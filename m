@@ -2,123 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D1A7BB84F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2BE77BB87B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232253AbjJFM61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 08:58:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35320 "EHLO
+        id S232077AbjJFNCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 09:02:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232082AbjJFM6Y (ORCPT
+        with ESMTP id S232439AbjJFNCV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 08:58:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BBEE83
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:57:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696597060;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=P72uFFNSSE0vKJxm+IxXc41kWoWIl9UwGtfO5HDJM5Q=;
-        b=i5PNPn6eGUxmO2gloekuPPyf4v+Lk3SpIHOdqG8AXMOj7I+GPaBD7irfFbXP+F3h5eInfg
-        eLlOHGcgrLQvPL+2k/LjnWdaFBT+Q7krt0h5DdLBSddE6xLtbNt7LB+Zuefx0ZEN8hFKDv
-        CXfvkgCVhg8RsWMhxqBlWb2XiN82AGw=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-350-wfOR4xrHPfqUGmMwYzmCdQ-1; Fri, 06 Oct 2023 08:57:39 -0400
-X-MC-Unique: wfOR4xrHPfqUGmMwYzmCdQ-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-402cd372b8bso15373865e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 05:57:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696597058; x=1697201858;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=P72uFFNSSE0vKJxm+IxXc41kWoWIl9UwGtfO5HDJM5Q=;
-        b=jJudgyGMpprMwUAZYaW1enx1EHnvi/L0M3OtbAHw488ah+PJOCqWBP94ZouYcLZKkQ
-         wHpb6T5Ka3D9MXup9VwzXmGhRgZC+L66hYkrNXMgHb1eQmqefABfT9AFQfbUR5vTLuG4
-         iGrsJznz28E3CDeR2/fzhe+tcegnDldq0EDP0aJ6c6ZeRfPhkii4UpkCCecsovA32nbA
-         a5LBgOl1j0HSt8A7XhPCzQLi1w0p6ls3vILTcpGw7PpS6M3cAasJcfQKb31HcB+zZWQz
-         /pZl2xK2HkaXsZy19FWMHI9on0dcx8dTCW61Mgw2PrNfmOCpF3Y8jNi10lSw624n3vA2
-         HIbw==
-X-Gm-Message-State: AOJu0YxzpRK6F/QXAAftGWYxugoXu7Unuv6uWeoNfujjJkEXbsyZ5s1h
-        o3SK9vmEKwJ85rvVo336zJNJi9qgrDP1ZAisM6b3ZR5417CZCR7g/reWUFP1fu5IEqch6c7Niv5
-        X1EJDNnMSiCRqbl6mf6KsN1Af
-X-Received: by 2002:a05:600c:246:b0:405:3455:567e with SMTP id 6-20020a05600c024600b004053455567emr7145384wmj.5.1696597058120;
-        Fri, 06 Oct 2023 05:57:38 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEtrmfJjyHMGFkRyzL7jLKZQ/tiiPpNKiRqiRcZEXdHFLDwxFTEU/qgtwVj7K45dXKQXT6eRQ==
-X-Received: by 2002:a05:600c:246:b0:405:3455:567e with SMTP id 6-20020a05600c024600b004053455567emr7145346wmj.5.1696597057619;
-        Fri, 06 Oct 2023 05:57:37 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c715:ee00:4e24:cf8e:3de0:8819? (p200300cbc715ee004e24cf8e3de08819.dip0.t-ipconnect.de. [2003:cb:c715:ee00:4e24:cf8e:3de0:8819])
-        by smtp.gmail.com with ESMTPSA id n14-20020adfe78e000000b0032196c508e3sm1612224wrm.53.2023.10.06.05.57.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 05:57:37 -0700 (PDT)
-Message-ID: <4131ade7-c790-053c-99cb-3544f3c6523d@redhat.com>
-Date:   Fri, 6 Oct 2023 14:57:35 +0200
+        Fri, 6 Oct 2023 09:02:21 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48196ED;
+        Fri,  6 Oct 2023 06:02:00 -0700 (PDT)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 396Clq1s026747;
+        Fri, 6 Oct 2023 13:00:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : content-transfer-encoding
+ : mime-version; s=pp1; bh=EzIkQvdqHkvqU8pfoi8auX9WuaFYkA4CdPiXxhdMDJM=;
+ b=aMB5YnwwdD81Fs/pqdankSbbxB248JstoF0QDgTEXcNgMPh6hDJl4ljJ/elSctI4U3cA
+ odFrSY0WBNjrfkVOIOxdU+C7KTFQrPXFanavJa4aUYjPiKprhYxZ65BfEQgK+ItWNzdH
+ HKjS20ScH6jlpvQgNT+Lbsu7D5kPzb/L94rWRLXESGsGCxlSaBRt1XqcuZ11awQene6s
+ oRMeJk7fL7oRyjZEiKtPYMWNYFJCpIHdhg8eVeKPV5DnFwXrzetDqwzb9jl+YL3rDsQa
+ nmwqGoCeNiLeCdipYkI851Q5t5LbmfDgIwf47BK+Xnzjn5refTy4+P3aEx+h0e1VRSW2 eg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tjjj70h27-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Oct 2023 13:00:06 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 396Cm8ur027771;
+        Fri, 6 Oct 2023 12:59:25 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tjjj70edd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Oct 2023 12:59:25 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 396CPqMk017592;
+        Fri, 6 Oct 2023 12:58:53 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tey0pkg8n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Oct 2023 12:58:53 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 396Cwm2G43254510
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 6 Oct 2023 12:58:48 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F17F320043;
+        Fri,  6 Oct 2023 12:58:47 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A4E3D2004B;
+        Fri,  6 Oct 2023 12:58:47 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Fri,  6 Oct 2023 12:58:47 +0000 (GMT)
+From:   Gerd Bayer <gbayer@linux.ibm.com>
+To:     rdunlap@infradead.org, wenjia@linux.ibm.com
+Cc:     linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        netdev@vger.kernel.org, raspl@linux.ibm.com, sfr@canb.auug.org.au,
+        alibuda@linux.alibaba.com, wintera@linux.ibm.com,
+        guwen@linux.alibaba.com, tonylu@linux.alibaba.com,
+        jaka@linux.ibm.com
+Subject: [PATCH net] net/smc: Fix dependency of SMC on ISM
+Date:   Fri,  6 Oct 2023 14:58:47 +0200
+Message-Id: <20231006125847.1517840-1-gbayer@linux.ibm.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <d9a2d47d-c8bd-cf17-83e0-d9b82561a594@linux.ibm.com>
+References: <d9a2d47d-c8bd-cf17-83e0-d9b82561a594@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: SG6ZWIKrpDqZYggufCdzL7By_oFzYgj7
+X-Proofpoint-GUID: wzbrlymHai5pgffCHOQI33fNRdJYEgKO
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 4/4] mm/gup: adapt get_user_page_vma_remote() to never
- return NULL
-Content-Language: en-US
-To:     Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <cover.1696288092.git.lstoakes@gmail.com>
- <00319ce292d27b3aae76a0eb220ce3f528187508.1696288092.git.lstoakes@gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <00319ce292d27b3aae76a0eb220ce3f528187508.1696288092.git.lstoakes@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-06_10,2023-10-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=816
+ suspectscore=0 clxscore=1011 malwarescore=0 phishscore=0 spamscore=0
+ adultscore=0 impostorscore=0 priorityscore=1501 lowpriorityscore=0
+ mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310060096
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.10.23 01:14, Lorenzo Stoakes wrote:
-> get_user_pages_remote() will never return 0 except in the case of
-> FOLL_NOWAIT being specified, which we explicitly disallow.
-> 
-> This simplifies error handling for the caller and avoids the awkwardness of
-> dealing with both errors and failing to pin. Failing to pin here is an
-> error.
-> 
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
-> ---
+When the SMC protocol is built into the kernel proper while ISM is
+configured to be built as module, linking the kernel fails due to
+unresolved dependencies out of net/smc/smc_ism.o to
+ism_get_smcd_ops, ism_register_client, and ism_unregister_client
+as reported via the linux-next test automation (see link).
+This however is a bug introduced a while ago.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Correct the dependency list in ISM's and SMC's Kconfig to reflect the
+dependencies that are actually inverted. With this you cannot build a
+kernel with CONFIG_SMC=y and CONFIG_ISM=m. Either ISM needs to be 'y',
+too - or a 'n'. That way, SMC can still be configured on non-s390
+architectures that do not have (nor need) an ISM driver.
 
+Fixes: 89e7d2ba61b7 ("net/ism: Add new API for client registration")
+
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Closes: https://lore.kernel.org/linux-next/d53b5b50-d894-4df8-8969-fd39e63440ae@infradead.org/
+Co-developed-by: Wenjia Zhang <wenjia@linux.ibm.com>
+Signed-off-by: Wenjia Zhang <wenjia@linux.ibm.com>
+Signed-off-by: Gerd Bayer <gbayer@linux.ibm.com>
+---
+ drivers/s390/net/Kconfig | 2 +-
+ net/smc/Kconfig          | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/s390/net/Kconfig b/drivers/s390/net/Kconfig
+index 74760c1a163b..4902d45e929c 100644
+--- a/drivers/s390/net/Kconfig
++++ b/drivers/s390/net/Kconfig
+@@ -102,7 +102,7 @@ config CCWGROUP
+ 
+ config ISM
+ 	tristate "Support for ISM vPCI Adapter"
+-	depends on PCI && SMC
++	depends on PCI
+ 	default n
+ 	help
+ 	  Select this option if you want to use the Internal Shared Memory
+diff --git a/net/smc/Kconfig b/net/smc/Kconfig
+index 1ab3c5a2c5ad..746be3996768 100644
+--- a/net/smc/Kconfig
++++ b/net/smc/Kconfig
+@@ -2,6 +2,7 @@
+ config SMC
+ 	tristate "SMC socket protocol family"
+ 	depends on INET && INFINIBAND
++	depends on m || ISM != m
+ 	help
+ 	  SMC-R provides a "sockets over RDMA" solution making use of
+ 	  RDMA over Converged Ethernet (RoCE) technology to upgrade
 -- 
-Cheers,
-
-David / dhildenb
+2.39.2
 
