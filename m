@@ -2,81 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AAD97BB141
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 07:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B38A7BB143
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 07:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbjJFFk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 01:40:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60548 "EHLO
+        id S230061AbjJFFmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 01:42:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230116AbjJFFkZ (ORCPT
+        with ESMTP id S230017AbjJFFmW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 01:40:25 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A244BF
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 22:40:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A65DFC433C9;
-        Fri,  6 Oct 2023 05:40:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696570823;
-        bh=i0vWmFm1rNMbqmdH6aUvaNH/rlt5gbDd1KUTPusN3G4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=MAEX3Bp/uW1+WDUINavoQnIQUOAWvhzEU0s3t3yTdVc5FYPFav4vNwFGBkQrHM2PA
-         ogGDA78M/otmKi1W0BwL4HXjBjS3YPbEkXP+Lrjb4PhljD3VTkiGOg4SYMQdPYvUjc
-         BeuLqFg/P6ITAMLavMP2SV63Zh72ZmKL6EjQ9BqOhQ8XM9wKzi8kNc5mTqt7enaEH8
-         gtOhydo4txddSplNvrNslndglLZ5y0RDdVT/l2PxYksc9ruaOzH9D9tOUdzhjg2V2p
-         gwKKn04bwj4waGOSpGXtj+4pU0F7FpMQMSXAkhrjhAHD0XVK9zsovu9xQsR/o5cbBF
-         X8hWke5jxG7lA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8B60EC595CB;
-        Fri,  6 Oct 2023 05:40:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Fri, 6 Oct 2023 01:42:22 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305E6BF
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 22:42:21 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-59c215f2f4aso20830387b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 22:42:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696570940; x=1697175740; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=iMNU/NcReGRTQoFhUIKFEhWrRToHaZS/r6S0IyfUYQA=;
+        b=SA+o1acD+FtLsYNEUhzawIOUUFxuMD4SCozuTCTQtEIf8xsGjfnehkKT3gPXtqEXyM
+         iZompe2XYlOamDl5cMHVTLMroUFR1xlXUvBNnasTZV1/UAO33aCIpNhN1hHqJKdr9JJ/
+         Dl8DF13lYIPkB7uTTmhWBcsQ0y8Pv07xSlorbFnXkzApo1q1huULdlZYF/Ykuo4N40fo
+         /7KjrlIqLTXIQaCR+NmSpqgIR4QP2QcD0TIYEhWm1O1ILY0nxnuf0IdTeFgJ5WJGQj9v
+         Px2hWNqHqcc/sGZ4aiUVGS1l7Y5YdijhE9831ZyqvJ66+jXw8PtmmOWk9bQak3QdhBQ/
+         WmLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696570940; x=1697175740;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iMNU/NcReGRTQoFhUIKFEhWrRToHaZS/r6S0IyfUYQA=;
+        b=ARr/26wW8IlHyC3uXR/Z6NFmAcSjcsq2AuTc0NF+5jS46hRRGSYtGjJWhTxUePMqgP
+         n2ytPVUkUM8xLg9YWRTTFnYoqmgrf5kLH7CC6r6jKAZPYVBNXt4T/gXluifh6zusDiFG
+         /QuHdvXrZ323hAm+klYh+BAUqbTuu1Rk2OJM/l7efdfXq5oO/R9zwg4FREVqO1ryTH9V
+         WIZBZinzfqNjK8z1Ah1XYuuFt2RLmVoAzmiMF337Xg44CBHANAM2EiwIQAv1PMB+fR+t
+         sVBa8B26Xlyf6W9aAUytz6KJOe73NPabmfoBTgdJMpwE6RHFrxenbch20Z3T6bfKDXwW
+         9XYg==
+X-Gm-Message-State: AOJu0YzbY4Bivzm1LbA7OcE1G5Nj76s3vD1pDImmi2fmeYUWnSzx3rTz
+        GbAMKUuzItuUX3kqRwpYVLBohA==
+X-Google-Smtp-Source: AGHT+IGEuUVUDHmEfgU2ZUeoXgbdvGNBLmcG/5Ng06kfo9sfd8SOCeQ0ooBNx3Jipoe0YW6Lkbx0lA==
+X-Received: by 2002:a81:4810:0:b0:5a1:d0fe:e44b with SMTP id v16-20020a814810000000b005a1d0fee44bmr7584991ywa.11.1696570940293;
+        Thu, 05 Oct 2023 22:42:20 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id w1-20020a81a201000000b005837633d9cbsm1033602ywg.64.2023.10.05.22.42.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 22:42:19 -0700 (PDT)
+Date:   Thu, 5 Oct 2023 22:42:17 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     "Chen, Tim C" <tim.c.chen@intel.com>
+cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Carlos Maiolino <cem@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: RE: [PATCH 8/8] shmem,percpu_counter: add _limited_add(fbc, limit,
+ amount)
+In-Reply-To: <DM6PR11MB4107F132CC1203486A91A4DEDCCAA@DM6PR11MB4107.namprd11.prod.outlook.com>
+Message-ID: <17877ef1-8aac-378b-94-af5afa2793ae@google.com>
+References: <c7441dc6-f3bb-dd60-c670-9f5cbd9f266@google.com> <bb817848-2d19-bcc8-39ca-ea179af0f0b4@google.com> <DM6PR11MB4107F132CC1203486A91A4DEDCCAA@DM6PR11MB4107.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] bpf: Fix the comment for bpf_restore_data_end()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169657082356.32138.7846294704221528255.git-patchwork-notify@kernel.org>
-Date:   Fri, 06 Oct 2023 05:40:23 +0000
-References: <20231005072137.29870-1-akihiko.odaki@daynix.com>
-In-Reply-To: <20231005072137.29870-1-akihiko.odaki@daynix.com>
-To:     Akihiko Odaki <akihiko.odaki@daynix.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Thu, 5 Oct 2023, Chen, Tim C wrote:
 
-This patch was applied to bpf/bpf-next.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
-
-On Thu,  5 Oct 2023 16:21:36 +0900 you wrote:
-> The comment used to say:
-> > Restore data saved by bpf_compute_data_pointers().
+> >--- a/lib/percpu_counter.c
+> >+++ b/lib/percpu_counter.c
+> >@@ -278,6 +278,59 @@ int __percpu_counter_compare(struct
+> >percpu_counter *fbc, s64 rhs, s32 batch)  }
+> >EXPORT_SYMBOL(__percpu_counter_compare);
+> >
+> >+/*
+> >+ * Compare counter, and add amount if the total is within limit.
+> >+ * Return true if amount was added, false if it would exceed limit.
+> >+ */
+> >+bool __percpu_counter_limited_add(struct percpu_counter *fbc,
+> >+				  s64 limit, s64 amount, s32 batch) {
+> >+	s64 count;
+> >+	s64 unknown;
+> >+	unsigned long flags;
+> >+	bool good;
+> >+
+> >+	if (amount > limit)
+> >+		return false;
+> >+
+> >+	local_irq_save(flags);
+> >+	unknown = batch * num_online_cpus();
+> >+	count = __this_cpu_read(*fbc->counters);
+> >+
+> >+	/* Skip taking the lock when safe */
+> >+	if (abs(count + amount) <= batch &&
+> >+	    fbc->count + unknown <= limit) {
+> >+		this_cpu_add(*fbc->counters, amount);
+> >+		local_irq_restore(flags);
+> >+		return true;
+> >+	}
+> >+
+> >+	raw_spin_lock(&fbc->lock);
+> >+	count = fbc->count + amount;
+> >+
 > 
-> But bpf_compute_data_pointers() does not save the data;
-> bpf_compute_and_save_data_end() does.
+> Perhaps we can fast path the case where for sure
+> we will exceed limit? 
 > 
-> Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
-> 
-> [...]
+> if (fbc->count + amount - unknown > limit)
+> 	return false;
 
-Here is the summary with links:
-  - bpf: Fix the comment for bpf_restore_data_end()
-    https://git.kernel.org/bpf/bpf-next/c/9c8c3fa3a52b
+Thanks, that sounds reasonable: I'll try to add something like that -
+but haven't thought about it carefully enough yet (too easy for me
+to overlook some negative case which messes everything up).
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Hugh
