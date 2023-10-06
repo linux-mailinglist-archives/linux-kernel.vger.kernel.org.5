@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 232757BC024
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC1F47BC026
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 22:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233448AbjJFURX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 16:17:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47064 "EHLO
+        id S233349AbjJFURc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 16:17:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233437AbjJFURU (ORCPT
+        with ESMTP id S233476AbjJFUR2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 16:17:20 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78F6EBD
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 13:17:18 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-692779f583fso2077686b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 13:17:18 -0700 (PDT)
+        Fri, 6 Oct 2023 16:17:28 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C12A9FA
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 13:17:24 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-690ba63891dso2152524b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 13:17:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696623438; x=1697228238; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1696623443; x=1697228243; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pjnr6MIfdcujcCvyrDmadksDTc6dwprcRhGznzbOSQc=;
-        b=Wu/6dDFXiktLOMH8+ROpJmA6IOMvxkZP8PTPmCP8rGOgTUdCsiCnErr0RtCEukIt7I
-         TzpsIkjBDP69hgfVTjPRxRVGcfyP15Em0ddUvyUN+W8sQbp3QKZ7Rbt3iP2Z67BTzaqR
-         MDdb1cvyeyh+1T0t8pJRpGfw9gGkEt715P9yQ=
+        bh=kW97lFtdi7tQSx5WV0UdX/3taJs5J9htbLPAyylMrXE=;
+        b=kJfSleHIr4K5rV9AG0993UM4ty3EhIbt+f1zqjQPQATref/U78mlNCHrRB2PdId8Ap
+         rhMUfyWUb428Sj2BvkML1y1A/7QkCp2Op73EBLONKDC5PJfN6WU/1uP2e6ODanPf2sO6
+         PfJVx9hocwMqsuqGyF0UB6KAQYv9A7WlZEcn0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696623438; x=1697228238;
+        d=1e100.net; s=20230601; t=1696623443; x=1697228243;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pjnr6MIfdcujcCvyrDmadksDTc6dwprcRhGznzbOSQc=;
-        b=Ac/KXEGHjOKHt0U99aWQg1HEQpiSFs7H7idC/2jM2cX49X0oeUCuoyJqHry+sxqQi5
-         6wpqnMicXlO5jnZYLPvJhwS4nokQ2Nd5UjACG11SZzFjx+AzgH/Co/si5BxviASFe68O
-         m1XAoPVUuH6cJZZ+fp84sU0O+kYULWqKjdHPoTuVdDI4J+sVio/27NaHyWwJGy0FfPQ+
-         USiehsEgxy+2vhzI6WnG9frj1VgpFsk4YkzCa47pE7lAdJuBdbGt7HoS483Y7lMDx0AG
-         ZqNO9In7KykPw+QpP9Ia85dPTgn5aWDLnU8tMNn0UUvghmO/GhRKCNGZiLlGfAQOshkV
-         YJjw==
-X-Gm-Message-State: AOJu0YxEMRltQAMz6I9kMlPefcHM339XQanSPOuMu7Cm+sy+tNE4zQJS
-        YjPlktDU77hTz+UyPBICB3ziY0VnsBBqS6HHqfI=
-X-Google-Smtp-Source: AGHT+IGhzG4GvBHXlZewAFuebmu7Hkj7yf8HoMy1nAAB2s5OGn1TAkAWTm0IKsfUQhnoYlxwPnQqsA==
-X-Received: by 2002:a05:6a20:6a11:b0:15a:1817:c493 with SMTP id p17-20020a056a206a1100b0015a1817c493mr10463727pzk.39.1696623437921;
-        Fri, 06 Oct 2023 13:17:17 -0700 (PDT)
+        bh=kW97lFtdi7tQSx5WV0UdX/3taJs5J9htbLPAyylMrXE=;
+        b=u9Mga0g5ktsyH0lr3Go7JO6Wy5QLBaU9N6KnNKIhWqU6VrpkyTJwlRT3CL3eX6N+i3
+         MJN/c7v2PGaMHCt1UQzBt4uvVGpBvz68JNfZAFfli7nFxbyBKCvqaTKklxurujvScU/V
+         wcDFiNIjBMe9i+EBywO5nOT3a1SFPkbIaXLdhxdyIEfEaWEBkqRngjdqwPelVwkh/KH7
+         OFPd15AdanbWP/RIkPHbJOaPULMd8pRlXDV4pXPeHjhQ5i7MRK1C93YD6Ag7U3ESHGyu
+         vAlTDYmEwMCG7hbcPIKjltZ4T51udBCGcAqBFvHKE11cTLIgZHhStgkvAqMsdBDjeYH4
+         3o7Q==
+X-Gm-Message-State: AOJu0Yy2WC4qD+xxYGlPSTwMb++flpESQ77Y/PDLBIENoHXM+USj/I5W
+        wqsBhzwssjmM9+ByDtlyNLpMvw==
+X-Google-Smtp-Source: AGHT+IG6MS6aq0hR7NEmqMW13hny+F7i2UoqfOJWvAQ5rl6J3/G66uwQc2vUM5xOUeHLWKCJ3JR0OQ==
+X-Received: by 2002:a05:6a21:3296:b0:140:d536:d428 with SMTP id yt22-20020a056a21329600b00140d536d428mr10800853pzb.51.1696623443148;
+        Fri, 06 Oct 2023 13:17:23 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id c9-20020aa78809000000b0068a13b0b300sm1951757pfo.11.2023.10.06.13.17.17
+        by smtp.gmail.com with ESMTPSA id q16-20020a62ae10000000b0069343e474bcsm1886916pff.104.2023.10.06.13.17.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 13:17:17 -0700 (PDT)
+        Fri, 06 Oct 2023 13:17:22 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
-To:     Ping-Ke Shih <pkshih@realtek.com>
+To:     Christian Lamparter <chunkeey@googlemail.com>
 Cc:     Kees Cook <keescook@chromium.org>, Kalle Valo <kvalo@kernel.org>,
         "Gustavo A. R. Silva" <gustavoars@kernel.org>,
         linux-wireless@vger.kernel.org, linux-hardening@vger.kernel.org,
@@ -55,25 +55,25 @@ Cc:     Kees Cook <keescook@chromium.org>, Kalle Valo <kvalo@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
         llvm@lists.linux.dev
-Subject: [PATCH] wifi: rtw89: coex: Annotate struct rtw89_btc_btf_set_slot_table with __counted_by
-Date:   Fri,  6 Oct 2023 13:17:15 -0700
-Message-Id: <20231006201715.work.239-kees@kernel.org>
+Subject: [PATCH] wifi: p54: Annotate struct p54_cal_database with __counted_by
+Date:   Fri,  6 Oct 2023 13:17:20 -0700
+Message-Id: <20231006201719.work.356-kees@kernel.org>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1321; i=keescook@chromium.org;
- h=from:subject:message-id; bh=eu6W7wXw5RTTiD60SAAgUrQDRZxpZuc1EvwMJ2JgTAI=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlIGtLFrvUk7TV+fsu3RoZBXUeAY5BE45UBpI5o
- H04FXBoP4qJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZSBrSwAKCRCJcvTf3G3A
- JkN9D/9DbkQ9s24VTWKihPeasIWSlCASR9Q6UgMN2sh4QmgFMoBiZlxb12IObvOXPnLVlYdHbmX
- EVy9OcIWuPk43HGC3iU/j44eEHlpM/TqUYFwvguvhr8W3ZvbTF8lzfpmCs0SmJXhbFMBaZ5+mB2
- 2qIy4G6fMNcmwLK4jH/1l5P8/Ls4R6xkfMqkDb4ibaFLM+VlsWnSEQYN7HIWR5ZiT8vPIHPAymc
- 6mi+AVnfzirQ380CiVqi7z4Llsn8ZXvpBa7RbJc+XMfQlLESPt2LTk6gskIP+d/mAzribY7z7xF
- UJr/yeImzGyEY+MrWTNG64p3AhBR3uTee3rMN+6QU/hQu8A9ng7ddLD+J/uVZYdOdMXqpHIQD0T
- sKVockWMg/GUEvNzpsNb6ebVslSZXGRRCN7NKF8y7T3jNQKzxDO0dppZdThl+D9gjUNeILx4rqs
- UWb00OkZQK2gTdUSzsm3Qy9fwl0/nCa7nwaIT86096mOrdJx+kkV23p4fujH9DXzzzuKJIrZ63h
- 2aXKuHw1/zaTlGRFHj0yAW1UVA487R9UVz+H/dDgCooswodM7cvImtDGZvKogqwPG2ICG7pepP2
- V75uq6CUWbyaJRKJxrdFTlZLJtnlcmkqDtyNWUN7zOI8kEGoDOLH5Ab4a73LxseCO2tTiBtgstk
- FLmAlOo dZguPuXA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1282; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=NFwzX0Eq7KCDbbQM5umu2p/6j6lMwTY9c2gIIvIyXH8=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlIGtQu26M1sSthhYbE6kdTUaJiSm4LeUxUUykm
+ 4fh5mQO3aaJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZSBrUAAKCRCJcvTf3G3A
+ Jhn3D/9y8+XILyj+byVNV0fCgmz3v95DGYn0tJmv1MXslgAFu8Pww0V8y65fznB07xphjUv3cxA
+ WEudhs5dA2oWKVPIwgQkBr3dHpfR7MfTVAMX10JUODoUvZVbazlu7hg0b1/7JFv1xtmuwolgPFU
+ ZDLr+eXAHNGcBC7mQDHWoQhR/anMut6KlTh0STekS1k9UApNKth4ayj4Q27n6URT7tgcLyhTpXG
+ IDqWi7pmZhV0HTzbN3qJ9OzS8Ea6Mrr3flfaApdtgc8l4Q8/KxLtO+gbQgWTd5bSAhG8ee3BrW7
+ CbghSKSSzyymAfdDTmw0xrvj6qfi+fTNEnOC/ahuDL/gsc+OPa/JbiLIWhLqhF5tOPKrwtvEPWQ
+ zaUV5mYkSplYev71JajAiT3XxdTIy4NvIAHvwhdz6qakMmuIPeWdxXVsF30xALAoGqwA4LUljcE
+ rOKtVVsTzIf3yZNJhOzFzBwOZlf6gpiSCfX/WLCn9+84Xf44KcnkWmIOrAJp8v85wuBKsOa3FGh
+ 7TVCgeR/pe2oepKBwd24/KIQfu00XLzyQ7gliBRqobRTqowyK+UH4HCz6dW8TJ9+xF/1MBlohwB
+ xWPTCxRzak2H8nyD8d/6psRG4kwCNICHXBCHdZ2sggZ3np+yS6sngN07u5+GoFUfkOBP2trZMya
+ Y8XV3hQ JBRA4ZRg==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -92,10 +92,9 @@ their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
 array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
 functions).
 
-As found with Coccinelle[1], add __counted_by for struct
-rtw89_btc_btf_set_slot_table.
+As found with Coccinelle[1], add __counted_by for struct p54_cal_database.
 
-Cc: Ping-Ke Shih <pkshih@realtek.com>
+Cc: Christian Lamparter <chunkeey@googlemail.com>
 Cc: Kalle Valo <kvalo@kernel.org>
 Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
 Cc: linux-wireless@vger.kernel.org
@@ -103,22 +102,22 @@ Cc: linux-hardening@vger.kernel.org
 Link: https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci [1]
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/net/wireless/realtek/rtw89/coex.c | 2 +-
+ drivers/net/wireless/intersil/p54/p54.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/realtek/rtw89/coex.c b/drivers/net/wireless/realtek/rtw89/coex.c
-index 4ba8b3df70ae..d66a1152c3f5 100644
---- a/drivers/net/wireless/realtek/rtw89/coex.c
-+++ b/drivers/net/wireless/realtek/rtw89/coex.c
-@@ -237,7 +237,7 @@ struct rtw89_btc_btf_set_report {
- struct rtw89_btc_btf_set_slot_table {
- 	u8 fver;
- 	u8 tbl_num;
--	u8 buf[];
-+	u8 buf[] __counted_by(tbl_num);
- } __packed;
+diff --git a/drivers/net/wireless/intersil/p54/p54.h b/drivers/net/wireless/intersil/p54/p54.h
+index 3356ea708d81..770e348d1f6c 100644
+--- a/drivers/net/wireless/intersil/p54/p54.h
++++ b/drivers/net/wireless/intersil/p54/p54.h
+@@ -126,7 +126,7 @@ struct p54_cal_database {
+ 	size_t entry_size;
+ 	size_t offset;
+ 	size_t len;
+-	u8 data[];
++	u8 data[] __counted_by(entries);
+ };
  
- struct rtw89_btc_btf_set_mon_reg {
+ #define EEPROM_READBACK_LEN 0x3fc
 -- 
 2.34.1
 
