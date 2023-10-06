@@ -2,59 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEDF97BBC83
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C8447BBC84
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232719AbjJFQO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 12:14:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55922 "EHLO
+        id S232782AbjJFQOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 12:14:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232557AbjJFQO1 (ORCPT
+        with ESMTP id S232550AbjJFQO1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 6 Oct 2023 12:14:27 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7249DA6;
-        Fri,  6 Oct 2023 09:14:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0FA1DC433C7;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04C1CAD;
+        Fri,  6 Oct 2023 09:14:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A3EFDC433CC;
         Fri,  6 Oct 2023 16:14:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1696608865;
-        bh=fxwe8aH3Ht8gojdkE8uldU7Xh/h2+LztbuUjaKV2g1w=;
+        bh=Kta9wxTkyFzWfR3wZJUaDd9Fi3SDudhkhLe3lx2zP/0=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=JFyj1xotICR+r00PmxTYDp9Gz+Eiw6zZXpAZViOpmE+QgcDPujoXohAjYkE1JFCpz
-         Vccz9ZN6WNJlS1fxnL+iQ92xHKzjWGxfDJNTjpZHHWhJIwJtKX4SwEGZHGwztseDnf
-         5xNANEyDIvY1Nm0WcflegXQutZ/D0yxLrNKUEExi3GXWwJHkH6fdm6JLRDLkD6JATu
-         Yflr+1NVv7PrZAUXmGEk0cluwm5VrtcBzNY5Ct0GrMYZ/IHrYaE2NlGvewLfZsmAt9
-         BOMdxOSxH8/mFEwVdOl5zC6cjMpuCJYYNBpCu9WZ2Fk2VzXKqk0AzEl6afwPiRPRD/
-         PHyO9C87ObjsQ==
+        b=RvIzdazoCFlIFKA0pduBNaS6meWF0uy+pmePNXpFH8i8pS/iZsZcMv3dBFdKdVI+7
+         k7xwwgCqyYcqCOTONMbFa5un+MTkjQ/KociGGMefdX94tu6DFBGE2fBAysYOV/S79j
+         SW8VNZNmqyp4KxhVts2da2mir+qS+6VkUQW6P99kNlp9ZPIOItpUV+qqEiE6r5py/4
+         H/VWZ2iVAE0DGSKY5ILupcZTkfFOHb3LYZl++/ZNBc5UC3P5r0YRE4Ke/knx6MdOKZ
+         lT2lGEDmYQqKeRzvgxycH1GNsNH++bvaBI/JS7dt93lUTn+Zax05QVhmpspygk+/LL
+         oTGlT5FHmDSAg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EF635E632D2;
-        Fri,  6 Oct 2023 16:14:24 +0000 (UTC)
-Subject: Re: [GIT PULL] PCI fixes for v6.6
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 91744E632D2;
+        Fri,  6 Oct 2023 16:14:25 +0000 (UTC)
+Subject: Re: [GIT PULL] platform-drivers-x86 for 6.6-4
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20231006154802.GA855916@bhelgaas>
-References: <20231006154802.GA855916@bhelgaas>
-X-PR-Tracked-List-Id: <linux-pci.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20231006154802.GA855916@bhelgaas>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git tags/pci-v6.6-fixes-2
-X-PR-Tracked-Commit-Id: c82458101d5490230d735caecce14c9c27b1010c
+In-Reply-To: <41cdbbf9-f270-d6ba-8c8e-5f06cc264b93@redhat.com>
+References: <41cdbbf9-f270-d6ba-8c8e-5f06cc264b93@redhat.com>
+X-PR-Tracked-List-Id: <platform-driver-x86.vger.kernel.org>
+X-PR-Tracked-Message-Id: <41cdbbf9-f270-d6ba-8c8e-5f06cc264b93@redhat.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v6.6-4
+X-PR-Tracked-Commit-Id: 5b44abbc39ca15df80d0da4756078c98c831090f
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: af95dc6fdc25e616051d0234aad638e15c02ec8f
-Message-Id: <169660886497.6012.5230240593694281886.pr-tracker-bot@kernel.org>
-Date:   Fri, 06 Oct 2023 16:14:24 +0000
-To:     Bjorn Helgaas <helgaas@kernel.org>
+X-PR-Merge-Commit-Id: a5e0a4b11c4adbe6ab2c0aa6c8b1d59d0fccf56a
+Message-Id: <169660886559.6012.4360845420804261906.pr-tracker-bot@kernel.org>
+Date:   Fri, 06 Oct 2023 16:14:25 +0000
+To:     Hans de Goede <hdegoede@redhat.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mark Blakeney <mark.blakeney@bullet-systems.net>,
-        Lizhi Hou <lizhi.hou@amd.com>,
-        Herve Codina <herve.codina@bootlin.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sricharan Ramabadhran <quic_srichara@quicinc.com>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -64,12 +57,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 6 Oct 2023 10:48:02 -0500:
+The pull request you sent on Fri, 6 Oct 2023 17:40:28 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git tags/pci-v6.6-fixes-2
+> git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v6.6-4
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/af95dc6fdc25e616051d0234aad638e15c02ec8f
+https://git.kernel.org/torvalds/c/a5e0a4b11c4adbe6ab2c0aa6c8b1d59d0fccf56a
 
 Thank you!
 
