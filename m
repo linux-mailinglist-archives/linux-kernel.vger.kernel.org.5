@@ -2,122 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC9F77BB87C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 498F97BB87F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232110AbjJFNCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 09:02:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60650 "EHLO
+        id S232303AbjJFNE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 09:04:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232469AbjJFNCg (ORCPT
+        with ESMTP id S232000AbjJFNEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 09:02:36 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C58A18B;
-        Fri,  6 Oct 2023 06:02:28 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4S27qm2Qp6z6K6wd;
-        Fri,  6 Oct 2023 21:02:12 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 6 Oct
- 2023 14:02:25 +0100
-Date:   Fri, 6 Oct 2023 14:02:24 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     David Rientjes <rientjes@google.com>
-CC:     Jiaqi Yan <jiaqiyan@google.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Grimm, Jon" <jon.grimm@amd.com>, <dave.hansen@linux.intel.com>,
-        <vilas.sridharan@amd.com>, <linuxarm@huawei.com>,
-        <shiju.jose@huawei.com>, <linux-acpi@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <rafael@kernel.org>, <lenb@kernel.org>, <naoya.horiguchi@nec.com>,
-        <james.morse@arm.com>, <david@redhat.com>, <jthoughton@google.com>,
-        <somasundaram.a@hpe.com>, <erdemaktas@google.com>,
-        <pgonda@google.com>, <duenwen@google.com>,
-        <mike.malvestuto@intel.com>, <gthelen@google.com>,
-        <tanxiaofei@huawei.com>, <prime.zeng@hisilicon.com>
-Subject: Re: [RFC PATCH 2/9] memory: scrub: sysfs: Add Documentation entries
- for set of scrub attributes
-Message-ID: <20231006140224.000018a2@Huawei.com>
-In-Reply-To: <92f48c1c-3235-49b2-aabd-7da87ad3febc@google.com>
-References: <20230915172818.761-1-shiju.jose@huawei.com>
-        <20230915172818.761-3-shiju.jose@huawei.com>
-        <CACw3F50jRzJnr9h7qYyD3t+6h7Uw9QMfkCkgu7a=7Lv0Tpi8Zg@mail.gmail.com>
-        <20230922111740.000046d7@huawei.com>
-        <CACw3F539gZc0FoJLo6VvYSyZmeWZ3Pbec7AzsH+MYUJJNzQbUQ@mail.gmail.com>
-        <92f48c1c-3235-49b2-aabd-7da87ad3febc@google.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Fri, 6 Oct 2023 09:04:25 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CE012CE;
+        Fri,  6 Oct 2023 06:04:23 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9F871C15;
+        Fri,  6 Oct 2023 06:05:02 -0700 (PDT)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id AFA0D3F641;
+        Fri,  6 Oct 2023 06:04:22 -0700 (PDT)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] ACPI: PCC: Updates for v6.7
+Date:   Fri,  6 Oct 2023 14:04:18 +0100
+Message-ID: <20231006130418.659320-1-sudeep.holla@arm.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Oct 2023 20:18:12 -0700 (PDT)
-David Rientjes <rientjes@google.com> wrote:
+Hi Rafael,
 
-> On Wed, 27 Sep 2023, Jiaqi Yan wrote:
-> 
-> > > > 1. I am not aware of any chip/platform hardware that implemented the
-> > > > hw ps part defined in ACPI RASF/RAS2 spec. So I am curious what the
-> > > > RAS experts from different hardware vendors think about this. For
-> > > > example, Tony and Dave from Intel, Jon and Vilas from AMD. Is there
-> > > > any hardware platform (if allowed to disclose) that implemented ACPI
-> > > > RASF/RAS2? If so, will vendors continue to support the control of
-> > > > patrol scrubber using the ACPI spec? If not (as Tony said in [1], will
-> > > > the vendor consider starting some future platform?
-> > > >
-> > > > If we are unlikely to get the vendor support, creating this ACPI
-> > > > specific sysfs API (and the driver implementations) in Linux seems to
-> > > > have limited meaning.  
-> > >
-> > > There is a bit of a chicken and egg problem here. Until there is
-> > > reasonable support in kernel (or it looks like there will be),
-> > > BIOS teams push back on a requirement to add the tables.
-> > > I'd encourage no one to bother with RASF - RAS2 is much less
-> > > ambiguous.  
-> > 
-> > Here mainly to re-ping folks from Intel (Tony and Dave)  and AMD (Jon
-> > and Vilas) for your opinion on RAS2.
-> >   
-> 
-> We'll need to know from vendors, ideally at minimum from both Intel and 
-> AMD, whether RAS2 is the long-term vision here.  Nothing is set in stone, 
-> of course, but deciding whether RAS2 is the standard that we should be 
-> rallying around will help to guide future development including in the 
-> kernel.
-> 
-> If RAS2 is insufficient for future use cases or we would need to support 
-> multiple implementations in the kernel for configuring the patrol scrubber 
-> depending on vendor, that's great feedback to have.
-> 
-> I'd much rather focus on implementing something in the kernel that we have 
-> some clarity about the vendors supporting, especially when it comes with 
-> user visible interfaces, as opposed to something that may not be used long 
-> term.  I think that's a fair ask and that vendor feedback is required 
-> here?
+I2C, HWMON and Hisilicon SoC changes are all acked-by respective maintainers.
+All the changes are in the linux-next for some time now. Please pull!
 
-Agreed and happy to have feedback from Intel and AMD + all the other CPU
-vendors who make use of ACPI + all the OEMs who add stuff well beyond what
-Intel and AMD tell them to :)  I'll just note a lot of the ACPI support in the
-kernel covers stuff not used on mainstream x86 platforms because they are
-doing something custom and we didn't want 2 + X custom implementations...
+Regards,
+Sudeep
 
-Some other interfaces for scrub control (beyond existing embedded ones)
-will surface in the next few months where RAS2 is not appropriate.
+-->8
 
-Jonathan
+The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
 
+  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
 
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git tags/acpi-pcc-updates-6.7
+
+for you to fetch changes up to a46e42c097982e258f89c64c5f52f30994bcfeda:
+
+  soc: kunpeng_hccs: Migrate to use generic PCC shmem related macros (2023-09-29 11:55:37 +0100)
+
+----------------------------------------------------------------
+ACPI: PCC: Mailbox and generic updates for v6.7
+
+Main updates include:
+1. Addition of support for Type 4 PCC subspace that enables platform
+   notification handling (Huisong Li).
+2. Support for the shared interrupt amongst multiple PCC subspaces/
+   channels (Huisong Li).
+3. Consolidation of PCC shared memory region command and status
+   bitfields definitions that were duplicated and scattered across
+   multiple PCC client drivers (Sudeep Holla).
+
+----------------------------------------------------------------
+Huisong Li (2):
+      mailbox: pcc: Add support for platform notification handling
+      mailbox: pcc: Support shared interrupt for multiple subspaces
+
+Sudeep Holla (4):
+      ACPI: PCC: Add PCC shared memory region command and status bitfields
+      i2c: xgene-slimpro: Migrate to use generic PCC shmem related macros
+      hwmon: (xgene) Migrate to use generic PCC shmem related macros
+      soc: kunpeng_hccs: Migrate to use generic PCC shmem related macros
+
+ drivers/hwmon/xgene-hwmon.c            | 16 ++----
+ drivers/i2c/busses/i2c-xgene-slimpro.c | 16 ++----
+ drivers/mailbox/pcc.c                  | 91 ++++++++++++++++++++++++++++++----
+ drivers/soc/hisilicon/kunpeng_hccs.c   |  8 +--
+ include/acpi/pcc.h                     | 13 +++++
+ 5 files changed, 104 insertions(+), 40 deletions(-)
