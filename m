@@ -2,285 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C567BB407
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 11:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 356837BB40C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 11:16:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231419AbjJFJLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 05:11:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41546 "EHLO
+        id S231398AbjJFJQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 05:16:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231373AbjJFJLl (ORCPT
+        with ESMTP id S231215AbjJFJQQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 05:11:41 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD870AC
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 02:11:39 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9ae2cc4d17eso343205666b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 02:11:39 -0700 (PDT)
+        Fri, 6 Oct 2023 05:16:16 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 562829F
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 02:16:09 -0700 (PDT)
+X-UUID: f878a224642811ee8051498923ad61e6-20231006
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=wpqzKOAXPudRRjhQPPtjDmqmrsnMNoqd3zWJIHTkZE4=;
+        b=Nz777PK2WJjrRGuzwbGOfuKLSNmlnzvshOagpI3OiIsHFCYOMM/Xt4ehG0J2mlQt2tqoQD6ahoVwCgdqo+A1ui69OrP76tvt4EwhfEGNQ7ZJl4y4wlnBqLT6SHfc5XBDTDIJlCrn5oUQkazORmWm8a/ndj1dHZNUl6+/NYMt9k0=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:8391aad0-afa1-4b65-b474-2734e4308fcd,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:5f78ec9,CLOUDID:1f92d8c3-1e57-4345-9d31-31ad9818b39f,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: f878a224642811ee8051498923ad61e6-20231006
+Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw02.mediatek.com
+        (envelope-from <jason-jh.lin@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 280994694; Fri, 06 Oct 2023 17:16:02 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 6 Oct 2023 17:16:00 +0800
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 6 Oct 2023 17:16:00 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QL2ViLlTRcgmgvQejuyviJKYsYwGxNiFuv+aKUlvKM5N71+PoTToa8joWLO6SzgrIV8rVFbYfcrh6o08ZuT0a5lMsh6WUNi58daEs2+r+ivrBnwH4Yu8dsg4/XbufwWQxNFdWII/EXnIm1qC5N8m5QkohAynzsnUmJUSOsR/NLfcYxTMVXt8E+cSYGfYzBZ8SvlRyefIqsIF9UH40V00GefHdzMy6ocaXftcGodEvKzLOzfpNNoJqXAYDCv3+8xHRs0MT/XBwWJPgjUghQV6syI++8zqTUQj0zOcp5l99Ns6jGTY5sYkLt9/SO7HUwFqN0SA0/U96npkmlNiD+qYhw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wpqzKOAXPudRRjhQPPtjDmqmrsnMNoqd3zWJIHTkZE4=;
+ b=VJ5WlYvHoeg/o+pY8QM4hy2K2VxPEpehMWzb8Mg0L+XiYm8Rqdmjesx0gfD/Sm9nbtCMAWE4bgv3yVkbn3skdg2Z0ZFqpRyG3be+RuPAtcsc4qmqPH1NQDQl2oN9T+llhoDvld1PP+KDIiw7WMmheriWg83KQWJwsWjG1UCePyb5/QDMM+hCEb6D5ISnLFkl/hWi0WS/XuSLJ2jIQiTbm+IMDT4MbWcXakn/fU36bwNOD/q8GMzyNTbnRodfiuqHy0SJ+3h8XJ/RfrjUrLWzw/mxiVqw7/Mmp8E79vRMD0tHqmJwLrZK6Nl8ZASplN9eC0zTif69M9BsBq57mCctHw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696583498; x=1697188298; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=gPZAjel/7BEY3RhAgCPVg4ze/Urh/MvLCiSwVXSV0HU=;
-        b=Xel9Ad1L2qTFegpOhl08ceyHywdd+rZw6HCn64t0Jcpig2I9ATAtlq7eYlWjuDCPZe
-         GDM/YJ9Q4Vhu1dikirMYNiuJhvoCmPdF2AFHaugsDY/Kps5UAeb7Zltu8o7ePn+SoQ2E
-         CtfswQ/3z9sR8jKHsCdhzpZGMYOp/II4PFPCicp5wZbIsom34TOZreM+UGPkvENpt6p4
-         BRGzZgULlpJseALxK3JgW+0ClZ+LXbKr8Vto+Q69qhA6McGlU7oUCXVjX+CYGPUeyjkH
-         Jz/rRrrMR1v/B+asVloiN1CJC5XE3cBQ3z7VJW/HyVfTVACXyHpAjgz3qjxtPhcCqC3O
-         K7KA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696583498; x=1697188298;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gPZAjel/7BEY3RhAgCPVg4ze/Urh/MvLCiSwVXSV0HU=;
-        b=YWh3S3dfCzN6J/yDZ8Gb1x4R5jc4H/P0dR1tc7aeHowKFOrUQ4pUIZX9+OZhRQYYL0
-         oapNo2nUwKDnuvVPR0E17a2du0YMxXuyzBWid9aTEfrAIxePKuOKzFkAaS4wemCzIAzS
-         pnjAtloJB8JKejKPJ5QRtqzQK7fBfUBE/2Yhu4p7thWz2p3cGMhCerCbhsLnfMn/n3g1
-         2jggrk0kpFjTvdZ3Dls+/UyQqBrGXGVBY405hKrXJBFfs3FwgSd2iUyL0Jc0ydZpRm7n
-         VdCAxTUS8t2Vq5DtSughtTtZ9FDVNslzlwHEBCmrG6sIV6CtZIQhERfg7QK79kUF1CQ0
-         gxXg==
-X-Gm-Message-State: AOJu0YxhfENEjJt95Vw86VW6cHuU3ZkSl2qPSJhTELQzvnoZBidqJzmJ
-        Q9Rnac7NU276rQNS1fA0mRruqw==
-X-Google-Smtp-Source: AGHT+IHqzxCTQW4dbnB+MpVwIaaz+tcSa18UGqOEYvZ3kAj3sqBG9BQ87e4hq6GOmFlmpnLPwJAtnA==
-X-Received: by 2002:a17:907:788a:b0:9b2:717a:c0ec with SMTP id ku10-20020a170907788a00b009b2717ac0ecmr7054791ejc.69.1696583498149;
-        Fri, 06 Oct 2023 02:11:38 -0700 (PDT)
-Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id t27-20020a1709063e5b00b00997e00e78e6sm2552344eji.112.2023.10.06.02.11.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 02:11:37 -0700 (PDT)
-Message-ID: <5dbbbfd7-d4ea-4aa2-b1f5-7207e2767069@linaro.org>
-Date:   Fri, 6 Oct 2023 11:11:36 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: exynos: set USI mode in board dts
-To:     Tudor Ambarus <tudor.ambarus@linaro.org>, robh+dt@kernel.org,
-        conor+dt@kernel.org, alim.akhtar@samsung.com
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        semen.protsenko@linaro.org, peter.griffin@linaro.org
-References: <20231006090258.278369-1-tudor.ambarus@linaro.org>
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wpqzKOAXPudRRjhQPPtjDmqmrsnMNoqd3zWJIHTkZE4=;
+ b=Bl9FIHz7IBviUUOwybpkjQonHrgu9UzUgauNWhuCqUTubzywQAGHFLw+W6Izq5NbzQddBcAdp8IEr3bh8q87EqvP2uvX7aZihx7f7Gkv2s6AAMzfWoTUJhBwm8V9N+VZ+lJ0iPjCkkwIscIP/xu+lkPnDNAf+dLwY6NOsANveCs=
+Received: from SEYPR03MB7682.apcprd03.prod.outlook.com (2603:1096:101:149::11)
+ by SEYPR03MB7608.apcprd03.prod.outlook.com (2603:1096:101:122::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.33; Fri, 6 Oct
+ 2023 09:15:58 +0000
+Received: from SEYPR03MB7682.apcprd03.prod.outlook.com
+ ([fe80::8c0:a8fa:8e5:159d]) by SEYPR03MB7682.apcprd03.prod.outlook.com
+ ([fe80::8c0:a8fa:8e5:159d%6]) with mapi id 15.20.6838.033; Fri, 6 Oct 2023
+ 09:15:58 +0000
+From:   =?utf-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
+        <Jason-JH.Lin@mediatek.com>
+To:     "jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>,
+        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        =?utf-8?B?U2luZ28gQ2hhbmcgKOW8teiIiOWciyk=?= 
+        <Singo.Chang@mediatek.com>,
+        =?utf-8?B?Sm9obnNvbiBXYW5nICjnjovogZbpkasp?= 
+        <Johnson.Wang@mediatek.com>,
+        =?utf-8?B?SmFzb24tY2ggQ2hlbiAo6Zmz5bu66LGqKQ==?= 
+        <Jason-ch.Chen@mediatek.com>,
+        =?utf-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?= 
+        <Shawn.Sung@mediatek.com>,
+        =?utf-8?B?TmFuY3kgTGluICjmnpfmrKPonqIp?= <Nancy.Lin@mediatek.com>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
+Subject: Re: [PATCH v2] mailbox: remove runtime GCE clk control
+Thread-Topic: [PATCH v2] mailbox: remove runtime GCE clk control
+Thread-Index: AQHZ9qBuCYSBVpc1a0+03zvp2lR9C7A5WrSAgAMjeIA=
+Date:   Fri, 6 Oct 2023 09:15:58 +0000
+Message-ID: <672d86a9e9bb08c770a6884860e9d13a0aaf0eb7.camel@mediatek.com>
+References: <20231004085430.19538-1-jason-jh.lin@mediatek.com>
+         <baa122da-4ae3-9023-3529-3ad38204b989@collabora.com>
+In-Reply-To: <baa122da-4ae3-9023-3529-3ad38204b989@collabora.com>
+Accept-Language: en-US
 Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231006090258.278369-1-tudor.ambarus@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SEYPR03MB7682:EE_|SEYPR03MB7608:EE_
+x-ms-office365-filtering-correlation-id: f1d61c93-87a6-4ec5-7f5f-08dbc64cda14
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: DEhn7uISMwz8tOxyZhZDR9fbDdh+fiGQ9MaiMQEuUpZxJAGVHYLRrJtuEAuVvNt8MwaT1+lu48qdDv8bLKZjIeqA1dQqu93nxBIRMGPDUS/wh5De5ffOcm7Xc6Fx0kXgy3mc/0mL2wfqWxpswGzcZm80lvW8+cteHAUKLfoclqeH0lfAAoVt0MgJi7/iPG3DQrFn98rjmNYtdfr5iNvWTAHASPF4pgUX1NNx+3M7MRR6RbrBuTzHxKnPvI/GlkUGOGxwY3drDRkoTS7tuxdsuJulaUPQBIdszQHrcdCKzJknC/cXQ+1ks07MVg4rXuJAOCRH/TZ7jhPCruJrchKJDhO5BlEI6ehNH8uSyMBxVzvlsuHTuc8ZT5WLjV3Jad5MmvFxdggsyoF8Jz4Wvbf4TBExRAc5qf5h5Lc1o4lwfKgogxwYDMwGtnDM7fmfoNvYqYGdRwpkZdj5MTXFFtXq7T/NuB6dpkDf81tplDjvGPP+RrNcH+YcBw4bMs26IKCvnlBv7l/EdvW1wSiD0eX8A5jpPFUQ35JE6ZZbrovo+TeIkjxV1hG9w0kot8irlBww4BQ/bzXs5FBueNBQsFDzcNjdUO3tE1tTSP/z+AKKqs+Vsij6H7rGLyblPQy4X1n0jNVR1CC1wIPphsBXCZ8l5xMMO8pg6yWo28pxgNt9euc=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEYPR03MB7682.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(376002)(39860400002)(136003)(346002)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(66556008)(15650500001)(110136005)(83380400001)(5660300002)(2906002)(6512007)(122000001)(6506007)(86362001)(478600001)(91956017)(66476007)(64756008)(36756003)(85182001)(38070700005)(38100700002)(26005)(71200400001)(76116006)(8676002)(8936002)(4326008)(66946007)(2616005)(316002)(54906003)(66446008)(6486002)(41300700001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VGJQdW05RWhpVXBuVVdrOU1SZ0xJR2FCc05rQXJ6TjM0aFB3YmZMWWQ2Q0hw?=
+ =?utf-8?B?MzNTdmVXZ2MvdTJpWkIvamJlMWtKdkhDL1V3VkZLYXpYTHJkZ2VCT2VnZkE4?=
+ =?utf-8?B?YjZ6enpiVTU5d2MvWElKV0xlNFRyZmUycGdlbTQrMHFNTTM0SDZkMHdydHZX?=
+ =?utf-8?B?NnVlNDdXdlpwVjRGY3ZYemlnT2t3N2NrMUM3T2RwZU1iQWtwL1JXR05rQkFV?=
+ =?utf-8?B?YWFDUXNDTGlTM0tibllKUG5ZK3R0QXJWL2hIZVo2RS9wWk14YzNWNm1rNTJs?=
+ =?utf-8?B?aWxxSWx0TEhMNzBGRmNaQlh6TzhsZVYzeGs2N2ErNGw4R3ArZVI4dFZNSktj?=
+ =?utf-8?B?ZGw1VzJxSmhUY1AyeFhNcENwNlNBaHNycHB4WnlMTFFwYnVzclpEU24wc0hw?=
+ =?utf-8?B?Z0tWbkpPa3d3eTcySmYvaVVxZmtrbTM5b2tLZXpFbjA1SVNHZGN5QkZUMjFB?=
+ =?utf-8?B?T0hlUU0rN1dtQjVLOVg4OTA0OGtyNVhSYlRnSU1CdUp0NjlNNE0vSG1aVzZl?=
+ =?utf-8?B?MUxZbVZ5YkpMVnNhc0ZSNDNWYU51YVNQUTlCS1FmK1h4ZFN1am51Z2F4OUhw?=
+ =?utf-8?B?b0hZUCtpTTc0ODhpTG43UU10VnR1MlY3T1dpVkdvUlB2WW1XcVN1UDhhSFZ2?=
+ =?utf-8?B?UGFjUlZoVWxFQXQ4VnpDcjBpek9jTlNxWE1jZGlydk1iWUkvNUxnTnlXVXBp?=
+ =?utf-8?B?SDNxVmdoTEFWTlB1R2F6TGg0cUg4cDRrUGRPZkVFbmxvRmwrNW9GV0hhMXpC?=
+ =?utf-8?B?U1lXRUpHaE5EckxnRk9SaDM1M0xLUS9GZW1DL0lmbFoyczNveDlUdW9KUzRu?=
+ =?utf-8?B?SUI5OWIwMCtUWlNmSzVWT0FrK0RsT3ZoMjZTTzd3a3hIRUc1OC9SZHB5NlAv?=
+ =?utf-8?B?aEVmeHpydjk4SlRaajhockJjNTdzRlJ5YUFXYXNiOEk0VWJ1aS9lVDdBM04w?=
+ =?utf-8?B?bGxBdnRaYVVyeHNISTM5RXhBUVJqQzN1UUxXejQxbW9FU0JTb2ZOczFvUmlt?=
+ =?utf-8?B?RWpIZEdlWldrMnpCOWgvUkxPUC9tK01YRHcyWG9nMmdSNWZ6bkwvb3VxaW9i?=
+ =?utf-8?B?Z0JWdHRyQi96M2NqdFBQOUhackRRbm1NV1lTZ1Bsb2VrajBqNU9aMzNJRVhB?=
+ =?utf-8?B?RFpHNHY3M0I1YWZxQ3U0Y0pvdHVGcGVhQ2tLSHdLZVFjTkk4UjQ1dW14aTkv?=
+ =?utf-8?B?RjluNm1BV3N0Vm5VWW1ESi9acy9zbmJPY2llRWNxNDBNNGpxK3B1U3Q4OGFu?=
+ =?utf-8?B?SVM3RkpsaDR2bzJNdVBCeWRCLzBRRSsrdEp0VDNKa3Yrb3BjNjlFcFMxR2pB?=
+ =?utf-8?B?Zm1QdUtFenVoUG1JWk1TTEI4SW5mT21GZW1rL3JyZXJaSFdDdHlYOFRhL2Z5?=
+ =?utf-8?B?WWRYUnF6OUUvN0FEY0Jxc2FUVXV2ejhvSFJUOGlsRDF6cWU0UnhyRzd2N2ow?=
+ =?utf-8?B?L1FIdlZkaTQrUE15aHhadUNjamhuWWE3enExOVI3eHVuRmtCWTZod0ljMnFB?=
+ =?utf-8?B?cWpBR3laYzdESnBBMStJb2JsVFRPbE5mQVNoa245YUQySVVoc29CSVlOUk13?=
+ =?utf-8?B?Ynp4OWpjTXpxS1pmOStET1oveWJyNXFBZ3pmWlZFRnJMa0VKazE0TXlEcjdX?=
+ =?utf-8?B?OVNMZVVTNXd3RXdyRmJud3F0dTEvbFhMNk1xQTlUSHFtWndKSUxSaFV2SFJ2?=
+ =?utf-8?B?eGxmanVzOGd2d1l4eUYyQ2F0R0d1NmJZTituSGpwZTUxNGFqZjcxR2x0UU5x?=
+ =?utf-8?B?NDRWMzZLU04xTlJhTWRvb1d0TkRXNHVPYnhZbndLSms0NG9CZkFkTjlJTVFU?=
+ =?utf-8?B?MUFyYWNITVBJNUNWT2NMQzg1UVM5blorejlhY1ZHZnYxZ2xGdDVIdk96cXpv?=
+ =?utf-8?B?N0s2OGhuNTd3aS8vRk44ank3K1FKeGJlMVBoUlY5OXhoL1A1dmZDT3Bqekty?=
+ =?utf-8?B?ZWdDUC93ZGpTMWw5UW9wQ2hoZ3kvMUgwY3duQ0FmdVhvNlROaTNJckQrU3VY?=
+ =?utf-8?B?VW5LWEtWZDNpcUFPY0ZxT3lKRkYzeDJGNURPZXJwemk0OHVkcGQzN1lLRlBn?=
+ =?utf-8?B?VWVDWnZGaGtLcEFralJRTXV5S2JBN0JaekJBbzhuQWhJWkFKSE55VWpkZWhH?=
+ =?utf-8?B?TkFxWGpXVldJT3QrNG5CUnlkaXRZdVVHMnpic2w5WElQSjFFZkl1dmxVcXpk?=
+ =?utf-8?B?S1E9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B9EDDB549D362D4B91CA215953E62715@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SEYPR03MB7682.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f1d61c93-87a6-4ec5-7f5f-08dbc64cda14
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Oct 2023 09:15:58.1378
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: iHFyJDVke8hGxYCKmk83CdS3zW7bNZdd4VXg8iLHL9UkNwvQHh36Ul4jg4RzjYKKOvQ0451Y7iSq5kr3ZFTOBHc/FIxsDvOHCEd+KxbF/uI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR03MB7608
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--9.500400-8.000000
+X-TMASE-MatchedRID: VfovoVrt/oanykMun0J1wmjZ8q/Oc1nAYefZ7F9kLgsNcckEPxfz2OLB
+        DcjMHcx7UmsNbSHn8eDFfOOkDUINTDP6pt+J6m1mi82UiskMqcwsCc2iFTIxrU8vg1FXaj1o33p
+        XY2CsQeKRM36eLwqvJ4oSesITgOkEcNPMFJIX+nP8gEfQ4Av4R3nUZqRb3abmDpCUEeEFm7Dmxl
+        PBgd8EzuEAhwl+9kCrSCjmFdhaApRaoFFRAKWvJrMjW/sniEQKG/VQKT/ZNQR+YFLISofIH2owi
+        x037W0D+SihPPY9VI+Rk6XtYogiatLvsKjhs0ldah1zjX08EkLEQdG7H66TyH4gKq42LRYkgIkG
+        pKAuQ8Gu5Wip/qrR2C1QFjrU86kR/hsI5tNFCMl+3BndfXUhXQ==
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--9.500400-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 101C4E9B66DDBD2475AD7504F7F795BF4CEEE1B1D7F7714D41D564445021E4E62000:8
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,RDNS_NONE,SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/2023 11:02, Tudor Ambarus wrote:
-> The Universal Serial Interface (USI) provides selectable serial protocol
-> (UART, SPI, I2C). Only one function can be used at a time. The SoC
-> provides flexibility for boards to choose the protocol desired. Instead
-> of selecting the USI protocol mode in the SoC dtsi file, select the mode
-> in the board dts file as the USI IP can work in either of the 3 modes,
-> but the board uses just one. Where the USI node was not enabled in the
-> board dts file, just remove the samsung,mode specified in dtsi.
-> 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> ---
->  .../boot/dts/exynos/exynos850-e850-96.dts     |  2 ++
->  arch/arm64/boot/dts/exynos/exynos850.dtsi     |  8 ------
->  .../boot/dts/exynos/exynosautov9-sadk.dts     |  2 ++
->  arch/arm64/boot/dts/exynos/exynosautov9.dtsi  | 25 -------------------
->  4 files changed, 4 insertions(+), 33 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/exynos/exynos850-e850-96.dts b/arch/arm64/boot/dts/exynos/exynos850-e850-96.dts
-> index 6ed38912507f..615c1d6647ea 100644
-> --- a/arch/arm64/boot/dts/exynos/exynos850-e850-96.dts
-> +++ b/arch/arm64/boot/dts/exynos/exynos850-e850-96.dts
-> @@ -15,6 +15,7 @@
->  #include <dt-bindings/gpio/gpio.h>
->  #include <dt-bindings/input/input.h>
->  #include <dt-bindings/leds/common.h>
-> +#include <dt-bindings/soc/samsung,exynos-usi.h>
->  
->  / {
->  	model = "WinLink E850-96 board";
-> @@ -187,6 +188,7 @@ &serial_0 {
->  };
->  
->  &usi_uart {
-> +	samsung,mode = <USI_V2_UART>;
->  	samsung,clkreq-on; /* needed for UART mode */
->  	status = "okay";
->  };
-> diff --git a/arch/arm64/boot/dts/exynos/exynos850.dtsi b/arch/arm64/boot/dts/exynos/exynos850.dtsi
-> index aa077008b3be..db35ee742a27 100644
-> --- a/arch/arm64/boot/dts/exynos/exynos850.dtsi
-> +++ b/arch/arm64/boot/dts/exynos/exynos850.dtsi
-> @@ -12,7 +12,6 @@
->  
->  #include <dt-bindings/clock/exynos850.h>
->  #include <dt-bindings/interrupt-controller/arm-gic.h>
-> -#include <dt-bindings/soc/samsung,exynos-usi.h>
->  
->  / {
->  	/* Also known under engineering name Exynos3830 */
-> @@ -574,7 +573,6 @@ usi_uart: usi@138200c0 {
->  			compatible = "samsung,exynos850-usi";
->  			reg = <0x138200c0 0x20>;
->  			samsung,sysreg = <&sysreg_peri 0x1010>;
-> -			samsung,mode = <USI_V2_UART>;
-
-This would have sense if the node was complete - had something else than
-UART. However node has only UART currently, so mode is reasonable here.
-I understand that choice of mode is DTS dependent, but now it looks like
-the board could actually choose it which is no true. Board DTS canno
-select something different than UART.
-
-This should be also fixed with bringing missing USI children.
-
-It makes sense though for usi_cmgp1 and others which have more children.
-
->  			#address-cells = <1>;
->  			#size-cells = <1>;
->  			ranges;
-> @@ -600,7 +598,6 @@ usi_hsi2c_0: usi@138a00c0 {
->  			compatible = "samsung,exynos850-usi";
->  			reg = <0x138a00c0 0x20>;
->  			samsung,sysreg = <&sysreg_peri 0x1020>;
-> -			samsung,mode = <USI_V2_I2C>;
->  			#address-cells = <1>;
->  			#size-cells = <1>;
->  			ranges;
-> @@ -628,7 +625,6 @@ usi_hsi2c_1: usi@138b00c0 {
->  			compatible = "samsung,exynos850-usi";
->  			reg = <0x138b00c0 0x20>;
->  			samsung,sysreg = <&sysreg_peri 0x1030>;
-> -			samsung,mode = <USI_V2_I2C>;
->  			#address-cells = <1>;
->  			#size-cells = <1>;
->  			ranges;
-> @@ -656,7 +652,6 @@ usi_hsi2c_2: usi@138c00c0 {
->  			compatible = "samsung,exynos850-usi";
->  			reg = <0x138c00c0 0x20>;
->  			samsung,sysreg = <&sysreg_peri 0x1040>;
-> -			samsung,mode = <USI_V2_I2C>;
->  			#address-cells = <1>;
->  			#size-cells = <1>;
->  			ranges;
-> @@ -684,7 +679,6 @@ usi_spi_0: usi@139400c0 {
->  			compatible = "samsung,exynos850-usi";
->  			reg = <0x139400c0 0x20>;
->  			samsung,sysreg = <&sysreg_peri 0x1050>;
-> -			samsung,mode = <USI_V2_SPI>;
->  			#address-cells = <1>;
->  			#size-cells = <1>;
->  			ranges;
-> @@ -698,7 +692,6 @@ usi_cmgp0: usi@11d000c0 {
->  			compatible = "samsung,exynos850-usi";
->  			reg = <0x11d000c0 0x20>;
->  			samsung,sysreg = <&sysreg_cmgp 0x2000>;
-> -			samsung,mode = <USI_V2_I2C>;
->  			#address-cells = <1>;
->  			#size-cells = <1>;
->  			ranges;
-> @@ -738,7 +731,6 @@ usi_cmgp1: usi@11d200c0 {
->  			compatible = "samsung,exynos850-usi";
->  			reg = <0x11d200c0 0x20>;
->  			samsung,sysreg = <&sysreg_cmgp 0x2010>;
-> -			samsung,mode = <USI_V2_I2C>;
->  			#address-cells = <1>;
->  			#size-cells = <1>;
->  			ranges;
-> diff --git a/arch/arm64/boot/dts/exynos/exynosautov9-sadk.dts b/arch/arm64/boot/dts/exynos/exynosautov9-sadk.dts
-> index bc1815f6ada2..91d302703366 100644
-> --- a/arch/arm64/boot/dts/exynos/exynosautov9-sadk.dts
-> +++ b/arch/arm64/boot/dts/exynos/exynosautov9-sadk.dts
-> @@ -9,6 +9,7 @@
->  /dts-v1/;
->  #include "exynosautov9.dtsi"
->  #include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/soc/samsung,exynos-usi.h>
->  
->  / {
->  	model = "Samsung ExynosAuto v9 SADK board";
-> @@ -79,6 +80,7 @@ &ufs_1 {
->  };
->  
->  &usi_0 {
-> +	samsung,mode = <USI_V2_UART>;
->  	samsung,clkreq-on; /* needed for UART mode */
->  	status = "okay";
->  };
-> diff --git a/arch/arm64/boot/dts/exynos/exynosautov9.dtsi b/arch/arm64/boot/dts/exynos/exynosautov9.dtsi
-> index b228cd7e351e..92f4b738834a 100644
-> --- a/arch/arm64/boot/dts/exynos/exynosautov9.dtsi
-> +++ b/arch/arm64/boot/dts/exynos/exynosautov9.dtsi
-> @@ -9,7 +9,6 @@
->  #include <dt-bindings/clock/samsung,exynosautov9.h>
->  #include <dt-bindings/interrupt-controller/arm-gic.h>
->  #include <dt-bindings/soc/samsung,boot-mode.h>
-> -#include <dt-bindings/soc/samsung,exynos-usi.h>
->  
->  / {
->  	compatible = "samsung,exynosautov9";
-> @@ -392,7 +391,6 @@ usi_0: usi@103000c0 {
->  				     "samsung,exynos850-usi";
->  			reg = <0x103000c0 0x20>;
->  			samsung,sysreg = <&syscon_peric0 0x1000>;
-> -			samsung,mode = <USI_V2_UART>;
->  			#address-cells = <1>;
->  			#size-cells = <1>;
->  			ranges;
-> @@ -454,7 +452,6 @@ usi_i2c_0: usi@103100c0 {
-
-Here as well. This node has only I2C, so mode is reasonable.
-
-
-Best regards,
-Krzysztof
-
+SGkgQW5nZWxvLA0KDQpUaGFua3MgZm9yIHRoZSByZXZpZXdzLg0KDQpPbiBXZWQsIDIwMjMtMTAt
+MDQgYXQgMTE6MjAgKzAyMDAsIEFuZ2Vsb0dpb2FjY2hpbm8gRGVsIFJlZ25vIHdyb3RlOg0KPiBJ
+bCAwNC8xMC8yMyAxMDo1NCwgSmFzb24tSkguTGluIGhhIHNjcml0dG86DQo+ID4gMS4gR0NFIGlz
+IGEgZnJlcXVlbnRseSB1c2VkIG1vZHVsZSwgc28gcnVudGltZSBjb250cm9sbGluZw0KPiA+IEdD
+RSBjbG9jayB3b24ndCBzYXZlIHRvbyBtdWNoIHBvd2VyIGFuZCBpdHMgb3JpZ2luYWwgZGVzaWdu
+DQo+ID4gZG9lc24ndCBleHBlY3QgaXQgdG8gYmUgZW5hYmxlZCBhbmQgZGlzYWJsZWQgdG9vIGZy
+ZXF1ZW50bHkuDQo+ID4gDQo+ID4gMi4gUnVudGltZSBjb250cm9sbGluZyBHQ0UgY2xvY2sgd2ls
+bCBjYXVzZSBkaXNwbGF5IEhXIHJlZ2lzdGVyDQo+ID4gY29uZmlndXJlZCBpbiB3b3JuZyBzdHJl
+YW0gZG9uZSBldmVudCBpc3N1ZSBiZWxvdzoNCj4gPiAgICBHQ0Ugc2hvdWxkIGNvbmZpZyBIVyBp
+biBldmVyeSB2YmxhbmtpbmcgZHVyYXRpb24uDQo+ID4gICAgVGhlIHN0cmVhbSBkb25lIGV2ZW50
+IGlzIHRoZSBzdGFydCBzaWduYWwgb2YgdmJsYW5raW5nLg0KPiA+IA0KPiA+ICAgIElmIHN0cmVh
+bSBkb25lIGV2ZW50IGlzIHNlbnQgYmV0d2VlbiBHQ0UgY2xrX2Rpc2FibGUNCj4gPiAgICBhbmQg
+Y2xrX2VuYWJsZS4gQWZ0ZXIgR0NFIGNsa19lbmFibGUgdGhlIHN0cmVhbSBkb25lIGV2ZW50DQo+
+ID4gICAgbWF5IG5vdCBhcHBlYXIgaW1tZWRpYXRlbHkgYW5kIGhhdmUgYWJvdXQgM3VzIGRlbGF5
+Lg0KPiA+IA0KPiA+ICAgIE5vcm1hbCBjYXNlOg0KPiA+ICAgIGNsa19kaXNhYmxlIC0+IGdldCBF
+dmVudEEgLT4gY2xrX2VuYWJsZSAtPiBjbGVhciBFdmVudEENCj4gPiAgICAtPiB3YWl0IEV2ZW50
+QiAtPiBnZXQgRXZlbnRCIC0+IGNvbmZpZyBIVw0KPiA+IA0KPiA+ICAgIEFibm9ybWFsIGNhc2U6
+DQo+ID4gICAgY2xrX2Rpc2FibGUgLT4gZ2V0IEV2ZW50QSAtPiBjbGtfZW5hYmxlIC0+IEV2ZW50
+QSBkZWxheSBhcHBlYXINCj4gPiAgICAtPiBjbGVhciBFdmVudEEgZmFpbCAtPiB3YWl0IEV2ZW50
+QiBidXQgZ2V0IEV2ZW50QSAtPiBjb25maWcgSFcNCj4gPiANCj4gPiBTbyBqdXN0IHJlbW92ZSB0
+aGUgcnVudGltZSBHQ0UgY2xvY2sgY29udG9ybC4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBK
+YXNvbi1KSC5MaW4gPGphc29uLWpoLmxpbkBtZWRpYXRlay5jb20+DQo+IA0KPiBJbnN0ZWFkIG9m
+IGVudGlyZWx5IHJlbW92aW5nIHRoZSBsb2dpYyB0aGF0IGNvbnRyb2xzIHRoZSBjbG9ja3MgYW5k
+DQo+IGFsd2F5cw0KPiByZWZ1c2UgdG8gc2F2ZSBwb3dlciwgd2hhdCBhYm91dCB1c2luZyBhdXRv
+c3VzcGVuZD8NCj4gDQo+IElmIHRoZSB0d28gY2FzZXMgdGhhdCB5b3UncmUgZGVzY3JpYmluZyBh
+cmUgaGFwcGVuaW5nIGFsd2F5cyBpbiBhDQo+IHJhbmdlIG9mDQo+IHRpbWUsIHdlIGNvdWxkICp5
+ZXMqIHJlbW92ZSB0aGUgIm1hbnVhbCIgYnVsayBkaXNhYmxlL2VuYWJsZSBjYWxscywNCj4gYnV0
+IHRoZW4NCj4gd2UgY291bGQgdXNlIHJ1bnRpbWVfc3VzcGVuZC9ydW50aW1lX3Jlc3VtZSBjYWxs
+YmFja3MgZm9yIHRoYXQuDQo+IA0KPiBIaW50OiBwbV9ydW50aW1lX3NldF9hdXRvc3VzcGVuZF9k
+ZWxheShkZXYsIDEwMDApOw0KPiANCj4gUmVnYXJkcywNCj4gQW5nZWxvDQo+IA0KDQpUaGVzZSAy
+IGlzc3VlcyBhcmUgY2F1c2VkIGJ5IEdDRSBidWxrX2NsayBlbmFibGUvZGlzYWJsZSB0b28NCmZy
+ZXF1ZW50bHkuDQoNCkFzIEkgbm93LCBwbV9ydW50aW1lX3NldF9hdXRvc3VzcGVuZF9kZWxheSgp
+IGlzIGZvciBjb250cm9sbGluZyB0aGUNCnBvd2VyIGRvbWFpbi4gVGhlIHBvd2VyIGRvbWFpbiBv
+ZiBHQ0UgaXMgaW5mcmFzeXMgd2hpY2ggY2FuIG9ubHkgYmUNCmVuYWJsZWQvZGlzYWJsZWQgYnkg
+c3BtIGR1cmluZyB0aGUgd2hvbGUgc3lzdGVtIHJlc3VtZS9zdXNwZW5kLg0KU28gSSdtIG5vdCBz
+dXJlIGFib3V0IGhvdyBjYW4gcG1fcnVudGltZV9zZXRfYXV0b3N1c3BlbmRfZGVsYXkoKSBzYXZl
+IA0KcG93ZXIgZm9yIEdDRSBidWxrX2NsayBpbiB0aGlzIGNhc2UuDQoNCkNvdWxkIHlvdSBnaXZl
+IG1vcmUgaGludCBmb3IgbWUgcGxlYXNlPw0KDQpSZWdhcmRzLA0KSmFzb24tSkguTGluDQoNCg==
