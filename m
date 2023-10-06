@@ -2,51 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA627BB8E5
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C46F7BB8E9
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232311AbjJFNSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 09:18:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38852 "EHLO
+        id S232288AbjJFNUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 09:20:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232091AbjJFNSs (ORCPT
+        with ESMTP id S231705AbjJFNUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 09:18:48 -0400
+        Fri, 6 Oct 2023 09:20:09 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4619483;
-        Fri,  6 Oct 2023 06:18:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4F85C433C7;
-        Fri,  6 Oct 2023 13:18:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696598326;
-        bh=t5ARPJAi2ZOUMZALtc2xCSh/huEsxLMt7Ehm+RTiBAs=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=dUL+Mg0D3X2BTRDPZgGw1VyWx9Kz+W5i+mUkXP8CH+bQZvKxeJC7wl4Q4KDjN18uP
-         ZsEaOuI7Mq/P4sho67CCeoTs85GApeQM89Jhljx4hsmChrXsWx0GGduVbsUgZsaCTC
-         JhexH+gAwpBSlLHgAD+y+Yh31/ruLPrhhtF/CftYqMs4+q4c2x1rkWBLm92a7K69qN
-         8PCBaOcV6s4YbzWNyl6pPaRTsNPb+aJhVfy+7Gz1dJNjriYHpCLAL4HpRxiYdk+EUI
-         5yjM2wjYoraeHpRZAkK4G4tS9w2EoNWTCsXtndVWCLlGiodoZlz3gIHftFKZn90sjV
-         yORXNHAEfB6Sw==
-Received: (nullmailer pid 3410056 invoked by uid 1000);
-        Fri, 06 Oct 2023 13:18:43 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C172A95
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 06:20:08 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F146C433C9;
+        Fri,  6 Oct 2023 13:20:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696598408;
+        bh=bkjpF90xs9W6T4GDw1pW54wVAZduRqdmSqenrnKSVcE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z0J5LgVgp4BGBGj1lMOMt+xJoI2Ba4Z7PR4IPip5Yn70+NgGSi1U3CbVMzOICe3C6
+         OWTBOcaLvpI1LOPbT9SWpMjRCsNWYvhjbfpKKiNOdNJ/6UV1DvrAddOMfv3lL2N9/5
+         bs+bsMdo/P4OjncA4lCHgwmI8uZ8KKf2e7fx9B1o=
+Date:   Fri, 6 Oct 2023 15:20:05 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Deepak R Varma <drv@mailo.com>
+Cc:     greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Alex Elder <elder@kernel.org>
+Subject: Re: [PATCH 1/3] staging: greybus: raw: make raw_class constant
+Message-ID: <2023100649-oxymoron-entrap-b959@gregkh>
+References: <2023100533-broadband-hunk-9e91@gregkh>
+ <ZSAHoIN8p2ROXvh/@runicha.com>
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     AKASHI Takahiro <takahiro.akashi@linaro.org>
-Cc:     robh+dt@kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linus.walleij@linaro.org, Oleksii_Moisieiev@epam.com,
-        devicetree@vger.kernel.org, sudeep.holla@arm.com,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        cristian.marussi@arm.com
-In-Reply-To: <20231005025843.508689-6-takahiro.akashi@linaro.org>
-References: <20231005025843.508689-1-takahiro.akashi@linaro.org>
- <20231005025843.508689-6-takahiro.akashi@linaro.org>
-Message-Id: <169659832273.3409847.15694416126257533842.robh@kernel.org>
-Subject: Re: [RFC v2 5/5] dt-bindings: gpio: Add bindings for pinctrl based
- generic gpio driver
-Date:   Fri, 06 Oct 2023 08:18:43 -0500
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZSAHoIN8p2ROXvh/@runicha.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -57,46 +48,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Thu, 05 Oct 2023 11:58:43 +0900, AKASHI Takahiro wrote:
-> A dt binding for pin controller based generic gpio driver is defined in
-> this commit. One usable device is Arm's SCMI.
+On Fri, Oct 06, 2023 at 06:42:00PM +0530, Deepak R Varma wrote:
+> On Thu, Oct 05, 2023 at 03:58:34PM +0200, Greg Kroah-Hartman wrote:
+> > Now that the driver core allows for struct class to be in read-only
 > 
-> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> ---
-> RFC v2 (Oct 5, 2023)
-> * rename the binding to pin-control-gpio
-> * add the "description"
-> * remove nodename, hog properties, and a consumer example
-> RFC (Oct 2, 2023)
-> ---
->  .../bindings/gpio/pin-control-gpio.yaml       | 55 +++++++++++++++++++
->  1 file changed, 55 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/gpio/pin-control-gpio.yaml
-> 
+> Hello Greg,
+> When you say "Now", has anything changed recently that facilitates this
+> improvement?
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Yes.  Well, it showed up in the 6.4 kernel, so not that long ago.
 
-yamllint warnings/errors:
+> Where can I read more about this change?
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/gpio/pin-control-gpio.example.dts:18.23-26.11: Warning (unit_address_vs_reg): /example-0/gpio@0: node has a unit name, but no reg or ranges property
+Running:
+	git log --oneline --author=gregkh v6.3..v6.4 drivers/base/
+will show you the some of work that happened here to make this possible.
+There was work done to the driver core, and the kobject core in earlier
+kernel releases that the changes in 6.4 built on top of.
 
-doc reference errors (make refcheckdocs):
+thanks,
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231005025843.508689-6-takahiro.akashi@linaro.org
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+greg k-h
