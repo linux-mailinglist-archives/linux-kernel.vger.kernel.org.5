@@ -2,223 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 204437BB5CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91C277BB5CF
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231898AbjJFLDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 07:03:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60398 "EHLO
+        id S231874AbjJFLDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 07:03:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231834AbjJFLDH (ORCPT
+        with ESMTP id S231882AbjJFLDb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 07:03:07 -0400
-Received: from smtp-fw-52004.amazon.com (smtp-fw-52004.amazon.com [52.119.213.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F4BC5;
-        Fri,  6 Oct 2023 04:03:05 -0700 (PDT)
+        Fri, 6 Oct 2023 07:03:31 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F95FDB
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 04:03:29 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-564b6276941so1424943a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 04:03:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1696590186; x=1728126186;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-transfer-encoding:mime-version:subject;
-  bh=+Oj9cWZfF6C+d+uAdm+g5fcf0+MKR1+ZXyJy38ELkUI=;
-  b=amxSpM34Qfm3XB60YT21eqg6iKiI/M1PGuzaeUG4jiE3O4ANJbWbhdTE
-   CfnzjKMYdupn+7FZBVrvin6tAi9I2tKaUizwhS4OEmVFVOKo+mYA0yC4L
-   sM7UAvjpwxOQeh0DnI7hcbiDIRO/ZtQ17OEf+H4hksOJ7VwAG6aTN1weH
-   c=;
-X-IronPort-AV: E=Sophos;i="6.03,203,1694736000"; 
-   d="scan'208";a="158577964"
-Subject: RE: [PATCH] net: ena: replace deprecated strncpy with strscpy
-Thread-Topic: [PATCH] net: ena: replace deprecated strncpy with strscpy
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-1box-2bm6-32cf6363.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-52004.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 11:03:03 +0000
-Received: from EX19D020EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-pdx-1box-2bm6-32cf6363.us-west-2.amazon.com (Postfix) with ESMTPS id 108B4807C1;
-        Fri,  6 Oct 2023 11:03:02 +0000 (UTC)
-Received: from EX19D047EUA001.ant.amazon.com (10.252.50.171) by
- EX19D020EUA001.ant.amazon.com (10.252.50.154) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Fri, 6 Oct 2023 11:02:39 +0000
-Received: from EX19D022EUA002.ant.amazon.com (10.252.50.201) by
- EX19D047EUA001.ant.amazon.com (10.252.50.171) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Fri, 6 Oct 2023 11:02:39 +0000
-Received: from EX19D022EUA002.ant.amazon.com ([fe80::7f87:7d63:def0:157d]) by
- EX19D022EUA002.ant.amazon.com ([fe80::7f87:7d63:def0:157d%3]) with mapi id
- 15.02.1118.037; Fri, 6 Oct 2023 11:02:39 +0000
-From:   "Kiyanovski, Arthur" <akiyano@amazon.com>
-To:     Kees Cook <keescook@chromium.org>
-CC:     Justin Stitt <justinstitt@google.com>,
-        "Agroskin, Shay" <shayagr@amazon.com>,
-        "Arinzon, David" <darinzon@amazon.com>,
-        "Dagan, Noam" <ndagan@amazon.com>,
-        "Bshara, Saeed" <saeedb@amazon.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-Thread-Index: AQHZ9ybKM2b6eyqkVE+Gavzwy9pPV7A7w5HwgAAHhICAAIzkkA==
-Date:   Fri, 6 Oct 2023 11:02:22 +0000
-Deferred-Delivery: Fri, 6 Oct 2023 07:05:46 +0000
-Message-ID: <5f8d24d16fba49bfb57fd4b6678ac27d@amazon.com>
-References: <20231005-strncpy-drivers-net-ethernet-amazon-ena-ena_netdev-c-v1-1-ba4879974160@google.com>
- <fe65f57f91f342c7a173891b84cda37b@amazon.com>
- <202310051537.7C5CEE6E@keescook>
-In-Reply-To: <202310051537.7C5CEE6E@keescook>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.252.50.216]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=linaro.org; s=google; t=1696590209; x=1697195009; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=zxFEgt05/Om310YXHqztn12qfKEglhAS71n4alSmu1w=;
+        b=e3yUzQd8CmCbQ6hVTGYl4tVVxHeaJ56vwmjPNSrfz0ZxwgR7/DmL8g5lD3NedI1n7C
+         Va3Nu0iNwHN9UEmIikDyvuaAnh93aYttSGzY00gxtNCOGNRdaLW18pIHAG1Irk+zRa/g
+         EjCImSUFFq7BgSizT8B0hL2tP7Li2r8uHu16iD1bBMLy280sy1QvE4arWyll6pk83X3i
+         OLa8rEzwJ0VrNv3GiUZgJSmRy2vY064xZtSFk/Vot0bfY7WR9SDNvE0P3o8biFnG62vy
+         GxnlALWDMk1tEha2x8nueu+5vzWiCmoJrW9XKJHJw0tdcSAHOc8axaOOcwNlWqw7M7r0
+         QqTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696590209; x=1697195009;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zxFEgt05/Om310YXHqztn12qfKEglhAS71n4alSmu1w=;
+        b=eXjBWJUdb4sks9z4yXhM80IpAs8qgDcLA6VxMNRARFe2e8A3LE6/gkkhvpfRn17eqP
+         osBdiY5yFgFoOG3joleYcI7g5mXwyKhkblD0tMH2nuDJSvLRmKNCbC6eLhHoZG5Sbvzm
+         9Hg/+s3wmGRskEehbY5Iru1WM56y1HiWIo+TMI9bhz1XtsT6ahe/hb0eCqjR/g2OpAl5
+         qrJSsMR7BEwiaTkfI24faY6fMBBYIRVb6Km8Zo2aC34TlCbVYPUKpxka7nPQCEhWv4lI
+         XihGnfSzecHg8uHuscteXVREqcWFtim5za9L+ZRUMqIBqLWq/kzw0EQPwoYBZn+Roq8d
+         Bu9w==
+X-Gm-Message-State: AOJu0Yy5Yt5+7Ut4PvDryuiVxUg938wnt6JuwlIKV1lKrpUhbN4I6ncN
+        bhi5/t4Kt4TxSbnXmKLiBtliPTxP+wvb1IJDvkbFSw==
+X-Google-Smtp-Source: AGHT+IGMeleG8BhIDxGOoRXVXqrxaKbP2xb5o3A0nxBRYxw9lKmKLkt+Rpnbik0fai3k1AB+dOAJvhFzxodtaomXtss=
+X-Received: by 2002:a17:90a:9513:b0:269:46d7:f1db with SMTP id
+ t19-20020a17090a951300b0026946d7f1dbmr8304821pjo.32.1696590208682; Fri, 06
+ Oct 2023 04:03:28 -0700 (PDT)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230929133754.857678-1-lcherian@marvell.com> <20230929133754.857678-2-lcherian@marvell.com>
+In-Reply-To: <20230929133754.857678-2-lcherian@marvell.com>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Fri, 6 Oct 2023 12:03:17 +0100
+Message-ID: <CAJ9a7VhzARGmywQFPNCZ27D5UKEEPSR9_hmL5fo3daFWpB26Vg@mail.gmail.com>
+Subject: Re: [PATCH 1/7] dt-bindings: arm: coresight-tmc: Add "memory-region" property
+To:     Linu Cherian <lcherian@marvell.com>
+Cc:     suzuki.poulose@arm.com, james.clark@arm.com, leo.yan@linaro.org,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, sgoutham@marvell.com,
+        gcherian@marvell.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linu
 
+On Fri, 29 Sept 2023 at 14:38, Linu Cherian <lcherian@marvell.com> wrote:
+>
+> memory-region 0: Reserved trace buffer memory
+>
+>   TMC ETR: When available, use this reserved memory region for
+>   trace data capture. Same region is used for trace data
+>   retention after a panic or watchdog reset.
+>
+>   TMC ETF: When available, use this reserved memory region for
+>   trace data retention synced from internal SRAM after a panic or
+>   watchdog reset.
+>
+> memory-region 1: Reserved meta data memory
+>
+>   TMC ETR, ETF: When available, use this memory for register
+>   snapshot retention synced from hardware registers after a panic
+>   or watchdog reset.
+>
+> Signed-off-by: Linu Cherian <lcherian@marvell.com>
+> ---
+>  .../bindings/arm/arm,coresight-tmc.yaml       | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/arm/arm,coresight-tmc.yaml b/Documentation/devicetree/bindings/arm/arm,coresight-tmc.yaml
+> index cb8dceaca70e..45ca4d02d73e 100644
+> --- a/Documentation/devicetree/bindings/arm/arm,coresight-tmc.yaml
+> +++ b/Documentation/devicetree/bindings/arm/arm,coresight-tmc.yaml
+> @@ -101,6 +101,22 @@ properties:
+>            and ETF configurations.
+>          $ref: /schemas/graph.yaml#/properties/port
+>
+> +  memory-region:
+> +    items:
+> +      - description: Reserved trace buffer memory for ETR and ETF sinks.
+> +          For ETR, this reserved memory region is used for trace data capture.
+> +          Same region is used for trace data retention as well after a panic
+> +          or watchdog reset.
+> +          For ETF, this reserved memory region is used for retention of trace
+> +          data synced from internal SRAM after a panic or watchdog reset.
+> +
 
-> -----Original Message-----
-> From: Kees Cook <keescook@chromium.org>
-> Sent: Friday, October 6, 2023 1:39 AM
-> To: Kiyanovski, Arthur <akiyano@amazon.com>
-> Cc: Justin Stitt <justinstitt@google.com>; Agroskin, Shay
-> <shayagr@amazon.com>; Arinzon, David <darinzon@amazon.com>; Dagan,
-> Noam <ndagan@amazon.com>; Bshara, Saeed <saeedb@amazon.com>; David
-> S. Miller <davem@davemloft.net>; Eric Dumazet <edumazet@google.com>;
-> Jakub Kicinski <kuba@kernel.org>; Paolo Abeni <pabeni@redhat.com>;
-> netdev@vger.kernel.org; linux-kernel@vger.kernel.org; linux-
-> hardening@vger.kernel.org
-> Subject: RE: [EXTERNAL] [PATCH] net: ena: replace deprecated strncpy with
-> strscpy
->=20
-> CAUTION: This email originated from outside of the organization. Do not c=
-lick
-> links or open attachments unless you can confirm the sender and know the
-> content is safe.
->=20
->=20
->=20
-> On Thu, Oct 05, 2023 at 10:25:08PM +0000, Kiyanovski, Arthur wrote:
-> > > -----Original Message-----
-> > > From: Justin Stitt <justinstitt@google.com>
-> > > Sent: Thursday, October 5, 2023 3:56 AM
-> > > To: Agroskin, Shay <shayagr@amazon.com>; Kiyanovski, Arthur
-> > > <akiyano@amazon.com>; Arinzon, David <darinzon@amazon.com>; Dagan,
-> > > Noam <ndagan@amazon.com>; Bshara, Saeed <saeedb@amazon.com>;
-> David
-> > > S. Miller <davem@davemloft.net>; Eric Dumazet <edumazet@google.com>;
-> > > Jakub Kicinski <kuba@kernel.org>; Paolo Abeni <pabeni@redhat.com>
-> > > Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org; linux-
-> > > hardening@vger.kernel.org; Justin Stitt <justinstitt@google.com>
-> > > Subject: [EXTERNAL] [PATCH] net: ena: replace deprecated strncpy
-> > > with strscpy
-> > >
-> > > CAUTION: This email originated from outside of the organization. Do
-> > > not click links or open attachments unless you can confirm the
-> > > sender and know the content is safe.
-> > >
-> > >
-> > >
-> > > `strncpy` is deprecated for use on NUL-terminated destination
-> > > strings [1] and as such we should prefer more robust and less ambiguo=
-us
-> string interfaces.
-> > >
-> > > NUL-padding is not necessary as host_info is initialized to
-> > > `ena_dev-
-> > > >host_attr.host_info` which is ultimately zero-initialized via
-> > > alloc_etherdev_mq().
-> > >
-> > > A suitable replacement is `strscpy` [2] due to the fact that it
-> > > guarantees NUL- termination on the destination buffer without
-> unnecessarily NUL-padding.
-> > >
-> > > Link:
-> > > https://www.kernel.org/doc/html/latest/process/deprecated.html#strnc
-> > > py-on-
-> > > nul-terminated-strings [1]
-> > > Link:
-> > > https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.ht
-> > > ml
-> > > [2]
-> > > Link: https://github.com/KSPP/linux/issues/90
-> > > Cc: linux-hardening@vger.kernel.org
-> > > Signed-off-by: Justin Stitt <justinstitt@google.com>
-> > > ---
-> > > Note: build-tested only.
-> > > ---
-> > >  drivers/net/ethernet/amazon/ena/ena_netdev.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c
-> > > b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-> > > index f955bde10cf9..3118a617c9b6 100644
-> > > --- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
-> > > +++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-> > > @@ -3276,8 +3276,8 @@ static void ena_config_host_info(struct
-> > > ena_com_dev *ena_dev, struct pci_dev *pd
-> > >         strscpy(host_info->kernel_ver_str, utsname()->version,
-> > >                 sizeof(host_info->kernel_ver_str) - 1);
-> > >         host_info->os_dist =3D 0;
-> > > -       strncpy(host_info->os_dist_str, utsname()->release,
-> > > -               sizeof(host_info->os_dist_str) - 1);
-> > > +       strscpy(host_info->os_dist_str, utsname()->release,
-> > > +               sizeof(host_info->os_dist_str));
-> > >         host_info->driver_version =3D
-> > >                 (DRV_MODULE_GEN_MAJOR) |
-> > >                 (DRV_MODULE_GEN_MINOR <<
-> > > ENA_ADMIN_HOST_INFO_MINOR_SHIFT) |
-> > >
-> > > ---
-> > > base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
-> > > change-id:
-> > > 20231005-strncpy-drivers-net-ethernet-amazon-ena-ena_netdev-c-
-> > > 6c4804466aa7
-> > >
-> > > Best regards,
-> > > --
-> > > Justin Stitt <justinstitt@google.com>
-> > >
-> >
-> > Thanks for submitting this change.
-> >
-> > The change looks good but the sentence "NUL-padding is not necessary
-> > as host_info is initialized to `ena_dev->host_attr.host_info` which is
-> > ultimately zero-initialized via alloc_etherdev_mq()." is inaccurate.
-> >
-> > host_info allocation is done in ena_com_allocate_host_info() via
-> > dma_alloc_coherent() and is not zero initialized by alloc_etherdev_mq()=
-.
-> >
-> > I looked at both the documentation of dma_alloc_coherent() in
-> > https://www.kernel.org/doc/Documentation/DMA-API.txt
-> > as well as the code itself, and (maybe I'm wrong but) I didn't see
-> > 100% guarantees the that the memory is zero-initialized.
-> >
-> > However zero initialization of the destination doesn't matter in this
-> > case, because strscpy() guarantees a NULL termination.
->=20
-> If this is in DMA memory, should the string buffer be %NUL-padded? (Or is=
- it
-> consumed strictly as a %NUL-terminated string?)
->=20
-> -Kees
->=20
+Is there a valid use case for ETR where we use these areas when there
+is not a panic/reset situation?
+
+Either way - the description should perhaps mention that these areas
+are only used if specifically selected by the driver - the default
+memory usage models for ETR / perf are otherwise unaltered.
+
+> +      - description: Reserved meta data memory. Used for ETR and ETF sinks.
+> +
+> +  memory-region-names:
+> +    items:
+> +      - const: trace-mem
+> +      - const: metadata-mem
+> +
+
+Is there a constraint required here? If we are using the memory area
+for trace in a panic situation, then we must have the meta data memory
+area defined?
+Perhaps a set of names such as "etr-trace-mem", "panic-trace-mem" ,
+"panic-metadata-mem", were the first is for general ETR trace in
+non-panic situation and then constrain the "panic-" areas to appear
+together.
+The "etr-trace-mem", "panic-trace-mem" could easily point to the same area.
+
+>  required:
+>    - compatible
+>    - reg
+> @@ -115,6 +131,9 @@ examples:
+>      etr@20070000 {
+>          compatible = "arm,coresight-tmc", "arm,primecell";
+>          reg = <0x20070000 0x1000>;
+> +        memory-region = <&etr_trace_mem_reserved>,
+> +                       <&etr_mdata_mem_reserved>;
+> +        memory-region-names = "trace-mem", "metadata-mem";
+>
+>          clocks = <&oscclk6a>;
+>          clock-names = "apb_pclk";
 > --
-> Kees Cook
+> 2.34.1
+>
 
-No need for NULL-padding, It is consumed strictly as a NULL-terminated stri=
-ng
 
-Thanks,
-Arthur Kiyanovski
+-- 
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
