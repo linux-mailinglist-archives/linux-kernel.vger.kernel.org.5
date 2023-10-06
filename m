@@ -2,162 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BBEE7BAFD9
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 02:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1D07BAFDC
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 03:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229967AbjJFA7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 20:59:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33992 "EHLO
+        id S229753AbjJFBBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 21:01:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230027AbjJFA64 (ORCPT
+        with ESMTP id S229584AbjJFBBB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 20:58:56 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B901A3
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 17:57:00 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59f7d4bbfc7so23146937b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 17:57:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696553820; x=1697158620; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Wngn7j6yKtSFTPMW7k+qGiUH7BBA15u51HDdOm1cg3E=;
-        b=zmOccEuN7EtJyN+GduajTOivHJfdjEbg7zz/wq/JNF8rg2erEaRmf5A3R2+W7fKKXH
-         jCp6THfIZRWnf6Qkrwe4SZD3UKVsnmKffdUDJ3Tfo7vux3mi5+4DwhPe13dEskmqEdj8
-         nfv7tjtnWhxNhniVLhEQ0TsP91fb/1I3lJdb/Qd9A1zP9HHgDFmgVTez0PSnWwlIBpeg
-         xKkJtvyvIY4+qf1FETs8xcrXScMwMkrBy4pL+1HiHKv0DA5HMc144olJrLJE+q1kdvE1
-         vj4dWQv8rhc4V+hAqNB3KNVer2uWRcjFG6hkfZ2dz40y/8j212RpHUmPka9yqpjw2hpi
-         DzZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696553820; x=1697158620;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Wngn7j6yKtSFTPMW7k+qGiUH7BBA15u51HDdOm1cg3E=;
-        b=dOJv7dqve1wvrybSoQ+dZpwjNO8w/K4YVjvBbYIqKBPSrnWZivDo6UbHBHq9WSveqW
-         6/NyVZmQP99gPFb9WZdQHayvafZbsJNL0VyW0SjWMFeGsIqJGmqWZPtxGU11SW+T8VNm
-         PJRId5B3unlqP05268b0Lx5wgB+lGeTuVfVRnORDpdp07cwlSH/6bkDe9hoe4SmxEEnl
-         eIIPzOzrijUBL7K8utB+9SPDEcWz7P6eRy1GmAtw7a2QjcDcgds6dZjcDttHj+iQHIbm
-         Ta7TlC/bdAvLexabkB2ahEHQ9sCSQX8EhEKn0j5McGfVS3V3kHXMzY7Z3LXwlfSE+PJ6
-         GxAQ==
-X-Gm-Message-State: AOJu0YxahRqprpnid68ZAr8zMnTBHic5E+mAai/gZbSyJmse0yGI66y9
-        0p7uRbr26HkL57l/LTj0ePaI1GKYRhg=
-X-Google-Smtp-Source: AGHT+IF9fHtrrX/GGgOPG/BXvvUJelJCJzZWpcqgDwtn8b0zwq8T77PGmCqSzSqYWoPwF3xnWBJ4W4tqtso=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:bcd:0:b0:d7f:2cb6:7d8c with SMTP id
- 196-20020a250bcd000000b00d7f2cb67d8cmr95392ybl.13.1696553820052; Thu, 05 Oct
- 2023 17:57:00 -0700 (PDT)
-Date:   Fri, 6 Oct 2023 00:56:58 +0000
-In-Reply-To: <1b0252b29c19cc08c41e1b58b26fbcf1f3fb06e4.camel@cyberus-technology.de>
-Mime-Version: 1.0
-References: <20231004133827.107-1-julian.stecklina@cyberus-technology.de>
- <ZR1_lizQd14pbXbg@google.com> <1b0252b29c19cc08c41e1b58b26fbcf1f3fb06e4.camel@cyberus-technology.de>
-Message-ID: <ZR9bWv_Fogzx1zwv@google.com>
-Subject: Re: [PATCH 1/2] KVM: x86: Fix partially uninitialized integer in emulate_pop
-From:   Sean Christopherson <seanjc@google.com>
-To:     Julian Stecklina <julian.stecklina@cyberus-technology.de>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 5 Oct 2023 21:01:01 -0400
+Received: from out-199.mta1.migadu.com (out-199.mta1.migadu.com [95.215.58.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64819110
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 18:01:00 -0700 (PDT)
+Message-ID: <7aa47549-5a95-22d7-1d03-ffdd251cec6d@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1696554056;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3uFabqeCC0ZaRLQsefD4hwIIguPVcY2YJuzj553oCas=;
+        b=hwGL3kkX/wvNGM5EF592wWTbKt6DKNsaYezKHyVPJEY0O2hUwc/F/BRLiId2/qWzJT6N/C
+        w8z+e8XnmevSY9uBv9ZZmir7GByWW/08ch2uBW/6wNFE30BD6sjQg4YmS6uzWUUjeL6uYk
+        Id9AS6BVmiIk5Y3DZ8yXK9BHwqB6CAg=
+Date:   Thu, 5 Oct 2023 18:00:46 -0700
+MIME-Version: 1.0
+Subject: Re: [PATCH bpf v3] net/xdp: fix zero-size allocation warning in
+ xskq_create()
+Content-Language: en-US
+To:     Andrew Kanner <andrew.kanner@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+fae676d3cf469331fc89@syzkaller.appspotmail.com,
+        syzbot+b132693e925cbbd89e26@syzkaller.appspotmail.com,
+        bjorn@kernel.org, magnus.karlsson@intel.com,
+        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, aleksander.lobakin@intel.com,
+        xuanzhuo@linux.alibaba.com, ast@kernel.org, hawk@kernel.org,
+        john.fastabend@gmail.com, daniel@iogearbox.net
+References: <20231005193548.515-1-andrew.kanner@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20231005193548.515-1-andrew.kanner@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023, Julian Stecklina wrote:
-> On Wed, 2023-10-04 at 08:07 -0700, Sean Christopherson wrote:
-> > On Wed, Oct 04, 2023, Julian Stecklina wrote:
-> > > Most code gives a pointer to an uninitialized unsigned long as dest i=
-n
-> > > emulate_pop. len is usually the word width of the guest.
-> > >=20
-> > > If the guest runs in 16-bit or 32-bit modes, len will not cover the
-> > > whole unsigned long and we end up with uninitialized data in dest.
-> > >=20
-> > > Looking through the callers of this function, the issue seems
-> > > harmless, but given that none of this is performance critical, there
-> > > should be no issue with just always initializing the whole value.
-> > >=20
-> > > Fix this by explicitly requiring a unsigned long pointer and
-> > > initializing it with zero in all cases.
-> >=20
-> > NAK, this will break em_leave() as it will zero RBP regardless of how m=
-any
-> > bytes
-> > are actually supposed to be written.=C2=A0 Specifically, KVM would inco=
-rrectly
-> > clobber
-> > RBP[31:16] if LEAVE is executed with a 16-bit stack.
->=20
-> Thanks, Sean! Great catch. I didn't see this. Is there already a test sui=
-te for
-> this?
+On 10/5/23 12:35 PM, Andrew Kanner wrote:
+> Syzkaller reported the following issue:
+>   ------------[ cut here ]------------
+>   WARNING: CPU: 0 PID: 2807 at mm/vmalloc.c:3247 __vmalloc_node_range (mm/vmalloc.c:3361)
+>   Modules linked in:
+>   CPU: 0 PID: 2807 Comm: repro Not tainted 6.6.0-rc2+ #12
+>   Hardware name: Generic DT based system
+>   unwind_backtrace from show_stack (arch/arm/kernel/traps.c:258)
+>   show_stack from dump_stack_lvl (lib/dump_stack.c:107 (discriminator 1))
+>   dump_stack_lvl from __warn (kernel/panic.c:633 kernel/panic.c:680)
+>   __warn from warn_slowpath_fmt (./include/linux/context_tracking.h:153 kernel/panic.c:700)
+>   warn_slowpath_fmt from __vmalloc_node_range (mm/vmalloc.c:3361 (discriminator 3))
+>   __vmalloc_node_range from vmalloc_user (mm/vmalloc.c:3478)
+>   vmalloc_user from xskq_create (net/xdp/xsk_queue.c:40)
+>   xskq_create from xsk_setsockopt (net/xdp/xsk.c:953 net/xdp/xsk.c:1286)
+>   xsk_setsockopt from __sys_setsockopt (net/socket.c:2308)
+>   __sys_setsockopt from ret_fast_syscall (arch/arm/kernel/entry-common.S:68)
+> 
+> xskq_get_ring_size() uses struct_size() macro to safely calculate the
+> size of struct xsk_queue and q->nentries of desc members. But the
+> syzkaller repro was able to set q->nentries with the value initially
+> taken from copy_from_sockptr() high enough to return SIZE_MAX by
+> struct_size(). The next PAGE_ALIGN(size) is such case will overflow
+> the size_t value and set it to 0. This will trigger WARN_ON_ONCE in
 
-No, I'm just excessively paranoid when it comes to the emulator :-)
+Please ignore the pw-bot email. A question just came to my mind after applying.
 
-> > I generally like defense-in-depth approaches, but zeroing data that the=
- caller
-> > did not ask to be written is not a net positive.
->=20
-> I'll rewrite the patch to just initialize variables where they are curren=
-tly
-> not. This should be a bit more conservative and have less risk of breakin=
-g
-> anything.
+> diff --git a/net/xdp/xsk_queue.c b/net/xdp/xsk_queue.c
+> index f8905400ee07..c7e8bbb12752 100644
+> --- a/net/xdp/xsk_queue.c
+> +++ b/net/xdp/xsk_queue.c
+> @@ -34,6 +34,11 @@ struct xsk_queue *xskq_create(u32 nentries, bool umem_queue)
+>   	q->ring_mask = nentries - 1;
+>   
+>   	size = xskq_get_ring_size(q, umem_queue);
+> +	if (unlikely(size == SIZE_MAX)) {
 
-In all honesty, I wouldn't bother.  Trying to harden the emulator code for =
-things
-like this will be a never ending game of whack-a-mole.  The operands, of wh=
-ich
-there are many, have multiple unions with fields of varying size, and all k=
-inds
-of subtle rules/logic for which field is used, how many bytes within a give=
-n field
-are valid, etc.
+What if "size" is SIZE_MAX-1? Would it still overflow the PAGE_ALIGN below?
 
-It pains me a bit to say this, but I think we're best off leaving the emula=
-tor
-as-is, and relying on things like fancy compiler features, UBSAN, and fuzze=
-rs to
-detect any lurking bugs.
+> +		kfree(q);
+> +		return NULL;
+> +	}
+> +
+>   	size = PAGE_ALIGN(size);
+>   
+>   	q->ring = vmalloc_user(size);
 
-  struct operand {
-	enum { OP_REG, OP_MEM, OP_MEM_STR, OP_IMM, OP_XMM, OP_MM, OP_NONE } type;
-	unsigned int bytes;
-	unsigned int count;
-	union {
-		unsigned long orig_val;
-		u64 orig_val64;
-	};
-	union {
-		unsigned long *reg;
-		struct segmented_address {
-			ulong ea;
-			unsigned seg;
-		} mem;
-		unsigned xmm;
-		unsigned mm;
-	} addr;
-	union {
-		unsigned long val;
-		u64 val64;
-		char valptr[sizeof(sse128_t)];
-		sse128_t vec_val;
-		u64 mm_val;
-		void *data;
-	};
-  };
