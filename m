@@ -2,150 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B80BA7BBA06
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 16:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 075427BBA0F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 16:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232518AbjJFOM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 10:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55746 "EHLO
+        id S232335AbjJFOQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 10:16:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232502AbjJFOMy (ORCPT
+        with ESMTP id S229492AbjJFOQt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 10:12:54 -0400
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB678A6;
-        Fri,  6 Oct 2023 07:12:50 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 55C5C1C0012;
-        Fri,  6 Oct 2023 14:12:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1696601568;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=agJi0nKF7FOULQsqtdpXdutlZ5f5eTcBhobxYJ95y04=;
-        b=OcgiKH3GTtvsfq6zaW1CVNcZt6+/AyeiINmUGtHdnWt5I7aMH0YFCydwd+KdJRebhS3YF3
-        CzQ0U5Qzp4MRTjFa1yPiP9VMS591VG9jM1g19DNWzZ/bBB9UEIv0Wxp2HN2SyZWYzyuSxr
-        yYzmblz7wnLSDcJIuRV2+OxX+fbx90bWisN2Rr+1xDgXj4wE0f9vu91E8yaABUQi9iGKJ+
-        45aqO9ZGQE0YfVlmO7bzAeeccDPi/blNgqNGkuPUsW6hTNNXSFxj5Hq3TgT8XW0jBz8NLE
-        iYw5koCOBfMzYi9VvVLScS73uevl2lVNuVOBKto2iXtQXdqL0hfMKFVBgFpvQw==
-From:   =?UTF-8?q?K=C3=B6ry=20Maincent?= <kory.maincent@bootlin.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Michal Kubecek <mkubecek@suse.cz>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Simon Horman <horms@kernel.org>,
-        Kory Maincent <kory.maincent@bootlin.com>,
-        thomas.petazzoni@bootlin.com, Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Subject: [PATCH net v2 1/1] ethtool: Fix mod state of verbose no_mask bitset
-Date:   Fri,  6 Oct 2023 16:12:46 +0200
-Message-Id: <20231006141246.3747944-1-kory.maincent@bootlin.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 6 Oct 2023 10:16:49 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68656C5;
+        Fri,  6 Oct 2023 07:16:48 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id e9e14a558f8ab-352a1d77fa4so9253175ab.3;
+        Fri, 06 Oct 2023 07:16:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696601808; x=1697206608; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rlFqNr400oUmo86LhhjzRRwWWVe1as4xD/8YyVt9kKk=;
+        b=NzY80zchDbXkuq0StA/l1IyqjhY6DJSunIGGSmG7XsV7FjPk/76ATuEdinl+QSagUg
+         1+naWDgEGhRFfSPGBjB6LkaGKGK6ACWLk6gTBrwv92bPX3tCqJ/q1aoeckeQTdiRtk4P
+         UU+wOWXP6ARydfxmlQtdOOisedqUBk6VXX5tbmqWTZOND1xVlImCbmhqu//VBtABhoxj
+         GfzJXbAL9tb3yDrqezZLTTLdwU/zK6yp46TEtdgPXZhKd++TE0mVQkd9h0Z/ayjTvdIk
+         wQkGszI5wkpo51PDj+nX4XncHIS4fRi8Vh2LRIQDFHoPRabm9H4JSdDBblveNnB2T06w
+         bIbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696601808; x=1697206608;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rlFqNr400oUmo86LhhjzRRwWWVe1as4xD/8YyVt9kKk=;
+        b=o3NvR4KaWqP1srOWkohFBm4Y0yk47FLiUX/V/mY99JPWNnPB8xDL/J2ekGaMQbuHSJ
+         JZZiUsb1fjQELY2LnrmS0dqDMoYOpCLUwxGRyY6Lhw2teJhQ+WqRv3XcnO/Gd3BM5Mm0
+         AlNrBI+1nNlxkHJlvZTPKcTJhNb0QYhczOgKDJxGdNNFpJDliKfpiZ89YuoLWX2EbN8N
+         6pW0lq/6VOVPsvYZuJyy0/jVcIOwqorAXl0iaQzis5P9/0RVyWPtCI1exKIqsWHUpTu5
+         M9nm8WR0eiYI2nRvB1XdVevQ51S13TfiGgjbShEud1+rQRz8c96lpis1J3HGV/+k/imB
+         4Aqg==
+X-Gm-Message-State: AOJu0YyH5woM27PAvJUFE6PBY9i45fZrIM0c9nGOqlm/hHghE1qJdLuk
+        ObdiCy+9u0KCmmEWv+Lf7fiUds1270k=
+X-Google-Smtp-Source: AGHT+IFr8XQMKMskr7PRnKb9gzN64Tp+/S3W0BqldLDGTmi01DtlauD/kgzrG+/reT6ocmMO70tINA==
+X-Received: by 2002:a6b:f319:0:b0:783:63d6:4c5 with SMTP id m25-20020a6bf319000000b0078363d604c5mr9701877ioh.12.1696601807648;
+        Fri, 06 Oct 2023 07:16:47 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id h1-20020a02b601000000b0043978165d54sm435756jam.104.2023.10.06.07.16.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Oct 2023 07:16:46 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 6 Oct 2023 07:16:44 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Wenkai <advantech.susiteam@gmail.com>
+Cc:     wenkai.chung@advantech.com.tw, Susi.Driver@advantech.com,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH 0/5] watchdog: eiois200_wdt: Add EIO-IS200 Watchdog Driver
+Message-ID: <ce810ce8-f93c-4a9c-9d14-1e8f8f8c3e2b@roeck-us.net>
+References: <cover.1696495372.git.advantech.susiteam@gmail.com>
+ <d7df3c7b-730a-4d09-8f15-3cc8591c8092@roeck-us.net>
+ <b08d6cf6-cd48-86d7-a959-290fc4de092c@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: kory.maincent@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <b08d6cf6-cd48-86d7-a959-290fc4de092c@gmail.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kory Maincent <kory.maincent@bootlin.com>
+On Fri, Oct 06, 2023 at 05:27:48PM +0800, Wenkai wrote:
+> 
+> 
+> Guenter Roeck 於 10/6/2023 11:02 AM 寫道:
+> > On Thu, Oct 05, 2023 at 04:51:18PM +0800, advantech.susiteam@gmail.com wrote:
+> > > From: Wenkai <advantech.susiteam@gmail.com>
+> > > 
+> > > This patch series aims to add support for the Advantech EIO-IS200
+> > > Embedded Controller's watchdog timer to the Linux kernel. The EIO-IS200
+> > > is a widely used embedded controller, and this series introduces a
+> > > native driver for its watchdog timer functionality within the Linux
+> > > ecosystem.
+> > > 
+> > I am not going to review this patch series. This is just ne watchdog driver.
+> > One patch is sufficient.
+> > 
+> > Guenter
+> Hi Guenter,
+> 
+> Advantech's EIO-IS200 watchdog supports 5 output pins: RESET, Power
+> Button, SCI, IRQ, and GPIO. The most traditional scenario is that the
+> Pretimeout triggers IRQ, and the timeout triggers RESET.
+> 
+> However, unfortunately, for industrial usages, there are various use
+> cases, which require certain mechanisms and logic to manage which signal
+> is output when Pretimeout and timeout expire. I am concerned that
+> consolidating all these features into a single patch for upstream may
+> lead to confusion and make the source code less readable and
+> understandable.
+> 
 
-A bitset without mask in a _SET request means we want exactly the bits in
-the bitset to be set. This works correctly for compact format but when
-verbose format is parsed, ethnl_update_bitset32_verbose() only sets the
-bits present in the request bitset but does not clear the rest. The commit
-6699170376ab fixes this issue by clearing the whole target bitmap before we
-start iterating. The solution proposed brought an issue with the behavior
-of the mod variable. As the bitset is always cleared the old val will
-always differ to the new val.
+The 1st patch in your series doesn't even compile. I don't call that
+understandable.
 
-Fix it by adding a new temporary variable which save the state of the old
-bitmap.
+Oh, it fails to compile because you include a non-existing file from
+../mfd directly and because you select a non-existing configuration option
+instead of depending on it.
 
-Fixes: 6699170376ab ("ethtool: fix application of verbose no_mask bitset")
-Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
----
+None of those is even remotely acceptable. Are you seriously sending me
+a series of patches that don't even build to review ?
 
-Changes in v2:
-- Fix the allocated size.
----
- net/ethtool/bitset.c | 31 +++++++++++++++++++++++++------
- 1 file changed, 25 insertions(+), 6 deletions(-)
+> Therefore, I have divided the implementation into 5 separate patches,
+> aiming to make the code more comprehensible and acceptable. If it's
+> acceptable to you, I am more than willing to provide a single patch as
+> per your preference.
+> 
+Frankly, your series is one more nail in the coffin. I am now seriously
+considering to resign as co-maintainer of the watchdog subsystem.
 
-diff --git a/net/ethtool/bitset.c b/net/ethtool/bitset.c
-index 0515d6604b3b..8a6b35c920cd 100644
---- a/net/ethtool/bitset.c
-+++ b/net/ethtool/bitset.c
-@@ -432,7 +432,9 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int nbits,
- 			      struct netlink_ext_ack *extack, bool *mod)
- {
- 	struct nlattr *bit_attr;
-+	u32 *tmp = NULL;
- 	bool no_mask;
-+	bool dummy;
- 	int rem;
- 	int ret;
- 
-@@ -448,8 +450,16 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int nbits,
- 	}
- 
- 	no_mask = tb[ETHTOOL_A_BITSET_NOMASK];
--	if (no_mask)
--		ethnl_bitmap32_clear(bitmap, 0, nbits, mod);
-+	if (no_mask) {
-+		unsigned int nwords = DIV_ROUND_UP(nbits, 32);
-+		unsigned int nbytes = nwords * sizeof(u32);
-+
-+		tmp = kcalloc(nwords, sizeof(u32), GFP_KERNEL);
-+		if (!tmp)
-+			return -ENOMEM;
-+		memcpy(tmp, bitmap, nbytes);
-+		ethnl_bitmap32_clear(bitmap, 0, nbits, &dummy);
-+	}
- 
- 	nla_for_each_nested(bit_attr, tb[ETHTOOL_A_BITSET_BITS], rem) {
- 		bool old_val, new_val;
-@@ -458,13 +468,19 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int nbits,
- 		if (nla_type(bit_attr) != ETHTOOL_A_BITSET_BITS_BIT) {
- 			NL_SET_ERR_MSG_ATTR(extack, bit_attr,
- 					    "only ETHTOOL_A_BITSET_BITS_BIT allowed in ETHTOOL_A_BITSET_BITS");
--			return -EINVAL;
-+			ret = -EINVAL;
-+			goto out;
- 		}
- 		ret = ethnl_parse_bit(&idx, &new_val, nbits, bit_attr, no_mask,
- 				      names, extack);
- 		if (ret < 0)
--			return ret;
--		old_val = bitmap[idx / 32] & ((u32)1 << (idx % 32));
-+			goto out;
-+
-+		if (no_mask)
-+			old_val = tmp[idx / 32] & ((u32)1 << (idx % 32));
-+		else
-+			old_val = bitmap[idx / 32] & ((u32)1 << (idx % 32));
-+
- 		if (new_val != old_val) {
- 			if (new_val)
- 				bitmap[idx / 32] |= ((u32)1 << (idx % 32));
-@@ -474,7 +490,10 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int nbits,
- 		}
- 	}
- 
--	return 0;
-+	ret = 0;
-+out:
-+	kfree(tmp);
-+	return ret;
- }
- 
- static int ethnl_compact_sanity_checks(unsigned int nbits,
--- 
-2.25.1
-
+Guenter
