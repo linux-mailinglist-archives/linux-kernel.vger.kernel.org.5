@@ -2,100 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B9E7BB1F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 09:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90A417BB200
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 09:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230284AbjJFHJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 03:09:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52588 "EHLO
+        id S230295AbjJFHKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 03:10:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230261AbjJFHJ2 (ORCPT
+        with ESMTP id S230261AbjJFHKc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 03:09:28 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E1AED
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 00:09:26 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c723f1c80fso13687575ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 00:09:26 -0700 (PDT)
+        Fri, 6 Oct 2023 03:10:32 -0400
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 036C2ED
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 00:10:30 -0700 (PDT)
+Received: by mail-ua1-x934.google.com with SMTP id a1e0cc1a2514c-7a8b5ec9a6fso677134241.2
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 00:10:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696576166; x=1697180966; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=j2ix4pQAzWFH3l8TYA1pZkl9Bx0YvuYD4ExOCvfP59A=;
-        b=imNPx5IlU1qtlfgSjsGc7FaJg1k3j3vU6r4xGQcjhhX9EHOsTW4Wd0CuqH+Z2u7PeM
-         flVOUA9dkqyTmI98i76mHhnNIkkoKn4i1nyGwT1oLwFQSX121ppPApH/35e0Xr1+mxg2
-         X2Q7lRL4vTK8RYg7gx7J+XKWj0Mf8N+lEGllOfd/gorowe/tsUu0aefyLKXdFladGh30
-         BJDm+xM/N3EAZwm+cqGXwG2JODUtG4EQoIFZxLVaBAPWrCJDyGd7/lQIaTj0OrnRCZrp
-         rGpXSrUcxcJ/dt3GfGIqQEDsoDA02Szwd6hyEZRz9e2hHaWCh9kMHItVdn6b+9cbvG/E
-         fJAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696576166; x=1697180966;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696576230; x=1697181030; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=j2ix4pQAzWFH3l8TYA1pZkl9Bx0YvuYD4ExOCvfP59A=;
-        b=sNed/5xvFKkW61K0TND4ax6YLYiqAMoHq3BMbsz6Cj/CemwICyesNdLJBMPRdGAroV
-         QSybqjhXlfcgeebZW/7x+ET9Sv5UETJxUkSZoNwLt5/tAy3hltX3Mw0yyfAtzDH417Z2
-         P7rSQky56Gcg8v1qM5bRHT0keGEmvwLG06bymUlMjx0qNws7eCNpTs8iHNnagHKItrLb
-         iaxG88denjYyy9C2DqiK7Fmei6kWVM5Zydw4oc98+qRXz3viIU721nwNv8UMfEhfI3md
-         n5QjNjrv+UYPSDiXpHjW6Q6NHnNOH6rB1iPNWRAS/BHsnHwUcaPyYVW/CDzXDyAAHBxD
-         uVvQ==
-X-Gm-Message-State: AOJu0YxntdVnNfuR6j+D0cleb7NxWIKhnWZ7W9diwkEMRnC+2pk/AXdB
-        FICesx3Cv2y74fCvzpJvbG7NZQ==
-X-Google-Smtp-Source: AGHT+IGPT2TrSlWvfu/luyb0+78z1cuvGwxlrHt9xIsh9ALOrCdKQgFyObbg2zqlqc5pM6A0/5KK+w==
-X-Received: by 2002:a17:903:124d:b0:1bf:d92e:c5a7 with SMTP id u13-20020a170903124d00b001bfd92ec5a7mr8400052plh.28.1696576165741;
-        Fri, 06 Oct 2023 00:09:25 -0700 (PDT)
-Received: from localhost ([122.172.81.92])
-        by smtp.gmail.com with ESMTPSA id d12-20020a170902cecc00b001c6092d35b9sm3027846plg.85.2023.10.06.00.09.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 00:09:25 -0700 (PDT)
-Date:   Fri, 6 Oct 2023 12:39:23 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        Nikunj Kela <nkela@quicinc.com>,
-        Prasad Sodagudi <psodagud@quicinc.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 9/9] firmware: arm_scmi: Add generic OPP support to the
- SCMI performance domain
-Message-ID: <20231006070923.hf3izdazuwng7uv5@vireshk-i7>
-References: <20230925131715.138411-1-ulf.hansson@linaro.org>
- <20230925131715.138411-10-ulf.hansson@linaro.org>
- <20230929162522.zjoh5d2tqspzm3nc@bogus>
- <20231003082133.xyu46szs3jfm6fks@vireshk-i7>
- <20231003112647.bbqwnre5bzijw5sg@bogus>
- <20231004050806.sba3ogq76yiylrro@vireshk-i7>
- <20231005150649.p6viyorcucq2irsi@bogus>
+        bh=s4Pz6V+l7g1fDRYkyErgWlYbtoLKmeqMrzbk272HU6I=;
+        b=DVbrAv/OhKHORSxdsS3e5euO2Z1vQWa+xc8b/wOAkbX9s1Q4i0rbCXanOzgWcML8tF
+         FwPobV/Yskf0wQz793l01oRnLguLoGd/nKmTZy1TkSmqGvUnIbooAJlctrjzf8h3DadK
+         cT0gRMAWzlzNQ3trpjrvVQ7wl89AlIftknFL9iksHDdNki+XFrAKNFiBYBjcbb5QOaCz
+         66nHlqTjK0egyeIvdBBSnhUxPPSkRaFfJihI3wrX3CVaGkyC1LNOGGyXG5d2e+qmzzcw
+         mD3+mbax2JJ5pfiQOKvL+l9DgJUdzqMXCcJZa0PYKua7vlRCNrHzJ3+mDIpGIPkou/6z
+         hrOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696576230; x=1697181030;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=s4Pz6V+l7g1fDRYkyErgWlYbtoLKmeqMrzbk272HU6I=;
+        b=TOF9Dpf/ch1MIqiP5lj9wHwGU/fciRWTsN+VuEgLo2zlkkIffIL6eWUzXMiITUygYz
+         vJ69s5WGbvW6KFrp4f+fmFX7/tKBLnVoyogNgOpNBJ+UUq2dsonRStWa6nBCoHlhM0jI
+         udEsu5yqC0yDZeoGTS9flDaHDufHKxPF+637DQh5WJsHGe3PBEYWH+vUPZhSyT92ke66
+         rZvmo2b4wnyK737o9aH7eg7YHxYhB6dZdZ2RDU4N3arXoks4+D2Pt2QBZVI46rgeXhD7
+         9a71JWckwJ1cSHsHtYqDA7xA2zZb1CX8WmEh+Yq2HoWuxvq8SJIeOfBZcmzESzsun9kQ
+         XBNw==
+X-Gm-Message-State: AOJu0YwKhqqQHcnbIgo2nRhM1slsjCzF0SYbk6F/nODmA7i/EUVj/BWG
+        6byZquKAgosi765z8wA491FCEi7Cxs/p79Zw36TNaA==
+X-Google-Smtp-Source: AGHT+IElekYbONyUWUDSEziCQbS03+r3xAaUoSu1bVKXQLUSAIno+7zsmOgB0alZ0ADMgfjFwh9TNpN3RIIBLTKJWkY=
+X-Received: by 2002:a1f:e246:0:b0:48f:8533:3cda with SMTP id
+ z67-20020a1fe246000000b0048f85333cdamr6331515vkg.11.1696576229965; Fri, 06
+ Oct 2023 00:10:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231005150649.p6viyorcucq2irsi@bogus>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231004-pxa-gpio-v5-0-d99ae6fceea8@skole.hr> <20231004-pxa-gpio-v5-5-d99ae6fceea8@skole.hr>
+In-Reply-To: <20231004-pxa-gpio-v5-5-d99ae6fceea8@skole.hr>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Fri, 6 Oct 2023 09:10:19 +0200
+Message-ID: <CAMRc=Mf47F7GgLyp+DkRQp2H7+JiqjczVHSQwZoYJg8455n_bA@mail.gmail.com>
+Subject: Re: [PATCH RFC v5 5/6] ARM: pxa: Convert gumstix Bluetooth to GPIO descriptors
+To:     =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Cc:     Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Russell King <linux@armlinux.org.uk>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-spi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05-10-23, 16:06, Sudeep Holla wrote:
-> Thanks, I wasn't expecting these patches in the branch, but if you are
-> aware off and are fine with it, I have no objections.
-> 
-> 	dt-bindings: opp: opp-v2-kryo-cpu: Allow opp-peak-kBps
-> 	OPP: debugfs: Fix warning with W=1 builds
-> 	OPP: Remove doc style comments for internal routines
-> 	OPP: Add dev_pm_opp_find_level_floor()
+On Wed, Oct 4, 2023 at 4:56=E2=80=AFPM Duje Mihanovi=C4=87 <duje.mihanovic@=
+skole.hr> wrote:
+>
+> Gumstix still uses the legacy GPIO interface for resetting the Bluetooth
+> device.
+>
+> Convert it to use the GPIO descriptor interface.
+>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Duje Mihanovi=C4=87 <duje.mihanovic@skole.hr>
+> ---
 
-Ahh, I didn't create a fresh branch for this but added them on top of
-OPP changes. Fixed it now. Fetch the repo again.
-
--- 
-viresh
+Reviewed-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
