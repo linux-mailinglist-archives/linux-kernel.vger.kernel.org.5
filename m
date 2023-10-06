@@ -2,104 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5666D7BB67B
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0CD7BB67C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232043AbjJFLeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 07:34:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41786 "EHLO
+        id S231911AbjJFLea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 07:34:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231444AbjJFLeR (ORCPT
+        with ESMTP id S232049AbjJFLe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 07:34:17 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 945F283;
-        Fri,  6 Oct 2023 04:34:16 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3af8b4a557dso1295382b6e.0;
-        Fri, 06 Oct 2023 04:34:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696592056; x=1697196856; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dJsxnKbNCk5+leHeFY97ByEqS+w0KsvjXISdSLAodbo=;
-        b=OhAg2G9Kjkzn/G8ndHZMWchsbx9UHVwQAbNFCbdUNU6he9Y55E+f2Zk0r8yCeQPAGR
-         OuWryjEIO3PUCKxnFbbNrqRh/zPvrVVLqERw01pO7C7lLfULPJh/dGM/pmDzLRV1VWw2
-         GAjyvWs0XiJ4A5mkmt0Xi+z8qJc/jBwzVHQL/dIXT6bexKk+uZRTJLSJ8bdIh5uVxO9x
-         LRtFyitVPSVMGbKp56pfuigJfLE4+EjQh4IyFi2SckYAM3ESVZEP9L0lGwJLCyjqDpwG
-         zT3/mvu41+XMK2qaAIDlw4bAorsBDDl1SY0EnPLYyTGYLEbyMvyKOCF2YbDDEMmHhsSR
-         kv/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696592056; x=1697196856;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dJsxnKbNCk5+leHeFY97ByEqS+w0KsvjXISdSLAodbo=;
-        b=Ym5m1XkXM+isBC2RTXl1A29CzYnmjdrlFRlggAtAvPOnFIKP/pq+uyF7gXAWusaQBa
-         oEiDsuh8BWmSy2Gb5fTWiPfeFtpncgWcUt9BiJtm1h0HgxuMpBWocitC7YEmtR1RWV32
-         GXqIhCHOqH1ZzjpB76wDFT6c2QtOVEYhSdGjY78wkMAUN2VGwYBtywADDCqyy26lcdrX
-         xaj8IVF6+RQ06dku4O1g1dzQ+aNENjWUSbERageTISqlJ4RS4kVF0RIMMvlvcD+2Z+g2
-         cT7ai/Ki3t+mAswzcacoG+IqRx4cVGN6tY3GuzNOjt6e/MhPxaBkHyqxglUhrfPu2T2+
-         9z/g==
-X-Gm-Message-State: AOJu0YxbVm0Bl2S7fN21BwGTa1LAOGQy/8caqF5ktwjx4kPUlUQCWZ8J
-        ZIcV1Y23RL1kQMekNoH3LBI1xOhvHxMGkaCM7+I=
-X-Google-Smtp-Source: AGHT+IGAJ3BibdIq1ke5w9ifC5KyliflY6aMcg/KldPfF0vwK+o2On/uXzQwQnujdp9hfWZnytiJ+ut6KHsEX9eTBsE=
-X-Received: by 2002:a05:6358:618c:b0:145:6e16:fa86 with SMTP id
- w12-20020a056358618c00b001456e16fa86mr9433411rww.22.1696592055772; Fri, 06
- Oct 2023 04:34:15 -0700 (PDT)
+        Fri, 6 Oct 2023 07:34:28 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B85CE;
+        Fri,  6 Oct 2023 04:34:25 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 396BYAi1067584;
+        Fri, 6 Oct 2023 06:34:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1696592050;
+        bh=L/qBAZRai9WwR2dMYvfxO/fOppmi703eQAvgBvW19LU=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=jIINuBiOF5EPoD7GkfNHSFzXOwb7d8EJYYNw+j68gWbGGeJwXTQpIDw8vJBOSm73M
+         9YSXxsSkPwBFeKYe0rV2KA2v80wprYnLimES3lNQ+xiVbjzFSgTeDT5UGjnV4mwFxc
+         biRn59B1MwZdczEwnHtW8b8ABOuH4uyZOpna9oVU=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 396BYAIw020690
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 6 Oct 2023 06:34:10 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 6
+ Oct 2023 06:34:10 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 6 Oct 2023 06:34:10 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 396BYAEJ024616;
+        Fri, 6 Oct 2023 06:34:10 -0500
+Date:   Fri, 6 Oct 2023 06:34:10 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Keerthy <j-keerthy@ti.com>
+CC:     <robh+dt@kernel.org>, <vigneshr@ti.com>, <conor+dt@kernel.org>,
+        <kristo@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <u-kumar1@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 5/7] arm64: dts: ti: k3-j784s4-mcu: Add the mcu domain
+ watchdog instances
+Message-ID: <20231006113410.tibvxxkeuujqnbv4@evolution>
+References: <20231006042901.6474-1-j-keerthy@ti.com>
+ <20231006042901.6474-6-j-keerthy@ti.com>
 MIME-Version: 1.0
-References: <20230910083418.8990-1-jonas.gorski@gmail.com> <ZQQ2Cv1uL/YVxNBb@gondor.apana.org.au>
-In-Reply-To: <ZQQ2Cv1uL/YVxNBb@gondor.apana.org.au>
-From:   Jonas Gorski <jonas.gorski@gmail.com>
-Date:   Fri, 6 Oct 2023 13:34:04 +0200
-Message-ID: <CAOiHx=nCfU22yd9-KommKMEnKq+VpQROOfKwyb9kbRWzY3azhg@mail.gmail.com>
-Subject: Re: [PATCH] hwrng: geode: fix accessing registers
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Andres Salomon <dilinger@queued.net>,
-        Olivia Mackall <olivia@selenic.com>,
-        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        "Timur I . Davletshin" <timur.davletshin@gmail.com>,
-        Jo-Philipp Wich <jo@mein.io>, linux-geode@lists.infradead.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231006042901.6474-6-j-keerthy@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Herbert,
+On 09:58-20231006, Keerthy wrote:
+> There are totally 2 instances of watchdog module in MCU domain.
+> These instances are coupled with the MCU domain R5F instances.
 
-On Fri, 15 Sept 2023 at 12:46, Herbert Xu <herbert@gondor.apana.org.au> wrote:
->
-> On Sun, Sep 10, 2023 at 10:34:17AM +0200, Jonas Gorski wrote:
-> > When the membase and pci_dev pointer were moved to a new struct in priv,
-> > the actual membase users were left untouched, and they started reading
-> > out arbitrary memory behind the struct instead of registers. This
-> > unfortunately turned the RNG into a constant number generator, depending
-> > on the content of what was at that offset.
-> >
-> > To fix this, update geode_rng_data_{read,present}() to also get the
-> > membase via amd_geode_priv, and properly read from the right addresses
-> > again.
-> >
-> > Fixes: 9f6ec8dc574e ("hwrng: geode - Fix PCI device refcount leak")
-> > Reported-by: Timur I. Davletshin <timur.davletshin@gmail.com>
-> > Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217882
-> > Tested-by: Timur I. Davletshin <timur.davletshin@gmail.com>
-> > Suggested-by: Jo-Philipp Wich <jo@mein.io>
-> > Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
-> > ---
-> >  drivers/char/hw_random/geode-rng.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
->
-> Patch applied.  Thanks.
+> Disabling them as they are not used by Linux.
+Device tree is hardware description - not tied to how Linux uses it.
 
-Where was it applied? I don't see it neither in linus' tree nor in
-char-misc. Wondering if it got stuck somewhere.
+Reason these wdts are disabled by default is because they are tightly
+coupled with R5Fs.
 
-Best Regards,
-Jonas
+> 
+> Signed-off-by: Keerthy <j-keerthy@ti.com>
+> ---
+>  .../boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi     | 24 +++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
+> index a7b5c4cb7d3e..809a0b1cf038 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
+> @@ -714,4 +714,28 @@
+>  		ti,esm-pins = <63>;
+>  		bootph-pre-ram;
+>  	};
+> +
+> +	/*
+> +	 * The 2 RTI instances are couple with MCU R5Fs so keeping them
+> +	 * disabled as these will be used by their respective firmware
+> +	 */
+> +	mcu_watchdog0: watchdog@40600000 {
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x40600000 0x00 0x100>;
+> +		clocks = <&k3_clks 367 1>;
+> +		power-domains = <&k3_pds 367 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 367 0>;
+> +		assigned-clock-parents = <&k3_clks 367 4>;
+> +		status = "disabled";
+> +	};
+> +
+> +	mcu_watchdog1: watchdog@40610000 {
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x40610000 0x00 0x100>;
+> +		clocks = <&k3_clks 368 1>;
+> +		power-domains = <&k3_pds 368 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 368 0>;
+> +		assigned-clock-parents = <&k3_clks 368 4>;
+
+Please DONOT ignore the review comments - I did ask the documentation in
+dts as well. reason being that this is what people will see rather than
+dig up the commit log. it should be intutive when reading the dts why
+nodes are disabled by default Vs the standard of leaving it enabled by
+default. Given esp that these peripherals do not have anything to do
+with board semantics (pinmux or something similar) to be complete.
+
+> +		status = "disabled";
+> +	};
+>  };
+> -- 
+> 2.17.1
+> 
+
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
