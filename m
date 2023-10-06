@@ -2,60 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BBFB7BB7B3
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA79C7BB78E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231989AbjJFMdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 08:33:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52566 "EHLO
+        id S232052AbjJFM20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 08:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231334AbjJFMdW (ORCPT
+        with ESMTP id S231262AbjJFM2V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 08:33:22 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0956ECE
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:33:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7923DC433C7;
-        Fri,  6 Oct 2023 12:33:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696595599;
-        bh=kaiiRDqph/9/dNfSPDM1f2ksRyqa+Xp41z4ukvjjt7o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FgybpyT9S78ECB5xM7ySYBUNt1IURI8e61hnxc3sraXfwIGf5mAyJiQkxEpV88wBT
-         tRmt3Kc/yxWN8U7TyN7jhn5GImY+Ww6xRl5cV+kf+mzhLuSv6QC9rMnOgL3L4nHV74
-         Gt6cwPlWo1BjJ/rzWZCqv3a0r2p7tMW4OoEuj8Cx+fVnI+uJYjFvdcbSGmG5jHunxU
-         f/LpdwMIuMdIUKVsC8fZVBgzHL6zC8IkntP4kdgbTOsuFsw5U1Q2RJFCPrkLORondq
-         C2rXbvhRjAriCd/OlD6MLROitNlWV2kOidzGhgazz2byw7eXw6cKwZchftqk0UZ3n6
-         VzylQjTR1Ylcw==
-Date:   Fri, 6 Oct 2023 20:21:09 +0800
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Anup Patel <anup@brainfault.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Inochi Amaoto <inochiama@outlook.com>, chao.wei@sophgo.com,
-        xiaoguang.xing@sophgo.com
-Subject: Re: [PATCH 4/5] riscv: dts: sophgo: add initial CV1800B SoC device
- tree
-Message-ID: <ZR/7te8fdBQWIZXH@xhacker>
-References: <20230930123937.1551-1-jszhang@kernel.org>
- <20230930123937.1551-5-jszhang@kernel.org>
- <20231002-pessimism-sycamore-a854a098cf43@spud>
+        Fri, 6 Oct 2023 08:28:21 -0400
+Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.196])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AE3F4CA
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:28:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=1a/vW
+        nH3Ah5pXEyFX/8tf2+Zvr5M8bQvxpTQY3e+UqA=; b=C2T7kyfWIAIMoRJ/bRm2z
+        xeT3mpMXCpdPWWNAMnQ8dsaGaPQdGELhq0nz99G9DzEyLGaQ/Co3dPNbpdmy7Tva
+        itDV8YzNT5/RNMS08f29Y6bUuyLAqoHNkc4VzElSalnNWBf7gj08o9hqN3LnWCho
+        Eiyw7Az5WzGNa4wglW5IP4=
+Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
+        by zwqz-smtp-mta-g3-4 (Coremail) with SMTP id _____wAnLUQn_R9lBEAAEA--.49286S4;
+        Fri, 06 Oct 2023 20:27:28 +0800 (CST)
+From:   Ma Ke <make_ruc2021@163.com>
+To:     richard@nod.at, anton.ivanov@cambridgegreys.com,
+        johannes@sipsolutions.net, make_ruc2021@163.com,
+        xiangyang3@huawei.com
+Cc:     linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] um: vector: fix return value check in vector_legacy_rx
+Date:   Fri,  6 Oct 2023 20:27:17 +0800
+Message-Id: <20231006122717.3984017-1-make_ruc2021@163.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231002-pessimism-sycamore-a854a098cf43@spud>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wAnLUQn_R9lBEAAEA--.49286S4
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZFyUXr1DCr1kZF4DAFyUGFg_yoWfGrX_Kw
+        1xZanrGr47Grn8Xr1DGF13urya93WkZFZ8Z3WFqr9xZw43Z34fAws0qrn8A3WUWay7Wwsr
+        Kry3GrWjkw1rKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRNeOJUUUUUU==
+X-Originating-IP: [183.174.60.14]
+X-CM-SenderInfo: 5pdnvshuxfjiisr6il2tof0z/xtbBFRkBC2B9oZDe6wABse
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
+        RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,75 +53,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 01:09:38PM +0100, Conor Dooley wrote:
-> On Sat, Sep 30, 2023 at 08:39:36PM +0800, Jisheng Zhang wrote:
-> > Add initial device tree for the CV1800B RISC-V SoC by SOPHGO.
-> > 
-> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> > ---
-> >  arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 117 ++++++++++++++++++++++++
-> >  1 file changed, 117 insertions(+)
-> >  create mode 100644 arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> > 
-> > diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> > new file mode 100644
-> > index 000000000000..8829bebaa017
-> > --- /dev/null
-> > +++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> > @@ -0,0 +1,117 @@
-> > +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> > +/*
-> > + * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
-> > + */
-> > +
-> > +#include <dt-bindings/interrupt-controller/irq.h>
-> > +
-> > +/ {
-> > +	compatible = "sophgo,cv1800b";
-> > +	#address-cells = <1>;
-> > +	#size-cells = <1>;
-> > +
-> > +	cpus: cpus {
-> > +		#address-cells = <1>;
-> > +		#size-cells = <0>;
-> > +		timebase-frequency = <25000000>;
-> > +
-> > +		cpu0: cpu@0 {
-> > +			compatible = "thead,c906", "riscv";
-> > +			device_type = "cpu";
-> > +			reg = <0>;
-> > +			d-cache-block-size = <64>;
-> > +			d-cache-sets = <512>;
-> > +			d-cache-size = <65536>;
-> > +			i-cache-block-size = <64>;
-> > +			i-cache-sets = <128>;
-> > +			i-cache-size = <32768>;
-> > +			mmu-type = "riscv,sv39";
-> > +			riscv,isa = "rv64imafdc";
-> > +			riscv,isa-base = "rv64i";
-> > +			riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "zicntr", "zicsr",
-> > +					       "zifencei", "zihpm";
-> > +
-> > +			cpu0_intc: interrupt-controller {
-> > +				compatible = "riscv,cpu-intc";
-> > +				interrupt-controller;
-> > +				#address-cells = <0>;
-> > +				#interrupt-cells = <1>;
-> > +			};
-> > +		};
-> > +	};
-> > +
-> > +	osc: oscillator {
-> > +		compatible = "fixed-clock";
-> > +		clock-output-names = "osc_25m";
-> > +		#clock-cells = <0>;
-> > +	};
-> 
-> Is this a stub that will later be replaced by a real clock controller
-> node, or is this actually a fixed oscillator? If it is the former, could
+In vector_legacy_rx, to avoid an unexpected result returned by
+pskb_trim, we should check the return value of pskb_trim().
 
-Hi Conor,
+Signed-off-by: Ma Ke <make_ruc2021@163.com>
+---
+ arch/um/drivers/vector_kern.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-This is a real 25MHZ oscillator. 
+diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+index 131b7cb29576..822a8c0cdcc1 100644
+--- a/arch/um/drivers/vector_kern.c
++++ b/arch/um/drivers/vector_kern.c
+@@ -890,7 +890,8 @@ static int vector_legacy_rx(struct vector_private *vp)
+ 					skb->ip_summed = CHECKSUM_UNNECESSARY;
+ 				}
+ 			}
+-			pskb_trim(skb, pkt_len - vp->rx_header_size);
++			if (pskb_trim(skb, pkt_len - vp->rx_header_size))
++				return 0;
+ 			skb->protocol = eth_type_trans(skb, skb->dev);
+ 			vp->dev->stats.rx_bytes += skb->len;
+ 			vp->dev->stats.rx_packets++;
+-- 
+2.37.2
 
-Thanks
