@@ -2,98 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B32DD7BBF55
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 20:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D64327BBF60
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 20:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233418AbjJFSzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 14:55:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42360 "EHLO
+        id S233224AbjJFS4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 14:56:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233398AbjJFSyo (ORCPT
+        with ESMTP id S233534AbjJFSzh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 14:54:44 -0400
-Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889AF19F;
-        Fri,  6 Oct 2023 11:53:30 -0700 (PDT)
-Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-57bb6b1f764so1447358eaf.2;
-        Fri, 06 Oct 2023 11:53:30 -0700 (PDT)
+        Fri, 6 Oct 2023 14:55:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0391AB
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 11:53:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696618418;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UW50MvzyQoFy0Y9n7htqlvGtReQShELOcf6kg4n+7v4=;
+        b=gXDT58Hc3fMlYZqxCwWmVXjh8ZKuSQkS0gPogfBAWBBj80i0a4vKqrl8OpXLTP0bNQ26E2
+        z177Dx5ZPUsqItVgE/k0cIPP7q81+LUVjWa5atJZiD1SI2uIklq1ZAu73TYoJim6HlJZ2z
+        dGUFnqlnAkc4edVv/gxPm7ZnUwJqg54=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-298-wvQdhD0ON6asu949UZXTRA-1; Fri, 06 Oct 2023 14:53:37 -0400
+X-MC-Unique: wvQdhD0ON6asu949UZXTRA-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-32686c75f8fso1786249f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 11:53:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696618410; x=1697223210;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pu1OhqaEizQhNsXiPRvW0zuKQRn9KfZiSBfIH3NMeIw=;
-        b=s/Zvfd2VJweS8M7BtG1n4DbO58nm9TI8mY1XKcgXIxc08r+SY5m80KHK6Q9dCIhjQJ
-         ii4Z5BAXfFdkSO5B6ueWjT+cwUc6jScN5VXOkvcn0lRb7CHH5K4J2Ng9peIJ4IOG31f4
-         4kzN/7GIqkzkNOKVPf8jwKb+u27pkKDSXRtlWEtP7ZAyDHS3KyflIHOJLjmOY45dyvQd
-         m6ZiEYv6LFBmIPfpwgrhIjtBT0AmU/A+TawoG25W6VHB65gjGBzB3b5G6h+PVXqfvcaI
-         0rmBtLcMvf+KAV/cKrOBTdgtsh/nGS1FLqzeVwIOWwgPq0WUPwZcr6815iOG8J+0iibL
-         qcOA==
-X-Gm-Message-State: AOJu0Yw2mJGnxwhtxm2svJcFnFHSESRT8NSnjZ4/b4ub5cuksy1nh32d
-        rCw1pfFrCqKN/90nf6MC9A==
-X-Google-Smtp-Source: AGHT+IF+T0d7oTVdlXt4Yx2WM43GDasmNgyD6b0RzCQ+yHy1Oq8qLsNcOxF/Qtri9h1PO8yl+6CffA==
-X-Received: by 2002:a4a:3447:0:b0:571:1fad:ebdb with SMTP id n7-20020a4a3447000000b005711fadebdbmr9655109oof.3.1696618409730;
-        Fri, 06 Oct 2023 11:53:29 -0700 (PDT)
-Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id z6-20020a4aae06000000b0057b74352e3asm469358oom.25.2023.10.06.11.53.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 11:53:29 -0700 (PDT)
-Received: (nullmailer pid 137174 invoked by uid 1000);
-        Fri, 06 Oct 2023 18:53:28 -0000
-Date:   Fri, 6 Oct 2023 13:53:28 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-pci@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Ray Jui <ray.jui@broadcom.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        devicetree@vger.kernel.org,
-        Scott Branden <scott.branden@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] dt-bindings: PCI: brcm,iproc-pcie: Fix 'msi' child
- node schema
-Message-ID: <169661840623.137085.10013985063047530748.robh@kernel.org>
-References: <20230926155351.31117-1-robh@kernel.org>
- <20230926155613.33904-3-robh@kernel.org>
+        d=1e100.net; s=20230601; t=1696618415; x=1697223215;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UW50MvzyQoFy0Y9n7htqlvGtReQShELOcf6kg4n+7v4=;
+        b=aKIrwf1G0FimxvJicouMMDYTF3/lIdj/rp1DZSz+fCqqHtFV2wGIA+DbSpCyR31BoG
+         qJZCQK+bo6OMzMrPpZXEgml+snyuQyD3gRYXPUVszPYan3ef0E9yUvZ5t/ojPKe5sVtt
+         1P/1SL8gDSi2kSUbE5w9ER1hI9pgZhm0+VFrcR8vKHlyM4GE1EntUZE2TVcxG7RiEtGK
+         oxlzMBmFJ3ts23+7BpANvukkNLphdVa/9i291F3C1d+jaDaNoSvfEF3ZG5RK+VYb6Nj8
+         HrTlP1lqc8H/toVKntRVOQVei86YHh06gvWm/UhnHFjNM53l+Qbi4C/iYCVHgOeMCfbX
+         nw/g==
+X-Gm-Message-State: AOJu0Ywav/HyhQMnOuc4aGhKzKTeS6FTy6WtfmgKwq07/UZ3DADFChWR
+        PbGLffFyLM21ZrulY2u+8fJriowpV7UmyCl/9srImJwT+yHCfjFokQdgMzaRtvdMlqTAEtD/rBw
+        Or3c9qQrY+iVtR5UHA3EzEsNA
+X-Received: by 2002:adf:f692:0:b0:31f:e883:2ffc with SMTP id v18-20020adff692000000b0031fe8832ffcmr7401132wrp.43.1696618415038;
+        Fri, 06 Oct 2023 11:53:35 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGpqMwEsERFbTQP4/MhAPILilQxV0SuCQcsD/MwMnwwdswb1JRO89mDTE4up485ECSgZoYcFg==
+X-Received: by 2002:adf:f692:0:b0:31f:e883:2ffc with SMTP id v18-20020adff692000000b0031fe8832ffcmr7401116wrp.43.1696618414601;
+        Fri, 06 Oct 2023 11:53:34 -0700 (PDT)
+Received: from [192.168.3.108] (p4ff23b7e.dip0.t-ipconnect.de. [79.242.59.126])
+        by smtp.gmail.com with ESMTPSA id g7-20020a5d5407000000b00327df8fcbd9sm2250805wrv.9.2023.10.06.11.53.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Oct 2023 11:53:34 -0700 (PDT)
+Message-ID: <225e8018-ef79-5514-a6ce-f5994206efe9@redhat.com>
+Date:   Fri, 6 Oct 2023 20:53:33 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230926155613.33904-3-robh@kernel.org>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v4] mm/thp: fix "mm: thp: kill __transhuge_page_enabled()"
+Content-Language: en-US
+To:     Zach O'Keefe <zokeefe@google.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Saurabh Singh Sengar <ssengar@microsoft.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>
+References: <20230925200110.1979606-1-zokeefe@google.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20230925200110.1979606-1-zokeefe@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Tue, 26 Sep 2023 10:56:09 -0500, Rob Herring wrote:
-> The 'msi' child node schema is missing constraints on additional properties.
-> It turns out it is incomplete and properties for it are documented in the
-> parent node by mistake. Move the reference to msi-controller.yaml and
-> the custom properties to the 'msi' node. Adding 'unevaluatedProperties'
-> ensures all the properties in the 'msi' node are documented.
+On 25.09.23 22:01, Zach O'Keefe wrote:
+> The 6.0 commits:
 > 
-> With the schema corrected, a minimal interrupt controller node is needed
-> to properly decode the interrupt properties since the example has
-> multiple interrupt parents.
+> commit 9fec51689ff6 ("mm: thp: kill transparent_hugepage_active()")
+> commit 7da4e2cb8b1f ("mm: thp: kill __transhuge_page_enabled()")
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> merged "can we have THPs in this VMA?" logic that was previously done
+> separately by fault-path, khugepaged, and smaps "THPeligible" checks.
+> 
+> During the process, the semantics of the fault path check changed in two
+> ways:
+> 
+> 1) A VM_NO_KHUGEPAGED check was introduced (also added to smaps path).
+> 2) We no longer checked if non-anonymous memory had a vm_ops->huge_fault
+>     handler that could satisfy the fault.  Previously, this check had been
+>     done in create_huge_pud() and create_huge_pmd() routines, but after
+>     the changes, we never reach those routines.
+> 
+> During the review of the above commits, it was determined that in-tree
+> users weren't affected by the change; most notably, since the only relevant
+> user (in terms of THP) of VM_MIXEDMAP or ->huge_fault is DAX, which is
+> explicitly approved early in approval logic. However, this was a bad
+> assumption to make as it assumes the only reason to support ->huge_fault
+> was for DAX (which is not true in general).
+> 
+> Remove the VM_NO_KHUGEPAGED check when not in collapse path and give
+> any ->huge_fault handler a chance to handle the fault.  Note that we
+> don't validate the file mode or mapping alignment, which is consistent
+> with the behavior before the aforementioned commits.
+> 
+> Fixes: 7da4e2cb8b1f ("mm: thp: kill __transhuge_page_enabled()")
+> Reported-by: Saurabh Singh Sengar <ssengar@microsoft.com>
+> Signed-off-by: Zach O'Keefe <zokeefe@google.com>
+> Cc: Yang Shi <shy828301@gmail.com>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: David Hildenbrand <david@redhat.com>
 > ---
->  .../bindings/pci/brcm,iproc-pcie.yaml         | 24 ++++++++++++-------
->  1 file changed, 16 insertions(+), 8 deletions(-)
-> 
+> I've updated the changelog to reflect discussions in [1] -- leaving
+> ack to David / Matthew on whether to take the patch.
 
-Applied, thanks!
+Works for me.
+
+Acked-by: David Hildenbrand <david@redhat.com>
+
+-- 
+Cheers,
+
+David / dhildenb
 
