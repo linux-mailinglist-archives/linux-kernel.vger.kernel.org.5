@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E617BBF7C
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6027BBF7D
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 21:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233391AbjJFTFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 15:05:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42426 "EHLO
+        id S233367AbjJFTFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 15:05:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233367AbjJFTFC (ORCPT
+        with ESMTP id S233308AbjJFTFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 15:05:02 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA430BB
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 12:04:57 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-523029050d0so848431a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 12:04:57 -0700 (PDT)
+        Fri, 6 Oct 2023 15:05:08 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F577126
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 12:05:04 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9b2d64c9307so97625866b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 12:05:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696619096; x=1697223896; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696619102; x=1697223902; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=68/nbTks8CXo1X/QB95+J8jvFGHLP1OjPuI8hsZjNRI=;
-        b=Q4OrOazgml/RsKtPvKhGrHJzFat/udzkYwjDX/RGffa2U/p9uk5w0h+JudOZzGKAvr
-         gN+jMnfNVTPG+vHO8xLw0FzbTK/vxhQZXCRXXy8Z1mLhx1Usey5foJwIBJfSgQiII4fY
-         IL5ez/4OZ+18yz9lDII7c6zPZR2OBDHnUKpP+tjG6o8VZV0qKvps0pbrhToGjMpxfHvx
-         GFKtSwJ8MPwrz8x5y8/au25Fg098czFiURvIa3PaEeJF+4vWSqlwu2Fn3vHElkvawhGf
-         Snvrqxwcbg93FLec76fPW8mArK3g9ZIcb5QVr9IS3tJvXRdT0ieLAlthayy/D1IR7psz
-         L63g==
+        bh=twZki8w+uSIknxeG/1Xm/hRx3jP9PNleQggQAAtzt9M=;
+        b=kXYXoUSLH3/FW0IxSH3OzBa3QalT0fzVlWlf7LwwmbpRkc+u9TkNLcwSnmfzgPwKTA
+         vGIF55b5jR1+ivvf8CTs+OXs52TdYRiJ9AtLQc+X4MWXnDWNVhfDThYKBTJeXRjqnBZA
+         iFTYJht2Nk14e2v3LixhopQFwFbGV0li2zAPPfD0gXgDF2WB29480m+3Us7hmtUKcGXJ
+         bMZ7ph+7fds31LpGTj+6RodylAjguWlcQ13C3KwXNXm0Y1GP1cCPORUDcBhuBYtOVbWe
+         ykIfrZxO6IC7yM1uu50yEmIofEFWjKYgHzxS6KA4VE3VkW3Rmb8QJO4fo3QeT3ZTg3zh
+         B8WQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696619096; x=1697223896;
+        d=1e100.net; s=20230601; t=1696619102; x=1697223902;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=68/nbTks8CXo1X/QB95+J8jvFGHLP1OjPuI8hsZjNRI=;
-        b=wpeSe4DXTip9HjMJx9Zo5DxDkpwP1FiFmHmPde6QxA/VSCjqn6fLAXISEt46PPmSl9
-         lku7thtPDXKf+q+jK2k1hgPoF1g/dxDeMvbrccyw3hbgtpR+WbOGRauubFEVWevrumoq
-         CtE0hVducymeUrmcL3LqkfX0AE0SF/bib243pFBPgch0KHnETAqnCWcP8GE4BAuYf736
-         /rbJNcpivQozNVc85lUjxDZNQRTFcITPXaABwCMidNvrnN0/hKv59BNexJX+fHDl8KBd
-         KtNSlEgRRfB1z9JD4j6AupntYe9kr0/Vs3sHixukAUhtIgIW1mjiASh30xKqJAC+aD3o
-         /sBQ==
-X-Gm-Message-State: AOJu0YyqJZ1cSVluPYQGqRidTRsBrh5q0AFSLxMeIbnXpM5C1fUjxEdJ
-        +bPpXMBptBr8qSwJNRHTYz4=
-X-Google-Smtp-Source: AGHT+IGDAH25y+WS9bMxScDAaMkKQ7xkjm4qdz6XkggJ9HO6OwZY6UYPPnH2GZNV4sqp0xum2cSRSA==
-X-Received: by 2002:a05:6402:35c2:b0:530:2bd:71b2 with SMTP id z2-20020a05640235c200b0053002bd71b2mr7460311edc.0.1696619096088;
-        Fri, 06 Oct 2023 12:04:56 -0700 (PDT)
+        bh=twZki8w+uSIknxeG/1Xm/hRx3jP9PNleQggQAAtzt9M=;
+        b=duCoFBp8dIknhSb+STIIHET/f50+KC7yDBXSMLxm7mNjM2P0J1z+dP5YwWrQWdUCU7
+         01ycr5SnQlNOwvseZIC20QRveRVmoPUYRgfbaamLT1JIbscWeQMSkm17Hjh5EZTd7Eou
+         s424gqf/mTIegZFFA+g7yVLLO5WSIOPuyot9CHmTIQGGIac8m/ccbcOGfccQ9MTaVZKz
+         5IO94hF0KS/SHAzpp6hFZKuEVfXn/re74SoaxriZ5qY1d/V6ueuZgNUpk1hnyPfBFZ2/
+         gutWFmeWHiAJmGXY6WI1LhMWgjujndbUhODGCz11aUpLm/I8BRe/g3R7kzCVifpVoSSu
+         5N3A==
+X-Gm-Message-State: AOJu0Yw7IHImnUJFA131e4J1XLJAG/gUr/lT14emFwzqCd6WveuiEUub
+        Vb8sr/nW94VJKRIR2t72gZc=
+X-Google-Smtp-Source: AGHT+IERjSYnMDWJyyNYqjqazcemZh6LO2GQiCT7dnPc+/TP9DrQk7KrxJUf/ZeoVvrVks/phO6LeA==
+X-Received: by 2002:a17:906:7389:b0:9b2:71f2:bd11 with SMTP id f9-20020a170906738900b009b271f2bd11mr7155082ejl.4.1696619102334;
+        Fri, 06 Oct 2023 12:05:02 -0700 (PDT)
 Received: from matrix-ESPRIMO-P710 (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
-        by smtp.gmail.com with ESMTPSA id ev5-20020a056402540500b0053b67aba57bsm244120edb.17.2023.10.06.12.04.55
+        by smtp.gmail.com with ESMTPSA id e12-20020a17090681cc00b009a9fbeb15f2sm3291667ejx.62.2023.10.06.12.05.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 12:04:55 -0700 (PDT)
-Date:   Fri, 6 Oct 2023 21:04:54 +0200
+        Fri, 06 Oct 2023 12:05:02 -0700 (PDT)
+Date:   Fri, 6 Oct 2023 21:05:00 +0200
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 03/10] staging: rtl8192e: Remove constant variable
- reg_max_lps_awake_intvl
-Message-ID: <d5b2ccc0f10c28f960552dd2b2c5ec83aa62041f.1696548527.git.philipp.g.hortmann@gmail.com>
+Subject: [PATCH 04/10] staging: rtl8192e: Remove function
+ _rtl92e_wx_adapter_power_status()
+Message-ID: <2fc8f18019c760125ae7c52c765271d2877c52bd.1696548527.git.philipp.g.hortmann@gmail.com>
 References: <cover.1696548527.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -71,79 +71,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove constant variable reg_max_lps_awake_intvl as this value is just
-written to MaxPeriod. Function _rtl92e_init_priv_constant() is then empty
-and can be removed as well.
+Remove function _rtl92e_wx_adapter_power_status() as this functionality
+is not commonly used and the tool to access it is deprecated.
 
 Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 ---
- drivers/staging/rtl8192e/rtl8192e/rtl_core.c | 10 ----------
- drivers/staging/rtl8192e/rtllib.h            |  1 -
- drivers/staging/rtl8192e/rtllib_softmac.c    |  8 +-------
- 3 files changed, 1 insertion(+), 18 deletions(-)
+ drivers/staging/rtl8192e/rtl8192e/rtl_wx.c | 37 ----------------------
+ 1 file changed, 37 deletions(-)
 
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-index f46cb152930a..7db01d68000a 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-@@ -712,15 +712,6 @@ static void _rtl92e_init_priv_handler(struct net_device *dev)
- 	priv->rtllib->ScanOperationBackupHandler = rtl92e_scan_op_backup;
+diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
+index 35f25c60dfb9..27309df925ba 100644
+--- a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
++++ b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
+@@ -122,34 +122,6 @@ static int _rtl92e_wx_get_power(struct net_device *dev,
+ 	return rtllib_wx_get_power(priv->rtllib, info, wrqu, extra);
  }
  
--static void _rtl92e_init_priv_constant(struct net_device *dev)
+-static int _rtl92e_wx_adapter_power_status(struct net_device *dev,
+-					   struct iw_request_info *info,
+-					   union iwreq_data *wrqu, char *extra)
 -{
 -	struct r8192_priv *priv = rtllib_priv(dev);
 -	struct rt_pwr_save_ctrl *psc = (struct rt_pwr_save_ctrl *)
--					&priv->rtllib->pwr_save_ctrl;
+-					(&priv->rtllib->pwr_save_ctrl);
+-	struct rtllib_device *ieee = priv->rtllib;
 -
--	psc->reg_max_lps_awake_intvl = 5;
+-	mutex_lock(&priv->wx_mutex);
+-
+-	if (*extra) {
+-		priv->ps_force = false;
+-		psc->bLeisurePs = true;
+-	} else {
+-		if (priv->rtllib->link_state == MAC80211_LINKED)
+-			rtl92e_leisure_ps_leave(dev);
+-
+-		priv->ps_force = true;
+-		psc->bLeisurePs = false;
+-		ieee->ps = *extra;
+-	}
+-
+-	mutex_unlock(&priv->wx_mutex);
+-
+-	return 0;
 -}
 -
- static void _rtl92e_init_priv_variable(struct net_device *dev)
- {
- 	struct r8192_priv *priv = rtllib_priv(dev);
-@@ -838,7 +829,6 @@ static short _rtl92e_init(struct net_device *dev)
- 	memset(&priv->stats, 0, sizeof(struct rt_stats));
+ static int _rtl92e_wx_set_debug(struct net_device *dev,
+ 				struct iw_request_info *info,
+ 				union iwreq_data *wrqu, char *extra)
+@@ -927,10 +899,6 @@ static const struct iw_priv_args r8192_private_args[] = {
+ 	}, {
+ 		SIOCIWFIRSTPRIV + 0x1,
+ 		IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, 0, "activescan"
+-	}, {
+-		SIOCIWFIRSTPRIV + 0x6,
+-		IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, IW_PRIV_TYPE_NONE,
+-		"set_power"
+ 	}
  
- 	_rtl92e_init_priv_handler(dev);
--	_rtl92e_init_priv_constant(dev);
- 	_rtl92e_init_priv_variable(dev);
- 	_rtl92e_init_priv_lock(priv);
- 	_rtl92e_init_priv_task(dev);
-diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
-index 6d54c03f5680..307bcbb7fbb6 100644
---- a/drivers/staging/rtl8192e/rtllib.h
-+++ b/drivers/staging/rtl8192e/rtllib.h
-@@ -1079,7 +1079,6 @@ struct rt_pwr_save_ctrl {
+ };
+@@ -938,11 +906,6 @@ static const struct iw_priv_args r8192_private_args[] = {
+ static iw_handler r8192_private_handler[] = {
+ 	(iw_handler)_rtl92e_wx_set_debug,   /*SIOCIWSECONDPRIV*/
+ 	(iw_handler)_rtl92e_wx_set_scan_type,
+-	(iw_handler)NULL,
+-	(iw_handler)NULL,
+-	(iw_handler)NULL,
+-	(iw_handler)NULL,
+-	(iw_handler)_rtl92e_wx_adapter_power_status,
+ };
  
- 	bool				bLeisurePs;
- 	u8				LpsIdleCount;
--	u8				reg_max_lps_awake_intvl;
- 	u8				LPSAwakeIntvl;
- 
- 	u32				CurPsLevel;
-diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
-index 206f8e05d5d0..f84133744bc3 100644
---- a/drivers/staging/rtl8192e/rtllib_softmac.c
-+++ b/drivers/staging/rtl8192e/rtllib_softmac.c
-@@ -1588,16 +1588,10 @@ static short rtllib_sta_ps_sleep(struct rtllib_device *ieee, u64 *time)
- 		if (ieee->bAwakePktSent) {
- 			psc->LPSAwakeIntvl = 1;
- 		} else {
--			u8 MaxPeriod = 1;
-+			u8 MaxPeriod = 5;
- 
- 			if (psc->LPSAwakeIntvl == 0)
- 				psc->LPSAwakeIntvl = 1;
--			if (psc->reg_max_lps_awake_intvl == 0)
--				MaxPeriod = 1;
--			else if (psc->reg_max_lps_awake_intvl == 0xFF)
--				MaxPeriod = ieee->current_network.dtim_period;
--			else
--				MaxPeriod = psc->reg_max_lps_awake_intvl;
- 			psc->LPSAwakeIntvl = (psc->LPSAwakeIntvl >=
- 					       MaxPeriod) ? MaxPeriod :
- 					       (psc->LPSAwakeIntvl + 1);
+ static struct iw_statistics *_rtl92e_get_wireless_stats(struct net_device *dev)
 -- 
 2.42.0
 
