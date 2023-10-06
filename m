@@ -2,104 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1F77BB776
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:19:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04DCF7BB777
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232204AbjJFMTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 08:19:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41902 "EHLO
+        id S232229AbjJFMTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 08:19:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231991AbjJFMTM (ORCPT
+        with ESMTP id S232161AbjJFMTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 08:19:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78418E9
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:18:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696594710;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dbw4MOmjZC51ejikUmCxHLL4GruOz1Qm7tMoP+Z0mHA=;
-        b=EREJmbn1C045F9XivOj0kIeav83/Prp0z8XHQK11IxzaIKm6KlrWzG5HfHwvAh5PP+yRwh
-        pfH3+V0qKVkn61we4q7x5ou1IsWTLGCGB1Htda4SLJFIyiHJUQusQ7AOgxaDBi6rn3u/M/
-        /TIgvXl5zMtiyReCUl1JfwcHsG8EBDQ=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-482-kre88s0ZPPye_Wf7Ly-F-A-1; Fri, 06 Oct 2023 08:18:14 -0400
-X-MC-Unique: kre88s0ZPPye_Wf7Ly-F-A-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-313c930ee0eso1328857f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 05:18:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696594693; x=1697199493;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dbw4MOmjZC51ejikUmCxHLL4GruOz1Qm7tMoP+Z0mHA=;
-        b=I6bKP+AP/uvnt/vrVAz1Hq0+xFMsqRrnGwKdkRgsnWQaZMrzhXlIhfsoG9Rvpg7KMW
-         9/vaspq2OxpYV9xe4qtySRKRPkq1wLNFjDtIrKGwiXaugwbyv8bilJ4Wnxw0SoXprDp4
-         bX7KOo6gGueZV9aUkzclR2aevoc802vOsKwf/oRdMG5QdDs5Ao9pQMKQis+8qQlI1nnD
-         8XBhOhdHXC5oxmqUKQL8M502QAMFhVFGKzYlAsMy2CdVT2VjMp0XTldpkzFiXIE/FHgx
-         JtaPEZIU9PG3WNRR6r/ULpxvTN10D+feJqZyAxsthvWGGaroa91pFxDHIydTYLjrb4yd
-         O47g==
-X-Gm-Message-State: AOJu0YzYAmXXUF2+zpmiuKUFcBM6EVw5jh+sevOzGjPFSqQIJF56L3Pj
-        ergAcYxly36FgROFPGMxfDjcYJjcHA/UPjdkiZyT1UF1l6NB4ckcBE7N6SVYQfLME99tB1OsB4/
-        55f8FtMbt9NHcMK4k5k+FlRdZ
-X-Received: by 2002:adf:e8cc:0:b0:322:da1f:60d9 with SMTP id k12-20020adfe8cc000000b00322da1f60d9mr7590367wrn.47.1696594693339;
-        Fri, 06 Oct 2023 05:18:13 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFc6SbTTZSfwrLVAys/qqFPp5hvwHwl88AuA1jeLh9rz9lTN3c+wJWP4s2tjE8cErcaLFUGCA==
-X-Received: by 2002:adf:e8cc:0:b0:322:da1f:60d9 with SMTP id k12-20020adfe8cc000000b00322da1f60d9mr7590346wrn.47.1696594692925;
-        Fri, 06 Oct 2023 05:18:12 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c715:ee00:4e24:cf8e:3de0:8819? (p200300cbc715ee004e24cf8e3de08819.dip0.t-ipconnect.de. [2003:cb:c715:ee00:4e24:cf8e:3de0:8819])
-        by smtp.gmail.com with ESMTPSA id u6-20020a05600c00c600b00402ff8d6086sm3642880wmm.18.2023.10.06.05.18.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 05:18:12 -0700 (PDT)
-Message-ID: <3cbd358e-501a-217f-6482-e20b55e7c728@redhat.com>
-Date:   Fri, 6 Oct 2023 14:18:11 +0200
+        Fri, 6 Oct 2023 08:19:33 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF22AC6
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:19:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D5F4C433C9;
+        Fri,  6 Oct 2023 12:19:27 +0000 (UTC)
+Date:   Fri, 6 Oct 2023 13:19:25 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>, Will Deacon <will@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        D Scott Phillips <scott@os.amperecomputing.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Misono Tomohiro <misono.tomohiro@fujitsu.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 1/2] arm64: smp: Fix pseudo NMI issues w/ broken Mediatek
+ FW
+Message-ID: <ZR/7TW1at0ltc4P4@arm.com>
+References: <CAD=FV=UeeL9uycVeKpOm+eDm3xHrOnKi2frt6a1qFG1HX9yEUg@mail.gmail.com>
+ <ZRwJKBZaYwF1rrur@FVFF77S0Q05N>
+ <CAD=FV=WASz1uvTgwsu3H3cTr3smHk+E_XNUVnjoPpttwv095rQ@mail.gmail.com>
+ <ZRxCCZxZWCG0NBur@FVFF77S0Q05N>
+ <CAD=FV=Xk-OMKQPXxU9Z9HOcWwUxxrmLZ4vD0u5ouZRW_zDFDPg@mail.gmail.com>
+ <ZR03liCodnTQWs7s@FVFF77S0Q05N>
+ <86jzs2ofqs.wl-maz@kernel.org>
+ <CAD=FV=XasZR6dhKBjpbYfby4F1Nu_bsq1m_HP+NpufjsJi0COg@mail.gmail.com>
+ <ZR6Pjk_3gpx1K3pF@FVFF77S0Q05N>
+ <CAD=FV=VbxM-hftVKsp2JhQpnQm9u_H86rQbnucS5-x-q8j0QQA@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] mm: rmap.c: fix kenrel-doc warning
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>,
-        Muzammil <m.muzzammilashraf@gmail.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20231006113948.51673-1-muzammil@dreambigsemi.com>
- <ZR/6sZmNMpMkfxKf@casper.infradead.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <ZR/6sZmNMpMkfxKf@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD=FV=VbxM-hftVKsp2JhQpnQm9u_H86rQbnucS5-x-q8j0QQA@mail.gmail.com>
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.10.23 14:16, Matthew Wilcox wrote:
-> On Fri, Oct 06, 2023 at 04:39:48PM +0500, Muzammil wrote:
->>   /**
->>    * folio_move_anon_rmap - move a folio to our anon_vma
->> - * @page:	The folio to move to our anon_vma
->> + * @folio:  struct folio - Represents a contiguous set of bytes.
->>    * @vma:	The vma the folio belongs to
+On Thu, Oct 05, 2023 at 08:34:56AM -0700, Doug Anderson wrote:
+> On Thu, Oct 5, 2023 at 3:27 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> > On Wed, Oct 04, 2023 at 07:04:12AM -0700, Doug Anderson wrote:
+> > > On Wed, Oct 4, 2023 at 3:15 AM Marc Zyngier <maz@kernel.org> wrote:
+> > > > On Wed, 04 Oct 2023 10:59:50 +0100,
+> > > > Mark Rutland <mark.rutland@arm.com> wrote:
+> > > > > Given you haven't seen any issues, I suspect those are getting reset to fixed
+> > > > > values that happens to work out for us, but it is a bit worrisome more
+> > > > > generally (e.g. the LPI case above).
+> > > >
+> > > > It is likely that these SoCs don't even have an ITS.
+> > >
+> > > Right. That was what we decided [1] when Marc pointed this out earlier.
+> > >
+> > > Overall: we know that this firmware behavior is not good but we're
+> > > stuck with it. :( At the very least, any new devices coming out will
+> > > have this fixed. Presumably if old devices are working OK enough today
+> > > (as long as you don't enable pseudo-NMI) then they can be made to keep
+> > > working?
+> > >
+> > > So circling back: what patch should we actually land?
+> >
+> > For now I'd prefer we took the patch I sent in:
+> >
+> >   https://lore.kernel.org/linux-arm-kernel/ZRr8r7XMoyDKaitd@FVFF77S0Q05N.cambridge.arm.com/
+> >
+> > ... as that leaves us no worse than before this series, and it's pretty simple.
 > 
-> Why did you change more than just 'page' to 'folio'?  I think the
-> other changes you have made to this line are not an improvement.
+> Sounds good to me!
+> 
+> Catalin / Will: Please yell if there's anything you need me to do.
+> Otherwise I'll assume you'll pick up Mark's patch instead of my patch
+> #1 and then you'll pick up my patch #2.
 
-Oh, I missed that. indeed, just s/page/folio/ is sufficient.
+I applied both to the arm64 for-next/backtrace-ipi branch. Thanks.
 
 -- 
-Cheers,
-
-David / dhildenb
-
+Catalin
