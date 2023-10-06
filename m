@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC047BB98B
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:45:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6B767BB98E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 15:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232463AbjJFNpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 09:45:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57838 "EHLO
+        id S232493AbjJFNpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 09:45:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232323AbjJFNpO (ORCPT
+        with ESMTP id S232449AbjJFNpO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 6 Oct 2023 09:45:14 -0400
-Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE7B83;
-        Fri,  6 Oct 2023 06:45:11 -0700 (PDT)
-Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-        by mx.skole.hr (mx.skole.hr) with ESMTP id 2CF8283E79;
-        Fri,  6 Oct 2023 15:45:10 +0200 (CEST)
+Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4FA9E;
+        Fri,  6 Oct 2023 06:45:13 -0700 (PDT)
+Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+        by mx.skole.hr (mx.skole.hr) with ESMTP id 41B5882B97;
+        Fri,  6 Oct 2023 15:45:12 +0200 (CEST)
 From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Subject: [PATCH RFT v6 0/6] ARM: pxa: GPIO descriptor conversions
-Date:   Fri, 06 Oct 2023 15:44:24 +0200
-Message-Id: <20231006-pxa-gpio-v6-0-981b4910d599@skole.hr>
+Date:   Fri, 06 Oct 2023 15:44:25 +0200
+Subject: [PATCH RFT v6 1/6] ARM: pxa: Convert Spitz OHCI to GPIO
+ descriptors
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIADgPIGUC/13PvW7DIBDA8VeJmEvE12Ho1KkPUHWrMhDfEaNWs
- QWVlSryuwcxpMjjwf3+iDsrlBMV9nq4s0xrKmm+1sG+HNg4heuFeMI6MyWUFk4MfLkFflnSzPV
- IChAG46RhdX3JFNOtpb7Yx/snO9XDKZXfOf+1/CrbVSt5Zf5Lq+SCKyfg7AZ0zpu38j3/0HHKr
- bGq3tnOqeq8M8YalBYQd073zndOVxeiQyBAGfX+PfN0UgjZOVOdiPrsByBLCDsHvev/B9Wh94F
- sHImC69y2bQ+Ih4j0hAEAAA==
+Message-Id: <20231006-pxa-gpio-v6-1-981b4910d599@skole.hr>
+References: <20231006-pxa-gpio-v6-0-981b4910d599@skole.hr>
+In-Reply-To: <20231006-pxa-gpio-v6-0-981b4910d599@skole.hr>
 To:     Daniel Mack <daniel@zonque.org>,
         Haojian Zhuang <haojian.zhuang@gmail.com>,
         Robert Jarzmik <robert.jarzmik@free.fr>,
@@ -44,24 +42,23 @@ To:     Daniel Mack <daniel@zonque.org>,
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
         linux-input@vger.kernel.org, linux-spi@vger.kernel.org,
-        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3136;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2825;
  i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=vI2UBZDMwp1KnzrvD4DKMizRjoWa7ZGUogcX2qCrlnU=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlIA9dcgrmj3+YmkuDPQ6NB90jclsxEluTaVbHA
- jRr7Yra0xyJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZSAPXQAKCRCaEZ6wQi2W
- 4ZLQD/9QfHwozzzavQqJBgavxYYXaezwWXw2/D6c76kmN7beMOJcorpY5WFtW1AHbAw40nTp0Hm
- UiOfHm8ovkbt8ht39EHQxpRZq1dX9Gak3M/wM9YlGday2HbdU8SeHPCWNnNNEY/mqQRUYdtPKm7
- ot6COA8GuXOuQg/TyE/uu8EMn9Zr/DcafHxF0CkBJ2/rj5aBfPEcglnqedZ7mBdjTSfS9egIv80
- zb+2Re2b1bkPSVMBm9FCnDVimn8VTYoUtRmrbv6XqFYDAgn0zZH3uvH6WZ3ypnv7KomCZlR2G/O
- pJvFE/HsqsCSN3o/Lhz9EKMDXjeDkrl1H9CfrsjELwxlt9QzRTxP7jCMckZ1aWXGwl9M8mpAyvT
- /R1/Nw9YiVZIYtcsipz20DLyl0Sjmcyy2rvVtgqBKYbOWqksTv/irBxOH9mYHAy3iYlqa8U568m
- 6JH6lPJJKP7acwSe2F1+ct1VOM1xNQtl5FpEe31gYay4NVA3cHB35p0JPpmkF1hBFbJg2jCy4V+
- sXzXQQWePzn/DYetDOTNp9ol2Q2I9Lm5zWxK7VRwaiDNEZfA9bCg9GpbpNRHIY7hfO96495p0pw
- +gWzvAWKaE/IrDVOkvBGa5lKqSbBp6iHY97ByUxuf6LXZOf7pb98+0Y7MxU0pGiRkNfzZQ/hzNb
- DstjqmARBtK1Dvg==
+ bh=83Eh/XeouG3djPuV6SU4ku4ywPzL4rSBMiJSWNnIES8=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlIA9d/ifr6EYbRBD0a3oFzegjlCJTxVHzSrE3y
+ ucTRNISdWqJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZSAPXQAKCRCaEZ6wQi2W
+ 4Qe3D/9b8gr0CCu78e3DUUkDFnzL5bxgHiQNOr5O83OpO2uA7XBFeUvvQIoPlh7MoQ2etBBRdP3
+ SEix4sJpkzf+4naq+asLagujGKKTacWwJVVLJeeSHpWsRbjhvO31TBO1bcmRq8hdPYa7dj7Bl5S
+ 1Cxb9FsbPKOUeS7QvJ9W4+yxqoDKQkw2/joElIo3JeLb0W7d9a8FbbqxvJq2nw2GNL+xknQhOnq
+ HSMHlQJEBJd4sQHQ8ty4HB3fdo4H7Z9REGnu+/ey3jKtpQC1hzsph+mGrlZ8JMdZTZFeRw7QCtf
+ R1lSVDoL2YqD7djNHfLF4d3q1cWIDkletqT0vVeGrnMht3Ls888rZvDxhgsB3ckQOo45HK0Vnqu
+ 654ByV6M1f+UHwQwOK9GvDLVrArrxjNJTICyBJONvmCiOwf6ZoR3XvVd9femOYUbvbTQpIU9Hdh
+ V6TJHsqwHb6enT6v5zFXu+dhbh+kIoz/wvhPk289Cn3vAWuIjxQt4VL+xvhctDxaqhP2VG3n6KQ
+ IzTgUR2UzqhH/ldMoukJD1XKvLT1SVPkpNMjKM+pxv9ENKzUQaKuzyoSrMjaR1p86P4IErBKPXx
+ AWVTrnkg9rpMLsZCwqm+U0mMXLKnTTjV90KgC7uwxF5TOugLeDWIKjUVi7Ef5uI8kQE4Y4+4lPH
+ OJmvgo77Zd1t0CA==
 X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
  fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
@@ -73,84 +70,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Sharp's Spitz board still uses the legacy GPIO interface for controlling
+a GPIO pin related to the USB host controller.
 
-Small series to convert some of the board files in the mach-pxa directory
-to use the new GPIO descriptor interface.
+Convert this function to use the new GPIO descriptor interface.
 
-Most notably, the am200epd, am300epd and Spitz matrix keypad among
-others are not converted in this series.
-
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
 ---
-Changes in v6:
-- Address maintainer comments:
-  - Use devm_gpiod_get_optional() in OHCI
-  - Use gpiod_get_array() in Spitz LEDs
-- Update trailers
-- Link to v5: https://lore.kernel.org/r/20231004-pxa-gpio-v5-0-d99ae6fceea8@skole.hr
+ arch/arm/mach-pxa/spitz.c      | 13 ++++++-------
+ drivers/usb/host/ohci-pxa27x.c |  7 +++++++
+ 2 files changed, 13 insertions(+), 7 deletions(-)
 
-Changes in v5:
-- Address maintainer comments:
-  - Rename "reset generator" GPIO to "reset"
-  - Rename ads7846_wait_for_sync() to ads7846_wait_for_sync_gpio()
-  - Properly bail out when requesting USB host GPIO fails
-  - Use dev_err_probe() when requesting touchscreen sync GPIO fails
-  - Use static gpio_desc for gumstix bluetooth reset
-- Pulse gumstix bluetooth reset line correctly (assert, then deassert)
-- Fix style issue in ads7846_wait_for_sync_gpio()
-- Update trailers
-- Link to v4: https://lore.kernel.org/r/20231001-pxa-gpio-v4-0-0f3b975e6ed5@skole.hr
+diff --git a/arch/arm/mach-pxa/spitz.c b/arch/arm/mach-pxa/spitz.c
+index cc691b199429..535e2b2e997b 100644
+--- a/arch/arm/mach-pxa/spitz.c
++++ b/arch/arm/mach-pxa/spitz.c
+@@ -649,23 +649,22 @@ static inline void spitz_mmc_init(void) {}
+  * USB Host
+  ******************************************************************************/
+ #if defined(CONFIG_USB_OHCI_HCD) || defined(CONFIG_USB_OHCI_HCD_MODULE)
++GPIO_LOOKUP_SINGLE(spitz_usb_host_gpio_table, "pxa27x-ohci", "gpio-pxa",
++		SPITZ_GPIO_USB_HOST, "usb-host", GPIO_ACTIVE_LOW);
++
+ static int spitz_ohci_init(struct device *dev)
+ {
+-	int err;
+-
+-	err = gpio_request(SPITZ_GPIO_USB_HOST, "USB_HOST");
+-	if (err)
+-		return err;
++	gpiod_add_lookup_table(&spitz_usb_host_gpio_table);
+ 
+ 	/* Only Port 2 is connected, setup USB Port 2 Output Control Register */
+ 	UP2OCR = UP2OCR_HXS | UP2OCR_HXOE | UP2OCR_DPPDE | UP2OCR_DMPDE;
+ 
+-	return gpio_direction_output(SPITZ_GPIO_USB_HOST, 1);
++	return 0;
+ }
+ 
+ static void spitz_ohci_exit(struct device *dev)
+ {
+-	gpio_free(SPITZ_GPIO_USB_HOST);
++	gpiod_remove_lookup_table(&spitz_usb_host_gpio_table);
+ }
+ 
+ static struct pxaohci_platform_data spitz_ohci_platform_data = {
+diff --git a/drivers/usb/host/ohci-pxa27x.c b/drivers/usb/host/ohci-pxa27x.c
+index 357d9aee38a3..7f04421c80d6 100644
+--- a/drivers/usb/host/ohci-pxa27x.c
++++ b/drivers/usb/host/ohci-pxa27x.c
+@@ -121,6 +121,7 @@ struct pxa27x_ohci {
+ 	void __iomem	*mmio_base;
+ 	struct regulator *vbus[3];
+ 	bool		vbus_enabled[3];
++	struct gpio_desc *usb_host;
+ };
+ 
+ #define to_pxa27x_ohci(hcd)	(struct pxa27x_ohci *)(hcd_to_ohci(hcd)->priv)
+@@ -447,6 +448,10 @@ static int ohci_hcd_pxa27x_probe(struct platform_device *pdev)
+ 	pxa_ohci = to_pxa27x_ohci(hcd);
+ 	pxa_ohci->clk = usb_clk;
+ 	pxa_ohci->mmio_base = (void __iomem *)hcd->regs;
++	pxa_ohci->usb_host = devm_gpiod_get_optional(&pdev->dev, "usb-host", GPIOD_OUT_LOW);
++	if (IS_ERR(pxa_ohci->usb_host))
++		return dev_err_probe(&pdev->dev, PTR_ERR(pxa_ohci->usb_host),
++				"failed to get USB host GPIO\n");
+ 
+ 	for (i = 0; i < 3; ++i) {
+ 		char name[6];
+@@ -512,6 +517,8 @@ static void ohci_hcd_pxa27x_remove(struct platform_device *pdev)
+ 	for (i = 0; i < 3; ++i)
+ 		pxa27x_ohci_set_vbus_power(pxa_ohci, i, false);
+ 
++	gpiod_put(pxa_ohci->usb_host);
++
+ 	usb_put_hcd(hcd);
+ }
+ 
 
-Changes in v4:
-- Address maintainer comments:
-  - Move wait_for_sync() from spitz.c to driver
-  - Register LED platform device before getting its gpiod-s
-- Add Linus' Reviewed-by
-- Link to v3: https://lore.kernel.org/r/20230929-pxa-gpio-v3-0-af8d5e5d1f34@skole.hr
-
-Changes in v3:
-- Address maintainer comments:
-  - Use GPIO_LOOKUP_IDX for LEDs
-  - Drop unnecessary NULL assignments
-  - Don't give up on *all* SPI devices if hsync cannot be set up
-- Add Linus' Acked-by
-- Link to v2: https://lore.kernel.org/r/20230926-pxa-gpio-v2-0-984464d165dd@skole.hr
-
-Changes in v2:
-- Address maintainer comments:
-  - Change mentions of function to function()
-  - Drop cast in OHCI driver dev_warn() call
-  - Use %pe in OHCI and reset drivers
-  - Use GPIO _optional() API in OHCI driver
-  - Drop unnecessary not-null check in OHCI driver
-  - Use pr_err() instead of printk() in reset driver
-- Rebase on v6.6-rc3
-- Link to v1: https://lore.kernel.org/r/20230924-pxa-gpio-v1-0-2805b87d8894@skole.hr
-
----
-Duje Mihanović (6):
-      ARM: pxa: Convert Spitz OHCI to GPIO descriptors
-      ARM: pxa: Convert Spitz LEDs to GPIO descriptors
-      ARM: pxa: Convert Spitz CF power control to GPIO descriptors
-      ARM: pxa: Convert reset driver to GPIO descriptors
-      ARM: pxa: Convert gumstix Bluetooth to GPIO descriptors
-      input: ads7846: Move wait_for_sync() logic to driver
-
- arch/arm/mach-pxa/gumstix.c         | 22 ++++++------
- arch/arm/mach-pxa/reset.c           | 39 +++++++-------------
- arch/arm/mach-pxa/reset.h           |  3 +-
- arch/arm/mach-pxa/spitz.c           | 71 +++++++++++++++++++++++++------------
- drivers/input/touchscreen/ads7846.c | 22 ++++++++----
- drivers/usb/host/ohci-pxa27x.c      |  7 ++++
- include/linux/spi/ads7846.h         |  1 -
- 7 files changed, 96 insertions(+), 69 deletions(-)
----
-base-commit: 8a749fd1a8720d4619c91c8b6e7528c0a355c0aa
-change-id: 20230807-pxa-gpio-3ce25d574814
-
-Best regards,
 -- 
-Duje Mihanović <duje.mihanovic@skole.hr>
+2.42.0
 
 
