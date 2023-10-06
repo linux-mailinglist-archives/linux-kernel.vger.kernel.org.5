@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6367BB514
+	by mail.lfdr.de (Postfix) with ESMTP id 759237BB515
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 12:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231710AbjJFKZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 06:25:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44504 "EHLO
+        id S231587AbjJFKZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 06:25:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231695AbjJFKZa (ORCPT
+        with ESMTP id S231696AbjJFKZb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 06:25:30 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42380BE
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 03:25:29 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9b6559cbd74so363692966b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 03:25:29 -0700 (PDT)
+        Fri, 6 Oct 2023 06:25:31 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A2B0E9
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 03:25:30 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9b9a494cc59so350799266b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 03:25:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696587927; x=1697192727; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696587928; x=1697192728; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=C9fUuQgN+anlMMoJHDkj24MjGD80W1ske574ToiOc/8=;
-        b=ZkZ1CATWo9pbiokQ7Gl/VQVPFbRNF5emwTWssOMI2SXJIqQT1Yhtm57MNjpEVMKdp7
-         IC4nbL3upeOSJgRH764ZTuGtb61n5vVQZZuA1zd5Yx7BCnfwKG8YnGnLsf5aVcdi3kuJ
-         YnHl87UM1S2/uol2p+geoRoTJKbTp+iK4715xYmrsv+UZc7wdcT9D2alOcHPB6RiDcoZ
-         G24Lnj9Kn6taqYy9m+q/TlcHj2SuXWEjWXde5HVnu+0HbfsO5kMWoxDQRovDEU/U4q3Y
-         kwmzMn7vtvpCoT/0rTYAgZN9f1Cjo/BKZ+iK2ejT7jQFP8j4j8AtHjvrJI1cs4i+nZsh
-         FUPw==
+        bh=lTTMqokwpEu0MsOdcm3T01Oj4as3iuY9zTcrlzN0rDU=;
+        b=M/8iLqeJu0xzRcKqd8EIx7ok/9ABVKErDCdUZZpsf/XX5X3prvlqWafPpFOParyzJs
+         2+CF/KSizDVerZHbekNjyFa/fVTl/SvpovO97IwnQ6wShR9lZA+t/VsA56W0LA12bpRK
+         VdGx2jR4P2yY+CtSeHlBaNxjloqeBZss+n7jljuvGOrhJp9H4tdaQNd3KBdK7TxZwd0F
+         K8ng1YoS/a3rts9yG372iUHNqJac7rnfk1nEfZypVPBHG5I2bV+2rxnZDHmMP4Q15Uu/
+         d8P7rxxiZvDB/bsDM1qtuqL389MgH20FCvUcAacHGbRg91L/lxq8voEATlbWTkpAx1N/
+         z8bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696587927; x=1697192727;
+        d=1e100.net; s=20230601; t=1696587928; x=1697192728;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=C9fUuQgN+anlMMoJHDkj24MjGD80W1ske574ToiOc/8=;
-        b=t0fUXwAr8Q5gPs1O3iU5uU1K05XEyCiEu/96KjLYjaY+7i8R0q7LtysM+EL2iO0Bl1
-         Eg3agO7iQDKOhB3dnteL+BxIHbZkSbRZGkO+yW2TMVr4kbtlOUaPGwu1FbQ9B51wglnK
-         3ybzU8rX7Qe1LbKqIOQBLfRniTDwY4yQubZo/phMwDxsBSi3Cbi4PA0JJDq/iIbm/w9/
-         CZzv3jRZauludIbHe/CX35NCpi4ROtssPHw0liC2lb5gFrPa6Wdk7pkD9bg3qOitJp8q
-         Qejzx9TC6fYCwt2jHoUmy8bffFbIyfWoVlhhrB7n4NZGyp0Jj3pCgjVqwAnReJEDzLPq
-         2esg==
-X-Gm-Message-State: AOJu0YyKAWelbwMGDekL83u/J+B/inF1GvrVLAqMCc9xCavft0L6Ug+C
-        XTDRxzoMGbxN7Utt3hai8z1dxhuo3vg=
-X-Google-Smtp-Source: AGHT+IGSHseoeQrSC0c7L4JwWaGXS5uAIJEPsaXVerU/RKptcL+DVGafJDxO0uL79VlQ6yjClRngnQ==
-X-Received: by 2002:a17:906:1bb2:b0:9b9:a1dd:5105 with SMTP id r18-20020a1709061bb200b009b9a1dd5105mr4735704ejg.50.1696587926979;
-        Fri, 06 Oct 2023 03:25:26 -0700 (PDT)
+        bh=lTTMqokwpEu0MsOdcm3T01Oj4as3iuY9zTcrlzN0rDU=;
+        b=Mp5VhGx7UBuy/UFqf4ms6hd4cogHvyYMUpJnaTcR8kwOgyddYdZGwR6dDtllJUNOEB
+         i5K7R8dwU5ZATDYm7JnTBEXfqZxhU4tn9v9To1ivhpYqQj0+/e8SdDcXvl70twz1uNky
+         Q2lhf01M7D+7ko8FU6r4pTI+LyCh2DrZ3CumFjBj32DEj1RxqBJDgaRK4NY26sFGDIGA
+         L3VjRYWg7h2Q5DxZCpezJay+uQr2xDX+n4Wac0Lo9am+QuZksBv0b/e0iiGprkZZN8GW
+         REzL/BKr0LFwm0s4l8d5qsYyRI+O6YjLzgM4fIbX5bZuxPrDcvsMDeDwV2hvnpgdE/Wf
+         2+8Q==
+X-Gm-Message-State: AOJu0YxJH2ElwxeB4QihdqM4W5EtBc183rOJeI3CrsnAKh2T98Z4KN0u
+        /TXM93/VQD45qgvP/5rPLIYFCQn9Wk0=
+X-Google-Smtp-Source: AGHT+IEGJerMor5S1sb3oq33pbZ965U8KAsIcmLU4zsiRF7Z7xVfzrjhKZ7tSzVJhvpJ0htjRZIjkw==
+X-Received: by 2002:a17:907:77c5:b0:9ad:e180:16e3 with SMTP id kz5-20020a17090777c500b009ade18016e3mr6838021ejc.37.1696587928317;
+        Fri, 06 Oct 2023 03:25:28 -0700 (PDT)
 Received: from kepler.redhat.com (1F2EF530.nat.pool.telekom.hu. [31.46.245.48])
-        by smtp.gmail.com with ESMTPSA id n17-20020a170906379100b009b957d5237asm2613502ejc.80.2023.10.06.03.25.25
+        by smtp.gmail.com with ESMTPSA id n17-20020a170906379100b009b957d5237asm2613502ejc.80.2023.10.06.03.25.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 03:25:26 -0700 (PDT)
+        Fri, 06 Oct 2023 03:25:27 -0700 (PDT)
 Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
 From:   Ingo Molnar <mingo@kernel.org>
 To:     linux-kernel@vger.kernel.org
@@ -64,9 +64,9 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 2/3] sched/nohz: Use consistent variable names in find_new_ilb() and kick_ilb()
-Date:   Fri,  6 Oct 2023 12:25:17 +0200
-Message-Id: <20231006102518.2452758-3-mingo@kernel.org>
+Subject: [PATCH 3/3] sched/nohz: Remove weird error handling from find_new_ilb()
+Date:   Fri,  6 Oct 2023 12:25:18 +0200
+Message-Id: <20231006102518.2452758-4-mingo@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231006102518.2452758-1-mingo@kernel.org>
 References: <20231006102518.2452758-1-mingo@kernel.org>
@@ -82,42 +82,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use 'ilb_cpu' consistently in both functions.
+find_new_ilb() returns nr_cpu_ids on failure - which is a weird
+choice in itself: not only is it a global variable, it is
+a +1 out of bounds CPU index...
+
+Its only user, kick_ilb(), then checks the return against nr_cpu_ids
+to decide to return.
+
+Instead of this, use a standard -1 return on failure to find an
+idle CPU, as the argument is signed already.
 
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Cc: linux-kernel@vger.kernel.org
 ---
- kernel/sched/fair.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ kernel/sched/fair.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 8435179779e3..d4e90d15bd77 100644
+index d4e90d15bd77..dad60576cf56 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -11558,18 +11558,18 @@ static inline int on_null_domain(struct rq *rq)
-  */
- static inline int find_new_ilb(void)
- {
--	int ilb;
- 	const struct cpumask *hk_mask;
-+	int ilb_cpu;
- 
- 	hk_mask = housekeeping_cpumask(HK_TYPE_MISC);
- 
--	for_each_cpu_and(ilb, nohz.idle_cpus_mask, hk_mask) {
-+	for_each_cpu_and(ilb_cpu, nohz.idle_cpus_mask, hk_mask) {
- 
--		if (ilb == smp_processor_id())
-+		if (ilb_cpu == smp_processor_id())
- 			continue;
- 
--		if (idle_cpu(ilb))
--			return ilb;
-+		if (idle_cpu(ilb_cpu))
-+			return ilb_cpu;
+@@ -11572,7 +11572,7 @@ static inline int find_new_ilb(void)
+ 			return ilb_cpu;
  	}
  
- 	return nr_cpu_ids;
+-	return nr_cpu_ids;
++	return -1;
+ }
+ 
+ /*
+@@ -11593,8 +11593,7 @@ static void kick_ilb(unsigned int flags)
+ 		nohz.next_balance = jiffies+1;
+ 
+ 	ilb_cpu = find_new_ilb();
+-
+-	if (ilb_cpu >= nr_cpu_ids)
++	if (ilb_cpu < 0)
+ 		return;
+ 
+ 	/*
 -- 
 2.39.2
 
