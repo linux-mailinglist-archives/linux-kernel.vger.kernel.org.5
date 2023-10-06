@@ -2,162 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C6F7BB722
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64FA17BB721
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 14:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232181AbjJFMCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 08:02:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56396 "EHLO
+        id S230503AbjJFMBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 08:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232167AbjJFMCC (ORCPT
+        with ESMTP id S232178AbjJFMBb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 08:02:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E1E3CA
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 05:01:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696593676;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kCYNyulRpx1YyhVOL3Le9TlBc2wHmh6Ikm1+wxMUQTM=;
-        b=bqRfCYmWLPMz6GIwyA176vyhWmGfvTsB+kBGbXb1fkEy9ohHZyfBWBeLoQn8m2fH5cLnJI
-        rz7HqJCCxUE5kYriW6aEqdc7jA6/uJoFqoG6seBGbVnxrUL6aL1ZgrAR/nHXpy4Mo5HzSc
-        ydePACf9Cgjph64vr4+cDy9PMpZ1t98=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-417-i5QmRvkgNBa2Tw7LccCbWw-1; Fri, 06 Oct 2023 08:01:12 -0400
-X-MC-Unique: i5QmRvkgNBa2Tw7LccCbWw-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40566c578b7so15095225e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 05:01:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696593671; x=1697198471;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :references:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kCYNyulRpx1YyhVOL3Le9TlBc2wHmh6Ikm1+wxMUQTM=;
-        b=OifiVOHeW2mVmIWzW7ZA6sjCWrYYO5VycNrzhJoSXBg2d7FAiTchjPrVowhj6PNXze
-         xgqzjUhJZI2Y9NxzS2fa/vdPluwRO2cZdInnm7aE7SwW4hpUbbZXuv9mgQdxgtRT1ovY
-         8CDiGYpmr9xAJtAlCZYDf8mCTmSx3Tl+xlespidbDB2QnhdSu7/53jqcX8DInOYEAtZy
-         cNR1i9KZw6oSDdyRaydMnnzxBYdu+vG1rDhQSiqdBM4sfV6wXpUf7co/N8nQy84aE2mG
-         Z4Z6bV44Bdssgv2+xu+JVG3IW+eO5cUGNKddpkgwkZkBxu0WwRVM+1ZFdyTDtBCDQlCt
-         0NFg==
-X-Gm-Message-State: AOJu0YwA8ypvtJ6pJyi/rZe+jTwlg7UHazo9EtXoTiKIrSTQSUWM/ylC
-        1ALRtb4MUDZ9OjJa8QtvG2HPKsdw3VOy6+dTlyliPFgG35Y1A/T9TfM4QNyipK4iR5oqUcp2kn9
-        bt9AowkecUfKknqgnMuW4A7aL
-X-Received: by 2002:adf:ea8f:0:b0:317:6175:95fd with SMTP id s15-20020adfea8f000000b00317617595fdmr7669954wrm.43.1696593670827;
-        Fri, 06 Oct 2023 05:01:10 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGIHkTSWEYQCqhtcnXwQbXXcji0NvYj5HwDLBbmOfLGxJeobULC9BGehmgcvKkiU172hpNvnA==
-X-Received: by 2002:adf:ea8f:0:b0:317:6175:95fd with SMTP id s15-20020adfea8f000000b00317617595fdmr7669924wrm.43.1696593670256;
-        Fri, 06 Oct 2023 05:01:10 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c715:ee00:4e24:cf8e:3de0:8819? (p200300cbc715ee004e24cf8e3de08819.dip0.t-ipconnect.de. [2003:cb:c715:ee00:4e24:cf8e:3de0:8819])
-        by smtp.gmail.com with ESMTPSA id m15-20020adfe94f000000b0031984b370f2sm1500366wrn.47.2023.10.06.05.01.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 05:01:09 -0700 (PDT)
-Message-ID: <4509a3b4-16a6-f63e-1dd5-e20c7eadf87d@redhat.com>
-Date:   Fri, 6 Oct 2023 14:01:09 +0200
+        Fri, 6 Oct 2023 08:01:31 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC97BE4;
+        Fri,  6 Oct 2023 05:01:29 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 396C1MdI105328;
+        Fri, 6 Oct 2023 07:01:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1696593682;
+        bh=lpD2epWNlmiS8XYq+aJ7VOLQ2+oJck78368nfWClxjI=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=pwuld3sXHg6btu5ribAn9L4pEvYqbAA6wkP2e1Zimg9ZRuWjlCbNLGeII1WhmAnAd
+         42/SI6FvGoKbpvZMJja090NvkC/jxi/f8LKJQ9x0HFvTIjvZafStlhCiHNgHKUtdef
+         tFACG0/6JM1/wtHdzI+/lTdFgf6HrIEA7l0kgdjc=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 396C1MPV125837
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 6 Oct 2023 07:01:22 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 6
+ Oct 2023 07:01:22 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 6 Oct 2023 07:01:22 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 396C1MHN032309;
+        Fri, 6 Oct 2023 07:01:22 -0500
+Date:   Fri, 6 Oct 2023 07:01:22 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     "J, KEERTHY" <j-keerthy@ti.com>
+CC:     <robh+dt@kernel.org>, <vigneshr@ti.com>, <conor+dt@kernel.org>,
+        <kristo@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <u-kumar1@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 5/7] arm64: dts: ti: k3-j784s4-mcu: Add the mcu domain
+ watchdog instances
+Message-ID: <20231006120122.qkohphk6uq6kmxgm@pueblo>
+References: <20231006042901.6474-1-j-keerthy@ti.com>
+ <20231006042901.6474-6-j-keerthy@ti.com>
+ <20231006113410.tibvxxkeuujqnbv4@evolution>
+ <9e3489f0-98f4-48ac-89a8-ea4ad3ee115c@ti.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Content-Language: en-US
-To:     Stefan Roesch <shr@devkernel.io>, kernel-team@fb.com
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, riel@surriel.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20231004190249.829015-1-shr@devkernel.io>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v1 0/4] mm/ksm: Add ksm advisor
-In-Reply-To: <20231004190249.829015-1-shr@devkernel.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <9e3489f0-98f4-48ac-89a8-ea4ad3ee115c@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.10.23 21:02, Stefan Roesch wrote:
-> What is the KSM advisor?
-> =========================
-> The ksm advisor automatically manages the pages_to_scan setting to
-> achieve a target scan time. The target scan time defines how many seconds
-> it should take to scan all the candidate KSM pages. In other words the
-> pages_to_scan rate is changed by the advisor to achieve the target scan
-> time.
+On 17:22-20231006, J, KEERTHY wrote:
 > 
-> Why do we need a KSM advisor?
-> ==============================
-> The number of candidate pages for KSM is dynamic. It can often be observed
-> that during the startup of an application more candidate pages need to be
-> processed. Without an advisor the pages_to_scan parameter needs to be
-> sized for the maximum number of candidate pages. With the scan time
-> advisor the pages_to_scan parameter based can be changed based on demand.
 > 
-> Algorithm
-> ==========
-> The algorithm calculates the change value based on the target scan time
-> and the previous scan time. To avoid pertubations an exponentially
-> weighted moving average is applied.
+> On 10/6/2023 5:04 PM, Nishanth Menon wrote:
+> > On 09:58-20231006, Keerthy wrote:
+> > > There are totally 2 instances of watchdog module in MCU domain.
+> > > These instances are coupled with the MCU domain R5F instances.
+> > 
+> > > Disabling them as they are not used by Linux.
+> > Device tree is hardware description - not tied to how Linux uses it.
+> > 
+> > Reason these wdts are disabled by default is because they are tightly
+> > coupled with R5Fs.
+> > 
+> > > 
+> > > Signed-off-by: Keerthy <j-keerthy@ti.com>
+> > > ---
+> > >   .../boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi     | 24 +++++++++++++++++++
+> > >   1 file changed, 24 insertions(+)
+> > > 
+> > > diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
+> > > index a7b5c4cb7d3e..809a0b1cf038 100644
+> > > --- a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
+> > > +++ b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
+> > > @@ -714,4 +714,28 @@
+> > >   		ti,esm-pins = <63>;
+> > >   		bootph-pre-ram;
+> > >   	};
+> > > +
 > 
-> The algorithm has a max and min
-> value to:
-> - guarantee responsiveness to changes
-> - to avoid to spend too much CPU
+> Nishanth,
 > 
-> Parameters to influence the KSM scan advisor
-> =============================================
-> The respective parameters are:
-> - ksm_advisor_mode
->    0: None (default), 1: scan time advisor
-> - ksm_advisor_target_scan_time
->    how many seconds a scan should of all candidate pages take
-> - ksm_advisor_min_pages
->    minimum value for pages_to_scan per batch
-> - ksm_advisor_max_pages
->    maximum value for pages_to_scan per batch
+> Below i have addressed the coupling with R5Fs & MCU domains watcdogs.
 > 
-> The parameters are exposed as knobs in /sys/kernel/mm/ksm.
-> By default the scan time advisor is disabled.
+> > > +	/*
+> > > +	 * The 2 RTI instances are couple with MCU R5Fs so keeping them
+> > > +	 * disabled as these will be used by their respective firmware
 
-What would be the main reason to not have this enabled as default?
+This description is best in the commit message
 
-IIUC, it is kind-of an auto-tuning of pages_to_scan. Would "auto-tuning" 
-describe it better than "advisor" ?
-
-[...]
-
-> How is defining a target scan time better?
-> ===========================================
-> For an administrator it is more logical to set a target scan time.. The
-> administrator can determine how many pages are scanned on each scan.
-> Therefore setting a target scan time makes more sense.
+> > > +	 */
+> > > +	mcu_watchdog0: watchdog@40600000 {
+> > > +		compatible = "ti,j7-rti-wdt";
+> > > +		reg = <0x00 0x40600000 0x00 0x100>;
+> > > +		clocks = <&k3_clks 367 1>;
+> > > +		power-domains = <&k3_pds 367 TI_SCI_PD_EXCLUSIVE>;
+> > > +		assigned-clocks = <&k3_clks 367 0>;
+> > > +		assigned-clock-parents = <&k3_clks 367 4>;
+> > > +		status = "disabled";
+> > > +	};
+> > > +
+> > > +	mcu_watchdog1: watchdog@40610000 {
+> > > +		compatible = "ti,j7-rti-wdt";
+> > > +		reg = <0x00 0x40610000 0x00 0x100>;
+> > > +		clocks = <&k3_clks 368 1>;
+> > > +		power-domains = <&k3_pds 368 TI_SCI_PD_EXCLUSIVE>;
+> > > +		assigned-clocks = <&k3_clks 368 0>;
+> > > +		assigned-clock-parents = <&k3_clks 368 4>;
+> > 
+> > Please DONOT ignore the review comments - I did ask the documentation in
+> > dts as well. reason being that this is what people will see rather than
+> > dig up the commit log. it should be intutive when reading the dts why
+> > nodes are disabled by default Vs the standard of leaving it enabled by
+> > default. Given esp that these peripherals do not have anything to do
+> > with board semantics (pinmux or something similar) to be complete.
 > 
-> In addition the administrator might have a good idea about the
-> memory sizing of its respective workloads.
+> As mentioned above. I added single comment for addressing both the
+> watchdogs.
 
-Is there any way you could imagine where we could have this just do 
-something reasonable without any user input? IOW, true auto-tuning?
+I missed it completely. Now that I think of it, I seem to have missed
+having seen it in previous rev reviews as well, and there is a reason
+for it: See [1] clarifying comment - nodes reserved for firmware usage
+have convention of "reserved" as status and documentation immediately
+above the status to help clarify the reason in-context. That is more
+readable than having to scroll up to find the rationale.
 
-I read above:
- > - guarantee responsiveness to changes
- > - to avoid to spend too much CPU
-
-whereby both things are accountable/measurable to use that as the input 
-for auto-tuning?
-
-
-I just had a family NMI, so my todo list is quite lengthy. Hoping I cna 
-take a closer look next week.
+[1] https://lore.kernel.org/all/20231006114422.avymeap7h5ocs6zq@dreadlock/
 
 -- 
-Cheers,
-
-David / dhildenb
-
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
