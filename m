@@ -2,103 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AC317BB07A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 05:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D897BB087
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 05:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbjJFDV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 23:21:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38512 "EHLO
+        id S229870AbjJFD3d convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Oct 2023 23:29:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229834AbjJFDVW (ORCPT
+        with ESMTP id S229815AbjJFD3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 23:21:22 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E345E8
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 20:21:18 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9299cac11aso1543777276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 20:21:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696562477; x=1697167277; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+GCfD3J/utVXt7fNFcXS7tndSxc76Lg25lhLquZNVGo=;
-        b=hrtpfTHdnDlVQOSCXorsT/aQpCWyDltEjd8ggllmcRKf0hehE+I3NnH7FBjDok1ZhH
-         zxiW3QeU7M+QnZdyltwO1UIpQuMKmo9EQEhNWpfk6pSMe/HEt+4b3rNW8zjTdMQg/B10
-         iZCLZl51zE9bQUpUbrhdEF9Fmxm16pzP4f8ofIJuXk4gLecrkB9/Q9kxBHT8rugTv8s/
-         bNMRxJ7Ujm366qW+kXMXoWNpdDO/O2Ot3Am4VUOq6Zgsd/yx/oiEIVzi0LddaCdnW98k
-         ehUE5i2UPtmnCpl8Hmq2OcMNaedBdRXW8yU7hbzO+v/QqNJ1b108X36Fx61ihw91uxsp
-         thqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696562477; x=1697167277;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=+GCfD3J/utVXt7fNFcXS7tndSxc76Lg25lhLquZNVGo=;
-        b=tFtumMAi0QV5eo2lHr0nGelgvVw0w4FQq8A/djCVC9EpUq0cBYIXIqbe6MUlZkk2kQ
-         p8tox3H8HHjUrdcdKxXXql6kaIFaUj3erACKIh3ZNDLy8JZdy733cZt11mI6Wle1n9oZ
-         gCoLxKv8gxLXhwGTZ8qd/cz7xGbpqESCKh5/TbfeDsAgdRQ/ukLmDZyCU/6lZC+xoxWA
-         2Sdf0Lj7yomsx4L79cFSx/4PuFdjOflSvztKkZnkPLcY0BQ4RlJjf3MUCt+fAYhMvoYW
-         kAm5b/1SJn+R8sC4FRc0IvACrh7F5ogxU+xj404SxPXh4QBUFwcYkqxOidWOJ/yFTSs+
-         /7Mw==
-X-Gm-Message-State: AOJu0Yze5ZkVk4+x4SuUy6SIOE+45GHILiIZ7ssDtXD4ix3gs/quExbC
-        rC/Lie7O27B0HFku0zAaLiOdmp0vFSk=
-X-Google-Smtp-Source: AGHT+IHbgJX1dul2brLKqtxy3zNH4Wq8osuz6z+RCm0MrNAV7Qoo4mqOPY/NVTlIcosnwAkmq4EHKfjNEDc=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:ae41:0:b0:d78:a78:6fc7 with SMTP id
- g1-20020a25ae41000000b00d780a786fc7mr101904ybe.6.1696562477545; Thu, 05 Oct
- 2023 20:21:17 -0700 (PDT)
-Date:   Thu, 5 Oct 2023 20:21:15 -0700
-In-Reply-To: <CA+EHjTwTgEVtea7wgef5G6EEgFa0so_GbNXTMZNKyFE=ucyV0g@mail.gmail.com>
-Mime-Version: 1.0
-References: <CA+EHjTwTgEVtea7wgef5G6EEgFa0so_GbNXTMZNKyFE=ucyV0g@mail.gmail.com>
-Message-ID: <ZR99K_ZuWXEtfDuR@google.com>
-Subject: Re: [RFC PATCH v12 11/33] KVM: Introduce per-page memory attributes
-From:   Sean Christopherson <seanjc@google.com>
-To:     Fuad Tabba <tabba@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, KVM <kvm@vger.kernel.org>,
-        "moderated list:ARM64 PORT (AARCH64 ARCHITECTURE)" 
-        <linux-arm-kernel@lists.infradead.org>,
-        KVMARM <kvmarm@lists.linux.dev>,
-        LinuxMIPS <linux-mips@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        Thu, 5 Oct 2023 23:29:31 -0400
+Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21873E4
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 20:29:29 -0700 (PDT)
+Received: from imladris.home.surriel.com ([10.0.13.28] helo=imladris.surriel.com)
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1qobWM-0001qH-1a;
+        Thu, 05 Oct 2023 23:28:58 -0400
+Message-ID: <d31f976cd37567b88b359749ee31fbf42568dd6d.camel@surriel.com>
+Subject: Re: [PATCH 3/3] hugetlbfs: replace hugetlb_vma_lock with
+ invalidate_lock
+From:   Rik van Riel <riel@surriel.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        muchun.song@linux.dev, leit@meta.com, willy@infradead.org
+Date:   Thu, 05 Oct 2023 23:28:58 -0400
+In-Reply-To: <20231006001912.GB86415@monkey>
+References: <20231004032814.3108383-1-riel@surriel.com>
+         <20231004032814.3108383-4-riel@surriel.com> <20231006001912.GB86415@monkey>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+MIME-Version: 1.0
+Sender: riel@surriel.com
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -106,78 +47,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023, Fuad Tabba wrote:
-> Hi Sean,
->=20
-> On Tue, Oct 3, 2023 at 9:51=E2=80=AFPM Sean Christopherson <seanjc@google=
-.com> wrote:
-> > > Like I said, pKVM doesn't need a userspace ABI for managing PRIVATE/S=
-HARED,
-> > > just a way of tracking in the host kernel of what is shared (as oppos=
-ed to
-> > > the hypervisor, which already has the knowledge). The solution could =
-simply
-> > > be that pKVM does not enable KVM_GENERIC_MEMORY_ATTRIBUTES, has its o=
-wn
-> > > tracking of the status of the guest pages, and only selects KVM_PRIVA=
-TE_MEM.
-> >
-> > At the risk of overstepping my bounds, I think that effectively giving =
-the guest
-> > full control over what is shared vs. private is a mistake.  It more or =
-less locks
-> > pKVM into a single model, and even within that model, dealing with erro=
-rs and/or
-> > misbehaving guests becomes unnecessarily problematic.
-> >
-> > Using KVM_SET_MEMORY_ATTRIBUTES may not provide value *today*, e.g. the=
- userspace
-> > side of pKVM could simply "reflect" all conversion hypercalls, and term=
-inate the
-> > VM on errors.  But the cost is very minimal, e.g. a single extra ioctl(=
-) per
-> > converion, and the upside is that pKVM won't be stuck if a use case com=
-es along
-> > that wants to go beyond "all conversion requests either immediately suc=
-ceed or
-> > terminate the guest".
->=20
-> Now that I understand the purpose of KVM_SET_MEMORY_ATTRIBUTES, I
-> agree. However, pKVM needs to track at the host kernel (i.e., EL1)
-> whether guest memory is shared or private.
+On Thu, 2023-10-05 at 17:19 -0700, Mike Kravetz wrote:
+> 
+> I have not gone through the patch, but it does produce the following:
+> 
+> [   49.783584] =====================================
+> [   49.784570] WARNING: bad unlock balance detected!
+> [   49.785589] 6.6.0-rc3-next-20230925+ #35 Not tainted
+> [   49.786644] -------------------------------------
+> [   49.787768] hfill2/938 is trying to release lock
+> (mapping.invalidate_lock) at:
+> [   49.789387] [<ffffffff815212e5>]
+> remove_inode_hugepages+0x405/0x4b0
+> [   49.790723] but there are no more locks to release!
+> [   49.791808] 
+> [   49.791808] other info that might help us debug this:
+> [   49.793274] 4 locks held by hfill2/938:
+> [   49.794190]  #0: ffff8881ff3213e8 (sb_writers#11){.+.+}-{0:0}, at:
+> do_syscall_64+0x37/0x90
+> [   49.796165]  #1: ffff888181c99640 (&sb->s_type-
+> >i_mutex_key#16){+.+.}-{3:3}, at: do_truncate+0x6f/0xd0
+> [   49.798188]  #2: ffff888301592f98
+> (&hugetlb_fault_mutex_table[i]){+.+.}-{3:3}, at:
+> remove_inode_hugepages+0x144/0x4b0
+> [   49.800494]  #3: ffff888181c998b0
+> (&hugetlbfs_i_mmap_rwsem_key){++++}-{3:3}, at:
+> remove_inode_hugepages+0x239/0x4b0
 
-Why does EL1 need it's own view/opinion?  E.g. is it to avoid a accessing d=
-ata
-that is still private according to EL2 (on behalf of the guest)?
+Well that's a fun one. The remove_inode_hugepages function
+does not take the mapping.invalidate_lock, but it calls
+hugetlb_unmap_file_folio which does.
 
-Assuming that's the case, why can't EL1 wait until it gets confirmation fro=
-m EL2
-that the data is fully shared before doing whatever it is that needs to be =
-done?
+The vma_interval_tree_foreach loop has a stray
+hugetlb_vma_unlock_write() left, which I should have
+removed when lifting the lock outside of the loop.
 
-Ah, is the problem that whether or not .mmap() is allowed keys off of the s=
-tate
-of the memory attributes?  If that's so, then yeah, an internal flag in att=
-ributes
-is probably the way to go.  It doesn't need to be a "host kernel private" f=
-lag
-though, e.g. an IN_FLUX flag to capture that the attributes aren't fully re=
-alized
-might be more intuitive for readers, and might have utility for other attri=
-butes
-in the future too.
+Nice catch!
 
-> One approach would be to add another flag to the attributes that
-> tracks the host kernel view. The way KVM_SET_MEMORY_ATTRIBUTES is
-> implemented now, userspace can zero it, so in that case, that
-> operation would need to be masked to avoid that.
->=20
-> Another approach would be to have a pKVM-specific xarray (or similar)
-> to do the tracking, but since there is a structure that's already
-> doing something similar (i.e.,the attributes array), it seems like it
-> would be unnecessary overhead.
->=20
-> Do you have any ideas or preferences?
->=20
-> Cheers,
-> /fuad
+-- 
+All Rights Reversed.
