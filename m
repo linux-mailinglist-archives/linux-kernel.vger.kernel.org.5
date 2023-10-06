@@ -2,113 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 330837BBBDC
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 17:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCEA7BBBDF
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 17:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232881AbjJFPhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 11:37:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51560 "EHLO
+        id S232874AbjJFPiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 11:38:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232859AbjJFPhi (ORCPT
+        with ESMTP id S232799AbjJFPiU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 11:37:38 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E81AD;
-        Fri,  6 Oct 2023 08:37:36 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A52ABC433C7;
-        Fri,  6 Oct 2023 15:37:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696606655;
-        bh=NmvkWFD8bZHwX17GRmdTtmtgoVM/o6Qpx7umeFUh+O0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A5llU35VLJGd50hYxUpaWZU9/v5UvRAzBWhsxz+ESpi21DbdU67fPQh+mIokBW06b
-         bQwj9Kr2EtNJh2Qd3oTOnwx3oDkrI6iO/UsIIe1N46QPM8LW5CgUEabASjf/yR2m7V
-         NbZvoe4JWQCqeJdiv4DjN3Px1Tx9/uoVl2+Wvp99voVIxIBXZC58p5n+3QU3W7TQIU
-         wJT1lKhqO4iFIJz7QF04sa/DPW8N/sVhjenipYP3AQOF1BVitEETtUZUSQJCZWdTdp
-         6vCeu96fhuChuvsSUTwGBshAQVcWZpx0FtLLg4LZqutyZY16PB/D4CPyh/0iaf8B6T
-         sAZE+gUqD557A==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qomtm-00068G-0D;
-        Fri, 06 Oct 2023 17:37:54 +0200
-Date:   Fri, 6 Oct 2023 17:37:54 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>
-Subject: Re: [PATCH] serial: core: Fix checks for tx runtime PM state
-Message-ID: <ZSAp0hUOPQNtOG_T@hovoldconsulting.com>
-References: <20231005075644.25936-1-tony@atomide.com>
- <ZR6lc/F1Esxt5ChI@smile.fi.intel.com>
- <20231006072738.GI34982@atomide.com>
- <ZR-_TUSwvIs6Vl_v@hovoldconsulting.com>
- <20231006083712.GJ34982@atomide.com>
+        Fri, 6 Oct 2023 11:38:20 -0400
+Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A394BA6;
+        Fri,  6 Oct 2023 08:38:18 -0700 (PDT)
+Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
+        by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id 046A652050C;
+        Fri,  6 Oct 2023 17:38:17 +0200 (CEST)
+Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
+ (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.32; Fri, 6 Oct
+ 2023 17:38:16 +0200
+From:   Hardik Gajjar <hgajjar@de.adit-jv.com>
+To:     <gregkh@linuxfoundation.org>, <s.hauer@pengutronix.de>,
+        <jonathanh@nvidia.com>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <quic_linyyuan@quicinc.com>, <paul@crapouillou.net>,
+        <quic_eserrao@quicinc.com>, <erosca@de.adit-jv.com>,
+        <hgajjar@de.adit-jv.com>
+Subject: [PATCH v3] usb: gadget: u_ether: Replace netif_stop_queue with netif_device_detach
+Date:   Fri, 6 Oct 2023 17:38:08 +0200
+Message-ID: <20231006153808.9758-1-hgajjar@de.adit-jv.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20231006145332.8739-1-hgajjar@de.adit-jv.com>
+References: <20231006145332.8739-1-hgajjar@de.adit-jv.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231006083712.GJ34982@atomide.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.72.93.77]
+X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
+ hi2exch02.adit-jv.com (10.72.92.28)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 11:37:12AM +0300, Tony Lindgren wrote:
-> * Johan Hovold <johan@kernel.org> [231006 08:03]:
-> > On Fri, Oct 06, 2023 at 10:27:38AM +0300, Tony Lindgren wrote:
+This patch replaces the usage of netif_stop_queue with netif_device_detach
+in the u_ether driver. The netif_device_detach function not only stops all
+tx queues by calling netif_tx_stop_all_queues but also marks the device as
+removed by clearing the __LINK_STATE_PRESENT bit.
 
-> > > You're right, so how about:
-> > > 
-> > > The serdev device and the serial core controller devices are children of
-> > > the serial port hardware device. The runtime PM usage count from serdev
-> > > device does not propagate to the serial core device siblings, it only
-> > > propagates to the parent.
-> > 
-> > That's still not accurate:
-> > 
-> >  - the serdev device is not a child (but a grandchild) of the serial
-> >    controller
-> >  - the new serial port devices are not "siblings" (but descendants) of
-> >    the serial controller
-> >  - the serdev controller ignores the power state of its children so that
-> >    bit is also incorrect
-> > 
-> > You just want to describe the fact that the serdev controller runtime PM
-> > state is currently not propagated to your new "devices" that are
-> > descendants to the serial controller.
-> 
-> OK so let's just use:
-> 
-> The serdev controller runtime PM state is not currently propagated
-> to the serial core controller port device. The runtime PM usage count
-> only propagates to the parent device.
+This change helps notify user space about the disconnection of the device
+more effectively, compared to netif_stop_queue, which only stops a single
+transmit queue.
 
-That sounds better.
+Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
+---
+Changes since version 1:
+	- Correct Singed-off user name and e-mail
 
-> > I'm still not sure why it was implemented this way, or if it is even
-> > correct, but this seems to be the state of things.
-> 
-> Care to clarify a bit which parts are unclear? The hierarchy of port
-> devices, making serial core manage runtime PM in a generic way, or
-> flushing tx?
+Changes since version 2:
+	- Move change history below signed-off-by
+---
+ drivers/usb/gadget/function/u_ether.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I still don't know why you added these two new abstractions (controller
-and port), and that isn't really explained by the commit message either.
-And if these are indeed needed, then why isn't the serdev controller now
-a child of the "port" device, for example?
+diff --git a/drivers/usb/gadget/function/u_ether.c b/drivers/usb/gadget/function/u_ether.c
+index 4bb0553da658..b0daee35b996 100644
+--- a/drivers/usb/gadget/function/u_ether.c
++++ b/drivers/usb/gadget/function/u_ether.c
+@@ -635,7 +635,7 @@ static int eth_stop(struct net_device *net)
+ 	unsigned long	flags;
+ 
+ 	VDBG(dev, "%s\n", __func__);
+-	netif_stop_queue(net);
++	netif_device_detach(dev->net);
+ 
+ 	DBG(dev, "stop stats: rx/tx %ld/%ld, errs %ld/%ld\n",
+ 		dev->net->stats.rx_packets, dev->net->stats.tx_packets,
+-- 
+2.17.1
 
-There are just a lot of questions and I worry that there are more
-problems lurking, but unfortunately I still don't have time to review
-this.
-
-Johan
