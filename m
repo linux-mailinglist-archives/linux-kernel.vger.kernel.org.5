@@ -2,46 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C817BB9FC
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 16:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16EE47BBA00
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 16:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232442AbjJFOL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 10:11:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40474 "EHLO
+        id S232505AbjJFOML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 10:12:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232382AbjJFOL6 (ORCPT
+        with ESMTP id S232248AbjJFOMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 10:11:58 -0400
+        Fri, 6 Oct 2023 10:12:08 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B709E;
-        Fri,  6 Oct 2023 07:11:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2613DC433C8;
-        Fri,  6 Oct 2023 14:11:57 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C157CCF;
+        Fri,  6 Oct 2023 07:12:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2A6AC433C7;
+        Fri,  6 Oct 2023 14:12:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696601517;
-        bh=HF1mlt3JfTnZ6zzC1XqcWAhuLUIXosajTn5u998VX00=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=ErZqtQTYQ89s7bu3kxbgj6kc+cONc+TH8XubUr1UWWFDFJwsB2Pt2BkNnZcr+yNyS
-         54tDU/86q3bFunK96rQzHcUh8GFbZPk/kXbw1XEkEUkwg7Pn0SONJmNJiOQP3kS1cw
-         eGKbKsPVv4cUne2JfmXB5ExHVC9/D6uBQ2HxRjFnxKvMYBh9BPaUGh3PiYfsU3g1As
-         Mg+shI9m+mmXmKXX9SXKdhARfUmzN3YQyLr6FHGIE4ePFWPKrjoTxPTBsilLahBv30
-         XiV8A1QvNchqmRfUgM8Y473/Li/+L5uxgHitd7WZ/P6tfGT0dK9+//ltGMjFN9u2oB
-         s1dDyOkJlqwCg==
-Date:   Fri, 6 Oct 2023 09:11:55 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the pci tree
-Message-ID: <20231006141155.GA851474@bhelgaas>
+        s=k20201202; t=1696601527;
+        bh=W8T8/kn6nOnCi47BvSU3UPd5pajVYNfSAYkFoseDTvM=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=KgviZjvUz8fDz4vKM9icf1PH4NUbznGzDmj443TXG6EmWUR/Oqfy0eyidyq7vuihT
+         X6IIOueAvo64dLdlARg/vPmNT5slnguyN4Su3yLP2ROO4Z78E8VULuUnKxbdfZFTcI
+         HZiMJ0cKuEmG9GyHHbu3w3X0Z48HC2KL3oG3SQ9UnUCU08wewLhXweTSklAZ8vedFS
+         Wtz6h3TE/xFUmnpOyRWKYA6s03YAmqUe29vk8BXuTf8mMHm0qPvXlnhk2A3LlkKGgm
+         xH6S4s2q3nnUF6NI3GSYfMnjjnY+ygfIpuN1kbrkOvVEp5PHcvVFG4sjWyBKaTmvMJ
+         TVMOXqTHGGzQQ==
+From:   Benjamin Tissoires <bentiss@kernel.org>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Johan Hovold <johan+linaro@kernel.org>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Maxime Ripard <mripard@kernel.org>
+In-Reply-To: <20231002155857.24584-1-johan+linaro@kernel.org>
+References: <20231002155857.24584-1-johan+linaro@kernel.org>
+Subject: Re: [PATCH v2] HID: i2c-hid: fix handling of unpopulated devices
+Message-Id: <169660152573.2015335.12847604884755165394.b4-ty@kernel.org>
+Date:   Fri, 06 Oct 2023 16:12:05 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231006115604.42971aa0@canb.auug.org.au>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.1
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -52,31 +53,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 11:56:04AM +1100, Stephen Rothwell wrote:
-> Hi all,
+On Mon, 02 Oct 2023 17:58:57 +0200, Johan Hovold wrote:
+> A recent commit reordered probe so that the interrupt line is now
+> requested before making sure that the device exists.
 > 
-> After merging the pci tree, today's linux-next build (x86_64 allmodconfig)
-> failed like this:
+> This breaks machines like the Lenovo ThinkPad X13s which rely on the
+> HID driver to probe second-source devices and only register the variant
+> that is actually populated. Specifically, the interrupt line may now
+> already be (temporarily) claimed when doing asynchronous probing of the
+> touchpad:
 > 
-> arch/x86/pci/fixup.c: In function 'amd_rp_pme_suspend':
-> arch/x86/pci/fixup.c:929:13: error: 'pm_suspend_target_state' undeclared (first use in this function)
->   929 |         if (pm_suspend_target_state == PM_SUSPEND_ON)
->       |             ^~~~~~~~~~~~~~~~~~~~~~~
-> arch/x86/pci/fixup.c:929:13: note: each undeclared identifier is reported only once for each function it appears in
-> arch/x86/pci/fixup.c:929:40: error: 'PM_SUSPEND_ON' undeclared (first use in this function); did you mean 'RPM_SUSPENDING'?
->   929 |         if (pm_suspend_target_state == PM_SUSPEND_ON)
->       |                                        ^~~~~~~~~~~~~
->       |                                        RPM_SUSPENDING
-> arch/x86/pci/fixup.c: In function 'amd_rp_pme_resume':
-> arch/x86/pci/fixup.c:951:27: error: implicit declaration of function 'FIELD_GET' [-Werror=implicit-function-declaration]
->   951 |         rp->pme_support = FIELD_GET(PCI_PM_CAP_PME_MASK, pmc);
->       |                           ^~~~~~~~~
-> 
-> Caused by commit
-> 
->   624306d2c241 ("x86/PCI: Avoid PME from D3hot/D3cold for AMD Rembrandt and Phoenix USB4")
+> [...]
 
-How embarrassing.  I moved this from drivers/pci to arch/x86 and
-obviously didn't even compile it afterwards.  Should be fixed now.
+Applied to hid/hid.git (for-6.6/upstream-fixes), thanks!
 
-Bjorn
+[1/1] HID: i2c-hid: fix handling of unpopulated devices
+      https://git.kernel.org/hid/hid/c/9af867c05b5d
+
+Cheers,
+-- 
+Benjamin Tissoires <bentiss@kernel.org>
+
