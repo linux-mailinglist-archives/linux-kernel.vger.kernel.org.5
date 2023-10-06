@@ -2,169 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D24E7BB5CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204437BB5CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 13:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231902AbjJFLBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 07:01:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50410 "EHLO
+        id S231898AbjJFLDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 07:03:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231932AbjJFLBn (ORCPT
+        with ESMTP id S231834AbjJFLDH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 07:01:43 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF43C5;
-        Fri,  6 Oct 2023 04:01:37 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 9ADD61F895;
-        Fri,  6 Oct 2023 11:01:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1696590096; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=piOdkBH7q3g/1BdTNsnZfQXf4D5rELoYVkzhPQ8djN8=;
-        b=nmSUnawLLGxHZx6O3UIeMOwzv12xv2RZvPnJ8stoCvCKdwMofAdiMkHBnrh5UPn21qX9o8
-        8Q74t+0pmMyfS3/KfP2UsdmJy6rFFQvDAp98BpFFW++/+Kn1eqKAHwCtFWit6clUi1S0yR
-        fgz62rGbjmT0562KHtQFkzMe8VKYFP8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1696590096;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=piOdkBH7q3g/1BdTNsnZfQXf4D5rELoYVkzhPQ8djN8=;
-        b=TbbiZWcj4OMYEB5UYrj9hYV67Ip7O8Kp80NroTbUjI3fpK0U77fZTUeMWiOsexUDWr6vKT
-        qVUAtYSxM2vr4KCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8A1FC13A2E;
-        Fri,  6 Oct 2023 11:01:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Wf6yIRDpH2WWagAAMHmgww
-        (envelope-from <jack@suse.cz>); Fri, 06 Oct 2023 11:01:36 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 19CDFA07CC; Fri,  6 Oct 2023 13:01:36 +0200 (CEST)
-Date:   Fri, 6 Oct 2023 13:01:36 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Jan Kara <jack@suse.cz>, Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Carlos Maiolino <cem@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Vlastmil Babka <vbabka@suse.cz>,
-        Sasha Levin <sashal@kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 3/8] shmem: factor shmem_falloc_wait() out of
- shmem_fault()
-Message-ID: <20231006110136.7xnfmjjrmmpumwyf@quack3>
-References: <c7441dc6-f3bb-dd60-c670-9f5cbd9f266@google.com>
- <6fe379a4-6176-9225-9263-fe60d2633c0@google.com>
- <20231003131853.ramdlfw5s6ne4iqx@quack3>
- <b2947c43-b7c6-5e50-ae55-81757efc1adb@google.com>
+        Fri, 6 Oct 2023 07:03:07 -0400
+Received: from smtp-fw-52004.amazon.com (smtp-fw-52004.amazon.com [52.119.213.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F4BC5;
+        Fri,  6 Oct 2023 04:03:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1696590186; x=1728126186;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-transfer-encoding:mime-version:subject;
+  bh=+Oj9cWZfF6C+d+uAdm+g5fcf0+MKR1+ZXyJy38ELkUI=;
+  b=amxSpM34Qfm3XB60YT21eqg6iKiI/M1PGuzaeUG4jiE3O4ANJbWbhdTE
+   CfnzjKMYdupn+7FZBVrvin6tAi9I2tKaUizwhS4OEmVFVOKo+mYA0yC4L
+   sM7UAvjpwxOQeh0DnI7hcbiDIRO/ZtQ17OEf+H4hksOJ7VwAG6aTN1weH
+   c=;
+X-IronPort-AV: E=Sophos;i="6.03,203,1694736000"; 
+   d="scan'208";a="158577964"
+Subject: RE: [PATCH] net: ena: replace deprecated strncpy with strscpy
+Thread-Topic: [PATCH] net: ena: replace deprecated strncpy with strscpy
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-1box-2bm6-32cf6363.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-52004.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 11:03:03 +0000
+Received: from EX19D020EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-1box-2bm6-32cf6363.us-west-2.amazon.com (Postfix) with ESMTPS id 108B4807C1;
+        Fri,  6 Oct 2023 11:03:02 +0000 (UTC)
+Received: from EX19D047EUA001.ant.amazon.com (10.252.50.171) by
+ EX19D020EUA001.ant.amazon.com (10.252.50.154) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Fri, 6 Oct 2023 11:02:39 +0000
+Received: from EX19D022EUA002.ant.amazon.com (10.252.50.201) by
+ EX19D047EUA001.ant.amazon.com (10.252.50.171) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Fri, 6 Oct 2023 11:02:39 +0000
+Received: from EX19D022EUA002.ant.amazon.com ([fe80::7f87:7d63:def0:157d]) by
+ EX19D022EUA002.ant.amazon.com ([fe80::7f87:7d63:def0:157d%3]) with mapi id
+ 15.02.1118.037; Fri, 6 Oct 2023 11:02:39 +0000
+From:   "Kiyanovski, Arthur" <akiyano@amazon.com>
+To:     Kees Cook <keescook@chromium.org>
+CC:     Justin Stitt <justinstitt@google.com>,
+        "Agroskin, Shay" <shayagr@amazon.com>,
+        "Arinzon, David" <darinzon@amazon.com>,
+        "Dagan, Noam" <ndagan@amazon.com>,
+        "Bshara, Saeed" <saeedb@amazon.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Thread-Index: AQHZ9ybKM2b6eyqkVE+Gavzwy9pPV7A7w5HwgAAHhICAAIzkkA==
+Date:   Fri, 6 Oct 2023 11:02:22 +0000
+Deferred-Delivery: Fri, 6 Oct 2023 07:05:46 +0000
+Message-ID: <5f8d24d16fba49bfb57fd4b6678ac27d@amazon.com>
+References: <20231005-strncpy-drivers-net-ethernet-amazon-ena-ena_netdev-c-v1-1-ba4879974160@google.com>
+ <fe65f57f91f342c7a173891b84cda37b@amazon.com>
+ <202310051537.7C5CEE6E@keescook>
+In-Reply-To: <202310051537.7C5CEE6E@keescook>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.252.50.216]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b2947c43-b7c6-5e50-ae55-81757efc1adb@google.com>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 05-10-23 20:48:00, Hugh Dickins wrote:
-> On Tue, 3 Oct 2023, Jan Kara wrote:
-> > On Fri 29-09-23 20:27:53, Hugh Dickins wrote:
-> > > That Trinity livelock shmem_falloc avoidance block is unlikely, and a
-> > > distraction from the proper business of shmem_fault(): separate it out.
-> > > (This used to help compilers save stack on the fault path too, but both
-> > > gcc and clang nowadays seem to make better choices anyway.)
-> > > 
-> > > Signed-off-by: Hugh Dickins <hughd@google.com>
-> > 
-> > Looks good. Feel free to add:
-> > 
-> > Reviewed-by: Jan Kara <jack@suse.cz>
-> 
-> Thanks a lot for all these reviews, Jan.  (And I particularly enjoyed
-> your "Autumn cleaning" remark: sweeping up the leaves, I've been glad
-> to have "Autumn Almanac" running through my head since reading that.)
 
-:-) You have widened my musical horizon.
 
-> > Looking at the code I'm just wondering whether the livelock with
-> > shmem_undo_range() couldn't be more easy to avoid by making
-> > shmem_undo_range() always advance the index by 1 after evicting a page and
-> > thus guaranteeing a forward progress... Because the forward progress within
-> > find_get_entries() is guaranteed these days, it should be enough.
-> 
-> I'm not sure that I understand your "advance the index by 1" comment.
-> Since the "/* If all gone or hole-punch or unfalloc, we're done */"
-> change went in, I believe shmem_undo_range() does make guaranteed
-> forward progress; but its forward progress is not enough.
+> -----Original Message-----
+> From: Kees Cook <keescook@chromium.org>
+> Sent: Friday, October 6, 2023 1:39 AM
+> To: Kiyanovski, Arthur <akiyano@amazon.com>
+> Cc: Justin Stitt <justinstitt@google.com>; Agroskin, Shay
+> <shayagr@amazon.com>; Arinzon, David <darinzon@amazon.com>; Dagan,
+> Noam <ndagan@amazon.com>; Bshara, Saeed <saeedb@amazon.com>; David
+> S. Miller <davem@davemloft.net>; Eric Dumazet <edumazet@google.com>;
+> Jakub Kicinski <kuba@kernel.org>; Paolo Abeni <pabeni@redhat.com>;
+> netdev@vger.kernel.org; linux-kernel@vger.kernel.org; linux-
+> hardening@vger.kernel.org
+> Subject: RE: [EXTERNAL] [PATCH] net: ena: replace deprecated strncpy with
+> strscpy
+>=20
+> CAUTION: This email originated from outside of the organization. Do not c=
+lick
+> links or open attachments unless you can confirm the sender and know the
+> content is safe.
+>=20
+>=20
+>=20
+> On Thu, Oct 05, 2023 at 10:25:08PM +0000, Kiyanovski, Arthur wrote:
+> > > -----Original Message-----
+> > > From: Justin Stitt <justinstitt@google.com>
+> > > Sent: Thursday, October 5, 2023 3:56 AM
+> > > To: Agroskin, Shay <shayagr@amazon.com>; Kiyanovski, Arthur
+> > > <akiyano@amazon.com>; Arinzon, David <darinzon@amazon.com>; Dagan,
+> > > Noam <ndagan@amazon.com>; Bshara, Saeed <saeedb@amazon.com>;
+> David
+> > > S. Miller <davem@davemloft.net>; Eric Dumazet <edumazet@google.com>;
+> > > Jakub Kicinski <kuba@kernel.org>; Paolo Abeni <pabeni@redhat.com>
+> > > Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org; linux-
+> > > hardening@vger.kernel.org; Justin Stitt <justinstitt@google.com>
+> > > Subject: [EXTERNAL] [PATCH] net: ena: replace deprecated strncpy
+> > > with strscpy
+> > >
+> > > CAUTION: This email originated from outside of the organization. Do
+> > > not click links or open attachments unless you can confirm the
+> > > sender and know the content is safe.
+> > >
+> > >
+> > >
+> > > `strncpy` is deprecated for use on NUL-terminated destination
+> > > strings [1] and as such we should prefer more robust and less ambiguo=
+us
+> string interfaces.
+> > >
+> > > NUL-padding is not necessary as host_info is initialized to
+> > > `ena_dev-
+> > > >host_attr.host_info` which is ultimately zero-initialized via
+> > > alloc_etherdev_mq().
+> > >
+> > > A suitable replacement is `strscpy` [2] due to the fact that it
+> > > guarantees NUL- termination on the destination buffer without
+> unnecessarily NUL-padding.
+> > >
+> > > Link:
+> > > https://www.kernel.org/doc/html/latest/process/deprecated.html#strnc
+> > > py-on-
+> > > nul-terminated-strings [1]
+> > > Link:
+> > > https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.ht
+> > > ml
+> > > [2]
+> > > Link: https://github.com/KSPP/linux/issues/90
+> > > Cc: linux-hardening@vger.kernel.org
+> > > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> > > ---
+> > > Note: build-tested only.
+> > > ---
+> > >  drivers/net/ethernet/amazon/ena/ena_netdev.c | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c
+> > > b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+> > > index f955bde10cf9..3118a617c9b6 100644
+> > > --- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
+> > > +++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+> > > @@ -3276,8 +3276,8 @@ static void ena_config_host_info(struct
+> > > ena_com_dev *ena_dev, struct pci_dev *pd
+> > >         strscpy(host_info->kernel_ver_str, utsname()->version,
+> > >                 sizeof(host_info->kernel_ver_str) - 1);
+> > >         host_info->os_dist =3D 0;
+> > > -       strncpy(host_info->os_dist_str, utsname()->release,
+> > > -               sizeof(host_info->os_dist_str) - 1);
+> > > +       strscpy(host_info->os_dist_str, utsname()->release,
+> > > +               sizeof(host_info->os_dist_str));
+> > >         host_info->driver_version =3D
+> > >                 (DRV_MODULE_GEN_MAJOR) |
+> > >                 (DRV_MODULE_GEN_MINOR <<
+> > > ENA_ADMIN_HOST_INFO_MINOR_SHIFT) |
+> > >
+> > > ---
+> > > base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
+> > > change-id:
+> > > 20231005-strncpy-drivers-net-ethernet-amazon-ena-ena_netdev-c-
+> > > 6c4804466aa7
+> > >
+> > > Best regards,
+> > > --
+> > > Justin Stitt <justinstitt@google.com>
+> > >
+> >
+> > Thanks for submitting this change.
+> >
+> > The change looks good but the sentence "NUL-padding is not necessary
+> > as host_info is initialized to `ena_dev->host_attr.host_info` which is
+> > ultimately zero-initialized via alloc_etherdev_mq()." is inaccurate.
+> >
+> > host_info allocation is done in ena_com_allocate_host_info() via
+> > dma_alloc_coherent() and is not zero initialized by alloc_etherdev_mq()=
+.
+> >
+> > I looked at both the documentation of dma_alloc_coherent() in
+> > https://www.kernel.org/doc/Documentation/DMA-API.txt
+> > as well as the code itself, and (maybe I'm wrong but) I didn't see
+> > 100% guarantees the that the memory is zero-initialized.
+> >
+> > However zero initialization of the destination doesn't matter in this
+> > case, because strscpy() guarantees a NULL termination.
+>=20
+> If this is in DMA memory, should the string buffer be %NUL-padded? (Or is=
+ it
+> consumed strictly as a %NUL-terminated string?)
+>=20
+> -Kees
+>=20
+> --
+> Kees Cook
 
-Right, I have missed that retry when glancing over the code. And the
-"advance the index by 1" was also wrong because find_get_entries() already
-does it these days.
+No need for NULL-padding, It is consumed strictly as a NULL-terminated stri=
+ng
 
-> I would love to delete all that shmem_falloc_wait() strangeness;
-> and your comment excited me to look, hey, can we just delete all that
-> stuff now, instead of shifting it aside?  That would be much nicer.
-
-Well, even if you decided to keep the synchronization what you could do
-these days is to use inode->i_mapping->invalidate_lock for synchronization
-instead of your home-grown solution (like all other filesystems do for
-these kind of races). If you don't want to pay the cost of rwsem
-acquisition in the fault fast path, you could do it in the hole-punch
-running case only like currently.
-
-> And if I'd replied to you yesterday, I'd have been saying yes we can.
-> But that's because I hadn't got far enough through re-reading the
-> various July 2014 3.16-rc mail threads.  I had been excited to find
-> myself posting a revert of the patch; before reaching Sasha's later
-> livelock which ended up with "belt and braces" retaining the
-> shmem_falloc wait while adding the "If all gone or hole-punch" mod.
-> 
-> https://marc.info/?l=linux-kernel&m=140487864819409&w=2
-> though that thread did not resolve, and morphed into lockdep moans.
-> 
-> So I've reverted to my usual position: that it's conceivable that
-> something has changed meanwhile, to make that Trinity livelock no
-> longer an issue (in particular, i_mmap_mutex changed to i_mmap_rwsem,
-> and much later unmap_mapping_range() changed to only take it for read:
-> but though that change gives hope, I suspect it would turn out to be
-> ineffectual against the livelock); but that would have to be proved.
-> 
-> If there's someone who can re-demonstrate Sasha's Trinity livelock
-> on 3.16-with-shmem-falloc-wait-disabled, or re-demonstrate it on any
-> later release-with-shmem-falloc-wait-disabled, but demonstrate that
-> the livelock does not occur on 6.6-rc-with-shmem-falloc-wait-disabled
-> (or that plus some simple adjustment of hacker's choosing): that would
-> be great news, and we could delete all this - though probably not
-> without bisecting to satisfy ourselves on what was the crucial change.
-> 
-> But I never got around to running up Trinity to work on it originally,
-> nor in the years since, nor do I expect to soon.  (Vlastimil had a
-> good simple technique for demonstrating a part of the problem, but
-> fixing that part turned out not fix the whole issue with Trinity.)
-
-Fair enough. I agree that we should do some testing before we actually
-remove the serialization because the problem was not well understood even
-back then and likely had something to do with unmap_mapping_folio()
-inefficiency (e.g. unmapping one page at a time acquiring heavily contended
-i_mmap_mutex for each page) rather than page cache eviction itself.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks,
+Arthur Kiyanovski
