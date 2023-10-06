@@ -2,151 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 707607BBECF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 20:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3041B7BBED6
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 20:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233116AbjJFSh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 14:37:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42024 "EHLO
+        id S233030AbjJFSmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 14:42:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232906AbjJFSh4 (ORCPT
+        with ESMTP id S230415AbjJFSmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 14:37:56 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE71B6;
-        Fri,  6 Oct 2023 11:37:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A256DC433C7;
-        Fri,  6 Oct 2023 18:37:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696617475;
-        bh=IE1bF8kdC9VMb3KABS+1fAZSI1WmO3d4DmO0mYqCYU4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=iLiHCtc35wuVkfpj7gS1mDntDlZUCW4IUvjH0kro2FzIQWgv2uTdWKgUpbgKSE+E1
-         3vetV+UMfUZEiVWpR8YR4BtWPDSKpGln/gRpDXTWiPsDfA37dvYp9m+vmScjZp6GJ1
-         3mrMHzvZyY4xeyJSI3i4ARc6OAhuYEo5bgGMUMieLIiqZy7iAk1mZP1QK+elEDykyI
-         MIhZfrvgMhSqnVM0gobcq7T/wsfOW3Jy5yvOQN08FFd3kcOvvCJ06u7GysQ/tPLqL/
-         VmmuKH3b7tAWA2K49DLIPBSDZGI81AP+05F7fUSH/SB1NmPpKMFSjA9wziX7nu2N/3
-         VnAW43xq9IdDg==
-Message-ID: <fbe836a5-97c5-340e-3644-1b0e046d3fbb@kernel.org>
-Date:   Sat, 7 Oct 2023 03:37:51 +0900
+        Fri, 6 Oct 2023 14:42:20 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F00B9BE
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 11:42:18 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-68fb85afef4so2172315b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 11:42:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696617738; x=1697222538; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UUg2EZ7t6QbVRPnDWD48q594BNWRx78W4j0XN10BHAI=;
+        b=COFnebuGpXUEXOKvaz8l/Ib116z2d85QKzH+mJ2/+DsnaJWs7uMzjM9WoxvkuQcFpX
+         Km5yxrmJ9Ez0JXnsjDG1o+z0x6Xhg+mMM5/CTgDD9AUNo+ypaynoxR1c4qSFYhZBin3H
+         t0KM4nXcazDf6t7bBZ6fT5Hw54aCIbSqvKKqrbgTRUwT9phk49UhevLoT2PvoytOEeZp
+         FvjU77/q8/vRB2/mJo7VcJDTcKWSKuujZ5ydayTAliSvt0lIIT4sqv1R39lPxaOdvHl5
+         TG4bP6CVFJs+JGO10IhtXZmuVob/pPEpJs9pYNZuXAAYCIKW2Pmvx75hzQib3LJx7QYB
+         g2MA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696617738; x=1697222538;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UUg2EZ7t6QbVRPnDWD48q594BNWRx78W4j0XN10BHAI=;
+        b=jz1A3TFJO8TTXAO1bT5cVm0GC/KUTXzgtaykRBNLWNRxmZYXb2qEEnb2gFS1j7CDD6
+         Y8D9DrNzS++edUEENsii6U2v3r2gN37gXmwve4tMbFujEQWHIWW+drteESdqnmjk+NhO
+         m1W0qh0B82GsILdjwuB/Q6fOQ7/GWxO4hcDfZp01LaO97Gzsq10ldnQP/3up8oZ3sRcJ
+         2e+UwvscrWa520O0cdwawkHUbS4d5CyTez3ep2d3UnYIYy0EdxtHuU8ehDIZgYVF5qyM
+         24PXd6NKXhDEdidbFEIPqWigjOfSuXMhlwcR/sOOvZkBJu1PdUKsYUjuVNUwKQgz0InR
+         2MbA==
+X-Gm-Message-State: AOJu0Yx3rcy3FMKWBcBdQv0RywzHFBUMs1YX/Etn4XcpQ2bue8eBtz27
+        /sts221b9fAuEYqRoXSXScfKEC8rfRvN5GF61EWLJw==
+X-Google-Smtp-Source: AGHT+IHUgHZyUTaGNx4dt+tc7IETfj4Jd3vKuta+Ow98vKSTFqxL8VKDeSZBqnX6bo8pJV9HXU1eh1GpPub4W8AU5JA=
+X-Received: by 2002:aa7:88ce:0:b0:690:b8b1:7b9e with SMTP id
+ k14-20020aa788ce000000b00690b8b17b9emr8463628pff.0.1696617738312; Fri, 06 Oct
+ 2023 11:42:18 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v7 15/26] PM / devfreq: rockchip-dfi: give variable a
- better name
-Content-Language: en-US
-To:     Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-rockchip@lists.infradead.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Vincent Legoll <vincent.legoll@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-References: <20230704093242.583575-1-s.hauer@pengutronix.de>
- <20230704093242.583575-16-s.hauer@pengutronix.de>
-From:   Chanwoo Choi <chanwoo@kernel.org>
-In-Reply-To: <20230704093242.583575-16-s.hauer@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231004175217.404851126@linuxfoundation.org> <CA+G9fYsqbZhSQnEi-qSc7n+4d7nPap8HWcdbZGWLfo3mTH-L7A@mail.gmail.com>
+In-Reply-To: <CA+G9fYsqbZhSQnEi-qSc7n+4d7nPap8HWcdbZGWLfo3mTH-L7A@mail.gmail.com>
+From:   =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
+Date:   Fri, 6 Oct 2023 12:42:04 -0600
+Message-ID: <CAEUSe78O-Ho=22nTeioT4eqPRoDNfcWCpc=5O=B59eaMvOkzpg@mail.gmail.com>
+Subject: Re: [PATCH 6.1 000/259] 6.1.56-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        linux-nfs@vger.kernel.org, stable@vger.kernel.org,
+        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Benjamin Coddington <bcodding@redhat.com>,
+        Anna Schumaker <Anna.Schumaker@netapp.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        LTP List <ltp@lists.linux.it>, Petr Vorel <pvorel@suse.cz>,
+        Richard Palethorpe <rpalethorpe@suse.com>,
+        Eryu Guan <eguan@redhat.com>, chrubis <chrubis@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23. 7. 4. 18:32, Sascha Hauer wrote:
-> struct dmc_count_channel::total counts the clock cycles of the DDR
-> controller. Rename it accordingly to give the reader a better idea
-> what this is about. While at it, at some documentation to struct
-> dmc_count_channel.
-> 
-> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
->  drivers/devfreq/event/rockchip-dfi.c | 19 ++++++++++++-------
->  1 file changed, 12 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/devfreq/event/rockchip-dfi.c b/drivers/devfreq/event/rockchip-dfi.c
-> index 8a7af7c32ae0d..50e497455dc69 100644
-> --- a/drivers/devfreq/event/rockchip-dfi.c
-> +++ b/drivers/devfreq/event/rockchip-dfi.c
-> @@ -46,9 +46,14 @@
->  #define DDRMON_CH1_COUNT_NUM		0x3c
->  #define DDRMON_CH1_DFI_ACCESS_NUM	0x40
->  
-> +/**
-> + * struct dmc_count_channel - structure to hold counter values from the DDR controller
-> + * @access:       Number of read and write accesses
-> + * @clock_cycles: DDR clock cycles
-> + */
->  struct dmc_count_channel {
->  	u32 access;
-> -	u32 total;
-> +	u32 clock_cycles;
->  };
->  
->  struct dmc_count {
-> @@ -150,7 +155,7 @@ static void rockchip_dfi_read_counters(struct rockchip_dfi *dfi, struct dmc_coun
->  			continue;
->  		count->c[i].access = readl_relaxed(dfi_regs +
->  				DDRMON_CH0_DFI_ACCESS_NUM + i * 20);
-> -		count->c[i].total = readl_relaxed(dfi_regs +
-> +		count->c[i].clock_cycles = readl_relaxed(dfi_regs +
->  				DDRMON_CH0_COUNT_NUM + i * 20);
->  	}
->  }
-> @@ -182,29 +187,29 @@ static int rockchip_dfi_get_event(struct devfreq_event_dev *edev,
->  	struct rockchip_dfi *dfi = devfreq_event_get_drvdata(edev);
->  	struct dmc_count count;
->  	struct dmc_count *last = &dfi->last_event_count;
-> -	u32 access = 0, total = 0;
-> +	u32 access = 0, clock_cycles = 0;
->  	int i;
->  
->  	rockchip_dfi_read_counters(dfi, &count);
->  
->  	/* We can only report one channel, so find the busiest one */
->  	for (i = 0; i < DMC_MAX_CHANNELS; i++) {
-> -		u32 a, t;
-> +		u32 a, c;
->  
->  		if (!(dfi->channel_mask & BIT(i)))
->  			continue;
->  
->  		a = count.c[i].access - last->c[i].access;
-> -		t = count.c[i].total - last->c[i].total;
-> +		c = count.c[i].clock_cycles - last->c[i].clock_cycles;
->  
->  		if (a > access) {
->  			access = a;
-> -			total = t;
-> +			clock_cycles = c;
->  		}
->  	}
->  
->  	edata->load_count = access * 4;
-> -	edata->total_count = total;
-> +	edata->total_count = clock_cycles;
->  
->  	dfi->last_event_count = count;
->  
+Hello!
 
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+On Thu, 5 Oct 2023 at 10:40, Naresh Kamboju <naresh.kamboju@linaro.org> wro=
+te:
+> On Wed, 4 Oct 2023 at 23:41, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 6.1.56 release.
+> > There are 259 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Fri, 06 Oct 2023 17:51:12 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patc=
+h-6.1.56-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git linux-6.1.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+>
+> Results from Linaro=E2=80=99s test farm.
+> Regressions on arm64 bcm2711-rpi-4-b device running LTP dio tests on
+> NFS mounted rootfs.
+> and LTP hugetlb hugemmap11 test case failed on x86 and arm64 bcm2711-rpi-=
+4-b.
+>
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>
+> LTP hugetlb tests failed log
+>   tst_hugepage.c:83: TINFO: 1 hugepage(s) reserved
+>   tst_test.c:1558: TINFO: Timeout per run is 0h 05m 00s
+>   hugemmap11.c:47: TFAIL: Memory mismatch after Direct-IO write
+>
+> LTP dio tests failed log
+>   compare_file: char mismatch: infile offset 4096: 0x01 .   outfile
+> offset 4096: 0x00 .
+>   diotest01    1  TFAIL  :  diotest1.c:158: file compare failed for
+> infile and outfile
 
--- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+Bisection led to "NFS: Fix O_DIRECT locking issues" (upstream commit
+7c6339322ce0c6128acbe36aacc1eeb986dd7bf1). Reverting that patch and
+"NFS: Fix error handling for O_DIRECT write scheduling" (upstream
+commit 954998b60caa8f2a3bf3abe490de6f08d283687a) (not a clean revert
+this one) made ltp-dio pass again.
 
+Greetings!
+
+Daniel D=C3=ADaz
+daniel.diaz@linaro.org
