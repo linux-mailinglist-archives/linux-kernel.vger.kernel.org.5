@@ -2,208 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6367BBD24
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57C527BBD29
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232968AbjJFQqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 12:46:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41286 "EHLO
+        id S231705AbjJFQqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 12:46:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232947AbjJFQqD (ORCPT
+        with ESMTP id S232972AbjJFQqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 12:46:03 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 614DDD58;
-        Fri,  6 Oct 2023 09:44:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696610676; x=1728146676;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=q/fbl8MRoHNlScwMG1/DLFJFN//gIakiG3syYUF579U=;
-  b=GOqUp5cKYLZMRlzVJqRWnytlUT7XPLcrt5niy0SJhEe6H4C/KnDPZgcr
-   ER/S1xErSYVb5BM/UKqaSjDTirZlxpa+nHdi1JvskQorMS9rJlmp7y7mp
-   KmtpfgMfszxGd/KoWGoaTqRyxMarM9IUfz6wkxKTUveLZSg0F8zar8GfG
-   jMTZ/rDkfGuNrxyikSCUgr6wO4O0P4ULx7chfn0j6WafwcLa6U8XEb8zH
-   M3UT/iEG2bECV9l1ldfoh4DvkU1vxYUyJoSLcrwKgHrrsQJG6vT1Lf2gf
-   h1xTCi3oWDQtFDb9QbaiEHseM2bU4uoYwMBsG//kayyZ0tih5NPjctu5J
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="383672548"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="383672548"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 09:43:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="787448487"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="787448487"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP; 06 Oct 2023 09:43:15 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 4506C430; Fri,  6 Oct 2023 19:43:14 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, Hongren Zheng <i@zenithal.me>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH v2 1/1] usbip: Use platform_device_register_full()
-Date:   Fri,  6 Oct 2023 19:43:12 +0300
-Message-Id: <20231006164312.3528524-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+        Fri, 6 Oct 2023 12:46:07 -0400
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3850919AE
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 09:44:37 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5a24b03e22eso28455507b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 09:44:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696610644; x=1697215444; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=I9qXiQD02jSxmMRUgSkyvEpmCFOZ3iTInzi5BF14OmQ=;
+        b=MlNQa+phUCR8A+i4TKwuJyj5q+Al9rlKc0OaEBaTQ1+vKG/rujyCUBN613ahj60O1T
+         0jg/wtuw6e2lk0lJ4vTvshpnr9SKI0K/Iypoe883tDs3Jw9RG5MGTQPRo84ifFkuJ4OF
+         vHaRV7QtSWEoD1g4BVvqpvn9h2irIXkhPoQ5wRT75vPYsl1Iox6mFIgNWUVEP+vbdqWV
+         RYjPofmrXe0dnmSs5JHQMQD0V21kHp20HvdP4PYlzj9YouIPZ12wdrQfLShBJpL3Wrca
+         rHe4KwdI9OStRXgGfLyANoibHzriUzQsx/+tLbM2V8oWJM5qqj7h1vhNyUCDH/1h5AWM
+         /49A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696610644; x=1697215444;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=I9qXiQD02jSxmMRUgSkyvEpmCFOZ3iTInzi5BF14OmQ=;
+        b=KeH2Q2NRIfCcAqa6EY2MXxXDoJ2YArHkcp/N7IiNshMQ2ZRumb43yAfu6L/tFe07x7
+         ElISWUwB+9RPblhWeCc3Hy98snepm8Whz9q/UkZ7b+SRjaQOzo3/p/L2HwvFJhfxSK0/
+         8RqQ0pDBAHv8CJ9eDrLybwwLDzJDiJgcE1S5b7BYshgBD8UXAV2OFTd+IwvGHnNpcmrp
+         FVi4KW9pMPfH895nUJl0sgqCDa+V+jShBr1V6aGPqcO+Cg3iv6LvGf4B6Xh/IysLb27t
+         Orwmq76RKqLXDaqoudN17YMb5UcuhETV5ap07lh+hBH5LbpMK1df2UU1dXajPA7CJnFR
+         uzdg==
+X-Gm-Message-State: AOJu0YzmjIXnCVPPbGlGP4OpYJexTu/nngQkLEGxFjbY2F8kOUbS/iSa
+        hOzhumzmL4cvatq4SXOsjlvrW7/JcJlWWQ==
+X-Google-Smtp-Source: AGHT+IEVlH/Sosq/Sgf9/c1bnatg/z09RORbFjd46bBQ1D1NUgCfWCe6BLGyA8YwDGqrFVihmnSCXA==
+X-Received: by 2002:a81:62d7:0:b0:576:fc3a:3ef5 with SMTP id w206-20020a8162d7000000b00576fc3a3ef5mr9105615ywb.47.1696610644125;
+        Fri, 06 Oct 2023 09:44:04 -0700 (PDT)
+Received: from localhost (76-202-118-196.lightspeed.jcvlfl.sbcglobal.net. [76.202.118.196])
+        by smtp.gmail.com with ESMTPSA id r135-20020a0de88d000000b005a1cc37aff1sm1378858ywe.20.2023.10.06.09.44.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Oct 2023 09:44:03 -0700 (PDT)
+Date:   Fri, 6 Oct 2023 09:44:02 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v5 0/8] bitmap: cleanup bitmap_*_region() implementation
+Message-ID: <ZSA5UlF8e7DRxuqp@yury-ThinkPad>
+References: <20230925023817.782509-1-yury.norov@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.1 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230925023817.782509-1-yury.norov@gmail.com>
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The code to create the child platform device is essentially the same as
-what platform_device_register_full() does, so change over to use
-that same function to reduce duplication.
+Ping?
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: (hopefully) fixed run-time NULL-dereference (LKP)
- drivers/usb/usbip/vhci_hcd.c | 55 +++++++++++++-----------------------
- 1 file changed, 20 insertions(+), 35 deletions(-)
-
-diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
-index 37d1fc34e8a5..f845b91848b9 100644
---- a/drivers/usb/usbip/vhci_hcd.c
-+++ b/drivers/usb/usbip/vhci_hcd.c
-@@ -1139,7 +1139,8 @@ static int hcd_name_to_id(const char *name)
- 
- static int vhci_setup(struct usb_hcd *hcd)
- {
--	struct vhci *vhci = *((void **)dev_get_platdata(hcd->self.controller));
-+	struct vhci *vhci = dev_get_platdata(hcd->self.controller);
-+
- 	if (usb_hcd_is_primary_hcd(hcd)) {
- 		vhci->vhci_hcd_hs = hcd_to_vhci_hcd(hcd);
- 		vhci->vhci_hcd_hs->vhci = vhci;
-@@ -1256,7 +1257,7 @@ static int vhci_get_frame_number(struct usb_hcd *hcd)
- /* FIXME: suspend/resume */
- static int vhci_bus_suspend(struct usb_hcd *hcd)
- {
--	struct vhci *vhci = *((void **)dev_get_platdata(hcd->self.controller));
-+	struct vhci *vhci = dev_get_platdata(hcd->self.controller);
- 	unsigned long flags;
- 
- 	dev_dbg(&hcd->self.root_hub->dev, "%s\n", __func__);
-@@ -1270,7 +1271,7 @@ static int vhci_bus_suspend(struct usb_hcd *hcd)
- 
- static int vhci_bus_resume(struct usb_hcd *hcd)
- {
--	struct vhci *vhci = *((void **)dev_get_platdata(hcd->self.controller));
-+	struct vhci *vhci = dev_get_platdata(hcd->self.controller);
- 	int rc = 0;
- 	unsigned long flags;
- 
-@@ -1337,7 +1338,7 @@ static const struct hc_driver vhci_hc_driver = {
- 
- static int vhci_hcd_probe(struct platform_device *pdev)
- {
--	struct vhci             *vhci = *((void **)dev_get_platdata(&pdev->dev));
-+	struct vhci             *vhci = dev_get_platdata(&pdev->dev);
- 	struct usb_hcd		*hcd_hs;
- 	struct usb_hcd		*hcd_ss;
- 	int			ret;
-@@ -1395,7 +1396,7 @@ static int vhci_hcd_probe(struct platform_device *pdev)
- 
- static void vhci_hcd_remove(struct platform_device *pdev)
- {
--	struct vhci *vhci = *((void **)dev_get_platdata(&pdev->dev));
-+	struct vhci *vhci = dev_get_platdata(&pdev->dev);
- 
- 	/*
- 	 * Disconnects the root hub,
-@@ -1430,7 +1431,7 @@ static int vhci_hcd_suspend(struct platform_device *pdev, pm_message_t state)
- 	if (!hcd)
- 		return 0;
- 
--	vhci = *((void **)dev_get_platdata(hcd->self.controller));
-+	vhci = dev_get_platdata(hcd->self.controller);
- 
- 	spin_lock_irqsave(&vhci->lock, flags);
- 
-@@ -1493,13 +1494,10 @@ static struct platform_driver vhci_driver = {
- 
- static void del_platform_devices(void)
- {
--	struct platform_device *pdev;
- 	int i;
- 
- 	for (i = 0; i < vhci_num_controllers; i++) {
--		pdev = vhcis[i].pdev;
--		if (pdev != NULL)
--			platform_device_unregister(pdev);
-+		platform_device_unregister(vhcis[i].pdev);
- 		vhcis[i].pdev = NULL;
- 	}
- 	sysfs_remove_link(&platform_bus.kobj, driver_name);
-@@ -1519,45 +1517,32 @@ static int __init vhci_hcd_init(void)
- 	if (vhcis == NULL)
- 		return -ENOMEM;
- 
--	for (i = 0; i < vhci_num_controllers; i++) {
--		vhcis[i].pdev = platform_device_alloc(driver_name, i);
--		if (!vhcis[i].pdev) {
--			i--;
--			while (i >= 0)
--				platform_device_put(vhcis[i--].pdev);
--			ret = -ENOMEM;
--			goto err_device_alloc;
--		}
--	}
--	for (i = 0; i < vhci_num_controllers; i++) {
--		void *vhci = &vhcis[i];
--		ret = platform_device_add_data(vhcis[i].pdev, &vhci, sizeof(void *));
--		if (ret)
--			goto err_driver_register;
--	}
--
- 	ret = platform_driver_register(&vhci_driver);
- 	if (ret)
- 		goto err_driver_register;
- 
- 	for (i = 0; i < vhci_num_controllers; i++) {
--		ret = platform_device_add(vhcis[i].pdev);
-+		struct platform_device_info pdevinfo = {
-+			.name = driver_name,
-+			.id = i,
-+			.data = &vhcis[i],
-+			.size_data = sizeof(void *),
-+		};
-+
-+		vhcis[i].pdev = platform_device_register_full(&pdevinfo);
-+		ret = PTR_ERR_OR_ZERO(vhcis[i].pdev);
- 		if (ret < 0) {
--			i--;
--			while (i >= 0)
--				platform_device_del(vhcis[i--].pdev);
-+			while (i--)
-+				platform_device_unregister(vhcis[i].pdev);
- 			goto err_add_hcd;
- 		}
- 	}
- 
--	return ret;
-+	return 0;
- 
- err_add_hcd:
- 	platform_driver_unregister(&vhci_driver);
- err_driver_register:
--	for (i = 0; i < vhci_num_controllers; i++)
--		platform_device_put(vhcis[i].pdev);
--err_device_alloc:
- 	kfree(vhcis);
- 	return ret;
- }
--- 
-2.40.0.1.gaa8946217a0b
-
+On Sun, Sep 24, 2023 at 07:38:09PM -0700, Yury Norov wrote:
+> bitmap_{allocate,find_free,release}_region() functions are implemented
+> on top of _reg_op() machinery. It duplicates existing generic functionality
+> with no benefits. In fact, generic alternatives may work even better
+> because they optimized for small_const_nbits() case and overall very well
+> optimized for performance and code generation.
+> 
+> This series drops _reg_op() entirely.
+> 
+> v2: https://lore.kernel.org/lkml/20230811005732.107718-2-yury.norov@gmail.com/T/
+> v3: https://lore.kernel.org/lkml/20230815233628.45016-2-yury.norov@gmail.com/T/
+> v4: https://lore.kernel.org/lkml/20230829023911.64335-1-yury.norov@gmail.com/T/
+> v5: - fix bitmap_release_region() implementation;
+>     - address nits for commits comments.
+> 
+> Yury Norov (8):
+>   bitmap: align __reg_op() wrappers with modern coding style
+>   bitmap: add test for bitmap_*_region() functions
+>   bitmap: fix opencoded bitmap_allocate_region()
+>   bitmap: replace _reg_op(REG_OP_ALLOC) with bitmap_set()
+>   bitmap: replace _reg_op(REG_OP_RELEASE) with bitmap_clear()
+>   bitmap: replace _reg_op(REG_OP_ISFREE) with find_next_bit()
+>   bitmap: drop _reg_op() function
+>   bitmap: move bitmap_*_region() functions to bitmap.h
+> 
+>  include/linux/bitmap.h |  63 ++++++++++++++++++-
+>  lib/bitmap.c           | 140 -----------------------------------------
+>  lib/test_bitmap.c      |  24 +++++++
+>  3 files changed, 84 insertions(+), 143 deletions(-)
+> 
+> -- 
+> 2.39.2
