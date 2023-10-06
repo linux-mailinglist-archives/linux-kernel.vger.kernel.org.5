@@ -2,71 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE787BAFA5
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 02:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6755D7BAFA8
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 02:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229593AbjJFAgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 20:36:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
+        id S229604AbjJFAkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 20:40:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbjJFAgl (ORCPT
+        with ESMTP id S229536AbjJFAkc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 20:36:41 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB33D8
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 17:36:39 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9b28dee4de8so58534466b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 17:36:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696552598; x=1697157398; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tFgmfWnki8h/R7++p9q6A3/cLBb3+aKhbDTv7byzrlY=;
-        b=dFFZ1/YSxXyzgxxyjqkginlxOYt/SbTUW44x0Q0vFAIiHYKflRwH0CPoxFp12jD5Za
-         PgU9E33neuNM/A81kU5KqIS4sW0shKIvu/LWEMwaHDAfueUCfqKLviwwIOY96OkdiUqz
-         bTnxW+0Yh5shn+2beKXQa+Fv3LQU8AhcYqEKo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696552598; x=1697157398;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tFgmfWnki8h/R7++p9q6A3/cLBb3+aKhbDTv7byzrlY=;
-        b=l0plHvIuQGFcrmlqLRxvBBaXxJkE4nQfIPiC49P9DgxSxPqXqaIknZ2lxahmR3D3p2
-         g+qeX/EZfu5y+9iScJ3I6b3iHxMenNj6rpRqJY9QPWvOxij0Op+x075W67yQlYtk9kMN
-         HxH4BTf7ppS9eboJvv+wARGOUktkm99SoZOUKsuvpZde8sfqZvyx+HETRSm/i8/rztwS
-         BRFbZa1xxC5fssoBfbzOA+1s9/W0VjPTfhPG4n4lxsddUe1YymlSCvxEVt1k/ja5hSA9
-         OLRPwzNpBNy68Zy4AFxy7IlVFEdK+4ff7sVkFZ+0JafenCmG6ho+UGiARxGdM14Kxarg
-         M2fQ==
-X-Gm-Message-State: AOJu0YzQ952VA3lG2dBAFmRZHeYRD0aW50Bkc1TdArHg3aNdHXXxHjSN
-        kw+61mmlKAjBHt2sFUo5rdooTf+wvPG4H3LD/YoR8g==
-X-Google-Smtp-Source: AGHT+IGuPRZ181qonvgAkt1WxGqramIbgveDQXMFl2wA5Gw5sFbksbRvLIduDYoU6aVcnOe8W4NAOK17zdYkwUBRYm8=
-X-Received: by 2002:a17:906:10dd:b0:9a2:1e03:1570 with SMTP id
- v29-20020a17090610dd00b009a21e031570mr5391001ejv.0.1696552597840; Thu, 05 Oct
- 2023 17:36:37 -0700 (PDT)
+        Thu, 5 Oct 2023 20:40:32 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B34B7D6
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 17:40:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 37F79C433C9;
+        Fri,  6 Oct 2023 00:40:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696552831;
+        bh=oFqZXtcvFppptFRRQK616T2zS75kLFYvPUfsMrV73+0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Lm8yzjEV5F0dJdu6RDVB6N8buhLc49RHkhFHD/A3zXWZB0QPrbkBoHR15lS8sy7nK
+         glhN6QnURCManbr8qn8SqF9GvpY0F4MuU18W2z+0p8nezDNOTQSVuUmoEnyA1JGPYb
+         RR/J0LXIjCrGIXwaEF4G9RyYfmcWVwpvT0xjCQC3n0N/4ab0iwPTP9y59rYHeLQr99
+         iW7FKADHvG2ORw/sC/i86vhAVD8WkQwTrFCn/H7m7N8HxYe9PA7cxB0S3pbHV3pEHT
+         KrMKrvbJGh/FuXPvpiT7kmXdfvnIzktg6oG2AL3B2orrLPsnY+I2lx7ujkxbu0Glba
+         SCnRXPCfWG6zQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1F7EAE11F50;
+        Fri,  6 Oct 2023 00:40:31 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20230531115839.089944915@infradead.org> <dlbtvvm5cewqzh5bcpl4cqhcwxmnnjb6pdle5jzywiiznlactd@cmhnpim42m3p>
- <20230906131356.GG38741@noisy.programming.kicks-ass.net> <CA+q576MS0-MV1Oy-eecvmYpvNT3tqxD8syzrpxQ-Zk310hvRbw@mail.gmail.com>
- <20231002184136.GA1539@noisy.programming.kicks-ass.net> <20231005120557.GA743@noisy.programming.kicks-ass.net>
- <CA+q576MLvCwH2YQFx3V2tf3f4n6JUze7jkpqqTx97UPsOHewhg@mail.gmail.com>
-In-Reply-To: <CA+q576MLvCwH2YQFx3V2tf3f4n6JUze7jkpqqTx97UPsOHewhg@mail.gmail.com>
-From:   Youssef Esmat <youssefesmat@chromium.org>
-Date:   Thu, 5 Oct 2023 19:36:26 -0500
-Message-ID: <CA+q576OonOQrDnXtu3VR2Fm9vBomWNovh0A0XnGo5HnSc2S8MQ@mail.gmail.com>
-Subject: Re: [PATCH 00/15] sched: EEVDF and latency-nice and/or slice-attr
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>, mingo@kernel.org,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, corbet@lwn.net, qyousef@layalina.io,
-        chris.hyser@oracle.com, patrick.bellasi@matbug.net, pjt@google.com,
-        pavel@ucw.cz, qperret@google.com, tim.c.chen@linux.intel.com,
-        joshdon@google.com, timj@gnu.org, kprateek.nayak@amd.com,
-        yu.c.chen@intel.com, joel@joelfernandes.org, efault@gmx.de,
-        tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf v3] net/xdp: fix zero-size allocation warning in
+ xskq_create()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169655283112.25319.4323691266083806754.git-patchwork-notify@kernel.org>
+Date:   Fri, 06 Oct 2023 00:40:31 +0000
+References: <20231005193548.515-1-andrew.kanner@gmail.com>
+In-Reply-To: <20231005193548.515-1-andrew.kanner@gmail.com>
+To:     Andrew Kanner <andrew.kanner@gmail.com>
+Cc:     bjorn@kernel.org, magnus.karlsson@intel.com,
+        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, aleksander.lobakin@intel.com,
+        xuanzhuo@linux.alibaba.com, ast@kernel.org, hawk@kernel.org,
+        john.fastabend@gmail.com, daniel@iogearbox.net,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+fae676d3cf469331fc89@syzkaller.appspotmail.com,
+        syzbot+b132693e925cbbd89e26@syzkaller.appspotmail.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -77,99 +62,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 5, 2023 at 1:23=E2=80=AFPM Youssef Esmat <youssefesmat@chromium=
-.org> wrote:
->
-> On Thu, Oct 5, 2023 at 7:06=E2=80=AFAM Peter Zijlstra <peterz@infradead.o=
-rg> wrote:
-> >
-> > On Mon, Oct 02, 2023 at 08:41:36PM +0200, Peter Zijlstra wrote:
-> >
-> > > When mixing request sizes things become a little more interesting.
-> > >
-> > > Let me ponder this a little bit more.
-> >
-> > Using the attached program (I got *REALLY* fed up trying to draw these
-> > diagrams by hand), let us illustrate the difference between Earliest
-> > *Eligible* Virtual Deadline First and the one with the Eligible test
-> > taken out: EVDF.
-> >
-> > Specifically, the program was used with the following argument for
-> > EEVDF:
-> >
-> >   ./eevdf -e "0,1024,6" -e "1,1024,2" -e "2,1024,18" -v 19
-> >
-> > and with an additional '-n' for the EVDF column.
-> >
+Hello:
 
-<snip diagrams>
+This patch was applied to bpf/bpf.git (master)
+by Martin KaFai Lau <martin.lau@kernel.org>:
 
-> >
-> >
-> > As I wrote before; EVDF has worse lag bounds, but this is not
-> > insurmountable. The biggest problem that I can see is that of wakeup
-> > preemption. Currently we allow to preempt when 'current' has reached V
-> > (RUN_TO_PARITY in pick_eevdf()).
-> >
-> > With these rules, when EEVDF schedules C (our large slice task) at t=3D=
-10
-> > above, it is only a little behind C and can be reaily preempted after
-> > about 2 time units.
-> >
-> > However, EVDF will delay scheduling C until much later, see how A and B
-> > walk far ahead of V until t=3D36. Only when will we pick C. But this me=
-ans
-> > that we're firmly stuck with C for at least 11 time units. A newly
-> > placed task will be around V and will have no chance to preempt.
-> >
->
-> Thank you for the detailed analysis! I am still in the process of
-> digesting everything.
-> I do have a quick question, this will only be the case if we adjust
-> C's runtime without adjusting nice value, correct? So it does not
-> currently apply to the submitted code where the only way to change the
-> deadline is to also change the nice value and thus how fast/slow
-> vruntime accumulates. In other words without the sched_runtime
-> patch[1] we should not run into this scenario, correct?
->
-> [1] https://lore.kernel.org/lkml/20230915124354.416936110@noisy.programmi=
-ng.kicks-ass.net/
+On Thu,  5 Oct 2023 22:35:49 +0300 you wrote:
+> Syzkaller reported the following issue:
+>  ------------[ cut here ]------------
+>  WARNING: CPU: 0 PID: 2807 at mm/vmalloc.c:3247 __vmalloc_node_range (mm/vmalloc.c:3361)
+>  Modules linked in:
+>  CPU: 0 PID: 2807 Comm: repro Not tainted 6.6.0-rc2+ #12
+>  Hardware name: Generic DT based system
+>  unwind_backtrace from show_stack (arch/arm/kernel/traps.c:258)
+>  show_stack from dump_stack_lvl (lib/dump_stack.c:107 (discriminator 1))
+>  dump_stack_lvl from __warn (kernel/panic.c:633 kernel/panic.c:680)
+>  __warn from warn_slowpath_fmt (./include/linux/context_tracking.h:153 kernel/panic.c:700)
+>  warn_slowpath_fmt from __vmalloc_node_range (mm/vmalloc.c:3361 (discriminator 3))
+>  __vmalloc_node_range from vmalloc_user (mm/vmalloc.c:3478)
+>  vmalloc_user from xskq_create (net/xdp/xsk_queue.c:40)
+>  xskq_create from xsk_setsockopt (net/xdp/xsk.c:953 net/xdp/xsk.c:1286)
+>  xsk_setsockopt from __sys_setsockopt (net/socket.c:2308)
+>  __sys_setsockopt from ret_fast_syscall (arch/arm/kernel/entry-common.S:68)
+> 
+> [...]
 
-Sorry, to clarify, by "this" I meant "that we're firmly stuck with C
-for at least 11 time units".
+Here is the summary with links:
+  - [bpf,v3] net/xdp: fix zero-size allocation warning in xskq_create()
+    https://git.kernel.org/bpf/bpf/c/90aeaa99f53e
 
->
-> > That said, I do have me a patch to cure some of that:
-> >
-> >   https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/comm=
-it/?h=3Dsched/eevdf&id=3Dd7edbe431f31762e516f2730196f41322edcc621
-> >
-> > That would allow a task with a shorter request time to preempt in spite
-> > of RUN_TO_PARITY.
-> >
-> > However, in this example V is only 2/3 of the way to C's deadline, but
-> > it we were to have many more tasks, you'll see V gets closer and closer
-> > to C's deadline and it will become harder and harder to place such that
-> > preemption becomes viable.
-> >
-> > Adding 4 more tasks:
-> >
-> >   ./eevdf -e "0,1024,6" -e "1,1024,2" -e "2,1024,18" -v 19 -n -e "3,102=
-4,2" -e "4,1024,2" -e "5,1024,2" -e "6,1024,2"
-> >
-> > t=3D92 V=3D16
-> >  A                   |----<
-> >  B                    |<
-> > >C   |----------------<
-> >  D                    |<
-> >  E                   |<
-> >  F                    |<
-> >  G                   |<
-> >    |---------|-----*---|---------|---------|----
-> >
-> >
-> > And I worry this will create very real latency spikes.
-> >
-> > That said; I do see not having the eligibility check can help. So I'm
-> > not opposed to having a sched_feat for this, but I would not want to
-> > default to EVDF.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
