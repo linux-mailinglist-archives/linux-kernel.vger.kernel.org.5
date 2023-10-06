@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FCE67BB2F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 10:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 387797BB2F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 10:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230527AbjJFIVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 04:21:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35090 "EHLO
+        id S230511AbjJFIVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 04:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230484AbjJFIU7 (ORCPT
+        with ESMTP id S230344AbjJFIVv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 04:20:59 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49BEDE9;
-        Fri,  6 Oct 2023 01:20:58 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qog4t-0006XM-43; Fri, 06 Oct 2023 10:20:55 +0200
-Message-ID: <9ffdce44-c1ca-4587-bcae-4bd1ebb52f61@leemhuis.info>
-Date:   Fri, 6 Oct 2023 10:20:54 +0200
+        Fri, 6 Oct 2023 04:21:51 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B801E9;
+        Fri,  6 Oct 2023 01:21:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBEBFC433C7;
+        Fri,  6 Oct 2023 08:21:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696580509;
+        bh=Rleyk+ijWu/nDpxQgC3SNjU9qlvK6Ft6iDjWmhbKDIY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=br3bgF/3/cRbaRJkBy3sRCjuWMUfnImgEykeBlfA8FIxEy2wPP8oSIi8IElBxVS/F
+         BybGhOPmrxEKJfWzLGitiqFsXcVfNxxuCMctgyKZ7DWbYjSweS1CDFznttr1R/O7ED
+         mrdpUTgGvPM4k+VaVLycb8ZeScw/wikpXbRP9poFuj954GaWiXiGGrMhY5kxxBPsYJ
+         aW7NL9cpr4CGsLsRT1G91GUrR0SSRkvTR8zZTCBG+k7Cufy5hhijjW7eDsEIuOJhgF
+         iFWyt8b+ta9VFf/OO1aKci9OBm/hgAaHgJo7VSpIfceLuTTgltILJ2CkcyANzlIUKZ
+         v71a5H2bfqo3Q==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan+linaro@kernel.org>)
+        id 1qog63-0004M8-2O;
+        Fri, 06 Oct 2023 10:22:08 +0200
+From:   Johan Hovold <johan+linaro@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Johan Hovold <johan+linaro@kernel.org>, stable@vger.kernel.org,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH] regmap: fix NULL deref on lookup
+Date:   Fri,  6 Oct 2023 10:21:04 +0200
+Message-ID: <20231006082104.16707-1-johan+linaro@kernel.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: dm crypt: Fix reqsize in crypt_iv_eboiv_gen
-Content-Language: en-US, de-DE
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Mike Snitzer <snitzer@kernel.org>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        =?UTF-8?Q?Tatu_Heikkil=C3=A4?= <tatu.heikkila@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Device Mapper <dm-devel@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>
-References: <f1b8d8f5-2079-537e-9d0f-d58da166fe50@gmail.com>
- <ZR9dEiXhQv-wBVA2@debian.me> <ZR9l446ndB4n1Xl4@gondor.apana.org.au>
- <ZR9wRq7Rkz+LocDX@redhat.com> <ZR9x6ifhd6axh5Ki@gondor.apana.org.au>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <ZR9x6ifhd6axh5Ki@gondor.apana.org.au>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1696580458;7dcc8313;
-X-HE-SMSGID: 1qog4t-0006XM-43
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,26 +53,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.10.23 04:33, Herbert Xu wrote:
-> On Thu, Oct 05, 2023 at 10:26:14PM -0400, Mike Snitzer wrote:
+Not all regmaps have a name so make sure to check for that to avoid
+dereferencing a NULL pointer when dev_get_regmap() is used to lookup a
+named regmap.
 
-BTW, Herbert, thx for taking care of this quickly!
+Fixes: e84861fec32d ("regmap: dev_get_regmap_match(): fix string comparison")
+Cc: stable@vger.kernel.org      # 5.8
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+---
+ drivers/base/regmap/regmap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->> Sure, please do.  Shouldn't your header Cc: stable given that the
->> Fixes commit implies v6.5 needs this fix?
-> 
-> Sure I'll add it although it will be picked up automatically due
-> to the Fixes header.
+diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
+index 884cb51c8f67..234a84ecde8b 100644
+--- a/drivers/base/regmap/regmap.c
++++ b/drivers/base/regmap/regmap.c
+@@ -1478,7 +1478,7 @@ static int dev_get_regmap_match(struct device *dev, void *res, void *data)
+ 
+ 	/* If the user didn't specify a name match any */
+ 	if (data)
+-		return !strcmp((*r)->name, data);
++		return (*r)->name && !strcmp((*r)->name, data);
+ 	else
+ 		return 1;
+ }
+-- 
+2.41.0
 
-FWIW, as some people don't know this: that might be the case, but there
-is no guarantee, hence it's better to add it:
-
-https://lore.kernel.org/all/2023060703-colony-shakily-3514@gregkh/
-
->  I'll also fix the reporter's name.
-
-Side note: a Link: or Closes: tag to the report
-(https://lore.kernel.org/all/f1b8d8f5-2079-537e-9d0f-d58da166fe50@gmail.com/
-) would be nice as well.
-
-Thx again. Ciao, Thorsten
