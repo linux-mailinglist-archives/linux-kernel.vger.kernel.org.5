@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D2F7BB0A3
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 06:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F377BB0A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 06:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbjJFEA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 00:00:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52132 "EHLO
+        id S229941AbjJFEAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 00:00:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229876AbjJFEAZ (ORCPT
+        with ESMTP id S229968AbjJFEAj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 00:00:25 -0400
+        Fri, 6 Oct 2023 00:00:39 -0400
 Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F58DE
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 21:00:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2789CE7
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 21:00:36 -0700 (PDT)
 Received: from imladris.home.surriel.com ([10.0.13.28] helo=imladris.surriel.com)
         by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.96)
         (envelope-from <riel@shelob.surriel.com>)
-        id 1qoc0k-0000mf-2n;
+        id 1qoc0k-0000mf-30;
         Fri, 06 Oct 2023 00:00:22 -0400
 From:   riel@surriel.com
 To:     linux-kernel@vger.kernel.org
 Cc:     kernel-team@meta.com, linux-mm@kvack.org,
         akpm@linux-foundation.org, muchun.song@linux.dev,
-        mike.kravetz@oracle.com, leit@meta.com, willy@infradead.org
-Subject: [PATCH v7 0/4] hugetlbfs: close race between MADV_DONTNEED and page fault
-Date:   Thu,  5 Oct 2023 23:59:05 -0400
-Message-ID: <20231006040020.3677377-1-riel@surriel.com>
+        mike.kravetz@oracle.com, leit@meta.com, willy@infradead.org,
+        Rik van Riel <riel@surriel.com>, stable@kernel.org
+Subject: [PATCH 1/4] hugetlbfs: clear resv_map pointer if mmap fails
+Date:   Thu,  5 Oct 2023 23:59:06 -0400
+Message-ID: <20231006040020.3677377-2-riel@surriel.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231006040020.3677377-1-riel@surriel.com>
+References: <20231006040020.3677377-1-riel@surriel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: riel@surriel.com
@@ -42,49 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v7: fix !vma->vm_file and hfill2 cases
-v6: move a fix from patch 3 to patch 2, more locking fixes
-v5: somehow a __vma_private_lock(vma) test failed to make it from my tree into the v4 series, fix that
-v4: fix unmap_vmas locking issue pointed out by Mike Kravetz, and resulting lockdep fallout
-v3: fix compile error w/ lockdep and test case errors with patch 3
-v2: fix the locking bug found with the libhugetlbfs tests.
+From: Rik van Riel <riel@surriel.com>
 
-Malloc libraries, like jemalloc and tcalloc, take decisions on when
-to call madvise independently from the code in the main application.
+Hugetlbfs leaves a dangling pointer in the VMA if mmap fails.
+This has not been a problem so far, but other code in this patch
+series tries to follow that pointer.
 
-This sometimes results in the application page faulting on an address,
-right after the malloc library has shot down the backing memory with
-MADV_DONTNEED.
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Signed-off-by: Rik van Riel <riel@surriel.com>
+Cc: stable@kernel.org
+Fixes: 04ada095dcfc ("hugetlb: don't delete vma_lock in hugetlb MADV_DONTNEED processing")
+---
+ mm/hugetlb.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-Usually this is harmless, because we always have some 4kB pages
-sitting around to satisfy a page fault. However, with hugetlbfs
-systems often allocate only the exact number of huge pages that
-the application wants.
-
-Due to TLB batching, hugetlbfs MADV_DONTNEED will free pages outside of
-any lock taken on the page fault path, which can open up the following
-race condition:
-
-       CPU 1                            CPU 2
-
-       MADV_DONTNEED
-       unmap page
-       shoot down TLB entry
-                                       page fault
-                                       fail to allocate a huge page
-                                       killed with SIGBUS
-       free page
-
-Fix that race by extending the hugetlb_vma_lock locking scheme to also
-cover private hugetlb mappings (with resv_map), and pulling the locking 
-from __unmap_hugepage_final_range into helper functions called from
-zap_page_range_single. This ensures page faults stay locked out of
-the MADV_DONTNEED VMA until the huge pages have actually been freed.
-
-The third patch in the series is more of an RFC. Using the
-invalidate_lock instead of the hugetlb_vma_lock greatly simplifies
-the code, but at the cost of turning a per-VMA lock into a lock
-per backing hugetlbfs file, which could slow things down when
-multiple processes are mapping the same hugetlbfs file.
-
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index ba6d39b71cb1..a86e070d735b 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1138,8 +1138,7 @@ static void set_vma_resv_map(struct vm_area_struct *vma, struct resv_map *map)
+ 	VM_BUG_ON_VMA(!is_vm_hugetlb_page(vma), vma);
+ 	VM_BUG_ON_VMA(vma->vm_flags & VM_MAYSHARE, vma);
+ 
+-	set_vma_private_data(vma, (get_vma_private_data(vma) &
+-				HPAGE_RESV_MASK) | (unsigned long)map);
++	set_vma_private_data(vma, (unsigned long)map);
+ }
+ 
+ static void set_vma_resv_flags(struct vm_area_struct *vma, unsigned long flags)
+@@ -6806,8 +6805,10 @@ bool hugetlb_reserve_pages(struct inode *inode,
+ 		 */
+ 		if (chg >= 0 && add < 0)
+ 			region_abort(resv_map, from, to, regions_needed);
+-	if (vma && is_vma_resv_set(vma, HPAGE_RESV_OWNER))
++	if (vma && is_vma_resv_set(vma, HPAGE_RESV_OWNER)) {
+ 		kref_put(&resv_map->refs, resv_map_release);
++		set_vma_resv_map(vma, NULL);
++	}
+ 	return false;
+ }
+ 
+-- 
+2.41.0
 
