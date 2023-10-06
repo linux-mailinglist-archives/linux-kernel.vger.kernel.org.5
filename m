@@ -2,86 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C837BB041
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 04:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AACE37BB044
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 04:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229657AbjJFCVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Oct 2023 22:21:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33218 "EHLO
+        id S229817AbjJFCXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Oct 2023 22:23:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbjJFCVv (ORCPT
+        with ESMTP id S229774AbjJFCXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Oct 2023 22:21:51 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC58EDE
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 19:21:49 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d8997e79faeso2452786276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 19:21:49 -0700 (PDT)
+        Thu, 5 Oct 2023 22:23:02 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E50106
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Oct 2023 19:22:39 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c87e55a6baso12418495ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Oct 2023 19:22:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696558909; x=1697163709; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6shvDX0+qx3XslC2HibD1yD0G0VEB9xcs/tREVEeh0c=;
-        b=UsK9jHx9MG01pCvqnSfU8S/bGIHYP5UVE+8+tLK72+HoaF43+Zdw5bNXO6EVfOeWO3
-         4OduypqjW0LPDJkSts5Mlh5oK//xnFMBtVKEYvSRWD+5uNfj4EjL3vqfRogzyveaGTpj
-         MdFtQ8wjUPhPrr4PDOYmXR8Min4MK3M8/4B+hMzHJSWmkmbYbAC2SDd2aExxZlECwn8P
-         T64e0g3DqeiyCp537hyPKJxkzu9iE+OvbnQalsaaAEqTk04F2mHrJu1vGVQdIKelorAZ
-         shL5i2GsNEHhamwjclvVXdRxsBuRHtdxFqJMDLErm3GpTLQ14VNhh6BAv872il5Eg9uB
-         pvbw==
+        d=bytedance.com; s=google; t=1696558958; x=1697163758; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MgD2XlWyO1IkxKrZZ4NotDzi7FafWvmObFFGZh4fKtk=;
+        b=Im7qPefsjDS9nbLox8rqJoVIvjqksZW2nFDzD7g83S4eQToetBFtf7KowlaD+pp27H
+         6kZvdBYd/9vvoMkMs2kaTp8k6gcKzeblf+HoT+n82oxQ+F5l8vPLv06AMKG/MXietmI6
+         lJEA6n7n3YxV1sr1FM1Pe5nljZhDep/nqDao31U9bR+93nyFlB8pQH4EkNeU3OxdmR/+
+         qtnLQ2A2G5OLcKxmVZiJQE4I7KPloDN7vae6K4IndRPoEBzolxawGmVLkmFYA3uK+uLh
+         BT//2uZyX9/un0E40hNwzW2FZXvks3pPG8/e1aV1ynC9eGo6+KdJAIO3U6RdUttv78Gu
+         G09w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696558909; x=1697163709;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6shvDX0+qx3XslC2HibD1yD0G0VEB9xcs/tREVEeh0c=;
-        b=cuPGAWQuEjbe+NsCiCe+RaA813SpD36cjMWSdaRwm4Q+UcksKqfBxzpSlfAZPXEE3E
-         ROgmT5PO9gOWQxscQLoTc/o5aW2jlsaDTQMhvDu2K3fOXBQrpSwq2HJ8OKdRolP2LmR5
-         h+vXCiufJp6xnPlrrPLipP/wiLcfX2OqFysKStNDw4OYzD0CBjMsKUEeo/tZ8/ek3Iy+
-         plippDXc8CvHxDKlRTmk65pbrdVNtdMzmB9YxklxlwRulvmSUCzyCBshdtLrxCVdtBED
-         sxGtXFzBDp3t2NHDdymda2wYQXOBARnf2jEg5fFR3pX2MojlXCKCwcuBDrWHmdw5YeVC
-         wcpw==
-X-Gm-Message-State: AOJu0Yxw0L31Ayl+gN1D6lAFJO61BW7g5R2bk/qnXiKM9P0nkR9JIo69
-        JBh4MebnnEPzq5v8DovxhVYq45mnH6w=
-X-Google-Smtp-Source: AGHT+IHtWjaEqEjc2Bujlu2v05hlvj4CO9Qua7kCiMdHq6Gj8Qv3Qh2MeUfYMV1nZDMnq2NRALUFDxbXxQg=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:abaf:0:b0:d91:1147:3379 with SMTP id
- v44-20020a25abaf000000b00d9111473379mr86463ybi.1.1696558908928; Thu, 05 Oct
- 2023 19:21:48 -0700 (PDT)
-Date:   Thu,  5 Oct 2023 19:20:08 -0700
-In-Reply-To: <20231002133342.195882-1-michael.roth@amd.com>
-Mime-Version: 1.0
-References: <20231002133342.195882-1-michael.roth@amd.com>
-X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Message-ID: <169655697171.3533982.9527317906469089174.b4-ty@google.com>
-Subject: Re: [PATCH gmem] KVM: Relax guest_memfd restrictions on hugepages
-From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
-        Michael Roth <michael.roth@amd.com>
-Cc:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1696558958; x=1697163758;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MgD2XlWyO1IkxKrZZ4NotDzi7FafWvmObFFGZh4fKtk=;
+        b=AhSBBfWeOreXzNfP/VyvGZB6Mc0gkTuRnwq9xBm7+ty1bbt9y0U3TIwoK+r1P+ECKt
+         +F5cYDMjtSsl+MPAJbhAskGiw46YyvZc/s/EpPdjTqfVPiuQx64b/Wn+Iyka+JrPQVAL
+         xG3IdH/gSmA3IVdZzFTs07nubVsXTwBV2KVqLiY2nVpk2UM/i/O1pMwJLUAqcbS5G2nB
+         x2N4WgBQ6AGtzIgJ3aEUr4c30xoZGu8xzAI4hsd7CPsU4c5LlTynT0LIRog7NiGoWhrO
+         AuwuIKgxHJcSq1udn/GDf1WUznK7wLqYLlpiGguVwW156rftRsN4TenP3q2iq18gNMLa
+         XSyw==
+X-Gm-Message-State: AOJu0Yx1J9o7ZTIGe1fiEBg8diVKgBJDDkWCs96KL4s2YAs2KBJpwfBH
+        GqpGQ6JyqPuQSAuuNcRzgyVFRA==
+X-Google-Smtp-Source: AGHT+IG+mQuSZhsZ7s1GbN7oZkzhFLn2RCUCg1Is6VpUBCVfYtfZj/tayH7KU48aIsSbMRFm9GPikA==
+X-Received: by 2002:a17:902:e542:b0:1c3:d07f:39f7 with SMTP id n2-20020a170902e54200b001c3d07f39f7mr7233603plf.62.1696558958573;
+        Thu, 05 Oct 2023 19:22:38 -0700 (PDT)
+Received: from localhost ([49.7.199.22])
+        by smtp.gmail.com with ESMTPSA id 10-20020a170902c20a00b001ae0152d280sm2487893pll.193.2023.10.05.19.22.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Oct 2023 19:22:38 -0700 (PDT)
+From:   Jian Zhang <zhangjian.3032@bytedance.com>
+To:     brendan.higgins@linux.dev, benh@kernel.crashing.org,
+        joel@jms.id.au, andrew@aj.id.au
+Cc:     zhangjian3032@gmail.com, yulei.sh@bytedance.com,
+        xiexinnan@bytedance.com, Andi Shyti <andi.shyti@kernel.org>,
+        Andrew Jeffery <andrew@codeconstruct.com.au>,
+        Tommy Huang <tommy_huang@aspeedtech.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        linux-i2c@vger.kernel.org (open list:ARM/ASPEED I2C DRIVER),
+        openbmc@lists.ozlabs.org (moderated list:ARM/ASPEED I2C DRIVER),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/ASPEED MACHINE
+        SUPPORT),
+        linux-aspeed@lists.ozlabs.org (moderated list:ARM/ASPEED MACHINE
+        SUPPORT), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v3] i2c: aspeed: Fix i2c bus hang in slave read
+Date:   Fri,  6 Oct 2023 10:22:33 +0800
+Message-Id: <20231006022233.3963590-1-zhangjian.3032@bytedance.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 02 Oct 2023 08:33:42 -0500, Michael Roth wrote:
-> Rather than requiring an entire memslot's gmem binding to be
-> hugepage-aligned to make use of hugepages, relax the check to simply
-> ensure that a large folio is completely contained by the range the
-> memslot is bound to. Otherwise, userspace components like QEMU may
-> inadvertantly disable the use of hugepages depending on how they handle
-> splitting up regions of guest memory for legacy regions, ROMs, etc.
-> 
-> [...]
+When the `CONFIG_I2C_SLAVE` option is enabled and the device operates
+as a slave, a situation arises where the master sends a START signal
+without the accompanying STOP signal. This action results in a
+persistent I2C bus timeout. The core issue stems from the fact that
+the i2c controller remains in a slave read state without a timeout
+mechanism. As a consequence, the bus perpetually experiences timeouts.
 
-Applied to kvm-x86 guest_memfd, thanks!
+In this case, the i2c bus will be reset, but the slave_state reset is
+missing.
 
-[1/1] KVM: Relax guest_memfd restrictions on hugepages
-      https://github.com/kvm-x86/linux/commit/e7af8d17224a
+Fixes: fee465150b45 ("i2c: aspeed: Reset the i2c controller when timeout occurs")
+Signed-off-by: Jian Zhang <zhangjian.3032@bytedance.com>
+Acked-by: Andi Shyti <andi.shyti@kernel.org>
+Tested-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+Reviewed-by: Andrew Jeffery <andrew@codeconstruct.com.au>
 
---
-https://github.com/kvm-x86/linux/tree/next
+---
+Changelog:
+ v3 - move to __aspeed_i2c_reg_slave.
+ v2 - remove the i2c slave reset and only move the
+ `bus->slave_state = ASPEED_I2C_SLAVE_INACTIVE` to the aspeed_i2c_init.
+---
+ drivers/i2c/busses/i2c-aspeed.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
+index 5a416b39b818..28e2a5fc4528 100644
+--- a/drivers/i2c/busses/i2c-aspeed.c
++++ b/drivers/i2c/busses/i2c-aspeed.c
+@@ -749,6 +749,8 @@ static void __aspeed_i2c_reg_slave(struct aspeed_i2c_bus *bus, u16 slave_addr)
+ 	func_ctrl_reg_val = readl(bus->base + ASPEED_I2C_FUN_CTRL_REG);
+ 	func_ctrl_reg_val |= ASPEED_I2CD_SLAVE_EN;
+ 	writel(func_ctrl_reg_val, bus->base + ASPEED_I2C_FUN_CTRL_REG);
++
++	bus->slave_state = ASPEED_I2C_SLAVE_INACTIVE;
+ }
+ 
+ static int aspeed_i2c_reg_slave(struct i2c_client *client)
+@@ -765,7 +767,6 @@ static int aspeed_i2c_reg_slave(struct i2c_client *client)
+ 	__aspeed_i2c_reg_slave(bus, client->addr);
+ 
+ 	bus->slave = client;
+-	bus->slave_state = ASPEED_I2C_SLAVE_INACTIVE;
+ 	spin_unlock_irqrestore(&bus->lock, flags);
+ 
+ 	return 0;
+-- 
+2.30.2
+
