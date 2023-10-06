@@ -2,117 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DD327BBC4C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A507BBC55
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Oct 2023 18:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232908AbjJFQEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 12:04:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34582 "EHLO
+        id S232933AbjJFQFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 12:05:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbjJFQE3 (ORCPT
+        with ESMTP id S229853AbjJFQFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 12:04:29 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BDB2A6;
-        Fri,  6 Oct 2023 09:04:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A72BC433C8;
-        Fri,  6 Oct 2023 16:04:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696608268;
-        bh=JIca2rNF7pnZk1VDUltU0QafLhtvatujIWLbLfgLEJ0=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=FtnsFQACjd5d5AS+BffoAu44TRMwoBbkzz9y/AQuHZO1jWYXeA0rAkSzHQEaz72pk
-         oIq5Af/Z4jnFY/vgaOYZbCC+Il1ACSFwgzVvGgkfcl0HIpiWnk7zC/7OdyHUuSxGTD
-         vtuz8a6Iv1tyCl6WSPql5PRbFHL4Muq91AXhmCak+eh2MVf0B0vqrcbvZICOxLtPhW
-         ZhIPOfsFu976YcxTUG8bEqM0SEOHOaotW3e2bjJFYsOr1Vf7jmHVa/XoKn2FzmiLAJ
-         1wbItfg1AqkKrQK6yJi0mSYAFAFAC33mwWPqYDi2SezreOkVbeAG9dRAWqa1iZ6hIA
-         cV/DNGulBD9qg==
-Message-ID: <0b2741dd-a524-dde1-7aa3-520ce076e3c6@kernel.org>
-Date:   Sat, 7 Oct 2023 01:04:22 +0900
+        Fri, 6 Oct 2023 12:05:01 -0400
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC4009E;
+        Fri,  6 Oct 2023 09:04:58 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 3C5F1120005;
+        Fri,  6 Oct 2023 19:04:56 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 3C5F1120005
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1696608296;
+        bh=DfYcgCrfsYVwE9QpzwJ60jTTS1sE6fpm4zxzMmEGexQ=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=CQgboBreTfYt6HRdIs5d/vVXZzekSHtnE3I/0+cFXIC2jQXeYT8SfRdinIiwmJXwX
+         MMgXY95pwo/QxELSyO8yPbdRw+so5W06/zgku4XdOdgzrB9r1ARzfAIzmGcsqql0c3
+         36T7XU+F3UuncDJTWMcO/jbnltFOCLJ+T8QSI0vZx/hdTRr4z4bUvpE6RMMrTdshGB
+         rbMPI/xjvAF7nFhgOQv5nXlGiqKNtSgLygjELc7aG8WtA43ryjMoLzZb7VLixfloma
+         1/wLu2wTSH0RGRXgmXUcN7XYTZdr3JDdQcXNQbxYKApLwQYlRT78gGVLGAxSeHd5m7
+         BgcOQCNunT4+A==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Fri,  6 Oct 2023 19:04:55 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Fri, 6 Oct 2023 19:04:55 +0300
+From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
+To:     <lee@kernel.org>, <pavel@ucw.cz>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <andy.shevchenko@gmail.com>
+CC:     <kernel@sberdevices.ru>, <rockosov@gmail.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-leds@vger.kernel.org>,
+        Dmitry Rokosov <ddrokosov@salutedevices.com>
+Subject: [PATCH v1 00/11] leds: aw200xx: several driver updates
+Date:   Fri, 6 Oct 2023 19:04:26 +0300
+Message-ID: <20231006160437.15627-1-ddrokosov@salutedevices.com>
+X-Mailer: git-send-email 2.36.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v7 02/26] PM / devfreq: rockchip-dfi: Embed desc into
- private data struct
-Content-Language: en-US
-To:     Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-rockchip@lists.infradead.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Vincent Legoll <vincent.legoll@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-References: <20230704093242.583575-1-s.hauer@pengutronix.de>
- <20230704093242.583575-3-s.hauer@pengutronix.de>
-From:   Chanwoo Choi <chanwoo@kernel.org>
-In-Reply-To: <20230704093242.583575-3-s.hauer@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 180439 [Oct 06 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 535 535 da804c0ea8918f802fc60e7a20ba49783d957ba2, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;doc.awinic.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/10/06 12:39:00
+X-KSMG-LinksScanning: Clean, bases: 2023/10/06 14:01:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/10/06 13:25:00 #22070343
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23. 7. 4. 18:32, Sascha Hauer wrote:
-> No need for an extra allocation, just embed the struct
-> devfreq_event_desc into the private data struct.
-> 
-> Reviewed-by: Heiko Stuebner <heiko@sntech.de>
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
->  drivers/devfreq/event/rockchip-dfi.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/devfreq/event/rockchip-dfi.c b/drivers/devfreq/event/rockchip-dfi.c
-> index 74893c06aa087..467f9f42d38f7 100644
-> --- a/drivers/devfreq/event/rockchip-dfi.c
-> +++ b/drivers/devfreq/event/rockchip-dfi.c
-> @@ -49,7 +49,7 @@ struct dmc_usage {
->   */
->  struct rockchip_dfi {
->  	struct devfreq_event_dev *edev;
-> -	struct devfreq_event_desc *desc;
-> +	struct devfreq_event_desc desc;
->  	struct dmc_usage ch_usage[RK3399_DMC_NUM_CH];
->  	struct device *dev;
->  	void __iomem *regs;
-> @@ -204,14 +204,10 @@ static int rockchip_dfi_probe(struct platform_device *pdev)
->  
->  	data->dev = dev;
->  
-> -	desc = devm_kzalloc(dev, sizeof(*desc), GFP_KERNEL);
-> -	if (!desc)
-> -		return -ENOMEM;
-> -
-> +	desc = &data->desc;
->  	desc->ops = &rockchip_dfi_ops;
->  	desc->driver_data = data;
->  	desc->name = np->name;
-> -	data->desc = desc;
->  
->  	data->edev = devm_devfreq_event_add_edev(&pdev->dev, desc);
->  	if (IS_ERR(data->edev)) {
+The following patch series includes several updates for the AW200XX LED
+driver:
+    - some small fixes and optimizations to the driver implementation:
+      delays, autodimming calculation, disable_locking regmap flag,
+      display_rows calculation in runtime;
+    - fix LED device tree node pattern to accept LED names counting not
+      only from 0 to f;
+    - support HWEN hardware control, which allows enabling or disabling
+      AW200XX RTL logic from the main SoC using a GPIO pin;
+    - introduce the new AW20108 LED controller, the datasheet for this
+      controller can be found at [1].
 
-Applied it. Thanks.
+Links:
+    [1] https://doc.awinic.com/doc/20230609wm/8a9a9ac8-1d8f-4e75-bf7a-67a04465c153.pdf
+
+Dmitry Rokosov (3):
+  dt-bindings: leds: aw200xx: fix led dt node pattern
+  leds: aw200xx: support HWEN hardware control
+  dt-bindings: leds: aw200xx: introduce optional hwen-gpio property
+
+George Stark (7):
+  leds: aw200xx: calculate dts property display_rows in driver
+  dt-bindings: leds: aw200xx: remove property "awinic,display-rows"
+  leds: aw200xx: add delay after software reset
+  leds: aw200xx: enable disable_locking flag in regmap config
+  leds: aw200xx: improve autodim calculation method
+  leds: aw200xx: add support for aw20108 device
+  dt-bindings: leds: Add binding for AW20108 led driver
+
+Martin Kurbanov (1):
+  leds: aw200xx: fix write to DIM parameter
+
+ .../bindings/leds/awinic,aw200xx.yaml         |  42 +++----
+ drivers/leds/Kconfig                          |   8 +-
+ drivers/leds/leds-aw200xx.c                   | 112 +++++++++++++++---
+ 3 files changed, 114 insertions(+), 48 deletions(-)
 
 -- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+2.36.0
 
