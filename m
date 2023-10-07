@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F9807BC825
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 16:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF2867BC829
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 16:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344019AbjJGOBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 10:01:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47972 "EHLO
+        id S1344010AbjJGOBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 10:01:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343974AbjJGOBE (ORCPT
+        with ESMTP id S1343979AbjJGOBF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 10:01:04 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10E22C2;
-        Sat,  7 Oct 2023 07:01:03 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-405361bb94eso30183565e9.0;
-        Sat, 07 Oct 2023 07:01:02 -0700 (PDT)
+        Sat, 7 Oct 2023 10:01:05 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FEB9B6;
+        Sat,  7 Oct 2023 07:01:04 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-3296b87aa13so1299585f8f.3;
+        Sat, 07 Oct 2023 07:01:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696687261; x=1697292061; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696687263; x=1697292063; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Jw8zYERSqEu+kmYmyCghLNxuUwk+IwP5R5Agq5Rn9uQ=;
-        b=h7i+N7n8y22I5Vvh/XvDLa4NIyhH9MysBhnNmZMryzp/BqEhGlL7370XKt0a1CUUQn
-         D71QGctiAjan71l8TVKYj3kx3KcGKI/cFcSJy+JpMhYHX/L1XJ+Vw3ZhCwmgqUQ+Qtl+
-         QJDbZ4a7HIbiVB0sMFkhIUuT9RXv9aC4/y5Izmj87H1oWDKOmqka6CqP0OuOYWVtAZZ1
-         pIs/4HlsOC8VHjIBro9brJb1STJsbrU2nBO+peNTAB1HITh2Nem9x0//jlp38MNuB713
-         DduXpuVqpWQwBRtxAUucGa1ykwLZQNN5UDTZNmEdAH3q91CuKDJq0ZiOf54dQsUPUkvA
-         Dr2w==
+        bh=OSyejUmIYUE/ugRzpClD0C9mW54tD2QmJtfXKPfskwA=;
+        b=Winbecs3XtfFJBD6YRpgzeEHPN9b9fhATawleORt+UMR+aqYYXT3B/m7IxXHxUgKCS
+         k56eMuVZZK/DQox0ZR4CngRdvXvBPaxAf9v7lEg4nXgxbearng8aS51Jy/kJGpS0oaN/
+         AUpd8JP7GcfEo2YDPoAxSNpeuX75Iju6LB+dLd//cLhvg/tGJ8IPteovWniNs79YQAoH
+         xTmtmHSYSxRXCI987WPLG5pLJKiXdcX4T1U1DW1qCN+OeWyJ4A4fvu6DHM4tvfMyHWvu
+         PlpM9wKF4vt/1Kf0Zk7Yrp1fy8x2qjIs46JcxCLt500cOIFYMu0+bUFHq+BWx5Iiokfg
+         E2XQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696687261; x=1697292061;
+        d=1e100.net; s=20230601; t=1696687263; x=1697292063;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Jw8zYERSqEu+kmYmyCghLNxuUwk+IwP5R5Agq5Rn9uQ=;
-        b=IzTg1303HEhkpEmtrBs77TRFGsR18q/YJCLetmW37Rn5mPArj2IBhUP/tKhf3zN32u
-         Vv+3HjRsp+YelfRqHm8co0u5FUdrmQPCMsnp+qbtsCvpKIH8JK42Fu9tPKP0apikRpVB
-         2M/GAqjharNILVIhehgtdvsPAyAfbL0z2RrmOHEoK0XzGsIoUaBBnQc3J+tbCbqWXuUo
-         fNTEsCZaTC1+NcHM/AS6VROXsR9mE+h1QLOph79Ri+Nvrpcla3AZxKU7hSkPACtKg8DN
-         zbuBlvkAiMh/OZHNStISEK0md6MMgBUKF8hd7TJO+8KTOalpBALUekgPgLIYwh2Puw44
-         7gKA==
-X-Gm-Message-State: AOJu0YwDF1uGpsrjYmW5VfOcFLD8y8blwd/9liDvwCRb6Cbk/xRRzcmM
-        4nsHge2N8E6NzNXMWGpmCv4=
-X-Google-Smtp-Source: AGHT+IFQptrEpwlPW9ot1SQ6UuDVRo1gaRXqfUiACI4NmGULahJnOISsiOOHpR3YvXdLnvR9QM+HrA==
-X-Received: by 2002:a1c:6a18:0:b0:405:4a78:a892 with SMTP id f24-20020a1c6a18000000b004054a78a892mr9155691wmc.9.1696687261384;
-        Sat, 07 Oct 2023 07:01:01 -0700 (PDT)
+        bh=OSyejUmIYUE/ugRzpClD0C9mW54tD2QmJtfXKPfskwA=;
+        b=uqOUSqvkPqs7/rMwloQnLanNTaBefwauaL7WKgqUJxL1bKuxnyrt0CM/oK3m8WfI0X
+         H5bhqyKrFtk4bFL/SOP+KhC2mj+qu0fajdjNxaDf/dcg0UB2Sssfs4Ux5ViTH7CwnLXx
+         zbj+1ksgG5lUlsczdPhWMMoaEKt81ngNV8ixp+7pBjr469XAvq+nNTbLUEjjL+geiVxp
+         y6pt97Wr/TRMBi3BgV1/sqC374/ZbjlcKL8vSUx42wriLc4gLu6jfVHzpX7v5wMbKnDo
+         2LvbhZ0gwrdhGMAJ9LeC5U7shYjDs2JFLb/9ZdNmtEiwg3yvRqUBV0zI+ZVJfCABhAmq
+         PvLA==
+X-Gm-Message-State: AOJu0Yxa/gQ2QVgMK12SaRymX3rI+CzjtHSs/4EIiJbyP5OtyNM+9klz
+        bNU6gu4l8085mBWLDsbhxVg=
+X-Google-Smtp-Source: AGHT+IGU9FhqUnrVQzrFhL1KtxM6QZuUbG2ri1efmrRV6OD4JzIZ4VoDEnddJbWUGYgeWXdqywDcEA==
+X-Received: by 2002:a5d:5607:0:b0:31c:6591:d415 with SMTP id l7-20020a5d5607000000b0031c6591d415mr9239447wrv.39.1696687262498;
+        Sat, 07 Oct 2023 07:01:02 -0700 (PDT)
 Received: from david-ryuzu.fritz.box ([77.22.112.104])
-        by smtp.googlemail.com with ESMTPSA id q8-20020a05600000c800b0032415213a6fsm4332043wrx.87.2023.10.07.07.01.00
+        by smtp.googlemail.com with ESMTPSA id q8-20020a05600000c800b0032415213a6fsm4332043wrx.87.2023.10.07.07.01.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Oct 2023 07:01:01 -0700 (PDT)
+        Sat, 07 Oct 2023 07:01:02 -0700 (PDT)
 From:   David Wronek <davidwronek@gmail.com>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -69,9 +69,9 @@ Cc:     cros-qcom-dts-watchers@chromium.org, linux-arm-msm@vger.kernel.org,
         linux-phy@lists.infradead.org, linux-scsi@vger.kernel.org,
         hexdump0815@googlemail.com, ~postmarketos/upstreaming@lists.sr.ht,
         phone-devel@vger.kernel.org, David Wronek <davidwronek@gmail.com>
-Subject: [PATCH 3/7] dt-bindings: arm: qcom: Add Xiaomi Redmi Note 9S
-Date:   Sat,  7 Oct 2023 15:58:27 +0200
-Message-ID: <20231007140053.1731245-4-davidwronek@gmail.com>
+Subject: [PATCH 4/7] phy: qcom: qmp-ufs: Add SC7180 support
+Date:   Sat,  7 Oct 2023 15:58:28 +0200
+Message-ID: <20231007140053.1731245-5-davidwronek@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231007140053.1731245-1-davidwronek@gmail.com>
 References: <20231007140053.1731245-1-davidwronek@gmail.com>
@@ -87,26 +87,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the Xiaomi Redmi Note 9S (curtana) smartphone, which is based
-on the Qualcomm SM7125 SoC.
+The SC7180 UFS PHY is identical to the one found on SM7150. Add a
+compatible for it.
 
 Signed-off-by: David Wronek <davidwronek@gmail.com>
 ---
- Documentation/devicetree/bindings/arm/qcom.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/phy/qualcomm/phy-qcom-qmp-ufs.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
-index 7f80f48a0954..42461b0f19a1 100644
---- a/Documentation/devicetree/bindings/arm/qcom.yaml
-+++ b/Documentation/devicetree/bindings/arm/qcom.yaml
-@@ -984,6 +984,7 @@ properties:
- 
-       - items:
-           - enum:
-+              - xiaomi,curtana
-               - xiaomi,joyeuse
-           - const: qcom,sm7125
- 
+diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c b/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
+index 514fa14df634..1919b8bf5a85 100644
+--- a/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
++++ b/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
+@@ -1787,6 +1787,9 @@ static const struct of_device_id qmp_ufs_of_match_table[] = {
+ 	}, {
+ 		.compatible = "qcom,sa8775p-qmp-ufs-phy",
+ 		.data = &sa8775p_ufsphy_cfg,
++	}, {
++		.compatible = "qcom,sc7180-qmp-ufs-phy",
++		.data = &sm7150_ufsphy_cfg,
+ 	}, {
+ 		.compatible = "qcom,sc7280-qmp-ufs-phy",
+ 		.data = &sc7280_ufsphy_cfg,
 -- 
 2.42.0
 
