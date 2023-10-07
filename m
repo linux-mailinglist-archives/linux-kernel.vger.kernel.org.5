@@ -2,44 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B977BC7FC
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 15:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A367BC802
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 15:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343904AbjJGNgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 09:36:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57058 "EHLO
+        id S1343919AbjJGNmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 09:42:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343627AbjJGNgF (ORCPT
+        with ESMTP id S1343627AbjJGNmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 09:36:05 -0400
+        Sat, 7 Oct 2023 09:42:13 -0400
 Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB62BA;
-        Sat,  7 Oct 2023 06:36:03 -0700 (PDT)
-X-QQ-mid: bizesmtp86t1696685746tumf87vq
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B700FB6;
+        Sat,  7 Oct 2023 06:42:10 -0700 (PDT)
+X-QQ-mid: bizesmtp80t1696686124tki9cnn8
 Received: from linux-lab-host.localdomain ( [116.30.131.235])
         by bizesmtp.qq.com (ESMTP) with 
-        id ; Sat, 07 Oct 2023 21:35:45 +0800 (CST)
+        id ; Sat, 07 Oct 2023 21:42:03 +0800 (CST)
 X-QQ-SSF: 01200000000000E0Y000000A0000000
-X-QQ-FEAT: 3M0okmaRx3jgGcczq7ckLHewl2tbA5gqgi51LqUGP7as6L5o4OHQBGbMr+O0K
-        Ev5u1YtIpPxQGtJlVHeYgCFGWuSyU4pupUt3i9h5i6zVcsE9kmXpl7AbGbnnLBOxIZeJQPL
-        +Uf+RAHoyB1WFXVIuEQ+hM+OUqylNxlzXA9MGEgfMEhjuEEyP835Kv4abK53J0LUbGOnySj
-        JxxpaCy54pY0AHvDEJ/5ycR62jiLW/n5w+rhGGqYxuoJG8GNAJr8OBXEIj6XKza1Sw4w5Nj
-        27F3twjB0oVAqiVQJOYZP6DupfkRZWP2HbTzQPMtM/u15Tu153r5elnFLt4UgaJcgJmVG0Z
-        mQlI8VDelUKWCRAEg97X1DbevJXNLRuEWG8ACCAxcpwN6vtCWNF6jsT4uDBoQ==
+X-QQ-FEAT: +ynUkgUhZJk7Fs1t8lUqtLH+EA8mn1TwpN/pWP05T+XG/tIY7HHE3pWYLRvU7
+        pe9msVxgs1t4pSKYQRrNZ7pHFhsaR+ZDN8xdpZY1yHm8KuhdtpodfhHL6QgVvoWngzz8vKY
+        yP5MBJQLQSxa0+n1Wyp7b1BRA7iyIBRiML7sTqvLHdFRK/ClBu6nMzJqeQhPsAIrS1U6HMg
+        HILUJdVdI9p3rjZFPVlB+6t3iH1uzHgqj6mcsO8Wzrrb0fEhnu5U2djZYWDTF3bTHWsF24I
+        VmY7yENLJBWnsmW4ZOYPMUfqmnAj4u39XkTtgd8oCfTkiHVDZevNyudZ8p1BZApheHajrKI
+        pM3JhFxHU2LkLfGVcC7ivIzRDmPUXk6JelUtFDAj8TzTX6uU2Nu6XOgg9zzPQuRHbyavWBz
 X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 6264558970741984576
+X-BIZMAIL-ID: 9388055664300987120
 From:   Zhangjin Wu <falcon@tinylab.org>
-To:     arnd@arndb.de
+To:     linux@weissschuh.net
 Cc:     falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
-        tim.bird@sony.com, tanyuan@tinylab.org
-Subject: Re: [PATCH v1 7/7] DCE/DSE: riscv: trim syscall tables
-Date:   Sat,  7 Oct 2023 21:35:44 +0800
-Message-Id: <20231007133544.6580-1-falcon@tinylab.org>
+        linux-kselftest@vger.kernel.org, shuah@kernel.org,
+        stable@vger.kernel.org, w@1wt.eu
+Subject: [PATCH] Re: tools/nolibc: drop test for getauxval(AT_PAGESZ)
+Date:   Sat,  7 Oct 2023 21:42:02 +0800
+Message-Id: <20231007134202.6766-1-falcon@tinylab.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <e160b4df-92ce-4b9c-96ba-200f259c8216@app.fastmail.com>
-References: <e160b4df-92ce-4b9c-96ba-200f259c8216@app.fastmail.com>
+In-Reply-To: <20231007-nolibc-auxval-pagesz-v1-1-af00804edead@weissschuh.net>
+References: <20231007-nolibc-auxval-pagesz-v1-1-af00804edead@weissschuh.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-QQ-SENDSIZE: 520
 Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
@@ -53,52 +54,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Arnd
+Hi, Thomas
 
-> On Tue, Sep 26, 2023, at 00:43, Zhangjin Wu wrote:
-> > When the maximum nr of the used syscalls is smaller than __NR_syscalls
-> > (original syscalls total). It is able to update __NR_syscalls to
-> > (maximum nr + 1) and further trim the '>= (maximum nr + 1)' part of the
-> > syscall tables:
-> >
-> > For example:
-> >
-> >     sys_call_table [143] = {
-> > 	[0 ... 143 - 1] = sys_ni_syscall,
-> >         [64] = sys_write,
-> >         [93] = sys_exit,
-> >         [142] = sys_reboot,
-> >     }
-> >
-> > The >= 143 part of the syscall tables can be trimmed.
-> >
-> > At the same time, the syscall >= 143 from user space must be ignored
-> > from do_trap_ecall_u() of traps.c.
-> >
-> > Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
-> > ---
-> >  arch/riscv/include/asm/unistd.h               |  2 ++
-> >  arch/riscv/kernel/Makefile                    |  2 ++
-> >  arch/riscv/kernel/syscalls/Makefile           | 22 +++++++++++++++++++
-> >  .../kernel/syscalls/compat_syscall_table.c    |  4 ++--
-> >  arch/riscv/kernel/syscalls/syscall_table.c    |  4 ++--
-> >  5 files changed, 30 insertions(+), 4 deletions(-)
-> 
-> This bit feels like you are overoptimizing for a corner case:
-> there is not much to be gained in terms of memory savings, but
-> you add complexity in an area that I feel should be made common
-> between architectures.
-> 
-> I hope to get back to working on consolidating both the
-> syscall.tbl input files and the build infrastructure for them
-> across architectures, and you make that harder here, so I'd
-> prefer you to drop this part, at least until the code is
-> shared across all architectures.
+> The test will not work for systems with pagesize != 4096 like aarch64
+> and some others.
 >
 
-Agree, let's drop it.
+We have used EXPECT_GE() instead of EXPECT_EQ(), so this should not
+fail, do I miss something ?;-)
 
 Thanks,
-Zhangjin
+Zhangjin Wu
 
->     Arnd
+> Other testcases are already testing the same functionality:
+> * auxv_AT_UID tests getauxval() in general.
+> * test_getpagesize() tests pagesize() which directly calls
+>   getauxval(AT_PAGESZ).
+> 
+> Fixes: 48967b73f8fe ("selftests/nolibc: add testcases for startup code")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> ---
+> Note:
+> 
+> This should probably also make it into 6.6.
+> ---
+>  tools/testing/selftests/nolibc/nolibc-test.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
+> index a3ee4496bf0a..7e3936c182dc 100644
+> --- a/tools/testing/selftests/nolibc/nolibc-test.c
+> +++ b/tools/testing/selftests/nolibc/nolibc-test.c
+> @@ -630,7 +630,6 @@ int run_startup(int min, int max)
+>  		CASE_TEST(environ_HOME);     EXPECT_PTRNZ(1, getenv("HOME")); break;
+>  		CASE_TEST(auxv_addr);        EXPECT_PTRGT(test_auxv != (void *)-1, test_auxv, brk); break;
+>  		CASE_TEST(auxv_AT_UID);      EXPECT_EQ(1, getauxval(AT_UID), getuid()); break;
+> -		CASE_TEST(auxv_AT_PAGESZ);   EXPECT_GE(1, getauxval(AT_PAGESZ), 4096); break;
+>  		case __LINE__:
+>  			return ret; /* must be last */
+>  		/* note: do not set any defaults so as to permit holes above */
+> 
+> ---
+> base-commit: ab663cc32912914258bc8a2fbd0e753f552ee9d8
+> change-id: 20231007-nolibc-auxval-pagesz-05f5ff79c4c4
+> 
+> Best regards,
+> -- 
+> Thomas Weißschuh <linux@weissschuh.net>
