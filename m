@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD807BC936
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 19:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F487BC934
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 19:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344117AbjJGRFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 13:05:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56746 "EHLO
+        id S1344122AbjJGRFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 13:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344098AbjJGRFB (ORCPT
+        with ESMTP id S1344105AbjJGRFC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 13:05:01 -0400
+        Sat, 7 Oct 2023 13:05:02 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE623B9;
-        Sat,  7 Oct 2023 10:04:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23CA5C433C8;
-        Sat,  7 Oct 2023 17:04:57 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB12BA;
+        Sat,  7 Oct 2023 10:05:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D892FC433CB;
+        Sat,  7 Oct 2023 17:04:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696698299;
-        bh=7PA8scmHfu5nyFOhItoPibMephbX/u9X82eA3NzQP1c=;
+        s=k20201202; t=1696698301;
+        bh=TTLYNPGjyBivwozdoa07Smf/suztpzKvRG2LWS6FNas=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LWnn0sOt6WygtD1hvtwiVIqmKHBDxYUleCmm8Su8hd/lnUJvGVbe6sHfuJl7ZjjA8
-         pZ96QAL2xYi7Egbrrdjvt0EvwffMJKtblV8mUCndaQJ2RZJAoTQibExZrVfXJykOnj
-         aWSpG0WDrEdYgYLSX33jj/riVgkH8hz3+x/rwrSdyQsPVmBDpQ12ADSFv3EiQADHaY
-         J8cCrKBe64utnoCGPbxGVmreLogcNc4NqaPkbm5XwX4Abes0XcwIAeQBco/YFqve0Q
-         0kNqxSJHhRmkr4BW2uaIYynAZfKuDg+aL1DvDsjChq5pL746vpys8wjaVLH/1nrUI5
-         f9e2VYHEtY3FA==
+        b=b8HZlTL4Afo59CcwyOtgb4Y93r5LNHEiDZEKyeCjOhuDNWTEokl9GgaNHBDGyQl1m
+         k98Volk7bHlMt8cG0kuf/X3YROh35Oz+RhlBeaNSQvs0X0nifaBb4BxkSA5iNpwmTK
+         9iW+aoM6iguuZVAIQnuN2KeXyNwMyiaGCWXPNG+Sn/NlT+R4sOQLgIvk6685gIjDdx
+         63f1dugnXyAhbGubHI/ZKunvbkiuu32lOajBgwSdiDrzzZilDkZDZybvabEJOA5Rnc
+         w/pf5cUTLzYO+89crg7fWJMZBsp5CI260rVEUWjRUaoVlTxz8GdyxUWnty3p5PH4Z6
+         uocIjpipmOmtQ==
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     linux-kbuild@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
         Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
         Nicolas Schier <nicolas@fjasle.eu>
-Subject: [PATCH 3/5] modpost: define TO_NATIVE() using bswap_* functions
-Date:   Sun,  8 Oct 2023 02:04:46 +0900
-Message-Id: <20231007170448.505487-3-masahiroy@kernel.org>
+Subject: [PATCH 4/5] modpost: refactor check_sec_ref()
+Date:   Sun,  8 Oct 2023 02:04:47 +0900
+Message-Id: <20231007170448.505487-4-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231007170448.505487-1-masahiroy@kernel.org>
 References: <20231007170448.505487-1-masahiroy@kernel.org>
@@ -52,94 +52,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current TO_NATIVE() has some limitations:
+We can replace &elf->sechdrs[i] with &sechdrs[i] to slightly shorten
+the code because we already have the local variable 'sechdrs'.
 
- 1) You cannot cast the argument.
-
- 2) You cannot pass a variable marked as 'const'.
-
- 3) Passing an array is a bug, but it is not detected.
-
-Impelement TO_NATIVE() using bswap_*() functions. These are GNU
-extensions. If we face portability issues, we can port the code from
-include/uapi/linux/swab.h.
-
-With this change, get_rel_type_and_sym() can be simplified by casting
-the arguments directly.
+However, defining 'sechdr' instead shortens the code further.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 ---
 
- scripts/mod/modpost.c | 13 ++++---------
- scripts/mod/modpost.h | 25 ++++++++++++-------------
- 2 files changed, 16 insertions(+), 22 deletions(-)
+ scripts/mod/modpost.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index 2f3b0fe6f68d..99476a9695c5 100644
+index 99476a9695c5..441d57ee3275 100644
 --- a/scripts/mod/modpost.c
 +++ b/scripts/mod/modpost.c
-@@ -1410,15 +1410,10 @@ static void get_rel_type_and_sym(struct elf_info *elf, uint64_t r_info,
- 		return;
- 	}
+@@ -1518,16 +1518,17 @@ static void section_rel(struct module *mod, struct elf_info *elf,
+ static void check_sec_ref(struct module *mod, struct elf_info *elf)
+ {
+ 	int i;
+-	Elf_Shdr *sechdrs = elf->sechdrs;
  
--	if (is_64bit) {
--		Elf64_Xword r_info64 = r_info;
--
--		r_info = TO_NATIVE(r_info64);
--	} else {
--		Elf32_Word r_info32 = r_info;
--
--		r_info = TO_NATIVE(r_info32);
--	}
-+	if (is_64bit)
-+		r_info = TO_NATIVE((Elf64_Xword)r_info);
-+	else
-+		r_info = TO_NATIVE((Elf32_Word)r_info);
- 
- 	*r_type = ELF_R_TYPE(r_info);
- 	*r_sym = ELF_R_SYM(r_info);
-diff --git a/scripts/mod/modpost.h b/scripts/mod/modpost.h
-index 6413f26fcb6b..1392afec118c 100644
---- a/scripts/mod/modpost.h
-+++ b/scripts/mod/modpost.h
-@@ -1,4 +1,5 @@
- /* SPDX-License-Identifier: GPL-2.0 */
-+#include <byteswap.h>
- #include <stdbool.h>
- #include <stdio.h>
- #include <stdlib.h>
-@@ -51,21 +52,19 @@
- #define ELF_R_TYPE  ELF64_R_TYPE
- #endif
- 
-+#define bswap(x) \
-+({ \
-+	_Static_assert(sizeof(x) == 1 || sizeof(x) == 2 || \
-+		       sizeof(x) == 4 || sizeof(x) == 8, "bug"); \
-+	(typeof(x))(sizeof(x) == 2 ? bswap_16(x) : \
-+		    sizeof(x) == 4 ? bswap_32(x) : \
-+		    sizeof(x) == 8 ? bswap_64(x) : \
-+		    x); \
-+})
+ 	/* Walk through all sections */
+ 	for (i = 0; i < elf->num_sections; i++) {
+-		check_section(mod->name, elf, &elf->sechdrs[i]);
++		Elf_Shdr *sechdr = &elf->sechdrs[i];
 +
- #if KERNEL_ELFDATA != HOST_ELFDATA
- 
--static inline void __endian(const void *src, void *dest, unsigned int size)
--{
--	unsigned int i;
--	for (i = 0; i < size; i++)
--		((unsigned char*)dest)[i] = ((unsigned char*)src)[size - i-1];
--}
--
--#define TO_NATIVE(x)						\
--({								\
--	typeof(x) __x;						\
--	__endian(&(x), &(__x), sizeof(__x));			\
--	__x;							\
--})
-+#define TO_NATIVE(x) (bswap(x))
- 
- #else /* endianness matches */
++		check_section(mod->name, elf, sechdr);
+ 		/* We want to process only relocation sections and not .init */
+-		if (sechdrs[i].sh_type == SHT_RELA)
+-			section_rela(mod, elf, &elf->sechdrs[i]);
+-		else if (sechdrs[i].sh_type == SHT_REL)
+-			section_rel(mod, elf, &elf->sechdrs[i]);
++		if (sechdr->sh_type == SHT_RELA)
++			section_rela(mod, elf, sechdr);
++		else if (sechdr->sh_type == SHT_REL)
++			section_rel(mod, elf, sechdr);
+ 	}
+ }
  
 -- 
 2.39.2
