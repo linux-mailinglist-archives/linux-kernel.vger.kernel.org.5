@@ -2,52 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 006C37BC9C6
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 22:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF5827BC9C8
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 22:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344153AbjJGUfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 16:35:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54036 "EHLO
+        id S1344178AbjJGUgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 16:36:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343782AbjJGUfD (ORCPT
+        with ESMTP id S1344124AbjJGUgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 16:35:03 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EEAD93;
-        Sat,  7 Oct 2023 13:35:00 -0700 (PDT)
+        Sat, 7 Oct 2023 16:36:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4FDE95;
+        Sat,  7 Oct 2023 13:35:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=P0XjgGcwROeVVGyQzp4eM0gt2uiSNUTYGxKdqCX9ND8=; b=hkNzELmrNfiMGUcaxH+u8YbfpY
-        qnkF3Jy1w8uNeNbEmmnHdSF20DY/Tg6WDSFh7VuNTkDFmuxKPk1lUXh62Z3kYUCeVVdNU3cwDI1jd
-        PB3be/MQLikguwYykHf0d0qQpzJ9nd9UXcKz5X5+JONUa4tG0OquU/vyKWGfjRQPhJ9GpfFwVhOjq
-        ohVjIfGkMDhiP0m4eyG5Wm7E+iV6/F9JzCYzhdSQ8AXl68IlfRCXsfHk/OMuHyAOuIlwf0L8BSJNM
-        12XLPwMwoJPj4qTFcW/3XlqGHssDxFtELdeQ4kX/SWrhoIuUwYu//DBUBR/+++GdwBuZmNg05PVLY
-        VVtkmQJw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qpE04-00DzC5-2C;
-        Sat, 07 Oct 2023 20:34:16 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 66AA4300388; Sat,  7 Oct 2023 22:34:11 +0200 (CEST)
-Date:   Sat, 7 Oct 2023 22:34:11 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Lucy Mielke <lucymielke@icloud.com>
-Cc:     mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-        tglx@linutronix.de, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf/x86/p4: Fix "Wunused-but-set-variable" warning
-Message-ID: <20231007203411.GA8085@noisy.programming.kicks-ass.net>
-References: <ZSGpl_hT23B6ix0M@mainframe>
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=TF/aqVn3IrPnAMqnSHzChnQi0apaIvuOdxt0Uorvv1E=; b=D3iwRI4Gvzv9R9HV3nr9SWYP+s
+        RdPiYvPHnG64BZK2SzCbvTwNWhcnYMlYkwGALT2aEiqtaKZnaCALWYgm0MWGHhD8oGn9kfTF9enem
+        NetzCtD4xQREvOZ4jXL1aTsL1kWhwbRLCsutNPGYwtaujQKRGRamU/XdZL7b+i+3btAl4Nm5skEzP
+        ccJl7S82yyWJeai2rto3f8d9OiLsOTr2b+52aFNSjCREUH4N5WFYLQTTKEuXsXa4w2ePNoq+3VNb6
+        hPZ6INb5AhYpZv2WUlIReGB4xllPL/lkJNpE622MtUYd/2QyD+lZ4IjBdOp7cZYtwEd1wxCoLiq2/
+        nmbReRHg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qpE1Y-005mL8-Eh; Sat, 07 Oct 2023 20:35:44 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+        Mateusz Guzik <mjguzik@gmail.com>
+Subject: [PATCH v2 0/5] Remove the XFS mrlock
+Date:   Sat,  7 Oct 2023 21:35:38 +0100
+Message-Id: <20231007203543.1377452-1-willy@infradead.org>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZSGpl_hT23B6ix0M@mainframe>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
@@ -57,34 +51,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 07, 2023 at 08:55:19PM +0200, Lucy Mielke wrote:
-> This fixes a compiler warning when compiling an allyesconfig with W=1:
-> warning: variable ´high´ set but not used [-Wunused-but-set-variable]
+XFS has an mrlock wrapper around the rwsem which adds only the
+functionality of knowing whether the rwsem is currently held in read
+or write mode.  Both regular rwsems and rt-rwsems know this, they just
+don't expose it as an API.  By adding that, we can remove the XFS mrlock
+as well as improving the debug assertions for the mmap_lock when lockdep
+is disabled.
 
-What compiler and what .config?
+v2: Add rwsem_assert_held() and rwsem_assert_held_write() instead of
+augmenting the existing rwsem_is_locked() with rwsem_is_write_locked().
+There's also an __rwsem_assert_held() and __rwsem_assert_held_write()
+for the benefit of XFS when it's in a context where lockdep doesn't
+know what's going on.  It's still an improvement, so I hope those who
+are looking for perfection can accept a mere improvement.
 
-> Signed-off-by: Lucy Mielke <lucymielke@icloud.com>
-> ---
->  arch/x86/events/intel/p4.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/events/intel/p4.c b/arch/x86/events/intel/p4.c
-> index 35936188db01..69aaf7c0f340 100644
-> --- a/arch/x86/events/intel/p4.c
-> +++ b/arch/x86/events/intel/p4.c
-> @@ -1366,7 +1366,7 @@ static __initconst const struct x86_pmu p4_pmu = {
->  
->  __init int p4_pmu_init(void)
->  {
-> -	unsigned int low, high;
-> +	unsigned int low, __maybe_unused high;
->  	int i, reg;
->  
->  	/* If we get stripped -- indexing fails */
+We can do more to replace uses of rwsem_is_locked(), and I have a few of
+those in my tree, but let's focus on these three use cases for now and
+we can trickle in other improvements through other maintainers after 6.7.
 
-Right after this we have:
+I'm sympathetic to "this will warn twice and dump much the same
+information if you have lockdep enabled".  Perhaps somebody has a
+suggestion for not doing that?
 
-	rdmsr(MSR_IA32_MISC_ENABLE, low, high);
+Matthew Wilcox (Oracle) (5):
+  locking: Add rwsem_assert_held() and rwsem_assert_held_write()
+  mm: Use rwsem assertion macros for mmap_lock
+  xfs: Replace xfs_isilocked with xfs_assert_locked
+  xfs: Remove mrlock wrapper
+  fs: Add inode_assert_locked() and inode_assert_locked_excl()
 
-which should get high unconditionally used. If there's a problem then
-it's probably inside that rdmsr macro.
+ fs/attr.c                       |  2 +-
+ fs/namei.c                      |  6 +--
+ fs/xfs/libxfs/xfs_attr.c        |  2 +-
+ fs/xfs/libxfs/xfs_attr_remote.c |  2 +-
+ fs/xfs/libxfs/xfs_bmap.c        | 19 ++++----
+ fs/xfs/libxfs/xfs_defer.c       |  2 +-
+ fs/xfs/libxfs/xfs_inode_fork.c  |  2 +-
+ fs/xfs/libxfs/xfs_rtbitmap.c    |  2 +-
+ fs/xfs/libxfs/xfs_trans_inode.c |  6 +--
+ fs/xfs/mrlock.h                 | 78 ------------------------------
+ fs/xfs/scrub/readdir.c          |  4 +-
+ fs/xfs/xfs_attr_list.c          |  2 +-
+ fs/xfs/xfs_bmap_util.c          | 10 ++--
+ fs/xfs/xfs_dir2_readdir.c       |  2 +-
+ fs/xfs/xfs_dquot.c              |  4 +-
+ fs/xfs/xfs_file.c               |  4 +-
+ fs/xfs/xfs_inode.c              | 86 ++++++++++++---------------------
+ fs/xfs/xfs_inode.h              |  4 +-
+ fs/xfs/xfs_inode_item.c         |  4 +-
+ fs/xfs/xfs_iops.c               |  7 ++-
+ fs/xfs/xfs_linux.h              |  2 +-
+ fs/xfs/xfs_qm.c                 | 10 ++--
+ fs/xfs/xfs_reflink.c            |  2 +-
+ fs/xfs/xfs_rtalloc.c            |  4 +-
+ fs/xfs/xfs_super.c              |  4 +-
+ fs/xfs/xfs_symlink.c            |  2 +-
+ fs/xfs/xfs_trans_dquot.c        |  2 +-
+ include/linux/fs.h              | 10 ++++
+ include/linux/mmap_lock.h       | 10 ++--
+ include/linux/rwbase_rt.h       |  9 +++-
+ include/linux/rwsem.h           | 42 ++++++++++++++--
+ 31 files changed, 142 insertions(+), 203 deletions(-)
+ delete mode 100644 fs/xfs/mrlock.h
+
+-- 
+2.40.1
+
