@@ -2,83 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F291A7BC391
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 03:20:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D5C67BC398
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 03:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234002AbjJGBUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 21:20:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57944 "EHLO
+        id S234021AbjJGBVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 21:21:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233269AbjJGBUn (ORCPT
+        with ESMTP id S233993AbjJGBVT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 21:20:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3459B6
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 18:20:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696641602;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JDPgDyc+rpy+6pDy/WUApGWgXd3+hqYtxVhpZw2Z+oU=;
-        b=Y26mIy4Lwq5cGNq3ziittyEMctrWOFPLkBtHYooDouefTbqmGJZoNw/kTpn+cEnXGlmmAE
-        m29fymq+I6HvPrzmBNek4+Zx8nTEtoKedqh1QLJObcDHQOiyPrnECGKCQnuU8GwATEz1ih
-        +scBD8eKn4Y1UNNtou4cti8PZURWPto=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-130-Bsf3v9i-PMiIaq92lybS-w-1; Fri, 06 Oct 2023 21:20:01 -0400
-X-MC-Unique: Bsf3v9i-PMiIaq92lybS-w-1
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1c5fea3139dso24867895ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 18:20:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696641600; x=1697246400;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JDPgDyc+rpy+6pDy/WUApGWgXd3+hqYtxVhpZw2Z+oU=;
-        b=IV9eK4VZspPAMKz2choYFVS45oNMqCMT2wYX9a0DnHyryYRVugPoIzpysBsXoyRp5z
-         ynJjiVcN2Kck6jhZYTFYZB3m590arBOL6Q+CaN1rA3YsgQwXAqEAPDkcBtMHdga60JHQ
-         l9Sv7q4wLoV2AR7ND7TLlteUxklg5PSjNwtyBqMTe/OpWhSjhhkP4+EPhjkdbHyXb+Td
-         A8mxar7lA8gBUlXOMKQ7zUkEapWDU3D+EFWCvEOGVXrl+wd5ddUdpfhibKFjuJjAILyj
-         KY/uyq4RAV0uQZ1aGFZKvoeWy3GzeDHz9IgXkaL33OgJA4LnaUTqYwell3Z3V2yNEmBR
-         xRuA==
-X-Gm-Message-State: AOJu0YwNfERUrZ2QajzNf59n7hscjOo5HwkCEQ6vW+1jA7U4O9j6ygZj
-        jFoiIB7uMlk19PyHTojyzktO+o3nUV/Mwq07e96YCSamJ3kw+ON+WpWFdMJ6y9jDZsQ/l4w/iGu
-        hYa63Cdisg/nwPFZts7nrKAz2
-X-Received: by 2002:a17:903:22cb:b0:1c4:5e9e:7865 with SMTP id y11-20020a17090322cb00b001c45e9e7865mr11138681plg.0.1696641600320;
-        Fri, 06 Oct 2023 18:20:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE27ukV5xdoxeuBFbDNnq/3SZ1mSxu4JFqOyNbj44S+UpM/DrxTnSraC3Bo0wkIV9f7/lhB9A==
-X-Received: by 2002:a17:903:22cb:b0:1c4:5e9e:7865 with SMTP id y11-20020a17090322cb00b001c45e9e7865mr11138672plg.0.1696641600005;
-        Fri, 06 Oct 2023 18:20:00 -0700 (PDT)
-Received: from [10.72.112.33] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id a4-20020a170902ecc400b001bdc3768ca5sm4554814plh.254.2023.10.06.18.19.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 18:19:59 -0700 (PDT)
-Message-ID: <880bb6a8-d641-003d-1e38-d0115d22eabc@redhat.com>
-Date:   Sat, 7 Oct 2023 09:19:54 +0800
+        Fri, 6 Oct 2023 21:21:19 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB2CC5;
+        Fri,  6 Oct 2023 18:21:14 -0700 (PDT)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3971KhZN22568955, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.92/5.92) with ESMTPS id 3971KhZN22568955
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 7 Oct 2023 09:20:43 +0800
+Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Sat, 7 Oct 2023 09:20:44 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Sat, 7 Oct 2023 09:20:43 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
+ RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
+ 15.01.2375.007; Sat, 7 Oct 2023 09:20:43 +0800
+From:   Ping-Ke Shih <pkshih@realtek.com>
+To:     "keescook@chromium.org" <keescook@chromium.org>
+CC:     "kvalo@kernel.org" <kvalo@kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "nathan@kernel.org" <nathan@kernel.org>,
+        "ndesaulniers@google.com" <ndesaulniers@google.com>,
+        "gustavoars@kernel.org" <gustavoars@kernel.org>
+Subject: Re: [PATCH] wifi: rtw89: coex: Annotate struct rtw89_btc_btf_set_slot_table with __counted_by
+Thread-Topic: [PATCH] wifi: rtw89: coex: Annotate struct
+ rtw89_btc_btf_set_slot_table with __counted_by
+Thread-Index: AQHZ+JIdINNFwhWCA0q/Xu1rquYi7LA9Aa0A
+Date:   Sat, 7 Oct 2023 01:20:43 +0000
+Message-ID: <4716f3c7bf3d34ea25229edd5250f5f0cff639d8.camel@realtek.com>
+References: <20231006201715.work.239-kees@kernel.org>
+In-Reply-To: <20231006201715.work.239-kees@kernel.org>
+Accept-Language: en-US, zh-TW
+Content-Language: zh-TW
+user-agent: Evolution 3.36.1-2 
+x-originating-ip: [125.224.81.64]
+x-kse-serverinfo: RTEXDAG01.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <055816771E1C154CA2754D4B6C70B030@realtek.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] fs: apply umask if POSIX ACL support is disabled
-Content-Language: en-US
-To:     Dave Kleikamp <dave.kleikamp@oracle.com>,
-        Max Kellermann <max.kellermann@ionos.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, jfs-discussion@lists.sourceforge.net
-References: <20230919081900.1096840-1-max.kellermann@ionos.com>
- <69dda7be-d7c8-401f-89f3-7a5ca5550e2f@oracle.com>
-From:   Xiubo Li <xiubli@redhat.com>
-In-Reply-To: <69dda7be-d7c8-401f-89f3-7a5ca5550e2f@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,79 +71,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 10/3/23 23:32, Dave Kleikamp wrote:
-> I think this is sane, but the patch needs a description of why this is 
-> necessary for these specific file systems.
->
-Sounds reasonable.
-
-Thanks
-
-- Xiubo
-
-
-> Thanks,
-> Shaggy
->
-> On 9/19/23 3:18AM, Max Kellermann wrote:
->> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
->> ---
->>   fs/ceph/super.h           | 1 +
->>   fs/ext2/acl.h             | 1 +
->>   fs/jfs/jfs_acl.h          | 1 +
->>   include/linux/posix_acl.h | 1 +
->>   4 files changed, 4 insertions(+)
->>
->> diff --git a/fs/ceph/super.h b/fs/ceph/super.h
->> index 51c7f2b14f6f..e7e2f264acf4 100644
->> --- a/fs/ceph/super.h
->> +++ b/fs/ceph/super.h
->> @@ -1194,6 +1194,7 @@ static inline void 
->> ceph_forget_all_cached_acls(struct inode *inode)
->>   static inline int ceph_pre_init_acls(struct inode *dir, umode_t *mode,
->>                        struct ceph_acl_sec_ctx *as_ctx)
->>   {
->> +    *mode &= ~current_umask();
->>       return 0;
->>   }
->>   static inline void ceph_init_inode_acls(struct inode *inode,
->> diff --git a/fs/ext2/acl.h b/fs/ext2/acl.h
->> index 4a8443a2b8ec..694af789c614 100644
->> --- a/fs/ext2/acl.h
->> +++ b/fs/ext2/acl.h
->> @@ -67,6 +67,7 @@ extern int ext2_init_acl (struct inode *, struct 
->> inode *);
->>     static inline int ext2_init_acl (struct inode *inode, struct 
->> inode *dir)
->>   {
->> +    inode->i_mode &= ~current_umask();
->>       return 0;
->>   }
->>   #endif
->> diff --git a/fs/jfs/jfs_acl.h b/fs/jfs/jfs_acl.h
->> index f892e54d0fcd..10791e97a46f 100644
->> --- a/fs/jfs/jfs_acl.h
->> +++ b/fs/jfs/jfs_acl.h
->> @@ -17,6 +17,7 @@ int jfs_init_acl(tid_t, struct inode *, struct 
->> inode *);
->>   static inline int jfs_init_acl(tid_t tid, struct inode *inode,
->>                      struct inode *dir)
->>   {
->> +    inode->i_mode &= ~current_umask();
->>       return 0;
->>   }
->>   diff --git a/include/linux/posix_acl.h b/include/linux/posix_acl.h
->> index 0e65b3d634d9..54bc9b1061ca 100644
->> --- a/include/linux/posix_acl.h
->> +++ b/include/linux/posix_acl.h
->> @@ -128,6 +128,7 @@ static inline void cache_no_acl(struct inode *inode)
->>   static inline int posix_acl_create(struct inode *inode, umode_t *mode,
->>           struct posix_acl **default_acl, struct posix_acl **acl)
->>   {
->> +    *mode &= ~current_umask();
->>       *default_acl = *acl = NULL;
->>       return 0;
->>   }
->
-
+T24gRnJpLCAyMDIzLTEwLTA2IGF0IDEzOjE3IC0wNzAwLCBLZWVzIENvb2sgd3JvdGU6DQo+IA0K
+PiBQcmVwYXJlIGZvciB0aGUgY29taW5nIGltcGxlbWVudGF0aW9uIGJ5IEdDQyBhbmQgQ2xhbmcg
+b2YgdGhlIF9fY291bnRlZF9ieQ0KPiBhdHRyaWJ1dGUuIEZsZXhpYmxlIGFycmF5IG1lbWJlcnMg
+YW5ub3RhdGVkIHdpdGggX19jb3VudGVkX2J5IGNhbiBoYXZlDQo+IHRoZWlyIGFjY2Vzc2VzIGJv
+dW5kcy1jaGVja2VkIGF0IHJ1bi10aW1lIHZpYSBDT05GSUdfVUJTQU5fQk9VTkRTIChmb3INCj4g
+YXJyYXkgaW5kZXhpbmcpIGFuZCBDT05GSUdfRk9SVElGWV9TT1VSQ0UgKGZvciBzdHJjcHkvbWVt
+Y3B5LWZhbWlseQ0KPiBmdW5jdGlvbnMpLg0KPiANCj4gQXMgZm91bmQgd2l0aCBDb2NjaW5lbGxl
+WzFdLCBhZGQgX19jb3VudGVkX2J5IGZvciBzdHJ1Y3QNCj4gcnR3ODlfYnRjX2J0Zl9zZXRfc2xv
+dF90YWJsZS4NCj4gDQo+IENjOiBQaW5nLUtlIFNoaWggPHBrc2hpaEByZWFsdGVrLmNvbT4NCj4g
+Q2M6IEthbGxlIFZhbG8gPGt2YWxvQGtlcm5lbC5vcmc+DQo+IENjOiAiR3VzdGF2byBBLiBSLiBT
+aWx2YSIgPGd1c3Rhdm9hcnNAa2VybmVsLm9yZz4NCj4gQ2M6IGxpbnV4LXdpcmVsZXNzQHZnZXIu
+a2VybmVsLm9yZw0KPiBDYzogbGludXgtaGFyZGVuaW5nQHZnZXIua2VybmVsLm9yZw0KPiBMaW5r
+OiBodHRwczovL2dpdGh1Yi5jb20va2Vlcy9rZXJuZWwtdG9vbHMvYmxvYi90cnVuay9jb2NjaW5l
+bGxlL2V4YW1wbGVzL2NvdW50ZWRfYnkuY29jY2kgWzFdDQo+IFNpZ25lZC1vZmYtYnk6IEtlZXMg
+Q29vayA8a2Vlc2Nvb2tAY2hyb21pdW0ub3JnPg0KPiAtLS0NCj4gIGRyaXZlcnMvbmV0L3dpcmVs
+ZXNzL3JlYWx0ZWsvcnR3ODkvY29leC5jIHwgMiArLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5z
+ZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQv
+d2lyZWxlc3MvcmVhbHRlay9ydHc4OS9jb2V4LmMgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9yZWFs
+dGVrL3J0dzg5L2NvZXguYw0KPiBpbmRleCA0YmE4YjNkZjcwYWUuLmQ2NmExMTUyYzNmNSAxMDA2
+NDQNCj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvcmVhbHRlay9ydHc4OS9jb2V4LmMNCj4g
+KysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvcmVhbHRlay9ydHc4OS9jb2V4LmMNCj4gQEAgLTIz
+Nyw3ICsyMzcsNyBAQCBzdHJ1Y3QgcnR3ODlfYnRjX2J0Zl9zZXRfcmVwb3J0IHsNCj4gIHN0cnVj
+dCBydHc4OV9idGNfYnRmX3NldF9zbG90X3RhYmxlIHsNCj4gICAgICAgICB1OCBmdmVyOw0KPiAg
+ICAgICAgIHU4IHRibF9udW07DQo+IC0gICAgICAgdTggYnVmW107DQo+ICsgICAgICAgdTggYnVm
+W10gX19jb3VudGVkX2J5KHRibF9udW0pOw0KDQpUaGlzIHN0cnVjdCBpc24ndCBkZWZpbmVkIHBy
+b3Blcmx5LiBJdCBzaG91bGQgYmUgDQoNCnN0cnVjdCBydHc4OV9idGNfYnRmX3NldF9zbG90X3Rh
+YmxlIHsNCgl1OCBmdmVyOw0KCXU4IHRibF9udW07DQoJc3RydWN0IHJ0dzg5X2J0Y19mYnRjX3Ns
+b3QgdGJsW10gX19jb3VudGVkX2J5KHRibF9udW0pOw0KfSBfX3BhY2tlZDsNCg0KQW5kLCB3ZSBz
+aG91bGQgbW9kaWZ5IHJ0dzg5X2J0Y19md19zZXRfc2xvdHMoKSBhcyB3ZWxsLiANCg0KQW5vdGhl
+ciBzdHJ1Y3QgJ3J0dzg5X2J0Y19idGZfc2V0X21vbl9yZWcnIGhhcyBzaW1pbGFyIHByb2JsZW0u
+DQoNClNvLCBOQUNLIHRoaXMgcGF0Y2guIEkgd2lsbCBwcmVwYXJlIG9uZSBvciB0d28gcGF0Y2hl
+cyBmb3IgdGhlbSBuZXh0IHdlZWsuIA0KDQpCeSB0aGUgd2F5LCBJIGhhdmUgcXVlc3Rpb24gYWJv
+dXQgX19jb3VudGVkX2J5KCkuIENhbiBJIGFwcGx5IGl0IHRvIGxpdHRsZS9iaWctDQplbmRpYW4g
+J251bSc/IExpa2UNCg0Kc3RydWN0IGZvbyB7DQoJLi4uDQoJX19sZTMyIG51bTsNCglfX2xlMzIg
+ZGF0YVtdIF9fY291bnRlZF9ieShudW0pOw0KfQ0KDQoNCj4gIH0gX19wYWNrZWQ7DQo+IA0KPiAg
+c3RydWN0IHJ0dzg5X2J0Y19idGZfc2V0X21vbl9yZWcgew0KPiAtLQ0KPiAyLjM0LjENCj4gDQoN
+Cg0KDQo=
