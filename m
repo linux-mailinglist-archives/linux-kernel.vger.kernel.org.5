@@ -2,54 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED80D7BC56A
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 09:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A18E7BC573
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 09:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343658AbjJGHMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 03:12:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58992 "EHLO
+        id S1343656AbjJGHP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 03:15:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343572AbjJGHML (ORCPT
+        with ESMTP id S1343641AbjJGHP4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 03:12:11 -0400
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a02:c205:3004:2154::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13146BF;
-        Sat,  7 Oct 2023 00:12:10 -0700 (PDT)
-Received: from p5dc58360.dip0.t-ipconnect.de ([93.197.131.96] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <andreas@kemnade.info>)
-        id 1qp1Ti-004bwu-Lz; Sat, 07 Oct 2023 09:11:58 +0200
-Date:   Sat, 7 Oct 2023 09:11:56 +0200
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     =?UTF-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@gmail.com>,
-        bcousson@baylibre.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, jarkko.nikula@bitmer.com,
-        dmitry.torokhov@gmail.com, linux-omap@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH 1/3] ASoC: ti: omap-mcbsp: Ignore errors for getting
- fck_src
-Message-ID: <20231007091156.588d7ba1@aktux>
-In-Reply-To: <20231007062518.GM34982@atomide.com>
-References: <20230705190324.355282-1-andreas@kemnade.info>
-        <20230705190324.355282-2-andreas@kemnade.info>
-        <7d58d52d-2087-45af-b29e-2515b63ead13@gmail.com>
-        <20230920063353.GQ5285@atomide.com>
-        <dac768d2-2c66-4d6b-b3d3-d1ef69103c76@gmail.com>
-        <20230921121626.GT5285@atomide.com>
-        <20231006102348.GK34982@atomide.com>
-        <20231006213003.0fbac87a@aktux>
-        <20231007062518.GM34982@atomide.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
+        Sat, 7 Oct 2023 03:15:56 -0400
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4DADB9;
+        Sat,  7 Oct 2023 00:15:50 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VtY4oO5_1696662946;
+Received: from 30.240.114.194(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VtY4oO5_1696662946)
+          by smtp.aliyun-inc.com;
+          Sat, 07 Oct 2023 15:15:48 +0800
+Message-ID: <f654be8f-aa98-1bed-117b-ebdf96d23df1@linux.alibaba.com>
+Date:   Sat, 7 Oct 2023 15:15:45 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [RFC PATCH v2 0/9] Use ERST for persistent storage of MCE and
+ APEI errors
+Content-Language: en-US
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
+        rafael@kernel.org, lenb@kernel.org, james.morse@arm.com,
+        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, ardb@kernel.org,
+        robert.moore@intel.com, linux-hardening@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-efi@vger.kernel.org,
+        acpica-devel@lists.linuxfoundation.org,
+        baolin.wang@linux.alibaba.com
+References: <20230925074426.97856-1-xueshuai@linux.alibaba.com>
+ <20230928144345.GAZRWRIXH1Tfgn5EpO@fat_crate.local>
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+In-Reply-To: <20230928144345.GAZRWRIXH1Tfgn5EpO@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-12.7 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,34 +53,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 7 Oct 2023 09:25:18 +0300
-Tony Lindgren <tony@atomide.com> wrote:
 
-> * Andreas Kemnade <andreas@kemnade.info> [231006 19:30]:
-> > On Fri, 6 Oct 2023 13:23:48 +0300
-> > Tony Lindgren <tony@atomide.com> wrote:  
-> > > Here's what I think the regression fix for omap4 clocks would be, the
-> > > old main_clk is not the same as the module clock that we get by default.
-> > > If this looks OK I'll do a similar fix also for omap5.
-> > > 
-> > > Or is something else also needed?
-> > >   
-> > 
-> > hmm,
-> > audio output works, the waring is away, but something new is here:  
-> 
-> OK good to hear it works, I'll send out fixes for omap4 and 5, seems
-> the runtime PM warning is something different.
-> 
-> > omap-mcbsp 40124000.mcbsp: Runtime PM usage count underflow!
-> > # cat /sys/bus/platform/devices/40124000.mcbsp/power/runtime_status 
-> > active
-> > 
-> > even with no sound.  
-> 
-Well, it is a regression caused by your fix. Without it (and not reverting
-the already applied ignore patch), runtime is properly suspended. Don't know
-why yet.
 
-Regards,
-Andreas
+On 2023/9/28 22:43, Borislav Petkov wrote:
+> On Mon, Sep 25, 2023 at 03:44:17PM +0800, Shuai Xue wrote:
+>> After /dev/mcelog character device deprecated by commit 5de97c9f6d85
+>> ("x86/mce: Factor out and deprecate the /dev/mcelog driver"), the
+>> serialized MCE error record, of previous boot in persistent storage is not
+>> collected via APEI ERST.
+> 
+> You lost me here. /dev/mcelog is deprecated but you can still use it and
+> apei_write_mce() still happens.
+
+Yes, you are right. apei_write_mce() still happens so that MCE records are
+written to persistent storage and the MCE records can be retrieved by
+apei_read_mce(). Previously, the task was performed by the mcelog package.
+However, it has been deprecated, some distributions like Arch kernels are
+not even compiled with the necessary configuration option
+CONFIG_X86_MCELOG_LEGACY.[1]
+
+So, IMHO, it's better to add a way to retrieve MCE records through switching
+to the new generation rasdaemon solution.
+
+> 
+> Looking at your patches, you're adding this to ghes so how about you sit
+> down first and explain your exact use case and what exactly you wanna
+> do?
+> 
+> Thx.
+> 
+
+Sorry for the poor cover letter. I hope the following response can clarify
+the matter.
+
+Q1: What is the exact problem?
+
+Traditionally, fatal hardware errors will cause Linux print error log to
+console, e.g. print_mce() or __ghes_print_estatus(), then reboot. With
+Linux, the primary method for obtaining debugging information of a serious
+error or fault is via the kdump mechanism. Kdump captures a wealth of
+kernel and machine state and writes it to a file for post-mortem debugging.
+
+In certain scenarios, ie. hosts/guests with root filesystems on NFS/iSCSI
+where networking software and/or hardware fails, and thus kdump fails to
+collect the hardware error context, leaving us unaware of what actually
+occurred. In the public cloud scenario, multiple virtual machines run on a
+single physical server, and if that server experiences a failure, it can
+potentially impact multiple tenants. It is crucial for us to thoroughly
+analyze the root causes of each instance failure in order to:
+
+- Provide customers with a detailed explanation of the outage to reassure them.
+- Collect the characteristics of the failures, such as ECC syndrome, to enable fault prediction.
+- Explore potential solutions to prevent widespread outages.
+
+In short, it is necessary to serialize hardware error information available
+for post-mortem debugging.
+
+Q2: What exactly I wanna do:
+
+The MCE handler, do_machine_check(), saves the MCE record to persistent
+storage and it is retrieved by mcelog. Mcelog has been deprecated when
+kernel 4.12 released in 2017, and the help of the configuration option
+CONFIG_X86_MCELOG_LEGACY suggest to consider switching to the new
+generation rasdaemon solution. The GHES handler does not support APEI error
+record now.
+
+To serialize hardware error information available for post-mortem
+debugging:
+- add support to save APEI error record into flash via ERST before go panic,
+- add support to retrieve MCE or APEI error record from the flash and emit
+the related tracepoint after system boot successful again so that rasdaemon
+can collect them
+
+
+Best Regards,
+Shuai
+
+
+[1] https://wiki.archlinux.org/title/Machine-check_exception
