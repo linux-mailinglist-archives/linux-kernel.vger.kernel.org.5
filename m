@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B45B17BC41F
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 04:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30FF97BC420
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 04:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234111AbjJGCOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 22:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58744 "EHLO
+        id S234079AbjJGCOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 22:14:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234096AbjJGCN4 (ORCPT
+        with ESMTP id S234095AbjJGCN7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 22:13:56 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FAE2DE
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 19:13:54 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d81e9981ff4so3545416276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 19:13:54 -0700 (PDT)
+        Fri, 6 Oct 2023 22:13:59 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38DACCA
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 19:13:57 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-594e1154756so41938067b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 19:13:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696644833; x=1697249633; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1696644836; x=1697249636; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Pvm9pouxrmYpafgNbDUzq8jjG9nkQlQXFZB/wFYV4ZY=;
-        b=gIt3Ep8wQrLm5/xI11pGeuKoRgXc+4+1ky3tENwptnfMrV8Dnhm3eUn1Neff+jr1ht
-         nBrZOdSRuch7YtiJZveOIztjN0qXG2QNjG4D/2Tfg4Sd0asjIbseR0Oah4fLyeMSY48S
-         YjBwRKLA297NCyCDHgpE6s8X7N/0ObtaPH37elx4oPFSpgPEUoHJXBX4LZnKt4wsx4On
-         27bm+ZfEJoxBXe3SB7+49GKV8Zq+8mclPXthEw9fZa46wA3Vdu138lDMb8C0fs4OkOnj
-         iXfNjPP8zqpIpu0nSJWP72ij6NxLspjEyzc5fxRiG2DySZRC5e09/vnediUEpzY2KV8B
-         Ui+Q==
+        bh=1sGfqKagqGXkVUrcgYGR2LHjgzBLLZ9lBFke+x7gv14=;
+        b=38hu8QC/gJVuyTiA8l1iPgE6WRMZ2f62s8Z+0wMuxjbYdEvIX5+AbTQeiDZk1GUJv/
+         YPfdwG2XovLgAtzFAgmP7VwPTTvvLgLK6kzpfZOc3kcC5VNlUAlhZczEYgzHQEkmNYPz
+         EOtJLIVGrKo56XhQa4EyPQBU3FQGqHJvPRkQJ5li7OjOrAQT9eY7ZkLNKp+pnRfEj44H
+         wsLebhf9YXVQ4RTnX9UdHUadeNiCC1EdxPmPByFV8d4tyMc50DyepORh22+QHPFVGzT0
+         182S4OhL9Tn7wbzfw6sONm9xkwRLKNAQaF5scHrNuuSSSwXsprtFFEza+s+Rwo+dXevB
+         4uzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696644833; x=1697249633;
+        d=1e100.net; s=20230601; t=1696644836; x=1697249636;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pvm9pouxrmYpafgNbDUzq8jjG9nkQlQXFZB/wFYV4ZY=;
-        b=vTPqKV2lG67NxYkHtJSxUDNXD10V6CI/giRbg5gH3s+BAFVwUZx0Z7AYb0u5zlAbl6
-         Kb2qU6ex8Rym1Sv5xU7FzYOzXNZm9gdcJpXosheYrJXCNCYTJdRIJUetw/IuW4zT1V8y
-         9z1WyS0WfVEInoKgniDlV8ltRDMk7AGpMdBKc8uUHJ8NHU3BYBZHm7rC5qnIMQYOYBhc
-         jgiyg2eJTRNerpK8xvqg9IvQlrmRjMS4LkCtQJS/Jv0IV5Q/Pxc/AMKYjX7mbbDkndeV
-         ghWpa7/4d+4JZhIxGlb1ke06D1OuwOzSlJk16Z6dnGQ0E71qcb+OzOuAMBd8HPKfUJ06
-         +ZZQ==
-X-Gm-Message-State: AOJu0YzQ7bqD/KOkvTmYYzWB+O4oZDAA8BpwT/pjUign6LFDFmndTrJC
-        KWTR73B0BlPfxwRCHGPi3JlSXK1FxE3n
-X-Google-Smtp-Source: AGHT+IG/FCsfFR7DMO8ROGGKaKObepHsSbay/fgC+twT50YsCh2lPxyqOr65LGKvE49Mf12qsmL2OTWovX1b
+        bh=1sGfqKagqGXkVUrcgYGR2LHjgzBLLZ9lBFke+x7gv14=;
+        b=wrn/M93nVu7t1tUfVbkm77vN4SJ27V9qf39UcVaEadbyCKgrqR0PlJQqPwabTKjXDa
+         W3d0nQdcfhA80LrOIREZCg9pisOAPr83wrmfH9YWakZ658iohMT63q2Re6TvSpq57o3s
+         BBfruMePrgkslo+CsJmDd4XnR9lGlEn624cyDmxY2tI7EE10qVWdvY9n1weVLZs5xO48
+         uMRmslGhrgLHWYEmQFbud0GRvLmUIYg9SI68xqB8/lRX1g6p5t3I0ENwNI8yoIkHowQd
+         tKquMMya49kxW/4iNAQUwzXgrBZGgka5ZWjB9gohxEEYu59z6WoRUWkbZLPEuHY3oQUT
+         yRDw==
+X-Gm-Message-State: AOJu0Yxik/tZEKEyOyVZkOvlZVSaJ4vBGGI6UrrtQS0vmzrGPaqdLjIK
+        33BhqnyfCPwuH3FhUdbfYg9+4GQ+M+5P
+X-Google-Smtp-Source: AGHT+IGPyz728tGRH8ExhK1+QmM65x0nmN9xIVpRL18JfmMySQD/XlSN7mZpyD2UibDvb5iXO/7jdemBmJnt
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:7031:b36b:6c77:bfd0])
- (user=irogers job=sendgmr) by 2002:a25:d313:0:b0:d7b:92d7:5629 with SMTP id
- e19-20020a25d313000000b00d7b92d75629mr166217ybf.8.1696644833466; Fri, 06 Oct
- 2023 19:13:53 -0700 (PDT)
-Date:   Fri,  6 Oct 2023 19:13:22 -0700
+ (user=irogers job=sendgmr) by 2002:a81:aa4d:0:b0:5a1:d4a5:7dff with SMTP id
+ z13-20020a81aa4d000000b005a1d4a57dffmr188765ywk.6.1696644836200; Fri, 06 Oct
+ 2023 19:13:56 -0700 (PDT)
+Date:   Fri,  6 Oct 2023 19:13:23 -0700
 In-Reply-To: <20231007021326.4156714-1-irogers@google.com>
-Message-Id: <20231007021326.4156714-4-irogers@google.com>
+Message-Id: <20231007021326.4156714-5-irogers@google.com>
 Mime-Version: 1.0
 References: <20231007021326.4156714-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Subject: [PATCH v1 3/7] perf arm-spe: Move PMU initialization from default
- config code
+Subject: [PATCH v1 4/7] perf pmu: Const-ify file APIs
 From:   Ian Rogers <irogers@google.com>
 To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
         Mike Leach <mike.leach@linaro.org>,
@@ -89,40 +88,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Avoid setting PMU values in arm_spe_pmu_default_config, move to
-perf_pmu__arch_init.
+File APIs don't alter the struct pmu so allow const ones to be passed.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/arch/arm/util/pmu.c       | 2 ++
- tools/perf/arch/arm64/util/arm-spe.c | 3 ---
- 2 files changed, 2 insertions(+), 3 deletions(-)
+ tools/perf/util/pmu.c    | 12 ++++++------
+ tools/perf/util/pmu.h    | 11 ++++++-----
+ tools/perf/util/python.c |  2 +-
+ 3 files changed, 13 insertions(+), 12 deletions(-)
 
-diff --git a/tools/perf/arch/arm/util/pmu.c b/tools/perf/arch/arm/util/pmu.c
-index d55d2b15f2e6..f25f68f84a94 100644
---- a/tools/perf/arch/arm/util/pmu.c
-+++ b/tools/perf/arch/arm/util/pmu.c
-@@ -23,6 +23,8 @@ void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
- 		pmu->default_config = cs_etm_get_default_config(pmu);
- #if defined(__aarch64__)
- 	} else if (strstarts(pmu->name, ARM_SPE_PMU_NAME)) {
-+		pmu->selectable = true;
-+		pmu->is_uncore = false;
- 		pmu->default_config = arm_spe_pmu_default_config(pmu);
- 	} else if (strstarts(pmu->name, HISI_PTT_PMU_NAME)) {
- 		pmu->selectable = true;
-diff --git a/tools/perf/arch/arm64/util/arm-spe.c b/tools/perf/arch/arm64/util/arm-spe.c
-index 9cc3d6dcb849..08a76734ccd2 100644
---- a/tools/perf/arch/arm64/util/arm-spe.c
-+++ b/tools/perf/arch/arm64/util/arm-spe.c
-@@ -516,8 +516,5 @@ struct perf_event_attr
- 		attr->sample_period = 4096;
- 	}
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index 6e95b3d2c2e3..e11901c923d7 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -575,7 +575,7 @@ static int perf_pmu__new_alias(struct perf_pmu *pmu, const char *name,
+ 	return 0;
+ }
  
--	arm_spe_pmu->selectable = true;
--	arm_spe_pmu->is_uncore = false;
--
- 	return attr;
+-static inline bool pmu_alias_info_file(char *name)
++static inline bool pmu_alias_info_file(const char *name)
+ {
+ 	size_t len;
+ 
+@@ -1771,7 +1771,7 @@ bool perf_pmu__is_software(const struct perf_pmu *pmu)
+ 	return !strcmp(pmu->name, "kprobe") || !strcmp(pmu->name, "uprobe");
+ }
+ 
+-FILE *perf_pmu__open_file(struct perf_pmu *pmu, const char *name)
++FILE *perf_pmu__open_file(const struct perf_pmu *pmu, const char *name)
+ {
+ 	char path[PATH_MAX];
+ 
+@@ -1782,7 +1782,7 @@ FILE *perf_pmu__open_file(struct perf_pmu *pmu, const char *name)
+ 	return fopen(path, "r");
+ }
+ 
+-FILE *perf_pmu__open_file_at(struct perf_pmu *pmu, int dirfd, const char *name)
++FILE *perf_pmu__open_file_at(const struct perf_pmu *pmu, int dirfd, const char *name)
+ {
+ 	int fd;
+ 
+@@ -1793,7 +1793,7 @@ FILE *perf_pmu__open_file_at(struct perf_pmu *pmu, int dirfd, const char *name)
+ 	return fdopen(fd, "r");
+ }
+ 
+-int perf_pmu__scan_file(struct perf_pmu *pmu, const char *name, const char *fmt,
++int perf_pmu__scan_file(const struct perf_pmu *pmu, const char *name, const char *fmt,
+ 			...)
+ {
+ 	va_list args;
+@@ -1810,7 +1810,7 @@ int perf_pmu__scan_file(struct perf_pmu *pmu, const char *name, const char *fmt,
+ 	return ret;
+ }
+ 
+-int perf_pmu__scan_file_at(struct perf_pmu *pmu, int dirfd, const char *name,
++int perf_pmu__scan_file_at(const struct perf_pmu *pmu, int dirfd, const char *name,
+ 			   const char *fmt, ...)
+ {
+ 	va_list args;
+@@ -1827,7 +1827,7 @@ int perf_pmu__scan_file_at(struct perf_pmu *pmu, int dirfd, const char *name,
+ 	return ret;
+ }
+ 
+-bool perf_pmu__file_exists(struct perf_pmu *pmu, const char *name)
++bool perf_pmu__file_exists(const struct perf_pmu *pmu, const char *name)
+ {
+ 	char path[PATH_MAX];
+ 
+diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+index 588c64e38d6b..24af7297b522 100644
+--- a/tools/perf/util/pmu.h
++++ b/tools/perf/util/pmu.h
+@@ -222,14 +222,15 @@ bool pmu__name_match(const struct perf_pmu *pmu, const char *pmu_name);
+  */
+ bool perf_pmu__is_software(const struct perf_pmu *pmu);
+ 
+-FILE *perf_pmu__open_file(struct perf_pmu *pmu, const char *name);
+-FILE *perf_pmu__open_file_at(struct perf_pmu *pmu, int dirfd, const char *name);
++FILE *perf_pmu__open_file(const struct perf_pmu *pmu, const char *name);
++FILE *perf_pmu__open_file_at(const struct perf_pmu *pmu, int dirfd, const char *name);
+ 
+-int perf_pmu__scan_file(struct perf_pmu *pmu, const char *name, const char *fmt, ...) __scanf(3, 4);
+-int perf_pmu__scan_file_at(struct perf_pmu *pmu, int dirfd, const char *name,
++int perf_pmu__scan_file(const struct perf_pmu *pmu, const char *name, const char *fmt, ...)
++	__scanf(3, 4);
++int perf_pmu__scan_file_at(const struct perf_pmu *pmu, int dirfd, const char *name,
+ 			   const char *fmt, ...) __scanf(4, 5);
+ 
+-bool perf_pmu__file_exists(struct perf_pmu *pmu, const char *name);
++bool perf_pmu__file_exists(const struct perf_pmu *pmu, const char *name);
+ 
+ int perf_pmu__test(void);
+ 
+diff --git a/tools/perf/util/python.c b/tools/perf/util/python.c
+index c29f5f0bb552..8761f51b5c7c 100644
+--- a/tools/perf/util/python.c
++++ b/tools/perf/util/python.c
+@@ -98,7 +98,7 @@ struct perf_pmu *evsel__find_pmu(const struct evsel *evsel __maybe_unused)
+ 	return NULL;
+ }
+ 
+-int perf_pmu__scan_file(struct perf_pmu *pmu, const char *name, const char *fmt, ...)
++int perf_pmu__scan_file(const struct perf_pmu *pmu, const char *name, const char *fmt, ...)
+ {
+ 	return EOF;
  }
 -- 
 2.42.0.609.gbb76f46606-goog
