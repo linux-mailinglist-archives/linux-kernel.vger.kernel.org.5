@@ -2,81 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B84EE7BC88E
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5367BC88C
 	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 17:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343994AbjJGPK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 11:10:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56050 "EHLO
+        id S1344002AbjJGPNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 11:13:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbjJGPK2 (ORCPT
+        with ESMTP id S229824AbjJGPNY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 11:10:28 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED041B9;
-        Sat,  7 Oct 2023 08:10:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72083C433C8;
-        Sat,  7 Oct 2023 15:10:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696691425;
-        bh=LH6IWkmyMSvjK2Q3N3HjTHI8GVBa4KuURUr6eXtccys=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kIzj7hK0L/DbwMAVrxGzakiLql+kw3pXx1ew0g45ixAo3GNkeQrZzd9PuDWCWxF0Q
-         9IBOXzzVpCsDt4JbpDmYgKUBKpNX66jLsOOr9tVCZ3XSODwohF1YU51Wz+vb8VDu74
-         8Hmcp5ZInqFxhE0tUi7gjmR1snrHvZNqezzcM1Vyz/ZSBAYEgwoRvJzHA7kujsBVpi
-         2REy0U1jFFh3BGvyd+PmEiqEfNdsyDXsBeKG+hQKKqnvjFFCyUT799FTz4+7oUYpCo
-         YaRyhio3Qc2+RS1XQBg66Gx7nlykEqJT67KZ7rKF79iuhooOR4XCaxgUXM4A8/t7Fp
-         XhWS0vNlAW3HQ==
-Date:   Sat, 7 Oct 2023 17:10:21 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Chengfeng Ye <dg573847474@gmail.com>
-Cc:     jreuter@yaina.de, ralf@linux-mips.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        linux-hams@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] ax25: Fix potential deadlock on &ax25_list_lock
-Message-ID: <20231007151021.GC831234@kernel.org>
-References: <20231005072349.52602-1-dg573847474@gmail.com>
+        Sat, 7 Oct 2023 11:13:24 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83940BC
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 08:13:23 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d81f35511e6so2760431276.0
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Oct 2023 08:13:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1696691602; x=1697296402; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dgqAnIXXeH9mWDMXjQvN3wvgKO1Ce5NTzFzcD5NvWDo=;
+        b=dobd+es8skvlgpTVlLPxuhz4H6WlTISbS/Igu38zNMv4he7tH/PZUjAK/As65w1yfQ
+         LgQ/ELLJ6a/0qxJhG1wjiOS1ISQYq/XO1m/4yAoZXjANwWGY5dR0nl/iFoV6zN5pvjgv
+         J6m9pNinuTElTumJuPCqVEyCSjMuryfIB2Hqh4pIyTRY9+ZI5+2VbJT2EV4Ub45aO5eD
+         aN516TRaXwRDFKlSyY+00OoJ+xZYtXOQCKhN+ax4R/xKIN1dBSQRnVEh8JXCy4XUi++I
+         TqkTWN2pWS0QcJZZKs45A+bCqwdqXm/9BQR+zyGv21xdur8tXZi1FkdRkCQb4cdChI7+
+         9FAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696691602; x=1697296402;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dgqAnIXXeH9mWDMXjQvN3wvgKO1Ce5NTzFzcD5NvWDo=;
+        b=ZwnL8VmsQIbxAOVg6v++t0RjJB9XE50E9cbaHGbJyeihVBr/hP0UHk6byGDsBh8hl2
+         BvNh550K8GMtRDue21HfYsy5e5ViX/+X3nPCUV2o1LLzNDeEt8k3hlPR+RGqve+g1vn3
+         vbnbv5U+9sG7E4M+lJR+LoPFsh9YoGtX4TYN/GOdapAhx+F3rI55r+j99MXOLbK8/MLl
+         DF9O3oYphD/mCJCYLfnPc5ndbttFbTN4siQ2702w/kkqUOZBN6RRGK2SrlbNDfL/q/Ce
+         AlP7h16Ub33e4MgBxQGjX4OjYV5ppYXiT0edsAm9BYKKPiMf3Urr05j/+6T+xKSwVCqA
+         TMCA==
+X-Gm-Message-State: AOJu0YzaFQLTuVCb08YAN62Zc1lDWzJhVoRrQ24P3vy+OMdnIx2tBKl1
+        GGVdrCtttK8hcmjJan+Ar6XW2+hOBRLIsBN19P3x
+X-Google-Smtp-Source: AGHT+IGaHfz1m1aCEzDxNVMecmiG8/VmlYGquX07ej4nTF6+rNUWqNpyHTFkXvZRWC9wSpHZwU/4iieyDYA/Xr2RZ0k=
+X-Received: by 2002:a25:1e43:0:b0:d4b:a962:76a3 with SMTP id
+ e64-20020a251e43000000b00d4ba96276a3mr5418892ybe.29.1696691602664; Sat, 07
+ Oct 2023 08:13:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231005072349.52602-1-dg573847474@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <MW2PR2101MB1033FFF044A258F84AEAA584F1C9A@MW2PR2101MB1033.namprd21.prod.outlook.com>
+ <ab758860-e51e-409c-8353-6205fbe515dc@kernel.dk> <e0307260-c438-41d9-97ec-563e9932a60e@kernel.dk>
+In-Reply-To: <e0307260-c438-41d9-97ec-563e9932a60e@kernel.dk>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Sat, 7 Oct 2023 11:13:11 -0400
+Message-ID: <CAHC9VhQ0z4wuH7R=KRcUTyZuRs7adYTiH5JjohJSz4d2-Jd9EQ@mail.gmail.com>
+Subject: Re: audit: io_uring openat triggers audit reference count underflow
+ in worker thread
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Dan Clash <Dan.Clash@microsoft.com>,
+        "audit@vger.kernel.org" <audit@vger.kernel.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        brauner@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 07:23:49AM +0000, Chengfeng Ye wrote:
-> Timer interrupt ax25_ds_timeout() could introduce double locks on
-> &ax25_list_lock.
-> 
-> ax25_ioctl()
-> --> ax25_ctl_ioctl()
-> --> ax25_dama_off()
-> --> ax25_dev_dama_off()
-> --> ax25_check_dama_slave()
-> --> spin_lock(&ax25_list_lock)
-> <timer interrupt>
->    --> ax25_ds_timeout()
->    --> spin_lock(&ax25_list_lock)
-> 
-> This flaw was found by an experimental static analysis tool I am
-> developing for irq-related deadlock.
-> 
-> To prevent the potential deadlock, the patch use spin_lock_bh()
-> on &ax25_list_lock inside ax25_check_dama_slave().
-> 
-> Fixes: c19c4b9c9acb ("[AX.25]: Optimize AX.25 socket list lock")
-> Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
-
-Hi Chengfeng Ye,
-
-Are there other functions that spin_lock(&ax25_list_lock)
-that also need to use spin_lock_bh()?
+On Sat, Oct 7, 2023 at 9:11=E2=80=AFAM Jens Axboe <axboe@kernel.dk> wrote:
+> On 10/6/23 8:32 PM, Jens Axboe wrote:
+> > On 10/6/23 2:09 PM, Dan Clash wrote:
 
 ...
+
+> > I'm not fully aware of what audit is doing with struct filename outside
+> > of needing it for the audit log. Rather than impose the atomic
+> > references for everyone, would it be doable to simply dupe the struct
+> > instead of grabbing the (non-atomic) reference to the existing one?
+> >
+> > If not, since there's no over/underflow handling right now, it'd
+> > certainly be cheaper to use an atomic_t here rather than a full
+> > refcount.
+>
+> After taking a closer look at this, I think the best course of action
+> would be to make the struct filename refcnt and atomic_t. With audit in
+> the picture, it's quite possible to have multiple threads manipulating
+> the filename refcnt at the same time, which is obviously not currently
+> safe.
+
+Thanks Jens.
+
+I personally would feel a bit better with the additional safety
+provided by refount_t, but I agree that there is little chance of an
+overflow/underflow in this case so the additional refcount_t checking
+is not likely to be needed here.
+
+For the record, this should only be an issue when audit is combined
+with io_uring, prior to io_uring there wasn't an issue with multiple
+threads attempting to cleanup the filename objects so we didn't have
+to worry about racing on filename::refcnt updates.  However, for those
+systems where both audit and io_uring are in use we definitely have a
+problem and will need the upcoming fix from Dan to ensure the safety
+of the system.
+
+Thanks for spotting this Dan and doing the initial investigation into
+the problem, if you run into any problems with the patch or need a
+hand let me know, I'm happy to help.
+
+> Dan, would you mind sending that as a patch? Include a link to your
+> original email:
+>
+> Link: https://lore.kernel.org/lkml/MW2PR2101MB1033FFF044A258F84AEAA584F1C=
+9A@MW2PR2101MB1033.namprd21.prod.outlook.com/
+>
+> and a Fixes tag as well:
+>
+> Fixes: 5bd2182d58e9 ("audit,io_uring,io-wq: add some basic audit support =
+to io_uring")
+>
+> and CC linux-fsdevel@vger.kernel.org and
+> Christian Brauner <brauner@kernel.org> as well.
+
+I'm going to CC Christian on this email just so he has a heads-up
+about the problem and knows to expect a patch.
+
+--
+paul-moore.com
