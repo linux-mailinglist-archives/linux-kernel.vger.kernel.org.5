@@ -2,476 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10FDE7BC4A5
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 06:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A66B77BC4A9
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 06:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343526AbjJGE0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 00:26:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41104 "EHLO
+        id S1343529AbjJGE10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 00:27:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjJGE0H (ORCPT
+        with ESMTP id S1343491AbjJGE1W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 00:26:07 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31578BF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 21:26:05 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3ae2f8bf865so1798095b6e.2
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 21:26:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1696652764; x=1697257564; darn=vger.kernel.org;
-        h=in-reply-to:from:cc:references:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rslvp6AitoH4rS23dFyU/ODj+5z33u/RNEcErDsfMPw=;
-        b=eTqla1j1k3HDRye5PnobNXcjNgPJgqS9uI4LvFESnsXW8AgptQdIyXcEJaMruwpdCl
-         0OkaehZTyy4QZKUO2c5RbRAskyY9XTs2xcB90UI115hBf5pvz1YD5L0aiBVnI3IkcqEz
-         15wIDrC0g2hMWVPMkfD0PvLj5FwtzD4dPZsEDHO1vccLJZOnmi1C+Ztuhwpigu8U5INK
-         2rk4G09on01n3IWmBWZFyX6eln/bBamCY97iSKwhT6Jo8G6o8wfb59iTy1u2x8tviRbc
-         0mEp+Pz4yRNmawyobMRgy24FTNpgwE9ciduBDqa0aVq17cDT+TlB8Uledxyw8/mL5ueA
-         97WQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696652764; x=1697257564;
-        h=in-reply-to:from:cc:references:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Rslvp6AitoH4rS23dFyU/ODj+5z33u/RNEcErDsfMPw=;
-        b=mylufCL2Zv1iL8982pUQmrsM5+g5EKJXHWkCEIp8nMh22MVjmt+TJ1ybgjqKzwEv11
-         /B/YsNc41r9fIRLdrIgoRBOWT1fFVRyE14m8GCnzHtL/TY9XPrb7+aW/cEScW8SFwBUj
-         u8GLkTSs+wRkqxa1IfNEnC/HkW39BSYegLdOugF1b9JeIYqlDHCHG/RKQLmFOrbBaWKk
-         izLgJRyQ+RaVEXFEQbSmSIeXlGXltBk0MGYUvYYKuY3vydEVV4qk85gCgat4A8sOg7kh
-         Qy9hNpBNDOo5CoNNpYXv/mSdTRsS2LOuStJZs7Wg3iIi2PP0ONXb1sOGo06zsTEHqRfw
-         mamg==
-X-Gm-Message-State: AOJu0YxXxZh938t5ZbZ2dTTifUxOxjUUcFg8Dufdy177wBKl0uKiQa8u
-        4biG7KiQprned1AVivD+inWRkA==
-X-Google-Smtp-Source: AGHT+IHH7Dy75gvrykHzeQf6CZs8dmhESWZVwzioYdWgJ8hBUOo2/Yy34HZgakNb6jz5tW8n9Nqa2A==
-X-Received: by 2002:a05:6358:7f1c:b0:143:96ac:96da with SMTP id p28-20020a0563587f1c00b0014396ac96damr7391613rwn.2.1696652764294;
-        Fri, 06 Oct 2023 21:26:04 -0700 (PDT)
-Received: from [10.254.225.239] ([139.177.225.225])
-        by smtp.gmail.com with ESMTPSA id mt12-20020a17090b230c00b0027b168cb02asm5035336pjb.9.2023.10.06.21.25.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 21:26:03 -0700 (PDT)
-Content-Type: multipart/mixed; boundary="------------0ZF2aWYZwteDjnDjJjSqArOh"
-Message-ID: <9d347c17-55dd-a772-4d82-5d18b1206bc4@bytedance.com>
-Date:   Sat, 7 Oct 2023 12:25:55 +0800
+        Sat, 7 Oct 2023 00:27:22 -0400
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2040.outbound.protection.outlook.com [40.107.100.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9B0BD;
+        Fri,  6 Oct 2023 21:27:21 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jq6nD4oo9OSJjA1mTr9P1g9I6vURRz7+TcB+kcvzBhzaSpueN7GXtBi/Fk6y8lX5nS3v/Rni8C9dMluK1Y5wfQi4pRzz1QdXylW3PYsm8NVkR5j1N78c81IOU4QmgFXA7QieTz11M3V6rimAXVlt+MfmFS+J/Kta+lx4GqgTA61X5LQu2vXuLw4GcHtlCy9BXbnOEEtRGwMOusIN3xVsCocX6D8f6ENKStANCtuTly5VaK97xmNFWNKa5DqKnMaabmpSKnnDghH1TmXSzpZvr6hFRzxe9/UUc3cshXTJ51EH1ySYL1a8ai3sFSk9PbDQvtzOcU6rVNw5lsj22gzDVw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GGVxYOWR6gr0Oy+DI8MNlXJHHTnb1SuUIDEhjK7R7Ks=;
+ b=lLqwQWYc6j9I/8HSNJPjsQJwOl4Bv6qHUsHPJ+yB3UOItdg9WK0tmA+qSg/h3Nka5+k00E2VWLqzgkJe9CnaVcisZU3hm7+Y/tkWfd8X/+EGM5yfNKnVpB0KvkB726wUoqMuOHLp55CBjeGZCANJJYlv8R3d4yAek6YCsEs4nHfyXkn46cfmUYsr7C2CHH3YByaMy874HsHKjTV2YNQc2ZWFXYh+DJn3P6G0cw8lkI46wGxx3xifRdoFbjwuiT0HYINAOJbomLVyeXYUvycP8Zobpde0O0lMP1Mekfg85ElQZiGhSXo4OfthMFUQyvfOVgYdQQ51hkx1lL+JUHyPnQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GGVxYOWR6gr0Oy+DI8MNlXJHHTnb1SuUIDEhjK7R7Ks=;
+ b=k/1rTXo5rjhdjtePcONPRwwgjexcK080wekf9eeZaVZWIRlQklrS9SCfVGSaossC7Tddum+WvydE4r4CfMe3XaIZs5LnvnhDalpeF47E+l8BSNMgoHI658Hnyo9prNq8xH5/oX+zkiW8IYYEdemkS0htDd1SURuNoaURSyDlUnQ=
+Received: from DS7PR03CA0289.namprd03.prod.outlook.com (2603:10b6:5:3ad::24)
+ by BL1PR12MB5876.namprd12.prod.outlook.com (2603:10b6:208:398::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.21; Sat, 7 Oct
+ 2023 04:27:18 +0000
+Received: from CY4PEPF0000EDD3.namprd03.prod.outlook.com
+ (2603:10b6:5:3ad:cafe::89) by DS7PR03CA0289.outlook.office365.com
+ (2603:10b6:5:3ad::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.37 via Frontend
+ Transport; Sat, 7 Oct 2023 04:27:18 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000EDD3.mail.protection.outlook.com (10.167.241.207) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6838.19 via Frontend Transport; Sat, 7 Oct 2023 04:27:17 +0000
+Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 6 Oct
+ 2023 23:27:16 -0500
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB05.amd.com
+ (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 6 Oct
+ 2023 23:27:16 -0500
+Received: from xsjtanmays50.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
+ Transport; Fri, 6 Oct 2023 23:27:15 -0500
+From:   Tanmay Shah <tanmay.shah@amd.com>
+To:     <jassisinghbrar@gmail.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <michal.simek@amd.com>, <shubhrajyoti.datta@amd.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Tanmay Shah <tanmay.shah@amd.com>
+Subject: [PATCH v2 1/2] dt-bindings: zynqmp: add destination mailbox compatible
+Date:   Fri, 6 Oct 2023 21:27:01 -0700
+Message-ID: <20231007042702.178028-1-tanmay.shah@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH v3 9/9] fork: Use __mt_dup() to duplicate maple tree in
- dup_mmap()
-To:     "Liam R. Howlett" <Liam.Howlett@Oracle.com>
-References: <20230925035617.84767-1-zhangpeng.00@bytedance.com>
- <20230925035617.84767-10-zhangpeng.00@bytedance.com>
- <20231003184634.bbb5c5ezkvi6tkdv@revolver>
- <58ec7a15-6983-d199-bc1a-6161c3b75e0f@bytedance.com>
- <20231004195347.yggeosopqwb6ftos@revolver>
- <785511a6-8636-04e5-c002-907443b34dad@bytedance.com>
- <20231007011102.koplouxuumlog3cu@revolver>
- <20231007013231.ctzjap6uzvutuant@revolver>
-Cc:     Peng Zhang <zhangpeng.00@bytedance.com>, corbet@lwn.net,
-        akpm@linux-foundation.org, willy@infradead.org, brauner@kernel.org,
-        surenb@google.com, michael.christie@oracle.com, mjguzik@gmail.com,
-        mathieu.desnoyers@efficios.com, npiggin@gmail.com,
-        peterz@infradead.org, oliver.sang@intel.com,
-        maple-tree@lists.infradead.org, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-From:   Peng Zhang <zhangpeng.00@bytedance.com>
-In-Reply-To: <20231007013231.ctzjap6uzvutuant@revolver>
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD3:EE_|BL1PR12MB5876:EE_
+X-MS-Office365-Filtering-Correlation-Id: d8c59d80-9e3b-4dfa-03cb-08dbc6edb0c9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GR8Ogtej7RQgsnMybs6s1dMtc7rvulKfEKEKTfTKvlFwXs4Ouy51ykLUSFFPam4t+WFCIkgTjgZlt7fxgGUolfN10loXL3u6v44awE7oZDTUgkzJtC9J7QrS/AxK6KNftvxF7BRMayRZOagHHke0mOSozkx87MW5alTrCwDxWF0STzXnairEHXGn30H0bBzszgYgkgzLR/NYMVb6+Ll7wwYysulxBuN3NPoaUoCFwk3gHTqITZgceNWGRHx7M33cfo3Ek+KNbIxgqSxkpU/dlY1JGgNfH6pikix9xjAORZ8EjW7CbH+CWlN+IuKx2chGvXyNKRcTZnfWGs4sO2ZQvqtR77j7UMDL0l5L1ECjT1xVAcM5dAidkg8o3pgEGW9z87jLeTiZbvE6g+qzOhRXOzPIRe6KE4xKtOmG64JOet/Ju0k3SyVuGJcYwt78gTKE0I+g9Qcmwl5Q4Q3WrHp9Seo3sFJIqOzQGC3gxdlEyIHOoZfbvw3i986FFRTlSd455ogMdfmBvK2/so0yl0YneQBRWvPXQhrcTWIY7D9kvaTUjTbfzONBLOjKUvVzgvQWFRlAm50TaNtrRw/HjpaoBKRQ7KzHxCxP12KmITMM6vg/QtaeSZimolKYBG8kmKl36tYcqVL08BglmdaGooxEngF9cPf/FGm/VzlHR1VWXiIqtMJ++IYFscfmU9ZRiLcKUGFliWvxJFaI63Qd/tiXj0mtJ2bJZ9M25rHKIGgOlcW8U+bKi8qN2XvG7ehpc6MLO9dd2+VoLgP8No8mzw0MOw==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(136003)(346002)(376002)(396003)(230922051799003)(186009)(64100799003)(451199024)(1800799009)(82310400011)(40470700004)(36840700001)(46966006)(2616005)(70586007)(54906003)(36860700001)(316002)(6636002)(40460700003)(70206006)(41300700001)(1076003)(81166007)(26005)(426003)(36756003)(6666004)(86362001)(478600001)(356005)(82740400003)(83380400001)(47076005)(336012)(110136005)(40480700001)(15650500001)(44832011)(4326008)(2906002)(8936002)(5660300002)(8676002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2023 04:27:17.7475
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d8c59d80-9e3b-4dfa-03cb-08dbc6edb0c9
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EDD3.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5876
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------0ZF2aWYZwteDjnDjJjSqArOh
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Current dt-bindings does not contain compatible property
+for child mailbox node. Child mailbox nodes are used
+to represent destination (remote) IPI agents. The compatible
+property for all destination mailboxes must be required to
+identify the node.
 
+This addition of new required property does not break ABI
+as current driver does not use this compatible property
+but, new features in driver should use this property.
 
+Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
+---
 
-在 2023/10/7 09:32, Liam R. Howlett 写道:
-...
->>>>
->>>>>>>
->>>>>>> [1] https://github.com/kdlucas/byte-unixbench/tree/master
->>>>>>>
->>>>>>> Signed-off-by: Peng Zhang <zhangpeng.00@bytedance.com>
->>>>>>> ---
->>>>>>>     include/linux/mm.h |  1 +
->>>>>>>     kernel/fork.c      | 34 ++++++++++++++++++++----------
->>>>>>>     mm/internal.h      |  3 ++-
->>>>>>>     mm/memory.c        |  7 ++++---
->>>>>>>     mm/mmap.c          | 52 ++++++++++++++++++++++++++++++++++++++++++++--
->>>>>>>     5 files changed, 80 insertions(+), 17 deletions(-)
->>>>>>>
->>>>>>> diff --git a/include/linux/mm.h b/include/linux/mm.h
->>>>>>> index 1f1d0d6b8f20..10c59dc7ffaa 100644
->>>>>>> --- a/include/linux/mm.h
->>>>>>> +++ b/include/linux/mm.h
->>>>>>> @@ -3242,6 +3242,7 @@ extern void unlink_file_vma(struct vm_area_struct *);
->>>>>>>     extern struct vm_area_struct *copy_vma(struct vm_area_struct **,
->>>>>>>     	unsigned long addr, unsigned long len, pgoff_t pgoff,
->>>>>>>     	bool *need_rmap_locks);
->>>>>>> +extern void undo_dup_mmap(struct mm_struct *mm, struct vm_area_struct *vma_end);
->>>>>>>     extern void exit_mmap(struct mm_struct *);
->>>>>>>     static inline int check_data_rlimit(unsigned long rlim,
->>>>>>> diff --git a/kernel/fork.c b/kernel/fork.c
->>>>>>> index 7ae36c2e7290..2f3d83e89fe6 100644
->>>>>>> --- a/kernel/fork.c
->>>>>>> +++ b/kernel/fork.c
->>>>>>> @@ -650,7 +650,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
->>>>>>>     	int retval;
->>>>>>>     	unsigned long charge = 0;
->>>>>>>     	LIST_HEAD(uf);
->>>>>>> -	VMA_ITERATOR(old_vmi, oldmm, 0);
->>>>>>>     	VMA_ITERATOR(vmi, mm, 0);
->>>>>>>     	uprobe_start_dup_mmap();
->>>>>>> @@ -678,16 +677,25 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
->>>>>>>     		goto out;
->>>>>>>     	khugepaged_fork(mm, oldmm);
->>>>>>> -	retval = vma_iter_bulk_alloc(&vmi, oldmm->map_count);
->>>>>>> -	if (retval)
->>>>>>> +	/* Use __mt_dup() to efficiently build an identical maple tree. */
->>>>>>> +	retval = __mt_dup(&oldmm->mm_mt, &mm->mm_mt, GFP_KERNEL);
->>>>>>> +	if (unlikely(retval))
->>>>>>>     		goto out;
->>>>>>>     	mt_clear_in_rcu(vmi.mas.tree);
->>>>>>> -	for_each_vma(old_vmi, mpnt) {
->>>>>>> +	for_each_vma(vmi, mpnt) {
->>>>>>>     		struct file *file;
->>>>>>>     		vma_start_write(mpnt);
->>>>>>>     		if (mpnt->vm_flags & VM_DONTCOPY) {
->>>>>>> +			mas_store_gfp(&vmi.mas, NULL, GFP_KERNEL);
->>>>>>> +
->>>>>>> +			/* If failed, undo all completed duplications. */
->>>>>>> +			if (unlikely(mas_is_err(&vmi.mas))) {
->>>>>>> +				retval = xa_err(vmi.mas.node);
->>>>>>> +				goto loop_out;
->>>>>>> +			}
->>>>>>> +
->>>>>>>     			vm_stat_account(mm, mpnt->vm_flags, -vma_pages(mpnt));
->>>>>>>     			continue;
->>>>>>>     		}
->>>>>>> @@ -749,9 +757,11 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
->>>>>>>     		if (is_vm_hugetlb_page(tmp))
->>>>>>>     			hugetlb_dup_vma_private(tmp);
->>>>>>> -		/* Link the vma into the MT */
->>>>>>> -		if (vma_iter_bulk_store(&vmi, tmp))
->>>>>>> -			goto fail_nomem_vmi_store;
->>>>>>> +		/*
->>>>>>> +		 * Link the vma into the MT. After using __mt_dup(), memory
->>>>>>> +		 * allocation is not necessary here, so it cannot fail.
->>>>>>> +		 */
->>>>>>> +		mas_store(&vmi.mas, tmp);
->>>>>>>     		mm->map_count++;
->>>>>>>     		if (!(tmp->vm_flags & VM_WIPEONFORK))
->>>>>>> @@ -760,15 +770,19 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
->>>>>>>     		if (tmp->vm_ops && tmp->vm_ops->open)
->>>>>>>     			tmp->vm_ops->open(tmp);
->>>>>>> -		if (retval)
->>>>>>> +		if (retval) {
->>>>>>> +			mpnt = vma_next(&vmi);
->>>>>>>     			goto loop_out;
->>>>>>> +		}
->>>>>>>     	}
->>>>>>>     	/* a new mm has just been created */
->>>>>>>     	retval = arch_dup_mmap(oldmm, mm);
->>>>>>>     loop_out:
->>>>>>>     	vma_iter_free(&vmi);
->>>>>>> -	if (!retval)
->>>>>>> +	if (likely(!retval))
->>>>>>>     		mt_set_in_rcu(vmi.mas.tree);
->>>>>>> +	else
->>>>>>> +		undo_dup_mmap(mm, mpnt);
->>>>>>>     out:
->>>>>>>     	mmap_write_unlock(mm);
->>>>>>>     	flush_tlb_mm(oldmm);
->>>>>>> @@ -778,8 +792,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
->>>>>>>     	uprobe_end_dup_mmap();
->>>>>>>     	return retval;
->>>>>>> -fail_nomem_vmi_store:
->>>>>>> -	unlink_anon_vmas(tmp);
->>>>>>>     fail_nomem_anon_vma_fork:
->>>>>>>     	mpol_put(vma_policy(tmp));
->>>>>>>     fail_nomem_policy:
->>>>>>> diff --git a/mm/internal.h b/mm/internal.h
->>>>>>> index 7a961d12b088..288ec81770cb 100644
->>>>>>> --- a/mm/internal.h
->>>>>>> +++ b/mm/internal.h
->>>>>>> @@ -111,7 +111,8 @@ void folio_activate(struct folio *folio);
->>>>>>>     void free_pgtables(struct mmu_gather *tlb, struct ma_state *mas,
->>>>>>>     		   struct vm_area_struct *start_vma, unsigned long floor,
->>>>>>> -		   unsigned long ceiling, bool mm_wr_locked);
->>>>>>> +		   unsigned long ceiling, unsigned long tree_end,
->>>>>>> +		   bool mm_wr_locked);
->>>>>>>     void pmd_install(struct mm_struct *mm, pmd_t *pmd, pgtable_t *pte);
->>>>>>>     struct zap_details;
->>>>>>> diff --git a/mm/memory.c b/mm/memory.c
->>>>>>> index 983a40f8ee62..1fd66a0d5838 100644
->>>>>>> --- a/mm/memory.c
->>>>>>> +++ b/mm/memory.c
->>>>>>> @@ -362,7 +362,8 @@ void free_pgd_range(struct mmu_gather *tlb,
->>>>>>>     void free_pgtables(struct mmu_gather *tlb, struct ma_state *mas,
->>>>>>>     		   struct vm_area_struct *vma, unsigned long floor,
->>>>>>> -		   unsigned long ceiling, bool mm_wr_locked)
->>>>>>> +		   unsigned long ceiling, unsigned long tree_end,
->>>>>>> +		   bool mm_wr_locked)
->>>>>>>     {
->>>>>>>     	do {
->>>>>>>     		unsigned long addr = vma->vm_start;
->>>>>>> @@ -372,7 +373,7 @@ void free_pgtables(struct mmu_gather *tlb, struct ma_state *mas,
->>>>>>>     		 * Note: USER_PGTABLES_CEILING may be passed as ceiling and may
->>>>>>>     		 * be 0.  This will underflow and is okay.
->>>>>>>     		 */
->>>>>>> -		next = mas_find(mas, ceiling - 1);
->>>>>>> +		next = mas_find(mas, tree_end - 1);
->>>>>>>     		/*
->>>>>>>     		 * Hide vma from rmap and truncate_pagecache before freeing
->>>>>>> @@ -393,7 +394,7 @@ void free_pgtables(struct mmu_gather *tlb, struct ma_state *mas,
->>>>>>>     			while (next && next->vm_start <= vma->vm_end + PMD_SIZE
->>>>>>>     			       && !is_vm_hugetlb_page(next)) {
->>>>>>>     				vma = next;
->>>>>>> -				next = mas_find(mas, ceiling - 1);
->>>>>>> +				next = mas_find(mas, tree_end - 1);
->>>>>>>     				if (mm_wr_locked)
->>>>>>>     					vma_start_write(vma);
->>>>>>>     				unlink_anon_vmas(vma);
->>>>>>> diff --git a/mm/mmap.c b/mm/mmap.c
->>>>>>> index 2ad950f773e4..daed3b423124 100644
->>>>>>> --- a/mm/mmap.c
->>>>>>> +++ b/mm/mmap.c
->>>>>>> @@ -2312,7 +2312,7 @@ static void unmap_region(struct mm_struct *mm, struct ma_state *mas,
->>>>>>>     	mas_set(mas, mt_start);
->>>>>>>     	free_pgtables(&tlb, mas, vma, prev ? prev->vm_end : FIRST_USER_ADDRESS,
->>>>>>>     				 next ? next->vm_start : USER_PGTABLES_CEILING,
->>>>>>> -				 mm_wr_locked);
->>>>>>> +				 tree_end, mm_wr_locked);
->>>>>>>     	tlb_finish_mmu(&tlb);
->>>>>>>     }
->>>>>>> @@ -3178,6 +3178,54 @@ int vm_brk(unsigned long addr, unsigned long len)
->>>>>>>     }
->>>>>>>     EXPORT_SYMBOL(vm_brk);
->>>>>>> +void undo_dup_mmap(struct mm_struct *mm, struct vm_area_struct *vma_end)
->>>>>>> +{
->>>>>>> +	unsigned long tree_end;
->>>>>>> +	VMA_ITERATOR(vmi, mm, 0);
->>>>>>> +	struct vm_area_struct *vma;
->>>>>>> +	unsigned long nr_accounted = 0;
->>>>>>> +	int count = 0;
->>>>>>> +
->>>>>>> +	/*
->>>>>>> +	 * vma_end points to the first VMA that has not been duplicated. We need
->>>>>>> +	 * to unmap all VMAs before it.
->>>>>>> +	 * If vma_end is NULL, it means that all VMAs in the maple tree have
->>>>>>> +	 * been duplicated, so setting tree_end to 0 will overflow to ULONG_MAX
->>>>>>> +	 * when using it.
->>>>>>> +	 */
->>>>>>> +	if (vma_end) {
->>>>>>> +		tree_end = vma_end->vm_start;
->>>>>>> +		if (tree_end == 0)
->>>>>>> +			goto destroy;
->>>>>>> +	} else
->>>>>>> +		tree_end = 0;
->>
->> You need to enclose this statement to meet the coding style.  You could
->> just set tree_end = 0 at the start of the function instead, actually I
->> think tree_end = USER_PGTABLES_CEILING unless there is a vma_end.
->>
->>>>>>> +
->>>>>>> +	vma = mas_find(&vmi.mas, tree_end - 1);
->>
->> vma = vma_find(&vmi, tree_end);
->>
->>>>>>> +
->>>>>>> +	if (vma) {
->>
->> Probably would be cleaner to jump to destroy here too:
->> if (!vma)
->> 	goto destroy;
->>
->>>>>>> +		arch_unmap(mm, vma->vm_start, tree_end);
-> 
-> One more thing, it seems the maple state that is passed into
-> unmap_region() needs to point to the _next_ element, or the reset
-> doesn't work right between the unmap_vmas() and free_pgtables() call:
-> 
-> vma_iter_set(&vmi, vma->vm_end);
-> 
-> 
->>>>>>> +		unmap_region(mm, &vmi.mas, vma, NULL, NULL, 0, tree_end,
->>>>>>> +			     tree_end, true);
->>>>>>
->>>>>> next is vma_end, as per your comment above.  Using next = vma_end allows
->>>>>> you to avoid adding another argument to free_pgtables().
->>>>> Unfortunately, it cannot be done this way. I fell into this trap before,
->>>>> and it caused incomplete page table cleanup. To solve this problem, the
->>>>> only solution I can think of right now is to add an additional
->>>>> parameter.
->>>>>
->>>>> free_pgtables() will be called in unmap_region() to free the page table,
->>>>> like this:
->>>>>
->>>>> free_pgtables(&tlb, mas, vma, prev ? prev->vm_end : FIRST_USER_ADDRESS,
->>>>> 		next ? next->vm_start : USER_PGTABLES_CEILING,
->>>>> 		mm_wr_locked);
->>>>>
->>>>> The problem is with 'next'. Our 'vma_end' does not exist in the actual
->>>>> mmap because it has not been duplicated and cannot be used as 'next'.
->>>>> If there is a real 'next', we can use 'next->vm_start' as the ceiling,
->>>>> which is not a problem. If there is no 'next' (next is 'vma_end'), we
->>>>> can only use 'USER_PGTABLES_CEILING' as the ceiling. Using
->>>>> 'vma_end->vm_start' as the ceiling will cause the page table not to be
->>>>> fully freed, which may be related to alignment in 'free_pgd_range()'. To
->>>>> solve this problem, we have to introduce 'tree_end', and separating
->>>>> 'tree_end' and 'ceiling' can solve this problem.
->>>>
->>>> Can you just use ceiling?  That is, just not pass in next and keep the
->>>> code as-is?  This is how exit_mmap() does it and should avoid any
->>>> alignment issues.  I assume you tried that and something went wrong as
->>>> well?
->>> I tried that, but it didn't work either. In free_pgtables(), the
->>> following line of code is used to iterate over VMAs:
->>> mas_find(mas, ceiling - 1);
->>> If next is passed as NULL, ceiling will be 0, resulting in iterating
->>> over all the VMAs in the maple tree, including the last portion that was
->>> not duplicated.
->>
->> If vma_end is NULL, it means that all VMAs in the maple tree have been
->> duplicated, so shouldn't the correct action in this case be freeing up
->> to ceiling?
-Yes, that's correct.
->>
->> If it isn't null, then vma_end->vm_start should work as the end of the
->> area to free.
-But there's an issue here. I initially thought the same way, but the
-behavior of free_pgtables() is very strange. For the last VMA, it seems
-that the ceiling passed to free_pgd_range() must be
-USER_PGTABLES_CEILING.
+Changes in v2:
+  - Fix commit message about breaking ABI
 
-It cannot be used vma_end->vm_start as the ceiling, possibly due to the
-peculiar alignment behavior in free_pgd_range().
+ .../bindings/mailbox/xlnx,zynqmp-ipi-mailbox.yaml           | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-The code is from free_pgd_range():
-	if (ceiling) {
-		ceiling &= PMD_MASK;
-		if (!ceiling)
-			return;
-	}
-I suspect it is related to this part. The behavior differs when the
-ceiling is equal to 0 or non-zero. However, I cannot comprehend all the
-details here.
+diff --git a/Documentation/devicetree/bindings/mailbox/xlnx,zynqmp-ipi-mailbox.yaml b/Documentation/devicetree/bindings/mailbox/xlnx,zynqmp-ipi-mailbox.yaml
+index aeaddbf574b0..8b15a0532120 100644
+--- a/Documentation/devicetree/bindings/mailbox/xlnx,zynqmp-ipi-mailbox.yaml
++++ b/Documentation/devicetree/bindings/mailbox/xlnx,zynqmp-ipi-mailbox.yaml
+@@ -74,6 +74,10 @@ patternProperties:
+     type: object  # DT nodes are json objects
+     additionalProperties: false
+     properties:
++
++      compatible:
++        const: xlnx,zynqmp-ipi-dest-mailbox
++
+       xlnx,ipi-id:
+         description:
+           Remote Xilinx IPI agent ID of which the mailbox is connected to.
+@@ -95,6 +99,7 @@ patternProperties:
+           - const: remote_response_region
+ 
+     required:
++      - compatible
+       - reg
+       - reg-names
+       - "#mbox-cells"
+@@ -124,6 +129,7 @@ examples:
+         ranges;
+ 
+         mailbox: mailbox@ff9905c0 {
++          compatible = "xlnx,zynqmp-ipi-dest-mailbox";
+           reg = <0x0 0xff9905c0 0x0 0x20>,
+                 <0x0 0xff9905e0 0x0 0x20>,
+                 <0x0 0xff990e80 0x0 0x20>,
 
->>
->> With your mas_find(mas, tree_end - 1), then the vma_end will be avoided,
->> but free_pgd_range() will use ceiling anyways:
->>
->> free_pgd_range(tlb, addr, vma->vm_end, floor, next ? next->vm_start : ceiling);
->>
->> Passing in vma_end as next to unmap_region() functions in my testing
->> without adding arguments to free_pgtables().
->>
->> How are you producing the accounting issue you mention above?  Maybe I
->> missed something?
-You can apply the patch provided at the bottom, and then use the test
-program in Attachment 1 to reproduce the issue.
+base-commit: 7d730f1bf6f39ece2d9f3ae682f12e5b593d534d
+-- 
+2.25.1
 
-In dmesg, the kernel will report the following error:
-[   14.829561] BUG: non-zero pgtables_bytes on freeing mm: 12288
-[   14.832445] BUG: non-zero pgtables_bytes on freeing mm: 12288
-
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 5f24f6d68ea4..fcc66acac480 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -688,7 +688,11 @@ static __latent_entropy int dup_mmap(struct 
-mm_struct *mm,
-
-  		vma_start_write(mpnt);
-  		if (mpnt->vm_flags & VM_DONTCOPY) {
--			mas_store_gfp(&vmi.mas, NULL, GFP_KERNEL);
-+			if (!strcmp(current->comm, "fork_test") && ktime_get_ns() % 2) {
-+				vmi.mas.node = MA_ERROR(-ENOMEM);
-+			} else {
-+				mas_store_gfp(&vmi.mas, NULL, GFP_KERNEL);
-+			}
-
-  			/* If failed, undo all completed duplications. */
-  			if (unlikely(mas_is_err(&vmi.mas))) {
-
->>
->>
->>>>
->>>>>
->>>>>>
->>>>>>> +
->>>>>>> +		mas_set(&vmi.mas, vma->vm_end);
->> vma_iter_set(&vmi, vma->vm_end);
->>>>>>> +		do {
->>>>>>> +			if (vma->vm_flags & VM_ACCOUNT)
->>>>>>> +				nr_accounted += vma_pages(vma);
->>>>>>> +			remove_vma(vma, true);
->>>>>>> +			count++;
->>>>>>> +			cond_resched();
->>>>>>> +			vma = mas_find(&vmi.mas, tree_end - 1);
->>>>>>> +		} while (vma != NULL);
->>
->> You can write this as:
->> do { ... } for_each_vma_range(vmi, vma, tree_end);
->>
->>>>>>> +
->>>>>>> +		BUG_ON(count != mm->map_count);
->>>>>>> +
->>>>>>> +		vm_unacct_memory(nr_accounted);
->>>>>>> +	}
->>>>>>> +
->>>>>>> +destroy:
->>>>>>> +	__mt_destroy(&mm->mm_mt);
->>>>>>> +}
->>>>>>> +
->>>>>>>     /* Release all mmaps. */
->>>>>>>     void exit_mmap(struct mm_struct *mm)
->>>>>>>     {
->>>>>>> @@ -3217,7 +3265,7 @@ void exit_mmap(struct mm_struct *mm)
->>>>>>>     	mt_clear_in_rcu(&mm->mm_mt);
->>>>>>>     	mas_set(&mas, vma->vm_end);
->>>>>>>     	free_pgtables(&tlb, &mas, vma, FIRST_USER_ADDRESS,
->>>>>>> -		      USER_PGTABLES_CEILING, true);
->>>>>>> +		      USER_PGTABLES_CEILING, USER_PGTABLES_CEILING, true);
->>>>>>>     	tlb_finish_mmu(&tlb);
->>>>>>>     	/*
->>>>>>> -- 
->>>>>>> 2.20.1
->>>>>>>
->>>>>>
->>>>>
->>>>
-> 
---------------0ZF2aWYZwteDjnDjJjSqArOh
-Content-Type: text/plain; charset=UTF-8; name="fork_test.c"
-Content-Disposition: attachment; filename="fork_test.c"
-Content-Transfer-Encoding: base64
-
-I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRsaWIuaD4KI2luY2x1ZGUgPHN5cy9t
-bWFuLmg+CiNpbmNsdWRlIDx1bmlzdGQuaD4KI2luY2x1ZGUgPHN5cy93YWl0Lmg+CgppbnQg
-bWFpbigpCnsKCWludCBjbnRfc3VjY2VzcyA9IDAsIGNudF9mYWlsdXJlID0gMDsKCWludCBz
-dGF0dXM7CgoJdm9pZCAqYWRkciA9IG1tYXAoTlVMTCwgNDA5NiwgUFJPVF9SRUFEIHwgUFJP
-VF9XUklURSwKCQkJICBNQVBfUFJJVkFURSB8IE1BUF9BTk9OWU1PVVMsIC0xLCAwKTsKCWlm
-IChhZGRyID09IE1BUF9GQUlMRUQpIHsKCQlwZXJyb3IoIm1tYXAgZmFpbGVkIik7CgkJZXhp
-dCgxKTsKCX0KCWlmIChtcHJvdGVjdChhZGRyLCA0MDk2LCBQUk9UX1JFQUQgfCBQUk9UX1dS
-SVRFIHwgUFJPVF9FWEVDKSA9PSAtMSkgewoJCXBlcnJvcigibXByb3RlY3QgZmFpbGVkIik7
-CgkJZXhpdCgxKTsKCX0KCWlmIChtYWR2aXNlKGFkZHIsIDQwOTYsIE1BRFZfRE9OVEZPUksp
-ID09IC0xKSB7CgkJcGVycm9yKCJtYWR2aXNlIGZhaWxlZCIpOwoJCWV4aXQoMSk7Cgl9Cglw
-cmludGYoIlZNQSBjcmVhdGVkIGF0IGFkZHJlc3MgJXBcbiIsIGFkZHIpOwoKCWZvciAoaW50
-IGkgPSAwOyBpIDwgMTAwMDA7IGkrKykgewoJCXBpZF90IHBpZCA9IGZvcmsoKTsKCQlpZiAo
-cGlkID09IC0xKSB7CgkJCWNudF9mYWlsdXJlKys7CgkJfSBlbHNlIGlmIChwaWQgPT0gMCkg
-ewoJCQlleGl0KEVYSVRfU1VDQ0VTUyk7CgkJfSBlbHNlIHsKCQkJY250X3N1Y2Nlc3MrKzsK
-CQkJd2FpdCgmc3RhdHVzKTsKCQkJaWYgKHN0YXR1cyAhPSAwKSB7CgkJCQlmcHJpbnRmKHN0
-ZGVyciwgIkJhZCB3YWl0IHN0YXR1czogMHgleFxuIiwKCQkJCQlzdGF0dXMpOwoJCQkJZXhp
-dCgyKTsKCQkJfQoJCX0KCX0KCglwcmludGYoInN1Y2Nlc3M6JWQgZmFpbHVyZTolZFxuIiwg
-Y250X3N1Y2Nlc3MsIGNudF9mYWlsdXJlKTsKCXJldHVybiAwOwp9Cg==
-
---------------0ZF2aWYZwteDjnDjJjSqArOh--
