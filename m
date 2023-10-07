@@ -2,85 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF97B7BC8E9
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 17:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA4F7BC8EE
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 17:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344068AbjJGPuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 11:50:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36668 "EHLO
+        id S1344040AbjJGPxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 11:53:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344097AbjJGPtx (ORCPT
+        with ESMTP id S1343934AbjJGPxj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 11:49:53 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7BCBCA;
-        Sat,  7 Oct 2023 08:49:45 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 397FlgSI011667;
-        Sat, 7 Oct 2023 15:49:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=ru5jfmYWa9vHMjM+QOrIHJoVV6lz6+EGc5Ri10pd6sk=;
- b=WfO49cTeXsnXpnFBqKtpS+/IXpqbmLfzTrPvWn+F0EaR7OHarOWGbx8XAeiajlNw4Z++
- 00CKyr2tcBOnp6SPPSonkPPs63gO9QVKzihVotjf1gwQ9dqmgaWb4NrWSINgHmBkplZ0
- 3WISK0sKCecrfLZMT4zP62pQA7/u+aVlMrqxqcnVAHDCPJrLEKY82aBccO9fvk0+hZTq
- xIDFl4oSPdtVqZ4N8UEJwpWQ4BM9rUWQqBMva0KuNC3Syo/K/8a2yvQzwPrAqQpBQYPf
- 401nLcjezcxldtgLhBVt3vxMkCd/Zdl492MaxtBs+rGH/9klpy/XA5PRkvxTYR2j1qG5 eA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tjxx88yg5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 07 Oct 2023 15:49:32 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 397FnV2I029276
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 7 Oct 2023 15:49:31 GMT
-Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Sat, 7 Oct 2023 08:49:25 -0700
-From:   Krishna Kurapati <quic_kriskura@quicinc.com>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Andy Gross" <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        Johan Hovold <johan@kernel.org>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>, <ahalaney@redhat.com>,
-        <quic_shazhuss@quicinc.com>,
-        Krishna Kurapati <quic_kriskura@quicinc.com>
-Subject: [PATCH v13 10/10] arm64: dts: qcom: sa8540-ride: Enable first port of tertiary usb controller
-Date:   Sat, 7 Oct 2023 21:18:06 +0530
-Message-ID: <20231007154806.605-11-quic_kriskura@quicinc.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231007154806.605-1-quic_kriskura@quicinc.com>
-References: <20231007154806.605-1-quic_kriskura@quicinc.com>
+        Sat, 7 Oct 2023 11:53:39 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F97BA
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 08:53:38 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5a21ea6baccso38594507b3.1
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Oct 2023 08:53:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696694017; x=1697298817; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XIoRUVFu2cJ5wWu6WRbqqm267XrfNYzNwi2GVhtMIn4=;
+        b=gRY+TGVpeTqIgehqGyZ6MvdoSL1RVeVwdLFJEN3d466nT4IS7HHMLFDRnktLaZfI4P
+         289DWXG8/9WqzHKCM/EaERR/PZVz6IDZdQNj0Z6p/j4KqotchYQLouD5egv/b3YJWUMN
+         jPOKM/k1CE7/aNHnFOcO3z/cb2OS+/X7zudMY9yHnClCIi03j3l+e7DPXjVfZ+29JrIp
+         Bj1KGCDwFmv0ZYSpKiI/7uDa6i+LflQBnJD9g79tgiMXhcnOsHmnz7efhDYyLyBxoYZg
+         Vpm8YMaJHRJkeJ6mpnTb2JF2YdCtq5zisSV0BuOyvQujQRX7Lr2LPVnRZajLZozm+bOf
+         qkcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696694017; x=1697298817;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XIoRUVFu2cJ5wWu6WRbqqm267XrfNYzNwi2GVhtMIn4=;
+        b=m32bdLj7e7W6JxvQVQrqhxnMY2oW6M5wzlF0t3uwsH3zonqz/qRiPEN5mXtQtM9Lm1
+         oz7UC/tlF58Ubh2H+ZSzIkDfBKzWqfXS4PWPX3hE+MtwT/sH5UDNcVdWWY+1v8Ek+/Ic
+         ZxodYTv0ixoz9yFp00UhVgMUxq8enkYV5gWJMyHlZHQbz4ZMcsc3TNu09aFEhb1oEL02
+         HXXa6H1TX2BQ483F74AlzFVrPbEXHT2XdWNkIYs8BdGw/dP4DTecE3D+Lre4vW5lg/p4
+         nLVNm8z8P+FF+kdoizTq7shIblnxoEaJjEKlrdJ67tzA0Z1L2K2T9buJ3CfmH3+cBuXE
+         /lBw==
+X-Gm-Message-State: AOJu0YxWTZ8+k619yuETmjTRQV4XDOPIixA4DsHTAiEKGdxUk6mCf7ye
+        SmmVX8Pxt+I2uuUaRx6u4aUQG+u8ZiTziQMoXWfbwg==
+X-Google-Smtp-Source: AGHT+IHRTbP3LnCb5nL4G04xxB/6ouPYhEI50onFC7yukO0J9Hy6kprf8+ym8MVvQcqV1zG7VWRBXNGAIV3eBVseG50=
+X-Received: by 2002:a05:690c:2c8a:b0:5a5:756:44f4 with SMTP id
+ ep10-20020a05690c2c8a00b005a5075644f4mr7775198ywb.22.1696694017572; Sat, 07
+ Oct 2023 08:53:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: y-X6bI1sFiL9Y0vzY8sS68XNeUgKB9Sp
-X-Proofpoint-ORIG-GUID: y-X6bI1sFiL9Y0vzY8sS68XNeUgKB9Sp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-07_12,2023-10-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- impostorscore=0 suspectscore=0 phishscore=0 priorityscore=1501 mlxscore=0
- spamscore=0 mlxlogscore=925 adultscore=0 lowpriorityscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310070143
+References: <20231006115147.18559-1-brgl@bgdev.pl> <ZSAIUVAQ6ifi8LTL@smile.fi.intel.com>
+ <CAMRc=MdrLSPCEsQ6OEgRX-7Wh7ka+Rczja=QjY-srozj3cz68w@mail.gmail.com> <ZSEMnqAynnrfBxX1@smile.fi.intel.com>
+In-Reply-To: <ZSEMnqAynnrfBxX1@smile.fi.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 7 Oct 2023 17:53:26 +0200
+Message-ID: <CACRpkdYTQ52fT5iiUXcO_Le2nYp5akdEPuq8brrSU+C0LFeOAQ@mail.gmail.com>
+Subject: Re: [RFC/RFT PATCH] gpiolib: reverse-assign the fwnode to struct gpio_chip
+To:     Andy Shevchenko <andy@kernel.org>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Dipen Patel <dipenp@nvidia.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -90,63 +70,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrew Halaney <ahalaney@redhat.com>
+On Sat, Oct 7, 2023 at 9:45=E2=80=AFAM Andy Shevchenko <andy@kernel.org> wr=
+ote:
 
-There is now support for the multiport USB controller this uses so
-enable it.
+> The providers decide themselves
+> if they want to have any specific device node for the chip or inherit
+> it from the physical hardware. Note, there are two types of the FW descri=
+ptions
+> of the GPIO controller, when it's 1:1 to the banks and when it's one devi=
+ce
+> with list of children, one per bank. Due to this differences we have
+> this field in the GPIO chip to begin with.
 
-The board only has a single port hooked up (despite it being wired up to
-the multiport IP on the SoC). There's also a USB 2.0 mux hooked up,
-which by default on boot is selected to mux properly. Grab the gpio
-controlling that and ensure it stays in the right position so USB 2.0
-continues to be routed from the external port to the SoC.
+So this is the real problem right, for example a pin controller with
+six sub-nodes that are GPIO chips but not necessarily devices.
 
-Co-developed-by: Andrew Halaney <ahalaney@redhat.com>
-Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
-[Krishna: Rebased on top of usb-next]
-Co-developed-by: Krishna Kurapati <quic_kriskura@quicinc.com>
-Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
----
- arch/arm64/boot/dts/qcom/sa8540p-ride.dts | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+In DT terms:
 
-diff --git a/arch/arm64/boot/dts/qcom/sa8540p-ride.dts b/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
-index b04f72ec097c..6904a4c201ff 100644
---- a/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
-+++ b/arch/arm64/boot/dts/qcom/sa8540p-ride.dts
-@@ -503,6 +503,18 @@ &usb_2_qmpphy0 {
- 	status = "okay";
- };
- 
-+&usb_2 {
-+	pinctrl-0 = <&usb2_en_state>;
-+	pinctrl-names = "default";
-+
-+	status = "okay";
-+};
-+
-+&usb_2_dwc3 {
-+	phy-names = "usb2-port0", "usb3-port0";
-+	phys = <&usb_2_hsphy0>, <&usb_2_qmpphy0>;
-+};
-+
- &xo_board_clk {
- 	clock-frequency = <38400000>;
- };
-@@ -655,4 +667,13 @@ wake-pins {
- 			bias-pull-up;
- 		};
- 	};
-+
-+	usb2_en_state: usb2-en-state {
-+		/* TS3USB221A USB2.0 mux select */
-+		pins = "gpio24";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-disable;
-+		output-low;
-+	};
- };
--- 
-2.42.0
+pinctrl@0 {
+   compatible =3D "...";
+(...)
+   gpio@0 {
+        (...)
+    };
+    gpio@1 {
+        (....)
+    };
+(...)
+    gpio@5 {
+        (....)
+    };
+};
 
+And now each of these subnodes spawn a gpio_chip and a gpio_device
+and now the big question is what fwnode (in this example of node) to use fo=
+r
+each.
+
+I was under the impression that despite the main device does not
+spawn subdevices in the Linux device model, the subdevices always
+have their individual fwnode, and when we create the gpio_chip for
+it, that creates a gpio_device and that *is* the device for that fwnode,
+if there is no corresponding say platform_device or similar.
+
+So e.g. assigning the fwnode of the parent (the pin controller in this
+example) to these gpio_chips flattens the hierarchy and that
+would be a *bug* in my mind (but maybe not in everyone else's
+mind).
+
+But IIUC what you are saying is that sometimes there are drivers that
+do this?
+
+Yours,
+Linus Walleij
