@@ -2,87 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8CC07BC914
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 18:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9F37BC918
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 18:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344037AbjJGQbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 12:31:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57552 "EHLO
+        id S1344063AbjJGQka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 12:40:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343956AbjJGQbI (ORCPT
+        with ESMTP id S1343956AbjJGQk3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 12:31:08 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA27B9
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 09:31:04 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B749C433C8;
-        Sat,  7 Oct 2023 16:31:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696696263;
-        bh=3saiFoFOXsJSmnhZLFioUhijfK07a5KjkQ16Shr0Tlo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CLLJanprTG5mz641FdNC0EgNnkUfxQ5ZBC7WolVoMeEvuzESgZ9Lp+LKOhHG/8BRT
-         50XNsXr2kyUJK+WOXAznr1k/j7UCYQSieAeq54JUprx3fCwtBff51vPfQsQ35DqtEv
-         yrD7qzPSVXkNCuJqkdoFhDSyqeFX/12WzrKVRYh0=
-Date:   Sat, 7 Oct 2023 18:31:00 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Michael Walle <michael@walle.cc>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Robert Marko <robert.marko@sartura.hr>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Daniel Golle <daniel@makrotopia.org>
-Subject: Re: [PATCH v12 5/7] nvmem: core: Rework layouts to become regular
- devices
-Message-ID: <2023100722-stallion-unquote-a3b1@gregkh>
-References: <20231005155907.2701706-1-miquel.raynal@bootlin.com>
- <20231005155907.2701706-6-miquel.raynal@bootlin.com>
+        Sat, 7 Oct 2023 12:40:29 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3A02EBA;
+        Sat,  7 Oct 2023 09:40:23 -0700 (PDT)
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 397GdaTL026853;
+        Sat, 7 Oct 2023 18:39:36 +0200
+Date:   Sat, 7 Oct 2023 18:39:36 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Vegard Nossum <vegard.nossum@oracle.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        security@kernel.org, corbet@lwn.net, workflows@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Solar Designer <solar@openwall.com>
+Subject: Re: [RFC PATCH] Documentation: security-bugs.rst: linux-distros
+ relaxed their rules
+Message-ID: <20231007163936.GA26837@1wt.eu>
+References: <20231007140454.25419-1-w@1wt.eu>
+ <5ae47535-b6e0-8b48-4d59-a167e37c7fcc@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231005155907.2701706-6-miquel.raynal@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <5ae47535-b6e0-8b48-4d59-a167e37c7fcc@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 05:59:05PM +0200, Miquel Raynal wrote:
-> --- a/drivers/nvmem/internals.h
-> +++ b/drivers/nvmem/internals.h
-> @@ -28,8 +28,30 @@ struct nvmem_device {
->  	nvmem_reg_read_t	reg_read;
->  	nvmem_reg_write_t	reg_write;
->  	struct gpio_desc	*wp_gpio;
-> +	struct device		*layout_dev;
->  	struct nvmem_layout	*layout;
->  	void *priv;
->  };
+Hi Vegard,
 
-Wait, is this now 2 struct device in the same structure?  Which one is
-the "real" owner of this structure?  Why is a pointer to layout_dev
-needed here as a "struct device" and not a real "struct
-nvmem_layout_device" or whatever it's called?
+On Sat, Oct 07, 2023 at 06:30:11PM +0200, Vegard Nossum wrote:
+> 
+> On 07/10/2023 16:04, Willy Tarreau wrote:
+> > +As such, the kernel security team strongly recommends that reporters of
+> > +potential security issues DO NOT contact the "linux-distros" mailing
+> > +list BEFORE a fix is accepted by the affected code's maintainers and you
+> 
+> is s/BEFORE/UNTIL/ clearer?
 
->  struct nvmem_layout {
-> -	const char *name;
-> -	const struct of_device_id *of_match_table;
-> +	struct device *dev;
+Probably, yes.
 
-Shouldn't this be a "real" struct device and not just a pointer?  If
-not, what does this point to?  Who owns the reference to it?
+> > +have read the linux-distros wiki page above and you fully understand the
+> > +requirements that doing so will impose on you and the kernel community.
+> > +This also means that in general it doesn't make sense to Cc: both lists
+> > +at once, except for coordination if a fix remains under embargo. And in
+> > +general, please do not Cc: the kernel security list about fixes that
+> > +have already been merged.
+> 
+> I was thinking about this Cc: thing and would it make sense to:
+> 
+> 1) have LKML and other public vger lists reject messages that include
+> s@k.o or (linux-)distros@ on Cc? The idea being that this is probably a
+> mistake -- I believe it has happened a few times recently by mistake.
+> 
+> 2) have (linux-)distros@ reject NEW threads (i.e. no In-Reply-To:) that
+> also include s@k.o on Cc? We could include a nice message explaining why
+> and to please resend when a patch has been developed and/or a disclosure
+> is planned in the next 7 days.
 
-thanks,
+I don't know, maybe it would add extra config burden, but on the other
+hand it could avoid the mistake from newcomers who have not read the
+docs first (which happened a few times already), but if l-d becomes a
+bit more flexible and tolerant to reporters' mistakes, as now documented,
+it should also be less of a problem.
 
-greg k-h
+> I guess the problem with this would be if
+> somebody on s@k.o does a reply-all which would add distros right back in
+> the loop -OR- a patch has already been developed and included.
+
+Then this would be deliberate, there would an in-reply-to so that would
+not be a problem. I really doubt anyone from s@k.o would Cc linux-distros
+anyway since it would imply disclosing some details from a reporter, and
+we do not do that, it's up to the reporter to do it if they want.
+
+Thanks,
+Willy
