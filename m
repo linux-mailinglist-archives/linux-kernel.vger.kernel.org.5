@@ -2,87 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53AE07BC606
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 10:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AAD27BC607
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 10:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234146AbjJGIWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 04:22:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43948 "EHLO
+        id S234134AbjJGIWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 04:22:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230011AbjJGIV7 (ORCPT
+        with ESMTP id S234148AbjJGIWU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 04:21:59 -0400
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A38B9B9;
-        Sat,  7 Oct 2023 01:21:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=jpLE4
-        H32ThsJyUmBiuptNCfeV0xPsEphlDRUqHMRYvc=; b=Ujga6X0Th/MtrUeG0zEFw
-        LZs5JZ8JfQjoPhg3XGGsiE05UceS6VG8rRMTqAJNuBn8nsFPo1JxK8pH5plfNLeU
-        AZE6rmwnbK/5ttj9z0RoIchKjZ24YvFzHn1HoPhSAEi8/cS6oTcoREIuBmrbS3t6
-        8xIVTEl+XuseLNpiflp5jI=
-Received: from localhost.localdomain (unknown [39.144.138.241])
-        by zwqz-smtp-mta-g2-2 (Coremail) with SMTP id _____wA3cIwFFSFls7Y9EA--.51861S2;
-        Sat, 07 Oct 2023 16:21:26 +0800 (CST)
-From:   Xing Tong Wu <xingtong_wu@163.com>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xingtong.wu@siemens.com
-Cc:     jan.kiszka@siemens.com, tobias.schaffner@siemens.com,
-        cedric.hombourger@siemens.com, gerd.haeussler.ext@siemens.com
-Subject: [PATCH] watchdog: wdat_wdt: Add timeout value as a param in ping method
-Date:   Sat,  7 Oct 2023 16:21:25 +0800
-Message-Id: <20231007082125.4699-1-xingtong_wu@163.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 7 Oct 2023 04:22:20 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25FC8BF
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 01:21:57 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id 006d021491bc7-57b6a7e0deeso1715267eaf.2
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Oct 2023 01:21:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1696666916; x=1697271716; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LAz8xXmhRswI9Wfo/147YMtE0iio01uYuGksIL2zD0E=;
+        b=ZuqRX91nRAQQljq+JabndT4iMYfy2DwAm39ZFH/d71nSoA4p1SGzHOjorTZrN3AEJD
+         VCfJpHFVnVaQ3T5Se1uJG9vXVsFKjk6uec5vR8mhvzuxTD5fWRp+Nm2UER0j3Nupj7V5
+         ni/JgPbBLWKvPIGjg0eVnl3iU084cf8pHbbGkw/JMA//3lTxzCJ3ogOzLdf1Tk/YutPr
+         +44eAxLtRA9/vwPseir/6pKB4poiwEydrK/JvZ8c0ldAZG9WhPOULzmHc8DF9zn2wZGE
+         Gns92ozM5PdqTz0KDJWfznNg1O2Sfc2LbPBPcFEACZWown09WneMEyPDqgpFseyQkDi4
+         C/RA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696666916; x=1697271716;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LAz8xXmhRswI9Wfo/147YMtE0iio01uYuGksIL2zD0E=;
+        b=r6/RjsSdmy4TAWpZo96ddkKauULLhrXL8bwgq8tHAE5JaVQcFd9w1/KOfEmlxZGoNl
+         cGuvPzT19fUQ6lYwn3mwpMqAoyNiUNl95uuHyQGbPk/M2G2ESyz68iZt8Jf5I7Oy+uVp
+         LZoPeRCs4zOtIsPHN9n0SE+xF52e2WHFHuKyGdhgRif7j8Hhi6jw+OGP6K7wcZ4BKV8C
+         XtkwMQMMuEl1yZHvKIIkveRffiqgCVvdp6TAIOTikRApH60N8G9wu1Rc4/pBzSZsnbXw
+         IxPhD+YPB95xe73GYPUOH4cm22scxDbFsg7PWD3SfD8cKc8R9utVxjn0C+sPPWsMQMe8
+         85yQ==
+X-Gm-Message-State: AOJu0YwBwdtUJ2gm7sUG1nju6nPfxUV2qgSwvCmJ9zwYLUw+matg97m7
+        BeyByID1DQgKh39xtxhPfevqXVKD/hiPx3bdsd7j
+X-Google-Smtp-Source: AGHT+IE7NTXPfDByfkgjF+uRhEZF4rdAVodoIp0h/JlhwCqfXkSUG6t8a5UGL1bEVtTGFHY+lL75JI8pMCWBqc0GOOM=
+X-Received: by 2002:a05:6358:52c2:b0:143:1063:d1ed with SMTP id
+ z2-20020a05635852c200b001431063d1edmr11416237rwz.26.1696666916406; Sat, 07
+ Oct 2023 01:21:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wA3cIwFFSFls7Y9EA--.51861S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxJrW3uFW8XrWrKw47GFyDWrg_yoW8GrWfpr
-        Wjkr15CryUtr48CFWxJwn7G39rCwnrZrW7XFykCw1Fv3s8KF15Ja1kt3srK34DKrZ3GFyY
-        ga4xKry8Aayjyr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jhyCJUUUUU=
-X-Originating-IP: [39.144.138.241]
-X-CM-SenderInfo: p0lqw35rqjs4rx6rljoofrz/1tbiOwsC0GC5nsxYpwAAsW
+References: <2023100643-tricolor-citizen-6c2d@gregkh>
+In-Reply-To: <2023100643-tricolor-citizen-6c2d@gregkh>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Sat, 7 Oct 2023 16:21:45 +0800
+Message-ID: <CACycT3s6BqcsRSL6aVf34_v-SV_owNrUmYuypS5XsUTtkQXm7A@mail.gmail.com>
+Subject: Re: [PATCH] vduse: make vduse_class constant
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xing Tong Wu <xingtong.wu@siemens.com>
+On Fri, Oct 6, 2023 at 10:31=E2=80=AFPM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> Now that the driver core allows for struct class to be in read-only
+> memory, we should make all 'class' structures declared at build time
+> placing them into read-only memory, instead of having to be dynamically
+> allocated at runtime.
+>
+> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> Cc: Xie Yongji <xieyongji@bytedance.com>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
 
-According to the WDAT spec that states about WATCHDOG_ACTION_SET_COUNTDOWN_PERIOD:
-"This action is required if WATCHDOG_ACTION_RESET does not explicitly write a new
-countdown value to a register during a reset."
-And that implies, WATCHDOG_ACTION_RESET may write a countdown value, thus may come
-with a WATCHDOG_INSTRUCTION_WRITE_COUNTDOWN, thus need the timeout value as parameter
-or would otherwise write 0.
-The watchdog for SIONCT6126 need a entry WATCHDOG_INSTRUCTION_WRITE_COUNTDOWN for
-WATCHDOG_ACTION_RESET action, I send this patch to support it.
+Reviewed-by: Xie Yongji <xieyongji@bytedance.com>
 
-Signed-off-by: Xing Tong Wu <xingtong.wu@siemens.com>
----
- drivers/watchdog/wdat_wdt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
+Yongji
 
-diff --git a/drivers/watchdog/wdat_wdt.c b/drivers/watchdog/wdat_wdt.c
-index 0ba99bed59fc..650fdc7996e1 100644
---- a/drivers/watchdog/wdat_wdt.c
-+++ b/drivers/watchdog/wdat_wdt.c
-@@ -269,7 +269,7 @@ static int wdat_wdt_stop(struct watchdog_device *wdd)
- 
- static int wdat_wdt_ping(struct watchdog_device *wdd)
- {
--	return wdat_wdt_run_action(to_wdat_wdt(wdd), ACPI_WDAT_RESET, 0, NULL);
-+	return wdat_wdt_run_action(to_wdat_wdt(wdd), ACPI_WDAT_RESET, wdd->timeout, NULL);
- }
- 
- static int wdat_wdt_set_timeout(struct watchdog_device *wdd,
--- 
-2.25.1
-
+>  drivers/vdpa/vdpa_user/vduse_dev.c | 40 ++++++++++++++++--------------
+>  1 file changed, 21 insertions(+), 19 deletions(-)
+>
+> diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/=
+vduse_dev.c
+> index df7869537ef1..0ddd4b8abecb 100644
+> --- a/drivers/vdpa/vdpa_user/vduse_dev.c
+> +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
+> @@ -134,7 +134,6 @@ static DEFINE_MUTEX(vduse_lock);
+>  static DEFINE_IDR(vduse_idr);
+>
+>  static dev_t vduse_major;
+> -static struct class *vduse_class;
+>  static struct cdev vduse_ctrl_cdev;
+>  static struct cdev vduse_cdev;
+>  static struct workqueue_struct *vduse_irq_wq;
+> @@ -1528,6 +1527,16 @@ static const struct kobj_type vq_type =3D {
+>         .default_groups =3D vq_groups,
+>  };
+>
+> +static char *vduse_devnode(const struct device *dev, umode_t *mode)
+> +{
+> +       return kasprintf(GFP_KERNEL, "vduse/%s", dev_name(dev));
+> +}
+> +
+> +static const struct class vduse_class =3D {
+> +       .name =3D "vduse",
+> +       .devnode =3D vduse_devnode,
+> +};
+> +
+>  static void vduse_dev_deinit_vqs(struct vduse_dev *dev)
+>  {
+>         int i;
+> @@ -1638,7 +1647,7 @@ static int vduse_destroy_dev(char *name)
+>         mutex_unlock(&dev->lock);
+>
+>         vduse_dev_reset(dev);
+> -       device_destroy(vduse_class, MKDEV(MAJOR(vduse_major), dev->minor)=
+);
+> +       device_destroy(&vduse_class, MKDEV(MAJOR(vduse_major), dev->minor=
+));
+>         idr_remove(&vduse_idr, dev->minor);
+>         kvfree(dev->config);
+>         vduse_dev_deinit_vqs(dev);
+> @@ -1805,7 +1814,7 @@ static int vduse_create_dev(struct vduse_dev_config=
+ *config,
+>
+>         dev->minor =3D ret;
+>         dev->msg_timeout =3D VDUSE_MSG_DEFAULT_TIMEOUT;
+> -       dev->dev =3D device_create_with_groups(vduse_class, NULL,
+> +       dev->dev =3D device_create_with_groups(&vduse_class, NULL,
+>                                 MKDEV(MAJOR(vduse_major), dev->minor),
+>                                 dev, vduse_dev_groups, "%s", config->name=
+);
+>         if (IS_ERR(dev->dev)) {
+> @@ -1821,7 +1830,7 @@ static int vduse_create_dev(struct vduse_dev_config=
+ *config,
+>
+>         return 0;
+>  err_vqs:
+> -       device_destroy(vduse_class, MKDEV(MAJOR(vduse_major), dev->minor)=
+);
+> +       device_destroy(&vduse_class, MKDEV(MAJOR(vduse_major), dev->minor=
+));
+>  err_dev:
+>         idr_remove(&vduse_idr, dev->minor);
+>  err_idr:
+> @@ -1934,11 +1943,6 @@ static const struct file_operations vduse_ctrl_fop=
+s =3D {
+>         .llseek         =3D noop_llseek,
+>  };
+>
+> -static char *vduse_devnode(const struct device *dev, umode_t *mode)
+> -{
+> -       return kasprintf(GFP_KERNEL, "vduse/%s", dev_name(dev));
+> -}
+> -
+>  struct vduse_mgmt_dev {
+>         struct vdpa_mgmt_dev mgmt_dev;
+>         struct device dev;
+> @@ -2082,11 +2086,9 @@ static int vduse_init(void)
+>         int ret;
+>         struct device *dev;
+>
+> -       vduse_class =3D class_create("vduse");
+> -       if (IS_ERR(vduse_class))
+> -               return PTR_ERR(vduse_class);
+> -
+> -       vduse_class->devnode =3D vduse_devnode;
+> +       ret =3D class_register(&vduse_class);
+> +       if (ret)
+> +               return ret;
+>
+>         ret =3D alloc_chrdev_region(&vduse_major, 0, VDUSE_DEV_MAX, "vdus=
+e");
+>         if (ret)
+> @@ -2099,7 +2101,7 @@ static int vduse_init(void)
+>         if (ret)
+>                 goto err_ctrl_cdev;
+>
+> -       dev =3D device_create(vduse_class, NULL, vduse_major, NULL, "cont=
+rol");
+> +       dev =3D device_create(&vduse_class, NULL, vduse_major, NULL, "con=
+trol");
+>         if (IS_ERR(dev)) {
+>                 ret =3D PTR_ERR(dev);
+>                 goto err_device;
+> @@ -2141,13 +2143,13 @@ static int vduse_init(void)
+>  err_wq:
+>         cdev_del(&vduse_cdev);
+>  err_cdev:
+> -       device_destroy(vduse_class, vduse_major);
+> +       device_destroy(&vduse_class, vduse_major);
+>  err_device:
+>         cdev_del(&vduse_ctrl_cdev);
+>  err_ctrl_cdev:
+>         unregister_chrdev_region(vduse_major, VDUSE_DEV_MAX);
+>  err_chardev_region:
+> -       class_destroy(vduse_class);
+> +       class_unregister(&vduse_class);
+>         return ret;
+>  }
+>  module_init(vduse_init);
+> @@ -2159,10 +2161,10 @@ static void vduse_exit(void)
+>         destroy_workqueue(vduse_irq_bound_wq);
+>         destroy_workqueue(vduse_irq_wq);
+>         cdev_del(&vduse_cdev);
+> -       device_destroy(vduse_class, vduse_major);
+> +       device_destroy(&vduse_class, vduse_major);
+>         cdev_del(&vduse_ctrl_cdev);
+>         unregister_chrdev_region(vduse_major, VDUSE_DEV_MAX);
+> -       class_destroy(vduse_class);
+> +       class_unregister(&vduse_class);
+>  }
+>  module_exit(vduse_exit);
+>
+> --
+> 2.42.0
+>
