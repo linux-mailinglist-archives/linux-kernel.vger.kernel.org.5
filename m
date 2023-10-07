@@ -2,57 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3BB97BC555
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 09:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC927BC558
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 09:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343633AbjJGHDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 03:03:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39606 "EHLO
+        id S1343642AbjJGHE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 03:04:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343578AbjJGHDR (ORCPT
+        with ESMTP id S1343578AbjJGHEY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 03:03:17 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 74AADB9
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 00:03:14 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8Dxl+iwAiFlMrsvAA--.55795S3;
-        Sat, 07 Oct 2023 15:03:12 +0800 (CST)
-Received: from openarena.loongson.cn (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxXNywAiFlmewZAA--.55077S2;
-        Sat, 07 Oct 2023 15:03:12 +0800 (CST)
-From:   Sui Jingfeng <suijingfeng@loongson.cn>
-To:     Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>
-Cc:     etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/etnaviv: Drop the 'len' parameter of etnaviv_iommu_map() function
-Date:   Sat,  7 Oct 2023 15:03:12 +0800
-Message-Id: <20231007070312.1026296-1-suijingfeng@loongson.cn>
-X-Mailer: git-send-email 2.34.1
+        Sat, 7 Oct 2023 03:04:24 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72420BD;
+        Sat,  7 Oct 2023 00:04:23 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-3ae65e8eb45so1953303b6e.1;
+        Sat, 07 Oct 2023 00:04:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696662262; x=1697267062; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EZVQpme/Czd5/VYAsQPo4BoFaas9BoftbCjcn0zFcSw=;
+        b=hTRSVcznJYi1i4XDYx3+tVSmKH/Pu5jUsfxKuHPcR7FeVHjjhy3fAxQP7M5WMEAbbb
+         RfXKozW0yZv6ena1ZD0BLPAifHEz/0V6bVLbrmLyC64SRQc/IbJYGS6gf1VR9KF0ssez
+         rdqVzaZkQCFfD0o/kNX/rSdWcxWIh9T4ghUUDEBNhkwVUNws+5WOY8xQNqthVusj3dWN
+         bWKI++Uss43e0Qxr5LxqX9vlaAIJE44vhVd2QEcMCMAA9RaSwy08AFT2g2SVxfR3d2Oc
+         I+/0AWdVRRPtD2B0CQqVMdinWoZnaCJUeWQXyXOfQdiOhNQsUScOrFz+6kFXac20W1HN
+         Alug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696662262; x=1697267062;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EZVQpme/Czd5/VYAsQPo4BoFaas9BoftbCjcn0zFcSw=;
+        b=shLzKtL+mzh6SCKbZUgWhBZwNpEp/olI6HK550t9oBvmhlCxRx3/fRCsRAWhRWdLE4
+         7VTLZ6CyE0T1mSRz/Z1ZYuR6DAqT0u1yFuNicXWOuW4G13xxHX5qHHTvEcZnKjYtC2fA
+         XuYJOiSzGMl8uJU1PgBSlnes9ESapSNLZcvcBp+ryqk9YUEiIW3wO/ig/0dNgWaHw9Ed
+         RZbwmL4dtcHs0TMk7NgJDUqClNW1PBUIgmuCEOKtI+MQ+YxQYjoa5KHbxTHFA2an1jA3
+         j+emHvHISJ8vMrBm0jd41ueLHlI7tNSH/wDFIgrUFXxvBWaDoJTelKN/XiYBSc6mKBxf
+         abxw==
+X-Gm-Message-State: AOJu0YwhXn8ev9Iznb430st828HI1efl4rLq3ioZxQEEBI3718eA5Gp5
+        5gSG/l5eLkOYrIgPfStjdp7b/j6eNiTEsfVHFaU=
+X-Google-Smtp-Source: AGHT+IElCh6zbQYAtET/SeI7Qf0Z54wtjDgQ0dGJOlBmT13Na90J4+1qHL69tsqck07fHDG0CQu2wLQxL0VT8p2avyI=
+X-Received: by 2002:aca:2810:0:b0:3ad:fdfb:d384 with SMTP id
+ 16-20020aca2810000000b003adfdfbd384mr9676137oix.53.1696662262569; Sat, 07 Oct
+ 2023 00:04:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8AxXNywAiFlmewZAA--.55077S2
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj9xXoW7Gw47XryUXF1fKryfJryxZwc_yoWkKwb_CF
-        1UZr9rJrsxZFn2q3Z2yrZxZF9YyF45ZFs2q3Zrt3sxKryDZwnxArWv934DA3yrXFy8uFnr
-        G3Z7tF10kF17WosvyTuYvTs0mTUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUj1kv1TuYvT
-        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-        cSsGvfJTRUUUb7AYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-        vaj40_Wr0E3s1l1IIY67AEw4v_JrI_Jryl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
-        Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE
-        14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x
-        0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
-        7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcV
-        C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF
-        04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
-        CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1EksDUUUUU==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20231006115147.18559-1-brgl@bgdev.pl> <CACRpkdZP_nOgj77iek_V28Ny8Pb03Xyy-=ho+WqzMHzXajtfqA@mail.gmail.com>
+In-Reply-To: <CACRpkdZP_nOgj77iek_V28Ny8Pb03Xyy-=ho+WqzMHzXajtfqA@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 7 Oct 2023 10:03:45 +0300
+Message-ID: <CAHp75Vdm-um7Ep=kfjEnDotJrbXi1vtfPUVJgcogou8Gr9+MQQ@mail.gmail.com>
+Subject: Re: [RFC/RFT PATCH] gpiolib: reverse-assign the fwnode to struct gpio_chip
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Dipen Patel <dipenp@nvidia.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,36 +71,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'len' parameter is the 4th argument, because it is not get used, so
-drop it. No functional change.
+On Sat, Oct 7, 2023 at 1:14=E2=80=AFAM Linus Walleij <linus.walleij@linaro.=
+org> wrote:
+> On Fri, Oct 6, 2023 at 1:51=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl=
+> wrote:
+>
+> > struct gpio_chip is not only used to carry the information needed to
+> > set-up a GPIO device but is also used in all GPIOLIB callbacks and is
+> > passed to the matching functions of lookup helpers.
+> >
+> > In that last case, it is currently impossible to match a GPIO device by
+> > fwnode unless it was explicitly assigned to the chip in the provider
+> > code. If the fwnode is taken from the parent device, the pointer in
+> > struct gpio_chip will remain NULL.
+> >
+> > If we have a parent device but gc->fwnode was not assigned by the
+> > provider, let's assign it ourselves so that lookup by fwnode can work i=
+n
+> > all cases.
+> >
+> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+>
+> because we want the code to work (rough consensus and running code)
+>
 
-Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
----
- drivers/gpu/drm/etnaviv/etnaviv_mmu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> The core of the crux is that we have
+> information duplication with a reference to the fwnode in two
+> places. One in gdev->dev and one in gc->fwnode.
 
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_mmu.c b/drivers/gpu/drm/etnaviv/etnaviv_mmu.c
-index 4fa72567183a..1661d589bf3e 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_mmu.c
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_mmu.c
-@@ -70,7 +70,7 @@ static int etnaviv_context_map(struct etnaviv_iommu_context *context,
- }
- 
- static int etnaviv_iommu_map(struct etnaviv_iommu_context *context, u32 iova,
--			     struct sg_table *sgt, unsigned len, int prot)
-+			     struct sg_table *sgt, int prot)
- {	struct scatterlist *sg;
- 	unsigned int da = iova;
- 	unsigned int i;
-@@ -314,7 +314,7 @@ int etnaviv_iommu_map_gem(struct etnaviv_iommu_context *context,
- 		goto unlock;
- 
- 	mapping->iova = node->start;
--	ret = etnaviv_iommu_map(context, node->start, sgt, etnaviv_obj->base.size,
-+	ret = etnaviv_iommu_map(context, node->start, sgt,
- 				ETNAVIV_PROT_READ | ETNAVIV_PROT_WRITE);
- 
- 	if (ret < 0) {
--- 
-2.34.1
+No, we don't. We have plenty of drivers that have gc->fwnode =3D=3D NULL,
+which means that it is shared with the parent device.
 
+
+...
+
+> A gdev is created for each gpio_chip so in my naive brain we could
+> get rid of gc->fwnode and only have the one inside gdev->dev?
+> +/- some helpful getters/setters if need be.
+>
+> Or what am I thinking wrong here?
+
+That would work I think. But I'm definitely against this change. It is
+the way to nowhere. We should really be quite strict about fwnode and
+do NOT assign the gc one behind the provider's back. If something is
+not working in this scenario, that should be fixed and not with a hack
+like this.
+
+--=20
+With Best Regards,
+Andy Shevchenko
