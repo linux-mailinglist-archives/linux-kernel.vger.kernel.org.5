@@ -2,132 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5137BCA57
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 00:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E5D7BCA59
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 00:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344209AbjJGWEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 18:04:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51372 "EHLO
+        id S1344206AbjJGWQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 18:16:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344151AbjJGWEt (ORCPT
+        with ESMTP id S1344151AbjJGWQL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 18:04:49 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D0E9F
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 15:04:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=pzZG/8YzvR5Ii/YC2xW8fwXHXk7pi3ZItpRBbHqx8JA=; b=ieLDsO0eXrUc+jl6MJc5uctC52
-        c600UjO7qMDcFWCAzWvCH8wXwC6a/lElh6zw91D0YfBPZguClSw6EVEHv4XwtKqRpuRMbA8FClhDc
-        km1s8YhBQsuVQN8No09HAplSbGm/hG3rbZmo/NWYeGfaXpgK2Nja8L1vry7NgvJwo4hjRcIHDmxpc
-        GPQ4JPGoTzV6+6mMbH8Nqxnj1S13tv3FrJ6lxPDCf/BA6YM2oE8h+lEnbYJQ4HA3YzoUFjE0hmNoe
-        QNLqjSkW51az/833QxCUMWF4NKOeLcgxLXEtsMJE9Y7inUgLAYWVUO68bl6J+WzjlSH7z3mS3MH1c
-        KIic9YUg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qpFOx-00E1sF-13;
-        Sat, 07 Oct 2023 22:04:01 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6BBF5300388; Sun,  8 Oct 2023 00:04:00 +0200 (CEST)
-Date:   Sun, 8 Oct 2023 00:04:00 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Youssef Esmat <youssefesmat@chromium.org>
-Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>, mingo@kernel.org,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, corbet@lwn.net, qyousef@layalina.io,
-        chris.hyser@oracle.com, patrick.bellasi@matbug.net, pjt@google.com,
-        pavel@ucw.cz, qperret@google.com, tim.c.chen@linux.intel.com,
-        joshdon@google.com, timj@gnu.org, kprateek.nayak@amd.com,
-        yu.c.chen@intel.com, joel@joelfernandes.org, efault@gmx.de,
-        tglx@linutronix.de
-Subject: Re: [PATCH 00/15] sched: EEVDF and latency-nice and/or slice-attr
-Message-ID: <20231007220400.GA5581@noisy.programming.kicks-ass.net>
-References: <20230531115839.089944915@infradead.org>
- <dlbtvvm5cewqzh5bcpl4cqhcwxmnnjb6pdle5jzywiiznlactd@cmhnpim42m3p>
- <20230906131356.GG38741@noisy.programming.kicks-ass.net>
- <CA+q576MS0-MV1Oy-eecvmYpvNT3tqxD8syzrpxQ-Zk310hvRbw@mail.gmail.com>
- <20231002184136.GA1539@noisy.programming.kicks-ass.net>
- <20231005120557.GA743@noisy.programming.kicks-ass.net>
+        Sat, 7 Oct 2023 18:16:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E14D9F;
+        Sat,  7 Oct 2023 15:16:10 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBFD9C433C7;
+        Sat,  7 Oct 2023 22:16:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696716969;
+        bh=jxeYH0Vp6GKZ73eOXD963bZzBieH2C5SDVp050HzZ60=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j/xlcuRxhAtsMxnJF5JD8IFMDXb548B+dLuG4Gu43b+0o6HqV/Efv4JhtbjBUkZD+
+         T5slG3ZwFc+vnbZj7lZfWgl26mIfVnFXDN2iNnFokUZAXLJGp0BtMfq8MMfInqEbur
+         3ZeNjNILTAuPfDX4VlLdPw4JEyIyvuiy2kXM4uDa6e5Ls0P3snLsDZvNWjm4X8LOmP
+         EF0KsAyFJnUMc/dEWlB0ZFakwzfAjscVsVPq6gBhc79gsnUebWWbA1es9OZkHfVJL+
+         a4vhq1AbUQ38bFD/91YRyqZJAlqtaJwI2vsFTN8xDP6xERbY+Z0k2gd5t64Ny10w28
+         4hoOehSjGIjGA==
+Date:   Sat, 7 Oct 2023 15:16:07 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     He-Jie Shih <bignose1007@gmail.com>,
+        Charlie Jenkins <charlie@rivosinc.com>,
+        Heiko Stuebner <heiko@sntech.de>, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, aou@eecs.berkeley.edu,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        conor.dooley@microchip.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        christoph.muellner@vrull.eu,
+        Heiko Stuebner <heiko.stuebner@vrull.eu>
+Subject: Re: [PATCH v4 00/12] RISC-V: support some cryptography accelerations
+Message-ID: <20231007221607.GC174883@sol.localdomain>
+References: <20230711153743.1970625-1-heiko@sntech.de>
+ <20230914001144.GA924@sol.localdomain>
+ <ZQJdnCwf99Glggin@ghost>
+ <3A0F6A71-C521-44A5-A56C-076AF3E13897@gmail.com>
+ <DD3113B1-AB9F-4D6D-BD6E-8F75A83DA45D@sifive.com>
+ <20231006194741.GA68531@google.com>
+ <7BC51820-61BC-422C-A2F7-B68CE679972C@gmail.com>
+ <CAMj1kXF-m3pYs6u=Xhf5F-Kgmuu8Az1Q6WP86vWqFnVphVSmkg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231005120557.GA743@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAMj1kXF-m3pYs6u=Xhf5F-Kgmuu8Az1Q6WP86vWqFnVphVSmkg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 02:05:57PM +0200, Peter Zijlstra wrote:
-
-> t=10 V=4                                                t=10 V=4
->  A       |----<                                          A       |----<
->  B      |<                                              >B      |<
-> >C   |----------------<                                  C   |----------------<
->    |---*-----|---------|---------|---------|----           |---*-----|---------|---------|---------|----
->                                                         
-
->                                                         
-> t=52 V=18                                               t=36 V=13
->  A                   |----<                              A                   |----<
-> >B                  |<                                   B                    |<
->  C                     |----------------<               >C   |----------------<
->    |---------|-------*-|---------|---------|----           |---------|--*------|---------|---------|----
->                                                         
-
->                                                         
-> BAaaBCccccccccBBBAaaBBBAaaBB                            BBAaaBBBAaaBBBAaaBCccccccccB
+On Sat, Oct 07, 2023 at 01:33:48AM +0200, Ard Biesheuvel wrote:
+> On Fri, 6 Oct 2023 at 23:01, He-Jie Shih <bignose1007@gmail.com> wrote:
+> >
+> > On Oct 7, 2023, at 03:47, Eric Biggers <ebiggers@kernel.org> wrote:
+> > > On Fri, Sep 15, 2023 at 11:21:28AM +0800, Jerry Shih wrote:
+> > >> On Sep 15, 2023, at 09:48, He-Jie Shih <bignose1007@gmail.com> wrote:
+> > >> The OpenSSL PR is at [1].
+> > >> And we are from SiFive.
+> > >>
+> > >> -Jerry
+> > >>
+> > >> [1]
+> > >> https://github.com/openssl/openssl/pull/21923
+> > >
+> > > Hi Jerry, I'm wondering if you have an update on this?  Do you need any help?
+> >
+> > We have specialized aes-cbc/ecb/ctr patch locally and pass the `testmgr` test
+> > cases. But the test patterns in `testmgr` are quite simple, I think it doesn't test the
+> > corner case(e.g. aes-xts with tail element).
+> >
 > 
+> There should be test cases for that.
+
+Yes, non-block-aligned AES-XTS test vectors should be added to crypto/testmgr.h.
+Though, that case should be already covered by the randomized tests enabled by
+CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y, which I very strongly recommend enabling
+during development.
+
 > 
+> > For aes-xts, I'm trying to update the implementation from OpenSSL. The design
+> > philosophy is different between OpenSSL and linux. In linux crypto, the data will
+> > be split into `scatterlist`. I need to preserve the aes-xts's iv for each scatterlist
+> > entry call.
 > 
-> As I wrote before; EVDF has worse lag bounds, but this is not
-> insurmountable. The biggest problem that I can see is that of wakeup
-> preemption. Currently we allow to preempt when 'current' has reached V
-> (RUN_TO_PARITY in pick_eevdf()).
+> Yes, this applies to all block ciphers that take an IV.
 > 
-> With these rules, when EEVDF schedules C (our large slice task) at t=10
-> above, it is only a little behind C and can be reaily preempted after
-> about 2 time units.
+> > And I'm thinking about how to handle the tail data in a simple way.
 > 
-> However, EVDF will delay scheduling C until much later, see how A and B
-> walk far ahead of V until t=36. Only when will we pick C. But this means
-> that we're firmly stuck with C for at least 11 time units. A newly
-> placed task will be around V and will have no chance to preempt.
+> The RISC-V vector ISA is quite advanced, so there may be a better
+> trick using predicates etc but otherwise, I suppose you could reuse
+> the same trick that other asm implementations use, which is to use
+> unaligned loads and stores for the final blocks, and to use a vector
+> permute with a permute table to shift the bytes in the registers. But
+> this is not performance critical, given that existing in-kernel users
+> use sector or page size inputs only.
+> 
+> > By the way, the `xts(aes)` implementation for arm and x86 are using
+> > `cra_blocksize= AES_BLOCK_SIZE`. I don't know why we need to handle the tail
+> > element. I think we will hit `EINVAL` error in `skcipher_walk_next()` if the data size
+> > it not be a multiple of block size.
+> >
+> 
+> No, both XTS and CBC-CTS permit inputs that are not a multiple of the
+> block size, and will use some form of ciphertext stealing for the
+> final tail. There is a generic CTS template that wraps CBC but
+> combining them in the same way (e.g., using vector permute) will speed
+> up things substantially. *However*, I'm not sure how relevant CBC-CTS
+> is in the kernel, given that only fscrypt uses it IIRC but actually
+> prefers something else so for new systems perhaps you shouldn't
+> bother.
+> 
+> > Overall, we will have
+> > 1) aes cipher
+> > 2) aes with cbc/ecb/ctr/xts mode
+> > 3) sha256/512 for `vlen>=128` platform
+> > 4) sm3 for `vlen>=128` platform
+> > 5) sm4
+> > 6) ghash
+> > 7) `chacha20` stream cipher
+> >
+> > The vector crypto pr in OpenSSL is under reviewing, we are still updating the
+> > perl file into linux.
+> >
+> > The most complicated `gcm(aes)` mode will be in our next plan.
+> >
+> > > I'm also wondering about riscv.pm and the choice of generating the crypto
+> > > instructions from .words instead of using the assembler.  It makes it
+> > > significantly harder to review the code, IMO.  Can we depend on assembler
+> > > support for these instructions, or is that just not ready yet?
+> >
+> > I have asked the same question before[1]. The reason is that Openssl could use
+> > very old compiler for compiling. Thus, the assembler might not know the standard
+> > rvv 1.0[2] and other vector crypto[3] instructions. That's why we use opcode for all
+> > vector instructions. IMO, I would prefer to use opcode for `vector crypto` only. The
+> > gcc-12 and clang-14 are already supporting rvv 1.0. Actually, I just read the `perl`
+> > file instead of the actually generated opcode for OpenSSL pr reviewing. And it's
+> > not hard to read the perl code.
+> >
+> 
+> I understand the desire to reuse code, and OpenSSL already relies on
+> so-called perlasm for this, but I think this is not a great choice,
+> and I actually think this was a mistake for RISC-V. OpenSSL relies on
+> perlasm for things like emittting different function pro-/epilogues
+> depending on the calling convention (SysV versus MS on x86_64, for
+> instance), but RISC-V does not have that much variety, and already
+> supports the insn_r / insn_i pseudo instructions to emit arbitrary
+> opcodes while still supporting named registers as usual. [Maybe my
+> experience does not quite extrapolate to the vector ISA, but I managed
+> to implement scalar AES [0] using the insn_r and insn_i pseudo
+> instructions (which are generally provided by the assembler but Linux
+> has fallback CPP macros for them as well), and this results on much
+> more maintainable code IMO.[
+> 
+> We are using some of the OpenSSL perlasm in the kernel already (and
+> some of it was introduced by me) but I don't think we should blindly
+> reuse all of the RISC-V code if  some of it can straight-forwardly be
+> written as normal .S files.
+> 
+> [0] https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=riscv-scalar-aes
 
-Playing around with it a little:
+I'm not a huge fan of perlasm either.  Normal .S files can be much easier to
+understand, and they do still support basic features like macros.  (Of course,
+this only works if the .S file is the real source code.  If the real source code
+is the perlasm, dumping it to a .S file doesn't make it more readable.)
 
-EEVDF					EVDF
+Ultimately, it needs to decided on an algorithm-by-algorithm basis whether it
+makes sense to use the .pl file directly from OpenSSL or write a normal .S file.
+Sharing code can save time, but it can also waste time if/when things don't
+match up and need to be changed for the kernel anyway.  If you look at the other
+architectures, sharing the OpenSSL .pl file is most common for Poly1305 and
+SHA-2.  It's rarer for AES modes.
 
-slice 30000000				slice 30000000
-# Min Latencies: 00014                  # Min Latencies: 00048
-# Avg Latencies: 00692                  # Avg Latencies: 188239
-# Max Latencies: 94633                  # Max Latencies: 961241
-                                        
-slice 3000000                           slice 3000000
-# Min Latencies: 00054                  # Min Latencies: 00055
-# Avg Latencies: 00522                  # Avg Latencies: 00673
-# Max Latencies: 41475                  # Max Latencies: 13297
-                                        
-slice 300000                            slice 300000
-# Min Latencies: 00018                  # Min Latencies: 00024
-# Avg Latencies: 00344                  # Avg Latencies: 00056
-# Max Latencies: 20061                  # Max Latencies: 00860
+In any case, regardless of .pl or .S, it would be nice to rely on the assembler
+for the mapping from readable instruction to 32-bit words.  Yes, I understand
+that the algorithm code reads mostly the some either way, but it introduces
+nonstandard notation (e.g. due to having to avoid the period character) and a
+possibility for error.  It's not the 1940s anymore; we should be able to have an
+assembler.  Why not make OpenSSL and Linux only enable this code when the
+assembler supports it?  Note that Linux already does this for many of the x86
+extensions, so there is precedent for this; see arch/x86/Kconfig.assembler.
 
-
-So while it improves the short slices, it completely blows up the large
-slices -- utterly slaughters the large slices in fact.
-
-And all the many variants of BIAS_ELIGIBLE that I've tried so far only
-manage to murder the high end while simultaneously not actually helping
-the low end -- so that's a complete write off.
-
-
-By far the sanest option so far is PLACE_SLEEPER -- and that is very
-much not a nice option either :-(
+- Eric 
