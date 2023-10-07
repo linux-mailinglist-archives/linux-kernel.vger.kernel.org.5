@@ -2,58 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C06A7BC944
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 19:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9DF77BC943
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 19:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344054AbjJGRLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 13:11:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37166 "EHLO
+        id S1344163AbjJGRLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 13:11:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344118AbjJGRLE (ORCPT
+        with ESMTP id S1344125AbjJGRLE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 7 Oct 2023 13:11:04 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0599A2;
-        Sat,  7 Oct 2023 10:11:01 -0700 (PDT)
-Date:   Sat, 07 Oct 2023 17:10:59 -0000
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B32FE9C;
+        Sat,  7 Oct 2023 10:11:02 -0700 (PDT)
+Date:   Sat, 07 Oct 2023 17:11:00 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696698660;
+        s=2020; t=1696698661;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5kiEoVZenwhxVMli/0Xg39anpqA8OnebqM0TKg7l87M=;
-        b=O2ljeJ7DWqzWuSAcmkP8d3cC4NLYfheMTGuugOMskDc2g67go6jcdctunyY5Poza3puNIs
-        6V9L6Wf1EY4T7Xdym01uo2KfPI2OzFmJkiXSgKubytDm1ntwMHxN2prMQ++dMsuTGDrqH7
-        LEJm9iQ9SzGYs4tLxlTA3quk6W/fzNpHwHa1wa/MWQ31XvxbpULU1gUCxvoUid4nW0VmZL
-        a4nPI0lIxDsjuKHbK9Oj88nqnRhhCz6AU4MjLcu+/xS2kgDzzy/TvTVWzzkA4NVIAJzWiI
-        Gy04ZFMYGE0I70z04B6PUIXF33BnsLE+q397+16Q2AatfOxTezHiqETUqfqzVw==
+        bh=w9W/7mWQnFitwcgGCOFt9OQeTwMOTrM02iphTm3u8Js=;
+        b=wF2y3Wx9FxXBlE40ZtTSCnGfounNNZhP5vV0Y2ukhKcEdXfxTA2gIQTDFEucq54juvtVBT
+        GvsFldzS+4WRYHmByNHE+rovj2xl7CYw1hzz6XlWmdGSQIzCPBN83YS4SIRxNlW/ORYE2z
+        /lV2NyrgRH8LxtuUDFSVrqHJCjcC7VHCSBX12LIrSW8/v68O/nZUC3eJAjkYEECAw9xkRS
+        1j3kT2k12zgY/G6eeTacEVsJD5Qq+C1D9uxMOZYinos6ehqoUqhZ3x8TYqNiYZz80vnCjv
+        irjeXKPcXN1ihQiB3GBg2RG50ENIZyDR+IVYfhGUd4GcFWDke87i0PK/1FENEA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696698660;
+        s=2020e; t=1696698661;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5kiEoVZenwhxVMli/0Xg39anpqA8OnebqM0TKg7l87M=;
-        b=jkO21dyGBKA00KscUXdIDd0azQwuWAI7mmmI6wOx1i5AtYZwIfthpD4bRDtMeuo1j/P+Wd
-        T4bSOCousVlAmhAg==
-From:   "tip-bot2 for Waiman Long" <tip-bot2@linutronix.de>
+        bh=w9W/7mWQnFitwcgGCOFt9OQeTwMOTrM02iphTm3u8Js=;
+        b=yvHkATSqm6EhzEwhZ9doHqir7/mb/lQLdYLda8yGF2YqcIUbNshW2sUdzYuPdXCueYOeWU
+        wWPveov1dxrdxSCA==
+From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] x86/speculation: Add __update_spec_ctrl() helper
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Waiman Long <longman@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
+Subject: [tip: sched/core] sched/core: Update stale comment in try_to_wake_up()
+Cc:     Zhang Qiao <zhangqiao22@huawei.com>,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230727184600.26768-2-longman@redhat.com>
-References: <20230727184600.26768-2-longman@redhat.com>
+In-Reply-To: <20230731085759.11443-1-zhangqiao22@huawei.com>
+References: <20230731085759.11443-1-zhangqiao22@huawei.com>
 MIME-Version: 1.0
-Message-ID: <169669865996.3135.485844093321921238.tip-bot2@tip-bot2>
+Message-ID: <169669866063.3135.14858424410402561741.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -69,54 +66,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     e3e3bab1844d448a239cd57ebf618839e26b4157
-Gitweb:        https://git.kernel.org/tip/e3e3bab1844d448a239cd57ebf618839e26b4157
-Author:        Waiman Long <longman@redhat.com>
-AuthorDate:    Thu, 27 Jul 2023 14:45:57 -04:00
+Commit-ID:     ea41bb514fe286bf50498b3c6d7f7a5dc2b6c5e0
+Gitweb:        https://git.kernel.org/tip/ea41bb514fe286bf50498b3c6d7f7a5dc2b6c5e0
+Author:        Ingo Molnar <mingo@kernel.org>
+AuthorDate:    Wed, 04 Oct 2023 11:33:36 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Sat, 07 Oct 2023 11:33:28 +02:00
 
-x86/speculation: Add __update_spec_ctrl() helper
+sched/core: Update stale comment in try_to_wake_up()
 
-Add a new __update_spec_ctrl() helper which is a variant of
-update_spec_ctrl() that can be used in a noinstr function.
+The following commit:
 
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Waiman Long <longman@redhat.com>
+  9b3c4ab3045e ("sched,rcu: Rework try_invoke_on_locked_down_task()")
+
+... renamed try_invoke_on_locked_down_task() to task_call_func(),
+but forgot to update the comment in try_to_wake_up().
+
+But it turns out that the smp_rmb() doesn't live in task_call_func()
+either, it was moved to __task_needs_rq_lock() in:
+
+  91dabf33ae5d ("sched: Fix race in task_call_func()")
+
+Fix that now.
+
+Also fix the s/smb/smp typo while at it.
+
+Reported-by: Zhang Qiao <zhangqiao22@huawei.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Link: https://lore.kernel.org/r/20230727184600.26768-2-longman@redhat.com
+Link: https://lore.kernel.org/r/20230731085759.11443-1-zhangqiao22@huawei.com
 ---
- arch/x86/include/asm/spec-ctrl.h | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ kernel/sched/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/spec-ctrl.h b/arch/x86/include/asm/spec-ctrl.h
-index cb0386f..c648502 100644
---- a/arch/x86/include/asm/spec-ctrl.h
-+++ b/arch/x86/include/asm/spec-ctrl.h
-@@ -4,6 +4,7 @@
- 
- #include <linux/thread_info.h>
- #include <asm/nospec-branch.h>
-+#include <asm/msr.h>
- 
- /*
-  * On VMENTER we must preserve whatever view of the SPEC_CTRL MSR
-@@ -76,6 +77,16 @@ static inline u64 ssbd_tif_to_amd_ls_cfg(u64 tifn)
- 	return (tifn & _TIF_SSBD) ? x86_amd_ls_cfg_ssbd_mask : 0ULL;
- }
- 
-+/*
-+ * This can be used in noinstr functions & should only be called in bare
-+ * metal context.
-+ */
-+static __always_inline void __update_spec_ctrl(u64 val)
-+{
-+	__this_cpu_write(x86_spec_ctrl_current, val);
-+	native_wrmsrl(MSR_IA32_SPEC_CTRL, val);
-+}
-+
- #ifdef CONFIG_SMP
- extern void speculative_store_bypass_ht_init(void);
- #else
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 65e10ac..f5783cb 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4237,7 +4237,7 @@ int try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+ 		 * Pairs with the LOCK+smp_mb__after_spinlock() on rq->lock in
+ 		 * __schedule().  See the comment for smp_mb__after_spinlock().
+ 		 *
+-		 * A similar smb_rmb() lives in try_invoke_on_locked_down_task().
++		 * A similar smp_rmb() lives in __task_needs_rq_lock().
+ 		 */
+ 		smp_rmb();
+ 		if (READ_ONCE(p->on_rq) && ttwu_runnable(p, wake_flags))
