@@ -2,66 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39BA57BC432
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 04:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B01887BC434
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 04:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234061AbjJGCcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 22:32:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42192 "EHLO
+        id S234076AbjJGCdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 22:33:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233755AbjJGCcv (ORCPT
+        with ESMTP id S234064AbjJGCcw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 22:32:51 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C8D2C2;
-        Fri,  6 Oct 2023 19:32:46 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4S2Tpw5Hy8z4f3jJ4;
-        Sat,  7 Oct 2023 10:32:40 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgB3Dt5HwyBl+tZOCQ--.41587S3;
-        Sat, 07 Oct 2023 10:32:41 +0800 (CST)
-Subject: Re: [PATCH -next v3 00/25] md: synchronize io with array
- reconfiguration
-To:     Song Liu <song@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     xni@redhat.com, agk@redhat.com, snitzer@kernel.org,
-        dm-devel@redhat.com, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20230928061543.1845742-1-yukuai1@huaweicloud.com>
- <CAPhsuW5cUgqy9fqj+Z4nGPQrAok-eQ=NipNxb0TL_kuCFaPMcw@mail.gmail.com>
- <f59cbb99-33dd-c427-2e43-5a07ab9fbf51@huaweicloud.com>
- <CAPhsuW7TRODsR_N95AmXJCZvpTuSKgbOjnYGxMGAWtmt3x9Vkw@mail.gmail.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <eb4ea24d-f7b4-899b-9259-2d48dc83e48f@huaweicloud.com>
-Date:   Sat, 7 Oct 2023 10:32:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Fri, 6 Oct 2023 22:32:52 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D230C6
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 19:32:51 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6927528c01dso449740b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 19:32:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1696645970; x=1697250770; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aE++ezKdN8720LEY7IVJ33vhFnTrqC0qzrEhyMq8nsc=;
+        b=wRG/NNYschSu4Ps9+zTjxeb9fHnBi7SneTWGkY4c/571j0QDN/mg7LhJrN6KzjIvza
+         eeSDT61CRnPcn+oJiScfbjFPa04fkaC796VlOr5pcdCM5wEKjJa+cOBqDK2L+4TneTv0
+         fU6x4kUfFUuTro2n5YgQgIf6EH5NHPCyRtLpTxbJn5jOpJ3IFZ3PoYahn2pPCtDGaona
+         pqvaSPr/K9cm9lN07GSaQaMgm2TIypfr8fqDWCMAh5Wb6Ak+Dfy1yNees1gNSyvJni4B
+         E1n6SifAedvukbTQRvvRSgXZDSHNTNzIiPqu56yxyYC2NjmjwVB4nUUafPdB9XQBKmLD
+         KCjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696645970; x=1697250770;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aE++ezKdN8720LEY7IVJ33vhFnTrqC0qzrEhyMq8nsc=;
+        b=OuFct9cBy2ZSAZh0ba22dNVp6r2ajIXhlPIQX9D2MsvshMEnShAsEamj2ZqAd/C016
+         yi86XtsDXy3f4loo2rBiSDpFRcUH4zWoyLg7gEa62AdancO08CfFL+akv4ycczTrRzbg
+         Ou5ORFUC89oYQOvLHjABLz4+BwSt2Difha2lNzESchHd/zBBvWRDvhYDbfzfdohQC6A5
+         hH/8mchuRRQBHERYuGz39pM3tjGwF2CCAxxYhwoJmWPz1A2bhtQX7av0o9LzG2N3/b6v
+         T2v28WucTqS6ePQ+/dgi7UByxmK4Uelu6yF0j0GD9x6wpdCB5+mzn9U+taQ2kkhGaf2r
+         kpPA==
+X-Gm-Message-State: AOJu0YzhX9s8j+71ed0pur9e9nGeK5UACb+J9P02B4k9xC871T49G9Xo
+        tuuJBIvwdxkqT3B5WL+Mjl1AmeHwcye2jh26eY8=
+X-Google-Smtp-Source: AGHT+IGR8X6ptX3+nEjZ6JSuts+D90XG+BG2spzZdlVNr424PE/dh6kUmay9cpeyTJ2NfkUy7ChUVQ==
+X-Received: by 2002:a05:6a00:1d94:b0:690:d314:38d with SMTP id z20-20020a056a001d9400b00690d314038dmr10732845pfw.1.1696645970427;
+        Fri, 06 Oct 2023 19:32:50 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id c24-20020a637258000000b0055c178a8df1sm417065pgn.94.2023.10.06.19.32.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Oct 2023 19:32:49 -0700 (PDT)
+Message-ID: <ab758860-e51e-409c-8353-6205fbe515dc@kernel.dk>
+Date:   Fri, 6 Oct 2023 20:32:47 -0600
 MIME-Version: 1.0
-In-Reply-To: <CAPhsuW7TRODsR_N95AmXJCZvpTuSKgbOjnYGxMGAWtmt3x9Vkw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgB3Dt5HwyBl+tZOCQ--.41587S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxtF45KFy5GF17WF45WrWxWFg_yoWxXFWrp3
-        y2qan0kr4DJrn7ZFs7J3y8uF1Sy3yfWFW5GryfK34akwn8Aryvvry8Ka15urZ09r9rGF12
-        vF4UKa98Aa4YyFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
-        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
-        sGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: audit: io_uring openat triggers audit reference count underflow
+ in worker thread
+Content-Language: en-US
+To:     Dan Clash <Dan.Clash@microsoft.com>,
+        "audit@vger.kernel.org" <audit@vger.kernel.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>
+Cc:     "paul@paul-moore.com" <paul@paul-moore.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <MW2PR2101MB1033FFF044A258F84AEAA584F1C9A@MW2PR2101MB1033.namprd21.prod.outlook.com>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <MW2PR2101MB1033FFF044A258F84AEAA584F1C9A@MW2PR2101MB1033.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,227 +76,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-在 2023/10/05 11:55, Song Liu 写道:
-> On Wed, Oct 4, 2023 at 8:42 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
->>
->> Hi,
->>
->> 在 2023/09/29 3:15, Song Liu 写道:
->>> Hi Kuai,
->>>
->>> Thanks for the patchset!
->>>
->>> A few high level questions/suggestions:
->>
->> Thanks a lot for these!
->>>
->>> 1. This is a big change that needs a lot of explanation. While you managed to
->>> keep each patch relatively small (great job btw), it is not very clear why we
->>> need these changes. Specifically, we are adding a new mutex, it is worth
->>> mentioning why we cannot achieve the same goal without it. Please add
->>> more information in the cover letter. We will put part of the cover letter in
->>> the merge commit.
->>
->> Yeah, I realize that I explain too little. I will add background and
->> design.
->>>
-Can you take a look about this new cover letter?
-
-##### Backgroud
-
-Our testers started to test raid10 last year, and we found that there
-are lots of problem in the following test scenario:
-
-- add or remove disks to the array
-- issue io to the array
-
-At first, we fixed each problem independently respect that io can
-concurrent with array reconfiguration.  However, on the one hand new
-issues are continuously reported, on the other hand other personalities
-might have the same problems. I'm thinking about how to fix these
-problems thoroughly.
-
-Refer to how block layer protect io with queue reconfiguration(for
-example, change elevator):
-
-```
-blk_mq_freeze_queue
--> wait for all io to be done, and prevent new io to be dispatched
-// reconfiguration
-blk_mq_unfreeze_queue
-```
-
-Then it comes to my mind that I can do something similar to synchronize
-io with array reconfiguration.
-
-##### rcu introduction
-
-see details in https://www.kernel.org/doc/html/next/RCU/whatisRCU.html
-
-- writer should replace old data with new data first, and free old data
-after grace period;
-- reader should handle both cases that old data and new data is read,
-and the data that is read should not be dereferenced after critical
-section;
-
-##### Current synchronization
-
-Add or remove disks to the array can be triggered by ioctl/sysfs/daemon
-thread:
-
-1. hold 'reconfig_mutex';
-
-2. check that rdev can be added/removed, one condition is that there is
-no IO, for example:
-
-    ```
-    raid10_remove_disk
-     if (atomic_read(&rdev->nr_pending))
-      err = -EBUSY;
-    ```
-
-3. do the actual operations to add/remove a rdev, one procedure is
-set/clear a pointer to rdev, for example:
-
-    ```
-    raid10_remove_disk
-     p = conf->mirrors[xx]
-     rdevp = &p->rdev/replacement
-     *rdevp = NULL
-    ```
-
-4. check if there is still no io on this rdev, if not, revert the
-pointer to rdev and return failure, for example
-
-    ```
-    raid10_remove_disk
-     synchronize_rcu()
-     if (atomic_read(&rdev->nr_pending))
-      err = -EBUSY
-      *rdevp = rdev
-    ```
-
-IO path is using rcu_read_lock/unlock() to access rdev, for example:
-
-```
-raid10_write_request
-  rcu_read_lock
-  rdev = rcu_dereference(mirror->rdev/replacement)
-  rcu_read_unlock
-
-raid10_end_write_request
-  rdev = conf->mirrors[dev].rdev/replacement
-  -> rdev/rrdev is still used after rcu_read_unlock()
-```
-
-##### Current problems
-
-- rcu is used wrongly;
-- There are lots of places involved that old value is read, however,
-many places doesn't handle this correctly;
-- Between step 3 and 4, if new io is dispatched, NULL will be read for
-the rdev, and data will be lost.
-
-##### New synchronization
-
-Similar to how blk_mq_freeze_queue() works
-
-Add or remove disks:
-
-1. suspend the array, this should guarantee no new io is dispatched and
-wait for dispatched io to be done;
-2. add or remove rdevs from array;
-3. resume the array;
-
-IO path doesn't need to change for now, and all rcu implementation can
-be removed.
-
-There are already apis to suspend/resume the array, unfortunately, they
-can't be used here because:
-
-- old apis only wait for io to be dispatched, not to be done;
-- old apis is only supported for the personality that implement quiesce
-callback;
-- old apis must be called after the array start running;
-- old apis must hold 'reconfig_mutex', and will wait for io to be done,
-this behavior is risky because 'reconfig_mutex' is used for daemon
-thread to update super_block and handle io. In order to prevent
-potential problems, there is a weird logical that suspend array hold
-'reconfig_mutex' for mddev_check_recovery() to update super_block;
-
-Then main work is divided into 3 steps, at first make sure new apis to
-suspend the array is general:
-
-- make sure suspend array will wait for io to be done(Done by []);
-- make sure suspend array can be called for all personalities(Done by
-[]);
-- make sure suspend array can be called at any time(Done by []);
-- make sure suspend array doesn't rely on 'reconfig_mutex';
-
-The second step is to replace old apis with new apis:
-
-```
-From:
-lock reconfig_mutex
-suspend array
-resume array
-unlock reconfig_mutex
-
-To:
-suspend array
-lock reconfig_mutex
-unlock reconfig_mutex
-resume array
-```
-
-Finally, for the remain path that involved reconfiguration, suspend the
-array first:
-
-```
-From:
-// reconfiguration
-
-To:
-suspend array
-// reconfiguration
-resume array
-```
-
->>> 2. In the cover letter, please also highlight that we are removing
->>>    MD_ALLOW_SB_UPDATE and MD_UPDATING_SB. This is a big improvement.
->>>
->>
->> Okay.
->>> 3. Please rearrange the patch set so that the two "READ_ONCE/WRITE_ONCE"
->>> patches are at the beginning.
->>
->> Okay.
->>>
->>> 4. Please consider merging some patches. Current "add-api => use-api =>
->>> remove-old-api" makes it tricky to follow what is being changed. For this set,
->>> I found the diff of the whole set easier to follow than some of the big patches.
->> I refer to some other big patchset to replace an old api, for example:
->>
->> https://lore.kernel.org/all/20230818123232.2269-1-jack@suse.cz/
+On 10/6/23 2:09 PM, Dan Clash wrote:
+> diff --git a/fs/namei.c b/fs/namei.c
+> index 2a8baa6ce3e8..4f7ac131c9d1 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -187,7 +187,7 @@ getname_flags(const char __user *filename, int flags, int *empty)
+>  		}
+>  	}
 > 
-> Yes, this is a safe way to replace old APIs. Since the scale of this
-> patchset is
-> smaller, I was thinking it might not be necessary to go that path. But
-> I will let
-> you make the decision.
+> -	result->refcnt = 1;
+> +	refcount_set(&result->refcnt, 1);
+>  	/* The empty path is special. */
+>  	if (unlikely(!len)) {
+>  		if (empty)
+> @@ -248,7 +248,7 @@ getname_kernel(const char * filename)
+>  	memcpy((char *)result->name, filename, len);
+>  	result->uptr = NULL;
+>  	result->aname = NULL;
+> -	result->refcnt = 1;
+> +	refcount_set(&result->refcnt, 1);
+>  	audit_getname(result);
 > 
->> Currently I prefer to use one patch for each function point. And I do
->> merged some patches in this version, and for remaining patches, do you
->> prefer to use one patch for one file instead of one function point?(For
->> example, merge patch 10-12 for md/raid5-cache, and 13-16 for md/raid5).
+>  	return result;
+> @@ -259,9 +259,10 @@ void putname(struct filename *name)
+>  	if (IS_ERR(name))
+>  		return;
 > 
-> I think 10 should be a separate patch, and we can merge 11 and 12. We can
-> merge 13-16, and maybe also 5-7 and 18-20.
+> -	BUG_ON(name->refcnt <= 0);
+> +	BUG_ON(refcount_read(&name->refcnt) == 0);
+> +	BUG_ON(refcount_read(&name->refcnt) == REFCOUNT_SATURATED);
 > 
-> Thanks,
-> Song
-> .
+> -	if (--name->refcnt > 0)
+> +	if (!refcount_dec_and_test(&name->refcnt))
+>  		return;
 > 
+>  	if (name->name != name->iname) {
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index d0a54e9aac7a..8217e07726d4 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -2719,7 +2719,7 @@ struct audit_names;
+>  struct filename {
+>  	const char		*name;	/* pointer to actual string */
+>  	const __user char	*uptr;	/* original userland pointer */
+> -	int			refcnt;
+> +	refcount_t		refcnt;
+>  	struct audit_names	*aname;
+>  	const char		iname[];
+>  };
+> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+> index 37cded22497e..232e0be9f6d9 100644
+> --- a/kernel/auditsc.c
+> +++ b/kernel/auditsc.c
+> @@ -2188,7 +2188,7 @@ __audit_reusename(const __user char *uptr)
+>  		if (!n->name)
+>  			continue;
+>  		if (n->name->uptr == uptr) {
+> -			n->name->refcnt++;
+> +			refcount_inc(&n->name->refcnt);
+>  			return n->name;
+>  		}
+>  	}
+> @@ -2217,7 +2217,7 @@ void __audit_getname(struct filename *name)
+>  	n->name = name;
+>  	n->name_len = AUDIT_NAME_FULL;
+>  	name->aname = n;
+> -	name->refcnt++;
+> +	refcount_inc(&name->refcnt);
+>  }
+> 
+>  static inline int audit_copy_fcaps(struct audit_names *name,
+> @@ -2349,7 +2349,7 @@ void __audit_inode(struct filename *name, const struct dentry *dentry,
+>  		return;
+>  	if (name) {
+>  		n->name = name;
+> -		name->refcnt++;
+> +		refcount_inc(&name->refcnt);
+>  	}
+> 
+>  out:
+> @@ -2474,7 +2474,7 @@ void __audit_inode_child(struct inode *parent,
+>  		if (found_parent) {
+>  			found_child->name = found_parent->name;
+>  			found_child->name_len = AUDIT_NAME_FULL;
+> -			found_child->name->refcnt++;
+> +			refcount_inc(&found_child->name->refcnt);
+>  		}
+>  	}
+
+I'm not fully aware of what audit is doing with struct filename outside
+of needing it for the audit log. Rather than impose the atomic
+references for everyone, would it be doable to simply dupe the struct
+instead of grabbing the (non-atomic) reference to the existing one?
+
+If not, since there's no over/underflow handling right now, it'd
+certainly be cheaper to use an atomic_t here rather than a full
+refcount.
+
+-- 
+Jens Axboe
 
