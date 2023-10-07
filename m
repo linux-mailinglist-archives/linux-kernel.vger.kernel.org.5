@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B526B7BC817
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 16:01:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA137BC81D
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 16:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343966AbjJGOBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 10:01:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47942 "EHLO
+        id S1343990AbjJGOBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 10:01:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343627AbjJGOBB (ORCPT
+        with ESMTP id S1343893AbjJGOBC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 10:01:01 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702DEB6;
-        Sat,  7 Oct 2023 07:01:00 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-406650da82bso27725625e9.3;
+        Sat, 7 Oct 2023 10:01:02 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD8EBC;
+        Sat,  7 Oct 2023 07:01:01 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40651a726acso27864195e9.1;
         Sat, 07 Oct 2023 07:01:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696687258; x=1697292058; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JA8pNS1sjO+SvOcd9f6aWXsYXEvGmALJgnPRfN+5ZZI=;
-        b=UDnIXIB++NvBHV9SoQCxqfjMq56DJVSBM5z50WqruSFt0D/CpePQzTycSdXcn56RY9
-         yb0Pda6b8xa8ocvBAyV2onRN+4BkIfHmQs8KC56PExjaSekwU5dqcShBBlBLhfPfsDbZ
-         KD2/tNFdxSlyYrtiC4tZ9zknfNalf8Q3Ju3DyAQNCmZOtvtGTq/rpxvS+vlAU9Wu1ulz
-         mu/dTgJ/KMV3ax1Yoce5WqItvlX1Cz1wIwPnAyDoOy7OnPNly/6J27fac88phZlj40hy
-         1BsAfFggVIx1adAsOnDRgOsn+atTXIVoaAlOsOL1N7aTnw3PV+SylLuvOEhYz0GUwdR/
-         YyyA==
+        d=gmail.com; s=20230601; t=1696687259; x=1697292059; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VGOiBnjw4/x0MkXFgDDiE4Fk7/tgt630it5dnumIjlY=;
+        b=GpGVoDYS2RZvwpy+WtWCVFAy1QGYS+a4FkqWnK7KAsjA/u1B3Qyk2R1sTEq84N14kb
+         L8eysZVRhcP58NjSgUco1iirLH9d/7kHw9ECfa9YoDY66DkHRxTwj7iirjq2T2h26yy2
+         Nbt7k8sfGbHLZZLsD+f97WHl8GSOsOnCzB5CInmlgj1tfnwibYn7XypUsZ70mHX1BbqZ
+         KQhoEqJFc2wSaJjjy6z2qhIoBZPB4kFi2irdfDCHhTn1FWAMxC7qsWRRdUsJkQlG4Klx
+         MUfHWGiEDyo9AaqltHBPJWeNOCoU+OLJaOcUPHDcc/DEqtScLyBgPzLLqEwHnsys27K0
+         5dyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696687258; x=1697292058;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JA8pNS1sjO+SvOcd9f6aWXsYXEvGmALJgnPRfN+5ZZI=;
-        b=U4HMmMIdFacu88IWGUoxvISys3ipvr0/rIhG++8yoSnhLMFtuD8g2MVSiwtmFhM9Cf
-         yfI7Z/qvx7eqnqbdbaW22O0NpA7CS4nbDvJi+85FjAQw6i81AHQ7nNvNvGGGhlnvsQf9
-         e2R+YHTz1ORL523Ry+AAsKqJyiqFRdPzA3GvT7DwGqnbKmlDTKxLxc/aIAAvfHxS8xLU
-         +9wWE7AQZsaw6rDg4lNRww+siNIVdz7ZT6rgghcputP38D4bH8tODqTYkrYzbRTNA8q+
-         TnQBxgRAgc08nnuj8IzeAkhijomH9tkEak353pVg/ex/yTKxI/J53Hh7DYCFxZhCAxcq
-         sSfQ==
-X-Gm-Message-State: AOJu0Yx/8z8FXZR5jcMYAdTuCe2r1ECjBb8RzJlVbA/ryrn0ycWod5Pu
-        o6rYt/pB5AsjUO2Yb1ie4UM=
-X-Google-Smtp-Source: AGHT+IGw5xKTNOEryOEGkm2GmWpAQMQ7XWxlFiwFmem0T2DEt25XxN9BwEq7jE9+BmH9cReNhqOUuQ==
-X-Received: by 2002:a1c:4c09:0:b0:401:b204:3b97 with SMTP id z9-20020a1c4c09000000b00401b2043b97mr10662857wmf.4.1696687258088;
-        Sat, 07 Oct 2023 07:00:58 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696687259; x=1697292059;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VGOiBnjw4/x0MkXFgDDiE4Fk7/tgt630it5dnumIjlY=;
+        b=r6jP3OuJYDrxudIyDsuWp6dxC3zQB+KlYJUEhtDhWdsyszc9F9sG3l7c905R0QIB/S
+         IbAqMWmH7+H7xYwgxE3YWEIID7SHMihcigeeNaC5NYxxv+d27zaKFAfhzK+LCICR5/8h
+         up6j2V06KcUpUzBWvl0qa+3nP6Bhiq86PYrMneIuSbAIfgsYQRrFSbBdpdd0wsWoZz5a
+         26IIVwdY/C3WPHFIrQ1NI6AYmP4srY+o0Nq1puqSzsP5qFPhfS6wly4LE9EWoEa3Vix1
+         vc5oMh5KEJAASncZ+TF5yvuh/kmTpvpE26Xe00wnSaY/dBGptSYjZcPfUYrfY1Bix042
+         8fLw==
+X-Gm-Message-State: AOJu0YyA2Fs6eZx4Pb+jPgoEvGxRzPtL4gzngZ+tN+sFBETsvjOXIw8I
+        NIUrmMKvAFEd6hZBgn0nsPo=
+X-Google-Smtp-Source: AGHT+IFUlOCstpFBtle9vJcHnRwKqht1Ydvm5Cr8wkCt/VplSUpVI+3bXftOtvU7hIWIsuDALe/TQg==
+X-Received: by 2002:a05:600c:b49:b0:406:7232:1431 with SMTP id k9-20020a05600c0b4900b0040672321431mr10355053wmr.33.1696687259174;
+        Sat, 07 Oct 2023 07:00:59 -0700 (PDT)
 Received: from david-ryuzu.fritz.box ([77.22.112.104])
-        by smtp.googlemail.com with ESMTPSA id q8-20020a05600000c800b0032415213a6fsm4332043wrx.87.2023.10.07.07.00.56
+        by smtp.googlemail.com with ESMTPSA id q8-20020a05600000c800b0032415213a6fsm4332043wrx.87.2023.10.07.07.00.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Oct 2023 07:00:57 -0700 (PDT)
+        Sat, 07 Oct 2023 07:00:58 -0700 (PDT)
 From:   David Wronek <davidwronek@gmail.com>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -68,10 +69,12 @@ Cc:     cros-qcom-dts-watchers@chromium.org, linux-arm-msm@vger.kernel.org,
         linux-phy@lists.infradead.org, linux-scsi@vger.kernel.org,
         hexdump0815@googlemail.com, ~postmarketos/upstreaming@lists.sr.ht,
         phone-devel@vger.kernel.org, David Wronek <davidwronek@gmail.com>
-Subject: [PATCH 0/7] Add UFS support for SC7180/SM7125
-Date:   Sat,  7 Oct 2023 15:58:24 +0200
-Message-ID: <20231007140053.1731245-1-davidwronek@gmail.com>
+Subject: [PATCH 1/7] dt-bindings: ufs: qcom: Add SC7180 compatible string
+Date:   Sat,  7 Oct 2023 15:58:25 +0200
+Message-ID: <20231007140053.1731245-2-davidwronek@gmail.com>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231007140053.1731245-1-davidwronek@gmail.com>
+References: <20231007140053.1731245-1-davidwronek@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -84,31 +87,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset introduces UFS storage support for SC7180 and SM7125, as
-well as support for the Xiaomi Redmi Note 9S.
+Document the compatible for the UFS found on SC7180.
 
-David Wronek (6):
-  dt-bindings: ufs: qcom: Add SC7180 compatible string
-  dt-bindings: phy: Add QMP UFS PHY compatible for SC7180
-  dt-bindings: arm: qcom: Add Xiaomi Redmi Note 9S
-  phy: qcom: qmp-ufs: Add SC7180 support
-  arm64: dts: qcom: sc7180: Add UFS nodes
-  arm64: dts: qcom: sm7125-xiaomi-common: Add UFS nodes
+Signed-off-by: David Wronek <davidwronek@gmail.com>
+---
+ Documentation/devicetree/bindings/ufs/qcom,ufs.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Joe Mason (1):
-  arm64: dts: qcom: Add support for Xiaomi Redmi Note 9S
-
- .../devicetree/bindings/arm/qcom.yaml         |  1 +
- .../phy/qcom,sc8280xp-qmp-ufs-phy.yaml        |  1 +
- .../devicetree/bindings/ufs/qcom,ufs.yaml     |  2 +
- arch/arm64/boot/dts/qcom/Makefile             |  1 +
- arch/arm64/boot/dts/qcom/sc7180.dtsi          | 70 +++++++++++++++++++
- .../boot/dts/qcom/sm7125-xiaomi-common.dtsi   | 16 +++++
- .../boot/dts/qcom/sm7125-xiaomi-curtana.dts   | 16 +++++
- drivers/phy/qualcomm/phy-qcom-qmp-ufs.c       |  3 +
- 8 files changed, 110 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/sm7125-xiaomi-curtana.dts
-
+diff --git a/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml b/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
+index 462ead5a1cec..f99a933cc217 100644
+--- a/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
++++ b/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
+@@ -27,6 +27,7 @@ properties:
+           - qcom,msm8996-ufshc
+           - qcom,msm8998-ufshc
+           - qcom,sa8775p-ufshc
++          - qcom,sc7180-ufshc
+           - qcom,sc8280xp-ufshc
+           - qcom,sdm845-ufshc
+           - qcom,sm6115-ufshc
+@@ -210,6 +211,7 @@ allOf:
+         compatible:
+           contains:
+             enum:
++              - qcom,sc7180-ufshc
+               - qcom,sm6115-ufshc
+     then:
+       properties:
 -- 
 2.42.0
 
