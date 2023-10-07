@@ -2,196 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2147BC7BC
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 14:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64E4D7BC7C8
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 14:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343931AbjJGMog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 08:44:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34544 "EHLO
+        id S1343984AbjJGMqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 08:46:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343680AbjJGMof (ORCPT
+        with ESMTP id S1343968AbjJGMp4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 08:44:35 -0400
-Received: from IND01-BMX-obe.outbound.protection.outlook.com (mail-bmxind01olkn2020.outbound.protection.outlook.com [40.92.103.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4C8B6;
-        Sat,  7 Oct 2023 05:44:34 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S9D0hnskYAoRphcHNjMp9kg7Jdlok/k0JpWwKo4O7wPmWUtlv6SA+dI5ZdeqwljUqZNzGwYHEOnogeoGarq10eA6knbI1nKU6UTlQKihbPJ7iCJ4ASmT7icz8D8VhivpRUiER8MINsaDJS9iDmNmyvHAxDFKhE2sEY3MMAxZcfmVuSIIXWZx9RQuNEZV0e73dFcLuKD6NcMhBS4dfHidj1yPL0zvnWcReUbwV9a6eb2G0B9H6WyAQuTtQbUMxl444QMBTKd63ngpHGpSl3XP/rCcmifvHw4C/0G11Zftr7hApVRe8faUOgDYqbpTIAXQPq47jxdis5gJuVQ6rjQAXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PbGUV3xgw2r3FA34QSOjK/IUaKKhnYbQXhh+oAvp75s=;
- b=Rjb7m669eBim3rYLB4Y2cMM9Vz4RDkbAirRkiIysl8apz5y9afJIX47WA6WcgXGUdPrSmGfLUPe/3uLRSfwE2yKB0LF1hWLFLjdrhyo5SubGgUG/pM03PbIhX8GYwsqOSZFgVQ53igo9y8NyCuNOIKGj+3w6UF5+TdRx9OBy56yRkUbtAE0mfJc27CUyN1PUK9XHOIqpIfQSJCKISknOWfgsiAx8R4Dx1DKSxzcHTQP9EEkVyUKX8abDi6lV0R+QBtax/CsRjYYEsPx4BB0V60pmaqc3dUYKOROg8+EYNWIkJPH8CESTUAPvlsGAIvI1BUpaCwk2M93B5NtXw18O6w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PbGUV3xgw2r3FA34QSOjK/IUaKKhnYbQXhh+oAvp75s=;
- b=AnEGBbsoJUsEDnL0bZtOsiJlhoF7MWRbe7GGlGxkDzHrt/RVnsSkUnXPL2dh49Lo13QReFIUNeSNc8Fd2VuLGixc8k8/PkYOZYTnLPhlsnl/qvEJEMhcb/CMLJCNdxWMCppbsnqL+ElDIgEHkccqrzS4FgHbcS6BLOhaZjrjwycymDBCOUdqNo4WtRuZwg5dgXePoYtFhyVpLTEdJnKQykhzTvMzUcUE09qJrvrkrXFZczM4PfUtu4PfzKDH0Ww1ZRC/RygP8OfonfVzrqBjKalr820qxusKbezHP+UjyvNVv6HJdAabRsMcPE0tTck9a4646AYa/s7BGHoXZ/5TFA==
-Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:ab::5) by
- PN0P287MB1079.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:142::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6838.35; Sat, 7 Oct 2023 12:44:27 +0000
-Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
- ([fe80::efe9:8d54:281b:23f7]) by MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
- ([fe80::efe9:8d54:281b:23f7%3]) with mapi id 15.20.6838.040; Sat, 7 Oct 2023
- 12:44:27 +0000
-Message-ID: <MA0P287MB0332FDA6E0083755B0FCB8ABFEC8A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
-Date:   Sat, 7 Oct 2023 20:44:23 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/5] riscv: dts: sophgo: add Milk-V Duo board device
- tree
-To:     Jisheng Zhang <jszhang@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Inochi Amaoto <inochiama@outlook.com>
-References: <20231006121449.721-1-jszhang@kernel.org>
- <20231006121449.721-6-jszhang@kernel.org>
-From:   Chen Wang <unicorn_wang@outlook.com>
-In-Reply-To: <20231006121449.721-6-jszhang@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TMN:  [uHLiM3JxmgzdJ+W+WVRI6JNSvqRR+y4v]
-X-ClientProxiedBy: SG2PR03CA0093.apcprd03.prod.outlook.com
- (2603:1096:4:7c::21) To MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a01:ab::5)
-X-Microsoft-Original-Message-ID: <c4ee4e82-d4f6-4d37-9760-3756e565d208@outlook.com>
+        Sat, 7 Oct 2023 08:45:56 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF22BAB
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 05:45:31 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3af65455e7cso2090876b6e.1
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Oct 2023 05:45:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1696682731; x=1697287531; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CDaXcRhA+gdgCae4/53Q2d2Fl2r3AoTXrjF9zbGRXmI=;
+        b=c8QW3k3qprf1xr2RjY22Q9LQYZfSNQXcWpqcCJ4lJ8OO7YbzFffXNQHu3Ux2qYapsN
+         l8KBIoaUvk0MrZj6kO1bDNuqOFtHiHaCySIbL6W4LJxsp5vAiZ2wg84BptFsG43AZU3l
+         Nfp9ynZZ07h8pRPNbN1ggjs1TsE5t6X8wJ7P6u+NDFd1jO/MHJAYKsF+ITGkL19ScUZ/
+         44W8esSm1x3xjXMTPfeJ8q7/7wFQOu+BdDEaQKQgeZgZQfoUIHR0GDyGUSCooj86vDBC
+         19ng3EJGj23oxMfzppK6YL/u7eLmlzfkiFFHLwVq0lQPYIV8xos2/SCMiEVcEghTanG0
+         i6pQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696682731; x=1697287531;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CDaXcRhA+gdgCae4/53Q2d2Fl2r3AoTXrjF9zbGRXmI=;
+        b=PtQBG86U0Co+ZF8UJeu8QXvCb+fIFXTA9w6PrapVBUt3XAG3+pOa5wxNfQDgrtnXVO
+         4PJTMFSo/v45IZd/icM4OnEUQD9/AdPCtAoXf5QaDsCMp7zjMAD8pILFwzJqK7ymo+aW
+         K+jMNYELl29O/GYj8C6+oR/4drKOEUyda6MFAwn64NMB6wuBlLzFOCKRrVqyGIOcKNJq
+         XGYyi7dVNtMdlIBBdMMQKNUpgi26NXJsxSFA7G5d5a5Mq+mSgBAXFQ93WWmW9JJ3fivv
+         l556/SN6kMGO3huMix6RjM1V8GLi3c4qjrfnbOrjuz9mS+CB7gY4JJV5Qn/cYEG256HF
+         nOEA==
+X-Gm-Message-State: AOJu0YzBNuLn+8LGcT4mYeTLtINlL7jgPjRGUlB2SRMzJ2+BczK2HETz
+        vGbYX1UcCWNAH7nPfG4bvmCmpvJSzJ1SuqHMbwM=
+X-Google-Smtp-Source: AGHT+IHUFRMpSu4SNkxxwn/WeGfgd14NUXUXzLV8+sjU8s2yXjHWZvKzt3fnYH7rVqCOP40xgfcJrA==
+X-Received: by 2002:a05:6358:7245:b0:134:ec9d:ef18 with SMTP id i5-20020a056358724500b00134ec9def18mr12997443rwa.28.1696682730919;
+        Sat, 07 Oct 2023 05:45:30 -0700 (PDT)
+Received: from n37-019-243.byted.org ([180.184.51.134])
+        by smtp.gmail.com with ESMTPSA id d6-20020a17090ad3c600b00256799877ffsm5095388pjw.47.2023.10.07.05.45.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Oct 2023 05:45:30 -0700 (PDT)
+From:   Chuyi Zhou <zhouchuyi@bytedance.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@kernel.org, tj@kernel.org, linux-kernel@vger.kernel.org,
+        Chuyi Zhou <zhouchuyi@bytedance.com>
+Subject: [PATCH bpf-next v4 0/8] Add Open-coded task, css_task and css iters
+Date:   Sat,  7 Oct 2023 20:45:14 +0800
+Message-Id: <20231007124522.34834-1-zhouchuyi@bytedance.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MA0P287MB0332:EE_|PN0P287MB1079:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8a436db4-7c4c-48f1-3c94-08dbc73323d9
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YM1hsF42vtEiBaEZHzY0TLfyzmmHgdEljaPVlXrA5nv5jxtfCURGzhr+zkI+Xug/r7DmSQCR4mqUMjAxmeM3r+ilEfNN4R3TBZWBJU2OLotZXZIjHhm32v6YKMbNog8YYEZZTt98kmnW9eEmeUHHq+bJHn4GgwxUydDat/IZKFHDvmyYRpnNu4tySsRI35T/K5jvWdT/pqcv62rUuScGzyVd6sLf563pRvk42YVYwXRHErjJXOrAv7V4T+85NEWIQ4fm+RL7+1x/prDyd+mDEnObIvlik7GIx5Wyp2xUJuPaKNEHaSUXSxMvLd7faFauVF63UklBOERE8f5jxdUf6SGsz5CsZkYVLZl9XydqKZpOUoxMWFUirEaIYMidPLDYFYfH/8dC+ee4jkiC55SZFlRdZJZGFCuYiWnVmuB98zChtyCUrzzz+mu8t8l/FCKuPB74xgeCH5HmSISnrnJMkJTepYC0qA2ya4uhZhm40Tkuhz6WYQ7EaQNyz5nGPkc3aUaCr4m4ip9Iu5JjB33xCl944r0A5XNMK/3qzHMV7DEe8K7BJg8MOYMKcwebh6P8sLdkAW3Z8AAaRMpWsunWBD3+046wn53inqBQ+GNAjJY=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TVgvVzdsM01Va0V4ZjMzY3ZSYmgwU2hRWkJkMGx6dEpmWHlOZk55ZjBSVVBG?=
- =?utf-8?B?ekVhWFF4WE50OHVDS3dsRjZCWVB6bUtoMUpnWnQ3dGRYRnFLUXJxNStsZHJX?=
- =?utf-8?B?RCtXd1lJNlF1N0hKZnVOa2J3U0J0VG5iWDZFRzBsNkRSSGdpTkJNM0ZTenA3?=
- =?utf-8?B?TlhNRnNBRGpBNFNWeWphcU5saTRyakM5SkJ5RGppSStwYVkyYSt2TGZ5UUp1?=
- =?utf-8?B?d3NCWWljbWNTNm5tNEhBQkpQbTN2a0JiUUhXM0Fya245NGlDdjg5SFMyTUZ5?=
- =?utf-8?B?QXJkSGJybXZQK3h6YnhOeWdqNGtqbVVMMnh6WTcxM2NMN1hmcENuRWxQV2Y1?=
- =?utf-8?B?emwvS1d3NGNUNnQveFBBTVdTNzVNeDczSlBveEE2T3VQYkt6VmNhNU9heStD?=
- =?utf-8?B?aEhTY3NYQ1FUeFZBYnRZUWwyb2JHa0RTWUdmaWYybXNnU2tBUVNIK0xYMEtX?=
- =?utf-8?B?NWNFWERTelE2bThqdFljNEs1TWUyaDRtbExzVnRKZ0ZxM29qRFM0bGR4OWox?=
- =?utf-8?B?Qnl6QVN4WVgwK0h5cGZya1JyYnhTUk15S3JOWG01Q2wweTZ0NGdsV1QrRUJs?=
- =?utf-8?B?cTYvU2JpTXdpcjBoSW9IQXM3UGNVSjk4T3BWM3hVODNvWWxDTnl5dnBRRS9q?=
- =?utf-8?B?QlJDZlh5bEVGQnZRaldCa1ZENUlOeUg4VTZLYzZPR3Jmc3lEdWs2UUVlTEM4?=
- =?utf-8?B?bk1JdXc4MjZGVkVQMElCckZCQkN1dWtSTlpvL3RVMjNqTVpzVGQxNEhucDdP?=
- =?utf-8?B?dnBWT0NaN001RitvWWluWE5xNFVYLytBOUJkOXdDekMyemcvU3BScXNCL2lo?=
- =?utf-8?B?OVJDZzd1WU52b1o3UjAwc08zQnFLQWw3OEUwUkwwNHBsRStxNVQ5Z3YySWZo?=
- =?utf-8?B?bmNta1dVUkhieXRtaktLNTdkbjAybzA0Skl2c2p3QTJhRDJhWFRnVGRWbUpH?=
- =?utf-8?B?eDA5OGw5eEpJU2lIdlhhV1lqS3NvUGt5N0k0b3k3em1nMVZnU1cvT2pwM0xx?=
- =?utf-8?B?SzRwenRLQVEvamY2T3JaZk5LV1lCV1hwaGtLUlE1RGpaaW9hY3dZaVdCQk9y?=
- =?utf-8?B?eXJ4SHNxZTJqbEhYWW5QdWZhN1NxSytnVW5LSFBISi83bFdQNEhlWHc3L0tO?=
- =?utf-8?B?ODJPaGNTSjNnSU5VdU5rTUxyZXowaTZkNnZyN01qaUZoY3AxZmtIMzdKMzYz?=
- =?utf-8?B?MjB3RFpnbTU4MnlDTUpYQkpuajZQOVhSQXd2bFYvcVhzY200M0Z1WC9RcUhh?=
- =?utf-8?B?L1RmZ3ZuNkcrbnRlTC9FbHJPTGJjWVpvbXpueGx1RCtHN1VyamxQcGM5S2Vk?=
- =?utf-8?B?aS9BcGZ3aUJ1UkVBSVM5ak9wNk84MDNGOStJeXUxaUs4LzFtZ0hDV0JpajV5?=
- =?utf-8?B?L1pKMVJJVDJES01zNU5PWDVuRzZGUGpFOURFa29jQllnY0pTZHVLdmRTYito?=
- =?utf-8?B?VlBsNDJyUlFQT1dRWDhOWDg5QTVyNEZmL0dGQVZCb2NJaTdNVWx3a2xSYmtT?=
- =?utf-8?B?blJTVkhTQ1N6RHlZYkNVYS9KT2tBdGg5ZUwvWTlzVUJjZUF0SVhPZldocVVN?=
- =?utf-8?B?bWxxUW1qM2VwSEpobklOY0NMMWJtdUlRdVYwRjdsdytIYy95Q1JaRTl2LzFV?=
- =?utf-8?Q?jXGaAckPNRixzySUePvZeRQLAmdRt9QxQFcC+6j+UCx0=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8a436db4-7c4c-48f1-3c94-08dbc73323d9
-X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2023 12:44:27.1952
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN0P287MB1079
-X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 2023/10/6 20:14, Jisheng Zhang wrote:
-> Milk-V Duo[1] board is an embedded development platform based on the
-> CV1800B chip. Add minimal device tree files for the development board.
->
-> Support basic uart drivers, so supports booting to a basic shell.
->
-> Link: https://milkv.io/duo [1]
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+This is version 4 of task, css_task and css iters support.
+Thanks for your review!
 
-Acked-by: Chen Wang <unicorn_wang@outlook.com>
+--- Changelog ---
 
-Thanks, Chen
+v3 -> v4:https://lore.kernel.org/all/20230925105552.817513-1-zhouchuyi@bytedance.com/
 
-> ---
->   arch/riscv/boot/dts/sophgo/Makefile           |  2 +-
->   .../boot/dts/sophgo/cv1800b-milkv-duo.dts     | 38 +++++++++++++++++++
->   2 files changed, 39 insertions(+), 1 deletion(-)
->   create mode 100644 arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
->
-> diff --git a/arch/riscv/boot/dts/sophgo/Makefile b/arch/riscv/boot/dts/sophgo/Makefile
-> index 5a471b19df22..3fb65512c631 100644
-> --- a/arch/riscv/boot/dts/sophgo/Makefile
-> +++ b/arch/riscv/boot/dts/sophgo/Makefile
-> @@ -1,3 +1,3 @@
->   # SPDX-License-Identifier: GPL-2.0
-> +dtb-$(CONFIG_ARCH_SOPHGO) += cv1800b-milkv-duo.dtb
->   dtb-$(CONFIG_ARCH_SOPHGO) += sg2042-milkv-pioneer.dtb
-> -
-> diff --git a/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts b/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
-> new file mode 100644
-> index 000000000000..3af9e34b3bc7
-> --- /dev/null
-> +++ b/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
-> @@ -0,0 +1,38 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "cv1800b.dtsi"
-> +
-> +/ {
-> +	model = "Milk-V Duo";
-> +	compatible = "milkv,duo", "sophgo,cv1800b";
-> +
-> +	aliases {
-> +		serial0 = &uart0;
-> +		serial1 = &uart1;
-> +		serial2 = &uart2;
-> +		serial3 = &uart3;
-> +		serial4 = &uart4;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +
-> +	memory@80000000 {
-> +		device_type = "memory";
-> +		reg = <0x80000000 0x3f40000>;
-> +	};
-> +};
-> +
-> +&osc {
-> +	clock-frequency = <25000000>;
-> +};
-> +
-> +&uart0 {
-> +	status = "okay";
-> +};
+* Address all the comments from Andrii in patch-3 ~ patch-6
+* Collect Tejun's ack
+* Add a extra patch to rename bpf_iter_task.c to bpf_iter_tasks.c
+* Seperate three BPF program files for selftests (iters_task.c iters_css_task.c iters_css.c)
+
+v2 -> v3:https://lore.kernel.org/lkml/20230912070149.969939-1-zhouchuyi@bytedance.com/
+
+Patch 1 (cgroup: Prepare for using css_task_iter_*() in BPF)
+  * Add tj's ack and Alexei's suggest-by.
+Patch 2 (bpf: Introduce css_task open-coded iterator kfuncs)
+  * Use bpf_mem_alloc/bpf_mem_free rather than kzalloc()
+  * Add KF_TRUSTED_ARGS for bpf_iter_css_task_new (Alexei)
+  * Move bpf_iter_css_task's definition from uapi/linux/bpf.h to
+    kernel/bpf/task_iter.c and we can use it from vmlinux.h
+  * Move bpf_iter_css_task_XXX's declaration from bpf_helpers.h to
+    bpf_experimental.h
+Patch 3 (Introduce task open coded iterator kfuncs)
+  * Change th API design keep consistent with SEC("iter/task"), support
+    iterating all threads(BPF_TASK_ITERATE_ALL) and threads of a
+    specific task (BPF_TASK_ITERATE_THREAD).（Andrii)
+  * Move bpf_iter_task's definition from uapi/linux/bpf.h to
+    kernel/bpf/task_iter.c and we can use it from vmlinux.h
+  * Move bpf_iter_task_XXX's declaration from bpf_helpers.h to
+    bpf_experimental.h
+Patch 4 (Introduce css open-coded iterator kfuncs)
+  * Change th API design keep consistent with cgroup_iters, reuse
+    BPF_CGROUP_ITER_DESCENDANTS_PRE/BPF_CGROUP_ITER_DESCENDANTS_POST
+    /BPF_CGROUP_ITER_ANCESTORS_UP(Andrii)
+  * Add KF_TRUSTED_ARGS for bpf_iter_css_new
+  * Move bpf_iter_css's definition from uapi/linux/bpf.h to
+    kernel/bpf/task_iter.c and we can use it from vmlinux.h
+  * Move bpf_iter_task_XXX's declaration from bpf_helpers.h to
+    bpf_experimental.h
+Patch 4 (Introduce css open-coded iterator kfuncs)
+  * Change th API design keep consistent with cgroup_iters, reuse
+    BPF_CGROUP_ITER_DESCENDANTS_PRE/BPF_CGROUP_ITER_DESCENDANTS_POST
+    /BPF_CGROUP_ITER_ANCESTORS_UP(Andrii)
+  * Add KF_TRUSTED_ARGS for bpf_iter_css_new
+  * Move bpf_iter_css's definition from uapi/linux/bpf.h to
+    kernel/bpf/task_iter.c and we can use it from vmlinux.h
+  * Move bpf_iter_css_XXX's declaration from bpf_helpers.h to
+    bpf_experimental.h
+Patch 5 (teach the verifier to enforce css_iter and task_iter in RCU CS)
+  * Add KF flag KF_RCU_PROTECTED to maintain kfuncs which need RCU CS.(Andrii)
+  * Consider STACK_ITER when using bpf_for_each_spilled_reg.
+Patch 6 (Let bpf_iter_task_new accept null task ptr)
+  * Add this extra patch to let bpf_iter_task_new accept a 'nullable'
+  * task pointer(Andrii)
+Patch 7 (selftests/bpf: Add tests for open-coded task and css iter)
+  * Add failure testcase(Alexei)
+
+
+Changes from v1(https://lore.kernel.org/lkml/20230827072057.1591929-1-zhouchuyi@bytedance.com/):
+- Add a pre-patch to make some preparations before supporting css_task
+  iters.(Alexei)
+- Add an allowlist for css_task iters(Alexei)
+- Let bpf progs do explicit bpf_rcu_read_lock() when using process
+  iters and css_descendant iters.(Alexei)
+---------------------
+
+In some BPF usage scenarios, it will be useful to iterate the process and
+css directly in the BPF program. One of the expected scenarios is
+customizable OOM victim selection via BPF[1].
+
+Inspired by Dave's task_vma iter[2], this patchset adds three types of
+open-coded iterator kfuncs:
+
+1. bpf_task_iters. It can be used to
+1) iterate all process in the system, like for_each_forcess() in kernel.
+2) iterate all threads in the system.
+3) iterate all threads of a specific task
+
+2. bpf_css_iters. It works like css_task_iter_{start, next, end} and would
+be used to iterating tasks/threads under a css.
+
+3. css_iters. It works like css_next_descendant_{pre, post} to iterating all
+descendant css.
+
+BPF programs can use these kfuncs directly or through bpf_for_each macro.
+
+link[1]: https://lore.kernel.org/lkml/20230810081319.65668-1-zhouchuyi@bytedance.com/
+link[2]: https://lore.kernel.org/all/20230810183513.684836-1-davemarchevsky@fb.com/
+
+Chuyi Zhou (8):
+  cgroup: Prepare for using css_task_iter_*() in BPF
+  bpf: Introduce css_task open-coded iterator kfuncs
+  bpf: Introduce task open coded iterator kfuncs
+  bpf: Introduce css open-coded iterator kfuncs
+  bpf: teach the verifier to enforce css_iter and task_iter in RCU CS
+  bpf: Let bpf_iter_task_new accept null task ptr
+  selftests/bpf: rename bpf_iter_task.c to bpf_iter_tasks.c
+  selftests/bpf: Add tests for open-coded task and css iter
+
+ include/linux/bpf_verifier.h                  |  19 ++-
+ include/linux/btf.h                           |   1 +
+ include/linux/cgroup.h                        |  12 +-
+ kernel/bpf/cgroup_iter.c                      |  59 +++++++
+ kernel/bpf/helpers.c                          |   9 +
+ kernel/bpf/task_iter.c                        | 138 +++++++++++++++
+ kernel/bpf/verifier.c                         |  86 ++++++++--
+ kernel/cgroup/cgroup.c                        |  18 +-
+ .../testing/selftests/bpf/bpf_experimental.h  |  19 +++
+ .../selftests/bpf/prog_tests/bpf_iter.c       |  18 +-
+ .../testing/selftests/bpf/prog_tests/iters.c  | 161 ++++++++++++++++++
+ .../{bpf_iter_task.c => bpf_iter_tasks.c}     |   0
+ tools/testing/selftests/bpf/progs/iters_css.c |  74 ++++++++
+ .../selftests/bpf/progs/iters_css_task.c      |  42 +++++
+ .../testing/selftests/bpf/progs/iters_task.c  |  41 +++++
+ .../selftests/bpf/progs/iters_task_failure.c  | 105 ++++++++++++
+ 16 files changed, 760 insertions(+), 42 deletions(-)
+ rename tools/testing/selftests/bpf/progs/{bpf_iter_task.c => bpf_iter_tasks.c} (100%)
+ create mode 100644 tools/testing/selftests/bpf/progs/iters_css.c
+ create mode 100644 tools/testing/selftests/bpf/progs/iters_css_task.c
+ create mode 100644 tools/testing/selftests/bpf/progs/iters_task.c
+ create mode 100644 tools/testing/selftests/bpf/progs/iters_task_failure.c
+
+-- 
+2.20.1
+
