@@ -2,68 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAC927BC558
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 09:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 893857BC55B
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 09:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343642AbjJGHE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 03:04:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44372 "EHLO
+        id S1343648AbjJGHGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 03:06:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343578AbjJGHEY (ORCPT
+        with ESMTP id S1343618AbjJGHGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 03:04:24 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72420BD;
-        Sat,  7 Oct 2023 00:04:23 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-3ae65e8eb45so1953303b6e.1;
-        Sat, 07 Oct 2023 00:04:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696662262; x=1697267062; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EZVQpme/Czd5/VYAsQPo4BoFaas9BoftbCjcn0zFcSw=;
-        b=hTRSVcznJYi1i4XDYx3+tVSmKH/Pu5jUsfxKuHPcR7FeVHjjhy3fAxQP7M5WMEAbbb
-         RfXKozW0yZv6ena1ZD0BLPAifHEz/0V6bVLbrmLyC64SRQc/IbJYGS6gf1VR9KF0ssez
-         rdqVzaZkQCFfD0o/kNX/rSdWcxWIh9T4ghUUDEBNhkwVUNws+5WOY8xQNqthVusj3dWN
-         bWKI++Uss43e0Qxr5LxqX9vlaAIJE44vhVd2QEcMCMAA9RaSwy08AFT2g2SVxfR3d2Oc
-         I+/0AWdVRRPtD2B0CQqVMdinWoZnaCJUeWQXyXOfQdiOhNQsUScOrFz+6kFXac20W1HN
-         Alug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696662262; x=1697267062;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EZVQpme/Czd5/VYAsQPo4BoFaas9BoftbCjcn0zFcSw=;
-        b=shLzKtL+mzh6SCKbZUgWhBZwNpEp/olI6HK550t9oBvmhlCxRx3/fRCsRAWhRWdLE4
-         7VTLZ6CyE0T1mSRz/Z1ZYuR6DAqT0u1yFuNicXWOuW4G13xxHX5qHHTvEcZnKjYtC2fA
-         XuYJOiSzGMl8uJU1PgBSlnes9ESapSNLZcvcBp+ryqk9YUEiIW3wO/ig/0dNgWaHw9Ed
-         RZbwmL4dtcHs0TMk7NgJDUqClNW1PBUIgmuCEOKtI+MQ+YxQYjoa5KHbxTHFA2an1jA3
-         j+emHvHISJ8vMrBm0jd41ueLHlI7tNSH/wDFIgrUFXxvBWaDoJTelKN/XiYBSc6mKBxf
-         abxw==
-X-Gm-Message-State: AOJu0YwhXn8ev9Iznb430st828HI1efl4rLq3ioZxQEEBI3718eA5Gp5
-        5gSG/l5eLkOYrIgPfStjdp7b/j6eNiTEsfVHFaU=
-X-Google-Smtp-Source: AGHT+IElCh6zbQYAtET/SeI7Qf0Z54wtjDgQ0dGJOlBmT13Na90J4+1qHL69tsqck07fHDG0CQu2wLQxL0VT8p2avyI=
-X-Received: by 2002:aca:2810:0:b0:3ad:fdfb:d384 with SMTP id
- 16-20020aca2810000000b003adfdfbd384mr9676137oix.53.1696662262569; Sat, 07 Oct
- 2023 00:04:22 -0700 (PDT)
+        Sat, 7 Oct 2023 03:06:08 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC1DABF;
+        Sat,  7 Oct 2023 00:06:03 -0700 (PDT)
+X-UUID: f6f2e95264df11eea33bb35ae8d461a2-20231007
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Le2uEJkChO2HUGa5K2hUsEoIn2/h+RuIAwUyZABd/Fg=;
+        b=WVvFhP66Bn09GC4ehoj3v7McO/7dAlm7FQtEoYyJGpz57+kyy9HntBI3tFKbr9fnXXhC1UXvcRpauw3fk464H9v2p/QJFmM8Dxl/x0bxWCdg0ITbuKVXbJHJePBNUML7jWG5UHG4IdQFhdcrph3qE7k7wvireaH3EL6hWmeQ4uE=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:9a829602-2bb3-4276-9fbe-0017bbb17f19,IP:0,U
+        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+        :release,TS:-5
+X-CID-META: VersionHash:5f78ec9,CLOUDID:cd89c814-4929-4845-9571-38c601e9c3c9,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: f6f2e95264df11eea33bb35ae8d461a2-20231007
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <mark-pk.tsai@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1482502868; Sat, 07 Oct 2023 15:05:57 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Sat, 7 Oct 2023 15:05:56 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Sat, 7 Oct 2023 15:05:56 +0800
+From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+To:     Minchan Kim <minchan@kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+CC:     <yj.chiang@mediatek.com>, Mark-PK Tsai <mark-pk.tsai@mediatek.com>,
+        <linux-kernel@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH] zram: use copy_page for full page copy
+Date:   Sat, 7 Oct 2023 15:05:53 +0800
+Message-ID: <20231007070554.8657-1-mark-pk.tsai@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <20231006115147.18559-1-brgl@bgdev.pl> <CACRpkdZP_nOgj77iek_V28Ny8Pb03Xyy-=ho+WqzMHzXajtfqA@mail.gmail.com>
-In-Reply-To: <CACRpkdZP_nOgj77iek_V28Ny8Pb03Xyy-=ho+WqzMHzXajtfqA@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 7 Oct 2023 10:03:45 +0300
-Message-ID: <CAHp75Vdm-um7Ep=kfjEnDotJrbXi1vtfPUVJgcogou8Gr9+MQQ@mail.gmail.com>
-Subject: Re: [RFC/RFT PATCH] gpiolib: reverse-assign the fwnode to struct gpio_chip
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Dipen Patel <dipenp@nvidia.com>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--5.565200-8.000000
+X-TMASE-MatchedRID: 7599MfAx46VCTeJ8Ii+TOrhzZI/dfrdOQl/FdRYkUZLfUZT83lbkECpJ
+        3T68EJKPEwte8QHPZve6/wFvLeWXhqYpNU5HIIOKngIgpj8eDcBpkajQR5gb3savT21DsLD/UEh
+        Wy9W70AEgBwKKRHe+r7RUJtZc0bvVaYlP96BGyA9Gf+arKp5f1G0XrKRZbupyMWoRxFL7SRo=
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--5.565200-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: C9F30F95FEA5B0A71375788D323ADC74DC144382AC8BD65FBB276596CD102A452000:8
+X-MTK:  N
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,T_SPF_TEMPERROR,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,54 +80,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 7, 2023 at 1:14=E2=80=AFAM Linus Walleij <linus.walleij@linaro.=
-org> wrote:
-> On Fri, Oct 6, 2023 at 1:51=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl=
-> wrote:
->
-> > struct gpio_chip is not only used to carry the information needed to
-> > set-up a GPIO device but is also used in all GPIOLIB callbacks and is
-> > passed to the matching functions of lookup helpers.
-> >
-> > In that last case, it is currently impossible to match a GPIO device by
-> > fwnode unless it was explicitly assigned to the chip in the provider
-> > code. If the fwnode is taken from the parent device, the pointer in
-> > struct gpio_chip will remain NULL.
-> >
-> > If we have a parent device but gc->fwnode was not assigned by the
-> > provider, let's assign it ourselves so that lookup by fwnode can work i=
-n
-> > all cases.
-> >
-> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
->
-> because we want the code to work (rough consensus and running code)
->
+Some architectures, such as arm, have implemented
+optimized copy_page for full page copying.
 
-> The core of the crux is that we have
-> information duplication with a reference to the fwnode in two
-> places. One in gdev->dev and one in gc->fwnode.
+Replace the full page memcpy with copy_page to
+take advantage of the optimization.
 
-No, we don't. We have plenty of drivers that have gc->fwnode =3D=3D NULL,
-which means that it is shared with the parent device.
+Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+---
+ drivers/block/zram/zram_drv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+index d77d3664ca08..58700dd73d1d 100644
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -1338,7 +1338,7 @@ static int zram_read_from_zspool(struct zram *zram, struct page *page,
+ 	src = zs_map_object(zram->mem_pool, handle, ZS_MM_RO);
+ 	if (size == PAGE_SIZE) {
+ 		dst = kmap_atomic(page);
+-		memcpy(dst, src, PAGE_SIZE);
++		copy_page(dst, src);
+ 		kunmap_atomic(dst);
+ 		ret = 0;
+ 	} else {
+-- 
+2.18.0
 
-...
-
-> A gdev is created for each gpio_chip so in my naive brain we could
-> get rid of gc->fwnode and only have the one inside gdev->dev?
-> +/- some helpful getters/setters if need be.
->
-> Or what am I thinking wrong here?
-
-That would work I think. But I'm definitely against this change. It is
-the way to nowhere. We should really be quite strict about fwnode and
-do NOT assign the gc one behind the provider's back. If something is
-not working in this scenario, that should be fixed and not with a hack
-like this.
-
---=20
-With Best Regards,
-Andy Shevchenko
