@@ -2,44 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 413B07BC722
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 13:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD727BC725
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 13:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343675AbjJGLdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 07:33:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55950 "EHLO
+        id S1343866AbjJGLeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 07:34:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233662AbjJGLdV (ORCPT
+        with ESMTP id S233662AbjJGLeF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 07:33:21 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73F7CB9;
-        Sat,  7 Oct 2023 04:33:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9A7DC433C8;
-        Sat,  7 Oct 2023 11:33:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696678400;
-        bh=MhC2Xsh1F0Dp/xiGufKa2htr3zYIzm0ooEtftPrfJ5g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rDr1R2umQ5BwJUJxxoc2jFkKlxL2yQU6SkCbIMRVdn4NYYTg8CmJH154fL9154PU2
-         +ZKCVfl5tqG5SksBNrtI6kwF0uNqyQdfZTSpXm9eEl80y2j2YQUafulniKHjQHtmxf
-         ldQuN/RPF5ZBqHna+Mn9BpEnAE7SFVvcMSO8BCS8=
-Date:   Sat, 7 Oct 2023 13:33:17 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        jacob.e.keller@intel.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH RESEND] i40e: fix the wrong PTP frequency calculation
-Message-ID: <2023100707-hydrogen-tapestry-62e8@gregkh>
-References: <20230926071059.1239033-1-yajun.deng@linux.dev>
+        Sat, 7 Oct 2023 07:34:05 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2228CB9;
+        Sat,  7 Oct 2023 04:33:58 -0700 (PDT)
+X-UUID: 63df5328650511eea33bb35ae8d461a2-20231007
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=G2hwZoXcbyNGfedM4B88uDwT0h+xRYSV2MrJHG+Tp70=;
+        b=u6NylKEHefPx9u32F9X61no9/4crwSlY0fqNlz/W58Ust3yRp/qaLMEUOWouFfYb3HlmVLgiauRKzSxfHbSVj4bDo2hKanlmqS8CUJdZRd0mdAMnd0YRPackxq59O+OA7F+ITlAA7XUKU0YkWrSjdPBq/uQwBR5b5q2CQ5YIYro=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:66315b78-29c6-4879-a495-6eddb0bbf174,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:5f78ec9,CLOUDID:de86e0c3-1e57-4345-9d31-31ad9818b39f,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
+        NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_ULN,TF_CID_SPAM_SNR
+X-UUID: 63df5328650511eea33bb35ae8d461a2-20231007
+Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw01.mediatek.com
+        (envelope-from <irui.wang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 2065451869; Sat, 07 Oct 2023 19:33:51 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Sat, 7 Oct 2023 19:33:50 +0800
+Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
+ mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Sat, 7 Oct 2023 19:33:49 +0800
+From:   Irui Wang <irui.wang@mediatek.com>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <angelogioacchino.delregno@collabora.com>,
+        <nicolas.dufresne@collabora.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        Irui Wang <irui.wang@mediatek.com>
+CC:     <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Maoguang Meng <maoguang.meng@mediatek.com>
+Subject: [PATCH v2] media: mediatek: vcodec: Handle invalid encoder vsi
+Date:   Sat, 7 Oct 2023 19:33:47 +0800
+Message-ID: <20231007113347.28863-1-irui.wang@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230926071059.1239033-1-yajun.deng@linux.dev>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,T_SPF_TEMPERROR,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -47,35 +74,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 03:10:59PM +0800, Yajun Deng wrote:
-> The new adjustment should be based on the base frequency, not the
-> I40E_PTP_40GB_INCVAL in i40e_ptp_adjfine().
-> 
-> This issue was introduced in commit 3626a690b717 ("i40e: use
-> mul_u64_u64_div_u64 for PTP frequency calculation"), frequency is left
-> just as base I40E_PTP_40GB_INCVAL before the commit. After the commit,
-> frequency is the I40E_PTP_40GB_INCVAL times the ptp_adj_mult value.
-> But then the diff is applied on the wrong value, and no multiplication
-> is done afterwards.
-> 
-> It was accidentally fixed in commit 1060707e3809 ("ptp: introduce helpers
-> to adjust by scaled parts per million"). It uses adjust_by_scaled_ppm
-> correctly performs the calculation and uses the base adjustment, so
-> there's no error here. But it is a new feature and doesn't need to
-> backported to the stable releases.
-> 
-> This issue affects both v6.0 and v6.1, and the v6.1 version is an LTS
-> release. Therefore, the patch only needs to be applied to v6.1 stable.
-> 
-> Fixes: 3626a690b717 ("i40e: use mul_u64_u64_div_u64 for PTP frequency calculation")
-> Cc: <stable@vger.kernel.org> # 6.1
-> Cc: Tony Nguyen <anthony.l.nguyen@intel.com>
-> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-> ---
->  drivers/net/ethernet/intel/i40e/i40e_ptp.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+Handle invalid encoder vsi in vpu_enc_init to ensure the encoder
+vsi is valid for future use.
 
-Now queued up, thanks.
+Fixes: 1972e32431ed ("media: mediatek: vcodec: Fix possible invalid memory access for encoder")
 
-greg k-h
+Signed-off-by: Irui Wang <irui.wang@mediatek.com>
+---
+changed with v1:
+ - add Fixes tag
+ - move vsi check to vpu_enc_init
+ - update commit message
+---
+ drivers/media/platform/mediatek/vcodec/encoder/venc_vpu_if.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/media/platform/mediatek/vcodec/encoder/venc_vpu_if.c b/drivers/media/platform/mediatek/vcodec/encoder/venc_vpu_if.c
+index d299cc2962a5..39e8f3ac53ca 100644
+--- a/drivers/media/platform/mediatek/vcodec/encoder/venc_vpu_if.c
++++ b/drivers/media/platform/mediatek/vcodec/encoder/venc_vpu_if.c
+@@ -153,6 +153,11 @@ int vpu_enc_init(struct venc_vpu_inst *vpu)
+ 		return -EINVAL;
+ 	}
+ 
++	if (IS_ERR_OR_NULL(vpu->vsi)) {
++		mtk_venc_err(vpu->ctx, "invalid venc vsi");
++		return -EINVAL;
++	}
++
+ 	return 0;
+ }
+ 
+-- 
+2.18.0
+
