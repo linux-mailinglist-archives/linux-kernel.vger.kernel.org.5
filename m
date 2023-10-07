@@ -2,65 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE647BC8AD
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 17:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11CBF7BC8AF
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 17:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343978AbjJGPiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 11:38:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46862 "EHLO
+        id S1344000AbjJGPjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 11:39:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233364AbjJGPiX (ORCPT
+        with ESMTP id S233364AbjJGPjM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 11:38:23 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2100B9;
-        Sat,  7 Oct 2023 08:38:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80AD3C433CD;
-        Sat,  7 Oct 2023 15:38:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696693102;
-        bh=9RxkWlQoVdIXC1kqthSAlbAWe5HDp6fdl+KbwgqaPQA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JmTczBYxUclmMypR5UJkRc2/LgJ6+KWaUof6cuKd+k6x7+b2EUZ8gPxeh75v3U41L
-         qkqPe+YsDwPJXOldm/WFJg4UTwwlJdmAYFKGYAM9UOOXkSFIkQKgE/6Fi2WyeGD4Wc
-         yr2Y2Ga+8qbdrmGKZQNNKbS2yONQt1nt8RNHnur9YhniSJCYcvVbJuUw0HikESU8ZJ
-         +iPD3inze4KRTPDlpVgxhkc+xsaen8rSVSwVUjFkYvW0rLXnW/hVMxPfP+HkU405Rn
-         kX8VpcrgVPLXgsMJ2ZsgAWJG0/N1C8ohcl6b2HRewTrgRB9Bj2E795vzvp3Q34S1tK
-         CjUAU9sugmu4Q==
-Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-1d544a4a2f2so2014675fac.3;
-        Sat, 07 Oct 2023 08:38:22 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwgB1foSHvgr7ELzbHzA8jJUyvfv7mwEh+RJSSFothqB6kLx5tm
-        iBK0IA8uL9T/q9ZPClLSTc8HJ0MjiHJpAt5xDME=
-X-Google-Smtp-Source: AGHT+IFjx6hBQQR76o5ah5rxZqz3wBxxDJuAHX1t4tCqPwUAXWHZTp/T+cfuRstjJssObOSnrdbHZUeMNYmK0l07/Ow=
-X-Received: by 2002:a05:6870:4710:b0:1d5:cba4:a6f6 with SMTP id
- b16-20020a056870471000b001d5cba4a6f6mr13705200oaq.6.1696693101851; Sat, 07
- Oct 2023 08:38:21 -0700 (PDT)
+        Sat, 7 Oct 2023 11:39:12 -0400
+Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C194B9;
+        Sat,  7 Oct 2023 08:39:10 -0700 (PDT)
+Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-1dd1db54d42so2051001fac.3;
+        Sat, 07 Oct 2023 08:39:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696693147; x=1697297947; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0lJN7RuCz9ZjltjJkr63VcR1vl5+W7ycDgx1Cg/Hr84=;
+        b=UItuVzNY4P+xHEgHPjwS3BSIJ7rj9Ismu4AFOMqAzNp7iC3NOUcVgcVlty0Qkvys/a
+         lvXSG+eE1H3mkIqf39LtJugAJ5pgc8I+Bs7VfSK+RgIm9WpENTZa9azlmAoc+Sy2yx0W
+         jjKR8XV5akamTkAb3wmTedIxUcrmgWpa843xCVSKgDG6EVY38cyi4MbpAN1eLpGGRxLi
+         tDnz+nDL37DQRAFX1nOGXCwrp9npvhOEeQ7rkAsryPEa6ToPkGSf791ZQqNPkry4PiBw
+         SNEuv0nyxSn1teeEbwgu2WpLpHhct1CkVwISFGvgYwWikWW0kpQNQsynAhZc2FSdgqO0
+         2RUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696693147; x=1697297947;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0lJN7RuCz9ZjltjJkr63VcR1vl5+W7ycDgx1Cg/Hr84=;
+        b=peEPSwhOiMM9oDR5hBnEL1AP1KmvAcLeoS1qpN83liqvIfmvQkEdDzkgldg3LwfM0z
+         3elLNgG4IGDN3aTvnLU843LORhfmd2V6kUvORb7RNsm9iUROEeowSMasOse05XIzUmZo
+         1rzPVEhgPtH6TXvfo8f4zVpvCnvwHDV30vGphAP1OwnQi1tYU/PWdeMAGo6H+88E/z/u
+         BD+4S21LJKcuoeayQvf7BEEPHpPrVs4yrB39AL1k+96hjD6kuCnkJ0bNIF6PBlAwiE33
+         GMwrspvmCy9VrUGIZP1Qc77tHIWbsZFNajYx7GhVGrgiw+t9InboYXJnOLX//LPV6Baa
+         frJg==
+X-Gm-Message-State: AOJu0YyTXgslbHg/VsZFC7lK8lC4u9AnbTGJcTu1aWLd1mqUM1hOhI2J
+        Bum/P4948c0I7IhxbAqbiq0=
+X-Google-Smtp-Source: AGHT+IFCF+7ptEknYG3uxPPktuAFWsMzDhdeQdX0H5Xy/UH2i3owgjFXHpdjxFEMJ3W1E/Emi9KBcg==
+X-Received: by 2002:a05:6870:d689:b0:1c8:bbd0:2fc9 with SMTP id z9-20020a056870d68900b001c8bbd02fc9mr12466971oap.49.1696693147062;
+        Sat, 07 Oct 2023 08:39:07 -0700 (PDT)
+Received: from atom0118 ([2405:201:c009:52e1:f940:d30d:8b60:5b64])
+        by smtp.gmail.com with ESMTPSA id j5-20020aa78d05000000b0068842ebfd10sm3300016pfe.160.2023.10.07.08.39.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Oct 2023 08:39:06 -0700 (PDT)
+Date:   Sat, 7 Oct 2023 21:09:00 +0530
+From:   Atul Kumar Pant <atulpant.linux@gmail.com>
+To:     naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
+        davem@davemloft.net, mhiramat@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org, shuah@kernel.org
+Subject: Re: [PATCH v1] samples: kprobes: Fixes a typo
+Message-ID: <20231007153900.GA20160@atom0118>
+References: <20230817170819.77857-1-atulpant.linux@gmail.com>
+ <20230923173040.GA159038@atom0118>
 MIME-Version: 1.0
-References: <20231005214057.759089-1-mmaurer@google.com>
-In-Reply-To: <20231005214057.759089-1-mmaurer@google.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 8 Oct 2023 00:37:45 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATBBk-a0EJcxpWGJ9n+9BHQUw3a4s41LTtC-R8fYrVMpw@mail.gmail.com>
-Message-ID: <CAK7LNATBBk-a0EJcxpWGJ9n+9BHQUw3a4s41LTtC-R8fYrVMpw@mail.gmail.com>
-Subject: Re: [PATCH v4] rust: Respect HOSTCC when linking for host
-To:     Matthew Maurer <mmaurer@google.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230923173040.GA159038@atom0118>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -69,40 +73,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 6, 2023 at 6:41=E2=80=AFAM Matthew Maurer <mmaurer@google.com> =
-wrote:
->
-> Currently, rustc defaults to invoking `cc`, even if `HOSTCC` is defined,
-> resulting in build failures in hermetic environments where `cc` does not
-> exist. This includes both hostprogs and proc-macros.
->
-> Since we are setting the linker to `HOSTCC`, we set the linker flavor to
-> `gcc` explicitly. The linker-flavor selects both which linker to search
-> for if the linker is unset, and which kind of linker flags to pass.
-> Without this flag, `rustc` would attempt to determine which flags to
-> pass based on the name of the binary passed as `HOSTCC`. `gcc` is the
-> name of the linker-flavor used by `rustc` for all C compilers, including
-> both `gcc` and `clang`.
->
-> Signed-off-by: Matthew Maurer <mmaurer@google.com>
-> ---
->
-> Edited to use escsq in both Makefiles, as per Masahiro Yamada's
-> suggestion.
+On Sat, Sep 23, 2023 at 11:00:46PM +0530, Atul Kumar Pant wrote:
+> On Thu, Aug 17, 2023 at 10:38:19PM +0530, Atul Kumar Pant wrote:
+> > Fixes typo in a function name.
+> > 
+> > Signed-off-by: Atul Kumar Pant <atulpant.linux@gmail.com>
+> > ---
+> >  samples/kprobes/kretprobe_example.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/samples/kprobes/kretprobe_example.c b/samples/kprobes/kretprobe_example.c
+> > index cbf16542d84e..ed79fd3d48fb 100644
+> > --- a/samples/kprobes/kretprobe_example.c
+> > +++ b/samples/kprobes/kretprobe_example.c
+> > @@ -35,7 +35,7 @@ struct my_data {
+> >  	ktime_t entry_stamp;
+> >  };
+> >  
+> > -/* Here we use the entry_hanlder to timestamp function entry */
+> > +/* Here we use the entry_handler to timestamp function entry */
+> >  static int entry_handler(struct kretprobe_instance *ri, struct pt_regs *regs)
+> >  {
+> >  	struct my_data *data;
+> > -- 
+> > 2.25.1
+> > 
+> 
+> 	Hi all, can someone provide comments on this change.
 
-
-
-Acked-by: Masahiro Yamada <masahiroy@kernel.org>
-
-if Miguel picked this up.
-
-
-Please let me know if I should pick this up.
-
-
-
-
-
---=20
-Best Regards
-Masahiro Yamada
+			Hi all, can someone please review this change. It has been not
+			reviewed for quite some time.
