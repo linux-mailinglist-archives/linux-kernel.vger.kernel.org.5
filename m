@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA407BC928
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 18:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7C07BC92A
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 18:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344108AbjJGQ6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 12:58:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39398 "EHLO
+        id S1344116AbjJGQ6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 12:58:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343956AbjJGQ63 (ORCPT
+        with ESMTP id S1344098AbjJGQ63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 7 Oct 2023 12:58:29 -0400
-Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E68BB9
+Received: from omta38.uswest2.a.cloudfilter.net (omta38.uswest2.a.cloudfilter.net [35.89.44.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF6ABC
         for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 09:58:28 -0700 (PDT)
-Received: from eig-obgw-6005a.ext.cloudfilter.net ([10.0.30.201])
+Received: from eig-obgw-5006a.ext.cloudfilter.net ([10.0.29.179])
         by cmsmtp with ESMTP
-        id p8p3qZxaknGhUpAdIqTN7u; Sat, 07 Oct 2023 16:58:28 +0000
+        id otbpq5jX9ytxcpAdIqqLoB; Sat, 07 Oct 2023 16:58:28 +0000
 Received: from md-in-79.webhostbox.net ([43.225.55.182])
         by cmsmtp with ESMTPS
-        id pAdEqWBykgi4ypAdGqasCj; Sat, 07 Oct 2023 16:58:26 +0000
-X-Authority-Analysis: v=2.4 cv=MaV/Brzf c=1 sm=1 tr=0 ts=65218e32
+        id pAdGq8T312xWVpAdHqOzBO; Sat, 07 Oct 2023 16:58:28 +0000
+X-Authority-Analysis: v=2.4 cv=EN0VbnVC c=1 sm=1 tr=0 ts=65218e34
  a=LfuyaZh/8e9VOkaVZk0aRw==:117 a=J9R/PiKqv2o3jGxbVGXx4w==:17
  a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=bhdUkHdE2iEA:10 a=oz0wMknONp8A:10 a=vU9dKmh3AAAA:8 a=gEfo2CItAAAA:8
- a=3wVwG3AGMsDn-ITQ_vwA:9 a=rsP06fVo5MYu2ilr0aT5:22 a=sptkURWiP4Gy88Gu7hUp:22
+ a=bhdUkHdE2iEA:10 a=oz0wMknONp8A:10 a=vU9dKmh3AAAA:8 a=vkTJ7md9u3ILQXjsLOgA:9
+ a=rsP06fVo5MYu2ilr0aT5:22
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=linumiz.com
         ; s=default; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=eUcuTet8QT5QESolz39f7W9jI3SYlnZj/s8TwdRqlXg=; b=mQkXFRKqoapyfbifh/aHqaQ+5z
-        uNRcJCfQW9gfYZI4PdFlIQ0BL3YlU001kjLrdZundV888HkbKZVU7aqo0XpMDq2EzdLlHgNUxJ5d2
-        SDpfMPg7q+2CKLFEVskD3qXc3xRqbTuMz/Qz1p2fD6ep+tX/XX2ndywBXNxtG9agcUDkN9kvnBxBf
-        amECh3j/18RgsKGIUrUB9hQLy1NtFYPyPzdh+7Mie519WJSxnzjG8otrcvv6RvnyTDfcpXGoUrX1a
-        OHXaRdw42kxXhxXlTP7k+1oWipSux5b4+EBRYlPOirx6vo6dPewui6s3KpEePvMeNRcJhAI1kBbc8
-        Hk4eRUpA==;
+        bh=S1mEjXE9swMM771o0bc5Hhhx27byeazfVy5HXq2TuqY=; b=R0lG7n9Ioab8QJiKp1o0i3AjkG
+        SATpEyfgfQ9QZo/o4C3HGvE9AGqmMCxmLzW5/wY61h6HlxtrGS3l+jRnt7YkiPaARUmqLUSfq6/r/
+        A1CI4JuyONg06/SyiT+zjZqwUNoqqXbq23uv6O8W1Z91huuXp4gPXC8vg96sF42O4h5wLavxTUuGS
+        VCAK56Zekr3QOSD09H7tyL/mcp3zAmIu7YzFVAwAKlao7Yo1RH+XZhGGbHg7AklfnYlD8Bm8ANN+W
+        ny8/yqXiKnN3PgQwgVIGiGz9Nu7uTDRr2gqRKlBHIdTy4sIJfHhF0Y/u0UhqNQ3lRSlwhNYXRs50d
+        XLbdMA5Q==;
 Received: from [103.186.120.251] (port=39748 helo=discovery..)
         by md-in-79.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.96.1)
         (envelope-from <saravanan@linumiz.com>)
-        id 1qpAdD-002Tlj-0j;
-        Sat, 07 Oct 2023 22:28:23 +0530
+        id 1qpAdF-002Tlj-1s;
+        Sat, 07 Oct 2023 22:28:25 +0530
 From:   Saravanan Sekar <saravanan@linumiz.com>
 To:     sravanhome@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
         robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
@@ -51,9 +51,9 @@ To:     sravanhome@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
 Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         linux-hwmon@vger.kernel.org,
         Saravanan Sekar <saravanan@linumiz.com>
-Subject: [PATCH v3 2/3] regulator: dt-bindings: Add mps,mpq2286 power-management IC
-Date:   Sat,  7 Oct 2023 22:28:02 +0530
-Message-Id: <20231007165803.239718-3-saravanan@linumiz.com>
+Subject: [PATCH v3 3/3] hwmon: (pmbus/mpq2286) Add a support for mpq2286 Power Management IC
+Date:   Sat,  7 Oct 2023 22:28:03 +0530
+Message-Id: <20231007165803.239718-4-saravanan@linumiz.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231007165803.239718-1-saravanan@linumiz.com>
 References: <20231007165803.239718-1-saravanan@linumiz.com>
@@ -67,21 +67,21 @@ X-AntiAbuse: Sender Address Domain - linumiz.com
 X-BWhitelist: no
 X-Source-IP: 103.186.120.251
 X-Source-L: No
-X-Exim-ID: 1qpAdD-002Tlj-0j
+X-Exim-ID: 1qpAdF-002Tlj-1s
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
 X-Source-Sender: (discovery..) [103.186.120.251]:39748
 X-Source-Auth: saravanan@linumiz.com
-X-Email-Count: 25
+X-Email-Count: 36
 X-Org:  HG=dishared_whb_net_legacy;ORG=directi;
 X-Source-Cap: bGludW1jbWM7aG9zdGdhdG9yO21kLWluLTc5LndlYmhvc3Rib3gubmV0
 X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfFYxVKJYaTrPTv5ZkdBaP2O6HJw4y75sCnCGyvKnEUzQnU7iaSbu/Y8lzyHOOBUSRNdnRqrwZ3OuqY6NUQrmwJdeK+3IJwfg0Ed+uXy3z8WVhiHRz5iw
- SAoMH/JZngVq3BjIt7ehcl0vpzn7vmhcQ7PE+KelxjAU3QDTpbdjgIIW9x7XJHwnwhM8B30dqNRMaQgyLmqcKJaOTAZntLEZ9RM=
+X-CMAE-Envelope: MS4xfDfJVP2x3H4A4+CxkbSOxT7OBsDNOznT7VnMJkWNgSlERNdqBJuoOXkZpTAqd6XWcIW4EbB4vFxLH/sJ5ixKyhIzGNUQ3s82IfOETqCi4x6W9zDA5zC1
+ LzQF+oNPdIYXhOwBAAE59mQRnDVlCGa7DOsrUT7JzIR7jpRdYgdoWATQzFyrD53u+myp9bXT1l/w5YLPzYoe+cfLDPiDtmhN9aQ=
 X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,80 +89,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document mpq2286 power-management IC. Instead of simple 'buck', 'buck0' is
-used to keep the driver common which handles multiple regulators.
+The MPQ2286 is a programmable, high frequency synchronous buck regulator
+designed to power a variety of Automotive system peripherals. Single buck
+converters with hardware monitoring capability is configurable over PMBus
+interface.
 
 Signed-off-by: Saravanan Sekar <saravanan@linumiz.com>
 ---
- .../bindings/regulator/mps,mpq2286.yaml       | 59 +++++++++++++++++++
- 1 file changed, 59 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/regulator/mps,mpq2286.yaml
+ drivers/hwmon/pmbus/mpq7932.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/regulator/mps,mpq2286.yaml b/Documentation/devicetree/bindings/regulator/mps,mpq2286.yaml
-new file mode 100644
-index 000000000000..594b929fe4b8
---- /dev/null
-+++ b/Documentation/devicetree/bindings/regulator/mps,mpq2286.yaml
-@@ -0,0 +1,59 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/regulator/mps,mpq2286.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Monolithic Power System MPQ2286 PMIC
-+
-+maintainers:
-+  - Saravanan Sekar <saravanan@linumiz.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - mps,mpq2286
-+
-+  reg:
-+    maxItems: 1
-+
-+  regulators:
-+    type: object
-+
-+    properties:
-+      buck0:
-+        type: object
-+        $ref: regulator.yaml#
-+
-+        unevaluatedProperties: false
-+
-+    additionalProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - regulators
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        pmic@3 {
-+            compatible = "mps,mpq2286";
-+            reg = <0x3>;
-+
-+            regulators {
-+                buck0 {
-+                    regulator-name = "buck0";
-+                    regulator-min-microvolt = <1600000>;
-+                    regulator-max-microvolt = <1800000>;
-+                    regulator-boot-on;
-+                };
-+            };
-+        };
-+    };
-+...
+diff --git a/drivers/hwmon/pmbus/mpq7932.c b/drivers/hwmon/pmbus/mpq7932.c
+index 723c314a57a2..60d7b8aec05a 100644
+--- a/drivers/hwmon/pmbus/mpq7932.c
++++ b/drivers/hwmon/pmbus/mpq7932.c
+@@ -21,6 +21,7 @@
+ #define MPQ7932_N_VOLTAGES		256
+ #define MPQ7932_VOUT_MAX		0xFF
+ #define MPQ7932_NUM_PAGES		6
++#define MPQ2286_NUM_PAGES		1
+ 
+ #define MPQ7932_TON_DELAY		0x60
+ #define MPQ7932_VOUT_STARTUP_SLEW	0xA3
+@@ -129,12 +130,14 @@ static int mpq7932_probe(struct i2c_client *client)
+ }
+ 
+ static const struct of_device_id mpq7932_of_match[] = {
++	{ .compatible = "mps,mpq2286", .data = (void *)MPQ2286_NUM_PAGES },
+ 	{ .compatible = "mps,mpq7932", .data = (void *)MPQ7932_NUM_PAGES },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, mpq7932_of_match);
+ 
+ static const struct i2c_device_id mpq7932_id[] = {
++	{ "mpq2286", },
+ 	{ "mpq7932", },
+ 	{ },
+ };
 -- 
 2.34.1
 
