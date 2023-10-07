@@ -2,140 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA3B87BC693
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 11:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A56B7BC69A
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 12:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343784AbjJGJ5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 05:57:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35084 "EHLO
+        id S1343794AbjJGKCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 06:02:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343778AbjJGJ5J (ORCPT
+        with ESMTP id S234189AbjJGKCG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 05:57:09 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A24DEBC
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 02:57:06 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-53627feca49so4945796a12.1
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Oct 2023 02:57:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696672625; x=1697277425; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PcqvIMKkfE5QIsgQKUvuiqQssRgDPpRj+/74oXDIspY=;
-        b=VuAcebwJllMA47LbTWuxY5FCLpYsFIaMO5O5y326cNCiDuPLYa9uUbs5rYxik4Dcro
-         1Nhv4b+jiwk5szFpRrwIrlQAQ5yNadCxKdL1ecnT2mDc/Zj4kxWrO3DBkJlsjRhZwDiQ
-         TjLl+p6rhpyZhA+SgwqVh5r0tkBHDDg4LNIn21Xwk3L6LktmjbuDW41k7EaIMTjKk8em
-         U4LuQ9sVLX63goe+OJy1RskWabhE8G4JB/65KrMDVAYBZG23yNx4VR5YtbaHHDZ2fge4
-         yg3kN4/E8J1UPgYmvWzHIwn5P/nNlyoQWH3yd4FsZi696fnQmdqhuoNFS9WtXqYw7mOx
-         COwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696672625; x=1697277425;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PcqvIMKkfE5QIsgQKUvuiqQssRgDPpRj+/74oXDIspY=;
-        b=IJBAzFZt0ZnFJJPaehD6Ju3sPOQ+nZy2K92or+e1JDCKzzrTBdU16t4a6IBF/jyVRF
-         zKN9idEuq7jXp+ADpVFppXVuQXzKdQSNgnc5S4NO1VPuEEDXD+OUIw3spdlK7+PtkQYb
-         PUF5WDKsbVW807rPC0R9CirDlJYmASzwBx4CRw+NfNZ6nl113SvAtG9tJ+j7cQlaP2Q+
-         U53P+YMXzz6UsS7hCHqCEYkAGWD7Ffz8S6ZPo+Z7Gi1gwcYPrRzSgiXtNS/Dz3YhOp9V
-         ru3bS93rWvG3Kd7gDdWyLnIstc+KIw0lRzFNq2kiRQ93RYve7g5POBZS0EPN2bYMzM5p
-         ptDQ==
-X-Gm-Message-State: AOJu0YyHG1Ghu6asZUj3oN5Jhjbt2F1oZnU769XZFS0v3ujtieP4prkg
-        QSdXG1cQdPKsGeR+QMBVch0rWYJIpWgahme9yTc=
-X-Google-Smtp-Source: AGHT+IEvnPu8pP6V6n59ZTFaLnvAeDRyogsdYuYsHtxOe4bVbU3D+8WXXoGQysYwzLZTHQXNcfwdpzbN35mZT3KiGKs=
-X-Received: by 2002:a05:6402:217:b0:533:4c15:c337 with SMTP id
- t23-20020a056402021700b005334c15c337mr8946052edv.16.1696672624908; Sat, 07
- Oct 2023 02:57:04 -0700 (PDT)
+        Sat, 7 Oct 2023 06:02:06 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5126CBD;
+        Sat,  7 Oct 2023 03:01:55 -0700 (PDT)
+X-QQ-mid: bizesmtp77t1696672903tvp5usk6
+Received: from main2-ubuntu.tail147f4.ts.net ( [202.201.15.117])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sat, 07 Oct 2023 18:01:40 +0800 (CST)
+X-QQ-SSF: 01200000000000B06000000A0000000
+X-QQ-FEAT: nA8mzCjPbKiHnigyrSNt2QncUdhNDjJJS34WRMdLE0y4F8gnTGB3njnhR1HFy
+        rak4LOMTDfVDpJ5RHPQKXYbyYLbJdqRpn5MKHf2n7hUlr1BbzxxH0RL4PiCJPXcP2ThCMu8
+        apvW3gH4oAvBgWJhIL4XEViAzyEILpuRJ+PCt5srAHeUPFlzBJI8i2N8NhS2lvEckAqxrX2
+        2+J74FxmriubHqWFe2Ra11s1aA7g8VCQ1I3McxbAWUJdnUbCzOJZ1kqNz53pkipFOkQV3Cu
+        esaGPUgjy44OxzOQQWxsdnDZTopmvFcisKDizzYlBqtLjLaYyYD9qvTZOj+GlaxyL+ak4mr
+        0Yj3slYYyEhU95hCW10lhW/h5G9hQ==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 1783803011377048823
+From:   Yuan Tan <tanyuan@tinylab.org>
+To:     falcon@tinylab.org
+Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux@weissschuh.net, palmer@rivosinc.com,
+        paul.walmsley@sifive.com, paulburton@kernel.org,
+        paulmck@kernel.org, tim.bird@sony.com, tsbogend@alpha.franken.de,
+        w@1wt.eu
+Subject: Re: [PATCH v1 2/7] DCE/DSE: add unused syscalls elimination configure support
+Date:   Sat,  7 Oct 2023 18:01:39 +0800
+Message-Id: <20231007100139.3501-1-tanyuan@tinylab.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <3f0eaf5fcb19f1c70cab075a97f067846f36f736.1695679700.git.falcon@tinylab.org>
+References: <3f0eaf5fcb19f1c70cab075a97f067846f36f736.1695679700.git.falcon@tinylab.org>
 MIME-Version: 1.0
-References: <20230721161018.50214-1-brgerst@gmail.com> <ZR5yTecBhCFsVOtQ@gmail.com>
- <CAMzpN2j7qddPEUdD+ZX3dtyQkPq6e4gzwcu5szkZ2esh_8zm9g@mail.gmail.com>
- <ZR8an4+JbkLS8/Ol@gmail.com> <5def7e28-3949-9685-7ddf-19b550847ef0@zytor.com>
-In-Reply-To: <5def7e28-3949-9685-7ddf-19b550847ef0@zytor.com>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Sat, 7 Oct 2023 11:56:58 +0200
-Message-ID: <CAFULd4byZBKAUrJ2+5EoEaTHTXpk+0FFeFvze9r+Y1dTezG7YQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] x86: Clean up fast syscall return validation
-To:     "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Ingo Molnar <mingo@kernel.org>, Brian Gerst <brgerst@gmail.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mpenttil@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=4.8 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,RCVD_IN_PBL,RCVD_IN_SBL_CSS,RCVD_IN_XBL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 6, 2023 at 8:59=E2=80=AFPM H. Peter Anvin <hpa@zytor.com> wrote=
-:
->
-> On 10/5/23 13:20, Ingo Molnar wrote:
-> >
-> > * Brian Gerst <brgerst@gmail.com> wrote:
-> >
-> >> Looking at the compiled output, the only suboptimal code appears to be
-> >> the canonical address test, where the C code uses the CL register for
-> >> the shifts instead of immediates.
-> >>
-> >>   180:   e9 00 00 00 00          jmp    185 <do_syscall_64+0x85>
-> >>                          181: R_X86_64_PC32      .altinstr_aux-0x4
-> >>   185:   b9 07 00 00 00          mov    $0x7,%ecx
-> >>   18a:   eb 05                   jmp    191 <do_syscall_64+0x91>
-> >>   18c:   b9 10 00 00 00          mov    $0x10,%ecx
-> >>   191:   48 89 c2                mov    %rax,%rdx
-> >>   194:   48 d3 e2                shl    %cl,%rdx
-> >>   197:   48 d3 fa                sar    %cl,%rdx
-> >>   19a:   48 39 d0                cmp    %rdx,%rax
-> >>   19d:   75 39                   jne    1d8 <do_syscall_64+0xd8>
-> >
-> > Yeah, it didn't look equivalent - so I guess we want a C equivalent for=
-:
-> >
-> > -       ALTERNATIVE "shl $(64 - 48), %rcx; sar $(64 - 48), %rcx", \
-> > -               "shl $(64 - 57), %rcx; sar $(64 - 57), %rcx", X86_FEATU=
-RE_LA57
-> >
-> > instead of the pgtable_l5_enabled() runtime test that
-> > __is_canonical_address() uses?
-> >
->
-> I don't think such a thing (without simply duplicate the above as an
-> alternative asm, which is obviously easy enough, and still allows the
-> compiler to pick the register used) would be possible without immediate
-> patching support[*].
->
-> Incidentally, this is a question for Uros: is there a reason this is a
-> mov to %ecx and not just %cl, which would save 3 bytes?
+Hi Zhangjin,
+ 
+> A minimal embedded Linux system may only has a very few of functions and
+> only uses a minimal subset of the posix syscalls, the unused syscalls
+> will never be used and eventually in a dead status, that also means disk
+> storage and memory footprint waste.
+> 
+> Based on dead code elimination support, it is able to further eliminate
+> the above dead or unused syscalls.
+> 
+> Firstly, both a new common CONFIG_TRIM_UNUSED_SYSCALLS option and a new
+> architecture specific HAVE_TRIM_UNUSED_SYSCALLS are added to enable or
+> disable such feature.
+> 
+> Secondly, a new CONFIG_USED_SYSCALLS option is added to allow configure
+> the syscalls used in a target system. CONFIG_USED_SYSCALLS can be a list
+> of the used syscalls or a file to store such a list.
+> 
+> Based on the above options, it is able to only reserve the used syscalls
+> and let CONFIG_LD_DEAD_CODE_DATA_ELIMINATION trim the unused ones for us
+> automatically.
+> 
+> Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+> ---
+>  init/Kconfig | 42 ++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 42 insertions(+)
+> 
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 4350d8ba7db4..aa648ce8bca1 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -1457,6 +1457,11 @@ config BPF
+>  	bool
+>  	select CRYPTO_LIB_SHA1
+>  
+> +config HAVE_TRIM_UNUSED_SYSCALLS
+> +	bool
+> +	depends on HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+> +	default n
+> +
+>  menuconfig EXPERT
+>  	bool "Configure standard kernel features (expert users)"
+>  	# Unhide debug options, to make the on-by-default options visible
+> @@ -1683,6 +1688,43 @@ config MEMBARRIER
+>  
+>  	  If unsure, say Y.
+>  
+> +config TRIM_UNUSED_SYSCALLS
+> +	bool "Trim unused syscalls (EXPERIMENTAL)" if EXPERT
+> +	default n
+> +	depends on HAVE_TRIM_UNUSED_SYSCALLS
+> +	depends on HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+> +	select LD_DEAD_CODE_DATA_ELIMINATION
+> +	help
+> +	  Say Y here to trim all of the unused syscalls for a target system.
 
-The compiler uses 32-bit mode to move values between registers, even
-when they are less than 32-bit wide. To avoid partial register stalls,
-it uses 32-bit mode as much as possible (e.g. zero-extends from memory
-to load 8-bit value, load of 32-bit constant, etc). Since the kernel
-is compiled with -O2, the compiler does not care that much for the
-size of instructions, and it uses full 32-bit width to initialize
-register with a constant.
+I think changing this sentence to "Say Y here to trim all of the unused
+syscalls, excluding those defined in USED_SYSCALLS." would be clearer.
 
-Please note that 8-bit movb instruction in fact represents insert into
-word-mode register. The compiler does not know how this word-mode
-register will be used, so to avoid partial register stalls, it takes a
-cautious approach and (with -O2) moves constant to a register with a
-word-width instruction.
+By the way, consider adding the three files syscall_table_used.c,
+compat_syscall_table_used.c, and traps_used.c to the .gitignore file.
 
-Also, the compiler is quite eager to CSE constants. When there are two
-or more uses of the same constant, it will move a constant into the
-register first.
-
-Uros.
+> +
+> +	  Note, this is only for minimal embedded systems, please don't use it
+> +	  for generic Linux distributions.
+> +
+> +	  If unsure, say N.
+> +
+> +config USED_SYSCALLS
+> +	string "Configure used syscalls (EXPERIMENTAL)" if EXPERT
+> +	depends on TRIM_UNUSED_SYSCALLS
+> +	default ""
+> +	help
+> +	  This option allows to configure the syscalls used in a target system,
+> +	  the unused ones will be disabled and trimmed by TRIM_UNUSED_SYSCALLS.
+> +
+> +	  The used syscalls should be listed one by one like this:
+> +
+> +	      write exit reboot
+> +
+> +	  Or put them into a file specified by this option, one syscall per
+> +	  line is recommended for such a config file:
+> +
+> +	      write
+> +	      exit
+> +	      reboot
+> +
+> +	  Note, If keep this empty, all of the syscalls will be trimmed.
+> +
+> +	  If unsure, please disable TRIM_UNUSED_SYSCALLS.
+> +
+>  config KALLSYMS
+>  	bool "Load all symbols for debugging/ksymoops" if EXPERT
+>  	default y
+> -- 
