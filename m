@@ -2,91 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4603C7BC7D3
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 14:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 722627BC7D6
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 14:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343932AbjJGMvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 08:51:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56004 "EHLO
+        id S1343939AbjJGMvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 08:51:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343882AbjJGMvI (ORCPT
+        with ESMTP id S1343929AbjJGMvW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 08:51:08 -0400
-Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49236B9;
-        Sat,  7 Oct 2023 05:51:05 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 8EF3A42617;
-        Sat,  7 Oct 2023 12:50:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=marcan.st; s=default;
-        t=1696683062; bh=iMMy30V2RH8HcFAxtufW8zJaG9pqEhOMkEXIgIHkq3w=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=NT94CZh0cDdfJkYzwtrEiGKhibKhm24cN9CWUZKfKgZeSV/MiEj79eaefgp8L8/e2
-         EYLkGQ/azhx2fp0nwbBpEqNoF9jhCJPMbDvF6Pjhu6GyTR6ItH2ezD7v0UNBZeGp6L
-         ANzPrfjfpLt0629j9mNVucxqwVEq2KERadWPmRlTbjyUS9+QMFDaLPXf+G9+ZXfAfi
-         zElfJmGxuVXT7VIKcL+lbyf224yf8jWdQr2VtZz8TcK0+cyyfbwiZsbescfeVWPjmd
-         pQb8mWRVCEVdM+4AsXZCRP7SPcKarphtPdRrUGUfjDeRMfjkgEjj0W2U3s5fUjLWwt
-         BfEbAqK1z0n2g==
-Message-ID: <e470902a-35eb-9bb4-7a9e-167f985c98bb@marcan.st>
-Date:   Sat, 7 Oct 2023 21:50:56 +0900
+        Sat, 7 Oct 2023 08:51:22 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E01FCB6
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 05:51:19 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-4053c6f0db8so27244395e9.3
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Oct 2023 05:51:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696683078; x=1697287878; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xvT6SDn6XOTMM7WN3V9Qer8S4PTe9uPFURCibPnQCSE=;
+        b=ZuJMIs1Hc7oNXCUr9iyFyEP34sGd6DX3TWi+6E7mK2w6iXGx7p8NkqFlJHkq+hE/F7
+         1PFvAhDmHk6aTp+hbV2qzby+lkT66UWMsMwh6jGrPGnL8n5cBBoJT2tfOAoWPU9Svd9I
+         zWHjXOuWfJMVKTsaDcEvD4KDjjJubsQvWomZQLLFcqWwbHjqR5S7PShkWNagyNZOI2YW
+         DfOZlawJgf9UP7TtdvEBQaqmdzKKSu52kPn4JN9qbGqIv36Gg+ncY7+JbwbYUtEEoupk
+         0IAanaVyipj2EB355869+lPRtEmO+Udu3oFElgQlWdXszpCGmLqdrBluCdUAqtpVsKNy
+         Q/6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696683078; x=1697287878;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xvT6SDn6XOTMM7WN3V9Qer8S4PTe9uPFURCibPnQCSE=;
+        b=n6XO4qX0l2p1uSJTV/40t1AUS474amu4LDuGl4vFLhOjWz4KwiQd2LfQvjN00CplTQ
+         zY+o28Z0kAKqblndBwrfHbsf5TnrZZAuSqxUb049PGuKSdok1EswO6vTnazI3lgWAcC3
+         h7IjQ+NexDZsVnzQqXxpz+Vn79IYqq3m+T2zsbe23b8obzqTk/Jnlgk55myvvZvaoxaS
+         nEsIBtZevJoJ4XwXfCuIYaJ3pvu8FBJ+aENccDSn5s4gBi6xA8m8rs4YPl0bsdSAsLTf
+         iDJr+wx+Bq1PkjXhe0WJtchVrlOmSU/BAgKlzyUGWUd4r/+4JGvegGEYbS9D8mfirbEu
+         8tFw==
+X-Gm-Message-State: AOJu0YyzuG/6mZrFbO8ipH/4GhvT/gNiJ+Gt5bA9pYTMrxku8OcfOyRj
+        IGcMGBCLU24jXD+Xtacwk+Ttfw==
+X-Google-Smtp-Source: AGHT+IFPVNcTiGWX1DJytlquK2kkJt6EJB9eK4ST5TT+6DPRGc9InfXTGto/Cfmad8KqxPyOgfdaOw==
+X-Received: by 2002:a1c:7914:0:b0:401:1b58:72f7 with SMTP id l20-20020a1c7914000000b004011b5872f7mr9782629wme.38.1696683077724;
+        Sat, 07 Oct 2023 05:51:17 -0700 (PDT)
+Received: from ?IPV6:2a05:6e02:1041:c10:ae93:531e:11ce:c83d? ([2a05:6e02:1041:c10:ae93:531e:11ce:c83d])
+        by smtp.googlemail.com with ESMTPSA id z19-20020a7bc7d3000000b0040641a9d49bsm6052434wmk.17.2023.10.07.05.51.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 07 Oct 2023 05:51:17 -0700 (PDT)
+Message-ID: <f74a029d-39be-4deb-bc4f-a1bc1e401082@linaro.org>
+Date:   Sat, 7 Oct 2023 14:51:16 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: On brcm80211 maintenance and support
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] thermal: Remove Amit Kucheria from MAINTAINERS
 Content-Language: en-US
-To:     Dmitry Antipov <dmantipov@yandex.ru>
-Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        SHA-cyfmac-dev-list@infineon.com,
-        brcm80211-dev-list.pdl@broadcom.com,
-        Asahi Linux <asahi@lists.linux.dev>,
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Kalle Valo <kvalo@kernel.org>,
-        Julian Calaby <julian.calaby@gmail.com>
-References: <6f78e624-62ee-3ae5-1db4-a0411566def8@yandex.ru>
- <CAGRGNgU7aySyUny9aG_+wXiKJ7j1weosa-rZDY4_WAXbq-3ABg@mail.gmail.com>
- <87ttr454bh.fsf@kernel.org> <3c5a3e7a-b332-4a77-51ba-bed3cad1e79f@marcan.st>
- <e1ee4d76-f717-a67c-8099-7b91192ba1ca@yandex.ru>
-From:   Hector Martin <marcan@marcan.st>
-In-Reply-To: <e1ee4d76-f717-a67c-8099-7b91192ba1ca@yandex.ru>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
+        Amit Kucheria <amitk@kernel.org>
+References: <5725069.DvuYhMxLoT@kreacher>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <5725069.DvuYhMxLoT@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/10/2023 00.48, Dmitry Antipov wrote:
-> On 10/6/23 18:34, Hector Martin wrote:
+On 07/10/2023 13:36, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Subject: [PATCH v2] thermal: Remove Amit Kucheria from MAINTAINERS
 > 
->> For better or worse, if nobody else does, I'm willing to sign up to
->> maintain the chips shipping on Apple ARM64 machines (i.e. BCM4378,
->> BCM4387, BCM4388 - that last one I have bringup for downstream, just got
->> it done this week) and partially BCM4377 as a bonus (since I have access
->> to an older Intel Mac with that one, and already did bringup for it,
->> though my access is sporadic). I'm already playing part time maintainer
->> anyway (other folks have already sent us patches I'll have to upstream),
->> and we need this driver to keep working and continue to support new chips.
+> Amit Kucheria has not been participating in kernel development in any
+> way or form for quite some time, so it is not useful to list him as a
+> designated reviewer for the thermal subsystem or as the thermal zone DT
+> binding maintainer.
 > 
-> Good news. Would you capable to consider some generic (not hooked to any
-> particular hardware) things like [1] ?
+> Remove him from the THERMAL entry in MAINTAINERS and list Daniel Lezcano
+> as the new thermal zone DT binding maintainer.
 > 
-> [1] https://lore.kernel.org/linux-wireless/20230703162458.155942-1-dmantipov@yandex.ru/
-> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
 
-Sure, I've done cleanup type stuff myself too.
+Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
-- Hector
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
