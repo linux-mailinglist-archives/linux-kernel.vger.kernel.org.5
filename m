@@ -2,124 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D044B7BC470
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 05:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DBB37BC474
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 05:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343504AbjJGDmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 23:42:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53050 "EHLO
+        id S234123AbjJGDmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 23:42:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234043AbjJGDl6 (ORCPT
+        with ESMTP id S234114AbjJGDmh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 23:41:58 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C06BD
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 20:41:54 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3973ckNd031558;
-        Sat, 7 Oct 2023 03:41:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=AO32nXH08dML1T+/b42a6LXZnMlL1YQ3mKO0J4C7mZw=;
- b=c0Np81fY7qgzdx3tGRlO2CkT+HSFWeg1SyLf+LNJjNSjXc037kNoiYgp4rZSNgf4TFwr
- SOYpiKzv+gHVLMZnsSEMLJBnomL9mh8SSKGHInL2RujZ/nFoJd9g2jHtMVLn9XLde8gi
- 3dU/IeiuIayXR3hQvV2hsiahgM+U91MDD6ce0DvJyW5Ym9h5dkCcHmHCaHZkfS4jOr59
- eMFzCFe5+9hv5HZFjCdU3s2isiGC7YbX+KDyOS+pFxj8D5n9WxDsV61p5/z1gCrCzjRh
- f0ulhni3zvfb4/NTcM5yDIeJkuLdBxK+Lsxug1VpEVCAUNOVOw61F5VJfqxNVyzncU3q iQ== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tjye0g0jy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 07 Oct 2023 03:41:47 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3973fkKp028746
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 7 Oct 2023 03:41:46 GMT
-Received: from maow2-gv.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Fri, 6 Oct 2023 20:41:43 -0700
-From:   Kassey Li <quic_yingangl@quicinc.com>
-To:     <gregkh@google.com>, <gregkh@linuxfoundation.org>,
-        <cmllamas@google.com>, <surenb@google.com>, <arve@android.com>,
-        <joel@joelfernandes.org>, <brauner@kernel.org>
-CC:     <tkjos@android.com>, <maco@android.com>,
-        <quic_yingangl@quicinc.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] binder: add mutex_lock for mmap and NULL when free
-Date:   Sat, 7 Oct 2023 11:40:46 +0800
-Message-ID: <20231007034046.2352124-1-quic_yingangl@quicinc.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 6 Oct 2023 23:42:37 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8CF3BE;
+        Fri,  6 Oct 2023 20:42:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F1C8C433C7;
+        Sat,  7 Oct 2023 03:42:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696650155;
+        bh=qYYmtyRXB1QvBQc5ba00QONAXBSOckRo54OymlP7Dk4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=CzrhKPk1lKjjJ7nIB4/Jgou7wEEAURYssXXGdC1e4jobIs2sc1fvZaQ9/Y7HVMvwU
+         1Xb7SFl/xAFG/qzPRKg4uJnWPbSmCkW97uDR3Vh607hK6wo0ZU5kezk9FFUnB+Iyka
+         xqvjbAkt6J+ayZTdF8lFYxssEEMXwhZ2RpTUkRYuu26NNzXPVCLPOPWxstZIoTDjqV
+         ZrLii9foDDRUGC5VFguz5Ja7uMVLoQRO9KdaTdF9QeSlVg79Fd9XaqN4nwKzytVPIt
+         sdt2IewTIjCP3o19FUb9rGkI4i/Od2iYQL3r9U7D6VX0GxXPN+ahUeOyJOvEKXKLaB
+         wmQeyzxWO9Jtw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id CC937CE0BAE; Fri,  6 Oct 2023 20:42:34 -0700 (PDT)
+Date:   Fri, 6 Oct 2023 20:42:34 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH bootconfig 2/3] fs/proc: Add boot loader arguments as
+ comment to /proc/bootconfig
+Message-ID: <c262818e-52c7-456d-965c-b19606daf412@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <6ea609a4-12e3-4266-8816-b9fca1f1f21c@paulmck-laptop>
+ <20231005171747.541123-2-paulmck@kernel.org>
+ <20231006175948.14df07948d8c6a4a46473c13@kernel.org>
+ <55067c09-9ec6-452a-a6db-30b8a8d08485@paulmck-laptop>
+ <20231007104209.e6950a657f07831c95a0a1de@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 3bZaDyX8RnILZJcVdY4luaHmsa38cQDG
-X-Proofpoint-ORIG-GUID: 3bZaDyX8RnILZJcVdY4luaHmsa38cQDG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-06_15,2023-10-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
- impostorscore=0 mlxscore=0 mlxlogscore=911 spamscore=0 adultscore=0
- priorityscore=1501 phishscore=0 bulkscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310070031
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231007104209.e6950a657f07831c95a0a1de@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enforce alloc->mutex in binder_alloc_mmap_handler when add
-the entry to list.
+On Sat, Oct 07, 2023 at 10:42:09AM +0900, Masami Hiramatsu wrote:
+> On Fri, 6 Oct 2023 09:52:30 -0700
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> 
+> > On Fri, Oct 06, 2023 at 05:59:48PM +0900, Masami Hiramatsu wrote:
+> > > On Thu,  5 Oct 2023 10:17:46 -0700
+> > > "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > > 
+> > > > In kernels built with CONFIG_BOOT_CONFIG_FORCE=y, /proc/cmdline will
+> > > > show all kernel boot parameters, both those supplied by the boot loader
+> > > > and those embedded in the kernel image.  This works well for those who
+> > > > just want to see all of the kernel boot parameters, but is not helpful to
+> > > > those who need to see only those parameters supplied by the boot loader.
+> > > > This is especially important when these parameters are presented to the
+> > > > boot loader by automation that might gather them from diverse sources.
+> > > > It is also useful when booting the next kernel via kexec(), in which
+> > > > case it is necessary to supply only those kernel command-line arguments
+> > > > from the boot loader, and most definitely not those that were embedded
+> > > > into the current kernel.
+> > > > 
+> > > > Therefore, add comments to /proc/bootconfig of the form:
+> > > > 
+> > > > 	# Parameters from bootloader:
+> > > > 	# root=UUID=ac0f0548-a69d-43ca-a06b-7db01bcbd5ad ro quiet ...
+> > > > 
+> > > > The second added line shows only those kernel boot parameters supplied
+> > > > by the boot loader.
+> > > 
+> > > Thanks for update it.
+> > > 
+> > > This looks good to me.
+> > > 
+> > > Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > > 
+> > > Thank you!
+> > 
+> > And thank you!  I take this as meaning that I should push these three
+> > commits for the upcoming v6.7 merge window.  Please let me know if I
+> > should be doing something else.
+> 
+> I have my bootconfig branch, so I think I should pick this and push it
+> to the next window. Does it work?
 
-Assign the freed pages/page_ptr to NULL to catch possible
-use after free with NULL pointer access.
+That works for me, and thank you!
 
-Signed-off-by: Kassey Li <quic_yingangl@quicinc.com>
----
- drivers/android/binder_alloc.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+(And thank you for taking and fixing my whitespace errors in the
+other two patches!)
 
-diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
-index e3db8297095a..c7d126e04343 100644
---- a/drivers/android/binder_alloc.c
-+++ b/drivers/android/binder_alloc.c
-@@ -775,6 +775,7 @@ int binder_alloc_mmap_handler(struct binder_alloc *alloc,
- 	}
- 
- 	buffer->user_data = alloc->buffer;
-+	mutex_lock(&alloc->mutex);
- 	list_add(&buffer->entry, &alloc->buffers);
- 	buffer->free = 1;
- 	binder_insert_free_buffer(alloc, buffer);
-@@ -782,7 +783,7 @@ int binder_alloc_mmap_handler(struct binder_alloc *alloc,
- 
- 	/* Signal binder_alloc is fully initialized */
- 	binder_alloc_set_vma(alloc, vma);
--
-+	mutex_unlock(&alloc->mutex);
- 	return 0;
- 
- err_alloc_buf_struct_failed:
-@@ -856,9 +857,11 @@ void binder_alloc_deferred_release(struct binder_alloc *alloc)
- 				     __func__, alloc->pid, i, page_addr,
- 				     on_lru ? "on lru" : "active");
- 			__free_page(alloc->pages[i].page_ptr);
-+			alloc->pages[i].page_ptr = NULL;
- 			page_count++;
- 		}
- 		kfree(alloc->pages);
-+		alloc->pages = NULL;
- 	}
- 	mutex_unlock(&alloc->mutex);
- 	if (alloc->mm)
--- 
-2.25.1
+							Thanx, Paul
 
+> > > > Link: https://lore.kernel.org/all/CAHk-=wjpVAW3iRq_bfKnVfs0ZtASh_aT67bQBG11b4W6niYVUw@mail.gmail.com/
+> > > > Link: https://lore.kernel.org/all/20230731233130.424913-1-paulmck@kernel.org/
+> > > > Co-developed-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > > > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> > > > Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+> > > > Cc: Arnd Bergmann <arnd@kernel.org>
+> > > > Cc: Nick Desaulniers <ndesaulniers@google.com>
+> > > > Cc: Alexey Dobriyan <adobriyan@gmail.com>
+> > > > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > > > Cc: Kees Cook <keescook@chromium.org>
+> > > > Cc: <linux-trace-kernel@vger.kernel.org>
+> > > > Cc: <linux-fsdevel@vger.kernel.org>
+> > > > ---
+> > > >  fs/proc/bootconfig.c | 6 ++++++
+> > > >  1 file changed, 6 insertions(+)
+> > > > 
+> > > > diff --git a/fs/proc/bootconfig.c b/fs/proc/bootconfig.c
+> > > > index 2e244ada1f97..902b326e1e56 100644
+> > > > --- a/fs/proc/bootconfig.c
+> > > > +++ b/fs/proc/bootconfig.c
+> > > > @@ -62,6 +62,12 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
+> > > >  				break;
+> > > >  			dst += ret;
+> > > >  		}
+> > > > +		if (ret >= 0 && boot_command_line[0]) {
+> > > > +			ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
+> > > > +				       boot_command_line);
+> > > > +			if (ret > 0)
+> > > > +				dst += ret;
+> > > > +		}
+> > > >  	}
+> > > >  out:
+> > > >  	kfree(key);
+> > > > -- 
+> > > > 2.40.1
+> > > > 
+> > > 
+> > > 
+> > > -- 
+> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
