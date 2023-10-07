@@ -2,415 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E6B7BC362
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 02:41:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB977BC368
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 02:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233979AbjJGAlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 20:41:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56810 "EHLO
+        id S233954AbjJGAtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 20:49:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233972AbjJGAl1 (ORCPT
+        with ESMTP id S233879AbjJGAtD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 20:41:27 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E02BF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 17:41:19 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-690bc3f82a7so2392687b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 17:41:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1696639279; x=1697244079; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=y5ObyqDOjztoDhC5t8E2lz3oLVXfFznkcrpNtj4QO6o=;
-        b=TRcFK3deXiDmpw8bhKTyyRPn6RMskkTfg9TQzbQI4yeB5lJ504+1dsKR/Yx1+lEzto
-         oiUFuXf82NRasYyZ2PpkrMU4+GpxvCR40bJ1tLxxSRAfgVcxcFcQeUs6c7Tr3nRVNT80
-         l+WpVwgZ8q10aEpFzK0+WZJiznzJcM5SyQF2Mr8ad/sj4DssP5+iqXxrTu0CaIj0Nkpc
-         JYHfSyprTDKQWlBFVZhZqrdCmQ/xpLP28LpaSayiQCpFkTmuf7rAuyR1kwh7+TOyVQ3x
-         uemiUmDlWAoOu1nYABE4xjAHZ+rC4OxppMcQZpcVG2eJh3uA4xDFUac6Oiw+1I9jIFOx
-         ke7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696639279; x=1697244079;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=y5ObyqDOjztoDhC5t8E2lz3oLVXfFznkcrpNtj4QO6o=;
-        b=Tqq+Pc/RLy8JFCk7uRVGsTKtFLhpdMsrtGh0ui16glt7qP39RgBp/UOweAsLc6NhRe
-         P4wtqYzlbfrzWf7H02pLkP1QIMzbFiBNuqGPCIxok0Gvt5HmAVCHxU5jkpHER1ByBJZx
-         dW3ffqYxzRepU4E9CEOrtzM1b+/vM5eylqRe2sqzlqdiEQHcA0GRTQUAr+LSdxKijNqE
-         +yBwGZiiNfzpkUb4qMHiFlvyeu6GQX3bPjjWz5zbyL/f0UW3HJlP8MwauKkgDeKLO7he
-         gDwXoquNvSq/pus0fuWxryiylume+Fh1mjA9Upr+T13Sa2SxEi5NsqxuQUn/ENsxRgvo
-         G3Xg==
-X-Gm-Message-State: AOJu0YzJ4eAwx3sj9q/azfp9hcvqEwOoXUdk3nRX8Zd17iisBVC/hYqZ
-        251NU/3ArgXcBrXhh/q57/iOEA==
-X-Google-Smtp-Source: AGHT+IHky70QBVvPzgEDItk7mYVORVvgukP/9hhiMTEl2hvCRW/wMJj0Xsi46NbUX0pwqScluqGBnA==
-X-Received: by 2002:a05:6a20:144c:b0:14e:a1f0:a8ea with SMTP id a12-20020a056a20144c00b0014ea1f0a8eamr9888603pzi.3.1696639279458;
-        Fri, 06 Oct 2023 17:41:19 -0700 (PDT)
-Received: from charlie.ba.rivosinc.com ([66.220.2.162])
-        by smtp.gmail.com with ESMTPSA id x16-20020a170902ec9000b001c582de968dsm4534540plg.72.2023.10.06.17.41.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 17:41:19 -0700 (PDT)
-From:   Charlie Jenkins <charlie@rivosinc.com>
-Date:   Fri, 06 Oct 2023 17:41:06 -0700
-Subject: [PATCH v2 1/2] riscv: Add remaining module relocations
+        Fri, 6 Oct 2023 20:49:03 -0400
+Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2ED7B6
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 17:49:01 -0700 (PDT)
+X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id 158927A0B41
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 00:41:18 +0000 (UTC)
+Received: from pdx1-sub0-mail-a302.dreamhost.com (unknown [127.0.0.6])
+        (Authenticated sender: dreamhost)
+        by relay.mailchannels.net (Postfix) with ESMTPA id A85A47A160D
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 00:41:17 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1696639277; a=rsa-sha256;
+        cv=none;
+        b=XJfVqlJ71m92aiP/EIY1mZVumXpopWW7WkQboryYnz/qlajZvPreJnvP8apiNl69lZw6wA
+        +NCknrgR8/DdwnCpB4lRc6MyI+QPjedwGOda0B0VoHqYItEKPEPJH1DkdMu+gW7URp8v+Q
+        GWfQmEoOwIZjmtDrd+R/MTQVB0veVjdvhPIdP2NAVjPX9xQtWEv2wEP7LglNwoHkVqEQdN
+        zCmN9juuDcowvnFEeJJFOI2BSp/ODl46MQfVi70hCawAeAHNlZ7vu6cqXxRXIOU8/dj15a
+        trPN1AZP8LJmOzcriYXXZiFrLhylF4GFwWCSGPOC+ZGQXULC7J+nJpsKhJ2/Vg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+        s=arc-2022; t=1696639277;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:dkim-signature;
+        bh=Rbh0OSGYEgujE+6OSCU+K35bSIRfKFKRGVhPA2zHgwk=;
+        b=Zt/zBtie2EeVKDgi9iVmoxrA+JjKSbLWbcBIjVH4RIillDlBI7D+Ba79ZGK3GDxWQaoFJW
+        Z7NnJWmvZcn+gPCZTQjmH43PHp8FeCxYG9/0lBBKPNz/anw2U7KQoeGvkko73WIGGkdLJp
+        58u9i/bJ24846pnYUkIR8go97NILYf2Kk9ZIoVzbr+xARliv+iv4GUVGBKzJ6Yyaipk2H9
+        P0/AB0/2Q88GbA+hCL1MEgRBOrn6MgQOhxVBDaizTYSSayP2CoIcgjh5YSITzEBqPH5CiB
+        +gjLqB7h5h8z2L94Akn+Df+0uJUO2jEdfUcmjkIhaQfn90UBQG5F+mpVuzLb9w==
+ARC-Authentication-Results: i=1;
+        rspamd-7c449d4847-m47lh;
+        auth=pass smtp.auth=dreamhost smtp.mailfrom=kjlx@templeofstupid.com
+X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: dreamhost|x-authsender|kjlx@templeofstupid.com
+X-MailChannels-Auth-Id: dreamhost
+X-Supply-Average: 65544b46528ac143_1696639277935_2038925879
+X-MC-Loop-Signature: 1696639277935:2385526386
+X-MC-Ingress-Time: 1696639277935
+Received: from pdx1-sub0-mail-a302.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+        by 100.103.131.218 (trex/6.9.1);
+        Sat, 07 Oct 2023 00:41:17 +0000
+Received: from kmjvbox (c-73-231-176-24.hsd1.ca.comcast.net [73.231.176.24])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kjlx@templeofstupid.com)
+        by pdx1-sub0-mail-a302.dreamhost.com (Postfix) with ESMTPSA id 4S2RLP0V8GzPm
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 17:41:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=templeofstupid.com;
+        s=dreamhost; t=1696639277;
+        bh=Rbh0OSGYEgujE+6OSCU+K35bSIRfKFKRGVhPA2zHgwk=;
+        h=Date:From:To:Cc:Subject:Content-Type;
+        b=d05+6XQBhuUC7d/f6I1Y7UzHvFK2JWbkG5hI35u2i73j70C4DL1AZjNRRtQCgh+x/
+         fQ6ze9CcdTRwc71cWQes205TT28NIG4/cqQwGXevMdYK73VxzlRCLVFrHt+nGxg0z5
+         LcKJP5T4kadq2zg3wsdOFv+n9M40RLspWA7N42+Q3fDHHyRGyBw0NduDdj05ubUHBa
+         RgwrbJgqONcFYKbNro8qXvmibEDI/RN2aDgvSpTDSGcpJ5LE04i45wi8YpcnYLwIih
+         XD2BuxXwjiIyX19EFdNfv23xHkRiOk+Qk5ou8/kRkKhOwiK9z2zCZMUV/xLOgBnc/S
+         BYypTBxWM2btA==
+Received: from johansen (uid 1000)
+        (envelope-from kjlx@templeofstupid.com)
+        id e01ea
+        by kmjvbox (DragonFly Mail Agent v0.12);
+        Fri, 06 Oct 2023 17:41:07 -0700
+Date:   Fri, 6 Oct 2023 17:41:07 -0700
+From:   Krister Johansen <kjlx@templeofstupid.com>
+To:     Bernd Schubert <bernd.schubert@fastmail.fm>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-fsdevel@vger.kernel.org,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        German Maglione <gmaglione@redhat.com>,
+        Greg Kurz <groug@kaod.org>, Max Reitz <mreitz@redhat.com>
+Subject: Re: [resend PATCH v2 2/2] fuse: ensure that submounts lookup their
+ parent
+Message-ID: <20231007004107.GA1967@templeofstupid.com>
+References: <cover.1696043833.git.kjlx@templeofstupid.com>
+ <45778432fba32dce1fb1f5fd13272c89c95c3f52.1696043833.git.kjlx@templeofstupid.com>
+ <3187f942-dcf0-4b2f-a106-0eb5d5a33949@fastmail.fm>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231006-module_relocations-v2-1-47566453fedc@rivosinc.com>
-References: <20231006-module_relocations-v2-0-47566453fedc@rivosinc.com>
-In-Reply-To: <20231006-module_relocations-v2-0-47566453fedc@rivosinc.com>
-To:     linux-riscv@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Charlie Jenkins <charlie@rivosinc.com>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3187f942-dcf0-4b2f-a106-0eb5d5a33949@fastmail.fm>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add all final module relocations and add error logs explaining the ones
-that are not supported.
+On Fri, Oct 06, 2023 at 07:13:06PM +0200, Bernd Schubert wrote:
+> 
+> 
+> On 10/2/23 17:24, Krister Johansen wrote:
+> > The submount code uses the parent nodeid passed into the function in
+> > order to create the root dentry for the new submount.  This nodeid does
+> > not get its remote reference count incremented by a lookup option.
+> > 
+> > If the parent inode is evicted from its superblock, due to memory
+> > pressure for example, it can result in a forget opertation being sent to
+> > the server.  Should this nodeid be forgotten while it is still in use in
+> > a submount, users of the submount get an error from the server on any
+> > subsequent access.  In the author's case, this was an EBADF on all
+> > subsequent operations that needed to reference the root.
+> > 
+> > Debugging the problem revealed that the dentry shrinker triggered a forget
+> > after killing the dentry with the last reference, despite the root
+> > dentry in another superblock still using the nodeid.
+> > 
+> > As a result, a container that was also using this submount failed to
+> > access its filesystem because it had borrowed the reference instead of
+> > taking its own when setting up its superblock for the submount.
+> > 
+> > This commit fixes the problem by having the new submount trigger a
+> > lookup for the parent as part of creating a new root dentry for the
+> > virtiofsd submount superblock.  This allows each superblock to have its
+> > inodes removed by the shrinker when unreferenced, while keeping the
+> > nodeid reference count accurate and active with the server.
+> > 
+> > Signed-off-by: Krister Johansen <kjlx@templeofstupid.com>
+> > ---
+> >   fs/fuse/dir.c    | 10 +++++-----
+> >   fs/fuse/fuse_i.h |  6 ++++++
+> >   fs/fuse/inode.c  | 43 +++++++++++++++++++++++++++++++++++++------
+> >   3 files changed, 48 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
+> > index 5e01946d7531..333730c74619 100644
+> > --- a/fs/fuse/dir.c
+> > +++ b/fs/fuse/dir.c
+> > @@ -183,11 +183,11 @@ static void fuse_lookup_init(struct fuse_conn *fc, struct fuse_args *args,
+> >   	args->out_args[0].value = outarg;
+> >   }
+> > -static int fuse_dentry_revalidate_lookup(struct fuse_mount *fm,
+> > -					 struct dentry *entry,
+> > -					 struct inode *inode,
+> > -					 struct fuse_entry_out *outarg,
+> > -					 bool *lookedup)
+> > +int fuse_dentry_revalidate_lookup(struct fuse_mount *fm,
+> > +				  struct dentry *entry,
+> > +				  struct inode *inode,
+> > +				  struct fuse_entry_out *outarg,
+> > +				  bool *lookedup)
+> >   {
+> >   	struct dentry *parent;
+> >   	struct fuse_forget_link *forget;
+> > diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
+> > index 405252bb51f2..a66fcf50a4cc 100644
+> > --- a/fs/fuse/fuse_i.h
+> > +++ b/fs/fuse/fuse_i.h
+> > @@ -1325,6 +1325,12 @@ void fuse_dax_dontcache(struct inode *inode, unsigned int flags);
+> >   bool fuse_dax_check_alignment(struct fuse_conn *fc, unsigned int map_alignment);
+> >   void fuse_dax_cancel_work(struct fuse_conn *fc);
+> > +/* dir.c */
+> > +int fuse_dentry_revalidate_lookup(struct fuse_mount *fm, struct dentry *entry,
+> > +				  struct inode *inode,
+> > +				  struct fuse_entry_out *outarg,
+> > +				  bool *lookedup);
+> > +
+> >   /* ioctl.c */
+> >   long fuse_file_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
+> >   long fuse_file_compat_ioctl(struct file *file, unsigned int cmd,
+> > diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+> > index 444418e240c8..79a31cb55512 100644
+> > --- a/fs/fuse/inode.c
+> > +++ b/fs/fuse/inode.c
+> > @@ -1464,7 +1464,13 @@ static int fuse_fill_super_submount(struct super_block *sb,
+> >   	struct fuse_mount *fm = get_fuse_mount_super(sb);
+> >   	struct super_block *parent_sb = parent_fi->inode.i_sb;
+> >   	struct fuse_attr root_attr;
+> > +	struct fuse_inode *fi;
+> >   	struct inode *root;
+> > +	struct inode *parent;
+> > +	struct dentry *pdent;
+> > +	struct fuse_entry_out outarg;
+> > +	bool lookedup = false;
+> > +	int ret;
+> >   	fuse_sb_defaults(sb);
+> >   	fm->sb = sb;
+> > @@ -1480,14 +1486,39 @@ static int fuse_fill_super_submount(struct super_block *sb,
+> >   	if (parent_sb->s_subtype && !sb->s_subtype)
+> >   		return -ENOMEM;
+> > -	fuse_fill_attr_from_inode(&root_attr, parent_fi);
+> > -	root = fuse_iget(sb, parent_fi->nodeid, 0, &root_attr, 0, 0);
+> >   	/*
+> > -	 * This inode is just a duplicate, so it is not looked up and
+> > -	 * its nlookup should not be incremented.  fuse_iget() does
+> > -	 * that, though, so undo it here.
+> > +	 * It is necessary to lookup the parent_if->nodeid in case the dentry
+> > +	 * that triggered the automount of the submount is later evicted.
+> > +	 * If this dentry is evicted without the lookup count getting increased
+> > +	 * on the submount root, then the server can subsequently forget this
+> > +	 * nodeid which leads to errors when trying to access the root of the
+> > +	 * submount.
+> >   	 */
+> > -	get_fuse_inode(root)->nlookup--;
+> > +	parent = &parent_fi->inode;
+> > +	pdent = d_find_alias(parent);
+> > +	if (!pdent)
+> > +		return -EINVAL;
+> > +
+> > +	ret = fuse_dentry_revalidate_lookup(fm, pdent, parent, &outarg,
+> > +	    &lookedup);
+> > +	dput(pdent);
+> > +	/*
+> > +	 * The new root owns this nlookup on success, and it is incremented by
+> > +	 * fuse_iget().  In the case the lookup succeeded but revalidate fails,
+> > +	 * ensure that the lookup count is tracked by the parent.
+> > +	 */
+> > +	if (ret <= 0) {
+> > +		if (lookedup) {
+> > +			fi = get_fuse_inode(parent);
+> > +			spin_lock(&fi->lock);
+> > +			fi->nlookup++;
+> > +			spin_unlock(&fi->lock);
+> > +		}
+> 
+> I might be wrong, but doesn't that mean that
+> "get_fuse_inode(root)->nlookup--" needs to be called?
 
-Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
----
- arch/riscv/include/uapi/asm/elf.h |   6 +-
- arch/riscv/kernel/module.c        | 247 ++++++++++++++++++++++++++++++++++----
- 2 files changed, 227 insertions(+), 26 deletions(-)
+In the case where ret > 0, the nlookup on get_fuse_inode(root) is set to
+1 by fuse_iget().  That ensures that the root is forgotten when later
+unmounted.  The code that handles the forget uses the count of nlookup
+to tell the server-side how many references to forget.  (That's in
+fuse_evict_inode()). 
 
-diff --git a/arch/riscv/include/uapi/asm/elf.h b/arch/riscv/include/uapi/asm/elf.h
-index d696d6610231..a9307a1c9ceb 100644
---- a/arch/riscv/include/uapi/asm/elf.h
-+++ b/arch/riscv/include/uapi/asm/elf.h
-@@ -49,6 +49,7 @@ typedef union __riscv_fp_state elf_fpregset_t;
- #define R_RISCV_TLS_DTPREL64	9
- #define R_RISCV_TLS_TPREL32	10
- #define R_RISCV_TLS_TPREL64	11
-+#define R_RISCV_IRELATIVE	58
- 
- /* Relocation types not used by the dynamic linker */
- #define R_RISCV_BRANCH		16
-@@ -81,7 +82,7 @@ typedef union __riscv_fp_state elf_fpregset_t;
- #define R_RISCV_ALIGN		43
- #define R_RISCV_RVC_BRANCH	44
- #define R_RISCV_RVC_JUMP	45
--#define R_RISCV_LUI		46
-+#define R_RISCV_RVC_LUI		46
- #define R_RISCV_GPREL_I		47
- #define R_RISCV_GPREL_S		48
- #define R_RISCV_TPREL_I		49
-@@ -93,6 +94,9 @@ typedef union __riscv_fp_state elf_fpregset_t;
- #define R_RISCV_SET16		55
- #define R_RISCV_SET32		56
- #define R_RISCV_32_PCREL	57
-+#define R_RISCV_PLT32		59
-+#define R_RISCV_SET_ULEB128	60
-+#define R_RISCV_SUB_ULEB128	61
- 
- 
- #endif /* _UAPI_ASM_RISCV_ELF_H */
-diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
-index 7c651d55fcbd..61d5cdbe609d 100644
---- a/arch/riscv/kernel/module.c
-+++ b/arch/riscv/kernel/module.c
-@@ -7,6 +7,7 @@
- #include <linux/elf.h>
- #include <linux/err.h>
- #include <linux/errno.h>
-+#include <linux/kernel.h>
- #include <linux/moduleloader.h>
- #include <linux/vmalloc.h>
- #include <linux/sizes.h>
-@@ -253,6 +254,30 @@ static int apply_r_riscv_call_rela(struct module *me, u32 *location,
- 	return 0;
- }
- 
-+static int apply_r_riscv_rvc_lui_rela(struct module *me, u32 *location,
-+				      Elf_Addr v)
-+{
-+	// Get high 6 bits of 18 bit absolute address
-+	s32 imm = ((s32)v + 0x800) >> 12;
-+
-+	if (v != sign_extend32(v, 6)) {
-+		pr_err("%s: target %016llx can not be addressed by the 6-bit offset from PC = %p\n",
-+		       me->name, (long long)v, location);
-+		return -EINVAL;
-+	}
-+
-+	if (imm == 0) {
-+		// imm = 0 is invalid for c.lui, convert to c.li
-+		*location = (*location & 0x0F83) | 0x4000;
-+	} else {
-+		u16 imm17 = ((((s32)v + 0x800) & 0x20000) >> (17 - 12));
-+		u16 imm16_12 = ((((s32)v + 0x800) & 0x1f000) >> (12 - 2));
-+		*location = (*location & 0xef83) | imm17 | imm16_12;
-+	}
-+
-+	return 0;
-+}
-+
- static int apply_r_riscv_relax_rela(struct module *me, u32 *location,
- 				    Elf_Addr v)
- {
-@@ -268,6 +293,12 @@ static int apply_r_riscv_align_rela(struct module *me, u32 *location,
- 	return -EINVAL;
- }
- 
-+static int apply_r_riscv_add8_rela(struct module *me, u32 *location, Elf_Addr v)
-+{
-+	*(u8 *)location += (u8)v;
-+	return 0;
-+}
-+
- static int apply_r_riscv_add16_rela(struct module *me, u32 *location,
- 				    Elf_Addr v)
- {
-@@ -289,6 +320,12 @@ static int apply_r_riscv_add64_rela(struct module *me, u32 *location,
- 	return 0;
- }
- 
-+static int apply_r_riscv_sub8_rela(struct module *me, u32 *location, Elf_Addr v)
-+{
-+	*(u8 *)location -= (u8)v;
-+	return 0;
-+}
-+
- static int apply_r_riscv_sub16_rela(struct module *me, u32 *location,
- 				    Elf_Addr v)
- {
-@@ -310,31 +347,150 @@ static int apply_r_riscv_sub64_rela(struct module *me, u32 *location,
- 	return 0;
- }
- 
--static int (*reloc_handlers_rela[]) (struct module *me, u32 *location,
--				Elf_Addr v) = {
--	[R_RISCV_32]			= apply_r_riscv_32_rela,
--	[R_RISCV_64]			= apply_r_riscv_64_rela,
--	[R_RISCV_BRANCH]		= apply_r_riscv_branch_rela,
--	[R_RISCV_JAL]			= apply_r_riscv_jal_rela,
--	[R_RISCV_RVC_BRANCH]		= apply_r_riscv_rvc_branch_rela,
--	[R_RISCV_RVC_JUMP]		= apply_r_riscv_rvc_jump_rela,
--	[R_RISCV_PCREL_HI20]		= apply_r_riscv_pcrel_hi20_rela,
--	[R_RISCV_PCREL_LO12_I]		= apply_r_riscv_pcrel_lo12_i_rela,
--	[R_RISCV_PCREL_LO12_S]		= apply_r_riscv_pcrel_lo12_s_rela,
--	[R_RISCV_HI20]			= apply_r_riscv_hi20_rela,
--	[R_RISCV_LO12_I]		= apply_r_riscv_lo12_i_rela,
--	[R_RISCV_LO12_S]		= apply_r_riscv_lo12_s_rela,
--	[R_RISCV_GOT_HI20]		= apply_r_riscv_got_hi20_rela,
--	[R_RISCV_CALL_PLT]		= apply_r_riscv_call_plt_rela,
--	[R_RISCV_CALL]			= apply_r_riscv_call_rela,
--	[R_RISCV_RELAX]			= apply_r_riscv_relax_rela,
--	[R_RISCV_ALIGN]			= apply_r_riscv_align_rela,
--	[R_RISCV_ADD16]			= apply_r_riscv_add16_rela,
--	[R_RISCV_ADD32]			= apply_r_riscv_add32_rela,
--	[R_RISCV_ADD64]			= apply_r_riscv_add64_rela,
--	[R_RISCV_SUB16]			= apply_r_riscv_sub16_rela,
--	[R_RISCV_SUB32]			= apply_r_riscv_sub32_rela,
--	[R_RISCV_SUB64]			= apply_r_riscv_sub64_rela,
-+static int dynamic_linking_not_supported(struct module *me, u32 *location,
-+					 Elf_Addr v)
-+{
-+	pr_err("%s: Dynamic linking not supported in kernel modules PC = %p\n",
-+	       me->name, location);
-+	return -EINVAL;
-+}
-+
-+static int tls_not_supported(struct module *me, u32 *location, Elf_Addr v)
-+{
-+	pr_err("%s: Thread local storage not supported in kernel modules PC = %p\n",
-+	       me->name, location);
-+	return -EINVAL;
-+}
-+
-+static int apply_r_riscv_sub6_rela(struct module *me, u32 *location, Elf_Addr v)
-+{
-+	*(u8 *)location -= (u8)v & 0x3F;
-+	return 0;
-+}
-+
-+static int apply_r_riscv_set6_rela(struct module *me, u32 *location, Elf_Addr v)
-+{
-+	*(u8 *)location = (*(u8 *)location & 0xc0) | ((u8)v & 0x3F);
-+	return 0;
-+}
-+
-+static int apply_r_riscv_set8_rela(struct module *me, u32 *location, Elf_Addr v)
-+{
-+	*(u8 *)location = (u8)v;
-+	return 0;
-+}
-+
-+static int apply_r_riscv_set16_rela(struct module *me, u32 *location,
-+				    Elf_Addr v)
-+{
-+	*(u16 *)location = (u16)v;
-+	return 0;
-+}
-+
-+static int apply_r_riscv_set32_rela(struct module *me, u32 *location,
-+				    Elf_Addr v)
-+{
-+	*(u32 *)location = (u32)v;
-+	return 0;
-+}
-+
-+static int apply_r_riscv_32_pcrel_rela(struct module *me, u32 *location,
-+				       Elf_Addr v)
-+{
-+	*(u32 *)location = (u32)v;
-+	return 0;
-+}
-+
-+static int apply_r_riscv_plt32_rela(struct module *me, u32 *location,
-+				    Elf_Addr v)
-+{
-+	*(u32 *)location = (u32)v;
-+	return 0;
-+}
-+
-+static int apply_r_riscv_set_uleb128(struct module *me, u32 *location, Elf_Addr v)
-+{
-+	/*
-+	 * Relocation is only performed if R_RISCV_SET_ULEB128 is followed by
-+	 * R_RISCV_SUB_ULEB128 so do computation there
-+	 */
-+	return 0;
-+}
-+
-+static int apply_r_riscv_sub_uleb128(struct module *me, u32 *location, Elf_Addr v)
-+{
-+	if (v >= 128) {
-+		pr_err("%s: uleb128 must be in [0, 127] (not %ld) at PC = %p\n",
-+		       me->name, (unsigned long)v, location);
-+		return -EINVAL;
-+	}
-+
-+	*location = v;
-+	return 0;
-+}
-+
-+/*
-+ * Relocations defined in the riscv-elf-psabi-doc.
-+ * This handles static linking only.
-+ */
-+static int (*reloc_handlers_rela[])(struct module *me, u32 *location,
-+				    Elf_Addr v) = {
-+	[R_RISCV_32] =			apply_r_riscv_32_rela,
-+	[R_RISCV_64] =			apply_r_riscv_64_rela,
-+	[R_RISCV_RELATIVE] =		dynamic_linking_not_supported,
-+	[R_RISCV_COPY] =		dynamic_linking_not_supported,
-+	[R_RISCV_JUMP_SLOT] =		dynamic_linking_not_supported,
-+	[R_RISCV_TLS_DTPMOD32] =	dynamic_linking_not_supported,
-+	[R_RISCV_TLS_DTPMOD64] =	dynamic_linking_not_supported,
-+	[R_RISCV_TLS_DTPREL32] =	dynamic_linking_not_supported,
-+	[R_RISCV_TLS_DTPREL64] =	dynamic_linking_not_supported,
-+	[R_RISCV_TLS_TPREL32] =		dynamic_linking_not_supported,
-+	[R_RISCV_TLS_TPREL64] =		dynamic_linking_not_supported,
-+	/* 12-15 undefined */
-+	[R_RISCV_BRANCH] =		apply_r_riscv_branch_rela,
-+	[R_RISCV_JAL] =			apply_r_riscv_jal_rela,
-+	[R_RISCV_CALL] =		apply_r_riscv_call_rela,
-+	[R_RISCV_CALL_PLT] =		apply_r_riscv_call_plt_rela,
-+	[R_RISCV_GOT_HI20] =		apply_r_riscv_got_hi20_rela,
-+	[R_RISCV_TLS_GOT_HI20] =	tls_not_supported,
-+	[R_RISCV_TLS_GD_HI20] =		tls_not_supported,
-+	[R_RISCV_PCREL_HI20] =		apply_r_riscv_pcrel_hi20_rela,
-+	[R_RISCV_PCREL_LO12_I] =	apply_r_riscv_pcrel_lo12_i_rela,
-+	[R_RISCV_PCREL_LO12_S] =	apply_r_riscv_pcrel_lo12_s_rela,
-+	[R_RISCV_HI20] =		apply_r_riscv_hi20_rela,
-+	[R_RISCV_LO12_I] =		apply_r_riscv_lo12_i_rela,
-+	[R_RISCV_LO12_S] =		apply_r_riscv_lo12_s_rela,
-+	[R_RISCV_TPREL_HI20] =		tls_not_supported,
-+	[R_RISCV_TPREL_LO12_I] =	tls_not_supported,
-+	[R_RISCV_TPREL_LO12_S] =	tls_not_supported,
-+	[R_RISCV_TPREL_ADD] =		tls_not_supported,
-+	[R_RISCV_ADD8] =		apply_r_riscv_add8_rela,
-+	[R_RISCV_ADD16] =		apply_r_riscv_add16_rela,
-+	[R_RISCV_ADD32] =		apply_r_riscv_add32_rela,
-+	[R_RISCV_ADD64] =		apply_r_riscv_add64_rela,
-+	[R_RISCV_SUB8] =		apply_r_riscv_sub8_rela,
-+	[R_RISCV_SUB16] =		apply_r_riscv_sub16_rela,
-+	[R_RISCV_SUB32] =		apply_r_riscv_sub32_rela,
-+	[R_RISCV_SUB64] =		apply_r_riscv_sub64_rela,
-+	/* 41-42 reserved for future standard use */
-+	[R_RISCV_ALIGN] =		apply_r_riscv_align_rela,
-+	[R_RISCV_RVC_BRANCH] =		apply_r_riscv_rvc_branch_rela,
-+	[R_RISCV_RVC_JUMP] =		apply_r_riscv_rvc_jump_rela,
-+	[R_RISCV_RVC_LUI] =		apply_r_riscv_rvc_lui_rela,
-+	/* 47-50 reserved for future standard use */
-+	[R_RISCV_RELAX] =		apply_r_riscv_relax_rela,
-+	[R_RISCV_SUB6] =		apply_r_riscv_sub6_rela,
-+	[R_RISCV_SET6] =		apply_r_riscv_set6_rela,
-+	[R_RISCV_SET8] =		apply_r_riscv_set8_rela,
-+	[R_RISCV_SET16] =		apply_r_riscv_set16_rela,
-+	[R_RISCV_SET32] =		apply_r_riscv_set32_rela,
-+	[R_RISCV_32_PCREL] =		apply_r_riscv_32_pcrel_rela,
-+	[R_RISCV_IRELATIVE] =		dynamic_linking_not_supported,
-+	[R_RISCV_PLT32] =		apply_r_riscv_plt32_rela,
-+	[R_RISCV_SET_ULEB128] =		apply_r_riscv_set_uleb128,
-+	[R_RISCV_SUB_ULEB128] =		apply_r_riscv_sub_uleb128,
-+	/* 62-191 reserved for future standard use */
-+	/* 192-255 nonstandard ABI extensions  */
- };
- 
- int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
-@@ -425,6 +581,47 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
- 				  me->name);
- 				return -EINVAL;
- 			}
-+		} else if (type == R_RISCV_SUB_ULEB128) {
-+			unsigned long set_loc;
-+			u32 set_type;
-+			unsigned long set_sym_val;
-+
-+			bool has_corresponding_relocation = false;
-+
-+			/* R_RISCV_SET_ULEB128 must appear before the SUB  */
-+			for (unsigned int j = i; j >= 0; j--) {
-+				set_loc = sechdrs[sechdrs[relsec].sh_info]
-+						  .sh_addr +
-+					  rel[j].r_offset;
-+				set_type = ELF_RISCV_R_TYPE(rel[j].r_info);
-+
-+				/*
-+				 * Find the SET relocation that is targeting the
-+				 * same position as the SUB
-+				 */
-+				if (set_type == R_RISCV_SET_ULEB128 &&
-+				    set_loc == (unsigned long)location) {
-+					Elf_Sym *corresponding_sym =
-+						(Elf_Sym *)sechdrs[symindex]
-+							.sh_addr +
-+						ELF_RISCV_R_SYM(rel[j].r_info);
-+
-+					set_sym_val =
-+						corresponding_sym->st_value +
-+						rel[j].r_addend;
-+					has_corresponding_relocation = true;
-+					break;
-+				}
-+			}
-+
-+			if (has_corresponding_relocation) {
-+				/* Calculate set and subtraction */
-+				v = set_sym_val - v;
-+			} else {
-+				pr_err("%s: R_RISCV_SUB_ULEB128 must always be paired with a R_RISCV_SET_ULEB128 that comes before it. PC = %p\n",
-+				       me->name, location);
-+				return -EINVAL;
-+			}
- 		}
- 
- 		res = handler(me, location, v);
+However, if the fuse_dentry_revalidate_lookup() call performs a valid
+lookup but returns an error, this function will return before it fills
+out s_root in the superblock or calls fuse_iget().  If the superblock
+doesn't have a s_root set, then the code in generic_kill_super() won't
+dput() the root dentry and trigger the forget.
 
--- 
-2.34.1
+The intention of this code was to handle the case where the lookup had
+succeeded, but the code determined it was still necessary to return an
+error.  In that situation, the reference taken by the lookup has to be
+accounted somewhere, and the parent seemed like a plausible candidate.
 
+However, after writing up this response, I can see that there's still a
+problem here if d_make_root(root) returns NULL, because we'll also lose
+track of the nlookup in that case.
+
+If you agree that charging this to the parent on error makes sense, I'll
+re-work the error handling here so that the right thing happens when
+either fuse_dentry_revalidate_lookup() or d_make_root() encounter an
+error.
+
+Thanks for the feedback.
+
+-K
