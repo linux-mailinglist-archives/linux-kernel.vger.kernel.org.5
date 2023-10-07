@@ -2,45 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00CA97BC521
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 08:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C32D7BC528
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 08:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343600AbjJGGoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 02:44:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52340 "EHLO
+        id S1343602AbjJGGug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 02:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343586AbjJGGom (ORCPT
+        with ESMTP id S1343577AbjJGGuf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 02:44:42 -0400
-Received: from muru.com (muru.com [72.249.23.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 42903D6;
-        Fri,  6 Oct 2023 23:44:41 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id AD8CC80E0;
-        Sat,  7 Oct 2023 06:44:40 +0000 (UTC)
-Date:   Sat, 7 Oct 2023 09:44:39 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Andreas Kemnade <andreas@kemnade.info>, bcousson@baylibre.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-omap@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: omap3-gta04: Drop superfluous omap36xx
- compatible
-Message-ID: <20231007064439.GN34982@atomide.com>
-References: <20231004065323.2408615-1-andreas@kemnade.info>
- <12323F42-3611-4685-8981-F6A18C4A5862@goldelico.com>
- <20231004130353.01228376@aktux>
- <FF3A3F35-E264-4D28-AFAC-EFA2ADB69F40@goldelico.com>
- <20231004135449.591b3f6c@aktux>
- <42806B60-E48B-4AA9-B375-E9F65F59AB87@goldelico.com>
- <6B245439-F9FE-4931-A0DE-81F825BB5FE5@goldelico.com>
+        Sat, 7 Oct 2023 02:50:35 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 18031B9;
+        Fri,  6 Oct 2023 23:50:33 -0700 (PDT)
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 3976oP6p021273;
+        Sat, 7 Oct 2023 08:50:25 +0200
+Date:   Sat, 7 Oct 2023 08:50:25 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc:     Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC] tools/nolibc: add support for constructors and
+ destructors
+Message-ID: <20231007065025.GZ20998@1wt.eu>
+References: <20231005-nolibc-constructors-v1-1-776d56bbe917@weissschuh.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <6B245439-F9FE-4931-A0DE-81F825BB5FE5@goldelico.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231005-nolibc-constructors-v1-1-776d56bbe917@weissschuh.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,20 +42,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* H. Nikolaus Schaller <hns@goldelico.com> [231004 12:50]:
-> What about the PVR/SGX driver. This needs a compatible that can distinguish
-> between the DM3725 and DM3730. The first is w/o SGX and the second one
-> with. Having all summarized as omap3630 does not allow to load the
-> PVR/SGX driver based on the board specific compatible entry.
+Hi Thomas,
+
+On Thu, Oct 05, 2023 at 06:45:07PM +0200, Thomas Weiﬂschuh wrote:
+> With the startup code moved to C, implementing support for
+> constructors and deconstructors is fairly easy to implement.
 > 
-> AFAIR this was the original idea behind 
+> Examples for code size impact:
 > 
-> 	compatible = "goldelico,gta04", "ti,omap3630", "ti,omap36xx", "ti,omap3"; 
+>    text	   data	    bss	    dec	    hex	filename
+>   21837	    104	     88	  22029	   560d	nolibc-test.before
+>   22135	    120	     88	  22343	   5747	nolibc-test.after
+>   21970	    104	     88	  22162	   5692 nolibc-test.after-only-crt.h-changes
+> 
+> The sections are defined by [0].
+> 
+> [0] https://refspecs.linuxfoundation.org/elf/gabi4+/ch5.dynamic.html
+> 
+> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
+> ---
+> Note:
+> 
+> This is only an RFC as I'm not 100% sure it belong into nolibc.
+> But at least the code is visible as an example.
 
-I think we already handle this, see drivers/bus/ti-sysc.c and search for
-DIS_SGX and similar flags for other accelerators. So I think this patch is
-safe to apply?
+That's interesting, thanks for working on this! I thought about it in
+the past but didn't see how to address it. I do think some users might
+find it convenient with modular code that will require less ifdefs.
+That may be particularly true with test programs that want to register
+some test series for example. The code looks clean to me, and I suppose
+you've tested it on multiple archs. However I'm having a comment below:
+(...)
 
-Regards,
+>  #endif /* _NOLIBC_CRT_H */
+> diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
+> index a3ee4496bf0a..f166b425613a 100644
+> --- a/tools/testing/selftests/nolibc/nolibc-test.c
+> +++ b/tools/testing/selftests/nolibc/nolibc-test.c
+> @@ -57,6 +57,9 @@ static int test_argc;
+>  /* will be used by some test cases as readable file, please don't write it */
+>  static const char *argv0;
+>  
+> +/* will be used by constructor tests */
+> +static int constructor_test_value;
+> +
+>  /* definition of a series of tests */
+>  struct test {
+>  	const char *name;              /* test name */
+> @@ -594,6 +597,18 @@ int expect_strne(const char *expr, int llen, const char *cmp)
+>  #define CASE_TEST(name) \
+>  	case __LINE__: llen += printf("%d %s", test, #name);
+>  
+> +__attribute__((constructor))
+> +static void constructor1(void)
+> +{
+> +	constructor_test_value = 1;
+> +}
+> +
+> +__attribute__((constructor))
+> +static void constructor2(void)
+> +{
+> +	constructor_test_value *= 2;
+> +}
+> +
 
-Tony
+In the past I learned the hard way that you can never trust the execution
+order of constructors, so if you're unlucky above you could very well end
+up with 1 and that would be correct. I suggest that instead you do something
+such as:
+
+      constructor_test_value += 1;
+...
+      constructor_test_value += 2;
+
+and check for value 3 in the test to make sure they were both executed
+exactly once each.
+
+Thanks!
+Willy
