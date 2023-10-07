@@ -2,182 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FFD27BC8F2
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 17:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93C4C7BC8F7
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 17:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344033AbjJGP5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 11:57:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35050 "EHLO
+        id S1344110AbjJGP6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 11:58:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343997AbjJGP5g (ORCPT
+        with ESMTP id S1344103AbjJGP6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 11:57:36 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B92E7BA
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 08:57:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48388C433C7;
-        Sat,  7 Oct 2023 15:57:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696694254;
-        bh=FdT0hRiVUetymc4htP5coHs/oBEZ3Uyq+kymb8Y2DpQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nBd1o104P6neQxI5O+GltjAU3rrUklfWY8d2142pc/H7mAqrbdQu02oK2QjMNS/M7
-         YiGP5Ro+vzKL8/E3g2d1Ctkd6QpA6WdK+uQOGn9/1JANxW8aAJZ3XULf0TmSoPAaXG
-         r6SMq0pwVsOW/R2cr/mKSVu5UIh/ff5OzwDtbq8TbXgiwKvpUmB4zkwCkvziWzy6sp
-         HalIoKSTqTDanMYRlnx465Cb9/xomChLFzTnAO5n2TE0CS3ukSsDcrr2FcEtoW2bRu
-         BdNAnqdw6H7/YBba6/p4azRz70rNmkWITuxORN795qPnDm0OybnccFMMD+tu5NRePF
-         cC6dZnQa5Fnbw==
-Date:   Sat, 7 Oct 2023 17:57:30 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     =?utf-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Michal Kubecek <mkubecek@suse.cz>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        thomas.petazzoni@bootlin.com, Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net v2 1/1] ethtool: Fix mod state of verbose no_mask
- bitset
-Message-ID: <20231007155730.GF831234@kernel.org>
-References: <20231006141246.3747944-1-kory.maincent@bootlin.com>
+        Sat, 7 Oct 2023 11:58:51 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 940B9BA;
+        Sat,  7 Oct 2023 08:58:49 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-323ef9a8b59so2993347f8f.3;
+        Sat, 07 Oct 2023 08:58:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696694328; x=1697299128; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=QqEN0Z4sFsNAs75sSbd741FXKiHxVIQSvrwRy+HtBEY=;
+        b=XcM6WLAbxgUhEftkUXXO5x9WKlT65CEIEhGBOec38u9nsGraXl4MjIm2rqHarl7dT5
+         KmY8HR4EsQcXjdWDCpGwAixXplIIFlB2hHPQGoWM7ZgGzQ/B+anHd4HLHIcrwHH/EvX3
+         a6ds1L48Zen9ytZs8faOjd/YYdWxBRo6Z/M9hDndj9igjhvuDwK66EtextASAc9BIa/1
+         KdT8Xcvuzl1CORYXS5zmcelfbSt/izD8f0ENmbpdrD0i8Lou0Je3mwKrEtQY0Bo3tcpu
+         Edo3djkj78ijU0Wws9FeN4TRkC+l9nRrMAuQd62WTRPqI+F9cQLp7Xq3FNBN0IoP6Q+q
+         7IfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696694328; x=1697299128;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QqEN0Z4sFsNAs75sSbd741FXKiHxVIQSvrwRy+HtBEY=;
+        b=qfHyNE3RGcjVfhFiiS+sG4YHcGjKD++iVFc2NdxBKV5Dr0oPg4StdG9eWsJQGyrjau
+         PwxS+6OP3ZuqEup00W7tWAwlZa8pfrdg/bCDyGxUJm3S/MHf1lKQEhg2xt0yEgYm4Kmr
+         iDTnjzigh2dw0yZd2984xILr1d3FTx2waexZRIzilobxQ1qGjowZA2jYAGh7C1v/ce37
+         cMHKsZx7z2jhWvVAxBIKTTb0Yaylp1ppiFT6N7Rw3IYd3vTVptjQcNF6nZNyD6FpW44b
+         vd1BukSmJBtuFlFP1SJvLSucflXpuaXZLo8uEEa3hhsP3KtapQ+byTKnHTZOCHps0oYI
+         KWAQ==
+X-Gm-Message-State: AOJu0YycDQYUk47QMuhP0hqhRD+7QYCozjVqJMuTbTtnEMftRs2nLeOy
+        a/RrhDXPejJdkTWH7swWek+Lx4XLNrq8prrROt8=
+X-Google-Smtp-Source: AGHT+IEHLl8aq/s7V6Mwt8/mGLMaX7dCJA80WXQJs1/MhGZyKdeRaRJIasSfDrLB+1/d+ThCfu/HG8W4pp9l4Lahang=
+X-Received: by 2002:a05:6000:109:b0:320:9e2:b3a2 with SMTP id
+ o9-20020a056000010900b0032009e2b3a2mr10138068wrx.33.1696694327693; Sat, 07
+ Oct 2023 08:58:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231006141246.3747944-1-kory.maincent@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231005074858.65082-1-dg573847474@gmail.com> <20231006162835.79484017@kernel.org>
+In-Reply-To: <20231006162835.79484017@kernel.org>
+From:   Chengfeng Ye <dg573847474@gmail.com>
+Date:   Sat, 7 Oct 2023 23:58:36 +0800
+Message-ID: <CAAo+4rUE=+9Kp8CvMH3w15dJotkX03h=5YMV+hu-YSobkwj1NA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] atm: solos-pci: Fix potential deadlock on &cli_queue_lock
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     3chas3@gmail.com, davem@davemloft.net, horms@kernel.org,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 04:12:46PM +0200, Köry Maincent wrote:
-> From: Kory Maincent <kory.maincent@bootlin.com>
-> 
-> A bitset without mask in a _SET request means we want exactly the bits in
-> the bitset to be set. This works correctly for compact format but when
-> verbose format is parsed, ethnl_update_bitset32_verbose() only sets the
-> bits present in the request bitset but does not clear the rest. The commit
-> 6699170376ab fixes this issue by clearing the whole target bitmap before we
-> start iterating. The solution proposed brought an issue with the behavior
-> of the mod variable. As the bitset is always cleared the old val will
-> always differ to the new val.
-> 
-> Fix it by adding a new temporary variable which save the state of the old
-> bitmap.
-> 
-> Fixes: 6699170376ab ("ethtool: fix application of verbose no_mask bitset")
-> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
-> ---
-> 
-> Changes in v2:
-> - Fix the allocated size.
-> ---
->  net/ethtool/bitset.c | 31 +++++++++++++++++++++++++------
->  1 file changed, 25 insertions(+), 6 deletions(-)
-> 
-> diff --git a/net/ethtool/bitset.c b/net/ethtool/bitset.c
-> index 0515d6604b3b..8a6b35c920cd 100644
-> --- a/net/ethtool/bitset.c
-> +++ b/net/ethtool/bitset.c
-> @@ -432,7 +432,9 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int nbits,
->  			      struct netlink_ext_ack *extack, bool *mod)
->  {
->  	struct nlattr *bit_attr;
-> +	u32 *tmp = NULL;
->  	bool no_mask;
-> +	bool dummy;
->  	int rem;
->  	int ret;
->  
-> @@ -448,8 +450,16 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int nbits,
->  	}
->  
->  	no_mask = tb[ETHTOOL_A_BITSET_NOMASK];
-> -	if (no_mask)
-> -		ethnl_bitmap32_clear(bitmap, 0, nbits, mod);
-> +	if (no_mask) {
-> +		unsigned int nwords = DIV_ROUND_UP(nbits, 32);
-> +		unsigned int nbytes = nwords * sizeof(u32);
+Hi Jakub,
 
-Hi Köry,
+> and irqsave here. I think you're right that it's just softirq (== bh)
+> that may deadlock, so no need to take the irqsave() version in process
+> context.
 
-Thanks for addressing my concerns regarding the size calculations in v1.
+Yes, spin_lock_bh() is enough.
 
-I think that a comment is warranted describing the fact that only the map,
-and not the mask part, is taken into account in the size calculations
-above.
+I just found spin_lock_irqsave() is more frequently used in this file, so I
+also used spin_lock_irqsave() here for uniformity consideration at that time.
 
-> +
-> +		tmp = kcalloc(nwords, sizeof(u32), GFP_KERNEL);
-> +		if (!tmp)
-> +			return -ENOMEM;
-> +		memcpy(tmp, bitmap, nbytes);
-> +		ethnl_bitmap32_clear(bitmap, 0, nbits, &dummy);
-> +	}
+Should I send a new patch series to change this to spin_lock_bh()? That's
+better for performance consideration.
 
-Perhaps we could consider something line the following.
-Which would avoid the need for the n_mask condition
-in the nla_for_each_nested() loop further below.
-
-		...
-
-                saved_bitmap = kcalloc(nwords, sizeof(u32), GFP_KERNEL);
-                if (!saved_bitmap)
-                        return -ENOMEM;
-                memcpy(saved_bitmap, bitmap, nbytes);
-                ethnl_bitmap32_clear(bitmap, 0, nbits, &dummy);
-
-                orig_bitmap = saved_bitmap;
-        } else {
-                orig_bitmap = bitmap;
-        }
-
-(Choosing names for variables seems hard today.)
-
->  
->  	nla_for_each_nested(bit_attr, tb[ETHTOOL_A_BITSET_BITS], rem) {
->  		bool old_val, new_val;
-> @@ -458,13 +468,19 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int nbits,
->  		if (nla_type(bit_attr) != ETHTOOL_A_BITSET_BITS_BIT) {
->  			NL_SET_ERR_MSG_ATTR(extack, bit_attr,
->  					    "only ETHTOOL_A_BITSET_BITS_BIT allowed in ETHTOOL_A_BITSET_BITS");
-> -			return -EINVAL;
-> +			ret = -EINVAL;
-> +			goto out;
->  		}
->  		ret = ethnl_parse_bit(&idx, &new_val, nbits, bit_attr, no_mask,
->  				      names, extack);
->  		if (ret < 0)
-> -			return ret;
-> -		old_val = bitmap[idx / 32] & ((u32)1 << (idx % 32));
-> +			goto out;
-> +
-> +		if (no_mask)
-> +			old_val = tmp[idx / 32] & ((u32)1 << (idx % 32));
-> +		else
-> +			old_val = bitmap[idx / 32] & ((u32)1 << (idx % 32));
-> +
->  		if (new_val != old_val) {
->  			if (new_val)
->  				bitmap[idx / 32] |= ((u32)1 << (idx % 32));
-> @@ -474,7 +490,10 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int nbits,
->  		}
->  	}
->  
-> -	return 0;
-> +	ret = 0;
-> +out:
-> +	kfree(tmp);
-> +	return ret;
->  }
->  
->  static int ethnl_compact_sanity_checks(unsigned int nbits,
-> -- 
-> 2.25.1
-> 
+Thanks,
+Chengfeng
