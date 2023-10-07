@@ -2,51 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B237BC6DF
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 12:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1997BC6E2
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 12:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343831AbjJGKlt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 7 Oct 2023 06:41:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39148 "EHLO
+        id S1343838AbjJGKnY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 7 Oct 2023 06:43:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343824AbjJGKlq (ORCPT
+        with ESMTP id S1343817AbjJGKnW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 06:41:46 -0400
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F15193;
-        Sat,  7 Oct 2023 03:41:45 -0700 (PDT)
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3af59a017a5so520448b6e.1;
-        Sat, 07 Oct 2023 03:41:45 -0700 (PDT)
+        Sat, 7 Oct 2023 06:43:22 -0400
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C98F692;
+        Sat,  7 Oct 2023 03:43:19 -0700 (PDT)
+Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3ae473c0bd6so519193b6e.0;
+        Sat, 07 Oct 2023 03:43:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696675304; x=1697280104;
+        d=1e100.net; s=20230601; t=1696675399; x=1697280199;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yTW/418JZkwu1M4Lrtu4B4aaWXqu9uvEkO2zcTVWixQ=;
-        b=QDGBZ65rhJHQocgEQp1TDLkgJ/bBPXLYLeOtSpzuuSZ8u6n1PaW8L/uxf6D74clgNX
-         mmlpnku7HQkKTWNWhc0wg0NnsADsoQwkAZ/ysTG2AV/rRrAvBTnSS6oHBA1M6jH1nULD
-         GMu6oQiekBFnGgnmHb7nXiE3btC5JYoFuNV23YZI0BkUSHGUW/BCAu10B1crKynozR9x
-         hW2+OMJu2uVJM6QMBCSaMMLMgZkP4OXyuGTLe5+TU/1w/P0Kr1wD9FrpVlbjbpdoYgEV
-         zveZYuD08axZfBgnIVEvO0bSjGGjqPCZlKG/IsFFbRhpAc9WycKr62ohFbqS7rWRVBse
-         k0mQ==
-X-Gm-Message-State: AOJu0YxCTwj8KbBmTp+dHKxei794qBcHPbXAH936bt/9fzFBw5HpagUP
-        B/RQAePacnPddvd0VGKml2nCMoEMMdBiNXYlHxM=
-X-Google-Smtp-Source: AGHT+IElnJy2W5QsXitT56398qgWSwz4X/Hh6r4lGHpWl5jLtHpoo5Mgk4b1e57UGg9q95IQOyrUu8EPj/9KcGfgC3M=
-X-Received: by 2002:a05:6808:21a6:b0:3ad:ae0d:f845 with SMTP id
- be38-20020a05680821a600b003adae0df845mr13923287oib.5.1696675304578; Sat, 07
- Oct 2023 03:41:44 -0700 (PDT)
+        bh=KI+7EOVOyPWCiOOc7dvfxOKmEPx6gMqHAT3wBewOPrU=;
+        b=CZI338f1HDEFFafiz5qjR7BeSR4m8uJbnPShA1LRCIV+shGic6t/7bnrtlDwFHdySj
+         4FRmmgzrdc446sSqukw9sx+veRLQBWm5urJqxHnLtKbSWf36ONTdz+G2Xi/CpoH6VY4q
+         9XxdHtlYk413j0nt2qDW/KJvnN+8cE8fYCy+l5kHEEbL3Ny4PMWHTeaGbGQQOyXlApFc
+         mEni6B/homN7wNmp6dVrxUwfO5PcXeeXEBtKaMfzHP5RPXm+01cHxCbXNAGgwosvftws
+         U9YwGliseTm39ee2kxT9Di8D+ClssgfbPpryOh928ryCHgZsiwIBJICvuPP97oEjRimG
+         lT9Q==
+X-Gm-Message-State: AOJu0YxLnVunWOj3tCZNSSG0jILOgD+SY8yEgNCUpzLRZpRNwXT65nfN
+        P8ND1GcceF9djWRkPhMU/sMx4oWsYJxiEWYlsGM=
+X-Google-Smtp-Source: AGHT+IF4LTmFQxadykDborHwetJ8pqWYYn9LbUePEy92IubMBSP9Q7MycDhRevGCicsDfB5lyYt5dAsDZjloWlQ3uz0=
+X-Received: by 2002:a05:6820:390:b0:57c:6e35:251e with SMTP id
+ r16-20020a056820039000b0057c6e35251emr10038284ooj.1.1696675399094; Sat, 07
+ Oct 2023 03:43:19 -0700 (PDT)
 MIME-Version: 1.0
 References: <20231006173055.2938160-1-michal.wilczynski@intel.com>
  <20231006173055.2938160-4-michal.wilczynski@intel.com> <CAJZ5v0jKJ6iw6Q=uYTf0at+ESkdCF0oWaXRmj7P5VLw+QppKPw@mail.gmail.com>
- <ZSEPGmCyhgSlMGRK@smile.fi.intel.com>
-In-Reply-To: <ZSEPGmCyhgSlMGRK@smile.fi.intel.com>
+ <ZSEPGmCyhgSlMGRK@smile.fi.intel.com> <CAJZ5v0gF0O_d1rjOtiNj5ryXv-PURv0NgiRWyQECZZFcaBEsPQ@mail.gmail.com>
+In-Reply-To: <CAJZ5v0gF0O_d1rjOtiNj5ryXv-PURv0NgiRWyQECZZFcaBEsPQ@mail.gmail.com>
 From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Sat, 7 Oct 2023 12:41:33 +0200
-Message-ID: <CAJZ5v0gF0O_d1rjOtiNj5ryXv-PURv0NgiRWyQECZZFcaBEsPQ@mail.gmail.com>
+Date:   Sat, 7 Oct 2023 12:43:08 +0200
+Message-ID: <CAJZ5v0iDhOFDX=k7xsC_=2jjerWmrP+Na-9PFM=YGA0V-hH2xw@mail.gmail.com>
 Subject: Re: [PATCH v2 3/6] ACPI: AC: Replace acpi_driver with platform_driver
 To:     Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Michal Wilczynski <michal.wilczynski@intel.com>,
+Cc:     Michal Wilczynski <michal.wilczynski@intel.com>,
         linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
         nvdimm@lists.linux.dev, rafael.j.wysocki@intel.com,
         lenb@kernel.org, dan.j.williams@intel.com,
@@ -63,39 +62,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 7, 2023 at 9:56 AM Andy Shevchenko
-<andriy.shevchenko@intel.com> wrote:
+On Sat, Oct 7, 2023 at 12:41 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
 >
-> On Fri, Oct 06, 2023 at 09:47:57PM +0200, Rafael J. Wysocki wrote:
-> > On Fri, Oct 6, 2023 at 8:33 PM Michal Wilczynski
-> > <michal.wilczynski@intel.com> wrote:
->
-> ...
->
-> > >  struct acpi_ac {
-> > >         struct power_supply *charger;
-> > >         struct power_supply_desc charger_desc;
-> > > -       struct acpi_device *device;
-> > > +       struct device *dev;
+> On Sat, Oct 7, 2023 at 9:56 AM Andy Shevchenko
+> <andriy.shevchenko@intel.com> wrote:
 > >
-> > I'm not convinced about this change.
+> > On Fri, Oct 06, 2023 at 09:47:57PM +0200, Rafael J. Wysocki wrote:
+> > > On Fri, Oct 6, 2023 at 8:33 PM Michal Wilczynski
+> > > <michal.wilczynski@intel.com> wrote:
 > >
-> > If I'm not mistaken, you only use the dev pointer above to get the
-> > ACPI_COMPANION() of it, but the latter is already found in _probe(),
-> > so it can be stored in struct acpi_ac for later use and then the dev
-> > pointer in there will not be necessary any more.
+> > ...
 > >
-> > That will save you a bunch of ACPI_HANDLE() evaluations and there's
-> > nothing wrong with using ac->device->handle.  The patch will then
-> > become almost trivial AFAICS and if you really need to get from ac to
-> > the underlying platform device, a pointer to it can be added to struct
-> > acpi_ac without removing the ACPI device pointer from it.
+> > > >  struct acpi_ac {
+> > > >         struct power_supply *charger;
+> > > >         struct power_supply_desc charger_desc;
+> > > > -       struct acpi_device *device;
+> > > > +       struct device *dev;
+> > >
+> > > I'm not convinced about this change.
+> > >
+> > > If I'm not mistaken, you only use the dev pointer above to get the
+> > > ACPI_COMPANION() of it, but the latter is already found in _probe(),
+> > > so it can be stored in struct acpi_ac for later use and then the dev
+> > > pointer in there will not be necessary any more.
+> > >
+> > > That will save you a bunch of ACPI_HANDLE() evaluations and there's
+> > > nothing wrong with using ac->device->handle.  The patch will then
+> > > become almost trivial AFAICS and if you really need to get from ac to
+> > > the underlying platform device, a pointer to it can be added to struct
+> > > acpi_ac without removing the ACPI device pointer from it.
+> >
+> > The idea behind is to eliminate data duplication.
 >
-> The idea behind is to eliminate data duplication.
+> What data duplication exactly do you mean?
+>
+> struct acpi_device *device is replaced with struct device *dev which
+> is the same size.  The latter is then used to obtain a struct
+> acpi_device pointer.  Why is it better to do this than to store the
+> struct acpi_device itself?
 
-What data duplication exactly do you mean?
-
-struct acpi_device *device is replaced with struct device *dev which
-is the same size.  The latter is then used to obtain a struct
-acpi_device pointer.  Why is it better to do this than to store the
-struct acpi_device itself?
+This should be "store the struct acpi_device pointer itself", sorry.
