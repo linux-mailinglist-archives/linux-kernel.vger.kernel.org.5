@@ -2,48 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E3B37BC512
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 08:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 126DC7BC518
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 08:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343595AbjJGGiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 02:38:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36386 "EHLO
+        id S1343594AbjJGGkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 02:40:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343561AbjJGGiA (ORCPT
+        with ESMTP id S1343561AbjJGGkk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 02:38:00 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8FD0DB
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 23:37:58 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B88BC433C8;
-        Sat,  7 Oct 2023 06:37:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696660678;
-        bh=haeoZMfXVfuibJKXHZqwDbIGTXzIAr3k6IkAQRF6pGU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=LYKw1oSSSpwkcD4fhCwHni6Ndss572NgxpTqVxC5jgsE7TlYs5RlDFU+9avG9S2cA
-         noeCbcswqAJHHYBGO3AUMG6Vg3UPpv/ijWYL2J27VBFkbzJ5bDLlppgNxPt6b8GiBi
-         ubhgW9omtxuu5SqZuooU1fBG2xlRQTrWxP5Pgtqh8TtwJu6gmCD4gBhvHclhGPva5o
-         +CA8Q8KNQOt0ITHZbDpzDj7mGVmwIClECbKA9imkjRa9oonpRG0os2x9XW2PKVmVhU
-         lW9JRXFD8rGPNDToPtMb0VOavsgimBSlNUgTT62qczTGD3XTVMAhamwgqHxpw7YyuB
-         lJrstfDNVDK7Q==
-Message-ID: <fa622c39-c02e-b143-0c40-99f85c9a8063@kernel.org>
-Date:   Sat, 7 Oct 2023 14:37:55 +0800
+        Sat, 7 Oct 2023 02:40:40 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50746BD;
+        Fri,  6 Oct 2023 23:40:39 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6bd04558784so1976186a34.3;
+        Fri, 06 Oct 2023 23:40:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696660838; x=1697265638; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rPnJf4ACBTqap66/DGz7muRwHc2NwgeM+41OMr/ru4M=;
+        b=bQfkyF7wdqoHllWwFf742p6lmaT/AbwN0xNVCZ8a+dMSgqFsuhKy0LVRzhS/o3bl6k
+         8oUFgkCkdEVgggb2yRORnQHMnMRP0/rrLBw2ZJ8pXU2F0Jlc6quP3kC+pEorqiqF7iGx
+         TuEFx3DhcTWU7XhC5JGJ9NYoVUBsCQpWWWqPsgScaGwHej+OyJc8QuqRqck/N0WXC5Wj
+         jR1E6ureAr03l1ByIhxZ3rc+RBI7Oa/Id74emQ6oZ7SL5KhFMhPtnMG9AauloIjwHxuT
+         VBd1r5183VU/xP+J2zGgGaf8BG+6O6XqJ4f1KFusdAnMRDNRlSMtykFs49fauc7qCcnx
+         dhdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696660838; x=1697265638;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rPnJf4ACBTqap66/DGz7muRwHc2NwgeM+41OMr/ru4M=;
+        b=MeilnNx9Tb2Z5ued6p7b4stVjkFqDGi2xCZzfPZfLOSrJ186cywcjQQhp+UhI6O7LK
+         XXD/is/uOONJHQUF7ctUEGhAa2zvudfEOQXL4A63DjrTIOvY61KTy0YMw4ii7Mruecm0
+         XJyBIYQjnhQnTakrPA3qDN0KO7u3P/E9IaysO8mSxyGPNV4n/F5YAb0CcbNTbC97IneN
+         OVkCgEdQQgzKqNM4ZxKMSUqdHpsK2oQmlJOq+1eybTpNieTKx/cxo7lPJVyk1PPKNmvx
+         gh8FT6wKI5cWgw6Cv2w4o0frYPl4SmnSEHbDGLqn3aD1rCUrZURS35Ht0NknBOrUPa8/
+         KXcQ==
+X-Gm-Message-State: AOJu0YzT/R5jnNBBvw8EwmAdDm9Cw5g50ON8eXMVWzN+4Aj16M/wWeMq
+        NHgEQS9GcyZcXS7UvCzMV58=
+X-Google-Smtp-Source: AGHT+IFbqqKKGaJeO8wWR2EIw0F/jFigVpDehW1sXdmPhHsIc5Bpm7LhgjiNiZUrlSp7LK0B50WOMw==
+X-Received: by 2002:a05:6870:9712:b0:1db:71b9:419c with SMTP id n18-20020a056870971200b001db71b9419cmr11905065oaq.58.1696660838560;
+        Fri, 06 Oct 2023 23:40:38 -0700 (PDT)
+Received: from localhost.localdomain ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id q25-20020a62e119000000b0069370f32688sm2506650pfh.194.2023.10.06.23.40.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Oct 2023 23:40:37 -0700 (PDT)
+From:   Like Xu <like.xu.linux@gmail.com>
+X-Google-Original-From: Like Xu <likexu@tencent.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: x86/xsave: Remove 'return void' expression for 'void function'
+Date:   Sat,  7 Oct 2023 14:40:19 +0800
+Message-ID: <20231007064019.17472-1-likexu@tencent.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [f2fs-dev] [PATCH] f2fs-tools: make checked node progress correct
-Content-Language: en-US
-To:     Daeho Jeong <daeho43@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>
-References: <20231003210754.275175-1-daeho43@gmail.com>
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <20231003210754.275175-1-daeho43@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -52,15 +70,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/4 5:07, Daeho Jeong wrote:
-> From: Daeho Jeong <daehojeong@google.com>
-> 
-> Let's say we have 100 nodes to be checked. With post-increment of
-> checked_node_cnt, when we reach the last node, we cannot print out 100%
-> progress. So, go with pre-increment.
-> 
-> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+From: Like Xu <likexu@tencent.com>
 
-Reviewed-by: Chao Yu <chao@kernel.org>
+The requested info will be stored in 'guest_xsave->region' referenced by
+the incoming pointer "struct kvm_xsave *guest_xsave", thus there is no need
+to explicitly use return void expression for a void function "static void
+kvm_vcpu_ioctl_x86_get_xsave(...)". The issue is caught with [-Wpedantic].
 
-Thanks,
+Fixes: 2d287ec65e79 ("x86/fpu: Allow caller to constrain xfeatures when copying to uabi buffer")
+Signed-off-by: Like Xu <likexu@tencent.com>
+---
+ arch/x86/kvm/x86.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index fdb2b0e61c43..2571466a317f 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -5503,8 +5503,8 @@ static void kvm_vcpu_ioctl_x86_get_xsave2(struct kvm_vcpu *vcpu,
+ static void kvm_vcpu_ioctl_x86_get_xsave(struct kvm_vcpu *vcpu,
+ 					 struct kvm_xsave *guest_xsave)
+ {
+-	return kvm_vcpu_ioctl_x86_get_xsave2(vcpu, (void *)guest_xsave->region,
+-					     sizeof(guest_xsave->region));
++	kvm_vcpu_ioctl_x86_get_xsave2(vcpu, (void *)guest_xsave->region,
++				      sizeof(guest_xsave->region));
+ }
+ 
+ static int kvm_vcpu_ioctl_x86_set_xsave(struct kvm_vcpu *vcpu,
+
+base-commit: 86701e115030e020a052216baa942e8547e0b487
+-- 
+2.42.0
+
