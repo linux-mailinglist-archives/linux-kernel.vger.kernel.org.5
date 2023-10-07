@@ -2,83 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB827BCA74
+	by mail.lfdr.de (Postfix) with ESMTP id C4DBC7BCA76
 	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 01:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344240AbjJGXVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 19:21:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47054 "EHLO
+        id S1344247AbjJGXh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 19:37:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344151AbjJGXVp (ORCPT
+        with ESMTP id S1344151AbjJGXh0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 19:21:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF4BDB9
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 16:21:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696720904; x=1728256904;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=yGkg57+9OSRQbVDylYzXeI84jQ+j0uTOCH3Vpr4F7bk=;
-  b=WkH2USJiILpRO73FzpSar2OZkk374Txli/GUxPs9mRN4LSENqljg+hf0
-   MPw3Kxr9PFiqZqwr8A3jSHK8erRDERUgJ2mnS5LhUZuUSQKEDIeF4bDW3
-   URrsYxDZeYvMoqdCRz+/GWguZiAGIVKsqux/UPOyVeAvOWK2jVE7kAaLU
-   mQ9QcOcPVbwAui7xZAUKlqBYPzmEKOgU8y5RFvfig8Qk7u6AlKbjvkgAu
-   wQQFFNngWHTAK4bWKaf4cW6vBEtLHxQv4e4iWzuXSwAgPghxZnT4qC+bl
-   Q7Ni8zTq+rGNDVA1LCEUQdQ+bVkg0bz6doFfl4N/nO9JTERX0XOBmVY/V
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10856"; a="364253213"
-X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
-   d="scan'208";a="364253213"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2023 16:21:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10856"; a="818435441"
-X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
-   d="scan'208";a="818435441"
-Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 07 Oct 2023 16:21:42 -0700
-Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qpGc2-0004uW-2F;
-        Sat, 07 Oct 2023 23:21:34 +0000
-Date:   Sun, 8 Oct 2023 07:21:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Avraham Stern <avraham.stern@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Johannes Berg <johannes.berg@intel.com>,
-        Gregory Greenman <gregory.greenman@intel.com>
-Subject: drivers/net/wireless/intel/iwlwifi/pcie/drv.c:1126:5-8: Unneeded
- variable: "ret". Return "  0" on line 1154
-Message-ID: <202310080743.rx2s9fDg-lkp@intel.com>
+        Sat, 7 Oct 2023 19:37:26 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE543B9
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 16:37:25 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c8a1541232so4660475ad.0
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Oct 2023 16:37:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696721845; x=1697326645; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AcoIRVvTXnvwMcYFSm/QUis00b0lHBXCtKWnoNH1HVY=;
+        b=F5IoFsoGEYyCAfc0gtO8SZLxtrCcsKtvGmrUqB+8T90pE0ALDEh0cwDemwM50TxT+v
+         oenKGp0T6kfEIY5VA/B1cjZn+XNXogHmBEoxl+Bye+5wsXXfpnoBNTCuxHUwZazsxLyg
+         MVRvSQbp/SUehpLWcr+NVcGG0WY14F9Pf0zUR1mNMb7T3/XraCXBdaZjjtT8keiEVAAL
+         iHSt2ntku+to18Jz8Mf68dKIXTvYDLvD6cQELQ9sRjvaa8ZywnLUTgBfoPEd6SghtGwa
+         UcIysMAnqeC8PaUiX7m7V2zaHlOfp1WZyI9zI9wnDfoT1rO0nV8AQIGhbeeaynd54T1J
+         BJUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696721845; x=1697326645;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AcoIRVvTXnvwMcYFSm/QUis00b0lHBXCtKWnoNH1HVY=;
+        b=kPaRrCuzLS0EKOsD8Cmxt2XbS1eYXbbg6VXZR0QRkS1ucuf1zWA+ZvEvACExFClKM+
+         g3GxL+8m5E1LNk7eAGIYnfcvjpXfj+3Z0BUJdqZXT8K459ZL1x9TZ7eWO1XEy2hfmN+7
+         M+bSYTeWkeI0drJ66jBYmH7aaKfvUQiQ5MYcaaYlYHC07zRoNkfwcLLf70/wtD06BqAT
+         As+igXMZG0gFHanjA9MMQtlcjqk2DyELGYCWv5/GSRFx0kim3d0Sy5f+4DUbXSAQSLti
+         hm3ofl8hPg2K22Y3Pv6gg7j1gi39w4HqVNh2kiN3ZzWqk+BboTAFvWQ/jeYns5WMJG24
+         2R3g==
+X-Gm-Message-State: AOJu0YyRvHdtV2RcvX+Ilk5GaoTVNxkVIzi+PVkROko2yPWbZ6GgOQEA
+        GZv3K6xvb/3IBzV4yF1acFu69CxuYFC4uA==
+X-Google-Smtp-Source: AGHT+IGEgBTKBBGlcmYQCZU8UlL4mu4x4m/hwsuXWOII8d8HRGGcLOiL5k7qYo4NVVwBKsDpm+k11w==
+X-Received: by 2002:a17:903:2348:b0:1c5:fab7:70ac with SMTP id c8-20020a170903234800b001c5fab770acmr15607353plh.27.1696721844719;
+        Sat, 07 Oct 2023 16:37:24 -0700 (PDT)
+Received: from localhost ([216.228.127.131])
+        by smtp.gmail.com with ESMTPSA id u1-20020a170902b28100b001bd28b9c3ddsm6424021plr.299.2023.10.07.16.37.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Oct 2023 16:37:24 -0700 (PDT)
+From:   Yury Norov <yury.norov@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        David Gow <davidgow@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        James Seo <james@equiv.tech>, Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Marco Elver <elver@google.com>,
+        Mark Brown <broonie@kernel.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Petr Tesarik <petr.tesarik.ext@huawei.com>,
+        Rae Moar <rmoar@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Yury Norov <yury.norov@gmail.com>
+Subject: [PATCH 0/2] lib: unload lib/bitmap.c
+Date:   Sat,  7 Oct 2023 16:35:08 -0700
+Message-Id: <20231007233510.2097166-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   b9ddbb0cde2adcedda26045cc58f31316a492215
-commit: 057381ddac0593c6e4ca8f58732830d8542b9c4e wifi: iwlwifi: pcie: avoid a warning in case prepare card failed
-date:   7 weeks ago
-config: x86_64-randconfig-101-20230927 (https://download.01.org/0day-ci/archive/20231008/202310080743.rx2s9fDg-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231008/202310080743.rx2s9fDg-lkp@intel.com/reproduce)
+The file is intended to hold functions to operate on bit arrays, but
+this days, more than 1/3 of bitmap.c is helpers for bitmap-to-string
+converters, plus some wrappers for device.h.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310080743.rx2s9fDg-lkp@intel.com/
+So move those out of lib/bitmap.c in sake of readability and
+maintainability.
 
-cocci warnings: (new ones prefixed by >>)
->> drivers/net/wireless/intel/iwlwifi/pcie/drv.c:1126:5-8: Unneeded variable: "ret". Return "  0" on line 1154
+Functionally, this series is a no-op.
+
+Yury Norov (2):
+  lib/bitmap: move bitmap allocators for device to linux/device.h
+  lib/bitmap: split-out string-related operations to a separate files
+
+ MAINTAINERS                |   2 +
+ include/linux/bitmap-str.h |  16 ++
+ include/linux/bitmap.h     |  25 +-
+ include/linux/device.h     |  30 ++
+ lib/Makefile               |   2 +-
+ lib/bitmap-str.c           | 510 ++++++++++++++++++++++++++++++++++
+ lib/bitmap.c               | 545 -------------------------------------
+ 7 files changed, 560 insertions(+), 570 deletions(-)
+ create mode 100644 include/linux/bitmap-str.h
+ create mode 100644 lib/bitmap-str.c
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.2
+
