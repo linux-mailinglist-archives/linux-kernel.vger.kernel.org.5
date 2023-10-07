@@ -2,598 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 431FE7BC7CF
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 14:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5AC17BC7D1
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 14:48:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344039AbjJGMqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 08:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49304 "EHLO
+        id S1343935AbjJGMsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 08:48:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343942AbjJGMqZ (ORCPT
+        with ESMTP id S1343898AbjJGMst (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 08:46:25 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA3B100
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 05:46:00 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-57de6e502fcso1707051eaf.3
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Oct 2023 05:46:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1696682759; x=1697287559; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Bph2orvoCEU3nv14q5S6Q5Uk2g2Q/moZTxGqgTwE44w=;
-        b=KH5HK5fW66gdj59zqZFSxfA3GCMX+qJ6J47Z68sBO5/vzQAj+U4fmoB6utua08tA9f
-         mhF+/VGaiR+VgTSJZbDaRQYBdTilzM6B8oVJ+fhSS7AGNLRTkfNC4asw4bUgmIQpyD0J
-         OJtE1zxE1hqxy2r7wwoNx7VWkR1HJ6V4oZjI13JnNTOtnryBoaYBa5cKXdieDncc5Z+3
-         vVOdYDWU5IhyETdRIdvo9U7y8maZ/Pmild5+z1WssUDq2t4gH4taqOVSccJ7l86Wdw4y
-         fSYywwmsXesSM3sqxf3r3R5SXzDe3Jl6UOrHrFB4h+9v4524HxosGa4Cu2TTjGE1EbSm
-         ELJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696682759; x=1697287559;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Bph2orvoCEU3nv14q5S6Q5Uk2g2Q/moZTxGqgTwE44w=;
-        b=dCNdVzMXFvyjS0mcNpFesimA/uSXrN9x3+bgmx8Wx0mcGSmq3POeGp8/ie98AtvxDq
-         3MJiZWpVRLsu/1UfOZiywW8QaDl7Oxri7iosZeTfqQpkmBk2rRlistVFzsBokxvXu3DQ
-         sb2KC4xQ5AdF61qjS2CiqE6W7Ui4dXXhtG5+oNWlkQw81teWpb9UMJN4o7fONB6jV+X6
-         tfUmL0nLQtfYuS0kcuMK3L0vL+lZypanId2jCxkrx5g1/bEQ7VsHA6WDxXWbOp4MHJYM
-         yVEHVQxpacI1NMrKYgskj+bB7Gsc/kpvdieYLuzgL7WTdK7RjkKrTCnzTF+G0fAUCi6M
-         IVcA==
-X-Gm-Message-State: AOJu0YwmFIhpe47wcKwVnSWm+j5oXJ/YeWKZ3a4t/cTbWDJcEd+7KuCh
-        4w2VJMFm+AdH2NAsb2HUmOQGPg==
-X-Google-Smtp-Source: AGHT+IE+krSO+hjP5vcrFe929tH50nBOct+R0k4rcF4h8IxLbrTOs/Ntr7dPh2WM5PvPht92gccksA==
-X-Received: by 2002:a05:6358:99a8:b0:141:d2d:6da7 with SMTP id j40-20020a05635899a800b001410d2d6da7mr10552271rwb.17.1696682759556;
-        Sat, 07 Oct 2023 05:45:59 -0700 (PDT)
-Received: from n37-019-243.byted.org ([180.184.51.134])
-        by smtp.gmail.com with ESMTPSA id d6-20020a17090ad3c600b00256799877ffsm5095388pjw.47.2023.10.07.05.45.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Oct 2023 05:45:59 -0700 (PDT)
-From:   Chuyi Zhou <zhouchuyi@bytedance.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@kernel.org, tj@kernel.org, linux-kernel@vger.kernel.org,
-        Chuyi Zhou <zhouchuyi@bytedance.com>
-Subject: [PATCH bpf-next v4 8/8] selftests/bpf: Add tests for open-coded task and css iter
-Date:   Sat,  7 Oct 2023 20:45:22 +0800
-Message-Id: <20231007124522.34834-9-zhouchuyi@bytedance.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20231007124522.34834-1-zhouchuyi@bytedance.com>
-References: <20231007124522.34834-1-zhouchuyi@bytedance.com>
+        Sat, 7 Oct 2023 08:48:49 -0400
+Received: from IND01-BMX-obe.outbound.protection.outlook.com (mail-bmxind01olkn2050.outbound.protection.outlook.com [40.92.103.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A282FAB;
+        Sat,  7 Oct 2023 05:48:47 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mGjzipeX8eUMiH0mCcU/bMwn2583OBAG1ld1tVnwKHRyoywrvvz6M10jHFA9NfUIHnktphXdHCOiGk0n9oVIq8qp3HFvtJDyjHFSEPDx7TabygYYi6mxU4uzoeypLJuLQsyNY328TdqugUS3WRGb6C71i6YdWFiQ409pwVUAO8GQ9FfX6HDUHvSJ+oYZjM/iA3cqZXY/v/TKQTEblTrx3AUdXHZi40vWGVm1pDLU3CIAybCn2CpEWweC78Vcw15TK/O9jyDkkPgCBxrheMP9CXOZj6Z6j+IX/VJJLPJwfj44ckvN6qMri004HUmkthyP2GEJTAHAScftZmY9V7b5HQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=H88O51VXP1JqbIVWpsR7vc3jpeCIH6jm4NRkUNS0z2A=;
+ b=JisOgryPgUcS2Mq0dZt4iKEiLTPw7nUIO9AOKp+Q/YtB5UkfcMc/vHbppFOXX8MJqOx76OHQoyCCoqMVOEc2ynOnmtiPruUA9tOX7cAXggsAenWkSu3xYWdYf4hJjgN0K/8LCCCoRXfae1oYpspsrC6U07ax7vH/g8B/uE1B27G3znHqzvaR/UsFS+rUC12+2ut3w54H2/I5q8wOmyNhiH3j9+2Jaa9wtwUenQ22SDyE5DJYhnSD0AvUQbZ/bGsQmgXvITbDiERlQDImZS5jcoQT6L5mwEeoZ+ebgtP2QL24lAXB7jZKoTHSBOH12aLytRWVWr4WWr6ifM1w3cCJJQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H88O51VXP1JqbIVWpsR7vc3jpeCIH6jm4NRkUNS0z2A=;
+ b=ZtlIKtCqc7BmfczEW3fdFSPP7X7PNgFDBpLOHZpZcpbXmR10EeQT8DCsVaYx/LJ8BeGMpeoxZOXuBSTKYQFr+V0arQFsHOMqXhKx0OQAa+aJqVMIzvr/c+gtONJu7rbeyqpMjR14nlydxOHmFtr7ntr17+Sk/a4gUAoINR624C0O8uxZfiIcOPzYbrPtJYO+AY8QZ57jRwLmu/zbQSMDd2nSEkqFV4ohXJn2k5u2//YYwmSGAE3yiNPT84YJJGrfsKkO9gGwDMIHc/fhBbFehSGK5PHdkqs2MLEcSlpGb1XQMnz8m/x/ejmyJAXETvEt3t/sX+Z79R7hEsTnpln/Zg==
+Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:ab::5) by
+ PN3P287MB0942.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:174::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6838.41; Sat, 7 Oct 2023 12:48:40 +0000
+Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
+ ([fe80::efe9:8d54:281b:23f7]) by MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
+ ([fe80::efe9:8d54:281b:23f7%3]) with mapi id 15.20.6838.040; Sat, 7 Oct 2023
+ 12:48:40 +0000
+Message-ID: <MA0P287MB0332B11A8481F491E4F0536DFEC8A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+Date:   Sat, 7 Oct 2023 20:48:34 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 00/10] Add Milk-V Pioneer RISC-V board support
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
+        chao.wei@sophgo.com, devicetree@vger.kernel.org, guoren@kernel.org,
+        jszhang@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org,
+        xiaoguang.xing@sophgo.com, apatel@ventanamicro.com
+References: <cover.1696663037.git.unicorn_wang@outlook.com>
+ <20231007-grasp-retake-0463858c13df@spud>
+ <MA0P287MB0332F80102F534CBD7412ED3FEC8A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+ <20231007-kennel-lustily-59b0a9867aaa@spud>
+ <MA0P287MB03329460B9F3B79B1148A6FDFEC8A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+ <20231007-green-correct-11d08f650ddd@spud>
+From:   Chen Wang <unicorn_wang@outlook.com>
+In-Reply-To: <20231007-green-correct-11d08f650ddd@spud>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TMN:  [82rjz9MFA51EZS27qsp+H9zC/5TUKB3H]
+X-ClientProxiedBy: SI2PR01CA0026.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:192::16) To MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:a01:ab::5)
+X-Microsoft-Original-Message-ID: <63d75ecf-2019-411e-8a48-86d64642eb17@outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MA0P287MB0332:EE_|PN3P287MB0942:EE_
+X-MS-Office365-Filtering-Correlation-Id: 51c0a5f7-6f48-4a35-619b-08dbc733ba93
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6koPnRU81fEFNM74IJFC4VFtCNfPlDsnPTMgGbR/0vMC3mYnRxvOoFxDOQkx42DdYgL6VOkDG/r5SsNQVDVIlxBXS8C+GFzQjQ0CmYoEy3m5evg/hrprp6ZpkAconfqh9tiyge2sXGdGbXFNTomJk39IUWdogCZxlPWPmE491SUFfe9EsFAlEDmmYHrXPmDb+mOM+4dLwk5J4vxIb5ZEtw67di8p0tyCJzJ09LdQ2Zg+t8UptlMMD27QL3rAMUH4++eYWaXmv3eeGrAOJHgec/YOwtxu8C979kaM1bLlaOnM1RK5NJ6Zx1hnjpmiOwZDFW8suF1ZTDp2VIq96rq5ohw4qkX3+ZR9evl5Ayu98jDhdyMGUH4dX+3/+YhiRafDs6/mm01gllHuerU8H4PGGyUNS9TJ1X60Nk6ss83lQTv+LQ9R/0nTR0rLfOo3mkxtejs8tfubxTIYGzqccLrOpXe5DdLQzaFetMuIBrjn3K2RXyDG0LkFtfDrHfuh4msm5rlTJzPxsSVyNVw65YPPqTr1OmhvwP2+FkqEp93+c8PdK9Elx1b/dhgSLxHPoTdj1AMlRjYFIujF4IsnKVTEv1E98WGwWD8x264b42WrDyY=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NmVpUUpGVkU2dFVZUGViMW02ZnRHbyt3eWhRbDE2NnR4MktBc3U4UUx6TVds?=
+ =?utf-8?B?RGpZL3hPSTdJNkZHU24wYnpqTlQxcDZYQWVEVnNUNXlyY1ZOb3M2UlVPdVNv?=
+ =?utf-8?B?UmtyUjhvWjdiUXZMWWZsMnpaRjVhMXpqazQ1SFI0SzBNMzVDU21ubmhTMVRj?=
+ =?utf-8?B?eFVWUlExeUY0WG1kVjBpS3VGZnF0dnZCMlVicGQ1RXkyUjZCQUEzVmkxMkRj?=
+ =?utf-8?B?VndPRW4vakd1WUxHYS9icStCNkRTaUR5RllxTEoxRjkwb1pQa3kxZFJIMnRj?=
+ =?utf-8?B?MjFUeTZuRU9tMUh2NUMrK3psWjJialRBaWdCMEpLSTI4K0VkbXYwaHVyZVJN?=
+ =?utf-8?B?TTZuZ3FkckJDcEh6N0VhRC9tRlorTGI0ajVVMi81S3FzUTA5RG0zT2RZOW4y?=
+ =?utf-8?B?MVkyMGZrWG9sOE1ETjkxUnE0QlJCY1ozWk1lTytoTkpESFNQNklrNG5xc1E5?=
+ =?utf-8?B?NVNpTWVTeXVrWlgyY3JyVGJoM1pXcjFjaUsybWFFQVBCNlRNTzQ0TUV0a2J3?=
+ =?utf-8?B?YWJxSElBME9ZSGx2UzhYWXk0TkRHZ1NiUVZhTndxclpTQWpuUmdqUDZNTW5L?=
+ =?utf-8?B?MnZqS1k0dEVzTGZpSUtUMFZ0ZXFlbkk0VHljdXpCVXptVXRtQ0VBMXVRVXlR?=
+ =?utf-8?B?amhDbFgvNHhRM21nK1kwWEh1enR0cG10eG1KR294WDU0TnVoWWN5eHFBV0dC?=
+ =?utf-8?B?SDN5eHgvYXd6WXNMR0ozcWNGQzJsQlNSUnNXSXFiQUZuWUZvYzZrUHIwMVdF?=
+ =?utf-8?B?RmV0U2VpbEpReU0yT0Zmd1l4OW54YmtZMmhmNk1sRWlRSUNGUzdxY2RPWG5M?=
+ =?utf-8?B?ZGtoeHZBZi9pT0k3MzVnNG9ROXdsaTh3VzdGYVA2eTFWekJ6NGJxVm92L0dP?=
+ =?utf-8?B?NUYxZCsxdllFQjh5Wlg0cUpLNHo5aHU0NVBYNUVDV2ozczFlWXFyVDFyZVhW?=
+ =?utf-8?B?Lyt4d0VRVFB0aWF5c2VTbEhCWHBRSVRoY2NxQjUxYkxaSC9jRHpKMEdwcm1C?=
+ =?utf-8?B?YVRFS25iTHQxaXZkZGRESU5kNU85ZzRxSVMyb3JwN05XK0ROSlgrWGVBaVIz?=
+ =?utf-8?B?Qm9wbHRTdVFya1FtSlRndjNmQ3VuNTRXcVZIUitMcDRlZW56bEdCVENIU3RT?=
+ =?utf-8?B?YkttdVZiNVFYL0NpbnVzZ0YwY1NjNy9mZHlCKzRFWGVSclpCMnE1QlRhS3hU?=
+ =?utf-8?B?RTJPU3lHdzV6dHNqeXlJWjRKQXI5QWV6WVpubUxBcmpwTndTWG45OEVyZTlH?=
+ =?utf-8?B?YXg3cTBRTFgrTjM1b3UxL0pHRzlzc1o2MVdrSWpTV1lhZGNQb0NMMng4REty?=
+ =?utf-8?B?SGo2YnBxM0ltQ2dBUmVTK3dBVWRJekI0d1dKUlhDcUhwa2JPNUNhWTZIR1cx?=
+ =?utf-8?B?ekFKV256SnBSUDF6YTZqSzhhNGxaeHh1Mi8vMWVlWjJqS3ZEZjhaNVJKeFFL?=
+ =?utf-8?B?eUZGd3NiUzhTSnQvQTk0d0JWL2JjSHZUdFROTExueHh5NDc4cVM0d2tmTmdx?=
+ =?utf-8?B?MUd2L1B3UDJ4Mk5zSzVMNTNVR29qSG1vZnIzcTdwaUk0UlhWWjhMeENVYnk3?=
+ =?utf-8?B?YUkxWlNVQmlYR3JHR3Zab25ZUHBScm4vMStZS2IzTTl3NEF0aWg3eVJNR1pT?=
+ =?utf-8?Q?Jcdd+VcPE/XJ42PWpAPfggtFkpOmsqB7Um1yu0+yPktY=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 51c0a5f7-6f48-4a35-619b-08dbc733ba93
+X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2023 12:48:40.1776
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN3P287MB0942
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds three subtests to demonstrate these patterns and validating
-correctness.
 
-subtest1:
+On 2023/10/7 20:36, Conor Dooley wrote:
+> On Sat, Oct 07, 2023 at 08:25:55PM +0800, Chen Wang wrote:
+>> On 2023/10/7 19:04, Conor Dooley wrote:
+>>> On Sat, Oct 07, 2023 at 06:58:51PM +0800, Chen Wang wrote:
+>>>> On 2023/10/7 18:17, Conor Dooley wrote:
+>>>>> On Sat, Oct 07, 2023 at 03:52:04PM +0800, Chen Wang wrote:
+>>>>>> From: Chen Wang <unicorn_wang@outlook.com>
+>>>>>> Changes in v5:
+>>>>>>      The patch series is based on v6.6-rc1. You can simply review or test
+>>>>>>      the patches at the link [7].
+>>>>>>      - dts: changed plic to support external interrupt
+>>>>>>      - pickup improvements from Conor, details refer to [8].
+>>>>> Did you? I only see them partially picked up. I'll just replace patch 8
+>>>>> with the patch 8 from this series I think.
+>>>> Yes, only the patch 8 of this series(v5) is updated for plic node. For other
+>>>> patches, I just cherry-picked them from previous "sophon" branch.
+>>> But added my signoff? I ended up seeing my signoff on the patch where I
+>>> disagreed with the commit message, which was confusing to me.
+>> Oh, I used to think I can keep the exising signoff and I didn't mean to add
+>> it.
+> I added mine when I applied the patches. It no longer makes sense when
+> you resent another version.
+>
+>> Anyway, I agree your suggestion to create a new patch with only one
+>> change should be better, I will follow this in later work.
+> :)
+>
+>> Regarding your changes on sg2042 series, I have acked in another email : https://lore.kernel.org/linux-riscv/MA0P287MB0332BA73D0135CC73CAEA16DFEC8A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM/.
+>> If anything else required, please feel free let me know.
+> An ack on Jisheng's series for the cv1800b would be nice.
 
-1) We use task_iter to iterate all process in the system and search for the
-current process with a given pid.
+Done, I have reviewed and acked all the files related to sophgo.
 
-2) We create some threads in current process context, and use
-BPF_TASK_ITER_PROC_THREADS to iterate all threads of current process. As
-expected, we would find all the threads of current process.
-
-3) We create some threads and use BPF_TASK_ITER_ALL_THREADS to iterate all
-threads in the system. As expected, we would find all the threads which was
-created.
-
-subtest2: We create a cgroup and add the current task to the cgroup. In the
-BPF program, we would use bpf_for_each(css_task, task, css) to iterate all
-tasks under the cgroup. As expected, we would find the current process.
-
-subtest3:
-
-1) We create a cgroup tree. In the BPF program, we use
-bpf_for_each(css, pos, root, XXX) to iterate all descendant under the root
-with pre and post order. As expected, we would find all descendant and the
-last iterating cgroup in post-order is root cgroup, the first iterating
-cgroup in pre-order is root cgroup.
-
-2) We wse BPF_CGROUP_ITER_ANCESTORS_UP to traverse the cgroup tree starting
-from leaf and root separately, and record the height. The diff of the
-hights would be the total tree-high - 1.
-
-Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
----
- .../testing/selftests/bpf/prog_tests/iters.c  | 161 ++++++++++++++++++
- tools/testing/selftests/bpf/progs/iters_css.c |  74 ++++++++
- .../selftests/bpf/progs/iters_css_task.c      |  42 +++++
- .../testing/selftests/bpf/progs/iters_task.c  |  41 +++++
- .../selftests/bpf/progs/iters_task_failure.c  | 105 ++++++++++++
- 5 files changed, 423 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/iters_css.c
- create mode 100644 tools/testing/selftests/bpf/progs/iters_css_task.c
- create mode 100644 tools/testing/selftests/bpf/progs/iters_task.c
- create mode 100644 tools/testing/selftests/bpf/progs/iters_task_failure.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/iters.c b/tools/testing/selftests/bpf/prog_tests/iters.c
-index 10804ae5ae97..d1d5dc3bedd3 100644
---- a/tools/testing/selftests/bpf/prog_tests/iters.c
-+++ b/tools/testing/selftests/bpf/prog_tests/iters.c
-@@ -1,13 +1,24 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
- 
-+#include <sys/syscall.h>
-+#include <sys/mman.h>
-+#include <sys/wait.h>
-+#include <unistd.h>
-+#include <malloc.h>
-+#include <stdlib.h>
- #include <test_progs.h>
-+#include "cgroup_helpers.h"
- 
- #include "iters.skel.h"
- #include "iters_state_safety.skel.h"
- #include "iters_looping.skel.h"
- #include "iters_num.skel.h"
- #include "iters_testmod_seq.skel.h"
-+#include "iters_task.skel.h"
-+#include "iters_css_task.skel.h"
-+#include "iters_css.skel.h"
-+#include "iters_task_failure.skel.h"
- 
- static void subtest_num_iters(void)
- {
-@@ -90,6 +101,149 @@ static void subtest_testmod_seq_iters(void)
- 	iters_testmod_seq__destroy(skel);
- }
- 
-+static pthread_mutex_t do_nothing_mutex;
-+
-+static void *do_nothing_wait(void *arg)
-+{
-+	pthread_mutex_lock(&do_nothing_mutex);
-+	pthread_mutex_unlock(&do_nothing_mutex);
-+
-+	pthread_exit(arg);
-+}
-+
-+#define thread_num 2
-+
-+static void subtest_task_iters(void)
-+{
-+	struct iters_task *skel;
-+	pthread_t thread_ids[thread_num];
-+	void *ret;
-+	int err;
-+
-+	skel = iters_task__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		goto cleanup;
-+	err = iters_task__load(skel);
-+	if (!ASSERT_OK(err, "skel_load"))
-+		goto cleanup;
-+	skel->bss->target_pid = getpid();
-+	err = iters_task__attach(skel);
-+	if (!ASSERT_OK(err, "iters_task__attach"))
-+		goto cleanup;
-+	pthread_mutex_lock(&do_nothing_mutex);
-+	for (int i = 0; i < thread_num; i++)
-+		ASSERT_OK(pthread_create(&thread_ids[i], NULL, &do_nothing_wait, NULL),
-+			"pthread_create");
-+
-+	syscall(SYS_getpgid);
-+	iters_task__detach(skel);
-+	ASSERT_EQ(skel->bss->process_cnt, 1, "process_cnt");
-+	ASSERT_EQ(skel->bss->thread_cnt, thread_num + 1, "thread_cnt");
-+	ASSERT_EQ(skel->bss->all_thread_cnt, thread_num + 1, "all_thread_cnt");
-+	pthread_mutex_unlock(&do_nothing_mutex);
-+	for (int i = 0; i < thread_num; i++)
-+		pthread_join(thread_ids[i], &ret);
-+cleanup:
-+	iters_task__destroy(skel);
-+}
-+
-+extern int stack_mprotect(void);
-+
-+static void subtest_css_task_iters(void)
-+{
-+	struct iters_css_task *skel;
-+	int err, cg_fd, cg_id;
-+	const char *cgrp_path = "/cg1";
-+
-+	err = setup_cgroup_environment();
-+	if (!ASSERT_OK(err, "setup_cgroup_environment"))
-+		goto cleanup;
-+	cg_fd = create_and_get_cgroup(cgrp_path);
-+	if (!ASSERT_GE(cg_fd, 0, "cg_create"))
-+		goto cleanup;
-+	cg_id = get_cgroup_id(cgrp_path);
-+	err = join_cgroup(cgrp_path);
-+	if (!ASSERT_OK(err, "setup_cgroup_environment"))
-+		goto cleanup;
-+
-+	skel = iters_css_task__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		goto cleanup;
-+
-+	err = iters_css_task__load(skel);
-+	if (!ASSERT_OK(err, "skel_load"))
-+		goto cleanup;
-+
-+	skel->bss->target_pid = getpid();
-+	skel->bss->cg_id = cg_id;
-+	err = iters_css_task__attach(skel);
-+
-+	err = stack_mprotect();
-+	if (!ASSERT_OK(err, "iters_task__attach"))
-+		goto cleanup;
-+
-+	iters_css_task__detach(skel);
-+	ASSERT_EQ(skel->bss->css_task_cnt, 1, "css_task_cnt");
-+
-+cleanup:
-+	cleanup_cgroup_environment();
-+	iters_css_task__destroy(skel);
-+}
-+
-+static void subtest_css_iters(void)
-+{
-+	struct iters_css *skel;
-+	struct {
-+		const char *path;
-+		int fd;
-+	} cgs[] = {
-+		{ "/cg1" },
-+		{ "/cg1/cg2" },
-+		{ "/cg1/cg2/cg3" },
-+		{ "/cg1/cg2/cg3/cg4" },
-+	};
-+	int err, cg_nr = ARRAY_SIZE(cgs);
-+	int i;
-+
-+	err = setup_cgroup_environment();
-+	if (!ASSERT_OK(err, "setup_cgroup_environment"))
-+		goto cleanup;
-+	for (i = 0; i < cg_nr; i++) {
-+		cgs[i].fd = create_and_get_cgroup(cgs[i].path);
-+		if (!ASSERT_GE(cgs[i].fd, 0, "cg_create"))
-+			goto cleanup;
-+	}
-+
-+	skel = iters_css__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		goto cleanup;
-+	err = iters_css__load(skel);
-+	if (!ASSERT_OK(err, "skel_load"))
-+		goto cleanup;
-+
-+	skel->bss->target_pid = getpid();
-+	skel->bss->root_cg_id = get_cgroup_id(cgs[0].path);
-+	skel->bss->leaf_cg_id = get_cgroup_id(cgs[cg_nr - 1].path);
-+	err = iters_css__attach(skel);
-+
-+	if (!ASSERT_OK(err, "iters_task__attach"))
-+		goto cleanup;
-+
-+	syscall(SYS_getpgid);
-+	ASSERT_EQ(skel->bss->pre_css_dec_cnt, cg_nr, "pre order search dec count");
-+	ASSERT_EQ(skel->bss->first_cg_id, get_cgroup_id(cgs[0].path),
-+				"pre order search first cgroup id");
-+
-+	ASSERT_EQ(skel->bss->post_css_dec_cnt, cg_nr, "post order search dec count");
-+	ASSERT_EQ(skel->bss->last_cg_id, get_cgroup_id(cgs[0].path),
-+				"post order search last cgroup id");
-+	ASSERT_EQ(skel->bss->tree_high, cg_nr - 1, "tree high");
-+	iters_css__detach(skel);
-+cleanup:
-+	cleanup_cgroup_environment();
-+	iters_css__destroy(skel);
-+}
-+
- void test_iters(void)
- {
- 	RUN_TESTS(iters_state_safety);
-@@ -103,4 +257,11 @@ void test_iters(void)
- 		subtest_num_iters();
- 	if (test__start_subtest("testmod_seq"))
- 		subtest_testmod_seq_iters();
-+	if (test__start_subtest("task"))
-+		subtest_task_iters();
-+	if (test__start_subtest("css_task"))
-+		subtest_css_task_iters();
-+	if (test__start_subtest("css"))
-+		subtest_css_iters();
-+	RUN_TESTS(iters_task_failure);
- }
-diff --git a/tools/testing/selftests/bpf/progs/iters_css.c b/tools/testing/selftests/bpf/progs/iters_css.c
-new file mode 100644
-index 000000000000..1422a7956c44
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/iters_css.c
-@@ -0,0 +1,74 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2023 Chuyi Zhou <zhouchuyi@bytedance.com> */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_misc.h"
-+#include "bpf_experimental.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+pid_t target_pid = 0;
-+u64 root_cg_id;
-+u64 leaf_cg_id;
-+
-+u64 last_cg_id = 0;
-+u64 first_cg_id = 0;
-+
-+int post_css_dec_cnt = 0;
-+int pre_css_dec_cnt = 0;
-+int tree_high = 0;
-+
-+struct cgroup *bpf_cgroup_from_id(u64 cgid) __ksym;
-+void bpf_cgroup_release(struct cgroup *p) __ksym;
-+void bpf_rcu_read_lock(void) __ksym;
-+void bpf_rcu_read_unlock(void) __ksym;
-+
-+SEC("fentry.s/" SYS_PREFIX "sys_getpgid")
-+int iter_css_for_each(const void *ctx)
-+{
-+	struct task_struct *cur_task = bpf_get_current_task_btf();
-+	struct cgroup_subsys_state *root_css, *leaf_css, *pos;
-+	struct cgroup *root_cgrp, *leaf_cgrp, *cur_cgrp;
-+
-+	if (cur_task->pid != target_pid)
-+		return 0;
-+
-+	root_cgrp = bpf_cgroup_from_id(root_cg_id);
-+
-+	if (!root_cgrp)
-+		return 0;
-+
-+	leaf_cgrp = bpf_cgroup_from_id(leaf_cg_id);
-+
-+	if (!leaf_cgrp) {
-+		bpf_cgroup_release(root_cgrp);
-+		return 0;
-+	}
-+	root_css = &root_cgrp->self;
-+	leaf_css = &leaf_cgrp->self;
-+	bpf_rcu_read_lock();
-+	bpf_for_each(css, pos, root_css, BPF_CGROUP_ITER_DESCENDANTS_POST) {
-+		cur_cgrp = pos->cgroup;
-+		post_css_dec_cnt += 1;
-+		last_cg_id = cur_cgrp->kn->id;
-+	}
-+
-+	bpf_for_each(css, pos, root_css, BPF_CGROUP_ITER_DESCENDANTS_PRE) {
-+		cur_cgrp = pos->cgroup;
-+		pre_css_dec_cnt += 1;
-+		if (!first_cg_id)
-+			first_cg_id = cur_cgrp->kn->id;
-+	}
-+
-+	bpf_for_each(css, pos, leaf_css, BPF_CGROUP_ITER_ANCESTORS_UP)
-+		tree_high += 1;
-+
-+	bpf_for_each(css, pos, root_css, BPF_CGROUP_ITER_ANCESTORS_UP)
-+		tree_high -= 1;
-+	bpf_rcu_read_unlock();
-+	bpf_cgroup_release(root_cgrp);
-+	bpf_cgroup_release(leaf_cgrp);
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/iters_css_task.c b/tools/testing/selftests/bpf/progs/iters_css_task.c
-new file mode 100644
-index 000000000000..506a2755234e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/iters_css_task.c
-@@ -0,0 +1,42 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2023 Chuyi Zhou <zhouchuyi@bytedance.com> */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_misc.h"
-+#include "bpf_experimental.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct cgroup *bpf_cgroup_from_id(u64 cgid) __ksym;
-+void bpf_cgroup_release(struct cgroup *p) __ksym;
-+
-+pid_t target_pid = 0;
-+int css_task_cnt = 0;
-+u64 cg_id;
-+
-+SEC("lsm/file_mprotect")
-+int BPF_PROG(iter_css_task_for_each)
-+{
-+	struct task_struct *cur_task = bpf_get_current_task_btf();
-+	struct cgroup_subsys_state *css;
-+	struct task_struct *task;
-+	struct cgroup *cgrp;
-+
-+	if (cur_task->pid != target_pid)
-+		return 0;
-+
-+	cgrp = bpf_cgroup_from_id(cg_id);
-+
-+	if (cgrp == NULL)
-+		return 0;
-+	css = &cgrp->self;
-+
-+	bpf_for_each(css_task, task, css, CSS_TASK_ITER_PROCS)
-+		if (task->pid == target_pid)
-+			css_task_cnt += 1;
-+
-+	bpf_cgroup_release(cgrp);
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/iters_task.c b/tools/testing/selftests/bpf/progs/iters_task.c
-new file mode 100644
-index 000000000000..bd6d4f7b5e59
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/iters_task.c
-@@ -0,0 +1,41 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2023 Chuyi Zhou <zhouchuyi@bytedance.com> */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_misc.h"
-+#include "bpf_experimental.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+pid_t target_pid = 0;
-+int process_cnt = 0;
-+int thread_cnt = 0;
-+int all_thread_cnt = 0;
-+
-+void bpf_rcu_read_lock(void) __ksym;
-+void bpf_rcu_read_unlock(void) __ksym;
-+
-+SEC("fentry.s/" SYS_PREFIX "sys_getpgid")
-+int iter_task_for_each_sleep(void *ctx)
-+{
-+	struct task_struct *cur_task = bpf_get_current_task_btf();
-+	struct task_struct *pos;
-+
-+	if (cur_task->pid != target_pid)
-+		return 0;
-+	bpf_rcu_read_lock();
-+	bpf_for_each(task, pos, NULL, BPF_TASK_ITER_ALL_PROCS)
-+		if (pos->pid == target_pid)
-+			process_cnt += 1;
-+
-+	bpf_for_each(task, pos, cur_task, BPF_TASK_ITER_PROC_THREADS)
-+		thread_cnt += 1;
-+
-+	bpf_for_each(task, pos, NULL, BPF_TASK_ITER_ALL_THREADS)
-+		if (pos->tgid == target_pid)
-+			all_thread_cnt += 1;
-+	bpf_rcu_read_unlock();
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/iters_task_failure.c b/tools/testing/selftests/bpf/progs/iters_task_failure.c
-new file mode 100644
-index 000000000000..c3bf96a67dba
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/iters_task_failure.c
-@@ -0,0 +1,105 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2023 Chuyi Zhou <zhouchuyi@bytedance.com> */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_misc.h"
-+#include "bpf_experimental.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct cgroup *bpf_cgroup_from_id(u64 cgid) __ksym;
-+void bpf_cgroup_release(struct cgroup *p) __ksym;
-+void bpf_rcu_read_lock(void) __ksym;
-+void bpf_rcu_read_unlock(void) __ksym;
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+__failure __msg("expected an RCU CS when using bpf_iter_task_next")
-+int BPF_PROG(iter_tasks_without_lock)
-+{
-+	struct task_struct *pos;
-+
-+	bpf_for_each(task, pos, NULL, BPF_TASK_ITER_ALL_PROCS) {
-+
-+	}
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+__failure __msg("expected an RCU CS when using bpf_iter_css_next")
-+int BPF_PROG(iter_css_without_lock)
-+{
-+	u64 cg_id = bpf_get_current_cgroup_id();
-+	struct cgroup *cgrp = bpf_cgroup_from_id(cg_id);
-+	struct cgroup_subsys_state *root_css, *pos;
-+
-+	if (!cgrp)
-+		return 0;
-+	root_css = &cgrp->self;
-+
-+	bpf_for_each(css, pos, root_css, BPF_CGROUP_ITER_DESCENDANTS_POST) {
-+
-+	}
-+	bpf_cgroup_release(cgrp);
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+__failure __msg("expected an RCU CS when using bpf_iter_task_next")
-+int BPF_PROG(iter_tasks_lock_and_unlock)
-+{
-+	struct task_struct *pos;
-+
-+	bpf_rcu_read_lock();
-+	bpf_for_each(task, pos, NULL, BPF_TASK_ITER_ALL_PROCS) {
-+		bpf_rcu_read_unlock();
-+
-+		bpf_rcu_read_lock();
-+	}
-+	bpf_rcu_read_unlock();
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+__failure __msg("expected an RCU CS when using bpf_iter_css_next")
-+int BPF_PROG(iter_css_lock_and_unlock)
-+{
-+	u64 cg_id = bpf_get_current_cgroup_id();
-+	struct cgroup *cgrp = bpf_cgroup_from_id(cg_id);
-+	struct cgroup_subsys_state *root_css, *pos;
-+
-+	if (!cgrp)
-+		return 0;
-+	root_css = &cgrp->self;
-+
-+	bpf_rcu_read_lock();
-+	bpf_for_each(css, pos, root_css, BPF_CGROUP_ITER_DESCENDANTS_POST) {
-+		bpf_rcu_read_unlock();
-+
-+		bpf_rcu_read_lock();
-+	}
-+	bpf_rcu_read_unlock();
-+	bpf_cgroup_release(cgrp);
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+__failure __msg("css_task_iter is only allowed in bpf_lsm and bpf iter-s")
-+int BPF_PROG(iter_css_task_for_each)
-+{
-+	u64 cg_id = bpf_get_current_cgroup_id();
-+	struct cgroup *cgrp = bpf_cgroup_from_id(cg_id);
-+	struct cgroup_subsys_state *css;
-+	struct task_struct *task;
-+
-+	if (cgrp == NULL)
-+		return 0;
-+	css = &cgrp->self;
-+
-+	bpf_for_each(css_task, task, css, CSS_TASK_ITER_PROCS) {
-+
-+	}
-+	bpf_cgroup_release(cgrp);
-+	return 0;
-+}
--- 
-2.20.1
 
