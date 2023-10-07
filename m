@@ -2,55 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B767BC74E
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 14:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B8C77BC74F
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 14:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343900AbjJGMAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 08:00:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44582 "EHLO
+        id S1343915AbjJGMAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 08:00:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343875AbjJGMAq (ORCPT
+        with ESMTP id S1343680AbjJGMAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 7 Oct 2023 08:00:46 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F59BC
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBBCBBD
         for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 05:00:44 -0700 (PDT)
-Date:   Sat, 07 Oct 2023 12:00:41 -0000
+Date:   Sat, 07 Oct 2023 12:00:42 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696680042;
+        s=2020; t=1696680043;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=a/VuryWsOY5L1lvasV2Y5bxl2TCkoNrxw4HiUx50Fso=;
-        b=Yy/4nHnyzHf5G+VlsjLu/sArRmzHy8t+jYdm7b+RwFDsnZMt8sI2xNSAi/naxDm9ONY/7T
-        lK3NSG3t3C94vKqrabIH8Kpt5jxqkCZfFfnslAhMoE561HFSIk4KzJmgTh00XHO+LeoD2H
-        tAgPFugLl+WmAaIFATSbf4x70EWBD0LHnNLkr4/l+l9OlPVDncp6hvAb38WXOGsjVpUc+0
-        5n8Fp2ICC/G2a6vMV86kOM7xzoN3CFZzJa8STHPV8JjS4N/tMkEyo33ckqQ7gFzIFAbuNk
-        h8BXNKJ7YTEme5bzz7dVc1DOk3u0CCSACXDOI/YzA8lvW1g/tpupsY0zvBmq2Q==
+        bh=9eQCG1SubaLKcefX9RXX8VJmey2R9K7NERppFez/kQs=;
+        b=fLJxRfVkH6YmuFj6bd7wJkrpzI5cWBYcxYwTpxFGvNNhekMMZ/DU8QJzkOw6FxyqM/nYbl
+        ktbpU43K44GHpT6oIxGnUOTW9c6n0NJ8WOXZRoX6HEUYGLb83TzAEOOJW+IvTYSm7sbm8M
+        30m8m/xiuwYwaJDwTpEhageo6FqmppODlVM2QmAhacI7l3J8Q0flLgPaxKNaEcgc+x/llj
+        oIIIfm5ipI8W8+ZPevjVChYH28NvwAF9DRoaCWVEoVtXKAF08CLj96LMtnQraQzYjavx6O
+        ikY3lYTpajd3kPeTVVI8E7T7jrA2OKzVTMIr4ZNSd1TBNiJ5HrIY0wS9oDhXdg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696680042;
+        s=2020e; t=1696680043;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=a/VuryWsOY5L1lvasV2Y5bxl2TCkoNrxw4HiUx50Fso=;
-        b=vXof+STJEz3aUm7XN1N+itzWxChb//mDYi4nNi5gyTXEZmYfv1r+VBF+tJkZ0SCJitD4Kf
-        I/3SBzI/1/cUcDCg==
-From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
+        bh=9eQCG1SubaLKcefX9RXX8VJmey2R9K7NERppFez/kQs=;
+        b=tHdq5eK1hladga6W4RW9ZrjwiFVrWeb/8UsAFSgy9dfEWUBZ5/EX0t7fn55mBv3fqqgKQG
+        fPI2h97WHJmZfYBw==
+From:   "irqchip-bot for Geert Uytterhoeven" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-fixes] MAINTAINERS: Add myself as the ARM GIC
- maintainer
-Cc:     Marc Zyngier <maz@kernel.org>, Zenghui Yu <zenghui.yu@linux.dev>,
-        tglx@linutronix.de
-In-Reply-To: <20231002141302.3409485-2-maz@kernel.org>
-References: <20231002141302.3409485-2-maz@kernel.org>
+Subject: [irqchip: irq/irqchip-fixes] irqchip/renesas-rzg2l: Convert to
+ irq_data_get_irq_chip_data()
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
+In-Reply-To: =?utf-8?q?=3C8e47cc6400e5a82c854c855948d2665a3a3197e3=2E16958?=
+ =?utf-8?q?19391=2Egit=2Egeert+renesas=40glider=2Ebe=3E?=
+References: =?utf-8?q?=3C8e47cc6400e5a82c854c855948d2665a3a3197e3=2E169581?=
+ =?utf-8?q?9391=2Egit=2Egeert+renesas=40glider=2Ebe=3E?=
 MIME-Version: 1.0
-Message-ID: <169668004147.3135.9982739949197050672.tip-bot2@tip-bot2>
+Message-ID: <169668004265.3135.6097288316194548861.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -66,47 +69,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-fixes branch of irqchip:
 
-Commit-ID:     c1097091b72255b2f9373260579133c5ce134dd1
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/c1097091b72255b2f9373260579133c5ce134dd1
-Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Mon, 02 Oct 2023 15:13:01 +01:00
+Commit-ID:     8a4f44f3e9b05c38606b2ae02f933d6b64a340dd
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/8a4f44f3e9b05c38606b2ae02f933d6b64a340dd
+Author:        Geert Uytterhoeven <geert+renesas@glider.be>
+AuthorDate:    Wed, 27 Sep 2023 14:57:32 +02:00
 Committer:     Marc Zyngier <maz@kernel.org>
 CommitterDate: Sat, 07 Oct 2023 12:47:13 +01:00
 
-MAINTAINERS: Add myself as the ARM GIC maintainer
+irqchip/renesas-rzg2l: Convert to irq_data_get_irq_chip_data()
 
-The ARM GIC maintenance is currently covered by the blanket
-IRQCHIP DRIVERS entry, which I'm about to remove myself from.
+Use the existing irq_data_get_irq_chip_data() helper instead of
+open-coding the same operation.
 
-It is unlikely that anyone is mad enough to pick this up,
-so I'll keep doing that for the foreseable future.
-
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Reviewed-by: Zenghui Yu <zenghui.yu@linux.dev>
-Link: https://lore.kernel.org/r/20231002141302.3409485-2-maz@kernel.org
+Link: https://lore.kernel.org/r/8e47cc6400e5a82c854c855948d2665a3a3197e3.1695819391.git.geert+renesas@glider.be
 ---
- MAINTAINERS | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/irqchip/irq-renesas-rzg2l.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 90f1328..a8599e2 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1585,6 +1585,17 @@ F:	arch/arm/include/asm/arch_timer.h
- F:	arch/arm64/include/asm/arch_timer.h
- F:	drivers/clocksource/arm_arch_timer.c
+diff --git a/drivers/irqchip/irq-renesas-rzg2l.c b/drivers/irqchip/irq-renesas-rzg2l.c
+index 2cee547..96f4e32 100644
+--- a/drivers/irqchip/irq-renesas-rzg2l.c
++++ b/drivers/irqchip/irq-renesas-rzg2l.c
+@@ -130,8 +130,8 @@ static void rzg2l_irqc_irq_enable(struct irq_data *d)
+ 	unsigned int hw_irq = irqd_to_hwirq(d);
  
-+ARM GENERIC INTERRUPT CONTROLLER DRIVERS
-+M:	Marc Zyngier <maz@kernel.org>
-+L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/interrupt-controller/arm,gic*
-+F:	arch/arm/include/asm/arch_gicv3.h
-+F:	arch/arm64/include/asm/arch_gicv3.h
-+F:	drivers/irqchip/irq-gic*.[ch]
-+F:	include/linux/irqchip/arm-gic*.h
-+F:	include/linux/irqchip/arm-vgic-info.h
-+
- ARM HDLCD DRM DRIVER
- M:	Liviu Dudau <liviu.dudau@arm.com>
- S:	Supported
+ 	if (hw_irq >= IRQC_TINT_START && hw_irq < IRQC_NUM_IRQ) {
++		unsigned long tint = (uintptr_t)irq_data_get_irq_chip_data(d);
+ 		struct rzg2l_irqc_priv *priv = irq_data_to_priv(d);
+-		unsigned long tint = (uintptr_t)d->chip_data;
+ 		u32 offset = hw_irq - IRQC_TINT_START;
+ 		u32 tssr_offset = TSSR_OFFSET(offset);
+ 		u8 tssr_index = TSSR_INDEX(offset);
