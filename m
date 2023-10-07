@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0622D7BC347
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 02:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A467BC34B
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 02:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233939AbjJGAZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 20:25:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34678 "EHLO
+        id S233963AbjJGA10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 20:27:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233696AbjJGAZj (ORCPT
+        with ESMTP id S233950AbjJGA1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 20:25:39 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5923BF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 17:25:36 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2bfea381255so31815851fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 17:25:36 -0700 (PDT)
+        Fri, 6 Oct 2023 20:27:24 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35994BF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 17:27:22 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-504427aae4fso4648977e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 17:27:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696638335; x=1697243135; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1696638440; x=1697243240; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=WpRLrgCkogJnOQeDSxOWTaQXWFu0n6LSuhwjIbXl4Dg=;
-        b=inJNCSNqZBIqUjUN7P49MTBj3XCdeSQljf8AC9ZY8+A6pFImGXkstlz4aaY1ChrKzi
-         SCVMTTyjba6DhQXBzceEJO2XxbBrmtiXOUNq7jTOrzMUZupTsehm6ujgmTe/THG5oMxY
-         4ewboNZ+ysLxDQuODc3p/CsllrgLPxAdhAMQk7zHCRlLu3DiJ8Y7Hl5uGFjjZgrOh+r/
-         MC3QQXH611YaeTqa3bUFblK7Gh3K3FgT88L8zm75WQbTXruG6Iros57jG5vWLJmEPxtt
-         2SafMBKXeX2IL/tAdi4Tim/zrv7lLui1MvkQI/6e4bH6BhcTZ2iqkczSS3s/k5GWMHd7
-         /7wg==
+        bh=Oog0K2bgSzTGEjhivaMNxr6iwDGl914nrwoOT/UHnOs=;
+        b=s8ztgmk7jQTx7vPqDQyRYRMvZ54pOvr/57LdxISSF//yV7xbVxiLTKdDPXUxUn9Are
+         zVTeYW7Ncms2+oqO0ZdGNtDMy8I5X+uHRanbfaRJ0+fffj1GBGKLBvc/q2XnWd5EfEdc
+         IbH0+N56erzp/NzgsoxeeGcaJZLRrNrGv2lmgIbgGLgSFisOndmWVnh5ZjD/KXs38adx
+         9dOPjplIP0E2iNe7Lj5QNk3Kd9Vp86x8yTRLioSgIwZiy4fwewmrDG4LCTp2K1CfISl/
+         eu2OmnKzoR2X/ltUbn9ZnJXj2CdistSC5Ks7/Cg6qgNBmvd4P8g9P19297A/V3TOP1ra
+         rGYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696638335; x=1697243135;
+        d=1e100.net; s=20230601; t=1696638440; x=1697243240;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WpRLrgCkogJnOQeDSxOWTaQXWFu0n6LSuhwjIbXl4Dg=;
-        b=tnFcnGK6F9Xdr6BCNsB0SlPXedt7/qveQo2j0M+IiIUxNbc87UnNYZIINDIYqws3e4
-         O1vFnIIh8iQ+TmNXAKa/JmZb30WIk1NShOspCse/552GcfWgOik3CFQBtqA+kf3e1RT8
-         nnKH3f6kUk9NnTFOLhoHb2jMi0K/fYhIBRDibYEY7SY6w19YHSrjGvujvBku2/IGcvP+
-         sy36GP77lgE9bApQJ96g19KImxx4jwb5RmSOW/GFMdMsA/i4bP8qnWU89eNiCqzhJBYQ
-         ftMK4SghLTAH1S4CtqEagItpMF2rCJm7ldLK1E42UAr3kKBfhbZQFRLXRvypNWf495YN
-         EkRw==
-X-Gm-Message-State: AOJu0Yxk3zeCS0OtxS4rqfqAUrxRce3wpE5jskhCXPy1Jq+rkMRdHucp
-        HdIARf+LN4qIRiT311ZQ1jy06w==
-X-Google-Smtp-Source: AGHT+IHCOIS0v55XWXNrxUE/JZh8wD4IyW0TFEJayt8WRillwe6P5vxbqNzcFrvOkfoExfHdUla+Gw==
-X-Received: by 2002:a2e:a281:0:b0:2bf:7905:12c3 with SMTP id k1-20020a2ea281000000b002bf790512c3mr6929264lja.40.1696638334926;
-        Fri, 06 Oct 2023 17:25:34 -0700 (PDT)
+        bh=Oog0K2bgSzTGEjhivaMNxr6iwDGl914nrwoOT/UHnOs=;
+        b=boZTDKRcY8YhLj0xenRGL2VDTd+voTjq4M+z7ACeSnNWh3rjlBUqjjU0i7ZLT9ouy5
+         P3+6ag+DdVRRXXQGVNddhL7O3ywfDPNjlbt0+CtOe2oIzzwJezvdPO1Q8Zz3IMFSdiVe
+         rItDRYPpjAn2Knepy5U5W1Q54KQwFKoPHk3m5cTjumEGfxWE58nEnBc0rQbP6zlj5dWI
+         f6R01akcqCBfp7S+NoSte3zVB7I2PPRA59/KhMlexUkPRoiQbJIpKASM10qJaSJJIgD8
+         or3f6XGjubZOLAeUeNW5nMYPmR6DRQdP+w0jNftEKW1ISpomIkx9NJpp2wgl9/vWQGwm
+         TsJw==
+X-Gm-Message-State: AOJu0YzNn/zUBwcBBBjNnWWcoy26DZktbg0sWoo7tSJsytw32dcA4gWN
+        A0IdA48vue5dJPMacKjZn6epNQ==
+X-Google-Smtp-Source: AGHT+IFtzpDnhWYYOkUnZp+FvUJho+CNakCfaZUKceUAufQa5szkxE9roVrKeEOUvHl9rS6D8CzsZQ==
+X-Received: by 2002:a05:6512:1588:b0:502:9672:48b8 with SMTP id bp8-20020a056512158800b00502967248b8mr4572653lfb.5.1696638440485;
+        Fri, 06 Oct 2023 17:27:20 -0700 (PDT)
 Received: from [192.168.200.173] (178235177147.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.147])
-        by smtp.gmail.com with ESMTPSA id e17-20020a2e8ed1000000b002c128e45245sm992168ljl.23.2023.10.06.17.25.33
+        by smtp.gmail.com with ESMTPSA id d2-20020ac24c82000000b005008b8dd56csm488778lfl.44.2023.10.06.17.27.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 17:25:34 -0700 (PDT)
-Message-ID: <123f7c9a-587c-410f-a3fe-545f10bd3d09@linaro.org>
-Date:   Sat, 7 Oct 2023 02:25:32 +0200
+        Fri, 06 Oct 2023 17:27:20 -0700 (PDT)
+Message-ID: <54ed2500-1d06-4f36-b2c5-418b878e9de4@linaro.org>
+Date:   Sat, 7 Oct 2023 02:27:17 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/6] dt-bindings: PCI: qcom: Add IPQ5108 SoC
+Subject: Re: [PATCH 6/6] arm64: dts: qcom: ipq5018: Enable PCIe
 Content-Language: en-US
 To:     Nitheesh Sekar <quic_nsekar@quicinc.com>, agross@kernel.org,
         andersson@kernel.org, lpieralisi@kernel.org, kw@linux.com,
@@ -67,7 +67,7 @@ To:     Nitheesh Sekar <quic_nsekar@quicinc.com>, agross@kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-phy@lists.infradead.org
 References: <20231003120846.28626-1-quic_nsekar@quicinc.com>
- <20231003120846.28626-3-quic_nsekar@quicinc.com>
+ <20231003120846.28626-7-quic_nsekar@quicinc.com>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -104,11 +104,11 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20231003120846.28626-3-quic_nsekar@quicinc.com>
+In-Reply-To: <20231003120846.28626-7-quic_nsekar@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -118,27 +118,26 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 3.10.2023 14:08, Nitheesh Sekar wrote:
-> Add support for the PCIe controller on the Qualcomm
-> IPQ5108 SoC to the bindings.
+> Enable the PCIe controller and PHY nodes for RDP 432-c2.
 > 
 > Signed-off-by: Nitheesh Sekar <quic_nsekar@quicinc.com>
 > ---
-[...]
+>  arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts b/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
+> index e636a1cb9b77..be7d92700517 100644
+> --- a/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
+> +++ b/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
+> @@ -28,6 +28,15 @@
+>  	status = "okay";
+>  };
+>  
+> +&pcie_x2 {
+> +	status = "ok";
+"okay" is preferred
 
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - qcom,pcie-ipq5018
-> +    then:
-> +      properties:
-> +        clocks:
-> +          minItems: 6
-> +          maxItems: 6
-> +        clock-names:
-> +          items:
-> +            - const: iface # PCIe to SysNOC BIU clock
-What's a BIU?
+It's also preferred to keep status as the last property within
+a node.
 
 Konrad
