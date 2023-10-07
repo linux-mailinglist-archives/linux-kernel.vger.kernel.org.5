@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F437BCA86
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 01:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 155487BCA7D
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 01:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344281AbjJGXkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 19:40:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34904 "EHLO
+        id S1344272AbjJGXkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 19:40:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344273AbjJGXkJ (ORCPT
+        with ESMTP id S1344271AbjJGXj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 19:40:09 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A289107;
-        Sat,  7 Oct 2023 16:40:02 -0700 (PDT)
+        Sat, 7 Oct 2023 19:39:59 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66087C5;
+        Sat,  7 Oct 2023 16:39:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
- t=1696721983; x=1697326783; i=w_armin@gmx.de;
- bh=Y/qUsDiDdVUWMFMwXVZBHFFUAPNEIq2aEjhb47CVHzI=;
+ t=1696721985; x=1697326785; i=w_armin@gmx.de;
+ bh=5+KayTNVHXGBHiTso+VMux4gCfCpCNVmo/W6eOPMdjY=;
  h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
- b=rgbhVzcKBhZVzUQ7AR+KSY4IWWHkGmELyTK7wZawN0e43WjPwsT0/mGr0PPv0WeeEPuAR7Ft46g
- O44PKUWQOQAAexBewMYrbrhQ+eiCaPMwCkMmi/tlYGRoxIANs1/qqu1yIuz7yeHhmyOHy3p33UMEV
- 3f8cHPpX3kbfUHPcBqHjuweruywfLtST1C4ue2eC+F5y+TTyOxcKx98JaSLItmGfRE/UZUPrdS12u
- 47mrvghSJvwZ0uOK9A5YkpqDkX1YLWbUmaL+jAjsIDlvg6n7qcLgPcJwCcSey32k6vObyKCfK2iHn
- Q05mbeFEympJIhCNudI4i9GrWbCeIejdJzDQ==
+ b=gSnJSyX9Ibk6x/ndbg8ujWkebzaViSf05mNiL6ZkYUp3wIlGvYwmavigKMOlRfNuyW85ZBPOo8F
+ 3YqqJl3x/JDE8pSw07AJOyAFjIvsE4F8JqEmYueE1t3RCOynDiqrnpQM5qOWl1ZUPi4lqn/LxqM69
+ y99Cq8eE6xylBxYw0C0E1/mSS7weshURtKaudf28G5Rqz4slmDOH7GY1iGk/b+7pa2juK13bCLeOH
+ OMBKoAhC8yDYNNaUWlCQY68nSnujNcegJo4ijfs1e/w1ioQ0gmlGTFlsy3BN4f+9V4/otOsGplk/V
+ 1evQDhK2LtnFPK2FwP6UTSybxogrd/wic3pg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1MxUnz-1rmCGd3f1F-00xvNG; Sun, 08 Oct 2023 01:39:42 +0200
+ (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1N7zFZ-1rbivj3Yxv-01511s; Sun, 08 Oct 2023 01:39:44 +0200
 From:   Armin Wolf <W_Armin@gmx.de>
 To:     hdegoede@redhat.com, markgross@kernel.org,
         ilpo.jarvinen@linux.intel.com
 Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/6] platform/x86: wmi: Decouple probe deferring from wmi_block_list
-Date:   Sun,  8 Oct 2023 01:39:29 +0200
-Message-Id: <20231007233933.72121-3-W_Armin@gmx.de>
+Subject: [PATCH 3/6] platform/x86: wmi: Fix refcounting of WMI devices in legacy functions
+Date:   Sun,  8 Oct 2023 01:39:30 +0200
+Message-Id: <20231007233933.72121-4-W_Armin@gmx.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231007233933.72121-1-W_Armin@gmx.de>
 References: <20231007233933.72121-1-W_Armin@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:flITnas8bY7wHEIbBweiIIBp7vUh6aH6WVAyzKsZgXSytqzEHnw
- ZHSXLk3gD6SBWYtjSNEIjkTm+BqVdrCdsKBjlxHdTmFPJ+S0dmOBWk9d8VXpYN5DjyXKApJ
- FgEWkmqa67JMzNUbKiBfeO7ZCmflxeKaCq+9vtV+GvfwedoFmTdfBevPuOKLXzqD5QAuX83
- qNR6OBV88KGpcnPCdhnDQ==
-UI-OutboundReport: notjunk:1;M01:P0:qxGLR2kVk5U=;htd33az+9hkprs0VwE8zAIpbw2m
- gTFQnOOhni7Axcehcdvb7L0J/4cqx6tMudTKUY9ifLENnyfQlU+RyB/BDfQ8Q57oxg9/88KZG
- 3pGWCyNVECBfvpAJd6ks3k+2KPqBwFkCFsCKlVdY72O0EexKfPssw1cVha7/7S4HnKzoFogaX
- Zc4F2vhM63LRcGZfI6oUfu+ork8no3wd7+NqNKGdzO9LT+ej48ghzrdXo3hHQMX1K5YyPw9Ig
- 19xNJGzDgEJU+1N0DsRVY5Pdx4nlIKalSD9UYFOAC4SKd2vC5UIr5VAYTaR0EJeElGSXjRHyO
- mO0cBnRbDpxJ1X+feAiwAdwHZ7wxHCc5R7JoSGDXjKhQV5/XuyiTNXFXESKShVDf1tHqLiMlJ
- DWGPqE+PBHp0Jvcu91sqWTXjD5SXS3M+EkUlG+E8GZBSnWgrQGYwEcMemfjNOQvGZGb3JD0dL
- pUjZaRMh41vr61upUKOCkYzYnR0CfvbP2s7OMX+CiHc1a1buV/Qj4mmHoB2vOXCQvuybZvuql
- 8PU8PbZh99UP9qQv4HUyWxIwP6R6/JDGuPrFs+zJBqrq1y4RZu0QQP9XZH1oFEKHZI4ljCpR5
- uCBmGOiKS1aMqDFIuWESffTdu60P/9m6ItV4hUn5IFCzYGMDt3HxL2McrdhyXr9X7VMYAj3AO
- zNnKsG3kdLOJx7dPPseoSbtFmvHiQS/sUPgUUyCitXM40y9ZGj0skVmk5PeFrOIMxFn7qgsRi
- XYd3UTedX0DjqxNV4keD0ecSRHRLgw7dTHgqX9ZTAle0MYXVgnuwNLAfWVvZ4njL/xI6U4/fR
- JILDiPjs7x8uTUIactdVoKKpYOKaLfTRQ0tYejLkbUKOsUqMxaP6cJH3HlWlkb6KTRy5o0j69
- ychnR8QXggk/zROiQ3EMPJ1jpfFIJO2SVoi7YSqFQWkXld8+atMxyu6pDYlbL8ir9QQ8+eSzh
- BDvjQqy4DcI2ikg7iRU4fA/LoXU=
+X-Provags-ID: V03:K1:oUmKFfwaZPonOyzvnKYLhZG9Mytu5LUhXeEZncVF//yvowmzt4L
+ 6WEnh4lVmcyIDbqA+AfDVTaayQqmcSy3Ah+r0Yd272OfkHh1qzSJyxD5CWjJH0zaBiEodts
+ ol/EbyVmvCyXJ3jZLG9AgWdhE5gp7/JMhjgMSBua6e+bLBqg6x1/0pwUMJDZmmjVwF2tgBD
+ MTjZFR/AWYXFucfqbSkVA==
+UI-OutboundReport: notjunk:1;M01:P0:6iM16qMGA34=;nAEvTbdvkI7SsKfY8YFJTIJfHaE
+ OPXicI0tokqZ3xmMyx/T3q9/fOdOmQQNnd5efB4YBUzUWQpIjFwKx6Mec0ZIX7bHafAyBAzI3
+ e+guMQXXOoCcew21TOc2t0k8hcZRiDRpHcnvemqf9K0ieX6c4PiwyKTlmcLu8v+lwKYfMcLW4
+ +7dR/+/wgIYrdEwNGlCDWQwUQQ/c9K9Btl/FA8Uwwuy2AILhM9DKkb1S6XWfA425koLQ3t6XJ
+ BMt6SAmmAKHPXQv7OBP30+TRlPINi7KjLoTo0J7SOkE8qxu+hTJuWm2WwiRvQhKPnt0UuIWud
+ jE3pJogG5rAfD2jiH9/MUV42SY/67dgWtHCSjDCQxlcr5SGvide32C0Te9+RUyEyvWYJXhqMq
+ E+gZr4GmV23Xt47MqjwNfYOyIhHVYmAUhZNNS0Q1p+ticfOTmcjNBiz49CnkrQUU9J920rF4Y
+ Rnsx8Vd+ai0O5glzQx1C1gZN8JHuwjwSHI7n0IkKXTLc4yP0ATJFl3I99zvkm0mkhXdLrUbLr
+ M/YHr5kGhTLpEkwcCXot4//C+fvVOKd58PTZEkXRh12DijK5tQIBoc1Qgv89dqt8PtPd/likj
+ s8TLmI8r7p7JLYPt1ToipQQz8E3clMWGhMvdcNJq4ns5JmwnOhL1frmw43lRvQ3vVD0ek1ccm
+ sgtW2AR7bCSVaBFDNG/cq8zZvaNjNYP2AaAFxNxNEX2Xw9Vn/SS8vaCGwnh8rVY+CYV/OwAuD
+ 42iRUzol3ZDfesGeC0BIJSAvwFmWINS4TG8ooiKlT2vdtSp+hty47jCRtK9106fn2qrMsbX8Y
+ AI/1isweTBjmmTd72Q4LwG2jBgxURnPOj+qgwqZkx9jJIYSUUSs4AP2Yhcz6b4oR3t1Bel2C7
+ EqzkWAcjSKex5Bdy7uZMFrRNgAbqknUEEjkTuHRlBHz1cv5dE/x+EE7c7m5Gf8vUZH0eQAvNg
+ YTyGoIRtsUjN0ojdQybCkFE+n20=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,114 +69,298 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many aggregate WMI drivers do not use -EPROBE_DEFER when they
-cannot find a WMI device during probe, instead they require
-all WMI devices associated with an platform device to become
-available at once. This is currently achieved by adding those
-WMI devices to the wmi_block_list before they are registered,
-which is then used by the deprecated GUID-based functions to
-search for WMI devices.
-Replace this approach with a device link which defers probing
-of the WMI device until the associated platform device has finished
-probing (and has registered all WMI devices). New aggregate WMI
-drivers should not rely on this behaviour.
+Until now, legacy GUID-based functions where using find_guid() when
+searching for WMI devices, which did no refcounting on the returned
+WMI device. This meant that the WMI device could disappear at any
+moment, potentially leading to various errors. Fix this by using
+bus_find_device() which returns an actual reference to the found
+WMI device.
 
 Signed-off-by: Armin Wolf <W_Armin@gmx.de>
 =2D--
- drivers/platform/x86/wmi.c | 39 +++++++++++++++++++++++++-------------
- 1 file changed, 26 insertions(+), 13 deletions(-)
+ drivers/platform/x86/wmi.c | 167 ++++++++++++++++++++++++-------------
+ 1 file changed, 107 insertions(+), 60 deletions(-)
 
 diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-index a78ddd83cda0..1dbef16acdeb 100644
+index 1dbef16acdeb..e3984801883a 100644
 =2D-- a/drivers/platform/x86/wmi.c
 +++ b/drivers/platform/x86/wmi.c
-@@ -1221,6 +1221,26 @@ static int wmi_create_device(struct device *wmi_bus=
-_dev,
- 	return 0;
+@@ -109,33 +109,13 @@ static const char * const allow_duplicates[] =3D {
+ 	NULL
+ };
+
++#define dev_to_wblock(__dev)	container_of_const(__dev, struct wmi_block, =
+dev.dev)
++#define dev_to_wdev(__dev)	container_of_const(__dev, struct wmi_device, d=
+ev)
++
+ /*
+  * GUID parsing functions
+  */
+
+-static acpi_status find_guid(const char *guid_string, struct wmi_block **=
+out)
+-{
+-	guid_t guid_input;
+-	struct wmi_block *wblock;
+-
+-	if (!guid_string)
+-		return AE_BAD_PARAMETER;
+-
+-	if (guid_parse(guid_string, &guid_input))
+-		return AE_BAD_PARAMETER;
+-
+-	list_for_each_entry(wblock, &wmi_block_list, list) {
+-		if (guid_equal(&wblock->gblock.guid, &guid_input)) {
+-			if (out)
+-				*out =3D wblock;
+-
+-			return AE_OK;
+-		}
+-	}
+-
+-	return AE_NOT_FOUND;
+-}
+-
+ static bool guid_parse_and_compare(const char *string, const guid_t *guid=
+)
+ {
+ 	guid_t guid_input;
+@@ -245,6 +225,41 @@ static acpi_status get_event_data(const struct wmi_bl=
+ock *wblock, struct acpi_bu
+ 	return acpi_evaluate_object(wblock->acpi_device->handle, "_WED", &input,=
+ out);
  }
 
-+static int wmi_add_device(struct platform_device *pdev, struct wmi_device=
- *wdev)
++static int wmidev_match_guid(struct device *dev, const void *data)
 +{
-+	struct device_link *link;
++	struct wmi_block *wblock =3D dev_to_wblock(dev);
++	const guid_t *guid =3D data;
 +
-+	/*
-+	 * Many aggregate WMI drivers do not use -EPROBE_DEFER when they
-+	 * are unable to find a WMI device during probe, instead they require
-+	 * all WMI devices associated with an platform device to become availabl=
-e
-+	 * at once. This device link thus prevents WMI drivers from probing unti=
-l
-+	 * the associated platform device has finished probing (and has register=
-ed
-+	 * all discovered WMI devices).
-+	 */
++	if (guid_equal(guid, &wblock->gblock.guid))
++		return 1;
 +
-+	link =3D device_link_add(&wdev->dev, &pdev->dev, DL_FLAG_AUTOREMOVE_SUPP=
-LIER);
-+	if (!link)
-+		return -EINVAL;
-+
-+	return device_add(&wdev->dev);
++	return 0;
 +}
 +
- static void wmi_free_devices(struct acpi_device *device)
- {
- 	struct wmi_block *wblock, *next;
-@@ -1263,11 +1283,12 @@ static bool guid_already_parsed_for_legacy(struct =
-acpi_device *device, const gui
- /*
-  * Parse the _WDG method for the GUID data blocks
-  */
--static int parse_wdg(struct device *wmi_bus_dev, struct acpi_device *devi=
-ce)
-+static int parse_wdg(struct device *wmi_bus_dev, struct platform_device *=
-pdev)
- {
-+	struct acpi_device *device =3D ACPI_COMPANION(&pdev->dev);
- 	struct acpi_buffer out =3D {ACPI_ALLOCATE_BUFFER, NULL};
- 	const struct guid_block *gblock;
--	struct wmi_block *wblock, *next;
-+	struct wmi_block *wblock;
- 	union acpi_object *obj;
- 	acpi_status status;
- 	int retval =3D 0;
-@@ -1317,22 +1338,14 @@ static int parse_wdg(struct device *wmi_bus_dev, s=
-truct acpi_device *device)
- 			wblock->handler =3D wmi_notify_debug;
- 			wmi_method_enable(wblock, true);
- 		}
--	}
-
--	/*
--	 * Now that all of the devices are created, add them to the
--	 * device tree and probe subdrivers.
--	 */
--	list_for_each_entry_safe(wblock, next, &wmi_block_list, list) {
--		if (wblock->acpi_device !=3D device)
--			continue;
--
--		retval =3D device_add(&wblock->dev.dev);
-+		retval =3D wmi_add_device(pdev, &wblock->dev);
- 		if (retval) {
- 			dev_err(wmi_bus_dev, "failed to register %pUL\n",
- 				&wblock->gblock.guid);
- 			if (debug_event)
- 				wmi_method_enable(wblock, false);
++static struct bus_type wmi_bus_type;
 +
- 			list_del(&wblock->list);
- 			put_device(&wblock->dev.dev);
- 		}
-@@ -1487,7 +1500,7 @@ static int acpi_wmi_probe(struct platform_device *de=
-vice)
- 	}
- 	dev_set_drvdata(&device->dev, wmi_bus_dev);
++static struct wmi_device *wmi_find_device_by_guid(const char *guid_string=
+)
++{
++	struct device *dev;
++	guid_t guid;
++	int ret;
++
++	ret =3D guid_parse(guid_string, &guid);
++	if (ret < 0)
++		return ERR_PTR(ret);
++
++	dev =3D bus_find_device(&wmi_bus_type, NULL, &guid, wmidev_match_guid);
++	if (!dev)
++		return ERR_PTR(-ENODEV);
++
++	return dev_to_wdev(dev);
++}
++
++static void wmi_device_put(struct wmi_device *wdev)
++{
++	put_device(&wdev->dev);
++}
++
+ /*
+  * Exported WMI functions
+  */
+@@ -279,18 +294,17 @@ EXPORT_SYMBOL_GPL(set_required_buffer_size);
+  */
+ int wmi_instance_count(const char *guid_string)
+ {
+-	struct wmi_block *wblock;
+-	acpi_status status;
++	struct wmi_device *wdev;
++	int ret;
 
--	error =3D parse_wdg(wmi_bus_dev, acpi_device);
-+	error =3D parse_wdg(wmi_bus_dev, device);
- 	if (error) {
- 		pr_err("Failed to parse WDG method\n");
- 		goto err_remove_busdev;
+-	status =3D find_guid(guid_string, &wblock);
+-	if (ACPI_FAILURE(status)) {
+-		if (status =3D=3D AE_BAD_PARAMETER)
+-			return -EINVAL;
++	wdev =3D wmi_find_device_by_guid(guid_string);
++	if (IS_ERR(wdev))
++		return PTR_ERR(wdev);
+
+-		return -ENODEV;
+-	}
++	ret =3D wmidev_instance_count(wdev);
++	wmi_device_put(wdev);
+
+-	return wmidev_instance_count(&wblock->dev);
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(wmi_instance_count);
+
+@@ -325,15 +339,18 @@ EXPORT_SYMBOL_GPL(wmidev_instance_count);
+ acpi_status wmi_evaluate_method(const char *guid_string, u8 instance, u32=
+ method_id,
+ 				const struct acpi_buffer *in, struct acpi_buffer *out)
+ {
+-	struct wmi_block *wblock =3D NULL;
++	struct wmi_device *wdev;
+ 	acpi_status status;
+
+-	status =3D find_guid(guid_string, &wblock);
+-	if (ACPI_FAILURE(status))
+-		return status;
++	wdev =3D wmi_find_device_by_guid(guid_string);
++	if (IS_ERR(wdev))
++		return AE_ERROR;
++
++	status =3D wmidev_evaluate_method(wdev, instance, method_id, in, out);
+
+-	return wmidev_evaluate_method(&wblock->dev, instance, method_id,
+-				      in, out);
++	wmi_device_put(wdev);
++
++	return status;
+ }
+ EXPORT_SYMBOL_GPL(wmi_evaluate_method);
+
+@@ -472,13 +489,19 @@ acpi_status wmi_query_block(const char *guid_string,=
+ u8 instance,
+ 			    struct acpi_buffer *out)
+ {
+ 	struct wmi_block *wblock;
++	struct wmi_device *wdev;
+ 	acpi_status status;
+
+-	status =3D find_guid(guid_string, &wblock);
+-	if (ACPI_FAILURE(status))
+-		return status;
++	wdev =3D wmi_find_device_by_guid(guid_string);
++	if (IS_ERR(wdev))
++		return AE_ERROR;
+
+-	return __query_block(wblock, instance, out);
++	wblock =3D container_of(wdev, struct wmi_block, dev);
++	status =3D __query_block(wblock, instance, out);
++
++	wmi_device_put(wdev);
++
++	return status;
+ }
+ EXPORT_SYMBOL_GPL(wmi_query_block);
+
+@@ -516,8 +539,9 @@ EXPORT_SYMBOL_GPL(wmidev_block_query);
+ acpi_status wmi_set_block(const char *guid_string, u8 instance,
+ 			  const struct acpi_buffer *in)
+ {
+-	struct wmi_block *wblock =3D NULL;
++	struct wmi_block *wblock;
+ 	struct guid_block *block;
++	struct wmi_device *wdev;
+ 	acpi_handle handle;
+ 	struct acpi_object_list input;
+ 	union acpi_object params[2];
+@@ -527,19 +551,26 @@ acpi_status wmi_set_block(const char *guid_string, u=
+8 instance,
+ 	if (!in)
+ 		return AE_BAD_DATA;
+
+-	status =3D find_guid(guid_string, &wblock);
+-	if (ACPI_FAILURE(status))
+-		return status;
++	wdev =3D wmi_find_device_by_guid(guid_string);
++	if (IS_ERR(wdev))
++		return AE_ERROR;
+
++	wblock =3D container_of(wdev, struct wmi_block, dev);
+ 	block =3D &wblock->gblock;
+ 	handle =3D wblock->acpi_device->handle;
+
+-	if (block->instance_count <=3D instance)
+-		return AE_BAD_PARAMETER;
++	if (block->instance_count <=3D instance) {
++		status =3D AE_BAD_PARAMETER;
++
++		goto err_wdev_put;
++	}
+
+ 	/* Check GUID is a data block */
+-	if (block->flags & (ACPI_WMI_EVENT | ACPI_WMI_METHOD))
+-		return AE_ERROR;
++	if (block->flags & (ACPI_WMI_EVENT | ACPI_WMI_METHOD)) {
++		status =3D AE_ERROR;
++
++		goto err_wdev_put;
++	}
+
+ 	input.count =3D 2;
+ 	input.pointer =3D params;
+@@ -551,7 +582,12 @@ acpi_status wmi_set_block(const char *guid_string, u8=
+ instance,
+
+ 	get_acpi_method_name(wblock, 'S', method);
+
+-	return acpi_evaluate_object(handle, method, &input, NULL);
++	status =3D acpi_evaluate_object(handle, method, &input, NULL);
++
++err_wdev_put:
++	wmi_device_put(wdev);
++
++	return status;
+ }
+ EXPORT_SYMBOL_GPL(wmi_set_block);
+
+@@ -742,7 +778,15 @@ EXPORT_SYMBOL_GPL(wmi_get_event_data);
+  */
+ bool wmi_has_guid(const char *guid_string)
+ {
+-	return ACPI_SUCCESS(find_guid(guid_string, NULL));
++	struct wmi_device *wdev;
++
++	wdev =3D wmi_find_device_by_guid(guid_string);
++	if (IS_ERR(wdev))
++		return false;
++
++	wmi_device_put(wdev);
++
++	return true;
+ }
+ EXPORT_SYMBOL_GPL(wmi_has_guid);
+
+@@ -756,20 +800,23 @@ EXPORT_SYMBOL_GPL(wmi_has_guid);
+  */
+ char *wmi_get_acpi_device_uid(const char *guid_string)
+ {
+-	struct wmi_block *wblock =3D NULL;
+-	acpi_status status;
++	struct wmi_block *wblock;
++	struct wmi_device *wdev;
++	char *uid;
+
+-	status =3D find_guid(guid_string, &wblock);
+-	if (ACPI_FAILURE(status))
++	wdev =3D wmi_find_device_by_guid(guid_string);
++	if (IS_ERR(wdev))
+ 		return NULL;
+
+-	return acpi_device_uid(wblock->acpi_device);
++	wblock =3D container_of(wdev, struct wmi_block, dev);
++	uid =3D acpi_device_uid(wblock->acpi_device);
++
++	wmi_device_put(wdev);
++
++	return uid;
+ }
+ EXPORT_SYMBOL_GPL(wmi_get_acpi_device_uid);
+
+-#define dev_to_wblock(__dev)	container_of_const(__dev, struct wmi_block, =
+dev.dev)
+-#define dev_to_wdev(__dev)	container_of_const(__dev, struct wmi_device, d=
+ev)
+-
+ static inline struct wmi_driver *drv_to_wdrv(struct device_driver *drv)
+ {
+ 	return container_of(drv, struct wmi_driver, driver);
 =2D-
 2.39.2
 
