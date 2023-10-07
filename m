@@ -2,118 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF61E7BC646
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 10:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C56D7BC65D
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 11:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343662AbjJGI6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 04:58:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35398 "EHLO
+        id S1343679AbjJGJNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 05:13:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229981AbjJGI63 (ORCPT
+        with ESMTP id S229757AbjJGJNp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 04:58:29 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4EB5B9;
-        Sat,  7 Oct 2023 01:58:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A3BDC433C7;
-        Sat,  7 Oct 2023 08:58:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696669107;
-        bh=63/dX8Mo5xru8ooy9lCm1E4eme6V3fkD4TYeT7/GxT8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l1i/NIDAMmZft2wxUCk+uo6l9YM0hOIgb4Ksq3nEmXl7j8swBvb1Th5UI1cO+oYFi
-         Mgc3JIhYrOjNZIIjl/JaMbWo7w5X+M7j/N9LdJ3OWL3toXnmtH2hC/t3/sP57Rit/R
-         g7QNjJ1hxzMZrMDUM8TmaY7ZVatkHKPDyQsOCEAk=
-Date:   Sat, 7 Oct 2023 10:58:24 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        linux-nfs@vger.kernel.org, stable@vger.kernel.org,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Benjamin Coddington <bcodding@redhat.com>,
-        Anna Schumaker <Anna.Schumaker@netapp.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        LTP List <ltp@lists.linux.it>, Petr Vorel <pvorel@suse.cz>,
-        Richard Palethorpe <rpalethorpe@suse.com>,
-        Eryu Guan <eguan@redhat.com>, chrubis <chrubis@suse.cz>
-Subject: Re: [PATCH 6.1 000/259] 6.1.56-rc1 review
-Message-ID: <2023100755-livestock-barcode-fe41@gregkh>
-References: <20231004175217.404851126@linuxfoundation.org>
- <CA+G9fYsqbZhSQnEi-qSc7n+4d7nPap8HWcdbZGWLfo3mTH-L7A@mail.gmail.com>
- <CAEUSe78O-Ho=22nTeioT4eqPRoDNfcWCpc=5O=B59eaMvOkzpg@mail.gmail.com>
+        Sat, 7 Oct 2023 05:13:45 -0400
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CCBDB9;
+        Sat,  7 Oct 2023 02:13:43 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VtZZePq_1696670019;
+Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0VtZZePq_1696670019)
+          by smtp.aliyun-inc.com;
+          Sat, 07 Oct 2023 17:13:40 +0800
+Date:   Sat, 7 Oct 2023 17:13:39 +0800
+From:   Dust Li <dust.li@linux.alibaba.com>
+To:     Albert Huang <huangjie.albert@bytedance.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Jan Karcher <jaka@linux.ibm.com>,
+        "D. Wythe" <alibuda@linux.alibaba.com>,
+        Tony Lu <tonylu@linux.alibaba.com>
+Cc:     Wen Gu <guwen@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net/smc: fix smc clc failed issue when netdevice not
+ in init_net
+Message-ID: <20231007091339.GH92403@linux.alibaba.com>
+Reply-To: dust.li@linux.alibaba.com
+References: <20231007084420.80236-1-huangjie.albert@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEUSe78O-Ho=22nTeioT4eqPRoDNfcWCpc=5O=B59eaMvOkzpg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231007084420.80236-1-huangjie.albert@bytedance.com>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 12:42:04PM -0600, Daniel Díaz wrote:
-> Hello!
+On Sat, Oct 07, 2023 at 04:44:19PM +0800, Albert Huang wrote:
+>If the netdevice is within a container and communicates externally
+>through network technologies such as VxLAN, we won't be able to find
+>routing information in the init_net namespace. To address this issue,
+>we need to add a struct net parameter to the smc_ib_find_route function.
+>This allow us to locate the routing information within the corresponding
+>net namespace, ensuring the correct completion of the SMC CLC interaction.
+>
+
+You should add a Fixes tag here, I think it should be:
+Fixes: e5c4744cfb59 ("net/smc: add SMC-Rv2 connection establishment")
+
+>Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
+>---
+> net/smc/af_smc.c | 3 ++-
+> net/smc/smc_ib.c | 7 ++++---
+> net/smc/smc_ib.h | 2 +-
+> 3 files changed, 7 insertions(+), 5 deletions(-)
+>
+>diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+>index bacdd971615e..7a874da90c7f 100644
+>--- a/net/smc/af_smc.c
+>+++ b/net/smc/af_smc.c
+>@@ -1201,6 +1201,7 @@ static int smc_connect_rdma_v2_prepare(struct smc_sock *smc,
+> 		(struct smc_clc_msg_accept_confirm_v2 *)aclc;
+> 	struct smc_clc_first_contact_ext *fce =
+> 		smc_get_clc_first_contact_ext(clc_v2, false);
+>+	struct net *net = sock_net(&smc->sk);
+> 	int rc;
 > 
-> On Thu, 5 Oct 2023 at 10:40, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> > On Wed, 4 Oct 2023 at 23:41, Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > This is the start of the stable review cycle for the 6.1.56 release.
-> > > There are 259 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
-> > >
-> > > Responses should be made by Fri, 06 Oct 2023 17:51:12 +0000.
-> > > Anything received after that time might be too late.
-> > >
-> > > The whole patch series can be found in one patch at:
-> > >         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.56-rc1.gz
-> > > or in the git tree and branch at:
-> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> > > and the diffstat can be found below.
-> > >
-> > > thanks,
-> > >
-> > > greg k-h
-> >
-> > Results from Linaro’s test farm.
-> > Regressions on arm64 bcm2711-rpi-4-b device running LTP dio tests on
-> > NFS mounted rootfs.
-> > and LTP hugetlb hugemmap11 test case failed on x86 and arm64 bcm2711-rpi-4-b.
-> >
-> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> >
-> > LTP hugetlb tests failed log
-> >   tst_hugepage.c:83: TINFO: 1 hugepage(s) reserved
-> >   tst_test.c:1558: TINFO: Timeout per run is 0h 05m 00s
-> >   hugemmap11.c:47: TFAIL: Memory mismatch after Direct-IO write
-> >
-> > LTP dio tests failed log
-> >   compare_file: char mismatch: infile offset 4096: 0x01 .   outfile
-> > offset 4096: 0x00 .
-> >   diotest01    1  TFAIL  :  diotest1.c:158: file compare failed for
-> > infile and outfile
+> 	if (!ini->first_contact_peer || aclc->hdr.version == SMC_V1)
+>@@ -1210,7 +1211,7 @@ static int smc_connect_rdma_v2_prepare(struct smc_sock *smc,
+> 		memcpy(ini->smcrv2.nexthop_mac, &aclc->r0.lcl.mac, ETH_ALEN);
+> 		ini->smcrv2.uses_gateway = false;
+> 	} else {
+>-		if (smc_ib_find_route(smc->clcsock->sk->sk_rcv_saddr,
+>+		if (smc_ib_find_route(net, smc->clcsock->sk->sk_rcv_saddr,
+> 				      smc_ib_gid_to_ipv4(aclc->r0.lcl.gid),
+> 				      ini->smcrv2.nexthop_mac,
+> 				      &ini->smcrv2.uses_gateway))
+>diff --git a/net/smc/smc_ib.c b/net/smc/smc_ib.c
+>index 9b66d6aeeb1a..89981dbe46c9 100644
+>--- a/net/smc/smc_ib.c
+>+++ b/net/smc/smc_ib.c
+>@@ -193,7 +193,7 @@ bool smc_ib_port_active(struct smc_ib_device *smcibdev, u8 ibport)
+> 	return smcibdev->pattr[ibport - 1].state == IB_PORT_ACTIVE;
+> }
 > 
-> Bisection led to "NFS: Fix O_DIRECT locking issues" (upstream commit
-> 7c6339322ce0c6128acbe36aacc1eeb986dd7bf1). Reverting that patch and
-> "NFS: Fix error handling for O_DIRECT write scheduling" (upstream
-> commit 954998b60caa8f2a3bf3abe490de6f08d283687a) (not a clean revert
-> this one) made ltp-dio pass again.
-
-So this is also an issue in Linus's tree?  Or is it only on the 6.1.y
-tree.
-
-thanks,
-
-greg k-h
+>-int smc_ib_find_route(__be32 saddr, __be32 daddr,
+>+int smc_ib_find_route(struct net *net, __be32 saddr, __be32 daddr,
+> 		      u8 nexthop_mac[], u8 *uses_gateway)
+> {
+> 	struct neighbour *neigh = NULL;
+>@@ -205,7 +205,7 @@ int smc_ib_find_route(__be32 saddr, __be32 daddr,
+> 
+> 	if (daddr == cpu_to_be32(INADDR_NONE))
+> 		goto out;
+>-	rt = ip_route_output_flow(&init_net, &fl4, NULL);
+>+	rt = ip_route_output_flow(net, &fl4, NULL);
+> 	if (IS_ERR(rt))
+> 		goto out;
+> 	if (rt->rt_uses_gateway && rt->rt_gw_family != AF_INET)
+>@@ -235,6 +235,7 @@ static int smc_ib_determine_gid_rcu(const struct net_device *ndev,
+> 	if (smcrv2 && attr->gid_type == IB_GID_TYPE_ROCE_UDP_ENCAP &&
+> 	    smc_ib_gid_to_ipv4((u8 *)&attr->gid) != cpu_to_be32(INADDR_NONE)) {
+> 		struct in_device *in_dev = __in_dev_get_rcu(ndev);
+>+		struct net *net = dev_net(ndev);
+> 		const struct in_ifaddr *ifa;
+> 		bool subnet_match = false;
+> 
+>@@ -248,7 +249,7 @@ static int smc_ib_determine_gid_rcu(const struct net_device *ndev,
+> 		}
+> 		if (!subnet_match)
+> 			goto out;
+>-		if (smcrv2->daddr && smc_ib_find_route(smcrv2->saddr,
+>+		if (smcrv2->daddr && smc_ib_find_route(net, smcrv2->saddr,
+> 						       smcrv2->daddr,
+> 						       smcrv2->nexthop_mac,
+> 						       &smcrv2->uses_gateway))
+>diff --git a/net/smc/smc_ib.h b/net/smc/smc_ib.h
+>index 4df5f8c8a0a1..ef8ac2b7546d 100644
+>--- a/net/smc/smc_ib.h
+>+++ b/net/smc/smc_ib.h
+>@@ -112,7 +112,7 @@ void smc_ib_sync_sg_for_device(struct smc_link *lnk,
+> int smc_ib_determine_gid(struct smc_ib_device *smcibdev, u8 ibport,
+> 			 unsigned short vlan_id, u8 gid[], u8 *sgid_index,
+> 			 struct smc_init_info_smcrv2 *smcrv2);
+>-int smc_ib_find_route(__be32 saddr, __be32 daddr,
+>+int smc_ib_find_route(struct net *net, __be32 saddr, __be32 daddr,
+> 		      u8 nexthop_mac[], u8 *uses_gateway);
+> bool smc_ib_is_valid_local_systemid(void);
+> int smcr_nl_get_device(struct sk_buff *skb, struct netlink_callback *cb);
+>-- 
+>2.37.1 (Apple Git-137.1)
