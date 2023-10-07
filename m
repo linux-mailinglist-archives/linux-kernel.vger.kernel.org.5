@@ -2,86 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7C07BC92A
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 18:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 249677BC930
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 19:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344116AbjJGQ6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 12:58:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39412 "EHLO
+        id S1344087AbjJGRE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 13:04:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344098AbjJGQ63 (ORCPT
+        with ESMTP id S1344032AbjJGRE6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 12:58:29 -0400
-Received: from omta38.uswest2.a.cloudfilter.net (omta38.uswest2.a.cloudfilter.net [35.89.44.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF6ABC
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 09:58:28 -0700 (PDT)
-Received: from eig-obgw-5006a.ext.cloudfilter.net ([10.0.29.179])
-        by cmsmtp with ESMTP
-        id otbpq5jX9ytxcpAdIqqLoB; Sat, 07 Oct 2023 16:58:28 +0000
-Received: from md-in-79.webhostbox.net ([43.225.55.182])
-        by cmsmtp with ESMTPS
-        id pAdGq8T312xWVpAdHqOzBO; Sat, 07 Oct 2023 16:58:28 +0000
-X-Authority-Analysis: v=2.4 cv=EN0VbnVC c=1 sm=1 tr=0 ts=65218e34
- a=LfuyaZh/8e9VOkaVZk0aRw==:117 a=J9R/PiKqv2o3jGxbVGXx4w==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=bhdUkHdE2iEA:10 a=oz0wMknONp8A:10 a=vU9dKmh3AAAA:8 a=vkTJ7md9u3ILQXjsLOgA:9
- a=rsP06fVo5MYu2ilr0aT5:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=linumiz.com
-        ; s=default; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=S1mEjXE9swMM771o0bc5Hhhx27byeazfVy5HXq2TuqY=; b=R0lG7n9Ioab8QJiKp1o0i3AjkG
-        SATpEyfgfQ9QZo/o4C3HGvE9AGqmMCxmLzW5/wY61h6HlxtrGS3l+jRnt7YkiPaARUmqLUSfq6/r/
-        A1CI4JuyONg06/SyiT+zjZqwUNoqqXbq23uv6O8W1Z91huuXp4gPXC8vg96sF42O4h5wLavxTUuGS
-        VCAK56Zekr3QOSD09H7tyL/mcp3zAmIu7YzFVAwAKlao7Yo1RH+XZhGGbHg7AklfnYlD8Bm8ANN+W
-        ny8/yqXiKnN3PgQwgVIGiGz9Nu7uTDRr2gqRKlBHIdTy4sIJfHhF0Y/u0UhqNQ3lRSlwhNYXRs50d
-        XLbdMA5Q==;
-Received: from [103.186.120.251] (port=39748 helo=discovery..)
-        by md-in-79.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96.1)
-        (envelope-from <saravanan@linumiz.com>)
-        id 1qpAdF-002Tlj-1s;
-        Sat, 07 Oct 2023 22:28:25 +0530
-From:   Saravanan Sekar <saravanan@linumiz.com>
-To:     sravanhome@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux@roeck-us.net, jdelvare@suse.com
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-hwmon@vger.kernel.org,
-        Saravanan Sekar <saravanan@linumiz.com>
-Subject: [PATCH v3 3/3] hwmon: (pmbus/mpq2286) Add a support for mpq2286 Power Management IC
-Date:   Sat,  7 Oct 2023 22:28:03 +0530
-Message-Id: <20231007165803.239718-4-saravanan@linumiz.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231007165803.239718-1-saravanan@linumiz.com>
-References: <20231007165803.239718-1-saravanan@linumiz.com>
+        Sat, 7 Oct 2023 13:04:58 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6921B9;
+        Sat,  7 Oct 2023 10:04:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22F07C433C8;
+        Sat,  7 Oct 2023 17:04:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696698295;
+        bh=5rWN3r1QrWbZPdwY53XXoqrpI9vkxw4GAZMoimstNTU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ne3VlCVVWtdJlPXT1Sksj5UMIr8o7iegZVtoYOu+WNb8oD72PHoQ0DS3n7xxd451P
+         dKdElA/aK5liU8cGmISK7mIQ9tWuwrGKuVcwzRtyy7sOXQ8HMMOE/ptiKzqX7HTmTW
+         Ki0wW+XN3u0oZ1BDbkug60VpfBjvKSyWoH2aE0nXbf45BHbWtmw7WcA3mreTtwoLea
+         85+bV00WxR29ecLxzHVzx/s36oLAQ2oZbHqIs6fwmQY1K4q+ynlVtxQf+p+FRy1lpG
+         blsa/RQzXTZe2pisEPrHwh3T9zohUTugXF2q9o1uW+YHKhrolJy1lBesq+GXCoJzLO
+         WiWvd4yF+jkgw==
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Bhupesh Sharma <bhsharma@redhat.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH 1/5] modpost: fix tee MODULE_DEVICE_TABLE built on big endian host
+Date:   Sun,  8 Oct 2023 02:04:44 +0900
+Message-Id: <20231007170448.505487-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - md-in-79.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - linumiz.com
-X-BWhitelist: no
-X-Source-IP: 103.186.120.251
-X-Source-L: No
-X-Exim-ID: 1qpAdF-002Tlj-1s
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (discovery..) [103.186.120.251]:39748
-X-Source-Auth: saravanan@linumiz.com
-X-Email-Count: 36
-X-Org:  HG=dishared_whb_net_legacy;ORG=directi;
-X-Source-Cap: bGludW1jbWM7aG9zdGdhdG9yO21kLWluLTc5LndlYmhvc3Rib3gubmV0
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfDfJVP2x3H4A4+CxkbSOxT7OBsDNOznT7VnMJkWNgSlERNdqBJuoOXkZpTAqd6XWcIW4EbB4vFxLH/sJ5ixKyhIzGNUQ3s82IfOETqCi4x6W9zDA5zC1
- LzQF+oNPdIYXhOwBAAE59mQRnDVlCGa7DOsrUT7JzIR7jpRdYgdoWATQzFyrD53u+myp9bXT1l/w5YLPzYoe+cfLDPiDtmhN9aQ=
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,43 +54,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MPQ2286 is a programmable, high frequency synchronous buck regulator
-designed to power a variety of Automotive system peripherals. Single buck
-converters with hardware monitoring capability is configurable over PMBus
-interface.
+When MODULE_DEVICE_TABLE(tee, ) is built on a host with a different
+endianness from the target architecture, it results in an incorrect
+MODULE_ALIAS().
 
-Signed-off-by: Saravanan Sekar <saravanan@linumiz.com>
+For example, see a case where drivers/char/hw_random/optee-rng.c
+is built as a module.
+
+If you build it on a little endian host, you will get the correct
+MODULE_ALIAS:
+
+    $ grep MODULE_ALIAS drivers/char/hw_random/optee-rng.mod.c
+    MODULE_ALIAS("tee:ab7a617c-b8e7-4d8f-8301-d09b61036b64*");
+
+However, if you build it on a big endian host, you will get a wrong
+MODULE_ALIAS:
+
+    $ grep MODULE_ALIAS drivers/char/hw_random/optee-rng.mod.c
+    MODULE_ALIAS("tee:646b0361-9bd0-0183-8f4d-e7b87c617aab*");
+
+This issue has been unnoticed because the ARM kernel is most likely built
+on a little endian host (cross-build on x86 or native-build on ARM).
+
+The uuid field must not be reversed because uuid_t is an array of __u8.
+
+Fixes: 0fc1db9d1059 ("tee: add bus driver framework for TEE based devices")
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- drivers/hwmon/pmbus/mpq7932.c | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/hwmon/pmbus/mpq7932.c b/drivers/hwmon/pmbus/mpq7932.c
-index 723c314a57a2..60d7b8aec05a 100644
---- a/drivers/hwmon/pmbus/mpq7932.c
-+++ b/drivers/hwmon/pmbus/mpq7932.c
-@@ -21,6 +21,7 @@
- #define MPQ7932_N_VOLTAGES		256
- #define MPQ7932_VOUT_MAX		0xFF
- #define MPQ7932_NUM_PAGES		6
-+#define MPQ2286_NUM_PAGES		1
+ scripts/mod/file2alias.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c
+index 7056751c29b1..70bf6a2f585c 100644
+--- a/scripts/mod/file2alias.c
++++ b/scripts/mod/file2alias.c
+@@ -1348,13 +1348,13 @@ static int do_typec_entry(const char *filename, void *symval, char *alias)
+ /* Looks like: tee:uuid */
+ static int do_tee_entry(const char *filename, void *symval, char *alias)
+ {
+-	DEF_FIELD(symval, tee_client_device_id, uuid);
++	DEF_FIELD_ADDR(symval, tee_client_device_id, uuid);
  
- #define MPQ7932_TON_DELAY		0x60
- #define MPQ7932_VOUT_STARTUP_SLEW	0xA3
-@@ -129,12 +130,14 @@ static int mpq7932_probe(struct i2c_client *client)
- }
+ 	sprintf(alias, "tee:%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
+-		uuid.b[0], uuid.b[1], uuid.b[2], uuid.b[3], uuid.b[4],
+-		uuid.b[5], uuid.b[6], uuid.b[7], uuid.b[8], uuid.b[9],
+-		uuid.b[10], uuid.b[11], uuid.b[12], uuid.b[13], uuid.b[14],
+-		uuid.b[15]);
++		uuid->b[0], uuid->b[1], uuid->b[2], uuid->b[3], uuid->b[4],
++		uuid->b[5], uuid->b[6], uuid->b[7], uuid->b[8], uuid->b[9],
++		uuid->b[10], uuid->b[11], uuid->b[12], uuid->b[13], uuid->b[14],
++		uuid->b[15]);
  
- static const struct of_device_id mpq7932_of_match[] = {
-+	{ .compatible = "mps,mpq2286", .data = (void *)MPQ2286_NUM_PAGES },
- 	{ .compatible = "mps,mpq7932", .data = (void *)MPQ7932_NUM_PAGES },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, mpq7932_of_match);
- 
- static const struct i2c_device_id mpq7932_id[] = {
-+	{ "mpq2286", },
- 	{ "mpq7932", },
- 	{ },
- };
+ 	add_wildcard(alias);
+ 	return 1;
 -- 
-2.34.1
+2.39.2
 
