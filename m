@@ -2,182 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 325C07BC42C
+	by mail.lfdr.de (Postfix) with ESMTP id 86E587BC42D
 	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 04:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234034AbjJGCY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 22:24:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50932 "EHLO
+        id S234056AbjJGC1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 22:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233755AbjJGCY1 (ORCPT
+        with ESMTP id S233755AbjJGC12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 22:24:27 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A99BBF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 19:24:25 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3af608eb34bso1758462b6e.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 19:24:25 -0700 (PDT)
+        Fri, 6 Oct 2023 22:27:28 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6498ABD;
+        Fri,  6 Oct 2023 19:27:27 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-65b0557ec77so15066696d6.0;
+        Fri, 06 Oct 2023 19:27:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696645465; x=1697250265; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=e9UWXPGpBqN8/aGLtCDuuQnwCBGM2WifajEW12m85LU=;
-        b=ZNsfcdCpmj2gbSBbVYL0oGP+wUsjukbRmMJSW8GWncBBLNO28mIsezWj0fFY1TlFdU
-         jWEjJqMJjggafU56u4cfsWVnl2t39EKpENCbqaO6TfOu8xx3m7J/MQp+ueeRc1vbn6HH
-         5yqegWEx9hnmIcUThF2LsNoMdXYD/GrzrSD8U=
+        d=gmail.com; s=20230601; t=1696645646; x=1697250446; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=yNDhtLOEKcYAnbXxDszSP4U1anKPaHCaiVOg9N7z6KQ=;
+        b=Mvs9FlG6CjgFiLAjDkwDiSi0P1MKXpEiRJbcueJFrWKA1qtAAnuGQ093cyu/RLxlq8
+         k9FnHh7KX9tkPHpLGBsGYWkqEQahZOSpeIemR7satPmskvNzSPuW4bXGof3M+86L1D+D
+         EVf3+SGJWznoqRC103+/wMBXHBFMSLQ5fIaRopQ7MkLYLh83aZDmzn1Yz9ziaZelCjJl
+         3kgQczaLKVM7GnqG3423fzNfpih6SfDP9xdSPG+X9vq3LwajdonT9IWWkpoaCmij6Ld4
+         OcaepBGQXVT1ZvTU2cUKRe/LypF2gsjwNGpc/3kDWPHI1AYl8/fA7LV8WAhTkzklaZeR
+         v4FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696645465; x=1697250265;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=e9UWXPGpBqN8/aGLtCDuuQnwCBGM2WifajEW12m85LU=;
-        b=slAdowp1GMwVJgnrLER5uelzHKXt+rme9EBHkooXS8LBKvKqBqxpMSn/SCWBUAhRas
-         JlZ3mkz08RsHLZaPPLISLwS+oyQDJAO4WntYFjJDW9ACQjcTV9BkgXwFMv5Ccd/03o+R
-         km04SynKlF4UhtA45WXSpCLVy3Inr1Ou/uiXjGWWXx5lKwpCXAHjqXDHPKwHUziMLynW
-         6lEJIUgOrXabAtjrajI0mTk3YEkQAINp0OlEamKQktPvnUBrofDKsHgiUcQ056iDw95v
-         e86vMHLyLfP+FvKl1KNma9hAbqwPsnBHIDAFsNfugFsfaz7T6A+RiyEarP26NoHE0Uyo
-         daLQ==
-X-Gm-Message-State: AOJu0Yz7f8kGpsc88qdiscWeQYxxCU0BZNH0FQy6hrjcbvcHy89qV9us
-        vcWhCPVewNtWSBKrbwBJvvSCeg==
-X-Google-Smtp-Source: AGHT+IHzkphbjEVz/o20GkGeZNmC6qgu3BYytys8/iIThThDt3sjc1ZRrJDHBBv1x8FOc4/t6VoC5A==
-X-Received: by 2002:a05:6808:c3:b0:3a7:3ce0:1ad7 with SMTP id t3-20020a05680800c300b003a73ce01ad7mr9128888oic.20.1696645464800;
-        Fri, 06 Oct 2023 19:24:24 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id l30-20020a63701e000000b00578cc5f4905sm3966426pgc.28.2023.10.06.19.24.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Oct 2023 19:24:23 -0700 (PDT)
-Date:   Fri, 6 Oct 2023 19:24:20 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Lukas Loidolt <e1634039@student.tuwien.ac.at>
-Cc:     linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Daniel Marth <daniel.marth@inso.tuwien.ac.at>
-Subject: Re: Missing cache considerations in randstruct performance feature
-Message-ID: <202310061840.045F218F08@keescook>
-References: <f3ca77f0-e414-4065-83a5-ae4c4d25545d@student.tuwien.ac.at>
+        d=1e100.net; s=20230601; t=1696645646; x=1697250446;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yNDhtLOEKcYAnbXxDszSP4U1anKPaHCaiVOg9N7z6KQ=;
+        b=We+DH0vH9qzlXDhP0pbvQQzuieKftbzj/4lmUBBk4fTt/Zuu+iwPxCFFycnU/iC9yV
+         gKym11OI333lmCPyLi+7rPX2dnEGFM5CamXb1SYbLxi113eO5rfAnnIOa3BOk1SZd2j9
+         lxgLZ7vDkLiFuZuH30/kw8i+YfV0jDw/9aq6QaNg63FZbOLjbPw5LEXOX7W9j0ehuZK+
+         aaTUg0RTOgb7SVeceIuUs/cz+8ibzjgTlMyVR0U/9lm7HkXJq4xdYbEypR9wOwVXAnfp
+         SxjL3uoMOOe280gJpeHD/suhlKOkabvSMzPYYlhw+v5eFpm9+ItqUnXWB/Mlu73csEwM
+         cEbQ==
+X-Gm-Message-State: AOJu0Yzvooj1p0lqKKkcuexUj5uArOwgVqguR9gr4nifUX8ycKjdiBor
+        KrXEZ6KTkEay0DZvI+kJeMIKkEQmdwBhNkjkkBK1H7XAt8s=
+X-Google-Smtp-Source: AGHT+IGfrIoyKbqF/4x8tCVuCkxWlvb9G7XOFRkJZ1RzOuA5QP98zms/OUwmW4RtEOnfYQR/KT1O8qDl551WOuaPTBk=
+X-Received: by 2002:a05:6214:310f:b0:658:59e7:aac5 with SMTP id
+ ks15-20020a056214310f00b0065859e7aac5mr8793292qvb.23.1696645646459; Fri, 06
+ Oct 2023 19:27:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f3ca77f0-e414-4065-83a5-ae4c4d25545d@student.tuwien.ac.at>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20230929-mmc-caps-v2-0-11a4c2d94f15@axis.com> <20230929-mmc-caps-v2-2-11a4c2d94f15@axis.com>
+In-Reply-To: <20230929-mmc-caps-v2-2-11a4c2d94f15@axis.com>
+From:   Wenchao Chen <wenchao.chen666@gmail.com>
+Date:   Sat, 7 Oct 2023 10:27:15 +0800
+Message-ID: <CA+Da2qy=6CVEkuP5t2dPQVk_eHex-U4-BzJuQ2Y6ozZMfSEbuw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] mmc: debugfs: Allow host caps to be modified
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@axis.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 07, 2023 at 12:30:01AM +0200, Lukas Loidolt wrote:
-> Hello!
-> 
-> I have been looking into the implementation of the "randstruct" gcc-plugin
-> and noticed a potential bug in its performance version, which is supposed to
-> limit randomization to cache-line sized groupings of structure members.
-> I haven't been able to find too much documentation on this version of
-> randstruct, but my general understanding of its intended behavior is as
-> follows:
-> 
-> - in performance mode, randstruct groups structure members into cache line
-> sized partitions of 64 bytes each
-> - the order of these partitions is randomized
-> - the order of structure members within each partition is also randomized
-> 
-> In my tests, however, the performance version behaves more or less like the
-> full version of randstruct.
-> For example, testing on a struct of 10 function pointers:
-> 
-> struct test_struct{
->     void (*func1)(void);
->     void (*func2)(void);
->     void (*func3)(void);
->     void (*func4)(void);
->     void (*func5)(void);
->     void (*func6)(void);
->     void (*func7)(void);
->     void (*func8)(void);
->     void (*func9)(void);
->     void (*func10)(void);
-> };
-> 
-> resulted in the following randomized memory layout:
-> 
-> func3 (offset 0)
-> func5 (offset 8)
-> func10 (offset 16)
-> func2 (offset 24)
-> func1 (offset 32)
-> func6 (offset 40)
-> func8 (offset 48)
-> func7 (offset 56)
-> func9 (offset 64)
-> func4 (offset 72)
+On Fri, 29 Sept 2023 at 21:17, Vincent Whitchurch
+<vincent.whitchurch@axis.com> wrote:
+>
+> During board verification, there is a need to test the various supported
+> eMMC/SD speed modes.  However, since the framework chooses the best mode
+> supported by the card and the host controller's caps, this currently
+> necessitates changing the devicetree for every iteration.
+>
+> Allow the various speed mode host capabilities to be modified via
+> debugfs in order to allow easier hardware verification.  The values to
+> be written are the raw MMC_CAP* values from include/linux/mmc/host.h.
+> This is rather low-level, and these defines are not guaranteed to be
+> stable, but it is perhaps good enough for the intended use case.
+>
+> MMC_CAP_AGGRESSIVE_PM can also be set, in order to be able to
+> re-initialize the card without having to physically remove and re-insert
+> it.
+>
+>  /sys/kernel/debug/mmc0# grep timing ios
+>  timing spec:   9 (mmc HS200)
+>
+>  // Turn on MMC_CAP_AGGRESSIVE_PM and re-trigger runtime suspend
+>  /sys/kernel/debug/mmc0# echo $(($(cat caps) | (1 << 7))) > caps
+>  /sys/kernel/debug/mmc0# echo on > /sys/bus/mmc/devices/mmc0\:0001/power/control
+>  /sys/kernel/debug/mmc0# echo auto > /sys/bus/mmc/devices/mmc0\:0001/power/control
+>
+>  // MMC_CAP2_HS200_1_8V_SDR
+>  /sys/kernel/debug/mmc0# echo $(($(cat caps2) & ~(1 << 5))) > caps2
 
-I'd agree; this doesn't look like an expected layout.
+$(($(cat caps2) & ~(1 << 5))) looks complicated, does it use echo DDR52 > caps2?
 
-> I would have expected cache-line sized partitions of (up to) 8 pointers, so
-> that func1 through func8 are adjacent in the final layout, but these
-> partitions are seemingly not preserved.
+>  /sys/kernel/debug/mmc0# echo on > /sys/bus/mmc/devices/mmc0\:0001/power/control
+>  /sys/kernel/debug/mmc0# grep timing ios
+>  timing spec:   8 (mmc DDR52)
+>
+> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+> ---
+>  drivers/mmc/core/debugfs.c | 51 ++++++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 49 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/mmc/core/debugfs.c b/drivers/mmc/core/debugfs.c
+> index 2c97b94aab23..1642ea72d22c 100644
+> --- a/drivers/mmc/core/debugfs.c
+> +++ b/drivers/mmc/core/debugfs.c
+> @@ -12,9 +12,12 @@
+>  #include <linux/slab.h>
+>  #include <linux/stat.h>
+>  #include <linux/fault-inject.h>
+> +#include <linux/time.h>
+>
+>  #include <linux/mmc/card.h>
+>  #include <linux/mmc/host.h>
+> +#include <linux/mmc/mmc.h>
+> +#include <linux/mmc/sd.h>
+>
+>  #include "core.h"
+>  #include "card.h"
+> @@ -298,6 +301,49 @@ static const struct file_operations mmc_err_stats_fops = {
+>         .release = single_release,
+>  };
+>
+> +static int mmc_caps_get(void *data, u64 *val)
+> +{
+> +       *val = *(u32 *)data;
+> +       return 0;
+> +}
+> +
+> +static int mmc_caps_set(void *data, u64 val)
+> +{
+> +       u32 *caps = data;
+> +       u32 diff = *caps ^ val;
+> +       u32 allowed = MMC_CAP_AGGRESSIVE_PM |
+> +                     MMC_CAP_SD_HIGHSPEED |
+> +                     MMC_CAP_MMC_HIGHSPEED |
+> +                     MMC_CAP_UHS |
+> +                     MMC_CAP_DDR;
+> +
+> +       if (diff & ~allowed)
+> +               return -EINVAL;
+> +
+> +       *caps = val;
+> +
+> +       return 0;
+> +}
+> +
+> +static int mmc_caps2_set(void *data, u64 val)
+> +{
+> +       u32 allowed = MMC_CAP2_HSX00_1_8V | MMC_CAP2_HSX00_1_2V;
+> +       u32 *caps = data;
+> +       u32 diff = *caps ^ val;
+> +
+> +       if (diff & ~allowed)
+> +               return -EINVAL;
+> +
+> +       *caps = val;
+> +
+> +       return 0;
+> +}
+> +
+> +DEFINE_DEBUGFS_ATTRIBUTE(mmc_caps_fops, mmc_caps_get, mmc_caps_set,
+> +                        "0x%08llx\n");
+> +DEFINE_DEBUGFS_ATTRIBUTE(mmc_caps2_fops, mmc_caps_get, mmc_caps2_set,
+> +                        "0x%08llx\n");
+> +
+>  void mmc_add_host_debugfs(struct mmc_host *host)
+>  {
+>         struct dentry *root;
+> @@ -306,8 +352,9 @@ void mmc_add_host_debugfs(struct mmc_host *host)
+>         host->debugfs_root = root;
+>
+>         debugfs_create_file("ios", S_IRUSR, root, host, &mmc_ios_fops);
+> -       debugfs_create_x32("caps", S_IRUSR, root, &host->caps);
+> -       debugfs_create_x32("caps2", S_IRUSR, root, &host->caps2);
+> +       debugfs_create_file("caps", 0600, root, &host->caps, &mmc_caps_fops);
+> +       debugfs_create_file("caps2", 0600, root, &host->caps2,
+> +                           &mmc_caps2_fops);
 
-I'd expect the order of func1-func8 to be randomized together, and
-func9-func10 order to be randomized together, and then they're pasted
-together.
+Would it be better to use "S_IRUSR | S_IWUSR" instead of "0600"?
 
-> Assuming that this is indeed not the intended behavior, the culprit is line
-> 213 in "randomize_layout_plugin.c"
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/scripts/gcc-plugins/randomize_layout_plugin.c?id=f291209eca5eba0b4704fa0832af57b12dbc1a02#n213
-> 
-> where
-> 
-> randnum = ranval(prng_state) % (i + 1);
-> 
-> should probably be something like
-> 
-> randnum = size_group[x].start + ranval(prng_state) % size_group[x].length;
-
-I thought the intent was to handle it in the loop offsets:
-
-	for (i = size_group[x].start + size_group[x].length - 1; i > size_group[x].start; i--) {
-
-But, no, this looks wrong, see below...
-
-> After changing this line, cache-line sized partitions are created and
-> preserved as expected.
-> However, while structure members within each partition are randomized, the
-> order of the partitions themselves is not randomized and remains the same as
-> in the original struct declaration.
-
-size_group[] is what holds the initial partitions. I would agree,
-though, the group shuffling doesn't seem to do anything.
-
-> I assume that the for loop in lines 200 to 206 is intended to shuffle the
-> partition_group structures
-> 
-> for (i = num_groups - 1; i > 0; i--) {
->         struct partition_group tmp;
->         randnum = ranval(prng_state) % (i + 1);
->         tmp = size_group[i];
->         size_group[i] = size_group[randnum];
->         size_group[randnum] = tmp;
-> }
-> 
-> but the order of the partition_group structs is not written back into the
-> newtree object, so the randomization from this loop is not reflected in the
-> final layout.
-
-I'd expect the newtree index to start at 0, rather than reusing "i", if
-the intent was to move groups around too. But in fact, the second
-shuffle loop seems to just not work at all: it's not shuffling within
-the group, since it operates from 0 to i, not size_group[x].start
-through size_group[x].start + size_group[x].length.
-
-> I would be interested to know if this is an actual issue with the
-> implementation or if I'm misinterpreting how randstruct is supposed to work
-> here.
-
-I'd agree; this looks totally broken.
-
--Kees
-
--- 
-Kees Cook
+>         debugfs_create_file_unsafe("clock", S_IRUSR | S_IWUSR, root, host,
+>                                    &mmc_clock_fops);
+>
+>
+> --
+> 2.34.1
+>
