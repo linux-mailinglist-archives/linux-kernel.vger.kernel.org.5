@@ -2,104 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75F567BC847
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 16:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC8C7BC84C
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 16:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343970AbjJGOHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 10:07:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53576 "EHLO
+        id S232643AbjJGOOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 10:14:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343893AbjJGOHp (ORCPT
+        with ESMTP id S229586AbjJGOOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 10:07:45 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA402BA
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 07:07:38 -0700 (PDT)
-X-QQ-mid: bizesmtp71t1696687653t72l74ws
-Received: from linux-lab-host.localdomain ( [116.30.131.235])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sat, 07 Oct 2023 22:07:32 +0800 (CST)
-X-QQ-SSF: 01200000000000E0Y000000A0000000
-X-QQ-FEAT: znfcQSa1hKZKhX27X40Savq3SzwTh6BMfmcCeU6mUPa0F+q0Z0SOvYudDJUc0
-        DjvaJYtOnEhHzKQJZrwSAHQFhCynAM80gowZKhcc4Sc92w3lNhUylJ6g9jUcyI7cSIhrvq1
-        jvs0EP8xATKkKC/SYVbbv3PNBKuz6OOaOHM3X+KIRsusw/x4CViUPmCuVxSur260h1apNui
-        s6e2ncFUvKe4BnnhEJOHVewPTDa7QIYIz29vzcbhUoCDYC/oTk6+zE1xmNX1Ubz98AWkc9d
-        mCEE4VrV+dvsLXx43d+gOj5lhnYetZp+DRO4Ox/+brkQ91VJZ0Dq9EPwBFa8YFEozSTlblK
-        82pM9zSTeUeRao0q/5TonKEGC5u7pOm9TXqe1LJUN0z4KA5UesG+1A4nqm3Ew==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 172060980312053188
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     linux@weissschuh.net
-Cc:     linux-kernel@vger.kernel.org, rodrigo@sdfg.com.ar, w@1wt.eu
-Subject: Re: [PATCH 1/1] tools/nolibc: Add workarounds for centos-7
-Date:   Sat,  7 Oct 2023 22:07:27 +0800
-Message-Id: <20231007140727.7399-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <5d4d14f5-b90d-4fd7-865e-0d64b8520c0e@t-8ch.de>
-References: <5d4d14f5-b90d-4fd7-865e-0d64b8520c0e@t-8ch.de>
+        Sat, 7 Oct 2023 10:14:33 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9290B6;
+        Sat,  7 Oct 2023 07:14:32 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-69101d33315so2483490b3a.3;
+        Sat, 07 Oct 2023 07:14:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696688072; x=1697292872; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QbaOkN11ShFjp3tT/ZrL3/V4ETkntY0iC/qweNkeDQE=;
+        b=Cbnq2JQGcy5g2I4zwkXkAHvIzJXGP+UZxZ6gA7hHMsKK7j8ZRZQ/Z6dEhH+W1hfkss
+         bfQH9dAdsEW/Ke6psstGn8mHVoj3B3kyJoSXhgmwkhbDcdg6TsqsttHFuUMHJwZn//wb
+         gTCcdlKlq0BX0etqU0BbYURziFaP8HR8YNFlOlL2c3qKms/GeSlzmeHJkD3O9pVk4hS7
+         ZPnS1zK649KEN5ztjoTPprwL7MZmDKCp27RHg+jLn/Gh7+BK9rAd9zdx0rQ0mtAvP7e7
+         RBaeYrddw6MOZr2ouYR6pT6SQO2tqGyEmF8LeP4jVmuGi7x7cBJJhy07BA9wRR8N0U3n
+         uSFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696688072; x=1697292872;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QbaOkN11ShFjp3tT/ZrL3/V4ETkntY0iC/qweNkeDQE=;
+        b=TXZtLbZ10GXhjxG7+qv+MNznB39XnINgelxiJpOxeuYCWYaFHM3l3dofXKPgwlEUOU
+         tUz2TNHJ08PKE/iQI9FiJn8T+SqY0goVsirjr/fbRPAGsElej4FfuiPCzacAgkdttH31
+         eaZc+5vhwtiZZZDUo4h0QtOAAC7qkJQHKlA/nVSvBpl4XUjTc8IFrOYB3LsW8K2E9g15
+         hnQdOHYbElTpeHf5dL5B1QsQcUXLs/b72SS3MXEfV4XNQshXdbhsRdfTsxSwQarBuu6H
+         pjnvovo/3WdeZWKxtXJINNhrRkuwadpIiXIBxvwXK70xjuHsrFzW12xUh3QxLBvVwKjN
+         XVqQ==
+X-Gm-Message-State: AOJu0YxoXJsAnXRw1fHWqANUKSDNx8Jay7FiwQtzjC+FXiw8JfysT3IC
+        91dZfsziRvDJBl+fjJYDsmt3PSYlbt4=
+X-Google-Smtp-Source: AGHT+IE1R8llrP0TWOY82g3RLZePSlPEl4OgvLzr13DUw8DNopmWh1YqFvllsyWFlIxDOLYj3zMKxw==
+X-Received: by 2002:a05:6a20:7f83:b0:15e:b8a1:57b9 with SMTP id d3-20020a056a207f8300b0015eb8a157b9mr13659474pzj.24.1696688071887;
+        Sat, 07 Oct 2023 07:14:31 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id z9-20020aa785c9000000b006926e3dc2besm3227082pfn.108.2023.10.07.07.14.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Oct 2023 07:14:31 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 1E08481C636A; Sat,  7 Oct 2023 21:14:23 +0700 (WIB)
+Date:   Sat, 7 Oct 2023 21:14:23 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Calvince Otieno <calvncce@gmail.com>,
+        Linux Outreachy <outreachy@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kernel Build System <linux-kbuild@vger.kernel.org>
+Subject: Re: Unable to make file
+Message-ID: <ZSFnvwvXMiisHOJ7@debian.me>
+References: <CADFX3OQ1rdnR=ONu5wufAYN0NrvMkaveQ_Y9z_1K8m9Dzz3SPA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=4.8 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,RCVD_IN_PBL,RCVD_IN_SBL_CSS,RCVD_IN_XBL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="8tSXnb0WXi8G6rnk"
+Content-Disposition: inline
+In-Reply-To: <CADFX3OQ1rdnR=ONu5wufAYN0NrvMkaveQ_Y9z_1K8m9Dzz3SPA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Thomas
 
-> On 2023-09-27 15:06:03+0200, Rodrigo Campos wrote:
-> ...
-> > For now we are work-arounding it by doing basically the same thing I'm doing
-> > here:
-> > 	https://github.com/opencontainers/runc/blob/96a61d3bf0dcc26343bfafe5112934d73d280dd3/libcontainer/dmz/xstat.h
-> > 
-> > We then include this file before nolibc.h, and then the type works as fine:
-> > 	https://github.com/opencontainers/runc/blob/96a61d3bf0dcc26343bfafe5112934d73d280dd3/libcontainer/dmz/_dmz.c
-> > 
-> > Would it be acceptable for nolibc if I just define what we use:
-> >  * struct statx
-> >  * struct statx_timestamp (used inside struct statx)
-> >  * STATX_BASIC_STATS (or STATX_* constants too, as you prefer)
-> 
-> Without __NR_statx this would still only result in dead code.
-> 
-> *IF* we want to fix/work around this in nolibc it would be more like
-> 
->   #ifdef __NR_statx
->   
->   /* whatever was done before */
->   
->   #else
->   
->   int stat(const char *path, struct stat *buf)
->   {
->   	return __sysret(-ENOSYS);
->   }
->   
->   #endif
-> 
-> Or we drop the #else completely to make it obvious for applications that
-> stat() will just not work.
+--8tSXnb0WXi8G6rnk
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This may worth a patch, sorry for my fault ;-(
+On Sat, Oct 07, 2023 at 04:50:32PM +0300, Calvince Otieno wrote:
+> Hello team!
+>=20
+> I have a problem. I tried running the Make file and I got this error mess=
+age:
+>=20
+> make[3]: *** No rule to make target 'debian/canonical-certs.pem',
+> needed by 'certs/x509_certificate_list'.  Stop.
+>=20
+> make[2]: *** [scripts/Makefile.build:480: certs] Error 2
+>=20
+> make[1]: *** [/home/calvince/Documents/labs/git/kernels/staging/Makefile:=
+1913:
+> .] Error 2
+>=20
+> make: *** [Makefile:234: __sub-make] Error 2
 
-And to avoid breaking the older kernel users or especially for some
-older kernel books readers, and since this also has introduced some
-inconvenience to Willy, perhaps it is valuable to restore original
-'sys_stat' support, I will look into how or simply revert the commit but
-need to add a new one for powerpc, I will learn how to avoid defining
-the extra structure for the not required architectures, the
-__ARCH_WANT_SYS_STAT macro may help. I'm also working on cleaning up the
-old_select(), old_mmap() and sys_fork()/sys_clone() selection support,
-they may be put in a series.
+If you need to keep your modules signed, you have to generate your own
+certificate. See Documentation/admin-guide/module-signing.rst in the kernel
+sources for how to do that.
 
-Willy, what about your suggestion?
+Thanks.
 
-Thanks,
-Zhangjin Wu
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--8tSXnb0WXi8G6rnk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZSFnuwAKCRD2uYlJVVFO
+o0OkAPwPchkMkTBT3AxCpEroXdS8Ox5JUG6RzzP/QodpsAkSDgD/ToBsBxmcybnx
+mg6cl2QWRnmmCE+rKF/nEOfGni+HLA8=
+=5xRX
+-----END PGP SIGNATURE-----
+
+--8tSXnb0WXi8G6rnk--
