@@ -2,65 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3FE57BC995
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 20:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5BA57BC998
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 20:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344132AbjJGSm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 14:42:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35482 "EHLO
+        id S1344141AbjJGSrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 14:47:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJGSmz (ORCPT
+        with ESMTP id S1344139AbjJGSrd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 14:42:55 -0400
-Received: from proxima.lasnet.de (proxima.lasnet.de [IPv6:2a01:4f8:121:31eb:3::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0198F93;
-        Sat,  7 Oct 2023 11:42:53 -0700 (PDT)
-Received: from [IPV6:2003:e9:d743:5c31:3105:419d:bcff:11c7] (p200300e9d7435c313105419dbcff11c7.dip0.t-ipconnect.de [IPv6:2003:e9:d743:5c31:3105:419d:bcff:11c7])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: stefan@datenfreihafen.org)
-        by proxima.lasnet.de (Postfix) with ESMTPSA id A9B5FC018D;
-        Sat,  7 Oct 2023 20:42:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=datenfreihafen.org;
-        s=2021; t=1696704167;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EPgzJpN+KSTuOzQ3xY/vszJbchz47yeonl0DRQJME30=;
-        b=jXhPRJ0iXYmaQCXG3Z910vQRe/gBwBVtk5SLWoak+NGfuKK6D9+7AJQfyC2Z3UHsFelL4c
-        3kaw92Co2LihIDymaKx7g0gaK3QvbNfU9RZ+Pm24SJ7JHZXAL8IQ5/21NTsDSpghBRqvxd
-        /XDp8xuqFEUHt+sglqW7M/ZAaojsYPO3/j6Sdl6WM9YsTLiA4hYb3lxVxECVJNiArM4+ao
-        y3G2ksL+b5rJs7EeGmPqXw0YU+FYEuBH5YNbLxFnS60XPKtfYBIGRaNJNw3yUSgdp3Pn3L
-        v6BnP0dho/ZNEPMonOuoQUqyohWZ/0lGYGPo3gp6zhAXXa48YvuQ7yH5RV3qZQ==
-Message-ID: <c2b7264f-c533-2d80-e41e-a7019aefb602@datenfreihafen.org>
-Date:   Sat, 7 Oct 2023 20:42:46 +0200
+        Sat, 7 Oct 2023 14:47:33 -0400
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com [209.85.160.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 067AABC
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 11:47:30 -0700 (PDT)
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1e113662d75so4715563fac.3
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Oct 2023 11:47:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696704449; x=1697309249;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tSRQ8RwQuSP9B1eQWdhsCbagB5eHTgwqSyVUIKNXPzs=;
+        b=k+ph81IzFmVKmGbgI/CZEH1I9DzGee/4i0f6EQdCYyiWq3gIjWJfedv2LI9WpVLl6y
+         bPEg9gihDBPxvmP/pplEJ3EMko9EeaqJ7eW1Xqkg4Pw1cqeDK6zYxMF4LSWMvY8k6M7Z
+         uW8vg7i8UjnQtSvzRQ99ZHvkj3dCH6M/br1S2somXG5Fix/wZzOlOMeAozELuFM9VDMm
+         8iGHQRJx6aqq7+2hWvN/4NBeXIP37sL6YneVTyX11igWDEL1R5wnYtqFR2fuEkj9iu7v
+         elOycAGher4XJiKBmT0uTmJCKjGTwT1LN9RaDvVEACRMa5MjILW2D16A/rGdWwRqTdlp
+         yPLg==
+X-Gm-Message-State: AOJu0YymiDKjcOux9hzUT4KuIwkjSHXgEOj5NA/3QJYrWRIkiINsHIIf
+        5ljGgU7U2u3lqhccrhekTtxTDpoDDAgNoxLV73G7khbXFjJs
+X-Google-Smtp-Source: AGHT+IEx2EwcPHofqub4lXJasDwOlKl9757idsGDqcwwmj6GOMD4/awENtx2yU7O4k0qCX3txvrblVBgUXRKbZTqOl9TUrQagkzO
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] [v4] ieee802154: ca8210: Fix a potential UAF in
- ca8210_probe
-Content-Language: en-US
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     stable@vger.kernel.org, Alexander Aring <alex.aring@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Harry Morris <harrymorris12@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231007033049.22353-1-dinghao.liu@zju.edu.cn>
-From:   Stefan Schmidt <stefan@datenfreihafen.org>
-In-Reply-To: <20231007033049.22353-1-dinghao.liu@zju.edu.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-Received: by 2002:a05:6871:6a8f:b0:1e1:46c:9ae2 with SMTP id
+ zf15-20020a0568716a8f00b001e1046c9ae2mr4598420oab.2.1696704449417; Sat, 07
+ Oct 2023 11:47:29 -0700 (PDT)
+Date:   Sat, 07 Oct 2023 11:47:29 -0700
+In-Reply-To: <00000000000073500205eac39838@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ff17f2060724c971@google.com>
+Subject: Re: [syzbot] [exfat?] possible deadlock in exfat_get_block
+From:   syzbot <syzbot+247e66a2c3ea756332c7@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, linkinjeon@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sj1557.seo@samsung.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,37 +56,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+syzbot suspects this issue was fixed by commit:
 
-On 07.10.23 05:30, Dinghao Liu wrote:
-> If of_clk_add_provider() fails in ca8210_register_ext_clock(),
-> it calls clk_unregister() to release priv->clk and returns an
-> error. However, the caller ca8210_probe() then calls ca8210_remove(),
-> where priv->clk is freed again in ca8210_unregister_ext_clock(). In
-> this case, a use-after-free may happen in the second time we call
-> clk_unregister().
-> 
-> Fix this by removing the first clk_unregister(). Also, priv->clk could
-> be an error code on failure of clk_register_fixed_rate(). Use
-> IS_ERR_OR_NULL to catch this case in ca8210_unregister_ext_clock().
-> 
-> Fixes: ded845a781a5 ("ieee802154: Add CA8210 IEEE 802.15.4 device driver")
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> ---
-> 
-> Changelog:
-> 
-> v2: -Remove the first clk_unregister() instead of nulling priv->clk.
-> 
-> v3: -Simplify ca8210_register_ext_clock().
->      -Add a ';' after return in ca8210_unregister_ext_clock().
-> 
-> v4: -Remove an unused variable 'ret'.
+commit ff84772fd45d486e4fc78c82e2f70ce5333543e6
+Author: Sungjong Seo <sj1557.seo@samsung.com>
+Date:   Fri Jul 14 08:43:54 2023 +0000
 
+    exfat: release s_lock before calling dir_emit()
 
-This patch has been applied to the wpan tree and will be
-part of the next pull request to net. Thanks!
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12f6bef1680000
+start commit:   5d0c230f1de8 Linux 6.5-rc4
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=27a4e50cc5856a15
+dashboard link: https://syzkaller.appspot.com/bug?extid=247e66a2c3ea756332c7
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12532d91a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=105aae2ea80000
 
-regards
-Stefan Schmidt
+If the result looks correct, please mark the issue as fixed by replying with:
 
+#syz fix: exfat: release s_lock before calling dir_emit()
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
