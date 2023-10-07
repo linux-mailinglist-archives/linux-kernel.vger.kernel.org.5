@@ -2,139 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFA67BC9AC
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 22:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E90CD7BC9AE
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 22:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344149AbjJGUGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 16:06:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37426 "EHLO
+        id S1344152AbjJGUHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 16:07:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343782AbjJGUGK (ORCPT
+        with ESMTP id S1343782AbjJGUHx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 16:06:10 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93B7BD;
-        Sat,  7 Oct 2023 13:06:08 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-7a2a3fb0713so128820739f.1;
-        Sat, 07 Oct 2023 13:06:08 -0700 (PDT)
+        Sat, 7 Oct 2023 16:07:53 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23AC0BC;
+        Sat,  7 Oct 2023 13:07:52 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3226b8de467so3096130f8f.3;
+        Sat, 07 Oct 2023 13:07:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696709270; x=1697314070; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=frrbQG1KV2zBsqrzA92ZI0bBTicwEVY0Ipaf/Vo55cE=;
+        b=L6t3Av0rBzphkX/hjyoj1JtXgEBl1CIVThXsar2HFpDEPOjnYbnPGUEygmx/EbkC3O
+         DQYEjihW62EMSUynCZ/k0uvCSa4nZlgAxooEYSViejtE7zf/vwvdN2XNnZR+cBMFmbNW
+         hzGcjN6K9SukJ+FJ1XHFnzOafIyN5zUd0Y4vNbwLyURtg2TRkd+ZxUCRDD+lFAUoFHaq
+         C4fmaGLG5i4DGlSh2NJCaME2NeFHMc99RrOVEVx2XXg8ndWPlyrYdE7kS7dKK72JVe7t
+         ZcFKiqFNsP/TgRR7OUVdsW2h7/vUFDkDeOD3UO5gz+Vfad1jOMG5vmSQ1rFxf1eIfcyo
+         /Bmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696709168; x=1697313968;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1696709270; x=1697314070;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zNlD1s/5Qv8LvOzp0cT+qMBzDmfWHxl8/xBRMHgFQGc=;
-        b=QvfqL1f4PC+1Q+zm01Fk51afkAupO3PoLygj2Qnsv7ilHd2gUr+Ck07tl/4eA9X34i
-         X/NGbV6kYMsA+pOnjuqtfq91902Hjt+h21YlQ/TAwBisRJcuHBh52Q+/eiv6jI9LXcND
-         PQGTTrv1QzNtvb3MSPu3DRkHRXqqk8k5HmlBIyVHh0EkKpYTigXKYq19Ka+v4lSiz9F2
-         1OfMw59LjN6BgyUWxYbbGrhUsJjK1y5em0JtWEhNpyuxde1kQhOlJHbRuW0jx2klRulU
-         lGI/bO7VutOjFrMJHpBppkRPH6QdK1HbmPPkvGNYK619q0Xv02qTO2RuLVDlKXhTnQxR
-         fkHA==
-X-Gm-Message-State: AOJu0Yxjxzmpg0EEMuYQCgnIxFN6JeCchiTZPr96LE5ICz0+4IM1/kWI
-        ZrkRVEdDfYOPkDXH12B6bAc=
-X-Google-Smtp-Source: AGHT+IG2wf6mgobZ2IOixaCTrcl3zW9YZbaOfG0cI8m3grNo8XccXE19/FQlBmnU1OO4gAk3FQ/gRg==
-X-Received: by 2002:a05:6602:54:b0:783:4bc6:636e with SMTP id z20-20020a056602005400b007834bc6636emr11401205ioz.21.1696709168170;
-        Sat, 07 Oct 2023 13:06:08 -0700 (PDT)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id gj12-20020a0566386a0c00b0043193e32c78sm1106734jab.152.2023.10.07.13.06.07
+        bh=frrbQG1KV2zBsqrzA92ZI0bBTicwEVY0Ipaf/Vo55cE=;
+        b=b8RNORVr2T4vW17turovDLtj2wYG7VGwO24Ms5kzAuBTqq0pdtoPhnKL0yy7pIZIIo
+         R6p4Df3US9CH/mohZ0WW6GTGf/BMKjusukT9J+XikW+4ENQtCZGfUkaGS7hLtTMkuT8k
+         Y3QEUEWhpWuXQHEQpybtbydSaO/2RxeWzVgpm/xpiNPHI4e7LZHHdVH+hA2LmFAUtWFI
+         ahMcGcuBdMwqwl/Bemt8tzDshqIUvm3C9E8sE/skg8SDoODP+cdDV0JmEo2p9BvaoRMk
+         LUOAo54jCdfATnMI+5nTFS9Mzkf6u6SGCAaSUr0NupIdriUAF2rAsNrfrEtLuT/oLZPf
+         TTOA==
+X-Gm-Message-State: AOJu0Yzb0kNW2Gv82ayREAbS4IParK2Le5yZw/lout/am3flxbyEm1Ds
+        PUCC8GoTeFP3YYBi6PxOnww=
+X-Google-Smtp-Source: AGHT+IGWQk6Kxejzx5y3Pu20Y6dY8/NNiXN6Z/O1O3DHsuExWlc4MtA1UfAL4KQLOm0NSOgL9MlAmw==
+X-Received: by 2002:adf:cd0a:0:b0:320:5f:c249 with SMTP id w10-20020adfcd0a000000b00320005fc249mr9265591wrm.30.1696709270256;
+        Sat, 07 Oct 2023 13:07:50 -0700 (PDT)
+Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
+        by smtp.gmail.com with ESMTPSA id o14-20020a5d4a8e000000b003197b85bad2sm5052534wrq.79.2023.10.07.13.07.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Oct 2023 13:06:07 -0700 (PDT)
-From:   "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-        s=2023; t=1696709166;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=zNlD1s/5Qv8LvOzp0cT+qMBzDmfWHxl8/xBRMHgFQGc=;
-        b=nkSQrXCY5vVbqS6btuYu/JipccFgDJ7nsyFtTYPE0Ffxa7OF5HPKZO91zA3DcU6yWTiHPv
-        Nr+KtmGt56HhXXRizuDQxOzfVNGguPFskpIeZzh6ZnpanJZ1twbWz2DQXa6Pl8KwqNtlGA
-        AYsRDqMY7JOvTOm6SQOGF4bmtFGjZFBqtcnxUGZ7ybPcwI/4b2TtCrW8+gDQDlY8WdzNxW
-        30w5/AdtEpNe1wFw9MYy9pGPNb3HM69K2BVXDqXKOvgHSOHkYTQ8PMxyAriBatLtfJxqtd
-        idiCs7KvGnX6GNrMz8eSJ8C8vD9nJ7pJ/idgkOeTGdXWzdSjovyGTxd4XbgwLQ==
-Authentication-Results: ORIGINATING;
-        auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tomasz Figa <tfiga@chromium.org>, Yong Zhi <yong.zhi@intel.com>
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        Sat, 07 Oct 2023 13:07:48 -0700 (PDT)
+Date:   Sat, 7 Oct 2023 21:07:48 +0100
+From:   Lorenzo Stoakes <lstoakes@gmail.com>
+To:     kernel test robot <yujie.liu@intel.com>
+Cc:     oe-lkp@lists.linux.dev, lkp@intel.com, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        "Ricardo B. Marliere" <ricardo@marliere.net>
-Subject: [PATCH] staging: media: ipu3: remove ftrace-like logging
-Date:   Sat,  7 Oct 2023 17:05:42 -0300
-Message-Id: <20231007200541.126325-1-ricardo@marliere.net>
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH v2 3/3] mm: perform the mapping_map_writable() check
+ after call_mmap()
+Message-ID: <87e0d5f2-7d64-41ec-8a7c-920d5d1ca947@lucifer.local>
+References: <6f3aea05c9cc46094b029cbd1138d163c1ae7f9d.1682890156.git.lstoakes@gmail.com>
+ <202305161044.bba89e76-yujie.liu@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202305161044.bba89e76-yujie.liu@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the following checkpatch.pl warnings in ipu3.c:
+On Tue, May 16, 2023 at 01:52:06PM +0800, kernel test robot wrote:
+> Hello,
+>
+> kernel test robot noticed "assertion_failure" on:
+>
+> commit: a0e22a91f487957346732c6613eb6bd1b7c72ab1 ("[PATCH v2 3/3] mm: perform the mapping_map_writable() check after call_mmap()")
+> url: https://github.com/intel-lab-lkp/linux/commits/Lorenzo-Stoakes/mm-drop-the-assumption-that-VM_SHARED-always-implies-writable/20230501-062815
+> base: https://git.kernel.org/cgit/linux/kernel/git/akpm/mm.git mm-everything
+> patch link: https://lore.kernel.org/all/6f3aea05c9cc46094b029cbd1138d163c1ae7f9d.1682890156.git.lstoakes@gmail.com/
+> patch subject: [PATCH v2 3/3] mm: perform the mapping_map_writable() check after call_mmap()
+>
+> in testcase: igt
+> version: igt-x86_64-9e9cd7e6-1_20230506
+> with following parameters:
+>
+> 	group: group-11
+>
+> compiler: gcc-11
+> test machine: 20 threads 1 sockets (Commet Lake) with 16G memory
+>
+> (please refer to attached dmesg/kmsg for entire log/backtrace)
+>
+>
+> If you fix the issue, kindly add following tag
+> | Reported-by: kernel test robot <yujie.liu@intel.com>
+> | Link: https://lore.kernel.org/oe-lkp/202305161044.bba89e76-yujie.liu@intel.com
+>
+>
+> 2023-05-11 12:29:38 build/tests/gem_mmap_gtt --run-subtest basic-copy
+> IGT-Version: 1.27.1-g9e9cd7e6 (x86_64) (Linux: 6.3.0-10673-ga0e22a91f487 x86_64)
+> Starting subtest: basic-copy
+> (gem_mmap_gtt:1138) i915/gem_mman-CRITICAL: Test assertion failure function gem_mmap__gtt, file ../lib/i915/gem_mman.c:146:
+> (gem_mmap_gtt:1138) i915/gem_mman-CRITICAL: Failed assertion: ptr
+> (gem_mmap_gtt:1138) i915/gem_mman-CRITICAL: Last errno: 1, Operation not permitted
+> Subtest basic-copy failed.
+[snip]
 
-WARNING: Unnecessary ftrace-like logging - prefer using ftrace
-+       dev_dbg(dev, "enter %s\n", __func__);
+I don't have the hardware to test this (the repro steps don't work and
+manually running the test indicates the actual hardware is required) but I
+suspect it's a result of i915_gem_mmap() somehow causing
+mapping_unmap_writable() to be invoked, which sets mapping->i_mmap_writable
+negative, and thus the check after call_mmap() is performed reports the error.
 
-WARNING: Unnecessary ftrace-like logging - prefer using ftrace
-+       dev_dbg(dev, "leave %s\n", __func__);
-
-WARNING: Unnecessary ftrace-like logging - prefer using ftrace
-+       dev_dbg(dev, "enter %s\n", __func__);
-
-WARNING: Unnecessary ftrace-like logging - prefer using ftrace
-+       dev_dbg(dev, "leave %s\n", __func__);
-
-Fixes: 7fc7af649ca7 ("media: staging/intel-ipu3: Add imgu top level pci device driver")
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- drivers/staging/media/ipu3/ipu3.c | 6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/drivers/staging/media/ipu3/ipu3.c b/drivers/staging/media/ipu3/ipu3.c
-index 0c453b37f8c4..18ca22c3018a 100644
---- a/drivers/staging/media/ipu3/ipu3.c
-+++ b/drivers/staging/media/ipu3/ipu3.c
-@@ -762,7 +762,6 @@ static int __maybe_unused imgu_suspend(struct device *dev)
- 	struct pci_dev *pci_dev = to_pci_dev(dev);
- 	struct imgu_device *imgu = pci_get_drvdata(pci_dev);
- 
--	dev_dbg(dev, "enter %s\n", __func__);
- 	imgu->suspend_in_stream = imgu_css_is_streaming(&imgu->css);
- 	if (!imgu->suspend_in_stream)
- 		goto out;
-@@ -783,7 +782,6 @@ static int __maybe_unused imgu_suspend(struct device *dev)
- 	imgu_powerdown(imgu);
- 	pm_runtime_force_suspend(dev);
- out:
--	dev_dbg(dev, "leave %s\n", __func__);
- 	return 0;
- }
- 
-@@ -793,8 +791,6 @@ static int __maybe_unused imgu_resume(struct device *dev)
- 	int r = 0;
- 	unsigned int pipe;
- 
--	dev_dbg(dev, "enter %s\n", __func__);
--
- 	if (!imgu->suspend_in_stream)
- 		goto out;
- 
-@@ -821,8 +817,6 @@ static int __maybe_unused imgu_resume(struct device *dev)
- 	}
- 
- out:
--	dev_dbg(dev, "leave %s\n", __func__);
--
- 	return r;
- }
- 
--- 
-2.40.1
-
+In v3 I will change this to continue to mark the file writable before
+invoking call_mmap() which should fix this issue.
