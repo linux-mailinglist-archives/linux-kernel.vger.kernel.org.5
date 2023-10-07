@@ -2,105 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B6547BC7E5
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 15:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C7E7BC7E6
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 15:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343940AbjJGNAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 09:00:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52462 "EHLO
+        id S1343957AbjJGNBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 09:01:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343741AbjJGNAU (ORCPT
+        with ESMTP id S1343741AbjJGNA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 09:00:20 -0400
-Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 849A6AB
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 06:00:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-        t=1696683613; bh=1Jri4c0dUWUEhbh0nohF7eCG2g72tCMR2ODPWB7oQMk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Sa/rhZmZW0rIafmQjpxwClLK5cJmPYNc+zI1PaA7cRbnhzpYyqFl1ztVgOvUTeNyU
-         k+FcqpYJvKtNXP9BR8Jrg+WJeBVCsC7PTMizxCZU5eEPKKnhbSZvzAadmLBsR/4i3U
-         rAXEzs/iKvS6a73pFdLQA1X/NZbp36u2Xn8k8lak=
-From:   =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megi@xff.cz>
-To:     linux-rockchip@lists.infradead.org
-Cc:     Ondrej Jirman <megi@xff.cz>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
-        Nicholas Roth <nicholas@rothemail.net>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org (open list:V4L2 CAMERA SENSOR DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] media: i2c: ov8858: Don't set fwnode in the driver
-Date:   Sat,  7 Oct 2023 15:00:00 +0200
-Message-ID: <20231007130004.942369-1-megi@xff.cz>
+        Sat, 7 Oct 2023 09:00:58 -0400
+Received: from mailo.com (msg-2.mailo.com [213.182.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AEA1C2
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 06:00:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
+        t=1696683633; bh=6e/J14qgrz5/5aSBCNVxqNF6zVd6jEJWQXAXSY4IkQs=;
+        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
+         MIME-Version:Content-Type:Content-Transfer-Encoding:In-Reply-To;
+        b=Wl/YS/3c1/JXS9cetGFFrgwJM4to1+2/hZSU41yumdXep8sVGnd2NwUKQqvfJL1Es
+         ERE2lEUgaUMAO9iQ3VwKlYKrK9L+VG+4watCndLoHV9j8lcnLVBFSOtUe40Avp+D6s
+         DMOwvjnWgnzDTU7r2mBBXGgtdD+3cbLwBMgNB3Ps=
+Received: by b221-4.in.mailobj.net [192.168.90.24] with ESMTP
+        via ip-20.mailobj.net [213.182.54.20]
+        Sat,  7 Oct 2023 15:00:33 +0200 (CEST)
+X-EA-Auth: CAve3YZ/hZSuwfASOt92PtmM7Xx8xFaK9CD6lQ30TkqPKvGUURv8G1rIc+WBPmvrICkK34P+vUG14I6ddiREXgxjMkykTT5H
+Date:   Sat, 7 Oct 2023 18:30:27 +0530
+From:   Deepak R Varma <drv@mailo.com>
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: Re: kmap() transformation: Question about copy_user_highpage
+Message-ID: <ZSFWa44FTi48hDyE@runicha.com>
+References: <ZSBV+h/gjPWV7+Gj@runicha.com>
+ <CAAhV-H7B2tqw-PWD2775Nx1JiPVwh8nGYsVDTiA0QjBhTYbrMw@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAhV-H7B2tqw-PWD2775Nx1JiPVwh8nGYsVDTiA0QjBhTYbrMw@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ondrej Jirman <megi@xff.cz>
+On Sat, Oct 07, 2023 at 12:55:14PM +0800, Huacai Chen wrote:
+> Hi, Deepak,
 
-This makes the driver work with the new check in
-v4l2_async_register_subdev() that was introduced recently in 6.6-rc1.
-Without this change, probe fails with:
+Hello Huacai,
 
-ov8858 1-0036: Detected OV8858 sensor, revision 0xb2
-ov8858 1-0036: sub-device fwnode is an endpoint!
-ov8858 1-0036: v4l2 async register subdev failed
-ov8858: probe of 1-0036 failed with error -22
+>
+> On Sat, Oct 7, 2023 at 2:46 AM Deepak R Varma <drv@mailo.com> wrote:
+> >
+> > Hello,
+> > I am attempting to work on replacing the kmap[_atomic]() calls by
+> > kmap_local_page() function call. A detail on this change can be found here [0].
+> >
+> > I would like to know if this function:
+> >         arch/loongarch/mm/init.c::copy_user_highpage()
+> > is currently in use or is it a dead code?
+> >
+> > If this code is not in use, can this be removed instead? However, if it is in
+> > use, can you comment why kmap_atomic() was preferred over kmap()
+> > function call?
+> I think this function will be used for the 32bit kernel, and we will
+> add loongarch32 support in the near future.
 
-This also simplifies the driver a bit.
+Okay. Sounds good.
 
-Signed-off-by: Ondrej Jirman <megi@xff.cz>
----
- drivers/media/i2c/ov8858.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+>
+> But on the other hand, you can replace kmap_atomic() with
+> kmap_local_page(), there is no special reason to use kmap_atomic().
 
-diff --git a/drivers/media/i2c/ov8858.c b/drivers/media/i2c/ov8858.c
-index 3af6125a2eee..b862dc9604cc 100644
---- a/drivers/media/i2c/ov8858.c
-+++ b/drivers/media/i2c/ov8858.c
-@@ -1868,7 +1868,7 @@ static int ov8858_parse_of(struct ov8858 *ov8858)
- 		return -EINVAL;
- 	}
- 
--	ov8858->subdev.fwnode = endpoint;
-+	fwnode_handle_put(endpoint);
- 
- 	return 0;
- }
-@@ -1913,7 +1913,7 @@ static int ov8858_probe(struct i2c_client *client)
- 
- 	ret = ov8858_init_ctrls(ov8858);
- 	if (ret)
--		goto err_put_fwnode;
-+		return ret;
- 
- 	sd = &ov8858->subdev;
- 	sd->flags |= V4L2_SUBDEV_FL_HAS_DEVNODE | V4L2_SUBDEV_FL_HAS_EVENTS;
-@@ -1964,8 +1964,6 @@ static int ov8858_probe(struct i2c_client *client)
- 	media_entity_cleanup(&sd->entity);
- err_free_handler:
- 	v4l2_ctrl_handler_free(&ov8858->ctrl_handler);
--err_put_fwnode:
--	fwnode_handle_put(ov8858->subdev.fwnode);
- 
- 	return ret;
- }
-@@ -1978,7 +1976,6 @@ static void ov8858_remove(struct i2c_client *client)
- 	v4l2_async_unregister_subdev(sd);
- 	media_entity_cleanup(&sd->entity);
- 	v4l2_ctrl_handler_free(&ov8858->ctrl_handler);
--	fwnode_handle_put(ov8858->subdev.fwnode);
- 
- 	pm_runtime_disable(&client->dev);
- 	if (!pm_runtime_status_suspended(&client->dev))
--- 
-2.42.0
+Looks like you sent in a patch. Thank you. I was working on trying to cross
+compile my patch for the arch. I still would like to attempt that. Will request
+your help if I get stuck.
+
+regards,
+deepak.
+
+
+>
+> Huacai
+>
+> >
+> > [0] https://lore.kernel.org/all/20201029222652.302358281@linutronix.de/
+> >
+> > Thank you,
+> > Deepak.
+> >
+> >
+> >
+
 
