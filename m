@@ -2,95 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E369F7BC58A
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 09:26:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA0357BC58D
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 09:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343678AbjJGH0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 03:26:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41704 "EHLO
+        id S1343681AbjJGH10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 03:27:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343632AbjJGHZ7 (ORCPT
+        with ESMTP id S1343598AbjJGH1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 03:25:59 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EFD4B9;
-        Sat,  7 Oct 2023 00:25:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696663558; x=1728199558;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=J282I5R9WNoyobuH7Ogbg9U0iV/eHTpeZxVkwzl1QWA=;
-  b=N8E6Rki+v34L3ysgoaZN4BosEwukqSWvzgAU8i5c6V56DPEBYgegNLhX
-   vDjIZWC032r/zEb4kr/3v2Vg0ZZHIBMxcp8u8FCxP6rA1bC27jCtmHufH
-   bBKGe+uPVSRsSVbmnKdlNZl169RdLs1mMJJnvMklFYBQ3HV/uwG8qticO
-   hRoyxhNje/NqnbD6+9AMf95b+dbyPL8TRqQBAO1pGO/hzVRUJ+Z0/6lkH
-   a5Ywz4/dsxlHANnBCnZYQQ1M2iIAo30DCgXn4L6Q30GJ/JYzqgzAZjWWb
-   UO9vZI2i3LASym8h1UkMFxq9XXOsDZH08t91y3mew4+L/9Qig6Ya4lUUp
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="5460244"
-X-IronPort-AV: E=Sophos;i="6.03,205,1694761200"; 
-   d="scan'208";a="5460244"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2023 00:25:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="999620260"
-X-IronPort-AV: E=Sophos;i="6.03,205,1694761200"; 
-   d="scan'208";a="999620260"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2023 00:25:55 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qp1hA-00000003Xh1-3huf;
-        Sat, 07 Oct 2023 10:25:52 +0300
-Date:   Sat, 7 Oct 2023 10:25:52 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     acpi4asus-user@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?iso-8859-1?Q?Jo=E3o?= Paulo Rechi Vita <jprvita@gmail.com>,
-        Corentin Chary <corentin.chary@gmail.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>
-Subject: Re: [PATCH v3 1/1] platform/x86: asus-wireless: Replace open coded
- acpi_match_device()
-Message-ID: <ZSEIAL4m9WbpJTW8@smile.fi.intel.com>
-References: <20231006155351.3503665-1-andriy.shevchenko@linux.intel.com>
- <371fc87d-ade3-51b8-6f56-4d99dad88873@redhat.com>
+        Sat, 7 Oct 2023 03:27:24 -0400
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 390B8C2
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 00:27:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=WB7nK
+        i52YjLc4sG3q3T1xtcsv16IVqBRlO8CrGHAiyQ=; b=TWSEngi9Ng51AvfcInrg1
+        XNiGPvm3Qd1zYFdbMnUqX+CRFkdintfb07NQ/aBH8gmGfT2FBNdkiiuBb4Gsf3aZ
+        /NWKABl0x2Ry9cM1fcW5KTWibu+07QtUoAAhu6JAaCsInoPOIt+sDy022Q13hRSP
+        EvTmijHUD/Pa5MH9geMWqQ=
+Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
+        by zwqz-smtp-mta-g1-2 (Coremail) with SMTP id _____wDncjVDCCFlWnx6EA--.50896S4;
+        Sat, 07 Oct 2023 15:27:06 +0800 (CST)
+From:   Ma Ke <make_ruc2021@163.com>
+To:     dlemoal@kernel.org
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ma Ke <make_ruc2021@163.com>
+Subject: [PATCH] ata: sata_mv: aspeed: fix value check in mv_platform_probe()
+Date:   Sat,  7 Oct 2023 15:26:57 +0800
+Message-Id: <20231007072657.4001311-1-make_ruc2021@163.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <371fc87d-ade3-51b8-6f56-4d99dad88873@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wDncjVDCCFlWnx6EA--.50896S4
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Jr4rAw4fGw18tFy5tr17Awb_yoWfXwbEka
+        yxu39rWr429Fsrt345Xw13ArWxKF4vvFn0va4Iyw1ayr17Xa13JrWDXwsxu39xWw48AFy0
+        vr1UC3y3Cry5GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRthFxDUUUUU==
+X-Originating-IP: [183.174.60.14]
+X-CM-SenderInfo: 5pdnvshuxfjiisr6il2tof0z/1tbivgoCC1ZcjAVt3wAAsM
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 07:08:35PM +0200, Hans de Goede wrote:
-> On 10/6/23 17:53, Andy Shevchenko wrote:
+In mv_platform_probe(), check the return value of clk_prepare_enable()
+and return the error code if clk_prepare_enable() returns an
+unexpected value.
 
-...
+Signed-off-by: Ma Ke <make_ruc2021@163.com>
+---
+ drivers/ata/sata_mv.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-> Thanks, patch looks good to me now:
-> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Thanks, but it seems something went wrong (most likely due to age of the
-patches in my local tree) and confusing "BUILD SUCCESS" from LKP.
-
-> > +	id = acpi_match_device(device_ids, adev);
-
-This should be acpi_match_acpi_device().
-
-> > +	if (!id)
-> >  		return 0;
-
+diff --git a/drivers/ata/sata_mv.c b/drivers/ata/sata_mv.c
+index 45e48d653c60..96f9841aae6c 100644
+--- a/drivers/ata/sata_mv.c
++++ b/drivers/ata/sata_mv.c
+@@ -4125,8 +4125,11 @@ static int mv_platform_probe(struct platform_device *pdev)
+ 	hpriv->clk = clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(hpriv->clk))
+ 		dev_notice(&pdev->dev, "cannot get optional clkdev\n");
+-	else
+-		clk_prepare_enable(hpriv->clk);
++	else {
++		rc = clk_prepare_enable(hpriv->clk);
++		if (rc)
++			return rc;
++	}
+ 
+ 	for (port = 0; port < n_ports; port++) {
+ 		char port_number[16];
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.37.2
 
