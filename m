@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F2A7BC93F
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 19:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C06A7BC944
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 19:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344127AbjJGRLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 13:11:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37140 "EHLO
+        id S1344054AbjJGRLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 13:11:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344046AbjJGRLB (ORCPT
+        with ESMTP id S1344118AbjJGRLE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 13:11:01 -0400
+        Sat, 7 Oct 2023 13:11:04 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 242E99E;
-        Sat,  7 Oct 2023 10:11:00 -0700 (PDT)
-Date:   Sat, 07 Oct 2023 17:10:58 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0599A2;
+        Sat,  7 Oct 2023 10:11:01 -0700 (PDT)
+Date:   Sat, 07 Oct 2023 17:10:59 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696698658;
+        s=2020; t=1696698660;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=gECZZh5iJ02TdAKQPSzRNmE/zibkCxme3Qc20tTwTPs=;
-        b=3JyEcrtLPT7xPj2ehM0/gYaq8DDMbwUTGsFtAoLPHnplatdJPypYNGE/PZSsIQM5n2yzmA
-        A4zr8vkDXym+qMbNNPcUM9C7sqxOMy4t87gUQvEe/iMC2bY/mBLJ2F/MgKtr3gtJT+Ts/U
-        qyb5wVMKghsbvXKc/0+sKvakF/UvHYouRpAoBk5+5DrOXq8zB/lHK8I9EEqwZYZSrGsJVW
-        41HssW1+9qLLatpwgI+JZ6d4CDEuLMqfFqrWHUJS5yICls9XtcJbtjC1etRWnPGKpJhq7U
-        phZA4q8GVniXnpWS+O9PB663AzhUm+h4vGVmm1wZgMmOKlZsNwlXmPAXZGxupw==
+        bh=5kiEoVZenwhxVMli/0Xg39anpqA8OnebqM0TKg7l87M=;
+        b=O2ljeJ7DWqzWuSAcmkP8d3cC4NLYfheMTGuugOMskDc2g67go6jcdctunyY5Poza3puNIs
+        6V9L6Wf1EY4T7Xdym01uo2KfPI2OzFmJkiXSgKubytDm1ntwMHxN2prMQ++dMsuTGDrqH7
+        LEJm9iQ9SzGYs4tLxlTA3quk6W/fzNpHwHa1wa/MWQ31XvxbpULU1gUCxvoUid4nW0VmZL
+        a4nPI0lIxDsjuKHbK9Oj88nqnRhhCz6AU4MjLcu+/xS2kgDzzy/TvTVWzzkA4NVIAJzWiI
+        Gy04ZFMYGE0I70z04B6PUIXF33BnsLE+q397+16Q2AatfOxTezHiqETUqfqzVw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696698658;
+        s=2020e; t=1696698660;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=gECZZh5iJ02TdAKQPSzRNmE/zibkCxme3Qc20tTwTPs=;
-        b=cdgrfJrN2bwdLeAJvwQfdGY97CXJwqbWT4dDnZl3hWsFHANCrolMMMDGN3rY/N98zoTcH4
-        Z5inQJSbtdCVtDAw==
+        bh=5kiEoVZenwhxVMli/0Xg39anpqA8OnebqM0TKg7l87M=;
+        b=jkO21dyGBKA00KscUXdIDd0azQwuWAI7mmmI6wOx1i5AtYZwIfthpD4bRDtMeuo1j/P+Wd
+        T4bSOCousVlAmhAg==
 From:   "tip-bot2 for Waiman Long" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] intel_idle: Use __update_spec_ctrl() in intel_idle_ibrs()
-Cc:     Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+Subject: [tip: sched/core] x86/speculation: Add __update_spec_ctrl() helper
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Waiman Long <longman@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
         "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230727184600.26768-4-longman@redhat.com>
-References: <20230727184600.26768-4-longman@redhat.com>
+In-Reply-To: <20230727184600.26768-2-longman@redhat.com>
+References: <20230727184600.26768-2-longman@redhat.com>
 MIME-Version: 1.0
-Message-ID: <169669865810.3135.4637182434325944599.tip-bot2@tip-bot2>
+Message-ID: <169669865996.3135.485844093321921238.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -67,60 +69,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     7506203089dceb1d9e1f35d37ad2e46d44798a6d
-Gitweb:        https://git.kernel.org/tip/7506203089dceb1d9e1f35d37ad2e46d44798a6d
+Commit-ID:     e3e3bab1844d448a239cd57ebf618839e26b4157
+Gitweb:        https://git.kernel.org/tip/e3e3bab1844d448a239cd57ebf618839e26b4157
 Author:        Waiman Long <longman@redhat.com>
-AuthorDate:    Thu, 27 Jul 2023 14:45:59 -04:00
+AuthorDate:    Thu, 27 Jul 2023 14:45:57 -04:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Sat, 07 Oct 2023 11:33:28 +02:00
 
-intel_idle: Use __update_spec_ctrl() in intel_idle_ibrs()
+x86/speculation: Add __update_spec_ctrl() helper
 
-When intel_idle_ibrs() is called, it modifies the SPEC_CTRL MSR to 0
-in order disable IBRS. However, the new MSR value isn't reflected in
-x86_spec_ctrl_current which is at odd with the other code that keep track
-of its state in that percpu variable.  Use the new __update_spec_ctrl()
-to have the x86_spec_ctrl_current percpu value properly updated.
+Add a new __update_spec_ctrl() helper which is a variant of
+update_spec_ctrl() that can be used in a noinstr function.
 
-Since spec-ctrl.h includes both msr.h and nospec-branch.h, we can remove
-those from the include file list.
-
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Waiman Long <longman@redhat.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Link: https://lore.kernel.org/r/20230727184600.26768-4-longman@redhat.com
+Link: https://lore.kernel.org/r/20230727184600.26768-2-longman@redhat.com
 ---
- drivers/idle/intel_idle.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ arch/x86/include/asm/spec-ctrl.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
-index ea5a6a1..86ac9a4 100644
---- a/drivers/idle/intel_idle.c
-+++ b/drivers/idle/intel_idle.c
-@@ -53,9 +53,8 @@
- #include <linux/moduleparam.h>
- #include <asm/cpu_device_id.h>
- #include <asm/intel-family.h>
--#include <asm/nospec-branch.h>
- #include <asm/mwait.h>
--#include <asm/msr.h>
-+#include <asm/spec-ctrl.h>
- #include <asm/fpu/api.h>
+diff --git a/arch/x86/include/asm/spec-ctrl.h b/arch/x86/include/asm/spec-ctrl.h
+index cb0386f..c648502 100644
+--- a/arch/x86/include/asm/spec-ctrl.h
++++ b/arch/x86/include/asm/spec-ctrl.h
+@@ -4,6 +4,7 @@
  
- #define INTEL_IDLE_VERSION "0.5.1"
-@@ -182,12 +181,12 @@ static __cpuidle int intel_idle_ibrs(struct cpuidle_device *dev,
- 	int ret;
+ #include <linux/thread_info.h>
+ #include <asm/nospec-branch.h>
++#include <asm/msr.h>
  
- 	if (smt_active)
--		native_wrmsrl(MSR_IA32_SPEC_CTRL, 0);
-+		__update_spec_ctrl(0);
- 
- 	ret = __intel_idle(dev, drv, index);
- 
- 	if (smt_active)
--		native_wrmsrl(MSR_IA32_SPEC_CTRL, spec_ctrl);
-+		__update_spec_ctrl(spec_ctrl);
- 
- 	return ret;
+ /*
+  * On VMENTER we must preserve whatever view of the SPEC_CTRL MSR
+@@ -76,6 +77,16 @@ static inline u64 ssbd_tif_to_amd_ls_cfg(u64 tifn)
+ 	return (tifn & _TIF_SSBD) ? x86_amd_ls_cfg_ssbd_mask : 0ULL;
  }
+ 
++/*
++ * This can be used in noinstr functions & should only be called in bare
++ * metal context.
++ */
++static __always_inline void __update_spec_ctrl(u64 val)
++{
++	__this_cpu_write(x86_spec_ctrl_current, val);
++	native_wrmsrl(MSR_IA32_SPEC_CTRL, val);
++}
++
+ #ifdef CONFIG_SMP
+ extern void speculative_store_bypass_ht_init(void);
+ #else
