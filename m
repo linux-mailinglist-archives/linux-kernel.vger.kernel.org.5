@@ -2,137 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7FBC7BC6A6
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 12:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F937BC6AB
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 12:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343778AbjJGKJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 06:09:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37646 "EHLO
+        id S1343786AbjJGKNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 06:13:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234148AbjJGKJC (ORCPT
+        with ESMTP id S234148AbjJGKNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 06:09:02 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD0B292
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 03:09:00 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50325ce89e9so3824131e87.0
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Oct 2023 03:09:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696673339; x=1697278139; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KWGnWC1nRItaPmklKxpuYvpPobvm6bbDsTmyxg2t6ZQ=;
-        b=FB0urXCoJOUCihbq5Qa3FiZ2LBXgzEYnREC5SL9ujYOCl+XeI+v9UtS6uEvxThZlM6
-         aSvkFFXQkq4YrEMce2n4g5vHBJnsKj7vjaE9SlIYe+b7MoCifM5Uy85RjR7kV7CFA6S3
-         MNVuJ3VLl6kjpD6NrWUirMMk47zaDKK9frtknUNPP6v0CA4ezQi0x7ATVojfmZl2K32X
-         1ybAcSiVKedbMkgXYaUWzetWsAzATLmLK4bgUgwfzWRBkn835xglqaDnTRzjilDQnUI3
-         J44v6LFhjHhOuJiktw+zZ1bKT1e0txxgCJlzo5HVfqmUkK9rvydFODoXcSaMBrn4+Cem
-         Doiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696673339; x=1697278139;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KWGnWC1nRItaPmklKxpuYvpPobvm6bbDsTmyxg2t6ZQ=;
-        b=FGnS2S/nSgVmbM3r/343sG7JgQS7c0ixl/nxrUljyxba6bs0aCc7dwooQpO2B0OnNd
-         Y8SoqAMd+0uje6o7TlDqIDR3SFJGKRdgDDrwP1ZNLSGwwXFs0AnhwqNJ/cyAYJKaJpsV
-         b/MvYWvVpaNRBfcOl7z7+S/Gb/iZ7zcapTHIUlS53WQOAaIX7zu/CcMWEneguWHmbUSs
-         4Ddfz9SX87aH84QTiSfTKU0RPptwViFsomxP/mkI+vwlrGkHvXmaHk35YI9GweZX3xK4
-         hu9RAda3GQWIMeQG9ksi30LeZMepFgXuUPK09TdV5cGYNzRkiyU8k1A7m8EKWCjPS+pp
-         ePeQ==
-X-Gm-Message-State: AOJu0Ywn5nJwzp2I6TA2lIF/n0Mu0FF1Bq+Bw2C1B9DEl/wIze90aPUU
-        PxPMIiZfRh/h8VF7R0BQ0Z0IZw==
-X-Google-Smtp-Source: AGHT+IG0CVCgqlPv2wxsTilLt17MBMEobW1SOqaRN9HJEasIJ3z9GUosQp+zA7kkduMp8d0uOJsWaA==
-X-Received: by 2002:ac2:5e33:0:b0:502:9c4e:d46a with SMTP id o19-20020ac25e33000000b005029c4ed46amr6837138lfg.32.1696673338827;
-        Sat, 07 Oct 2023 03:08:58 -0700 (PDT)
-Received: from [172.20.10.4] (82-132-213-54.dab.02.net. [82.132.213.54])
-        by smtp.gmail.com with ESMTPSA id v7-20020adfedc7000000b003197efd1e7bsm3796811wro.114.2023.10.07.03.08.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Oct 2023 03:08:58 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Hector Martin <marcan@marcan.st>,
-        Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Vincent Shih <vincent.sunplus@gmail.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Lala Lin <lala.lin@mediatek.com>,
-        Komal Bajaj <quic_kbajaj@quicinc.com>,
-        Kumar Thella <sthella@codeaurora.org>,
-        Keiji Hayashibara <hayashibara.keiji@socionext.com>,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, asahi@lists.linux.dev,
-        linux-arm-msm@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-rtc@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
-In-Reply-To: <20231003064018.7502-1-zajec5@gmail.com>
-References: <20231003064018.7502-1-zajec5@gmail.com>
-Subject: Re: [PATCH V2] dt-bindings: nvmem: move deprecated cells binding
- to its own file
-Message-Id: <169667333484.74178.7121029453685069845.b4-ty@linaro.org>
-Date:   Sat, 07 Oct 2023 11:08:54 +0100
+        Sat, 7 Oct 2023 06:13:06 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26D692;
+        Sat,  7 Oct 2023 03:13:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D573C433C8;
+        Sat,  7 Oct 2023 10:13:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696673584;
+        bh=TcALwCWaWLYZlDiKumVC2gfmtJ9T07W/GvdNt5U2KyA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=T7hfTrU4H1juHzNZFz/CWpkXvoNKR4ClQeaDw1eGuv66m6uCiiiXVCKLd/Yf+uG86
+         B604QMYHOW1nvt+qjjkwEYOkQht3+Rr4gLXZEkfQVTUl9RQfzZiMIXMv5ytnv6H2fD
+         fsFHvoYdLlL8t79lJsEmptPCFWQ5WurZNMcSHmPPJ663cVNXedajsxP7mRAEA+MXiv
+         80jn0ZkX3FLQpuQNFa8CALjMvPTItJXHwww1NNs0s4VKYxUWfDgkp/T6YN1mCQYKqI
+         0/8NYNxr60h+OV7nyY6NOeZj8kNrII4YdzobptcGLaQB/QYHnNbPTKiIP3vVq0On1k
+         +MKxxMeH40OGg==
+Message-ID: <e6eb5949-fb48-7210-8162-3630a08761d5@kernel.org>
+Date:   Sat, 7 Oct 2023 18:13:00 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v5] scsi: support packing multi-segment in UNMAP command
+Content-Language: en-US
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     jejb@linux.ibm.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230310123604.1820231-1-chao@kernel.org>
+ <b53321ab-679d-e007-6407-6bd00149948e@kernel.org>
+ <yq17ct0nijm.fsf@ca-mkp.ca.oracle.com>
+ <f93949dd-e90f-a9bf-33b3-4f31c4328c7d@kernel.org>
+ <yq1sfabni01.fsf@ca-mkp.ca.oracle.com>
+ <d3c1c2cb-9076-523b-da81-a1b632b4b0f5@kernel.org>
+ <yq1h6p9k4vk.fsf@ca-mkp.ca.oracle.com>
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <yq1h6p9k4vk.fsf@ca-mkp.ca.oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Martin,
 
-On Tue, 03 Oct 2023 08:40:18 +0200, Rafał Miłecki wrote:
-> Support for old NVMEM fixed cells was deprecated in favour of
-> "fixed-layout". It's still part of the nvmem.yaml though and may be
-> unknowingly used by new bindings added without much of analyze.
+Is it possible to commit this patch only to catch up 6.7-rc1, w/o other
+changes in 5.20/discovery? I don't feel there is any strong correlation
+between them, or am I missing something?
+
+Thanks,
+
+On 2023/8/8 22:04, Martin K. Petersen wrote:
 > 
-> To make it more difficult to accidentally support old syntax move its
-> binding to separated file with "deprecated" in its name.
+> Chao,
 > 
-> [...]
-
-Applied, thanks!
-
-[1/1] dt-bindings: nvmem: move deprecated cells binding to its own file
-      commit: 6d25308bb9deb10ae62bdeefdf2362072a5a4836
-
-Best regards,
--- 
-Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
+>>>> Any progress on this patch?
+>>> I'll resubmit this series for 6.6.
+> 
+> Been working on this series to address the reported regressions. Spent
+> quite a bit of time on it last week.
+> 
