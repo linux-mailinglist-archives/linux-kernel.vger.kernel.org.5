@@ -2,130 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4A37BC7F1
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 15:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3DFB7BC7F3
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 15:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343873AbjJGNK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 09:10:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49668 "EHLO
+        id S1343741AbjJGNLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 09:11:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231290AbjJGNK5 (ORCPT
+        with ESMTP id S234165AbjJGNLo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 09:10:57 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D444FB6;
-        Sat,  7 Oct 2023 06:10:56 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40535597f01so28024495e9.3;
-        Sat, 07 Oct 2023 06:10:56 -0700 (PDT)
+        Sat, 7 Oct 2023 09:11:44 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A47ABC
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 06:11:42 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-690f8e63777so763909b3a.0
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Oct 2023 06:11:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696684255; x=1697289055; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JckiUdume8/244qoGkEzxCY5dVAABsvgSL01kRwzTpg=;
-        b=QwxvqicZggpuwNM75/jGjk3fHA3Hx7R5gUo5KUdfuWY7oP3oIdiZ6hSZShIlZe/i+L
-         lK0L+HRxQQjlsCfRhmh1hR6uKbisxRrdLkOBYF4f1gqtD8EUOvqn2IVj5oAsPQe99zGY
-         W+ldEt4nlA9NB9Y58mUfbUPMhtc8uv7HY0EZBVPR+Wv5cdvhAeKeafGzwgnK5BVe8zGD
-         bsZZG4jbNVWhJzX7B3qhzmGNTgQRmnrhbG/BMCBx4hYQnUzcyE0SxvNPJL3oTQAWBeyL
-         KCB8u8jvFmy0Us929j+ka/nha0Ii6a24XY2mu8Furelpjg6f1/5gxXYbjqIB6FEsyQb9
-         gJUg==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1696684301; x=1697289101; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ca4YeJ2DLaYsOGwO/0MihJc3GRRS7TJuq5FqieD0IEM=;
+        b=jL5Wu4iL8G6XnYhq9FnV/hd0bQycXk3t8ZnxVbr/6H5LSzDMFAfhy5x/gwtzcbHlXY
+         uO5rPiFVGN49Mb7QrFJumzXDQP6GOa/70I6nlr7EgK/qyzEkapJMhuOHYx90xBB1Ajd0
+         ePOfFlZefghYxuaUNc0zy1M03UKX62ClH7DsTyZcqzphv2Gj7EhUYrbJFvU5bnmHNbG+
+         FvPgqVk3yAsgU6nQMlNoc3T5jqF4w6PJF8HLeBPm7qhysl81u8kPGAs6CXlqAHRi1102
+         7Mzkcj4M9231vaKcG343B6EVhMmYayM91sBItHMHJTxeeoP0tVDgFTglRu2rVPMRMY67
+         foHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696684255; x=1697289055;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JckiUdume8/244qoGkEzxCY5dVAABsvgSL01kRwzTpg=;
-        b=Hgt6GRVcb576J5JnjKvAH9S4CcZ/ywxhfvQQB3SMLeji7OYFhCHlyHug/9z29ry+Ab
-         lh6iBEJUTdizr4j3zQiltCKhBctLGKB4qsoR7U0yeAHvZXp9NFhkYZdn7szQgz96FtwG
-         Q/KL5D0LFvlWKxePJHuTiXeY+t9G4Q0FKZY8E2fAp5MRZ+OPRJiHqSuZtZvDugZhhDIk
-         JrfdrxErZ6N699i71Xd0dyaf6Q7PfE95CcT6SchYpVZN62YYaEQjM8X/ld1K3SvGNVjn
-         amRThEqcDr7HQqmIEaJqLxid4ohW7Tlwa5gCzpDTGe42oeU9uBnxYctDDO4CapsGF2Xx
-         uplA==
-X-Gm-Message-State: AOJu0Yxyb6npuhisaSSB1OR60V89l1esz4W0FWdMg7KK+2g+IFHlkuyG
-        fxJexrhkQg3NXb7af4PAib0=
-X-Google-Smtp-Source: AGHT+IHLkfk9ITx4gK1tDu0r7cmJuMEf4/dyDkcAuowsCwxPpMICDJ8fKG+kvks9164B/5egGGr3dA==
-X-Received: by 2002:a1c:7407:0:b0:401:c338:ab94 with SMTP id p7-20020a1c7407000000b00401c338ab94mr9969808wmc.29.1696684254888;
-        Sat, 07 Oct 2023 06:10:54 -0700 (PDT)
-Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id v10-20020a05600c470a00b00407460234f9sm513922wmo.21.2023.10.07.06.10.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Oct 2023 06:10:54 -0700 (PDT)
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Li Zetao <lizetao1@huawei.com>, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: [net PATCH] leds: trigger: netdev: move size check in set_device_name
-Date:   Sat,  7 Oct 2023 15:10:42 +0200
-Message-Id: <20231007131042.15032-1-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.40.1
+        d=1e100.net; s=20230601; t=1696684301; x=1697289101;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ca4YeJ2DLaYsOGwO/0MihJc3GRRS7TJuq5FqieD0IEM=;
+        b=m4DvOucCuokH9Fv6ZmBkTmRdk10mPDCESMt1wp1v09GbstQYtM/w1CUYPiMuDLbKkw
+         nhZSBy7PEfzU05kQ9pZJ/E2iQpdLligohgctTm8/LKdK/Li1j9kgLKoCDeFTPEFlumpy
+         ZN9FW4Ig2hpwFBfJ0EXwSnuMOg0QAj32cBAId3Tgf1oBEcW/7LP8U4CAF7u2Atg9iXGD
+         DTCTu0ytZxZDUI1kPuBDjXmwSq2+jzpDVIeU/zcAHuiXEZtrDZFsbs7zlSODcRMRNx3V
+         09/xB4lMnDLKgDHm4Ft00ngShddcXt+Sh1/uCxJIqHSHDUr4rJ/ZSBuTpr0q9+jT3BVg
+         Hqww==
+X-Gm-Message-State: AOJu0YwYDDz4NS4umCrPpnVLroziMWUz+Jf+yRgODes6hgBD9xPOmekQ
+        /tAYXH/pfV95K0+HUgFOAVn3ig==
+X-Google-Smtp-Source: AGHT+IGXkUprzQ+aBzAbPIR0AAjGTWfKW9B1FptWyEqyWx1LVz/YkVYz7f6mZOGdQHZYSLnGzwXU6Q==
+X-Received: by 2002:a05:6a21:789a:b0:159:f5fb:bf74 with SMTP id bf26-20020a056a21789a00b00159f5fbbf74mr12535446pzc.3.1696684301401;
+        Sat, 07 Oct 2023 06:11:41 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id j5-20020a17090aeb0500b0026f90d7947csm5036013pjz.34.2023.10.07.06.11.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 07 Oct 2023 06:11:40 -0700 (PDT)
+Message-ID: <e0307260-c438-41d9-97ec-563e9932a60e@kernel.dk>
+Date:   Sat, 7 Oct 2023 07:11:39 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: audit: io_uring openat triggers audit reference count underflow
+ in worker thread
+Content-Language: en-US
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Dan Clash <Dan.Clash@microsoft.com>,
+        "audit@vger.kernel.org" <audit@vger.kernel.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>
+Cc:     "paul@paul-moore.com" <paul@paul-moore.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <MW2PR2101MB1033FFF044A258F84AEAA584F1C9A@MW2PR2101MB1033.namprd21.prod.outlook.com>
+ <ab758860-e51e-409c-8353-6205fbe515dc@kernel.dk>
+In-Reply-To: <ab758860-e51e-409c-8353-6205fbe515dc@kernel.dk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GCC 13.2 complains about array subscript 17 is above array bounds of
-'char[16]' with IFNAMSIZ set to 16.
+On 10/6/23 8:32 PM, Jens Axboe wrote:
+> On 10/6/23 2:09 PM, Dan Clash wrote:
+>> diff --git a/fs/namei.c b/fs/namei.c
+>> index 2a8baa6ce3e8..4f7ac131c9d1 100644
+>> --- a/fs/namei.c
+>> +++ b/fs/namei.c
+>> @@ -187,7 +187,7 @@ getname_flags(const char __user *filename, int flags, int *empty)
+>>  		}
+>>  	}
+>>
+>> -	result->refcnt = 1;
+>> +	refcount_set(&result->refcnt, 1);
+>>  	/* The empty path is special. */
+>>  	if (unlikely(!len)) {
+>>  		if (empty)
+>> @@ -248,7 +248,7 @@ getname_kernel(const char * filename)
+>>  	memcpy((char *)result->name, filename, len);
+>>  	result->uptr = NULL;
+>>  	result->aname = NULL;
+>> -	result->refcnt = 1;
+>> +	refcount_set(&result->refcnt, 1);
+>>  	audit_getname(result);
+>>
+>>  	return result;
+>> @@ -259,9 +259,10 @@ void putname(struct filename *name)
+>>  	if (IS_ERR(name))
+>>  		return;
+>>
+>> -	BUG_ON(name->refcnt <= 0);
+>> +	BUG_ON(refcount_read(&name->refcnt) == 0);
+>> +	BUG_ON(refcount_read(&name->refcnt) == REFCOUNT_SATURATED);
+>>
+>> -	if (--name->refcnt > 0)
+>> +	if (!refcount_dec_and_test(&name->refcnt))
+>>  		return;
+>>
+>>  	if (name->name != name->iname) {
+>> diff --git a/include/linux/fs.h b/include/linux/fs.h
+>> index d0a54e9aac7a..8217e07726d4 100644
+>> --- a/include/linux/fs.h
+>> +++ b/include/linux/fs.h
+>> @@ -2719,7 +2719,7 @@ struct audit_names;
+>>  struct filename {
+>>  	const char		*name;	/* pointer to actual string */
+>>  	const __user char	*uptr;	/* original userland pointer */
+>> -	int			refcnt;
+>> +	refcount_t		refcnt;
+>>  	struct audit_names	*aname;
+>>  	const char		iname[];
+>>  };
+>> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+>> index 37cded22497e..232e0be9f6d9 100644
+>> --- a/kernel/auditsc.c
+>> +++ b/kernel/auditsc.c
+>> @@ -2188,7 +2188,7 @@ __audit_reusename(const __user char *uptr)
+>>  		if (!n->name)
+>>  			continue;
+>>  		if (n->name->uptr == uptr) {
+>> -			n->name->refcnt++;
+>> +			refcount_inc(&n->name->refcnt);
+>>  			return n->name;
+>>  		}
+>>  	}
+>> @@ -2217,7 +2217,7 @@ void __audit_getname(struct filename *name)
+>>  	n->name = name;
+>>  	n->name_len = AUDIT_NAME_FULL;
+>>  	name->aname = n;
+>> -	name->refcnt++;
+>> +	refcount_inc(&name->refcnt);
+>>  }
+>>
+>>  static inline int audit_copy_fcaps(struct audit_names *name,
+>> @@ -2349,7 +2349,7 @@ void __audit_inode(struct filename *name, const struct dentry *dentry,
+>>  		return;
+>>  	if (name) {
+>>  		n->name = name;
+>> -		name->refcnt++;
+>> +		refcount_inc(&name->refcnt);
+>>  	}
+>>
+>>  out:
+>> @@ -2474,7 +2474,7 @@ void __audit_inode_child(struct inode *parent,
+>>  		if (found_parent) {
+>>  			found_child->name = found_parent->name;
+>>  			found_child->name_len = AUDIT_NAME_FULL;
+>> -			found_child->name->refcnt++;
+>> +			refcount_inc(&found_child->name->refcnt);
+>>  		}
+>>  	}
+> 
+> I'm not fully aware of what audit is doing with struct filename outside
+> of needing it for the audit log. Rather than impose the atomic
+> references for everyone, would it be doable to simply dupe the struct
+> instead of grabbing the (non-atomic) reference to the existing one?
+> 
+> If not, since there's no over/underflow handling right now, it'd
+> certainly be cheaper to use an atomic_t here rather than a full
+> refcount.
 
-The warning is correct but this scenario is impossible.
-set_device_name is called by device_name_store (store sysfs entry) and
-netdev_trig_activate.
+After taking a closer look at this, I think the best course of action
+would be to make the struct filename refcnt and atomic_t. With audit in
+the picture, it's quite possible to have multiple threads manipulating
+the filename refcnt at the same time, which is obviously not currently
+safe.
 
-device_name_store already check if size is >= of IFNAMSIZ and return
--EINVAL. (making the warning scenario impossible)
+Dan, would you mind sending that as a patch? Include a link to your
+original email:
 
-netdev_trig_activate works on already defined interface, where the name
-has already been checked and should already follow the condition of
-strlen() < IFNAMSIZ.
+Link: https://lore.kernel.org/lkml/MW2PR2101MB1033FFF044A258F84AEAA584F1C9A@MW2PR2101MB1033.namprd21.prod.outlook.com/
 
-Aside from the scenario being impossible, set_device_name can be
-improved to both mute the warning and make the function safer.
-To make it safer, move size check from device_name_store directly to
-set_device_name and prevent any out of bounds scenario.
+and a Fixes tag as well:
 
-Cc: stable@vger.kernel.org
-Fixes: 28a6a2ef18ad ("leds: trigger: netdev: refactor code setting device name")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202309192035.GTJEEbem-lkp@intel.com/
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
- drivers/leds/trigger/ledtrig-netdev.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Fixes: 5bd2182d58e9 ("audit,io_uring,io-wq: add some basic audit support to io_uring")
 
-diff --git a/drivers/leds/trigger/ledtrig-netdev.c b/drivers/leds/trigger/ledtrig-netdev.c
-index 58f3352539e8..e358e77e4b38 100644
---- a/drivers/leds/trigger/ledtrig-netdev.c
-+++ b/drivers/leds/trigger/ledtrig-netdev.c
-@@ -221,6 +221,9 @@ static ssize_t device_name_show(struct device *dev,
- static int set_device_name(struct led_netdev_data *trigger_data,
- 			   const char *name, size_t size)
- {
-+	if (size >= IFNAMSIZ)
-+		return -EINVAL;
-+
- 	cancel_delayed_work_sync(&trigger_data->work);
- 
- 	mutex_lock(&trigger_data->lock);
-@@ -263,9 +266,6 @@ static ssize_t device_name_store(struct device *dev,
- 	struct led_netdev_data *trigger_data = led_trigger_get_drvdata(dev);
- 	int ret;
- 
--	if (size >= IFNAMSIZ)
--		return -EINVAL;
--
- 	ret = set_device_name(trigger_data, buf, size);
- 
- 	if (ret < 0)
+and CC linux-fsdevel@vger.kernel.org and
+Christian Brauner <brauner@kernel.org> as well.
+
+Thanks!
+
 -- 
-2.40.1
+Jens Axboe
 
