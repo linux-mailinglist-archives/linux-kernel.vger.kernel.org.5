@@ -2,170 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F40977BC775
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 14:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00DFA7BC776
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 14:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343961AbjJGM0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 08:26:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53716 "EHLO
+        id S1343982AbjJGM2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 08:28:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343952AbjJGM0K (ORCPT
+        with ESMTP id S1343980AbjJGM2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 08:26:10 -0400
-Received: from IND01-MAX-obe.outbound.protection.outlook.com (mail-maxind01olkn2014.outbound.protection.outlook.com [40.92.102.14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F280B9;
-        Sat,  7 Oct 2023 05:26:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=buG4SKw1ckSfwXosY8jONBlbt2B4I5jVw3ypX9caHp3KgKtrTi9KNzBQYO/v3jZz8rie3Ab4362NLMq+gcWaJfAf6LJ+OElv8wkl611s4uHpL6yEWkb3mynh+YP48vpTx5X/QODcbuEUBWIWuINR2EXFOPC2eG/WZwpLWsyTZCi09hNbZlEOwpuRFIFd0FpRfnYUVcPzCQsqlx4G6lc7SeboaCJiPbCmJUAWhgfzEj7M9s6XSde1XJ2hEUMGGe7UshGcTFLHlzzutvLMtfdzQfx9L7fcaQlVg46Pj8f+IYPHOGJDYo2hJkDXeUWxg6SFIRUWagmtlCTO1n9L4bb+lg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=a7Qq/K8WDJfv22UBjEtfIsKqtkFE+NNPzMZwhbqRwDc=;
- b=oFmTKmVqTTs6yvoiAHYuufFlDoFx2nGqr/bamIokPAvH3+5BzPd1JjoUVPZIRPqwyymre8wWNCUn6fR+3i6bIamqG4UNouVbUMZV1PcTYAyiJkFVZCoVk6vaCqqK8HPw0oZiCXm/+MN1NJh0bPrJqx7jRinzXOEsYzDzbi+aaxaI6Z5AXup0LAs7LsgJ7FMuit5EdSBIFV/iRS8pz4it2D7m6G2WPpsfaYYoDSaYUlkbUtkusdJi4FggcnWXMF/zNkPyMAIBC3MRDAOiP/0dK3eeuW/m38gFncXMXwB9mxlQVN2/fWhSc+YJrzwi97fGZPtF0bNPVKj3GbugFxIx9A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a7Qq/K8WDJfv22UBjEtfIsKqtkFE+NNPzMZwhbqRwDc=;
- b=AaBf+vp5yEoLb5BcHhh8j6HvRavoT2SQRw76+v8C2Davld3Rlckp2ADa2EsbLo1dXlXdVIpijxMbDmERiQOgBtBMpzqvQAQgcKhrKo1BXAk/3jJ/AGS3YI4XdMVxFkKWoCXXHqq1Oar1dM05a897vbGaMS1mHSZ9RtwvH4Nk0NWGWUWeeTEQtv0Nqx9/KYqd8ZsMj5/g+E3l42Q098cSROg4t+qsokaUhnPGmPQnXcNNzJhB4juK11PLLKkslxzoHVcWkmbVzhh7SCtXEtj/27JmAbCWvDm8gi5ToLAHDs4lZIhLJD2yocjffcTixCXbj7NPBHewChUq2DdwSgM+lQ==
-Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:ab::5) by
- PN3P287MB1978.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:1cf::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6838.41; Sat, 7 Oct 2023 12:26:02 +0000
-Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
- ([fe80::efe9:8d54:281b:23f7]) by MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
- ([fe80::efe9:8d54:281b:23f7%3]) with mapi id 15.20.6838.040; Sat, 7 Oct 2023
- 12:26:01 +0000
-Message-ID: <MA0P287MB03329460B9F3B79B1148A6FDFEC8A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
-Date:   Sat, 7 Oct 2023 20:25:55 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 00/10] Add Milk-V Pioneer RISC-V board support
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
-        chao.wei@sophgo.com, devicetree@vger.kernel.org, guoren@kernel.org,
-        jszhang@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org,
-        xiaoguang.xing@sophgo.com, apatel@ventanamicro.com
-References: <cover.1696663037.git.unicorn_wang@outlook.com>
- <20231007-grasp-retake-0463858c13df@spud>
- <MA0P287MB0332F80102F534CBD7412ED3FEC8A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
- <20231007-kennel-lustily-59b0a9867aaa@spud>
-From:   Chen Wang <unicorn_wang@outlook.com>
-In-Reply-To: <20231007-kennel-lustily-59b0a9867aaa@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TMN:  [mYef3Mz2ZHNtBgJJXJe7tFy+ItH7wngV]
-X-ClientProxiedBy: SI2PR01CA0030.apcprd01.prod.exchangelabs.com
- (2603:1096:4:192::15) To MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a01:ab::5)
-X-Microsoft-Original-Message-ID: <8ee1cfcb-6ef0-45ec-9ac1-31f17a1ee920@outlook.com>
+        Sat, 7 Oct 2023 08:28:38 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2BBAB
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 05:28:37 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 397CRbkk000832;
+        Sat, 7 Oct 2023 12:28:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=8YiXbO0FZTma50ZlGW9j8kFnXUKsvbHsdA6m3UAwiMA=;
+ b=ln1n9cuxtVVYh7jjWID2yKQV2bS7S+xRtVrO0lkQ75kJEXEN97aAtapElO8ep2kJI04S
+ 3sxIwS0EoDTB6SqHO4tthXVm+P0NWuKizXlWUwKamJmbunwtiRyykXOLcKWXeP+mibn+
+ xGO+jPiyun8m1r5MjFlguwAHaG8WytR2Um22buIpt5S0dyIBK+zU0ftkh4B630gdeG8j
+ E072apkh0Oob7t8534ukyFJA/jOxRWikH0MPAzekZ+jvqiGiLjOuxAckDg3IcSNWV9OH
+ YR4OMwe63Q3TPVqGKsyMI900VJcDF81BnSe4NU2pYwVbAnqWDLmBV02iyzV37RKd8SK2 Gw== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tjvpts05w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 07 Oct 2023 12:28:30 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 397CSS43009416
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 7 Oct 2023 12:28:28 GMT
+Received: from maow2-gv.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Sat, 7 Oct 2023 05:28:25 -0700
+From:   Kassey Li <quic_yingangl@quicinc.com>
+To:     <gregkh@google.com>, <gregkh@linuxfoundation.org>,
+        <cmllamas@google.com>, <surenb@google.com>, <arve@android.com>,
+        <joel@joelfernandes.org>, <brauner@kernel.org>
+CC:     <tkjos@android.com>, <maco@android.com>,
+        <quic_yingangl@quicinc.com>, <linux-kernel@vger.kernel.org>,
+        Sherry Yang <sherryy@android.com>
+Subject: [PATCH v3] binder: add mutex_lock for mmap and NULL when free
+Date:   Sat, 7 Oct 2023 20:28:13 +0800
+Message-ID: <20231007122813.84282-1-quic_yingangl@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MA0P287MB0332:EE_|PN3P287MB1978:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2385e4d3-2926-4954-5cd3-08dbc73090f6
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 30RS6KtiZm/mtWi4m4bjT7oDG3K0wBbm8vvcTzpf9ngYTR/MCn2JgIRnME4wzocCPml3Wvm9wsQaBkhFErKn7NsKgP1NfIuBXaKsiXKVgx8Rufb9RfoOk+8Ju1bAKbPz4JnZSDFPmJk+kHcW8gI79c0uXTB0iPRg0GPHqifW/6njCgs4/rao2bTX/XMPghdapdISwIzfowk8wROWHmPJsD10URrMdhKynqIV7B/p8sbRA8OACxyRfLTGAATpAoRmOCCCTnjbsFR/L/7vJF4AHrxMbbtloI4IapWmkKwpPcEwOVpMNzxrYQmS+b/fhRSgApT9nVUyQQxijVlOIs1Rp5vdta5CB+ekVOO7ljkvC0Uounjh6GeoIb5ix9AvQMFIXwQ7+Aoh7R2GhXE29X0G/r2csLRF7ChL0u23bLz1LhJ2llZ8cYlj/Df536EN6lsW67xa4zpfn4rRdiBSwza+YWkofZaPY81YYgJBVKzVJQYyQE3yVi4xuFrHuuXuvyqf2j3O5C/woUDb19p4oCzdWbmbZ3oqhVZQ1+9iTriN+5QsM+FEFG/hiF/ScDfAfx/8VOH9n5820RctQI9Hb0QINZVcWMufGwQRhhi6QxglnZk=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VnNqenpxQjVnYlczdlNYS3pmL3BYTE1Pam9yK2V4VVh4cytkcjliY0JzdWFw?=
- =?utf-8?B?ZzhLQWZZcGVGNzhtNkhoSmZ3a25uUDhId0J1K1BXV1Q2eElaNmhSeW5haFJw?=
- =?utf-8?B?K0tCTTZGMkhXaUk3QzRrWFBtV3BLc1MwUUxHK2ZMZUFyRERZOHgxVzB1bU9w?=
- =?utf-8?B?WG9HTTJvd3pVWllNYmlQbFJYamlETzlsd05jSUFPRk14ZGlnUmNyRlhTY3dL?=
- =?utf-8?B?WUlHaFF3dGpvM3E5c1M4cUNyemRESS9tQWMzUEZ3TkhhdVpaL3Y5MU4zeFg1?=
- =?utf-8?B?Y2pBVERyR0hMcnFGbkdOSkhOdGN5WUh6ZmFQMXAvUTh2SFlDS09QZVQvSGRx?=
- =?utf-8?B?a1NvdGxpMm1mOGFSS1FsWHMxdzZJSjloS3dEcDREMjdMV05wWlNObjlQR2tJ?=
- =?utf-8?B?NS96UEFLTnBZV1p5cnBBZHVGT3N0SlgzU0Z4QWdvL0ZsdWJuTHVDNWhtZzl0?=
- =?utf-8?B?VzlvVEl5U2kydjcwUExwU2RLMEdZVU1HWmd3cWZVR21NNE9zOUp4bTNjSE9P?=
- =?utf-8?B?UnB4VUdxU0FiUllkTjhRWi9xMnl1RXBDMWpScW9EQXdRTlorbk04Q3JLYnFR?=
- =?utf-8?B?Z01lcllaMGl0cGd0dXpsZTVweTJKcTJ5RHE5bWU0Zmh3VEQ2NjhqR3FndXlm?=
- =?utf-8?B?ZG1rNTM3UVJuVnFRUlZVRENianA3bmhhdHBDZHRKbzVSWWhvb3llU0NBWUFE?=
- =?utf-8?B?dWplSFl2OTR3S0tUWWtudEtYTUpMTzJPV213TTE2SnJRbllZMU5jV2F3RWN4?=
- =?utf-8?B?Q3hVbVJYK0FpTnhmdnczSjJaalFlNVd3SmhuK1FjaXZ0QjRLQ1YyTTdFN3o3?=
- =?utf-8?B?aXU3b0QvMXlqc2MxMjNtT2FtUy84NkNFakNOMmFybjRMaE9mZFNOSXRoRm9W?=
- =?utf-8?B?bGdzb05iOUs5S3FHZzRBMkI2azRISzFWZ3FvUWZKY2JuN0dqSU85czVMYXgr?=
- =?utf-8?B?ZFlWdXdRamRxWTlXYWtrUG5yTzFXc2xjSW1qenF2a2xiNGhYeTJhcDhRK2RX?=
- =?utf-8?B?WmtrNEN1VjFlcHpLUjI5RkMwU05oT1pkK1laU3g4YnpySUpIcFFtMlY1R1JR?=
- =?utf-8?B?c3c5YjV1dDNJb2U2K3FiTmVJeXkvRXdxVXZMcXBGQWxkblIwOTN3T0NtSGg1?=
- =?utf-8?B?WGIvNUVJS2Y5WjhTN0FvY0pwVlRObERnb2NSMDNXamRrS3pFRXR2Yjg0a0Nu?=
- =?utf-8?B?eTVRY0RZNzNVZHFUN0s0cFloSjNxQUEzeWdNLzMxSXRTWmpDdEtBbDJzNGV1?=
- =?utf-8?B?U1hrWDMvWTI1V1hLdmF2elc0bTVvbUhGZFd2eU5OUUs0UFIxUUE0WCtLSjlM?=
- =?utf-8?B?NnBnMkpOYlppN25PemhudERLM3RNREt3Nk9CQXZicW1vTnBtdEYxZmNpcXBV?=
- =?utf-8?B?OENIVmVURWlkbHZTV0FYR0FIWU0rbFl2TjRUMXpHSGE1QVc5K0NuYVp4b3hC?=
- =?utf-8?B?Q2JlZFUxejFhVjhURlk5TFkyRzRXNC92akRPS1JBK2xoVHRiMUM4dXVkZ1ps?=
- =?utf-8?B?eldjUjRtTWRkNkVDb0FBRVVFR0JqYkxxcitEOFdSR1NZcm05clRvYVYvbWt4?=
- =?utf-8?B?MktMajRiV0tLSmVBNkRqVXlMNkY4Ky9OZ24yS2R5Q3JueWV5bEtVYUtFOFJh?=
- =?utf-8?Q?gBBcPAk/bbtK/jODQuwCNlrPWP3CRncF+6oriyFB4XHY=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2385e4d3-2926-4954-5cd3-08dbc73090f6
-X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2023 12:26:01.9078
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN3P287MB1978
-X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 1mALU7Au0ojohU-jN0HQ5Tayy7YiNHop
+X-Proofpoint-GUID: 1mALU7Au0ojohU-jN0HQ5Tayy7YiNHop
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-07_09,2023-10-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ priorityscore=1501 spamscore=0 adultscore=0 mlxscore=0 bulkscore=0
+ lowpriorityscore=0 malwarescore=0 phishscore=0 suspectscore=0
+ clxscore=1011 mlxlogscore=961 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2309180000 definitions=main-2310070111
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+- Enforce alloc->mutex in binder_alloc_mmap_handler when add the entry to
+  list.
 
-On 2023/10/7 19:04, Conor Dooley wrote:
-> On Sat, Oct 07, 2023 at 06:58:51PM +0800, Chen Wang wrote:
->> On 2023/10/7 18:17, Conor Dooley wrote:
->>> On Sat, Oct 07, 2023 at 03:52:04PM +0800, Chen Wang wrote:
->>>> From: Chen Wang <unicorn_wang@outlook.com>
->>>>
->>>> Milk-V Pioneer [1] is a developer motherboard based on SOPHON SG2042 [2]
->>>> in a standard mATX form factor. Add minimal device
->>>> tree files for the SG2042 SOC and the Milk-V Pioneer board.
->>>>
->>>> Now only support basic uart drivers to boot up into a basic console.
->>>>
->>>> Thanks,
->>>> Chen
->>>>
->>>> ---
->>>>
->>>> Changes in v5:
->>>>     The patch series is based on v6.6-rc1. You can simply review or test
->>>>     the patches at the link [7].
->>>>     - dts: changed plic to support external interrupt
->>>>     - pickup improvements from Conor, details refer to [8].
->>> Did you? I only see them partially picked up. I'll just replace patch 8
->>> with the patch 8 from this series I think.
->> Yes, only the patch 8 of this series(v5) is updated for plic node. For other
->> patches, I just cherry-picked them from previous "sophon" branch.
-> But added my signoff? I ended up seeing my signoff on the patch where I
-> disagreed with the commit message, which was confusing to me.
+- Assign the freed pages/page_ptr to NULL to catch possible use after free
+  with NULL pointer access.
 
-Oh, I used to think I can keep the exising signoff and I didn't mean to 
-add it. Anyway, I agree your suggestion to create a new patch with only 
-one change should be better, I will follow this in later work.
+Fixes: 19c987241ca1 ("binder: separate out binder_alloc functions")
+Fixes: f2517eb76f1f ("android: binder: Add global lru shrinker to binder")
+CC: Todd Kjos <tkjos@android.com>
+CC: Sherry Yang <sherryy@android.com>
+Link: https://lore.kernel.org/all/20231007034046.2352124-1-quic_yingangl@quicinc.com/
+Signed-off-by: Kassey Li <quic_yingangl@quicinc.com>
+---
+V1 -> V2: Add Fixes info.
+V2 -> V3: Add this history.
+---
+ drivers/android/binder_alloc.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Regarding your changes on sg2042 series, I have acked in another email : 
-https://lore.kernel.org/linux-riscv/MA0P287MB0332BA73D0135CC73CAEA16DFEC8A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM/. 
-If anything else required, please feel free let me know.
+diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
+index e3db8297095a..c7d126e04343 100644
+--- a/drivers/android/binder_alloc.c
++++ b/drivers/android/binder_alloc.c
+@@ -775,6 +775,7 @@ int binder_alloc_mmap_handler(struct binder_alloc *alloc,
+ 	}
+ 
+ 	buffer->user_data = alloc->buffer;
++	mutex_lock(&alloc->mutex);
+ 	list_add(&buffer->entry, &alloc->buffers);
+ 	buffer->free = 1;
+ 	binder_insert_free_buffer(alloc, buffer);
+@@ -782,7 +783,7 @@ int binder_alloc_mmap_handler(struct binder_alloc *alloc,
+ 
+ 	/* Signal binder_alloc is fully initialized */
+ 	binder_alloc_set_vma(alloc, vma);
+-
++	mutex_unlock(&alloc->mutex);
+ 	return 0;
+ 
+ err_alloc_buf_struct_failed:
+@@ -856,9 +857,11 @@ void binder_alloc_deferred_release(struct binder_alloc *alloc)
+ 				     __func__, alloc->pid, i, page_addr,
+ 				     on_lru ? "on lru" : "active");
+ 			__free_page(alloc->pages[i].page_ptr);
++			alloc->pages[i].page_ptr = NULL;
+ 			page_count++;
+ 		}
+ 		kfree(alloc->pages);
++		alloc->pages = NULL;
+ 	}
+ 	mutex_unlock(&alloc->mutex);
+ 	if (alloc->mm)
+-- 
+2.25.1
 
-Thanks,
-
-Chen
-
->
->> BTW, what I did this time may be a bit redundant. I would like to ask, if I
->> encounter a similar situation in the future (that is, only one patch needs
->> to be modified, and the others remain unchanged), is there a better way to
->> submit the patchset?
-> You could have sent the plic change as a incremental change on top. So a
-> new patch with just that one change in it.
->
-> Thanks,
-> Conor.
