@@ -2,86 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC1F7BC664
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 11:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B2D7BC667
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 11:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343750AbjJGJRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 05:17:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60378 "EHLO
+        id S1343751AbjJGJVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 05:21:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229762AbjJGJRo (ORCPT
+        with ESMTP id S229757AbjJGJVe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 05:17:44 -0400
+        Sat, 7 Oct 2023 05:21:34 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDABABD;
-        Sat,  7 Oct 2023 02:17:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09543C433C8;
-        Sat,  7 Oct 2023 09:17:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696670262;
-        bh=Hj4TwF8++s63MgyWqlgNIz+WcGpWDhaMOi/4xSSl2lM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WGq38i2alQYUR8TQMyKOwcAYiDIXSgOWA8Cm0M0jXFQxYoiq1XwQKiR7+2/ZItcLb
-         RQAF2vVK8dyv5CPikkKN5WQg5eXCFS5fHvcGRv7XCmq4jd85++tp7iSoBFIvc+YTyE
-         Rwtfrr7UM2s0D7/u2Goo9wmV572BUdD51cqkSRBY=
-Date:   Sat, 7 Oct 2023 11:17:39 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Max Filippov <jcmvbkbc@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] serial: add PORT_ANY definition
-Message-ID: <2023100706-circle-rework-993e@gregkh>
-References: <20231006115713.801322-1-jcmvbkbc@gmail.com>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1087B9;
+        Sat,  7 Oct 2023 02:21:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31520C433C8;
+        Sat,  7 Oct 2023 09:21:27 +0000 (UTC)
+Message-ID: <eeeb183e-f6ed-4158-8852-04da5e452d9b@xs4all.nl>
+Date:   Sat, 7 Oct 2023 11:21:26 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231006115713.801322-1-jcmvbkbc@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] media: v4l2-event: Annotate struct v4l2_subscribed_event
+ with __counted_by
+Content-Language: en-US, nl
+To:     Kees Cook <keescook@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     lijian <lijian@yulong.com>, linux-media@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+References: <20230922174951.work.160-kees@kernel.org>
+ <169662411867.2154917.2192633783167073007.b4-ty@chromium.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <169662411867.2154917.2192633783167073007.b4-ty@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 04:57:13AM -0700, Max Filippov wrote:
-> Current pattern in the linux kernel is that every new serial driver adds
-> one or more new PORT_ definitions because uart_ops::config_port()
-> callback documentation prescribes setting port->type according to the
-> type of port found, or to PORT_UNKNOWN if no port was detected.
+On 06/10/2023 22:28, Kees Cook wrote:
+> On Fri, 22 Sep 2023 10:49:52 -0700, Kees Cook wrote:
+>> Prepare for the coming implementation by GCC and Clang of the __counted_by
+>> attribute. Flexible array members annotated with __counted_by can have
+>> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+>> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+>> functions).
+>>
+>> As found with Coccinelle[1], add __counted_by for struct v4l2_subscribed_event.
+>> Additionally, since the element count member must be set before accessing
+>> the annotated flexible array member, move its initialization earlier.
+>>
+>> [...]
 > 
-> When the specific type of the port is not important to the userspace
-> there's no need for a unique PORT_ value, but so far there's no suitable
-> identifier for that case.
+> Since this is a trivial change and it's been 2 week without further
+> discussion, I'll snag this patch.
+
+Ah, I picked this up for media as well. Same for the other patch.
+You should have gotten an email from patchwork on Oct 3 that it was accepted.
+
+I think I should be more pro-active and reply when I pick up patches from
+non-media developers instead of relying on patchwork. It seems that it is
+easy to miss emails from patchwork.
+
+Regards,
+
+	Hans
+
 > 
-> Provide generic port type identifier other than PORT_UNKNOWN for ports
-> which type is not important to userspace.
+> Applied to for-next/hardening, thanks!
 > 
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
-> ---
->  include/uapi/linux/serial.h | 2 ++
->  1 file changed, 2 insertions(+)
+> [1/1] media: v4l2-event: Annotate struct v4l2_subscribed_event with __counted_by
+>       https://git.kernel.org/kees/c/b1a20bbd4687
 > 
-> diff --git a/include/uapi/linux/serial.h b/include/uapi/linux/serial.h
-> index 53bc1af67a41..070e50cf9e1e 100644
-> --- a/include/uapi/linux/serial.h
-> +++ b/include/uapi/linux/serial.h
-> @@ -47,6 +47,8 @@ struct serial_struct {
->  /*
->   * These are the supported serial types.
->   */
-> +/* Generic type identifier for ports which type is not important to userspace. */
-> +#define PORT_ANY	(-1)
+> Take care,
+> 
 
-This should be at the end of the list.
-
-And I think we need a better name, "PORT_GENERIC"?
-
-thanks,
-
-greg k-h
