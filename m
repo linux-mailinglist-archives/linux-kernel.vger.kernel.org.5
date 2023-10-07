@@ -2,46 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 249677BC930
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 19:05:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F21B07BC931
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 19:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344087AbjJGRE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 13:04:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56734 "EHLO
+        id S1344103AbjJGRFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 13:05:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344032AbjJGRE6 (ORCPT
+        with ESMTP id S1344046AbjJGRE6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 7 Oct 2023 13:04:58 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6921B9;
-        Sat,  7 Oct 2023 10:04:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22F07C433C8;
-        Sat,  7 Oct 2023 17:04:52 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F0BBA;
+        Sat,  7 Oct 2023 10:04:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDADAC433C7;
+        Sat,  7 Oct 2023 17:04:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696698295;
-        bh=5rWN3r1QrWbZPdwY53XXoqrpI9vkxw4GAZMoimstNTU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ne3VlCVVWtdJlPXT1Sksj5UMIr8o7iegZVtoYOu+WNb8oD72PHoQ0DS3n7xxd451P
-         dKdElA/aK5liU8cGmISK7mIQ9tWuwrGKuVcwzRtyy7sOXQ8HMMOE/ptiKzqX7HTmTW
-         Ki0wW+XN3u0oZ1BDbkug60VpfBjvKSyWoH2aE0nXbf45BHbWtmw7WcA3mreTtwoLea
-         85+bV00WxR29ecLxzHVzx/s36oLAQ2oZbHqIs6fwmQY1K4q+ynlVtxQf+p+FRy1lpG
-         blsa/RQzXTZe2pisEPrHwh3T9zohUTugXF2q9o1uW+YHKhrolJy1lBesq+GXCoJzLO
-         WiWvd4yF+jkgw==
+        s=k20201202; t=1696698297;
+        bh=13ShY6HnWg7Sx2I9hscgBsQOpo9Vq3faGjdLVYoBM5o=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=eUeSBoRC8ODJTmKIkYd6gNHF/IrKY8Gdzo0GJtWGKXvn/Gwxg66E66zwK+R+L641h
+         RH91OtdShkzWHuMANps+J8Tk/390bUD43IXxpuXrUmzlZ05XTXonzNYEnWWPx7X41M
+         2yz+S0Ez0O60sxYV+gxrOXChiiB5dI2NdlKFf2mSvqGCjH5w5iO1wDyObNm6wVEK1y
+         8CafTp2S7rUo6l50QfyjmNHtmXI+FjjRaK7qOO11kQeSR4vpSHgoIaidgiPSnAlanS
+         dThJcqOhH5Y0mQPS4fb8cu0vCfja+eoOcDBKuq1Iab/VnMOtrRwqUseRmQm0ueA0/L
+         8jdcl8NIkKFpA==
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     linux-kbuild@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
         Masahiro Yamada <masahiroy@kernel.org>,
-        Bhupesh Sharma <bhsharma@redhat.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Jiri Kosina <jkosina@suse.cz>,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Nicolas Schier <nicolas@fjasle.eu>,
-        Sumit Garg <sumit.garg@linaro.org>
-Subject: [PATCH 1/5] modpost: fix tee MODULE_DEVICE_TABLE built on big endian host
-Date:   Sun,  8 Oct 2023 02:04:44 +0900
-Message-Id: <20231007170448.505487-1-masahiroy@kernel.org>
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Subject: [PATCH 2/5] modpost: fix ishtp MODULE_DEVICE_TABLE built on big endian host
+Date:   Sun,  8 Oct 2023 02:04:45 +0900
+Message-Id: <20231007170448.505487-2-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231007170448.505487-1-masahiroy@kernel.org>
+References: <20231007170448.505487-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -54,59 +56,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When MODULE_DEVICE_TABLE(tee, ) is built on a host with a different
+When MODULE_DEVICE_TABLE(ishtp, ) is built on a host with a different
 endianness from the target architecture, it results in an incorrect
 MODULE_ALIAS().
 
-For example, see a case where drivers/char/hw_random/optee-rng.c
+For example, see a case where drivers/platform/x86/intel/ishtp_eclite.c
 is built as a module.
 
 If you build it on a little endian host, you will get the correct
 MODULE_ALIAS:
 
-    $ grep MODULE_ALIAS drivers/char/hw_random/optee-rng.mod.c
-    MODULE_ALIAS("tee:ab7a617c-b8e7-4d8f-8301-d09b61036b64*");
+    $ grep MODULE_ALIAS drivers/platform/x86/intel/ishtp_eclite.mod.c
+    MODULE_ALIAS("ishtp:{6A19CC4B-D760-4DE3-B14D-F25EBD0FBCD9}");
 
 However, if you build it on a big endian host, you will get a wrong
 MODULE_ALIAS:
 
-    $ grep MODULE_ALIAS drivers/char/hw_random/optee-rng.mod.c
-    MODULE_ALIAS("tee:646b0361-9bd0-0183-8f4d-e7b87c617aab*");
+    $ grep MODULE_ALIAS drivers/platform/x86/intel/ishtp_eclite.mod.c
+    MODULE_ALIAS("ishtp:{BD0FBCD9-F25E-B14D-4DE3-D7606A19CC4B}");
 
-This issue has been unnoticed because the ARM kernel is most likely built
-on a little endian host (cross-build on x86 or native-build on ARM).
+This issue has been unnoticed because the x86 kernel is most likely built
+natively on an x86 host.
 
-The uuid field must not be reversed because uuid_t is an array of __u8.
+The guid field must not be reversed because guid_t is an array of __u8.
 
-Fixes: 0fc1db9d1059 ("tee: add bus driver framework for TEE based devices")
+Fixes: fa443bc3c1e4 ("HID: intel-ish-hid: add support for MODULE_DEVICE_TABLE()")
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- scripts/mod/file2alias.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ scripts/mod/file2alias.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c
-index 7056751c29b1..70bf6a2f585c 100644
+index 70bf6a2f585c..6583b36dbe69 100644
 --- a/scripts/mod/file2alias.c
 +++ b/scripts/mod/file2alias.c
-@@ -1348,13 +1348,13 @@ static int do_typec_entry(const char *filename, void *symval, char *alias)
- /* Looks like: tee:uuid */
- static int do_tee_entry(const char *filename, void *symval, char *alias)
+@@ -1401,10 +1401,10 @@ static int do_mhi_ep_entry(const char *filename, void *symval, char *alias)
+ /* Looks like: ishtp:{guid} */
+ static int do_ishtp_entry(const char *filename, void *symval, char *alias)
  {
--	DEF_FIELD(symval, tee_client_device_id, uuid);
-+	DEF_FIELD_ADDR(symval, tee_client_device_id, uuid);
+-	DEF_FIELD(symval, ishtp_device_id, guid);
++	DEF_FIELD_ADDR(symval, ishtp_device_id, guid);
  
- 	sprintf(alias, "tee:%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
--		uuid.b[0], uuid.b[1], uuid.b[2], uuid.b[3], uuid.b[4],
--		uuid.b[5], uuid.b[6], uuid.b[7], uuid.b[8], uuid.b[9],
--		uuid.b[10], uuid.b[11], uuid.b[12], uuid.b[13], uuid.b[14],
--		uuid.b[15]);
-+		uuid->b[0], uuid->b[1], uuid->b[2], uuid->b[3], uuid->b[4],
-+		uuid->b[5], uuid->b[6], uuid->b[7], uuid->b[8], uuid->b[9],
-+		uuid->b[10], uuid->b[11], uuid->b[12], uuid->b[13], uuid->b[14],
-+		uuid->b[15]);
+ 	strcpy(alias, ISHTP_MODULE_PREFIX "{");
+-	add_guid(alias, guid);
++	add_guid(alias, *guid);
+ 	strcat(alias, "}");
  
- 	add_wildcard(alias);
  	return 1;
 -- 
 2.39.2
