@@ -2,93 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 640277BC5A5
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 09:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC607BC5A8
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 09:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343693AbjJGHj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 03:39:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33700 "EHLO
+        id S1343709AbjJGHkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 03:40:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343611AbjJGHj4 (ORCPT
+        with ESMTP id S1343690AbjJGHkk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 03:39:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B36DBD;
-        Sat,  7 Oct 2023 00:39:55 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="448101647"
-X-IronPort-AV: E=Sophos;i="6.03,205,1694761200"; 
-   d="scan'208";a="448101647"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2023 00:39:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="729118298"
-X-IronPort-AV: E=Sophos;i="6.03,205,1694761200"; 
-   d="scan'208";a="729118298"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2023 00:39:53 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
-        (envelope-from <andy@kernel.org>)
-        id 1qp1ug-00000003Xq6-18l2;
-        Sat, 07 Oct 2023 10:39:50 +0300
-Date:   Sat, 7 Oct 2023 10:39:50 +0300
-From:   Andy Shevchenko <andy@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Dipen Patel <dipenp@nvidia.com>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [RFC/RFT PATCH] gpiolib: reverse-assign the fwnode to struct
- gpio_chip
-Message-ID: <ZSELRvVk3G1y258L@smile.fi.intel.com>
-References: <20231006115147.18559-1-brgl@bgdev.pl>
- <ZSAKdOXpo+xOI3sJ@smile.fi.intel.com>
- <CAMRc=MeYiiWaaqRtSjRBfaWGFtZCPWCjYk+ZrX5TwicNq9MQeA@mail.gmail.com>
- <CACRpkdaqPm9471q7Sg-cxcLTTE63=NuKuSUFiFtPsaUoRiB3jA@mail.gmail.com>
+        Sat, 7 Oct 2023 03:40:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F6BB9
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 00:40:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65BF4C433C7;
+        Sat,  7 Oct 2023 07:40:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696664439;
+        bh=QNdP6CzhDYNi4kZoC6kQSoWNk4vaR0KoYKoMwwnfCk0=;
+        h=Date:Subject:To:References:From:In-Reply-To:From;
+        b=ZD6BHLVLeAO36MPjUMFZlQ3Ecnh8qiTLRZdfejreYwLcgJmWLK9rR7NhpFwqBrau8
+         4oFjd8xleln0VttlWWN0zcesnyf1iDRE59q82+INdEIFVpY2ZpxCBQDubDevB/sCpE
+         J+45YDh/Bg8prgEqziRTMus8rCDdN2/KsipcCnJNfSk33of/M6NsoOdE1V8yiVBkrr
+         SfG1CMPMpG0/Wbovjo1oy5iKFxY5sj5nJ8WfcjbbNJ4m50CTQN1rMOpj/UllFVvAs2
+         ExA8ZJPV6VqYdzEetODqywayAPc1DJEV5uZEjw0bPTz2CBiE/hR2nBbg46URxq1ig9
+         xQVMrZL075N0A==
+Message-ID: <c70b330a-b5f5-72d9-1190-fe1a6872919d@kernel.org>
+Date:   Sat, 7 Oct 2023 15:40:36 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdaqPm9471q7Sg-cxcLTTE63=NuKuSUFiFtPsaUoRiB3jA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [f2fs-dev] [PATCH] f2fs: stop iterating f2fs_map_block if hole
+ exists
+Content-Language: en-US
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+References: <20231003225208.1936359-1-jaegeuk@kernel.org>
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <20231003225208.1936359-1-jaegeuk@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 07, 2023 at 12:22:01AM +0200, Linus Walleij wrote:
-> On Fri, Oct 6, 2023 at 9:08 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> > I don't see any good reason for it not having the fwnode assigned.
-
-> > User calling gpio_device_find() will have to jump through hoops in
-> > order to match the device by fwnode
+On 2023/10/4 6:52, Jaegeuk Kim wrote:
+> Let's avoid unnecessary f2fs_map_block calls to load extents.
 > 
-> Yeah I would add
+>   # f2fs_io fadvise willneed 0 4096 /data/local/tmp/test
 > 
-> struct fwnode_handle *gpiochip_get_fwnode(struct gpio_chip *gc)
-> {
->    return dev_fwnode(&gc->gpiodev->dev);
-> }
+>    f2fs_map_blocks: dev = (254,51), ino = 85845, file offset = 386, start blkaddr = 0x34ac00, len = 0x1400, flags = 2,
+>    f2fs_map_blocks: dev = (254,51), ino = 85845, file offset = 5506, start blkaddr = 0x34c200, len = 0x1000, flags = 2,
+>    f2fs_map_blocks: dev = (254,51), ino = 85845, file offset = 9602, start blkaddr = 0x34d600, len = 0x1200, flags = 2,
+>    f2fs_map_blocks: dev = (254,51), ino = 85845, file offset = 14210, start blkaddr = 0x34ec00, len = 0x400, flags = 2,
+>    f2fs_map_blocks: dev = (254,51), ino = 85845, file offset = 15235, start blkaddr = 0x34f401, len = 0xbff, flags = 2,
+>    f2fs_map_blocks: dev = (254,51), ino = 85845, file offset = 18306, start blkaddr = 0x350200, len = 0x1200, flags = 2
+>    f2fs_map_blocks: dev = (254,51), ino = 85845, file offset = 22915, start blkaddr = 0x351601, len = 0xa7d, flags = 2
+>    f2fs_map_blocks: dev = (254,51), ino = 85845, file offset = 25600, start blkaddr = 0x351601, len = 0x0, flags = 0
+>    f2fs_map_blocks: dev = (254,51), ino = 85845, file offset = 25601, start blkaddr = 0x351601, len = 0x0, flags = 0
+>    f2fs_map_blocks: dev = (254,51), ino = 85845, file offset = 25602, start blkaddr = 0x351601, len = 0x0, flags = 0
+>    ...
+>    f2fs_map_blocks: dev = (254,51), ino = 85845, file offset = 1037188, start blkaddr = 0x351601, len = 0x0, flags = 0
+>    f2fs_map_blocks: dev = (254,51), ino = 85845, file offset = 1038206, start blkaddr = 0x351601, len = 0x0, flags = 0
+>    f2fs_map_blocks: dev = (254,51), ino = 85845, file offset = 1039224, start blkaddr = 0x351601, len = 0x0, flags = 0
+>    f2fs_map_blocks: dev = (254,51), ino = 85845, file offset = 2075548, start blkaddr = 0x351601, len = 0x0, flags = 0
+
+Jaegeuk,
+
+Not sure, but it looks it's due to f2fs_precache_extents() will traverse file
+w/ range [0, max_file_blocks), since data which exceeds EOF will always be zero,
+so it's not necessary to precache its mapping info, so we'd better adjust upper
+boundary to i_size rather than max_file_blocks().
+
 > 
-> so it's easy for external users to get the fwnode if they really need it.
-> This and a few more changes and we can drop gc->fwnode altogether
-> can't we?
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> ---
+>   fs/f2fs/file.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index 161826c6e200..2403fd1de5a0 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -3270,7 +3270,7 @@ int f2fs_precache_extents(struct inode *inode)
+>   		f2fs_down_write(&fi->i_gc_rwsem[WRITE]);
+>   		err = f2fs_map_blocks(inode, &map, F2FS_GET_BLOCK_PRECACHE);
+>   		f2fs_up_write(&fi->i_gc_rwsem[WRITE]);
+> -		if (err)
+> +		if (err || !map.m_len)
+Well, if there is a hole in the head of file, it may break here rather
+than precaching following valid map info.
 
-This would work, but the problem here is to understand which fwnode
-(semantically) the caller wants to use.
+What about passing parameter offset|len from f2fs_file_fadvise() to
+f2fs_precache_extents(), and then precaching mapping info on demand.
 
-One is the GPIO device's, and the other is what provider explicitly assigned.
-Currently the latter case is transparent in a sense that GPIO device will get
-the same fwnode as GPIO chip submitted by the provider.
+Thanks,
 
-Internally GPIOLIB must use GPIO device fwnode and rely only on it.
-Externally it depends. Basically it's provider's business to know if it
-is safe to use gc->fwnode or not and when.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+>   			return err;
+>   
+>   		map.m_lblk = m_next_extent;
