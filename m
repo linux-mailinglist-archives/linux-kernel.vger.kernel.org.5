@@ -2,178 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B01887BC434
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 04:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 350467BC438
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 04:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234076AbjJGCdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 22:33:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42202 "EHLO
+        id S234064AbjJGCir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 22:38:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234064AbjJGCcw (ORCPT
+        with ESMTP id S233755AbjJGCir (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 22:32:52 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D230C6
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 19:32:51 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6927528c01dso449740b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 19:32:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1696645970; x=1697250770; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aE++ezKdN8720LEY7IVJ33vhFnTrqC0qzrEhyMq8nsc=;
-        b=wRG/NNYschSu4Ps9+zTjxeb9fHnBi7SneTWGkY4c/571j0QDN/mg7LhJrN6KzjIvza
-         eeSDT61CRnPcn+oJiScfbjFPa04fkaC796VlOr5pcdCM5wEKjJa+cOBqDK2L+4TneTv0
-         fU6x4kUfFUuTro2n5YgQgIf6EH5NHPCyRtLpTxbJn5jOpJ3IFZ3PoYahn2pPCtDGaona
-         pqvaSPr/K9cm9lN07GSaQaMgm2TIypfr8fqDWCMAh5Wb6Ak+Dfy1yNees1gNSyvJni4B
-         E1n6SifAedvukbTQRvvRSgXZDSHNTNzIiPqu56yxyYC2NjmjwVB4nUUafPdB9XQBKmLD
-         KCjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696645970; x=1697250770;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aE++ezKdN8720LEY7IVJ33vhFnTrqC0qzrEhyMq8nsc=;
-        b=OuFct9cBy2ZSAZh0ba22dNVp6r2ajIXhlPIQX9D2MsvshMEnShAsEamj2ZqAd/C016
-         yi86XtsDXy3f4loo2rBiSDpFRcUH4zWoyLg7gEa62AdancO08CfFL+akv4ycczTrRzbg
-         Ou5ORFUC89oYQOvLHjABLz4+BwSt2Difha2lNzESchHd/zBBvWRDvhYDbfzfdohQC6A5
-         hH/8mchuRRQBHERYuGz39pM3tjGwF2CCAxxYhwoJmWPz1A2bhtQX7av0o9LzG2N3/b6v
-         T2v28WucTqS6ePQ+/dgi7UByxmK4Uelu6yF0j0GD9x6wpdCB5+mzn9U+taQ2kkhGaf2r
-         kpPA==
-X-Gm-Message-State: AOJu0YzhX9s8j+71ed0pur9e9nGeK5UACb+J9P02B4k9xC871T49G9Xo
-        tuuJBIvwdxkqT3B5WL+Mjl1AmeHwcye2jh26eY8=
-X-Google-Smtp-Source: AGHT+IGR8X6ptX3+nEjZ6JSuts+D90XG+BG2spzZdlVNr424PE/dh6kUmay9cpeyTJ2NfkUy7ChUVQ==
-X-Received: by 2002:a05:6a00:1d94:b0:690:d314:38d with SMTP id z20-20020a056a001d9400b00690d314038dmr10732845pfw.1.1696645970427;
-        Fri, 06 Oct 2023 19:32:50 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id c24-20020a637258000000b0055c178a8df1sm417065pgn.94.2023.10.06.19.32.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Oct 2023 19:32:49 -0700 (PDT)
-Message-ID: <ab758860-e51e-409c-8353-6205fbe515dc@kernel.dk>
-Date:   Fri, 6 Oct 2023 20:32:47 -0600
+        Fri, 6 Oct 2023 22:38:47 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 639F6BD
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 19:38:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696646325; x=1728182325;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Hi0wF9L9duZEk+kOz9r7poz5SLEFRN+eLDO3BdWF35I=;
+  b=DnzrQuITfZA1UhBrm9XsiYuo1Z+zi+T85SpHfnbJgK73sqYUACszVR5F
+   LkidOAKOjumAO3ciiQvKEgO5mDBCDtwJZAwZ5e73QsZ8yXKMssAKHdPGK
+   pW+ai7keJ/BxOgYAiRrTpdodi2OgVmZQhKSTiSzolgSYxe58bt1PO4RqN
+   pCv+YN0z+BzYJcZmN+3385Gg/WJgm58AP0ZQZ5kdO1c4JHiPsKaPvOgGI
+   sbpvqpnX1F5ncd6BtF4mBvw9YoRfRe3s3TAW0/Qhu3LHMpI5w0fDhjW26
+   GjIAj7W18zLiiCfMByNTF5EtCtCHhgNMG1RY5D/QoHPvik1rB/WNHwnok
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="383762483"
+X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
+   d="scan'208";a="383762483"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 19:38:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="781861860"
+X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
+   d="scan'208";a="781861860"
+Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 06 Oct 2023 19:38:41 -0700
+Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qoxDD-0003s7-0Y;
+        Sat, 07 Oct 2023 02:38:39 +0000
+Date:   Sat, 7 Oct 2023 10:38:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Mike Rapoport <rppt@kernel.org>, linux-mm@kvack.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Alexandre Ghiti <alexghiti@rivosinc.com>
+Subject: Re: [PATCH 2/2] riscv: Fix set_memory_XX() and set_direct_map_XX()
+ by splitting huge linear mappings
+Message-ID: <202310071015.gtxGG3ml-lkp@intel.com>
+References: <20231006092930.15850-3-alexghiti@rivosinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: audit: io_uring openat triggers audit reference count underflow
- in worker thread
-Content-Language: en-US
-To:     Dan Clash <Dan.Clash@microsoft.com>,
-        "audit@vger.kernel.org" <audit@vger.kernel.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>
-Cc:     "paul@paul-moore.com" <paul@paul-moore.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <MW2PR2101MB1033FFF044A258F84AEAA584F1C9A@MW2PR2101MB1033.namprd21.prod.outlook.com>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <MW2PR2101MB1033FFF044A258F84AEAA584F1C9A@MW2PR2101MB1033.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231006092930.15850-3-alexghiti@rivosinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/6/23 2:09 PM, Dan Clash wrote:
-> diff --git a/fs/namei.c b/fs/namei.c
-> index 2a8baa6ce3e8..4f7ac131c9d1 100644
-> --- a/fs/namei.c
-> +++ b/fs/namei.c
-> @@ -187,7 +187,7 @@ getname_flags(const char __user *filename, int flags, int *empty)
->  		}
->  	}
-> 
-> -	result->refcnt = 1;
-> +	refcount_set(&result->refcnt, 1);
->  	/* The empty path is special. */
->  	if (unlikely(!len)) {
->  		if (empty)
-> @@ -248,7 +248,7 @@ getname_kernel(const char * filename)
->  	memcpy((char *)result->name, filename, len);
->  	result->uptr = NULL;
->  	result->aname = NULL;
-> -	result->refcnt = 1;
-> +	refcount_set(&result->refcnt, 1);
->  	audit_getname(result);
-> 
->  	return result;
-> @@ -259,9 +259,10 @@ void putname(struct filename *name)
->  	if (IS_ERR(name))
->  		return;
-> 
-> -	BUG_ON(name->refcnt <= 0);
-> +	BUG_ON(refcount_read(&name->refcnt) == 0);
-> +	BUG_ON(refcount_read(&name->refcnt) == REFCOUNT_SATURATED);
-> 
-> -	if (--name->refcnt > 0)
-> +	if (!refcount_dec_and_test(&name->refcnt))
->  		return;
-> 
->  	if (name->name != name->iname) {
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index d0a54e9aac7a..8217e07726d4 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -2719,7 +2719,7 @@ struct audit_names;
->  struct filename {
->  	const char		*name;	/* pointer to actual string */
->  	const __user char	*uptr;	/* original userland pointer */
-> -	int			refcnt;
-> +	refcount_t		refcnt;
->  	struct audit_names	*aname;
->  	const char		iname[];
->  };
-> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-> index 37cded22497e..232e0be9f6d9 100644
-> --- a/kernel/auditsc.c
-> +++ b/kernel/auditsc.c
-> @@ -2188,7 +2188,7 @@ __audit_reusename(const __user char *uptr)
->  		if (!n->name)
->  			continue;
->  		if (n->name->uptr == uptr) {
-> -			n->name->refcnt++;
-> +			refcount_inc(&n->name->refcnt);
->  			return n->name;
->  		}
->  	}
-> @@ -2217,7 +2217,7 @@ void __audit_getname(struct filename *name)
->  	n->name = name;
->  	n->name_len = AUDIT_NAME_FULL;
->  	name->aname = n;
-> -	name->refcnt++;
-> +	refcount_inc(&name->refcnt);
->  }
-> 
->  static inline int audit_copy_fcaps(struct audit_names *name,
-> @@ -2349,7 +2349,7 @@ void __audit_inode(struct filename *name, const struct dentry *dentry,
->  		return;
->  	if (name) {
->  		n->name = name;
-> -		name->refcnt++;
-> +		refcount_inc(&name->refcnt);
->  	}
-> 
->  out:
-> @@ -2474,7 +2474,7 @@ void __audit_inode_child(struct inode *parent,
->  		if (found_parent) {
->  			found_child->name = found_parent->name;
->  			found_child->name_len = AUDIT_NAME_FULL;
-> -			found_child->name->refcnt++;
-> +			refcount_inc(&found_child->name->refcnt);
->  		}
->  	}
+Hi Alexandre,
 
-I'm not fully aware of what audit is doing with struct filename outside
-of needing it for the audit log. Rather than impose the atomic
-references for everyone, would it be doable to simply dupe the struct
-instead of grabbing the (non-atomic) reference to the existing one?
+kernel test robot noticed the following build errors:
 
-If not, since there's no over/underflow handling right now, it'd
-certainly be cheaper to use an atomic_t here rather than a full
-refcount.
+[auto build test ERROR on linus/master]
+[also build test ERROR on v6.6-rc4 next-20231006]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Alexandre-Ghiti/riscv-Don-t-use-PGD-entries-for-the-linear-mapping/20231006-173223
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20231006092930.15850-3-alexghiti%40rivosinc.com
+patch subject: [PATCH 2/2] riscv: Fix set_memory_XX() and set_direct_map_XX() by splitting huge linear mappings
+config: riscv-rv32_defconfig (https://download.01.org/0day-ci/archive/20231007/202310071015.gtxGG3ml-lkp@intel.com/config)
+compiler: riscv32-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231007/202310071015.gtxGG3ml-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310071015.gtxGG3ml-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   arch/riscv/mm/pageattr.c: In function '__split_linear_mapping_pmd':
+>> arch/riscv/mm/pageattr.c:112:45: error: implicit declaration of function '_pmd_pfn'; did you mean 'pmd_pfn'? [-Werror=implicit-function-declaration]
+     112 |                         unsigned long pfn = _pmd_pfn(*pmdp);
+         |                                             ^~~~~~~~
+         |                                             pmd_pfn
+>> arch/riscv/mm/pageattr.c:127:39: error: implicit declaration of function 'pfn_pmd'; did you mean 'pfn_pgd'? [-Werror=implicit-function-declaration]
+     127 |                         set_pmd(pmdp, pfn_pmd(page_to_pfn(pte_page), PAGE_TABLE));
+         |                                       ^~~~~~~
+         |                                       pfn_pgd
+>> arch/riscv/mm/pageattr.c:127:39: error: incompatible type for argument 2 of 'set_pmd'
+     127 |                         set_pmd(pmdp, pfn_pmd(page_to_pfn(pte_page), PAGE_TABLE));
+         |                                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         |                                       |
+         |                                       int
+   In file included from include/linux/pgtable.h:6,
+                    from include/linux/mm.h:29,
+                    from include/linux/pagewalk.h:5,
+                    from arch/riscv/mm/pageattr.c:6:
+   arch/riscv/include/asm/pgtable.h:249:47: note: expected 'pmd_t' but argument is of type 'int'
+     249 | static inline void set_pmd(pmd_t *pmdp, pmd_t pmd)
+         |                                         ~~~~~~^~~
+   arch/riscv/mm/pageattr.c: In function '__split_linear_mapping_pud':
+>> arch/riscv/mm/pageattr.c:152:45: error: implicit declaration of function '_pud_pfn'; did you mean 'pud_pfn'? [-Werror=implicit-function-declaration]
+     152 |                         unsigned long pfn = _pud_pfn(*pudp);
+         |                                             ^~~~~~~~
+         |                                             pud_pfn
+   arch/riscv/mm/pageattr.c:164:41: error: incompatible type for argument 2 of 'set_pmd'
+     164 |                                         pfn_pmd(pfn + ((i * PMD_SIZE) >> PAGE_SHIFT), prot));
+         |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         |                                         |
+         |                                         int
+   arch/riscv/include/asm/pgtable.h:249:47: note: expected 'pmd_t' but argument is of type 'int'
+     249 | static inline void set_pmd(pmd_t *pmdp, pmd_t pmd)
+         |                                         ~~~~~~^~~
+   In file included from arch/riscv/include/asm/pgtable-32.h:9,
+                    from arch/riscv/include/asm/pgtable.h:141:
+>> arch/riscv/mm/pageattr.c:168:39: error: implicit declaration of function 'pfn_pud'; did you mean 'pfn_pgd'? [-Werror=implicit-function-declaration]
+     168 |                         set_pud(pudp, pfn_pud(page_to_pfn(pmd_page), PAGE_TABLE));
+         |                                       ^~~~~~~
+   include/asm-generic/pgtable-nopmd.h:44:86: note: in definition of macro 'set_pud'
+      44 | #define set_pud(pudptr, pudval)                 set_pmd((pmd_t *)(pudptr), (pmd_t) { pudval })
+         |                                                                                      ^~~~~~
+   include/asm-generic/pgtable-nopmd.h:44:76: warning: missing braces around initializer [-Wmissing-braces]
+      44 | #define set_pud(pudptr, pudval)                 set_pmd((pmd_t *)(pudptr), (pmd_t) { pudval })
+         |                                                                            ^
+   arch/riscv/mm/pageattr.c:168:25: note: in expansion of macro 'set_pud'
+     168 |                         set_pud(pudp, pfn_pud(page_to_pfn(pmd_page), PAGE_TABLE));
+         |                         ^~~~~~~
+   arch/riscv/mm/pageattr.c: In function '__split_linear_mapping_p4d':
+>> arch/riscv/mm/pageattr.c:201:45: error: implicit declaration of function '_p4d_pfn'; did you mean '_pgd_pfn'? [-Werror=implicit-function-declaration]
+     201 |                         unsigned long pfn = _p4d_pfn(*p4dp);
+         |                                             ^~~~~~~~
+         |                                             _pgd_pfn
+   include/asm-generic/pgtable-nopmd.h:44:76: warning: missing braces around initializer [-Wmissing-braces]
+      44 | #define set_pud(pudptr, pudval)                 set_pmd((pmd_t *)(pudptr), (pmd_t) { pudval })
+         |                                                                            ^
+   arch/riscv/mm/pageattr.c:216:33: note: in expansion of macro 'set_pud'
+     216 |                                 set_pud(pudp_new,
+         |                                 ^~~~~~~
+>> arch/riscv/mm/pageattr.c:226:39: error: implicit declaration of function 'pfn_p4d'; did you mean 'pfn_pgd'? [-Werror=implicit-function-declaration]
+     226 |                         set_p4d(p4dp, pfn_p4d(page_to_pfn(pud_page), PAGE_TABLE));
+         |                                       ^~~~~~~
+   include/asm-generic/pgtable-nopmd.h:44:86: note: in definition of macro 'set_pud'
+      44 | #define set_pud(pudptr, pudval)                 set_pmd((pmd_t *)(pudptr), (pmd_t) { pudval })
+         |                                                                                      ^~~~~~
+   arch/riscv/mm/pageattr.c:226:25: note: in expansion of macro 'set_p4d'
+     226 |                         set_p4d(p4dp, pfn_p4d(page_to_pfn(pud_page), PAGE_TABLE));
+         |                         ^~~~~~~
+   include/asm-generic/pgtable-nopud.h:40:60: warning: missing braces around initializer [-Wmissing-braces]
+      40 | #define set_p4d(p4dptr, p4dval) set_pud((pud_t *)(p4dptr), (pud_t) { p4dval })
+         |                                                            ^
+   include/asm-generic/pgtable-nopmd.h:44:86: note: in definition of macro 'set_pud'
+      44 | #define set_pud(pudptr, pudval)                 set_pmd((pmd_t *)(pudptr), (pmd_t) { pudval })
+         |                                                                                      ^~~~~~
+   arch/riscv/mm/pageattr.c:226:25: note: in expansion of macro 'set_p4d'
+     226 |                         set_p4d(p4dp, pfn_p4d(page_to_pfn(pud_page), PAGE_TABLE));
+         |                         ^~~~~~~
+   include/asm-generic/pgtable-nopmd.h:44:76: warning: missing braces around initializer [-Wmissing-braces]
+      44 | #define set_pud(pudptr, pudval)                 set_pmd((pmd_t *)(pudptr), (pmd_t) { pudval })
+         |                                                                            ^
+   include/asm-generic/pgtable-nopud.h:40:33: note: in expansion of macro 'set_pud'
+      40 | #define set_p4d(p4dptr, p4dval) set_pud((pud_t *)(p4dptr), (pud_t) { p4dval })
+         |                                 ^~~~~~~
+   arch/riscv/mm/pageattr.c:226:25: note: in expansion of macro 'set_p4d'
+     226 |                         set_p4d(p4dp, pfn_p4d(page_to_pfn(pud_page), PAGE_TABLE));
+         |                         ^~~~~~~
+   cc1: some warnings being treated as errors
+
+
+vim +112 arch/riscv/mm/pageattr.c
+
+    94	
+    95	static int __split_linear_mapping_pmd(pud_t *pudp,
+    96					      unsigned long vaddr, unsigned long end)
+    97	{
+    98		pmd_t *pmdp;
+    99		unsigned long next;
+   100	
+   101		pmdp = pmd_offset(pudp, vaddr);
+   102	
+   103		do {
+   104			next = pmd_addr_end(vaddr, end);
+   105	
+   106			if (next - vaddr >= PMD_SIZE &&
+   107			    vaddr <= (vaddr & PMD_MASK) && end >= next)
+   108				continue;
+   109	
+   110			if (pmd_leaf(*pmdp)) {
+   111				struct page *pte_page;
+ > 112				unsigned long pfn = _pmd_pfn(*pmdp);
+   113				pgprot_t prot = __pgprot(pmd_val(*pmdp) & ~_PAGE_PFN_MASK);
+   114				pte_t *ptep_new;
+   115				int i;
+   116	
+   117				pte_page = alloc_page(GFP_KERNEL);
+   118				if (!pte_page)
+   119					return -ENOMEM;
+   120	
+   121				ptep_new = (pte_t *)page_address(pte_page);
+   122				for (i = 0; i < PTRS_PER_PTE; ++i, ++ptep_new)
+   123					set_pte(ptep_new, pfn_pte(pfn + i, prot));
+   124	
+   125				smp_wmb();
+   126	
+ > 127				set_pmd(pmdp, pfn_pmd(page_to_pfn(pte_page), PAGE_TABLE));
+   128			}
+   129		} while (pmdp++, vaddr = next, vaddr != end);
+   130	
+   131		return 0;
+   132	}
+   133	
+   134	static int __split_linear_mapping_pud(p4d_t *p4dp,
+   135					      unsigned long vaddr, unsigned long end)
+   136	{
+   137		pud_t *pudp;
+   138		unsigned long next;
+   139		int ret;
+   140	
+   141		pudp = pud_offset(p4dp, vaddr);
+   142	
+   143		do {
+   144			next = pud_addr_end(vaddr, end);
+   145	
+   146			if (next - vaddr >= PUD_SIZE &&
+   147			    vaddr <= (vaddr & PUD_MASK) && end >= next)
+   148				continue;
+   149	
+   150			if (pud_leaf(*pudp)) {
+   151				struct page *pmd_page;
+ > 152				unsigned long pfn = _pud_pfn(*pudp);
+   153				pgprot_t prot = __pgprot(pud_val(*pudp) & ~_PAGE_PFN_MASK);
+   154				pmd_t *pmdp_new;
+   155				int i;
+   156	
+   157				pmd_page = alloc_page(GFP_KERNEL);
+   158				if (!pmd_page)
+   159					return -ENOMEM;
+   160	
+   161				pmdp_new = (pmd_t *)page_address(pmd_page);
+   162				for (i = 0; i < PTRS_PER_PMD; ++i, ++pmdp_new)
+   163					set_pmd(pmdp_new,
+   164						pfn_pmd(pfn + ((i * PMD_SIZE) >> PAGE_SHIFT), prot));
+   165	
+   166				smp_wmb();
+   167	
+ > 168				set_pud(pudp, pfn_pud(page_to_pfn(pmd_page), PAGE_TABLE));
+   169			}
+   170	
+   171			ret = __split_linear_mapping_pmd(pudp, vaddr, next);
+   172			if (ret)
+   173				return ret;
+   174		} while (pudp++, vaddr = next, vaddr != end);
+   175	
+   176		return 0;
+   177	}
+   178	
+   179	static int __split_linear_mapping_p4d(pgd_t *pgdp,
+   180					      unsigned long vaddr, unsigned long end)
+   181	{
+   182		p4d_t *p4dp;
+   183		unsigned long next;
+   184		int ret;
+   185	
+   186		p4dp = p4d_offset(pgdp, vaddr);
+   187	
+   188		do {
+   189			next = p4d_addr_end(vaddr, end);
+   190	
+   191			/*
+   192			 * If [vaddr; end] contains [vaddr & P4D_MASK; next], we don't
+   193			 * need to split, we'll change the protections on the whole P4D.
+   194			 */
+   195			if (next - vaddr >= P4D_SIZE &&
+   196			    vaddr <= (vaddr & P4D_MASK) && end >= next)
+   197				continue;
+   198	
+   199			if (p4d_leaf(*p4dp)) {
+   200				struct page *pud_page;
+ > 201				unsigned long pfn = _p4d_pfn(*p4dp);
+   202				pgprot_t prot = __pgprot(p4d_val(*p4dp) & ~_PAGE_PFN_MASK);
+   203				pud_t *pudp_new;
+   204				int i;
+   205	
+   206				pud_page = alloc_page(GFP_KERNEL);
+   207				if (!pud_page)
+   208					return -ENOMEM;
+   209	
+   210				/*
+   211				 * Fill the pud level with leaf puds that have the same
+   212				 * protections as the leaf p4d.
+   213				 */
+   214				pudp_new = (pud_t *)page_address(pud_page);
+   215				for (i = 0; i < PTRS_PER_PUD; ++i, ++pudp_new)
+   216					set_pud(pudp_new,
+   217						pfn_pud(pfn + ((i * PUD_SIZE) >> PAGE_SHIFT), prot));
+   218	
+   219				/*
+   220				 * Make sure the pud filling is not reordered with the
+   221				 * p4d store which could result in seeing a partially
+   222				 * filled pud level.
+   223				 */
+   224				smp_wmb();
+   225	
+ > 226				set_p4d(p4dp, pfn_p4d(page_to_pfn(pud_page), PAGE_TABLE));
+   227			}
+   228	
+   229			ret = __split_linear_mapping_pud(p4dp, vaddr, next);
+   230			if (ret)
+   231				return ret;
+   232		} while (p4dp++, vaddr = next, vaddr != end);
+   233	
+   234		return 0;
+   235	}
+   236	
 
 -- 
-Jens Axboe
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
