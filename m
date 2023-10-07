@@ -2,45 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F21B07BC931
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 19:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD807BC936
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 19:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344103AbjJGRFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 13:05:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56742 "EHLO
+        id S1344117AbjJGRFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 13:05:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344046AbjJGRE6 (ORCPT
+        with ESMTP id S1344098AbjJGRFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 13:04:58 -0400
+        Sat, 7 Oct 2023 13:05:01 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F0BBA;
-        Sat,  7 Oct 2023 10:04:58 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDADAC433C7;
-        Sat,  7 Oct 2023 17:04:55 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE623B9;
+        Sat,  7 Oct 2023 10:04:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23CA5C433C8;
+        Sat,  7 Oct 2023 17:04:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696698297;
-        bh=13ShY6HnWg7Sx2I9hscgBsQOpo9Vq3faGjdLVYoBM5o=;
+        s=k20201202; t=1696698299;
+        bh=7PA8scmHfu5nyFOhItoPibMephbX/u9X82eA3NzQP1c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eUeSBoRC8ODJTmKIkYd6gNHF/IrKY8Gdzo0GJtWGKXvn/Gwxg66E66zwK+R+L641h
-         RH91OtdShkzWHuMANps+J8Tk/390bUD43IXxpuXrUmzlZ05XTXonzNYEnWWPx7X41M
-         2yz+S0Ez0O60sxYV+gxrOXChiiB5dI2NdlKFf2mSvqGCjH5w5iO1wDyObNm6wVEK1y
-         8CafTp2S7rUo6l50QfyjmNHtmXI+FjjRaK7qOO11kQeSR4vpSHgoIaidgiPSnAlanS
-         dThJcqOhH5Y0mQPS4fb8cu0vCfja+eoOcDBKuq1Iab/VnMOtrRwqUseRmQm0ueA0/L
-         8jdcl8NIkKFpA==
+        b=LWnn0sOt6WygtD1hvtwiVIqmKHBDxYUleCmm8Su8hd/lnUJvGVbe6sHfuJl7ZjjA8
+         pZ96QAL2xYi7Egbrrdjvt0EvwffMJKtblV8mUCndaQJ2RZJAoTQibExZrVfXJykOnj
+         aWSpG0WDrEdYgYLSX33jj/riVgkH8hz3+x/rwrSdyQsPVmBDpQ12ADSFv3EiQADHaY
+         J8cCrKBe64utnoCGPbxGVmreLogcNc4NqaPkbm5XwX4Abes0XcwIAeQBco/YFqve0Q
+         0kNqxSJHhRmkr4BW2uaIYynAZfKuDg+aL1DvDsjChq5pL746vpys8wjaVLH/1nrUI5
+         f9e2VYHEtY3FA==
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     linux-kbuild@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
         Masahiro Yamada <masahiroy@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jiri Kosina <jkosina@suse.cz>,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Subject: [PATCH 2/5] modpost: fix ishtp MODULE_DEVICE_TABLE built on big endian host
-Date:   Sun,  8 Oct 2023 02:04:45 +0900
-Message-Id: <20231007170448.505487-2-masahiroy@kernel.org>
+        Nicolas Schier <nicolas@fjasle.eu>
+Subject: [PATCH 3/5] modpost: define TO_NATIVE() using bswap_* functions
+Date:   Sun,  8 Oct 2023 02:04:46 +0900
+Message-Id: <20231007170448.505487-3-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231007170448.505487-1-masahiroy@kernel.org>
 References: <20231007170448.505487-1-masahiroy@kernel.org>
@@ -56,54 +52,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When MODULE_DEVICE_TABLE(ishtp, ) is built on a host with a different
-endianness from the target architecture, it results in an incorrect
-MODULE_ALIAS().
+The current TO_NATIVE() has some limitations:
 
-For example, see a case where drivers/platform/x86/intel/ishtp_eclite.c
-is built as a module.
+ 1) You cannot cast the argument.
 
-If you build it on a little endian host, you will get the correct
-MODULE_ALIAS:
+ 2) You cannot pass a variable marked as 'const'.
 
-    $ grep MODULE_ALIAS drivers/platform/x86/intel/ishtp_eclite.mod.c
-    MODULE_ALIAS("ishtp:{6A19CC4B-D760-4DE3-B14D-F25EBD0FBCD9}");
+ 3) Passing an array is a bug, but it is not detected.
 
-However, if you build it on a big endian host, you will get a wrong
-MODULE_ALIAS:
+Impelement TO_NATIVE() using bswap_*() functions. These are GNU
+extensions. If we face portability issues, we can port the code from
+include/uapi/linux/swab.h.
 
-    $ grep MODULE_ALIAS drivers/platform/x86/intel/ishtp_eclite.mod.c
-    MODULE_ALIAS("ishtp:{BD0FBCD9-F25E-B14D-4DE3-D7606A19CC4B}");
+With this change, get_rel_type_and_sym() can be simplified by casting
+the arguments directly.
 
-This issue has been unnoticed because the x86 kernel is most likely built
-natively on an x86 host.
-
-The guid field must not be reversed because guid_t is an array of __u8.
-
-Fixes: fa443bc3c1e4 ("HID: intel-ish-hid: add support for MODULE_DEVICE_TABLE()")
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- scripts/mod/file2alias.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ scripts/mod/modpost.c | 13 ++++---------
+ scripts/mod/modpost.h | 25 ++++++++++++-------------
+ 2 files changed, 16 insertions(+), 22 deletions(-)
 
-diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c
-index 70bf6a2f585c..6583b36dbe69 100644
---- a/scripts/mod/file2alias.c
-+++ b/scripts/mod/file2alias.c
-@@ -1401,10 +1401,10 @@ static int do_mhi_ep_entry(const char *filename, void *symval, char *alias)
- /* Looks like: ishtp:{guid} */
- static int do_ishtp_entry(const char *filename, void *symval, char *alias)
- {
--	DEF_FIELD(symval, ishtp_device_id, guid);
-+	DEF_FIELD_ADDR(symval, ishtp_device_id, guid);
+diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+index 2f3b0fe6f68d..99476a9695c5 100644
+--- a/scripts/mod/modpost.c
++++ b/scripts/mod/modpost.c
+@@ -1410,15 +1410,10 @@ static void get_rel_type_and_sym(struct elf_info *elf, uint64_t r_info,
+ 		return;
+ 	}
  
- 	strcpy(alias, ISHTP_MODULE_PREFIX "{");
--	add_guid(alias, guid);
-+	add_guid(alias, *guid);
- 	strcat(alias, "}");
+-	if (is_64bit) {
+-		Elf64_Xword r_info64 = r_info;
+-
+-		r_info = TO_NATIVE(r_info64);
+-	} else {
+-		Elf32_Word r_info32 = r_info;
+-
+-		r_info = TO_NATIVE(r_info32);
+-	}
++	if (is_64bit)
++		r_info = TO_NATIVE((Elf64_Xword)r_info);
++	else
++		r_info = TO_NATIVE((Elf32_Word)r_info);
  
- 	return 1;
+ 	*r_type = ELF_R_TYPE(r_info);
+ 	*r_sym = ELF_R_SYM(r_info);
+diff --git a/scripts/mod/modpost.h b/scripts/mod/modpost.h
+index 6413f26fcb6b..1392afec118c 100644
+--- a/scripts/mod/modpost.h
++++ b/scripts/mod/modpost.h
+@@ -1,4 +1,5 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
++#include <byteswap.h>
+ #include <stdbool.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+@@ -51,21 +52,19 @@
+ #define ELF_R_TYPE  ELF64_R_TYPE
+ #endif
+ 
++#define bswap(x) \
++({ \
++	_Static_assert(sizeof(x) == 1 || sizeof(x) == 2 || \
++		       sizeof(x) == 4 || sizeof(x) == 8, "bug"); \
++	(typeof(x))(sizeof(x) == 2 ? bswap_16(x) : \
++		    sizeof(x) == 4 ? bswap_32(x) : \
++		    sizeof(x) == 8 ? bswap_64(x) : \
++		    x); \
++})
++
+ #if KERNEL_ELFDATA != HOST_ELFDATA
+ 
+-static inline void __endian(const void *src, void *dest, unsigned int size)
+-{
+-	unsigned int i;
+-	for (i = 0; i < size; i++)
+-		((unsigned char*)dest)[i] = ((unsigned char*)src)[size - i-1];
+-}
+-
+-#define TO_NATIVE(x)						\
+-({								\
+-	typeof(x) __x;						\
+-	__endian(&(x), &(__x), sizeof(__x));			\
+-	__x;							\
+-})
++#define TO_NATIVE(x) (bswap(x))
+ 
+ #else /* endianness matches */
+ 
 -- 
 2.39.2
 
