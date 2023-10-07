@@ -2,88 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F06127BC449
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 04:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B5F7BC44C
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 05:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343495AbjJGC4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 22:56:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46032 "EHLO
+        id S234083AbjJGDEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 23:04:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbjJGC4p (ORCPT
+        with ESMTP id S229930AbjJGDD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 22:56:45 -0400
-Received: from wxsgout04.xfusion.com (wxsgout03.xfusion.com [36.139.52.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04FC9BD;
-        Fri,  6 Oct 2023 19:56:43 -0700 (PDT)
-Received: from wuxshcsitd00600.xfusion.com (unknown [10.32.133.213])
-        by wxsgout04.xfusion.com (SkyGuard) with ESMTPS id 4S2VHx3hHZzB0SM8;
-        Sat,  7 Oct 2023 10:54:21 +0800 (CST)
-Received: from localhost (10.82.147.3) by wuxshcsitd00600.xfusion.com
- (10.32.133.213) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Sat, 7 Oct
- 2023 10:56:31 +0800
-Date:   Sat, 7 Oct 2023 10:56:31 +0800
-From:   Wang Jinchao <wangjinchao@xfusion.com>
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>
-CC:     Steffen Klassert <steffen.klassert@secunet.com>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stone.xulei@xfusion.com>
-Subject: Re: Issue: Can padata avoid dealing with CPU-related operations?
-Message-ID: <ZSDI34RMdJ7es7hj@fedora>
-References: <ZRQtYnAhF2byr784@fedora>
- <cwcbhk22vycf6di4d5x56l2e5sxm2o5s45v4w6abqggyluyzko@xhcveoev3vhu>
+        Fri, 6 Oct 2023 23:03:58 -0400
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 10CACBD
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 20:03:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=eXdTM
+        qOTVo37Vuo+Ii2+2vMJv7kgRRnrVpWPIL1gsDI=; b=KZJxd/jdNVT4o+gYnm2IU
+        GxGA/ZihRg6oC6c1CYAFJEvZymE3+T/a5mGXdIXI3OaH70JOdyMhvI1vAeqlffH0
+        IlztKSKbbbJHWo5lDB0TNFfONMjm2lTxBz3h48bmebY4J8j6KHdJnk+Xfc12TmdL
+        APzyao2b1ME89Rbe5yCrW0=
+Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
+        by zwqz-smtp-mta-g2-2 (Coremail) with SMTP id _____wDnFXp4yiBl5FAoEA--.48757S4;
+        Sat, 07 Oct 2023 11:03:29 +0800 (CST)
+From:   Ma Ke <make_ruc2021@163.com>
+To:     linus.walleij@linaro.org, neil.armstrong@linaro.org,
+        sam@ravnborg.org, airlied@gmail.com, daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Ma Ke <make_ruc2021@163.com>
+Subject: [PATCH] drm/panel/panel-tpo-tpg110: fix a possible null pointer dereference
+Date:   Sat,  7 Oct 2023 11:03:18 +0800
+Message-Id: <20231007030318.3996798-1-make_ruc2021@163.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <cwcbhk22vycf6di4d5x56l2e5sxm2o5s45v4w6abqggyluyzko@xhcveoev3vhu>
-X-Originating-IP: [10.82.147.3]
-X-ClientProxiedBy: wuxshcsitd00601.xfusion.com (10.32.135.241) To
- wuxshcsitd00600.xfusion.com (10.32.133.213)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wDnFXp4yiBl5FAoEA--.48757S4
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZrW8KFyfCw18AF47KFWrAFb_yoWDJFb_uF
+        18XasrWr47W3Z7CF4Iva13Ar1ayFs8AF4kZ3WSkayIkrykGF17Jr1DWr909a4UuF17uFs8
+        Aa4xAF1YvFnrGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRKLvK7UUUUU==
+X-Originating-IP: [183.174.60.14]
+X-CM-SenderInfo: 5pdnvshuxfjiisr6il2tof0z/xtbBFR4CC2B9oZk1SgAAsY
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 10:52:57AM -0400, Daniel Jordan wrote:
-> Hi,
-> 
-> On Wed, Sep 27, 2023 at 09:25:54PM +0800, Wang Jinchao wrote:
-> > Hello, I have a few questions about the padata code I've been studying
-> > recently:
-> > 
-> > - Why does padata use the WQ_UNBOUND attribute of the workqueue?
-> 
-> There's background in this series:
->     https://lore.kernel.org/all/20190813005224.30779-1-daniel.m.jordan@oracle.com/
-> 
-Summarizing, the use of the WQ_UNBOUND attribute is primarily based on performance
-considerations. Is this understanding correct?
-> > Because I've noticed a significant maintenance cost related to CPUs.
-> > Are there any specific benefits?
-> 
-> Aside from what Steffen said about serialization, the pcrypt cpumasks
-> can be set from sysfs to control where parallel and serial jobs run.
-> 
-> > - In what scenarios is it necessary to specify a CPU for serial
-> > execution, or is ensuring the order sufficient?
-> 
-> I'm not sure that it's necessary.  The way I read it, at least, it seems
-> pcrypt uses cb_cpu to load balance serialization across all CPUs allowed
-> in the serial cpumask.
+In radeon_fp_native_mode(), the return value of drm_mode_duplicate()
+is assigned to mode, which will lead to a NULL pointer dereference
+on failure of drm_mode_duplicate(). Add a check to avoid npd.
 
-I recognize that the key issue isn't the capabilities it can offer, but rather
-the underlying necessity for these capabilities. If the need isn't particularly
-strong and the cost of implementing this capability is high, should we consider
-omitting it?
+Signed-off-by: Ma Ke <make_ruc2021@163.com>
+---
+ drivers/gpu/drm/panel/panel-tpo-tpg110.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-As previously mentioned in another email, I'm seeking guidance on how to effectively 
-evaluate the timing of padata serialization in a network environment. 
-Could you provide some insights or pointers on this matter?
+diff --git a/drivers/gpu/drm/panel/panel-tpo-tpg110.c b/drivers/gpu/drm/panel/panel-tpo-tpg110.c
+index 845304435e23..f6a212e542cb 100644
+--- a/drivers/gpu/drm/panel/panel-tpo-tpg110.c
++++ b/drivers/gpu/drm/panel/panel-tpo-tpg110.c
+@@ -379,6 +379,8 @@ static int tpg110_get_modes(struct drm_panel *panel,
+ 	connector->display_info.bus_flags = tpg->panel_mode->bus_flags;
+ 
+ 	mode = drm_mode_duplicate(connector->dev, &tpg->panel_mode->mode);
++	if (!mode)
++		return -ENOMEM;
+ 	drm_mode_set_name(mode);
+ 	mode->type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
+ 
+-- 
+2.37.2
 
-Furthermore, I'd like to extend my sincere gratitude for your recent responses 
-and would appreciate discussing my future steps with you. 
-Thank you.
