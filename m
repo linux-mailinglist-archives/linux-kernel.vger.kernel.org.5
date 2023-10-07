@@ -2,83 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6C47BC610
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 10:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 888F97BC618
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 10:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234154AbjJGIa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 04:30:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49990 "EHLO
+        id S234149AbjJGIfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 04:35:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232558AbjJGIax (ORCPT
+        with ESMTP id S232558AbjJGIfL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 04:30:53 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A9530A6;
-        Sat,  7 Oct 2023 01:30:50 -0700 (PDT)
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 3978UZTu021895;
-        Sat, 7 Oct 2023 10:30:35 +0200
-Date:   Sat, 7 Oct 2023 10:30:35 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC] tools/nolibc: add support for constructors and
- destructors
-Message-ID: <20231007083035.GA21880@1wt.eu>
-References: <20231005-nolibc-constructors-v1-1-776d56bbe917@weissschuh.net>
- <20231007065025.GZ20998@1wt.eu>
- <485b8b48-673a-4b1d-8651-2c0038d478cf@t-8ch.de>
+        Sat, 7 Oct 2023 04:35:11 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a02:c205:3004:2154::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F1C83;
+        Sat,  7 Oct 2023 01:35:10 -0700 (PDT)
+Received: from p5dc58360.dip0.t-ipconnect.de ([93.197.131.96] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <andreas@kemnade.info>)
+        id 1qp2m5-004c4z-Ex; Sat, 07 Oct 2023 10:35:01 +0200
+Date:   Sat, 7 Oct 2023 10:34:59 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     =?UTF-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@gmail.com>,
+        bcousson@baylibre.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, jarkko.nikula@bitmer.com,
+        dmitry.torokhov@gmail.com, linux-omap@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH 1/3] ASoC: ti: omap-mcbsp: Ignore errors for getting
+ fck_src
+Message-ID: <20231007103459.29998aa8@aktux>
+In-Reply-To: <20231007074159.GX34982@atomide.com>
+References: <20230705190324.355282-1-andreas@kemnade.info>
+        <20230705190324.355282-2-andreas@kemnade.info>
+        <7d58d52d-2087-45af-b29e-2515b63ead13@gmail.com>
+        <20230920063353.GQ5285@atomide.com>
+        <dac768d2-2c66-4d6b-b3d3-d1ef69103c76@gmail.com>
+        <20230921121626.GT5285@atomide.com>
+        <20231006102348.GK34982@atomide.com>
+        <20231006213003.0fbac87a@aktux>
+        <20231007062518.GM34982@atomide.com>
+        <20231007091156.588d7ba1@aktux>
+        <20231007074159.GX34982@atomide.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <485b8b48-673a-4b1d-8651-2c0038d478cf@t-8ch.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 07, 2023 at 09:28:45AM +0200, Thomas Weißschuh wrote:
-> > In the past I learned the hard way that you can never trust the execution
-> > order of constructors, so if you're unlucky above you could very well end
-> > up with 1 and that would be correct. I suggest that instead you do something
-> > such as:
-> > 
-> >       constructor_test_value += 1;
-> > ...
-> >       constructor_test_value += 2;
-> > 
-> > and check for value 3 in the test to make sure they were both executed
-> > exactly once each.
-> 
-> Was this indeterminism for constructors from the same translation unit?
-> Or across different translation units/shared objects?
+On Sat, 7 Oct 2023 10:41:59 +0300
+Tony Lindgren <tony@atomide.com> wrote:
 
-I'm certain that there's no guarantee from multiple units, but I seem
-to remember something about possible reordering within a same unit.
-
-> I'm not entirely sure, but the GCC [0] docs could be read that within a
-> given TU the execution order for constructors is the same as the
-> definition order, even for C.
+> * Andreas Kemnade <andreas@kemnade.info> [231007 07:12]:
+> > Well, it is a regression caused by your fix. Without it (and not reverting
+> > the already applied ignore patch), runtime is properly suspended. Don't know
+> > why yet.  
 > 
->     The priorities for constructor and destructor functions are the same
->     as those specified for namespace-scope C++ objects
+> We return early from omap2_mcbsp_set_clks_src() with IS_ERR(fck_src) and
+> the runtime PM functions never get called?
 > 
-> And linked from there:
-> 
->     In Standard C++, objects defined at namespace scope are guaranteed
->     to be initialized in an order in strict accordance with that of
->     their definitions *in a given translation unit*. No guarantee is made
->     for initializations across translation units.
+no, we do not. This patch we are talking about to do it in a better way made
+its way into mainline v6.6-rc1. The other pieces of sound support did not,
+they need rework.
 
-Then that's probably OK. I'd say it all depends what you want to test.
-If you also want the test to cover for this, then your test is stricter,
-but then maybe you should put a comment there saying that it's on purpose
-to also verify they execute in the expected order ;-)
-
-Willy
+Regards,
+Andreas
