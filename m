@@ -2,65 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8622D7BC85E
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 16:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B020C7BC871
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 16:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343979AbjJGOlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 10:41:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60842 "EHLO
+        id S1343941AbjJGOwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 10:52:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbjJGOlI (ORCPT
+        with ESMTP id S229824AbjJGOwY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 10:41:08 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E75BF;
-        Sat,  7 Oct 2023 07:41:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696689667; x=1728225667;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=JQHNSle2ueyfdO9Mt/f52EyzsjPdPwIj0SvbjbMA0QU=;
-  b=HLq3EuXOHCkv4gWJA2KamJkO8zygRJIRo1IqgZFToNuSRrzqHWicxGoD
-   LXAgGa2b1u36ILgdFz0m1QnJHFFAlRkBcs0EvsAUzr7/Jx8uQaa84sAHp
-   hT6k8JLC7xkBnBnUqTKO/uWNwoJJ7SyKNyKScGIBcqkYQCaWgYN/alPSP
-   MZSqMMAdY5otUoIMFl2/YU++Ij+UDyA6fOnf5zcz4tvcns6nAXb+ChgkJ
-   v62wdAp2nkD6lJ/IcsO6ilI/Ll/yuo2yZg2K4pOkY0gnP7IQIkkSXlNck
-   MMGd9sLdroVVVZAfWW2jODP7v0Qalt752XIbTy1hEcD8CJNeOXwqREbS5
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10856"; a="448123687"
-X-IronPort-AV: E=Sophos;i="6.03,206,1694761200"; 
-   d="scan'208";a="448123687"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2023 07:41:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10856"; a="782003461"
-X-IronPort-AV: E=Sophos;i="6.03,206,1694761200"; 
-   d="scan'208";a="782003461"
-Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 07 Oct 2023 07:41:03 -0700
-Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qp8UH-0004SK-1o;
-        Sat, 07 Oct 2023 14:41:01 +0000
-Date:   Sat, 7 Oct 2023 22:40:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Chuyi Zhou <zhouchuyi@bytedance.com>, bpf@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-        tj@kernel.org, linux-kernel@vger.kernel.org,
-        Chuyi Zhou <zhouchuyi@bytedance.com>
-Subject: Re: [PATCH bpf-next v4 2/8] bpf: Introduce css_task open-coded
- iterator kfuncs
-Message-ID: <202310072246.OfAldQpf-lkp@intel.com>
-References: <20231007124522.34834-3-zhouchuyi@bytedance.com>
+        Sat, 7 Oct 2023 10:52:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E381B9
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 07:52:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D519C433C7;
+        Sat,  7 Oct 2023 14:52:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696690342;
+        bh=kykrOis2w1PaWsK9svmGejE5QwtogNC++rLKy8pBryA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oA72+nIDoigy2eNMFHURszzd0IgFdTFO9R40WkcdJVNxaEIQPxXFZE2fmMvarXTeh
+         n7NquBUhhwcX8G8hfOnsWpKtLuaXcCIEkn1EdHLodVTXx5pbmCDHNHafwuikmQ56EK
+         +LMFxs3jqagd8WsPMnRczNy67dbeX8uoWQ7weMF1DW6HzdmcJAKJMHah6PBPMK+zRG
+         ZDqOXKTmWZ+/T9G2YnnfyiViqbzvdr0GtFAOespBKwE/O9UkdlgIUiGDH4tbXsRndO
+         gb/PenUBKRhSn0e0+3YARjsay6SOQQUyyhxl7QiBFZQ26XvCacEIWSvzli7thrhmXk
+         E6X652S33tz/w==
+Date:   Sat, 7 Oct 2023 16:52:17 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Sai Krishna <saikrishnag@marvell.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sgoutham@marvell.com,
+        gakula@marvell.com, richardcochran@gmail.com, lcherian@marvell.com,
+        jerinj@marvell.com, hkelam@marvell.com, sbhatta@marvell.com
+Subject: Re: [net PATCH v2] octeontx2-af: Fix hardware timestamping for VFs
+Message-ID: <20231007145217.GB831234@kernel.org>
+References: <20231003110504.913980-1-saikrishnag@marvell.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231007124522.34834-3-zhouchuyi@bytedance.com>
+In-Reply-To: <20231003110504.913980-1-saikrishnag@marvell.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,86 +52,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chuyi,
+On Tue, Oct 03, 2023 at 04:35:04PM +0530, Sai Krishna wrote:
+> From: Subbaraya Sundeep <sbhatta@marvell.com>
+> 
+> Currently for VFs, mailbox returns ENODEV error when hardware timestamping
+> enable is requested. This patch fixes this issue. Modified this patch to
+> return EPERM error for the PF/VFs which are not attached to CGX/RPM.
+> 
+> Fixes: 421572175ba5 ("octeontx2-af: Support to enable/disable HW timestamping")
+> Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
+> Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
+> Signed-off-by: Sai Krishna <saikrishnag@marvell.com>
+> ---
+>  drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+> index f2b1edf1bb43..f464640e188b 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+> @@ -756,12 +756,11 @@ static int rvu_cgx_ptp_rx_cfg(struct rvu *rvu, u16 pcifunc, bool enable)
+>  	if (!is_mac_feature_supported(rvu, pf, RVU_LMAC_FEAT_PTP))
+>  		return 0;
+>  
+> -	/* This msg is expected only from PFs that are mapped to CGX LMACs,
+> +	/* This msg is expected only from PF/VFs that are mapped to CGX/RPM LMACs,
+>  	 * if received from other PF/VF simply ACK, nothing to do.
+>  	 */
+> -	if ((pcifunc & RVU_PFVF_FUNC_MASK) ||
+> -	    !is_pf_cgxmapped(rvu, pf))
+> -		return -ENODEV;
+> +	if (!is_pf_cgxmapped(rvu, rvu_get_pf(pcifunc)))
 
-kernel test robot noticed the following build warnings:
+Hi Sai,
 
-[auto build test WARNING on bpf-next/master]
+I'm not clear on why this change substitutes pf for rvu_get_pf(pcifunc),
+as futher above in this function pf is set to the return value of
+rvu_get_pf(pcifunc).
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Chuyi-Zhou/cgroup-Prepare-for-using-css_task_iter_-in-BPF/20231007-204750
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20231007124522.34834-3-zhouchuyi%40bytedance.com
-patch subject: [PATCH bpf-next v4 2/8] bpf: Introduce css_task open-coded iterator kfuncs
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231007/202310072246.OfAldQpf-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231007/202310072246.OfAldQpf-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310072246.OfAldQpf-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> kernel/bpf/task_iter.c:815:17: warning: no previous prototype for 'bpf_iter_css_task_new' [-Wmissing-prototypes]
-     815 | __bpf_kfunc int bpf_iter_css_task_new(struct bpf_iter_css_task *it,
-         |                 ^~~~~~~~~~~~~~~~~~~~~
->> kernel/bpf/task_iter.c:840:33: warning: no previous prototype for 'bpf_iter_css_task_next' [-Wmissing-prototypes]
-     840 | __bpf_kfunc struct task_struct *bpf_iter_css_task_next(struct bpf_iter_css_task *it)
-         |                                 ^~~~~~~~~~~~~~~~~~~~~~
->> kernel/bpf/task_iter.c:849:18: warning: no previous prototype for 'bpf_iter_css_task_destroy' [-Wmissing-prototypes]
-     849 | __bpf_kfunc void bpf_iter_css_task_destroy(struct bpf_iter_css_task *it)
-         |                  ^~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +/bpf_iter_css_task_new +815 kernel/bpf/task_iter.c
-
-   814	
- > 815	__bpf_kfunc int bpf_iter_css_task_new(struct bpf_iter_css_task *it,
-   816			struct cgroup_subsys_state *css, unsigned int flags)
-   817	{
-   818		struct bpf_iter_css_task_kern *kit = (void *)it;
-   819	
-   820		BUILD_BUG_ON(sizeof(struct bpf_iter_css_task_kern) != sizeof(struct bpf_iter_css_task));
-   821		BUILD_BUG_ON(__alignof__(struct bpf_iter_css_task_kern) !=
-   822						__alignof__(struct bpf_iter_css_task));
-   823		kit->css_it = NULL;
-   824		switch (flags) {
-   825		case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
-   826		case CSS_TASK_ITER_PROCS:
-   827		case 0:
-   828			break;
-   829		default:
-   830			return -EINVAL;
-   831		}
-   832	
-   833		kit->css_it = bpf_mem_alloc(&bpf_global_ma, sizeof(struct css_task_iter));
-   834		if (!kit->css_it)
-   835			return -ENOMEM;
-   836		css_task_iter_start(css, flags, kit->css_it);
-   837		return 0;
-   838	}
-   839	
- > 840	__bpf_kfunc struct task_struct *bpf_iter_css_task_next(struct bpf_iter_css_task *it)
-   841	{
-   842		struct bpf_iter_css_task_kern *kit = (void *)it;
-   843	
-   844		if (!kit->css_it)
-   845			return NULL;
-   846		return css_task_iter_next(kit->css_it);
-   847	}
-   848	
- > 849	__bpf_kfunc void bpf_iter_css_task_destroy(struct bpf_iter_css_task *it)
-   850	{
-   851		struct bpf_iter_css_task_kern *kit = (void *)it;
-   852	
-   853		if (!kit->css_it)
-   854			return;
-   855		css_task_iter_end(kit->css_it);
-   856		bpf_mem_free(&bpf_global_ma, kit->css_it);
-   857	}
-   858	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> +		return -EPERM;
+>  
+>  	rvu_get_cgx_lmac_id(rvu->pf2cgxlmac_map[pf], &cgx_id, &lmac_id);
+>  	cgxd = rvu_cgx_pdata(cgx_id, rvu);
+> -- 
+> 2.25.1
+> 
+> 
