@@ -2,116 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EECE7BC91C
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 18:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96BD77BC909
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 18:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344074AbjJGQrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 12:47:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38378 "EHLO
+        id S1344066AbjJGQOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 12:14:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343956AbjJGQrC (ORCPT
+        with ESMTP id S1343992AbjJGQOl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 12:47:02 -0400
-X-Greylist: delayed 2269 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 07 Oct 2023 09:47:00 PDT
-Received: from 5.mo560.mail-out.ovh.net (5.mo560.mail-out.ovh.net [87.98.181.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CEDCB9
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 09:47:00 -0700 (PDT)
-Received: from director2.ghost.mail-out.ovh.net (unknown [10.108.4.72])
-        by mo560.mail-out.ovh.net (Postfix) with ESMTP id E5D0428CE8
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 16:09:08 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-dfqrn (unknown [10.110.208.79])
-        by director2.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 774AB1FD3D;
-        Sat,  7 Oct 2023 16:09:06 +0000 (UTC)
-Received: from RCM-web6.webmail.mail.ovh.net ([151.80.29.20])
-        by ghost-submission-6684bf9d7b-dfqrn with ESMTPSA
-        id sA4zHKKCIWUySAIA90DV1w
-        (envelope-from <rafal@milecki.pl>); Sat, 07 Oct 2023 16:09:06 +0000
+        Sat, 7 Oct 2023 12:14:41 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D983AB9;
+        Sat,  7 Oct 2023 09:14:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=e6r4ZECyO9EqgE0zmF10A/TBUvrf32/knhNgMfcTMpc=; b=tjDTEUPwILW4Bcxjb8LgjBeOcw
+        lqC/TEiUs36rn/1SswqXLPigaxpC/u813h4qlKONpc7jdvwfKh6SycnqIFfFGIO+fj6LrmmXhxQI8
+        PI7ogAxinHUjDWsXFXLwDB0/XYNWTKC5obe16CQE9P1SYtGpVYzg00r3Hr8oEcR6SZBXPtvfczBOg
+        fOlhTu9YpPwGkn1hNMRJlkNFh9ghKubr9EoO1ot8M+QMsK6prcCevqPNmlQf+ukokrFMo/vPcIzke
+        t98teuyDXl2Rhm7Tn6q68OAxB/uLuQVPkLVpwqe7pjxvKev/YhO//vpl/Lnq/pv7uU6M9H6odijv5
+        07KQyfIQ==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qp9wq-007imV-2l;
+        Sat, 07 Oct 2023 16:14:36 +0000
+Message-ID: <9f7931dd-3c0e-4bc2-988e-1fb3549e440e@infradead.org>
+Date:   Sat, 7 Oct 2023 09:14:36 -0700
 MIME-Version: 1.0
-Date:   Sat, 07 Oct 2023 18:09:06 +0200
-From:   =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Walle <michael@walle.cc>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Robert Marko <robert.marko@sartura.hr>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Daniel Golle <daniel@makrotopia.org>
-Subject: Re: [PATCH v12 2/7] nvmem: Clarify the situation when there is no DT
- node available
-In-Reply-To: <20231006183229.51cd8e60@xps-13>
-References: <20231005155907.2701706-1-miquel.raynal@bootlin.com>
- <20231005155907.2701706-3-miquel.raynal@bootlin.com>
- <05cd4592d0cfe0fb86aeb24db01de547@milecki.pl>
- <20231006183229.51cd8e60@xps-13>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <2e3ea6a4e63e0c6bebf4c18b165250e5@milecki.pl>
-X-Sender: rafal@milecki.pl
-X-Originating-IP: 31.11.218.106
-X-Webmail-UserID: rafal@milecki.pl
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 9413649123384929181
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrgeelgdeljecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeggfffhvfevufgjfhgfkfigihgtgfesthekjhdttderjeenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepjedvlefguedthfefleehgeeftdeludeluedvgfeffeevhfevtdehteejteefheegnecukfhppeduvdejrddtrddtrddupdefuddruddurddvudekrddutdeipdduhedurdektddrvdelrddvtdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehrrghfrghlsehmihhlvggtkhhirdhplheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehiedtpdhmohguvgepshhmthhpohhuth
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH linux-next] LoongArch: mm: Export symbol for
+ invalid_pud_table.
+Content-Language: en-US
+To:     Tianrui Zhao <zhaotianrui@loongson.cn>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list : LOONGARCH" <loongarch@lists.linux.dev>,
+        KVM list <kvm@vger.kernel.org>, maobibo@loongson.cn,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+References: <20231007075303.263407-1-zhaotianrui@loongson.cn>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20231007075303.263407-1-zhaotianrui@loongson.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One comment below
 
-On 2023-10-06 18:32, Miquel Raynal wrote:
-> rafal@milecki.pl wrote on Fri, 06 Oct 2023 13:41:52 +0200:
+
+On 10/7/23 00:53, Tianrui Zhao wrote:
+> Export symbol for invalid_pud_table, so it can be used
+> by the files in other directories.
 > 
->> On 2023-10-05 17:59, Miquel Raynal wrote:
->> > At a first look it might seem that the presence of the of_node pointer
->> > in the nvmem device does not matter much, but in practice, after > looking
->> > deep into the DT core, nvmem_add_cells_from_dt() will simply and always
->> > return NULL if this field is not provided. As most mtd devices don't
->> > populate this field (this could evolve later), it means none of their
->> > children cells will be populated unless no_of_node is explicitly set to
->> > false. In order to clarify the logic, let's add clear check at the
->> > beginning of this helper.
->> 
->> I'm somehow confused by above explanation and code too. I read it
->> carefully 5 times but I can't see what exactly this change helps with.
->> 
->> At first look at nvmem_add_cells_from_legacy_of() I can see it uses
->> "of_node" so I don't really agree with "it might seem that the 
->> presence
->> of the of_node pointer in the nvmem device does not matter much".
->> 
->> You really don't need to look deep into DT core (actually you don't 
->> have
->> to look into it at all) to understand that nvmem_add_cells_from_dt()
->> will return 0 (nitpicking: not NULL) for a NULL pointer. It's all made
->> of for_each_child_of_node(). Obviously it does nothing if there is
->> nothing to loop over.
+> And this can resolve the problem caused in:
+> https://lore.kernel.org/lkml/20230927030959.3629941-5-zhaotianrui@loongson.cn/
+> ERROR: modpost: "invalid_pud_table" [arch/loongarch/kvm/kvm.ko] undefined!
 > 
-> That was not obvious to me as I thought it would start from /, which I
-> think some other function do when you don't provide a start node.
+> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
 
-What about documenting that function instead of adding redundant code?
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Tested-by: Randy Dunlap <rdunlap@infradead.org>
 
+Thanks.
 
->> Given that for_each_child_of_node() is NULL-safe I think code from 
->> this
->> patch is redundant.
+> ---
+>  arch/loongarch/mm/init.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> I didn't say it was not safe, just not explicit.
+> diff --git a/arch/loongarch/mm/init.c b/arch/loongarch/mm/init.c
+> index f3fe8c06ba4d..ddf1330c924c 100644
+> --- a/arch/loongarch/mm/init.c
+> +++ b/arch/loongarch/mm/init.c
+> @@ -240,6 +240,7 @@ pgd_t swapper_pg_dir[_PTRS_PER_PGD] __section(".bss..swapper_pg_dir");
+>  pgd_t invalid_pg_dir[_PTRS_PER_PGD] __page_aligned_bss;
+>  #ifndef __PAGETABLE_PUD_FOLDED
+>  pud_t invalid_pud_table[PTRS_PER_PUD] __page_aligned_bss;
+> +EXPORT_SYMBOL(invalid_pud_table);
+>  #endif
+>  #ifndef __PAGETABLE_PMD_FOLDED
+>  pmd_t invalid_pmd_table[PTRS_PER_PMD] __page_aligned_bss;
 
 -- 
-Rafał Miłecki
+~Randy
