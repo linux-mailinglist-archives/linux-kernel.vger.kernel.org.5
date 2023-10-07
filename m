@@ -2,84 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2FC47BC96E
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 19:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 376C87BC972
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 19:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344225AbjJGR3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 13:29:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34528 "EHLO
+        id S1344094AbjJGRcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 13:32:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344120AbjJGR2x (ORCPT
+        with ESMTP id S1344046AbjJGRcw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 13:28:53 -0400
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E86CB9;
-        Sat,  7 Oct 2023 10:28:51 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 4BB2910000A;
-        Sat,  7 Oct 2023 20:28:49 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 4BB2910000A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1696699729;
-        bh=OtNDlWrkt7+jXGIeT0ZjpI1aaKRCSMFBzwsjOpwx1Nw=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=TzTuif1Fmtf+aQLLSYo1cl1/1ZSLh30G5yZ/iSBkxsjcVuNCYGe3eF5WyjCoSCB48
-         JXwi6vyCp1EuxZNQPdBsk8xSSL6iPRMRxM33ie6iCSIK0CvJRXeqwAu53BvhVyfotO
-         Gsiup3EFaJIoTM/Jflz1FkguA9HvEgnkQTuH5SnuM3dzL2AVsLB/civWYYrKpg8IZq
-         p20KcBHngJo1ieB7umYlQgM/Cg+ttE7hIYPPIAXT79hl81XJ6gZlYiICNBqeDn0MOR
-         BYj5VOLxJEPHjNfuN6NBG+14jhrYYco+lHQ9z2LyT86MErZsViFnXT1+7fgZzK7lxP
-         NGOkBQ3WuiXVw==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Sat,  7 Oct 2023 20:28:49 +0300 (MSK)
-Received: from localhost.localdomain (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Sat, 7 Oct 2023 20:28:48 +0300
-From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>
-CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>,
-        <avkrasnov@salutedevices.com>
-Subject: [PATCH net-next v3 12/12] test/vsock: io_uring rx/tx tests
-Date:   Sat, 7 Oct 2023 20:21:39 +0300
-Message-ID: <20231007172139.1338644-13-avkrasnov@salutedevices.com>
-X-Mailer: git-send-email 2.35.0
-In-Reply-To: <20231007172139.1338644-1-avkrasnov@salutedevices.com>
-References: <20231007172139.1338644-1-avkrasnov@salutedevices.com>
+        Sat, 7 Oct 2023 13:32:52 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B16A6;
+        Sat,  7 Oct 2023 10:32:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=aJVvBE4SP5c8uAtSdDAuWAVhLtX7ZDGEDfCptajDH6k=; b=wFggfl5SM9G9zYhKm7l+YGoy21
+        oqRvLUxgsvRf5bDmcQ3izmplXtWY3KQ+rSU5OYf3uN0FyrbnbgGHok1snt20q59SL5E80/9lu9fy3
+        1+hElBG2xZM0QUmg66Xjz6GthUS6gJM8a3npbi9fxUaEXk9Sw0X+cQty9L2Hqyr/VV2fT76f4Jpj7
+        XIUVecYZOwjhq/nwla/GYBYF0dl4Aqis4aZek2MQGSkvAXRVQX/x6gcp8jZYUDHlf8PbQDmtuZL40
+        3gQF5xrl01yAF1PxvDpHrLgIqxdlqEp5UwtTJea2WleKR3vSnskg7/XNUGXBuaSzWXX5F9URhTlIz
+        cQiQ3Q+Q==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qpBAO-007lyk-11;
+        Sat, 07 Oct 2023 17:32:40 +0000
+Message-ID: <bc92f6cb-71dd-4b15-8d83-db7579ec7fb9@infradead.org>
+Date:   Sat, 7 Oct 2023 10:32:37 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 180453 [Oct 07 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 535 535 da804c0ea8918f802fc60e7a20ba49783d957ba2, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/10/07 16:48:00 #22085983
-X-KSMG-AntiVirus-Status: Clean, skipped
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: Tree for Sep 20 (ppc32: ADB_CUDA Kconfig warning)
+Content-Language: en-US
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        tanyuan@tinylab.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+References: <20230920133714.351f83f9@canb.auug.org.au>
+ <fe130d55-7b5e-4444-85ea-c3fbf4eb238d@infradead.org>
+ <87il83m5k0.fsf@mail.lhotse>
+ <47afe095-0dd9-47bc-a4d1-dcd66f87ac7c@infradead.org>
+In-Reply-To: <47afe095-0dd9-47bc-a4d1-dcd66f87ac7c@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
@@ -89,418 +60,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds set of tests which use io_uring for rx/tx. This test suite is
-implemented as separated util like 'vsock_test' and has the same set of
-input arguments as 'vsock_test'. These tests only cover cases of data
-transmission (no connect/bind/accept etc).
+Hi Michael,
 
-Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
----
- Changelog:
- v1 -> v2:
-  * Add 'LDLIBS = -luring' to the target 'vsock_uring_test'.
-  * Add 'vsock_uring_test' to the target 'test'.
- v2 -> v3:
-  * Make 'struct vsock_test_data' private by placing it to the .c file.
-    Rename it and add comments to this struct to clarify sense of its
-    fields.
-  * Add 'vsock_uring_test' to the '.gitignore'.
-  * Add receive loop to the server side - this is needed to read entire
-    data sent by client.
+On 9/21/23 21:51, Randy Dunlap wrote:
+> 
+> 
+> On 9/21/23 17:10, Michael Ellerman wrote:
+>> Randy Dunlap <rdunlap@infradead.org> writes:
+>>> On 9/19/23 20:37, Stephen Rothwell wrote:
+>>>> Hi all,
+>>>>
+>>>> Changes since 20230919:
+>>>>
+>>>> The mm tree lost its boot warning.
+>>>>
+>>>> The drm-misc tree gained a conflict against Linus' tree.
+>>>>
+>>>> Non-merge commits (relative to Linus' tree): 6006
+>>>>  3996 files changed, 459968 insertions(+), 111742 deletions(-)
+>>>>
+>>>> ----------------------------------------------------------------------------
+>>>
+>>> 4 out of 10 randconfigs have this warning:
+>>>
+>>> WARNING: unmet direct dependencies detected for ADB_CUDA
+>>>   Depends on [n]: MACINTOSH_DRIVERS [=n] && (ADB [=n] || PPC_PMAC [=y]) && !PPC_PMAC64 [=n]
+>>>   Selected by [y]:
+>>>   - PPC_PMAC [=y] && PPC_BOOK3S [=y] && CPU_BIG_ENDIAN [=y] && POWER_RESET [=y] && PPC32 [=y]
+>>>
+>>> WARNING: unmet direct dependencies detected for ADB_CUDA
+>>>   Depends on [n]: MACINTOSH_DRIVERS [=n] && (ADB [=n] || PPC_PMAC [=y]) && !PPC_PMAC64 [=n]
+>>>   Selected by [y]:
+>>>   - PPC_PMAC [=y] && PPC_BOOK3S [=y] && CPU_BIG_ENDIAN [=y] && POWER_RESET [=y] && PPC32 [=y]
+>>>
+>>> WARNING: unmet direct dependencies detected for ADB_CUDA
+>>>   Depends on [n]: MACINTOSH_DRIVERS [=n] && (ADB [=n] || PPC_PMAC [=y]) && !PPC_PMAC64 [=n]
+>>>   Selected by [y]:
+>>>   - PPC_PMAC [=y] && PPC_BOOK3S [=y] && CPU_BIG_ENDIAN [=y] && POWER_RESET [=y] && PPC32 [=y]
+>>
+>> Crud. Caused by:
+>>
+>> a3ef2fef198c ("powerpc/32: Add dependencies of POWER_RESET for pmac32")
+>>
+>> I was suspicious of that select, I should have been *more* suspicious :)
+>>
+>> I think this is a fix. The PPC32 isn't needed because ADB depends on (PPC_PMAC && PPC32).
+> 
+> Yes, that fixes the problem. Thanks.
+> 
+> Tested-by: Randy Dunlap <rdunlap@infradead.org>
+> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+> 
 
- tools/testing/vsock/.gitignore         |   1 +
- tools/testing/vsock/Makefile           |   7 +-
- tools/testing/vsock/vsock_uring_test.c | 350 +++++++++++++++++++++++++
- 3 files changed, 356 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/vsock/vsock_uring_test.c
+Will you be merging this fix?
 
-diff --git a/tools/testing/vsock/.gitignore b/tools/testing/vsock/.gitignore
-index a8adcfdc292b..d9f798713cd7 100644
---- a/tools/testing/vsock/.gitignore
-+++ b/tools/testing/vsock/.gitignore
-@@ -3,3 +3,4 @@
- vsock_test
- vsock_diag_test
- vsock_perf
-+vsock_uring_test
-diff --git a/tools/testing/vsock/Makefile b/tools/testing/vsock/Makefile
-index 1a26f60a596c..b80e7c7def1e 100644
---- a/tools/testing/vsock/Makefile
-+++ b/tools/testing/vsock/Makefile
-@@ -1,12 +1,15 @@
- # SPDX-License-Identifier: GPL-2.0-only
- all: test vsock_perf
--test: vsock_test vsock_diag_test
-+test: vsock_test vsock_diag_test vsock_uring_test
- vsock_test: vsock_test.o vsock_test_zerocopy.o timeout.o control.o util.o
- vsock_diag_test: vsock_diag_test.o timeout.o control.o util.o
- vsock_perf: vsock_perf.o
- 
-+vsock_uring_test: LDLIBS = -luring
-+vsock_uring_test: control.o util.o vsock_uring_test.o timeout.o
-+
- CFLAGS += -g -O2 -Werror -Wall -I. -I../../include -I../../../usr/include -Wno-pointer-sign -fno-strict-overflow -fno-strict-aliasing -fno-common -MMD -U_FORTIFY_SOURCE -D_GNU_SOURCE
- .PHONY: all test clean
- clean:
--	${RM} *.o *.d vsock_test vsock_diag_test vsock_perf
-+	${RM} *.o *.d vsock_test vsock_diag_test vsock_perf vsock_uring_test
- -include *.d
-diff --git a/tools/testing/vsock/vsock_uring_test.c b/tools/testing/vsock/vsock_uring_test.c
-new file mode 100644
-index 000000000000..889887cf3989
---- /dev/null
-+++ b/tools/testing/vsock/vsock_uring_test.c
-@@ -0,0 +1,350 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* io_uring tests for vsock
-+ *
-+ * Copyright (C) 2023 SberDevices.
-+ *
-+ * Author: Arseniy Krasnov <avkrasnov@salutedevices.com>
-+ */
-+
-+#include <getopt.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <liburing.h>
-+#include <unistd.h>
-+#include <sys/mman.h>
-+#include <linux/kernel.h>
-+#include <error.h>
-+
-+#include "util.h"
-+#include "control.h"
-+#include "msg_zerocopy_common.h"
-+
-+#define PAGE_SIZE		4096
-+#define RING_ENTRIES_NUM	4
-+
-+#define VSOCK_TEST_DATA_MAX_IOV 3
-+
-+struct vsock_io_uring_test {
-+	/* Number of valid elements in 'vecs'. */
-+	int vecs_cnt;
-+	/* Array how to allocate buffers for test.
-+	 * 'iov_base' == NULL -> valid buf: mmap('iov_len').
-+	 *
-+	 * 'iov_base' == MAP_FAILED -> invalid buf:
-+	 *               mmap('iov_len'), then munmap('iov_len').
-+	 *               'iov_base' still contains result of
-+	 *               mmap().
-+	 *
-+	 * 'iov_base' == number -> unaligned valid buf:
-+	 *               mmap('iov_len') + number.
-+	 */
-+	struct iovec vecs[VSOCK_TEST_DATA_MAX_IOV];
-+};
-+
-+static struct vsock_io_uring_test test_data_array[] = {
-+	/* All elements have page aligned base and size. */
-+	{
-+		.vecs_cnt = 3,
-+		{
-+			{ NULL, PAGE_SIZE },
-+			{ NULL, 2 * PAGE_SIZE },
-+			{ NULL, 3 * PAGE_SIZE },
-+		}
-+	},
-+	/* Middle element has both non-page aligned base and size. */
-+	{
-+		.vecs_cnt = 3,
-+		{
-+			{ NULL, PAGE_SIZE },
-+			{ (void *)1, 200  },
-+			{ NULL, 3 * PAGE_SIZE },
-+		}
-+	}
-+};
-+
-+static void vsock_io_uring_client(const struct test_opts *opts,
-+				  const struct vsock_io_uring_test *test_data,
-+				  bool msg_zerocopy)
-+{
-+	struct io_uring_sqe *sqe;
-+	struct io_uring_cqe *cqe;
-+	struct io_uring ring;
-+	struct iovec *iovec;
-+	struct msghdr msg;
-+	int fd;
-+
-+	fd = vsock_stream_connect(opts->peer_cid, 1234);
-+	if (fd < 0) {
-+		perror("connect");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	if (msg_zerocopy)
-+		enable_so_zerocopy(fd);
-+
-+	iovec = iovec_from_test_data(test_data->vecs, test_data->vecs_cnt);
-+
-+	if (io_uring_queue_init(RING_ENTRIES_NUM, &ring, 0))
-+		error(1, errno, "io_uring_queue_init");
-+
-+	if (io_uring_register_buffers(&ring, iovec, test_data->vecs_cnt))
-+		error(1, errno, "io_uring_register_buffers");
-+
-+	memset(&msg, 0, sizeof(msg));
-+	msg.msg_iov = iovec;
-+	msg.msg_iovlen = test_data->vecs_cnt;
-+	sqe = io_uring_get_sqe(&ring);
-+
-+	if (msg_zerocopy)
-+		io_uring_prep_sendmsg_zc(sqe, fd, &msg, 0);
-+	else
-+		io_uring_prep_sendmsg(sqe, fd, &msg, 0);
-+
-+	if (io_uring_submit(&ring) != 1)
-+		error(1, errno, "io_uring_submit");
-+
-+	if (io_uring_wait_cqe(&ring, &cqe))
-+		error(1, errno, "io_uring_wait_cqe");
-+
-+	io_uring_cqe_seen(&ring, cqe);
-+
-+	control_writeulong(iovec_hash_djb2(iovec, test_data->vecs_cnt));
-+
-+	control_writeln("DONE");
-+	io_uring_queue_exit(&ring);
-+	free_iovec_test_data(test_data->vecs, iovec, test_data->vecs_cnt);
-+	close(fd);
-+}
-+
-+static void vsock_io_uring_server(const struct test_opts *opts,
-+				  const struct vsock_io_uring_test *test_data)
-+{
-+	unsigned long remote_hash;
-+	unsigned long local_hash;
-+	struct io_uring ring;
-+	size_t data_len;
-+	size_t recv_len;
-+	void *data;
-+	int fd;
-+
-+	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
-+	if (fd < 0) {
-+		perror("accept");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	data_len = iovec_bytes(test_data->vecs, test_data->vecs_cnt);
-+
-+	data = malloc(data_len);
-+	if (!data) {
-+		perror("malloc");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	if (io_uring_queue_init(RING_ENTRIES_NUM, &ring, 0))
-+		error(1, errno, "io_uring_queue_init");
-+
-+	recv_len = 0;
-+
-+	while (recv_len < data_len) {
-+		struct io_uring_sqe *sqe;
-+		struct io_uring_cqe *cqe;
-+		struct iovec iovec;
-+
-+		sqe = io_uring_get_sqe(&ring);
-+		iovec.iov_base = data + recv_len;
-+		iovec.iov_len = data_len;
-+
-+		io_uring_prep_readv(sqe, fd, &iovec, 1, 0);
-+
-+		if (io_uring_submit(&ring) != 1)
-+			error(1, errno, "io_uring_submit");
-+
-+		if (io_uring_wait_cqe(&ring, &cqe))
-+			error(1, errno, "io_uring_wait_cqe");
-+
-+		recv_len += cqe->res;
-+		io_uring_cqe_seen(&ring, cqe);
-+	}
-+
-+	if (recv_len != data_len) {
-+		fprintf(stderr, "expected %zu, got %zu\n", data_len,
-+			recv_len);
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	local_hash = hash_djb2(data, data_len);
-+
-+	remote_hash = control_readulong();
-+	if (remote_hash != local_hash) {
-+		fprintf(stderr, "hash mismatch\n");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	control_expectln("DONE");
-+	io_uring_queue_exit(&ring);
-+	free(data);
-+}
-+
-+void test_stream_uring_server(const struct test_opts *opts)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
-+		vsock_io_uring_server(opts, &test_data_array[i]);
-+}
-+
-+void test_stream_uring_client(const struct test_opts *opts)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
-+		vsock_io_uring_client(opts, &test_data_array[i], false);
-+}
-+
-+void test_stream_uring_msg_zc_server(const struct test_opts *opts)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
-+		vsock_io_uring_server(opts, &test_data_array[i]);
-+}
-+
-+void test_stream_uring_msg_zc_client(const struct test_opts *opts)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
-+		vsock_io_uring_client(opts, &test_data_array[i], true);
-+}
-+
-+static struct test_case test_cases[] = {
-+	{
-+		.name = "SOCK_STREAM io_uring test",
-+		.run_server = test_stream_uring_server,
-+		.run_client = test_stream_uring_client,
-+	},
-+	{
-+		.name = "SOCK_STREAM io_uring MSG_ZEROCOPY test",
-+		.run_server = test_stream_uring_msg_zc_server,
-+		.run_client = test_stream_uring_msg_zc_client,
-+	},
-+	{},
-+};
-+
-+static const char optstring[] = "";
-+static const struct option longopts[] = {
-+	{
-+		.name = "control-host",
-+		.has_arg = required_argument,
-+		.val = 'H',
-+	},
-+	{
-+		.name = "control-port",
-+		.has_arg = required_argument,
-+		.val = 'P',
-+	},
-+	{
-+		.name = "mode",
-+		.has_arg = required_argument,
-+		.val = 'm',
-+	},
-+	{
-+		.name = "peer-cid",
-+		.has_arg = required_argument,
-+		.val = 'p',
-+	},
-+	{
-+		.name = "help",
-+		.has_arg = no_argument,
-+		.val = '?',
-+	},
-+	{},
-+};
-+
-+static void usage(void)
-+{
-+	fprintf(stderr, "Usage: vsock_uring_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid>\n"
-+		"\n"
-+		"  Server: vsock_uring_test --control-port=1234 --mode=server --peer-cid=3\n"
-+		"  Client: vsock_uring_test --control-host=192.168.0.1 --control-port=1234 --mode=client --peer-cid=2\n"
-+		"\n"
-+		"Run transmission tests using io_uring. Usage is the same as\n"
-+		"in ./vsock_test\n"
-+		"\n"
-+		"Options:\n"
-+		"  --help                 This help message\n"
-+		"  --control-host <host>  Server IP address to connect to\n"
-+		"  --control-port <port>  Server port to listen on/connect to\n"
-+		"  --mode client|server   Server or client mode\n"
-+		"  --peer-cid <cid>       CID of the other side\n"
-+		);
-+	exit(EXIT_FAILURE);
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	const char *control_host = NULL;
-+	const char *control_port = NULL;
-+	struct test_opts opts = {
-+		.mode = TEST_MODE_UNSET,
-+		.peer_cid = VMADDR_CID_ANY,
-+	};
-+
-+	init_signals();
-+
-+	for (;;) {
-+		int opt = getopt_long(argc, argv, optstring, longopts, NULL);
-+
-+		if (opt == -1)
-+			break;
-+
-+		switch (opt) {
-+		case 'H':
-+			control_host = optarg;
-+			break;
-+		case 'm':
-+			if (strcmp(optarg, "client") == 0) {
-+				opts.mode = TEST_MODE_CLIENT;
-+			} else if (strcmp(optarg, "server") == 0) {
-+				opts.mode = TEST_MODE_SERVER;
-+			} else {
-+				fprintf(stderr, "--mode must be \"client\" or \"server\"\n");
-+				return EXIT_FAILURE;
-+			}
-+			break;
-+		case 'p':
-+			opts.peer_cid = parse_cid(optarg);
-+			break;
-+		case 'P':
-+			control_port = optarg;
-+			break;
-+		case '?':
-+		default:
-+			usage();
-+		}
-+	}
-+
-+	if (!control_port)
-+		usage();
-+	if (opts.mode == TEST_MODE_UNSET)
-+		usage();
-+	if (opts.peer_cid == VMADDR_CID_ANY)
-+		usage();
-+
-+	if (!control_host) {
-+		if (opts.mode != TEST_MODE_SERVER)
-+			usage();
-+		control_host = "0.0.0.0";
-+	}
-+
-+	control_init(control_host, control_port,
-+		     opts.mode == TEST_MODE_SERVER);
-+
-+	run_tests(test_cases, &opts);
-+
-+	control_cleanup();
-+
-+	return 0;
-+}
+Thanks.
+
+>>
+>> diff --git a/arch/powerpc/platforms/powermac/Kconfig b/arch/powerpc/platforms/powermac/Kconfig
+>> index 8bdae0caf21e..84f101ec53a9 100644
+>> --- a/arch/powerpc/platforms/powermac/Kconfig
+>> +++ b/arch/powerpc/platforms/powermac/Kconfig
+>> @@ -2,7 +2,7 @@
+>>  config PPC_PMAC
+>>         bool "Apple PowerMac based machines"
+>>         depends on PPC_BOOK3S && CPU_BIG_ENDIAN
+>> -       select ADB_CUDA if POWER_RESET && PPC32
+>> +       select ADB_CUDA if POWER_RESET && ADB
+>>         select MPIC
+>>         select FORCE_PCI
+>>         select PPC_INDIRECT_PCI if PPC32
+>>
+>> cheers
+> 
+
 -- 
-2.25.1
-
+~Randy
