@@ -2,80 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4507BC891
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 17:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DFE27BC895
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 17:18:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344007AbjJGPNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 11:13:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38168 "EHLO
+        id S1344012AbjJGPSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 11:18:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344011AbjJGPNf (ORCPT
+        with ESMTP id S1343946AbjJGPSJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 11:13:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B372BA
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 08:13:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D111C433C7;
-        Sat,  7 Oct 2023 15:13:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696691612;
-        bh=m89gazFfrv75JcJMlTacH3tiK09irLU+A97u2aDkxBU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YO9WG4/P5pcHX0L59vCYD0VJkvi8oRSDh7oXwbRb66Emjoem3g9/VIEfrly7YtBqv
-         BRzlfWtip+BGlVSHm9QV+n6NdBRIqBWH/6PdT35W4Kb0NKS0zfkdTw4h0/xfrXUTvz
-         RJSlqtANVRhvktF5ylJVyf3631CdiGFxEzt494mxuCzzlxthftyfJ5A3xid+FPOnzF
-         PjeKRNsdhaiEk5bFGgQqlVSXWWxSgDzMe8Yd3nWo45HPZiXdpwnWb7cr1ATx3fVkF9
-         cka8NB/Qou7tV8mUoo8g/11VzP8tQKlVfCjhLVDpPMvD+iWi/nQsB1M8PFxFRYGHQk
-         tZWnkRmBe+8xQ==
-Date:   Sat, 7 Oct 2023 17:13:28 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Chengfeng Ye <dg573847474@gmail.com>
-Cc:     3chas3@gmail.com, davem@davemloft.net,
-        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] atm: solos-pci: Fix potential deadlock on
- &tx_queue_lock
-Message-ID: <20231007151328.GD831234@kernel.org>
-References: <20231005074917.65161-1-dg573847474@gmail.com>
+        Sat, 7 Oct 2023 11:18:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28453B9
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 08:17:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696691841;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PPtQSncuXiGIg7RBOh+ShvADCBAgeQPrkAF7VWeTPLA=;
+        b=GT6dStVzZdvzg2Om4Y1MSThfyvc9HpOqd4XH3TZvFucM16WiJoGU0FLZd/M4oGlibdG5PN
+        jfmVFGOFGV7ojyxcfiN6hcsD+QwVrGD2zbRnNnWoBQ9eVhliVHsryiqimP31LfQNwILz9z
+        QbSKXV+0druArXujbr0nry2hvAVoKgw=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-677-fko8I_r8MS2GPNjMFFWdRg-1; Sat, 07 Oct 2023 11:17:10 -0400
+X-MC-Unique: fko8I_r8MS2GPNjMFFWdRg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1FCE885A5A8;
+        Sat,  7 Oct 2023 15:17:10 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.9])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 1BA47215670B;
+        Sat,  7 Oct 2023 15:17:06 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Sat,  7 Oct 2023 17:16:11 +0200 (CEST)
+Date:   Sat, 7 Oct 2023 17:16:08 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     Li Nan <linan666@huaweicloud.com>,
+        Khazhy Kumykov <khazhy@chromium.org>, tj@kernel.org,
+        josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, houtao1@huawei.com, yangerkun@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+Subject: Re: [PATCH] blk-throttle: Calculate allowed value only when the
+ throttle is enabled
+Message-ID: <20231007151607.GA24726@redhat.com>
+References: <20230928015858.1809934-1-linan666@huaweicloud.com>
+ <CACGdZY+JV+PdiC_cspQiScm=SJ0kijdufeTrc8wkrQC3ZJx3qQ@mail.gmail.com>
+ <4ace01e8-6815-29d0-70ce-4632818ca701@huaweicloud.com>
+ <20231005162417.GA32420@redhat.com>
+ <0a8f34aa-ced9-e613-3e5f-b5e53a3ef3d9@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231005074917.65161-1-dg573847474@gmail.com>
+In-Reply-To: <0a8f34aa-ced9-e613-3e5f-b5e53a3ef3d9@huaweicloud.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 07:49:17AM +0000, Chengfeng Ye wrote:
-> As &card->tx_queue_lock is acquired under softirq context along the
-> following call chain from solos_bh(), other acquisition of the same
-> lock inside process context should disable at least bh to avoid double
-> lock.
-> 
-> <deadlock #2>
-> pclose()
-> --> spin_lock(&card->tx_queue_lock)
-> <interrupt>
->    --> solos_bh()
->    --> fpga_tx()
->    --> spin_lock(&card->tx_queue_lock)
-> 
-> This flaw was found by an experimental static analysis tool I am
-> developing for irq-related deadlock.
-> 
-> To prevent the potential deadlock, the patch uses spin_lock_irqsave()
-> on &card->tx_queue_lock under process context code consistently to
-> prevent the possible deadlock scenario.
-> 
-> Fixes: 213e85d38912 ("solos-pci: clean up pclose() function")
-> Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
-> ---
-> V2: add fix tag, and split into two patches
+On 10/07, Yu Kuai wrote:
+>
+> >>>probably need to remove the mul_u64_u64_div_u64 and check for
+> >>>overflow/potential overflow ourselves?
+> >
+> >probably yes...
+>
+> How about this?
+>
+> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+> index 1101fb6f6cc8..5482c316a103 100644
+> --- a/block/blk-throttle.c
+> +++ b/block/blk-throttle.c
+> @@ -723,6 +723,10 @@ static unsigned int calculate_io_allowed(u32
+> iops_limit,
+>
+>  static u64 calculate_bytes_allowed(u64 bps_limit, unsigned long
+> jiffy_elapsed)
+>  {
+> +       if (jiffy_elapsed > HZ &&
+> +           bps_limit > mul_u64_u64_div_u64(U64_MAX, (u64)HZ,
+> (u64)jiffy_elapsed);
+> +               return U64_MAX;
+> +
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+I can't suggest anything better...
+
+but I do not know if it is possible that HZ > jiffy_elapsed. If yes, then
+mul_u64_u64_div_u64() above is not safe too.
+
+Oleg.
 
