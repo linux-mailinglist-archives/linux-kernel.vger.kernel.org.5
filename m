@@ -2,87 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F887BC681
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 11:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0407BC687
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 11:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234190AbjJGJqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 05:46:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49298 "EHLO
+        id S1343762AbjJGJtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 05:49:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234177AbjJGJqK (ORCPT
+        with ESMTP id S234148AbjJGJtJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 05:46:10 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9485AC2;
-        Sat,  7 Oct 2023 02:46:08 -0700 (PDT)
-Received: from kwepemm000012.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S2gLW6p4czNnyw;
-        Sat,  7 Oct 2023 17:42:11 +0800 (CST)
-Received: from [10.174.178.220] (10.174.178.220) by
- kwepemm000012.china.huawei.com (7.193.23.142) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Sat, 7 Oct 2023 17:46:05 +0800
-Message-ID: <ac995e80-f71b-4b98-7264-56ce55e61cc3@huawei.com>
-Date:   Sat, 7 Oct 2023 17:46:04 +0800
+        Sat, 7 Oct 2023 05:49:09 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F499B9;
+        Sat,  7 Oct 2023 02:49:08 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEDCAC433C8;
+        Sat,  7 Oct 2023 09:49:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696672147;
+        bh=5fs0qAQmil8qeHzK8rF+amcjXk7Zutaz5R48u8TzdmM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hHd84PRDzVNBDHQPVtuh03Jyme9pRDRcy7vntd/lJdFL2fowa4yuKbLc8VZFwExOA
+         4/TZfOrE5WskzIpJHcvXFhc42HEQBIK/CN8wpR1BPBi2nMYJRrHXxRthk3RMmWdUxw
+         XJRhLyBWemaHzyYm06avj7JP30Tioj79H+SqTvfSoUZYHc4n0qf0Vzsrwvd5rM2eeq
+         Fs2mWePTEXQIdtDU+cZ1w3dmcPOPwa1ePAeJL2ohOy3t2gxx1P6n1dF6TCGWebRmb+
+         nYurUlkJQT9dsG+k+z2UfeaZ6K1h2Oo9IGwiaaZV/DOmdcUsV3A3X+E2AqXRndHMFx
+         JVQDiJW2vut0g==
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-53808d5b774so5364644a12.3;
+        Sat, 07 Oct 2023 02:49:07 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzB4IxSd7fiuJ1qvITqseGjGJmWMd+GDniuVKFowkI30Q0L/su4
+        NasnLiaVrpOtxW96mn5zTcAxobiELMs5vNXdsIM=
+X-Google-Smtp-Source: AGHT+IHKWW8jP9f0mfthlCgUSVspE9l6zjhQYo0TfFni4XPCIysLb+iCqkttR7C3eV1aEYdvozDNfFXplpnTvMIAIbM=
+X-Received: by 2002:aa7:da8a:0:b0:531:9c1:8262 with SMTP id
+ q10-20020aa7da8a000000b0053109c18262mr9305005eds.8.1696672146241; Sat, 07 Oct
+ 2023 02:49:06 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH v2 0/4] SCSI: Fix issues between removing device and error
- handle
-Content-Language: en-US
-To:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <louhongxiang@huawei.com>
-References: <20230928073543.3496394-1-haowenchao2@huawei.com>
-From:   Wenchao Hao <haowenchao2@huawei.com>
-In-Reply-To: <20230928073543.3496394-1-haowenchao2@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.220]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm000012.china.huawei.com (7.193.23.142)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231007075303.263407-1-zhaotianrui@loongson.cn>
+In-Reply-To: <20231007075303.263407-1-zhaotianrui@loongson.cn>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Sat, 7 Oct 2023 17:48:52 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H50XxWH+YMT8LHS+sCVRyHWyHvRbL0UvW1f3cWWgpQi2g@mail.gmail.com>
+Message-ID: <CAAhV-H50XxWH+YMT8LHS+sCVRyHWyHvRbL0UvW1f3cWWgpQi2g@mail.gmail.com>
+Subject: Re: [PATCH linux-next] LoongArch: mm: Export symbol for invalid_pud_table.
+To:     Tianrui Zhao <zhaotianrui@loongson.cn>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list : LOONGARCH" <loongarch@lists.linux.dev>,
+        KVM list <kvm@vger.kernel.org>, maobibo@loongson.cn,
+        Paolo Bonzini <pbonzini@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/9/28 15:35, Wenchao Hao wrote:
-> I am testing SCSI error handle with my previous scsi_debug error
-> injection patches, and found some issues when removing device and
-> error handler happened together.
-> 
-> These issues are triggered because devices in removing would be skipped
-> when calling shost_for_each_device().
-> 
+Queued for loongarch-next (though I prepared a similar patch), thanks.
 
-ping...
+Huacai
 
-> Three issues are found:
-> 1. statistic info printed at beginning of scsi_error_handler is wrong
-> 2. device reset is not triggered
-> 3. IO requeued to request_queue would be hang after error handle
-> 
-> V2:
->    - Fix IO hang by run all devices' queue after error handler
->    - Do not modify shost_for_each_device() directly but add a new
->      helper to iterate devices but do not skip devices in removing
-> 
-> Wenchao Hao (4):
->    scsi: core: Add new helper to iterate all devices of host
->    scsi: scsi_error: Fix wrong statistic when print error info
->    scsi: scsi_error: Fix device reset is not triggered
->    scsi: scsi_core:  Fix IO hang when device removing
-> 
->   drivers/scsi/scsi.c        | 43 +++++++++++++++++++++++++-------------
->   drivers/scsi/scsi_error.c  |  4 ++--
->   drivers/scsi/scsi_lib.c    |  2 +-
->   include/scsi/scsi_device.h | 25 +++++++++++++++++++---
->   4 files changed, 53 insertions(+), 21 deletions(-)
-> 
-
+On Sat, Oct 7, 2023 at 3:53=E2=80=AFPM Tianrui Zhao <zhaotianrui@loongson.c=
+n> wrote:
+>
+> Export symbol for invalid_pud_table, so it can be used
+> by the files in other directories.
+>
+> And this can resolve the problem caused in:
+> https://lore.kernel.org/lkml/20230927030959.3629941-5-zhaotianrui@loongso=
+n.cn/
+> ERROR: modpost: "invalid_pud_table" [arch/loongarch/kvm/kvm.ko] undefined=
+!
+>
+> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
+> ---
+>  arch/loongarch/mm/init.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/loongarch/mm/init.c b/arch/loongarch/mm/init.c
+> index f3fe8c06ba4d..ddf1330c924c 100644
+> --- a/arch/loongarch/mm/init.c
+> +++ b/arch/loongarch/mm/init.c
+> @@ -240,6 +240,7 @@ pgd_t swapper_pg_dir[_PTRS_PER_PGD] __section(".bss..=
+swapper_pg_dir");
+>  pgd_t invalid_pg_dir[_PTRS_PER_PGD] __page_aligned_bss;
+>  #ifndef __PAGETABLE_PUD_FOLDED
+>  pud_t invalid_pud_table[PTRS_PER_PUD] __page_aligned_bss;
+> +EXPORT_SYMBOL(invalid_pud_table);
+>  #endif
+>  #ifndef __PAGETABLE_PMD_FOLDED
+>  pmd_t invalid_pmd_table[PTRS_PER_PMD] __page_aligned_bss;
+> --
+> 2.39.1
+>
