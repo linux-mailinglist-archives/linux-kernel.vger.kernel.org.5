@@ -2,98 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9477BC733
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 13:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B652C7BC737
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 13:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343868AbjJGLfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 07:35:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48492 "EHLO
+        id S1343881AbjJGLge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 07:36:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234077AbjJGLfu (ORCPT
+        with ESMTP id S234148AbjJGLgc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 07:35:50 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 628DAB6
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 04:35:49 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c888b3a25aso18306765ad.0
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Oct 2023 04:35:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696678549; x=1697283349; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OC5rK9qIvmSdPXizzl/i9ObN30hGdlyAdlMZVQnqKXg=;
-        b=K5H+UEla4XKesj6cptxpzyXdK7lwBWNrnQNfGBTQ3VCufjx2ttlJssyb+Ri/OYfWf6
-         Cr2sRRsvyGqNqXipALr9w29SStciAxTghxiSJGjIastzZNsjnJUziFN8Mf+RyhyXWSgg
-         6EdNCsBKaHZ4M9UuoaX1cuAqmlS1bHxPkdCA0tZyyjzlaSzYgh2Rdww/KSPR0OUgtNBJ
-         Dav5UhuX/Oaq3pTAnqTknA6rP1dCYIRUr2l71MncyhkqHoD9HLYVOqITvVYFbQmK2dHy
-         2GoZ/52/FBKAc4Uft9/TLn873LJ62yJCFRJUaAFkuYUm8im/SC84PrSi+3x0pBxNLeO1
-         LM8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696678549; x=1697283349;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OC5rK9qIvmSdPXizzl/i9ObN30hGdlyAdlMZVQnqKXg=;
-        b=k1MeQ/fKnE3ckg3U64jJWCfc4eN5KWl+efoseytYqAKXTdkCucJ6u/CUa9ByRzjqsW
-         Vx4dhw8dUuNtNpOEsAe7B0thTBx3QwA5PAzsj0ZKENvNX3Uac8E9bQ1XiEK6il8vGFvH
-         csEmTHBwlMYceLsS+JoO4O9J5gDGau6EnjYrQVoVYo8tRjejEbOwiXqfH8N50jpMocYI
-         qmduoh3DBxzuJBM6yZFCeM19ThpYftEbnfW5XR+ZxG8rVS929o0JY+C4XkvYzf4CRRxU
-         kW04ZrrHfSwoGm9FAKhJkdsWBfCOvD7Ot4PhqYtEC68wXlfNg3X+ng+395vkz9veXQA1
-         /DpA==
-X-Gm-Message-State: AOJu0YzNCKgitldyyImt85a2n7AOqTcDnI5Ph5iVPSvKciE9Aw85miJm
-        OgjSXx25Ih80PzFXvQAphKE=
-X-Google-Smtp-Source: AGHT+IFGS4xEFxEK4CNGp2eHbWcpIv/5M8gJnT1EnZbppV++n/iNOba81CMqMX3VJ37zaJmygvbthA==
-X-Received: by 2002:a17:902:c404:b0:1c3:e130:18f1 with SMTP id k4-20020a170902c40400b001c3e13018f1mr12797969plk.20.1696678548670;
-        Sat, 07 Oct 2023 04:35:48 -0700 (PDT)
-Received: from MSCND1355B05.fareast.nevint.com ([183.242.39.186])
-        by smtp.gmail.com with ESMTPSA id c18-20020a170903235200b001c62b9a51c0sm5664973plh.103.2023.10.07.04.35.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Oct 2023 04:35:48 -0700 (PDT)
-From:   Zqiang <qiang.zhang1211@gmail.com>
-To:     tj@kernel.org, jiangshanlai@gmail.com
-Cc:     qiang.zhang1211@gmail.com, linux-kernel@vger.kernel.org
-Subject: [PATCH] workqueue: Use the kmem_cache_free() instead of kfree() to release pwq
-Date:   Sat,  7 Oct 2023 19:35:41 +0800
-Message-Id: <20231007113541.8365-1-qiang.zhang1211@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 7 Oct 2023 07:36:32 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D96BD;
+        Sat,  7 Oct 2023 04:36:29 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id b51d04623ba10436; Sat, 7 Oct 2023 13:36:28 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id DF0816621FA;
+        Sat,  7 Oct 2023 13:36:27 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
+        Amit Kucheria <amitk@kernel.org>
+Subject: [PATCH v3] thermal: Remove Amit Kucheria from MAINTAINERS
+Date:   Sat, 07 Oct 2023 13:36:27 +0200
+Message-ID: <5725069.DvuYhMxLoT@kreacher>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrgeelgdegvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeefvddtfeffveeguefgtdeiuddtieelheegkefhhefgkeefuddutdehgfdvudduieenucffohhmrghinhepuggvvhhitggvthhrvggvrdhorhhgnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepuddupdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehrrghfrggvlheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurges
+ lhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-DCC--Metrics: v370.home.net.pl 1024; Body=11 Fuz1=11 Fuz2=11
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pwq objects is allocated by kmem_cache_alloc(), this commit therefore
-use kmem_cache_free() instead of kfree() to release pwq objects and also
-make use the correct tracepoint("trace_kmem_cache_free") to trace the
-release of pwq.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Subject: [PATCH v2] thermal: Remove Amit Kucheria from MAINTAINERS
 
-Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+Amit Kucheria has not been participating in kernel development in any
+way or form for quite some time, so it is not useful to list him as a
+designated reviewer for the thermal subsystem or as the thermal zone DT
+binding maintainer.
+
+Remove him from the THERMAL entry in MAINTAINERS and list Daniel Lezcano
+as the new thermal zone DT binding maintainer.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
- kernel/workqueue.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index ebe24a5e1435..6f74cab2bd5a 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -4610,8 +4610,12 @@ static int alloc_and_link_pwqs(struct workqueue_struct *wq)
+v2 -> v3: List Daniel Lezcano as the thermal zone DT binding maintainer.
+
+---
+ Documentation/devicetree/bindings/thermal/thermal-zones.yaml |    2 +-
+ MAINTAINERS                                                  |    1 -
+ 2 files changed, 1 insertion(+), 2 deletions(-)
+
+Index: linux-pm/MAINTAINERS
+===================================================================
+--- linux-pm.orig/MAINTAINERS
++++ linux-pm/MAINTAINERS
+@@ -21363,7 +21363,6 @@ F:	drivers/media/radio/radio-raremono.c
+ THERMAL
+ M:	Rafael J. Wysocki <rafael@kernel.org>
+ M:	Daniel Lezcano <daniel.lezcano@linaro.org>
+-R:	Amit Kucheria <amitk@kernel.org>
+ R:	Zhang Rui <rui.zhang@intel.com>
+ L:	linux-pm@vger.kernel.org
+ S:	Supported
+Index: linux-pm/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+===================================================================
+--- linux-pm.orig/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
++++ linux-pm/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+@@ -8,7 +8,7 @@ $schema: http://devicetree.org/meta-sche
+ title: Thermal zone
  
- enomem:
- 	if (wq->cpu_pwq) {
--		for_each_possible_cpu(cpu)
--			kfree(*per_cpu_ptr(wq->cpu_pwq, cpu));
-+		for_each_possible_cpu(cpu) {
-+			struct pool_workqueue *pwq = *per_cpu_ptr(wq->cpu_pwq, cpu);
-+
-+			if (pwq)
-+				kmem_cache_free(pwq_cache, pwq);
-+		}
- 		free_percpu(wq->cpu_pwq);
- 		wq->cpu_pwq = NULL;
- 	}
--- 
-2.17.1
+ maintainers:
+-  - Amit Kucheria <amitk@kernel.org>
++  - Daniel Lezcano <daniel.lezcano@linaro.org>
+ 
+ description: |
+   Thermal management is achieved in devicetree by describing the sensor hardware
+
+
 
