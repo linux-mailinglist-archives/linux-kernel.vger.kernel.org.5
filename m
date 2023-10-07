@@ -2,140 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DFF77BCA85
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 01:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E84347BCA91
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 01:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344207AbjJGXkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 19:40:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51074 "EHLO
+        id S231445AbjJGXs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 19:48:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344277AbjJGXkH (ORCPT
+        with ESMTP id S229446AbjJGXsv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 19:40:07 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB830BD;
-        Sat,  7 Oct 2023 16:39:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
- t=1696721990; x=1697326790; i=w_armin@gmx.de;
- bh=kFgVOLW+XKGG9Dulheyn+xrEGtWuwccHJv/X261e87w=;
- h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
- b=GsXNuWD1th1B3DclPSFXXYBH3X0ksEIpOHcAegdNjDqGIU200drq+An8esFiOlQhelNKMFDWMHr
- PDGFn+XXzcMbaKsv0xgNbc43R/fWPReHft1vG5BTzSgOcWR50+/+thVY9RcCp5KbuIOItRziscJKw
- 1KhBA3E6xaTHS81k3f8ifE0nRqHZfEjijVV9Ba+VpFMEPx032d+pnMwjtgXElhJqqPXrsFKc4gDtp
- 3/joaloJgUpwIK7he3dNMzAZcrfKV0YuSMgRZ3jwKuYz/UbI4YCvymrDjzfW74tSjlhfWomCEGyYg
- SQ0TLXKL1MNzZW4DYc6y1AdB3KzuYwb+Gckw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1MfHEJ-1rVDd042FH-00gsu3; Sun, 08 Oct 2023 01:39:50 +0200
-From:   Armin Wolf <W_Armin@gmx.de>
-To:     hdegoede@redhat.com, markgross@kernel.org,
-        ilpo.jarvinen@linux.intel.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 6/6] platform/x86: wmi: Decouple WMI device removal from wmi_block_list
-Date:   Sun,  8 Oct 2023 01:39:33 +0200
-Message-Id: <20231007233933.72121-7-W_Armin@gmx.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231007233933.72121-1-W_Armin@gmx.de>
-References: <20231007233933.72121-1-W_Armin@gmx.de>
+        Sat, 7 Oct 2023 19:48:51 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9249B9;
+        Sat,  7 Oct 2023 16:48:46 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2bffd6c1460so39205901fa.3;
+        Sat, 07 Oct 2023 16:48:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696722525; x=1697327325; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z8ks13CH2P8HB9Lhw96RBJaDRb016JT/2wf8+AM60Gk=;
+        b=lOGaSjWP/j625+UeYhfQlh9h1TfHh72UP9qD9fEphq+3M80RcFKiLYFsWRgAnjGsUv
+         /B2dQ/99/nD4PXg3Bc1hFAlU0BFYYj7H0kPCU8AiVBoTwpcT2WTrMwodUcw7lF5VYigD
+         M0qg+pqO23wl+So/hEiN/NPGzJg8MY2+5XTOj44ijhPncKl89AQVKdg42i5lF+28c0if
+         g7cQcRWCXGaVG8Q5T3WjyvK7Dqlhpy8v0+ADqyo9dnV0b03+FSb4oFJg9S82T321syf5
+         DBjh9a9OGSJ5chS8R2MaJeiPmot+6nhvmI4w+Vh6edctRxKcvL0poj0D/xXXPTXqkCaN
+         uApQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696722525; x=1697327325;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Z8ks13CH2P8HB9Lhw96RBJaDRb016JT/2wf8+AM60Gk=;
+        b=ozbTAHQTHr3KCrYh4uaI8VkriZ2Guo40JoY44DKYV9W32N9ckpo8dsqC3GFrnue3xU
+         thXDAieVyw4mscad1RhUW6wu5Of0sUJQMQKjqkfciHQsCvWEkAoDPutYgZKK1Ynu3rTB
+         iXPEKcMTw06geTTwvheLWBhMThKI/n01tH736iRuFMpjG1lwNQXejn/wOWVzAvHr5kvz
+         17Eru5oJZhWuD+9cdr4W/L+BJLyPSMJb9W4yJoXPQQUyYQLTK3JvbyldUXYJB6fHSLBZ
+         djE0NI/PomPFFWyY43t1tqayLIoZJfPBhnyWi0UAq+v+Ra2JCQj4L5zzmGC6gHqUXv7E
+         zVZQ==
+X-Gm-Message-State: AOJu0YzopGaLEn2upDIjPsJf6Db3FK1sXfKSmGw5tw44TqWQLvHO0Z6R
+        cRVf/dRJleGcfP8SJ+aV0C+UiJUMKIYkTqS9/7w=
+X-Google-Smtp-Source: AGHT+IGS7nEmTf3cidl+rNO7f+1JByk7touGUV35eqP8aMO2DsO6rnjLJdjqKOp7yCgEOfNrRZyxfw==
+X-Received: by 2002:a2e:914e:0:b0:2c1:7d85:73e3 with SMTP id q14-20020a2e914e000000b002c17d8573e3mr10995854ljg.49.1696722524411;
+        Sat, 07 Oct 2023 16:48:44 -0700 (PDT)
+Received: from fr.lan ([46.31.31.132])
+        by smtp.googlemail.com with ESMTPSA id k7-20020a2e8887000000b002c0336f0f27sm1359871lji.119.2023.10.07.16.48.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Oct 2023 16:48:43 -0700 (PDT)
+From:   Ivan Mikhaylov <fr0st61te@gmail.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Ivan Mikhaylov <fr0st61te@gmail.com>
+Subject: [PATCH v5 0/2] Add maxim max34408/34409 ADC driver and yaml
+Date:   Sun,  8 Oct 2023 02:48:36 +0300
+Message-ID: <20231007234838.8748-1-fr0st61te@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:b7G/rOePCi7x7e+1VGql32FHdfHyPGQTQhoLJXjPsL31nV+soFc
- DIf+GTHg0IKHWmsL+J4ZgeBR+7HEyuc1CLIiXrMgenmfzK4dTO0FGsLcAh1uoCdfs7uqHfu
- 0qwL5m5rQwfbjMDL5U002nnYCrws07p8cCl5Hws098bk9W5yWTDUxRjjVTWexr9aX1XpYNW
- tKWTTkgapVN21v+5/wXDA==
-UI-OutboundReport: notjunk:1;M01:P0:JH0FVov/eNw=;OMvzziTvm5YQUyk0tojZy1KxTb9
- 8lwOtuVRotZnzKIiJQcOHBQ9c3lAWj6Zzm8m4vC1t2yhwwbznz6fRjZgDH6hmUogJ4vW80Xvw
- YS0G+9Uvxp9G5xvtpMQNuuEAevPHk1bfYchI2w+WqeTjzhROkVU+jcrf4gztAbAtS/V+v93Ll
- 7BZ+m53KvkbordcXwiJ9Ti5noS4bzP03v21+VkKggNojkDcXjWfaF6lPGZ9x1riLzwylxmGp8
- QURRh0T33OJtCIya0jS4VhV7dKKQ6AP6F9XQPvcm6KjhPLp+zRdmZJzJenhyGES3DfXcw4u2Z
- 48Om3SFH66H63ZeTbVtIKIB/PW/nQcJv/cwj9I6qzEmg1pLGLLLCxhS0L6vT9KKPfKH0JwiGr
- BgemkFLWsABlsFsbK0ETj8W0Ej6yHn014QRXeiiKRr2FKdfo3TeExGpgko8YfOwPuEqzjKQ/2
- njMmrmvkEcHWSXDichxcGvWLWgRGrXolhpuPTBp0kD5qJt46kF+rtF2umI9lSKXtrUyj0i2kX
- dYlLDuqlmkwwjnQBIC8O04iFXZ86HfxNUL6HyfAqCHwFlfO40yhcc0ScNDqpjnp/mzhFTX/7i
- SMq+cb+PmmKir5XsZesZkGuQ+SuOTC9plCA5/irAqUYuRYAboKS03kRsU2MVgLNx3MuajULeJ
- H8XqNCie+YRynU9r1Z7mmVfi3K3Bu96GOxkC+zkl/QpoydHeXw6dM8xQZmmbS1gUsGfxz+daB
- VVDRMGIrdL8UztMvz8CdzWz9x4Aevl9QCcc1ZkSP9Li6PPIwUV2kfhKKUcG3gOjpphsR1I8kf
- snyEJfXKPM0X3A58SjYeizvhEhPi6n1qBhXsMgi40RxCMCk2KV7KXTByXfM5BJsphGioTuQIk
- Kh/a9CkB463s750Eqh2i1koUj1HXFw4XDQzT9K0FgOxGBCOVv3ravUukytqro7qJ4yoBtQCz0
- UaqEdg==
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use device_for_each_child_reverse() to find and unregister WMI devices
-belonging to a WMI bus device instead of iterating thru the entire
-wmi_block_list.
+Add Maxim max34408/34409 ADC driver and yaml for it. Until now it
+supports only current monitioring function without overcurrent
+threshold/delay, shutdown delay configuration, alert interrupt.
 
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-=2D--
- drivers/platform/x86/wmi.c | 29 ++++++++++++++---------------
- 1 file changed, 14 insertions(+), 15 deletions(-)
+Changes from v1:
+   - minor changes from Rob's comments for yaml
+   - add ena, shtdn and make 4 inputs for R sense from Jonathan's comments for yaml
+   - add _REG suffix and make prefix for bitmasks and statuses
+   - add SCALE/OFFSET instead of AVG/PROCESSED from Jonathan and
+     Lars-Peter comments
+   - add chip data from Jonathan and Lars-Peter comments
+   - minor changes from Lars-Peter and Jonathan comments for driver
 
-diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-index 6b3b2fe464d2..5c27b4aa9690 100644
-=2D-- a/drivers/platform/x86/wmi.c
-+++ b/drivers/platform/x86/wmi.c
-@@ -1280,19 +1280,6 @@ static int wmi_add_device(struct platform_device *p=
-dev, struct wmi_device *wdev)
- 	return device_add(&wdev->dev);
- }
+Changes from v2:
+   - add channels into hardware description into yaml
+   - add rsense property per channel
+   - rename pins for shtdn and ena pins
+   - make one array for input_rsense values
 
--static void wmi_free_devices(struct acpi_device *device)
--{
--	struct wmi_block *wblock, *next;
--
--	/* Delete devices for all the GUIDs */
--	list_for_each_entry_safe(wblock, next, &wmi_block_list, list) {
--		if (wblock->acpi_device =3D=3D device) {
--			list_del(&wblock->list);
--			device_unregister(&wblock->dev.dev);
--		}
--	}
--}
--
- static bool guid_already_parsed_for_legacy(struct acpi_device *device, co=
-nst guid_t *guid)
- {
- 	struct wmi_block *wblock;
-@@ -1487,16 +1474,28 @@ static void acpi_wmi_notify_handler(acpi_handle ha=
-ndle, u32 event,
- 		event, 0);
- }
+Changes from v3:
+   - change *_34408_OCT3 and 4 to *_34409_OCT3 and 4
+   - change of_property_read_u32 to fwnode family calls
+   - add i2c dev table
+   - change of_match_device to i2c_of_match_device
+   - change match->data to i2c_get_match_data 
 
-+static int wmi_remove_device(struct device *dev, void *data)
-+{
-+	struct wmi_block *wblock =3D dev_to_wblock(dev);
-+
-+	list_del(&wblock->list);
-+	device_unregister(dev);
-+
-+	return 0;
-+}
-+
- static void acpi_wmi_remove(struct platform_device *device)
- {
- 	struct acpi_device *acpi_device =3D ACPI_COMPANION(&device->dev);
-+	struct device *wmi_bus_device =3D dev_get_drvdata(&device->dev);
+Changes from v4:
+   - minor changes in yaml
 
- 	acpi_remove_notify_handler(acpi_device->handle, ACPI_ALL_NOTIFY,
- 				   acpi_wmi_notify_handler);
- 	acpi_remove_address_space_handler(acpi_device->handle,
- 				ACPI_ADR_SPACE_EC, &acpi_wmi_ec_space_handler);
--	wmi_free_devices(acpi_device);
--	device_unregister(dev_get_drvdata(&device->dev));
-+
-+	device_for_each_child_reverse(wmi_bus_device, NULL, wmi_remove_device);
-+	device_unregister(wmi_bus_device);
- }
+Ivan Mikhaylov (2):
+  dt-bindings: adc: provide max34408/9 device tree binding document
+  iio: adc: Add driver support for MAX34408/9
 
- static int acpi_wmi_probe(struct platform_device *device)
-=2D-
-2.39.2
+ .../bindings/iio/adc/maxim,max34408.yaml      | 141 +++++++++
+ drivers/iio/adc/Kconfig                       |  11 +
+ drivers/iio/adc/Makefile                      |   1 +
+ drivers/iio/adc/max34408.c                    | 278 ++++++++++++++++++
+ 4 files changed, 431 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
+ create mode 100644 drivers/iio/adc/max34408.c
+
+-- 
+2.42.0
 
