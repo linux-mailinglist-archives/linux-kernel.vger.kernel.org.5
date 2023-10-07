@@ -2,132 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A18E7BC573
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 09:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 712507BC577
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 09:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343656AbjJGHP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 03:15:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47892 "EHLO
+        id S1343672AbjJGHRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 03:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343641AbjJGHP4 (ORCPT
+        with ESMTP id S1343644AbjJGHRb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 03:15:56 -0400
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4DADB9;
-        Sat,  7 Oct 2023 00:15:50 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VtY4oO5_1696662946;
-Received: from 30.240.114.194(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VtY4oO5_1696662946)
-          by smtp.aliyun-inc.com;
-          Sat, 07 Oct 2023 15:15:48 +0800
-Message-ID: <f654be8f-aa98-1bed-117b-ebdf96d23df1@linux.alibaba.com>
-Date:   Sat, 7 Oct 2023 15:15:45 +0800
+        Sat, 7 Oct 2023 03:17:31 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8238B9;
+        Sat,  7 Oct 2023 00:17:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696663049; x=1728199049;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=gLXJeDyuHUbqo88VCpEmeE/4yFNV+xV2FELdzhx9+f8=;
+  b=QStIkWfETkcPD2fFGt3DNDy4oIhPoyW3Q+Ok6QB6dbMk1wsMytacnEIe
+   OEDwOhB7QGZDRkORKHV22tQJWx/mRwhqus14hvHuqJStcz6l104umT9a/
+   mStAiZNMs2Q0KIloFYCpn5+2/YtfdeqzNOq63eNjNYRQCcprPHFTKVuvR
+   tSeTvyh2PpTgTYdAdujpMjqudeFLr91fonp0q1dRZccWCDZiMjvOhMy1P
+   hbaIaZvSo25/IGJcxY5U45YHYjXgpNdT353pUBg1eGgg6HDriH8ma0KMF
+   /00UpG/teLqKnlMArK9paCLUy3/QTWzduUvm5xdirY0X03SAKcMrecNod
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="383784289"
+X-IronPort-AV: E=Sophos;i="6.03,205,1694761200"; 
+   d="scan'208";a="383784289"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2023 00:17:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="843124782"
+X-IronPort-AV: E=Sophos;i="6.03,205,1694761200"; 
+   d="scan'208";a="843124782"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by FMSMGA003.fm.intel.com with ESMTP; 07 Oct 2023 00:17:27 -0700
+Date:   Sat, 7 Oct 2023 15:16:37 +0800
+From:   Xu Yilun <yilun.xu@linux.intel.com>
+To:     Nava kishore Manne <nava.kishore.manne@amd.com>
+Cc:     mdf@kernel.org, hao.wu@intel.com, yilun.xu@intel.com,
+        trix@redhat.com, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+Subject: Re: [PATCH] fpga: versal: Add support for 44-bit DMA operations
+Message-ID: <ZSEF1TOpd13BkCXL@yilunxu-OptiPlex-7050>
+References: <20231003071409.4165149-1-nava.kishore.manne@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [RFC PATCH v2 0/9] Use ERST for persistent storage of MCE and
- APEI errors
-Content-Language: en-US
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
-        rafael@kernel.org, lenb@kernel.org, james.morse@arm.com,
-        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, ardb@kernel.org,
-        robert.moore@intel.com, linux-hardening@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-efi@vger.kernel.org,
-        acpica-devel@lists.linuxfoundation.org,
-        baolin.wang@linux.alibaba.com
-References: <20230925074426.97856-1-xueshuai@linux.alibaba.com>
- <20230928144345.GAZRWRIXH1Tfgn5EpO@fat_crate.local>
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <20230928144345.GAZRWRIXH1Tfgn5EpO@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-12.7 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231003071409.4165149-1-nava.kishore.manne@amd.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 03, 2023 at 12:44:09PM +0530, Nava kishore Manne wrote:
+> The existing implementation support only 32-bit DMA operation.
+> So, it fails to load the bitstream for the high DDR designs(Beyond 4GB).
+> To fix this issue update the DMA mask handling logic to support 44-bit
 
+This is the HW defined DMA addressing capability. Does the device
+only support up to 44 bits DMA? Any Doc?
 
-On 2023/9/28 22:43, Borislav Petkov wrote:
-> On Mon, Sep 25, 2023 at 03:44:17PM +0800, Shuai Xue wrote:
->> After /dev/mcelog character device deprecated by commit 5de97c9f6d85
->> ("x86/mce: Factor out and deprecate the /dev/mcelog driver"), the
->> serialized MCE error record, of previous boot in persistent storage is not
->> collected via APEI ERST.
+Thanks,
+Yilun
+
+> DMA operations.
 > 
-> You lost me here. /dev/mcelog is deprecated but you can still use it and
-> apei_write_mce() still happens.
-
-Yes, you are right. apei_write_mce() still happens so that MCE records are
-written to persistent storage and the MCE records can be retrieved by
-apei_read_mce(). Previously, the task was performed by the mcelog package.
-However, it has been deprecated, some distributions like Arch kernels are
-not even compiled with the necessary configuration option
-CONFIG_X86_MCELOG_LEGACY.[1]
-
-So, IMHO, it's better to add a way to retrieve MCE records through switching
-to the new generation rasdaemon solution.
-
+> Signed-off-by: Nava kishore Manne <nava.kishore.manne@amd.com>
+> Reviewed-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+> ---
+>  drivers/fpga/versal-fpga.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Looking at your patches, you're adding this to ghes so how about you sit
-> down first and explain your exact use case and what exactly you wanna
-> do?
+> diff --git a/drivers/fpga/versal-fpga.c b/drivers/fpga/versal-fpga.c
+> index e1601b3a345b..3710e8f01be2 100644
+> --- a/drivers/fpga/versal-fpga.c
+> +++ b/drivers/fpga/versal-fpga.c
+> @@ -48,7 +48,7 @@ static int versal_fpga_probe(struct platform_device *pdev)
+>  	struct fpga_manager *mgr;
+>  	int ret;
+>  
+> -	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+> +	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(44));
+>  	if (ret < 0) {
+>  		dev_err(dev, "no usable DMA configuration\n");
+>  		return ret;
+> -- 
+> 2.25.1
 > 
-> Thx.
-> 
-
-Sorry for the poor cover letter. I hope the following response can clarify
-the matter.
-
-Q1: What is the exact problem?
-
-Traditionally, fatal hardware errors will cause Linux print error log to
-console, e.g. print_mce() or __ghes_print_estatus(), then reboot. With
-Linux, the primary method for obtaining debugging information of a serious
-error or fault is via the kdump mechanism. Kdump captures a wealth of
-kernel and machine state and writes it to a file for post-mortem debugging.
-
-In certain scenarios, ie. hosts/guests with root filesystems on NFS/iSCSI
-where networking software and/or hardware fails, and thus kdump fails to
-collect the hardware error context, leaving us unaware of what actually
-occurred. In the public cloud scenario, multiple virtual machines run on a
-single physical server, and if that server experiences a failure, it can
-potentially impact multiple tenants. It is crucial for us to thoroughly
-analyze the root causes of each instance failure in order to:
-
-- Provide customers with a detailed explanation of the outage to reassure them.
-- Collect the characteristics of the failures, such as ECC syndrome, to enable fault prediction.
-- Explore potential solutions to prevent widespread outages.
-
-In short, it is necessary to serialize hardware error information available
-for post-mortem debugging.
-
-Q2: What exactly I wanna do:
-
-The MCE handler, do_machine_check(), saves the MCE record to persistent
-storage and it is retrieved by mcelog. Mcelog has been deprecated when
-kernel 4.12 released in 2017, and the help of the configuration option
-CONFIG_X86_MCELOG_LEGACY suggest to consider switching to the new
-generation rasdaemon solution. The GHES handler does not support APEI error
-record now.
-
-To serialize hardware error information available for post-mortem
-debugging:
-- add support to save APEI error record into flash via ERST before go panic,
-- add support to retrieve MCE or APEI error record from the flash and emit
-the related tracepoint after system boot successful again so that rasdaemon
-can collect them
-
-
-Best Regards,
-Shuai
-
-
-[1] https://wiki.archlinux.org/title/Machine-check_exception
