@@ -2,102 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C597BC9AA
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 22:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFFA67BC9AC
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 22:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344112AbjJGUEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 16:04:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52632 "EHLO
+        id S1344149AbjJGUGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 16:06:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343782AbjJGUEj (ORCPT
+        with ESMTP id S1343782AbjJGUGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 16:04:39 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1DFBBA;
-        Sat,  7 Oct 2023 13:04:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C135EC433C7;
-        Sat,  7 Oct 2023 20:04:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696709077;
-        bh=k+E7o4trRwpUVpsgiWw9zd/8lmV+kOwn1CHhDi4J/Yo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=jblyM3cEtrib/74xHI17sH3ZJytEYYeAjCDJPFD3KBCStlKs9wJ2HGxDFdvarbqFx
-         P36i22ZGZM67vyqEdfO9Ad3jx1oaK//GGZA5uBXorrNyJvqkq5qnAKDP3V+ZaLnAh2
-         lnmDVYg1qVN84i7cblbu/rhsRCro+/X6M3LTbksmIv1zXohwfC6C2WMYnKpP5LF3nw
-         VMkFPEsWGWpg5KxdeWJFzPh8lQX0cgNxP7+f1bOspOyGrTM+fU2vkjw3ycEjAq5AIE
-         O7yLzUTUHvd33/7pklmbQ53JP1Ni2pVLHSs0yw0YoLHOV0pPcH2ij2q6ez5KgWvQWF
-         JrOsensvDSjTg==
-From:   SeongJae Park <sj@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     SeongJae Park <sj@kernel.org>, damon@lists.linux.dev,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: [PATCH 1/1] mm/damon/sysfs: check DAMOS regions update progress from before_terminate()
-Date:   Sat,  7 Oct 2023 20:04:32 +0000
-Message-Id: <20231007200432.3110-1-sj@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        Sat, 7 Oct 2023 16:06:10 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93B7BD;
+        Sat,  7 Oct 2023 13:06:08 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-7a2a3fb0713so128820739f.1;
+        Sat, 07 Oct 2023 13:06:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696709168; x=1697313968;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zNlD1s/5Qv8LvOzp0cT+qMBzDmfWHxl8/xBRMHgFQGc=;
+        b=QvfqL1f4PC+1Q+zm01Fk51afkAupO3PoLygj2Qnsv7ilHd2gUr+Ck07tl/4eA9X34i
+         X/NGbV6kYMsA+pOnjuqtfq91902Hjt+h21YlQ/TAwBisRJcuHBh52Q+/eiv6jI9LXcND
+         PQGTTrv1QzNtvb3MSPu3DRkHRXqqk8k5HmlBIyVHh0EkKpYTigXKYq19Ka+v4lSiz9F2
+         1OfMw59LjN6BgyUWxYbbGrhUsJjK1y5em0JtWEhNpyuxde1kQhOlJHbRuW0jx2klRulU
+         lGI/bO7VutOjFrMJHpBppkRPH6QdK1HbmPPkvGNYK619q0Xv02qTO2RuLVDlKXhTnQxR
+         fkHA==
+X-Gm-Message-State: AOJu0Yxjxzmpg0EEMuYQCgnIxFN6JeCchiTZPr96LE5ICz0+4IM1/kWI
+        ZrkRVEdDfYOPkDXH12B6bAc=
+X-Google-Smtp-Source: AGHT+IG2wf6mgobZ2IOixaCTrcl3zW9YZbaOfG0cI8m3grNo8XccXE19/FQlBmnU1OO4gAk3FQ/gRg==
+X-Received: by 2002:a05:6602:54:b0:783:4bc6:636e with SMTP id z20-20020a056602005400b007834bc6636emr11401205ioz.21.1696709168170;
+        Sat, 07 Oct 2023 13:06:08 -0700 (PDT)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id gj12-20020a0566386a0c00b0043193e32c78sm1106734jab.152.2023.10.07.13.06.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Oct 2023 13:06:07 -0700 (PDT)
+From:   "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+        s=2023; t=1696709166;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=zNlD1s/5Qv8LvOzp0cT+qMBzDmfWHxl8/xBRMHgFQGc=;
+        b=nkSQrXCY5vVbqS6btuYu/JipccFgDJ7nsyFtTYPE0Ffxa7OF5HPKZO91zA3DcU6yWTiHPv
+        Nr+KtmGt56HhXXRizuDQxOzfVNGguPFskpIeZzh6ZnpanJZ1twbWz2DQXa6Pl8KwqNtlGA
+        AYsRDqMY7JOvTOm6SQOGF4bmtFGjZFBqtcnxUGZ7ybPcwI/4b2TtCrW8+gDQDlY8WdzNxW
+        30w5/AdtEpNe1wFw9MYy9pGPNb3HM69K2BVXDqXKOvgHSOHkYTQ8PMxyAriBatLtfJxqtd
+        idiCs7KvGnX6GNrMz8eSJ8C8vD9nJ7pJ/idgkOeTGdXWzdSjovyGTxd4XbgwLQ==
+Authentication-Results: ORIGINATING;
+        auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tomasz Figa <tfiga@chromium.org>, Yong Zhi <yong.zhi@intel.com>
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        "Ricardo B. Marliere" <ricardo@marliere.net>
+Subject: [PATCH] staging: media: ipu3: remove ftrace-like logging
+Date:   Sat,  7 Oct 2023 17:05:42 -0300
+Message-Id: <20231007200541.126325-1-ricardo@marliere.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DAMON_SYSFS can receive DAMOS tried regions update request while kdamond
-is already out of the main loop and before_terminate callback
-(damon_sysfs_before_terminate() in this case) is not yet called.  And
-damon_sysfs_handle_cmd() can further be finished before the callback is
-invoked.  Then, damon_sysfs_before_terminate() unlocks damon_sysfs_lock,
-which is not locked by anyone.  This happens because the callback
-function assumes damon_sysfs_cmd_request_callback() should be called
-before it.  Check if the assumption was true before doing the unlock, to
-avoid this problem.
+This patch fixes the following checkpatch.pl warnings in ipu3.c:
 
-Fixes: f1d13cacabe1 ("mm/damon/sysfs: implement DAMOS tried regions update command")
-Cc: <stable@vger.kernel.org> # 6.2.x
-Signed-off-by: SeongJae Park <sj@kernel.org>
+WARNING: Unnecessary ftrace-like logging - prefer using ftrace
++       dev_dbg(dev, "enter %s\n", __func__);
+
+WARNING: Unnecessary ftrace-like logging - prefer using ftrace
++       dev_dbg(dev, "leave %s\n", __func__);
+
+WARNING: Unnecessary ftrace-like logging - prefer using ftrace
++       dev_dbg(dev, "enter %s\n", __func__);
+
+WARNING: Unnecessary ftrace-like logging - prefer using ftrace
++       dev_dbg(dev, "leave %s\n", __func__);
+
+Fixes: 7fc7af649ca7 ("media: staging/intel-ipu3: Add imgu top level pci device driver")
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 ---
- mm/damon/sysfs.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/staging/media/ipu3/ipu3.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/mm/damon/sysfs.c b/mm/damon/sysfs.c
-index b86ba7b0a921..f60e56150feb 100644
---- a/mm/damon/sysfs.c
-+++ b/mm/damon/sysfs.c
-@@ -1208,6 +1208,8 @@ static int damon_sysfs_set_targets(struct damon_ctx *ctx,
+diff --git a/drivers/staging/media/ipu3/ipu3.c b/drivers/staging/media/ipu3/ipu3.c
+index 0c453b37f8c4..18ca22c3018a 100644
+--- a/drivers/staging/media/ipu3/ipu3.c
++++ b/drivers/staging/media/ipu3/ipu3.c
+@@ -762,7 +762,6 @@ static int __maybe_unused imgu_suspend(struct device *dev)
+ 	struct pci_dev *pci_dev = to_pci_dev(dev);
+ 	struct imgu_device *imgu = pci_get_drvdata(pci_dev);
+ 
+-	dev_dbg(dev, "enter %s\n", __func__);
+ 	imgu->suspend_in_stream = imgu_css_is_streaming(&imgu->css);
+ 	if (!imgu->suspend_in_stream)
+ 		goto out;
+@@ -783,7 +782,6 @@ static int __maybe_unused imgu_suspend(struct device *dev)
+ 	imgu_powerdown(imgu);
+ 	pm_runtime_force_suspend(dev);
+ out:
+-	dev_dbg(dev, "leave %s\n", __func__);
  	return 0;
  }
  
-+static bool damon_sysfs_schemes_regions_updating;
-+
- static void damon_sysfs_before_terminate(struct damon_ctx *ctx)
- {
- 	struct damon_target *t, *next;
-@@ -1219,8 +1221,10 @@ static void damon_sysfs_before_terminate(struct damon_ctx *ctx)
- 	cmd = damon_sysfs_cmd_request.cmd;
- 	if (kdamond && ctx == kdamond->damon_ctx &&
- 			(cmd == DAMON_SYSFS_CMD_UPDATE_SCHEMES_TRIED_REGIONS ||
--			 cmd == DAMON_SYSFS_CMD_UPDATE_SCHEMES_TRIED_BYTES)) {
-+			 cmd == DAMON_SYSFS_CMD_UPDATE_SCHEMES_TRIED_BYTES) &&
-+			damon_sysfs_schemes_regions_updating) {
- 		damon_sysfs_schemes_update_regions_stop(ctx);
-+		damon_sysfs_schemes_regions_updating = false;
- 		mutex_unlock(&damon_sysfs_lock);
+@@ -793,8 +791,6 @@ static int __maybe_unused imgu_resume(struct device *dev)
+ 	int r = 0;
+ 	unsigned int pipe;
+ 
+-	dev_dbg(dev, "enter %s\n", __func__);
+-
+ 	if (!imgu->suspend_in_stream)
+ 		goto out;
+ 
+@@ -821,8 +817,6 @@ static int __maybe_unused imgu_resume(struct device *dev)
  	}
  
-@@ -1340,7 +1344,6 @@ static int damon_sysfs_commit_input(struct damon_sysfs_kdamond *kdamond)
- static int damon_sysfs_cmd_request_callback(struct damon_ctx *c)
- {
- 	struct damon_sysfs_kdamond *kdamond;
--	static bool damon_sysfs_schemes_regions_updating;
- 	bool total_bytes_only = false;
- 	int err = 0;
+ out:
+-	dev_dbg(dev, "leave %s\n", __func__);
+-
+ 	return r;
+ }
  
 -- 
-2.34.1
+2.40.1
 
