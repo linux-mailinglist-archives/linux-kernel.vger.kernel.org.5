@@ -2,80 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D62C7BC375
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 03:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7297BC370
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 03:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233998AbjJGBBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 21:01:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53808 "EHLO
+        id S233986AbjJGBA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 21:00:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233994AbjJGBBg (ORCPT
+        with ESMTP id S233952AbjJGBA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 21:01:36 -0400
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 83C52B6;
-        Fri,  6 Oct 2023 18:01:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=C1iUt
-        QXJHDHL2bLy/guQSpAx1+CMVbpIrJoept/H6sM=; b=gWy5TQojfPdZcHwTYEjpK
-        3mmV/t0FcLRVPemluFhFeoY5rDQBhgRIxXk4qfCsfs2fiov4+wZe/Xf6tFy1k8xX
-        lLdB08TFbSijxcU3fYF9dUulDdueMy9uCrakOrJnzDT8hkGZQl1xlqKFsIPanRZy
-        2VReAZ2ybmfiDu4/LKpils=
-Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
-        by zwqz-smtp-mta-g4-1 (Coremail) with SMTP id _____wDn+46KrSBl6sNMEA--.49925S4;
-        Sat, 07 Oct 2023 09:00:04 +0800 (CST)
-From:   Ma Ke <make_ruc2021@163.com>
-To:     steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ma Ke <make_ruc2021@163.com>
-Subject: [PATCH] net: ipv6: fix return value check in esp_remove_trailer
-Date:   Sat,  7 Oct 2023 08:59:53 +0800
-Message-Id: <20231007005953.3994960-1-make_ruc2021@163.com>
-X-Mailer: git-send-email 2.37.2
+        Fri, 6 Oct 2023 21:00:26 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E826BD;
+        Fri,  6 Oct 2023 18:00:24 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id DEB40C433C8;
+        Sat,  7 Oct 2023 01:00:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696640423;
+        bh=NEqHBe+eX7OIDPmmjjD/TBY6CeK3+9IHwSncD+p1M4s=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=QFiaSqXkVqWALVSRNzn2GDbFcJC+WebIruWduuxNJD4VSWK7FLri/04tdsLx5onGo
+         18IykfxGDDdNyxbgPnGwjTqAHClNJlkuRzegYTzT77havYer20gy/0BJIJBR2TzSdr
+         q27cAZOA60dm21IiFqO4s4PObIyeIR8LyFX3cvY97fiToAyF54BoRwNQRJqaZ6OtZO
+         yEx6GEKpb2L3Uop3dUH2QoM+J15ceMWk3ga86tvZ2c7Dte7MnZOsym83RlO/OV18oL
+         RB4VV79wZKOcIX/lVHrTsuwvX2q2feB9sURgOF9lkOdxL0wYqRttab1SERScACdtL7
+         CIDNHdSSmXIJA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C2E00C41671;
+        Sat,  7 Oct 2023 01:00:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wDn+46KrSBl6sNMEA--.49925S4
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZFyUXr4rXr18Zw18Zw45GFg_yoWxtFg_Ga
-        9rXrWkWr18uF4kAw4Svr42vFy5trW8ZFWfZFyft3yfZw17Aw1rJrs7urZ8ZrZxGas7Cry3
-        CFsxCrW7t34SqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRKfHUJUUUUU==
-X-Originating-IP: [183.174.60.14]
-X-CM-SenderInfo: 5pdnvshuxfjiisr6il2tof0z/1tbivhcCC1ZcjAANoQAAsK
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] Bluetooth: btrtl: Ignore error return for
+ hci_devcd_register()
+From:   patchwork-bot+bluetooth@kernel.org
+Message-Id: <169664042379.23949.8315443049400174883.git-patchwork-notify@kernel.org>
+Date:   Sat, 07 Oct 2023 01:00:23 +0000
+References: <20231006024707.413349-1-max.chou@realtek.com>
+In-Reply-To: <20231006024707.413349-1-max.chou@realtek.com>
+To:     Max Chou <max.chou@realtek.com>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alex_lu@realsil.com.cn, hildawu@realtek.com,
+        regressions@lists.linux.dev, kirill@shutemov.name,
+        bagasdotme@gmail.com, linux@leemhuis.info
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In esp_remove_trailer(), to avoid an unexpected result returned by
-pskb_trim, we should check the return value of pskb_trim().
+Hello:
 
-Signed-off-by: Ma Ke <make_ruc2021@163.com>
----
- net/ipv6/esp6.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+This patch was applied to bluetooth/bluetooth-next.git (master)
+by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
 
-diff --git a/net/ipv6/esp6.c b/net/ipv6/esp6.c
-index fddd0cbdede1..e023d29e919c 100644
---- a/net/ipv6/esp6.c
-+++ b/net/ipv6/esp6.c
-@@ -770,7 +770,9 @@ static inline int esp_remove_trailer(struct sk_buff *skb)
- 		skb->csum = csum_block_sub(skb->csum, csumdiff,
- 					   skb->len - trimlen);
- 	}
--	pskb_trim(skb, skb->len - trimlen);
-+	ret = pskb_trim(skb, skb->len - trimlen);
-+	if (unlikely(ret))
-+		return ret;
- 
- 	ret = nexthdr[1];
- 
+On Fri, 6 Oct 2023 10:47:07 +0800 you wrote:
+> From: Max Chou <max.chou@realtek.com>
+> 
+> If CONFIG_DEV_COREDUMP was not set, it would return -EOPNOTSUPP for
+> hci_devcd_register().
+> In this commit, ignore error return for hci_devcd_register().
+> Otherwise Bluetooth initialization will be failed.
+> 
+> [...]
+
+Here is the summary with links:
+  - Bluetooth: btrtl: Ignore error return for hci_devcd_register()
+    https://git.kernel.org/bluetooth/bluetooth-next/c/3ef20de6b2a8
+
+You are awesome, thank you!
 -- 
-2.37.2
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
