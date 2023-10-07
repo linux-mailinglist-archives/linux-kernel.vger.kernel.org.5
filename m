@@ -2,51 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF4B7BC50F
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 08:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E3B37BC512
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 08:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343593AbjJGGhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 02:37:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52688 "EHLO
+        id S1343595AbjJGGiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 02:38:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343561AbjJGGhj (ORCPT
+        with ESMTP id S1343561AbjJGGiA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 02:37:39 -0400
+        Sat, 7 Oct 2023 02:38:00 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711FBBF;
-        Fri,  6 Oct 2023 23:37:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3ECD5C433C7;
-        Sat,  7 Oct 2023 06:37:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8FD0DB
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 23:37:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B88BC433C8;
+        Sat,  7 Oct 2023 06:37:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696660658;
-        bh=KSOrew3wseS+vBwOvbuWsGImKQGR9H+tyoy0Z79qIxY=;
+        s=k20201202; t=1696660678;
+        bh=haeoZMfXVfuibJKXHZqwDbIGTXzIAr3k6IkAQRF6pGU=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=VpiywC3o4HFOAQeLLKHx6ezYJX/OqNZR0whHK8AUlqUZcOcPGcsKShE7YmKGKLzl+
-         AjI8+oqtE0G7WZbGe4ciaN3d+D7ry55pvoLNmA6xuz9hTnPdzj305JAlcxbfwoiJRB
-         TTNu14qcH97j7vH02yN7hesuv46VGki7tmefSa5Q2+cwOkchrXm3ePAwfhr5/W5kuB
-         no58BpfveTcEdTB1IsSYeATlJEy0dXDGZEBVFZU47OP1LSIq+VuQGGaP60bQ5tfgUN
-         NCqJDEBbRHvUi9wBdgMDFz1CJTDkIyVjlfuA+CjhjyvpmJf4qxsV4BmkVxq2PVuzbn
-         QSdQeXdvkzMig==
-Message-ID: <3c154d90-f9ab-e0e9-dd49-d6880a45763f@kernel.org>
-Date:   Sat, 7 Oct 2023 14:37:34 +0800
+        b=LYKw1oSSSpwkcD4fhCwHni6Ndss572NgxpTqVxC5jgsE7TlYs5RlDFU+9avG9S2cA
+         noeCbcswqAJHHYBGO3AUMG6Vg3UPpv/ijWYL2J27VBFkbzJ5bDLlppgNxPt6b8GiBi
+         ubhgW9omtxuu5SqZuooU1fBG2xlRQTrWxP5Pgtqh8TtwJu6gmCD4gBhvHclhGPva5o
+         +CA8Q8KNQOt0ITHZbDpzDj7mGVmwIClECbKA9imkjRa9oonpRG0os2x9XW2PKVmVhU
+         lW9JRXFD8rGPNDToPtMb0VOavsgimBSlNUgTT62qczTGD3XTVMAhamwgqHxpw7YyuB
+         lJrstfDNVDK7Q==
+Message-ID: <fa622c39-c02e-b143-0c40-99f85c9a8063@kernel.org>
+Date:   Sat, 7 Oct 2023 14:37:55 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
-Subject: Re: [PATCH 10/29] f2fs: move f2fs_xattr_handlers and
- f2fs_xattr_handler_map to .rodata
+Subject: Re: [f2fs-dev] [PATCH] f2fs-tools: make checked node progress correct
 Content-Language: en-US
-To:     Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Wedson Almeida Filho <walmeida@microsoft.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net
-References: <20230930050033.41174-1-wedsonaf@gmail.com>
- <20230930050033.41174-11-wedsonaf@gmail.com>
+To:     Daeho Jeong <daeho43@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>
+References: <20231003210754.275175-1-daeho43@gmail.com>
 From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <20230930050033.41174-11-wedsonaf@gmail.com>
+In-Reply-To: <20231003210754.275175-1-daeho43@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -59,16 +52,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/9/30 13:00, Wedson Almeida Filho wrote:
-> From: Wedson Almeida Filho <walmeida@microsoft.com>
+On 2023/10/4 5:07, Daeho Jeong wrote:
+> From: Daeho Jeong <daehojeong@google.com>
 > 
-> This makes it harder for accidental or malicious changes to
-> f2fs_xattr_handlers or f2fs_xattr_handler_map at runtime.
+> Let's say we have 100 nodes to be checked. With post-increment of
+> checked_node_cnt, when we reach the last node, we cannot print out 100%
+> progress. So, go with pre-increment.
 > 
-> Cc: Jaegeuk Kim <jaegeuk@kernel.org>
-> Cc: Chao Yu <chao@kernel.org>
-> Cc: linux-f2fs-devel@lists.sourceforge.net
-> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
+> Signed-off-by: Daeho Jeong <daehojeong@google.com>
 
 Reviewed-by: Chao Yu <chao@kernel.org>
 
