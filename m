@@ -2,44 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E4B7BC51F
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 08:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00CA97BC521
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 08:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343591AbjJGGoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 02:44:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52458 "EHLO
+        id S1343600AbjJGGoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 02:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343561AbjJGGob (ORCPT
+        with ESMTP id S1343586AbjJGGom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 02:44:31 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A84CBF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 23:44:30 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7842AC433C7;
-        Sat,  7 Oct 2023 06:44:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696661069;
-        bh=/UithT0SHHNlkQBneXRuPm4dZa1q7Z47U1p0EtVjkFk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=h+/H2A/ryLltte4AKxm6lAct0kOE2L9MdXkGn/qY2b9L3/FNs9j8QrmVsJmR3k8sV
-         adZ1M9wd3xgCiutn1uLbhKR9ds939NOLrY/HUcsgShiUOH94oTRaFgbIltzVi04azh
-         gNScDXoNAD+9xCSjvowJJY2/4xqZoXSjfNxJvmrc=
-Date:   Sat, 7 Oct 2023 08:44:27 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Kassey Li <quic_yingangl@quicinc.com>
-Cc:     gregkh@google.com, cmllamas@google.com, surenb@google.com,
-        arve@android.com, joel@joelfernandes.org, brauner@kernel.org,
-        tkjos@android.com, maco@android.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] binder: add mutex_lock for mmap and NULL when free
-Message-ID: <2023100715-blade-valiant-714d@gregkh>
-References: <20231007034046.2352124-1-quic_yingangl@quicinc.com>
+        Sat, 7 Oct 2023 02:44:42 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 42903D6;
+        Fri,  6 Oct 2023 23:44:41 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id AD8CC80E0;
+        Sat,  7 Oct 2023 06:44:40 +0000 (UTC)
+Date:   Sat, 7 Oct 2023 09:44:39 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Andreas Kemnade <andreas@kemnade.info>, bcousson@baylibre.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-omap@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: dts: omap3-gta04: Drop superfluous omap36xx
+ compatible
+Message-ID: <20231007064439.GN34982@atomide.com>
+References: <20231004065323.2408615-1-andreas@kemnade.info>
+ <12323F42-3611-4685-8981-F6A18C4A5862@goldelico.com>
+ <20231004130353.01228376@aktux>
+ <FF3A3F35-E264-4D28-AFAC-EFA2ADB69F40@goldelico.com>
+ <20231004135449.591b3f6c@aktux>
+ <42806B60-E48B-4AA9-B375-E9F65F59AB87@goldelico.com>
+ <6B245439-F9FE-4931-A0DE-81F825BB5FE5@goldelico.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231007034046.2352124-1-quic_yingangl@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <6B245439-F9FE-4931-A0DE-81F825BB5FE5@goldelico.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -47,20 +48,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 07, 2023 at 11:40:46AM +0800, Kassey Li wrote:
-> Enforce alloc->mutex in binder_alloc_mmap_handler when add
-> the entry to list.
+* H. Nikolaus Schaller <hns@goldelico.com> [231004 12:50]:
+> What about the PVR/SGX driver. This needs a compatible that can distinguish
+> between the DM3725 and DM3730. The first is w/o SGX and the second one
+> with. Having all summarized as omap3630 does not allow to load the
+> PVR/SGX driver based on the board specific compatible entry.
 > 
-> Assign the freed pages/page_ptr to NULL to catch possible
-> use after free with NULL pointer access.
+> AFAIR this was the original idea behind 
 > 
-> Signed-off-by: Kassey Li <quic_yingangl@quicinc.com>
-> ---
->  drivers/android/binder_alloc.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+> 	compatible = "goldelico,gta04", "ti,omap3630", "ti,omap36xx", "ti,omap3"; 
 
-What commit id does this fix?
+I think we already handle this, see drivers/bus/ti-sysc.c and search for
+DIS_SGX and similar flags for other accelerators. So I think this patch is
+safe to apply?
 
-thanks,
+Regards,
 
-greg k-h
+Tony
