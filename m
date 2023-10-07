@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 915FD7BC6B1
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 12:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C407BC6B4
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 12:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343791AbjJGKR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 06:17:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55578 "EHLO
+        id S1343800AbjJGKTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 06:19:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234148AbjJGKRz (ORCPT
+        with ESMTP id S1343765AbjJGKTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 06:17:55 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ACCCB6
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 03:17:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FEFCC433C7;
-        Sat,  7 Oct 2023 10:17:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696673870;
-        bh=5SvARg1tVUAbuCBSDivmH2UxOz0qfHxw6Fo68f/xKHw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FUzeeSgAsBBQiI9I8zffvJjRySGtVNaYobZANkHpk2IN+DoPtz4Rx9/kyo3hLvp2O
-         yQgQ68Iuts5KhkezXy0NZKOPB5bpnkzIh3OdVg9VLqRkAW+dFsuv8tNp0p4YPnmJPy
-         9TzIERm9vTWsuQUxtW61Zc+Fpu5wDJ1oDfU7PqJbvotPtUjODTovCapXF9lHffwJ+A
-         9VZCWndAlxmS+PLOVa9DzZcPp5FMEdbG2j9V61GFd9DmINOXTojKpxceRCD4qtjpTl
-         7PLwRElTlzyXeIfZLqe7A1W0xH41h5+mcL5XHGPG4wE/eppZpRwQFwVs/XBgFuiiAq
-         bPGclCyXEye3w==
-Date:   Sat, 7 Oct 2023 11:17:44 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Chen Wang <unicornxw@gmail.com>
-Cc:     aou@eecs.berkeley.edu, chao.wei@sophgo.com,
-        devicetree@vger.kernel.org, guoren@kernel.org, jszhang@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, robh+dt@kernel.org,
-        xiaoguang.xing@sophgo.com, apatel@ventanamicro.com,
-        Chen Wang <unicorn_wang@outlook.com>
-Subject: Re: [PATCH v5 00/10] Add Milk-V Pioneer RISC-V board support
-Message-ID: <20231007-grasp-retake-0463858c13df@spud>
-References: <cover.1696663037.git.unicorn_wang@outlook.com>
+        Sat, 7 Oct 2023 06:19:05 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D968A9E;
+        Sat,  7 Oct 2023 03:19:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1696673940;
+        bh=0nHMkbE1NZHL4kOKXvOG9pMkoOdKDasdfTGrknqLkcA=;
+        h=From:Date:Subject:To:Cc:From;
+        b=aHoe7zobf7eSMIIq3gbUhfsPgDaaW3Ac7qG2IF6Y7SUIpSPNycB4OWr2U1vzcUTY1
+         mkSYTPsjoxH9Bj+KMKZ4qVpshe7r63qExNX6Q4wZrmLIycsRYtrmWMGGIKCjZ+JLtn
+         M1ElHGi1QmqclF0axObWUfFXR0KGINcQnx7FB31w=
+From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date:   Sat, 07 Oct 2023 12:18:55 +0200
+Subject: [PATCH] tools/nolibc: drop test for getauxval(AT_PAGESZ)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="iKyvg3rJU1jsPJ54"
-Content-Disposition: inline
-In-Reply-To: <cover.1696663037.git.unicorn_wang@outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20231007-nolibc-auxval-pagesz-v1-1-af00804edead@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIAI4wIWUC/x3MTQqAIBBA4avErBuwP6SuEi3MRhsIC6WQxLsnL
+ b/FewkCeaYAU5XA08OBT1fQ1BXoXTlLyFsxtKLtGiEkuvPgVaO646MOvJSl8KIYzGCMHHWveyj
+ p5clw/LfzkvMHfeR152YAAAA=
+To:     Willy Tarreau <w@1wt.eu>, Shuah Khan <shuah@kernel.org>,
+        Zhangjin Wu <falcon@tinylab.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1696673939; l=1537;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=0nHMkbE1NZHL4kOKXvOG9pMkoOdKDasdfTGrknqLkcA=;
+ b=5r6m6itiG7A0Vk07TLV0NvoTWkMJCElvcxESSRuNmInyJacRMIp0FSqUcThS+R6eo9fY9YRXO
+ OlixYaa/EwdDFgWDgLX9s5/YcDLj79fkJPNMmPIEQde7ghr6nwPIwoL
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The test will not work for systems with pagesize != 4096 like aarch64
+and some others.
 
---iKyvg3rJU1jsPJ54
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Other testcases are already testing the same functionality:
+* auxv_AT_UID tests getauxval() in general.
+* test_getpagesize() tests pagesize() which directly calls
+  getauxval(AT_PAGESZ).
 
-On Sat, Oct 07, 2023 at 03:52:04PM +0800, Chen Wang wrote:
-> From: Chen Wang <unicorn_wang@outlook.com>
->=20
-> Milk-V Pioneer [1] is a developer motherboard based on SOPHON SG2042 [2]
-> in a standard mATX form factor. Add minimal device
-> tree files for the SG2042 SOC and the Milk-V Pioneer board.
->=20
-> Now only support basic uart drivers to boot up into a basic console.
->=20
-> Thanks,
-> Chen
->=20
-> ---
->=20
-> Changes in v5:
->   The patch series is based on v6.6-rc1. You can simply review or test
->   the patches at the link [7].
->   - dts: changed plic to support external interrupt
->   - pickup improvements from Conor, details refer to [8].
+Fixes: 48967b73f8fe ("selftests/nolibc: add testcases for startup code")
+Cc: stable@vger.kernel.org
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+Note:
 
-Did you? I only see them partially picked up. I'll just replace patch 8
-with the patch 8 from this series I think.
+This should probably also make it into 6.6.
+---
+ tools/testing/selftests/nolibc/nolibc-test.c | 1 -
+ 1 file changed, 1 deletion(-)
 
---iKyvg3rJU1jsPJ54
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
+index a3ee4496bf0a..7e3936c182dc 100644
+--- a/tools/testing/selftests/nolibc/nolibc-test.c
++++ b/tools/testing/selftests/nolibc/nolibc-test.c
+@@ -630,7 +630,6 @@ int run_startup(int min, int max)
+ 		CASE_TEST(environ_HOME);     EXPECT_PTRNZ(1, getenv("HOME")); break;
+ 		CASE_TEST(auxv_addr);        EXPECT_PTRGT(test_auxv != (void *)-1, test_auxv, brk); break;
+ 		CASE_TEST(auxv_AT_UID);      EXPECT_EQ(1, getauxval(AT_UID), getuid()); break;
+-		CASE_TEST(auxv_AT_PAGESZ);   EXPECT_GE(1, getauxval(AT_PAGESZ), 4096); break;
+ 		case __LINE__:
+ 			return ret; /* must be last */
+ 		/* note: do not set any defaults so as to permit holes above */
 
------BEGIN PGP SIGNATURE-----
+---
+base-commit: ab663cc32912914258bc8a2fbd0e753f552ee9d8
+change-id: 20231007-nolibc-auxval-pagesz-05f5ff79c4c4
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSEwSAAKCRB4tDGHoIJi
-0l2tAQDJTgaBOCPvFiUINFvZMw8wD2MOLJqkt3HmEO9xOGScTAD+ORVuErM4SNOR
-n3mMxcJKA/v1jqqvOzsexEgno/chAgc=
-=b+S6
------END PGP SIGNATURE-----
+Best regards,
+-- 
+Thomas Weißschuh <linux@weissschuh.net>
 
---iKyvg3rJU1jsPJ54--
