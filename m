@@ -2,174 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC9B7BC8FE
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 18:06:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6C77BC900
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 18:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344053AbjJGQGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 12:06:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52488 "EHLO
+        id S1344023AbjJGQGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 12:06:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344023AbjJGQGP (ORCPT
+        with ESMTP id S1343992AbjJGQGn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 12:06:15 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C257FB9;
-        Sat,  7 Oct 2023 09:06:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696694773; x=1728230773;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=n5AFnPXEzN+QKzdl9114Nc4MT/H4AlQFbFyb9f0tsJE=;
-  b=IKLN4L94kWQMYIE+DJRjPfVcVm/l2fUX3Wh71EeD5dcKJipJ1mzOSB/K
-   cuLY/Qslb4Bjw5Teu99r1GMz08DnOKo1LEPE6lesxx/01C/q598hN/mZl
-   3r+7XSC2Pq+5YW4ysy8Ol2IySB1hH3JdgWpAgErK+CkP8Ty80flMXT+6p
-   4kj8zOJB3Z7WcTsdl1YrfzXnJEC4O81yLgQijvx/9uJgQAfD/T2Ty0jXx
-   6bHHbcsYSR8VMRVrVYdLnjherN/qE5Z1WPlXmUXqIjVc3W1kcinfjKN8b
-   tqH6YldVdaRqpGeMZt1Yd3KvM3vZy5wQdfDrk/XdM4bSyVOK8kUYEwcHV
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10856"; a="387806740"
-X-IronPort-AV: E=Sophos;i="6.03,206,1694761200"; 
-   d="scan'208";a="387806740"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2023 09:06:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10856"; a="702413998"
-X-IronPort-AV: E=Sophos;i="6.03,206,1694761200"; 
-   d="scan'208";a="702413998"
-Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 07 Oct 2023 09:06:10 -0700
-Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qp9oe-0004XN-0m;
-        Sat, 07 Oct 2023 16:06:08 +0000
-Date:   Sun, 8 Oct 2023 00:05:40 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Chuyi Zhou <zhouchuyi@bytedance.com>, bpf@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-        tj@kernel.org, linux-kernel@vger.kernel.org,
-        Chuyi Zhou <zhouchuyi@bytedance.com>
-Subject: Re: [PATCH bpf-next v4 4/8] bpf: Introduce css open-coded iterator
- kfuncs
-Message-ID: <202310072337.CzRlbffm-lkp@intel.com>
-References: <20231007124522.34834-5-zhouchuyi@bytedance.com>
+        Sat, 7 Oct 2023 12:06:43 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D3AC2;
+        Sat,  7 Oct 2023 09:06:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=VZ4kcoqQ9YTUKz/bWlIB+CayC4kkrmXmIfZVAUvHPtc=; b=susPAjK8QuI+p9JXVgqO2BEDVm
+        tuVi4UOdZFnphceY5wN8zgkfsN8O2klVJ3AQnsxvuzQyBmCZIJBIRMVYaRHylOmnPlpZ+80nBiv5a
+        ZI5vz3fO0rKyi7x11ukxd4z0cgSHJStiPzwFmYeqFPbgukctzT5ec8Y8oOAtSrDHPkx4ue6fk/oUZ
+        +bs0xs/KVgd+w4UcFJm0gDJJb00wCfOd5I/BeXlkv/Yc3SbN0ksBzUjCdklCw4OY8srQFM9EjNRrs
+        fU23vOWutNHO8LrrQDqcQKta8bBqxVZbf+j+aPt9Cd6MsC+tBcAFa3XJHTKQ0ocRvah88I1HuUKS1
+        DpZk2xzQ==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qp9p5-007iOO-00;
+        Sat, 07 Oct 2023 16:06:35 +0000
+Message-ID: <ff4bbd33-e494-4db2-93e2-59d1a866d7cf@infradead.org>
+Date:   Sat, 7 Oct 2023 09:06:33 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231007124522.34834-5-zhouchuyi@bytedance.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: Tree for Oct 6 (riscv: andes)
+Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+References: <20231006153809.2054a0f8@canb.auug.org.au>
+ <09a6b0f0-76a1-45e3-ab52-329c47393d1d@infradead.org>
+ <20231007-poach-refute-b84fe5b7431a@spud>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20231007-poach-refute-b84fe5b7431a@spud>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chuyi,
+Hi Conor,
 
-kernel test robot noticed the following build warnings:
+On 10/7/23 03:56, Conor Dooley wrote:
+> On Fri, Oct 06, 2023 at 05:28:27PM -0700, Randy Dunlap wrote:
+>>
+>>
+>> On 10/5/23 21:38, Stephen Rothwell wrote:
+>>> Hi all,
+>>>
+>>> Changes since 20231005:
+>>>
+>>
+>> on riscv 64bit:
+>>
+>> WARNING: unmet direct dependencies detected for ERRATA_ANDES
+>>   Depends on [n]: RISCV_ALTERNATIVE [=n] && RISCV_SBI [=y]
+>>   Selected by [y]:
+>>   - ARCH_R9A07G043 [=y] && SOC_RENESAS [=y] && RISCV [=y] && NONPORTABLE [=y] && RISCV_SBI [=y]
+>>
+>> ../arch/riscv/errata/andes/errata.c:59:54: warning: 'struct alt_entry' declared inside parameter list will not be visible outside of this definition or declaration
+>>    59 | void __init_or_module andes_errata_patch_func(struct alt_entry *begin, struct alt_entry *end,
+>>       |                                                      ^~~~~~~~~
+>>
+>>
+>> Full randconfig file is attached.
+> 
+> Riiight. XIP_KERNEL is enabled, which means no alternatives are
+> permitted, but that R9A config option selects the Andes errata, which in
+> turn depends on alternatives.
+> 
+> I suppose we could do something like (untested):
+> diff --git a/drivers/soc/renesas/Kconfig b/drivers/soc/renesas/Kconfig
+> index 7b74de732718..6fe85255e2ce 100644
+> --- a/drivers/soc/renesas/Kconfig
+> +++ b/drivers/soc/renesas/Kconfig
+> @@ -343,7 +343,7 @@ config ARCH_R9A07G043
+>         select ARCH_RZG2L
+>         select AX45MP_L2_CACHE if RISCV_DMA_NONCOHERENT
+>         select DMA_GLOBAL_POOL
+> -       select ERRATA_ANDES if RISCV_SBI
+> +       select ERRATA_ANDES if (RISCV_SBI & RISCV_ALTERNATIVE)
 
-[auto build test WARNING on bpf-next/master]
+s/&/&&/ and then this works. Thanks.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Chuyi-Zhou/cgroup-Prepare-for-using-css_task_iter_-in-BPF/20231007-204750
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20231007124522.34834-5-zhouchuyi%40bytedance.com
-patch subject: [PATCH bpf-next v4 4/8] bpf: Introduce css open-coded iterator kfuncs
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231007/202310072337.CzRlbffm-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231007/202310072337.CzRlbffm-lkp@intel.com/reproduce)
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Tested-by: Randy Dunlap <rdunlap@infradead.org>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310072337.CzRlbffm-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> kernel/bpf/cgroup_iter.c:308:17: warning: no previous prototype for 'bpf_iter_css_new' [-Wmissing-prototypes]
-     308 | __bpf_kfunc int bpf_iter_css_new(struct bpf_iter_css *it,
-         |                 ^~~~~~~~~~~~~~~~
->> kernel/bpf/cgroup_iter.c:332:41: warning: no previous prototype for 'bpf_iter_css_next' [-Wmissing-prototypes]
-     332 | __bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_next(struct bpf_iter_css *it)
-         |                                         ^~~~~~~~~~~~~~~~~
->> kernel/bpf/cgroup_iter.c:353:18: warning: no previous prototype for 'bpf_iter_css_destroy' [-Wmissing-prototypes]
-     353 | __bpf_kfunc void bpf_iter_css_destroy(struct bpf_iter_css *it)
-         |                  ^~~~~~~~~~~~~~~~~~~~
-   In file included from <command-line>:
-   kernel/bpf/cgroup_iter.c: In function 'bpf_iter_css_new':
-   include/linux/compiler_types.h:425:45: error: call to '__compiletime_assert_320' declared with attribute error: BUILD_BUG_ON failed: sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css)
-     425 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |                                             ^
-   include/linux/compiler_types.h:406:25: note: in definition of macro '__compiletime_assert'
-     406 |                         prefix ## suffix();                             \
-         |                         ^~~~~~
-   include/linux/compiler_types.h:425:9: note: in expansion of macro '_compiletime_assert'
-     425 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-         |                                     ^~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-         |         ^~~~~~~~~~~~~~~~
-   kernel/bpf/cgroup_iter.c:313:9: note: in expansion of macro 'BUILD_BUG_ON'
-     313 |         BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css));
-         |         ^~~~~~~~~~~~
-
-
-vim +/bpf_iter_css_new +308 kernel/bpf/cgroup_iter.c
-
-   307	
- > 308	__bpf_kfunc int bpf_iter_css_new(struct bpf_iter_css *it,
-   309			struct cgroup_subsys_state *start, unsigned int flags)
-   310	{
-   311		struct bpf_iter_css_kern *kit = (void *)it;
-   312	
-   313		BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css));
-   314		BUILD_BUG_ON(__alignof__(struct bpf_iter_css_kern) != __alignof__(struct bpf_iter_css));
-   315	
-   316		kit->start = NULL;
-   317		switch (flags) {
-   318		case BPF_CGROUP_ITER_DESCENDANTS_PRE:
-   319		case BPF_CGROUP_ITER_DESCENDANTS_POST:
-   320		case BPF_CGROUP_ITER_ANCESTORS_UP:
-   321			break;
-   322		default:
-   323			return -EINVAL;
-   324		}
-   325	
-   326		kit->start = start;
-   327		kit->pos = NULL;
-   328		kit->flags = flags;
-   329		return 0;
-   330	}
-   331	
- > 332	__bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_next(struct bpf_iter_css *it)
-   333	{
-   334		struct bpf_iter_css_kern *kit = (void *)it;
-   335	
-   336		if (!kit->start)
-   337			return NULL;
-   338	
-   339		switch (kit->flags) {
-   340		case BPF_CGROUP_ITER_DESCENDANTS_PRE:
-   341			kit->pos = css_next_descendant_pre(kit->pos, kit->start);
-   342			break;
-   343		case BPF_CGROUP_ITER_DESCENDANTS_POST:
-   344			kit->pos = css_next_descendant_post(kit->pos, kit->start);
-   345			break;
-   346		case BPF_CGROUP_ITER_ANCESTORS_UP:
-   347			kit->pos = kit->pos ? kit->pos->parent : kit->start;
-   348		}
-   349	
-   350		return kit->pos;
-   351	}
-   352	
- > 353	__bpf_kfunc void bpf_iter_css_destroy(struct bpf_iter_css *it)
+>         select ERRATA_ANDES_CMO if ERRATA_ANDES
+>         help
+>           This enables support for the Renesas RZ/Five SoC.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+~Randy
