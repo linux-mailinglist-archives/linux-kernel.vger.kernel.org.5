@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DEAC7BC713
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 13:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 413B07BC722
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 13:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343861AbjJGLVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 07:21:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45298 "EHLO
+        id S1343675AbjJGLdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 07:33:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234166AbjJGLV3 (ORCPT
+        with ESMTP id S233662AbjJGLdV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 07:21:29 -0400
+        Sat, 7 Oct 2023 07:33:21 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27FC5EB;
-        Sat,  7 Oct 2023 04:21:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E27EC433C7;
-        Sat,  7 Oct 2023 11:21:28 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73F7CB9;
+        Sat,  7 Oct 2023 04:33:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9A7DC433C8;
+        Sat,  7 Oct 2023 11:33:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696677688;
-        bh=ypPx73/HPVt+pc+5aZZOAJz1R6TMbfAvk+Bltq6Z5Uc=;
+        s=korg; t=1696678400;
+        bh=MhC2Xsh1F0Dp/xiGufKa2htr3zYIzm0ooEtftPrfJ5g=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pi87RE23MySu6BfirA5WmmiZ8HSYuKP4fjZOAXlJ5tVih/q1dihOzZuk+N4wqWkvO
-         lr6A6n0ygAmwNwKRYnLoMa8sekL9NeDhhFZMB6Vo2Hy83DXo+wJ+mfSxlg2XCeH+Ez
-         qX6A0vyTJdn/EHELMKb22ZHjs9QuADxOIWmbXWus=
-Date:   Sat, 7 Oct 2023 13:21:26 +0200
+        b=rDr1R2umQ5BwJUJxxoc2jFkKlxL2yQU6SkCbIMRVdn4NYYTg8CmJH154fL9154PU2
+         +ZKCVfl5tqG5SksBNrtI6kwF0uNqyQdfZTSpXm9eEl80y2j2YQUafulniKHjQHtmxf
+         ldQuN/RPF5ZBqHna+Mn9BpEnAE7SFVvcMSO8BCS8=
+Date:   Sat, 7 Oct 2023 13:33:17 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-Cc:     stable@vger.kernel.org, joe@perches.com, blamoreaux@vmware.com,
-        linux-kernel@vger.kernel.org, vegard.nossum@oracle.com
-Subject: Re: [PATCH 4.14.y] drivers core: Use sysfs_emit and sysfs_emit_at
- for show(device *...) functions
-Message-ID: <2023100737-enchilada-angriness-2a42@gregkh>
-References: <20230922121454.2735355-1-harshit.m.mogalapalli@oracle.com>
+To:     Yajun Deng <yajun.deng@linux.dev>
+Cc:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        jacob.e.keller@intel.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH RESEND] i40e: fix the wrong PTP frequency calculation
+Message-ID: <2023100707-hydrogen-tapestry-62e8@gregkh>
+References: <20230926071059.1239033-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230922121454.2735355-1-harshit.m.mogalapalli@oracle.com>
+In-Reply-To: <20230926071059.1239033-1-yajun.deng@linux.dev>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -47,26 +47,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 05:14:54AM -0700, Harshit Mogalapalli wrote:
-> Signed-off-by: Joe Perches <joe@perches.com>
-> Link: https://lore.kernel.org/r/3d033c33056d88bbe34d4ddb62afd05ee166ab9a.1600285923.git.joe@perches.com
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> [Harshit: backport to 4.14.y -- regenerated the diff with the help of
-> coccinelle script in driver/base/ directory.]
-> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+On Tue, Sep 26, 2023 at 03:10:59PM +0800, Yajun Deng wrote:
+> The new adjustment should be based on the base frequency, not the
+> I40E_PTP_40GB_INCVAL in i40e_ptp_adjfine().
+> 
+> This issue was introduced in commit 3626a690b717 ("i40e: use
+> mul_u64_u64_div_u64 for PTP frequency calculation"), frequency is left
+> just as base I40E_PTP_40GB_INCVAL before the commit. After the commit,
+> frequency is the I40E_PTP_40GB_INCVAL times the ptp_adj_mult value.
+> But then the diff is applied on the wrong value, and no multiplication
+> is done afterwards.
+> 
+> It was accidentally fixed in commit 1060707e3809 ("ptp: introduce helpers
+> to adjust by scaled parts per million"). It uses adjust_by_scaled_ppm
+> correctly performs the calculation and uses the base adjustment, so
+> there's no error here. But it is a new feature and doesn't need to
+> backported to the stable releases.
+> 
+> This issue affects both v6.0 and v6.1, and the v6.1 version is an LTS
+> release. Therefore, the patch only needs to be applied to v6.1 stable.
+> 
+> Fixes: 3626a690b717 ("i40e: use mul_u64_u64_div_u64 for PTP frequency calculation")
+> Cc: <stable@vger.kernel.org> # 6.1
+> Cc: Tony Nguyen <anthony.l.nguyen@intel.com>
+> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+> Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
 > ---
-> Only compile tested. This fixes CVE-2022-20166.
-> It is not clear whether the CVE was assigned for a demonstrated issue
-> or just a theoretical one. In any case it's a good defensive measure
-> against future patches that may introduce a real issue if they assume
-> this patch is already there.
+>  drivers/net/ethernet/intel/i40e/i40e_ptp.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-This is not needed in this kernel tree, so why are you attempting to add
-it?
-
-And if you have questions about a CVE, as the entity that gave the cve
-out, they are responsible for it, not us!
-
-thanks,
+Now queued up, thanks.
 
 greg k-h
