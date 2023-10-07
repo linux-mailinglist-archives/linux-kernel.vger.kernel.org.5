@@ -2,84 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1FA57BC59D
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 09:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2707BC5A1
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 09:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343716AbjJGHaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 03:30:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42446 "EHLO
+        id S1343685AbjJGHgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 03:36:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343704AbjJGHaL (ORCPT
+        with ESMTP id S1343632AbjJGHgS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 03:30:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82B7CA
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 00:29:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696663762;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=P2XYj63JutQ2NopEHr3614ehw4VQD2DCO6wPQwn2C2A=;
-        b=hz6oT4njxv8MutcApmtguAkGLuSZ3KbUwzjOvX9zEV/8/Fqf8JFm9G6GA/2VsA9Mj7SavV
-        EZ5bmSBBNI+use0K/sN1c+GWp0RmlTtHEaNJrI7uJMht2UXeDZFl2Hh+V4nm59PfG2cm9l
-        FDmsizFTNoWOZ3WRjoewtVg1ZdXn3e8=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-649-Id4xzfQGNO-7JeT9k6sb-w-1; Sat, 07 Oct 2023 03:29:18 -0400
-X-MC-Unique: Id4xzfQGNO-7JeT9k6sb-w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A24B8380200F;
-        Sat,  7 Oct 2023 07:29:17 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.226])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D59FCC15BB8;
-        Sat,  7 Oct 2023 07:29:14 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <356ef449-44bf-539f-76c0-7fe9c6e713bb@google.com>
-References: <356ef449-44bf-539f-76c0-7fe9c6e713bb@google.com> <20230925120309.1731676-9-dhowells@redhat.com> <20230925120309.1731676-1-dhowells@redhat.com> <1809398.1696238751@warthog.procyon.org.uk>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     dhowells@redhat.com, Christian Brauner <brauner@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        David Laight <David.Laight@aculab.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH next] iov_iter: fix copy_page_from_iter_atomic()
+        Sat, 7 Oct 2023 03:36:18 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D19F0B9;
+        Sat,  7 Oct 2023 00:36:16 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="363258789"
+X-IronPort-AV: E=Sophos;i="6.03,205,1694761200"; 
+   d="scan'208";a="363258789"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2023 00:36:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="876236536"
+X-IronPort-AV: E=Sophos;i="6.03,205,1694761200"; 
+   d="scan'208";a="876236536"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2023 00:36:14 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
+        (envelope-from <andy@kernel.org>)
+        id 1qp1r9-00000003Xnq-2voy;
+        Sat, 07 Oct 2023 10:36:11 +0300
+Date:   Sat, 7 Oct 2023 10:36:11 +0300
+From:   Andy Shevchenko <andy@kernel.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dipen Patel <dipenp@nvidia.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [RFC/RFT PATCH] gpiolib: reverse-assign the fwnode to struct
+ gpio_chip
+Message-ID: <ZSEKa3gwBRzR7HI+@smile.fi.intel.com>
+References: <20231006115147.18559-1-brgl@bgdev.pl>
+ <ZSAKdOXpo+xOI3sJ@smile.fi.intel.com>
+ <CAMRc=MeYiiWaaqRtSjRBfaWGFtZCPWCjYk+ZrX5TwicNq9MQeA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <231154.1696663754.1@warthog.procyon.org.uk>
-Date:   Sat, 07 Oct 2023 08:29:14 +0100
-Message-ID: <231155.1696663754@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=MeYiiWaaqRtSjRBfaWGFtZCPWCjYk+ZrX5TwicNq9MQeA@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hugh Dickins <hughd@google.com> wrote:
+On Fri, Oct 06, 2023 at 09:07:49PM +0200, Bartosz Golaszewski wrote:
+> On Fri, Oct 6, 2023 at 3:24 PM Andy Shevchenko <andy@kernel.org> wrote:
+> >
+> > On Fri, Oct 06, 2023 at 01:51:47PM +0200, Bartosz Golaszewski wrote:
+> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > >
+> > > struct gpio_chip is not only used to carry the information needed to
+> > > set-up a GPIO device but is also used in all GPIOLIB callbacks and is
+> > > passed to the matching functions of lookup helpers.
+> > >
+> > > In that last case, it is currently impossible to match a GPIO device by
+> > > fwnode unless it was explicitly assigned to the chip in the provider
+> > > code. If the fwnode is taken from the parent device, the pointer in
+> > > struct gpio_chip will remain NULL.
+> > >
+> > > If we have a parent device but gc->fwnode was not assigned by the
+> > > provider, let's assign it ourselves so that lookup by fwnode can work in
+> > > all cases.
 
-> -		__copy_from_iter(p, n, i);
-> +		n = __copy_from_iter(p, n, i);
+...
 
-Yeah, that looks right.  Can you fold it in, Christian?
+> > > +             gc->fwnode = parent_fwnode;
+> >
+> > Ah, this is basically reverts my commit, the whole idea of which was to go
+> > towards constant struct gpio_chip object that is supplied by a provider.
+> 
+> Then this idea was wrong in the first place and that goal will never
+> be achieved.
 
-David
+Why not? You always can have internal opaque data structure that takes constant
+object from the provider.
+
+> Whether that's a correct approach is questionable but
+> struct gpio_chip has become so much more than a simple config
+> structure and - given how ubiquitous GPIO providers are throughout the
+> different subsystems of the kernel - it'll stay that way unless we're
+> ready to rebuild every GPIO provider in linux.
+
+> The best we can do now is at least make its usage safe. Meaning: it's
+> a structure with which providers will interact using GPIOLIB callbacks
+> which will in turn assure that during the execution of any function
+> taking struct gpio_chip as argument, it will remain alive and
+> protected from concurrent access.
+> 
+> The providers however will continue to use gpio_chip for many
+> purposes. One of such purposes is matching the GPIO device BY its
+> backing gpio_chip structure. It not having the same fwnode in this
+> particular case is an inconsistency rather than design IMO.
+> 
+> I don't see any good reason for it not having the fwnode assigned.
+
+I see it clearly that we don't need to go this dead end.
+The fwnode used by GPIO devices is not semantically the same as fwnode that is
+supplied by the provider. Moreover, your patch will bring a clear layering
+violation since it changes the member behind the owner's back.
+
+> User calling gpio_device_find() will have to jump through hoops in
+> order to match the device by fwnode (include gpiolib.h and dereference
+> gpiodev?) but it could be very easily facilitated by just assigning it
+> at registration-time - just like we assign a whole bunch of other
+> pointers and data structures.
+
+No, please do not do this hack with fwnode.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
