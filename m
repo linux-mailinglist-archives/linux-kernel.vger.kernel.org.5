@@ -2,41 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C82E7BC566
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 09:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED80D7BC56A
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 09:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343651AbjJGHKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 03:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42472 "EHLO
+        id S1343658AbjJGHMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 03:12:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343572AbjJGHKS (ORCPT
+        with ESMTP id S1343572AbjJGHML (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 03:10:18 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D5CB9;
-        Sat,  7 Oct 2023 00:10:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E38FC433C8;
-        Sat,  7 Oct 2023 07:10:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696662617;
-        bh=xeHnT2C9sh0AspYV0KkPiTMG27K+EQ5856aRmwIk09A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fMbgk3mvwmCKY+R93LchM3ZW+Lp4DVA55slkhxzmhqnr9EaXW9SolajgfqOOvMY3b
-         LduunjkUaxB69wOJ6ZHKli0w4PwWDsmlN1FlDrucGV1YTL8DsmnbCYXD4Bey8M8ZEA
-         uqIyTwP9PJOOYL9sUKASzMYu20O38sAVbx27jUcM=
-Date:   Sat, 7 Oct 2023 09:10:14 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Kyle Zeng <zengyhkyle@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: nullptr-deference in perf
-Message-ID: <2023100758-astronaut-comrade-9abe@gregkh>
-References: <ZSDxDZR5hoaKTCdP@westworld>
+        Sat, 7 Oct 2023 03:12:11 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a02:c205:3004:2154::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13146BF;
+        Sat,  7 Oct 2023 00:12:10 -0700 (PDT)
+Received: from p5dc58360.dip0.t-ipconnect.de ([93.197.131.96] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <andreas@kemnade.info>)
+        id 1qp1Ti-004bwu-Lz; Sat, 07 Oct 2023 09:11:58 +0200
+Date:   Sat, 7 Oct 2023 09:11:56 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     =?UTF-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@gmail.com>,
+        bcousson@baylibre.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, jarkko.nikula@bitmer.com,
+        dmitry.torokhov@gmail.com, linux-omap@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH 1/3] ASoC: ti: omap-mcbsp: Ignore errors for getting
+ fck_src
+Message-ID: <20231007091156.588d7ba1@aktux>
+In-Reply-To: <20231007062518.GM34982@atomide.com>
+References: <20230705190324.355282-1-andreas@kemnade.info>
+        <20230705190324.355282-2-andreas@kemnade.info>
+        <7d58d52d-2087-45af-b29e-2515b63ead13@gmail.com>
+        <20230920063353.GQ5285@atomide.com>
+        <dac768d2-2c66-4d6b-b3d3-d1ef69103c76@gmail.com>
+        <20230921121626.GT5285@atomide.com>
+        <20231006102348.GK34982@atomide.com>
+        <20231006213003.0fbac87a@aktux>
+        <20231007062518.GM34982@atomide.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZSDxDZR5hoaKTCdP@westworld>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -45,15 +57,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 10:47:57PM -0700, Kyle Zeng wrote:
-> Hi there,
+On Sat, 7 Oct 2023 09:25:18 +0300
+Tony Lindgren <tony@atomide.com> wrote:
+
+> * Andreas Kemnade <andreas@kemnade.info> [231006 19:30]:
+> > On Fri, 6 Oct 2023 13:23:48 +0300
+> > Tony Lindgren <tony@atomide.com> wrote:  
+> > > Here's what I think the regression fix for omap4 clocks would be, the
+> > > old main_clk is not the same as the module clock that we get by default.
+> > > If this looks OK I'll do a similar fix also for omap5.
+> > > 
+> > > Or is something else also needed?
+> > >   
+> > 
+> > hmm,
+> > audio output works, the waring is away, but something new is here:  
 > 
-> I found a nullptr dereference in perf subsystem and it affects at least
-> v5.10 and v6.1 stable trees. (the same poc cannot trigger the crash in
-> the mainline).
+> OK good to hear it works, I'll send out fixes for omap4 and 5, seems
+> the runtime PM warning is something different.
+> 
+> > omap-mcbsp 40124000.mcbsp: Runtime PM usage count underflow!
+> > # cat /sys/bus/platform/devices/40124000.mcbsp/power/runtime_status 
+> > active
+> > 
+> > even with no sound.  
+> 
+Well, it is a regression caused by your fix. Without it (and not reverting
+the already applied ignore patch), runtime is properly suspended. Don't know
+why yet.
 
-Can you use 'git bisect' to find the patch that fixes this?
-
-thanks,
-
-greg k-h
+Regards,
+Andreas
