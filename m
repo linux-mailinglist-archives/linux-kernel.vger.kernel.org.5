@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F487BC934
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 19:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DAF57BC937
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 19:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344122AbjJGRFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 13:05:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56756 "EHLO
+        id S1344136AbjJGRFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 13:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344105AbjJGRFC (ORCPT
+        with ESMTP id S1344120AbjJGRFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 13:05:02 -0400
+        Sat, 7 Oct 2023 13:05:04 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB12BA;
-        Sat,  7 Oct 2023 10:05:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D892FC433CB;
-        Sat,  7 Oct 2023 17:04:59 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF2FB9;
+        Sat,  7 Oct 2023 10:05:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9964FC433C8;
+        Sat,  7 Oct 2023 17:05:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696698301;
-        bh=TTLYNPGjyBivwozdoa07Smf/suztpzKvRG2LWS6FNas=;
+        s=k20201202; t=1696698303;
+        bh=VFhwLN6cPSTo8azgI6QvVm2lvfds7OQ34SuiYHF6MzU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b8HZlTL4Afo59CcwyOtgb4Y93r5LNHEiDZEKyeCjOhuDNWTEokl9GgaNHBDGyQl1m
-         k98Volk7bHlMt8cG0kuf/X3YROh35Oz+RhlBeaNSQvs0X0nifaBb4BxkSA5iNpwmTK
-         9iW+aoM6iguuZVAIQnuN2KeXyNwMyiaGCWXPNG+Sn/NlT+R4sOQLgIvk6685gIjDdx
-         63f1dugnXyAhbGubHI/ZKunvbkiuu32lOajBgwSdiDrzzZilDkZDZybvabEJOA5Rnc
-         w/pf5cUTLzYO+89crg7fWJMZBsp5CI260rVEUWjRUaoVlTxz8GdyxUWnty3p5PH4Z6
-         uocIjpipmOmtQ==
+        b=sBynyLUd1/uJaABdRrkJDXMqCBr6rKnMibc1ZccirbcOVP0DwA/e6rFwgRutM+vYO
+         C4kcvfL+Ojlxuec+WLBCy7aRXhcVG9AopB9Q6UBjRY593Srgrp7kt6kAUNcJsUzyzx
+         tJX4/8N4Vlg2L0zkVrmGv2n83/MVoStZQbTb8ETiJeaKFuR7gNiG45L5z3WhNzAnT6
+         0RPHK8V1m/jU2/2iIyjugJDYW1Ct2Yw/Uhii6rDcnnA2A1pNTMvF6f8hiFCouxgYbl
+         sBayNGlrDVh/ixc8rMSgyy69ofVu+BLzBwH2Bvae06izplRquNEs7i2VGiBvvqje+L
+         UzfP+q5pGXKkg==
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     linux-kbuild@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Nick Desaulniers <ndesaulniers@google.com>,
         Nathan Chancellor <nathan@kernel.org>,
         Nicolas Schier <nicolas@fjasle.eu>
-Subject: [PATCH 4/5] modpost: refactor check_sec_ref()
-Date:   Sun,  8 Oct 2023 02:04:47 +0900
-Message-Id: <20231007170448.505487-4-masahiroy@kernel.org>
+Subject: [PATCH 5/5] modpost: factor out the common boilerplate of section_rel(a)
+Date:   Sun,  8 Oct 2023 02:04:48 +0900
+Message-Id: <20231007170448.505487-5-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231007170448.505487-1-masahiroy@kernel.org>
 References: <20231007170448.505487-1-masahiroy@kernel.org>
@@ -52,43 +52,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can replace &elf->sechdrs[i] with &sechdrs[i] to slightly shorten
-the code because we already have the local variable 'sechdrs'.
+The first few lines of section_rel() and section_rela() are the same.
+They both retrieve the index of the section to which the relocaton
+applies, and skip known-good sections. This common code should be moved
+to check_sec_ref().
 
-However, defining 'sechdr' instead shortens the code further.
+Avoid ugly casts when computing 'start' and 'stop', and also make the
+Elf_Rel and Elf_Rela pointers const.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 ---
 
- scripts/mod/modpost.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ scripts/mod/modpost.c | 50 ++++++++++++++++++++++---------------------
+ 1 file changed, 26 insertions(+), 24 deletions(-)
 
 diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index 99476a9695c5..441d57ee3275 100644
+index 441d57ee3275..f1f658122ad8 100644
 --- a/scripts/mod/modpost.c
 +++ b/scripts/mod/modpost.c
-@@ -1518,16 +1518,17 @@ static void section_rel(struct module *mod, struct elf_info *elf,
- static void check_sec_ref(struct module *mod, struct elf_info *elf)
- {
- 	int i;
--	Elf_Shdr *sechdrs = elf->sechdrs;
+@@ -1420,17 +1420,10 @@ static void get_rel_type_and_sym(struct elf_info *elf, uint64_t r_info,
+ }
  
- 	/* Walk through all sections */
- 	for (i = 0; i < elf->num_sections; i++) {
--		check_section(mod->name, elf, &elf->sechdrs[i]);
-+		Elf_Shdr *sechdr = &elf->sechdrs[i];
-+
-+		check_section(mod->name, elf, sechdr);
+ static void section_rela(struct module *mod, struct elf_info *elf,
+-			 Elf_Shdr *sechdr)
++			 unsigned int fsecndx, const char *fromsec,
++			 const Elf_Rela *start, const Elf_Rela *stop)
+ {
+-	Elf_Rela *rela;
+-	unsigned int fsecndx = sechdr->sh_info;
+-	const char *fromsec = sec_name(elf, fsecndx);
+-	Elf_Rela *start = (void *)elf->hdr + sechdr->sh_offset;
+-	Elf_Rela *stop  = (void *)start + sechdr->sh_size;
+-
+-	/* if from section (name) is know good then skip it */
+-	if (match(fromsec, section_white_list))
+-		return;
++	const Elf_Rela *rela;
+ 
+ 	for (rela = start; rela < stop; rela++) {
+ 		Elf_Addr taddr, r_offset;
+@@ -1460,17 +1453,10 @@ static void section_rela(struct module *mod, struct elf_info *elf,
+ }
+ 
+ static void section_rel(struct module *mod, struct elf_info *elf,
+-			Elf_Shdr *sechdr)
++			unsigned int fsecndx, const char *fromsec,
++			const Elf_Rel *start, const Elf_Rel *stop)
+ {
+-	Elf_Rel *rel;
+-	unsigned int fsecndx = sechdr->sh_info;
+-	const char *fromsec = sec_name(elf, fsecndx);
+-	Elf_Rel *start = (void *)elf->hdr + sechdr->sh_offset;
+-	Elf_Rel *stop  = (void *)start + sechdr->sh_size;
+-
+-	/* if from section (name) is know good then skip it */
+-	if (match(fromsec, section_white_list))
+-		return;
++	const Elf_Rel *rel;
+ 
+ 	for (rel = start; rel < stop; rel++) {
+ 		Elf_Sym *tsym;
+@@ -1525,10 +1511,26 @@ static void check_sec_ref(struct module *mod, struct elf_info *elf)
+ 
+ 		check_section(mod->name, elf, sechdr);
  		/* We want to process only relocation sections and not .init */
--		if (sechdrs[i].sh_type == SHT_RELA)
--			section_rela(mod, elf, &elf->sechdrs[i]);
--		else if (sechdrs[i].sh_type == SHT_REL)
--			section_rel(mod, elf, &elf->sechdrs[i]);
-+		if (sechdr->sh_type == SHT_RELA)
-+			section_rela(mod, elf, sechdr);
-+		else if (sechdr->sh_type == SHT_REL)
-+			section_rel(mod, elf, sechdr);
+-		if (sechdr->sh_type == SHT_RELA)
+-			section_rela(mod, elf, sechdr);
+-		else if (sechdr->sh_type == SHT_REL)
+-			section_rel(mod, elf, sechdr);
++		if (sechdr->sh_type == SHT_REL || sechdr->sh_type == SHT_RELA) {
++			/* section to which the relocation applies */
++			unsigned int secndx = sechdr->sh_info;
++			const char *secname = sec_name(elf, secndx);
++			const void *start, *stop;
++
++			/* If the section is known good, skip it */
++			if (match(secname, section_white_list))
++				continue;
++
++			start = sym_get_data_by_offset(elf, i, 0);
++			stop = start + sechdr->sh_size;
++
++			if (sechdr->sh_type == SHT_RELA)
++				section_rela(mod, elf, secndx, secname,
++					     start, stop);
++			else
++				section_rel(mod, elf, secndx, secname,
++					    start, stop);
++		}
  	}
  }
  
