@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D9D7BC41D
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 04:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B45B17BC41F
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 04:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234081AbjJGCN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 22:13:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38208 "EHLO
+        id S234111AbjJGCOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 22:14:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234069AbjJGCNx (ORCPT
+        with ESMTP id S234096AbjJGCN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 22:13:53 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AB51CA
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 19:13:52 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d86766bba9fso3842066276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 19:13:52 -0700 (PDT)
+        Fri, 6 Oct 2023 22:13:56 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FAE2DE
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 19:13:54 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d81e9981ff4so3545416276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 19:13:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696644831; x=1697249631; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1696644833; x=1697249633; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=8fc7EI+IqMoK5GVnqlsLaiP62BnjpCmFT/Si/B7nJZs=;
-        b=zJgDK0rZ1nQdVyYd+zr+B9/D9pYts8s5cn8NxT4eo6cErsMSnxIZSgwdaWfnfFDJF9
-         qAajyn8qFg6g2Bbq5qRlhKoj0BIUQm1JqwNMeraEjjZW5ks0dYNyU2JJkv2LTyS2Y30Q
-         Sq/LNG2/3+e7E8P6NqDp0zH7tEkoPOmTAFhvXj4GLz5YLWsyCsYG2S8CHmbOjtpz1Pyu
-         Hn/vRMWAlfnFJK7tqgu02dDExQV0fWZ/Flv6lH+byB7BG8ADP+aVFgcfYyHwWAZ0PVqh
-         PpFSTVE2CL3CB/tZSVNoTFZctRrDajpMUOSaGoO/5vszaIIpskzWjLXCDrFdR6uQdKrl
-         F2wQ==
+        bh=Pvm9pouxrmYpafgNbDUzq8jjG9nkQlQXFZB/wFYV4ZY=;
+        b=gIt3Ep8wQrLm5/xI11pGeuKoRgXc+4+1ky3tENwptnfMrV8Dnhm3eUn1Neff+jr1ht
+         nBrZOdSRuch7YtiJZveOIztjN0qXG2QNjG4D/2Tfg4Sd0asjIbseR0Oah4fLyeMSY48S
+         YjBwRKLA297NCyCDHgpE6s8X7N/0ObtaPH37elx4oPFSpgPEUoHJXBX4LZnKt4wsx4On
+         27bm+ZfEJoxBXe3SB7+49GKV8Zq+8mclPXthEw9fZa46wA3Vdu138lDMb8C0fs4OkOnj
+         iXfNjPP8zqpIpu0nSJWP72ij6NxLspjEyzc5fxRiG2DySZRC5e09/vnediUEpzY2KV8B
+         Ui+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696644831; x=1697249631;
+        d=1e100.net; s=20230601; t=1696644833; x=1697249633;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8fc7EI+IqMoK5GVnqlsLaiP62BnjpCmFT/Si/B7nJZs=;
-        b=UOwGefIpNMFB7g1jZ5ZSNzWacbd233YTWr5LtmQGWQVJ29jaxGfF9QjfNfwtzwoLfV
-         vDYIicVjYV1lKbaWTpMxp90TlGFcsrb0TMY8S6PGsTuWBGtu53sfXsSW7EC4Fp0iecPV
-         yrjMF7f3FaTpWyIscpKUoHZXTbhOZetdz7PRgkldan8o1L/Ox9Hiout/YZd3CxUJXqcH
-         jl6FtmaG6YBHWDz9WvtjopxgPYqdtGiCQqdjph2t2rnhWucKMBPBfxY5jJwFjA7GlTek
-         UgYDrBAkTnO6NMTP3PuCwKhaOcs/nBADpUM5dPFsr7EgUrbrognASoHcAFlzb2/sjkDr
-         b7nw==
-X-Gm-Message-State: AOJu0YyNb2Z7RgoxC0h3wsGeb0jJjYn9ChKKJvWZQkzvibBXho7Ikz66
-        Nk159ahvwOFkuUxZX8JCntI5mfT5HTi5
-X-Google-Smtp-Source: AGHT+IHrCzJat+rz/BJ6g8m43IhpNWgcQXVdsawjas52P79D5OWVnwHwRJxeKmFFr5isb0ADzqHoPQ82uORz
+        bh=Pvm9pouxrmYpafgNbDUzq8jjG9nkQlQXFZB/wFYV4ZY=;
+        b=vTPqKV2lG67NxYkHtJSxUDNXD10V6CI/giRbg5gH3s+BAFVwUZx0Z7AYb0u5zlAbl6
+         Kb2qU6ex8Rym1Sv5xU7FzYOzXNZm9gdcJpXosheYrJXCNCYTJdRIJUetw/IuW4zT1V8y
+         9z1WyS0WfVEInoKgniDlV8ltRDMk7AGpMdBKc8uUHJ8NHU3BYBZHm7rC5qnIMQYOYBhc
+         jgiyg2eJTRNerpK8xvqg9IvQlrmRjMS4LkCtQJS/Jv0IV5Q/Pxc/AMKYjX7mbbDkndeV
+         ghWpa7/4d+4JZhIxGlb1ke06D1OuwOzSlJk16Z6dnGQ0E71qcb+OzOuAMBd8HPKfUJ06
+         +ZZQ==
+X-Gm-Message-State: AOJu0YzQ7bqD/KOkvTmYYzWB+O4oZDAA8BpwT/pjUign6LFDFmndTrJC
+        KWTR73B0BlPfxwRCHGPi3JlSXK1FxE3n
+X-Google-Smtp-Source: AGHT+IG/FCsfFR7DMO8ROGGKaKObepHsSbay/fgC+twT50YsCh2lPxyqOr65LGKvE49Mf12qsmL2OTWovX1b
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:7031:b36b:6c77:bfd0])
- (user=irogers job=sendgmr) by 2002:a25:e20b:0:b0:d81:817c:582 with SMTP id
- h11-20020a25e20b000000b00d81817c0582mr155263ybe.7.1696644831137; Fri, 06 Oct
- 2023 19:13:51 -0700 (PDT)
-Date:   Fri,  6 Oct 2023 19:13:21 -0700
+ (user=irogers job=sendgmr) by 2002:a25:d313:0:b0:d7b:92d7:5629 with SMTP id
+ e19-20020a25d313000000b00d7b92d75629mr166217ybf.8.1696644833466; Fri, 06 Oct
+ 2023 19:13:53 -0700 (PDT)
+Date:   Fri,  6 Oct 2023 19:13:22 -0700
 In-Reply-To: <20231007021326.4156714-1-irogers@google.com>
-Message-Id: <20231007021326.4156714-3-irogers@google.com>
+Message-Id: <20231007021326.4156714-4-irogers@google.com>
 Mime-Version: 1.0
 References: <20231007021326.4156714-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Subject: [PATCH v1 2/7] perf intel-pt: Move PMU initialization from default
+Subject: [PATCH v1 3/7] perf arm-spe: Move PMU initialization from default
  config code
 From:   Ian Rogers <irogers@google.com>
 To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
@@ -89,40 +89,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Avoid setting PMU values in intel_pt_pmu_default_config, move to
+Avoid setting PMU values in arm_spe_pmu_default_config, move to
 perf_pmu__arch_init.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/arch/x86/util/intel-pt.c | 2 --
- tools/perf/arch/x86/util/pmu.c      | 1 +
- 2 files changed, 1 insertion(+), 2 deletions(-)
+ tools/perf/arch/arm/util/pmu.c       | 2 ++
+ tools/perf/arch/arm64/util/arm-spe.c | 3 ---
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/arch/x86/util/intel-pt.c b/tools/perf/arch/x86/util/intel-pt.c
-index b923bca939d9..6d6cd8f9133c 100644
---- a/tools/perf/arch/x86/util/intel-pt.c
-+++ b/tools/perf/arch/x86/util/intel-pt.c
-@@ -267,8 +267,6 @@ intel_pt_pmu_default_config(struct perf_pmu *intel_pt_pmu)
+diff --git a/tools/perf/arch/arm/util/pmu.c b/tools/perf/arch/arm/util/pmu.c
+index d55d2b15f2e6..f25f68f84a94 100644
+--- a/tools/perf/arch/arm/util/pmu.c
++++ b/tools/perf/arch/arm/util/pmu.c
+@@ -23,6 +23,8 @@ void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
+ 		pmu->default_config = cs_etm_get_default_config(pmu);
+ #if defined(__aarch64__)
+ 	} else if (strstarts(pmu->name, ARM_SPE_PMU_NAME)) {
++		pmu->selectable = true;
++		pmu->is_uncore = false;
+ 		pmu->default_config = arm_spe_pmu_default_config(pmu);
+ 	} else if (strstarts(pmu->name, HISI_PTT_PMU_NAME)) {
+ 		pmu->selectable = true;
+diff --git a/tools/perf/arch/arm64/util/arm-spe.c b/tools/perf/arch/arm64/util/arm-spe.c
+index 9cc3d6dcb849..08a76734ccd2 100644
+--- a/tools/perf/arch/arm64/util/arm-spe.c
++++ b/tools/perf/arch/arm64/util/arm-spe.c
+@@ -516,8 +516,5 @@ struct perf_event_attr
+ 		attr->sample_period = 4096;
+ 	}
  
- 	attr->config = intel_pt_default_config(intel_pt_pmu);
- 
--	intel_pt_pmu->selectable = true;
+-	arm_spe_pmu->selectable = true;
+-	arm_spe_pmu->is_uncore = false;
 -
  	return attr;
  }
- 
-diff --git a/tools/perf/arch/x86/util/pmu.c b/tools/perf/arch/x86/util/pmu.c
-index 811e2377d2d5..949b3e2c67bd 100644
---- a/tools/perf/arch/x86/util/pmu.c
-+++ b/tools/perf/arch/x86/util/pmu.c
-@@ -22,6 +22,7 @@ void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
- #ifdef HAVE_AUXTRACE_SUPPORT
- 	if (!strcmp(pmu->name, INTEL_PT_PMU_NAME)) {
- 		pmu->auxtrace = true;
-+		pmu->selectable = true;
- 		pmu->default_config = intel_pt_pmu_default_config(pmu);
- 	}
- 	if (!strcmp(pmu->name, INTEL_BTS_PMU_NAME)) {
 -- 
 2.42.0.609.gbb76f46606-goog
 
