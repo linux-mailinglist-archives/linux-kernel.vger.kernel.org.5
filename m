@@ -2,80 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DAA17BC369
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 02:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D927BC36B
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 02:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233962AbjJGAvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 20:51:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58652 "EHLO
+        id S233975AbjJGAzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 20:55:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233879AbjJGAvp (ORCPT
+        with ESMTP id S233822AbjJGAzY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 20:51:45 -0400
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C9437BD
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 17:51:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=p3Qx7
-        B082VtZrFxOuYcTvp7+pBO3IhmptOg+FirYoRY=; b=l6pmgkCAodebYncQaXmxV
-        5k6RMMYuPSUmRT4u5AupptzsHN2NiEFmk47GZUtl834nZLPEz7OxHR/0UNA59CMw
-        ANmedTEuCsJDNVCV0fbrzxIBZmq1VxgtpN8GPXZRpO1RBmIb+bNnKwjiTT3cOBhy
-        yHzOCl8a9Bn06/xtypPL7g=
-Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
-        by zwqz-smtp-mta-g4-0 (Coremail) with SMTP id _____wD33OZ5qyBlC+QfEA--.50324S4;
-        Sat, 07 Oct 2023 08:51:14 +0800 (CST)
-From:   Ma Ke <make_ruc2021@163.com>
-To:     richard@nod.at, anton.ivanov@cambridgegreys.com,
-        johannes@sipsolutions.net, xiangyang3@huawei.com,
-        make_ruc2021@163.com
-Cc:     linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] um: vector: fix return value check in vector_mmsg_rx
-Date:   Sat,  7 Oct 2023 08:51:04 +0800
-Message-Id: <20231007005104.3994678-1-make_ruc2021@163.com>
-X-Mailer: git-send-email 2.37.2
+        Fri, 6 Oct 2023 20:55:24 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2AE4BF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 17:55:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=BT8tYl9kyCovYjvFEVeXbXj4P8U+VUi2Ywgg+MiH7SA=; b=2THIlO9aNRYwd5NkbeiK3pMNqH
+        NVJFXMVfMrgYpaKmo+HvRdCyUG4hGIbVtdiNDP3LJWwpJcze8rqWWoMrlF6HpzEplrjlo2L3uEqoO
+        2akY3DOGppEY+2MAdVQBJzxXvNtA3FZDkbea43kc4zQGt7IB/EzjwJoZWWMwcmJAuJGa2n4GccFH3
+        YLAiWQ91KBaxJEnWONEpkXb+XBptKQgXxOypuZz4euLfM5GTKTD68/Cgatlag5YEMqH5BvwS7sONk
+        Qvk+boo4Hqr8MMDr9aeYTlMrnquP6ZF82521NciqUNbTCyFqov2Oz1IKQtiSpg2qbAbaRAvJzHEvA
+        GdWZ/vVw==;
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qovbD-006j2J-0g;
+        Sat, 07 Oct 2023 00:55:19 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Dave Airlie <airlied@redhat.com>,
+        Danilo Krummrich <dakr@redhat.com>,
+        Karol Herbst <kherbst@redhat.com>,
+        Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org
+Subject: [PATCH] drm/nouveau: exec: fix ioctl kernel-doc warning
+Date:   Fri,  6 Oct 2023 17:55:18 -0700
+Message-ID: <20231007005518.32015-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wD33OZ5qyBlC+QfEA--.50324S4
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZFyUXr1DAw4kAFy8urW7Arb_yoWfXFX_Gw
-        n7XanrJr4xKFn0qr1kCr13uryava1q9F95ZF1FqrW3ZwsxZw1xAF909r15A3WUWa9rGrsr
-        Kr93GrW09r1rKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRM5l8UUUUUU==
-X-Originating-IP: [183.174.60.14]
-X-CM-SenderInfo: 5pdnvshuxfjiisr6il2tof0z/xtbBFQICC2B9oZceNAAAsf
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
-        RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In vector_mmsg_rx, to avoid an unexpected result returned by
-pskb_trim, we should check the return value of pskb_trim().
+include/uapi/drm/nouveau_drm.h:49: warning: Cannot understand  * @NOUVEAU_GETPARAM_EXEC_PUSH_MAX
+ on line 49 - I thought it was a doc line
 
-Signed-off-by: Ma Ke <make_ruc2021@163.com>
+Fixes: d59e75eef52d ("drm/nouveau: exec: report max pushs through getparam")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Dave Airlie <airlied@redhat.com>
+Cc: Danilo Krummrich <dakr@redhat.com>
+Cc: Karol Herbst <kherbst@redhat.com>
+Cc: Lyude Paul <lyude@redhat.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: nouveau@lists.freedesktop.org
 ---
- arch/um/drivers/vector_kern.c | 4 ++--
+ include/uapi/drm/nouveau_drm.h |    4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index 131b7cb29576..c280ce5ea6ce 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -1013,8 +1013,8 @@ static int vector_mmsg_rx(struct vector_private *vp, int budget)
- 					skb->ip_summed = CHECKSUM_UNNECESSARY;
- 				}
- 			}
--			pskb_trim(skb,
--				mmsg_vector->msg_len - vp->rx_header_size);
-+			if (pskb_trim(skb, mmsg_vector->msg_len - vp->rx_header_size))
-+				return 0;
- 			skb->protocol = eth_type_trans(skb, skb->dev);
- 			/*
- 			 * We do not need to lock on updating stats here
--- 
-2.37.2
-
+diff -- a/include/uapi/drm/nouveau_drm.h b/include/uapi/drm/nouveau_drm.h
+--- a/include/uapi/drm/nouveau_drm.h
++++ b/include/uapi/drm/nouveau_drm.h
+@@ -45,8 +45,8 @@ extern "C" {
+ #define NOUVEAU_GETPARAM_HAS_BO_USAGE    15
+ #define NOUVEAU_GETPARAM_HAS_PAGEFLIP    16
+ 
+-/**
+- * @NOUVEAU_GETPARAM_EXEC_PUSH_MAX
++/*
++ * NOUVEAU_GETPARAM_EXEC_PUSH_MAX - query max pushes through getparam
+  *
+  * Query the maximum amount of IBs that can be pushed through a single
+  * &drm_nouveau_exec structure and hence a single &DRM_IOCTL_NOUVEAU_EXEC
