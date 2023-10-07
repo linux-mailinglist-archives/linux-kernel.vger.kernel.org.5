@@ -2,58 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B8C77BC74F
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 14:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E837BC751
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 14:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343915AbjJGMAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 08:00:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44602 "EHLO
+        id S1343928AbjJGMBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 08:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343680AbjJGMAq (ORCPT
+        with ESMTP id S1343884AbjJGMAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 08:00:46 -0400
+        Sat, 7 Oct 2023 08:00:47 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBBCBBD
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 05:00:44 -0700 (PDT)
-Date:   Sat, 07 Oct 2023 12:00:42 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58CA4BF
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 05:00:45 -0700 (PDT)
+Date:   Sat, 07 Oct 2023 12:00:43 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696680043;
+        s=2020; t=1696680044;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9eQCG1SubaLKcefX9RXX8VJmey2R9K7NERppFez/kQs=;
-        b=fLJxRfVkH6YmuFj6bd7wJkrpzI5cWBYcxYwTpxFGvNNhekMMZ/DU8QJzkOw6FxyqM/nYbl
-        ktbpU43K44GHpT6oIxGnUOTW9c6n0NJ8WOXZRoX6HEUYGLb83TzAEOOJW+IvTYSm7sbm8M
-        30m8m/xiuwYwaJDwTpEhageo6FqmppODlVM2QmAhacI7l3J8Q0flLgPaxKNaEcgc+x/llj
-        oIIIfm5ipI8W8+ZPevjVChYH28NvwAF9DRoaCWVEoVtXKAF08CLj96LMtnQraQzYjavx6O
-        ikY3lYTpajd3kPeTVVI8E7T7jrA2OKzVTMIr4ZNSd1TBNiJ5HrIY0wS9oDhXdg==
+        bh=LqJ6iDQXqbjO7aIUOF/hNk0wFZR0pQOymhYZyQ7Ndss=;
+        b=277BGSdLaYGAIpGC/2OSZ5Q/2V5RV2bIlj2R9h9J72UH95wpnbscClEaGkFbfQAw02kr0d
+        blqDxKSRvbatKIbi+4BlajvBDauvzfZQ4LrAe/lkLkDc/Am5x7LB4oVuxELd0gQxxtjoCW
+        +r8hqaLnRY3FYc49Y1495JSfqJHmdPDksvG7BE4M2tbYud6uK4AGi4RG50OQTUl5VFX6fM
+        oU3DThLPkNttDqe4IAW21ZHM3Ure/K54kPnaEDls9JONhPhQtlBc+VThm59ilPfWZrfjvH
+        edq7XFty44aTk+YY/hnFDK69nyoAKJZF80poIBDY4//eHZotSfjJbS+ADQqIsg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696680043;
+        s=2020e; t=1696680044;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9eQCG1SubaLKcefX9RXX8VJmey2R9K7NERppFez/kQs=;
-        b=tHdq5eK1hladga6W4RW9ZrjwiFVrWeb/8UsAFSgy9dfEWUBZ5/EX0t7fn55mBv3fqqgKQG
-        fPI2h97WHJmZfYBw==
-From:   "irqchip-bot for Geert Uytterhoeven" <tip-bot2@linutronix.de>
+        bh=LqJ6iDQXqbjO7aIUOF/hNk0wFZR0pQOymhYZyQ7Ndss=;
+        b=8M/6C+ltXFSYDk6EDF79y9y6/6/Aa/TRBEUo4INBwhcqtj9Q0cL1vpC2D3JzqU7mYq3GoR
+        PYGM2ifbgA8B4/BA==
+From:   "irqchip-bot for Ben Wolsieffer" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-fixes] irqchip/renesas-rzg2l: Convert to
- irq_data_get_irq_chip_data()
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+Subject: [irqchip: irq/irqchip-fixes] irqchip/stm32-exti: add missing DT IRQ
+ flag translation
+Cc:     Ben Wolsieffer <ben.wolsieffer@hefring.com>,
         Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
-In-Reply-To: =?utf-8?q?=3C8e47cc6400e5a82c854c855948d2665a3a3197e3=2E16958?=
- =?utf-8?q?19391=2Egit=2Egeert+renesas=40glider=2Ebe=3E?=
-References: =?utf-8?q?=3C8e47cc6400e5a82c854c855948d2665a3a3197e3=2E169581?=
- =?utf-8?q?9391=2Egit=2Egeert+renesas=40glider=2Ebe=3E?=
+In-Reply-To: <20231003162003.1649967-1-ben.wolsieffer@hefring.com>
+References: <20231003162003.1649967-1-ben.wolsieffer@hefring.com>
 MIME-Version: 1.0
-Message-ID: <169668004265.3135.6097288316194548861.tip-bot2@tip-bot2>
+Message-ID: <169668004329.3135.14975229580572864483.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -69,37 +66,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-fixes branch of irqchip:
 
-Commit-ID:     8a4f44f3e9b05c38606b2ae02f933d6b64a340dd
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/8a4f44f3e9b05c38606b2ae02f933d6b64a340dd
-Author:        Geert Uytterhoeven <geert+renesas@glider.be>
-AuthorDate:    Wed, 27 Sep 2023 14:57:32 +02:00
+Commit-ID:     8554cba1d6dbd3c74e0549e28ddbaccbb1d6b30a
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/8554cba1d6dbd3c74e0549e28ddbaccbb1d6b30a
+Author:        Ben Wolsieffer <ben.wolsieffer@hefring.com>
+AuthorDate:    Tue, 03 Oct 2023 12:20:03 -04:00
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Sat, 07 Oct 2023 12:47:13 +01:00
+CommitterDate: Sat, 07 Oct 2023 12:47:12 +01:00
 
-irqchip/renesas-rzg2l: Convert to irq_data_get_irq_chip_data()
+irqchip/stm32-exti: add missing DT IRQ flag translation
 
-Use the existing irq_data_get_irq_chip_data() helper instead of
-open-coding the same operation.
+The STM32F4/7 EXTI driver was missing the xlate callback, so IRQ trigger
+flags specified in the device tree were being ignored. This was
+preventing the RTC alarm interrupt from working, because it must be set
+to trigger on the rising edge to function correctly.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/8e47cc6400e5a82c854c855948d2665a3a3197e3.1695819391.git.geert+renesas@glider.be
+Link: https://lore.kernel.org/r/20231003162003.1649967-1-ben.wolsieffer@hefring.com
 ---
- drivers/irqchip/irq-renesas-rzg2l.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/irqchip/irq-stm32-exti.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/irqchip/irq-renesas-rzg2l.c b/drivers/irqchip/irq-renesas-rzg2l.c
-index 2cee547..96f4e32 100644
---- a/drivers/irqchip/irq-renesas-rzg2l.c
-+++ b/drivers/irqchip/irq-renesas-rzg2l.c
-@@ -130,8 +130,8 @@ static void rzg2l_irqc_irq_enable(struct irq_data *d)
- 	unsigned int hw_irq = irqd_to_hwirq(d);
+diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
+index d8ba5fb..971240e 100644
+--- a/drivers/irqchip/irq-stm32-exti.c
++++ b/drivers/irqchip/irq-stm32-exti.c
+@@ -460,6 +460,7 @@ static const struct irq_domain_ops irq_exti_domain_ops = {
+ 	.map	= irq_map_generic_chip,
+ 	.alloc  = stm32_exti_alloc,
+ 	.free	= stm32_exti_free,
++	.xlate	= irq_domain_xlate_twocell,
+ };
  
- 	if (hw_irq >= IRQC_TINT_START && hw_irq < IRQC_NUM_IRQ) {
-+		unsigned long tint = (uintptr_t)irq_data_get_irq_chip_data(d);
- 		struct rzg2l_irqc_priv *priv = irq_data_to_priv(d);
--		unsigned long tint = (uintptr_t)d->chip_data;
- 		u32 offset = hw_irq - IRQC_TINT_START;
- 		u32 tssr_offset = TSSR_OFFSET(offset);
- 		u8 tssr_index = TSSR_INDEX(offset);
+ static void stm32_irq_ack(struct irq_data *d)
