@@ -2,105 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B652C7BC737
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 13:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 209EE7BC73B
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 13:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343881AbjJGLge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 07:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55440 "EHLO
+        id S1343877AbjJGLiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 07:38:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234148AbjJGLgc (ORCPT
+        with ESMTP id S233669AbjJGLiE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 07:36:32 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D96BD;
-        Sat,  7 Oct 2023 04:36:29 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id b51d04623ba10436; Sat, 7 Oct 2023 13:36:28 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id DF0816621FA;
-        Sat,  7 Oct 2023 13:36:27 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
-        Amit Kucheria <amitk@kernel.org>
-Subject: [PATCH v3] thermal: Remove Amit Kucheria from MAINTAINERS
-Date:   Sat, 07 Oct 2023 13:36:27 +0200
-Message-ID: <5725069.DvuYhMxLoT@kreacher>
+        Sat, 7 Oct 2023 07:38:04 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34A7B9
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 04:38:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D71C8C433C7;
+        Sat,  7 Oct 2023 11:38:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696678682;
+        bh=yIZF0RqPJRImpFrt5o/kd4l9dwpXlfghbJq8h5vMsc4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HjH3lniK5RC+BgQmxHW3Kpn3nArIwiMi7VQG4hqaZkl12JYnpRKVaNhdfneyD3VR4
+         gvn89ttW3EM6L0/4fUbAiKS1xAu/ZRcPke6gjUeR8IPHzWvM8WRXYIuhI3aaHcHk8n
+         YVjVbfHkwAnTTTfsUk2jlx7WQoseZpRx4HwBcYzk=
+Date:   Sat, 7 Oct 2023 13:37:59 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Kassey Li <quic_yingangl@quicinc.com>
+Cc:     gregkh@google.com, cmllamas@google.com, surenb@google.com,
+        arve@android.com, joel@joelfernandes.org, brauner@kernel.org,
+        tkjos@android.com, maco@android.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] binder: add mutex_lock for mmap and NULL when free
+Message-ID: <2023100735-dullness-cameo-2666@gregkh>
+References: <20231007034046.2352124-1-quic_yingangl@quicinc.com>
+ <2023100715-blade-valiant-714d@gregkh>
+ <26988068-8c9f-8591-db6e-44c8105af638@quicinc.com>
+ <2023100725-oversized-shore-c873@gregkh>
+ <12642deb-0db3-9210-b468-1872cd3d5409@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrgeelgdegvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeefvddtfeffveeguefgtdeiuddtieelheegkefhhefgkeefuddutdehgfdvudduieenucffohhmrghinhepuggvvhhitggvthhrvggvrdhorhhgnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepuddupdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehrrghfrggvlheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurges
- lhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-DCC--Metrics: v370.home.net.pl 1024; Body=11 Fuz1=11 Fuz2=11
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <12642deb-0db3-9210-b468-1872cd3d5409@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Subject: [PATCH v2] thermal: Remove Amit Kucheria from MAINTAINERS
+On Sat, Oct 07, 2023 at 07:34:05PM +0800, Kassey Li wrote:
+> 
+> 
+> On 2023/10/7 19:18, Greg KH wrote:
+> > On Sat, Oct 07, 2023 at 07:07:40PM +0800, Kassey Li wrote:
+> > > 
+> > > 
+> > > On 2023/10/7 14:44, Greg KH wrote:
+> > > > On Sat, Oct 07, 2023 at 11:40:46AM +0800, Kassey Li wrote:
+> > > > > Enforce alloc->mutex in binder_alloc_mmap_handler when add
+> > > > > the entry to list.
+> > > > > 
+> > > > > Assign the freed pages/page_ptr to NULL to catch possible
+> > > > > use after free with NULL pointer access.
+> > > > > 
+> > > > > Signed-off-by: Kassey Li <quic_yingangl@quicinc.com>
+> > > > > ---
+> > > > >    drivers/android/binder_alloc.c | 5 ++++-
+> > > > >    1 file changed, 4 insertions(+), 1 deletion(-)
+> > > > 
+> > > > What commit id does this fix?
+> > > 
+> > >    there is no specific commit id this change going to fix.
+> > > 
+> > >    it is a follow up for commit
+> > > 	19c987241ca1216a51118b2bd0185b8bc5081783  binder: separate out binder_alloc
+> > > functions (mutex lock added for list access in alloc/free)
+> > > 	f2517eb76f1f2f7f89761f9db2b202e89931738c  android: binder: Add global lru
+> > > shrinker to binder (set page->page_ptr = NULL;)
+> > > 
+> > >    the background to raise this change that we are easy hit below crash in
+> > > monkey test:
+> > > 
+> > > where a wrong end is passing to
+> > > binder_update_page_range, thus calculate a weird index
+> > > for
+> > >    page = &alloc->pages[index]
+> > 
+> > Obviously it is a fix for some commit, please list that here.
+> 
+>  ok, please kindly review this patch description according your suggest, i
+> can re-send v2 patch again.
+> 
+> commit 16aaeb8556ff4eb75823c56773ee82b06bac44a0 (HEAD -> master)
+> Author: Kassey Li <quic_yingangl@quicinc.com>
+> Date:   Thu Sep 28 10:42:52 2023 +0800
+> 
+>     binder: add mutex_lock for mmap and NULL when free
+> 
+>     -Enforce alloc->mutex in binder_alloc_mmap_handler when add
+>     the entry to list.
+> 
+>     -Assign the freed pages/page_ptr to NULL to catch possible
+>     use after free with NULL pointer access.
 
-Amit Kucheria has not been participating in kernel development in any
-way or form for quite some time, so it is not useful to list him as a
-designated reviewer for the thermal subsystem or as the thermal zone DT
-binding maintainer.
+Odd indentation :(
 
-Remove him from the THERMAL entry in MAINTAINERS and list Daniel Lezcano
-as the new thermal zone DT binding maintainer.
+>     Fixes: 19c987241ca1 ("binder: separate out binder_alloc functions")
+>     Fixes: f2517eb76f1f ("android: binder: Add global lru shrinker to
+> binder")
+>     Signed-off-by: Kassey Li <quic_yingangl@quicinc.com>
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
+Looks better than before, thanks.
 
-v2 -> v3: List Daniel Lezcano as the thermal zone DT binding maintainer.
-
----
- Documentation/devicetree/bindings/thermal/thermal-zones.yaml |    2 +-
- MAINTAINERS                                                  |    1 -
- 2 files changed, 1 insertion(+), 2 deletions(-)
-
-Index: linux-pm/MAINTAINERS
-===================================================================
---- linux-pm.orig/MAINTAINERS
-+++ linux-pm/MAINTAINERS
-@@ -21363,7 +21363,6 @@ F:	drivers/media/radio/radio-raremono.c
- THERMAL
- M:	Rafael J. Wysocki <rafael@kernel.org>
- M:	Daniel Lezcano <daniel.lezcano@linaro.org>
--R:	Amit Kucheria <amitk@kernel.org>
- R:	Zhang Rui <rui.zhang@intel.com>
- L:	linux-pm@vger.kernel.org
- S:	Supported
-Index: linux-pm/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
-===================================================================
---- linux-pm.orig/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
-+++ linux-pm/Documentation/devicetree/bindings/thermal/thermal-zones.yaml
-@@ -8,7 +8,7 @@ $schema: http://devicetree.org/meta-sche
- title: Thermal zone
- 
- maintainers:
--  - Amit Kucheria <amitk@kernel.org>
-+  - Daniel Lezcano <daniel.lezcano@linaro.org>
- 
- description: |
-   Thermal management is achieved in devicetree by describing the sensor hardware
-
-
-
+greg k-h
