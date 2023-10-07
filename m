@@ -2,130 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0B017BC4C7
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 07:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C259F7BC4CF
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 07:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343537AbjJGFRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 01:17:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58876 "EHLO
+        id S1343520AbjJGF3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 01:29:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233675AbjJGFRv (ORCPT
+        with ESMTP id S233675AbjJGF3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 01:17:51 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7997BD
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 22:17:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696655870; x=1728191870;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=h8JjTkOjxy+GvvvrgGzYxXx8I+OrRY9nFul1gwrLQGU=;
-  b=P2IcMUk61eRVW7/+MaBzC/LpUl6XtU379aIaWyGP1g9sWtovSZ8Esrmz
-   JO7SO5VsC3Sf9X0PgLX1JaDF0wYTK1lU7QK7gu5pWFZfn3ciK9ph4CKUC
-   aH/bxFn7i4NnDNsTR5gZAUGEjb53V3HVPygNHdNSAJHAU0UHwfcXOMLO7
-   td1DhnpKBaTM8ZqhtRbqgg9qJO1mUKLUZ9NDP07XxcuZ8hpKnsfvAkhMG
-   MvU99V5jHW+p21PUMx1i3Lijlrrg2xa5Lv5IXQH7WyvwqUMfYY1tnCzzp
-   UwXjgd8KiJLhdXHnU/IYLzvFv4R8wYpd8gJHXVi0a8iU7aY7mFGLoDneO
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="386731699"
-X-IronPort-AV: E=Sophos;i="6.03,205,1694761200"; 
-   d="scan'208";a="386731699"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 22:17:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="756103940"
-X-IronPort-AV: E=Sophos;i="6.03,205,1694761200"; 
-   d="scan'208";a="756103940"
-Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 06 Oct 2023 22:17:46 -0700
-Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qozhA-0003zl-27;
-        Sat, 07 Oct 2023 05:17:44 +0000
-Date:   Sat, 7 Oct 2023 13:17:06 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Ma Ke <make_ruc2021@163.com>, airlied@gmail.com, daniel@ffwll.ch,
-        javierm@redhat.com, lyude@redhat.com, mripard@kernel.org,
-        u.kleine-koenig@pengutronix.de, noralf@tronnes.org,
-        tzimmermann@suse.de
-Cc:     oe-kbuild-all@lists.linux.dev, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/i2c/ch7006: fix a possible null pointer dereference
-Message-ID: <202310071306.7oXVHYob-lkp@intel.com>
-References: <20231007031712.3997144-1-make_ruc2021@163.com>
+        Sat, 7 Oct 2023 01:29:38 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3CABB
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 22:29:37 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-536ef8a7dcdso5930a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 22:29:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696656576; x=1697261376; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ehXIAL9COr2p+SJpJYVkLUs7bLNsHpyoys6ti/OmwOI=;
+        b=OiAMtXJ6tynmtPbNf0oVtLtakB4w672tZqGGFGc20uXHn8lXontrHzK4qP1tuSYiUH
+         tLyVfpdQWpzYGzwjZLup748DMmHPLUY0ksXcxOjj6dbos+c/jnmf5EkjJbwz3Gu3KWHH
+         AVIyMbQpxnTa7TxQTI48+P0ceptkAh4J9DuF5UzwMMQYVEa5StYB1tzsJPk89rOkYKit
+         zMgtXb8LXQpzPCbwS5oZc+e3lFxRdXQIypFnvypgIbmnBl2YN8AGc6Rrt3m13xzJswBu
+         6fCc/bjDt1sg5eUX7Eg1qQodtZkXA/rdY85AK+AP++rpClTfNPyuKDek3KS1PlhruFt+
+         +NaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696656576; x=1697261376;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ehXIAL9COr2p+SJpJYVkLUs7bLNsHpyoys6ti/OmwOI=;
+        b=wI4Rip4wTe8HQ5vOeAjzfHfNxOeEf0HEPdbNXn2zY2sD3/8nRnI0WI7MObSmcjeBBX
+         u9obmj3PDwVIJ3bzH++MDU4ilFwWrsJ/0AbyObkZNx6bh4eBVEfWri6SRbcnqbief3ap
+         kFi8MlPuTayvtB7mJLnoAqJRQpzkpIJuwnDx/LH7blIW9NpfviD06OL0nWP+CTnK8rYe
+         5iVAjJq1XeFN9cAkHcViy8BaG1gTdWuFNW4Z3Xm4J5+S95s0w1TQCx8kbuG4C6QT3RA+
+         HvtDewuLrrc6pq8/4wfAfGnL9RM9OwShbf4ykHZBm2fSmtYugudGuQkZEgabfLJ6fFBI
+         oyjw==
+X-Gm-Message-State: AOJu0YzpSwht3aUHOyyXRDhsPnOJSJYXuZl7tjOF0ve++JXW8lEYyz6/
+        bPqncjGrS5m6hpyqoBZZH+czI/RmVbDnFUkV21HNmg==
+X-Google-Smtp-Source: AGHT+IE/hTkf8AkZ8ITlkwNVi2PQWbMg9VbCiFwnsi2YbVc9094IqpEkM9HeLWBd/UWOs4drgL5TpFtxUxnWyQHg7ME=
+X-Received: by 2002:a50:bb67:0:b0:519:7d2:e256 with SMTP id
+ y94-20020a50bb67000000b0051907d2e256mr268054ede.0.1696656575664; Fri, 06 Oct
+ 2023 22:29:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231007031712.3997144-1-make_ruc2021@163.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20231007050621.1706331-1-yajun.deng@linux.dev>
+In-Reply-To: <20231007050621.1706331-1-yajun.deng@linux.dev>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Sat, 7 Oct 2023 07:29:24 +0200
+Message-ID: <CANn89iL-zUw1FqjYRSC7BGB0hfQ5uKpJzUba3YFd--c=GdOoGg@mail.gmail.com>
+Subject: Re: [PATCH net-next v7] net/core: Introduce netdev_core_stats_inc()
+To:     Yajun Deng <yajun.deng@linux.dev>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexander Lobakin <aleksander.lobakin@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ma,
+On Sat, Oct 7, 2023 at 7:06=E2=80=AFAM Yajun Deng <yajun.deng@linux.dev> wr=
+ote:
+>
+> Although there is a kfree_skb_reason() helper function that can be used t=
+o
+> find the reason why this skb is dropped, but most callers didn't increase
+> one of rx_dropped, tx_dropped, rx_nohandler and rx_otherhost_dropped.
+>
+...
 
-kernel test robot noticed the following build warnings:
+> +
+> +void netdev_core_stats_inc(struct net_device *dev, u32 offset)
+> +{
+> +       /* This READ_ONCE() pairs with the write in netdev_core_stats_all=
+oc() */
+> +       struct net_device_core_stats __percpu *p =3D READ_ONCE(dev->core_=
+stats);
+> +       unsigned long *field;
+> +
+> +       if (unlikely(!p))
+> +               p =3D netdev_core_stats_alloc(dev);
+> +
+> +       if (p) {
+> +               field =3D (unsigned long *)((void *)this_cpu_ptr(p) + off=
+set);
+> +               WRITE_ONCE(*field, READ_ONCE(*field) + 1);
 
-[auto build test WARNING on drm-misc/drm-misc-next]
-[also build test WARNING on linus/master v6.6-rc4 next-20231006]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+This is broken...
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ma-Ke/drm-i2c-ch7006-fix-a-possible-null-pointer-dereference/20231007-112036
-base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-patch link:    https://lore.kernel.org/r/20231007031712.3997144-1-make_ruc2021%40163.com
-patch subject: [PATCH] drm/i2c/ch7006: fix a possible null pointer dereference
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231007/202310071306.7oXVHYob-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231007/202310071306.7oXVHYob-lkp@intel.com/reproduce)
+As I explained earlier, dev_core_stats_xxxx(dev) can be called from
+many different contexts:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310071306.7oXVHYob-lkp@intel.com/
+1) process contexts, where preemption and migration are allowed.
+2) interrupt contexts.
 
-All warnings (new ones prefixed by >>):
+Adding WRITE_ONCE()/READ_ONCE() is not solving potential races.
 
-   drivers/gpu/drm/i2c/ch7006_drv.c: In function 'ch7006_encoder_get_modes':
->> drivers/gpu/drm/i2c/ch7006_drv.c:239:42: warning: variable 'encoder_mode' set but not used [-Wunused-but-set-variable]
-     239 |                 struct drm_display_mode *encoder_mode;
-         |                                          ^~~~~~~~~~~~
+I _think_ I already gave you how to deal with this ?
 
+Please try instead:
 
-vim +/encoder_mode +239 drivers/gpu/drm/i2c/ch7006_drv.c
-
-   226	
-   227	static int ch7006_encoder_get_modes(struct drm_encoder *encoder,
-   228					    struct drm_connector *connector)
-   229	{
-   230		struct ch7006_priv *priv = to_ch7006_priv(encoder);
-   231		const struct ch7006_mode *mode;
-   232		int n = 0;
-   233	
-   234		for (mode = ch7006_modes; mode->mode.clock; mode++) {
-   235			if (~mode->valid_scales & 1<<priv->scale ||
-   236			    ~mode->valid_norms & 1<<priv->norm)
-   237				continue;
-   238	
- > 239			struct drm_display_mode *encoder_mode;
-   240			encoder_mode = drm_mode_duplicate(encoder->dev, &mode->mode);
-   241			if (!mode)
-   242				continue;
-   243	
-   244			n++;
-   245		}
-   246	
-   247		return n;
-   248	}
-   249	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
++void netdev_core_stats_inc(struct net_device *dev, u32 offset)
++{
++       /* This READ_ONCE() pairs with the write in netdev_core_stats_alloc=
+() */
++       struct net_device_core_stats __percpu *p =3D READ_ONCE(dev->core_st=
+ats);
++       unsigned long __percpu *field;
++
++       if (unlikely(!p)) {
++               p =3D netdev_core_stats_alloc(dev);
++               if (!p)
++                       return;
++       }
++       field =3D (__force unsigned long __percpu *)((__force void *)p + of=
+fset);
++       this_cpu_inc(*field);
++}
