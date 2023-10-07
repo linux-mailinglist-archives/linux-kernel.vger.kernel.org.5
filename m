@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF5827BC9C8
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 22:36:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE667BC9CB
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 22:36:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344178AbjJGUgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 16:36:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59934 "EHLO
+        id S1344190AbjJGUgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 16:36:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344124AbjJGUgC (ORCPT
+        with ESMTP id S1344160AbjJGUgD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 16:36:02 -0400
+        Sat, 7 Oct 2023 16:36:03 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4FDE95;
-        Sat,  7 Oct 2023 13:35:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05BE7BC;
+        Sat,  7 Oct 2023 13:35:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=TF/aqVn3IrPnAMqnSHzChnQi0apaIvuOdxt0Uorvv1E=; b=D3iwRI4Gvzv9R9HV3nr9SWYP+s
-        RdPiYvPHnG64BZK2SzCbvTwNWhcnYMlYkwGALT2aEiqtaKZnaCALWYgm0MWGHhD8oGn9kfTF9enem
-        NetzCtD4xQREvOZ4jXL1aTsL1kWhwbRLCsutNPGYwtaujQKRGRamU/XdZL7b+i+3btAl4Nm5skEzP
-        ccJl7S82yyWJeai2rto3f8d9OiLsOTr2b+52aFNSjCREUH4N5WFYLQTTKEuXsXa4w2ePNoq+3VNb6
-        hPZ6INb5AhYpZv2WUlIReGB4xllPL/lkJNpE622MtUYd/2QyD+lZ4IjBdOp7cZYtwEd1wxCoLiq2/
-        nmbReRHg==;
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=gK2PkVQedGYkiXZ+S6dDW/QdpinQQuQZI6/6Ogj39CE=; b=WDbKmpqHsfQKSeC/TKnzhmuJiI
+        XlF8tSu64opY8lCrqTKdNZn4EJxfi2q/PChuCviUe9nlITFxCNCS8H6sg23IVfp1KEV4oa3Uabg4v
+        k/8SyjPEtT9LSef6M4Fq2ekcazpitwdP4ZUd/vMn5CV1MqbJnh/xZvWaVpuiRjU3ljPr6twQONFF8
+        NPVe2/HFVL0mnVB8pEWRl6UlGUioGDu/ZwK+lDNBHqEMNs0Gu5XNP0n60hTF12hgDjq5gOsVl8Smz
+        Ha3qXka1ZbBhtaqJ99sTPBCiH6gvEXWtXloFKTA0k3TS48IMtX2jSAs2ZqNaDwUuU5DyZDgB5P+kr
+        f9RhCEsQ==;
 Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qpE1Y-005mL8-Eh; Sat, 07 Oct 2023 20:35:44 +0000
+        id 1qpE1Y-005mLA-Ih; Sat, 07 Oct 2023 20:35:44 +0000
 From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
@@ -36,10 +36,12 @@ Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         Chandan Babu R <chandan.babu@oracle.com>,
         "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
         Mateusz Guzik <mjguzik@gmail.com>
-Subject: [PATCH v2 0/5] Remove the XFS mrlock
-Date:   Sat,  7 Oct 2023 21:35:38 +0100
-Message-Id: <20231007203543.1377452-1-willy@infradead.org>
+Subject: [PATCH v2 1/5] locking: Add rwsem_assert_held() and rwsem_assert_held_write()
+Date:   Sat,  7 Oct 2023 21:35:39 +0100
+Message-Id: <20231007203543.1377452-2-willy@infradead.org>
 X-Mailer: git-send-email 2.37.1
+In-Reply-To: <20231007203543.1377452-1-willy@infradead.org>
+References: <20231007203543.1377452-1-willy@infradead.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -51,69 +53,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-XFS has an mrlock wrapper around the rwsem which adds only the
-functionality of knowing whether the rwsem is currently held in read
-or write mode.  Both regular rwsems and rt-rwsems know this, they just
-don't expose it as an API.  By adding that, we can remove the XFS mrlock
-as well as improving the debug assertions for the mmap_lock when lockdep
-is disabled.
+Modelled after lockdep_assert_held() and lockdep_assert_held_write(),
+but are always active, even when lockdep is disabled.  Of course, they
+don't test that _this_ thread is the owner, but it's sufficient to catch
+many bugs and doesn't incur the same performance penalty as lockdep.
 
-v2: Add rwsem_assert_held() and rwsem_assert_held_write() instead of
-augmenting the existing rwsem_is_locked() with rwsem_is_write_locked().
-There's also an __rwsem_assert_held() and __rwsem_assert_held_write()
-for the benefit of XFS when it's in a context where lockdep doesn't
-know what's going on.  It's still an improvement, so I hope those who
-are looking for perfection can accept a mere improvement.
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ include/linux/rwbase_rt.h |  9 +++++++--
+ include/linux/rwsem.h     | 42 ++++++++++++++++++++++++++++++++++-----
+ 2 files changed, 44 insertions(+), 7 deletions(-)
 
-We can do more to replace uses of rwsem_is_locked(), and I have a few of
-those in my tree, but let's focus on these three use cases for now and
-we can trickle in other improvements through other maintainers after 6.7.
-
-I'm sympathetic to "this will warn twice and dump much the same
-information if you have lockdep enabled".  Perhaps somebody has a
-suggestion for not doing that?
-
-Matthew Wilcox (Oracle) (5):
-  locking: Add rwsem_assert_held() and rwsem_assert_held_write()
-  mm: Use rwsem assertion macros for mmap_lock
-  xfs: Replace xfs_isilocked with xfs_assert_locked
-  xfs: Remove mrlock wrapper
-  fs: Add inode_assert_locked() and inode_assert_locked_excl()
-
- fs/attr.c                       |  2 +-
- fs/namei.c                      |  6 +--
- fs/xfs/libxfs/xfs_attr.c        |  2 +-
- fs/xfs/libxfs/xfs_attr_remote.c |  2 +-
- fs/xfs/libxfs/xfs_bmap.c        | 19 ++++----
- fs/xfs/libxfs/xfs_defer.c       |  2 +-
- fs/xfs/libxfs/xfs_inode_fork.c  |  2 +-
- fs/xfs/libxfs/xfs_rtbitmap.c    |  2 +-
- fs/xfs/libxfs/xfs_trans_inode.c |  6 +--
- fs/xfs/mrlock.h                 | 78 ------------------------------
- fs/xfs/scrub/readdir.c          |  4 +-
- fs/xfs/xfs_attr_list.c          |  2 +-
- fs/xfs/xfs_bmap_util.c          | 10 ++--
- fs/xfs/xfs_dir2_readdir.c       |  2 +-
- fs/xfs/xfs_dquot.c              |  4 +-
- fs/xfs/xfs_file.c               |  4 +-
- fs/xfs/xfs_inode.c              | 86 ++++++++++++---------------------
- fs/xfs/xfs_inode.h              |  4 +-
- fs/xfs/xfs_inode_item.c         |  4 +-
- fs/xfs/xfs_iops.c               |  7 ++-
- fs/xfs/xfs_linux.h              |  2 +-
- fs/xfs/xfs_qm.c                 | 10 ++--
- fs/xfs/xfs_reflink.c            |  2 +-
- fs/xfs/xfs_rtalloc.c            |  4 +-
- fs/xfs/xfs_super.c              |  4 +-
- fs/xfs/xfs_symlink.c            |  2 +-
- fs/xfs/xfs_trans_dquot.c        |  2 +-
- include/linux/fs.h              | 10 ++++
- include/linux/mmap_lock.h       | 10 ++--
- include/linux/rwbase_rt.h       |  9 +++-
- include/linux/rwsem.h           | 42 ++++++++++++++--
- 31 files changed, 142 insertions(+), 203 deletions(-)
- delete mode 100644 fs/xfs/mrlock.h
-
+diff --git a/include/linux/rwbase_rt.h b/include/linux/rwbase_rt.h
+index 1d264dd08625..a04acd85705b 100644
+--- a/include/linux/rwbase_rt.h
++++ b/include/linux/rwbase_rt.h
+@@ -26,12 +26,17 @@ struct rwbase_rt {
+ 	} while (0)
+ 
+ 
+-static __always_inline bool rw_base_is_locked(struct rwbase_rt *rwb)
++static __always_inline bool rw_base_is_locked(const struct rwbase_rt *rwb)
+ {
+ 	return atomic_read(&rwb->readers) != READER_BIAS;
+ }
+ 
+-static __always_inline bool rw_base_is_contended(struct rwbase_rt *rwb)
++static inline void rw_base_assert_held_write(const struct rwbase_rt *rwb)
++{
++	BUG_ON(atomic_read(&rwb->readers) != WRITER_BIAS);
++}
++
++static __always_inline bool rw_base_is_contended(const struct rwbase_rt *rwb)
+ {
+ 	return atomic_read(&rwb->readers) > 0;
+ }
+diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
+index 1dd530ce8b45..048149f781b3 100644
+--- a/include/linux/rwsem.h
++++ b/include/linux/rwsem.h
+@@ -66,14 +66,24 @@ struct rw_semaphore {
+ #endif
+ };
+ 
+-/* In all implementations count != 0 means locked */
++#define RWSEM_UNLOCKED_VALUE		0UL
++#define RWSEM_WRITER_LOCKED		(1UL << 0)
++#define __RWSEM_COUNT_INIT(name)	.count = ATOMIC_LONG_INIT(RWSEM_UNLOCKED_VALUE)
++
+ static inline int rwsem_is_locked(struct rw_semaphore *sem)
+ {
+-	return atomic_long_read(&sem->count) != 0;
++	return atomic_long_read(&sem->count) != RWSEM_UNLOCKED_VALUE;
+ }
+ 
+-#define RWSEM_UNLOCKED_VALUE		0L
+-#define __RWSEM_COUNT_INIT(name)	.count = ATOMIC_LONG_INIT(RWSEM_UNLOCKED_VALUE)
++static inline void __rwsem_assert_held(const struct rw_semaphore *sem)
++{
++	WARN_ON(atomic_long_read(&sem->count) == RWSEM_UNLOCKED_VALUE);
++}
++
++static inline void __rwsem_assert_held_write(const struct rw_semaphore *sem)
++{
++	WARN_ON(!(atomic_long_read(&sem->count) & RWSEM_WRITER_LOCKED));
++}
+ 
+ /* Common initializer macros and functions */
+ 
+@@ -152,11 +162,21 @@ do {								\
+ 	__init_rwsem((sem), #sem, &__key);			\
+ } while (0)
+ 
+-static __always_inline int rwsem_is_locked(struct rw_semaphore *sem)
++static __always_inline int rwsem_is_locked(const struct rw_semaphore *sem)
+ {
+ 	return rw_base_is_locked(&sem->rwbase);
+ }
+ 
++static inline void __rwsem_assert_held(const struct rw_semaphore *sem)
++{
++	BUG_ON(!rwsem_is_locked(sem));
++}
++
++static inline void __rwsem_assert_held_write(const struct rw_semaphore *sem)
++{
++	rw_base_assert_held_write(sem);
++}
++
+ static __always_inline int rwsem_is_contended(struct rw_semaphore *sem)
+ {
+ 	return rw_base_is_contended(&sem->rwbase);
+@@ -169,6 +189,18 @@ static __always_inline int rwsem_is_contended(struct rw_semaphore *sem)
+  * the RT specific variant.
+  */
+ 
++static inline void rwsem_assert_held(const struct rw_semaphore *sem)
++{
++	lockdep_assert_held(sem);
++	__rwsem_assert_held(sem);
++}
++
++static inline void rwsem_assert_held_write(const struct rw_semaphore *sem)
++{
++	lockdep_assert_held_write(sem);
++	__rwsem_assert_held_write(sem);
++}
++
+ /*
+  * lock for reading
+  */
 -- 
 2.40.1
 
