@@ -2,71 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C47F7BC553
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 09:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3BB97BC555
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 09:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343646AbjJGHCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 03:02:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46244 "EHLO
+        id S1343633AbjJGHDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 03:03:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343660AbjJGHCB (ORCPT
+        with ESMTP id S1343578AbjJGHDR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 03:02:01 -0400
-Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 604D8E9
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 00:01:58 -0700 (PDT)
-Received: by mail-ua1-x936.google.com with SMTP id a1e0cc1a2514c-7b07719089aso1854045241.0
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Oct 2023 00:01:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696662117; x=1697266917; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=MV3fajDywtr5Jk/wqj0ujD7RNZVpvrV8ESz+9hWBpd0=;
-        b=I9n84xpWpBO0XndI8Z5RLDA5GxcpmDtpn2w31uRdWwEyADF8iHDc4CTY/JztTcTYo1
-         h2/tfI0wFQR1F0j8ESBUxC+H94lSYM9Ht2Wy5XrZMnWKYDCV/XJpvzbsuIiVIcIEp9AJ
-         /NWFX93vLeKGPBvXIy537ALEh31znUxDtk4LXf56tpx/QK9hV3eGl4/H/ps+cHjR0uaG
-         RKNqLAkwuAoB2thnFrehVhAiSUuw/pD67AEobX7vDdNn/Pi/H7bF1XbrQpQxQq3EV0SV
-         xyFnB09mXgYKZ7HyM8e+ssXTE+aqFEpqiLne8B07YASACkm+/Gk4LTu8q1nylpE1RJOP
-         Mv4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696662117; x=1697266917;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MV3fajDywtr5Jk/wqj0ujD7RNZVpvrV8ESz+9hWBpd0=;
-        b=d1pxl1yosMH6agcFk9MTlrOo17p3y8/6WJcSDx75Y9m29X2i1eN5bc7fvxmNpyXSZn
-         T8eHCnzA//0ZvPHciSaR7wMZ1vpUpem+d3+hlef+ViicQqoYR3ePF7+qP6ox/VTMnb0N
-         MwKYqnlhKR+2sU7Fnc8bedahWw/E7GJeQlR97tJu/t3OF0WJvOUDrEZBqOftCoiu3uHt
-         rzL69WU5ryBf32UBzpXmXHGVbv/LIax0bdQr4i/3uyFpZbu0GTUIlnb0BMioeit8aDbS
-         uHzTXNllloh7+aFaWxBOzanKENUqr+i5rlbd6s8xqMUdMKOaqL272lnvS9Jo6IKBtO2r
-         6i0A==
-X-Gm-Message-State: AOJu0YzdjeGQ25cthMM6CXxFN084FsRm4xv8CAmTGTLw+5iWFLW3nDTa
-        9NWOIPiOFNlDUCVGZpRjHt7RuxTXEw++Upn07pDOHQ==
-X-Google-Smtp-Source: AGHT+IFdohtRGFQRlUDkLz2okiPnrDtwhF5TIH53ApeAk1hNpPge1IoFBRrCXopD2OE2Wl7moP3v7EkCp1ZdUfX3vG4=
-X-Received: by 2002:a1f:9889:0:b0:49d:2a13:58fc with SMTP id
- a131-20020a1f9889000000b0049d2a1358fcmr3336138vke.2.1696662117155; Sat, 07
- Oct 2023 00:01:57 -0700 (PDT)
+        Sat, 7 Oct 2023 03:03:17 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 74AADB9
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 00:03:14 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8Dxl+iwAiFlMrsvAA--.55795S3;
+        Sat, 07 Oct 2023 15:03:12 +0800 (CST)
+Received: from openarena.loongson.cn (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxXNywAiFlmewZAA--.55077S2;
+        Sat, 07 Oct 2023 15:03:12 +0800 (CST)
+From:   Sui Jingfeng <suijingfeng@loongson.cn>
+To:     Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>
+Cc:     etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/etnaviv: Drop the 'len' parameter of etnaviv_iommu_map() function
+Date:   Sat,  7 Oct 2023 15:03:12 +0800
+Message-Id: <20231007070312.1026296-1-suijingfeng@loongson.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <cover.1696605143.git.andreyknvl@google.com> <1c4eb354a3a7b8ab56bf0c2fc6157c22050793ca.1696605143.git.andreyknvl@google.com>
-In-Reply-To: <1c4eb354a3a7b8ab56bf0c2fc6157c22050793ca.1696605143.git.andreyknvl@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Sat, 7 Oct 2023 09:01:21 +0200
-Message-ID: <CANpmjNM7rytkGRjyG3Pf5PakCdibtpvsm7o-K3am-U0kT-d2Rw@mail.gmail.com>
-Subject: Re: [PATCH 5/5] Documentation: *san: drop "the" from article titles
-To:     andrey.konovalov@linux.dev
-Cc:     Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        kasan-dev@googlegroups.com,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8AxXNywAiFlmewZAA--.55077S2
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj9xXoW7Gw47XryUXF1fKryfJryxZwc_yoWkKwb_CF
+        1UZr9rJrsxZFn2q3Z2yrZxZF9YyF45ZFs2q3Zrt3sxKryDZwnxArWv934DA3yrXFy8uFnr
+        G3Z7tF10kF17WosvyTuYvTs0mTUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUj1kv1TuYvT
+        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+        cSsGvfJTRUUUb7AYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+        vaj40_Wr0E3s1l1IIY67AEw4v_JrI_Jryl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
+        Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE
+        14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x
+        0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+        7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcV
+        C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF
+        04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
+        CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1EksDUUUUU==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,74 +60,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Oct 2023 at 17:18, <andrey.konovalov@linux.dev> wrote:
->
-> From: Andrey Konovalov <andreyknvl@google.com>
->
-> Drop "the" from the titles of documentation articles for KASAN, KCSAN,
-> and KMSAN, as it is redundant.
->
-> Also add SPDX-License-Identifier for kasan.rst.
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> ---
->  Documentation/dev-tools/kasan.rst | 7 +++++--
->  Documentation/dev-tools/kcsan.rst | 4 ++--
->  Documentation/dev-tools/kmsan.rst | 6 +++---
+The 'len' parameter is the 4th argument, because it is not get used, so
+drop it. No functional change.
 
-UBSan also has it: https://docs.kernel.org/dev-tools/ubsan.html
+Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+---
+ drivers/gpu/drm/etnaviv/etnaviv_mmu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Reviewed-by: Marco Elver <elver@google.com>
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_mmu.c b/drivers/gpu/drm/etnaviv/etnaviv_mmu.c
+index 4fa72567183a..1661d589bf3e 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_mmu.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_mmu.c
+@@ -70,7 +70,7 @@ static int etnaviv_context_map(struct etnaviv_iommu_context *context,
+ }
+ 
+ static int etnaviv_iommu_map(struct etnaviv_iommu_context *context, u32 iova,
+-			     struct sg_table *sgt, unsigned len, int prot)
++			     struct sg_table *sgt, int prot)
+ {	struct scatterlist *sg;
+ 	unsigned int da = iova;
+ 	unsigned int i;
+@@ -314,7 +314,7 @@ int etnaviv_iommu_map_gem(struct etnaviv_iommu_context *context,
+ 		goto unlock;
+ 
+ 	mapping->iova = node->start;
+-	ret = etnaviv_iommu_map(context, node->start, sgt, etnaviv_obj->base.size,
++	ret = etnaviv_iommu_map(context, node->start, sgt,
+ 				ETNAVIV_PROT_READ | ETNAVIV_PROT_WRITE);
+ 
+ 	if (ret < 0) {
+-- 
+2.34.1
 
->  3 files changed, 10 insertions(+), 7 deletions(-)
->
-> diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
-> index 382818a7197a..858c77fe7dc4 100644
-> --- a/Documentation/dev-tools/kasan.rst
-> +++ b/Documentation/dev-tools/kasan.rst
-> @@ -1,5 +1,8 @@
-> -The Kernel Address Sanitizer (KASAN)
-> -====================================
-> +.. SPDX-License-Identifier: GPL-2.0
-> +.. Copyright (C) 2023, Google LLC.
-> +
-> +Kernel Address Sanitizer (KASAN)
-> +================================
->
->  Overview
->  --------
-> diff --git a/Documentation/dev-tools/kcsan.rst b/Documentation/dev-tools/kcsan.rst
-> index 3ae866dcc924..94b6802ab0ab 100644
-> --- a/Documentation/dev-tools/kcsan.rst
-> +++ b/Documentation/dev-tools/kcsan.rst
-> @@ -1,8 +1,8 @@
->  .. SPDX-License-Identifier: GPL-2.0
->  .. Copyright (C) 2019, Google LLC.
->
-> -The Kernel Concurrency Sanitizer (KCSAN)
-> -========================================
-> +Kernel Concurrency Sanitizer (KCSAN)
-> +====================================
->
->  The Kernel Concurrency Sanitizer (KCSAN) is a dynamic race detector, which
->  relies on compile-time instrumentation, and uses a watchpoint-based sampling
-> diff --git a/Documentation/dev-tools/kmsan.rst b/Documentation/dev-tools/kmsan.rst
-> index 55fa82212eb2..323eedad53cd 100644
-> --- a/Documentation/dev-tools/kmsan.rst
-> +++ b/Documentation/dev-tools/kmsan.rst
-> @@ -1,9 +1,9 @@
->  .. SPDX-License-Identifier: GPL-2.0
->  .. Copyright (C) 2022, Google LLC.
->
-> -===================================
-> -The Kernel Memory Sanitizer (KMSAN)
-> -===================================
-> +===============================
-> +Kernel Memory Sanitizer (KMSAN)
-> +===============================
->
->  KMSAN is a dynamic error detector aimed at finding uses of uninitialized
->  values. It is based on compiler instrumentation, and is quite similar to the
-> --
-> 2.25.1
->
