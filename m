@@ -2,61 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B1DD7BC5B3
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 09:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6147BC5B6
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 09:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343722AbjJGHoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 03:44:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44162 "EHLO
+        id S1343690AbjJGHpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 03:45:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343611AbjJGHoJ (ORCPT
+        with ESMTP id S1343665AbjJGHpl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 03:44:09 -0400
-Received: from muru.com (muru.com [72.249.23.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BBF92BD;
-        Sat,  7 Oct 2023 00:44:08 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 33BD5809E;
-        Sat,  7 Oct 2023 07:44:08 +0000 (UTC)
-Date:   Sat, 7 Oct 2023 10:44:06 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Vaibhav Hiremath <hvaibhav@ti.com>,
-        Felipe Balbi <balbi@ti.com>,
-        Xunlei Pang <pang.xunlei@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] ARM: OMAP: timer32K: fix all kernel-doc warnings
-Message-ID: <20231007074406.GZ34982@atomide.com>
-References: <20231007001603.24972-1-rdunlap@infradead.org>
+        Sat, 7 Oct 2023 03:45:41 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1812A6;
+        Sat,  7 Oct 2023 00:45:39 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="382769528"
+X-IronPort-AV: E=Sophos;i="6.03,205,1694761200"; 
+   d="scan'208";a="382769528"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2023 00:45:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="756132848"
+X-IronPort-AV: E=Sophos;i="6.03,205,1694761200"; 
+   d="scan'208";a="756132848"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2023 00:45:37 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
+        (envelope-from <andy@kernel.org>)
+        id 1qp20E-00000003Xtd-3FMI;
+        Sat, 07 Oct 2023 10:45:34 +0300
+Date:   Sat, 7 Oct 2023 10:45:34 +0300
+From:   Andy Shevchenko <andy@kernel.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dipen Patel <dipenp@nvidia.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [RFC/RFT PATCH] gpiolib: reverse-assign the fwnode to struct
+ gpio_chip
+Message-ID: <ZSEMnqAynnrfBxX1@smile.fi.intel.com>
+References: <20231006115147.18559-1-brgl@bgdev.pl>
+ <ZSAIUVAQ6ifi8LTL@smile.fi.intel.com>
+ <CAMRc=MdrLSPCEsQ6OEgRX-7Wh7ka+Rczja=QjY-srozj3cz68w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231007001603.24972-1-rdunlap@infradead.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=MdrLSPCEsQ6OEgRX-7Wh7ka+Rczja=QjY-srozj3cz68w@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Randy Dunlap <rdunlap@infradead.org> [231007 03:16]:
-> Fix kernel-doc warnings reported by the kernel test robot:
+On Fri, Oct 06, 2023 at 09:07:54PM +0200, Bartosz Golaszewski wrote:
+> On Fri, Oct 6, 2023 at 3:15 PM Andy Shevchenko <andy@kernel.org> wrote:
+> >
+> > On Fri, Oct 06, 2023 at 01:51:47PM +0200, Bartosz Golaszewski wrote:
+> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > >
+> > > struct gpio_chip is not only used to carry the information needed to
+> > > set-up a GPIO device but is also used in all GPIOLIB callbacks and is
+> > > passed to the matching functions of lookup helpers.
+> > >
+> > > In that last case, it is currently impossible to match a GPIO device by
+> > > fwnode unless it was explicitly assigned to the chip in the provider
+> > > code.
+> >
+> > That's expected behaviour.
 > 
-> timer32k.c:186: warning: cannot understand function prototype: 'struct timespec64 persistent_ts; '
-> timer32k.c:191: warning: Function parameter or member 'ts' not described in 'omap_read_persistent_clock64'
-> timer32k.c:216: warning: Function parameter or member 'vbase' not described in 'omap_init_clocksource_32k'
-> timer32k.c:216: warning: Excess function parameter 'pbase' description in 'omap_init_clocksource_32k'
-> timer32k.c:216: warning: Excess function parameter 'size' description in 'omap_init_clocksource_32k'
-> timer32k.c:216: warning: No description found for return value of 'omap_init_clocksource_32k'
+> Is it though? We now have a GPIO device that represents a piece of
+> physical hardware that has an fwnode assigned and the associated GPIO
+> chip (tied to that device) that has none. How is that logical? It's
+> not coherent.
 
-Thanks applying into fixes.
+To me it is pretty much logical, yes. The providers decide themselves
+if they want to have any specific device node for the chip or inherit
+it from the physical hardware. Note, there are two types of the FW descriptions
+of the GPIO controller, when it's 1:1 to the banks and when it's one device
+with list of children, one per bank. Due to this differences we have
+this field in the GPIO chip to begin with.
 
-Tony
+
+> I'm not surprised users of that code will be confused -
+> like Dipen in this case.
+
+Which case? I'm still unsure you pictured the issue here.
+Where can I read about it?
+
+> > > If the fwnode is taken from the parent device, the pointer in
+> > > struct gpio_chip will remain NULL.
+> >
+> > > If we have a parent device but gc->fwnode was not assigned by the
+> > > provider, let's assign it ourselves so that lookup by fwnode can work in
+> > > all cases.
+> >
+> > I don't think this is a good change. We paper over the real issue where
+> > we and callers need to understand what they are looking for.
+> >
+> > ...
+> >
+> > > This is something that Dipen reported with one of the tegra drivers where
+> > > a GPIO lookup by fwnode does not work because the fwnode pointer in struct
+> > > gpio_chip is NULL. This patch addresses this use-case.
+> >
+> > I am not sure I understand the problem here. All these should have been
+> > addressed already, no?
+> >
+> > So, the GPIOLIB should use dev_fwnode(&gdev->dev) inside it, outside it
+> > the GPIO drivers are free to use gc->fwnode as long as they understand
+> > the lifetime of the respective object.
+> >
+> >
+> > --
+> > With Best Regards,
+> > Andy Shevchenko
+> >
+> >
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
