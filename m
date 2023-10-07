@@ -2,95 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 313DE7BC6C0
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 12:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 087AC7BC6C4
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 12:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343813AbjJGKXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 06:23:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49228 "EHLO
+        id S1343827AbjJGKZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 06:25:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343798AbjJGKX2 (ORCPT
+        with ESMTP id S1343783AbjJGKZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 06:23:28 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EE09A2
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 03:23:24 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-4053c6f0db8so26563875e9.3
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Oct 2023 03:23:24 -0700 (PDT)
+        Sat, 7 Oct 2023 06:25:06 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6731193;
+        Sat,  7 Oct 2023 03:25:05 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-2773523b2b6so1941109a91.2;
+        Sat, 07 Oct 2023 03:25:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696674203; x=1697279003; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1696674305; x=1697279105; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=B624f8viZ/1zkGyjy2K58RrXte57gw6qOrvl3O2Wa+0=;
-        b=Y8IVb66UOMpgNmqcVUEfVZqt9DY6BfUwElAoXzaaBouMVWearm4g+SntJMwkLI/W+X
-         VI52OCyr2OfdXeHY2Etf/+5eGtIwot2Feb4kutxSqsQzC8CIWsADwd7fEa8KgCHh0z+a
-         Zv3kxH8UGIdbu2aqlUfO27fP09jeE326Q7VgD2oK43/9ZPARzxy0wS1vZMk+kjZ/kIL5
-         dhvHNx9LTpNJV30VfzXHkdoq1IgEvmNwT1ESIpalqUVUkLefFd+h1UQjCTPFIBAdeLPV
-         brkRjH7qvES/xUut+kdUoZVm4uPNDBdswoFf6TN745wKazQSGQ9IMOjmrIrnubPL1wMP
-         hmtQ==
+        bh=oZrX+dTB7po/SFyO4VmNLR/v/7IkFcGD0fZTbD+Yg6I=;
+        b=OJ+njM1dFP/ZorHh3Mzlf1jEIX7P22pEq03dvKLj4x49vtNGekE3ofD1rEKqU1h3RW
+         uDBFNlxFpExXuS2oyFRBk1uIYffgWhwqbLiXDEndLc+9zQoXVuYyvuMyWaPCTFCACLXR
+         ptzCbMcMSj+sHn1MwtQ5JaqzUOAePcMbMS7Ik1uCmuX3vFaVGew0lm6huhO/yGxcA5V0
+         aUqHG8PvAnokT+vZJ77ghVwRtXvDOHnAqTeTPVCR0JmQNQC4B8ucMtvf3wiqyc/UnAGE
+         Z+2f5eQU1uAs+KRhAmNeK0ODJUT7IIanHZiIW5agHmXoLsbFTh55x8TpfmCVczQj5SjN
+         d6cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696674203; x=1697279003;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696674305; x=1697279105;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=B624f8viZ/1zkGyjy2K58RrXte57gw6qOrvl3O2Wa+0=;
-        b=E2wHJyQ3pl8UrDJoOcyFNbRqczBYWEm4CE9KhhcH/FkkvpdtTPYmysCrdKrInmieb/
-         d7siuSDMQfJBxlS7EeRDnzCI8PedZcQorNJYfKanQ8b/YZG7KdgwKfw2PvnoZMltrmRM
-         4NvyTmALxhItm+5HNHJwpl1CVt6U0wp+6C9GZdGghKcES5zTt0Amx4ShETG/2wIwpK35
-         0vb/IuEipf7X8oaZ0ATsdwBL8UKyuMwPdk8cpZTGf4EtbEkWx6fOrOVYVlxutvNrAux/
-         c1UaZzwfeMWqaAFbZGNTBGp+QNzJQ4/NVZIz0HPzxP+nYxmpI53HKsbaKZVDp85YiB/Z
-         ORxg==
-X-Gm-Message-State: AOJu0Yx+xPfdoBqkp2DTgFT39M81nPHeC9yJFoR7A0TKGBl5EobnSdwr
-        7kMyrQai4DGodkR9gFwJVCmKZGX8lGb0c+dPvoQ=
-X-Google-Smtp-Source: AGHT+IH5tRDEMzH77PCOgReSaBgOwSItxJaZ10MvMZHUttF7QLJu7fn2XqzRDfBQvlqR1JLyeKH2qw==
-X-Received: by 2002:a7b:c397:0:b0:401:b53e:6c40 with SMTP id s23-20020a7bc397000000b00401b53e6c40mr9663375wmj.10.1696674203044;
-        Sat, 07 Oct 2023 03:23:23 -0700 (PDT)
-Received: from [172.20.10.4] (82-132-213-54.dab.02.net. [82.132.213.54])
-        by smtp.gmail.com with ESMTPSA id q15-20020a7bce8f000000b00405391f485fsm5773401wmj.41.2023.10.07.03.23.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Oct 2023 03:23:22 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230926164529.102427-1-robh@kernel.org>
-References: <20230926164529.102427-1-robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: nvmem: u-boot,env: Add missing
- additionalProperties on child node schemas
-Message-Id: <169667420087.74713.7725505612482066059.b4-ty@linaro.org>
-Date:   Sat, 07 Oct 2023 11:23:20 +0100
+        bh=oZrX+dTB7po/SFyO4VmNLR/v/7IkFcGD0fZTbD+Yg6I=;
+        b=i4OPgoJcsMIfVRy2hXLoWj3ZGkfAQHXiEPDYkSiXKwa9IJHGdeqYkYbr+Cow7uEvDH
+         H4g5lS3jKKecYs3fZEQFlXoxNrrhp48aM6G+6lkdssOY31VmXthkIx0ywDqwMbizEvH+
+         ObaFenQYIhKlQnMdnQfl1ZiHpyIqm4ZwiiUm+mcfbHZ2TVrIF3+hYJ6VL9mqmCo3kus5
+         e/YLd1cMfkRSgA21StTZI/TDppsOJgEshPs6XomDy2aawTQIvhM27tdSZJeU76cTctWl
+         sXSal7ugkK1u2fkUhx8DkHX6ypQOHlVB5ibpQ9NgB0DufPPaFAqXqgw1C08L2m8+eFBi
+         s16Q==
+X-Gm-Message-State: AOJu0Yxb1MerWLWkiPeBgLo6w3lKgsdYpEUeeMxJhoMtB1oQL0CEAzGi
+        8UHlczRqyPsOktHguYKXckg1zrOfTSw9J3fcf8w=
+X-Google-Smtp-Source: AGHT+IH1hI2l1/yITSbqW+RpK+Q5smunjEoi5mtQynU7RHJOiuJFSjsMQw+MtS83LJdNGcUzRnip+GzO4SWEs+0lwFg=
+X-Received: by 2002:a17:90a:fe17:b0:277:cdc:29cf with SMTP id
+ ck23-20020a17090afe1700b002770cdc29cfmr9865372pjb.46.1696674304734; Sat, 07
+ Oct 2023 03:25:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20231003232903.7109-1-frederic@kernel.org> <f214737a-6856-455f-ac86-9f7ec605b902@paulmck-laptop>
+ <ZR0vjdp+BNiFm46+@lothringen>
+In-Reply-To: <ZR0vjdp+BNiFm46+@lothringen>
+From:   zhuangel570 <zhuangel570@gmail.com>
+Date:   Sat, 7 Oct 2023 18:24:53 +0800
+Message-ID: <CANZk6aQG4Lqyk8JkT_my3dwub4jGpn31wYRoCwW4oSH1x=sJ1A@mail.gmail.com>
+Subject: Re: [PATCH 0/5] srcu fixes
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 4, 2023 at 5:25=E2=80=AFPM Frederic Weisbecker <frederic@kernel=
+.org> wrote:
+>
+> On Tue, Oct 03, 2023 at 05:35:31PM -0700, Paul E. McKenney wrote:
+> > On Wed, Oct 04, 2023 at 01:28:58AM +0200, Frederic Weisbecker wrote:
+> > > Hi,
+> > >
+> > > This contains a fix for "SRCU: kworker hung in synchronize_srcu":
+> > >
+> > >     http://lore.kernel.org/CANZk6aR+CqZaqmMWrC2eRRPY12qAZnDZLwLnHZbNi=
+=3DxXMB401g@mail.gmail.com
+> > >
+> > > And a few cleanups.
+> > >
+> > > Passed 50 hours of SRCU-P and SRCU-N.
+> > >
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks=
+.git
+> > >     srcu/fixes
+> > >
+> > > HEAD: 7ea5adc5673b42ef06e811dca75e43d558cc87e0
+> > >
+> > > Thanks,
+> > >     Frederic
+> >
+> > Very good, and a big "Thank You!!!" to all of you!
+> >
+> > I queued this series for testing purposes, and have started a bunch of
+> > SRCU-P and SRCU-N tests on one set of systems, and a single SRCU-P and
+> > SRCU-N on another system, but with both scenarios resized to 40 CPU eac=
+h.
+> >
+> > While that is in flight, a few questions:
+> >
+> > o     Please check the Co-developed-by rules.  Last I knew, it was
+> >       necessary to have a Signed-off-by after each Co-developed-by.
+>
+> Indeed! I'll try to collect the three of them within a few days. If some
+> are missing, I'll put a Reported-by instead.
+>
+> >
+> > o     Is it possible to get a Tested-by from the original reporter?
+> >       Or is this not reproducible?
+>
+> It seems that the issue would trigger rarely. But I hope we can get one.
 
-On Tue, 26 Sep 2023 11:45:25 -0500, Rob Herring wrote:
-> Just as unevaluatedProperties or additionalProperties are required at
-> the top level of schemas, they should (and will) also be required for
-> child node schemas. That ensures only documented properties are
-> present for any node.
-> 
-> 
+There is currently no way to reproduce this problem in our environment.
+The problem has appeared on 2 machines, and each time it occurred, the
+test had been running for more than a month.
 
-Applied, thanks!
+BTW, I will run tests with these patches in our environment.
 
-[1/1] dt-bindings: nvmem: u-boot,env: Add missing additionalProperties on child node schemas
-      commit: 8beb2ec54b65eb08891c9b9c23428712d46d8e15
-
-Best regards,
--- 
-Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
+>
+> >
+> > o     Is it possible to convince rcutorture to find this sort of
+> >       bug?  Seems like it should be, but easy to say...
+>
+> So at least the part where advance/accelerate fail is observed from time
+> to time. But then we must meet two more rare events:
+>
+> 1) The CPU failing to ACC/ADV must also fail to start the grace period be=
+cause
+>   another CPU was faster.
+>
+> 2) The callbacks invocation must not run until that grace period has ende=
+d (even
+>   though we had a previous one completed with callbacks ready).
+>
+>   Or it can run after all but at least the acceleration part of it has to
+>   happen after the end of the new grace period.
+>
+> Perhaps all these conditions can me met more often if we overcommit the n=
+umber
+> of vCPU. For example run 10 SRCU-P instances within 3 real CPUs. This cou=
+ld
+> introduce random breaks within the torture writers...
+>
+> Just an idea...
+>
+> >
+> > o     Frederic, would you like to include this in your upcoming
+> >       pull request?  Or does it need more time?
+>
+> At least the first patch yes. It should be easily backported and
+> it should be enough to solve the race. I'll just wait a bit to collect
+> more tags.
+>
+> Thanks!
+>
+> >
+> >                                               Thanx, Paul
+> >
+> > > ---
+> > >
+> > > Frederic Weisbecker (5):
+> > >       srcu: Fix callbacks acceleration mishandling
+> > >       srcu: Only accelerate on enqueue time
+> > >       srcu: Remove superfluous callbacks advancing from srcu_start_gp=
+()
+> > >       srcu: No need to advance/accelerate if no callback enqueued
+> > >       srcu: Explain why callbacks invocations can't run concurrently
+> > >
+> > >
+> > >  kernel/rcu/srcutree.c | 55 ++++++++++++++++++++++++++++++++++++-----=
+----------
+> > >  1 file changed, 39 insertions(+), 16 deletions(-)
