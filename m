@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7F67BC830
+	by mail.lfdr.de (Postfix) with ESMTP id A3B207BC831
 	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 16:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344096AbjJGOBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 10:01:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37344 "EHLO
+        id S1344111AbjJGOBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 10:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344006AbjJGOBJ (ORCPT
+        with ESMTP id S1343974AbjJGOBX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 10:01:09 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2038CBD;
-        Sat,  7 Oct 2023 07:01:08 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-406618d0991so27705535e9.2;
-        Sat, 07 Oct 2023 07:01:08 -0700 (PDT)
+        Sat, 7 Oct 2023 10:01:23 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30BD9C5;
+        Sat,  7 Oct 2023 07:01:09 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-32167a4adaaso2707501f8f.1;
+        Sat, 07 Oct 2023 07:01:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696687266; x=1697292066; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696687267; x=1697292067; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zT+UyLNrtTIL3bbAzaCCFygmUaFXv4MJR29ziVQ6mVY=;
-        b=Q5KjAzAQ2fO5ShChwVJ00wTPbYwiXKvWUfenBqzXC9qhViZ5XLkuW//ESCj2zromGP
-         oHWRL26LGrEOr5TkOjhfFwDR4v2umfN65jgHmSPrHbDq1QliIVUYIfk1szJXXine0KEU
-         RVVdHjnbItduk03sGEz8RV8TpDU5y9E5s9prvXbe1xs6+saA/KMbfTcSWpRDMTJT04K4
-         N0ND90inyxAqdJIAqVpli5BNSe26p8gouawhwRufBpn+Krqny0R82/6gZrxK7fmeXwFI
-         Vt6zLkTifBiMzTcEhvxNUbzy46DJ8QX91PpwTmH+XGTW6RIylwe6OSm3TE3n39AR7U/s
-         BFaw==
+        bh=MWjelm02UwHQeFfJRYeGKYAqi5E/N/b99cz5nFc0Cp0=;
+        b=cV+6uvnbQ8BtUogi27xDSZ478Vh9MsO+5KABKTKjpVw7InaswoPpxemFkEBoGIqxHp
+         /GkTz0Ru6Qbmwpd59OQktVtXvqVHk9Vsb1njOLWS+f3IBW5cI4rOXrjTbIBEnMfO2xxX
+         s865164rODtSmcuN2bv25aLdFcbSlqGuedxgOZOLzcBAb7sgjKNZfBcEk/t9eMHRqSuk
+         NQleetLda8zZw7So+zQ7wjG4KSLzci+AFOte7MRRcNwRM7YI0pqjuuaMhogpkknVwTEk
+         mSOS9zumn2UGr3cAer0I65+71qEZVXgo5KRL90koxZ96xhRPKp+Yd9Ry6rSg1e3hLPxO
+         ZMlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696687266; x=1697292066;
+        d=1e100.net; s=20230601; t=1696687267; x=1697292067;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zT+UyLNrtTIL3bbAzaCCFygmUaFXv4MJR29ziVQ6mVY=;
-        b=xDrqQ5S8aqmQ+AS7+YpwkMt7Ps49BgMqnTaQBWXxzm1TisNAnWRES1gPoz1cO2B/aQ
-         lK3GxUt6oFadh8SkjQAZnYWGT3RgasGtvsDCWr5vBxLhI63lNt/lFBvMfSJb9aNpDICh
-         F1BmZ8hCb7lFv6A+6pK+xS/Rei6dof4THCApaWCfO5B3dHOAluO9vz9WCuDdf2N9X8l/
-         PdJn1CLoyZO0sAr8s4oqgnGkyJuqhBG7ecTjEHFB8t3echVOYOc8AoY9BYJ9gueZOelH
-         tkWkqObosYJwcKOh4CHUJJmDNHIXmsr2gUmlVBkgVzRMrDHHxJ694+LrgDZaP+sl1G6/
-         C6+A==
-X-Gm-Message-State: AOJu0YyuiiNlTao/OBfV3hcqB1vg99842w4o/yW7wmr6HCYTVgW+yONW
-        /xyS4GoeQSB4+s7tAaFrSiY=
-X-Google-Smtp-Source: AGHT+IFTgNG+SUnfvuJjpfF+KF0NxkqiuO3cNvZJSlX7bz+MSzTjE1SvIxxxorryKRkkwFDP+e8pOw==
-X-Received: by 2002:a05:600c:22c6:b0:404:7659:ba39 with SMTP id 6-20020a05600c22c600b004047659ba39mr10352242wmg.16.1696687266411;
-        Sat, 07 Oct 2023 07:01:06 -0700 (PDT)
+        bh=MWjelm02UwHQeFfJRYeGKYAqi5E/N/b99cz5nFc0Cp0=;
+        b=pUrhI9/Ubf6boDUlWW93UkrDt6rFgNLn39hBMgci8YNZUeNBpD5p2idLC/8VhIeihT
+         GtAlCG+EsUG3bcu0CZlcAB3Tl5ZsFTnaiaW0ISR3Rk39NvSvF97mt5Yoa7R0i5d7LS6y
+         xtyW9MPTvvMIYIlvDGKMjQ1SPqm4AtKaLK87dSacT0EBiHvyNc+SKJrw8puoZOZfdRlU
+         D3JomCf2JABKcilLCotlhIzyDuW9WMrtbcVT6W6G+B+kGGHorRjSN+j5t9dLCdY6SuHe
+         3s+yU3PR/530lEmelbiBEjZcrQwciGpjJMkJdnosdqS7kKvGEa1RxNnRQJa9odP7SvF/
+         vAeA==
+X-Gm-Message-State: AOJu0YyPKfkwFbETVOXlNvcqGiSEoVJmbFvaLR2KLg5eoLKLObKT0LA2
+        VZgAeLXyib5i3D2FBk1T7Gw=
+X-Google-Smtp-Source: AGHT+IGZ0NQ8IIxs8Y9r9no4/Wi61xyYKIjIooHZrkFtqfgEySaKP3SYREGDsFHBHsb06pFTotav4A==
+X-Received: by 2002:adf:e90a:0:b0:321:6fb0:9a8b with SMTP id f10-20020adfe90a000000b003216fb09a8bmr9548205wrm.70.1696687267534;
+        Sat, 07 Oct 2023 07:01:07 -0700 (PDT)
 Received: from david-ryuzu.fritz.box ([77.22.112.104])
-        by smtp.googlemail.com with ESMTPSA id q8-20020a05600000c800b0032415213a6fsm4332043wrx.87.2023.10.07.07.01.03
+        by smtp.googlemail.com with ESMTPSA id q8-20020a05600000c800b0032415213a6fsm4332043wrx.87.2023.10.07.07.01.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Oct 2023 07:01:04 -0700 (PDT)
+        Sat, 07 Oct 2023 07:01:07 -0700 (PDT)
 From:   David Wronek <davidwronek@gmail.com>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -69,9 +69,9 @@ Cc:     cros-qcom-dts-watchers@chromium.org, linux-arm-msm@vger.kernel.org,
         linux-phy@lists.infradead.org, linux-scsi@vger.kernel.org,
         hexdump0815@googlemail.com, ~postmarketos/upstreaming@lists.sr.ht,
         phone-devel@vger.kernel.org, David Wronek <davidwronek@gmail.com>
-Subject: [PATCH 6/7] arm64: dts: qcom: sm7125-xiaomi-common: Add UFS nodes
-Date:   Sat,  7 Oct 2023 15:58:30 +0200
-Message-ID: <20231007140053.1731245-7-davidwronek@gmail.com>
+Subject: [PATCH 7/7] arm64: dts: qcom: Add support for Xiaomi Redmi Note 9S
+Date:   Sat,  7 Oct 2023 15:58:31 +0200
+Message-ID: <20231007140053.1731245-8-davidwronek@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231007140053.1731245-1-davidwronek@gmail.com>
 References: <20231007140053.1731245-1-davidwronek@gmail.com>
@@ -79,7 +79,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,40 +87,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable the UFS found on the SM7125 Xiaomi smartphones.
+From: Joe Mason <buddyjojo06@outlook.com>
 
+Add a device tree for the Xiaomi Redmi Note 9S (curtana) phone, based on
+sm7125-xiaomi-common.dtsi.
+
+Signed-off-by: Joe Mason <buddyjojo06@outlook.com>
 Signed-off-by: David Wronek <davidwronek@gmail.com>
 ---
- .../boot/dts/qcom/sm7125-xiaomi-common.dtsi      | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ arch/arm64/boot/dts/qcom/Makefile                |  1 +
+ .../boot/dts/qcom/sm7125-xiaomi-curtana.dts      | 16 ++++++++++++++++
+ 2 files changed, 17 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/sm7125-xiaomi-curtana.dts
 
-diff --git a/arch/arm64/boot/dts/qcom/sm7125-xiaomi-common.dtsi b/arch/arm64/boot/dts/qcom/sm7125-xiaomi-common.dtsi
-index e55cd83c19b8..22ad8a25217e 100644
---- a/arch/arm64/boot/dts/qcom/sm7125-xiaomi-common.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm7125-xiaomi-common.dtsi
-@@ -398,6 +398,22 @@ sd-cd-pins {
- 	};
- };
- 
-+&ufs_mem_hc {
-+	vcc-supply = <&vreg_l19a_3p0>;
-+	vcc-max-microamp = <600000>;
-+	vccq2-supply = <&vreg_l12a_1p8>;
-+	vccq2-max-microamp = <600000>;
-+	status = "okay";
-+};
+diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+index d6cb840b7050..57974fb0c580 100644
+--- a/arch/arm64/boot/dts/qcom/Makefile
++++ b/arch/arm64/boot/dts/qcom/Makefile
+@@ -207,6 +207,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sm6125-sony-xperia-seine-pdx201.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sm6125-xiaomi-laurel-sprout.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sm6350-sony-xperia-lena-pdx213.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sm6375-sony-xperia-murray-pdx225.dtb
++dtb-$(CONFIG_ARCH_QCOM)	+= sm7125-xiaomi-curtana.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sm7125-xiaomi-joyeuse.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sm7225-fairphone-fp4.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-hdk.dtb
+diff --git a/arch/arm64/boot/dts/qcom/sm7125-xiaomi-curtana.dts b/arch/arm64/boot/dts/qcom/sm7125-xiaomi-curtana.dts
+new file mode 100644
+index 000000000000..12f517a8492c
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sm7125-xiaomi-curtana.dts
+@@ -0,0 +1,16 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2023, Joe Mason <buddyjojo06@outlook.com>
++ */
 +
-+&ufs_mem_phy {
-+	vdda-phy-supply = <&vreg_l4a_0p88>;
-+	vdda-pll-supply = <&vreg_l3c_1p23>;
-+	vdda-phy-max-microamp = <62900>;
-+	vdda-pll-max-microamp = <18300>;
-+	status = "okay";
-+};
++/dts-v1/;
 +
- &usb_1 {
- 	qcom,select-utmi-as-pipe-clk;
- 	status = "okay";
++#include "sm7125-xiaomi-common.dtsi"
++
++/ {
++	model = "Xiaomi Redmi Note 9S";
++	compatible = "xiaomi,curtana", "qcom,sm7125";
++
++	/* required for bootloader to select correct board */
++	qcom,board-id = <0x20022 1>;
++};
 -- 
 2.42.0
 
