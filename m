@@ -2,148 +2,361 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A03BA7BC3A0
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 03:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D317BC3A3
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Oct 2023 03:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234027AbjJGBYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Oct 2023 21:24:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44468 "EHLO
+        id S234006AbjJGB0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Oct 2023 21:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234005AbjJGBYF (ORCPT
+        with ESMTP id S233822AbjJGB0T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Oct 2023 21:24:05 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA62BD;
-        Fri,  6 Oct 2023 18:24:03 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4S2SHf4zZmz4f3kKc;
-        Sat,  7 Oct 2023 09:23:58 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgD3gtIusyBlHcNKCQ--.16277S3;
-        Sat, 07 Oct 2023 09:23:59 +0800 (CST)
-Subject: Re: [PATCH] blk-throttle: Calculate allowed value only when the
- throttle is enabled
-To:     Oleg Nesterov <oleg@redhat.com>, Li Nan <linan666@huaweicloud.com>
-Cc:     Khazhy Kumykov <khazhy@chromium.org>, tj@kernel.org,
-        josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, houtao1@huawei.com, yangerkun@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20230928015858.1809934-1-linan666@huaweicloud.com>
- <CACGdZY+JV+PdiC_cspQiScm=SJ0kijdufeTrc8wkrQC3ZJx3qQ@mail.gmail.com>
- <4ace01e8-6815-29d0-70ce-4632818ca701@huaweicloud.com>
- <20231005162417.GA32420@redhat.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <0a8f34aa-ced9-e613-3e5f-b5e53a3ef3d9@huaweicloud.com>
-Date:   Sat, 7 Oct 2023 09:23:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Fri, 6 Oct 2023 21:26:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7999BBD
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Oct 2023 18:25:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696641932;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lZr0lwJuo58MungWEu7BcqdVHBirMeagcssZqizoiGE=;
+        b=akr/Et97UxnMyVswH4hCnur1RknmzWJaR7Vf9Ow8erx2ujn6tiQnsa+onxubo5CEMzcS/J
+        pn+LM0pK+pwge7zlInwGqvvwOp1PbbrQuCIwj00Y5BEu4p8yW+Kl9biH797fOb2dDOErw7
+        7WtwYk09nUyKJkmWPtTmcAX+ANRGd8s=
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
+ [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-357-KcPgeydVOmilRb7qahVtDg-1; Fri, 06 Oct 2023 21:25:30 -0400
+X-MC-Unique: KcPgeydVOmilRb7qahVtDg-1
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1c62aa0a29fso26129545ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Oct 2023 18:25:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696641929; x=1697246729;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lZr0lwJuo58MungWEu7BcqdVHBirMeagcssZqizoiGE=;
+        b=bR73jxWTl871lyE20PKnU+nRCbscN0pw4j2JD6uZcbl4UWjAW7GitQFAPh5y5HHiyW
+         MrkZd+L6Lv3BtOQbAqHzHRBHVrTU4PbblPGDntjkYVdub7spDe8A1u+kB9k4GRz3h7V+
+         RqhPpMUbK21fDSuGtqI17SX951KneBrH5ZnFh5EwWk2p15acxwncImqiBMMofLhPd12h
+         AkaGAM+JqWjOVNGccF/KuAAo75D09OyMUYDW0wJ4dYpxkw8K7foiPwKnrBBZMa/jZp18
+         TurqGjMnPTEIDAAlBSBHWGah90WWtuU+keks1V0efBA9xGLvlSoVPuwDwS2yASkBL7vz
+         pctg==
+X-Gm-Message-State: AOJu0Yzgo1jIqT32bUeZPjBse8nz7v4KOggfCMmv5DePSwl0R2G5T8Oy
+        c75bW/RQ8bIap7tWlETmAS/ahecju8oKgbJB6RZGMNzc+19SVyEMiWkNEHhHkACq4LPOAvhmuui
+        bNphj6ZvG2xEJKsEESPefe0KR
+X-Received: by 2002:a17:902:864c:b0:1bd:da96:dc70 with SMTP id y12-20020a170902864c00b001bdda96dc70mr9461222plt.49.1696641929422;
+        Fri, 06 Oct 2023 18:25:29 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFkv8dhvPRaPRg8UkKZnrSCsZFSPjShFfI5/Uk4PEaVA/DjDDE9pvSe2IfTK55qEBRMGpfFuA==
+X-Received: by 2002:a17:902:864c:b0:1bd:da96:dc70 with SMTP id y12-20020a170902864c00b001bdda96dc70mr9461212plt.49.1696641929063;
+        Fri, 06 Oct 2023 18:25:29 -0700 (PDT)
+Received: from [10.72.112.33] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id b1-20020a170902ed0100b001c735421215sm4566095pld.216.2023.10.06.18.25.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Oct 2023 18:25:28 -0700 (PDT)
+Message-ID: <6b6fb023-4f3f-f806-c7be-345e1bd7a6d7@redhat.com>
+Date:   Sat, 7 Oct 2023 09:25:24 +0800
 MIME-Version: 1.0
-In-Reply-To: <20231005162417.GA32420@redhat.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgD3gtIusyBlHcNKCQ--.16277S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7uF18ur43ZF13ur43ZF4kXrb_yoW8Krykpr
-        WayFnFkr1UXF97JFs7JF12qF15Zry7JrZ5trZ8G39xC3Z3u3W7GFnIkFWIkaykXryS9a1j
-        qF47tryUAry2v3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UWE__UUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 24/89] ceph: convert to new timestamp accessors
+Content-Language: en-US
+To:     Jeff Layton <jlayton@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     ceph-devel@vger.kernel.org
+References: <20231004185221.80802-1-jlayton@kernel.org>
+ <20231004185347.80880-1-jlayton@kernel.org>
+ <20231004185347.80880-22-jlayton@kernel.org>
+From:   Xiubo Li <xiubli@redhat.com>
+In-Reply-To: <20231004185347.80880-22-jlayton@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-ÔÚ 2023/10/06 0:24, Oleg Nesterov Ð´µÀ:
-> Hi Li,
-> 
-> On 10/05, Li Nan wrote:
->>
->>> I don't think this change is sufficient to prevent kernel crash, as a
->>> "clever" user could still set the bps_limit to U64_MAX - 1 (or another
->>> large value), which probably would still result in the same crash. The
->>> comment in mul_u64_u64_div_u64 suggests there's something we can do to
->>> better handle the overflow case, but I'm not sure what it's referring
->>> to. ("Will generate an #DE when the result doesn't fit u64, could fix
->>> with an __ex_table[] entry when it becomes an issue.") Otherwise, we
->>
->> When (a * mul) overflows, a divide 0 error occurs in
->> mul_u64_u64_div_u64(). Commit 3dc167ba5729 ("sched/cputime: Improve
->> cputime_adjust()") changed func and said: "Will generate an #DE when the
->> result doesn't fit u64, could fix with an __ex_table[] entry when it
->> becomes an issue." But we are unsure of how to fix it. Could you please
->> explain how to fix this issue.
-> 
-> Not sure I understand the question...
-> 
-> OK, we can change mul_u64_u64_div_u64() to trap the exception, say,
-> 
-> 	static inline u64 mul_u64_u64_div_u64(u64 a, u64 mul, u64 div)
-> 	{
-> 		u64 q;
-> 
-> 		asm ("mulq %2; 1: divq %3; 2:\n"
-> 		     _ASM_EXTABLE_TYPE(1b, 2b, EX_TYPE_DEFAULT|EX_FLAG_CLEAR_AX)
-> 					: "=a" (q)
-> 					: "a" (a), "rm" (mul), "rm" (div)
-> 					: "rdx");
-> 
-> 		return q;
-> 	}
-> 
-> should (iiuc) return 0 if the result doesn't fit u64 or div == 0.
-> 
-> But even if we forget that this is x86-specific, how can this help?
-> What should calculate_bytes_allowed() do/return in this case?
+On 10/5/23 02:52, Jeff Layton wrote:
+> Convert to using the new inode timestamp accessor functions.
+>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>   fs/ceph/addr.c       | 10 +++----
+>   fs/ceph/caps.c       |  4 +--
+>   fs/ceph/file.c       |  2 +-
+>   fs/ceph/inode.c      | 64 ++++++++++++++++++++++++--------------------
+>   fs/ceph/mds_client.c |  8 ++++--
+>   fs/ceph/snap.c       |  4 +--
+>   6 files changed, 51 insertions(+), 41 deletions(-)
+>
+> diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
+> index f4863078f7fe..936b9e0b351d 100644
+> --- a/fs/ceph/addr.c
+> +++ b/fs/ceph/addr.c
+> @@ -750,7 +750,7 @@ static int writepage_nounlock(struct page *page, struct writeback_control *wbc)
+>   	dout("writepage %llu~%llu (%llu bytes, %sencrypted)\n",
+>   	     page_off, len, wlen, IS_ENCRYPTED(inode) ? "" : "not ");
+>   
+> -	req->r_mtime = inode->i_mtime;
+> +	req->r_mtime = inode_get_mtime(inode);
+>   	ceph_osdc_start_request(osdc, req);
+>   	err = ceph_osdc_wait_request(osdc, req);
+>   
+> @@ -1327,7 +1327,7 @@ static int ceph_writepages_start(struct address_space *mapping,
+>   			pages = NULL;
+>   		}
+>   
+> -		req->r_mtime = inode->i_mtime;
+> +		req->r_mtime = inode_get_mtime(inode);
+>   		ceph_osdc_start_request(&fsc->client->osdc, req);
+>   		req = NULL;
+>   
+> @@ -1875,7 +1875,7 @@ int ceph_uninline_data(struct file *file)
+>   		goto out_unlock;
+>   	}
+>   
+> -	req->r_mtime = inode->i_mtime;
+> +	req->r_mtime = inode_get_mtime(inode);
+>   	ceph_osdc_start_request(&fsc->client->osdc, req);
+>   	err = ceph_osdc_wait_request(&fsc->client->osdc, req);
+>   	ceph_osdc_put_request(req);
+> @@ -1917,7 +1917,7 @@ int ceph_uninline_data(struct file *file)
+>   			goto out_put_req;
+>   	}
+>   
+> -	req->r_mtime = inode->i_mtime;
+> +	req->r_mtime = inode_get_mtime(inode);
+>   	ceph_osdc_start_request(&fsc->client->osdc, req);
+>   	err = ceph_osdc_wait_request(&fsc->client->osdc, req);
+>   
+> @@ -2092,7 +2092,7 @@ static int __ceph_pool_perm_get(struct ceph_inode_info *ci,
+>   				     0, false, true);
+>   	ceph_osdc_start_request(&fsc->client->osdc, rd_req);
+>   
+> -	wr_req->r_mtime = ci->netfs.inode.i_mtime;
+> +	wr_req->r_mtime = inode_get_mtime(&ci->netfs.inode);
+>   	ceph_osdc_start_request(&fsc->client->osdc, wr_req);
+>   
+>   	err = ceph_osdc_wait_request(&fsc->client->osdc, rd_req);
+> diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
+> index 14215ec646f7..a104669fcf4c 100644
+> --- a/fs/ceph/caps.c
+> +++ b/fs/ceph/caps.c
+> @@ -1421,8 +1421,8 @@ static void __prep_cap(struct cap_msg_args *arg, struct ceph_cap *cap,
+>   		arg->old_xattr_buf = NULL;
+>   	}
+>   
+> -	arg->mtime = inode->i_mtime;
+> -	arg->atime = inode->i_atime;
+> +	arg->mtime = inode_get_mtime(inode);
+> +	arg->atime = inode_get_atime(inode);
+>   	arg->ctime = inode_get_ctime(inode);
+>   	arg->btime = ci->i_btime;
+>   	arg->change_attr = inode_peek_iversion_raw(inode);
+> diff --git a/fs/ceph/file.c b/fs/ceph/file.c
+> index b1da02f5dbe3..b96d4e74ae99 100644
+> --- a/fs/ceph/file.c
+> +++ b/fs/ceph/file.c
+> @@ -2489,7 +2489,7 @@ static int ceph_zero_partial_object(struct inode *inode,
+>   		goto out;
+>   	}
+>   
+> -	req->r_mtime = inode->i_mtime;
+> +	req->r_mtime = inode_get_mtime(inode);
+>   	ceph_osdc_start_request(&fsc->client->osdc, req);
+>   	ret = ceph_osdc_wait_request(&fsc->client->osdc, req);
+>   	if (ret == -ENOENT)
+> diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
+> index 800ab7920513..e846752b9a1f 100644
+> --- a/fs/ceph/inode.c
+> +++ b/fs/ceph/inode.c
+> @@ -185,9 +185,9 @@ struct inode *ceph_get_snapdir(struct inode *parent)
+>   	inode->i_mode = parent->i_mode;
+>   	inode->i_uid = parent->i_uid;
+>   	inode->i_gid = parent->i_gid;
+> -	inode->i_mtime = parent->i_mtime;
+> +	inode_set_mtime_to_ts(inode, inode_get_mtime(parent));
+>   	inode_set_ctime_to_ts(inode, inode_get_ctime(parent));
+> -	inode->i_atime = parent->i_atime;
+> +	inode_set_atime_to_ts(inode, inode_get_atime(parent));
+>   	ci->i_rbytes = 0;
+>   	ci->i_btime = ceph_inode(parent)->i_btime;
+>   
+> @@ -837,28 +837,31 @@ void ceph_fill_file_time(struct inode *inode, int issued,
+>   			/* the MDS did a utimes() */
+>   			dout("mtime %lld.%09ld -> %lld.%09ld "
+>   			     "tw %d -> %d\n",
+> -			     inode->i_mtime.tv_sec, inode->i_mtime.tv_nsec,
+> +			     inode_get_mtime_sec(inode),
+> +			     inode_get_mtime_nsec(inode),
+>   			     mtime->tv_sec, mtime->tv_nsec,
+>   			     ci->i_time_warp_seq, (int)time_warp_seq);
+>   
+> -			inode->i_mtime = *mtime;
+> -			inode->i_atime = *atime;
+> +			inode_set_mtime_to_ts(inode, *mtime);
+> +			inode_set_atime_to_ts(inode, *atime);
+>   			ci->i_time_warp_seq = time_warp_seq;
+>   		} else if (time_warp_seq == ci->i_time_warp_seq) {
+> +			struct timespec64	ts;
+> +
+>   			/* nobody did utimes(); take the max */
+> -			if (timespec64_compare(mtime, &inode->i_mtime) > 0) {
+> +			ts = inode_get_mtime(inode);
+> +			if (timespec64_compare(mtime, &ts) > 0) {
+>   				dout("mtime %lld.%09ld -> %lld.%09ld inc\n",
+> -				     inode->i_mtime.tv_sec,
+> -				     inode->i_mtime.tv_nsec,
+> +				     ts.tv_sec, ts.tv_nsec,
+>   				     mtime->tv_sec, mtime->tv_nsec);
+> -				inode->i_mtime = *mtime;
+> +				inode_set_mtime_to_ts(inode, *mtime);
+>   			}
+> -			if (timespec64_compare(atime, &inode->i_atime) > 0) {
+> +			ts = inode_get_atime(inode);
+> +			if (timespec64_compare(atime, &ts) > 0) {
+>   				dout("atime %lld.%09ld -> %lld.%09ld inc\n",
+> -				     inode->i_atime.tv_sec,
+> -				     inode->i_atime.tv_nsec,
+> +				     ts.tv_sec, ts.tv_nsec,
+>   				     atime->tv_sec, atime->tv_nsec);
+> -				inode->i_atime = *atime;
+> +				inode_set_atime_to_ts(inode, *atime);
+>   			}
+>   		} else if (issued & CEPH_CAP_FILE_EXCL) {
+>   			/* we did a utimes(); ignore mds values */
+> @@ -869,8 +872,8 @@ void ceph_fill_file_time(struct inode *inode, int issued,
+>   		/* we have no write|excl caps; whatever the MDS says is true */
+>   		if (ceph_seq_cmp(time_warp_seq, ci->i_time_warp_seq) >= 0) {
+>   			inode_set_ctime_to_ts(inode, *ctime);
+> -			inode->i_mtime = *mtime;
+> -			inode->i_atime = *atime;
+> +			inode_set_mtime_to_ts(inode, *mtime);
+> +			inode_set_atime_to_ts(inode, *atime);
+>   			ci->i_time_warp_seq = time_warp_seq;
+>   		} else {
+>   			warn = 1;
+> @@ -2553,20 +2556,22 @@ int __ceph_setattr(struct inode *inode, struct iattr *attr,
+>   	}
+>   
+>   	if (ia_valid & ATTR_ATIME) {
+> +		struct timespec64 atime = inode_get_atime(inode);
+> +
+>   		dout("setattr %p atime %lld.%ld -> %lld.%ld\n", inode,
+> -		     inode->i_atime.tv_sec, inode->i_atime.tv_nsec,
+> +		     atime.tv_sec, atime.tv_nsec,
+>   		     attr->ia_atime.tv_sec, attr->ia_atime.tv_nsec);
+>   		if (issued & CEPH_CAP_FILE_EXCL) {
+>   			ci->i_time_warp_seq++;
+> -			inode->i_atime = attr->ia_atime;
+> +			inode_set_atime_to_ts(inode, attr->ia_atime);
+>   			dirtied |= CEPH_CAP_FILE_EXCL;
+>   		} else if ((issued & CEPH_CAP_FILE_WR) &&
+> -			   timespec64_compare(&inode->i_atime,
+> -					    &attr->ia_atime) < 0) {
+> -			inode->i_atime = attr->ia_atime;
+> +			   timespec64_compare(&atime,
+> +					      &attr->ia_atime) < 0) {
+> +			inode_set_atime_to_ts(inode, attr->ia_atime);
+>   			dirtied |= CEPH_CAP_FILE_WR;
+>   		} else if ((issued & CEPH_CAP_FILE_SHARED) == 0 ||
+> -			   !timespec64_equal(&inode->i_atime, &attr->ia_atime)) {
+> +			   !timespec64_equal(&atime, &attr->ia_atime)) {
+>   			ceph_encode_timespec64(&req->r_args.setattr.atime,
+>   					       &attr->ia_atime);
+>   			mask |= CEPH_SETATTR_ATIME;
+> @@ -2626,20 +2631,21 @@ int __ceph_setattr(struct inode *inode, struct iattr *attr,
+>   		}
+>   	}
+>   	if (ia_valid & ATTR_MTIME) {
+> +		struct timespec64 mtime = inode_get_mtime(inode);
+> +
+>   		dout("setattr %p mtime %lld.%ld -> %lld.%ld\n", inode,
+> -		     inode->i_mtime.tv_sec, inode->i_mtime.tv_nsec,
+> +		     mtime.tv_sec, mtime.tv_nsec,
+>   		     attr->ia_mtime.tv_sec, attr->ia_mtime.tv_nsec);
+>   		if (issued & CEPH_CAP_FILE_EXCL) {
+>   			ci->i_time_warp_seq++;
+> -			inode->i_mtime = attr->ia_mtime;
+> +			inode_set_mtime_to_ts(inode, attr->ia_mtime);
+>   			dirtied |= CEPH_CAP_FILE_EXCL;
+>   		} else if ((issued & CEPH_CAP_FILE_WR) &&
+> -			   timespec64_compare(&inode->i_mtime,
+> -					    &attr->ia_mtime) < 0) {
+> -			inode->i_mtime = attr->ia_mtime;
+> +			   timespec64_compare(&mtime, &attr->ia_mtime) < 0) {
+> +			inode_set_mtime_to_ts(inode, attr->ia_mtime);
+>   			dirtied |= CEPH_CAP_FILE_WR;
+>   		} else if ((issued & CEPH_CAP_FILE_SHARED) == 0 ||
+> -			   !timespec64_equal(&inode->i_mtime, &attr->ia_mtime)) {
+> +			   !timespec64_equal(&mtime, &attr->ia_mtime)) {
+>   			ceph_encode_timespec64(&req->r_args.setattr.mtime,
+>   					       &attr->ia_mtime);
+>   			mask |= CEPH_SETATTR_MTIME;
+> @@ -2653,8 +2659,8 @@ int __ceph_setattr(struct inode *inode, struct iattr *attr,
+>   		bool only = (ia_valid & (ATTR_SIZE|ATTR_MTIME|ATTR_ATIME|
+>   					 ATTR_MODE|ATTR_UID|ATTR_GID)) == 0;
+>   		dout("setattr %p ctime %lld.%ld -> %lld.%ld (%s)\n", inode,
+> -		     inode_get_ctime(inode).tv_sec,
+> -		     inode_get_ctime(inode).tv_nsec,
+> +		     inode_get_ctime_sec(inode),
+> +		     inode_get_ctime_nsec(inode),
+>   		     attr->ia_ctime.tv_sec, attr->ia_ctime.tv_nsec,
+>   		     only ? "ctime only" : "ignored");
+>   		if (only) {
+> diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+> index 615db141b6c4..e4cfa3b02187 100644
+> --- a/fs/ceph/mds_client.c
+> +++ b/fs/ceph/mds_client.c
+> @@ -4353,12 +4353,16 @@ static int reconnect_caps_cb(struct inode *inode, int mds, void *arg)
+>   		rec.v2.flock_len = (__force __le32)
+>   			((ci->i_ceph_flags & CEPH_I_ERROR_FILELOCK) ? 0 : 1);
+>   	} else {
+> +		struct timespec64 ts;
+> +
+>   		rec.v1.cap_id = cpu_to_le64(cap->cap_id);
+>   		rec.v1.wanted = cpu_to_le32(__ceph_caps_wanted(ci));
+>   		rec.v1.issued = cpu_to_le32(cap->issued);
+>   		rec.v1.size = cpu_to_le64(i_size_read(inode));
+> -		ceph_encode_timespec64(&rec.v1.mtime, &inode->i_mtime);
+> -		ceph_encode_timespec64(&rec.v1.atime, &inode->i_atime);
+> +		ts = inode_get_mtime(inode);
+> +		ceph_encode_timespec64(&rec.v1.mtime, &ts);
+> +		ts = inode_get_atime(inode);
+> +		ceph_encode_timespec64(&rec.v1.atime, &ts);
+>   		rec.v1.snaprealm = cpu_to_le64(ci->i_snap_realm->ino);
+>   		rec.v1.pathbase = cpu_to_le64(pathbase);
+>   	}
+> diff --git a/fs/ceph/snap.c b/fs/ceph/snap.c
+> index 813f21add992..6732e1ea97d9 100644
+> --- a/fs/ceph/snap.c
+> +++ b/fs/ceph/snap.c
+> @@ -658,8 +658,8 @@ int __ceph_finish_cap_snap(struct ceph_inode_info *ci,
+>   
+>   	BUG_ON(capsnap->writing);
+>   	capsnap->size = i_size_read(inode);
+> -	capsnap->mtime = inode->i_mtime;
+> -	capsnap->atime = inode->i_atime;
+> +	capsnap->mtime = inode_get_mtime(inode);
+> +	capsnap->atime = inode_get_atime(inode);
+>   	capsnap->ctime = inode_get_ctime(inode);
+>   	capsnap->btime = ci->i_btime;
+>   	capsnap->change_attr = inode_peek_iversion_raw(inode);
 
-I believe, U64_MAX should be returned if result doesn't fit u64;
-> 
->>> probably need to remove the mul_u64_u64_div_u64 and check for
->>> overflow/potential overflow ourselves?
-> 
-> probably yes...
+LGTM.
 
-How about this?
+Thanks Jeff.
 
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 1101fb6f6cc8..5482c316a103 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -723,6 +723,10 @@ static unsigned int calculate_io_allowed(u32 
-iops_limit,
-
-  static u64 calculate_bytes_allowed(u64 bps_limit, unsigned long 
-jiffy_elapsed)
-  {
-+       if (jiffy_elapsed > HZ &&
-+           bps_limit > mul_u64_u64_div_u64(U64_MAX, (u64)HZ, 
-(u64)jiffy_elapsed);
-+               return U64_MAX;
-+
-         return mul_u64_u64_div_u64(bps_limit, (u64)jiffy_elapsed, (u64)HZ);
-  }
-
-> 
-> Oleg.
-> 
-> .
-> 
+- Xiubo
 
