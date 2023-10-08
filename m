@@ -2,46 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7F0A7BCB47
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 02:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6277BCB52
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 02:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344266AbjJHAx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 20:53:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58070 "EHLO
+        id S1344306AbjJHAyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 20:54:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234379AbjJHAx1 (ORCPT
+        with ESMTP id S1344286AbjJHAym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 20:53:27 -0400
+        Sat, 7 Oct 2023 20:54:42 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EC8C1FDE;
-        Sat,  7 Oct 2023 17:50:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2DA5C433CD;
-        Sun,  8 Oct 2023 00:50:11 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 791B0D5E;
+        Sat,  7 Oct 2023 17:50:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 755D1C433A9;
+        Sun,  8 Oct 2023 00:50:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696726213;
-        bh=4FZukAzgRqZmHju6AJSvXtiFZ0m//F4NtAhJd/BndHA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=cpxKsSxsA+dR6CQtKTnqRguha/3GpWnJpQXDbSXGr6irVSUOPb11qbAKPl9tjAu3i
-         He9FR1lpFKsCw5Natu9F+AGiDBjh4xRBxpJPGmxFG3MFSL9rGoXSJYxrIO4kFHoHKL
-         rwiK7WwiNEQ6S4a142LHEL2342emwewaj9BuHtzidSMaltDVJkN6Q7ZAycRgFZeN2v
-         DHfhCUKi8ola82Txs8tj4sNBVRKcKdbTJVN4usxU+CeOEcj4IfgB1fnD6wrCQXtbdb
-         pa4xr+Qq7HhdIHsbnKF2kJjficCcUP21U7sFk0fmhWTqKSv/Y3GN8/R6FVhmlO7qJh
-         MQYWGPjJCl6iw==
+        s=k20201202; t=1696726214;
+        bh=DP1pCqvcmm+ff4PiuZGlAzsuv/HvH1tUu+70pVGrOh8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ouWSalPHkqCqjkncFUCLZvWwdoF3LgGao6BV9a0i4PwY0g35/8Fn0viEr1ErPTn4Q
+         AD5N7bbBXo43GtCIs4tUdjaZPDh4ba5Cz8s+/+suT3Db61PsvAJeeUWFj8og2d5SKI
+         8d1TmJoTe3KWBdfHweea+gR3wjA3hDTdNC3Are+JXfrPRFgvAQHTNE4HzTXuSqMfgS
+         tubzP9QUVkxCqDlcWW2l/9mVzlxLHDaS+7hgnaWKYjTrf/+PqWdP3FTKKs4N/QCXqF
+         DT8FZ9lr/HwSf287cpZqHkQ7YWtRZuD3YZBDelzp6O+1HrUqBwh1QCAEFtcwcs/sAS
+         VPh3UoV2PNwnw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tony Lindgren <tony@atomide.com>,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Carl Philipp Klemm <philipp@uvos.xyz>,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Sasha Levin <sashal@kernel.org>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 1/8] ARM: dts: ti: omap: Fix noisy serial with overrun-throttle-ms for mapphone
-Date:   Sat,  7 Oct 2023 20:50:02 -0400
-Message-Id: <20231008005009.3768314-1-sashal@kernel.org>
+Cc:     Filipe Manana <fdmanana@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>, clm@fb.com,
+        linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 2/8] btrfs: return -EUCLEAN for delayed tree ref with a ref count not equals to 1
+Date:   Sat,  7 Oct 2023 20:50:03 -0400
+Message-Id: <20231008005009.3768314-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231008005009.3768314-1-sashal@kernel.org>
+References: <20231008005009.3768314-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -57,41 +55,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-[ Upstream commit 5ad37b5e30433afa7a5513e3eb61f69fa0976785 ]
+[ Upstream commit 1bf76df3fee56d6637718e267f7c34ed70d0c7dc ]
 
-On mapphone devices we may get lots of noise on the micro-USB port in debug
-uart mode until the phy-cpcap-usb driver probes. Let's limit the noise by
-using overrun-throttle-ms.
+When running a delayed tree reference, if we find a ref count different
+from 1, we return -EIO. This isn't an IO error, as it indicates either a
+bug in the delayed refs code or a memory corruption, so change the error
+code from -EIO to -EUCLEAN. Also tag the branch as 'unlikely' as this is
+not expected to ever happen, and change the error message to print the
+tree block's bytenr without the parenthesis (and there was a missing space
+between the 'block' word and the opening parenthesis), for consistency as
+that's the style we used everywhere else.
 
-Note that there is also a related separate issue where the charger cable
-connected may cause random sysrq requests until phy-cpcap-usb probes that
-still remains.
-
-Cc: Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
-Cc: Carl Philipp Klemm <philipp@uvos.xyz>
-Cc: Merlijn Wajer <merlijn@wizzup.org>
-Cc: Pavel Machek <pavel@ucw.cz>
-Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/motorola-mapphone-common.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ fs/btrfs/extent-tree.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/motorola-mapphone-common.dtsi b/arch/arm/boot/dts/motorola-mapphone-common.dtsi
-index 5f8f77cfbe59f..2df13897c0257 100644
---- a/arch/arm/boot/dts/motorola-mapphone-common.dtsi
-+++ b/arch/arm/boot/dts/motorola-mapphone-common.dtsi
-@@ -742,6 +742,7 @@ &uart1 {
- &uart3 {
- 	interrupts-extended = <&wakeupgen GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH
- 			       &omap4_pmx_core 0x17c>;
-+	overrun-throttle-ms = <500>;
- };
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 4d2f25ebe3048..8f62e171053ba 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -1641,12 +1641,12 @@ static int run_delayed_tree_ref(struct btrfs_trans_handle *trans,
+ 		parent = ref->parent;
+ 	ref_root = ref->root;
  
- &uart4 {
+-	if (node->ref_mod != 1) {
++	if (unlikely(node->ref_mod != 1)) {
+ 		btrfs_err(trans->fs_info,
+-	"btree block(%llu) has %d references rather than 1: action %d ref_root %llu parent %llu",
++	"btree block %llu has %d references rather than 1: action %d ref_root %llu parent %llu",
+ 			  node->bytenr, node->ref_mod, node->action, ref_root,
+ 			  parent);
+-		return -EIO;
++		return -EUCLEAN;
+ 	}
+ 	if (node->action == BTRFS_ADD_DELAYED_REF && insert_reserved) {
+ 		BUG_ON(!extent_op || !extent_op->update_flags);
 -- 
 2.40.1
 
