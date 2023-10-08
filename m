@@ -2,45 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 281287BCAFD
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 02:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D557BCAF4
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 02:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbjJHAui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 20:50:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44690 "EHLO
+        id S234452AbjJHAur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 20:50:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234299AbjJHAuG (ORCPT
+        with ESMTP id S234239AbjJHAuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 20:50:06 -0400
+        Sat, 7 Oct 2023 20:50:17 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0B710CF;
-        Sat,  7 Oct 2023 17:49:40 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0597CC433CC;
-        Sun,  8 Oct 2023 00:49:38 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15630102;
+        Sat,  7 Oct 2023 17:49:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61F68C43391;
+        Sun,  8 Oct 2023 00:49:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696726179;
-        bh=A7G/D2/WcBnszPWOYRSdaNu7jRiJVnSCxLJYut/UiBw=;
+        s=k20201202; t=1696726181;
+        bh=UQPRDrfwJ0KuUOkzBw6SGSpxmstJEwVtWrhASvLDi/s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZFliSNdU2+Nnm7wWxDK+pYeEOO89vrIFfJpfmSFd30SN1Gu3VZKyT7ikxq2481vms
-         391X6V5TCxCN2x1AdrcxLsrJb9r7syGjy2TcpZsBUMht8+Kkm7/7Xder9g6ho6XJyx
-         3/8MbUIUhY1LvWODcvtr26NrMeA64PKqX9eAvJuNq1idCIDCe6B5pSU1ZlcuLiWRMx
-         55cmjmLnWiZTgivzbsJgnq+/BhmcfiPDXCx1qzWy6Zsmhpv2HRHYrHxNns9+byUQAh
-         VtbUZA5FoIEkWIHcBTdkkWSVE6TELxFwsFRidCMsTuxMq00E6NmZNjuMYxe1UPCh2i
-         KT7fOBPTvXZ5A==
+        b=GWRJcg5JUZR1jDZh4pNU29Rsq44iviJanL828fTGaO+5Ks4EeZ3X0hGnd/xn89mnI
+         Dtb5VbpIno6eVWyRczsV1farHr4o0EKAo+jBfESN1GEIyXiCY539+CE0ksCnhDAcHB
+         FSjj2SbGjOTEbD41sDNQyP28IVgg55QhrZciL5iCkYKV3NmZ50HKZpm78kx8dXDevX
+         VVBZnJCFJvmML++LhBTMVcBCLmsR+P/MRNdVIYGVEeLrdN0G5Ip7+BAUB/ra4BRk8C
+         2lsEgbdmf0v7FFwz64woQG30gGlNiT/zJIaB0eeGhXgCSEc+YhmRRq1aY4UYF6Fp9X
+         Cho2EgNwwQ1Vg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, clm@fb.com,
-        linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 06/12] btrfs: initialize start_slot in btrfs_log_prealloc_extents
-Date:   Sat,  7 Oct 2023 20:49:23 -0400
-Message-Id: <20231008004929.3767992-6-sashal@kernel.org>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Peter Rosin <peda@axentia.se>, Wolfram Sang <wsa@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-i2c@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 07/12] i2c: mux: Avoid potential false error message in i2c_mux_add_adapter
+Date:   Sat,  7 Oct 2023 20:49:24 -0400
+Message-Id: <20231008004929.3767992-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231008004929.3767992-1-sashal@kernel.org>
 References: <20231008004929.3767992-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.56
@@ -55,52 +53,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Heiner Kallweit <hkallweit1@gmail.com>
 
-[ Upstream commit b4c639f699349880b7918b861e1bd360442ec450 ]
+[ Upstream commit b13e59e74ff71a1004e0508107e91e9a84fd7388 ]
 
-Jens reported a compiler warning when using
-CONFIG_CC_OPTIMIZE_FOR_SIZE=y that looks like this
+I2C_CLASS_DEPRECATED is a flag and not an actual class.
+There's nothing speaking against both, parent and child, having
+I2C_CLASS_DEPRECATED set. Therefore exclude it from the check.
 
-  fs/btrfs/tree-log.c: In function ‘btrfs_log_prealloc_extents’:
-  fs/btrfs/tree-log.c:4828:23: warning: ‘start_slot’ may be used
-  uninitialized [-Wmaybe-uninitialized]
-   4828 |                 ret = copy_items(trans, inode, dst_path, path,
-	|                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   4829 |                                  start_slot, ins_nr, 1, 0);
-	|                                  ~~~~~~~~~~~~~~~~~~~~~~~~~
-  fs/btrfs/tree-log.c:4725:13: note: ‘start_slot’ was declared here
-   4725 |         int start_slot;
-	|             ^~~~~~~~~~
-
-The compiler is incorrect, as we only use this code when ins_len > 0,
-and when ins_len > 0 we have start_slot properly initialized.  However
-we generally find the -Wmaybe-uninitialized warnings valuable, so
-initialize start_slot to get rid of the warning.
-
-Reported-by: Jens Axboe <axboe@kernel.dk>
-Tested-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+Acked-by: Peter Rosin <peda@axentia.se>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/tree-log.c | 2 +-
+ drivers/i2c/i2c-mux.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 00be69ce7b90f..451a74a04b99d 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -4793,7 +4793,7 @@ static int btrfs_log_prealloc_extents(struct btrfs_trans_handle *trans,
- 	struct extent_buffer *leaf;
- 	int slot;
- 	int ins_nr = 0;
--	int start_slot;
-+	int start_slot = 0;
- 	int ret;
+diff --git a/drivers/i2c/i2c-mux.c b/drivers/i2c/i2c-mux.c
+index 313904be5f3bd..57ff09f18c371 100644
+--- a/drivers/i2c/i2c-mux.c
++++ b/drivers/i2c/i2c-mux.c
+@@ -341,7 +341,7 @@ int i2c_mux_add_adapter(struct i2c_mux_core *muxc,
+ 		priv->adap.lock_ops = &i2c_parent_lock_ops;
  
- 	if (!(inode->flags & BTRFS_INODE_PREALLOC))
+ 	/* Sanity check on class */
+-	if (i2c_mux_parent_classes(parent) & class)
++	if (i2c_mux_parent_classes(parent) & class & ~I2C_CLASS_DEPRECATED)
+ 		dev_err(&parent->dev,
+ 			"Segment %d behind mux can't share classes with ancestors\n",
+ 			chan_id);
 -- 
 2.40.1
 
