@@ -2,45 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36EE77BCB2F
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 02:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 353B17BCB68
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 03:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234333AbjJHAxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 20:53:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57822 "EHLO
+        id S234293AbjJHBM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 21:12:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234244AbjJHAxC (ORCPT
+        with ESMTP id S234338AbjJHBMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 20:53:02 -0400
+        Sat, 7 Oct 2023 21:12:18 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BA02D64;
-        Sat,  7 Oct 2023 17:51:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACB24C43140;
-        Sun,  8 Oct 2023 00:51:01 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491CD3592;
+        Sat,  7 Oct 2023 17:52:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BD66C116A4;
+        Sun,  8 Oct 2023 00:51:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696726262;
-        bh=Dhp40pBNB2ucCb+P1yiF8uzZMj2aodKJXYogWqXroCw=;
+        s=k20201202; t=1696726264;
+        bh=0pBYOUF9hqHS5pUtktUEo6Y2BBDCAqwXN/wja+8ATKQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MVaISciGppl7EtXYtGmJlVkjtImvnk8d4xtBcty4GaB7Nwt8X9IzU5Ek2z7q4pbYe
-         UxYzuKfbSmx3JaD+g0VgMTzpX+H9AUukq3n336lT+ETZ+lztFCVEf11PXLQvWGFSkq
-         6zePvBDh88OXo/5bGIjzNBKHpPeWBDEhXOn+tqf/rd5J99bMlUcdqghsAxgnGY7YF7
-         +WZUQOMK8LO4vatHnHGiwbsjhM3CZz8XF6YfXvhnqLjl2vwY6ngNBx84T75f8DOiSM
-         tZIqC9ZVo904PAYKQbZmIueDilZL5+k5qJt79l13J0RXJ8tdxXS5vMaRMk7cTRQzfo
-         DK3rrVbYEVVJA==
+        b=a2PhjTAABLf2v36NBIxYEzL1P+RdqyQopdcEmcpjHWHUvObTFfVzULCKK1oBpApB4
+         vahMSRtrs1+/qd62GuuT4UWAbJuaT41sRl8eVFY36N0lKg7ZWhUbfcGfZIiFtInvLs
+         rKHi0PbD5+963s+jSshVm7jBSbrr68bKhyzrQ8zq0ECiodgKmnD3hcDoudHwYSLyn9
+         2egKzD9EuMkuvzLN1JBRbyZ2LznYxI4KYuCoVzKlFjtlTXf/+rKHHgxXj+BYtkFLyI
+         ppPCWtwnmFVpGx0qsuEuWb68QOBrNiHP3d8W021qf963Jlx2riC5HTkxRmE100j+Y6
+         zjBzmep5hLdKA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chengfeng Ye <dg573847474@gmail.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, linus.walleij@linaro.org,
-        brgl@bgdev.pl, linux-gpio@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 5/7] gpio: timberdale: Fix potential deadlock on &tgpio->lock
-Date:   Sat,  7 Oct 2023 20:50:51 -0400
-Message-Id: <20231008005053.3768625-5-sashal@kernel.org>
+Cc:     Damien Le Moal <dlemoal@kernel.org>,
+        Hannes Reinecke <hare@suse.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, linux-ide@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 6/7] ata: libata-eh: Fix compilation warning in ata_eh_link_report()
+Date:   Sat,  7 Oct 2023 20:50:52 -0400
+Message-Id: <20231008005053.3768625-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231008005053.3768625-1-sashal@kernel.org>
 References: <20231008005053.3768625-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.14.326
@@ -55,62 +56,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chengfeng Ye <dg573847474@gmail.com>
+From: Damien Le Moal <dlemoal@kernel.org>
 
-[ Upstream commit 9e8bc2dda5a7a8e2babc9975f4b11c9a6196e490 ]
+[ Upstream commit 49728bdc702391902a473b9393f1620eea32acb0 ]
 
-As timbgpio_irq_enable()/timbgpio_irq_disable() callback could be
-executed under irq context, it could introduce double locks on
-&tgpio->lock if it preempts other execution units requiring
-the same locks.
+The 6 bytes length of the tries_buf string in ata_eh_link_report() is
+too short and results in a gcc compilation warning with W-!:
 
-timbgpio_gpio_set()
---> timbgpio_update_bit()
---> spin_lock(&tgpio->lock)
-<interrupt>
-   --> timbgpio_irq_disable()
-   --> spin_lock_irqsave(&tgpio->lock)
+drivers/ata/libata-eh.c: In function ‘ata_eh_link_report’:
+drivers/ata/libata-eh.c:2371:59: warning: ‘%d’ directive output may be truncated writing between 1 and 11 bytes into a region of size 4 [-Wformat-truncation=]
+ 2371 |                 snprintf(tries_buf, sizeof(tries_buf), " t%d",
+      |                                                           ^~
+drivers/ata/libata-eh.c:2371:56: note: directive argument in the range [-2147483648, 4]
+ 2371 |                 snprintf(tries_buf, sizeof(tries_buf), " t%d",
+      |                                                        ^~~~~~
+drivers/ata/libata-eh.c:2371:17: note: ‘snprintf’ output between 4 and 14 bytes into a destination of size 6
+ 2371 |                 snprintf(tries_buf, sizeof(tries_buf), " t%d",
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2372 |                          ap->eh_tries);
+      |                          ~~~~~~~~~~~~~
 
-This flaw was found by an experimental static analysis tool I am
-developing for irq-related deadlock.
+Avoid this warning by increasing the string size to 16B.
 
-To prevent the potential deadlock, the patch uses spin_lock_irqsave()
-on &tgpio->lock inside timbgpio_gpio_set() to prevent the possible
-deadlock scenario.
-
-Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
-Reviewed-by: Andy Shevchenko <andy@kernel.org>
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/gpio-timberdale.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/ata/libata-eh.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpio/gpio-timberdale.c b/drivers/gpio/gpio-timberdale.c
-index 181f86ce00cd4..639c8daaeb310 100644
---- a/drivers/gpio/gpio-timberdale.c
-+++ b/drivers/gpio/gpio-timberdale.c
-@@ -55,9 +55,10 @@ static int timbgpio_update_bit(struct gpio_chip *gpio, unsigned index,
- 	unsigned offset, bool enabled)
- {
- 	struct timbgpio *tgpio = gpiochip_get_data(gpio);
-+	unsigned long flags;
- 	u32 reg;
+diff --git a/drivers/ata/libata-eh.c b/drivers/ata/libata-eh.c
+index cbe9af624a06f..bb47bbe20ef28 100644
+--- a/drivers/ata/libata-eh.c
++++ b/drivers/ata/libata-eh.c
+@@ -2466,7 +2466,7 @@ static void ata_eh_link_report(struct ata_link *link)
+ 	struct ata_port *ap = link->ap;
+ 	struct ata_eh_context *ehc = &link->eh_context;
+ 	const char *frozen, *desc;
+-	char tries_buf[6] = "";
++	char tries_buf[16] = "";
+ 	int tag, nr_failed = 0;
  
--	spin_lock(&tgpio->lock);
-+	spin_lock_irqsave(&tgpio->lock, flags);
- 	reg = ioread32(tgpio->membase + offset);
- 
- 	if (enabled)
-@@ -66,7 +67,7 @@ static int timbgpio_update_bit(struct gpio_chip *gpio, unsigned index,
- 		reg &= ~(1 << index);
- 
- 	iowrite32(reg, tgpio->membase + offset);
--	spin_unlock(&tgpio->lock);
-+	spin_unlock_irqrestore(&tgpio->lock, flags);
- 
- 	return 0;
- }
+ 	if (ehc->i.flags & ATA_EHI_QUIET)
 -- 
 2.40.1
 
