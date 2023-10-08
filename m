@@ -2,350 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F25F57BCCB7
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 08:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80AC27BCCB8
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 08:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344451AbjJHG2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 02:28:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43782 "EHLO
+        id S1344447AbjJHG3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 02:29:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344425AbjJHG2t (ORCPT
+        with ESMTP id S1344425AbjJHG3m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 02:28:49 -0400
-Received: from mail-oo1-f77.google.com (mail-oo1-f77.google.com [209.85.161.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4007CF
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 23:28:45 -0700 (PDT)
-Received: by mail-oo1-f77.google.com with SMTP id 006d021491bc7-57badc96ba6so4644246eaf.2
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Oct 2023 23:28:45 -0700 (PDT)
+        Sun, 8 Oct 2023 02:29:42 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5996C5
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 23:29:40 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-77428e40f71so236168485a.1
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Oct 2023 23:29:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696746580; x=1697351380; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ItEGZOzHy+Mpn2qFsqD5x6rXjpPpn6ArW6TM+N4oOT8=;
+        b=PuFdsrlkxhTSO1SExSPFvqsBIrY/SqBsrj8xyRoMnS/UcWALkQjKnuPrtE7ulzot+D
+         qAuHuSrw87/q5yj0w8qyySQBTp+ZgMS2oZlNW1JD2MVSE6F3Z0Nk9RlnGcwWYU4A1y8F
+         7TzJpf0DarQutqlWjWGa1S5BIbO8Md4Nn2GLvdDfTk9LKKmxz8MRroMvfJh+S63okc62
+         RfHNO52A9CaK9oMR3p19IIvQ5IJUfq2pVSRiXQTg6CYaqdIO4m4SdSuaEqozxtOOmrC6
+         o8VbaoCyOm1xTz9KHcxrIpVao+BinerNvkotit7dvPPrMqamiYD8iCa0+ZMdVWixQWT9
+         yRGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696746525; x=1697351325;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+        d=1e100.net; s=20230601; t=1696746580; x=1697351380;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=IcgMww75S99xFdktqW21CfFoKt5XQ5CmscxpCVAwsKM=;
-        b=g+hg11xtNRDvTABuSe/Gz2LPyFJIe4R8v3YYXRXMs87TwDsq7NoT+5ILHW9XUI27HA
-         HnVcTtrrCG7mPs4Fua8BCzHaPs85ag3js/EhKHeKJTgdZOImwya/6RCor1GrUXvo+e5x
-         xV4WolEZQoET9vAbNNI0iZkAKffIKOClQgdVR4lgWoV7w75S6xIPUKOKt6bbG2SjDiut
-         yLKSfEcq2E/uexdhwEYy5qdmlJRYIBBKsHK8PPNvSF/qlXDzzzwKZw9lyAu+GTEcZt1R
-         l0l0hQqG+hnDUvVDt9OeeWrHOgU4HWn1sIKU+Gl0GPL67b9kqsCLDmaA2WMVJuPXzG2B
-         ROFA==
-X-Gm-Message-State: AOJu0YwNm3PabB9CXztq6dFctZTcCLSGBJOVT0EH3POtzIBD4z+sA+l/
-        K0Ag5B7PXSEgFc+zTpjjc+KUsh7I5iNCnbs352MWME09y3n6
-X-Google-Smtp-Source: AGHT+IHgFDcwxNgZODyXBeDii6FSvMv0C8cUoJi9cFJcXiVOj9RpAyUc/DlNyq5wEdP9u+H9LLIUI8G7fm/ll2tekORVDP3k5lal
+        bh=ItEGZOzHy+Mpn2qFsqD5x6rXjpPpn6ArW6TM+N4oOT8=;
+        b=snfz8RKFtzdRhLX3NVfbGw6LoSyM9yjloprNN6R68C0ZB7aVxfzP3i/zvUtfHshQg4
+         gOIfbMlZdFQBi7YfEy6JcJUjBoaS300Qc2NxsBfztX/mvZ7IACsZ87NmLnORk0WzGROJ
+         dsfPW3sxg5E5xVWp9ACMFI+l/jng2FTlnFI3fWE6MsZcp31TIftDZAgYG/2Bq6Lqow/k
+         W6xq7RZJsZ8eaL54wqInLQO/Q9nDPLdzvIcrOa1PEPwsEkoS2dtOe7Iim0DhXXta07sx
+         GqvUNHaCeAszkXfhlUcYNGlD0n+CqYN4A8f9UC10DmQUMwabJHzpLpGgVcx6tM/e+tCs
+         n2IA==
+X-Gm-Message-State: AOJu0YxPsTNL1D2N7St1A2ugfOL48Ebjl42cbgRDzC8XFD2af5tFJGSm
+        XUjiLfnlUfu8/fe4bKq6YphQpzl/SJ9vqUYP2LY8qg==
+X-Google-Smtp-Source: AGHT+IFR7ku6jUa4lT8Jsgu5yGQDMYmTaI/Tm7GH7oUPHYc4oFvxnWIOHjESkJeZ2K3LlXYkvfWuomkc4+6RqlWtWig=
+X-Received: by 2002:a05:620a:6102:b0:774:3933:1f30 with SMTP id
+ oq2-20020a05620a610200b0077439331f30mr12110121qkn.8.1696746579671; Sat, 07
+ Oct 2023 23:29:39 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:7688:b0:1dc:6d26:9ff with SMTP id
- dx8-20020a056870768800b001dc6d2609ffmr4642150oab.6.1696746525126; Sat, 07 Oct
- 2023 23:28:45 -0700 (PDT)
-Date:   Sat, 07 Oct 2023 23:28:45 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e7765006072e9591@google.com>
-Subject: [syzbot] [kernel?] possible deadlock in task_fork_fair
-From:   syzbot <syzbot+1a93ee5d329e97cfbaff@syzkaller.appspotmail.com>
-To:     bpf@vger.kernel.org, brauner@kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sun, 8 Oct 2023 11:59:28 +0530
+Message-ID: <CA+G9fYuOYvGL9ugszrpJdqO3EibfJz=1a1pg4mcUukjDwMQPSA@mail.gmail.com>
+Subject: Kunit: BUG: KASAN: null-ptr-deref in __fpga_bridge_get+0x88/0x100 [fpga_bridge]
+To:     kunit-dev@googlegroups.com,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        lkft-triage@lists.linaro.org
+Cc:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
+        linux-fpga@vger.kernel.org, David Gow <davidgow@google.com>,
+        Rae Moar <rmoar@google.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Following kernel bug and warning noticed while running fpga_bridge on
+arm64 Juno-r2 device running Linux next 6.6.0-rc4-next-20231006 tag.
 
-syzbot found the following issue on:
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-HEAD commit:    7d730f1bf6f3 Add linux-next specific files for 20231005
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1150d0de680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f532286be4fff4b5
-dashboard link: https://syzkaller.appspot.com/bug?extid=1a93ee5d329e97cfbaff
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+KUNIT_TEST_MODULE=snd-hda-cirrus-scodec-test.ko
+[  239.069569] KTAP version 1
+[  239.072540] 1..1
+[  239.074962]     KTAP version 1
+[  239.078060]     # Subtest: fpga_bridge
+[  239.081928]     # module: fpga_bridge_test
+[  239.082011]     1..3
+[  239.100750] ==================================================================
+[  239.108037] BUG: KASAN: null-ptr-deref in
+__fpga_bridge_get+0x88/0x100 [fpga_bridge]
+[  239.115958] Read of size 8 at addr 0000000000000010 by task
+kunit_try_catch/2052
+[  239.123410]
+[  239.124932] CPU: 3 PID: 2052 Comm: kunit_try_catch Tainted: G    B
+          N 6.6.0-rc4-next-20231006 #1
+[  239.134660] Hardware name: ARM Juno development board (r2) (DT)
+[  239.140624] Call trace:
+[  239.143097]  dump_backtrace+0x9c/0x128
+[  239.146913]  show_stack+0x20/0x38
+[  239.150278]  dump_stack_lvl+0x60/0xb0
+[  239.154005]  print_report+0x2f0/0x5d8
+[  239.157729]  kasan_report+0xc8/0x118
+[  239.161362]  __asan_load8+0x68/0xc0
+[  239.164911]  __fpga_bridge_get+0x88/0x100 [fpga_bridge]
+[  239.170290]  fpga_bridge_get+0x48/0x78 [fpga_bridge]
+[  239.175405]  fpga_bridge_test_get+0xa0/0x1a8 [fpga_bridge_test]
+[  239.181469]  kunit_try_run_case+0x84/0x110
+[  239.185633]  kunit_generic_run_threadfn_adapter+0x38/0x60
+[  239.191109]  kthread+0x18c/0x1a8
+[  239.194385]  ret_from_fork+0x10/0x20
+[  239.198017] ==================================================================
+[  239.205450] Unable to handle kernel NULL pointer dereference at
+virtual address 0000000000000010
+[  239.214507] Mem abort info:
+[  239.217327]   ESR = 0x0000000096000004
+[  239.221158]   EC = 0x25: DABT (current EL), IL = 32 bits
+[  239.226533]   SET = 0, FnV = 0
+[  239.229608]   EA = 0, S1PTW = 0
+[  239.233339]   FSC = 0x04: level 0 translation fault
+[  239.238263] Data abort info:
+[  239.241181]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+[  239.246716]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+[  239.251820]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+[  239.257179] user pgtable: 4k pages, 48-bit VAs, pgdp=00000008ac6ec000
+[  239.263670] [0000000000000010] pgd=0000000000000000, p4d=0000000000000000
+[  239.270544] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
+[  239.276840] Modules linked in: fpga_bridge_test(+) fpga_bridge
+tda998x hdlcd onboard_usb_hub cec crct10dif_ce drm_dma_helper
+drm_kms_helper drm fuse backlight dm_mod ip_tables x_tables
+[  239.293440] CPU: 1 PID: 2052 Comm: kunit_try_catch Tainted: G    B
+          N 6.6.0-rc4-next-20231006 #1
+[  239.303135] Hardware name: ARM Juno development board (r2) (DT)
+[  239.309076] pstate: 40000005 (nZcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[  239.316066] pc : __fpga_bridge_get+0x88/0x100 [fpga_bridge]
+[  239.321710] lr : __fpga_bridge_get+0x88/0x100 [fpga_bridge]
+[  239.327341] sp : ffff800089237d00
+[  239.330666] x29: ffff800089237d00 x28: 0000000000000000 x27: 0000000000000000
+[  239.337849] x26: ffff000800a6c600 x25: ffff8000892673e8 x24: ffff8000809cc528
+[  239.345031] x23: ffff000800a6c108 x22: 0000000000000000 x21: ffff000828683000
+[  239.352215] x20: ffff000828683300 x19: ffff000828683008 x18: 0000000000000000
+[  239.359400] x17: 3d3d3d3d3d3d3d3d x16: 3d3d3d3d3d3d3d3d x15: 3d3d3d3d3d3d3d3d
+[  239.366585] x14: 3d3d3d3d3d3d3d3d x13: 3d3d3d3d3d3d3d3d x12: ffff700010eb79f1
+[  239.373765] x11: 1ffff00010eb79f0 x10: ffff700010eb79f0 x9 : dfff800000000000
+[  239.380948] x8 : 00008fffef148610 x7 : ffff8000875bcf87 x6 : 0000000000000001
+[  239.388130] x5 : ffff8000875bcf80 x4 : ffff700010eb79f1 x3 : 0000000000000000
+[  239.395309] x2 : 0000000000040020 x1 : ffff00082d182300 x0 : 0000000000000001
+[  239.402488] Call trace:
+[  239.404943]  __fpga_bridge_get+0x88/0x100 [fpga_bridge]
+[  239.410232]  fpga_bridge_get+0x48/0x78 [fpga_bridge]
+[  239.415254]  fpga_bridge_test_get+0xa0/0x1a8 [fpga_bridge_test]
+[  239.421230]  kunit_try_run_case+0x84/0x110
+[  239.425362]  kunit_generic_run_threadfn_adapter+0x38/0x60
+[  239.430799]  kthread+0x18c/0x1a8
+[  239.434047]  ret_from_fork+0x10/0x20
+[  239.437656] Code: 9431930e f94036d6 910042c0 9431930b (f9400ac0)
+[  239.443769] ---[ end trace 0000000000000000 ]---
+[  545.778709]     # fpga_bridge_test_get: try timed out
+[  545.783886] ------------[ cut here ]------------
+[  545.788568] refcount_t: addition on 0; use-after-free.
+[  545.793835] WARNING: CPU: 1 PID: 2051 at lib/refcount.c:25
+refcount_warn_saturate+0x14c/0x178
+[  545.802410] Modules linked in: fpga_bridge_test(+) fpga_bridge
+tda998x hdlcd onboard_usb_hub cec crct10dif_ce drm_dma_helper
+drm_kms_helper drm fuse backlight dm_mod ip_tables x_tables
+[  545.819009] CPU: 1 PID: 2051 Comm: modprobe Tainted: G    B D
+   N 6.6.0-rc4-next-20231006 #1
+[  545.828090] Hardware name: ARM Juno development board (r2) (DT)
+[  545.834028] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[  545.841017] pc : refcount_warn_saturate+0x14c/0x178
+[  545.845919] lr : refcount_warn_saturate+0x14c/0x178
+[  545.850819] sp : ffff8000892670c0
+[  545.854145] x29: ffff8000892670c0 x28: ffff8000820cdf40 x27: ffff80007f8d7480
+[  545.861328] x26: ffff8000892673f8 x25: ffff00082d182300 x24: ffff8000892673d0
+[  545.868510] x23: ffff800089267410 x22: ffff00082ea86e00 x21: ffff00082d182328
+[  545.875690] x20: ffff00082d182328 x19: 0000000000000002 x18: 0000000000000000
+[  545.882869] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
+[  545.890047] x14: 0000000000000000 x13: 2e656572662d7265 x12: ffff70001124cdb9
+[  545.897225] x11: 1ffff0001124cdb8 x10: ffff70001124cdb8 x9 : ffff8000801a10b8
+[  545.904405] x8 : 00008fffeedb3248 x7 : ffff800089266dc7 x6 : 0000000000000001
+[  545.911583] x5 : ffff800089266dc0 x4 : ffff70001124cdb9 x3 : dfff800000000000
+[  545.918762] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff00082d9e3480
+[  545.925940] Call trace:
+[  545.928394]  refcount_warn_saturate+0x14c/0x178
+[  545.932947]  kthread_stop+0x230/0x318
+[  545.936629]  kunit_try_catch_run+0x248/0x2a8
+[  545.940927]  kunit_run_case_catch_errors+0xdc/0x1b0
+[  545.945831]  kunit_run_tests+0x6d8/0x860
+[  545.949776]  __kunit_test_suites_init+0x9c/0xf0
+[  545.954332]  kunit_exec_run_tests+0x9c/0xb8
+[  545.958539]  kunit_module_notify+0x2f0/0x318
+[  545.962832]  notifier_call_chain+0x90/0x1c8
+[  545.967038]  blocking_notifier_call_chain_robust+0xc8/0x148
+[  545.972637]  load_module+0x296c/0x2d50
+[  545.976408]  init_module_from_file+0xdc/0x138
+[  545.980789]  __arm64_sys_finit_module+0x23c/0x458
+[  545.985517]  invoke_syscall+0x68/0x198
+[  545.989290]  el0_svc_common.constprop.0+0x80/0x150
+[  545.994108]  do_el0_svc+0x38/0x50
+[  545.997438]  el0_svc+0x3c/0x80
+[  546.000516]  el0t_64_sync_handler+0x120/0x130
+[  546.004897]  el0t_64_sync+0x190/0x198
+[  546.008577] ---[ end trace 0000000000000000 ]---
+[  546.013383] Unable to handle kernel NULL pointer dereference at
+virtual address 0000000000000000
+[  546.022243] Mem abort info:
+[  546.025101]   ESR = 0x0000000096000004
+[  546.028922]   EC = 0x25: DABT (current EL), IL = 32 bits
+[  546.034303]   SET = 0, FnV = 0
+[  546.037422]   EA = 0, S1PTW = 0
+[  546.040622]   FSC = 0x04: level 0 translation fault
+[  546.045556] Data abort info:
+[  546.048477]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+[  546.054019]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+[  546.059128]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+[  546.064501] user pgtable: 4k pages, 48-bit VAs, pgdp=00000008b2af1000
+[  546.071027] [0000000000000000] pgd=0000000000000000, p4d=0000000000000000
+[  546.077909] Internal error: Oops: 0000000096000004 [#2] PREEMPT SMP
+[  546.084206] Modules linked in: fpga_bridge_test(+) fpga_bridge
+tda998x hdlcd onboard_usb_hub cec crct10dif_ce drm_dma_helper
+drm_kms_helper drm fuse backlight dm_mod ip_tables x_tables
+[  546.100801] CPU: 1 PID: 2051 Comm: modprobe Tainted: G    B D W
+   N 6.6.0-rc4-next-20231006 #1
+[  546.109884] Hardware name: ARM Juno development board (r2) (DT)
+[  546.115823] pstate: 40000005 (nZcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[  546.122811] pc : kthread_stop+0x1f4/0x318
+[  546.126846] lr : kthread_stop+0x78/0x318
+[  546.130788] sp : ffff8000892670e0
+[  546.134118] x29: ffff8000892670e0 x28: ffff8000820cdf40 x27: ffff80007f8d7480
+[  546.141300] x26: ffff8000892673f8 x25: ffff00082d182300 x24: ffff8000892673d0
+[  546.148480] x23: ffff800089267410 x22: ffff00082ea86e00 x21: ffff00082d182328
+[  546.155661] x20: 0000000000000000 x19: ffff00082d182300 x18: 0000000000000000
+[  546.162840] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
+[  546.170017] x14: 0000000000000000 x13: 2e656572662d7265 x12: ffff70001124cdb9
+[  546.177196] x11: 1ffff0001124cdb8 x10: ffff70001124cdb8 x9 : ffff8000801a10b8
+[  546.184375] x8 : ffff8000892670c0 x7 : 0000000000000000 x6 : 0000000000000001
+[  546.191559] x5 : 0000000000000000 x4 : ffff00082d9e3480 x3 : 0000000000000000
+[  546.198737] x2 : 0000000000000001 x1 : ffff80008760bd60 x0 : 0000000000000001
+[  546.205920] Call trace:
+[  546.208373]  kthread_stop+0x1f4/0x318
+[  546.212056]  kunit_try_catch_run+0x248/0x2a8
+[  546.216354]  kunit_run_case_catch_errors+0xdc/0x1b0
+[  546.221259]  kunit_run_tests+0x6d8/0x860
+[  546.225207]  __kunit_test_suites_init+0x9c/0xf0
+[  546.229762]  kunit_exec_run_tests+0x9c/0xb8
+[  546.233970]  kunit_module_notify+0x2f0/0x318
+[  546.238263]  notifier_call_chain+0x90/0x1c8
+[  546.242467]  blocking_notifier_call_chain_robust+0xc8/0x148
+[  546.248069]  load_module+0x296c/0x2d50
+[  546.251841]  init_module_from_file+0xdc/0x138
+[  546.256222]  __arm64_sys_finit_module+0x23c/0x458
+[  546.260954]  invoke_syscall+0x68/0x198
+[  546.264730]  el0_svc_common.constprop.0+0x80/0x150
+[  546.269548]  do_el0_svc+0x38/0x50
+[  546.272878]  el0_svc+0x3c/0x80
+[  546.275954]  el0t_64_sync_handler+0x120/0x130
+[  546.280336]  el0t_64_sync+0x190/0x198
+[  546.284024] Code: c8017e60 35ffffa1 17ffffae f9800291 (c85f7e80)
+[  546.290138] ---[ end trace 0000000000000000 ]---
+Segmentation fault
+modprobe-fpga-bridge-test fail
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Links:
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20231006/testrun/20279429/suite/log-parser-test/test/check-kernel-bug/log
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20231006/testrun/20279429/suite/log-parser-test/tests/
+ - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2WO7UKXuHh4Z2jX19cmUhNchbyq
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2WO7RQfyDFoIvCa0HgqR2mRxOu8/
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2WO7RQfyDFoIvCa0HgqR2mRxOu8/config
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2WO7RQfyDFoIvCa0HgqR2mRxOu8/vmlinux.xz
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2WO7RQfyDFoIvCa0HgqR2mRxOu8/System.map
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/1d7f28a4398f/disk-7d730f1b.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/d454d124268e/vmlinux-7d730f1b.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/dbca966175cb/bzImage-7d730f1b.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1a93ee5d329e97cfbaff@syzkaller.appspotmail.com
-
-EEVDF scheduling fail, picking leftmost
-======================================================
-WARNING: possible circular locking dependency detected
-6.6.0-rc4-next-20231005-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor.4/5092 is trying to acquire lock:
-ffffffff8cab8560 (console_owner){....}-{0:0}, at: console_trylock_spinning kernel/printk/printk.c:1963 [inline]
-ffffffff8cab8560 (console_owner){....}-{0:0}, at: vprintk_emit+0x313/0x5f0 kernel/printk/printk.c:2303
-
-but task is already holding lock:
-ffff8880b993c718 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x29/0x130 kernel/sched/core.c:558
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #5 (&rq->__lock){-.-.}-{2:2}:
-       _raw_spin_lock_nested+0x31/0x40 kernel/locking/spinlock.c:378
-       raw_spin_rq_lock_nested+0x29/0x130 kernel/sched/core.c:558
-       raw_spin_rq_lock kernel/sched/sched.h:1357 [inline]
-       rq_lock kernel/sched/sched.h:1671 [inline]
-       task_fork_fair+0x70/0x240 kernel/sched/fair.c:12399
-       sched_cgroup_fork+0x3cf/0x510 kernel/sched/core.c:4799
-       copy_process+0x4580/0x74b0 kernel/fork.c:2609
-       kernel_clone+0xfd/0x920 kernel/fork.c:2907
-       user_mode_thread+0xb4/0xf0 kernel/fork.c:2985
-       rest_init+0x27/0x2b0 init/main.c:691
-       arch_call_rest_init+0x13/0x30 init/main.c:823
-       start_kernel+0x39f/0x480 init/main.c:1068
-       x86_64_start_reservations+0x18/0x30 arch/x86/kernel/head64.c:556
-       x86_64_start_kernel+0xb2/0xc0 arch/x86/kernel/head64.c:537
-       secondary_startup_64_no_verify+0x166/0x16b
-
--> #4 (&p->pi_lock){-.-.}-{2:2}:
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x3a/0x50 kernel/locking/spinlock.c:162
-       class_raw_spinlock_irqsave_constructor include/linux/spinlock.h:518 [inline]
-       try_to_wake_up+0xb0/0x15d0 kernel/sched/core.c:4213
-       kick_pool+0x253/0x460 kernel/workqueue.c:1142
-       create_worker+0x45e/0x710 kernel/workqueue.c:2217
-       workqueue_init+0x319/0x830 kernel/workqueue.c:6686
-       kernel_init_freeable+0x332/0x900 init/main.c:1532
-       kernel_init+0x1c/0x2a0 init/main.c:1437
-       ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
-       ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
-
--> #3 (&pool->lock){-.-.}-{2:2}:
-       __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
-       _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
-       __queue_work+0x399/0x1050 kernel/workqueue.c:1763
-       queue_work_on+0xed/0x110 kernel/workqueue.c:1834
-       queue_work include/linux/workqueue.h:554 [inline]
-       rpm_suspend+0x1219/0x16f0 drivers/base/power/runtime.c:660
-       rpm_idle+0x574/0x6e0 drivers/base/power/runtime.c:534
-       __pm_runtime_idle+0xbe/0x160 drivers/base/power/runtime.c:1102
-       pm_runtime_put include/linux/pm_runtime.h:460 [inline]
-       __device_attach+0x382/0x4b0 drivers/base/dd.c:1048
-       bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
-       device_add+0x117e/0x1aa0 drivers/base/core.c:3624
-       serial_base_port_add+0x353/0x4b0 drivers/tty/serial/serial_base_bus.c:178
-       serial_core_port_device_add drivers/tty/serial/serial_core.c:3315 [inline]
-       serial_core_register_port+0x137/0x1af0 drivers/tty/serial/serial_core.c:3356
-       serial8250_register_8250_port+0x140d/0x2080 drivers/tty/serial/8250/8250_core.c:1139
-       serial_pnp_probe+0x47d/0x880 drivers/tty/serial/8250/8250_pnp.c:478
-       pnp_device_probe+0x2a3/0x4c0 drivers/pnp/driver.c:111
-       call_driver_probe drivers/base/dd.c:579 [inline]
-       really_probe+0x234/0xc90 drivers/base/dd.c:658
-       __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
-       driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
-       __driver_attach+0x274/0x570 drivers/base/dd.c:1216
-       bus_for_each_dev+0x13c/0x1d0 drivers/base/bus.c:368
-       bus_add_driver+0x2e9/0x630 drivers/base/bus.c:673
-       driver_register+0x15c/0x4a0 drivers/base/driver.c:246
-       serial8250_init+0xba/0x4b0 drivers/tty/serial/8250/8250_core.c:1240
-       do_one_initcall+0x11c/0x640 init/main.c:1232
-       do_initcall_level init/main.c:1294 [inline]
-       do_initcalls init/main.c:1310 [inline]
-       do_basic_setup init/main.c:1329 [inline]
-       kernel_init_freeable+0x5c2/0x900 init/main.c:1547
-       kernel_init+0x1c/0x2a0 init/main.c:1437
-       ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
-       ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
-
--> #2 (&dev->power.lock){-.-.}-{2:2}:
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x3a/0x50 kernel/locking/spinlock.c:162
-       __pm_runtime_resume+0xab/0x170 drivers/base/power/runtime.c:1169
-       pm_runtime_get include/linux/pm_runtime.h:408 [inline]
-       __uart_start+0x1b0/0x420 drivers/tty/serial/serial_core.c:148
-       uart_write+0x2ff/0x5b0 drivers/tty/serial/serial_core.c:618
-       process_output_block drivers/tty/n_tty.c:574 [inline]
-       n_tty_write+0x422/0x1130 drivers/tty/n_tty.c:2379
-       iterate_tty_write drivers/tty/tty_io.c:1017 [inline]
-       file_tty_write.constprop.0+0x519/0x9b0 drivers/tty/tty_io.c:1088
-       tty_write drivers/tty/tty_io.c:1109 [inline]
-       redirected_tty_write drivers/tty/tty_io.c:1132 [inline]
-       redirected_tty_write+0xa6/0xc0 drivers/tty/tty_io.c:1112
-       call_write_iter include/linux/fs.h:1966 [inline]
-       new_sync_write fs/read_write.c:491 [inline]
-       vfs_write+0x64f/0xe40 fs/read_write.c:584
-       ksys_write+0x12f/0x250 fs/read_write.c:637
-       do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-       do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--> #1 (&port_lock_key){-.-.}-{2:2}:
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x3a/0x50 kernel/locking/spinlock.c:162
-       uart_port_lock_irqsave include/linux/serial_core.h:616 [inline]
-       serial8250_console_write+0xa7c/0x1060 drivers/tty/serial/8250/8250_port.c:3410
-       console_emit_next_record kernel/printk/printk.c:2894 [inline]
-       console_flush_all+0x4d5/0xd50 kernel/printk/printk.c:2960
-       console_unlock+0x10c/0x260 kernel/printk/printk.c:3029
-       vprintk_emit+0x17f/0x5f0 kernel/printk/printk.c:2304
-       vprintk+0x7b/0x90 kernel/printk/printk_safe.c:45
-       _printk+0xc8/0x100 kernel/printk/printk.c:2329
-       register_console+0xb30/0x1210 kernel/printk/printk.c:3535
-       univ8250_console_init+0x35/0x50 drivers/tty/serial/8250/8250_core.c:717
-       console_init+0xba/0x5c0 kernel/printk/printk.c:3681
-       start_kernel+0x25a/0x480 init/main.c:1004
-       x86_64_start_reservations+0x18/0x30 arch/x86/kernel/head64.c:556
-       x86_64_start_kernel+0xb2/0xc0 arch/x86/kernel/head64.c:537
-       secondary_startup_64_no_verify+0x166/0x16b
-
--> #0 (console_owner){....}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain kernel/locking/lockdep.c:3868 [inline]
-       __lock_acquire+0x2e3d/0x5de0 kernel/locking/lockdep.c:5136
-       lock_acquire kernel/locking/lockdep.c:5753 [inline]
-       lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5718
-       console_trylock_spinning kernel/printk/printk.c:1963 [inline]
-       vprintk_emit+0x328/0x5f0 kernel/printk/printk.c:2303
-       vprintk+0x7b/0x90 kernel/printk/printk_safe.c:45
-       _printk+0xc8/0x100 kernel/printk/printk.c:2329
-       pick_eevdf kernel/sched/fair.c:963 [inline]
-       pick_next_entity kernel/sched/fair.c:5247 [inline]
-       pick_next_task_fair+0x1c5/0x1280 kernel/sched/fair.c:8205
-       __pick_next_task kernel/sched/core.c:5986 [inline]
-       pick_next_task kernel/sched/core.c:6061 [inline]
-       __schedule+0x493/0x5a00 kernel/sched/core.c:6640
-       __schedule_loop kernel/sched/core.c:6753 [inline]
-       schedule+0xe7/0x270 kernel/sched/core.c:6768
-       schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6825
-       __mutex_lock_common kernel/locking/mutex.c:679 [inline]
-       __mutex_lock+0x969/0x1340 kernel/locking/mutex.c:747
-       ieee80211_register_hw+0x26d0/0x4260 net/mac80211/main.c:1408
-       mac80211_hwsim_new_radio+0x24cf/0x4cb0 drivers/net/wireless/virtual/mac80211_hwsim.c:5304
-       hwsim_new_radio_nl+0xaf8/0x1240 drivers/net/wireless/virtual/mac80211_hwsim.c:5985
-       genl_family_rcv_msg_doit+0x1fc/0x2e0 net/netlink/genetlink.c:971
-       genl_family_rcv_msg net/netlink/genetlink.c:1051 [inline]
-       genl_rcv_msg+0x55c/0x800 net/netlink/genetlink.c:1066
-       netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2545
-       genl_rcv+0x28/0x40 net/netlink/genetlink.c:1075
-       netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
-       netlink_unicast+0x536/0x810 net/netlink/af_netlink.c:1368
-       netlink_sendmsg+0x93c/0xe40 net/netlink/af_netlink.c:1910
-       sock_sendmsg_nosec net/socket.c:730 [inline]
-       __sock_sendmsg+0xd5/0x180 net/socket.c:745
-       __sys_sendto+0x255/0x340 net/socket.c:2194
-       __do_sys_sendto net/socket.c:2206 [inline]
-       __se_sys_sendto net/socket.c:2202 [inline]
-       __x64_sys_sendto+0xe0/0x1b0 net/socket.c:2202
-       do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-       do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-other info that might help us debug this:
-
-Chain exists of:
-  console_owner --> &p->pi_lock --> &rq->__lock
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&rq->__lock);
-                               lock(&p->pi_lock);
-                               lock(&rq->__lock);
-  lock(console_owner);
-
- *** DEADLOCK ***
-
-4 locks held by syz-executor.4/5092:
- #0: ffffffff8e6a8450 (cb_lock){++++}-{3:3}, at: genl_rcv+0x19/0x40 net/netlink/genetlink.c:1074
- #1: ffffffff8e6a8508 (genl_mutex){+.+.}-{3:3}, at: genl_lock net/netlink/genetlink.c:33 [inline]
- #1: ffffffff8e6a8508 (genl_mutex){+.+.}-{3:3}, at: genl_op_lock net/netlink/genetlink.c:58 [inline]
- #1: ffffffff8e6a8508 (genl_mutex){+.+.}-{3:3}, at: genl_op_lock net/netlink/genetlink.c:55 [inline]
- #1: ffffffff8e6a8508 (genl_mutex){+.+.}-{3:3}, at: genl_rcv_msg+0x577/0x800 net/netlink/genetlink.c:1065
- #2: ffffffff8e60db28 (rtnl_mutex){+.+.}-{3:3}, at: ieee80211_register_hw+0x26d0/0x4260 net/mac80211/main.c:1408
- #3: ffff8880b993c718 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x29/0x130 kernel/sched/core.c:558
-
-stack backtrace:
-CPU: 1 PID: 5092 Comm: syz-executor.4 Not tainted 6.6.0-rc4-next-20231005-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- check_noncircular+0x311/0x3f0 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain kernel/locking/lockdep.c:3868 [inline]
- __lock_acquire+0x2e3d/0x5de0 kernel/locking/lockdep.c:5136
- lock_acquire kernel/locking/lockdep.c:5753 [inline]
- lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5718
- console_trylock_spinning kernel/printk/printk.c:1963 [inline]
- vprintk_emit+0x328/0x5f0 kernel/printk/printk.c:2303
- vprintk+0x7b/0x90 kernel/printk/printk_safe.c:45
- _printk+0xc8/0x100 kernel/printk/printk.c:2329
- pick_eevdf kernel/sched/fair.c:963 [inline]
- pick_next_entity kernel/sched/fair.c:5247 [inline]
- pick_next_task_fair+0x1c5/0x1280 kernel/sched/fair.c:8205
- __pick_next_task kernel/sched/core.c:5986 [inline]
- pick_next_task kernel/sched/core.c:6061 [inline]
- __schedule+0x493/0x5a00 kernel/sched/core.c:6640
- __schedule_loop kernel/sched/core.c:6753 [inline]
- schedule+0xe7/0x270 kernel/sched/core.c:6768
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6825
- __mutex_lock_common kernel/locking/mutex.c:679 [inline]
- __mutex_lock+0x969/0x1340 kernel/locking/mutex.c:747
- ieee80211_register_hw+0x26d0/0x4260 net/mac80211/main.c:1408
- mac80211_hwsim_new_radio+0x24cf/0x4cb0 drivers/net/wireless/virtual/mac80211_hwsim.c:5304
- hwsim_new_radio_nl+0xaf8/0x1240 drivers/net/wireless/virtual/mac80211_hwsim.c:5985
- genl_family_rcv_msg_doit+0x1fc/0x2e0 net/netlink/genetlink.c:971
- genl_family_rcv_msg net/netlink/genetlink.c:1051 [inline]
- genl_rcv_msg+0x55c/0x800 net/netlink/genetlink.c:1066
- netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2545
- genl_rcv+0x28/0x40 net/netlink/genetlink.c:1075
- netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
- netlink_unicast+0x536/0x810 net/netlink/af_netlink.c:1368
- netlink_sendmsg+0x93c/0xe40 net/netlink/af_netlink.c:1910
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg+0xd5/0x180 net/socket.c:745
- __sys_sendto+0x255/0x340 net/socket.c:2194
- __do_sys_sendto net/socket.c:2206 [inline]
- __se_sys_sendto net/socket.c:2202 [inline]
- __x64_sys_sendto+0xe0/0x1b0 net/socket.c:2202
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f6ec907e7dc
-Code: 1a 51 02 00 44 8b 4c 24 2c 4c 8b 44 24 20 89 c5 44 8b 54 24 28 48 8b 54 24 18 b8 2c 00 00 00 48 8b 74 24 10 8b 7c 24 08 0f 05 <48> 3d 00 f0 ff ff 77 34 89 ef 48 89 44 24 08 e8 60 51 02 00 48 8b
-RSP: 002b:00007fff330e2f40 EFLAGS: 00000293 ORIG_RAX: 000000000000002c
-RAX: ffffffffffffffda RBX: 00007f6ec9cc4620 RCX: 00007f6ec907e7dc
-RDX: 0000000000000024 RSI: 00007f6ec9cc4670 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 00007fff330e2f94 R09: 000000000000000c
-R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000001
-R13: 0000000000000000 R14: 00007f6ec9cc4670 R15: 0000000000000000
- </TASK>
-ieee80211 phy14: Selected rate control algorithm 'minstrel_ht'
+Step to reproduce:
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2WO7RQfyDFoIvCa0HgqR2mRxOu8/tuxmake_reproducer.sh
+ - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2WO7UKXuHh4Z2jX19cmUhNchbyq/reproducer
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+--
+Linaro LKFT
+https://lkft.linaro.org
