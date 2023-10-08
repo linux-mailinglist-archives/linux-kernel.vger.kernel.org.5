@@ -2,147 +2,326 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE2D7BCE49
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 14:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A78B27BCE46
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 14:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344725AbjJHLt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 07:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47762 "EHLO
+        id S1344735AbjJHL64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 07:58:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230303AbjJHLt2 (ORCPT
+        with ESMTP id S230303AbjJHL6z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 07:49:28 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 303B5A6
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 04:49:26 -0700 (PDT)
-Received: from canpemm500006.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S3L3x4BFrzrTB8;
-        Sun,  8 Oct 2023 19:46:53 +0800 (CST)
-Received: from [10.174.179.200] (10.174.179.200) by
- canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Sun, 8 Oct 2023 19:49:23 +0800
-Subject: Re: [PATCH] Bluetooth: Fix UAF for hci_chan
-To:     Pauli Virtanen <pav@iki.fi>
-CC:     <linux-kernel@vger.kernel.org>
-References: <20231007093521.2404844-1-william.xuanziyang@huawei.com>
- <f1b9fe3939dff426528760eca39d4ad4ab2340a3.camel@iki.fi>
-From:   "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
-Message-ID: <8266e59c-0819-b477-7eff-c4bdfb5614de@huawei.com>
-Date:   Sun, 8 Oct 2023 19:49:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sun, 8 Oct 2023 07:58:55 -0400
+Received: from mail-oi1-f208.google.com (mail-oi1-f208.google.com [209.85.167.208])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2BACB6
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 04:58:53 -0700 (PDT)
+Received: by mail-oi1-f208.google.com with SMTP id 5614622812f47-3af5b5d7ecbso6142403b6e.3
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 04:58:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696766333; x=1697371133;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8RprEX1ixu6u5Jx+NExPvlRafwbMpRzy1zYFg1qW8o0=;
+        b=M4zcquubWBJvAJkAhBSNMwD6kXSIgL6M7wH+4mzD0IQ8VJaVyhqMFbkTzSFwY9EBnK
+         sN0VnITkuvnxTq9YWmNUBCPPj62oNkwnCGvaKKnur4NZvEH9hcZSiWTyLEs6x+yQ3J4l
+         kJjp365Rd11RY9kjk1/v8oxjMmyGsJX+J6KBMO9h4Eoxw02xpO3hkedmUDYdX/YHUhTn
+         vCJE5ZxpGKF0dsbAZiphxLp30JjIoMQIWD0an3GSezXdc8IHPp0nbjMxW65HNoVEgfrT
+         nnO3YEZN7Fd4IQSQ3kFRHVbFD4yE1Gh12LN00YA5RLLWSCc4vKqqdDCoxlH72bZgR4vZ
+         uKYw==
+X-Gm-Message-State: AOJu0Yyf0dBDw965IyqAYANtAn1SM85iPOopNvt1hnlYB6VGJMg8HiU2
+        UDzLSNkE7tbnC7avp2srYlL6e0esP5gVJP5ZM4sTQMzO75YLFYAqvA==
+X-Google-Smtp-Source: AGHT+IH379ZAYxcqiTdBOpbrbHPA6BP8Vf6jUy0A+2nCyZZDxNbC/J+qMTtUCkXngh9H6UVo6gO6MOLBA9LTZrhpQ66NJLMyLg1a
 MIME-Version: 1.0
-In-Reply-To: <f1b9fe3939dff426528760eca39d4ad4ab2340a3.camel@iki.fi>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.200]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500006.china.huawei.com (7.192.105.130)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:f05:b0:3a7:5f99:9fe1 with SMTP id
+ m5-20020a0568080f0500b003a75f999fe1mr7018210oiw.2.1696766333135; Sun, 08 Oct
+ 2023 04:58:53 -0700 (PDT)
+Date:   Sun, 08 Oct 2023 04:58:53 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008db61e0607333294@google.com>
+Subject: [syzbot] [kernel?] possible deadlock in try_to_wake_up (3)
+From:   syzbot <syzbot+6b8ea5bb987ec6fe0fd1@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, luto@kernel.org,
+        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Hi,
-> 
-> la, 2023-10-07 kello 17:35 +0800, Ziyang Xuan kirjoitti:
->> Syzbot reports a UAF problem as follows:
->>
->> BUG: KASAN: slab-use-after-free in hci_send_acl+0x48/0xe70 net/bluetooth/hci_core.c:3231
->> ...
->> Call Trace:
->>  <TASK>
->>  __dump_stack lib/dump_stack.c:88 [inline]
->>  dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
->>  print_address_description mm/kasan/report.c:364 [inline]
->>  print_report+0x163/0x540 mm/kasan/report.c:475
->>  kasan_report+0x175/0x1b0 mm/kasan/report.c:588
->>  hci_send_acl+0x48/0xe70 net/bluetooth/hci_core.c:3231
->>  l2cap_send_conn_req net/bluetooth/l2cap_core.c:1286 [inline]
->>  l2cap_start_connection+0x465/0x620 net/bluetooth/l2cap_core.c:1514
->>  l2cap_conn_start+0xbf3/0x1130 net/bluetooth/l2cap_core.c:1661
->>  process_one_work kernel/workqueue.c:2630 [inline]
->>  process_scheduled_works+0x90f/0x1400 kernel/workqueue.c:2703
->>  worker_thread+0xa5f/0xff0 kernel/workqueue.c:2784
->>  kthread+0x2d3/0x370 kernel/kthread.c:388
->>  ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
->>  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
->>  </TASK>
-> 
-> Note this looks like the same issue as in the following thread, where
-> there's a suggestion from maintainer:
-> 
-> https://lore.kernel.org/linux-bluetooth/fd9c0f0eddb8a7d73e9797568dc3cf2bc9b8ad62.1696077070.git.pav@iki.fi/T/#u
-> 
-> 
-> Is it the same issue?
+Hello,
 
-Yes, Thank you for your reminder.
+syzbot found the following issue on:
 
-I think use ida to make handle unique can solve the problem more easily.
+HEAD commit:    7d730f1bf6f3 Add linux-next specific files for 20231005
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=15f02fa1680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f532286be4fff4b5
+dashboard link: https://syzkaller.appspot.com/bug?extid=6b8ea5bb987ec6fe0fd1
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
-I will rebase my patch.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Ziyang Xuan
-> 
->>
->> Allocated by task 27110:
->>  kasan_save_stack mm/kasan/common.c:45 [inline]
->>  kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
->>  ____kasan_kmalloc mm/kasan/common.c:374 [inline]
->>  __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:383
->>  kmalloc include/linux/slab.h:599 [inline]
->>  kzalloc include/linux/slab.h:720 [inline]
->>  hci_chan_create+0xc8/0x300 net/bluetooth/hci_conn.c:2714
->>  l2cap_conn_add+0x69/0xc10 net/bluetooth/l2cap_core.c:7841
->>  l2cap_chan_connect+0x61f/0xeb0 net/bluetooth/l2cap_core.c:8053
->>  bt_6lowpan_connect net/bluetooth/6lowpan.c:894 [inline]
->>  lowpan_control_write+0x55e/0x850 net/bluetooth/6lowpan.c:1129
->>  full_proxy_write+0x113/0x1c0 fs/debugfs/file.c:236
->>  vfs_write+0x286/0xaf0 fs/read_write.c:582
->>  ksys_write+0x1a0/0x2c0 fs/read_write.c:637
->>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->>  do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
->>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
->>
->> Freed by task 5067:
->>  kasan_save_stack mm/kasan/common.c:45 [inline]
->>  kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
->>  kasan_save_free_info+0x28/0x40 mm/kasan/generic.c:522
->>  ____kasan_slab_free+0xd6/0x120 mm/kasan/common.c:236
->>  kasan_slab_free include/linux/kasan.h:164 [inline]
->>  slab_free_hook mm/slub.c:1800 [inline]
->>  slab_free_freelist_hook mm/slub.c:1826 [inline]
->>  slab_free mm/slub.c:3809 [inline]
->>  __kmem_cache_free+0x25f/0x3b0 mm/slub.c:3822
->>  hci_chan_list_flush net/bluetooth/hci_conn.c:2754 [inline]
->>  hci_conn_cleanup net/bluetooth/hci_conn.c:152 [inline]
->>  hci_conn_del+0x4f8/0xc40 net/bluetooth/hci_conn.c:1156
->>  hci_abort_conn_sync+0xa45/0xfe0
->>  hci_cmd_sync_work+0x228/0x400 net/bluetooth/hci_sync.c:306
->>  process_one_work kernel/workqueue.c:2630 [inline]
->>  process_scheduled_works+0x90f/0x1400 kernel/workqueue.c:2703
->>  worker_thread+0xa5f/0xff0 kernel/workqueue.c:2784
->>  kthread+0x2d3/0x370 kernel/kthread.c:388
->>  ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
->>  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
->>
->> There are two main reasons for this:
->> 1. In the case of hci_conn_add() concurrency, the handle of
->> hci_conn allocated through hci_conn_hash_alloc_unset() is not unique.
->> 2. The processes related to hci_abort_conn() and hci_connect_xxx()
->> can be concurrent, but the two processes lack synchronization.
->>
->> To fix this, use ida to manage the allocation of conn->handle, and
->> add the HCI_CONN_DISC flag to achieve synchronization between
->> hci_abort_conn() and hci_connect_xxx() related processes.
->>
->> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
->> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/1d7f28a4398f/disk-7d730f1b.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/d454d124268e/vmlinux-7d730f1b.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/dbca966175cb/bzImage-7d730f1b.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6b8ea5bb987ec6fe0fd1@syzkaller.appspotmail.com
+
+batman_adv: It is strongly recommended to keep mac addresses unique to avoid problems!
+batman_adv: The newly added mac address (aa:aa:aa:aa:aa:3f) already exists on: batadv_slave_1
+======================================================
+WARNING: possible circular locking dependency detected
+6.6.0-rc4-next-20231005-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor.5/5091 is trying to acquire lock:
+ffff88801d41e338 (&p->pi_lock){-.-.}-{2:2}, at: class_raw_spinlock_irqsave_constructor include/linux/spinlock.h:518 [inline]
+ffff88801d41e338 (&p->pi_lock){-.-.}-{2:2}, at: try_to_wake_up+0xb0/0x15d0 kernel/sched/core.c:4213
+
+but task is already holding lock:
+ffffffff8cb98e18 ((console_sem).lock){-...}-{2:2}, at: up+0x16/0xb0 kernel/locking/semaphore.c:187
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 ((console_sem).lock){-...}-{2:2}:
+       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+       _raw_spin_lock_irqsave+0x3a/0x50 kernel/locking/spinlock.c:162
+       down_trylock+0x12/0x70 kernel/locking/semaphore.c:139
+       __down_trylock_console_sem+0x40/0x140 kernel/printk/printk.c:323
+       console_trylock+0x73/0x130 kernel/printk/printk.c:2652
+       console_trylock_spinning kernel/printk/printk.c:1924 [inline]
+       vprintk_emit+0x162/0x5f0 kernel/printk/printk.c:2303
+       vprintk+0x7b/0x90 kernel/printk/printk_safe.c:45
+       _printk+0xc8/0x100 kernel/printk/printk.c:2329
+       pick_eevdf kernel/sched/fair.c:963 [inline]
+       pick_next_entity kernel/sched/fair.c:5247 [inline]
+       pick_next_task_fair+0x1c5/0x1280 kernel/sched/fair.c:8205
+       __pick_next_task kernel/sched/core.c:5986 [inline]
+       pick_next_task kernel/sched/core.c:6061 [inline]
+       __schedule+0x493/0x5a00 kernel/sched/core.c:6640
+       preempt_schedule_irq+0x52/0x90 kernel/sched/core.c:6998
+       irqentry_exit+0x35/0x80 kernel/entry/common.c:432
+       asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
+       kernel_text_address+0x0/0xf0 kernel/extable.c:71
+       __kernel_text_address+0xd/0x30 kernel/extable.c:79
+       unwind_get_return_address+0x78/0xe0 arch/x86/kernel/unwind_orc.c:369
+       arch_stack_walk+0xbe/0x170 arch/x86/kernel/stacktrace.c:26
+       stack_trace_save+0x96/0xd0 kernel/stacktrace.c:122
+       save_stack+0x160/0x1f0 mm/page_owner.c:128
+       __reset_page_owner+0x5a/0x190 mm/page_owner.c:149
+       reset_page_owner include/linux/page_owner.h:24 [inline]
+       free_pages_prepare mm/page_alloc.c:1134 [inline]
+       free_unref_page_prepare+0x476/0xa40 mm/page_alloc.c:2383
+       free_unref_page+0x33/0x3b0 mm/page_alloc.c:2518
+       qlink_free mm/kasan/quarantine.c:166 [inline]
+       qlist_free_all+0x6a/0x170 mm/kasan/quarantine.c:185
+       kasan_quarantine_reduce+0x18e/0x1d0 mm/kasan/quarantine.c:292
+       __kasan_slab_alloc+0x65/0x90 mm/kasan/common.c:305
+       kasan_slab_alloc include/linux/kasan.h:188 [inline]
+       slab_post_alloc_hook mm/slab.h:758 [inline]
+       slab_alloc_node mm/slub.c:3478 [inline]
+       slab_alloc mm/slub.c:3486 [inline]
+       __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+       kmem_cache_alloc+0x15d/0x380 mm/slub.c:3502
+       kmem_cache_zalloc include/linux/slab.h:711 [inline]
+       alloc_empty_file+0x73/0x1d0 fs/file_table.c:223
+       path_openat+0xdd/0x2ce0 fs/namei.c:3763
+       do_filp_open+0x1de/0x430 fs/namei.c:3807
+       do_sys_openat2+0x176/0x1e0 fs/open.c:1422
+       do_sys_open fs/open.c:1437 [inline]
+       __do_sys_openat fs/open.c:1453 [inline]
+       __se_sys_openat fs/open.c:1448 [inline]
+       __x64_sys_openat+0x175/0x210 fs/open.c:1448
+       do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+       do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+-> #1 (&rq->__lock){-.-.}-{2:2}:
+       _raw_spin_lock_nested+0x31/0x40 kernel/locking/spinlock.c:378
+       raw_spin_rq_lock_nested+0x29/0x130 kernel/sched/core.c:558
+       raw_spin_rq_lock kernel/sched/sched.h:1357 [inline]
+       rq_lock kernel/sched/sched.h:1671 [inline]
+       task_fork_fair+0x70/0x240 kernel/sched/fair.c:12399
+       sched_cgroup_fork+0x3cf/0x510 kernel/sched/core.c:4799
+       copy_process+0x4580/0x74b0 kernel/fork.c:2609
+       kernel_clone+0xfd/0x920 kernel/fork.c:2907
+       user_mode_thread+0xb4/0xf0 kernel/fork.c:2985
+       rest_init+0x27/0x2b0 init/main.c:691
+       arch_call_rest_init+0x13/0x30 init/main.c:823
+       start_kernel+0x39f/0x480 init/main.c:1068
+       x86_64_start_reservations+0x18/0x30 arch/x86/kernel/head64.c:556
+       x86_64_start_kernel+0xb2/0xc0 arch/x86/kernel/head64.c:537
+       secondary_startup_64_no_verify+0x166/0x16b
+
+-> #0 (&p->pi_lock){-.-.}-{2:2}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain kernel/locking/lockdep.c:3868 [inline]
+       __lock_acquire+0x2e3d/0x5de0 kernel/locking/lockdep.c:5136
+       lock_acquire kernel/locking/lockdep.c:5753 [inline]
+       lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5718
+       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+       _raw_spin_lock_irqsave+0x3a/0x50 kernel/locking/spinlock.c:162
+       class_raw_spinlock_irqsave_constructor include/linux/spinlock.h:518 [inline]
+       try_to_wake_up+0xb0/0x15d0 kernel/sched/core.c:4213
+       up+0x79/0xb0 kernel/locking/semaphore.c:191
+       __up_console_sem kernel/printk/printk.c:340 [inline]
+       __console_unlock kernel/printk/printk.c:2699 [inline]
+       console_unlock+0x1cf/0x260 kernel/printk/printk.c:3031
+       vprintk_emit+0x17f/0x5f0 kernel/printk/printk.c:2304
+       vprintk+0x7b/0x90 kernel/printk/printk_safe.c:45
+       _printk+0xc8/0x100 kernel/printk/printk.c:2329
+       batadv_check_known_mac_addr+0x21f/0x440 net/batman-adv/hard-interface.c:526
+       batadv_hard_if_event+0x1048/0x1660 net/batman-adv/hard-interface.c:998
+       notifier_call_chain+0xb6/0x3b0 kernel/notifier.c:93
+       call_netdevice_notifiers_info+0xb9/0x130 net/core/dev.c:1970
+       call_netdevice_notifiers_extack net/core/dev.c:2008 [inline]
+       call_netdevice_notifiers net/core/dev.c:2022 [inline]
+       dev_set_mac_address+0x36f/0x4a0 net/core/dev.c:8860
+       dev_set_mac_address_user+0x30/0x50 net/core/dev.c:8874
+       do_setlink+0x6e9/0x3fa0 net/core/rtnetlink.c:2864
+       __rtnl_newlink+0xc1d/0x1940 net/core/rtnetlink.c:3707
+       rtnl_newlink+0x67/0xa0 net/core/rtnetlink.c:3754
+       rtnetlink_rcv_msg+0x3c4/0xdf0 net/core/rtnetlink.c:6480
+       netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2545
+       netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
+       netlink_unicast+0x536/0x810 net/netlink/af_netlink.c:1368
+       netlink_sendmsg+0x93c/0xe40 net/netlink/af_netlink.c:1910
+       sock_sendmsg_nosec net/socket.c:730 [inline]
+       __sock_sendmsg+0xd5/0x180 net/socket.c:745
+       __sys_sendto+0x255/0x340 net/socket.c:2194
+       __do_sys_sendto net/socket.c:2206 [inline]
+       __se_sys_sendto net/socket.c:2202 [inline]
+       __x64_sys_sendto+0xe0/0x1b0 net/socket.c:2202
+       do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+       do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+other info that might help us debug this:
+
+Chain exists of:
+  &p->pi_lock --> &rq->__lock --> (console_sem).lock
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock((console_sem).lock);
+                               lock(&rq->__lock);
+                               lock((console_sem).lock);
+  lock(&p->pi_lock);
+
+ *** DEADLOCK ***
+
+4 locks held by syz-executor.5/5091:
+ #0: ffffffff8e60db28 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
+ #0: ffffffff8e60db28 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x36f/0xdf0 net/core/rtnetlink.c:6477
+ #1: ffffffff8e6001b0 (dev_addr_sem){++++}-{3:3}, at: dev_set_mac_address_user+0x22/0x50 net/core/dev.c:8873
+ #2: ffffffff8cbab220 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:303 [inline]
+ #2: ffffffff8cbab220 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:749 [inline]
+ #2: ffffffff8cbab220 (rcu_read_lock){....}-{1:2}, at: batadv_check_known_mac_addr+0x38/0x440 net/batman-adv/hard-interface.c:513
+ #3: ffffffff8cb98e18 ((console_sem).lock){-...}-{2:2}, at: up+0x16/0xb0 kernel/locking/semaphore.c:187
+
+stack backtrace:
+CPU: 0 PID: 5091 Comm: syz-executor.5 Not tainted 6.6.0-rc4-next-20231005-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ check_noncircular+0x311/0x3f0 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain kernel/locking/lockdep.c:3868 [inline]
+ __lock_acquire+0x2e3d/0x5de0 kernel/locking/lockdep.c:5136
+ lock_acquire kernel/locking/lockdep.c:5753 [inline]
+ lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5718
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x3a/0x50 kernel/locking/spinlock.c:162
+ class_raw_spinlock_irqsave_constructor include/linux/spinlock.h:518 [inline]
+ try_to_wake_up+0xb0/0x15d0 kernel/sched/core.c:4213
+ up+0x79/0xb0 kernel/locking/semaphore.c:191
+ __up_console_sem kernel/printk/printk.c:340 [inline]
+ __console_unlock kernel/printk/printk.c:2699 [inline]
+ console_unlock+0x1cf/0x260 kernel/printk/printk.c:3031
+ vprintk_emit+0x17f/0x5f0 kernel/printk/printk.c:2304
+ vprintk+0x7b/0x90 kernel/printk/printk_safe.c:45
+ _printk+0xc8/0x100 kernel/printk/printk.c:2329
+ batadv_check_known_mac_addr+0x21f/0x440 net/batman-adv/hard-interface.c:526
+ batadv_hard_if_event+0x1048/0x1660 net/batman-adv/hard-interface.c:998
+ notifier_call_chain+0xb6/0x3b0 kernel/notifier.c:93
+ call_netdevice_notifiers_info+0xb9/0x130 net/core/dev.c:1970
+ call_netdevice_notifiers_extack net/core/dev.c:2008 [inline]
+ call_netdevice_notifiers net/core/dev.c:2022 [inline]
+ dev_set_mac_address+0x36f/0x4a0 net/core/dev.c:8860
+ dev_set_mac_address_user+0x30/0x50 net/core/dev.c:8874
+ do_setlink+0x6e9/0x3fa0 net/core/rtnetlink.c:2864
+ __rtnl_newlink+0xc1d/0x1940 net/core/rtnetlink.c:3707
+ rtnl_newlink+0x67/0xa0 net/core/rtnetlink.c:3754
+ rtnetlink_rcv_msg+0x3c4/0xdf0 net/core/rtnetlink.c:6480
+ netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2545
+ netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
+ netlink_unicast+0x536/0x810 net/netlink/af_netlink.c:1368
+ netlink_sendmsg+0x93c/0xe40 net/netlink/af_netlink.c:1910
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0xd5/0x180 net/socket.c:745
+ __sys_sendto+0x255/0x340 net/socket.c:2194
+ __do_sys_sendto net/socket.c:2206 [inline]
+ __se_sys_sendto net/socket.c:2202 [inline]
+ __x64_sys_sendto+0xe0/0x1b0 net/socket.c:2202
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f75f027e7dc
+Code: 1a 51 02 00 44 8b 4c 24 2c 4c 8b 44 24 20 89 c5 44 8b 54 24 28 48 8b 54 24 18 b8 2c 00 00 00 48 8b 74 24 10 8b 7c 24 08 0f 05 <48> 3d 00 f0 ff ff 77 34 89 ef 48 89 44 24 08 e8 60 51 02 00 48 8b
+RSP: 002b:00007ffece75e400 EFLAGS: 00000293 ORIG_RAX: 000000000000002c
+RAX: ffffffffffffffda RBX: 00007f75f0ec4620 RCX: 00007f75f027e7dc
+RDX: 000000000000002c RSI: 00007f75f0ec4670 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 00007ffece75e454 R09: 000000000000000c
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000001
+R13: 0000000000000000 R14: 00007f75f0ec4670 R15: 0000000000000000
+ </TASK>
+batman_adv: It is strongly recommended to keep mac addresses unique to avoid problems!
+batman_adv: The newly added mac address (aa:aa:aa:aa:aa:3f) already exists on: batadv_slave_1
+batman_adv: It is strongly recommended to keep mac addresses unique to avoid problems!
+batman_adv: The newly added mac address (aa:aa:aa:aa:aa:3f) already exists on: batadv_slave_1
+batman_adv: It is strongly recommended to keep mac addresses unique to avoid problems!
+batman_adv: batadv0: Interface activated: batadv_slave_1
+netdevsim netdevsim5 netdevsim0: set [1, 0] type 2 family 0 port 6081 - 0
+netdevsim netdevsim5 netdevsim1: set [1, 0] type 2 family 0 port 6081 - 0
+netdevsim netdevsim5 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
+netdevsim netdevsim5 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
+ieee80211 phy11: Selected rate control algorithm 'minstrel_ht'
+ieee80211 phy14: Selected rate control algorithm 'minstrel_ht'
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
