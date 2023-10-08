@@ -2,137 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 956FA7BD0CC
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 00:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81FD97BD0CE
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 00:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344767AbjJHWS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 18:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47968 "EHLO
+        id S1344791AbjJHWTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 18:19:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344437AbjJHWSY (ORCPT
+        with ESMTP id S1344437AbjJHWTM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 18:18:24 -0400
-Received: from vern.gendns.com (vern.gendns.com [98.142.107.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF368A3
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 15:18:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=M+Il/UbRpv2hwbJYh84vfo4sM0bgLWrVwAVsRhP4+Gg=; b=koC2+ANB36O0hWWF/Tz+r2qSOZ
-        MHsU/cfxKI3ApvIuuwI3j02KxfeRos4VQwcdSlGAfcXg5t8eaKY+Rc6QesbVc9da1RUbzSj2CgYjH
-        qPdH2I+H+yLxbv3rwIgpMNOh/g5+FYVxLBSQ2hJPUY/x5aSgrVs2YBlFBWOtoiPrnyTwM1+oSegkJ
-        QtYanRk62idrwjvC0kl1V/sCnn4RjVc8kRdoVgoQrWLFEfNfSLQClnrzZJuu9posktvDUjcmPRHWZ
-        cfMbGT/SK4R7rMSjet/rWfSt9nEKrqt2uDyOPeIiVR6LkfsvCmveicsqTRHgkfxU9k0SeLVsarliJ
-        c6bm6V2Q==;
-Received: from ip98-183-112-25.ok.ok.cox.net ([98.183.112.25]:41498 helo=[192.168.0.142])
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96.1)
-        (envelope-from <david@lechnology.com>)
-        id 1qpc6L-0005ou-0F;
-        Sun, 08 Oct 2023 18:18:19 -0400
-Message-ID: <a324b19f-b40c-480b-8a76-1f37c54bc9cc@lechnology.com>
-Date:   Sun, 8 Oct 2023 17:18:12 -0500
+        Sun, 8 Oct 2023 18:19:12 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A77CA3;
+        Sun,  8 Oct 2023 15:19:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7C6AC433C7;
+        Sun,  8 Oct 2023 22:19:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696803550;
+        bh=05vPfLU2yIkLwnr16KJ7BkjZqNGNPvyMsiVoRgVyMWI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=GLQPOLsfHm1nrFWusCYAG+KfDebAqF8gspuEqRy1ZbgxBJoSn49zKwVh2sQi1iINy
+         a3P8Q0/Fg6ropEdOUBLY/DTewkwlPV7uwJOciXmtx5Cd/LxMez7kYwbAR+dvfYFD5C
+         bLDxMFM9u+Iz4+kpo/gccTjN/ZSyrA7BXcKn2npxSkEfozKVTmumy/m0y+xAZqhtQx
+         9uhi8h7jUpPKmDqYCZW4BUklxJ4ipLkoc43jvsbhLPdBnuMbRcWcpY/qh0GozxOBPw
+         oaVPD6BPlVwzG7gwE7o+/8N8+1myUIsGoe7pu93MFKakShO/Dnc2SBux9AnFNRG1LG
+         M9rv5hzsCmlEQ==
+Message-ID: <98c448be-8ea8-a0bd-62cc-3bc3a5cf5569@kernel.org>
+Date:   Mon, 9 Oct 2023 07:19:04 +0900
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] clk: Use device_get_match_data()
-To:     Rob Herring <robh@kernel.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Sekhar Nori <nsekhar@ti.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Tero Kristo <kristo@kernel.org>
-Cc:     patches@opensource.cirrus.com, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org
-References: <20231006213959.334439-1-robh@kernel.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v7 18/26] PM / devfreq: rockchip-dfi: account for multiple
+ DDRMON_CTRL registers
 Content-Language: en-US
-From:   David Lechner <david@lechnology.com>
-Autocrypt: addr=david@lechnology.com; keydata=
- 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
-In-Reply-To: <20231006213959.334439-1-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-rockchip@lists.infradead.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Vincent Legoll <vincent.legoll@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+References: <20230704093242.583575-1-s.hauer@pengutronix.de>
+ <20230704093242.583575-19-s.hauer@pengutronix.de>
+From:   Chanwoo Choi <chanwoo@kernel.org>
+In-Reply-To: <20230704093242.583575-19-s.hauer@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/6/23 4:39 PM, Rob Herring wrote:
-> Use preferred device_get_match_data() instead of of_match_device() to
-> get the driver match data. With this, adjust the includes to explicitly
-> include the correct headers.
+On 23. 7. 4. 18:32, Sascha Hauer wrote:
+> The currently supported RK3399 has a set of registers per channel, but
+> it has only a single DDRMON_CTRL register. With upcoming RK3588 this
+> will be different, the RK3588 has a DDRMON_CTRL register per channel.
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> Instead of expecting a single DDRMON_CTRL register, loop over the
+> channels and write the channel specific DDRMON_CTRL register. Break
+> out early out of the loop when there is only a single DDRMON_CTRL
+> register like on the RK3399.
+> 
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 > ---
+>  drivers/devfreq/event/rockchip-dfi.c | 72 ++++++++++++++++++----------
+>  1 file changed, 48 insertions(+), 24 deletions(-)
+> 
+> diff --git a/drivers/devfreq/event/rockchip-dfi.c b/drivers/devfreq/event/rockchip-dfi.c
+> index 85ec93fd41858..2362d3953ba40 100644
+> --- a/drivers/devfreq/event/rockchip-dfi.c
+> +++ b/drivers/devfreq/event/rockchip-dfi.c
+> @@ -113,12 +113,13 @@ struct rockchip_dfi {
+>  	int burst_len;
+>  	int buswidth[DMC_MAX_CHANNELS];
+>  	int ddrmon_stride;
+> +	bool ddrmon_ctrl_single;
+>  };
+>  
+>  static int rockchip_dfi_enable(struct rockchip_dfi *dfi)
+>  {
+>  	void __iomem *dfi_regs = dfi->regs;
+> -	int ret = 0;
+> +	int i, ret = 0;
+>  
+>  	mutex_lock(&dfi->mutex);
+>  
+> @@ -132,29 +133,41 @@ static int rockchip_dfi_enable(struct rockchip_dfi *dfi)
+>  		goto out;
+>  	}
+>  
+> -	/* clear DDRMON_CTRL setting */
+> -	writel_relaxed(HIWORD_UPDATE(0, DDRMON_CTRL_TIMER_CNT_EN | DDRMON_CTRL_SOFTWARE_EN |
+> -		       DDRMON_CTRL_HARDWARE_EN), dfi_regs + DDRMON_CTRL);
+> +	for (i = 0; i < DMC_MAX_CHANNELS; i++) {
+> +		u32 ctrl = 0;
+>  
+> -	/* set ddr type to dfi */
+> -	switch (dfi->ddr_type) {
+> -	case ROCKCHIP_DDRTYPE_LPDDR2:
+> -	case ROCKCHIP_DDRTYPE_LPDDR3:
+> -		writel_relaxed(HIWORD_UPDATE(DDRMON_CTRL_LPDDR23, DDRMON_CTRL_DDR_TYPE_MASK),
+> -			       dfi_regs + DDRMON_CTRL);
+> -		break;
+> -	case ROCKCHIP_DDRTYPE_LPDDR4:
+> -	case ROCKCHIP_DDRTYPE_LPDDR4X:
+> -		writel_relaxed(HIWORD_UPDATE(DDRMON_CTRL_LPDDR4, DDRMON_CTRL_DDR_TYPE_MASK),
+> -			       dfi_regs + DDRMON_CTRL);
+> -		break;
+> -	default:
+> -		break;
+> -	}
+> +		if (!(dfi->channel_mask & BIT(i)))
+> +			continue;
+>  
+> -	/* enable count, use software mode */
+> -	writel_relaxed(HIWORD_UPDATE(DDRMON_CTRL_SOFTWARE_EN, DDRMON_CTRL_SOFTWARE_EN),
+> -		       dfi_regs + DDRMON_CTRL);
+> +		/* clear DDRMON_CTRL setting */
+> +		writel_relaxed(HIWORD_UPDATE(0, DDRMON_CTRL_TIMER_CNT_EN |
+> +			       DDRMON_CTRL_SOFTWARE_EN | DDRMON_CTRL_HARDWARE_EN),
+> +			       dfi_regs + i * dfi->ddrmon_stride + DDRMON_CTRL);
+> +
+> +		/* set ddr type to dfi */
+> +		switch (dfi->ddr_type) {
+> +		case ROCKCHIP_DDRTYPE_LPDDR2:
+> +		case ROCKCHIP_DDRTYPE_LPDDR3:
+> +			ctrl = DDRMON_CTRL_LPDDR23;
+> +			break;
+> +		case ROCKCHIP_DDRTYPE_LPDDR4:
+> +		case ROCKCHIP_DDRTYPE_LPDDR4X:
+> +			ctrl = DDRMON_CTRL_LPDDR4;
+> +			break;
+> +		default:
+> +			break;
+> +		}
+> +
+> +		writel_relaxed(HIWORD_UPDATE(ctrl, DDRMON_CTRL_DDR_TYPE_MASK),
+> +			       dfi_regs + i * dfi->ddrmon_stride + DDRMON_CTRL);
+> +
+> +		/* enable count, use software mode */
+> +		writel_relaxed(HIWORD_UPDATE(DDRMON_CTRL_SOFTWARE_EN, DDRMON_CTRL_SOFTWARE_EN),
+> +			       dfi_regs + i * dfi->ddrmon_stride + DDRMON_CTRL);
+> +
+> +		if (dfi->ddrmon_ctrl_single)
+> +			break;
+> +	}
+>  out:
+>  	mutex_unlock(&dfi->mutex);
+>  
+> @@ -164,6 +177,7 @@ static int rockchip_dfi_enable(struct rockchip_dfi *dfi)
+>  static void rockchip_dfi_disable(struct rockchip_dfi *dfi)
+>  {
+>  	void __iomem *dfi_regs = dfi->regs;
+> +	int i;
+>  
+>  	mutex_lock(&dfi->mutex);
+>  
+> @@ -174,8 +188,17 @@ static void rockchip_dfi_disable(struct rockchip_dfi *dfi)
+>  	if (dfi->usecount > 0)
+>  		goto out;
+>  
+> -	writel_relaxed(HIWORD_UPDATE(0, DDRMON_CTRL_SOFTWARE_EN),
+> -		       dfi_regs + DDRMON_CTRL);
+> +	for (i = 0; i < DMC_MAX_CHANNELS; i++) {
+> +		if (!(dfi->channel_mask & BIT(i)))
+> +			continue;
+> +
+> +		writel_relaxed(HIWORD_UPDATE(0, DDRMON_CTRL_SOFTWARE_EN),
+> +			      dfi_regs + i * dfi->ddrmon_stride + DDRMON_CTRL);
+> +
+> +		if (dfi->ddrmon_ctrl_single)
+> +			break;
+> +	}
+> +
+>  	clk_disable_unprepare(dfi->clk);
+>  out:
+>  	mutex_unlock(&dfi->mutex);
+> @@ -666,6 +689,7 @@ static int rk3399_dfi_init(struct rockchip_dfi *dfi)
+>  	dfi->buswidth[1] = FIELD_GET(RK3399_PMUGRF_OS_REG2_BW_CH1, val) == 0 ? 4 : 2;
+>  
+>  	dfi->ddrmon_stride = 0x14;
+> +	dfi->ddrmon_ctrl_single = true;
+>  
+>  	return 0;
+>  };
 
-Acked-by: David Lechner <david@lechnology.com>
+Even if rk3568 has the only one channle and don't need to check whether 'dfi->ddrmon_ctrl_single'
+is true or not because of 'if (!(dfi->channel_mask & BIT(i)))',
+I recommand the add 'dfi->ddrmon_ctrl_single = true;' for rk3568 in order to
+provide the number of DDRMON_CTRL reigster of rk3568.
 
+If rk3568 doesn't have the 'ddrmon_ctrl_single', actually it is not easy
+to catch what why are there no initilization for rk3568. 
+ 
+-- 
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
 
