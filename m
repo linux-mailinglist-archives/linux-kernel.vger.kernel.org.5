@@ -2,50 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0579C7BCEDA
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 16:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9067BCEDC
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 16:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344877AbjJHOHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 10:07:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59144 "EHLO
+        id S1344882AbjJHOIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 10:08:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344827AbjJHOHf (ORCPT
+        with ESMTP id S1344849AbjJHOIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 10:07:35 -0400
+        Sun, 8 Oct 2023 10:08:49 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6C8199
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 07:07:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB984A4;
+        Sun,  8 Oct 2023 07:08:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
         Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=31H6J0TKF2jb6VRUPaWmYacNYwTgcymYOOg7MyMV/6g=; b=0hseURS32wrmjeWCmP59ESkAJl
-        UPUY+oltA6U8Hg7+FPRboX5J4xJMABPgpxe8DHV6XUaip0FiLCGpVWJ1ar/NbxaQ+I5B16lBArgur
-        Cl97ZqZ1X/FY8hD7efxD6QxArijb+yYhibWpb/PBy4OWW7mLNPKU9u6eI9Ij5TyLU8zS9i9+eZ7z4
-        i2Q2oyvAWBlfa5N9koTFrBVLCk0POr1MQG83Sg112YjWxrmtjRwNriSXBflfqwTSPpFmYA6adDsLD
-        wEcq56kaPOY3vUT4CLHmT2TX8DqMDQvr+oCu4dksgIOCXtariFCyJwQT4vttVzK7rf+OK2vDzyZc5
-        RLUF3EHg==;
+        bh=wmFHnrq2vm7ZZb21NIE4ZIne9K2JfxgkcpFShgCSvo8=; b=WycHbR/PvR1N4lh9e1WrGNTVGZ
+        LVDkRSsUe+dkZW6HlP4gFQy8kP4iI/TwDkj09DG+Iv/LgOvb4hc22pqpU+PP8peNW44pxLvBynIfA
+        WaEYY7iQGVn12vgNGKAVn+wvMRnd5gFkNE/l2CCzm0Bpwq5ciN8cLI5SJAGIsiP7jhFjmuM0+lek4
+        ayfD5K82/4VgQkbemkvCeeei5Wbby039dkaqUAnjJi93HNOxh72kgsFSTJxRnLZ7JYEZd9dEurOWI
+        1SaIXJ25mvP6kt3k4hMYsZaGxvIrHObcr14xmi6cHNwv1WZWPjoJO4MfYefRAsCtIQMdtTu1lpHAT
+        C7nxWzQQ==;
 Received: from [50.53.46.231] (helo=[192.168.254.15])
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qpURL-008vvc-0W;
-        Sun, 08 Oct 2023 14:07:27 +0000
-Message-ID: <22b74194-2701-47b4-a8cc-3e41ceb326d6@infradead.org>
-Date:   Sun, 8 Oct 2023 07:07:24 -0700
+        id 1qpUSd-008vvc-2S;
+        Sun, 08 Oct 2023 14:08:47 +0000
+Message-ID: <22bc05d3-86e9-4cf6-aec6-10d11df1acc3@infradead.org>
+Date:   Sun, 8 Oct 2023 07:08:47 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/nouveau: fix kernel-doc warning
+Subject: Re: [RFC PATCH] ssb: relax SSB_EMBEDDED dependencies
 Content-Language: en-US
-To:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
-        kherbst@redhat.com, lyude@redhat.com, dakr@redhat.com,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20231008070618.20640-1-bragathemanick0908@gmail.com>
+To:     =?UTF-8?Q?Michael_B=C3=BCsch?= <m@bues.ch>
+Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
+References: <20231007182443.32300-1-rdunlap@infradead.org>
+ <20231008093520.42ead15f@barney>
 From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231008070618.20640-1-bragathemanick0908@gmail.com>
+In-Reply-To: <20231008093520.42ead15f@barney>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
@@ -55,62 +52,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 10/8/23 00:06, Bragatheswaran Manickavel wrote:
-> Identified below document warning in latest linux-next.
-> ./include/uapi/drm/nouveau_drm.h:49: warning: Cannot understand
-> * @NOUVEAU_GETPARAM_EXEC_PUSH_MAX: on line 49 - I thought it was a doc line
+
+On 10/8/23 00:35, Michael Büsch wrote:
+> Hi Randy,
 > 
-> Also, on running checkpatch.pl to nouveau_drm.h identified
-> few more warnings/errors and fixing them in this patch
+> thanks for the patch.
 > 
-> Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
-> ---
->  include/uapi/drm/nouveau_drm.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+> On Sat,  7 Oct 2023 11:24:43 -0700
+> Randy Dunlap <rdunlap@infradead.org> wrote:
 > 
-> diff --git a/include/uapi/drm/nouveau_drm.h b/include/uapi/drm/nouveau_drm.h
-> index eaf9f248619f..a523ca5aa865 100644
-> --- a/include/uapi/drm/nouveau_drm.h
-> +++ b/include/uapi/drm/nouveau_drm.h
-> @@ -46,7 +46,7 @@ extern "C" {
->  #define NOUVEAU_GETPARAM_HAS_PAGEFLIP    16
->  
->  /**
-> - * @NOUVEAU_GETPARAM_EXEC_PUSH_MAX
-> + * NOUVEAU_GETPARAM_EXEC_PUSH_MAX:
+>> This is a kconfig warning in a randconfig when CONFIG_PCI is not set:
+>>
+>> WARNING: unmet direct dependencies detected for SSB_EMBEDDED
+>>   Depends on [n]: SSB [=y] && SSB_DRIVER_MIPS [=y] &&
+>> SSB_PCICORE_HOSTMODE [=n] Selected by [y]:
+>>   - BCM47XX_SSB [=y] && BCM47XX [=y]
+>>
+>> This is caused by arch/mips/bcm47xx/Kconfig's symbol BCM47XX_SSB
+>> selecting SSB_EMBEDDED when CONFIG_PCI is not set.
+>>
+>> This warning can be prevented by having SSB_EMBEDDED not depend on
+>> SSB_PCICORE_HOSTMODE, although some parts of SSB use PCI.
+> 
+>> diff -- a/drivers/ssb/Kconfig b/drivers/ssb/Kconfig
+>> --- a/drivers/ssb/Kconfig
+>> +++ b/drivers/ssb/Kconfig
+>> @@ -134,7 +134,7 @@ config SSB_SFLASH
+>>  # Assumption: We are on embedded, if we compile the MIPS core.
+>>  config SSB_EMBEDDED
+>>  	bool
+>> -	depends on SSB_DRIVER_MIPS && SSB_PCICORE_HOSTMODE
+>> +	depends on SSB_DRIVER_MIPS
+>>  	default y
+>>  
+>>  config SSB_DRIVER_EXTIF
+> 
+> Could we instead make SSB_EMBEDDED depend on SSB_PCICORE_HOSTMODE if
+> PCI!=n. Wouldn't that also solve the problem?
+> 
+> I don't fully remember how all this ssb config stuff works, but to
+> me adding a PCICORE->PCI dependency sounds safer against build
+> regressions in some other configurations.
+> 
+> What do you think?
 
-Yes, this does quieten the kernel-doc warning, but the produced html output
-is not correct.
-
-I had sent a patch for this but it was incomplete (missing full commit message).
-I have just sent a v2:
-  https://lore.kernel.org/lkml/20231008140231.17921-1-rdunlap@infradead.org/
-
-
->   *
->   * Query the maximum amount of IBs that can be pushed through a single
->   * &drm_nouveau_exec structure and hence a single &DRM_IOCTL_NOUVEAU_EXEC
-> @@ -458,15 +458,15 @@ struct drm_nouveau_svm_bind {
->  
->  #define DRM_IOCTL_NOUVEAU_GETPARAM           DRM_IOWR(DRM_COMMAND_BASE + DRM_NOUVEAU_GETPARAM, struct drm_nouveau_getparam)
->  #define DRM_IOCTL_NOUVEAU_CHANNEL_ALLOC      DRM_IOWR(DRM_COMMAND_BASE + DRM_NOUVEAU_CHANNEL_ALLOC, struct drm_nouveau_channel_alloc)
-> -#define DRM_IOCTL_NOUVEAU_CHANNEL_FREE       DRM_IOW (DRM_COMMAND_BASE + DRM_NOUVEAU_CHANNEL_FREE, struct drm_nouveau_channel_free)
-> +#define DRM_IOCTL_NOUVEAU_CHANNEL_FREE       DRM_IOW(DRM_COMMAND_BASE + DRM_NOUVEAU_CHANNEL_FREE, struct drm_nouveau_channel_free)
->  
->  #define DRM_IOCTL_NOUVEAU_SVM_INIT           DRM_IOWR(DRM_COMMAND_BASE + DRM_NOUVEAU_SVM_INIT, struct drm_nouveau_svm_init)
->  #define DRM_IOCTL_NOUVEAU_SVM_BIND           DRM_IOWR(DRM_COMMAND_BASE + DRM_NOUVEAU_SVM_BIND, struct drm_nouveau_svm_bind)
->  
->  #define DRM_IOCTL_NOUVEAU_GEM_NEW            DRM_IOWR(DRM_COMMAND_BASE + DRM_NOUVEAU_GEM_NEW, struct drm_nouveau_gem_new)
->  #define DRM_IOCTL_NOUVEAU_GEM_PUSHBUF        DRM_IOWR(DRM_COMMAND_BASE + DRM_NOUVEAU_GEM_PUSHBUF, struct drm_nouveau_gem_pushbuf)
-> -#define DRM_IOCTL_NOUVEAU_GEM_CPU_PREP       DRM_IOW (DRM_COMMAND_BASE + DRM_NOUVEAU_GEM_CPU_PREP, struct drm_nouveau_gem_cpu_prep)
-> -#define DRM_IOCTL_NOUVEAU_GEM_CPU_FINI       DRM_IOW (DRM_COMMAND_BASE + DRM_NOUVEAU_GEM_CPU_FINI, struct drm_nouveau_gem_cpu_fini)
-> +#define DRM_IOCTL_NOUVEAU_GEM_CPU_PREP       DRM_IOW(DRM_COMMAND_BASE + DRM_NOUVEAU_GEM_CPU_PREP, struct drm_nouveau_gem_cpu_prep)
-> +#define DRM_IOCTL_NOUVEAU_GEM_CPU_FINI       DRM_IOW(DRM_COMMAND_BASE + DRM_NOUVEAU_GEM_CPU_FINI, struct drm_nouveau_gem_cpu_fini)
->  #define DRM_IOCTL_NOUVEAU_GEM_INFO           DRM_IOWR(DRM_COMMAND_BASE + DRM_NOUVEAU_GEM_INFO, struct drm_nouveau_gem_info)
->  
->  #define DRM_IOCTL_NOUVEAU_VM_INIT            DRM_IOWR(DRM_COMMAND_BASE + DRM_NOUVEAU_VM_INIT, struct drm_nouveau_vm_init)
+I'll test it some and see how it works out.
+Thanks.
 
 -- 
 ~Randy
