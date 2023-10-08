@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 353B17BCB68
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 03:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 838A67BCB83
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 03:18:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234293AbjJHBM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 21:12:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56138 "EHLO
+        id S234015AbjJHBSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 21:18:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234338AbjJHBMS (ORCPT
+        with ESMTP id S234244AbjJHBRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 21:12:18 -0400
+        Sat, 7 Oct 2023 21:17:43 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491CD3592;
-        Sat,  7 Oct 2023 17:52:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BD66C116A4;
-        Sun,  8 Oct 2023 00:51:03 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A33271A8;
+        Sat,  7 Oct 2023 17:51:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 731F7C116AD;
+        Sun,  8 Oct 2023 00:51:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696726264;
-        bh=0pBYOUF9hqHS5pUtktUEo6Y2BBDCAqwXN/wja+8ATKQ=;
+        s=k20201202; t=1696726265;
+        bh=8D8u97XDPoWyNaB5aP1e19AHVlAsc8+LTpc7EvD2PFc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a2PhjTAABLf2v36NBIxYEzL1P+RdqyQopdcEmcpjHWHUvObTFfVzULCKK1oBpApB4
-         vahMSRtrs1+/qd62GuuT4UWAbJuaT41sRl8eVFY36N0lKg7ZWhUbfcGfZIiFtInvLs
-         rKHi0PbD5+963s+jSshVm7jBSbrr68bKhyzrQ8zq0ECiodgKmnD3hcDoudHwYSLyn9
-         2egKzD9EuMkuvzLN1JBRbyZ2LznYxI4KYuCoVzKlFjtlTXf/+rKHHgxXj+BYtkFLyI
-         ppPCWtwnmFVpGx0qsuEuWb68QOBrNiHP3d8W021qf963Jlx2riC5HTkxRmE100j+Y6
-         zjBzmep5hLdKA==
+        b=YLXsHeUm0QLB9a5oEg1YIk/BcExTt8EHZgZ5JXPyJ0Ilhxn4xr8NRCjlFfzCMWRn7
+         okPoXq63C9LqVUF5fHZ+3psvWR78ZDK9e0f5ukr7+SDAJjRkfVWUc3JMoeHR8ThRSC
+         S7337kfc0w/hGM34HRtNxgz+zNXrVHUHiVWjrIWrmTL5tLRJGq63pGMCZiFcNDrhAx
+         yCeXTz77JZMWFXXxx072uKMbHKVvrxDyUInbto+BEPZA/LEcJe1woOzM2PuluEjfFX
+         yqQ2Wqv57HdCJTdI3aqpYpN5KAszRc+MAb+7vwcHngCFO1Qf/ZLWTmC1J6Dy+TeYiD
+         h239kIMypJ12w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Damien Le Moal <dlemoal@kernel.org>,
-        Hannes Reinecke <hare@suse.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-ide@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 6/7] ata: libata-eh: Fix compilation warning in ata_eh_link_report()
-Date:   Sat,  7 Oct 2023 20:50:52 -0400
-Message-Id: <20231008005053.3768625-6-sashal@kernel.org>
+Cc:     =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Atish Patra <atishp@rivosinc.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-trace-kernel@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 7/7] tracing: relax trace_event_eval_update() execution with cond_resched()
+Date:   Sat,  7 Oct 2023 20:50:53 -0400
+Message-Id: <20231008005053.3768625-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231008005053.3768625-1-sashal@kernel.org>
 References: <20231008005053.3768625-1-sashal@kernel.org>
@@ -56,50 +57,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Damien Le Moal <dlemoal@kernel.org>
+From: Clément Léger <cleger@rivosinc.com>
 
-[ Upstream commit 49728bdc702391902a473b9393f1620eea32acb0 ]
+[ Upstream commit 23cce5f25491968b23fb9c399bbfb25f13870cd9 ]
 
-The 6 bytes length of the tries_buf string in ata_eh_link_report() is
-too short and results in a gcc compilation warning with W-!:
+When kernel is compiled without preemption, the eval_map_work_func()
+(which calls trace_event_eval_update()) will not be preempted up to its
+complete execution. This can actually cause a problem since if another
+CPU call stop_machine(), the call will have to wait for the
+eval_map_work_func() function to finish executing in the workqueue
+before being able to be scheduled. This problem was observe on a SMP
+system at boot time, when the CPU calling the initcalls executed
+clocksource_done_booting() which in the end calls stop_machine(). We
+observed a 1 second delay because one CPU was executing
+eval_map_work_func() and was not preempted by the stop_machine() task.
 
-drivers/ata/libata-eh.c: In function ‘ata_eh_link_report’:
-drivers/ata/libata-eh.c:2371:59: warning: ‘%d’ directive output may be truncated writing between 1 and 11 bytes into a region of size 4 [-Wformat-truncation=]
- 2371 |                 snprintf(tries_buf, sizeof(tries_buf), " t%d",
-      |                                                           ^~
-drivers/ata/libata-eh.c:2371:56: note: directive argument in the range [-2147483648, 4]
- 2371 |                 snprintf(tries_buf, sizeof(tries_buf), " t%d",
-      |                                                        ^~~~~~
-drivers/ata/libata-eh.c:2371:17: note: ‘snprintf’ output between 4 and 14 bytes into a destination of size 6
- 2371 |                 snprintf(tries_buf, sizeof(tries_buf), " t%d",
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 2372 |                          ap->eh_tries);
-      |                          ~~~~~~~~~~~~~
+Adding a call to cond_resched() in trace_event_eval_update() allows
+other tasks to be executed and thus continue working asynchronously
+like before without blocking any pending task at boot time.
 
-Avoid this warning by increasing the string size to 16B.
+Link: https://lore.kernel.org/linux-trace-kernel/20230929191637.416931-1-cleger@rivosinc.com
 
-Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Clément Léger <cleger@rivosinc.com>
+Tested-by: Atish Patra <atishp@rivosinc.com>
+Reviewed-by: Atish Patra <atishp@rivosinc.com>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ata/libata-eh.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/trace/trace_events.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/ata/libata-eh.c b/drivers/ata/libata-eh.c
-index cbe9af624a06f..bb47bbe20ef28 100644
---- a/drivers/ata/libata-eh.c
-+++ b/drivers/ata/libata-eh.c
-@@ -2466,7 +2466,7 @@ static void ata_eh_link_report(struct ata_link *link)
- 	struct ata_port *ap = link->ap;
- 	struct ata_eh_context *ehc = &link->eh_context;
- 	const char *frozen, *desc;
--	char tries_buf[6] = "";
-+	char tries_buf[16] = "";
- 	int tag, nr_failed = 0;
- 
- 	if (ehc->i.flags & ATA_EHI_QUIET)
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index 37be6913cfb27..f29552b009c80 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -2240,6 +2240,7 @@ void trace_event_eval_update(struct trace_eval_map **map, int len)
+ 				update_event_printk(call, map[i]);
+ 			}
+ 		}
++		cond_resched();
+ 	}
+ 	up_write(&trace_event_sem);
+ }
 -- 
 2.40.1
 
