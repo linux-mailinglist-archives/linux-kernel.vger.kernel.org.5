@@ -2,132 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A6F7BCE57
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 14:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08AAF7BCE59
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 14:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344758AbjJHMbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 08:31:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59392 "EHLO
+        id S1344750AbjJHMeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 08:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230303AbjJHMbC (ORCPT
+        with ESMTP id S1344682AbjJHMeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 08:31:02 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B5FD6
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 05:31:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696768260; x=1728304260;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=FYY2rURDQBJZaTC/WcscTr9k6USO6bNlsB6CWgQfXBU=;
-  b=ShcgEXYmNESZrhxqxO4bQTVVoElpHvY59BIzGjS5q3AWHgN0BOmazH9e
-   jQQTgeY4fLy9g76aGg+6gRZf+mKVnxRFrVHK9NKWox84tg/nwKCa827Xp
-   xEFCuwvU4ZwOIJlAdp3Ijl51w1eXL97mMtvia1W1/osY0OKh2TdfpMME/
-   ox/vlKBiH3ZVxfJdriOjQYURobtRZLSF138w8DJv+MNQig6axppDjaDZo
-   gDIB+h7NSxZb5wHfeJFZftSkpBwiQiy00oWWkWbod7a870eBG6/Bk2tAj
-   spS1WNalqSyA59nn+GiogVqHP+e7N+WmkXrcipMDQliE400koj9NtlBVz
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="450500535"
-X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
-   d="scan'208";a="450500535"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2023 05:31:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="868926215"
-X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
-   d="scan'208";a="868926215"
-Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 08 Oct 2023 05:30:58 -0700
-Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qpSvw-0005P7-0z;
-        Sun, 08 Oct 2023 12:30:56 +0000
-Date:   Sun, 8 Oct 2023 20:30:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: include/linux/compiler_types.h:319:45: error: call to
- '__compiletime_assert_215' declared with attribute error: BUILD_BUG_ON
- failed: FIX_KMAP_SLOTS > PTRS_PER_PTE
-Message-ID: <202310082016.smE7Yb93-lkp@intel.com>
+        Sun, 8 Oct 2023 08:34:06 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB376B6;
+        Sun,  8 Oct 2023 05:34:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1696768442;
+        bh=gs3Q5ckwSMfG87NEL5Jp5qePton1W9wYfWxYZQZdOk4=;
+        h=From:Date:Subject:To:Cc:From;
+        b=qfQXqf6fD5MWKC6onIE4MPIjbeFdwNqKMbzuxt9zSMHJlL6Gc2gILJdQuXVMYo1rD
+         XRW03jTWtIMy/FRsDGNA9FJqjXUFkH2vx1a8c2wX/bu5lnY4ZeeQ9m1QycKDep8COH
+         3m0ESw4cB6lH3I56tgpnLdbeN4kKZKZCbpWgHgxQ=
+From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date:   Sun, 08 Oct 2023 14:34:01 +0200
+Subject: [PATCH] selftests/nolibc: use qemu-system-ppc64 for ppc64le
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20231008-nolibc-qemu-ppc64-v1-1-29e2326e0420@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIALihImUC/x3MQQ5AMBBA0avIrE0yaEpcRSyoKZNQ1YZIxN01l
+ m/x/wORg3CENnsg8CVRdpdQ5BmYZXAzo0zJUFJZFUQNun2V0eDB24neG62Q6lHZWpGqBg2p84G
+ t3P+z69/3A+FVVQ9jAAAA
+To:     Willy Tarreau <w@1wt.eu>, Shuah Khan <shuah@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhangjin Wu <falcon@tinylab.org>,
+        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1696768442; l=1155;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=gs3Q5ckwSMfG87NEL5Jp5qePton1W9wYfWxYZQZdOk4=;
+ b=scFFXC3DIVBIrx83J3nXT5zvZ9Zq2PWEiycS5TbOckrbcO7gL29G+bDO2k9o40UkaKDXCmnFk
+ coWLrwPwBlSC9qP7RHimvTfK9tmLK5ZvNE3vyHriR2WPj1E9GSkUycg
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+qemu-system-ppc64 can handle both big and little endian kernels.
 
-FYI, the error/warning still remains.
+While some setups, like Debian, provide a symlink to execute
+qemu-system-ppc64 as qemu-system-ppc64le, others, like ArchLinux, do not.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   b9ddbb0cde2adcedda26045cc58f31316a492215
-commit: 39cac191ff37939544af80d5d2af6b870fd94c9b arc/mm/highmem: Use generic kmap atomic implementation
-date:   2 years, 11 months ago
-config: arc-randconfig-r014-20230911 (https://download.01.org/0day-ci/archive/20231008/202310082016.smE7Yb93-lkp@intel.com/config)
-compiler: arc-elf-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231008/202310082016.smE7Yb93-lkp@intel.com/reproduce)
+So always use qemu-system-ppc64 directly.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310082016.smE7Yb93-lkp@intel.com/
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+ tools/testing/selftests/nolibc/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-All errors (new ones prefixed by >>):
+diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+index 891aa396163d..af60e07d3c12 100644
+--- a/tools/testing/selftests/nolibc/Makefile
++++ b/tools/testing/selftests/nolibc/Makefile
+@@ -82,7 +82,7 @@ QEMU_ARCH_arm        = arm
+ QEMU_ARCH_mips       = mipsel  # works with malta_defconfig
+ QEMU_ARCH_ppc        = ppc
+ QEMU_ARCH_ppc64      = ppc64
+-QEMU_ARCH_ppc64le    = ppc64le
++QEMU_ARCH_ppc64le    = ppc64
+ QEMU_ARCH_riscv      = riscv64
+ QEMU_ARCH_s390       = s390x
+ QEMU_ARCH_loongarch  = loongarch64
 
-   In file included from <command-line>:
-   arch/arc/mm/highmem.c: In function 'kmap_init':
->> include/linux/compiler_types.h:319:45: error: call to '__compiletime_assert_215' declared with attribute error: BUILD_BUG_ON failed: FIX_KMAP_SLOTS > PTRS_PER_PTE
-     319 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |                                             ^
-   include/linux/compiler_types.h:300:25: note: in definition of macro '__compiletime_assert'
-     300 |                         prefix ## suffix();                             \
-         |                         ^~~~~~
-   include/linux/compiler_types.h:319:9: note: in expansion of macro '_compiletime_assert'
-     319 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-         |                                     ^~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-         |         ^~~~~~~~~~~~~~~~
-   arch/arc/mm/highmem.c:69:9: note: in expansion of macro 'BUILD_BUG_ON'
-      69 |         BUILD_BUG_ON(FIX_KMAP_SLOTS > PTRS_PER_PTE);
-         |         ^~~~~~~~~~~~
+---
+base-commit: 361fbc295e965a3c7f606d281e6107e098d33730
+change-id: 20231008-nolibc-qemu-ppc64-07b4f74043a6
 
-
-vim +/__compiletime_assert_215 +319 include/linux/compiler_types.h
-
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  305  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  306  #define _compiletime_assert(condition, msg, prefix, suffix) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  307  	__compiletime_assert(condition, msg, prefix, suffix)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  308  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  309  /**
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  310   * compiletime_assert - break build and emit msg if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  311   * @condition: a compile-time constant condition to check
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  312   * @msg:       a message to emit if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  313   *
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  314   * In tradition of POSIX assert, this macro will break the build if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  315   * supplied condition is *false*, emitting the supplied error message if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  316   * compiler has support to do so.
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  317   */
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  318  #define compiletime_assert(condition, msg) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21 @319  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  320  
-
-:::::: The code at line 319 was first introduced by commit
-:::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move compiletime_assert() macros into compiler_types.h
-
-:::::: TO: Will Deacon <will@kernel.org>
-:::::: CC: Will Deacon <will@kernel.org>
-
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thomas Weißschuh <linux@weissschuh.net>
+
