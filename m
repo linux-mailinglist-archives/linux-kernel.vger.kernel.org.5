@@ -2,141 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 587367BCDC0
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 12:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D267BCDC3
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 12:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344614AbjJHKNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 06:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58890 "EHLO
+        id S1344611AbjJHKWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 06:22:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230412AbjJHKN2 (ORCPT
+        with ESMTP id S230412AbjJHKWm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 06:13:28 -0400
+        Sun, 8 Oct 2023 06:22:42 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 335A2B9
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 03:13:27 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15DDB9D;
+        Sun,  8 Oct 2023 03:22:41 -0700 (PDT)
+Date:   Sun, 08 Oct 2023 10:22:38 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696760005;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        s=2020; t=1696760559;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=IyfYsQzaOeLTXQBHv3VBHVIY5Xsq/KdLp69dFVT7Uxc=;
-        b=B9yMbKj+Ld4oAx8iNBwUTVe9fhZZ9OV/bhBArBYfFcz1cUUc96jT017mfeXCEMYiXEitg7
-        r/DW8iwe5KpB1VIS7rGeel0TO014yF/4qFtsO3RokUtFKG5K0uRcOC6PFv/4lEz9CvrOEl
-        AZAeDUu8U2nn0MZEn9oYldZE5VeUPYW/m/j9soZiCT9ToNc3BZ7+RCnw+FZAX1RqjVdM58
-        WDBejKIYbmwFdYSFIZkztA3w4wMDTXyx8MrkUDzAaBlGXm5UmOvr3TfLHOx7IaGqErPjEH
-        lnKIpwYtehNZuTpmLVq0+is/jRqfok+ziHez4H8wFp+rTk8cZNqXeKU/D+EJMA==
+        bh=RQ8CXIzdONq2HHeXMTEKjhbOGr0Vv4BDo04JkSJZsG4=;
+        b=tQjWHfod7Qu9DywJJBOUFbAYDiDqfPPoXVLhpDHFf9vYWF6RMeqIWEYAz4iHC4G+0UDX93
+        EBUssKAXWddXMS3M+MjVGYWdOXrCNrTRyll419Kdg6ecPCktgREdwR7eshUQdQc3+cTnRz
+        b9k1mfqkX1GZlct5MwRys13KntzJ03CGLxe2NmqnOCBzTH9D/updqFIQ1hRJsMRMK6CN9H
+        ZlQwk25vpMcz1vPwCx3isju8p1TVbnCnlRUiSD4Wpf02F4V8tHQvNdKZNMIztjEinTVzse
+        hDjHAoQ1E1BJP3r0K01BWsxU7tvrGQN04NnG3sLTxu/ZFfks/xLwVfi2XQ8IKw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696760005;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        s=2020e; t=1696760559;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=IyfYsQzaOeLTXQBHv3VBHVIY5Xsq/KdLp69dFVT7Uxc=;
-        b=6Y5TkTky3+TMm/7Vo2O4V7hJ4YfP8LJCRen2M97wkx+dJN9CrkX7j3we+MNj0CuwINs2WE
-        Fa03uwJLm/k3Y6DQ==
-To:     Petr Mladek <pmladek@suse.com>,
-        Linus Torvalds <torvalds@linuxfoundation.org>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: panic context: was: Re: [PATCH printk v2 04/11] printk: nbcon:
- Provide functions to mark atomic write sections
-In-Reply-To: <ZSADUKp8oJ2Ws2vC@alley>
-References: <ZRGvn4m2NGCn3Pef@alley> <87h6n5teos.fsf@jogness.linutronix.de>
- <ZSADUKp8oJ2Ws2vC@alley>
-Date:   Sun, 08 Oct 2023 12:19:21 +0206
-Message-ID: <87il7hv2v2.fsf@jogness.linutronix.de>
+        bh=RQ8CXIzdONq2HHeXMTEKjhbOGr0Vv4BDo04JkSJZsG4=;
+        b=0EDofpKHNcpcZS8Z1ZrTdv7b0fBKN4u21QIEegof7nuBGikSsF2uHFy+GX04luxSEbyPhZ
+        ZkjwFTXON4uprqDw==
+From:   "tip-bot2 for Kees Cook" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf/x86/rapl: Annotate 'struct rapl_pmus' with __counted_by
+Cc:     Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20231006201754.work.473-kees@kernel.org>
+References: <20231006201754.work.473-kees@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Message-ID: <169676055888.3135.18089597086363215333.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Petr,
+The following commit has been merged into the perf/core branch of tip:
 
-On 2023-10-06, Petr Mladek <pmladek@suse.com> wrote:
->> During the demo at LPC2022 we had the situation that there was a large
->> backlog when a WARN was hit. With current mainline the first line of the
->> WARN is put into the ringbuffer and then the entire backlog is flushed
->> before storing the rest of the WARN into the ringbuffer. At the time it
->> was obvious that we should finish storing the WARN message and then
->> start flushing the backlog.
->
-> This talks about the "emergency" context (WARN/OOPS/watchdog).
-> The system might be in big troubles but it would still try to continue.
->
-> Do we really want to defer the flush also for panic() context?
+Commit-ID:     a56d5551e1993ca84dd0c69df5a3d8223d13fb5f
+Gitweb:        https://git.kernel.org/tip/a56d5551e1993ca84dd0c69df5a3d8223d13fb5f
+Author:        Kees Cook <keescook@chromium.org>
+AuthorDate:    Fri, 06 Oct 2023 13:17:54 -07:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Sun, 08 Oct 2023 12:18:17 +02:00
 
-We can start flushing right after the backtrace is in the
-ringbuffer. But flushing the backlog _before_ putting the backtrace into
-the ringbuffer was not desired because if there is a large backlog, the
-machine may not survive to get the backtrace out. And in that case it
-won't even be in the ringbuffer to be used by other debugging
-tools.
+perf/x86/rapl: Annotate 'struct rapl_pmus' with __counted_by
 
-> I ask because I was not on LPC 2022 in person and I do not remember
-> all details.
+Prepare for the coming implementation by GCC and Clang of the __counted_by
+attribute. Flexible array members annotated with __counted_by can have
+their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS=y (for
+array indexing) and CONFIG_FORTIFY_SOURCE=y (for strcpy/memcpy-family
+functions).
 
-The LPC2022 demo/talk was recorded:
+Found with Coccinelle:
 
-https://www.youtube.com/watch?v=TVhNcKQvzxI
+  https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci [1]
 
-At 55:55 is where the situation occurred and triggered the conversation,
-ultimately leading to this new feature.
+Add __counted_by for 'struct rapl_pmus'.
 
-You may also want to reread my summary:
+No change in functionality intended.
 
-https://lore.kernel.org/lkml/875yheqh6v.fsf@jogness.linutronix.de
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Link: https://lore.kernel.org/r/20231006201754.work.473-kees@kernel.org
+---
+ arch/x86/events/rapl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-as well as Linus' follow-up message:
-
-https://lore.kernel.org/lkml/CAHk-=wieXPMGEm7E=Sz2utzZdW1d=9hJBwGYAaAipxnMXr0Hvg@mail.gmail.com
-
-> But it is tricky in panic(), see 8th patch at
-> https://lore.kernel.org/r/20230919230856.661435-9-john.ogness@linutronix.de
->
->    + nbcon_atomic_exit() is called only in one code path.
-
-Correct. When panic() is complete and the machine goes into its infinite
-loop. This is also the point where it will attempt an unsafe flush, if
-it could not get the messages out yet.
-
->    + nbcon_atomic_flush_all() is used in other paths. It looks like
->      a "Whack a mole" game to me.
-
-Several different outputs occur during panic(). The flush is everywhere
-where something significant has been put into the ringbuffer and now it
-would be OK to flush it.
-
->    + messages are never emitted by printk kthread either because
->      CPUs are stopped or the kthread is not allowed to get the lock
-
-Correct.
-
-> I see only one positive of the explicit flush. The consoles would
-> not delay crash_exec() and the crash dump might be closer to
-> the point where panic() was called.
-
-It's only about getting the critical messages into the ringbuffer before
-flushing. And since various things can go wrong during the many actions
-within panic(), it makes sense to flush in between those actions.
-
-> Otherwise I see only negatives => IMHO, we want to flush atomic
-> consoles synchronously from printk() in panic().
->
-> Does anyone really want explicit flushes in panic()?
-
-So far you are the only one speaking against it. I expect as time goes
-on it will get even more complex as it becomes tunable (also something
-we talked about during the demo).
-
-John
+diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
+index c2c37fb..8d98d46 100644
+--- a/arch/x86/events/rapl.c
++++ b/arch/x86/events/rapl.c
+@@ -115,7 +115,7 @@ struct rapl_pmu {
+ struct rapl_pmus {
+ 	struct pmu		pmu;
+ 	unsigned int		maxdie;
+-	struct rapl_pmu		*pmus[];
++	struct rapl_pmu		*pmus[] __counted_by(maxdie);
+ };
+ 
+ enum rapl_unit_quirk {
