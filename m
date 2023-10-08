@@ -2,80 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD437BD000
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 22:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C8D7BD008
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 22:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344584AbjJHUJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 16:09:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45008 "EHLO
+        id S1344557AbjJHUOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 16:14:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344467AbjJHUJV (ORCPT
+        with ESMTP id S1344467AbjJHUOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 16:09:21 -0400
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9428599;
-        Sun,  8 Oct 2023 13:09:19 -0700 (PDT)
-Received: by mail-ua1-x934.google.com with SMTP id a1e0cc1a2514c-7abcef80a82so1465043241.3;
-        Sun, 08 Oct 2023 13:09:19 -0700 (PDT)
+        Sun, 8 Oct 2023 16:14:16 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B535299
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 13:14:14 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9ba1eb73c27so74178966b.3
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 13:14:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696795758; x=1697400558; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OKzbBuqUCPwy23ymUT8eWLppkGLME/yOaopQNwUxG30=;
-        b=mB2r707agsWpTrOg+hzMsJGDlaVjWyJHbZ8bjbEjj/17rUwaQRUykX5WounqYOiEec
-         GIQAdGCFZFEWhH1FjLlpAEyKVHjOaOAUyCcBpqVxxWMVLV5Qb0wAKY5DOQLA/vngFXga
-         li++ORimIYvsfVdij7VVk4RIJYQRpzLc6ee8TpFY1cNckzyxJN8pIPT9+Rord9zKC6ec
-         lgOpQntLP/frzk8qvDbGNPuhcpraEG4KPdTj6kwghUIizdduJoXW32ericAg0uT90wJy
-         DEbL7tQHFYBl9N4fHup4IrcsK8DCL9WwDnkXL86JL6/mnMRQ0I85QvhepDNgLr5Uryba
-         kEcA==
+        d=linux-foundation.org; s=google; t=1696796053; x=1697400853; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=UYvMlmI9M7/YUJkI+f1pO6RxL0gTPMbx932oD4jWB14=;
+        b=QE6PcEx3lS6bwsGmXp0AszHk9k30aPn9DXyfQ5pOFuPJY8ODPQT4z/ATPhzUh/12s6
+         eRyj8rQndoaVwVj5n+aV5oFVlXrT6zN8Gusyt+dwIqUclsnfYW7VEVJUANTCBtwkCvHJ
+         zZwEEwvkZii+Axk5Ni/s8LdmFjgGCxo41Vgdw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696795758; x=1697400558;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OKzbBuqUCPwy23ymUT8eWLppkGLME/yOaopQNwUxG30=;
-        b=cjfnZtjysG5KitGnHSv56gl5IV0SbZGVm+Q0aeaEz9lyDRaHV7S1a642cs92gKGF4q
-         iY4SppQoYN4cqVPW+kb5rAT3Z/oaRUn0XCJdu/AjjLp5m+tzFmnzHvDqJWYWg9XQgQ9P
-         f9zNfCA4TP89AJeIsL3b4oCqUt3DsehhpAGO/aysbjclfIYEBFBP1cQEkO+ZrCHQpa1Z
-         aby9Bk01S3feERu7brfXNVH7mqBQ6NfSTIEE8gFWCI2JDpE7pH4prNB+ixBPfNIVTlak
-         xZDE7My5qBpNEe56tNRCkQMZeMv8JKU6bAPNQk080zmVz55DOTiKoRK9eAg9w9AGPXhw
-         4srA==
-X-Gm-Message-State: AOJu0YzSeExkryXUE+o1xzmfy7iyI5oimFfaGmyhCVndJGiJBnUlGTtv
-        8B+zBukitrt0yI7aIAzrse55DoTwaIbjC2BoDXM=
-X-Google-Smtp-Source: AGHT+IGrYlgQ6F5EY0bVUrDd7waD3CZx2805a119uOAlNTL7Tqx04UAkUDYuRhHdWSoQ7JP98oJjlRy68sXaAxl/L7Y=
-X-Received: by 2002:a1f:ed41:0:b0:495:dcd0:471 with SMTP id
- l62-20020a1fed41000000b00495dcd00471mr10732498vkh.5.1696795758506; Sun, 08
- Oct 2023 13:09:18 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696796053; x=1697400853;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UYvMlmI9M7/YUJkI+f1pO6RxL0gTPMbx932oD4jWB14=;
+        b=me3JgWEIdNvVFsRVKLPfsbyFLzNq4REKBIWEhxIbV7Jq6ntidyBsFhApvxim7H/xf+
+         5xsIriBVEfBnJS85dT/6baYp2/whhVRowlOXzSKGGGWEKEvnkbjc7pI3sPn9+ylVT9Kt
+         2pyQHy97jRF2iyVaDmXNNjll1pdQaogf2VYy88J+84ZINHAE8sTFDUM6XBj782uG7ZY8
+         +XokBOFVbyRwit09RwEwzNecaGwv7CPtBocntDLy+8pjZ5rxdsftsSyOWIXu1JP7wgou
+         smody/zpZ9T5Plc1uwBKI2OMFNzpOqadAP7sYvRCTbnePUaRT4vrvLBff1KK8Cma/4U5
+         gK7w==
+X-Gm-Message-State: AOJu0Yxl/OWh3rusEF2RVKsb00xepydx0rROOkxKMWDdmkjUhivp7Z9s
+        /qIvSHbXd2EXQgTMpT34inzbRfinQ+adZGq2yXj1HQ==
+X-Google-Smtp-Source: AGHT+IFShEp+75QBtpXcowBOTkaF9uj4laEQGbr024UKbpFfoUUn3in6m+BTZ4PDLIAdK95YnGOpyg==
+X-Received: by 2002:a17:906:100b:b0:9ae:5270:46d5 with SMTP id 11-20020a170906100b00b009ae527046d5mr13706018ejm.73.1696796052740;
+        Sun, 08 Oct 2023 13:14:12 -0700 (PDT)
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
+        by smtp.gmail.com with ESMTPSA id ks8-20020a170906f84800b00982a92a849asm5870790ejb.91.2023.10.08.13.14.11
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 08 Oct 2023 13:14:12 -0700 (PDT)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-532c81b9adbso6754777a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 13:14:11 -0700 (PDT)
+X-Received: by 2002:a50:fb87:0:b0:532:e1a2:b0b8 with SMTP id
+ e7-20020a50fb87000000b00532e1a2b0b8mr12953692edq.8.1696796051558; Sun, 08 Oct
+ 2023 13:14:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231008052101.144422-1-akihiko.odaki@daynix.com>
- <20231008052101.144422-6-akihiko.odaki@daynix.com> <CAF=yD-LdwcXKK66s5gvJNOH8qCWRt3SvEL-GkkVif=kkOaYGhg@mail.gmail.com>
- <8f4ad5bc-b849-4ef4-ac1f-8d5a796205e9@daynix.com>
-In-Reply-To: <8f4ad5bc-b849-4ef4-ac1f-8d5a796205e9@daynix.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Sun, 8 Oct 2023 22:08:41 +0200
-Message-ID: <CAF=yD-+DjDqE9iBu+PvbeBby=C4CCwG=fMFONQONrsErmps3ww@mail.gmail.com>
-Subject: Re: [RFC PATCH 5/7] tun: Introduce virtio-net hashing feature
-To:     Akihiko Odaki <akihiko.odaki@daynix.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, rdunlap@infradead.org, willemb@google.com,
-        gustavoars@kernel.org, herbert@gondor.apana.org.au,
-        steffen.klassert@secunet.com, nogikh@google.com,
-        pablo@netfilter.org, decui@microsoft.com, jakub@cloudflare.com,
-        elver@google.com, pabeni@redhat.com,
-        Yuri Benditovich <yuri.benditovich@daynix.com>
+References: <20231004145137.86537-1-ubizjak@gmail.com> <20231004145137.86537-5-ubizjak@gmail.com>
+ <CAHk-=wgepFm=jGodFQYPAaEvcBhR3-f_h1BLBYiVQsutCwCnUQ@mail.gmail.com> <CAFULd4YWjxoSTyCtMN0OzKgHtshMQOuMH1Z0n_OaWKVnUjy2iA@mail.gmail.com>
+In-Reply-To: <CAFULd4YWjxoSTyCtMN0OzKgHtshMQOuMH1Z0n_OaWKVnUjy2iA@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 8 Oct 2023 13:13:54 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whq=+LNHmsde8LaF4pdvKxqKt5GxW+Tq+U35_aDcV0ADg@mail.gmail.com>
+Message-ID: <CAHk-=whq=+LNHmsde8LaF4pdvKxqKt5GxW+Tq+U35_aDcV0ADg@mail.gmail.com>
+Subject: Re: [PATCH 4/4] x86/percpu: Use C for percpu read/write accessors
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, Nadav Amit <namit@vmware.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,132 +83,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 8, 2023 at 10:04=E2=80=AFPM Akihiko Odaki <akihiko.odaki@daynix=
-.com> wrote:
+On Sun, 8 Oct 2023 at 12:18, Uros Bizjak <ubizjak@gmail.com> wrote:
 >
-> On 2023/10/09 4:07, Willem de Bruijn wrote:
-> > On Sun, Oct 8, 2023 at 7:22=E2=80=AFAM Akihiko Odaki <akihiko.odaki@day=
-nix.com> wrote:
-> >>
-> >> virtio-net have two usage of hashes: one is RSS and another is hash
-> >> reporting. Conventionally the hash calculation was done by the VMM.
-> >> However, computing the hash after the queue was chosen defeats the
-> >> purpose of RSS.
-> >>
-> >> Another approach is to use eBPF steering program. This approach has
-> >> another downside: it cannot report the calculated hash due to the
-> >> restrictive nature of eBPF.
-> >>
-> >> Introduce the code to compute hashes to the kernel in order to overcom=
-e
-> >> thse challenges. An alternative solution is to extend the eBPF steerin=
-g
-> >> program so that it will be able to report to the userspace, but it mak=
-es
-> >> little sense to allow to implement different hashing algorithms with
-> >> eBPF since the hash value reported by virtio-net is strictly defined b=
-y
-> >> the specification.
-> >>
-> >> The hash value already stored in sk_buff is not used and computed
-> >> independently since it may have been computed in a way not conformant
-> >> with the specification.
-> >>
-> >> Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
-> >> ---
-> >
-> >> +static const struct tun_vnet_hash_cap tun_vnet_hash_cap =3D {
-> >> +       .max_indirection_table_length =3D
-> >> +               TUN_VNET_HASH_MAX_INDIRECTION_TABLE_LENGTH,
-> >> +
-> >> +       .types =3D VIRTIO_NET_SUPPORTED_HASH_TYPES
-> >> +};
-> >
-> > No need to have explicit capabilities exchange like this? Tun either
-> > supports all or none.
->
-> tun does not support VIRTIO_NET_RSS_HASH_TYPE_IP_EX,
-> VIRTIO_NET_RSS_HASH_TYPE_TCP_EX, and VIRTIO_NET_RSS_HASH_TYPE_UDP_EX.
->
-> It is because the flow dissector does not support IPv6 extensions. The
-> specification is also vague, and does not tell how many TLVs should be
-> consumed at most when interpreting destination option header so I chose
-> to avoid adding code for these hash types to the flow dissector. I doubt
-> anyone will complain about it since nobody complains for Linux.
->
-> I'm also adding this so that we can extend it later.
-> max_indirection_table_length may grow for systems with 128+ CPUs, or
-> types may have other bits for new protocols in the future.
->
-> >
-> >>          case TUNSETSTEERINGEBPF:
-> >> -               ret =3D tun_set_ebpf(tun, &tun->steering_prog, argp);
-> >> +               bpf_ret =3D tun_set_ebpf(tun, &tun->steering_prog, arg=
-p);
-> >> +               if (IS_ERR(bpf_ret))
-> >> +                       ret =3D PTR_ERR(bpf_ret);
-> >> +               else if (bpf_ret)
-> >> +                       tun->vnet_hash.flags &=3D ~TUN_VNET_HASH_RSS;
-> >
-> > Don't make one feature disable another.
-> >
-> > TUNSETSTEERINGEBPF and TUNSETVNETHASH are mutually exclusive
-> > functions. If one is enabled the other call should fail, with EBUSY
-> > for instance.
-> >
-> >> +       case TUNSETVNETHASH:
-> >> +               len =3D sizeof(vnet_hash);
-> >> +               if (copy_from_user(&vnet_hash, argp, len)) {
-> >> +                       ret =3D -EFAULT;
-> >> +                       break;
-> >> +               }
-> >> +
-> >> +               if (((vnet_hash.flags & TUN_VNET_HASH_REPORT) &&
-> >> +                    (tun->vnet_hdr_sz < sizeof(struct virtio_net_hdr_=
-v1_hash) ||
-> >> +                     !tun_is_little_endian(tun))) ||
-> >> +                    vnet_hash.indirection_table_mask >=3D
-> >> +                    TUN_VNET_HASH_MAX_INDIRECTION_TABLE_LENGTH) {
-> >> +                       ret =3D -EINVAL;
-> >> +                       break;
-> >> +               }
-> >> +
-> >> +               argp =3D (u8 __user *)argp + len;
-> >> +               len =3D (vnet_hash.indirection_table_mask + 1) * 2;
-> >> +               if (copy_from_user(vnet_hash_indirection_table, argp, =
-len)) {
-> >> +                       ret =3D -EFAULT;
-> >> +                       break;
-> >> +               }
-> >> +
-> >> +               argp =3D (u8 __user *)argp + len;
-> >> +               len =3D virtio_net_hash_key_length(vnet_hash.types);
-> >> +
-> >> +               if (copy_from_user(vnet_hash_key, argp, len)) {
-> >> +                       ret =3D -EFAULT;
-> >> +                       break;
-> >> +               }
-> >
-> > Probably easier and less error-prone to define a fixed size control
-> > struct with the max indirection table size.
->
-> I made its size variable because the indirection table and key may grow
-> in the future as I wrote above.
->
-> >
-> > Btw: please trim the CC: list considerably on future patches.
->
-> I'll do so in the next version with the TUNSETSTEERINGEBPF change you
-> proposed.
+> Let me see what happens here. I have changed *only* raw_cpu_read_8,
+> but the GP fault is reported in cpu_init_exception_handling, which
+> uses this_cpu_ptr. Please note that all per-cpu initializations go
+> through existing {this|raw}_cpu_write.
 
-To be clear: please don't just resubmit with that one change.
+I think it's an ordering issue, and I think you may hit some issue
+with loading TR od the GDT or whatever.
 
-The skb and cb issues are quite fundamental issues that need to be resolved=
-.
+For example, we have this
 
-I'd like to understand why adjusting the existing BPF feature for this
-exact purpose cannot be amended to return the key it produced.
+        set_tss_desc(cpu, &get_cpu_entry_area(cpu)->tss.x86_tss);
 
-As you point out, the C flow dissector is insufficient. The BPF flow
-dissector does not have this problem. The same argument would go for
-the pre-existing BPF steering program.
+followed by
+
+        asm volatile("ltr %w0"::"q" (GDT_ENTRY_TSS*8));
+
+in native_load_tr_desc(), and I think we might want to add a "memory"
+clobber to it to make sure it is serialized with any stores to the GDT
+entries in question.
+
+I don't think *that* particular thing is the issue (because you kept
+the writes as-is and still hit things), but I think it's an example of
+some lazy inline asm constraints that could possibly cause problems if
+the ordering changes.
+
+And yes, this code ends up depending on things like
+CONFIG_PARAVIRT_XXL for whether it uses the native TR loading or uses
+some paravirt version, so config options can make a difference.
+
+Again: I don't think it's that "ltr" instruction. I'm calling it out
+just as a "that function does some funky things", and the load TR is
+*one* of the funky things, and it looks like it could be the same type
+of thing that then causes issues.
+
+Things like CONFIG_SMP might also matter, because the percpu setup is
+different. On UP, the *segment* use goes away, but I think the whole
+"use inline asm vs regular memory ops" remains (admittedly I did *not*
+verify that, I might be speaking out of my *ss).
+
+Your dump does end up being close to a %gs access:
+
+   0: 4a 03 04 ed 40 19 15 add    -0x7aeae6c0(,%r13,8),%rax
+   7: 85
+   8: 48 89 c7              mov    %rax,%rdi
+   b: e8 9c bb ff ff        call   0xffffffffffffbbac
+  10: 48 c7 c0 10 73 02 00 mov    $0x27310,%rax
+  17: 48 ba 00 00 00 00 00 movabs $0xdffffc0000000000,%rdx
+  1e: fc ff df
+  21: 48 c1 e8 03          shr    $0x3,%rax
+  25:* 80 3c 10 00          cmpb   $0x0,(%rax,%rdx,1) <-- trapping instruction
+  29: 0f 85 21 05 00 00    jne    0x550
+  2f: 65 48 8b 05 45 26 f6 mov    %gs:0x7ef62645(%rip),%rax        # 0x7ef6267c
+  36: 7e
+  37: 48 8d 7b 24          lea    0x24(%rbx),%rdi
+
+but I don't know what the "call" before is, so I wasn't able to match
+it up with any obvious code in there.
+
+              Linus
