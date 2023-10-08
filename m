@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 437357BCB16
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 02:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1EA7BCB20
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 02:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234450AbjJHAvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 20:51:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44468 "EHLO
+        id S234480AbjJHAwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 20:52:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234297AbjJHAvd (ORCPT
+        with ESMTP id S234488AbjJHAvp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 20:51:33 -0400
+        Sat, 7 Oct 2023 20:51:45 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBB226B6;
-        Sat,  7 Oct 2023 17:50:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D30FC433C9;
-        Sun,  8 Oct 2023 00:50:32 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E4B8189;
+        Sat,  7 Oct 2023 17:50:56 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09A5AC433BF;
+        Sun,  8 Oct 2023 00:50:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696726233;
-        bh=qfRJbF+Udv0tWMynZn1JUmVoo9ls4SNI9STC6TtqapE=;
+        s=k20201202; t=1696726235;
+        bh=ZxLTp2cbLb9eo1xQ5FrKJgFWIe79ItBd51kd3aNbBl8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tmlxCwRVh1FaDa9pnGxfodX2rYRc4SDS0Ghny3l7GfqDP5LWs3jedIwjkrE9GSK5r
-         JZG8NThOEzQWqdym27yJ5cKoCw6wGi2hp0lwN5FLqfIMo1RZBA6OgrBmo5RXsNAhnb
-         eFzCv4DTeO7T4AjSpoIdBlO+/vihytImy2fA4002uV6TPbI5eMiEB5zPCDIRRjflH3
-         AhOdv/N6HZFFWwf3/yoWs2/VshzADfqxzXi7rkTkwb1mDl3YtY0doLR1xwEdPkwzeD
-         0GqYtqRgW1GLZwFWIS3J/he+Za2PEB+zWU/ZFt2PrMtx0t2dhobzsVfwUszLXyxkk1
-         n62zeTAnfq9GA==
+        b=XLjcdrfl+aQ0KHsJsthbPGnj+PKvyYIvKH6+ivOzvW8fxCTdzHyuh5daNwcvhWP2r
+         FnMSK4KyyTanztTeE/UPHXVGYXTVeNeteKMlDxut0fyjueWPU7xrjXv8z3EKfxu25n
+         s/DMHmMe4g0RSJi/jsJcDpE8/Cmb+EeoAnqXu8ZDkbIQHjnHI9AIeQ/CyrLs1qgETK
+         8XS5/pZ2MUBpF+Cyj6QFT3DO2bQ8is5WjP2Ei1sh6aFrbX7OpuYKyzp1+BIKEDCqJ1
+         y5hogdDS8ytB/le4we9BIn0MgkGzFz/5KzeDNtJ+X45J0J2rjF/xV+9v0+NaTm6FBZ
+         HiMV1gWRfPh0w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, miklos@szeredi.hu,
-        linux-unionfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 5/8] overlayfs: set ctime when setting mtime and atime
-Date:   Sat,  7 Oct 2023 20:50:21 -0400
-Message-Id: <20231008005024.3768418-5-sashal@kernel.org>
+Cc:     Chengfeng Ye <dg573847474@gmail.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Sasha Levin <sashal@kernel.org>, linus.walleij@linaro.org,
+        brgl@bgdev.pl, linux-gpio@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 6/8] gpio: timberdale: Fix potential deadlock on &tgpio->lock
+Date:   Sat,  7 Oct 2023 20:50:22 -0400
+Message-Id: <20231008005024.3768418-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231008005024.3768418-1-sashal@kernel.org>
 References: <20231008005024.3768418-1-sashal@kernel.org>
@@ -56,45 +55,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Layton <jlayton@kernel.org>
+From: Chengfeng Ye <dg573847474@gmail.com>
 
-[ Upstream commit 03dbab3bba5f009d053635c729d1244f2c8bad38 ]
+[ Upstream commit 9e8bc2dda5a7a8e2babc9975f4b11c9a6196e490 ]
 
-Nathan reported that he was seeing the new warning in
-setattr_copy_mgtime pop when starting podman containers. Overlayfs is
-trying to set the atime and mtime via notify_change without also
-setting the ctime.
+As timbgpio_irq_enable()/timbgpio_irq_disable() callback could be
+executed under irq context, it could introduce double locks on
+&tgpio->lock if it preempts other execution units requiring
+the same locks.
 
-POSIX states that when the atime and mtime are updated via utimes() that
-we must also update the ctime to the current time. The situation with
-overlayfs copy-up is analogies, so add ATTR_CTIME to the bitmask.
-notify_change will fill in the value.
+timbgpio_gpio_set()
+--> timbgpio_update_bit()
+--> spin_lock(&tgpio->lock)
+<interrupt>
+   --> timbgpio_irq_disable()
+   --> spin_lock_irqsave(&tgpio->lock)
 
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-Acked-by: Christian Brauner <brauner@kernel.org>
-Acked-by: Amir Goldstein <amir73il@gmail.com>
-Message-Id: <20230913-ctime-v1-1-c6bc509cbc27@kernel.org>
-Signed-off-by: Christian Brauner <brauner@kernel.org>
+This flaw was found by an experimental static analysis tool I am
+developing for irq-related deadlock.
+
+To prevent the potential deadlock, the patch uses spin_lock_irqsave()
+on &tgpio->lock inside timbgpio_gpio_set() to prevent the possible
+deadlock scenario.
+
+Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
+Reviewed-by: Andy Shevchenko <andy@kernel.org>
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/overlayfs/copy_up.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpio/gpio-timberdale.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/fs/overlayfs/copy_up.c b/fs/overlayfs/copy_up.c
-index 1bfd1660a66c0..9e5223108362d 100644
---- a/fs/overlayfs/copy_up.c
-+++ b/fs/overlayfs/copy_up.c
-@@ -192,7 +192,7 @@ static int ovl_set_timestamps(struct dentry *upperdentry, struct kstat *stat)
+diff --git a/drivers/gpio/gpio-timberdale.c b/drivers/gpio/gpio-timberdale.c
+index de14949a3fe5a..92c1f2baa4bff 100644
+--- a/drivers/gpio/gpio-timberdale.c
++++ b/drivers/gpio/gpio-timberdale.c
+@@ -43,9 +43,10 @@ static int timbgpio_update_bit(struct gpio_chip *gpio, unsigned index,
+ 	unsigned offset, bool enabled)
  {
- 	struct iattr attr = {
- 		.ia_valid =
--		     ATTR_ATIME | ATTR_MTIME | ATTR_ATIME_SET | ATTR_MTIME_SET,
-+		     ATTR_ATIME | ATTR_MTIME | ATTR_ATIME_SET | ATTR_MTIME_SET | ATTR_CTIME,
- 		.ia_atime = stat->atime,
- 		.ia_mtime = stat->mtime,
- 	};
+ 	struct timbgpio *tgpio = gpiochip_get_data(gpio);
++	unsigned long flags;
+ 	u32 reg;
+ 
+-	spin_lock(&tgpio->lock);
++	spin_lock_irqsave(&tgpio->lock, flags);
+ 	reg = ioread32(tgpio->membase + offset);
+ 
+ 	if (enabled)
+@@ -54,7 +55,7 @@ static int timbgpio_update_bit(struct gpio_chip *gpio, unsigned index,
+ 		reg &= ~(1 << index);
+ 
+ 	iowrite32(reg, tgpio->membase + offset);
+-	spin_unlock(&tgpio->lock);
++	spin_unlock_irqrestore(&tgpio->lock, flags);
+ 
+ 	return 0;
+ }
 -- 
 2.40.1
 
