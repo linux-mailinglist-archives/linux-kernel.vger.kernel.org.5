@@ -2,95 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E797BCDE9
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 12:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C447BCDEB
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 12:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344646AbjJHK6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 06:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34562 "EHLO
+        id S1344636AbjJHK6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 06:58:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344621AbjJHK6B (ORCPT
+        with ESMTP id S1344651AbjJHK6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 06:58:01 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC45EAC
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 03:57:59 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id C062C40E0196;
-        Sun,  8 Oct 2023 10:57:57 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 5arru0iT7ia8; Sun,  8 Oct 2023 10:57:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1696762675; bh=X6ZMUHp9c0/lKZrCVID+buHxxwyZLP+KkA6PO63U5Jc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f6qF9xC4LoGLKhyeIwWl/ySAyKDKERual4fweyCH4YsIpcIawySjtoYOmXZzCHKcg
-         exEEbsU8L3NfxSxmb1EEK9PILPG4GlYYQc/bJZBb77vd4IP7h8fptR+zwI9B39IQNu
-         8DuBqwRXqKfeOMXK18/qJjsW1DKwMm+8rhxDoMTbhhGy9UyhxhSlkNUK8UPPmpu0qD
-         N2U7tfsa2vt4O1n64a71l6/PTpJuD+HaGeGi8dd2TArrpiWfMJDd9tPnB1ctIBZ00q
-         p359fJ9gTmnyc7FafbxQxOzoHDZB4C3MIu6Pi88yY9qOawOlZRgXo8AUmcEiXIVQXN
-         GfmpaxbjDS/cuYHWUNU8ncZ8hbgzHfwzl5TjsG5QWtA+WmlegvI2Zdg1Z9Y+OvlpOq
-         CePjkZGjmeWKurDzrHFezkCGPZzc1V8XdnlOHBWSImq1Ba3nV+jBVY3elTBHQh14H7
-         Ns53vQpS24RLrHt66UWmdgZOLQLOl5ukpXaCaOtOhkadVOTKdJh4sgGtYS9vaesxnQ
-         NBpUMyiHRyC7wI/QpvA5nnwswi74B6fdjfjc40HQ5Tev7CQyZyNIYBc9tDvUNKhvDB
-         bUFjxt6BXT1gHUkwU8Uukw/kGCu7xpKPu42KDLDyhWrIroEJhHZFmuh2MmFnyktMDm
-         CafwVGZAJSJEdlGPIwHA4O2o=
-Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C1CDA40E0177;
-        Sun,  8 Oct 2023 10:57:47 +0000 (UTC)
-Date:   Sun, 8 Oct 2023 12:57:40 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-Cc:     Tony Luck <tony.luck@intel.com>, Lili Li <lili.li@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Richter <rric@kernel.org>, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] EDAC/igen6: Fix slab-use-after-free in
- igen6_unregister_mci()
-Message-ID: <20231008105740.GAZSKLJMLfbiDbZlm8@fat_crate.local>
-References: <20231008080231.51917-1-qiuxu.zhuo@intel.com>
+        Sun, 8 Oct 2023 06:58:07 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32473BA
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 03:58:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7pI/ahoeLwQta1iBDvRGZESmSgf9li60JTBecFWXMxk=; b=jgzOlfO4cO3bnYQRy5enV0Nj+e
+        WPnanc4s50xLJds4z9pWdVpVuHwzAi2FgJDtp+//bEdUaORyFosJt47wlODgy+0CuIaTOSTt6x2Yn
+        +1UIClin7Q1J60m7IXGWfkRpwjbJyeu1AIDFDmIMI113MYYPPVAd+tbWbIqPKbK684eea3iYVCHEk
+        ItEV6Vp3Jve5dKHvIy1ECq8i3hXXD23uCs/SeHMTd0mhhDzIPUkTD14hysoPCgQ+83kTxhc9LihmK
+        5OyBieTKMQxbDDh+7tCol/hdvB7QbuGyWf1DHOoNH+l9cNrPbE87GswoduqxnvBPtX+ZWJOVy7OQM
+        Gx8QAn6g==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qpRU0-00EeBZ-28;
+        Sun, 08 Oct 2023 10:58:02 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B7986300687; Sun,  8 Oct 2023 12:58:01 +0200 (CEST)
+Date:   Sun, 8 Oct 2023 12:58:01 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "brookxu.cn" <brookxu.cn@gmail.com>
+Cc:     bsingharora@gmail.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] delayacct: convert task->delays to a object
+Message-ID: <20231008105801.GC6320@noisy.programming.kicks-ass.net>
+References: <cover.1696761522.git.chunguang.xu@shopee.com>
+ <531ddc82793a39f4c09316d701a4b1170bcad4ab.1696761522.git.chunguang.xu@shopee.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231008080231.51917-1-qiuxu.zhuo@intel.com>
+In-Reply-To: <531ddc82793a39f4c09316d701a4b1170bcad4ab.1696761522.git.chunguang.xu@shopee.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 08, 2023 at 04:02:29PM +0800, Qiuxu Zhuo wrote:
-> When unloading the igen6_edac driver, the EDAC core wrongly kfreed
-> 'pvt_info,' which was private data and managed by the igen6_edac
-> driver. This resulted in a slab-use-after-free bug. Fix it by adding
-> a flag to indicate whether 'pvt_info' is managed by the EDAC core.
-> The EDAC core will only kfree 'pvt_info' when the flag is set to true.
+On Sun, Oct 08, 2023 at 06:49:37PM +0800, brookxu.cn wrote:
+> From: Chunguang Xu <chunguang.xu@shopee.com>
+> 
+> Since in some scenarios we still want to get the task delayacct
+> through taskstats, so commit <0cd7c741f01de> introduces a sysctl to
 
-That's because your silly driver is wrongly allocating stuff:
+This is not the canonical way to reference a commit.
 
-igen6_probe() allocates the whole pvt struct and then
-igen6_register_mci() assigns it piece-meal-wise to each MC's ->pvt_info.
+> enable it dynamically. However, since task->delays is allocated
+> during fork(), task->delays will not be reallocated when delayacct
+> is enabled later. This will make we cannot get the delayacct of old
+> tasks, but the new tasks cans. This can easily lead to confusion.
+> Therefore, try to workaround this issue by convert task->delays to
+> an object.
 
-On the unreg path, you then call edac_mc_free(), it frees ->mct_info and
-then you do wonder why it complains when you call kfree(igen6_pvt) in
-igen6_remove().
+And grow task_struct for no reason? I think not.
 
-You should do the exact opposite of the allocation steps on the unreg
-path and it'll all work fine. Definitely not add ugly hacks to the
-EDAC core.
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index 77f01ac385f7..5cc78184a31f 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -37,6 +37,7 @@
+>  #include <linux/kcsan.h>
+>  #include <linux/rv.h>
+>  #include <linux/livepatch_sched.h>
+> +#include <linux/delayacct.h>
+>  #include <asm/kmap_size.h>
+>  
+>  /* task_struct member predeclarations (sorted alphabetically): */
+> @@ -1331,7 +1332,7 @@ struct task_struct {
+>  	struct page_frag		task_frag;
+>  
+>  #ifdef CONFIG_TASK_DELAY_ACCT
+> -	struct task_delay_info		*delays;
+> +	struct task_delay_info		delays;
+>  #endif
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Yeah, no.
