@@ -2,97 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6BF37BCE3A
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 13:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA58E7BCE36
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 13:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344731AbjJHLiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 07:38:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38084 "EHLO
+        id S1344705AbjJHLhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 07:37:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344682AbjJHLiC (ORCPT
+        with ESMTP id S230303AbjJHLhh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 07:38:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D634299
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 04:37:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696765035;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dd6ivPkoy5OU8m6zrjUxdg/2ojaw9JTGsy7cUreFIZk=;
-        b=EkQE5OHkqctA3ziJi5PKtU4KFtaJMDqJgUoZJd8iL/s8Avi5incMQOyVoJaVZxotnC02qy
-        Wy0o/xzn1b8CjeQOu1kN1Rfpg7JLroKg4cgGok4QLsDMsiIfW390p+7NxfVl/woTf8Mk82
-        2e12jXvRXu5yAjTZ938JLMv023Z+AdI=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-100-_NdAhrgfP9K3XOElsbPEvw-1; Sun, 08 Oct 2023 07:37:06 -0400
-X-MC-Unique: _NdAhrgfP9K3XOElsbPEvw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C0BE93804522;
-        Sun,  8 Oct 2023 11:37:05 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.9])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 625B61054FC0;
-        Sun,  8 Oct 2023 11:37:02 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Sun,  8 Oct 2023 13:36:07 +0200 (CEST)
-Date:   Sun, 8 Oct 2023 13:36:03 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     Li Nan <linan666@huaweicloud.com>,
-        Khazhy Kumykov <khazhy@chromium.org>, tj@kernel.org,
-        josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, houtao1@huawei.com, yangerkun@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-Subject: Re: [PATCH] blk-throttle: Calculate allowed value only when the
- throttle is enabled
-Message-ID: <20231008113602.GB24726@redhat.com>
-References: <20230928015858.1809934-1-linan666@huaweicloud.com>
- <CACGdZY+JV+PdiC_cspQiScm=SJ0kijdufeTrc8wkrQC3ZJx3qQ@mail.gmail.com>
- <4ace01e8-6815-29d0-70ce-4632818ca701@huaweicloud.com>
- <20231005162417.GA32420@redhat.com>
- <0a8f34aa-ced9-e613-3e5f-b5e53a3ef3d9@huaweicloud.com>
- <20231007151607.GA24726@redhat.com>
- <21843836-7265-f903-a7d5-e77b07dd5a71@huaweicloud.com>
+        Sun, 8 Oct 2023 07:37:37 -0400
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com [209.85.161.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89095B6
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 04:37:36 -0700 (PDT)
+Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-57ba1b829e2so4873004eaf.0
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 04:37:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696765056; x=1697369856;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YzcTrVTmosEvDzMUusiCgzk7cGHTQh4FEFDZlKIlmOI=;
+        b=oeS37XeuHH1AUNrbgvokFULAvhLU58OHZQ81kcfIEhVTEGLYgolkLM2tIN2cvQa7gE
+         Dk3CbaphxM4arzrKO7MuNby2QZtufbAd9u0zL3iqdpvdw7AkSOENBtP/0kJDA76xPg/R
+         Bnd6+38CioqKXepUEAPadgQ0PlRJni3hXrmvx5NWzEC/D7DBMcOBUqGbS3NRxpCyRp41
+         A971kEH1w70L8gl+o8ZgXTg2cCyEBAYcaXAr6mcve4VKXzNhRwJIIYWbx5754XuuZAnh
+         EvRrjIRQBMBy96qocaifoZ2bGCd9js23hTpISdkvWjrjP521jNXY0uKVvZiQrl4gGrcD
+         QP4A==
+X-Gm-Message-State: AOJu0YwNo4/5toZcpqzO3ujeEozHCE03kVUdwyMULnPCRxNfBg7wBzkZ
+        SyYn9+SGe6osr0dgSm52+JBTsonS8hhxBcfc+bKbO497xds5
+X-Google-Smtp-Source: AGHT+IGQwVt00gq33jpPiw0F43S+w543tE04AtO3vWY8vLdVl9OdAgRHpYDJZXPrCqldPCBQEPmv7fgC37Vi9/oXFFH41hvDdtU8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <21843836-7265-f903-a7d5-e77b07dd5a71@huaweicloud.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a4a:4990:0:b0:57b:3a08:62b3 with SMTP id
+ z138-20020a4a4990000000b0057b3a0862b3mr4324620ooa.1.1696765055915; Sun, 08
+ Oct 2023 04:37:35 -0700 (PDT)
+Date:   Sun, 08 Oct 2023 04:37:35 -0700
+In-Reply-To: <20231008111554.2010-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006cdc4c060732e606@google.com>
+Subject: Re: [syzbot] [net?] [usb?] INFO: rcu detected stall in worker_thread (9)
+From:   syzbot <syzbot+225bfad78b079744fd5e@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/08, Yu Kuai wrote:
->
-> >>  static u64 calculate_bytes_allowed(u64 bps_limit, unsigned long
-> >>jiffy_elapsed)
-> >>  {
-> >>+       if (jiffy_elapsed > HZ &&
-> >>+           bps_limit > mul_u64_u64_div_u64(U64_MAX, (u64)HZ,
-> >>(u64)jiffy_elapsed);
-> >>+               return U64_MAX;
-> >>+
-> >
-> >I can't suggest anything better...
-> >
-> >but I do not know if it is possible that HZ > jiffy_elapsed. If yes, then
-> >mul_u64_u64_div_u64() above is not safe too.
->
-> Well, 'jiffy_elapsed > HZ' is judged before mul_u64_u64_div_u64().
+Hello,
 
-Yes, sorry, somehow I didn't notice this check.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Oleg.
+Reported-and-tested-by: syzbot+225bfad78b079744fd5e@syzkaller.appspotmail.com
 
+Tested on:
+
+commit:         b9ddbb0c Merge tag 'parisc-for-6.6-rc5' of git://git.k..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=11f35345680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7a5682d32a74b423
+dashboard link: https://syzkaller.appspot.com/bug?extid=225bfad78b079744fd5e
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=155fb231680000
+
+Note: testing is done by a robot and is best-effort only.
