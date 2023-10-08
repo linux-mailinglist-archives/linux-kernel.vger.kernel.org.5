@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C927BCF14
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE5D7BCF15
 	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 17:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344861AbjJHP1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 11:27:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49218 "EHLO
+        id S1344888AbjJHP1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 11:27:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230082AbjJHP1N (ORCPT
+        with ESMTP id S234338AbjJHP1N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 8 Oct 2023 11:27:13 -0400
 Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A8D8B6;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A82EA6;
         Sun,  8 Oct 2023 08:27:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-        t=1696778828; bh=0jajswhxJ2xstyOKf9U5EODA+wWJ81yMdH1vbZSVs8g=;
-        h=From:To:Cc:Subject:Date:From;
-        b=xv2tyj44BnKRtlSXZ4Cnt+HgiVP8JQoubtuE9gILpf4GHYTz2jFwSfHWscjEIF6IA
-         n+hjDCdDMGtonkQ+OIph5eZdqBGisMoWbYS5/EHscMLs7bOCTaZVDrzD7RtXqPXTRM
-         KfdYWJvVv81M5TloOqjREqrdB4OtFuNyE4dIDOLI=
+        t=1696778828; bh=r8N+wfxnCeE/Jl/nIUcgHOkS6aF17ptQCuQGzv4X2jk=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=yhvqiwEomuo53yXJrjDoaOTXxSis5fL8DkHMfWI9HrmrHQKX/RlPHuBQc6qnErKIZ
+         kvDBi5hM77Pcu/69STbZC17sm7tV/BHjudAvaBSkThBaDzXAML0xupHJzi2mP1aVm9
+         cNj+5piG6F8W4D0BBDwp7bxG7o3wXJw1ErUnZ0vU=
 From:   =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megi@xff.cz>
 To:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -33,11 +33,12 @@ Cc:     Ondrej Jirman <megi@xff.cz>, Jagan Teki <jagan@edgeble.ai>,
         Kever Yang <kever.yang@rock-chips.com>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/2] Add support for Pine64 QuartzPro64
-Date:   Sun,  8 Oct 2023 17:26:55 +0200
-Message-ID: <20231008152703.1196370-1-megi@xff.cz>
+Subject: [PATCH 1/2] dt-bindings: arm: rockchip: Add Pine64 QuarzPro64
+Date:   Sun,  8 Oct 2023 17:26:56 +0200
+Message-ID: <20231008152703.1196370-2-megi@xff.cz>
+In-Reply-To: <20231008152703.1196370-1-megi@xff.cz>
+References: <20231008152703.1196370-1-megi@xff.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
@@ -50,28 +51,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ondrej Jirman <megi@xff.cz>
 
-This series adds an initial support for Pine64 QuartzPro64 SBC.
+Add devicetree binding documentation for Pine64 QuartzPro64 SBC.
 
-The series was tested against Linux 6.6-rc4.
+Signed-off-by: Ondrej Jirman <megi@xff.cz>
+---
+ Documentation/devicetree/bindings/arm/rockchip.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Please take a look.
-
-Thank you,
-	Ondřej Jirman
-
-(Support for a few extra things, notably USB 3.0 is available at
- https://xff.cz/git/linux/log/?h=opi5-6.6)
-
-Ondrej Jirman (2):
-  dt-bindings: arm: rockchip: Add Pine64 QuarzPro64
-  arm64: dts: rk3588-quartzpro64: Add QuartzPro64 SBC device tree
-
- .../devicetree/bindings/arm/rockchip.yaml     |    5 +
- arch/arm64/boot/dts/rockchip/Makefile         |    1 +
- .../boot/dts/rockchip/rk3588-quartzpro64.dts  | 1146 +++++++++++++++++
- 3 files changed, 1152 insertions(+)
- create mode 100644 arch/arm64/boot/dts/rockchip/rk3588-quartzpro64.dts
-
+diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
+index ca5389862887..0bd51ba0d6a8 100644
+--- a/Documentation/devicetree/bindings/arm/rockchip.yaml
++++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
+@@ -660,6 +660,11 @@ properties:
+               - pine64,quartz64-b
+           - const: rockchip,rk3566
+ 
++      - description: Pine64 QuartzPro64
++        items:
++          - const: pine64,quartzpro64
++          - const: rockchip,rk3588
++
+       - description: Pine64 SoQuartz SoM
+         items:
+           - enum:
 -- 
 2.42.0
 
