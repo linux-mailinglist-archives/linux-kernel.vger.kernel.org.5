@@ -2,194 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0067BCFFB
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 22:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67CF77BCFFD
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 22:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344582AbjJHUE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 16:04:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59486 "EHLO
+        id S1344550AbjJHUIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 16:08:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344467AbjJHUEZ (ORCPT
+        with ESMTP id S229945AbjJHUIR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 16:04:25 -0400
-Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA81B6
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 13:04:24 -0700 (PDT)
-Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-1c0fcbf7ae4so2939319fac.0
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 13:04:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1696795462; x=1697400262; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wk4ID+9Y2woSlIo9KG7KQPxOKMdKteazTwjUAl7uvHc=;
-        b=xWuhtOwHbOEuuqEvdG/xCV9PaV7GlwXKl8ia80sSCWwIR1eQ8nEa8acaC37fDPVm3P
-         xBlVBOGV5fvR4EQlP3XoZODoJxOQkACGgoXekrFGGi+a6n17NW+H7VUM+6wjgyxWtl9I
-         q01PcPZFYO1IOzF0nC3KcPq62/J6zskijRWk020awePtmHjWGfXP0VafiMdqySdp7kpI
-         nXuCuVheylTP5Muv+Kyc+rPrYwcG2zE2SFgf+cArebc/FqYL8YAVnotyO9bzvTcnBxWq
-         ThxaXHyblTU23DtHjQ9n7Tw2Zw5Fh3KqRJd4/rZ8fYZ/vOZ+usMzF4QQo5RQv6e08v3k
-         FQSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696795462; x=1697400262;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wk4ID+9Y2woSlIo9KG7KQPxOKMdKteazTwjUAl7uvHc=;
-        b=w6DpoRnd+APMuAT5s5wMJ77gyiTmGEaGB4G+tgtwij4SOE+cYJmxZhxBUAw9V2TdHJ
-         JO1dsXWHkY7PbepehU1YkWqqeLbDm6IDqbnQeaeck/vIr3Hry/lnQkQVR8q5rEA8g4Mx
-         aYd3EPgBKR1gYIBoWCVcOdr6o24LSdGavvInKehlQ5B8wsgKQDUtZZUorHGsepiOi4OF
-         sq3M9JOOlb7kTFGYdD++pq7Q0Ije5+is1R3J1OQaC0YqvRvudAtwU8WgPM1qBE8sjDis
-         pEtIeFke0ZamR1yHJT6F6yCxw+pWgYVs6CUfKaYpmvYLcs9l/fJe/09XW0HyeQKV//+J
-         LEDg==
-X-Gm-Message-State: AOJu0YxXxdfj2X3Eof+JK6X591j/WdEPCcugv5uBye83XENxp7jrMa+c
-        JkuvrVQLm/5gdZbVGrp2y8v5pQ==
-X-Google-Smtp-Source: AGHT+IFvrlaD3FcoyeoteZn8QYo3hLgQzaE/npYrh01teNLQxeArDL4tW+jIm7E9x3F4Eq/sg5G4MA==
-X-Received: by 2002:a05:6870:d606:b0:1d6:5649:a88e with SMTP id a6-20020a056870d60600b001d65649a88emr17607839oaq.37.1696795461716;
-        Sun, 08 Oct 2023 13:04:21 -0700 (PDT)
-Received: from ?IPV6:2400:4050:a840:1e00:78d2:b862:10a7:d486? ([2400:4050:a840:1e00:78d2:b862:10a7:d486])
-        by smtp.gmail.com with ESMTPSA id c16-20020aa78810000000b00690d1269691sm4895954pfo.22.2023.10.08.13.04.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Oct 2023 13:04:21 -0700 (PDT)
-Message-ID: <8f4ad5bc-b849-4ef4-ac1f-8d5a796205e9@daynix.com>
-Date:   Mon, 9 Oct 2023 05:04:14 +0900
+        Sun, 8 Oct 2023 16:08:17 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9491599
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 13:08:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696795696; x=1728331696;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=SbWbcrrNmeBqA9BQqzmtaXxtcav7MKoPuFe4Z8z/M9w=;
+  b=OtGbY/bwYygQqaGWVrkEq9JEH9vm+QcC4g+1tAXpeuy+fSBfZ4LIvayu
+   wb0876bC3HlcDzX5KtTP5XoJmdKhFkX32ujaWSngrC+fQEUWfo0yF/qcq
+   2WfJgypkxyVwC0C/DbJ4NM+bht+ph6ArM0rzjnkJvCiX1c2xZjFrhffXF
+   qY/X36ecgh63oNjoowa6shr/IKs3qnIWbxLQdnEISlDVPNHmW7M9WeZ9J
+   Wylvk2Ua8DbNFbkoHjJkAqOkUWSQcKHa48xnl1FrpHlYqMv+n6SEF6v/h
+   CwsOg2jw3KEmgzbLXf6AsLqIK8nY4NdR8Fuhm8svbrL9t6cRKPWOyyV4y
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="381296767"
+X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
+   d="scan'208";a="381296767"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2023 13:08:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="787956763"
+X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
+   d="scan'208";a="787956763"
+Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 08 Oct 2023 13:08:14 -0700
+Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qpa4S-0005iX-0I;
+        Sun, 08 Oct 2023 20:08:12 +0000
+Date:   Mon, 9 Oct 2023 04:08:04 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Karsten Graul <kgraul@linux.ibm.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: net/smc/smc_llc.c:40:1: warning: alignment 1 of 'struct smc_llc_hdr'
+ is less than 4
+Message-ID: <202310090453.06oMLpnk-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 5/7] tun: Introduce virtio-net hashing feature
-Content-Language: en-US
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, rdunlap@infradead.org, willemb@google.com,
-        gustavoars@kernel.org, herbert@gondor.apana.org.au,
-        steffen.klassert@secunet.com, nogikh@google.com,
-        pablo@netfilter.org, decui@microsoft.com, jakub@cloudflare.com,
-        elver@google.com, pabeni@redhat.com,
-        Yuri Benditovich <yuri.benditovich@daynix.com>
-References: <20231008052101.144422-1-akihiko.odaki@daynix.com>
- <20231008052101.144422-6-akihiko.odaki@daynix.com>
- <CAF=yD-LdwcXKK66s5gvJNOH8qCWRt3SvEL-GkkVif=kkOaYGhg@mail.gmail.com>
-From:   Akihiko Odaki <akihiko.odaki@daynix.com>
-In-Reply-To: <CAF=yD-LdwcXKK66s5gvJNOH8qCWRt3SvEL-GkkVif=kkOaYGhg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/09 4:07, Willem de Bruijn wrote:
-> On Sun, Oct 8, 2023 at 7:22 AM Akihiko Odaki <akihiko.odaki@daynix.com> wrote:
->>
->> virtio-net have two usage of hashes: one is RSS and another is hash
->> reporting. Conventionally the hash calculation was done by the VMM.
->> However, computing the hash after the queue was chosen defeats the
->> purpose of RSS.
->>
->> Another approach is to use eBPF steering program. This approach has
->> another downside: it cannot report the calculated hash due to the
->> restrictive nature of eBPF.
->>
->> Introduce the code to compute hashes to the kernel in order to overcome
->> thse challenges. An alternative solution is to extend the eBPF steering
->> program so that it will be able to report to the userspace, but it makes
->> little sense to allow to implement different hashing algorithms with
->> eBPF since the hash value reported by virtio-net is strictly defined by
->> the specification.
->>
->> The hash value already stored in sk_buff is not used and computed
->> independently since it may have been computed in a way not conformant
->> with the specification.
->>
->> Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
->> ---
-> 
->> +static const struct tun_vnet_hash_cap tun_vnet_hash_cap = {
->> +       .max_indirection_table_length =
->> +               TUN_VNET_HASH_MAX_INDIRECTION_TABLE_LENGTH,
->> +
->> +       .types = VIRTIO_NET_SUPPORTED_HASH_TYPES
->> +};
-> 
-> No need to have explicit capabilities exchange like this? Tun either
-> supports all or none.
+Hi Karsten,
 
-tun does not support VIRTIO_NET_RSS_HASH_TYPE_IP_EX, 
-VIRTIO_NET_RSS_HASH_TYPE_TCP_EX, and VIRTIO_NET_RSS_HASH_TYPE_UDP_EX.
+FYI, the error/warning still remains.
 
-It is because the flow dissector does not support IPv6 extensions. The 
-specification is also vague, and does not tell how many TLVs should be 
-consumed at most when interpreting destination option header so I chose 
-to avoid adding code for these hash types to the flow dissector. I doubt 
-anyone will complain about it since nobody complains for Linux.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   b9ddbb0cde2adcedda26045cc58f31316a492215
+commit: b4ba4652b3f8b7c9bbb5786f8acf4724bdab2196 net/smc: extend LLC layer for SMC-Rv2
+date:   2 years ago
+config: arm-randconfig-002-20231002 (https://download.01.org/0day-ci/archive/20231009/202310090453.06oMLpnk-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231009/202310090453.06oMLpnk-lkp@intel.com/reproduce)
 
-I'm also adding this so that we can extend it later. 
-max_indirection_table_length may grow for systems with 128+ CPUs, or 
-types may have other bits for new protocols in the future.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310090453.06oMLpnk-lkp@intel.com/
 
-> 
->>          case TUNSETSTEERINGEBPF:
->> -               ret = tun_set_ebpf(tun, &tun->steering_prog, argp);
->> +               bpf_ret = tun_set_ebpf(tun, &tun->steering_prog, argp);
->> +               if (IS_ERR(bpf_ret))
->> +                       ret = PTR_ERR(bpf_ret);
->> +               else if (bpf_ret)
->> +                       tun->vnet_hash.flags &= ~TUN_VNET_HASH_RSS;
-> 
-> Don't make one feature disable another.
-> 
-> TUNSETSTEERINGEBPF and TUNSETVNETHASH are mutually exclusive
-> functions. If one is enabled the other call should fail, with EBUSY
-> for instance.
-> 
->> +       case TUNSETVNETHASH:
->> +               len = sizeof(vnet_hash);
->> +               if (copy_from_user(&vnet_hash, argp, len)) {
->> +                       ret = -EFAULT;
->> +                       break;
->> +               }
->> +
->> +               if (((vnet_hash.flags & TUN_VNET_HASH_REPORT) &&
->> +                    (tun->vnet_hdr_sz < sizeof(struct virtio_net_hdr_v1_hash) ||
->> +                     !tun_is_little_endian(tun))) ||
->> +                    vnet_hash.indirection_table_mask >=
->> +                    TUN_VNET_HASH_MAX_INDIRECTION_TABLE_LENGTH) {
->> +                       ret = -EINVAL;
->> +                       break;
->> +               }
->> +
->> +               argp = (u8 __user *)argp + len;
->> +               len = (vnet_hash.indirection_table_mask + 1) * 2;
->> +               if (copy_from_user(vnet_hash_indirection_table, argp, len)) {
->> +                       ret = -EFAULT;
->> +                       break;
->> +               }
->> +
->> +               argp = (u8 __user *)argp + len;
->> +               len = virtio_net_hash_key_length(vnet_hash.types);
->> +
->> +               if (copy_from_user(vnet_hash_key, argp, len)) {
->> +                       ret = -EFAULT;
->> +                       break;
->> +               }
-> 
-> Probably easier and less error-prone to define a fixed size control
-> struct with the max indirection table size.
+All warnings (new ones prefixed by >>):
 
-I made its size variable because the indirection table and key may grow 
-in the future as I wrote above.
+   In file included from include/linux/gfp.h:6,
+                    from include/linux/xarray.h:14,
+                    from include/linux/radix-tree.h:19,
+                    from include/linux/fs.h:15,
+                    from include/linux/highmem.h:5,
+                    from include/linux/bvec.h:10,
+                    from include/linux/skbuff.h:17,
+                    from include/linux/tcp.h:17,
+                    from include/net/tcp.h:20,
+                    from net/smc/smc_llc.c:13:
+   include/linux/mmzone.h: In function '__nr_to_section':
+   include/linux/mmzone.h:1349:13: warning: the comparison will always evaluate as 'true' for the address of 'mem_section' will never be NULL [-Waddress]
+    1349 |         if (!mem_section[SECTION_NR_TO_ROOT(nr)])
+         |             ^
+   include/linux/mmzone.h:1335:27: note: 'mem_section' declared here
+    1335 | extern struct mem_section mem_section[NR_SECTION_ROOTS][SECTIONS_PER_ROOT];
+         |                           ^~~~~~~~~~~
+   net/smc/smc_llc.c: At top level:
+>> net/smc/smc_llc.c:40:1: warning: alignment 1 of 'struct smc_llc_hdr' is less than 4 [-Wpacked-not-aligned]
+      40 | } __packed;             /* format defined in
+         | ^
+   In file included from <command-line>:
+   In function 'smc_llc_add_pending_send',
+       inlined from 'smc_llc_send_message' at net/smc/smc_llc.c:760:7:
+   include/linux/compiler_types.h:322:45: error: call to '__compiletime_assert_569' declared with attribute error: must increase SMC_WR_BUF_SIZE to at least sizeof(struct smc_llc_msg)
+     322 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                                             ^
+   include/linux/compiler_types.h:303:25: note: in definition of macro '__compiletime_assert'
+     303 |                         prefix ## suffix();                             \
+         |                         ^~~~~~
+   include/linux/compiler_types.h:322:9: note: in expansion of macro '_compiletime_assert'
+     322 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   net/smc/smc_llc.c:409:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+     409 |         BUILD_BUG_ON_MSG(
+         |         ^~~~~~~~~~~~~~~~
+   include/linux/compiler_types.h:322:45: error: call to '__compiletime_assert_570' declared with attribute error: must adapt SMC_WR_TX_SIZE to sizeof(struct smc_llc_msg); if not all smc_wr upper layer protocols use the same message size any more, must start to set link->wr_tx_sges[i].length on each individual smc_wr_tx_send()
+     322 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                                             ^
+   include/linux/compiler_types.h:303:25: note: in definition of macro '__compiletime_assert'
+     303 |                         prefix ## suffix();                             \
+         |                         ^~~~~~
+   include/linux/compiler_types.h:322:9: note: in expansion of macro '_compiletime_assert'
+     322 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   net/smc/smc_llc.c:412:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+     412 |         BUILD_BUG_ON_MSG(
+         |         ^~~~~~~~~~~~~~~~
+   In function 'smc_llc_add_pending_send',
+       inlined from 'smc_llc_send_confirm_rkey' at net/smc/smc_llc.c:492:7:
+   include/linux/compiler_types.h:322:45: error: call to '__compiletime_assert_569' declared with attribute error: must increase SMC_WR_BUF_SIZE to at least sizeof(struct smc_llc_msg)
+     322 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                                             ^
+   include/linux/compiler_types.h:303:25: note: in definition of macro '__compiletime_assert'
+     303 |                         prefix ## suffix();                             \
+         |                         ^~~~~~
+   include/linux/compiler_types.h:322:9: note: in expansion of macro '_compiletime_assert'
+     322 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   net/smc/smc_llc.c:409:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+     409 |         BUILD_BUG_ON_MSG(
+         |         ^~~~~~~~~~~~~~~~
+   include/linux/compiler_types.h:322:45: error: call to '__compiletime_assert_570' declared with attribute error: must adapt SMC_WR_TX_SIZE to sizeof(struct smc_llc_msg); if not all smc_wr upper layer protocols use the same message size any more, must start to set link->wr_tx_sges[i].length on each individual smc_wr_tx_send()
+     322 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                                             ^
+   include/linux/compiler_types.h:303:25: note: in definition of macro '__compiletime_assert'
+     303 |                         prefix ## suffix();                             \
+         |                         ^~~~~~
+   include/linux/compiler_types.h:322:9: note: in expansion of macro '_compiletime_assert'
+     322 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   net/smc/smc_llc.c:412:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+     412 |         BUILD_BUG_ON_MSG(
+         |         ^~~~~~~~~~~~~~~~
+   In function 'smc_llc_add_pending_send',
+       inlined from 'smc_llc_add_link_cont' at net/smc/smc_llc.c:833:7:
+   include/linux/compiler_types.h:322:45: error: call to '__compiletime_assert_569' declared with attribute error: must increase SMC_WR_BUF_SIZE to at least sizeof(struct smc_llc_msg)
+     322 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                                             ^
+   include/linux/compiler_types.h:303:25: note: in definition of macro '__compiletime_assert'
+     303 |                         prefix ## suffix();                             \
+         |                         ^~~~~~
+   include/linux/compiler_types.h:322:9: note: in expansion of macro '_compiletime_assert'
+     322 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   net/smc/smc_llc.c:409:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+     409 |         BUILD_BUG_ON_MSG(
+         |         ^~~~~~~~~~~~~~~~
+   include/linux/compiler_types.h:322:45: error: call to '__compiletime_assert_570' declared with attribute error: must adapt SMC_WR_TX_SIZE to sizeof(struct smc_llc_msg); if not all smc_wr upper layer protocols use the same message size any more, must start to set link->wr_tx_sges[i].length on each individual smc_wr_tx_send()
+     322 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                                             ^
+   include/linux/compiler_types.h:303:25: note: in definition of macro '__compiletime_assert'
+     303 |                         prefix ## suffix();                             \
+         |                         ^~~~~~
+   include/linux/compiler_types.h:322:9: note: in expansion of macro '_compiletime_assert'
+     322 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   net/smc/smc_llc.c:412:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+     412 |         BUILD_BUG_ON_MSG(
+         |         ^~~~~~~~~~~~~~~~
+   In function 'smc_llc_add_pending_send',
 
-> 
-> Btw: please trim the CC: list considerably on future patches.
 
-I'll do so in the next version with the TUNSETSTEERINGEBPF change you 
-proposed.
+vim +40 net/smc/smc_llc.c
+
+    23	
+    24	struct smc_llc_hdr {
+    25		struct smc_wr_rx_hdr common;
+    26		union {
+    27			struct {
+    28				u8 length;	/* 44 */
+    29		#if defined(__BIG_ENDIAN_BITFIELD)
+    30				u8 reserved:4,
+    31				   add_link_rej_rsn:4;
+    32	#elif defined(__LITTLE_ENDIAN_BITFIELD)
+    33				u8 add_link_rej_rsn:4,
+    34				   reserved:4;
+    35	#endif
+    36			};
+    37			u16 length_v2;	/* 44 - 8192*/
+    38		};
+    39		u8 flags;
+  > 40	} __packed;		/* format defined in
+    41				 * IBM Shared Memory Communications Version 2
+    42				 * (https://www.ibm.com/support/pages/node/6326337)
+    43				 */
+    44	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
