@@ -2,79 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 933F07BCF7A
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 20:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27A0D7BCF7C
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 20:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344394AbjJHSAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 14:00:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59978 "EHLO
+        id S1344418AbjJHSEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 14:04:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231167AbjJHSAF (ORCPT
+        with ESMTP id S1343667AbjJHSEN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 14:00:05 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BBCFA3
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 11:00:03 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-53b32dca0bfso4789409a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 11:00:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1696788001; x=1697392801; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=gYm8WKdYe1rvZQ8btuzLZ+Hp15ywPLpv3nLFBvt4dEE=;
-        b=CIKDDnLh4DbRPd85YGRdSEpl8B1ptGT83n1AaDrCsRu75v6aWw/wttxaTxmYOl/Gs9
-         5M4noT4tNAN3p33WDob+8LTuAyGcdCRc7o0ozJJ5A3ASvx2UVmNUEqtvI1O6lOodMBC4
-         qh/9ENfZUbnFQdh7o2Pq/2lNMe7xuoopiZAR4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696788001; x=1697392801;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gYm8WKdYe1rvZQ8btuzLZ+Hp15ywPLpv3nLFBvt4dEE=;
-        b=Gm32i5zmelGueP+cCFM+JjWKNRg+ZSSdPREwlhsxa1pwPakkMeWiDg8PEFPYa6ug+a
-         sNyU6/VojVrK4ZvPlmAP9cSpTdQ8KDkYXu7ZzNF6Ujgay4Fsis1jf1txk6QErJ/o5E0h
-         YRjf/fVjE6TstdvwV3IftWBJiaABzEz2+pri7su8rxcaz7CJQPX9D8fIUc8HZc98GeVg
-         6Mc50jttdm+k6N9FAdzNUJ3rDnKTrvmIdkEnX6QpbsZ1G1atx2EhN/cVC9NVNv+DM29d
-         NjI+4aY9nQe8JlxakarR/KbHuhiiBXMWgtdNZbRKnNZ/DcDkbF/EKTBh2yxzjqYfLKcI
-         QRhQ==
-X-Gm-Message-State: AOJu0Yyo6LV9BI3vBSAbb1whq3in7GlkrFyw7pGT93EGIbRTqjUNvpRi
-        uJTE52yOYoVnvLb9W/G6/j1wZm/WVE2kRaprU6cjyw==
-X-Google-Smtp-Source: AGHT+IHJyCclWn6fIrRNn5BJOYp2jbguBBaJqrPogDzcpT+mJcNXRaK54F1vQFpoPFH2qKY1Gi6AmA==
-X-Received: by 2002:a50:fb0c:0:b0:530:8759:a3ac with SMTP id d12-20020a50fb0c000000b005308759a3acmr10041456edq.2.1696788001409;
-        Sun, 08 Oct 2023 11:00:01 -0700 (PDT)
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com. [209.85.218.54])
-        by smtp.gmail.com with ESMTPSA id b25-20020aa7df99000000b0053808d83f0fsm5223469edy.9.2023.10.08.11.00.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Oct 2023 11:00:00 -0700 (PDT)
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-9adb9fa7200so837794666b.0
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 11:00:00 -0700 (PDT)
-X-Received: by 2002:a17:907:2d09:b0:9aa:206d:b052 with SMTP id
- gs9-20020a1709072d0900b009aa206db052mr8482128ejc.27.1696788000334; Sun, 08
- Oct 2023 11:00:00 -0700 (PDT)
+        Sun, 8 Oct 2023 14:04:13 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FF7AC
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 11:04:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696788252; x=1728324252;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BxmOCSaovhTpr23m24r/ivhTBR7t+IQqd8EbUZuhaoE=;
+  b=L+3e/DQop5FMfOP66ef6TNmIzbZ5XQktX36n/C5eiaJr6BKToUgjcTZv
+   OmHwgrSTx53G479oaOR1OI9x0vSnOseFy+xf2o0Y0ljmOA1a4RZuCgcfI
+   BuvscibaC/m28/WJ26MEW5Vq6Zk5QhBPhZPYAyjLqumZ89ei04yyZkyzV
+   71Dskz2HNXoQBVIUmmcGylu2eS3TAeiD7xxv/on1E6hVyUBQNaMqSylYF
+   +i4d2hVdZCMVSdejpD4HXwSJ8xKITTnsoKICkgCmvrahiXpalOKLEL4rf
+   Y4W9aDgNz0A9iItfdcfwaxx4vr4IC0ZTpK3+FxssYepNOLV+gIXGbIxET
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="382903114"
+X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
+   d="scan'208";a="382903114"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2023 11:04:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="729426782"
+X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
+   d="scan'208";a="729426782"
+Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 08 Oct 2023 11:04:09 -0700
+Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qpY8M-0005dp-2s;
+        Sun, 08 Oct 2023 18:04:06 +0000
+Date:   Mon, 9 Oct 2023 02:03:21 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Subject: Re: [PATCH] ASoC: ti: ams-delta: Allow it to be test compiled
+Message-ID: <202310090122.Yp9JndiQ-lkp@intel.com>
+References: <20231008135601.542356-1-jmkrzyszt@gmail.com>
 MIME-Version: 1.0
-References: <20231004145137.86537-1-ubizjak@gmail.com> <20231004145137.86537-5-ubizjak@gmail.com>
-In-Reply-To: <20231004145137.86537-5-ubizjak@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 8 Oct 2023 10:59:43 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgepFm=jGodFQYPAaEvcBhR3-f_h1BLBYiVQsutCwCnUQ@mail.gmail.com>
-Message-ID: <CAHk-=wgepFm=jGodFQYPAaEvcBhR3-f_h1BLBYiVQsutCwCnUQ@mail.gmail.com>
-Subject: Re: [PATCH 4/4] x86/percpu: Use C for percpu read/write accessors
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231008135601.542356-1-jmkrzyszt@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,53 +69,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Oct 2023 at 07:51, Uros Bizjak <ubizjak@gmail.com> wrote:
->
-> The percpu code mostly uses inline assembly. Using segment qualifiers
-> allows to use C code instead, which enables the compiler to perform
-> various optimizations (e.g. propagation of memory arguments). Convert
-> percpu read and write accessors to C code, so the memory argument can
-> be propagated to the instruction that uses this argument.
+Hi Janusz,
 
-So apparently this causes boot failures.
+kernel test robot noticed the following build errors:
 
-It might be worth testing a version where this:
+[auto build test ERROR on broonie-sound/for-next]
+[also build test ERROR on linus/master v6.6-rc4 next-20231006]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> +#define raw_cpu_read_1(pcp)            __raw_cpu_read(, pcp)
-> +#define raw_cpu_read_2(pcp)            __raw_cpu_read(, pcp)
-> +#define raw_cpu_read_4(pcp)            __raw_cpu_read(, pcp)
-> +#define raw_cpu_write_1(pcp, val)      __raw_cpu_write(, pcp, val)
-> +#define raw_cpu_write_2(pcp, val)      __raw_cpu_write(, pcp, val)
-> +#define raw_cpu_write_4(pcp, val)      __raw_cpu_write(, pcp, val)
+url:    https://github.com/intel-lab-lkp/linux/commits/Janusz-Krzysztofik/ASoC-ti-ams-delta-Allow-it-to-be-test-compiled/20231008-215910
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+patch link:    https://lore.kernel.org/r/20231008135601.542356-1-jmkrzyszt%40gmail.com
+patch subject: [PATCH] ASoC: ti: ams-delta: Allow it to be test compiled
+config: sh-allmodconfig (https://download.01.org/0day-ci/archive/20231009/202310090122.Yp9JndiQ-lkp@intel.com/config)
+compiler: sh4-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231009/202310090122.Yp9JndiQ-lkp@intel.com/reproduce)
 
-and this
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310090122.Yp9JndiQ-lkp@intel.com/
 
-> +#ifdef CONFIG_X86_64
-> +#define raw_cpu_read_8(pcp)            __raw_cpu_read(, pcp)
-> +#define raw_cpu_write_8(pcp, val)      __raw_cpu_write(, pcp, val)
+All errors (new ones prefixed by >>):
 
-was all using 'volatile' in the qualifier argument and see if that
-makes the boot failure go away.
+>> sound/soc/ti/ams-delta.c:401:24: error: initialization of 'void (*)(struct tty_struct *, const u8 *, const u8 *, size_t)' {aka 'void (*)(struct tty_struct *, const unsigned char *, const unsigned char *, unsigned int)'} from incompatible pointer type 'void (*)(struct tty_struct *, const u8 *, const char *, int)' {aka 'void (*)(struct tty_struct *, const unsigned char *, const char *, int)'} [-Werror=incompatible-pointer-types]
+     401 |         .receive_buf = cx81801_receive,
+         |                        ^~~~~~~~~~~~~~~
+   sound/soc/ti/ams-delta.c:401:24: note: (near initialization for 'cx81801_ops.receive_buf')
+   cc1: some warnings being treated as errors
 
-Because while the old code wasn't "asm volatile", even just a *plain*
-asm() is certainly a lot more serialized than a normal access.
 
-For example, the asm() version of raw_cpu_write() used "+m" for the
-destination modifier, which means that if you did multiple percpu
-writes to the same variable, gcc would output multiple asm calls,
-because it would see the subsequent ones as reading the old value
-(even if they don't *actually* do so).
+vim +401 sound/soc/ti/ams-delta.c
 
-That's admittedly really just because it uses a common macro for
-raw_cpu_write() and the updates (like the percpu_add() code), so the
-fact that it uses "+m" instead of "=m" is just a random odd artifact
-of the inline asm version, but maybe we have code that ends up working
-just by accident.
+6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29  393  
+6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29  394  static struct tty_ldisc_ops cx81801_ops = {
+6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29  395  	.name = "cx81801",
+fbadf70a8053b3 sound/soc/ti/ams-delta.c   Jiri Slaby         2021-05-05  396  	.num = N_V253,
+6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29  397  	.owner = THIS_MODULE,
+6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29  398  	.open = cx81801_open,
+6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29  399  	.close = cx81801_close,
+6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29  400  	.hangup = cx81801_hangup,
+6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29 @401  	.receive_buf = cx81801_receive,
+6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29  402  	.write_wakeup = cx81801_wakeup,
+6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29  403  };
+6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29  404  
+6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29  405  
 
-Also, I'm not sure gcc re-orders asms wrt each other - even when they
-aren't marked volatile.
-
-So it might be worth at least a trivial "make everything volatile"
-test to see if that affects anything.
-
-              Linus
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
