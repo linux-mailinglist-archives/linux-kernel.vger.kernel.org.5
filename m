@@ -2,38 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D2147BCF3B
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 18:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62EB37BCF3D
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 18:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344920AbjJHQJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 12:09:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53320 "EHLO
+        id S1344926AbjJHQTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 12:19:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232513AbjJHQJT (ORCPT
+        with ESMTP id S234352AbjJHQTJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 12:09:19 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D2BAB
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 09:09:15 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:5054:ff:feb3:8f48] (helo=regzbot.fritz.box); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1qpWLB-0002Ub-VJ; Sun, 08 Oct 2023 18:09:14 +0200
-From:   "Regzbot (on behalf of Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Linux regressions report  for mainline [2023-10-08]
-Date:   Sun,  8 Oct 2023 16:09:13 +0000
-Message-Id: <169678126224.160034.5275230285223450822@leemhuis.info>
-X-Mailer: git-send-email 2.40.1
-Content-Type: text/plain; charset="utf-8"
+        Sun, 8 Oct 2023 12:19:09 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 421BAAB
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 09:19:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696781948; x=1728317948;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=KvZXZB3MAVxKu8w7Yn260PNj64/2cfuVWWPoVqrpC8Q=;
+  b=ZguLaW8YmA3/56XwZEV3iETrBDwVuftw2PcgB8bWSu42eTWdczARYwZ4
+   2b9R4nrZiKchhXHEbZcuoLVmK+6Itldzyixth3EFMGeL7LyJLXrOZjPVG
+   +ry+/Yau0dIrHMBOb1luAH9Nh12C+pBslKCDSOAm9weCViOldhd/2lgYe
+   P1QS//VED7nz2oQJztlOHmjDw3aISNKmGWSjqre5ZwWYdywd+3IXpw7d6
+   4XwwxusUD21Y8karMxuH82PAP7+Fc3tX0nDenMGoK9EZiZ41SrwA0Hy5W
+   LUWkZJIwjjFgewKyNyg5SL+oULZHWQ7mLbYZt0LNonxqiIZDM43MdLltq
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="364311511"
+X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
+   d="scan'208";a="364311511"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2023 09:19:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="746418678"
+X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
+   d="scan'208";a="746418678"
+Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 08 Oct 2023 09:19:04 -0700
+Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qpWUg-0005YT-1i;
+        Sun, 08 Oct 2023 16:19:02 +0000
+Date:   Mon, 9 Oct 2023 00:18:48 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "brookxu.cn" <brookxu.cn@gmail.com>, bsingharora@gmail.com,
+        juri.lelli@redhat.com, peterz@infradead.org,
+        vincent.guittot@linaro.org
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] delayacct: convert task->delays to a object
+Message-ID: <202310090033.4XQPktBr-lkp@intel.com>
+References: <531ddc82793a39f4c09316d701a4b1170bcad4ab.1696761522.git.chunguang.xu@shopee.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1696781355;81a10301;
-X-HE-SMSGID: 1qpWLB-0002Ub-VJ
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <531ddc82793a39f4c09316d701a4b1170bcad4ab.1696761522.git.chunguang.xu@shopee.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -41,192 +66,158 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus. There is not much to report wrt to regressions introduced
-during the current cycle: there are a few, put people are working on
-fixing them.
+Hi brookxu.cn,
 
-Except maybe one; but I'll likely drop that from the list of tracked
-issues anyway, unless you object:
-https://lore.kernel.org/all/eab8e74b-61e0-4ef4-bfb3-751047d879bc@green-communications.fr/
+kernel test robot noticed the following build warnings:
 
-As far as I understand things the cause is 3ec5ac12ac8a4e ("wifi: mt76:
-mt7915: remove VHT160 capability on MT7915") [v6.6-rc1] which removed a
-erroneously added feature flag (introduced in c2f73eacee3bf1 ("wifi:
-mt76: mt7915: add back 160MHz channel width support for MT7915")
-[v6.3-rc4]) which broke a user's hostap configuration. But I guess there
-is nothing much we can do here, as the hardware doesn't support that
-feature. See above link for details.
+[auto build test WARNING on tip/sched/core]
+[also build test WARNING on linus/master v6.6-rc4 next-20231006]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Ciao, Thorsten
+url:    https://github.com/intel-lab-lkp/linux/commits/brookxu-cn/delayacct-introduce-delayacct_enabled-to-simplify-implement/20231008-185144
+base:   tip/sched/core
+patch link:    https://lore.kernel.org/r/531ddc82793a39f4c09316d701a4b1170bcad4ab.1696761522.git.chunguang.xu%40shopee.com
+patch subject: [PATCH 2/3] delayacct: convert task->delays to a object
+config: x86_64-randconfig-002-20231008 (https://download.01.org/0day-ci/archive/20231009/202310090033.4XQPktBr-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231009/202310090033.4XQPktBr-lkp@intel.com/reproduce)
 
----
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310090033.4XQPktBr-lkp@intel.com/
 
-Hi, this is regzbot, the Linux kernel regression tracking bot.
+All warnings (new ones prefixed by >>):
 
-Currently I'm aware of 10 regressions in linux-mainline. Find the
-current status below and the latest on the web:
-
-https://linux-regtracking.leemhuis.info/regzbot/mainline/
-
-Bye bye, hope to see you soon for the next report.
-   Regzbot (on behalf of Thorsten Leemhuis)
-
-
-======================================================
-current cycle (v6.5.. aka v6.6-rc), culprit identified
-======================================================
-
-
-virtio: network-related regression when using SWIOTLB in the guest
-------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/20230926130451.axgodaa6tvwqs3ut@amd.com/
-https://lore.kernel.org/lkml/20230926130451.axgodaa6tvwqs3ut@amd.com/
-
-By Michael Roth; 12 days ago; 5 activities, latest 0 days ago.
-Introduced in 295525e29a (v6.6-rc1)
-
-Fix incoming:
-* virtio_net: fix the missing of the dma cpu sync
-  https://lore.kernel.org/lkml/a7a2bf25-cfc1-47a8-baf4-487a8574fb5a@leemhuis.info/
-
-
-[ *NEW* ] Regression: devcoredump patch broke Realtek usb bluetooth adapter
----------------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/20231003182038.k57nirtt4sonvt7c@box.shutemov.name/
-https://lore.kernel.org/lkml/20231003182038.k57nirtt4sonvt7c@box.shutemov.name/
-
-By Kirill A. Shutemov; 4 days ago; 11 activities, latest 1 days ago.
-Introduced in 044014ce85a1 (v6.6-rc1)
-
-Recent activities from: Max Chou (4), Kirill A. Shutemov (3), patchwork-
-  bot+bluetooth@kernel.org (1), bluez.test.bot@gmail.com (1),
-  max.chou@realtek.com (1), Bagas Sanjaya (1)
-
-One patch associated with this regression:
-* RE: Regression: devcoredump patch broke Realtek usb bluetooth adapter
-  https://lore.kernel.org/lkml/7507ad6c8a964b179bf2b3318104a124@realtek.com/
-  4 days ago, by Max Chou
-
-Noteworthy links:
-* [PATCH] Bluetooth: btrtl: Ignore error return for hci_devcd_register()
-  https://lore.kernel.org/lkml/20231006024707.413349-1-max.chou@realtek.com/
-  2 days ago, by max.chou@realtek.com; thread monitored.
-
-
-powerpc: new page table range API causes PowerMac G5 to fail booting
---------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/20230929132750.3cd98452@yea/
-https://lore.kernel.org/linuxppc-dev/20230929132750.3cd98452@yea/
-
-By Erhard Furtner; 9 days ago; 8 activities, latest 2 days ago.
-Introduced in 9fee28baa601 (v6.6-rc1)
-
-Recent activities from: Erhard Furtner (2), Aneesh Kumar K.V (2), Bagas
-  Sanjaya (2), Matthew Wilcox (1)
-
-2 patch postings are associated with this regression, the latest is this:
-* Re: [Bisected] PowerMac G5 fails booting kernel 6.6-rc3 (BUG: Unable to handle kernel data access at 0xfeffbb62ffec65fe)
-  https://lore.kernel.org/linuxppc-dev/87mswwnec1.fsf@linux.ibm.com/
-  2 days ago, by Aneesh Kumar K.V
-
-
-resume_console performance regression due to per-console suspended state
-------------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/bugzilla.kernel.org/217955/
-https://bugzilla.kernel.org/show_bug.cgi?id=217955
-https://lore.kernel.org/lkml/99b9d4d1-f7a9-4b6c-aebf-ef1d2ddee0d7@gmail.com/
-
-By Todd Brandt and Todd Brandt; 10 days ago; 21 activities, latest 2 days ago.
-Introduced in 9e70a5e109a4 (v6.6-rc1)
-
-Fix incoming:
-* printk: flush consoles before checking progress
-  https://lore.kernel.org/lkml/da91c950-51c0-4c71-855e-ae11898a97f5@gmail.com/
-
-
-x86,static_call: crash on x86 kernel with CONFIG_DEBUG_VIRTUAL=y.
------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/ZRhKq6e5nF/4ZIV1@fedora/
-https://lore.kernel.org/lkml/ZRhKq6e5nF%2F4ZIV1@fedora/
-
-By Hyeonggon Yoo; 7 days ago; 11 activities, latest 2 days ago.
-Introduced in aee9d30b9744 (v6.6-rc3)
-
-Fix incoming:
-* KEYS: trusted: Remove redundant static calls usage
-  https://lore.kernel.org/lkml/019424f6-b39b-41d9-bb4a-40bfc8953d98@leemhuis.info/
-
-
-Input: psmouse - Resume broken on T14s Gen1 (AMD) due to a new delay when deactivating for SMBus mode
------------------------------------------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/ca0109fa-c64b-43c1-a651-75b294d750a1@leemhuis.info/
-https://lore.kernel.org/lkml/ca0109fa-c64b-43c1-a651-75b294d750a1@leemhuis.info/
-https://lore.kernel.org/lkml/0d84fb59-4628-4c7f-ab1a-f58889ef2c9b@leemhuis.info/
-
-By Thorsten Leemhuis and Thorsten Leemhuis; 11 days ago; 9 activities, latest 3 days ago.
-Introduced in 92e24e0e57f7 (v6.6-rc1)
-
-Recent activities from: Jeffery Miller (3), Thorsten Leemhuis (2)
-
-One patch associated with this regression:
-* Re: [regression] Resume broken on T14s Gen1 (AMD) due to "Input: psmouse - add delay when deactivating for SMBus mode"
-  https://lore.kernel.org/lkml/CAAzPG9MD%2BUQb_RdiMkPkpQGYe-arD1nMKWngMj4P5s3_zJvphQ@mail.gmail.com/
-  5 days ago, by Jeffery Miller
-
-Noteworthy links:
-* [PATCH v2] Input: psmouse - fix fast_reconnect function for PS/2 mode
-  https://lore.kernel.org/lkml/20231005002249.554877-1-jefferymiller@google.com/
-  3 days ago, by Jeffery Miller; thread monitored.
+   In file included from arch/x86/include/asm/paravirt_types.h:19,
+                    from arch/x86/include/asm/ptrace.h:97,
+                    from arch/x86/include/asm/math_emu.h:5,
+                    from arch/x86/include/asm/processor.h:13,
+                    from arch/x86/include/asm/timex.h:5,
+                    from include/linux/timex.h:67,
+                    from include/linux/time32.h:13,
+                    from include/linux/time.h:60,
+                    from arch/x86/entry/vdso/vdso32/../vclock_gettime.c:11,
+                    from arch/x86/entry/vdso/vdso32/vclock_gettime.c:4:
+   arch/x86/include/asm/pgtable.h: In function 'pte_flags_pkey':
+>> arch/x86/include/asm/pgtable_types.h:66:43: warning: left shift count >= width of type [-Wshift-count-overflow]
+      66 | #define _PAGE_PKEY_BIT0 (_AT(pteval_t, 1) << _PAGE_BIT_PKEY_BIT0)
+         |                                           ^~
+   arch/x86/include/asm/pgtable_types.h:77:26: note: in expansion of macro '_PAGE_PKEY_BIT0'
+      77 | #define _PAGE_PKEY_MASK (_PAGE_PKEY_BIT0 | \
+         |                          ^~~~~~~~~~~~~~~
+   arch/x86/include/asm/pgtable.h:1615:29: note: in expansion of macro '_PAGE_PKEY_MASK'
+    1615 |         return (pte_flags & _PAGE_PKEY_MASK) >> _PAGE_BIT_PKEY_BIT0;
+         |                             ^~~~~~~~~~~~~~~
+   arch/x86/include/asm/pgtable_types.h:67:43: warning: left shift count >= width of type [-Wshift-count-overflow]
+      67 | #define _PAGE_PKEY_BIT1 (_AT(pteval_t, 1) << _PAGE_BIT_PKEY_BIT1)
+         |                                           ^~
+   arch/x86/include/asm/pgtable_types.h:78:26: note: in expansion of macro '_PAGE_PKEY_BIT1'
+      78 |                          _PAGE_PKEY_BIT1 | \
+         |                          ^~~~~~~~~~~~~~~
+   arch/x86/include/asm/pgtable.h:1615:29: note: in expansion of macro '_PAGE_PKEY_MASK'
+    1615 |         return (pte_flags & _PAGE_PKEY_MASK) >> _PAGE_BIT_PKEY_BIT0;
+         |                             ^~~~~~~~~~~~~~~
+   arch/x86/include/asm/pgtable_types.h:68:43: warning: left shift count >= width of type [-Wshift-count-overflow]
+      68 | #define _PAGE_PKEY_BIT2 (_AT(pteval_t, 1) << _PAGE_BIT_PKEY_BIT2)
+         |                                           ^~
+   arch/x86/include/asm/pgtable_types.h:79:26: note: in expansion of macro '_PAGE_PKEY_BIT2'
+      79 |                          _PAGE_PKEY_BIT2 | \
+         |                          ^~~~~~~~~~~~~~~
+   arch/x86/include/asm/pgtable.h:1615:29: note: in expansion of macro '_PAGE_PKEY_MASK'
+    1615 |         return (pte_flags & _PAGE_PKEY_MASK) >> _PAGE_BIT_PKEY_BIT0;
+         |                             ^~~~~~~~~~~~~~~
+   arch/x86/include/asm/pgtable_types.h:69:43: warning: left shift count >= width of type [-Wshift-count-overflow]
+      69 | #define _PAGE_PKEY_BIT3 (_AT(pteval_t, 1) << _PAGE_BIT_PKEY_BIT3)
+         |                                           ^~
+   arch/x86/include/asm/pgtable_types.h:80:26: note: in expansion of macro '_PAGE_PKEY_BIT3'
+      80 |                          _PAGE_PKEY_BIT3)
+         |                          ^~~~~~~~~~~~~~~
+   arch/x86/include/asm/pgtable.h:1615:29: note: in expansion of macro '_PAGE_PKEY_MASK'
+    1615 |         return (pte_flags & _PAGE_PKEY_MASK) >> _PAGE_BIT_PKEY_BIT0;
+         |                             ^~~~~~~~~~~~~~~
+   In file included from include/linux/pgtable.h:6,
+                    from include/linux/kasan.h:33,
+                    from include/linux/slab.h:180,
+                    from include/linux/delayacct.h:62,
+                    from include/linux/sched.h:40,
+                    from include/linux/sched/mm.h:7,
+                    from include/linux/xarray.h:19,
+                    from include/linux/radix-tree.h:21,
+                    from include/linux/idr.h:15,
+                    from include/linux/kernfs.h:12,
+                    from include/linux/sysfs.h:16,
+                    from include/linux/kobject.h:20,
+                    from include/linux/of.h:17,
+                    from include/linux/clocksource.h:19,
+                    from include/clocksource/hyperv_timer.h:16,
+                    from arch/x86/include/asm/vdso/gettimeofday.h:21,
+                    from include/vdso/datapage.h:137,
+                    from arch/x86/entry/vdso/vdso32/../../../../../lib/vdso/gettimeofday.c:5,
+                    from arch/x86/entry/vdso/vdso32/../vclock_gettime.c:15,
+                    from arch/x86/entry/vdso/vdso32/vclock_gettime.c:4:
+>> arch/x86/include/asm/pgtable.h:1615:46: warning: right shift count >= width of type [-Wshift-count-overflow]
+    1615 |         return (pte_flags & _PAGE_PKEY_MASK) >> _PAGE_BIT_PKEY_BIT0;
+         |                                              ^~
+   In file included from include/linux/kasan.h:33,
+                    from include/linux/slab.h:180,
+                    from include/linux/delayacct.h:62,
+                    from include/linux/sched.h:40,
+                    from include/linux/sched/mm.h:7,
+                    from include/linux/xarray.h:19,
+                    from include/linux/radix-tree.h:21,
+                    from include/linux/idr.h:15,
+                    from include/linux/kernfs.h:12,
+                    from include/linux/sysfs.h:16,
+                    from include/linux/kobject.h:20,
+                    from include/linux/of.h:17,
+                    from include/linux/clocksource.h:19,
+                    from include/clocksource/hyperv_timer.h:16,
+                    from arch/x86/include/asm/vdso/gettimeofday.h:21,
+                    from include/vdso/datapage.h:137,
+                    from arch/x86/entry/vdso/vdso32/../../../../../lib/vdso/gettimeofday.c:5,
+                    from arch/x86/entry/vdso/vdso32/../vclock_gettime.c:15,
+                    from arch/x86/entry/vdso/vdso32/vclock_gettime.c:4:
+   include/linux/pgtable.h: At top level:
+   include/linux/pgtable.h:1578:2: error: #error Missing MAX_POSSIBLE_PHYSMEM_BITS definition
+    1578 | #error Missing MAX_POSSIBLE_PHYSMEM_BITS definition
+         |  ^~~~~
 
 
-[ *NEW* ] dqput() fix causes kvm-xfstests nojournal test time longer
---------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/ZRytn6CxFK2oECUt@debian-BULLSEYE-live-builder-AMD64/
-https://lore.kernel.org/linux-ext4/ZRytn6CxFK2oECUt@debian-BULLSEYE-live-builder-AMD64/
+vim +66 arch/x86/include/asm/pgtable_types.h
 
-By Eric Whitney; 4 days ago; 4 activities, latest 3 days ago.
-Introduced in dabc8b207566 (v6.6-rc1)
+8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  48  
+8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  49  #define _PAGE_PRESENT	(_AT(pteval_t, 1) << _PAGE_BIT_PRESENT)
+8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  50  #define _PAGE_RW	(_AT(pteval_t, 1) << _PAGE_BIT_RW)
+8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  51  #define _PAGE_USER	(_AT(pteval_t, 1) << _PAGE_BIT_USER)
+8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  52  #define _PAGE_PWT	(_AT(pteval_t, 1) << _PAGE_BIT_PWT)
+8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  53  #define _PAGE_PCD	(_AT(pteval_t, 1) << _PAGE_BIT_PCD)
+8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  54  #define _PAGE_ACCESSED	(_AT(pteval_t, 1) << _PAGE_BIT_ACCESSED)
+8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  55  #define _PAGE_DIRTY	(_AT(pteval_t, 1) << _PAGE_BIT_DIRTY)
+8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  56  #define _PAGE_PSE	(_AT(pteval_t, 1) << _PAGE_BIT_PSE)
+8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  57  #define _PAGE_GLOBAL	(_AT(pteval_t, 1) << _PAGE_BIT_GLOBAL)
+c46a7c817e662a Mel Gorman          2014-06-04  58  #define _PAGE_SOFTW1	(_AT(pteval_t, 1) << _PAGE_BIT_SOFTW1)
+f955371ca9d398 David Vrabel        2014-01-07  59  #define _PAGE_SOFTW2	(_AT(pteval_t, 1) << _PAGE_BIT_SOFTW2)
+6c0df8689494e1 Joerg Roedel        2018-07-18  60  #define _PAGE_SOFTW3	(_AT(pteval_t, 1) << _PAGE_BIT_SOFTW3)
+8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  61  #define _PAGE_PAT	(_AT(pteval_t, 1) << _PAGE_BIT_PAT)
+8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  62  #define _PAGE_PAT_LARGE (_AT(pteval_t, 1) << _PAGE_BIT_PAT_LARGE)
+8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  63  #define _PAGE_SPECIAL	(_AT(pteval_t, 1) << _PAGE_BIT_SPECIAL)
+8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  64  #define _PAGE_CPA_TEST	(_AT(pteval_t, 1) << _PAGE_BIT_CPA_TEST)
+5c1d90f51027e1 Dave Hansen         2016-02-12  65  #ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
+5c1d90f51027e1 Dave Hansen         2016-02-12 @66  #define _PAGE_PKEY_BIT0	(_AT(pteval_t, 1) << _PAGE_BIT_PKEY_BIT0)
+5c1d90f51027e1 Dave Hansen         2016-02-12  67  #define _PAGE_PKEY_BIT1	(_AT(pteval_t, 1) << _PAGE_BIT_PKEY_BIT1)
+5c1d90f51027e1 Dave Hansen         2016-02-12  68  #define _PAGE_PKEY_BIT2	(_AT(pteval_t, 1) << _PAGE_BIT_PKEY_BIT2)
+5c1d90f51027e1 Dave Hansen         2016-02-12  69  #define _PAGE_PKEY_BIT3	(_AT(pteval_t, 1) << _PAGE_BIT_PKEY_BIT3)
+5c1d90f51027e1 Dave Hansen         2016-02-12  70  #else
+5c1d90f51027e1 Dave Hansen         2016-02-12  71  #define _PAGE_PKEY_BIT0	(_AT(pteval_t, 0))
+5c1d90f51027e1 Dave Hansen         2016-02-12  72  #define _PAGE_PKEY_BIT1	(_AT(pteval_t, 0))
+5c1d90f51027e1 Dave Hansen         2016-02-12  73  #define _PAGE_PKEY_BIT2	(_AT(pteval_t, 0))
+5c1d90f51027e1 Dave Hansen         2016-02-12  74  #define _PAGE_PKEY_BIT3	(_AT(pteval_t, 0))
+5c1d90f51027e1 Dave Hansen         2016-02-12  75  #endif
+8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  76  
 
-Recent activities from: Eric Whitney (2), Jan Kara (1), Bagas
-  Sanjaya (1)
-
-
-wifi: mt76: mt7915: removal of VHT160 capability broke hostap
--------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/12289744.O9o76ZdvQC@natalenko.name/
-https://lore.kernel.org/lkml/12289744.O9o76ZdvQC@natalenko.name/
-
-By Oleksandr Natalenko; 17 days ago; 3 activities, latest 8 days ago.
-Introduced in 3ec5ac12ac8a (v6.6-rc1)
-
-
-=============
-End of report
-=============
-
-All regressions marked '[ *NEW* ]' were added since the previous report,
-which can be found here:
-https://lore.kernel.org/r/169616777754.3766264.2663767892794249034@leemhuis.info
-
-Thanks for your attention, have a nice day!
-
-  Regzbot, your hard working Linux kernel regression tracking robot
-
-
-P.S.: Wanna know more about regzbot or how to use it to track regressions
-for your subsystem? Then check out the getting started guide or the
-reference documentation:
-
-https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
-https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
-
-The short version: if you see a regression report you want to see
-tracked, just send a reply to the report where you Cc
-regressions@lists.linux.dev with a line like this:
-
-#regzbot introduced: v5.13..v5.14-rc1
-
-If you want to fix a tracked regression, just do what is expected
-anyway: add a 'Link:' tag with the url to the report, e.g.:
-
-Link: https://lore.kernel.org/all/30th.anniversary.repost@klaava.Helsinki.FI/
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
