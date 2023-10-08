@@ -2,115 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 585E47BD03B
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 23:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2A817BD03D
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 23:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbjJHVVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 17:21:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56872 "EHLO
+        id S229635AbjJHVWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 17:22:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbjJHVVh (ORCPT
+        with ESMTP id S230373AbjJHVWD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 17:21:37 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5771AC;
-        Sun,  8 Oct 2023 14:21:35 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6c63117a659so2205272a34.0;
-        Sun, 08 Oct 2023 14:21:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696800095; x=1697404895; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7tFkgfW4cZbNG3g5YvrO+dBVaVKzGdwwIuQTmQTY0jc=;
-        b=J2T6ECoZ2NQ6jQK317KDWj5GB1bRHagjHXju3Uj80aoxQ08+3krVPYJzsZFRDdKhgH
-         brYhhqc2WkItqIha8tre4HCmBJo1LxFGvXpv8Ge9A5AkQ4gnbah8TbLX7MFMH0Nd/0fg
-         0ucF7qCpbqZrQw3F/Z1pxfNaGnjWDFDeDzYfrgcFgVG9w5/ZvS9EAssP9hDYiEr3aSmD
-         b6Cb8Bv3uMTULzBBXoowJyrlftVRdvQDWvGIajZ00xTjdoOyKPRayTKZ/njjW1UjIVIn
-         XaL9M9xZxz12Mx8cexXc5XpeRm05Fbf8aEQgnpJbGH2DcDEec8EvxhDyTUkQ5ENlLPDw
-         gOZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696800095; x=1697404895;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7tFkgfW4cZbNG3g5YvrO+dBVaVKzGdwwIuQTmQTY0jc=;
-        b=GHFJCMhnhaveJrU479uVF93+QnRC8BAbHmPNwhdgrMVp1U9DTl1gX6OoQDR8PTWmkU
-         V6RPNbCg3Ybb0hzaFlLHoaK6xVN/V7USZMEH87n0fXIcoKAm7n3POxJ4vPClmjgthynn
-         47AegXE+duNJf62P+Hv0k5ouLmUJvkWO+3dccLhiXpEDR/n533zppl3zHsgZPwSF3o9p
-         dGgyR9baANU1nYau4X08GemM0c201Xy2pAIy78j3QHpVSUfNBqEX7GGb4sLobRWppbsB
-         cwHLpjK1W3LI6Blzb31JLzp7Ks7Sz9kZ2mMnP6+qEbQNDhfDgnNXOxWh8g29P8nx/hIr
-         4NrQ==
-X-Gm-Message-State: AOJu0YwhYshEUex9WpuZfY4KCGV3HCIbyAdceqWiemrJhAAFwOYHuJtv
-        2tnTtqhEiBsrfXArlHPLwSQioW2mxOl4QJzkl44=
-X-Google-Smtp-Source: AGHT+IG2X00Izsq8yJBHpE/SbCtPB2p4GnsaqwRMKU+ZKdCHKskj69ge6judSTj8+aIg/9Lz64Olraz14Kpd2Ju2OVY=
-X-Received: by 2002:a9d:6d0d:0:b0:6c4:6aef:cd58 with SMTP id
- o13-20020a9d6d0d000000b006c46aefcd58mr12438764otp.8.1696800095162; Sun, 08
- Oct 2023 14:21:35 -0700 (PDT)
+        Sun, 8 Oct 2023 17:22:03 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 330329D;
+        Sun,  8 Oct 2023 14:22:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1696800113;
+        bh=NIPp7qa77EEcjTVDJ+U30nCovPstS57FpHksGRlizt0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=NxZdKa4PuFUSYKsl+vbRxNaj8/YKuD4C9w17YhwqPGGSGE/rh6zxEx9xkLnHKCNHL
+         3aY659djBQWoPsGShTIDON5nUumJklxFhqMdsLxcyVS2xD2q4YAVYSzJKDJwFz0Y4a
+         S9dUWjuHfBI0fmzOiup+OlxrTebWOx8OrvNs4rlCwMav4/xOIQe0pF8YziuIRmKiRO
+         3S6tenRCnBljm+i1tmOvwqVGPYEP4cF1YmCZye1j1fmFVnXQ+gdf7jpH42tYUF1FLq
+         7zKbeZC7opOmQ1vkkNfuts1b/HjFcFLJ7wfoQEdmStK+fvzT6I+kBJqiFTCmxMRiYu
+         gBmZm1eZWbCAA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S3ZqP1LLYz4x5K;
+        Mon,  9 Oct 2023 08:21:53 +1100 (AEDT)
+Date:   Mon, 9 Oct 2023 08:21:51 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Wang Jianjian <wangjianjian0@foxmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the ext4 tree
+Message-ID: <20231009082151.70a630a2@canb.auug.org.au>
 MIME-Version: 1.0
-Received: by 2002:ac9:5786:0:b0:4f0:1250:dd51 with HTTP; Sun, 8 Oct 2023
- 14:21:34 -0700 (PDT)
-In-Reply-To: <ZSMZkuJGgHyyqDWP@casper.infradead.org>
-References: <20231007203543.1377452-1-willy@infradead.org> <20231007203543.1377452-6-willy@infradead.org>
- <CAGudoHEg7oWG8CuyivWRsWLZZtw51oY0=PjLPRzFZDDZf=kzGg@mail.gmail.com> <ZSMZkuJGgHyyqDWP@casper.infradead.org>
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Sun, 8 Oct 2023 23:21:34 +0200
-Message-ID: <CAGudoHGVa2qjkOB25whVquRtgUN7sJtEuqUGDoVe_18RdYwSTw@mail.gmail.com>
-Subject: Re: [PATCH v2 5/5] fs: Add inode_assert_locked() and inode_assert_locked_excl()
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Christian Brauner <brauner@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/LirgHqgOfDIsIyfuLba7E40";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/23, Matthew Wilcox <willy@infradead.org> wrote:
-> On Sun, Oct 08, 2023 at 10:26:40PM +0200, Mateusz Guzik wrote:
->> On 10/7/23, Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
->> > +static inline void inode_assert_locked_excl(const struct inode *inode)
->> > +{
->> > +	rwsem_assert_held_write(&inode->i_rwsem);
->> > +}
->> > +
->> >  static inline void inode_lock_nested(struct inode *inode, unsigned
->> > subclass)
->> >  {
->> >  	down_write_nested(&inode->i_rwsem, subclass);
->>
->> Why "excl" instead of "write"? Apart from looking weird, it is
->> inconsistent with "prior art" in the file: i_mmap_assert_write_locked.
->
-> Yes, but that pairs with i_mmap_lock_write() / i_mmap_lock_read().
->
-> The problem is that we have inode_lock() / inode_lock_shared()
-> inode_assert_locked_read/write doesn't make sense with them.  But
-> inode_assert_locked() doesn't make sense as the assertion for
-> inode_lock() because you'd expect it to assert whether the inode lock
-> is held at all.  So I went with inode_assert_locked_excl().
->
-> I wouldn't mind if we converted all the inode_lock()/shared to
-> inode_lock_read() / inode_lock_write(), and then added
-> inode_assert_read_locked() / inode_assert_write_locked().  That's
-> a bit of a bigger job than I want to take on today.
->
+--Sig_/LirgHqgOfDIsIyfuLba7E40
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I agree it is rather messy and I'm not going to spend time arguing as
-it is not my call anyway.
+Hi all,
 
-Speaking of that, I just noticed the vfs folk are not CC'ed, which I'm
-rectifying with this e-mail.
+In commit
 
--- 
-Mateusz Guzik <mjguzik gmail.com>
+  ebf6cb7c6e12 ("ext4: no need to generate from free list in mballoc")
+
+Fixes tag
+
+  Fixes: 7a2fcbf7f85('ext4: don't use blocks freed but not yet committed in=
+ buddy cache init')
+
+has these problem(s):
+
+  - missing space between the SHA1 and the subject
+  - SHA1 should be at least 12 digits long
+    This can be fixed for the future by setting core.abbrev to 12 (or
+    more) or (for git v2.11 or later) just making sure it is not set
+    (or set to "auto").
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/LirgHqgOfDIsIyfuLba7E40
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUjHW8ACgkQAVBC80lX
+0GwXwgf/aw1U5tNKtPjfpvdqozLgodvYTSjPjqdgeL5J1gbGTHIKEZf3Tk12qU4M
+NxKDxDIND8vI8/DQ9eP8oLpXD7C/8beH5zxngrj9WzNvFSudC0qv82qpRsnEVzID
+3kDGbHSA88J0o11i2z858hJPajjcZ0q6kc4CxjJiAqAiWYGW3DLkKIpjeEDcXAbk
+agy+p7lru9mtniDI+FKgscF3vDtuOkw/uG0aEhB5o9rAM3hMXrnlYdyDC+QDV8Mu
+1rYewqUGjN8/GYwHum1BEB6WYWlEbhBoXYTA1XwhysHL2bLgRbO5j4J6Vn8eUHfZ
+3g6A785sCKhhmh4nW47X9aTgJPYEjA==
+=g7j8
+-----END PGP SIGNATURE-----
+
+--Sig_/LirgHqgOfDIsIyfuLba7E40--
