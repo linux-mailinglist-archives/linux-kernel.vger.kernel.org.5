@@ -2,78 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 574F57BCFC0
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 21:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B832D7BCFC8
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 21:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344479AbjJHTHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 15:07:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46404 "EHLO
+        id S1344490AbjJHTQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 15:16:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbjJHTHr (ORCPT
+        with ESMTP id S1344413AbjJHTQg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 15:07:47 -0400
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A08D2AC;
-        Sun,  8 Oct 2023 12:07:45 -0700 (PDT)
-Received: by mail-ua1-x935.google.com with SMTP id a1e0cc1a2514c-7b396733895so416431241.2;
-        Sun, 08 Oct 2023 12:07:45 -0700 (PDT)
+        Sun, 8 Oct 2023 15:16:36 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5848AC;
+        Sun,  8 Oct 2023 12:16:33 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9ae7383b7ecso1088092966b.0;
+        Sun, 08 Oct 2023 12:16:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696792063; x=1697396863; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tUIUiIpPTlwOBRO7US0BTmiwF5PXFfWcZRBZPb+tCDY=;
-        b=GW5WZ5Kyn9EPEyabHpJu3TagErVWHaRX0sGereZUU5fko+5aG4mx/D/huUBynkMLJE
-         /Kl+28SJnyfFjJ1hfjj3/IFmQLU7HwduDbqdwVtE1PzhiyyWIsHgS7YgKJjwafgMCl7O
-         Jpifqe5yt9bws+Anud3cyRZ2rhTWOIzoCA8AUbvCr9kt1Z0no/y4yocNY3zhhzIxzWVI
-         Yocxvlrpj+i6VQtPcs+96YvQFwKCofcpMTSpg1noNJ6tfEQGJddJX3+o87mkuvkUlIlS
-         sdhGCDOHQeFrsFjIMFTB14FVIr94RcljauE+CIgOY8wEkCAlBnTywjhEZKUXrk2yxtoO
-         Cucw==
+        d=gmail.com; s=20230601; t=1696792592; x=1697397392; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KsylpQf7X1mm72N/86c1cHvtLeAB33CaIt+8Z0lEbY4=;
+        b=KHku8+/DgmVOCdcDcPUYzTcfJtmFVZYTcEmF4jcjkYwaYjx+Fv+AHRdvbHh/x7J5cA
+         W2RLgmAX0yOMTUF7AayfA6r/+CXSkdkGWK1F9O63SVoJKi3moZ0p1uNDijo/0bZ8ui/l
+         QZDbDJlPSirWP+ILfqX151HlO1DMT5gwGJznoN8LHz2eFf33G8I0hJtrU/7gZdTxDm/W
+         n7HPAUWjKitN5bbYWyKUBZjyF5uDVvuk5hb4BmIMcMldcm1fL/T+yGtOBwLJN2UYEnnr
+         +gTgxbSxsm505VXfFF4jfx3dyE+WvjZALXBRP3jiGDt9A1FaPoBQdXrbEflh8HS28KaG
+         eezw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696792063; x=1697396863;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tUIUiIpPTlwOBRO7US0BTmiwF5PXFfWcZRBZPb+tCDY=;
-        b=nLw3Dx1WqkEoBlCFQ1LU7EGOPJuFDZV7NqwE9F5gr0oKuxbgFprNeUkOZttvHoJ2UX
-         kQ4VPgF6qyJ1D8aF9GE9emIgn6agByD6RWas9USIewoO0/V3cqEI1YKyuzWgF9iqEjr7
-         lSD9r/xs7yx+9C87i1Dy2sndLD9gJu4nhpswzB3t9V5H6pQWeetOOTcj0DM+8rWvi3lM
-         VVYQL0E1Vb2j4XUmL5ZIiimdx0VQNujp6cgL/qJettNOD+Wg6ODWD2aK4jr9Y3l1fXd8
-         CPnpRSHvdveqs1GrriRWX8GUffkGrTaw2QnWd+sJKqi7tSqSEitDaneRXFbxgMPv0N/g
-         2p0A==
-X-Gm-Message-State: AOJu0Yz/HNGBB5Rl4vMcX//dvldIlUcWwejiwMlcc8dVWIcBrQyippQt
-        mLU48Xfs1nFg/8C14KtV3BmaK7EKlqe5I4p+lCA=
-X-Google-Smtp-Source: AGHT+IFyg6cgU92JMHIokRkaJhJ1e8P2rsbmzc2Pl3JccuZl4PPZUIzePqmqzU+Vbf5KveqqFMmHtwZMF46wJiX+l34=
-X-Received: by 2002:a67:e40d:0:b0:452:8953:729e with SMTP id
- d13-20020a67e40d000000b004528953729emr13189757vsf.13.1696792063644; Sun, 08
- Oct 2023 12:07:43 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696792592; x=1697397392;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KsylpQf7X1mm72N/86c1cHvtLeAB33CaIt+8Z0lEbY4=;
+        b=lzA7EA3HcsWAgw1Lw5rCeqXloFNF3s7s1Hd62PbiN/OGo1tGPXyvJtWqLTWhmFAfQi
+         kg+XV4gCdojO7SFNf4FNqs5+hMdQyswvM8TwAspTtA/cEoYaEns7Fuc0UUXW5X4VfKex
+         Y7pReSw4MkiOMC4QR5cPh/tq0SU2ghcV/ar3iiOvjXGwVcnoQPv+prT8uNFseA8JAB8V
+         BBnDRaUIw+3Io7Aq0KqMnTsw/BeK3g98TAFtfaJrJuqxEIy3lMdINVI6O/bxSI4DU+XP
+         dOPa23el3FeXk0In+h9t/OyBJa+jE186rL0QF5Xyo1LsAEIumVUEQSGGY8o4nWi7k1Hp
+         dWqg==
+X-Gm-Message-State: AOJu0YygEkYR9onSHSzn+C7jR6RDhSry0khwf+A0vzmIE3KqrOiGT+OU
+        +YxR6x5Rnpdv5oZ8nx6rZ+kYJu0GQyY1xQ==
+X-Google-Smtp-Source: AGHT+IEKqFGjF2KU+uQE7lfBOyp33gaom5ee6pCL9uzsv5SBhwf9sC0jIeRa3A4k1uLud/H4Hi0YQA==
+X-Received: by 2002:a17:907:2ce7:b0:9a5:9f3c:961e with SMTP id hz7-20020a1709072ce700b009a59f3c961emr9927426ejc.18.1696792591788;
+        Sun, 08 Oct 2023 12:16:31 -0700 (PDT)
+Received: from [127.0.1.1] (2a02-8389-41cf-e200-4a45-171a-1368-697e.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:4a45:171a:1368:697e])
+        by smtp.gmail.com with ESMTPSA id s10-20020a170906354a00b00997cce73cc7sm5796251eja.29.2023.10.08.12.16.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Oct 2023 12:16:31 -0700 (PDT)
+From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Date:   Sun, 08 Oct 2023 21:16:30 +0200
+Subject: [PATCH] Input: bcm5974 - check endpoint type before starting
+ traffic
 MIME-Version: 1.0
-References: <20231008052101.144422-1-akihiko.odaki@daynix.com> <20231008052101.144422-6-akihiko.odaki@daynix.com>
-In-Reply-To: <20231008052101.144422-6-akihiko.odaki@daynix.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Sun, 8 Oct 2023 21:07:06 +0200
-Message-ID: <CAF=yD-LdwcXKK66s5gvJNOH8qCWRt3SvEL-GkkVif=kkOaYGhg@mail.gmail.com>
-Subject: Re: [RFC PATCH 5/7] tun: Introduce virtio-net hashing feature
-To:     Akihiko Odaki <akihiko.odaki@daynix.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, rdunlap@infradead.org, willemb@google.com,
-        gustavoars@kernel.org, herbert@gondor.apana.org.au,
-        steffen.klassert@secunet.com, nogikh@google.com,
-        pablo@netfilter.org, decui@microsoft.com, jakub@cloudflare.com,
-        elver@google.com, pabeni@redhat.com,
-        Yuri Benditovich <yuri.benditovich@daynix.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231007-topic-bcm5974_bulk-v1-1-355be9f8ad80@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAA0AI2UC/x2N7QqCQBAAX0X2dwvnRx71KiGxe265lKfcWgTiu
+ 3v2cxiGWcEkqRhcixWSfNV0ihnKUwFhoPgU1D4zVK6qS+c8LtOsATmM54tv7vx5vzC0LfumZvJ
+ MkEMmE+REMQxHOpItkg4xJ3no73+7ddu2AwiOEAJ9AAAA
+To:     John Horan <knasher@gmail.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+        syzbot+348331f63b034f89b622@syzkaller.appspotmail.com
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1696792590; l=3489;
+ i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
+ bh=veOgRjNyPagrKkSeY1Im90/VmK4rAwlN1gcQaLDbDUo=;
+ b=2Uz0XsmVKpvoU9ILu7CY8nKQ26vz7KFXoUj2TcriMNmjUbj/90H3Lfy2M2t9JgueYar+OrLID
+ bJKck+Do5S4AmiHwi0xaRQYP1d04UcmYoYphjgMypkB953SLa/GZhqf
+X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
+ pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,90 +84,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 8, 2023 at 7:22=E2=80=AFAM Akihiko Odaki <akihiko.odaki@daynix.=
-com> wrote:
->
-> virtio-net have two usage of hashes: one is RSS and another is hash
-> reporting. Conventionally the hash calculation was done by the VMM.
-> However, computing the hash after the queue was chosen defeats the
-> purpose of RSS.
->
-> Another approach is to use eBPF steering program. This approach has
-> another downside: it cannot report the calculated hash due to the
-> restrictive nature of eBPF.
->
-> Introduce the code to compute hashes to the kernel in order to overcome
-> thse challenges. An alternative solution is to extend the eBPF steering
-> program so that it will be able to report to the userspace, but it makes
-> little sense to allow to implement different hashing algorithms with
-> eBPF since the hash value reported by virtio-net is strictly defined by
-> the specification.
->
-> The hash value already stored in sk_buff is not used and computed
-> independently since it may have been computed in a way not conformant
-> with the specification.
->
-> Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
-> ---
+syzbot has found a type mismatch between a USB pipe and the transfer
+endpoint, which is triggered by the bcm5974 driver[1].
 
-> +static const struct tun_vnet_hash_cap tun_vnet_hash_cap =3D {
-> +       .max_indirection_table_length =3D
-> +               TUN_VNET_HASH_MAX_INDIRECTION_TABLE_LENGTH,
-> +
-> +       .types =3D VIRTIO_NET_SUPPORTED_HASH_TYPES
-> +};
+This driver expects the device to provide input interrupt endpoints and
+if that is not the case, the driver registration should terminate.
 
-No need to have explicit capabilities exchange like this? Tun either
-supports all or none.
+Repros are available to reproduce this issue with a certain setup for
+the dummy_hcd, leading to an interrupt/bulk mismatch which is caught in
+the USB core after calling usb_submit_urb() with the following message:
+"BOGUS urb xfer, pipe 1 != type 3"
 
->         case TUNSETSTEERINGEBPF:
-> -               ret =3D tun_set_ebpf(tun, &tun->steering_prog, argp);
-> +               bpf_ret =3D tun_set_ebpf(tun, &tun->steering_prog, argp);
-> +               if (IS_ERR(bpf_ret))
-> +                       ret =3D PTR_ERR(bpf_ret);
-> +               else if (bpf_ret)
-> +                       tun->vnet_hash.flags &=3D ~TUN_VNET_HASH_RSS;
+Some other device drivers (like the appletouch driver bcm5974 is mainly
+based on) provide some checking mechanism to make sure that an IN
+interrupt endpoint is available. In this particular case the endpoint
+addresses are provided by a config table, so the checking can be
+targeted to the provided endpoints.
 
-Don't make one feature disable another.
+Add some basic checking to guarantee that the endpoints available match
+the expected type for both the trackpad and button endpoints.
 
-TUNSETSTEERINGEBPF and TUNSETVNETHASH are mutually exclusive
-functions. If one is enabled the other call should fail, with EBUSY
-for instance.
+This issue was only found for the trackpad endpoint, but the checking
+has been added to the button endpoint as well for the same reasons.
 
-> +       case TUNSETVNETHASH:
-> +               len =3D sizeof(vnet_hash);
-> +               if (copy_from_user(&vnet_hash, argp, len)) {
-> +                       ret =3D -EFAULT;
-> +                       break;
-> +               }
-> +
-> +               if (((vnet_hash.flags & TUN_VNET_HASH_REPORT) &&
-> +                    (tun->vnet_hdr_sz < sizeof(struct virtio_net_hdr_v1_=
-hash) ||
-> +                     !tun_is_little_endian(tun))) ||
-> +                    vnet_hash.indirection_table_mask >=3D
-> +                    TUN_VNET_HASH_MAX_INDIRECTION_TABLE_LENGTH) {
-> +                       ret =3D -EINVAL;
-> +                       break;
-> +               }
-> +
-> +               argp =3D (u8 __user *)argp + len;
-> +               len =3D (vnet_hash.indirection_table_mask + 1) * 2;
-> +               if (copy_from_user(vnet_hash_indirection_table, argp, len=
-)) {
-> +                       ret =3D -EFAULT;
-> +                       break;
-> +               }
-> +
-> +               argp =3D (u8 __user *)argp + len;
-> +               len =3D virtio_net_hash_key_length(vnet_hash.types);
-> +
-> +               if (copy_from_user(vnet_hash_key, argp, len)) {
-> +                       ret =3D -EFAULT;
-> +                       break;
-> +               }
+[1] https://syzkaller.appspot.com/bug?extid=348331f63b034f89b622
 
-Probably easier and less error-prone to define a fixed size control
-struct with the max indirection table size.
+Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Reported-and-tested-by: syzbot+348331f63b034f89b622@syzkaller.appspotmail.com
+---
+ drivers/input/mouse/bcm5974.c | 37 ++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 36 insertions(+), 1 deletion(-)
 
-Btw: please trim the CC: list considerably on future patches.
+diff --git a/drivers/input/mouse/bcm5974.c b/drivers/input/mouse/bcm5974.c
+index ca150618d32f..eb552bb4751e 100644
+--- a/drivers/input/mouse/bcm5974.c
++++ b/drivers/input/mouse/bcm5974.c
+@@ -891,6 +891,26 @@ static int bcm5974_resume(struct usb_interface *iface)
+ 	return error;
+ }
+ 
++static int bcm5974_int_in_endpoint(struct usb_host_interface *iface, int addr)
++{
++	struct usb_endpoint_descriptor *endpoint;
++	bool int_in_endpoint = false;
++	int i;
++
++	for (i = 0; i < iface->desc.bNumEndpoints; i++) {
++		endpoint = &iface->endpoint[i].desc;
++		if (endpoint->bEndpointAddress == addr) {
++			if (usb_endpoint_is_int_in(endpoint))
++				int_in_endpoint = true;
++			break;
++		}
++	}
++	if (!int_in_endpoint)
++		return -ENODEV;
++
++	return 0;
++}
++
+ static int bcm5974_probe(struct usb_interface *iface,
+ 			 const struct usb_device_id *id)
+ {
+@@ -898,16 +918,31 @@ static int bcm5974_probe(struct usb_interface *iface,
+ 	const struct bcm5974_config *cfg;
+ 	struct bcm5974 *dev;
+ 	struct input_dev *input_dev;
+-	int error = -ENOMEM;
++	int error;
+ 
+ 	/* find the product index */
+ 	cfg = bcm5974_get_config(udev);
+ 
++	if (cfg->tp_type == TYPE1) {
++		error = bcm5974_int_in_endpoint(iface->cur_altsetting, cfg->bt_ep);
++		if (error) {
++			dev_err(&iface->dev, "No int-in endpoint for the button\n");
++			return error;
++		}
++	}
++
++	error = bcm5974_int_in_endpoint(iface->cur_altsetting, cfg->tp_ep);
++	if (error) {
++		dev_err(&iface->dev, "No int-in endpoint for the trackpad\n");
++		return error;
++	}
++
+ 	/* allocate memory for our device state and initialize it */
+ 	dev = kzalloc(sizeof(struct bcm5974), GFP_KERNEL);
+ 	input_dev = input_allocate_device();
+ 	if (!dev || !input_dev) {
+ 		dev_err(&iface->dev, "out of memory\n");
++		error = -ENOMEM;
+ 		goto err_free_devs;
+ 	}
+ 
+
+---
+base-commit: b9ddbb0cde2adcedda26045cc58f31316a492215
+change-id: 20231007-topic-bcm5974_bulk-c66b743ba7ba
+
+Best regards,
+-- 
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
+
