@@ -2,121 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27A0D7BCF7C
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 20:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A30027BCF7E
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 20:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344418AbjJHSEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 14:04:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51970 "EHLO
+        id S1344452AbjJHSGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 14:06:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343667AbjJHSEN (ORCPT
+        with ESMTP id S231437AbjJHSGP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 14:04:13 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FF7AC
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 11:04:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696788252; x=1728324252;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BxmOCSaovhTpr23m24r/ivhTBR7t+IQqd8EbUZuhaoE=;
-  b=L+3e/DQop5FMfOP66ef6TNmIzbZ5XQktX36n/C5eiaJr6BKToUgjcTZv
-   OmHwgrSTx53G479oaOR1OI9x0vSnOseFy+xf2o0Y0ljmOA1a4RZuCgcfI
-   BuvscibaC/m28/WJ26MEW5Vq6Zk5QhBPhZPYAyjLqumZ89ei04yyZkyzV
-   71Dskz2HNXoQBVIUmmcGylu2eS3TAeiD7xxv/on1E6hVyUBQNaMqSylYF
-   +i4d2hVdZCMVSdejpD4HXwSJ8xKITTnsoKICkgCmvrahiXpalOKLEL4rf
-   Y4W9aDgNz0A9iItfdcfwaxx4vr4IC0ZTpK3+FxssYepNOLV+gIXGbIxET
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="382903114"
-X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
-   d="scan'208";a="382903114"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2023 11:04:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="729426782"
-X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
-   d="scan'208";a="729426782"
-Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 08 Oct 2023 11:04:09 -0700
-Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qpY8M-0005dp-2s;
-        Sun, 08 Oct 2023 18:04:06 +0000
-Date:   Mon, 9 Oct 2023 02:03:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: Re: [PATCH] ASoC: ti: ams-delta: Allow it to be test compiled
-Message-ID: <202310090122.Yp9JndiQ-lkp@intel.com>
-References: <20231008135601.542356-1-jmkrzyszt@gmail.com>
+        Sun, 8 Oct 2023 14:06:15 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1BC0AC;
+        Sun,  8 Oct 2023 11:06:13 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-31427ddd3fbso3649967f8f.0;
+        Sun, 08 Oct 2023 11:06:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696788372; x=1697393172; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=bYbkgDe+3tHdIXo8rdcnWG0U5dk8XqMihFhusRlvC8I=;
+        b=eQ/vsP//RkUSjpYBHFffELHR4Gq8xZ97/Qyfk12fqX6BY9Tn0+Jf+tRHfSqlJHqZ6j
+         MEWLcAST+b8/JVyudY1KpWi2lS5jPh/fYFVOKocsfw48nygFLso70+W1An8RCdEy4Q4U
+         ZQQ/NPBBzASD3PDbZ7Mpwm29keeEpV43kivtEpg/uTLuE13XzR9oAVO5kNE4r1k+W4fi
+         HLLnyd9/fJTDmp6L6ApROibv+T9nCnxkztz73JGNxlqGmWal9ySmLpAAQqGyAbo+1Ln4
+         xmsdLvi1mK7GhlvqONNAOdu+h778EOaoh5VElb5SBNbqCyP3DhLiOE3VF/KwDPioos+t
+         Rxfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696788372; x=1697393172;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bYbkgDe+3tHdIXo8rdcnWG0U5dk8XqMihFhusRlvC8I=;
+        b=oeILIJOkcQkNIZzN7i9KQEzrys4N1UU4CnSoqHY0ogOXsHe+y33OymyQgteG8hg254
+         4hmmsBkT34TtIglZQn0+Y2R9Lx9u+CJkjoSD9pZCuEF26bxjJsRCsM19uJwU6aFCYQHq
+         sJyhhRcO/9uwBYLVIPxzlC/fn2nq4gPgJAwmLPeZL9+dKdVYugM8IdnqOeso6tz8pCHY
+         KLgsTfVWLGsRzhlL8LypjOcY5ctcU3eqYXKVq5NaR3BAQxkw+HhffiuAC4GL11ho8zw5
+         Q2YfRt0R4pOpbUfUiGXEUve88gxfHOyJNLKAUo+6So2oaZ8hzRp8JbKi8mI6Pqi6UFK6
+         xxAw==
+X-Gm-Message-State: AOJu0YwTF6i+HATjFZTXw+TnW0qmUgGvJp484wZ6YtoT6MBjppZemmBT
+        xcww8oHuOK6Bt5ZdCqgvsc79lcx9Wa9NPRD2QJ2d4WEY
+X-Google-Smtp-Source: AGHT+IFsQ+WHA+pdcqX8nR9lMIB0E6dl32qm+c/iErn/n1tscycB8LHBCZb3+B0MRFxdhE8vA2UKtVY7S63uArExL7E=
+X-Received: by 2002:adf:fc09:0:b0:31c:7ada:5e05 with SMTP id
+ i9-20020adffc09000000b0031c7ada5e05mr10538634wrr.51.1696788371871; Sun, 08
+ Oct 2023 11:06:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231008135601.542356-1-jmkrzyszt@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230926182625.72475-1-dg573847474@gmail.com> <20231004170120.1c80b3b4@kernel.org>
+ <CAAo+4rW=zh_d7AxJSP0uLuO7w+_PmbBfBr6D4=4X2Ays7ATqoA@mail.gmail.com> <ZSLtOViO2p31Jzd6@pop-os.localdomain>
+In-Reply-To: <ZSLtOViO2p31Jzd6@pop-os.localdomain>
+From:   Chengfeng Ye <dg573847474@gmail.com>
+Date:   Mon, 9 Oct 2023 02:06:00 +0800
+Message-ID: <CAAo+4rXyj3mSt3kRMURZqQZ2mCXQUGUR3mZ+1zz04Qg5OP_eCA@mail.gmail.com>
+Subject: Re: [PATCH] net/sched: use spin_lock_bh() on &gact->tcf_lock
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, jhs@mojatatu.com,
+        jiri@resnulli.us, davem@davemloft.net, edumazet@google.com,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Janusz,
+You are right, sorry for my negligence.
 
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on broonie-sound/for-next]
-[also build test ERROR on linus/master v6.6-rc4 next-20231006]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Janusz-Krzysztofik/ASoC-ti-ams-delta-Allow-it-to-be-test-compiled/20231008-215910
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-patch link:    https://lore.kernel.org/r/20231008135601.542356-1-jmkrzyszt%40gmail.com
-patch subject: [PATCH] ASoC: ti: ams-delta: Allow it to be test compiled
-config: sh-allmodconfig (https://download.01.org/0day-ci/archive/20231009/202310090122.Yp9JndiQ-lkp@intel.com/config)
-compiler: sh4-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231009/202310090122.Yp9JndiQ-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310090122.Yp9JndiQ-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> sound/soc/ti/ams-delta.c:401:24: error: initialization of 'void (*)(struct tty_struct *, const u8 *, const u8 *, size_t)' {aka 'void (*)(struct tty_struct *, const unsigned char *, const unsigned char *, unsigned int)'} from incompatible pointer type 'void (*)(struct tty_struct *, const u8 *, const char *, int)' {aka 'void (*)(struct tty_struct *, const unsigned char *, const char *, int)'} [-Werror=incompatible-pointer-types]
-     401 |         .receive_buf = cx81801_receive,
-         |                        ^~~~~~~~~~~~~~~
-   sound/soc/ti/ams-delta.c:401:24: note: (near initialization for 'cx81801_ops.receive_buf')
-   cc1: some warnings being treated as errors
-
-
-vim +401 sound/soc/ti/ams-delta.c
-
-6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29  393  
-6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29  394  static struct tty_ldisc_ops cx81801_ops = {
-6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29  395  	.name = "cx81801",
-fbadf70a8053b3 sound/soc/ti/ams-delta.c   Jiri Slaby         2021-05-05  396  	.num = N_V253,
-6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29  397  	.owner = THIS_MODULE,
-6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29  398  	.open = cx81801_open,
-6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29  399  	.close = cx81801_close,
-6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29  400  	.hangup = cx81801_hangup,
-6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29 @401  	.receive_buf = cx81801_receive,
-6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29  402  	.write_wakeup = cx81801_wakeup,
-6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29  403  };
-6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29  404  
-6d7f68a1eab3d5 sound/soc/omap/ams-delta.c Janusz Krzysztofik 2009-07-29  405  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Chengfeng
