@@ -2,106 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00DE77BD122
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 01:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6A87BD12B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 01:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344957AbjJHXVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 19:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60010 "EHLO
+        id S1344972AbjJHX1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 19:27:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344922AbjJHXVT (ORCPT
+        with ESMTP id S1344437AbjJHX1f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 19:21:19 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D10A6;
-        Sun,  8 Oct 2023 16:21:18 -0700 (PDT)
-Received: from [192.168.0.206] (unknown [179.221.49.143])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: koike)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 5F5AB660708F;
-        Mon,  9 Oct 2023 00:21:12 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696807277;
-        bh=n6FyZS8CpZQUQ33bu6wL3AYnS1Dftji3soEkyzZ0Od8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=GSjmJuCEEU/d63ysqmYNF+ppD8PPHjhJmgIZCbe/H2M9L+kqYc1HsZB+5ouw1YaDF
-         tgvM4WojDp1WpdjG+iCtOQpQphyhycBHXKhR23lmFys6vSioZxfjnAuezCLXVl3YB3
-         Qz9BH2x80q5aU19QDIWGVXUIGxbuIBuKel1eeS+oVmEk/qlji5E7Pf14retQP7WY2X
-         a2LBo3FgO6cvptP3lJfZ0wID7eyIB9FcnvV2P/c3Si+KM7Cuzi4U48YrQ6AigPSM82
-         7dXbSSR8kAE3jw4DqAauqNJFlBKxMNKQttu8LyKAFRXvg2R4Ih2N2qE5MqTe2H4c6+
-         /jEgajdueChEQ==
-Message-ID: <526457dd-37f2-467d-b583-b710a5e84b97@collabora.com>
-Date:   Sun, 8 Oct 2023 20:21:07 -0300
+        Sun, 8 Oct 2023 19:27:35 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49C8A6
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 16:27:32 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-27760c31056so2269422a91.1
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 16:27:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1696807652; x=1697412452; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=aS5wnORfWJ02Ic4UlNgXgG7erca/6rPk7A+dIWgu1xE=;
+        b=ar+F8kCJJYhocpH7678ttAXERmoI3yDavLymH+R8n+35dyDP58p8hJzK8gVAcQnWwh
+         RirkN49+Qt+O1zUgU1OfDzkBhTeE7796uHFvZHa0gFv1zP8QKIuNAFcbsljod+Gb60La
+         MiIgpSGI49duQ1w0jRtwOZUBq8c/h1RdDsSXqtVptZrGgUVqObEK4jKbEN+3G+hlm0ml
+         ePJVD+GKPlQoTH1agTEdIi2/BnJZj1h1L0HyVx2nEp9mWs0vsmmgb5Sk3UHSkc6v7D73
+         BYJ099PQo8RtsN0oxQog8POX7NVf/yv46dlGYNpDNeCGi8L0E4fi7PhSIhNw4HyeN8f9
+         AY/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696807652; x=1697412452;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aS5wnORfWJ02Ic4UlNgXgG7erca/6rPk7A+dIWgu1xE=;
+        b=sKEJICceZAHgv83ZHyYwwUult7D3hBr2iV6yzgEubezX6cC+oyY6Ww4sRN60PiR+D1
+         9q9HKyVyV5JpIpPuGHP+d5AZD3BSfnr0M6TCvPbUp4tEK/DnhNxeBVS7lAZbrdepJyrN
+         SDwQw8q/MbK3KqnfsjthasPYw+Ymlx6vKdULj68Rxc42omV4s7ly14jeWA5hxfLQXZ/+
+         fpB7pXzTPBXUyWEcZMFwrjvdtqItaLtVRoFQq9vAAVRoIXwx0TWTkhF+ALC3HGrwDILR
+         PS2fRBpdDSBzeJ2Xvhku3L4jZQl/4kwWV58KTusBh64pg+0gsUJL8qShXMndkJtVyKZN
+         GZIQ==
+X-Gm-Message-State: AOJu0YxvvULLxLUvwANiOT8I9O4495ZJByPoQlpnbdKjbKucjiEOLa5g
+        Eb/A3cx2bdBP0VC6gqhJ+0r1ag==
+X-Google-Smtp-Source: AGHT+IGc6rajtNnnrMTfh5c1WN82wupHs7ltG+HbFIhM8I8+f4cQIL9QXxrn5Dk/ibag1JxJfP4QTg==
+X-Received: by 2002:a17:90b:4b06:b0:273:e689:8dfc with SMTP id lx6-20020a17090b4b0600b00273e6898dfcmr11740281pjb.32.1696807652373;
+        Sun, 08 Oct 2023 16:27:32 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id az12-20020a17090b028c00b0026d4100e0e8sm6954450pjb.10.2023.10.08.16.27.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Oct 2023 16:27:31 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qpdBI-00BHvI-0p;
+        Mon, 09 Oct 2023 10:27:28 +1100
+Date:   Mon, 9 Oct 2023 10:27:28 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
+Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Brian Foster <bfoster@redhat.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Bart Van Assche <bvanassche@google.com>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Subject: Re: [PATCH v8 5/5] block: Pass unshare intent via REQ_OP_PROVISION
+Message-ID: <ZSM64EOTVyKNkc/X@dread.disaster.area>
+References: <20231007012817.3052558-1-sarthakkukreti@chromium.org>
+ <20231007012817.3052558-6-sarthakkukreti@chromium.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/msm/dpu: Use the encoder for default CRC source
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Daniel Stone <daniels@collabora.com>,
-        Vinod Polimera <quic_vpolimer@quicinc.com>,
-        Kalyan Thota <quic_kalyant@quicinc.com>,
-        Jiasheng Jiang <jiasheng@iscas.ac.cn>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20231008175615.413497-1-robdclark@gmail.com>
- <CAA8EJppgUmkLrhTw779tq5wkgXfu4sypGrQbJFYtrnCrbwa3=Q@mail.gmail.com>
-From:   Helen Koike <helen.koike@collabora.com>
-In-Reply-To: <CAA8EJppgUmkLrhTw779tq5wkgXfu4sypGrQbJFYtrnCrbwa3=Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231007012817.3052558-6-sarthakkukreti@chromium.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 06, 2023 at 06:28:17PM -0700, Sarthak Kukreti wrote:
+> Allow REQ_OP_PROVISION to pass in an extra REQ_UNSHARE bit to
+> annotate unshare requests to underlying layers. Layers that support
+> FALLOC_FL_UNSHARE will be able to use this as an indicator of which
+> fallocate() mode to use.
+> 
+> Suggested-by: Darrick J. Wong <djwong@kernel.org>
+> Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
+> ---
+>  block/blk-lib.c           |  6 +++++-
+>  block/fops.c              |  6 ++++--
+>  drivers/block/loop.c      | 35 +++++++++++++++++++++++++++++------
+>  include/linux/blk_types.h |  3 +++
+>  include/linux/blkdev.h    |  3 ++-
+>  5 files changed, 43 insertions(+), 10 deletions(-)
 
+I have no idea how filesystems (or even userspace applications, for
+that matter) are supposed to use this - they have no idea if the
+underlying block device has shared blocks for LBA ranges it already
+has allocated and provisioned. IOWs, I don't know waht the semantics
+of this function is, it is not documented anywhere, and there is no
+use case present that tells me how it might get used.
 
-On 08/10/2023 16:59, Dmitry Baryshkov wrote:
-> On Sun, 8 Oct 2023 at 20:56, Rob Clark <robdclark@gmail.com> wrote:
->>
->> From: Rob Clark <robdclark@chromium.org>
->>
->> i-g-t expects the CRC to reflect any applied CTM.  But the layer mixer
->> source is upstream of the DSPP, so it is before the CTM is applied.
->>
->> Switch the default source to 'encoder' instead so that the CRC is
->> captured downstream of the DSPP.
->>
->> Signed-off-by: Rob Clark <robdclark@chromium.org>
->> ---
->>   drivers/gpu/drm/ci/xfails/msm-sc7180-fails.txt |  4 ----
->>   drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt |  5 -----
->>   drivers/gpu/drm/ci/xfails/msm-sdm845-fails.txt | 11 +----------
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c       |  6 +++---
-> 
-> I'm not sure, if updating the CI skip list together with the
-> functional changs is a good idea, my preference would be towards two
-> separate patches.
+Yes, unshare at the file level means the filesystem tries to break
+internal data extent sharing, but if the block layers or backing
+devices are doing deduplication and sharing unknown to the
+application or filesystem, how do they ever know that this operation
+might need to be performed? In what cases do we need to be able to
+unshare block device ranges, and how is that different to the
+guarantees that REQ_PROVISION is already supposed to give for
+provisioned ranges that are then subsequently shared by the block
+device (e.g. by snapshots)?
 
-On the other hand, having both together in the same patch documents 
-which tests this PATCH is fixing.
+Also, from an API perspective, this is an "unshare" data operation,
+not a "provision" operation. Hence I'd suggest that the API should
+be blkdev_issue_unshare() rather than optional behaviour to
+_provision() which - before this patch - had clear and well defined
+meaning....
 
-Regards,
-Helen
+Cheers,
 
-> 
-> Nevertheless:
-> 
-> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> 
->>   4 files changed, 4 insertions(+), 22 deletions(-)
-> 
-> 
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
