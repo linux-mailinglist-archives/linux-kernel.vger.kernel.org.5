@@ -2,63 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A657BD0D3
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 00:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0BD7BD0D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 00:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344817AbjJHWW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 18:22:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38224 "EHLO
+        id S1344814AbjJHWX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 18:23:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344751AbjJHWW0 (ORCPT
+        with ESMTP id S1344437AbjJHWX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 18:22:26 -0400
+        Sun, 8 Oct 2023 18:23:26 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C522A3;
-        Sun,  8 Oct 2023 15:22:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CE76C433C8;
-        Sun,  8 Oct 2023 22:22:21 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1BEFA3;
+        Sun,  8 Oct 2023 15:23:24 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27648C433C8;
+        Sun,  8 Oct 2023 22:23:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696803744;
-        bh=V/gRScXNczOJEO4UnCPx9DHtYiz8HWK5ovCQMAVbPTY=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=NmGIvQtz3GIziC9RGAURiu14pBP0osPLogoPE1l6FfopYAu6MQ6dg7gn/vmSRVkjL
-         q1o/d5cfHvIXalTuLYi8dEX7rVWc+x56krqaF7diymkkmas1iF6taIv+/djcLaVyar
-         BuzyPhT+h8bRybFNU/qGnxH7nJjkhk/NuxTePcLE5Rx4E4Q8yEqY1lRSe1Vfg4iE7O
-         fp0QZRdTfgdG/djrjxP69yKG2Bryr34i5b48YuyZ8ogl2ojl/CQ188VOIMSmOEfGL3
-         B8wAZ2h9hB1XgVfWCFM3KkrKPNTyKavtwyzZ/8FlNiQ66R+s0pX6weM948Eb3q/tBZ
-         s3wseuMf4npdA==
-Message-ID: <61da546f-42e6-2c2e-a535-43cacc088bdd@kernel.org>
-Date:   Mon, 9 Oct 2023 07:22:20 +0900
+        s=k20201202; t=1696803804;
+        bh=rkgdAawlIj34svqn91frk1NZL12cc28ZYOTA1wfaCcA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=glxiyO+hsm8tbiC1OrW0oAB8T0EvLvgfJv2ICJ3rEYrxuLUZdEHB360xVPeYdjhYm
+         XpNu7CqSkAbCbVeTjStYSCXNY1YAF5NEoWrp1fGv48XeFQkaafQwK+B6YV7j0f7syY
+         0lOL8WTzSEQQzZybDiWJOrs8Ed/ixvOvGNTdmorsBGErue+TeB1h1V/JR96bbt1kRU
+         VQMxMSOGOksucDrQUfCwbHp4QXLoUj3LDJj0IvX/bMPK8tw/pRe4iCeCEuQn96/HBR
+         oQGjQblKD0Uy/R9gUqGQZbJUQLc6zWZBps2yaLCIircawk5s+8E9NR0i499zLYn+jj
+         JDL6y3HnqOvLQ==
+Date:   Mon, 9 Oct 2023 00:23:20 +0200
+From:   Alejandro Colomar <alx@kernel.org>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Peter Xu <peterx@redhat.com>, linux-man@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/5] ioctl_userfaultfd.2: document new UFFDIO_POISON
+ ioctl
+Message-ID: <ZSMr2P031R6hbYCE@debian>
+References: <20231003194547.2237424-1-axelrasmussen@google.com>
+ <20231003194547.2237424-6-axelrasmussen@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v7 19/26] PM / devfreq: rockchip-dfi: add support for
- RK3588
-Content-Language: en-US
-To:     Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-rockchip@lists.infradead.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Vincent Legoll <vincent.legoll@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-References: <20230704093242.583575-1-s.hauer@pengutronix.de>
- <20230704093242.583575-20-s.hauer@pengutronix.de>
-From:   Chanwoo Choi <chanwoo@kernel.org>
-In-Reply-To: <20230704093242.583575-20-s.hauer@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="1Kfpe6wlbD0Pas4S"
+Content-Disposition: inline
+In-Reply-To: <20231003194547.2237424-6-axelrasmussen@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -67,103 +52,195 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23. 7. 4. 18:32, Sascha Hauer wrote:
-> Add support for the RK3588 to the driver. The RK3588 has four DDR
-> channels with a register stride of 0x4000 between the channel
-> registers, also it has a DDRMON_CTRL register per channel.
-> 
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+
+--1Kfpe6wlbD0Pas4S
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 9 Oct 2023 00:23:20 +0200
+From: Alejandro Colomar <alx@kernel.org>
+To: Axel Rasmussen <axelrasmussen@google.com>
+Cc: Peter Xu <peterx@redhat.com>, linux-man@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/5] ioctl_userfaultfd.2: document new UFFDIO_POISON
+ ioctl
+
+Hi Axel,
+
+On Tue, Oct 03, 2023 at 12:45:47PM -0700, Axel Rasmussen wrote:
+> This is a new feature recently added to the kernel. So, document the new
+> ioctl the same way we do other UFFDIO_* ioctls.
+>=20
+> Also note the corresponding new ioctl flag we can return in reponse to a
+> UFFDIO_REGISTER call.
+>=20
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 > ---
->  drivers/devfreq/event/rockchip-dfi.c | 30 +++++++++++++++++++++++++++-
->  include/soc/rockchip/rk3588_grf.h    | 18 +++++++++++++++++
->  2 files changed, 47 insertions(+), 1 deletion(-)
->  create mode 100644 include/soc/rockchip/rk3588_grf.h
-> 
-> diff --git a/drivers/devfreq/event/rockchip-dfi.c b/drivers/devfreq/event/rockchip-dfi.c
-> index 2362d3953ba40..9854d4093e186 100644
-> --- a/drivers/devfreq/event/rockchip-dfi.c
-> +++ b/drivers/devfreq/event/rockchip-dfi.c
-> @@ -26,8 +26,9 @@
->  #include <soc/rockchip/rockchip_grf.h>
->  #include <soc/rockchip/rk3399_grf.h>
->  #include <soc/rockchip/rk3568_grf.h>
-> +#include <soc/rockchip/rk3588_grf.h>
->  
-> -#define DMC_MAX_CHANNELS	2
-> +#define DMC_MAX_CHANNELS	4
-
-As I mentioned before, need to have the number of channel for each SoC
-to reduce the unneeded loop and checking of is statement. Except for it, looks good to me.
-
->  
->  #define HIWORD_UPDATE(val, mask)	((val) | (mask) << 16)
->  
-> @@ -714,9 +715,36 @@ static int rk3568_dfi_init(struct rockchip_dfi *dfi)
->  	return 0;
->  };
->  
-> +static int rk3588_dfi_init(struct rockchip_dfi *dfi)
-> +{
-> +	struct regmap *regmap_pmu = dfi->regmap_pmu;
-> +	u32 reg2, reg3, reg4;
-> +
-> +	regmap_read(regmap_pmu, RK3588_PMUGRF_OS_REG2, &reg2);
-> +	regmap_read(regmap_pmu, RK3588_PMUGRF_OS_REG3, &reg3);
-> +	regmap_read(regmap_pmu, RK3588_PMUGRF_OS_REG4, &reg4);
-> +
-> +	dfi->ddr_type = FIELD_GET(RK3588_PMUGRF_OS_REG2_DRAMTYPE_INFO, reg2);
-> +
-> +	if (FIELD_GET(RK3588_PMUGRF_OS_REG3_SYSREG_VERSION, reg3) >= 0x3)
-> +		dfi->ddr_type |= FIELD_GET(RK3588_PMUGRF_OS_REG3_DRAMTYPE_INFO_V3, reg3) << 3;
-> +
-> +	dfi->buswidth[0] = FIELD_GET(RK3588_PMUGRF_OS_REG2_BW_CH0, reg2) == 0 ? 4 : 2;
-> +	dfi->buswidth[1] = FIELD_GET(RK3588_PMUGRF_OS_REG2_BW_CH1, reg2) == 0 ? 4 : 2;
-> +	dfi->buswidth[2] = FIELD_GET(RK3568_PMUGRF_OS_REG2_BW_CH0, reg4) == 0 ? 4 : 2;
-> +	dfi->buswidth[3] = FIELD_GET(RK3588_PMUGRF_OS_REG2_BW_CH1, reg4) == 0 ? 4 : 2;
-> +	dfi->channel_mask = FIELD_GET(RK3588_PMUGRF_OS_REG2_CH_INFO, reg2) |
-> +			    FIELD_GET(RK3588_PMUGRF_OS_REG2_CH_INFO, reg4) << 2;
-> +
-> +	dfi->ddrmon_stride = 0x4000;
-> +
-> +	return 0;
+>  man2/ioctl_userfaultfd.2 | 112 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 112 insertions(+)
+>=20
+> diff --git a/man2/ioctl_userfaultfd.2 b/man2/ioctl_userfaultfd.2
+> index 95d69f773..6b6980d4a 100644
+> --- a/man2/ioctl_userfaultfd.2
+> +++ b/man2/ioctl_userfaultfd.2
+> @@ -380,6 +380,11 @@ operation is supported.
+>  The
+>  .B UFFDIO_CONTINUE
+>  operation is supported.
+> +.TP
+> +.B 1 << _UFFDIO_POISON
+> +The
+> +.B UFFDIO_POISON
+> +operation is supported.
+>  .PP
+>  This
+>  .BR ioctl (2)
+> @@ -890,6 +895,113 @@ The faulting process has exited at the time of a
+>  .B UFFDIO_CONTINUE
+>  operation.
+>  .\"
+> +.SS UFFDIO_POISON
+> +(Since Linux 6.6.)
+> +Mark an address range as "poisoned".
+> +Future accesses to these addresses will raise a
+> +.B SIGBUS
+> +signal.
+> +Unlike
+> +.B MADV_HWPOISON
+> +this works by installing page table entries,
+> +rather than "really" poisoning the underlying physical pages.
+> +This means it only affects this particular address space.
+> +.PP
+> +The
+> +.I argp
+> +argument is a pointer to a
+> +.I uffdio_continue
+> +structure as shown below:
+> +.PP
+> +.in +4n
+> +.EX
+> +struct uffdio_poison {
+> +	struct uffdio_range range;
+> +	                /* Range to install poison PTE markers in */
+> +	__u64 mode;     /* Flags controlling the behavior of poison */
+> +	__s64 updated;  /* Number of bytes poisoned, or negated error */
 > +};
-> +
->  static const struct of_device_id rockchip_dfi_id_match[] = {
->  	{ .compatible = "rockchip,rk3399-dfi", .data = rk3399_dfi_init },
->  	{ .compatible = "rockchip,rk3568-dfi", .data = rk3568_dfi_init },
-> +	{ .compatible = "rockchip,rk3588-dfi", .data = rk3588_dfi_init },
->  	{ },
->  };
->  
-> diff --git a/include/soc/rockchip/rk3588_grf.h b/include/soc/rockchip/rk3588_grf.h
-> new file mode 100644
-> index 0000000000000..630b35a550640
-> --- /dev/null
-> +++ b/include/soc/rockchip/rk3588_grf.h
-> @@ -0,0 +1,18 @@
-> +/* SPDX-License-Identifier: GPL-2.0+ */
-> +#ifndef __SOC_RK3588_GRF_H
-> +#define __SOC_RK3588_GRF_H
-> +
-> +#define RK3588_PMUGRF_OS_REG2		0x208
-> +#define RK3588_PMUGRF_OS_REG2_DRAMTYPE_INFO		GENMASK(15, 13)
-> +#define RK3588_PMUGRF_OS_REG2_BW_CH0			GENMASK(3, 2)
-> +#define RK3588_PMUGRF_OS_REG2_BW_CH1                    GENMASK(19, 18)
-> +#define RK3588_PMUGRF_OS_REG2_CH_INFO                   GENMASK(29, 28)
-> +
-> +#define RK3588_PMUGRF_OS_REG3		0x20c
-> +#define RK3588_PMUGRF_OS_REG3_DRAMTYPE_INFO_V3		GENMASK(13, 12)
-> +#define RK3588_PMUGRF_OS_REG3_SYSREG_VERSION		GENMASK(31, 28)
-> +
-> +#define RK3588_PMUGRF_OS_REG4           0x210
-> +#define RK3588_PMUGRF_OS_REG5           0x214
-> +
-> +#endif /* __SOC_RK3588_GRF_H */
+> +.EE
+> +.in
+> +.PP
+> +The following value may be bitwise ORed in
+> +.I mode
+> +to change the behavior of the
+> +.B UFFDIO_POISON
+> +operation:
+> +.TP
+> +.B UFFDIO_POISON_MODE_DONTWAKE
+> +Do not wake up the thread that waits for page-fault resolution.
+> +.PP
+> +The
+> +.I updated
+> +field is used by the kernel
+> +to return the number of bytes that were actually poisoned,
+> +or an error in the same manner as
+> +.BR UFFDIO_COPY .
+> +If the value returned in the
+> +.I updated
+> +field doesn't match the value that was specified in
+> +.IR range.len ,
+> +the operation fails with the error
+> +.BR EAGAIN .
+> +The
+> +.I updated
+> +field is output-only;
+> +it is not read by the
+> +.B UFFDIO_POISON
+> +operation.
+> +.PP
+> +This
+> +.BR ioctl (2)
+> +operation returns 0 on success.
+> +In this case,
+> +the entire area was poisoned.
+> +On error, \-1 is returned and
+> +.I errno
+> +is set to indicate the error.
+> +Possible errors include:
+> +.TP
+> +.B EAGAIN
+> +The number of bytes mapped
+> +(i.e., the value returned in the
+> +.I updated
+> +field)
+> +does not equal the value that was specified in the
+> +.I range.len
+> +field.
+> +.TP
+> +.B EINVAL
+> +Either
+> +.I range.start
+> +or
+> +.I range.len
+> +was not a multiple of the system page size; or
+> +.I range.len
+> +was zero; or the range specified was invalid.
+> +.TP
+> +.B EINVAL
+> +An invalid bit was specified in the
+> +.I mode
+> +field.
+> +.TP
+> +.B EEXIST
 
--- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+Any reasons for this order, or should we use alphabetic order?
 
+Thanks,
+Alex
+
+> +One or more pages were already mapped in the given range.
+> +.TP
+> +.B ENOENT
+> +The faulting process has changed its virtual memory layout simultaneousl=
+y with
+> +an outstanding
+> +.B UFFDIO_POISON
+> +operation.
+> +.TP
+> +.B ENOMEM
+> +Allocating memory for page table entries failed.
+> +.TP
+> +.B ESRCH
+> +The faulting process has exited at the time of a
+> +.B UFFDIO_POISON
+> +operation.
+> +.\"
+>  .SH RETURN VALUE
+>  See descriptions of the individual operations, above.
+>  .SH ERRORS
+> --=20
+> 2.42.0.609.gbb76f46606-goog
+>=20
+
+--=20
+<https://www.alejandro-colomar.es/>
+
+--1Kfpe6wlbD0Pas4S
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmUjK9gACgkQnowa+77/
+2zLzhhAAiXf9jyMvFOnEEfGZOVXVvSOtaicOOLxPFLJE8QhanJrGTwQRTrB/qeKE
+TWwYkm234QaEwZxg4CgYf7P8eIRZc8PbcxMXvQX1fnym4myW9TMBIpiZmn8DpFDZ
+Mxfy/pKkoz5tAlL2/QsDSTs8RDq5P3qhSen+D772xbV5VwE+Vt9Ggqk/I0V7lV57
+2KmE17L0l0WY/KLiUuqf3c3mGQjKsLfz0GDxBHVAx5/OXqQhv5FtJN935E8UeNpR
+yyUyo0KBhyc6xAliOyPTRyukIuRhSqhilEESYZrtpWlVrisBLXKsF6JfLE8nwYVK
+0u7TLCA3/vfCQF69ejtXIg/GE4IS/S3dr8KaDyXFiOWcR9p2xRu40UNEqBMsrCB3
+5VvHbz4Ekc2stpABJ7VFhMcWl7mRhNopioqXfks2X6dUTfEvGfe6v/fzayjUjNHk
+WuZMZWSfpqKRXh6yBdp2KTAmByZwPszrmZBEDWzM2rKuoL39ssshInKmnRgNfUyO
+sWYMf7mvVTXw3Rgo/wPTTntsL4BzSKp3ErIf4g/+/SKCfOkjKg2Z6FIcAIIxar9P
+7p1nBdhgNPWrBgCFEmfjkAR8eMpB068ORneFLpY+eAHGur4hQ9fdraK1nlgDEIr/
+XKDX76jy1RSJ0JE1MSXJZGMJ5AzU+Vin23kCzzOdDfX87537ARY=
+=zIMJ
+-----END PGP SIGNATURE-----
+
+--1Kfpe6wlbD0Pas4S--
