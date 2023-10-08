@@ -2,137 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 561A37BCF92
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 20:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A5217BCF95
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 20:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344423AbjJHS1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 14:27:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43224 "EHLO
+        id S1344453AbjJHScM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 14:32:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbjJHS1i (ORCPT
+        with ESMTP id S229945AbjJHScL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 14:27:38 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F27A3;
-        Sun,  8 Oct 2023 11:27:37 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3247cefa13aso3504021f8f.1;
-        Sun, 08 Oct 2023 11:27:37 -0700 (PDT)
+        Sun, 8 Oct 2023 14:32:11 -0400
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E75ADAC
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 11:31:46 -0700 (PDT)
+Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-57b706f604aso2405468eaf.0
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 11:31:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696789654; x=1697394454; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:subject:cc:to:from:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=UYhUlM0v/kiBnSA7qqkERNTe3ha0hd9wd9BeXsJuFRo=;
-        b=JSwbmiZCaHGFO9Si6aH78Qhj9fM1wPHsOC6QWVJSzNk857ic9djFm1+pqpk7pKGGxp
-         WK3OroWhyW83kshoTJkBSqAM1tR+Ha3SNMtzTkzxy1+isDHg9DCb4sfzdO7iJyuJ4vM6
-         GR2qEFcddyvF98b18yVubStOuYHQp2n0ihk/bQA6RkeUJIo/sveVPblAg0ZN09hsaqyM
-         dG01SXARf3kz3CV69rmGyz7YMWvRliAwYR/MGwfFklyf+gu5FEFUxCYFM2/q+RPlmJX4
-         C/c22d/ojpo4+0PIJCZW8bq3aphc45v1g8lUjODL6QBp1vFVIxeZE+lgJLSKmsTX/Dxg
-         6ODw==
+        d=bytedance.com; s=google; t=1696789906; x=1697394706; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:subject:content-language
+         :references:cc:to:from:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=Bu3H0mmKT9/VFNQGv/Or1xKtPcsAPgQVVnZwkPgPCKM=;
+        b=JKmj0VvR4tgSWvICfPpINqH8YpA69BwGYunbtkhi+aaACAzxzzE27mtK4Rs5GKuALx
+         KBEEJdkUQuQg8FqY+Vlv5miNcx1YsC9U7/joSsEoFyxzkDagch2M0wiqbVOmMMEhNQBP
+         b+qe6hEylDIhP/cI61QfeJBwctKOxEvaxAGFs7tnrxY64Vt7rjBy1Skx3rGdalD543A6
+         0J22Ps0FLdqfgTqH0G3HjYUBPzKMcqZFKOkH+WwATVMLmkFRXC6+lNxa4ChMn6KAl6MA
+         8CEcgR+Rhf2gHdICiYZTOorJYXEJVpoSTXwHTBsUQY7Oxr4sMejVDqKdaxYOPB7rIEt3
+         uBtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696789654; x=1697394454;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:subject:cc:to:from:date:message-id
+        d=1e100.net; s=20230601; t=1696789906; x=1697394706;
+        h=content-transfer-encoding:in-reply-to:subject:content-language
+         :references:cc:to:from:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UYhUlM0v/kiBnSA7qqkERNTe3ha0hd9wd9BeXsJuFRo=;
-        b=WASWiYr5sredpi3vQS1/AmmtvabMd5lZPwX3X+pCdWlas685T/aeukaJTe1NBGjjqz
-         yuK6Iw2W7tN+r/cVUcjwQw31/MyXl3wenZx4YAPUCy+MAKfhLRDgyuxFq6HyWX6LIEwb
-         jbUsN0YI1cMDojNxa5lcHfk0KOYMsXapjwuyyLGGr+7d/vHsOxPuLsSNtvJzadipK0oF
-         JmRSDYPsRYPG6yY9cdsx2i8Wags3/yNj5YNy8ouRDYcYfkoDjcGNLr/kkh162swm0Wgx
-         V7bu4qs8hVWpaCKKoa+XPhamUDwni8IBhWk974uao9Y0P06vjHmuRPgZsWwYXaSz2fe0
-         onUA==
-X-Gm-Message-State: AOJu0Yy9/hL3kn78PiCc3H19pEopZxmLbFnorDbRsO6fcEN9Unjx4ePY
-        xE3KXStg9Tfq9CbOTiQz4k4=
-X-Google-Smtp-Source: AGHT+IG1Z2UQG/8uimtzwOsX0SSnSzQeAnFClPvayUdx2bESkKFHKQw9/TSlsvhrREuwaEcXQ8SiYA==
-X-Received: by 2002:a5d:50c8:0:b0:316:f24b:597a with SMTP id f8-20020a5d50c8000000b00316f24b597amr11755917wrt.46.1696789653876;
-        Sun, 08 Oct 2023 11:27:33 -0700 (PDT)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id j14-20020adff54e000000b003233a31a467sm7413627wrp.34.2023.10.08.11.27.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Oct 2023 11:27:33 -0700 (PDT)
-Message-ID: <6522f495.df0a0220.326ed.de6c@mx.google.com>
-X-Google-Original-Message-ID: <ZSL0kLgKGmK2HJ9x@Ansuel-xps.>
-Date:   Sun, 8 Oct 2023 20:27:28 +0200
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Chris Snook <chris.snook@gmail.com>,
-        Raju Rangoju <rajur@chelsio.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Shailend Chand <shailend@google.com>,
-        Douglas Miller <dougmill@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nick Child <nnac123@linux.ibm.com>,
-        Haren Myneni <haren@linux.ibm.com>,
-        Rick Lindsley <ricklind@linux.ibm.com>,
-        Dany Madden <danymadden@us.ibm.com>,
-        Thomas Falcon <tlfalcon@linux.ibm.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Krzysztof Halasa <khalasa@piap.pl>,
-        Kalle Valo <kvalo@kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
-        Intel Corporation <linuxwwan@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
-        Liu Haijun <haijun.liu@mediatek.com>,
-        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
-        Ricardo Martinez <ricardo.martinez@linux.intel.com>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Yuanjun Gong <ruc_gongyuanjun@163.com>,
-        Simon Horman <horms@kernel.org>, Rob Herring <robh@kernel.org>,
-        Ziwei Xiao <ziweixiao@google.com>,
-        Rushil Gupta <rushilg@google.com>,
-        Coco Li <lixiaoyan@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Junfeng Guo <junfeng.guo@intel.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Wei Fang <wei.fang@nxp.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Yuri Karpov <YKarpov@ispras.ru>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Zheng Zengkai <zhengzengkai@huawei.com>,
-        Lee Jones <lee@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Dawei Li <set_pte_at@outlook.com>,
-        Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
-        Benjamin Berg <benjamin.berg@intel.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org
-Subject: Re: [net-next PATCH v2 4/4] netdev: use napi_schedule bool instead
- of napi_schedule_prep/__napi_schedule
-References: <20231003145150.2498-1-ansuelsmth@gmail.com>
- <20231003145150.2498-4-ansuelsmth@gmail.com>
- <CANn89iLtYZJPOQE7OkAbEdmhT8qjzAJ+27poa__3c8Nf0M6u_w@mail.gmail.com>
- <652056c5.5d0a0220.2b60d.c5dc@mx.google.com>
- <CANn89i+Cie+oE_hTWkyJWutTG9CnPy+dbW+-A97Q+E9Rq-f9rQ@mail.gmail.com>
+        bh=Bu3H0mmKT9/VFNQGv/Or1xKtPcsAPgQVVnZwkPgPCKM=;
+        b=KD+MktCHRovdTUE8wuoo9xmoy53U8HCbkZ+RBu3tTCpyxNeIRyakkgTWrIwaT8zpAh
+         Bfp+qe1dim/FeHU8RQ/QknBneu5OZdW+PrVDnk+4Dx7+Q/JcCsJ4gxo7r76G0GaB+j6W
+         bQ2WCFnnRAhf9If6itEVDJ1sc+YwEzDZFWJBP5y56Wxyl85S1TY6sNjdP77fxRKFOXn4
+         QggXczxBtRsVRtWqoIpDC4ryr4GKBkiX8lkPgVG3/fL3ye5//R8p2i+GFPUtV3pztqJV
+         yNjQHoQRuvCmRgzuYrICQtG8lflb8D8/t454j4xfb4fRGWYAbzSDWNN5dDARmppUQ6Zd
+         g70w==
+X-Gm-Message-State: AOJu0YxV12Iw/FUQ9lD50bhYZ9ISpWJSevg5zUL+sD9UTj2tyo2HP/0+
+        aFuOIa2ULa1j5lnVhLdsNwn+LA==
+X-Google-Smtp-Source: AGHT+IGxJdp9JeWkzqra1THjAPRQCtxgL/9fNv2f14B+UaCvrmEPQv+AdBqpHfhR6MMg9n+2tpTTMg==
+X-Received: by 2002:a05:6358:8824:b0:150:8ba9:55 with SMTP id hv36-20020a056358882400b001508ba90055mr13586849rwb.8.1696789905894;
+        Sun, 08 Oct 2023 11:31:45 -0700 (PDT)
+Received: from [10.254.230.118] ([139.177.225.250])
+        by smtp.gmail.com with ESMTPSA id k6-20020a17090a658600b0026f39c90111sm6664095pjj.20.2023.10.08.11.31.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 08 Oct 2023 11:31:45 -0700 (PDT)
+Message-ID: <dded6d55-4212-54d1-4465-2e3e2634ee98@bytedance.com>
+Date:   Mon, 9 Oct 2023 02:31:34 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANn89i+Cie+oE_hTWkyJWutTG9CnPy+dbW+-A97Q+E9Rq-f9rQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+From:   wuqiang <wuqiang.matt@bytedance.com>
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     linux-trace-kernel@vger.kernel.org, davem@davemloft.net,
+        anil.s.keshavamurthy@intel.com, naveen.n.rao@linux.ibm.com,
+        rostedt@goodmis.org, peterz@infradead.org,
+        akpm@linux-foundation.org, sander@svanheule.net,
+        ebiggers@google.com, dan.j.williams@intel.com, jpoimboe@kernel.org,
+        linux-kernel@vger.kernel.org, lkp@intel.com, mattwu@163.com
+References: <20230905015255.81545-1-wuqiang.matt@bytedance.com>
+ <20230905015255.81545-4-wuqiang.matt@bytedance.com>
+ <20231007110229.70b21d0d7610bdf304b5e355@kernel.org>
+Content-Language: en-US
+Subject: Re: [PATCH v9 3/5] kprobes: kretprobe scalability improvement with
+ objpool
+In-Reply-To: <20231007110229.70b21d0d7610bdf304b5e355@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -140,93 +82,582 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 08, 2023 at 09:08:41AM +0200, Eric Dumazet wrote:
-> On Fri, Oct 6, 2023 at 8:49 PM Christian Marangi <ansuelsmth@gmail.com> wrote:
-> >
-> > On Thu, Oct 05, 2023 at 06:16:26PM +0200, Eric Dumazet wrote:
-> > > On Tue, Oct 3, 2023 at 8:36 PM Christian Marangi <ansuelsmth@gmail.com> wrote:
-> > > >
-> > > > Replace if condition of napi_schedule_prep/__napi_schedule and use bool
-> > > > from napi_schedule directly where possible.
-> > > >
-> > > > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > > > ---
-> > > >  drivers/net/ethernet/atheros/atlx/atl1.c     | 4 +---
-> > > >  drivers/net/ethernet/toshiba/tc35815.c       | 4 +---
-> > > >  drivers/net/wireless/intel/iwlwifi/pcie/rx.c | 4 +---
-> > > >  3 files changed, 3 insertions(+), 9 deletions(-)
-> > > >
-> > > > diff --git a/drivers/net/ethernet/atheros/atlx/atl1.c b/drivers/net/ethernet/atheros/atlx/atl1.c
-> > > > index 02aa6fd8ebc2..a9014d7932db 100644
-> > > > --- a/drivers/net/ethernet/atheros/atlx/atl1.c
-> > > > +++ b/drivers/net/ethernet/atheros/atlx/atl1.c
-> > > > @@ -2446,7 +2446,7 @@ static int atl1_rings_clean(struct napi_struct *napi, int budget)
-> > > >
-> > > >  static inline int atl1_sched_rings_clean(struct atl1_adapter* adapter)
-> > > >  {
-> > > > -       if (!napi_schedule_prep(&adapter->napi))
-> > > > +       if (!napi_schedule(&adapter->napi))
-> > > >                 /* It is possible in case even the RX/TX ints are disabled via IMR
-> > > >                  * register the ISR bits are set anyway (but do not produce IRQ).
-> > > >                  * To handle such situation the napi functions used to check is
-> > > > @@ -2454,8 +2454,6 @@ static inline int atl1_sched_rings_clean(struct atl1_adapter* adapter)
-> > > >                  */
-> > > >                 return 0;
-> > > >
-> > > > -       __napi_schedule(&adapter->napi);
-> > > > -
-> > > >         /*
-> > > >          * Disable RX/TX ints via IMR register if it is
-> > > >          * allowed. NAPI handler must reenable them in same
-> > > > diff --git a/drivers/net/ethernet/toshiba/tc35815.c b/drivers/net/ethernet/toshiba/tc35815.c
-> > > > index 14cf6ecf6d0d..a8b8a0e13f9a 100644
-> > > > --- a/drivers/net/ethernet/toshiba/tc35815.c
-> > > > +++ b/drivers/net/ethernet/toshiba/tc35815.c
-> > > > @@ -1436,9 +1436,7 @@ static irqreturn_t tc35815_interrupt(int irq, void *dev_id)
-> > > >         if (!(dmactl & DMA_IntMask)) {
-> > > >                 /* disable interrupts */
-> > > >                 tc_writel(dmactl | DMA_IntMask, &tr->DMA_Ctl);
-> > > > -               if (napi_schedule_prep(&lp->napi))
-> > > > -                       __napi_schedule(&lp->napi);
-> > > > -               else {
-> > > > +               if (!napi_schedule(&lp->napi)) {
-> > > >                         printk(KERN_ERR "%s: interrupt taken in poll\n",
-> > > >                                dev->name);
-> > > >                         BUG();
-> > >
-> > > Hmmm... could you also remove this BUG() ? I think this code path can be taken
-> > > if some applications are using busy polling.
-> > >
-> > > Or simply rewrite this with the traditional
-> > >
-> > > if (napi_schedule_prep(&lp->napi)) {
-> > >    /* disable interrupts */
-> > >    tc_writel(dmactl | DMA_IntMask, &tr->DMA_Ctl);
-> > >     __napi_schedule(&lp->napi);
-> > > }
-> > >
-> > >
-> >
-> > Mhhh is it safe to do so? I mean it seems very wrong to print a warning
-> > and BUG() instead of disabling the interrupt only if napi can be
-> > scheduled... Maybe is very old code? The more I see this the more I see
-> > problem... (randomly disabling the interrupt and then make the kernel
-> > die)
+On 2023/10/7 10:02, Masami Hiramatsu (Google) wrote:
+> On Tue,  5 Sep 2023 09:52:53 +0800
+> "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
 > 
-> I am pretty sure this BUG() can be hit these days with busy polling or
-> setting gro_flush_timeout.
+>> kretprobe is using freelist to manage return-instances, but freelist,
+>> as LIFO queue based on singly linked list, scales badly and reduces
+>> the overall throughput of kretprobed routines, especially for high
+>> contention scenarios.
+>>
+>> Here's a typical throughput test of sys_prctl (counts in 10 seconds,
+>> measured with perf stat -a -I 10000 -e syscalls:sys_enter_prctl):
+>>
+>> OS: Debian 10 X86_64, Linux 6.5rc7 with freelist
+>> HW: XEON 8336C x 2, 64 cores/128 threads, DDR4 3200MT/s
+>>
+>>        1T       2T       4T       8T      16T      24T
+>> 24150045 29317964 15446741 12494489 18287272 18287272
+>>       32T      48T      64T      72T      96T     128T
+>> 16200682  1620068 11645677 11269858 10470118  9931051
+>>
+>> This patch introduces objpool to kretprobe and rethook, with orginal
+>> freelist replaced and brings near-linear scalability to kretprobed
+>> routines. Tests of kretprobe throughput show the biggest ratio as
+>> 166.7x of the original freelist. Here's the comparison:
+>>
+>>                    1T         2T         4T         8T        16T
+>> native:     41186213   82336866  164250978  328662645  658810299
+>> freelist:   24150045   29317964   15446741   12494489   18287272
+>> objpool:    24663700   49410571   98544977  197725940  396294399
+>>                   32T        48T        64T        96T       128T
+>> native:   1330338351 1969957941 2512291791 1514690434 2671040914
+>> freelist:   16200682   13737658   11645677   10470118    9931051
+>> objpool:    78673470 1177354156 1514690434 1604472348 1655086824
+>>
+>> Tests on 96-core ARM64 system output similarly, but with the biggest
+>> ratio up to 454.8x:
+>>
+>> OS: Debian 10 AARCH64, Linux 6.5rc7
+>> HW: Kunpeng-920 96 cores/2 sockets/4 NUMA nodes, DDR4 2933 MT/s
+>>
+>>                    1T         2T         4T         8T        16T
+>> native: .   30066096   13733813  126194076  257447289  505800181
+>> freelist:   16152090   11064397   11124068    7215768    5663013
+>> objpool:    13733813   27749031   56540679  112291770  223482778
+>>                   24T        32T        48T        64T        96T
+>> native:    763305277 1015925192 1521075123 2033009392 3021013752
+>> freelist:    5015810    4602893    3766792    3382478    2945292
+>> objpool:   334605663  448310646  675018951  903449904 1339693418
+>>
 > 
-> I wish we could remove these bugs before someone copy-paste them.
+> This looks good to me (and I have tested with updated objpool)
 > 
-> Again, this is orthogonal, I might simply stop doing reviews if this
-> is not useful.
+> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> Wuqiang, can you update the above number with the simplified
+> objpool? I got better number (always 80% of the native performance)
+> with 128 node/probe.
+> (*) https://lore.kernel.org/all/20231003003923.eabc33bb3f4ffb8eac71f2af@kernel.org/
 
-They are very useful and thanks a lot for them! I'm asking these as to
-understand how to proceed. I have in queue 2 other series that depends
-on this and I'm just asking info on how to speedup the progress on this!
+That's great. I'll prepare a new patch and try to spare the testbeds for
+another round of testing.
 
-Soo think I have to send v3 with the suggested change and BUG() dropped?
-Happy to do everything to fix and improve this series!
+> Thank you,
 
--- 
-	Ansuel
+Thanks for your effort. Sorry for the late response, just back from
+a 'long' vacation.
+
+> 
+>> Signed-off-by: wuqiang.matt <wuqiang.matt@bytedance.com>
+>> ---
+>>   include/linux/kprobes.h | 11 ++---
+>>   include/linux/rethook.h | 16 ++-----
+>>   kernel/kprobes.c        | 93 +++++++++++++++++------------------------
+>>   kernel/trace/fprobe.c   | 32 ++++++--------
+>>   kernel/trace/rethook.c  | 90 ++++++++++++++++++---------------------
+>>   5 files changed, 98 insertions(+), 144 deletions(-)
+>>
+>> diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+>> index 85a64cb95d75..365eb092e9c4 100644
+>> --- a/include/linux/kprobes.h
+>> +++ b/include/linux/kprobes.h
+>> @@ -26,8 +26,7 @@
+>>   #include <linux/rcupdate.h>
+>>   #include <linux/mutex.h>
+>>   #include <linux/ftrace.h>
+>> -#include <linux/refcount.h>
+>> -#include <linux/freelist.h>
+>> +#include <linux/objpool.h>
+>>   #include <linux/rethook.h>
+>>   #include <asm/kprobes.h>
+>>   
+>> @@ -141,7 +140,7 @@ static inline bool kprobe_ftrace(struct kprobe *p)
+>>    */
+>>   struct kretprobe_holder {
+>>   	struct kretprobe	*rp;
+>> -	refcount_t		ref;
+>> +	struct objpool_head	pool;
+>>   };
+>>   
+>>   struct kretprobe {
+>> @@ -154,7 +153,6 @@ struct kretprobe {
+>>   #ifdef CONFIG_KRETPROBE_ON_RETHOOK
+>>   	struct rethook *rh;
+>>   #else
+>> -	struct freelist_head freelist;
+>>   	struct kretprobe_holder *rph;
+>>   #endif
+>>   };
+>> @@ -165,10 +163,7 @@ struct kretprobe_instance {
+>>   #ifdef CONFIG_KRETPROBE_ON_RETHOOK
+>>   	struct rethook_node node;
+>>   #else
+>> -	union {
+>> -		struct freelist_node freelist;
+>> -		struct rcu_head rcu;
+>> -	};
+>> +	struct rcu_head rcu;
+>>   	struct llist_node llist;
+>>   	struct kretprobe_holder *rph;
+>>   	kprobe_opcode_t *ret_addr;
+>> diff --git a/include/linux/rethook.h b/include/linux/rethook.h
+>> index 26b6f3c81a76..ce69b2b7bc35 100644
+>> --- a/include/linux/rethook.h
+>> +++ b/include/linux/rethook.h
+>> @@ -6,11 +6,10 @@
+>>   #define _LINUX_RETHOOK_H
+>>   
+>>   #include <linux/compiler.h>
+>> -#include <linux/freelist.h>
+>> +#include <linux/objpool.h>
+>>   #include <linux/kallsyms.h>
+>>   #include <linux/llist.h>
+>>   #include <linux/rcupdate.h>
+>> -#include <linux/refcount.h>
+>>   
+>>   struct rethook_node;
+>>   
+>> @@ -30,14 +29,12 @@ typedef void (*rethook_handler_t) (struct rethook_node *, void *, unsigned long,
+>>   struct rethook {
+>>   	void			*data;
+>>   	rethook_handler_t	handler;
+>> -	struct freelist_head	pool;
+>> -	refcount_t		ref;
+>> +	struct objpool_head	pool;
+>>   	struct rcu_head		rcu;
+>>   };
+>>   
+>>   /**
+>>    * struct rethook_node - The rethook shadow-stack entry node.
+>> - * @freelist: The freelist, linked to struct rethook::pool.
+>>    * @rcu: The rcu_head for deferred freeing.
+>>    * @llist: The llist, linked to a struct task_struct::rethooks.
+>>    * @rethook: The pointer to the struct rethook.
+>> @@ -48,20 +45,16 @@ struct rethook {
+>>    * on each entry of the shadow stack.
+>>    */
+>>   struct rethook_node {
+>> -	union {
+>> -		struct freelist_node freelist;
+>> -		struct rcu_head      rcu;
+>> -	};
+>> +	struct rcu_head		rcu;
+>>   	struct llist_node	llist;
+>>   	struct rethook		*rethook;
+>>   	unsigned long		ret_addr;
+>>   	unsigned long		frame;
+>>   };
+>>   
+>> -struct rethook *rethook_alloc(void *data, rethook_handler_t handler);
+>> +struct rethook *rethook_alloc(void *data, rethook_handler_t handler, int size, int num);
+>>   void rethook_stop(struct rethook *rh);
+>>   void rethook_free(struct rethook *rh);
+>> -void rethook_add_node(struct rethook *rh, struct rethook_node *node);
+>>   struct rethook_node *rethook_try_get(struct rethook *rh);
+>>   void rethook_recycle(struct rethook_node *node);
+>>   void rethook_hook(struct rethook_node *node, struct pt_regs *regs, bool mcount);
+>> @@ -98,4 +91,3 @@ void rethook_flush_task(struct task_struct *tk);
+>>   #endif
+>>   
+>>   #endif
+>> -
+>> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+>> index ca385b61d546..075a632e6c7c 100644
+>> --- a/kernel/kprobes.c
+>> +++ b/kernel/kprobes.c
+>> @@ -1877,13 +1877,27 @@ static struct notifier_block kprobe_exceptions_nb = {
+>>   #ifdef CONFIG_KRETPROBES
+>>   
+>>   #if !defined(CONFIG_KRETPROBE_ON_RETHOOK)
+>> +
+>> +/* callbacks for objpool of kretprobe instances */
+>> +static int kretprobe_init_inst(void *nod, void *context)
+>> +{
+>> +	struct kretprobe_instance *ri = nod;
+>> +
+>> +	ri->rph = context;
+>> +	return 0;
+>> +}
+>> +static int kretprobe_fini_pool(struct objpool_head *head, void *context)
+>> +{
+>> +	kfree(context);
+>> +	return 0;
+>> +}
+>> +
+>>   static void free_rp_inst_rcu(struct rcu_head *head)
+>>   {
+>>   	struct kretprobe_instance *ri = container_of(head, struct kretprobe_instance, rcu);
+>> +	struct kretprobe_holder *rph = ri->rph;
+>>   
+>> -	if (refcount_dec_and_test(&ri->rph->ref))
+>> -		kfree(ri->rph);
+>> -	kfree(ri);
+>> +	objpool_drop(ri, &rph->pool);
+>>   }
+>>   NOKPROBE_SYMBOL(free_rp_inst_rcu);
+>>   
+>> @@ -1892,7 +1906,7 @@ static void recycle_rp_inst(struct kretprobe_instance *ri)
+>>   	struct kretprobe *rp = get_kretprobe(ri);
+>>   
+>>   	if (likely(rp))
+>> -		freelist_add(&ri->freelist, &rp->freelist);
+>> +		objpool_push(ri, &rp->rph->pool);
+>>   	else
+>>   		call_rcu(&ri->rcu, free_rp_inst_rcu);
+>>   }
+>> @@ -1929,23 +1943,12 @@ NOKPROBE_SYMBOL(kprobe_flush_task);
+>>   
+>>   static inline void free_rp_inst(struct kretprobe *rp)
+>>   {
+>> -	struct kretprobe_instance *ri;
+>> -	struct freelist_node *node;
+>> -	int count = 0;
+>> -
+>> -	node = rp->freelist.head;
+>> -	while (node) {
+>> -		ri = container_of(node, struct kretprobe_instance, freelist);
+>> -		node = node->next;
+>> -
+>> -		kfree(ri);
+>> -		count++;
+>> -	}
+>> +	struct kretprobe_holder *rph = rp->rph;
+>>   
+>> -	if (refcount_sub_and_test(count, &rp->rph->ref)) {
+>> -		kfree(rp->rph);
+>> -		rp->rph = NULL;
+>> -	}
+>> +	if (!rph)
+>> +		return;
+>> +	rp->rph = NULL;
+>> +	objpool_fini(&rph->pool);
+>>   }
+>>   
+>>   /* This assumes the 'tsk' is the current task or the is not running. */
+>> @@ -2087,19 +2090,17 @@ NOKPROBE_SYMBOL(__kretprobe_trampoline_handler)
+>>   static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
+>>   {
+>>   	struct kretprobe *rp = container_of(p, struct kretprobe, kp);
+>> +	struct kretprobe_holder *rph = rp->rph;
+>>   	struct kretprobe_instance *ri;
+>> -	struct freelist_node *fn;
+>>   
+>> -	fn = freelist_try_get(&rp->freelist);
+>> -	if (!fn) {
+>> +	ri = objpool_pop(&rph->pool);
+>> +	if (!ri) {
+>>   		rp->nmissed++;
+>>   		return 0;
+>>   	}
+>>   
+>> -	ri = container_of(fn, struct kretprobe_instance, freelist);
+>> -
+>>   	if (rp->entry_handler && rp->entry_handler(ri, regs)) {
+>> -		freelist_add(&ri->freelist, &rp->freelist);
+>> +		objpool_push(ri, &rph->pool);
+>>   		return 0;
+>>   	}
+>>   
+>> @@ -2193,7 +2194,6 @@ int kprobe_on_func_entry(kprobe_opcode_t *addr, const char *sym, unsigned long o
+>>   int register_kretprobe(struct kretprobe *rp)
+>>   {
+>>   	int ret;
+>> -	struct kretprobe_instance *inst;
+>>   	int i;
+>>   	void *addr;
+>>   
+>> @@ -2227,20 +2227,12 @@ int register_kretprobe(struct kretprobe *rp)
+>>   		rp->maxactive = max_t(unsigned int, 10, 2*num_possible_cpus());
+>>   
+>>   #ifdef CONFIG_KRETPROBE_ON_RETHOOK
+>> -	rp->rh = rethook_alloc((void *)rp, kretprobe_rethook_handler);
+>> -	if (!rp->rh)
+>> -		return -ENOMEM;
+>> +	rp->rh = rethook_alloc((void *)rp, kretprobe_rethook_handler,
+>> +				sizeof(struct kretprobe_instance) +
+>> +				rp->data_size, rp->maxactive);
+>> +	if (IS_ERR(rp->rh))
+>> +		return PTR_ERR(rp->rh);
+>>   
+>> -	for (i = 0; i < rp->maxactive; i++) {
+>> -		inst = kzalloc(sizeof(struct kretprobe_instance) +
+>> -			       rp->data_size, GFP_KERNEL);
+>> -		if (inst == NULL) {
+>> -			rethook_free(rp->rh);
+>> -			rp->rh = NULL;
+>> -			return -ENOMEM;
+>> -		}
+>> -		rethook_add_node(rp->rh, &inst->node);
+>> -	}
+>>   	rp->nmissed = 0;
+>>   	/* Establish function entry probe point */
+>>   	ret = register_kprobe(&rp->kp);
+>> @@ -2249,25 +2241,18 @@ int register_kretprobe(struct kretprobe *rp)
+>>   		rp->rh = NULL;
+>>   	}
+>>   #else	/* !CONFIG_KRETPROBE_ON_RETHOOK */
+>> -	rp->freelist.head = NULL;
+>>   	rp->rph = kzalloc(sizeof(struct kretprobe_holder), GFP_KERNEL);
+>>   	if (!rp->rph)
+>>   		return -ENOMEM;
+>>   
+>> -	rp->rph->rp = rp;
+>> -	for (i = 0; i < rp->maxactive; i++) {
+>> -		inst = kzalloc(sizeof(struct kretprobe_instance) +
+>> -			       rp->data_size, GFP_KERNEL);
+>> -		if (inst == NULL) {
+>> -			refcount_set(&rp->rph->ref, i);
+>> -			free_rp_inst(rp);
+>> -			return -ENOMEM;
+>> -		}
+>> -		inst->rph = rp->rph;
+>> -		freelist_add(&inst->freelist, &rp->freelist);
+>> +	if (objpool_init(&rp->rph->pool, rp->maxactive, rp->data_size +
+>> +			sizeof(struct kretprobe_instance), GFP_KERNEL,
+>> +			rp->rph, kretprobe_init_inst, kretprobe_fini_pool)) {
+>> +		kfree(rp->rph);
+>> +		rp->rph = NULL;
+>> +		return -ENOMEM;
+>>   	}
+>> -	refcount_set(&rp->rph->ref, i);
+>> -
+>> +	rp->rph->rp = rp;
+>>   	rp->nmissed = 0;
+>>   	/* Establish function entry probe point */
+>>   	ret = register_kprobe(&rp->kp);
+>> diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+>> index 3b21f4063258..f5bf98e6b2ac 100644
+>> --- a/kernel/trace/fprobe.c
+>> +++ b/kernel/trace/fprobe.c
+>> @@ -187,9 +187,9 @@ static void fprobe_init(struct fprobe *fp)
+>>   
+>>   static int fprobe_init_rethook(struct fprobe *fp, int num)
+>>   {
+>> -	int i, size;
+>> +	int size;
+>>   
+>> -	if (num < 0)
+>> +	if (num <= 0)
+>>   		return -EINVAL;
+>>   
+>>   	if (!fp->exit_handler) {
+>> @@ -202,29 +202,21 @@ static int fprobe_init_rethook(struct fprobe *fp, int num)
+>>   		size = fp->nr_maxactive;
+>>   	else
+>>   		size = num * num_possible_cpus() * 2;
+>> -	if (size < 0)
+>> +	if (size <= 0)
+>>   		return -E2BIG;
+>>   
+>> -	fp->rethook = rethook_alloc((void *)fp, fprobe_exit_handler);
+>> -	if (!fp->rethook)
+>> -		return -ENOMEM;
+>> -	for (i = 0; i < size; i++) {
+>> -		struct fprobe_rethook_node *node;
+>> -
+>> -		node = kzalloc(sizeof(*node) + fp->entry_data_size, GFP_KERNEL);
+>> -		if (!node) {
+>> -			rethook_free(fp->rethook);
+>> -			fp->rethook = NULL;
+>> -			return -ENOMEM;
+>> -		}
+>> -		rethook_add_node(fp->rethook, &node->node);
+>> -	}
+>> +	/* Initialize rethook */
+>> +	fp->rethook = rethook_alloc((void *)fp, fprobe_exit_handler,
+>> +				sizeof(struct fprobe_rethook_node), size);
+>> +	if (IS_ERR(fp->rethook))
+>> +		return PTR_ERR(fp->rethook);
+>> +
+>>   	return 0;
+>>   }
+>>   
+>>   static void fprobe_fail_cleanup(struct fprobe *fp)
+>>   {
+>> -	if (fp->rethook) {
+>> +	if (!IS_ERR_OR_NULL(fp->rethook)) {
+>>   		/* Don't need to cleanup rethook->handler because this is not used. */
+>>   		rethook_free(fp->rethook);
+>>   		fp->rethook = NULL;
+>> @@ -379,14 +371,14 @@ int unregister_fprobe(struct fprobe *fp)
+>>   	if (!fprobe_is_registered(fp))
+>>   		return -EINVAL;
+>>   
+>> -	if (fp->rethook)
+>> +	if (!IS_ERR_OR_NULL(fp->rethook))
+>>   		rethook_stop(fp->rethook);
+>>   
+>>   	ret = unregister_ftrace_function(&fp->ops);
+>>   	if (ret < 0)
+>>   		return ret;
+>>   
+>> -	if (fp->rethook)
+>> +	if (!IS_ERR_OR_NULL(fp->rethook))
+>>   		rethook_free(fp->rethook);
+>>   
+>>   	ftrace_free_filter(&fp->ops);
+>> diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
+>> index 5eb9b598f4e9..13c8e6773892 100644
+>> --- a/kernel/trace/rethook.c
+>> +++ b/kernel/trace/rethook.c
+>> @@ -9,6 +9,7 @@
+>>   #include <linux/rethook.h>
+>>   #include <linux/slab.h>
+>>   #include <linux/sort.h>
+>> +#include <linux/smp.h>
+>>   
+>>   /* Return hook list (shadow stack by list) */
+>>   
+>> @@ -36,21 +37,7 @@ void rethook_flush_task(struct task_struct *tk)
+>>   static void rethook_free_rcu(struct rcu_head *head)
+>>   {
+>>   	struct rethook *rh = container_of(head, struct rethook, rcu);
+>> -	struct rethook_node *rhn;
+>> -	struct freelist_node *node;
+>> -	int count = 1;
+>> -
+>> -	node = rh->pool.head;
+>> -	while (node) {
+>> -		rhn = container_of(node, struct rethook_node, freelist);
+>> -		node = node->next;
+>> -		kfree(rhn);
+>> -		count++;
+>> -	}
+>> -
+>> -	/* The rh->ref is the number of pooled node + 1 */
+>> -	if (refcount_sub_and_test(count, &rh->ref))
+>> -		kfree(rh);
+>> +	objpool_fini(&rh->pool);
+>>   }
+>>   
+>>   /**
+>> @@ -83,54 +70,62 @@ void rethook_free(struct rethook *rh)
+>>   	call_rcu(&rh->rcu, rethook_free_rcu);
+>>   }
+>>   
+>> +static int rethook_init_node(void *nod, void *context)
+>> +{
+>> +	struct rethook_node *node = nod;
+>> +
+>> +	node->rethook = context;
+>> +	return 0;
+>> +}
+>> +
+>> +static int rethook_fini_pool(struct objpool_head *head, void *context)
+>> +{
+>> +	kfree(context);
+>> +	return 0;
+>> +}
+>> +
+>>   /**
+>>    * rethook_alloc() - Allocate struct rethook.
+>>    * @data: a data to pass the @handler when hooking the return.
+>> - * @handler: the return hook callback function.
+>> + * @handler: the return hook callback function, must NOT be NULL
+>> + * @size: node size: rethook node and additional data
+>> + * @num: number of rethook nodes to be preallocated
+>>    *
+>>    * Allocate and initialize a new rethook with @data and @handler.
+>> - * Return NULL if memory allocation fails or @handler is NULL.
+>> + * Return pointer of new rethook, or error codes for failures.
+>> + *
+>>    * Note that @handler == NULL means this rethook is going to be freed.
+>>    */
+>> -struct rethook *rethook_alloc(void *data, rethook_handler_t handler)
+>> +struct rethook *rethook_alloc(void *data, rethook_handler_t handler,
+>> +			      int size, int num)
+>>   {
+>> -	struct rethook *rh = kzalloc(sizeof(struct rethook), GFP_KERNEL);
+>> +	struct rethook *rh;
+>>   
+>> -	if (!rh || !handler) {
+>> -		kfree(rh);
+>> -		return NULL;
+>> -	}
+>> +	if (!handler || num <= 0 || size < sizeof(struct rethook_node))
+>> +		return ERR_PTR(-EINVAL);
+>> +
+>> +	rh = kzalloc(sizeof(struct rethook), GFP_KERNEL);
+>> +	if (!rh)
+>> +		return ERR_PTR(-ENOMEM);
+>>   
+>>   	rh->data = data;
+>>   	rh->handler = handler;
+>> -	rh->pool.head = NULL;
+>> -	refcount_set(&rh->ref, 1);
+>>   
+>> +	/* initialize the objpool for rethook nodes */
+>> +	if (objpool_init(&rh->pool, num, size, GFP_KERNEL, rh,
+>> +			 rethook_init_node, rethook_fini_pool)) {
+>> +		kfree(rh);
+>> +		return ERR_PTR(-ENOMEM);
+>> +	}
+>>   	return rh;
+>>   }
+>>   
+>> -/**
+>> - * rethook_add_node() - Add a new node to the rethook.
+>> - * @rh: the struct rethook.
+>> - * @node: the struct rethook_node to be added.
+>> - *
+>> - * Add @node to @rh. User must allocate @node (as a part of user's
+>> - * data structure.) The @node fields are initialized in this function.
+>> - */
+>> -void rethook_add_node(struct rethook *rh, struct rethook_node *node)
+>> -{
+>> -	node->rethook = rh;
+>> -	freelist_add(&node->freelist, &rh->pool);
+>> -	refcount_inc(&rh->ref);
+>> -}
+>> -
+>>   static void free_rethook_node_rcu(struct rcu_head *head)
+>>   {
+>>   	struct rethook_node *node = container_of(head, struct rethook_node, rcu);
+>> +	struct rethook *rh = node->rethook;
+>>   
+>> -	if (refcount_dec_and_test(&node->rethook->ref))
+>> -		kfree(node->rethook);
+>> -	kfree(node);
+>> +	objpool_drop(node, &rh->pool);
+>>   }
+>>   
+>>   /**
+>> @@ -145,7 +140,7 @@ void rethook_recycle(struct rethook_node *node)
+>>   	lockdep_assert_preemption_disabled();
+>>   
+>>   	if (likely(READ_ONCE(node->rethook->handler)))
+>> -		freelist_add(&node->freelist, &node->rethook->pool);
+>> +		objpool_push(node, &node->rethook->pool);
+>>   	else
+>>   		call_rcu(&node->rcu, free_rethook_node_rcu);
+>>   }
+>> @@ -161,7 +156,6 @@ NOKPROBE_SYMBOL(rethook_recycle);
+>>   struct rethook_node *rethook_try_get(struct rethook *rh)
+>>   {
+>>   	rethook_handler_t handler = READ_ONCE(rh->handler);
+>> -	struct freelist_node *fn;
+>>   
+>>   	lockdep_assert_preemption_disabled();
+>>   
+>> @@ -178,11 +172,7 @@ struct rethook_node *rethook_try_get(struct rethook *rh)
+>>   	if (unlikely(!rcu_is_watching()))
+>>   		return NULL;
+>>   
+>> -	fn = freelist_try_get(&rh->pool);
+>> -	if (!fn)
+>> -		return NULL;
+>> -
+>> -	return container_of(fn, struct rethook_node, freelist);
+>> +	return (struct rethook_node *)objpool_pop(&rh->pool);
+>>   }
+>>   NOKPROBE_SYMBOL(rethook_try_get);
+>>   
+>> -- 
+>> 2.40.1
+>>
+> 
+> 
+
+
