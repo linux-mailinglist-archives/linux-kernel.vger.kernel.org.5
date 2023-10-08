@@ -2,50 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8027BCAE4
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 02:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A567BCAE6
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 02:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234324AbjJHAuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 20:50:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44468 "EHLO
+        id S234405AbjJHAuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 20:50:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234313AbjJHAtr (ORCPT
+        with ESMTP id S234217AbjJHAtv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 20:49:47 -0400
+        Sat, 7 Oct 2023 20:49:51 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA18D48;
-        Sat,  7 Oct 2023 17:49:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57998C433CB;
-        Sun,  8 Oct 2023 00:49:26 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5905D61;
+        Sat,  7 Oct 2023 17:49:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C5CBC433D9;
+        Sun,  8 Oct 2023 00:49:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696726167;
-        bh=MaUCKvfjkEyRWJL8+AEXbnDxd2bXHVdvql91up3CKqY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bMGI2PY5f++vOMGyKBMqRnfhWFziqhyBV8ZnUTm2M8cMGYmkMNuQZJ80Azof+JOHg
-         iONpjvdjSjaVI3nMWqvj08yAkG++vG0F5EMIiKns99jRA9FSBc53zknNli2Gx4sl25
-         nOuSpmOkPRAwvH8IyRSSJLmXnOrAt7p2UKpLifdmlqJSXe3//V9e40OsQlACORJ/3y
-         Z3SOIfwi8wV/NMpxaWZ3DUQFuD90babK0kL82hyVpMxv7+ObiKMnEHrSJkonPXKIrI
-         NemyxqPippENvAVG39mR2lS2r/OWoulry5pjj19euAHlTUMIElNOTCZ/XmeYoO818w
-         rb7MVG6/dBVtQ==
+        s=k20201202; t=1696726172;
+        bh=CvsbMA6o1hf6s0sGhwFv37Z+xi+UkOfltBQ25XUEmjo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GM6RDysZPJqlY8ctoXLBeVN7dRb7iFpTgL10KA0xqAJpFWGnyE1W3j0pM5tTILYpd
+         xDyYOyYKrd5IFRDqS0ClxWfGZIWkEqpZZJaub1OtlronAuJcfsOx6fozxG/k3zjcZ5
+         2YtXv+J+wvqlbVhMEUgWcoHL7CjPcQ2x4g5PDJfBjdfUJVvwZ7uXXQ+cmrfKob7nQo
+         o8yMmgPEtm7zfEjeDOT7t+bGZ2ZjIBT4HxcllcceyghIMOvDGwU7WlYLC9Yv2QGeva
+         CLutJkqyWD2orKszU394V8lT9h9dEQl10OL4opXwNn3R1vHVluZnbJTw9jp+8675Si
+         k4T0jZQHFYOTA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Atish Patra <atishp@rivosinc.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-trace-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 18/18] tracing: relax trace_event_eval_update() execution with cond_resched()
-Date:   Sat,  7 Oct 2023 20:48:52 -0400
-Message-Id: <20231008004853.3767621-18-sashal@kernel.org>
+Cc:     David Thompson <davthompson@nvidia.com>,
+        Asmaa Mnebhi <asmaa@nvidia.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Sasha Levin <sashal@kernel.org>, sre@kernel.org,
+        linux-pm@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 01/12] pwr-mlxbf: extend Kconfig to include gpio-mlxbf3 dependency
+Date:   Sat,  7 Oct 2023 20:49:18 -0400
+Message-Id: <20231008004929.3767992-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231008004853.3767621-1-sashal@kernel.org>
-References: <20231008004853.3767621-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.5.6
+X-stable-base: Linux 6.1.56
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -57,49 +53,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Clément Léger <cleger@rivosinc.com>
+From: David Thompson <davthompson@nvidia.com>
 
-[ Upstream commit 23cce5f25491968b23fb9c399bbfb25f13870cd9 ]
+[ Upstream commit 82f07f1acf417b81e793145c167dd5e156024de4 ]
 
-When kernel is compiled without preemption, the eval_map_work_func()
-(which calls trace_event_eval_update()) will not be preempted up to its
-complete execution. This can actually cause a problem since if another
-CPU call stop_machine(), the call will have to wait for the
-eval_map_work_func() function to finish executing in the workqueue
-before being able to be scheduled. This problem was observe on a SMP
-system at boot time, when the CPU calling the initcalls executed
-clocksource_done_booting() which in the end calls stop_machine(). We
-observed a 1 second delay because one CPU was executing
-eval_map_work_func() and was not preempted by the stop_machine() task.
+The BlueField power handling driver (pwr-mlxbf.c) provides
+functionality for both BlueField-2 and BlueField-3 based
+platforms.  This driver also depends on the SoC-specific
+BlueField GPIO driver, whether gpio-mlxbf2 or gpio-mlxbf3.
+This patch extends the Kconfig definition to include the
+dependency on the gpio-mlxbf3 driver, if applicable.
 
-Adding a call to cond_resched() in trace_event_eval_update() allows
-other tasks to be executed and thus continue working asynchronously
-like before without blocking any pending task at boot time.
-
-Link: https://lore.kernel.org/linux-trace-kernel/20230929191637.416931-1-cleger@rivosinc.com
-
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Clément Léger <cleger@rivosinc.com>
-Tested-by: Atish Patra <atishp@rivosinc.com>
-Reviewed-by: Atish Patra <atishp@rivosinc.com>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Signed-off-by: David Thompson <davthompson@nvidia.com>
+Reviewed-by: Asmaa Mnebhi <asmaa@nvidia.com>
+Link: https://lore.kernel.org/r/20230823133743.31275-1-davthompson@nvidia.com
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/trace_events.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/power/reset/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index 0cf84a7449f5b..9841589b4af7f 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -2777,6 +2777,7 @@ void trace_event_eval_update(struct trace_eval_map **map, int len)
- 				update_event_fields(call, map[i]);
- 			}
- 		}
-+		cond_resched();
- 	}
- 	up_write(&trace_event_sem);
- }
+diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
+index a8c46ba5878fe..54201f0374104 100644
+--- a/drivers/power/reset/Kconfig
++++ b/drivers/power/reset/Kconfig
+@@ -299,7 +299,7 @@ config NVMEM_REBOOT_MODE
+ 
+ config POWER_MLXBF
+ 	tristate "Mellanox BlueField power handling driver"
+-	depends on (GPIO_MLXBF2 && ACPI)
++	depends on (GPIO_MLXBF2 || GPIO_MLXBF3) && ACPI
+ 	help
+ 	  This driver supports reset or low power mode handling for Mellanox BlueField.
+ 
 -- 
 2.40.1
 
