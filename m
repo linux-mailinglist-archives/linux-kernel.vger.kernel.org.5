@@ -2,89 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E017BCBCA
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 04:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE867BCBD0
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 05:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344332AbjJHC7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 22:59:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39006 "EHLO
+        id S1344249AbjJHDD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 23:03:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbjJHC7M (ORCPT
+        with ESMTP id S234218AbjJHDDy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 22:59:12 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F8EBC;
-        Sat,  7 Oct 2023 19:59:10 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-50433d8385cso4576979e87.0;
-        Sat, 07 Oct 2023 19:59:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696733949; x=1697338749; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ScEsw5kRuBSyCrQaTmCBYUka5dQTvwb6RwilZml22rc=;
-        b=hVVbDEWLLxEn0JCbIiru9h3H94b7ftOGKPB4SA/lFZcxADytR2YlVdOwCs5qRQ+qHS
-         LLHHf6XKzMeHIxuW35mielGI2OzqBYirS3nIZvTkrnnFia5gMxG+xxSV/5PvCMARl6N5
-         IGegdjwnd1Q2oQ0J8D1tbwH/QsALrSoFU4YQ/jOAUFgdM+pcgEm2IuTkmIMKNjSAWqDn
-         TYd3l8eOHaD5UKxBgaOHDqUeolzjonvbfl7cA6UshfULvZOZ5SE4OXKBAiGgypRmbJVo
-         khyfus8VKzusezhY9lctlRu7VsJXEURO1nfPi4NtTAxxdqv8B/8i50IIM751mUyVRJ2L
-         1rIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696733949; x=1697338749;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ScEsw5kRuBSyCrQaTmCBYUka5dQTvwb6RwilZml22rc=;
-        b=MnZvIkjwONI0yUy4cIGOzv92xwv0zof9A3bZLnTtfXJr0O0PB1G89opAm0MS870OOH
-         wTI5UkUCpJienes0sRzj2Aqgl5lsDwY+YKzoBkLqoLtCOSPI/ek3Ceb8OgDpX9JQBB5z
-         PorDqQH9lUkcoNUHSZ60lMou7/R83Vb09k42Ay14iNdiEVe9c01d60W3ZWiFCkMy9l76
-         Dp6gUJqHleK4SlWODHmizb4tQS3dQfwKU25Re/JG77oTn5SkMZDExW7IG1JtYBfYQVYd
-         fOp+HYidOvyLcAE6njqG3CuZryTYoop48B5632Z20AOe7n/BayXaYfDvZhsUaxaB+q6D
-         WdnQ==
-X-Gm-Message-State: AOJu0Yyzf44wFoMr3WtG9fO4bMW6/QidFLD8tUDMMJ0vRQMsj8MefL+r
-        4QNhHX7tg4yrpJz4ueZHQOh39XZTwrJbegd3GKE=
-X-Google-Smtp-Source: AGHT+IEpb2yeFTzMhQ8mODQ9bJzzgKP4xcGT3Fdr1mnHynSEwgLk6lyxwCFHJcwsd6qGQGzx5r8I8XmeCKBxhv85QXI=
-X-Received: by 2002:a05:6512:1154:b0:501:bd43:3b9c with SMTP id
- m20-20020a056512115400b00501bd433b9cmr11192604lfg.23.1696733948681; Sat, 07
- Oct 2023 19:59:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1694421911.git.haibo1.xu@intel.com> <cda6cc71c9bdde87fe87f6c2dec4f03ca249dd62.1694421911.git.haibo1.xu@intel.com>
- <20231003-d44206f71d0b22e539833697@orel>
-In-Reply-To: <20231003-d44206f71d0b22e539833697@orel>
-From:   Haibo Xu <xiaobo55x@gmail.com>
-Date:   Sun, 8 Oct 2023 10:58:57 +0800
-Message-ID: <CAJve8o=Q74U0Z3PayrzY7heNc0qeTw5VYS+tdkpm=aJdefQEbQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/9] KVM: selftests: Unify the makefile rule for split targets
-To:     Andrew Jones <ajones@ventanamicro.com>
-Cc:     Haibo Xu <haibo1.xu@intel.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        Thomas Huth <thuth@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvm-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+        Sat, 7 Oct 2023 23:03:54 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2044.outbound.protection.outlook.com [40.107.255.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18127C5;
+        Sat,  7 Oct 2023 20:03:49 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gou6BxWAYaBM0Ne4+fQMfvtNBaF45iMgQg/PTeJg5Rjua62bTg4Ym7lfkLT6EOAiEb2fzsH0qNPKqFu7gE6StcCivZyKfYOf/MKTPSIMO/aDkVH/9S3GhkuQufA89aJyhKKmqiqiVCevMlUJgUUzoYjMG6INXh/cwBxXAgiDLbbknACQ1pxmaEaIwj/RrI9vSZR/9czP8BxMJ2r3mWnw4Ycc3eTnwooodobCOMjz1a0VTYTwcmqNDuqXPxunXDQQ5IsN1gM6V+inyCJILoJHnOCa18HU+BtqN3ouX8HvBnug2tbzero0Vau97Ym3q2CQ3msNtbAE41ksC4ItfB3MSQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LcJs31P+aC95oQM4lgXf5nX5SVirrycQMTygAjP8S1Y=;
+ b=O81RD0UYIsO5SiAH96JSaTGg/RC5n1Po7yiHs861aowlDIfAsLdp/F9qqcalPfojgfD6mJ6+WqG7BMKUdoYQbKmM4wNv80AaP2XXPO4hx+Zlyk9wRvHoeVwsCe9Tzn2lOOeKPnM1LlAdhCWuAyz0mGtp8kfA1b3bNYsEZExyYvc2fsIkBVrC/SFntB3NwNqd+3B7G/lEScWnDpBw+v7/sv+0aV9z0j+QUIb/V2J/sM50a/TZnIdNlnAh7k+A8IUu84D0eek4oAV0pTYqt2z4kBROjgbmJauQRtO7vyN6Gi/7sPCbABDgvzWW/CfxchadSgnBEGLlUG1OEbZELqAV+w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=jaguarmicro.com; dmarc=pass action=none
+ header.from=jaguarmicro.com; dkim=pass header.d=jaguarmicro.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jaguarmicro.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LcJs31P+aC95oQM4lgXf5nX5SVirrycQMTygAjP8S1Y=;
+ b=cbgLEu1uZDGZSCE+e7t0AY/5Xaiju78JWUzgLqqbCbSFq3ATu3FnZKSdHXOK/g0eHJCwaZqJF8QTfiTWIWjSBKjRvkmmBzcysDaISwOgjSCLrPqQUd84fYKZKgKe6g3TOLf6HFjS0WwXz+0mvhBXQrPCPnoEdity3mgwEWj84TPax+9reRWuneBpczBHuWpoT/VeOOFaCdc65QROEMTOOaOFX2r/dDaWm0IeWme8h6G1a4AhO+/UqJt0lWVm5zd4mPu9KnmCQ9AsYdo1OaWWOUpgeqiOic/mYX6hMytGxADvGiaLEAsFowI1/9hE02dbB6kDc/YB7ZlUgN9u4g20hg==
+Received: from PSAPR06MB3942.apcprd06.prod.outlook.com (2603:1096:301:2b::5)
+ by KL1PR0601MB4177.apcprd06.prod.outlook.com (2603:1096:820:2c::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.41; Sun, 8 Oct
+ 2023 03:03:43 +0000
+Received: from PSAPR06MB3942.apcprd06.prod.outlook.com
+ ([fe80::e5ee:587c:9e8e:1dbd]) by PSAPR06MB3942.apcprd06.prod.outlook.com
+ ([fe80::e5ee:587c:9e8e:1dbd%4]) with mapi id 15.20.6863.032; Sun, 8 Oct 2023
+ 03:03:43 +0000
+From:   Liming Wu <liming.wu@jaguarmicro.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>
+Subject: RE: [PATCH v2 1/2] tools/virtio: Add dma sync api for virtio test
+Thread-Topic: [PATCH v2 1/2] tools/virtio: Add dma sync api for virtio test
+Thread-Index: AQHZ+OtW793w5h9+jkK1diJSHXBDBLA/KdaAgAAMP7A=
+Date:   Sun, 8 Oct 2023 03:03:43 +0000
+Message-ID: <PSAPR06MB3942DE121AD46C46D8728942E1CFA@PSAPR06MB3942.apcprd06.prod.outlook.com>
+References: <20230926050021.717-1-liming.wu@jaguarmicro.com>
+ <20230926050021.717-2-liming.wu@jaguarmicro.com>
+ <20230927111904-mutt-send-email-mst@kernel.org>
+ <20231007065547.1028-1-liming.wu@jaguarmicro.com>
+ <1696731557.4612653-1-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <1696731557.4612653-1-xuanzhuo@linux.alibaba.com>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=jaguarmicro.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PSAPR06MB3942:EE_|KL1PR0601MB4177:EE_
+x-ms-office365-filtering-correlation-id: 462573c9-2839-4c9b-8315-08dbc7ab2e5d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: keIxB51VUH0l4IoxqTBMQablVFHiIvrI4MdPpb0LoaFP13WW2uCj9SWpOStzzebXYaqfRL3Jq51Fo3BhWPWXooIT6ldmnWjw42Q9DuQ4jm0sy9T9BkoLt7VYPO4g6OdwuFw2iM5/4AYPEohn3lOegsDktj30tKsPMR1F4wh3zfad6Q3s1s1QSsd9ZkArf1yGWnaE2UnrWKippluEVKx9q5paHukbKzNb9zKqqph6Ad9ih3or/ejGFPujUj94+ylqUSeokcbT4h175XhEVZAi74NXpo7NEjDQnGwWjo1NXVp8mbb+Clsu+oZnSM4iHFWcjlVElOvOoIlDIQAQoX10l8+jo6c9HrUeERcQ954b35M82muq0OApHJ0BaqwdAjC+QV1B3nyMWrj/f3v6tlh3PA01m9QSJ+QijCSHvzIpVusF0vt2bnNoc0nlTgJonNOj/wdS/Wwd435RX2B21FSd80vXCFgo6Xvii2ZFUBgQs1wOz+ijfiS8K/4O87RR5s2mcR+aKR0STK/TDeOXdQghhph1a0IVYwZRchGQt9NeTzkSsDwFR6f/WgTQA7xfHb/7ZrEZPSdfv9aLQkIClFg470bo9zIznE34tRFK7MDoRzLOcbV0C8wA7PZhvhSwTC4q
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PSAPR06MB3942.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(396003)(39830400003)(346002)(136003)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(55016003)(83380400001)(26005)(66946007)(66476007)(66556008)(316002)(66446008)(54906003)(76116006)(6916009)(64756008)(8936002)(8676002)(4326008)(5660300002)(52536014)(41300700001)(44832011)(7696005)(6506007)(53546011)(71200400001)(9686003)(2906002)(4744005)(478600001)(33656002)(38070700005)(38100700002)(122000001)(86362001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Fm4MJEpMPBCSS3iGcwNFGYwkFF1C/Ax8GtKSstYxzre1fmiOsHS68KcGmUtE?=
+ =?us-ascii?Q?wke5MDX5girHGbYqK7GJabsgGkjO4c5yjImVbZKTY5mapH+k3pSU7cRBUXBz?=
+ =?us-ascii?Q?kLGM2iWyZmAv+Lpy3/zkU4alV6aHonuf9aCW9idf6qkqDd2b1JbroWY1vbtn?=
+ =?us-ascii?Q?/Mon6kYtFIkcn2lxkPYot/SBjPRQwRzgmZ4Ljlye4ivlV86FnWs5YhoZZ/Aj?=
+ =?us-ascii?Q?WEii1l2nkQ18WEGn6iLwC/BIBwq3Txjm57VHtBzpprjlicevMaUHV6ai6F/q?=
+ =?us-ascii?Q?ZrZcRkPXraB7JGi5yTNAUIPYiYR7eoV9yyTdD8qhkoxGV8AAEBRi85cKdeWT?=
+ =?us-ascii?Q?gekDix1WJEiARmYSCahjJlE4Ip8zNPwPnFGyxwHIuedttJTHRqfmH737ZxjV?=
+ =?us-ascii?Q?TEIWLGQAHKZesvX9p1j02q2mlM37D/3uVAiFUZIYxebtAtH2bhKigalct6PV?=
+ =?us-ascii?Q?K4v7tEJzW/rCNTKQ28d5+ezVIXO5gfNtcmXbDEeHgWO0l2VIif9s7sWSaER7?=
+ =?us-ascii?Q?Mlq4UcdVJNg/HuDWUlTKxGlS4W7JC0lvb/jIbcweEvCbHzDzLud7CdgTitbD?=
+ =?us-ascii?Q?YcupEBYF0rU71gCfxwghGkYsoFi6wjufjtRHhu/WSKC1W+q1uZPns9vZRZJ+?=
+ =?us-ascii?Q?F/3WLyLO6MXpu86MYz4EMYNmNobbNsuCKEr+KiiEHhKJKwG0qzGQFZq7Dnyc?=
+ =?us-ascii?Q?dxDXtZKS6dEFDpdOkCZe/UlPeBshuh1YrGR7vWH6qh+EUvwjGAYDjj/ASI0Y?=
+ =?us-ascii?Q?8TRCqebZmLAM58uc7FIOkXOXCf3BNQui57QCPIqaJRON17t6wIAyyedSFIiV?=
+ =?us-ascii?Q?aLIAi/fnAURHN9sDKb9hzkeub+1tumSn7dG9cD6mXd/0yWwfuR8L393vtEOG?=
+ =?us-ascii?Q?ymjY6sPCrYZYFUbcVhmInGG7UHKHeHcypQeiyDNjGa2EpnWv/hBVos/IV3LH?=
+ =?us-ascii?Q?vii2a+2FO2IIlGBuqBbENAuV8NBkcwVPGy3u7jAF+vVwclVfuR5e9P8TN+G4?=
+ =?us-ascii?Q?iPLx2sG5ghsMUOsnZvPlKFsjauS6TjJU8WOL1C5P6Y5X6h2pSihCFTfyv75d?=
+ =?us-ascii?Q?fpGjKYoH8eeKmt4cCV44sJpAt0mX1PDC1b4lvpriCdItW/iQtPg6E8w6D9qz?=
+ =?us-ascii?Q?BmCkxrycJPTrcl0HATEopCNL0T9fAfBGdfFFWyphuzCO7pDeeYf1EvRJP9HZ?=
+ =?us-ascii?Q?+jJYuNSBeUl91ddKeAl7o/BdaKXay2WG0E1K176muNdI5FaCxr7ea66VhXRW?=
+ =?us-ascii?Q?Sm9AeB8znKSoHb2lC7pg14ifvJPIHP0yZC6X3g+TGOJEijvvvk3vEqc+CT52?=
+ =?us-ascii?Q?GONmjeglUSRWP+bhxchrdsGFw4N+1iar6eyfbVF/NmISVae6LHTZOQdbfNpd?=
+ =?us-ascii?Q?sflMgLBxIhqDs0OiVVUeEEXUDCnFVa+tybiegBVGhABNJM4rbU6Pi7GbWWC8?=
+ =?us-ascii?Q?glzgKdulVKCqy3xMIVsnqxmkuHj2VfB2R4HhmnDN0EQdiTxCTQGIGi2GHR3h?=
+ =?us-ascii?Q?tw/CDRTiBDsfdjm/0ZU1HULJy6FWkdIMd8QDTy+ndStjj7fzbjqTq6SCZ24A?=
+ =?us-ascii?Q?DIOLOWPiEaaRSM2k9KdKm3v/k2om5KqQ6vhQ486J?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+MIME-Version: 1.0
+X-OriginatorOrg: jaguarmicro.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PSAPR06MB3942.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 462573c9-2839-4c9b-8315-08dbc7ab2e5d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Oct 2023 03:03:43.4138
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 1e45a5c2-d3e1-46b3-a0e6-c5ebf6d8ba7b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zohhMopvtEX+z7Ssg3vKjDEgysZfW5pK5jGmLYSM7PTo1HGJdRpmfrELaAPX+6e04UDB88ew8zr8SrU5by1ddPbMDHq++cPp761DH2OPtjg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR0601MB4177
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,66 +125,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 3, 2023 at 6:28=E2=80=AFPM Andrew Jones <ajones@ventanamicro.co=
-m> wrote:
->
-> On Thu, Sep 14, 2023 at 09:36:56AM +0800, Haibo Xu wrote:
-> > A separate makefile rule was used for split targets which was added
-> > in patch(KVM: arm64: selftests: Split get-reg-list test code). This
-> > could be avoided by minor changes to the recipes of current rule.
+
+
+> -----Original Message-----
+> From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> Sent: Sunday, October 8, 2023 10:19 AM
+> To: Liming Wu <liming.wu@jaguarmicro.com>
+> Cc: kvm@vger.kernel.org; virtualization@lists.linux-foundation.org;
+> netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Liming Wu
+> <liming.wu@jaguarmicro.com>; Michael S . Tsirkin <mst@redhat.com>;
+> Jason Wang <jasowang@redhat.com>
+> Subject: Re: [PATCH v2 1/2] tools/virtio: Add dma sync api for virtio tes=
+t
+>=20
+> On Sat,  7 Oct 2023 14:55:46 +0800, liming.wu@jaguarmicro.com wrote:
+> > From: Liming Wu <liming.wu@jaguarmicro.com>
 > >
-> > Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
+> > Fixes: 8bd2f71054bd ("virtio_ring: introduce dma sync api for
+> > virtqueue") also add dma sync api for virtio test.
+> >
+> > Signed-off-by: Liming Wu <liming.wu@jaguarmicro.com>
+>=20
+> You should post a new thread.
+
+OK,  Thanks.
+>=20
+> Thanks.
+>=20
+>=20
 > > ---
-> >  tools/testing/selftests/kvm/Makefile | 6 ++----
-> >  1 file changed, 2 insertions(+), 4 deletions(-)
 > >
-> > diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selft=
-ests/kvm/Makefile
-> > index a3bb36fb3cfc..7972269e8c5f 100644
-> > --- a/tools/testing/selftests/kvm/Makefile
-> > +++ b/tools/testing/selftests/kvm/Makefile
-> > @@ -249,13 +249,10 @@ TEST_DEP_FILES +=3D $(patsubst %.o, %.d, $(SPLIT_=
-TESTS_OBJS))
-> >  -include $(TEST_DEP_FILES)
-> >
-> >  $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): %: %.o
-> > -     $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $< $(LIBKVM=
-_OBJS) $(LDLIBS) -o $@
-> > +     $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $^ $(LDLIBS=
-) -o $@
-> >  $(TEST_GEN_OBJ): $(OUTPUT)/%.o: %.c
-> >       $(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c $< -o $@
-> >
-> > -$(SPLIT_TESTS_TARGETS): %: %.o $(SPLIT_TESTS_OBJS)
-> > -     $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $^ $(LDLIBS=
-) -o $@
-> > -
-> >  EXTRA_CLEAN +=3D $(LIBKVM_OBJS) $(TEST_DEP_FILES) $(TEST_GEN_OBJ) $(SP=
-LIT_TESTS_OBJS) cscope.*
-> >
-> >  x :=3D $(shell mkdir -p $(sort $(dir $(LIBKVM_C_OBJ) $(LIBKVM_S_OBJ)))=
-)
-> > @@ -274,6 +271,7 @@ $(LIBKVM_STRING_OBJ): $(OUTPUT)/%.o: %.c
-> >  x :=3D $(shell mkdir -p $(sort $(dir $(TEST_GEN_PROGS))))
-> >  $(TEST_GEN_PROGS): $(LIBKVM_OBJS)
-> >  $(TEST_GEN_PROGS_EXTENDED): $(LIBKVM_OBJS)
-> > +$(SPLIT_TESTS_TARGETS): $(OUTPUT)/%: $(ARCH_DIR)/%.o
-> >
-> >  cscope: include_paths =3D $(LINUX_TOOL_INCLUDE) $(LINUX_HDR_PATH) incl=
-ude lib ..
-> >  cscope:
-> > --
-> > 2.34.1
-> >
->
-> I just noticed that with and without this patch we're building the
-> arch-specific part in tools/testing/selftests/kvm/riscv even when we have
-> an $(OUTPUT) directory (e.g. O=3Dbuild). Those build artifacts should be =
-in
-> build/kselftest/kvm/riscv instead.
->
-
-Thanks for pointing it out. I will have a look in next week!
-
-> Thanks,
-> drew
