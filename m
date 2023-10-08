@@ -2,81 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3EC7BCEBE
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 16:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B254C7BCEC1
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 16:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344846AbjJHOBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 10:01:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55494 "EHLO
+        id S1344855AbjJHOBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 10:01:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344831AbjJHOBa (ORCPT
+        with ESMTP id S1344834AbjJHOBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 10:01:30 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26353C5
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 07:01:28 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50435a9f800so4782996e87.2
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 07:01:28 -0700 (PDT)
+        Sun, 8 Oct 2023 10:01:32 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D288ADB
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 07:01:29 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so46472561fa.3
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 07:01:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696773686; x=1697378486; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1696773688; x=1697378488; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PSMUdpgtTg04OpFZxfxSUvT4pwJGZAYPeTOexRIr+Ds=;
-        b=ZaF7WLvaSTRCyOqPouUAV/H36xzPfWUriPc01EHczkl4v1Dj/+6MKx/9Bsxl0LIJAZ
-         +oF2jlhvAJgw+J9jyipad4J090HJTUq1MfOlFM5dpf4IRnxlksS+GsfaSLj9VDoMaXlz
-         IW/eKNdCmjMMaRSTRF3f7E/oVAl2pmhNb7lTIOY4pb3w7grcNrNxsMDQLbPdvb+N9Igr
-         868V70ZH7LgZCw8z83IJxNjoh+UfnCQThZmDk4qApOog9VX53pq2oAL/J5+qieeurVgf
-         vRIcodLPxA7qZIaV0sNbXKSTN+2TBw3xpPUaAtA8MjELvxM/e6W3gB8XTe4+gLjuRVio
-         P9kg==
+        bh=rFG+HbWkCL5q3sRytHz2EUARFUhHTNpTPTS/2TGCkYs=;
+        b=ObzbFgTMYVwo20haAZn7lVGopTzVwLFDJFv1vJPRR5JMPA8MQIBKruM4uN1lnA+MnR
+         Ekw90axVfeoLgnPiMCnUTJlTr3U1GeodkYdAS5+p61YXeUpNIxFhOi4NK9l4Gajnropk
+         oum/4MtJNhlr4pjTudnxjjeQ+UhWR/nrqACzb2ZRI2FD2EpNDfxozLQJ54Qq8ojMnf19
+         S+2GyT0qvPGx4wYsrcU7oigcBrfstFWU6zpuwRA9FNYuRCxoysVcB2H0BOrVo/87b2VP
+         t8lhCP970G6oy7su51Gc1F993zxeYamZkYOsdgiTTpd/dEVMT2wbhIHkkQmneRE4TL4x
+         +z+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696773686; x=1697378486;
+        d=1e100.net; s=20230601; t=1696773688; x=1697378488;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PSMUdpgtTg04OpFZxfxSUvT4pwJGZAYPeTOexRIr+Ds=;
-        b=t9NYEFw/Z8upTwaW5vx1sChe80p6VrW4ukp3+ZNOYPwK3PhuXfFB2KhJwf+34F7U7a
-         EqcIimvLZsjOYBkk2yu4OkSqnVP8Q3NMGu9JN+K/pYaoSnU/lxfH/2SCLpJcAIm0kC/o
-         eiogNK+OpqcqwetY8X22jCWam5D8jcgzvI0GyHW5940Ng5BEy/u/vOW7Lwe4Ul6HjNqK
-         9XhRkTjj+qMKUUU+qKl7CjE4i/h67AxhbOwwfOcUgPUl/3ICHA+8qiALx0PPb0fyD7W+
-         c706JdD5keo9trDtLgG2gSGkey+dI/lS4hv+ASw+Pej3A3KYOL1MDUccZnL196ZwZZlw
-         1YQg==
-X-Gm-Message-State: AOJu0Yx1JN0PzLVxgwgUCmtUXxr2JiEMmZ866Q1x/W+sQ11MM8r+nZke
-        U/T4FpNz4WWmNOl82yam64Af+A==
-X-Google-Smtp-Source: AGHT+IGxfVDd6z3b4aL3PVKq8C7Mjb21gUGAEM9IbcbsGG5OCtfSfwwara4kEgcUl8RPGr9RfAl4FA==
-X-Received: by 2002:ac2:4a81:0:b0:4fb:8585:eefe with SMTP id l1-20020ac24a81000000b004fb8585eefemr9557457lfp.57.1696773686418;
-        Sun, 08 Oct 2023 07:01:26 -0700 (PDT)
+        bh=rFG+HbWkCL5q3sRytHz2EUARFUhHTNpTPTS/2TGCkYs=;
+        b=Iy3Vc/mHNR+yKnsCQCcu8wMmzSFsduR2pQaFZXZz6ZZHbY+r2Z6dOpeWbm1dhWC8+J
+         WxiThqPkxfucjTw8x32ViCt4djgTJPLoRDB79emCZjuz+1/BB/V2xU1vTtE3ZGlQe00X
+         tdAxlabZ9ciBucMBN/gS5UzQme62XaA6H3vK1IrkCePRR5akIS9379Qkc/0hJ4pqr35a
+         GscQ/pP9g6ovkKrWZKW9NQ39xC9kZjaIahVtAJodA/V+AyAI+WLpa8V/lESLScCYTT/q
+         37Wai7J+j9ke0GLyQdu3mVSb74Fswx2A95TIVN0Pme94IUfdy0fyj6de25nVoguJkebP
+         5rBA==
+X-Gm-Message-State: AOJu0YzkZpmEE8Nw/HUD6nCa+eA3upw2atIw5qr9DI6dUo3SMZMApIMv
+        /74okAi/Aq4OaelRV2qtuUVpiA==
+X-Google-Smtp-Source: AGHT+IF9SR2eKmWzelixific7kPQBmMahRChh7MHMDUtBo/o+iJKla32qvo/C/wtuhmKyiBSevln/w==
+X-Received: by 2002:a05:6512:31d0:b0:4ff:a04c:8a5b with SMTP id j16-20020a05651231d000b004ffa04c8a5bmr13427692lfe.47.1696773688103;
+        Sun, 08 Oct 2023 07:01:28 -0700 (PDT)
 Received: from umbar.unikie.fi ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id q14-20020ac24a6e000000b00504211d2a73sm1080455lfp.230.2023.10.08.07.01.25
+        by smtp.gmail.com with ESMTPSA id q14-20020ac24a6e000000b00504211d2a73sm1080455lfp.230.2023.10.08.07.01.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Oct 2023 07:01:25 -0700 (PDT)
+        Sun, 08 Oct 2023 07:01:27 -0700 (PDT)
 From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 To:     Rob Clark <robdclark@gmail.com>,
         Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kuogee Hsieh <quic_khsieh@quicinc.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: display: msm: Add missing unevaluatedProperties on child node schemas
-Date:   Sun,  8 Oct 2023 17:01:17 +0300
-Message-Id: <169677325602.2570975.10339984139706350311.b4-ty@linaro.org>
+        Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        Sean Paul <sean@poorly.run>, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+Subject: Re: [PATCH 0/2] drm/msm/dp: More DPCD cleanups
+Date:   Sun,  8 Oct 2023 17:01:19 +0300
+Message-Id: <169677306905.2570646.16231496941138431299.b4-ty@linaro.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230925212434.1972368-1-robh@kernel.org>
-References: <20230925212434.1972368-1-robh@kernel.org>
+In-Reply-To: <20230906181226.2198441-1-swboyd@chromium.org>
+References: <20230906181226.2198441-1-swboyd@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -84,20 +76,24 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Mon, 25 Sep 2023 16:24:24 -0500, Rob Herring wrote:
-> Just as unevaluatedProperties or additionalProperties are required at
-> the top level of schemas, they should (and will) also be required for
-> child node schemas. That ensures only documented properties are
-> present for any node.
+On Wed, 06 Sep 2023 11:12:24 -0700, Stephen Boyd wrote:
+> This is a follow-on to this series[1]. I can resend the whole pile if
+> desired.
 > 
+> [1] https://lore.kernel.org/r/20230829184735.2841739-1-swboyd@chromium.org
 > 
+> Stephen Boyd (2):
+>   drm/msm/dp: Inline dp_display_is_sink_count_zero()
+>   drm/msm/dp: Remove error message when downstream port not connected
+> 
+> [...]
 
 Applied, thanks!
 
-[1/2] dt-bindings: display: msm: Add missing unevaluatedProperties on child node schemas
-      https://gitlab.freedesktop.org/lumag/msm/-/commit/08bf97ab16f3
-[2/2] dt-bindings: display: msm: Make "additionalProperties: true" explicit
-      https://gitlab.freedesktop.org/lumag/msm/-/commit/55bbcadccdec
+[1/2] drm/msm/dp: Inline dp_display_is_sink_count_zero()
+      https://gitlab.freedesktop.org/lumag/msm/-/commit/fb48250ca919
+[2/2] drm/msm/dp: Remove error message when downstream port not connected
+      https://gitlab.freedesktop.org/lumag/msm/-/commit/e117fd68f973
 
 Best regards,
 -- 
