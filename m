@@ -2,166 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4EE07BCF94
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 20:34:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7938C7BCF9A
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 20:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344403AbjJHSdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 14:33:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34554 "EHLO
+        id S1344469AbjJHShg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 14:37:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbjJHSdm (ORCPT
+        with ESMTP id S229945AbjJHShf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 14:33:42 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F000B6
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 11:33:19 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c88b46710bso17102705ad.1
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 11:33:19 -0700 (PDT)
+        Sun, 8 Oct 2023 14:37:35 -0400
+Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6230AC;
+        Sun,  8 Oct 2023 11:37:33 -0700 (PDT)
+Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-49618e09f16so1256513e0c.2;
+        Sun, 08 Oct 2023 11:37:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1696789998; x=1697394798; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:subject:content-language
-         :references:cc:to:from:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=BwfVcBXul2YudjzP0K2Y5pnWckXRjo7iIFIQho4Pppw=;
-        b=INgLxuZmHF74YP0JK5UdzA22YhMg7hO5nRXE8HcJR+ufogxgeCc5hC91dveiRy5CDZ
-         Nn5oml5TBpSvB3O2cEV1RP3BcBrfOBgHTJkJSNevq62RIvhUA3q8fw14NYjnu8xh9oYl
-         di6hh6fVmVkf09r5cwNK3YWFCjdjXTtJEzi9U2HawxUwCm9oHw0iuryc0ywSHKFSLofe
-         nBuQ78BFaEOgnLmwdcnGRd8/ImcL6C1fzYTyNTp4HJQCcBhISiDPctYb4PunslNa6jFe
-         De/kKYUXN5VKX7OYZPtJxCuPj7SY+ciO2Y1YdJBPfyrsj59kK4MeAMD6O9/Kid3NlxHj
-         PIAA==
+        d=gmail.com; s=20230601; t=1696790253; x=1697395053; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XeJ1AX0Emm0B1MNXW9ufDQ+zSWl6WDvAagaRLQUTatk=;
+        b=bw2CaHJV30W1P8hD9Sxix6Raciuwqe4hW0Uk0mlEYlzd4OnuO5uc7GuIHkz0hbHfTK
+         RQNJ7ycAjlpUYPmJ7Zp4Vo6l/OEQfi1YZkMhxrDvsNUL6B5C6GdunbC/oAcekOHT/AIO
+         RT+yUssx6Vta3fHXs+lPFlhJ5PIZtHmw7Fj7/hicQDhLH7xSJyLZXBX7Twj2ZIzm08Xp
+         XvnSmZZG5yoXH+BiOry4Pzc/k1Dq3tdrCIm21aw4kTB7pR1B91fzk/s9sUZGhDtoUVre
+         i3g8QculUQYsY7ufD/DfMtzkzPBGw3IMo9OKizsufXdIasJuD8Z0y1K0EzMp/PQrhNuH
+         ziGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696789998; x=1697394798;
-        h=content-transfer-encoding:in-reply-to:subject:content-language
-         :references:cc:to:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BwfVcBXul2YudjzP0K2Y5pnWckXRjo7iIFIQho4Pppw=;
-        b=ncujwPJJKCslybcmH9ms/qe3arq8R1xMT+nwAPwFA8C4Kv8r8GT2M5IQNAku1Bd4dd
-         3sLR9AO+AFFxqKGz2labgPdKCO+Y7CTh3KUpvn5ubY7YqI/iAEKHtOZ7Od7sBTBDptqj
-         3vO+TgKU2oyJ6GjnktY5mRtWYm+Wgrr1kbZO55MU9qSiuVzoPPgKqe54grseMf30soga
-         kAnBZJ7PXhE0/9xsgGDWech5BomodVL0oMPU/Lrfp2jVSJm9lBzYW8Ly57AUNO3vVUzM
-         SuDOzDR/2Czu8xailZ0D7DROGs9fLSNGB7b2ESfW+xTwWOUWdDnppI99zc7E4RnOh6RP
-         vuag==
-X-Gm-Message-State: AOJu0YwlvamG38VxdQfazp+GctFGT/ffjRELR52aCi34RNx3lW7VXUJ9
-        zqG4+MyWHlXDLee0ygSB13Px75+YJY5zz2wK3apcsg==
-X-Google-Smtp-Source: AGHT+IGeSLvChAelOdNg5xcvg7ht1Gd3ueSN63PCk+hxuH7YOdzzbb7bWQsXu/wovyzCoJlUMaemdA==
-X-Received: by 2002:a17:902:d2c2:b0:1c7:3526:dfcd with SMTP id n2-20020a170902d2c200b001c73526dfcdmr13201955plc.52.1696789998517;
-        Sun, 08 Oct 2023 11:33:18 -0700 (PDT)
-Received: from [10.254.230.118] ([139.177.225.250])
-        by smtp.gmail.com with ESMTPSA id y13-20020a170902ed4d00b001c898328289sm4092752plb.158.2023.10.08.11.33.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Oct 2023 11:33:18 -0700 (PDT)
-Message-ID: <30892865-c92e-433e-2dba-ec6004c3d0e2@bytedance.com>
-Date:   Mon, 9 Oct 2023 02:33:09 +0800
+        d=1e100.net; s=20230601; t=1696790253; x=1697395053;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XeJ1AX0Emm0B1MNXW9ufDQ+zSWl6WDvAagaRLQUTatk=;
+        b=wD3nZzd6qpSJKuO+gHs5SSVQPdeZLT8WTQRqz57JgzF3OkHlXF2tJZS4DPDBbAAn6N
+         lshIHjgGFM6mU9ol6e0j7S0wO27xQQ7xPAx3iwkb3+Zj0nWfbmV6jLXk0FI6aWfaAQZ4
+         WhtnG4+IIQpxe0tMlv4V/E1vE+QJ/0ryp+XOctTn2vxf2AOcnpzK4F5AJMuXG24DQga/
+         /hQRx3P8LyaE0+qQ/rIDGAYaWXDpmfSnzpyAoIgORaVUY57LKpOulF46onLPniZvoDYj
+         vy1XKWwMxBQM3zbY2eGOHMlkJjfJ4e5SEQ0eCyh8Az3QIfnmFD38YLExsmie7SDWaX8E
+         cHIA==
+X-Gm-Message-State: AOJu0Yy6D2HJI+U6iNnEEBUaFx6vEJV446fVJ30B9k5ikROq8oJBMw8r
+        240EpahogR6axyPvsHI7f/2yo91KyMbGyc0kg/U=
+X-Google-Smtp-Source: AGHT+IHSB43dF0pLQwl5fSHzzvgSOaQuNELTv/vnarvg9JxIB3dWUKmxutdHnh4vUjKSphH5Pexh5TnlfPVFyCr7FY4=
+X-Received: by 2002:a1f:e641:0:b0:48f:8891:29d9 with SMTP id
+ d62-20020a1fe641000000b0048f889129d9mr10186430vkh.13.1696790252736; Sun, 08
+ Oct 2023 11:37:32 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-From:   wuqiang <wuqiang.matt@bytedance.com>
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     linux-trace-kernel@vger.kernel.org, davem@davemloft.net,
-        anil.s.keshavamurthy@intel.com, naveen.n.rao@linux.ibm.com,
-        rostedt@goodmis.org, peterz@infradead.org,
-        akpm@linux-foundation.org, sander@svanheule.net,
-        ebiggers@google.com, dan.j.williams@intel.com, jpoimboe@kernel.org,
-        linux-kernel@vger.kernel.org, lkp@intel.com, mattwu@163.com
-References: <20230905015255.81545-1-wuqiang.matt@bytedance.com>
- <20230923175746.da3ab516a5c17c5d1897d6d6@kernel.org>
-Content-Language: en-US
-Subject: Re: [PATCH v9 0/5] lib,kprobes: kretprobe scalability improvement
-In-Reply-To: <20230923175746.da3ab516a5c17c5d1897d6d6@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231008052101.144422-1-akihiko.odaki@daynix.com>
+In-Reply-To: <20231008052101.144422-1-akihiko.odaki@daynix.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Sun, 8 Oct 2023 20:36:56 +0200
+Message-ID: <CAF=yD-LnqYQ2qdiV+oygfHq5ZQb7QaSZ81XikzKjY8unfCTGRQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/7] tun: Introduce virtio-net hashing feature
+To:     Akihiko Odaki <akihiko.odaki@daynix.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, rdunlap@infradead.org, willemb@google.com,
+        gustavoars@kernel.org, herbert@gondor.apana.org.au,
+        steffen.klassert@secunet.com, nogikh@google.com,
+        pablo@netfilter.org, decui@microsoft.com, cai@lca.pw,
+        jakub@cloudflare.com, elver@google.com, pabeni@redhat.com,
+        Yuri Benditovich <yuri.benditovich@daynix.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/9/23 16:57, Masami Hiramatsu (Google) wrote:
-> Hi Wuqiang,
-> 
-> I dug my mail box and found this. Sorry for replying late.
-> 
-> On Tue,  5 Sep 2023 09:52:50 +0800
-> "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
-> 
->> This patch series introduces a scalable and lockless ring-array based
->> object pool and replaces the original freelist (a LIFO queue based on
->> singly linked list) to improve scalability of kretprobed routines.
->>
->> v9:
->>    1) objpool: raw_local_irq_save/restore added to prevent interruption
->>
->>       To avoid possible ABA issues, we must ensure objpool_try_add_slot
->>       and objpool_try_add_slot are uninterruptible. If these operations
->>       are blocked or interrupted in the middle, other cores could overrun
->>       the same slot's ages[] of uint32, then after resuming back, the
->>       interrupted pop() or push() could see same value of ages[], which
->>       is a typical ABA problem though the possibility is small.
->>
->>       The pair of pop()/push() costs about 8.53 cpu cycles, measured
->>       by IACA (Intel Architecture Code Analyzer). That is, on a 4Ghz
->>       core dedicated for pop() & push(), theoretically it would only
->>       need 8.53 seconds to overflow a 32bit value. Testings upon Intel
->>       i7-10700 (2.90GHz) cost 71.88 seconds to overrun a 32bit integer.
-> 
-> What does this mean? This sounds like "There is a timing issue if it's enough fast".
+On Sun, Oct 8, 2023 at 7:21=E2=80=AFAM Akihiko Odaki <akihiko.odaki@daynix.=
+com> wrote:
+>
+> virtio-net have two usage of hashes: one is RSS and another is hash
+> reporting. Conventionally the hash calculation was done by the VMM.
+> However, computing the hash after the queue was chosen defeats the
+> purpose of RSS.
+>
+> Another approach is to use eBPF steering program. This approach has
+> another downside: it cannot report the calculated hash due to the
+> restrictive nature of eBPF.
+>
+> Introduce the code to compute hashes to the kernel in order to overcome
+> thse challenges.
+>
+> An alternative solution is to extend the eBPF steering program so that it
+> will be able to report to the userspace, but it makes little sense to
+> allow to implement different hashing algorithms with eBPF since the hash
+> value reported by virtio-net is strictly defined by the specification.
 
-Yes, that's why local irq must be disabled. If push()/pop() is interrupted or 
-preempted long enough (> 10 seconds for the extreme cases), other nodes could
-overrun the same ages[] of 32-bit, then after resuming to execution the push()
-or pop() would see the same value without notifying the overrun, which is a
-typical ABA.
+But using the existing BPF steering may have the benefit of requiring
+a lot less new code.
 
-Changing ages[] to 64-bit could be a solution, but it's inappropriate for
-32-bit OS and looks too heavy. With local irg disabled, push() or pop() is
-uninterrupted，thus the ABA is avoided.
-
-push() or pop() consumes only ~4 cycles to complete (most of the use cases), 
-so raw_local_irq_save/restore are used instead of local_irq_save/restore to
-minimize the overhead.
-
-> Let me reivew the patch itself.
-> 
-> Thanks,
-> 
->>
->>    2) codes improvements: thanks to Masami for the thorough inspection
->>
->> v8:
->>    1) objpool: refcount added for objpool lifecycle management
->>
->> wuqiang.matt (5):
->>    lib: objpool added: ring-array based lockless MPMC
->>    lib: objpool test module added
->>    kprobes: kretprobe scalability improvement with objpool
->>    kprobes: freelist.h removed
->>    MAINTAINERS: objpool added
->>
->>   MAINTAINERS              |   7 +
->>   include/linux/freelist.h | 129 --------
->>   include/linux/kprobes.h  |  11 +-
->>   include/linux/objpool.h  | 174 ++++++++++
->>   include/linux/rethook.h  |  16 +-
->>   kernel/kprobes.c         |  93 +++---
->>   kernel/trace/fprobe.c    |  32 +-
->>   kernel/trace/rethook.c   |  90 +++--
->>   lib/Kconfig.debug        |  11 +
->>   lib/Makefile             |   4 +-
->>   lib/objpool.c            | 338 +++++++++++++++++++
->>   lib/test_objpool.c       | 689 +++++++++++++++++++++++++++++++++++++++
->>   12 files changed, 1320 insertions(+), 274 deletions(-)
->>   delete mode 100644 include/linux/freelist.h
->>   create mode 100644 include/linux/objpool.h
->>   create mode 100644 lib/objpool.c
->>   create mode 100644 lib/test_objpool.c
->>
->> -- 
->> 2.40.1
->>
-> 
-> 
-
-
+There is ample precedence for BPF programs that work this way. The
+flow dissector comes to mind.
