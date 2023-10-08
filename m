@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BFE17BCCB5
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 08:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F25F57BCCB7
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 08:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344442AbjJHG2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 02:28:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43778 "EHLO
+        id S1344451AbjJHG2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 02:28:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344425AbjJHG2r (ORCPT
+        with ESMTP id S1344425AbjJHG2t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 02:28:47 -0400
-Received: from mail-ot1-f80.google.com (mail-ot1-f80.google.com [209.85.210.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C94EC6
+        Sun, 8 Oct 2023 02:28:49 -0400
+Received: from mail-oo1-f77.google.com (mail-oo1-f77.google.com [209.85.161.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4007CF
         for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 23:28:45 -0700 (PDT)
-Received: by mail-ot1-f80.google.com with SMTP id 46e09a7af769-6c65c78d808so4551633a34.1
+Received: by mail-oo1-f77.google.com with SMTP id 006d021491bc7-57badc96ba6so4644246eaf.2
         for <linux-kernel@vger.kernel.org>; Sat, 07 Oct 2023 23:28:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1696746525; x=1697351325;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=kTnoTYhod3zndbGdr+YULxfAtxRV1V2QijDoEjygQ7k=;
-        b=pOG+esYbrdp1XzJKy5ni8J5PhVS4Hi/OcvOC/fWE2KHiM6YsmkeGP7h3w5+HQoH5qc
-         q+UdKw3aeqDgtKwJcW3PcTzq9S6Lt25HqtbB2nDnxzEO5XMNzTV3bh8TtF9Unpf+bku4
-         lhAe5Ab66W+vO+X29qY22XVOmbS1UC4RuRuSlcntMfuTVrIVlJ4QcnXgMPwi02+ntBx6
-         u26IIWpYRR8q6N/2fk4kvesq4/By/hElTb5F+6bX+zXLfWejwMKHB4T53C7SLsOxvA3x
-         MX92VERr7JrSC3oeRVTi/rAx92wlSGQRoNWKJ/uBLyMLDUfoHDY25sfld/w3ms0AfGBd
-         27MA==
-X-Gm-Message-State: AOJu0YwanTcKlEQkpAIQs2DOCMSKXEmAvwbpW2O8aRP3VuuoPD+CsBwB
-        Yijyrkn2m/Y6oqP1XHSD5rNmS4czxV2p7ma4d5x//Tam1jjMdVFWqg==
-X-Google-Smtp-Source: AGHT+IE5MBTqyMJf4qmSIC5rlsu4YPgQPooeM683GCA8bKc094aGCdF6FRCZhHL/KCVHg2hcSJKJhAdCQ1+EK3K4Oo/9SWxWSFWu
+        bh=IcgMww75S99xFdktqW21CfFoKt5XQ5CmscxpCVAwsKM=;
+        b=g+hg11xtNRDvTABuSe/Gz2LPyFJIe4R8v3YYXRXMs87TwDsq7NoT+5ILHW9XUI27HA
+         HnVcTtrrCG7mPs4Fua8BCzHaPs85ag3js/EhKHeKJTgdZOImwya/6RCor1GrUXvo+e5x
+         xV4WolEZQoET9vAbNNI0iZkAKffIKOClQgdVR4lgWoV7w75S6xIPUKOKt6bbG2SjDiut
+         yLKSfEcq2E/uexdhwEYy5qdmlJRYIBBKsHK8PPNvSF/qlXDzzzwKZw9lyAu+GTEcZt1R
+         l0l0hQqG+hnDUvVDt9OeeWrHOgU4HWn1sIKU+Gl0GPL67b9kqsCLDmaA2WMVJuPXzG2B
+         ROFA==
+X-Gm-Message-State: AOJu0YwNm3PabB9CXztq6dFctZTcCLSGBJOVT0EH3POtzIBD4z+sA+l/
+        K0Ag5B7PXSEgFc+zTpjjc+KUsh7I5iNCnbs352MWME09y3n6
+X-Google-Smtp-Source: AGHT+IHgFDcwxNgZODyXBeDii6FSvMv0C8cUoJi9cFJcXiVOj9RpAyUc/DlNyq5wEdP9u+H9LLIUI8G7fm/ll2tekORVDP3k5lal
 MIME-Version: 1.0
-X-Received: by 2002:a9d:6842:0:b0:6af:9f8b:c606 with SMTP id
- c2-20020a9d6842000000b006af9f8bc606mr3862814oto.0.1696746524902; Sat, 07 Oct
- 2023 23:28:44 -0700 (PDT)
-Date:   Sat, 07 Oct 2023 23:28:44 -0700
+X-Received: by 2002:a05:6870:7688:b0:1dc:6d26:9ff with SMTP id
+ dx8-20020a056870768800b001dc6d2609ffmr4642150oab.6.1696746525126; Sat, 07 Oct
+ 2023 23:28:45 -0700 (PDT)
+Date:   Sat, 07 Oct 2023 23:28:45 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e40a2906072e9567@google.com>
-Subject: [syzbot] [kernel?] possible deadlock in console_flush_all (2)
-From:   syzbot <syzbot+f78380e4eae53c64125c@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de
+Message-ID: <000000000000e7765006072e9591@google.com>
+Subject: [syzbot] [kernel?] possible deadlock in task_fork_fair
+From:   syzbot <syzbot+1a93ee5d329e97cfbaff@syzkaller.appspotmail.com>
+To:     bpf@vger.kernel.org, brauner@kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
@@ -60,9 +60,9 @@ syzbot found the following issue on:
 
 HEAD commit:    7d730f1bf6f3 Add linux-next specific files for 20231005
 git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=172d36e9680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1150d0de680000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=f532286be4fff4b5
-dashboard link: https://syzkaller.appspot.com/bug?extid=f78380e4eae53c64125c
+dashboard link: https://syzkaller.appspot.com/bug?extid=1a93ee5d329e97cfbaff
 compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
 Unfortunately, I don't have any reproducer for this issue yet.
@@ -73,17 +73,16 @@ vmlinux: https://storage.googleapis.com/syzbot-assets/d454d124268e/vmlinux-7d730
 kernel image: https://storage.googleapis.com/syzbot-assets/dbca966175cb/bzImage-7d730f1b.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f78380e4eae53c64125c@syzkaller.appspotmail.com
+Reported-by: syzbot+1a93ee5d329e97cfbaff@syzkaller.appspotmail.com
 
 EEVDF scheduling fail, picking leftmost
 ======================================================
 WARNING: possible circular locking dependency detected
 6.6.0-rc4-next-20231005-syzkaller #0 Not tainted
 ------------------------------------------------------
-syz-executor.0/5232 is trying to acquire lock:
-ffffffff8cab8560 (console_owner){....}-{0:0}, at: console_lock_spinning_enable kernel/printk/printk.c:1855 [inline]
-ffffffff8cab8560 (console_owner){....}-{0:0}, at: console_emit_next_record kernel/printk/printk.c:2888 [inline]
-ffffffff8cab8560 (console_owner){....}-{0:0}, at: console_flush_all+0x49a/0xd50 kernel/printk/printk.c:2960
+syz-executor.4/5092 is trying to acquire lock:
+ffffffff8cab8560 (console_owner){....}-{0:0}, at: console_trylock_spinning kernel/printk/printk.c:1963 [inline]
+ffffffff8cab8560 (console_owner){....}-{0:0}, at: vprintk_emit+0x313/0x5f0 kernel/printk/printk.c:2303
 
 but task is already holding lock:
 ffff8880b993c718 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x29/0x130 kernel/sched/core.c:558
@@ -93,7 +92,7 @@ which lock already depends on the new lock.
 
 the existing dependency chain (in reverse order) is:
 
--> #4 (&rq->__lock){-.-.}-{2:2}:
+-> #5 (&rq->__lock){-.-.}-{2:2}:
        _raw_spin_lock_nested+0x31/0x40 kernel/locking/spinlock.c:378
        raw_spin_rq_lock_nested+0x29/0x130 kernel/sched/core.c:558
        raw_spin_rq_lock kernel/sched/sched.h:1357 [inline]
@@ -110,78 +109,79 @@ the existing dependency chain (in reverse order) is:
        x86_64_start_kernel+0xb2/0xc0 arch/x86/kernel/head64.c:537
        secondary_startup_64_no_verify+0x166/0x16b
 
--> #3 (&p->pi_lock){-.-.}-{2:2}:
+-> #4 (&p->pi_lock){-.-.}-{2:2}:
        __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
        _raw_spin_lock_irqsave+0x3a/0x50 kernel/locking/spinlock.c:162
        class_raw_spinlock_irqsave_constructor include/linux/spinlock.h:518 [inline]
        try_to_wake_up+0xb0/0x15d0 kernel/sched/core.c:4213
-       __wake_up_common+0x140/0x5a0 kernel/sched/wait.c:107
-       __wake_up_common_lock+0xd6/0x140 kernel/sched/wait.c:138
-       tty_port_default_wakeup+0x2a/0x40 drivers/tty/tty_port.c:69
-       serial8250_tx_chars+0x542/0xf60 drivers/tty/serial/8250/8250_port.c:1842
-       serial8250_handle_irq+0x606/0xbe0 drivers/tty/serial/8250/8250_port.c:1949
-       serial8250_default_handle_irq+0x94/0x210 drivers/tty/serial/8250/8250_port.c:1969
-       serial8250_interrupt+0xfc/0x200 drivers/tty/serial/8250/8250_core.c:127
-       __handle_irq_event_percpu+0x22a/0x740 kernel/irq/handle.c:158
-       handle_irq_event_percpu kernel/irq/handle.c:193 [inline]
-       handle_irq_event+0xab/0x1e0 kernel/irq/handle.c:210
-       handle_edge_irq+0x261/0xcf0 kernel/irq/chip.c:831
-       generic_handle_irq_desc include/linux/irqdesc.h:161 [inline]
-       handle_irq arch/x86/kernel/irq.c:238 [inline]
-       __common_interrupt+0xdb/0x240 arch/x86/kernel/irq.c:257
-       common_interrupt+0xa9/0xd0 arch/x86/kernel/irq.c:247
-       asm_common_interrupt+0x26/0x40 arch/x86/include/asm/idtentry.h:636
-       __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:151 [inline]
-       _raw_spin_unlock_irqrestore+0x31/0x70 kernel/locking/spinlock.c:194
-       spin_unlock_irqrestore include/linux/spinlock.h:406 [inline]
-       uart_port_unlock_irqrestore include/linux/serial_core.h:667 [inline]
-       serial_port_runtime_resume+0x2ae/0x330 drivers/tty/serial/serial_port.c:41
-       __rpm_callback+0xc5/0x4c0 drivers/base/power/runtime.c:392
-       rpm_callback+0x1da/0x220 drivers/base/power/runtime.c:446
-       rpm_resume+0xdb5/0x1980 drivers/base/power/runtime.c:912
-       pm_runtime_work+0x12e/0x180 drivers/base/power/runtime.c:977
-       process_one_work+0x884/0x15c0 kernel/workqueue.c:2630
-       process_scheduled_works kernel/workqueue.c:2703 [inline]
-       worker_thread+0x8b9/0x1290 kernel/workqueue.c:2784
-       kthread+0x33c/0x440 kernel/kthread.c:388
+       kick_pool+0x253/0x460 kernel/workqueue.c:1142
+       create_worker+0x45e/0x710 kernel/workqueue.c:2217
+       workqueue_init+0x319/0x830 kernel/workqueue.c:6686
+       kernel_init_freeable+0x332/0x900 init/main.c:1532
+       kernel_init+0x1c/0x2a0 init/main.c:1437
        ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
        ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
 
--> #2 (&tty->write_wait){-...}-{2:2}:
+-> #3 (&pool->lock){-.-.}-{2:2}:
+       __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+       _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+       __queue_work+0x399/0x1050 kernel/workqueue.c:1763
+       queue_work_on+0xed/0x110 kernel/workqueue.c:1834
+       queue_work include/linux/workqueue.h:554 [inline]
+       rpm_suspend+0x1219/0x16f0 drivers/base/power/runtime.c:660
+       rpm_idle+0x574/0x6e0 drivers/base/power/runtime.c:534
+       __pm_runtime_idle+0xbe/0x160 drivers/base/power/runtime.c:1102
+       pm_runtime_put include/linux/pm_runtime.h:460 [inline]
+       __device_attach+0x382/0x4b0 drivers/base/dd.c:1048
+       bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
+       device_add+0x117e/0x1aa0 drivers/base/core.c:3624
+       serial_base_port_add+0x353/0x4b0 drivers/tty/serial/serial_base_bus.c:178
+       serial_core_port_device_add drivers/tty/serial/serial_core.c:3315 [inline]
+       serial_core_register_port+0x137/0x1af0 drivers/tty/serial/serial_core.c:3356
+       serial8250_register_8250_port+0x140d/0x2080 drivers/tty/serial/8250/8250_core.c:1139
+       serial_pnp_probe+0x47d/0x880 drivers/tty/serial/8250/8250_pnp.c:478
+       pnp_device_probe+0x2a3/0x4c0 drivers/pnp/driver.c:111
+       call_driver_probe drivers/base/dd.c:579 [inline]
+       really_probe+0x234/0xc90 drivers/base/dd.c:658
+       __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
+       driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
+       __driver_attach+0x274/0x570 drivers/base/dd.c:1216
+       bus_for_each_dev+0x13c/0x1d0 drivers/base/bus.c:368
+       bus_add_driver+0x2e9/0x630 drivers/base/bus.c:673
+       driver_register+0x15c/0x4a0 drivers/base/driver.c:246
+       serial8250_init+0xba/0x4b0 drivers/tty/serial/8250/8250_core.c:1240
+       do_one_initcall+0x11c/0x640 init/main.c:1232
+       do_initcall_level init/main.c:1294 [inline]
+       do_initcalls init/main.c:1310 [inline]
+       do_basic_setup init/main.c:1329 [inline]
+       kernel_init_freeable+0x5c2/0x900 init/main.c:1547
+       kernel_init+0x1c/0x2a0 init/main.c:1437
+       ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+
+-> #2 (&dev->power.lock){-.-.}-{2:2}:
        __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
        _raw_spin_lock_irqsave+0x3a/0x50 kernel/locking/spinlock.c:162
-       __wake_up_common_lock+0xbb/0x140 kernel/sched/wait.c:137
-       tty_port_default_wakeup+0x2a/0x40 drivers/tty/tty_port.c:69
-       serial8250_tx_chars+0x542/0xf60 drivers/tty/serial/8250/8250_port.c:1842
-       serial8250_handle_irq+0x606/0xbe0 drivers/tty/serial/8250/8250_port.c:1949
-       serial8250_default_handle_irq+0x94/0x210 drivers/tty/serial/8250/8250_port.c:1969
-       serial8250_interrupt+0xfc/0x200 drivers/tty/serial/8250/8250_core.c:127
-       __handle_irq_event_percpu+0x22a/0x740 kernel/irq/handle.c:158
-       handle_irq_event_percpu kernel/irq/handle.c:193 [inline]
-       handle_irq_event+0xab/0x1e0 kernel/irq/handle.c:210
-       handle_edge_irq+0x261/0xcf0 kernel/irq/chip.c:831
-       generic_handle_irq_desc include/linux/irqdesc.h:161 [inline]
-       handle_irq arch/x86/kernel/irq.c:238 [inline]
-       __common_interrupt+0xdb/0x240 arch/x86/kernel/irq.c:257
-       common_interrupt+0xa9/0xd0 arch/x86/kernel/irq.c:247
-       asm_common_interrupt+0x26/0x40 arch/x86/include/asm/idtentry.h:636
-       __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:151 [inline]
-       _raw_spin_unlock_irqrestore+0x31/0x70 kernel/locking/spinlock.c:194
-       spin_unlock_irqrestore include/linux/spinlock.h:406 [inline]
-       uart_port_unlock_irqrestore include/linux/serial_core.h:667 [inline]
-       serial_port_runtime_resume+0x2ae/0x330 drivers/tty/serial/serial_port.c:41
-       __rpm_callback+0xc5/0x4c0 drivers/base/power/runtime.c:392
-       rpm_callback+0x1da/0x220 drivers/base/power/runtime.c:446
-       rpm_resume+0xdb5/0x1980 drivers/base/power/runtime.c:912
-       pm_runtime_work+0x12e/0x180 drivers/base/power/runtime.c:977
-       process_one_work+0x884/0x15c0 kernel/workqueue.c:2630
-       process_scheduled_works kernel/workqueue.c:2703 [inline]
-       worker_thread+0x8b9/0x1290 kernel/workqueue.c:2784
-       kthread+0x33c/0x440 kernel/kthread.c:388
-       ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
-       ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+       __pm_runtime_resume+0xab/0x170 drivers/base/power/runtime.c:1169
+       pm_runtime_get include/linux/pm_runtime.h:408 [inline]
+       __uart_start+0x1b0/0x420 drivers/tty/serial/serial_core.c:148
+       uart_write+0x2ff/0x5b0 drivers/tty/serial/serial_core.c:618
+       process_output_block drivers/tty/n_tty.c:574 [inline]
+       n_tty_write+0x422/0x1130 drivers/tty/n_tty.c:2379
+       iterate_tty_write drivers/tty/tty_io.c:1017 [inline]
+       file_tty_write.constprop.0+0x519/0x9b0 drivers/tty/tty_io.c:1088
+       tty_write drivers/tty/tty_io.c:1109 [inline]
+       redirected_tty_write drivers/tty/tty_io.c:1132 [inline]
+       redirected_tty_write+0xa6/0xc0 drivers/tty/tty_io.c:1112
+       call_write_iter include/linux/fs.h:1966 [inline]
+       new_sync_write fs/read_write.c:491 [inline]
+       vfs_write+0x64f/0xe40 fs/read_write.c:584
+       ksys_write+0x12f/0x250 fs/read_write.c:637
+       do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+       do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
--> #1 (&port_lock_key){-...}-{2:2}:
+-> #1 (&port_lock_key){-.-.}-{2:2}:
        __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
        _raw_spin_lock_irqsave+0x3a/0x50 kernel/locking/spinlock.c:162
        uart_port_lock_irqsave include/linux/serial_core.h:616 [inline]
@@ -207,30 +207,38 @@ the existing dependency chain (in reverse order) is:
        __lock_acquire+0x2e3d/0x5de0 kernel/locking/lockdep.c:5136
        lock_acquire kernel/locking/lockdep.c:5753 [inline]
        lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5718
-       console_lock_spinning_enable kernel/printk/printk.c:1855 [inline]
-       console_emit_next_record kernel/printk/printk.c:2888 [inline]
-       console_flush_all+0x4af/0xd50 kernel/printk/printk.c:2960
-       console_unlock+0x10c/0x260 kernel/printk/printk.c:3029
-       vprintk_emit+0x17f/0x5f0 kernel/printk/printk.c:2304
+       console_trylock_spinning kernel/printk/printk.c:1963 [inline]
+       vprintk_emit+0x328/0x5f0 kernel/printk/printk.c:2303
        vprintk+0x7b/0x90 kernel/printk/printk_safe.c:45
        _printk+0xc8/0x100 kernel/printk/printk.c:2329
        pick_eevdf kernel/sched/fair.c:963 [inline]
        pick_next_entity kernel/sched/fair.c:5247 [inline]
-       pick_next_task_fair kernel/sched/fair.c:8244 [inline]
-       __pick_next_task_fair+0xe2/0x540 kernel/sched/fair.c:8297
-       __pick_next_task kernel/sched/core.c:6003 [inline]
-       __pick_next_task kernel/sched/core.c:5972 [inline]
+       pick_next_task_fair+0x1c5/0x1280 kernel/sched/fair.c:8205
+       __pick_next_task kernel/sched/core.c:5986 [inline]
        pick_next_task kernel/sched/core.c:6061 [inline]
-       __schedule+0x38d5/0x5a00 kernel/sched/core.c:6640
+       __schedule+0x493/0x5a00 kernel/sched/core.c:6640
        __schedule_loop kernel/sched/core.c:6753 [inline]
        schedule+0xe7/0x270 kernel/sched/core.c:6768
-       futex_wait_queue+0xfe/0x1f0 kernel/futex/waitwake.c:369
-       __futex_wait+0x292/0x3c0 kernel/futex/waitwake.c:668
-       futex_wait+0xea/0x380 kernel/futex/waitwake.c:696
-       do_futex+0x227/0x350 kernel/futex/syscalls.c:102
-       __do_sys_futex kernel/futex/syscalls.c:179 [inline]
-       __se_sys_futex kernel/futex/syscalls.c:160 [inline]
-       __x64_sys_futex+0x1e1/0x4c0 kernel/futex/syscalls.c:160
+       schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6825
+       __mutex_lock_common kernel/locking/mutex.c:679 [inline]
+       __mutex_lock+0x969/0x1340 kernel/locking/mutex.c:747
+       ieee80211_register_hw+0x26d0/0x4260 net/mac80211/main.c:1408
+       mac80211_hwsim_new_radio+0x24cf/0x4cb0 drivers/net/wireless/virtual/mac80211_hwsim.c:5304
+       hwsim_new_radio_nl+0xaf8/0x1240 drivers/net/wireless/virtual/mac80211_hwsim.c:5985
+       genl_family_rcv_msg_doit+0x1fc/0x2e0 net/netlink/genetlink.c:971
+       genl_family_rcv_msg net/netlink/genetlink.c:1051 [inline]
+       genl_rcv_msg+0x55c/0x800 net/netlink/genetlink.c:1066
+       netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2545
+       genl_rcv+0x28/0x40 net/netlink/genetlink.c:1075
+       netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
+       netlink_unicast+0x536/0x810 net/netlink/af_netlink.c:1368
+       netlink_sendmsg+0x93c/0xe40 net/netlink/af_netlink.c:1910
+       sock_sendmsg_nosec net/socket.c:730 [inline]
+       __sock_sendmsg+0xd5/0x180 net/socket.c:745
+       __sys_sendto+0x255/0x340 net/socket.c:2194
+       __do_sys_sendto net/socket.c:2206 [inline]
+       __se_sys_sendto net/socket.c:2202 [inline]
+       __x64_sys_sendto+0xe0/0x1b0 net/socket.c:2202
        do_syscall_x64 arch/x86/entry/common.c:51 [inline]
        do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
        entry_SYSCALL_64_after_hwframe+0x63/0xcd
@@ -251,17 +259,17 @@ Chain exists of:
 
  *** DEADLOCK ***
 
-3 locks held by syz-executor.0/5232:
- #0: ffff8880b993c718 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x29/0x130 kernel/sched/core.c:558
- #1: ffffffff8cb989a0 (console_lock){+.+.}-{0:0}, at: console_trylock_spinning kernel/printk/printk.c:1924 [inline]
- #1: ffffffff8cb989a0 (console_lock){+.+.}-{0:0}, at: vprintk_emit+0x162/0x5f0 kernel/printk/printk.c:2303
- #2: ffffffff8cb98a10 (console_srcu){....}-{0:0}, at: rcu_lock_acquire include/linux/rcupdate.h:303 [inline]
- #2: ffffffff8cb98a10 (console_srcu){....}-{0:0}, at: srcu_read_lock_nmisafe include/linux/srcu.h:232 [inline]
- #2: ffffffff8cb98a10 (console_srcu){....}-{0:0}, at: console_srcu_read_lock kernel/printk/printk.c:286 [inline]
- #2: ffffffff8cb98a10 (console_srcu){....}-{0:0}, at: console_flush_all+0x12a/0xd50 kernel/printk/printk.c:2952
+4 locks held by syz-executor.4/5092:
+ #0: ffffffff8e6a8450 (cb_lock){++++}-{3:3}, at: genl_rcv+0x19/0x40 net/netlink/genetlink.c:1074
+ #1: ffffffff8e6a8508 (genl_mutex){+.+.}-{3:3}, at: genl_lock net/netlink/genetlink.c:33 [inline]
+ #1: ffffffff8e6a8508 (genl_mutex){+.+.}-{3:3}, at: genl_op_lock net/netlink/genetlink.c:58 [inline]
+ #1: ffffffff8e6a8508 (genl_mutex){+.+.}-{3:3}, at: genl_op_lock net/netlink/genetlink.c:55 [inline]
+ #1: ffffffff8e6a8508 (genl_mutex){+.+.}-{3:3}, at: genl_rcv_msg+0x577/0x800 net/netlink/genetlink.c:1065
+ #2: ffffffff8e60db28 (rtnl_mutex){+.+.}-{3:3}, at: ieee80211_register_hw+0x26d0/0x4260 net/mac80211/main.c:1408
+ #3: ffff8880b993c718 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x29/0x130 kernel/sched/core.c:558
 
 stack backtrace:
-CPU: 1 PID: 5232 Comm: syz-executor.0 Not tainted 6.6.0-rc4-next-20231005-syzkaller #0
+CPU: 1 PID: 5092 Comm: syz-executor.4 Not tainted 6.6.0-rc4-next-20231005-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
 Call Trace:
  <TASK>
@@ -274,42 +282,51 @@ Call Trace:
  __lock_acquire+0x2e3d/0x5de0 kernel/locking/lockdep.c:5136
  lock_acquire kernel/locking/lockdep.c:5753 [inline]
  lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5718
- console_lock_spinning_enable kernel/printk/printk.c:1855 [inline]
- console_emit_next_record kernel/printk/printk.c:2888 [inline]
- console_flush_all+0x4af/0xd50 kernel/printk/printk.c:2960
- console_unlock+0x10c/0x260 kernel/printk/printk.c:3029
- vprintk_emit+0x17f/0x5f0 kernel/printk/printk.c:2304
+ console_trylock_spinning kernel/printk/printk.c:1963 [inline]
+ vprintk_emit+0x328/0x5f0 kernel/printk/printk.c:2303
  vprintk+0x7b/0x90 kernel/printk/printk_safe.c:45
  _printk+0xc8/0x100 kernel/printk/printk.c:2329
  pick_eevdf kernel/sched/fair.c:963 [inline]
  pick_next_entity kernel/sched/fair.c:5247 [inline]
- pick_next_task_fair kernel/sched/fair.c:8244 [inline]
- __pick_next_task_fair+0xe2/0x540 kernel/sched/fair.c:8297
- __pick_next_task kernel/sched/core.c:6003 [inline]
- __pick_next_task kernel/sched/core.c:5972 [inline]
+ pick_next_task_fair+0x1c5/0x1280 kernel/sched/fair.c:8205
+ __pick_next_task kernel/sched/core.c:5986 [inline]
  pick_next_task kernel/sched/core.c:6061 [inline]
- __schedule+0x38d5/0x5a00 kernel/sched/core.c:6640
+ __schedule+0x493/0x5a00 kernel/sched/core.c:6640
  __schedule_loop kernel/sched/core.c:6753 [inline]
  schedule+0xe7/0x270 kernel/sched/core.c:6768
- futex_wait_queue+0xfe/0x1f0 kernel/futex/waitwake.c:369
- __futex_wait+0x292/0x3c0 kernel/futex/waitwake.c:668
- futex_wait+0xea/0x380 kernel/futex/waitwake.c:696
- do_futex+0x227/0x350 kernel/futex/syscalls.c:102
- __do_sys_futex kernel/futex/syscalls.c:179 [inline]
- __se_sys_futex kernel/futex/syscalls.c:160 [inline]
- __x64_sys_futex+0x1e1/0x4c0 kernel/futex/syscalls.c:160
+ schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6825
+ __mutex_lock_common kernel/locking/mutex.c:679 [inline]
+ __mutex_lock+0x969/0x1340 kernel/locking/mutex.c:747
+ ieee80211_register_hw+0x26d0/0x4260 net/mac80211/main.c:1408
+ mac80211_hwsim_new_radio+0x24cf/0x4cb0 drivers/net/wireless/virtual/mac80211_hwsim.c:5304
+ hwsim_new_radio_nl+0xaf8/0x1240 drivers/net/wireless/virtual/mac80211_hwsim.c:5985
+ genl_family_rcv_msg_doit+0x1fc/0x2e0 net/netlink/genetlink.c:971
+ genl_family_rcv_msg net/netlink/genetlink.c:1051 [inline]
+ genl_rcv_msg+0x55c/0x800 net/netlink/genetlink.c:1066
+ netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2545
+ genl_rcv+0x28/0x40 net/netlink/genetlink.c:1075
+ netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
+ netlink_unicast+0x536/0x810 net/netlink/af_netlink.c:1368
+ netlink_sendmsg+0x93c/0xe40 net/netlink/af_netlink.c:1910
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0xd5/0x180 net/socket.c:745
+ __sys_sendto+0x255/0x340 net/socket.c:2194
+ __do_sys_sendto net/socket.c:2206 [inline]
+ __se_sys_sendto net/socket.c:2202 [inline]
+ __x64_sys_sendto+0xe0/0x1b0 net/socket.c:2202
  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f7af7e7cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f7af8af7178 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: ffffffffffffffda RBX: 00007f7af7f9bf88 RCX: 00007f7af7e7cae9
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007f7af7f9bf88
-RBP: 00007f7af7f9bf80 R08: 00007f7af8af76c0 R09: 00007f7af8af76c0
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f7af7f9bf8c
-R13: 000000000000000b R14: 00007fff1e139c80 R15: 00007fff1e139d68
+RIP: 0033:0x7f6ec907e7dc
+Code: 1a 51 02 00 44 8b 4c 24 2c 4c 8b 44 24 20 89 c5 44 8b 54 24 28 48 8b 54 24 18 b8 2c 00 00 00 48 8b 74 24 10 8b 7c 24 08 0f 05 <48> 3d 00 f0 ff ff 77 34 89 ef 48 89 44 24 08 e8 60 51 02 00 48 8b
+RSP: 002b:00007fff330e2f40 EFLAGS: 00000293 ORIG_RAX: 000000000000002c
+RAX: ffffffffffffffda RBX: 00007f6ec9cc4620 RCX: 00007f6ec907e7dc
+RDX: 0000000000000024 RSI: 00007f6ec9cc4670 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 00007fff330e2f94 R09: 000000000000000c
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000001
+R13: 0000000000000000 R14: 00007f6ec9cc4670 R15: 0000000000000000
  </TASK>
+ieee80211 phy14: Selected rate control algorithm 'minstrel_ht'
 
 
 ---
