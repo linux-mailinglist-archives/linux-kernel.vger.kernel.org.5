@@ -2,53 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E31BB7BD0EC
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 00:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7648A7BD0FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 00:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344876AbjJHW3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 18:29:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53618 "EHLO
+        id S1344905AbjJHWqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 18:46:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344437AbjJHW33 (ORCPT
+        with ESMTP id S1344886AbjJHWqC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 18:29:29 -0400
+        Sun, 8 Oct 2023 18:46:02 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7159BA3;
-        Sun,  8 Oct 2023 15:29:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC245C433C7;
-        Sun,  8 Oct 2023 22:29:24 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1181AA3;
+        Sun,  8 Oct 2023 15:46:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71A95C433C7;
+        Sun,  8 Oct 2023 22:45:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696804167;
-        bh=/YmEAaMKXea2h3RFQj0heMwVmlKcgwyx3HWrdcuv5Is=;
+        s=k20201202; t=1696805160;
+        bh=kotJJ9gsZkQcnHWqrlxm2deUqRwlycTaO/tg2RqNNko=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=GwB+tSsrg70utOUtt1D0VO5lZdsaGrmMXVpA/dER1oCQhI2Ww/FuiyUS2Gle9gJys
-         QjFBdDWAfPqtSvamPEuyY/k86sh4yrTazXkCx+7ZolsON/WLTecZGpMZMA3dMgbxvq
-         O8mVSr27Y0ZKGwNpU/jEaftN+LPjVOxjT2ar3JhPh62Pm0mi2p6auuynxGOOqF1NTL
-         4IEmI+W3HzuXrXFHDQBxunpCR3Z9ecXhcT49UkfuhY18//05T4b8EkSV++6cRVkGN+
-         nHv1bN8Pz+d+XY9aCe58pRFzLEpPrBGplBRRMa7KTSkdLde4LyELPAy67QRbkIgDPC
-         uoNjsyyeTbk+Q==
-Message-ID: <2d9156ac-f524-4ab8-016d-c0882b0ef307@kernel.org>
-Date:   Mon, 9 Oct 2023 07:29:22 +0900
+        b=n2k3nv66A7YBlXrB+jn/PMmf6Kbwu1QoO5H+tphBlky4GMOjW4R7XqmXs/eNXcmr1
+         hk4vuH7fVWuNoawxFa3MyQCO871yng630/NymD5hLqsIbrp6D6U5byi4+F97ZINg2V
+         6rwvVDTbqifL2wF/faMWkaLEFQvPfkqhB7m77IVtYb2pBeU0Npu3q40mrz5lvuaYRr
+         ciqDwM3eNE/Z38lx+7CXnXA1RETJDcJ/4mJyLEVgCupZjXLLslt/Q8DNTQqzPn6s0q
+         YSCaeMuriz9y7ylXS8teEJ8gv2AsaNeXUzW2Q63zlLa7mMVD3MahYpIz2qXMGaxGzh
+         lVqAk/rR2bYFQ==
+Message-ID: <729f0d44-7db9-46d2-bdee-9a58022d9229@kernel.org>
+Date:   Mon, 9 Oct 2023 07:45:55 +0900
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] PM / devfreq: exynos-ppmu: Use device_get_match_data()
-Content-Language: en-US
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] clk: Use device_get_match_data()
 To:     Rob Herring <robh@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        David Lechner <david@lechnology.com>,
+        Sekhar Nori <nsekhar@ti.com>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Heiko Stuebner <heiko@sntech.de>,
         Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>
-Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231006213854.333261-1-robh@kernel.org>
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Tero Kristo <kristo@kernel.org>
+Cc:     patches@opensource.cirrus.com, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org
+References: <20231006213959.334439-1-robh@kernel.org>
 From:   Chanwoo Choi <chanwoo@kernel.org>
-In-Reply-To: <20231006213854.333261-1-robh@kernel.org>
+Content-Language: en-US
+In-Reply-To: <20231006213959.334439-1-robh@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,59 +69,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23. 10. 7. 06:38, Rob Herring wrote:
+On 23. 10. 7. 06:39, Rob Herring wrote:
 > Use preferred device_get_match_data() instead of of_match_device() to
 > get the driver match data. With this, adjust the includes to explicitly
 > include the correct headers.
 > 
 > Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
->  drivers/devfreq/event/exynos-ppmu.c | 13 +++----------
->  1 file changed, 3 insertions(+), 10 deletions(-)
+>  drivers/clk/clk-lochnagar.c             |  9 ++-------
+>  drivers/clk/davinci/da8xx-cfgchip.c     |  8 +++-----
+>  drivers/clk/davinci/pll.c               | 10 +++-------
+>  drivers/clk/davinci/psc.c               | 10 +++-------
+>  drivers/clk/qcom/gcc-msm8960.c          | 13 +++++--------
+>  drivers/clk/qcom/gcc-msm8974.c          | 10 +++-------
+>  drivers/clk/qcom/kpss-xcc.c             |  9 ++-------
+>  drivers/clk/qcom/krait-cc.c             | 14 +++++---------
+>  drivers/clk/qcom/mmcc-msm8960.c         | 16 +++++-----------
+>  drivers/clk/qcom/mmcc-sdm660.c          |  8 ++------
+>  drivers/clk/rockchip/clk-rk3399.c       |  9 ++-------
+>  drivers/clk/samsung/clk-exynos-clkout.c |  8 +++-----
+>  drivers/clk/ti/adpll.c                  | 14 ++++----------
+>  13 files changed, 42 insertions(+), 96 deletions(-)
 > 
-> diff --git a/drivers/devfreq/event/exynos-ppmu.c b/drivers/devfreq/event/exynos-ppmu.c
-> index 896a6cc93b00..56bac4702006 100644
-> --- a/drivers/devfreq/event/exynos-ppmu.c
-> +++ b/drivers/devfreq/event/exynos-ppmu.c
-> @@ -12,9 +12,9 @@
->  #include <linux/io.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
-> -#include <linux/of_address.h>
-> -#include <linux/of_device.h>
-> +#include <linux/of.h>
->  #include <linux/platform_device.h>
-> +#include <linux/property.h>
->  #include <linux/regmap.h>
->  #include <linux/suspend.h>
->  #include <linux/devfreq-event.h>
-> @@ -507,7 +507,6 @@ static int of_get_devfreq_events(struct device_node *np,
->  	struct device *dev = info->dev;
->  	struct device_node *events_np, *node;
->  	int i, j, count;
-> -	const struct of_device_id *of_id;
->  	int ret;
->  
->  	events_np = of_get_child_by_name(np, "events");
-> @@ -525,13 +524,7 @@ static int of_get_devfreq_events(struct device_node *np,
->  	}
->  	info->num_events = count;
->  
-> -	of_id = of_match_device(exynos_ppmu_id_match, dev);
-> -	if (of_id)
-> -		info->ppmu_type = (enum exynos_ppmu_type)of_id->data;
-> -	else {
-> -		of_node_put(events_np);
-> -		return -EINVAL;
-> -	}
-> +	info->ppmu_type = (enum exynos_ppmu_type)device_get_match_data(dev);
->  
->  	j = 0;
->  	for_each_child_of_node(events_np, node) {
 
+For samsung exynos,
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
 
-Applied it.
-Thanks.
 -- 
 Best Regards,
 Samsung Electronics
