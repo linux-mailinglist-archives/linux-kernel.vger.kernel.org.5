@@ -2,50 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9067BCEDC
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 16:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C82DB7BCEDF
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 16:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344882AbjJHOIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 10:08:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60440 "EHLO
+        id S1344887AbjJHOLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 10:11:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344849AbjJHOIt (ORCPT
+        with ESMTP id S230303AbjJHOLQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 10:08:49 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB984A4;
-        Sun,  8 Oct 2023 07:08:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=wmFHnrq2vm7ZZb21NIE4ZIne9K2JfxgkcpFShgCSvo8=; b=WycHbR/PvR1N4lh9e1WrGNTVGZ
-        LVDkRSsUe+dkZW6HlP4gFQy8kP4iI/TwDkj09DG+Iv/LgOvb4hc22pqpU+PP8peNW44pxLvBynIfA
-        WaEYY7iQGVn12vgNGKAVn+wvMRnd5gFkNE/l2CCzm0Bpwq5ciN8cLI5SJAGIsiP7jhFjmuM0+lek4
-        ayfD5K82/4VgQkbemkvCeeei5Wbby039dkaqUAnjJi93HNOxh72kgsFSTJxRnLZ7JYEZd9dEurOWI
-        1SaIXJ25mvP6kt3k4hMYsZaGxvIrHObcr14xmi6cHNwv1WZWPjoJO4MfYefRAsCtIQMdtTu1lpHAT
-        C7nxWzQQ==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qpUSd-008vvc-2S;
-        Sun, 08 Oct 2023 14:08:47 +0000
-Message-ID: <22bc05d3-86e9-4cf6-aec6-10d11df1acc3@infradead.org>
-Date:   Sun, 8 Oct 2023 07:08:47 -0700
+        Sun, 8 Oct 2023 10:11:16 -0400
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FCFE99
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 07:11:15 -0700 (PDT)
+Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-57b635e3fd9so1755160eaf.3
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 07:11:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696774274; x=1697379074; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XyEKxcvwY7znmPwndnO8wEBvpz3VAnMCyGn/RSrU7oc=;
+        b=UsFH9XH3PFyvFYiaINm6OOgG0U4m4OMa/0I2x2iTzdLUDhQD6ZSZU646rpweIyxBqE
+         q/P5oDOcaYNg4A5L83hLULENXx70lTFXuyemViE5lUT6lAZ/sCjo1AnYq1BpRyx2oeqw
+         mQyqpfI6rq7DW2GOmzMRGg9l6YYTG7BbIgu1cAlzUAJaWoVcUC3UPBiad2Kf0p6HyV86
+         9C1GD0dU47cVoDNTTxvvSOYoj3oQjKseU8ZIztOmISs7/s2RGPBG0C//nj2PGVWXHD8B
+         DLSmNvuKLSPm+hQOvM9QzDYWwjoCHqPGc579OPDXC8jUyUKPIIPyElxkaJTMQI+R7bQq
+         OUNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696774274; x=1697379074;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XyEKxcvwY7znmPwndnO8wEBvpz3VAnMCyGn/RSrU7oc=;
+        b=BuxA+KlPsOx21ZmNZS4HeV19JT7ZjPbAv+5Q/1ClV+G+BGSBTEh/sfwY0w/FzcoUVM
+         AeqWpS+yo04XRW66TQUoUaG7jE69G1boEK3cc8JH2n3OrQXBT5t5dRRoCmw1Y6hlaywk
+         Ix/b6saxD6W5fppuOYxgiqG1DDxXHxprAXvQuDUqKAZnbcnRp+a7AfV5qdEJ1518Tnpf
+         E0sPYCrIrDd8DU4TTUq0QWw7dJOnXuLTMKt1kLPNyuG1ynq6aMYwKluZaQZ54v8TkSsA
+         J3AQQCFKCfgpVPJKeiNJyRAawzTBhVvgyaFKV9eyARilttR5QGybeEo0sD9knKMCzr8a
+         KpGg==
+X-Gm-Message-State: AOJu0YyVxMTM/SNQhw54j53wI9hFnKl4aBmQFReEbWi4LYYKbM0jGW6I
+        WS03K1A2i42vT4XheP3CXMU=
+X-Google-Smtp-Source: AGHT+IG+CkVWDZM4qbJZPGKsfqeGKlF2EUxOaaCzInK5BXwAXjPI7BtZrZDAcVJa8xl9T/W6Kr6cOQ==
+X-Received: by 2002:a05:6358:918b:b0:14f:3874:2746 with SMTP id j11-20020a056358918b00b0014f38742746mr10423698rwa.23.1696774274421;
+        Sun, 08 Oct 2023 07:11:14 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id l19-20020a639853000000b0056b6d1ac949sm6374825pgo.13.2023.10.08.07.11.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Oct 2023 07:11:13 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 3F79F81B12C1; Sun,  8 Oct 2023 21:11:04 +0700 (WIB)
+Date:   Sun, 8 Oct 2023 21:11:04 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
+        kherbst@redhat.com, lyude@redhat.com, dakr@redhat.com,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/nouveau: fix kernel-doc warning
+Message-ID: <ZSK4eNUPYIqPF3fM@debian.me>
+References: <20231008070618.20640-1-bragathemanick0908@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH] ssb: relax SSB_EMBEDDED dependencies
-Content-Language: en-US
-To:     =?UTF-8?Q?Michael_B=C3=BCsch?= <m@bues.ch>
-Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
-References: <20231007182443.32300-1-rdunlap@infradead.org>
- <20231008093520.42ead15f@barney>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231008093520.42ead15f@barney>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="NyY6YWaxLzVX3FT9"
+Content-Disposition: inline
+In-Reply-To: <20231008070618.20640-1-bragathemanick0908@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -53,52 +78,60 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--NyY6YWaxLzVX3FT9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 10/8/23 00:35, Michael Büsch wrote:
-> Hi Randy,
-> 
-> thanks for the patch.
-> 
-> On Sat,  7 Oct 2023 11:24:43 -0700
-> Randy Dunlap <rdunlap@infradead.org> wrote:
-> 
->> This is a kconfig warning in a randconfig when CONFIG_PCI is not set:
->>
->> WARNING: unmet direct dependencies detected for SSB_EMBEDDED
->>   Depends on [n]: SSB [=y] && SSB_DRIVER_MIPS [=y] &&
->> SSB_PCICORE_HOSTMODE [=n] Selected by [y]:
->>   - BCM47XX_SSB [=y] && BCM47XX [=y]
->>
->> This is caused by arch/mips/bcm47xx/Kconfig's symbol BCM47XX_SSB
->> selecting SSB_EMBEDDED when CONFIG_PCI is not set.
->>
->> This warning can be prevented by having SSB_EMBEDDED not depend on
->> SSB_PCICORE_HOSTMODE, although some parts of SSB use PCI.
-> 
->> diff -- a/drivers/ssb/Kconfig b/drivers/ssb/Kconfig
->> --- a/drivers/ssb/Kconfig
->> +++ b/drivers/ssb/Kconfig
->> @@ -134,7 +134,7 @@ config SSB_SFLASH
->>  # Assumption: We are on embedded, if we compile the MIPS core.
->>  config SSB_EMBEDDED
->>  	bool
->> -	depends on SSB_DRIVER_MIPS && SSB_PCICORE_HOSTMODE
->> +	depends on SSB_DRIVER_MIPS
->>  	default y
->>  
->>  config SSB_DRIVER_EXTIF
-> 
-> Could we instead make SSB_EMBEDDED depend on SSB_PCICORE_HOSTMODE if
-> PCI!=n. Wouldn't that also solve the problem?
-> 
-> I don't fully remember how all this ssb config stuff works, but to
-> me adding a PCICORE->PCI dependency sounds safer against build
-> regressions in some other configurations.
-> 
-> What do you think?
+On Sun, Oct 08, 2023 at 12:36:18PM +0530, Bragatheswaran Manickavel wrote:
+> @@ -458,15 +458,15 @@ struct drm_nouveau_svm_bind {
+> =20
+>  #define DRM_IOCTL_NOUVEAU_GETPARAM           DRM_IOWR(DRM_COMMAND_BASE +=
+ DRM_NOUVEAU_GETPARAM, struct drm_nouveau_getparam)
+>  #define DRM_IOCTL_NOUVEAU_CHANNEL_ALLOC      DRM_IOWR(DRM_COMMAND_BASE +=
+ DRM_NOUVEAU_CHANNEL_ALLOC, struct drm_nouveau_channel_alloc)
+> -#define DRM_IOCTL_NOUVEAU_CHANNEL_FREE       DRM_IOW (DRM_COMMAND_BASE +=
+ DRM_NOUVEAU_CHANNEL_FREE, struct drm_nouveau_channel_free)
+> +#define DRM_IOCTL_NOUVEAU_CHANNEL_FREE       DRM_IOW(DRM_COMMAND_BASE + =
+DRM_NOUVEAU_CHANNEL_FREE, struct drm_nouveau_channel_free)
+> =20
+>  #define DRM_IOCTL_NOUVEAU_SVM_INIT           DRM_IOWR(DRM_COMMAND_BASE +=
+ DRM_NOUVEAU_SVM_INIT, struct drm_nouveau_svm_init)
+>  #define DRM_IOCTL_NOUVEAU_SVM_BIND           DRM_IOWR(DRM_COMMAND_BASE +=
+ DRM_NOUVEAU_SVM_BIND, struct drm_nouveau_svm_bind)
+> =20
+>  #define DRM_IOCTL_NOUVEAU_GEM_NEW            DRM_IOWR(DRM_COMMAND_BASE +=
+ DRM_NOUVEAU_GEM_NEW, struct drm_nouveau_gem_new)
+>  #define DRM_IOCTL_NOUVEAU_GEM_PUSHBUF        DRM_IOWR(DRM_COMMAND_BASE +=
+ DRM_NOUVEAU_GEM_PUSHBUF, struct drm_nouveau_gem_pushbuf)
+> -#define DRM_IOCTL_NOUVEAU_GEM_CPU_PREP       DRM_IOW (DRM_COMMAND_BASE +=
+ DRM_NOUVEAU_GEM_CPU_PREP, struct drm_nouveau_gem_cpu_prep)
+> -#define DRM_IOCTL_NOUVEAU_GEM_CPU_FINI       DRM_IOW (DRM_COMMAND_BASE +=
+ DRM_NOUVEAU_GEM_CPU_FINI, struct drm_nouveau_gem_cpu_fini)
+> +#define DRM_IOCTL_NOUVEAU_GEM_CPU_PREP       DRM_IOW(DRM_COMMAND_BASE + =
+DRM_NOUVEAU_GEM_CPU_PREP, struct drm_nouveau_gem_cpu_prep)
+> +#define DRM_IOCTL_NOUVEAU_GEM_CPU_FINI       DRM_IOW(DRM_COMMAND_BASE + =
+DRM_NOUVEAU_GEM_CPU_FINI, struct drm_nouveau_gem_cpu_fini)
+>  #define DRM_IOCTL_NOUVEAU_GEM_INFO           DRM_IOWR(DRM_COMMAND_BASE +=
+ DRM_NOUVEAU_GEM_INFO, struct drm_nouveau_gem_info)
+> =20
+>  #define DRM_IOCTL_NOUVEAU_VM_INIT            DRM_IOWR(DRM_COMMAND_BASE +=
+ DRM_NOUVEAU_VM_INIT, struct drm_nouveau_vm_init)
 
-I'll test it some and see how it works out.
-Thanks.
+Can you please split checkpatch fix above into separate patch?
 
--- 
-~Randy
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--NyY6YWaxLzVX3FT9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZSK4dwAKCRD2uYlJVVFO
+ow1cAQDVcS0V99/qpu73ULyxIv/J+8DZ7JV9q172/0v22KhgWQEA4slaxL7vNv9D
+tEdpFPiHgSg5FsYifzU9Rtf8fy38fAs=
+=INQ7
+-----END PGP SIGNATURE-----
+
+--NyY6YWaxLzVX3FT9--
