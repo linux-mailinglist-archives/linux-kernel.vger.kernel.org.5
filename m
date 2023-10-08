@@ -2,126 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8767BD019
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 22:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0067BCFFB
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 22:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344551AbjJHUfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 16:35:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59076 "EHLO
+        id S1344582AbjJHUE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 16:04:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbjJHUfv (ORCPT
+        with ESMTP id S1344467AbjJHUEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 16:35:51 -0400
-X-Greylist: delayed 1988 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 08 Oct 2023 13:35:49 PDT
-Received: from mx.dolansoft.org (s2.dolansoft.org [212.51.146.245])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A03299
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 13:35:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=brun.one;
-        s=s1; h=MIME-Version:Message-ID:Date:Subject:Cc:To:From:In-Reply-To:
-        References:From:To:Subject:Date:Message-ID:Reply-To;
-        bh=T3SoMggWQU9QDC3JzPWHOLjCpIniafz0l32O6ZjmZIo=; b=i2HU9xxjminmB8WfpeIEps9DaY
-        BPZViI2Ng7ZOM2efRgoZI4tNoozU6GbR0Sa2zZYR3aj+0ShDFh1+4vUp2vCnuTrE8gEe81HtAobcD
-        8lUARVM6C17VPHvnUrqHxO8BwpPnWmLBxx3uJ1NIRbbj4jfbFh5SfZRmurhXRVao+bb+sMob/TI1d
-        sSt/XM3+vjetRp1y5L5ZDlRmCc9zD2an9SYuAyL2FsEMqfVyjnxBOaufaHax+aH2z5XZ7jjTdHb+0
-        6CViOJJ1roWDH2Y0Ksv2oxaxy180FZ8mjJdWbS6yKrxByVI+mYi/dQybPyVDCJkhSEynLMsHvqgWo
-        Ey5itKXg==;
-Received: from [212.51.153.89] (helo=blacklava.cluster.local)
-        by mx.dolansoft.org with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <lorenz@dolansoft.org>)
-        id 1qpZyp-0092yh-1k;
-        Sun, 08 Oct 2023 20:02:23 +0000
-From:   Lorenz Brun <lorenz@brun.one>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND] arm64: defconfig: add support for MediaTek MT7986
-Date:   Sun,  8 Oct 2023 22:02:18 +0200
-Message-ID: <20231008200219.3055781-1-lorenz@brun.one>
+        Sun, 8 Oct 2023 16:04:25 -0400
+Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA81B6
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 13:04:24 -0700 (PDT)
+Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-1c0fcbf7ae4so2939319fac.0
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 13:04:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1696795462; x=1697400262; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wk4ID+9Y2woSlIo9KG7KQPxOKMdKteazTwjUAl7uvHc=;
+        b=xWuhtOwHbOEuuqEvdG/xCV9PaV7GlwXKl8ia80sSCWwIR1eQ8nEa8acaC37fDPVm3P
+         xBlVBOGV5fvR4EQlP3XoZODoJxOQkACGgoXekrFGGi+a6n17NW+H7VUM+6wjgyxWtl9I
+         q01PcPZFYO1IOzF0nC3KcPq62/J6zskijRWk020awePtmHjWGfXP0VafiMdqySdp7kpI
+         nXuCuVheylTP5Muv+Kyc+rPrYwcG2zE2SFgf+cArebc/FqYL8YAVnotyO9bzvTcnBxWq
+         ThxaXHyblTU23DtHjQ9n7Tw2Zw5Fh3KqRJd4/rZ8fYZ/vOZ+usMzF4QQo5RQv6e08v3k
+         FQSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696795462; x=1697400262;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wk4ID+9Y2woSlIo9KG7KQPxOKMdKteazTwjUAl7uvHc=;
+        b=w6DpoRnd+APMuAT5s5wMJ77gyiTmGEaGB4G+tgtwij4SOE+cYJmxZhxBUAw9V2TdHJ
+         JO1dsXWHkY7PbepehU1YkWqqeLbDm6IDqbnQeaeck/vIr3Hry/lnQkQVR8q5rEA8g4Mx
+         aYd3EPgBKR1gYIBoWCVcOdr6o24LSdGavvInKehlQ5B8wsgKQDUtZZUorHGsepiOi4OF
+         sq3M9JOOlb7kTFGYdD++pq7Q0Ije5+is1R3J1OQaC0YqvRvudAtwU8WgPM1qBE8sjDis
+         pEtIeFke0ZamR1yHJT6F6yCxw+pWgYVs6CUfKaYpmvYLcs9l/fJe/09XW0HyeQKV//+J
+         LEDg==
+X-Gm-Message-State: AOJu0YxXxdfj2X3Eof+JK6X591j/WdEPCcugv5uBye83XENxp7jrMa+c
+        JkuvrVQLm/5gdZbVGrp2y8v5pQ==
+X-Google-Smtp-Source: AGHT+IFvrlaD3FcoyeoteZn8QYo3hLgQzaE/npYrh01teNLQxeArDL4tW+jIm7E9x3F4Eq/sg5G4MA==
+X-Received: by 2002:a05:6870:d606:b0:1d6:5649:a88e with SMTP id a6-20020a056870d60600b001d65649a88emr17607839oaq.37.1696795461716;
+        Sun, 08 Oct 2023 13:04:21 -0700 (PDT)
+Received: from ?IPV6:2400:4050:a840:1e00:78d2:b862:10a7:d486? ([2400:4050:a840:1e00:78d2:b862:10a7:d486])
+        by smtp.gmail.com with ESMTPSA id c16-20020aa78810000000b00690d1269691sm4895954pfo.22.2023.10.08.13.04.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 08 Oct 2023 13:04:21 -0700 (PDT)
+Message-ID: <8f4ad5bc-b849-4ef4-ac1f-8d5a796205e9@daynix.com>
+Date:   Mon, 9 Oct 2023 05:04:14 +0900
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 5/7] tun: Introduce virtio-net hashing feature
+Content-Language: en-US
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, rdunlap@infradead.org, willemb@google.com,
+        gustavoars@kernel.org, herbert@gondor.apana.org.au,
+        steffen.klassert@secunet.com, nogikh@google.com,
+        pablo@netfilter.org, decui@microsoft.com, jakub@cloudflare.com,
+        elver@google.com, pabeni@redhat.com,
+        Yuri Benditovich <yuri.benditovich@daynix.com>
+References: <20231008052101.144422-1-akihiko.odaki@daynix.com>
+ <20231008052101.144422-6-akihiko.odaki@daynix.com>
+ <CAF=yD-LdwcXKK66s5gvJNOH8qCWRt3SvEL-GkkVif=kkOaYGhg@mail.gmail.com>
+From:   Akihiko Odaki <akihiko.odaki@daynix.com>
+In-Reply-To: <CAF=yD-LdwcXKK66s5gvJNOH8qCWRt3SvEL-GkkVif=kkOaYGhg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Sender: lorenz@dolansoft.org
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        UPPERCASE_50_75 autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Considering that there are boards based on this SoC with 2GiB+ RAM and
-PCIe out there (BPI-R3) I think it makes sense to have support for these
-in defconfig as people can conceivably use these with stock Linux
-distributions.
+On 2023/10/09 4:07, Willem de Bruijn wrote:
+> On Sun, Oct 8, 2023 at 7:22 AM Akihiko Odaki <akihiko.odaki@daynix.com> wrote:
+>>
+>> virtio-net have two usage of hashes: one is RSS and another is hash
+>> reporting. Conventionally the hash calculation was done by the VMM.
+>> However, computing the hash after the queue was chosen defeats the
+>> purpose of RSS.
+>>
+>> Another approach is to use eBPF steering program. This approach has
+>> another downside: it cannot report the calculated hash due to the
+>> restrictive nature of eBPF.
+>>
+>> Introduce the code to compute hashes to the kernel in order to overcome
+>> thse challenges. An alternative solution is to extend the eBPF steering
+>> program so that it will be able to report to the userspace, but it makes
+>> little sense to allow to implement different hashing algorithms with
+>> eBPF since the hash value reported by virtio-net is strictly defined by
+>> the specification.
+>>
+>> The hash value already stored in sk_buff is not used and computed
+>> independently since it may have been computed in a way not conformant
+>> with the specification.
+>>
+>> Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
+>> ---
+> 
+>> +static const struct tun_vnet_hash_cap tun_vnet_hash_cap = {
+>> +       .max_indirection_table_length =
+>> +               TUN_VNET_HASH_MAX_INDIRECTION_TABLE_LENGTH,
+>> +
+>> +       .types = VIRTIO_NET_SUPPORTED_HASH_TYPES
+>> +};
+> 
+> No need to have explicit capabilities exchange like this? Tun either
+> supports all or none.
 
-AFAIK this only adds modules, it should not increase the size of the
-main vmlinux binary.
+tun does not support VIRTIO_NET_RSS_HASH_TYPE_IP_EX, 
+VIRTIO_NET_RSS_HASH_TYPE_TCP_EX, and VIRTIO_NET_RSS_HASH_TYPE_UDP_EX.
 
-Signed-off-by: Lorenz Brun <lorenz@brun.one>
----
- arch/arm64/configs/defconfig | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+It is because the flow dissector does not support IPv6 extensions. The 
+specification is also vague, and does not tell how many TLVs should be 
+consumed at most when interpreting destination option header so I chose 
+to avoid adding code for these hash types to the flow dissector. I doubt 
+anyone will complain about it since nobody complains for Linux.
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index a25d783dfb95..13a1e09524d4 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -162,6 +162,7 @@ CONFIG_IP6_NF_TARGET_MASQUERADE=m
- CONFIG_BRIDGE=m
- CONFIG_BRIDGE_VLAN_FILTERING=y
- CONFIG_NET_DSA=m
-+CONFIG_NET_DSA_MT7530=m
- CONFIG_VLAN_8021Q=m
- CONFIG_VLAN_8021Q_GVRP=y
- CONFIG_VLAN_8021Q_MVRP=y
-@@ -177,6 +178,8 @@ CONFIG_NET_CLS_ACT=y
- CONFIG_NET_ACT_GACT=m
- CONFIG_NET_ACT_MIRRED=m
- CONFIG_NET_ACT_GATE=m
-+CONFIG_NET_VENDOR_MEDIATEK=y
-+CONFIG_NET_MEDIATEK_SOC=m
- CONFIG_QRTR_SMD=m
- CONFIG_QRTR_TUN=m
- CONFIG_CAN=m
-@@ -267,9 +270,11 @@ CONFIG_MTD_SST25L=y
- CONFIG_MTD_RAW_NAND=y
- CONFIG_MTD_NAND_DENALI_DT=y
- CONFIG_MTD_NAND_MARVELL=y
-+CONFIG_MTD_NAND_MTK=m
- CONFIG_MTD_NAND_BRCMNAND=m
- CONFIG_MTD_NAND_FSL_IFC=y
- CONFIG_MTD_NAND_QCOM=y
-+CONFIG_MTD_NAND_ECC_MEDIATEK=m
- CONFIG_MTD_SPI_NOR=y
- CONFIG_MTD_UBI=m
- CONFIG_UBIFS_FS=m
-@@ -407,6 +412,8 @@ CONFIG_BRCMFMAC=m
- CONFIG_MWIFIEX=m
- CONFIG_MWIFIEX_SDIO=m
- CONFIG_MWIFIEX_PCIE=m
-+CONFIG_MT7915E=m
-+CONFIG_MT7986_WMAC=y
- CONFIG_MT7921E=m
- CONFIG_WL18XX=m
- CONFIG_WLCORE_SDIO=m
-@@ -529,6 +536,7 @@ CONFIG_SPI_MESON_SPICC=m
- CONFIG_SPI_MESON_SPIFC=m
- CONFIG_SPI_MT65XX=y
- CONFIG_SPI_MTK_NOR=m
-+CONFIG_SPI_MTK_SNFI=m
- CONFIG_SPI_OMAP24XX=m
- CONFIG_SPI_ORION=y
- CONFIG_SPI_PL022=y
-@@ -645,6 +653,8 @@ CONFIG_THERMAL_GOV_POWER_ALLOCATOR=y
- CONFIG_CPU_THERMAL=y
- CONFIG_DEVFREQ_THERMAL=y
- CONFIG_THERMAL_EMULATION=y
-+CONFIG_MTK_THERMAL=y
-+CONFIG_MTK_SOC_THERMAL=m
- CONFIG_IMX_SC_THERMAL=m
- CONFIG_IMX8MM_THERMAL=m
- CONFIG_QORIQ_THERMAL=m
--- 
-2.41.0
+I'm also adding this so that we can extend it later. 
+max_indirection_table_length may grow for systems with 128+ CPUs, or 
+types may have other bits for new protocols in the future.
 
+> 
+>>          case TUNSETSTEERINGEBPF:
+>> -               ret = tun_set_ebpf(tun, &tun->steering_prog, argp);
+>> +               bpf_ret = tun_set_ebpf(tun, &tun->steering_prog, argp);
+>> +               if (IS_ERR(bpf_ret))
+>> +                       ret = PTR_ERR(bpf_ret);
+>> +               else if (bpf_ret)
+>> +                       tun->vnet_hash.flags &= ~TUN_VNET_HASH_RSS;
+> 
+> Don't make one feature disable another.
+> 
+> TUNSETSTEERINGEBPF and TUNSETVNETHASH are mutually exclusive
+> functions. If one is enabled the other call should fail, with EBUSY
+> for instance.
+> 
+>> +       case TUNSETVNETHASH:
+>> +               len = sizeof(vnet_hash);
+>> +               if (copy_from_user(&vnet_hash, argp, len)) {
+>> +                       ret = -EFAULT;
+>> +                       break;
+>> +               }
+>> +
+>> +               if (((vnet_hash.flags & TUN_VNET_HASH_REPORT) &&
+>> +                    (tun->vnet_hdr_sz < sizeof(struct virtio_net_hdr_v1_hash) ||
+>> +                     !tun_is_little_endian(tun))) ||
+>> +                    vnet_hash.indirection_table_mask >=
+>> +                    TUN_VNET_HASH_MAX_INDIRECTION_TABLE_LENGTH) {
+>> +                       ret = -EINVAL;
+>> +                       break;
+>> +               }
+>> +
+>> +               argp = (u8 __user *)argp + len;
+>> +               len = (vnet_hash.indirection_table_mask + 1) * 2;
+>> +               if (copy_from_user(vnet_hash_indirection_table, argp, len)) {
+>> +                       ret = -EFAULT;
+>> +                       break;
+>> +               }
+>> +
+>> +               argp = (u8 __user *)argp + len;
+>> +               len = virtio_net_hash_key_length(vnet_hash.types);
+>> +
+>> +               if (copy_from_user(vnet_hash_key, argp, len)) {
+>> +                       ret = -EFAULT;
+>> +                       break;
+>> +               }
+> 
+> Probably easier and less error-prone to define a fixed size control
+> struct with the max indirection table size.
+
+I made its size variable because the indirection table and key may grow 
+in the future as I wrote above.
+
+> 
+> Btw: please trim the CC: list considerably on future patches.
+
+I'll do so in the next version with the TUNSETSTEERINGEBPF change you 
+proposed.
