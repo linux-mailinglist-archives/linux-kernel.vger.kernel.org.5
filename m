@@ -2,143 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C037BCCD2
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 09:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66AD17BCCD6
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 09:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344470AbjJHHAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 03:00:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38174 "EHLO
+        id S1344475AbjJHHAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 03:00:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344423AbjJHHAI (ORCPT
+        with ESMTP id S229441AbjJHHAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 03:00:08 -0400
-Received: from out-205.mta1.migadu.com (out-205.mta1.migadu.com [IPv6:2001:41d0:203:375::cd])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4523B6
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 00:00:03 -0700 (PDT)
-Message-ID: <a53a3ff6-8c66-07c4-0163-e582d88843dd@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1696748400;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e25EP2ncrPSMlf32zqS7Wc/g1NCrwz+m8kkJ9qdekrg=;
-        b=xrWK+LdEl2hRTbZDkexP8QRgcvJWeD02ZLYipPNoDD+p+oN+Z64LJuK42N+W4puYmW0sD7
-        w9E1pzUlmlcuZ9RnipcvL84Mm08PZQM+rkuheeziH6q6TVxAsuITNfYYXZahKV+OlNlLOS
-        E8/6Myzi1dmQ9BL+gMKHkIeyrScDQf0=
-Date:   Sun, 8 Oct 2023 14:59:51 +0800
+        Sun, 8 Oct 2023 03:00:46 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2B9D8
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 00:00:44 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-534694a9f26so5427a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 00:00:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696748442; x=1697353242; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mH8rgsD0Hcv//mdO9CGjCjg749l4skH04u5NpNfXSJo=;
+        b=BShKJaRtusNijZZ57Kaaydm5cxCfHocp+nOGciKvqb++6Z9nyuOD/uC/kwsqizh687
+         mFCJJDc0urQQh8PUEZpRDB/57VWp8QQL0APQ1smHc1IlmJKuQB/El5qROWmyM0VacBco
+         0A9gWDEdTwWZUHz6i8escGbPUk+91X8GZVCK4ScPcGUG7Z5Hvknlv82uujz3OWIz09xc
+         zuxWkk0Rgyg0O67zeZyl1tZBwYl653Ub4NuaRjZptmkgBr/R3t3EIsSz82C3x0SZm5j7
+         I2qJPEGGMPOdJtEZnHrvaxoj7eYt8xYe/WVxl0ptpTU3+tNzNcTzagg0FQubKas09fM9
+         WWNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696748442; x=1697353242;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mH8rgsD0Hcv//mdO9CGjCjg749l4skH04u5NpNfXSJo=;
+        b=CMd3t6E1PgMAGDFYSAX/U4jiL0wkbNYIzECEGgYmp5dmFhoXxIqC1P7tsuG1YkyPO5
+         tLQDMiUSeLetTJXeePh8EZ8oM7q4EjFlxmkLjOnEcBpZomKioZv6r7YXuwz4t7B1zx8e
+         FZAXz6o8bxrbs1I+nSBQy72SmSdVFRG6vml/6jpYZcvKjW9lAXXyN9pVCRKwQolB4nUi
+         4EKcM22BxoZGupbpB13cA/3hits1x7e4cnrA2AIXkxpOgzYF1x2Z/mJtlWPMV5DxR98w
+         Ktbj7h6EJBJoXY5OyznZei1TYx7Ov0o0FjaEO4VptwkG5CUBW89G/z7Nr0WRS3WcxiOy
+         y/Fg==
+X-Gm-Message-State: AOJu0Yx34BBbgW09SmC27jCjC69JXXASmoKbCgsgQdFpJN4/RXtUXctU
+        OX+AooFeWVdPqkCF0fI05ksh1d3BdaYVGzCgzSriww==
+X-Google-Smtp-Source: AGHT+IEsm3Yaeezo31ko5A6vpc3J66AXEC7Qr6Rm72BDJiSgp93BqqzS34935wa+NNU03Xl/ZB6KCTMLkH8SD9/RjuM=
+X-Received: by 2002:a50:9fa4:0:b0:538:5f9e:f0fc with SMTP id
+ c33-20020a509fa4000000b005385f9ef0fcmr307070edf.0.1696748442128; Sun, 08 Oct
+ 2023 00:00:42 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next v7] net/core: Introduce netdev_core_stats_inc()
-Content-Language: en-US
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexander Lobakin <aleksander.lobakin@intel.com>
-References: <20231007050621.1706331-1-yajun.deng@linux.dev>
- <CANn89iL-zUw1FqjYRSC7BGB0hfQ5uKpJzUba3YFd--c=GdOoGg@mail.gmail.com>
- <917708b5-cb86-f233-e878-9233c4e6c707@linux.dev>
- <CANn89i+navyRe8-AV=ehM3qFce2hmnOEKBqvK5Xnev7KTaS5Lg@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yajun Deng <yajun.deng@linux.dev>
-In-Reply-To: <CANn89i+navyRe8-AV=ehM3qFce2hmnOEKBqvK5Xnev7KTaS5Lg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231003145150.2498-1-ansuelsmth@gmail.com> <20231003145150.2498-3-ansuelsmth@gmail.com>
+ <CANn89iK226C-pHUJm7HKMyEtMycGC=KCA2M6kw2KJaUj0cCT6w@mail.gmail.com>
+ <20231005093253.2e25533a@kernel.org> <CANn89iJQ50AdXP2C1YB2pGjE02WCJ-QCsZqE1yGXtcGsfLA0Jw@mail.gmail.com>
+ <65205789.5d0a0220.7e49b.ccb0@mx.google.com>
+In-Reply-To: <65205789.5d0a0220.7e49b.ccb0@mx.google.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Sun, 8 Oct 2023 09:00:29 +0200
+Message-ID: <CANn89i+ntByi2709y10PN6cgri-b0EWxPSNXdu_Nf2nOvJ45FQ@mail.gmail.com>
+Subject: Re: [net-next PATCH v2 3/4] netdev: replace napi_reschedule with napi_schedule
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        Raju Rangoju <rajur@chelsio.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Shailend Chand <shailend@google.com>,
+        Douglas Miller <dougmill@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nick Child <nnac123@linux.ibm.com>,
+        Haren Myneni <haren@linux.ibm.com>,
+        Rick Lindsley <ricklind@linux.ibm.com>,
+        Dany Madden <danymadden@us.ibm.com>,
+        Thomas Falcon <tlfalcon@linux.ibm.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Kalle Valo <kvalo@kernel.org>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>,
+        Gregory Greenman <gregory.greenman@intel.com>,
+        Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
+        Intel Corporation <linuxwwan@intel.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
+        Liu Haijun <haijun.liu@mediatek.com>,
+        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
+        Ricardo Martinez <ricardo.martinez@linux.intel.com>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Yuanjun Gong <ruc_gongyuanjun@163.com>,
+        Simon Horman <horms@kernel.org>, Rob Herring <robh@kernel.org>,
+        Ziwei Xiao <ziweixiao@google.com>,
+        Rushil Gupta <rushilg@google.com>,
+        Coco Li <lixiaoyan@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Junfeng Guo <junfeng.guo@intel.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Wei Fang <wei.fang@nxp.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Yuri Karpov <YKarpov@ispras.ru>,
+        Zhengchao Shao <shaozhengchao@huawei.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Zheng Zengkai <zhengzengkai@huawei.com>,
+        Lee Jones <lee@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Dawei Li <set_pte_at@outlook.com>,
+        Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
+        Benjamin Berg <benjamin.berg@intel.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL,WEIRD_QUOTING
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2023/10/8 14:45, Eric Dumazet wrote:
-> On Sat, Oct 7, 2023 at 8:34 AM Yajun Deng <yajun.deng@linux.dev> wrote:
->>
->> On 2023/10/7 13:29, Eric Dumazet wrote:
->>> On Sat, Oct 7, 2023 at 7:06 AM Yajun Deng <yajun.deng@linux.dev> wrote:
->>>> Although there is a kfree_skb_reason() helper function that can be used to
->>>> find the reason why this skb is dropped, but most callers didn't increase
->>>> one of rx_dropped, tx_dropped, rx_nohandler and rx_otherhost_dropped.
->>>>
->>> ...
->>>
->>>> +
->>>> +void netdev_core_stats_inc(struct net_device *dev, u32 offset)
->>>> +{
->>>> +       /* This READ_ONCE() pairs with the write in netdev_core_stats_alloc() */
->>>> +       struct net_device_core_stats __percpu *p = READ_ONCE(dev->core_stats);
->>>> +       unsigned long *field;
->>>> +
->>>> +       if (unlikely(!p))
->>>> +               p = netdev_core_stats_alloc(dev);
->>>> +
->>>> +       if (p) {
->>>> +               field = (unsigned long *)((void *)this_cpu_ptr(p) + offset);
->>>> +               WRITE_ONCE(*field, READ_ONCE(*field) + 1);
->>> This is broken...
->>>
->>> As I explained earlier, dev_core_stats_xxxx(dev) can be called from
->>> many different contexts:
->>>
->>> 1) process contexts, where preemption and migration are allowed.
->>> 2) interrupt contexts.
->>>
->>> Adding WRITE_ONCE()/READ_ONCE() is not solving potential races.
->>>
->>> I _think_ I already gave you how to deal with this ?
->>
->> Yes, I replied in v6.
->>
->> https://lore.kernel.org/all/e25b5f3c-bd97-56f0-de86-b93a3172870d@linux.dev/
->>
->>> Please try instead:
->>>
->>> +void netdev_core_stats_inc(struct net_device *dev, u32 offset)
->>> +{
->>> +       /* This READ_ONCE() pairs with the write in netdev_core_stats_alloc() */
->>> +       struct net_device_core_stats __percpu *p = READ_ONCE(dev->core_stats);
->>> +       unsigned long __percpu *field;
->>> +
->>> +       if (unlikely(!p)) {
->>> +               p = netdev_core_stats_alloc(dev);
->>> +               if (!p)
->>> +                       return;
->>> +       }
->>> +       field = (__force unsigned long __percpu *)((__force void *)p + offset);
->>> +       this_cpu_inc(*field);
->>> +}
->>
->> This wouldn't trace anything even the rx_dropped is in increasing. It
->> needs to add an extra operation, such as:
-> I honestly do not know what you are talking about.
+On Fri, Oct 6, 2023 at 8:52=E2=80=AFPM Christian Marangi <ansuelsmth@gmail.=
+com> wrote:
 >
-> Have you even tried to change your patch to use
+> On Thu, Oct 05, 2023 at 06:41:03PM +0200, Eric Dumazet wrote:
+> > On Thu, Oct 5, 2023 at 6:32=E2=80=AFPM Jakub Kicinski <kuba@kernel.org>=
+ wrote:
+> > >
+> > > On Thu, 5 Oct 2023 18:11:56 +0200 Eric Dumazet wrote:
+> > > > OK, but I suspect some users of napi_reschedule() might not be race=
+-free...
+> > >
+> > > What's the race you're thinking of?
+> >
+> > This sort of thing... the race is in fl_starving() though...
+> >
+> > diff --git a/drivers/net/ethernet/chelsio/cxgb4/sge.c
+> > b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+> > index 98dd78551d89..b5ff2e1a9975 100644
+> > --- a/drivers/net/ethernet/chelsio/cxgb4/sge.c
+> > +++ b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+> > @@ -4261,7 +4261,7 @@ static void sge_rx_timer_cb(struct timer_list *t)
+> >
+> >                         if (fl_starving(adap, fl)) {
+> >                                 rxq =3D container_of(fl, struct sge_eth=
+_rxq, fl);
+> > -                               if (napi_reschedule(&rxq->rspq.napi))
+> > +                               if (napi_schedule(&rxq->rspq.napi))
+> >                                         fl->starving++;
+> >                                 else
+> >                                         set_bit(id, s->starving_fl);
 >
-> field = (__force unsigned long __percpu *)((__force void *)p + offset);
-> this_cpu_inc(*field);
-
-
-Yes, I tested this code. But the following couldn't show anything even 
-if the rx_dropped is increasing.
-
-'sudo python3 /usr/share/bcc/tools/trace netdev_core_stats_inc'
-
-It needs to add anything else. The above command will show correctly.
-
+> Ehhh problem is that this is a simple rename so if any race is present,
+> it's already there and not caused by this rename :(
 >
-> Instead of the clearly buggy code you had instead :
+> Don't know maybe this is out of scope and should be investigated with a
+> bug report?
 >
->      field = (unsigned long *)((void *)this_cpu_ptr(p) + offset);
->       WRITE_ONCE(*field, READ_ONCE(*field) + 1);
+> Maybe this should be changed to prep/__schedule to prevent any kind of
+> race? But doing so doesn't prevent any kind of ""starving""?
 >
-> If your v7 submission was ok for tracing what you wanted,
-> I fail to see why a v8 with 3 lines changed would not work.
 
+I gave a "Reviewed-by: Eric Dumazet <edumazet@google.com>", meaning
+your patch was ok for me.
 
-Me too.
-
-If I add a pr_info in your code, the kprobe will be ok.
-
+My remark was orthogonal, I am not asking you to act on it ;)
