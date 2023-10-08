@@ -2,128 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA5E7BCCF6
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 09:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64E167BCD01
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 09:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344414AbjJHHJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 03:09:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47570 "EHLO
+        id S1344482AbjJHHSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 03:18:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234218AbjJHHJA (ORCPT
+        with ESMTP id S229988AbjJHHSb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 03:09:00 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F69FA
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 00:08:57 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so8135a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 00:08:57 -0700 (PDT)
+        Sun, 8 Oct 2023 03:18:31 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38F65B9
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 00:18:30 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-537f07dfe8eso5336a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 00:18:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696748935; x=1697353735; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1696749508; x=1697354308; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6boweBsbEPYLh1haUGvUFhb+7tfvWfkGzP1aLPKTUnI=;
-        b=F39qHPk5zk2pyBIKhEM6PcfKPQRqnY9pi/x8dTGkHBXtoFP1RZ9kgEew/bWJahSX7u
-         ijedCeuRSfwz7OjfdCyxdqgtiBIWDVnZ+085y5EzOmOe01pKu/WoqWvlKM610Lf5ihNv
-         BMUgGXOMdVPIH/J4H13eMVDC7AnXJsSP84YgXJgXK+hcNEhDJZUgmt1wUlUZv3PKqkU0
-         g3k1jhh3eNn9QqkZXTNDOqxxoGlKUKZouNkqgcyvOvgTA+tlURIcHSfsmXi4Jc2lAOHi
-         Va+NwqU0sc3x25H3/Yd53hz8MkS+gfLDgULe90K8Q9KqVKkuV57WLP+bSXUphgxnKMpJ
-         4SZg==
+        bh=jYg30R2T1VOGDusTNGMsBpmfFwzenHW5dl09bgjsszk=;
+        b=29hZzSSubqYxfVxyYjz8SV9QpKeLFN0bgr4Ya+sZXnTTSgPrtDzjbASki3g5XF9Ey7
+         TioHQSpiUmVhQhkB95GeakPkt87CaYqrPeZ7hSUYq0m6u+YAP1MmeaVSLufptRyv5Maj
+         60faYT4IE8r4oG/MFMQQrbjbnxdZ2A+e1KMzkDQOwvptAeSZrF1skVNIgRzm9bSEz1x6
+         j39hGiIMB7AXOHz+nUgrk/sGEwkrwHD3Co0Zbf5xOhzIRkFSBXEt8BSTsrXhhXBp6D5Y
+         V0g6SRrL4VZNRWyM68P5oZ3PN6KiolhdYV5kpfH/mLhATg5J7XVEnUsCcuEILkfc6Wgx
+         /LOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696748935; x=1697353735;
+        d=1e100.net; s=20230601; t=1696749508; x=1697354308;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6boweBsbEPYLh1haUGvUFhb+7tfvWfkGzP1aLPKTUnI=;
-        b=t2+Ubxns/AuFdGE18Ui7ULh77w1qie6Pi/9h59LyCbYyUjkHa8XrMyDXgP7E66cN6V
-         7X5fM6q4byOIUKLV35bKGzvhBqrPYnGTMdFZBWJJLJHRuPWWHJp8tC5zurS5jh3rrMtN
-         StF7aMc0gybD4BOkNda6VwCO/NMKPqcsYa2Q21k3zn4MBxNb1u5v7MCIZtac+eT/Ml2r
-         n+Y+sL9n+bbqfiR6JHw6IZt4prhjYkg4ZU9xu9jKzyvTTMW+u+duSjrP0R11FgT/6AuG
-         Iak3YNHB1F5qrZ5nIck03p7mJU/B8IhV131k1ajOv3mr8Obqx6pWiCow6DUYYSl3fua1
-         c/pA==
-X-Gm-Message-State: AOJu0Yx96gxuEY8w09zhb76X1QgOie9JpiDPtafYzpZ3Q1En9jI9tm+E
-        7+T9ykmG/E7lbPu91/CX9jwC60HutCnzuQvohtVMKg==
-X-Google-Smtp-Source: AGHT+IEVhxr/hi+K678k9mZTv6OusdxrCYSsJHysJnZbWTvXJuhiZ+72RbS/nL58DWxeXDrsThbghNBmT+06iJCcOf8=
-X-Received: by 2002:a50:9f6c:0:b0:52e:f99a:b5f8 with SMTP id
- b99-20020a509f6c000000b0052ef99ab5f8mr308559edf.7.1696748935193; Sun, 08 Oct
- 2023 00:08:55 -0700 (PDT)
+        bh=jYg30R2T1VOGDusTNGMsBpmfFwzenHW5dl09bgjsszk=;
+        b=kW5lF+LX/+U9APeRnM7vNRqW0dJuaNzCnudZpBTMSMq2n3Adogr4mMTf1jy5Do1cyZ
+         WY2Uq7jgxhT+okCOLAlTJC1n1Ell39RDfDvHfl+JTOSTWVDsZBhghJC0Hd6AJsnsCLeX
+         rhZSPbnxLRlodrbTOH2u51O5VWvJgL6F3BMduV5i7sZaH67HskvWu6gHTwII75UHoYrA
+         mReb4hB7VFuhTUeK3vMrw22ML4A9+EkM5QiPwmZjfLGmCGz9PxmV8L2twaajGqpY6UdQ
+         6O6t6p6uyvMXVwK8Ylz/x/20Gpo2Be1YJ2AAiefQ4ARUTlDps1ZrzlkSvjFDUTNtn93t
+         FT7g==
+X-Gm-Message-State: AOJu0YxvVFjQ/3tyAvTkEEUdrbzWaP2kXZYnnZbbXm723niF2rRWJrIn
+        wLx4pLZc04p/5LniIoqWOxgxKv+p/PEkEbgHJfg+6w==
+X-Google-Smtp-Source: AGHT+IHbZTMKXE7Dkug2Nken3wKczcQ3I7l+F3H5smWKKa0rZz+hAaWx3/rtNodp5PHY/k0m8NGr/pZXZiwWYyfPezc=
+X-Received: by 2002:a50:9b1d:0:b0:525:573c:643b with SMTP id
+ o29-20020a509b1d000000b00525573c643bmr293344edi.7.1696749508479; Sun, 08 Oct
+ 2023 00:18:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231003145150.2498-1-ansuelsmth@gmail.com> <20231003145150.2498-4-ansuelsmth@gmail.com>
- <CANn89iLtYZJPOQE7OkAbEdmhT8qjzAJ+27poa__3c8Nf0M6u_w@mail.gmail.com> <652056c5.5d0a0220.2b60d.c5dc@mx.google.com>
-In-Reply-To: <652056c5.5d0a0220.2b60d.c5dc@mx.google.com>
+References: <20231007050621.1706331-1-yajun.deng@linux.dev>
+ <CANn89iL-zUw1FqjYRSC7BGB0hfQ5uKpJzUba3YFd--c=GdOoGg@mail.gmail.com>
+ <917708b5-cb86-f233-e878-9233c4e6c707@linux.dev> <CANn89i+navyRe8-AV=ehM3qFce2hmnOEKBqvK5Xnev7KTaS5Lg@mail.gmail.com>
+ <a53a3ff6-8c66-07c4-0163-e582d88843dd@linux.dev>
+In-Reply-To: <a53a3ff6-8c66-07c4-0163-e582d88843dd@linux.dev>
 From:   Eric Dumazet <edumazet@google.com>
-Date:   Sun, 8 Oct 2023 09:08:41 +0200
-Message-ID: <CANn89i+Cie+oE_hTWkyJWutTG9CnPy+dbW+-A97Q+E9Rq-f9rQ@mail.gmail.com>
-Subject: Re: [net-next PATCH v2 4/4] netdev: use napi_schedule bool instead of napi_schedule_prep/__napi_schedule
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Chris Snook <chris.snook@gmail.com>,
-        Raju Rangoju <rajur@chelsio.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Shailend Chand <shailend@google.com>,
-        Douglas Miller <dougmill@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nick Child <nnac123@linux.ibm.com>,
-        Haren Myneni <haren@linux.ibm.com>,
-        Rick Lindsley <ricklind@linux.ibm.com>,
-        Dany Madden <danymadden@us.ibm.com>,
-        Thomas Falcon <tlfalcon@linux.ibm.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Krzysztof Halasa <khalasa@piap.pl>,
-        Kalle Valo <kvalo@kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
-        Intel Corporation <linuxwwan@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
-        Liu Haijun <haijun.liu@mediatek.com>,
-        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
-        Ricardo Martinez <ricardo.martinez@linux.intel.com>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Yuanjun Gong <ruc_gongyuanjun@163.com>,
-        Simon Horman <horms@kernel.org>, Rob Herring <robh@kernel.org>,
-        Ziwei Xiao <ziweixiao@google.com>,
-        Rushil Gupta <rushilg@google.com>,
-        Coco Li <lixiaoyan@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Junfeng Guo <junfeng.guo@intel.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Wei Fang <wei.fang@nxp.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Yuri Karpov <YKarpov@ispras.ru>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Zheng Zengkai <zhengzengkai@huawei.com>,
-        Lee Jones <lee@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Dawei Li <set_pte_at@outlook.com>,
-        Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
-        Benjamin Berg <benjamin.berg@intel.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org
+Date:   Sun, 8 Oct 2023 09:18:17 +0200
+Message-ID: <CANn89i+u5dXdYm_0_LwhXg5Nw+gHXx+nPUmbYhvT=k9P4+9JRQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v7] net/core: Introduce netdev_core_stats_inc()
+To:     Yajun Deng <yajun.deng@linux.dev>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexander Lobakin <aleksander.lobakin@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -132,96 +74,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 6, 2023 at 8:49=E2=80=AFPM Christian Marangi <ansuelsmth@gmail.=
-com> wrote:
+On Sun, Oct 8, 2023 at 9:00=E2=80=AFAM Yajun Deng <yajun.deng@linux.dev> wr=
+ote:
 >
-> On Thu, Oct 05, 2023 at 06:16:26PM +0200, Eric Dumazet wrote:
-> > On Tue, Oct 3, 2023 at 8:36=E2=80=AFPM Christian Marangi <ansuelsmth@gm=
-ail.com> wrote:
-> > >
-> > > Replace if condition of napi_schedule_prep/__napi_schedule and use bo=
-ol
-> > > from napi_schedule directly where possible.
-> > >
-> > > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > > ---
-> > >  drivers/net/ethernet/atheros/atlx/atl1.c     | 4 +---
-> > >  drivers/net/ethernet/toshiba/tc35815.c       | 4 +---
-> > >  drivers/net/wireless/intel/iwlwifi/pcie/rx.c | 4 +---
-> > >  3 files changed, 3 insertions(+), 9 deletions(-)
-> > >
-> > > diff --git a/drivers/net/ethernet/atheros/atlx/atl1.c b/drivers/net/e=
-thernet/atheros/atlx/atl1.c
-> > > index 02aa6fd8ebc2..a9014d7932db 100644
-> > > --- a/drivers/net/ethernet/atheros/atlx/atl1.c
-> > > +++ b/drivers/net/ethernet/atheros/atlx/atl1.c
-> > > @@ -2446,7 +2446,7 @@ static int atl1_rings_clean(struct napi_struct =
-*napi, int budget)
-> > >
-> > >  static inline int atl1_sched_rings_clean(struct atl1_adapter* adapte=
-r)
-> > >  {
-> > > -       if (!napi_schedule_prep(&adapter->napi))
-> > > +       if (!napi_schedule(&adapter->napi))
-> > >                 /* It is possible in case even the RX/TX ints are dis=
-abled via IMR
-> > >                  * register the ISR bits are set anyway (but do not p=
-roduce IRQ).
-> > >                  * To handle such situation the napi functions used t=
-o check is
-> > > @@ -2454,8 +2454,6 @@ static inline int atl1_sched_rings_clean(struct=
- atl1_adapter* adapter)
-> > >                  */
-> > >                 return 0;
-> > >
-> > > -       __napi_schedule(&adapter->napi);
-> > > -
-> > >         /*
-> > >          * Disable RX/TX ints via IMR register if it is
-> > >          * allowed. NAPI handler must reenable them in same
-> > > diff --git a/drivers/net/ethernet/toshiba/tc35815.c b/drivers/net/eth=
-ernet/toshiba/tc35815.c
-> > > index 14cf6ecf6d0d..a8b8a0e13f9a 100644
-> > > --- a/drivers/net/ethernet/toshiba/tc35815.c
-> > > +++ b/drivers/net/ethernet/toshiba/tc35815.c
-> > > @@ -1436,9 +1436,7 @@ static irqreturn_t tc35815_interrupt(int irq, v=
-oid *dev_id)
-> > >         if (!(dmactl & DMA_IntMask)) {
-> > >                 /* disable interrupts */
-> > >                 tc_writel(dmactl | DMA_IntMask, &tr->DMA_Ctl);
-> > > -               if (napi_schedule_prep(&lp->napi))
-> > > -                       __napi_schedule(&lp->napi);
-> > > -               else {
-> > > +               if (!napi_schedule(&lp->napi)) {
-> > >                         printk(KERN_ERR "%s: interrupt taken in poll\=
-n",
-> > >                                dev->name);
-> > >                         BUG();
-> >
-> > Hmmm... could you also remove this BUG() ? I think this code path can b=
-e taken
-> > if some applications are using busy polling.
-> >
-> > Or simply rewrite this with the traditional
-> >
-> > if (napi_schedule_prep(&lp->napi)) {
-> >    /* disable interrupts */
-> >    tc_writel(dmactl | DMA_IntMask, &tr->DMA_Ctl);
-> >     __napi_schedule(&lp->napi);
-> > }
-> >
-> >
 >
-> Mhhh is it safe to do so? I mean it seems very wrong to print a warning
-> and BUG() instead of disabling the interrupt only if napi can be
-> scheduled... Maybe is very old code? The more I see this the more I see
-> problem... (randomly disabling the interrupt and then make the kernel
-> die)
+> On 2023/10/8 14:45, Eric Dumazet wrote:
+> > On Sat, Oct 7, 2023 at 8:34=E2=80=AFAM Yajun Deng <yajun.deng@linux.dev=
+> wrote:
+> >>
+> >> On 2023/10/7 13:29, Eric Dumazet wrote:
+> >>> On Sat, Oct 7, 2023 at 7:06=E2=80=AFAM Yajun Deng <yajun.deng@linux.d=
+ev> wrote:
+> >>>> Although there is a kfree_skb_reason() helper function that can be u=
+sed to
+> >>>> find the reason why this skb is dropped, but most callers didn't inc=
+rease
+> >>>> one of rx_dropped, tx_dropped, rx_nohandler and rx_otherhost_dropped=
+.
+> >>>>
+> >>> ...
+> >>>
+> >>>> +
+> >>>> +void netdev_core_stats_inc(struct net_device *dev, u32 offset)
+> >>>> +{
+> >>>> +       /* This READ_ONCE() pairs with the write in netdev_core_stat=
+s_alloc() */
+> >>>> +       struct net_device_core_stats __percpu *p =3D READ_ONCE(dev->=
+core_stats);
+> >>>> +       unsigned long *field;
+> >>>> +
+> >>>> +       if (unlikely(!p))
+> >>>> +               p =3D netdev_core_stats_alloc(dev);
+> >>>> +
+> >>>> +       if (p) {
+> >>>> +               field =3D (unsigned long *)((void *)this_cpu_ptr(p) =
++ offset);
+> >>>> +               WRITE_ONCE(*field, READ_ONCE(*field) + 1);
+> >>> This is broken...
+> >>>
+> >>> As I explained earlier, dev_core_stats_xxxx(dev) can be called from
+> >>> many different contexts:
+> >>>
+> >>> 1) process contexts, where preemption and migration are allowed.
+> >>> 2) interrupt contexts.
+> >>>
+> >>> Adding WRITE_ONCE()/READ_ONCE() is not solving potential races.
+> >>>
+> >>> I _think_ I already gave you how to deal with this ?
+> >>
+> >> Yes, I replied in v6.
+> >>
+> >> https://lore.kernel.org/all/e25b5f3c-bd97-56f0-de86-b93a3172870d@linux=
+.dev/
+> >>
+> >>> Please try instead:
+> >>>
+> >>> +void netdev_core_stats_inc(struct net_device *dev, u32 offset)
+> >>> +{
+> >>> +       /* This READ_ONCE() pairs with the write in netdev_core_stats=
+_alloc() */
+> >>> +       struct net_device_core_stats __percpu *p =3D READ_ONCE(dev->c=
+ore_stats);
+> >>> +       unsigned long __percpu *field;
+> >>> +
+> >>> +       if (unlikely(!p)) {
+> >>> +               p =3D netdev_core_stats_alloc(dev);
+> >>> +               if (!p)
+> >>> +                       return;
+> >>> +       }
+> >>> +       field =3D (__force unsigned long __percpu *)((__force void *)=
+p + offset);
+> >>> +       this_cpu_inc(*field);
+> >>> +}
+> >>
+> >> This wouldn't trace anything even the rx_dropped is in increasing. It
+> >> needs to add an extra operation, such as:
+> > I honestly do not know what you are talking about.
+> >
+> > Have you even tried to change your patch to use
+> >
+> > field =3D (__force unsigned long __percpu *)((__force void *)p + offset=
+);
+> > this_cpu_inc(*field);
+>
+>
+> Yes, I tested this code. But the following couldn't show anything even
+> if the rx_dropped is increasing.
+>
+> 'sudo python3 /usr/share/bcc/tools/trace netdev_core_stats_inc'
 
-I am pretty sure this BUG() can be hit these days with busy polling or
-setting gro_flush_timeout.
+Well, I am not sure about this, "bpftrace" worked for me.
 
-I wish we could remove these bugs before someone copy-paste them.
+Make sure your toolchain generates something that looks like what I got:
 
-Again, this is orthogonal, I might simply stop doing reviews if this
-is not useful.
+000000000000ef20 <netdev_core_stats_inc>:
+    ef20: f3 0f 1e fa          endbr64
+    ef24: e8 00 00 00 00        call   ef29 <netdev_core_stats_inc+0x9>
+ef25: R_X86_64_PLT32 __fentry__-0x4
+    ef29: 55                    push   %rbp
+    ef2a: 48 89 e5              mov    %rsp,%rbp
+    ef2d: 53                    push   %rbx
+    ef2e: 89 f3                mov    %esi,%ebx
+    ef30: 48 8b 87 f0 01 00 00 mov    0x1f0(%rdi),%rax
+    ef37: 48 85 c0              test   %rax,%rax
+    ef3a: 74 0b                je     ef47 <netdev_core_stats_inc+0x27>
+    ef3c: 89 d9                mov    %ebx,%ecx
+    ef3e: 65 48 ff 04 08        incq   %gs:(%rax,%rcx,1)
+    ef43: 5b                    pop    %rbx
+    ef44: 5d                    pop    %rbp
+    ef45: c3                    ret
+    ef46: cc                    int3
+    ef47: e8 00 00 00 00        call   ef4c <netdev_core_stats_inc+0x2c>
+ef48: R_X86_64_PLT32 .text.unlikely.+0x13c
+    ef4c: 48 85 c0              test   %rax,%rax
+    ef4f: 75 eb                jne    ef3c <netdev_core_stats_inc+0x1c>
+    ef51: eb f0                jmp    ef43 <netdev_core_stats_inc+0x23>
+    ef53: 66 66 66 66 2e 0f 1f data16 data16 data16 cs nopw 0x0(%rax,%rax,1=
+)
+    ef5a: 84 00 00 00 00 00
