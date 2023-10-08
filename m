@@ -2,64 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 453167BD071
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 23:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5F57BD073
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 23:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344719AbjJHV52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 17:57:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33264 "EHLO
+        id S1344732AbjJHV7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 17:59:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344437AbjJHV51 (ORCPT
+        with ESMTP id S1344437AbjJHV7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 17:57:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B910C9D;
-        Sun,  8 Oct 2023 14:57:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F1A4C433C7;
-        Sun,  8 Oct 2023 21:57:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696802244;
-        bh=D6g+fHkvWXqT9fQPLmLkAurQi+eFTlkTGLEB1/+HK5o=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=U79ADZLI5HNnhwsw/3rhB0wj0GDu3gACikHFAm3MkH2IJ41zjXOtmFEDZD9zsjR1C
-         P+4nRa4+TMWPbwkMFMwEonwk2wd7sUVhQjYMbADGticlmDi4Wl0OP1VWv0hMbWGyfd
-         Q/ioCBkWxvDRIdatsQ6K5gtlIUgXgMzq3uPSq2f/Ga+unVPqews/DIkp0/3FBKijgN
-         lPypN27ujCPn4c13dUFV500lKjXw/PyBHHmgdQaHggB9p7dGlIyOheVxrz6fbIJMcI
-         V4e0RsbKB2/U6PSUADLDYscdQR1lfJFpXFJ/Ff3WnsT37yqAQmVIWLv2qyxyXlX+fV
-         LjFTzBOX1He7g==
-Message-ID: <8c97db33-ee83-6f2c-cc5a-00c185e35770@kernel.org>
-Date:   Mon, 9 Oct 2023 06:57:19 +0900
+        Sun, 8 Oct 2023 17:59:35 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D1A9D
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 14:59:34 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6c644a1845cso2722441a34.2
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 14:59:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1696802373; x=1697407173; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RHmdmQkdVjsJr88jt1p+1Se8MuMGD/JR3QvlSJrhIZw=;
+        b=MTyTl+4FOUG4ZVl94hjQdCwQGnAEmiHO6M3w733h2Z2cBQWuDXpTz78ioFS+l6u3cV
+         05SjfnXjcG1E+yPowIr9zgGRlr/WTd11CC7UOQyiY8vgH8PKGKL7BR1z4I5xWT512HBn
+         fGKVzl8GCZvik7fsYq+sXEgjDIC21oKwF8BWCPi01UHljPQg80Mr+5Z547+cHYjOxUHO
+         0ixG+9QLG580NrewTaYKcVpjBRJOg2h5lAn50iYuS+lobpX9T/F4ZSui0DBg60Ts14Jg
+         whY47ll3jm6yYu6m12zm9J9E8lCIaPQ0J1azEmpFaU+cRHlA3VuwcFGgm5cN/pG8GMLu
+         hMMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696802373; x=1697407173;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RHmdmQkdVjsJr88jt1p+1Se8MuMGD/JR3QvlSJrhIZw=;
+        b=WK1Rl9zck8KgZwV0IRck8BniQEORuWf+GAN9MAA0MU1FmQtjjK8nqiuHH8RhRj++vg
+         d3y3vAE1Cq/davaELMZf398oN597naNr1QNWlqIv62PQHvOV+EHnshnXH707sUAcjsbZ
+         Z4olwZ/WeSiTa/USTyN+/dHqIO3RBh3ePsDRzrS2F5vxdp5yRGgDeDnQHpgPigCp0BSv
+         b6KVLaFuKW6cpvsTNrdwKFJHu5XWUzR5eGX5ZQ24BpYSbpxi+XJxju848hq5lE1NHoUy
+         IIkeIYitxuaPy9OwVJ+majdOwNP65ARRYeeb6gk9sQbXilMMFOvzL6rGXuU6NeSdfoOV
+         Mbkg==
+X-Gm-Message-State: AOJu0Yyd9VO3pF4Sr852BVEqmnDwkNz9epILeeX6bOTdYIDeEodv5kcJ
+        VO8WfNB4kvtjO/ra4+ZgqK3yvw==
+X-Google-Smtp-Source: AGHT+IGXKMISVyHxuVm+vG9Pt+kBBJaOZcAMf0U1UZVqmJe4rkXuoORfl4tuGE7G0+IUE8CQxCFomg==
+X-Received: by 2002:a05:6358:52c2:b0:143:1063:d1ed with SMTP id z2-20020a05635852c200b001431063d1edmr14645362rwz.26.1696802373402;
+        Sun, 08 Oct 2023 14:59:33 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id s15-20020a17090a5d0f00b00263cca08d95sm8772070pji.55.2023.10.08.14.59.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Oct 2023 14:59:32 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qpboA-00BGGw-1Q;
+        Mon, 09 Oct 2023 08:59:30 +1100
+Date:   Mon, 9 Oct 2023 08:59:30 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+        Mateusz Guzik <mjguzik@gmail.com>
+Subject: Re: [PATCH v2 3/5] xfs: Replace xfs_isilocked with xfs_assert_locked
+Message-ID: <ZSMmQm/DbJQ0/oH9@dread.disaster.area>
+References: <20231007203543.1377452-1-willy@infradead.org>
+ <20231007203543.1377452-4-willy@infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v7 17/26] PM / devfreq: rockchip-dfi: make register stride
- SoC specific
-Content-Language: en-US
-To:     Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-rockchip@lists.infradead.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Vincent Legoll <vincent.legoll@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-References: <20230704093242.583575-1-s.hauer@pengutronix.de>
- <20230704093242.583575-18-s.hauer@pengutronix.de>
-From:   Chanwoo Choi <chanwoo@kernel.org>
-In-Reply-To: <20230704093242.583575-18-s.hauer@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231007203543.1377452-4-willy@infradead.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,71 +79,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23. 7. 4. 18:32, Sascha Hauer wrote:
-> The currently supported RK3399 has a stride of 20 between the channel
-> specific registers. Upcoming RK3588 has a different stride, so put
-> the stride into driver data to make it configurable.
-> While at it convert decimal 20 to hex 0x14 for consistency with RK3588
-> which has a register stride 0x4000 and we want to write that in hex
-> as well.
+On Sat, Oct 07, 2023 at 09:35:41PM +0100, Matthew Wilcox (Oracle) wrote:
+> To use the new rwsem_assert_held()/rwsem_assert_held_write(), we can't
+> use the existing ASSERT macro.
 > 
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> xfs_assert_ilocked(ip,  XFS_IOLOCK_EXCL | XFS_ILOCK_EXCL) checks both the
+> IOLOCK and the ILOCK are held for write.  xfs_isilocked() only checked
+> that the ILOCK was held for write.
+> 
+> xfs_assert_ilocked() is always on, even if DEBUG or XFS_WARN aren't
+> defined.  It's a cheap check, so I don't think it's worth defining
+> it away.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 > ---
->  drivers/devfreq/event/rockchip-dfi.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/devfreq/event/rockchip-dfi.c b/drivers/devfreq/event/rockchip-dfi.c
-> index 969b62f071b83..85ec93fd41858 100644
-> --- a/drivers/devfreq/event/rockchip-dfi.c
-> +++ b/drivers/devfreq/event/rockchip-dfi.c
-> @@ -112,6 +112,7 @@ struct rockchip_dfi {
->  	int active_events;
->  	int burst_len;
->  	int buswidth[DMC_MAX_CHANNELS];
-> +	int ddrmon_stride;
->  };
->  
->  static int rockchip_dfi_enable(struct rockchip_dfi *dfi)
-> @@ -189,13 +190,13 @@ static void rockchip_dfi_read_counters(struct rockchip_dfi *dfi, struct dmc_coun
->  		if (!(dfi->channel_mask & BIT(i)))
->  			continue;
->  		c->c[i].read_access = readl_relaxed(dfi_regs +
-> -				DDRMON_CH0_RD_NUM + i * 20);
-> +				DDRMON_CH0_RD_NUM + i * dfi->ddrmon_stride);
->  		c->c[i].write_access = readl_relaxed(dfi_regs +
-> -				DDRMON_CH0_WR_NUM + i * 20);
-> +				DDRMON_CH0_WR_NUM + i * dfi->ddrmon_stride);
->  		c->c[i].access = readl_relaxed(dfi_regs +
-> -				DDRMON_CH0_DFI_ACCESS_NUM + i * 20);
-> +				DDRMON_CH0_DFI_ACCESS_NUM + i * dfi->ddrmon_stride);
->  		c->c[i].clock_cycles = readl_relaxed(dfi_regs +
-> -				DDRMON_CH0_COUNT_NUM + i * 20);
-> +				DDRMON_CH0_COUNT_NUM + i * dfi->ddrmon_stride);
+......
 
-Before this path, rk3399 and rk3568 have used the same stride.
-But, this patch add the ddrmon_stride for only rk3399. 
+> -bool
+> -xfs_isilocked(
+> +void
+> +xfs_assert_ilocked(
+>  	struct xfs_inode	*ip,
+>  	uint			lock_flags)
+>  {
+> -	if (lock_flags & (XFS_ILOCK_EXCL|XFS_ILOCK_SHARED)) {
+> -		if (!(lock_flags & XFS_ILOCK_SHARED))
+> -			return !!ip->i_lock.mr_writer;
+> -		return rwsem_is_locked(&ip->i_lock.mr_lock);
+> -	}
+> -
+> -	if (lock_flags & (XFS_MMAPLOCK_EXCL|XFS_MMAPLOCK_SHARED)) {
+> -		return __xfs_rwsem_islocked(&VFS_I(ip)->i_mapping->invalidate_lock,
+> -				(lock_flags & XFS_MMAPLOCK_SHARED));
+> -	}
+> -
+> -	if (lock_flags & (XFS_IOLOCK_EXCL | XFS_IOLOCK_SHARED)) {
+> -		return __xfs_rwsem_islocked(&VFS_I(ip)->i_rwsem,
+> -				(lock_flags & XFS_IOLOCK_SHARED));
+> -	}
+> -
+> -	ASSERT(0);
+> -	return false;
+> +	if (lock_flags & XFS_ILOCK_SHARED)
+> +		rwsem_assert_held(&ip->i_lock.mr_lock);
+> +	else if (lock_flags & XFS_ILOCK_EXCL)
+> +		BUG_ON(!ip->i_lock.mr_writer);
 
-It seems that the behavior of rk3568 is changed. 
-If ddrmon_stride is not required for rk3568,
-you must move this patch before adding rk3568 support patch ("PM / devfreq: rockchip-dfi: Add RK3568 support").
+		ASSERT(!ip->i_lock.mr_writer);
 
->  	}
->  }
->  
-> @@ -664,6 +665,8 @@ static int rk3399_dfi_init(struct rockchip_dfi *dfi)
->  	dfi->buswidth[0] = FIELD_GET(RK3399_PMUGRF_OS_REG2_BW_CH0, val) == 0 ? 4 : 2;
->  	dfi->buswidth[1] = FIELD_GET(RK3399_PMUGRF_OS_REG2_BW_CH1, val) == 0 ? 4 : 2;
->  
-> +	dfi->ddrmon_stride = 0x14;
-> +
->  	return 0;
->  };
->  
+Otherwise OK.
+
+-Dave.
 
 -- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
-
+Dave Chinner
+david@fromorbit.com
