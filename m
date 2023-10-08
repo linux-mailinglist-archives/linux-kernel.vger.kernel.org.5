@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1087BCDBE
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 12:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 587367BCDC0
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 12:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344601AbjJHKLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 06:11:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52640 "EHLO
+        id S1344614AbjJHKNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 06:13:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230412AbjJHKLp (ORCPT
+        with ESMTP id S230412AbjJHKN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 06:11:45 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED58C5
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 03:11:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EA90C433CD
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 10:11:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696759903;
-        bh=anTSxeHmgVC+wUa5CZQEweK0ru9RY3rK8/qOldhQRI0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jyWUMXP2C7qQ5bvF80TgLwAiwvxjiu35k7JKjmr2yc3gz1o/VIY/DVg3xgkS8S5KO
-         fpqjleX6D+NA0ih2ktqp43aJn7Bck74y6drzG5yXQyJ0xjUU70Dcgw4YD+fMfHwMl2
-         KxjV5+lMjhY0M2BP4ElnDs3ohYBhWWPAvAazkzZ2kHAc9Q2YH3MCh2LDtGdX5+fdlD
-         x6+6er4nuf/BE9MM0CqXsy7zr75uzH7RDnh51uzYBUMJ9XZhoT9KG5429ZPJRiItaz
-         UlaZEakhHG0pZCMl9mIsjEIRnMgfaC5skSnJtFm07V4M8AWJUcjRoxUKNK8acLJqMD
-         yoC3UFHVqt/tw==
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5384975e34cso6386401a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 03:11:43 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxViakuErdpiLbGFCNJR03+rW9tt5dxzbL05b85yXlGHj58A8eT
-        8lelYOGTk1QZoPovWz4WsvdKhlayJikQBq6HGNU=
-X-Google-Smtp-Source: AGHT+IEZh4FpuUW0n0QqCNDBpXRuPHCr5YjuwnacjFnzmcOW2Lym8q8t50grRMgRb78Xrb/5TbjwLsbVz6ZeN5wzrHU=
-X-Received: by 2002:a05:6402:78c:b0:522:3a0d:38c2 with SMTP id
- d12-20020a056402078c00b005223a0d38c2mr11555622edy.9.1696759901490; Sun, 08
- Oct 2023 03:11:41 -0700 (PDT)
+        Sun, 8 Oct 2023 06:13:28 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 335A2B9
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 03:13:27 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1696760005;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IyfYsQzaOeLTXQBHv3VBHVIY5Xsq/KdLp69dFVT7Uxc=;
+        b=B9yMbKj+Ld4oAx8iNBwUTVe9fhZZ9OV/bhBArBYfFcz1cUUc96jT017mfeXCEMYiXEitg7
+        r/DW8iwe5KpB1VIS7rGeel0TO014yF/4qFtsO3RokUtFKG5K0uRcOC6PFv/4lEz9CvrOEl
+        AZAeDUu8U2nn0MZEn9oYldZE5VeUPYW/m/j9soZiCT9ToNc3BZ7+RCnw+FZAX1RqjVdM58
+        WDBejKIYbmwFdYSFIZkztA3w4wMDTXyx8MrkUDzAaBlGXm5UmOvr3TfLHOx7IaGqErPjEH
+        lnKIpwYtehNZuTpmLVq0+is/jRqfok+ziHez4H8wFp+rTk8cZNqXeKU/D+EJMA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1696760005;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IyfYsQzaOeLTXQBHv3VBHVIY5Xsq/KdLp69dFVT7Uxc=;
+        b=6Y5TkTky3+TMm/7Vo2O4V7hJ4YfP8LJCRen2M97wkx+dJN9CrkX7j3we+MNj0CuwINs2WE
+        Fa03uwJLm/k3Y6DQ==
+To:     Petr Mladek <pmladek@suse.com>,
+        Linus Torvalds <torvalds@linuxfoundation.org>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: panic context: was: Re: [PATCH printk v2 04/11] printk: nbcon:
+ Provide functions to mark atomic write sections
+In-Reply-To: <ZSADUKp8oJ2Ws2vC@alley>
+References: <ZRGvn4m2NGCn3Pef@alley> <87h6n5teos.fsf@jogness.linutronix.de>
+ <ZSADUKp8oJ2Ws2vC@alley>
+Date:   Sun, 08 Oct 2023 12:19:21 +0206
+Message-ID: <87il7hv2v2.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-References: <20231001103433.3187-1-jszhang@kernel.org> <20231001103433.3187-3-jszhang@kernel.org>
-In-Reply-To: <20231001103433.3187-3-jszhang@kernel.org>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Sun, 8 Oct 2023 18:11:29 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSUku1TNLT2aOe0zhdwrrD6+7boSEs+8Rtr6MLntd36AQ@mail.gmail.com>
-Message-ID: <CAJF2gTSUku1TNLT2aOe0zhdwrrD6+7boSEs+8Rtr6MLntd36AQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] riscv: errata: thead: use pa based instructions
- for CMO
-To:     Jisheng Zhang <jszhang@kernel.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,68 +61,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 1, 2023 at 6:46=E2=80=AFPM Jisheng Zhang <jszhang@kernel.org> w=
-rote:
->
-> T-HEAD CPUs such as C906/C910/C920 support phy address based CMO, use
-> them so that we don't need to convert to virt address.
->
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> ---
->  arch/riscv/errata/thead/errata.c | 18 ++++++------------
->  1 file changed, 6 insertions(+), 12 deletions(-)
->
-> diff --git a/arch/riscv/errata/thead/errata.c b/arch/riscv/errata/thead/e=
-rrata.c
-> index 3fefeb1b456e..632557f36b19 100644
-> --- a/arch/riscv/errata/thead/errata.c
-> +++ b/arch/riscv/errata/thead/errata.c
-> @@ -58,9 +58,9 @@ static bool errata_probe_pbmt(unsigned int stage,
->   * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
->   *   0000000    11001     00000      000      00000  0001011
->   */
-> -#define THEAD_inval_A0 ".long 0x0265000b"
-> -#define THEAD_clean_A0 ".long 0x0255000b"
-> -#define THEAD_flush_A0 ".long 0x0275000b"
-> +#define THEAD_inval_A0 ".long 0x02a5000b"
-> +#define THEAD_clean_A0 ".long 0x0295000b"
-> +#define THEAD_flush_A0 ".long 0x02b5000b"
->  #define THEAD_SYNC_S   ".long 0x0190000b"
->
->  #define THEAD_CMO_OP(_op, _start, _size, _cachesize)                   \
-> @@ -79,23 +79,17 @@ asm volatile("mv a0, %1\n\t"                         =
-                       \
->
->  static void thead_errata_cache_inv(phys_addr_t paddr, size_t size)
->  {
-> -       void *vaddr =3D phys_to_virt(paddr);
-> -
-> -       THEAD_CMO_OP(inval, vaddr, size, riscv_cbom_block_size);
-> +       THEAD_CMO_OP(inval, paddr, size, riscv_cbom_block_size);
->  }
->
->  static void thead_errata_cache_wback(phys_addr_t paddr, size_t size)
->  {
-> -       void *vaddr =3D phys_to_virt(paddr);
-> -
-> -       THEAD_CMO_OP(clean, vaddr, size, riscv_cbom_block_size);
-> +       THEAD_CMO_OP(clean, paddr, size, riscv_cbom_block_size);
->  }
->
->  static void thead_errata_cache_wback_inv(phys_addr_t paddr, size_t size)
->  {
-> -       void *vaddr =3D phys_to_virt(paddr);
-> -
-> -       THEAD_CMO_OP(flush, vaddr, size, riscv_cbom_block_size);
-> +       THEAD_CMO_OP(flush, paddr, size, riscv_cbom_block_size);
->  }
->
->  static const struct riscv_nonstd_cache_ops thead_errata_cmo_ops =3D {
-> --
-> 2.40.1
->
-Thx, Reviewed-by: Guo Ren <guoren@kernel.org>
+Hi Petr,
 
---=20
-Best Regards
- Guo Ren
+On 2023-10-06, Petr Mladek <pmladek@suse.com> wrote:
+>> During the demo at LPC2022 we had the situation that there was a large
+>> backlog when a WARN was hit. With current mainline the first line of the
+>> WARN is put into the ringbuffer and then the entire backlog is flushed
+>> before storing the rest of the WARN into the ringbuffer. At the time it
+>> was obvious that we should finish storing the WARN message and then
+>> start flushing the backlog.
+>
+> This talks about the "emergency" context (WARN/OOPS/watchdog).
+> The system might be in big troubles but it would still try to continue.
+>
+> Do we really want to defer the flush also for panic() context?
+
+We can start flushing right after the backtrace is in the
+ringbuffer. But flushing the backlog _before_ putting the backtrace into
+the ringbuffer was not desired because if there is a large backlog, the
+machine may not survive to get the backtrace out. And in that case it
+won't even be in the ringbuffer to be used by other debugging
+tools.
+
+> I ask because I was not on LPC 2022 in person and I do not remember
+> all details.
+
+The LPC2022 demo/talk was recorded:
+
+https://www.youtube.com/watch?v=TVhNcKQvzxI
+
+At 55:55 is where the situation occurred and triggered the conversation,
+ultimately leading to this new feature.
+
+You may also want to reread my summary:
+
+https://lore.kernel.org/lkml/875yheqh6v.fsf@jogness.linutronix.de
+
+as well as Linus' follow-up message:
+
+https://lore.kernel.org/lkml/CAHk-=wieXPMGEm7E=Sz2utzZdW1d=9hJBwGYAaAipxnMXr0Hvg@mail.gmail.com
+
+> But it is tricky in panic(), see 8th patch at
+> https://lore.kernel.org/r/20230919230856.661435-9-john.ogness@linutronix.de
+>
+>    + nbcon_atomic_exit() is called only in one code path.
+
+Correct. When panic() is complete and the machine goes into its infinite
+loop. This is also the point where it will attempt an unsafe flush, if
+it could not get the messages out yet.
+
+>    + nbcon_atomic_flush_all() is used in other paths. It looks like
+>      a "Whack a mole" game to me.
+
+Several different outputs occur during panic(). The flush is everywhere
+where something significant has been put into the ringbuffer and now it
+would be OK to flush it.
+
+>    + messages are never emitted by printk kthread either because
+>      CPUs are stopped or the kthread is not allowed to get the lock
+
+Correct.
+
+> I see only one positive of the explicit flush. The consoles would
+> not delay crash_exec() and the crash dump might be closer to
+> the point where panic() was called.
+
+It's only about getting the critical messages into the ringbuffer before
+flushing. And since various things can go wrong during the many actions
+within panic(), it makes sense to flush in between those actions.
+
+> Otherwise I see only negatives => IMHO, we want to flush atomic
+> consoles synchronously from printk() in panic().
+>
+> Does anyone really want explicit flushes in panic()?
+
+So far you are the only one speaking against it. I expect as time goes
+on it will get even more complex as it becomes tunable (also something
+we talked about during the demo).
+
+John
