@@ -2,50 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C80487BD069
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 23:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F30F07BD06D
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 23:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344702AbjJHVxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 17:53:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38320 "EHLO
+        id S1344710AbjJHVyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 17:54:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344437AbjJHVxC (ORCPT
+        with ESMTP id S1344437AbjJHVyf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 17:53:02 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39A369D;
-        Sun,  8 Oct 2023 14:53:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FE02C433C7;
-        Sun,  8 Oct 2023 21:52:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696801980;
-        bh=ej6qPerfgZFriLCt1FOJ2SBffAjDi+XhXPfeurlTIS4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vo0lYbMxYE1jZbuGiDMltJMLV0Pgv2mgTDphI5PciHHC96mK4tZ9LAnJtnEMSoIx6
-         02Kz4WKhsLlGWxkOe2/DYc/7ML0J2M9S9sPYwcqI1KZFZwawu/nKPJ1Xd0n6Yj3FIV
-         BL/u4mtE++faoS2T1v0g8jsALK4LcdWFB8jys7vhryvQPKCIIa5/dESzOIGPT7tk1n
-         OVl9cMubf+kMWfIeYVcmXwa4zZGLJImH0RvQbh7fEds5hYBc4C06WkWgGZlZxYWVlK
-         fnjdHOSKMFFj3/DMkbpvGdHr5hbt64102ipxZZDzTBNkGSlsyf8YlrhIQ9IlV0FgP4
-         fUYwADfGASApg==
-Date:   Sun, 8 Oct 2023 23:52:56 +0200
-From:   Alejandro Colomar <alx@kernel.org>
-To:     Axel Rasmussen <axelrasmussen@google.com>,
-        Mike Rapoport <rppt@kernel.org>
-Cc:     Peter Xu <peterx@redhat.com>, linux-man@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] ioctl_userfaultfd.2: clarify the state of the
- uffdio_api structure on error
-Message-ID: <ZSMkuf3g5hGk1Kjk@debian>
-References: <20231003194547.2237424-1-axelrasmussen@google.com>
- <20231003194547.2237424-4-axelrasmussen@google.com>
+        Sun, 8 Oct 2023 17:54:35 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDBBCAC
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 14:54:33 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-7741b18a06aso287768385a.1
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 14:54:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1696802073; x=1697406873; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2lF92kcVMrLRaxlLOpuuihR9KaLnr39sEQyi5og8S4Q=;
+        b=oRt5lRhGA45NWLfsNWFveCjvPYIMf1OGRPgqL71zdRrmtlZVVh8UgD9kFurup6Ba32
+         kVmzFQkQUe/B1kzt+HOR+/fQ/8iamOMvW1lj8MUNcLgfZLz+HK4Kwzq1lJpeHVKPS6Vh
+         ynfOx/mmvv8Gkq14aSh9bwVMkOCx1WFNtkTtsrVolXVFToHSRNDRg6EuzvFKcO6VpuyN
+         CL0H8NPh2NkDlHBcxjJ8NBh1GaKFxfjblpFDCEjM0gQDcqYOUhf1OXjua7cKFJPqDHnK
+         cr3mD1RrZmZEIs1FcA/mcuQxbg7uuZxOTMtLNtzQSCGYflUT5mFMu49nXVaLUxRp5V4j
+         NxAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696802073; x=1697406873;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2lF92kcVMrLRaxlLOpuuihR9KaLnr39sEQyi5og8S4Q=;
+        b=aa8sPhd2cQ1X+ep1JxpI5pxOWqCxagaZtaMb2TzopvSSBzoX5PQ+cV0/2LAmDApz5q
+         rZWC/70quo++7NbHVDYsfHGDy94P7e0Q2848ei6h2IdC5SSrxJctaFer3NPIjsrkqIyd
+         tkvcC64ijIaLK3juQkJoLP24VqOxhVbiCXCr/8U2r4AwdUtOwUIsG04/z1TTLGl+c1V7
+         iz+959i6rAbPL49G6+D8X3JkSNv8TDSuL7PzYG7ndmcfegNDXgAgOBsJCDVArPoRZIPC
+         qqjb1dDcCbGdyqNxsP+H1iKMQDYsKyvwtEkLPlO9+QS8fvNcBXmNGU+Vhs/1n6PCIYhT
+         Walg==
+X-Gm-Message-State: AOJu0YzklTN1TCS0MogWTOo+pkY1mFIYw490HoALbbMc6sfYJStqeinI
+        WzYBrzvEUu12FEIUuKntR68ToA+jNHY95DKG844=
+X-Google-Smtp-Source: AGHT+IE9uk2jQHbCBVxRhP7NjawRCWYl0XIv9gecaHQ8PgPtfZNgekIL319uoZlVT8luWtvfdncaig==
+X-Received: by 2002:a05:620a:410a:b0:76c:bdbd:c51d with SMTP id j10-20020a05620a410a00b0076cbdbdc51dmr18146770qko.66.1696802072815;
+        Sun, 08 Oct 2023 14:54:32 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id e18-20020aa78c52000000b00686b649cdd0sm4991103pfd.86.2023.10.08.14.54.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Oct 2023 14:54:31 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qpbjI-00BFzX-19;
+        Mon, 09 Oct 2023 08:54:28 +1100
+Date:   Mon, 9 Oct 2023 08:54:28 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+        Mateusz Guzik <mjguzik@gmail.com>
+Subject: Re: [PATCH v2 1/5] locking: Add rwsem_assert_held() and
+ rwsem_assert_held_write()
+Message-ID: <ZSMlFMTuD/5B1U/n@dread.disaster.area>
+References: <20231007203543.1377452-1-willy@infradead.org>
+ <20231007203543.1377452-2-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="q07TwbX2z1RRAfBB"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231003194547.2237424-4-axelrasmussen@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <20231007203543.1377452-2-willy@infradead.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,104 +80,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---q07TwbX2z1RRAfBB
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Date: Sun, 8 Oct 2023 23:52:56 +0200
-From: Alejandro Colomar <alx@kernel.org>
-To: Axel Rasmussen <axelrasmussen@google.com>,
-	Mike Rapoport <rppt@kernel.org>
-Cc: Peter Xu <peterx@redhat.com>, linux-man@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] ioctl_userfaultfd.2: clarify the state of the
- uffdio_api structure on error
-
-Hi Axel,
-
-On Tue, Oct 03, 2023 at 12:45:45PM -0700, Axel Rasmussen wrote:
-> The old FIXME noted that the zeroing was done to differentiate the two
-> EINVAL cases. It's possible something like this was true historically,
-> but in current Linux we zero it in *both* EINVAL cases, so this is at
-> least no longer true.
->=20
-> After reading the code, I can't determine any clear reason why we zero
-> it in some cases but not in others. So, some simple advice we can give
-> userspace is: if an error occurs, treat the contents of the structure as
-> unspecified. Just re-initialize it before retrying UFFDIO_API again.
->=20
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+On Sat, Oct 07, 2023 at 09:35:39PM +0100, Matthew Wilcox (Oracle) wrote:
+> Modelled after lockdep_assert_held() and lockdep_assert_held_write(),
+> but are always active, even when lockdep is disabled.  Of course, they
+> don't test that _this_ thread is the owner, but it's sufficient to catch
+> many bugs and doesn't incur the same performance penalty as lockdep.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 > ---
->  man2/ioctl_userfaultfd.2 | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
->=20
-> diff --git a/man2/ioctl_userfaultfd.2 b/man2/ioctl_userfaultfd.2
-> index 28dd2fcdd..2ee6a0532 100644
-> --- a/man2/ioctl_userfaultfd.2
-> +++ b/man2/ioctl_userfaultfd.2
-> @@ -248,6 +248,14 @@ operation returns 0 on success.
->  On error, \-1 is returned and
->  .I errno
->  is set to indicate the error.
-> +If an error occurs,
-> +the kernel may zero the provided
-> +.I uffdio_api
-> +structure.
-> +The caller should treat its contents as unspecified,
-> +and reinitialize it before re-attempting another
-> +.B UFFDIO_API
-> +call.
->  Possible errors include:
->  .TP
->  .B EFAULT
-> @@ -281,14 +289,6 @@ feature was enabled,
->  but the calling process doesn't have the
->  .B CAP_SYS_PTRACE
->  capability.
-> -.\" FIXME In the above error case, the returned 'uffdio_api' structure is
-> -.\" zeroed out. Why is this done? This should be explained in the manual=
- page.
-> -.\"
-> -.\" Mike Rapoport:
-> -.\"     In my understanding the uffdio_api
-> -.\"     structure is zeroed to allow the caller
-> -.\"     to distinguish the reasons for -EINVAL.
-> -.\"
+.....
+> @@ -169,6 +189,18 @@ static __always_inline int rwsem_is_contended(struct rw_semaphore *sem)
+>   * the RT specific variant.
+>   */
+>  
+> +static inline void rwsem_assert_held(const struct rw_semaphore *sem)
+> +{
+> +	lockdep_assert_held(sem);
+> +	__rwsem_assert_held(sem);
+> +}
 
-I've added Mike to the thread in case he wants to comment.
+	if (IS_ENABLED(CONFIG_LOCKDEP))
+		lockdep_assert_held(sem);
+	else
+		__rwsem_assert_held(sem);
 
-Thanks,
-Alex
-
->  .SS UFFDIO_REGISTER
->  (Since Linux 4.3.)
->  Register a memory address range with the userfaultfd object.
-> --=20
-> 2.42.0.609.gbb76f46606-goog
->=20
-
---=20
-<https://www.alejandro-colomar.es/>
-
---q07TwbX2z1RRAfBB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmUjJLgACgkQnowa+77/
-2zIvAA/9GYOyYYlNERqW/yXmh5Tg3E/gssJaue4y2SGAdTQzuSiyqiRu41V1fUbX
-381Ma4SrFvhgGwREJc0xucH/Nj+WsJT1JtgCXjJjkFhT3S7+m4XRZBx2jt/9Hnhq
-49GZHokw2As9MHioJ6k5Q5plrUN5451KbHEPL4yuvk6jD7JfeY9DhXZy+Hftye4A
-gxIPOweAaXUkWbVJQQeDFX0GtK8yY2VO9TkoNkPI0Ec1cJjIWAQ1w7i9cdW3VIw5
-Uy3IzdqW3ovZ3dx1FrGKLrtM/3NaI00N0BzXKOQz3EZ8vfpzga57+YOK+SJEDZIm
-AgJ5zNkJPl+5wpQRdCv1A51X8EoYO+ZiN418i9mClP9IhMNvczOTZ4tKUcMlXMJn
-i69i/0AWFoecCCVZqe/g7KVg0IiJUUE4HblyfsAhOiqz4XhUw69uCfqtaKzBGG34
-bxttfeqm2I2WWGBe/pluAg1I8uQtcCBhog7/J1Mz20LPbFxrGzz/jpWT5UVaxuJP
-QivbRf0yxsLy/mzAC70Vm0P6JndrfXGr5nTvWunco7y5/SSagA9QDmYfmodgTliG
-eQh0ghyYx+wf5EXmdNS02KqH4+GPXW9/3XtypNLy3oLIqimmDWIQE2LQ4/MRPq69
-knb/wWn6LkwA2Ta0TFF7QHYKPtFzgpFi1eBYI3ySuqUlYkOGE5U=
-=tpHy
------END PGP SIGNATURE-----
-
---q07TwbX2z1RRAfBB--
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
