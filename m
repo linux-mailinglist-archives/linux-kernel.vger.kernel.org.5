@@ -2,107 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 975EE7BCD63
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 10:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8027BCD66
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 10:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344543AbjJHIzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 04:55:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59644 "EHLO
+        id S1344497AbjJHI5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 04:57:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344509AbjJHIzI (ORCPT
+        with ESMTP id S230441AbjJHI5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 04:55:08 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B63F1C5
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 01:55:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696755306; x=1728291306;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=fg15z7C0Ds/CR/5uFP/gDGO+WpHuVd96XbJUma4TjEo=;
-  b=UiAAdDGFeFTNkNx4M4R1ycQ1k4037lpNULKWDrO/b9i70wgNZJdIjZ6p
-   CUajA4V45TD3WRW0sw9zzG/6nm6XBhC6CD2AvGTy31ZVDDIWzQdTEnWRR
-   /QWEBJf7fuI0mXYvRQplMY+eZIkbnLC8a+9A81EqppEcKS4kQON/iHKtO
-   z00wUYDkKKHjY3aQk7pSchd3WrofE5030SJhAnAQkOw4a/whkKeXg4eng
-   cIQq51wNy4ER5GYMtU45KfqlWhIspqc5+dizXIwoeT4bZ5S4ctZkz/2fR
-   089CnMnPbaP3lzVdpt7Zb9mu7vEsXAEamxfN6FnmaL5y75c0qfg1W9qif
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10856"; a="448178189"
-X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
-   d="scan'208";a="448178189"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2023 01:55:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10856"; a="843379542"
-X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
-   d="scan'208";a="843379542"
-Received: from qiuxu-clx.sh.intel.com ([10.239.53.109])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2023 01:55:03 -0700
-From:   Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-To:     tglx@linutronix.de
-Cc:     arjan@linux.intel.com, bp@alien8.de, chang.seok.bae@intel.com,
-        linux-kernel@vger.kernel.org, nik.borisov@suse.com, x86@kernel.org,
-        qiuxu.zhuo@intel.com
-Subject: Re: [patch V4 00/30] x86/microcode: Cleanup and late loading enhancements
-Date:   Sun,  8 Oct 2023 16:54:56 +0800
-Message-Id: <20231008085456.71646-1-qiuxu.zhuo@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231002115506.217091296@linutronix.de>
-References: <20231002115506.217091296@linutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sun, 8 Oct 2023 04:57:35 -0400
+Received: from out-201.mta1.migadu.com (out-201.mta1.migadu.com [95.215.58.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 283EDBA
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 01:57:34 -0700 (PDT)
+Message-ID: <2f8c4741-5c7f-272d-9cef-9fda9fbc7ca6@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1696755451;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y10H/HMLxaCFV3IBxifP5y2+mCacV1qzKaQVQZSnA3A=;
+        b=qBF8GbfO3jMQAprRf1WlTsXvZENuk08a5/0qubUt0gjK9EQXofsxIpeunoRepIKcKaLRxF
+        kf2tQPnW2RmOR2TGsOPIh6pMX8wh3RfMzEZbDZyG1yCyYl77jhMLdf8PKrWR/Y00SA8dGi
+        lXJe76YWUX1YidkNuBieP2X92dJ7Z/I=
+Date:   Sun, 8 Oct 2023 16:57:22 +0800
+MIME-Version: 1.0
+Subject: Re: [PATCH v4 2/2] mm: Init page count in reserve_bootmem_region when
+ MEMINIT_EARLY
+Content-Language: en-US
+To:     David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@kernel.org>
+Cc:     akpm@linux-foundation.org, mike.kravetz@oracle.com,
+        muchun.song@linux.dev, willy@infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20230928083302.386202-1-yajun.deng@linux.dev>
+ <20230928083302.386202-3-yajun.deng@linux.dev>
+ <20230929083018.GU3303@kernel.org>
+ <f144b910-cd9f-a571-ce9b-a0a8b509c28a@redhat.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yajun Deng <yajun.deng@linux.dev>
+In-Reply-To: <f144b910-cd9f-a571-ce9b-a0a8b509c28a@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
 
-> ...
+On 2023/10/2 16:30, David Hildenbrand wrote:
+> On 29.09.23 10:30, Mike Rapoport wrote:
+>> On Thu, Sep 28, 2023 at 04:33:02PM +0800, Yajun Deng wrote:
+>>> memmap_init_range() would init page count of all pages, but the free
+>>> pages count would be reset in __free_pages_core(). There are opposite
+>>> operations. It's unnecessary and time-consuming when it's MEMINIT_EARLY
+>>> context.
+>>>
+>>> Init page count in reserve_bootmem_region when in MEMINIT_EARLY 
+>>> context,
+>>> and check the page count before reset it.
+>>>
+>>> At the same time, the INIT_LIST_HEAD in reserve_bootmem_region isn't
+>>> need, as it already done in __init_single_page.
+>>>
+>>> The following data was tested on an x86 machine with 190GB of RAM.
+>>>
+>>> before:
+>>> free_low_memory_core_early()    341ms
+>>>
+>>> after:
+>>> free_low_memory_core_early()    285ms
+>>>
+>>> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+>>> ---
+>>> v4: same with v2.
+>>> v3: same with v2.
+>>> v2: check page count instead of check context before reset it.
+>>> v1: 
+>>> https://lore.kernel.org/all/20230922070923.355656-1-yajun.deng@linux.dev/
+>>> ---
+>>>   mm/mm_init.c    | 18 +++++++++++++-----
+>>>   mm/page_alloc.c | 20 ++++++++++++--------
+>>>   2 files changed, 25 insertions(+), 13 deletions(-)
+>>>
+>>> diff --git a/mm/mm_init.c b/mm/mm_init.c
+>>> index 9716c8a7ade9..3ab8861e1ef3 100644
+>>> --- a/mm/mm_init.c
+>>> +++ b/mm/mm_init.c
+>>> @@ -718,7 +718,7 @@ static void __meminit 
+>>> init_reserved_page(unsigned long pfn, int nid)
+>>>           if (zone_spans_pfn(zone, pfn))
+>>>               break;
+>>>       }
+>>> -    __init_single_page(pfn_to_page(pfn), pfn, zid, nid, 
+>>> INIT_PAGE_COUNT);
+>>> +    __init_single_page(pfn_to_page(pfn), pfn, zid, nid, 0);
+>>>   }
+>>>   #else
+>>>   static inline void pgdat_set_deferred_range(pg_data_t *pgdat) {}
+>>> @@ -756,8 +756,8 @@ void __meminit 
+>>> reserve_bootmem_region(phys_addr_t start,
+>>>                 init_reserved_page(start_pfn, nid);
+>>>   -            /* Avoid false-positive PageTail() */
+>>> -            INIT_LIST_HEAD(&page->lru);
+>>> +            /* Init page count for reserved region */
+>>
+>> Please add a comment that describes _why_ we initialize the page 
+>> count here.
+>>
+>>> +            init_page_count(page);
+>>>                 /*
+>>>                * no need for atomic set_bit because the struct
+>>> @@ -888,9 +888,17 @@ void __meminit memmap_init_range(unsigned long 
+>>> size, int nid, unsigned long zone
+>>>           }
+>>>             page = pfn_to_page(pfn);
+>>> -        __init_single_page(page, pfn, zone, nid, INIT_PAGE_COUNT);
+>>> -        if (context == MEMINIT_HOTPLUG)
+>>> +
+>>> +        /* If the context is MEMINIT_EARLY, we will init page count 
+>>> and
+>>> +         * mark page reserved in reserve_bootmem_region, the free 
+>>> region
+>>> +         * wouldn't have page count and we will check the pages count
+>>> +         * in __free_pages_core.
+>>> +         */
+>>> +        __init_single_page(page, pfn, zone, nid, 0);
+>>> +        if (context == MEMINIT_HOTPLUG) {
+>>> +            init_page_count(page);
+>>>               __SetPageReserved(page);
+>>
+>> Rather than calling init_page_count() and __SetPageReserved() for
+>> MEMINIT_HOTPLUG you can set flags to INIT_PAGE_COUNT | 
+>> INIT_PAGE_RESERVED
+>> an call __init_single_page() after the check for MEMINIT_HOTPLUG.
+>>
+>> But more generally, I wonder if we have to differentiate HOTPLUG here 
+>> at all.
+>> @David, can you comment please?
 >
-> The series is also available from git:
-> 
->    git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git ucode-v4
-> ...
+> There are a lot of details to that, and I'll share some I can briefly 
+> think of.
+>
+> 1) __SetPageReserved()
+>
+> I tried removing that a while ago, but there was a blocker (IIRC 
+> something about
+> ZONE_DEVICE). I still have the patches at [1] and I could probably 
+> take a look
+> if that blocker still exists (I recall that something changed at some 
+> point, but
+> I never had the time to follow up).
+>
+> But once we stop setting the pages reserved, we might run into issues 
+> with ...
+>
+>
+> 2) init_page_count()
+>
+> virtio-mem, XEN balloon and HV-balloon add memory blocks that can 
+> contain holes.
+> set_online_page_callback() is used to intercept memory onlining and to 
+> expose
+> only the pages that are not holes to the buddy: calling 
+> generic_online_page() on !hole.
+>
+> Holes are PageReserved but with an initialized page count. Memory 
+> offlining will fail on
+> PageReserved pages -- has_unmovable_pages().
+>
+>
+> At least virtio-mem clears the PageReserved flag of holes when 
+> onlining memory,
+> and currently relies in the page count to be reasonable (so memory 
+> offlining can work).
+>
+> static void virtio_mem_set_fake_offline(unsigned long pfn,
+>                     unsigned long nr_pages, bool onlined)
+> {
+>     page_offline_begin();
+>     for (; nr_pages--; pfn++) {
+>         struct page *page = pfn_to_page(pfn);
+>
+>         __SetPageOffline(page);
+>         if (!onlined) {
+>             SetPageDirty(page);
+>             /* FIXME: remove after cleanups */
+>             ClearPageReserved(page);
+>         }
+>     }
+>     page_offline_end();
+> }
+>
+>
+> For virtio-mem, we could initialize the page count there instead. The 
+> other PV drivers
+> might require a bit more thought.
+>
+>
+> [1] 
+> https://github.com/davidhildenbrand/linux/tree/online_reserved_cleanup
+>
+>>
+>>> +        }
+>>>             /*
+>>>            * Usually, we want to mark the pageblock MIGRATE_MOVABLE,
+>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>>> index 06be8821d833..b868caabe8dc 100644
+>>> --- a/mm/page_alloc.c
+>>> +++ b/mm/page_alloc.c
+>>> @@ -1285,18 +1285,22 @@ void __free_pages_core(struct page *page, 
+>>> unsigned int order)
+>>>       unsigned int loop;
+>>>         /*
+>>> -     * When initializing the memmap, __init_single_page() sets the 
+>>> refcount
+>>> -     * of all pages to 1 ("allocated"/"not free"). We have to set the
+>>> -     * refcount of all involved pages to 0.
+>>> +     * When initializing the memmap, memmap_init_range sets the 
+>>> refcount
+>>> +     * of all pages to 1 ("reserved" and "free") in hotplug 
+>>> context. We
+>>> +     * have to set the refcount of all involved pages to 0. Otherwise,
+>>> +     * we don't do it, as reserve_bootmem_region only set the 
+>>> refcount on
+>>> +     * reserve region ("reserved") in early context.
+>>>        */
+>>
+>> Again, why hotplug and early init should be different?
+>>
+>>> -    prefetchw(p);
+>>> -    for (loop = 0; loop < (nr_pages - 1); loop++, p++) {
+>>> -        prefetchw(p + 1);
+>>> +    if (page_count(page)) {
+>>> +        prefetchw(p);
+>>> +        for (loop = 0; loop < (nr_pages - 1); loop++, p++) {
+>>> +            prefetchw(p + 1);
+>>> +            __ClearPageReserved(p);
+>>> +            set_page_count(p, 0);
+>>> +        }
+>>>           __ClearPageReserved(p);
+>>>           set_page_count(p, 0);
+>
+> That looks wrong. if the page count would by pure luck be 0 already 
+> for hotplugged memory,
+> you wouldn't clear the reserved flag.
+>
+> These changes make me a bit nervous.
 
-Test Result (same as ucode-v3)
-------------------------------
-Tested 'ucode-v4' on an Intel Sapphire Rapids server that both early load
-and late load worked well. For more details, please refer to the test below:
 
+Is 'if (page_count(page) || PageReserved(page))' be safer? Or do I need 
+to do something else?
 
-Tested Machine
---------------
-  Intel Sapphire Rapids server with 2 sockets, each containing 48 cores,
-  resulting in a total of 192 threads.
-
-
-Microcodes
-----------
-  a) Microcode revisison of CPU                        : 0xab000130
-  b) Microcode revision in the initramfs               : 0xab000140 // for early load
-  c) Microcode revision in /lib/firmware/intel-ucode/* : 0xab000160 // for late load
-
-     [ Microcode b) & c) headers both contain minirev 0x2b0000a1. ]
-
-
-Dmesg log
----------
-// Early load OK.
-[    0.000000] microcode: updated early: 0xab000130 -> 0xab000140, date = 2022-11-04
-
-...
-[   20.215653] microcode: Microcode Update Driver: v2.2.
-...
-
-// Late load OK.
-[   27.596822] microcode: Updated to revision 0xab000160, date = 2022-11-16
-[   27.606848] microcode: load: updated on 96 primary CPUs with 96 siblings
-[   27.614789] microcode: revision: 0xab000140 -> 0xab000160
-
-Thanks!
--Qiuxu
