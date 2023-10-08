@@ -2,71 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 518CE7BCDD1
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 12:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3170F7BCDDB
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 12:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344627AbjJHKkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 06:40:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46300 "EHLO
+        id S1344633AbjJHKne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 06:43:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230412AbjJHKkf (ORCPT
+        with ESMTP id S230412AbjJHKnb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 06:40:35 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 030B3C5
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 03:40:34 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-307d20548adso3305749f8f.0
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 03:40:33 -0700 (PDT)
+        Sun, 8 Oct 2023 06:43:31 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC8BC5
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 03:43:27 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40684f53ef3so34995915e9.3
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 03:43:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696761632; x=1697366432; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1696761806; x=1697366606; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=0/WCGfQbdwvDDkPgXFAUGyl5z/KP3TLZf3iVTyQ6q4o=;
-        b=jTHydkeq0niscfpLtJTGgwuO1giP2X1xa4yKSAQA1KZJVI66PtFTY1RzovdlJhWI/C
-         /HnpYJSfru3lIHKf6YfFxncnjSrBWQsY/GGywawbDtdlCrA7jPZY9zQq0JdCF46uYHQB
-         XkLa453D6N/aGex9kXqTte/lFiieNgw1mrGb1eaSXWXw7GcSBoGNhzTvPDuuttae5dy4
-         mcZ6eU8b+RQGbwoQMvIfpolW+s9/mHiGakBHamqTjN3w0SRmY0O4tq1z1bsTY7s7hpgC
-         yPnuJctZeHEFRCHVJXOJM1Dv4ipugZGmdNM1hshNp2NFXNG5e0HihMz8fpIKkECAws0V
-         4Jvg==
+        bh=GNRoH+bHMURhNHv7CCwUJjKtF9LFvrYJ+0oK2DEzl68=;
+        b=LOg2kqxecN6sSep5f+s+UBR0LmiTuDCemuspdWhK4KADxPX2PfUwyJrcT3dztW153R
+         X0Fetff/MFKX1jcn32dOipxhthFkX9Of26NnSRN3IIRVqVIBENMQPWa1glUjhsHtgeSu
+         d2NpTV6TUb9D3BGYo6phbNAoqAuLOJAgolvO5mSxApq1tX3l5qV3CAEQiLUx3slCXU7m
+         8vEgpnz1MzvW7b2B4hHsoDC9UQM4KPzeztbwoHYthXcgyvfkUX7z422pWHRoMEeJ0mgA
+         d5HtepQfVeoGrNRbOMwcbW1WlI4xhhTMOVCGWeHUOAaPC1XwNceBsDS99D+FGCMQfTfw
+         yywQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696761632; x=1697366432;
+        d=1e100.net; s=20230601; t=1696761806; x=1697366606;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0/WCGfQbdwvDDkPgXFAUGyl5z/KP3TLZf3iVTyQ6q4o=;
-        b=oXBWSvo971ece5EKEW8Bitp3lQkLjK2RLjazF/thhOJo2wPe3cCmfXIFIOrY6tu9rB
-         /JycoKV6Y7Pv6vtx6oaQ6d9uIArxvtNqD3FNa0GA2Zyju6Xoi4YY8Ds23SDD1Dbkh/rf
-         nrDy90uFA6QGSIZOQWa4jLaWHg4FEeMc2gAayeY/PE7jR78OjsAalTzm7oIDSMP7rkCz
-         kSFU5Jx1k2qI+PGmHIcFI17+DN8bQuftJUfKi/M4x1lLHxbKTp04DSRgukEwqtK0WFk6
-         mD17SW3j9Sr5jbhbJpCjaemvWI6RXBvBtQkQazKQRZ3A9B74RZnnTo41Bzr/xO9wd1D5
-         9yZw==
-X-Gm-Message-State: AOJu0YxCCxldRymKQdbKYLIibNbspQVVk2bYdpGL0BYA9bnjAPn/0kna
-        nsubkqz72TK0DMyOrOSoi5yUpbWOuQapfLdaRh1M7l2v
-X-Google-Smtp-Source: AGHT+IGfd/nt7b1m0FxcLTfPevwGRF/g2pfmIcxzdC9YCNSMKafq05U6ooE4eV5zEFHfVaGBE6jBfQ==
-X-Received: by 2002:a5d:6b82:0:b0:319:5677:f832 with SMTP id n2-20020a5d6b82000000b003195677f832mr10269209wrx.62.1696761631934;
-        Sun, 08 Oct 2023 03:40:31 -0700 (PDT)
+        bh=GNRoH+bHMURhNHv7CCwUJjKtF9LFvrYJ+0oK2DEzl68=;
+        b=UeEh9bPImjctA0HSwhqC7T40SI7WuB4TTPbmVlvG9VSj2VX9gd2ceAPU4B6BwLAU3A
+         TzxRcm/eZH1ZppuBN3zRn3jTt0V0c50Ba9j3KuOxB2QJ/vcorSKJNGZJZs+VKaY0Dxzl
+         0z2qYof0Z6fMbGTKuPFFqwYQr+fTu3aGm0BuhdBgQneZuZrO2ZL/0rxquOnGuoaw4ebw
+         X0YFqK5HXCkw1J6CsQME5gO5k6q1hMtH+fJrDAcO2fqp+odqRbE+z3V5kN762UgPtESD
+         7YRVzAGTyKsxcaJcbCPvnSmMFEcNS0AmEfgEUAJgMmvlObTdVjQ3iYal0xXr99cRrdXj
+         5axw==
+X-Gm-Message-State: AOJu0YxFgvFxSEgCywwO2MI+RLnyRRRBcgvhVJ4IqghDJbZNe1pfc9Op
+        RM3djcjkRFkGOzomI14GaH7dDQ==
+X-Google-Smtp-Source: AGHT+IGTZ0y+58du/X6xVatm1boJ96BG9MRZ0XPVDY4sBtT+6ZdphWXc+SDnLxVzvQTOUK+dvYr9jg==
+X-Received: by 2002:a05:600c:2189:b0:405:7400:1e4c with SMTP id e9-20020a05600c218900b0040574001e4cmr11409731wme.35.1696761806088;
+        Sun, 08 Oct 2023 03:43:26 -0700 (PDT)
 Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id a9-20020a5d5709000000b0032320a9b010sm6525874wrv.28.2023.10.08.03.40.30
+        by smtp.gmail.com with ESMTPSA id c5-20020a05600c0ac500b0040586360a36sm10432871wmr.17.2023.10.08.03.43.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Oct 2023 03:40:31 -0700 (PDT)
-Message-ID: <1ce9d59e-0938-4448-8279-b8c6e522b26a@linaro.org>
-Date:   Sun, 8 Oct 2023 12:40:29 +0200
+        Sun, 08 Oct 2023 03:43:25 -0700 (PDT)
+Message-ID: <d4663197-8295-4967-a4f5-6cc91638fc0d@linaro.org>
+Date:   Sun, 8 Oct 2023 12:43:23 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] regulator: dt-bindings: Add mps,mpq2286
- power-management IC
+Subject: Re: [PATCH v13 00/10] Add multiport support for DWC3 controllers
 Content-Language: en-US
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Saravanan Sekar <saravanan@linumiz.com>
-Cc:     sravanhome@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, jdelvare@suse.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-hwmon@vger.kernel.org
-References: <20231007165803.239718-1-saravanan@linumiz.com>
- <20231007165803.239718-3-saravanan@linumiz.com>
- <84f4692c-5fee-4d00-b537-570f90191d6e@roeck-us.net>
+To:     Krishna Kurapati <quic_kriskura@quicinc.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Johan Hovold <johan@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
+        quic_jackp@quicinc.com, ahalaney@redhat.com,
+        quic_shazhuss@quicinc.com
+References: <20231007154806.605-1-quic_kriskura@quicinc.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -112,11 +119,11 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <84f4692c-5fee-4d00-b537-570f90191d6e@roeck-us.net>
+In-Reply-To: <20231007154806.605-1-quic_kriskura@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -125,25 +132,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/10/2023 03:20, Guenter Roeck wrote:
-> On Sat, Oct 07, 2023 at 10:28:02PM +0530, Saravanan Sekar wrote:
->> Document mpq2286 power-management IC. Instead of simple 'buck', 'buck0' is
->> used to keep the driver common which handles multiple regulators.
+On 07/10/2023 17:47, Krishna Kurapati wrote:
+> Currently the DWC3 driver supports only single port controller which
+> requires at most two PHYs ie HS and SS PHYs. There are SoCs that has
+> DWC3 controller with multiple ports that can operate in host mode.
+> Some of the port supports both SS+HS and other port supports only HS
+> mode.
 > 
-> Sorry for the maybe dumb question, but where can I find the driver
-> depencency on buck naming ?
+> This change primarily refactors the Phy logic in core driver to allow
+> multiport support with Generic Phy's.
+> 
+> Changes have been tested on  QCOM SoC SA8295P which has 4 ports (2
+> are HS+SS capable and 2 are HS only capable).
+> 
 
-I guess it is because:
-PMBUS_REGULATOR_STEP("buck", 0, MPQ7932_N_VOLTAGES,
-creates regulator name as buck+id (so buck0).
-
-However as Rob pointed out, driver can handle buck for this variant. We
-want the bindings to be independent from Linux implementation and this
-patch here adds such dependency.
-
-Therefore I still believe this should be just "buck", unless the
-datasheet says it is "buck0". Which I doubt.
-
+I think I said it few times on the lists to Qualcomm folks, although I
+cannot remember whether exactly in this patchset. Please split DTS from
+USB, because Greg prefers to grab everything and DTS *should go* via
+Qualcomm SoC.
 
 Best regards,
 Krzysztof
