@@ -2,92 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76EC57BCFF4
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 22:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B8767BD019
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 22:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344562AbjJHUCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 16:02:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53864 "EHLO
+        id S1344551AbjJHUfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 16:35:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344421AbjJHUCG (ORCPT
+        with ESMTP id S229945AbjJHUfv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 16:02:06 -0400
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A537B9;
-        Sun,  8 Oct 2023 13:02:05 -0700 (PDT)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-59bf1dde73fso46938167b3.3;
-        Sun, 08 Oct 2023 13:02:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696795324; x=1697400124; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X7MakII0J3LdOeWbIPVLK76PGw3TSV1zmjMhcJXII88=;
-        b=jck7KQVNC60xaO8db10pfb2z4S5uuldDSvbkO070MFd+CY+/G9O1mJpu37pmGFZ9om
-         uabX72VisPoIoc+avAyO/ifVH4sKjnQStS+x9qgnQbVYrAz/IBDBtqIDQY/GzOMnvx2N
-         Ya0XmMSqJV/Ii13W8jeSH3uGAwnnfq4iVlo30cjM8Hb0Jiph2t6CILwGlBdkws66wE77
-         0iOmIA+BNNrFEkEpVK0s2NGA6TtP4QD3fe05JZiZmr1Oyz3Qqcg0rhdqnjgbjTnrBqnt
-         K5LvrDMOH59ptXhKUUmXDomcRAmOvaG0KoY6TSJoIbfJFb0lWPNHZe9TBaM6LzQSZGpE
-         BH2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696795324; x=1697400124;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X7MakII0J3LdOeWbIPVLK76PGw3TSV1zmjMhcJXII88=;
-        b=oX6UMiLVPF+z24AbS7Noa+dW+8StzXdSB3QYp5GUSMGh7gXF51LM10CSjVHgKHae8R
-         A+jlu+X0YW28iNBj5KctckHI/pVx+L8n3yCFwkxqxvcPzxHRc3Pm2L14Zv4aeULA9suN
-         eVqB8ZoDCu3glZj7uJrDYXqHXBkebGiEU/T7UCwX7tZ8iZ6WOCDXNqCDQLpRpiycCE48
-         QFf+6Fj3NLofLisI3jUkbXuvKbqv2K9v7qX2kwKBXm8HhWP4KDt51qLdBokZDZms/V3Z
-         Nnv8RZn7WgQXiUu/mAitsCVwHyFUde8J3ovzLRjmYoDwJflFiMln3Q275E89OCT7s67k
-         VV2g==
-X-Gm-Message-State: AOJu0Yzrq44/zWa4jbJ3S/0/zwCzawExjm4UixUA6xKo/9MkKXBiVZnD
-        UmQVtjeJGLegic3hGZNydw7QhpUKBj+xDo0H9Zo=
-X-Google-Smtp-Source: AGHT+IHVLIyOA1fIExYWMQ6r9WeLhL3Iob47+k3qGpLb8MQUpbwN7ouaXj+xvngsIgQBqrU0HawrefvNHaLKYNXzxMo=
-X-Received: by 2002:a0d:f8c6:0:b0:59b:5696:c33 with SMTP id
- i189-20020a0df8c6000000b0059b56960c33mr13162735ywf.46.1696795324575; Sun, 08
- Oct 2023 13:02:04 -0700 (PDT)
+        Sun, 8 Oct 2023 16:35:51 -0400
+X-Greylist: delayed 1988 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 08 Oct 2023 13:35:49 PDT
+Received: from mx.dolansoft.org (s2.dolansoft.org [212.51.146.245])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A03299
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 13:35:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=brun.one;
+        s=s1; h=MIME-Version:Message-ID:Date:Subject:Cc:To:From:In-Reply-To:
+        References:From:To:Subject:Date:Message-ID:Reply-To;
+        bh=T3SoMggWQU9QDC3JzPWHOLjCpIniafz0l32O6ZjmZIo=; b=i2HU9xxjminmB8WfpeIEps9DaY
+        BPZViI2Ng7ZOM2efRgoZI4tNoozU6GbR0Sa2zZYR3aj+0ShDFh1+4vUp2vCnuTrE8gEe81HtAobcD
+        8lUARVM6C17VPHvnUrqHxO8BwpPnWmLBxx3uJ1NIRbbj4jfbFh5SfZRmurhXRVao+bb+sMob/TI1d
+        sSt/XM3+vjetRp1y5L5ZDlRmCc9zD2an9SYuAyL2FsEMqfVyjnxBOaufaHax+aH2z5XZ7jjTdHb+0
+        6CViOJJ1roWDH2Y0Ksv2oxaxy180FZ8mjJdWbS6yKrxByVI+mYi/dQybPyVDCJkhSEynLMsHvqgWo
+        Ey5itKXg==;
+Received: from [212.51.153.89] (helo=blacklava.cluster.local)
+        by mx.dolansoft.org with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <lorenz@dolansoft.org>)
+        id 1qpZyp-0092yh-1k;
+        Sun, 08 Oct 2023 20:02:23 +0000
+From:   Lorenz Brun <lorenz@brun.one>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND] arm64: defconfig: add support for MediaTek MT7986
+Date:   Sun,  8 Oct 2023 22:02:18 +0200
+Message-ID: <20231008200219.3055781-1-lorenz@brun.one>
 MIME-Version: 1.0
-References: <20230930144958.46051-1-wedsonaf@gmail.com>
-In-Reply-To: <20230930144958.46051-1-wedsonaf@gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Sun, 8 Oct 2023 22:01:53 +0200
-Message-ID: <CANiq72mmba7=WJydSo-S_BjAOUrGO_2G6Yhb8bY7an2Q+CnVUg@mail.gmail.com>
-Subject: Re: [PATCH] rust: error: fix the description for `ECHILD`
-To:     Wedson Almeida Filho <wedsonaf@gmail.com>
-Cc:     rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        linux-kernel@vger.kernel.org,
-        Wedson Almeida Filho <walmeida@microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Sender: lorenz@dolansoft.org
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        UPPERCASE_50_75 autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 30, 2023 at 4:50=E2=80=AFPM Wedson Almeida Filho <wedsonaf@gmai=
-l.com> wrote:
->
-> From: Wedson Almeida Filho <walmeida@microsoft.com>
->
-> A mistake was made and the description of `ECHILD` is wrong (it reuses
-> the description of `ENOEXEC`). This fixes it to reflect what's in
-> `errno-base.h`.
->
-> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
+Considering that there are boards based on this SoC with 2GiB+ RAM and
+PCIe out there (BPI-R3) I think it makes sense to have support for these
+in defconfig as people can conceivably use these with stock Linux
+distributions.
 
-Applied to `rust-fixes`, thanks everyone!
+AFAIK this only adds modules, it should not increase the size of the
+main vmlinux binary.
 
-Cheers,
-Miguel
+Signed-off-by: Lorenz Brun <lorenz@brun.one>
+---
+ arch/arm64/configs/defconfig | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index a25d783dfb95..13a1e09524d4 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -162,6 +162,7 @@ CONFIG_IP6_NF_TARGET_MASQUERADE=m
+ CONFIG_BRIDGE=m
+ CONFIG_BRIDGE_VLAN_FILTERING=y
+ CONFIG_NET_DSA=m
++CONFIG_NET_DSA_MT7530=m
+ CONFIG_VLAN_8021Q=m
+ CONFIG_VLAN_8021Q_GVRP=y
+ CONFIG_VLAN_8021Q_MVRP=y
+@@ -177,6 +178,8 @@ CONFIG_NET_CLS_ACT=y
+ CONFIG_NET_ACT_GACT=m
+ CONFIG_NET_ACT_MIRRED=m
+ CONFIG_NET_ACT_GATE=m
++CONFIG_NET_VENDOR_MEDIATEK=y
++CONFIG_NET_MEDIATEK_SOC=m
+ CONFIG_QRTR_SMD=m
+ CONFIG_QRTR_TUN=m
+ CONFIG_CAN=m
+@@ -267,9 +270,11 @@ CONFIG_MTD_SST25L=y
+ CONFIG_MTD_RAW_NAND=y
+ CONFIG_MTD_NAND_DENALI_DT=y
+ CONFIG_MTD_NAND_MARVELL=y
++CONFIG_MTD_NAND_MTK=m
+ CONFIG_MTD_NAND_BRCMNAND=m
+ CONFIG_MTD_NAND_FSL_IFC=y
+ CONFIG_MTD_NAND_QCOM=y
++CONFIG_MTD_NAND_ECC_MEDIATEK=m
+ CONFIG_MTD_SPI_NOR=y
+ CONFIG_MTD_UBI=m
+ CONFIG_UBIFS_FS=m
+@@ -407,6 +412,8 @@ CONFIG_BRCMFMAC=m
+ CONFIG_MWIFIEX=m
+ CONFIG_MWIFIEX_SDIO=m
+ CONFIG_MWIFIEX_PCIE=m
++CONFIG_MT7915E=m
++CONFIG_MT7986_WMAC=y
+ CONFIG_MT7921E=m
+ CONFIG_WL18XX=m
+ CONFIG_WLCORE_SDIO=m
+@@ -529,6 +536,7 @@ CONFIG_SPI_MESON_SPICC=m
+ CONFIG_SPI_MESON_SPIFC=m
+ CONFIG_SPI_MT65XX=y
+ CONFIG_SPI_MTK_NOR=m
++CONFIG_SPI_MTK_SNFI=m
+ CONFIG_SPI_OMAP24XX=m
+ CONFIG_SPI_ORION=y
+ CONFIG_SPI_PL022=y
+@@ -645,6 +653,8 @@ CONFIG_THERMAL_GOV_POWER_ALLOCATOR=y
+ CONFIG_CPU_THERMAL=y
+ CONFIG_DEVFREQ_THERMAL=y
+ CONFIG_THERMAL_EMULATION=y
++CONFIG_MTK_THERMAL=y
++CONFIG_MTK_SOC_THERMAL=m
+ CONFIG_IMX_SC_THERMAL=m
+ CONFIG_IMX8MM_THERMAL=m
+ CONFIG_QORIQ_THERMAL=m
+-- 
+2.41.0
+
