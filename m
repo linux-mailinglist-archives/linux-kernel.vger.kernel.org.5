@@ -2,121 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4F577BCB91
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 03:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F8E87BCB93
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 03:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344254AbjJHB0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 21:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50274 "EHLO
+        id S1344229AbjJHBa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 21:30:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbjJHB0c (ORCPT
+        with ESMTP id S229717AbjJHBa6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 21:26:32 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2267F92;
-        Sat,  7 Oct 2023 18:26:31 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4S34J16QzKz4f3jJL;
-        Sun,  8 Oct 2023 09:26:25 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgCHHt5BBSJl_IqfCQ--.51241S3;
-        Sun, 08 Oct 2023 09:26:27 +0800 (CST)
-Subject: Re: [PATCH] blk-throttle: Calculate allowed value only when the
- throttle is enabled
-To:     Oleg Nesterov <oleg@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     Li Nan <linan666@huaweicloud.com>,
-        Khazhy Kumykov <khazhy@chromium.org>, tj@kernel.org,
-        josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, houtao1@huawei.com, yangerkun@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20230928015858.1809934-1-linan666@huaweicloud.com>
- <CACGdZY+JV+PdiC_cspQiScm=SJ0kijdufeTrc8wkrQC3ZJx3qQ@mail.gmail.com>
- <4ace01e8-6815-29d0-70ce-4632818ca701@huaweicloud.com>
- <20231005162417.GA32420@redhat.com>
- <0a8f34aa-ced9-e613-3e5f-b5e53a3ef3d9@huaweicloud.com>
- <20231007151607.GA24726@redhat.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <21843836-7265-f903-a7d5-e77b07dd5a71@huaweicloud.com>
-Date:   Sun, 8 Oct 2023 09:26:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Sat, 7 Oct 2023 21:30:58 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0280B92
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 18:30:55 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c135cf2459so39100171fa.0
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Oct 2023 18:30:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1696728653; x=1697333453; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KzfF/gGeCBC9V3v8liPcwyRygfYzpFCTXg7Z0Zkg6kM=;
+        b=RN0MbzwhhEEP/zv52rtVdaZUI8DYHnPr05njSrgtQPr7Q36DE2zrEQVNZCxICfHVqI
+         Ekc3kGVsTDvDvZkoGekbZ4j/gzhonuCGdtz18WxogXw7BYl9d52PbyFwmAxGdqKABL6u
+         ZqlOXxFgNk8eGOE1sMSEsHjf6E+/LUq1oCgp0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696728653; x=1697333453;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KzfF/gGeCBC9V3v8liPcwyRygfYzpFCTXg7Z0Zkg6kM=;
+        b=i5KiuaLsH/fTv2LAv3typdlOGhcSW99/N+7cxy4ImHgr3tg4fg30l2IuBDhoMXmr8h
+         dRPCPqxxu4qzn+aeYKrLGZfAnkNX40gz7DZi7yr9t+lOHKrAaSwNKUagicz5eJE+dVVN
+         ZveKL/4bTk+Ta20EmgiSnZFKEhBgaqkxoRTqBRf4Jd1OfzDulNi+I7hSgTrfznGZcpTj
+         qEhDXSGLFbm/eN2QCDxWuAg1mHTvRsAkVbY2kbX9PofIrAfnhQSd/PPIrFTcFVWGvJhu
+         xWfv73+8WtFqUsLCpO5aM+ctiWU0/vSuOhtqzAoiBKaGc6uH7fBoNCDGD5U1EAlFsBzG
+         lqDQ==
+X-Gm-Message-State: AOJu0YyOZAFPs6hJy1JdJbkJ5jZKDwfU9JNwvu/G9/yH3zXf5+xXzVM2
+        HfhapRICILPmPFBqPbRjLDonhrsvM7l7pQdCt2ZRYg==
+X-Google-Smtp-Source: AGHT+IFN1xqQRQ+HT0bT9ifD2rfgW1rqc5g7tXGLjWLVl7dr7TJe7bThOu/yY/XNweHn8ACbixlwUe8dW5oUD4PtdTs=
+X-Received: by 2002:a2e:9001:0:b0:2bf:aba1:d951 with SMTP id
+ h1-20020a2e9001000000b002bfaba1d951mr10322222ljg.10.1696728653255; Sat, 07
+ Oct 2023 18:30:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20231007151607.GA24726@redhat.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgCHHt5BBSJl_IqfCQ--.51241S3
-X-Coremail-Antispam: 1UD129KBjvdXoWruryUWFWrXr1rJF18JFWxXrb_yoWkJrg_XF
-        4DAas7Crn0qF48ZFWDKFnxCrsxuw1UXrWvga48Wr17Zwnaqa1kAa47G3y8Gr45XFWfCrsx
-        Cr1DAF15XFsI9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb3AFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
-        IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
-        3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
-        nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+References: <20230929021213.2364883-1-joel@joelfernandes.org>
+ <87bkdl55qm.fsf@email.froward.int.ebiederm.org> <CAEXW_YQ=HGok600ARtCKBNDs1OHSc=UM4hWmBdQ=sXZvif0Z5g@mail.gmail.com>
+In-Reply-To: <CAEXW_YQ=HGok600ARtCKBNDs1OHSc=UM4hWmBdQ=sXZvif0Z5g@mail.gmail.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Sat, 7 Oct 2023 21:30:42 -0400
+Message-ID: <CAEXW_YQ3YZExYb6FLg3fvWr9K+FGgNQx7xk3p-PngLG6rt8Ntw@mail.gmail.com>
+Subject: Re: [PATCH] kexec: Fix reboot race during device_shutdown()
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Ricardo Ribalda <ribalda@google.com>,
+        Ross Zwisler <zwisler@google.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        kexec@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Oct 2, 2023 at 2:18=E2=80=AFPM Joel Fernandes <joel@joelfernandes.o=
+rg> wrote:
+[..]
+> > > Such freezing is already being done if kernel supports KEXEC_JUMP and
+> > > kexec_image->preserve_context is true. However, doing it if either of=
+ these are
+> > > not true prevents crashes/races.
+> >
+> > The KEXEC_JUMP case is something else entirely.  It is supposed to work
+> > like suspend to RAM.  Maybe reboot should as well, but I am
+> > uncomfortable making a generic device fix kexec specific.
+>
+> I see your point of view. I think regular reboot should also be fixed
+> to avoid similar crash possibilities. I am happy to make a change for
+> that similar to this patch if we want to proceed that way.
+>
+> Thoughts?
 
-ÔÚ 2023/10/07 23:16, Oleg Nesterov Ð´µÀ:
-> On 10/07, Yu Kuai wrote:
->>
->>>>> probably need to remove the mul_u64_u64_div_u64 and check for
->>>>> overflow/potential overflow ourselves?
->>>
->>> probably yes...
->>
->> How about this?
->>
->> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
->> index 1101fb6f6cc8..5482c316a103 100644
->> --- a/block/blk-throttle.c
->> +++ b/block/blk-throttle.c
->> @@ -723,6 +723,10 @@ static unsigned int calculate_io_allowed(u32
->> iops_limit,
->>
->>   static u64 calculate_bytes_allowed(u64 bps_limit, unsigned long
->> jiffy_elapsed)
->>   {
->> +       if (jiffy_elapsed > HZ &&
->> +           bps_limit > mul_u64_u64_div_u64(U64_MAX, (u64)HZ,
->> (u64)jiffy_elapsed);
->> +               return U64_MAX;
->> +
-> 
-> I can't suggest anything better...
-> 
-> but I do not know if it is possible that HZ > jiffy_elapsed. If yes, then
-> mul_u64_u64_div_u64() above is not safe too.
+Just checking how we want to proceed, is the consensus that we should
+prevent kernel crashes without relying on userspace stopping all
+processes? Should we fix regular reboot syscall as well and not just
+kexec reboot?
 
-Well, 'jiffy_elapsed > HZ' is judged before mul_u64_u64_div_u64().
+thanks,
 
-Overflow can only happen if the above 2 conditions passed, and U64_MAX
-is returned.
-
-Thanks,
-Kuai
-
-> 
-> Oleg.
-> 
-> .
-> 
-
+ - Joel
