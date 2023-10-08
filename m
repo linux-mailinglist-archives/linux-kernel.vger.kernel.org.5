@@ -2,120 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3E77BD0DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 00:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B2E7BD0DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 00:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344852AbjJHWZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 18:25:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51390 "EHLO
+        id S1344867AbjJHWZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 18:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344708AbjJHWZB (ORCPT
+        with ESMTP id S1344708AbjJHWZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 18:25:01 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B26A3;
-        Sun,  8 Oct 2023 15:25:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A6F5C433C7;
-        Sun,  8 Oct 2023 22:24:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696803900;
-        bh=VXitWHqq4leNa1/V/OcVVi+BEGZhzWw0cZ6hmoOcQMQ=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=CWZ5lJ1PFWizHfcrPeU727vpdOlmvFuhXbiMXMETd5787gXM8KBsPJnIo16SQafAK
-         54Kx+jIPC3M3FMHb9Dsj5esfScadzWYXJafsXimSK09/aLsUNBc/HVkEAJcJAbnLiN
-         Mb4tOttbrpFjBpCZXskrX/mmtSRvqgegio6/ZgJaeXASVoyPPszZQbckGDiDoZ8TlW
-         cVBCoPl1wM5GwbXeOTa0yk1g3d9aUVipM6WlBAKlDIfYLCttcACLJ7jsVoB7gCcvv8
-         DO+YEqbQ4NfVkqf1UV/MzEqujRmGkdHBHC5cgkkhUHUGrbtp9HIVsa+lO9QojnE1X+
-         GJwXPDNjCBkUw==
-Message-ID: <6be92f71-f023-32df-a787-1ee3da37107b@kernel.org>
-Date:   Mon, 9 Oct 2023 07:24:56 +0900
+        Sun, 8 Oct 2023 18:25:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F283EAB;
+        Sun,  8 Oct 2023 15:25:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696803927; x=1728339927;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=yPD6DsIdg9+uokcveGmkjl3wIt7hKAzaaoSXHfIFMT8=;
+  b=AU2GoFwsVRQ4jc41D/qBsOlQDuFenhqbFRFfhJWVAL2Rzn0xWPFNVwBr
+   1UlY//ZOqfdP20tTOiMB/rGumzS/JHldQwsCuhSeYWrOhfdJW7Ylx28O+
+   1PqbjxUDJRxxwEsraa2SRWHOXvUy2zT0JWIueh9NA8+tcU8yEPDkf4GhO
+   1Ax/kcwzf9KPn3bQ23rpynuA8Si7j7welqB1Wg84MldaqgjN6ykOL8BjZ
+   LM6ebnDcotuFKHuBwy6Ui/tZiktNZk9aoxxaRGb0sqTQYy4JGGAMQZ10w
+   PvZMpXXBmQ/qlDUAKdPXLpLhOIf+fJbIMtOTMOrFBQVhBf/YUloc2VKpy
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="387900175"
+X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
+   d="scan'208";a="387900175"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2023 15:25:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="869025176"
+X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
+   d="scan'208";a="869025176"
+Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 08 Oct 2023 15:25:21 -0700
+Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qpcD9-0005p2-1q;
+        Sun, 08 Oct 2023 22:25:19 +0000
+Date:   Mon, 9 Oct 2023 06:25:00 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tianyi Liu <i.pear@outlook.com>, seanjc@google.com,
+        pbonzini@redhat.com, peterz@infradead.org, mingo@redhat.com,
+        acme@kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        kvm@vger.kernel.org, x86@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
+        Tianyi Liu <i.pear@outlook.com>
+Subject: Re: [PATCH v2 1/5] KVM: Add arch specific interfaces for sampling
+ guest callchains
+Message-ID: <202310090652.6TMWiCuU-lkp@intel.com>
+References: <SY4P282MB10840154D4F09917D6528BC69DCFA@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v7 22/26] dt-bindings: devfreq: event: rockchip,dfi: Add
- rk3588 support
-Content-Language: en-US
-To:     Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-rockchip@lists.infradead.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Vincent Legoll <vincent.legoll@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Conor Dooley <conor.dooley@microchip.com>
-References: <20230704093242.583575-1-s.hauer@pengutronix.de>
- <20230704093242.583575-23-s.hauer@pengutronix.de>
-From:   Chanwoo Choi <chanwoo@kernel.org>
-In-Reply-To: <20230704093242.583575-23-s.hauer@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SY4P282MB10840154D4F09917D6528BC69DCFA@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23. 7. 4. 18:32, Sascha Hauer wrote:
-> This adds rockchip,rk3588-dfi to the list of compatibles. Unlike ealier
-> SoCs the rk3588 has four interrupts (one for each channel) instead of
-> only one, so increase the number of allowed interrupts to four.
-> 
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> ---
-> 
-> Notes:
->     Changes since v4:
->     - new patch
->     
->     Changes since v5:
->     - drop interrupt-names property
->     
->     Changes since v4:
->     - new patch
-> 
->  .../devicetree/bindings/devfreq/event/rockchip,dfi.yaml       | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/devfreq/event/rockchip,dfi.yaml b/Documentation/devicetree/bindings/devfreq/event/rockchip,dfi.yaml
-> index e8b64494ee8bd..50d3fabe958d5 100644
-> --- a/Documentation/devicetree/bindings/devfreq/event/rockchip,dfi.yaml
-> +++ b/Documentation/devicetree/bindings/devfreq/event/rockchip,dfi.yaml
-> @@ -14,6 +14,7 @@ properties:
->      enum:
->        - rockchip,rk3399-dfi
->        - rockchip,rk3568-dfi
-> +      - rockchip,rk3588-dfi
->  
->    clocks:
->      maxItems: 1
-> @@ -23,7 +24,8 @@ properties:
->        - const: pclk_ddr_mon
->  
->    interrupts:
-> -    maxItems: 1
-> +    minItems: 1
-> +    maxItems: 4
->  
->    reg:
->      maxItems: 1
+Hi Tianyi,
 
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on 8a749fd1a8720d4619c91c8b6e7528c0a355c0aa]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Tianyi-Liu/KVM-Add-arch-specific-interfaces-for-sampling-guest-callchains/20231008-230042
+base:   8a749fd1a8720d4619c91c8b6e7528c0a355c0aa
+patch link:    https://lore.kernel.org/r/SY4P282MB10840154D4F09917D6528BC69DCFA%40SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
+patch subject: [PATCH v2 1/5] KVM: Add arch specific interfaces for sampling guest callchains
+config: x86_64-rhel-8.3-rust (https://download.01.org/0day-ci/archive/20231009/202310090652.6TMWiCuU-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231009/202310090652.6TMWiCuU-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310090652.6TMWiCuU-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> arch/x86/kvm/x86.c:12917:35: error: incompatible pointer to integer conversion passing 'void *' to parameter of type 'gva_t' (aka 'unsigned long') [-Wint-conversion]
+           return kvm_read_guest_virt(vcpu, addr, dest, length, &e) == X86EMUL_CONTINUE;
+                                            ^~~~
+   arch/x86/kvm/x86.c:7403:19: note: passing argument to parameter here
+   EXPORT_SYMBOL_GPL(kvm_read_guest_virt);
+                     ^
+   1 error generated.
+
+
+vim +12917 arch/x86/kvm/x86.c
+
+ 12911	
+ 12912	bool kvm_arch_vcpu_read_virt(struct kvm_vcpu *vcpu, void *addr, void *dest, unsigned int length)
+ 12913	{
+ 12914		struct x86_exception e;
+ 12915	
+ 12916		/* Return true on success */
+ 12917		return kvm_read_guest_virt(vcpu, addr, dest, length, &e) == X86EMUL_CONTINUE;
+ 12918	}
+ 12919	
 
 -- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
