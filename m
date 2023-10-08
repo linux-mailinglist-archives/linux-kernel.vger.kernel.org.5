@@ -2,128 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BBFA7BCDEE
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 13:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3F907BCDF1
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 13:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344661AbjJHLB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 07:01:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48882 "EHLO
+        id S1344665AbjJHLCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 07:02:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344569AbjJHLBz (ORCPT
+        with ESMTP id S1344569AbjJHLCm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 07:01:55 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E3CCAC;
-        Sun,  8 Oct 2023 04:01:54 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 398ApVTO022624;
-        Sun, 8 Oct 2023 11:01:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=GGKblOyJ7XSl3htCiFQ8+bviD4IqBok5IRccknTmqZY=;
- b=Z7fH0iEad33soGdLZRXGoKKmpL4J9gaXw6sy1yogcwEZVqdOpFxP43plmnaWWsN/X36p
- 0rF9nI+YnECBwebkXSlrxvOocIeUJFt0MlFulcIlrY5rHki6epvuCBAu99nEtcKWamdz
- EQ39vT4Jjb33MyrBUmDeAtAb51EwMxT5kOdjakXuhGW7Vkgaw9FnMdhXuXlCvJHGdEVh
- SOQAWrmdD3jMF3yDHlbrkrtcIo5TNVFyhBTwZCzJ+XHosxK2JyT7Sm7tR5osj9T9VEm4
- teU+EGaonuUN94+2CfIiqC+fCd3TeLzsotU27cIEnoPlle6js/H+Gc3vHLSh4WQBOx1h ig== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tkh878hfq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 08 Oct 2023 11:01:25 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 398B1Opi020531
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 8 Oct 2023 11:01:24 GMT
-Received: from [10.216.15.238] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Sun, 8 Oct
- 2023 04:01:17 -0700
-Message-ID: <75db183e-3c47-48e4-ad29-fea785826109@quicinc.com>
-Date:   Sun, 8 Oct 2023 16:31:13 +0530
+        Sun, 8 Oct 2023 07:02:42 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 673F0AC
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 04:02:41 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53627feca49so5997452a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 04:02:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696762960; x=1697367760; darn=vger.kernel.org;
+        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=I2BwMPIdqGU2NqgXy5cot4/7RwrAa6qLkUv4kvr0lFI=;
+        b=FG0fFGsy5bXYh3Hix9OvNoIl77cUL7zPwG0OhPrPZmsqcYyOFBs1hF1r7xAMYORIcp
+         iS6UTRWTwFsaLTAMpiwGQzYoDr2NxeGxZ6kqETS0T3l+TZj6u1CqNMkiBVSFA2t1cnIE
+         Slod4Jw2s4QrZxOQJa0Wp8i9q0gpaKRGBipnwMntG2c5WqnZMemXfo62TwHsgtTGlFV2
+         lq3EnSQ6/M7B1TMjHhV99f2njhv8tkgoWKoccVexzSGi5I1S7VXJiwI8al8lf80HLAd/
+         D1uZZdEC/TMi2VivllX0XENBs1zTrWWa+AZoNPb+lmq/4OJx6co/U5e937kS98zzhTe5
+         IwDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696762960; x=1697367760;
+        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=I2BwMPIdqGU2NqgXy5cot4/7RwrAa6qLkUv4kvr0lFI=;
+        b=ePyytt6SwIziWI6mamj4YYaFJRdWDHYRkKBSs0oaoJHxMbbgtxYcHRBf1J9kNf+56G
+         x2fSwzEiAJiTQxXBODC617W1IQjUZm3M5m+eX2u6EHd/CiK58aBfq70ZKrhBD1kAhNu/
+         wpzeCTRqVDFnXItHoQK4QwvGkNdeMkdJiglS/2tYTTAgz54k1vTvv/I/a9sQti8GvKYY
+         vNxQyb4t+jVkMiTYn0Qlp6/vYPRhGYik+Vcmf8qLMvxEMmJGr9ZeFzvMlQS/5lDAnG2b
+         QDHY0KWzxmOXsxmvQr/ZVgyxLny4zNbqbpjelrR0NJNBV2zVoveks7njHfH0SIMOearL
+         CGhw==
+X-Gm-Message-State: AOJu0Yw8wXWZBjfj30zb0k17maDK2HG8JJqxRD9exaM+u40gtHvvG3AD
+        OQQ1bpstQbVdJWXQ6P43kF+1EjcXL9C4lA==
+X-Google-Smtp-Source: AGHT+IHy1m45sSABny17HsA0YPMhRhLbvYZX41pT4wKfbzc5vlhxyd/WQ3jpRgofkFJqcis5pkKN6A==
+X-Received: by 2002:aa7:c393:0:b0:533:c55f:582a with SMTP id k19-20020aa7c393000000b00533c55f582amr11125186edq.27.1696762959595;
+        Sun, 08 Oct 2023 04:02:39 -0700 (PDT)
+Received: from dell.localnet (77-255-201-154.dynamic.inetia.pl. [77.255.201.154])
+        by smtp.gmail.com with ESMTPSA id r9-20020aa7d589000000b0052576969ef8sm4832770edq.14.2023.10.08.04.02.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Oct 2023 04:02:38 -0700 (PDT)
+From:   Janusz Krzysztofik <jmkrzyszt@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Subject: Re: [PATCH] ASoC: ti: ams-delta: Fix cx81801_receive() argument types
+Date:   Sun, 08 Oct 2023 13:02:36 +0200
+Message-ID: <4229381.1IzOArtZ34@dell>
+In-Reply-To: <8377873.NyiUUSuA9g@dell>
+References: <20231007213820.376360-1-jmkrzyszt@gmail.com>
+ <2023100811-shakable-derby-0b91@gregkh> <8377873.NyiUUSuA9g@dell>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 00/10] Add multiport support for DWC3 controllers
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        "Bjorn Andersson" <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        "Wesley Cheng" <quic_wcheng@quicinc.com>,
-        Johan Hovold <johan@kernel.org>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>, <ahalaney@redhat.com>,
-        <quic_shazhuss@quicinc.com>
-References: <20231007154806.605-1-quic_kriskura@quicinc.com>
- <d4663197-8295-4967-a4f5-6cc91638fc0d@linaro.org>
-Content-Language: en-US
-From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <d4663197-8295-4967-a4f5-6cc91638fc0d@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: I1tVyil0196ub9T8-wNxFXS-vtSdgOn1
-X-Proofpoint-GUID: I1tVyil0196ub9T8-wNxFXS-vtSdgOn1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-08_08,2023-10-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- phishscore=0 impostorscore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
- priorityscore=1501 adultscore=0 spamscore=0 malwarescore=0 mlxlogscore=743
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310080098
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="nextPart2707487.BddDVKsqQX";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--nextPart2707487.BddDVKsqQX
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date: Sun, 08 Oct 2023 13:02:36 +0200
+Message-ID: <4229381.1IzOArtZ34@dell>
+In-Reply-To: <8377873.NyiUUSuA9g@dell>
+MIME-Version: 1.0
+
+Dnia niedziela, 8 pa=C5=BAdziernika 2023 11:42:50 CEST Janusz Krzysztofik p=
+isze:
+> Dnia niedziela, 8 pa=C5=BAdziernika 2023 07:04:39 CEST Greg Kroah-Hartman=
+ pisze:
+> > On Sat, Oct 07, 2023 at 11:38:18PM +0200, Janusz Krzysztofik wrote:
+> > > Since types of arguments accepted by tty_ldis_ops::receive_buf() have
+> > > changed, the driver no longer builds.
+> > >=20
+> > > .../linux/sound/soc/ti/ams-delta.c:403:24: error: initialization of '=
+void (*)(struct tty_struct *, const u8 *, const u8 *, size_t)' {aka 'void (=
+*)(struct tty_struct *, const unsigned char *, const unsigned char *, unsig=
+ned int)'} from incompatible pointer type 'void (*)(struct tty_struct *, co=
+nst u8 *, const char *, int)' {aka 'void (*)(struct tty_struct *, const uns=
+igned char *, const char *, int)'} [-Werror=3Dincompatible-pointer-types]
+> > >   403 |         .receive_buf =3D cx81801_receive,
+> > >=20
+> > > Fix it.
+> > >=20
+> > > Fixes: e8161447bb0c ("tty: make tty_ldisc_ops::*buf*() hooks operate =
+on size_t")
+> > > Fixes: 892bc209f250 ("tty: use u8 for flags")
+> > > Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+> > > ---
+> > >  sound/soc/ti/ams-delta.c | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >=20
+> > Odd no built-bots caught this, maybe no one normally builds this file?
+>=20
+> The driver depends on SND, SND_SOC and TTY, but can't be selected=20
+> individually, only via its user. =20
+
+Sorry, that was an ASoC board driver, not a CODEC driver, that required the=
+=20
+fix.
+
+> Then, it usually builds when=20
+> CONFIG_SND_SOC_OMAP_AMS_DELTA=3Dy, and that's probably uncommon due to=20
+> specific dependencies. =20
+
+In addition to SOUND, SND, SND_SOC and TTY, this ASoC board driver depends=
+=20
+on MACH_AMS_DELTA, then on ARM, MMU, ARCH_MULTI_V4T, !ARCH_MULTI_V6,=20
+!ARCH_MULTI_V7, CPU_LITTLE_ENDIAN, ATAGS, ARCH_OMAP1 and ARCH_OMAP15XX. =20
+Let me check if it builds without those machine dependencies, then we can=20
+cover it by COMPILE_TEST.
+
+Thanks,
+Janusz
+
+> However, cx20442 can also be selected and built=20
+> with CONFIG_COMPILE_TEST=3Dy and CONFIG_SND_SOC_ALL_CODECS=3Dy.  Since si=
+milar=20
+> approach seems to apply to quite a number of ASoC CODECs, maybe build-bot=
+s=20
+> should pay special attention to select SND_SOC_ALL_CODECS more frequently=
+,=20
+> like they probably do with COMPILE_TEST.
+>=20
+> Thanks,
+> Janusz
+>=20
+> > Anyway, I'll pick this up in my tty tree now, thanks!
+> >=20
+> > greg k-h
+> >=20
+>=20
+>=20
 
 
-On 10/8/2023 4:13 PM, Krzysztof Kozlowski wrote:
-> On 07/10/2023 17:47, Krishna Kurapati wrote:
->> Currently the DWC3 driver supports only single port controller which
->> requires at most two PHYs ie HS and SS PHYs. There are SoCs that has
->> DWC3 controller with multiple ports that can operate in host mode.
->> Some of the port supports both SS+HS and other port supports only HS
->> mode.
->>
->> This change primarily refactors the Phy logic in core driver to allow
->> multiport support with Generic Phy's.
->>
->> Changes have been tested on  QCOM SoC SA8295P which has 4 ports (2
->> are HS+SS capable and 2 are HS only capable).
->>
-> 
-> I think I said it few times on the lists to Qualcomm folks, although I
-> cannot remember whether exactly in this patchset. Please split DTS from
-> USB, because Greg prefers to grab everything and DTS *should go* via
-> Qualcomm SoC.
-> 
-Hi Krzyztof,
+--nextPart2707487.BddDVKsqQX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
-Apologies !
+-----BEGIN PGP SIGNATURE-----
 
-Do you mean to send the DTS just to linux-arm-msm list and not linux-usb 
-list ? I don't think it was posted on this series and I am not on 
-linux-arm-msm mailing list, so missed that comment. Sorry for that. I 
-saw some series where DT, Driver and bindings were sent as one set to 
-linux-usb list as well and so wanted to follow suite. Will make sure to 
-send DT just to linux-arm-msm list from now on. Thanks for the comments :-)
+iQEzBAABCAAdFiEEnyr6IsGnTYAeAkHJ2WqSnltsjBoFAmUijEwACgkQ2WqSnlts
+jBqpygf/TZYnhnJ79SYUbtDpvKJvQn4573Q7v/l2znOGa1OJTKp7WpamhXlqXOct
+rTHSJ4md10EXlw3e7OhmSWwP4fhrMIASzHYYPmlX7LYXZedRkSbaOFC+kOSDhKYW
+ZHhJrEfTOpfd968L/0cLd2Sg913OJqYQzThlUXk40v3VQNnkSZMH9Ma/DqasAOWE
+j8MmaxtqOEwuQwFNoOnwAHGcHz5fMO2xgijTrhpMrZLx8cWLoY/1DuFk1jUBy9B7
+/27avelGo4+IhBSC6ysZa6QueVOrfUWGcFnsXwUG6SCE4AMh11z3mecoSlwO8jcB
+hEoZ+9f8JJ3bRxtCUDvAm0mTkc0i0g==
+=cxua
+-----END PGP SIGNATURE-----
 
-Regards,
-Krishna,
+--nextPart2707487.BddDVKsqQX--
+
+
+
