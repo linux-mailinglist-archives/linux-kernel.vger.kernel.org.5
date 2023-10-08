@@ -2,183 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48ABE7BCDF7
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 13:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6D97BCE05
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 13:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344664AbjJHLJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 07:09:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52674 "EHLO
+        id S1344676AbjJHLNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 07:13:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230424AbjJHLJd (ORCPT
+        with ESMTP id S234321AbjJHLNt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 07:09:33 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDCD6BA
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 04:09:31 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40684f53ef3so35097175e9.3
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 04:09:31 -0700 (PDT)
+        Sun, 8 Oct 2023 07:13:49 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F4DC5
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 04:13:46 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-991c786369cso598800366b.1
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 04:13:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696763370; x=1697368170; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=1vYilIHh7UzhsRZJbXWjITmqBr2heFnggTX8eCFXyBY=;
-        b=DDDN+wLs/RjIeuNroo8Un1QZAPrp0GAHtdOAZu07f6g67AgGQQ3UT5ERYG/lRbH5P/
-         uXtPiTmokHoqg5gUOo8F/Fn9L2qucJG9nkKm/OsCRrWu8WMSsVjyLNgHBGggcuTAkfB6
-         iIXs8k206BHV2XmoumqhxOsRWDZuFav54OY/IULIz2CXl0B1TQxb5mF/ub5/w+PaE7JJ
-         pdGtKiPdv+i4TkV6osNivyTg5sDvTmbJam8VUkRa1OYlfVjSfO/LrJHJ37WQnNI/k9SL
-         E8A63gF/l7kf1b3wIQIc74RsBWqE++Ab5f8cmGOWFRekjZUkJq7CJQ+Z4ZkuQmhLp8Bw
-         4Ojg==
+        d=pqrs.dk; s=google; t=1696763624; x=1697368424; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vDluQS60ilpfpuw8LSy/Bxf7lkTMWAw31oo0Cn9rzKA=;
+        b=fcnU4So/heUjSRTgel4mX2tBQ9cJSFX62yr+LffeZ8B90zH25YqnRbmq22R2m6SFeU
+         4MA2JEYVzwAdM3ouaYfDMxdveVkEzftvylzGaksJKffX016qjBd7znGIyNy4Ky5Zzh4Q
+         nrXcMYIj+Yl4La3NPzt6p17H4Nwwy86POsYrkl4B2MCDHkr/mzV9kNM5Aig17DDvddOT
+         mlW9mB2v+aYnDgt4otIXkzeiSUCO+M43kGpNH68AGeRHLM4KigWmxoTUNRb18mY2ikBg
+         0aLx1Q6gZZyfAI2WkUl8ickJBOJhvbzaFb2xQpiWYc5cGh6m4xrYFJag5WO5Ruz1uKv1
+         06Tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696763370; x=1697368170;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1vYilIHh7UzhsRZJbXWjITmqBr2heFnggTX8eCFXyBY=;
-        b=wrot/T1RUbS5qGMBCtopoXxnuX0RH+naP+kwfp0cjGA+qz096qE3dxW+yJxoCgefwh
-         XoKo2geuXxkK0Er1dp96PTv82sRirWysgS4wW5hB+0jSPDZpfVs2jmU4Zu+OxuzqJek1
-         VLnboN5EYwvVrosbCXb2pkNxHhAp+WyUNZViwSyL/mytA06fYFNriTNj8HDxRSKLCjZF
-         18f3cmthtUrLbzoDf/nnC6RplZ3FEL0b4X8PQbc00O3UNIyxU4RjNBwWznr3/TkwQ19m
-         BcWQXw1CMYa1U64caWzSac4fFt2DYEEP/da0qV0zrnEEbR2h3e5Jn/ShV4pd5FWgadsB
-         Gcdg==
-X-Gm-Message-State: AOJu0YwXX5eY0gU2J4zEFF7qEi/RLJT4AWmHGHJV6Vv7Weq7R8YoIWM0
-        S57QVaNJkolA1DqsnVLMKGRWNw==
-X-Google-Smtp-Source: AGHT+IFXweF/ld2Qv2xYsyJL9P6LEsivjWo+qBqwnSsGKfkAMTTy7nrrLVXlGvF7aGgjvpNWe0YSLA==
-X-Received: by 2002:a05:600c:2242:b0:401:2fab:43e8 with SMTP id a2-20020a05600c224200b004012fab43e8mr10982958wmm.15.1696763370076;
-        Sun, 08 Oct 2023 04:09:30 -0700 (PDT)
-Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id k14-20020a05600c0b4e00b003fe1fe56202sm8301853wmr.33.2023.10.08.04.09.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Oct 2023 04:09:29 -0700 (PDT)
-Message-ID: <a17782be-6c77-4e1f-b991-2015ee216c68@linaro.org>
-Date:   Sun, 8 Oct 2023 13:09:27 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 00/10] Add multiport support for DWC3 controllers
-To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        d=1e100.net; s=20230601; t=1696763624; x=1697368424;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vDluQS60ilpfpuw8LSy/Bxf7lkTMWAw31oo0Cn9rzKA=;
+        b=OO+2kLR2nnFm7ftNGrXFTL5QYBo3rDYIusG8UQkg5v1BvmYf+hPVTxdOuQ9G/D4qut
+         3UsPEFST3EPiyK4hqifsQOIB59PM9sUlDrWIeAFjgfluQD13xoBKhhwkXdbeVTGEvkHL
+         TAkTb2yO4p6r1CA7col6q9J57ud8ktPzh2y206m6xNnAd7EdoE5vNLPZVynFofO5GBN6
+         bSUsIeSTLf3F3+UoI2JCRXDSEiyUfCWw7kitw2rmvODADI5Vk1yh+Rp/CRZ5DVpD+egk
+         pzylnW8D85dlis7YQXPnjSQj4Jt2VqSWkPGtmx24OOSgibmG6YIW8/7JnHE7V30HCbiC
+         4GrQ==
+X-Gm-Message-State: AOJu0Yzd1yLsuLkxiFLp60QBhDH92tYlCnPZVQuv2fV8+q8VLkOOj0/E
+        mry9bbRCDjSY7EpkBCb8T4E7OQ==
+X-Google-Smtp-Source: AGHT+IFemXzAb5XH6+S2TspCh01ek3kyjYlyYPdoYZFDVq6ouNvKicpcsCbvmiWKkdQ1E3yY3cA9Lw==
+X-Received: by 2002:a17:907:1dd7:b0:9ae:48df:2235 with SMTP id og23-20020a1709071dd700b009ae48df2235mr10994965ejc.55.1696763624505;
+        Sun, 08 Oct 2023 04:13:44 -0700 (PDT)
+Received: from capella.localdomain (80.71.142.18.ipv4.parknet.dk. [80.71.142.18])
+        by smtp.gmail.com with ESMTPSA id t3-20020a1709064f0300b009b928eb8dd3sm5383396eju.163.2023.10.08.04.13.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Oct 2023 04:13:44 -0700 (PDT)
+From:   =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alvin@pqrs.dk>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        Johan Hovold <johan@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
-        quic_jackp@quicinc.com, ahalaney@redhat.com,
-        quic_shazhuss@quicinc.com
-References: <20231007154806.605-1-quic_kriskura@quicinc.com>
- <d4663197-8295-4967-a4f5-6cc91638fc0d@linaro.org>
- <75db183e-3c47-48e4-ad29-fea785826109@quicinc.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <75db183e-3c47-48e4-ad29-fea785826109@quicinc.com>
+        Conor Dooley <conor+dt@kernel.org>,
+        =?UTF-8?q?=A0ipraga?= <alsi@bang-olufsen.dk>
+Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/3] clk: si5351: add option to adjust PLL without glitches
+Date:   Sun,  8 Oct 2023 13:09:36 +0200
+Message-ID: <20231008111324.582595-1-alvin@pqrs.dk>
+X-Mailer: git-send-email 2.42.0
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/10/2023 13:01, Krishna Kurapati PSSNV wrote:
-> 
-> 
-> On 10/8/2023 4:13 PM, Krzysztof Kozlowski wrote:
->> On 07/10/2023 17:47, Krishna Kurapati wrote:
->>> Currently the DWC3 driver supports only single port controller which
->>> requires at most two PHYs ie HS and SS PHYs. There are SoCs that has
->>> DWC3 controller with multiple ports that can operate in host mode.
->>> Some of the port supports both SS+HS and other port supports only HS
->>> mode.
->>>
->>> This change primarily refactors the Phy logic in core driver to allow
->>> multiport support with Generic Phy's.
->>>
->>> Changes have been tested on  QCOM SoC SA8295P which has 4 ports (2
->>> are HS+SS capable and 2 are HS only capable).
->>>
->>
->> I think I said it few times on the lists to Qualcomm folks, although I
->> cannot remember whether exactly in this patchset. Please split DTS from
->> USB, because Greg prefers to grab everything and DTS *should go* via
->> Qualcomm SoC.
->>
-> Hi Krzyztof,
-> 
-> Apologies !
-> 
-> Do you mean to send the DTS just to linux-arm-msm list and not linux-usb 
-> list ? 
+From: Alvin Šipraga <alsi@bang-olufsen.dk>
 
+This series intends to address a problem I had when using the Si5351A as
+a runtime adjustable audio bit clock. The basic issue is that the driver
+in its current form unconditionally resets the PLL whenever adjusting
+its rate. But this reset causes an unwanted ~1.4 ms LOW signal glitch in
+the clock output.
 
-Not entirely, I meant to create separate patchsets. One for USB drivers
-and other one for Qualcomm SoC. The DTS patchset should have link to
-lore to USB drivers patchset. You send each of the patchsets to
-respective maintainer, lists and everyone necessary using b4 or
-scripts/get_maintainers.pl.
+As a remedy, a new property is added to control the reset behaviour of
+the PLLs more precisely. In the process I also converted the bindings to
+YAML.
 
+Changes:
 
-I don't think it was posted on this series and I am not on
-> linux-arm-msm mailing list, so missed that comment. Sorry for that. I 
-> saw some series where DT, Driver and bindings were sent as one set to 
-> linux-usb list as well and so wanted to follow suite. Will make sure to 
-> send DT just to linux-arm-msm list from now on. Thanks for the comments :-)
+v2 -> v3:
 
+- address further comments from Rob:
+  - drop unnecessary refs and minItems
+  - simplify if conditions for chip variants
+  - ignore his comment about dropping '|', as line would be >80 columns
+  - move additionalProperties: false close to type: object
+  - define clocks/clock-names at top-level
+- drop patch to dove-cubox dts per Krzysztof's comment - will send
+  separately
+- collect Sebastian's Acked-by
 
-Best regards,
-Krzysztof
+v1 -> v2:
+
+- address Rob's comments on the two dt-bindings patches
+- new patch to correct the clock node names in the only upstream device
+  tree using si5351
+
+Alvin Šipraga (3):
+  dt-bindings: clock: si5351: convert to yaml
+  dt-bindings: clock: si5351: add PLL reset mode property
+  clk: si5351: allow PLLs to be adjusted without reset
+
+ .../bindings/clock/silabs,si5351.txt          | 126 --------
+ .../bindings/clock/silabs,si5351.yaml         | 268 ++++++++++++++++++
+ drivers/clk/clk-si5351.c                      |  47 ++-
+ include/linux/platform_data/si5351.h          |   2 +
+ 4 files changed, 314 insertions(+), 129 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/clock/silabs,si5351.txt
+ create mode 100644 Documentation/devicetree/bindings/clock/silabs,si5351.yaml
+
+-- 
+2.42.0
 
