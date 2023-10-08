@@ -2,81 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F01BF7BD021
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 22:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C487BD023
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 22:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232433AbjJHUsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 16:48:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60730 "EHLO
+        id S1344618AbjJHUwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 16:52:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbjJHUs3 (ORCPT
+        with ESMTP id S1344597AbjJHUwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 16:48:29 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C73B3
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 13:48:27 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9b95622c620so714365666b.0
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 13:48:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1696798105; x=1697402905; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=EtpbtXNTgAw7A9FVCfs/xfeaX4QpnPrPy9XfoZ2+es4=;
-        b=WPOmpQ0S9yxEyZiLtiYGXneklbJ0Caf69y0jqR681QLCJEr8s+btHyfcgYE0FXXuOv
-         AELHiLj8YlGvXmfWwEEM33Dp3MN/K+K2xSf0yqudT0Duk/Vy/SkWo7kO9KUvP0m2zBAk
-         iwLPL3iGvb6tr4WfGMhgBOtaFb8FV20Sk9qJ0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696798105; x=1697402905;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EtpbtXNTgAw7A9FVCfs/xfeaX4QpnPrPy9XfoZ2+es4=;
-        b=D2pW2lq8L6TV7gkrIvYd0ymvz7mppzQ1wCX0Pk3usTGpWvdfqGgSeujg9d2EnmXvMn
-         BOI9tpAb6XpliwAeKFBtT50/S6o29KiR569bOMqDp6BKwudDQPszuBQtlhYRCkfY//W1
-         c0NMFwJnZgJu1YFl0LLkCshgM8Js3nk8lS8i+jz3lJzSfLDAN0x2GSXTsAvUbR+r9eTK
-         wtv35Cb2Qf5/xazrXJPduEpcmFQn/4r93KXN+dCb7+n6okPQN4uI5Zp9Te7geJLc7dWD
-         NRpGz+2nFl1iVvAwZzY+Bn9mE7MQum9Rx7KggKEz/MYc3jho0Z00HO611sj3TwBx4EIQ
-         1V9w==
-X-Gm-Message-State: AOJu0Yxziuw5W/zfhOoo7E8v2S7v2+MMXwJirgg/z0jTsb1G0/wHlsB8
-        74Nfw9scgW6BLHSdrCtLf5Fo23cLjZAk24qg2U6Z3xwq
-X-Google-Smtp-Source: AGHT+IEmRufz59W/5dW5KSOac6qO0luvL5iQcYBriJGKOA0gP5q1+FFzxYTFdclPuJXFB+mrXAPREA==
-X-Received: by 2002:a17:906:2254:b0:9b9:4509:d575 with SMTP id 20-20020a170906225400b009b94509d575mr12277549ejr.2.1696798105707;
-        Sun, 08 Oct 2023 13:48:25 -0700 (PDT)
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com. [209.85.221.43])
-        by smtp.gmail.com with ESMTPSA id v2-20020a1709064e8200b009b2c9476726sm5920332eju.21.2023.10.08.13.48.24
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Oct 2023 13:48:25 -0700 (PDT)
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-307d20548adso3574145f8f.0
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 13:48:24 -0700 (PDT)
-X-Received: by 2002:adf:e8cc:0:b0:322:da1f:60d9 with SMTP id
- k12-20020adfe8cc000000b00322da1f60d9mr12676506wrn.47.1696798104195; Sun, 08
- Oct 2023 13:48:24 -0700 (PDT)
+        Sun, 8 Oct 2023 16:52:20 -0400
+Received: from proxmox1.postmarketos.org (proxmox1.postmarketos.org [213.239.216.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 429559F;
+        Sun,  8 Oct 2023 13:52:17 -0700 (PDT)
+Received: from [192.168.1.177] (unknown [10.0.0.254])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by proxmox1.postmarketos.org (Postfix) with ESMTPSA id 4531E140495;
+        Sun,  8 Oct 2023 20:52:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=postmarketos.org;
+        s=donut; t=1696798334;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UuxrTL7KvyJ7XN5A1fs9GWsRygHQUHM6anrrqyaRV1c=;
+        b=mWrLpGfLn2FuF/iVpmJZLpN8RDuXORQZCIAURsF4EvgNSQZlt1IaRv34qweKgmzYmly9LA
+        QENYN7n5YqEfjn9ou2DP0UqZtp3jOzI3bb5j7an0LEMFuSxLQs7OxPopxrgupQlE1nGSOc
+        GYuf/Nfea5aBrS+X0J/XxeZtDatbiaY=
+Message-ID: <c3380c97-1b8c-5a68-168e-fc6150701365@postmarketos.org>
+Date:   Sun, 8 Oct 2023 23:52:13 +0300
 MIME-Version: 1.0
-References: <20231004145137.86537-1-ubizjak@gmail.com> <20231004145137.86537-5-ubizjak@gmail.com>
- <CAHk-=wgepFm=jGodFQYPAaEvcBhR3-f_h1BLBYiVQsutCwCnUQ@mail.gmail.com>
- <CAFULd4YWjxoSTyCtMN0OzKgHtshMQOuMH1Z0n_OaWKVnUjy2iA@mail.gmail.com> <CAHk-=whq=+LNHmsde8LaF4pdvKxqKt5GxW+Tq+U35_aDcV0ADg@mail.gmail.com>
-In-Reply-To: <CAHk-=whq=+LNHmsde8LaF4pdvKxqKt5GxW+Tq+U35_aDcV0ADg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 8 Oct 2023 13:48:06 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi6U-O1wdPOESuCE6QO2OaPu0hEzaig0uDOU4L5CREhug@mail.gmail.com>
-Message-ID: <CAHk-=wi6U-O1wdPOESuCE6QO2OaPu0hEzaig0uDOU4L5CREhug@mail.gmail.com>
-Subject: Re: [PATCH 4/4] x86/percpu: Use C for percpu read/write accessors
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] drm/panel: Move AUX B116XW03 out of panel-edp back to
+ panel-simple
+Content-Language: en-US
+To:     Doug Anderson <dianders@chromium.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-samsung-soc@vger.kernel.org,
+        Hsin-Yi Wang <hsinyi@chromium.org>, matthias.bgg@gmail.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>, airlied@gmail.com,
+        daniel@ffwll.ch, jitao.shi@mediatek.com, linus.walleij@linaro.org,
+        linux-kernel@vger.kernel.org, neil.armstrong@linaro.org,
+        quic_jesszhan@quicinc.com, sam@ravnborg.org,
+        Anton Bambura <jenneron@protonmail.com>
+References: <20230925150010.1.Iff672233861bcc4cf25a7ad0a81308adc3bda8a4@changeid>
+ <b0037c9f-588b-4eb8-6415-0fe75bed264f@collabora.com>
+ <CAD=FV=UWQgLLfU4X+6OUR5AWOkJKwG9J7BbKGRCgze6LTY6JNw@mail.gmail.com>
+ <CAD=FV=UqG6DiAyjcLKeoUWKutepGd46Zx=8O-NWKoYC-fZEG6g@mail.gmail.com>
+From:   Anton Bambura <jenneron@postmarketos.org>
+In-Reply-To: <CAD=FV=UqG6DiAyjcLKeoUWKutepGd46Zx=8O-NWKoYC-fZEG6g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,50 +69,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 8 Oct 2023 at 13:13, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+
+On 10/5/23 21:10, Doug Anderson wrote:
+> Hi,
 >
-> Your dump does end up being close to a %gs access:
+> On Tue, Sep 26, 2023 at 7:01 AM Doug Anderson <dianders@chromium.org> wrote:
+>> Hi,
+>>
+>> On Tue, Sep 26, 2023 at 1:06 AM AngeloGioacchino Del Regno
+>> <angelogioacchino.delregno@collabora.com> wrote:
+>>> Il 26/09/23 00:00, Douglas Anderson ha scritto:
+>>>> In commit 5f04e7ce392d ("drm/panel-edp: Split eDP panels out of
+>>>> panel-simple") I moved a pile of panels out of panel-simple driver
+>>>> into the newly created panel-edp driver. One of those panels, however,
+>>>> shouldn't have been moved.
+>>>>
+>>>> As is clear from commit e35e305eff0f ("drm/panel: simple: Add AUO
+>>>> B116XW03 panel support"), AUX B116XW03 is an LVDS panel. It's used in
+>>>> exynos5250-snow and exynos5420-peach-pit where it's clear that the
+>>>> panel is hooked up with LVDS. Furthermore, searching for datasheets I
+>>>> found one that makes it clear that this panel is LVDS.
+>>>>
+>>>> As far as I can tell, I got confused because in commit 88d3457ceb82
+>>>> ("drm/panel: auo,b116xw03: fix flash backlight when power on") Jitao
+>>>> Shi added "DRM_MODE_CONNECTOR_eDP". That seems wrong. Looking at the
+>>>> downstream ChromeOS trees, it seems like some Mediatek boards are
+>>>> using a panel that they call "auo,b116xw03" that's an eDP panel. The
+>>>> best I can guess is that they actually have a different panel that has
+>>>> similar timing. If so then the proper panel should be used or they
+>>>> should switch to the generic "edp-panel" compatible.
+>>>>
+>>>> When moving this back to panel-edp, I wasn't sure what to use for
+>>>> .bus_flags and .bus_format and whether to add the extra "enable" delay
+>>>> from commit 88d3457ceb82 ("drm/panel: auo,b116xw03: fix flash
+>>>> backlight when power on"). I've added formats/flags/delays based on my
+>>>> (inexpert) analysis of the datasheet. These are untested.
+>>>>
+>>>> NOTE: if/when this is backported to stable, we might run into some
+>>>> trouble. Specifically, before 474c162878ba ("arm64: dts: mt8183:
+>>>> jacuzzi: Move panel under aux-bus") this panel was used by
+>>>> "mt8183-kukui-jacuzzi", which assumed it was an eDP panel. I don't
+>>>> know what to suggest for that other than someone making up a bogus
+>>>> panel for jacuzzi that's just for the stable channel.
+>>>>
+>>>> Fixes: 88d3457ceb82 ("drm/panel: auo,b116xw03: fix flash backlight when power on")
+>>>> Fixes: 5f04e7ce392d ("drm/panel-edp: Split eDP panels out of panel-simple")
+>>>> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+>>>> ---
+>>>> I haven't had a snow or peach-pit hooked up for debugging / testing
+>>>> for years. I presume that they must be broken and hope that this fixes
+>>>> them.
+>>> We could avoid backport breakages by avoiding to backport this to any kernel
+>>> that doesn't contain commit 474c162878ba ("arm64: dts: mt8183: jacuzzi: Move
+>>> panel under aux-bus")... because creating a dummy panel to get two wrongs
+>>> right is definitely not ok.
+>> Sure, except that leaves us with ... a breakage. :-P
+>>
+>> Although I haven't tested it, I have a hard time believing that
+>> exynos5250-snow and exynos5420-peach-pit will work properly with the
+>> panel defined as an eDP panel. That means that they will be broken. If
+>> someone cared to get those fixed in a stable backport then we'd be
+>> stuck deciding who to break. If you have any brilliant ideas then I'm
+>> all ears.
+>>
+>> ...then again, I presume this has been broken since commit
+>> 88d3457ceb82 ("drm/panel: auo,b116xw03: fix flash backlight when power
+>> on"). That was a little over 3 years ago. Maybe I'm wrong and somehow
+>> things still limp along and sorta work even though the panel is
+>> defined incorrectly?
+> I dug out a exynos5250-snow out of my pile and booted postmarket OS on
+> it, which was shockingly easy/pleasant (kudos to those involved!). I
+> found that it was booting a kernel based on 6.1.24. Digging into
+> sysfs, I found that indeed it appeared to be using the "panel-edp"
+> driver, so I guess it is limping along with the wrong driver and wrong
+> flags...
+>
+> It wasn't totally clear for me how to build a new kernel and deploy it
+> for postmarket OS, so I wasn't able to confirm this change. I've CCed
+> the person listed on the postmarket OS wiki though to see if they have
+> any insight.
+Tested it on peach-pit using linux-next with this patch applied. Panel 
+still works and "dmesg | grep panel" returns panel_simple instead of 
+panel_edp.
 
-Bah. I should have looked closer at the instructions before the oops.
-
-Because I think that's exactly the problem here. That's the KASAN
-checks that have been added, and we have this insane code:
-
->   10: 48 c7 c0 10 73 02 00 mov    $0x27310,%rax
->   17: 48 ba 00 00 00 00 00 movabs $0xdffffc0000000000,%rdx
->   1e: fc ff df
->   21: 48 c1 e8 03          shr    $0x3,%rax
->   25:* 80 3c 10 00          cmpb   $0x0,(%rax,%rdx,1) <-- trapping instruction
-
-Look how both %rax and %rdx are constants, yet then gcc has generated
-that crazy "shift a constant value right by three bits, and then use
-an addressing mode to add it to another constant".
-
-And that 0xdffffc0000000000 constant is KASAN_SHADOW_OFFSET.
-
-So what I think is going on is trivial - and has nothing to do with ordering.
-
-I think gcc is simply doing a KASAN check on a percpu address.
-
-Which it shouldn't do, and didn't use to do because we did the access
-using inline asm.
-
-But now that gcc does the accesses as normal (albeit special address
-space) memory accesses, the KASAN code triggers on them too, and it
-all goes to hell in a handbasket very quickly.
-
-End result: those percpu accessor functions need to disable any KASAN
-checking or other sanitizer checking. Not on the percpu address,
-because that's not a "real" address, it's obviously just the offset
-from the segment register.
-
-We have some other cases like that, see __read_once_word_nocheck().
-
-And gcc should probably not have generated such code in the first
-place, so arguably this is a bug with -fsanitize=kernel-address. How
-does gcc handle the thread pointers with address sanitizer? Does it
-convert them into real pointers first, and didn't realize that it
-can't do it for __seg_gs?
-
-               Linus
+Tested-by: Anton Bambura <jenneron@postmarketos.org>
+>
+> In any case, it sounds as if things are working well enough on older
+> OSes, so maybe we can just skip trying to do any stable backport on
+> this. It still seems like we should land it, though, since the current
+> state of the world seems pretty broken. Anyone willing to give a
+> Reviewed-by or Acked-by tag?
+>
+> -Doug
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
