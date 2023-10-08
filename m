@@ -2,80 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C8D7BD008
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 22:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E1CA7BD00A
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 22:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344557AbjJHUOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 16:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59668 "EHLO
+        id S1344581AbjJHUXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 16:23:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344467AbjJHUOQ (ORCPT
+        with ESMTP id S1344467AbjJHUXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 16:14:16 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B535299
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 13:14:14 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9ba1eb73c27so74178966b.3
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 13:14:14 -0700 (PDT)
+        Sun, 8 Oct 2023 16:23:22 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F64F99;
+        Sun,  8 Oct 2023 13:23:21 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40566f8a093so35599125e9.3;
+        Sun, 08 Oct 2023 13:23:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1696796053; x=1697400853; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=UYvMlmI9M7/YUJkI+f1pO6RxL0gTPMbx932oD4jWB14=;
-        b=QE6PcEx3lS6bwsGmXp0AszHk9k30aPn9DXyfQ5pOFuPJY8ODPQT4z/ATPhzUh/12s6
-         eRyj8rQndoaVwVj5n+aV5oFVlXrT6zN8Gusyt+dwIqUclsnfYW7VEVJUANTCBtwkCvHJ
-         zZwEEwvkZii+Axk5Ni/s8LdmFjgGCxo41Vgdw=
+        d=gmail.com; s=20230601; t=1696796600; x=1697401400; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oAlFt19XSPitoEhPZtTBItR7ZhRoBTV71rlHM3x983M=;
+        b=hGqkYvHPDPFWQwn9y6Ifhzej8Fv/3iDcbFBKhvSV9C0sTgYibov9KiMW2KzmexCDO+
+         KyPwRn096MXlm9QHdz/pqKzq4azxxQ665HmNuKC1WH7tMHlyQGlVitmQLbNh6GZYHEdU
+         STVyZqychOSZIIn3YxsySFd8jZpdVQfhWH243Uhhkmo2IEvYCWR9n3Sp4UbdH2cqoBGE
+         uf8LaK4SnjB1IU5aFDuY0sCXL/pAbBfOBPiLhNFJZ7QRO2WlJMvF6A7ZC7SPtAIDwDDs
+         iZkvv3VudK3xY3uXnIQa2Jgf9iNWPYQ/KHKgvI3IeRV02Nzbzl2gkb2RT4Djo/fzu62k
+         5OUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696796053; x=1697400853;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1696796600; x=1697401400;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=UYvMlmI9M7/YUJkI+f1pO6RxL0gTPMbx932oD4jWB14=;
-        b=me3JgWEIdNvVFsRVKLPfsbyFLzNq4REKBIWEhxIbV7Jq6ntidyBsFhApvxim7H/xf+
-         5xsIriBVEfBnJS85dT/6baYp2/whhVRowlOXzSKGGGWEKEvnkbjc7pI3sPn9+ylVT9Kt
-         2pyQHy97jRF2iyVaDmXNNjll1pdQaogf2VYy88J+84ZINHAE8sTFDUM6XBj782uG7ZY8
-         +XokBOFVbyRwit09RwEwzNecaGwv7CPtBocntDLy+8pjZ5rxdsftsSyOWIXu1JP7wgou
-         smody/zpZ9T5Plc1uwBKI2OMFNzpOqadAP7sYvRCTbnePUaRT4vrvLBff1KK8Cma/4U5
-         gK7w==
-X-Gm-Message-State: AOJu0Yxl/OWh3rusEF2RVKsb00xepydx0rROOkxKMWDdmkjUhivp7Z9s
-        /qIvSHbXd2EXQgTMpT34inzbRfinQ+adZGq2yXj1HQ==
-X-Google-Smtp-Source: AGHT+IFShEp+75QBtpXcowBOTkaF9uj4laEQGbr024UKbpFfoUUn3in6m+BTZ4PDLIAdK95YnGOpyg==
-X-Received: by 2002:a17:906:100b:b0:9ae:5270:46d5 with SMTP id 11-20020a170906100b00b009ae527046d5mr13706018ejm.73.1696796052740;
-        Sun, 08 Oct 2023 13:14:12 -0700 (PDT)
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
-        by smtp.gmail.com with ESMTPSA id ks8-20020a170906f84800b00982a92a849asm5870790ejb.91.2023.10.08.13.14.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Oct 2023 13:14:12 -0700 (PDT)
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-532c81b9adbso6754777a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 13:14:11 -0700 (PDT)
-X-Received: by 2002:a50:fb87:0:b0:532:e1a2:b0b8 with SMTP id
- e7-20020a50fb87000000b00532e1a2b0b8mr12953692edq.8.1696796051558; Sun, 08 Oct
- 2023 13:14:11 -0700 (PDT)
+        bh=oAlFt19XSPitoEhPZtTBItR7ZhRoBTV71rlHM3x983M=;
+        b=jsoRD7+RjPBYJCSuFATsU4CbY2d4EBE5fGfKUBmj27g07c+4RcDfKFI/r2zmP2T6BP
+         IF8Zv4BriShpRz4I18SduRbrDmeWmounJgoUwuaJXgaIU7gMxQiISgQTXhOuKiAbo3Y2
+         g2qGe6oVurFAkjJmAJC+bqcxKNdDneD1gq7r4BR5yDYJQ9iDLRoKIuIolZj25C1E8KrS
+         O4YDgSsSs30eqr+1niDZCWJ3DuZyumtPv3QTVAGXoYeTCmBAy/7L+7ogBe6ugq2NxVZ2
+         9rRf5ky/MIEw7tpMv7sZLhcCORp6JTyGeeeSbVu+RlNn20w9JZH+jDKpr1MBbvhuBNwC
+         C7zw==
+X-Gm-Message-State: AOJu0YyG07GNKa2+gU77Wx285abgTUR2utBvdg2m4R6qdx8DqOycGUFJ
+        VJttyCgy0FelpBaFzqkDD+8=
+X-Google-Smtp-Source: AGHT+IEKXIM2JzbB/++nhZ/TA/gEwzRYuFkvk6v+COl+Htl+x4F+7inAR6yDfVh+8rq4JdKFK6K5Uw==
+X-Received: by 2002:a05:600c:cc:b0:405:3955:5872 with SMTP id u12-20020a05600c00cc00b0040539555872mr11841823wmm.18.1696796599599;
+        Sun, 08 Oct 2023 13:23:19 -0700 (PDT)
+Received: from lucifer.home ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
+        by smtp.googlemail.com with ESMTPSA id c5-20020a05600c0ac500b0040586360a36sm11474879wmr.17.2023.10.08.13.23.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Oct 2023 13:23:18 -0700 (PDT)
+From:   Lorenzo Stoakes <lstoakes@gmail.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     "=Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        linux-fsdevel@vger.kernel.org, Lorenzo Stoakes <lstoakes@gmail.com>
+Subject: [PATCH 0/4] Abstract vma_merge() and split_vma()
+Date:   Sun,  8 Oct 2023 21:23:12 +0100
+Message-ID: <cover.1696795837.git.lstoakes@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <20231004145137.86537-1-ubizjak@gmail.com> <20231004145137.86537-5-ubizjak@gmail.com>
- <CAHk-=wgepFm=jGodFQYPAaEvcBhR3-f_h1BLBYiVQsutCwCnUQ@mail.gmail.com> <CAFULd4YWjxoSTyCtMN0OzKgHtshMQOuMH1Z0n_OaWKVnUjy2iA@mail.gmail.com>
-In-Reply-To: <CAFULd4YWjxoSTyCtMN0OzKgHtshMQOuMH1Z0n_OaWKVnUjy2iA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 8 Oct 2023 13:13:54 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whq=+LNHmsde8LaF4pdvKxqKt5GxW+Tq+U35_aDcV0ADg@mail.gmail.com>
-Message-ID: <CAHk-=whq=+LNHmsde8LaF4pdvKxqKt5GxW+Tq+U35_aDcV0ADg@mail.gmail.com>
-Subject: Re: [PATCH 4/4] x86/percpu: Use C for percpu read/write accessors
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,64 +73,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 8 Oct 2023 at 12:18, Uros Bizjak <ubizjak@gmail.com> wrote:
->
-> Let me see what happens here. I have changed *only* raw_cpu_read_8,
-> but the GP fault is reported in cpu_init_exception_handling, which
-> uses this_cpu_ptr. Please note that all per-cpu initializations go
-> through existing {this|raw}_cpu_write.
+The vma_merge() interface is very confusing and its implementation has led
+to numerous bugs as a result of that confusion.
 
-I think it's an ordering issue, and I think you may hit some issue
-with loading TR od the GDT or whatever.
+In addition there is duplication both in invocation of vma_merge(), but
+also in the common mprotect()-style pattern of attempting a merge, then if
+this fails, splitting the portion of a VMA about to have its attributes
+changed.
 
-For example, we have this
+This pattern has been copy/pasted around the kernel in each instance where
+such an operation has been required, each very slightly modified from the
+last to make it even harder to decipher what is going on.
 
-        set_tss_desc(cpu, &get_cpu_entry_area(cpu)->tss.x86_tss);
+Simplify the whole thing by dividing the actual uses of vma_merge() and
+split_vma() into specific and abstracted functions and de-duplicate the
+vma_merge()/split_vma() pattern altogether.
 
-followed by
+Doing so also opens the door to changing how vma_merge() is implemented -
+by knowing precisely what cases a caller is invoking rather than having a
+central interface where anything might happen, we can untangle the brittle
+and confusing vma_merge() implementation into something more workable.
 
-        asm volatile("ltr %w0"::"q" (GDT_ENTRY_TSS*8));
+For mprotect()-like cases we introduce vma_modify() which performs the
+vma_merge()/split_vma() pattern, returning a pointer or an ERR_PTR(err) if
+the splits fail.
 
-in native_load_tr_desc(), and I think we might want to add a "memory"
-clobber to it to make sure it is serialized with any stores to the GDT
-entries in question.
+This is an internal interface, as it is confusing having a number of
+different parameters available for fields that can be changed. Instead we
+split the kernel interface into four functions:-
 
-I don't think *that* particular thing is the issue (because you kept
-the writes as-is and still hit things), but I think it's an example of
-some lazy inline asm constraints that could possibly cause problems if
-the ordering changes.
+* vma_modify_flags()      - Prepare to modify the VMA's flags.
+* vma_modify_flags_name() - Prepare to modify the VMA's flags/anon_vma_name
+* vma_modify_policy()     - Prepare to modify the VMA's mempolicy.
+* vma_modify_uffd()       - Prepare to modify the VMA's flags/uffd context.
 
-And yes, this code ends up depending on things like
-CONFIG_PARAVIRT_XXL for whether it uses the native TR loading or uses
-some paravirt version, so config options can make a difference.
+For cases where a new VMA is attempted to be merged with adjacent VMAs we
+add:-
 
-Again: I don't think it's that "ltr" instruction. I'm calling it out
-just as a "that function does some funky things", and the load TR is
-*one* of the funky things, and it looks like it could be the same type
-of thing that then causes issues.
+* vma_merge_new_vma() - Prepare to merge a new VMA.
+* vma_merge_extend()  - Prepare to extend the end of a new VMA.
 
-Things like CONFIG_SMP might also matter, because the percpu setup is
-different. On UP, the *segment* use goes away, but I think the whole
-"use inline asm vs regular memory ops" remains (admittedly I did *not*
-verify that, I might be speaking out of my *ss).
+Lorenzo Stoakes (4):
+  mm: abstract the vma_merge()/split_vma() pattern for mprotect() et al.
+  mm: make vma_merge() and split_vma() internal
+  mm: abstract merge for new VMAs into vma_merge_new_vma()
+  mm: abstract VMA extension and merge into vma_merge_extend() helper
 
-Your dump does end up being close to a %gs access:
+ fs/userfaultfd.c   |  53 +++++----------
+ include/linux/mm.h |  32 ++++++---
+ mm/internal.h      |   7 ++
+ mm/madvise.c       |  25 ++-----
+ mm/mempolicy.c     |  20 +-----
+ mm/mlock.c         |  24 ++-----
+ mm/mmap.c          | 160 ++++++++++++++++++++++++++++++++++++++++-----
+ mm/mprotect.c      |  27 ++------
+ mm/mremap.c        |  30 ++++-----
+ mm/nommu.c         |   4 +-
+ 10 files changed, 228 insertions(+), 154 deletions(-)
 
-   0: 4a 03 04 ed 40 19 15 add    -0x7aeae6c0(,%r13,8),%rax
-   7: 85
-   8: 48 89 c7              mov    %rax,%rdi
-   b: e8 9c bb ff ff        call   0xffffffffffffbbac
-  10: 48 c7 c0 10 73 02 00 mov    $0x27310,%rax
-  17: 48 ba 00 00 00 00 00 movabs $0xdffffc0000000000,%rdx
-  1e: fc ff df
-  21: 48 c1 e8 03          shr    $0x3,%rax
-  25:* 80 3c 10 00          cmpb   $0x0,(%rax,%rdx,1) <-- trapping instruction
-  29: 0f 85 21 05 00 00    jne    0x550
-  2f: 65 48 8b 05 45 26 f6 mov    %gs:0x7ef62645(%rip),%rax        # 0x7ef6267c
-  36: 7e
-  37: 48 8d 7b 24          lea    0x24(%rbx),%rdi
-
-but I don't know what the "call" before is, so I wasn't able to match
-it up with any obvious code in there.
-
-              Linus
+--
+2.42.0
