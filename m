@@ -2,170 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0ADB7BD02F
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 23:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A9E7BD031
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 23:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbjJHVFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 17:05:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43710 "EHLO
+        id S229945AbjJHVFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 17:05:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbjJHVFQ (ORCPT
+        with ESMTP id S229635AbjJHVFi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 17:05:16 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F18ADB6
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 14:05:13 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-68fb85afef4so2839022b3a.1
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 14:05:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696799113; x=1697403913; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6gxm93K6GGWMbjUtGXp1BZmgoqSMt/fikbA5J3YWvlU=;
-        b=S2ejNuTm6W8bIEkFe3KjXWzRMN75Gy4bYtOi6KAeZGoOmPCfeba3AUcGaeMW21N6Qd
-         Ucr2bEoKyv9ujkr8F2dNOso1rA/lXseMHrMt3WHWifHt0bpYV69qEpIYro9uq0mCxalf
-         5MqJvjgs9C5wVov/SFGKFF5cbeQ+UAiPNAUGk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696799113; x=1697403913;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6gxm93K6GGWMbjUtGXp1BZmgoqSMt/fikbA5J3YWvlU=;
-        b=Ersv9vt8yxW65T7jhPbrQ+s1NVhkSkRFK0M7Q9N305WzfOWMcUJ6gSJQAbthETtv69
-         TknyEQD+oapGwPuUL5y7136vAr/SRlIg9U8778T4qGnpdbzegB0e9dwPK8nQzf0UI2im
-         dMl74SF2J/hIUpvdNqDZuXsrNC3T4ID7wlW6Hw6/XVdvCXXb0oQnECFtgkht9SswYfPI
-         N5ZJnBlafxtv9mW3eKMvEzWttAKgGmV/RuLAcPSSuWbYG7ePF5mIqcwyDxwnbz4mRNEc
-         baDHWdRI5BuxV+jdIIjXz1fkseHm5BX13wskr0tMcIa8jjUciQ+hB+gj3CDwbMnF5FV8
-         4iXA==
-X-Gm-Message-State: AOJu0YzDVNYBzzkPmLkYschYGHlM6rRrR2KNQdTu1S7HHX1xcbwJ5b9C
-        ogTyyTW6hLRm9Y991HQ9Bz3Fog==
-X-Google-Smtp-Source: AGHT+IHXtwJV5QiOwEV9BS5g5BayCndoQLHqktCHa0OWTprxahWUvy7m6rsAL0Es1eBJ85IRithi+g==
-X-Received: by 2002:a05:6a00:1d89:b0:68f:c6f8:144a with SMTP id z9-20020a056a001d8900b0068fc6f8144amr10953293pfw.22.1696799113111;
-        Sun, 08 Oct 2023 14:05:13 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id e9-20020aa78249000000b006934390d0c5sm5078353pfn.175.2023.10.08.14.05.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Oct 2023 14:05:12 -0700 (PDT)
-Date:   Sun, 8 Oct 2023 14:05:10 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     gustavoars@kernel.org, Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Vinod Koul <vkoul@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH 2/2] dmaengine: pxa_dma: Annotate struct pxad_desc_sw
- with __counted_by
-Message-ID: <202310081404.382AE20@keescook>
-References: <c8fc5563c9593c914fde41f0f7d1489a21b45a9a.1696676782.git.christophe.jaillet@wanadoo.fr>
- <1c9ef22826f449a3756bb13a83494e9fe3e0be8b.1696676782.git.christophe.jaillet@wanadoo.fr>
+        Sun, 8 Oct 2023 17:05:38 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 442A7B6;
+        Sun,  8 Oct 2023 14:05:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uZ6fRJpfdZ02bjnVpPGf7vgCC45VnPxsA0G8Tp1ZP8w=; b=modRTFHngoZgMNIpdoKNI8Xi3i
+        1xPnPtKOiLrYfgswU01yZiXdqDCP4FvGOLtsKzoT5hVs2MuEj/3sBvxgLFCCRBYI+brDec62Z3WnM
+        OLVQx/uFF0HUcCWzxgZsUGVPSRoIMp+QxHaG0LC32F99y8fRj8LWTcW5ROHCS8tzqTNxJUnAHY2+5
+        1UEgC7Nqyh8wvdxRREjmGSCua168vsa7oQopUXTI++4gW96NdFhsYy9Ekn+hQf26ANxqCMic/XmEZ
+        LB3x94IzGdpPFfBieT/P4hIxX5eNSRIJROOvpQCdF/x1i5W86erIdxCWK9f9kLYcuyXO5Lt+2o2tj
+        AqTxam6A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qpaxm-00Bw97-7g; Sun, 08 Oct 2023 21:05:22 +0000
+Date:   Sun, 8 Oct 2023 22:05:22 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v2 5/5] fs: Add inode_assert_locked() and
+ inode_assert_locked_excl()
+Message-ID: <ZSMZkuJGgHyyqDWP@casper.infradead.org>
+References: <20231007203543.1377452-1-willy@infradead.org>
+ <20231007203543.1377452-6-willy@infradead.org>
+ <CAGudoHEg7oWG8CuyivWRsWLZZtw51oY0=PjLPRzFZDDZf=kzGg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1c9ef22826f449a3756bb13a83494e9fe3e0be8b.1696676782.git.christophe.jaillet@wanadoo.fr>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAGudoHEg7oWG8CuyivWRsWLZZtw51oY0=PjLPRzFZDDZf=kzGg@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 07, 2023 at 01:13:10PM +0200, Christophe JAILLET wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
+On Sun, Oct 08, 2023 at 10:26:40PM +0200, Mateusz Guzik wrote:
+> On 10/7/23, Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
+> > +static inline void inode_assert_locked_excl(const struct inode *inode)
+> > +{
+> > +	rwsem_assert_held_write(&inode->i_rwsem);
+> > +}
+> > +
+> >  static inline void inode_lock_nested(struct inode *inode, unsigned
+> > subclass)
+> >  {
+> >  	down_write_nested(&inode->i_rwsem, subclass);
 > 
-> To do so, the code needs a little shuffling related to how hw_desc is used
-> and nb_desc incremented.
-> 
-> The one by one increment is needed for the error handling path, calling
-> pxad_free_desc(), to work correctly.
-> 
-> So, add a new intermediate variable, desc, to store the result of the
-> dma_pool_alloc() call.
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Why "excl" instead of "write"? Apart from looking weird, it is
+> inconsistent with "prior art" in the file: i_mmap_assert_write_locked.
 
-Thanks! Yeah, this looks like a sensible refactor to handle the
-increment before array assignment without losing error checking.
+Yes, but that pairs with i_mmap_lock_write() / i_mmap_lock_read().
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+The problem is that we have inode_lock() / inode_lock_shared()
+inode_assert_locked_read/write doesn't make sense with them.  But
+inode_assert_locked() doesn't make sense as the assertion for
+inode_lock() because you'd expect it to assert whether the inode lock
+is held at all.  So I went with inode_assert_locked_excl().
 
--Kees
-
-> ---
-> This patch is part of a work done in parallel of what is currently worked
-> on by Kees Cook.
-> 
-> My patches are only related to corner cases that do NOT match the
-> semantic of his Coccinelle script[1].
-> 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> ---
->  drivers/dma/pxa_dma.c | 13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/dma/pxa_dma.c b/drivers/dma/pxa_dma.c
-> index 94cef2905940..c6e2862896e3 100644
-> --- a/drivers/dma/pxa_dma.c
-> +++ b/drivers/dma/pxa_dma.c
-> @@ -91,7 +91,8 @@ struct pxad_desc_sw {
->  	bool			cyclic;
->  	struct dma_pool		*desc_pool;	/* Channel's used allocator */
->  
-> -	struct pxad_desc_hw	*hw_desc[];	/* DMA coherent descriptors */
-> +	struct pxad_desc_hw	*hw_desc[] __counted_by(nb_desc);
-> +						/* DMA coherent descriptors */
->  };
->  
->  struct pxad_phy {
-> @@ -739,6 +740,7 @@ pxad_alloc_desc(struct pxad_chan *chan, unsigned int nb_hw_desc)
->  {
->  	struct pxad_desc_sw *sw_desc;
->  	dma_addr_t dma;
-> +	void *desc;
->  	int i;
->  
->  	sw_desc = kzalloc(struct_size(sw_desc, hw_desc, nb_hw_desc),
-> @@ -748,20 +750,21 @@ pxad_alloc_desc(struct pxad_chan *chan, unsigned int nb_hw_desc)
->  	sw_desc->desc_pool = chan->desc_pool;
->  
->  	for (i = 0; i < nb_hw_desc; i++) {
-> -		sw_desc->hw_desc[i] = dma_pool_alloc(sw_desc->desc_pool,
-> -						     GFP_NOWAIT, &dma);
-> -		if (!sw_desc->hw_desc[i]) {
-> +		desc = dma_pool_alloc(sw_desc->desc_pool, GFP_NOWAIT, &dma);
-> +		if (!desc) {
->  			dev_err(&chan->vc.chan.dev->device,
->  				"%s(): Couldn't allocate the %dth hw_desc from dma_pool %p\n",
->  				__func__, i, sw_desc->desc_pool);
->  			goto err;
->  		}
->  
-> +		sw_desc->nb_desc++;
-> +		sw_desc->hw_desc[i] = desc;
-> +
->  		if (i == 0)
->  			sw_desc->first = dma;
->  		else
->  			sw_desc->hw_desc[i - 1]->ddadr = dma;
-> -		sw_desc->nb_desc++;
->  	}
->  
->  	return sw_desc;
-> -- 
-> 2.34.1
-> 
-
--- 
-Kees Cook
+I wouldn't mind if we converted all the inode_lock()/shared to
+inode_lock_read() / inode_lock_write(), and then added
+inode_assert_read_locked() / inode_assert_write_locked().  That's
+a bit of a bigger job than I want to take on today.
