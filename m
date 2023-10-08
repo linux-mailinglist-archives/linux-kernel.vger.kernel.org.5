@@ -2,82 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE727BCDB9
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 12:00:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B30C7BCDBB
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 12:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344622AbjJHKAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 06:00:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38324 "EHLO
+        id S1344603AbjJHKEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 06:04:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344616AbjJHKAa (ORCPT
+        with ESMTP id S230412AbjJHKEq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 06:00:30 -0400
-Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B73812C
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 03:00:17 -0700 (PDT)
-Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-1dd8304b980so2489517fac.2
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 03:00:17 -0700 (PDT)
+        Sun, 8 Oct 2023 06:04:46 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 538DBB6;
+        Sun,  8 Oct 2023 03:04:41 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-69101022969so3224747b3a.3;
+        Sun, 08 Oct 2023 03:04:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=transsion-corp-partner-google-com.20230601.gappssmtp.com; s=20230601; t=1696759216; x=1697364016; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zjwttTM8shNa+ZykQipB79DYWo5iJnu0BccYrm9Eubk=;
-        b=Tc/3SJt/9ZFMvTKSKDWOq+UB65R7NeloWYUVVeLGgoVxa5rFRpiSSKOjPrc6Mfin6c
-         OY90IgsHzj1ti0J4TGOW6UCwFJfDeRn1iA3wyLFQc7TJe9x3M8nCi0/BLg6iDY8zXdQW
-         a09kgFaPYbO8KvjjXM19PKK/0P8Oy4iN1foVgxrOhAO8M1VCTvlkCqvBYrRoNWivoYES
-         RcTP5YqSKpBTfBDGdyMKa8MitdaFD1mH1ornmHRy5laONY1xPUC55vd2LWO+ia3iBy+e
-         D9umBGVU7gRdyLlaKq9uDn/eKOFK34Uzi/wnn1Zj+Mxb3CDxyEHlZ5OrZxxvo9g5c7Nk
-         a1eA==
+        d=gmail.com; s=20230601; t=1696759481; x=1697364281; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xIhkUz9q8zzhIbVUqPN76xFOBMPbkwp5QCawaSSPdnM=;
+        b=Z7P1ZN3W6DFUN2upBkSrXW71iDrimOU+fYqipUAq+pQ/ZpnV8y/+jGbejQHoC2iIxy
+         4BelL81jcjIzkXSgqs8ZVLsFW+yQ3ajbutNXqbBVl3A+w2DHV0l7V08+qlIq0nbWF/aZ
+         LYanqjWx8qr07j2pzLi5q+3ArVHGsQ7IyTM5vhXaw7A8VE4jUYgzvhg7VhtYqIMfIK1G
+         WYBCieZbFgkWbDbn5sSDKejOiuHYjl7tgZZUKdV93FwMa5qAygH6gQ4L80GBGuQtRn1d
+         b9NQclR2VOA5kLWhTPxkxSnVydBgY03AMs+0LYnxphiLUq5Gvrh8FXrOEsjTDX48IR4E
+         /zDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696759216; x=1697364016;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zjwttTM8shNa+ZykQipB79DYWo5iJnu0BccYrm9Eubk=;
-        b=JShS1kBg3TeGZqLRCsa01b9WnfIUVdhblVLQF7Yg3t943A+zvVLYIel1p5OUv/LRCi
-         7P9q24Rpf/OXdyjBV6D02bApypdPcOwXVDeaPgTITeAOajS1EHmHcAOo1r94hePUlqnU
-         qsVJvVPNnsfWheP7AgghWSIhC61O9Ihf83BbOzg7SyK4dRlo4Jf9W+LoWAsN+qFr1tFf
-         RU3PVcKNsf/2PQULlx3XT2suFz0Z33juya0HPgZ5t0UOTSeWvUq1Z5pQ4lPzR/9oPmuP
-         qpihefkxK8yQ9wZXllOhQTbNjVoqvqBitJrheNtH5bJf9JB89fOLzjnsaNTudex9MKnA
-         LNVQ==
-X-Gm-Message-State: AOJu0YznJB2+oM0HQfxedKzde6Xt6b6TeW3XEsFkWQHn7CNc/eY2hQ4m
-        r/WkpogLP75AuM1TZhhkCfGCNiVFByOsGiKb9nE=
-X-Google-Smtp-Source: AGHT+IHbSkEM0AN5q48/SQhxJuecJnMxGYLkPP4mU+9ovjZ/3+4gSc8kFKvogvablROZw3L0oZktig==
-X-Received: by 2002:a05:6871:451:b0:1dc:ddcd:876f with SMTP id e17-20020a056871045100b001dcddcd876fmr15041196oag.41.1696759216748;
-        Sun, 08 Oct 2023 03:00:16 -0700 (PDT)
-Received: from linchengyang-VB.. ([103.40.76.4])
-        by smtp.gmail.com with ESMTPSA id u9-20020a17090282c900b001c72c07c9d9sm7126343plz.308.2023.10.08.03.00.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Oct 2023 03:00:16 -0700 (PDT)
-From:   Lincheng Yang <lincheng.yang@transsion.corp-partner.google.com>
-X-Google-Original-From: Lincheng Yang <lincheng.yang@transsion.com>
-To:     akpm@linux-foundation.org, rostedt@goodmis.org,
-        mhiramat@kernel.org, willy@infradead.org, hughd@google.com,
-        peterx@redhat.com, mike.kravetz@oracle.com, jgg@ziepe.ca,
-        surenb@google.com, steven.price@arm.com, pasha.tatashin@soleen.com,
-        kirill.shutemov@linux.intel.com, yuanchu@google.com,
-        david@redhat.com, mathieu.desnoyers@efficios.com,
-        dhowells@redhat.com, shakeelb@google.com, pcc@google.com,
-        tytso@mit.edu, 42.hyeyoo@gmail.com, vbabka@suse.cz,
-        catalin.marinas@arm.com, lrh2000@pku.edu.cn, ying.huang@intel.com,
-        mhocko@suse.com, vishal.moola@gmail.com, yosryahmed@google.com,
-        findns94@gmail.com, neilb@suse.de
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        wanbin.wang@transsion.com, chunlei.zhuang@transsion.com,
-        jinsheng.zhao@transsion.com, jiajun.ling@transsion.com,
-        dongyun.liu@transsion.com,
-        Lincheng Yang <lincheng.yang@transsion.com>
-Subject: [RFC PATCH 5/5] mm/swapfile: add swapfile_write_enable interface
-Date:   Sun,  8 Oct 2023 17:59:24 +0800
-Message-Id: <20231008095924.1165106-6-lincheng.yang@transsion.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231008095924.1165106-1-lincheng.yang@transsion.com>
-References: <20231008095924.1165106-1-lincheng.yang@transsion.com>
+        d=1e100.net; s=20230601; t=1696759481; x=1697364281;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xIhkUz9q8zzhIbVUqPN76xFOBMPbkwp5QCawaSSPdnM=;
+        b=gvGtmLySfiY6JjbmFocm8E/EINiSjvQDdJ60PY5UHeZX6B28HspxkyIBdoIwu46hhI
+         fPWpApvoN5MI+YAsEZdyJU/V628j64I1t6qh6B+uhCiupa0pkwmx6t5yeD+3HVoYT9eH
+         M8cpIFXtkjmg3d+ueG8n0gkH752PQIAlXYLcIZ0YmXaDm2o7ypGwObn4ZM/bHAqMa24F
+         ft/AZdO7qbwjjudCrFwd9EG0pT2JF/1HB05PvoQIbVM/rks+AGJ+e6wdEH0LxOrVChh3
+         3wduAT/Zclp0jbWCzV9hyqgb2o/yTt9soEDCl8W7yENkQPxCf+G2HQKeJsegOzsKv4Mc
+         Db1g==
+X-Gm-Message-State: AOJu0Yyq58MiT84SKGFCyfvMiIrovtwWuXWl20RX6lgxCqCpcQW754l6
+        ENu+O7HXVkd+CPmuAusJ30A=
+X-Google-Smtp-Source: AGHT+IEYr65hoJ/ii5X3srhLclDzVhqNmnkpWRJVUOQb/j0vk0xMn5Ed610TTy2GLDpCBFbIzVek1g==
+X-Received: by 2002:a05:6a20:6a1a:b0:154:fb34:5f09 with SMTP id p26-20020a056a206a1a00b00154fb345f09mr15453017pzk.15.1696759480632;
+        Sun, 08 Oct 2023 03:04:40 -0700 (PDT)
+Received: from [192.168.255.10] ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id e9-20020aa78249000000b00690f622d3cdsm4265817pfn.126.2023.10.08.03.04.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 08 Oct 2023 03:04:39 -0700 (PDT)
+Message-ID: <c69a1eb1-e07a-8270-ca63-54949ded433d@gmail.com>
+Date:   Sun, 8 Oct 2023 18:04:28 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [Patch v4 07/13] perf/x86: Add constraint for guest perf metrics
+ event
+To:     Sean Christopherson <seanjc@google.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Dapeng Mi <dapeng1.mi@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Like Xu <likexu@tencent.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>, kvm@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhang Xiong <xiong.y.zhang@intel.com>,
+        Lv Zhiyuan <zhiyuan.lv@intel.com>,
+        Yang Weijiang <weijiang.yang@intel.com>,
+        Dapeng Mi <dapeng1.mi@intel.com>,
+        David Dunn <daviddunn@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mingwei Zhang <mizhang@google.com>,
+        Jim Mattson <jmattson@google.com>
+References: <20231002115718.GB13957@noisy.programming.kicks-ass.net>
+ <ZRrF38RGllA04R8o@gmail.com> <ZRroQg6flyGBtZTG@google.com>
+ <20231002204017.GB27267@noisy.programming.kicks-ass.net>
+ <ZRtmvLJFGfjcusQW@google.com>
+ <20231003081616.GE27267@noisy.programming.kicks-ass.net>
+ <ZRwx7gcY7x1x3a5y@google.com>
+ <20231004112152.GA5947@noisy.programming.kicks-ass.net>
+ <CAL715W+RgX2JfeRsenNoU4TuTWwLS5H=P+vrZK_GQVQmMkyraw@mail.gmail.com>
+ <ZR3eNtP5IVAHeFNC@google.com> <ZR3hx9s1yJBR0WRJ@google.com>
+Content-Language: en-US
+From:   Like Xu <like.xu.linux@gmail.com>
+In-Reply-To: <ZR3hx9s1yJBR0WRJ@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,83 +105,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the user does not want to write back cold pages to swapfile, set
-/proc/swapfile_write_enable to 0. At this time, all anon pages, regardless
-of hot or cold status, will be written back to the zram device.
+Hi all,
 
-Signed-off-by: Lincheng Yang <lincheng.yang@transsion.com>
----
- mm/swapfile.c | 39 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 38 insertions(+), 1 deletion(-)
+On 5/10/2023 6:05 am, Sean Christopherson wrote:
+> So I'll add a self-NAK to the idea of completely disabling the host PMU, I think
+> that would burn us quite badly at some point.
 
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 629e6a291e9b..557d1c29be77 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -106,6 +106,7 @@ static atomic_t proc_poll_event = ATOMIC_INIT(0);
- atomic_t nr_rotate_swap = ATOMIC_INIT(0);
- 
- static unsigned int workingset_restore_limit;
-+static unsigned int swapfile_write_enable;
- 
- static struct swap_info_struct *swap_type_to_swap_info(int type)
- {
-@@ -127,7 +128,7 @@ bool swap_folio_hot(struct folio *folio, bool hotness)
- 	unsigned long restores;
- 	int delta;
- 
--	if (hotness)
-+	if (!swapfile_write_enable || hotness)
- 		return true;
- 
- 	if (folio_test_swapbacked(folio) && folio_test_hot(folio)) {
-@@ -2775,10 +2776,46 @@ const struct proc_ops workingset_restore_limit_fops = {
- 	.proc_write = workingset_restore_limit_write,
- };
- 
-+static ssize_t swapfile_write_enable_write(struct file *file,
-+					   const char __user *ubuf,
-+					   size_t count, loff_t *pos)
-+{
-+	unsigned int val;
-+	int ret;
-+
-+	ret = kstrtouint_from_user(ubuf, count, 10, &val);
-+	if (ret)
-+		return ret;
-+
-+	swapfile_write_enable = val;
-+
-+	return count;
-+}
-+
-+static int swapfile_write_enable_show(struct seq_file *m, void *v)
-+{
-+	seq_printf(m, "%d\n", swapfile_write_enable);
-+	return 0;
-+}
-+
-+static int swapfile_write_enable_open(struct inode *inode, struct file *file)
-+{
-+	return single_open(file, swapfile_write_enable_show, inode->i_private);
-+}
-+
-+const struct proc_ops swapfile_write_enable_fops = {
-+	.proc_open	= swapfile_write_enable_open,
-+	.proc_read	= seq_read,
-+	.proc_lseek	= seq_lseek,
-+	.proc_release	= seq_release,
-+	.proc_write	= swapfile_write_enable_write,
-+};
-+
- static int __init procswaps_init(void)
- {
- 	proc_create("swaps", 0, NULL, &swaps_proc_ops);
- 	proc_create("workingset_restore_limit", S_IALLUGO, NULL, &workingset_restore_limit_fops);
-+	proc_create("swapfile_write_enable", S_IALLUGO, NULL, &swapfile_write_enable_fops);
- 
- 	return 0;
- }
--- 
-2.34.1
+I seem to have missed a party, so allow me to add a few more comments
+to better facilitate future discussions in this direction:
 
+(1) PMU counters on TEE
+
+The SGX/SEV is already part of the upstream, but what kind of performance
+data will be obtained by sampling enclaves or sev-guest with hardware pmu
+counters on host (will the perf-report show these data missing holes or
+pure encrypted data), we don't have a clear idea nor have we established
+the right expectations. But on AMD profiling a SEV-SNP guest is supported:
+
+"Fingerprinting attack protection is also not supported in the current
+generation of these technologies. Fingerprinting attacks attempt to
+determine what code the VM is running by monitoring its access patterns,
+performance counter information, etc." (AMD SEV-SNP White Paper, 2020)
+
+(2) PMU Guest/Host Co-existence Development
+
+The introduction of pt_mode in the KVM was misleading, leading subsequent
+developers to believe that static slicing of pmu facility usage was allowed.
+
+On user scenarios, the host/perf should treat pmu resource requests from
+vCPUs with regularity (which can be unequal under the host's authority IMO)
+while allowing the host to be able to profile any software entity (including
+hypervisor and guest-code, including TEE code in debug mode). Functionality
+takes precedence over performance.
+
+The semantics of exclude_guest/host should be tied to the hw-event isolation
+settings on the hardware interfaces, not to the human-defined sw-context.
+The perf subsystem is the arbiter of pmu resource allocation on the host,
+and any attempt to change the status quo (or maintenance scope) will not
+succeed. Therefore, vPMU developers are required to be familiar with the
+implementation details of both perf and kvm, and try not to add perf APIs
+dedicated to serving KVM blindly.
+
+Getting host and guests to share limited PMU resources harmoniously is not
+particularly difficult compared to real rocket science in the kernel, so
+please don't be intimidated.
+
+(3) Performance Concern in Co-existence
+
+I wonder if it would be possible to add a knob to turn off the perf counter
+multiplexing mechanism on the host, so that in coexistence scenarios, the
+number of VM exits on the vCPU would not be increased by counter rotations
+due to timer expiration.
+
+For normal counters shared between guest and host, the number of counter
+msr switches requiring a vm-entry level will be relatively small.
+(The number of counters is growing; for LBR, it is possible to share LBR
+select values to avoid frequent switching, but of course this requires the
+implementation of a software filtering mechanism when the host/guest read
+the LBR records, and some additional PMI; for DS-based PEBS, host and guest
+PEBS buffers are automatically segregated based on linear address).
+
+There is a lot of room for optimisation here, and in real scenarios where
+triggering a large number of register switches in the host/guest PMU is
+to be expected and observed easily (accompanied by a large number of pmi
+appearances).
+
+If we are really worried about the virtualisation overhead of vPMU, then
+virtio-pmu might be an option. In this technology direction, the back-end
+pmu can add more performance events of interest to the VM (including host
+un-core and off-core events, host-side software events, etc.) In terms of
+implementation, the semantics of the MSRLIST instruction can be re-used,
+along with compatibility with the different PMU hardware interfaces on ARM
+and Risc-v, which is also very friendly to production environments based on
+its virtio nature.
+
+(4) New vPMU Feature Development
+
+We should not put KVM's current vPMU support into maintenance-only mode.
+Users want more PMU features in the guest, like AMD vIBS, Intel pmu higher
+versions, Intel topdown and Arch lbr, more on the way. The maturity of
+different features' patch sets aren't the same, but we can't ignore these
+real needs because of available time for key maintainers, apathy towards
+contributors, mindset avoidance and laziness, and preference for certain
+technology stacks. These technical challenges will attract an influx of
+open source heroes to push the technology forward, which is good in the
+long run.
+
+(5) More to think about
+
+Similar to the guest PMU feature, the debugging feature may face the same
+state. For example, what happens when you debug code inside the host and
+guest at the same time (host debugs hypevisor/guest code and guest debugs
+guest code only) ?
+
+Forgive my ignorance and offence, but we don't want to see a KVM subsystem
+controlled and driven by Google's demands.
+
+Please feel free to share comments to move forward.
+
+Thanks,
+Like Xu
