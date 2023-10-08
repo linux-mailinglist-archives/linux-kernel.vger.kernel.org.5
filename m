@@ -2,182 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E72D37BCD1F
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 09:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2637BCD2E
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 10:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344498AbjJHH6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 03:58:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54632 "EHLO
+        id S234245AbjJHIId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 04:08:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229988AbjJHH6h (ORCPT
+        with ESMTP id S229988AbjJHIIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 03:58:37 -0400
-Received: from wxsgout04.xfusion.com (wxsgout04.xfusion.com [36.139.87.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31727B9;
-        Sun,  8 Oct 2023 00:58:32 -0700 (PDT)
-Received: from wuxshcsitd00600.xfusion.com (unknown [10.32.133.213])
-        by wxsgout04.xfusion.com (SkyGuard) with ESMTPS id 4S3Dxl1nCfz9xmcj;
-        Sun,  8 Oct 2023 15:56:11 +0800 (CST)
-Received: from localhost (10.82.147.3) by wuxshcsitd00600.xfusion.com
- (10.32.133.213) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Sun, 8 Oct
- 2023 15:58:27 +0800
-Date:   Sun, 8 Oct 2023 15:58:26 +0800
-From:   Wang Jinchao <wangjinchao@xfusion.com>
-To:     Steffen Klassert <steffen.klassert@secunet.com>
-CC:     Daniel Jordan <daniel.m.jordan@oracle.com>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stone.xulei@xfusion.com>
-Subject: Re: [RFC/REFACT] Refactoring and significantly reducing code
- complexity
-Message-ID: <ZSJhIpRUPrT6Sag6@fedora>
-References: <ZRU/EjubEH/5QLlG@fedora>
- <ZRZk6tC6j1FtW3uY@gauss3.secunet.de>
+        Sun, 8 Oct 2023 04:08:32 -0400
+X-Greylist: delayed 506 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 08 Oct 2023 01:08:30 PDT
+Received: from 6.mo575.mail-out.ovh.net (6.mo575.mail-out.ovh.net [46.105.63.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D0E2CA
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 01:08:30 -0700 (PDT)
+Received: from director4.ghost.mail-out.ovh.net (unknown [10.109.143.72])
+        by mo575.mail-out.ovh.net (Postfix) with ESMTP id ED82827DA8
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 08:00:01 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-9mdf6 (unknown [10.110.171.163])
+        by director4.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 5E1A01FE55;
+        Sun,  8 Oct 2023 08:00:00 +0000 (UTC)
+Received: from foxhound.fi ([37.59.142.106])
+        by ghost-submission-6684bf9d7b-9mdf6 with ESMTPSA
+        id SGIwEoBhImXIvwAA5rXBkA
+        (envelope-from <jose.pekkarinen@foxhound.fi>); Sun, 08 Oct 2023 08:00:00 +0000
+Authentication-Results: garm.ovh; auth=pass (GARM-106R006c7d3698b-c1da-41f1-860f-13c89ef29aab,
+                    F6EE83B07292679BC443460DC7C66060252C3E74) smtp.auth=jose.pekkarinen@foxhound.fi
+X-OVh-ClientIp: 83.100.45.21
+From:   =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>
+To:     dmitry.torokhov@gmail.com, rydberg@bitmath.org,
+        skhan@linuxfoundation.org
+Cc:     =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>,
+        amandhoot12@gmail.com, rrangel@chromium.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH] Input: synaptics: enable InterTouch for ThinkPad L14 G1
+Date:   Sun,  8 Oct 2023 11:01:28 +0300
+Message-ID: <20231008080129.17931-1-jose.pekkarinen@foxhound.fi>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZRZk6tC6j1FtW3uY@gauss3.secunet.de>
-X-Originating-IP: [10.82.147.3]
-X-ClientProxiedBy: wuxshcsitd00601.xfusion.com (10.32.135.241) To
- wuxshcsitd00600.xfusion.com (10.32.133.213)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 7025896895597160102
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: 0
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrhedtgdduvdejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpefhvfevufffkffogggtgfesthekredtredtjeenucfhrhhomheplfhoshorucfrvghkkhgrrhhinhgvnhcuoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqeenucggtffrrghtthgvrhhnpeeftdelueetieetvdettdetueeivedujeefffdvteefkeelhefhleelfeetteejjeenucfkphepuddvjedrtddrtddruddpkeefrddutddtrdeghedrvddupdefjedrheelrddugedvrddutdeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehjeehpdhmohguvgepshhmthhpohhuth
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 07:47:22AM +0200, Steffen Klassert wrote:
-> On Thu, Sep 28, 2023 at 04:53:38PM +0800, Wang Jinchao wrote:
-> > This is a refactored version with the following main changes:
-> > 
-> > - The parallel workqueue no longer uses the WQ_UNBOUND attribute
-> > - Removal of CPU-related logic, sysfs-related interfaces
-> > - removal of structures like padata_cpumask, and deletion of parallel_data
-> > - Using completion to maintain sequencing
-> > - no longer using lists
-> > - removing structures like padata_list and padata_serial_queue
-> > - Removal of padata_do_serial()
-> 
-> This removes all the logic that is needed to ensure that
-> the parallelized objects return in the same order as
-> they were before the parallelization. This change makes
-> padata unusable for networking.
+Observed on dmesg of my laptop I see the following
+output:
 
-Hello Steffen, 
-I have constructed a scenario where parallel() time cost 
-is forced to be reversed , and then ensured the order using serial(). 
-The tests have passed on a 32-core machine. 
-Can you please explain if my refactored approach guarantees the serial ordering?
+[   19.898700] psmouse serio1: synaptics: queried max coordinates: x [..5678], y [..4694]
+[   19.936057] psmouse serio1: synaptics: queried min coordinates: x [1266..], y [1162..]
+[   19.936076] psmouse serio1: synaptics: Your touchpad (PNP: LEN0411 PNP0f13) says it can support a different bus. If i2c-hid and hid-rmi are not used, you might want to try setting psmouse.synaptics_intertouch to 1 and report this to linux-input@vger.kernel.org.
+[   20.008901] psmouse serio1: synaptics: Touchpad model: 1, fw: 10.32, id: 0x1e2a1, caps: 0xf014a3/0x940300/0x12e800/0x500000, board id: 3471, fw id: 2909640
+[   20.008925] psmouse serio1: synaptics: serio: Synaptics pass-through port at isa0060/serio1/input0
+[   20.053344] input: SynPS/2 Synaptics TouchPad as /devices/platform/i8042/serio1/input/input7
+[   20.397608] mousedev: PS/2 mouse device common for all mice
 
-Here is the code:
+This patch will add its pnp id to the smbus list to
+produce the setup of intertouch for the device. After
+applying, the ouput will look like:
 
-padata_test.c
---------------
-```c
-#include <linux/delay.h>
-#include <linux/module.h>
-#include <linux/padata.h>
+[   19.168664] psmouse serio1: synaptics: queried max coordinates: x [..5678], y [..4694]
+[   19.206311] psmouse serio1: synaptics: queried min coordinates: x [1266..], y [1162..]
+[   19.206325] psmouse serio1: synaptics: Trying to set up SMBus access
+[   19.209545] psmouse serio1: synaptics: SMbus companion is not ready yet
+[   19.283845] psmouse serio1: synaptics: Touchpad model: 1, fw: 10.32, id: 0x1e2a1, caps: 0xf014a3/0x940300/0x12e800/0x500000, board id: 3471, fw id: 2909640
+[   19.283863] psmouse serio1: synaptics: serio: Synaptics pass-through port at isa0060/serio1/input0
+[   19.328959] input: SynPS/2 Synaptics TouchPad as /devices/platform/i8042/serio1/input/input8
+[   19.706164] mousedev: PS/2 mouse device common for all mice
 
-struct request {
-  struct padata_priv padata;
-  int seq;
-  struct completion done;
-};
+Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
+---
+ drivers/input/mouse/synaptics.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-#define TEST_ARRAY_SIZE 200
+diff --git a/drivers/input/mouse/synaptics.c b/drivers/input/mouse/synaptics.c
+index ada299ec5bba..376a041c80b2 100644
+--- a/drivers/input/mouse/synaptics.c
++++ b/drivers/input/mouse/synaptics.c
+@@ -183,6 +183,7 @@ static const char * const smbus_pnp_ids[] = {
+ 	"LEN009b", /* T580 */
+ 	"LEN0402", /* X1 Extreme Gen 2 / P1 Gen 2 */
+ 	"LEN040f", /* P1 Gen 3 */
++	"LEN0411", /* L14 Gen 1 */
+ 	"LEN200f", /* T450s */
+ 	"LEN2044", /* L470  */
+ 	"LEN2054", /* E480 */
+-- 
+2.41.0
 
-#define PARALLEL_BASE_TIME 10
-
-static int serial_cnt;
-static int shuffled;
-struct request requests[TEST_ARRAY_SIZE];
-void parallel(struct padata_priv *padata) {
-  struct request *req = container_of(padata, struct request, padata);
-
-  // The smaller the req->seq number, the longer the delay time
-  // creating a reverse order.
-  mdelay((TEST_ARRAY_SIZE - req->seq) * PARALLEL_BASE_TIME);
-  msleep((TEST_ARRAY_SIZE - req->seq) * PARALLEL_BASE_TIME);
-}
-
-void serial(struct padata_priv *padata) {
-  struct request *req = container_of(padata, struct request, padata);
-  if (req->seq != serial_cnt)
-    shuffled = 1;
-  serial_cnt++;
-  complete(&req->done);
-}
-
-struct padata_instance *pinst;
-struct padata_shell *ps;
-static int __init padata_test_init(void) {
-  serial_cnt = 0;
-  shuffled = 0;
-  pinst = padata_alloc("padata_test");
-  if (!pinst)
-    return -ENOMEM;
-
-  ps = padata_alloc_shell(pinst);
-
-  for (int i = 0; i < TEST_ARRAY_SIZE; i++) {
-    requests[i].padata.parallel = parallel;
-    requests[i].padata.serial = serial;
-    requests[i].seq = i;
-    init_completion(&requests[i].done);
-  }
-
-  for (int i = 0; i < TEST_ARRAY_SIZE; i++) {
-    padata_do_parallel(ps, &requests[i].padata);
-  }
-
-  // only wait for the last one 
-  // if they were not done serially
-  // the serial_cnt will not be TEST_ARRAY_SIZE
-  // there was a shuffering
-  int last = TEST_ARRAY_SIZE - 1;
-  wait_for_completion(&requests[last].done);
-  if (serial_cnt != TEST_ARRAY_SIZE)
-	shuffled = 1;
-  
-  printk(KERN_INFO "padata_test: shuffled %d serial_cnt %d\n", shuffled,
-         serial_cnt);
-  return 0;
-}
-
-static void __exit padata_test_exit(void) {
-  padata_free_shell(ps);
-  padata_free(pinst);
-}
-
-module_init(padata_test_init);
-module_exit(padata_test_exit);
-
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("wangjinchao");
-MODULE_DESCRIPTION("padata Test Module");
-```
-
-Makefile
----------
-```makefile
-obj-m += padata_test.o
-
-all:
-	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
-
-clean:
-	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
-```
-
-run.sh
---------
-```bash
-make
-dmesg -C
-insmod padata_test.ko
-rmmod padata_test
-dmesg|grep serial_cnt
-```
