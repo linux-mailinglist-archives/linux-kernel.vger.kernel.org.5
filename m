@@ -2,114 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A447BCBDD
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 05:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A56A17BCBDF
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 05:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344348AbjJHDSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 23:18:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50486 "EHLO
+        id S1344312AbjJHDT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 23:19:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344270AbjJHDSC (ORCPT
+        with ESMTP id S234215AbjJHDT0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 23:18:02 -0400
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2079.outbound.protection.outlook.com [40.107.215.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6DC8BD;
-        Sat,  7 Oct 2023 20:18:00 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PVpewel+Melowzbc9FqRJA/2pRtHImlUTVdT1eqjndIANc5nIXQ+Y0R5iEeANHRnOW5Vk1ciNcM3cls9T4I74hg+Dke0lIOGR0iTJR855ml+Dv8bPQCD/dVLDSwL8EcfIVQXhFfo3gTwgknkydvqTnnQKrCzHnQxsJGv0/cdbhq07CoztNons7nhDHnlJB5IAbcRKC+1PJlYn0SemckR2GFy+AnJ8rLRVPoxybHdBwg8eFoF+0AYSjuO/ZMhaYCdlnDfb+PGzSBrd85ByToBLW6r5SEHr4PRWh0hiDYds8hsS+dwkX2PW6AJwZTVb1zYxQjX2J9P/XbEa7EVkxmlSQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZiSSt9+07jFyZ9CDYPxWwuiq4IslOeTq7xqk3JqSFgc=;
- b=Kr/MQ37HRAaK63uVHbKQcZ8oSArDZA89I9sT4nbiKbj83ATY9WGRcyaoYW6kyi+Q4ZIeFKIzEfUfKTi9NMNl0yORKToHA6mXgZT2ETikTaifbx4Q+rXcRFeRZFykVwHe9GX+qBZ7iZgsXfgQlL0kpUENhta7A5gGJfDWUxz4ft9x05ku7fz1iGdAorqhsTkwgi5rhTOuQS22VeA3Khkx3J+fEg+HblQtbWwagCeCV/3XNQgQhrQJec653EPkmAoP9FeRoBkbX8JrnMz1kTZ5912DjPY7Gyb7gRQ+QXVKT6iyoQhEcyCaGVGDzMltW1UJYKryRMP7thFlA/Ha2RutdQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=jaguarmicro.com; dmarc=pass action=none
- header.from=jaguarmicro.com; dkim=pass header.d=jaguarmicro.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jaguarmicro.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZiSSt9+07jFyZ9CDYPxWwuiq4IslOeTq7xqk3JqSFgc=;
- b=Fq5+ePF11Qe8BARKKqrSD2m9A7VijRIKwcvaJ7SzFV2mpBe7s01hP+xCHoWrayar9smXjSJThMu4UBTkK4lSsT9ghc/gAJdaJyw/Cd0BuJyXGeivRpw8Prs4K5+NA1kPzgzBB6GcfvO6gmBkHbncJLrc3ctwRe8UXp+8VZQE+v+RV10NxrKPCpVocRxxWrbqzcv/UEeKEr4CN8fi8abZzQwWDRsMdbLYvfzd+mT9LWOxt8qa4CmX9FvXYA0FZyYVqhJkYx8EaPD83Uaae7GU8Av42WVF7QppKQM33YtoTPFLwqc8F3BlfDeftV1YmHlj0tfl3EgIGfAwx0F9Rp3rnA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=jaguarmicro.com;
-Received: from PSAPR06MB3942.apcprd06.prod.outlook.com (2603:1096:301:2b::5)
- by TYZPR06MB6514.apcprd06.prod.outlook.com (2603:1096:400:454::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.41; Sun, 8 Oct
- 2023 03:17:58 +0000
-Received: from PSAPR06MB3942.apcprd06.prod.outlook.com
- ([fe80::e5ee:587c:9e8e:1dbd]) by PSAPR06MB3942.apcprd06.prod.outlook.com
- ([fe80::e5ee:587c:9e8e:1dbd%4]) with mapi id 15.20.6863.032; Sun, 8 Oct 2023
- 03:17:57 +0000
-From:   liming.wu@jaguarmicro.com
-To:     "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Liming Wu <liming.wu@jaguarmicro.com>
-Subject: [PATCH v2 2/2] tools/virtio: Add hints when module is not installed
-Date:   Sun,  8 Oct 2023 11:17:34 +0800
-Message-Id: <20231008031734.1095-2-liming.wu@jaguarmicro.com>
-X-Mailer: git-send-email 2.34.0.windows.1
-In-Reply-To: <20231008031734.1095-1-liming.wu@jaguarmicro.com>
-References: <20231008031734.1095-1-liming.wu@jaguarmicro.com>
+        Sat, 7 Oct 2023 23:19:26 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27758BD;
+        Sat,  7 Oct 2023 20:19:19 -0700 (PDT)
+X-UUID: 75bb6f30658911eea33bb35ae8d461a2-20231008
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=2lncwbw67fIZafoqWE9u36La+aHXLXeJrzy1kQnUnk4=;
+        b=PjAVUJJuSHqHzRTKGPA5OXNAW2UMD/ShP7lruTxpWR84/Y7K5Nbff6s5UWPEiJaggLjKylCKpU4T8hXIcfSiSoLNDmWRODH4VzBlUeoos4aT6J30/7+hCFNquUFmtB5gaRhLcBjZcJ2a5Xq5kyzI9Sq2STdEZcL9FzzMlSfUBnA=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:6c9a4b80-1fa8-48ca-b766-41ba7fce0e95,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:5f78ec9,CLOUDID:1f1fb3bf-14cc-44ca-b657-2d2783296e72,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 75bb6f30658911eea33bb35ae8d461a2-20231008
+Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw01.mediatek.com
+        (envelope-from <yunfei.dong@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1277965314; Sun, 08 Oct 2023 11:19:15 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Sun, 8 Oct 2023 11:19:13 +0800
+Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
+ mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Sun, 8 Oct 2023 11:19:12 +0800
+From:   Yunfei Dong <yunfei.dong@mediatek.com>
+To:     =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
+        <nfraprado@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Nathan Hebert <nhebert@chromium.org>
+CC:     Chen-Yu Tsai <wenst@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Steve Cho" <stevecho@chromium.org>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [PATCH] media: mediatek: vcodec: using encoder device to alloc/free encoder memory
+Date:   Sun, 8 Oct 2023 11:19:09 +0800
+Message-ID: <20231008031909.32146-1-yunfei.dong@mediatek.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: TYAPR01CA0053.jpnprd01.prod.outlook.com
- (2603:1096:404:2b::17) To PSAPR06MB3942.apcprd06.prod.outlook.com
- (2603:1096:301:2b::5)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PSAPR06MB3942:EE_|TYZPR06MB6514:EE_
-X-MS-Office365-Filtering-Correlation-Id: dce9fbd7-6aa6-4c2c-002e-08dbc7ad2b8d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: G+vkVSdZM5DWdjpVXkOc4osz8FQ8e1liVn2vbiVoU5IEca0QfgfNd69ecB/1SijXb3jS4UNMIC4E45NJo3ohoWciVM9naab6lqQ56U1LmIh2+SJLnHoD9p6mrGA/ZLWWnG8SRwj/B45PALzyIfJwqDJNjrq7UhJqOFQFVRmF3pigcBwOmqpIUmEqr0H0O996BWzqK0XRbuRfB+7nv5HBH4lh2cxjgCtG7FPMJQ+aJGjMb4TUPQTjxrAERC7R4X95jQnVozsnhsaRq2NMhrTBuqvoY8Yvri+IWdYhREQD7By4Y05jCBhONiFKXsKB0BIPjBI9j7yWY9PVpLA+FlHB9hTWMCsSAB5imnYky7KblvcbsWZ69IXd0LQZQ9Em+IoiklKm+aYE7XS6w+PjtEMyThTG7rwSAkE2Mq2HX3wSHgSuhJNH6YQ9xFAdC0qmMaJOKdO8dFpAjqPa1lyKcuRBLGZ2L09mUZhOHfT+P6W7xd6NTT8r8d6it84FHZB5X9m26j5GjTtUizYYGyGWev0WqTlmLk73TKT2+aTJH1CudFNnBiIbaEBb/IZhkbgp1FjbMochvC7W07prB3lVfDoQvLNKU+MDaT6RDvdJvIdvaDtpeMP08WNCVi2xWJ9VO9lW
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PSAPR06MB3942.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(136003)(39830400003)(396003)(346002)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(478600001)(66946007)(110136005)(66476007)(66556008)(6636002)(6486002)(316002)(38350700002)(6506007)(2616005)(6666004)(38100700002)(9686003)(26005)(1076003)(107886003)(52116002)(6512007)(36756003)(4744005)(41300700001)(4326008)(5660300002)(8936002)(8676002)(2906002)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2gpkaHVcgywtV3jSBM59JL2PfJOvGtZ3Wp7n5Fd24duGImb+h08NCd426uiQ?=
- =?us-ascii?Q?6cjFXNg0PGuiMS2jPeoxSAlKSQmrxWx8TzIR39IoTosuiLRMk2jbpUtKwbMe?=
- =?us-ascii?Q?u8OISQcl3bB7FMSgt4QaVdktyjbMiieeu8ePRemKJZfSLqzHTFKtj8eRW3ST?=
- =?us-ascii?Q?Js8whE9Wq6NCVFIk58esC6MLFVzyWpYHa9C33L0QnoIjjUbIpBMAdKbM0bhv?=
- =?us-ascii?Q?1gqTMkKxu+ohCCpALkJs69sEM/8Hiyh/X9RBMB9r8CFYxEHw6ZtkWV3Bc+ix?=
- =?us-ascii?Q?MqnmTfUoKJpmcmH4gOUWYLuRJ3kR9VnjD+vncNAmVYJQHg2Kxxw9BboaCRst?=
- =?us-ascii?Q?lZyYgac8y+WhOwRfI8d/2i66ibvVKf4bZ+loGBykUWrXi/VtQK3NcIAv5aaQ?=
- =?us-ascii?Q?jm4dalaXnlLHTXyx7QDjSmF6mGyld80pXcVhWuTIiuu4xZAdspENCYMUhZ8C?=
- =?us-ascii?Q?k9i0lupN0gdnFgmpQLiXtBlH6on2pDTleUT9OuLw6WboK5Xoy8kGgmIIGmMe?=
- =?us-ascii?Q?IKYL9lLt0dGToLdrEAfGzC6lMlCdx7HGNT1znMXeCyQyMwi8Xcf3EJ1scdEe?=
- =?us-ascii?Q?bH1cEfvrhGA9ltJvN6UKbpJG6SKvCK2h2EdFAop3Yn+KdSAGIjP8pVpwoKDz?=
- =?us-ascii?Q?5T4WChcoeBvCBW3eAi98bi7C7DvsmI50aO9hOWD9gO/yA23RfbjiJB5SKazd?=
- =?us-ascii?Q?NfMWN4Ab8wptp2qMC+mzCw8KwetzQVA21uCAPO4jXM+Qo1g2pFq/D7MjV/5L?=
- =?us-ascii?Q?HXKEqakOsXJ/NapbOBa27rVo3+Q16RoQWX+1f6sbLVlvSBB0pG9qlK/yPEjx?=
- =?us-ascii?Q?dehGhNBVu+YElsu14XVQB7sY3hxbSb0uLpFPgDsXUn5R/HPa3GF6sMhuvxch?=
- =?us-ascii?Q?sDXZMNGbxFaRhdaeiW3YAYWZMdPUrx5/IP2jdRV0D5DQuKwqsYqJbeOBNiPo?=
- =?us-ascii?Q?Wv38c8YtJw+WKss/TU1ibS3rNPWCoxQjdg6UAys4pEvwjVbeeTDfWDxilcpx?=
- =?us-ascii?Q?1qXtvWWVFbPC8pySYk6R55DG3d18Tw+nYbN6IgJCww8aIjv9sww8dmGnDTJx?=
- =?us-ascii?Q?/B0SaL1sJQZX9YVJLHtw0hzPn+nw0qP3VawpKNIjRPaLWlz69wepkls8j5wB?=
- =?us-ascii?Q?T06RZK05hC/T4/Ah9UiRUjLZkjCnJRZaU7T5DhoXaoOWIfuEScvJ9Zr9Vutk?=
- =?us-ascii?Q?MqjAalX4wloIUL66dN4fcvko5tVFZIgK9zhSj3wlGlCy+0XkILMV75lHUhdo?=
- =?us-ascii?Q?Mrsyxonz73HCwWktxFGPK+mUV3MgBH5wCwVFx407gvfnR7tUJSGuvtdVQcD+?=
- =?us-ascii?Q?SWqNRjBZ5ExQm2JRJt9yoQSJZanZvdAc+vTAFprSKxIwBZdfWfx5KnBNY1v1?=
- =?us-ascii?Q?a2w67ujDqRzhZf3DJ0DcM1a3CAegaSMJoL6IFMZS77HTaGT5TCno5mFsx+Um?=
- =?us-ascii?Q?Nxip0DTOxo6QmCLbINY6oRv4ULnDmNFczzNfsE70l0r9V1DpbKAFnus2nJa0?=
- =?us-ascii?Q?V7QDe21aUsCjdDIZ55vul0HJLDICrIO0hhOVSmQEZ3IH6H2KZBikVk/YrZiu?=
- =?us-ascii?Q?K4X6n9lfco7HZTi7A3KxdmSJNod5HoSBxfYWg6/1EgGORAboh/fjyV45VBxR?=
- =?us-ascii?Q?wg=3D=3D?=
-X-OriginatorOrg: jaguarmicro.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dce9fbd7-6aa6-4c2c-002e-08dbc7ad2b8d
-X-MS-Exchange-CrossTenant-AuthSource: PSAPR06MB3942.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Oct 2023 03:17:57.8991
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 1e45a5c2-d3e1-46b3-a0e6-c5ebf6d8ba7b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YcZtrsyQtF/FHWuSTYlz3X8FgcWLgEBmpgQkc5plNGoMGh6HWvZgMo/MpwyhrwfS9FYr7Cr9qOlPuOLe2h5R3qUjNR5zGNb03jLgHhImX0M=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB6514
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--9.270600-8.000000
+X-TMASE-MatchedRID: EvLd3cwGQhEtJMbDWD8p3hWCVBr+Ay98uoYFb0nRiqOCsBeCv8CM/Xf3
+        4BoKFzcHTg/jfa6b1OczYorSrzJ8m2MAzi+7d0chF6z9HGHKwNuIrmqDVyayv8lgi/vLS272INi
+        phQlaWRN2ZsQ86ifK0L+R4Fk68cCxoXHg+KoW2Ubil2r2x2PwtYfsPVs/8Vw6Ydn5x3tXIpcota
+        sKsNUdSeLzNWBegCW2xl8lw85EaVQLbigRnpKlKWxlRJiH4397GKedVHUXrT7KIf/D+oFxIU+rs
+        1+BI9BmqizkboPGhHnzIgp4i3lt2A==
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--9.270600-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 115D3AFDCB6F7F683D4B83FD3D6673B22C9D90B17C7C1E4CDDFDB2404A119D962000:8
+X-MTK:  N
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        SPF_HELO_PASS,T_SPF_TEMPERROR,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -117,31 +92,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liming Wu <liming.wu@jaguarmicro.com>
+Need to use encoder device to allocate/free encoder memory when calling
+mtk_vcodec_mem_alloc/mtk_vcodec_mem_free, or leading to below crash log
+when test encoder with decoder device.
 
-Need to insmod vhost_test.ko before run virtio_test.
-Give some hints to users.
+pc : dma_alloc_attrs+0x44/0xf4
+lr : mtk_vcodec_mem_alloc+0x50/0xa4 [mtk_vcodec_common]
+sp : ffffffc0209f3990
+x29: ffffffc0209f39a0 x28: ffffff8024102a18 x27: 0000000000000000
+x26: 0000000000000000 x25: ffffffc00c06e2d8 x24: 0000000000000001
+x23: 0000000000000cc0 x22: 0000000000000010 x21: 0000000000000800
+x20: ffffff8024102a18 x19: 0000000000000000 x18: 0000000000000000
+x17: 0000000000000009 x16: ffffffe389736a98 x15: 0000000000000078
+x14: ffffffe389704434 x13: 0000000000000007 x12: ffffffe38a2b2560
+x11: 0000000000000800 x10: 0000000000000004 x9 : ffffffe331f07484
+x8 : 5400e9aef2395000 x7 : 0000000000000000 x6 : 000000000000003f
+x5 : 0000000000000001 x4 : 0000000000000000 x3 : 0000000000000cc0
+x2 : ffffff8024102a18 x1 : 0000000000000800 x0 : 0000000000000010
+Call trace:
+ dma_alloc_attrs+0x44/0xf4
+ mtk_vcodec_mem_alloc+0x50/0xa4 [mtk_vcodec_common 2819d3d601f3cd06c1f2213ac1b9995134441421]
+ h264_enc_set_param+0x27c/0x378 [mtk_vcodec_enc 772cc3d26c254e8cf54079451ef8d930d2eb4404]
+ venc_if_set_param+0x4c/0x7c [mtk_vcodec_enc 772cc3d26c254e8cf54079451ef8d930d2eb4404]
+ vb2ops_venc_start_streaming+0x1bc/0x328 [mtk_vcodec_enc 772cc3d26c254e8cf54079451ef8d930d2eb4404]
+ vb2_start_streaming+0x64/0x12c
+ vb2_core_streamon+0x114/0x158
+ vb2_streamon+0x38/0x60
+ v4l2_m2m_streamon+0x48/0x88
+ v4l2_m2m_ioctl_streamon+0x20/0x2c
+ v4l_streamon+0x2c/0x38
+ __video_do_ioctl+0x2c4/0x3dc
+ video_usercopy+0x404/0x934
+ video_ioctl2+0x20/0x2c
+ v4l2_ioctl+0x54/0x64
+ v4l2_compat_ioctl32+0x90/0xa34
+ __arm64_compat_sys_ioctl+0x128/0x13c
+ invoke_syscall+0x4c/0x108
+ el0_svc_common+0x98/0x104
+ do_el0_svc_compat+0x28/0x34
+ el0_svc_compat+0x2c/0x74
+ el0t_32_sync_handler+0xa8/0xcc
+ el0t_32_sync+0x194/0x198
+Code: aa0003f6 aa0203f4 aa0103f5 f900
 
-Signed-off-by: Liming Wu <liming.wu@jaguarmicro.com>
+'Fixes: 01abf5fbb081c ("media: mediatek: vcodec: separate struct 'mtk_vcodec_ctx'")'
+Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
 ---
- tools/virtio/virtio_test.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ .../mediatek/vcodec/common/mtk_vcodec_util.c  | 66 ++++++++++++++++++-
+ 1 file changed, 64 insertions(+), 2 deletions(-)
 
-diff --git a/tools/virtio/virtio_test.c b/tools/virtio/virtio_test.c
-index 028f54e6854a..13572a677c35 100644
---- a/tools/virtio/virtio_test.c
-+++ b/tools/virtio/virtio_test.c
-@@ -135,6 +135,10 @@ static void vdev_info_init(struct vdev_info* dev, unsigned long long features)
- 	dev->buf = malloc(dev->buf_size);
- 	assert(dev->buf);
- 	dev->control = open("/dev/vhost-test", O_RDWR);
+diff --git a/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_util.c b/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_util.c
+index 908602031fd0..62bb7290c56d 100644
+--- a/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_util.c
++++ b/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_util.c
+@@ -45,7 +45,7 @@ int mtk_vcodec_write_vdecsys(struct mtk_vcodec_dec_ctx *ctx, unsigned int reg,
+ }
+ EXPORT_SYMBOL(mtk_vcodec_write_vdecsys);
+ 
+-int mtk_vcodec_mem_alloc(void *priv, struct mtk_vcodec_mem *mem)
++static int mtk_vcodec_mem_dec_alloc(void *priv, struct mtk_vcodec_mem *mem)
+ {
+ 	unsigned long size = mem->size;
+ 	struct mtk_vcodec_dec_ctx *ctx = priv;
+@@ -64,9 +64,39 @@ int mtk_vcodec_mem_alloc(void *priv, struct mtk_vcodec_mem *mem)
+ 
+ 	return 0;
+ }
 +
-+	if (dev->control < 0)
-+		fprintf(stderr,
-+			"Install vhost_test module (./vhost_test/vhost_test.ko) first.\n");
- 	assert(dev->control >= 0);
- 	r = ioctl(dev->control, VHOST_SET_OWNER, NULL);
- 	assert(r >= 0);
++static int mtk_vcodec_mem_enc_alloc(void *priv, struct mtk_vcodec_mem *mem)
++{
++	unsigned long size = mem->size;
++	struct mtk_vcodec_enc_ctx *ctx = priv;
++	struct device *dev = &ctx->dev->plat_dev->dev;
++
++	mem->va = dma_alloc_coherent(dev, size, &mem->dma_addr, GFP_KERNEL);
++	if (!mem->va) {
++		mtk_v4l2_venc_err(ctx, "%s dma_alloc size=%ld failed!", dev_name(dev), size);
++		return -ENOMEM;
++	}
++
++	mtk_v4l2_venc_dbg(3, ctx, "[%d]  - va      = %p", ctx->id, mem->va);
++	mtk_v4l2_venc_dbg(3, ctx, "[%d]  - dma     = 0x%lx", ctx->id,
++			  (unsigned long)mem->dma_addr);
++	mtk_v4l2_venc_dbg(3, ctx, "[%d]    size = 0x%lx", ctx->id, size);
++
++	return 0;
++}
++
++int mtk_vcodec_mem_alloc(void *priv, struct mtk_vcodec_mem *mem)
++{
++	enum mtk_instance_type inst_type = *((unsigned int *)priv);
++
++	if (inst_type == MTK_INST_ENCODER)
++		return mtk_vcodec_mem_enc_alloc(priv, mem);
++	else
++		return mtk_vcodec_mem_dec_alloc(priv, mem);
++}
+ EXPORT_SYMBOL(mtk_vcodec_mem_alloc);
+ 
+-void mtk_vcodec_mem_free(void *priv, struct mtk_vcodec_mem *mem)
++static void mtk_vcodec_mem_dec_free(void *priv, struct mtk_vcodec_mem *mem)
+ {
+ 	unsigned long size = mem->size;
+ 	struct mtk_vcodec_dec_ctx *ctx = priv;
+@@ -87,6 +117,38 @@ void mtk_vcodec_mem_free(void *priv, struct mtk_vcodec_mem *mem)
+ 	mem->dma_addr = 0;
+ 	mem->size = 0;
+ }
++
++static void mtk_vcodec_mem_enc_free(void *priv, struct mtk_vcodec_mem *mem)
++{
++	unsigned long size = mem->size;
++	struct mtk_vcodec_enc_ctx *ctx = priv;
++	struct device *dev = &ctx->dev->plat_dev->dev;
++
++	if (!mem->va) {
++		mtk_v4l2_venc_err(ctx, "%s dma_free size=%ld failed!", dev_name(dev), size);
++		return;
++	}
++
++	mtk_v4l2_venc_dbg(3, ctx, "[%d]  - va      = %p", ctx->id, mem->va);
++	mtk_v4l2_venc_dbg(3, ctx, "[%d]  - dma     = 0x%lx", ctx->id,
++			  (unsigned long)mem->dma_addr);
++	mtk_v4l2_venc_dbg(3, ctx, "[%d]    size = 0x%lx", ctx->id, size);
++
++	dma_free_coherent(dev, size, mem->va, mem->dma_addr);
++	mem->va = NULL;
++	mem->dma_addr = 0;
++	mem->size = 0;
++}
++
++void mtk_vcodec_mem_free(void *priv, struct mtk_vcodec_mem *mem)
++{
++	enum mtk_instance_type inst_type = *((unsigned int *)priv);
++
++	if (inst_type == MTK_INST_ENCODER)
++		mtk_vcodec_mem_enc_free(priv, mem);
++	else
++		mtk_vcodec_mem_dec_free(priv, mem);
++}
+ EXPORT_SYMBOL(mtk_vcodec_mem_free);
+ 
+ void *mtk_vcodec_get_hw_dev(struct mtk_vcodec_dec_dev *dev, int hw_idx)
 -- 
-2.34.1
+2.18.0
 
