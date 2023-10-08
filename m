@@ -2,42 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9A567BCAE6
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 02:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA107BCAEB
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 02:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234405AbjJHAuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 20:50:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44726 "EHLO
+        id S234421AbjJHAuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 20:50:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234217AbjJHAtv (ORCPT
+        with ESMTP id S234206AbjJHAt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 20:49:51 -0400
+        Sat, 7 Oct 2023 20:49:56 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5905D61;
-        Sat,  7 Oct 2023 17:49:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C5CBC433D9;
-        Sun,  8 Oct 2023 00:49:31 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B98CAD6F;
+        Sat,  7 Oct 2023 17:49:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC5E8C433C8;
+        Sun,  8 Oct 2023 00:49:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696726172;
-        bh=CvsbMA6o1hf6s0sGhwFv37Z+xi+UkOfltBQ25XUEmjo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=GM6RDysZPJqlY8ctoXLBeVN7dRb7iFpTgL10KA0xqAJpFWGnyE1W3j0pM5tTILYpd
-         xDyYOyYKrd5IFRDqS0ClxWfGZIWkEqpZZJaub1OtlronAuJcfsOx6fozxG/k3zjcZ5
-         2YtXv+J+wvqlbVhMEUgWcoHL7CjPcQ2x4g5PDJfBjdfUJVvwZ7uXXQ+cmrfKob7nQo
-         o8yMmgPEtm7zfEjeDOT7t+bGZ2ZjIBT4HxcllcceyghIMOvDGwU7WlYLC9Yv2QGeva
-         CLutJkqyWD2orKszU394V8lT9h9dEQl10OL4opXwNn3R1vHVluZnbJTw9jp+8675Si
-         k4T0jZQHFYOTA==
+        s=k20201202; t=1696726174;
+        bh=NhWxuNLTp7GYGxdpj3kshyvhnq8sbcconl2ofdo1sBs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=bYGBCRfBfMTT3zlzk05eHPrmYqS5w7KTOZONc9PDTfBVyQCc0pMmOGW9mmWKs9vWg
+         34/yKo7Vzhqo6bG9TXgOQoDwCo02yf2mVtlebqo2ZjtPxH0ezo+tP5n+oSPvKSEHMY
+         RWVPeCrq/7fPF6uXfPDojolrPxXGSaZBa4A7zZHXyleaAjzsrmElPdV32dYnXwBTdz
+         FJf9AeL9nON673mqWZA1ziTIy8d/r6DirRAFaCqeBTpG03ETS0AKp7LNd35DCfsqB7
+         n6cPB/JZ+lv8q6DreqGNmvY8pB2H90umFEvxLHZuzrN8jY6EqsPkQD8Ymr+DNpQGVp
+         VzCf7sWarJVOQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     David Thompson <davthompson@nvidia.com>,
-        Asmaa Mnebhi <asmaa@nvidia.com>,
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        Carl Philipp Klemm <philipp@uvos.xyz>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Pavel Machek <pavel@ucw.cz>,
         Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Sasha Levin <sashal@kernel.org>, sre@kernel.org,
-        linux-pm@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 01/12] pwr-mlxbf: extend Kconfig to include gpio-mlxbf3 dependency
-Date:   Sat,  7 Oct 2023 20:49:18 -0400
-Message-Id: <20231008004929.3767992-1-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 02/12] ARM: dts: ti: omap: Fix noisy serial with overrun-throttle-ms for mapphone
+Date:   Sat,  7 Oct 2023 20:49:19 -0400
+Message-Id: <20231008004929.3767992-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231008004929.3767992-1-sashal@kernel.org>
+References: <20231008004929.3767992-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -53,39 +59,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Thompson <davthompson@nvidia.com>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit 82f07f1acf417b81e793145c167dd5e156024de4 ]
+[ Upstream commit 5ad37b5e30433afa7a5513e3eb61f69fa0976785 ]
 
-The BlueField power handling driver (pwr-mlxbf.c) provides
-functionality for both BlueField-2 and BlueField-3 based
-platforms.  This driver also depends on the SoC-specific
-BlueField GPIO driver, whether gpio-mlxbf2 or gpio-mlxbf3.
-This patch extends the Kconfig definition to include the
-dependency on the gpio-mlxbf3 driver, if applicable.
+On mapphone devices we may get lots of noise on the micro-USB port in debug
+uart mode until the phy-cpcap-usb driver probes. Let's limit the noise by
+using overrun-throttle-ms.
 
-Signed-off-by: David Thompson <davthompson@nvidia.com>
-Reviewed-by: Asmaa Mnebhi <asmaa@nvidia.com>
-Link: https://lore.kernel.org/r/20230823133743.31275-1-davthompson@nvidia.com
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Note that there is also a related separate issue where the charger cable
+connected may cause random sysrq requests until phy-cpcap-usb probes that
+still remains.
+
+Cc: Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
+Cc: Carl Philipp Klemm <philipp@uvos.xyz>
+Cc: Merlijn Wajer <merlijn@wizzup.org>
+Cc: Pavel Machek <pavel@ucw.cz>
+Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/reset/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/motorola-mapphone-common.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
-index a8c46ba5878fe..54201f0374104 100644
---- a/drivers/power/reset/Kconfig
-+++ b/drivers/power/reset/Kconfig
-@@ -299,7 +299,7 @@ config NVMEM_REBOOT_MODE
+diff --git a/arch/arm/boot/dts/motorola-mapphone-common.dtsi b/arch/arm/boot/dts/motorola-mapphone-common.dtsi
+index c7a1f3ffc48ca..bd4731b929da5 100644
+--- a/arch/arm/boot/dts/motorola-mapphone-common.dtsi
++++ b/arch/arm/boot/dts/motorola-mapphone-common.dtsi
+@@ -640,6 +640,7 @@ &uart1 {
+ &uart3 {
+ 	interrupts-extended = <&wakeupgen GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH
+ 			       &omap4_pmx_core 0x17c>;
++	overrun-throttle-ms = <500>;
+ };
  
- config POWER_MLXBF
- 	tristate "Mellanox BlueField power handling driver"
--	depends on (GPIO_MLXBF2 && ACPI)
-+	depends on (GPIO_MLXBF2 || GPIO_MLXBF3) && ACPI
- 	help
- 	  This driver supports reset or low power mode handling for Mellanox BlueField.
- 
+ &uart4 {
 -- 
 2.40.1
 
