@@ -2,105 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 674BA7BCBA4
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 03:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D527BCBAB
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 04:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344335AbjJHBsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 21:48:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56578 "EHLO
+        id S1344269AbjJHCIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 22:08:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344279AbjJHBsP (ORCPT
+        with ESMTP id S229945AbjJHCIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 21:48:15 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01B3199;
-        Sat,  7 Oct 2023 18:48:14 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4S34n60pFDz4f3jqt;
-        Sun,  8 Oct 2023 09:48:10 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP1 (Coremail) with SMTP id cCh0CgBH0bFZCiJl7zQbCQ--.22902S4;
-        Sun, 08 Oct 2023 09:48:11 +0800 (CST)
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-To:     viro@zeniv.linux.org.uk, brauner@kernel.org, dhowells@redhat.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] pipe: avoid repeat check of pipe->readers with pipe lock held
-Date:   Sun,  8 Oct 2023 17:48:01 +0800
-Message-Id: <20231008094801.354312-3-shikemeng@huaweicloud.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20231008094801.354312-1-shikemeng@huaweicloud.com>
-References: <20231008094801.354312-1-shikemeng@huaweicloud.com>
+        Sat, 7 Oct 2023 22:08:47 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6ACA92
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 19:08:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696730925; x=1728266925;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=HyXXI6JtABP1sR+hdCxAiIXCjGu2h/ii26y/g2GA900=;
+  b=egQDqUOGLGik6FqBdaQ0rxNnjDxM2RAlJsYCIm8+ftN/jQHorJMVxaP7
+   N/A21ohshUhMCoJbaIEpz5qN94WJ4bXrjd21RFQ8OlS+uvYv6FMgu0dlL
+   nLHb7TY8BD4HS5SPLagX6XeslMahfScfBDWv6Yln/m5sXx+nXvhNP+R50
+   5NbmJ71uFtLl89F0xj0LakfAdpEkiOBmA7BkCWmwr9VHxbvKIQCHOYb4S
+   1a73vwMQttMWxCagpS1SGnJZDlHP/GJZnWZxaLCX4zeyN5jk7k51zfJNR
+   iiJ1vjgeh7auks3FEn4WnEHL0N/HFWOvFQjdb3KmfSstH1cPrD3JhnYam
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10856"; a="382841742"
+X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
+   d="scan'208";a="382841742"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2023 19:08:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10856"; a="787806974"
+X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
+   d="scan'208";a="787806974"
+Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 07 Oct 2023 19:08:43 -0700
+Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qpJDk-00052X-2f;
+        Sun, 08 Oct 2023 02:08:40 +0000
+Date:   Sun, 8 Oct 2023 10:08:09 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Lyude Paul <lyude@redhat.com>
+Subject: drivers/gpu/drm/nouveau/nouveau_dmem.c:205:13: sparse: sparse:
+ incorrect type in assignment (different base types)
+Message-ID: <202310081010.okVQwwej-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgBH0bFZCiJl7zQbCQ--.22902S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7GFyDJF1xZrWxCw18WFyxuFg_yoWDtwbEk3
-        92yF1rWr1fJrWxXa17CF1ayr4UuryDAr17Zr1Yyr9rGF18WryDu3Z5ZFy8AryUXan8GF9x
-        Ca9Fyr9rJr1xCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbfxYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l87I20VAvwVAaII0Ic2I_JFv_Gryl82
-        xGYIkIc2x26280x7IE14v26r15M28IrcIa0xkI8VCY1x0267AKxVWUCVW8JwA2ocxC64kI
-        II0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7
-        xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2
-        z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4
-        xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v2
-        6r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwI
-        xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
-        Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7
-        IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
-        6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jTQ6JUUUUU=
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=1.8 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        MAY_BE_FORGED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change to pipe->readers is protected by pipe_lock. Only recheck
-pipe->reader after relock to avoid repeat check of pipe->readers with
-pipe lock held.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   b9ddbb0cde2adcedda26045cc58f31316a492215
+commit: d9b719394a1147614351961ac454589111c76e76 nouveau/dmem: refactor nouveau_dmem_fault_copy_one()
+date:   12 months ago
+config: x86_64-randconfig-123-20231008 (https://download.01.org/0day-ci/archive/20231008/202310081010.okVQwwej-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231008/202310081010.okVQwwej-lkp@intel.com/reproduce)
 
-Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
----
- fs/pipe.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310081010.okVQwwej-lkp@intel.com/
 
-diff --git a/fs/pipe.c b/fs/pipe.c
-index b19875720ff1..e9c63f66d1c7 100644
---- a/fs/pipe.c
-+++ b/fs/pipe.c
-@@ -479,13 +479,6 @@ pipe_write(struct kiocb *iocb, struct iov_iter *from)
- 	}
- 
- 	for (;;) {
--		if (!pipe->readers) {
--			send_sig(SIGPIPE, current, 0);
--			if (!ret)
--				ret = -EPIPE;
--			break;
--		}
--
- 		head = pipe->head;
- 		if (!pipe_full(head, pipe->tail, pipe->max_usage)) {
- 			unsigned int mask = pipe->ring_size - 1;
-@@ -573,6 +566,12 @@ pipe_write(struct kiocb *iocb, struct iov_iter *from)
- 		__pipe_lock(pipe);
- 		was_empty = pipe_empty(pipe->head, pipe->tail);
- 		wake_next_writer = true;
-+		if (!pipe->readers) {
-+			send_sig(SIGPIPE, current, 0);
-+			if (!ret)
-+				ret = -EPIPE;
-+			break;
-+		}
- 	}
- out:
- 	if (pipe_full(pipe->head, pipe->tail, pipe->max_usage))
+sparse warnings: (new ones prefixed by >>)
+>> drivers/gpu/drm/nouveau/nouveau_dmem.c:205:13: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted vm_fault_t [usertype] ret @@     got int @@
+   drivers/gpu/drm/nouveau/nouveau_dmem.c:205:13: sparse:     expected restricted vm_fault_t [usertype] ret
+   drivers/gpu/drm/nouveau/nouveau_dmem.c:205:13: sparse:     got int
+
+vim +205 drivers/gpu/drm/nouveau/nouveau_dmem.c
+
+   161	
+   162	static vm_fault_t nouveau_dmem_migrate_to_ram(struct vm_fault *vmf)
+   163	{
+   164		struct nouveau_drm *drm = page_to_drm(vmf->page);
+   165		struct nouveau_dmem *dmem = drm->dmem;
+   166		struct nouveau_fence *fence;
+   167		struct nouveau_svmm *svmm;
+   168		struct page *spage, *dpage;
+   169		unsigned long src = 0, dst = 0;
+   170		dma_addr_t dma_addr = 0;
+   171		vm_fault_t ret = 0;
+   172		struct migrate_vma args = {
+   173			.vma		= vmf->vma,
+   174			.start		= vmf->address,
+   175			.end		= vmf->address + PAGE_SIZE,
+   176			.src		= &src,
+   177			.dst		= &dst,
+   178			.pgmap_owner	= drm->dev,
+   179			.flags		= MIGRATE_VMA_SELECT_DEVICE_PRIVATE,
+   180		};
+   181	
+   182		/*
+   183		 * FIXME what we really want is to find some heuristic to migrate more
+   184		 * than just one page on CPU fault. When such fault happens it is very
+   185		 * likely that more surrounding page will CPU fault too.
+   186		 */
+   187		if (migrate_vma_setup(&args) < 0)
+   188			return VM_FAULT_SIGBUS;
+   189		if (!args.cpages)
+   190			return 0;
+   191	
+   192		spage = migrate_pfn_to_page(src);
+   193		if (!spage || !(src & MIGRATE_PFN_MIGRATE))
+   194			goto done;
+   195	
+   196		dpage = alloc_page_vma(GFP_HIGHUSER, vmf->vma, vmf->address);
+   197		if (!dpage)
+   198			goto done;
+   199	
+   200		dst = migrate_pfn(page_to_pfn(dpage));
+   201	
+   202		svmm = spage->zone_device_data;
+   203		mutex_lock(&svmm->mutex);
+   204		nouveau_svmm_invalidate(svmm, args.start, args.end);
+ > 205		ret = nouveau_dmem_copy_one(drm, spage, dpage, &dma_addr);
+   206		mutex_unlock(&svmm->mutex);
+   207		if (ret) {
+   208			ret = VM_FAULT_SIGBUS;
+   209			goto done;
+   210		}
+   211	
+   212		nouveau_fence_new(dmem->migrate.chan, false, &fence);
+   213		migrate_vma_pages(&args);
+   214		nouveau_dmem_fence_done(&fence);
+   215		dma_unmap_page(drm->dev->dev, dma_addr, PAGE_SIZE, DMA_BIDIRECTIONAL);
+   216	done:
+   217		migrate_vma_finalize(&args);
+   218		return ret;
+   219	}
+   220	
+
 -- 
-2.30.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
