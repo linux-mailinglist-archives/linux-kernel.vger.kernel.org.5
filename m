@@ -2,128 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9AC7BD0BE
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 00:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 922FA7BD0C7
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 00:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344743AbjJHWJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 18:09:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33784 "EHLO
+        id S1344769AbjJHWNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 18:13:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344437AbjJHWJW (ORCPT
+        with ESMTP id S1344437AbjJHWNJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 18:09:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7535AC
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 15:09:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696802961; x=1728338961;
-  h=date:from:to:cc:subject:message-id;
-  bh=KXA3FUaYprB7d/XLCgMSdnaYcp+wwgVJAE9lxFUsFCA=;
-  b=PD3U7fi3RyhcorZLW0P5qBTdMjbxDhmDLBvS6Ix54SvyXg6Zqi9YdQeW
-   2ilPp4CPGbgYWug4JZzKHda25t5NYKU0os1liR739ffAy2EKlgJEZg3cz
-   zarzDTpnAjUe7cJKimZeYihWAKDAW53sFJiAHcsSctxuYHK8xfz9OMED4
-   6LXPqdTNbZY0Vl98/CFnnPzDtX6aqbRI5fZ58omAPuZa/8exSVjOWeUqG
-   wkPZqXejHj7s415aHGLkfhhrzOE1xHhw2MMRtv12JL/n+A43u09byBY2n
-   V+Qxw/1al48xTT41Suitl7JEInEP4Y0BI9FWz29Rg7MDwpy2nL2j8GjW8
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="381301136"
-X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
-   d="scan'208";a="381301136"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2023 15:09:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="926569552"
-X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
-   d="scan'208";a="926569552"
-Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 08 Oct 2023 15:09:20 -0700
-Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qpbxe-0005nn-0W;
-        Sun, 08 Oct 2023 22:09:18 +0000
-Date:   Mon, 09 Oct 2023 06:08:55 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- 025d5ac978cc3b47874cc1c03ab096a78b49f278
-Message-ID: <202310090652.AlG673ro-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Sun, 8 Oct 2023 18:13:09 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A477AC
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 15:13:04 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40566f89f6eso38990145e9.3
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 15:13:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696803182; x=1697407982; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CICUqZ/o34LI6Dd5J98alxpKqSpwDiMxjvjmgrvbCcI=;
+        b=mB/Lobr0WT2ksC3gulBRb00nhMgdvcqLYvvDLOWEgasU1quN0XphYtMHn+R4hfh+C6
+         fp1wITWl4a4+LB6KnLhl51ZtoHMWzcbj3Le0E0sTvBLqR0mpuRV7QMIfb9Zd5RcfK0x5
+         Y2Y/djR07Gy/wkkexjDOeWh/aGTk0jM8rio1UiDX4mbgpsxjNz4OvXao6tNV86sif58X
+         hKUk1OghNAXGkn1JTxxWTXrsGbY7d6qAxWxBmXij4tieomlUZcp03XH8LsekAgBAE0RH
+         c0icIx30hS7eT7ORp6YU9TFEzkdQz4oZSaD6fs35v0/2tZBTJoRBgFOR7l8QzvtxLltF
+         MRIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696803182; x=1697407982;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CICUqZ/o34LI6Dd5J98alxpKqSpwDiMxjvjmgrvbCcI=;
+        b=qSAaWG2hEhzkHuRTwDDA8j2KiCQj5pFHT7nifqP0mAiGbGI1SYUyj5o6ckopjX6+dW
+         YfhB5LcFhCUD3+1Z62Xd5n75Pm+tFAAd2E0P20F1H3Ycx+g/zWNjnLtn7VpzQm4t/Tno
+         CzqtMaFjwOk6wT9gyrUB55Z27WdnakaZ54Hnaf7TOuUxRFLsc8J7j2ce9a/2szsjmjMi
+         oHj3oSeZ5W+vj+jS/Jywp/R664lBuiouGY+nIEu9NQz5PIO3ESeHFA+BhnO5wS2MKpKf
+         UyfCrkJCZEcjghLCgjLvs8ATD3UKeOH4wM59kotkGrxpTe3rKNUIWo0qX36m/X7BmcXF
+         CMvA==
+X-Gm-Message-State: AOJu0YxPYk7hJlchGZtY4aSOtVPcB0bG+Vu3qW4Y/kWJbhlrF/wKwYPg
+        gmuYq+UheY211NRIadFICZssjZRJcM/YpQLSMys74w==
+X-Google-Smtp-Source: AGHT+IH9nHU1yaXAIFSlou3H22HrTz0smjAh3KcRu/MarUz/GBrfNBZQ0J2QRhj8DFvh/BjQAsCihg==
+X-Received: by 2002:a1c:7414:0:b0:405:82c0:d9f3 with SMTP id p20-20020a1c7414000000b0040582c0d9f3mr12645537wmc.30.1696803182516;
+        Sun, 08 Oct 2023 15:13:02 -0700 (PDT)
+Received: from [192.168.100.102] ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id p5-20020a1c7405000000b004064e3b94afsm11747593wmc.4.2023.10.08.15.13.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 08 Oct 2023 15:13:02 -0700 (PDT)
+Message-ID: <4fdfd283-234b-4c14-8db1-3feaf1fa8618@linaro.org>
+Date:   Sun, 8 Oct 2023 23:13:01 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/5] i2c: qcom-cci: Add sc8280xp compatible
+Content-Language: en-US
+To:     Andi Shyti <andi.shyti@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     agross@kernel.org, andersson@kernel.org, loic.poulain@linaro.org,
+        rfoss@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        todor.too@gmail.com, mchehab@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231006120159.3413789-1-bryan.odonoghue@linaro.org>
+ <20231006120159.3413789-3-bryan.odonoghue@linaro.org>
+ <b8f2d7f1-16e2-4e6a-9c84-37da393f74a3@linaro.org>
+ <20231008212824.cs6e6hc7zur67v6k@zenone.zhora.eu>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20231008212824.cs6e6hc7zur67v6k@zenone.zhora.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
-branch HEAD: 025d5ac978cc3b47874cc1c03ab096a78b49f278  x86/resctrl: Fix kernel-doc warnings
+On 08/10/2023 22:28, Andi Shyti wrote:
+> Hi Konrad,
+> 
+>>> Add sc8280xp compatible with cci_v2_data parameters.
+>>>
+>>> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+>>> ---
+>> Drop this patch, it adds nothing useful
+> 
+> what about the rest of the series?
+> 
+> Could you please be a bit more explicative?
+> 
+> Thanks,
+> Andi
 
-elapsed time: 729m
+I think he means I can use the sm8250 or sm8450 compat string, which is 
+true.
 
-configs tested: 52
-configs skipped: 110
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231008   gcc  
-i386         buildonly-randconfig-002-20231008   gcc  
-i386         buildonly-randconfig-003-20231008   gcc  
-i386         buildonly-randconfig-004-20231008   gcc  
-i386         buildonly-randconfig-005-20231008   gcc  
-i386         buildonly-randconfig-006-20231008   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231008   gcc  
-i386                  randconfig-002-20231008   gcc  
-i386                  randconfig-003-20231008   gcc  
-i386                  randconfig-004-20231008   gcc  
-i386                  randconfig-005-20231008   gcc  
-i386                  randconfig-006-20231008   gcc  
-i386                  randconfig-011-20231008   gcc  
-i386                  randconfig-012-20231008   gcc  
-i386                  randconfig-013-20231008   gcc  
-i386                  randconfig-014-20231008   gcc  
-i386                  randconfig-015-20231008   gcc  
-i386                  randconfig-016-20231008   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231008   gcc  
-x86_64       buildonly-randconfig-002-20231008   gcc  
-x86_64       buildonly-randconfig-003-20231008   gcc  
-x86_64       buildonly-randconfig-004-20231008   gcc  
-x86_64       buildonly-randconfig-005-20231008   gcc  
-x86_64       buildonly-randconfig-006-20231008   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231008   gcc  
-x86_64                randconfig-002-20231008   gcc  
-x86_64                randconfig-003-20231008   gcc  
-x86_64                randconfig-004-20231008   gcc  
-x86_64                randconfig-005-20231008   gcc  
-x86_64                randconfig-006-20231008   gcc  
-x86_64                randconfig-011-20231008   gcc  
-x86_64                randconfig-012-20231008   gcc  
-x86_64                randconfig-013-20231008   gcc  
-x86_64                randconfig-014-20231008   gcc  
-x86_64                randconfig-015-20231008   gcc  
-x86_64                randconfig-016-20231008   gcc  
-x86_64                randconfig-071-20231008   gcc  
-x86_64                randconfig-072-20231008   gcc  
-x86_64                randconfig-073-20231008   gcc  
-x86_64                randconfig-074-20231008   gcc  
-x86_64                randconfig-075-20231008   gcc  
-x86_64                randconfig-076-20231008   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+---
+bod
