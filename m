@@ -2,71 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 251637BD04F
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 23:32:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59DAA7BD052
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 23:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344570AbjJHVcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 17:32:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54324 "EHLO
+        id S1344644AbjJHVdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 17:33:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbjJHVcW (ORCPT
+        with ESMTP id S229706AbjJHVdY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 17:32:22 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21AA89D
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 14:32:19 -0700 (PDT)
-Received: from [192.168.2.166] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id B8BDB6607095;
-        Sun,  8 Oct 2023 22:32:14 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696800736;
-        bh=XUtLmucQmSmbTeOzlijxRbhLNkEky+Jw98wNMb8b+Kc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=jSl976mlAr4sN985I9ZG4oY1UqjTKcMGlAaA3bEvzUvcT1Pt21wfVmh3x0toX9Lo4
-         XOkm5OvIAKAq8mJoiGzBqpkbb2Z8Or6lfmiBRcsPSEFzXJfOASv6QLGI3gN3zsDgdF
-         OhzibDAkUNwvWhPQFiZIfX8MwY5Rw1B2yn6rW/13C9OUYbYytdHgNzUhWYqgbWAsR6
-         R8t8/gcTF1iFAWhS0Ae9WBaWMU7/O50h5c2nJfn1G1bsXkxE0tohcOUucVgslwxpkr
-         Q4+PVq8GVvCUAwelNT47w/cnv7F4Y/eULUSCgB3at+KCetvR/kLx/4sB/USqtH2AED
-         v9hIFQjJl6rmA==
-Message-ID: <938d1363-849b-0d7d-0ca3-03d6162fe0cd@collabora.com>
-Date:   Mon, 9 Oct 2023 00:32:11 +0300
+        Sun, 8 Oct 2023 17:33:24 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC7D69D;
+        Sun,  8 Oct 2023 14:33:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696800803; x=1728336803;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=QjUYd7D8jxKwhfKDBMGlUwHrcS+k4UsbgJEgqAWVww8=;
+  b=P2bHOeHixqQultUazxx9JCgR+5Kcz0QAWqZXWXB2RdpmzU3yqlcvDZz0
+   8G8EvLsoZVac/Mx9KLYTQxm0UZH++fZWa5Tu4wQvBEE+LKDKH7gMXLiEb
+   I20cK5M7ittyHlGJ1nAl/JqIYaIdenJZFCA3nXPOotl0hf0hKJtMKe/2H
+   NwsoATemZXqxLySiW0leo7kP+8TO+WdG6SF3CYUuX0cACBOt8aX+HNj9x
+   571+fJDt07dmnaNzFqMKrv2OhIYN0cmtcB2Y8oDr2TIuTH4KHCtc+rMIA
+   iKNWspPX6IMCgG+6Z0VcxfML9t2UetnIuRZlMyf14+34k0eaRpbCBcR1x
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="5580185"
+X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
+   d="scan'208";a="5580185"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2023 14:33:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="787968390"
+X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
+   d="scan'208";a="787968390"
+Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 08 Oct 2023 14:33:17 -0700
+Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qpbOl-0005mD-1l;
+        Sun, 08 Oct 2023 21:33:15 +0000
+Date:   Mon, 9 Oct 2023 05:32:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tianyi Liu <i.pear@outlook.com>, seanjc@google.com,
+        pbonzini@redhat.com, peterz@infradead.org, mingo@redhat.com,
+        acme@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        kvm@vger.kernel.org, x86@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
+        Tianyi Liu <i.pear@outlook.com>
+Subject: Re: [PATCH v2 1/5] KVM: Add arch specific interfaces for sampling
+ guest callchains
+Message-ID: <202310090559.wzrojQni-lkp@intel.com>
+References: <SY4P282MB10840154D4F09917D6528BC69DCFA@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v17 13/18] drm/shmem-helper: Add memory shrinker
-Content-Language: en-US
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-References: <20230914232721.408581-1-dmitry.osipenko@collabora.com>
- <20230914232721.408581-14-dmitry.osipenko@collabora.com>
- <20230915104633.0d5c3932@collabora.com>
- <454c464e-4534-7ec3-6d38-49b7df83c7be@collabora.com>
- <20230926093517.11a172ad@collabora.com>
- <bbbd82a5-41bf-4ca3-476d-e5039e94631b@collabora.com>
- <20231003110055.346fd94c@collabora.com>
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <20231003110055.346fd94c@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SY4P282MB10840154D4F09917D6528BC69DCFA@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,31 +73,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/3/23 12:00, Boris Brezillon wrote:
->> I'd prefer to keep refcounting as is, don't see how to implement your
->> suggestion.
-> Can you be more specific? I don't really see what the problem is with
-> decrementing pages_use_count when you free the sgt (eviction), and
-> re-incrementing it when the sgt is restored (swapin).
+Hi Tianyi,
 
-For the reference, we further discussed this question about refcounting
-with Boris offline and found how to implement the refcnt drop done by
-shrinker's evict/purge.
+kernel test robot noticed the following build warnings:
 
-For evict/purge we can do:
+[auto build test WARNING on 8a749fd1a8720d4619c91c8b6e7528c0a355c0aa]
 
-    if (!refcount_dec_not_one(&shmem->pages_use_count))
-        refcount_set(&shmem->pages_use_count, 0);
+url:    https://github.com/intel-lab-lkp/linux/commits/Tianyi-Liu/KVM-Add-arch-specific-interfaces-for-sampling-guest-callchains/20231008-230042
+base:   8a749fd1a8720d4619c91c8b6e7528c0a355c0aa
+patch link:    https://lore.kernel.org/r/SY4P282MB10840154D4F09917D6528BC69DCFA%40SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
+patch subject: [PATCH v2 1/5] KVM: Add arch specific interfaces for sampling guest callchains
+config: x86_64-defconfig (https://download.01.org/0day-ci/archive/20231009/202310090559.wzrojQni-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231009/202310090559.wzrojQni-lkp@intel.com/reproduce)
 
-and then for swapin:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310090559.wzrojQni-lkp@intel.com/
 
-    if (!refcount_inc_not_zero(&shmem->pages_use_count))
-        refcount_set(&shmem->pages_use_count, 1);
+All warnings (new ones prefixed by >>):
 
-This resolves the issue with dropping refcnt to zero I was talking
-about, allowing to delegate sgt's refcnt ownership to shrinker.
+   arch/x86/kvm/x86.c: In function 'kvm_arch_vcpu_read_virt':
+>> arch/x86/kvm/x86.c:12917:42: warning: passing argument 2 of 'kvm_read_guest_virt' makes integer from pointer without a cast [-Wint-conversion]
+   12917 |         return kvm_read_guest_virt(vcpu, addr, dest, length, &e) == X86EMUL_CONTINUE;
+         |                                          ^~~~
+         |                                          |
+         |                                          void *
+   arch/x86/kvm/x86.c:7388:38: note: expected 'gva_t' {aka 'long unsigned int'} but argument is of type 'void *'
+    7388 |                                gva_t addr, void *val, unsigned int bytes,
+         |                                ~~~~~~^~~~
+
+
+vim +/kvm_read_guest_virt +12917 arch/x86/kvm/x86.c
+
+ 12911	
+ 12912	bool kvm_arch_vcpu_read_virt(struct kvm_vcpu *vcpu, void *addr, void *dest, unsigned int length)
+ 12913	{
+ 12914		struct x86_exception e;
+ 12915	
+ 12916		/* Return true on success */
+ 12917		return kvm_read_guest_virt(vcpu, addr, dest, length, &e) == X86EMUL_CONTINUE;
+ 12918	}
+ 12919	
 
 -- 
-Best regards,
-Dmitry
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
