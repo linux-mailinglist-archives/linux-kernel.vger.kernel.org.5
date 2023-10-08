@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A03597BCACD
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 02:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2C57BCACF
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 02:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234314AbjJHAtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 20:49:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44558 "EHLO
+        id S234262AbjJHAtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 20:49:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234281AbjJHAtj (ORCPT
+        with ESMTP id S233795AbjJHAtm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 20:49:39 -0400
+        Sat, 7 Oct 2023 20:49:42 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F7FDE;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACDA8137;
         Sat,  7 Oct 2023 17:49:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA686C433C8;
-        Sun,  8 Oct 2023 00:49:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED300C433CC;
+        Sun,  8 Oct 2023 00:49:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696726156;
-        bh=6T6y6g6MkK/g9bZbH6IhH9VsKsMjUid8G0Jp284vhVg=;
+        s=k20201202; t=1696726158;
+        bh=NCKzeikpXlCwrEjGU+bArViVhPuqsORKdK3xuq6sQwc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nlpH4GC+Kf9jvzcLAh4gkCCrERny/MykrFM96Gmw0zdojbKkjGZ34Isfyswva2IUc
-         6APUXeBE/T0PU4nfu6to/B2Zeh6K8o2K+cXopaq+B3AcUpw9/Cki1dSgqOMRAV7LhG
-         3X1ALVuuohJ0Jk1BL9+eY5jIdpdN4jNoJxk2M/h48h4D5lTG1aCeBMhuY6+PlZDej1
-         Mad/2R6IKqERYgaKdSGsn9WPxjw5YZzW7jdkfIN43K8Y58S1M23ylPHOZ/VeL2/weN
-         E3eslLfnWRsLXLSc6zmC86i3FWG6MpIcR94ydGZpzHhn3V+3y1Bl5ikdaSUbQhd3VH
-         LSGLr7TL7vaxQ==
+        b=Hzv5J2jDeDG4nXh4BnJAYqh47E+ONqPpi8aLeF9l3wGHu44H9E0u+dbuRyswCeoSu
+         gSFSoXr2ElfXSqCtXpnd5eRlm8ZYuO/vnYjxEln0ZhT612szzgOyh9/QeQWkoAKC8z
+         TW1xNlRIXZV8PO1UspQnAWJEAtCs7tCDGjFLwplyIgTZL8vOPsYEtvG2VmWVJKZs6b
+         kCAoeLoGdMSWXZEQAp9iceIcqOMwGFG6C7G4Mf6snfo9l2WJRghUHYcvmjrjz0cNzQ
+         QZW5foJ52/TLZTuUmZGq2JAhBOqa6ZsdQgHjia7rihUqsz4hW4C09o2nOWidsup4Oa
+         Go6cc09eTx6qw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Ilya Dryomov <idryomov@gmail.com>,
         Dongsheng Yang <dongsheng.yang@easystack.cn>,
         Sasha Levin <sashal@kernel.org>, axboe@kernel.dk,
         ceph-devel@vger.kernel.org, linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 12/18] rbd: decouple header read-in from updating rbd_dev->header
-Date:   Sat,  7 Oct 2023 20:48:46 -0400
-Message-Id: <20231008004853.3767621-12-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.5 13/18] rbd: decouple parent info read-in from updating rbd_dev
+Date:   Sat,  7 Oct 2023 20:48:47 -0400
+Message-Id: <20231008004853.3767621-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231008004853.3767621-1-sashal@kernel.org>
 References: <20231008004853.3767621-1-sashal@kernel.org>
@@ -56,448 +56,269 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ilya Dryomov <idryomov@gmail.com>
 
-[ Upstream commit 510a7330c82a7754d5df0117a8589e8a539067c7 ]
+[ Upstream commit c10311776f0a8ddea2276df96e255625b07045a8 ]
 
-Make rbd_dev_header_info() populate a passed struct rbd_image_header
-instead of rbd_dev->header and introduce rbd_dev_update_header() for
-updating mutable fields in rbd_dev->header upon refresh.  The initial
-read-in of both mutable and immutable fields in rbd_dev_image_probe()
-passes in rbd_dev->header so no update step is required there.
+Unlike header read-in, parent info read-in is already decoupled in
+get_parent_info(), but it's buried in rbd_dev_v2_parent_info() along
+with the processing logic.
 
-rbd_init_layout() is now called directly from rbd_dev_image_probe()
-instead of individually in format 1 and format 2 implementations.
+Separate the initial read-in and update read-in logic into
+rbd_dev_setup_parent() and rbd_dev_update_parent() respectively and
+have rbd_dev_v2_parent_info() just populate struct parent_image_info
+(i.e. what get_parent_info() did).  Some existing QoI issues, like
+flatten of a standalone clone being disregarded on refresh, remain.
 
 Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Reviewed-by: Dongsheng Yang <dongsheng.yang@easystack.cn>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/rbd.c | 206 ++++++++++++++++++++++++--------------------
- 1 file changed, 114 insertions(+), 92 deletions(-)
+ drivers/block/rbd.c | 142 +++++++++++++++++++++++++-------------------
+ 1 file changed, 80 insertions(+), 62 deletions(-)
 
 diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
-index 91e9c709b8716..90a78176dbc89 100644
+index 90a78176dbc89..4e381ba158dce 100644
 --- a/drivers/block/rbd.c
 +++ b/drivers/block/rbd.c
-@@ -632,7 +632,8 @@ void rbd_warn(struct rbd_device *rbd_dev, const char *fmt, ...)
- static void rbd_dev_remove_parent(struct rbd_device *rbd_dev);
+@@ -5594,6 +5594,14 @@ struct parent_image_info {
+ 	u64		overlap;
+ };
  
- static int rbd_dev_refresh(struct rbd_device *rbd_dev);
--static int rbd_dev_v2_header_onetime(struct rbd_device *rbd_dev);
-+static int rbd_dev_v2_header_onetime(struct rbd_device *rbd_dev,
-+				     struct rbd_image_header *header);
- static const char *rbd_dev_v2_snap_name(struct rbd_device *rbd_dev,
- 					u64 snap_id);
- static int _rbd_dev_v2_snap_size(struct rbd_device *rbd_dev, u64 snap_id,
-@@ -993,15 +994,24 @@ static void rbd_init_layout(struct rbd_device *rbd_dev)
- 	RCU_INIT_POINTER(rbd_dev->layout.pool_ns, NULL);
- }
- 
-+static void rbd_image_header_cleanup(struct rbd_image_header *header)
++static void rbd_parent_info_cleanup(struct parent_image_info *pii)
 +{
-+	kfree(header->object_prefix);
-+	ceph_put_snap_context(header->snapc);
-+	kfree(header->snap_sizes);
-+	kfree(header->snap_names);
++	kfree(pii->pool_ns);
++	kfree(pii->image_id);
 +
-+	memset(header, 0, sizeof(*header));
++	memset(pii, 0, sizeof(*pii));
 +}
 +
  /*
-  * Fill an rbd image header with information from the given format 1
-  * on-disk header.
+  * The caller is responsible for @pii.
   */
--static int rbd_header_from_disk(struct rbd_device *rbd_dev,
--				 struct rbd_image_header_ondisk *ondisk)
-+static int rbd_header_from_disk(struct rbd_image_header *header,
-+				struct rbd_image_header_ondisk *ondisk,
-+				bool first_time)
- {
--	struct rbd_image_header *header = &rbd_dev->header;
--	bool first_time = header->object_prefix == NULL;
- 	struct ceph_snap_context *snapc;
- 	char *object_prefix = NULL;
- 	char *snap_names = NULL;
-@@ -1068,11 +1078,6 @@ static int rbd_header_from_disk(struct rbd_device *rbd_dev,
- 	if (first_time) {
- 		header->object_prefix = object_prefix;
- 		header->obj_order = ondisk->options.order;
--		rbd_init_layout(rbd_dev);
--	} else {
--		ceph_put_snap_context(header->snapc);
--		kfree(header->snap_names);
--		kfree(header->snap_sizes);
- 	}
+@@ -5663,6 +5671,9 @@ static int __get_parent_info(struct rbd_device *rbd_dev,
+ 	if (pii->has_overlap)
+ 		ceph_decode_64_safe(&p, end, pii->overlap, e_inval);
  
- 	/* The remaining fields always get updated (when we refresh) */
-@@ -4857,7 +4862,9 @@ static int rbd_obj_read_sync(struct rbd_device *rbd_dev,
-  * return, the rbd_dev->header field will contain up-to-date
-  * information about the image.
-  */
--static int rbd_dev_v1_header_info(struct rbd_device *rbd_dev)
-+static int rbd_dev_v1_header_info(struct rbd_device *rbd_dev,
-+				  struct rbd_image_header *header,
-+				  bool first_time)
- {
- 	struct rbd_image_header_ondisk *ondisk = NULL;
- 	u32 snap_count = 0;
-@@ -4905,7 +4912,7 @@ static int rbd_dev_v1_header_info(struct rbd_device *rbd_dev)
- 		snap_count = le32_to_cpu(ondisk->snap_count);
- 	} while (snap_count != want_count);
- 
--	ret = rbd_header_from_disk(rbd_dev, ondisk);
-+	ret = rbd_header_from_disk(header, ondisk, first_time);
- out:
- 	kfree(ondisk);
- 
-@@ -5468,17 +5475,12 @@ static int _rbd_dev_v2_snap_size(struct rbd_device *rbd_dev, u64 snap_id,
++	dout("%s pool_id %llu pool_ns %s image_id %s snap_id %llu has_overlap %d overlap %llu\n",
++	     __func__, pii->pool_id, pii->pool_ns, pii->image_id, pii->snap_id,
++	     pii->has_overlap, pii->overlap);
  	return 0;
+ 
+ e_inval:
+@@ -5701,14 +5712,17 @@ static int __get_parent_info_legacy(struct rbd_device *rbd_dev,
+ 	pii->has_overlap = true;
+ 	ceph_decode_64_safe(&p, end, pii->overlap, e_inval);
+ 
++	dout("%s pool_id %llu pool_ns %s image_id %s snap_id %llu has_overlap %d overlap %llu\n",
++	     __func__, pii->pool_id, pii->pool_ns, pii->image_id, pii->snap_id,
++	     pii->has_overlap, pii->overlap);
+ 	return 0;
+ 
+ e_inval:
+ 	return -EINVAL;
  }
  
--static int rbd_dev_v2_image_size(struct rbd_device *rbd_dev)
--{
--	return _rbd_dev_v2_snap_size(rbd_dev, CEPH_NOSNAP,
--					&rbd_dev->header.obj_order,
--					&rbd_dev->header.image_size);
--}
--
--static int rbd_dev_v2_object_prefix(struct rbd_device *rbd_dev)
-+static int rbd_dev_v2_object_prefix(struct rbd_device *rbd_dev,
-+				    char **pobject_prefix)
+-static int get_parent_info(struct rbd_device *rbd_dev,
+-			   struct parent_image_info *pii)
++static int rbd_dev_v2_parent_info(struct rbd_device *rbd_dev,
++				  struct parent_image_info *pii)
  {
- 	size_t size;
- 	void *reply_buf;
-+	char *object_prefix;
- 	int ret;
+ 	struct page *req_page, *reply_page;
  	void *p;
- 
-@@ -5496,16 +5498,16 @@ static int rbd_dev_v2_object_prefix(struct rbd_device *rbd_dev)
- 		goto out;
- 
- 	p = reply_buf;
--	rbd_dev->header.object_prefix = ceph_extract_encoded_string(&p,
--						p + ret, NULL, GFP_NOIO);
-+	object_prefix = ceph_extract_encoded_string(&p, p + ret, NULL,
-+						    GFP_NOIO);
-+	if (IS_ERR(object_prefix)) {
-+		ret = PTR_ERR(object_prefix);
-+		goto out;
-+	}
- 	ret = 0;
- 
--	if (IS_ERR(rbd_dev->header.object_prefix)) {
--		ret = PTR_ERR(rbd_dev->header.object_prefix);
--		rbd_dev->header.object_prefix = NULL;
--	} else {
--		dout("  object_prefix = %s\n", rbd_dev->header.object_prefix);
--	}
-+	*pobject_prefix = object_prefix;
-+	dout("  object_prefix = %s\n", object_prefix);
- out:
- 	kfree(reply_buf);
- 
-@@ -5556,13 +5558,6 @@ static int _rbd_dev_v2_snap_features(struct rbd_device *rbd_dev, u64 snap_id,
- 	return 0;
- }
- 
--static int rbd_dev_v2_features(struct rbd_device *rbd_dev)
--{
--	return _rbd_dev_v2_snap_features(rbd_dev, CEPH_NOSNAP,
--					 rbd_is_ro(rbd_dev),
--					 &rbd_dev->header.features);
--}
--
- /*
-  * These are generic image flags, but since they are used only for
-  * object map, store them in rbd_dev->object_map_flags.
-@@ -5837,14 +5832,14 @@ static int rbd_dev_v2_parent_info(struct rbd_device *rbd_dev)
+@@ -5736,7 +5750,7 @@ static int get_parent_info(struct rbd_device *rbd_dev,
  	return ret;
  }
  
--static int rbd_dev_v2_striping_info(struct rbd_device *rbd_dev)
-+static int rbd_dev_v2_striping_info(struct rbd_device *rbd_dev,
-+				    u64 *stripe_unit, u64 *stripe_count)
+-static int rbd_dev_v2_parent_info(struct rbd_device *rbd_dev)
++static int rbd_dev_setup_parent(struct rbd_device *rbd_dev)
  {
- 	struct {
- 		__le64 stripe_unit;
- 		__le64 stripe_count;
- 	} __attribute__ ((packed)) striping_info_buf = { 0 };
- 	size_t size = sizeof (striping_info_buf);
--	void *p;
- 	int ret;
+ 	struct rbd_spec *parent_spec;
+ 	struct parent_image_info pii = { 0 };
+@@ -5746,37 +5760,12 @@ static int rbd_dev_v2_parent_info(struct rbd_device *rbd_dev)
+ 	if (!parent_spec)
+ 		return -ENOMEM;
  
- 	ret = rbd_obj_method_sync(rbd_dev, &rbd_dev->header_oid,
-@@ -5856,27 +5851,33 @@ static int rbd_dev_v2_striping_info(struct rbd_device *rbd_dev)
- 	if (ret < size)
- 		return -ERANGE;
- 
--	p = &striping_info_buf;
--	rbd_dev->header.stripe_unit = ceph_decode_64(&p);
--	rbd_dev->header.stripe_count = ceph_decode_64(&p);
-+	*stripe_unit = le64_to_cpu(striping_info_buf.stripe_unit);
-+	*stripe_count = le64_to_cpu(striping_info_buf.stripe_count);
-+	dout("  stripe_unit = %llu stripe_count = %llu\n", *stripe_unit,
-+	     *stripe_count);
-+
- 	return 0;
- }
- 
--static int rbd_dev_v2_data_pool(struct rbd_device *rbd_dev)
-+static int rbd_dev_v2_data_pool(struct rbd_device *rbd_dev, s64 *data_pool_id)
- {
--	__le64 data_pool_id;
-+	__le64 data_pool_buf;
- 	int ret;
- 
- 	ret = rbd_obj_method_sync(rbd_dev, &rbd_dev->header_oid,
- 				  &rbd_dev->header_oloc, "get_data_pool",
--				  NULL, 0, &data_pool_id, sizeof(data_pool_id));
-+				  NULL, 0, &data_pool_buf,
-+				  sizeof(data_pool_buf));
-+	dout("%s: rbd_obj_method_sync returned %d\n", __func__, ret);
- 	if (ret < 0)
- 		return ret;
--	if (ret < sizeof(data_pool_id))
-+	if (ret < sizeof(data_pool_buf))
- 		return -EBADMSG;
- 
--	rbd_dev->header.data_pool_id = le64_to_cpu(data_pool_id);
--	WARN_ON(rbd_dev->header.data_pool_id == CEPH_NOPOOL);
-+	*data_pool_id = le64_to_cpu(data_pool_buf);
-+	dout("  data_pool_id = %lld\n", *data_pool_id);
-+	WARN_ON(*data_pool_id == CEPH_NOPOOL);
-+
- 	return 0;
- }
- 
-@@ -6068,7 +6069,8 @@ static int rbd_spec_fill_names(struct rbd_device *rbd_dev)
- 	return ret;
- }
- 
--static int rbd_dev_v2_snap_context(struct rbd_device *rbd_dev)
-+static int rbd_dev_v2_snap_context(struct rbd_device *rbd_dev,
-+				   struct ceph_snap_context **psnapc)
- {
- 	size_t size;
- 	int ret;
-@@ -6129,9 +6131,7 @@ static int rbd_dev_v2_snap_context(struct rbd_device *rbd_dev)
- 	for (i = 0; i < snap_count; i++)
- 		snapc->snaps[i] = ceph_decode_64(&p);
- 
--	ceph_put_snap_context(rbd_dev->header.snapc);
--	rbd_dev->header.snapc = snapc;
--
-+	*psnapc = snapc;
- 	dout("  snap context seq = %llu, snap_count = %u\n",
- 		(unsigned long long)seq, (unsigned int)snap_count);
- out:
-@@ -6180,38 +6180,42 @@ static const char *rbd_dev_v2_snap_name(struct rbd_device *rbd_dev,
- 	return snap_name;
- }
- 
--static int rbd_dev_v2_header_info(struct rbd_device *rbd_dev)
-+static int rbd_dev_v2_header_info(struct rbd_device *rbd_dev,
-+				  struct rbd_image_header *header,
-+				  bool first_time)
- {
--	bool first_time = rbd_dev->header.object_prefix == NULL;
- 	int ret;
- 
--	ret = rbd_dev_v2_image_size(rbd_dev);
-+	ret = _rbd_dev_v2_snap_size(rbd_dev, CEPH_NOSNAP,
-+				    first_time ? &header->obj_order : NULL,
-+				    &header->image_size);
+-	ret = get_parent_info(rbd_dev, &pii);
++	ret = rbd_dev_v2_parent_info(rbd_dev, &pii);
  	if (ret)
- 		return ret;
+ 		goto out_err;
  
- 	if (first_time) {
--		ret = rbd_dev_v2_header_onetime(rbd_dev);
-+		ret = rbd_dev_v2_header_onetime(rbd_dev, header);
- 		if (ret)
- 			return ret;
+-	dout("%s pool_id %llu pool_ns %s image_id %s snap_id %llu has_overlap %d overlap %llu\n",
+-	     __func__, pii.pool_id, pii.pool_ns, pii.image_id, pii.snap_id,
+-	     pii.has_overlap, pii.overlap);
+-
+-	if (pii.pool_id == CEPH_NOPOOL || !pii.has_overlap) {
+-		/*
+-		 * Either the parent never existed, or we have
+-		 * record of it but the image got flattened so it no
+-		 * longer has a parent.  When the parent of a
+-		 * layered image disappears we immediately set the
+-		 * overlap to 0.  The effect of this is that all new
+-		 * requests will be treated as if the image had no
+-		 * parent.
+-		 *
+-		 * If !pii.has_overlap, the parent image spec is not
+-		 * applicable.  It's there to avoid duplication in each
+-		 * snapshot record.
+-		 */
+-		if (rbd_dev->parent_overlap) {
+-			rbd_dev->parent_overlap = 0;
+-			rbd_dev_parent_put(rbd_dev);
+-			pr_info("%s: clone image has been flattened\n",
+-				rbd_dev->disk->disk_name);
+-		}
+-
++	if (pii.pool_id == CEPH_NOPOOL || !pii.has_overlap)
+ 		goto out;	/* No parent?  No problem. */
+-	}
+ 
+ 	/* The ceph file layout needs to fit pool id in 32 bits */
+ 
+@@ -5788,46 +5777,34 @@ static int rbd_dev_v2_parent_info(struct rbd_device *rbd_dev)
  	}
  
--	ret = rbd_dev_v2_snap_context(rbd_dev);
--	if (ret && first_time) {
--		kfree(rbd_dev->header.object_prefix);
--		rbd_dev->header.object_prefix = NULL;
--	}
-+	ret = rbd_dev_v2_snap_context(rbd_dev, &header->snapc);
-+	if (ret)
-+		return ret;
- 
--	return ret;
-+	return 0;
- }
- 
--static int rbd_dev_header_info(struct rbd_device *rbd_dev)
-+static int rbd_dev_header_info(struct rbd_device *rbd_dev,
-+			       struct rbd_image_header *header,
-+			       bool first_time)
- {
- 	rbd_assert(rbd_image_format_valid(rbd_dev->image_format));
-+	rbd_assert(!header->object_prefix && !header->snapc);
- 
- 	if (rbd_dev->image_format == 1)
--		return rbd_dev_v1_header_info(rbd_dev);
-+		return rbd_dev_v1_header_info(rbd_dev, header, first_time);
- 
--	return rbd_dev_v2_header_info(rbd_dev);
-+	return rbd_dev_v2_header_info(rbd_dev, header, first_time);
- }
- 
- /*
-@@ -6699,60 +6703,49 @@ static int rbd_dev_image_id(struct rbd_device *rbd_dev)
-  */
- static void rbd_dev_unprobe(struct rbd_device *rbd_dev)
- {
--	struct rbd_image_header	*header;
--
- 	rbd_dev_parent_put(rbd_dev);
- 	rbd_object_map_free(rbd_dev);
- 	rbd_dev_mapping_clear(rbd_dev);
- 
- 	/* Free dynamic fields from the header, then zero it out */
- 
--	header = &rbd_dev->header;
--	ceph_put_snap_context(header->snapc);
--	kfree(header->snap_sizes);
--	kfree(header->snap_names);
--	kfree(header->object_prefix);
--	memset(header, 0, sizeof (*header));
-+	rbd_image_header_cleanup(&rbd_dev->header);
- }
- 
--static int rbd_dev_v2_header_onetime(struct rbd_device *rbd_dev)
-+static int rbd_dev_v2_header_onetime(struct rbd_device *rbd_dev,
-+				     struct rbd_image_header *header)
- {
- 	int ret;
- 
--	ret = rbd_dev_v2_object_prefix(rbd_dev);
-+	ret = rbd_dev_v2_object_prefix(rbd_dev, &header->object_prefix);
- 	if (ret)
--		goto out_err;
-+		return ret;
- 
  	/*
- 	 * Get the and check features for the image.  Currently the
- 	 * features are assumed to never change.
+-	 * The parent won't change (except when the clone is
+-	 * flattened, already handled that).  So we only need to
+-	 * record the parent spec we have not already done so.
++	 * The parent won't change except when the clone is flattened,
++	 * so we only need to record the parent image spec once.
  	 */
--	ret = rbd_dev_v2_features(rbd_dev);
-+	ret = _rbd_dev_v2_snap_features(rbd_dev, CEPH_NOSNAP,
-+					rbd_is_ro(rbd_dev), &header->features);
- 	if (ret)
--		goto out_err;
-+		return ret;
- 
- 	/* If the image supports fancy striping, get its parameters */
- 
--	if (rbd_dev->header.features & RBD_FEATURE_STRIPINGV2) {
--		ret = rbd_dev_v2_striping_info(rbd_dev);
--		if (ret < 0)
--			goto out_err;
-+	if (header->features & RBD_FEATURE_STRIPINGV2) {
-+		ret = rbd_dev_v2_striping_info(rbd_dev, &header->stripe_unit,
-+					       &header->stripe_count);
-+		if (ret)
-+			return ret;
- 	}
- 
--	if (rbd_dev->header.features & RBD_FEATURE_DATA_POOL) {
--		ret = rbd_dev_v2_data_pool(rbd_dev);
-+	if (header->features & RBD_FEATURE_DATA_POOL) {
-+		ret = rbd_dev_v2_data_pool(rbd_dev, &header->data_pool_id);
- 		if (ret)
--			goto out_err;
-+			return ret;
- 	}
- 
--	rbd_init_layout(rbd_dev);
- 	return 0;
+-	if (!rbd_dev->parent_spec) {
+-		parent_spec->pool_id = pii.pool_id;
+-		if (pii.pool_ns && *pii.pool_ns) {
+-			parent_spec->pool_ns = pii.pool_ns;
+-			pii.pool_ns = NULL;
+-		}
+-		parent_spec->image_id = pii.image_id;
+-		pii.image_id = NULL;
+-		parent_spec->snap_id = pii.snap_id;
 -
--out_err:
--	rbd_dev->header.features = 0;
--	kfree(rbd_dev->header.object_prefix);
--	rbd_dev->header.object_prefix = NULL;
--	return ret;
- }
- 
- /*
-@@ -6947,13 +6940,15 @@ static int rbd_dev_image_probe(struct rbd_device *rbd_dev, int depth)
- 	if (!depth)
- 		down_write(&rbd_dev->header_rwsem);
- 
--	ret = rbd_dev_header_info(rbd_dev);
-+	ret = rbd_dev_header_info(rbd_dev, &rbd_dev->header, true);
- 	if (ret) {
- 		if (ret == -ENOENT && !need_watch)
- 			rbd_print_dne(rbd_dev, false);
- 		goto err_out_probe;
+-		rbd_dev->parent_spec = parent_spec;
+-		parent_spec = NULL;	/* rbd_dev now owns this */
++	parent_spec->pool_id = pii.pool_id;
++	if (pii.pool_ns && *pii.pool_ns) {
++		parent_spec->pool_ns = pii.pool_ns;
++		pii.pool_ns = NULL;
  	}
- 
-+	rbd_init_layout(rbd_dev);
++	parent_spec->image_id = pii.image_id;
++	pii.image_id = NULL;
++	parent_spec->snap_id = pii.snap_id;
 +
++	rbd_assert(!rbd_dev->parent_spec);
++	rbd_dev->parent_spec = parent_spec;
++	parent_spec = NULL;	/* rbd_dev now owns this */
+ 
  	/*
- 	 * If this image is the one being mapped, we have pool name and
- 	 * id, image name and id, and snap name - need to fill snap id.
-@@ -7008,15 +7003,39 @@ static int rbd_dev_image_probe(struct rbd_device *rbd_dev, int depth)
+-	 * We always update the parent overlap.  If it's zero we issue
+-	 * a warning, as we will proceed as if there was no parent.
++	 * Record the parent overlap.  If it's zero, issue a warning as
++	 * we will proceed as if there is no parent.
+ 	 */
+-	if (!pii.overlap) {
+-		if (parent_spec) {
+-			/* refresh, careful to warn just once */
+-			if (rbd_dev->parent_overlap)
+-				rbd_warn(rbd_dev,
+-				    "clone now standalone (overlap became 0)");
+-		} else {
+-			/* initial probe */
+-			rbd_warn(rbd_dev, "clone is standalone (overlap 0)");
+-		}
+-	}
++	if (!pii.overlap)
++		rbd_warn(rbd_dev, "clone is standalone (overlap 0)");
+ 	rbd_dev->parent_overlap = pii.overlap;
+ 
+ out:
+ 	ret = 0;
+ out_err:
+-	kfree(pii.pool_ns);
+-	kfree(pii.image_id);
++	rbd_parent_info_cleanup(&pii);
+ 	rbd_spec_put(parent_spec);
  	return ret;
  }
+@@ -6977,7 +6954,7 @@ static int rbd_dev_image_probe(struct rbd_device *rbd_dev, int depth)
+ 	}
  
-+static void rbd_dev_update_header(struct rbd_device *rbd_dev,
-+				  struct rbd_image_header *header)
+ 	if (rbd_dev->header.features & RBD_FEATURE_LAYERING) {
+-		ret = rbd_dev_v2_parent_info(rbd_dev);
++		ret = rbd_dev_setup_parent(rbd_dev);
+ 		if (ret)
+ 			goto err_out_probe;
+ 	}
+@@ -7026,9 +7003,47 @@ static void rbd_dev_update_header(struct rbd_device *rbd_dev,
+ 	}
+ }
+ 
++static void rbd_dev_update_parent(struct rbd_device *rbd_dev,
++				  struct parent_image_info *pii)
 +{
-+	rbd_assert(rbd_image_format_valid(rbd_dev->image_format));
-+	rbd_assert(rbd_dev->header.object_prefix); /* !first_time */
++	if (pii->pool_id == CEPH_NOPOOL || !pii->has_overlap) {
++		/*
++		 * Either the parent never existed, or we have
++		 * record of it but the image got flattened so it no
++		 * longer has a parent.  When the parent of a
++		 * layered image disappears we immediately set the
++		 * overlap to 0.  The effect of this is that all new
++		 * requests will be treated as if the image had no
++		 * parent.
++		 *
++		 * If !pii.has_overlap, the parent image spec is not
++		 * applicable.  It's there to avoid duplication in each
++		 * snapshot record.
++		 */
++		if (rbd_dev->parent_overlap) {
++			rbd_dev->parent_overlap = 0;
++			rbd_dev_parent_put(rbd_dev);
++			pr_info("%s: clone has been flattened\n",
++				rbd_dev->disk->disk_name);
++		}
++	} else {
++		rbd_assert(rbd_dev->parent_spec);
 +
-+	rbd_dev->header.image_size = header->image_size;
-+
-+	ceph_put_snap_context(rbd_dev->header.snapc);
-+	rbd_dev->header.snapc = header->snapc;
-+	header->snapc = NULL;
-+
-+	if (rbd_dev->image_format == 1) {
-+		kfree(rbd_dev->header.snap_names);
-+		rbd_dev->header.snap_names = header->snap_names;
-+		header->snap_names = NULL;
-+
-+		kfree(rbd_dev->header.snap_sizes);
-+		rbd_dev->header.snap_sizes = header->snap_sizes;
-+		header->snap_sizes = NULL;
++		/*
++		 * Update the parent overlap.  If it became zero, issue
++		 * a warning as we will proceed as if there is no parent.
++		 */
++		if (!pii->overlap && rbd_dev->parent_overlap)
++			rbd_warn(rbd_dev,
++				 "clone has become standalone (overlap 0)");
++		rbd_dev->parent_overlap = pii->overlap;
 +	}
 +}
 +
  static int rbd_dev_refresh(struct rbd_device *rbd_dev)
  {
-+	struct rbd_image_header	header = { 0 };
+ 	struct rbd_image_header	header = { 0 };
++	struct parent_image_info pii = { 0 };
  	u64 mapping_size;
  	int ret;
  
- 	down_write(&rbd_dev->header_rwsem);
- 	mapping_size = rbd_dev->mapping.size;
- 
--	ret = rbd_dev_header_info(rbd_dev);
-+	ret = rbd_dev_header_info(rbd_dev, &header, false);
- 	if (ret)
- 		goto out;
- 
-@@ -7030,6 +7049,8 @@ static int rbd_dev_refresh(struct rbd_device *rbd_dev)
+@@ -7044,12 +7059,14 @@ static int rbd_dev_refresh(struct rbd_device *rbd_dev)
+ 	 * mapped image getting flattened.
+ 	 */
+ 	if (rbd_dev->parent) {
+-		ret = rbd_dev_v2_parent_info(rbd_dev);
++		ret = rbd_dev_v2_parent_info(rbd_dev, &pii);
+ 		if (ret)
  			goto out;
  	}
  
-+	rbd_dev_update_header(rbd_dev, &header);
-+
+ 	rbd_dev_update_header(rbd_dev, &header);
++	if (rbd_dev->parent)
++		rbd_dev_update_parent(rbd_dev, &pii);
+ 
  	rbd_assert(!rbd_is_snap(rbd_dev));
  	rbd_dev->mapping.size = rbd_dev->header.image_size;
- 
-@@ -7038,6 +7059,7 @@ static int rbd_dev_refresh(struct rbd_device *rbd_dev)
+@@ -7059,6 +7076,7 @@ static int rbd_dev_refresh(struct rbd_device *rbd_dev)
  	if (!ret && mapping_size != rbd_dev->mapping.size)
  		rbd_dev_update_size(rbd_dev);
  
-+	rbd_image_header_cleanup(&header);
++	rbd_parent_info_cleanup(&pii);
+ 	rbd_image_header_cleanup(&header);
  	return ret;
  }
- 
 -- 
 2.40.1
 
