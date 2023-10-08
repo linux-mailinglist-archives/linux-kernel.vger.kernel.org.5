@@ -2,63 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EB37BCF3D
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 18:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68F787BCF40
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 18:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344926AbjJHQTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 12:19:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37048 "EHLO
+        id S1344935AbjJHQ1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 12:27:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234352AbjJHQTJ (ORCPT
+        with ESMTP id S1344915AbjJHQ1q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 12:19:09 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 421BAAB
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 09:19:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696781948; x=1728317948;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=KvZXZB3MAVxKu8w7Yn260PNj64/2cfuVWWPoVqrpC8Q=;
-  b=ZguLaW8YmA3/56XwZEV3iETrBDwVuftw2PcgB8bWSu42eTWdczARYwZ4
-   2b9R4nrZiKchhXHEbZcuoLVmK+6Itldzyixth3EFMGeL7LyJLXrOZjPVG
-   +ry+/Yau0dIrHMBOb1luAH9Nh12C+pBslKCDSOAm9weCViOldhd/2lgYe
-   P1QS//VED7nz2oQJztlOHmjDw3aISNKmGWSjqre5ZwWYdywd+3IXpw7d6
-   4XwwxusUD21Y8karMxuH82PAP7+Fc3tX0nDenMGoK9EZiZ41SrwA0Hy5W
-   LUWkZJIwjjFgewKyNyg5SL+oULZHWQ7mLbYZt0LNonxqiIZDM43MdLltq
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="364311511"
-X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
-   d="scan'208";a="364311511"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2023 09:19:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="746418678"
-X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
-   d="scan'208";a="746418678"
-Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 08 Oct 2023 09:19:04 -0700
-Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qpWUg-0005YT-1i;
-        Sun, 08 Oct 2023 16:19:02 +0000
-Date:   Mon, 9 Oct 2023 00:18:48 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "brookxu.cn" <brookxu.cn@gmail.com>, bsingharora@gmail.com,
-        juri.lelli@redhat.com, peterz@infradead.org,
-        vincent.guittot@linaro.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] delayacct: convert task->delays to a object
-Message-ID: <202310090033.4XQPktBr-lkp@intel.com>
-References: <531ddc82793a39f4c09316d701a4b1170bcad4ab.1696761522.git.chunguang.xu@shopee.com>
+        Sun, 8 Oct 2023 12:27:46 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E6894
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 09:27:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52CABC433C7;
+        Sun,  8 Oct 2023 16:27:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696782464;
+        bh=5e2wPm4fvqhAunrbeH6/dmcRGUvDHp6u0OI/Kex4i+c=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=HoLV3QruwusvtL6Rqcf356qHtAgnpPZKEVLEYOLP/+ZPAWryDDoRAj1M/sVxnboRK
+         XuB7lH5unipB4gPiskFoQrVJ/qsJaEB9umJ6T1yyOwiKLKGawIQwG46MC8ncEhgfp0
+         yp1q4vbdtyERyCU74BdrQKTo9QDLW9E/O8kK6YqQx/S6OCzZjiJbXEoN/9eSC2diuT
+         bWmTIQ0aZH34AlwlUsgmJSCwJOtngsqs8A71Vzh5L+oLx4VAf2K7+H/ao72e5RHZ1n
+         ztLOlr9dZuUgfAYgeVBEDY56xfc8gH8qHNzffSZOaLvUV9Hb2HEAbF5gJ+UNsD0yn0
+         7yEss9AdLCvXA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id E6634CE0869; Sun,  8 Oct 2023 09:27:43 -0700 (PDT)
+Date:   Sun, 8 Oct 2023 09:27:43 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc:     Willy Tarreau <w@1wt.eu>, Shuah Khan <skhan@linuxfoundation.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: nolibc changes since 6.6-rc1 for linux-next
+Message-ID: <76a51116-46bb-4271-b5ac-c101e02d5a63@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <11a790c0-f9c0-49eb-b14f-56b962af6d2d@t-8ch.de>
+ <dcfa99da-eb3e-4c85-9e7f-092bbb1be801@linuxfoundation.org>
+ <48c01af3-d373-4546-a8f2-d81fa447eaaa@t-8ch.de>
+ <25382680-956a-4612-b930-f6823c71cf8d@paulmck-laptop>
+ <696fc488-63d3-444c-a9f2-14d7a7379143@linuxfoundation.org>
+ <23bc3841-4cda-4a23-a67f-a944e1104f1d@paulmck-laptop>
+ <20231007070630.GB20998@1wt.eu>
+ <d80c1da1-56f8-4b94-b1e2-eef75a52d022@paulmck-laptop>
+ <fad7814f-0bbd-43f0-a205-9ba2c08bac22@t-8ch.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <531ddc82793a39f4c09316d701a4b1170bcad4ab.1696761522.git.chunguang.xu@shopee.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fad7814f-0bbd-43f0-a205-9ba2c08bac22@t-8ch.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,158 +61,235 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi brookxu.cn,
+On Sun, Oct 08, 2023 at 02:58:15PM +0200, Thomas Weißschuh wrote:
+> Hi Paul,
+> 
+> On 2023-10-07 08:42:53-0700, Paul E. McKenney wrote:
+> > On Sat, Oct 07, 2023 at 09:06:30AM +0200, Willy Tarreau wrote:
+> > > On Thu, Oct 05, 2023 at 05:01:22PM -0700, Paul E. McKenney wrote:
+> > > > On Thu, Oct 05, 2023 at 03:30:52PM -0600, Shuah Khan wrote:
+> > > > > On 10/5/23 14:58, Paul E. McKenney wrote:
+> > > > > > On Thu, Oct 05, 2023 at 10:28:05PM +0200, Thomas Weißschuh wrote:
+> > > > > > > On 2023-10-05 14:15:31-0600, Shuah Khan wrote:
+> > > > > > > > Hi Thomas,
+> > > > > > > > 
+> > > > > > > > On 10/5/23 11:00, Thomas Weißschuh wrote:
+> > > > > > > > > Hi Shuah,
+> > > > > > > > > 
+> > > > > > > > > I'd like to test the current state of nolibc in linux-next.
+> > > > > > > > > Could pull the request below into your nolibc branch?
+> > > > > > > > > 
+> > > > > > > > > I'll do some manual tests this weekend, too.
+> > > > > > > > > 
+> > > > > > > > > 
+> > > > > > > > > Thanks,
+> > > > > > > > > Thomas
+> > > > > > > > > 
+> > > > > > > > > 
+> > > > > > > > > The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
+> > > > > > > > > 
+> > > > > > > > >     Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
+> > > > > > > > > 
+> > > > > > > > > are available in the Git repository at:
+> > > > > > > > > 
+> > > > > > > > >     https://git.kernel.org/pub/scm/linux/kernel/git/nolibc/linux-nolibc.git nolibc/next
+> > > > > > > > > 
+> > > > > > > > > for you to fetch changes up to ab663cc32912914258bc8a2fbd0e753f552ee9d8:
+> > > > > > > > > 
+> > > > > > > > >     tools/nolibc: automatically detect necessity to use pselect6 (2023-09-28 09:20:35 +0200)
+> > > > > > > > 
+> > > > > > > > Absolutely. Do you mind tagging and pushing the tag and send
+> > > > > > > > pull request with the tag?
+> > > > > > > 
+> > > > > > > Sure, here it is:
+> > > > > > > 
+> > > > > > > 
+> > > > > > > The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
+> > > > > > > 
+> > > > > > >    Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
+> > > > > > > 
+> > > > > > > are available in the Git repository at:
+> > > > > > > 
+> > > > > > >    https://git.kernel.org/pub/scm/linux/kernel/git/nolibc/linux-nolibc.git nolibc-next.2023.10.05a
+> > > > > > > 
+> > > > > > > for you to fetch changes up to ab663cc32912914258bc8a2fbd0e753f552ee9d8:
+> > > > > > > 
+> > > > > > >    tools/nolibc: automatically detect necessity to use pselect6 (2023-09-28 09:20:35 +0200)
+> > > > > > 
+> > > > > > Looks good on my laptop:
+> > > > > > 
+> > > > > > make run:
+> > > > > > 
+> > > > > > 	160 test(s): 160 passed,   0 skipped,   0 failed => status: success
+> > > > > > 
+> > > > > > make run-user:
+> > > > > > 
+> > > > > > 	160 test(s): 158 passed,   2 skipped,   0 failed => status: warning
+> > > > > > 
+> > > > > > Shuah, I can take nolibc for the upcoming merge window (I believe that
+> > > > > > it is my turn to do so), but if you would prefer to take them, that also
+> > > > > > works for me.  Either way, just let me know.
+> > > > > 
+> > > > > Yes it is your turn. Please go ahead and take them.
+> > > > 
+> > > > Very good, I will merge them in and post them to the relevant email lists.
+> > > > 
+> > > > > I will pull and do testing and update you on how it went.
+> > > > 
+> > > > Looking forward to seeing what you find!
+> > > 
+> > > In the list I'm seeing this one which is a fix for breakage introduced
+> > > in 6.6-rc1:
+> > > 
+> > >   commit 3c9b7c4a228bf8cca2f92abb65575cdd54065302 (korg-nolibc/fixes, 20230830-nolibc-fixes)
+> > >   Author: Ammar Faizi <ammarfaizi2@gnuweeb.org>
+> > >   Date:   Wed Aug 30 08:02:23 2023 +0700
+> > > 
+> > >     tools/nolibc: i386: Fix a stack misalign bug on _start
+> > >     
+> > >     The ABI mandates that the %esp register must be a multiple of 16 when
+> > >     executing a 'call' instruction.
+> > >   ...
+> > > 
+> > > We'll have to send it separately so that it gets into 6.6 soon enough.
+> > > And I think the update of the tree location in the MAINTAINERS file
+> > > would be deserved as well.
+> > > 
+> > > Paul, Shuah, what's the preferred way for you to get fixes for the current
+> > > kernel now ? Do you prefer a PR based on a specific branch or just a patch ?
+> > 
+> > The easiest for me would be if you rebased your stack on top of this
+> > new fix, all still based on v6.6-rc1.  I can then pull the new stack,
+> > including fix, test it, and submit the fix to Linus in a few days,
+> > assuming testing goes well.
+> > 
+> > Would something else work better for you guys?
+> 
+> With "stack" are you referring to only the fixes that are intended for
+> v6.6?
+> It sounds a bit like it should also included patches that are only meant
+> for v6.7 .
+> 
+> If it is only for the fixes, see below the request.
+> Note that I dropped the patch
+> "tools/nolibc: drop test for getauxval(AT_PAGESZ)" as it's not actually
+> a fix.
+> 
+> The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
+> 
+>   Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/nolibc/linux-nolibc.git fixes
+> 
+> for you to fetch changes up to ac06a8400561f2e4f204e88c130970fb1b9f470c:
+> 
+>   MAINTAINERS: nolibc: update tree location (2023-10-07 12:41:14 +0200)
+> 
+> ----------------------------------------------------------------
+> Ammar Faizi (1):
+>       tools/nolibc: i386: Fix a stack misalign bug on _start
+> 
+> Thomas Weißschuh (1):
+>       MAINTAINERS: nolibc: update tree location
+> 
+>  MAINTAINERS                      | 2 +-
+>  tools/include/nolibc/arch-i386.h | 4 +++-
+>  2 files changed, 4 insertions(+), 2 deletions(-)
 
-kernel test robot noticed the following build warnings:
+I can make it work either way, your choice.
 
-[auto build test WARNING on tip/sched/core]
-[also build test WARNING on linus/master v6.6-rc4 next-20231006]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Given a separate nolibc/fixes and nolibc/next branch, as you have now,
+what I do is pull them separately.  I test the nolibc/fixes branch
+and also the merge with nolibc/next.  Please see the -rcu branch
+nolibc-merge.2023.10.08a to see the result.  I send a pull request
+to Linus for nolibc/fixes after a few days exposure to -next testing,
+and for the merge into the upcoming merge window.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/brookxu-cn/delayacct-introduce-delayacct_enabled-to-simplify-implement/20231008-185144
-base:   tip/sched/core
-patch link:    https://lore.kernel.org/r/531ddc82793a39f4c09316d701a4b1170bcad4ab.1696761522.git.chunguang.xu%40shopee.com
-patch subject: [PATCH 2/3] delayacct: convert task->delays to a object
-config: x86_64-randconfig-002-20231008 (https://download.01.org/0day-ci/archive/20231009/202310090033.4XQPktBr-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231009/202310090033.4XQPktBr-lkp@intel.com/reproduce)
+Test results for nolibc/fixes:
+"make run": 160 test(s): 160 passed,   0 skipped,   0 failed => status: success
+"make run-user": 160 test(s): 158 passed,   2 skipped,   0 failed => status: warning
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310090033.4XQPktBr-lkp@intel.com/
+Test results for the merge of nolibc/fixes and nolibc/next:
+"make run": 160 test(s): 160 passed,   0 skipped,   0 failed => status: success
+"make run-user": 160 test(s): 158 passed,   2 skipped,   0 failed => status: warning
 
-All warnings (new ones prefixed by >>):
+This approach can work well, but has a couple of potential weaknesses:
 
-   In file included from arch/x86/include/asm/paravirt_types.h:19,
-                    from arch/x86/include/asm/ptrace.h:97,
-                    from arch/x86/include/asm/math_emu.h:5,
-                    from arch/x86/include/asm/processor.h:13,
-                    from arch/x86/include/asm/timex.h:5,
-                    from include/linux/timex.h:67,
-                    from include/linux/time32.h:13,
-                    from include/linux/time.h:60,
-                    from arch/x86/entry/vdso/vdso32/../vclock_gettime.c:11,
-                    from arch/x86/entry/vdso/vdso32/vclock_gettime.c:4:
-   arch/x86/include/asm/pgtable.h: In function 'pte_flags_pkey':
->> arch/x86/include/asm/pgtable_types.h:66:43: warning: left shift count >= width of type [-Wshift-count-overflow]
-      66 | #define _PAGE_PKEY_BIT0 (_AT(pteval_t, 1) << _PAGE_BIT_PKEY_BIT0)
-         |                                           ^~
-   arch/x86/include/asm/pgtable_types.h:77:26: note: in expansion of macro '_PAGE_PKEY_BIT0'
-      77 | #define _PAGE_PKEY_MASK (_PAGE_PKEY_BIT0 | \
-         |                          ^~~~~~~~~~~~~~~
-   arch/x86/include/asm/pgtable.h:1615:29: note: in expansion of macro '_PAGE_PKEY_MASK'
-    1615 |         return (pte_flags & _PAGE_PKEY_MASK) >> _PAGE_BIT_PKEY_BIT0;
-         |                             ^~~~~~~~~~~~~~~
-   arch/x86/include/asm/pgtable_types.h:67:43: warning: left shift count >= width of type [-Wshift-count-overflow]
-      67 | #define _PAGE_PKEY_BIT1 (_AT(pteval_t, 1) << _PAGE_BIT_PKEY_BIT1)
-         |                                           ^~
-   arch/x86/include/asm/pgtable_types.h:78:26: note: in expansion of macro '_PAGE_PKEY_BIT1'
-      78 |                          _PAGE_PKEY_BIT1 | \
-         |                          ^~~~~~~~~~~~~~~
-   arch/x86/include/asm/pgtable.h:1615:29: note: in expansion of macro '_PAGE_PKEY_MASK'
-    1615 |         return (pte_flags & _PAGE_PKEY_MASK) >> _PAGE_BIT_PKEY_BIT0;
-         |                             ^~~~~~~~~~~~~~~
-   arch/x86/include/asm/pgtable_types.h:68:43: warning: left shift count >= width of type [-Wshift-count-overflow]
-      68 | #define _PAGE_PKEY_BIT2 (_AT(pteval_t, 1) << _PAGE_BIT_PKEY_BIT2)
-         |                                           ^~
-   arch/x86/include/asm/pgtable_types.h:79:26: note: in expansion of macro '_PAGE_PKEY_BIT2'
-      79 |                          _PAGE_PKEY_BIT2 | \
-         |                          ^~~~~~~~~~~~~~~
-   arch/x86/include/asm/pgtable.h:1615:29: note: in expansion of macro '_PAGE_PKEY_MASK'
-    1615 |         return (pte_flags & _PAGE_PKEY_MASK) >> _PAGE_BIT_PKEY_BIT0;
-         |                             ^~~~~~~~~~~~~~~
-   arch/x86/include/asm/pgtable_types.h:69:43: warning: left shift count >= width of type [-Wshift-count-overflow]
-      69 | #define _PAGE_PKEY_BIT3 (_AT(pteval_t, 1) << _PAGE_BIT_PKEY_BIT3)
-         |                                           ^~
-   arch/x86/include/asm/pgtable_types.h:80:26: note: in expansion of macro '_PAGE_PKEY_BIT3'
-      80 |                          _PAGE_PKEY_BIT3)
-         |                          ^~~~~~~~~~~~~~~
-   arch/x86/include/asm/pgtable.h:1615:29: note: in expansion of macro '_PAGE_PKEY_MASK'
-    1615 |         return (pte_flags & _PAGE_PKEY_MASK) >> _PAGE_BIT_PKEY_BIT0;
-         |                             ^~~~~~~~~~~~~~~
-   In file included from include/linux/pgtable.h:6,
-                    from include/linux/kasan.h:33,
-                    from include/linux/slab.h:180,
-                    from include/linux/delayacct.h:62,
-                    from include/linux/sched.h:40,
-                    from include/linux/sched/mm.h:7,
-                    from include/linux/xarray.h:19,
-                    from include/linux/radix-tree.h:21,
-                    from include/linux/idr.h:15,
-                    from include/linux/kernfs.h:12,
-                    from include/linux/sysfs.h:16,
-                    from include/linux/kobject.h:20,
-                    from include/linux/of.h:17,
-                    from include/linux/clocksource.h:19,
-                    from include/clocksource/hyperv_timer.h:16,
-                    from arch/x86/include/asm/vdso/gettimeofday.h:21,
-                    from include/vdso/datapage.h:137,
-                    from arch/x86/entry/vdso/vdso32/../../../../../lib/vdso/gettimeofday.c:5,
-                    from arch/x86/entry/vdso/vdso32/../vclock_gettime.c:15,
-                    from arch/x86/entry/vdso/vdso32/vclock_gettime.c:4:
->> arch/x86/include/asm/pgtable.h:1615:46: warning: right shift count >= width of type [-Wshift-count-overflow]
-    1615 |         return (pte_flags & _PAGE_PKEY_MASK) >> _PAGE_BIT_PKEY_BIT0;
-         |                                              ^~
-   In file included from include/linux/kasan.h:33,
-                    from include/linux/slab.h:180,
-                    from include/linux/delayacct.h:62,
-                    from include/linux/sched.h:40,
-                    from include/linux/sched/mm.h:7,
-                    from include/linux/xarray.h:19,
-                    from include/linux/radix-tree.h:21,
-                    from include/linux/idr.h:15,
-                    from include/linux/kernfs.h:12,
-                    from include/linux/sysfs.h:16,
-                    from include/linux/kobject.h:20,
-                    from include/linux/of.h:17,
-                    from include/linux/clocksource.h:19,
-                    from include/clocksource/hyperv_timer.h:16,
-                    from arch/x86/include/asm/vdso/gettimeofday.h:21,
-                    from include/vdso/datapage.h:137,
-                    from arch/x86/entry/vdso/vdso32/../../../../../lib/vdso/gettimeofday.c:5,
-                    from arch/x86/entry/vdso/vdso32/../vclock_gettime.c:15,
-                    from arch/x86/entry/vdso/vdso32/vclock_gettime.c:4:
-   include/linux/pgtable.h: At top level:
-   include/linux/pgtable.h:1578:2: error: #error Missing MAX_POSSIBLE_PHYSMEM_BITS definition
-    1578 | #error Missing MAX_POSSIBLE_PHYSMEM_BITS definition
-         |  ^~~~~
+1.	Bisectability given that any bugs addressed by the "nolibc/fixes"
+	branch are in full force in the "nolibc/next" branch.
 
+2.	Any merge conflicts end up being addressed in the merge commit,
+	and I might make the wrong choice for conflict resolution.
 
-vim +66 arch/x86/include/asm/pgtable_types.h
+3.	There can be duplicate commits, as is currently the case for
+	both commits on the "nolibc/fixes" branch.
 
-8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  48  
-8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  49  #define _PAGE_PRESENT	(_AT(pteval_t, 1) << _PAGE_BIT_PRESENT)
-8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  50  #define _PAGE_RW	(_AT(pteval_t, 1) << _PAGE_BIT_RW)
-8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  51  #define _PAGE_USER	(_AT(pteval_t, 1) << _PAGE_BIT_USER)
-8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  52  #define _PAGE_PWT	(_AT(pteval_t, 1) << _PAGE_BIT_PWT)
-8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  53  #define _PAGE_PCD	(_AT(pteval_t, 1) << _PAGE_BIT_PCD)
-8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  54  #define _PAGE_ACCESSED	(_AT(pteval_t, 1) << _PAGE_BIT_ACCESSED)
-8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  55  #define _PAGE_DIRTY	(_AT(pteval_t, 1) << _PAGE_BIT_DIRTY)
-8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  56  #define _PAGE_PSE	(_AT(pteval_t, 1) << _PAGE_BIT_PSE)
-8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  57  #define _PAGE_GLOBAL	(_AT(pteval_t, 1) << _PAGE_BIT_GLOBAL)
-c46a7c817e662a Mel Gorman          2014-06-04  58  #define _PAGE_SOFTW1	(_AT(pteval_t, 1) << _PAGE_BIT_SOFTW1)
-f955371ca9d398 David Vrabel        2014-01-07  59  #define _PAGE_SOFTW2	(_AT(pteval_t, 1) << _PAGE_BIT_SOFTW2)
-6c0df8689494e1 Joerg Roedel        2018-07-18  60  #define _PAGE_SOFTW3	(_AT(pteval_t, 1) << _PAGE_BIT_SOFTW3)
-8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  61  #define _PAGE_PAT	(_AT(pteval_t, 1) << _PAGE_BIT_PAT)
-8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  62  #define _PAGE_PAT_LARGE (_AT(pteval_t, 1) << _PAGE_BIT_PAT_LARGE)
-8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  63  #define _PAGE_SPECIAL	(_AT(pteval_t, 1) << _PAGE_BIT_SPECIAL)
-8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  64  #define _PAGE_CPA_TEST	(_AT(pteval_t, 1) << _PAGE_BIT_CPA_TEST)
-5c1d90f51027e1 Dave Hansen         2016-02-12  65  #ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
-5c1d90f51027e1 Dave Hansen         2016-02-12 @66  #define _PAGE_PKEY_BIT0	(_AT(pteval_t, 1) << _PAGE_BIT_PKEY_BIT0)
-5c1d90f51027e1 Dave Hansen         2016-02-12  67  #define _PAGE_PKEY_BIT1	(_AT(pteval_t, 1) << _PAGE_BIT_PKEY_BIT1)
-5c1d90f51027e1 Dave Hansen         2016-02-12  68  #define _PAGE_PKEY_BIT2	(_AT(pteval_t, 1) << _PAGE_BIT_PKEY_BIT2)
-5c1d90f51027e1 Dave Hansen         2016-02-12  69  #define _PAGE_PKEY_BIT3	(_AT(pteval_t, 1) << _PAGE_BIT_PKEY_BIT3)
-5c1d90f51027e1 Dave Hansen         2016-02-12  70  #else
-5c1d90f51027e1 Dave Hansen         2016-02-12  71  #define _PAGE_PKEY_BIT0	(_AT(pteval_t, 0))
-5c1d90f51027e1 Dave Hansen         2016-02-12  72  #define _PAGE_PKEY_BIT1	(_AT(pteval_t, 0))
-5c1d90f51027e1 Dave Hansen         2016-02-12  73  #define _PAGE_PKEY_BIT2	(_AT(pteval_t, 0))
-5c1d90f51027e1 Dave Hansen         2016-02-12  74  #define _PAGE_PKEY_BIT3	(_AT(pteval_t, 0))
-5c1d90f51027e1 Dave Hansen         2016-02-12  75  #endif
-8d19c99faf6165 Jeremy Fitzhardinge 2009-02-08  76  
+Nonetheless, if you prefer the merge approach, we absolutely can make
+this work.  For one thing, this is how many trees operate today.  But if
+we take this approach, can we please base "nolibc/fixes" on top of the
+"nolibc-next" commit 4b4a30ea14d1 ("tools/nolibc: i386: Fix a stack
+misalign bug on _start")?
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+The other approach involves rebasing the "nolibc/next" stack
+on top of the "nolibc/fixes" stack.  Please see the -rcu branch
+nolibc-rebase.2023.10.08a to see how that would look.  Note that the
+rebase process detected and eliminated the duplicate commits.
+In this case, I actually used "git cherry-pick":
+
+	git checkout -b nolibc-rebase.2023.10.08a nolibc/fixes
+	git cherry-pick v6.6-rc1..nolibc/next
+	git cherry-pick skip # After complaint about first duplicate
+	git cherry-pick --continue
+	git cherry-pick skip # After complaint about second duplicate
+	git cherry-pick --continue
+	git diff nolibc-merge.2023.10.08a # Verify no differences
+
+You could just as easily do this:
+
+	git branch nolibc-rebase.2023.10.08a nolibc/next
+	git rebase --onto nolibc/next v6.6-rc1 nolibc-rebase.2023.10.08a
+
+There would be the same complaints about duplicate commits and
+similar response (it prompts you with your alternatives).
+
+And then I send the fixes portion of the branch to Linus after a few
+days of exposure to -next testing, and the full branch for the upcoming
+merge window.
+
+Test results for nolibc-rebase.2023.10.08a:
+"make run": 160 test(s): 158 passed,   2 skipped,   0 failed => status: warning
+"make run-user": 160 test(s): 158 passed,   2 skipped,   0 failed => status: warning
+
+This approach has its strenghts and weaknesses.
+
+1.	It avoids all the weaknesses called out for merging.
+
+2.	It can require more testing when moving yet another commit
+	down into urgent-fixes portion of the branch.
+
+3.	Many people are much less comfortable rebasing and mass
+	cherry-picking than they are with merging.
+
+Again, I am happy to do this either way (especially since I now have
+both ways set up in -rcu), but felt the need to call out the strengths
+and weaknesses of each approach.  Your guys' choice.
+
+While in the area, would the following (absolutely not urgent or even
+particularly important) patch be a good idea?  This gets rid of a line
+of noise from "git status" after running the tests.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+diff --git a/tools/testing/selftests/nolibc/.gitignore b/tools/testing/selftests/nolibc/.gitignore
+index 52f613cdad54..3487da96e12e 100644
+--- a/tools/testing/selftests/nolibc/.gitignore
++++ b/tools/testing/selftests/nolibc/.gitignore
+@@ -3,3 +3,4 @@
+ /nolibc-test
+ /run.out
+ /sysroot/
++/initramfs.cpio
