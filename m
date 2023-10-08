@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A70FA7BCAEC
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 02:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 154947BCAF0
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 02:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234279AbjJHAu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 20:50:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44384 "EHLO
+        id S234432AbjJHAuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 20:50:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234370AbjJHAuE (ORCPT
+        with ESMTP id S234374AbjJHAuF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 20:50:04 -0400
+        Sat, 7 Oct 2023 20:50:05 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CAB5D7F;
-        Sat,  7 Oct 2023 17:49:36 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE88FC43140;
-        Sun,  8 Oct 2023 00:49:34 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93D3BDB;
+        Sat,  7 Oct 2023 17:49:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40D2BC433BC;
+        Sun,  8 Oct 2023 00:49:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696726175;
-        bh=c0LaTWziVQpM22d8brxEdUUMsV4lJHnqCHu7HqHdOcw=;
+        s=k20201202; t=1696726177;
+        bh=aySlpxPzYKweouPrs23+PsDDuAGtneQiFKNVAje+y6Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rLATHvUzPvChHQEpJHmZSQo/PA1C4Eo14F6zhCYp/9Cr0l3brTk8AmJUCQApj8NAC
-         4IwlDqt8fOId9lfHZC8KhWWjcPOktR4TQTrDz/HwBAkt6yyC58YDNm9cLvpeEZSuru
-         l7EOOkCtQMLzr8U4jb3/SH/Bxdghq96dZuKmNOuYDudTnv34DZ/aXTjZYlelPQhBbc
-         tJZLXlviwoXGj1+ZxY4NzpQ4mu36o4RLpLhIoP3iehIuDTFFRD5xaLcyKpSVDQSUZy
-         UEfHx5PZSNFPTjsH6C2itVGrvfHlwvrqrZ44iYYS6/OUOGEwBpP9eYCGzbmUJzCQWA
-         6fBkVnjjxfq9g==
+        b=Wg/IJ9WKuMZNj/TA93oXJuA5PbhXBz3DzfQ7FVw8g1M8UE0i+35xQFMdnByfh7P6J
+         HFmRnY4m/TJbSUlWayMqNu80Ghx9MgizRRR43sMBUW4OhREh8lYU6djf0IaPKdmb+E
+         9nRsPdwxC5raKG3dZjO0emG9WSZkqW8TFb05KAXYLrzFC79BBDoKptXJNy/ZcYiIqC
+         VFK3dCOGVB6mQjKwSiLdcX9dMKAwxta+XLbYT+rZpZPXNP6Q0cZaYRyZIJTejeFczR
+         Cof3LVLpeAPZiYsDVM79KJDknb6fXHzyCOWNDTMaa67Wqp1O7+sgutAqzVtXgpl6TV
+         Z/1eGclP7p+rQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chunhai Guo <guochunhai@vivo.com>, Jan Kara <jack@suse.cz>,
-        Christian Brauner <brauner@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 03/12] fs-writeback: do not requeue a clean inode having skipped pages
-Date:   Sat,  7 Oct 2023 20:49:20 -0400
-Message-Id: <20231008004929.3767992-3-sashal@kernel.org>
+Cc:     Filipe Manana <fdmanana@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>, clm@fb.com,
+        linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 04/12] btrfs: prevent transaction block reserve underflow when starting transaction
+Date:   Sat,  7 Oct 2023 20:49:21 -0400
+Message-Id: <20231008004929.3767992-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231008004929.3767992-1-sashal@kernel.org>
 References: <20231008004929.3767992-1-sashal@kernel.org>
@@ -54,84 +55,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunhai Guo <guochunhai@vivo.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-[ Upstream commit be049c3a088d512187407b7fd036cecfab46d565 ]
+[ Upstream commit a7ddeeb079505961355cf0106154da0110f1fdff ]
 
-When writing back an inode and performing an fsync on it concurrently, a
-deadlock issue may arise as shown below. In each writeback iteration, a
-clean inode is requeued to the wb->b_dirty queue due to non-zero
-pages_skipped, without anything actually being written. This causes an
-infinite loop and prevents the plug from being flushed, resulting in a
-deadlock. We now avoid requeuing the clean inode to prevent this issue.
+When starting a transaction, with a non-zero number of items, we reserve
+metadata space for that number of items and for delayed refs by doing a
+call to btrfs_block_rsv_add(), with the transaction block reserve passed
+as the block reserve argument. This reserves metadata space and adds it
+to the transaction block reserve. Later we migrate the space we reserved
+for delayed references from the transaction block reserve into the delayed
+refs block reserve, by calling btrfs_migrate_to_delayed_refs_rsv().
 
-    wb_writeback        fsync (inode-Y)
-blk_start_plug(&plug)
-for (;;) {
-  iter i-1: some reqs with page-X added into plug->mq_list // f2fs node page-X with PG_writeback
-                        filemap_fdatawrite
-                          __filemap_fdatawrite_range // write inode-Y with sync_mode WB_SYNC_ALL
-                           do_writepages
-                            f2fs_write_data_pages
-                             __f2fs_write_data_pages // wb_sync_req[DATA]++ for WB_SYNC_ALL
-                              f2fs_write_cache_pages
-                               f2fs_write_single_data_page
-                                f2fs_do_write_data_page
-                                 f2fs_outplace_write_data
-                                  f2fs_update_data_blkaddr
-                                   f2fs_wait_on_page_writeback
-                                     wait_on_page_writeback // wait for f2fs node page-X
-  iter i:
-    progress = __writeback_inodes_wb(wb, work)
-    . writeback_sb_inodes
-    .   __writeback_single_inode // write inode-Y with sync_mode WB_SYNC_NONE
-    .   . do_writepages
-    .   .   f2fs_write_data_pages
-    .   .   .  __f2fs_write_data_pages // skip writepages due to (wb_sync_req[DATA]>0)
-    .   .   .   wbc->pages_skipped += get_dirty_pages(inode) // wbc->pages_skipped = 1
-    .   if (!(inode->i_state & I_DIRTY_ALL)) // i_state = I_SYNC | I_SYNC_QUEUED
-    .    total_wrote++;  // total_wrote = 1
-    .   requeue_inode // requeue inode-Y to wb->b_dirty queue due to non-zero pages_skipped
-    if (progress) // progress = 1
-      continue;
-  iter i+1:
-      queue_io
-      // similar process with iter i, infinite for-loop !
-}
-blk_finish_plug(&plug)   // flush plug won't be called
+btrfs_migrate_to_delayed_refs_rsv() decrements the number of bytes to
+migrate from the source block reserve, and this however may result in an
+underflow in case the space added to the transaction block reserve ended
+up being used by another task that has not reserved enough space for its
+own use - examples are tasks doing reflinks or hole punching because they
+end up calling btrfs_replace_file_extents() -> btrfs_drop_extents() and
+may need to modify/COW a variable number of leaves/paths, so they keep
+trying to use space from the transaction block reserve when they need to
+COW an extent buffer, and may end up trying to use more space then they
+have reserved (1 unit/path only for removing file extent items).
 
-Signed-off-by: Chunhai Guo <guochunhai@vivo.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Message-Id: <20230916045131.957929-1-guochunhai@vivo.com>
-Signed-off-by: Christian Brauner <brauner@kernel.org>
+This can be avoided by simply reserving space first without adding it to
+the transaction block reserve, then add the space for delayed refs to the
+delayed refs block reserve and finally add the remaining reserved space
+to the transaction block reserve. This also makes the code a bit shorter
+and simpler. So just do that.
+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/fs-writeback.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ fs/btrfs/delayed-ref.c | 9 +--------
+ fs/btrfs/delayed-ref.h | 1 -
+ fs/btrfs/transaction.c | 6 +++---
+ 3 files changed, 4 insertions(+), 12 deletions(-)
 
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index d387708977a50..a5c31a479aacc 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -1522,10 +1522,15 @@ static void requeue_inode(struct inode *inode, struct bdi_writeback *wb,
+diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
+index 36a3debe94930..e08e3852c4788 100644
+--- a/fs/btrfs/delayed-ref.c
++++ b/fs/btrfs/delayed-ref.c
+@@ -141,24 +141,17 @@ void btrfs_update_delayed_refs_rsv(struct btrfs_trans_handle *trans)
+  * Transfer bytes to our delayed refs rsv
+  *
+  * @fs_info:   the filesystem
+- * @src:       source block rsv to transfer from
+  * @num_bytes: number of bytes to transfer
+  *
+- * This transfers up to the num_bytes amount from the src rsv to the
++ * This transfers up to the num_bytes amount, previously reserved, to the
+  * delayed_refs_rsv.  Any extra bytes are returned to the space info.
+  */
+ void btrfs_migrate_to_delayed_refs_rsv(struct btrfs_fs_info *fs_info,
+-				       struct btrfs_block_rsv *src,
+ 				       u64 num_bytes)
+ {
+ 	struct btrfs_block_rsv *delayed_refs_rsv = &fs_info->delayed_refs_rsv;
+ 	u64 to_free = 0;
  
- 	if (wbc->pages_skipped) {
- 		/*
--		 * writeback is not making progress due to locked
--		 * buffers. Skip this inode for now.
-+		 * Writeback is not making progress due to locked buffers.
-+		 * Skip this inode for now. Although having skipped pages
-+		 * is odd for clean inodes, it can happen for some
-+		 * filesystems so handle that gracefully.
- 		 */
--		redirty_tail_locked(inode, wb);
-+		if (inode->i_state & I_DIRTY_ALL)
-+			redirty_tail_locked(inode, wb);
-+		else
-+			inode_cgwb_move_to_attached(inode, wb);
- 		return;
- 	}
+-	spin_lock(&src->lock);
+-	src->reserved -= num_bytes;
+-	src->size -= num_bytes;
+-	spin_unlock(&src->lock);
+-
+ 	spin_lock(&delayed_refs_rsv->lock);
+ 	if (delayed_refs_rsv->size > delayed_refs_rsv->reserved) {
+ 		u64 delta = delayed_refs_rsv->size -
+diff --git a/fs/btrfs/delayed-ref.h b/fs/btrfs/delayed-ref.h
+index d6304b690ec4a..712a6315e956b 100644
+--- a/fs/btrfs/delayed-ref.h
++++ b/fs/btrfs/delayed-ref.h
+@@ -383,7 +383,6 @@ void btrfs_update_delayed_refs_rsv(struct btrfs_trans_handle *trans);
+ int btrfs_delayed_refs_rsv_refill(struct btrfs_fs_info *fs_info,
+ 				  enum btrfs_reserve_flush_enum flush);
+ void btrfs_migrate_to_delayed_refs_rsv(struct btrfs_fs_info *fs_info,
+-				       struct btrfs_block_rsv *src,
+ 				       u64 num_bytes);
+ int btrfs_should_throttle_delayed_refs(struct btrfs_trans_handle *trans);
+ bool btrfs_check_space_for_delayed_refs(struct btrfs_fs_info *fs_info);
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index a555567594418..847eee1e0db6f 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -613,14 +613,14 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
+ 			reloc_reserved = true;
+ 		}
  
+-		ret = btrfs_block_rsv_add(fs_info, rsv, num_bytes, flush);
++		ret = btrfs_reserve_metadata_bytes(fs_info, rsv, num_bytes, flush);
+ 		if (ret)
+ 			goto reserve_fail;
+ 		if (delayed_refs_bytes) {
+-			btrfs_migrate_to_delayed_refs_rsv(fs_info, rsv,
+-							  delayed_refs_bytes);
++			btrfs_migrate_to_delayed_refs_rsv(fs_info, delayed_refs_bytes);
+ 			num_bytes -= delayed_refs_bytes;
+ 		}
++		btrfs_block_rsv_add_bytes(rsv, num_bytes, true);
+ 
+ 		if (rsv->space_info->force_alloc)
+ 			do_chunk_alloc = true;
 -- 
 2.40.1
 
