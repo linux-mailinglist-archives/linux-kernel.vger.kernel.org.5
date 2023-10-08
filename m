@@ -2,47 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D68A87BCB84
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 03:18:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4517BCB2C
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 02:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234199AbjJHBSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 21:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46502 "EHLO
+        id S234212AbjJHAwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 20:52:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234290AbjJHBRp (ORCPT
+        with ESMTP id S234532AbjJHAwL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 21:17:45 -0400
+        Sat, 7 Oct 2023 20:52:11 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E00271F;
-        Sat,  7 Oct 2023 17:52:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5231C43142;
-        Sun,  8 Oct 2023 00:50:55 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA9402738;
+        Sat,  7 Oct 2023 17:51:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2D5BC116AB;
+        Sun,  8 Oct 2023 00:50:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696726257;
-        bh=wDWIqD460oEsh3nRxYpDhP8nQPY+vgqfxSoDuHNiGaw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=G/6ZygORBvQANDIhFR6k9l+993r99YWqhT8smGfQCXmp9E3JPWUxxUYfwpzd6VI4Q
-         fICnvjtmJmUVVnhXLxn/LwK0KP9Lmz+Bnw/gJegyQBn3KBq+OGrXGSK5FpEJVRVpxi
-         /S7xmdC/snJIDixyY6Asi4Liybhw1IVAc/BuBhqPrOnJb2Tj9/KP1J/d2Si+rh0oh9
-         0HeXJA91w6NJTc/yY+mRLTje0J5miE4da9nnW1usQ6sbluSX5HFFV7K01sw0VQOyTz
-         mL+660cmz7tHUQrX4BqGLJ6sy1yhehARF5RMKLHAQD8cWW/R2uNIsDK0dPPuhR6jvP
-         pPg8KtBZNAoGQ==
+        s=k20201202; t=1696726258;
+        bh=DmB7PwNeVaJXOtoW4WnOeidz7LG20wOuun6mr2crmog=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=iWJXJrqgTiJTT462tcmM0WOWUBmoZylAS8GglXGD65/pCUyfyA30/JaAkMizi4KEp
+         QjAVz5UatJnOXDxcrtEUDngyGAUpN5tDXzx7fbtYVdKvGaNGxqY9BAjEwEbpDXL/Xh
+         ZAerbWYyHPfXzA6pv/AJyZ1hgnJBsDeYy0CBLbeoLWCnVGCB4NHqMo6H5JK0jE7/Am
+         R8OhJt4cfiKtfBTHOgeyYn/3JhT2srvsuEtJCMHhamlmGRvWkIuoHa9YBIDkWYSwo9
+         Sx4bLdcZuPMHaZYPbU1tj7oKtjXGZvN++jxMRqbO+i8sLCDPB97qAuBF3jUAIHoi25
+         2Uw+7JYn/0AcQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tony Lindgren <tony@atomide.com>,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Carl Philipp Klemm <philipp@uvos.xyz>,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Sasha Levin <sashal@kernel.org>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 1/7] ARM: dts: ti: omap: Fix noisy serial with overrun-throttle-ms for mapphone
-Date:   Sat,  7 Oct 2023 20:50:47 -0400
-Message-Id: <20231008005053.3768625-1-sashal@kernel.org>
+Cc:     Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>, clm@fb.com,
+        linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 2/7] btrfs: initialize start_slot in btrfs_log_prealloc_extents
+Date:   Sat,  7 Oct 2023 20:50:48 -0400
+Message-Id: <20231008005053.3768625-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231008005053.3768625-1-sashal@kernel.org>
+References: <20231008005053.3768625-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.14.326
@@ -57,41 +55,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit 5ad37b5e30433afa7a5513e3eb61f69fa0976785 ]
+[ Upstream commit b4c639f699349880b7918b861e1bd360442ec450 ]
 
-On mapphone devices we may get lots of noise on the micro-USB port in debug
-uart mode until the phy-cpcap-usb driver probes. Let's limit the noise by
-using overrun-throttle-ms.
+Jens reported a compiler warning when using
+CONFIG_CC_OPTIMIZE_FOR_SIZE=y that looks like this
 
-Note that there is also a related separate issue where the charger cable
-connected may cause random sysrq requests until phy-cpcap-usb probes that
-still remains.
+  fs/btrfs/tree-log.c: In function ‘btrfs_log_prealloc_extents’:
+  fs/btrfs/tree-log.c:4828:23: warning: ‘start_slot’ may be used
+  uninitialized [-Wmaybe-uninitialized]
+   4828 |                 ret = copy_items(trans, inode, dst_path, path,
+	|                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   4829 |                                  start_slot, ins_nr, 1, 0);
+	|                                  ~~~~~~~~~~~~~~~~~~~~~~~~~
+  fs/btrfs/tree-log.c:4725:13: note: ‘start_slot’ was declared here
+   4725 |         int start_slot;
+	|             ^~~~~~~~~~
 
-Cc: Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
-Cc: Carl Philipp Klemm <philipp@uvos.xyz>
-Cc: Merlijn Wajer <merlijn@wizzup.org>
-Cc: Pavel Machek <pavel@ucw.cz>
-Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+The compiler is incorrect, as we only use this code when ins_len > 0,
+and when ins_len > 0 we have start_slot properly initialized.  However
+we generally find the -Wmaybe-uninitialized warnings valuable, so
+initialize start_slot to get rid of the warning.
+
+Reported-by: Jens Axboe <axboe@kernel.dk>
+Tested-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/omap4-droid4-xt894.dts | 1 +
- 1 file changed, 1 insertion(+)
+ fs/btrfs/tree-log.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/omap4-droid4-xt894.dts b/arch/arm/boot/dts/omap4-droid4-xt894.dts
-index bad690b23081b..6d2ee40d88e1c 100644
---- a/arch/arm/boot/dts/omap4-droid4-xt894.dts
-+++ b/arch/arm/boot/dts/omap4-droid4-xt894.dts
-@@ -533,6 +533,7 @@ OMAP4_IOPAD(0X1d0, PIN_OUTPUT | MUX_MODE1)	/* dmtimer9_pwm_evt (gpio_28) */
- &uart3 {
- 	interrupts-extended = <&wakeupgen GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH
- 			       &omap4_pmx_core 0x17c>;
-+	overrun-throttle-ms = <500>;
- };
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 2407a231d9ad4..f73a1438a6ac1 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -4191,7 +4191,7 @@ static int btrfs_log_prealloc_extents(struct btrfs_trans_handle *trans,
+ 	struct extent_buffer *leaf;
+ 	int slot;
+ 	int ins_nr = 0;
+-	int start_slot;
++	int start_slot = 0;
+ 	int ret;
  
- &uart4 {
+ 	if (!(inode->flags & BTRFS_INODE_PREALLOC))
 -- 
 2.40.1
 
