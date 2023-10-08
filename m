@@ -2,68 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3928F7BCD8B
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 11:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9087B7BCD8D
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 11:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344554AbjJHJgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 05:36:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41526 "EHLO
+        id S1344564AbjJHJhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 05:37:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230441AbjJHJgT (ORCPT
+        with ESMTP id S230441AbjJHJhE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 05:36:19 -0400
+        Sun, 8 Oct 2023 05:37:04 -0400
 Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A141BB6;
-        Sun,  8 Oct 2023 02:36:17 -0700 (PDT)
-Received: from kwepemm000003.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4S3H4h31CJzRhp3;
-        Sun,  8 Oct 2023 17:32:20 +0800 (CST)
-Received: from [10.67.111.205] (10.67.111.205) by
- kwepemm000003.china.huawei.com (7.193.23.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Sun, 8 Oct 2023 17:36:14 +0800
-Subject: Re: [PATCH v1 6/7] perf pmu-events: Remember the events and metrics
- table
-To:     Ian Rogers <irogers@google.com>
-CC:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Jing Zhang <renyu.zj@linux.alibaba.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        <coresight@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20231007021326.4156714-1-irogers@google.com>
- <20231007021326.4156714-7-irogers@google.com>
- <39b28ad5-8086-76ed-a4c6-bfc8271d226b@huawei.com>
- <CAP-5=fV3NO-3Q=7YQ0S6RNJUX1dWfszX-paFSPwniNhSokYRew@mail.gmail.com>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <ae8fae39-8585-c692-9200-80a551b30eb5@huawei.com>
-Date:   Sun, 8 Oct 2023 17:36:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B12B5B6;
+        Sun,  8 Oct 2023 02:37:01 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4S3H5Y26QpzRhp3;
+        Sun,  8 Oct 2023 17:33:05 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Sun, 8 Oct
+ 2023 17:36:59 +0800
+Subject: Re: [PATCH net-next v10 1/6] page_pool: fragment API support for
+ 32-bit arch with 64-bit DMA
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     Alexander Duyck <alexander.duyck@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>, <davem@davemloft.net>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Liang Chen <liangchen.linux@gmail.com>,
+        Guillaume Tucker <guillaume.tucker@collabora.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Eric Dumazet <edumazet@google.com>
+References: <20230922091138.18014-1-linyunsheng@huawei.com>
+ <20230922091138.18014-2-linyunsheng@huawei.com>
+ <b70b44bec789b60a99c18e43f6270f9c48e3d704.camel@redhat.com>
+ <20231003151216.1a3d6901@kernel.org>
+ <c2ef79ea-468e-ce25-a597-cc1684389143@intel.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <943e7a57-1285-4123-578c-1bb8d1a926c4@huawei.com>
+Date:   Sun, 8 Oct 2023 17:36:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-In-Reply-To: <CAP-5=fV3NO-3Q=7YQ0S6RNJUX1dWfszX-paFSPwniNhSokYRew@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <c2ef79ea-468e-ce25-a597-cc1684389143@intel.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.111.205]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm000003.china.huawei.com (7.193.23.66)
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
@@ -74,72 +65,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On 2023/10/8 13:49, Ian Rogers wrote:
-> On Sat, Oct 7, 2023 at 8:39 PM Yang Jihong <yangjihong1@huawei.com> wrote:
->>
->> Hello,
->>
->> On 2023/10/7 10:13, Ian Rogers wrote:
->>> strcmp_cpuid_str performs regular expression comparisons. Avoid
->>> repeated computation of the table by remembering the table in a
->>> static.
->>>
->>> Signed-off-by: Ian Rogers <irogers@google.com>
->>> ---
->>>    tools/perf/pmu-events/jevents.py | 48 +++++++++++++++++++-------------
->>>    1 file changed, 28 insertions(+), 20 deletions(-)
->>>
->>> diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
->>> index fd009752b427..8d8d5088c53c 100755
->>> --- a/tools/perf/pmu-events/jevents.py
->>> +++ b/tools/perf/pmu-events/jevents.py
->>> @@ -978,28 +978,32 @@ int pmu_metrics_table__for_each_metric(const struct pmu_metrics_table *table,
->>>
->>>    const struct pmu_events_table *perf_pmu__find_events_table(struct perf_pmu *pmu)
->>>    {
->>> -        const struct pmu_events_table *table = NULL;
->>> -        char *cpuid = perf_pmu__getcpuid(pmu);
->>> +        static const struct pmu_events_table *table;
->>>            size_t i;
->>>
->>> -        /* on some platforms which uses cpus map, cpuid can be NULL for
->>> -         * PMUs other than CORE PMUs.
->>> -         */
->>> -        if (!cpuid)
->>> -                return NULL;
->>> -
->>> -        i = 0;
->>> -        for (;;) {
->>> -                const struct pmu_events_map *map = &pmu_events_map[i++];
->>> -                if (!map->arch)
->>> -                        break;
->>> -
->>> -                if (!strcmp_cpuid_str(map->cpuid, cpuid)) {
->>> -                        table = &map->event_table;
->>> -                        break;
->>> +        if (!table) {
->> If there is no matched table in pmu_events_map,
->> perf_pmu__find_events_table() will enter this branch for repeated search
->> each time.
->> Or do we need to use another variable to indicate whether the search has
->> been performed?
+On 2023/10/4 17:31, Alexander Lobakin wrote:
+> From: Jakub Kicinski <kuba@kernel.org>
+> Date: Tue, 3 Oct 2023 15:12:16 -0700
 > 
-> Agreed, the behavior will match the existing behavior. Longer term I
-> want to remove this code. Do you have a scenario we should optimize
-> for here?
+>> On Tue, 03 Oct 2023 09:45:56 +0200 Paolo Abeni wrote:
+>>> I think it would be nice also an explicit ack from Jesper and/or Ilias.
+>>
+>> Also a review tag from one or both of the Alexanders would be great!
 > 
+> I got back to libie/iavf this week, hoping I'll rebase without major
+> issues and will be able to give a Tested-by as well, will see :>
+>
 
-Yes, the CPU of the environment I'm using is "AuthenticAMD-15-6B-1" (not 
-in the pmu_events_map).
-As a result, the search is repeated every time.
-(If `perf record true` is executed once, the search is repeated for 6 
-times.)
+It is great to have some Tested-by tag to confirm that this patchset
+works for other driver. Please let me know if there is any problem when
+rebasing and testing, thanks.
 
-This commit avoids repeated lookups to improve performance,
-so if it's feasible, is it best to consider improving performance in 
-this case as well?
 
-Thanks,
-Yang
+> Thanks,
+> Olek
+> 
+> .
+> 
