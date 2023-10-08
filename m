@@ -2,180 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66AD17BCCD6
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 09:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1BDB7BCCE1
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 09:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344475AbjJHHAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 03:00:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33026 "EHLO
+        id S229994AbjJHHG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 03:06:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjJHHAq (ORCPT
+        with ESMTP id S229441AbjJHHG4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 03:00:46 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2B9D8
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 00:00:44 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-534694a9f26so5427a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 00:00:43 -0700 (PDT)
+        Sun, 8 Oct 2023 03:06:56 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20EA9B6
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 00:06:52 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-57bca5b9b0aso1985606eaf.3
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 00:06:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696748442; x=1697353242; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mH8rgsD0Hcv//mdO9CGjCjg749l4skH04u5NpNfXSJo=;
-        b=BShKJaRtusNijZZ57Kaaydm5cxCfHocp+nOGciKvqb++6Z9nyuOD/uC/kwsqizh687
-         mFCJJDc0urQQh8PUEZpRDB/57VWp8QQL0APQ1smHc1IlmJKuQB/El5qROWmyM0VacBco
-         0A9gWDEdTwWZUHz6i8escGbPUk+91X8GZVCK4ScPcGUG7Z5Hvknlv82uujz3OWIz09xc
-         zuxWkk0Rgyg0O67zeZyl1tZBwYl653Ub4NuaRjZptmkgBr/R3t3EIsSz82C3x0SZm5j7
-         I2qJPEGGMPOdJtEZnHrvaxoj7eYt8xYe/WVxl0ptpTU3+tNzNcTzagg0FQubKas09fM9
-         WWNA==
+        d=gmail.com; s=20230601; t=1696748811; x=1697353611; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xaaQmfAOdlMr/G3DN8Nw6V4MkQHgrZFbaXHumsVfrFA=;
+        b=mJOB/RyTn/cEDGC9hwDEN1qrpGfmoOfj70tY1W8ARpIcbDcRCa84OR2o2oSJbW3itd
+         0G5v+ui26dkZngQyauvjp+1OjTuqj9yk6TU5q7XpnbhmfD0C0BEv7GjVVnI1jbS/z9DT
+         PbTX0xwAr7H9kipnTmmpQ7nX3YHEwOdw3phFuZkJVjfkCKd6zEmccS627I9PssbO7k+L
+         3oT/+WS+JRDW/RTWccXJZ3vf/xuP7VQFuQw+nWHaJ5YVC2Qmw9cv6w8gfQNdoFwOk6kP
+         fM6BTOe/JcN9DMWQL3nOKKyGXt3OVByHEuWAcd0DWFkXi9LdcknH7y7oee8vupPPE9zF
+         9UWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696748442; x=1697353242;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mH8rgsD0Hcv//mdO9CGjCjg749l4skH04u5NpNfXSJo=;
-        b=CMd3t6E1PgMAGDFYSAX/U4jiL0wkbNYIzECEGgYmp5dmFhoXxIqC1P7tsuG1YkyPO5
-         tLQDMiUSeLetTJXeePh8EZ8oM7q4EjFlxmkLjOnEcBpZomKioZv6r7YXuwz4t7B1zx8e
-         FZAXz6o8bxrbs1I+nSBQy72SmSdVFRG6vml/6jpYZcvKjW9lAXXyN9pVCRKwQolB4nUi
-         4EKcM22BxoZGupbpB13cA/3hits1x7e4cnrA2AIXkxpOgzYF1x2Z/mJtlWPMV5DxR98w
-         Ktbj7h6EJBJoXY5OyznZei1TYx7Ov0o0FjaEO4VptwkG5CUBW89G/z7Nr0WRS3WcxiOy
-         y/Fg==
-X-Gm-Message-State: AOJu0Yx34BBbgW09SmC27jCjC69JXXASmoKbCgsgQdFpJN4/RXtUXctU
-        OX+AooFeWVdPqkCF0fI05ksh1d3BdaYVGzCgzSriww==
-X-Google-Smtp-Source: AGHT+IEsm3Yaeezo31ko5A6vpc3J66AXEC7Qr6Rm72BDJiSgp93BqqzS34935wa+NNU03Xl/ZB6KCTMLkH8SD9/RjuM=
-X-Received: by 2002:a50:9fa4:0:b0:538:5f9e:f0fc with SMTP id
- c33-20020a509fa4000000b005385f9ef0fcmr307070edf.0.1696748442128; Sun, 08 Oct
- 2023 00:00:42 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696748811; x=1697353611;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xaaQmfAOdlMr/G3DN8Nw6V4MkQHgrZFbaXHumsVfrFA=;
+        b=PqHW0XlppDE+ugX4bbQjDzT2wUVvr8X/4+Q63/mEx4m+IZtgaiTuNHtQvG1wr16siV
+         DXUc0q9SmfTqomVUCh1G9kyixbMocrnrKmDHcUubdQU+a8gPHde+uvCdpUoMIeZB9f9T
+         eNnJcQ7RBCI4ww+Jg+f3gize6hNfY76x/RdeAt8aYBBxOMBdSAadnNpiZxUaZFJqToQG
+         NDWSggYR38aU+1jWRC39XEfdDF5owtQ5YMSzSs+DBR4HNuf2N1pLfFlc4D+oLqFOEZF/
+         lYbWAXCia0yGuJ9mugjxcQce40EBp4S5RNClHeJEhd0c47IFLPZbUnARIT8IHjREZt4k
+         2csg==
+X-Gm-Message-State: AOJu0Yz1qHb32ogtRqBwSL6xaqdVqBt3Sq03iOzUqQdY2jswwCVnGkKJ
+        oQF7NcO7Olm2w6RFo2eNuBg=
+X-Google-Smtp-Source: AGHT+IHjlQJlc1v/QJINcsLjzBlw3z4Y2om9X4TNhRdSRpyR3bjky2WaVc7uXpVm3uLtbUZ8+CZ6UQ==
+X-Received: by 2002:a05:6358:63a7:b0:14b:d9de:3008 with SMTP id k39-20020a05635863a700b0014bd9de3008mr14338878rwh.5.1696748811195;
+        Sun, 08 Oct 2023 00:06:51 -0700 (PDT)
+Received: from localhost.localdomain ([27.5.160.191])
+        by smtp.gmail.com with ESMTPSA id c24-20020a637258000000b0055c178a8df1sm2290356pgn.94.2023.10.08.00.06.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Oct 2023 00:06:50 -0700 (PDT)
+From:   Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+To:     kherbst@redhat.com, lyude@redhat.com, dakr@redhat.com,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch
+Cc:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/nouveau: fix kernel-doc warning
+Date:   Sun,  8 Oct 2023 12:36:18 +0530
+Message-Id: <20231008070618.20640-1-bragathemanick0908@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231003145150.2498-1-ansuelsmth@gmail.com> <20231003145150.2498-3-ansuelsmth@gmail.com>
- <CANn89iK226C-pHUJm7HKMyEtMycGC=KCA2M6kw2KJaUj0cCT6w@mail.gmail.com>
- <20231005093253.2e25533a@kernel.org> <CANn89iJQ50AdXP2C1YB2pGjE02WCJ-QCsZqE1yGXtcGsfLA0Jw@mail.gmail.com>
- <65205789.5d0a0220.7e49b.ccb0@mx.google.com>
-In-Reply-To: <65205789.5d0a0220.7e49b.ccb0@mx.google.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Sun, 8 Oct 2023 09:00:29 +0200
-Message-ID: <CANn89i+ntByi2709y10PN6cgri-b0EWxPSNXdu_Nf2nOvJ45FQ@mail.gmail.com>
-Subject: Re: [net-next PATCH v2 3/4] netdev: replace napi_reschedule with napi_schedule
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Chris Snook <chris.snook@gmail.com>,
-        Raju Rangoju <rajur@chelsio.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Shailend Chand <shailend@google.com>,
-        Douglas Miller <dougmill@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nick Child <nnac123@linux.ibm.com>,
-        Haren Myneni <haren@linux.ibm.com>,
-        Rick Lindsley <ricklind@linux.ibm.com>,
-        Dany Madden <danymadden@us.ibm.com>,
-        Thomas Falcon <tlfalcon@linux.ibm.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Krzysztof Halasa <khalasa@piap.pl>,
-        Kalle Valo <kvalo@kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
-        Intel Corporation <linuxwwan@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
-        Liu Haijun <haijun.liu@mediatek.com>,
-        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
-        Ricardo Martinez <ricardo.martinez@linux.intel.com>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Yuanjun Gong <ruc_gongyuanjun@163.com>,
-        Simon Horman <horms@kernel.org>, Rob Herring <robh@kernel.org>,
-        Ziwei Xiao <ziweixiao@google.com>,
-        Rushil Gupta <rushilg@google.com>,
-        Coco Li <lixiaoyan@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Junfeng Guo <junfeng.guo@intel.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Wei Fang <wei.fang@nxp.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Yuri Karpov <YKarpov@ispras.ru>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Zheng Zengkai <zhengzengkai@huawei.com>,
-        Lee Jones <lee@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Dawei Li <set_pte_at@outlook.com>,
-        Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
-        Benjamin Berg <benjamin.berg@intel.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL,WEIRD_QUOTING
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 6, 2023 at 8:52=E2=80=AFPM Christian Marangi <ansuelsmth@gmail.=
-com> wrote:
->
-> On Thu, Oct 05, 2023 at 06:41:03PM +0200, Eric Dumazet wrote:
-> > On Thu, Oct 5, 2023 at 6:32=E2=80=AFPM Jakub Kicinski <kuba@kernel.org>=
- wrote:
-> > >
-> > > On Thu, 5 Oct 2023 18:11:56 +0200 Eric Dumazet wrote:
-> > > > OK, but I suspect some users of napi_reschedule() might not be race=
--free...
-> > >
-> > > What's the race you're thinking of?
-> >
-> > This sort of thing... the race is in fl_starving() though...
-> >
-> > diff --git a/drivers/net/ethernet/chelsio/cxgb4/sge.c
-> > b/drivers/net/ethernet/chelsio/cxgb4/sge.c
-> > index 98dd78551d89..b5ff2e1a9975 100644
-> > --- a/drivers/net/ethernet/chelsio/cxgb4/sge.c
-> > +++ b/drivers/net/ethernet/chelsio/cxgb4/sge.c
-> > @@ -4261,7 +4261,7 @@ static void sge_rx_timer_cb(struct timer_list *t)
-> >
-> >                         if (fl_starving(adap, fl)) {
-> >                                 rxq =3D container_of(fl, struct sge_eth=
-_rxq, fl);
-> > -                               if (napi_reschedule(&rxq->rspq.napi))
-> > +                               if (napi_schedule(&rxq->rspq.napi))
-> >                                         fl->starving++;
-> >                                 else
-> >                                         set_bit(id, s->starving_fl);
->
-> Ehhh problem is that this is a simple rename so if any race is present,
-> it's already there and not caused by this rename :(
->
-> Don't know maybe this is out of scope and should be investigated with a
-> bug report?
->
-> Maybe this should be changed to prep/__schedule to prevent any kind of
-> race? But doing so doesn't prevent any kind of ""starving""?
->
+Identified below document warning in latest linux-next.
+./include/uapi/drm/nouveau_drm.h:49: warning: Cannot understand
+* @NOUVEAU_GETPARAM_EXEC_PUSH_MAX: on line 49 - I thought it was a doc line
 
-I gave a "Reviewed-by: Eric Dumazet <edumazet@google.com>", meaning
-your patch was ok for me.
+Also, on running checkpatch.pl to nouveau_drm.h identified
+few more warnings/errors and fixing them in this patch
 
-My remark was orthogonal, I am not asking you to act on it ;)
+Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+---
+ include/uapi/drm/nouveau_drm.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/include/uapi/drm/nouveau_drm.h b/include/uapi/drm/nouveau_drm.h
+index eaf9f248619f..a523ca5aa865 100644
+--- a/include/uapi/drm/nouveau_drm.h
++++ b/include/uapi/drm/nouveau_drm.h
+@@ -46,7 +46,7 @@ extern "C" {
+ #define NOUVEAU_GETPARAM_HAS_PAGEFLIP    16
+ 
+ /**
+- * @NOUVEAU_GETPARAM_EXEC_PUSH_MAX
++ * NOUVEAU_GETPARAM_EXEC_PUSH_MAX:
+  *
+  * Query the maximum amount of IBs that can be pushed through a single
+  * &drm_nouveau_exec structure and hence a single &DRM_IOCTL_NOUVEAU_EXEC
+@@ -458,15 +458,15 @@ struct drm_nouveau_svm_bind {
+ 
+ #define DRM_IOCTL_NOUVEAU_GETPARAM           DRM_IOWR(DRM_COMMAND_BASE + DRM_NOUVEAU_GETPARAM, struct drm_nouveau_getparam)
+ #define DRM_IOCTL_NOUVEAU_CHANNEL_ALLOC      DRM_IOWR(DRM_COMMAND_BASE + DRM_NOUVEAU_CHANNEL_ALLOC, struct drm_nouveau_channel_alloc)
+-#define DRM_IOCTL_NOUVEAU_CHANNEL_FREE       DRM_IOW (DRM_COMMAND_BASE + DRM_NOUVEAU_CHANNEL_FREE, struct drm_nouveau_channel_free)
++#define DRM_IOCTL_NOUVEAU_CHANNEL_FREE       DRM_IOW(DRM_COMMAND_BASE + DRM_NOUVEAU_CHANNEL_FREE, struct drm_nouveau_channel_free)
+ 
+ #define DRM_IOCTL_NOUVEAU_SVM_INIT           DRM_IOWR(DRM_COMMAND_BASE + DRM_NOUVEAU_SVM_INIT, struct drm_nouveau_svm_init)
+ #define DRM_IOCTL_NOUVEAU_SVM_BIND           DRM_IOWR(DRM_COMMAND_BASE + DRM_NOUVEAU_SVM_BIND, struct drm_nouveau_svm_bind)
+ 
+ #define DRM_IOCTL_NOUVEAU_GEM_NEW            DRM_IOWR(DRM_COMMAND_BASE + DRM_NOUVEAU_GEM_NEW, struct drm_nouveau_gem_new)
+ #define DRM_IOCTL_NOUVEAU_GEM_PUSHBUF        DRM_IOWR(DRM_COMMAND_BASE + DRM_NOUVEAU_GEM_PUSHBUF, struct drm_nouveau_gem_pushbuf)
+-#define DRM_IOCTL_NOUVEAU_GEM_CPU_PREP       DRM_IOW (DRM_COMMAND_BASE + DRM_NOUVEAU_GEM_CPU_PREP, struct drm_nouveau_gem_cpu_prep)
+-#define DRM_IOCTL_NOUVEAU_GEM_CPU_FINI       DRM_IOW (DRM_COMMAND_BASE + DRM_NOUVEAU_GEM_CPU_FINI, struct drm_nouveau_gem_cpu_fini)
++#define DRM_IOCTL_NOUVEAU_GEM_CPU_PREP       DRM_IOW(DRM_COMMAND_BASE + DRM_NOUVEAU_GEM_CPU_PREP, struct drm_nouveau_gem_cpu_prep)
++#define DRM_IOCTL_NOUVEAU_GEM_CPU_FINI       DRM_IOW(DRM_COMMAND_BASE + DRM_NOUVEAU_GEM_CPU_FINI, struct drm_nouveau_gem_cpu_fini)
+ #define DRM_IOCTL_NOUVEAU_GEM_INFO           DRM_IOWR(DRM_COMMAND_BASE + DRM_NOUVEAU_GEM_INFO, struct drm_nouveau_gem_info)
+ 
+ #define DRM_IOCTL_NOUVEAU_VM_INIT            DRM_IOWR(DRM_COMMAND_BASE + DRM_NOUVEAU_VM_INIT, struct drm_nouveau_vm_init)
+-- 
+2.34.1
+
