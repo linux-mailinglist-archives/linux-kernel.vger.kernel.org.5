@@ -2,124 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E363D7BD035
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 23:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 585E47BD03B
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 23:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229875AbjJHVMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 17:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59178 "EHLO
+        id S230133AbjJHVVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 17:21:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbjJHVMY (ORCPT
+        with ESMTP id S229635AbjJHVVh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 17:12:24 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E739D;
-        Sun,  8 Oct 2023 14:12:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696799542; x=1728335542;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=KTvYRiC5xnxvfy9uGT176OFxMaWQyvYItVYw9cKHphU=;
-  b=SEUQdcRXpZNUR2EW3VVE0ACQUZUKj9nRuk+i9amGQ3SRsgbH6KPzSddw
-   6UcgmjHbvGv7wpEyHfqX4gEiOwa8vAF+td2O8Beb/9daO/m6kexJmPjvH
-   8E7S+b3LsP7EPMh5y0wWwrwQAD1+wDcmV9SNBAJ5kTqBhktl86ijSvXLG
-   IFvwdPiV1MNLCW6ccInNVX3n3O7UcJIzHvtfV+RUVcuvrR4mER0FxyIhB
-   e+pnZdbtpNjmFYHWadHI87IYQvsS/tnlqzwsx/hjFwAO/qcJKwBZKt6S9
-   u24vXlkKL9XNDqec1rWqnlDes1sF5xupKMAwp4OViMLBtutB0QEpjRLS0
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="448228774"
-X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
-   d="scan'208";a="448228774"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2023 14:12:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="756496413"
-X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
-   d="scan'208";a="756496413"
-Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 08 Oct 2023 14:12:15 -0700
-Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qpb4R-0005lg-05;
-        Sun, 08 Oct 2023 21:12:15 +0000
-Date:   Mon, 9 Oct 2023 05:12:05 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tianyi Liu <i.pear@outlook.com>, seanjc@google.com,
-        pbonzini@redhat.com, peterz@infradead.org, mingo@redhat.com,
-        acme@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        kvm@vger.kernel.org, x86@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-        Tianyi Liu <i.pear@outlook.com>
-Subject: Re: [PATCH v2 1/5] KVM: Add arch specific interfaces for sampling
- guest callchains
-Message-ID: <202310090448.ffbVfkHi-lkp@intel.com>
-References: <SY4P282MB10840154D4F09917D6528BC69DCFA@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
+        Sun, 8 Oct 2023 17:21:37 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5771AC;
+        Sun,  8 Oct 2023 14:21:35 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6c63117a659so2205272a34.0;
+        Sun, 08 Oct 2023 14:21:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696800095; x=1697404895; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=7tFkgfW4cZbNG3g5YvrO+dBVaVKzGdwwIuQTmQTY0jc=;
+        b=J2T6ECoZ2NQ6jQK317KDWj5GB1bRHagjHXju3Uj80aoxQ08+3krVPYJzsZFRDdKhgH
+         brYhhqc2WkItqIha8tre4HCmBJo1LxFGvXpv8Ge9A5AkQ4gnbah8TbLX7MFMH0Nd/0fg
+         0ucF7qCpbqZrQw3F/Z1pxfNaGnjWDFDeDzYfrgcFgVG9w5/ZvS9EAssP9hDYiEr3aSmD
+         b6Cb8Bv3uMTULzBBXoowJyrlftVRdvQDWvGIajZ00xTjdoOyKPRayTKZ/njjW1UjIVIn
+         XaL9M9xZxz12Mx8cexXc5XpeRm05Fbf8aEQgnpJbGH2DcDEec8EvxhDyTUkQ5ENlLPDw
+         gOZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696800095; x=1697404895;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7tFkgfW4cZbNG3g5YvrO+dBVaVKzGdwwIuQTmQTY0jc=;
+        b=GHFJCMhnhaveJrU479uVF93+QnRC8BAbHmPNwhdgrMVp1U9DTl1gX6OoQDR8PTWmkU
+         V6RPNbCg3Ybb0hzaFlLHoaK6xVN/V7USZMEH87n0fXIcoKAm7n3POxJ4vPClmjgthynn
+         47AegXE+duNJf62P+Hv0k5ouLmUJvkWO+3dccLhiXpEDR/n533zppl3zHsgZPwSF3o9p
+         dGgyR9baANU1nYau4X08GemM0c201Xy2pAIy78j3QHpVSUfNBqEX7GGb4sLobRWppbsB
+         cwHLpjK1W3LI6Blzb31JLzp7Ks7Sz9kZ2mMnP6+qEbQNDhfDgnNXOxWh8g29P8nx/hIr
+         4NrQ==
+X-Gm-Message-State: AOJu0YwhYshEUex9WpuZfY4KCGV3HCIbyAdceqWiemrJhAAFwOYHuJtv
+        2tnTtqhEiBsrfXArlHPLwSQioW2mxOl4QJzkl44=
+X-Google-Smtp-Source: AGHT+IG2X00Izsq8yJBHpE/SbCtPB2p4GnsaqwRMKU+ZKdCHKskj69ge6judSTj8+aIg/9Lz64Olraz14Kpd2Ju2OVY=
+X-Received: by 2002:a9d:6d0d:0:b0:6c4:6aef:cd58 with SMTP id
+ o13-20020a9d6d0d000000b006c46aefcd58mr12438764otp.8.1696800095162; Sun, 08
+ Oct 2023 14:21:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SY4P282MB10840154D4F09917D6528BC69DCFA@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:ac9:5786:0:b0:4f0:1250:dd51 with HTTP; Sun, 8 Oct 2023
+ 14:21:34 -0700 (PDT)
+In-Reply-To: <ZSMZkuJGgHyyqDWP@casper.infradead.org>
+References: <20231007203543.1377452-1-willy@infradead.org> <20231007203543.1377452-6-willy@infradead.org>
+ <CAGudoHEg7oWG8CuyivWRsWLZZtw51oY0=PjLPRzFZDDZf=kzGg@mail.gmail.com> <ZSMZkuJGgHyyqDWP@casper.infradead.org>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Sun, 8 Oct 2023 23:21:34 +0200
+Message-ID: <CAGudoHGVa2qjkOB25whVquRtgUN7sJtEuqUGDoVe_18RdYwSTw@mail.gmail.com>
+Subject: Re: [PATCH v2 5/5] fs: Add inode_assert_locked() and inode_assert_locked_excl()
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Christian Brauner <brauner@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tianyi,
+On 10/8/23, Matthew Wilcox <willy@infradead.org> wrote:
+> On Sun, Oct 08, 2023 at 10:26:40PM +0200, Mateusz Guzik wrote:
+>> On 10/7/23, Matthew Wilcox (Oracle) <willy@infradead.org> wrote:
+>> > +static inline void inode_assert_locked_excl(const struct inode *inode)
+>> > +{
+>> > +	rwsem_assert_held_write(&inode->i_rwsem);
+>> > +}
+>> > +
+>> >  static inline void inode_lock_nested(struct inode *inode, unsigned
+>> > subclass)
+>> >  {
+>> >  	down_write_nested(&inode->i_rwsem, subclass);
+>>
+>> Why "excl" instead of "write"? Apart from looking weird, it is
+>> inconsistent with "prior art" in the file: i_mmap_assert_write_locked.
+>
+> Yes, but that pairs with i_mmap_lock_write() / i_mmap_lock_read().
+>
+> The problem is that we have inode_lock() / inode_lock_shared()
+> inode_assert_locked_read/write doesn't make sense with them.  But
+> inode_assert_locked() doesn't make sense as the assertion for
+> inode_lock() because you'd expect it to assert whether the inode lock
+> is held at all.  So I went with inode_assert_locked_excl().
+>
+> I wouldn't mind if we converted all the inode_lock()/shared to
+> inode_lock_read() / inode_lock_write(), and then added
+> inode_assert_read_locked() / inode_assert_write_locked().  That's
+> a bit of a bigger job than I want to take on today.
+>
 
-kernel test robot noticed the following build warnings:
+I agree it is rather messy and I'm not going to spend time arguing as
+it is not my call anyway.
 
-[auto build test WARNING on 8a749fd1a8720d4619c91c8b6e7528c0a355c0aa]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Tianyi-Liu/KVM-Add-arch-specific-interfaces-for-sampling-guest-callchains/20231008-230042
-base:   8a749fd1a8720d4619c91c8b6e7528c0a355c0aa
-patch link:    https://lore.kernel.org/r/SY4P282MB10840154D4F09917D6528BC69DCFA%40SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
-patch subject: [PATCH v2 1/5] KVM: Add arch specific interfaces for sampling guest callchains
-config: arm64-randconfig-003-20231009 (https://download.01.org/0day-ci/archive/20231009/202310090448.ffbVfkHi-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231009/202310090448.ffbVfkHi-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310090448.ffbVfkHi-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from include/uapi/linux/posix_types.h:5,
-                    from include/uapi/linux/types.h:14,
-                    from include/linux/types.h:6,
-                    from include/linux/kasan-checks.h:5,
-                    from include/asm-generic/rwonce.h:26,
-                    from arch/arm64/include/asm/rwonce.h:71,
-                    from include/linux/compiler.h:246,
-                    from include/asm-generic/bug.h:5,
-                    from arch/arm64/include/asm/bug.h:26,
-                    from include/linux/bug.h:5,
-                    from arch/arm64/kvm/arm.c:7:
-   arch/arm64/kvm/arm.c: In function 'kvm_arch_vcpu_get_frame_pointer':
->> include/linux/stddef.h:8:14: warning: returning 'void *' from a function with return type 'long unsigned int' makes integer from pointer without a cast [-Wint-conversion]
-       8 | #define NULL ((void *)0)
-         |              ^
-   arch/arm64/kvm/arm.c:578:16: note: in expansion of macro 'NULL'
-     578 |         return NULL;
-         |                ^~~~
-
-
-vim +8 include/linux/stddef.h
-
-^1da177e4c3f41 Linus Torvalds   2005-04-16  6  
-^1da177e4c3f41 Linus Torvalds   2005-04-16  7  #undef NULL
-^1da177e4c3f41 Linus Torvalds   2005-04-16 @8  #define NULL ((void *)0)
-6e218287432472 Richard Knutsson 2006-09-30  9  
+Speaking of that, I just noticed the vfs folk are not CC'ed, which I'm
+rectifying with this e-mail.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Mateusz Guzik <mjguzik gmail.com>
