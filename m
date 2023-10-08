@@ -2,118 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B2E7BD0DF
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 00:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E54847BD0E1
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 00:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344867AbjJHWZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 18:25:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50958 "EHLO
+        id S1344878AbjJHWZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 18:25:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344708AbjJHWZ2 (ORCPT
+        with ESMTP id S1344789AbjJHWZt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 18:25:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F283EAB;
-        Sun,  8 Oct 2023 15:25:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696803927; x=1728339927;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=yPD6DsIdg9+uokcveGmkjl3wIt7hKAzaaoSXHfIFMT8=;
-  b=AU2GoFwsVRQ4jc41D/qBsOlQDuFenhqbFRFfhJWVAL2Rzn0xWPFNVwBr
-   1UlY//ZOqfdP20tTOiMB/rGumzS/JHldQwsCuhSeYWrOhfdJW7Ylx28O+
-   1PqbjxUDJRxxwEsraa2SRWHOXvUy2zT0JWIueh9NA8+tcU8yEPDkf4GhO
-   1Ax/kcwzf9KPn3bQ23rpynuA8Si7j7welqB1Wg84MldaqgjN6ykOL8BjZ
-   LM6ebnDcotuFKHuBwy6Ui/tZiktNZk9aoxxaRGb0sqTQYy4JGGAMQZ10w
-   PvZMpXXBmQ/qlDUAKdPXLpLhOIf+fJbIMtOTMOrFBQVhBf/YUloc2VKpy
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="387900175"
-X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
-   d="scan'208";a="387900175"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2023 15:25:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="869025176"
-X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
-   d="scan'208";a="869025176"
-Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 08 Oct 2023 15:25:21 -0700
-Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qpcD9-0005p2-1q;
-        Sun, 08 Oct 2023 22:25:19 +0000
-Date:   Mon, 9 Oct 2023 06:25:00 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tianyi Liu <i.pear@outlook.com>, seanjc@google.com,
-        pbonzini@redhat.com, peterz@infradead.org, mingo@redhat.com,
-        acme@kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        kvm@vger.kernel.org, x86@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-        Tianyi Liu <i.pear@outlook.com>
-Subject: Re: [PATCH v2 1/5] KVM: Add arch specific interfaces for sampling
- guest callchains
-Message-ID: <202310090652.6TMWiCuU-lkp@intel.com>
-References: <SY4P282MB10840154D4F09917D6528BC69DCFA@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
+        Sun, 8 Oct 2023 18:25:49 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C4A9B9;
+        Sun,  8 Oct 2023 15:25:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07FBEC433C7;
+        Sun,  8 Oct 2023 22:25:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696803948;
+        bh=QrkuFelQkgF4dmVeOtjNdhlzBMRjrCcoF4SOVif4oIs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BXvXe2g3qldchM8UvdGuaMQL0oYBVvRQCvD0QUHj6Li4OR/OXp00Cs7Cq/q3Yx0OQ
+         3tFhu+8VHTqsXUTjOwe2RiKkmnHKjXDsGrmK4jm/P19/I+LEvJcBhbvB0NL9Uqx+E5
+         MFRY+XIRejnrU6x9805L1AT0puETUp3t4hN19k5Hk5X6X0Whub8dxSfwNYVwqnD98q
+         w4VUeDhE0/iVaUEEw/nH86v3j1gLaHl7KH2YTqQq73o/Q7DKxKlbKiN9FFCBlPiZlO
+         1L0oGx2rM2lw2MTY6E0gMZWuNqYT3K2X2WEkC9+4ELMuq/+lHIcTLxGVRqMGIYMlFs
+         Uo6Jof74j06jA==
+Date:   Mon, 9 Oct 2023 00:25:44 +0200
+From:   Alejandro Colomar <alx@kernel.org>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Peter Xu <peterx@redhat.com>, linux-man@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/5] ioctl_userfaultfd.2: correct and update
+ UFFDIO_API ioctl error codes
+Message-ID: <ZSMsaC-GUVbvMM_9@debian>
+References: <20231003194547.2237424-1-axelrasmussen@google.com>
+ <20231003194547.2237424-3-axelrasmussen@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Xg0NzKVlmIEGA05n"
 Content-Disposition: inline
-In-Reply-To: <SY4P282MB10840154D4F09917D6528BC69DCFA@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231003194547.2237424-3-axelrasmussen@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tianyi,
 
-kernel test robot noticed the following build errors:
+--Xg0NzKVlmIEGA05n
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 9 Oct 2023 00:25:44 +0200
+From: Alejandro Colomar <alx@kernel.org>
+To: Axel Rasmussen <axelrasmussen@google.com>
+Cc: Peter Xu <peterx@redhat.com>, linux-man@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/5] ioctl_userfaultfd.2: correct and update
+ UFFDIO_API ioctl error codes
 
-[auto build test ERROR on 8a749fd1a8720d4619c91c8b6e7528c0a355c0aa]
+Hi Axel,
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Tianyi-Liu/KVM-Add-arch-specific-interfaces-for-sampling-guest-callchains/20231008-230042
-base:   8a749fd1a8720d4619c91c8b6e7528c0a355c0aa
-patch link:    https://lore.kernel.org/r/SY4P282MB10840154D4F09917D6528BC69DCFA%40SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
-patch subject: [PATCH v2 1/5] KVM: Add arch specific interfaces for sampling guest callchains
-config: x86_64-rhel-8.3-rust (https://download.01.org/0day-ci/archive/20231009/202310090652.6TMWiCuU-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231009/202310090652.6TMWiCuU-lkp@intel.com/reproduce)
+On Tue, Oct 03, 2023 at 12:45:44PM -0700, Axel Rasmussen wrote:
+> First, it is not correct that repeated UFFDIO_API calls result in
+> EINVAL. This is true *if both calls enable features*, but in the case
+> where we're doing a two-step feature detection handshake, the kernel
+> explicitly expects 2 calls (one with no features set). So, correct this
+> description.
+>=20
+> Then, some new error cases have been added to the kernel recently, and
+> the man page wasn't updated to note these. So, add in descriptions of
+> these new error cases.
+>=20
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310090652.6TMWiCuU-lkp@intel.com/
+Patch applied.
 
-All errors (new ones prefixed by >>):
+Thanks,
+Alex
 
->> arch/x86/kvm/x86.c:12917:35: error: incompatible pointer to integer conversion passing 'void *' to parameter of type 'gva_t' (aka 'unsigned long') [-Wint-conversion]
-           return kvm_read_guest_virt(vcpu, addr, dest, length, &e) == X86EMUL_CONTINUE;
-                                            ^~~~
-   arch/x86/kvm/x86.c:7403:19: note: passing argument to parameter here
-   EXPORT_SYMBOL_GPL(kvm_read_guest_virt);
-                     ^
-   1 error generated.
+> ---
+>  man2/ioctl_userfaultfd.2 | 24 +++++++++++++++++++-----
+>  1 file changed, 19 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/man2/ioctl_userfaultfd.2 b/man2/ioctl_userfaultfd.2
+> index ef352a69d..28dd2fcdd 100644
+> --- a/man2/ioctl_userfaultfd.2
+> +++ b/man2/ioctl_userfaultfd.2
+> @@ -256,17 +256,31 @@ refers to an address that is outside the calling pr=
+ocess's
+>  accessible address space.
+>  .TP
+>  .B EINVAL
+> -The userfaultfd has already been enabled by a previous
+> -.B UFFDIO_API
+> -operation.
+> -.TP
+> -.B EINVAL
+>  The API version requested in the
+>  .I api
+>  field is not supported by this kernel, or the
+>  .I features
+>  field passed to the kernel includes feature bits that are not supported
+>  by the current kernel version.
+> +.TP
+> +.B EINVAL
+> +A previous
+> +.B UFFDIO_API
+> +call already enabled one or more features for this userfaultfd.
+> +Calling
+> +.B UFFDIO_API
+> +twice,
+> +the first time with no features set,
+> +is explicitly allowed
+> +as per the two-step feature detection handshake.
+> +.TP
+> +.B EPERM
+> +The
+> +.B UFFD_FEATURE_EVENT_FORK
+> +feature was enabled,
+> +but the calling process doesn't have the
+> +.B CAP_SYS_PTRACE
+> +capability.
+>  .\" FIXME In the above error case, the returned 'uffdio_api' structure is
+>  .\" zeroed out. Why is this done? This should be explained in the manual=
+ page.
+>  .\"
+> --=20
+> 2.42.0.609.gbb76f46606-goog
+>=20
 
+--=20
+<https://www.alejandro-colomar.es/>
 
-vim +12917 arch/x86/kvm/x86.c
+--Xg0NzKVlmIEGA05n
+Content-Type: application/pgp-signature; name="signature.asc"
 
- 12911	
- 12912	bool kvm_arch_vcpu_read_virt(struct kvm_vcpu *vcpu, void *addr, void *dest, unsigned int length)
- 12913	{
- 12914		struct x86_exception e;
- 12915	
- 12916		/* Return true on success */
- 12917		return kvm_read_guest_virt(vcpu, addr, dest, length, &e) == X86EMUL_CONTINUE;
- 12918	}
- 12919	
+-----BEGIN PGP SIGNATURE-----
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmUjLGgACgkQnowa+77/
+2zJlIA//Y16WCTGtmYOnY6FKmX5w6ECWQE1OpB05FcYSRYBUlIhAwfgcBRWQ3ZWZ
+ji+X7zzEQlrziC4hoKmbhiTq26Zvc8cighajyi5xKiAPou3shriMHJLMybRncB0b
+nzE8eZPc+1M64tE3iJop7Kdh8We3uVvIrXDaeWNCwhLGUlfFdE9GhJaiY37tWmGj
+lkCnXitB9lelweX7feZm+aOy/LKa8AW9jcNdn9s9vrLvUmOPcaH+AWOr5vfz4/4q
+R2iI/zWou7GElOvNYMkXwZ3KKhH5UpVe/KzKPADo98H7dLOug/D685bFimRWTC6Q
+jaOxMS5iTr1dFZHBj+c4V2RWBcrGspFLiCpTwnMOJAn1iATupofHDqPdrVgmkULr
+M1jiel4faoHdzTA8eKlNeEEs0FSB2UIioR9fkbB6v9ts7+tSLI4M8TjqvLhG03g4
+gNeZ1AsFgJH+bgAhA53ZPSTGVLNiiv91zawY5/inkuOrGU5v7RgJHUCkHGX0j2zD
+Y8egedLm0hc4WYOCaSWnO1gtFE6KLJZjWc/4PNSJFTQf76iocBx3jpfhDWXLUfAf
+phlmVOsVwMoYEQx3xPdk7rByO/8h4B3rLPP6g0cIr/54oPWKs6G6kfUU2zCnizx+
+diSwyLdB5OBV/p9ejJJyHFsBAbhHMtjZnKqyj+JllYCZ4J/j19U=
+=elyF
+-----END PGP SIGNATURE-----
+
+--Xg0NzKVlmIEGA05n--
