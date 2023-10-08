@@ -2,217 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81FD97BD0CE
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 00:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9229D7BD0D0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 00:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344791AbjJHWTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 18:19:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52146 "EHLO
+        id S1344790AbjJHWVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 18:21:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344437AbjJHWTM (ORCPT
+        with ESMTP id S1344437AbjJHWVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 18:19:12 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A77CA3;
-        Sun,  8 Oct 2023 15:19:11 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7C6AC433C7;
-        Sun,  8 Oct 2023 22:19:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696803550;
-        bh=05vPfLU2yIkLwnr16KJ7BkjZqNGNPvyMsiVoRgVyMWI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=GLQPOLsfHm1nrFWusCYAG+KfDebAqF8gspuEqRy1ZbgxBJoSn49zKwVh2sQi1iINy
-         a3P8Q0/Fg6ropEdOUBLY/DTewkwlPV7uwJOciXmtx5Cd/LxMez7kYwbAR+dvfYFD5C
-         bLDxMFM9u+Iz4+kpo/gccTjN/ZSyrA7BXcKn2npxSkEfozKVTmumy/m0y+xAZqhtQx
-         9uhi8h7jUpPKmDqYCZW4BUklxJ4ipLkoc43jvsbhLPdBnuMbRcWcpY/qh0GozxOBPw
-         oaVPD6BPlVwzG7gwE7o+/8N8+1myUIsGoe7pu93MFKakShO/Dnc2SBux9AnFNRG1LG
-         M9rv5hzsCmlEQ==
-Message-ID: <98c448be-8ea8-a0bd-62cc-3bc3a5cf5569@kernel.org>
-Date:   Mon, 9 Oct 2023 07:19:04 +0900
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v7 18/26] PM / devfreq: rockchip-dfi: account for multiple
- DDRMON_CTRL registers
-Content-Language: en-US
-To:     Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-rockchip@lists.infradead.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Vincent Legoll <vincent.legoll@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-References: <20230704093242.583575-1-s.hauer@pengutronix.de>
- <20230704093242.583575-19-s.hauer@pengutronix.de>
-From:   Chanwoo Choi <chanwoo@kernel.org>
-In-Reply-To: <20230704093242.583575-19-s.hauer@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sun, 8 Oct 2023 18:21:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323F7AC
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 15:21:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696803682; x=1728339682;
+  h=date:from:to:cc:subject:message-id;
+  bh=cMhYEO+Kn0iz/QMlno4gE8MzbcduOet3XXC+vwi9r0Y=;
+  b=hsygbIDmQcGMHX4yu3aF9PNdglXGWpL9YUlhaO4UxPhll6WJQawhYaJe
+   ijrkqUf0EC/0jhbYrFuyb6HGHrLOoNVRTvTOlvFxzZvdpYeWkRBCV2zL8
+   mjrnTCGi16OPTVet4Ha2TLAFTeih1AYf+WZN2GXo+6+XwFiiSUwOxE6D5
+   /bMy8te+0fHuTW9Y6EM/U6Fmfz2pzPyGF99f0zWM+hC8Y9rDMcw2OLvYL
+   ei2nlPTiURwCgCGpfzAih0SFUrGwWoBxDHIikpn2uyBJ15IvNQr0hNepH
+   7aK5JPplZwim8o4y5J3WFA/R4x40yx2a/th0B9pgyiy72V+lHn+ASxmf/
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="382913260"
+X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
+   d="scan'208";a="382913260"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2023 15:21:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="818638632"
+X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
+   d="scan'208";a="818638632"
+Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 08 Oct 2023 15:21:20 -0700
+Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qpc9G-0005oV-1h;
+        Sun, 08 Oct 2023 22:21:18 +0000
+Date:   Mon, 09 Oct 2023 06:20:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:perf/core] BUILD SUCCESS
+ a56d5551e1993ca84dd0c69df5a3d8223d13fb5f
+Message-ID: <202310090637.S5cP23MF-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23. 7. 4. 18:32, Sascha Hauer wrote:
-> The currently supported RK3399 has a set of registers per channel, but
-> it has only a single DDRMON_CTRL register. With upcoming RK3588 this
-> will be different, the RK3588 has a DDRMON_CTRL register per channel.
-> 
-> Instead of expecting a single DDRMON_CTRL register, loop over the
-> channels and write the channel specific DDRMON_CTRL register. Break
-> out early out of the loop when there is only a single DDRMON_CTRL
-> register like on the RK3399.
-> 
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
->  drivers/devfreq/event/rockchip-dfi.c | 72 ++++++++++++++++++----------
->  1 file changed, 48 insertions(+), 24 deletions(-)
-> 
-> diff --git a/drivers/devfreq/event/rockchip-dfi.c b/drivers/devfreq/event/rockchip-dfi.c
-> index 85ec93fd41858..2362d3953ba40 100644
-> --- a/drivers/devfreq/event/rockchip-dfi.c
-> +++ b/drivers/devfreq/event/rockchip-dfi.c
-> @@ -113,12 +113,13 @@ struct rockchip_dfi {
->  	int burst_len;
->  	int buswidth[DMC_MAX_CHANNELS];
->  	int ddrmon_stride;
-> +	bool ddrmon_ctrl_single;
->  };
->  
->  static int rockchip_dfi_enable(struct rockchip_dfi *dfi)
->  {
->  	void __iomem *dfi_regs = dfi->regs;
-> -	int ret = 0;
-> +	int i, ret = 0;
->  
->  	mutex_lock(&dfi->mutex);
->  
-> @@ -132,29 +133,41 @@ static int rockchip_dfi_enable(struct rockchip_dfi *dfi)
->  		goto out;
->  	}
->  
-> -	/* clear DDRMON_CTRL setting */
-> -	writel_relaxed(HIWORD_UPDATE(0, DDRMON_CTRL_TIMER_CNT_EN | DDRMON_CTRL_SOFTWARE_EN |
-> -		       DDRMON_CTRL_HARDWARE_EN), dfi_regs + DDRMON_CTRL);
-> +	for (i = 0; i < DMC_MAX_CHANNELS; i++) {
-> +		u32 ctrl = 0;
->  
-> -	/* set ddr type to dfi */
-> -	switch (dfi->ddr_type) {
-> -	case ROCKCHIP_DDRTYPE_LPDDR2:
-> -	case ROCKCHIP_DDRTYPE_LPDDR3:
-> -		writel_relaxed(HIWORD_UPDATE(DDRMON_CTRL_LPDDR23, DDRMON_CTRL_DDR_TYPE_MASK),
-> -			       dfi_regs + DDRMON_CTRL);
-> -		break;
-> -	case ROCKCHIP_DDRTYPE_LPDDR4:
-> -	case ROCKCHIP_DDRTYPE_LPDDR4X:
-> -		writel_relaxed(HIWORD_UPDATE(DDRMON_CTRL_LPDDR4, DDRMON_CTRL_DDR_TYPE_MASK),
-> -			       dfi_regs + DDRMON_CTRL);
-> -		break;
-> -	default:
-> -		break;
-> -	}
-> +		if (!(dfi->channel_mask & BIT(i)))
-> +			continue;
->  
-> -	/* enable count, use software mode */
-> -	writel_relaxed(HIWORD_UPDATE(DDRMON_CTRL_SOFTWARE_EN, DDRMON_CTRL_SOFTWARE_EN),
-> -		       dfi_regs + DDRMON_CTRL);
-> +		/* clear DDRMON_CTRL setting */
-> +		writel_relaxed(HIWORD_UPDATE(0, DDRMON_CTRL_TIMER_CNT_EN |
-> +			       DDRMON_CTRL_SOFTWARE_EN | DDRMON_CTRL_HARDWARE_EN),
-> +			       dfi_regs + i * dfi->ddrmon_stride + DDRMON_CTRL);
-> +
-> +		/* set ddr type to dfi */
-> +		switch (dfi->ddr_type) {
-> +		case ROCKCHIP_DDRTYPE_LPDDR2:
-> +		case ROCKCHIP_DDRTYPE_LPDDR3:
-> +			ctrl = DDRMON_CTRL_LPDDR23;
-> +			break;
-> +		case ROCKCHIP_DDRTYPE_LPDDR4:
-> +		case ROCKCHIP_DDRTYPE_LPDDR4X:
-> +			ctrl = DDRMON_CTRL_LPDDR4;
-> +			break;
-> +		default:
-> +			break;
-> +		}
-> +
-> +		writel_relaxed(HIWORD_UPDATE(ctrl, DDRMON_CTRL_DDR_TYPE_MASK),
-> +			       dfi_regs + i * dfi->ddrmon_stride + DDRMON_CTRL);
-> +
-> +		/* enable count, use software mode */
-> +		writel_relaxed(HIWORD_UPDATE(DDRMON_CTRL_SOFTWARE_EN, DDRMON_CTRL_SOFTWARE_EN),
-> +			       dfi_regs + i * dfi->ddrmon_stride + DDRMON_CTRL);
-> +
-> +		if (dfi->ddrmon_ctrl_single)
-> +			break;
-> +	}
->  out:
->  	mutex_unlock(&dfi->mutex);
->  
-> @@ -164,6 +177,7 @@ static int rockchip_dfi_enable(struct rockchip_dfi *dfi)
->  static void rockchip_dfi_disable(struct rockchip_dfi *dfi)
->  {
->  	void __iomem *dfi_regs = dfi->regs;
-> +	int i;
->  
->  	mutex_lock(&dfi->mutex);
->  
-> @@ -174,8 +188,17 @@ static void rockchip_dfi_disable(struct rockchip_dfi *dfi)
->  	if (dfi->usecount > 0)
->  		goto out;
->  
-> -	writel_relaxed(HIWORD_UPDATE(0, DDRMON_CTRL_SOFTWARE_EN),
-> -		       dfi_regs + DDRMON_CTRL);
-> +	for (i = 0; i < DMC_MAX_CHANNELS; i++) {
-> +		if (!(dfi->channel_mask & BIT(i)))
-> +			continue;
-> +
-> +		writel_relaxed(HIWORD_UPDATE(0, DDRMON_CTRL_SOFTWARE_EN),
-> +			      dfi_regs + i * dfi->ddrmon_stride + DDRMON_CTRL);
-> +
-> +		if (dfi->ddrmon_ctrl_single)
-> +			break;
-> +	}
-> +
->  	clk_disable_unprepare(dfi->clk);
->  out:
->  	mutex_unlock(&dfi->mutex);
-> @@ -666,6 +689,7 @@ static int rk3399_dfi_init(struct rockchip_dfi *dfi)
->  	dfi->buswidth[1] = FIELD_GET(RK3399_PMUGRF_OS_REG2_BW_CH1, val) == 0 ? 4 : 2;
->  
->  	dfi->ddrmon_stride = 0x14;
-> +	dfi->ddrmon_ctrl_single = true;
->  
->  	return 0;
->  };
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/core
+branch HEAD: a56d5551e1993ca84dd0c69df5a3d8223d13fb5f  perf/x86/rapl: Annotate 'struct rapl_pmus' with __counted_by
 
-Even if rk3568 has the only one channle and don't need to check whether 'dfi->ddrmon_ctrl_single'
-is true or not because of 'if (!(dfi->channel_mask & BIT(i)))',
-I recommand the add 'dfi->ddrmon_ctrl_single = true;' for rk3568 in order to
-provide the number of DDRMON_CTRL reigster of rk3568.
+elapsed time: 721m
 
-If rk3568 doesn't have the 'ddrmon_ctrl_single', actually it is not easy
-to catch what why are there no initilization for rk3568. 
- 
+configs tested: 147
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                         haps_hs_defconfig   gcc  
+arc                 nsimosci_hs_smp_defconfig   gcc  
+arc                   randconfig-001-20231008   gcc  
+arc                    vdk_hs38_smp_defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                          ep93xx_defconfig   clang
+arm                          pxa3xx_defconfig   gcc  
+arm                   randconfig-001-20231008   gcc  
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20231008   gcc  
+i386         buildonly-randconfig-002-20231008   gcc  
+i386         buildonly-randconfig-003-20231008   gcc  
+i386         buildonly-randconfig-004-20231008   gcc  
+i386         buildonly-randconfig-005-20231008   gcc  
+i386         buildonly-randconfig-006-20231008   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231008   gcc  
+i386                  randconfig-002-20231008   gcc  
+i386                  randconfig-003-20231008   gcc  
+i386                  randconfig-004-20231008   gcc  
+i386                  randconfig-005-20231008   gcc  
+i386                  randconfig-006-20231008   gcc  
+i386                  randconfig-011-20231008   gcc  
+i386                  randconfig-012-20231008   gcc  
+i386                  randconfig-013-20231008   gcc  
+i386                  randconfig-014-20231008   gcc  
+i386                  randconfig-015-20231008   gcc  
+i386                  randconfig-016-20231008   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231008   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+powerpc                     asp8347_defconfig   gcc  
+powerpc                  iss476-smp_defconfig   gcc  
+powerpc                 mpc834x_itx_defconfig   gcc  
+powerpc                      tqm8xx_defconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20231008   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20231008   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                               j2_defconfig   gcc  
+sh                           se7780_defconfig   gcc  
+sh                   sh7770_generic_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                 randconfig-001-20231008   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20231008   gcc  
+x86_64       buildonly-randconfig-002-20231008   gcc  
+x86_64       buildonly-randconfig-003-20231008   gcc  
+x86_64       buildonly-randconfig-004-20231008   gcc  
+x86_64       buildonly-randconfig-005-20231008   gcc  
+x86_64       buildonly-randconfig-006-20231008   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231008   gcc  
+x86_64                randconfig-002-20231008   gcc  
+x86_64                randconfig-003-20231008   gcc  
+x86_64                randconfig-004-20231008   gcc  
+x86_64                randconfig-005-20231008   gcc  
+x86_64                randconfig-006-20231008   gcc  
+x86_64                randconfig-011-20231008   gcc  
+x86_64                randconfig-012-20231008   gcc  
+x86_64                randconfig-013-20231008   gcc  
+x86_64                randconfig-014-20231008   gcc  
+x86_64                randconfig-015-20231008   gcc  
+x86_64                randconfig-016-20231008   gcc  
+x86_64                randconfig-071-20231008   gcc  
+x86_64                randconfig-072-20231008   gcc  
+x86_64                randconfig-073-20231008   gcc  
+x86_64                randconfig-074-20231008   gcc  
+x86_64                randconfig-075-20231008   gcc  
+x86_64                randconfig-076-20231008   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                generic_kc705_defconfig   gcc  
+
 -- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
