@@ -2,223 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B1117BCC78
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 07:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D220F7BCC7B
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 08:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344412AbjJHFzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 01:55:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59310 "EHLO
+        id S1344417AbjJHGBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 02:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344363AbjJHFzQ (ORCPT
+        with ESMTP id S1344363AbjJHGBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 01:55:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B594AC;
-        Sat,  7 Oct 2023 22:55:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696744514; x=1728280514;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=jPPKWA5EYoNLKdWcumNhjv596gsUgdt5cmlVdLrcL+Q=;
-  b=J/Z7vBimvrfapA/yN6DC0Ovk8lJ+1ObauWYkEOp12H377EpzV79oBHQD
-   6IZvfh9ZMvqyERZB0tGRL7cu57L1Jv3+ScamgLnc8bgc3u0BkOrmGEUGA
-   ERTGwwzGIVn5Ul8q2TOFPgkDfIIka7DFFjLqcRMV3FJCns4cJVPNmZp/K
-   2rLvVHQWfDGxUveMZSZOkNyUuqjFGtxnEufYszAil64NGyRXrDvkWtph4
-   vk/XBc9Qy6TGqShDQ9Lxfkyee+rozVPwEf1vSHe++xX1uu0WvRj2wznLI
-   cDj4R2w0CIxwvhAdaUCCOnG0xTzE++REkukAgOWYa497kSbsk+9gH8hqD
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10856"; a="448169958"
-X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
-   d="scan'208";a="448169958"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2023 22:55:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10856"; a="782136497"
-X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
-   d="scan'208";a="782136497"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Oct 2023 22:55:06 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Sat, 7 Oct 2023 22:55:03 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Sat, 7 Oct 2023 22:55:03 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.45) by
- edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Sat, 7 Oct 2023 22:55:03 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Zi/jMM6xSmpHVmlKzSjPAjmR0M59TH24wntYMJVcw8Nkbv4kaHm+MJ8+L5/8+lt4rviRn00sDikp01EyIkb63RI5AT4obronecYNZPsjkytgyc0jU/fF4H9e9HJ0cQfYU1yr7uPjHbfqkkAduz3Ac3DSuaByAlpWkwVO542+aWy4f7KkjK/jm/eICVt2D23QeERA5BXrLZMkCiyLPD+QkkxN4Uy+LjKLW0QBhcTPY8sezekgGVz/X105k3eqPXqNBbmpAVZZbKQyOZ03X7mcFuSAaSCHDjPtBXm1YHiMVifa0Gof2HKQ7/z6mR/neRFMtAehxADldt3zRo7+FjUvjQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3QK4Cc27XJ7lPfoNKYAxcO0fWunDBu5EdAiM5YaMdu0=;
- b=KIkfvlHrnT0CwMGH6AF00rgiajiYOkwL9n0UTSFrYwJOhSYpGOdERZutT9EmhSbsQu3RDhs9bnnzBag7YbqE0CiTxHg6bwP++potqAw+YcWSHBzjG7VXyPxB0PS9sZw5KBXqV9TnvrZh/tiTdPqQUJF9IFYkJOtdviYsvmOHFLuTKz+5Wqnt4WWUuzHP/r68RG6D25q5nNBBJDJLBb9TMfuOQbpx3ZHKEoYXNn1ArcZKp3xlKynwHn5UGHVoisAky36laJYoPhzQAqmT/hgRaxXigcXhsAtRNqFMhKk2LlbTVoDMy213v4QoiDwqoRuJKThcoQUZWkACxai35mL5YQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB6780.namprd11.prod.outlook.com (2603:10b6:510:1cb::11)
- by CH3PR11MB8562.namprd11.prod.outlook.com (2603:10b6:610:1b8::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.36; Sun, 8 Oct
- 2023 05:55:01 +0000
-Received: from PH8PR11MB6780.namprd11.prod.outlook.com
- ([fe80::5d9f:7e54:4218:159f]) by PH8PR11MB6780.namprd11.prod.outlook.com
- ([fe80::5d9f:7e54:4218:159f%7]) with mapi id 15.20.6813.017; Sun, 8 Oct 2023
- 05:55:01 +0000
-Date:   Sun, 8 Oct 2023 13:54:49 +0800
-From:   Chao Gao <chao.gao@intel.com>
-To:     Yang Weijiang <weijiang.yang@intel.com>
-CC:     <seanjc@google.com>, <pbonzini@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <dave.hansen@intel.com>,
-        <peterz@infradead.org>, <rick.p.edgecombe@intel.com>,
-        <john.allen@amd.com>, Zhang Yi Z <yi.z.zhang@linux.intel.com>
-Subject: Re: [PATCH v6 12/25] KVM: x86: Refresh CPUID on write to guest
- MSR_IA32_XSS
-Message-ID: <ZSJEKcNMwBuO6TW3@chao-email>
-References: <20230914063325.85503-1-weijiang.yang@intel.com>
- <20230914063325.85503-13-weijiang.yang@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230914063325.85503-13-weijiang.yang@intel.com>
-X-ClientProxiedBy: SG2PR02CA0124.apcprd02.prod.outlook.com
- (2603:1096:4:188::9) To PH8PR11MB6780.namprd11.prod.outlook.com
- (2603:10b6:510:1cb::11)
+        Sun, 8 Oct 2023 02:01:06 -0400
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B30FBD
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 23:01:05 -0700 (PDT)
+Received: by mail-ua1-x935.google.com with SMTP id a1e0cc1a2514c-7ab9f1efecfso1119514241.3
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Oct 2023 23:01:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696744864; x=1697349664; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=gTFi6T6hp86aembs7r35hWj2AG1dkdBFbTPFt+6s00M=;
+        b=opm5j0n5ms+cUvmzyj2hTkOZ20We3f1ZL3RFv6XDLZMHHUjbaPiU3Sk6u6ndC3xK7c
+         06nWWiqBFCgkWorTmRJaSu9BQanUL7AGoGSP6q6CRLQvfeS6zBCXi0azVLndnqtS3faV
+         Oa+CRMiAB64zT4gXNpj/lwFCOitgm84x3KNuXKklvRZuFGDafN75F5wPGDY8++aN7aRS
+         J4b5NG1hGlQldfIYz08g947jNmerlIaUZK2WMtR2s11WdbUPNFL7jRgEjPLW9MkYfkEs
+         f4xBUhyA9AgpV2TQOI0l9f73cl/e5sIM5WatqJ+4xG6x8GTkVeB9+lKE+WEj4MSjm/oq
+         v8KQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696744864; x=1697349664;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gTFi6T6hp86aembs7r35hWj2AG1dkdBFbTPFt+6s00M=;
+        b=NnocezmZGqIkbRl2KtGkCshoFjAI/r+PcMT/ZXu07Lp4hV/iymJWbJZXF4aA5Ial+E
+         hAUV6P6kMtqqxhApY+MEZ5V5NoGY3HkCM+TZdCeYsORf3DXOL45xNj81fSccQb3mZ4qv
+         Xkx3F05kjSkOmALSCQ8GCjJw249HiKSPaHqqU0/zHkwZz4G03Uvzh9bXpaPSg5d8v6FP
+         FT9S+CPEoOQmPcJXVjBzqqzEZjAKgtLLpyUJRy+XGXW+YeAB+nbQqY00qNsYG5RkfDe3
+         pxAu0iA5gITCkpCJk/aXCTZJx/mbr0/sTfWu3EDpupYO/K0l0/QsffswERRjNlBnaaPt
+         OZ0Q==
+X-Gm-Message-State: AOJu0YyFkO5DSP1JD8V7SeAl6uVs8KmwRIjHwW/SHNUUnjESncquLwaW
+        YoSMlAw/BGPsHFpvcQK4gU1aFQS6pQU07lq9yL9ALw==
+X-Google-Smtp-Source: AGHT+IEisY4ALnTRd3SdmOhu9pGYxl2VC9A5R1BecJDnPHTBXfNgrIOf02rkq3XPdXvjXLYQOx2mmGTI2Av1gxmQ46k=
+X-Received: by 2002:a05:6122:1822:b0:495:e530:5155 with SMTP id
+ ay34-20020a056122182200b00495e5305155mr12374254vkb.3.1696744864072; Sat, 07
+ Oct 2023 23:01:04 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB6780:EE_|CH3PR11MB8562:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0c03f903-aa17-49ab-a87f-08dbc7c31bec
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1MFuaKtluQ2S9fXLa42idsLXF3Pu1a07JxXTnJLGB1sJQlngTT482jf+Fz8vHinxfx9kYIvIL/tnPyaVSyyfb/kTpcocgI1iJL2KIN7qFVW/GIavyA9ZqjHD9e3zei+NF8rHAJX4iouNYaAULbNy7rdZInBrLQG7O+YTIeMwN35FLPrGLEVpqWtigdswsc41c8IVNP3y1CCEfJrrvKd7va2+XiVudNj+U6mtHMIdirASKCCM7d83xa5edTd6mlp1Zq+NqIrTpoukViZ1HPV+j8wDf1VIg4xv7kZ9lX5Oy3BArjK6rBmqNM3XmSvV+hybl3STNF9uwZZCxiIz4sxfLDEPXA6haMcAwdesyWeE3T8tmtrrg8p0LI7SuUsy6y6MAG9IbaV/+301xt3TnfCy54pZnhxdGfalvYX8AHVEqF6PNxVTw5tGBSN78F1lp/ZJNM6u7BWQjvcdNvOcLLc4CPjcQlS+EyDKq2Mrp0FN5bz9hj3TQ8wYMTeOtRZ4FMZb66BlBOnMcVzxXRas0/yjIvgGidehBgcDSCxch+CgmBNVtcNIsSbHN1lMcts914w1
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB6780.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(366004)(136003)(39860400002)(346002)(376002)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(6506007)(478600001)(6512007)(6666004)(6486002)(9686003)(5660300002)(26005)(82960400001)(38100700002)(86362001)(2906002)(6636002)(33716001)(83380400001)(41300700001)(66476007)(66556008)(8676002)(8936002)(6862004)(44832011)(4326008)(316002)(66946007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?sPMYzw7H/rureMqKBJKVtfF0LXL3gYS892I9b/L5uAfJHg7RhKXCH2VeJsgp?=
- =?us-ascii?Q?/mHmqZqBhiFTpIT3d084AggCEjGs0Cyz6EQcSJ3qY8v5b5ZuLRdSYPxVL5xG?=
- =?us-ascii?Q?N904MKbTYa265bDKyxDBHP3CYT6VGIHGl/mhjKElwz5PtQ6FM0W+Xh2ixDm+?=
- =?us-ascii?Q?Jr0AMKoHdv3YMFQ3JbaTw5e7WI3J5cdcfyOINNDNy1c0JHjLNkGS4N6mgwXp?=
- =?us-ascii?Q?KiodkhArp9Qc1uaw1fr66PIOxCDi7505NXiqnzynGM5mScmzY4QT2vLWVCAT?=
- =?us-ascii?Q?/n9sr3RRwFJapdYHGSXKCQsg7ZxRxOTtdkuwj026HqowlSg7KV9MTHRLCeu9?=
- =?us-ascii?Q?9ttqfw0Bd+vcudVyBJbmzkxZwMbqTnzAiTYkiMpth4EpHqnFlx5MK5e1Jgxf?=
- =?us-ascii?Q?wJoK64hgyyzMxqj4Hf/vASKC1oSEExpNyUaS1WpGvbJ6QWc4LNZmTyo3DOg4?=
- =?us-ascii?Q?SZiPDXqLNdYcA87DDvVJ55EkjSwRby0jhBE54BLeoKXMTlBwSv8LV5zElRF8?=
- =?us-ascii?Q?FWQv6lTgBBbx2Cg4+jhOsN5TZneZe8FdR42bGQYnKQr1j/u72mUEPk6Igz5f?=
- =?us-ascii?Q?lU40eRC/hieh/Jhsn3Q93+Z24ndKo9M9MOLNYpv0caneaIM4qUUuWqkGm3r9?=
- =?us-ascii?Q?2LEJH8fd/U1XX/JyIjyVYUXjusSwNzOCyfkRuXTMAJfdlSjezPfcHtSF40PC?=
- =?us-ascii?Q?9ELTS8pbNWKvwVZvsqoTq81/2+xuB6EMS/Xe7yR3j2XTi19x8jjUfiA94CEF?=
- =?us-ascii?Q?b3+d/1WnkqZiUe1sfwD6Y4i4S1VJY7xkzzxeb9OytkdKr88bA6Sjbji95lS8?=
- =?us-ascii?Q?lPkwv2TIHP5aU+otVLemMC0x3b7Ip+5hhlc0SMg+PxqnRKJbWy24zmIGaZtR?=
- =?us-ascii?Q?+coyyf2jiAzbQlBWIsSci9iwyiN3R9wIGuQpc4Ji3XnORjAGRgJSpTPof1sd?=
- =?us-ascii?Q?9yfebsrh+aNefN4JvzoMWy4M000o/Y0yyDq6h7NHvWlQGDJ86zXUiX2Nhhui?=
- =?us-ascii?Q?3WlpsA5XH5TgcxBdjRwRYiCEyC3Dutnz52MD5TYHasFmT7tMx9wKkNQ3VYjR?=
- =?us-ascii?Q?ZMyYmHXvCfNTRFQWCIdtWEQj3l0nzw8w6d8rgWtOd/riH0kJ1ydnPBeX+p5m?=
- =?us-ascii?Q?H6vvRomyj0Pm0gyA/EiN/Lasl/xEoaJQsMETRqWjY764ReNVYLDJFrtK9r4s?=
- =?us-ascii?Q?QAEzTe2roxrmvzvh9e74St5uGQcgOghdOWYuq9pQkXCGWfQYNyoFpXlIhNjL?=
- =?us-ascii?Q?rWsiMrQ8nBycWKDcGlNvFksPT/Lg0e5plDEI0WxR+Txh2KFc0cDONv1bw6cm?=
- =?us-ascii?Q?RI3SDbHLk0TmlBIO2IDbhCbynG4iJ0PtKjN9KaqwVl8gzaUUP2wrEwYuQGRA?=
- =?us-ascii?Q?bgF0a8OKfMbi3S5wpudgO1RvqLBSaDSQhZTzzjrbj8Jv7wXtdFQxKDuHXEo3?=
- =?us-ascii?Q?Qw054fcYkNJtBcnr0zoxGC31Oz5g0AAB0D1FoXgymaNVaSQxCCKTSxNpluql?=
- =?us-ascii?Q?Yoz0IC9zHnFsWm+/QJsdU1Va8FKVnF981c9SYrdSpAMvMTuYI7GCJ2nvh40Y?=
- =?us-ascii?Q?bB7otyjqlf/TCkQ/l63GcoJ/TT4y8/QLN8OfOO9I?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0c03f903-aa17-49ab-a87f-08dbc7c31bec
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB6780.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Oct 2023 05:55:00.7617
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5l3ILbIHHwQRsLcHl1riEbO3/kC0pbpRVTtLjiqZ01fMN+Ci86tvD/xeilPyMtu0AX1Ezgz4s8fw5FEavjFxLg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8562
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sun, 8 Oct 2023 11:30:52 +0530
+Message-ID: <CA+G9fYsJA4fkLCDdXfCdjqJz3q3K0TErgKjypuLmPZ=EU3MbDg@mail.gmail.com>
+Subject: selftests: cgroup: test_core - Unable to handle kernel NULL pointer
+ dereference at virtual address
+To:     "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, lkft-triage@lists.linaro.org
+Cc:     Lucas Karpinski <lkarpins@redhat.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <muchun.song@linux.dev>,
+        Shuah Khan <shuah@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
->index 0fc5e6312e93..d77b030e996c 100644
->--- a/arch/x86/include/asm/kvm_host.h
->+++ b/arch/x86/include/asm/kvm_host.h
->@@ -803,6 +803,7 @@ struct kvm_vcpu_arch {
-> 
-> 	u64 xcr0;
-> 	u64 guest_supported_xcr0;
->+	u64 guest_supported_xss;
+While running selftests: cgroup: test_kmem on FVP following kernel crash
+noticed on Linux next 6.6.0-rc4-next-20231006.
 
-This structure has the ia32_xss field. how about moving it here for symmetry?
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> 
-> 	struct kvm_pio_request pio;
-> 	void *pio_data;
->diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
->index 1f206caec559..4e7a820cba62 100644
->--- a/arch/x86/kvm/cpuid.c
->+++ b/arch/x86/kvm/cpuid.c
->@@ -275,7 +275,8 @@ static void __kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu, struct kvm_cpuid_e
-> 	best = cpuid_entry2_find(entries, nent, 0xD, 1);
-> 	if (best && (cpuid_entry_has(best, X86_FEATURE_XSAVES) ||
-> 		     cpuid_entry_has(best, X86_FEATURE_XSAVEC)))
->-		best->ebx = xstate_required_size(vcpu->arch.xcr0, true);
->+		best->ebx = xstate_required_size(vcpu->arch.xcr0 |
->+						 vcpu->arch.ia32_xss, true);
-> 
-> 	best = __kvm_find_kvm_cpuid_features(vcpu, entries, nent);
-> 	if (kvm_hlt_in_guest(vcpu->kvm) && best &&
->@@ -312,6 +313,17 @@ static u64 vcpu_get_supported_xcr0(struct kvm_vcpu *vcpu)
-> 	return (best->eax | ((u64)best->edx << 32)) & kvm_caps.supported_xcr0;
-> }
-> 
->+static u64 vcpu_get_supported_xss(struct kvm_vcpu *vcpu)
->+{
->+	struct kvm_cpuid_entry2 *best;
->+
->+	best = kvm_find_cpuid_entry_index(vcpu, 0xd, 1);
->+	if (!best)
->+		return 0;
->+
->+	return (best->ecx | ((u64)best->edx << 32)) & kvm_caps.supported_xss;
->+}
->+
-> static bool kvm_cpuid_has_hyperv(struct kvm_cpuid_entry2 *entries, int nent)
-> {
-> 	struct kvm_cpuid_entry2 *entry;
->@@ -358,6 +370,7 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
-> 	}
-> 
-> 	vcpu->arch.guest_supported_xcr0 = vcpu_get_supported_xcr0(vcpu);
->+	vcpu->arch.guest_supported_xss = vcpu_get_supported_xss(vcpu);
-> 
-> 	/*
-> 	 * FP+SSE can always be saved/restored via KVM_{G,S}ET_XSAVE, even if
->diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->index 1258d1d6dd52..9a616d84bd39 100644
->--- a/arch/x86/kvm/x86.c
->+++ b/arch/x86/kvm/x86.c
->@@ -3795,20 +3795,25 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
-> 			vcpu->arch.ia32_tsc_adjust_msr += adj;
-> 		}
-> 		break;
->-	case MSR_IA32_XSS:
->-		if (!msr_info->host_initiated &&
->-		    !guest_cpuid_has(vcpu, X86_FEATURE_XSAVES))
->+	case MSR_IA32_XSS: {
->+		bool host_msr_reset = msr_info->host_initiated && data == 0;
->+
->+		if (!guest_cpuid_has(vcpu, X86_FEATURE_XSAVES) &&
->+		    (!host_msr_reset || !msr_info->host_initiated))
+Boot log:
+[    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd0f0]
+[    0.000000] Linux version 6.6.0-rc4-next-20231006 (tuxmake@tuxmake)
+(aarch64-linux-gnu-gcc (Debian 13.2.0-2) 13.2.0, GNU ld (GNU Binutils
+for Debian) 2.41) #1 SMP PREEMPT @1696592107
+[    0.000000] KASLR enabled
+[    0.000000] Machine model: FVP Base RevC
+...
 
-!msr_info->host_initiated can be dropped here.
+Running selftests: cgroup
+
+# selftests: cgroup: test_kmem
+# ok 1 test_kmem_basic
+#
+not ok 2 selftests: cgroup: test_kmem # TIMEOUT 45 seconds
+# timeout set to 45
+# selftests: cgroup: test_core
+# ok 1 test_cgcore_internal_process_constraint
+# ok 2 test_cgcore_top_down_constraint_enable
+# ok 3 test_cgcore_top_down_constraint_disable
+# ok 4 test_cgcore_no_internal_process_constraint_on_threads
+# ok 5 test_cgcore_parent_becomes_threaded
+# ok 6 test_cgcore_invalid_domain
+# ok 7 test_cgcore_populated
+# ok 8 test_cgcore_proc_migration
+# ok 9 test_cgcore_thread_migration
+# ok 10 test_cgcore_destroy
+# ok 11 test_cgcore_lesser_euid_open
+# ok 12 test_cgcore_lesser_ns_open
+[  400.108176] Unable to handle kernel NULL pointer dereference at
+virtual address 0000000000000000
+[  400.108404] Mem abort info:
+[  400.108523]   ESR = 0x0000000096000004
+[  400.108656]   EC = 0x25: DABT (current EL), IL = 32 bits
+[  400.108810]   SET = 0, FnV = 0
+[  400.108942]   EA = 0, S1PTW = 0
+[  400.109074]   FSC = 0x04: level 0 translation fault
+[  400.109219] Data abort info:
+[  400.109338]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+[  400.109488]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+ok 3 selftests: cgroup: test_core
+[  400.109644]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+[  400.109802] user pgtable: 4k pages, 48-bit VAs, pgdp=00000008898f3000
+[  400.109969] [0000000000000000] pgd=0000000000000000, p4d=0000000000000000
+[  400.110267] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
+[  400.110372] Modules linked in: pl111_drm drm_dma_helper arm_spe_pmu
+panel_simple crct10dif_ce drm_kms_helper fuse drm backlight dm_mod
+ip_tables x_tables
+[  400.110872] CPU: 4 PID: 131 Comm: kworker/4:2 Not tainted
+6.6.0-rc4-next-20231006 #1
+[  400.111010] Hardware name: FVP Base RevC (DT)
+[  400.111093] Workqueue: cgroup_destroy css_free_rwork_fn
+[  400.111238] pstate: 03402009 (nzcv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
+[  400.111380] pc : percpu_ref_put_many.constprop.0+0xa0/0xf0
+[  400.111540] lr : percpu_ref_put_many.constprop.0+0x18/0xf0
+[  400.111700] sp : ffff800080713ca0
+[  400.111774] x29: ffff800080713ca0 x28: 0000000000000000 x27: 0000000000000000
+[  400.111970] x26: ffff00087f779d28 x25: ffff000800a3f700 x24: ffff0008003c2205
+[  400.112173] x23: 0000000000000036 x22: ffffd7c64df6a000 x21: ffffd7c64df6cb70
+[  400.112373] x20: ffff0008094d2000 x19: ffff000806dfa4c0 x18: ffff800083893c48
+[  400.112575] x17: 0000000000000000 x16: 0000000000000001 x15: 0000000000000001
+[  400.112765] x14: 0000000000000004 x13: ffffd7c64df87258 x12: 0000000000000000
+[  400.112964] x11: ffff000800402e60 x10: ffff000800402da0 x9 : ffffd7c64b786a90
+[  400.113166] x8 : ffff800080713b68 x7 : 0000000000000000 x6 : 0000000000000001
+[  400.113360] x5 : ffffd7c64df6a000 x4 : ffffd7c64df6a288 x3 : 0000000000000000
+[  400.113558] x2 : ffff0008044e0000 x1 : 0000000000000000 x0 : ffffffffffffffff
+[  400.113756] Call trace:
+[  400.113819]  percpu_ref_put_many.constprop.0+0xa0/0xf0
+[  400.113980]  __mem_cgroup_free+0x2c/0xe8
+[  400.114129]  mem_cgroup_css_free+0x16c/0x1e8
+[  400.114281]  css_free_rwork_fn+0x54/0x370
+[  400.114408]  process_one_work+0x148/0x3b8
+[  400.114530]  worker_thread+0x32c/0x450
+[  400.114650]  kthread+0x104/0x118
+[  400.114797]  ret_from_fork+0x10/0x20
+[  400.114954] Code: d65f03c0 f9400661 d503201f 92800000 (f8e00020)
+[  400.115051] ---[ end trace 0000000000000000 ]---
+
+
+Links:
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20231006/testrun/20279395/suite/log-parser-test/test/check-kernel-oops/log
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20231006/testrun/20279395/suite/log-parser-test/tests/
+ - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2WO7SlYRh87RbfNXUbvVZx2HBL8
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2WO7RIllBsiwSAbiLChz9w6KXn8/
+- https://storage.tuxsuite.com/public/linaro/lkft/builds/2WO7RIllBsiwSAbiLChz9w6KXn8/config
+https://storage.tuxsuite.com/public/linaro/lkft/builds/2WO7RIllBsiwSAbiLChz9w6KXn8/tuxmake_reproducer.sh
+
+--
+Linaro LKFT
+https://lkft.linaro.org
