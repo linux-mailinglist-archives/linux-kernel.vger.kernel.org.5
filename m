@@ -2,123 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6667BCD8A
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 11:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3928F7BCD8B
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 11:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344459AbjJHJe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 05:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42456 "EHLO
+        id S1344554AbjJHJgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 05:36:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230441AbjJHJe6 (ORCPT
+        with ESMTP id S230441AbjJHJgT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 05:34:58 -0400
-Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9043B6;
-        Sun,  8 Oct 2023 02:34:56 -0700 (PDT)
-Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-49369d29be3so1512979e0c.3;
-        Sun, 08 Oct 2023 02:34:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696757696; x=1697362496; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kBlUVQJaS2QVKhbKscoUL4NFod1x8khTjMBK7u8aW6o=;
-        b=ZvqNHj8alv/9+LKotQHfuH+zShml24HDq8e0jJUi+ftX+PU9DPeZj+JUIaJ3NfBVlo
-         ZMjukFeyRt1SxAuw2PgLf/wJ3tYpYDmYr8k0XbuHr8ic8Hr+zzk1gH0jCty9kCGP1D0F
-         P3VURKLqxukX2+KKlVejmFRdPA5zR+J0WSD131pGj0wtDOXVMQDWrroJiTMZ6VA1Yvn4
-         z3drx7zktg8m/l/IxbaI/DV/2+pEg609lj7qx8ImGD1GUj1tRB2vmNaJDK18ghE7Esut
-         x7tPdSPxdSVVb6itKw8RprwSE7a8GNvv2oLu0JvScd3gQUdBdVgLWOeE8yO6QfnU2MoS
-         kF6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696757696; x=1697362496;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kBlUVQJaS2QVKhbKscoUL4NFod1x8khTjMBK7u8aW6o=;
-        b=L0DJIVlSz/Lh69l9r1UgWU1zneZgtbwQto7tT0WsgEVgsUtIRc7m+XZMoD2DbrEgDJ
-         C8iMZa98HF0UcpUJI/bY4EwufVo4VgASi+5r8Sdx2MGgBOLxBtOuPeiWarxq+zy0gBAD
-         jGO+yOq2cZmPDu2DC9PZh1JQYORsvvGoiLDtsKp7Wyhq2iCeiG1MdjFuCG6HayuffI2+
-         2Q/Y0bljJIvE82hwoDOCrFGeBYycLthEbnXi1c0iylWgP4c4Yx2WTOiP8RjJ4B2mTYEo
-         91sw8tPG5rzqPJVgyuOdc7CmzsxBe7gMAqR8JObtLRZiW5P2ro3P7JH74bVD7C1ScMyV
-         /lKg==
-X-Gm-Message-State: AOJu0YxexSNbAePnpfFRqR/a0/cQob8CeSmOLEzknh/SD2wVAwdNLnfh
-        MM780F3uUdHlltyw1kCl8kxs+eOt6FGwSvtskfBzQaghfSN6clzU
-X-Google-Smtp-Source: AGHT+IHl/YyHGv2Hw1jRFM1F/jxzZPHFV8Mii7BcWH3Q24BGobPGCn29/2DAfjv3ZiQhf4x7TtkZO9aS6ssH1NcOwPo=
-X-Received: by 2002:a67:f5cb:0:b0:452:6b50:1e7e with SMTP id
- t11-20020a67f5cb000000b004526b501e7emr9290513vso.35.1696757695971; Sun, 08
- Oct 2023 02:34:55 -0700 (PDT)
+        Sun, 8 Oct 2023 05:36:19 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A141BB6;
+        Sun,  8 Oct 2023 02:36:17 -0700 (PDT)
+Received: from kwepemm000003.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4S3H4h31CJzRhp3;
+        Sun,  8 Oct 2023 17:32:20 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm000003.china.huawei.com (7.193.23.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Sun, 8 Oct 2023 17:36:14 +0800
+Subject: Re: [PATCH v1 6/7] perf pmu-events: Remember the events and metrics
+ table
+To:     Ian Rogers <irogers@google.com>
+CC:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Jing Zhang <renyu.zj@linux.alibaba.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        <coresight@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20231007021326.4156714-1-irogers@google.com>
+ <20231007021326.4156714-7-irogers@google.com>
+ <39b28ad5-8086-76ed-a4c6-bfc8271d226b@huawei.com>
+ <CAP-5=fV3NO-3Q=7YQ0S6RNJUX1dWfszX-paFSPwniNhSokYRew@mail.gmail.com>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <ae8fae39-8585-c692-9200-80a551b30eb5@huawei.com>
+Date:   Sun, 8 Oct 2023 17:36:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20231007130905.78554-1-jianlv@ebay.com> <87mswtkj8x.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <CAFA-uR9ymPTktMbi96cb+smjQHB4Y=8SQfAqmsqTbniGbkGTLA@mail.gmail.com> <87il7hjzdp.fsf@yhuang6-desk2.ccr.corp.intel.com>
-In-Reply-To: <87il7hjzdp.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Jianlin Lv <iecedge@gmail.com>
-Date:   Sun, 8 Oct 2023 17:34:44 +0800
-Message-ID: <CAFA-uR9n-rKw4k26Bhm=P16jOMtAncRsno7o=yYJ1kTxmB_mRw@mail.gmail.com>
-Subject: Re: [PATCH] memcg: add interface to force disable swap
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        corbet@lwn.net, mhocko@kernel.org, roman.gushchin@linux.dev,
-        shakeelb@google.com, muchun.song@linux.dev,
-        akpm@linux-foundation.org, yosryahmed@google.com,
-        willy@infradead.org, linmiaohe@huawei.com,
-        wangkefeng.wang@huawei.com, laoar.shao@gmail.com,
-        yuzhao@google.com, wuyun.abel@bytedance.com, david@redhat.com,
-        peterx@redhat.com, vishal.moola@gmail.com, hughd@google.com,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, jianlv@ebay.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAP-5=fV3NO-3Q=7YQ0S6RNJUX1dWfszX-paFSPwniNhSokYRew@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.111.205]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm000003.china.huawei.com (7.193.23.66)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 8, 2023 at 4:26=E2=80=AFPM Huang, Ying <ying.huang@intel.com> w=
-rote:
->
-> Jianlin Lv <iecedge@gmail.com> writes:
->
-> > On Sun, Oct 8, 2023 at 9:17=E2=80=AFAM Huang, Ying <ying.huang@intel.co=
-m> wrote:
-> >>
-> >> Jianlin Lv <iecedge@gmail.com> writes:
-> >>
-> >> > From: Jianlin Lv <iecedge@gmail.com>
-> >> >
-> >> > Global reclaim will swap even if swappiness is set to 0.
-> >>
-> >> Why?  Can you elaborate the situation?
-> >
-> > We reproduced the issue of pages being swapped out even when swappiness=
- is
-> > set to 0 in the production environment through the following test progr=
-am.
-> > Not sure whether this program can reproduce the issue in any environmen=
-t.
-> >
-> > From the implementation of the get_scan_count code, it can be seen that=
-,
-> > based on the current runtime situation, memory reclamation will choose =
-a
-> > scanning method (SCAN_ANON/SCAN_FILE/SCAN_FRACT) to determine how
-> > aggressively the anon and file LRU are scanned. However, this introduce=
-s
-> > uncertainty.
-> >
-> > For the JVM issue at hand, we expect deterministic SCAN_FILE scan to av=
-oid
-> > swapping out anon pages.
->
-> Why doesn't memory.swap.max work?
+Hello,
 
-The main reason is that deployed nodes  are kept on cgroups v1.
+On 2023/10/8 13:49, Ian Rogers wrote:
+> On Sat, Oct 7, 2023 at 8:39 PM Yang Jihong <yangjihong1@huawei.com> wrote:
+>>
+>> Hello,
+>>
+>> On 2023/10/7 10:13, Ian Rogers wrote:
+>>> strcmp_cpuid_str performs regular expression comparisons. Avoid
+>>> repeated computation of the table by remembering the table in a
+>>> static.
+>>>
+>>> Signed-off-by: Ian Rogers <irogers@google.com>
+>>> ---
+>>>    tools/perf/pmu-events/jevents.py | 48 +++++++++++++++++++-------------
+>>>    1 file changed, 28 insertions(+), 20 deletions(-)
+>>>
+>>> diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
+>>> index fd009752b427..8d8d5088c53c 100755
+>>> --- a/tools/perf/pmu-events/jevents.py
+>>> +++ b/tools/perf/pmu-events/jevents.py
+>>> @@ -978,28 +978,32 @@ int pmu_metrics_table__for_each_metric(const struct pmu_metrics_table *table,
+>>>
+>>>    const struct pmu_events_table *perf_pmu__find_events_table(struct perf_pmu *pmu)
+>>>    {
+>>> -        const struct pmu_events_table *table = NULL;
+>>> -        char *cpuid = perf_pmu__getcpuid(pmu);
+>>> +        static const struct pmu_events_table *table;
+>>>            size_t i;
+>>>
+>>> -        /* on some platforms which uses cpus map, cpuid can be NULL for
+>>> -         * PMUs other than CORE PMUs.
+>>> -         */
+>>> -        if (!cpuid)
+>>> -                return NULL;
+>>> -
+>>> -        i = 0;
+>>> -        for (;;) {
+>>> -                const struct pmu_events_map *map = &pmu_events_map[i++];
+>>> -                if (!map->arch)
+>>> -                        break;
+>>> -
+>>> -                if (!strcmp_cpuid_str(map->cpuid, cpuid)) {
+>>> -                        table = &map->event_table;
+>>> -                        break;
+>>> +        if (!table) {
+>> If there is no matched table in pmu_events_map,
+>> perf_pmu__find_events_table() will enter this branch for repeated search
+>> each time.
+>> Or do we need to use another variable to indicate whether the search has
+>> been performed?
+> 
+> Agreed, the behavior will match the existing behavior. Longer term I
+> want to remove this code. Do you have a scenario we should optimize
+> for here?
+> 
 
->
-> --
-> Best Regards,
-> Huang, Ying
+Yes, the CPU of the environment I'm using is "AuthenticAMD-15-6B-1" (not 
+in the pmu_events_map).
+As a result, the search is repeated every time.
+(If `perf record true` is executed once, the search is repeated for 6 
+times.)
+
+This commit avoids repeated lookups to improve performance,
+so if it's feasible, is it best to consider improving performance in 
+this case as well?
+
+Thanks,
+Yang
