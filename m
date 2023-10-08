@@ -2,149 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B06617BCFEA
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 21:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F4DB7BCFEC
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 22:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344511AbjJHT6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 15:58:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38016 "EHLO
+        id S1344553AbjJHT76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 15:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbjJHT6a (ORCPT
+        with ESMTP id S229945AbjJHT75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 15:58:30 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E5DAC;
-        Sun,  8 Oct 2023 12:58:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696795109; x=1728331109;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=cKwxlSWZrewmQgKrJB6brf7XXi0sqVpTNLHHsR9nXbk=;
-  b=iKzYpjOTzqKhKXQMSN+eojWZ8S0Fnupg6Lm05Jfs3CG2UNx84ZjYaKeA
-   Y0f5n6vzTdRCRv/5BSTp0p20dnnXNEUR7qw0GbKUn6oZmgSA0EoOggYWl
-   /RlP4M4ih8h7AeEWkC+iDMlGmgl9L2uNc9KhOKhQDIK1W5Zg48aqkObH2
-   xK3i5oQDR83q9LKAncTBseRj/QzuugSED/Bci97xo79vnkbGrq8ruFdWb
-   esWW4xjNEfEykbdf2fthyoDNaLet92EtNer0O6S/B01TvfFYmk+yAFbYA
-   26gPG2UnV9SmW/HHOr1UvAFZI5+N7idEKA6fY5m+YnRahylb6pClIsbaj
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="415019063"
-X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
-   d="scan'208";a="415019063"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2023 12:58:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="869002523"
-X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
-   d="scan'208";a="869002523"
-Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 08 Oct 2023 12:58:13 -0700
-Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qpZul-0005hz-1T;
-        Sun, 08 Oct 2023 19:58:11 +0000
-Date:   Mon, 9 Oct 2023 03:57:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tianyi Liu <i.pear@outlook.com>, seanjc@google.com,
-        pbonzini@redhat.com, peterz@infradead.org, mingo@redhat.com,
-        acme@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        kvm@vger.kernel.org, x86@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-        Tianyi Liu <i.pear@outlook.com>
-Subject: Re: [PATCH v2 4/5] perf kvm: Support sampling guest callchains
-Message-ID: <202310090338.4PmYjmBS-lkp@intel.com>
-References: <SY4P282MB108433024762F1F292D47C2A9DCFA@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
+        Sun, 8 Oct 2023 15:59:57 -0400
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41476AC;
+        Sun,  8 Oct 2023 12:59:56 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-5a4c073cc06so41275997b3.1;
+        Sun, 08 Oct 2023 12:59:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696795195; x=1697399995; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sdYr4d7gBllm6mIyE1rAZ7SVZ/Nyogo/s69v4RDk5B8=;
+        b=cha8+LDw4aMkCO6hjm09g8T226yl4MGnFIol8lBX6uMZNi5leWnxF1DDW0b0GkM8PL
+         2zmdBFvJ/+zS/ajjATQ17eG4835GxHkYAjGay+F55agCapR+yAYiN4KI93iQTiqNNAE+
+         I3Xs8WP34IfK/cOu9t8sD2s3lZeGdvQTDgYd0f1lUm36ME+adHxEM5cU4d/g8/XduWOd
+         v97gwkfiG8j25Dk6XAI3/UZTQe41D+gF6gTmzBCSSskPZdmqZB3HBBTRUza9/hOm4BH2
+         8NKJOvR49wHrwzLeSTyhCs2+iZUEkxsR3+i3QFrssJAM7CAWF/cOgyCZ3JHkhhocca6c
+         jbnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696795195; x=1697399995;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sdYr4d7gBllm6mIyE1rAZ7SVZ/Nyogo/s69v4RDk5B8=;
+        b=WP8/qTmfYfjrKD3BikmJRXhdGLH6LHBhb6lAI3ZskFYVNpZzoZHbbapeKEklRaL/tR
+         LWOC7uCbHqmZR7JGARVEbOteeLlLFgB8x2nzWcPJBeJVIczLvSIGgyC62H10jQ8Twcm2
+         0NAQWFDpoHgm6MtABYYnN717YUtfozcxfl1KtYzE5Ds4R8LTPRzbto91w1UyJqWEKR3o
+         /mCYTpXtYOTc1OCkXbOBxfdeUC5XgUEjvyfAxgTOTDJFKA+5oUrvn+Q9gQNrlC9aY8Z7
+         dfX1uH2Iyn8iyOPU1v8RBdMISWn4WvTV0zZz6YM2QoDXFAM9VcP/kQSRBnEdAoa8zBPv
+         ikRg==
+X-Gm-Message-State: AOJu0YyX1ulIxyidTGF63m6E9bL9Atw1qZau2bYv6W86T9gu+ZVb0IgA
+        a2PmFjpDbsKoEcBJAQhimRCet+h9QlZnO4dkRJY=
+X-Google-Smtp-Source: AGHT+IHyfN0gqXCS8NjyFGxv3STLk4oQJvMKyqZ3FwpKgQpMbwp4UeIAm4Andx8CtEUJbebwzLVG5y2mGYYplpwjJls=
+X-Received: by 2002:a81:6086:0:b0:59f:6440:7eff with SMTP id
+ u128-20020a816086000000b0059f64407effmr7234775ywb.15.1696795195430; Sun, 08
+ Oct 2023 12:59:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SY4P282MB108433024762F1F292D47C2A9DCFA@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230815065346.131387-1-andrea.righi@canonical.com>
+In-Reply-To: <20230815065346.131387-1-andrea.righi@canonical.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Sun, 8 Oct 2023 21:59:44 +0200
+Message-ID: <CANiq72=t3H7FseigxjMywwAWr2hM5YKZPqJMO_0dH86WwirtEg@mail.gmail.com>
+Subject: Re: [PATCH] rust: fix bindgen build error with fstrict-flex-arrays
+To:     Andrea Righi <andrea.righi@canonical.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tianyi,
+On Tue, Aug 15, 2023 at 8:54=E2=80=AFAM Andrea Righi <andrea.righi@canonica=
+l.com> wrote:
+>
+> Commit df8fc4e934c1 ("kbuild: Enable -fstrict-flex-arrays=3D3") enabled
+> '-fstrict-flex-arrays=3D3' globally, but bindgen does not recognized this
+> compiler option, triggering the following build error:
+>
+>  error: unknown argument: '-fstrict-flex-arrays=3D3', err: true
+>
+> Add '-fstrict-flex-arrays' to the list of cflags that should be ignored
+> by bindgen.
+>
+> Fixes: df8fc4e934c1 ("kbuild: Enable -fstrict-flex-arrays=3D3")
+> Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
 
-kernel test robot noticed the following build warnings:
+Applied to `rust-fixes` (with an extra summary of the discussion in
+the list), thanks everyone!
 
-[auto build test WARNING on 8a749fd1a8720d4619c91c8b6e7528c0a355c0aa]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Tianyi-Liu/KVM-Add-arch-specific-interfaces-for-sampling-guest-callchains/20231008-230042
-base:   8a749fd1a8720d4619c91c8b6e7528c0a355c0aa
-patch link:    https://lore.kernel.org/r/SY4P282MB108433024762F1F292D47C2A9DCFA%40SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
-patch subject: [PATCH v2 4/5] perf kvm: Support sampling guest callchains
-config: i386-tinyconfig (https://download.01.org/0day-ci/archive/20231009/202310090338.4PmYjmBS-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231009/202310090338.4PmYjmBS-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310090338.4PmYjmBS-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   arch/x86/events/core.c: In function 'perf_callchain_guest32':
->> arch/x86/events/core.c:2784:43: warning: passing argument 1 of 'perf_guest_read_virt' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-    2784 |                 if (!perf_guest_read_virt(&fp->next_frame, &frame.next_frame,
-         |                                           ^~~~~~~~~~~~~~~
-   In file included from arch/x86/events/core.c:15:
-   include/linux/perf_event.h:1531:41: note: expected 'void *' but argument is of type 'const u32 *' {aka 'const unsigned int *'}
-    1531 | static inline bool perf_guest_read_virt(void*, void*, unsigned int)     { return 0; }
-         |                                         ^~~~~
-   arch/x86/events/core.c:2787:43: warning: passing argument 1 of 'perf_guest_read_virt' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-    2787 |                 if (!perf_guest_read_virt(&fp->return_address, &frame.return_address,
-         |                                           ^~~~~~~~~~~~~~~~~~~
-   include/linux/perf_event.h:1531:41: note: expected 'void *' but argument is of type 'const u32 *' {aka 'const unsigned int *'}
-    1531 | static inline bool perf_guest_read_virt(void*, void*, unsigned int)     { return 0; }
-         |                                         ^~~~~
-   arch/x86/events/core.c: In function 'perf_callchain_guest':
-   arch/x86/events/core.c:2808:51: warning: passing argument 1 of 'perf_guest_read_virt' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-    2808 |                         if (!perf_guest_read_virt(&fp->next_frame, &frame.next_frame,
-         |                                                   ^~~~~~~~~~~~~~~
-   include/linux/perf_event.h:1531:41: note: expected 'void *' but argument is of type 'struct stack_frame * const*'
-    1531 | static inline bool perf_guest_read_virt(void*, void*, unsigned int)     { return 0; }
-         |                                         ^~~~~
-   arch/x86/events/core.c:2811:51: warning: passing argument 1 of 'perf_guest_read_virt' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-    2811 |                         if (!perf_guest_read_virt(&fp->return_address, &frame.return_address,
-         |                                                   ^~~~~~~~~~~~~~~~~~~
-   include/linux/perf_event.h:1531:41: note: expected 'void *' but argument is of type 'const long unsigned int *'
-    1531 | static inline bool perf_guest_read_virt(void*, void*, unsigned int)     { return 0; }
-         |                                         ^~~~~
-
-
-vim +2784 arch/x86/events/core.c
-
-  2775	
-  2776	static inline void
-  2777	perf_callchain_guest32(struct perf_callchain_entry_ctx *entry)
-  2778	{
-  2779		struct stack_frame_ia32 frame;
-  2780		const struct stack_frame_ia32 *fp;
-  2781	
-  2782		fp = (void *)perf_guest_get_frame_pointer();
-  2783		while (fp && entry->nr < entry->max_stack) {
-> 2784			if (!perf_guest_read_virt(&fp->next_frame, &frame.next_frame,
-  2785				sizeof(frame.next_frame)))
-  2786				break;
-  2787			if (!perf_guest_read_virt(&fp->return_address, &frame.return_address,
-  2788				sizeof(frame.return_address)))
-  2789				break;
-  2790			perf_callchain_store(entry, frame.return_address);
-  2791			fp = (void *)frame.next_frame;
-  2792		}
-  2793	}
-  2794	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Cheers,
+Miguel
