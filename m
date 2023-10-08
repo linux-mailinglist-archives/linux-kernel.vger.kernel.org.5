@@ -2,75 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3337BCA98
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 02:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A42F27BCA96
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 02:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344168AbjJGX77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 19:59:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46012 "EHLO
+        id S1344223AbjJHAGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 20:06:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbjJGX76 (ORCPT
+        with ESMTP id S229589AbjJHAGr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 19:59:58 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB62B9;
-        Sat,  7 Oct 2023 16:59:56 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-690d8fb3b7eso3043710b3a.1;
-        Sat, 07 Oct 2023 16:59:56 -0700 (PDT)
+        Sat, 7 Oct 2023 20:06:47 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B364B6;
+        Sat,  7 Oct 2023 17:06:45 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-690bd8f89baso2630852b3a.2;
+        Sat, 07 Oct 2023 17:06:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696723196; x=1697327996; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0sGMrrHTB+tR0vTLCrN7mfWdKJmRNgxB3WVQ9VyrNzI=;
-        b=aAfax5/HrnoVzk6C75CBveuxphaHH/PqVfJ6c/4b0KIGwum7h+pP4A3Z7ZbJUTCiFH
-         WcKDGbpu9dCtjSHIpMzmjkLcsNUy417PHujEVChJkGSFIWs20oWuwo2CjGnrfinA4kgS
-         VHlxq6PGzJP0Q6SWD49GTMzvDEhMauFVeNfT85Lx3Pt0ZWWckq3nTx/USI82wgUXH2mB
-         /qBNZkbS252zaKvjksjYYs9uwxrchpnpAkz6cI/PvoEqQDTS8yf2XAH161MVG6GLiqZl
-         thIsOAmd4Puhd/TEUAgpQWo7NbE0QAqGAc2EdJLFhlGe4Q7VM0Iftg/V2WMFx5oZs8MY
-         1X5A==
+        d=gmail.com; s=20230601; t=1696723604; x=1697328404; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bTUmEcdn90yDICcymw/6ZAnQy50L9PCf2cOKREv6Dxg=;
+        b=foI/AKBtnOAk1LUdI7Sl7MPLCpYRdSS5meqE/VYa6BZIjKc0Deni3ev145NwVPlm2o
+         MBTtT/aE25tU/KhM41MJRhwrq28uRagM/2RWDDJGL0KZ82hs6tcn2vijIcxzCnnl0kPk
+         y40nByVnrBpayf0nnRLNhocJNfKS4f31ShKHiM0oq6HQiiohlJ8UlKd1n2XTVX4Qd0aT
+         jk4SeP9Am34Fn/PqlGRPEXWR4Df0jbd4SnvAX3QvV00SnuKU5r6gnHKNC4pjgVXqtvkN
+         eU5aEhT28hvjx05Am7Wih2ujB93XOWhlp2PR9H7f46smmQ87GDDxphf1oMuDE8NmjDs3
+         onWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696723196; x=1697327996;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0sGMrrHTB+tR0vTLCrN7mfWdKJmRNgxB3WVQ9VyrNzI=;
-        b=j0VO5ABJkrcIXVVuPgSqrJEm/4Q1shDFeHlq739CGT/OVG5DNU/7I8i50vdNq8DzNR
-         yDalLKcSGl3ysm3+w26+5gef4beH64hyRCeoGUgwajMNduVL4Pi/Za9yjYWFOrUVSwzN
-         4U/olmnHq1ZqrA4sR2UDdZRGDRzlL/cjP/1J9AMVjw1wx5LAO+9LCS2CMs/8/2PDAzmL
-         v2QvlvP1RCwhG5snx2g1uzOx6SM6QCX/3fZM5wun9iQ4+PTnIEw/wfLwZrxfkUagV8Rq
-         CPK4RzlUGxvF0ce3tBRvo1GYvZYwp7ZxZPGVrIOsvBtUyzRUUmFL63PYnwqK88gL7vlI
-         SwLQ==
-X-Gm-Message-State: AOJu0YybvDk1iI2Fs636eWglYXTUM1IiqeD+1QKYOdjBmZQiiFdiP8kD
-        rWYg0mEbVp3BTHxZRIRpjoY=
-X-Google-Smtp-Source: AGHT+IHJ9hE857rlcCCEcXGpcF+Gvj1SrB3Na2tvBurEBoU5+ZizPLQo14DoJbjzAoU0GtMSMNPcow==
-X-Received: by 2002:a05:6a00:1511:b0:690:cb8f:3320 with SMTP id q17-20020a056a00151100b00690cb8f3320mr14902520pfu.24.1696723195652;
-        Sat, 07 Oct 2023 16:59:55 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696723604; x=1697328404;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bTUmEcdn90yDICcymw/6ZAnQy50L9PCf2cOKREv6Dxg=;
+        b=DS8dbe1+SevZzDIXDfHnpeeSyy0jwo+hl3DxGpO5zvQlUUxzCPvupCyipqLB7LtL3y
+         h1H/oUQ0Ao8omCgaRW7blJkN4H4RbcuSmSupAU/kOuX14imZO+f1zEPas7fL1njzX5MJ
+         HKqQiXLlaJALEqYlIwXVPLmuGTvzecwo6YNiOS76lAX0WtT6M50zYX9CzmBBglHWK7bE
+         kpcbdyRo4dcXvNza+O+PO1lQxZKkO8wkF4X4wWNGCuXfY67ig8hVUPe2GPd3jCRMuAjh
+         XKzPk9MFThb02qUg9NEtyTxPh0oKVDoZYkyMsGRoOMIenaL4rE4fU5oBATzK56QoZ9H5
+         zgvg==
+X-Gm-Message-State: AOJu0YzqrRyji0CSM8LKv3i0YTJ4rpzYNEQrFWjOmHPL+vQ/nr/AIDxY
+        GMyBHgk0ER+wDX8zLnRdXog=
+X-Google-Smtp-Source: AGHT+IFHDN5+FLcvCVs5Z8TB7ZVZRrjOERwcy9tGqSxCapxu6Q0LwtpbiHHkneqIFeyw3DFqNYBhig==
+X-Received: by 2002:a17:902:ceca:b0:1c5:9c73:c91c with SMTP id d10-20020a170902ceca00b001c59c73c91cmr13506515plg.48.1696723604556;
+        Sat, 07 Oct 2023 17:06:44 -0700 (PDT)
 Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id m16-20020aa79010000000b0068fde95aa93sm3649742pfo.135.2023.10.07.16.59.54
+        by smtp.gmail.com with ESMTPSA id c16-20020a170903235000b001c0a414695bsm6473567plh.43.2023.10.07.17.06.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Oct 2023 16:59:55 -0700 (PDT)
+        Sat, 07 Oct 2023 17:06:43 -0700 (PDT)
 Received: by debian.me (Postfix, from userid 1000)
-        id 131A881B5CE3; Sun,  8 Oct 2023 06:59:50 +0700 (WIB)
-Date:   Sun, 8 Oct 2023 06:59:49 +0700
+        id 4217381B5CE3; Sun,  8 Oct 2023 07:06:41 +0700 (WIB)
+Date:   Sun, 8 Oct 2023 07:06:41 +0700
 From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     "chaosesqueteam@yahoo.com" <chaosesqueteam@yahoo.com>,
-        Linux Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Julia Lawall <julia.lawall@inria.fr>
-Subject: Re: I can't get contributors for my C project. Can you help?
-Message-ID: <ZSHw9aGGHOpJ825J@debian.me>
+To:     <ankita@nvidia.com>, <jgg@nvidia.com>,
+        <alex.williamson@redhat.com>, <yishaih@nvidia.com>,
+        <shameerali.kolothum.thodi@huawei.com>, <kevin.tian@intel.com>
+Cc:     <aniketa@nvidia.com>, <cjia@nvidia.com>, <kwankhede@nvidia.com>,
+        <targupta@nvidia.com>, <vsethi@nvidia.com>, <acurrid@nvidia.com>,
+        <apopple@nvidia.com>, <jhubbard@nvidia.com>, <danw@nvidia.com>,
+        <anuaggarwal@nvidia.com>, <dnigam@nvidia.com>, <udhoke@nvidia.com>,
+        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v11 1/1] vfio/nvgpu: Add vfio pci variant module for
+ grace hopper
+Message-ID: <ZSHykZ2GgSn0fE_x@debian.me>
+References: <20231007202254.30385-1-ankita@nvidia.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rIWI1lPtTC5iY74n"
+        protocol="application/pgp-signature"; boundary="1NNiZyyRTdcr+9q8"
 Content-Disposition: inline
-In-Reply-To: <457035954.3503192.1696688953071@mail.yahoo.com>
+In-Reply-To: <20231007202254.30385-1-ankita@nvidia.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,59 +81,34 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---rIWI1lPtTC5iY74n
+--1NNiZyyRTdcr+9q8
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-[trim Cc: list as it becomes mess]
-
-On Sat, Oct 07, 2023 at 02:29:13PM +0000, chaosesqueteam@yahoo.com wrote:
-> Bagas;=20
-> There is no other place that C projects are talked about. In the past I c=
-ould get help and contributors just asking; now you are all silo'd in your =
-own little worlds and seethe with extreme anger or some castrated-drug-stup=
-or in "irony" and smugness against anyone that asks for some contributors. =
-Every single place bans anyone that asks for contributors to free-software =
-projects.
->=20
-> You feel you are superior because you "did code" 10 years ago and "suppor=
-t trans rights".
-> When asked to even allow a message to be seen that asks for contributors,=
- in this case a file format, to a fellow C project: you seethe or pretend y=
-ou are superior.
-> As if I didn't know where I was sending the message?=C2=A0
-> I sent it to: RMS, ESR, Bruce Perens, redhat, OpenBSD, NetBSD, and Line-U=
-nix. All C projects. Just like this engine.
-> I'm just asking for contributors. Not promoting "outrecehery" (some femin=
-ist BS), Not "master vs main", not "noo can't call things whitelist/blackli=
-st", and not Codes Of Conducts for free contributors. I'm just asking for C=
- programming help for 3d file formats I'd like to add to this free-software=
- project.
->=20
-> sourceforge.net/p/chaosesqueanthology/tickets/2/=C2=A0
+On Sun, Oct 08, 2023 at 01:52:54AM +0530, ankita@nvidia.com wrote:
+> PCI BAR are aligned to the power-of-2, but the actual memory on the
+> device may not. A read or write access to the physical address from the
+> last device PFN up to the next power-of-2 aligned physical address
+> results in reading ~0 and dropped writes.
 >=20
 
-Please don't top-post; reply inline with appropriate context instead.
+Reading garbage or padding in that case?
 
-I repeat, this is not userspace application support forum. This (LKML)
-is for Linux kernel development instead. You better get support somewhere
-else.
-
-Bye!
+Confused...
 
 --=20
 An old man doll... just what I always wanted! - Clara
 
---rIWI1lPtTC5iY74n
+--1NNiZyyRTdcr+9q8
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZSHw8QAKCRD2uYlJVVFO
-o9EgAQCRF6Zc4wh0NemCn3xpeWh3IkCq0j4AIB0fgpqiR5qt2wD+N999nC+PZtUo
-p2GRkb8+MrgrB8ZOzzuqBawblwKZ7Qs=
-=oe2q
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZSHykQAKCRD2uYlJVVFO
+o1M2APsH03ryYg6rpO4m+TNrTVyteM4p95rY7zKYL1/IPGVsXwEAkwHm3sLwLo3c
+mNHzMFH99QPPRscMn9RAbx+d0o69ZQw=
+=aAng
 -----END PGP SIGNATURE-----
 
---rIWI1lPtTC5iY74n--
+--1NNiZyyRTdcr+9q8--
