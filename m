@@ -2,223 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9229D7BD0D0
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 00:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51A657BD0D3
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 00:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344790AbjJHWVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 18:21:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49036 "EHLO
+        id S1344817AbjJHWW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 18:22:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344437AbjJHWVX (ORCPT
+        with ESMTP id S1344751AbjJHWW0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 18:21:23 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323F7AC
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 15:21:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696803682; x=1728339682;
-  h=date:from:to:cc:subject:message-id;
-  bh=cMhYEO+Kn0iz/QMlno4gE8MzbcduOet3XXC+vwi9r0Y=;
-  b=hsygbIDmQcGMHX4yu3aF9PNdglXGWpL9YUlhaO4UxPhll6WJQawhYaJe
-   ijrkqUf0EC/0jhbYrFuyb6HGHrLOoNVRTvTOlvFxzZvdpYeWkRBCV2zL8
-   mjrnTCGi16OPTVet4Ha2TLAFTeih1AYf+WZN2GXo+6+XwFiiSUwOxE6D5
-   /bMy8te+0fHuTW9Y6EM/U6Fmfz2pzPyGF99f0zWM+hC8Y9rDMcw2OLvYL
-   ei2nlPTiURwCgCGpfzAih0SFUrGwWoBxDHIikpn2uyBJ15IvNQr0hNepH
-   7aK5JPplZwim8o4y5J3WFA/R4x40yx2a/th0B9pgyiy72V+lHn+ASxmf/
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="382913260"
-X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
-   d="scan'208";a="382913260"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2023 15:21:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="818638632"
-X-IronPort-AV: E=Sophos;i="6.03,207,1694761200"; 
-   d="scan'208";a="818638632"
-Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 08 Oct 2023 15:21:20 -0700
-Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qpc9G-0005oV-1h;
-        Sun, 08 Oct 2023 22:21:18 +0000
-Date:   Mon, 09 Oct 2023 06:20:40 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:perf/core] BUILD SUCCESS
- a56d5551e1993ca84dd0c69df5a3d8223d13fb5f
-Message-ID: <202310090637.S5cP23MF-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Sun, 8 Oct 2023 18:22:26 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C522A3;
+        Sun,  8 Oct 2023 15:22:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CE76C433C8;
+        Sun,  8 Oct 2023 22:22:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696803744;
+        bh=V/gRScXNczOJEO4UnCPx9DHtYiz8HWK5ovCQMAVbPTY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=NmGIvQtz3GIziC9RGAURiu14pBP0osPLogoPE1l6FfopYAu6MQ6dg7gn/vmSRVkjL
+         q1o/d5cfHvIXalTuLYi8dEX7rVWc+x56krqaF7diymkkmas1iF6taIv+/djcLaVyar
+         BuzyPhT+h8bRybFNU/qGnxH7nJjkhk/NuxTePcLE5Rx4E4Q8yEqY1lRSe1Vfg4iE7O
+         fp0QZRdTfgdG/djrjxP69yKG2Bryr34i5b48YuyZ8ogl2ojl/CQ188VOIMSmOEfGL3
+         B8wAZ2h9hB1XgVfWCFM3KkrKPNTyKavtwyzZ/8FlNiQ66R+s0pX6weM948Eb3q/tBZ
+         s3wseuMf4npdA==
+Message-ID: <61da546f-42e6-2c2e-a535-43cacc088bdd@kernel.org>
+Date:   Mon, 9 Oct 2023 07:22:20 +0900
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v7 19/26] PM / devfreq: rockchip-dfi: add support for
+ RK3588
+Content-Language: en-US
+To:     Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-rockchip@lists.infradead.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Vincent Legoll <vincent.legoll@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+References: <20230704093242.583575-1-s.hauer@pengutronix.de>
+ <20230704093242.583575-20-s.hauer@pengutronix.de>
+From:   Chanwoo Choi <chanwoo@kernel.org>
+In-Reply-To: <20230704093242.583575-20-s.hauer@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/core
-branch HEAD: a56d5551e1993ca84dd0c69df5a3d8223d13fb5f  perf/x86/rapl: Annotate 'struct rapl_pmus' with __counted_by
+On 23. 7. 4. 18:32, Sascha Hauer wrote:
+> Add support for the RK3588 to the driver. The RK3588 has four DDR
+> channels with a register stride of 0x4000 between the channel
+> registers, also it has a DDRMON_CTRL register per channel.
+> 
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> ---
+>  drivers/devfreq/event/rockchip-dfi.c | 30 +++++++++++++++++++++++++++-
+>  include/soc/rockchip/rk3588_grf.h    | 18 +++++++++++++++++
+>  2 files changed, 47 insertions(+), 1 deletion(-)
+>  create mode 100644 include/soc/rockchip/rk3588_grf.h
+> 
+> diff --git a/drivers/devfreq/event/rockchip-dfi.c b/drivers/devfreq/event/rockchip-dfi.c
+> index 2362d3953ba40..9854d4093e186 100644
+> --- a/drivers/devfreq/event/rockchip-dfi.c
+> +++ b/drivers/devfreq/event/rockchip-dfi.c
+> @@ -26,8 +26,9 @@
+>  #include <soc/rockchip/rockchip_grf.h>
+>  #include <soc/rockchip/rk3399_grf.h>
+>  #include <soc/rockchip/rk3568_grf.h>
+> +#include <soc/rockchip/rk3588_grf.h>
+>  
+> -#define DMC_MAX_CHANNELS	2
+> +#define DMC_MAX_CHANNELS	4
 
-elapsed time: 721m
+As I mentioned before, need to have the number of channel for each SoC
+to reduce the unneeded loop and checking of is statement. Except for it, looks good to me.
 
-configs tested: 147
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                         haps_hs_defconfig   gcc  
-arc                 nsimosci_hs_smp_defconfig   gcc  
-arc                   randconfig-001-20231008   gcc  
-arc                    vdk_hs38_smp_defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                          ep93xx_defconfig   clang
-arm                          pxa3xx_defconfig   gcc  
-arm                   randconfig-001-20231008   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231008   gcc  
-i386         buildonly-randconfig-002-20231008   gcc  
-i386         buildonly-randconfig-003-20231008   gcc  
-i386         buildonly-randconfig-004-20231008   gcc  
-i386         buildonly-randconfig-005-20231008   gcc  
-i386         buildonly-randconfig-006-20231008   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231008   gcc  
-i386                  randconfig-002-20231008   gcc  
-i386                  randconfig-003-20231008   gcc  
-i386                  randconfig-004-20231008   gcc  
-i386                  randconfig-005-20231008   gcc  
-i386                  randconfig-006-20231008   gcc  
-i386                  randconfig-011-20231008   gcc  
-i386                  randconfig-012-20231008   gcc  
-i386                  randconfig-013-20231008   gcc  
-i386                  randconfig-014-20231008   gcc  
-i386                  randconfig-015-20231008   gcc  
-i386                  randconfig-016-20231008   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231008   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                     asp8347_defconfig   gcc  
-powerpc                  iss476-smp_defconfig   gcc  
-powerpc                 mpc834x_itx_defconfig   gcc  
-powerpc                      tqm8xx_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231008   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231008   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                               j2_defconfig   gcc  
-sh                           se7780_defconfig   gcc  
-sh                   sh7770_generic_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231008   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231008   gcc  
-x86_64       buildonly-randconfig-002-20231008   gcc  
-x86_64       buildonly-randconfig-003-20231008   gcc  
-x86_64       buildonly-randconfig-004-20231008   gcc  
-x86_64       buildonly-randconfig-005-20231008   gcc  
-x86_64       buildonly-randconfig-006-20231008   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231008   gcc  
-x86_64                randconfig-002-20231008   gcc  
-x86_64                randconfig-003-20231008   gcc  
-x86_64                randconfig-004-20231008   gcc  
-x86_64                randconfig-005-20231008   gcc  
-x86_64                randconfig-006-20231008   gcc  
-x86_64                randconfig-011-20231008   gcc  
-x86_64                randconfig-012-20231008   gcc  
-x86_64                randconfig-013-20231008   gcc  
-x86_64                randconfig-014-20231008   gcc  
-x86_64                randconfig-015-20231008   gcc  
-x86_64                randconfig-016-20231008   gcc  
-x86_64                randconfig-071-20231008   gcc  
-x86_64                randconfig-072-20231008   gcc  
-x86_64                randconfig-073-20231008   gcc  
-x86_64                randconfig-074-20231008   gcc  
-x86_64                randconfig-075-20231008   gcc  
-x86_64                randconfig-076-20231008   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                generic_kc705_defconfig   gcc  
+>  
+>  #define HIWORD_UPDATE(val, mask)	((val) | (mask) << 16)
+>  
+> @@ -714,9 +715,36 @@ static int rk3568_dfi_init(struct rockchip_dfi *dfi)
+>  	return 0;
+>  };
+>  
+> +static int rk3588_dfi_init(struct rockchip_dfi *dfi)
+> +{
+> +	struct regmap *regmap_pmu = dfi->regmap_pmu;
+> +	u32 reg2, reg3, reg4;
+> +
+> +	regmap_read(regmap_pmu, RK3588_PMUGRF_OS_REG2, &reg2);
+> +	regmap_read(regmap_pmu, RK3588_PMUGRF_OS_REG3, &reg3);
+> +	regmap_read(regmap_pmu, RK3588_PMUGRF_OS_REG4, &reg4);
+> +
+> +	dfi->ddr_type = FIELD_GET(RK3588_PMUGRF_OS_REG2_DRAMTYPE_INFO, reg2);
+> +
+> +	if (FIELD_GET(RK3588_PMUGRF_OS_REG3_SYSREG_VERSION, reg3) >= 0x3)
+> +		dfi->ddr_type |= FIELD_GET(RK3588_PMUGRF_OS_REG3_DRAMTYPE_INFO_V3, reg3) << 3;
+> +
+> +	dfi->buswidth[0] = FIELD_GET(RK3588_PMUGRF_OS_REG2_BW_CH0, reg2) == 0 ? 4 : 2;
+> +	dfi->buswidth[1] = FIELD_GET(RK3588_PMUGRF_OS_REG2_BW_CH1, reg2) == 0 ? 4 : 2;
+> +	dfi->buswidth[2] = FIELD_GET(RK3568_PMUGRF_OS_REG2_BW_CH0, reg4) == 0 ? 4 : 2;
+> +	dfi->buswidth[3] = FIELD_GET(RK3588_PMUGRF_OS_REG2_BW_CH1, reg4) == 0 ? 4 : 2;
+> +	dfi->channel_mask = FIELD_GET(RK3588_PMUGRF_OS_REG2_CH_INFO, reg2) |
+> +			    FIELD_GET(RK3588_PMUGRF_OS_REG2_CH_INFO, reg4) << 2;
+> +
+> +	dfi->ddrmon_stride = 0x4000;
+> +
+> +	return 0;
+> +};
+> +
+>  static const struct of_device_id rockchip_dfi_id_match[] = {
+>  	{ .compatible = "rockchip,rk3399-dfi", .data = rk3399_dfi_init },
+>  	{ .compatible = "rockchip,rk3568-dfi", .data = rk3568_dfi_init },
+> +	{ .compatible = "rockchip,rk3588-dfi", .data = rk3588_dfi_init },
+>  	{ },
+>  };
+>  
+> diff --git a/include/soc/rockchip/rk3588_grf.h b/include/soc/rockchip/rk3588_grf.h
+> new file mode 100644
+> index 0000000000000..630b35a550640
+> --- /dev/null
+> +++ b/include/soc/rockchip/rk3588_grf.h
+> @@ -0,0 +1,18 @@
+> +/* SPDX-License-Identifier: GPL-2.0+ */
+> +#ifndef __SOC_RK3588_GRF_H
+> +#define __SOC_RK3588_GRF_H
+> +
+> +#define RK3588_PMUGRF_OS_REG2		0x208
+> +#define RK3588_PMUGRF_OS_REG2_DRAMTYPE_INFO		GENMASK(15, 13)
+> +#define RK3588_PMUGRF_OS_REG2_BW_CH0			GENMASK(3, 2)
+> +#define RK3588_PMUGRF_OS_REG2_BW_CH1                    GENMASK(19, 18)
+> +#define RK3588_PMUGRF_OS_REG2_CH_INFO                   GENMASK(29, 28)
+> +
+> +#define RK3588_PMUGRF_OS_REG3		0x20c
+> +#define RK3588_PMUGRF_OS_REG3_DRAMTYPE_INFO_V3		GENMASK(13, 12)
+> +#define RK3588_PMUGRF_OS_REG3_SYSREG_VERSION		GENMASK(31, 28)
+> +
+> +#define RK3588_PMUGRF_OS_REG4           0x210
+> +#define RK3588_PMUGRF_OS_REG5           0x214
+> +
+> +#endif /* __SOC_RK3588_GRF_H */
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
+
