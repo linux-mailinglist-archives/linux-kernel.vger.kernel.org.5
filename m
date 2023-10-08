@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A50C7BCE74
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 15:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E997BCE70
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 15:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344779AbjJHNGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 09:06:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33978 "EHLO
+        id S1344787AbjJHNGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 09:06:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344755AbjJHNGM (ORCPT
+        with ESMTP id S1344772AbjJHNGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 8 Oct 2023 09:06:12 -0400
 Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B63C6
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BAB6B9
         for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 06:06:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-        t=1696770368; bh=RR80q5tjzziqB2LGjQvlUWzbTeLf/Y2/TnpugtEscbc=;
+        t=1696770368; bh=SGueJWzRUgwjjh8gQok9lNmS9RZL18PVUdYVO6wswxM=;
         h=From:To:Cc:Subject:Date:References:From;
-        b=BlWThhwOsaTCvKljn7BTZAw3iQakA826UlbM0OoCmagHD1bjxNlrI/LdEPjaC0svc
-         hCCiteZ8MDBBTSkdHs1J77QARJsXNT+rT9VfKmSswPSf3F6ioYauMPhO2Byk5q6sVm
-         dzyWp43+9iaxS5Epft3trtmtQk0aATP2WW3NB6UY=
+        b=Vl/UOEyQifLbMzsnIH/o3Z1kNXYmYAFI3U2C/EsSJuQw4AI3Liq5r4meui1nAJjzf
+         /8FqZzIDVgsQMf+yb4SmCEymsNLDY64FI3KMgvodwOOrXQ3zLVcRSJVI+HCdiIPetv
+         bqT2bBngbwCTcodtYrI9d58zzTWbAwnfZPNqeR8k=
 From:   =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megi@xff.cz>
 To:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -32,9 +32,9 @@ Cc:     Ondrej Jirman <megi@xff.cz>, Jagan Teki <jagan@edgeble.ai>,
         Sebastian Reichel <sebastian.reichel@collabora.com>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/4] arm64: dts: rockchip: rk3588s-pinctrl: Add UART9 M0 pin definitions
-Date:   Sun,  8 Oct 2023 15:05:00 +0200
-Message-ID: <20231008130515.1155664-3-megi@xff.cz>
+Subject: [PATCH 3/4] dt-bindings: arm: rockchip: Add Orange Pi 5 Plus
+Date:   Sun,  8 Oct 2023 15:05:01 +0200
+Message-ID: <20231008130515.1155664-4-megi@xff.cz>
 In-Reply-To: <20231008130515.1155664-1-megi@xff.cz>
 References: <20231008130515.1155664-1-megi@xff.cz>
 MIME-Version: 1.0
@@ -50,33 +50,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ondrej Jirman <megi@xff.cz>
 
-This is used on Orange Pi 5 Plus.
+Add devicetree binding documentation for Orange Pi 5 Plus SBC made by
+Xunlong.
 
 Signed-off-by: Ondrej Jirman <megi@xff.cz>
 ---
- arch/arm64/boot/dts/rockchip/rk3588s-pinctrl.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ Documentation/devicetree/bindings/arm/rockchip.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-pinctrl.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s-pinctrl.dtsi
-index 72708b1d8036..63151d9d2377 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588s-pinctrl.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3588s-pinctrl.dtsi
-@@ -3342,6 +3342,15 @@ uart8_xfer: uart8-xfer {
- 	};
+diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
+index ca5389862887..1a636ad540ce 100644
+--- a/Documentation/devicetree/bindings/arm/rockchip.yaml
++++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
+@@ -870,6 +870,11 @@ properties:
+           - const: tronsmart,orion-r68-meta
+           - const: rockchip,rk3368
  
- 	uart9 {
-+		/omit-if-no-ref/
-+		uart9m0_xfer: uart9m0-xfer {
-+			rockchip,pins =
-+				/* uart9_rx_m0 */
-+				<2 RK_PC4 10 &pcfg_pull_up>,
-+				/* uart9_tx_m0 */
-+				<2 RK_PC2 10 &pcfg_pull_up>;
-+		};
++      - description: Xunlong Orange Pi 5 Plus
++        items:
++          - const: xunlong,orangepi-5-plus
++          - const: rockchip,rk3588
 +
- 		/omit-if-no-ref/
- 		uart9m1_xfer: uart9m1-xfer {
- 			rockchip,pins =
+       - description: Xunlong Orange Pi R1 Plus / LTS
+         items:
+           - enum:
 -- 
 2.42.0
 
