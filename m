@@ -2,161 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E54847BD0E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 00:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DA4C7BD0E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 00:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344878AbjJHWZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 18:25:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48778 "EHLO
+        id S1344881AbjJHW00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 18:26:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344789AbjJHWZt (ORCPT
+        with ESMTP id S1344863AbjJHW0X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 18:25:49 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C4A9B9;
-        Sun,  8 Oct 2023 15:25:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07FBEC433C7;
-        Sun,  8 Oct 2023 22:25:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696803948;
-        bh=QrkuFelQkgF4dmVeOtjNdhlzBMRjrCcoF4SOVif4oIs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BXvXe2g3qldchM8UvdGuaMQL0oYBVvRQCvD0QUHj6Li4OR/OXp00Cs7Cq/q3Yx0OQ
-         3tFhu+8VHTqsXUTjOwe2RiKkmnHKjXDsGrmK4jm/P19/I+LEvJcBhbvB0NL9Uqx+E5
-         MFRY+XIRejnrU6x9805L1AT0puETUp3t4hN19k5Hk5X6X0Whub8dxSfwNYVwqnD98q
-         w4VUeDhE0/iVaUEEw/nH86v3j1gLaHl7KH2YTqQq73o/Q7DKxKlbKiN9FFCBlPiZlO
-         1L0oGx2rM2lw2MTY6E0gMZWuNqYT3K2X2WEkC9+4ELMuq/+lHIcTLxGVRqMGIYMlFs
-         Uo6Jof74j06jA==
-Date:   Mon, 9 Oct 2023 00:25:44 +0200
-From:   Alejandro Colomar <alx@kernel.org>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Peter Xu <peterx@redhat.com>, linux-man@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/5] ioctl_userfaultfd.2: correct and update
- UFFDIO_API ioctl error codes
-Message-ID: <ZSMsaC-GUVbvMM_9@debian>
-References: <20231003194547.2237424-1-axelrasmussen@google.com>
- <20231003194547.2237424-3-axelrasmussen@google.com>
+        Sun, 8 Oct 2023 18:26:23 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2747AC5
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 15:26:21 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-4064867903cso39092015e9.2
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 15:26:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696803979; x=1697408779; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=E5F6Ic134Yi1iysyJ6K232qeqhgAgSXNQ9anlaFp7+o=;
+        b=vp/BtA35HUCXhFv1symXXPDLhdZ6mZOEsEXQPQzAt0n8aoWbQTWQ+z0dsZ6Bx9a3lf
+         Hy7PDKdvA4/U3JDpqrUBJ11wb1LGd66K/1lLXkJvYLf5Hgwg+mEf1UPKEb6rxpFFQane
+         TwWi+ziNH/baQdFbYT061V4+kjplDeh8XWNJF9UNHbCiwSowvS/b3kvvtdr11qb5Sv6Q
+         O25CLXjSyoWEdMIPN+sUT7ouKLINxgj1xrFyLxqBoSm0AJgaTYvb5FOf2Px2/NhIIj1M
+         NF9bNY54zS8zyvYBaVQ82ov9XvPceTfubMhDBw16DDVXREaiqOjXp2Z5/Mn8oYhgxzwH
+         DVcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696803979; x=1697408779;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=E5F6Ic134Yi1iysyJ6K232qeqhgAgSXNQ9anlaFp7+o=;
+        b=mkwTeBro9LsqZzYg/H0WAto95k5s/NcaeOxyd8pJHGlwx9s5PXWn5Q05A5UawIP/Ws
+         G0F24rcudUeHAAcbKB3UwOr602vEREftcuU6JkFNSPLXyscQQ/E9v6JHM2JM7gPKaOrL
+         3nSuBxQAvyivcpkHM9xwqCRtGxzUF+yrUJO5DiDsENYMAIUI04e7xgSPtFk67etlCYOo
+         YcgnN0EvTsC90nHGpFY5Kf/ctBX5uzmKkZdI9Lv4njGHnNOjwe/iMo9bTbSQsBdTo/Pt
+         6I2hyoNGNZmlWKzDvkmRNAsrt4FBEmqClDcxELguJtQDXshWWURpEhVEtd68FZvFxpjU
+         vnew==
+X-Gm-Message-State: AOJu0YyGHDFiAeElTICXxacJize/ZoK2VEZmG1xmBhcMY+haCj/P25vz
+        NUNLjlESRTyZ3stjQ6BhACHh2Q==
+X-Google-Smtp-Source: AGHT+IE5Bwgw8Sv4XEbdHISWjLI6mywdMuzfaBhCFQkF9GkEp3SmKfDb1yrC+EDJeeO0eM6jYnFsqw==
+X-Received: by 2002:a05:600c:468d:b0:407:4944:76dc with SMTP id p13-20020a05600c468d00b00407494476dcmr1947380wmo.20.1696803979357;
+        Sun, 08 Oct 2023 15:26:19 -0700 (PDT)
+Received: from [192.168.100.102] ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id n5-20020a05600c294500b003fc02e8ea68sm11615535wmd.13.2023.10.08.15.26.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 08 Oct 2023 15:26:18 -0700 (PDT)
+Message-ID: <18716c6a-93ea-43d5-ab55-43b3b86920ce@linaro.org>
+Date:   Sun, 8 Oct 2023 23:26:17 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Xg0NzKVlmIEGA05n"
-Content-Disposition: inline
-In-Reply-To: <20231003194547.2237424-3-axelrasmussen@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/5] i2c: qcom-cci: Add sc8280xp compatible
+Content-Language: en-US
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+To:     Andi Shyti <andi.shyti@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     agross@kernel.org, andersson@kernel.org, loic.poulain@linaro.org,
+        rfoss@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        todor.too@gmail.com, mchehab@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231006120159.3413789-1-bryan.odonoghue@linaro.org>
+ <20231006120159.3413789-3-bryan.odonoghue@linaro.org>
+ <b8f2d7f1-16e2-4e6a-9c84-37da393f74a3@linaro.org>
+ <20231008212824.cs6e6hc7zur67v6k@zenone.zhora.eu>
+ <4fdfd283-234b-4c14-8db1-3feaf1fa8618@linaro.org>
+In-Reply-To: <4fdfd283-234b-4c14-8db1-3feaf1fa8618@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---Xg0NzKVlmIEGA05n
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Date: Mon, 9 Oct 2023 00:25:44 +0200
-From: Alejandro Colomar <alx@kernel.org>
-To: Axel Rasmussen <axelrasmussen@google.com>
-Cc: Peter Xu <peterx@redhat.com>, linux-man@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/5] ioctl_userfaultfd.2: correct and update
- UFFDIO_API ioctl error codes
-
-Hi Axel,
-
-On Tue, Oct 03, 2023 at 12:45:44PM -0700, Axel Rasmussen wrote:
-> First, it is not correct that repeated UFFDIO_API calls result in
-> EINVAL. This is true *if both calls enable features*, but in the case
-> where we're doing a two-step feature detection handshake, the kernel
-> explicitly expects 2 calls (one with no features set). So, correct this
-> description.
->=20
-> Then, some new error cases have been added to the kernel recently, and
-> the man page wasn't updated to note these. So, add in descriptions of
-> these new error cases.
->=20
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-
-Patch applied.
-
-Thanks,
-Alex
-
+On 08/10/2023 23:13, Bryan O'Donoghue wrote:
+> On 08/10/2023 22:28, Andi Shyti wrote:
+>> Hi Konrad,
+>>
+>>>> Add sc8280xp compatible with cci_v2_data parameters.
+>>>>
+>>>> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+>>>> ---
+>>> Drop this patch, it adds nothing useful
+>>
+>> what about the rest of the series?
+>>
+>> Could you please be a bit more explicative?
+>>
+>> Thanks,
+>> Andi
+> 
+> I think he means I can use the sm8250 or sm8450 compat string, which is 
+> true.
+> 
 > ---
->  man2/ioctl_userfaultfd.2 | 24 +++++++++++++++++++-----
->  1 file changed, 19 insertions(+), 5 deletions(-)
->=20
-> diff --git a/man2/ioctl_userfaultfd.2 b/man2/ioctl_userfaultfd.2
-> index ef352a69d..28dd2fcdd 100644
-> --- a/man2/ioctl_userfaultfd.2
-> +++ b/man2/ioctl_userfaultfd.2
-> @@ -256,17 +256,31 @@ refers to an address that is outside the calling pr=
-ocess's
->  accessible address space.
->  .TP
->  .B EINVAL
-> -The userfaultfd has already been enabled by a previous
-> -.B UFFDIO_API
-> -operation.
-> -.TP
-> -.B EINVAL
->  The API version requested in the
->  .I api
->  field is not supported by this kernel, or the
->  .I features
->  field passed to the kernel includes feature bits that are not supported
->  by the current kernel version.
-> +.TP
-> +.B EINVAL
-> +A previous
-> +.B UFFDIO_API
-> +call already enabled one or more features for this userfaultfd.
-> +Calling
-> +.B UFFDIO_API
-> +twice,
-> +the first time with no features set,
-> +is explicitly allowed
-> +as per the two-step feature detection handshake.
-> +.TP
-> +.B EPERM
-> +The
-> +.B UFFD_FEATURE_EVENT_FORK
-> +feature was enabled,
-> +but the calling process doesn't have the
-> +.B CAP_SYS_PTRACE
-> +capability.
->  .\" FIXME In the above error case, the returned 'uffdio_api' structure is
->  .\" zeroed out. Why is this done? This should be explained in the manual=
- page.
->  .\"
-> --=20
-> 2.42.0.609.gbb76f46606-goog
->=20
+> bod
 
---=20
-<https://www.alejandro-colomar.es/>
+Tested, compat sm8250 works fine.
 
---Xg0NzKVlmIEGA05n
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmUjLGgACgkQnowa+77/
-2zJlIA//Y16WCTGtmYOnY6FKmX5w6ECWQE1OpB05FcYSRYBUlIhAwfgcBRWQ3ZWZ
-ji+X7zzEQlrziC4hoKmbhiTq26Zvc8cighajyi5xKiAPou3shriMHJLMybRncB0b
-nzE8eZPc+1M64tE3iJop7Kdh8We3uVvIrXDaeWNCwhLGUlfFdE9GhJaiY37tWmGj
-lkCnXitB9lelweX7feZm+aOy/LKa8AW9jcNdn9s9vrLvUmOPcaH+AWOr5vfz4/4q
-R2iI/zWou7GElOvNYMkXwZ3KKhH5UpVe/KzKPADo98H7dLOug/D685bFimRWTC6Q
-jaOxMS5iTr1dFZHBj+c4V2RWBcrGspFLiCpTwnMOJAn1iATupofHDqPdrVgmkULr
-M1jiel4faoHdzTA8eKlNeEEs0FSB2UIioR9fkbB6v9ts7+tSLI4M8TjqvLhG03g4
-gNeZ1AsFgJH+bgAhA53ZPSTGVLNiiv91zawY5/inkuOrGU5v7RgJHUCkHGX0j2zD
-Y8egedLm0hc4WYOCaSWnO1gtFE6KLJZjWc/4PNSJFTQf76iocBx3jpfhDWXLUfAf
-phlmVOsVwMoYEQx3xPdk7rByO/8h4B3rLPP6g0cIr/54oPWKs6G6kfUU2zCnizx+
-diSwyLdB5OBV/p9ejJJyHFsBAbhHMtjZnKqyj+JllYCZ4J/j19U=
-=elyF
------END PGP SIGNATURE-----
-
---Xg0NzKVlmIEGA05n--
+---
+bod
