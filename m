@@ -2,88 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D32577BCBA3
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 03:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EBE77BCB94
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 03:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344314AbjJHBsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Oct 2023 21:48:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56570 "EHLO
+        id S1344268AbjJHBdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Oct 2023 21:33:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344257AbjJHBsP (ORCPT
+        with ESMTP id S229717AbjJHBdV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Oct 2023 21:48:15 -0400
-Received: from mail.nfschina.com (unknown [42.101.60.195])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id E940B92;
-        Sat,  7 Oct 2023 18:48:12 -0700 (PDT)
-Received: from localhost.localdomain (unknown [180.167.10.98])
-        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 1CD25604A13E3;
-        Sun,  8 Oct 2023 09:48:06 +0800 (CST)
-X-MD-Sfrom: suhui@nfschina.com
-X-MD-SrcIP: 180.167.10.98
-From:   Su Hui <suhui@nfschina.com>
-Cc:     Su Hui <suhui@nfschina.com>, tj@kernel.org, josef@toxicpanda.com,
-        axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] blk-throttle: silence truncated string warning
-Date:   Sun,  8 Oct 2023 09:47:52 +0800
-Message-Id: <20231008014751.423133-1-suhui@nfschina.com>
-X-Mailer: git-send-email 2.30.2
+        Sat, 7 Oct 2023 21:33:21 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D0792
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Oct 2023 18:33:19 -0700 (PDT)
+Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4S34P42Hdfz1P7kb;
+        Sun,  8 Oct 2023 09:30:48 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by dggpemm500009.china.huawei.com
+ (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Sun, 8 Oct
+ 2023 09:33:17 +0800
+From:   Liu Shixin <liushixin2@huawei.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Patrick Wang <patrick.wang.shcn@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Liu Shixin <liushixin2@huawei.com>
+Subject: [PATCH v2 0/4] Some bugfix about kmemleak
+Date:   Sun, 8 Oct 2023 10:33:13 +0800
+Message-ID: <20231008023317.3015699-1-liushixin2@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.32]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-using gcc and w=1, there are some warnings like these:
+Some bugfix to improve the accuracy of detection and the print info of
+debug mode.
 
-block/blk-throttle.c:1531:53: error:
-‘snprintf’ output may be truncated before the last format character
-[-Werror=format-truncation=]
- 1531 |    snprintf(idle_time, sizeof(idle_time), " idle=%lu",
-      |                                                     ^
-block/blk-throttle.c:1531:4: note: ‘snprintf’ output between 8 and 27 bytes
-into a destination of size 26
- 1531 |    snprintf(idle_time, sizeof(idle_time), " idle=%lu",
-      |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 1532 |     tg->idletime_threshold_conf);
-      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-block/blk-throttle.c:1538:15: error:
-‘%lu’ directive output may be truncated writing between 1 and 20 bytes
-into a region of size 17 [-Werror=format-truncation=]
- 1538 |     " latency=%lu", tg->latency_target_conf);
-      |               ^~~
+v1->v2: Split the first patch suggested by Andrew. And fix the format of
+	the last two patches suggested by Catalin. Use mutex in patch[3]
+	because there are memory allocation with flag GFP_KERNEL.
 
-"%lu" can up to 21, so string " idle=%lu" can up to 27. But 'idle_time'
-only has 26 Bytes. It's same for 'latency_time' whose size should be 30
-rather than 26 because string " latency=%lu" can up to 30.
+Liu Shixin (4):
+  bootmem: use kmemleak_free_part_phys in put_page_bootmem
+  bootmem: use kmemleak_free_part_phys in free_bootmem_page
+  mm/kmemleak: fix partially freeing unknown object warning
+  mm/kmemleak: fix print format of pointer in pr_debug()
 
-Signed-off-by: Su Hui <suhui@nfschina.com>
----
- block/blk-throttle.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/linux/bootmem_info.h |  2 +-
+ mm/bootmem_info.c            |  2 +-
+ mm/kmemleak.c                | 37 +++++++++++++++++++++---------------
+ 3 files changed, 24 insertions(+), 17 deletions(-)
 
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 38a881cf97d0..dfc5c0d3d9c1 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -1489,8 +1489,8 @@ static u64 tg_prfill_limit(struct seq_file *sf, struct blkg_policy_data *pd,
- 	char bufs[4][21] = { "max", "max", "max", "max" };
- 	u64 bps_dft;
- 	unsigned int iops_dft;
--	char idle_time[26] = "";
--	char latency_time[26] = "";
-+	char idle_time[27] = "";
-+	char latency_time[30] = "";
- 
- 	if (!dname)
- 		return 0;
 -- 
-2.30.2
+2.25.1
 
