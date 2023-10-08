@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE5B7BCE79
+	by mail.lfdr.de (Postfix) with ESMTP id AF2E07BCE7A
 	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 15:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344788AbjJHNHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 09:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33278 "EHLO
+        id S1344804AbjJHNIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 09:08:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344772AbjJHNHy (ORCPT
+        with ESMTP id S1344799AbjJHNIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 09:07:54 -0400
+        Sun, 8 Oct 2023 09:08:04 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9059C5
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 06:07:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3BF2C433C7;
-        Sun,  8 Oct 2023 13:07:51 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE827CA
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 06:08:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3607C433C8;
+        Sun,  8 Oct 2023 13:08:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696770472;
-        bh=20jId0YR8CWrXSKu6wj0Jv9I+ASNRRUWUTUEQPTOuN0=;
+        s=korg; t=1696770482;
+        bh=n197WUbjPATrHaaeOw5LG4dXYkPwkQKNtf27c1N7CJI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DDUzESCuM/qK63Q6jxR5QWjNlH5R70XJI+Iknsybmet4t+BdDzvTU2oCZvZ8RFhoP
-         dzbfqr+7DsW+5n+RhHZjAEpr/ftDXW6+mjNSMIaUDnxo87ODIx9WlU/M6YUHWDAZFw
-         jABtubbjXpF7gJldfKGmzPKn0eyh3x68pHwqkOz0=
-Date:   Sun, 8 Oct 2023 15:07:45 +0200
+        b=JoXN2IoP3tyqU9P+ZM1pz3NLAbuOP8pVsU4OxYh+USBbevp0KGpB/DpiS3lITNpvf
+         PvxmF5M382x2piety81elfCFwuBs0bJx4r0Npzv/iI1h4tjJpAfsT1xcGKLcp82/ER
+         rkPT1MGfZy2oaTO15WVWleM3jdnMmgumaU4G7Ruc=
+Date:   Sun, 8 Oct 2023 15:07:52 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
 Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
@@ -37,14 +37,14 @@ Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Stefan Wahren <stefan.wahren@i2se.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH 1/3] nvmem: imx: correct nregs for i.MX6SLL
-Message-ID: <2023100826-cranium-granite-be85@gregkh>
+Subject: Re: [PATCH 2/3] nvmem: imx: correct nregs for i.MX6UL
+Message-ID: <2023100847-energetic-zodiac-b1d3@gregkh>
 References: <20231008-nvmem-imx-v1-0-cabeb18ab676@nxp.com>
- <20231008-nvmem-imx-v1-1-cabeb18ab676@nxp.com>
+ <20231008-nvmem-imx-v1-2-cabeb18ab676@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231008-nvmem-imx-v1-1-cabeb18ab676@nxp.com>
+In-Reply-To: <20231008-nvmem-imx-v1-2-cabeb18ab676@nxp.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -55,27 +55,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 08, 2023 at 04:10:20PM +0800, Peng Fan (OSS) wrote:
+On Sun, Oct 08, 2023 at 04:10:21PM +0800, Peng Fan (OSS) wrote:
 > From: Peng Fan <peng.fan@nxp.com>
 > 
-> The nregs for i.MX6SLL should be 80 per fuse map, correct it.
+> The nregs for i.MX6UL should be 144 per fuse map, correct it.
 > 
-> Fixes: 6da27821a6f5 ("nvmem: imx-ocotp: add support for imx6sll")
+> Fixes: 4aa2b4802046 ("nvmem: octop: Add support for imx6ul")
 > Signed-off-by: Peng Fan <peng.fan@nxp.com>
 > ---
 >  drivers/nvmem/imx-ocotp.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 > diff --git a/drivers/nvmem/imx-ocotp.c b/drivers/nvmem/imx-ocotp.c
-> index 434f197e27bf..c59cfe13a5f8 100644
+> index c59cfe13a5f8..8d30c8bfdbcf 100644
 > --- a/drivers/nvmem/imx-ocotp.c
 > +++ b/drivers/nvmem/imx-ocotp.c
-> @@ -498,7 +498,7 @@ static const struct ocotp_params imx6sl_params = {
+> @@ -512,7 +512,7 @@ static const struct ocotp_params imx6sx_params = {
 >  };
 >  
->  static const struct ocotp_params imx6sll_params = {
+>  static const struct ocotp_params imx6ul_params = {
 > -	.nregs = 128,
-> +	.nregs = 80,
+> +	.nregs = 144,
 >  	.bank_address_words = 0,
 >  	.set_timing = imx_ocotp_set_imx6_timing,
 >  	.ctrl = IMX_OCOTP_BM_CTRL_DEFAULT,
