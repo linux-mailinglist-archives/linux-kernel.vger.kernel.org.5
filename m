@@ -2,101 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD0D27BD061
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 23:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1DFF7BD067
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 23:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344677AbjJHVtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 17:49:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44896 "EHLO
+        id S1344693AbjJHVv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 17:51:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbjJHVto (ORCPT
+        with ESMTP id S232399AbjJHVv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 17:49:44 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D1BEB3
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 14:49:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=oI9MuQRl2O5rXf5GLrlTbmAhFm338lR/3BJ7Buy8EGQ=; b=bJcMWkQza6A2eQmMMaRgBLc+5S
-        HVBIwNX2ovWSoCZw5G3WMSJVauAFTZaTaoCiAAGnwwADxvZgua0qltDFjEmHdut2XKWJnqMINdNzO
-        MGDcdzhc30HP9cPrvZjn9yAbpQtzpHDobBGCkjOtmFsdcLwsV1f3hjBqzDIzEWkD+Z/FwBrDmvRtp
-        hZkh6PW+CLDa36I2a4FiW/RBvolbVm0VthOR9ipu1+92n3p4Tis2tqMUaWOmToKzW5f8qXC2jZk7x
-        8O34ATO8hDd2Cue0mOYMIYxmAzrhG6GWKwHMvVTzT2cDVw43xkP5tOnCBAn6r0xf3uS+vstAtBhhB
-        NAT3B6MQ==;
-Received: from [50.53.46.231] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qpbeg-009MYb-2s;
-        Sun, 08 Oct 2023 21:49:42 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        intel-gfx@lists.freedesktop.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>, dri-devel@lists.freedesktop.org
-Subject: [PATCH v2] drm/i915/uapi: fix doc typos
-Date:   Sun,  8 Oct 2023 14:49:40 -0700
-Message-ID: <20231008214942.28439-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.42.0
+        Sun, 8 Oct 2023 17:51:27 -0400
+Received: from forwardcorp1b.mail.yandex.net (forwardcorp1b.mail.yandex.net [178.154.239.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B0EB3;
+        Sun,  8 Oct 2023 14:51:19 -0700 (PDT)
+Received: from mail-nwsmtp-smtp-corp-canary-81.sas.yp-c.yandex.net (mail-nwsmtp-smtp-corp-canary-81.sas.yp-c.yandex.net [IPv6:2a02:6b8:c08:ba1:0:640:375a:0])
+        by forwardcorp1b.mail.yandex.net (Yandex) with ESMTP id 5769E623B2;
+        Mon,  9 Oct 2023 00:51:16 +0300 (MSK)
+Received: from [IPV6:2a02:6b8:b081:b6af::1:24] (unknown [2a02:6b8:b081:b6af::1:24])
+        by mail-nwsmtp-smtp-corp-canary-81.sas.yp-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id EpjYFZBOlKo0-yX8dmxAB;
+        Mon, 09 Oct 2023 00:51:15 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru;
+        s=default; t=1696801875;
+        bh=awdEI7BOcGPprVM/3CfxRB5xiwqGUlBHRGFcX7oUSEQ=;
+        h=From:In-Reply-To:Cc:Date:References:To:Subject:Message-ID;
+        b=1PkLZQSwcgjw0NKUEL5quf1CLlsPk8ZZIFP0bp8ZxIVKo8RTPM4U+azlz6gPOKPhp
+         AOt8F7HXEBAndI4Ig7CM4MkW/u9MopJO7JHioHCtrigZiIVlmMXjGABC2tiAPKdwQ6
+         qTktzzKKqSezN37JUKFLwDmbe9IDhdjzxTsD0788=
+Authentication-Results: mail-nwsmtp-smtp-corp-canary-81.sas.yp-c.yandex.net; dkim=pass header.i=@yandex-team.ru
+Message-ID: <2c7bfe48-b2f5-41a2-81b9-34a49c139d87@yandex-team.ru>
+Date:   Mon, 9 Oct 2023 02:51:13 +0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 2/2] PCI: Implement custom llseek for sysfs resource
+ entries
+Content-Language: ru, en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Tejun Heo <tj@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+References: <2023092241-obedient-squirt-966c@gregkh>
+ <20230925084013.309399-2-valesini@yandex-team.ru>
+ <2023100503-change-nimbly-8c58@gregkh>
+From:   Valentin Sinitsyn <valesini@yandex-team.ru>
+In-Reply-To: <2023100503-change-nimbly-8c58@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correct typo of "its".
-Add commas for clarity.
-Capitalize L3.
+On 05.10.2023 16:41, Greg Kroah-Hartman wrote:
+> On Mon, Sep 25, 2023 at 11:40:13AM +0300, Valentine Sinitsyn wrote:
+>> Since commit 636b21b50152 ("PCI: Revoke mappings like devmem"), mmappable
+>> sysfs entries have started to receive their f_mapping from the iomem
+>> pseudo filesystem, so that CONFIG_IO_STRICT_DEVMEM is honored in sysfs
+>> (and procfs) as well as in /dev/[k]mem.
+>>
+>> This resulted in a userspace-visible regression:
+>>
+>> 1. Open a sysfs PCI resource file (eg. /sys/bus/pci/devices/*/resource0)
+>> 2. Use lseek(fd, 0, SEEK_END) to determine its size
+>>
+>> Expected result: a PCI region size is returned.
+>> Actual result: 0 is returned.
+>>
+>> The reason is that PCI resource files residing in sysfs use
+>> generic_file_llseek(), which relies on f_mapping->host inode to get the
+>> file size. As f_mapping is now redefined, f_mapping->host points to an
+>> anonymous zero-sized iomem_inode which has nothing to do with sysfs file
+>> in question.
+>>
+>> Implement a custom llseek method for sysfs PCI resources, which is
+>> almost the same as proc_bus_pci_lseek() used for procfs entries.
+>>
+>> This makes sysfs and procfs entries consistent with regards to seeking,
+>> but also introduces userspace-visible changes to seeking PCI resources
+>> in sysfs:
+>>
+>> - SEEK_DATA and SEEK_HOLE are no longer supported;
+>> - Seeking past the end of the file is prohibited while previously
+>>    offsets up to MAX_NON_LFS were accepted (reading from these offsets
+>>    was always invalid).
+>>
+>> Fixes: 636b21b50152 ("PCI: Revoke mappings like devmem")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Valentine Sinitsyn <valesini@yandex-team.ru>
+>> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+>> ---
+>>   drivers/pci/pci-sysfs.c | 26 +++++++++++++++++++++++++-
+>>   1 file changed, 25 insertions(+), 1 deletion(-)
+> 
+> I'll take these now, for 6.7-rc1, but not mark them as fixes or cc:
+Thanks, appreciated.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Cc: intel-gfx@lists.freedesktop.org
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Cc: dri-devel@lists.freedesktop.org
----
-v2: capitalize L3, add another comma for clarity (Ville)
+> stable as this is a new functionality, the code has never worked for
+> lseek on these files so it's not like anything was broken :)
+In fact, lseek() on PCI resource files in sysfs was broken since commit 
+636b21b50152. That was the reason why I started to investigate the 
+issue: one of our applications stopped working after a kernel update.
 
- include/uapi/drm/i915_drm.h |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+I'm not hundred percent sure if it belongs to stable, but it does fix a 
+user-visible regression.
 
-diff -- a/include/uapi/drm/i915_drm.h b/include/uapi/drm/i915_drm.h
---- a/include/uapi/drm/i915_drm.h
-+++ b/include/uapi/drm/i915_drm.h
-@@ -38,13 +38,13 @@ extern "C" {
-  */
- 
- /**
-- * DOC: uevents generated by i915 on it's device node
-+ * DOC: uevents generated by i915 on its device node
-  *
-  * I915_L3_PARITY_UEVENT - Generated when the driver receives a parity mismatch
-- *	event from the gpu l3 cache. Additional information supplied is ROW,
-+ *	event from the GPU L3 cache. Additional information supplied is ROW,
-  *	BANK, SUBBANK, SLICE of the affected cacheline. Userspace should keep
-- *	track of these events and if a specific cache-line seems to have a
-- *	persistent error remap it with the l3 remapping tool supplied in
-+ *	track of these events, and if a specific cache-line seems to have a
-+ *	persistent error, remap it with the L3 remapping tool supplied in
-  *	intel-gpu-tools.  The value supplied with the event is always 1.
-  *
-  * I915_ERROR_UEVENT - Generated upon error detection, currently only via
+Best,
+Valentin
