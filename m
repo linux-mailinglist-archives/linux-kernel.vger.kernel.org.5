@@ -2,100 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F607BCF6E
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 19:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F8957BCF76
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 19:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344371AbjJHRsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 13:48:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49990 "EHLO
+        id S1344402AbjJHR43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 13:56:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbjJHRr7 (ORCPT
+        with ESMTP id S234247AbjJHR41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 13:47:59 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B997A3
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 10:47:58 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c5ff5f858dso25426385ad.2
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 10:47:58 -0700 (PDT)
+        Sun, 8 Oct 2023 13:56:27 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735EFD8;
+        Sun,  8 Oct 2023 10:56:25 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-68bed2c786eso2836444b3a.0;
+        Sun, 08 Oct 2023 10:56:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696787277; x=1697392077; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696787785; x=1697392585; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=QJoz8SDUov6EH8w2r891PJdscTvuwkuTW6wM+WMDtO8=;
-        b=gBMH4Wema6+fO1Ql3z0kv5RR+wOeVYeDVieDNL04tv5gYlwtjXEG0jw3yl3P5wPyP2
-         +iPmi/ln14auMZCjRGlOio/KlDgod8Ne/0Fh04+PJJkt3EtHj9csmdImF58eZ5b4Ouv3
-         dxbFN7COMxyCsJshxeR5vlMSSRWOvtVupl8x8gHrb+e2KpjIU70JvRpO7WvzTko7eiMS
-         /568Lma6VA1ThHtd5XZtq/ddARIiE2MQnC+D+R4kDgBKMfgMDudkMtLcZLfeTu5BSQP5
-         Ji5w9fOaOyDrOsOE9Kxp8vSxGQaIlZAsvcR0IPnjgFKYM+wp/mh57b+HtMgtjnQwOUaG
-         r6yg==
+        bh=vzldSszU6MMY3+BPZFEE+sdPY1rkhW3V7SWMFRFvi3c=;
+        b=LuLjpACPCYI8Guxl6SnOjTWhvCbqtI3wzAn2vcSc0itj28/k6wkYxXdYWs85+L3i0i
+         0rleRL4yG+rXtaVDsCwAItvqpo+6rHmUim+f0rjcm9eqqj+rg6CdDAzin6ZrlFs7PFtW
+         1tOFb8GO1QzmPSR90gQFupwLCS88ZioSquHSVaWuXzy0RCxAjVZd3aOzR60VMPDVxreG
+         h5lpxcrv52mNwVEkGcjXnQui7KZV7ylKB3Up4cpkKoVKrHbSRVvsF6ixWFXx69Xbv1fV
+         aYzMS8DC+qLOcb5vSrHcvnMuwFcni5I8zTVOvhYajpZ4blC5DfJCVmr0bGb9lWQhJvnh
+         /0+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696787277; x=1697392077;
+        d=1e100.net; s=20230601; t=1696787785; x=1697392585;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=QJoz8SDUov6EH8w2r891PJdscTvuwkuTW6wM+WMDtO8=;
-        b=nuimGuum2uUr2MvbQ5iapg+KJjQhwtdItECPUKd7Z1SL1T+YM7/OjWUqfpOUEGxn0n
-         17i3QEjrBMAXPknKVbPopjVd9/T2P/q+ybPmSnQfSTZ8SoFwD6JnQEJz/LUIj5mEBT8r
-         Ha2yLTCXEtHLdhnjuW2iMIzu/njTbKMAEToRmHN3jsm5gL8I3ZZNrL/aqdl7KLXhi1BT
-         iXg/7z/sgcrM+34dGZNAebKCQReRamq0DuQeDRnXI4cwkFaU7AX0VHl0+zg2epy//1cY
-         P6KJ13je9tm9X3gQlWHRgXDkL92Qj1KZcMAVPZXM3hmTsF63i3aP8XifJS0yW/+D+A8v
-         Euiw==
-X-Gm-Message-State: AOJu0YywGKM4dTcl2twsJRlt2mbjP87D5OADLM40e2BhEGxAw/2anx9y
-        o9f1jHeo8IlvcGf83Lc+tQsrS9Al/wYyooLSQHI=
-X-Google-Smtp-Source: AGHT+IE5/VaCHBxl0zQmbH6k5aueCLYd63UoBV/FHcEYzYhDOT8Gh5hnx8Yu2Vjd6+SWWeOZAHn77Q==
-X-Received: by 2002:a17:903:48f:b0:1c7:2c07:ca00 with SMTP id jj15-20020a170903048f00b001c72c07ca00mr10512562plb.36.1696787277368;
-        Sun, 08 Oct 2023 10:47:57 -0700 (PDT)
-Received: from manas-VirtualBox.iitr.ac.in ([103.37.201.175])
-        by smtp.gmail.com with ESMTPSA id h9-20020a170902f54900b001c47541ecd7sm7757861plf.250.2023.10.08.10.47.54
+        bh=vzldSszU6MMY3+BPZFEE+sdPY1rkhW3V7SWMFRFvi3c=;
+        b=NClYvx0aYYObJgwVITRbEAkJMlf+wx2u3mfKwinNGkYKrAczAyBfI4sSgO6IjTLvyP
+         ETjWzZDQVnqGYM151Ea1IRLdag8VBvI6E+CZerqQS8ZkJlUHQT7U9Sf0nmzJJtmefpNf
+         9Mht8QbWsz8AuAisxJ3Ny+lMl9Nz7h/CXshIueGmeJnDA/qUqLHQC6ttTUMve8kEpvp9
+         KKeR6ouOnIGVgkwSGYFlOCrviUPaK7A9lb76YoseI26HTTUpMcUcS60A6DN+7b1t+1on
+         n72tPM1+F/GBG5+/CfgGKovgKgW8UShE9/gZJTdApuEcO9Axya+WeE0TR9vr8BmvVmTP
+         2vhw==
+X-Gm-Message-State: AOJu0YwByoT/u4jq2sBpczpLtetg1UP6+eSJqwvJG98JtdEf9wNzhg5j
+        DQrjr4lNO0yKExxCbnITi3E=
+X-Google-Smtp-Source: AGHT+IHqQ/Vyp0H3SIe36vYhUTFYZOV3Jn9KI7Rwe/TDcLX9WK8K9IRoidQS4zA/CzHtqqtXwbRB+g==
+X-Received: by 2002:a05:6a21:a5a7:b0:15d:721e:44d5 with SMTP id gd39-20020a056a21a5a700b0015d721e44d5mr15053674pzc.49.1696787784604;
+        Sun, 08 Oct 2023 10:56:24 -0700 (PDT)
+Received: from localhost (c-73-37-105-206.hsd1.or.comcast.net. [73.37.105.206])
+        by smtp.gmail.com with ESMTPSA id jb17-20020a170903259100b001c8836a3795sm7741992plb.271.2023.10.08.10.56.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Oct 2023 10:47:56 -0700 (PDT)
-From:   Manas Ghandat <ghandatmanas@gmail.com>
-To:     dave.kleikamp@oracle.com, shaggy@kernel.org
-Cc:     Manas Ghandat <ghandatmanas@gmail.com>,
-        Linux-kernel-mentees@lists.linuxfoundation.org,
-        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        syzbot+c1056fdfe414463fdb33@syzkaller.appspotmail.com
-Subject: [PATCH] jfs : fix array-index-out-of-bounds in diWrite
-Date:   Sun,  8 Oct 2023 23:17:45 +0530
-Message-Id: <20231008174745.27342-1-ghandatmanas@gmail.com>
-X-Mailer: git-send-email 2.37.2
+        Sun, 08 Oct 2023 10:56:23 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Helen Koike <helen.koike@collabora.com>,
+        Rob Clark <robdclark@chromium.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Daniel Stone <daniels@collabora.com>,
+        Vinod Polimera <quic_vpolimer@quicinc.com>,
+        Kalyan Thota <quic_kalyant@quicinc.com>,
+        Jiasheng Jiang <jiasheng@iscas.ac.cn>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/msm/dpu: Use the encoder for default CRC source
+Date:   Sun,  8 Oct 2023 10:55:59 -0700
+Message-ID: <20231008175615.413497-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently while copying dtree root from inode to dnode in the xp slot
-there is a out of bound memcpy. Added a bound check to the memcpy.
+From: Rob Clark <robdclark@chromium.org>
 
-Reported-by: syzbot+c1056fdfe414463fdb33@syzkaller.appspotmail.com
-Fixes: https://syzkaller.appspot.com/bug?extid=c1056fdfe414463fdb33
-Signed-off-by: Manas Ghandat <ghandatmanas@gmail.com>
+i-g-t expects the CRC to reflect any applied CTM.  But the layer mixer
+source is upstream of the DSPP, so it is before the CTM is applied.
+
+Switch the default source to 'encoder' instead so that the CRC is
+captured downstream of the DSPP.
+
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 ---
- fs/jfs/jfs_imap.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/ci/xfails/msm-sc7180-fails.txt |  4 ----
+ drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt |  5 -----
+ drivers/gpu/drm/ci/xfails/msm-sdm845-fails.txt | 11 +----------
+ drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c       |  6 +++---
+ 4 files changed, 4 insertions(+), 22 deletions(-)
 
-diff --git a/fs/jfs/jfs_imap.c b/fs/jfs/jfs_imap.c
-index 799d3837e7c2..d1f897848be0 100644
---- a/fs/jfs/jfs_imap.c
-+++ b/fs/jfs/jfs_imap.c
-@@ -746,7 +746,8 @@ int diWrite(tid_t tid, struct inode *ip)
- 		xp = (dtpage_t *) & dp->di_dtroot;
- 		lv = ilinelock->lv;
- 		for (n = 0; n < ilinelock->index; n++, lv++) {
--			memcpy(&xp->slot[lv->offset], &p->slot[lv->offset],
-+			if (lv->offset < 128)
-+				memcpy(&xp->slot[lv->offset], &p->slot[lv->offset],
- 			       lv->length << L2DTSLOTSIZE);
- 		}
- 	} else {
+diff --git a/drivers/gpu/drm/ci/xfails/msm-sc7180-fails.txt b/drivers/gpu/drm/ci/xfails/msm-sc7180-fails.txt
+index faf2702c223f..a51950746443 100644
+--- a/drivers/gpu/drm/ci/xfails/msm-sc7180-fails.txt
++++ b/drivers/gpu/drm/ci/xfails/msm-sc7180-fails.txt
+@@ -1,10 +1,6 @@
+ kms_cursor_legacy@cursor-vs-flip-toggle,Fail
+ kms_cursor_legacy@cursor-vs-flip-varying-size,Fail
+ kms_cursor_legacy@cursorA-vs-flipA-atomic-transitions,Crash
+-kms_pipe_crc_basic@compare-crc-sanitycheck-nv12,Fail
+-kms_plane_alpha_blend@alpha-7efc,Fail
+-kms_plane_alpha_blend@coverage-7efc,Fail
+-kms_plane_alpha_blend@coverage-vs-premult-vs-constant,Fail
+ kms_plane_alpha_blend@pipe-A-alpha-7efc,Fail
+ kms_plane_alpha_blend@pipe-A-coverage-7efc,Fail
+ kms_plane_alpha_blend@pipe-A-coverage-vs-premult-vs-constant,Fail
+diff --git a/drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt b/drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt
+index 612f7e822c80..327039f70252 100644
+--- a/drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt
++++ b/drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt
+@@ -1,7 +1,2 @@
+ # Suspend to RAM seems to be broken on this machine
+ .*suspend.*
+-
+-# Test incorrectly assumes that CTM support implies gamma/degamma
+-# LUT support.  None of the subtests handle the case of only having
+-# CTM support
+-kms_color.*
+diff --git a/drivers/gpu/drm/ci/xfails/msm-sdm845-fails.txt b/drivers/gpu/drm/ci/xfails/msm-sdm845-fails.txt
+index ba36b92e3325..3d53c53a0659 100644
+--- a/drivers/gpu/drm/ci/xfails/msm-sdm845-fails.txt
++++ b/drivers/gpu/drm/ci/xfails/msm-sdm845-fails.txt
+@@ -1,20 +1,11 @@
+ kms_color@ctm-0-25,Fail
+ kms_color@ctm-0-50,Fail
+-kms_color@ctm-0-75,Fail
+ kms_color@ctm-blue-to-red,Fail
+ kms_color@ctm-green-to-red,Fail
+ kms_color@ctm-negative,Fail
+ kms_color@ctm-red-to-blue,Fail
+ kms_color@ctm-signed,Fail
+-kms_color@pipe-A-ctm-0-25,Fail
+-kms_color@pipe-A-ctm-0-5,Fail
+-kms_color@pipe-A-ctm-0-75,Fail
+-kms_color@pipe-A-ctm-blue-to-red,Fail
+-kms_color@pipe-A-ctm-green-to-red,Fail
+-kms_color@pipe-A-ctm-max,Fail
+-kms_color@pipe-A-ctm-negative,Fail
+-kms_color@pipe-A-ctm-red-to-blue,Fail
+-kms_color@pipe-A-legacy-gamma,Fail
++kms_color@ctm-max,Fail
+ kms_cursor_legacy@basic-flip-after-cursor-atomic,Fail
+ kms_cursor_legacy@basic-flip-after-cursor-legacy,Fail
+ kms_cursor_legacy@basic-flip-after-cursor-varying-size,Fail
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+index 8ce7586e2ddf..5eacf19382b5 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+@@ -79,10 +79,10 @@ static enum dpu_crtc_crc_source dpu_crtc_parse_crc_source(const char *src_name)
+ 	if (!src_name ||
+ 	    !strcmp(src_name, "none"))
+ 		return DPU_CRTC_CRC_SOURCE_NONE;
+-	if (!strcmp(src_name, "auto") ||
+-	    !strcmp(src_name, "lm"))
++	if (!strcmp(src_name, "lm"))
+ 		return DPU_CRTC_CRC_SOURCE_LAYER_MIXER;
+-	if (!strcmp(src_name, "encoder"))
++	if (!strcmp(src_name, "encoder") ||
++	    !strcmp(src_name, "auto"))
+ 		return DPU_CRTC_CRC_SOURCE_ENCODER;
+ 
+ 	return DPU_CRTC_CRC_SOURCE_INVALID;
 -- 
-2.37.2
+2.41.0
 
