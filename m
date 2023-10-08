@@ -2,176 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3F907BCDF1
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 13:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB8F7BCDF2
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 13:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344665AbjJHLCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 07:02:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46976 "EHLO
+        id S1344668AbjJHLDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 07:03:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344569AbjJHLCm (ORCPT
+        with ESMTP id S1344569AbjJHLDH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 07:02:42 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 673F0AC
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 04:02:41 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53627feca49so5997452a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 04:02:41 -0700 (PDT)
+        Sun, 8 Oct 2023 07:03:07 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F20DDBA
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 04:03:05 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso2916654a12.3
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 04:03:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696762960; x=1697367760; darn=vger.kernel.org;
-        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=I2BwMPIdqGU2NqgXy5cot4/7RwrAa6qLkUv4kvr0lFI=;
-        b=FG0fFGsy5bXYh3Hix9OvNoIl77cUL7zPwG0OhPrPZmsqcYyOFBs1hF1r7xAMYORIcp
-         iS6UTRWTwFsaLTAMpiwGQzYoDr2NxeGxZ6kqETS0T3l+TZj6u1CqNMkiBVSFA2t1cnIE
-         Slod4Jw2s4QrZxOQJa0Wp8i9q0gpaKRGBipnwMntG2c5WqnZMemXfo62TwHsgtTGlFV2
-         lq3EnSQ6/M7B1TMjHhV99f2njhv8tkgoWKoccVexzSGi5I1S7VXJiwI8al8lf80HLAd/
-         D1uZZdEC/TMi2VivllX0XENBs1zTrWWa+AZoNPb+lmq/4OJx6co/U5e937kS98zzhTe5
-         IwDg==
+        d=gmail.com; s=20230601; t=1696762985; x=1697367785; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MI2aGqX8IQw92CQpgLDjKYL8b/K1wVHaDqiaHa2ONas=;
+        b=Doz6ffvu/ETlbrWtK0PvMo8fj9aTgCd8sytqdNjgmBQBEq42cPmx+qwlDrCpZfec26
+         17IWtBGK3PMz9ryWeGXPcaV4NBEVObl5XzN8Pc8SxQOEOSmWUQt305BvLP0IKB76sbDO
+         pRa5wI05sCYFPKUo0iWKR/oau3hLIT0NGwgmXoojtmwawMqV02iQvPOyeAZd8HKNjAyJ
+         M85lmKLbjlwOOeaKD8hd9dBwqItz+941t78jt/uG18nXurnRn1a9Xu7IhH1z0hv6n7Y5
+         ZEWCAPxVEOwGcNgq/v2rM+7SiUdKnenI/bYzE5ln/tQx1m/hk/sE3HLrdrqyfpxIehnw
+         eV9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696762960; x=1697367760;
-        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=I2BwMPIdqGU2NqgXy5cot4/7RwrAa6qLkUv4kvr0lFI=;
-        b=ePyytt6SwIziWI6mamj4YYaFJRdWDHYRkKBSs0oaoJHxMbbgtxYcHRBf1J9kNf+56G
-         x2fSwzEiAJiTQxXBODC617W1IQjUZm3M5m+eX2u6EHd/CiK58aBfq70ZKrhBD1kAhNu/
-         wpzeCTRqVDFnXItHoQK4QwvGkNdeMkdJiglS/2tYTTAgz54k1vTvv/I/a9sQti8GvKYY
-         vNxQyb4t+jVkMiTYn0Qlp6/vYPRhGYik+Vcmf8qLMvxEMmJGr9ZeFzvMlQS/5lDAnG2b
-         QDHY0KWzxmOXsxmvQr/ZVgyxLny4zNbqbpjelrR0NJNBV2zVoveks7njHfH0SIMOearL
-         CGhw==
-X-Gm-Message-State: AOJu0Yw8wXWZBjfj30zb0k17maDK2HG8JJqxRD9exaM+u40gtHvvG3AD
-        OQQ1bpstQbVdJWXQ6P43kF+1EjcXL9C4lA==
-X-Google-Smtp-Source: AGHT+IHy1m45sSABny17HsA0YPMhRhLbvYZX41pT4wKfbzc5vlhxyd/WQ3jpRgofkFJqcis5pkKN6A==
-X-Received: by 2002:aa7:c393:0:b0:533:c55f:582a with SMTP id k19-20020aa7c393000000b00533c55f582amr11125186edq.27.1696762959595;
-        Sun, 08 Oct 2023 04:02:39 -0700 (PDT)
-Received: from dell.localnet (77-255-201-154.dynamic.inetia.pl. [77.255.201.154])
-        by smtp.gmail.com with ESMTPSA id r9-20020aa7d589000000b0052576969ef8sm4832770edq.14.2023.10.08.04.02.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Oct 2023 04:02:38 -0700 (PDT)
-From:   Janusz Krzysztofik <jmkrzyszt@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: Re: [PATCH] ASoC: ti: ams-delta: Fix cx81801_receive() argument types
-Date:   Sun, 08 Oct 2023 13:02:36 +0200
-Message-ID: <4229381.1IzOArtZ34@dell>
-In-Reply-To: <8377873.NyiUUSuA9g@dell>
-References: <20231007213820.376360-1-jmkrzyszt@gmail.com>
- <2023100811-shakable-derby-0b91@gregkh> <8377873.NyiUUSuA9g@dell>
+        d=1e100.net; s=20230601; t=1696762985; x=1697367785;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=MI2aGqX8IQw92CQpgLDjKYL8b/K1wVHaDqiaHa2ONas=;
+        b=GppTqylsUyb1gkUFvaIPUAzvT7sq/tgslOSKok2M3QtnsIfNSd5qxgThWmX7r93elW
+         MKaJ3sxi8BUPHW0ZZ2BOgRVZrbhAviJ0BxjibUa6h1dcmZc+MA+qrdRy4H6fNWBTA8hj
+         qelZzfHZOEzTlQIH8zcMVp0V7jeibAH4j3YymFr0FLYI3soGLSbiguHtDRjcFJu8Acr6
+         a4OrWqJL3TlAQynfiM07fkMg5NQ97XEHwLfrdVn8zbbbwVxOKatT3/BTlUUBeFlaQSxD
+         Njz5sNi0nyWpQsuB56JuyJH1qT3gkp27/G3xc7/nbY4cn1tpeM1YXRTo8uRpmFuooegF
+         zWjg==
+X-Gm-Message-State: AOJu0YyWSwidvIlY756zWBxU4UrSZgS7cw/bJGwoi4yIeRFz0Agkvtk4
+        Llc0Nw2QgUKr3Y2Vl7omxxAU17/+VGPp0gyhWQo=
+X-Google-Smtp-Source: AGHT+IGMbVmDRDWN6R0443njiMorLkHAoOavCC66hn9SMnE+BnJ1HO2EFPfG5M++zVjO8PjtzevCjg==
+X-Received: by 2002:a05:6a20:d41c:b0:138:2fb8:6a14 with SMTP id il28-20020a056a20d41c00b001382fb86a14mr11825377pzb.3.1696762985348;
+        Sun, 08 Oct 2023 04:03:05 -0700 (PDT)
+Received: from [10.53.28.113] ([143.92.127.238])
+        by smtp.gmail.com with ESMTPSA id b1-20020a170902d50100b001bdb0483e65sm7273757plg.265.2023.10.08.04.03.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 08 Oct 2023 04:03:04 -0700 (PDT)
+Message-ID: <2b2dbd18-b018-7212-8a3c-5d207697709d@gmail.com>
+Date:   Sun, 8 Oct 2023 19:03:01 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2707487.BddDVKsqQX";
- micalg="pgp-sha256"; protocol="application/pgp-signature"
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH 1/3] delayacct: introduce delayacct_enabled() to simplify
+ implement
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     bsingharora@gmail.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org
+References: <cover.1696761522.git.chunguang.xu@shopee.com>
+ <8e5d6ed7d70ff7187a33130231783ed2c1d70841.1696761522.git.chunguang.xu@shopee.com>
+ <20231008105627.GB6320@noisy.programming.kicks-ass.net>
+From:   brookxu <brookxu.cn@gmail.com>
+In-Reply-To: <20231008105627.GB6320@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart2707487.BddDVKsqQX
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
-From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date: Sun, 08 Oct 2023 13:02:36 +0200
-Message-ID: <4229381.1IzOArtZ34@dell>
-In-Reply-To: <8377873.NyiUUSuA9g@dell>
-MIME-Version: 1.0
 
-Dnia niedziela, 8 pa=C5=BAdziernika 2023 11:42:50 CEST Janusz Krzysztofik p=
-isze:
-> Dnia niedziela, 8 pa=C5=BAdziernika 2023 07:04:39 CEST Greg Kroah-Hartman=
- pisze:
-> > On Sat, Oct 07, 2023 at 11:38:18PM +0200, Janusz Krzysztofik wrote:
-> > > Since types of arguments accepted by tty_ldis_ops::receive_buf() have
-> > > changed, the driver no longer builds.
-> > >=20
-> > > .../linux/sound/soc/ti/ams-delta.c:403:24: error: initialization of '=
-void (*)(struct tty_struct *, const u8 *, const u8 *, size_t)' {aka 'void (=
-*)(struct tty_struct *, const unsigned char *, const unsigned char *, unsig=
-ned int)'} from incompatible pointer type 'void (*)(struct tty_struct *, co=
-nst u8 *, const char *, int)' {aka 'void (*)(struct tty_struct *, const uns=
-igned char *, const char *, int)'} [-Werror=3Dincompatible-pointer-types]
-> > >   403 |         .receive_buf =3D cx81801_receive,
-> > >=20
-> > > Fix it.
-> > >=20
-> > > Fixes: e8161447bb0c ("tty: make tty_ldisc_ops::*buf*() hooks operate =
-on size_t")
-> > > Fixes: 892bc209f250 ("tty: use u8 for flags")
-> > > Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-> > > ---
-> > >  sound/soc/ti/ams-delta.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >=20
-> > Odd no built-bots caught this, maybe no one normally builds this file?
->=20
-> The driver depends on SND, SND_SOC and TTY, but can't be selected=20
-> individually, only via its user. =20
-
-Sorry, that was an ASoC board driver, not a CODEC driver, that required the=
-=20
-fix.
-
-> Then, it usually builds when=20
-> CONFIG_SND_SOC_OMAP_AMS_DELTA=3Dy, and that's probably uncommon due to=20
-> specific dependencies. =20
-
-In addition to SOUND, SND, SND_SOC and TTY, this ASoC board driver depends=
-=20
-on MACH_AMS_DELTA, then on ARM, MMU, ARCH_MULTI_V4T, !ARCH_MULTI_V6,=20
-!ARCH_MULTI_V7, CPU_LITTLE_ENDIAN, ATAGS, ARCH_OMAP1 and ARCH_OMAP15XX. =20
-Let me check if it builds without those machine dependencies, then we can=20
-cover it by COMPILE_TEST.
-
-Thanks,
-Janusz
-
-> However, cx20442 can also be selected and built=20
-> with CONFIG_COMPILE_TEST=3Dy and CONFIG_SND_SOC_ALL_CODECS=3Dy.  Since si=
-milar=20
-> approach seems to apply to quite a number of ASoC CODECs, maybe build-bot=
-s=20
-> should pay special attention to select SND_SOC_ALL_CODECS more frequently=
-,=20
-> like they probably do with COMPILE_TEST.
->=20
-> Thanks,
-> Janusz
->=20
-> > Anyway, I'll pick this up in my tty tree now, thanks!
-> >=20
-> > greg k-h
-> >=20
->=20
->=20
-
-
---nextPart2707487.BddDVKsqQX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEnyr6IsGnTYAeAkHJ2WqSnltsjBoFAmUijEwACgkQ2WqSnlts
-jBqpygf/TZYnhnJ79SYUbtDpvKJvQn4573Q7v/l2znOGa1OJTKp7WpamhXlqXOct
-rTHSJ4md10EXlw3e7OhmSWwP4fhrMIASzHYYPmlX7LYXZedRkSbaOFC+kOSDhKYW
-ZHhJrEfTOpfd968L/0cLd2Sg913OJqYQzThlUXk40v3VQNnkSZMH9Ma/DqasAOWE
-j8MmaxtqOEwuQwFNoOnwAHGcHz5fMO2xgijTrhpMrZLx8cWLoY/1DuFk1jUBy9B7
-/27avelGo4+IhBSC6ysZa6QueVOrfUWGcFnsXwUG6SCE4AMh11z3mecoSlwO8jcB
-hEoZ+9f8JJ3bRxtCUDvAm0mTkc0i0g==
-=cxua
------END PGP SIGNATURE-----
-
---nextPart2707487.BddDVKsqQX--
-
-
-
+在 2023/10/8 18:56, Peter Zijlstra 写道:
+> On Sun, Oct 08, 2023 at 06:49:36PM +0800, brookxu.cn wrote:
+>> From: Chunguang Xu <chunguang.xu@shopee.com>
+>>
+>> Introduce delayacct_enabled() to simplify the code and make it
+>> more concise.
+>>
+>> Signed-off-by: Chunguang Xu <chunguang.xu@shopee.com>
+>> ---
+>>   include/linux/delayacct.h | 74 +++++++++++----------------------------
+>>   kernel/delayacct.c        |  2 +-
+>>   2 files changed, 21 insertions(+), 55 deletions(-)
+>>
+>> diff --git a/include/linux/delayacct.h b/include/linux/delayacct.h
+>> index 6639f48dac36..660e534ce7c4 100644
+>> --- a/include/linux/delayacct.h
+>> +++ b/include/linux/delayacct.h
+>> @@ -94,137 +94,103 @@ static inline void delayacct_tsk_init(struct task_struct *tsk)
+>>   		__delayacct_tsk_init(tsk);
+>>   }
+>>   
+>> +static inline bool delayacct_enabled(void)
+>> +{
+>> +	return static_branch_unlikely(&delayacct_key);
+>> +}
+>> +
+>>   /* Free tsk->delays. Called from bad fork and __put_task_struct
+>>    * where there's no risk of tsk->delays being accessed elsewhere
+>>    */
+>>   static inline void delayacct_tsk_free(struct task_struct *tsk)
+>>   {
+>> -	if (tsk->delays)
+>> +	if (delayacct_enabled())
+> This isn't an equivalent change and your Changelog does not clarify.
+Sorry, As Patch 2 will convert tsk->delays to object,  we donot need to 
+check whether tsk->delays is null or not, so relative code can be simplify.
