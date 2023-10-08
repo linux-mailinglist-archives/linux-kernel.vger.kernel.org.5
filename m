@@ -2,61 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC9B47BCFB4
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 21:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 552BF7BCFB5
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 21:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344495AbjJHTCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 15:02:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59738 "EHLO
+        id S1344524AbjJHTCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 15:02:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbjJHTCI (ORCPT
+        with ESMTP id S1344500AbjJHTCK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 15:02:08 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3607AC
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 12:02:06 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6934202b8bdso3166642b3a.1
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 12:02:06 -0700 (PDT)
+        Sun, 8 Oct 2023 15:02:10 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04564AC
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 12:02:09 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-352753fb42eso16297015ab.1
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 12:02:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696791726; x=1697396526; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=w1+Qsyy+bFdp5dmNBCr+fP+a+JH1BEYENvEHb1RnYwk=;
-        b=CPzLxXVysjPt9BF396+BVj6/Wm5kqek/fBg5CwAqQULe0FHrh8JyC+mxizt+VzQHaQ
-         +yjqNpYyIYNlbpexEPaD5cqfS0xYVL3zEuL+Ws2+HYfdUP3Kx85fC6RT8y9jNIlC1oQ2
-         0HBKWex3Mps/4LU2SlLtB4UHMJvsgF0twMURoKMRLjTJ/su6S8Uzfakc6bvADvVwFHln
-         tlPNMSLpkSsLGkq7LSL81qE5Wd2h15tWic+KF78WZAYOy5/Ac6/c7YJDQYjZugobLUmK
-         1YPHYkMQoxY9/9yi8kKQpxBRJXYRKTY5Deyr5cO+JjDqMGQm7FX11kBVndOKCAQl/apZ
-         nsbQ==
+        d=gmail.com; s=20230601; t=1696791728; x=1697396528; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6VyZXwoc1Z5JSgbPuetTHjH+Q4MbZFY0gbDiCVVsdfs=;
+        b=XJ0IiN7v5GUNo2+FOWFajM3z7J7IkQrq30/GzhkbbLI/gw2M9KxhOTIxXAXo4xnyDE
+         gSlkMek60wKOVKsHLZjch40Rilww2/z2ixLBFGXBtMzSBx2qi03buP3QfLVO0hwozAEY
+         HRrVowRMNuB9hzL9QSKu2Jac7xvq3t5Qg1BCnADIy4MfsimI5uqPeK5zgWAQuWtkTJdK
+         WObIO+Z3PQpZYwTwEl+OhYStdIu9lAn8lam39/AF83p8kFao3i3ODg8KuGfMO1/PJrEu
+         izWr8pPW4FuwPb46K+eQZGVlAgc/aYLJtYIBbRKtu+24W1LXTYJiNdrUDrwfGJfeBxFx
+         zO1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696791726; x=1697396526;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=w1+Qsyy+bFdp5dmNBCr+fP+a+JH1BEYENvEHb1RnYwk=;
-        b=ZVxNKUJztox6XAGDh5qw0Stt95ntrlsgoo9G6NjDndm5ZLNGHRk+Ec0XpudBrN0ipo
-         VPynSBfyivbtlPeRWi2BLwrP3n79UHgRUpRWkEjezA+TvEUpz2mATCMD9JVMIIQpo0Qo
-         rq9OnzRrWwroEZx8KKl59mGZIgTO2JpAT1GgExH3rsu3rL2bBkag06QJoJ+HPnIgVGFj
-         BK5SC3xItFQvYqCkBeToiRsZjWzP86tBw4cpxT00mAu2X+EgM6oMjZd4lmEojRPjx9iX
-         d1PkAtCeerTJAueLVF/morlgM3hJOAtDxgAQHXTY4FYHSdNmyefZr1zP4ehDodFRehn+
-         +sOQ==
-X-Gm-Message-State: AOJu0Yyef6ETEyTJ2oPAw9p61ooxzvIc21BDabqMVUSBbV/LCHWo3e22
-        yTJVYV+hr3T96GFaG8bpDD65nyorQVI=
-X-Google-Smtp-Source: AGHT+IEPuPtqQ5zNPmhUWxQ27zPqwWH7rYWq0GjGIWqAwGdboE2LIkOqDipI4eMn/0YhBFMdQJRmDQ==
-X-Received: by 2002:a05:6a00:391d:b0:68e:4303:edb8 with SMTP id fh29-20020a056a00391d00b0068e4303edb8mr15323342pfb.30.1696791726338;
-        Sun, 08 Oct 2023 12:02:06 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696791728; x=1697396528;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6VyZXwoc1Z5JSgbPuetTHjH+Q4MbZFY0gbDiCVVsdfs=;
+        b=sV3UD1YYkteZm+O9w22OOyaFnfS77GbCy6Yc/2AmG7ApZoeIH7nlOOH6ulauqt9TfO
+         fAKXD7EDmoF5MaB8neTII7ipgqWvgcnYUswjKxk9rKTbUk8D+/myZELcQFwWqAI9N0jA
+         tkowyqDFdNA/JIh4jv68zT0PbxUAeB2Sc99pVw1MOLp5HQNd5lMwUZYY7FUJa57vuOat
+         dZ1RwEQQHUv59HUsmiPs6cO50vrafe/VLMGZ3B91xRsbFtMpm7a+5iZRr7Rf0EUgv/QE
+         EXTOsCAUmzqFD2Qkhu4f44RhVm6PpOUCWtdlv5yjRpoxdQ+U7DJNJWrDhpGbOS2N3IO6
+         Ejyg==
+X-Gm-Message-State: AOJu0YziR7UQ6oWLsFgGViUa1iwDuSWzn84kLOtjhC/yLl28unFd2v9y
+        bxfkGCfdavVsvoKXD8tWkFNUZG76pBY=
+X-Google-Smtp-Source: AGHT+IFiZnfIWGFdZUMjgc+6ypttacTXyr/llYiB8pNW+7NLeoU5A+rHw1xcX41tgLDWMntxUvo7rA==
+X-Received: by 2002:a05:6e02:1354:b0:351:1311:c282 with SMTP id k20-20020a056e02135400b003511311c282mr12479417ilr.9.1696791728314;
+        Sun, 08 Oct 2023 12:02:08 -0700 (PDT)
 Received: from ubuntu.. ([223.178.246.252])
-        by smtp.gmail.com with ESMTPSA id g12-20020a63be4c000000b00577e62e13c5sm6018165pgo.32.2023.10.08.12.02.04
+        by smtp.gmail.com with ESMTPSA id g12-20020a63be4c000000b00577e62e13c5sm6018165pgo.32.2023.10.08.12.02.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Oct 2023 12:02:05 -0700 (PDT)
+        Sun, 08 Oct 2023 12:02:07 -0700 (PDT)
 From:   Pavan Bobba <opensource206@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
 Cc:     Pavan Bobba <opensource206@gmail.com>
-Subject: [PATCH v5 0/3] Type encoding info dropped from arrary name "abyBBVGA" and variable names "byBBVGACurrent", "byBBVGANew"
-Date:   Mon,  9 Oct 2023 00:31:47 +0530
-Message-Id: <cover.1696791459.git.opensource206@gmail.com>
+Subject: [PATCH v5 1/3] staging: vt6655: Type encoding info dropped from array name "abyBBVGA"
+Date:   Mon,  9 Oct 2023 00:31:48 +0530
+Message-Id: <13a233dff4d6daf728f75ab18b38ec9d0703764b.1696791459.git.opensource206@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1696791459.git.opensource206@gmail.com>
+References: <cover.1696791459.git.opensource206@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -69,21 +72,183 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset series consist of fixes to issues found by checkpatch
+array name "abyBBVGA" updated like below:
 
-Pavan Bobba (3):
-  staging: vt6655: Type encoding info dropped from array name "abyBBVGA"
-  staging: vt6655: Type encoding info dropped from variable name
-    "byBBVGACurrent"
-  staging: vt6655: Type encoding info dropped from variable name
-    "byBBVGANew"
+a.type encoding info dropped from name
+b.camelcase name replaced by snakecase
 
- drivers/staging/vt6655/baseband.c    | 40 ++++++++++++++--------------
- drivers/staging/vt6655/channel.c     |  6 ++---
- drivers/staging/vt6655/device.h      |  6 ++---
- drivers/staging/vt6655/device_main.c | 24 ++++++++---------
- 4 files changed, 38 insertions(+), 38 deletions(-)
+Issue found by checkpatch
 
+Signed-off-by: Pavan Bobba <opensource206@gmail.com>
+---
+v1 -> v2 : 1.cover letter added
+           2.patches sent as attachments in a single mail for review
+
+v2 -> v3 : patches sending in a single mail intead of attachments
+
+v3 -> v4 : version info updated in patchset subject
+
+v4 -> v5 : sending all patches in a series
+
+ drivers/staging/vt6655/baseband.c    | 38 ++++++++++++++--------------
+ drivers/staging/vt6655/channel.c     |  4 +--
+ drivers/staging/vt6655/device.h      |  2 +-
+ drivers/staging/vt6655/device_main.c |  8 +++---
+ 4 files changed, 26 insertions(+), 26 deletions(-)
+
+diff --git a/drivers/staging/vt6655/baseband.c b/drivers/staging/vt6655/baseband.c
+index 0ae2ab3987c6..a19a75f5d761 100644
+--- a/drivers/staging/vt6655/baseband.c
++++ b/drivers/staging/vt6655/baseband.c
+@@ -2016,10 +2016,10 @@ bool bb_vt3253_init(struct vnt_private *priv)
+ 			iowrite32(0x23, iobase + MAC_REG_ITRTMSET);
+ 			vt6655_mac_reg_bits_on(iobase, MAC_REG_PAPEDELAY, BIT(0));
+ 		}
+-		priv->abyBBVGA[0] = 0x18;
+-		priv->abyBBVGA[1] = 0x0A;
+-		priv->abyBBVGA[2] = 0x0;
+-		priv->abyBBVGA[3] = 0x0;
++		priv->bbvga[0] = 0x18;
++		priv->bbvga[1] = 0x0A;
++		priv->bbvga[2] = 0x0;
++		priv->bbvga[3] = 0x0;
+ 		priv->dbm_threshold[0] = -70;
+ 		priv->dbm_threshold[1] = -50;
+ 		priv->dbm_threshold[2] = 0;
+@@ -2034,10 +2034,10 @@ bool bb_vt3253_init(struct vnt_private *priv)
+ 			result &= bb_write_embedded(priv,
+ 				vt3253b0_agc[ii][0], vt3253b0_agc[ii][1]);
+ 
+-		priv->abyBBVGA[0] = 0x1C;
+-		priv->abyBBVGA[1] = 0x10;
+-		priv->abyBBVGA[2] = 0x0;
+-		priv->abyBBVGA[3] = 0x0;
++		priv->bbvga[0] = 0x1C;
++		priv->bbvga[1] = 0x10;
++		priv->bbvga[2] = 0x0;
++		priv->bbvga[3] = 0x0;
+ 		priv->dbm_threshold[0] = -70;
+ 		priv->dbm_threshold[1] = -48;
+ 		priv->dbm_threshold[2] = 0;
+@@ -2056,10 +2056,10 @@ bool bb_vt3253_init(struct vnt_private *priv)
+ 		iowrite8(0x23, iobase + MAC_REG_ITRTMSET);
+ 		vt6655_mac_reg_bits_on(iobase, MAC_REG_PAPEDELAY, BIT(0));
+ 
+-		priv->abyBBVGA[0] = 0x14;
+-		priv->abyBBVGA[1] = 0x0A;
+-		priv->abyBBVGA[2] = 0x0;
+-		priv->abyBBVGA[3] = 0x0;
++		priv->bbvga[0] = 0x14;
++		priv->bbvga[1] = 0x0A;
++		priv->bbvga[2] = 0x0;
++		priv->bbvga[3] = 0x0;
+ 		priv->dbm_threshold[0] = -60;
+ 		priv->dbm_threshold[1] = -50;
+ 		priv->dbm_threshold[2] = 0;
+@@ -2074,10 +2074,10 @@ bool bb_vt3253_init(struct vnt_private *priv)
+ 			result &= bb_write_embedded(priv,
+ 				vt3253b0_agc[ii][0], vt3253b0_agc[ii][1]);
+ 
+-		priv->abyBBVGA[0] = 0x1C;
+-		priv->abyBBVGA[1] = 0x10;
+-		priv->abyBBVGA[2] = 0x0;
+-		priv->abyBBVGA[3] = 0x0;
++		priv->bbvga[0] = 0x1C;
++		priv->bbvga[1] = 0x10;
++		priv->bbvga[2] = 0x0;
++		priv->bbvga[3] = 0x0;
+ 		priv->dbm_threshold[0] = -70;
+ 		priv->dbm_threshold[1] = -48;
+ 		priv->dbm_threshold[2] = 0;
+@@ -2088,7 +2088,7 @@ bool bb_vt3253_init(struct vnt_private *priv)
+ 	} else {
+ 		/* No VGA Table now */
+ 		priv->bUpdateBBVGA = false;
+-		priv->abyBBVGA[0] = 0x1C;
++		priv->bbvga[0] = 0x1C;
+ 	}
+ 
+ 	if (by_local_id > REV_ID_VT3253_A1) {
+@@ -2126,7 +2126,7 @@ bb_set_short_slot_time(struct vnt_private *priv)
+ 
+ 	/* patch for 3253B0 Baseband with Cardbus module */
+ 	bb_read_embedded(priv, 0xE7, &by_bb_vga);
+-	if (by_bb_vga == priv->abyBBVGA[0])
++	if (by_bb_vga == priv->bbvga[0])
+ 		by_bb_rx_conf |= 0x20; /* 0010 0000 */
+ 
+ 	bb_write_embedded(priv, 0x0A, by_bb_rx_conf); /* CR10 */
+@@ -2140,7 +2140,7 @@ void bb_set_vga_gain_offset(struct vnt_private *priv, unsigned char by_data)
+ 
+ 	bb_read_embedded(priv, 0x0A, &by_bb_rx_conf); /* CR10 */
+ 	/* patch for 3253B0 Baseband with Cardbus module */
+-	if (by_data == priv->abyBBVGA[0])
++	if (by_data == priv->bbvga[0])
+ 		by_bb_rx_conf |= 0x20; /* 0010 0000 */
+ 	else if (priv->short_slot_time)
+ 		by_bb_rx_conf &= 0xDF; /* 1101 1111 */
+diff --git a/drivers/staging/vt6655/channel.c b/drivers/staging/vt6655/channel.c
+index e90e0b43505d..e20701815db9 100644
+--- a/drivers/staging/vt6655/channel.c
++++ b/drivers/staging/vt6655/channel.c
+@@ -87,8 +87,8 @@ bool set_channel(struct vnt_private *priv, struct ieee80211_channel *ch)
+ 
+ 	/* Set VGA to max sensitivity */
+ 	if (priv->bUpdateBBVGA &&
+-	    priv->byBBVGACurrent != priv->abyBBVGA[0]) {
+-		priv->byBBVGACurrent = priv->abyBBVGA[0];
++	    priv->byBBVGACurrent != priv->bbvga[0]) {
++		priv->byBBVGACurrent = priv->bbvga[0];
+ 
+ 		bb_set_vga_gain_offset(priv, priv->byBBVGACurrent);
+ 	}
+diff --git a/drivers/staging/vt6655/device.h b/drivers/staging/vt6655/device.h
+index 8c90539cc3d7..b662c74a2dc7 100644
+--- a/drivers/staging/vt6655/device.h
++++ b/drivers/staging/vt6655/device.h
+@@ -250,7 +250,7 @@ struct vnt_private {
+ 	unsigned int	uBBVGADiffCount;
+ 	unsigned char byBBVGANew;
+ 	unsigned char byBBVGACurrent;
+-	unsigned char abyBBVGA[BB_VGA_LEVEL];
++	unsigned char bbvga[BB_VGA_LEVEL];
+ 	long                    dbm_threshold[BB_VGA_LEVEL];
+ 
+ 	unsigned char byBBPreEDRSSI;
+diff --git a/drivers/staging/vt6655/device_main.c b/drivers/staging/vt6655/device_main.c
+index f76f482f4c06..385848df8848 100644
+--- a/drivers/staging/vt6655/device_main.c
++++ b/drivers/staging/vt6655/device_main.c
+@@ -424,9 +424,9 @@ static void device_init_registers(struct vnt_private *priv)
+ 	bb_vt3253_init(priv);
+ 
+ 	if (priv->bUpdateBBVGA) {
+-		priv->byBBVGACurrent = priv->abyBBVGA[0];
++		priv->byBBVGACurrent = priv->bbvga[0];
+ 		priv->byBBVGANew = priv->byBBVGACurrent;
+-		bb_set_vga_gain_offset(priv, priv->abyBBVGA[0]);
++		bb_set_vga_gain_offset(priv, priv->bbvga[0]);
+ 	}
+ 
+ 	bb_set_rx_antenna_mode(priv, priv->byRxAntennaMode);
+@@ -1053,7 +1053,7 @@ static void vnt_check_bb_vga(struct vnt_private *priv)
+ 
+ 	for (i = 0; i < BB_VGA_LEVEL; i++) {
+ 		if (dbm < priv->dbm_threshold[i]) {
+-			priv->byBBVGANew = priv->abyBBVGA[i];
++			priv->byBBVGANew = priv->bbvga[i];
+ 			break;
+ 		}
+ 	}
+@@ -1510,7 +1510,7 @@ static void vnt_bss_info_changed(struct ieee80211_hw *hw,
+ 			priv->short_slot_time = false;
+ 
+ 		CARDbSetPhyParameter(priv, priv->byBBType);
+-		bb_set_vga_gain_offset(priv, priv->abyBBVGA[0]);
++		bb_set_vga_gain_offset(priv, priv->bbvga[0]);
+ 	}
+ 
+ 	if (changed & BSS_CHANGED_TXPOWER)
 -- 
 2.34.1
 
