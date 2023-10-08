@@ -2,74 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA457BCF43
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 18:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D09B7BCF47
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Oct 2023 18:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344941AbjJHQjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 12:39:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43094 "EHLO
+        id S1344944AbjJHQqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 12:46:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344915AbjJHQjR (ORCPT
+        with ESMTP id S1344924AbjJHQqM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 12:39:17 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C97B3
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 09:39:15 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-7a2a9e5451bso149596439f.1
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 09:39:15 -0700 (PDT)
+        Sun, 8 Oct 2023 12:46:12 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4456B6
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 09:46:09 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-351232a46b3so14860995ab.1
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 09:46:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1696783155; x=1697387955; darn=vger.kernel.org;
+        d=joelfernandes.org; s=google; t=1696783569; x=1697388369; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4koq0qb+9EqMhvH22U5EdqI24pJGwiBkHVIALKouyD8=;
-        b=VR1liPfqYq+FKEUJzjKg05tdWPrcJdKf+diBpOfF3IcS+A+gtUbRY+x7EpI1Yj2h/D
-         HUkMcU6xeRjBs2e6qNBQfHHUOUBGECjs2bS7qrLyYlAZLr8vdpTX+DIl7SsonyRF7mOV
-         JEBWodgyTngj0LKLaQsu/m0bg1e3Mmxm67ECM=
+        bh=VnVFZJC7sQv/uUQwxwCLKccSDfGZB0dl57RLHiWuzW8=;
+        b=esFG7niQh8qYcE1f9MdgmDHD+yyY92SyXXOvu5+Som+GpodgXGL/AvoysW5NXWZIxR
+         XxlCP0cDbLOyCc2FFjtwy9FvovxbVnAdNahT47hmBO73fJaS2YIp9F3D1RtFkOfIcQH+
+         +t44/spSF0EuLlKwQxt2PFtNX4YPFmXRyQKZ4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696783155; x=1697387955;
+        d=1e100.net; s=20230601; t=1696783569; x=1697388369;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4koq0qb+9EqMhvH22U5EdqI24pJGwiBkHVIALKouyD8=;
-        b=LayBcavjo1bSNihMb7hvyrtWzQuSaWOwS7soRds5Xzex26M26xmLwa4iGrfZHsjR9H
-         HypsUV8VLrkt64BskP4PFSK93I7WWeyqpE2wYnNzPHz2ZHYaFOlMsqykPHiGyaI8vx0Y
-         zETPTXRJsaXjNrpWA6uMcE+SUsVJSNDL1RxHu7vWb/9RObKuxgpTQCDJroVoeP16PWAt
-         EqYYApEBvhKotKxhXBsbhryUC50L3ZzWNw8dKjJu9/VBcwmcDpxAfW5Wb7m0aI5Orck+
-         HJGG+rdnnDnCnNfV3p0srCkBth2GhdEqnfNhlqL1x2ZMDaSqNmc6AY7mMd32y+ay9BGo
-         Yg4w==
-X-Gm-Message-State: AOJu0Yw6dDtnxwza+1Zx8IlnwDvcjE+4V+MhuRSrM6lZufS984pKXhwW
-        Ne4d+kH8GKYEkSGPy0oOYvePNg==
-X-Google-Smtp-Source: AGHT+IHOpitYJabM74nkMZmNhro4z5jj4hd3Ps+vU5OcvGL1ZOiyHv5hfF32DtZIoA0TlsB/uV604w==
-X-Received: by 2002:a6b:e31a:0:b0:791:acd7:233f with SMTP id u26-20020a6be31a000000b00791acd7233fmr11895757ioc.15.1696783155058;
-        Sun, 08 Oct 2023 09:39:15 -0700 (PDT)
+        bh=VnVFZJC7sQv/uUQwxwCLKccSDfGZB0dl57RLHiWuzW8=;
+        b=IvhNGSKcZZXRnIqF5Eeb2HW1AGJVE4l6Pe1zuF+IJ15bfGUdpJ6ZZfbISuKAAMNvYh
+         nthnp8MTSIyBYJYXgc1pgKbNQHdcp0LDfhqhGRjm0h3TZnh/tor80aY6p0zHE9BObKlC
+         QHoitSmzz3XXMXcFRageFQU5yLypg72Ysrar+fPWKAo8LpZkR/hfBVg2GNAphs7GKgbd
+         jWKy59LNZoSSO1KtEjCB8WXVkPDqDkRg4OCf36NqNgNXaZ5idYg5IsUyERYMXa4xACJQ
+         Q5w71VqELh8X4tR7mZ5l7IdewJdDCIuW/MTjAaNwq5+3zC1PaE2y9r4snf2Ihmk+RUzv
+         HV6Q==
+X-Gm-Message-State: AOJu0YzBA6UzOQS7yRrYc323X/rN5A1GLAxebYNNLa7WLFE2q37Kuv0C
+        A52DvVlbxVvxv9Y3oFHYIzPnMQ==
+X-Google-Smtp-Source: AGHT+IGXEcwoKYpM6C2uAQD5A4sGPWPRZ8l0B+QWJj0eO2MlZO81LuQW3BwsKpmY6OJUuVH9z0MNEw==
+X-Received: by 2002:a05:6e02:1a4f:b0:352:a19c:a581 with SMTP id u15-20020a056e021a4f00b00352a19ca581mr17230008ilv.13.1696783568905;
+        Sun, 08 Oct 2023 09:46:08 -0700 (PDT)
 Received: from localhost (161.74.123.34.bc.googleusercontent.com. [34.123.74.161])
-        by smtp.gmail.com with ESMTPSA id p7-20020a5ecb07000000b0079fa3d0d790sm1897662iom.31.2023.10.08.09.39.13
+        by smtp.gmail.com with ESMTPSA id a9-20020a92ce49000000b0035142caa6edsm2398364ilr.6.2023.10.08.09.46.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Oct 2023 09:39:14 -0700 (PDT)
-Date:   Sun, 8 Oct 2023 16:39:12 +0000
+        Sun, 08 Oct 2023 09:46:08 -0700 (PDT)
+Date:   Sun, 8 Oct 2023 16:46:07 +0000
 From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+Cc:     Vineeth Pillai <vineethrp@google.com>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Hsin Yi <hsinyi@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
         Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Vineeth Pillai <vineethrp@google.com>,
-        Suleiman Souhlal <suleiman@google.com>,
-        Hsin Yi <hsinyi@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
+        Valentin Schneider <vschneid@redhat.com>
 Subject: Re: [PATCH RFC] sched/fair: Avoid unnecessary IPIs for ILB
-Message-ID: <20231008163912.GA2338308@google.com>
+Message-ID: <20231008164607.GB2338308@google.com>
 References: <20231005161727.1855004-1-joel@joelfernandes.org>
- <20231006200129.GJ36277@noisy.programming.kicks-ass.net>
+ <98d06022-accd-a1df-7608-dcd6689b44ec@linux.vnet.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231006200129.GJ36277@noisy.programming.kicks-ass.net>
+In-Reply-To: <98d06022-accd-a1df-7608-dcd6689b44ec@linux.vnet.ibm.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -79,10 +80,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
-
-On Fri, Oct 06, 2023 at 10:01:29PM +0200, Peter Zijlstra wrote:
-> On Thu, Oct 05, 2023 at 04:17:26PM +0000, Joel Fernandes (Google) wrote:
+On Sat, Oct 07, 2023 at 12:48:57AM +0530, Shrikanth Hegde wrote:
+> 
+> 
+> On 10/5/23 9:47 PM, Joel Fernandes (Google) wrote:
 > > From: Vineeth Pillai <vineethrp@google.com>
 > > 
 > > Whenever a CPU stops its tick, it now requires another idle CPU to handle the
@@ -135,17 +136,124 @@ On Fri, Oct 06, 2023 at 10:01:29PM +0200, Peter Zijlstra wrote:
 > > with fix: ~1000
 > > 
 > > Fixes: 7fd7a9e0caba ("sched/fair: Trigger nohz.next_balance updates when a CPU goes NOHZ-idle")
+> > 
+> > [ Joel: wrote commit messages, collaborated on fix, helped reproduce issue etc. ]
 > 
-> Hurm.. does this really warrant a Fixes tag? Afaict nothing is currently
-> broken -- this is a pure optimization question, no?
+> Hi Joel/Vineeth. 
+> 
+> Its an interesting patch. 
+> 
+> Gave this patch a try on powerpc system with 96 CPU. (12 cores SMT8)
+> Was debugging an issue where ILB count goes up significantly at a specific 
+> busy CPU count. Haven't yet found out why. Its WIP. Was curious if this patch 
+> would address that issue. 
 
-IMHO it is a breakage as it breaks NOHZ -- a lot of times the ILB kicks back
-the CPU stopping the tick out of idle (effectively breaking NOHZ). The large
-number of IPIs also wrecks power and it happens only on 6.1 and after. Having
-the fixes tag means it will also goto all stable kernels >= 6.1. Hope that
-sounds reasonable and thank you for taking a look!
+Do you see that only from a specific kernel version onward? Have you tried
+pre-6.1 kernels?
+
+> cloned rt-test repo and ran same cyclictest command and collected 
+> softirq's count using bcc tool. That count remains same more or less with patch. 
+> Is what I am checking incorrect? Any other way to check IPI count?
+> 
+>         base 6.6_rc4    +patch
+> 
+> block       31.00        48.86
+> net_rx     475.90       348.90
+> timer     2213.20      2405.00
+> rcu      33057.30     34738.10
+> sched   175904.70    169695.60
+
+So, we ran "perf stat -e irq:softirq_*" and counted those. For the sched
+softirq, a majority of them were raised from the ILB path. This gave a clue
+that it must be a flood of ILB.
+
+For IPI counts, we run "perf record -a -g" and then "perf script" and look
+for call stacks involving an smp_call. There's also /proc/interrupts that can
+read out IPI counts.
+
+We also used trace_printk in the ILB path, collected a trace, and count how
+many times the ILB happens.
+
+Vineeth collected the final data in this patch so I'll let him add any
+details if he used some other method.
 
 thanks,
 
  - Joel
 
+> 
+> 
+> > 
+> > Cc: Suleiman Souhlal <suleiman@google.com>
+> > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > Cc: Hsin Yi <hsinyi@google.com>
+> > Cc: Frederic Weisbecker <frederic@kernel.org>
+> > Cc: Paul E. McKenney <paulmck@kernel.org>
+> > Signed-off-by: Vineeth Pillai <vineethrp@google.com>
+> > Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > ---
+> >  kernel/sched/fair.c | 21 ++++++++++++++-------
+> >  1 file changed, 14 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index cb225921bbca..2ece55f32782 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -11786,13 +11786,12 @@ void nohz_balance_enter_idle(int cpu)
+> >  	/*
+> >  	 * Ensures that if nohz_idle_balance() fails to observe our
+> >  	 * @idle_cpus_mask store, it must observe the @has_blocked
+> > -	 * and @needs_update stores.
+> > +	 * stores.
+> >  	 */
+> >  	smp_mb__after_atomic();
+> >  
+> >  	set_cpu_sd_state_idle(cpu);
+> >  
+> > -	WRITE_ONCE(nohz.needs_update, 1);
+> >  out:
+> >  	/*
+> >  	 * Each time a cpu enter idle, we assume that it has blocked load and
+> > @@ -11945,21 +11944,25 @@ static bool nohz_idle_balance(struct rq *this_rq, enum cpu_idle_type idle)
+> >  }
+> >  
+> >  /*
+> > - * Check if we need to run the ILB for updating blocked load before entering
+> > - * idle state.
+> > + * Check if we need to run the ILB for updating blocked load and/or updating
+> > + * nohz.next_balance before entering idle state.
+> >   */
+> >  void nohz_run_idle_balance(int cpu)
+> >  {
+> >  	unsigned int flags;
+> >  
+> > -	flags = atomic_fetch_andnot(NOHZ_NEWILB_KICK, nohz_flags(cpu));
+> > +	flags = atomic_fetch_andnot(NOHZ_NEWILB_KICK | NOHZ_NEXT_KICK, nohz_flags(cpu));
+> > +
+> > +	if (!flags)
+> > +		return;
+> >  
+> >  	/*
+> >  	 * Update the blocked load only if no SCHED_SOFTIRQ is about to happen
+> >  	 * (ie NOHZ_STATS_KICK set) and will do the same.
+> >  	 */
+> > -	if ((flags == NOHZ_NEWILB_KICK) && !need_resched())
+> > -		_nohz_idle_balance(cpu_rq(cpu), NOHZ_STATS_KICK);
+> > +	if ((flags == (flags & (NOHZ_NEXT_KICK | NOHZ_NEWILB_KICK))) &&
+> > +	    !need_resched())
+> > +		_nohz_idle_balance(cpu_rq(cpu), flags);
+> >  }
+> >  
+> >  static void nohz_newidle_balance(struct rq *this_rq)
+> > @@ -11977,6 +11980,10 @@ static void nohz_newidle_balance(struct rq *this_rq)
+> >  	if (this_rq->avg_idle < sysctl_sched_migration_cost)
+> >  		return;
+> >  
+> > +	/* If rq->next_balance before nohz.next_balance, trigger ILB */
+> > +	if (time_before(this_rq->next_balance, READ_ONCE(nohz.next_balance)))
+> > +		atomic_or(NOHZ_NEXT_KICK, nohz_flags(this_cpu));
+> > +
+> >  	/* Don't need to update blocked load of idle CPUs*/
+> >  	if (!READ_ONCE(nohz.has_blocked) ||
+> >  	    time_before(jiffies, READ_ONCE(nohz.next_blocked)))
