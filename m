@@ -2,154 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B063F7BEE45
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 00:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6C47BEE42
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 00:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378907AbjJIW2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 18:28:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59754 "EHLO
+        id S1378910AbjJIW0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 18:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378880AbjJIW2h (ORCPT
+        with ESMTP id S1378880AbjJIW0T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 18:28:37 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F769D
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 15:28:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696890514; x=1728426514;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=tcdMrCDUe3iaka9lM/WN33sOnz9XetzlVI9bNrAOSSU=;
-  b=NOWQsJGAG3QXfWzwpjrg5i1wdvFAJZt3KwFumxkyOJrY2NiW7quXpWKB
-   fWDV0C22s21IGdXJBxU9oX+XRJtH6i/qr2Qa2/HC6u/8kvLoq6ksJI5GJ
-   fTLeZoANkzqrdYVaD/IZv/E2rblC6cBoqIz94dV8nx17fSc9WWj66cXAI
-   RzliZaOLpQl4rkuPzWL+BOzjIY/sCVGvZiFy9ZCeD0FLdcY4d7UeFeozK
-   8yb4adUa3kKl21cFUj5SD8tUEoIIe7uBvb8+JZrIiP2Ojozj2Cwu22MU2
-   6aO8fHch7Nq/lnpmcKR1xHvCsbcO/0S/kaU3m05qUydmIsFxc4q0Wh8kx
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="470520019"
-X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
-   d="scan'208";a="470520019"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 15:26:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="926897957"
-X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
-   d="scan'208";a="926897957"
-Received: from lkp-server02.sh.intel.com (HELO 4ed589823ba4) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 09 Oct 2023 15:26:19 -0700
-Received: from kbuild by 4ed589823ba4 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qpyhc-0000lg-3B;
-        Mon, 09 Oct 2023 22:26:16 +0000
-Date:   Tue, 10 Oct 2023 06:25:40 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Sidhartha Kumar <sidhartha.kumar@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        maple-tree@lists.infradead.org
-Cc:     oe-kbuild-all@lists.linux.dev, akpm@linux-foundation.org,
-        willy@infradead.org, liam.howlett@oracle.com,
-        zhangpeng.00@bytedance.com,
-        Sidhartha Kumar <sidhartha.kumar@oracle.com>
-Subject: Re: [PATCH 1/3] maple_tree: introduce mas_prealloc_calc()
-Message-ID: <202310100603.qsn3ruBx-lkp@intel.com>
-References: <20231009201639.920512-2-sidhartha.kumar@oracle.com>
+        Mon, 9 Oct 2023 18:26:19 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC9279D;
+        Mon,  9 Oct 2023 15:26:17 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id a640c23a62f3a-98377c5d53eso861535066b.0;
+        Mon, 09 Oct 2023 15:26:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696890376; x=1697495176; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gNp5QN+Wa5gSGqFJs+wkBFIMdPrKF+F1qBOYA4/HLBM=;
+        b=Iht0jWInlER29aQNJaZ0jnftDItjzIrOTTfQ7pdAxNara2YFqslY3Sfq9uAie8hqf1
+         xpJcvhEq7t29Ck00AcT6tIEyHY2PZa53e7VMzhEYVRus9vP76szsCESQWO+e3bR2TpYZ
+         ghPJvmbOVyY2y86+kj6UhVyREf2wCuTUCFm2lXpVmPzA9tSSTGgkQAQhjG/JQYFPXqDZ
+         qv3JxZlDcUKwws5extxsrGsprJrrrViPoc1zxJo9P19ECvs3pdqy0O9JB7OZmyOWc6Ov
+         0RftRtwD/VtBcvtYhohh0euLv/dTTl9nu5exXxWn7Ndhz/Zo3EZJz4s90IdoDnBpEmHc
+         fVBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696890376; x=1697495176;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gNp5QN+Wa5gSGqFJs+wkBFIMdPrKF+F1qBOYA4/HLBM=;
+        b=pDv0u3xAMTPV6AR1QeckVcBgBGVPSWASgWnjPLCCCQhlnTrrHHljyRPPuqysshjAUj
+         Q1kRxRx7qpmM3hbimg22jlqR75h1vZgWbov6X3rfBj9xUHUpIxvNH/cNjagSFWQdyG83
+         RhH4/C8lUbFW/hx6P+MLU9qISR1r8IrSYkPt3kSBxnGxEdVOvTNjVzM/8MlIWKwxrp3G
+         YSLkTPKrJsCz+iTvGMNuIOt9rTi0N0jhq9y4440a8v2p2bXbzpexrYzevc6WzGpYxWEl
+         OFAdRcFNR529xNmz59Q3OZfmneD22kJALm8L3EC1Nvgv1p9MuVmXz4X+r01SvSgC7gXV
+         k9tQ==
+X-Gm-Message-State: AOJu0YzhXkX9C/FzGI0iGj27r4bferakuukxuIP0rpmUt/+m7cDZvv6L
+        AYW4p9XpF6lUl+ooEWTWX9E=
+X-Google-Smtp-Source: AGHT+IEXBZp6MNn5Iz0ZdFKMXIs3oPFYXzJVz9SzxV9sEy1dPEadJNRGycTF+Pwpu4r1dnqq7/zVSQ==
+X-Received: by 2002:a17:907:78d1:b0:9b3:264:446 with SMTP id kv17-20020a17090778d100b009b302640446mr15240204ejc.0.1696890376063;
+        Mon, 09 Oct 2023 15:26:16 -0700 (PDT)
+Received: from [127.0.1.1] (2a02-8389-41cf-e200-0d7c-652f-4e74-10b8.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:d7c:652f:4e74:10b8])
+        by smtp.gmail.com with ESMTPSA id t24-20020a1709066bd800b0099ddc81903asm7311487ejs.221.2023.10.09.15.26.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Oct 2023 15:26:15 -0700 (PDT)
+From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Date:   Tue, 10 Oct 2023 00:26:14 +0200
+Subject: [PATCH v2] net: usb: dm9601: fix uninitialized variable use in
+ dm9601_mdio_read
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231009201639.920512-2-sidhartha.kumar@oracle.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231009-topic-dm9601_uninit_mdio_read-v2-1-f2fe39739b6c@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAAV+JGUC/42OWw6DIBREt2L4Lg3gq/ar+2iMAbnoTQoYoKaNc
+ e9FV9DPM5OcmY1ECAiR3IuNBFgxoncZxKUg4yzdBBR1ZiKYKDljHU1+wZFq2zWMD2+HDtNgNfo
+ hgNRU8rrjN2OUbgzJDiUjUBWkG+fDYmVMEI5iCWDwcw4/+8wzxuTD9/yx8iP9d3LllFNd6batQ
+ VRQqsdkJb6uo7ek3/f9B61zopHjAAAA
+To:     Peter Korsgaard <peter@korsgaard.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        syzbot+1f53a30781af65d2c955@syzkaller.appspotmail.com
+Cc:     netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Javier Carrasco <javier.carrasco.cruz@gmail.com>
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1696890374; l=1805;
+ i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
+ bh=tuSpdfIOLwv7wtHY5W9nhbDUxC1QdO8MYoXpwOuuSqE=;
+ b=Ai7OsMH7iPyecSWDeP+Mdw3y4XBpnq183Zav9G1vJ1tx14o4CErwsZh5oPsgU6MM4uM3Zq+Fo
+ AHoFWK1Pkm7BUwyCk4C68GAbXkn6nw2mH1+29wwNde4BnUVQk0MxV5j
+X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
+ pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sidhartha,
+syzbot has found an uninit-value bug triggered by the dm9601 driver [1].
 
-kernel test robot noticed the following build warnings:
+This error happens because the variable res is not updated if the call
+to dm_read_shared_word returns an error. In this particular case -EPROTO
+was returned and res stayed uninitialized.
 
-[auto build test WARNING on akpm-mm/mm-everything]
-[also build test WARNING on linus/master v6.6-rc5 next-20231009]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+This can be avoided by checking the return value of dm_read_shared_word
+and propagating the error if the read operation failed.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Sidhartha-Kumar/maple_tree-introduce-mas_prealloc_calc/20231010-041859
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20231009201639.920512-2-sidhartha.kumar%40oracle.com
-patch subject: [PATCH 1/3] maple_tree: introduce mas_prealloc_calc()
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231010/202310100603.qsn3ruBx-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231010/202310100603.qsn3ruBx-lkp@intel.com/reproduce)
+[1] https://syzkaller.appspot.com/bug?extid=1f53a30781af65d2c955
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310100603.qsn3ruBx-lkp@intel.com/
+Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Reported-and-tested-by: syzbot+1f53a30781af65d2c955@syzkaller.appspotmail.com
+---
+Changes in v2:
+- Remove unnecessary 'err == 0' case
+- Link to v1: https://lore.kernel.org/r/20231009-topic-dm9601_uninit_mdio_read-v1-1-d4d775e24e3b@gmail.com
+---
+ drivers/net/usb/dm9601.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-All warnings (new ones prefixed by >>):
+diff --git a/drivers/net/usb/dm9601.c b/drivers/net/usb/dm9601.c
+index 48d7d278631e..99ec1d4a972d 100644
+--- a/drivers/net/usb/dm9601.c
++++ b/drivers/net/usb/dm9601.c
+@@ -222,13 +222,18 @@ static int dm9601_mdio_read(struct net_device *netdev, int phy_id, int loc)
+ 	struct usbnet *dev = netdev_priv(netdev);
+ 
+ 	__le16 res;
++	int err;
+ 
+ 	if (phy_id) {
+ 		netdev_dbg(dev->net, "Only internal phy supported\n");
+ 		return 0;
+ 	}
+ 
+-	dm_read_shared_word(dev, 1, loc, &res);
++	err = dm_read_shared_word(dev, 1, loc, &res);
++	if (err < 0) {
++		netdev_err(dev->net, "MDIO read error: %d\n", err);
++		return err;
++	}
+ 
+ 	netdev_dbg(dev->net,
+ 		   "dm9601_mdio_read() phy_id=0x%02x, loc=0x%02x, returns=0x%04x\n",
 
->> lib/maple_tree.c:5428:5: warning: no previous prototype for 'mas_prealloc_calc' [-Wmissing-prototypes]
-    5428 | int mas_prealloc_calc(struct ma_wr_state *wr_mas)
-         |     ^~~~~~~~~~~~~~~~~
+---
+base-commit: 94f6f0550c625fab1f373bb86a6669b45e9748b3
+change-id: 20231009-topic-dm9601_uninit_mdio_read-a15918ffbd6f
 
-
-vim +/mas_prealloc_calc +5428 lib/maple_tree.c
-
-  5420	
-  5421	/**
-  5422	 * mas_prealloc_calc() - Calculate number of nodes needed for a
-  5423	 * store operation.
-  5424	 * @wr_mas: The maple write state
-  5425	 *
-  5426	 * Return: Number of nodes required for preallocation.
-  5427	 */
-> 5428	int mas_prealloc_calc(struct ma_wr_state *wr_mas)
-  5429	{
-  5430		struct ma_state *mas = wr_mas->mas;
-  5431		unsigned char node_size;
-  5432	
-  5433		if (unlikely(!mas->index && mas->last == ULONG_MAX))
-  5434			return 1;
-  5435	
-  5436		/* Root expand */
-  5437		if (unlikely(mas_is_none(mas) || mas_is_ptr(mas)))
-  5438			return 1;
-  5439	
-  5440		if (unlikely(!mas_wr_walk(wr_mas))) {
-  5441			/* Spanning store, use worst case for now */
-  5442			return 1 + mas_mt_height(mas) * 3;
-  5443		}
-  5444	
-  5445		/* At this point, we are at the leaf node that needs to be altered. */
-  5446		/* Exact fit, no nodes needed. */
-  5447		if (wr_mas->r_min == mas->index && wr_mas->r_max == mas->last)
-  5448			return 0;
-  5449	
-  5450		mas_wr_end_piv(wr_mas);
-  5451		node_size = mas_wr_new_end(wr_mas);
-  5452		if (node_size >= mt_slots[wr_mas->type]) {
-  5453			/* Split, worst case for now. */
-  5454			return 1 + mas_mt_height(mas) * 2;
-  5455		}
-  5456	
-  5457		/* New root needs a singe node */
-  5458		if (unlikely(mte_is_root(mas->node)))
-  5459			return 1;
-  5460	
-  5461		/* Potential spanning rebalance collapsing a node, use worst-case */
-  5462		if (node_size  - 1 <= mt_min_slots[wr_mas->type])
-  5463			return mas_mt_height(mas) * 2 - 1;
-  5464	
-  5465		/* node store, slot store needs one node */
-  5466		return 1;
-  5467	}
-  5468	
-
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
+
