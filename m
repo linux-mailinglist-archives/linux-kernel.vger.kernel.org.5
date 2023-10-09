@@ -2,54 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EEC17BE12D
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B907BDD17
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377441AbjJINrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 09:47:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39744 "EHLO
+        id S1376656AbjJINHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 09:07:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377427AbjJINrn (ORCPT
+        with ESMTP id S1376326AbjJING7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 09:47:43 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 011F494;
-        Mon,  9 Oct 2023 06:47:40 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06EE9C433C8;
-        Mon,  9 Oct 2023 13:47:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696859260;
-        bh=w1mG/xq00c5zIGwwH/VZbNgMYSYP9IqTAB8syuFeWEc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Pvix1SWTZoWPX0LMpbr3+G+cGIZem3HbWGNO5wfbTQ+Nvl3sUBQ5AFAo2ke3ygGVy
-         endeMJ681Y4bXLU4nfxS2v1z4S/4j5dfYZfpzUnqgz6hAbhBYH2xPfiG4FlOG2n6Rx
-         qHnqlWeo/3S5NwxEiPl79iVSVRCo/WBh+YpZm1V4=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: [PATCH 4.14 00/55] 4.14.327-rc1 review
-Date:   Mon,  9 Oct 2023 15:05:59 +0200
-Message-ID: <20231009130107.717692466@linuxfoundation.org>
-X-Mailer: git-send-email 2.42.0
+        Mon, 9 Oct 2023 09:06:59 -0400
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6688C8F;
+        Mon,  9 Oct 2023 06:06:57 -0700 (PDT)
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39988KWV002751;
+        Mon, 9 Oct 2023 15:06:33 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=3PQ+2v2hmYuHs5jDOC8Az7oTSOTXepldPGCW+7kNOTA=; b=qj
+        KXN6ucPltGfUQkCxs5eJy7A75jo7dich1n9YVbSe4Eii8m5W4Nbhpj+Fn/qDpai5
+        Dbo9az6CTZcEyjF5vlr3tce4X4YgmKmg0OPJ9hnWqu9Z2OlOtebz6gtyJb2Z/J6t
+        xc9ps9L7MmTXwV+T0t0XHRjixFUwKPPfuOqxzONPy2uecd6OVygRbjgmxK3toVK+
+        nvZKlPFnhc10HgFuCJnCOVdHMdZCyGsQnj++QSIPoZ4XvfN80uhgRa/i7Ut6/+g+
+        mtnknabD4AxY0yNQeLZBNya+nocaQ9n4k+zR2xJwwxvDkZzK/04tESU95bPjf5a4
+        OiQr0lskndAPscCSkm3g==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3tkhfdw9uw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 09 Oct 2023 15:06:32 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5FA51100063;
+        Mon,  9 Oct 2023 15:06:30 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 52ABC23D411;
+        Mon,  9 Oct 2023 15:06:30 +0200 (CEST)
+Received: from [10.201.20.120] (10.201.20.120) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 9 Oct
+ 2023 15:06:29 +0200
+Message-ID: <fb77b886-b557-b2af-a2f5-c0057a95b589@foss.st.com>
+Date:   Mon, 9 Oct 2023 15:06:28 +0200
 MIME-Version: 1.0
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.327-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.14.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.14.327-rc1
-X-KernelTest-Deadline: 2023-10-11T13:01+00:00
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 3/7] dt-bindings: media: Document STM32MP25 VENC video
+ encoder
+Content-Language: en-US
+To:     Rob Herring <robh@kernel.org>, Adam Ford <aford173@gmail.com>
+CC:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        <linux-media@vger.kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-rockchip@lists.infradead.org>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+References: <20231004091552.3531659-1-hugues.fruchet@foss.st.com>
+ <20231004091552.3531659-4-hugues.fruchet@foss.st.com>
+ <CAHCN7xKrriTPaRMJ-r86cSgFDUUP1At08imLBr_zEP0g3fga_g@mail.gmail.com>
+ <20231006162703.GA4030032-robh@kernel.org>
+From:   Hugues FRUCHET <hugues.fruchet@foss.st.com>
+In-Reply-To: <20231006162703.GA4030032-robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Originating-IP: [10.201.20.120]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-09_11,2023-10-09_01,2023-05-22_02
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,260 +89,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.14.327 release.
-There are 55 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
-
-Responses should be made by Wed, 11 Oct 2023 13:00:55 +0000.
-Anything received after that time might be too late.
-
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.327-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-and the diffstat can be found below.
-
-thanks,
-
-greg k-h
-
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.14.327-rc1
-
-John David Anglin <dave@parisc-linux.org>
-    parisc: Restore __ldcw_align for PA-RISC 2.0 processors
-
-Shay Drory <shayd@nvidia.com>
-    RDMA/mlx5: Fix NULL string error
-
-Leon Romanovsky <leonro@nvidia.com>
-    RDMA/cma: Fix truncation compilation warning in make_cma_ports
-
-Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-    gpio: aspeed: fix the GPIO number passed to pinctrl_gpio_set_config()
-
-Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-    IB/mlx4: Fix the size of a buffer in add_port_entries()
-
-Ivan Babrou <ivan@cloudflare.com>
-    cpupower: add Makefile dependencies for install targets
-
-Xin Long <lucien.xin@gmail.com>
-    sctp: update hb timer immediately after users change hb_interval
-
-Xin Long <lucien.xin@gmail.com>
-    sctp: update transport state when processing a dupcook packet
-
-Neal Cardwell <ncardwell@google.com>
-    tcp: fix delayed ACKs for MSS boundary condition
-
-Shigeru Yoshida <syoshida@redhat.com>
-    net: usb: smsc75xx: Fix uninit-value access in __smsc75xx_read_reg
-
-David Howells <dhowells@redhat.com>
-    ipv4, ipv6: Fix handling of transhdrlen in __ip{,6}_append_data()
-
-Mauricio Faria de Oliveira <mfo@canonical.com>
-    modpost: add missing else to the "of" check
-
-Junxiao Bi <junxiao.bi@oracle.com>
-    scsi: target: core: Fix deadlock due to recursive locking
-
-Richard Fitzgerald <rf@opensource.cirrus.com>
-    regmap: rbtree: Fix wrong register marked as in-cache when creating new node
-
-Alexandra Diupina <adiupina@astralinux.ru>
-    drivers/net: process the result of hdlc_open() and add call of hdlc_close() in uhdlc_close()
-
-Pin-yen Lin <treapking@chromium.org>
-    wifi: mwifiex: Fix oob check condition in mwifiex_process_rx_packet
-
-Zhihao Cheng <chengzhihao1@huawei.com>
-    ubi: Refuse attaching if mtd's erasesize is 0
-
-Qu Wenruo <wqu@suse.com>
-    btrfs: reject unknown mount options early
-
-Gustavo A. R. Silva <gustavoars@kernel.org>
-    wifi: mwifiex: Fix tlv_buf_left calculation
-
-Dinghao Liu <dinghao.liu@zju.edu.cn>
-    scsi: zfcp: Fix a double put in zfcp_port_enqueue()
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    media: dvb: symbol fixup for dvb_attach() - again
-
-Niklas Cassel <niklas.cassel@wdc.com>
-    ata: libata: disallow dev-initiated LPM transitions to unsupported states
-
-Budimir Markovic <markovicbudimir@gmail.com>
-    net/sched: sch_hfsc: Ensure inner classes have fsc curve
-
-Shida Zhang <zhangshida@kylinos.cn>
-    ext4: fix rec_len verify error
-
-George Kennedy <george.kennedy@oracle.com>
-    vc_screen: reload load of struct vc_data pointer in vcs_write() to avoid UAF
-
-Greg Ungerer <gerg@kernel.org>
-    fs: binfmt_elf_efpic: fix personality for ELF-FDPIC
-
-Matthias Schiffer <mschiffer@universe-factory.net>
-    ata: libata-sata: increase PMP SRST timeout to 10s
-
-Damien Le Moal <dlemoal@kernel.org>
-    ata: libata-core: Fix port and device removal
-
-Damien Le Moal <dlemoal@kernel.org>
-    ata: libata-core: Fix ata_port_request_pm() locking
-
-Josef Bacik <josef@toxicpanda.com>
-    btrfs: properly report 0 avail for very full file systems
-
-Heiner Kallweit <hkallweit1@gmail.com>
-    i2c: i801: unregister tco_pdev in i801_probe() error path
-
-Niklas Cassel <niklas.cassel@wdc.com>
-    ata: libata-scsi: ignore reserved bits for REPORT SUPPORTED OPERATION CODES
-
-Pan Bian <bianpan2016@163.com>
-    nilfs2: fix potential use after free in nilfs_gccache_submit_read_data()
-
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-    serial: 8250_port: Check IRQ data before use
-
-Mika Westerberg <mika.westerberg@linux.intel.com>
-    watchdog: iTCO_wdt: Set NO_REBOOT if the watchdog is not already running
-
-Mika Westerberg <mika.westerberg@linux.intel.com>
-    watchdog: iTCO_wdt: No need to stop the timer in probe
-
-Szuying Chen <chensiying21@gmail.com>
-    ata: libahci: clear pending interrupt status
-
-Hannes Reinecke <hare@suse.de>
-    ata: ahci: Drop pointless VPRINTK() calls and convert the remaining ones
-
-Thomas Zimmermann <tzimmermann@suse.de>
-    fbdev/sh7760fb: Depend on FB=y
-
-Niklas Cassel <niklas.cassel@wdc.com>
-    ata: libata-eh: do not clear ATA_PFLAG_EH_PENDING in ata_eh_reset()
-
-Zheng Yejian <zhengyejian1@huawei.com>
-    ring-buffer: Avoid softlockup in ring_buffer_resize()
-
-Zheng Yejian <zhengyejian1@huawei.com>
-    selftests/ftrace: Correctly enable event in instance-event.tc
-
-Helge Deller <deller@gmx.de>
-    parisc: irq: Make irq_stack_union static to avoid sparse warning
-
-Helge Deller <deller@gmx.de>
-    parisc: iosapic.c: Fix sparse warnings
-
-Helge Deller <deller@gmx.de>
-    parisc: sba: Fix compile warning wrt list of SBA devices
-
-Max Filippov <jcmvbkbc@gmail.com>
-    xtensa: boot/lib: fix function prototypes
-
-Randy Dunlap <rdunlap@infradead.org>
-    xtensa: boot: don't add include-dirs
-
-Timo Alho <talho@nvidia.com>
-    clk: tegra: fix error return case for recalc_rate
-
-Xiaoke Wang <xkernel.wang@foxmail.com>
-    i2c: mux: demux-pinctrl: check the return value of devm_kstrdup()
-
-Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-    gpio: tb10x: Fix an error handling path in tb10x_gpio_probe()
-
-Ziyang Xuan <william.xuanziyang@huawei.com>
-    team: fix null-ptr-deref when team device type is changed
-
-Eric Dumazet <edumazet@google.com>
-    dccp: fix dccp_v4_err()/dccp_v6_err() again
-
-Kajol Jain <kjain@linux.ibm.com>
-    powerpc/perf/hv-24x7: Update domain value check
-
-Kyle Zeng <zengyhkyle@gmail.com>
-    ipv4: fix null-deref in ipv4_link_failure
-
-Trond Myklebust <trond.myklebust@hammerspace.com>
-    NFS/pNFS: Report EINVAL errors from connect() to the server
-
-
--------------
-
-Diffstat:
-
- Makefile                                           |  4 +-
- arch/parisc/include/asm/ldcw.h                     | 36 ++++++++------
- arch/parisc/include/asm/ropes.h                    |  3 ++
- arch/parisc/include/asm/spinlock_types.h           |  5 --
- arch/parisc/kernel/irq.c                           |  2 +-
- arch/powerpc/perf/hv-24x7.c                        |  2 +-
- arch/xtensa/boot/Makefile                          |  3 +-
- arch/xtensa/boot/lib/zmem.c                        |  5 +-
- drivers/ata/ahci.c                                 | 13 +++--
- drivers/ata/ahci_xgene.c                           |  4 --
- drivers/ata/libahci.c                              | 49 +++++++++---------
- drivers/ata/libata-core.c                          | 58 +++++++++++++++++-----
- drivers/ata/libata-eh.c                            | 13 ++---
- drivers/ata/libata-scsi.c                          |  2 +-
- drivers/base/regmap/regcache-rbtree.c              |  3 +-
- drivers/char/agp/parisc-agp.c                      |  2 -
- drivers/clk/tegra/clk-bpmp.c                       |  2 +-
- drivers/gpio/gpio-aspeed.c                         |  2 +-
- drivers/gpio/gpio-tb10x.c                          |  6 ++-
- drivers/i2c/busses/i2c-i801.c                      |  1 +
- drivers/i2c/muxes/i2c-demux-pinctrl.c              |  4 ++
- drivers/infiniband/core/cma_configfs.c             |  2 +-
- drivers/infiniband/hw/mlx4/sysfs.c                 |  2 +-
- drivers/infiniband/hw/mlx5/main.c                  |  2 +-
- drivers/media/dvb-frontends/sp8870.c               |  2 +-
- drivers/media/tuners/tuner-xc2028.c                |  2 +-
- drivers/mtd/ubi/build.c                            |  7 +++
- drivers/net/team/team.c                            | 10 +++-
- drivers/net/usb/smsc75xx.c                         |  4 +-
- drivers/net/wan/fsl_ucc_hdlc.c                     | 12 ++++-
- .../net/wireless/marvell/mwifiex/11n_rxreorder.c   |  4 +-
- drivers/net/wireless/marvell/mwifiex/sta_rx.c      | 16 +++---
- drivers/parisc/iosapic.c                           |  4 +-
- drivers/parisc/iosapic_private.h                   |  4 +-
- drivers/s390/scsi/zfcp_aux.c                       |  9 ++--
- drivers/target/target_core_device.c                | 11 ++--
- drivers/tty/serial/8250/8250_port.c                |  5 +-
- drivers/tty/vt/vc_screen.c                         | 11 +++-
- drivers/video/fbdev/Kconfig                        |  2 +-
- drivers/watchdog/iTCO_wdt.c                        | 26 ++++++++--
- fs/binfmt_elf_fdpic.c                              |  5 +-
- fs/btrfs/super.c                                   |  6 ++-
- fs/ext4/namei.c                                    | 26 ++++++----
- fs/nfs/flexfilelayout/flexfilelayout.c             |  1 +
- fs/nilfs2/gcinode.c                                |  6 +--
- include/linux/if_team.h                            |  2 +
- include/linux/libata.h                             |  6 ++-
- kernel/trace/ring_buffer.c                         |  2 +
- net/dccp/ipv4.c                                    |  9 +---
- net/dccp/ipv6.c                                    |  9 +---
- net/ipv4/route.c                                   |  4 +-
- net/ipv4/tcp_input.c                               | 13 +++++
- net/l2tp/l2tp_ip6.c                                |  2 +-
- net/sched/sch_hfsc.c                               |  2 +
- net/sctp/associola.c                               |  3 +-
- net/sctp/socket.c                                  |  1 +
- scripts/mod/file2alias.c                           |  2 +-
- tools/power/cpupower/Makefile                      |  8 +--
- tools/power/cpupower/bench/Makefile                |  2 +-
- .../ftrace/test.d/instances/instance-event.tc      |  2 +-
- 60 files changed, 289 insertions(+), 176 deletions(-)
-
-
+Hi Rob,
+
+On 10/6/23 18:27, Rob Herring wrote:
+> On Wed, Oct 04, 2023 at 06:41:09PM -0500, Adam Ford wrote:
+>> On Wed, Oct 4, 2023 at 4:16 AM Hugues Fruchet
+>> <hugues.fruchet@foss.st.com> wrote:
+>>>
+>>> Add STM32MP25 VENC video encoder bindings.
+>>>
+>>> Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+>>> ---
+>>>   .../bindings/media/st,stm32mp25-venc.yaml     | 56 +++++++++++++++++++
+>>>   1 file changed, 56 insertions(+)
+>>>   create mode 100644 Documentation/devicetree/bindings/media/st,stm32mp25-venc.yaml
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/media/st,stm32mp25-venc.yaml b/Documentation/devicetree/bindings/media/st,stm32mp25-venc.yaml
+>>> new file mode 100644
+>>> index 000000000000..c69e0a34f675
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/media/st,stm32mp25-venc.yaml
+>>> @@ -0,0 +1,56 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>>> +
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/media/st,stm32mp25-venc.yaml#
+>>
+>> Can this dt-binding be made more generic, like something like
+>> hantro-h1 or VC8000NanoE?
+>>
+>> I think there will be more boards that may incorporate the Hantro-H1
+>> or a VC8000 in the future, because I don't think this IP is unique to
+>> the STM32MP25.
+> 
+> Unless the underlying IP is well documented (i.e. public), then it's
+> kind of pointless. Everyone will just invent their own numbers and names
+> of clocks, resets, etc. unless someone can enforce not doing that.
+
+Unfortunately the IP documentation is not public, there are no documents 
+provided publicly by Verisilicon for the time being.
+
+> 
+> Rob
+
+BR,
+Hugues
