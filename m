@@ -2,166 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 380E57BD34C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 08:23:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D147BD350
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 08:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345192AbjJIGXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 02:23:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47596 "EHLO
+        id S1345225AbjJIGYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 02:24:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345168AbjJIGXS (ORCPT
+        with ESMTP id S1345168AbjJIGYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 02:23:18 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A47A2
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 23:23:17 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id DDD071F38C;
-        Mon,  9 Oct 2023 06:23:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1696832595; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YVglXbA5KGR99TIvnnpK12ZxeM4UJ/QmddNOTitskK0=;
-        b=OgBybor9H1XLVkEy9xKeovohcvPQNUpUGEI/DP7r0pJL/PxCdVqj+gwevTXwYYRqNdHo0b
-        zVqwSW2bhbx9Txk+XZ4AFM/tiWclqP42udVrvd0f8+Sfqi+nfc3hU2dYLjoQVm+40mEBPc
-        zn302QJ/txfxV9FYvif+54dJGrPkfm0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1696832595;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YVglXbA5KGR99TIvnnpK12ZxeM4UJ/QmddNOTitskK0=;
-        b=Unzbt6VXvSaoQUEJA3USz/bx1Uu3IGWbqDbGZjP7j5Ni1bp1wdEHNFh2p8uo2G4YYlgSka
-        Yl1TjSE/EYptUAAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8EFB913586;
-        Mon,  9 Oct 2023 06:23:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id DW5eIVOcI2X5AwAAMHmgww
-        (envelope-from <tiwai@suse.de>); Mon, 09 Oct 2023 06:23:15 +0000
-Date:   Mon, 09 Oct 2023 08:23:15 +0200
-Message-ID: <87jzrwtiuk.wl-tiwai@suse.de>
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Maarten Lankhorst <dev@lankhorst.se>
-Cc:     =?ISO-8859-1?Q?P=E9ter?= Ujfalusi 
-        <peter.ujfalusi@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Alsa-devel <alsa-devel@alsa-project.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
-Subject: Re: [PATCH v6 11/12] ASoC: SOF: Intel: Move binding to display driver outside of deferred probe
-In-Reply-To: <ee92964c-c277-a258-5081-cf0a19ccff79@lankhorst.se>
-References: <20231004145540.32321-1-maarten.lankhorst@linux.intel.com>
-        <20231004145540.32321-12-maarten.lankhorst@linux.intel.com>
-        <alpine.DEB.2.22.394.2310041953090.3390143@eliteleevi.tm.intel.com>
-        <b4a010aa-b547-42ad-844f-849f287abd54@linux.intel.com>
-        <ee92964c-c277-a258-5081-cf0a19ccff79@lankhorst.se>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
+        Mon, 9 Oct 2023 02:24:11 -0400
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2042.outbound.protection.outlook.com [40.107.102.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE6FA2;
+        Sun,  8 Oct 2023 23:24:10 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ImejjI24d1Hth2pXWAarnUCstxomRYBYrN131sB/6DfHoZUvbWz9ndjGhS5hq9sMBI7qRbG0Fm8wRtuNhscJHHQNGmzbh1uwiptsykxAasKlLu+l/JPs0IBBUMc70B9NUsmcudgZhymBTc6w3pnjatKUcYmFXMkeA0MoTiLSjNA5mZq6Y1Yc0k+JTCkResNsTMpbP9oio5ad/3bJ3brzl/BAEDnbW2sfDkuKYl4iBz2vDouBgAXwxdgwc62SsqU2QqucDzrxaIwcUH/r1x3JuN9XIW714rCyS4z7mbg5plzM+ruTHSwUMF4CLuGw16gBJIySh3OsMcXzlM/Tbv7fEA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aT1Er/rn0mAaHdkWHSlqF0IhSqNQdOXq7TNsL9660rw=;
+ b=ELJe4Uh05i1JfJSrsa6+KS89rlj5zfObpvxBwmj4EKhLhZpibYeP7P6wZCqbvQxkp1yLoT4RSoc1sowItUqgR21VTQW1rDEAPI/+QirScFtB1FBevH2p7yVjkMkxvFMdrzgUdiaRkVUkv4F1vO+3VE7V4na8zf9bVSMYwYD+S18ZXTdtzYdmXCABou1wjsz/Vh/EsK7jXEpWqzCvXRHryxkf5uv2FX1gG+st6auocqp0TMiCJIksvwPO0Nx8gbEqJBJWVmlozdbyz+by2e6qTwuly34d8sfPl6nH6Ww+oqoYiK/rxKvZplrMZNUmXwO4ZFWrs1podmXspinlh6B/Hw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aT1Er/rn0mAaHdkWHSlqF0IhSqNQdOXq7TNsL9660rw=;
+ b=0iyNXLmh+GmTQ/GuArPOneLnSCWsdIuTGKhKOzdspwcWI3909jSAOuuIKh5XKInKvmWE3A2WmhENmoAImNsTBzViii3RBhyScz4T3rq+MBki6G0PM4tmMXdJfJ/i1Y1rT2CD/4jo9VeDAtQxCwmD9Pb9nRHOdvA5iO35tqcwR/s=
+Received: from DS7PR03CA0145.namprd03.prod.outlook.com (2603:10b6:5:3b4::30)
+ by MW6PR12MB8760.namprd12.prod.outlook.com (2603:10b6:303:23a::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.43; Mon, 9 Oct
+ 2023 06:24:07 +0000
+Received: from DS1PEPF00017094.namprd03.prod.outlook.com
+ (2603:10b6:5:3b4:cafe::7e) by DS7PR03CA0145.outlook.office365.com
+ (2603:10b6:5:3b4::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.36 via Frontend
+ Transport; Mon, 9 Oct 2023 06:24:06 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS1PEPF00017094.mail.protection.outlook.com (10.167.17.137) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6838.14 via Frontend Transport; Mon, 9 Oct 2023 06:24:06 +0000
+Received: from BLR-5CG13462PL.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 9 Oct
+ 2023 01:24:00 -0500
+From:   Wyes Karny <wyes.karny@amd.com>
+To:     Meng Li <li.meng@amd.com>
+CC:     Wyes Karny <wyes.karny@amd.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Huang Rui <ray.huang@amd.com>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
+        <linux-acpi@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        <linux-kselftest@vger.kernel.org>,
+        Nathan Fontenot <nathan.fontenot@amd.com>,
+        Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Shimmer Huang <shimmer.huang@amd.com>,
+        Perry Yuan <Perry.Yuan@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@alien8.de>
+Subject: Re: [PATCH V8 6/7] Documentation: amd-pstate: introduce amd-pstate preferred core
+Date:   Mon, 9 Oct 2023 11:53:48 +0530
+Message-ID: <20231009062310.5zjzg4avv36o4vvg@BLR-5CG13462PL.amd.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231009024932.2563622-7-li.meng@amd.com>
+References: <20231009024932.2563622-1-li.meng@amd.com> <20231009024932.2563622-7-li.meng@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS1PEPF00017094:EE_|MW6PR12MB8760:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4a7df083-25cb-4c8a-8d19-08dbc8905712
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Oy7pof0bm7moXO9vxnHR+xeWKfug2GKBtxfS4Qu6/NOgd2tyaqcpq/OOIV8g1OPgrRYzDz+qMk8rlQ5yoSJJQ+9ZXotXxHim8X2yEpod3gw0uXjMXHGJcLw6aGq/eKYj8C1FyxCg2B3APoWJf91wEWTwhEe+RiIXgjUeTJEESCaJlgcjIi5GPoQeuKxuSVxwuSDqSep8MD47icC+B1P1lRFXvsUmfRETvB/KRUa9C7HLVgGsvgXwi8eGmmRt4s2HzmSAC2lwdKHOQsK3Yi9BBw2/KlsIfFQOUl1AdCBVxQyxS1EXeJlSnYlGUnXMn/g92adXaiTYehsxyVTlZ6gJpJ2QsRm5UzO35MritKBDp41tT9RdJbGbWMGVyCm69dMc5toFgt/RK4mkBqd//NveI1xWUbWhGni01/0hYZCgCG7quiraTwerlSV2A2bHQNvPQNb4/V+vdSPV9vSSUCjlxW8A81Tytv7ceRWHjRcVVDf7lm/cjYXRbcdPILzDnlRDxY+0EJOnmudCv3BdmtpqcDBkDv1tSkm6Qlh+mxCj5xKjmu6aprGrEFevh3q7ux4l4j64UZDPhrvFkfQudE5btGD6R61hAc8LWiw8pX2YbcWhD7E7im+yxTjrXBLlYLfa+ZDpHinXTHtWdGBk3pK+Pec5+QCz0T6xvQhiwdcKd7c/DFOLKo5CjUF/eN8RqRrElCjUXKluSioYNW6kF/FjGvLs9v0OVl4uuCvdm23L9HYaMq35OaTHBtNI0NvaJzcB0+98fD0ysVFGjEG6/dgF4g==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(376002)(39860400002)(346002)(396003)(230922051799003)(1800799009)(64100799003)(186009)(82310400011)(451199024)(36840700001)(40470700004)(46966006)(6666004)(1076003)(40460700003)(40480700001)(55016003)(86362001)(36860700001)(81166007)(356005)(82740400003)(26005)(16526019)(47076005)(426003)(336012)(83380400001)(2906002)(7696005)(478600001)(8676002)(6862004)(4326008)(8936002)(70586007)(41300700001)(6636002)(316002)(70206006)(5660300002)(44832011)(54906003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2023 06:24:06.3955
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a7df083-25cb-4c8a-8d19-08dbc8905712
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS1PEPF00017094.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8760
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 05 Oct 2023 13:26:18 +0200,
-Maarten Lankhorst wrote:
+On 09 Oct 10:49, Meng Li wrote:
+> Introduce amd-pstate preferred core.
 > 
+> check preferred core state set by the kernel parameter:
+> $ cat /sys/devices/system/cpu/amd-pstate/prefcore
 > 
+> Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+> Reviewed-by: Huang Rui <ray.huang@amd.com>
+Reviewed-by: Wyes Karny <wyes.karny@amd.com>
+> Signed-off-by: Meng Li <li.meng@amd.com>
+> ---
+>  Documentation/admin-guide/pm/amd-pstate.rst | 59 ++++++++++++++++++++-
+>  1 file changed, 57 insertions(+), 2 deletions(-)
 > 
-> On 2023-10-05 12:58, Péter Ujfalusi wrote:
-> > 
-> > 
-> > On 04/10/2023 19:59, Kai Vehmanen wrote:
-> >> Hi,
-> >> 
-> >> I'm good with rest of the series, but one patch requires work.
-> >> 
-> >> On Wed, 4 Oct 2023, Maarten Lankhorst wrote:
-> >> 
-> >>> Now that we can use -EPROBE_DEFER, it's no longer required to spin off
-> >>> the snd_hdac_i915_init into a workqueue.
-> >>> 
-> >>> Use the -EPROBE_DEFER mechanism instead, which must be returned in the
-> >>> probe function.
-> >>> 
-> >>> The previously added probe_early can be used for this,
-> >>> and we also use the newly added remove_late for unbinding afterwards.
-> >> [...]
-> >>> --- a/sound/soc/sof/intel/hda-common-ops.c
-> >>> +++ b/sound/soc/sof/intel/hda-common-ops.c
-> >>> @@ -19,6 +19,7 @@ struct snd_sof_dsp_ops sof_hda_common_ops = {
-> >>>   	.probe_early	= hda_dsp_probe_early,
-> >>>   	.probe		= hda_dsp_probe,
-> >>>   	.remove		= hda_dsp_remove,
-> >>> +	.remove_late	= hda_dsp_remove_late,
-> >>>     	/* Register IO uses direct mmio */
-> >>>   diff --git a/sound/soc/sof/intel/hda.c
-> >>> b/sound/soc/sof/intel/hda.c
-> >>> index 86a2571488bc..4eb7f04b8ae1 100644
-> >>> --- a/sound/soc/sof/intel/hda.c
-> >>> +++ b/sound/soc/sof/intel/hda.c
-> >>> @@ -1160,6 +1160,7 @@ int hda_dsp_probe_early(struct snd_sof_dev *sdev)
-> >>>   		return -ENOMEM;
-> >>>   	sdev->pdata->hw_pdata = hdev;
-> >>>   	hdev->desc = chip;
-> >>> +	ret = hda_init(sdev);
-> >>>     err:
-> >>>   	return ret;
-> >> 
-> >> I don't think this works. The hda_codec_i915_init() errors are ignored in
-> >> hda_init() so this never returns -EPROBE_DEFER.
-> >> 
-> >> So something like this is needed on top (tested quickly on one SOF
-> >> machine and this blocks SOF load until i915 or xe driver is loaded):
-> >> 
-> >> --cut--
-> >> diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-> >> index 9025bfaf6a7e..8b17c82dcc89 100644
-> >> --- a/sound/soc/sof/intel/hda.c
-> >> +++ b/sound/soc/sof/intel/hda.c
-> >> @@ -863,13 +863,20 @@ static int hda_init(struct snd_sof_dev *sdev)
-> >>          /* init i915 and HDMI codecs */
-> >>          ret = hda_codec_i915_init(sdev);
-> >>          if (ret < 0)
-> >> -               dev_warn(sdev->dev, "init of i915 and HDMI codec
-> >> failed\n");
-> >> +               dev_warn(sdev->dev, "init of i915 and HDMI codec failed
-> >> (%d)\n", ret);
-> > 
-> > we should not print anything or maximum dev_dbg in case of EPROBE_DEFER.
-> There's dev_err_probe, which is dev_err on error, or sets the reason
-> for deferred probe to the arguments if the error is -EPROBE_DEFER.
-
-I expect you'll respin v7 for addressing this?
-
-I'd love to merge the series for 6.7, and the time ticks...
-
-
-thanks,
-
-Takashi
+> diff --git a/Documentation/admin-guide/pm/amd-pstate.rst b/Documentation/admin-guide/pm/amd-pstate.rst
+> index 1cf40f69278c..0b832ff529db 100644
+> --- a/Documentation/admin-guide/pm/amd-pstate.rst
+> +++ b/Documentation/admin-guide/pm/amd-pstate.rst
+> @@ -300,8 +300,8 @@ platforms. The AMD P-States mechanism is the more performance and energy
+>  efficiency frequency management method on AMD processors.
+>  
+>  
+> -AMD Pstate Driver Operation Modes
+> -=================================
+> +``amd-pstate`` Driver Operation Modes
+> +======================================
+>  
+>  ``amd_pstate`` CPPC has 3 operation modes: autonomous (active) mode,
+>  non-autonomous (passive) mode and guided autonomous (guided) mode.
+> @@ -353,6 +353,48 @@ is activated.  In this mode, driver requests minimum and maximum performance
+>  level and the platform autonomously selects a performance level in this range
+>  and appropriate to the current workload.
+>  
+> +``amd-pstate`` Preferred Core
+> +=================================
+> +
+> +The core frequency is subjected to the process variation in semiconductors.
+> +Not all cores are able to reach the maximum frequency respecting the
+> +infrastructure limits. Consequently, AMD has redefined the concept of
+> +maximum frequency of a part. This means that a fraction of cores can reach
+> +maximum frequency. To find the best process scheduling policy for a given
+> +scenario, OS needs to know the core ordering informed by the platform through
+> +highest performance capability register of the CPPC interface.
+> +
+> +``amd-pstate`` preferred core enables the scheduler to prefer scheduling on
+> +cores that can achieve a higher frequency with lower voltage. The preferred
+> +core rankings can dynamically change based on the workload, platform conditions,
+> +thermals and ageing.
+> +
+> +The priority metric will be initialized by the ``amd-pstate`` driver. The ``amd-pstate``
+> +driver will also determine whether or not ``amd-pstate`` preferred core is
+> +supported by the platform.
+> +
+> +``amd-pstate`` driver will provide an initial core ordering when the system boots.
+> +The platform uses the CPPC interfaces to communicate the core ranking to the
+> +operating system and scheduler to make sure that OS is choosing the cores
+> +with highest performance firstly for scheduling the process. When ``amd-pstate``
+> +driver receives a message with the highest performance change, it will
+> +update the core ranking and set the cpu's priority.
+> +
+> +``amd-pstate`` Preferred Core Switch
+> +=================================
+> +Kernel Parameters
+> +-----------------
+> +
+> +``amd-pstate`` peferred core`` has two states: enable and disable.
+> +Enable/disable states can be chosen by different kernel parameters.
+> +Default enable ``amd-pstate`` preferred core.
+> +
+> +``amd_prefcore=disable``
+> +
+> +For systems that support ``amd-pstate`` preferred core, the core rankings will
+> +always be advertised by the platform. But OS can choose to ignore that via the
+> +kernel parameter ``amd_prefcore=disable``.
+> +
+>  User Space Interface in ``sysfs`` - General
+>  ===========================================
+>  
+> @@ -385,6 +427,19 @@ control its functionality at the system level.  They are located in the
+>          to the operation mode represented by that string - or to be
+>          unregistered in the "disable" case.
+>  
+> +``prefcore``
+> +	Preferred core state of the driver: "enabled" or "disabled".
+> +
+> +	"enabled"
+> +		Enable the ``amd-pstate`` preferred core.
+> +
+> +	"disabled"
+> +		Disable the ``amd-pstate`` preferred core
+> +
+> +
+> +        This attribute is read-only to check the state of preferred core set
+> +        by the kernel parameter.
+> +
+>  ``cpupower`` tool support for ``amd-pstate``
+>  ===============================================
+>  
+> -- 
+> 2.34.1
+> 
