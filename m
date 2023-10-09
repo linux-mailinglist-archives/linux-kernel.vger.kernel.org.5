@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B0A7BE980
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 20:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E3C7BE984
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 20:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378101AbjJISe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 14:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37720 "EHLO
+        id S1378122AbjJISee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 14:34:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377721AbjJISeT (ORCPT
+        with ESMTP id S1378047AbjJISeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 9 Oct 2023 14:34:19 -0400
-Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4438FAF;
-        Mon,  9 Oct 2023 11:34:17 -0700 (PDT)
-Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-        by mx.skole.hr (mx.skole.hr) with ESMTP id D927D84C3E;
-        Mon,  9 Oct 2023 20:34:15 +0200 (CEST)
+Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56BDAB0;
+        Mon,  9 Oct 2023 11:34:18 -0700 (PDT)
+Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+        by mx.skole.hr (mx.skole.hr) with ESMTP id F13CA847A9;
+        Mon,  9 Oct 2023 20:34:16 +0200 (CEST)
 From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Date:   Mon, 09 Oct 2023 20:34:00 +0200
-Subject: [PATCH RFT v7 3/6] ARM: pxa: Convert Spitz CF power control to
- GPIO descriptors
+Date:   Mon, 09 Oct 2023 20:34:01 +0200
+Subject: [PATCH RFT v7 4/6] ARM: pxa: Convert reset driver to GPIO
+ descriptors
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20231009-pxa-gpio-v7-3-c8f5f403e856@skole.hr>
+Message-Id: <20231009-pxa-gpio-v7-4-c8f5f403e856@skole.hr>
 References: <20231009-pxa-gpio-v7-0-c8f5f403e856@skole.hr>
 In-Reply-To: <20231009-pxa-gpio-v7-0-c8f5f403e856@skole.hr>
 To:     Daniel Mack <daniel@zonque.org>,
@@ -45,21 +45,21 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2281;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3701;
  i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=+fxcsarubc2tXSSH1K644VHfXQAJtw0ZRrtO0ziZod4=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlJEebBzCQ8D7a6o2IA9iJM6L4IKQvEJLF/EMXP
- D8/dTCglt+JAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZSRHmwAKCRCaEZ6wQi2W
- 4W7nD/oDYI8OQRD1Xb/8LN/F2NAL5p3w4cjcV3gKEe69yyhOfsWRfhWuScix3/DvzARzdyQGoN4
- 7pLtVaz+giD3aR+FRcQzL5Wh2petHAporVzUTsKk3MxGx4wAZui7UnUAgwb0mF/Lie3xpeNkC3j
- K5nxi2Q5Xw9FDDN7AUuSAdCrEkUDzbRjX3ZBzad35xbYZ9+T83rm3Xo2TJMa07lkPYB06bFo49/
- p9IdsgwYjevs8TWQxI4tHkuTQ0dgoVCqynJtR1w28S0TgYMQE9g1puhBjwqgkI9tg9RZtdv5CsQ
- nKMVlg4juTc7xfawDkPtexGwtU0OA09wXkxYTambLcXVcVnf2Cvzc/mcqYVE9vpXwENTCpFclYt
- uYjQ8ufCg7TQsmdokaVG01ZbxxcfjESE+Xp5GSrGn8uduC4ZCYIY3OtrUuuodLz1LN+ftYTVJlN
- gZYl5lrhe8RgOaAYLri+cp+VG7u6z8bPAEbOhMHheG0LKF4/mmbIJOuMnNNcmYn2nLNYH898UMb
- NwGnwR6g0CgnYSreN6kil9/SZ94KgP975Tya9dNXdapiSljTl2tkPdvzBfa+cffRIyXd7tDfwyw
- AqHp5gqMz4hr+lgM6RgM3xkI8+pNZ3VLPBkZ42Ly9Xve3RKbFBoB7Du8xpSNsmfDFL8KvXk9M1e
- Zh+8jJaWR9Q0dRQ==
+ bh=stluTKvWGcn2p+ML66gGYIi7wxf5yhB+y1zfCDDsHxI=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlJEebdthvaI93nFyuC3BXNj3wC7ieEASNxuH5Q
+ hluepmUOWKJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZSRHmwAKCRCaEZ6wQi2W
+ 4YbpD/9ICgWdk5Y2uakCChcrwU6WQkdCxY2ra3+j/0zeqz+vD18zzGpzzV2oftFuWmoi/R0aJ8x
+ aSwfHyzE38Z/TNyjgAjAnHM8QnaJvo1pXNcPGedpXXpGe6IzymumX8WEQ80YJ33wTHgfIhxj6Bg
+ xZh8JikEwalRMM9+fzo2CNQQ4587pz3YKcTXy+5U0C5pMW4tn8o1Rc3OJuC1SYOJ5vu7gb4m5u+
+ YU80eV1WJvVmqaB8pLxA16R0RdWcpx15XZS1JEACMAGgPuqdFkAi7s0B5f4Tfsm3lhlZEsMKexP
+ 0M9+d7MQFj4r0gL5rQnPwyE0K99TG9yKav92P1FEoZbW/VnGbopgBU+RqZqD9X6e6+ZlE8+8z17
+ hmmlh8CtJkYeQbbhaAsiGd15P3e83UlYVMUCnfiqzRZ66L/9pYUemihJamiUOoRh3Up85SWa/cA
+ CY4ZJV6Fh2npZBWz8jENdLLeW0feHgTHANTqJR5Q+yhKZaLoHf0gJNRLskx6Efd0AD3sKXDQ7LP
+ KXPsysopdaoN8qA1Nv9ISiPzSOntthw+Zm81/0QLStRvDXkP/Crxf150N5tgbJPh5nC+h/QWk2a
+ lOoQ3sHEDuOeXu30oJUZqzl7GflbMDUNpWADY40G4129n3nZzWdajCMFWY2EqzMhmn2ZE0/3dxJ
+ ZlntmePUshKqVwQ==
 X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
  fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
@@ -70,8 +70,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sharp's Spitz board still uses the legacy GPIO interface for controlling
-the power supply to its CF and SD card slots.
+The PXA reset driver still uses the legacy GPIO interface for
+configuring and asserting the reset pin.
 
 Convert it to use the GPIO descriptor interface.
 
@@ -79,64 +79,122 @@ Acked-by: Linus Walleij <linus.walleij@linaro.org>
 Reviewed-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
 ---
- arch/arm/mach-pxa/spitz.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+ arch/arm/mach-pxa/reset.c | 39 +++++++++++++--------------------------
+ arch/arm/mach-pxa/reset.h |  3 +--
+ arch/arm/mach-pxa/spitz.c |  6 +++++-
+ 3 files changed, 19 insertions(+), 29 deletions(-)
 
-diff --git a/arch/arm/mach-pxa/spitz.c b/arch/arm/mach-pxa/spitz.c
-index 29907abc4513..c8fc333c2017 100644
---- a/arch/arm/mach-pxa/spitz.c
-+++ b/arch/arm/mach-pxa/spitz.c
-@@ -133,6 +133,10 @@ static unsigned long spitz_pin_config[] __initdata = {
-  * Scoop GPIO expander
-  ******************************************************************************/
- #if defined(CONFIG_SHARP_SCOOP) || defined(CONFIG_SHARP_SCOOP_MODULE)
-+GPIO_LOOKUP_SINGLE(spitz_card_pwr_ctrl_gpio_table, "pxa2xx-mci.0",
-+		"sharp-scoop", SPITZ_GPIO_CF_POWER, "cf_power",
-+		GPIO_ACTIVE_HIGH);
-+
- /* SCOOP Device #1 */
- static struct resource spitz_scoop_1_resources[] = {
- 	[0] = {
-@@ -190,6 +194,7 @@ struct platform_device spitz_scoop_2_device = {
- static void __init spitz_scoop_init(void)
- {
- 	platform_device_register(&spitz_scoop_1_device);
-+	gpiod_add_lookup_table(&spitz_card_pwr_ctrl_gpio_table);
+diff --git a/arch/arm/mach-pxa/reset.c b/arch/arm/mach-pxa/reset.c
+index 27293549f8ad..08bc104b9411 100644
+--- a/arch/arm/mach-pxa/reset.c
++++ b/arch/arm/mach-pxa/reset.c
+@@ -2,7 +2,7 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/delay.h>
+-#include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/io.h>
+ #include <asm/proc-fns.h>
+ #include <asm/system_misc.h>
+@@ -14,33 +14,20 @@
  
- 	/* Akita doesn't have the second SCOOP chip */
- 	if (!machine_is_akita())
-@@ -201,9 +206,18 @@ static void __maybe_unused spitz_card_pwr_ctrl(uint8_t enable, uint8_t new_cpr)
- {
- 	unsigned short cpr;
- 	unsigned long flags;
-+	struct gpio_desc *cf_power;
-+
-+	cf_power = gpiod_get(&pxa_device_mci.dev, "cf_power", GPIOD_ASIS);
-+	if (IS_ERR(cf_power)) {
-+		dev_err(&pxa_device_mci.dev,
-+				"failed to get power control GPIO with %ld\n",
-+				PTR_ERR(cf_power));
-+		return;
-+	}
+ static void do_hw_reset(void);
  
- 	if (new_cpr & 0x7) {
--		gpio_set_value(SPITZ_GPIO_CF_POWER, 1);
-+		gpiod_direction_output(cf_power, 1);
- 		mdelay(5);
+-static int reset_gpio = -1;
++static struct gpio_desc *reset_gpio;
+ 
+-int init_gpio_reset(int gpio, int output, int level)
++int init_gpio_reset(int output, int level)
+ {
+-	int rc;
+-
+-	rc = gpio_request(gpio, "reset generator");
+-	if (rc) {
+-		printk(KERN_ERR "Can't request reset_gpio\n");
+-		goto out;
++	reset_gpio = gpiod_get(NULL, "reset", GPIOD_ASIS);
++	if (IS_ERR(reset_gpio)) {
++		pr_err("Can't request reset_gpio: %pe\n", reset_gpio);
++		return PTR_ERR(reset_gpio);
  	}
  
-@@ -222,8 +236,10 @@ static void __maybe_unused spitz_card_pwr_ctrl(uint8_t enable, uint8_t new_cpr)
- 
- 	if (!(cpr & 0x7)) {
- 		mdelay(1);
--		gpio_set_value(SPITZ_GPIO_CF_POWER, 0);
-+		gpiod_direction_output(cf_power, 0);
- 	}
-+
-+	gpiod_put(cf_power);
+ 	if (output)
+-		rc = gpio_direction_output(gpio, level);
++		return gpiod_direction_output(reset_gpio, level);
+ 	else
+-		rc = gpio_direction_input(gpio);
+-	if (rc) {
+-		printk(KERN_ERR "Can't configure reset_gpio\n");
+-		gpio_free(gpio);
+-		goto out;
+-	}
+-
+-out:
+-	if (!rc)
+-		reset_gpio = gpio;
+-
+-	return rc;
++		return gpiod_direction_input(reset_gpio);
  }
  
- #else
+ /*
+@@ -50,16 +37,16 @@ int init_gpio_reset(int gpio, int output, int level)
+  */
+ static void do_gpio_reset(void)
+ {
+-	BUG_ON(reset_gpio == -1);
++	BUG_ON(IS_ERR(reset_gpio));
+ 
+ 	/* drive it low */
+-	gpio_direction_output(reset_gpio, 0);
++	gpiod_direction_output(reset_gpio, 0);
+ 	mdelay(2);
+ 	/* rising edge or drive high */
+-	gpio_set_value(reset_gpio, 1);
++	gpiod_set_value(reset_gpio, 1);
+ 	mdelay(2);
+ 	/* falling edge */
+-	gpio_set_value(reset_gpio, 0);
++	gpiod_set_value(reset_gpio, 0);
+ 
+ 	/* give it some time */
+ 	mdelay(10);
+diff --git a/arch/arm/mach-pxa/reset.h b/arch/arm/mach-pxa/reset.h
+index 963dd190bc13..5864f61a0e94 100644
+--- a/arch/arm/mach-pxa/reset.h
++++ b/arch/arm/mach-pxa/reset.h
+@@ -13,10 +13,9 @@ extern void pxa_register_wdt(unsigned int reset_status);
+ 
+ /**
+  * init_gpio_reset() - register GPIO as reset generator
+- * @gpio: gpio nr
+  * @output: set gpio as output instead of input during normal work
+  * @level: output level
+  */
+-extern int init_gpio_reset(int gpio, int output, int level);
++extern int init_gpio_reset(int output, int level);
+ 
+ #endif /* __ASM_ARCH_RESET_H */
+diff --git a/arch/arm/mach-pxa/spitz.c b/arch/arm/mach-pxa/spitz.c
+index c8fc333c2017..4b6360821396 100644
+--- a/arch/arm/mach-pxa/spitz.c
++++ b/arch/arm/mach-pxa/spitz.c
+@@ -1026,9 +1026,13 @@ static void spitz_restart(enum reboot_mode mode, const char *cmd)
+ 	spitz_poweroff();
+ }
+ 
++GPIO_LOOKUP_SINGLE(spitz_reset_gpio_table, NULL, "pxa-gpio",
++		SPITZ_GPIO_ON_RESET, "reset", GPIO_ACTIVE_HIGH);
++
+ static void __init spitz_init(void)
+ {
+-	init_gpio_reset(SPITZ_GPIO_ON_RESET, 1, 0);
++	gpiod_add_lookup_table(&spitz_reset_gpio_table);
++	init_gpio_reset(1, 0);
+ 	pm_power_off = spitz_poweroff;
+ 
+ 	PMCR = 0x00;
 
 -- 
 2.42.0
