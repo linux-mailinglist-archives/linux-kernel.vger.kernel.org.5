@@ -2,225 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DC3E7BE2E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 16:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F0C7BE2E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 16:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233555AbjJIOdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 10:33:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51342 "EHLO
+        id S230484AbjJIOd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 10:33:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231409AbjJIOc6 (ORCPT
+        with ESMTP id S230317AbjJIOdZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 10:32:58 -0400
-Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34AFA9E;
-        Mon,  9 Oct 2023 07:32:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1696861977; x=1728397977;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=rkVt3ztR2twS1HBsfcA3gWwcWNs+5ICdIqBhASlpNHI=;
-  b=WbpSwbx/8EXW3gmf8mGUgUqvD691Mxc79+FkUdpReGLxV+/0Zbrb2Q4u
-   yXc1NtgfZ5OEZWN07IFDpgjfJW9nXsURzx1pxg2u0U38A/sO3OeUY6KYx
-   hGHCyyaN9NRX2jddu6pt83l+LvzoedaTLVx3iMiWyoEiTcuq/yxINKymf
-   c9KwCtOaEOQwmtXc24VSZO2/Af99EcVS2SpL0zzap6s1lQgUbb5IVDe3g
-   KAdqaEiG9Lv8rQCd/jXQtJjV5tDC8um+ck1YJatKXb5BPoYbWYjSer+9n
-   zwPl5DysoOjwZsCRZpmdJMgvmQmMZGZe+qY2J3NubF3QjrMe8UHitqFF5
-   g==;
-X-CSE-ConnectionGUID: 57xtZDrGSey0+TBy834U1g==
-X-CSE-MsgGUID: 3ZT/6rJ6Rs+gKDuvovEnHA==
-X-IronPort-AV: E=Sophos;i="6.03,210,1694707200"; 
-   d="scan'208";a="244209660"
-Received: from mail-dm6nam10lp2101.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.101])
-  by ob1.hgst.iphmx.com with ESMTP; 09 Oct 2023 22:32:55 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K3QGn4JJRS0i0hxkLCyYmVyNtbFpnvqyjk7b0ge9a0vutXvENpzpr24fiL73iXfvxeBlr8BJcFoGhJh4ccBXbNO4fAcUc3jKVqhNAzLDZ3lHajILlAC5ud3i1An3r193TojVXHAbF3AZuSy546uRVgMddmXyOtcUUO1fI7qxsBm8K7YCd4aHtYlpFbKN8AbIxkrFFqR4GGRq4h9iyftICxXut74ifk/eQYRXQ7aZ1BhSQYbS7Ky0ZBYYjJdEwxjVoPy90WN4FpteajNxygseeM+CjBj/hCHYRvCNDhf1nRlxNQ1h1a0GOUsEWExDh23qIffMND/VzzlRyGziAcdHyg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Oo5sydePOBgyE+jspN5YhQB7+N+GhA2SqT02slDBiUY=;
- b=QI0FqsF+/v0D85Py2V8NM4GE6H3Ut16MQys9QQLy2akrXC5ETbQKI6u6ixufgWZ97Rj0W1E19+HQ5HbEggIB4kswD6r6jJ/BFYWmD12OUUO6NZqNW118+/e8he3v1EOJep0a6fbw7bsAezzI2mfTXrOcNMgJ74YzpNgzXHba3cpWqy+VsSN3E/T+xE40TOqmj/pDHBviaft+e3s5AwrLrk4YE5747kXTWixBc+wyAXLmTyrN5UqumCXfQMHGvqldsZoXIS0+KVvI8pQwsNkz79n7AqX+m62j5SwZDmOQsfQ+imlDUn8dmH+w6iNSQ0tSHnVr2paCqb1ZS+tFBBKkGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Oo5sydePOBgyE+jspN5YhQB7+N+GhA2SqT02slDBiUY=;
- b=RwMxEoxRde4Y5skuGUbRa9icFh5quZ77T8Uo8z42Xmn8gLMM/si0a8DtzGDSlM8fXcesUCxHDlsCFcpej5p2Kuv3iPYpNYnDL5dnJ4uQcl3dnZPWnKcNN1/vvvg136VaUhPOHiqoLbO4rUOgsAvSpxWowDO3CUSCpIIRhwnXgI8=
-Received: from MN2PR04MB6272.namprd04.prod.outlook.com (2603:10b6:208:e0::27)
- by BN0PR04MB8078.namprd04.prod.outlook.com (2603:10b6:408:15d::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Mon, 9 Oct
- 2023 14:32:53 +0000
-Received: from MN2PR04MB6272.namprd04.prod.outlook.com
- ([fe80::6fb5:ecb:1ea0:3b1d]) by MN2PR04MB6272.namprd04.prod.outlook.com
- ([fe80::6fb5:ecb:1ea0:3b1d%6]) with mapi id 15.20.6863.032; Mon, 9 Oct 2023
- 14:32:53 +0000
-From:   Niklas Cassel <Niklas.Cassel@wdc.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Damien Le Moal <dlemoal@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ata: imx: Use device_get_match_data()
-Thread-Topic: [PATCH] ata: imx: Use device_get_match_data()
-Thread-Index: AQHZ+r18FCvS8aA15UaFAdH3fkfrTA==
-Date:   Mon, 9 Oct 2023 14:32:52 +0000
-Message-ID: <ZSQPD0xeQ3I6I/v7@x1-carbon>
-References: <20231006214442.339890-1-robh@kernel.org>
-In-Reply-To: <20231006214442.339890-1-robh@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN2PR04MB6272:EE_|BN0PR04MB8078:EE_
-x-ms-office365-filtering-correlation-id: 78ed62bd-4110-42fb-a9ab-08dbc8d49f0f
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PGmTepDq/4FWAakk6gx3TFYZELAIg+752r4vAEfzGAR+7rcIUZZU4J0TqMczOW5Vc2ECVN2meO25m1htBj3iaJnLuyjpQzkOxLVmxqph6RbK9CukOnEtsQivrh4z/NpbYYVztkjeECoASRv4vhpHokSz4JEMYrEpGcRAlsZ4qblNULdZIuHQAePaDD72ONCO1IrzZMBAUgEbHKsELCee1UliU4rfcgihlVbtqF61PAlLb6/F/nTynsVgmFi6wpEd3YqwU+yigPs7bs5f9ejmxuARvva1bMaMamSRp6BYIzhOUmAFeX8dYcJXaTQUh5YioRkN+2/w7sxAF08K+hL8B6bz0CHb4kmxXHk7U8HFsYgWuOyRvcMYDwVBAeRVfybGbFIdaOti8YRrlA9dC4I9lJ6nSapps0rg7h3KL/yGc7Tn6NlGHRPUdNcB8K/w3CS4yNBfST1suscMzMT+qdtI1W7lD3NJv3nKSMZWPa+vwk4Vn7FkwY4E7nJlh7ieBNkkINjPF9mZRHoWZEs0tF5kEE5hI4y9+WU1ORqym2bcYkQ3AvPDUKVGFh6VUypNZiZNHSsceUUTnKymr/zIi4gP49rM6B15rO6c6lpx+SShxfstbDmtjXjij/wBBJSnW9SD
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR04MB6272.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(376002)(396003)(346002)(39860400002)(366004)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(83380400001)(6512007)(38070700005)(9686003)(71200400001)(122000001)(82960400001)(26005)(6506007)(38100700002)(6486002)(33716001)(41300700001)(91956017)(76116006)(66476007)(478600001)(66556008)(316002)(64756008)(66446008)(66946007)(6916009)(54906003)(5660300002)(8936002)(86362001)(4326008)(8676002)(7416002)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ht95MvpXF/M7mLJzdVuU1Fn82k+tkILMQ8nloQfrxg849NzkcKi2SjFWLbKH?=
- =?us-ascii?Q?PBQb9zSNyalVKURJ+hlvRkt5bxhCa6YkeeI0Fj8HGttz81r/y64hJZT/owYg?=
- =?us-ascii?Q?bbf27yHjZ/ZA6s8dkB4BpYe1NpVtxSz2vgPnCGGw5/D/hAxUuyQtVEMf1Oso?=
- =?us-ascii?Q?yQGuh2a7ZerBBoS/JcpXiktCbvRy+3wvaEHg+fwQo6Gi/wzO/8JsnSYkK9Aq?=
- =?us-ascii?Q?8UjS922FLX6MBcEUVTmwoo8aeZ3cFTRMwIi7FEMJB08YEyxeaAGDJr4nbYqL?=
- =?us-ascii?Q?4Ei2PXOaxL0vEtfJXAW6bune1PZ6qPQci6J93HodEHgf3n6lrCjTQdWF6Ax9?=
- =?us-ascii?Q?NC97ZZ27cg+ebsqVIqbJ6i3w7rRHUf0Yh/359eSCp4xOQ6aBql3Z0ZASz6v/?=
- =?us-ascii?Q?ZAqvaitB5dBY7f0OckqT30SttASrlLsW9zDmSVR2JXScvSqngMC0yXAoytyY?=
- =?us-ascii?Q?tD+I4QNMI04xTdd/9577hxRBsCPUcoIt0ZzYlSx4ow9OHCDt7BKMzQ2bAlCT?=
- =?us-ascii?Q?35W6tp0LiXfzEwfJCcEJeOg/j9EJvn3slnvpv+KsH2jQZEzC/JkVhC6wsVOp?=
- =?us-ascii?Q?1l93Tyw0uVViiXYRbzeXmd/S4wiHFZjp4RqEyJIOV/HZhC6RqOCR5Kp/8XWe?=
- =?us-ascii?Q?ptrug3tPzi7phLnPvLQZeNp+FzjzsL1gm1XoZD8IndmitmomT4D4P0+SXcQy?=
- =?us-ascii?Q?8YlFbLNZ+0gXC6lJit+iEkpzJ8P6bPTitj/E3i5M7+gAnMe08p2z71HcojTC?=
- =?us-ascii?Q?F5y609wY2oMAofYNcI3ZEsh4N2jXweTy3QeUqdv2HWljvEO7PAH19xJf1M7J?=
- =?us-ascii?Q?8qy8Wpt1F9Bfjys/tR9iphcNfjW6vwvC/Lu3S5ZIiX0ufmQimYC3qGAQ36Fj?=
- =?us-ascii?Q?h8j4BBg10Trylu8ZTQqMZivxLbUz2osog+EgSeYWlQ0dSdP0Stil86xpO9S1?=
- =?us-ascii?Q?09MuCc4naCmg/Ju3fsdFOahHsJoENbWSkfJ8171OoHD+Gka1kFBf66nKJ2EV?=
- =?us-ascii?Q?l4e4nU8kJFrwYBcJeWPDXL1nN6S/oK+pYchUJT990luYZVpUXlff/QkjYDWg?=
- =?us-ascii?Q?UVxHGeIWn/lO+SUxjH0soH/JWNV3A7J61xcQR+zhTBHLwPdwJw9ELAlDFM97?=
- =?us-ascii?Q?wU5tET1anlaBw1JSyqLLUU8otxJrQHhWfMor23DLVpp1lXBmQrjbk7X5Spup?=
- =?us-ascii?Q?ZHuH8+EVWhnRxx5u6EF8k+lWnaA6GOXbcZptpqAirmY2UIFiUJ/UgfDh2Rkw?=
- =?us-ascii?Q?B8xq7cuXZRQe8AI2JIfYLGIBPwj307TWeVc2hNEec8gLvbgMeinW4LQnSAh/?=
- =?us-ascii?Q?IdrMyFXT8fmBUcaO6gxVvpOQHgmMTZVOPHrUAtJ7D/0NA2EY+5PlEEfsuO4B?=
- =?us-ascii?Q?Q0ptKDLlN2xHMAR+LbgNYAGbZQXbO7c/chXbu0GoSZvDmcSEXSj2eLC5HoFO?=
- =?us-ascii?Q?qU8pqmfxMP9nSdPtZOtLEzHlT6gRGWi7rEAxsadPPVfu9NirnUNICdc0eYBg?=
- =?us-ascii?Q?i02pP3XFgNifqQpCL2B311RvNXJtquMcpZmcNHVXbEwbgbJKpLOvx1VyMnCg?=
- =?us-ascii?Q?+8rqnjuPS73zwexurl5Y0gs1CB//wGaCkZtN2CJZucanEZ6LbdX8OUnv+29B?=
- =?us-ascii?Q?PA=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <177E43F2B167D045B3B99EAE33C56E21@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Mon, 9 Oct 2023 10:33:25 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 376A3B9;
+        Mon,  9 Oct 2023 07:33:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 319E9C433C8;
+        Mon,  9 Oct 2023 14:33:19 +0000 (UTC)
+Message-ID: <ff0cbd65-33ee-4a5e-acc3-0ca085eaaed4@xs4all.nl>
+Date:   Mon, 9 Oct 2023 16:33:17 +0200
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?neSeCggN25s33cD6dy0D2w/SiLIXqZVSpYUq1y2nYuq4mgSWbyD0MZUeYvCt?=
- =?us-ascii?Q?OpXsZhKEzqECrg1qpFM+pMSSWjMkfZM5uXXuQ/94WqsKnR1JazDTmF5/SIIt?=
- =?us-ascii?Q?Lvvg5uWnd1ilBy7V46h/HZj88nyjZx837kXAK/m5bwVTlLkD71GGPG6OYExs?=
- =?us-ascii?Q?+5NfYOdljuK9fvttzdaXZNDjUTzaVESwlXKRg/nxmpz6Jb7OGL++8uuPDbwp?=
- =?us-ascii?Q?uRjuIC9sn5hceLxEtfoyfDnP68MWSdRJb7Nv09o4srbTWhcfoPBrvzayXcQV?=
- =?us-ascii?Q?C25lZvvIzRFHcLw6NLi81NAQSJ25BNuXrn9vZTBLZMAiKQfW29Ol/1V/NewX?=
- =?us-ascii?Q?iX/+TB6VoyvTSYxVdoTc2rbPL1EV2fPuA4S547QgQ9K5NpzJHm292Z3tJAG1?=
- =?us-ascii?Q?WHM9rnK1WkE2rKJLewiQPcJGFATGe9BCX+B6K1lGKPmj/Rp6miCk5qu1XARS?=
- =?us-ascii?Q?n39gZI4L+0gj/v+peWCdxaVlu+pKD/clJyNimZAsM6wzvZgAIABEBvKQrtF8?=
- =?us-ascii?Q?HTrrHhqvzIzRFPUQYhQmb+NpvnYfvyzJzCZsBBWseee2IOm7qoY/pLRYCnSV?=
- =?us-ascii?Q?1t8srGZBpVFoQ7DznFAJlL3nPE1vyT8EqEqC6cX/hkvPh4DzqwHXpfMjZrpp?=
- =?us-ascii?Q?56QU3qeed3LQDapXkltnuVT97YOCWRSb5niwfiPIDmWjQQRLmGY71wt/RhCj?=
- =?us-ascii?Q?APo8AxOCUwzQZbKKlhJnUJlqGlkjmL/8uJqL4YseP8sWCHgS3J0SCtjz+olb?=
- =?us-ascii?Q?8wrHwLmq8kBSXHDus6q165Z47zDjybQ2QJhT4H/fd+jynhfkQHpCGOsoQ5uY?=
- =?us-ascii?Q?2OfSg9yZePnyuofP8f5g2aUn015uTe8SxPDxDXjsLfkLN8rp23j/iooDujZH?=
- =?us-ascii?Q?OZNGe8ZoC1kTAvmU0g+gQOMDzYOpsxfen+E2bNUp6PvwVCBluj7rwoIEQM31?=
- =?us-ascii?Q?VK8hjyf3IycD/GOrCw29lQ=3D=3D?=
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR04MB6272.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 78ed62bd-4110-42fb-a9ab-08dbc8d49f0f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Oct 2023 14:32:53.0204
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: uXmAyZ12YkJ9JBOoQ3Q8Il2sNvvBZnfYeWzbrCYI3Hr5FDnyMfXGkPqS2ZJMKJv2cFIELO4ahjTR6CRk6LYxkw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR04MB8078
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v5 08/11] media: uapi: Add audio rate controls support
+Content-Language: en-US, nl
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
+        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <1695891619-32393-1-git-send-email-shengjiu.wang@nxp.com>
+ <1695891619-32393-9-git-send-email-shengjiu.wang@nxp.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ xsFNBFQ84W0BEAC7EF1iL4s3tY8cRTVkJT/297h0Hz0ypA+ByVM4CdU9sN6ua/YoFlr9k0K4
+ BFUlg7JzJoUuRbKxkYb8mmqOe722j7N3HO8+ofnio5cAP5W0WwDpM0kM84BeHU0aPSTsWiGR
+ yw55SOK2JBSq7hueotWLfJLobMWhQii0Zd83hGT9SIt9uHaHjgwmtTH7MSTIiaY6N14nw2Ud
+ C6Uykc1va0Wqqc2ov5ihgk/2k2SKa02ookQI3e79laOrbZl5BOXNKR9LguuOZdX4XYR3Zi6/
+ BsJ7pVCK9xkiVf8svlEl94IHb+sa1KrlgGv3fn5xgzDw8Z222TfFceDL/2EzUyTdWc4GaPMC
+ E/c1B4UOle6ZHg02+I8tZicjzj5+yffv1lB5A1btG+AmoZrgf0X2O1B96fqgHx8w9PIpVERN
+ YsmkfxvhfP3MO3oHh8UY1OLKdlKamMneCLk2up1Zlli347KMjHAVjBAiy8qOguKF9k7HOjif
+ JCLYTkggrRiEiE1xg4tblBNj8WGyKH+u/hwwwBqCd/Px2HvhAsJQ7DwuuB3vBAp845BJYUU3
+ 06kRihFqbO0vEt4QmcQDcbWINeZ2zX5TK7QQ91ldHdqJn6MhXulPKcM8tCkdD8YNXXKyKqNl
+ UVqXnarz8m2JCbHgjEkUlAJCNd6m3pfESLZwSWsLYL49R5yxIwARAQABzSFIYW5zIFZlcmt1
+ aWwgPGh2ZXJrdWlsQHhzNGFsbC5ubD7CwZUEEwECACgFAlQ84W0CGwMFCRLMAwAGCwkIBwMC
+ BhUIAgkKCwQWAgMBAh4BAheAACEJEL0tYUhmFDtMFiEEBSzee8IVBTtonxvKvS1hSGYUO0wT
+ 7w//frEmPBAwu3OdvAk9VDkH7X+7RcFpiuUcJxs3Xl6jpaA+SdwtZra6W1uMrs2RW8eXXiq/
+ 80HXJtYnal1Y8MKUBoUVhT/+5+KcMyfVQK3VFRHnNxCmC9HZV+qdyxAGwIscUd4hSlweuU6L
+ 6tI7Dls6NzKRSTFbbGNZCRgl8OrF01TBH+CZrcFIoDgpcJA5Pw84mxo+wd2BZjPA4TNyq1od
+ +slSRbDqFug1EqQaMVtUOdgaUgdlmjV0+GfBHoyCGedDE0knv+tRb8v5gNgv7M3hJO3Nrl+O
+ OJVoiW0G6OWVyq92NNCKJeDy8XCB1yHCKpBd4evO2bkJNV9xcgHtLrVqozqxZAiCRKN1elWF
+ 1fyG8KNquqItYedUr+wZZacqW+uzpVr9pZmUqpVCk9s92fzTzDZcGAxnyqkaO2QTgdhPJT2m
+ wpG2UwIKzzi13tmwakY7OAbXm76bGWVZCO3QTHVnNV8ku9wgeMc/ZGSLUT8hMDZlwEsW7u/D
+ qt+NlTKiOIQsSW7u7h3SFm7sMQo03X/taK9PJhS2BhhgnXg8mOa6U+yNaJy+eU0Lf5hEUiDC
+ vDOI5x++LD3pdrJVr/6ZB0Qg3/YzZ0dk+phQ+KlP6HyeO4LG662toMbFbeLcBjcC/ceEclII
+ 90QNEFSZKM6NVloM+NaZRYVO3ApxWkFu+1mrVTXOwU0EVDzhbQEQANzLiI6gHkIhBQKeQaYs
+ p2SSqF9c++9LOy5x6nbQ4s0X3oTKaMGfBZuiKkkU6NnHCSa0Az5ScRWLaRGu1PzjgcVwzl5O
+ sDawR1BtOG/XoPRNB2351PRp++W8TWo2viYYY0uJHKFHML+ku9q0P+NkdTzFGJLP+hn7x0RT
+ DMbhKTHO3H2xJz5TXNE9zTJuIfGAz3ShDpijvzYieY330BzZYfpgvCllDVM5E4XgfF4F/N90
+ wWKu50fMA01ufwu+99GEwTFVG2az5T9SXd7vfSgRSkzXy7hcnxj4IhOfM6Ts85/BjMeIpeqy
+ TDdsuetBgX9DMMWxMWl7BLeiMzMGrfkJ4tvlof0sVjurXibTibZyfyGR2ricg8iTbHyFaAzX
+ 2uFVoZaPxrp7udDfQ96sfz0hesF9Zi8d7NnNnMYbUmUtaS083L/l2EDKvCIkhSjd48XF+aO8
+ VhrCfbXWpGRaLcY/gxi2TXRYG9xCa7PINgz9SyO34sL6TeFPSZn4bPQV5O1j85Dj4jBecB1k
+ z2arzwlWWKMZUbR04HTeAuuvYvCKEMnfW3ABzdonh70QdqJbpQGfAF2p4/iCETKWuqefiOYn
+ pR8PqoQA1DYv3t7y9DIN5Jw/8Oj5wOeEybw6vTMB0rrnx+JaXvxeHSlFzHiD6il/ChDDkJ9J
+ /ejCHUQIl40wLSDRABEBAAHCwXwEGAECAA8FAlQ84W0CGwwFCRLMAwAAIQkQvS1hSGYUO0wW
+ IQQFLN57whUFO2ifG8q9LWFIZhQ7TA1WD/9yxJvQrpf6LcNrr8uMlQWCg2iz2q1LGt1Itkuu
+ KaavEF9nqHmoqhSfZeAIKAPn6xuYbGxXDrpN7dXCOH92fscLodZqZtK5FtbLvO572EPfxneY
+ UT7JzDc/5LT9cFFugTMOhq1BG62vUm/F6V91+unyp4dRlyryAeqEuISykhvjZCVHk/woaMZv
+ c1Dm4Uvkv0Ilelt3Pb9J7zhcx6sm5T7v16VceF96jG61bnJ2GFS+QZerZp3PY27XgtPxRxYj
+ AmFUeF486PHx/2Yi4u1rQpIpC5inPxIgR1+ZFvQrAV36SvLFfuMhyCAxV6WBlQc85ArOiQZB
+ Wm7L0repwr7zEJFEkdy8C81WRhMdPvHkAIh3RoY1SGcdB7rB3wCzfYkAuCBqaF7Zgfw8xkad
+ KEiQTexRbM1sc/I8ACpla3N26SfQwrfg6V7TIoweP0RwDrcf5PVvwSWsRQp2LxFCkwnCXOra
+ gYmkrmv0duG1FStpY+IIQn1TOkuXrciTVfZY1cZD0aVxwlxXBnUNZZNslldvXFtndxR0SFat
+ sflovhDxKyhFwXOP0Rv8H378/+14TaykknRBIKEc0+lcr+EMOSUR5eg4aURb8Gc3Uc7fgQ6q
+ UssTXzHPyj1hAyDpfu8DzAwlh4kKFTodxSsKAjI45SLjadSc94/5Gy8645Y1KgBzBPTH7Q==
+In-Reply-To: <1695891619-32393-9-git-send-email-shengjiu.wang@nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 04:44:42PM -0500, Rob Herring wrote:
-> Use preferred device_get_match_data() instead of of_match_device() to
-> get the driver match data. With this, adjust the includes to explicitly
-> include the correct headers.
->=20
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  drivers/ata/ahci_imx.c | 10 +++-------
->  1 file changed, 3 insertions(+), 7 deletions(-)
->=20
-> diff --git a/drivers/ata/ahci_imx.c b/drivers/ata/ahci_imx.c
-> index 9fa005965f3b..cb768f66f0a7 100644
-> --- a/drivers/ata/ahci_imx.c
-> +++ b/drivers/ata/ahci_imx.c
-> @@ -9,10 +9,11 @@
->  #include <linux/kernel.h>
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
-> +#include <linux/property.h>
->  #include <linux/regmap.h>
->  #include <linux/ahci_platform.h>
->  #include <linux/gpio/consumer.h>
-> -#include <linux/of_device.h>
-> +#include <linux/of.h>
->  #include <linux/mfd/syscon.h>
->  #include <linux/mfd/syscon/imx6q-iomuxc-gpr.h>
->  #include <linux/libata.h>
-> @@ -1050,16 +1051,11 @@ static int imx8_sata_probe(struct device *dev, st=
-ruct imx_ahci_priv *imxpriv)
->  static int imx_ahci_probe(struct platform_device *pdev)
->  {
->  	struct device *dev =3D &pdev->dev;
-> -	const struct of_device_id *of_id;
->  	struct ahci_host_priv *hpriv;
->  	struct imx_ahci_priv *imxpriv;
->  	unsigned int reg_val;
->  	int ret;
-> =20
-> -	of_id =3D of_match_device(imx_ahci_of_match, dev);
-> -	if (!of_id)
-> -		return -EINVAL;
-> -
->  	imxpriv =3D devm_kzalloc(dev, sizeof(*imxpriv), GFP_KERNEL);
->  	if (!imxpriv)
->  		return -ENOMEM;
-> @@ -1067,7 +1063,7 @@ static int imx_ahci_probe(struct platform_device *p=
-dev)
->  	imxpriv->ahci_pdev =3D pdev;
->  	imxpriv->no_device =3D false;
->  	imxpriv->first_time =3D true;
-> -	imxpriv->type =3D (unsigned long)of_id->data;
-> +	imxpriv->type =3D (enum ahci_imx_type)device_get_match_data(dev);
-> =20
->  	imxpriv->sata_clk =3D devm_clk_get(dev, "sata");
->  	if (IS_ERR(imxpriv->sata_clk)) {
-> --=20
-> 2.40.1
->=20
+On 28/09/2023 11:00, Shengjiu Wang wrote:
+> Audio rate controls is used for user to configure
 
-Reviewed-by: Niklas Cassel <niklas.cassel@wdc.com>=
+is -> are
+for -> by the
+
+> the audio sample rate to driver.
+> 
+> Add V4L2_CID_ASRC_SOURCE_RATE and V4L2_CID_ASRC_DEST_RATE
+> new ID for ASRC rate control.
+
+ID -> IDs
+
+> 
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+>  .../userspace-api/media/v4l/common.rst        |  1 +
+>  .../media/v4l/ext-ctrls-asrc-rate.rst         | 36 +++++++++++++++++++
+>  .../media/v4l/vidioc-g-ext-ctrls.rst          |  4 +++
+>  .../media/v4l/vidioc-queryctrl.rst            |  7 ++++
+>  .../media/videodev2.h.rst.exceptions          |  1 +
+>  drivers/media/v4l2-core/v4l2-ctrls-core.c     |  5 +++
+>  drivers/media/v4l2-core/v4l2-ctrls-defs.c     |  4 +++
+>  include/media/v4l2-ctrls.h                    |  1 +
+>  include/uapi/linux/v4l2-controls.h            | 13 +++++++
+>  include/uapi/linux/videodev2.h                |  1 +
+>  10 files changed, 73 insertions(+)
+>  create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-asrc-rate.rst
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/common.rst b/Documentation/userspace-api/media/v4l/common.rst
+> index ea0435182e44..fe6cd7ae60e4 100644
+> --- a/Documentation/userspace-api/media/v4l/common.rst
+> +++ b/Documentation/userspace-api/media/v4l/common.rst
+> @@ -52,6 +52,7 @@ applicable to all devices.
+>      ext-ctrls-fm-rx
+>      ext-ctrls-detect
+>      ext-ctrls-colorimetry
+> +    ext-ctrls-asrc-rate
+>      fourcc
+>      format
+>      planar-apis
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-asrc-rate.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-asrc-rate.rst
+> new file mode 100644
+> index 000000000000..28bf9e1628e1
+> --- /dev/null
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-asrc-rate.rst
+> @@ -0,0 +1,36 @@
+> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
+> +
+> +.. _asrc-rate-controls:
+> +
+> +***************************
+> +ASRC RATE Control Reference
+
+RATE -> Rate
+
+> +***************************
+> +
+> +These controls is intended to support asynchronous sample
+
+is -> are
+support -> support an
+
+> +rate converter.
+> +
+> +.. _v4l2-audio-asrc:
+> +
+> +``V4L2_CID_ASRC_SOURCE_RATE``
+> +    sets the rasampler source rate.
+
+You mean 'resampler'?
+
+> +
+> +``V4L2_CID_ASRC_DEST_RATE``
+> +    sets the rasampler destination rate.
+
+Ditto
+
+> +
+> +.. c:type:: v4l2_ctrl_asrc_rate
+> +
+> +.. cssclass:: longtable
+> +
+> +.. tabularcolumns:: |p{1.5cm}|p{5.8cm}|p{10.0cm}|
+> +
+> +.. flat-table:: struct v4l2_ctrl_asrc_rate
+> +    :header-rows:  0
+> +    :stub-columns: 0
+> +    :widths:       1 1 2
+> +
+> +    * - __u32
+> +      - ``rate_integer``
+> +      - integer part of sample rate.
+> +    * - __s32
+> +      - ``rate_fractional``
+> +      - fractional part of sample rate, which is Q31.
+> diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
+> index f9f73530a6be..93ce15330490 100644
+> --- a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
+> +++ b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
+> @@ -295,6 +295,10 @@ still cause this situation.
+>        - ``p_av1_film_grain``
+>        - A pointer to a struct :c:type:`v4l2_ctrl_av1_film_grain`. Valid if this control is
+>          of type ``V4L2_CTRL_TYPE_AV1_FILM_GRAIN``.
+> +    * - struct :c:type:`v4l2_ctrl_asrc_rate` *
+> +      - ``p_asrc_rate``
+> +      - A pointer to a struct :c:type:`v4l2_ctrl_asrc_rate`. Valid if this control is
+> +        of type ``V4L2_CTRL_TYPE_ASRC_RATE``.
+>      * - void *
+>        - ``ptr``
+>        - A pointer to a compound type which can be an N-dimensional array
+> diff --git a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
+> index 4d38acafe8e1..8c15a0bb0fbc 100644
+> --- a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
+> +++ b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
+> @@ -549,6 +549,13 @@ See also the examples in :ref:`control`.
+>        - n/a
+>        - A struct :c:type:`v4l2_ctrl_av1_film_grain`, containing AV1 Film Grain
+>          parameters for stateless video decoders.
+> +    * - ``V4L2_CTRL_TYPE_ASRC_RATE``
+> +      - n/a
+> +      - n/a
+> +      - n/a
+> +      - A struct :c:type:`v4l2_ctrl_asrc_rate`, containing audio
+> +        parameters for asrc component.
+> +
+
+You relate the name of the type to the controls that use it, but I think
+the type should be about the actual value it carries. So:
+
+V4L2_CTRL_TYPE_FRACTIONAL
+
+I.e. it is the type for a fractional value and it can be used by any
+control that would need a fractional value.
+
+Note: I'm not sure if 'fractional' is the best name. Perhaps 'FIXED_POINT'
+would be better? Suggestions welcome.
+
+>  
+>  .. raw:: latex
+>  
+> diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exceptions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+> index e61152bb80d1..769e333a2b75 100644
+> --- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+> +++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+> @@ -167,6 +167,7 @@ replace symbol V4L2_CTRL_TYPE_AV1_SEQUENCE :c:type:`v4l2_ctrl_type`
+>  replace symbol V4L2_CTRL_TYPE_AV1_TILE_GROUP_ENTRY :c:type:`v4l2_ctrl_type`
+>  replace symbol V4L2_CTRL_TYPE_AV1_FRAME :c:type:`v4l2_ctrl_type`
+>  replace symbol V4L2_CTRL_TYPE_AV1_FILM_GRAIN :c:type:`v4l2_ctrl_type`
+> +replace symbol V4L2_CTRL_TYPE_ASRC_RATE :c:type:`v4l2_ctrl_type`
+>  
+>  # V4L2 capability defines
+>  replace define V4L2_CAP_VIDEO_CAPTURE device-capabilities
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+> index a662fb60f73f..2a72779f3508 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+> @@ -1168,6 +1168,8 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+>  		if (!area->width || !area->height)
+>  			return -EINVAL;
+>  		break;
+> +	case V4L2_CTRL_TYPE_ASRC_RATE:
+> +		break;
+>  
+>  	default:
+>  		return -EINVAL;
+> @@ -1868,6 +1870,9 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
+>  	case V4L2_CTRL_TYPE_AREA:
+>  		elem_size = sizeof(struct v4l2_area);
+>  		break;
+> +	case V4L2_CTRL_TYPE_ASRC_RATE:
+> +		elem_size = sizeof(struct v4l2_ctrl_asrc_rate);
+> +		break;
+>  	default:
+>  		if (type < V4L2_CTRL_COMPOUND_TYPES)
+>  			elem_size = sizeof(s32);
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> index 8696eb1cdd61..84766037db80 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
+> @@ -1602,6 +1602,10 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+>  	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:
+>  		*type = V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY;
+>  		break;
+> +	case V4L2_CID_ASRC_SOURCE_RATE:
+> +	case V4L2_CID_ASRC_DEST_RATE:
+> +		*type = V4L2_CTRL_TYPE_ASRC_RATE;
+> +		break;
+>  	default:
+>  		*type = V4L2_CTRL_TYPE_INTEGER;
+>  		break;
+> diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
+> index 59679a42b3e7..40475965f8e4 100644
+> --- a/include/media/v4l2-ctrls.h
+> +++ b/include/media/v4l2-ctrls.h
+> @@ -89,6 +89,7 @@ union v4l2_ctrl_ptr {
+>  	struct v4l2_ctrl_av1_tile_group_entry *p_av1_tile_group_entry;
+>  	struct v4l2_ctrl_av1_frame *p_av1_frame;
+>  	struct v4l2_ctrl_av1_film_grain *p_av1_film_grain;
+> +	struct v4l2_ctrl_asrc_rate *p_asrc_rate;
+>  	void *p;
+>  	const void *p_const;
+>  };
+> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+> index c3604a0a3e30..a08be3bd5977 100644
+> --- a/include/uapi/linux/v4l2-controls.h
+> +++ b/include/uapi/linux/v4l2-controls.h
+> @@ -112,6 +112,8 @@ enum v4l2_colorfx {
+>  
+>  /* last CID + 1 */
+>  #define V4L2_CID_LASTP1                         (V4L2_CID_BASE+44)
+> +#define V4L2_CID_ASRC_SOURCE_RATE		(V4L2_CID_BASE + 45)
+> +#define V4L2_CID_ASRC_DEST_RATE			(V4L2_CID_BASE + 46)
+>  
+>  /* USER-class private control IDs */
+>  
+> @@ -3488,4 +3490,15 @@ struct v4l2_ctrl_av1_film_grain {
+>  #define V4L2_CID_MPEG_MFC51_BASE        V4L2_CID_CODEC_MFC51_BASE
+>  #endif
+>  
+> +/**
+> + * struct v4l2_ctrl_asrc_rate - ASRC sample rate.
+> + *
+> + * @rate_integer: integer part of rate.
+> + * @rate_fractional: fractional part of rate, most time may be zero
+> + */
+> +struct v4l2_ctrl_asrc_rate {
+> +	__u32 rate_integer;
+> +	__u32 rate_fractional;
+> +};
+> +
+>  #endif
+> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+> index 3630f50eedb1..166c51f537cc 100644
+> --- a/include/uapi/linux/videodev2.h
+> +++ b/include/uapi/linux/videodev2.h
+> @@ -1840,6 +1840,7 @@ struct v4l2_ext_control {
+>  		struct v4l2_ctrl_av1_tile_group_entry __user *p_av1_tile_group_entry;
+>  		struct v4l2_ctrl_av1_frame __user *p_av1_frame;
+>  		struct v4l2_ctrl_av1_film_grain __user *p_av1_film_grain;
+> +		struct v4l2_ctrl_asrc_rate __user *p_asrc_rate;
+>  		void __user *ptr;
+>  	};
+>  } __attribute__ ((packed));
+
+Regards,
+
+	Hans
