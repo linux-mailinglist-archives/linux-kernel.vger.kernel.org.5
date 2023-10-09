@@ -2,120 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0C87BEA6C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 21:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7047BEA63
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 21:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378379AbjJITPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 15:15:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33406 "EHLO
+        id S1378322AbjJITOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 15:14:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378349AbjJITPL (ORCPT
+        with ESMTP id S1346660AbjJITOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 15:15:11 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B71B4;
-        Mon,  9 Oct 2023 12:15:08 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 399HiYee025944;
-        Mon, 9 Oct 2023 19:14:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=tWRKWpXhvsDqqfeaAHHgGggYdW5N5cRaEvFAjiLKlRY=;
- b=HIX81vKtkiNZN6d8zilW9zLPEyg013s9x6cgadaqWPyYeb8x/89v10HLSQ+eMj6FPfOA
- g5QoJUaY5Yw6BL16U+IVaLdwfOcd0wWN+k9W0ms+rgp7y3NtvcHie72ARWPeg1MgRrUE
- HjAAT7Y5VxrdnJV6k8Q/pnnq7onXbwh08pP/yheEKVK+AVK9MAvsepR964njycb1SsLv
- bgTNzaH8hCwezjshDqzvahkUPhI0tU3GNXHYqY5kS+nTFQq26toFyaSMTq4dcwK4vQt7
- ZQGbbZId+s1H5YFOtDuEIswNFpgZZ0HEmnOx9Gk2/oWIjNPyIsq0DIKk9vauclpN4nfL lA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tmj0y8tts-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Oct 2023 19:14:55 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 399JEsKB002376
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 9 Oct 2023 19:14:54 GMT
-Received: from car-linux11.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 9 Oct 2023 12:14:54 -0700
-From:   Nikunj Kela <quic_nkela@quicinc.com>
-To:     <sudeep.holla@arm.com>
-CC:     <cristian.marussi@arm.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        Nikunj Kela <quic_nkela@quicinc.com>
-Subject: [PATCH v6 1/2] dt-bindings: arm: Add new compatible for smc/hvc transport for SCMI
-Date:   Mon, 9 Oct 2023 12:14:36 -0700
-Message-ID: <20231009191437.27926-2-quic_nkela@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231009191437.27926-1-quic_nkela@quicinc.com>
-References: <20230718160833.36397-1-quic_nkela@quicinc.com>
- <20231009191437.27926-1-quic_nkela@quicinc.com>
+        Mon, 9 Oct 2023 15:14:52 -0400
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D43F8E
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 12:14:49 -0700 (PDT)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5a2379a8b69so59610347b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 12:14:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umich.edu; s=google-2016-06-03; t=1696878888; x=1697483688; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qJkxWpfY6BylSbHsECCWxvdWvw5Xy177dBQc6H0SaVM=;
+        b=hXWoJyQLgoTUKPLXUo0OsDP6QlHu+vpi6ZjXxufvB4kQ0fcr2pH1yOq+jbv0/u1Oyz
+         b3910Jb5UJoKX7LExSy0W6hOT0JggAFRON3VcZSS+IZzOTH86I+LA0y27PR4DHiglOZM
+         rLX24z9JaBfPsV9c0NrlYssTzYTn23F2mQQXQjrnQMxrHjk/ylh/aGK23qk9ybyaD5tr
+         CbvqwVWN9HhQr2X1HXBhDkfl4fkjx2xzTWP73ld95iJadqtXzxHDL4i2ES9CYdnC5K8S
+         2fY9dGy79C8KbMzwsS6cseWJwNmqz/OJEy23WHNCYG7Uc5ECvWuMDcpkyCsyYKzNf/C8
+         Zjvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696878888; x=1697483688;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qJkxWpfY6BylSbHsECCWxvdWvw5Xy177dBQc6H0SaVM=;
+        b=d78zF6ZwFZnKXLqyMyCXWRemWdCtCbAtauwVzn3psMfAj8b6fUXKzYWHaTwvVmRF2a
+         2HV023etGaTyeLvZ8gvYvoKbq6l6ntbq8bVz/21v4qX5aA9jMhqtB+wYHCz91ehPnQ42
+         T6PaIRQmuZjgZbpo0kz/EYgDHA5aAw4QgAbg43tlhZ8bVu2NNKboSF+4l+9jdhzp3GcU
+         vXTiz7QvceX2It96+dNePDEYFhet7cOsRfOnAqlpMEqs0YE5vbH3wvIP1uL5f9nIQaW5
+         Bt5DtReIWCcZ0DNJSeWrgJsrmjc9edrqNAY3dinqIYLV8nNCOOjMpH8U4s/jbGOVcO4p
+         zc/A==
+X-Gm-Message-State: AOJu0YzFjJbYILfv0JxP54Lb/Vp6ajvlUiGzvy3PsExVLKZpZ/WI1m5K
+        9J7kceecjPiEFpQ9ZPXVpO5LO/hd+ys9KEaKO33JiQ==
+X-Google-Smtp-Source: AGHT+IGoOGPmyv61/skaGAXztPhoFbdiRTQNoHUWul1/cEM2B5AjDtUCSOLoHBtqQYYPCDEmcZ2ozReE5JYRpwKHe1g=
+X-Received: by 2002:a81:9c14:0:b0:598:5bb5:1801 with SMTP id
+ m20-20020a819c14000000b005985bb51801mr14787290ywa.50.1696878888662; Mon, 09
+ Oct 2023 12:14:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: _8a3jWOtXvc0wNqj94usnSsS4GcB3Eqf
-X-Proofpoint-ORIG-GUID: _8a3jWOtXvc0wNqj94usnSsS4GcB3Eqf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-09_17,2023-10-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1015
- impostorscore=0 priorityscore=1501 malwarescore=0 phishscore=0 bulkscore=0
- mlxscore=0 adultscore=0 lowpriorityscore=0 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310090157
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231008094816.320424-1-tmgross@umich.edu> <8a6a2133-92a0-4478-8f3a-e1c7ba38ff18@gmail.com>
+ <CALNs47vj=whnF1FcmmXHz=msB2j=GAnrnwx-OKHciW6iR+GUMw@mail.gmail.com> <CANiq72mn3f1w0RZo58BrzDuDHjcGNyBr3FhygVGfSx_xbYwgLg@mail.gmail.com>
+In-Reply-To: <CANiq72mn3f1w0RZo58BrzDuDHjcGNyBr3FhygVGfSx_xbYwgLg@mail.gmail.com>
+From:   Trevor Gross <tmgross@umich.edu>
+Date:   Mon, 9 Oct 2023 15:14:37 -0400
+Message-ID: <CALNs47v9Vk14Up2MMQsqZGtGzbvyA+b7QB_nmTH05zSBpbyxJg@mail.gmail.com>
+Subject: Re: [PATCH] rust: macros: update 'paste!' macro to accept string literals
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        FUJITA Tomonori <fujita.tomonori@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce compatible "qcom,scmi-smc" for SCMI smc/hvc transport channel for
-Qualcomm virtual platforms.
+On Mon, Oct 9, 2023 at 6:49=E2=80=AFAM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+>
+> On Mon, Oct 9, 2023 at 5:04=E2=80=AFAM Trevor Gross <tmgross@umich.edu> w=
+rote:
+> >
+> > Good point, thanks! I'll add that if there is a v2 (or Miguel can
+> > probably add it if not)
+>
+> Yes, I add them myself when I notice they are missing (e.g. most
+> recently 2 of the ones in `rust-fixes`), but patches should definitely
+> come with the `Fixes: ` tag themselves, i.e. it should be the
+> exceptional case.
+>
+> However, is this actually a fix? The title and commit message make it
+> sound like it is a new feature rather than a fix. And the docs of the
+> macro says literals are not supported, right?
 
-This compatible mandates populating an additional parameter 'capability-id'
-from the last 8 bytes of the shmem channel.
+I suppose it is something that augments current behavior and "fixes"
+the linked use case by making it possible. I am not sure what
+qualifies as a fix.
 
-Signed-off-by: Nikunj Kela <quic_nkela@quicinc.com>
-Reviewed-by: Brian Masney <bmasney@redhat.com>
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
----
- Documentation/devicetree/bindings/firmware/arm,scmi.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+> So this probably needs to update those docs too (and ideally add an
+> example with the newly supported construct too). Or am I
+> misunderstanding?
+>
+> Cheers,
+> Miguel
 
-diff --git a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
-index 563a87dfb31a..4591523b51a0 100644
---- a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
-+++ b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
-@@ -38,6 +38,9 @@ properties:
-                      with shmem address(4KB-page, offset) as parameters
-         items:
-           - const: arm,scmi-smc-param
-+      - description: SCMI compliant firmware with Qualcomm SMC/HVC transport
-+        items:
-+          - const: qcom,scmi-smc
-       - description: SCMI compliant firmware with SCMI Virtio transport.
-                      The virtio transport only supports a single device.
-         items:
-@@ -313,6 +316,7 @@ else:
-           enum:
-             - arm,scmi-smc
-             - arm,scmi-smc-param
-+            - qcom,scmi-smc
-   then:
-     required:
-       - arm,smc-id
--- 
-2.17.1
-
+I will update the documentation, thanks for the catch.
