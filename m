@@ -2,163 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7334E7BE8B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2207BE8B9
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377264AbjJIRwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 13:52:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46618 "EHLO
+        id S1377240AbjJIRxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 13:53:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345624AbjJIRwd (ORCPT
+        with ESMTP id S233250AbjJIRxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 13:52:33 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C57991;
-        Mon,  9 Oct 2023 10:52:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B953C433C7;
-        Mon,  9 Oct 2023 17:52:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696873951;
-        bh=yP/scKtcI6OBBotY/FATY0k1OHLk/ySM8TF7CIdRg08=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Wc3N/MYOxqwOL9eWWR4ar7f+Nl52Pw+OQRfHKD88OVoSlVWv2eEbE18pawMPvGTNS
-         PIeAMCD8CViMEDT2sMBZUiso2CP19P2E27ltwwc0EOXnXm+f5Tpgevo+uG3PeJtH+o
-         AWjZ1SWpOKLA6J7qJQ3oAtmJq5e1eGsZvh/MazS0iOuZd7F9y9YqNrw0K1ChD0c7J5
-         DudWnoM/+1NmBrj7AvKKk5LZIllba4PkvHiT9/LyF0nEyWhWVAr7Ysr/QBMkdwx5NT
-         C/Zo7h60CBj66xgMQdH0F6fexAbiO1jdDfL9WHYFAWwwc38Gq3wbzFz+BFGjXzV5js
-         5wLL+IqB+8B3g==
-Date:   Mon, 9 Oct 2023 18:52:26 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     yang tylor <tylor_yang@himax.corp-partner.google.com>
-Cc:     Conor Dooley <conor.dooley@microchip.com>,
-        dmitry.torokhov@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jikos@kernel.org, benjamin.tissoires@redhat.com,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        poyuan_chang@himax.corp-partner.google.com, hbarnor@chromium.org,
-        "jingyliang@chromium.org" <jingyliang@chromium.org>,
-        wuxy23@lenovo.com, luolm1@lenovo.com,
-        hung poyu <poyu_hung@himax.corp-partner.google.com>
-Subject: Re: [PATCH V2 1/2] dt-bindings: input: Introduce Himax HID-over-SPI
- device
-Message-ID: <20231009-pentagram-clamshell-b14ff00743fd@spud>
-References: <20230922-removable-footwork-f1d4d96d38dd@spud>
- <CAGD2q_Y467jJJnwCVH+3F-hh6a-1-OYRugcy0DdjPnTCC77Z8A@mail.gmail.com>
- <20230925-cod-vacancy-08dc8d88f90e@wendy>
- <CAGD2q_a1nLtFj7H42f+u+J5Bih59MGS0aJLHCFJy5gM2ydys4w@mail.gmail.com>
- <20230926-action-sludge-ec8e51fdd6d4@spud>
- <CAGD2q_YBfDT950tyxEF87ZeiANgea_x8S16Ud5K2bcQ+eL9T=w@mail.gmail.com>
- <20230926-reverence-unlit-d0027225cc43@spud>
- <CAGD2q_ZzNPOL+Mhg7aWFTQd+UJJYVLz1ZE9hbNb0roS2M6y34g@mail.gmail.com>
- <20230928-spectacle-civic-339c0d71d8d7@spud>
- <CAGD2q_b1gn8XAfgfzuNn3Jo6gEguBEacxERyRM5ms-V=+hWS+g@mail.gmail.com>
+        Mon, 9 Oct 2023 13:53:34 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D71C91
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 10:53:31 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-77575233633so330725885a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 10:53:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1696874010; x=1697478810; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IoyXQp0nB/IWm6dvckPcOr8vbJO99u9ZUrMCMrf5qWM=;
+        b=XxDesE0pMy1h4OblGmF9MMUOwZYdCFHNb4KAAR56hGOuqVYQc4pKkJWF37JUpKlI7V
+         nBUbXd4Ct3PiZl9RI83vfbjnOb8Qf285XkaKyNwk0lsOloRhFEejqDNK7CGHyoEMsKw5
+         +sTekenXDJsjQifkatll6qhJITYNFfi+cwljCPEXFn5FK7gaOETJGwPM80W0aamwjCqC
+         8wuAzE/lpb8ZmksO5k0WbDumNd9PVG3cSbLwAwxj7atewsqreq9ON0qsSP3vzW7dxmWt
+         vNQW0upgpQoP5RhCw6qQlBib70H6G6ykIyMF9sK5gFhp70E6WXe+mcXAqr6cHQudsSUV
+         OgZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696874010; x=1697478810;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IoyXQp0nB/IWm6dvckPcOr8vbJO99u9ZUrMCMrf5qWM=;
+        b=gyGH7pUR/T6DhEIRvuKnYhCMn35JZ+BkZpU0JFiRWVkaBgXxM8YeO3dVoksyv+aWdj
+         Au05JdrOjonZjwRBHWW6ZdREfRqJVB527pSyrdcn/NbJ4Uh67TkNP/917hIXhLCUqwla
+         uqDucKw2ZVHk8gnrhe4W+yHTuQjdHUpRQqJ1SbovQHAVDI+K8/05Ye41Ntu6wAJvOOnb
+         RWgge33B0kgmqsp1mmeZEphlzDZn6/XfNB08LkRvP1BybAGnI+CtUCxvEV4CYPs4SZA6
+         QFpewxTER+zj1gA/aN151CQIVoQxlwbxBDQxUeiJe0VadBZEfULz+RoL1lcm4KMm9hvy
+         pFSg==
+X-Gm-Message-State: AOJu0YwZu044buPZ2fEuOAdoULVFZCQJ8WNaFZw3VbOrw1xpTFxZJXGo
+        ppGhImxtjhvqyRSQAj5HgqMfoQ==
+X-Google-Smtp-Source: AGHT+IE1Qk4KpxGExPbP+Bwm/XXhpMnfLUgfDaerG1rDq19vZJtPM/OZ16TFeKYeE6po2KeQFV7LTw==
+X-Received: by 2002:a05:620a:16c9:b0:76f:f11:7d1 with SMTP id a9-20020a05620a16c900b0076f0f1107d1mr14894821qkn.77.1696874010272;
+        Mon, 09 Oct 2023 10:53:30 -0700 (PDT)
+Received: from ?IPV6:2600:1700:2000:b002:41c4:1832:a984:34e2? ([2600:1700:2000:b002:41c4:1832:a984:34e2])
+        by smtp.gmail.com with ESMTPSA id f10-20020a05620a15aa00b007659935ce64sm3681308qkk.71.2023.10.09.10.53.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Oct 2023 10:53:29 -0700 (PDT)
+Message-ID: <2047b2c2-bf37-4c02-9297-d89f95863ed5@sifive.com>
+Date:   Mon, 9 Oct 2023 12:53:28 -0500
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="M6raEjnX9WsFCxfg"
-Content-Disposition: inline
-In-Reply-To: <CAGD2q_b1gn8XAfgfzuNn3Jo6gEguBEacxERyRM5ms-V=+hWS+g@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/4] riscv: Improve flush_tlb()
+Content-Language: en-US
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc:     Andrew Jones <ajones@ventanamicro.com>,
+        Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mayuresh Chitale <mchitale@ventanamicro.com>,
+        Vincent Chen <vincent.chen@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
+        Lad Prabhakar <prabhakar.csengg@gmail.com>
+References: <20230911131224.61924-1-alexghiti@rivosinc.com>
+ <20230911131224.61924-2-alexghiti@rivosinc.com>
+From:   Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <20230911131224.61924-2-alexghiti@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023-09-11 8:12 AM, Alexandre Ghiti wrote:
+> For now, flush_tlb() simply calls flush_tlb_mm() which results in a
 
---M6raEjnX9WsFCxfg
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+s/flush_tlb/tlb_flush/ here and in the subject.
 
-On Mon, Oct 02, 2023 at 06:44:41PM +0800, yang tylor wrote:
-> On Fri, Sep 29, 2023 at 12:56=E2=80=AFAM Conor Dooley <conor@kernel.org> =
-wrote:
-> >
-> > On Thu, Sep 28, 2023 at 10:12:41AM +0800, yang tylor wrote:
-> > > On Tue, Sep 26, 2023 at 8:53=E2=80=AFPM Conor Dooley <conor@kernel.or=
-g> wrote:
-> > > > On Tue, Sep 26, 2023 at 05:52:39PM +0800, yang tylor wrote:
-> > > > > On Tue, Sep 26, 2023 at 5:02=E2=80=AFPM Conor Dooley <conor@kerne=
-l.org> wrote:
-> > > > > > On Mon, Sep 25, 2023 at 06:16:29PM +0800, yang tylor wrote:
-> > > > > > > On Mon, Sep 25, 2023 at 4:41=E2=80=AFPM Conor Dooley <conor.d=
-ooley@microchip.com> wrote:
-> > > > > > > We have a default prefix firmware name(like himax_xxxx.bin) i=
-n the driver code.
-> > > > > >
-> > > > > > How do you intend generating the name of the firmware file? I a=
-ssume the
-> > > > > > same firmware doesn't work on every IC, so you'll need to pick a
-> > > > > > different one depending on the compatible?
-> > > > > >
-> > > > > If considering a firmware library line-up for all the incoming pa=
-nels
-> > > > > of this driver.
-> > > > > We would use PID as part of the file name. Because all the suppor=
-t panels would
-> > > > > have a unique PID associated. Which will make the firmware name l=
-ike
-> > > > > himax_xxx_{$PID}.bin. The problem is, we need to know PID before =
-firmware load
-> > > > > at no flash condition. Thus PID information is required in dts wh=
-en
-> > > > > no-flash-flag
-> > > > > is specified.
-> > > >
-> > > > Firstly, where does the "xxx" come from?
-> > > > And you're making it sound more like having firmware-name is suitab=
-le
-> > > > for this use case, given you need to determine the name of the file=
- to
-> > > > use based on something that is hardware specific but is not
-> > > > dynamically detectable.
-> > > Current driver patch uses a prefix name "himax_i2chid" which comes
-> > > from the previous project
-> > >  and seems not suitable for this condition, so I use "xxx" and plan to
-> > > replace it in the next version.
-> > > For finding firmware, I think both solutions are reasonable.
-> > > - provide firmware name directly: implies no-flash and use user
-> > > specified firmware, no PID info.
-> > > - provide no-flash-flag and PID info: loading firmware from organized
-> > > names with PID info.
-> > > I prefer the 2nd solution, but it needs more properties in dts. 1st
-> > > has less properties and more
-> > > intuitive.
-> > >
-> > > I don't know which one is more acceptable by the community, as you
-> > > know I'm a newbie here.
-> >
-> > To be honest, I am not all that sure either! Does the panel id have
-> > value in its own right, or is that only used to determine the firmware
-> > filename?
-> Currently, PID stands for Panel/Project ID and is used for determining
-> the firmware filename only. We haven't come up with any new attribute that
-> may attach to it. The differences between panels are handled in firmware
-> dedicated to its PID.
->=20
-> > Also, if it does have value in its own right, rather than a "pid",
-> > should the panel be a child node of this hid device with its own
-> > compatible?
-> It may need a child node if we find it necessary to add attributes to eac=
-h PID.
-> But currently we have no idea about it.
+Otherwise:
+Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
 
-To be honest, it seems to me like you are using "PID" in place of a
-compatible for the panel, since it needs to be provided via DT anyway.
+> flush of the whole TLB. So let's use mmu_gather fields to provide a more
+> fine-grained flush of the TLB.
+> 
+> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> ---
+>  arch/riscv/include/asm/tlb.h      | 8 +++++++-
+>  arch/riscv/include/asm/tlbflush.h | 3 +++
+>  arch/riscv/mm/tlbflush.c          | 7 +++++++
+>  3 files changed, 17 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/riscv/include/asm/tlb.h b/arch/riscv/include/asm/tlb.h
+> index 120bcf2ed8a8..1eb5682b2af6 100644
+> --- a/arch/riscv/include/asm/tlb.h
+> +++ b/arch/riscv/include/asm/tlb.h
+> @@ -15,7 +15,13 @@ static void tlb_flush(struct mmu_gather *tlb);
+>  
+>  static inline void tlb_flush(struct mmu_gather *tlb)
+>  {
+> -	flush_tlb_mm(tlb->mm);
+> +#ifdef CONFIG_MMU
+> +	if (tlb->fullmm || tlb->need_flush_all)
+> +		flush_tlb_mm(tlb->mm);
+> +	else
+> +		flush_tlb_mm_range(tlb->mm, tlb->start, tlb->end,
+> +				   tlb_get_unmap_size(tlb));
+> +#endif
+>  }
+>  
+>  #endif /* _ASM_RISCV_TLB_H */
+> diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
+> index a09196f8de68..f5c4fb0ae642 100644
+> --- a/arch/riscv/include/asm/tlbflush.h
+> +++ b/arch/riscv/include/asm/tlbflush.h
+> @@ -32,6 +32,8 @@ static inline void local_flush_tlb_page(unsigned long addr)
+>  #if defined(CONFIG_SMP) && defined(CONFIG_MMU)
+>  void flush_tlb_all(void);
+>  void flush_tlb_mm(struct mm_struct *mm);
+> +void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
+> +			unsigned long end, unsigned int page_size);
+>  void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr);
+>  void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+>  		     unsigned long end);
+> @@ -52,6 +54,7 @@ static inline void flush_tlb_range(struct vm_area_struct *vma,
+>  }
+>  
+>  #define flush_tlb_mm(mm) flush_tlb_all()
+> +#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
+>  #endif /* !CONFIG_SMP || !CONFIG_MMU */
+>  
+>  /* Flush a range of kernel pages */
+> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+> index 77be59aadc73..fa03289853d8 100644
+> --- a/arch/riscv/mm/tlbflush.c
+> +++ b/arch/riscv/mm/tlbflush.c
+> @@ -132,6 +132,13 @@ void flush_tlb_mm(struct mm_struct *mm)
+>  	__flush_tlb_range(mm, 0, -1, PAGE_SIZE);
+>  }
+>  
+> +void flush_tlb_mm_range(struct mm_struct *mm,
+> +			unsigned long start, unsigned long end,
+> +			unsigned int page_size)
+> +{
+> +	__flush_tlb_range(mm, start, end - start, page_size);
+> +}
+> +
+>  void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
+>  {
+>  	__flush_tlb_range(vma->vm_mm, addr, PAGE_SIZE, PAGE_SIZE);
 
---M6raEjnX9WsFCxfg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSQ92gAKCRB4tDGHoIJi
-0sbAAQDvFnawcZKqA8CN5euZeU93hvrmcUykdZUeXZ3RsTGPegEAqXY+uqJz22vN
-qIYSeon1HUa/OyfQTuriEEM5vLbg6Q0=
-=mZhs
------END PGP SIGNATURE-----
-
---M6raEjnX9WsFCxfg--
