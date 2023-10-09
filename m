@@ -2,96 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60C367BD2D2
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 07:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 996FD7BD2D3
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 07:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345117AbjJIF3S convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Oct 2023 01:29:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59382 "EHLO
+        id S1345112AbjJIFeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 01:34:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345049AbjJIF3Q (ORCPT
+        with ESMTP id S1345049AbjJIFes (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 01:29:16 -0400
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC909E;
-        Sun,  8 Oct 2023 22:29:15 -0700 (PDT)
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-27740ce6c76so2364672a91.0;
-        Sun, 08 Oct 2023 22:29:15 -0700 (PDT)
+        Mon, 9 Oct 2023 01:34:48 -0400
+Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93AF9E
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 22:34:45 -0700 (PDT)
+Received: by mail-vs1-xe35.google.com with SMTP id ada2fe7eead31-45269fe9d6bso1808606137.2
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 22:34:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696829685; x=1697434485; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=z0qIh7N601V8ZDv+VU22d/EvZslgLn6R5kTfS7DGg8Q=;
+        b=YY3K/G41DVkgPimg02ZHCJS1V+OLuM7hX534o8baS+GS0mlM9B1b74Mf9hZ00XzVlK
+         Ak4BjDs4ATfgkDs+SzY+fgBIFktGid/GvYk2hQr/2ZB4aH6FDYC45Rz7KAJXseSy2C6j
+         WC7XAWl30fU7Ww1aZzAuVYjc/ctUcjxh21paRYt8v2oFXIWMNppshESVe0X/5cKwB0n/
+         CaVEoekL2P91gO/ROm/wUaa3agOjA24hmgxcmVHNFkSFKc3fqK3P8RwZHcj21AydAaSI
+         z/NptfmwXRNzMn23SpKj/ihwJt+/iDVF/hduDs5FsaAJx0CPGfwDvvWqY3Vmwvau0O0M
+         zp4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696829354; x=1697434154;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Vr/F+bCfSklSZ5y08IwzckZb9rJ4zF5BksIsHEdUNU0=;
-        b=Kyv0YlLheoIHRnDjd2PNm7dCqBaPzaOui7gze85f9jri92YobwdneYrJbupminq12k
-         xSjDTed65cNUxshugxdntBdInoz4fRg2c6UvYoYmAXIUh+j/nTtW4AGoWYTsECBoLE1I
-         aECH7RCoK0uewvAdgmQBt2GsaJaCyR6IMKlBnL3PQAnH6SnkoOFTPcMwR6YbKdyGTfOZ
-         X+yyN3bH7o3Gqqi3z98aVYEYiv+BQWVTeKqqwgKYdaDaoHe4P4otUuF0G2DhHaAjK2ud
-         tsV4CHzs4hvlduozbwUaiKJDJLiqMljh/N2V1WZMKpeR0LDz42c1RIIQvExWuz4HoenG
-         JzXQ==
-X-Gm-Message-State: AOJu0YxZfFJWS7M42jH4wMsP5v21GpBScDMDa0WoFLFkgEWgjPlZW7ZQ
-        FJT0BV6G6R6Ui1exGlXogYiOg1vrpPSz4n1Aelw=
-X-Google-Smtp-Source: AGHT+IFjuFOwAwgsbfljMcjBSoN7dfnQTS3qqskI6Sm1oinsBVThEl8w00q+fWuQEJaIjhJW6PRA73xKJHQDET5JRro=
-X-Received: by 2002:a17:90b:4c87:b0:26d:416a:d9d0 with SMTP id
- my7-20020a17090b4c8700b0026d416ad9d0mr11350450pjb.21.1696829354575; Sun, 08
- Oct 2023 22:29:14 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696829685; x=1697434485;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=z0qIh7N601V8ZDv+VU22d/EvZslgLn6R5kTfS7DGg8Q=;
+        b=ut8REz2+U9qkoPyot6c92f09V/jornGkT8niRY0Czq+TBaINNXjISd0qeC0aZX0kYN
+         TL8r0hkc9juTArVDcEE7wA0ADY2BQU/teJT9gFPoxyawlcRLmcCIkwh/3ROB6LdbM1e9
+         O4iM5ln1LUpQPyjpywUtS3+gpZAVfrSQFudIal1/kLya0/TPqWzctmbzIZE3ZkGB3GPL
+         7aLN2n4UnwlJ2yeZ5PF/Vb47AoY9gNmCO8UQ/0s6ryTbL7DBgsrFLg+Q4fZKXxW+BWTc
+         3Pv8mGX24VaGGV899oR8aEmL7EJ2f8oYlG/mOV/A9Pde6Aaa6YWly5veY2si/8fxlj2u
+         LZnQ==
+X-Gm-Message-State: AOJu0YyUs8a32sPVQHtelrEfU+zkcH/lmQpAk1inLVcq6Jck7L3sVpAl
+        /45naJcvEzesW2iny7q1rOifBeYWAT3Z66bszYYIiQ==
+X-Google-Smtp-Source: AGHT+IG1I9qkvp0Xl76fa7iKyNOnNPP8qt7dy0JbBgVpSFnmCX9TWCcomF/W5vlYe0F8xbyRLHNX3TgWVR3LB9j5kdE=
+X-Received: by 2002:a67:efc6:0:b0:44d:5a92:ec43 with SMTP id
+ s6-20020a67efc6000000b0044d5a92ec43mr12955216vsp.24.1696829684930; Sun, 08
+ Oct 2023 22:34:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231002221909.2958708-1-irogers@google.com> <CAP-5=fX-VOeCkOJY5xeW67x0+A0tGAHM4VYBBz46L-g2eRCR+w@mail.gmail.com>
- <93afcf44-5f8b-49c1-abc5-5304cba5f991@intel.com> <CAP-5=fXzcR6QKKhFG5PS1pFYi5JsO4AOUoH_-Bv0O+11YzEkkw@mail.gmail.com>
-In-Reply-To: <CAP-5=fXzcR6QKKhFG5PS1pFYi5JsO4AOUoH_-Bv0O+11YzEkkw@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Sun, 8 Oct 2023 22:29:03 -0700
-Message-ID: <CAM9d7cjQZvZm+Vyrx9PTUYMFN5RjE+i-Kq1kbffyVp2hGKF6sg@mail.gmail.com>
-Subject: Re: [PATCH v1] perf intel-pt: pkt-decoder: Fix alignment issues
-To:     Ian Rogers <irogers@google.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Olsa <jolsa@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+References: <2023100613-lustiness-affiliate-7dcb@gregkh>
+In-Reply-To: <2023100613-lustiness-affiliate-7dcb@gregkh>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Mon, 9 Oct 2023 11:04:33 +0530
+Message-ID: <CAFA6WYNbMsEE7OF0SpLN5gQx5-TNPXD7Zm+2tVu21xdpzKU=Xg@mail.gmail.com>
+Subject: Re: [PATCH] tee: make tee_class constant
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org,
+        Jens Wiklander <jens.wiklander@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 5, 2023 at 2:24 PM Ian Rogers <irogers@google.com> wrote:
+On Fri, 6 Oct 2023 at 19:30, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> On Thu, Oct 5, 2023 at 12:06 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
-> >
-> > On 5/10/23 18:48, Ian Rogers wrote:
-> > > On Mon, Oct 2, 2023 at 3:19 PM Ian Rogers <irogers@google.com> wrote:
-> > >>
-> > >> The byte aligned buffer is cast to large types and dereferenced
-> > >> causing misaligned pointer warnings from undefined behavior sanitizer.
-> > >> Fix the alignment issues with memcpy which may require the
-> > >> introduction of temporaries.
-> > >>
-> > >> Signed-off-by: Ian Rogers <irogers@google.com>
-> > >> ---
-> > >
-> > > This is a relatively small change that fixes building with
-> > > -fsanitize=alignment -fsanitize-undefined-trap-on-error. Adrian, as
-> > > this is Intel-PT could you take a look?
-> >
-> > Thanks! This has been down my list of things to do for ages,
-> > but using get_unaligned_le16() etc seems nicer.  I sent a patch
-> > set for that.
+> Now that the driver core allows for struct class to be in read-only
+> memory, we should make all 'class' structures declared at build time
+> placing them into read-only memory, instead of having to be dynamically
+> allocated at runtime.
 >
-> Thanks Adrian! Your patch set looks good and I think after Arnaldo's
-> comment is addressed we should go with it.
+> Cc: Jens Wiklander <jens.wiklander@linaro.org>
+> Cc: Sumit Garg <sumit.garg@linaro.org>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  drivers/tee/tee_core.c | 21 +++++++++++----------
+>  1 file changed, 11 insertions(+), 10 deletions(-)
+>
 
-I think it can be done as a later step as long as the interface is the
-same.  Can I add your Ack's to the Adrian's patchset?
+Apart from nit below, feel free to add:
 
-Thanks,
-Namhyung
+Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+
+> diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
+> index 0eb342de0b00..5ddfd5d9ac7f 100644
+> --- a/drivers/tee/tee_core.c
+> +++ b/drivers/tee/tee_core.c
+> @@ -40,7 +40,10 @@ static const uuid_t tee_client_uuid_ns = UUID_INIT(0x58ac9ca0, 0x2086, 0x4683,
+>  static DECLARE_BITMAP(dev_mask, TEE_NUM_DEVICES);
+>  static DEFINE_SPINLOCK(driver_lock);
+>
+> -static struct class *tee_class;
+> +static const struct class tee_class = {
+> +       .name = "tee",
+> +};
+> +
+>  static dev_t tee_devt;
+>
+>  struct tee_context *teedev_open(struct tee_device *teedev)
+> @@ -919,7 +922,7 @@ struct tee_device *tee_device_alloc(const struct tee_desc *teedesc,
+>                  teedesc->flags & TEE_DESC_PRIVILEGED ? "priv" : "",
+>                  teedev->id - offs);
+>
+> -       teedev->dev.class = tee_class;
+> +       teedev->dev.class = &tee_class;
+>         teedev->dev.release = tee_release_device;
+>         teedev->dev.parent = dev;
+>
+> @@ -1112,7 +1115,7 @@ tee_client_open_context(struct tee_context *start,
+>                 dev = &start->teedev->dev;
+>
+>         do {
+> -               dev = class_find_device(tee_class, dev, &match_data, match_dev);
+> +               dev = class_find_device(&tee_class, dev, &match_data, match_dev);
+>                 if (!dev) {
+>                         ctx = ERR_PTR(-ENOENT);
+>                         break;
+> @@ -1226,10 +1229,10 @@ static int __init tee_init(void)
+>  {
+>         int rc;
+>
+> -       tee_class = class_create("tee");
+> -       if (IS_ERR(tee_class)) {
+> +       rc = class_register(&tee_class);
+> +       if (rc) {
+>                 pr_err("couldn't create class\n");
+
+nit: this error message should be updated as well.
+
+-Sumit
+
+> -               return PTR_ERR(tee_class);
+> +               return rc;
+>         }
+>
+>         rc = alloc_chrdev_region(&tee_devt, 0, TEE_NUM_DEVICES, "tee");
+> @@ -1249,8 +1252,7 @@ static int __init tee_init(void)
+>  out_unreg_chrdev:
+>         unregister_chrdev_region(tee_devt, TEE_NUM_DEVICES);
+>  out_unreg_class:
+> -       class_destroy(tee_class);
+> -       tee_class = NULL;
+> +       class_unregister(&tee_class);
+>
+>         return rc;
+>  }
+> @@ -1259,8 +1261,7 @@ static void __exit tee_exit(void)
+>  {
+>         bus_unregister(&tee_bus_type);
+>         unregister_chrdev_region(tee_devt, TEE_NUM_DEVICES);
+> -       class_destroy(tee_class);
+> -       tee_class = NULL;
+> +       class_unregister(&tee_class);
+>  }
+>
+>  subsys_initcall(tee_init);
+> --
+> 2.42.0
+>
