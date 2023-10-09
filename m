@@ -2,236 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69A837BD696
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6712C7BD6A0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345681AbjJIJSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 05:18:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51806 "EHLO
+        id S1345722AbjJIJWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 05:22:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345623AbjJIJSr (ORCPT
+        with ESMTP id S1345692AbjJIJWD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 05:18:47 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1266A3;
-        Mon,  9 Oct 2023 02:18:42 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3999H05Z024838;
-        Mon, 9 Oct 2023 09:18:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=42uL0Miy/BOYuXAbYidv+fw7jxLzFyLKKp+kUs5+6Xg=;
- b=UCdF5YQqe6s7CONlTmH5Gan1BAz+PUBvabw2p/RZFexA6hSnVZj+XgxQKcXZojQlVmFm
- LmuzS2yqlPwc4kp9LN+34V6ece0H/z2q9dQqE2nTZXFfNQFgKoZQCJV+LGCzv7mmTLXC
- XoKBYUnrEZ43TwGZ7TT5e8HEAGw0vFUl1Tjl6DYuOuGa+y60HiTZ6xoSgBq4m0GJBPPv
- f1Rj/k5zglJlxFL1sDU+PsNTd8G6unipbBcQksR6fQvuUWMXCH4hcFNCNia6Ujh1wy32
- 0560n3YvGNLPp3o5g+iTT+4yQPdtOpSDstOlFqm9qRK6J/7OVPI9UTX5u6P7CE3pPYt1 uw== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tkh879xq6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Oct 2023 09:18:34 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3999IWsr028891
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 9 Oct 2023 09:18:32 GMT
-Received: from [10.214.66.58] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 9 Oct
- 2023 02:18:31 -0700
-Message-ID: <044a2146-f859-44b3-bcf7-66b68d3e7787@quicinc.com>
-Date:   Mon, 9 Oct 2023 14:48:27 +0530
+        Mon, 9 Oct 2023 05:22:03 -0400
+Received: from DEU01-BE0-obe.outbound.protection.outlook.com (mail-be0deu01on2080.outbound.protection.outlook.com [40.107.127.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1AF6A2;
+        Mon,  9 Oct 2023 02:22:00 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WY3dW2XYEST8sOIiz9X2EhwIpiaMac1eIOb3UihA9bkXj0lilCQZPMvUtJ511pyCSTILV1YL9aWsj9fbnfRnaSr31RGU2f7Sr+wO2rx92gunSr3/3BXj6VHw19mu1sQxM5D3yEN1XqaQPjXnn5XWeY0JWb0v0RCczrnCnB/or9l6YWjfVsJDphWaao9Q6hiVDcCCy8Nk7C+cnXMDrLnaYX4CJKjv6Vo//NbMwU7IrCVIwQyAEVdkr7A0c24ilm3uoAVDzpxu9cV8a0Jq1k3eGO38Iv78HDaCStvT4skqUst7JorhvAAjJ1Bt75MY3bUCM8VxMURDoQ8H65gtyyAJ8Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xPvahczNfvcmActLmgOBqvbEW/CePOBHq9GcQJYj4ME=;
+ b=RbLOlpOrJoEkdzuIcNwqK/FHdz+/mik9aatplLxQivUxn2VCHzvWGhbpGZHxQv8k5yW7kIyWSKtrLVJPm+gyLiHJjbFRo5zb3tCqMaZdIpZ9WyLARjDIwDbR2+CFDCaKkU9day1uy461Eh31vtE1vD9bx7NTkG4dWnPe4WOjrILPw6KKPzGc0/CQSLPPogT/XJNoKetLqfed0XYuXtY6ttxOB2hrXBNyiDGdbiB/cQfR9+lZho58CixF7Oy/iKyhT427voQLqBtpWk/t3jriqSPIQik/x8pEClVPEbZYABX9jndJkK17HPIOWPczysDlnNyLbXG9d0/8+HskWsO8UQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cyberus-technology.de; dmarc=pass action=none
+ header.from=cyberus-technology.de; dkim=pass header.d=cyberus-technology.de;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cyberus-technology.de;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xPvahczNfvcmActLmgOBqvbEW/CePOBHq9GcQJYj4ME=;
+ b=kjAR2CQnXPve5ighJZ2Qzti4fV4Uub82qN6zbyMTD1SqWwVNf6gIPn6aFKIpyf365nVA6XDWAUETfC6igv4JBiUkRWq3WYDBuBlZA5BuYYjfcPo80QtRFgmzyPGpFft0FnpIP1hjdDzgZ93mVdKFi9eKolp4OZ5kR2/2mPhv8A2hE2Kp5lLn5cP9ZN+glhI1owa59ZCJCr6ywHEJjNujwJ22N14Jc/0PaXM7USf8QDnWbnWbe/lrvsUM+uvkD68Ylg3seTb3+3EGYsSZ/DQ2Ck8NITz1Uvjzeq/J9pgSA0MJ2/kmiqK0JL3egzT3K5BC1p0myollhdmd7LEjj7+T/A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=cyberus-technology.de;
+Received: from FR3P281MB1567.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:7a::10)
+ by FR0P281MB1983.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:29::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.37; Mon, 9 Oct
+ 2023 09:21:58 +0000
+Received: from FR3P281MB1567.DEUP281.PROD.OUTLOOK.COM
+ ([fe80::739c:5a5b:9c94:e5ec]) by FR3P281MB1567.DEUP281.PROD.OUTLOOK.COM
+ ([fe80::739c:5a5b:9c94:e5ec%7]) with mapi id 15.20.6863.032; Mon, 9 Oct 2023
+ 09:21:58 +0000
+From:   Julian Stecklina <julian.stecklina@cyberus-technology.de>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc:     Julian Stecklina <julian.stecklina@cyberus-technology.de>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] KVM: x86: Fix partially uninitialized integer in emulate_pop
+Date:   Mon,  9 Oct 2023 11:20:53 +0200
+Message-Id: <20231009092054.556935-1-julian.stecklina@cyberus-technology.de>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231004133827.107-1-julian.stecklina@cyberus-technology.de>
+References: <20231004133827.107-1-julian.stecklina@cyberus-technology.de>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: PA7P264CA0404.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:102:39b::8) To FR3P281MB1567.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:7a::10)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: build failure after merge of the usb tree
-To:     Greg KH <greg@kroah.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20231004132247.01c3bfeb@canb.auug.org.au>
- <2023100410-concave-explore-95bf@gregkh>
- <e26b26ff-9e88-4455-9172-1afb520583e7@quicinc.com>
- <2023100445-cymbal-glade-52c8@gregkh>
-Content-Language: en-US
-From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
-In-Reply-To: <2023100445-cymbal-glade-52c8@gregkh>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: iXAyWcdqTSzkC_rv50Uye4Hk0RcyBCPa
-X-Proofpoint-GUID: iXAyWcdqTSzkC_rv50Uye4Hk0RcyBCPa
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-09_07,2023-10-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- phishscore=0 impostorscore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
- priorityscore=1501 adultscore=0 spamscore=0 malwarescore=0 mlxlogscore=789
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2310090077
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: FR3P281MB1567:EE_|FR0P281MB1983:EE_
+X-MS-Office365-Filtering-Correlation-Id: f6f3688e-01f8-4c6c-176e-08dbc8a92fc2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: I7RYUAR8FYWag2Lo13Eoa8joZCUER5BawlTcOoZNOigZZs1Oy9v8DiBAB+JBJkHLpkQam9IxRwGX1uvQhl2hycNf3R8Jbn8NNPYDjPbIKmpNtmKoI6irpP62nYD+B8H2G6fz2o0WpAXwsli7yNqzkRpE3+xePIiwBvZBKkRl99YjgUxYmBSGB2uhv95C/GINv8GjL0n58TkEVE1Psx9QUQRas9ltzi1kcvGlY+ddNX022dkqw0O25EpVC/vdbS4K/j8S/IyUekC37tYH+oLTvoz+nBLjE2WDnTwmopleSCVC66zAc/k2wDmM8qet6XmCQeWG1RvDPwsgzaSxXPBhj4upTkNOUWVIUgDGMaa5Tb/P7DnPZjL22C7VXEwykxaUyNfyGBZND3sAzpDjJRS+gO8X5MUTRnVVyYmF3Oegm8rQxy3OOaTKBxiHbJfIPkAy9gjHelgBTcCk8G6c9KW9y1v9cWrjdFxTk5YJbYqqdopqO6EfMkcN2P6xOT11lq0JjP1MpV2QkmYKy3PoS0GrKYHGfev8o7PI8INm8aSkfGACR0LnOVSpw3gADJgh04hx8FvYZeVFOMlDA1zACdnYiP27bUVROAlCy5kRKH+5t+64pT7iazoYFvjhZ2OtDdu/nt2z/sGsnBVqxxXLf5IKCnLooSWsRbebos04pkbptyPse2we4QlbVABMfV1IZR0w
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:FR3P281MB1567.DEUP281.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39830400003)(376002)(136003)(346002)(230922051799003)(1800799009)(451199024)(186009)(64100799003)(86362001)(38100700002)(36756003)(2906002)(6512007)(478600001)(6486002)(44832011)(5660300002)(41300700001)(8936002)(4326008)(8676002)(6666004)(52116002)(6506007)(83380400001)(2616005)(1076003)(66556008)(66476007)(7416002)(110136005)(316002)(66946007)(26005)(38350700002)(341764005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JtX4E3lBZZtvAYey3T5aWUgis7u1XcDGTX+qxESgsLXcYCG2DVy7tjwueedO?=
+ =?us-ascii?Q?fFLd4ecC154gEU0lX38L0zBX2Ka1AoIFEdjxUy+1zEhrBj0h8q0eQdTLJ9rk?=
+ =?us-ascii?Q?9U2Eah6vBWq2Y/zsyv1WrVQ5uF1ULV6KK8j1xrVNAtoVIJd0PdDbOituUqUf?=
+ =?us-ascii?Q?KS9qFmIFTob2Zgmzx1oQ0o+2eWfP8FxvbjyG55uWURHnSy02TsDE/XrBadef?=
+ =?us-ascii?Q?ZzDIujocwI1Qw3p8LHv8qsAQ8PvFB02qzYToe+7k1ST6ZOhuTccZSl/rxWSi?=
+ =?us-ascii?Q?RD79CzK5mgvkMpl4RF28tP7YWhshE0GLfyuaog7mk4E1ewAGYLYcAVMGUubU?=
+ =?us-ascii?Q?6kegVaZeO8d4egI13Cn8FDt1CyaJrbFysJo+I2kYE+H8f4MXTnrNYfN/tyrA?=
+ =?us-ascii?Q?Tvf0n92p54a6BUltjjimDOUWwxfGk2srUxZFJLoI3UN7YE7D6KONe8mDd8Wm?=
+ =?us-ascii?Q?agoZcdXfQyzFroRyIdF2nbJG2QJUEtu/WTeKGeDPBTNua7hMzo93PcePFH9u?=
+ =?us-ascii?Q?cyKc1YkcJGTKBTM+4+/VSQBzT09dtvSufNKD7BVXHR8xCRZ7wF3d1ahN4ptc?=
+ =?us-ascii?Q?EoKdf1SlOprXX4Ec/OaQcq1/+gFSYf7MZX/0zEJpXdN4/1SUMztrDfoWyQJ7?=
+ =?us-ascii?Q?bOjwByrd+8g8R4yuz2/GdyvDqAdO+LlrtgtSvK4/xdB78pTo4P1TA3t0cHN/?=
+ =?us-ascii?Q?wCJcgrVDL/FZWaPz/rDqmpp7QVT4rMgyKhSHKyz5uaGmKu8Eqc66Lf8Fwptj?=
+ =?us-ascii?Q?Fc2R8hAEz6ejZzUkLIZUe3FGfjPDHBX5qu1dKPjvlwBauw6EPOj1CesHKJXx?=
+ =?us-ascii?Q?Pa1W7x7p6tph0VUs2hbjgtsae7vktW6LwGxX+v7iXQLgFBk0eKb+tKlRlePs?=
+ =?us-ascii?Q?lL6ParUvO2V0Iw0bX9KrOYHww0keriTYnpJ8qCjUSXPtHRIzwchT2Q2+XnSJ?=
+ =?us-ascii?Q?dH/rTE/T24dhFIdBjzX7hX5em7BVipp8VIcHBU1BdWgfqKbkp2UDG6xqZCd9?=
+ =?us-ascii?Q?VpDiIlgiVJ9udRuAVCF+Cdg4swsyhaHzFXp6Ifso7KiOcC2Cu3UYMabFZSkq?=
+ =?us-ascii?Q?bWSD8bxNC/ls3aH7YWfaio8q5Bz92EuQYPbBRRYbjP8FT0zsh17k2XPUxuFx?=
+ =?us-ascii?Q?5F5LS+nu9nw4nQdtXY9nHcNKzs0zJgKdPIC/fYhaSufoAFAPrK04BqulFd+s?=
+ =?us-ascii?Q?u5qcipm9eOuRCt63GJjk3fszu9pE6Hf8/bT9aDN2PQKVOXXfUglvLYNkC4DN?=
+ =?us-ascii?Q?B9zEaFsnXNv7VlFM3iDGkSZmBzCyiCc0YQ5AxHmTttwfw1svxwiMLljxbjah?=
+ =?us-ascii?Q?w+hlauXHCKOGf5kEkjKQ14TeZmXvggk6EypYqP1EWRKf64Zw1t9vZyuyC1z/?=
+ =?us-ascii?Q?a1g7BRxzYQIkMDf964TfbPBJcWcCdnJPUGj3LAiU1alqfoQuHfqbtRlwAC00?=
+ =?us-ascii?Q?hNuz/TpaIWJGAzsNEvdRocI2yScco/OpBhcEZR1eHIYj4GKnsvF0ERk0qhxo?=
+ =?us-ascii?Q?w73Y5LT2mbr/Guj7JvCGBEDf1fwqQ2QOEHe2VN72twnm2TY8OH4WNYABleF5?=
+ =?us-ascii?Q?zegMoTEEA4FUQbwzje44+gEFWuG0IQZ3/Q34omIOua6o7/WdwJQlvz537+4l?=
+ =?us-ascii?Q?a1mZr310JboriVI7roc/BqQ=3D?=
+X-OriginatorOrg: cyberus-technology.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: f6f3688e-01f8-4c6c-176e-08dbc8a92fc2
+X-MS-Exchange-CrossTenant-AuthSource: FR3P281MB1567.DEUP281.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2023 09:21:58.0757
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f4e0f4e0-9d68-4bd6-a95b-0cba36dbac2e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: F+xVXPRHQSvemYDgoFRPqMHzgpR0hBwiSiFk3MA+2q32pgHMzyf8tjZx2VOUvHXT+Q/nRxYgvN+K5sWgZY5IX9ku2+13N9xMySDP7QI76v005TdmZenqxt9/MSoePv5S
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: FR0P281MB1983
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Most code gives a pointer to an uninitialized unsigned long as dest in
+emulate_pop. len is usually the word width of the guest.
 
-On 10/4/2023 6:16 PM, Greg KH wrote:
-> On Wed, Oct 04, 2023 at 12:17:27PM +0530, Rohit Agarwal wrote:
->> On 10/4/2023 12:13 PM, Greg KH wrote:
->>> On Wed, Oct 04, 2023 at 01:22:47PM +1100, Stephen Rothwell wrote:
->>>> Hi all,
->>>>
->>>> After merging the usb tree, today's linux-next build (x86_64 allmodconfig)
->>>> failed like this:
->>>>
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:156:43: error: 'QPHY_V6_PCS_SW_RESET' undeclared here (not in a function); did you mean 'QPHY_V2_PCS_SW_RESET'?
->>>>     156 |         [QPHY_SW_RESET]                 = QPHY_V6_PCS_SW_RESET,
->>>>         |                                           ^~~~~~~~~~~~~~~~~~~~
->>>>         |                                           QPHY_V2_PCS_SW_RESET
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:157:43: error: 'QPHY_V6_PCS_START_CONTROL' undeclared here (not in a function); did you mean 'QPHY_V3_PCS_START_CONTROL'?
->>>>     157 |         [QPHY_START_CTRL]               = QPHY_V6_PCS_START_CONTROL,
->>>>         |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~
->>>>         |                                           QPHY_V3_PCS_START_CONTROL
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:158:43: error: 'QPHY_V6_PCS_PCS_STATUS1' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_PCS_STATUS1'?
->>>>     158 |         [QPHY_PCS_STATUS]               = QPHY_V6_PCS_PCS_STATUS1,
->>>>         |                                           ^~~~~~~~~~~~~~~~~~~~~~~
->>>>         |                                           QPHY_V5_PCS_PCS_STATUS1
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:159:43: error: 'QPHY_V6_PCS_POWER_DOWN_CONTROL' undeclared here (not in a function); did you mean 'QPHY_V3_PCS_POWER_DOWN_CONTROL'?
->>>>     159 |         [QPHY_PCS_POWER_DOWN_CONTROL]   = QPHY_V6_PCS_POWER_DOWN_CONTROL,
->>>>         |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>         |                                           QPHY_V3_PCS_POWER_DOWN_CONTROL
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:162:43: error: 'QPHY_V6_PCS_USB3_AUTONOMOUS_MODE_CTRL' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_USB3_AUTONOMOUS_MODE_CTRL'?
->>>>     162 |         [QPHY_PCS_AUTONOMOUS_MODE_CTRL] = QPHY_V6_PCS_USB3_AUTONOMOUS_MODE_CTRL,
->>>>         |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>         |                                           QPHY_V5_PCS_USB3_AUTONOMOUS_MODE_CTRL
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:163:44: error: 'QPHY_V6_PCS_USB3_LFPS_RXTERM_IRQ_CLEAR' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_USB3_LFPS_RXTERM_IRQ_CLEAR'?
->>>>     163 |         [QPHY_PCS_LFPS_RXTERM_IRQ_CLEAR] = QPHY_V6_PCS_USB3_LFPS_RXTERM_IRQ_CLEAR,
->>>>         |                                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>         |                                            QPHY_V5_PCS_USB3_LFPS_RXTERM_IRQ_CLEAR
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:991:26: error: 'QPHY_V6_PCS_LOCK_DETECT_CONFIG1' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_LOCK_DETECT_CONFIG1'?
->>>>     991 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_LOCK_DETECT_CONFIG1, 0xc4),
->>>>         |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>      78 |                 .offset = o,            \
->>>>         |                           ^
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:992:26: error: 'QPHY_V6_PCS_LOCK_DETECT_CONFIG2' undeclared here (not in a function); did you mean 'QPHY_V3_PCS_LOCK_DETECT_CONFIG2'?
->>>>     992 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_LOCK_DETECT_CONFIG2, 0x89),
->>>>         |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>      78 |                 .offset = o,            \
->>>>         |                           ^
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:993:26: error: 'QPHY_V6_PCS_LOCK_DETECT_CONFIG3' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_LOCK_DETECT_CONFIG3'?
->>>>     993 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_LOCK_DETECT_CONFIG3, 0x20),
->>>>         |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>      78 |                 .offset = o,            \
->>>>         |                           ^
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:994:26: error: 'QPHY_V6_PCS_LOCK_DETECT_CONFIG6' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_LOCK_DETECT_CONFIG6'?
->>>>     994 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_LOCK_DETECT_CONFIG6, 0x13),
->>>>         |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>      78 |                 .offset = o,            \
->>>>         |                           ^
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:997:26: error: 'QPHY_V6_PCS_RCVR_DTCT_DLY_P1U2_L' undeclared here (not in a function); did you mean 'QPHY_V3_PCS_RCVR_DTCT_DLY_P1U2_L'?
->>>>     997 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_RCVR_DTCT_DLY_P1U2_L, 0xe7),
->>>>         |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>      78 |                 .offset = o,            \
->>>>         |                           ^
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:998:26: error: 'QPHY_V6_PCS_RCVR_DTCT_DLY_P1U2_H' undeclared here (not in a function); did you mean 'QPHY_V3_PCS_RCVR_DTCT_DLY_P1U2_H'?
->>>>     998 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_RCVR_DTCT_DLY_P1U2_H, 0x03),
->>>>         |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>      78 |                 .offset = o,            \
->>>>         |                           ^
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:999:26: error: 'QPHY_V6_PCS_CDR_RESET_TIME' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_CDR_RESET_TIME'?
->>>>     999 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_CDR_RESET_TIME, 0x0a),
->>>>         |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>      78 |                 .offset = o,            \
->>>>         |                           ^
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1000:26: error: 'QPHY_V6_PCS_ALIGN_DETECT_CONFIG1' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_ALIGN_DETECT_CONFIG1'?
->>>>    1000 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_ALIGN_DETECT_CONFIG1, 0x88),
->>>>         |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>      78 |                 .offset = o,            \
->>>>         |                           ^
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1001:26: error: 'QPHY_V6_PCS_ALIGN_DETECT_CONFIG2' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_ALIGN_DETECT_CONFIG2'?
->>>>    1001 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_ALIGN_DETECT_CONFIG2, 0x13),
->>>>         |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>      78 |                 .offset = o,            \
->>>>         |                           ^
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1003:26: error: 'QPHY_V6_PCS_EQ_CONFIG1' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_EQ_CONFIG1'?
->>>>    1003 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_EQ_CONFIG1, 0x4b),
->>>>         |                          ^~~~~~~~~~~~~~~~~~~~~~
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>      78 |                 .offset = o,            \
->>>>         |                           ^
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1004:26: error: 'QPHY_V6_PCS_EQ_CONFIG5' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_EQ_CONFIG5'?
->>>>    1004 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_EQ_CONFIG5, 0x10),
->>>>         |                          ^~~~~~~~~~~~~~~~~~~~~~
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>      78 |                 .offset = o,            \
->>>>         |                           ^
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1008:26: error: 'QPHY_V6_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL'?
->>>>    1008 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL, 0xf8),
->>>>         |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>      78 |                 .offset = o,            \
->>>>         |                           ^
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1009:26: error: 'QPHY_V6_PCS_USB3_RXEQTRAINING_DFE_TIME_S2' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_USB3_RXEQTRAINING_DFE_TIME_S2'?
->>>>    1009 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_USB3_RXEQTRAINING_DFE_TIME_S2, 0x07),
->>>>         |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>      78 |                 .offset = o,            \
->>>>         |                           ^
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1010:26: error: 'QPHY_V6_PCS_USB3_RCVR_DTCT_DLY_U3_L' undeclared here (not in a function); did you mean 'QPHY_V4_PCS_USB3_RCVR_DTCT_DLY_U3_L'?
->>>>    1010 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_USB3_RCVR_DTCT_DLY_U3_L, 0x40),
->>>>         |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>      78 |                 .offset = o,            \
->>>>         |                           ^
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:1011:26: error: 'QPHY_V6_PCS_USB3_RCVR_DTCT_DLY_U3_H' undeclared here (not in a function); did you mean 'QPHY_V5_PCS_USB3_RCVR_DTCT_DLY_U3_H'?
->>>>    1011 |         QMP_PHY_INIT_CFG(QPHY_V6_PCS_USB3_RCVR_DTCT_DLY_U3_H, 0x00),
->>>>         |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>> drivers/phy/qualcomm/phy-qcom-qmp-usb.c:78:27: note: in definition of macro 'QMP_PHY_INIT_CFG'
->>>>      78 |                 .offset = o,            \
->>>>         |                           ^
->>>>
->>>> Caused by commit
->>>>
->>>>     685dbd1b2306 ("phy: qcom-qmp-usb: Add Qualcomm SDX75 USB3 PHY support")
->>>>
->>>> I have used the usb tree from next-20231003 for today.
->>> Thanks, I've now reverted this from my tree.
->> As mentioned in the cover letter of these changes, the series was dependent
->> on the other submitted series [1], [2].
-> Ah, I missed that, I almost never read cover letters :)
->
->> Can you also pick these series [1], [2] to resolve this build failures.
->> [1] https://lore.kernel.org/all/20230911203842.778411-1-dmitry.baryshkov@linaro.org/
->> [2] https://lore.kernel.org/linux-phy/20230824211952.1397699-1-dmitry.baryshkov@linaro.org/
-> How about you just send this change with these others, or all of them as
-> one big series so they can be applied in the proper order?
-Adding Dmitry as well.
+If the guest runs in 16-bit or 32-bit modes, len will not cover the
+whole unsigned long and we end up with uninitialized data in dest.
 
-I see some of the dependent patches are already applied and the patches 
-from [2] are not.
-Since all the rest dependent changes are already applied,
-you can pick series[2] and then this series that should also be fine.
-Please let me know if this is fine?
+Looking through the callers of this function, the issue seems
+harmless, but given that none of this is performance critical, there
+should be no issue with just always initializing the whole value.
 
-Thanks,
-Rohit.
-> thanks,
->
-> greg k-h
+Even though popa is not reachable in 64-bit mode, I've changed its val
+variable to unsigned long too to avoid sad copy'n'paste bugs.
+
+Signed-off-by: Julian Stecklina <julian.stecklina@cyberus-technology.de>
+---
+ arch/x86/kvm/emulate.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
+index 2673cd5c46cb..86d0ee9f1a6a 100644
+--- a/arch/x86/kvm/emulate.c
++++ b/arch/x86/kvm/emulate.c
+@@ -1862,7 +1862,8 @@ static int emulate_popf(struct x86_emulate_ctxt *ctxt,
+ 			void *dest, int len)
+ {
+ 	int rc;
+-	unsigned long val, change_mask;
++	unsigned long val = 0;
++	unsigned long change_mask;
+ 	int iopl = (ctxt->eflags & X86_EFLAGS_IOPL) >> X86_EFLAGS_IOPL_BIT;
+ 	int cpl = ctxt->ops->cpl(ctxt);
+ 
+@@ -1953,7 +1954,7 @@ static int em_push_sreg(struct x86_emulate_ctxt *ctxt)
+ static int em_pop_sreg(struct x86_emulate_ctxt *ctxt)
+ {
+ 	int seg = ctxt->src2.val;
+-	unsigned long selector;
++	unsigned long selector = 0;
+ 	int rc;
+ 
+ 	rc = emulate_pop(ctxt, &selector, 2);
+@@ -1999,7 +2000,7 @@ static int em_popa(struct x86_emulate_ctxt *ctxt)
+ {
+ 	int rc = X86EMUL_CONTINUE;
+ 	int reg = VCPU_REGS_RDI;
+-	u32 val;
++	unsigned long val = 0;
+ 
+ 	while (reg >= VCPU_REGS_RAX) {
+ 		if (reg == VCPU_REGS_RSP) {
+@@ -2228,7 +2229,7 @@ static int em_cmpxchg8b(struct x86_emulate_ctxt *ctxt)
+ static int em_ret(struct x86_emulate_ctxt *ctxt)
+ {
+ 	int rc;
+-	unsigned long eip;
++	unsigned long eip = 0;
+ 
+ 	rc = emulate_pop(ctxt, &eip, ctxt->op_bytes);
+ 	if (rc != X86EMUL_CONTINUE)
+@@ -2240,7 +2241,8 @@ static int em_ret(struct x86_emulate_ctxt *ctxt)
+ static int em_ret_far(struct x86_emulate_ctxt *ctxt)
+ {
+ 	int rc;
+-	unsigned long eip, cs;
++	unsigned long eip = 0;
++	unsigned long cs = 0;
+ 	int cpl = ctxt->ops->cpl(ctxt);
+ 	struct desc_struct new_desc;
+ 
+@@ -3183,7 +3185,7 @@ static int em_call_far(struct x86_emulate_ctxt *ctxt)
+ static int em_ret_near_imm(struct x86_emulate_ctxt *ctxt)
+ {
+ 	int rc;
+-	unsigned long eip;
++	unsigned long eip = 0;
+ 
+ 	rc = emulate_pop(ctxt, &eip, ctxt->op_bytes);
+ 	if (rc != X86EMUL_CONTINUE)
+-- 
+2.40.1
+
