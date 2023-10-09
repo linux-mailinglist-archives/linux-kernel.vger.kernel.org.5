@@ -2,91 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4557BE1E3
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 453FF7BE1E9
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377165AbjJINzO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Oct 2023 09:55:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37950 "EHLO
+        id S1377597AbjJINzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 09:55:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377601AbjJINzH (ORCPT
+        with ESMTP id S1377585AbjJINzs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 09:55:07 -0400
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E362FA;
-        Mon,  9 Oct 2023 06:55:06 -0700 (PDT)
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6c623d55b98so422063a34.1;
-        Mon, 09 Oct 2023 06:55:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696859706; x=1697464506;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DbYSaAkppXiXwPywgJaYV/kJCNrZ4Yezq8j1jCwJ9gw=;
-        b=AaxdZsCkw+tlye9GTa9lkjDafIxwx8PzI7csCeYi81riIISIjmWXJaDFj6CnL2IjlJ
-         D5F8RruMoIKnDVoGHJXzbw6Bsp40s5cqftun4Mdj6VQ1nKWpZ+nyj+igoeR26kiWl9GC
-         gw/pyiYMynCqweb0qpTRQ0LFyV/TPWaAy3XzmgxbAVOrzgaXYfyZFLR3IDI49j9YxP2i
-         7mIuyt+i9Sekr/GXlPRjMSXEC1PHtPw82nzwZeSpAqX8NL6SJrhWaoUEYReC26O0KSIj
-         QeukspOsJ8XVPApNUeoUnvtjKT0hvZcPq3vekUP+gKO/iCXPX6rNBeEINrVxn/1JW8i1
-         yDyg==
-X-Gm-Message-State: AOJu0Yy/ofKCoyuB8bztaLAA6HVBTvsXIFJD6OcG4M1xbaOVHTqesNxi
-        WkakSz3lQW7OxXXRrEwnL8hiUs4EOBmloEK5Oo0=
-X-Google-Smtp-Source: AGHT+IE2VRWkpXzrRv5siKgPmRUKaCxwWCJwWFC7kks38lnM7w5ZjjKOORJg03+CHic70zFb0JwtENEPLcu9N2QoEfE=
-X-Received: by 2002:a4a:ee90:0:b0:57b:94b7:c6ba with SMTP id
- dk16-20020a4aee90000000b0057b94b7c6bamr13458447oob.0.1696859705868; Mon, 09
- Oct 2023 06:55:05 -0700 (PDT)
+        Mon, 9 Oct 2023 09:55:48 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9572FAB;
+        Mon,  9 Oct 2023 06:55:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E413C433C7;
+        Mon,  9 Oct 2023 13:55:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696859745;
+        bh=DRqjrg0j7GONsh5GzBzP+A72WJxZ6ioATyVB0ZfWFBU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lgXJuTFq9b2AtpFyPlgWucQ5gsgWhVPBRpzC1HCH57pR97eATKKhO311M+eojKtFf
+         dxfLLR4SE0Ade5nCZ9vIiZC7Eb9AVk3woNffrmQoY5F5odGs0x5/VvRz6k+NGcl7p9
+         bZCAW6gG5YNE4vv2XmpeIj+JBTNikG3losMbQsTsLxgh/m7a0eD1xTrYmjf2BIqWpa
+         S0mgG7lwXGz8j3g3BAqZB8v5IMTZBrdszcTLvmucc/88pIJtH8zhR41dTNb1ZShYS/
+         ADp9Og1mfInXMn+qXTbv0ylbUqhNBLGyjTqWxBoRAfV1q6Diekq1o3mpVcpJkx/GcP
+         DuQfo3zOkvacA==
+Date:   Mon, 9 Oct 2023 15:55:38 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Lizhi Xu <lizhi.xu@windriver.com>,
+        syzbot+23bc20037854bb335d59@syzkaller.appspotmail.com,
+        axboe@kernel.dk, dave.kleikamp@oracle.com, hare@suse.de,
+        hch@lst.de, jfs-discussion@lists.sourceforge.net,
+        johannes.thumshirn@wdc.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, shaggy@kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] jfs: fix log->bdev_handle null ptr deref in lbmStartIO
+Message-ID: <20231009-obendrauf-biodiesel-0d76cdd76ab5@brauner>
+References: <0000000000005239cf060727d3f6@google.com>
+ <20231009094557.1398920-1-lizhi.xu@windriver.com>
+ <20231009100825.dkkaylsrj4db3ekp@quack3>
 MIME-Version: 1.0
-References: <20231006135434.3602921-1-lukasz.luba@arm.com>
-In-Reply-To: <20231006135434.3602921-1-lukasz.luba@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 9 Oct 2023 15:54:54 +0200
-Message-ID: <CAJZ5v0hiPcPWgqwmjpJhG4wG4WbSzkO8yxvVw5=ED8w3HNwBTw@mail.gmail.com>
-Subject: Re: [PATCH] thermal: Add myself as thermal reviewer in MAINTAINERS
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, rafael@kernel.org,
-        daniel.lezcano@linaro.org, rafael.j.wysocki@intel.com,
-        linux-pm@vger.kernel.org, srinivas.pandruvada@linux.intel.com,
-        rui.zhang@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231009100825.dkkaylsrj4db3ekp@quack3>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 6, 2023 at 3:54 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
->
-> Become designated reviewer and help thermal subsystem in development
-> process.
->
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> ---
-> Hi Rafael,
->
-> This should apply on top of your patch removing the previous reviewer.
+> Christian, please pick up this fixup into your tree. Thanks!
 
-Applied, thanks!
-
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 63186c63cba6..70087a08d720 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -21357,6 +21357,7 @@ THERMAL
->  M:     Rafael J. Wysocki <rafael@kernel.org>
->  M:     Daniel Lezcano <daniel.lezcano@linaro.org>
->  R:     Zhang Rui <rui.zhang@intel.com>
-> +R:     Lukasz Luba <lukasz.luba@arm.com>
->  L:     linux-pm@vger.kernel.org
->  S:     Supported
->  Q:     https://patchwork.kernel.org/project/linux-pm/list/
-> --
-> 2.25.1
->
+Done!
