@@ -2,119 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C17037BDA55
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:54:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEB0D7BDA57
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346333AbjJILyP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Oct 2023 07:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48712 "EHLO
+        id S1346353AbjJILyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 07:54:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346281AbjJILyN (ORCPT
+        with ESMTP id S1346348AbjJILyU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 07:54:13 -0400
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1FFA6;
-        Mon,  9 Oct 2023 04:54:11 -0700 (PDT)
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5a505762c9dso54479987b3.2;
-        Mon, 09 Oct 2023 04:54:11 -0700 (PDT)
+        Mon, 9 Oct 2023 07:54:20 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D4CAF7
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 04:54:19 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40566f8a093so40953795e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 04:54:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696852457; x=1697457257; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FsXSAz8UwMqpX7LGDxRG7soPkv+HU3a1mUHRtcMadhY=;
+        b=f2p0TT7rNPT7qvSEYuc9EGoA8OkzS6vd3EPvA3qi2TtnWZJFERnJ2RJgPCmlPSuWIW
+         edu+EbLy0/41k1EyMCzldgiHyCBDTOlIUrF+9eL9AX2GsfovadfbtW3h5j+P8jR/5uBr
+         zWj8gNjv+BhwYwIof577MEzDsgqZu85Egfy294GPHCz5owWzQkeK0pAWW6i7tk5tnR2p
+         SzvFvR8HMMeyt6sG1A9TQA3ob1J/25XEuvqSZUzHVg0i6fXb+eyNnHqrVVbK1Lfjn84M
+         aNADdoZ9hbic/Uwsy7UKyKWSOJKfqHpuKTJ/iTYyzRiKCr2y4FFQSSLzTalMYq+z0ICf
+         6iig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696852450; x=1697457250;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696852457; x=1697457257;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kqRLvJ9E18i5qflSJgpevFkrZOvSMrfws5EIbB8TTXc=;
-        b=Mby2FKqfdTwst4svNa34Bfyu3nxCAJ8vXdd1M+GjRpQaMIBPUeKyDq4Pr2agBnGd2x
-         Wk6fzqfo/Uk3D1+YuFvVCNhRfIIz5a98hjEgR6OwpOf0YNff/n3xMI+NXJBW2Qfu1Psm
-         lMZD84eeGfJI93htpp1aTGEpE3kpJsOkGOPvuUfAvmwRz3rmutJwztuCk50+3SmOhONG
-         72EDlCPmyZW4ouGI4Ll9EDnF+gD6iOsYHSiwCqcQl3Rc9aWX0M3FRjvz2LVXMiQ7Zj/S
-         poHnmiR+sD4msDdi3voW4iTlpNRtNGurkD2rTJ6QUZEpvQufgdj3mdPurjHVTPggPgOW
-         oF+A==
-X-Gm-Message-State: AOJu0YzTjWFU7tprlncYt0oNCYXDbn5OzWmHVjUGhFU3tpp+tNsGQ3yo
-        waX3kXPwCvcwiCMZJvnagcZnm/oUrZJxWA==
-X-Google-Smtp-Source: AGHT+IFnqD/VHfscMOliBXuKr2uvl6BS8KFCq5bRMmb3bFWpZrJjGVrpRGoyqy9yn+qCg7H8ArN3tQ==
-X-Received: by 2002:a05:690c:a08:b0:5a7:af51:e274 with SMTP id cg8-20020a05690c0a0800b005a7af51e274mr109825ywb.18.1696852450604;
-        Mon, 09 Oct 2023 04:54:10 -0700 (PDT)
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
-        by smtp.gmail.com with ESMTPSA id r7-20020a815d07000000b00583b144fe51sm3648088ywb.118.2023.10.09.04.54.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 04:54:10 -0700 (PDT)
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-d91a7999d50so4894362276.3;
-        Mon, 09 Oct 2023 04:54:10 -0700 (PDT)
-X-Received: by 2002:a05:6902:1890:b0:d89:4368:aa1 with SMTP id
- cj16-20020a056902189000b00d8943680aa1mr18075370ybb.53.1696852450080; Mon, 09
- Oct 2023 04:54:10 -0700 (PDT)
+        bh=FsXSAz8UwMqpX7LGDxRG7soPkv+HU3a1mUHRtcMadhY=;
+        b=JhTsu7BpLvKjhUs0yxdF+HyAmXl6K9haO1Ce2Cb/d6g3AkFc5CF9l84NrxE+j/dJCb
+         Q3ojT/e0tloOqa9x+Z5sB/cm7WdO+cJsyo/sCOJYHFyqb2gPQCKC5489rjTguKqYI5zP
+         2ZhgIOdNI/OUzMASd9alRbhYn/sFu01d/tW6qTaieJq7q9PbZONiCIiOlBy9jav7Vsg1
+         UaJ2j2W6XgVuWy5besKDHK/Ro+/bTK5w6RQ6dc84Cue27jKDiF4s5SLMyQipPT+nVR1B
+         5OQTD1oxeZuzqm+az41kfznGYx2pp28T7bC5mFpmSMlb9qR6pt4IYbwA3Yf+Ei7Eaxgb
+         TmsQ==
+X-Gm-Message-State: AOJu0YzuuWNE38xNCM7Le5UcQfkcXGJoHF+DX/DzKy2qILwYyjmmr3jI
+        dq8ax0gpIbmSBoyCzpCgn68=
+X-Google-Smtp-Source: AGHT+IGwNeouZtTRFX+s4/VTxNEFugSAg+20IibBDZLJhiavF1HcCoPx9hhe3bobqkD/IdOnM43JGg==
+X-Received: by 2002:a1c:740d:0:b0:405:1ba2:4fd1 with SMTP id p13-20020a1c740d000000b004051ba24fd1mr14127970wmc.24.1696852457355;
+        Mon, 09 Oct 2023 04:54:17 -0700 (PDT)
+Received: from gmail.com (1F2EF237.nat.pool.telekom.hu. [31.46.242.55])
+        by smtp.gmail.com with ESMTPSA id 12-20020a05600c024c00b0040531f5c51asm11112782wmj.5.2023.10.09.04.54.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Oct 2023 04:54:16 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Mon, 9 Oct 2023 13:54:14 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Yajun Deng <yajun.deng@linux.dev>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] sched/rt: Move sched_rt_entity::back to under the
+ CONFIG_RT_GROUP_SCHED block
+Message-ID: <ZSPp5rKmgdO+8PZS@gmail.com>
+References: <20231005162317.3343678-1-yajun.deng@linux.dev>
+ <20231005162317.3343678-3-yajun.deng@linux.dev>
+ <ZSPS+jMcJEd+ZR28@gmail.com>
+ <5a3342ef-f14f-173c-630f-6b474bded257@linux.dev>
+ <ZSPjbjPPMeafHbjU@gmail.com>
+ <af176171-7c06-700d-c885-b63f44a0443d@linux.dev>
 MIME-Version: 1.0
-References: <20231006103959.197485-1-claudiu.beznea.uj@bp.renesas.com> <20231006103959.197485-4-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20231006103959.197485-4-claudiu.beznea.uj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 9 Oct 2023 13:53:58 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUc8jV_mf7Q1mXQ8XKmZfD0ZyCJQ6Pp9tTF1YkDjyRvhw@mail.gmail.com>
-Message-ID: <CAMuHMdUc8jV_mf7Q1mXQ8XKmZfD0ZyCJQ6Pp9tTF1YkDjyRvhw@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] clk: renesas: rzg2l: add a divider clock for RZ/G3S
-To:     Claudiu <claudiu.beznea@tuxon.dev>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, magnus.damm@gmail.com,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <af176171-7c06-700d-c885-b63f44a0443d@linux.dev>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 6, 2023 at 12:40 PM Claudiu <claudiu.beznea@tuxon.dev> wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> Add a divider clock driver for RZ/G3S. This will be used in RZ/G3S
-> by SDHI, SPI, OCTA, I, I2, I3, P0, P1, P2, P3 core clocks.
-> The divider has some limitation for SDHI, OCTA and SPI clocks:
-> - SDHI div cannot be 1 if parent rate is 800MHz
-> - OCTA, SPI div cannot be 1 if parent rate is 400MHz
-> For these clocks a notifier could be registered from platform specific
-> clock driver and proper actions are taken before clock rate is changed,
-> if needed.
->
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> ---
->
-> Changes in v3:
-> - adjusted commit message to specifies that divider has limitations also
->   for SPI clock
-> - s/SD div/SDHI div in commit message
-> - return proper code from notifier
-> - used CPG_WEN_BIT where possible notifier and set explicitily 1 in div
->   notifier
-> - removed rzg3s_div_clk_is_rate_valid() and all its occurencies: it was
->   not needed in rzg3s_div_clk_set_rate()
-> - .round_rate was replaced by .determine_rate for the introduced divider
-> - initialized max variable in rzg3s_cpg_div_clk_register()
-> - introduced struct div_hw_data::max_rate to specify from the SoC-specific
->   drivers the maximum available rate for divider that will be requested
->   when a rate higher than this one is requested
-> - removed bitmask variable from notifier and rzg3s_div_clk_set_rate()
-> - added max_rate to DEF_G3S_DIV() macro
-> - tested on RZ/G2L and RZ/G3S
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-clk-for-v6.7.
+* Yajun Deng <yajun.deng@linux.dev> wrote:
 
-Gr{oetje,eeting}s,
+> 
+> On 2023/10/9 19:26, Ingo Molnar wrote:
+> > * Yajun Deng <yajun.deng@linux.dev> wrote:
+> > 
+> > > On 2023/10/9 18:16, Ingo Molnar wrote:
+> > > > * Yajun Deng <yajun.deng@linux.dev> wrote:
+> > > > 
+> > > > > The member back in struct sched_rt_entity only related to RT_GROUP_SCHED,
+> > > > > So move sched_rt_entity::back to under the CONFIG_RT_GROUP_SCHED block. It
+> > > > > will save a few bytes.
+> > > > > 
+> > > > > Also, init child when parent isn't NULL in init_tg_rt_entry().
+> > > > > 
+> > > > > Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+> > > > > ---
+> > > > >    include/linux/sched.h |  2 +-
+> > > > >    kernel/sched/rt.c     | 18 +++++++++---------
+> > > > >    2 files changed, 10 insertions(+), 10 deletions(-)
+> > > > > 
+> > > > > diff --git a/include/linux/sched.h b/include/linux/sched.h
+> > > > > index 292c31697248..d0fe56603e60 100644
+> > > > > --- a/include/linux/sched.h
+> > > > > +++ b/include/linux/sched.h
+> > > > > @@ -597,8 +597,8 @@ struct sched_rt_entity {
+> > > > >    	unsigned short			on_rq;
+> > > > >    	unsigned short			on_list;
+> > > > > -	struct sched_rt_entity		*back;
+> > > > >    #ifdef CONFIG_RT_GROUP_SCHED
+> > > > > +	struct sched_rt_entity		*back;
+> > > > >    	struct sched_rt_entity		*parent;
+> > > > >    	/* rq on which this entity is (to be) queued: */
+> > > > >    	struct rt_rq			*rt_rq;
+> > > > Title claims this change - the rest of the changes should be in a separate
+> > > > patch:
+> > > 
+> > > Okay. I will send v2.
+> > It's ~v7 already by my count, isn't it?
+> 
+> 
+> May be. If we count from the earliest.
 
-                        Geert
+Yes, of course we count from the earliest this series was sent, why 
+wouldn't we? Having new patches or removing patches doesn't really reset 
+the counter.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Thanks,
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+	Ingo
