@@ -2,129 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F5F7BD7E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 12:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E94D47BD7ED
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 12:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346011AbjJIKEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 06:04:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58714 "EHLO
+        id S1346029AbjJIKF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 06:05:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345822AbjJIKD6 (ORCPT
+        with ESMTP id S1346026AbjJIKF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 06:03:58 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7250597
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 03:03:57 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bf55a81eeaso28230175ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 03:03:57 -0700 (PDT)
+        Mon, 9 Oct 2023 06:05:27 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D299C
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 03:05:25 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3af6bd48093so3152514b6e.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 03:05:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1696845837; x=1697450637; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hMq2jaKv0w7qan5Rleu8o2mGnamgbpb4/RZFYckJiqE=;
-        b=eIN6wv78V6TIKbWZslEO89bntQLmIuBcYQSWGCKiV8hx3qW1IGCESB+Oa1htaV6KpS
-         isOAXUhyeAdED4TzYY++98CVRGuqHD4AToSEcjSRKdiJT1Vx8BwuODWuw50OFghIpAy2
-         cZ6kNNVgBq0tFbObLYRdD4dar+zLGyosiRu09MRlB5rTCLAbEALZZxKeCDcPXLCz10Lt
-         1bZXqUolgxjnIvMGDzjRNSebzBZR7z8w0bZEKlGhfNbKZ7GjtOzImAK03b+S4cO1+87L
-         9AdAN80jZ8+Aik7LTv5Ki7QcU3jfdon1BFoIJlXvUxJ1Ht9KBwTWP+ADnDc3a99FkEeV
-         7ujA==
+        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1696845924; x=1697450724; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tU1LzqCUZS3h8pX7+UKm34RoTSScep7fx/DPCoe38tw=;
+        b=BK+39T5yy4phl4G/9d9cDalQbZaRXrtX8+wNINltCQsBkDF9Fzsv1q107gGFyDbnBA
+         TVXlTSPK0Ho+HJq6gd2YstKKmMM5U6QoGoBAX3oANf7yPA4drbmoVdAR2inQVpsCMxAV
+         lQfzI9TgHAAOsTCRuhJkms+ODpex6oLKMdhVJRwd7D4YD1BDJyFDimMLjJnkKz25dJSr
+         /jSVY3eQczLNFIT1IFI6t/oEKExn3oXv7IpFsmvPypbqMlYT0QSc+Rec5A2uqqdzHA5m
+         mb2G+5hY3w3WGdacxUbq4PbDsxGBSPmyXSy2BiKjCEoyND87o7wMlDfspTDvitAfb7E8
+         XrcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696845837; x=1697450637;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hMq2jaKv0w7qan5Rleu8o2mGnamgbpb4/RZFYckJiqE=;
-        b=XIXhPzKzJx8huxmhmobnBmMbmpUaodZ8UUSgF32ImbiuEXYagfbqTSthdc03NRnVch
-         9WTFPhPE4s6nVmUomgXu5TGlC0BUn+hHCRQjC/yMnyoMMJB/aXaDXoQFCMcZ+QUcJtXm
-         GYLelBoB7eHN/OLOioLj3KskCwZ1eAG4abS1ZlqksuAOtFP9GqFy3Snw6tbqti6+IwZc
-         titx+cwbuHTVRvljYh/4dV+dJm78EvtJvZvcSKRdgkcRJ3NHgIxddjw/xQquZ4oGNtcI
-         +UVAHcDFFIhvZrTQpdLT+L6QV7RzINxAQZ1KB5EVTQo8kiYb6fjISm12yWUBKBiOCNuH
-         FtLQ==
-X-Gm-Message-State: AOJu0YycJ9YQu0teAj2MWy8bIKRtGeVvp5AmFVrrKp0l3dD0R/2Icm9n
-        iMn835aMSlqocqL++JQwboRoa+FotjdH9FqWhUS12g==
-X-Google-Smtp-Source: AGHT+IHqyeR/SlcADUh0qh+R4VMms4WKkZS0JH3GoHyZjxjZO/4rMaaXkeB8vh9DU/H7/MsJVadC6A==
-X-Received: by 2002:a17:903:1245:b0:1c7:49dd:2df with SMTP id u5-20020a170903124500b001c749dd02dfmr14037224plh.32.1696845836897;
-        Mon, 09 Oct 2023 03:03:56 -0700 (PDT)
-Received: from ubuntu-yizhou.default.svc.cluster.local ([101.127.248.173])
-        by smtp.gmail.com with ESMTPSA id d15-20020a170902cecf00b001c5eb37e92csm9119991plg.305.2023.10.09.03.03.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 03:03:56 -0700 (PDT)
-From:   yizhou.tang@shopee.com
-To:     houtao1@huawei.com, jack@suse.cz, bvanassche@acm.org,
-        kch@nvidia.com
-Cc:     axboe@kernel.dk, tj@kernel.org, corbet@lwn.net,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yingfu.zhou@shopee.com,
-        yizhou.tang@shopee.com, chunguang.xu@shopee.com
-Subject: [PATCH] doc: blk-ioprio: Standardize a few names
-Date:   Mon,  9 Oct 2023 18:03:49 +0800
-Message-Id: <20231009100349.52884-1-yizhou.tang@shopee.com>
-X-Mailer: git-send-email 2.25.1
+        d=1e100.net; s=20230601; t=1696845924; x=1697450724;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tU1LzqCUZS3h8pX7+UKm34RoTSScep7fx/DPCoe38tw=;
+        b=Ew9mL7vvZiaall/nV87+Ehqu/z4lkA0RQ1wksnLmnPeyDBCCF2X5KDk2eCGLmnSjB3
+         bFqcYKPK/ATFjBggy54xPsxT4j0QXIciZ8+C6BcHxYIyxhaNqjLWAhxHdOHrYYhfpG73
+         ttceWdjKvaCjybkk/vKjwuZURpun+LCY/lUw6wDNKIY+GykWZJadyHmjB5p9yH7n3yW4
+         aKkVSwKL7epYxjRMWUFyJWGRHpiCc4ZTsuPEhz4lw14f+XnWdHefj2kCBejfUS8Tlwa9
+         o9eiBXFjkT5UrP3uFXG3psxvA+DLUlyPvSqmPwHMtague2GSdl0ODFrpzkqHT1/G459I
+         QPPA==
+X-Gm-Message-State: AOJu0YwOgfmY+KH2VRD6q03ZsKUe1DJSqtCxJZaNi/3Tb3QTW4ucBL8W
+        ZpxQD6FXtEFEZnaRamDaR0ca0w==
+X-Google-Smtp-Source: AGHT+IF4H0eU7CwZ4mrgQw3oNKjHU7YW8wcOMrp8fQqVCgy+nOlf1B9uoA+rslI3PUuYyMWBGQ6e4w==
+X-Received: by 2002:a05:6808:2a43:b0:3a0:41d4:b144 with SMTP id fa3-20020a0568082a4300b003a041d4b144mr13646173oib.1.1696845924629;
+        Mon, 09 Oct 2023 03:05:24 -0700 (PDT)
+Received: from ?IPV6:2400:4050:a840:1e00:78d2:b862:10a7:d486? ([2400:4050:a840:1e00:78d2:b862:10a7:d486])
+        by smtp.gmail.com with ESMTPSA id c6-20020a633506000000b0058579ef9577sm7860030pga.79.2023.10.09.03.05.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Oct 2023 03:05:24 -0700 (PDT)
+Message-ID: <6a698c99-6f02-4cfb-a709-ba02296a05f7@daynix.com>
+Date:   Mon, 9 Oct 2023 19:05:17 +0900
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 5/7] tun: Introduce virtio-net hashing feature
+Content-Language: en-US
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, rdunlap@infradead.org, willemb@google.com,
+        gustavoars@kernel.org, herbert@gondor.apana.org.au,
+        steffen.klassert@secunet.com, nogikh@google.com,
+        pablo@netfilter.org, decui@microsoft.com, cai@lca.pw,
+        jakub@cloudflare.com, elver@google.com, pabeni@redhat.com,
+        Yuri Benditovich <yuri.benditovich@daynix.com>
+References: <20231008052101.144422-1-akihiko.odaki@daynix.com>
+ <20231008052101.144422-6-akihiko.odaki@daynix.com>
+ <CAF=yD-K2MQt4nnfwJrx6h6Nii_rho7j1o6nb_jYaSwcWY45pPw@mail.gmail.com>
+ <48e20be1-b658-4117-8856-89ff1df6f48f@daynix.com>
+ <CAF=yD-K4bCBpUVtDR_cv=bagRL+vM4Rusez+uHFTb4_kR8XkpA@mail.gmail.com>
+From:   Akihiko Odaki <akihiko.odaki@daynix.com>
+In-Reply-To: <CAF=yD-K4bCBpUVtDR_cv=bagRL+vM4Rusez+uHFTb4_kR8XkpA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tang Yizhou <yizhou.tang@shopee.com>
 
-Our system administrator have noted that the names 'rt-to-be' and
-'all-to-idle' in the I/O priority policies table appeared without
-explanations, leading to confusion. Let's standardize these names in
-line with the naming in the 'attribute' section.
 
-Additionally,
-1. Correct the interface name to 'io.prio.class'.
-2. Add a table entry of 'promote-to-rt' for consistency.
-3. Fix a typo of 'priority'.
+On 2023/10/09 18:54, Willem de Bruijn wrote:
+> On Mon, Oct 9, 2023 at 3:44 AM Akihiko Odaki <akihiko.odaki@daynix.com> wrote:
+>>
+>> On 2023/10/09 17:13, Willem de Bruijn wrote:
+>>> On Sun, Oct 8, 2023 at 12:22 AM Akihiko Odaki <akihiko.odaki@daynix.com> wrote:
+>>>>
+>>>> virtio-net have two usage of hashes: one is RSS and another is hash
+>>>> reporting. Conventionally the hash calculation was done by the VMM.
+>>>> However, computing the hash after the queue was chosen defeats the
+>>>> purpose of RSS.
+>>>>
+>>>> Another approach is to use eBPF steering program. This approach has
+>>>> another downside: it cannot report the calculated hash due to the
+>>>> restrictive nature of eBPF.
+>>>>
+>>>> Introduce the code to compute hashes to the kernel in order to overcome
+>>>> thse challenges. An alternative solution is to extend the eBPF steering
+>>>> program so that it will be able to report to the userspace, but it makes
+>>>> little sense to allow to implement different hashing algorithms with
+>>>> eBPF since the hash value reported by virtio-net is strictly defined by
+>>>> the specification.
+>>>>
+>>>> The hash value already stored in sk_buff is not used and computed
+>>>> independently since it may have been computed in a way not conformant
+>>>> with the specification.
+>>>>
+>>>> Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
+>>>
+>>>> @@ -2116,31 +2172,49 @@ static ssize_t tun_put_user(struct tun_struct *tun,
+>>>>           }
+>>>>
+>>>>           if (vnet_hdr_sz) {
+>>>> -               struct virtio_net_hdr gso;
+>>>> +               union {
+>>>> +                       struct virtio_net_hdr hdr;
+>>>> +                       struct virtio_net_hdr_v1_hash v1_hash_hdr;
+>>>> +               } hdr;
+>>>> +               int ret;
+>>>>
+>>>>                   if (iov_iter_count(iter) < vnet_hdr_sz)
+>>>>                           return -EINVAL;
+>>>>
+>>>> -               if (virtio_net_hdr_from_skb(skb, &gso,
+>>>> -                                           tun_is_little_endian(tun), true,
+>>>> -                                           vlan_hlen)) {
+>>>> +               if ((READ_ONCE(tun->vnet_hash.flags) & TUN_VNET_HASH_REPORT) &&
+>>>> +                   vnet_hdr_sz >= sizeof(hdr.v1_hash_hdr) &&
+>>>> +                   skb->tun_vnet_hash) {
+>>>
+>>> Isn't vnet_hdr_sz guaranteed to be >= hdr.v1_hash_hdr, by virtue of
+>>> the set hash ioctl failing otherwise?
+>>>
+>>> Such checks should be limited to control path where possible
+>>
+>> There is a potential race since tun->vnet_hash.flags and vnet_hdr_sz are
+>> not read at once.
+> 
+> It should not be possible to downgrade the hdr_sz once v1 is selected.
 
-Suggested-by: Yingfu Zhou <yingfu.zhou@shopee.com>
-Signed-off-by: Tang Yizhou <yizhou.tang@shopee.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+I see nothing that prevents shrinking the header size.
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 4ef890191196..10461c73c9a3 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2023,7 +2023,7 @@ IO Priority
- ~~~~~~~~~~~
- 
- A single attribute controls the behavior of the I/O priority cgroup policy,
--namely the blkio.prio.class attribute. The following values are accepted for
-+namely the io.prio.class attribute. The following values are accepted for
- that attribute:
- 
-   no-change
-@@ -2052,9 +2052,11 @@ The following numerical values are associated with the I/O priority policies:
- +----------------+---+
- | no-change      | 0 |
- +----------------+---+
--| rt-to-be       | 2 |
-+| promote-to-rt  | 1 |
- +----------------+---+
--| all-to-idle    | 3 |
-+| restrict-to-be | 2 |
-++----------------+---+
-+| idle           | 3 |
- +----------------+---+
- 
- The numerical value that corresponds to each I/O priority class is as follows:
-@@ -2074,7 +2076,7 @@ The algorithm to set the I/O priority class for a request is as follows:
- - If I/O priority class policy is promote-to-rt, change the request I/O
-   priority class to IOPRIO_CLASS_RT and change the request I/O priority
-   level to 4.
--- If I/O priorityt class is not promote-to-rt, translate the I/O priority
-+- If I/O priority class policy is not promote-to-rt, translate the I/O priority
-   class policy into a number, then change the request I/O priority class
-   into the maximum of the I/O priority class policy number and the numerical
-   I/O priority class.
--- 
-2.25.1
-
+tun->vnet_hash.flags is read after vnet_hdr_sz so the race can happen 
+even for the case the header size grows though this can be fixed by 
+reordering the two reads.
