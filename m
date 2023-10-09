@@ -2,141 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 843AF7BDA8E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74CE77BDA8F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346398AbjJIMBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 08:01:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36204 "EHLO
+        id S1346441AbjJIMBL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Oct 2023 08:01:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346394AbjJIMBB (ORCPT
+        with ESMTP id S1346416AbjJIMBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 08:01:01 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A57BAA6
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 05:00:58 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-533c5d10dc7so7739867a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 05:00:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696852857; x=1697457657; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O0e3Kjl0Q+kzKKYQyaEbXG2ZRjDWxSvz8cJxvL5yyWo=;
-        b=E2quLMtOPcMIi59CpudMOk9EdL/Es9T37rSIbAgEumtlr7WrBofU7vBFJxQnfgwUQX
-         McXX5bnziR5VdxWZFypCFODrFu2gKmOEmY0OYm/r1VGuLW3w8ymi8wer+SYNDiDwGGZb
-         98L4HZEY6lDIJS6ZfeIGPVRZKki+mv6ixNFFwjahzzEXLtITKv5NlYTlesa459P0DPpc
-         vUaqtQGPM88ghn686pvhzvdYIT6hUbu1TZ1J3uiSAc7hFAwGn3VUYbp0VaitN5ADMKvX
-         IqQUjCmu0kylzZ1KHWpdpUYqn2AOoU+Le7w274WIDUkAm3Qx/JSMXbk62IrDvzoRq1A0
-         pB+g==
+        Mon, 9 Oct 2023 08:01:06 -0400
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D74F6AC
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 05:01:01 -0700 (PDT)
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-d862533ea85so5215140276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 05:01:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696852857; x=1697457657;
+        d=1e100.net; s=20230601; t=1696852860; x=1697457660;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=O0e3Kjl0Q+kzKKYQyaEbXG2ZRjDWxSvz8cJxvL5yyWo=;
-        b=UK+LwM198gjk3nVNTBVFDEdiRj4XYzg6hPdt65kULPYQpm+/MRqqzd5m4jn2WadtmS
-         Ho6Oo0A99Hh06BxUDzGZ13glnor1iKu1LY21l6+1NPITt0Aqv1H5QrjMBa9fswVBPVK6
-         aqpFfAsOwVzD08HhxuvNzSVzEt/zGHWGgcFMFbqR8HwPAoUL1Qughe2tC0j/Q4sIekDP
-         otkIEOZBuzgngEz8fdZNHhOK+phZpKc1tHy6KELr7BKLyCOlGlxkQ/sEtckHtx4j6Oix
-         bo8TeLjd1tFLQsblmkorx+v4UY3u1CiAUky9IdGBlO2aJ/KhZHP0ydsxe9IILBzfB0JI
-         AEHA==
-X-Gm-Message-State: AOJu0YweKXKXTh423CI70/wn3PFk4xPtV3JXPDbX5YiYP3jKrZyRxnb8
-        aw4QNhGjjEDwl5uVy+jyyCkDGzvvCWXNzWTiyf/IGkMbp2HSCg==
-X-Google-Smtp-Source: AGHT+IHHGwXp1BLyQ3x9ITLRnODDkHvjp+lwqNLimyDz229pNDPelgQSv0X+4h9bHnu5J47KR2HaE7NS6yxKxVHr0cg=
-X-Received: by 2002:aa7:dc0f:0:b0:52d:212d:78e8 with SMTP id
- b15-20020aa7dc0f000000b0052d212d78e8mr13351385edu.34.1696852856718; Mon, 09
- Oct 2023 05:00:56 -0700 (PDT)
+        bh=7gtciP7pJ5ePDuZs6hrkiwcAh6cWpIDvabFqt+RxIBw=;
+        b=Ilc7bQve4gcQTcCuKJfHauDTL7it05NY838G1m57XRLYpT34LgRXREBgDR5dm7UmKw
+         jQjQtsk/4S9Cz/7XMAOL0w/3yaONHkWtT/k/rhOdj7Pax6JsxOmEcbmg4iob0BTlfPZf
+         1facfAzVeZAc/jEa/COrX7xj4iWlBTeNk8wKh6RufT66D3N0f3+4PIZ1YHnoCBdnPs6Q
+         k8Kyp67VUWF7UrfCy95jzsy6arvbMdRxruB32aQDcPbtI0Q6z/hCfH6rF0I8Nm9CF1u5
+         SZJ3wMxa5XPSIqikmVERSq4I/GPlUgYB6EtWbtgMV9djMjfEydRlWvGzmBmFbWbm1bYh
+         ZwIQ==
+X-Gm-Message-State: AOJu0YwS36SBhR8vvSN+6Qz8OUQb81Q3OpevZnC4DCtwDVRJ90s0OfkT
+        IuQqkApEPYYcsER6RPrOKqw/3Hc8aWxSCw==
+X-Google-Smtp-Source: AGHT+IE8Oyfk8Pe4vCi607/weCGyUuFucUPiCpA0RdrmRHr1E+aK2VTDfclSb7gM57S94D4DICqaMA==
+X-Received: by 2002:a25:e70e:0:b0:d81:af6b:cde with SMTP id e14-20020a25e70e000000b00d81af6b0cdemr12217284ybh.62.1696852860519;
+        Mon, 09 Oct 2023 05:01:00 -0700 (PDT)
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
+        by smtp.gmail.com with ESMTPSA id o135-20020a25418d000000b00d9a3fe483cfsm21179yba.23.2023.10.09.05.01.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Oct 2023 05:01:00 -0700 (PDT)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-59f6e6b7600so52590507b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 05:01:00 -0700 (PDT)
+X-Received: by 2002:a81:7309:0:b0:59b:fcca:afc6 with SMTP id
+ o9-20020a817309000000b0059bfccaafc6mr14770713ywc.50.1696852859893; Mon, 09
+ Oct 2023 05:00:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231004145137.86537-1-ubizjak@gmail.com> <20231004145137.86537-5-ubizjak@gmail.com>
- <CAHk-=wgepFm=jGodFQYPAaEvcBhR3-f_h1BLBYiVQsutCwCnUQ@mail.gmail.com>
- <CAFULd4YWjxoSTyCtMN0OzKgHtshMQOuMH1Z0n_OaWKVnUjy2iA@mail.gmail.com>
- <CAHk-=whq=+LNHmsde8LaF4pdvKxqKt5GxW+Tq+U35_aDcV0ADg@mail.gmail.com>
- <CAHk-=wi6U-O1wdPOESuCE6QO2OaPu0hEzaig0uDOU4L5CREhug@mail.gmail.com>
- <CAFULd4Z3C771u8Y==8h6hi=mhGmy=7RJRAEBGfNZ0SmynxF41g@mail.gmail.com>
- <ZSPm6Z/lTK1ZlO8m@gmail.com> <ZSPpW3zLTn7IohOJ@gmail.com>
-In-Reply-To: <ZSPpW3zLTn7IohOJ@gmail.com>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Mon, 9 Oct 2023 14:00:45 +0200
-Message-ID: <CAFULd4bjnro3CFQLY=qR0S5M0WY3NkrVUW-JUk4nB4mV7xhWNg@mail.gmail.com>
-Subject: Re: [PATCH 4/4] x86/percpu: Use C for percpu read/write accessors
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Nadav Amit <namit@vmware.com>, Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
+References: <7858a184cda66e0991fd295c711dfed7e4d1248c.1696603287.git.geert@linux-m68k.org>
+ <CAMuHMdVT7QEfagWcLx9z7YGtFiKRW5-J3F6gyxKYEzFBb=2_Gg@mail.gmail.com> <61d3b62380fb78b87003a09cc08827fb28de7942.camel@physik.fu-berlin.de>
+In-Reply-To: <61d3b62380fb78b87003a09cc08827fb28de7942.camel@physik.fu-berlin.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 9 Oct 2023 14:00:48 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUbHS3tvLF3_JaG=0Hoxcwf71HGbSX+mo2WXQruWSL=nQ@mail.gmail.com>
+Message-ID: <CAMuHMdUbHS3tvLF3_JaG=0Hoxcwf71HGbSX+mo2WXQruWSL=nQ@mail.gmail.com>
+Subject: Re: [PATCH/RFC] m68k: Add full preempt support
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Greg Ungerer <gerg@linux-m68k.org>, Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
+        Matthew Wilcox <willy@infradead.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 9, 2023 at 1:51=E2=80=AFPM Ingo Molnar <mingo@kernel.org> wrote=
-:
->
->
-> * Ingo Molnar <mingo@kernel.org> wrote:
->
-> >
-> > * Uros Bizjak <ubizjak@gmail.com> wrote:
-> >
-> > > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> > > index ecb256954351..1edf4a5b93ca 100644
-> > > --- a/arch/x86/Kconfig
-> > > +++ b/arch/x86/Kconfig
-> > > @@ -2393,7 +2393,7 @@ config CC_HAS_NAMED_AS
+Hi Adrian,
+
+On Mon, Oct 9, 2023 at 1:45 PM John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+> On Mon, 2023-10-09 at 13:29 +0200, Geert Uytterhoeven wrote:
+> > On Fri, Oct 6, 2023 at 4:49 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > Currently, a Preemptible Kernel is only supported on the Coldfire CPU
+> > > family.  Extend preempt support to the full Classic M68K CPU family
+> > > (68020+ with MMU, and 68000-derivatives without MMU).
 > > >
-> > >  config USE_X86_SEG_SUPPORT
-> > >     def_bool y
-> > > -   depends on CC_HAS_NAMED_AS && SMP
-> > > +   depends on CC_HAS_NAMED_AS && SMP && !KASAN
-> > > +   depends on CC_HAS_NAMED_AS && SMP && !KASAN
+> > > Make sure preemption is disabled in loops involving cache and TLB
+> > > flushing.
+> > >
+> > > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > > ---
+> > > Tested on ARAnyM, using none/voluntary/full preemption.
 > >
-> > So I'd rather express this as a Kconfig quirk line, and explain each qu=
-irk.
+> > bloat-o-meter summaries for atari_defconfig:
 > >
-> > Something like:
+> > PREEMPT_NONE -> PREEMPT_VOLUNTARY:
 > >
-> >       depends on CC_HAS_NAMED_AS
-> >       depends on SMP
-> >       #
-> >       # -fsanitize=3Dkernel-address (KASAN) is at the moment incompatib=
-le
-> >       # with named address spaces - see GCC bug #12345.
-> >       #
-> >       depends on !KASAN
+> >     add/remove: 0/0 grow/shrink: 238/30 up/down: 2804/-748 (2056)
+> >     Total: Before=4478149, After=4480205, chg +0.05%
 > >
-> > ... or so.
+> > PREEMPT_VOLUNTARY -> PREEMPT:
+> >
+> >     add/remove: 735/277 grow/shrink: 3050/347 up/down: 244359/-11440 (232919)
+> >     Total: Before=4480205, After=4713124, chg +5.20%
+> >
+> > Ouch.
 >
-> BTW., while this OK for testing, this is too heavy handed for release
-> purposes, so please only disable the KASAN instrumentation for the affect=
-ed
-> percpu accessors.
->
-> See the various __no_sanitize* attributes available.
+> What exactly does the change document? More scheduling events?
 
-These attributes are for function declarations. The percpu casts can
-not be implemented with separate static inline functions. Also,
-__no_sanitize_address is mutually exclusive with __always_inline.
+No, kernel image size.  Hence enabling full preemption increases kernel
+size by ca. 229 KiB (which is more or less the equivalent size increase of
+upgrading the kernel by 10 releases).
 
-Uros.
+Gr{oetje,eeting}s,
 
-> I'd even suggest introducing a new attribute variant, specific to x86,
-> prefixed with __no_sanitize_x86_seg or so, which would allow the eventual
-> KASAN-instrumentation of the percpu accessors once the underlying GCC bug
-> is fixed.
->
-> Thanks,
->
->         Ingo
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
