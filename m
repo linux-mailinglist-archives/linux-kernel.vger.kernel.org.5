@@ -2,847 +2,418 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 717C77BE27B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 16:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 656507BE27A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 16:20:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377631AbjJIOUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 10:20:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52388 "EHLO
+        id S1377669AbjJIOUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 10:20:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377628AbjJIOTx (ORCPT
+        with ESMTP id S1377618AbjJIOTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 10:19:53 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2991011F
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 07:19:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E935BC433C8;
-        Mon,  9 Oct 2023 14:19:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696861184;
-        bh=68mVtORIwxg8AZ1r3/NoS+BN/3w0itsX/vDfePScDHE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BmsEu1oJ+g6HjQHsN89xQdUUCBHL4ZRtnpw7Z+bdY3bqcYbgHv4XsNlUCs28C3ff3
-         cLiKFQKENFQIOWHb26H/ZxSC4HYGBtSqfC2DzSbTAnmgBP3Gp2mHCXRVitITxZpAjj
-         05r92hxOFOMQwVA5Cq7E+4Cwcn8AyqkhLD00VbP0jk/fsI4XWR4tESgTXtfo0Upeny
-         JTLPmesxy8EXQr3FVEgOWo2sCYZo6wQTuXX5lLa1UChH2fUoOmQxJdWeG2sIhHEKE5
-         4liLlfxqcy5IG5r2Ak3LI6nKTxi0UkDhCPNcr8HHcxPdNJWPOG/GAmPxgcJd2KUFDB
-         Nyi8BjIXLuKBg==
-Date:   Mon, 9 Oct 2023 23:19:38 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     wuqiang <wuqiang.matt@bytedance.com>
-Cc:     linux-trace-kernel@vger.kernel.org, davem@davemloft.net,
-        anil.s.keshavamurthy@intel.com, naveen.n.rao@linux.ibm.com,
-        rostedt@goodmis.org, peterz@infradead.org,
-        akpm@linux-foundation.org, sander@svanheule.net,
-        ebiggers@google.com, dan.j.williams@intel.com, jpoimboe@kernel.org,
-        linux-kernel@vger.kernel.org, lkp@intel.com, mattwu@163.com
-Subject: Re: [PATCH v9 1/5] lib: objpool added: ring-array based lockless
- MPMC
-Message-Id: <20231009231938.c6830d986103da57ce55d26d@kernel.org>
-In-Reply-To: <84dacdd7-3364-9cb6-3b9e-2bf348e10449@bytedance.com>
-References: <20230905015255.81545-1-wuqiang.matt@bytedance.com>
-        <20230905015255.81545-2-wuqiang.matt@bytedance.com>
-        <20230923184858.d82abcf71e5f02c4c070543b@kernel.org>
-        <84dacdd7-3364-9cb6-3b9e-2bf348e10449@bytedance.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 9 Oct 2023 10:19:46 -0400
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF1A9C
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 07:19:40 -0700 (PDT)
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3af609cb0bdso5866468b6e.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 07:19:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696861180; x=1697465980;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0TGWQAlp8UuYQhA52ZWaujZvCAShLjeIRZ1glRL7WKI=;
+        b=ZzckROzWtqtdEYh1YhZxXg/c7AfdFm71OScc5EDEHsWSqCgYljWqZkGCtFeHh0WSJr
+         Yg13dRdGA3n7CaqXk8NUmfefZFwIushWU4sDbSu4/KLQryhfHDLOy8ZH8FIbMI0/aMsH
+         11c4MGD6k+oeam/2ZqS8tWXC1VCf5U7FVYVYU/lufv4iS+MuJn0jiCqYyO16/dY5O7Zn
+         wX7tQUOvAc4pRD4Ndbbt+9gus41EA/pfRjz3eeOF5gZpuW7JZdszvwGBAM344WeNl10N
+         BangJ4lAHsRLgQmcMz6xqCwbdlkeGOMDuiDt+6X5FmeKza3p0sE59l17y+EFuMs+gEDL
+         9MZQ==
+X-Gm-Message-State: AOJu0YxZpYQASm2T0MNaQQ+3i0Mja0PMyc7naJWgI3F/36Dx9bxAqxJ5
+        BqaxxUaxpY/CsQ7tDUMlZe1anS1WER9HcKga/xw5z4FsqnIg
+X-Google-Smtp-Source: AGHT+IF8k7g0eSiSkI0Ync143FSHXVQo54adV+KV5FBCMFaXl+hqfgqHiK68ktgDtgtIhiy6neQ2zCz/2mSRkRXFkrZ/R/d9uXLc
+MIME-Version: 1.0
+X-Received: by 2002:a05:6808:2190:b0:3a8:45f0:b83a with SMTP id
+ be16-20020a056808219000b003a845f0b83amr6406561oib.5.1696861179851; Mon, 09
+ Oct 2023 07:19:39 -0700 (PDT)
+Date:   Mon, 09 Oct 2023 07:19:39 -0700
+In-Reply-To: <20231009-leihgabe-abseilen-26e86d03f787@brauner>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000dbce480607494722@google.com>
+Subject: Re: [syzbot] [reiserfs?] possible deadlock in super_lock
+From:   syzbot <syzbot+062317ea1d0a6d5e29e7@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, brauner@kernel.org, chao@kernel.org,
+        daniel.vetter@ffwll.ch, hdanton@sina.com, jack@suse.cz,
+        jaegeuk@kernel.org, jinpu.wang@ionos.com,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mairacanal@riseup.net, mcanal@igalia.com,
+        reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        terrelln@fb.com, willy@infradead.org, yukuai3@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello,
 
-On Mon, 9 Oct 2023 02:40:53 +0800
-wuqiang <wuqiang.matt@bytedance.com> wrote:
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+INFO: task hung in blkdev_put
 
-> On 2023/9/23 17:48, Masami Hiramatsu (Google) wrote:
-> > Hi Wuqiang,
-> > 
-> > Sorry for replying later.
-> > 
-> > On Tue,  5 Sep 2023 09:52:51 +0800
-> > "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
-> > 
-> >> The object pool is a scalable implementaion of high performance queue
-> >> for object allocation and reclamation, such as kretprobe instances.
-> >>
-> >> With leveraging percpu ring-array to mitigate the hot spot of memory
-> >> contention, it could deliver near-linear scalability for high parallel
-> >> scenarios. The objpool is best suited for following cases:
-> >> 1) Memory allocation or reclamation are prohibited or too expensive
-> >> 2) Consumers are of different priorities, such as irqs and threads
-> >>
-> >> Limitations:
-> >> 1) Maximum objects (capacity) is determined during pool initializing
-> >>     and can't be modified (extended) after objpool creation
-> > 
-> > So the pool size is fixed in initialization.
-> 
-> Right. The arrary size will be up-rounded to the exponent of 2, but the
-> actual number of objects (to be allocated) are the exact value specified
-> by user.
+INFO: task syz-executor.1:6676 blocked for more than 143 seconds.
+      Not tainted 6.6.0-rc5-syzkaller-gb6ab131813c2 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.1  state:D stack:0     pid:6676  ppid:6383   flags:0x00000005
+Call trace:
+ __switch_to+0x320/0x754 arch/arm64/kernel/process.c:556
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0x1364/0x23b4 kernel/sched/core.c:6695
+ schedule+0xc4/0x170 kernel/sched/core.c:6771
+ schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6830
+ __mutex_lock_common+0xbd8/0x21a0 kernel/locking/mutex.c:679
+ __mutex_lock kernel/locking/mutex.c:747 [inline]
+ mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
+ blkdev_put+0xec/0x740 block/bdev.c:884
+ blkdev_release+0x84/0x9c block/fops.c:604
+ __fput+0x324/0x7f8 fs/file_table.c:384
+ __fput_sync+0x60/0x9c fs/file_table.c:465
+ __do_sys_close fs/open.c:1572 [inline]
+ __se_sys_close fs/open.c:1557 [inline]
+ __arm64_sys_close+0x150/0x1e0 fs/open.c:1557
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+INFO: task syz-executor.2:6678 blocked for more than 143 seconds.
+      Not tainted 6.6.0-rc5-syzkaller-gb6ab131813c2 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.2  state:D stack:0     pid:6678  ppid:6377   flags:0x00000005
+Call trace:
+ __switch_to+0x320/0x754 arch/arm64/kernel/process.c:556
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0x1364/0x23b4 kernel/sched/core.c:6695
+ schedule+0xc4/0x170 kernel/sched/core.c:6771
+ schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6830
+ __mutex_lock_common+0xbd8/0x21a0 kernel/locking/mutex.c:679
+ __mutex_lock kernel/locking/mutex.c:747 [inline]
+ mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
+ blkdev_put+0xec/0x740 block/bdev.c:884
+ blkdev_release+0x84/0x9c block/fops.c:604
+ __fput+0x324/0x7f8 fs/file_table.c:384
+ __fput_sync+0x60/0x9c fs/file_table.c:465
+ __do_sys_close fs/open.c:1572 [inline]
+ __se_sys_close fs/open.c:1557 [inline]
+ __arm64_sys_close+0x150/0x1e0 fs/open.c:1557
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+INFO: task syz-executor.0:6682 blocked for more than 143 seconds.
+      Not tainted 6.6.0-rc5-syzkaller-gb6ab131813c2 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.0  state:D stack:0     pid:6682  ppid:6389   flags:0x0000000d
+Call trace:
+ __switch_to+0x320/0x754 arch/arm64/kernel/process.c:556
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0x1364/0x23b4 kernel/sched/core.c:6695
+ schedule+0xc4/0x170 kernel/sched/core.c:6771
+ schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6830
+ __mutex_lock_common+0xbd8/0x21a0 kernel/locking/mutex.c:679
+ __mutex_lock kernel/locking/mutex.c:747 [inline]
+ mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
+ bd_finish_claiming+0x218/0x3dc block/bdev.c:566
+ blkdev_get_by_dev+0x3f4/0x55c block/bdev.c:799
+ journal_init_dev fs/reiserfs/journal.c:2616 [inline]
+ journal_init+0xb08/0x1e68 fs/reiserfs/journal.c:2783
+ reiserfs_fill_super+0xd58/0x2058 fs/reiserfs/super.c:2029
+ mount_bdev+0x1e8/0x2b4 fs/super.c:1629
+ get_super_block+0x44/0x58 fs/reiserfs/super.c:2605
+ legacy_get_tree+0xd4/0x16c fs/fs_context.c:638
+ vfs_get_tree+0x90/0x288 fs/super.c:1750
+ do_new_mount+0x25c/0x8c8 fs/namespace.c:3335
+ path_mount+0x590/0xe04 fs/namespace.c:3662
+ do_mount fs/namespace.c:3675 [inline]
+ __do_sys_mount fs/namespace.c:3884 [inline]
+ __se_sys_mount fs/namespace.c:3861 [inline]
+ __arm64_sys_mount+0x45c/0x594 fs/namespace.c:3861
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+INFO: task syz-executor.3:6690 blocked for more than 143 seconds.
+      Not tainted 6.6.0-rc5-syzkaller-gb6ab131813c2 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.3  state:D stack:0     pid:6690  ppid:6373   flags:0x0000000d
+Call trace:
+ __switch_to+0x320/0x754 arch/arm64/kernel/process.c:556
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0x1364/0x23b4 kernel/sched/core.c:6695
+ schedule+0xc4/0x170 kernel/sched/core.c:6771
+ super_lock+0x23c/0x328 fs/super.c:134
+ super_lock_shared fs/super.c:146 [inline]
+ super_lock_shared_active fs/super.c:1431 [inline]
+ fs_bdev_sync+0xa4/0x168 fs/super.c:1466
+ blkdev_flushbuf block/ioctl.c:372 [inline]
+ blkdev_common_ioctl+0x848/0x2884 block/ioctl.c:502
+ blkdev_ioctl+0x35c/0xae4 block/ioctl.c:624
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl fs/ioctl.c:857 [inline]
+ __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:857
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+INFO: task syz-executor.3:6695 blocked for more than 143 seconds.
+      Not tainted 6.6.0-rc5-syzkaller-gb6ab131813c2 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.3  state:D stack:0     pid:6695  ppid:6373   flags:0x00000005
+Call trace:
+ __switch_to+0x320/0x754 arch/arm64/kernel/process.c:556
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0x1364/0x23b4 kernel/sched/core.c:6695
+ schedule+0xc4/0x170 kernel/sched/core.c:6771
+ schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6830
+ __mutex_lock_common+0xbd8/0x21a0 kernel/locking/mutex.c:679
+ __mutex_lock kernel/locking/mutex.c:747 [inline]
+ mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
+ bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
+ loop_configure+0x15c/0xfd4 drivers/block/loop.c:1018
+ lo_ioctl+0xc70/0x1d04
+ blkdev_ioctl+0x3e4/0xae4 block/ioctl.c:630
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl fs/ioctl.c:857 [inline]
+ __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:857
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+INFO: task syz-executor.5:6696 blocked for more than 143 seconds.
+      Not tainted 6.6.0-rc5-syzkaller-gb6ab131813c2 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.5  state:D stack:0     pid:6696  ppid:6381   flags:0x00000005
+Call trace:
+ __switch_to+0x320/0x754 arch/arm64/kernel/process.c:556
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0x1364/0x23b4 kernel/sched/core.c:6695
+ schedule+0xc4/0x170 kernel/sched/core.c:6771
+ schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6830
+ __mutex_lock_common+0xbd8/0x21a0 kernel/locking/mutex.c:679
+ __mutex_lock kernel/locking/mutex.c:747 [inline]
+ mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
+ blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
+ blkdev_open+0x128/0x2b0 block/fops.c:589
+ do_dentry_open+0x6fc/0x118c fs/open.c:929
+ vfs_open+0x7c/0x90 fs/open.c:1063
+ do_open fs/namei.c:3639 [inline]
+ path_openat+0x1f2c/0x27f8 fs/namei.c:3796
+ do_filp_open+0x1bc/0x3cc fs/namei.c:3823
+ do_sys_openat2+0x124/0x1b8 fs/open.c:1422
+ do_sys_open fs/open.c:1437 [inline]
+ __do_sys_openat fs/open.c:1453 [inline]
+ __se_sys_openat fs/open.c:1448 [inline]
+ __arm64_sys_openat+0x1f0/0x240 fs/open.c:1448
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+INFO: task syz-executor.5:6703 blocked for more than 143 seconds.
+      Not tainted 6.6.0-rc5-syzkaller-gb6ab131813c2 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.5  state:D stack:0     pid:6703  ppid:6381   flags:0x00000005
+Call trace:
+ __switch_to+0x320/0x754 arch/arm64/kernel/process.c:556
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0x1364/0x23b4 kernel/sched/core.c:6695
+ schedule+0xc4/0x170 kernel/sched/core.c:6771
+ schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6830
+ __mutex_lock_common+0xbd8/0x21a0 kernel/locking/mutex.c:679
+ __mutex_lock kernel/locking/mutex.c:747 [inline]
+ mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
+ bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
+ loop_configure+0x15c/0xfd4 drivers/block/loop.c:1018
+ lo_ioctl+0xc70/0x1d04
+ blkdev_ioctl+0x3e4/0xae4 block/ioctl.c:630
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl fs/ioctl.c:857 [inline]
+ __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:857
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+INFO: task syz-executor.4:6698 blocked for more than 143 seconds.
+      Not tainted 6.6.0-rc5-syzkaller-gb6ab131813c2 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.4  state:D stack:0     pid:6698  ppid:6384   flags:0x00000005
+Call trace:
+ __switch_to+0x320/0x754 arch/arm64/kernel/process.c:556
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0x1364/0x23b4 kernel/sched/core.c:6695
+ schedule+0xc4/0x170 kernel/sched/core.c:6771
+ schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6830
+ __mutex_lock_common+0xbd8/0x21a0 kernel/locking/mutex.c:679
+ __mutex_lock kernel/locking/mutex.c:747 [inline]
+ mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
+ blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
+ blkdev_open+0x128/0x2b0 block/fops.c:589
+ do_dentry_open+0x6fc/0x118c fs/open.c:929
+ vfs_open+0x7c/0x90 fs/open.c:1063
+ do_open fs/namei.c:3639 [inline]
+ path_openat+0x1f2c/0x27f8 fs/namei.c:3796
+ do_filp_open+0x1bc/0x3cc fs/namei.c:3823
+ do_sys_openat2+0x124/0x1b8 fs/open.c:1422
+ do_sys_open fs/open.c:1437 [inline]
+ __do_sys_openat fs/open.c:1453 [inline]
+ __se_sys_openat fs/open.c:1448 [inline]
+ __arm64_sys_openat+0x1f0/0x240 fs/open.c:1448
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+INFO: task syz-executor.4:6704 blocked for more than 143 seconds.
+      Not tainted 6.6.0-rc5-syzkaller-gb6ab131813c2 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.4  state:D stack:0     pid:6704  ppid:6384   flags:0x00000005
+Call trace:
+ __switch_to+0x320/0x754 arch/arm64/kernel/process.c:556
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0x1364/0x23b4 kernel/sched/core.c:6695
+ schedule+0xc4/0x170 kernel/sched/core.c:6771
+ schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6830
+ __mutex_lock_common+0xbd8/0x21a0 kernel/locking/mutex.c:679
+ __mutex_lock kernel/locking/mutex.c:747 [inline]
+ mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
+ bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
+ loop_configure+0x15c/0xfd4 drivers/block/loop.c:1018
+ lo_ioctl+0xc70/0x1d04
+ blkdev_ioctl+0x3e4/0xae4 block/ioctl.c:630
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl fs/ioctl.c:857 [inline]
+ __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:857
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
 
-Yeah, this makes easy to use the seq-number as index.
+Showing all locks held in the system:
+1 lock held by khungtaskd/30:
+ #0: ffff80008e3739c0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0xc/0x44 include/linux/rcupdate.h:302
+2 locks held by kworker/u4:6/235:
+2 locks held by getty/5770:
+ #0: ffff0000d6cf20a0 (&tty->ldisc_sem){++++}-{0:0}, at: ldsem_down_read+0x3c/0x4c drivers/tty/tty_ldsem.c:340
+ #1: ffff8000959f02f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x414/0x1214 drivers/tty/n_tty.c:2206
+1 lock held by syz-executor.1/6676:
+ #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_put+0xec/0x740 block/bdev.c:884
+1 lock held by syz-executor.2/6678:
+ #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_put+0xec/0x740 block/bdev.c:884
+3 locks held by syz-executor.0/6682:
+ #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
+ #1: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_finish_claiming+0x84/0x3dc block/bdev.c:557
+ #2: ffff0000c1543a88 (&bdev->bd_holder_lock){+.+.}-{3:3}, at: bd_finish_claiming+0x218/0x3dc block/bdev.c:566
+1 lock held by syz-executor.3/6690:
+ #0: ffff0000c1543a88 (&bdev->bd_holder_lock){+.+.}-{3:3}, at: blkdev_flushbuf block/ioctl.c:370 [inline]
+ #0: ffff0000c1543a88 (&bdev->bd_holder_lock){+.+.}-{3:3}, at: blkdev_common_ioctl+0x7fc/0x2884 block/ioctl.c:502
+1 lock held by syz-executor.3/6695:
+ #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
+1 lock held by syz-executor.5/6696:
+ #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
+1 lock held by syz-executor.5/6703:
+ #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
+1 lock held by syz-executor.4/6698:
+ #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
+1 lock held by syz-executor.4/6704:
+ #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
+1 lock held by syz-executor.0/6872:
+ #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
+1 lock held by syz-executor.1/6939:
+ #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
+1 lock held by syz-executor.1/6940:
+ #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
+1 lock held by syz-executor.2/6956:
+ #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
+1 lock held by syz-executor.2/6957:
+ #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
+1 lock held by syz-executor.5/6959:
+ #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
+1 lock held by syz-executor.5/6960:
+ #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
+1 lock held by syz-executor.3/6976:
+ #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
+1 lock held by syz-executor.3/6977:
+ #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
+1 lock held by syz-executor.4/6979:
+ #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
+1 lock held by syz-executor.4/6980:
+ #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
+1 lock held by syz-executor.1/6999:
+ #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
+1 lock held by syz-executor.1/7000:
+ #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
+1 lock held by syz-executor.2/7054:
+ #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
+1 lock held by syz-executor.2/7055:
+ #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
+1 lock held by syz-executor.5/7067:
+ #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
+1 lock held by syz-executor.5/7068:
+ #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
+1 lock held by syz-executor.3/7075:
+ #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
+1 lock held by syz-executor.3/7078:
+ #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
+1 lock held by syz-executor.4/7083:
+ #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
+1 lock held by syz-executor.4/7084:
+ #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
 
-> 
-> > 
-> >> 2) The memory of objects won't be freed until objpool is finalized
-> >> 3) Object allocation (pop) may fail after trying all cpu slots
-> > 
-> > This means that object allocation will fail if the all pools are empty,
-> > right?
-> 
-> Yes, pop() will return NULL for this case. pop() does the checking for
-> only 1 round of all cpu nodes.
-> 
-> The objpool might not be empty since new object could be inserted back
-> in the meaintime by other nodes, which is natural for lockless queues.
-
-OK.
-
-> 
-> > 
-> >>
-> >> Signed-off-by: wuqiang.matt <wuqiang.matt@bytedance.com>
-> >> ---
-> >>   include/linux/objpool.h | 174 +++++++++++++++++++++
-> >>   lib/Makefile            |   2 +-
-> >>   lib/objpool.c           | 338 ++++++++++++++++++++++++++++++++++++++++
-> >>   3 files changed, 513 insertions(+), 1 deletion(-)
-> >>   create mode 100644 include/linux/objpool.h
-> >>   create mode 100644 lib/objpool.c
-> >>
-> >> diff --git a/include/linux/objpool.h b/include/linux/objpool.h
-> >> new file mode 100644
-> >> index 000000000000..33c832216b98
-> >> --- /dev/null
-> >> +++ b/include/linux/objpool.h
-> >> @@ -0,0 +1,174 @@
-> >> +/* SPDX-License-Identifier: GPL-2.0 */
-> >> +
-> >> +#ifndef _LINUX_OBJPOOL_H
-> >> +#define _LINUX_OBJPOOL_H
-> >> +
-> >> +#include <linux/types.h>
-> >> +#include <linux/refcount.h>
-> >> +
-> >> +/*
-> >> + * objpool: ring-array based lockless MPMC queue
-> >> + *
-> >> + * Copyright: wuqiang.matt@bytedance.com
-> >> + *
-> >> + * The object pool is a scalable implementaion of high performance queue
-> >> + * for objects allocation and reclamation, such as kretprobe instances.
-> >> + *
-> >> + * With leveraging per-cpu ring-array to mitigate the hot spots of memory
-> >> + * contention, it could deliver near-linear scalability for high parallel
-> >> + * scenarios. The ring-array is compactly managed in a single cache-line
-> >> + * to benefit from warmed L1 cache for most cases (<= 4 objects per-core).
-> >> + * The body of pre-allocated objects is stored in continuous cache-lines
-> >> + * just after the ring-array.
-> > 
-> > I consider the size of entries may be big if we have larger number of
-> > CPU cores, like 72-cores. And if user specifies (2^n) + 1 entries.
-> > In this case, each CPU has (2^n - 1)/72 objects, but has 2^(n + 1)
-> > entries in ring buffer. So it should be noted.
-> 
-> Yes for the arrary size since it‘s up-rounded to the exponent of 2, but the
-> actual number of pre-allocated objects will stay the same as user specified.
-> 
-> >> + *
-> >> + * The object pool is interrupt safe. Both allocation and reclamation
-> >> + * (object pop and push operations) can be preemptible or interruptable.
-> > 
-> > You've added raw_spinlock_disable/enable(), so it is not preemptible
-> > or interruptible anymore. (Anyway, caller doesn't take care of that)
-> 
-> Sure, this decription is imporper and unnecessary. Will be removed.
-> 
-> >> + *
-> >> + * It's best suited for following cases:
-> >> + * 1) Memory allocation or reclamation are prohibited or too expensive
-> >> + * 2) Consumers are of different priorities, such as irqs and threads
-> >> + *
-> >> + * Limitations:
-> >> + * 1) Maximum objects (capacity) is determined during pool initializing
-> >> + * 2) The memory of objects won't be freed until the pool is finalized
-> >> + * 3) Object allocation (pop) may fail after trying all cpu slots
-> >> + */
-> >> +
-> >> +/**
-> >> + * struct objpool_slot - percpu ring array of objpool
-> >> + * @head: head of the local ring array (to retrieve at)
-> >> + * @tail: tail of the local ring array (to append at)
-> >> + * @bits: log2 of capacity (for bitwise operations)
-> >> + * @mask: capacity - 1
-> > 
-> > These description does not give idea what those roles are.
-> 
-> I'll refine the description. objpool_slot is totally internal to objpool.
-> 
-> > 
-> >> + *
-> >> + * Represents a cpu-local array-based ring buffer, its size is specialized
-> >> + * during initialization of object pool. The percpu objpool slot is to be
-> >> + * allocated from local memory for NUMA system, and to be kept compact in
-> >> + * continuous memory: ages[] is stored just after the body of objpool_slot,
-> >> + * and then entries[]. ages[] describes revision of each item, solely used
-> >> + * to avoid ABA; entries[] contains pointers of the actual objects
-> >> + *
-> >> + * Layout of objpool_slot in memory:
-> >> + *
-> >> + * 64bit:
-> >> + *        4      8      12     16        32                 64
-> >> + * | head | tail | bits | mask | ages[4] | ents[4]: (8 * 4) | objects
-> >> + *
-> >> + * 32bit:
-> >> + *        4      8      12     16        32        48       64
-> >> + * | head | tail | bits | mask | ages[4] | ents[4] | unused | objects
-> > 
-> > Hm, the '4' here means number of objects after this objpool_slot?
-> > I don't recommend you to allocate several arraies after the header, instead,
-> > using another data structure like this;
-> > 
-> > |head|tail|bits|mask|ents[N]{age:4|offs:4}|padding|objects
-> > 
-> > here N means the number of total objects.
-> 
-> Sorry for the confusion, I will make it more clear. Here 4/8/.../64 are offset
-> in bytes. The above is an example with the objpool_slot compacted in a single
-> cache line.
-
-But in that case, the entry number may not be enough for storing all object.
-(or limit the number of objects)
-
-Actually, since the rethook needs to make a shadow stack list per task not
-per cpu, the (safe) required number of object is usually proportional to the
-number of active tasks. kretprobes sets the default number of nodes according
-to the CPUs but it is minimum requirement. This is because, 
-- most of the kernel functions are not nested, thus it is called once on each
- thread in the kernel.
-- the thread can be scheduled or slept, thus the function return hook also is
-  not done until the thread comes back.
-So, usually, the recommended number of node (obj) will be 100-200 (depends on
-the system.) If it is a server, it may be more than 1000.
-
-> 
-> > 
-> > struct objpool_entry {
-> > 	uint32_t	age;
-> > 	void *	ptr;
-> > } __attribute__((packed,aligned(8))) ;
-> > 
-> >> + *
-> >> + */
-> >> +struct objpool_slot {
-> >> +	uint32_t                head;
-> >> +	uint32_t                tail;
-> >> +	uint32_t                bits;
-> >> +	uint32_t                mask;
-> > 
-> > 	struct objpool_entry	entries[];
-> > 
-> >> +} __packed;
-> > 
-> > Then, you don't need complex macros to access object, but you need only one
-> > inline function to get the actual object address.
-> > 
-> > static inline void *objpool_slot_object(struct objpool_slot *slot, int nth)
-> > {
-> > 	if (nth > (1 << bits))
-> > 		return NULL;
-> > 
-> > 	return (void *)((unsigned long)slot + slot.entries[nth].offs);
-> > }
-> 
-> The reason of these macroes is to compact objpool_slot/ages/ents to hot cache
-> lines and also minimize the memory footprint.
-
-Hmm, at this moment, I don't recommend you to stick on the cache line but
-easier to read. If you have any number, you can add optimize patch afterwards.
-But the initial patch should take care about the readability.
-
-> 
-> objpool_head could be a better place to manage these pointers, similarly as
-> cpu_slots. I'll recheck the overhead.
-> 
-> 
-> >> +
-> >> +struct objpool_head;
-> >> +
-> >> +/*
-> >> + * caller-specified callback for object initial setup, it's only called
-> >> + * once for each object (just after the memory allocation of the object)
-> >> + */
-> >> +typedef int (*objpool_init_obj_cb)(void *obj, void *context);
-> >> +
-> >> +/* caller-specified cleanup callback for objpool destruction */
-> >> +typedef int (*objpool_fini_cb)(struct objpool_head *head, void *context);
-> >> +
-> >> +/**
-> >> + * struct objpool_head - object pooling metadata
-> >> + * @obj_size:   object & element size
-> > 
-> > What does the 'element' mean?
-> 
-> "object size" should be enough. "element" means object, so it's unnecessary.
-> 
-> > 
-> >> + * @nr_objs:    total objs (to be pre-allocated)
-> > 
-> > but all objects must be pre-allocated, right? then it is simply
-> 
-> Yes, all objects are pre-allocated for this implementation.
-> 
-> > 
-> > @nr_objs: the total number of objects in this objpool.
-> > 
-> >> + * @nr_cpus:    nr_cpu_ids
-> > 
-> > would we have to save it? or just use 'nr_cpu_ids'?
-> 
-> Yes, it's just a local save of nr_cpu_ids, just to make the members of
-> objpool_head aligned by 64 bits (there could be a 4-byte hold anyway).
-> And possible beatification from hot TLB cache ?
-
-Unless you pack the data structure, you don't need to care about
-the cache. And the compiler works better than human for initial work.
-At this moment, it is more important to reduce the members as simple
-as possible.
-
-> 
-> > 
-> >> + * @capacity:   max objects per cpuslot
-> > 
-> > what is 'cpuslot'?
-> > This seems the size of objpool_entry array in objpool_slot.
-> 
-> Yes, should be "capacity per objpool_slot", i.e. "maximum objects could be
-> stored in a objpool_slot".
-> 
-> >> + * @gfp:        gfp flags for kmalloc & vmalloc
-> >> + * @ref:        refcount for objpool
-> >> + * @flags:      flags for objpool management
-> >> + * @cpu_slots:  array of percpu slots
-> >> + * @slot_sizes:	size in bytes of slots
-> >> + * @release:    resource cleanup callback
-> >> + * @context:    caller-provided context
-> >> + */
-> >> +struct objpool_head {
-> >> +	int                     obj_size;
-> >> +	int                     nr_objs;
-> >> +	int                     nr_cpus;
-> >> +	int                     capacity;
-> >> +	gfp_t                   gfp;
-> >> +	refcount_t              ref;
-> >> +	unsigned long           flags;
-> >> +	struct objpool_slot   **cpu_slots;
-> >> +	int                    *slot_sizes;
-> >> +	objpool_fini_cb         release;
-> >> +	void                   *context;
-> >> +};
-> >> +
-> >> +#define OBJPOOL_FROM_VMALLOC	(0x800000000)	/* objpool allocated from vmalloc area */
-> >> +#define OBJPOOL_HAVE_OBJECTS	(0x400000000)	/* objects allocated along with objpool */
-> >> +
-> >> +/**
-> >> + * objpool_init() - initialize objpool and pre-allocated objects
-> >> + * @head:    the object pool to be initialized, declared by caller
-> >> + * @nr_objs: total objects to be pre-allocated by this object pool
-> >> + * @object_size: size of an object (should be > 0)
-> >> + * @gfp:     flags for memory allocation (via kmalloc or vmalloc)
-> >> + * @context: user context for object initialization callback
-> >> + * @objinit: object initialization callback for extra setup
-> >> + * @release: cleanup callback for extra cleanup task
-> >> + *
-> >> + * return value: 0 for success, otherwise error code
-> >> + *
-> >> + * All pre-allocated objects are to be zeroed after memory allocation.
-> >> + * Caller could do extra initialization in objinit callback. objinit()
-> >> + * will be called just after slot allocation and will be only once for
-> >> + * each object. Since then the objpool won't touch any content of the
-> >> + * objects. It's caller's duty to perform reinitialization after each
-> >> + * pop (object allocation) or do clearance before each push (object
-> >> + * reclamation).
-> >> + */
-> >> +int objpool_init(struct objpool_head *head, int nr_objs, int object_size,
-> >> +		 gfp_t gfp, void *context, objpool_init_obj_cb objinit,
-> >> +		 objpool_fini_cb release);
-> >> +
-> >> +/**
-> >> + * objpool_pop() - allocate an object from objpool
-> >> + * @head: object pool
-> >> + *
-> >> + * return value: object ptr or NULL if failed
-> >> + */
-> >> +void *objpool_pop(struct objpool_head *head);
-> >> +
-> >> +/**
-> >> + * objpool_push() - reclaim the object and return back to objpool
-> >> + * @obj:  object ptr to be pushed to objpool
-> >> + * @head: object pool
-> >> + *
-> >> + * return: 0 or error code (it fails only when user tries to push
-> >> + * the same object multiple times or wrong "objects" into objpool)
-> >> + */
-> >> +int objpool_push(void *obj, struct objpool_head *head);
-> >> +
-> >> +/**
-> >> + * objpool_drop() - discard the object and deref objpool
-> >> + * @obj:  object ptr to be discarded
-> >> + * @head: object pool
-> >> + *
-> >> + * return: 0 if objpool was released or error code
-> >> + */
-> >> +int objpool_drop(void *obj, struct objpool_head *head);
-> >> +
-> >> +/**
-> >> + * objpool_free() - release objpool forcely (all objects to be freed)
-> >> + * @head: object pool to be released
-> >> + */
-> >> +void objpool_free(struct objpool_head *head);
-> >> +
-> >> +/**
-> >> + * objpool_fini() - deref object pool (also releasing unused objects)
-> >> + * @head: object pool to be dereferenced
-> >> + */
-> >> +void objpool_fini(struct objpool_head *head);
-> >> +
-> >> +#endif /* _LINUX_OBJPOOL_H */
-> >> diff --git a/lib/Makefile b/lib/Makefile
-> >> index 1ffae65bb7ee..7a84c922d9ff 100644
-> >> --- a/lib/Makefile
-> >> +++ b/lib/Makefile
-> >> @@ -34,7 +34,7 @@ lib-y := ctype.o string.o vsprintf.o cmdline.o \
-> >>   	 is_single_threaded.o plist.o decompress.o kobject_uevent.o \
-> >>   	 earlycpio.o seq_buf.o siphash.o dec_and_lock.o \
-> >>   	 nmi_backtrace.o win_minmax.o memcat_p.o \
-> >> -	 buildid.o
-> >> +	 buildid.o objpool.o
-> >>   
-> >>   lib-$(CONFIG_PRINTK) += dump_stack.o
-> >>   lib-$(CONFIG_SMP) += cpumask.o
-> >> diff --git a/lib/objpool.c b/lib/objpool.c
-> >> new file mode 100644
-> >> index 000000000000..22e752371820
-> >> --- /dev/null
-> >> +++ b/lib/objpool.c
-> >> @@ -0,0 +1,338 @@
-> >> +// SPDX-License-Identifier: GPL-2.0
-> >> +
-> >> +#include <linux/objpool.h>
-> >> +#include <linux/slab.h>
-> >> +#include <linux/vmalloc.h>
-> >> +#include <linux/atomic.h>
-> >> +#include <linux/prefetch.h>
-> >> +#include <linux/irqflags.h>
-> >> +#include <linux/cpumask.h>
-> >> +#include <linux/log2.h>
-> >> +
-> >> +/*
-> >> + * objpool: ring-array based lockless MPMC/FIFO queues
-> >> + *
-> >> + * Copyright: wuqiang.matt@bytedance.com
-> >> + */
-> >> +
-> >> +#define SLOT_AGES(s) ((uint32_t *)((char *)(s) + sizeof(struct objpool_slot)))
-> >> +#define SLOT_ENTS(s) ((void **)((char *)(s) + sizeof(struct objpool_slot) + \
-> >> +			(sizeof(uint32_t) << (s)->bits)))
-> >> +#define SLOT_OBJS(s) ((void *)((char *)(s) + sizeof(struct objpool_slot) + \
-> >> +			((sizeof(uint32_t) + sizeof(void *)) << (s)->bits)))
-> >> +#define SLOT_CORE(n) cpumask_nth((n) % num_possible_cpus(), cpu_possible_mask)
-> >> +
-> >> +/* compute the suitable num of objects to be managed per slot */
-> >> +static int objpool_nobjs(int size)
-> >> +{
-> >> +	return rounddown_pow_of_two((size - sizeof(struct objpool_slot)) /
-> >> +			(sizeof(uint32_t) + sizeof(void *)));
-> >> +}
-> >> +
-> >> +/* allocate and initialize percpu slots */
-> > 
-> > @head: the objpool_head for managing this objpool
-> > @nobjs: the total number of objects in this objpool
-> > @context: context data for @objinit
-> > @objinit: initialize callback for each object.
-> 
-> Got it. I didn't since objpool_init_percpu_slots is not public.
-> 
-> >> +static int
-> >> +objpool_init_percpu_slots(struct objpool_head *head, int nobjs,
-> >> +			void *context, objpool_init_obj_cb objinit)
-> >> +{
-> >> +	int i, j, n, size, objsz, cpu = 0, nents = head->capacity;
-> > 
-> > 'nents' is *round up to the power of 2* of the total number of objects.
-> > 
-> >> +
-> >> +	/* aligned object size by sizeof(void *) */
-> >> +	objsz = ALIGN(head->obj_size, sizeof(void *));
-> >> +	/* shall we allocate objects along with percpu-slot */
-> >> +	if (objsz)
-> >> +		head->flags |= OBJPOOL_HAVE_OBJECTS;
-> > 
-> > Is there any chance that objsz == 0?
-> 
-> No chance. We always require non-zero objsz. Will update in next verion.
-> 
-> > 
-> >> +
-> >> +	/* vmalloc is used in default to allocate percpu-slots */
-> >> +	if (!(head->gfp & GFP_ATOMIC))
-> >> +		head->flags |= OBJPOOL_FROM_VMALLOC;
-> >> +
-> >> +	for (i = 0; i < head->nr_cpus; i++) {
-> >> +		struct objpool_slot *os;
-> >> +
-> >> +		/* skip the cpus which could never be present */
-> >> +		if (!cpu_possible(i))
-> >> +			continue;
-> >> +
-> >> +		/* compute how many objects to be managed by this slot */
-> > 
-> > "to be managed"? or "to be allocated with"?
-> > It seems all objects are possible to be managed by each slot.
-> 
-> Right. "to be allocated with" is preferable. Thanks.
-> 
-> >> +		n = nobjs / num_possible_cpus();
-> >> +		if (cpu < (nobjs % num_possible_cpus()))
-> >> +			n++;
-> >> +		size = sizeof(struct objpool_slot) + sizeof(void *) * nents +
-> >> +		       sizeof(uint32_t) * nents + objsz * n;
-> >> +
-> >> +		/*
-> >> +		 * here we allocate percpu-slot & objects together in a single
-> >> +		 * allocation, taking advantage of warm caches and TLB hits as
-> >> +		 * vmalloc always aligns the request size to pages
-> > 
-> > "Since the objpool_entry array in the slot is mostly accessed from the
-> >   i-th CPU, it should be allocated from the memory node for that CPU."
-> > 
-> > I think the reason of the memory node allocation is mainly for reducing the
-> > penalty of the cache-miss, since it will be bigger if running on NUMA.
-> 
-> Right, NUMA is addressed by objpool_slot. The above description is to explain
-> why a single memory allocation (not multiple). I'll try to make it more clear.
-> 
-> > 
-> >> +		 */
-> >> +		if (head->flags & OBJPOOL_FROM_VMALLOC)
-> >> +			os = __vmalloc_node(size, sizeof(void *), head->gfp,
-> >> +				cpu_to_node(i), __builtin_return_address(0));
-> >> +		else
-> >> +			os = kmalloc_node(size, head->gfp, cpu_to_node(i));
-> >> +		if (!os)
-> >> +			return -ENOMEM;
-> >> +
-> >> +		/* initialize percpu slot for the i-th slot */
-> >> +		memset(os, 0, size);
-> >> +		os->bits = ilog2(head->capacity);
-> >> +		os->mask = head->capacity - 1;
-> >> +		head->cpu_slots[i] = os;
-> >> +		head->slot_sizes[i] = size;
-> >> +		cpu = cpu + 1;
-> >> +
-> >> +		/*
-> >> +		 * manually set head & tail to avoid possible conflict:
-> >> +		 * We assume that the head item is ready for retrieval
-> >> +		 * iff head is equal to ages[head & mask]. but ages is
-> >> +		 * initialized as 0, so in view of the caller of pop(),
-> >> +		 * the 1st item (0th) is always ready, but the reality
-> >> +		 * could be: push() is stalled before the final update,
-> >> +		 * thus the item being inserted will be lost forever
-> >> +		 */
-> >> +		os->head = os->tail = head->capacity;
-> >> +
-> >> +		if (!objsz)
-> >> +			continue;
-> > 
-> > Is it possible? and for what?
-> 
-> Will be removed in next version.
-> 
-> > 
-> >> +
-> >> +		for (j = 0; j < n; j++) {
-> >> +			uint32_t *ages = SLOT_AGES(os);
-> >> +			void **ents = SLOT_ENTS(os);
-> >> +			void *obj = SLOT_OBJS(os) + j * objsz;
-> >> +			uint32_t ie = os->tail & os->mask;
-> >> +
-> >> +			/* perform object initialization */
-> >> +			if (objinit) {
-> >> +				int rc = objinit(obj, context);
-> >> +				if (rc)
-> >> +					return rc;
-> >> +			}
-> >> +
-> >> +			/* add obj into the ring array */
-> >> +			ents[ie] = obj;
-> >> +			ages[ie] = os->tail;
-> >> +			os->tail++;
-> >> +			head->nr_objs++;
-> >> +		}
-> > 
-> > To simplify the code, this loop should be another static function.
-> 
-> I'll reconsider the implementation. And the multiple computations of ages/ents
-> should be avoided too.
-> 
-> > 
-> >> +	}
-> >> +
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +/* cleanup all percpu slots of the object pool */
-> >> +static void objpool_fini_percpu_slots(struct objpool_head *head)
-> >> +{
-> >> +	int i;
-> >> +
-> >> +	if (!head->cpu_slots)
-> >> +		return;
-> >> +
-> >> +	for (i = 0; i < head->nr_cpus; i++) {
-> >> +		if (!head->cpu_slots[i])
-> >> +			continue;
-> >> +		if (head->flags & OBJPOOL_FROM_VMALLOC)
-> >> +			vfree(head->cpu_slots[i]);
-> >> +		else
-> >> +			kfree(head->cpu_slots[i]);
-> >> +	}
-> >> +	kfree(head->cpu_slots);
-> >> +	head->cpu_slots = NULL;
-> >> +	head->slot_sizes = NULL;
-> >> +}
-> >> +
-> >> +/* initialize object pool and pre-allocate objects */
-> >> +int objpool_init(struct objpool_head *head, int nr_objs, int object_size,
-> >> +		gfp_t gfp, void *context, objpool_init_obj_cb objinit,
-> >> +		objpool_fini_cb release)
-> >> +{
-> >> +	int nents, rc;
-> >> +
-> >> +	/* check input parameters */
-> >> +	if (nr_objs <= 0 || object_size <= 0)
-> >> +		return -EINVAL;
-> >> +
-> >> +	/* calculate percpu slot size (rounded to pow of 2) */
-> >> +	nents = max_t(int, roundup_pow_of_two(nr_objs),
-> >> +			objpool_nobjs(L1_CACHE_BYTES));
-> >> +
-> >> +	/* initialize objpool head */
-> >> +	memset(head, 0, sizeof(struct objpool_head));
-> >> +	head->nr_cpus = nr_cpu_ids;
-> >> +	head->obj_size = object_size;
-> >> +	head->capacity = nents;
-> >> +	head->gfp = gfp & ~__GFP_ZERO;
-> >> +	head->context = context;
-> >> +	head->release = release;
-> >> +
-> >> +	/* allocate array for percpu slots */
-> >> +	head->cpu_slots = kzalloc(head->nr_cpus * sizeof(void *) +
-> >> +			       head->nr_cpus * sizeof(int), head->gfp);
-> >> +	if (!head->cpu_slots)
-> >> +		return -ENOMEM;
-> >> +	head->slot_sizes = (int *)&head->cpu_slots[head->nr_cpus];
-> >> +
-> >> +	/* initialize per-cpu slots */
-> >> +	rc = objpool_init_percpu_slots(head, nr_objs, context, objinit);
-> >> +	if (rc)
-> >> +		objpool_fini_percpu_slots(head);
-> >> +	else
-> >> +		refcount_set(&head->ref, nr_objs + 1);
-> >> +
-> >> +	return rc;
-> >> +}
-> >> +EXPORT_SYMBOL_GPL(objpool_init);
-> >> +
-> >> +/* adding object to slot, abort if the slot was already full */
-> >> +static inline int objpool_try_add_slot(void *obj, struct objpool_slot *os)
-> >> +{
-> >> +	uint32_t *ages = SLOT_AGES(os);
-> >> +	void **ents = SLOT_ENTS(os);
-> >> +	uint32_t head, tail;
-> >> +
-> >> +	do {
-> >> +		/* perform memory loading for both head and tail */
-> >> +		head = READ_ONCE(os->head);
-> >> +		tail = READ_ONCE(os->tail);
-> >> +		/* just abort if slot is full */
-> >> +		if (tail - head > os->mask)
-> >> +			return -ENOENT;
-> > 
-> > Is this really possible? The total number of objects must be less euqal to
-> > the os->mask. If it means a bug, please use WARN_ON_ONCE() here for debug.
-> 
-> Yes, it's a BUG and the caller's fault. When user tries pushing wrong object
-> or repeatedly pushing a same object, it could break the objpool's consistency.
-> It's a 'worse' or 'more worse' choice, rather returning error than breaking
-> the consitency.
-> 
-> As you adviced, better crash than problematic. I'll update in next version.
-> 
-> > 
-> >> +		/* try to extend tail by 1 using CAS to avoid races */
-> >> +		if (try_cmpxchg_acquire(&os->tail, &tail, tail + 1))
-> >> +			break;
-> >> +	} while (1);
-> > 
-> > "if(cond) ~ break; } while(1)" should be "} (!cond);"
-> 
-> I see. Just to make the codes more "balanced" with comments :)
-> 
-> > 
-> > And this seems to be buggy since tail++ can be 0, then "tail - head" < 0.
-> > 
-> > if (tail < head)
-> > 	if (WARN_ON_ONCE(tail + (UINT32_MAX - head) > os->mask))
-> > 		return -ENOENT;
-> > else
-> > 	if (WARN_ON_ONCE(tail - head > os->mask))
-> > 		return -ENOENT;
-> 
-> tail and head are unsigned, so "tail - head" is unsigned and should always
-> be the actual number of free objects in the objpool_slot.
-> 
-> >> +
-> >> +	/* the tail-th of slot is reserved for the given obj */
-> >> +	WRITE_ONCE(ents[tail & os->mask], obj);
-> >> +	/* update epoch id to make this object available for pop() */
-> >> +	smp_store_release(&ages[tail & os->mask], tail);
-> > 
-> > Note: since the ages array size is the power of 2, this is just a
-> > (32 - os->bits) loop counter. :)
-> > 
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +/* reclaim an object to object pool */
-> >> +int objpool_push(void *obj, struct objpool_head *oh)
-> >> +{
-> >> +	unsigned long flags;
-> >> +	int cpu, rc;
-> >> +
-> >> +	/* disable local irq to avoid preemption & interruption */
-> >> +	raw_local_irq_save(flags);
-> >> +	cpu = raw_smp_processor_id();
-> >> +	do {
-> >> +		rc = objpool_try_add_slot(obj, oh->cpu_slots[cpu]);
-> >> +		if (!rc)
-> >> +			break;
-> >> +		cpu = cpumask_next_wrap(cpu, cpu_possible_mask, -1, 1);
-> >> +	} while (1);
-> > 
-> > Hmm, as I said, head->capacity >= nr_all_obj, this must not happen,
-> > we can always push it on this CPU's slot, right?
-> 
-> Right. If it happens, that means the user made mistakes. I'll refine
-> the codes.
-> 
-> > 
-> >> +	raw_local_irq_restore(flags);
-> >> +
-> >> +	return rc;
-> >> +}
-> >> +EXPORT_SYMBOL_GPL(objpool_push);
-> >> +
-> >> +/* drop the allocated object, rather reclaim it to objpool */
-> >> +int objpool_drop(void *obj, struct objpool_head *head)
-> >> +{
-> >> +	if (!obj || !head)
-> >> +		return -EINVAL;
-> >> +
-> >> +	if (refcount_dec_and_test(&head->ref)) {
-> >> +		objpool_free(head);
-> >> +		return 0;
-> >> +	}
-> >> +
-> >> +	return -EAGAIN;
-> >> +}
-> >> +EXPORT_SYMBOL_GPL(objpool_drop);
-> >> +
-> >> +/* try to retrieve object from slot */
-> >> +static inline void *objpool_try_get_slot(struct objpool_slot *os)
-> >> +{
-> >> +	uint32_t *ages = SLOT_AGES(os);
-> >> +	void **ents = SLOT_ENTS(os);
-> >> +	/* do memory load of head to local head */
-> >> +	uint32_t head = smp_load_acquire(&os->head);
-> >> +
-> >> +	/* loop if slot isn't empty */
-> >> +	while (head != READ_ONCE(os->tail)) {
-> >> +		uint32_t id = head & os->mask, prev = head;
-> >> +
-> >> +		/* do prefetching of object ents */
-> >> +		prefetch(&ents[id]);
-> >> +
-> >> +		/* check whether this item was ready for retrieval */
-> >> +		if (smp_load_acquire(&ages[id]) == head) {
-> > 
-> > We may not need this check, since we know head != tail and the
-> > sizeof(ages) >= nr_all_objs.
-> > 
-> > Hmm, I guess we can remove ages[] from the code.
-> 
-> Just do a quick peek to avoid an unnecessary call of try_cmpxchg_release.
-> try_cmpxchg_release is implemented by heavy instruction with "LOCK" prefix,
-> which could bring cache invalidation among CPU nodes.
-
-OK, I understand what this ages[] does. This is a nestable commit table
-for the ring array.
-
-> 
-> > 
-> >> +			/* node must have been udpated by push() */
-> >> +			void *node = READ_ONCE(ents[id]);
-> > 
-> > Please use the same word for the same object.
-> > I mean this is not 'node' but 'object'.
-> 
-> Got it.
-> 
-> > 
-> >> +			/* commit and move forward head of the slot */
-> >> +			if (try_cmpxchg_release(&os->head, &head, head + 1))
-> >> +				return node;
-> >> +			/* head was already updated by others */
-> >> +		}
-> >> +
-> >> +		/* re-load head from memory and continue trying */
-> >> +		head = READ_ONCE(os->head);
-> >> +		/*
-> >> +		 * head stays unchanged, so it's very likely there's an
-> >> +		 * ongoing push() on other cpu nodes but yet not update
-> >> +		 * ages[] to mark it's completion
-> >> +		 */
-> >> +		if (head == prev)
-> >> +			break;
-> > 
-> > This is OK. If we always push() on the current CPU slot, and pop() from
-> > any cpus, we can try again here if this slot is not current CPU. But that
-> > maybe to much :P
-> 
-> Yes. For most cases, every CPU should only touch it's own objpool_slot.
-> 
-> > Thank you,
-> 
-> Thanks for your time.
-
-Thank you for your reply!
+=============================================
 
 
-> 
 
+Tested on:
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+commit:         b6ab1318 reiserfs: fix journal device opening
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git b4/vfs-fixes-reiserfs
+console output: https://syzkaller.appspot.com/x/log.txt?x=125bdcde680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1b8c825e0d5f3f72
+dashboard link: https://syzkaller.appspot.com/bug?extid=062317ea1d0a6d5e29e7
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+
+Note: no patches were applied.
