@@ -2,68 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2F17BE477
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 860887BE483
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376942AbjJIPR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 11:17:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57806 "EHLO
+        id S1376540AbjJIPTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 11:19:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376736AbjJIPR4 (ORCPT
+        with ESMTP id S1376366AbjJIPTb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 11:17:56 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2870EA3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 08:17:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D296C433B7;
-        Mon,  9 Oct 2023 15:17:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696864671;
-        bh=IxC3QSqPVebIUIRAWD+xhWprjzDHOIt3IBTBrp48heo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QSbOy7tie+ysnc34WLh7T8qM5g5Hep59jVakIVVg7b/MLulFFJE5pGb2GEvBqMXGP
-         KnPwAWfAtpkN5ufKCIYccOCr0pHzqBOgPgWGVayiYQ3kTC8V8nhQEci7ZEfbkKpNr1
-         dWuP2ig4eXLIFQYtUdJrBCCYEzfViD6GeE8o21oy8YYoi1kUdDEe78p8H/dA684ILU
-         iqpceVibFcCNj/hVcRFLegXJWz4fcAvOEN80JOMXa+CpkPMfLyiKIjst/IFXBx6ehk
-         vqoKVr/tZVUXoOR+jWI7fUWXRUkJoPfK3ASN++C+Ec0RxBwr7+yPGQ5F8Wdllz93uT
-         mTUCc57DJgP3g==
-Date:   Mon, 9 Oct 2023 08:17:50 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Chengfeng Ye <dg573847474@gmail.com>
-Cc:     3chas3@gmail.com, davem@davemloft.net, horms@kernel.org,
-        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] atm: solos-pci: Fix potential deadlock on
- &cli_queue_lock
-Message-ID: <20231009081750.2073013d@kernel.org>
-In-Reply-To: <CAAo+4rUE=+9Kp8CvMH3w15dJotkX03h=5YMV+hu-YSobkwj1NA@mail.gmail.com>
-References: <20231005074858.65082-1-dg573847474@gmail.com>
-        <20231006162835.79484017@kernel.org>
-        <CAAo+4rUE=+9Kp8CvMH3w15dJotkX03h=5YMV+hu-YSobkwj1NA@mail.gmail.com>
+        Mon, 9 Oct 2023 11:19:31 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F7B0B7
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 08:19:12 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40572aeb673so45167775e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 08:19:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1696864751; x=1697469551; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=F4PvYOaVB2LfCKyNyEgmRFPDdLDakSJl6mv7yLdqqSA=;
+        b=c6oKpCj4JDMSGijVPucbuU0eLKWH1s33e4853t5Z1A9FDd93uPIQZdmurSVb+YS7aH
+         vqK5JVZPpklY5yTOPaVi4N61Mz42eZNA1mHSx22k0ww1c/mjqVMQ0evO6wZs2IFcP4+k
+         clTDKHfrty0jMDw490nZylaJrGz6TzSsvLjtgaePd+ZRvCvAxrAR49ODBpgEQXyckc9A
+         rHaaHw3flz3KcvO6frtD6P30T59RrbW0PGGlM57nTMH8dU8m+/HYAGg3VCVRrG6cc4Ha
+         GpvA34aZmjIWEhEl4nj06rHglst2i7bryeb33tlTBXugk7fHXW0PDzk4FrtSKHP1Hhxt
+         9CpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696864751; x=1697469551;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=F4PvYOaVB2LfCKyNyEgmRFPDdLDakSJl6mv7yLdqqSA=;
+        b=HGVSD95I60gogYRy/YxNp5frjm4iPmltJXebCsNbil3gfNpJCIrVjBiZ2LTvEwx3aS
+         Zlwf5zdkwDKqTdPDbjRQKSVVo+g7knbIIPxX0Sw5uZScRZ9GIwUiK+q66CzbL9jKsJlp
+         5rybtsRJzA4in9OME3k21TamliDEfv6NgkrDppsinWJC/44MUUQ9n6sjDtlBZ3JAKXLB
+         3YyDkuwrLWJis6GE409sUL44vZdxMAZ5wVYC/nFGilxc2L1GJskuMxmU1rxz5wYpHC0S
+         6U7m/No8eTI6QB+c2+oVrNUh6tgTXFtpNxRAt17Pz2zJsCipj1ZUi9Pvg+h3Bd0f/VpJ
+         fG+g==
+X-Gm-Message-State: AOJu0YwQV8SLhu1peS+Y2AxqEHzcsUvGOvW2c8WqfD0TRZadR9gffgdG
+        pRWCZnI+jTNxj62v0ExR1yhbsw==
+X-Google-Smtp-Source: AGHT+IFuACbcoZMRy23F40Qe1mGH7p+/4U8K68rTkDVcu7dwan8czyedSSU1A4QiSJA/Or/vJGEP9A==
+X-Received: by 2002:a05:600c:2197:b0:406:5227:86f0 with SMTP id e23-20020a05600c219700b00406522786f0mr13023961wme.5.1696864750947;
+        Mon, 09 Oct 2023 08:19:10 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:6b6a:b5c7:0:c1b1:1479:6449:a1ff])
+        by smtp.gmail.com with ESMTPSA id r2-20020a05600c320200b0040641ce36a8sm7075008wmp.1.2023.10.09.08.19.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Oct 2023 08:19:10 -0700 (PDT)
+From:   Usama Arif <usama.arif@bytedance.com>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        muchun.song@linux.dev, mike.kravetz@oracle.com,
+        songmuchun@bytedance.com, fam.zheng@bytedance.com,
+        liangma@liangbit.com, punit.agrawal@bytedance.com,
+        Usama Arif <usama.arif@bytedance.com>
+Subject: [PATCH 0/1] mm: hugetlb_vmemmap: use folio argument for hugetlb_vmemmap_* functions
+Date:   Mon,  9 Oct 2023 16:18:29 +0100
+Message-Id: <20231009151830.2248885-1-usama.arif@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 7 Oct 2023 23:58:36 +0800 Chengfeng Ye wrote:
-> > and irqsave here. I think you're right that it's just softirq (== bh)
-> > that may deadlock, so no need to take the irqsave() version in process
-> > context.  
-> 
-> Yes, spin_lock_bh() is enough.
-> 
-> I just found spin_lock_irqsave() is more frequently used in this file, so I
-> also used spin_lock_irqsave() here for uniformity consideration at that time.
-> 
-> Should I send a new patch series to change this to spin_lock_bh()? That's
-> better for performance consideration.
+Most function calls in hugetlb.c are made with folio arguments.
+This brings hugetlb_vmemmap calls inline with them by using folio
+instead of head struct page. Head struct page is still needed
+within these functions.
 
-Yes, performance is one reason and another is that the code will 
-be easier to understand if the locking matches the requirements.
+This patch is on top of the patch
+"hugetlb: batch TLB flushes when restoring vmemmap" to avoid merge conflicts.
+ 
+Usama Arif (1):
+  hugetlb_vmemmap: use folio argument for hugetlb_vmemmap_* functions
+
+ mm/hugetlb.c         | 10 +++++-----
+ mm/hugetlb_vmemmap.c | 42 ++++++++++++++++++++++--------------------
+ mm/hugetlb_vmemmap.h |  8 ++++----
+ 3 files changed, 31 insertions(+), 29 deletions(-)
+
+-- 
+2.25.1
+
