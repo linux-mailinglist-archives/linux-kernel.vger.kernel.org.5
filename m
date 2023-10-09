@@ -2,142 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 569287BD70D
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2E077BD711
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345765AbjJIJaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 05:30:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43068 "EHLO
+        id S1345789AbjJIJa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 05:30:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345675AbjJIJad (ORCPT
+        with ESMTP id S1345846AbjJIJay (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 05:30:33 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E000F1
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:30:31 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-534694a9f26so10354a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 02:30:31 -0700 (PDT)
+        Mon, 9 Oct 2023 05:30:54 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4C6FCA
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:30:52 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-504a7f9204eso5138312e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 02:30:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696843829; x=1697448629; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TLyudqSMOhmAh3CWo49NCC+vFjpCOk99m8pKFm0PjdI=;
-        b=RODB1RLCy4JZ8rAIylWofuDDGtig5YVjofIrBdwlqD5FlNpGeV0sjfk086F3+37zon
-         vSF8RHoNQ1Fml5a/io5tooghYoMuLRqejfMI2GviVQgJ8XF36oJKdh0C2J4cU32hi9yD
-         U2NPB0E0Mx7c32hwul+sb7HLtEmmvSj7xkywnK4KDaw6KU1+H5UTmDwOM1b8o6UgXSfh
-         CCFOq5EhBjZrRknIkvmBme3K9iwC3FFSEkheAOVdMPfZF3CvnFL3puaQ028yiTVdjp1b
-         EaAlHLzBNak7Uk0FfxpeSEgbmFAHetkZzWdR1VhPXSYnO3S9Rl03kyiQfzFH99/pr96h
-         cJGg==
+        d=linaro.org; s=google; t=1696843851; x=1697448651; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gmwAEQHUShD13Crz4Xqpp8bdUVorE1C8HPaXCwJ5RJ8=;
+        b=kZ6z5IxN4aX4KJfXpXCjNnV+YZauuccd/ep/diL8oX7vqFucd94XdWfSWn16ZKU22b
+         T+bo9epP4aCwo8N54C7xvlkjFIzsj4i8V3JFGaoAWrq/+eUiQ/2O8swTZV1AfcMLhTpd
+         WvqV+NPWHexoNivS2sX+Z45S3pAj1GMzy/nYm3a1rHdA/1+ww1QMPwMbHJcnWaHfRxHi
+         LBtWqmXEYedWzeGa95gtnGf6Fnls0sI1pVVYj8/Y+K6YQGxf6SnKPyovCuryN6vGvwKL
+         uDb6cH0GaZtk4GPNZGfCTh5baRmt+Sq1bLsH7ei5zA0EPTo2bhvw4PSPlNV4V2Tvx/pC
+         vtlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696843829; x=1697448629;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TLyudqSMOhmAh3CWo49NCC+vFjpCOk99m8pKFm0PjdI=;
-        b=lIib3G32Xi7bhubfjcriC9Cd4/RK5TcpqOS6GtZXoFvB3c6uF6Z5NYTKkONyF2nE03
-         E7m7R/tQN01voJM1ZSbhy9bCc2Zanl6qek3tO7FHYJsrgfeG5LEOaZwA+yv1f2Sirbyx
-         tGjmguYAJb91rv4f92ni8OjqIGEFxnnOf7PLY1foEd4qgeA0ZEOP+QSaX/+5fmUXPBkE
-         2lNXjFbcPS39c3nz8tvOiYNOg3Rr9kwHrTi+ETUCR2+SSMMqW58sRPBwFeABjOB6yJoz
-         7A/A53Vf/0fhROfeIYUR2ooolnHyxGfHGMZBL874OpXuCVQrqgy+Z4uMlK+80sJtqz6E
-         HPFg==
-X-Gm-Message-State: AOJu0YwoxCX9VbHvoPD57giic9PtOgeUHsd/cPLhcCTIZceW4iSLSNoY
-        GCz4D1SNVAOe2fVVopKl3L33D8nvj150zLW8St5uaQ==
-X-Google-Smtp-Source: AGHT+IH7RuJLlU9VtC9SLyybEZiZajTmMC0WMqzGd7Km+auMypxpw0+MwbkeqMcolnOdB0KiX2W1XHJoOY0T3sx9t0k=
-X-Received: by 2002:a50:8d5a:0:b0:538:2941:ad10 with SMTP id
- t26-20020a508d5a000000b005382941ad10mr358835edt.5.1696843829278; Mon, 09 Oct
- 2023 02:30:29 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696843851; x=1697448651;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gmwAEQHUShD13Crz4Xqpp8bdUVorE1C8HPaXCwJ5RJ8=;
+        b=pIKlIg3f0SuzZoyt8Q7mj5w4dv7j0QVV0v7N6IxWyhpQpZHiDlPoXmmlED0Oj+3gVk
+         qUJo5C/4ps2w0OXeCHfZ5RSjIwN+/MaA3kOtgyWj0gR72aoGia9CJyDoQJTEGIalrz64
+         BJL/AYicEPpskuJrUEBWGVycXvagrWCKbT7bRGpoH6zUZtM374YRPzAk8cbhiy+gqZEH
+         VXjKgSrocUzENZ+xUhv8M8G3cFEMYerbXAN0CUH6sU3oxhR2jM0LN0QIllP9xkEwjmwt
+         PoFh4OE6BHkXphV1mjn8Nq63rwAMc0/qcqfY2cm7gLmjgn+NumylLhNMjh1bTeQGpbVM
+         Dn6g==
+X-Gm-Message-State: AOJu0YzHf5Qv4Gd26xb4dFsA0fdTh1KE+d4hvT8H5SOc5iMNpEXPEFZ4
+        cAP7ZcGNyUyc0XmZjxWtKCfHNw==
+X-Google-Smtp-Source: AGHT+IGHTGAuOleZS6uYzYovcWRJPRlE6qvUjsDstd5ZAD/P+o5pTl57ppGEmoWHacjXimQyT7/PjA==
+X-Received: by 2002:a05:6512:1245:b0:500:a7c8:1847 with SMTP id fb5-20020a056512124500b00500a7c81847mr16170277lfb.66.1696843851098;
+        Mon, 09 Oct 2023 02:30:51 -0700 (PDT)
+Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
+        by smtp.gmail.com with ESMTPSA id h10-20020ac2596a000000b004fe26362d48sm1385178lfp.75.2023.10.09.02.30.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Oct 2023 02:30:50 -0700 (PDT)
+Message-ID: <92377509-0f30-46ff-8b37-3b4b6fd53189@linaro.org>
+Date:   Mon, 9 Oct 2023 12:30:49 +0300
 MIME-Version: 1.0
-References: <20231007050621.1706331-1-yajun.deng@linux.dev>
- <CANn89iL-zUw1FqjYRSC7BGB0hfQ5uKpJzUba3YFd--c=GdOoGg@mail.gmail.com>
- <917708b5-cb86-f233-e878-9233c4e6c707@linux.dev> <CANn89i+navyRe8-AV=ehM3qFce2hmnOEKBqvK5Xnev7KTaS5Lg@mail.gmail.com>
- <a53a3ff6-8c66-07c4-0163-e582d88843dd@linux.dev> <CANn89i+u5dXdYm_0_LwhXg5Nw+gHXx+nPUmbYhvT=k9P4+9JRQ@mail.gmail.com>
- <9f4fb613-d63f-9b86-fe92-11bf4dfb7275@linux.dev> <CANn89iK7bvQtGD=p+fHaWiiaNn=u8vWrt0YQ26pGQY=kZTdfJw@mail.gmail.com>
- <4a747fda-2bb9-4231-66d6-31306184eec2@linux.dev> <814b5598-5284-9558-8f56-12a6f7a67187@linux.dev>
- <CANn89iJCTgWTu0mzwj-8_-HiWm4uErY=VASDHoYaod9Nq-ayPA@mail.gmail.com>
- <508b33f7-3dc0-4536-21f6-4a5e7ade2b5c@linux.dev> <CANn89i+r-pQGpen1mUhybmj+6ybhxSsuoaB07NFzOWyHUMFDNw@mail.gmail.com>
- <296ca17d-cff0-2d19-f620-eedab004ddde@linux.dev>
-In-Reply-To: <296ca17d-cff0-2d19-f620-eedab004ddde@linux.dev>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Mon, 9 Oct 2023 11:30:15 +0200
-Message-ID: <CANn89iL=W3fyuH_KawfhKvLyw2Cw=qhHbEZtbKgQEYhHJChy3Q@mail.gmail.com>
-Subject: Re: [PATCH net-next v7] net/core: Introduce netdev_core_stats_inc()
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     rostedt@goodmis.org, mhiramat@kernel.org, dennis@kernel.org,
-        tj@kernel.org, cl@linux.com, mark.rutland@arm.com,
-        davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 7/9] drm/ci: export kernel config
+Content-Language: en-GB
+To:     Helen Koike <helen.koike@collabora.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     robdclark@chromium.org, vignesh.raman@collabora.com,
+        sergi.blanch.torne@collabora.com, guilherme.gallo@collabora.com,
+        david.heidelberg@collabora.com, quic_abhinavk@quicinc.com,
+        quic_jesszhan@quicinc.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20231009004953.203576-1-helen.koike@collabora.com>
+ <20231009004953.203576-8-helen.koike@collabora.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+In-Reply-To: <20231009004953.203576-8-helen.koike@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 9, 2023 at 10:36=E2=80=AFAM Yajun Deng <yajun.deng@linux.dev> w=
-rote:
->
->
-> On 2023/10/9 16:20, Eric Dumazet wrote:
-> > On Mon, Oct 9, 2023 at 10:14=E2=80=AFAM Yajun Deng <yajun.deng@linux.de=
-v> wrote:
-> >>
-> >> On 2023/10/9 15:53, Eric Dumazet wrote:
-> >>> On Mon, Oct 9, 2023 at 5:07=E2=80=AFAM Yajun Deng <yajun.deng@linux.d=
-ev> wrote:
-> >>>
-> >>>> 'this_cpu_read + this_cpu_write' and 'pr_info + this_cpu_inc' will m=
-ake
-> >>>> the trace work well.
-> >>>>
-> >>>> They all have 'pop' instructions in them. This may be the key to mak=
-ing
-> >>>> the trace work well.
-> >>>>
-> >>>> Hi all,
-> >>>>
-> >>>> I need your help on percpu and ftrace.
-> >>>>
-> >>> I do not think you made sure netdev_core_stats_inc() was never inline=
-d.
-> >>>
-> >>> Adding more code in it is simply changing how the compiler decides to
-> >>> inline or not.
-> >>
-> >> Yes, you are right. It needs to add the 'noinline' prefix. The
-> >> disassembly code will have 'pop'
-> >>
-> >> instruction.
-> >>
-> > The function was fine, you do not need anything like push or pop.
-> >
-> > The only needed stuff was the call __fentry__.
-> >
-> > The fact that the function was inlined for some invocations was the
-> > issue, because the trace point
-> > is only planted in the out of line function.
->
->
-> But somehow the following code isn't inline? They didn't need to add the
-> 'noinline' prefix.
->
-> +               field =3D (unsigned long *)((void *)this_cpu_ptr(p) + off=
-set);
-> +               WRITE_ONCE(*field, READ_ONCE(*field) + 1);
->
-> Or
-> +               (*(unsigned long *)((void *)this_cpu_ptr(p) + offset))++;
->
+On 09/10/2023 03:49, Helen Koike wrote:
+> Export the resultant kernel config, making it easier to verify if the
+> resultant config was correctly generated.
+> 
+> Suggested-by: Rob Clark <robdclark@chromium.org>
+> Signed-off-by: Helen Koike <helen.koike@collabora.com>
 
-I think you are very confused.
+Acked-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-You only want to trace netdev_core_stats_inc() entry point, not
-arbitrary pieces of it.
+
+I'd even say:
+
+Appreciated-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+It will help a lot to debug possible Kconfig changes and/or omissions.
+
+> ---
+>   drivers/gpu/drm/ci/build.sh       | 1 +
+>   drivers/gpu/drm/ci/image-tags.yml | 2 +-
+>   2 files changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build.sh
+> index 8eec15143bfe..740b5008be2e 100644
+> --- a/drivers/gpu/drm/ci/build.sh
+> +++ b/drivers/gpu/drm/ci/build.sh
+> @@ -148,6 +148,7 @@ mkdir -p artifacts/install/lib
+>   mv install/* artifacts/install/.
+>   rm -rf artifacts/install/modules
+>   ln -s common artifacts/install/ci-common
+> +cp .config artifacts/${CI_JOB_NAME}_config
+>   
+>   for image in ${KERNEL_IMAGE_NAME}; do
+>       cp /lava-files/$image artifacts/install/.
+> diff --git a/drivers/gpu/drm/ci/image-tags.yml b/drivers/gpu/drm/ci/image-tags.yml
+> index df94d8fb348e..3e5cd4e8be24 100644
+> --- a/drivers/gpu/drm/ci/image-tags.yml
+> +++ b/drivers/gpu/drm/ci/image-tags.yml
+> @@ -4,7 +4,7 @@ variables:
+>      DEBIAN_BASE_TAG: "${CONTAINER_TAG}"
+>   
+>      DEBIAN_X86_64_BUILD_IMAGE_PATH: "debian/x86_64_build"
+> -   DEBIAN_BUILD_TAG: "2023-10-08-igt"
+> +   DEBIAN_BUILD_TAG: "2023-10-08-config"
+>   
+>      KERNEL_ROOTFS_TAG: "2023-10-06-amd"
+>   
+
+-- 
+With best wishes
+Dmitry
+
