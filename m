@@ -2,84 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 544367BD94A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C587BD94C
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346182AbjJILKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 07:10:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35032 "EHLO
+        id S1346184AbjJILLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 07:11:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346171AbjJILKx (ORCPT
+        with ESMTP id S1346187AbjJILLT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 07:10:53 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C03AAF;
-        Mon,  9 Oct 2023 04:10:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696849852; x=1728385852;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=/hGFy3dY+abobqliqfXMKxSmSYBUujSLeMlrXMfTXFg=;
-  b=cPQ15Qc1mS51SAHu2HIi5opr3rKdtTUcD+AhqkyH/kbrOS1DvypuCft0
-   AvNwcp9Fa+iqYWthlgQF1dG12cnpbrbQbaU0wRSwAc9GCklppmgBGgigl
-   iWX7ARQ2U6LPK2W9hRAMX2ppfXcXGN/k72DRAslVt1E/CVFDlk2XPfqrk
-   Dh2J5hj7oTwMufzczkfQWEhm5iWqFz4j9sVyrjZ05fq7jC96x40Hp8nFv
-   tHpWa4tyKObdSBHqOtOgS8IGC1Qse9ETcSSztob6foq31UGfkgdJBDo6V
-   vzcm6S93ueKvf4pc5zitTaWNA4zm4cCkqdW3qQt80rZaN2wbEHk9dR19E
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="450618176"
-X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="scan'208";a="450618176"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 04:10:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="876761195"
-X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="scan'208";a="876761195"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga004.jf.intel.com with ESMTP; 09 Oct 2023 04:10:49 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-        id 6F4F722B; Mon,  9 Oct 2023 14:10:48 +0300 (EEST)
-Date:   Mon, 9 Oct 2023 14:10:48 +0300
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 06/20] pinctrl: intel: lynxpoint: Convert to platform
- remove callback returning void
-Message-ID: <20231009111048.GF3208943@black.fi.intel.com>
-References: <20231009083856.222030-1-u.kleine-koenig@pengutronix.de>
- <20231009083856.222030-7-u.kleine-koenig@pengutronix.de>
+        Mon, 9 Oct 2023 07:11:19 -0400
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E6B1ED;
+        Mon,  9 Oct 2023 04:11:17 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R671e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0Vtn6Z4K_1696849872;
+Received: from 30.240.114.194(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vtn6Z4K_1696849872)
+          by smtp.aliyun-inc.com;
+          Mon, 09 Oct 2023 19:11:14 +0800
+Message-ID: <54601861-bd02-d4c9-6d78-34901807a001@linux.alibaba.com>
+Date:   Mon, 9 Oct 2023 19:11:11 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231009083856.222030-7-u.kleine-koenig@pengutronix.de>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH v5 2/2] perf record: Update docs regarding the maximum
+ limitation of AUX area
+Content-Language: en-US
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     mingo@redhat.com, baolin.wang@linux.alibaba.com, acme@kernel.org,
+        mark.rutland@arm.com, jolsa@kernel.org, namhyung@kernel.org,
+        irogers@google.com, adrian.hunter@intel.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nathan@kernel.org, bpf@vger.kernel.org,
+        alexander.shishkin@linux.intel.com, peterz@infradead.org,
+        james.clark@arm.com, leo.yan@linaro.org
+References: <20230907004308.25874-1-xueshuai@linux.alibaba.com>
+ <20230907004308.25874-3-xueshuai@linux.alibaba.com>
+In-Reply-To: <20230907004308.25874-3-xueshuai@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 10:38:42AM +0200, Uwe Kleine-König wrote:
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is ignored (apart
-> from emitting a warning) and this typically results in resource leaks.
-> 
-> To improve here there is a quest to make the remove callback return
-> void. In the first step of this quest all drivers are converted to
-> .remove_new(), which already returns void. Eventually after all drivers
-> are converted, .remove_new() will be renamed to .remove().
-> 
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
-> 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+
+On 2023/9/7 08:43, Shuai Xue wrote:
+> The maximum AUX area is limited by the page size of the system. Update
+> the documentation to reflect this.
+> 
+> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+> ---
+>  tools/perf/Documentation/perf-record.txt | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+> index 680396c56bd1..dfc322d6f1f1 100644
+> --- a/tools/perf/Documentation/perf-record.txt
+> +++ b/tools/perf/Documentation/perf-record.txt
+> @@ -292,6 +292,17 @@ OPTIONS
+>  	Also, by adding a comma, the number of mmap pages for AUX
+>  	area tracing can be specified.
+>  
+> +	The maximum AUX area is limited by the maximum physically contiguous
+> +	memory allocated from slab/slub. It can be calculated with following
+> +	formula:
+> +
+> +	  PAGE_SIZE << MAX_ORDER
+> +	( ---------------------- ) * PAGE_SIZE
+> +	   sizeof(page_pointer)
+> +
+> +	For example with 4K pages and MAX_ORDER=10 configured, the maximum AUX
+> +	area is 2GiB.
+> +
+>  -g::
+>  	Enables call-graph (stack chain/backtrace) recording for both
+>  	kernel space and user space.
+
+
+Hi, Namhyung,
+
+Since PATCH [1/2] of this series has been merge into perf/core[1], are you happy to
+pick this part [2/2] into perf-tools-next?
+
+Thank you.
+
+Best Regards,
+Shuai
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?h=perf/core&id=54aee5f15b83437f23b2b2469bcf21bdd9823916
