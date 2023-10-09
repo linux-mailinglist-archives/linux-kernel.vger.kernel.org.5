@@ -2,141 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA42A7BD61A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6652C7BD61D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345703AbjJIJCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 05:02:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55072 "EHLO
+        id S1345684AbjJIJDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 05:03:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345682AbjJIJCv (ORCPT
+        with ESMTP id S1345584AbjJIJDp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 05:02:51 -0400
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC9EFDE;
-        Mon,  9 Oct 2023 02:02:42 -0700 (PDT)
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3997kBj8016515;
-        Mon, 9 Oct 2023 11:02:20 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=
-        selector1; bh=G45xnPIUX9Ez29Qgnji13Rx5Rf0f5sWrQjcrxGxi2dI=; b=z3
-        Bvtq2jdON1aVCMbQCY3h/qaVoQmvOeYcE46qodM8z0atcV2aqWKIOtEre8sEFx42
-        2tsVZvqLIgZh86AzjZBZytYNTCwQGtG+PqYrWflFBWrJGBpLv7Ltvlbof+N1xoub
-        bYreB6WtLnSuLDda9OysxNMUwqAsQarrf97cEpWBk8Tdp1bIrqfK3po3Kf+8iu2s
-        Od/HYR8ColJa0HYl/jUeEe07lCt6eIEY5wV/B6mW+Ow7bdwsFHKafHgMTvr8pw3u
-        G5NFg7GKQWB5Fn7ly55XrRTvgf0q3X0ZsR4DBFwtvx1DNCTKCCwH0dD99mUiaWzY
-        kLFWvaxZa1roOwcw55gw==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3tkhfdv8d5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Oct 2023 11:02:20 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5425E100063;
-        Mon,  9 Oct 2023 11:02:20 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4C01621ADB2;
-        Mon,  9 Oct 2023 11:02:20 +0200 (CEST)
-Received: from gnbcxd0016.gnb.st.com (10.129.178.213) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 9 Oct
- 2023 11:02:19 +0200
-Date:   Mon, 9 Oct 2023 11:02:13 +0200
-From:   Alain Volmat <alain.volmat@foss.st.com>
-To:     Amelie Delaunay <amelie.delaunay@foss.st.com>
-CC:     Vinod Koul <vkoul@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        M'boumba Cedric Madianga <cedric.madianga@gmail.com>,
-        Pierre-Yves MORDRET <pierre-yves.mordret@st.com>,
-        <stable@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] dmaengine: stm32-mdma: correct desc prep when channel
- running
-Message-ID: <20231009090213.GA1547647@gnbcxd0016.gnb.st.com>
-Mail-Followup-To: Amelie Delaunay <amelie.delaunay@foss.st.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        M'boumba Cedric Madianga <cedric.madianga@gmail.com>,
-        Pierre-Yves MORDRET <pierre-yves.mordret@st.com>,
-        stable@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231009082450.452877-1-amelie.delaunay@foss.st.com>
+        Mon, 9 Oct 2023 05:03:45 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A037AB
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:03:42 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-69fc829d7b1so1385950b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 02:03:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1696842222; x=1697447022; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zVPBUts0sM4ll2vXGLp7ZtXBxcW/h1TyBHpbZpV8ZlI=;
+        b=hlTgykwID4cohBQxftpD30xjO1kTA+GlU3TXe/CGkYloPIuqBBvDww9+HKJQXDUak0
+         r9BfCXXIPiAdPp4cOplzgSgVlILghz3dL9DMfq8Y6zLz3KC24CUSTcqtacqZ+hv0FGWT
+         mr9btDAF+fbBI1Oo+3VNyJu6S56J87uwyJig7kF4EoMFIn3g1ji7Oxm2ABYoXzb2DRy1
+         ky4JM7Zn5N4/xqs6KupzcWOSKEuC2jogIvJp69tISahpNLxVyhT4z6Q0n/6vESdETWcQ
+         ns6ZuVHihoa0ri/D7B2wO7kl4pHxLWKQhKBo3RAGVHjdfhMF/WnSkOuxcLL39+Woc0lk
+         5OBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696842222; x=1697447022;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zVPBUts0sM4ll2vXGLp7ZtXBxcW/h1TyBHpbZpV8ZlI=;
+        b=Nv8TNjIMgaG4Cju5aMrBw8eGnSrEPjwPRsUUEdGr6ntPXizHBEvIDYWNueKY+ZsZCh
+         kvqYvfcfhJgiNWf/GuiDr7SipgSmVMyJFNlh9WwlQ8226klctJb1aF8WWGZiC4jRdhQC
+         6D5u+I/uu7o5xtF9VCVQ+Skmxt/xDvDj8RTgVzIGD9TjeZs7g1ud99TSH+pOpSnWP7li
+         d6r3QiOw1qtPd8ay3q7caGlHysWDSwSOKB+zSrlB3VwtFfSvkCLB5j/AjX4SE2CTxSn/
+         a+P2I9fMwQVgPFv2AM7MXAbUHAuZnFqm66jz8UW4Izy8vDmp6AwzHf4zEWcEWMpHXOVX
+         xQdg==
+X-Gm-Message-State: AOJu0YzaCVACKn/Z3KkSwMj9V+kZJU41MA6VFQT0TGw848HLJjQ2z4vW
+        f7ljpL2djBUsoc8w+B59aax2/g==
+X-Google-Smtp-Source: AGHT+IGL5ggcIxz/u0/Y14JkIJ+W5YgdS64GhkUPDuRS8uFzbKt1pKOfnH6ukCzYRqW5rAeL6aDlFA==
+X-Received: by 2002:a05:6a20:72a2:b0:16b:d470:b403 with SMTP id o34-20020a056a2072a200b0016bd470b403mr9389736pzk.28.1696842221863;
+        Mon, 09 Oct 2023 02:03:41 -0700 (PDT)
+Received: from GL4FX4PXWL.bytedance.net ([139.177.225.243])
+        by smtp.gmail.com with ESMTPSA id fk3-20020a056a003a8300b00690ca4356f1sm5884847pfb.198.2023.10.09.02.03.35
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Mon, 09 Oct 2023 02:03:41 -0700 (PDT)
+From:   Peng Zhang <zhangpeng.00@bytedance.com>
+To:     Liam.Howlett@oracle.com, corbet@lwn.net, akpm@linux-foundation.org,
+        willy@infradead.org, brauner@kernel.org, surenb@google.com,
+        michael.christie@oracle.com, mjguzik@gmail.com,
+        mathieu.desnoyers@efficios.com, npiggin@gmail.com,
+        peterz@infradead.org, oliver.sang@intel.com, mst@redhat.com
+Cc:     zhangpeng.00@bytedance.com, maple-tree@lists.infradead.org,
+        linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCH v4 00/10] Introduce __mt_dup() to improve the performance of fork()
+Date:   Mon,  9 Oct 2023 17:03:10 +0800
+Message-Id: <20231009090320.64565-1-zhangpeng.00@bytedance.com>
+X-Mailer: git-send-email 2.37.0 (Apple Git-136)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231009082450.452877-1-amelie.delaunay@foss.st.com>
-X-Disclaimer: ce message est personnel / this message is private
-X-Originating-IP: [10.129.178.213]
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-09_07,2023-10-06_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Amélie,
+Hi all,
 
-thanks a lot.
+This series introduces __mt_dup() to improve the performance of fork(). During
+the duplication process of mmap, all VMAs are traversed and inserted one by one
+into the new maple tree, causing the maple tree to be rebalanced multiple times.
+Balancing the maple tree is a costly operation. To duplicate VMAs more
+efficiently, mtree_dup() and __mt_dup() are introduced for the maple tree. They
+can efficiently duplicate a maple tree.
 
-Tested-by: Alain Volmat <alain.volmat@foss.st.com>
+Here are some algorithmic details about {mtree, __mt}_dup(). We perform a DFS
+pre-order traversal of all nodes in the source maple tree. During this process,
+we fully copy the nodes from the source tree to the new tree. This involves
+memory allocation, and when encountering a new node, if it is a non-leaf node,
+all its child nodes are allocated at once.
 
-Regards,
-Alain
+Some previous discussions can be referred to as [1]. For a more detailed
+analysis of the algorithm, please refer to the logs for patch [3/10] and patch
+[10/10]
 
-On Mon, Oct 09, 2023 at 10:24:50AM +0200, Amelie Delaunay wrote:
-> From: Alain Volmat <alain.volmat@foss.st.com>
-> 
-> In case of the prep descriptor while the channel is already running, the
-> CCR register value stored into the channel could already have its EN bit
-> set.  This would lead to a bad transfer since, at start transfer time,
-> enabling the channel while other registers aren't yet properly set.
-> To avoid this, ensure to mask the CCR_EN bit when storing the ccr value
-> into the mdma channel structure.
-> 
-> Fixes: a4ffb13c8946 ("dmaengine: Add STM32 MDMA driver")
-> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-> Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
-> Cc: stable@vger.kernel.org
-> ---
->  drivers/dma/stm32-mdma.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/dma/stm32-mdma.c b/drivers/dma/stm32-mdma.c
-> index bae08b3f55c7..f414efdbd809 100644
-> --- a/drivers/dma/stm32-mdma.c
-> +++ b/drivers/dma/stm32-mdma.c
-> @@ -489,7 +489,7 @@ static int stm32_mdma_set_xfer_param(struct stm32_mdma_chan *chan,
->  	src_maxburst = chan->dma_config.src_maxburst;
->  	dst_maxburst = chan->dma_config.dst_maxburst;
->  
-> -	ccr = stm32_mdma_read(dmadev, STM32_MDMA_CCR(chan->id));
-> +	ccr = stm32_mdma_read(dmadev, STM32_MDMA_CCR(chan->id)) & ~STM32_MDMA_CCR_EN;
->  	ctcr = stm32_mdma_read(dmadev, STM32_MDMA_CTCR(chan->id));
->  	ctbr = stm32_mdma_read(dmadev, STM32_MDMA_CTBR(chan->id));
->  
-> @@ -965,7 +965,7 @@ stm32_mdma_prep_dma_memcpy(struct dma_chan *c, dma_addr_t dest, dma_addr_t src,
->  	if (!desc)
->  		return NULL;
->  
-> -	ccr = stm32_mdma_read(dmadev, STM32_MDMA_CCR(chan->id));
-> +	ccr = stm32_mdma_read(dmadev, STM32_MDMA_CCR(chan->id)) & ~STM32_MDMA_CCR_EN;
->  	ctcr = stm32_mdma_read(dmadev, STM32_MDMA_CTCR(chan->id));
->  	ctbr = stm32_mdma_read(dmadev, STM32_MDMA_CTBR(chan->id));
->  	cbndtr = stm32_mdma_read(dmadev, STM32_MDMA_CBNDTR(chan->id));
-> -- 
-> 2.25.1
-> 
+There is a "spawn" in byte-unixbench[2], which can be used to test the
+performance of fork(). I modified it slightly to make it work with
+different number of VMAs.
+
+Below are the test results. The first row shows the number of VMAs.
+The second and third rows show the number of fork() calls per ten seconds,
+corresponding to next-20231006 and the this patchset, respectively. The
+test results were obtained with CPU binding to avoid scheduler load
+balancing that could cause unstable results. There are still some
+fluctuations in the test results, but at least they are better than the
+original performance.
+
+21     121   221    421    821    1621   3221   6421   12821  25621  51221
+112100 76261 54227  34035  20195  11112  6017   3161   1606   802    393
+114558 83067 65008  45824  28751  16072  8922   4747   2436   1233   599
+2.19%  8.92% 19.88% 34.64% 42.37% 44.64% 48.28% 50.17% 51.68% 53.74% 52.42%
+
+Thanks for Liam's review.
+
+Changes since v3:
+ - Modified the user-space kmem_cache_alloc_bulk() to align its behavior with
+   that of the kernel.
+ - Made minor modifications to the comments for {__mt,mtree}_dup() and their
+   sub-functions.
+ - Made minor modifications to the error handling of mas_dup_alloc().
+ - Adjusted the code style of undo_dup_mmap() and also fixed a potential bug in
+   it.
+ - Rebased onto next-20231006.
+
+[1] https://lore.kernel.org/lkml/463899aa-6cbd-f08e-0aca-077b0e4e4475@bytedance.com/
+[2] https://github.com/kdlucas/byte-unixbench/tree/master
+
+v1: https://lore.kernel.org/lkml/20230726080916.17454-1-zhangpeng.00@bytedance.com/
+v2: https://lore.kernel.org/lkml/20230830125654.21257-1-zhangpeng.00@bytedance.com/
+v3: https://lore.kernel.org/lkml/20230925035617.84767-1-zhangpeng.00@bytedance.com/
+
+Peng Zhang (10):
+  maple_tree: Add mt_free_one() and mt_attr() helpers
+  maple_tree: Introduce {mtree,mas}_lock_nested()
+  maple_tree: Introduce interfaces __mt_dup() and mtree_dup()
+  radix tree test suite: Align kmem_cache_alloc_bulk() with kernel
+    behavior.
+  maple_tree: Add test for mtree_dup()
+  maple_tree: Update the documentation of maple tree
+  maple_tree: Skip other tests when BENCH is enabled
+  maple_tree: Update check_forking() and bench_forking()
+  maple_tree: Preserve the tree attributes when destroying maple tree
+  fork: Use __mt_dup() to duplicate maple tree in dup_mmap()
+
+ Documentation/core-api/maple_tree.rst |   4 +
+ include/linux/maple_tree.h            |   7 +
+ include/linux/mm.h                    |   1 +
+ kernel/fork.c                         |  34 ++-
+ lib/maple_tree.c                      | 300 ++++++++++++++++++++-
+ lib/test_maple_tree.c                 |  69 +++--
+ mm/internal.h                         |   3 +-
+ mm/memory.c                           |   7 +-
+ mm/mmap.c                             |  50 +++-
+ tools/include/linux/spinlock.h        |   1 +
+ tools/testing/radix-tree/linux.c      |  45 +++-
+ tools/testing/radix-tree/maple.c      | 363 ++++++++++++++++++++++++++
+ 12 files changed, 818 insertions(+), 66 deletions(-)
+
+-- 
+2.20.1
+
