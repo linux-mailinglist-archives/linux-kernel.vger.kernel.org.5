@@ -2,97 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC2C7BEE98
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 00:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C817BEEA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 00:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378940AbjJIW4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 18:56:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47768 "EHLO
+        id S1378976AbjJIW5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 18:57:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378939AbjJIW4J (ORCPT
+        with ESMTP id S1378961AbjJIW5u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 18:56:09 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16459D;
-        Mon,  9 Oct 2023 15:56:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1696892163;
-        bh=lZbOeY8h0q3Stw3D5TP1TELS51wD9sHI+rTHHE3IsOE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=DD+wQnSWA8fpbfNKQ8T2sXTsMAE0CRShgGpOhmFJ4Y8e5r6UEzqi2yp5u6MVxsuWN
-         thMP7+gZt1oW1GiZfmXyWiNXbE54mrY7QihsOulKz8MoyUpGILGpchZ5X0rYDvKcPf
-         BX5UBtaHYH88MZrdN38lqLreTaxtmGMVUpFlMDbrAlnLxa5sfmXafi0v1LmrmFrUAa
-         3tSGhgN/3W+q1jfkw2MaAVCr0OddweUlbKdPiRaZApSoplhtJ7hfyf9CyyBrKXPAGG
-         yHanuPL7UkL3cp+V4kCK2MDrqdeWECg0EjJf8Yl133aBv7oaiYU4no7WoZrwNBF1CJ
-         Ws4YJDQg8ZiPw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S4Dsb2cMBz4xQm;
-        Tue, 10 Oct 2023 09:56:03 +1100 (AEDT)
-Date:   Tue, 10 Oct 2023 09:56:01 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Will Deacon <will@kernel.org>
-Cc:     Ilkka Koskinen <ilkka@os.amperecomputing.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the arm-perf tree
-Message-ID: <20231010095601.1443903c@canb.auug.org.au>
+        Mon, 9 Oct 2023 18:57:50 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BF27B8
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 15:57:49 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-7a29359c80bso19068539f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 15:57:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1696892268; x=1697497068; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2OEcyx+CG+G2DX8k230kBj9Zk1p7l6RAqnhFlG0dPE0=;
+        b=JQQEUTKlKWmhfLKcS8uMvoKu1r5+RV99O4xNyzAYxjdabiIgxqg/3sotiM/VaLGXr2
+         BOPLmubVmnAGg+4WztnMMugbV2n4L/ALbpHo4CqLVDdrCatXiujvtTd0WACUnpCSoYAr
+         fleb3TM4DCv0ohO9Swzug+qqI0AcdLflfdISc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696892268; x=1697497068;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2OEcyx+CG+G2DX8k230kBj9Zk1p7l6RAqnhFlG0dPE0=;
+        b=OjozRG7hRrIRLsM717g1Zk33hfhzJIUZzyJtBeM1V9KkDGMkkSAk/8K9tXVA0S36Ew
+         uoK6cwXJjT5ILnhyVJGcbrc0JiCmwQLstf4zKj/H841KzqLpy6DyYwBNTr1uazWW6Ouq
+         D5zDiJcZJ1UO0ByBXYY18yMQAA7bIq+RdUnYYCLKm7I2BDfPm2XMapaL/hRYy4uyBv6u
+         7La8RoJgXmgJgW1Jk2p2NTkAZDvmmLh8A+993Mc8X7P/TFnsU3T5jQ2C+Nj538Ru8Xcp
+         nBGiks75PGrnoxKdExG8j+cudeS+fMNm3a0VVxmVuYpWiow9as0IWiyD6nQHv+U/j2wp
+         ytjQ==
+X-Gm-Message-State: AOJu0YwO50x7b+rQxtGYYhlZI5WoBUDRHpD7dT6OfuE8OwX2DA/6IfJ6
+        dWHEH0xvByYC9W3gd93g7MOLXg==
+X-Google-Smtp-Source: AGHT+IFbTZ2wIH4yqfN84dEc3TWbmavjElIAAr7btZSRiegZjepleLuOOmWAR//KMO3Z9SVLZvXinw==
+X-Received: by 2002:a05:6602:1a07:b0:79d:1c65:9bde with SMTP id bo7-20020a0566021a0700b0079d1c659bdemr17549615iob.1.1696892268502;
+        Mon, 09 Oct 2023 15:57:48 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id j2-20020a02a682000000b00418a5e0e93esm2347740jam.162.2023.10.09.15.57.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Oct 2023 15:57:48 -0700 (PDT)
+Message-ID: <98ce539d-481f-4897-8d30-13b6c57e5b74@linuxfoundation.org>
+Date:   Mon, 9 Oct 2023 16:57:47 -0600
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/LULx.hQtM29MVS1rQFZKik+";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.10 000/226] 5.10.198-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20231009130126.697995596@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20231009130126.697995596@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/LULx.hQtM29MVS1rQFZKik+
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 10/9/23 06:59, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.198 release.
+> There are 226 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 11 Oct 2023 13:00:55 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.198-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Hi all,
+Compiled and booted on my test system. No dmesg regressions.
 
-After merging the arm-perf tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-drivers/perf/arm_cspmu/ampere_cspmu.c: In function 'ampere_cspmu_set_ev_fil=
-ter':
-drivers/perf/arm_cspmu/ampere_cspmu.c:164:9: error: implicit declaration of=
- function 'writel' [-Werror=3Dimplicit-function-declaration]
-  164 |         writel(threshold, cspmu->base0 + PMAUXR0);
-      |         ^~~~~~
-cc1: all warnings being treated as errors
-
-Caused by commit
-
-  290a9c0e55f8 ("perf: arm_cspmu: ampere_cspmu: Add support for Ampere SoC =
-PMU")
-
-I have used the arm-perf tree from next-20231009 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/LULx.hQtM29MVS1rQFZKik+
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUkhQEACgkQAVBC80lX
-0Gww2Af+KFRVSTri6Lj+GzcrshGD+r44dXBjnda3Rx4ITzRPT66QYuyqPYev6BJF
-BffFvWnR7ynd8F/TeITAziGjHI9xZkz6F44cW+hhoSf/HLst5RRM34PR909mNV5I
-WXeGsczTHCOmk00RBg7MHwqwlBTO5Z9RvMJzI16jzp8ZMlH8MwQDtu9RIjEl60iV
-M/kR9jBYXtJZLcO+E/UL5BJPVn3Ohsd2X8WWLiraS889aprFn/ke2caFtaxwy8bX
-49k2Jbx48GGczu7AgZHQeyNzVvPbpbcJNnG2zrkBp/SJEbZEsFeSVjgoz+zkfyIZ
-aY2rRzYVA8R2rtb52ZBofYPtExwhpw==
-=Ly/C
------END PGP SIGNATURE-----
-
---Sig_/LULx.hQtM29MVS1rQFZKik+--
+thanks,
+-- Shuah
