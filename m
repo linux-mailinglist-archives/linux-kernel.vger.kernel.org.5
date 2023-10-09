@@ -2,73 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB547BD3F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 08:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56FCC7BD3F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 08:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345364AbjJIG6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 02:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46114 "EHLO
+        id S1345344AbjJIG7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 02:59:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345348AbjJIG6A (ORCPT
+        with ESMTP id S1344984AbjJIG7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 02:58:00 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9614DCF;
-        Sun,  8 Oct 2023 23:57:58 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 284101F891;
-        Mon,  9 Oct 2023 06:57:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1696834677; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5PMKoGoS2vLzoKH9kdsFyFd1ZtB88d4t02wBvV5jGHk=;
-        b=XvQG4fCsu3fvRyKslufODhpJNhqV6mFFPSflf91XHeQxi1mYqBg9rqt4Py5X/4wE/2wFCN
-        JtW487lBqLcYeXnePO2gGogqAxEGWLD1CNL/IEysvR6BaPITfzh1B07tZS5nD3ldUnNbb2
-        W7F5bZlqz8Z112F/GxBuVfNLaJDZmjM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1696834677;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5PMKoGoS2vLzoKH9kdsFyFd1ZtB88d4t02wBvV5jGHk=;
-        b=mByEucNw6d0I9QJtVlZdb3iYV29rBHB8n7DPWXW/al0v9mEueRVYaopwdmKOdoS5tYme8i
-        36r1Ydx1Rj3bqMDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ADA2413586;
-        Mon,  9 Oct 2023 06:57:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id EHI8KHSkI2XLEQAAMHmgww
-        (envelope-from <hare@suse.de>); Mon, 09 Oct 2023 06:57:56 +0000
-Message-ID: <f2be55ef-2521-4147-9a70-4996cc08bb99@suse.de>
-Date:   Mon, 9 Oct 2023 08:57:56 +0200
+        Mon, 9 Oct 2023 02:59:13 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E566A3;
+        Sun,  8 Oct 2023 23:59:11 -0700 (PDT)
+Received: from kwepemm000012.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S3qYW0kL2zVlQN;
+        Mon,  9 Oct 2023 14:55:43 +0800 (CST)
+Received: from [10.174.178.220] (10.174.178.220) by
+ kwepemm000012.china.huawei.com (7.193.23.142) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 9 Oct 2023 14:59:09 +0800
+Message-ID: <05c0b3ef-8643-3fac-c78a-2d04a10bb188@huawei.com>
+Date:   Mon, 9 Oct 2023 14:59:08 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/10] scsi: libsas: Delete sas_ata_task.retry_count
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH v2 0/4] SCSI: Fix issues between removing device and error
+ handle
+To:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <louhongxiang@huawei.com>
+References: <20230928073543.3496394-1-haowenchao2@huawei.com>
 Content-Language: en-US
-To:     John Garry <john.g.garry@oracle.com>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, chenxiang66@hisilicon.com,
-        artur.paszkiewicz@intel.com, yanaijie@huawei.com,
-        jinpu.wang@cloud.ionos.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dlemoal@kernel.org
-References: <20230814141022.36875-1-john.g.garry@oracle.com>
- <20230814141022.36875-11-john.g.garry@oracle.com>
-From:   Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20230814141022.36875-11-john.g.garry@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+From:   Wenchao Hao <haowenchao2@huawei.com>
+In-Reply-To: <20230928073543.3496394-1-haowenchao2@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.220]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm000012.china.huawei.com (7.193.23.142)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,26 +52,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/14/23 16:10, John Garry wrote:
-> Since libsas was introduced in commit 2908d778ab3e ("[SCSI] aic94xx: new
-> driver"), sas_ata_task.retry_count is never set, so delete it and the
-> reference in asd_build_ata_ascb().
+On 2023/9/28 15:35, Wenchao Hao wrote:
+> I am testing SCSI error handle with my previous scsi_debug error
+> injection patches, and found some issues when removing device and
+> error handler happened together.
 > 
-> Signed-off-by: John Garry <john.g.garry@oracle.com>
-> ---
->   drivers/scsi/aic94xx/aic94xx_task.c | 2 +-
->   include/scsi/libsas.h               | 2 --
->   2 files changed, 1 insertion(+), 3 deletions(-)
+> These issues are triggered because devices in removing would be skipped
+> when calling shost_for_each_device().
 > 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+> Three issues are found:
+> 1. statistic info printed at beginning of scsi_error_handler is wrong
+> 2. device reset is not triggered
+> 3. IO requeued to request_queue would be hang after error handle
+> 
 
-Cheers,
+These patches fix bug which is easy to recurrent when removing device
+and error handle happened together, so friendly ping again...
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Ivo Totev, Andrew
-Myers, Andrew McDonald, Martje Boudien Moerman
+> V2:
+>    - Fix IO hang by run all devices' queue after error handler
+>    - Do not modify shost_for_each_device() directly but add a new
+>      helper to iterate devices but do not skip devices in removing
+> 
+> Wenchao Hao (4):
+>    scsi: core: Add new helper to iterate all devices of host
+>    scsi: scsi_error: Fix wrong statistic when print error info
+>    scsi: scsi_error: Fix device reset is not triggered
+>    scsi: scsi_core:  Fix IO hang when device removing
+> 
+>   drivers/scsi/scsi.c        | 43 +++++++++++++++++++++++++-------------
+>   drivers/scsi/scsi_error.c  |  4 ++--
+>   drivers/scsi/scsi_lib.c    |  2 +-
+>   include/scsi/scsi_device.h | 25 +++++++++++++++++++---
+>   4 files changed, 53 insertions(+), 21 deletions(-)
+> 
 
