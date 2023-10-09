@@ -2,103 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 717017BD42E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 09:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D06767BD431
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 09:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345376AbjJIHTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 03:19:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58536 "EHLO
+        id S1345379AbjJIHXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 03:23:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234360AbjJIHTa (ORCPT
+        with ESMTP id S232625AbjJIHXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 03:19:30 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D82CA4;
-        Mon,  9 Oct 2023 00:19:28 -0700 (PDT)
-Received: from kwepemm000012.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4S3r1z3WFVz1M9Gb;
-        Mon,  9 Oct 2023 15:16:55 +0800 (CST)
-Received: from [10.174.178.220] (10.174.178.220) by
- kwepemm000012.china.huawei.com (7.193.23.142) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 9 Oct 2023 15:19:25 +0800
-Message-ID: <89365bd3-b4b0-de2d-f863-afbaad118649@huawei.com>
-Date:   Mon, 9 Oct 2023 15:19:24 +0800
+        Mon, 9 Oct 2023 03:23:03 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C75BAB
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 00:23:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1696836179;
+        bh=QwqFqkXh+UwZPAFFs4+wsmZwhgNgtwMLcNYLANcfZzQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IC3/eBwVy7afGzWq1WxfzfAQrcJOn26dEgf/B9CszKdCS1AhRmMDQ91ascjNIqntg
+         J/ElC7SLdXmBD75hG0dtwk0iBz4q0Rp0tDuR1TYYf+3zdYyluQ6MKKy/AvC3sHQwWf
+         NO0mbcy0Fl0hE53KtpxgPqj+Luguflh9KbdUCCFs=
+Date:   Mon, 9 Oct 2023 09:22:59 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: nolibc changes since 6.6-rc1 for linux-next
+Message-ID: <f9695abc-f1f2-49e0-901b-41a078ec57c5@t-8ch.de>
+References: <dcfa99da-eb3e-4c85-9e7f-092bbb1be801@linuxfoundation.org>
+ <48c01af3-d373-4546-a8f2-d81fa447eaaa@t-8ch.de>
+ <25382680-956a-4612-b930-f6823c71cf8d@paulmck-laptop>
+ <696fc488-63d3-444c-a9f2-14d7a7379143@linuxfoundation.org>
+ <23bc3841-4cda-4a23-a67f-a944e1104f1d@paulmck-laptop>
+ <20231007070630.GB20998@1wt.eu>
+ <d80c1da1-56f8-4b94-b1e2-eef75a52d022@paulmck-laptop>
+ <fad7814f-0bbd-43f0-a205-9ba2c08bac22@t-8ch.de>
+ <76a51116-46bb-4271-b5ac-c101e02d5a63@paulmck-laptop>
+ <ZSOjhgIbK8bs3Asu@1wt.eu>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH v5 10/10] scsi: scsi_debug: Add param to control sdev's
- allow_restart
-Content-Language: en-US
-To:     <dgilbert@interlog.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        <open-iscsi@googlegroups.com>, <linux-scsi@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <louhongxiang@huawei.com>
-References: <20230922092906.2645265-1-haowenchao2@huawei.com>
- <20230922092906.2645265-11-haowenchao2@huawei.com>
- <d61e88d3-e1b7-44e0-ba9b-f633be0b5b30@interlog.com>
-From:   Wenchao Hao <haowenchao2@huawei.com>
-In-Reply-To: <d61e88d3-e1b7-44e0-ba9b-f633be0b5b30@interlog.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.220]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm000012.china.huawei.com (7.193.23.142)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZSOjhgIbK8bs3Asu@1wt.eu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/9 7:17, Douglas Gilbert wrote:
-> On 2023-09-22 05:29, Wenchao Hao wrote:
->> Add new module param "allow_restart" to control if setup
->> scsi_device's allow_restart flag. This is used to test scsi
->> command finished with sense_key 0x6, asc 0x4 and ascq 0x2
->>
->> Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
-> 
-> Hi,
-> Looked at this and verified that the allow_restart flag of scsi_debug
-> devices (disks ?) is usually 0 and when the scsi_debug module is
-> started with allow_restart=1 then the allow_restart flag does indeed
-> change to 1. For example:
->     # cat /sys/class/scsi_disk/1\:0\:0\:0/allow_restart
->     1
-> 
-> That ASC/ASCQ code means: "Logical unit not ready, initializing command
-> required" according to my library. Played around with sg_start but didn't
-> see any change in how it reacts. According to scsi_device.h that flag's
-> description is: "issue START_UNIT in error handler" which implies it
-> changes how the EH handler reacts.
-> 
-> Perhaps the 3 line patch description could say a little more about how
-> to use this new parameter...
+Hi Willy, Paul,
 
-Sorry I did not write in detail. As you mentioned above, this is to
-determine if to trigger error. I would update the commit message to
-following lines:
+On 2023-10-09 08:53:58+0200, Willy Tarreau wrote:
+> On Sun, Oct 08, 2023 at 09:27:43AM -0700, Paul E. McKenney wrote:
+> (...)
+> > The other approach involves rebasing the "nolibc/next" stack
+> > on top of the "nolibc/fixes" stack.
+> 
+> That was my initial expectation as well, it's much easier, preserves
+> the patches ordering so it guarantees that all fixes are always present
+> in -next and that there won't be conflicts when they're finally submitted.
 
-Add new module param "allow_restart" to control if setup scsi_device's
-allow_restart flag, this flag determines if trigger EH after command
-finished with sense_key 0x6, asc 0x4 and ascq 0x2, EH would be triggered
-if allow_restart=1 in this condition.
+The workflow Paul described indeed makes a lot of sense.
 
-The new param can be used with error inject added in patch6 to test how
-commands finished with sense_key 0x6, asc 0x4 and ascq 0x2 are handled.
+I can redo it this afternoon.
 
-> 
-> Tested-by: Douglas Gilbert <dgilbert@interlog.com>
-> 
-> <snip>
-> 
-> 
-> 
-> 
-> 
+> [..]
 
+> > While in the area, would the following (absolutely not urgent or even
+> > particularly important) patch be a good idea?  This gets rid of a line
+> > of noise from "git status" after running the tests.
+> 
+> Good idea, feel free to propose a patch ;-)
+
+How about directly folding it into the original patch?
+I can take care of that later today, too.
+
+Thomas
