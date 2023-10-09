@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7727BD4C6
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 09:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D9D67BD4C8
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 10:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345457AbjJIH7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 03:59:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41072 "EHLO
+        id S1345464AbjJIIAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 04:00:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345450AbjJIH7x (ORCPT
+        with ESMTP id S1345453AbjJIIAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 03:59:53 -0400
+        Mon, 9 Oct 2023 04:00:22 -0400
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 90C4A94
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 00:59:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 42BBD94;
+        Mon,  9 Oct 2023 01:00:21 -0700 (PDT)
 Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 01D0820B74C0;
-        Mon,  9 Oct 2023 00:59:51 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 01D0820B74C0
+        by linux.microsoft.com (Postfix) with ESMTPSA id C11DF20B74C0;
+        Mon,  9 Oct 2023 01:00:20 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C11DF20B74C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1696838391;
+        s=default; t=1696838420;
         bh=ciYxCapYU4oDZf85UphUOQ42M2gQNBx7cupu6nGUlqQ=;
         h=From:To:Cc:Subject:Date:From;
-        b=XjO8kt82vd/+moVA/ZunIs9QBrX85JGVRZXLWt765Mpy0H9dw2mrmOvcdk6cqB59/
-         8yCsSf8JJyIPfJbtS6PvomW6dtwBZIOmSzx0qMyD9ue+/BsbE6gHhwbKeel/YMgUZp
-         9T2eeoL9uth5tztUduHnYlvwJybyVgFEmbJxA8YA=
+        b=JUxaZe0nfozj3VHJpAhqgwB434gj84XxYY55KnpWkujWG26TrS5THd1uO2q93JshY
+         614VTdFg48DBEO2XjrNkIrzhC09Ij87LNruIKZ6wlpjo9x80TpZcOumQeDcgez1Aqz
+         9AHhNKIRXnggcePwHvWDedBPRywMTKBcIyqwVvsg=
 From:   Sonia Sharma <sosha@linux.microsoft.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     sosha@microsoft.com
+Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        sosha@microsoft.com, kys@microsoft.com, mikelley@microsoft.com,
+        haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+        longli@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com
 Subject: [PATCH net-next v7] hv_netvsc: fix netvsc_send_completion to avoid multiple message length checks
-Date:   Mon,  9 Oct 2023 00:59:46 -0700
-Message-Id: <1696838386-8779-1-git-send-email-sosha@linux.microsoft.com>
+Date:   Mon,  9 Oct 2023 01:00:16 -0700
+Message-Id: <1696838416-8925-1-git-send-email-sosha@linux.microsoft.com>
 X-Mailer: git-send-email 1.8.3.1
 X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
