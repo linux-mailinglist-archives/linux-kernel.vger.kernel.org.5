@@ -2,133 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A4587BE8AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E37637BE8B1
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377379AbjJIRt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 13:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46040 "EHLO
+        id S1377097AbjJIRvj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Oct 2023 13:51:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233372AbjJIRt6 (ORCPT
+        with ESMTP id S1346636AbjJIRvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 13:49:58 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BAE0AF;
-        Mon,  9 Oct 2023 10:49:57 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 399Hitmx010618;
-        Mon, 9 Oct 2023 17:49:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=IPuLfY1co6cd9F2y/mCmzIMjZ4Z5GLyj7fCatcrQ81c=;
- b=fy6p6D7aWklBtBaHFs50UakU4q3uh7K5dW9U75uWpS7PboE6ia5j+WcpvVgvMYt+4p1X
- 7nt1Dr0lC8Xw0DMWza4G0R8F4hiE0jTA6cPKXGbMohd79wCdUW22eYMKsVBJIUhI1kPg
- j8jkxcAb5j8gK5SoLrVSf9i8BWwvtr8IoL1FnG17WOplGbTyUaBphTlT4E4kj4ZWqxca
- nr5mtXDrssHcEKfV9Dw0O2KNixeVHuHj5VVjKhMIyI9BL843Et3X7lrgXQvuLqvjd6m9
- WPJbW1Don7nPOIvijRiEPA8A5s/BV516cawPA0JNWrXB0M86ano/IcR85eCRdGtaqx0N Gg== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tkh4tb6yj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Oct 2023 17:49:46 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 399Hnjso017405
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 9 Oct 2023 17:49:45 GMT
-Received: from [10.110.87.129] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 9 Oct
- 2023 10:49:44 -0700
-Message-ID: <535bbc68-74bb-21e8-0e72-8de1df9cfc99@quicinc.com>
-Date:   Mon, 9 Oct 2023 10:49:44 -0700
+        Mon, 9 Oct 2023 13:51:38 -0400
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA7C91;
+        Mon,  9 Oct 2023 10:51:37 -0700 (PDT)
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-57c0775d4fcso601809eaf.0;
+        Mon, 09 Oct 2023 10:51:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696873896; x=1697478696;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xQBtcxUEBTteAt95r1bhShJsO6XhiQD8q2TBwfTAy8Y=;
+        b=a27bL+5hUMdadMar1HdOrLQgvXFxc0nCTQXNIwpudT3K+tiDJpqtk2OYpdKlRA7XsN
+         R5ZVLSYodOcYFp/Yx298TpKJvOV6znQ/yzXdDA3YSSthlGBf5v6VRZMbDaBewijbECSM
+         rmCFwGdj6yHuDsvs+lbojVfrRdTkEgBHuNl0J/6VFsBGG6VXW/cjmSht4QldvjCoY2Wp
+         WyxvEbEa5k712Brj5KkJvQ7eWmiGeGAu4FbNzfBdHviKxuz3rhen9UDgwJWlhwWAM20z
+         DjdL263SqP5Y/cjI87PIuChdyQeViSfTfWASjN4wLdd5CKryD7vgzJJurM6Iwh3srZgc
+         LDNA==
+X-Gm-Message-State: AOJu0YxQ+YcEF+pOO2UZMvRrZCFA7EonA7h+EMB31oMd8urCBA17I2m1
+        rcOb4FYzPBvvC1teZDb/a15COOcK8GLSYkKtNWw=
+X-Google-Smtp-Source: AGHT+IGUmF/LVHHrOgPdHxSjp/xIgIZDRO1132XTPnCUXW1CQVgDWzrxUZ1VxL2ND11CHY8bBqQ/04JupLN2zIbwRQs=
+X-Received: by 2002:a4a:de08:0:b0:56e:94ed:c098 with SMTP id
+ y8-20020a4ade08000000b0056e94edc098mr14198631oot.0.1696873896270; Mon, 09 Oct
+ 2023 10:51:36 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v5 2/2] firmware: arm_scmi: Add qcom smc/hvc transport
- support
-To:     Sudeep Holla <sudeep.holla@arm.com>
-CC:     <cristian.marussi@arm.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>
-References: <20230718160833.36397-1-quic_nkela@quicinc.com>
- <20231006164206.40710-1-quic_nkela@quicinc.com>
- <20231006164206.40710-3-quic_nkela@quicinc.com>
- <20231009144744.yi44ljq4llaxjsb7@bogus>
- <e6d9fbbb-eb61-0736-aa7b-a5e5d1a91db1@quicinc.com>
- <20231009152952.dww3fgh5q7fqysps@bogus>
-Content-Language: en-US
-From:   Nikunj Kela <quic_nkela@quicinc.com>
-In-Reply-To: <20231009152952.dww3fgh5q7fqysps@bogus>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: c2_Uf1AAKfw4Lwo-4eIWLZmNsYEu5aDS
-X-Proofpoint-ORIG-GUID: c2_Uf1AAKfw4Lwo-4eIWLZmNsYEu5aDS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-09_15,2023-10-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- priorityscore=1501 lowpriorityscore=0 phishscore=0 clxscore=1015
- spamscore=0 impostorscore=0 bulkscore=0 malwarescore=0 adultscore=0
- suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310090146
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231006173055.2938160-1-michal.wilczynski@intel.com>
+ <20231006173055.2938160-4-michal.wilczynski@intel.com> <CAJZ5v0jKJ6iw6Q=uYTf0at+ESkdCF0oWaXRmj7P5VLw+QppKPw@mail.gmail.com>
+ <ZSEPGmCyhgSlMGRK@smile.fi.intel.com> <CAJZ5v0gF0O_d1rjOtiNj5ryXv-PURv0NgiRWyQECZZFcaBEsPQ@mail.gmail.com>
+ <CAJZ5v0iDhOFDX=k7xsC_=2jjerWmrP+Na-9PFM=YGA0V-hH2xw@mail.gmail.com>
+ <f8ff3c4b-376a-4de0-8674-5789bcbe7aa9@intel.com> <CAJZ5v0i4in=oyhXKOQ1MeoRP5fAhHdEFgZZp98N0pF8hB6BtbQ@mail.gmail.com>
+ <be180b68-d31f-4e7f-aeaa-071be74e2696@intel.com>
+In-Reply-To: <be180b68-d31f-4e7f-aeaa-071be74e2696@intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 9 Oct 2023 19:51:25 +0200
+Message-ID: <CAJZ5v0g=MkRwFQ88SQfRcvwnii5VnXujC7ZUaDsncodNkzdNdQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/6] ACPI: AC: Replace acpi_driver with platform_driver
+To:     "Wilczynski, Michal" <michal.wilczynski@intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nvdimm@lists.linux.dev, rafael.j.wysocki@intel.com,
+        lenb@kernel.org, dan.j.williams@intel.com,
+        vishal.l.verma@intel.com, ira.weiny@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 10/9/2023 8:29 AM, Sudeep Holla wrote:
-> On Mon, Oct 09, 2023 at 07:59:08AM -0700, Nikunj Kela wrote:
->> On 10/9/2023 7:47 AM, Sudeep Holla wrote:
->>> On Fri, Oct 06, 2023 at 09:42:06AM -0700, Nikunj Kela wrote:
->>>> This change adds the support for SCMI message exchange on Qualcomm
->>>> virtual platforms.
->>>>
->>>> The hypervisor associates an object-id also known as capability-id
->>>> with each smc/hvc doorbell object. The capability-id is used to
->>>> identify the doorbell from the VM's capability namespace, similar
->>>> to a file-descriptor.
->>>>
->>>> The hypervisor, in addition to the function-id, expects the capability-id
->>>> to be passed in x1 register when SMC/HVC call is invoked.
->>>>
->>>> The capability-id is allocated by the hypervisor on bootup and is stored in
->>>> the shmem region by the firmware before starting Linux.
->>>>
->>> Since you are happy to move to signed value, I assume you are happy to loose
->>> upper half of the range values ?
->>>
->>> Anyways after Bjorn pointed out inconsistency, I am thinking of moving
->>> all the values to unsigned long to work with both 32bit and 64bit.
->>>
->>> Does the below delta on top of this patch works for you and makes sense?
->> This looks good to me. Will do some testing and float v6 with the changes
->> you suggested below. Thanks
->>
-> Please refer or use the patch from [1] when reposting. I rebased on my
-> patch[2] that I posted few minutes back. I am trying to finalise the branch
-> and send PR in next couple of days, so please test and post sooner. Sorry
-> for the rush.
-
-Validated the patch from [1] below on Qualcomm ARM64 virtual platform 
-using SMC64 convention. Thanks!
-
-
+On Mon, Oct 9, 2023 at 3:04 PM Wilczynski, Michal
+<michal.wilczynski@intel.com> wrote:
 >
-> --
-> Regards,
-> Sudeep
-> [1] https://git.kernel.org/sudeep.holla/h/for-next/scmi/updates
-> [2] https://lore.kernel.org/r/20231009152049.1428872-1-sudeep.holla@arm.com
+>
+>
+> On 10/9/2023 2:27 PM, Rafael J. Wysocki wrote:
+> > On Mon, Oct 9, 2023 at 10:40 AM Wilczynski, Michal
+> > <michal.wilczynski@intel.com> wrote:
+> >>
+
+[cut]
+
+> >> Yeah we could add platform device without removing acpi device, and
+> >> yes that would introduce data duplication, like Andy noticed.
+> > But he hasn't answered my question regarding what data duplication he
+> > meant, exactly.
+> >
+> > So what data duplication do you mean?
+>
+> So what I meant was that many drivers would find it useful to have
+> a struct device embedded in their 'private structure', and in that case
+> there would be a duplication of platform_device and acpi_device as
+> both pointers would be needed.
+
+It all depends on how often each of them is going to be used in the
+given driver.
+
+This particular driver only needs a struct acpi_device pointer if I'm
+not mistaken.
+
+> Mind this if you only have struct device
+> it's easy to get acpi device, but it's not the case the other way around.
+>
+> So for this driver it's just a matter of sticking to convention,
+
+There is no convention in this respect and there is always a tradeoff
+between using more memory and using more CPU time in computing in
+general, but none of them should be wasted just for the sake of
+following a convention.
+
+> for the others like it would be duplication.
+
+So I'm only talking about the driver modified by the patch at hand.
+
+> In my version of this patch we managed to avoid this duplication, thanks
+> to the contextual argument introduced before, but look at this patch:
+> https://github.com/mwilczy/linux-pm/commit/cc8ef52707341e67a12067d6ead991d56ea017ca
+>
+> Author of this patch had to introduce platform_device and acpi_device to the struct ac, so
+> there was some duplication. That is the case for many drivers to come, so I decided it's better
+> to change this and have a pattern with keeping only 'struct device'.
+
+Well, if the only thing you need from a struct device is its
+ACPI_COMPANION(), it is better to store a pointer to the latter.
