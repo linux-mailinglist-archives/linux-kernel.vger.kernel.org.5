@@ -2,76 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88BB27BE63D
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 049167BE63F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:22:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377055AbjJIQVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 12:21:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35436 "EHLO
+        id S1377029AbjJIQWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 12:22:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376782AbjJIQVi (ORCPT
+        with ESMTP id S233506AbjJIQWo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 12:21:38 -0400
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFEA49F
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 09:21:36 -0700 (PDT)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-59bebd5bdadso57660217b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 09:21:36 -0700 (PDT)
+        Mon, 9 Oct 2023 12:22:44 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B349E
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 09:22:42 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-5068b69f4aeso8131e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 09:22:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696868496; x=1697473296; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1696868561; x=1697473361; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cWEDMabBDXVAf1Pbn/AZJ5/IlrMxaWW3Jbubn56F5tM=;
-        b=N53IZmLIDcm0yOwa2+sSztIosQJUc+byeCa1cygVedgzTwWE5s04TQEDrnZh3iARrN
-         rb6OJgnmYFSZ7e6+9dsC0PwhSj3ksmh3hoFKVo9sQu4elvSv7LpsY14eV71OLM0/co9c
-         zKoz65IO3hB4l4Ty/5keQBM9LstZkZCNL+KQgWIGIgWy01L4Em6y09DmzogxpV+aofdN
-         gYd9s5d6+AQGCRiXDDcNqSSmtcbv47tVBZ6kxpPRQdogPOF8sIcsHOpJ8QSnhLP25MZn
-         CSpoOjPMpu7pDR53RQP+NVRw4+yyKvT8KiQfuCzzd9dmvGK/HakWS24tNN6zX3FnkSdi
-         Z1LQ==
+        bh=eN5/tm1CszkBi5CACTQEAKrzQx6IrUZ94+b5uVmgWK4=;
+        b=SqFHNkgBeXgHIPfic/jFE9FbmCdCJAfN6Pu/ohiAyuUxawDFacdlBWr+QIqyyWIqKA
+         0QLYo7Fba0H0+mpiTOZ7iTHGkv/MWa3kJUK6lataBEzSMMrkB22FG8SySqzXmf7QV6Gp
+         2nMd/JtsK0ec18dlLahHRubzzs/I6Mwysh73lZAgnD7INV3AVdAISwt3gYSkMb6uBdgP
+         2BkeKA6tWbKQ6wi74Nl/xRBzatJqUmiM29DKD3uAfw+tg3pX8NBm9dpRUX4JDdCL82co
+         AhONIhI5py9UaAb8XaxI5R6TEbEUNKCTayCHNMPyDGgVtrDQOOvytryN9WlUXpPBKnOu
+         6nKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696868496; x=1697473296;
+        d=1e100.net; s=20230601; t=1696868561; x=1697473361;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cWEDMabBDXVAf1Pbn/AZJ5/IlrMxaWW3Jbubn56F5tM=;
-        b=awt0lhbUglhYWEVHpXfR6LqsCgw34RrRXukygWYhaDZWoVKfBfebyJoWS5zwdBCf3h
-         6wjm+n1AmviSVJFZnVGPJsm/3j5jf9yMpp+IusiI45vukxb3qcdf3E+pnaNj1pIVeZKI
-         T5KzXcJEORQInZRiwGXrd5WB8hh6hw/wSwXKoKTABgaAdW7yoCfi8CBhrtR2sK7bUdu8
-         bpmEyVa6+BadV1DGa204h0aDQeQpJtCP8BjeS09J9bwkr6wGuGrjyZ8I7qggvM1ZZTAY
-         ttuy5OUi+yDVylSckNsGhy9/Fl9vsNJ4P/8iEM3HcXoxio9UR53+fMR/YKrIA/fZlBqY
-         jA2w==
-X-Gm-Message-State: AOJu0YzVhL2A4mYOEpnyS+0XJuE6GK20JY5IFt9+nXqSzO6DIODriGC3
-        czPYmYzxD67/cRYh4scnsDlp0HWgZlFd9QMFfi/vGQ==
-X-Google-Smtp-Source: AGHT+IF2OmOB0yghUAKz3DlOALSAWglmgSJNOvrM1rf3LA5p2DLe0WzUxprQASiV/coW0oDcUEKKvfaqc6HIZ2m8nlU=
-X-Received: by 2002:a0d:c546:0:b0:595:80e4:907d with SMTP id
- h67-20020a0dc546000000b0059580e4907dmr16646576ywd.32.1696868495792; Mon, 09
- Oct 2023 09:21:35 -0700 (PDT)
+        bh=eN5/tm1CszkBi5CACTQEAKrzQx6IrUZ94+b5uVmgWK4=;
+        b=wJZ4p1akMYCzWMjfNB4+zI8GWl/QnM1lCfFmlOz804bbEVdZ220/UIaGHvQi8462zi
+         j1fsIB5WqPCvMa8ZfKGA1oA78Z4OFSboCyICr2ueHRD0K2Akdx/7pIuPz+6150VjjDsp
+         q4VPyF3fnjSUiODgWcsNN8bdc3J+6xMVZQElgkVgDPMcYrM0uC2KbZ8ixWTMTRgjQaYM
+         M3hrDY9hD0ThKzmp4ISldAIuo/jlxQcsyCEeCnHBKyPXKGIQ9j0DKAFGXw6imANuXG0D
+         ijF5vllJumkNRQiCLFTU2QzEtdTF6ZiNwmvAqpYPWGS+6ty7ZI0SI1x3tgNVXRjWe6Yv
+         F6Fg==
+X-Gm-Message-State: AOJu0YwaSjPMVZz0cjliW6YIclUqR6jlvL03Im1orde8B3b/lS61x0T7
+        Tu8MqCimaMtQ/Ww0KY76kPoU3+4Mm6KEVhZjjukAmA==
+X-Google-Smtp-Source: AGHT+IGlKH3BqD0VkM33kCF3I8vg5a06QPB7mGu7SImCtuxjTB4hlaPZKhR3ELfvaLAqTH1s1pn+eL8Fum0ZXA7kbmQ=
+X-Received: by 2002:ac2:558c:0:b0:502:cdb6:f316 with SMTP id
+ v12-20020ac2558c000000b00502cdb6f316mr227512lfg.3.1696868560649; Mon, 09 Oct
+ 2023 09:22:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231009064230.2952396-1-surenb@google.com> <20231009064230.2952396-3-surenb@google.com>
- <214b78ed-3842-5ba1-fa9c-9fa719fca129@redhat.com>
-In-Reply-To: <214b78ed-3842-5ba1-fa9c-9fa719fca129@redhat.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 9 Oct 2023 09:21:22 -0700
-Message-ID: <CAJuCfpHzSm+z9b6uxyYFeqr5b5=6LehE9O0g192DZdJnZqmQEw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
-To:     David Hildenbrand <david@redhat.com>
-Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        lokeshgidra@google.com, peterx@redhat.com, hughd@google.com,
-        mhocko@suse.com, axelrasmussen@google.com, rppt@kernel.org,
-        willy@infradead.org, Liam.Howlett@oracle.com, jannh@google.com,
-        zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
+References: <20231005230851.3666908-1-irogers@google.com> <20231005230851.3666908-7-irogers@google.com>
+ <CAM9d7cjB_Sm4xnXexDqq_Q4jmOrwhxBjQbAhr-UTmb_4CPLONw@mail.gmail.com>
+In-Reply-To: <CAM9d7cjB_Sm4xnXexDqq_Q4jmOrwhxBjQbAhr-UTmb_4CPLONw@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 9 Oct 2023 09:22:29 -0700
+Message-ID: <CAP-5=fUEFcMpAS1q+M7RNdREy4gHaJmD8N5aVXowm5gyEJ_hnQ@mail.gmail.com>
+Subject: Re: [PATCH v2 06/18] perf buildid-cache: Fix use of uninitialized value
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Yuan Can <yuancan@huawei.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        James Clark <james.clark@arm.com>, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,172 +93,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 9, 2023 at 7:38=E2=80=AFAM David Hildenbrand <david@redhat.com>=
- wrote:
+On Sun, Oct 8, 2023 at 11:06=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
 >
-> On 09.10.23 08:42, Suren Baghdasaryan wrote:
-> > From: Andrea Arcangeli <aarcange@redhat.com>
+> On Thu, Oct 5, 2023 at 4:09=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+ote:
 > >
-> > Implement the uABI of UFFDIO_MOVE ioctl.
-> > UFFDIO_COPY performs ~20% better than UFFDIO_MOVE when the application
-> > needs pages to be allocated [1]. However, with UFFDIO_MOVE, if pages ar=
-e
-> > available (in userspace) for recycling, as is usually the case in heap
-> > compaction algorithms, then we can avoid the page allocation and memcpy
-> > (done by UFFDIO_COPY). Also, since the pages are recycled in the
-> > userspace, we avoid the need to release (via madvise) the pages back to
-> > the kernel [2].
-> > We see over 40% reduction (on a Google pixel 6 device) in the compactin=
-g
-> > thread=E2=80=99s completion time by using UFFDIO_MOVE vs. UFFDIO_COPY. =
-This was
-> > measured using a benchmark that emulates a heap compaction implementati=
-on
-> > using userfaultfd (to allow concurrent accesses by application threads)=
-.
-> > More details of the usecase are explained in [2].
-> > Furthermore, UFFDIO_MOVE enables moving swapped-out pages without
-> > touching them within the same vma. Today, it can only be done by mremap=
-,
-> > however it forces splitting the vma.
+> > The buildid filename is first determined and then from this the
+> > buildid read. If getting the filename fails then the buildid will be
+> > used for a later memcmp uninitialized. Detected by clang-tidy.
 > >
-> > [1] https://lore.kernel.org/all/1425575884-2574-1-git-send-email-aarcan=
-ge@redhat.com/
-> > [2] https://lore.kernel.org/linux-mm/CA+EESO4uO84SSnBhArH4HvLNhaUQ5nZKN=
-KXqxRCyjniNVjp0Aw@mail.gmail.com/
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/builtin-buildid-cache.c | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
 > >
-> > Update for the ioctl_userfaultfd(2)  manpage:
+> > diff --git a/tools/perf/builtin-buildid-cache.c b/tools/perf/builtin-bu=
+ildid-cache.c
+> > index cd381693658b..e2a40f1d9225 100644
+> > --- a/tools/perf/builtin-buildid-cache.c
+> > +++ b/tools/perf/builtin-buildid-cache.c
+> > @@ -277,8 +277,10 @@ static bool dso__missing_buildid_cache(struct dso =
+*dso, int parm __maybe_unused)
+> >         char filename[PATH_MAX];
+> >         struct build_id bid;
 > >
-> >     UFFDIO_MOVE
-> >         (Since Linux xxx)  Move a continuous memory chunk into the
-> >         userfault registered range and optionally wake up the blocked
-> >         thread. The source and destination addresses and the number of
-> >         bytes to move are specified by the src, dst, and len fields of
-> >         the uffdio_move structure pointed to by argp:
-> >
-> >             struct uffdio_move {
-> >                 __u64 dst;    /* Destination of move */
-> >                 __u64 src;    /* Source of move */
-> >                 __u64 len;    /* Number of bytes to move */
-> >                 __u64 mode;   /* Flags controlling behavior of move */
-> >                 __s64 move;   /* Number of bytes moved, or negated erro=
-r */
-> >             };
-> >
-> >         The following value may be bitwise ORed in mode to change the
-> >         behavior of the UFFDIO_MOVE operation:
-> >
-> >         UFFDIO_MOVE_MODE_DONTWAKE
-> >                Do not wake up the thread that waits for page-fault
-> >                resolution
-> >
-> >         UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES
-> >                Allow holes in the source virtual range that is being mo=
-ved.
-> >                When not specified, the holes will result in ENOENT erro=
-r.
-> >                When specified, the holes will be accounted as successfu=
-lly
-> >                moved memory. This is mostly useful to move hugepage ali=
-gned
-> >                virtual regions without knowing if there are transparent
-> >                hugepages in the regions or not, but preventing the risk=
- of
-> >                having to split the hugepage during the operation.
-> >
-> >         The move field is used by the kernel to return the number of
-> >         bytes that was actually moved, or an error (a negated errno-
-> >         style value).  If the value returned in move doesn't match the
-> >         value that was specified in len, the operation fails with the
-> >         error EAGAIN.  The move field is output-only; it is not read by
-> >         the UFFDIO_MOVE operation.
-> >
-> >         The operation may fail for various reasons. Usually, remapping =
-of
-> >         pages that are not exclusive to the given process fail; once KS=
-M
-> >         might deduplicate pages or fork() COW-shares pages during fork(=
-)
-> >         with child processes, they are no longer exclusive. Further, th=
-e
-> >         kernel might only perform lightweight checks for detecting whet=
-her
-> >         the pages are exclusive, and return -EBUSY in case that check f=
-ails.
-> >         To make the operation more likely to succeed, KSM should be
-> >         disabled, fork() should be avoided or MADV_DONTFORK should be
-> >         configured for the source VMA before fork().
-> >
-> >         This ioctl(2) operation returns 0 on success.  In this case, th=
-e
-> >         entire area was moved.  On error, -1 is returned and errno is
-> >         set to indicate the error.  Possible errors include:
-> >
-> >         EAGAIN The number of bytes moved (i.e., the value returned in
-> >                the move field) does not equal the value that was
-> >                specified in the len field.
-> >
-> >         EINVAL Either dst or len was not a multiple of the system page
-> >                size, or the range specified by src and len or dst and l=
-en
-> >                was invalid.
-> >
-> >         EINVAL An invalid bit was specified in the mode field.
-> >
-> >         ENOENT
-> >                The source virtual memory range has unmapped holes and
-> >                UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES is not set.
-> >
-> >         EEXIST
-> >                The destination virtual memory range is fully or partial=
-ly
-> >                mapped.
-> >
-> >         EBUSY
-> >                The pages in the source virtual memory range are not
-> >                exclusive to the process. The kernel might only perform
-> >                lightweight checks for detecting whether the pages are
-> >                exclusive. To make the operation more likely to succeed,
-> >                KSM should be disabled, fork() should be avoided or
-> >                MADV_DONTFORK should be configured for the source virtua=
-l
-> >                memory area before fork().
-> >
-> >         ENOMEM Allocating memory needed for the operation failed.
-> >
-> >         ESRCH
-> >                The faulting process has exited at the time of a
-> >                UFFDIO_MOVE operation.
-> >
+> > -       if (dso__build_id_filename(dso, filename, sizeof(filename), fal=
+se) &&
+> > -           filename__read_build_id(filename, &bid) =3D=3D -1) {
+> > +       if (!dso__build_id_filename(dso, filename, sizeof(filename), fa=
+lse))
+> > +               return true;
 >
-> A general comment simply because I realized that just now: does anything
-> speak against limiting the operations now to a single MM?
->
-> The use cases I heard so far don't need it. If ever required, we could
-> consider extending it.
->
-> Let's reduce complexity and KIS unless really required.
+> This won't print anything and ignore the file which changes
+> the existing behavior.  But if it fails to read the build-id, I
+> don't think there is not much we can do with it.  IIUC the
+> original intention of -M/--missing option is to list files that
+> have a build-id but it's not in the build-id cache.  So maybe
+> it's ok to silently ignore it.
 
-Let me check if there are use cases that require moves between MMs.
-Andrea seems to have put considerable effort to make it work between
-MMs and it would be a pity to lose that. I can send a follow-up patch
-to recover that functionality and even if it does not get merged, it
-can be used in the future as a reference. But first let me check if we
-can drop it.
+If getting the build id filename fails then 'bid' is uninitialized and
+I don't think there is an expected behavior for what a memcmp on
+uninitialized memory should do - we may hope that it fails and get the
+pr_warning in the existing code, but that warning depends on reading
+the filename too. This was the smallest change to not change behavior
+but to avoid the undefined behavior (bugs) in the code. It could be a
+signal the code needs to be worked on more.
 
->
->
-> Further: see "22) Do not crash the kernel" in coding-style.rst. All
-> these BUG_ON need to go. Ideally, use WARN_ON_ONCE() or just VM_WARN_ON()=
-.
-
-Yeah, it might be the right time to clean that up. Will do.
 Thanks,
-Suren.
+Ian
 
+> Thanks,
+> Namhyung
 >
-> --
-> Cheers,
 >
-> David / dhildenb
->
+> > +
+> > +       if (filename__read_build_id(filename, &bid) =3D=3D -1) {
+> >                 if (errno =3D=3D ENOENT)
+> >                         return false;
+> >
+> > --
+> > 2.42.0.609.gbb76f46606-goog
+> >
