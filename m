@@ -2,149 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7073C7BEB66
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 22:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1027BEB68
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 22:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378572AbjJIUQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 16:16:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
+        id S1378577AbjJIUQd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Oct 2023 16:16:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378520AbjJIUP7 (ORCPT
+        with ESMTP id S1378520AbjJIUQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 16:15:59 -0400
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.167])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14FC3B0;
-        Mon,  9 Oct 2023 13:15:56 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1696882555; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=Qg+dZpi+/R1E4e4+pVxCWQsb3XD+L7ATn7IyaRI9b7KJo/coaIeKdZ+9v1NweIiCow
-    zaaLwEQz6FJtwdZE0VlUccn1u5OhMaC410YbVtx11hwPE3kLDMWgXl0eBAc3YXnls0xF
-    b4wZgpu7ngM6WJRzTZYME87DcS4wXy5BX7e4H7qnCFfq3GrxQ7BfWsHLq3s2pk+NMKIF
-    4Yoiyv7dkDfqUN/fWCexhmOdB1kRJVKEJ3nq6apz/TLatTXg9KiQjmNzeBSgS78yJWar
-    f9gifxW6dpXfWEK2Ka9HQtba+RSBcZujCqArfRu8+4PSGBzLbpZCrPcgTJntDe67agMP
-    /e3w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1696882555;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=AYYFuvbioLJ/DNuT39655GA/XjuNrzG4+t4D6P7ZPxM=;
-    b=bmIZqvCYezw3FgevxhjbBIAZGTRiYzWF9CpZ9pnC0IkM8a3GumW2xiJrzbkhQl/u1O
-    ppFHKl8vIZsOToN3voj+AZHqAbmWpHDGFhkTNHnZXRWiNBMv1WHZqmTHPgMA2FeQ+dVA
-    lro31YNnPa5UVrMxqV+yA90qT/vg5e/ymuZZmP6EFRrlVtz/6pGLOWIw0cP6O+2xGVA+
-    Bw8DoG51zPC1LBOzZNmEnZHoYOeK4bHGuTVprsE/TR9U3rmWFTA1qugnBFvpkbh15BR1
-    BW6lg2wm6E6ARIxZ6xbdA4wmrrkrPnJSGgOnHepurC0Ld9sYlI1X4JCqwvRyskFu85/U
-    HSpA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1696882555;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=AYYFuvbioLJ/DNuT39655GA/XjuNrzG4+t4D6P7ZPxM=;
-    b=kemEecyB9igwhkxSNvuSZAWzJhyu/PlpE6TZnQP9oAPGADrnscYoBIfON49nj/ItcN
-    sG62cdOITay1iDblYPpZuQP0Zab7JAfx90PMosr236VSHvo1gATG//CBuW1prvcds6ll
-    mlfibzIHvzFqNOIp/O6sq8v7ScOmincmtNItfghyu+63EjTWIk3Y4J/ERaWsmhSe69C4
-    6hE1NZqVTOdmsVjtyQAclsEYBzlCrjfK34ipv4DplhioCVfqLAXLhmgcVKS0DjK65Cl7
-    uzoz1cjSNE70NqiUQk2yDQXc2FwFvr7xXartLN2IDngIi427QlDZ4kRTxM6zJ1lya6BH
-    UXrQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1696882555;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=AYYFuvbioLJ/DNuT39655GA/XjuNrzG4+t4D6P7ZPxM=;
-    b=9onSfLjRRRFSwCg4g4dOQ5szZ8bPhdei4mUguXpDJTrchNm3lAIINhjz2xAI0rK8Zw
-    t7L+4gh7Tw+hS1E7czBQ==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA+p3h"
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 49.8.2 DYNA|AUTH)
-    with ESMTPSA id R04c57z99KFsQBY
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Mon, 9 Oct 2023 22:15:54 +0200 (CEST)
-Date:   Mon, 9 Oct 2023 22:15:47 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] clk: qcom: smd: Disable unused clocks
-Message-ID: <ZSRfc_w19h-55Bib@gerhold.net>
-References: <20231004-clk-qcom-smd-rpm-unused-v2-1-9a5281f324dc@kernkonzept.com>
- <bc8fa799-aa64-4b69-97ce-8f1872c8eb11@linaro.org>
+        Mon, 9 Oct 2023 16:16:32 -0400
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1F294;
+        Mon,  9 Oct 2023 13:16:29 -0700 (PDT)
+Received: from [194.95.143.137] (helo=phil.localnet)
+        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <heiko@sntech.de>)
+        id 1qpwfx-0004xo-Vr; Mon, 09 Oct 2023 22:16:26 +0200
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Uwe =?ISO-8859-1?Q?Kleine=2DK=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 11/20] pinctrl: rockchip: Convert to platform remove callback
+ returning void
+Date:   Mon, 09 Oct 2023 22:16:25 +0200
+Message-ID: <3523328.iIbC2pHGDl@phil>
+In-Reply-To: <20231009083856.222030-12-u.kleine-koenig@pengutronix.de>
+References: <20231009083856.222030-1-u.kleine-koenig@pengutronix.de>
+ <20231009083856.222030-12-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bc8fa799-aa64-4b69-97ce-8f1872c8eb11@linaro.org>
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="iso-8859-1"
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        SPF_PASS,SUSPICIOUS_RECIPS,T_SPF_HELO_TEMPERROR autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 11:08:39PM +0200, Konrad Dybcio wrote:
-> On 4.10.2023 14:10, Stephan Gerhold wrote:
-> > At the moment, clk-smd-rpm forces all clocks on at probe time (for
-> > "handoff"). However, it does not make the clk core aware of that.
-> > 
-> > This means that the clocks stay enabled forever if they are not used
-> > by anything. We can easily disable them again after bootup has been
-> > completed, by making the clk core aware of the state. This is
-> > implemented by returning the current state of the clock in
-> > is_prepared().
-> > 
-> > Checking the SPMI clock registers reveals that this allows the RPM to
-> > disable unused BB/RF clocks. This reduces the power consumption quite
-> > significantly and is also needed to allow entering low-power states.
-> > 
-> > As of commit d6edc31f3a68 ("clk: qcom: smd-rpm: Separate out
-> > interconnect bus clocks") the interconnect-related clocks are no longer
-> > managed/exposed by clk-smd-rpm. Also the BI_TCXO_AO clock is now
-> > critical (and never disabled).
-> > 
-> > There is still a slight chance that this change will break boot on some
-> > devices. However, this will be most likely caused by actual mistakes in
-> > the device tree (where required clocks were not actually specified).
-> Precisely this, and solely as a consequence of the interconnect driver
-> not covering all the required clocks (usually named GCC_SOME_NOC_XYZ_CLK,
-> but there's quite a lot more).
+Am Montag, 9. Oktober 2023, 10:38:47 CEST schrieb Uwe Kleine-König:
+> The .remove() callback for a platform driver returns an int which makes
+> many driver authors wrongly assume it's possible to do error handling by
+> returning an error code. However the value returned is ignored (apart
+> from emitting a warning) and this typically results in resource leaks.
 > 
-> For platforms without an interconnect driver, breaking stuff this **MOST
-> LIKELY** means that Linux uses some hw that isn't voted for (e.g. missing
-> crypto clock under scm or something).
+> To improve here there is a quest to make the remove callback return
+> void. In the first step of this quest all drivers are converted to
+> .remove_new(), which already returns void. Eventually after all drivers
+> are converted, .remove_new() will be renamed to .remove().
 > 
-> For those with an interconnect driver, this will uncover issues that were
-> previously hidden because of the smd-rpm interconnect being essentially
-> broken for most of its existence. I can smell 660 breaking from however
-> many miles you are away from me, but it's "good", as we were relying on
-> (board specific) magic..
+> Trivially convert this driver from always returning zero in the remove
+> callback to the void returning variant.
 > 
-> I've been carrying an equivalent patch in my tree for over half a year now
-> and IIRC 8996 was mostly fine. It's also a good idea to test suspend
-> (echo mem > /sys/power/state) and wakeup.
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+
+Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+
+> ---
+>  drivers/pinctrl/pinctrl-rockchip.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/pinctrl-rockchip.c b/drivers/pinctrl/pinctrl-rockchip.c
+> index 45e416f68e74..3bedf36a0019 100644
+> --- a/drivers/pinctrl/pinctrl-rockchip.c
+> +++ b/drivers/pinctrl/pinctrl-rockchip.c
+> @@ -3429,7 +3429,7 @@ static int rockchip_pinctrl_probe(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> -static int rockchip_pinctrl_remove(struct platform_device *pdev)
+> +static void rockchip_pinctrl_remove(struct platform_device *pdev)
+>  {
+>  	struct rockchip_pinctrl *info = platform_get_drvdata(pdev);
+>  	struct rockchip_pin_bank *bank;
+> @@ -3450,8 +3450,6 @@ static int rockchip_pinctrl_remove(struct platform_device *pdev)
+>  		}
+>  		mutex_unlock(&bank->deferred_lock);
+>  	}
+> -
+> -	return 0;
+>  }
+>  
+>  static struct rockchip_pin_bank px30_pin_banks[] = {
+> @@ -3982,7 +3980,7 @@ static const struct of_device_id rockchip_pinctrl_dt_match[] = {
+>  
+>  static struct platform_driver rockchip_pinctrl_driver = {
+>  	.probe		= rockchip_pinctrl_probe,
+> -	.remove		= rockchip_pinctrl_remove,
+> +	.remove_new	= rockchip_pinctrl_remove,
+>  	.driver = {
+>  		.name	= "rockchip-pinctrl",
+>  		.pm = &rockchip_pinctrl_dev_pm_ops,
 > 
 
-I didn't notice any problems on 8916 and 8909 either. :-)
 
-> For reasons that I don't fully recall, I do have both .is_prepared and
-> .is_enabled though..
-> 
 
-clk-smd-rpm doesn't have any .enable()/.disable() ops (only .prepare()
-and .unprepare()) so I don't think is_enabled is needed. For the unused
-clock cleanup in drivers/clk/clk.c (clk_disable_unused()) we just care
-about the clk_unprepare_unused_subtree() part. That part is run when the
-clock reports true in .is_prepared(). The equivalent for .is_enabled()
-would just be a no-op because there are no .enable()/.disable() ops.
 
-Thanks,
-Stephan
