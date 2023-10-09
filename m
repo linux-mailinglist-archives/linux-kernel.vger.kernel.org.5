@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5ED47BED43
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D8A7BED46
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378879AbjJIVXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 17:23:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49262 "EHLO
+        id S1378887AbjJIVXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 17:23:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378776AbjJIVWp (ORCPT
+        with ESMTP id S1378713AbjJIVXT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 17:22:45 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB651734
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 14:21:46 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-77063481352so487512385a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 14:21:46 -0700 (PDT)
+        Mon, 9 Oct 2023 17:23:19 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D47818B
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 14:22:24 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-77574dec71bso328201385a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 14:22:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1696886506; x=1697491306; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1696886543; x=1697491343; darn=vger.kernel.org;
         h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=FF8iHuG5aKIXam9MoP6I9OS9vTNS+G7N4WPhYx42q08=;
-        b=ddFeVmPtpNvH/0EQWVSwXmCSPXhRVR/hvOgnXN0ZarLvHHlvZ+NDz7YWa5rNCA4kHL
-         24aMyRiS41MlSmBl02PE4gd7A2x85ljYEOqDx7PaKl7nkXTqRJihgTeiu/S3yhDDcjhO
-         CCwKZWA8FDdclRRjozHXChuyvYOAU3+dVNyL4=
+        bh=IXkx/VVzPUhmxWX0S7YaM5BZvbO+ra8rkBXXO/nXblw=;
+        b=NmGkU8V/7LxtneHvwKbKqFfDWObpJcFwgUp5VefRWky3qy5ot06zH5OGWwluUJK2hE
+         xd2B7JKpfCw/av1jtXtfoid5GhMXd0vvUrCIGwDpmIMeeJXb4ZOxrMtbRac5hLGOtJRX
+         3NZqogrObV+m0Qf4SGvI0NBjQPgOwJujbk23Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696886506; x=1697491306;
+        d=1e100.net; s=20230601; t=1696886543; x=1697491343;
         h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=FF8iHuG5aKIXam9MoP6I9OS9vTNS+G7N4WPhYx42q08=;
-        b=I7btu8xHiSpodklFuCxtuhHbhyIC1tLLm2leVrSlHp5K+6ecdx3/buS8yih67cq3bZ
-         4tBuquwhhNZvPPj27lVClAlG+mSMKKqf4uqceEDKYofhDnAErExoLLb/3YT6CaH+AAqc
-         aXVziXKm8BYSS58MnNO5ye/SazyLzNbRX+PezoEgGKeZvMoe2OTyd8b0S04I8KrhZAli
-         rT0uppsFxNL4ApJeeHaA2I9PMPfvW7uBOLCH0v8rCXftSIMKZqNMyQHNHL5wLYNPhO/2
-         yVkKafgrE3s4aVA9ntCB6+TRb8pJqekVQuP3lv71/3/mpSkmBmOz/eSRECAc2r4/HCqb
-         rMww==
-X-Gm-Message-State: AOJu0Yw3ixLgkeiTsSgslAtauaFA/y8brO4n3K9YMYAMj4H640XsBICx
-        H7VAnOiGpXkHEZmxKNfUPzRvKQ==
-X-Google-Smtp-Source: AGHT+IGNSP5pTvCgrW05h5xwK3zTSxcnE0fzWgHBovcel8YeQ13XRNe+muFcbP/dM8lR5/laOYn8IA==
-X-Received: by 2002:a05:620a:1aa1:b0:76d:a784:9685 with SMTP id bl33-20020a05620a1aa100b0076da7849685mr21009701qkb.28.1696886505824;
-        Mon, 09 Oct 2023 14:21:45 -0700 (PDT)
+        bh=IXkx/VVzPUhmxWX0S7YaM5BZvbO+ra8rkBXXO/nXblw=;
+        b=Xhbvd7BCi2WMyAEYlElSOZepxvUmm6KRdqR3TW8joAGKw7Y5G/xZLNkE3/NmW33Xo0
+         obQqHv+yhwrohBXlJTV1BVOFZBZvx50aDnTrh0/uVPJS1Ph9GAtg5u5gEIikHFqMXXqB
+         L/GDyROWSspCEFuj6bUzNZZFASsApYST5LmuG07v2kZ+wNc0x4UEqjlIwkdrhtlrZQor
+         LBAsAjDOb8gSwmTSIEL+0U88ANdSn8TuEKM7tnHYVfWaArjZQW6tYaTUY8zW3dxbol/Q
+         i6T6PpFl+Xn1laW1Fp1XMGqbIHRySQSuCKF4GqFe9AEcVLC1E9lOnh6SxvrSGn6u++R0
+         lyDQ==
+X-Gm-Message-State: AOJu0YxfjyVAmXsnG0P36bqb+XSxYl2G8XVCpzYBzoqy3vVNxpvI0r+N
+        OhuDI1pzo45s8axCfQlnMr704Q==
+X-Google-Smtp-Source: AGHT+IEVDYNPP9fQbtVbyllq4DXsEnluwv+GHT1aO3DTyvKMy4hUMfJ6X2gSUCukBdhkRPVoVuK2lA==
+X-Received: by 2002:a05:620a:4623:b0:773:cb13:cb7d with SMTP id br35-20020a05620a462300b00773cb13cb7dmr18932955qkb.48.1696886543431;
+        Mon, 09 Oct 2023 14:22:23 -0700 (PDT)
 Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id y6-20020a37e306000000b0077413b342e9sm3789749qki.128.2023.10.09.14.21.42
+        by smtp.gmail.com with ESMTPSA id y6-20020a37e306000000b0077413b342e9sm3789749qki.128.2023.10.09.14.22.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 14:21:45 -0700 (PDT)
-Message-ID: <dca2c4a8-7805-4cdb-a311-d308057cdd75@broadcom.com>
-Date:   Mon, 9 Oct 2023 14:21:42 -0700
+        Mon, 09 Oct 2023 14:22:23 -0700 (PDT)
+Message-ID: <2b2869fb-39a8-4590-afd5-06ef1af42503@broadcom.com>
+Date:   Mon, 9 Oct 2023 14:22:19 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v5 09/16] netlink: specs: Introduce new netlink
- command to get current timestamp
+Subject: Re: [PATCH net-next v5 11/16] netlink: specs: Introduce new netlink
+ command to list available time stamping layers
 To:     =?UTF-8?Q?K=C3=B6ry_Maincent?= <kory.maincent@bootlin.com>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-doc@vger.kernel.org
@@ -81,7 +81,7 @@ Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
         Jacob Keller <jacob.e.keller@intel.com>,
         Maxime Chevallier <maxime.chevallier@bootlin.com>
 References: <20231009155138.86458-1-kory.maincent@bootlin.com>
- <20231009155138.86458-10-kory.maincent@bootlin.com>
+ <20231009155138.86458-12-kory.maincent@bootlin.com>
 From:   Florian Fainelli <florian.fainelli@broadcom.com>
 Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
  xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
@@ -115,20 +115,19 @@ Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
  MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
  7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
  95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
-In-Reply-To: <20231009155138.86458-10-kory.maincent@bootlin.com>
+In-Reply-To: <20231009155138.86458-12-kory.maincent@bootlin.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000006bdd0c06074f2d36"
+        boundary="000000000000ab234f06074f2f44"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000006bdd0c06074f2d36
+--000000000000ab234f06074f2f44
 Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
@@ -136,22 +135,24 @@ Content-Transfer-Encoding: 8bit
 On 10/9/23 08:51, Köry Maincent wrote:
 > From: Kory Maincent <kory.maincent@bootlin.com>
 > 
-> Add a new commands allowing to get the current time stamping on a
+> Add a new commands allowing to list available time stamping layers on a
 > netdevice's link.
 > 
 > Example usage :
-> ./ynl/cli.py --spec netlink/specs/ethtool.yaml --no-schema --do ts-get \
+> ./ynl/cli.py --spec netlink/specs/ethtool.yaml --no-schema \
+> 	     --do ts-list-get \
 > 	     --json '{"header":{"dev-name":"eth0"}}'
-> {'header': {'dev-index': 3, 'dev-name': 'eth0'}, 'ts-layer': 1}
+> {'header': {'dev-index': 3, 'dev-name': 'eth0'},
+>   'ts-list-layer': b'\x01\x00\x00\x00\x05\x00\x00\x00'}
 > 
 > Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 
-This is small enough you could probably fold this patch into patch 8.
+Likewise you could fold this into patch 10.
 -- 
 Florian
 
 
---0000000000006bdd0c06074f2d36
+--000000000000ab234f06074f2f44
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -222,14 +223,14 @@ kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
 NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
 AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
 LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGKyFPrPMwZFsF4m
-6escyy7TP8IJvpcDF4R8xISt1lPjMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTIzMTAwOTIxMjE0NlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIKmySBQx6o95DRkx
+zew65CaFt48hMhtGYwXSyT5XySbTMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMTAwOTIxMjIyM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
 AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDg2AsxjwictnjcOTNd9Hx5sYYwb1/w912T
-/hR+bVWoqMuJinyxpJiYvfu7kHkUNgykTEOTX5K4WeB1u8sSGyouJgeO/OnnQOaNcnlYzV6yp9oT
-3aAMYk+ieXdvEHsHbUB3bvWzlq/+yHreRPUwDvheXUQ4FHlZr7is3yBCEnVVUvDvVDh0gIjm9d5r
-q0/pzFcq+dvzRBB7+FV8H7v0rZb2mMlJ8TCLJV+CLmou37pMP57T+YaI9ACYpQ6kKAFZ15QMZrkY
-1LhsET46j4sHeB0V6X+n7jSyTJrCQPX2DDY+Qo0XAe/uKr4W3d+XSwi/gsCC74DChMcQeWP+6i0J
-XYVJ
---0000000000006bdd0c06074f2d36--
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCbM5TnBhj+B3pg01okfdSPLs4lvGlSFjQj
++NwvOVZcTmEvLqTeGnnEmiMsFi3BP16y/75XXPhpeEnCT01xN9e4yGuZpDZ91IE5+SyUSYKF9B80
+BSG7Q4FacqINp+cu7maDjjzih3XksRQ3gnEzKPqjgYUH9NroC9R4yJkSPl7LNGJqpRscny0uiAcD
+Fw1DhVLAQFJC6MfYuFsSztHvvWUxWRGPXF2LpDlfP9aPHND24rsoQf9yPIYUCx4PXUakrL4etqT0
+Vtdlb+QkD2+U3JjY/Wzy0zY37yfix9phhNn9edREJf17KbuSi0Ip7dNgKVJf6LN6abAcLJbwXW3C
+b7m9
+--000000000000ab234f06074f2f44--
