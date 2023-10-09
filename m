@@ -2,102 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 590757BEF05
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 01:20:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 578F77BEF03
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 01:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379018AbjJIXUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 19:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34220 "EHLO
+        id S1378979AbjJIXUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 19:20:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379009AbjJIXUr (ORCPT
+        with ESMTP id S231434AbjJIXT7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 19:20:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A2A9D
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 16:20:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696893599;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type;
-        bh=Ra59s6ELCEBLlS89Z2HAfelqi5/68EEl27Q4FvjToO4=;
-        b=jILEbJfBFrwXFUGLbNimzeUP9tHIwp5WuNGBcwFTslE0ntJQ55N/dxvzxhOu2/z59QMNxt
-        KUblosO8zcc48amI4wjxK090m99k+Oq6gEmfvVVhLO2IdZCXugb8gPc5PKPbQWrGWVIYqz
-        ZnuPdZ9F6fvX8p+sXlzLEa5/Pg0PYfI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-367-7Rcrwmj9M4-f5kjXXYEM-g-1; Mon, 09 Oct 2023 19:19:34 -0400
-X-MC-Unique: 7Rcrwmj9M4-f5kjXXYEM-g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BB3BE8039C1;
-        Mon,  9 Oct 2023 23:19:33 +0000 (UTC)
-Received: from localhost (unknown [10.22.33.188])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D80851C060AE;
-        Mon,  9 Oct 2023 23:19:32 +0000 (UTC)
-Date:   Mon, 9 Oct 2023 20:19:31 -0300
-From:   "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        stable-rt <stable-rt@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Luis Goncalves <lgoncalv@redhat.com>
-Subject: [ANNOUNCE] 4.14.326-rt155
-Message-ID: <ZSSKg0eQftFhia9j@uudg.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Mon, 9 Oct 2023 19:19:59 -0400
+Received: from mail-oa1-x49.google.com (mail-oa1-x49.google.com [IPv6:2001:4860:4864:20::49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBDF9A9
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 16:19:58 -0700 (PDT)
+Received: by mail-oa1-x49.google.com with SMTP id 586e51a60fabf-1e1391bee82so7508165fac.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 16:19:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696893598; x=1697498398; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=zjHQyvadONVOud3v/rE/Az+3J92aB2vK1iZQZ/OYRLE=;
+        b=rGgDo/H5T9gZYLPmFpOQGJVZ4k6OAoKrpALI+biAf+tM24a13+h8KfK3Z04ysSZ92P
+         lcuIFq/S4RgiZPrxJP7OmlhmlRU3lP3uCwsV0FXtlKSSIHlYV9rW8AeQO3Xm0MbOsnWP
+         J3wfoKZSiXvl/Hq9nzVcR+F5zG1k6TXmEy+eIfQ27mzRP0ueLKEl4shn+W5X9EvW4aF4
+         rg8v2ZjME3f2/4jTY7OaPnHOV5IXd6IHVti0q8gKE/J+MLPpVjCSoghcTIQ5Ce8UWkSs
+         kcWyqBJ5YQeYo7503/Vv8QxoJTQHr48OQFlXT7ZjBY/SFK8w+WEGP8WlqQyDgLV4KPFj
+         +H4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696893598; x=1697498398;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zjHQyvadONVOud3v/rE/Az+3J92aB2vK1iZQZ/OYRLE=;
+        b=iTU5p2+64ezHcHUad4CY8p95VqegF1RsAfT2kSZaYXNm+YLvzFC9PzosJCtShFZhC6
+         fmwOsEJNs94yi0p56CzaP/AS9dRdpr1dmLHhdiGiOsj39hbUZSyD5Ru2SswMjw1Q+qf7
+         KP7Pj4D2Ru5V7YIQNMlgqEiAmyzNfwiklKS3bQEVYVGptyL3pihpOrTotrgM4VtQrLtx
+         Cshbe0sIJ61W1Nkt/5jKgOH/Tbpqu52RbeOSNHSt2GBtS0Qk1sHNn+VtyMYdcMwVCCI7
+         cfr2rt/1nrOy8+GmMJrGrfucTyk8ySC5UbgL+TNGCzhSpLYSbrwQJM2qprYNKAx1hCgj
+         zrNg==
+X-Gm-Message-State: AOJu0Yy5VbU1HSTmvDDKVTaetOiHegNo+1egnaXCiE1NS7yQtq8VBAII
+        x6h7b5I8mPxKtFa08Vg8qpdU8tegKPJsNIVKDg==
+X-Google-Smtp-Source: AGHT+IEJoSw0wb7t9m20c6ZpjKDlOmD783PHpu5vdHPvTTgfWAZC5cRf21JJzRLNwBCQUCa+9r2jjqVtgVy/1uiCHQ==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6870:3a10:b0:1d5:95fc:2a65 with
+ SMTP id du16-20020a0568703a1000b001d595fc2a65mr6733088oab.0.1696893598255;
+ Mon, 09 Oct 2023 16:19:58 -0700 (PDT)
+Date:   Mon, 09 Oct 2023 23:19:57 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAJyKJGUC/x2NQQrCMBBFr1Jm7cCkohCvIi7a9GtnYSwzIVRK7
+ 27q4sF/m/82cpjC6dZtZKjq+slNwqmjNA/5BdapOfXSn4NIZC+W0/LlybTCnDMKo8ywY+j4Pqh ZEyeGRJFxCBGXK7XDxfDU9R+7P/b9B+1asIF8AAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1696893597; l=1913;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=IQPojGhMm0FWYkhisYrQ00VPkfbCrbcIeRucK9CSAtU=; b=lqQitRgTvDQrS2yNAdU1MwFFmxI/TImPYzq1XkAQrajgWQGjpKNWCOFzZ6AGd8vHFb8Xj4b88
+ UcPIIFUP2hSCCsgd+ycewkMTnHNJ1UB2BTMpZXFag89Q1wnWwAwYyer
+X-Mailer: b4 0.12.3
+Message-ID: <20231009-strncpy-drivers-net-ethernet-ibm-ibmvnic-c-v1-1-712866f16754@google.com>
+Subject: [PATCH] ibmvnic: replace deprecated strncpy with strscpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Haren Myneni <haren@linux.ibm.com>,
+        Rick Lindsley <ricklind@linux.ibm.com>,
+        Nick Child <nnac123@linux.ibm.com>,
+        Dany Madden <danymadden@us.ibm.com>,
+        Thomas Falcon <tlfalcon@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+`strncpy` is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-I'm pleased to announce the 4.14.326-rt155 stable release.
+NUL-padding is not required as the buffer is already memset to 0:
+|       memset(adapter->fw_version, 0, 32);
 
-This release is an update to the new stable 4.14.326-rt155
-version and no RT-specific changes have been performed.
+Note that another usage of strscpy exists on the same buffer:
+|       strscpy((char *)adapter->fw_version, "N/A", sizeof(adapter->fw_version));
 
-You can get this release via the git tree at:
+Considering the above, a suitable replacement is `strscpy` [2] due to
+the fact that it guarantees NUL-termination on the destination buffer
+without unnecessarily NUL-padding.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
+---
+ drivers/net/ethernet/ibm/ibmvnic.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-  branch: v4.14-rt
-  Head SHA1: 1d10d09bd19b5eb5e90c5585afb308207e9c683f
+diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
+index cdf5251e5679..ac15dcadf4c1 100644
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -5247,7 +5247,8 @@ static void handle_vpd_rsp(union ibmvnic_crq *crq,
+ 	/* copy firmware version string from vpd into adapter */
+ 	if ((substr + 3 + fw_level_len) <
+ 	    (adapter->vpd->buff + adapter->vpd->len)) {
+-		strncpy((char *)adapter->fw_version, substr + 3, fw_level_len);
++		strscpy(adapter->fw_version, substr + 3,
++			sizeof(adapter->fw_version));
+ 	} else {
+ 		dev_info(dev, "FW substr extrapolated VPD buff\n");
+ 	}
 
-Or to build 4.14.326-rt155 directly, the following patches should be applied:
+---
+base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
+change-id: 20231009-strncpy-drivers-net-ethernet-ibm-ibmvnic-c-e0900ba19e56
 
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.14.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.14.326.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/older/patch-4.14.326-rt155.patch.xz
-
-Signing key fingerprint:
-
-  9354 0649 9972 8D31 D464  D140 F394 A423 F8E6 7C26
-
-All keys used for the above files and repositories can be found on the
-following git repository:
-
-   git://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git
-
-Enjoy!
-Luis
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
