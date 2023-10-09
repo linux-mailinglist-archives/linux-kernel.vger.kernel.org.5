@@ -2,98 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A334A7BEBE1
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 22:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B357BEBE7
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 22:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378039AbjJIUpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 16:45:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42314 "EHLO
+        id S1377993AbjJIUsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 16:48:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234598AbjJIUo7 (ORCPT
+        with ESMTP id S1377082AbjJIUsm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 16:44:59 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D2792;
-        Mon,  9 Oct 2023 13:44:58 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46609C433C8;
-        Mon,  9 Oct 2023 20:44:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696884298;
-        bh=xqPPlteo+/irwg1A8Nmsg7I8TpquWpmsFmUvKGKyQHo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ZEZGlqkuZvJF2yg5oonzytBzx9hYOgBwyLTgVN0/S7cA1HKqyN7f84BevW/PYUGjZ
-         jm+fg16/Eoqtk5lixQKPZ1rb3J4iK1kAHnHvdi6G8QezxsgYveuaxfWqx9OwnvqiYI
-         aQGXJ8B+DRU9+0zi2Aa/G//zaR+6hzBdIZbsqevBzeBgCWE4h56/16MJHw8z5LqO4X
-         QdyEhvT8Fg/n9I4q5cLU0fSwzw6sJPWRc+vpRkqjLl1uZlLzMwCibT1ZPvklAcmTsi
-         D+u7jNb0ZgmaruYQcPbHlVcReX40dDp2VQhJFJZ5dRN47OZdKB7m6AVVbOvRw5shLm
-         qKhW28wJqYPSQ==
-Date:   Mon, 9 Oct 2023 14:44:54 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] btrfs: Add __counted_by for struct btrfs_delayed_item
- and use struct_size()
-Message-ID: <ZSRmRj7leOsdUmJm@work>
+        Mon, 9 Oct 2023 16:48:42 -0400
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9758692;
+        Mon,  9 Oct 2023 13:48:40 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E6FD4C0002;
+        Mon,  9 Oct 2023 20:48:36 +0000 (UTC)
+Received: from peko by dell.be.48ers.dk with local (Exim 4.94.2)
+        (envelope-from <peter@korsgaard.com>)
+        id 1qpxB0-00FbYD-V5; Mon, 09 Oct 2023 22:48:30 +0200
+From:   Peter Korsgaard <peter@korsgaard.com>
+To:     Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        syzbot+1f53a30781af65d2c955@syzkaller.appspotmail.com,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: usb: dm9601: fix uninitialized variable use in
+ dm9601_mdio_read
+References: <20231009-topic-dm9601_uninit_mdio_read-v1-1-d4d775e24e3b@gmail.com>
+Date:   Mon, 09 Oct 2023 22:48:30 +0200
+In-Reply-To: <20231009-topic-dm9601_uninit_mdio_read-v1-1-d4d775e24e3b@gmail.com>
+        (Javier Carrasco's message of "Mon, 09 Oct 2023 20:52:55 +0200")
+Message-ID: <87zg0rcyjl.fsf@48ers.dk>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-GND-Sasl: peter@korsgaard.com
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prepare for the coming implementation by GCC and Clang of the __counted_by
-attribute. Flexible array members annotated with __counted_by can have
-their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
-array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-functions).
+>>>>> "Javier" == Javier Carrasco <javier.carrasco.cruz@gmail.com> writes:
 
-While there, use struct_size() helper, instead of the open-coded
-version, to calculate the size for the allocation of the whole
-flexible structure, including of course, the flexible-array member.
+ > syzbot has found an uninit-value bug triggered by the dm9601 driver [1].
+ > This error happens because the variable res is not updated if the call
+ > to dm_read_shared_word returns an error or if no data is read (see
+ > __usbnet_read_cmd()). In this particular case -EPROTO was returned and
+ > res stayed uninitialized.
 
-This code was found with the help of Coccinelle, and audited and
-fixed manually.
+ > This can be avoided by checking the return value of dm_read_shared_word
+ > and returning an error if the read operation failed or no data was read.
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- fs/btrfs/delayed-inode.c | 2 +-
- fs/btrfs/delayed-inode.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ > [1] https://syzkaller.appspot.com/bug?extid=1f53a30781af65d2c955
 
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 35d7616615c1..4f364e242341 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -313,7 +313,7 @@ static struct btrfs_delayed_item *btrfs_alloc_delayed_item(u16 data_len,
- {
- 	struct btrfs_delayed_item *item;
+ > Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+ > Reported-and-tested-by: syzbot+1f53a30781af65d2c955@syzkaller.appspotmail.com
+ > ---
+ >  drivers/net/usb/dm9601.c | 9 ++++++++-
+ >  1 file changed, 8 insertions(+), 1 deletion(-)
+
+ > diff --git a/drivers/net/usb/dm9601.c b/drivers/net/usb/dm9601.c
+ > index 48d7d278631e..e223daa93229 100644
+ > --- a/drivers/net/usb/dm9601.c
+ > +++ b/drivers/net/usb/dm9601.c
+ > @@ -222,13 +222,20 @@ static int dm9601_mdio_read(struct net_device *netdev, int phy_id, int loc)
+ >  	struct usbnet *dev = netdev_priv(netdev);
  
--	item = kmalloc(sizeof(*item) + data_len, GFP_NOFS);
-+	item = kmalloc(struct_size(item, data, data_len), GFP_NOFS);
- 	if (item) {
- 		item->data_len = data_len;
- 		item->type = type;
-diff --git a/fs/btrfs/delayed-inode.h b/fs/btrfs/delayed-inode.h
-index d050e572c7f9..5cceb31bbd16 100644
---- a/fs/btrfs/delayed-inode.h
-+++ b/fs/btrfs/delayed-inode.h
-@@ -95,7 +95,7 @@ struct btrfs_delayed_item {
- 	bool logged;
- 	/* The maximum leaf size is 64K, so u16 is more than enough. */
- 	u16 data_len;
--	char data[];
-+	char data[] __counted_by(data_len);
- };
+ >  	__le16 res;
+ > +	int err;
  
- static inline void btrfs_init_delayed_root(
+ >  	if (phy_id) {
+ >  		netdev_dbg(dev->net, "Only internal phy supported\n");
+ >  		return 0;
+ >  	}
+ 
+ > -	dm_read_shared_word(dev, 1, loc, &res);
+ > +	err = dm_read_shared_word(dev, 1, loc, &res);
+ > +	if (err <= 0) {
+ > +		if (err == 0)
+ > +			err = -ENODATA;
+
+Looking at dm_read(), it doesn't look like we can end up here with err
+== 0, but OK.
+
+Acked-by: Peter Korsgaard <peter@korsgaard.com>
+
 -- 
-2.34.1
-
+Bye, Peter Korsgaard
