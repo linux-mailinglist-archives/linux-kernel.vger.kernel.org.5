@@ -2,65 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4375E7BDEC5
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7DC7BDEDB
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376428AbjJINWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 09:22:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58528 "EHLO
+        id S1376477AbjJINXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 09:23:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376396AbjJINWx (ORCPT
+        with ESMTP id S1376443AbjJINXr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 09:22:53 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C2228F
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 06:22:52 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-534694a9f26so13049a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 06:22:52 -0700 (PDT)
+        Mon, 9 Oct 2023 09:23:47 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D15F794
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 06:23:45 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-537f07dfe8eso12940a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 06:23:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696857770; x=1697462570; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1696857824; x=1697462624; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8ucMi41TQkv++KBAnHCuW8sOa9RykSneNLP1uSJ3/rY=;
-        b=4M3epxgkhirh85jt5J2jq1bEB8pXmohefDRjKIBkTZ0+ADikHycH2uYGACgkxdFgg6
-         9vLZCpWMdx3aAeu2wCk8CDNkCFNrdDfjBD51CSVjtT8uDo1aUrTeu+Au0ZNV75NfdSAL
-         rMEOHII2SvIaDoLQXKpBiuJiWY5+CLFRP6FmCac1QE49vz+RN7s/NOaTDAzsljmxYxxd
-         ReMcnsQXjEqviPU0hQgLEtGcVc7vnwxJg73VSOIbd+jwafpYv1qfGjpdnGSBx6lU+cfK
-         FDHPU6t4g8Sxe2RRbH6thXnHdd7iVaYEHz8gxyqu5OJqzaSGNAWvssTnBSbYGeEUfYD1
-         j3Yw==
+        bh=bUlrF6eVI5CzGWdW4qZHoHie28nfjSTSRnsJxxWevYM=;
+        b=lm2IAsiOWr7PyBoAl7bNIcMp33+WyKqEfDzx3BZ8JkRewzS1eCXvNsQk1BMhcuesjL
+         SSdUaqd8GqXSmCOkzDVfIMzBkD2RJ/nZcB+GnIKFOkqs64PyW9KTDzcMG76zONYPOknV
+         3WUmCPprYbuVutnX8EybIGBc8kwtDETZnnxtC75+jGt87SN/s1/E/DyFHRzpZSf91UTI
+         EJIueYp6uSvB6BO2vB4FhZrz2l8kQueMbkcDZB+JsqSDzqtpb0BXslJjNTzwgaCxEw0z
+         6J8cVaD9CxTrJWgRzBSRFwceaqLokpdPK78kDNTsHdDlvpp96H3xKWlADv4iyb4bGXmB
+         f42w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696857770; x=1697462570;
+        d=1e100.net; s=20230601; t=1696857824; x=1697462624;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8ucMi41TQkv++KBAnHCuW8sOa9RykSneNLP1uSJ3/rY=;
-        b=P+Ec/FMYcSQpiXzho+T16FfZsuK1jae8KW9SsYVLFtqtokMWKT38IMev7jjOe6aTSi
-         kUnbzasutkV3h1nu5g2zZShBwzvJZTdMm48CI/iAdgQGvInCfgmwyc4mC7ZH7ISaVkSu
-         u6p5/AQCUSUeYAZmDRiY5lkRZIw74IrNIVhQhFZelxyjvE6XwZoYNQAsEA+bMf9VLDmB
-         dQ3ApsytfKORN010ZR9hPLhAClsBoC+sRCqCo+jFFTBxiXWF7b+AymiUQiTh5EfwgLH/
-         noV0FvwEr3EHpfYwyQsonqTBNuBeQoQKhqoB/pMYnWdN9h8GGJazAKsy5JlwdKCaWyo/
-         2BSw==
-X-Gm-Message-State: AOJu0YyalAH8cdswVpJkGXHksotpoU+9rXk0jAz048YiTOQxvmoKKYSR
-        3QK9puC9NE4cZdwbPNTFHbAJuH+NzGIWuWap0QfK14883IZT5seHfu0=
-X-Google-Smtp-Source: AGHT+IFOUr34G+Yla/d4AVAiHklOzTMuqIvsyl6uOGRaCES8wUndJpjxEHBlFLQrrKJSoyqaqmBfRSqGnVKYP8wY0oM=
-X-Received: by 2002:a05:6402:d4b:b0:53a:ff83:6123 with SMTP id
- ec11-20020a0564020d4b00b0053aff836123mr227837edb.3.1696857770226; Mon, 09 Oct
- 2023 06:22:50 -0700 (PDT)
+        bh=bUlrF6eVI5CzGWdW4qZHoHie28nfjSTSRnsJxxWevYM=;
+        b=YtDtmuiQX3KrrV5MSpUsx+0SEx0kInYWJ8Xuz4WolblotGi3jjBR1D7pdEJoOCrEHo
+         wKi3jiELvuUrWxNQAqh7vv4j1v0fRUFFAf/YnT6ALh57w78Z8XUz/JXYLc8DnzlhucTZ
+         /iIBVeD79LMhdSwnztT9c+qC3tSWXXncCyCKZ4INPBjP+gMVtcdtZ7ot6LjcF0rx9wRy
+         PFQ2VBXifyPpdJ9Rbw5a1Ng5oY72XtFXHGA1GyYZOZIcOoWINO4pUel5QHegrN3LOsN7
+         J0btqmj4yQ4Hz88DEWfFyW8Zy7bm25O0DOkHQyihA3FluCzvtTXZ9dTog07yvkPfM03a
+         NGEQ==
+X-Gm-Message-State: AOJu0Yxl8lR5tlXJHBhDYYuIP5VsJCcTPkJazNNYKps9TmOhcqmgp+d5
+        xgivxQldNT+zS4GGg8yPcVZ++FB0Ty83qh8DaRdLmA==
+X-Google-Smtp-Source: AGHT+IEERXwOrX1YQV0elIdWkUVnhhst9NzscoQY6rKnNsI3jYL7jiXNsex6lvmbobXMgSxWeRTVaJacN2q/vKq1VKA=
+X-Received: by 2002:a50:9b1d:0:b0:525:573c:643b with SMTP id
+ o29-20020a509b1d000000b00525573c643bmr366678edi.7.1696857824204; Mon, 09 Oct
+ 2023 06:23:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230925200110.1979606-1-zokeefe@google.com> <20231006105012.61a12beefaa0f9a5adc8299f@linux-foundation.org>
-In-Reply-To: <20231006105012.61a12beefaa0f9a5adc8299f@linux-foundation.org>
+References: <20230925200110.1979606-1-zokeefe@google.com> <20231006105810.17fcb352e33cbcab1645099b@linux-foundation.org>
+ <0ed83331-9037-421a-d450-363e07e87f6a@redhat.com> <20231006121105.69a1f32753dad00b993e2547@linux-foundation.org>
+ <22ff3362-83fc-46c6-9412-15ca36c51d54@arm.com>
+In-Reply-To: <22ff3362-83fc-46c6-9412-15ca36c51d54@arm.com>
 From:   "Zach O'Keefe" <zokeefe@google.com>
-Date:   Mon, 9 Oct 2023 06:22:14 -0700
-Message-ID: <CAAa6QmTqk5bBMOMiuWP-92NcYN2XckXHpHLa8WJPysC2g8Mtxw@mail.gmail.com>
+Date:   Mon, 9 Oct 2023 06:23:09 -0700
+Message-ID: <CAAa6QmRcqmw1_UL--mj2HC-GxvJG1NibVi=03+ahri_DzEp5Mw@mail.gmail.com>
 Subject: Re: [PATCH v4] mm/thp: fix "mm: thp: kill __transhuge_page_enabled()"
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
         Saurabh Singh Sengar <ssengar@microsoft.com>,
         Yang Shi <shy828301@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+        Matthew Wilcox <willy@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
@@ -74,70 +76,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 6, 2023 at 10:50=E2=80=AFAM Andrew Morton <akpm@linux-foundatio=
-n.org> wrote:
+On Fri, Oct 6, 2023 at 2:28=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.com> =
+wrote:
 >
-> On Mon, 25 Sep 2023 13:01:10 -0700 "Zach O'Keefe" <zokeefe@google.com> wr=
-ote:
+> On 06/10/2023 20:11, Andrew Morton wrote:
+> > On Fri, 6 Oct 2023 20:52:30 +0200 David Hildenbrand <david@redhat.com> =
+wrote:
+> >
+> >>> And as I don't know what is the urgency of this patch ("mm/thp: fix
+> >>> "mm: thp: kill __transhuge_page_enabled()"), I'm unable to decide whi=
+ch
+> >>> patch needs to come first (thus requiring rework of the other patch).
+> >>>
+> >>> Please discuss!
+> >>
+> >> IMHO clearly this one.
+> >
+> > OK.  I'll drop the "variable-order, large folios for anonymous memory" =
+v6
+> > series for now.
 >
-> > The 6.0 commits:
-> >
-> > commit 9fec51689ff6 ("mm: thp: kill transparent_hugepage_active()")
-> > commit 7da4e2cb8b1f ("mm: thp: kill __transhuge_page_enabled()")
-> >
-> > merged "can we have THPs in this VMA?" logic that was previously done
-> > separately by fault-path, khugepaged, and smaps "THPeligible" checks.
-> >
-> > During the process, the semantics of the fault path check changed in tw=
-o
-> > ways:
-> >
-> > 1) A VM_NO_KHUGEPAGED check was introduced (also added to smaps path).
-> > 2) We no longer checked if non-anonymous memory had a vm_ops->huge_faul=
-t
-> >    handler that could satisfy the fault.  Previously, this check had be=
-en
-> >    done in create_huge_pud() and create_huge_pmd() routines, but after
-> >    the changes, we never reach those routines.
-> >
-> > During the review of the above commits, it was determined that in-tree
-> > users weren't affected by the change; most notably, since the only rele=
-vant
-> > user (in terms of THP) of VM_MIXEDMAP or ->huge_fault is DAX, which is
-> > explicitly approved early in approval logic. However, this was a bad
-> > assumption to make as it assumes the only reason to support ->huge_faul=
-t
-> > was for DAX (which is not true in general).
-> >
-> > Remove the VM_NO_KHUGEPAGED check when not in collapse path and give
-> > any ->huge_fault handler a chance to handle the fault.  Note that we
-> > don't validate the file mode or mapping alignment, which is consistent
-> > with the behavior before the aforementioned commits.
->
-> It's unclear what are the userspace visible impacts of this change.
-> Which makes it hard for others to determine whether -stable kernels
-> should be patched.
+> Yep, agreed!
 
-IMO, I don't think this change is suitable for -stable; the only users
-that would have been affected are those that maintain out-of-tree
-drivers / code that hooked into ->huge_fault() or used VM_MIXEDMAP +
-THP. No users of the in-tree kernel would have been affected. It's
-still a good "fix" to make going forward (and certainly happy to be
-able to help Saurabh out).
+Thank all and sorry for the late response ; have been buried as of late.
 
-+ greg k-h for vis / to confirm.
-
-> > Fixes: 7da4e2cb8b1f ("mm: thp: kill __transhuge_page_enabled()")
-> > Reported-by: Saurabh Singh Sengar <ssengar@microsoft.com>
->
-> It's nice to include a Closes: link after a Reported-by:.  Then readers
-> are better able to answer the above question.
-
-Ah, apologies, Andrew; I didn't know such a tag existed -- I'll be
-sure to include it in the future.
-
-> > Signed-off-by: Zach O'Keefe <zokeefe@google.com>
-> > Cc: Yang Shi <shy828301@gmail.com>
-> > Cc: Matthew Wilcox <willy@infradead.org>
-> > Cc: David Hildenbrand <david@redhat.com>
->
+Best,
+Zach
