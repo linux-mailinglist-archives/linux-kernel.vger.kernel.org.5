@@ -2,68 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA717BEE0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 00:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 557FD7BEE10
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 00:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378851AbjJIWFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 18:05:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52086 "EHLO
+        id S1378842AbjJIWGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 18:06:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378850AbjJIWFj (ORCPT
+        with ESMTP id S1378741AbjJIWGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 18:05:39 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16FDA7
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 15:05:24 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6969b391791so3391816b3a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 15:05:24 -0700 (PDT)
+        Mon, 9 Oct 2023 18:06:04 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D37A6
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 15:06:01 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-690d2441b95so3658575b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 15:06:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696889124; x=1697493924; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1696889161; x=1697493961; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/rIbMEY0KLZuTJXGkvyS53BfVxkGFGvroxWH8XJdJsI=;
-        b=DHzg7jHM90iHDjEjpMVZsxcPKECro4TSt3cw2gx2SqVlX+MA+mZSTS2TB4w4cdejL3
-         5FBrDWCWG55KCfaiqXU/fojQuiefCwEdEgBf7tX1366TdltsrZ4Rz99QvJefA6eHEiuo
-         sgf9lc4KpbU7hjV4u+SqHHloTnvhlonluxnHs=
+        bh=845MK78LxhnwOhYyBjmLLC+lpa1q0nrX/E0dElEn/Cc=;
+        b=chejwi6w0gnStM8GPNcL5n3DcdgQYMRYnrMOSRFqRvgIfwGKtXcJxTHp7/dupjFFEN
+         yZSF31fEKqHW6wKbi1DPo5tDElBXywPfxDGQq0jkQHC9vDNAGMIvK8hD9MBJjfD5D6oI
+         2Xr8Hg5NcmzdW2dfmWnyD9Aclv63i/RVCzLPg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696889124; x=1697493924;
+        d=1e100.net; s=20230601; t=1696889161; x=1697493961;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/rIbMEY0KLZuTJXGkvyS53BfVxkGFGvroxWH8XJdJsI=;
-        b=Ut+FzldUysUCw3ZHLHkD8dt0V3TA2MC1gihIC5TkD2GyV/NTtHYprhkUibNraZrz4O
-         I54K1JhxCK/fL+4dSLw7GGeNPG2+WGRGtvTZLypPSc/D1FdDhOUSguwEOSf1QzLICDOF
-         RUmGi+a6pS8xs21XPbxl+wU0PrKebMUJW6SNNCiX3mk+Pp0jubr/glpdQrK/YZkYL1tb
-         jaSA3aTgBLUSDMkgL1QaBYB6QY4/DFz5ptt7F9dBZS9JrW6ICUrnicrqh5JUl/GkcFi9
-         Q+lH5Bbg1FgIIyyk01VIPUvDacy1ZIIS4O6XyoDuispiv24DaWc28EFuYouEqlJojNDw
-         Me4w==
-X-Gm-Message-State: AOJu0YxZDzRvGHR88KYcTplnDOQRdnbb5dvmbKgwsgvGCkQp8BYHjaOe
-        49wHo1WthJfqm1NYts1+6I49ng==
-X-Google-Smtp-Source: AGHT+IEBCqtLNAeRUJEeWjcTOnSv1UFgTNeaa9XXwYbRiU7M2LJKxYcai3apehX/wjgyfixLRc3kcA==
-X-Received: by 2002:a05:6a20:d41e:b0:16b:74bb:e57e with SMTP id il30-20020a056a20d41e00b0016b74bbe57emr8200777pzb.12.1696889124175;
-        Mon, 09 Oct 2023 15:05:24 -0700 (PDT)
+        bh=845MK78LxhnwOhYyBjmLLC+lpa1q0nrX/E0dElEn/Cc=;
+        b=wakPZZZLZyFGGAx5uZ1w/Xfg+Ss46wtC1dGtolAMdV4MC6KBLAHD7FFECtLS5cAR+d
+         LAZ8/bm0n0zBlFUfvYAiiuNAesO29WX+bqjUBwq8tV6aqTUzO3Hx4wNbXSFZ6j2jpg2R
+         GEUavsVUa8giJVqWYT7FoVz1J76vtTsoEQzp9gQaDSJ48u8JeLxO33sFojU0d5bIhqhx
+         ROHugsz6dO7LGxg+Ofb8NxD/YOkuH7MH6NhhwWniFeEwiHH436MhuzBmGors6zydGzlo
+         67arqGA67Z3oIFf7UwTXpolMqrBNAh+4+jxg3S4+yuoc7Z0LJgUa7vBf6KrNiFonPUYH
+         yWHw==
+X-Gm-Message-State: AOJu0Yz2viKFJXPDLSTcxdLeFKGVs2RTgCdqN5u4EpZq48S/NiKk2KLB
+        ki8zRPGvr2UX6+I2RqX5Xy1FLJr08KkMgB74MLk=
+X-Google-Smtp-Source: AGHT+IHqaBNQQQRLJKp65sZWW9PKzkYfF+M26/Xgf+6qN4PKsORHoYdOSJWUwzqVcOHLSVA68vcuuw==
+X-Received: by 2002:a05:6a00:2d94:b0:68f:cc67:e709 with SMTP id fb20-20020a056a002d9400b0068fcc67e709mr19253695pfb.16.1696889161154;
+        Mon, 09 Oct 2023 15:06:01 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id c12-20020aa78e0c000000b006933866fd21sm6918310pfr.117.2023.10.09.15.05.23
+        by smtp.gmail.com with ESMTPSA id c17-20020aa78c11000000b0068c10187dc3sm6849915pfd.168.2023.10.09.15.06.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 15:05:23 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 15:05:21 -0700
+        Mon, 09 Oct 2023 15:06:00 -0700 (PDT)
+Date:   Mon, 9 Oct 2023 15:05:57 -0700
 From:   Kees Cook <keescook@chromium.org>
 To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] wifi: brcmfmac: fweh: Add __counted_by for struct
- brcmf_fweh_queue_item and use struct_size()
-Message-ID: <202310091505.396E92C3@keescook>
-References: <ZSRzrIe0345eymk2@work>
+Cc:     Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
+        Intel Corporation <linuxwwan@intel.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
+        Liu Haijun <haijun.liu@mediatek.com>,
+        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
+        Ricardo Martinez <ricardo.martinez@linux.intel.com>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] net: wwan: t7xx: Add __counted_by for struct
+ t7xx_fsm_event and use struct_size()
+Message-ID: <202310091505.49082C790A@keescook>
+References: <ZSR0qh5dEV5qoBW4@work>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZSRzrIe0345eymk2@work>
+In-Reply-To: <ZSR0qh5dEV5qoBW4@work>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -73,17 +80,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 03:42:04PM -0600, Gustavo A. R. Silva wrote:
+On Mon, Oct 09, 2023 at 03:46:18PM -0600, Gustavo A. R. Silva wrote:
 > Prepare for the coming implementation by GCC and Clang of the __counted_by
 > attribute. Flexible array members annotated with __counted_by can have
 > their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
 > array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
 > functions).
-> 
-> Also, relocate `event->datalen = datalen;` to before calling
-> `memcpy(event->data, data, datalen);`, so that the __counted_by
-> annotation has effect, and flex-array member `data` can be properly
-> bounds-checked at run-time.
 > 
 > While there, use struct_size() helper, instead of the open-coded
 > version, to calculate the size for the allocation of the whole
@@ -94,49 +96,44 @@ On Mon, Oct 09, 2023 at 03:42:04PM -0600, Gustavo A. R. Silva wrote:
 > 
 > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Yeah, looks right. Thanks for moving the count assignment.
+Looks right to me.
 
 Reviewed-by: Kees Cook <keescook@chromium.org>
 
 -Kees
 
 > ---
->  drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>  drivers/net/wwan/t7xx/t7xx_state_monitor.c | 3 ++-
+>  drivers/net/wwan/t7xx/t7xx_state_monitor.h | 2 +-
+>  2 files changed, 3 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.c
-> index dac7eb77799b..68960ae98987 100644
-> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.c
-> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.c
-> @@ -33,7 +33,7 @@ struct brcmf_fweh_queue_item {
->  	u8 ifaddr[ETH_ALEN];
->  	struct brcmf_event_msg_be emsg;
->  	u32 datalen;
-> -	u8 data[];
-> +	u8 data[] __counted_by(datalen);
+> diff --git a/drivers/net/wwan/t7xx/t7xx_state_monitor.c b/drivers/net/wwan/t7xx/t7xx_state_monitor.c
+> index 80edb8e75a6a..0bc97430211b 100644
+> --- a/drivers/net/wwan/t7xx/t7xx_state_monitor.c
+> +++ b/drivers/net/wwan/t7xx/t7xx_state_monitor.c
+> @@ -445,7 +445,8 @@ int t7xx_fsm_append_event(struct t7xx_fsm_ctl *ctl, enum t7xx_fsm_event_state ev
+>  		return -EINVAL;
+>  	}
+>  
+> -	event = kmalloc(sizeof(*event) + length, in_interrupt() ? GFP_ATOMIC : GFP_KERNEL);
+> +	event = kmalloc(struct_size(event, data, length),
+> +			in_interrupt() ? GFP_ATOMIC : GFP_KERNEL);
+>  	if (!event)
+>  		return -ENOMEM;
+>  
+> diff --git a/drivers/net/wwan/t7xx/t7xx_state_monitor.h b/drivers/net/wwan/t7xx/t7xx_state_monitor.h
+> index b6e76f3903c8..b0b3662ae6d7 100644
+> --- a/drivers/net/wwan/t7xx/t7xx_state_monitor.h
+> +++ b/drivers/net/wwan/t7xx/t7xx_state_monitor.h
+> @@ -102,7 +102,7 @@ struct t7xx_fsm_event {
+>  	struct list_head	entry;
+>  	enum t7xx_fsm_event_state event_id;
+>  	unsigned int		length;
+> -	unsigned char		data[];
+> +	unsigned char		data[] __counted_by(length);
 >  };
 >  
->  /*
-> @@ -418,17 +418,17 @@ void brcmf_fweh_process_event(struct brcmf_pub *drvr,
->  	    datalen + sizeof(*event_packet) > packet_len)
->  		return;
->  
-> -	event = kzalloc(sizeof(*event) + datalen, gfp);
-> +	event = kzalloc(struct_size(event, data, datalen), gfp);
->  	if (!event)
->  		return;
->  
-> +	event->datalen = datalen;
->  	event->code = code;
->  	event->ifidx = event_packet->msg.ifidx;
->  
->  	/* use memcpy to get aligned event message */
->  	memcpy(&event->emsg, &event_packet->msg, sizeof(event->emsg));
->  	memcpy(event->data, data, datalen);
-> -	event->datalen = datalen;
->  	memcpy(event->ifaddr, event_packet->eth.h_dest, ETH_ALEN);
->  
->  	brcmf_fweh_queue_event(fweh, event);
+>  struct t7xx_fsm_command {
 > -- 
 > 2.34.1
 > 
