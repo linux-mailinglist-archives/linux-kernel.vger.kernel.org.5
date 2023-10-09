@@ -2,142 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C70787BD5E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 10:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F7A17BD5E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 10:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345613AbjJIIya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 04:54:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50954 "EHLO
+        id S1345558AbjJIIyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 04:54:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346044AbjJIIyP (ORCPT
+        with ESMTP id S1345594AbjJIIyj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 04:54:15 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE6D018F
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 01:54:07 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-4054f790190so41112625e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 01:54:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696841646; x=1697446446; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tawKlj4NwKRNWJhg+WB2iw2MzhEt5iLp9WdomLuxTsc=;
-        b=mRiNXmtqJCzygC5B+ccp5dJe/2rmo6pYIiU5Y1ns6fBHR0gLgZZeTkyJx7o72FXL9U
-         et4y9WOBxCBaIe4hjJbp8ZihVoTikWqwlkR6lTgpVUMipDub61XMesD8LC9TeAle9MSY
-         h8M8xH5EfnjgMDi+ty3xYTcpO6pcaIviS9jxl6SQrQubLHfUq0pmLIhR8cl+GXSEsHbU
-         rLyYrVClhBpwktJf6dAvsFnFH1zcLpjr/RPnSlQK6BsiYs3FVzCx06cVKj+Kqj/VvBTp
-         cDW7FxNl5oi2GpMrVHZJjHRKBMP5FKp13bkkswZFn30/s/+oVITUw6GQaX6aOs4uH+7S
-         AUaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696841646; x=1697446446;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tawKlj4NwKRNWJhg+WB2iw2MzhEt5iLp9WdomLuxTsc=;
-        b=BqapY1aAQ4+4ryf6+0VuEQBXJzE/jA7gSCyOH2YXMyUhLpyRBWZzqMNsXAMpUAQYt6
-         WRe6gbfiTNO/mJJEI+x/03dnJJ8a8sOx+VBfJmvBjaInwZeSE46IwfteiyoRacDvHEQv
-         tzx+jvWtZQDEABa4ks35Doa3LukBUdEhwpxl4HEnPFoUHisV4E3r7rVFbDotzmfK2xYr
-         20FZbZ5CmWlCYDtR26bpQa6Vmau8g2lAJgZmP+4Z9IpyG3KqV/7D6XEQBVukhqjNxgUQ
-         gSj7QYHrA4xT3ugOlUMmRPGJOuANToS1qRVoNZSB4yhD2wFSNVDb18fPKVnIVBEuawfL
-         aifg==
-X-Gm-Message-State: AOJu0Yw/DeUBAi097yAjXm9HN0429LOcExWXbe2l+z8CXdrykMy+OgxY
-        MaaTyuElaU5qvosCcIQ7QBSSjw==
-X-Google-Smtp-Source: AGHT+IGouuR+IH+XtAVq/zCHR2lpY8VEe17w2cFVnpj5OMERr7qv5EDkNuA3hymIkLLbseauor52Wg==
-X-Received: by 2002:a05:600c:298c:b0:401:b2c7:34a4 with SMTP id r12-20020a05600c298c00b00401b2c734a4mr13337773wmd.11.1696841645668;
-        Mon, 09 Oct 2023 01:54:05 -0700 (PDT)
-Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id h11-20020a056000000b00b00325a59b2080sm8988371wrx.97.2023.10.09.01.54.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 01:54:05 -0700 (PDT)
-Message-ID: <0ed03631-a2f7-41ab-b956-ec190e35d304@linaro.org>
-Date:   Mon, 9 Oct 2023 10:54:03 +0200
+        Mon, 9 Oct 2023 04:54:39 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E2E11B
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 01:54:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D428CC433C9
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 08:54:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696841676;
+        bh=9n/7RwxQhXcoWDnbns8I2FTa6fM9dCa/G7p8dxIGNok=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Pgw7GRae+wKAnMOnM/+5rHl/WCpsw6W/8c3Tt5JZN0DFQElI4IkV+SlINTxqpoHLq
+         ZA8uZl8EQtVexIpuJofR0lrei37fHNpQRUpf3hvJQBEvg5ylExreknJsf+zN1Iqnh1
+         pWSRt70dK7ji/uOARGL9FjH+B1d1USOL9q5y9enWywYp3x+zWu4F/wAi5z4ztda7TW
+         MWaHE1VApJwiXeEtUpptTxgpKUeROrS2OyHX1uTODWXqZsZXExmtmLTp4T4uEMuDZq
+         4pydbGVznmQDT/+HyT8jApMjv2XLZjcW8Pn/2jrYo4j2kOrqYk4aBPS609qAm0Rv61
+         0rMG78kRTTC6w==
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-9b6559cbd74so778896966b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 01:54:36 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxkWJI4toqffue9HP0rvhEJ2yhLMd5rR8aED9nRegij59cloZa8
+        Ioff1Ek2u7hYeyT6HWyn6fC2V/w6xr1d6a79zYg=
+X-Google-Smtp-Source: AGHT+IHGww7rveukx+cl27yL8nzyIgkRy+YrEuRsJ+DkxVHOlDW304ob+nvB745R9AlYO0maQg3J0Dz168Y6kCwz9oI=
+X-Received: by 2002:a17:906:108f:b0:9ae:519f:8287 with SMTP id
+ u15-20020a170906108f00b009ae519f8287mr10823154eju.77.1696841675200; Mon, 09
+ Oct 2023 01:54:35 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/4] dt-bindings: power: reset: gpio-poweroff: Add
- priority property
-Content-Language: en-US
-To:     Francesco Dolcini <francesco@dolcini.it>,
-        Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Stefan Eichenberger <stefan.eichenberger@toradex.com>,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Francesco Dolcini <francesco.dolcini@toradex.com>
-References: <20231006130428.11259-1-francesco@dolcini.it>
- <20231006130428.11259-4-francesco@dolcini.it>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231006130428.11259-4-francesco@dolcini.it>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <7c50e051-eba2-09fc-da9f-023d592de457@ristioja.ee>
+ <31bdf7b1-0ed9-4217-b459-1d857e53120b@leemhuis.info> <CAAhV-H7fRpykesVUEyaTpVnFiGwpP+fPbtdrp6JwfgD=bDp06Q@mail.gmail.com>
+ <CAAhV-H7XCmbgS=N4-SE8FnASAws8hnDRZsQJgXE+dwyARaqzNw@mail.gmail.com> <ZSO9uArAtsPMPeTP@debian.me>
+In-Reply-To: <ZSO9uArAtsPMPeTP@debian.me>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Mon, 9 Oct 2023 16:54:22 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H5GbidUx8YanUc7S9oGqBkDd53xeT=2O4aCuX7KpM-+8A@mail.gmail.com>
+Message-ID: <CAAhV-H5GbidUx8YanUc7S9oGqBkDd53xeT=2O4aCuX7KpM-+8A@mail.gmail.com>
+Subject: Re: Blank screen on boot of Linux 6.5 and later on Lenovo ThinkPad L570
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Linux Regressions <regressions@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jaak Ristioja <jaak@ristioja.ee>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Linux DRI Development <dri-devel@lists.freedesktop.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/2023 15:04, Francesco Dolcini wrote:
-> From: Stefan Eichenberger <stefan.eichenberger@toradex.com>
-> 
-> Add the priority property to the gpio-poweroff bindings description.
-> 
-> Signed-off-by: Stefan Eichenberger <stefan.eichenberger@toradex.com>
-> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
-> ---
-> v1->v2:
+On Mon, Oct 9, 2023 at 4:45=E2=80=AFPM Bagas Sanjaya <bagasdotme@gmail.com>=
+ wrote:
+>
+> On Mon, Oct 09, 2023 at 09:27:02AM +0800, Huacai Chen wrote:
+> > Hi, all,
+> >
+> > On Tue, Sep 26, 2023 at 10:31=E2=80=AFPM Huacai Chen <chenhuacai@kernel=
+.org> wrote:
+> > >
+> > > Hi, all,
+> > >
+> > > On Tue, Sep 26, 2023 at 7:15=E2=80=AFPM Linux regression tracking (Th=
+orsten
+> > > Leemhuis) <regressions@leemhuis.info> wrote:
+> > > >
+> > > > [CCing the regression list, as it should be in the loop for regress=
+ions:
+> > > > https://docs.kernel.org/admin-guide/reporting-regressions.html]
+> > > >
+> > > > Hi, Thorsten here, the Linux kernel's regression tracker.
+> > > >
+> > > > On 13.09.23 14:02, Jaak Ristioja wrote:
+> > > > >
+> > > > > Upgrading to Linux 6.5 on a Lenovo ThinkPad L570 (Integrated Inte=
+l HD
+> > > > > Graphics 620 (rev 02), Intel(R) Core(TM) i7-7500U) results in a b=
+lank
+> > > > > screen after boot until the display manager starts... if it does =
+start
+> > > > > at all. Using the nomodeset kernel parameter seems to be a workar=
+ound.
+> > > > >
+> > > > > I've bisected this to commit 60aebc9559492cea6a9625f514a8041717e3=
+a2e4
+> > > > > ("drivers/firmware: Move sysfb_init() from device_initcall to
+> > > > > subsys_initcall_sync").
+> > > >
+> > > > Hmmm, no reaction since it was posted a while ago, unless I'm missi=
+ng
+> > > > something.
+> > > >
+> > > > Huacai Chen, did you maybe miss this report? The problem is apparen=
+tly
+> > > > caused by a commit of yours (that Javier applied), you hence should=
+ look
+> > > > into this.
+> > > I'm sorry but it looks very strange, could you please share your conf=
+ig file?
+> > As confirmed by Jaak, disabling DRM_SIMPLEDRM makes things work fine
+> > again. So I guess the reason:
+>
+> Did Jaak reply privately? It should have been disclosed in public
+> ML here instead.
+Yes, he replied privately, and disabling DRM_SIMPLEDRM was suggested by me.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>
+> >
+> > When SIMPLEDRM takes over the framebuffer, the screen is blank (don't
+> > know why). And before 60aebc9559492cea6a9625f ("drivers/firmware: Move
+> > sysfb_init() from device_initcall to subsys_initcall_sync") there is
+> > no platform device created for SIMPLEDRM at early stage, so it seems
+> > also "no problem".
+>
+> I don't understand above. You mean that after that commit the platform
+> device is also none, right?
+No. The SIMPLEDRM driver needs a platform device to work, and that
+commit makes the platform device created earlier. So, before that
+commit, SIMPLEDRM doesn't work, but the screen isn't blank; after that
+commit, SIMPLEDRM works, but the screen is blank.
 
-Best regards,
-Krzysztof
-
+Huacai
+>
+> Confused...
+>
+> --
+> An old man doll... just what I always wanted! - Clara
