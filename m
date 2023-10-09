@@ -2,52 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0039B7BEA00
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 20:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F07177BEA03
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 20:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378162AbjJISpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 14:45:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42444 "EHLO
+        id S1378176AbjJISqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 14:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377520AbjJISph (ORCPT
+        with ESMTP id S1378120AbjJISqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 14:45:37 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCEC89C;
-        Mon,  9 Oct 2023 11:45:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0489DC433C7;
-        Mon,  9 Oct 2023 18:45:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696877135;
-        bh=oxL0pIQeXgp/udAU9snOzPIc9ECHIbLmdsXSzEt/Py8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=usotOXlSP3FliBXBBlbbYPvt9TxoDAMOmA/7aEW3Mx5hSlbdyy+BWakSIQ5zvLT7r
-         9lXHsRDVJXyh+WoKoVKsUqqTeicW7XWGULnb1hIpRLEzHTS87aFU5Duj+pV0rErpQd
-         LMG0VOwpi+sMBGYeSkGzfyjK/hE7q9Vb5ZoGjMRZGlOv9bHPVe91GrBEgzCVqmGfSv
-         9elqXv22Hlr4X8cA9DVQ2lDPpMSqNhxM6SQ7+u6xdfnYi5I+3jBpMIgMbcVclbUy8B
-         7Hq7DviVIWpNCPLvBerNL3MbVf/F/0WSZd8/1nQmfNW9vRQU7FiQWebKTEtaxR5Dbl
-         zvPSoYFDK/I9A==
-From:   SeongJae Park <sj@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, damon@lists.linux.dev,
-        SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 6.5 000/163] 6.5.7-rc1 review
-Date:   Mon,  9 Oct 2023 18:45:32 +0000
-Message-Id: <20231009184532.8281-1-sj@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231009130124.021290599@linuxfoundation.org>
-References: 
+        Mon, 9 Oct 2023 14:46:07 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A667A6
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 11:46:06 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6c4e38483d2so3465839a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 11:46:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696877165; x=1697481965; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hO3LUe5ofUhhf/JzpF6obyH/g5xq6HG7iuNZoAV8g0A=;
+        b=mqeC56XKMg1n3zpHXSKbrhwTHY+FxOjFy7Dcj3wdPDM/FcYCI6tCwkMN10mhgGE+03
+         c9s9Hyd8qGBV8Abz5HO/59LDzK69T2u+RxgbHO4MAqPNhCkdarWZju56RI9BxlpDK9PZ
+         KZYo4WmGx0ZqZxZzpA1VjFE+VJhS1mOw790E1dAGmBOA4d4X/3XENSkglj7d/ZNdf902
+         civaTk5Gvywnx9Vc/uRz9rCCXNaY+iiDMVL1aftHudYGTVHcUBcK9NInivS6K9n7pXhF
+         TZ95y8YlzGJVXv1r4C1keWmbtE0HyN5f6ICg6EpgNtFwtPvE23vL88MJsC+WPVl/r292
+         b8vA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696877165; x=1697481965;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hO3LUe5ofUhhf/JzpF6obyH/g5xq6HG7iuNZoAV8g0A=;
+        b=ooXs/vUqcIisjM7E1RBCHbGVE5WPKXMc7CzBlj+mkeNIKmktB37Oy8WlDzpn+ywMMm
+         P9ul+Cfx67gijqkUvJqZQQr4YPlt08Kqw7ltZDcp7E5T+ByNVup8xmjUOs7wsxJ+ky+Z
+         8SsyNbP43ELjYMmCt+xzrg+tgBTq7Gn69k36Skjq8Ui78ZS+VK+kvvlH7cJCBwLDNDX/
+         qcV/7t9WW+wE6cXIsqBts90z74W/SJv9n3852fXyJtx/n9dJ/LxvZqhc4a8B60Wu/A+9
+         wERqldqAufzjVxJAtzqgAqzKOVURsAgDzxSgNnekXVuA0HIo1iodoFgRenM4qfrK7DzU
+         p9Ig==
+X-Gm-Message-State: AOJu0Yxhe/fvrt3tvY945JggzEmi5+Sxcs6ZYGPtzWXAlsZwTmfgJPWn
+        2s2VMyAq0OGIS74QL2dLE4ZEpLTpKbINv3WWcSQ=
+X-Google-Smtp-Source: AGHT+IGPYT0RA6DlQ4e2wnpZWcJFoS79JDz2JE5zmK9PmczS5ESfePxUym53XyVJIbPneoKuwkdOzdEcD189F8+MdJA=
+X-Received: by 2002:a05:6871:451:b0:1dc:ddcd:876f with SMTP id
+ e17-20020a056871045100b001dcddcd876fmr19133264oag.41.1696877165351; Mon, 09
+ Oct 2023 11:46:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20231008064649.3184677-1-uwu@icenowy.me> <MW4PR12MB5667743E5B759FFE85F204ACF2CEA@MW4PR12MB5667.namprd12.prod.outlook.com>
+In-Reply-To: <MW4PR12MB5667743E5B759FFE85F204ACF2CEA@MW4PR12MB5667.namprd12.prod.outlook.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 9 Oct 2023 14:45:54 -0400
+Message-ID: <CADnq5_PziCZsBy==21t4Wen_Dv_F7Q1AMNbJXmSjtBrgsboSAg@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu: fix SI failure due to doorbells allocation
+To:     "Sharma, Shashank" <Shashank.Sharma@amd.com>
+Cc:     Icenowy Zheng <uwu@icenowy.me>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Yadav, Arvind" <Arvind.Yadav@amd.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,65 +77,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Applied.  Thanks!
 
-On Mon, 9 Oct 2023 14:59:24 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-
-> This is the start of the stable review cycle for the 6.5.7 release.
-> There are 163 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 11 Oct 2023 13:00:55 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.7-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
-> and the diffstat can be found below.
-
-This rc kernel passes DAMON functionality test[1] on my test machine.
-Attaching the test results summary below.  Please note that I retrieved the
-kernel from linux-stable-rc tree[2].
-
-Tested-by: SeongJae Park <sj@kernel.org>
-
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] e640325b3c9a ("Linux 6.5.7-rc1")
-
-Thanks,
-SJ
-
-[...]
-
----
-
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 2 selftests: damon: debugfs_schemes.sh
-ok 3 selftests: damon: debugfs_target_ids.sh
-ok 4 selftests: damon: debugfs_empty_targets.sh
-ok 5 selftests: damon: debugfs_huge_count_read_write.sh
-ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
-ok 7 selftests: damon: debugfs_rm_non_contexts.sh
-ok 8 selftests: damon: sysfs.sh
-ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
-ok 10 selftests: damon: reclaim.sh
-ok 11 selftests: damon: lru_sort.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_arm64.sh
-ok 12 selftests: damon-tests: build_i386_idle_flag.sh
-ok 13 selftests: damon-tests: build_i386_highpte.sh
-ok 14 selftests: damon-tests: build_nomemcg.sh
- [33m
- [92mPASS [39m
-_remote_run_corr.sh SUCCESS
+On Mon, Oct 9, 2023 at 5:27=E2=80=AFAM Sharma, Shashank <Shashank.Sharma@am=
+d.com> wrote:
+>
+> [AMD Official Use Only - General]
+>
+> Reviewed-by: Shashank Sharma <shashank.sharma@amd.com>
+>
+> Regards
+> Shashank
+> -----Original Message-----
+> From: Icenowy Zheng <uwu@icenowy.me>
+> Sent: Sunday, October 8, 2023 8:47 AM
+> To: Deucher, Alexander <Alexander.Deucher@amd.com>; Koenig, Christian <Ch=
+ristian.Koenig@amd.com>; Pan, Xinhui <Xinhui.Pan@amd.com>; David Airlie <ai=
+rlied@gmail.com>; Daniel Vetter <daniel@ffwll.ch>; Sharma, Shashank <Shasha=
+nk.Sharma@amd.com>; Yadav, Arvind <Arvind.Yadav@amd.com>
+> Cc: amd-gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org; linux=
+-kernel@vger.kernel.org; Icenowy Zheng <uwu@icenowy.me>
+> Subject: [PATCH] drm/amdgpu: fix SI failure due to doorbells allocation
+>
+> SI hardware does not have doorbells at all, however currently the code wi=
+ll try to do the allocation and thus fail, makes SI AMDGPU not usable.
+>
+> Fix this failure by skipping doorbells allocation when doorbells count is=
+ zero.
+>
+> Fixes: 54c30d2a8def ("drm/amdgpu: create kernel doorbell pages")
+> Signed-off-by: Icenowy Zheng <uwu@icenowy.me>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c b/drivers/g=
+pu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c
+> index d0249ada91d30..599aece42017a 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c
+> @@ -142,6 +142,10 @@ int amdgpu_doorbell_create_kernel_doorbells(struct a=
+mdgpu_device *adev)
+>         int r;
+>         int size;
+>
+> +       /* SI HW does not have doorbells, skip allocation */
+> +       if (adev->doorbell.num_kernel_doorbells =3D=3D 0)
+> +               return 0;
+> +
+>         /* Reserve first num_kernel_doorbells (page-aligned) for kernel o=
+ps */
+>         size =3D ALIGN(adev->doorbell.num_kernel_doorbells * sizeof(u32),=
+ PAGE_SIZE);
+>
+> --
+> 2.39.1
+>
