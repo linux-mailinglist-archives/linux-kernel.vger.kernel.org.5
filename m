@@ -2,54 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A33937BE142
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3E07BE173
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377474AbjJINsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 09:48:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53284 "EHLO
+        id S1377399AbjJINuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 09:50:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376760AbjJINsg (ORCPT
+        with ESMTP id S1377326AbjJINuF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 09:48:36 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAB4794;
-        Mon,  9 Oct 2023 06:48:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8CECC433C8;
-        Mon,  9 Oct 2023 13:48:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696859314;
-        bh=+HSuQE4uwcv/S7v9Nu+yPUKMpHFCIut7bedSD0CoE+8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=tUT2ZZjjoyKrHy9spdRqLkKumZ59dlMndP1ekBAykHym+I9g1k39CRcqUXSeoVTqo
-         Z3xuUbY7mXsnOwgIi7yBQdMycUPRHFK35wzu94NkC9wXqe/ov4uMJ3UABP+2vXkI9y
-         UgteuuzSZhHsyo0DlcXKeFIzGGvj/2vjsvHXPD0PwUMqWZvXMU8qPTz9T5yoCbeEDu
-         R1dUaGDrRW5kAPCebPaeAyyc3t1SX9N6IF0/VFFSi5q/r7GjWPMHOv9zDuGbTtPEas
-         H4u/mTKT2CY5C6k5UY61G0i73TUhMGHtV5AmPgywk6CReOKL866HVwmyoAJWy+ZG2L
-         S4CgJoKX+MF3A==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, "Lee, Chun-Yi" <jlee@suse.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
-        Lee@vger.kernel.org,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        stable@vger.kernel.org, Iulia Tanasescu <iulia.tanasescu@nxp.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Bluetooth: mark bacmp() and bacpy() as __always_inline
-Date:   Mon,  9 Oct 2023 15:48:19 +0200
-Message-Id: <20231009134826.1063869-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        Mon, 9 Oct 2023 09:50:05 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2348CF;
+        Mon,  9 Oct 2023 06:50:02 -0700 (PDT)
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 399D7Qxg013177;
+        Mon, 9 Oct 2023 15:49:43 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=Rl6XtwYBshIFAdYkV2eozsWds6Rxm1JhSGil6DuD480=; b=u2
+        qZ9iUMCuSQohPkXzoktEV4wucBR6zC7z6pbKCvxrCE4UE1N2O5wD8pTNA1GTdk5i
+        BzWqVSGKd7RgwFXHk5CRBwZMRUYRZDN98g5rEVFJTuZw0uUwVCjli7A/Na7+RZIW
+        9QhDxTQuE4QE+jaQFgPP7wqDRJZA/roFtr8ywVHuBqPG75ly+UmlP4EeRkyz9Mlu
+        AAq9wxKEmWKpOQMdS+ncv8PsR0yY/lQz/h8w11IGePTgm5KyPcq4d3qUj5CVV/Zu
+        TONWGDQMxSGSvmQm1nZmN58BTEu6NLDsGPeKE6VU671d/CRfQJg+W627CeHyuMdV
+        QHdV36dKtBka4r+BAz0Q==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3tkhk3de1y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 09 Oct 2023 15:49:43 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id F243210005E;
+        Mon,  9 Oct 2023 15:49:42 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E6F9924FF4F;
+        Mon,  9 Oct 2023 15:49:42 +0200 (CEST)
+Received: from [10.201.20.120] (10.201.20.120) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 9 Oct
+ 2023 15:49:41 +0200
+Message-ID: <0de2ae74-2ba1-0e8d-aa7b-77806ac8b252@foss.st.com>
+Date:   Mon, 9 Oct 2023 15:49:41 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 3/7] dt-bindings: media: Document STM32MP25 VENC video
+ encoder
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        <linux-media@vger.kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-rockchip@lists.infradead.org>
+CC:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+References: <20231004091552.3531659-1-hugues.fruchet@foss.st.com>
+ <20231004091552.3531659-4-hugues.fruchet@foss.st.com>
+ <6bc60e4a-ddf1-4125-ba27-53ab55a553d2@linaro.org>
+From:   Hugues FRUCHET <hugues.fruchet@foss.st.com>
+In-Reply-To: <6bc60e4a-ddf1-4125-ba27-53ab55a553d2@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.201.20.120]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-09_11,2023-10-09_01,2023-05-22_02
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,55 +89,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hi Krzysztof,
 
-These functions are simple wrappers around memcmp() and memcpy(), which
-contain compile-time checks for buffer overflow. Something in gcc-13 and
-likely other versions makes this trigger a warning when the functions
-are not inlined and the compiler misunderstands the buffer length:
+On 10/5/23 21:45, Krzysztof Kozlowski wrote:
+> On 04/10/2023 11:15, Hugues Fruchet wrote:
+>> Add STM32MP25 VENC video encoder bindings.
+>>
+> 
+> I don't understand why this binding is separate from video decoder.
+> Merge them.
+VDEC and VENC are two independent IPs with their own clock, reset, 
+interrupt & register set, they have their own access to APB/AXI bus.
+Moreover future chipsets may embed only VENC or VDEC.
 
-In file included from net/bluetooth/hci_event.c:32:
-In function 'bacmp',
-    inlined from 'hci_conn_request_evt' at net/bluetooth/hci_event.c:3276:7:
-include/net/bluetooth/bluetooth.h:364:16: error: 'memcmp' specified bound 6 exceeds source size 0 [-Werror=stringop-overread]
-  364 |         return memcmp(ba1, ba2, sizeof(bdaddr_t));
-      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Hoping that this clarifies the reason of two different bindings.
 
-Use the __always_inline annotation to ensure that the helpers are
-correctly checked. This has no effect on the actual correctness
-of the code, but avoids the warning. Since the patch that introduced
-the warning is marked for stable backports, this one should also
-go that way to avoid introducing build regressions.
+> 
+> Best regards,
+> Krzysztof
+> 
 
-Fixes: d70e44fef8621 ("Bluetooth: Reject connection with the device which has same BD_ADDR")
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Lee, Chun-Yi <jlee@suse.com>
-Cc: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-Cc: Marcel Holtmann <marcel@holtmann.org>
-Cc: stable@vger.kernel.org
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- include/net/bluetooth/bluetooth.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/net/bluetooth/bluetooth.h b/include/net/bluetooth/bluetooth.h
-index 7ffa8c192c3f2..27ee1bf51c235 100644
---- a/include/net/bluetooth/bluetooth.h
-+++ b/include/net/bluetooth/bluetooth.h
-@@ -359,11 +359,11 @@ static inline bool bdaddr_type_is_le(u8 type)
- #define BDADDR_NONE (&(bdaddr_t) {{0xff, 0xff, 0xff, 0xff, 0xff, 0xff}})
- 
- /* Copy, swap, convert BD Address */
--static inline int bacmp(const bdaddr_t *ba1, const bdaddr_t *ba2)
-+static __always_inline int bacmp(const bdaddr_t *ba1, const bdaddr_t *ba2)
- {
- 	return memcmp(ba1, ba2, sizeof(bdaddr_t));
- }
--static inline void bacpy(bdaddr_t *dst, const bdaddr_t *src)
-+static __always_inline void bacpy(bdaddr_t *dst, const bdaddr_t *src)
- {
- 	memcpy(dst, src, sizeof(bdaddr_t));
- }
--- 
-2.39.2
-
+Br,
+Hugues.
