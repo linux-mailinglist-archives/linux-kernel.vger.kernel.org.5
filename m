@@ -2,82 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4067BE615
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D60FD7BE617
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377169AbjJIQPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 12:15:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47684 "EHLO
+        id S1377163AbjJIQPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 12:15:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377121AbjJIQPB (ORCPT
+        with ESMTP id S1377121AbjJIQPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 12:15:01 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE08D92;
-        Mon,  9 Oct 2023 09:14:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25C36C433C9;
-        Mon,  9 Oct 2023 16:14:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696868099;
-        bh=xKFun3wpqKI15zrVSb9Vi77QMWDHT1VEu3Sfx4AXxh0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U/tWxx2ek0jb9ImawAOOuGclWy99k0A5kNl95bJF6F0H/VlJ2C25kVR9+SYQz4gvE
-         0//F8jjUtMTqiyhSSSZdxjyiyCJjF9l5AFxfpVTa/tKIq/mJTnncP3r/8NwYuXIKDm
-         HYp2lMB4T/kpwTtcaFJZtnyVxDVMBlcQwB+fSbMu7n0OW06oJvqmMuWOL/WsuEoG1c
-         29L4pvYQYKVCFXyGoHvwE3EgEb0APRFCX3bh88BDiU+zxKKq7AWqfOmRrRnk179D/0
-         mNlHRyOza0id9ez7/alMlpABXbJepPRYePJQrhi1hMnXVXvKJ7MIibsxQeO6YpevCy
-         JZikoRdQWABwA==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 0/2] 2 cosmetic changes
-Date:   Mon,  9 Oct 2023 18:14:54 +0200
-Message-Id: <20231009-jungpflanze-legislative-dc84b2c252d0@brauner>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231004111916.728135-1-mjguzik@gmail.com>
-References: <20231004111916.728135-1-mjguzik@gmail.com>
+        Mon, 9 Oct 2023 12:15:48 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3281492;
+        Mon,  9 Oct 2023 09:15:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696868147; x=1728404147;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=kSRc3U+XdQD0Wx1crW7aMZ5DUH3qauCyrQrJWbPgz2E=;
+  b=YXIEWPmO+kgs5ilg2p1f/JgekwjxBMyFnqNEkwoa01BacRs5stVLR9co
+   jiQZgm0LV71LujO/z0uc0MnlrqkllIhFpZHRXgUeuiYk7M9lUv5DVBoY9
+   JAuXfFjeThPVuBg1WBP9W0eYzvOHed4fr+7XT1L/uJd7Bky+ZXQqxGQf/
+   LdgjgDVHMJ5I5J9X7Pl9LSbSq7cMXEkk+JKSQS5qVPGRf2S4vcKROB6Vh
+   FC0sMuq7c1ATwQh/OkAEtcpfl3EpQzrz3pSIhmjDvv+1cj4nX4fLutYAQ
+   lna48bvSIswtmIwFPoIkaRb4ha4qsd1Ccc6AiIQiPUt2V/vtng5Tv12Ny
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="364474317"
+X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
+   d="scan'208";a="364474317"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 09:15:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="818896663"
+X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
+   d="scan'208";a="818896663"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.36.27])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 09:15:40 -0700
+Message-ID: <2118f573-0760-4dae-ab63-ff2768c7b437@intel.com>
+Date:   Mon, 9 Oct 2023 19:15:36 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1182; i=brauner@kernel.org; h=from:subject:message-id; bh=xKFun3wpqKI15zrVSb9Vi77QMWDHT1VEu3Sfx4AXxh0=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaSqqP1Yr28RrFw5N5Ivwv+Uftq7jaJRRzc5bGGa9cz1s7RE t6BeRykLgxgXg6yYIotDu0m43HKeis1GmRowc1iZQIYwcHEKwERyEhl+s+YmdouV7J7QNe2T7bMFVf xWPAx7I7/tezIrh7HMh7nyLCPDn+Ab9yQ3yrHKye+8z+R4PrYrI1zK91nE9I3H6vmt1vuzAgA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/1] mmc: sdhci-pci: Switch to use
+ acpi_evaluate_dsm_typed()
+Content-Language: en-US
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231002135103.2602847-1-andriy.shevchenko@linux.intel.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20231002135103.2602847-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 04 Oct 2023 13:19:14 +0200, Mateusz Guzik wrote:
-> both were annoying me for some time, so I'm pushing them out
+On 2/10/23 16:51, Andy Shevchenko wrote:
+> The acpi_evaluate_dsm_typed() provides a way to check the type of the
+> object evaluated by _DSM call. Use it instead of open coded variant.
 > 
-> These patches don't warrant arguing nor pinging in case of no response,
-> so if you don't like them that's it for the patchset. :)
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+
+> ---
+>  drivers/mmc/host/sdhci-pci-core.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> cheers
-> 
-> [...]
+> diff --git a/drivers/mmc/host/sdhci-pci-core.c b/drivers/mmc/host/sdhci-pci-core.c
+> index 7c14feb5db77..025b31aa712c 100644
+> --- a/drivers/mmc/host/sdhci-pci-core.c
+> +++ b/drivers/mmc/host/sdhci-pci-core.c
+> @@ -483,11 +483,12 @@ static int __intel_dsm(struct intel_host *intel_host, struct device *dev,
+>  	int err = 0;
+>  	size_t len;
+>  
+> -	obj = acpi_evaluate_dsm(ACPI_HANDLE(dev), &intel_dsm_guid, 0, fn, NULL);
+> +	obj = acpi_evaluate_dsm_typed(ACPI_HANDLE(dev), &intel_dsm_guid, 0, fn, NULL,
+> +				      ACPI_TYPE_BUFFER);
+>  	if (!obj)
+>  		return -EOPNOTSUPP;
+>  
+> -	if (obj->type != ACPI_TYPE_BUFFER || obj->buffer.length < 1) {
+> +	if (obj->buffer.length < 1) {
+>  		err = -EINVAL;
+>  		goto out;
+>  	}
 
-Applied to the vfs.misc branch of the vfs/vfs.git tree.
-Patches in the vfs.misc branch should appear in linux-next soon.
-
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
-
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.misc
-
-[1/2] vfs: predict the error in retry_estale as unlikely
-      https://git.kernel.org/vfs/vfs/c/c9f39d6a1486
-[2/2] vfs: stop counting on gcc not messing with mnt_expiry_mark if not asked
-      https://git.kernel.org/vfs/vfs/c/5cafd8fed85c
