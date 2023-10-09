@@ -2,78 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 709317BD16E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 02:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 691FE7BD15D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 02:09:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344632AbjJIAX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 20:23:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37744 "EHLO
+        id S1345022AbjJIAI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 20:08:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229845AbjJIAXx (ORCPT
+        with ESMTP id S1344929AbjJIAI5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 20:23:53 -0400
-X-Greylist: delayed 5649 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 08 Oct 2023 17:23:50 PDT
-Received: from mx.ucpejv.edu.cu (mail.ucpejv.edu.cu [200.14.49.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 498B0A3;
-        Sun,  8 Oct 2023 17:23:50 -0700 (PDT)
-Received: from mx.ucpejv.edu.cu (localhost.localdomain [127.0.0.1])
-        by mx.ucpejv.edu.cu (mx.ucpejv.edu.cu) with ESMTP id 500B3EEE2B;
-        Sun,  8 Oct 2023 17:46:22 -0400 (CDT)
-Received: from mail.ucpejv.edu.cu (mail.ucpejv.edu.cu [10.68.100.8])
-        by mx.ucpejv.edu.cu (mx.ucpejv.edu.cu) with ESMTPS id 383A5EEE1D;
-        Sun,  8 Oct 2023 17:46:22 -0400 (CDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.ucpejv.edu.cu (Postfix) with ESMTP id 1DFE1704437;
-        Sun,  8 Oct 2023 17:46:22 -0400 (CDT)
-Received: from mail.ucpejv.edu.cu ([127.0.0.1])
-        by localhost (mail.ucpejv.edu.cu [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Exztl3zqKXNR; Sun,  8 Oct 2023 17:46:21 -0400 (CDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.ucpejv.edu.cu (Postfix) with ESMTP id F0D85704FB1;
-        Sun,  8 Oct 2023 17:46:20 -0400 (CDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.ucpejv.edu.cu F0D85704FB1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucpejv.edu.cu;
-        s=6944A500-D828-11EB-A78A-E8BC65E2ACE4; t=1696801581;
-        bh=YVQkxxsQjcA28pTrfdCHmYTQQhEotWPiglViH2UlrcU=;
-        h=Date:From:Message-ID:MIME-Version;
-        b=DLPCjbxihiDywpazJbQICW0FLN/mTBiWOthdLxGSWez1EspKn3I/FPTdhtTxUrYmx
-         wqGeHqOgHKhGtEgMB4JpjcKbRvVuZSxk35B3JGEy94d1UB5Y1VOIXBLdAquCTMg4w9
-         whtpNY2wqJIrUxLvJmpuoqgFdJQyQcwHhvXleSPHw3N6WJnQnuGcI4SD97x/2eF88y
-         OvDDMrGvUyvhFy5ZvNOE2oatctQHJgj0SiYZRVHTVjCDEh4l4m0egCC8VNp332DKIC
-         gF7lK6FB/WIWKWWTH5fPwQSuPEOjwVu7iGbuE2qibUoKpOQDAFKqFwk2shg0aw+8Of
-         lM2bUX52VXvWQ==
-X-Virus-Scanned: amavisd-new at ucpejv.edu.cu
-Received: from mail.ucpejv.edu.cu ([127.0.0.1])
-        by localhost (mail.ucpejv.edu.cu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Ayjgxo3xmSXN; Sun,  8 Oct 2023 17:46:20 -0400 (CDT)
-Received: from mail.ucpejv.edu.cu (mail.ucpejv.edu.cu [10.68.100.8])
-        by mail.ucpejv.edu.cu (Postfix) with ESMTP id C2C7F704E55;
-        Sun,  8 Oct 2023 17:46:18 -0400 (CDT)
-Date:   Sun, 8 Oct 2023 17:46:18 -0400 (CDT)
-From:   Han <atencionalapoblacion@ucpejv.edu.cu>
-Reply-To: Han <han92728817@proton.me>
-Message-ID: <1382327503.25736.1696801578768.JavaMail.zimbra@ucpejv.edu.cu>
-Subject: Gesture
+        Sun, 8 Oct 2023 20:08:57 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51894A6;
+        Sun,  8 Oct 2023 17:08:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1696810134;
+        bh=H3b5Q4CPhf81BAdNsBH6LuxbsnJyU4sVyUV1x2qhmA8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=AGb1iLFDKb9CIgjxZnImgYVCOwokV6IZSIqFHl1vR4uD3FF7hOqYNNsEgClYAnV1+
+         o2udg/jytrXq50a49CBtHXPslZb0QMgIf3kJQUwg2+dSBK3RH91qL8tPwZcyviH0gg
+         dNvCugSvjM5jkA1f3plzX3CCnydnbRp/CProX6coyj9+q+9jAFI4I5wRyvPIGK8k0V
+         31J6Lyjf7MOSIOuwBA9L2aTRuSsqlpGD2eXz/t0J5Dp4IVs2uYRlLjalJurYa2uo6R
+         FE1Pjy7fsA3idSqfyQA1/O3hTB6ppOZulHDRbAznkS16jBtsI9HIN21rM0QPHcEstj
+         wt4zzjagMh0fA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S3fX56NxKz4xPf;
+        Mon,  9 Oct 2023 11:08:53 +1100 (AEDT)
+Date:   Mon, 9 Oct 2023 11:08:52 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the v4l-dvb-next tree
+Message-ID: <20231009110852.36b0bd42@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.68.100.8]
-X-Mailer: Zimbra 8.8.15_GA_4508 (zclient/8.8.15_GA_4508)
-Thread-Index: VdKfUkenmeSz1eReGIH0qC6shMVA1w==
-Thread-Topic: Gesture
-X-Spam-Status: No, score=3.2 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MISSING_HEADERS,
-        RCVD_IN_DNSWL_BLOCKED,REPLYTO_WITHOUT_TO_CC,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+Content-Type: multipart/signed; boundary="Sig_/A1sezmQ/KuRtzY79VQD+=6s";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/A1sezmQ/KuRtzY79VQD+=6s
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-A smile is a small gesture that expresses an interest and is a first step towards getting to know someone better! I am sending you a smile,I would love to know you more.I am 100% genuine in my search to hopefully meet someone special and withwhom together we can start as Friends and from that strong foundation hopefully build a life lasting relationship.Han
+After merging the v4l-dvb-next tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
+drivers/media/platform/qcom/camss/camss.c: In function 'camss_probe':
+drivers/media/platform/qcom/camss/camss.c:1634:17: error: label 'err_cleanu=
+p' used but not defined
+ 1634 |                 goto err_cleanup;
+      |                 ^~~~
+
+Caused by commits
+
+  7405116519ad ("media: qcom: camss: Fix pm_domain_on sequence in probe")
+  b278080a89f4 ("media: qcom: camss: Fix V4L2 async notifier error path")
+
+interacting with commit
+
+  2c1bae27df78 ("media: qcom: camss: Fix pm_domain_on sequence in probe")
+
+from the v4l-dvb tree.
+
+I have applied the following merge resolution patch for today.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Mon, 9 Oct 2023 11:05:26 +1100
+Subject: [PATCH] v4l-dvb-next: fix up for bad automatic merge.
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ drivers/media/platform/qcom/camss/camss.c | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/plat=
+form/qcom/camss/camss.c
+index 38d20b12cdd8..8e78dd8d5961 100644
+--- a/drivers/media/platform/qcom/camss/camss.c
++++ b/drivers/media/platform/qcom/camss/camss.c
+@@ -1628,12 +1628,6 @@ static int camss_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+=20
+-	ret =3D camss_configure_pd(camss);
+-	if (ret < 0) {
+-		dev_err(dev, "Failed to configure power domains: %d\n", ret);
+-		goto err_cleanup;
+-	}
+-
+ 	ret =3D camss_init_subdevices(camss);
+ 	if (ret < 0)
+ 		goto err_genpd_cleanup;
+--=20
+2.40.1
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/A1sezmQ/KuRtzY79VQD+=6s
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUjRJQACgkQAVBC80lX
+0GwuiQf/QfAzuWmGC6qJnIVAonO6LYfjmaUK06Ga8oQlvRphiOSu3980xTLIBg6F
+CoANi+4K1bSiQJYDfuQQigeffbfT/4c3FgTM5wP/9VUYIuruoA8NNJJoVcdPYlKI
+FGkiRzkAyiZSfWY7gIph9kb5lcYjdRgaJNHnFY/xUX9oWlsptH94AQ5HCe/SzaQT
+PBpWMRWoUgYyB/5w79BLJ4d7XZybzi9e8mGo1lnDCL5hCQJVo61260h6cgmH//To
+QAunR1ug2qqkuBMSRO7S5gjtIUq03s4s3vBdL08rdjWm6rUEsuRYPvtPw4PeytpB
++UyvJRIw9b0+X74JL5/BfgUBQhd3ig==
+=ybwZ
+-----END PGP SIGNATURE-----
+
+--Sig_/A1sezmQ/KuRtzY79VQD+=6s--
