@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F19587BE9F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 20:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B697BE9F9
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 20:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378175AbjJISnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 14:43:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36112 "EHLO
+        id S1378156AbjJISoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 14:44:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377383AbjJISnW (ORCPT
+        with ESMTP id S1377218AbjJISog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 14:43:22 -0400
+        Mon, 9 Oct 2023 14:44:36 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9298A6;
-        Mon,  9 Oct 2023 11:43:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20B59C433C7;
-        Mon,  9 Oct 2023 18:43:19 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890FF9C;
+        Mon,  9 Oct 2023 11:44:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDA2EC433C8;
+        Mon,  9 Oct 2023 18:44:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696877000;
-        bh=KLcPOZVZ6qPvVKuF7IUo1kPdJYgfDa4CvXeDodUQZ9s=;
+        s=k20201202; t=1696877074;
+        bh=dsTfcLrXOKjcx+P13kuQ74O+SgAQfK4PY+jYMmHST50=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jg2ztNFNbLRuZb6+E+zqf8Y3LolWY3kmIZY9ZH3BUfxhMMB5dak3vdxpUgQWPbR+Q
-         KD0MxMT21MK2tOkCAbL22pYz8mCt0SWW2y1PP5Keg5Njq/T5mKw+tSI70AKhfvUGpy
-         cUeXtm1ZzHqmg90vwxJAh9bXPbBbLrCqkEUb3Xc4Ta1e4OGuIDigy2n2a2B5fRLqJ2
-         dZgk5zO0NLMnV0KrYY1bvaM/bs8ki/YENlbY6ye2n2OOMdp2FYNx8akmM85WAqcM4o
-         KL3e1lRwN3hN7nyrhsOZS956EiTmHW/056XGrzy8l+GbATCLYNTylH2gpkjiQfci3w
-         IBv1Fb/QspEfA==
+        b=Gom4Jgjk4hkjbKux+m6U+VeNDZFnwLaC5e+tNC+wN0pLSL/XB6fsEKLdOO+wGvKqY
+         /prSjBxuh7rEtP7eixupnAhIvHL4wuofqzAIiZt0eB0MNJkiUcHRIcEofMoD/t+XNP
+         UX5u/5HYDt00WUpGt+fwzGor9m0uQBbeA1LFCQlkTazCTEcawfsfdby9PARH5/TPjZ
+         A814weq6gpto4f4Ua1hSPYQ8BrYRX3LXC7rPkv+hvszTrc8Uf1rGbwzX5KcRr6ip7j
+         qqjJuRGd2Auycn36pqPdqlmegi4BuVcVFMfpwAlGj4XfMYv7xlKMz5N5lEXbvp77zg
+         snD0YsYJ8fLQw==
 From:   SeongJae Park <sj@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
@@ -37,11 +37,11 @@ Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
         sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
         conor@kernel.org, damon@lists.linux.dev,
         SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 5.15 00/75] 5.15.135-rc1 review
-Date:   Mon,  9 Oct 2023 18:43:15 +0000
-Message-Id: <20231009184315.8232-1-sj@kernel.org>
+Subject: Re: [PATCH 6.1 000/162] 6.1.57-rc1 review
+Date:   Mon,  9 Oct 2023 18:44:31 +0000
+Message-Id: <20231009184431.8256-1-sj@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231009130111.200710898@linuxfoundation.org>
+In-Reply-To: <20231009130122.946357448@linuxfoundation.org>
 References: 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -55,10 +55,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Oct 2023 15:01:22 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+Hello,
 
-> This is the start of the stable review cycle for the 5.15.135 release.
-> There are 75 patches in this series, all will be posted as a response
+On Mon, 9 Oct 2023 14:59:41 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+
+> This is the start of the stable review cycle for the 6.1.57 release.
+> There are 162 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
@@ -66,12 +68,10 @@ On Mon, 9 Oct 2023 15:01:22 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org
 > Anything received after that time might be too late.
 > 
 > The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.135-rc1.gz
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.57-rc1.gz
 > or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
 > and the diffstat can be found below.
-> 
-> thanks,
 
 This rc kernel passes DAMON functionality test[1] on my test machine.
 Attaching the test results summary below.  Please note that I retrieved the
@@ -80,7 +80,7 @@ kernel from linux-stable-rc tree[2].
 Tested-by: SeongJae Park <sj@kernel.org>
 
 [1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] 6b29ebf84608 ("Linux 5.15.135-rc1")
+[2] 282079f8e407 ("Linux 6.1.57-rc1")
 
 Thanks,
 SJ
@@ -90,6 +90,12 @@ SJ
 ---
 
 ok 1 selftests: damon: debugfs_attrs.sh
+ok 2 selftests: damon: debugfs_schemes.sh
+ok 3 selftests: damon: debugfs_target_ids.sh
+ok 4 selftests: damon: debugfs_empty_targets.sh
+ok 5 selftests: damon: debugfs_huge_count_read_write.sh
+ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
+ok 7 selftests: damon: sysfs.sh
 ok 1 selftests: damon-tests: kunit.sh
 ok 2 selftests: damon-tests: huge_count_read_write.sh
 ok 3 selftests: damon-tests: buffer_overflow.sh
