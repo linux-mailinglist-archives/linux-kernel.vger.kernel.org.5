@@ -2,193 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B16A07BD8AC
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 12:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F0D7BD8B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 12:34:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345864AbjJIKdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 06:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50124 "EHLO
+        id S1345769AbjJIKd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 06:33:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345759AbjJIKdQ (ORCPT
+        with ESMTP id S1345759AbjJIKdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 06:33:16 -0400
-Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE60C9C;
-        Mon,  9 Oct 2023 03:33:12 -0700 (PDT)
-Received: by mail-vk1-xa30.google.com with SMTP id 71dfb90a1353d-49e15724283so901733e0c.1;
-        Mon, 09 Oct 2023 03:33:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696847592; x=1697452392; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rT1rH97yMTf0notAyuO1uE+7xlHDEM8gJWBeBFRun/4=;
-        b=fVJBx33lvVIec7BPRSSeE1O1koYZKiO+/Cr6z5bLUzgCreyYXGO+x8B2SShUHfyJ4j
-         k5GC9oY+TcT2fOCQI3pupWdXhW6EP4hkM4UgbPJjBd28xc3lhSeaEhOHFUXWZUiwdT+L
-         vOxDoiIBYvQ2IdGoGqSD6ie0+dr/OGfYtKzkipAWvDXM0koqeftnk9iLFBJwiNAjhL2v
-         SeTfVGGmiV7UZoVwlqi7XmRqfip0GLVdUXOgdZ650E6EDzkjjwIlAMemJKH+XFvbXUgI
-         LCr6AvrmfYv9AeeqQKhI8VXfw61s3oCDaNJ8OfNlHM7NkvXViyoEzLKHPcSeewvCFV4Q
-         fJQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696847592; x=1697452392;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rT1rH97yMTf0notAyuO1uE+7xlHDEM8gJWBeBFRun/4=;
-        b=gwaCu5w5srJag2kxxKlhJqhVSfLN7u00nqBgx2BsKFAVzerrbGBdFLyWbDJMct3xy3
-         bJqnNgtqXTwn0506AGjdX5nFmtM14urzYbiAgVkeQfoedY8s3WYt10qCRU3ThB2EhCFr
-         s8fdmBUVUOyO3iDiq8HotjsECOC0mRhWLWIO4bvPQp3/A9S/ZV0YzRfBkxV3IyLZon0e
-         gNTVy5fEB/btbklRPR2fgjDfsj6PDaQcA8M7j3SGYMIwcdcaEHHTAKE59wwkAnkkVSsS
-         dOrHCv7M31FoW29pCZ31pugOSqQBmBT3qjUE+ji4s3JCcXSyZrbMwD/Mtte/Pi9EQOVE
-         iyHQ==
-X-Gm-Message-State: AOJu0YwbB5bZljxngf8xczZca1ExEhMa5UgI9C9oQ5jJ+S5MIWFG4Pfe
-        EOAhEAc9PaY837qUFR2mYYGYX/bHcmKJQNTmc4c=
-X-Google-Smtp-Source: AGHT+IHE+bLXnKSnxxU/KTXcPWxDAmkZwBaU9nQyxeRMxaOL1S5mD7d5OmMEdKfRaLaQMD1aS0xEm5VGTb84Y71ZDqI=
-X-Received: by 2002:a05:6122:7c9:b0:49d:c216:873d with SMTP id
- l9-20020a05612207c900b0049dc216873dmr13801907vkr.8.1696847591769; Mon, 09 Oct
- 2023 03:33:11 -0700 (PDT)
+        Mon, 9 Oct 2023 06:33:55 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D440C9C;
+        Mon,  9 Oct 2023 03:33:53 -0700 (PDT)
+Date:   Mon, 09 Oct 2023 10:33:51 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1696847632;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ED3Q9EjTvFOqHf0F/fp3lKmzOsY2Fj8/fhVP6Rz/qq8=;
+        b=1O76TzngN6JMYbkBMKcuu6QxC9AtzdG5Iyh43yjtaKxyYJjHhtI8vH/JIytigD+hlgVtRa
+        R7tRpKBiCm0lyYPIBHxEITQsiXj/9+WylbqYSiBRIEfxnYGbqkOEAMvH3lijyhpwPQgE7b
+        MSXn9Q4Zz9cp9sOQ1ciMuZpiHkSGT5REHkuXyz2+jRhg1Ko2BUPMWn36Eyq9Q0JxftY+f9
+        MlIRIdGOeMmYJDyoR2cP3sebccRtlYoJe3co3J0lnPKMe1OiIjQEUiu+AMje4U6pY7gLrf
+        BxHCop0u5fdr4WECYVcsKBQejpdABWONHcOmjUCq9IkFYP8n/2fofyZG1dUPhw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1696847632;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ED3Q9EjTvFOqHf0F/fp3lKmzOsY2Fj8/fhVP6Rz/qq8=;
+        b=Zochh8pnIHQzxrmzxfltO7ruWbcxrZGQE0Mdu2vPuJ3oiLcEgDpzx30nEMb+AfQ5JfVa30
+        NyV3lP+fwYK2SzDA==
+From:   "tip-bot2 for Lucy Mielke" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf/x86/intel/pt: Fix kernel-doc comments
+Cc:     Lucy Mielke <lucymielke@icloud.com>,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <ZSOjQW3e2nJR4bAo@fedora.fritz.box>
+References: <ZSOjQW3e2nJR4bAo@fedora.fritz.box>
 MIME-Version: 1.0
-References: <20231008052101.144422-1-akihiko.odaki@daynix.com>
- <20231008052101.144422-6-akihiko.odaki@daynix.com> <CAF=yD-K2MQt4nnfwJrx6h6Nii_rho7j1o6nb_jYaSwcWY45pPw@mail.gmail.com>
- <48e20be1-b658-4117-8856-89ff1df6f48f@daynix.com> <CAF=yD-K4bCBpUVtDR_cv=bagRL+vM4Rusez+uHFTb4_kR8XkpA@mail.gmail.com>
- <6a698c99-6f02-4cfb-a709-ba02296a05f7@daynix.com> <CAF=yD-+WFy8us0wUWo-0KpZUKHx2Q82cJ8teO0qRkK-_R1e0cA@mail.gmail.com>
- <eab359ec-3bb9-4245-8ac3-097d66ef30a9@daynix.com>
-In-Reply-To: <eab359ec-3bb9-4245-8ac3-097d66ef30a9@daynix.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Mon, 9 Oct 2023 03:32:33 -0700
-Message-ID: <CAF=yD-LPMK4eOTABU5EPOOnSCBo=jQNPuNXLLa6qZy_jHSxyMg@mail.gmail.com>
-Subject: Re: [RFC PATCH 5/7] tun: Introduce virtio-net hashing feature
-To:     Akihiko Odaki <akihiko.odaki@daynix.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, rdunlap@infradead.org, willemb@google.com,
-        gustavoars@kernel.org, herbert@gondor.apana.org.au,
-        steffen.klassert@secunet.com, nogikh@google.com,
-        pablo@netfilter.org, decui@microsoft.com, cai@lca.pw,
-        jakub@cloudflare.com, elver@google.com, pabeni@redhat.com,
-        Yuri Benditovich <yuri.benditovich@daynix.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <169684763154.3135.4873019894270877876.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 9, 2023 at 3:11=E2=80=AFAM Akihiko Odaki <akihiko.odaki@daynix.=
-com> wrote:
->
-> On 2023/10/09 19:07, Willem de Bruijn wrote:
-> > On Mon, Oct 9, 2023 at 3:05=E2=80=AFAM Akihiko Odaki <akihiko.odaki@day=
-nix.com> wrote:
-> >>
-> >>
-> >>
-> >> On 2023/10/09 18:54, Willem de Bruijn wrote:
-> >>> On Mon, Oct 9, 2023 at 3:44=E2=80=AFAM Akihiko Odaki <akihiko.odaki@d=
-aynix.com> wrote:
-> >>>>
-> >>>> On 2023/10/09 17:13, Willem de Bruijn wrote:
-> >>>>> On Sun, Oct 8, 2023 at 12:22=E2=80=AFAM Akihiko Odaki <akihiko.odak=
-i@daynix.com> wrote:
-> >>>>>>
-> >>>>>> virtio-net have two usage of hashes: one is RSS and another is has=
-h
-> >>>>>> reporting. Conventionally the hash calculation was done by the VMM=
-.
-> >>>>>> However, computing the hash after the queue was chosen defeats the
-> >>>>>> purpose of RSS.
-> >>>>>>
-> >>>>>> Another approach is to use eBPF steering program. This approach ha=
-s
-> >>>>>> another downside: it cannot report the calculated hash due to the
-> >>>>>> restrictive nature of eBPF.
-> >>>>>>
-> >>>>>> Introduce the code to compute hashes to the kernel in order to ove=
-rcome
-> >>>>>> thse challenges. An alternative solution is to extend the eBPF ste=
-ering
-> >>>>>> program so that it will be able to report to the userspace, but it=
- makes
-> >>>>>> little sense to allow to implement different hashing algorithms wi=
-th
-> >>>>>> eBPF since the hash value reported by virtio-net is strictly defin=
-ed by
-> >>>>>> the specification.
-> >>>>>>
-> >>>>>> The hash value already stored in sk_buff is not used and computed
-> >>>>>> independently since it may have been computed in a way not conform=
-ant
-> >>>>>> with the specification.
-> >>>>>>
-> >>>>>> Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
-> >>>>>
-> >>>>>> @@ -2116,31 +2172,49 @@ static ssize_t tun_put_user(struct tun_str=
-uct *tun,
-> >>>>>>            }
-> >>>>>>
-> >>>>>>            if (vnet_hdr_sz) {
-> >>>>>> -               struct virtio_net_hdr gso;
-> >>>>>> +               union {
-> >>>>>> +                       struct virtio_net_hdr hdr;
-> >>>>>> +                       struct virtio_net_hdr_v1_hash v1_hash_hdr;
-> >>>>>> +               } hdr;
-> >>>>>> +               int ret;
-> >>>>>>
-> >>>>>>                    if (iov_iter_count(iter) < vnet_hdr_sz)
-> >>>>>>                            return -EINVAL;
-> >>>>>>
-> >>>>>> -               if (virtio_net_hdr_from_skb(skb, &gso,
-> >>>>>> -                                           tun_is_little_endian(t=
-un), true,
-> >>>>>> -                                           vlan_hlen)) {
-> >>>>>> +               if ((READ_ONCE(tun->vnet_hash.flags) & TUN_VNET_HA=
-SH_REPORT) &&
-> >>>>>> +                   vnet_hdr_sz >=3D sizeof(hdr.v1_hash_hdr) &&
-> >>>>>> +                   skb->tun_vnet_hash) {
-> >>>>>
-> >>>>> Isn't vnet_hdr_sz guaranteed to be >=3D hdr.v1_hash_hdr, by virtue =
-of
-> >>>>> the set hash ioctl failing otherwise?
-> >>>>>
-> >>>>> Such checks should be limited to control path where possible
-> >>>>
-> >>>> There is a potential race since tun->vnet_hash.flags and vnet_hdr_sz=
- are
-> >>>> not read at once.
-> >>>
-> >>> It should not be possible to downgrade the hdr_sz once v1 is selected=
-.
-> >>
-> >> I see nothing that prevents shrinking the header size.
-> >>
-> >> tun->vnet_hash.flags is read after vnet_hdr_sz so the race can happen
-> >> even for the case the header size grows though this can be fixed by
-> >> reordering the two reads.
-> >
-> > One option is to fail any control path that tries to re-negotiate
-> > header size once this hash option is enabled?
-> >
-> > There is no practical reason to allow feature re-negotiation at any
-> > arbitrary time.
->
-> I think it's a bit awkward interface design since tun allows to
-> reconfigure any of its parameters, but it's certainly possible.
+The following commit has been merged into the perf/core branch of tip:
 
-If this would be the only exception to that rule, and this is the only
-place that needs a datapath check, then it's fine to leave as is.
+Commit-ID:     38cd5b6a875adc877681faf8e3ad47fdbd6eceb5
+Gitweb:        https://git.kernel.org/tip/38cd5b6a875adc877681faf8e3ad47fdbd6eceb5
+Author:        Lucy Mielke <lucymielke@icloud.com>
+AuthorDate:    Mon, 09 Oct 2023 08:54:54 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Mon, 09 Oct 2023 12:26:22 +02:00
 
-In general, this runtime configurability serves little purpose but to
-help syzbot exercise code paths no real application would attempt. But
-I won't ask to diverge from whatever tun already does. We just have to
-be more careful about the possible races it brings.
+perf/x86/intel/pt: Fix kernel-doc comments
+
+Some parameters or return codes were either wrong or missing,
+update them.
+
+Signed-off-by: Lucy Mielke <lucymielke@icloud.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/ZSOjQW3e2nJR4bAo@fedora.fritz.box
+---
+ arch/x86/events/intel/pt.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/events/intel/pt.c b/arch/x86/events/intel/pt.c
+index 42a5579..8e2a122 100644
+--- a/arch/x86/events/intel/pt.c
++++ b/arch/x86/events/intel/pt.c
+@@ -736,6 +736,7 @@ static bool topa_table_full(struct topa *topa)
+ /**
+  * topa_insert_pages() - create a list of ToPA tables
+  * @buf:	PT buffer being initialized.
++ * @cpu:	CPU on which to allocate.
+  * @gfp:	Allocation flags.
+  *
+  * This initializes a list of ToPA tables with entries from
+@@ -1207,8 +1208,11 @@ static void pt_buffer_fini_topa(struct pt_buffer *buf)
+ /**
+  * pt_buffer_init_topa() - initialize ToPA table for pt buffer
+  * @buf:	PT buffer.
+- * @size:	Total size of all regions within this ToPA.
++ * @cpu:	CPU on which to allocate.
++ * @nr_pages:	No. of pages to allocate.
+  * @gfp:	Allocation flags.
++ *
++ * Return:	0 on success or error code.
+  */
+ static int pt_buffer_init_topa(struct pt_buffer *buf, int cpu,
+ 			       unsigned long nr_pages, gfp_t gfp)
+@@ -1281,7 +1285,7 @@ out:
+ 
+ /**
+  * pt_buffer_setup_aux() - set up topa tables for a PT buffer
+- * @cpu:	Cpu on which to allocate, -1 means current.
++ * @event:	Performance event
+  * @pages:	Array of pointers to buffer pages passed from perf core.
+  * @nr_pages:	Number of pages in the buffer.
+  * @snapshot:	If this is a snapshot/overwrite counter.
