@@ -2,103 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2F07BD39E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 08:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF717BD3A5
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 08:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232727AbjJIGlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 02:41:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44278 "EHLO
+        id S1345312AbjJIGmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 02:42:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232791AbjJIGln (ORCPT
+        with ESMTP id S1345310AbjJIGmh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 02:41:43 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA3DA3;
-        Sun,  8 Oct 2023 23:41:42 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7E6261F891;
-        Mon,  9 Oct 2023 06:41:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1696833701; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=n6ru4BeyFXFdIt7eil+7eK2LWQQrOHgO9/SgXh0HGFc=;
-        b=pmaN8BgIPtZrrBGeuZG5pswC4yD2ai3zE1359VbUxtF4F4b89cFu1L90uU6zuYvaO/Cvx7
-        c8vtayGS/p009rMFdhQM6FCDq/qcuJGTMmTOY02EPj3MFvLNfBv4H/o2gBdBscO6+RWp1r
-        kNRlrX11LwXzBNmpOvIodOSFF6una6E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1696833701;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=n6ru4BeyFXFdIt7eil+7eK2LWQQrOHgO9/SgXh0HGFc=;
-        b=7owIMAyADACiStz5o/BUvG+Atv8ED2Tl9/DJ9lSW0bWeB0sxTj9P8eoryNAfggy4Ft7w5G
-        0d7D35iZ1lC+n9Ag==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 06C7113586;
-        Mon,  9 Oct 2023 06:41:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 6Gc0OqSgI2UmCgAAMHmgww
-        (envelope-from <hare@suse.de>); Mon, 09 Oct 2023 06:41:40 +0000
-Message-ID: <61967481-4606-4375-9d21-25e314bbcdbe@suse.de>
-Date:   Mon, 9 Oct 2023 08:41:40 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 05/10] scsi: libsas: Delete sas_ssp_task.retry_count
-Content-Language: en-US
-To:     John Garry <john.g.garry@oracle.com>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, chenxiang66@hisilicon.com,
-        artur.paszkiewicz@intel.com, yanaijie@huawei.com,
-        jinpu.wang@cloud.ionos.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dlemoal@kernel.org
-References: <20230814141022.36875-1-john.g.garry@oracle.com>
- <20230814141022.36875-6-john.g.garry@oracle.com>
-From:   Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20230814141022.36875-6-john.g.garry@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 9 Oct 2023 02:42:37 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FEBED8
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 23:42:35 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d81646fcf3eso5766265276.0
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 23:42:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696833754; x=1697438554; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7zUUB2am9n9CKFAnT6nZ8XawbgT1VoZ44ZKp10n60qQ=;
+        b=e4uqqOI/kMhj3oqOpwHWHl2dhFfOhTeUYy+IvEDgvhXL5DvHLtlYn3AJN97YbZaep/
+         0XuU+r9qUGov98a2Ae9choukSs9E1FJrerpwyqtyq8G3h8asHBDqp45dMD1uZrVcl35o
+         PIjmpKrWQhfROJjoZWOPabQW/An+uYz/U0rpEumjgstHxiqWfsw+vv5GIXyXaJoygBAX
+         IxFuBOu+MkBJbvrNiO2b46hEacR9GVhqI8o4SdoMRFSLUvXolpCl6xgnWwaHhZ9Z0GGO
+         7haTOw/g6oCg8gMyA4YE/AKOrb+jH8CtwO48erbJKr0P+jryH4+mjSDAlzDn7g8xq2+q
+         nfow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696833754; x=1697438554;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7zUUB2am9n9CKFAnT6nZ8XawbgT1VoZ44ZKp10n60qQ=;
+        b=UMnTFmkAgbuXh9KhMeBthsFbtRS2Cr6hHmNeq0g2UB6/r64M2R6OyiK5Lo4UGTyXGm
+         esFA3ryHgguTzx0qnzN6FVPL5uKH6U0WnkKPiCDRYaDFBS98tR9JNVZGrLj3HPZcWpNX
+         qq1ydNuVjjYv/Efub4tEOGUSHsQLkMrQ/ytsEMV9jkGgmnhnqsncZe9KTCjvYv0KclNJ
+         F4lSX3wMxeF5/jYii3xjF2KQRGVCEoBOa/p2Q++CF6947uiXYQANz9/cJEN8TLQR//xS
+         cqBO0e4CZKsDcIYpHvSFt+ZbPFt49ZwIoR178E3hS5vt1S6v1/Z5Ky98G7jIv5EQXaE5
+         SWVw==
+X-Gm-Message-State: AOJu0YwlEaP6lZ1gXaeExmQrsR93WXbag7iq7IPyYmg8Lhk0YFfD6x/p
+        Oi943l2JsyQka7R8cpys2b9Zt8oPpk0=
+X-Google-Smtp-Source: AGHT+IFgAg9kuGpXCr3YUWTFgYRcSR2EjJOWKwvSOMrijuF0wKr/70tmErg8XwfV2RFmODsMhMgBsAEZSjM=
+X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:3e83:601e:dc42:a455])
+ (user=surenb job=sendgmr) by 2002:a25:ad50:0:b0:d78:2c3:e633 with SMTP id
+ l16-20020a25ad50000000b00d7802c3e633mr204458ybe.2.1696833754494; Sun, 08 Oct
+ 2023 23:42:34 -0700 (PDT)
+Date:   Sun,  8 Oct 2023 23:42:25 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
+Message-ID: <20231009064230.2952396-1-surenb@google.com>
+Subject: [PATCH v3 0/3] userfaultfd move option
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     akpm@linux-foundation.org
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
+        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
+        david@redhat.com, hughd@google.com, mhocko@suse.com,
+        axelrasmussen@google.com, rppt@kernel.org, willy@infradead.org,
+        Liam.Howlett@oracle.com, jannh@google.com, zhangpeng362@huawei.com,
+        bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com,
+        jdduke@google.com, surenb@google.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/14/23 16:10, John Garry wrote:
-> Since libsas was introduced in commit 2908d778ab3e ("[SCSI] aic94xx: new
-> driver"), sas_ssp_task.retry_count is only ever set, so delete it.
-> 
-> The aic94xx driver also had its own retry_count definition in struct scb
-> sub-structs, which may have caused a mix-up.
-> 
-> Signed-off-by: John Garry <john.g.garry@oracle.com>
-> ---
->   drivers/scsi/libsas/sas_ata.c       | 1 -
->   drivers/scsi/libsas/sas_scsi_host.c | 1 -
->   include/scsi/libsas.h               | 2 --
->   3 files changed, 4 deletions(-)
-> 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+This patch series introduces UFFDIO_MOVE feature to userfaultfd, which
+has long been implemented and maintained by Andrea in his local tree [1],
+but was not upstreamed due to lack of use cases where this approach would
+be better than allocating a new page and copying the contents. Previous
+upstraming attempts could be found at [6] and [7].
 
-Cheers,
+UFFDIO_COPY performs ~20% better than UFFDIO_MOVE when the application
+needs pages to be allocated [2]. However, with UFFDIO_MOVE, if pages are
+available (in userspace) for recycling, as is usually the case in heap
+compaction algorithms, then we can avoid the page allocation and memcpy
+(done by UFFDIO_COPY). Also, since the pages are recycled in the
+userspace, we avoid the need to release (via madvise) the pages back to
+the kernel [3].
+We see over 40% reduction (on a Google pixel 6 device) in the compacting
+thread=E2=80=99s completion time by using UFFDIO_MOVE vs. UFFDIO_COPY. This=
+ was
+measured using a benchmark that emulates a heap compaction implementation
+using userfaultfd (to allow concurrent accesses by application threads).
+More details of the usecase are explained in [3].
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Ivo Totev, Andrew
-Myers, Andrew McDonald, Martje Boudien Moerman
+Furthermore, UFFDIO_MOVE enables moving swapped-out pages without
+touching them within the same vma. Today, it can only be done by mremap,
+however it forces splitting the vma.
+
+Main changes since Andrea's last version [1]:
+- Trivial translations from page to folio, mmap_sem to mmap_lock
+- Replace pmd_trans_unstable() with pte_offset_map_nolock() and handle its
+possible failure
+- Move pte mapping into remap_pages_pte to allow for retries when source
+page or anon_vma is contended. Since pte_offset_map_nolock() start RCU
+read section, we can't block anymore after mapping a pte, so have to unmap
+the ptesm do the locking and retry.
+- Add and use anon_vma_trylock_write()  to avoid blocking while in RCU
+read section.
+- Accommodate changes in mmu_notifier_range_init() API, switch to
+mmu_notifier_invalidate_range_start_nonblock() to avoid blocking while in
+RCU read section.
+- Open-code now removed __swp_swapcount()
+- Replace pmd_read_atomic() with pmdp_get_lockless()
+- Add new selftest for UFFDIO_MOVE
+
+Changes since v1 [4]:
+- add mmget_not_zero in userfaultfd_remap, per Jann Horn
+- removed extern from function definitions, per Matthew Wilcox
+- converted to folios in remap_pages_huge_pmd, per Matthew Wilcox
+- use PageAnonExclusive in remap_pages_huge_pmd, per David Hildenbrand
+- handle pgtable transfers between MMs, per Jann Horn
+- ignore concurrent A/D pte bit changes, per Jann Horn
+- split functions into smaller units, per David Hildenbrand
+- test for folio_test_large in remap_anon_pte, per Matthew Wilcox
+- use pte_swp_exclusive for swapcount check, per David Hildenbrand
+- eliminated use of mmu_notifier_invalidate_range_start_nonblock,
+per Jann Horn
+- simplified THP alignment checks, per Jann Horn
+- refactored the loop inside remap_pages, per Jann Horn
+- additional clarifying comments, per Jann Horn
+
+Changes since v2 [5]:
+- renamed UFFDIO_REMAP to UFFDIO_MOVE, per David Hildenbrand
+- rebase over mm-unstable to use folio_move_anon_rmap(),
+per David Hildenbrand=20
+- added text for manpage explaining DONTFORK and KSM requirements for this
+feature, per David Hildenbrand=20
+- check for anon_vma changes in the fast path of folio_lock_anon_vma_read,
+per Peter Xu
+- updated the title and description of the first patch,
+per David Hildenbrand
+- updating comments in folio_lock_anon_vma_read() explaining the need for
+anon_vma checks, per David Hildenbrand
+- changed all mapcount checks to PageAnonExclusive, per Jann Horn and
+David Hildenbrand
+- changed counters in remap_swap_pte() from MM_ANONPAGES to MM_SWAPENTS,
+per Jann Horn
+- added a check for PTE change after folio is locked in remap_pages_pte(),
+per Jann Horn
+- added handling of PMD migration entries and bailout when pmd_devmap(),
+per Jann Horn
+- added checks to ensure both src and dst VMAs are writable, per Peter Xu
+- added UFFD_FEATURE_MOVE, per Peter Xu
+- removed obsolete comments, per Peter Xu
+- renamed remap_anon_pte to remap_present_pte, per Peter Xu
+- added a comment for folio_get_anon_vma() explaining the need for
+anon_vma checks, per Peter Xu
+- changed error handling in remap_pages() to make it more clear,
+per Peter Xu
+- changed EFAULT to EAGAIN to retry when a hugepage appears or disappears
+from under us, per Peter Xu
+- added links to previous upstreaming attempts, per David Hildenbrand
+
+[1] https://gitlab.com/aarcange/aa/-/commit/2aec7aea56b10438a3881a20a411aa4=
+b1fc19e92
+[2] https://lore.kernel.org/all/1425575884-2574-1-git-send-email-aarcange@r=
+edhat.com/
+[3] https://lore.kernel.org/linux-mm/CA+EESO4uO84SSnBhArH4HvLNhaUQ5nZKNKXqx=
+RCyjniNVjp0Aw@mail.gmail.com/
+[4] https://lore.kernel.org/all/20230914152620.2743033-1-surenb@google.com/
+[5] https://lore.kernel.org/all/20230923013148.1390521-1-surenb@google.com/
+[6] https://lore.kernel.org/all/1425575884-2574-21-git-send-email-aarcange@=
+redhat.com/
+[7] https://lore.kernel.org/all/cover.1547251023.git.blake.caldwell@colorad=
+o.edu/
+
+The patchset applies over mm-unstable.
+
+Andrea Arcangeli (2):
+  mm/rmap: support move to different root anon_vma in
+    folio_move_anon_rmap()
+  userfaultfd: UFFDIO_MOVE uABI
+
+Suren Baghdasaryan (1):
+  selftests/mm: add UFFDIO_MOVE ioctl test
+
+ Documentation/admin-guide/mm/userfaultfd.rst |   3 +
+ fs/userfaultfd.c                             |  63 ++
+ include/linux/rmap.h                         |   5 +
+ include/linux/userfaultfd_k.h                |  12 +
+ include/uapi/linux/userfaultfd.h             |  29 +-
+ mm/huge_memory.c                             | 138 +++++
+ mm/khugepaged.c                              |   3 +
+ mm/rmap.c                                    |  30 +
+ mm/userfaultfd.c                             | 602 +++++++++++++++++++
+ tools/testing/selftests/mm/uffd-common.c     |  41 +-
+ tools/testing/selftests/mm/uffd-common.h     |   1 +
+ tools/testing/selftests/mm/uffd-unit-tests.c |  62 ++
+ 12 files changed, 986 insertions(+), 3 deletions(-)
+
+--=20
+2.42.0.609.gbb76f46606-goog
 
