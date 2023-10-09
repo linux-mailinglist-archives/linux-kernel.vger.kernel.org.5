@@ -2,106 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 852437BEA58
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 21:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3A07BEA66
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 21:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378218AbjJITJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 15:09:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49328 "EHLO
+        id S1378328AbjJITPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 15:15:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346660AbjJITJM (ORCPT
+        with ESMTP id S1346692AbjJITPF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 15:09:12 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B259D;
-        Mon,  9 Oct 2023 12:09:11 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-693375d2028so4345554b3a.2;
-        Mon, 09 Oct 2023 12:09:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696878551; x=1697483351; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2WB2O+ZBzB4ZMkeQ2reQ4/yBz+9uB3jIVkq0VzlaCUY=;
-        b=MZSHmExeSeBfbLThBj5mbMPFrCmIjRfqA6onajkf6lWvKZjzR2WFdEQyqqio7tUiXU
-         KJ62chzJ0T21JY1rSRLHMu9kJ5RLIiSnbBUsV6jhUhtOSNHEeVLiOcAer5i9QVsDaMdP
-         MOq4czUvlUxj7Q+2WxABdHjlrX8+d7y+cbz3oaZxer1lAg3fXa0sPavsFIsYj1CTXx2r
-         Zn26RAhn6yOWFS+sNaYuTU84xUKFXpxH4sc2Fguml6D7/mBVtkctCUjta2DYFE6u4PIB
-         qNCHOgcwu9idqaYbGTrdu3DEOkd8EHA2Gr69eLefQuJV3YijleXfwQuKYhlPKLHJq32N
-         Wj1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696878551; x=1697483351;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2WB2O+ZBzB4ZMkeQ2reQ4/yBz+9uB3jIVkq0VzlaCUY=;
-        b=hxLcqF1UCB4UeP+2yylQCvb0fIYhzgyL01lc979F26JV8jJBL7uRarm41z+Aa7a4Sx
-         w+pSmzDF9AJuYV1tTj2F+pMCa/kRJqVc8yTZhr0ohdaoQIRn70RUO/StQD7yrbBhukaJ
-         dleJeJQ+mQd6sTKL98oxecqC4rYbb0vhBl8pM63yFejDf45j9H5jAJtWHdDWAzbCsBz7
-         6QWkCBdoZRDuxqAkKuAAGeXmADfpsUqNzcG0f4RcqU1l+K1NIFMlSyJoX7FYuYTUK9yD
-         EdEBRe6NrNRFM1OyhvHwHeAMIvV1x73niVhN565dGSTctRXPEJjSgcA61L+o7X6/f6RV
-         OOwg==
-X-Gm-Message-State: AOJu0Yz7HjAkiutXufN/yRTFIjxO568ecwP581trRhKkF2JuKkpjaosD
-        B3I+xPQ+PdFsyOULpReLpA8=
-X-Google-Smtp-Source: AGHT+IHqi/Arp5jO9UE8mGcTD2ZBtMrBThOiTbPkKB2cIKERsnzlL7P8eOjGCjenBXvVB4E+NMPaQQ==
-X-Received: by 2002:a05:6a00:2394:b0:690:2ad9:1454 with SMTP id f20-20020a056a00239400b006902ad91454mr20897163pfc.33.1696878551009;
-        Mon, 09 Oct 2023 12:09:11 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id gx9-20020a056a001e0900b00692b2a63cccsm6729012pfb.210.2023.10.09.12.09.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 12:09:10 -0700 (PDT)
-Message-ID: <cb16ada8-4c7a-4134-aca9-41983521e388@gmail.com>
-Date:   Mon, 9 Oct 2023 12:09:08 -0700
+        Mon, 9 Oct 2023 15:15:05 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A896B8E;
+        Mon,  9 Oct 2023 12:15:03 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 399J03mq027332;
+        Mon, 9 Oct 2023 19:14:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=qcppdkim1;
+ bh=Au2zwI8nEPJBDnDP0Jpkk0pNWgyzzfFNkvXZiw7DZtM=;
+ b=ceGsQ1J+pWFbm5+vD5NRA3tkNK4kUXzXnyXv3n4+1xwzSR+29xiTjzvNWnQI3raNE37L
+ 7awrBh3TdIs+6nBDyt0M95+yzCwKxgXioQoygyKoTd8x7tiBP9tDjLJLTg3IB9YtPqUx
+ p9TCFNIVf37Z8j97TTIrDeZaf/yDawwEfbT3cNOubx3WJHfutYavBz6BDjlyeMJFKFBy
+ zuzQrcemI+4eCLHecUqvDO7eomNvJkqwAEimYx3cxZ71nAaXrBQG8WeiEycBZdY1WeMB
+ k/oJgmF60/VAk/qUYsGx5XeCYAnZcgsDXyDTyp+TFTxBjeDY/1PNhKKNVutmKMFGb0GG 2A== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tkhj13atw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 09 Oct 2023 19:14:53 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 399JEqbT006859
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 9 Oct 2023 19:14:52 GMT
+Received: from car-linux11.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 9 Oct 2023 12:14:51 -0700
+From:   Nikunj Kela <quic_nkela@quicinc.com>
+To:     <sudeep.holla@arm.com>
+CC:     <cristian.marussi@arm.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        Nikunj Kela <quic_nkela@quicinc.com>
+Subject: [PATCH v6 0/2] Add qcom smc/hvc transport support
+Date:   Mon, 9 Oct 2023 12:14:35 -0700
+Message-ID: <20231009191437.27926-1-quic_nkela@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230718160833.36397-1-quic_nkela@quicinc.com>
+References: <20230718160833.36397-1-quic_nkela@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.4 000/131] 5.4.258-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20231009130116.329529591@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20231009130116.329529591@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: a-tP5NsJ_tIrTbKaP9YRPNZ-ddQxXUhE
+X-Proofpoint-GUID: a-tP5NsJ_tIrTbKaP9YRPNZ-ddQxXUhE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-09_17,2023-10-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 adultscore=0 bulkscore=0 priorityscore=1501
+ impostorscore=0 mlxscore=0 malwarescore=0 spamscore=0 suspectscore=0
+ mlxlogscore=898 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2309180000 definitions=main-2310090157
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/9/23 06:00, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.258 release.
-> There are 131 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 11 Oct 2023 13:00:55 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.258-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+This change augments smc transport to include support for Qualcomm virtual
+platforms by passing a parameter(capability-id) in the hypervisor call to
+identify which doorbell to assert. This parameter is dynamically generated
+at runtime on the device and insuitable to pass via the devicetree.
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+The capability-id is stored by firmware in the shmem region.
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+This has been tested on ARM64 virtual Qualcomm platform.
+
+---
+v6 -> use unsigned long for cap-id
+
+v5 -> changed compatible, removed polling support patch,
+      make use of smc-id binding for function-id
+
+v4 -> port the changes into smc.c
+
+v3 -> fix the compilation error reported by the test bot,
+      add support for polling based instances
+
+v2 -> use allOf construct in dtb schema,
+      remove wrappers from mutexes,
+      use architecture independent channel layout
+
+v1 -> original patches
+
+Nikunj Kela (2):
+  dt-bindings: arm: Add new compatible for smc/hvc transport for SCMI
+  firmware: arm_scmi: Add qcom smc/hvc transport support
+
+ .../bindings/firmware/arm,scmi.yaml           |  4 +++
+ drivers/firmware/arm_scmi/driver.c            |  1 +
+ drivers/firmware/arm_scmi/smc.c               | 27 +++++++++++++++++--
+ 3 files changed, 30 insertions(+), 2 deletions(-)
+
 -- 
-Florian
+2.17.1
 
