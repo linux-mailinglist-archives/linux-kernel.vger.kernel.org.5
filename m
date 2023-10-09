@@ -2,139 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 673FA7BD35F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 08:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFDCA7BD36A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 08:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345206AbjJIGbP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Oct 2023 02:31:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56386 "EHLO
+        id S1345262AbjJIGd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 02:33:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230475AbjJIGbO (ORCPT
+        with ESMTP id S229551AbjJIGd4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 02:31:14 -0400
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF98A4;
-        Sun,  8 Oct 2023 23:31:12 -0700 (PDT)
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso3376430a12.3;
-        Sun, 08 Oct 2023 23:31:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696833072; x=1697437872;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vD0Fv9cM67zX2LwKdhCrzGLuQATLW6HXC5O4/Nd4nTE=;
-        b=XQx9nJdNInB7FMmd3ZJTpmO4FS24dWqb1hmTV34meNbtFJzWEWbYnEPI4nCnz5MGug
-         h8JeDO/etFa9bWZt7S70L9lC8il0yulMAgzIEF6fprs7MJpcrkzIJPbagJ81F+d+pqw6
-         9/8znFo5jqUqbb5h2a99ige5sucIMWMfRl/WrbwQQngNn6tvlDdHX+G1J525e+6kD7Ef
-         oS2sYP5qfHxC9Ut/rXsFkHsK/SFz4omAMk9FZBndx17pijibbI0emY9RXlPG7PJ9gfYV
-         4eo4pFhgi3IHhqtYrjyB5UU2yAaaoTAwaL0DwvDxiT5NpViiI3X8wOt3NjijZ9VBH851
-         Qd3Q==
-X-Gm-Message-State: AOJu0YyGTJJBPrjacvj0F4QVe8W2wA9LGSf3rWYsQYKT2sQS/E/hQdrj
-        KHbjHi3+UHISKo83F9O1IFaEwI9O+waVvOMbHN/V3occ
-X-Google-Smtp-Source: AGHT+IEOQspT2cmBHQKFmpyVLLR+19S0QFb8macQedL/e+/KbEJLcVDbtXZ0lZH43XNvVA3aOx01YcU7aI64n/+lMyk=
-X-Received: by 2002:a17:90b:11cc:b0:277:6d6a:33ba with SMTP id
- gv12-20020a17090b11cc00b002776d6a33bamr14075416pjb.28.1696833072180; Sun, 08
- Oct 2023 23:31:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231005230851.3666908-1-irogers@google.com> <20231005230851.3666908-14-irogers@google.com>
-In-Reply-To: <20231005230851.3666908-14-irogers@google.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Sun, 8 Oct 2023 23:31:01 -0700
-Message-ID: <CAM9d7cj-ANu1j-6WxGDQ_+pJtDt1xfyuGCNyC_dTpCDECZZgCQ@mail.gmail.com>
-Subject: Re: [PATCH v2 13/18] perf svghelper: Avoid memory leak
-To:     Ian Rogers <irogers@google.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ming Wang <wangming01@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Yuan Can <yuancan@huawei.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        James Clark <james.clark@arm.com>, llvm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        Mon, 9 Oct 2023 02:33:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265A6B9;
+        Sun,  8 Oct 2023 23:33:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696833234; x=1728369234;
+  h=from:to:cc:subject:date:message-id;
+  bh=yGGnTiOwfcMWNPVc2G/Q813ixhjZkvPBHMtZp7WfHWA=;
+  b=RhzwvGgW2Tay0i90VybRKZkZns+OkvFNviuWP8QAvEoI2Dm5YADqBnL8
+   Xzn4lmefIuDYnS11qsVcOtnUIs/FlNvK0FVYdmnsFguae0664Od7KjHK6
+   KnSpfiTj7BvEQB11ytKycUE6UPGlZy14RNRWo4QoFwAgsJ7e2LGStV3uA
+   usQvzYrJh2mK9SLoCEMu5Ubx+Fgko54HdGoa2V3evU1HsZOcjq5pUV88v
+   wTKKe5FGxnJCEBR9T9Wasbv/1BJb1MKvOzpwwQLA3yWdDkoN0yvOA4fie
+   w6FwIV34g7coFaIl1w2k+naBsB46w8YvjFda+o6ji+1GKDXTKY7I+OJk0
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="448273533"
+X-IronPort-AV: E=Sophos;i="6.03,209,1694761200"; 
+   d="scan'208";a="448273533"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2023 23:33:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="896653868"
+X-IronPort-AV: E=Sophos;i="6.03,209,1694761200"; 
+   d="scan'208";a="896653868"
+Received: from shsensorbuild2.sh.intel.com ([10.239.134.197])
+  by fmsmga001.fm.intel.com with ESMTP; 08 Oct 2023 23:32:08 -0700
+From:   Wentong Wu <wentong.wu@intel.com>
+To:     gregkh@linuxfoundation.org, oneukum@suse.com, wsa@kernel.org,
+        andi.shyti@linux.intel.com, broonie@kernel.org
+Cc:     bartosz.golaszewski@linaro.org, linus.walleij@linaro.org,
+        hdegoede@redhat.com, linux-usb@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-spi@vger.kernel.org,
+        sakari.ailus@linux.intel.com, zhifeng.wang@intel.com,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wentong Wu <wentong.wu@intel.com>
+Subject: [PATCH v20 0/4] Add Intel LJCA device driver
+Date:   Mon,  9 Oct 2023 14:33:21 +0800
+Message-Id: <1696833205-16716-1-git-send-email-wentong.wu@intel.com>
+X-Mailer: git-send-email 2.7.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 5, 2023 at 4:09 PM Ian Rogers <irogers@google.com> wrote:
->
-> On success path the sib_core and sib_thr values weren't being
-> freed. Detected by clang-tidy.
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/builtin-lock.c   | 1 +
->  tools/perf/util/svghelper.c | 5 +++--
->  2 files changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-> index d4b22313e5fc..1b40b00c9563 100644
-> --- a/tools/perf/builtin-lock.c
-> +++ b/tools/perf/builtin-lock.c
-> @@ -2463,6 +2463,7 @@ static int parse_call_stack(const struct option *opt __maybe_unused, const char
->                 entry = malloc(sizeof(*entry) + strlen(tok) + 1);
->                 if (entry == NULL) {
->                         pr_err("Memory allocation failure\n");
-> +                       free(s);
->                         return -1;
->                 }
->
+Add driver for Intel La Jolla Cove Adapter (LJCA) device. This
+IO-expander adds additional functions to the host system with
+host USB interface, such as GPIO, I2C and SPI. This patch set
+adds four drivers to support this device: a USB device driver,
+a GPIO chip driver, a I2C controller driver and a SPI controller
+driver.
 
-This is unrelated.  Please put it in a separate patch.
+---
+v20:
+ - add __counted_by attributes for all of [] arrays
+ - use proper kernel doc for ljca_adapter structure
+ - re-structure ljca_recv function to make it more clear
+ - remove all of scoped_guard
+ - check return value of usb_autopm_get_interface()
+ - re-structure ljca_enumerate_clients() to handle error correctly
+ - add comment for 'uid = "0";' in ljca_match_device_ids()
+ - change the parameters' type of ljca_send() to u8
 
-Thanks,
-Namhyung
+v17 - v19:
+ - rebase patch set on top of Linus' master branch (57d88e8a5974644039fbc47806bac7bb12025636)
+ - change valid_pins type to __le32 and access valid_pins with get_unaligned_le32
+ - remove COMPILE_TEST for USB_LJCA Kconfig
 
+v16:
+ - drop all void * and use real types in the exported apis and internal ljca_send()
+ - remove #ifdef in usb-ljca.c file
+ - add documentation in ljca.h for the public structures
+ - add error message in ljca_handle_cmd_ack() if error happens and remove blank line
+ - use the functionality in cleanup.h for spinlock to make function much simpler
+ - change the type of ex_buf in struct ljca_adapter to u8 *
 
-> diff --git a/tools/perf/util/svghelper.c b/tools/perf/util/svghelper.c
-> index 0e4dc31c6c9c..1892e9b6aa7f 100644
-> --- a/tools/perf/util/svghelper.c
-> +++ b/tools/perf/util/svghelper.c
-> @@ -754,6 +754,7 @@ int svg_build_topology_map(struct perf_env *env)
->         int i, nr_cpus;
->         struct topology t;
->         char *sib_core, *sib_thr;
-> +       int ret = -1;
->
->         nr_cpus = min(env->nr_cpus_online, MAX_NR_CPUS);
->
-> @@ -799,11 +800,11 @@ int svg_build_topology_map(struct perf_env *env)
->
->         scan_core_topology(topology_map, &t, nr_cpus);
->
-> -       return 0;
-> +       ret = 0;
->
->  exit:
->         zfree(&t.sib_core);
->         zfree(&t.sib_thr);
->
-> -       return -1;
-> +       return ret;
->  }
-> --
-> 2.42.0.609.gbb76f46606-goog
->
+v14 - v15:
+ - enhance disconnect() of usb-ljca driver
+ - change memchr to strchr in ljca_match_device_ids() of usb-ljca driver
+ - fix build error: implicit declaration of function 'acpi_dev_clear_dependencies'
+
+v13:
+ - make ljca-usb more robust with the help of Hans de Goede
+ - call acpi_dev_clear_dependencies() to mark _DEP ACPI dependencies on the I2C controller as satisfied
+ - avoid err printing because of calling usb_kill_urb when attempts to resubmit the rx urb
+
+v10 - v12:
+ - switch dev_err to dev_dbg for i2c-ljca driver
+ - remove message length check because of defined quirk structure
+ - remove I2C_FUNC_SMBUS_EMUL support
+ - remove ljca_i2c_format_slave_addr
+ - remove memset before write write w_packet for i2c driver
+ - make ljca_i2c_stop void and print err message in case failure
+ - use dev_err_probe in ljca_i2c_probe function
+
+v9:
+ - overhaul usb-ljca driver to make it more structured and easy understand
+ - fix memory leak issue for usb-ljca driver
+ - add spinlock to protect tx_buf and ex_buf
+ - change exported APIs for usb-ljca driver
+ - unify prefix for structures and functions for i2c-ljca driver
+ - unify prefix for structures and functions for spi-ljca driver
+ - unify prefix for structures and functions for gpio-ljca driver
+ - update gpio-ljca, i2c-ljca and spi-ljca drivers according to usb-ljca's changes
+
+Wentong Wu (4):
+  usb: Add support for Intel LJCA device
+  i2c: Add support for Intel LJCA USB I2C driver
+  spi: Add support for Intel LJCA USB SPI driver
+  gpio: update Intel LJCA USB GPIO driver
+
+ drivers/gpio/Kconfig          |   4 +-
+ drivers/gpio/gpio-ljca.c      | 246 +++++++-----
+ drivers/i2c/busses/Kconfig    |  11 +
+ drivers/i2c/busses/Makefile   |   1 +
+ drivers/i2c/busses/i2c-ljca.c | 343 ++++++++++++++++
+ drivers/spi/Kconfig           |  11 +
+ drivers/spi/Makefile          |   1 +
+ drivers/spi/spi-ljca.c        | 297 ++++++++++++++
+ drivers/usb/misc/Kconfig      |  13 +
+ drivers/usb/misc/Makefile     |   1 +
+ drivers/usb/misc/usb-ljca.c   | 902 ++++++++++++++++++++++++++++++++++++++++++
+ include/linux/usb/ljca.h      | 145 +++++++
+ 12 files changed, 1870 insertions(+), 105 deletions(-)
+ create mode 100644 drivers/i2c/busses/i2c-ljca.c
+ create mode 100644 drivers/spi/spi-ljca.c
+ create mode 100644 drivers/usb/misc/usb-ljca.c
+ create mode 100644 include/linux/usb/ljca.h
+
+-- 
+2.7.4
+
