@@ -2,99 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E84A7BDA2F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 071587BDA30
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346227AbjJILl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 07:41:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42962 "EHLO
+        id S1346285AbjJILli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 07:41:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346203AbjJILl1 (ORCPT
+        with ESMTP id S1346268AbjJILlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 07:41:27 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D23899
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 04:41:26 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-65b02e42399so27844746d6.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 04:41:26 -0700 (PDT)
+        Mon, 9 Oct 2023 07:41:35 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1567CA
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 04:41:33 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-406609df1a6so42447915e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 04:41:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696851685; x=1697456485; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=I8Ea6TW7T9MLSMJpTNywUDmHSrDqthlTo8veDLZhSMo=;
-        b=4iGheH3YMPxn4SELOp2nQP6Vxcg3Er9m/K7Fz1kHcAYbquERgn2lv4Q/H7Mpz2dF0h
-         GkALY8DG4qMav8VZsOZY9vVG3tIvMi+hiF1lgNbKhWixrBy3KdwP+0fJg9RlmKZKWg2x
-         SiFN6WWqn4+8TJfIZG2kUDLe9WO6dWsdjHFF9YnTLH+X5DU1q4CUJgV9ACWViubhXLm9
-         Z6caJAJuXN3gp9hO2fGo1BaZpVueqtEloRfAdFtCd6jOEigA/3v25dLxLfTpC+NMzpGh
-         CAf0chVzJSW7+/hNiP0P0AG3+uT72DrOwfjSx9xj3HDriLv3tOviHwDR1SlpP4J21OpH
-         YjhQ==
+        d=gmail.com; s=20230601; t=1696851692; x=1697456492; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=at5Qaj9hVaVRx3LSfPPmHnEYoodzE54HJnIMINcZ6QI=;
+        b=Ex4OyTi/kz4NUelDpPV0jTcXGN0aSiycHOotEh1r5k5raoa+IlZTfN9Q8Y7BrYn9M7
+         17vcf2a8qPR8GTzH1zbE+PZtpehL2OjdLAFFmurJNbZVGS9ie1qTMk4z9BZijffAIfwB
+         5YN7NDRYYPfvdfKa/Q7L0L75TVDt2ENE3SuqHEtglWIkZqSpBsvkqNHl+3QyudoRxUVP
+         PF2Tk7yewsJNMc4ZPLB97yiUAl1ZTv8i1gar1zh4rpOAsT/hQU2GqTeSgB2fPA1QhhYq
+         JG56C3GbVAW4ElAs99vlCUzzMzRElmWkKj9O5xsxdVB44Hkt3RSztM0mYP1Qt6hsOHia
+         4bmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696851685; x=1697456485;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696851692; x=1697456492;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=I8Ea6TW7T9MLSMJpTNywUDmHSrDqthlTo8veDLZhSMo=;
-        b=EDIqPH2WFigLNcZsXm5YGh1TOLGl+Ofm/ddTBWrhAkX26lesF/hLzPaKLOWxJt8i1e
-         PXG3iF6ZDmTcbEnmhusE5hjbJ8mjnNy453tg5Zq6fPXcQ32Wwg37Ih61gwA9Zgse3eto
-         pxZ8IU6bX6FxzTnE4NgliFSywfQZqccNWCTMm7rHn4a4WiSin+87Hah9YIYxupQ3mwZh
-         aY4/zxEc94a1gKY0++rA3gwUXH3du9QcvF5hk5/gK+dOG32UpFmrzZ7gJuQqdgR+Ri2D
-         A9d1FU79Kz0EuBofKKWrtTWxJvhJW3fuNAs/z2ZNNFH44dJJ24DMGALL9KInvj0Pr6rJ
-         kCGg==
-X-Gm-Message-State: AOJu0YyGXDgIPwPMv826yj5goIqzzYlChehyu2f8o30/3lIw91Z6c0Cv
-        WkAFJerTy/9Jnq8j6WeVx5hvWb5TFyk/NQYsjchiHQ==
-X-Google-Smtp-Source: AGHT+IGUdqL8uNX6vXwIwICTF/FsZDJtG9CPVvgCWeEyjaaMwckc79PtrbUFKNuFjQa/eSgSSebjnMQPIE+TbH5Uceo=
-X-Received: by 2002:ad4:4d92:0:b0:668:da55:6c17 with SMTP id
- cv18-20020ad44d92000000b00668da556c17mr14592159qvb.49.1696851685150; Mon, 09
- Oct 2023 04:41:25 -0700 (PDT)
+        bh=at5Qaj9hVaVRx3LSfPPmHnEYoodzE54HJnIMINcZ6QI=;
+        b=TyGHe7EdMCIm6epm66Q1plwJrSZc1SPyIvy44s3XP/kMYwIhrb39MxT2wAURf81RvB
+         5oCACpn24Ktlk4OSNBbnU+78gJ2RD1DtvboVV0EwngKbVOG08JBD3wq2olYqfOYuB19Y
+         AYmYZcw3TbeEFeRQEwUtcQpKaJ6GGodLYA9wjNOxCS2cVKtyrbimERXHeNaLrqj76H1z
+         NlyS9lYTKHTKq2ApqT2wfXnbMgCRC62/AwcPKKn/iFsiuo8Ys1sJl4akHnxOa3QexFT/
+         L1LpZUeLRYroAYcxsr3nOPPltBh42F5zud3xHgbMv3uRd7AVfgehmYnRupC9Q+pB3u/U
+         qgbQ==
+X-Gm-Message-State: AOJu0YwUzAKnO3/y3vbbg4g907rqVh824Pft38n8VjP/5G5+S9A/75Ry
+        qVub3hVXdwfGMh/YQZmyF6E=
+X-Google-Smtp-Source: AGHT+IGywA2HBz0gSPuVo0gqn4U6M1z0A9mhr5WSsVNxgzKddWybHTKF//GGOPNCZfR6yd7ZqYQ1EA==
+X-Received: by 2002:adf:ed11:0:b0:317:6653:60b8 with SMTP id a17-20020adfed11000000b00317665360b8mr12479308wro.50.1696851692281;
+        Mon, 09 Oct 2023 04:41:32 -0700 (PDT)
+Received: from gmail.com (1F2EF237.nat.pool.telekom.hu. [31.46.242.55])
+        by smtp.gmail.com with ESMTPSA id b5-20020a5d6345000000b0032326908972sm9350665wrw.17.2023.10.09.04.41.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Oct 2023 04:41:31 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Mon, 9 Oct 2023 13:41:29 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Nadav Amit <namit@vmware.com>, Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH 4/4] x86/percpu: Use C for percpu read/write accessors
+Message-ID: <ZSPm6Z/lTK1ZlO8m@gmail.com>
+References: <20231004145137.86537-1-ubizjak@gmail.com>
+ <20231004145137.86537-5-ubizjak@gmail.com>
+ <CAHk-=wgepFm=jGodFQYPAaEvcBhR3-f_h1BLBYiVQsutCwCnUQ@mail.gmail.com>
+ <CAFULd4YWjxoSTyCtMN0OzKgHtshMQOuMH1Z0n_OaWKVnUjy2iA@mail.gmail.com>
+ <CAHk-=whq=+LNHmsde8LaF4pdvKxqKt5GxW+Tq+U35_aDcV0ADg@mail.gmail.com>
+ <CAHk-=wi6U-O1wdPOESuCE6QO2OaPu0hEzaig0uDOU4L5CREhug@mail.gmail.com>
+ <CAFULd4Z3C771u8Y==8h6hi=mhGmy=7RJRAEBGfNZ0SmynxF41g@mail.gmail.com>
 MIME-Version: 1.0
-References: <cover.1694625260.git.andreyknvl@google.com> <c15b94412d146957c8be423c8dc1d3b66f659709.1694625260.git.andreyknvl@google.com>
-In-Reply-To: <c15b94412d146957c8be423c8dc1d3b66f659709.1694625260.git.andreyknvl@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Mon, 9 Oct 2023 13:40:45 +0200
-Message-ID: <CAG_fn=WLgOq_dAK7pHro0DkyaLY7juCyHhLgKwxbbwUp=qgOKw@mail.gmail.com>
-Subject: Re: [PATCH v2 15/19] lib/stackdepot: add refcount for records
-To:     andrey.konovalov@linux.dev
-Cc:     Marco Elver <elver@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
-        Evgenii Stepanov <eugenis@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFULd4Z3C771u8Y==8h6hi=mhGmy=7RJRAEBGfNZ0SmynxF41g@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 7:17=E2=80=AFPM <andrey.konovalov@linux.dev> wrote:
->
-> From: Andrey Konovalov <andreyknvl@google.com>
->
-> Add a reference counter for how many times a stack records has been added
-> to stack depot.
->
-> Add a new STACK_DEPOT_FLAG_GET flag to stack_depot_save_flags that
-> instructs the stack depot to increment the refcount.
->
-> Do not yet decrement the refcount; this is implemented in one of the
-> following patches.
->
-> Do not yet enable any users to use the flag to avoid overflowing the
-> refcount.
->
-> This is preparatory patch for implementing the eviction of stack records
-> from the stack depot.
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
+
+* Uros Bizjak <ubizjak@gmail.com> wrote:
+
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index ecb256954351..1edf4a5b93ca 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -2393,7 +2393,7 @@ config CC_HAS_NAMED_AS
+>  
+>  config USE_X86_SEG_SUPPORT
+>  	def_bool y
+> -	depends on CC_HAS_NAMED_AS && SMP
+> +	depends on CC_HAS_NAMED_AS && SMP && !KASAN
+> +	depends on CC_HAS_NAMED_AS && SMP && !KASAN
+
+So I'd rather express this as a Kconfig quirk line, and explain each quirk.
+
+Something like:
+
+	depends on CC_HAS_NAMED_AS
+	depends on SMP
+	#
+	# -fsanitize=kernel-address (KASAN) is at the moment incompatible
+	# with named address spaces - see GCC bug #12345.
+	#
+	depends on !KASAN
+
+... or so.
+
+BTW., please also document the reason why !SMP is excluded.
+
+Thanks,
+
+	Ingo
