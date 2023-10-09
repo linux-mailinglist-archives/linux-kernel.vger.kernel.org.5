@@ -2,174 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C858C7BEB96
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 22:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 246E77BEB9F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 22:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378590AbjJIU30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 16:29:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48510 "EHLO
+        id S1377896AbjJIUbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 16:31:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234540AbjJIU3Z (ORCPT
+        with ESMTP id S1346674AbjJIUbp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 16:29:25 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912599E
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 13:29:24 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c8a6aa0cd1so7465205ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 13:29:24 -0700 (PDT)
+        Mon, 9 Oct 2023 16:31:45 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2616DAF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 13:31:43 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9936b3d0286so892237066b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 13:31:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696883364; x=1697488164; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696883501; x=1697488301; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=aNWvqx+TZumLgslLCmyx3nUs5iegGwECzTZpwyFt1BY=;
-        b=k+6bkq9E894du/voSLd8443pUKYc0DVZ6Mjbfq9yq5PseYaQ1v4RNcVhxLpCWYLHVy
-         JBal5duqXrvfGNFWSA3DRGGGX6Q62mRFJ/d7VPoyoSJtO6tTFh1WQQqVsHW4kGJ/dAMj
-         B34y4+3YEOSdImyxYLZl7BQNwhMwrlnHvGLrQRWmUkO80h7cO9fktz908FZ4zeaFrd/2
-         KITOUhTjtQGmBmB28DPHCchIMYXzyupBB3Yi2TJnxhVFBVctH6y7AwH2lddCvXGJL10z
-         an4SWpGwZjyDHwvALaEHBjFZMeVVPeDcfEOt8kETB2g0AkZBLms1KvjfZMYLo8R/ymtN
-         OFFA==
+        bh=V9TaY+1/D3Blq76vaecFciRsnp/iTpZr7tVAbHJ+j0I=;
+        b=UsWz9cE2zv1NSlSUab41KnOqCHGQBOSbxI5ojryqkvhhJ9js11myRvegScTxHTEF5X
+         zYTS2iCsswq14XoGueeSZ6xmYXcqieWSVpLj1ODkiy6AbTk34IK2o1c7a5QsJ7VCEp1D
+         VhMoLnP55nSEjIN+Y+o3TZhUYGFCQ0cix8+ixIpbHKLD5Z04XODd0/Ej11xWHytqMtod
+         7hjGRN7Tm0y1CeNqpBMnWatliZRnCQK2NjfYcvoWGC2oL/za+0I+TYMogR353FcI1tGm
+         OSnOTopmafS4NZV/QHFw7jbecSyTCyRBD5dpMMPT8ha9KRpoH/B+vFV1G5erm+Nn/Ll0
+         vW4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696883364; x=1697488164;
+        d=1e100.net; s=20230601; t=1696883501; x=1697488301;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=aNWvqx+TZumLgslLCmyx3nUs5iegGwECzTZpwyFt1BY=;
-        b=gm+xrqMF0aKPdA0JFiMl8fv3o/0FMIFWcPDPDNWd9jr9RUepXYhUAydYWUN4IPzXey
-         xYmnmwpmI0kCwYLVoaVi6gV4MnrQvR4sdNIQVgd3/KJ0M6Oar6beoMtX5mlhgEw/pC07
-         k3dPl26rTkU0bGbqX5yZ8MGYdWGBoLIekySLOTveaLgPMvcvYR8PGg2yvDDqWuMA5pC+
-         O9SwqENS8qCQn4Sbz3kxdPDq64wcHrpJXKF8mNIyf34l7PRjFD+dTlA8TL9nv3dMzrzy
-         yKegnqAWm2qe78hLpx5a+9N4CbpjmlnIU7NX471Lc5qqnKbLdBt4cF5jaf9RTygyQKHa
-         9BYQ==
-X-Gm-Message-State: AOJu0Yy8a0PGYIDO3nWnY/mbP7CY2Ku/u2oFojmakgl8W/++h8vALrrf
-        5ECsrj+aK3xSexP3C7xU0RvLQhuZJC0=
-X-Google-Smtp-Source: AGHT+IEO1UcwAKvlYfVRJowOzIIjl3b6jfjN+CUhqSQDHyh9SkVUClpyT386+PwKF187dxein0DKCA==
-X-Received: by 2002:a17:902:d50f:b0:1c3:bc2a:f6b4 with SMTP id b15-20020a170902d50f00b001c3bc2af6b4mr16637007plg.42.1696883363732;
-        Mon, 09 Oct 2023 13:29:23 -0700 (PDT)
-Received: from daehojeong-desktop.mtv.corp.google.com ([2620:15c:211:201:7d85:c4b4:e59e:896])
-        by smtp.gmail.com with ESMTPSA id u9-20020a17090282c900b001c72c07c9d9sm9962633plz.308.2023.10.09.13.29.22
+        bh=V9TaY+1/D3Blq76vaecFciRsnp/iTpZr7tVAbHJ+j0I=;
+        b=nzLNymjSbRQpbJBIkNtbcF4GatmYIH81o/87oXVIlKGJiedk7D9pRP8WqaZ3+aOVwh
+         BNIwjLtXsU39ScDTbdUFBDanODpM0A0IWNr0kRXhwq2VFT48n+FphJjKfOXtImnJ1tVP
+         vQZVRSOQAXIvU97YaZHxzJEWLkF+/aa/PQ+qmaLu2UmQS+mhj6Y7BnOpB3smMXwnOWtj
+         AkwOlprWyQC0ul5nMBhO6D63jL/BEuNBY3jb+1K0Ts3ivltbskM7k228/wQNxa1VrRO3
+         4ANNtFW4H1ftsuD/+PkE70kXe7yX0ev6WGxt7ar5PzoGz94fq2R+CAcIZJf1EBO4gaoj
+         znUQ==
+X-Gm-Message-State: AOJu0YyDm2hx0739uzoDw/xkMVDpqsRdeS9OGjm7NjxLEdFPUeRucgeG
+        XfX0Xe3pUAINJ/h7oVhqHho=
+X-Google-Smtp-Source: AGHT+IGQmeHU7DgdWHS0ezKAtRqO1ga8ziJik+enp1NhMJU1PtwcJiJ7z58UuX3JcZznOmETIfL/Ng==
+X-Received: by 2002:a17:906:221c:b0:9a5:b876:b1e3 with SMTP id s28-20020a170906221c00b009a5b876b1e3mr13674670ejs.20.1696883501377;
+        Mon, 09 Oct 2023 13:31:41 -0700 (PDT)
+Received: from localhost.localdomain ([46.248.82.114])
+        by smtp.gmail.com with ESMTPSA id l12-20020a170906078c00b009b94fe3fc47sm7153601ejc.159.2023.10.09.13.31.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 13:29:23 -0700 (PDT)
-From:   Daeho Jeong <daeho43@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>
-Subject: [PATCH v2] f2fs-tools: use proper address entry count for direct nodes
-Date:   Mon,  9 Oct 2023 13:29:17 -0700
-Message-ID: <20231009202917.1835899-1-daeho43@gmail.com>
-X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
+        Mon, 09 Oct 2023 13:31:41 -0700 (PDT)
+From:   Uros Bizjak <ubizjak@gmail.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Uros Bizjak <ubizjak@gmail.com>, Nadav Amit <namit@vmware.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: [PATCH tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+Date:   Mon,  9 Oct 2023 22:29:33 +0200
+Message-ID: <20231009203132.82773-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daeho Jeong <daehojeong@google.com>
+Implementing arch_raw_cpu_ptr() in C, allows the compiler to perform
+better optimizations, such as setting an appropriate base to compute
+the address instead of an add instruction.
 
-For direct nodes, we have to use DEF_ADDRS_PER_BLOCK.
+E.g.: address calcuation in amd_pmu_enable_virt() improves from:
 
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
+    48 c7 c0 00 00 00 00 	mov    $0x0,%rax
+	87b7: R_X86_64_32S	cpu_hw_events
+
+    65 48 03 05 00 00 00 	add    %gs:0x0(%rip),%rax
+    00
+	87bf: R_X86_64_PC32	this_cpu_off-0x4
+
+    48 c7 80 28 13 00 00 	movq   $0x0,0x1328(%rax)
+    00 00 00 00
+
+to:
+
+    65 48 8b 05 00 00 00 	mov    %gs:0x0(%rip),%rax
+    00
+	8798: R_X86_64_PC32	this_cpu_off-0x4
+    48 c7 80 00 00 00 00 	movq   $0x0,0x0(%rax)
+    00 00 00 00
+	87a6: R_X86_64_32S	cpu_hw_events+0x1328
+
+Co-developed-by: Nadav Amit <namit@vmware.com>
+Signed-off-by: Nadav Amit <namit@vmware.com>
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Brian Gerst <brgerst@gmail.com>
+Cc: Denys Vlasenko <dvlasenk@redhat.com>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
 ---
-v2: pass inode struct as a parameter and check COMPRESS_ADDR
----
- fsck/fsck.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ arch/x86/include/asm/percpu.h | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
 
-diff --git a/fsck/fsck.c b/fsck/fsck.c
-index 78ffdb6..3ade728 100644
---- a/fsck/fsck.c
-+++ b/fsck/fsck.c
-@@ -2875,7 +2875,7 @@ static int fsck_do_reconnect_file(struct f2fs_sb_info *sbi,
- }
+diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
+index 60ea7755c0fe..aa48c061abd9 100644
+--- a/arch/x86/include/asm/percpu.h
++++ b/arch/x86/include/asm/percpu.h
+@@ -39,16 +39,23 @@
  
- static void fsck_failed_reconnect_file_dnode(struct f2fs_sb_info *sbi,
--					     nid_t nid)
-+					struct f2fs_inode *inode, nid_t nid)
- {
- 	struct f2fs_fsck *fsck = F2FS_FSCK(sbi);
- 	struct f2fs_node *node;
-@@ -2894,12 +2894,12 @@ static void fsck_failed_reconnect_file_dnode(struct f2fs_sb_info *sbi,
- 	fsck->chk.valid_blk_cnt--;
- 	f2fs_clear_main_bitmap(sbi, ni.blk_addr);
+ #define __percpu_prefix		""
  
--	for (i = 0; i < ADDRS_PER_BLOCK(&node->i); i++) {
-+	for (i = 0; i < ADDRS_PER_BLOCK(inode); i++) {
- 		addr = le32_to_cpu(node->dn.addr[i]);
- 		if (!addr)
- 			continue;
- 		fsck->chk.valid_blk_cnt--;
--		if (addr == NEW_ADDR)
-+		if (addr == NEW_ADDR || addr == COMPRESS_ADDR)
- 			continue;
- 		f2fs_clear_main_bitmap(sbi, addr);
- 	}
-@@ -2908,7 +2908,7 @@ static void fsck_failed_reconnect_file_dnode(struct f2fs_sb_info *sbi,
- }
++/*
++ * Efficient implementation for cases in which the compiler supports
++ * named address spaces.  Allows the compiler to perform additional
++ * optimizations that can save more instructions.
++ */
++#define arch_raw_cpu_ptr(ptr)					\
++({								\
++	unsigned long tcp_ptr__;				\
++	tcp_ptr__ = __raw_cpu_read(, this_cpu_off) + (unsigned long)(ptr); \
++	(typeof(*(ptr)) __kernel __force *)tcp_ptr__;		\
++})
++
+ #else /* CONFIG_CC_HAS_NAMED_AS */
  
- static void fsck_failed_reconnect_file_idnode(struct f2fs_sb_info *sbi,
--					      nid_t nid)
-+					struct f2fs_inode *inode, nid_t nid)
- {
- 	struct f2fs_fsck *fsck = F2FS_FSCK(sbi);
- 	struct f2fs_node *node;
-@@ -2931,14 +2931,14 @@ static void fsck_failed_reconnect_file_idnode(struct f2fs_sb_info *sbi,
- 		tmp = le32_to_cpu(node->in.nid[i]);
- 		if (!tmp)
- 			continue;
--		fsck_failed_reconnect_file_dnode(sbi, tmp);
-+		fsck_failed_reconnect_file_dnode(sbi, inode, tmp);
- 	}
+ #define __percpu_seg_override
+ #define __percpu_prefix		"%%"__stringify(__percpu_seg)":"
  
- 	free(node);
- }
- 
- static void fsck_failed_reconnect_file_didnode(struct f2fs_sb_info *sbi,
--					       nid_t nid)
-+					struct f2fs_inode *inode, nid_t nid)
- {
- 	struct f2fs_fsck *fsck = F2FS_FSCK(sbi);
- 	struct f2fs_node *node;
-@@ -2961,7 +2961,7 @@ static void fsck_failed_reconnect_file_didnode(struct f2fs_sb_info *sbi,
- 		tmp = le32_to_cpu(node->in.nid[i]);
- 		if (!tmp)
- 			continue;
--		fsck_failed_reconnect_file_idnode(sbi, tmp);
-+		fsck_failed_reconnect_file_idnode(sbi, inode, tmp);
- 	}
- 
- 	free(node);
-@@ -3010,7 +3010,7 @@ static void fsck_failed_reconnect_file(struct f2fs_sb_info *sbi, nid_t ino)
- 			if (!addr)
- 				continue;
- 			fsck->chk.valid_blk_cnt--;
--			if (addr == NEW_ADDR)
-+			if (addr == NEW_ADDR || addr == COMPRESS_ADDR)
- 				continue;
- 			f2fs_clear_main_bitmap(sbi, addr);
- 		}
-@@ -3024,14 +3024,14 @@ static void fsck_failed_reconnect_file(struct f2fs_sb_info *sbi, nid_t ino)
- 		switch (i) {
- 		case 0: /* direct node */
- 		case 1:
--			fsck_failed_reconnect_file_dnode(sbi, nid);
-+			fsck_failed_reconnect_file_dnode(sbi, &node->i, nid);
- 			break;
- 		case 2: /* indirect node */
- 		case 3:
--			fsck_failed_reconnect_file_idnode(sbi, nid);
-+			fsck_failed_reconnect_file_idnode(sbi, &node->i, nid);
- 			break;
- 		case 4: /* double indirect node */
--			fsck_failed_reconnect_file_didnode(sbi, nid);
-+			fsck_failed_reconnect_file_didnode(sbi, &node->i, nid);
- 			break;
- 		}
- 	}
+-#endif /* CONFIG_CC_HAS_NAMED_AS */
+-
+-#define __force_percpu_prefix	"%%"__stringify(__percpu_seg)":"
+-#define __my_cpu_offset		this_cpu_read(this_cpu_off)
+-
+ /*
+  * Compared to the generic __my_cpu_offset version, the following
+  * saves one instruction and avoids clobbering a temp register.
+@@ -61,6 +68,12 @@
+ 	     : "m" (__my_cpu_var(this_cpu_off)), "0" (ptr));	\
+ 	(typeof(*(ptr)) __kernel __force *)tcp_ptr__;		\
+ })
++
++#endif /* CONFIG_CC_HAS_NAMED_AS */
++
++#define __force_percpu_prefix	"%%"__stringify(__percpu_seg)":"
++#define __my_cpu_offset		this_cpu_read(this_cpu_off)
++
+ #else /* CONFIG_SMP */
+ #define __percpu_seg_override
+ #define __percpu_prefix		""
 -- 
-2.42.0.609.gbb76f46606-goog
+2.41.0
 
