@@ -2,65 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D94E7BD764
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE637BD767
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345801AbjJIJoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 05:44:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56428 "EHLO
+        id S1345800AbjJIJob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 05:44:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345758AbjJIJoA (ORCPT
+        with ESMTP id S1345608AbjJIJo3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 05:44:00 -0400
-Received: from out-210.mta1.migadu.com (out-210.mta1.migadu.com [95.215.58.210])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2FCAB
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:43:57 -0700 (PDT)
-Message-ID: <68eb65c5-1870-0776-0878-694a8b002a6d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1696844635;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=O0YOF8WiqWV3qWEelhaf9YObeiYly4thXLasaoZJfXw=;
-        b=bG99yCTavxE57bN/sitJRBv3pvuXgFF9RvNFfRAPaLA/yw7LIq18IbInFcZFQahAQDzbrG
-        YgvZMtphcWgi9sGRwruSxGXFM+LmJ86HtdVKsvysqZ+OcE7hl+tnmhZ1Sj7OAQv3ooAkqC
-        ZxCWXIA1dcG1z4QhUKfmSa6R6xxV+UY=
-Date:   Mon, 9 Oct 2023 17:43:43 +0800
+        Mon, 9 Oct 2023 05:44:29 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F5297
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:44:27 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qpmoJ-0001nd-BN; Mon, 09 Oct 2023 11:44:23 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qpmoI-000Ni4-Gk; Mon, 09 Oct 2023 11:44:22 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qpmoI-00C5du-7U; Mon, 09 Oct 2023 11:44:22 +0200
+Date:   Mon, 9 Oct 2023 11:44:22 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH 09/36] gpio: mvebu: use new pinctrl GPIO helpers
+Message-ID: <20231009094422.5gwckjevgyt2ibkq@pengutronix.de>
+References: <20231003145114.21637-1-brgl@bgdev.pl>
+ <20231003145114.21637-10-brgl@bgdev.pl>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next v7] net/core: Introduce netdev_core_stats_inc()
-Content-Language: en-US
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     rostedt@goodmis.org, mhiramat@kernel.org, dennis@kernel.org,
-        tj@kernel.org, cl@linux.com, mark.rutland@arm.com,
-        davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20231007050621.1706331-1-yajun.deng@linux.dev>
- <CANn89iL-zUw1FqjYRSC7BGB0hfQ5uKpJzUba3YFd--c=GdOoGg@mail.gmail.com>
- <917708b5-cb86-f233-e878-9233c4e6c707@linux.dev>
- <CANn89i+navyRe8-AV=ehM3qFce2hmnOEKBqvK5Xnev7KTaS5Lg@mail.gmail.com>
- <a53a3ff6-8c66-07c4-0163-e582d88843dd@linux.dev>
- <CANn89i+u5dXdYm_0_LwhXg5Nw+gHXx+nPUmbYhvT=k9P4+9JRQ@mail.gmail.com>
- <9f4fb613-d63f-9b86-fe92-11bf4dfb7275@linux.dev>
- <CANn89iK7bvQtGD=p+fHaWiiaNn=u8vWrt0YQ26pGQY=kZTdfJw@mail.gmail.com>
- <4a747fda-2bb9-4231-66d6-31306184eec2@linux.dev>
- <814b5598-5284-9558-8f56-12a6f7a67187@linux.dev>
- <CANn89iJCTgWTu0mzwj-8_-HiWm4uErY=VASDHoYaod9Nq-ayPA@mail.gmail.com>
- <508b33f7-3dc0-4536-21f6-4a5e7ade2b5c@linux.dev>
- <CANn89i+r-pQGpen1mUhybmj+6ybhxSsuoaB07NFzOWyHUMFDNw@mail.gmail.com>
- <296ca17d-cff0-2d19-f620-eedab004ddde@linux.dev>
- <CANn89iL=W3fyuH_KawfhKvLyw2Cw=qhHbEZtbKgQEYhHJChy3Q@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yajun Deng <yajun.deng@linux.dev>
-In-Reply-To: <CANn89iL=W3fyuH_KawfhKvLyw2Cw=qhHbEZtbKgQEYhHJChy3Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="mahuur3tcnxfizgw"
+Content-Disposition: inline
+In-Reply-To: <20231003145114.21637-10-brgl@bgdev.pl>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -68,74 +60,46 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2023/10/9 17:30, Eric Dumazet wrote:
-> On Mon, Oct 9, 2023 at 10:36 AM Yajun Deng <yajun.deng@linux.dev> wrote:
->>
->> On 2023/10/9 16:20, Eric Dumazet wrote:
->>> On Mon, Oct 9, 2023 at 10:14 AM Yajun Deng <yajun.deng@linux.dev> wrote:
->>>> On 2023/10/9 15:53, Eric Dumazet wrote:
->>>>> On Mon, Oct 9, 2023 at 5:07 AM Yajun Deng <yajun.deng@linux.dev> wrote:
->>>>>
->>>>>> 'this_cpu_read + this_cpu_write' and 'pr_info + this_cpu_inc' will make
->>>>>> the trace work well.
->>>>>>
->>>>>> They all have 'pop' instructions in them. This may be the key to making
->>>>>> the trace work well.
->>>>>>
->>>>>> Hi all,
->>>>>>
->>>>>> I need your help on percpu and ftrace.
->>>>>>
->>>>> I do not think you made sure netdev_core_stats_inc() was never inlined.
->>>>>
->>>>> Adding more code in it is simply changing how the compiler decides to
->>>>> inline or not.
->>>> Yes, you are right. It needs to add the 'noinline' prefix. The
->>>> disassembly code will have 'pop'
->>>>
->>>> instruction.
->>>>
->>> The function was fine, you do not need anything like push or pop.
->>>
->>> The only needed stuff was the call __fentry__.
->>>
->>> The fact that the function was inlined for some invocations was the
->>> issue, because the trace point
->>> is only planted in the out of line function.
->>
->> But somehow the following code isn't inline? They didn't need to add the
->> 'noinline' prefix.
->>
->> +               field = (unsigned long *)((void *)this_cpu_ptr(p) + offset);
->> +               WRITE_ONCE(*field, READ_ONCE(*field) + 1);
->>
->> Or
->> +               (*(unsigned long *)((void *)this_cpu_ptr(p) + offset))++;
->>
-> I think you are very confused.
->
-> You only want to trace netdev_core_stats_inc() entry point, not
-> arbitrary pieces of it.
+--mahuur3tcnxfizgw
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hello Bartosz,
 
-Yes, I will trace netdev_core_stats_inc() entry point. I mean to replace
+On Tue, Oct 03, 2023 at 04:50:47PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>=20
+> Replace the pinctrl helpers taking the global GPIO number as argument
+> with the improved variants that instead take a pointer to the GPIO chip
+> and the controller-relative offset.
+>=20
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-+                                       field = (__force unsigned long 
-__percpu *)((__force void *)p + offset);
-+                                       this_cpu_inc(*field);
+Looks good (after I found the cover letter which luckily is easy).
 
-with
+Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
 
-+               field = (unsigned long *)((void *)this_cpu_ptr(p) + offset);
-+               WRITE_ONCE(*field, READ_ONCE(*field) + 1);
+Best regards
+Uwe
 
-Or
-+               (*(unsigned long *)((void *)this_cpu_ptr(p) + offset))++;
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-The netdev_core_stats_inc() entry point will work fine even if it doesn't
-have 'noinline' prefix.
+--mahuur3tcnxfizgw
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I don't know why this code needs to add 'noinline' prefix.
-+               field = (__force unsigned long __percpu *)((__force void *)p + offset);
-+               this_cpu_inc(*field);
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUjy3UACgkQj4D7WH0S
+/k6JmAgAqO0rwDQaWBATXxBu9c3kkG0hmIEiuvCzvVMYCNCeJElvs/tQV2wxi1M0
+mhbuo5i1ep/vym6RQjReuj6WL0xqfbeP9D2+VSIEiru43OR3/3V0WbnLiKh0jt5O
+L2JmJaU+ArRH6jEwm5aBZjwRbgqH3fs1zb9aFaybgAJq+PuNUtc/ohkc4QJsP8w9
+rBEsRdy/DCuYFrwzTy8zNDNtnrBgPwWlPz5EyN8MM186QdJnHHwyav26/36tnifs
+8HBH7O8k3w2hxAmA3Zn6z28PsbwfXs6C0+6lJrodWoOxqLTHqHRV8/+mMivzwePC
+8Hq7E8kF2XX5zEc8JcPVoswKEqg10w==
+=AsJb
+-----END PGP SIGNATURE-----
+
+--mahuur3tcnxfizgw--
