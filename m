@@ -2,159 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0797F7BDA49
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 803307BDA4A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346320AbjJILvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 07:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58456 "EHLO
+        id S1346324AbjJILwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 07:52:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346281AbjJILvR (ORCPT
+        with ESMTP id S1346281AbjJILwB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 07:51:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2650AAC
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 04:50:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696852229;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MBRRUjtk0t8+rSFYxPYd7qzO0KgNPL4SOI4O3jVUvmI=;
-        b=EFym7aIK9cGix1NimkZpWfEWlj4ejbSC5h+4UO8U93mjmQRRRT4KoUz0r9U9h2rPMcEUSR
-        zuFelapJBSeyFTJkTRyGM6TXeg+3g6BJFKYkJkfyOAR9SSJQ8yeEqmC1Loxfoz6mw3ycBu
-        LV0wFALoKMCkvTAjFRteAOxXDwRz5Sk=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-613-mIlMi_C7PimyMG41z82W6Q-1; Mon, 09 Oct 2023 07:50:22 -0400
-X-MC-Unique: mIlMi_C7PimyMG41z82W6Q-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-9ae0bf9c0b4so362208966b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 04:50:22 -0700 (PDT)
+        Mon, 9 Oct 2023 07:52:01 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BADF894
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 04:51:59 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40651a72807so43107515e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 04:51:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696852318; x=1697457118; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QXAKj/7AkzuxGnbV+WvDfr1ujwsq/S+2CpiuERLuNt8=;
+        b=QynhCd4PT10MWGPxJGkPaRiGlbSWlh9MS4GbsazuEtYr8joKRRfVhyjsePRhWiIond
+         +q4Z6wezdgZRsRfj37BojshSVAY1k5im62kRarBxN1h0SLjYZz07cpGtW1CHdX+jeLv0
+         ejYZ6zeZjjm90NgYfIUqgKRZYdzmreEjfckkT1EwbReNbqLw8DxVMnb4GPBWczM+f5tQ
+         38guPIxlrtSrMaNX7GBqR3yl6djwYMeWjc11wzYZG8VwBXFzXxOVQlR9MN/lSOANf+uE
+         HUIGN6+h5xVFo3RSkH9XSyLhKwr8w7ctFsKo6Ymz318XosJBTzq/1zkfJHSD+wtctyyc
+         8ofQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696852222; x=1697457022;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MBRRUjtk0t8+rSFYxPYd7qzO0KgNPL4SOI4O3jVUvmI=;
-        b=PYgy4OkVfkOW9ifCcRZDFm/fyGJDN3VW2PkmoA5fg2KAVtZTmkWIO47OdU+t8qM7zo
-         bDLUrgHbb8O763TJbIpUljwmweWjHlf40mGLSt2EZlLUf8Z/r8ylGFDDP5nFe1nAnOs7
-         dpbxl4IJABCqHjcDl41ZbYNPDlSulwi44vKUy/rYeD1fCHOrFimM+9G5c3J3f1QsTkbG
-         yLR40yUDhGK4vvn/qazZrnvet0CR1W4se7SgfIsAR5YJlwJvBajzMFMmiCP0bDX15KyC
-         ZBT+HDJnubjlnNbGpzodtWPaiUiGpKpg+/XbfkEmIT1JL3oo+fUu6cc8wS0dv5Ier0+o
-         f3jw==
-X-Gm-Message-State: AOJu0YyNsgPoZkw3OkH+lxMi3lutqQU1KB9wjOX6ZFis5dz7K4dcUgzx
-        4U37Y+Bl6HHdnX7M16SuArs5z0fr0qg33Erid/E8c84XhPOeyAD8ixer5KM/EfQiMhMwloAgfow
-        e7pYfo8zEqpqdsh/XzKoN5HM2
-X-Received: by 2002:a17:906:8a50:b0:9aa:2c5b:6591 with SMTP id gx16-20020a1709068a5000b009aa2c5b6591mr14399899ejc.9.1696852221873;
-        Mon, 09 Oct 2023 04:50:21 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHOfzC8yt9O1EKKC6ulfMdWzK/Wyw5t8obuDTFM7EgyZXQHnZ2zQtwYH9FVSA5nqeIbOBRa3w==
-X-Received: by 2002:a17:906:8a50:b0:9aa:2c5b:6591 with SMTP id gx16-20020a1709068a5000b009aa2c5b6591mr14399871ejc.9.1696852221495;
-        Mon, 09 Oct 2023 04:50:21 -0700 (PDT)
-Received: from redhat.com ([2a02:14f:16f:5caf:857a:f352:c1fc:cf50])
-        by smtp.gmail.com with ESMTPSA id x19-20020aa7d393000000b005330b2d1904sm6058419edq.71.2023.10.09.04.50.14
+        d=1e100.net; s=20230601; t=1696852318; x=1697457118;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QXAKj/7AkzuxGnbV+WvDfr1ujwsq/S+2CpiuERLuNt8=;
+        b=kdYCYC3s9a2Rfy8DZ+GtzbaTn8N+4RydkxOTlU3bR7kZ/Hr5b9a2vzzCS7nIpZyev3
+         OlWq9RsGC/to+cRsSa2yauIRjdVFVtsfnAcxuDnF+8fwS96YTpi7dNNZZ3Akqt3bBA3F
+         4VNr/GZiiWPCq5WfagD6OM4fIKSO8WicUpf/KsPNcYRBwOOUyiL6pW9JWF+ugRN2tTaj
+         A41tkyyFY0ngFxPvqtyyYr9dN99pdFPMnrVgYcd1xtIfh2tBgUezmQMlCORjoVYRq44E
+         niaNhOTK3XjfEu7KE+WnDCBx7fDbiZsqLGNddau0x7Y+FcDUtYRg5QJQVY16a+GaSdQg
+         pw5Q==
+X-Gm-Message-State: AOJu0YyCdLo/erXOrT/pw8YCSahCWT99SlrjOlcDx7ON1e6bqUWGPSaX
+        +/xX6hrmFBRXMlpq3XhTDpviMj8VWtQ=
+X-Google-Smtp-Source: AGHT+IGOZK+YFEV9b54mBSE/b9qRn4NNDY/nyS9aWduygpYQIxFHEqNyvZarUG0WIBziOPSPU8g11g==
+X-Received: by 2002:a05:600c:2b0e:b0:406:848f:8711 with SMTP id y14-20020a05600c2b0e00b00406848f8711mr13425463wme.21.1696852317947;
+        Mon, 09 Oct 2023 04:51:57 -0700 (PDT)
+Received: from gmail.com (1F2EF237.nat.pool.telekom.hu. [31.46.242.55])
+        by smtp.gmail.com with ESMTPSA id o13-20020a05600c378d00b004063cd8105csm13149363wmr.22.2023.10.09.04.51.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 04:50:20 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 07:50:10 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Akihiko Odaki <akihiko.odaki@daynix.com>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jason Wang <jasowang@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, rdunlap@infradead.org, willemb@google.com,
-        gustavoars@kernel.org, herbert@gondor.apana.org.au,
-        steffen.klassert@secunet.com, nogikh@google.com,
-        pablo@netfilter.org, decui@microsoft.com, cai@lca.pw,
-        jakub@cloudflare.com, elver@google.com, pabeni@redhat.com,
-        Yuri Benditovich <yuri.benditovich@daynix.com>
-Subject: Re: [RFC PATCH 5/7] tun: Introduce virtio-net hashing feature
-Message-ID: <20231009074840-mutt-send-email-mst@kernel.org>
-References: <20231008052101.144422-1-akihiko.odaki@daynix.com>
- <20231008052101.144422-6-akihiko.odaki@daynix.com>
- <CAF=yD-K2MQt4nnfwJrx6h6Nii_rho7j1o6nb_jYaSwcWY45pPw@mail.gmail.com>
- <48e20be1-b658-4117-8856-89ff1df6f48f@daynix.com>
+        Mon, 09 Oct 2023 04:51:57 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Mon, 9 Oct 2023 13:51:55 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Nadav Amit <namit@vmware.com>, Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH 4/4] x86/percpu: Use C for percpu read/write accessors
+Message-ID: <ZSPpW3zLTn7IohOJ@gmail.com>
+References: <20231004145137.86537-1-ubizjak@gmail.com>
+ <20231004145137.86537-5-ubizjak@gmail.com>
+ <CAHk-=wgepFm=jGodFQYPAaEvcBhR3-f_h1BLBYiVQsutCwCnUQ@mail.gmail.com>
+ <CAFULd4YWjxoSTyCtMN0OzKgHtshMQOuMH1Z0n_OaWKVnUjy2iA@mail.gmail.com>
+ <CAHk-=whq=+LNHmsde8LaF4pdvKxqKt5GxW+Tq+U35_aDcV0ADg@mail.gmail.com>
+ <CAHk-=wi6U-O1wdPOESuCE6QO2OaPu0hEzaig0uDOU4L5CREhug@mail.gmail.com>
+ <CAFULd4Z3C771u8Y==8h6hi=mhGmy=7RJRAEBGfNZ0SmynxF41g@mail.gmail.com>
+ <ZSPm6Z/lTK1ZlO8m@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <48e20be1-b658-4117-8856-89ff1df6f48f@daynix.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <ZSPm6Z/lTK1ZlO8m@gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 05:44:20PM +0900, Akihiko Odaki wrote:
-> On 2023/10/09 17:13, Willem de Bruijn wrote:
-> > On Sun, Oct 8, 2023 at 12:22 AM Akihiko Odaki <akihiko.odaki@daynix.com> wrote:
-> > > 
-> > > virtio-net have two usage of hashes: one is RSS and another is hash
-> > > reporting. Conventionally the hash calculation was done by the VMM.
-> > > However, computing the hash after the queue was chosen defeats the
-> > > purpose of RSS.
-> > > 
-> > > Another approach is to use eBPF steering program. This approach has
-> > > another downside: it cannot report the calculated hash due to the
-> > > restrictive nature of eBPF.
-> > > 
-> > > Introduce the code to compute hashes to the kernel in order to overcome
-> > > thse challenges. An alternative solution is to extend the eBPF steering
-> > > program so that it will be able to report to the userspace, but it makes
-> > > little sense to allow to implement different hashing algorithms with
-> > > eBPF since the hash value reported by virtio-net is strictly defined by
-> > > the specification.
-> > > 
-> > > The hash value already stored in sk_buff is not used and computed
-> > > independently since it may have been computed in a way not conformant
-> > > with the specification.
-> > > 
-> > > Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
-> > 
-> > > @@ -2116,31 +2172,49 @@ static ssize_t tun_put_user(struct tun_struct *tun,
-> > >          }
-> > > 
-> > >          if (vnet_hdr_sz) {
-> > > -               struct virtio_net_hdr gso;
-> > > +               union {
-> > > +                       struct virtio_net_hdr hdr;
-> > > +                       struct virtio_net_hdr_v1_hash v1_hash_hdr;
-> > > +               } hdr;
-> > > +               int ret;
-> > > 
-> > >                  if (iov_iter_count(iter) < vnet_hdr_sz)
-> > >                          return -EINVAL;
-> > > 
-> > > -               if (virtio_net_hdr_from_skb(skb, &gso,
-> > > -                                           tun_is_little_endian(tun), true,
-> > > -                                           vlan_hlen)) {
-> > > +               if ((READ_ONCE(tun->vnet_hash.flags) & TUN_VNET_HASH_REPORT) &&
-> > > +                   vnet_hdr_sz >= sizeof(hdr.v1_hash_hdr) &&
-> > > +                   skb->tun_vnet_hash) {
-> > 
-> > Isn't vnet_hdr_sz guaranteed to be >= hdr.v1_hash_hdr, by virtue of
-> > the set hash ioctl failing otherwise?
-> > 
-> > Such checks should be limited to control path where possible
+
+* Ingo Molnar <mingo@kernel.org> wrote:
+
 > 
-> There is a potential race since tun->vnet_hash.flags and vnet_hdr_sz are not
-> read at once.
+> * Uros Bizjak <ubizjak@gmail.com> wrote:
+> 
+> > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> > index ecb256954351..1edf4a5b93ca 100644
+> > --- a/arch/x86/Kconfig
+> > +++ b/arch/x86/Kconfig
+> > @@ -2393,7 +2393,7 @@ config CC_HAS_NAMED_AS
+> >  
+> >  config USE_X86_SEG_SUPPORT
+> >  	def_bool y
+> > -	depends on CC_HAS_NAMED_AS && SMP
+> > +	depends on CC_HAS_NAMED_AS && SMP && !KASAN
+> > +	depends on CC_HAS_NAMED_AS && SMP && !KASAN
+> 
+> So I'd rather express this as a Kconfig quirk line, and explain each quirk.
+> 
+> Something like:
+> 
+> 	depends on CC_HAS_NAMED_AS
+> 	depends on SMP
+> 	#
+> 	# -fsanitize=kernel-address (KASAN) is at the moment incompatible
+> 	# with named address spaces - see GCC bug #12345.
+> 	#
+> 	depends on !KASAN
+> 
+> ... or so.
 
-And then it's a complete mess and you get inconsistent
-behaviour with packets getting sent all over the place, right?
-So maybe keep a pointer to this struct so it can be
-changed atomically then. Maybe even something with rcu I donnu.
+BTW., while this OK for testing, this is too heavy handed for release 
+purposes, so please only disable the KASAN instrumentation for the affected 
+percpu accessors.
 
--- 
-MST
+See the various __no_sanitize* attributes available.
 
+I'd even suggest introducing a new attribute variant, specific to x86, 
+prefixed with __no_sanitize_x86_seg or so, which would allow the eventual 
+KASAN-instrumentation of the percpu accessors once the underlying GCC bug 
+is fixed.
+
+Thanks,
+
+	Ingo
