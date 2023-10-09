@@ -2,73 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 234C47BEC0D
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 22:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A35127BEC14
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 22:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378206AbjJIUyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 16:54:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57248 "EHLO
+        id S1378609AbjJIUye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 16:54:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378147AbjJIUxw (ORCPT
+        with ESMTP id S1378270AbjJIUyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 16:53:52 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF3C5B0;
-        Mon,  9 Oct 2023 13:53:41 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-32615eaa312so4575814f8f.2;
-        Mon, 09 Oct 2023 13:53:41 -0700 (PDT)
+        Mon, 9 Oct 2023 16:54:25 -0400
+Received: from raptorengineering.com (mail.raptorengineering.com [23.155.224.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AED2A9;
+        Mon,  9 Oct 2023 13:54:10 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.rptsys.com (Postfix) with ESMTP id 4EC8B8286816;
+        Mon,  9 Oct 2023 15:54:09 -0500 (CDT)
+Received: from mail.rptsys.com ([127.0.0.1])
+        by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id JBIZjUBB-1bh; Mon,  9 Oct 2023 15:54:08 -0500 (CDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.rptsys.com (Postfix) with ESMTP id 63A2B8286866;
+        Mon,  9 Oct 2023 15:54:08 -0500 (CDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.rptsys.com 63A2B8286866
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696884820; x=1697489620; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xL574zJuwTg3rbZ38h4Jjm16YvUMoLxu5gzcSq0qQog=;
-        b=dbvlfFcWXQ6iaB0eGPBARCf/16J/NcSoekYzPmQFSHACh24Ne6J1eUMT6riokp5eI3
-         V1nxGfackS0KshmDqeA7WXLJymGtoCeibTAFKbtyH10tvwKQ/HCLeOL4AWnIbxPcBblG
-         Taw4E+9JFCGwfZLb0q8WhHlNG/mjCYikIKFlVSvfF9W5hS2QWEVBfdLxsLxPrWndvNb7
-         kQrGcJZqBB8AUq4Wv9QIVigTnj47zAuZTOuW+mxYN/gd0d1rmitBzhu15HD5TZSzZ5r/
-         To3bFKEFC2HrOt44+82Y8DpwhnCsxGvnVmC9hcMfk3CW2n7deOhIx10p3Z77clA29qTj
-         SL6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696884820; x=1697489620;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xL574zJuwTg3rbZ38h4Jjm16YvUMoLxu5gzcSq0qQog=;
-        b=ZLvcBRKOV/rIzdD5yJrae6biTqwdVPddd7sILpe0ULT8H3vpytj4E5WVa1euHEnwxz
-         pjF3lA2tU9uQ+k4EEvSwHCNj19M5tH9FqfZMrvE2fm8MyILeNSTS2iZS7/B4N25ZvvVH
-         e2shW6KgFPdV6Ztbs+/tu/NlEkNjXSMqa5LGEB8RCHkVZBhxa20vuTtpc3lV/yclZ+2M
-         iiRTgcXouF4n63jNy5V8c5WOwucyeis63LMm4WXm8v6xdIFQ8EmqTNOBJoQLP2t7K2zi
-         n/GiWnkPW/hlX+1Qi53LH/WhJLf2riFwhhbY4r6n7lQ1DiZJ3WNCrrPQ1ZxfZ8MCGaRD
-         FBig==
-X-Gm-Message-State: AOJu0YzUhFWGME0DFoDxEUV60/EzNdfGLhs4noE0STBg88zl8yxrdMs4
-        SzG/ctxX3bfExWMatNUkVivT6iiQPsg=
-X-Google-Smtp-Source: AGHT+IEZcDJXfUk/m4asVym6HC8MzhKstd/QCfQCxF3CdaRPkCYRP2UAGVNJPPmMrmT3c3m/Jt2IXw==
-X-Received: by 2002:adf:e6ce:0:b0:31f:b7b2:d4e1 with SMTP id y14-20020adfe6ce000000b0031fb7b2d4e1mr14332666wrm.20.1696884819954;
-        Mon, 09 Oct 2023 13:53:39 -0700 (PDT)
-Received: from lucifer.home ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
-        by smtp.googlemail.com with ESMTPSA id l2-20020a5d4802000000b0031fe0576460sm10578130wrq.11.2023.10.09.13.53.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 13:53:39 -0700 (PDT)
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     "=Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        linux-fsdevel@vger.kernel.org, Lorenzo Stoakes <lstoakes@gmail.com>
-Subject: [PATCH v2 5/5] mm: abstract VMA merge and extend into vma_merge_extend() helper
-Date:   Mon,  9 Oct 2023 21:53:20 +0100
-Message-ID: <ab531d53bc5b4517c873c6648c08223ee575d8f6.1696884493.git.lstoakes@gmail.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <cover.1696884493.git.lstoakes@gmail.com>
-References: <cover.1696884493.git.lstoakes@gmail.com>
+        d=raptorengineering.com; s=B8E824E6-0BE2-11E6-931D-288C65937AAD;
+        t=1696884848; bh=Hq+W0pYoX/RD12Ucrxx4Xcw+gED/OOKCQdN4ucsOuWU=;
+        h=Message-ID:Date:MIME-Version:To:From;
+        b=OI6BE535nQveYjP7j4B0Efiq6aUYLcdyg9sq7gYXDWXJY4uPZq7jFurfNlejmCg6Z
+         hIVLOSih3fiZpD2tjACVr5Thzcg/og1jK0vIbFAe4W2VqIKRpewrCV0A6ulkD5DE9O
+         MgkPBWEh52DtJsZ6DahmAPqTK0zZB/XJO1ieNVUA=
+X-Virus-Scanned: amavisd-new at rptsys.com
+Received: from mail.rptsys.com ([127.0.0.1])
+        by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id g2WM3TFOVVU2; Mon,  9 Oct 2023 15:54:08 -0500 (CDT)
+Received: from [10.11.0.3] (5.edge.rptsys.com [23.155.224.38])
+        by mail.rptsys.com (Postfix) with ESMTPSA id 789AC8286816;
+        Mon,  9 Oct 2023 15:54:07 -0500 (CDT)
+Message-ID: <a834b0b9-f7d3-b9dc-90ef-51a5f7b0e0b7@raptorengineering.com>
+Date:   Mon, 9 Oct 2023 15:54:06 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux ppc64le; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 1/3] dt-bindings: vendor-prefixes: Add prefix for SIE
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        devicetree@vger.kernel.org, lee@kernel.org,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Shawn Guo <shawnguo@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Jagan Teki <jagan@edgeble.ai>, Icenowy Zheng <uwu@icenowy.me>,
+        linux-kernel@vger.kernel.org
+References: <cover.1696285339.git.sanastasio@raptorengineering.com>
+ <e2fb7a1924bf5642204c50d73d414b5d41e09e93.1696285339.git.sanastasio@raptorengineering.com>
+ <55870f8f-db70-424d-9de5-bce87800dd1f@linaro.org>
+From:   Shawn Anastasio <sanastasio@raptorengineering.com>
+In-Reply-To: <55870f8f-db70-424d-9de5-bce87800dd1f@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,147 +72,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mremap uses vma_merge() in the case where a VMA needs to be extended. This
-can be significantly simplified and abstracted.
+On 10/3/23 4:23 AM, Krzysztof Kozlowski wrote:
+> On 03/10/2023 00:32, Shawn Anastasio wrote:
+>> Add a vendor prefix for Sony Interactive Entertainment LLC (SIE).
+>>
+>> Signed-off-by: Shawn Anastasio <sanastasio@raptorengineering.com>
+>> ---
+>>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+>> index 573578db9509..cff35e68a34d 100644
+>> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+>> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+>> @@ -1211,6 +1211,8 @@ patternProperties:
+>>      description: Si-En Technology Ltd.
+>>    "^si-linux,.*":
+>>      description: Silicon Linux Corporation
+>> +  "^sie,.*":
+>> +    description: Sony Interactive Entertainment LLC
+> 
+> Is this different company than Sony?
+>
 
-This makes it far easier to understand what the actual function is doing,
-avoids future mistakes in use of the confusing vma_merge() function and
-importantly allows us to make future changes to how vma_merge() is
-implemented by knowing explicitly which merge cases each invocation uses.
+Yes. As I understand it, Sony Interactive Entertainment, LLC is its own
+separate corporate entity, though it is ultimately owned by Sony Group
+Corporation.
 
-Note that in the mremap() extend case, we perform this merge only when
-old_len == vma->vm_end - addr. The extension_start, i.e. the start of the
-extended portion of the VMA is equal to addr + old_len, i.e. vma->vm_end.
+> Best regards,
+> Krzysztof
 
-With this refactoring, vma_merge() is no longer required anywhere except
-mm/mmap.c, so mark it static.
-
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
----
- mm/internal.h |  8 +++-----
- mm/mmap.c     | 31 ++++++++++++++++++++++++-------
- mm/mremap.c   | 30 +++++++++++++-----------------
- 3 files changed, 40 insertions(+), 29 deletions(-)
-
-diff --git a/mm/internal.h b/mm/internal.h
-index ddaeb9f2d9d7..6fa722b07a94 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -1014,11 +1014,9 @@ struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
- /*
-  * mm/mmap.c
-  */
--struct vm_area_struct *vma_merge(struct vma_iterator *vmi,
--	struct mm_struct *, struct vm_area_struct *prev, unsigned long addr,
--	unsigned long end, unsigned long vm_flags, struct anon_vma *,
--	struct file *, pgoff_t, struct mempolicy *, struct vm_userfaultfd_ctx,
--	struct anon_vma_name *);
-+struct vm_area_struct *vma_merge_extend(struct vma_iterator *vmi,
-+					struct vm_area_struct *vma,
-+					unsigned long delta);
- 
- enum {
- 	/* mark page accessed */
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 33aafd23823b..200319bf3292 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -860,13 +860,13 @@ can_vma_merge_after(struct vm_area_struct *vma, unsigned long vm_flags,
-  * **** is not represented - it will be merged and the vma containing the
-  *      area is returned, or the function will return NULL
-  */
--struct vm_area_struct *vma_merge(struct vma_iterator *vmi, struct mm_struct *mm,
--			struct vm_area_struct *prev, unsigned long addr,
--			unsigned long end, unsigned long vm_flags,
--			struct anon_vma *anon_vma, struct file *file,
--			pgoff_t pgoff, struct mempolicy *policy,
--			struct vm_userfaultfd_ctx vm_userfaultfd_ctx,
--			struct anon_vma_name *anon_name)
-+static struct vm_area_struct
-+*vma_merge(struct vma_iterator *vmi, struct mm_struct *mm,
-+	   struct vm_area_struct *prev, unsigned long addr, unsigned long end,
-+	   unsigned long vm_flags, struct anon_vma *anon_vma, struct file *file,
-+	   pgoff_t pgoff, struct mempolicy *policy,
-+	   struct vm_userfaultfd_ctx vm_userfaultfd_ctx,
-+	   struct anon_vma_name *anon_name)
- {
- 	struct vm_area_struct *curr, *next, *res;
- 	struct vm_area_struct *vma, *adjust, *remove, *remove2;
-@@ -2498,6 +2498,23 @@ static struct vm_area_struct *vma_merge_new_vma(struct vma_iterator *vmi,
- 			 vma->vm_userfaultfd_ctx, anon_vma_name(vma));
- }
- 
-+/*
-+ * Expand vma by delta bytes, potentially merging with an immediately adjacent
-+ * VMA with identical properties.
-+ */
-+struct vm_area_struct *vma_merge_extend(struct vma_iterator *vmi,
-+					struct vm_area_struct *vma,
-+					unsigned long delta)
-+{
-+	pgoff_t pgoff = vma->vm_pgoff + vma_pages(vma);
-+
-+	/* vma is specified as prev, so case 1 or 2 will apply. */
-+	return vma_merge(vmi, vma->vm_mm, vma, vma->vm_end, vma->vm_end + delta,
-+			 vma->vm_flags, vma->anon_vma, vma->vm_file, pgoff,
-+			 vma_policy(vma), vma->vm_userfaultfd_ctx,
-+			 anon_vma_name(vma));
-+}
-+
- /*
-  * do_vmi_align_munmap() - munmap the aligned region from @start to @end.
-  * @vmi: The vma iterator
-diff --git a/mm/mremap.c b/mm/mremap.c
-index ce8a23ef325a..38d98465f3d8 100644
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -1096,14 +1096,12 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
- 	/* old_len exactly to the end of the area..
- 	 */
- 	if (old_len == vma->vm_end - addr) {
-+		unsigned long delta = new_len - old_len;
-+
- 		/* can we just expand the current mapping? */
--		if (vma_expandable(vma, new_len - old_len)) {
--			long pages = (new_len - old_len) >> PAGE_SHIFT;
--			unsigned long extension_start = addr + old_len;
--			unsigned long extension_end = addr + new_len;
--			pgoff_t extension_pgoff = vma->vm_pgoff +
--				((extension_start - vma->vm_start) >> PAGE_SHIFT);
--			VMA_ITERATOR(vmi, mm, extension_start);
-+		if (vma_expandable(vma, delta)) {
-+			long pages = delta >> PAGE_SHIFT;
-+			VMA_ITERATOR(vmi, mm, vma->vm_end);
- 			long charged = 0;
- 
- 			if (vma->vm_flags & VM_ACCOUNT) {
-@@ -1115,17 +1113,15 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
- 			}
- 
- 			/*
--			 * Function vma_merge() is called on the extension we
--			 * are adding to the already existing vma, vma_merge()
--			 * will merge this extension with the already existing
--			 * vma (expand operation itself) and possibly also with
--			 * the next vma if it becomes adjacent to the expanded
--			 * vma and  otherwise compatible.
-+			 * Function vma_merge_extend() is called on the
-+			 * extension we are adding to the already existing vma,
-+			 * vma_merge_extend() will merge this extension with the
-+			 * already existing vma (expand operation itself) and
-+			 * possibly also with the next vma if it becomes
-+			 * adjacent to the expanded vma and otherwise
-+			 * compatible.
- 			 */
--			vma = vma_merge(&vmi, mm, vma, extension_start,
--				extension_end, vma->vm_flags, vma->anon_vma,
--				vma->vm_file, extension_pgoff, vma_policy(vma),
--				vma->vm_userfaultfd_ctx, anon_vma_name(vma));
-+			vma = vma_merge_extend(&vmi, vma, delta);
- 			if (!vma) {
- 				vm_unacct_memory(charged);
- 				ret = -ENOMEM;
--- 
-2.42.0
-
+Thanks,
+Shawn
