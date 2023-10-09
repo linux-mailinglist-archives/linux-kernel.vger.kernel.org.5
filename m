@@ -2,168 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1616B7BDBC1
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 854BF7BDBC0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376361AbjJIM2A convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Oct 2023 08:28:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55698 "EHLO
+        id S1376343AbjJIM1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 08:27:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346554AbjJIM17 (ORCPT
+        with ESMTP id S1346402AbjJIM1v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 08:27:59 -0400
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C62AACA;
-        Mon,  9 Oct 2023 05:27:56 -0700 (PDT)
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-57b83ff7654so267106eaf.1;
-        Mon, 09 Oct 2023 05:27:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696854476; x=1697459276;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aEFOPfZ+WmfDKLy1rOdw40S5bHAGj56vhBWEOoNahLc=;
-        b=LEp5VgFt4I8onQp75e7ILxHLsgvZpG/bKqi1vpgQn1H4DQDZLcclNjtV6Zi0+ThBpp
-         7lj1pguc9Nwc0FetLc5MVcsTJUmLytsJt2uqckBIEbg9rYSeBrlg51HNrgRIsh9vsTeK
-         16mQpGdjrLLcnQH7rApVVeWIoIUxTDQTb3DBMnz4e0Y3vbO3QxQBYFkh2i5qoB87OI2C
-         NmzRtD5+iJBBeWi253q8aQj4eSHxONJ9Vqlf1WXrmaV64JvR4Uy3g8GCV2nxDcHUUwOX
-         ZPw/mlykJSPO8VShrEBSNsIaWWGIGsRHN/KcQflwMC8Bn/8BkDTKkYD2z7aw9dapo6GR
-         4yMw==
-X-Gm-Message-State: AOJu0YxqhvBupU5nF0koUVq4YdaZFnjD5r6m6saYgus0tqSiV/3a+Cku
-        wZLTIPJitC09a/siJS1pWM2FM1f9MFbikJ3zESs=
-X-Google-Smtp-Source: AGHT+IE16hjIAXtQbaTARMEtCEdUW23oYu18iT1kcYEb7pXOFT2vsR9IK17LNz/BFPtOYC2RZpJhsFgsHt1aeZyNDuQ=
-X-Received: by 2002:a4a:b588:0:b0:578:c2af:45b5 with SMTP id
- t8-20020a4ab588000000b00578c2af45b5mr12916582ooo.0.1696854475961; Mon, 09 Oct
- 2023 05:27:55 -0700 (PDT)
+        Mon, 9 Oct 2023 08:27:51 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DD9F999
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 05:27:48 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E8AA61FB;
+        Mon,  9 Oct 2023 05:28:28 -0700 (PDT)
+Received: from [10.57.3.51] (unknown [10.57.3.51])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9F4363F762;
+        Mon,  9 Oct 2023 05:27:46 -0700 (PDT)
+Message-ID: <b6050a3f-d464-6b0a-dc79-18103dd7d527@arm.com>
+Date:   Mon, 9 Oct 2023 13:27:45 +0100
 MIME-Version: 1.0
-References: <20231006173055.2938160-1-michal.wilczynski@intel.com>
- <20231006173055.2938160-4-michal.wilczynski@intel.com> <CAJZ5v0jKJ6iw6Q=uYTf0at+ESkdCF0oWaXRmj7P5VLw+QppKPw@mail.gmail.com>
- <ZSEPGmCyhgSlMGRK@smile.fi.intel.com> <CAJZ5v0gF0O_d1rjOtiNj5ryXv-PURv0NgiRWyQECZZFcaBEsPQ@mail.gmail.com>
- <CAJZ5v0iDhOFDX=k7xsC_=2jjerWmrP+Na-9PFM=YGA0V-hH2xw@mail.gmail.com> <f8ff3c4b-376a-4de0-8674-5789bcbe7aa9@intel.com>
-In-Reply-To: <f8ff3c4b-376a-4de0-8674-5789bcbe7aa9@intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 9 Oct 2023 14:27:43 +0200
-Message-ID: <CAJZ5v0i4in=oyhXKOQ1MeoRP5fAhHdEFgZZp98N0pF8hB6BtbQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/6] ACPI: AC: Replace acpi_driver with platform_driver
-To:     "Wilczynski, Michal" <michal.wilczynski@intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nvdimm@lists.linux.dev, rafael.j.wysocki@intel.com,
-        lenb@kernel.org, dan.j.williams@intel.com,
-        vishal.l.verma@intel.com, ira.weiny@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH] coresight: Fix crash when Perf and sysfs modes are used
+ concurrently
+To:     James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
+        hejunhao3@huawei.com
+Cc:     Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231006131452.646721-1-james.clark@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <20231006131452.646721-1-james.clark@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 9, 2023 at 10:40 AM Wilczynski, Michal
-<michal.wilczynski@intel.com> wrote:
->
->
-> Hi !
->
-> Thanks a lot for a review, to both of you ! :-)
->
-> On 10/7/2023 12:43 PM, Rafael J. Wysocki wrote:
-> > On Sat, Oct 7, 2023 at 12:41 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> >> On Sat, Oct 7, 2023 at 9:56 AM Andy Shevchenko
-> >> <andriy.shevchenko@intel.com> wrote:
-> >>> On Fri, Oct 06, 2023 at 09:47:57PM +0200, Rafael J. Wysocki wrote:
-> >>>> On Fri, Oct 6, 2023 at 8:33 PM Michal Wilczynski
-> >>>> <michal.wilczynski@intel.com> wrote:
-> >>> ...
-> >>>
-> >>>>>  struct acpi_ac {
-> >>>>>         struct power_supply *charger;
-> >>>>>         struct power_supply_desc charger_desc;
-> >>>>> -       struct acpi_device *device;
-> >>>>> +       struct device *dev;
-> >>>> I'm not convinced about this change.
-> >>>>
-> >>>> If I'm not mistaken, you only use the dev pointer above to get the
-> >>>> ACPI_COMPANION() of it, but the latter is already found in _probe(),
-> >>>> so it can be stored in struct acpi_ac for later use and then the dev
-> >>>> pointer in there will not be necessary any more.
-> >>>>
-> >>>> That will save you a bunch of ACPI_HANDLE() evaluations and there's
-> >>>> nothing wrong with using ac->device->handle.  The patch will then
-> >>>> become almost trivial AFAICS and if you really need to get from ac to
-> >>>> the underlying platform device, a pointer to it can be added to struct
-> >>>> acpi_ac without removing the ACPI device pointer from it.
->
-> Yeah we could add platform device without removing acpi device, and
-> yes that would introduce data duplication, like Andy noticed.
+Junhao He,
 
-But he hasn't answered my question regarding what data duplication he
-meant, exactly.
+Please could you test the patch and let us know if it resolves the
+problem for you ?
 
-So what data duplication do you mean?
+On 06/10/2023 14:14, James Clark wrote:
+> Partially revert the change in commit 6148652807ba ("coresight: Enable
+> and disable helper devices adjacent to the path") which changed the bare
+> call from source_ops(csdev)->enable() to coresight_enable_source() for
+> Perf sessions. It was missed that coresight_enable_source() is
+> specifically for the sysfs interface, rather than being a generic call.
+> This interferes with the sysfs reference counting to cause the following
+> crash:
+> 
+>    $ perf record -e cs_etm/@tmc_etr0/ -C 0 &
+>    $ echo 1 > /sys/bus/coresight/devices/tmc_etr0/enable_sink
+>    $ echo 1 > /sys/bus/coresight/devices/etm0/enable_source
+>    $ echo 0 > /sys/bus/coresight/devices/etm0/enable_source
+> 
+>    Unable to handle kernel NULL pointer dereference at virtual
+>    address 00000000000001d0
+>    Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
+>    ...
+>    Call trace:
+>     etm4_disable+0x54/0x150 [coresight_etm4x]
+>     coresight_disable_source+0x6c/0x98 [coresight]
+>     coresight_disable+0x74/0x1c0 [coresight]
+>     enable_source_store+0x88/0xa0 [coresight]
+>     dev_attr_store+0x20/0x40
+>     sysfs_kf_write+0x4c/0x68
+>     kernfs_fop_write_iter+0x120/0x1b8
+>     vfs_write+0x2dc/0x3b0
+>     ksys_write+0x70/0x108
+>     __arm64_sys_write+0x24/0x38
+>     invoke_syscall+0x50/0x128
+>     el0_svc_common.constprop.0+0x104/0x130
+>     do_el0_svc+0x40/0xb8
+>     el0_svc+0x2c/0xb8
+>     el0t_64_sync_handler+0xc0/0xc8
+>     el0t_64_sync+0x1a4/0x1a8
+>    Code: d53cd042 91002000 b9402a81 b8626800 (f940ead5)
+>    ---[ end trace 0000000000000000 ]---
+> 
+> This commit linked below also fixes the issue, but has unlocked updates
+> to the mode which could potentially race. So until we come up with a
+> more complete solution that takes all locking and interaction between
+> both modes into account, just revert back to the old behavior for Perf.
+> 
+> Reported-by: Junhao He <hejunhao3@huawei.com>
+> Closes: https://lore.kernel.org/linux-arm-kernel/20230921132904.60996-1-hejunhao3@huawei.com/
+> Fixes: 6148652807ba ("coresight: Enable and disable helper devices adjacent to the path")
+> Signed-off-by: James Clark <james.clark@arm.com>
 
-> And yes, maybe for this particular driver there is little impact (as struct device is not
-> really used), but in my opinion we should adhere to some common coding
-> pattern among all acpi drivers in order for the code to be easier to maintain
-> and improve readability, also for any newcomer.
+The patch looks good to me. I will wait for Junhao to test this before
+pulling it in.
 
-Well, maybe.
+Suzuki
 
-But then please minimize the number of code lines changed in this
-particular patch and please avoid changes that are not directly
-related to the purpose of the patch.
 
-> >>> The idea behind is to eliminate data duplication.
-> >> What data duplication exactly do you mean?
-> >>
-> >> struct acpi_device *device is replaced with struct device *dev which
-> >> is the same size.  The latter is then used to obtain a struct
-> >> acpi_device pointer.  Why is it better to do this than to store the
-> >> struct acpi_device itself?
-> > This should be "store the struct acpi_device pointer itself", sorry.
->
-> Hi,
-> So let me explain the reasoning here:
->
-> 1) I've had a pleasure to work with different drivers in ACPI directory. In my
->     opinion the best ones I've seen, were build around the concept of struct
->     device (e.g NFIT). It's a struct that's well understood in the kernel, and
->     it's easier to understand without having to read any ACPI specific code.
->     If I see something like ACPI_HANDLE(dev), I think 'ah-ha -  having a struct
->     device I can easily get struct acpi_device - they're connected'. And I think
->     using a standardized macro, instead of manually dereferencing pointers is
->     also much easier for ACPI newbs reading the code, as it hides a bit complexity
->     of getting acpi device from struct device. And to be honest I don't think there would
->     be any measurable performance change, as those code paths are far from
->     being considered 'hot paths'. So if we can get the code easier to understand
->     from a newcomer perspective, why not do it.
 
-I have a differing opinion on a couple of points above, and let's make
-one change at a time.
 
->
-> 2) I think it would be good to stick to the convention, and introduce some coding
->      pattern, for now some drivers store the struct device pointer, and other store
->      acpi device pointer . As I'm doing this change acpi device pointer become less
->      relevant, as we're using platform device. So to reflect that loss of relevance
->      we can choose to adhere to a pattern where we use it less and less, and the
->      winning approach would be to use 'struct device' by default everywhere we can
->      so maybe eventually we would be able to lose acpi_device altogether at some point,
->      as most of the usage is to retrieve acpi handle and execute some AML method.
->      So in my understanding acpi device is already obsolete at this point, if we can
->      manage to use it less and less, and eventually wipe it out then why not ;-)
+> ---
+>   drivers/hwtracing/coresight/coresight-etm-perf.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> index 5ca6278baff4..89e8ed214ea4 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> @@ -493,7 +493,7 @@ static void etm_event_start(struct perf_event *event, int flags)
+>   		goto fail_end_stop;
+>   
+>   	/* Finally enable the tracer */
+> -	if (coresight_enable_source(csdev, CS_MODE_PERF, event))
+> +	if (source_ops(csdev)->enable(csdev, event, CS_MODE_PERF))
+>   		goto fail_disable_path;
+>   
+>   	/*
+> @@ -587,7 +587,7 @@ static void etm_event_stop(struct perf_event *event, int mode)
+>   		return;
+>   
+>   	/* stop tracer */
+> -	coresight_disable_source(csdev, event);
+> +	source_ops(csdev)->disable(csdev, event);
+>   
+>   	/* tell the core */
+>   	event->hw.state = PERF_HES_STOPPED;
 
-No, ACPI device is not obsolete, it will still be needed for various
-things, like power management and hotplug.
-
-Also, I'd rather store a struct acpi_device than acpi_handle, because
-the latter is much better from the compile-time type correctness
-checks and similar.
-
-I can send my version of the $subject patch just fine if you strongly
-disagree with me.
