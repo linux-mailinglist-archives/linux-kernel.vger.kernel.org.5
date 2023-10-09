@@ -2,199 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 021C37BE1A5
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2437BE1CC
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377508AbjJINw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 09:52:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48340 "EHLO
+        id S1377552AbjJINyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 09:54:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377457AbjJINw1 (ORCPT
+        with ESMTP id S1377632AbjJINyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 09:52:27 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E5BA3;
-        Mon,  9 Oct 2023 06:52:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1696859543; x=1728395543;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=woWLvA+OZiwBOAnGAJHDSkgAYlJa502T4z/q/Xqpl9M=;
-  b=wNGl/KR7BoYCjqevRPbNLuuCiTPZsrJSWyqQoRlYrOi6I3gzxGteIF/c
-   kX88F6ZKXxXv0EKQscIxQSQ+FTsEOcta+rKsOfS6mH8e+SyrXEUyJar5H
-   JDZwdznL2VAqSj8E9xpI1ukJXnv7JBI4QyDf25pgyJyoVm4dnD30XyN+S
-   sWDQq6R9fSeOXa3UzGdKzhNOkZAkQLGg9qmsObYw5iDV3IoOWaRSn2fI9
-   FsY9l8x5EM9aezwdDVGzxSx0XzRG8QJIxvGifbsRqyUHVP63J0tuCb1Fk
-   5EzknoCYxzjA62fN5glNP0b5BDGleCmypYQgm7C6d/ntqrvzEnEOx/4Qy
-   g==;
-X-CSE-ConnectionGUID: M2UGz3wCSraKDoNm0f0NgQ==
-X-CSE-MsgGUID: kDZEEEfbRYGInoeHmZQt0Q==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="asc'?scan'208";a="176451529"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Oct 2023 06:52:17 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Mon, 9 Oct 2023 06:52:17 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Mon, 9 Oct 2023 06:52:13 -0700
-Date:   Mon, 9 Oct 2023 14:51:52 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Minda Chen <minda.chen@starfivetech.com>
-CC:     Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-Subject: Re: [PATCH v7 13/19] PCI: microchip: Add get_events() callback
- function
-Message-ID: <20231009-ecologist-postage-f4e6d96d77cd@wendy>
-References: <20230927100802.46620-1-minda.chen@starfivetech.com>
- <20230927100802.46620-14-minda.chen@starfivetech.com>
+        Mon, 9 Oct 2023 09:54:06 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4269399
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 06:54:05 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC743C433C8;
+        Mon,  9 Oct 2023 13:54:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696859644;
+        bh=Do0OSnCoIrgA63N7+OoDGYu8qYZpmXnRnU0TElVI78o=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=mDvfBr9oAw6rRwIOH+CKli+rRsLVKX4wQvuqZv3IqfLhIh9l/ihzkNDY8+J7lh7hI
+         EiLu8hTLiMyOlCiVirQwlGPJQrsYD2dinN6NlUT6pDmA1i0fKo09sQ/PcthlgScb+Z
+         kobr9vkmutfY4jwama9oeSIQ1A5Bq9savu/9BAMFKdl9pVLMgKL+/H0WPAySmrPY8x
+         Xyp7E+PPpvKYMPdvLGPIzrR9WP5X8q3uc0TZpsK+BZQzxY9a6s6SXAwk5sIgBkA4Gi
+         ztZ/UN6QPnMA4wmnl6xg9AewDG8DJtdqpD0uyLM0WGCZpSg8tfr2jHBplIxOdNND2C
+         yd9GQaDmBp+PA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 81B4DCE016C; Mon,  9 Oct 2023 06:54:04 -0700 (PDT)
+Date:   Mon, 9 Oct 2023 06:54:04 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc:     Willy Tarreau <w@1wt.eu>, Shuah Khan <skhan@linuxfoundation.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: nolibc changes since 6.6-rc1 for linux-next
+Message-ID: <9c29f134-cf5c-4d21-bd66-9393db100f0c@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <48c01af3-d373-4546-a8f2-d81fa447eaaa@t-8ch.de>
+ <25382680-956a-4612-b930-f6823c71cf8d@paulmck-laptop>
+ <696fc488-63d3-444c-a9f2-14d7a7379143@linuxfoundation.org>
+ <23bc3841-4cda-4a23-a67f-a944e1104f1d@paulmck-laptop>
+ <20231007070630.GB20998@1wt.eu>
+ <d80c1da1-56f8-4b94-b1e2-eef75a52d022@paulmck-laptop>
+ <fad7814f-0bbd-43f0-a205-9ba2c08bac22@t-8ch.de>
+ <76a51116-46bb-4271-b5ac-c101e02d5a63@paulmck-laptop>
+ <ZSOjhgIbK8bs3Asu@1wt.eu>
+ <f9695abc-f1f2-49e0-901b-41a078ec57c5@t-8ch.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="GRp9b0oKyCUZcQwq"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230927100802.46620-14-minda.chen@starfivetech.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f9695abc-f1f2-49e0-901b-41a078ec57c5@t-8ch.de>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---GRp9b0oKyCUZcQwq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, Oct 09, 2023 at 09:22:59AM +0200, Thomas Weißschuh wrote:
+> Hi Willy, Paul,
+> 
+> On 2023-10-09 08:53:58+0200, Willy Tarreau wrote:
+> > On Sun, Oct 08, 2023 at 09:27:43AM -0700, Paul E. McKenney wrote:
+> > (...)
+> > > The other approach involves rebasing the "nolibc/next" stack
+> > > on top of the "nolibc/fixes" stack.
+> > 
+> > That was my initial expectation as well, it's much easier, preserves
+> > the patches ordering so it guarantees that all fixes are always present
+> > in -next and that there won't be conflicts when they're finally submitted.
+> 
+> The workflow Paul described indeed makes a lot of sense.
+> 
+> I can redo it this afternoon.
+> 
+> > [..]
+> 
+> > > While in the area, would the following (absolutely not urgent or even
+> > > particularly important) patch be a good idea?  This gets rid of a line
+> > > of noise from "git status" after running the tests.
+> > 
+> > Good idea, feel free to propose a patch ;-)
+> 
+> How about directly folding it into the original patch?
+> I can take care of that later today, too.
 
-Hey,
+Works for me, and thank you!
 
-On Wed, Sep 27, 2023 at 06:07:56PM +0800, Minda Chen wrote:
-> For different interrupts to event num mapping function,
-> add get_events() function pointer.
->=20
-> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
-> ---
->  drivers/pci/controller/plda/pcie-microchip-host.c | 14 +++++++++++++-
->  drivers/pci/controller/plda/pcie-plda.h           |  2 ++
->  2 files changed, 15 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/=
-pci/controller/plda/pcie-microchip-host.c
-> index fb09b6c34e01..875bdb03ce22 100644
-> --- a/drivers/pci/controller/plda/pcie-microchip-host.c
-> +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
-> @@ -646,7 +646,7 @@ static void plda_handle_event(struct irq_desc *desc)
-> =20
->  	chained_irq_enter(chip, desc);
-> =20
-> -	events =3D mc_get_events(port);
-> +	events =3D port->event_ops->get_events(port);
-> =20
->  	for_each_set_bit(bit, &events, port->num_events)
->  		generic_handle_domain_irq(port->event_domain, bit);
-> @@ -805,7 +805,12 @@ static int mc_request_event_irq(struct plda_pcie_rp =
-*plda, int event_irq,
->  				0, event_cause[event].sym, plda);
->  }
-> =20
-> +static const struct plda_event_ops mc_event_ops =3D {
-> +	.get_events =3D mc_get_events,
-> +};
-> +
->  static const struct plda_event mc_event =3D {
-> +	.event_ops              =3D &mc_event_ops,
->  	.request_event_irq      =3D mc_request_event_irq,
->  	.intx_event             =3D EVENT_LOCAL_PM_MSI_INT_INTX,
->  	.msi_event              =3D EVENT_LOCAL_PM_MSI_INT_MSI,
-> @@ -919,6 +924,11 @@ static int plda_init_interrupts(struct platform_devi=
-ce *pdev,
->  	int i, intx_irq, msi_irq, event_irq;
->  	int ret;
-> =20
-> +	if (!event->event_ops || !event->event_ops->get_events) {
-> +		dev_err(dev, "no get events ops\n");
-> +		return -EINVAL;
-> +	}
-
-Dumb question maybe, but is this actually possible to trigger?
-This code is in the Microchip driver, so I assume there's a future patch
-moving this code that could actually trigger the problem? If so, the
-motivation for making this generic should be mentioned in the commit
-message IMO.
-
-Thanks,
-Conor.
-
-> +
->  	ret =3D plda_pcie_init_irq_domains(port);
->  	if (ret) {
->  		dev_err(dev, "failed creating IRQ domains\n");
-> @@ -929,6 +939,8 @@ static int plda_init_interrupts(struct platform_devic=
-e *pdev,
->  	if (irq < 0)
->  		return -ENODEV;
-> =20
-> +	port->event_ops =3D event->event_ops;
-> +
->  	for (i =3D 0; i < port->num_events; i++) {
->  		event_irq =3D irq_create_mapping(port->event_domain, i);
->  		if (!event_irq) {
-> diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/contro=
-ller/plda/pcie-plda.h
-> index af5e69718342..48d7bc471137 100644
-> --- a/drivers/pci/controller/plda/pcie-plda.h
-> +++ b/drivers/pci/controller/plda/pcie-plda.h
-> @@ -149,11 +149,13 @@ struct plda_pcie_rp {
->  	struct irq_domain *event_domain;
->  	raw_spinlock_t lock;
->  	struct plda_msi msi;
-> +	const struct plda_event_ops *event_ops;
->  	void __iomem *bridge_addr;
->  	int num_events;
->  };
-> =20
->  struct plda_event {
-> +	const struct plda_event_ops *event_ops;
->  	int (*request_event_irq)(struct plda_pcie_rp *pcie,
->  				 int event_irq, int event);
->  	int intx_event;
-> --=20
-> 2.17.1
->=20
-
---GRp9b0oKyCUZcQwq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSQFeAAKCRB4tDGHoIJi
-0sQDAQCmZ0rXA250TxGxywJjsr6LKhJtGnFd+6HHyhxRHgHgZgD/cXM805IrCm9N
-65OncJLg0lDUUeiQLhzDEErT/hwwjgk=
-=9ZA0
------END PGP SIGNATURE-----
-
---GRp9b0oKyCUZcQwq--
+							Thanx, Paul
