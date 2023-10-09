@@ -2,139 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 673C87BED8D
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C84F17BED94
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378810AbjJIVsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 17:48:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47228 "EHLO
+        id S1378833AbjJIVtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 17:49:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377858AbjJIVsV (ORCPT
+        with ESMTP id S1377858AbjJIVts (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 17:48:21 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5497C9D;
-        Mon,  9 Oct 2023 14:48:20 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id 4fb4d7f45d1cf-536071e79deso10931129a12.1;
-        Mon, 09 Oct 2023 14:48:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696888099; x=1697492899; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tCR5rXijoXzxvuw8QoAQRaj/pF5B8m/H14tPIFeeRBI=;
-        b=k1ZglGfbtAcldLEaTP76L8vMCtgB662XBt6YXUsRwlT/r8RAVWp30WngvgJKVMAyG/
-         93im1+MP0Itc4mB8QSShSFq71SR3h9j7rVuZPA55cStX5R5Qp+jsBvM9iigEUdZ7UoBc
-         5xOoVONgLK7riSJ8LiYIRnF1AGs0sFEhLhKwTZK3qAzDeZQPbORkgw+q5IgdDEJt/qm9
-         I9JCObCdkak2+3V703ZwMgcgNqR9hn3fl88YtHVeyZx+10piAZuUKYYdcGMiYe/EeCmx
-         iLI6qLKVY7cE8dOlteUcrTI7Lu5jycoPQ1f2f1Iu0NBGlEYK7akQ9itWBoWe78bobgGI
-         eGSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696888099; x=1697492899;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tCR5rXijoXzxvuw8QoAQRaj/pF5B8m/H14tPIFeeRBI=;
-        b=qkDXPeHdNqmX8cvb6gbl10nksCw/acmRdXrruUzXp4IXAFsZV1IXv6T9YIg4Nio6Fh
-         NEiujU01B8cDQse2ZAmKRQhWwan6l81lqlRLrhuWBqD0hw3KmyC/hRrSatxzO+dDRMiY
-         IvCIcf3zx9vEPSWVxwStp+wNNpEQqU5JSkNjx8E6xJduYIE2Wm0ZKmVUQZcOgTUliUJn
-         FrdJVB0hhkY7nva5vXiwubeIcU3+uG0OkIslnUE2I7coyWeFfbcPeg9s2a8a+j+aL8Oj
-         80NhJM8ss4nNVaaUz8g0uf+4Xl4GXoX9kyhAn01MqVxoELbFryU1pfN332pryj/U07Ok
-         HElw==
-X-Gm-Message-State: AOJu0Yw29TM6VvHiWZQPqOcybFzcKMwk2VNM7ox5OZVjDBvlA0H4Mfe+
-        xe4nNniZfGtYcfJAVnqEnwgZJiBSJjX3L5Ae
-X-Google-Smtp-Source: AGHT+IElpm6EEE84nokyOgm/3WpN9qAqFr2dPgiip7gVXUBUA3x9C3otDOHYdKYj42Pi6z11L4+bjA==
-X-Received: by 2002:aa7:dcc7:0:b0:522:b876:9ef5 with SMTP id w7-20020aa7dcc7000000b00522b8769ef5mr12825159edu.8.1696888098359;
-        Mon, 09 Oct 2023 14:48:18 -0700 (PDT)
-Received: from ?IPV6:2a02:8389:41cf:e200:d7c:652f:4e74:10b8? (2a02-8389-41cf-e200-0d7c-652f-4e74-10b8.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:d7c:652f:4e74:10b8])
-        by smtp.gmail.com with ESMTPSA id f17-20020a056402161100b00537666d307csm6593345edv.32.2023.10.09.14.48.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 14:48:17 -0700 (PDT)
-Message-ID: <e3ad2ed3-8859-4740-9126-9757f8d13a0e@gmail.com>
-Date:   Mon, 9 Oct 2023 23:48:16 +0200
+        Mon, 9 Oct 2023 17:49:48 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 857DD9D;
+        Mon,  9 Oct 2023 14:49:46 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2D3AC433C8;
+        Mon,  9 Oct 2023 21:49:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696888186;
+        bh=/02JJBzcVaX1DU3waWXi0+UAJ2uTJXrVNatI5QxJLOI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=F/Xs7FkBE1RhCI+yrZYDvbixH88IPAMRZuA5C5fHFjtdn6wM+kN3H5iHzyXLt5tlY
+         RcpQYCPVhMiyUhYkik8kF4FdX14XbCdk8OL2JPKdPBiwWNwKAusqydF1Fj/CV/RzwX
+         F+CmAH2GKYl3s0dh6iy/6zpPfvctGccx6P41mdC8glBfMPEzb7h91+REyXxUpjQTN/
+         0Nnqs6Te0Fhxvfq1KKg13OnLJ+LShGJQPkCjB1TLfgyrT1rVioW43ZN/nYf75BGp+k
+         1avQBEtuCuA779PEPre7yuWs8DS5povIYfG9MToRHA4i+rL++p0I3u1+l8wLR0agsm
+         0PiNbzP+m4baw==
+Date:   Mon, 9 Oct 2023 14:49:44 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Sean Christopherson <seanjc@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     pbonzini@redhat.com, workflows@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH] KVM: deprecate KVM_WERROR in favor of general WERROR
+Message-ID: <20231009144944.17c8eba3@kernel.org>
+In-Reply-To: <ZSRVoYbCuDXc7aR7@google.com>
+References: <20231006205415.3501535-1-kuba@kernel.org>
+        <ZSQ7z8gqIemJQXI6@google.com>
+        <20231009110613.2405ff47@kernel.org>
+        <ZSRVoYbCuDXc7aR7@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net: usb: dm9601: fix uninitialized variable use in
- dm9601_mdio_read
-Content-Language: en-US
-To:     Peter Korsgaard <peter@korsgaard.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        syzbot+1f53a30781af65d2c955@syzkaller.appspotmail.com,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231009-topic-dm9601_uninit_mdio_read-v1-1-d4d775e24e3b@gmail.com>
- <87zg0rcyjl.fsf@48ers.dk>
-From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
-In-Reply-To: <87zg0rcyjl.fsf@48ers.dk>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On Mon, 9 Oct 2023 12:33:53 -0700 Sean Christopherson wrote:
+> > We do have sympathy for these folks, we are mostly volunteers after
+> > all. At the same time someone's under-investment should not be causing
+> > pain to those of us who _do_ build test stuff carefully.  
+> 
+> This is a bit over the top.  Yeah, I need to add W=1 to my build scripts, but that's
+> not a lack of investment, just an oversight.  Though in this case it likely wouldn't
+> have made any difference since Paolo grabbed the patches directly and might have
+> even bypassed linux-next.  But again I would argue that's bad process, not a lack
+> of investment.
 
-On 09.10.23 22:48, Peter Korsgaard wrote:
-> 
->  > syzbot has found an uninit-value bug triggered by the dm9601 driver [1].
->  > This error happens because the variable res is not updated if the call
->  > to dm_read_shared_word returns an error or if no data is read (see
->  > __usbnet_read_cmd()). In this particular case -EPROTO was returned and
->  > res stayed uninitialized.
-> 
->  > This can be avoided by checking the return value of dm_read_shared_word
->  > and returning an error if the read operation failed or no data was read.
-> 
->  > [1] https://syzkaller.appspot.com/bug?extid=1f53a30781af65d2c955
-> 
->  > Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
->  > Reported-and-tested-by: syzbot+1f53a30781af65d2c955@syzkaller.appspotmail.com
->  > ---
->  >  drivers/net/usb/dm9601.c | 9 ++++++++-
->  >  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
->  > diff --git a/drivers/net/usb/dm9601.c b/drivers/net/usb/dm9601.c
->  > index 48d7d278631e..e223daa93229 100644
->  > --- a/drivers/net/usb/dm9601.c
->  > +++ b/drivers/net/usb/dm9601.c
->  > @@ -222,13 +222,20 @@ static int dm9601_mdio_read(struct net_device *netdev, int phy_id, int loc) !
->  >  	struct usbnet *dev = netdev_priv(netdev);
->  
->  >  	__le16 res;
->  > +	int err;
->  
->  >  	if (phy_id) {
->  >  		netdev_dbg(dev->net, "Only internal phy supported\n");
->  >  		return 0;
->  >  	}
->  
->  > -	dm_read_shared_word(dev, 1, loc, &res);
->  > +	err = dm_read_shared_word(dev, 1, loc, &res);
->  > +	if (err <= 0) {
->  > +		if (err == 0)
->  > +			err = -ENODATA;
-> 
-> Looking at dm_read(), it doesn't look like we can end up here with err
-> == 0, but OK.You are right, I just simulated the err = 0 value from
-__usbnet_read_cmd() and in this case it is harmless because dm_read is
-called with length != 0 (in dm_read_shared_word either 1 or 2) and
-therefore it returns -EINVAL. A silly case where this would fail would
-be if length == 0, which would be wrong anyways.
+If you do invest in build testing automation, why can't your automation
+count warnings rather than depend on WERROR? I don't understand.
 
-So I will remove the err == 0 case for v2.
-
-Thanks a lot for your feedback.
-
-> Acked-by: Peter Korsgaard <peter@korsgaard.com>
+> > Rather than tweak stuff I'd prefer if we could agree that local -Werror
+> > is anti-social :(
+> > 
+> > The global WERROR seems to be a good compromise.  
 > 
-Best regards,
-Javier Carrasco
+> I disagree.  WERROR simply doesn't provide the same coverage.  E.g. it can't be
+> enabled for i386 without tuning FRAME_WARN, which (a) won't be at all obvious to
+> the average contributor and (b) increasing FRAME_WARN effectively reduces the
+> test coverage of KVM i386.
+> 
+> For KVM x86, I want the rules for contributing to be clearly documented, and as
+> simple as possible.  I don't see a sane way to achieve that with WERROR=y.
+
+Linus, you created the global WERROR option. Do you have an opinion
+on whether random subsystems should create their own WERROR flags?
+W=1 warning got in thru KVM and since they have a KVM_WERROR which
+defaults to enabled it broke build testing in networking.
+Randomly sprinkled -Werrors are fragile. Can we ask people to stop
+using them now that the global ERROR exists?
