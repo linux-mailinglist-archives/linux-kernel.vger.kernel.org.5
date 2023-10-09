@@ -2,131 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED2507BE657
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB247BE659
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377651AbjJIQZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 12:25:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53686 "EHLO
+        id S1377188AbjJIQ0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 12:26:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377640AbjJIQZg (ORCPT
+        with ESMTP id S1376275AbjJIQ0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 12:25:36 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1462B6
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 09:25:34 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qpt4E-0004il-Ow; Mon, 09 Oct 2023 18:25:14 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qpt4E-000SWa-1Z; Mon, 09 Oct 2023 18:25:14 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qpt4D-00CPkZ-O7; Mon, 09 Oct 2023 18:25:13 +0200
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Rob Herring <robh@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] pinctrl: sprd-sc9860: Convert to platform remove callback returning void
-Date:   Mon,  9 Oct 2023 18:25:10 +0200
-Message-Id: <20231009162510.335208-4-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231009162510.335208-1-u.kleine-koenig@pengutronix.de>
-References: <20231009162510.335208-1-u.kleine-koenig@pengutronix.de>
+        Mon, 9 Oct 2023 12:26:49 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D007591
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 09:26:46 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD62DC433C8;
+        Mon,  9 Oct 2023 16:26:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696868806;
+        bh=TS7qlSQMJeaEwASV4I5bE63YJ4CtP1GPaVK0RvdE5Dc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V8ly/Rh+3e8H/Pg56Qi6/j04x4vPz0nxbQPuq6aMKwy+xlQpBcHOpzXwIDTTdzc0m
+         HzRGiKWkjV45/eclX2Z+KRlYU//K0OA93zRQk6x+xnb8nkZJcNK80Mlpi+rrhxmb+7
+         Stkzdi2bnLvfAUb1QEPd62wWAYqj+7ZiFY6bt6Jmq2tK1XN4gixKWJiO454+czsQxH
+         midOWd7eNHoErFnIeZp3UHADfnFa8SUZx6lyQOQaY3FPjc9Pga5hxb+SBQmYojgXhr
+         a1BrKEJ2DUJkc8kMYsh0Ytt8j01dnGA9wLGLpHVLF8P/z8fDyP4j5dEfOAx3FB7Tma
+         3aP/1mE9d1UWQ==
+Date:   Mon, 9 Oct 2023 17:26:41 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jagan Teki <jagan@edgeble.ai>, Jonas Karlman <jonas@kwiboo.se>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] dt-bindings: arm: rockchip: Add Orange Pi 5 Plus
+Message-ID: <20231009-poncho-refining-5206e3875669@spud>
+References: <20231008130515.1155664-1-megi@xff.cz>
+ <20231008130515.1155664-4-megi@xff.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2793; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=IqXNKTNRDlIlftg1vOloagLt5DM4tFswzFBVR3pOJiw=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlJClk3VxoLKOu/793wEyDtT0NwoO970SXjqBAO DIdylD9jy6JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZSQpZAAKCRCPgPtYfRL+ TmfcB/4qxK0CJoyVqR6PNCNFVPgmgE9fcqgx8/WK95DRuYgyU/tuqsXVILwI18XWxscXn+NLPY2 00aYxsdqCo6LPuj5GPNF2vdlzotM6k8jxNihOuyEvmFzm1ToubCqi8M67v+RtXk+8AY+mOge6cE TZAUgMlCpbjmZAby7unx6TrykTXePgDBsDspRPmzd0EkOrIp4n+9I/UEO6lpRWdht6/6guw4+EX Lck8m7RoovcG7HzgWp+Azslb37gDOAMxU7jNXAqJeBVO15BstVTdwSm4dzm9lXaO200lyu5c95y xLcZ3oftvqTaEBJxjsKly+XBxlYECLQ1a1JwFvUY+PkLzSYK
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="jtxAoSr1vHYzIdfq"
+Content-Disposition: inline
+In-Reply-To: <20231008130515.1155664-4-megi@xff.cz>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The .remove() callback for a platform driver returns an int which makes
-many driver authors wrongly assume it's possible to do error handling by
-returning an error code. However the value returned is ignored (apart
-from emitting a warning) and this typically results in resource leaks.
 
-To improve here there is a quest to make the remove callback return
-void. In the first step of this quest all drivers are converted to
-.remove_new(), which already returns void. Eventually after all drivers
-are converted, .remove_new() will be renamed to .remove().
+--jtxAoSr1vHYzIdfq
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-To convert the sprd-sc9860 driver, make sprd_pinctrl_remove()
-return void (instead of zero) and use .remove_new as callback.
+On Sun, Oct 08, 2023 at 03:05:01PM +0200, Ond=C5=99ej Jirman wrote:
+> From: Ondrej Jirman <megi@xff.cz>
+>=20
+> Add devicetree binding documentation for Orange Pi 5 Plus SBC made by
+> Xunlong.
+>=20
+> Signed-off-by: Ondrej Jirman <megi@xff.cz>
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/pinctrl/sprd/pinctrl-sprd-sc9860.c | 2 +-
- drivers/pinctrl/sprd/pinctrl-sprd.c        | 3 +--
- drivers/pinctrl/sprd/pinctrl-sprd.h        | 2 +-
- 3 files changed, 3 insertions(+), 4 deletions(-)
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-diff --git a/drivers/pinctrl/sprd/pinctrl-sprd-sc9860.c b/drivers/pinctrl/sprd/pinctrl-sprd-sc9860.c
-index d14f382f2392..9c3c39dc6550 100644
---- a/drivers/pinctrl/sprd/pinctrl-sprd-sc9860.c
-+++ b/drivers/pinctrl/sprd/pinctrl-sprd-sc9860.c
-@@ -943,7 +943,7 @@ static struct platform_driver sprd_pinctrl_driver = {
- 		.of_match_table = sprd_pinctrl_of_match,
- 	},
- 	.probe = sprd_pinctrl_probe,
--	.remove = sprd_pinctrl_remove,
-+	.remove_new = sprd_pinctrl_remove,
- 	.shutdown = sprd_pinctrl_shutdown,
- };
- module_platform_driver(sprd_pinctrl_driver);
-diff --git a/drivers/pinctrl/sprd/pinctrl-sprd.c b/drivers/pinctrl/sprd/pinctrl-sprd.c
-index ccdcc91c7fa5..d0b6d3e655a2 100644
---- a/drivers/pinctrl/sprd/pinctrl-sprd.c
-+++ b/drivers/pinctrl/sprd/pinctrl-sprd.c
-@@ -1110,12 +1110,11 @@ int sprd_pinctrl_core_probe(struct platform_device *pdev,
- }
- EXPORT_SYMBOL_GPL(sprd_pinctrl_core_probe);
- 
--int sprd_pinctrl_remove(struct platform_device *pdev)
-+void sprd_pinctrl_remove(struct platform_device *pdev)
- {
- 	struct sprd_pinctrl *sprd_pctl = platform_get_drvdata(pdev);
- 
- 	pinctrl_unregister(sprd_pctl->pctl);
--	return 0;
- }
- EXPORT_SYMBOL_GPL(sprd_pinctrl_remove);
- 
-diff --git a/drivers/pinctrl/sprd/pinctrl-sprd.h b/drivers/pinctrl/sprd/pinctrl-sprd.h
-index 69544a3cd635..190bcdb3bb6a 100644
---- a/drivers/pinctrl/sprd/pinctrl-sprd.h
-+++ b/drivers/pinctrl/sprd/pinctrl-sprd.h
-@@ -53,7 +53,7 @@ struct sprd_pins_info {
- int sprd_pinctrl_core_probe(struct platform_device *pdev,
- 			    struct sprd_pins_info *sprd_soc_pin_info,
- 			    int pins_cnt);
--int sprd_pinctrl_remove(struct platform_device *pdev);
-+void sprd_pinctrl_remove(struct platform_device *pdev);
- void sprd_pinctrl_shutdown(struct platform_device *pdev);
- 
- #endif /* __PINCTRL_SPRD_H__ */
--- 
-2.40.1
+Thanks,
+Conor.
 
+> ---
+>  Documentation/devicetree/bindings/arm/rockchip.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Docume=
+ntation/devicetree/bindings/arm/rockchip.yaml
+> index ca5389862887..1a636ad540ce 100644
+> --- a/Documentation/devicetree/bindings/arm/rockchip.yaml
+> +++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
+> @@ -870,6 +870,11 @@ properties:
+>            - const: tronsmart,orion-r68-meta
+>            - const: rockchip,rk3368
+> =20
+> +      - description: Xunlong Orange Pi 5 Plus
+> +        items:
+> +          - const: xunlong,orangepi-5-plus
+> +          - const: rockchip,rk3588
+> +
+>        - description: Xunlong Orange Pi R1 Plus / LTS
+>          items:
+>            - enum:
+> --=20
+> 2.42.0
+>=20
+
+--jtxAoSr1vHYzIdfq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSQpwQAKCRB4tDGHoIJi
+0maaAP47E1PJIyhK8cjy+hke5lwVZTaDc5KFma7+IRK1rtnLAwD+JBc/RJpoF+Fc
+rBJfx39NBvbJPDnRQ7dDfFCZznzkSgQ=
+=+cps
+-----END PGP SIGNATURE-----
+
+--jtxAoSr1vHYzIdfq--
