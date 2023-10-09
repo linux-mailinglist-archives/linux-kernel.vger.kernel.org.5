@@ -2,111 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD0F7BE47F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:18:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F2F17BE477
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376949AbjJIPSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 11:18:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58650 "EHLO
+        id S1376942AbjJIPR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 11:17:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377057AbjJIPSa (ORCPT
+        with ESMTP id S1376736AbjJIPR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 11:18:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B7CA6
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 08:17:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696864662;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=u5JcXPIqedItIu+FW3AQTSKHWl8dmpt+dQk3rJLF9AU=;
-        b=PC4LxMwd1AjS0MzlaktxkiXQO4+idm+Cka8SP/4cunjYYOmRvEyj3tBx9jqOk+tyU4pxlh
-        okN8FZ1dLr1lNlSnqheX41gnAHv2g2ciyuiTUvIOUsjdNBgnUhj39Pa6IeLFRA2REryr7B
-        tfmQHMIDt2t30QgAM7t9PSJSJNI5aOw=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-635-4zJUge4TPpCK2NSFlCEiTw-1; Mon, 09 Oct 2023 11:17:39 -0400
-X-MC-Unique: 4zJUge4TPpCK2NSFlCEiTw-1
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-531373ea109so1300459a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 08:17:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696864658; x=1697469458;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u5JcXPIqedItIu+FW3AQTSKHWl8dmpt+dQk3rJLF9AU=;
-        b=NmIcXuCXdEbHpbuW3+Q2AhhkV8M4y1ULpy7WJLNl3pVdOBlSP2qOnUZQXzqaIoMcwq
-         SdkKm2z8iT69KQyxJ0oOquJYltVkyrOqMQ/KrFWPx7Nv8ULtmLnU+Jc31tT0ZzCQWw4o
-         edMJC57Iyra24iw+Q0yJPhmy+Mwg3poemmggN9LEreMHkIo/laoyj1JCPSYZetNH5I6D
-         HEUXaW5EThxwLIcGFBGpiBprN3HqIYzLmllA5UDEZrWuBhRbMuhbzK0OlJAAVJdYRFCj
-         Q5GIC+kGyq8Ug+GQ9Pq2oAup8cLfJLQs3a6HB+OkKnHJZr+CiRnJdNbxTWa790f/3QqR
-         viHg==
-X-Gm-Message-State: AOJu0YxqIWAmGYodow+EpOjEIB5mh9OZtiuxa5cy+f/knVaJqU2ARwiJ
-        MPIJAl8cKwX1AWa5WgYeXoMp6hVTImb5Zftv1Jw5/IhuZ+hxuPlu0yCEQFC6u71FDFMvQlRR+pG
-        vtwWTDtNnuEPcThSeaKt9eGjW
-X-Received: by 2002:aa7:c991:0:b0:536:e5f7:b329 with SMTP id c17-20020aa7c991000000b00536e5f7b329mr13448856edt.33.1696864658511;
-        Mon, 09 Oct 2023 08:17:38 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFqaNdjOVR8GEVS7MrW8+be1z+py7ZOPR3ncwNWSeW3qxMntltB1eh7SSq1dhz3kONe9XqOGA==
-X-Received: by 2002:aa7:c991:0:b0:536:e5f7:b329 with SMTP id c17-20020aa7c991000000b00536e5f7b329mr13448839edt.33.1696864658056;
-        Mon, 09 Oct 2023 08:17:38 -0700 (PDT)
-Received: from sgarzare-redhat (host-82-57-51-114.retail.telecomitalia.it. [82.57.51.114])
-        by smtp.gmail.com with ESMTPSA id w24-20020a50fa98000000b00532bec5f768sm6197050edr.95.2023.10.09.08.17.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 08:17:37 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 17:17:33 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Subject: Re: [PATCH net-next v3 11/12] test/vsock: MSG_ZEROCOPY support for
- vsock_perf
-Message-ID: <afcyfpp6axca3d2ebtrp44o4wqxkutbn6eixv2gnpa2r3ievhr@yx2462i5p3e7>
-References: <20231007172139.1338644-1-avkrasnov@salutedevices.com>
- <20231007172139.1338644-12-avkrasnov@salutedevices.com>
+        Mon, 9 Oct 2023 11:17:56 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2870EA3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 08:17:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D296C433B7;
+        Mon,  9 Oct 2023 15:17:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696864671;
+        bh=IxC3QSqPVebIUIRAWD+xhWprjzDHOIt3IBTBrp48heo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=QSbOy7tie+ysnc34WLh7T8qM5g5Hep59jVakIVVg7b/MLulFFJE5pGb2GEvBqMXGP
+         KnPwAWfAtpkN5ufKCIYccOCr0pHzqBOgPgWGVayiYQ3kTC8V8nhQEci7ZEfbkKpNr1
+         dWuP2ig4eXLIFQYtUdJrBCCYEzfViD6GeE8o21oy8YYoi1kUdDEe78p8H/dA684ILU
+         iqpceVibFcCNj/hVcRFLegXJWz4fcAvOEN80JOMXa+CpkPMfLyiKIjst/IFXBx6ehk
+         vqoKVr/tZVUXoOR+jWI7fUWXRUkJoPfK3ASN++C+Ec0RxBwr7+yPGQ5F8Wdllz93uT
+         mTUCc57DJgP3g==
+Date:   Mon, 9 Oct 2023 08:17:50 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Chengfeng Ye <dg573847474@gmail.com>
+Cc:     3chas3@gmail.com, davem@davemloft.net, horms@kernel.org,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] atm: solos-pci: Fix potential deadlock on
+ &cli_queue_lock
+Message-ID: <20231009081750.2073013d@kernel.org>
+In-Reply-To: <CAAo+4rUE=+9Kp8CvMH3w15dJotkX03h=5YMV+hu-YSobkwj1NA@mail.gmail.com>
+References: <20231005074858.65082-1-dg573847474@gmail.com>
+        <20231006162835.79484017@kernel.org>
+        <CAAo+4rUE=+9Kp8CvMH3w15dJotkX03h=5YMV+hu-YSobkwj1NA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20231007172139.1338644-12-avkrasnov@salutedevices.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 07, 2023 at 08:21:38PM +0300, Arseniy Krasnov wrote:
->To use this option pass '--zerocopy' parameter:
->
->./vsock_perf --zerocopy --sender <cid> ...
->
->With this option MSG_ZEROCOPY flag will be passed to the 'send()' call.
->
->Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
->---
-> Changelog:
-> v1 -> v2:
->  * Move 'SOL_VSOCK' and 'VSOCK_RECVERR' from 'util.c' to 'util.h'.
-> v2 -> v3:
->  * Use 'msg_zerocopy_common.h' for MSG_ZEROCOPY related things.
->  * Rename '--zc' option to '--zerocopy'.
->  * Add detail in help that zerocopy mode is for sender mode only.
->
-> tools/testing/vsock/vsock_perf.c | 80 ++++++++++++++++++++++++++++----
-> 1 file changed, 71 insertions(+), 9 deletions(-)
+On Sat, 7 Oct 2023 23:58:36 +0800 Chengfeng Ye wrote:
+> > and irqsave here. I think you're right that it's just softirq (== bh)
+> > that may deadlock, so no need to take the irqsave() version in process
+> > context.  
+> 
+> Yes, spin_lock_bh() is enough.
+> 
+> I just found spin_lock_irqsave() is more frequently used in this file, so I
+> also used spin_lock_irqsave() here for uniformity consideration at that time.
+> 
+> Should I send a new patch series to change this to spin_lock_bh()? That's
+> better for performance consideration.
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
-
+Yes, performance is one reason and another is that the code will 
+be easier to understand if the locking matches the requirements.
