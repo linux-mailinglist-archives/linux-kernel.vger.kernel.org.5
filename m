@@ -2,72 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 948007BEB74
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 22:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C65B97BEB7A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 22:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378545AbjJIUTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 16:19:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32870 "EHLO
+        id S1378594AbjJIUUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 16:20:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378520AbjJIUTL (ORCPT
+        with ESMTP id S1378544AbjJIUUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 16:19:11 -0400
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD11DDA;
-        Mon,  9 Oct 2023 13:19:04 -0700 (PDT)
-Received: from [194.95.143.137] (helo=phil.localnet)
-        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <heiko@sntech.de>)
-        id 1qpwiI-0004zP-2L; Mon, 09 Oct 2023 22:18:50 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-mtd@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        linux-hardening@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] mtd: rawnand: rockchip: Use struct_size()
-Date:   Mon, 09 Oct 2023 22:18:49 +0200
-Message-ID: <3186469.5fSG56mABF@phil>
-In-Reply-To: <481721c2c7fe570b4027dbe231d523961c953d5a.1696146232.git.christophe.jaillet@wanadoo.fr>
-References: <481721c2c7fe570b4027dbe231d523961c953d5a.1696146232.git.christophe.jaillet@wanadoo.fr>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+        Mon, 9 Oct 2023 16:20:11 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E74694
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 13:20:09 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a22eb73cb3so88386057b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 13:20:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696882808; x=1697487608; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=X6+GJ5cI4z2TlJw5nJFvkv7FETWY362gjhrvcMB9XFc=;
+        b=LYMPNRYaGtJ0B7jCpzJLOeAOt4N5rEjxApu3zMBe7oeVCCTl5ExTQEGkDjkQ2VquMi
+         5JzYk5VrNtmkSZEbCJr7LuTLXgPgdswazaskUq4r/nb2MwvQlY/7bin9K4mSEOb1nh23
+         aQGNHQR5OCxv8ouCA5FnKE6fg5l2yOVe8wE0MnBeOdtEv7qlv4UWIW+YwoP7fCYOmhM7
+         IcxngCv54vmqWR2K7rpaTfwzdEBwnwv880xHoxJbZg5AP9sNmeXJ1XIbmh7dlza/cfMf
+         uAMOiB3KSGkQK0ZsaI/eD8AuVIIoMseYxZAZliaW6DQNB32qGbBHGpSYxiTQAKR6ts1H
+         BB/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696882808; x=1697487608;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=X6+GJ5cI4z2TlJw5nJFvkv7FETWY362gjhrvcMB9XFc=;
+        b=E7CpW7ykcZzmXXwbd8+2w2ueW5nHjblkAAm8BnW3A3xBtiBEyhOdT3OGkMp6uDKWuE
+         um/RhN7aWpauxnDYCwhuKLERosy7BZPcc3WzoYPvPDhtUNRXaPHlLgI+qNd936EJh+iH
+         PfWR7c8kPRP4Kpf1V2vNLitgOnDVuROQNNj/EMZOKmM0CgORVS0QMh6gMqG19ea8txHe
+         Yy9N5IpxuDIzU35xCdbu70KuehMudzAGDs+eV+b8rUUV8RUQZ026kdVEHlWlQctSNooj
+         kSBfPc2cEA5rvsecaxJ7I5/ZuRcZ490EaIbm81AW58X4FZYehLLvsi09mwqfAXB+Q+DT
+         FgqA==
+X-Gm-Message-State: AOJu0YyIZitdcvcI7tCYE37ELz6qRuAPQ2YijN1LqIoXZSngbjML2BqH
+        iNMwAHAU5kh8v8O/ys+/WYeyq3dC/c8=
+X-Google-Smtp-Source: AGHT+IFY1JX42tQvUiQbHjxHOd20j5m7plZ8L4JheDy574ZvKTNtyQEZK75VDZPRx5P3o6rzL4rbdqXGQyM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a5b:b50:0:b0:d80:904d:c211 with SMTP id
+ b16-20020a5b0b50000000b00d80904dc211mr241176ybr.7.1696882808446; Mon, 09 Oct
+ 2023 13:20:08 -0700 (PDT)
+Date:   Mon, 9 Oct 2023 13:20:06 -0700
+In-Reply-To: <20231009200608.GJ800259@ZenIV>
+Mime-Version: 1.0
+References: <20230928180651.1525674-1-pbonzini@redhat.com> <169595365500.1386813.6579237770749312873.b4-ty@google.com>
+ <20231009022248.GD800259@ZenIV> <ZSQO4fHaAxDkbGyz@google.com> <20231009200608.GJ800259@ZenIV>
+Message-ID: <ZSRgdgQe3fseEQpf@google.com>
+Subject: Re: [PATCH gmem FIXUP] kvm: guestmem: do not use a file system
+From:   Sean Christopherson <seanjc@google.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SPF_HELO_TEMPERROR autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Sonntag, 1. Oktober 2023, 09:44:04 CEST schrieb Christophe JAILLET:
-> Use struct_size() instead of hand writing it.
-> This is less verbose and more robust.
+On Mon, Oct 09, 2023, Al Viro wrote:
+> On Mon, Oct 09, 2023 at 07:32:48AM -0700, Sean Christopherson wrote:
 > 
-> While at it, prepare for the coming implementation by GCC and Clang of the
-> __counted_by attribute. Flexible array members annotated with __counted_by
-> can have their accesses bounds-checked at run-time checking via
-> CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE (for
-> strcpy/memcpy-family functions).
+> > Yeah, we found that out the hard way.  Is using the "secure" variant to get a
+> > per-file inode a sane approach, or is that abuse that's going to bite us too?
+> > 
+> > 	/*
+> > 	 * Use the so called "secure" variant, which creates a unique inode
+> > 	 * instead of reusing a single inode.  Each guest_memfd instance needs
+> > 	 * its own inode to track the size, flags, etc.
+> > 	 */
+> > 	file = anon_inode_getfile_secure(anon_name, &kvm_gmem_fops, gmem,
+> > 					 O_RDWR, NULL);
 > 
-> Also remove a useless comment about the position of a flex-array in a
-> structure.
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Umm...  Is there any chance that your call site will ever be in a module?
+> If not, you are probably OK with that variant.
 
-Acked-by: Heiko Stuebner <heiko@sntech.de>
-
-
+Yes, this code can be compiled as a module.  I assume there issues with the inode
+outliving the module?
