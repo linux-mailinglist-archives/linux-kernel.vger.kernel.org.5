@@ -2,82 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03ECE7BD659
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B32F7BD661
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345638AbjJIJJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 05:09:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45414 "EHLO
+        id S1345547AbjJIJKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 05:10:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345674AbjJIJJU (ORCPT
+        with ESMTP id S234489AbjJIJKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 05:09:20 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D16DA2
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:09:17 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40572aeb73cso39062325e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 02:09:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696842556; x=1697447356; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Hu0+ThQAo+g9milkUYpUIIdlEQpDV2pWkgKvoM+zN8s=;
-        b=FzOgZiEZzez4Fb/26B6jgz5CMCq7HRnMsXpHgd9XjGj5UNTVs1clbL6+F9gYN4H1t9
-         Et2d8B2yZdT+prHlHSkcv1x+jtByq0RuAeLU/edunOHp1s2t2V5y+FW+d5Hfk1wEzwfI
-         ZETWvucgccToRdDEH28VYdCE0Wm695gX6JAZN/G1C2+H55jIgp1Qv+qIjLGovQ2nHfOi
-         fW7yBowJejnLo2wjHfacliR8v6Ez4eRQcTP3FxLn7TmVXbuH1YrByJtvpYFO2GrSAear
-         e1BxhNxnVTmaTqVviNsFDmUFqJDoBqpdQGLBlQuHm8jCXhnsqZmQpNcZTsEQjJGSVAc+
-         guBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696842556; x=1697447356;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Hu0+ThQAo+g9milkUYpUIIdlEQpDV2pWkgKvoM+zN8s=;
-        b=w/aS/TTjjbY8xOzagZxYFBHCx5zCHDT7DIVzN2Zh6wYyD6QEW+NukUOLLShtxiLCph
-         t83TXYoSBDbm9I9vNimmH4jeoayZ2oLjSBkiWi+Tfqjil3xbcBUgwpphPhjB19zLMC5i
-         JALe/KzbBLTqLII330WVf1tv1o/5OZSyKhOXsW1I2Mfg0aR9mOZ+Il7/Rg3b1x/Hc01/
-         sQExv0Rw9RKbQKteEopogQ1TdeSxMNqWIIST/w6SJhlQYYPcf+nGyV8mwupgo3+pUJqw
-         u+8uqaqMcuf8YUobVv1/KpCF7yLur8iqBSxvZ4EWV7vNLkn5a8PoQw2LFdR0eiFoKyCs
-         KZvA==
-X-Gm-Message-State: AOJu0Ywb3FhiM8/5D8qQGMQ1xQ5Z3/x0MShT0HMnb7wWNMWL2Hb/hEgg
-        /zfb9b4wti3VEauuCnCrIVR3lw==
-X-Google-Smtp-Source: AGHT+IF1gfeKffTkLyBV4zT0Aa0IN2FUuZ4jVafuElp2ql/w0uc+4jVcF3RfnhlbHDzrhtAIg3iwHQ==
-X-Received: by 2002:a1c:ed17:0:b0:402:f8ea:be3e with SMTP id l23-20020a1ced17000000b00402f8eabe3emr13000541wmh.7.1696842555840;
-        Mon, 09 Oct 2023 02:09:15 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id e24-20020a05600c219800b004013797efb6sm12864525wme.9.2023.10.09.02.09.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 02:09:15 -0700 (PDT)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-To:     Inki Dae <inki.dae@samsung.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Michael Tretter <m.tretter@pengutronix.de>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, Marco Felsch <m.felsch@pengutronix.de>,
-        Adam Ford <aford173@gmail.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>
-In-Reply-To: <20230818-samsung-dsim-v2-0-846603df0e0a@pengutronix.de>
-References: <20230818-samsung-dsim-v2-0-846603df0e0a@pengutronix.de>
-Subject: Re: [PATCH v2 0/5] drm/bridge: samsung-dsim: fix various modes
- with ADV7535 bridge
-Message-Id: <169684255481.1988265.17594322174846257761.b4-ty@linaro.org>
-Date:   Mon, 09 Oct 2023 11:09:14 +0200
+        Mon, 9 Oct 2023 05:10:47 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCC95A3;
+        Mon,  9 Oct 2023 02:10:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41527C433C7;
+        Mon,  9 Oct 2023 09:10:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696842645;
+        bh=f5CUYsknjVmhnuTqhXtkJxqt3bb4YSHlTfNzYrnpBuU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fz+BE5xuLV3Yh0jSKKwKBi28SNwZP6ko5HrzaOLCMXAY3v0jAslsCOFIJyBQlOWa3
+         3+peKOxVHoeX+jBrhdicviDhC3uZ9e58+jIh5tCIfOXjup1W5xSe02ogt/NWiBvoB9
+         tVz/7Vc6CvgLRNXOevRFKX7Tlkqzps/0zBUYC/cpIPJdMHL79vvx8zhneWLsOcdBti
+         /vT5vOdZKJndel926GduNNEBI0b4yt/VyEOv+oNBZDmdZZHRAe0lWV7MoMIkJUH71Y
+         YJ5YUnvafWnMJpU8TCmbEQguN6pCHXUYQRb5LGiO9E80bB5pQ4pU5/Aa9QJ3uDq09b
+         ygzDjga+86edw==
+Date:   Mon, 9 Oct 2023 12:09:51 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Alejandro Colomar <alx@kernel.org>, Peter Xu <peterx@redhat.com>,
+        linux-man@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/10] ioctl_userfaultfd.2: document new UFFDIO_POISON
+ ioctl
+Message-ID: <20231009090951.GM3303@kernel.org>
+References: <20230919190206.388896-1-axelrasmussen@google.com>
+ <20230919190206.388896-11-axelrasmussen@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230919190206.388896-11-axelrasmussen@google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,31 +51,161 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Fri, 06 Oct 2023 17:07:02 +0200, Michael Tretter wrote:
-> I tested the i.MX8M Nano EVK with the NXP supplied MIPI-DSI adapter,
-> which uses an ADV7535 MIPI-DSI to HDMI converter. I found that a few
-> modes were working, but in many modes my monitor stayed dark.
+On Tue, Sep 19, 2023 at 12:02:06PM -0700, Axel Rasmussen wrote:
+> This is a new feature recently added to the kernel. So, document the new
+> ioctl the same way we do other UFFDIO_* ioctls.
 > 
-> This series fixes the Samsung DSIM bridge driver to bring up a few more
-> modes:
+> Also note the corresponding new ioctl flag we can return in reponse to a
+> UFFDIO_REGISTER call.
 > 
-> [...]
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
-Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
+With a small correction 
 
-[1/5] drm/bridge: samsung-dsim: add more mipi-dsi device debug information
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=3683182a7254f728778452814abe2437a12502c3
-[2/5] drm/bridge: samsung-dsim: reread ref clock before configuring PLL
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=eb26c6ab2a11e6c595ee88ce30c7de9578d957aa
-[3/5] drm/bridge: samsung-dsim: update PLL reference clock
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=846307185f0ffbbe6b34d53b97c31c0fc392cff0
-[4/5] drm/bridge: samsung-dsim: adjust porches by rounding up
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=198e54282ae560958e64328fe8f72893661b9e8b
-[5/5] drm/bridge: samsung-dsim: calculate porches in Hz
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=6acb691824933535219dfd94d9d97c922f5593d2
+Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
+
+> ---
+>  man2/ioctl_userfaultfd.2 | 112 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 112 insertions(+)
+> 
+> diff --git a/man2/ioctl_userfaultfd.2 b/man2/ioctl_userfaultfd.2
+> index afe3caffc..1282f63e1 100644
+> --- a/man2/ioctl_userfaultfd.2
+> +++ b/man2/ioctl_userfaultfd.2
+> @@ -405,6 +405,11 @@ operation is supported.
+>  The
+>  .B UFFDIO_CONTINUE
+>  operation is supported.
+> +.TP
+> +.B 1 << _UFFDIO_POISON
+> +The
+> +.B UFFDIO_POISON
+> +operation is supported.
+>  .PP
+>  This
+>  .BR ioctl (2)
+> @@ -916,6 +921,113 @@ The faulting process has exited at the time of a
+>  .B UFFDIO_CONTINUE
+>  operation.
+>  .\"
+> +.SS UFFDIO_POISON
+> +(Since Linux 6.6.)
+> +Mark an address range as "poisoned".
+> +Future accesses to these addresses will raise a
+> +.B SIGBUS
+> +signal.
+> +Unlike
+> +.B MADV_HWPOISON
+> +this works by installing page table entries,
+> +rather than "really" poisoning the underlying physical pages.
+> +This means it only affects this particular address space.
+> +.PP
+> +The
+> +.I argp
+> +argument is a pointer to a
+> +.I uffdio_continue
+
+Did you mean uffdio_poison? 
+
+> +structure as shown below:
+> +.PP
+> +.in +4n
+> +.EX
+> +struct uffdio_poison {
+> +	struct uffdio_range range;
+> +	                /* Range to install poison PTE markers in */
+> +	__u64 mode;     /* Flags controlling the behavior of poison */
+> +	__s64 updated;  /* Number of bytes poisoned, or negated error */
+> +};
+> +.EE
+> +.in
+> +.PP
+> +The following value may be bitwise ORed in
+> +.I mode
+> +to change the behavior of the
+> +.B UFFDIO_POISON
+> +operation:
+> +.TP
+> +.B UFFDIO_POISON_MODE_DONTWAKE
+> +Do not wake up the thread that waits for page-fault resolution.
+> +.PP
+> +The
+> +.I updated
+> +field is used by the kernel
+> +to return the number of bytes that were actually poisoned,
+> +or an error in the same manner as
+> +.BR UFFDIO_COPY .
+> +If the value returned in the
+> +.I updated
+> +field doesn't match the value that was specified in
+> +.IR range.len ,
+> +the operation fails with the error
+> +.BR EAGAIN .
+> +The
+> +.I updated
+> +field is output-only;
+> +it is not read by the
+> +.B UFFDIO_POISON
+> +operation.
+> +.PP
+> +This
+> +.BR ioctl (2)
+> +operation returns 0 on success.
+> +In this case,
+> +the entire area was poisoned.
+> +On error, \-1 is returned and
+> +.I errno
+> +is set to indicate the error.
+> +Possible errors include:
+> +.TP
+> +.B EAGAIN
+> +The number of bytes mapped
+> +(i.e., the value returned in the
+> +.I updated
+> +field)
+> +does not equal the value that was specified in the
+> +.I range.len
+> +field.
+> +.TP
+> +.B EINVAL
+> +Either
+> +.I range.start
+> +or
+> +.I range.len
+> +was not a multiple of the system page size; or
+> +.I range.len
+> +was zero; or the range specified was invalid.
+> +.TP
+> +.B EINVAL
+> +An invalid bit was specified in the
+> +.I mode
+> +field.
+> +.TP
+> +.B EEXIST
+> +One or more pages were already mapped in the given range.
+> +.TP
+> +.B ENOENT
+> +The faulting process has changed its virtual memory layout simultaneously with
+> +an outstanding
+> +.B UFFDIO_POISON
+> +operation.
+> +.TP
+> +.B ENOMEM
+> +Allocating memory for page table entries failed.
+> +.TP
+> +.B ESRCH
+> +The faulting process has exited at the time of a
+> +.B UFFDIO_POISON
+> +operation.
+> +.\"
+>  .SH RETURN VALUE
+>  See descriptions of the individual operations, above.
+>  .SH ERRORS
+> -- 
+> 2.42.0.459.ge4e396fd5e-goog
+> 
+> 
 
 -- 
-Neil
-
+Sincerely yours,
+Mike.
