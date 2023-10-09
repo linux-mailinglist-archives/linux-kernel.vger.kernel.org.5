@@ -2,53 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF137BD6E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA187BD6E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346014AbjJIJZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 05:25:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41922 "EHLO
+        id S1345897AbjJIJZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 05:25:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345999AbjJIJYx (ORCPT
+        with ESMTP id S1346023AbjJIJYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 05:24:53 -0400
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB09A102
+        Mon, 9 Oct 2023 05:24:54 -0400
+Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2531E187
         for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:23:54 -0700 (PDT)
-Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3af59142cfaso6298515b6e.0
+Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1dcf6a4378bso5776428fac.3
         for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 02:23:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696843432; x=1697448232;
+        d=1e100.net; s=20230601; t=1696843433; x=1697448233;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=hPujDRn6mquV4gNuBOn8UaHjz6kc/QET8wVwYt94UoE=;
-        b=L9DMeZz3ALIuA3adtVkP4IrIlUHQd1Iz9bcKU/wyjbtgScdUmO4Rrlb2Vj2zNz8T6E
-         rJbwcpkrJ+sdbn460SYhd/+8aC527FZ8KnXlART/+RFRV2kDlmzs4/kOb5a30WNuBtIy
-         Q8c0+uirPfb9Rka+fLF8timpssbAcudMHu2O6Ba+eRyiNTEZ1eNxOLLjAESqpWtMajiD
-         ifdslxbHDJvg1iFr1vgA6uH5If81B+9IwhEzwl9BGPbbnoycD1gceMoybnNDYAxnnVZO
-         Ki70Nv1ZeecU6dXDN+YcWtTjXO+HYBYGzWsk6QgQt8ZWyls82F9J0IQeE07LrAMQkkQT
-         QJ0g==
-X-Gm-Message-State: AOJu0Yw7MndFx+tqhTRxxWtcay78RmkbfSBNB+EssSU5HRdRQWEbRG2y
-        K92rPo9zdjsz291Q4LIpXQPWGh6748i1zRmg9JW7qLdkyJZy
-X-Google-Smtp-Source: AGHT+IFn7BeMZbPq9UpSpWnsypz/Ixh2f8OpofsNTYYDSsEp2wb+6MTEBCLN8FYolbTDp8eOnaZ9OquBpDLdbMsmtCwRk8qgsSPj
+        bh=65WZ9YFi5sn+6ZO5ERm1lg5G6uHSE9SWOH1rDCIdyGM=;
+        b=Ka9gXeOTUH4+ZKqXJre/i+C71FdUZrOAjRSoSP+hKrAlFlUvAICR3MiNpA8gdtivJL
+         V5r9XBr6PXVje1S8pV5i9PNT23dF6HRfOf8wptklh0bhqUeWqPHc//x9wJ+Mq56sLzZk
+         tJvHPJIoJC74TVRd8F6i/JzhigPin/D5fSlY+9gCC3jqPfnGVevyBfeGoMFhxwCzUQsR
+         YbMvui1JqJIkZVulUAyl9PZEIJw8/Cs0ATmYYr4yg4S8l71N7ydu7Rje0uu8iyjm2GIk
+         JHQBHlmUfhBrcWaixZ9Nq3cgMIdDn1BQCxa1v7JovgEMIzPHf7r2Gv4EO1hRkcnttp2q
+         6lqA==
+X-Gm-Message-State: AOJu0YwIdD+HPxn/nus+bwwzFRrWSWCPbJOTblR+CjnfAlyqJz7b8nTz
+        EvXMK/0YdIv+jIcNW2U/st/mAuR/TiHlHQXPeeYbveLVOhKp
+X-Google-Smtp-Source: AGHT+IEo7V/AZ60BTZSRjftitTfIZGEo/othg1DNf/jnetxePrPeGLDsA/DxXHk0f5kAfjT9wev6fUz/dWFo2sLhafwDuEEpIQ6H
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:2025:b0:3ad:fe71:10cd with SMTP id
- q37-20020a056808202500b003adfe7110cdmr7702930oiw.11.1696843432454; Mon, 09
+X-Received: by 2002:a05:6870:c79a:b0:1dc:27f6:7a10 with SMTP id
+ dy26-20020a056870c79a00b001dc27f67a10mr6163237oab.10.1696843432914; Mon, 09
  Oct 2023 02:23:52 -0700 (PDT)
 Date:   Mon, 09 Oct 2023 02:23:52 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000007f0d90607452652@google.com>
-Subject: [syzbot] Monthly batman report (Oct 2023)
-From:   syzbot <syzbot+listbc635e7898634771116b@syzkaller.appspotmail.com>
-To:     a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org,
-        linux-kernel@vger.kernel.org, mareklindner@neomailbox.ch,
-        netdev@vger.kernel.org, sven@narfation.org, sw@simonwunderlich.de,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <0000000000000ef4d706074526cd@google.com>
+Subject: [syzbot] Monthly ext4 report (Oct 2023)
+From:   syzbot <syzbot+list12247b4500c0d653da52@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
-        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,24 +55,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello batman maintainers/developers,
+Hello ext4 maintainers/developers,
 
-This is a 31-day syzbot report for the batman subsystem.
+This is a 31-day syzbot report for the ext4 subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/batman
+https://syzkaller.appspot.com/upstream/s/ext4
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 7 issues are still open and 22 have been fixed so far.
+During the period, 3 new issues were detected and 0 were fixed.
+In total, 38 issues are still open and 116 have been fixed so far.
 
 Some of the still happening issues:
 
-Ref Crashes Repro Title
-<1> 167     Yes   INFO: rcu detected stall in batadv_nc_worker (3)
-                  https://syzkaller.appspot.com/bug?extid=69904c3b4a09e8fa2e1b
-<2> 150     No    KMSAN: uninit-value in bpf_prog_run_generic_xdp
-                  https://syzkaller.appspot.com/bug?extid=0e6ddb1ef80986bdfe64
-<3> 2       Yes   memory leak in skb_clone (2)
-                  https://syzkaller.appspot.com/bug?extid=92f9b5fba2df252a3569
+Ref  Crashes Repro Title
+<1>  4113    Yes   WARNING: locking bug in ext4_move_extents
+                   https://syzkaller.appspot.com/bug?extid=7f4a6f7f7051474e40ad
+<2>  326     Yes   WARNING: locking bug in __ext4_ioctl
+                   https://syzkaller.appspot.com/bug?extid=a537ff48a9cb940d314c
+<3>  145     Yes   WARNING: locking bug in ext4_ioctl
+                   https://syzkaller.appspot.com/bug?extid=a3c8e9ac9f9d77240afd
+<4>  145     No    possible deadlock in evict (3)
+                   https://syzkaller.appspot.com/bug?extid=dd426ae4af71f1e74729
+<5>  83      Yes   INFO: task hung in sync_inodes_sb (5)
+                   https://syzkaller.appspot.com/bug?extid=30476ec1b6dc84471133
+<6>  46      No    KASAN: slab-use-after-free Read in check_igot_inode
+                   https://syzkaller.appspot.com/bug?extid=741810aea4ac24243b2f
+<7>  12      Yes   possible deadlock in ext4_xattr_inode_iget (2)
+                   https://syzkaller.appspot.com/bug?extid=352d78bd60c8e9d6ecdc
+<8>  10      Yes   INFO: task hung in find_inode_fast (2)
+                   https://syzkaller.appspot.com/bug?extid=adfd362e7719c02b3015
+<9>  9       Yes   kernel BUG in ext4_enable_quotas
+                   https://syzkaller.appspot.com/bug?extid=693985588d7a5e439483
+<10> 7       Yes   KASAN: slab-use-after-free Read in ext4_convert_inline_data_nolock
+                   https://syzkaller.appspot.com/bug?extid=db6caad9ebd2c8022b41
 
 ---
 This report is generated by a bot. It may contain errors.
