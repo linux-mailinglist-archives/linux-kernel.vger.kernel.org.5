@@ -2,160 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADFB27BD94F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15CB87BD953
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346177AbjJILMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 07:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54976 "EHLO
+        id S1346191AbjJILNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 07:13:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346139AbjJILMj (ORCPT
+        with ESMTP id S1346139AbjJILNb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 07:12:39 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A6E694;
-        Mon,  9 Oct 2023 04:12:38 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-405497850dbso40792215e9.0;
-        Mon, 09 Oct 2023 04:12:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696849956; x=1697454756; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=er7cddzQstZpFxcdLakPZUUkD06YhuxbDUUxJ2NUqkQ=;
-        b=RyKZ8XcuK5mhjvVE4OscfXV00ahPF7K8bV0JWsOdpcKGqTIWun3PSssg5ks4C7xHzo
-         R8zbbr4NuyEtgOSmU9fjgQNSPOJdSgBNsw/y2Sp3foNHtpgwR22ZwbsjN7QRR3NfhDGW
-         xxP4NQ/Z+p2f79jEJfeWNfVOXqVHOQSVP+M5+frLnzz2rMjFLM2Oi97MrvGEb/2MjSvg
-         3PXQ2zplh1raedE3UAz8MIiw89+BznXaH7zU/LdZptGImx6Vt5DHr22d3wdJu0wam5f/
-         gEZ4gm8KghLF1WtZMfTEFBTcC0RXS/sFKeY7WMuPYMECnWXnrK0jxpUlPbx1ikcEbnFx
-         irYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696849956; x=1697454756;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=er7cddzQstZpFxcdLakPZUUkD06YhuxbDUUxJ2NUqkQ=;
-        b=tkI+/oG4bUj7Lux1yUgtl8H9PQPf2pi0qI/kRCDbxxDdMic/NmLetS8cOKzS8IKC6h
-         PcqItoUHl/3A+/2RxdUCg4blhiSP5rzoFvFEvWkM2wZVjLdXWjZbVVI9wF7PcXZyH/fT
-         Kapdez2krj3q55HwgDD8yl2fYGZ2ZOwfr4iTQ3bkkL1uV33U7nWBJ2dF0K5OzrKkBgVZ
-         6/CHAcp4TnfpH/3/6MRHMro8FXcb+hq5pattgW/Gd+9EtYjgIWGXl2ZLyJiKLQnhxeCd
-         8CHfINdiqsH1phywHEmyNgmEg2JhUxy3tGunMVn2bAJrgUoAz7EC4F5iIh32z9bPxNY3
-         N+Yw==
-X-Gm-Message-State: AOJu0YxuNwBbQ9p0gTmD1Mg5djzgQEqmmsuKHSIx2YoUjsuHXlVD6Pgw
-        9mh9/mnieFR8eO8TXWcMaO/Uw/eOUw==
-X-Google-Smtp-Source: AGHT+IEfMal/y1YXs3d3fjAHUYDtoTbl97gsCwi8vCSTLWnqdCIa5qWPs661zfQeCM89MtfOL0Zg7A==
-X-Received: by 2002:a5d:6a07:0:b0:314:350a:6912 with SMTP id m7-20020a5d6a07000000b00314350a6912mr13366375wru.36.1696849955951;
-        Mon, 09 Oct 2023 04:12:35 -0700 (PDT)
-Received: from amdsuplus2.inf.ethz.ch (amdsuplus2.inf.ethz.ch. [129.132.31.88])
-        by smtp.gmail.com with ESMTPSA id n8-20020a5d4208000000b003253523d767sm9285019wrq.109.2023.10.09.04.12.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 04:12:35 -0700 (PDT)
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Mon, 09 Oct 2023 13:12:02 +0200
-Subject: [PATCH bpf-next] Detect jumping to reserved code during
- check_cfg()
+        Mon, 9 Oct 2023 07:13:31 -0400
+Received: from out-202.mta0.migadu.com (out-202.mta0.migadu.com [91.218.175.202])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C44B94
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 04:13:30 -0700 (PDT)
+Message-ID: <5a3342ef-f14f-173c-630f-6b474bded257@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1696850008;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6bujvWT1GknYcY3g+1JFcsWNbwZNp5LaRrzpNwllk3A=;
+        b=wLkUIYxmmn6cmeSEYoCHAKeBvBQK14NDRGt9x2Qs/LQkAGw12ppUiQDu4TIdxvqjvl92Yw
+        bQdY16/YjA9VxyQeH3tXV42nghOY5yuae7RD/CAEjrOV1A+oWhkpEx2mDTBocPO4NjAHkq
+        tPWvUVo4OVfaO9xKrpZyytyWdqklQXE=
+Date:   Mon, 9 Oct 2023 19:13:18 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Subject: Re: [PATCH 2/2] sched/rt: Move sched_rt_entity::back to under the
+ CONFIG_RT_GROUP_SCHED block
+Content-Language: en-US
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com,
+        linux-kernel@vger.kernel.org
+References: <20231005162317.3343678-1-yajun.deng@linux.dev>
+ <20231005162317.3343678-3-yajun.deng@linux.dev> <ZSPS+jMcJEd+ZR28@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yajun Deng <yajun.deng@linux.dev>
+In-Reply-To: <ZSPS+jMcJEd+ZR28@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231009-jmp-into-reserved-fields-v1-1-d8006e2ac1f6@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAAHgI2UC/x3MQQ6DIBBG4auYWXcS0EXFqzRdIPy001gkYIyJ4
- e4Sl2/xvZMKsqDQ1J2UsUuRNbbQj47c18YPWHxr6lU/aKUM//6JJW4rZzS6w3MQLL5wcNqa0Y5
- 4ekeNp4wgx71+0ZwCRxwbvWu9AJ+Mgb90AAAA
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hao Sun <sunhao.th@gmail.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1696849955; l=2372;
- i=sunhao.th@gmail.com; s=20231009; h=from:subject:message-id;
- bh=wf3i1Iv2g4OKCrVAVIuikfMpT8jO6JJjtxyGZjBPh+c=;
- b=NXxUFgPTG86JjkxKihOaSnVsPPFSRBFPQbNOwB4RujNLdjlbxW0UY1ypBJs5EjMP9AhyMIfdC
- 8bAQvRSF97OC6Ska02pyK6OVt5hHPEL/fAU4xW3MB7c37zjIy8xsGdy
-X-Developer-Key: i=sunhao.th@gmail.com; a=ed25519;
- pk=AHFxrImGtyqXOuw4f5xTNh4PGReb7hzD86ayyTZCXd4=
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, we don't check if the branch-taken of a jump is reserved code of
-ld_imm64. Instead, such a issue is captured in check_ld_imm(). The verifier
-gives the following log in such case:
 
-func#0 @0
-0: R1=ctx(off=0,imm=0) R10=fp0
-0: (18) r4 = 0xffff888103436000       ; R4_w=map_ptr(off=0,ks=4,vs=128,imm=0)
-2: (18) r1 = 0x1d                     ; R1_w=29
-4: (55) if r4 != 0x0 goto pc+4        ; R4_w=map_ptr(off=0,ks=4,vs=128,imm=0)
-5: (1c) w1 -= w1                      ; R1_w=0
-6: (18) r5 = 0x32                     ; R5_w=50
-8: (56) if w5 != 0xfffffff4 goto pc-2
-mark_precise: frame0: last_idx 8 first_idx 0 subseq_idx -1
-mark_precise: frame0: regs=r5 stack= before 6: (18) r5 = 0x32
-7: R5_w=50
-7: BUG_ld_00
-invalid BPF_LD_IMM insn
+On 2023/10/9 18:16, Ingo Molnar wrote:
+> * Yajun Deng <yajun.deng@linux.dev> wrote:
+>
+>> The member back in struct sched_rt_entity only related to RT_GROUP_SCHED,
+>> So move sched_rt_entity::back to under the CONFIG_RT_GROUP_SCHED block. It
+>> will save a few bytes.
+>>
+>> Also, init child when parent isn't NULL in init_tg_rt_entry().
+>>
+>> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+>> ---
+>>   include/linux/sched.h |  2 +-
+>>   kernel/sched/rt.c     | 18 +++++++++---------
+>>   2 files changed, 10 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/include/linux/sched.h b/include/linux/sched.h
+>> index 292c31697248..d0fe56603e60 100644
+>> --- a/include/linux/sched.h
+>> +++ b/include/linux/sched.h
+>> @@ -597,8 +597,8 @@ struct sched_rt_entity {
+>>   	unsigned short			on_rq;
+>>   	unsigned short			on_list;
+>>   
+>> -	struct sched_rt_entity		*back;
+>>   #ifdef CONFIG_RT_GROUP_SCHED
+>> +	struct sched_rt_entity		*back;
+>>   	struct sched_rt_entity		*parent;
+>>   	/* rq on which this entity is (to be) queued: */
+>>   	struct rt_rq			*rt_rq;
+> Title claims this change - the rest of the changes should be in a separate
+> patch:
 
-Here the verifier rejects the program because it thinks insn at 7 is an
-invalid BPF_LD_IMM, but such a error log is not accurate since the issue
-is jumping to reserved code not because the program contains invalid insn.
-Therefore, make the verifier check the jump target during check_cfg(). For
-the same program, the verifier reports the following log:
 
-func#0 @0
-jump to reserved code from insn 8 to 7
+Okay. I will send v2.
 
----
-
-
-Signed-off-by: Hao Sun <sunhao.th@gmail.com>
----
- kernel/bpf/verifier.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index eed7350e15f4..725ac0b464cf 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -14980,6 +14980,7 @@ static int push_insn(int t, int w, int e, struct bpf_verifier_env *env,
- {
- 	int *insn_stack = env->cfg.insn_stack;
- 	int *insn_state = env->cfg.insn_state;
-+	struct bpf_insn *insns = env->prog->insnsi;
- 
- 	if (e == FALLTHROUGH && insn_state[t] >= (DISCOVERED | FALLTHROUGH))
- 		return DONE_EXPLORING;
-@@ -14993,6 +14994,12 @@ static int push_insn(int t, int w, int e, struct bpf_verifier_env *env,
- 		return -EINVAL;
- 	}
- 
-+	if (e == BRANCH && insns[w].code == 0) {
-+		verbose_linfo(env, t, "%d", t);
-+		verbose(env, "jump to reserved code from insn %d to %d\n", t, w);
-+		return -EINVAL;
-+	}
-+
- 	if (e == BRANCH) {
- 		/* mark branch target for state pruning */
- 		mark_prune_point(env, w);
-
----
-base-commit: 3157b7ce14bbf468b0ca8613322a05c37b5ae25d
-change-id: 20231009-jmp-into-reserved-fields-fc1a98a8e7dc
-
-Best regards,
--- 
-Hao Sun <sunhao.th@gmail.com>
-
+>> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+>> index 642edbd24ffb..7b3105b875f1 100644
+>> --- a/kernel/sched/rt.c
+>> +++ b/kernel/sched/rt.c
+>> @@ -233,8 +233,10 @@ void init_tg_rt_entry(struct task_group *tg, struct rt_rq *rt_rq,
+>>   
+>>   	if (!parent)
+>>   		rt_se->rt_rq = &rq->rt;
+>> -	else
+>> +	else {
+>>   		rt_se->rt_rq = parent->my_q;
+>> +		parent->back = rt_se;
+>> +	}
+>>   
+>>   	rt_se->my_q = rt_rq;
+>>   	rt_se->parent = parent;
+>> @@ -1441,23 +1443,21 @@ static void __dequeue_rt_entity(struct sched_rt_entity *rt_se, unsigned int flag
+>>    */
+>>   static void dequeue_rt_stack(struct sched_rt_entity *rt_se, unsigned int flags)
+>>   {
+>> -	struct sched_rt_entity *back = NULL;
+>> +	struct sched_rt_entity *root = NULL;
+>>   	unsigned int rt_nr_running;
+>>   
+>> -	for_each_sched_rt_entity(rt_se) {
+>> -		rt_se->back = back;
+>> -		back = rt_se;
+>> -	}
+>> +	for_each_sched_rt_entity(rt_se)
+>> +		root = rt_se;
+>>   
+>> -	rt_nr_running = rt_rq_of_se(back)->rt_nr_running;
+>> +	rt_nr_running = rt_rq_of_se(root)->rt_nr_running;
+>>   
+>> -	rt_se = back;
+>> +	rt_se = root;
+>>   	for_each_sched_rt_entity_back(rt_se) {
+>>   		if (on_rt_rq(rt_se))
+>>   			__dequeue_rt_entity(rt_se, flags);
+>>   	}
+>>   
+>> -	dequeue_top_rt_rq(rt_rq_of_se(back), rt_nr_running);
+>> +	dequeue_top_rt_rq(rt_rq_of_se(root), rt_nr_running);
+>>   }
+>>   
+>>   static void enqueue_rt_entity(struct sched_rt_entity *rt_se, unsigned int flags)
+>> -- 
+>> 2.25.1
+> Thanks,
+>
+> 	Ingo
