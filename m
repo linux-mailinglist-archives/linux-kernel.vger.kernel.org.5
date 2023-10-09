@@ -2,49 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8997BE7F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 600EE7BE7FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377922AbjJIR3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 13:29:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47808 "EHLO
+        id S1376865AbjJIRaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 13:30:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377909AbjJIR3u (ORCPT
+        with ESMTP id S1377407AbjJIRaR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 13:29:50 -0400
+        Mon, 9 Oct 2023 13:30:17 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02041A3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 10:29:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 867C6C433C9;
-        Mon,  9 Oct 2023 17:29:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696872589;
-        bh=Kgq9dnbTrtqSOafpxynRJ7uEV9ANCrxny0KeGFCUYgk=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=Dc/usC2t/uREaBFreFCshDGgxmbwLr9QptVzPzMMjGCYmcYoAFTGxNavwwYBKJaoL
-         6NTDtLzY57AWszIsUepo9iQP3CZ6T5Bglkg4/zTshieZu262SRIXohnStHaBw8jJ/+
-         2AzCvKCOnZ2ywspJmuYcOmE+t7DqnWnWDj5hk5XBn7yJaAeA8roT38qb9k4VvmLvFL
-         Eq8RqZQolhg0fm5KPexCcL2GnB+8vIgOAGtXRT2cj1akt5411Fsy+VcPzhm1FDypKU
-         5PMLw9x5RD4uTVlQU5JK90JiZU/2//pc7TTRILNvclrp0ViQp8wcjMw66kSZGG8mgR
-         Ha2RVxNNx/fpA==
-From:   Mark Brown <broonie@kernel.org>
-To:     Support Opensource <support.opensource@diasemi.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-In-Reply-To: <20230922175330.work.066-kees@kernel.org>
-References: <20230922175330.work.066-kees@kernel.org>
-Subject: Re: [PATCH] regulator: da9062: Annotate struct da9062_regulators
- with __counted_by
-Message-Id: <169687258725.126964.12871475282941350323.b4-ty@kernel.org>
-Date:   Mon, 09 Oct 2023 18:29:47 +0100
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C31A9D;
+        Mon,  9 Oct 2023 10:30:16 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2A51C433C7;
+        Mon,  9 Oct 2023 17:30:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696872615;
+        bh=EACK2tmq5+41Js6GZfBr/J8+BuSNLbbDDNpHvCryNec=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=INX4ASZNRg/lD8oCQEsXmK56PSVK/sEm9Mkl83Lf+wu6Pq6XbuVOt8fQHRF/LILAS
+         fvBuviO4505VLsdbEbjKHnZpR9i3YN6+G42buKLgOzK30gks9PtUCHIIpMAGmvnre5
+         RidVSyLf/g5j7I1uMYVsSeIjpRqPCTh62O5WpvbM=
+Date:   Mon, 9 Oct 2023 19:30:12 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Max Kellermann <max.kellermann@ionos.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Dongsheng Yang <dongsheng.yang@easystack.cn>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rodolfo Giometti <giometti@enneenne.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ceph-devel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-serial@vger.kernel.org, ocfs2-devel@lists.linux.dev,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 7/7] block, drivers: make lots of attribute_group globals
+ const
+Message-ID: <2023100944-sandpit-bronco-3db4@gregkh>
+References: <20231009165741.746184-1-max.kellermann@ionos.com>
+ <20231009165741.746184-7-max.kellermann@ionos.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231009165741.746184-7-max.kellermann@ionos.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -55,42 +65,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Sep 2023 10:53:31 -0700, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> As found with Coccinelle[1], add __counted_by for struct da9062_regulators.
-> 
-> [...]
+On Mon, Oct 09, 2023 at 06:57:40PM +0200, Max Kellermann wrote:
+> This moves those variables to the ".rodata" section which reduces the
+> kernel size a bit and protects the variables by putting them on
+> read-only pages at runtime.
 
-Applied to
+The kernel size should still be the same overall, you are just moving
+pointers from one section to another, right?
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+If not, what are the numbers, show them please.
 
-Thanks!
+But step back, are you SURE you can make these attribute group pointers
+const?  They are modified by some subsystems by adding or removing items
+from the lists, so why does the core need to change for that?
 
-[1/1] regulator: da9062: Annotate struct da9062_regulators with __counted_by
-      commit: 907f2a48359b836ff22e55eeb4a440fb9af86c10
+thanks,
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+greg k-h
