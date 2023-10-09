@@ -2,164 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C85E37BD852
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 12:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E84E7BD855
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 12:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346122AbjJIKP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 06:15:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58156 "EHLO
+        id S1346123AbjJIKQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 06:16:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346061AbjJIKPy (ORCPT
+        with ESMTP id S1346124AbjJIKQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 06:15:54 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A7D9F;
-        Mon,  9 Oct 2023 03:15:52 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D093C210EA;
-        Mon,  9 Oct 2023 10:15:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1696846550; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9aFHFIVYD+PckYoucQFFA7Q682WFJMhzaZvRQ/S9EPY=;
-        b=gsQYRTEb0njWM9TpyXer3r9WyXV9IEVCnaR6yBLYDXzmPah64iYyEWy0schTQL56j382wU
-        ebeI+dR4WlXBngIzleMTZ6eFCtrOhabfilROoT2ZMSGNUw7hTXLu57wireUa9RtvXxxSBk
-        IXpMHR1y6fiWpE3v0Rh2Thpix3jr7T8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1696846550;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9aFHFIVYD+PckYoucQFFA7Q682WFJMhzaZvRQ/S9EPY=;
-        b=qGEvzez2mF/FkU4Ol42KQIlRTDDiii7TYnAWg2gFBLvMprviOvhVfjy0GNDwi4Ha8aMADD
-        fayHZjqOhIiP06DQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BE1B413905;
-        Mon,  9 Oct 2023 10:15:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id b4xZLtbSI2WNeQAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 09 Oct 2023 10:15:50 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 29F17A04B2; Mon,  9 Oct 2023 12:15:50 +0200 (CEST)
-Date:   Mon, 9 Oct 2023 12:15:50 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Mirsad Todorovac <mirsad.todorovac@alu.hr>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        Jan Kara <jack@suse.cz>, Philipp Stanner <pstanner@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chris Mason <clm@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v1 1/1] xarray: fix the data-race in xas_find_chunk() by
- using READ_ONCE()
-Message-ID: <20231009101550.pqnkrp5cp5zbr3lr@quack3>
-References: <20230918094116.2mgquyxhnxcawxfu@quack3>
- <22ca3ad4-42ef-43bc-51d0-78aaf274977b@alu.unizg.hr>
- <20230918113840.h3mmnuyer44e5bc5@quack3>
- <fb0f5ba9-7fe3-a951-0587-640e7672efec@alu.unizg.hr>
- <ZQhlt/EbRf3Y+0jT@yury-ThinkPad>
- <20230918155403.ylhfdbscgw6yek6p@quack3>
- <cda628df-1933-cce8-86cd-23346541e3d8@alu.unizg.hr>
- <ZQidZLUcrrITd3Vy@yury-ThinkPad>
- <ZQkhgVb8nWGxpSPk@casper.infradead.org>
- <2c7f2acd-ef37-4504-a0e3-f74b66c455ec@alu.unizg.hr>
+        Mon, 9 Oct 2023 06:16:45 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10455E4
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 03:16:42 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4053f24c900so75935e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 03:16:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696846600; x=1697451400; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rNSWC1NcEQWATBxO3PFnKpkKdXA2Vi1W1PLFHkk8mKY=;
+        b=jusifRT53YVyAn44ZRntLn3cR6GADFESo2+bTOTdjIKlLt13+eQuy1acu8jUGaZ9dO
+         N+/pmPM0pq5RsXUxZ0YHnvuBmujxLdGm82A5SrWhSH4z8qUVZZQhoqazkrKiPnpsJcWE
+         Jhpgy82y3OQJJVkTWca27aH7lo2UuDbkQYTZVq0/BCY6L6y17gir3K10ihQalbzrbqFc
+         ZeY7CNQr32YtSXXtnUTGn1bp7g2FnaPbBZfx6f66kqrk3mDa4hs6i5oYIFp3SBO6TRzD
+         gVnsy5bBkt6VImuKmwQMFPXL7y+B5yWGVsb2QYL9BxxS9amg6JEt9JkGKp/idRGHFfCi
+         wx2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696846600; x=1697451400;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rNSWC1NcEQWATBxO3PFnKpkKdXA2Vi1W1PLFHkk8mKY=;
+        b=XD7pPkpRh/aHd/hNKmMRhy6giEtDd7ymiS3ugkJUVclJfqTKWMkeV085YJEquWhZvA
+         o8qFLPSAl7O1EjmsMlb2QDHbyP/mxqb/kHeynFiLBlIrqOYGcmhEjNl4Mj+hAMKCgKiu
+         9bC3RYUJujPFuUOHooRnAayZE72UoyFePfMVI0ykrSzWgxN+1+GW49mhVH2l/vMgQy8c
+         9uncixlWj751Hvl9sePXPYr6KMlV0er9VoLXN5Eq7vhhWNkgZ0uxrhD72KJgj/xR3xQ9
+         qV6JjAOQLstkXdAhklV58ddkStJmaJKDwMgtRWRme6LYeV783rYPcKqrrFyp9uPIVc9Y
+         pT8w==
+X-Gm-Message-State: AOJu0YyweS2rlgQLDK4iIT+BW/DRY2WIqlavNWsIK+em+v0bXI/y3lCX
+        Q7tT0B/Gkj+dlGzd0++MLskft+Af57hULjXnCa2rfA==
+X-Google-Smtp-Source: AGHT+IHu8cp7BHI0j2KjaoQYwoQVJwgOi+YC/g3+z5dc7ANthPGOUQ19ZO5iRT4b5xLRPaPsqTwcVoJW9QtBAl4LAuU=
+X-Received: by 2002:a05:600c:2301:b0:405:38d1:e146 with SMTP id
+ 1-20020a05600c230100b0040538d1e146mr320547wmo.4.1696846600202; Mon, 09 Oct
+ 2023 03:16:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2c7f2acd-ef37-4504-a0e3-f74b66c455ec@alu.unizg.hr>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+References: <20231007050621.1706331-1-yajun.deng@linux.dev>
+ <CANn89iL-zUw1FqjYRSC7BGB0hfQ5uKpJzUba3YFd--c=GdOoGg@mail.gmail.com>
+ <917708b5-cb86-f233-e878-9233c4e6c707@linux.dev> <CANn89i+navyRe8-AV=ehM3qFce2hmnOEKBqvK5Xnev7KTaS5Lg@mail.gmail.com>
+ <a53a3ff6-8c66-07c4-0163-e582d88843dd@linux.dev> <CANn89i+u5dXdYm_0_LwhXg5Nw+gHXx+nPUmbYhvT=k9P4+9JRQ@mail.gmail.com>
+ <9f4fb613-d63f-9b86-fe92-11bf4dfb7275@linux.dev> <CANn89iK7bvQtGD=p+fHaWiiaNn=u8vWrt0YQ26pGQY=kZTdfJw@mail.gmail.com>
+ <4a747fda-2bb9-4231-66d6-31306184eec2@linux.dev> <814b5598-5284-9558-8f56-12a6f7a67187@linux.dev>
+ <CANn89iJCTgWTu0mzwj-8_-HiWm4uErY=VASDHoYaod9Nq-ayPA@mail.gmail.com>
+ <508b33f7-3dc0-4536-21f6-4a5e7ade2b5c@linux.dev> <CANn89i+r-pQGpen1mUhybmj+6ybhxSsuoaB07NFzOWyHUMFDNw@mail.gmail.com>
+ <296ca17d-cff0-2d19-f620-eedab004ddde@linux.dev> <CANn89iL=W3fyuH_KawfhKvLyw2Cw=qhHbEZtbKgQEYhHJChy3Q@mail.gmail.com>
+ <68eb65c5-1870-0776-0878-694a8b002a6d@linux.dev>
+In-Reply-To: <68eb65c5-1870-0776-0878-694a8b002a6d@linux.dev>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Mon, 9 Oct 2023 12:16:25 +0200
+Message-ID: <CANn89iJHtYJjp6zPc2PVLAWuN88BQc5OntjrAf7f6QOcqP+B=g@mail.gmail.com>
+Subject: Re: [PATCH net-next v7] net/core: Introduce netdev_core_stats_inc()
+To:     Yajun Deng <yajun.deng@linux.dev>
+Cc:     rostedt@goodmis.org, mhiramat@kernel.org, dennis@kernel.org,
+        tj@kernel.org, cl@linux.com, mark.rutland@arm.com,
+        davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 06-10-23 16:39:54, Mirsad Todorovac wrote:
-> On 9/19/2023 6:20 AM, Matthew Wilcox wrote:
-> > On Mon, Sep 18, 2023 at 11:56:36AM -0700, Yury Norov wrote:
-> > > Guys, I lost the track of the conversation. In the other email Mirsad
-> > > said:
-> > >          Which was the basic reason in the first place for all this, because something changed
-> > >          data from underneath our fingers ..
-> > > 
-> > > It sounds clearly to me that this is a bug in xarray, *revealed* by
-> > > find_next_bit() function. But later in discussion you're trying to 'fix'
-> > > find_*_bit(), like if find_bit() corrupted the bitmap, but it's not.
-> > 
-> > No, you're really confused.  That happens.
-> > 
-> > KCSAN is looking for concurrency bugs.  That is, does another thread
-> > mutate the data "while" we're reading it.  It does that by reading
-> > the data, delaying for a few instructions and reading it again.  If it
-> > changed, clearly there's a race.  That does not mean there's a bug!
-> > 
-> > Some races are innocuous.  Many races are innocuous!  The problem is
-> > that compilers sometimes get overly clever and don't do the obvious
-> > thing you ask them to do.  READ_ONCE() serves two functions here;
-> > one is that it tells the compiler not to try anything fancy, and
-> > the other is that it tells KCSAN to not bother instrumenting this
-> > load; no load-delay-reload.
-> > 
-> > > In previous email Jan said:
-> > >          for any sane compiler the generated assembly with & without READ_ONCE()
-> > >          will be exactly the same.
-> > > 
-> > > If the code generated with and without READ_ONCE() is the same, the
-> > > behavior would be the same, right? If you see the difference, the code
-> > > should differ.
-> > 
-> > Hopefully now you understand why this argument is wrong ...
-> > 
-> > > You say that READ_ONCE() in find_bit() 'fixes' 200 KCSAN BUG warnings. To
-> > > me it sounds like hiding the problems instead of fixing. If there's a race
-> > > between writing and reading bitmaps, it should be fixed properly by
-> > > adding an appropriate serialization mechanism. Shutting Kcsan up with
-> > > READ_ONCE() here and there is exactly the opposite path to the right direction.
-> > 
-> > Counterpoint: generally bitmaps are modified with set_bit() which
-> > actually is atomic.  We define so many bitmap things as being atomic
-> > already, it doesn't feel like making find_bit() "must be protected"
-> > as a useful use of time.
-> > 
-> > But hey, maybe I'm wrong.  Mirsad, can you send Yury the bug reports
-> > for find_bit and friends, and Yury can take the time to dig through them
-> > and see if there are any real races in that mess?
-> > 
-> > > Every READ_ONCE must be paired with WRITE_ONCE, just like atomic
-> > > reads/writes or spin locks/unlocks. Having that in mind, adding
-> > > READ_ONCE() in find_bit() requires adding it to every bitmap function
-> > > out there. And this is, as I said before, would be an overhead for
-> > > most users.
-> > 
-> > I don't believe you.  Telling the compiler to stop trying to be clever
-> > rarely results in a performance loss.
-> 
-> Hi Mr. Wilcox,
-> 
-> Do you think we should submit a formal patch for this data-race?
+On Mon, Oct 9, 2023 at 11:43=E2=80=AFAM Yajun Deng <yajun.deng@linux.dev> w=
+rote:
+>
+>
+> On 2023/10/9 17:30, Eric Dumazet wrote:
+> > On Mon, Oct 9, 2023 at 10:36=E2=80=AFAM Yajun Deng <yajun.deng@linux.de=
+v> wrote:
+> >>
+> >> On 2023/10/9 16:20, Eric Dumazet wrote:
+> >>> On Mon, Oct 9, 2023 at 10:14=E2=80=AFAM Yajun Deng <yajun.deng@linux.=
+dev> wrote:
+> >>>> On 2023/10/9 15:53, Eric Dumazet wrote:
+> >>>>> On Mon, Oct 9, 2023 at 5:07=E2=80=AFAM Yajun Deng <yajun.deng@linux=
+.dev> wrote:
+> >>>>>
+> >>>>>> 'this_cpu_read + this_cpu_write' and 'pr_info + this_cpu_inc' will=
+ make
+> >>>>>> the trace work well.
+> >>>>>>
+> >>>>>> They all have 'pop' instructions in them. This may be the key to m=
+aking
+> >>>>>> the trace work well.
+> >>>>>>
+> >>>>>> Hi all,
+> >>>>>>
+> >>>>>> I need your help on percpu and ftrace.
+> >>>>>>
+> >>>>> I do not think you made sure netdev_core_stats_inc() was never inli=
+ned.
+> >>>>>
+> >>>>> Adding more code in it is simply changing how the compiler decides =
+to
+> >>>>> inline or not.
+> >>>> Yes, you are right. It needs to add the 'noinline' prefix. The
+> >>>> disassembly code will have 'pop'
+> >>>>
+> >>>> instruction.
+> >>>>
+> >>> The function was fine, you do not need anything like push or pop.
+> >>>
+> >>> The only needed stuff was the call __fentry__.
+> >>>
+> >>> The fact that the function was inlined for some invocations was the
+> >>> issue, because the trace point
+> >>> is only planted in the out of line function.
+> >>
+> >> But somehow the following code isn't inline? They didn't need to add t=
+he
+> >> 'noinline' prefix.
+> >>
+> >> +               field =3D (unsigned long *)((void *)this_cpu_ptr(p) + =
+offset);
+> >> +               WRITE_ONCE(*field, READ_ONCE(*field) + 1);
+> >>
+> >> Or
+> >> +               (*(unsigned long *)((void *)this_cpu_ptr(p) + offset))=
+++;
+> >>
+> > I think you are very confused.
+> >
+> > You only want to trace netdev_core_stats_inc() entry point, not
+> > arbitrary pieces of it.
+>
+>
+> Yes, I will trace netdev_core_stats_inc() entry point. I mean to replace
+>
+> +                                       field =3D (__force unsigned long
+> __percpu *)((__force void *)p + offset);
+> +                                       this_cpu_inc(*field);
+>
+> with
+>
+> +               field =3D (unsigned long *)((void *)this_cpu_ptr(p) + off=
+set);
+> +               WRITE_ONCE(*field, READ_ONCE(*field) + 1);
+>
+> Or
+> +               (*(unsigned long *)((void *)this_cpu_ptr(p) + offset))++;
+>
+> The netdev_core_stats_inc() entry point will work fine even if it doesn't
+> have 'noinline' prefix.
+>
+> I don't know why this code needs to add 'noinline' prefix.
+> +               field =3D (__force unsigned long __percpu *)((__force voi=
+d *)p + offset);
+> +               this_cpu_inc(*field);
+>
 
-So I did some benchmarking with various GCC versions and the truth is that
-READ_ONCE() does affect code generation a bit (although the original code
-does not refetch the value from memory). As a result my benchmarks show the
-bit searching functions are about 2% slower. This is not much but it is
-stupid to cause a performance regression due to non-issue. I'm trying to
-get some compiler guys look into this whether we can improve it somehow...
+C compiler decides to inline or not, depending on various factors.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+The most efficient (and small) code is generated by this_cpu_inc()
+version, allowing the compiler to inline it.
+
+If you copy/paste this_cpu_inc()  twenty times, then the compiler
+would  not inline the function anymore.
