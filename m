@@ -2,194 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1587BE1F0
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB027BE1F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377574AbjJIN46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 09:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49876 "EHLO
+        id S1377551AbjJIN6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 09:58:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377607AbjJIN44 (ORCPT
+        with ESMTP id S1376852AbjJIN6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 09:56:56 -0400
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB31FF;
-        Mon,  9 Oct 2023 06:56:49 -0700 (PDT)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5a2244e06c3so8553497b3.1;
-        Mon, 09 Oct 2023 06:56:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696859809; x=1697464609; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7R+Ed3OVoVGJyxMBNphIrCQkroRIbnjibwGDxMcagv4=;
-        b=SpcnGmaGoqeo3xlZQPFEA608gDNt0hkPZIiQvAI4N7jBruw2B256U9bIAmhUZBVh2J
-         yrow0IeFmx7wcpnqest4EqwGurm9uUXDqswsO9/JOD7Jsqxw9/WpJYlX6ff5imMB5Vv0
-         wSjyVr5ddSNMsGIm2kFVTpwde4CKPuOPb2g1IgntX3Pz+h2LNWLVP7N3oSs8m/J632e+
-         QnPeuIOQyF2v56+83HIAeD2DXTCXE5beI61HLtvfMrKxUz69b/JRYBktgHcqYiOfnHTO
-         93IqaJdUavMAmNoZWdoHQvZuvkEaOHq6Q5Y9nBl/i3IrD3PaRPYgTcF3R6d4I7p3NpMS
-         Dk1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696859809; x=1697464609;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7R+Ed3OVoVGJyxMBNphIrCQkroRIbnjibwGDxMcagv4=;
-        b=L6R9f2Eo5atH/sVP/HkZps6dxk1XRm+KdbGRYa33eX0QXaRt3SNxNHVCZ2IqLzTPhg
-         NmqTXlKTLpe83lC00laJdJ7RKNKCT19jnzhqAB+oBKwE1Lj+mD7KUOTPYR+/ZLQh9rpp
-         duIJuTXnL5rSlFMY9IshKvtz1zqbyzbv90nMYK0aLogZoeDLqZgSudtrzwdvNuMNC9EN
-         RqbB4LKtBKsrYlG0laz4TH5ix+/k/ZkSrffLEaHbEuVodS+sWXJMcKrNKRIIw2RiZQTM
-         uYwoiWTLXdBaafEXmYuqOMXJ2HZjgJEsudRHD8jblv2UZMUZ0+GygZPVMtvDUTawPNYY
-         GyTA==
-X-Gm-Message-State: AOJu0YxyQzqjtDitBRH3PLRT5VH2Efyk4BMSsm8y5/JNkKkip3TFFK7p
-        7jBg/bq/5vF1LVMwxpTl5njjOtn9yRWTCJ2iMTA=
-X-Google-Smtp-Source: AGHT+IEu5gcpHJZ81LmqyGwxblojiM/y116gIKH4I7qOS/xlUVmyIFarciyB7EASKhQWdTNoirmWT2vqnZibHQs+aOc=
-X-Received: by 2002:a25:aba8:0:b0:d43:a0d8:8daf with SMTP id
- v37-20020a25aba8000000b00d43a0d88dafmr10377767ybi.6.1696859807950; Mon, 09
- Oct 2023 06:56:47 -0700 (PDT)
+        Mon, 9 Oct 2023 09:58:17 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00BB199;
+        Mon,  9 Oct 2023 06:58:15 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id AEDA81F381;
+        Mon,  9 Oct 2023 13:58:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1696859894; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7OgkSL2KmvIM/AbVLqY0l7mLuBK7eG7eLJyEbA5Dmic=;
+        b=lIh9JNcNFzDdUWqqH8dgPFjtVoPjAPJ09+D6/ZnUe8PNohHlnvGctLowI4oJOpavAYxv7F
+        ma3yxEFptZfEIw+MDkv0aIq9J4oaFF/RR6rFuDoa+qftptY8yTsVBnCjMIdO7u2fGZYmTx
+        mhr3/E0pYJ26quX4KXWSRf1+fUg5cgQ=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 93BCE13586;
+        Mon,  9 Oct 2023 13:58:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id M2NmI/YGJGV6fAAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Mon, 09 Oct 2023 13:58:14 +0000
+From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+To:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Firo Yang <firo.yang@suse.com>
+Subject: [PATCH] cgroup: Remove duplicates in cgroup v1 tasks file
+Date:   Mon,  9 Oct 2023 15:58:11 +0200
+Message-ID: <20231009135811.2627-1-mkoutny@suse.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <20231007075148.1759-1-andrew.kanner@gmail.com>
-In-Reply-To: <20231007075148.1759-1-andrew.kanner@gmail.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Mon, 9 Oct 2023 15:56:36 +0200
-Message-ID: <CAJ8uoz2VL0mtQxG6DdUFEK7FWN+MWXUtrEFEsYue4DLBO-WNtw@mail.gmail.com>
-Subject: Re: [PATCH bpf v4] net/xdp: fix zero-size allocation warning in xskq_create()
-To:     Andrew Kanner <andrew.kanner@gmail.com>
-Cc:     martin.lau@linux.dev, bjorn@kernel.org, magnus.karlsson@intel.com,
-        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, aleksander.lobakin@intel.com,
-        xuanzhuo@linux.alibaba.com, ast@kernel.org, hawk@kernel.org,
-        john.fastabend@gmail.com, daniel@iogearbox.net,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+fae676d3cf469331fc89@syzkaller.appspotmail.com,
-        syzbot+b132693e925cbbd89e26@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 7 Oct 2023 at 09:52, Andrew Kanner <andrew.kanner@gmail.com> wrote:
->
-> Syzkaller reported the following issue:
->  ------------[ cut here ]------------
->  WARNING: CPU: 0 PID: 2807 at mm/vmalloc.c:3247 __vmalloc_node_range (mm/vmalloc.c:3361)
->  Modules linked in:
->  CPU: 0 PID: 2807 Comm: repro Not tainted 6.6.0-rc2+ #12
->  Hardware name: Generic DT based system
->  unwind_backtrace from show_stack (arch/arm/kernel/traps.c:258)
->  show_stack from dump_stack_lvl (lib/dump_stack.c:107 (discriminator 1))
->  dump_stack_lvl from __warn (kernel/panic.c:633 kernel/panic.c:680)
->  __warn from warn_slowpath_fmt (./include/linux/context_tracking.h:153 kernel/panic.c:700)
->  warn_slowpath_fmt from __vmalloc_node_range (mm/vmalloc.c:3361 (discriminator 3))
->  __vmalloc_node_range from vmalloc_user (mm/vmalloc.c:3478)
->  vmalloc_user from xskq_create (net/xdp/xsk_queue.c:40)
->  xskq_create from xsk_setsockopt (net/xdp/xsk.c:953 net/xdp/xsk.c:1286)
->  xsk_setsockopt from __sys_setsockopt (net/socket.c:2308)
->  __sys_setsockopt from ret_fast_syscall (arch/arm/kernel/entry-common.S:68)
->
-> xskq_get_ring_size() uses struct_size() macro to safely calculate the
-> size of struct xsk_queue and q->nentries of desc members. But the
-> syzkaller repro was able to set q->nentries with the value initially
-> taken from copy_from_sockptr() high enough to return SIZE_MAX by
-> struct_size(). The next PAGE_ALIGN(size) is such case will overflow
-> the size_t value and set it to 0. This will trigger WARN_ON_ONCE in
-> vmalloc_user() -> __vmalloc_node_range().
->
-> The issue is reproducible on 32-bit arm kernel.
->
-> Reported-and-tested-by: syzbot+fae676d3cf469331fc89@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/all/000000000000c84b4705fb31741e@google.com/T/
-> Link: https://syzkaller.appspot.com/bug?extid=fae676d3cf469331fc89
-> Reported-by: syzbot+b132693e925cbbd89e26@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/all/000000000000e20df20606ebab4f@google.com/T/
-> Fixes: 9f78bf330a66 ("xsk: support use vaddr as ring")
-> Signed-off-by: Andrew Kanner <andrew.kanner@gmail.com>
+One PID may appear multiple times in a preloaded pidlist.
+(Possibly due to PID recycling but we have reports of the same
+task_struct appearing with different PIDs, thus possibly involving
+transfer of PID via de_thread().)
 
-Thanks Andrew for fixing this.
+Because v1 seq_file iterator uses PIDs as position, it leads to
+a message:
+> seq_file: buggy .next function kernfs_seq_next did not update position index
 
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Conservative and quick fix consists of removing duplicates from `tasks`
+file (as opposed to removing pidlists altogether). It doesn't affect
+correctness (it's sufficient to show a PID once), performance impact
+would be hidden by unconditional sorting of the pidlist already in place
+(asymptotically).
 
-> ---
->
-> Notes (akanner):
->     v4:
->       - add explanation about SIZE_MAX, suggested by Martin KaFai Lau
->         <martin.lau@linux.dev>
->     v3: https://lore.kernel.org/all/20231005193548.515-1-andrew.kanner@gmail.com/T/
->       - free kzalloc-ed memory before return, the leak was noticed by
->         Daniel Borkmann <daniel@iogearbox.net>
->     v2: https://lore.kernel.org/all/20231002222939.1519-1-andrew.kanner@gmail.com/raw
->       - use unlikely() optimization for the case with SIZE_MAX return from
->         struct_size(), suggested by Alexander Lobakin
->         <aleksander.lobakin@intel.com>
->       - cc-ed 4 more maintainers, mentioned by cc_maintainers patchwork
->         test
->
->     v1: https://lore.kernel.org/all/20230928204440.543-1-andrew.kanner@gmail.com/T/
->       - RFC notes:
->         It was found that net/xdp/xsk.c:xsk_setsockopt() uses
->         copy_from_sockptr() to get the number of entries (int) for cases
->         with XDP_RX_RING / XDP_TX_RING and XDP_UMEM_FILL_RING /
->         XDP_UMEM_COMPLETION_RING.
->
->         Next in xsk_init_queue() there're 2 sanity checks (entries == 0)
->         and (!is_power_of_2(entries)) for which -EINVAL will be returned.
->
->         After that net/xdp/xsk_queue.c:xskq_create() will calculate the
->         size multipling the number of entries (int) with the size of u64,
->         at least.
->
->         I wonder if there should be the upper bound (e.g. the 3rd sanity
->         check inside xsk_init_queue()). It seems that without the upper
->         limit it's quiet easy to overflow the allocated size (SIZE_MAX),
->         especially for 32-bit architectures, for example arm nodes which
->         were used by the syzkaller.
->
->         In this patch I added a naive check for SIZE_MAX which helped to
->         skip zero-size allocation after overflow, but maybe it's not quite
->         right. Please, suggest if you have any thoughts about the
->         appropriate limit for the size of these xdp rings.
->
->         PS: the initial number of entries is 0x20000000 in syzkaller
->         repro: syscall(__NR_setsockopt, (intptr_t)r[0], 0x11b, 3,
->         0x20000040, 0x20);
->
->         Link:
->         https://syzkaller.appspot.com/text?tag=ReproC&x=10910f18280000
->
->  net/xdp/xsk_queue.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->
-> diff --git a/net/xdp/xsk_queue.c b/net/xdp/xsk_queue.c
-> index f8905400ee07..d2c264030017 100644
-> --- a/net/xdp/xsk_queue.c
-> +++ b/net/xdp/xsk_queue.c
-> @@ -34,6 +34,16 @@ struct xsk_queue *xskq_create(u32 nentries, bool umem_queue)
->         q->ring_mask = nentries - 1;
->
->         size = xskq_get_ring_size(q, umem_queue);
-> +
-> +       /* size which is overflowing or close to SIZE_MAX will become 0 in
-> +        * PAGE_ALIGN(), checking SIZE_MAX is enough due to the previous
-> +        * is_power_of_2(), the rest will be handled by vmalloc_user()
-> +        */
-> +       if (unlikely(size == SIZE_MAX)) {
-> +               kfree(q);
-> +               return NULL;
-> +       }
-> +
->         size = PAGE_ALIGN(size);
->
->         q->ring = vmalloc_user(size);
-> --
-> 2.39.3
->
->
+Link: https://lore.kernel.org/r/20230823174804.23632-1-mkoutny@suse.com/
+Suggested-by: Firo Yang <firo.yang@suse.com>
+Signed-off-by: Michal Koutný <mkoutny@suse.com>
+---
+ kernel/cgroup/cgroup-v1.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+index c487ffef6652..76db6c67e39a 100644
+--- a/kernel/cgroup/cgroup-v1.c
++++ b/kernel/cgroup/cgroup-v1.c
+@@ -360,10 +360,9 @@ static int pidlist_array_load(struct cgroup *cgrp, enum cgroup_filetype type,
+ 	}
+ 	css_task_iter_end(&it);
+ 	length = n;
+-	/* now sort & (if procs) strip out duplicates */
++	/* now sort & strip out duplicates (tgids or recycled thread PIDs) */
+ 	sort(array, length, sizeof(pid_t), cmppid, NULL);
+-	if (type == CGROUP_FILE_PROCS)
+-		length = pidlist_uniq(array, length);
++	length = pidlist_uniq(array, length);
+ 
+ 	l = cgroup_pidlist_find_create(cgrp, type);
+ 	if (!l) {
+-- 
+2.42.0
+
