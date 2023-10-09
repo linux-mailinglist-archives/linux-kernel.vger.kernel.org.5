@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB367BE8AC
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E5F7BE8AB
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378015AbjJIRtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 13:49:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47580 "EHLO
+        id S1377995AbjJIRtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 13:49:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377934AbjJIRtN (ORCPT
+        with ESMTP id S1377976AbjJIRtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 9 Oct 2023 13:49:13 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FF51DB;
-        Mon,  9 Oct 2023 10:49:10 -0700 (PDT)
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0FA8CC;
+        Mon,  9 Oct 2023 10:49:09 -0700 (PDT)
 Date:   Mon, 09 Oct 2023 17:49:07 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1696873748;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=QWdXMdn/ZA+CKPOIzbK9ahmLd6E9Xf93k/1EC4YxxVA=;
-        b=jQoHI9EBuZgka37wd6bL90rYdONSLZg2pOdQnOEDpuaZOPQ5rVgoRYuEaTXcmzhtSS7vlI
-        QcLid9d8b8LXIqIGjr00FMU8eFwVlh9npm16YD0ZEg8OIyMXnqZADEBL5b3dmU2pDb1otb
-        s+wGLUxxykySzKP/FWj2BuLS92CCAC15NNyDIZOQ0o0pjTn3HZoBi8k+GapyGrOIb4jJKy
-        Ij1Atb2sKIsPFEQ2xhtukXBmNXAuEzcH1sof9O6E1NCxX+V1DkZefRGvIZPp4bRiboznXw
-        uNp4IqgdymccInwpLW/O8owRFfvO9u6qKFUNWRUV5tIC6Lu1Q9zBoDhZJp9a/w==
+        bh=PbsKPCrGLp//NWnC934vWGHzzWfrPxMe6zPNAPbsNRc=;
+        b=bkCmsVTqKfbcML0UCN4uLY3QbFochbywPeu4P5Shaa7DRXjFZ2pKCRp1dyMGWCpMwb6FdP
+        byull2QiF+a5CEj8KaihoHLBREQy7KbpBRqVzJlzvZRoyM3538UjheXJWws5B+LThXFfcU
+        L/RmHzDEgbLQF1WnZ51BBuYNiP4OpcGOTK4JvmV3MUgkzIshiCyWeGmI14HJ2GAPspwmt+
+        dXRlUpBrmTsjBxE/vLBUELvRoNNg7650qukLbGL58wV9FNIaHLIZfYHkAC8fbhIQzFJfdy
+        hsk1J46EipGjGZHK0aiNsxL/P3osWm7Dcv2zPpp5DNuNTINSlwbb/QzBYAbOtw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1696873748;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=QWdXMdn/ZA+CKPOIzbK9ahmLd6E9Xf93k/1EC4YxxVA=;
-        b=XqwL/fk8g+76WdVThZg7spTjGRXiY2kac9gi4qAIoDuOB8qk/MYpAHOgDLNowiOlH9lNKC
-        rZWQ15Xx16ApQNCQ==
+        bh=PbsKPCrGLp//NWnC934vWGHzzWfrPxMe6zPNAPbsNRc=;
+        b=GBOUG/64USpbcusFPR48TcWbsO+8YI4b277wV+Lt9vmrnSK1t11ZIA0hHKsCb/QmyFUVQ7
+        Pld/y9t7pTG2MGBg==
 From:   "tip-bot2 for Uros Bizjak" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/atomic/x86: Introduce arch_sync_try_cmpxchg()
+Subject: [tip: locking/core] locking/atomic, xen: Use sync_try_cmpxchg()
+ instead of sync_cmpxchg()
 Cc:     Uros Bizjak <ubizjak@gmail.com>, Ingo Molnar <mingo@kernel.org>,
+        Juergen Gross <jgross@suse.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         linux-kernel@vger.kernel.org, x86@kernel.org
 MIME-Version: 1.0
-Message-ID: <169687374799.3135.12810563510258476664.tip-bot2@tip-bot2>
+Message-ID: <169687374726.3135.10624349103335300582.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -65,98 +65,133 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     636d6a8b850a2bb8462b5f743c9db9aa4d735cda
-Gitweb:        https://git.kernel.org/tip/636d6a8b850a2bb8462b5f743c9db9aa4d735cda
+Commit-ID:     ad0a2e4c2f20510d7e3f2bc110cf74f8578547f0
+Gitweb:        https://git.kernel.org/tip/ad0a2e4c2f20510d7e3f2bc110cf74f8578547f0
 Author:        Uros Bizjak <ubizjak@gmail.com>
-AuthorDate:    Mon, 25 Sep 2023 16:55:48 +02:00
+AuthorDate:    Mon, 10 Jul 2023 21:01:27 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Mon, 09 Oct 2023 18:14:25 +02:00
+CommitterDate: Mon, 09 Oct 2023 18:14:34 +02:00
 
-locking/atomic/x86: Introduce arch_sync_try_cmpxchg()
+locking/atomic, xen: Use sync_try_cmpxchg() instead of sync_cmpxchg()
 
-Introduce the arch_sync_try_cmpxchg() macro to improve code using
-sync_try_cmpxchg() locking primitive. The new definitions use existing
-__raw_try_cmpxchg() macros, but use its own "lock; " prefix.
+Use sync_try_cmpxchg() instead of sync_cmpxchg(*ptr, old, new) == old
+in clear_masked_cond(), clear_linked() and
+gnttab_end_foreign_access_ref_v1(). x86 CMPXCHG instruction returns
+success in ZF flag, so this change saves a compare after cmpxchg
+(and related move instruction in front of cmpxchg), improving the
+cmpxchg loop in gnttab_end_foreign_access_ref_v1() from:
 
-The new macros improve assembly of the cmpxchg loop in
-evtchn_fifo_unmask() from drivers/xen/events/events_fifo.c from:
-
- 57a:	85 c0                	test   %eax,%eax
- 57c:	78 52                	js     5d0 <...>
- 57e:	89 c1                	mov    %eax,%ecx
- 580:	25 ff ff ff af       	and    $0xafffffff,%eax
- 585:	c7 04 24 00 00 00 00 	movl   $0x0,(%rsp)
- 58c:	81 e1 ff ff ff ef    	and    $0xefffffff,%ecx
- 592:	89 4c 24 04          	mov    %ecx,0x4(%rsp)
- 596:	89 44 24 08          	mov    %eax,0x8(%rsp)
- 59a:	8b 74 24 08          	mov    0x8(%rsp),%esi
- 59e:	8b 44 24 04          	mov    0x4(%rsp),%eax
- 5a2:	f0 0f b1 32          	lock cmpxchg %esi,(%rdx)
- 5a6:	89 04 24             	mov    %eax,(%rsp)
- 5a9:	8b 04 24             	mov    (%rsp),%eax
- 5ac:	39 c1                	cmp    %eax,%ecx
- 5ae:	74 07                	je     5b7 <...>
- 5b0:	a9 00 00 00 40       	test   $0x40000000,%eax
- 5b5:	75 c3                	jne    57a <...>
- <...>
+     174:	eb 0e                	jmp    184 <...>
+     176:	89 d0                	mov    %edx,%eax
+     178:	f0 66 0f b1 31       	lock cmpxchg %si,(%rcx)
+     17d:	66 39 c2             	cmp    %ax,%dx
+     180:	74 11                	je     193 <...>
+     182:	89 c2                	mov    %eax,%edx
+     184:	89 d6                	mov    %edx,%esi
+     186:	66 83 e6 18          	and    $0x18,%si
+     18a:	74 ea                	je     176 <...>
 
 to:
 
- 578:	a9 00 00 00 40       	test   $0x40000000,%eax
- 57d:	74 2b                	je     5aa <...>
- 57f:	85 c0                	test   %eax,%eax
- 581:	78 40                	js     5c3 <...>
- 583:	89 c1                	mov    %eax,%ecx
- 585:	25 ff ff ff af       	and    $0xafffffff,%eax
- 58a:	81 e1 ff ff ff ef    	and    $0xefffffff,%ecx
- 590:	89 4c 24 04          	mov    %ecx,0x4(%rsp)
- 594:	89 44 24 08          	mov    %eax,0x8(%rsp)
- 598:	8b 4c 24 08          	mov    0x8(%rsp),%ecx
- 59c:	8b 44 24 04          	mov    0x4(%rsp),%eax
- 5a0:	f0 0f b1 0a          	lock cmpxchg %ecx,(%rdx)
- 5a4:	89 44 24 04          	mov    %eax,0x4(%rsp)
- 5a8:	75 30                	jne    5da <...>
- <...>
- 5da:	8b 44 24 04          	mov    0x4(%rsp),%eax
- 5de:	eb 98                	jmp    578 <...>
+     614:	89 c1                	mov    %eax,%ecx
+     616:	66 83 e1 18          	and    $0x18,%cx
+     61a:	75 11                	jne    62d <...>
+     61c:	f0 66 0f b1 0a       	lock cmpxchg %cx,(%rdx)
+     621:	75 f1                	jne    614 <...>
 
-The new code removes move instructions from 585: 5a6: and 5a9:
-and the compare from 5ac:. Additionally, the compiler assumes that
-cmpxchg success is more probable and optimizes code flow accordingly.
+No functional change intended.
 
 Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Juergen Gross <jgross@suse.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Stefano Stabellini <sstabellini@kernel.org>
+Cc: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
 Cc: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: linux-kernel@vger.kernel.org
 ---
- arch/x86/include/asm/cmpxchg.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/xen/events/events_fifo.c | 26 ++++++++++++--------------
+ drivers/xen/grant-table.c        | 10 ++++------
+ 2 files changed, 16 insertions(+), 20 deletions(-)
 
-diff --git a/arch/x86/include/asm/cmpxchg.h b/arch/x86/include/asm/cmpxchg.h
-index d536365..5612648 100644
---- a/arch/x86/include/asm/cmpxchg.h
-+++ b/arch/x86/include/asm/cmpxchg.h
-@@ -221,12 +221,18 @@ extern void __add_wrong_size(void)
- #define __try_cmpxchg(ptr, pold, new, size)				\
- 	__raw_try_cmpxchg((ptr), (pold), (new), (size), LOCK_PREFIX)
+diff --git a/drivers/xen/events/events_fifo.c b/drivers/xen/events/events_fifo.c
+index ad9fe51..655775d 100644
+--- a/drivers/xen/events/events_fifo.c
++++ b/drivers/xen/events/events_fifo.c
+@@ -226,21 +226,20 @@ static bool evtchn_fifo_is_masked(evtchn_port_t port)
+  */
+ static bool clear_masked_cond(volatile event_word_t *word)
+ {
+-	event_word_t new, old, w;
++	event_word_t new, old;
  
-+#define __sync_try_cmpxchg(ptr, pold, new, size)			\
-+	__raw_try_cmpxchg((ptr), (pold), (new), (size), "lock; ")
-+
- #define __try_cmpxchg_local(ptr, pold, new, size)			\
- 	__raw_try_cmpxchg((ptr), (pold), (new), (size), "")
+-	w = *word;
++	old = *word;
  
- #define arch_try_cmpxchg(ptr, pold, new) 				\
- 	__try_cmpxchg((ptr), (pold), (new), sizeof(*(ptr)))
+ 	do {
+-		if (!(w & (1 << EVTCHN_FIFO_MASKED)))
++		if (!(old & (1 << EVTCHN_FIFO_MASKED)))
+ 			return true;
  
-+#define arch_sync_try_cmpxchg(ptr, pold, new) 				\
-+	__sync_try_cmpxchg((ptr), (pold), (new), sizeof(*(ptr)))
-+
- #define arch_try_cmpxchg_local(ptr, pold, new)				\
- 	__try_cmpxchg_local((ptr), (pold), (new), sizeof(*(ptr)))
+-		if (w & (1 << EVTCHN_FIFO_PENDING))
++		if (old & (1 << EVTCHN_FIFO_PENDING))
+ 			return false;
  
+-		old = w & ~(1 << EVTCHN_FIFO_BUSY);
++		old = old & ~(1 << EVTCHN_FIFO_BUSY);
+ 		new = old & ~(1 << EVTCHN_FIFO_MASKED);
+-		w = sync_cmpxchg(word, old, new);
+-	} while (w != old);
++	} while (!sync_try_cmpxchg(word, &old, new));
+ 
+ 	return true;
+ }
+@@ -259,17 +258,16 @@ static void evtchn_fifo_unmask(evtchn_port_t port)
+ 
+ static uint32_t clear_linked(volatile event_word_t *word)
+ {
+-	event_word_t new, old, w;
++	event_word_t new, old;
+ 
+-	w = *word;
++	old = *word;
+ 
+ 	do {
+-		old = w;
+-		new = (w & ~((1 << EVTCHN_FIFO_LINKED)
+-			     | EVTCHN_FIFO_LINK_MASK));
+-	} while ((w = sync_cmpxchg(word, old, new)) != old);
++		new = (old & ~((1 << EVTCHN_FIFO_LINKED)
++			       | EVTCHN_FIFO_LINK_MASK));
++	} while (!sync_try_cmpxchg(word, &old, new));
+ 
+-	return w & EVTCHN_FIFO_LINK_MASK;
++	return old & EVTCHN_FIFO_LINK_MASK;
+ }
+ 
+ static void consume_one_event(unsigned cpu, struct evtchn_loop_ctrl *ctrl,
+diff --git a/drivers/xen/grant-table.c b/drivers/xen/grant-table.c
+index 35659bf..04a6b47 100644
+--- a/drivers/xen/grant-table.c
++++ b/drivers/xen/grant-table.c
+@@ -427,16 +427,14 @@ EXPORT_SYMBOL_GPL(gnttab_grant_foreign_access);
+ 
+ static int gnttab_end_foreign_access_ref_v1(grant_ref_t ref)
+ {
+-	u16 flags, nflags;
+-	u16 *pflags;
++	u16 *pflags = &gnttab_shared.v1[ref].flags;
++	u16 flags;
+ 
+-	pflags = &gnttab_shared.v1[ref].flags;
+-	nflags = *pflags;
++	flags = *pflags;
+ 	do {
+-		flags = nflags;
+ 		if (flags & (GTF_reading|GTF_writing))
+ 			return 0;
+-	} while ((nflags = sync_cmpxchg(pflags, flags, 0)) != flags);
++	} while (!sync_try_cmpxchg(pflags, &flags, 0));
+ 
+ 	return 1;
+ }
