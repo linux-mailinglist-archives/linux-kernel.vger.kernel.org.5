@@ -2,117 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B27E7BE79F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11FF57BE7A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377770AbjJIRTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 13:19:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50440 "EHLO
+        id S1377421AbjJIRUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 13:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377587AbjJIRTI (ORCPT
+        with ESMTP id S1377398AbjJIRUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 13:19:08 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5475B94;
-        Mon,  9 Oct 2023 10:19:07 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-27740ce6c76so2786041a91.0;
-        Mon, 09 Oct 2023 10:19:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696871947; x=1697476747; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZYsDyuLHhe+jjGyQkgh34WNXlJPcA2wIrKJwL6sse2g=;
-        b=djobItllvsdaWsPyMmBKs9iMLkVIhT3QNjxCHlA93mNyWwIvMKABKy5BcYyL7SRQvl
-         2pEUhwHe7Tx1eOt/IC/C0Ca+42SGoYOa8hma5Nn+TPZB7t9GtQzOnFVdI5IbxGQoZ2SR
-         DwrniADAOfgfA7twc15fEo3yBtdHCWoHgE6JygNDW3bM0uACdLotjKZwR07MiTs0z2wE
-         eqdQjyw6RNC6LJ5VZitDRs8NLFG+HK3cRHRx5h01Ob0vs1DKoYdbnpnOft2VwCt1UlqF
-         NafRXrtoH0W12pkbK7xBh48XV0z2XF6S/soFQRB06Ieg0juSofN/N3284tHZyYQbwCL/
-         ldkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696871947; x=1697476747;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZYsDyuLHhe+jjGyQkgh34WNXlJPcA2wIrKJwL6sse2g=;
-        b=eHKixegULPzIZ7C2SUH5/H41t7gqY1dXEXNkyzch1fe4sshTC5qf1bcCOOKPaJSlfj
-         DDzTLSGTsQ6PKOn9ulnZ+e3WveJayt53oJXkqfWvRxzdZw5+0uZh1OBxbdWNFb9f6Fbm
-         oXonynIORveeHDKDLglVvPptbcwRa1oJELC+7QUNk0ENjjw2BxSklAXTKmk97s1Fjjy5
-         yPv9Xb05W5DRem/CjbqMqCtOwser+/5l+tCMVWbPv5UuIsSkyy6fNQOIOy1EvcgEzaWn
-         CX9POYBlcDuMoGmsMKi5vsIFglQgub/Vq1uXKhSFu1mheR2rrc2OYZxfXN4aW5ydpIv6
-         q9ag==
-X-Gm-Message-State: AOJu0YyOKQF4ieRuGwIksv+9VSfSkt3h2iNVj+SfoA+erSznMyjnpfdm
-        Ww5KIRul3tQ7fFtvqbJ3HAn+3VkrzNI=
-X-Google-Smtp-Source: AGHT+IEDVJTqcauNyoJ4QmdtJElIMGQj7TZ0gNMtHAXchJoiIlwpyZ7gIWM8Jj/+9FhZNzcemHUazw==
-X-Received: by 2002:a17:90a:d804:b0:273:efc0:33eb with SMTP id a4-20020a17090ad80400b00273efc033ebmr11720051pjv.14.1696871946579;
-        Mon, 09 Oct 2023 10:19:06 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u12-20020a17090adb4c00b0027722832498sm10650839pjx.52.2023.10.09.10.19.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 10:19:05 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 9 Oct 2023 10:19:04 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Max Kellermann <max.kellermann@ionos.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/7] drivers/hwmon: add local variable for newly
- allocated attribute_group**
-Message-ID: <bab3c83c-2ba8-4d23-b3cb-2f233898f7f2@roeck-us.net>
-References: <20231009165741.746184-1-max.kellermann@ionos.com>
- <20231009165741.746184-2-max.kellermann@ionos.com>
+        Mon, 9 Oct 2023 13:20:07 -0400
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9856DA3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 10:20:05 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 8140840E01AD;
+        Mon,  9 Oct 2023 17:20:02 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id X-1eWUJPZh-I; Mon,  9 Oct 2023 17:20:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1696872000; bh=6uKOwNAtIi+7iLgXjvjrx+/QVcVmKqKtiRu/yGVcehU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ROAPEIGG1Dw+xwZ27N75PtOaWSQkGYDcIjkoeTTKlXMjbJeWsaLrwImLHaiTmR37f
+         W37eyVbQkfVBpbrN9o43US8IrxPmPr6KZhzU467ATgL1jWVHPu2GpIgIxUH1zxfJ86
+         rJoSrO5fqtxG8O86rJE4I6K7fCNYJnrjxuHOO7u7pFI+RaQcJbsEWlA3hWgMFhjwiQ
+         o8eoO6KTb1nVTXqu5C6VE47TkAFpmR4B87N3lmUd++63vWPkLuiL6Uq/OfhImIbkDo
+         gu6I81iXfr0qbJX/3++KILKNEoNbzqkb5DJ0gdT3LjmbzDjM7l6lZ5WEuPDE6/zu+C
+         dhBlzcyi/UItt/80t6j0FTpKnkb8mxYlnPbrOoAk2R1uqyYelvW27+CfBGTU24+vlm
+         qq3y+jvMhM3aCCCB39AL51OkMf/aVfrsOAHgxkAjZsV8clB8/gFKZ4ZLg0uyYzSyru
+         AF/mfpj9UVhABxmazeeErSxx3xndCb9KypJnIoSnZ19x6xdVN6nEu1QgRkgzzoiYS1
+         sAlQQaSR5QmiSTaz3BdgaKn4vOYYFGa2rOlW7MeTXyip6cagWuevMg62D2o4aPEm2y
+         t3er02Qk8J3kokinwE3iFHRm5Rtsa7Fk9eO+Kdgw4En4oDxkK6tb1KRMaOilUr9ypk
+         MA4s30hCnUobhHncQGeB87NQ=
+Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 505EB40E01AA;
+        Mon,  9 Oct 2023 17:19:26 +0000 (UTC)
+Date:   Mon, 9 Oct 2023 19:19:18 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Babu Moger <babu.moger@amd.com>
+Cc:     corbet@lwn.net, reinette.chatre@intel.com, tglx@linutronix.de,
+        mingo@redhat.com, fenghua.yu@intel.com,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        paulmck@kernel.org, akpm@linux-foundation.org,
+        quic_neeraju@quicinc.com, rdunlap@infradead.org,
+        damien.lemoal@opensource.wdc.com, songmuchun@bytedance.com,
+        peterz@infradead.org, jpoimboe@kernel.org, pbonzini@redhat.com,
+        chang.seok.bae@intel.com, pawan.kumar.gupta@linux.intel.com,
+        jmattson@google.com, daniel.sneddon@linux.intel.com,
+        sandipan.das@amd.com, tony.luck@intel.com, james.morse@arm.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bagasdotme@gmail.com, eranian@google.com,
+        christophe.leroy@csgroup.eu, jarkko@kernel.org,
+        adrian.hunter@intel.com, quic_jiles@quicinc.com,
+        peternewman@google.com
+Subject: Re: [PATCH v11 03/10] x86/resctrl: Rename rftype flags for
+ consistency
+Message-ID: <20231009171918.GPZSQ2Frs/qp129wsP@fat_crate.local>
+References: <20231003235430.1231238-1-babu.moger@amd.com>
+ <20231003235430.1231238-4-babu.moger@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231009165741.746184-2-max.kellermann@ionos.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231003235430.1231238-4-babu.moger@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 06:57:35PM +0200, Max Kellermann wrote:
-> This allows the compiler to keep the pointer in a register and
-> prepares for making the struct field "const".
+On Tue, Oct 03, 2023 at 06:54:23PM -0500, Babu Moger wrote:
+> resctrl associates rftype flags with its files so that files can be chosen
+> based on the resource, whether it is info or base, and if it is control
+> or monitor type file. These flags use the RF_ as well as RFTYPE_ prefixes.
 > 
-> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
-
-I have no idea what this is about, and I don't see how that would
-improve anything, but ...
-
-> ---
->  drivers/hwmon/hwmon.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
+> Change the prefix to RFTYPE_ for all these flags to be consistent.
 > 
-> diff --git a/drivers/hwmon/hwmon.c b/drivers/hwmon/hwmon.c
-> index c7dd3f5b2bd5..e50ab229b27d 100644
-> --- a/drivers/hwmon/hwmon.c
-> +++ b/drivers/hwmon/hwmon.c
-> @@ -783,6 +783,7 @@ __hwmon_device_register(struct device *dev, const char *name, void *drvdata,
->  	hdev = &hwdev->dev;
->  
->  	if (chip) {
-> +		const struct attribute_group **new_groups;
->  		struct attribute **attrs;
->  		int ngroups = 2; /* terminating NULL plus &hwdev->groups */
->  
-> @@ -790,8 +791,8 @@ __hwmon_device_register(struct device *dev, const char *name, void *drvdata,
->  			for (i = 0; groups[i]; i++)
->  				ngroups++;
->  
-> -		hwdev->groups = kcalloc(ngroups, sizeof(*groups), GFP_KERNEL);
-> -		if (!hwdev->groups) {
-> +		hwdev->groups = new_groups = kcalloc(ngroups, sizeof(*new_groups), GFP_KERNEL);
+> Add RFTYPE_MON_BASE that will be used in a later patch. RFTYPE_MON_BASE
+> complements existing RFTYPE_CTRL_BASE and represents files
+> belonging to monitoring groups.
 
-CHECK: multiple assignments should be avoided
-#101: FILE: drivers/hwmon/hwmon.c:794:
-+		hwdev->groups = new_groups = kcalloc(ngroups, sizeof(*new_groups), GFP_KERNEL);
+First of all, the concept of "later patch" has no meaning when the
+patches go into git, depending on the listing order.
 
-either case, this change is not acceptable.
+Second, why isn't this define added in the patch that's using it?
 
-Guenter
+A patch needs to be a logically separate, possibly self-contained
+change - remember that.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
