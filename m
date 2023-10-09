@@ -2,118 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A69B97BD573
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 10:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F2A7BD57D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 10:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345497AbjJIIoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 04:44:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55142 "EHLO
+        id S1345477AbjJIIoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 04:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345483AbjJIIoM (ORCPT
+        with ESMTP id S1345506AbjJIIoa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 04:44:12 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE1BBA;
-        Mon,  9 Oct 2023 01:44:11 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D14CC433C7;
-        Mon,  9 Oct 2023 08:44:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696841050;
-        bh=BGJHNwJNMBztON4oLZ3LK2mJH//4F5a7Anr3Jd6sFmI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DPHn6xM3gL5Za1CbvpeiFF3F0gzdQ3DjDTTeg9Ovi4zhADS2ZCOnru4zQMiodrHX9
-         Ku/FOE3+x9wXR+FMb/kuc4HHJwpwk5aOZL3bT+dypbMozi8tk+xD19g90Stq4ltEEG
-         8PY1pFf30rnGzUH4RocDUvCqJeIFugAqv570BPUOLbqFIKPp22v6vRExQ8fq1Der8I
-         yVFNvbJJh+KjYq4HeYvJqtA3EiE4i0QDJv+DLoSQwqQolVRcJ2XPio3z0+v+IEaQQg
-         pPOGsGSi5P72ZzUuCstB2fPY/FRBGLOz2WzlwcezIpAS0xiXjXbDBeLS0lgoSfR9Pq
-         Vbo7g+Hk/PkWg==
-Date:   Mon, 9 Oct 2023 11:44:06 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Junxian Huang <huangjunxian6@hisilicon.com>
-Cc:     jgg@ziepe.ca, dsahern@gmail.com, stephen@networkplumber.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH iproute2-next 2/2] rdma: Add support to dump SRQ resource
- in raw format
-Message-ID: <20231009084406.GC5042@unreal>
-References: <20231007035855.2273364-1-huangjunxian6@hisilicon.com>
- <20231007035855.2273364-3-huangjunxian6@hisilicon.com>
+        Mon, 9 Oct 2023 04:44:30 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CED09F
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 01:44:29 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-692a885f129so3124031b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 01:44:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1696841068; x=1697445868; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2NgGjX5YpaL52FNYH4ty5Y7bA0h/vA8gQAgoFoY58+k=;
+        b=qJFvg8/1UQjpzWGLwmhfH00/0lkT4jImKvjzwp2hDS/aOBQNVTpG0POeQ6cKGGPK8p
+         rf7z2ZsEpX3gloi21jYM4THdYPgLGsgZKZUcALwD+rNztpgZhfDe57/2FdP2yszVkB0K
+         vUhepehp2OvuSv71WfEGXL8l+HOb/zLXGJvc945HB4/13JTnixq3wzPer1D+KsVICzAT
+         qi3zRPO+DwUU9lT4FkOTExfcW5WCxnEfl3/o9cq9mTf9bP13Th4KkCbwCks/S73A+f1v
+         Q4pkncYWHMRQMYhb5b1qp2sqqXdTXV/yDAhEL25srHWBDymeQIs+jQs+JhFO1eYoOCEl
+         0wNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696841068; x=1697445868;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2NgGjX5YpaL52FNYH4ty5Y7bA0h/vA8gQAgoFoY58+k=;
+        b=iE53+FHq+u/fPaaq0bilUvAXXlrC0iC9LLyNAeSD5PGQYvvMypPsHBCzSrXPb4LOBk
+         iXtWk5/Vr90AkMBIrzVWNHyYYNE4cBxXel+cj6gCgj+9QzvySx+WsTBe6ByJZ2jj5Pqv
+         co3lmt56P7OXkjiOtBtvZtMN86cR5tPy3yy5VVmMVQbA3Ozfydi6kHcvDsBbYglNpLMz
+         UWH3mF88Hhs6r4ca6DczvhP+ETsJBw6pe6AQnfT3PHmtEv6lsU3cm/KRE9W71HrT+BIb
+         8Tuxwiks1dz+5t7gLfpKe67+7apj4X0Xf0iseZ/G+ChBeZrDKOacBnAFGejfjazJYHMZ
+         evew==
+X-Gm-Message-State: AOJu0Yz896GU6N2DahnH6nrRcSLozRjAQz3C/MvwMTSc8IBVyyQ1KMTH
+        6lH9vp51UBuigTlcDp5prd9A3w==
+X-Google-Smtp-Source: AGHT+IEcrHvp+wzPkmT4qVttYLRxHzYhOeFcQDW6k9Tp2oL71t/M9yU8JDgBz9yQNjgE76O5vK0sAA==
+X-Received: by 2002:a05:6a20:2445:b0:14e:3ba7:2933 with SMTP id t5-20020a056a20244500b0014e3ba72933mr14489341pzc.54.1696841068641;
+        Mon, 09 Oct 2023 01:44:28 -0700 (PDT)
+Received: from ?IPV6:2400:4050:a840:1e00:78d2:b862:10a7:d486? ([2400:4050:a840:1e00:78d2:b862:10a7:d486])
+        by smtp.gmail.com with ESMTPSA id h19-20020aa786d3000000b0068ff267f092sm5777762pfo.216.2023.10.09.01.44.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Oct 2023 01:44:28 -0700 (PDT)
+Message-ID: <48e20be1-b658-4117-8856-89ff1df6f48f@daynix.com>
+Date:   Mon, 9 Oct 2023 17:44:20 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231007035855.2273364-3-huangjunxian6@hisilicon.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 5/7] tun: Introduce virtio-net hashing feature
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, rdunlap@infradead.org, willemb@google.com,
+        gustavoars@kernel.org, herbert@gondor.apana.org.au,
+        steffen.klassert@secunet.com, nogikh@google.com,
+        pablo@netfilter.org, decui@microsoft.com, cai@lca.pw,
+        jakub@cloudflare.com, elver@google.com, pabeni@redhat.com,
+        Yuri Benditovich <yuri.benditovich@daynix.com>
+References: <20231008052101.144422-1-akihiko.odaki@daynix.com>
+ <20231008052101.144422-6-akihiko.odaki@daynix.com>
+ <CAF=yD-K2MQt4nnfwJrx6h6Nii_rho7j1o6nb_jYaSwcWY45pPw@mail.gmail.com>
+Content-Language: en-US
+From:   Akihiko Odaki <akihiko.odaki@daynix.com>
+In-Reply-To: <CAF=yD-K2MQt4nnfwJrx6h6Nii_rho7j1o6nb_jYaSwcWY45pPw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 07, 2023 at 11:58:55AM +0800, Junxian Huang wrote:
-> From: wenglianfa <wenglianfa@huawei.com>
+On 2023/10/09 17:13, Willem de Bruijn wrote:
+> On Sun, Oct 8, 2023 at 12:22 AM Akihiko Odaki <akihiko.odaki@daynix.com> wrote:
+>>
+>> virtio-net have two usage of hashes: one is RSS and another is hash
+>> reporting. Conventionally the hash calculation was done by the VMM.
+>> However, computing the hash after the queue was chosen defeats the
+>> purpose of RSS.
+>>
+>> Another approach is to use eBPF steering program. This approach has
+>> another downside: it cannot report the calculated hash due to the
+>> restrictive nature of eBPF.
+>>
+>> Introduce the code to compute hashes to the kernel in order to overcome
+>> thse challenges. An alternative solution is to extend the eBPF steering
+>> program so that it will be able to report to the userspace, but it makes
+>> little sense to allow to implement different hashing algorithms with
+>> eBPF since the hash value reported by virtio-net is strictly defined by
+>> the specification.
+>>
+>> The hash value already stored in sk_buff is not used and computed
+>> independently since it may have been computed in a way not conformant
+>> with the specification.
+>>
+>> Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
 > 
-> Add support to dump SRQ resource in raw format.
+>> @@ -2116,31 +2172,49 @@ static ssize_t tun_put_user(struct tun_struct *tun,
+>>          }
+>>
+>>          if (vnet_hdr_sz) {
+>> -               struct virtio_net_hdr gso;
+>> +               union {
+>> +                       struct virtio_net_hdr hdr;
+>> +                       struct virtio_net_hdr_v1_hash v1_hash_hdr;
+>> +               } hdr;
+>> +               int ret;
+>>
+>>                  if (iov_iter_count(iter) < vnet_hdr_sz)
+>>                          return -EINVAL;
+>>
+>> -               if (virtio_net_hdr_from_skb(skb, &gso,
+>> -                                           tun_is_little_endian(tun), true,
+>> -                                           vlan_hlen)) {
+>> +               if ((READ_ONCE(tun->vnet_hash.flags) & TUN_VNET_HASH_REPORT) &&
+>> +                   vnet_hdr_sz >= sizeof(hdr.v1_hash_hdr) &&
+>> +                   skb->tun_vnet_hash) {
 > 
-> This patch relies on the corresponding kernel commit aebf8145e11a
-> ("RDMA/core: Add support to dump SRQ resource in RAW format")
+> Isn't vnet_hdr_sz guaranteed to be >= hdr.v1_hash_hdr, by virtue of
+> the set hash ioctl failing otherwise?
 > 
-> Example:
-> $ rdma res show srq -r
-> dev hns3 149000...
-> 
-> $ rdma res show srq -j -r
-> [{"ifindex":0,"ifname":"hns3","data":[149,0,0,...]}]
-> 
-> Signed-off-by: wenglianfa <wenglianfa@huawei.com>
-> ---
->  rdma/res-srq.c | 17 ++++++++++++++++-
->  rdma/res.h     |  2 ++
->  2 files changed, 18 insertions(+), 1 deletion(-)
-> 
-> diff --git a/rdma/res-srq.c b/rdma/res-srq.c
-> index 186ae281..d2581a3f 100644
-> --- a/rdma/res-srq.c
-> +++ b/rdma/res-srq.c
-> @@ -162,6 +162,20 @@ out:
->  	return -EINVAL;
->  }
+> Such checks should be limited to control path where possible
 
-<...>
-
->  static int res_srq_line(struct rd *rd, const char *name, int idx,
->  			struct nlattr **nla_line)
->  {
-> @@ -276,7 +290,8 @@ int res_srq_parse_cb(const struct nlmsghdr *nlh, void *data)
->  		if (ret != MNL_CB_OK)
->  			break;
->  
-> -		ret = res_srq_line(rd, name, idx, nla_line);
-> +		ret = (rd->show_raw) ? res_srq_line_raw(rd, name, idx, nla_line) :
-> +		       res_srq_line(rd, name, idx, nla_line);
-
-You are missing same change in res_srq_idx_parse_cb(), see commit e2bbf737e61b ("rdma: Add support to get MR in raw format")
-as an example.
-
-Thanks
-
->  		if (ret != MNL_CB_OK)
->  			break;
->  	}
-> diff --git a/rdma/res.h b/rdma/res.h
-> index 70e51acd..e880c28b 100644
-> --- a/rdma/res.h
-> +++ b/rdma/res.h
-> @@ -39,6 +39,8 @@ static inline uint32_t res_get_command(uint32_t command, struct rd *rd)
->  		return RDMA_NLDEV_CMD_RES_CQ_GET_RAW;
->  	case RDMA_NLDEV_CMD_RES_MR_GET:
->  		return RDMA_NLDEV_CMD_RES_MR_GET_RAW;
-> +	case RDMA_NLDEV_CMD_RES_SRQ_GET:
-> +		return RDMA_NLDEV_CMD_RES_SRQ_GET_RAW;
->  	default:
->  		return command;
->  	}
-> -- 
-> 2.30.0
-> 
+There is a potential race since tun->vnet_hash.flags and vnet_hdr_sz are 
+not read at once.
