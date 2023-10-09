@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D90A77BE4DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 851537BE4E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376980AbjJIPet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 11:34:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41776 "EHLO
+        id S1376842AbjJIPe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 11:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376862AbjJIPeq (ORCPT
+        with ESMTP id S1376903AbjJIPer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 11:34:46 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF074DB
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 08:34:43 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-32167a4adaaso4246371f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 08:34:43 -0700 (PDT)
+        Mon, 9 Oct 2023 11:34:47 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EDE991
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 08:34:45 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-32615eaa312so4296184f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 08:34:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696865682; x=1697470482; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696865684; x=1697470484; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ALY9Lnunr5db7q3qvzbnZl3K+5+m0WgnB3YOM2cNc3c=;
-        b=U5dMPCLFeBW+gQNwXC0lL/5mFGoequVC1tXdyhFwK0k3ONpevPplSSBIC1eEtxGjur
-         ZhyOxqz7kW8uSjXMKP/07SY47iAI1GzmkVPDqYLItSsMzUKRsOQY7Ce6KuhzY1GgPGNi
-         3UA27y6Ngm/yb9//v4cz05seMVWgPROTkWDyb8CYXJW+wyg+TnGkiSuo55vruMSk3UTV
-         xMPQAo4ZqHOxy3GXdA7XJlKFVElXUYZt9zlJ6IUmQCT1+F7IX2ykYv4dNRgfYfovZowx
-         Lzgr6gt5elr2VxbKqLcKSTvCwUhkBRWo3czHTAVfC2ehhBS1KUl8auKe/31Ke+4MyZby
-         42Lg==
+        bh=D6eAwp+/NLgzsLQxQqIe9/6ILdI8QAjkHJ9+by+NSlg=;
+        b=xhXKuHps+ybCrEyg8BHskK+FPz7fzSwdZi4aTPWwWwvKXH7BLV1R3hz/8tY2aiUorZ
+         61aS9bBepbOFm4hAPOzVuqO45FhxlBNw6/96IUk9ajmiONQHuwF+FKR0zSBHZ0861uSz
+         +08jsF7uSxSTbttElADRoY3tYX2xQmaf1t7x9W1sAEGo0mVUo/onpf5kVBGUdy3+qYKU
+         XBAiWM1Ux/T9k6DCJPSLq8c/WRuiNkqd4X9fKyyptU9WWhHH7L9DsV6LBFHVkx6icbgn
+         NsJ+DPcflylAOwkpQvSdccvKa32U4zChUHz2Nj665/3gQPpTXWOewEdyJF5rxwTcEtX4
+         CZag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696865682; x=1697470482;
+        d=1e100.net; s=20230601; t=1696865684; x=1697470484;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ALY9Lnunr5db7q3qvzbnZl3K+5+m0WgnB3YOM2cNc3c=;
-        b=uUPaTkjS0iZ8gL2lizGHmrSjdvD+qZar/YIAZDT9BWw1QZY6whtHXm9CUuEvjxNu4D
-         FQ9wcddxviuNFVEZHAsLzifnFSWjEdXxKPk98gp/nHhh9HEc6zjeCMBn1lODSu3sz/J7
-         jcNiMDFXfGWvtjRtPzm5yMkjn5N+cYTklcggl/uuWgCa9fxnr4FqBYiD3XNsaYBpipsq
-         mM7DNG4pWdzAmqs40iWKLxMyJM5hBnI1YKrNiqm4OaSPsenOmJSyOLcOr2wo2cDIDkwe
-         Hl/Jzw7pwVhaiNZQxnHe/QnVTS41bza+jV+dZUlL54/kSMcUmzP1U4n7NynKVELQ4Dtf
-         DkHw==
-X-Gm-Message-State: AOJu0YxSPPdgf3ZW/wD2S7qURYCALjlW1BJcrAYXZ8BGt/6BPmjogYyA
-        +yuc5Ow6aZX9wGcfJ0AJ8O4lDg==
-X-Google-Smtp-Source: AGHT+IGfg4tN8OVm/Uv0hOiVhjVIt3rKwgD+zzMAu3rLsKW+sCrUPcY/lBvoMT8ujc86jhUTbapRyg==
-X-Received: by 2002:a5d:4f8a:0:b0:319:7722:30c with SMTP id d10-20020a5d4f8a000000b003197722030cmr12432000wru.22.1696865682327;
-        Mon, 09 Oct 2023 08:34:42 -0700 (PDT)
+        bh=D6eAwp+/NLgzsLQxQqIe9/6ILdI8QAjkHJ9+by+NSlg=;
+        b=Ut0STvZ43cMN9ClGQp09nAVt2XuMQ2SXerfbGaP2K2LD3pQjuwgWypFkzJ4KBi2kFX
+         IZUIyaMP6MXojuKy9mO+gmrvtdYhISJHBkTqSs7YjCFl4mOq+xoajIB4v0RHKvizmK6m
+         o/cUoUsswIIbSzDUA9bPArTJsMx/GQbz5X9cKVL2dAaP7UnciSc8mybDzaWhl+b9Sy4N
+         6nGAqHHGfD6gBgZp4jL2W3JMM/AvHGjs6hYcjZYLTKwNaFNSTKb0J7KA9ozCflgNykmh
+         bMQgRgz6k0HZmARpmHOfq9eQeDlPRseBcJArMJB+mUvVn9mt2T2kqU7nufXQDPE4M52z
+         Pt2g==
+X-Gm-Message-State: AOJu0YzM25t54SuawYl9nI7p99kPr/eys0K5vQpNj0iUACSUJpJNgNEt
+        EDX1mMyJ8C51Kxag0IXNG6a+nQ==
+X-Google-Smtp-Source: AGHT+IGQPbmjtWzlwmkDpMj8BrV+CGMweKgLmWJRazlR2GfQlg6tpQhTsj0X/JeH7Ks7AF7tx4ODyw==
+X-Received: by 2002:adf:f407:0:b0:31f:eed7:2fdc with SMTP id g7-20020adff407000000b0031feed72fdcmr14360253wro.35.1696865683428;
+        Mon, 09 Oct 2023 08:34:43 -0700 (PDT)
 Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:f20d:2959:7545:e99f])
-        by smtp.gmail.com with ESMTPSA id b3-20020adff243000000b0031431fb40fasm10016521wrp.89.2023.10.09.08.34.41
+        by smtp.gmail.com with ESMTPSA id b3-20020adff243000000b0031431fb40fasm10016521wrp.89.2023.10.09.08.34.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 08:34:41 -0700 (PDT)
+        Mon, 09 Oct 2023 08:34:43 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -64,9 +64,9 @@ To:     Andy Gross <agross@kernel.org>,
 Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v3 02/15] firmware: qcom: scm: add a missing forward declaration for struct device
-Date:   Mon,  9 Oct 2023 17:34:14 +0200
-Message-Id: <20231009153427.20951-3-brgl@bgdev.pl>
+Subject: [PATCH v3 03/15] firmware: qcom: scm: remove unneeded 'extern' specifiers
+Date:   Mon,  9 Oct 2023 17:34:15 +0200
+Message-Id: <20231009153427.20951-4-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231009153427.20951-1-brgl@bgdev.pl>
 References: <20231009153427.20951-1-brgl@bgdev.pl>
@@ -83,27 +83,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-We reference struct device in the private scm header but we neither
-include linux/device.h nor forward declare it. Fix it.
+'extern' specifiers do nothing for function declarations. Remove them
+from the private qcom-scm header.
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- drivers/firmware/qcom/qcom_scm.h | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/firmware/qcom/qcom_scm.h | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/firmware/qcom/qcom_scm.h b/drivers/firmware/qcom/qcom_scm.h
-index 7b68fa820495..c88e29051d20 100644
+index c88e29051d20..4532907e8489 100644
 --- a/drivers/firmware/qcom/qcom_scm.h
 +++ b/drivers/firmware/qcom/qcom_scm.h
-@@ -4,6 +4,8 @@
- #ifndef __QCOM_SCM_INT_H
- #define __QCOM_SCM_INT_H
+@@ -66,18 +66,17 @@ int qcom_scm_wait_for_wq_completion(u32 wq_ctx);
+ int scm_get_wq_ctx(u32 *wq_ctx, u32 *flags, u32 *more_pending);
  
-+struct device;
-+
- enum qcom_scm_convention {
- 	SMC_CONVENTION_UNKNOWN,
- 	SMC_CONVENTION_LEGACY,
+ #define SCM_SMC_FNID(s, c)	((((s) & 0xFF) << 8) | ((c) & 0xFF))
+-extern int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
+-			  enum qcom_scm_convention qcom_convention,
+-			  struct qcom_scm_res *res, bool atomic);
++int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
++		   enum qcom_scm_convention qcom_convention,
++		   struct qcom_scm_res *res, bool atomic);
+ #define scm_smc_call(dev, desc, res, atomic) \
+ 	__scm_smc_call((dev), (desc), qcom_scm_convention, (res), (atomic))
+ 
+ #define SCM_LEGACY_FNID(s, c)	(((s) << 10) | ((c) & 0x3ff))
+-extern int scm_legacy_call_atomic(struct device *dev,
+-				  const struct qcom_scm_desc *desc,
+-				  struct qcom_scm_res *res);
+-extern int scm_legacy_call(struct device *dev, const struct qcom_scm_desc *desc,
++int scm_legacy_call_atomic(struct device *dev, const struct qcom_scm_desc *desc,
+ 			   struct qcom_scm_res *res);
++int scm_legacy_call(struct device *dev, const struct qcom_scm_desc *desc,
++		    struct qcom_scm_res *res);
+ 
+ #define QCOM_SCM_SVC_BOOT		0x01
+ #define QCOM_SCM_BOOT_SET_ADDR		0x01
 -- 
 2.39.2
 
