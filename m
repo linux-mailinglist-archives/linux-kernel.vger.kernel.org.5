@@ -2,133 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82FC77BEC2C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B27FD7BEC2E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378193AbjJIVAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 17:00:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48560 "EHLO
+        id S1378027AbjJIVBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 17:01:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378151AbjJIVAQ (ORCPT
+        with ESMTP id S234587AbjJIVBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 17:00:16 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B34EDA3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 14:00:13 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-5045cb9c091so6567059e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 14:00:13 -0700 (PDT)
+        Mon, 9 Oct 2023 17:01:07 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91B72A3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 14:01:03 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7aa816c5bso11107477b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 14:01:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696885212; x=1697490012; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FFZIXmEw2tc1DnjJYwLf5gJO4LbvSj649aUqBUfNLtE=;
-        b=GIpsBT1PNjglUUx1tEs06IKZcM/j20vbudwWVNfVA1hNdA2LTqw/D/QncZ3vtH1IEf
-         aBvPIGlHw0QeIdwLarG7HbdEfUfmJRlLH3nym+Qlv+LlbjpLnh8VqUQGqW3rlS2K/ew3
-         YBbzZWyYrA+Yv9B7s3xtGNjacBTM+yljyBBCaoZPlfopONGbDbLJvN9FNKEtmGAy6jz7
-         vh9NFTgh+cmBJlEoZBpPuFqMJZBTJREhCfWZJEjwg/Xh+Op0MzC98rGSuE7gRf1x6I2T
-         rCT5v/bBYuXBIEKs0+n2E6LkS4mhWXsvkKGlaFpjPtR0g43WLdpv4HGt++5MRHACPpqM
-         AszA==
+        d=google.com; s=20230601; t=1696885263; x=1697490063; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=qyOEdilfHw6B6k4i/Hrpjck7dAiRB3VXEglYZeWU0vY=;
+        b=RDqhhdTFJzDEWkrgAFSXv2TAkzjlNIv0utTHzAf1vat4jLqL467f1eyWhCms0hrpuU
+         XeEDnmllu4x+r0VCYVazUpQToTfOagFhQ2g8pPIlNkW0clkiws5TjjVYWFy8mr4gGAUv
+         gjRPZTJedhMwI12slCQP7JwNwLTHqalGIfkJtm0eSwLTEvJsIfSpJ36R60m+AWeeH3Vq
+         1wEEd5dlMghdsNwAMjhpG55/sE2VptzL0BOHG1fbk9f+TYVR6/JUpw148RAzCYGdr0L7
+         SHb2p5N2sg+JzUMVZZwRvIO1Rj2/shaTkqPbgeW2JoXyD4+htb4qoMnd/0OLaQRUDcNW
+         bW1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696885212; x=1697490012;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FFZIXmEw2tc1DnjJYwLf5gJO4LbvSj649aUqBUfNLtE=;
-        b=T8/8w3N5IkN7yEuaunQHpI11byPLMi1pfsDi9DyyzoqaN69hwgSkWDKXd05DIQw3y2
-         ivqPlOpqpuYZXXp00Msr2lFqsfG4/f/H9SatqC8PfQV/FH/ntq96VY6i4hq3fIaaIwyz
-         9AUAFo1GyewOEvr4W+Rftf7T37wIYB+sTamdbgvVsgrQsCLOCeFfigfZR68V676+HMtT
-         QrkoZ0oIUDvAvoVJOQzCZV6JLD0Ge9l4zScpWxDhF/y1RLkBmvcUOlx0IBVv7ZHUAsDG
-         3VYJtC+630fGfuzQ7y/FAxMrbYUqZPO4ad1HhfZwSZMaPKIQ7FZ+hofVRzSMh/cCOj00
-         zhEQ==
-X-Gm-Message-State: AOJu0YyLGas2p+Us6wEvSP1M/PdOrcqPGykNSFL80kRmfCQ+mOHya/ed
-        hzh5TmvC4O3i2hPSBDUeXRofxA==
-X-Google-Smtp-Source: AGHT+IFiDYWQz4SXKOH5uGqzuFUrpdOqp33jcUV1BQQub9Nial0VFpPgIQC2f+dCF8FwCKzKQYD9pg==
-X-Received: by 2002:a05:6512:200e:b0:503:183c:1223 with SMTP id a14-20020a056512200e00b00503183c1223mr12684061lfb.7.1696885211793;
-        Mon, 09 Oct 2023 14:00:11 -0700 (PDT)
-Received: from [172.30.204.90] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id d16-20020ac24c90000000b004fe5608e412sm1545004lfl.170.2023.10.09.14.00.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 14:00:11 -0700 (PDT)
-Message-ID: <52bf96e4-f8eb-4f3b-ae2e-3c33d314b09c@linaro.org>
-Date:   Mon, 9 Oct 2023 23:00:07 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 2/2] regulator: qcom_smd: Disable unused regulators
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-References: <20231004-reg-smd-unused-v1-0-5d682493d555@kernkonzept.com>
- <20231004-reg-smd-unused-v1-2-5d682493d555@kernkonzept.com>
- <9b7744bf-d42c-4922-85e8-ca4777f313a7@linaro.org>
- <ZSRhTIqYX7hQ0_lc@gerhold.net>
-Content-Language: en-US
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <ZSRhTIqYX7hQ0_lc@gerhold.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+        d=1e100.net; s=20230601; t=1696885263; x=1697490063;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qyOEdilfHw6B6k4i/Hrpjck7dAiRB3VXEglYZeWU0vY=;
+        b=Sg7TdxGJDCThkcoAk43jRl0FyQGx9dl+HAU2F3ADCC3m1xAjinFsxkFTSvenPE63dB
+         9f6z7tFpKuzAHo5q8U5fF9PvtNt21h8cSpo5z4Oryf99jGsYPXWCGO3TEEdPnka14CLJ
+         P7PpBi4IDDuv25V0V/0mqoKEDa+SXluBlks9sypHEf61m6Aqb9+Tjqgh2Odymeg8Ed6N
+         Y9g3g74onRZQHFEa/GPXxAxDC5llnMu8R+mz81WPWmtSpSEfhTL6/JoedlKhVsxVK5PR
+         NU43Ut66lWDOfVc32owt6klXby3XAbpM5RFMXTNf34Pr5q4WHtndERo4P0Zr+B5tuflc
+         TyBw==
+X-Gm-Message-State: AOJu0Yzjr2alTqnPSm8iSR7v/rhfSey70NrmQad4DDx5qvJ1U7sn1GK4
+        KkmHo4qhRgEeHBNOm1vjvD1T4vH46sNVg2E=
+X-Google-Smtp-Source: AGHT+IEDyvZJwdqY9Oc+PsWnDK52oMqUDJXq0wl9ww7b4zK4S7kU9Z8dwTPjMN33xEoBDyZKGPNLrxqnaLEgeN4=
+X-Received: from rdbabiera.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:18a8])
+ (user=rdbabiera job=sendgmr) by 2002:a81:c14a:0:b0:5a7:aab1:96a9 with SMTP id
+ e10-20020a81c14a000000b005a7aab196a9mr37078ywl.6.1696885262787; Mon, 09 Oct
+ 2023 14:01:02 -0700 (PDT)
+Date:   Mon,  9 Oct 2023 21:00:58 +0000
+Mime-Version: 1.0
+X-Developer-Key: i=rdbabiera@google.com; a=openpgp; fpr=639A331F1A21D691815CE090416E17CA2BBBD5C8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1373; i=rdbabiera@google.com;
+ h=from:subject; bh=naOIDwmSOXGmB0NeKgkfBkGNyY1AcsJZAkoLxfJAvY4=;
+ b=owGbwMvMwCFW0bfok0KS4TbG02pJDKkqWZyV4e0cCiJFf8M0b/3MzIv2XfV/aa2ZucelhMbUB
+ WwzXh/qKGVhEONgkBVTZNH1zzO4cSV1yxzOGmOYOaxMIEMYuDgFYCIcnAx/ZSSaD5g46di9/9R0
+ r/b1VJ44i2ydZaw3Ezd4Scww9pqqzvBP80lb4eKKcJsTypG9fPO5bv/dMcWJ/2LbyudhXJz6PSb cAA==
+X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
+Message-ID: <20231009210057.3773877-2-rdbabiera@google.com>
+Subject: [PATCH v1] usb: typec: altmodes/displayport: Signal hpd low when
+ exiting mode
+From:   RD Babiera <rdbabiera@google.com>
+To:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org
+Cc:     badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, RD Babiera <rdbabiera@google.com>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Upon receiving an ACK for a sent EXIT_MODE message, the DisplayPort
+driver currently resets the status and configuration of the port partner.
+The hpd signal is not updated despite being part of the status, so the
+Display stack can still transmit video despite typec_altmode_exit placing
+the lanes in a Safe State.
 
+Set hpd to low when a sent EXIT_MODE message is ACK'ed.
 
-On 10/9/23 22:23, Stephan Gerhold wrote:
-> On Fri, Oct 06, 2023 at 11:15:40PM +0200, Konrad Dybcio wrote:
->> On 4.10.2023 16:17, Stephan Gerhold wrote:
->>> The RPM firmware on Qualcomm platforms does not provide a way to check
->>> if a regulator is on during boot using the SMD interface. If the
->>> regulators are already on during boot and Linux does not make use of
->>> them they will currently stay enabled forever. The regulator core does
->>> not know these regulators are on and cannot clean them up together with
->>> the other unused regulators.
->>>
->>> Fix this by setting the initial enable state to -EINVAL similar to
->>> qcom-rpmh-regulator.c. The regulator core will then also explicitly
->>> disable all unused regulators with unknown status.
->>>
->>> Signed-off-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
->>> ---
->>> NOTE: This has a slight potential of breaking boards that rely on having
->>> unused regulators permanently enabled (without regulator-always-on).
->>> However, this is always a mistake in the device tree so it's probably
->>> better to risk some breakage now, add the missing regulators and avoid
->>> this problem for all future boards.
->>> ---
->>>   drivers/regulator/qcom_smd-regulator.c | 5 +++--
->>>   1 file changed, 3 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/regulator/qcom_smd-regulator.c b/drivers/regulator/qcom_smd-regulator.c
->>> index f53ada076252..0bbfba2e17ff 100644
->>> --- a/drivers/regulator/qcom_smd-regulator.c
->>> +++ b/drivers/regulator/qcom_smd-regulator.c
->>> @@ -53,14 +53,14 @@ static int rpm_reg_write_active(struct qcom_rpm_reg *vreg)
->>>   		reqlen++;
->>>   	}
->>>   
->>> -	if (vreg->uv_updated && vreg->is_enabled) {
->>> +	if (vreg->uv_updated && vreg->is_enabled > 0) {
->> At a quick glance, are there any states for this value, other
->> than 0 and 1? This is not the regulator_ops->is_enabled, but
->> qcom_rpm_reg->is_enabled.
->>
-> 
-> Yes, I initially assign vreg->is_enabled = -EINVAL (for use with PATCH
-> 1/2). It's in the part of the patch that you trimmed in your reply. :D
-> 
-> Thanks,
-> Stephan
-Oh, right ^^
+Fixes: 0e3bb7d6894d ("usb: typec: Add driver for DisplayPort alternate mode")
+Cc: stable@vger.kernel.org
+Signed-off-by: RD Babiera <rdbabiera@google.com>
+---
+ drivers/usb/typec/altmodes/displayport.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Konrad
+diff --git a/drivers/usb/typec/altmodes/displayport.c b/drivers/usb/typec/altmodes/displayport.c
+index f503cb4cd721..718da02036d8 100644
+--- a/drivers/usb/typec/altmodes/displayport.c
++++ b/drivers/usb/typec/altmodes/displayport.c
+@@ -307,6 +307,11 @@ static int dp_altmode_vdm(struct typec_altmode *alt,
+ 			typec_altmode_update_active(alt, false);
+ 			dp->data.status = 0;
+ 			dp->data.conf = 0;
++			if (dp->hpd) {
++				drm_connector_oob_hotplug_event(dp->connector_fwnode);
++				dp->hpd = false;
++				sysfs_notify(&dp->alt->dev.kobj, "displayport", "hpd");
++			}
+ 			break;
+ 		case DP_CMD_STATUS_UPDATE:
+ 			dp->data.status = *vdo;
+
+base-commit: 1053c4a4b8fcbd28386e80347e7c82d4d617e352
+-- 
+2.42.0.609.gbb76f46606-goog
+
