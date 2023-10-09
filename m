@@ -2,49 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0462E7BEC78
+	by mail.lfdr.de (Postfix) with ESMTP id B1C887BEC7A
 	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378667AbjJIVOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 17:14:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52918 "EHLO
+        id S1378643AbjJIVOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 17:14:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378652AbjJIVOO (ORCPT
+        with ESMTP id S1378657AbjJIVOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 17:14:14 -0400
+        Mon, 9 Oct 2023 17:14:16 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DB6392;
-        Mon,  9 Oct 2023 14:14:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57DD6C433C8;
-        Mon,  9 Oct 2023 21:14:11 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3185892
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 14:14:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CA74C433BA;
+        Mon,  9 Oct 2023 21:14:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696886052;
-        bh=i4X/vNFkCjPk4yHPDzSDoFpjb66LQuRc1sygQ/O3xKM=;
+        s=k20201202; t=1696886054;
+        bh=vXdS6prYg0vTMoJ0Kq07ybf3uIB5ClVyk/8JPboxWbw=;
         h=From:To:Cc:Subject:Date:From;
-        b=CWIri7A6oxBeh3cQs4ZB5m0ts1YQvjE5P9iz31i0NipnWDBTs7+naZtGVs65xxfkl
-         kgpZL2e0OX3vuBf17HFaK1XPJEjDnx3Ozn2ApWwGs/eeWs4azGMEuBBo4iWEN+BurE
-         X9+/s974r6WMrtu+ckgRIGvIcofTS8g2B2aMC9+VnFTdZTsntHH1tVrNhBXgybZ0o7
-         upVTLfCaAwkj3MMNcz8+yzCJfJEwgvYfERDgyTRU2LdKHjyIC9oD8yxMGJL4N52EZi
-         fQWJH3ETj1Jlk0woqkHXUKsVGLnIifv3gQJV5MV3G3AevO2IWGp0IrZl5++rDEavUr
-         fX7VpxSmKpxYw==
-Received: (nullmailer pid 3245330 invoked by uid 1000);
+        b=JHKpR1bc8VPvT+UEgmag2buUjSi/GHDsQsHvcjdx79u5ZWj3+XSCMk6P4TVBPbFiB
+         n7AbBWbC563JG5bET7La2D+8sDsf/mLr2kCt5wp7+MxFrcTeqt1eYdN2UOt9QC4SmH
+         9iZ3pEQl/hxU2VxWiCI4jQaoHYFByCQDwpZbqUTUEoAOqvi3ZEI+/0ySoQqZHQ8pkh
+         RcIJv+0RFFUebPjuZM+d8rvSG1UhxX1yyub3h6oJeOy0i5sfdtifSOzDVs6jQFEIMX
+         pg8HBK2mQlTMcUaKUAhTc5L2gTab4eCcU4SgwvHXZI2lKJuKqej4Zv3bVMlgEqaQ7C
+         COuH3DShT8mBw==
+Received: (nullmailer pid 3245430 invoked by uid 1000);
         Mon, 09 Oct 2023 21:14:08 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Lee Jones <lee@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Tony Lindgren <tony@atomide.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-omap@vger.kernel.org
-Subject: [PATCH] mfd: Use device_get_match_data()
-Date:   Mon,  9 Oct 2023 16:13:33 -0500
-Message-ID: <20231009211356.3242037-3-robh@kernel.org>
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Lee Jones <lee@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     patches@opensource.cirrus.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] mfd: Use i2c_get_match_data()
+Date:   Mon,  9 Oct 2023 16:13:34 -0500
+Message-ID: <20231009211356.3242037-4-robh@kernel.org>
 X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -57,299 +51,245 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use preferred device_get_match_data() instead of of_match_device() to
-get the driver match data. With this, adjust the includes to explicitly
-include the correct headers.
+Use preferred i2c_get_match_data() instead of of_match_device() and
+i2c driver_data to get the driver match data. With this, adjust the
+includes to explicitly include the correct headers.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/mfd/axp20x.c           | 22 +++-------------------
- drivers/mfd/hi6421-pmic-core.c |  9 +++------
- drivers/mfd/mxs-lradc.c        |  9 ++-------
- drivers/mfd/qcom-spmi-pmic.c   |  6 ++++--
- drivers/mfd/qcom_rpm.c         |  8 ++++----
- drivers/mfd/tps65910.c         | 11 ++---------
- drivers/mfd/twl4030-power.c    |  9 +++------
- drivers/mfd/twl6030-irq.c      | 10 +++++-----
- 8 files changed, 26 insertions(+), 58 deletions(-)
+ drivers/mfd/lochnagar-i2c.c |  9 ++-------
+ drivers/mfd/lp87565.c       |  9 +++------
+ drivers/mfd/max14577.c      | 14 +++-----------
+ drivers/mfd/rn5t618.c       | 11 ++---------
+ drivers/mfd/wm831x-i2c.c    | 16 ++++------------
+ drivers/mfd/wm8994-core.c   | 11 +----------
+ 6 files changed, 15 insertions(+), 55 deletions(-)
 
-diff --git a/drivers/mfd/axp20x.c b/drivers/mfd/axp20x.c
-index d93189b0230d..deaa969bab4e 100644
---- a/drivers/mfd/axp20x.c
-+++ b/drivers/mfd/axp20x.c
-@@ -22,7 +22,8 @@
- #include <linux/mfd/axp20x.h>
+diff --git a/drivers/mfd/lochnagar-i2c.c b/drivers/mfd/lochnagar-i2c.c
+index 59092f839d65..0b76fcccd0bd 100644
+--- a/drivers/mfd/lochnagar-i2c.c
++++ b/drivers/mfd/lochnagar-i2c.c
+@@ -15,8 +15,8 @@
+ #include <linux/i2c.h>
+ #include <linux/lockdep.h>
  #include <linux/mfd/core.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
-+#include <linux/property.h>
- #include <linux/reboot.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
-@@ -1131,27 +1132,10 @@ static int axp20x_power_off(struct sys_off_data *data)
- int axp20x_match_device(struct axp20x_dev *axp20x)
- {
- 	struct device *dev = axp20x->dev;
--	const struct acpi_device_id *acpi_id;
--	const struct of_device_id *of_id;
- 	const struct mfd_cell *cells_no_irq = NULL;
- 	int nr_cells_no_irq = 0;
- 
--	if (dev->of_node) {
--		of_id = of_match_device(dev->driver->of_match_table, dev);
--		if (!of_id) {
--			dev_err(dev, "Unable to match OF ID\n");
--			return -ENODEV;
--		}
--		axp20x->variant = (long)of_id->data;
--	} else {
--		acpi_id = acpi_match_device(dev->driver->acpi_match_table, dev);
--		if (!acpi_id || !acpi_id->driver_data) {
--			dev_err(dev, "Unable to match ACPI ID and data\n");
--			return -ENODEV;
--		}
--		axp20x->variant = (long)acpi_id->driver_data;
--	}
--
-+	axp20x->variant = (long)device_get_match_data(dev);
- 	switch (axp20x->variant) {
- 	case AXP152_ID:
- 		axp20x->nr_cells = ARRAY_SIZE(axp152_cells);
-diff --git a/drivers/mfd/hi6421-pmic-core.c b/drivers/mfd/hi6421-pmic-core.c
-index a6a890537a1e..5af24a438329 100644
---- a/drivers/mfd/hi6421-pmic-core.c
-+++ b/drivers/mfd/hi6421-pmic-core.c
-@@ -15,8 +15,9 @@
- #include <linux/mfd/core.h>
- #include <linux/mfd/hi6421-pmic.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/mutex.h>
+-#include <linux/of.h>
+ #include <linux/of_platform.h>
  #include <linux/regmap.h>
  
- static const struct mfd_cell hi6421_devs[] = {
-@@ -50,16 +51,12 @@ MODULE_DEVICE_TABLE(of, of_hi6421_pmic_match);
- static int hi6421_pmic_probe(struct platform_device *pdev)
+@@ -270,7 +270,6 @@ static int lochnagar_i2c_probe(struct i2c_client *i2c)
  {
- 	struct hi6421_pmic *pmic;
--	const struct of_device_id *id;
- 	const struct mfd_cell *subdevs;
- 	enum hi6421_type type;
- 	void __iomem *base;
- 	int n_subdevs, ret;
- 
--	id = of_match_device(of_hi6421_pmic_match, &pdev->dev);
--	if (!id)
--		return -EINVAL;
--	type = (uintptr_t)id->data;
-+	type = (uintptr_t)device_get_match_data(&pdev->dev);
- 
- 	pmic = devm_kzalloc(&pdev->dev, sizeof(*pmic), GFP_KERNEL);
- 	if (!pmic)
-diff --git a/drivers/mfd/mxs-lradc.c b/drivers/mfd/mxs-lradc.c
-index 21f3033d6eb5..ec1b356562b9 100644
---- a/drivers/mfd/mxs-lradc.c
-+++ b/drivers/mfd/mxs-lradc.c
-@@ -16,8 +16,8 @@
- #include <linux/mfd/mxs-lradc.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
- #include <linux/slab.h>
- 
- #define ADC_CELL		0
-@@ -125,7 +125,6 @@ MODULE_DEVICE_TABLE(of, mxs_lradc_dt_ids);
- 
- static int mxs_lradc_probe(struct platform_device *pdev)
- {
+ 	struct device *dev = &i2c->dev;
+ 	const struct lochnagar_config *config = NULL;
 -	const struct of_device_id *of_id;
- 	struct device *dev = &pdev->dev;
- 	struct device_node *node = dev->of_node;
- 	struct mxs_lradc *lradc;
-@@ -138,11 +137,7 @@ static int mxs_lradc_probe(struct platform_device *pdev)
- 	if (!lradc)
+ 	struct lochnagar *lochnagar;
+ 	struct gpio_desc *reset, *present;
+ 	unsigned int val;
+@@ -282,11 +281,7 @@ static int lochnagar_i2c_probe(struct i2c_client *i2c)
+ 	if (!lochnagar)
  		return -ENOMEM;
  
--	of_id = of_match_device(mxs_lradc_dt_ids, &pdev->dev);
+-	of_id = of_match_device(lochnagar_of_match, dev);
 -	if (!of_id)
 -		return -EINVAL;
 -
--	lradc->soc = (uintptr_t)of_id->data;
-+	lradc->soc = (enum mxs_lradc_id)device_get_match_data(&pdev->dev);
+-	config = of_id->data;
++	config = i2c_get_match_data(i2c);
  
- 	lradc->clk = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(lradc->clk)) {
-diff --git a/drivers/mfd/qcom-spmi-pmic.c b/drivers/mfd/qcom-spmi-pmic.c
-index 7e2cd79d17eb..4899af64bf10 100644
---- a/drivers/mfd/qcom-spmi-pmic.c
-+++ b/drivers/mfd/qcom-spmi-pmic.c
-@@ -8,10 +8,12 @@
- #include <linux/gfp.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+#include <linux/of_platform.h>
- #include <linux/spmi.h>
- #include <linux/types.h>
- #include <linux/regmap.h>
--#include <linux/of_platform.h>
- #include <soc/qcom/qcom-spmi-pmic.h>
+ 	lochnagar->dev = dev;
+ 	mutex_init(&lochnagar->analogue_config_lock);
+diff --git a/drivers/mfd/lp87565.c b/drivers/mfd/lp87565.c
+index 1b7f8349911d..08c62ddfb4f5 100644
+--- a/drivers/mfd/lp87565.c
++++ b/drivers/mfd/lp87565.c
+@@ -6,10 +6,11 @@
+  */
  
- #define PMIC_REV2		0x101
-@@ -236,7 +238,7 @@ static int pmic_spmi_probe(struct spmi_device *sdev)
- 	if (!ctx)
- 		return -ENOMEM;
- 
--	ctx->num_usids = (uintptr_t)of_device_get_match_data(&sdev->dev);
-+	ctx->num_usids = (uintptr_t)device_get_match_data(&sdev->dev);
- 
- 	/* Only the first slave id for a PMIC contains this information */
- 	if (sdev->usid % ctx->num_usids == 0) {
-diff --git a/drivers/mfd/qcom_rpm.c b/drivers/mfd/qcom_rpm.c
-index 086611322874..27446f43e3f3 100644
---- a/drivers/mfd/qcom_rpm.c
-+++ b/drivers/mfd/qcom_rpm.c
-@@ -7,6 +7,8 @@
- 
- #include <linux/module.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
-+#include <linux/of.h>
- #include <linux/of_platform.h>
- #include <linux/io.h>
+ #include <linux/gpio/consumer.h>
++#include <linux/i2c.h>
  #include <linux/interrupt.h>
-@@ -528,7 +530,6 @@ static irqreturn_t qcom_rpm_wakeup_interrupt(int irq, void *dev)
- 
- static int qcom_rpm_probe(struct platform_device *pdev)
- {
--	const struct of_device_id *match;
- 	struct device_node *syscon_np;
- 	struct qcom_rpm *rpm;
- 	u32 fw_version[3];
-@@ -570,10 +571,9 @@ static int qcom_rpm_probe(struct platform_device *pdev)
- 	if (irq_wakeup < 0)
- 		return irq_wakeup;
- 
--	match = of_match_device(qcom_rpm_of_match, &pdev->dev);
--	if (!match)
-+	rpm->data = device_get_match_data(&pdev->dev);
-+	if (!rpm->data)
- 		return -ENODEV;
--	rpm->data = match->data;
- 
- 	rpm->status_regs = devm_platform_get_and_ioremap_resource(pdev, 0, NULL);
- 	if (IS_ERR(rpm->status_regs))
-diff --git a/drivers/mfd/tps65910.c b/drivers/mfd/tps65910.c
-index 41408df1712f..dce6ad668dbf 100644
---- a/drivers/mfd/tps65910.c
-+++ b/drivers/mfd/tps65910.c
-@@ -19,7 +19,7 @@
- #include <linux/regmap.h>
- #include <linux/mfd/tps65910.h>
- #include <linux/of.h>
+ #include <linux/mfd/core.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/module.h>
 -#include <linux/of_device.h>
-+#include <linux/property.h>
+ #include <linux/regmap.h>
  
- static const struct resource rtc_resources[] = {
- 	{
-@@ -374,16 +374,9 @@ static struct tps65910_board *tps65910_parse_dt(struct i2c_client *client,
- 	struct device_node *np = client->dev.of_node;
- 	struct tps65910_board *board_info;
- 	unsigned int prop;
--	const struct of_device_id *match;
+ #include <linux/mfd/lp87565.h>
+@@ -46,7 +47,6 @@ MODULE_DEVICE_TABLE(of, of_lp87565_match_table);
+ static int lp87565_probe(struct i2c_client *client)
+ {
+ 	struct lp87565 *lp87565;
+-	const struct of_device_id *of_id;
+ 	int ret;
+ 	unsigned int otpid;
+ 
+@@ -89,10 +89,7 @@ static int lp87565_probe(struct i2c_client *client)
+ 	}
+ 
+ 	lp87565->rev = otpid & LP87565_OTP_REV_OTP_ID;
+-
+-	of_id = of_match_device(of_lp87565_match_table, &client->dev);
+-	if (of_id)
+-		lp87565->dev_type = (uintptr_t)of_id->data;
++	lp87565->dev_type = (uintptr_t)i2c_get_match_data(client);
+ 
+ 	i2c_set_clientdata(client, lp87565);
+ 
+diff --git a/drivers/mfd/max14577.c b/drivers/mfd/max14577.c
+index 1f4f5002595c..8f7472c76009 100644
+--- a/drivers/mfd/max14577.c
++++ b/drivers/mfd/max14577.c
+@@ -9,9 +9,10 @@
+ // This driver is based on max8997.c
+ 
+ #include <linux/err.h>
++#include <linux/i2c.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+ #include <linux/interrupt.h>
+-#include <linux/of_device.h>
+ #include <linux/mfd/core.h>
+ #include <linux/mfd/max14577.h>
+ #include <linux/mfd/max14577-private.h>
+@@ -357,7 +358,6 @@ static void max77836_remove(struct max14577 *max14577)
+ 
+ static int max14577_i2c_probe(struct i2c_client *i2c)
+ {
+-	const struct i2c_device_id *id = i2c_client_get_device_id(i2c);
+ 	struct max14577 *max14577;
+ 	struct max14577_platform_data *pdata = dev_get_platdata(&i2c->dev);
+ 	struct device_node *np = i2c->dev.of_node;
+@@ -397,15 +397,7 @@ static int max14577_i2c_probe(struct i2c_client *i2c)
+ 		return ret;
+ 	}
+ 
+-	if (np) {
+-		const struct of_device_id *of_id;
+-
+-		of_id = of_match_device(max14577_dt_match, &i2c->dev);
+-		if (of_id)
+-			max14577->dev_type = (uintptr_t)of_id->data;
+-	} else {
+-		max14577->dev_type = id->driver_data;
+-	}
++	max14577->dev_type = (enum maxim_device_type)i2c_get_match_data(i2c);
+ 
+ 	max14577_print_dev_type(max14577);
+ 
+diff --git a/drivers/mfd/rn5t618.c b/drivers/mfd/rn5t618.c
+index 0fe616b2db8e..7336e6d8a001 100644
+--- a/drivers/mfd/rn5t618.c
++++ b/drivers/mfd/rn5t618.c
+@@ -13,7 +13,7 @@
+ #include <linux/mfd/core.h>
+ #include <linux/mfd/rn5t618.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/reboot.h>
+ #include <linux/regmap.h>
+@@ -179,22 +179,15 @@ MODULE_DEVICE_TABLE(of, rn5t618_of_match);
+ 
+ static int rn5t618_i2c_probe(struct i2c_client *i2c)
+ {
+-	const struct of_device_id *of_id;
+ 	struct rn5t618 *priv;
  	int ret;
  
--	match = of_match_device(tps65910_of_match, &client->dev);
--	if (!match) {
--		dev_err(&client->dev, "Failed to find matching dt id\n");
--		return NULL;
+-	of_id = of_match_device(rn5t618_of_match, &i2c->dev);
+-	if (!of_id) {
+-		dev_err(&i2c->dev, "Failed to find matching DT ID\n");
+-		return -EINVAL;
 -	}
 -
--	*chip_id  = (unsigned long)match->data;
-+	*chip_id  = (unsigned long)device_get_match_data(&client->dev);
+ 	priv = devm_kzalloc(&i2c->dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+ 		return -ENOMEM;
  
- 	board_info = devm_kzalloc(&client->dev, sizeof(*board_info),
- 			GFP_KERNEL);
-diff --git a/drivers/mfd/twl4030-power.c b/drivers/mfd/twl4030-power.c
-index e35b0f788c50..1595e9c76132 100644
---- a/drivers/mfd/twl4030-power.c
-+++ b/drivers/mfd/twl4030-power.c
-@@ -27,8 +27,8 @@
- #include <linux/pm.h>
- #include <linux/mfd/twl.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
+ 	i2c_set_clientdata(i2c, priv);
+-	priv->variant = (long)of_id->data;
++	priv->variant = (long)i2c_get_match_data(i2c);
+ 	priv->irq = i2c->irq;
+ 	priv->dev = &i2c->dev;
+ 
+diff --git a/drivers/mfd/wm831x-i2c.c b/drivers/mfd/wm831x-i2c.c
+index 694ddbbf0372..9bee007f9c99 100644
+--- a/drivers/mfd/wm831x-i2c.c
++++ b/drivers/mfd/wm831x-i2c.c
+@@ -15,7 +15,6 @@
+ #include <linux/slab.h>
+ #include <linux/err.h>
  #include <linux/of.h>
 -#include <linux/of_device.h>
+ #include <linux/regmap.h>
  
- #include <asm/mach-types.h>
+ #include <linux/mfd/wm831x/core.h>
+@@ -23,22 +22,15 @@
  
-@@ -883,7 +883,6 @@ static int twl4030_power_probe(struct platform_device *pdev)
+ static int wm831x_i2c_probe(struct i2c_client *i2c)
  {
- 	const struct twl4030_power_data *pdata = dev_get_platdata(&pdev->dev);
- 	struct device_node *node = pdev->dev.of_node;
--	const struct of_device_id *match;
- 	int err = 0;
- 	int err2 = 0;
- 	u8 val;
-@@ -904,10 +903,8 @@ static int twl4030_power_probe(struct platform_device *pdev)
- 		return err;
- 	}
- 
--	match = of_match_device(of_match_ptr(twl4030_power_of_match),
--				&pdev->dev);
--	if (match && match->data)
--		pdata = match->data;
-+	if (node)
-+		pdata = device_get_match_data(&pdev->dev);
- 
- 	if (pdata) {
- 		err = twl4030_power_configure_scripts(pdata);
-diff --git a/drivers/mfd/twl6030-irq.c b/drivers/mfd/twl6030-irq.c
-index 3c03681c124c..f9fce8408c2c 100644
---- a/drivers/mfd/twl6030-irq.c
-+++ b/drivers/mfd/twl6030-irq.c
-@@ -24,10 +24,10 @@
- #include <linux/kthread.h>
- #include <linux/mfd/twl.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
- #include <linux/suspend.h>
- #include <linux/of.h>
- #include <linux/irqdomain.h>
--#include <linux/of_device.h>
- 
- #include "twl-core.h"
- 
-@@ -368,10 +368,10 @@ int twl6030_init_irq(struct device *dev, int irq_num)
- 	int			nr_irqs;
- 	int			status;
- 	u8			mask[3];
+-	const struct i2c_device_id *id = i2c_client_get_device_id(i2c);
+ 	struct wm831x_pdata *pdata = dev_get_platdata(&i2c->dev);
 -	const struct of_device_id *of_id;
-+	const int		*irq_tbl;
+ 	struct wm831x *wm831x;
+ 	enum wm831x_parent type;
+ 	int ret;
  
--	of_id = of_match_device(twl6030_of_match, dev);
--	if (!of_id || !of_id->data) {
-+	irq_tbl = device_get_match_data(dev);
-+	if (!irq_tbl) {
- 		dev_err(dev, "Unknown TWL device model\n");
- 		return -EINVAL;
+-	if (i2c->dev.of_node) {
+-		of_id = of_match_device(wm831x_of_match, &i2c->dev);
+-		if (!of_id) {
+-			dev_err(&i2c->dev, "Failed to match device\n");
+-			return -ENODEV;
+-		}
+-		type = (uintptr_t)of_id->data;
+-	} else {
+-		type = (enum wm831x_parent)id->driver_data;
++	type = (uintptr_t)i2c_get_match_data(i2c);
++	if (!type) {
++		dev_err(&i2c->dev, "Failed to match device\n");
++		return -ENODEV;
  	}
-@@ -409,7 +409,7 @@ int twl6030_init_irq(struct device *dev, int irq_num)
  
- 	twl6030_irq->pm_nb.notifier_call = twl6030_irq_pm_notifier;
- 	atomic_set(&twl6030_irq->wakeirqs, 0);
--	twl6030_irq->irq_mapping_tbl = of_id->data;
-+	twl6030_irq->irq_mapping_tbl = irq_tbl;
+ 	wm831x = devm_kzalloc(&i2c->dev, sizeof(struct wm831x), GFP_KERNEL);
+diff --git a/drivers/mfd/wm8994-core.c b/drivers/mfd/wm8994-core.c
+index aba7af688175..d5ac066f9db4 100644
+--- a/drivers/mfd/wm8994-core.c
++++ b/drivers/mfd/wm8994-core.c
+@@ -15,7 +15,6 @@
+ #include <linux/delay.h>
+ #include <linux/mfd/core.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
+ #include <linux/regulator/consumer.h>
+@@ -612,8 +611,6 @@ MODULE_DEVICE_TABLE(of, wm8994_of_match);
  
- 	twl6030_irq->irq_domain =
- 		irq_domain_add_linear(node, nr_irqs,
+ static int wm8994_i2c_probe(struct i2c_client *i2c)
+ {
+-	const struct i2c_device_id *id = i2c_client_get_device_id(i2c);
+-	const struct of_device_id *of_id;
+ 	struct wm8994 *wm8994;
+ 	int ret;
+ 
+@@ -625,13 +622,7 @@ static int wm8994_i2c_probe(struct i2c_client *i2c)
+ 	wm8994->dev = &i2c->dev;
+ 	wm8994->irq = i2c->irq;
+ 
+-	if (i2c->dev.of_node) {
+-		of_id = of_match_device(wm8994_of_match, &i2c->dev);
+-		if (of_id)
+-			wm8994->type = (uintptr_t)of_id->data;
+-	} else {
+-		wm8994->type = id->driver_data;
+-	}
++	wm8994->type = (enum wm8994_type)i2c_get_match_data(i2c);
+ 
+ 	wm8994->regmap = devm_regmap_init_i2c(i2c, &wm8994_base_regmap_config);
+ 	if (IS_ERR(wm8994->regmap)) {
 -- 
 2.42.0
 
