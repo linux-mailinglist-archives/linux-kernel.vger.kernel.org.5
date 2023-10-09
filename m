@@ -2,93 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 849087BEC33
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A877BEC37
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377532AbjJIVCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 17:02:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52036 "EHLO
+        id S1378199AbjJIVDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 17:03:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377082AbjJIVCw (ORCPT
+        with ESMTP id S1378151AbjJIVDI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 17:02:52 -0400
-Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D83BA
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 14:02:51 -0700 (PDT)
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-59f6492b415so43023057b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 14:02:51 -0700 (PDT)
+        Mon, 9 Oct 2023 17:03:08 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F50EB;
+        Mon,  9 Oct 2023 14:03:04 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-584bfb14c59so3058625a12.0;
+        Mon, 09 Oct 2023 14:03:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696885370; x=1697490170; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SJz0h0Tx8tbmQIBwQkViScvt69REAVK+f5XbSP6AYKE=;
-        b=zUDlbyAE84bS8JysuwtlFOlOCAIWHq5vzlBdmzHuLZHTu9Su55E3ZOHSlochmwe4ku
-         jUA+nBDgJjp5jJot7wg1c5nQdLExC35cCoWHvQS/AE9DqudRhIwlBxbNaDP5yy6GuK3k
-         gn6JHPIjOS8no3KV+MCnjIamgwIABXgze4vo00hH2wRYKc+gaKukjamaSsq/QjUqbEyZ
-         N98niBdGNGk90sjPdMYWvgAODLTESYfa37pxPF+38K9T83mGNoV0fAaW+jeUhbXOC4zZ
-         cNg01NNqtizcd40c26dWJt3yPK7VEl8abjTF9eOtd41mV5IdgAK+YdqSeZKYwdgT38Nm
-         Quzw==
+        d=gmail.com; s=20230601; t=1696885383; x=1697490183; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=os7QhAKub4KIthm7Pb05vmG1pc3XAljYVBVgNXJPWvs=;
+        b=bwH7MeQHRw1XFbkokWtrNqX3zzyQ1eHixqM66/wVMpaE+apb29VZdCCn38ITlKSxmr
+         VPmRqXTHo3QTrrK67zJxtXQ5mopESqwzyKuYWSyiCcwUJkZNLs1neFQIJnNHS2gOndYr
+         wilrgzcerO0pgthQi7DrOmXhSn7LEpcZzcngXy7hjAc/D2JK8eq82AnkY277kEkHAfau
+         VnwdS3xHO+MukOlFPsUS2Mpv7XzOSsg9dbWkQZdtYsjnwQQWeVF/blvIiD/bPJ2yaa5s
+         Z3lG351t4/YWaUnV4YwrgNOs5jytNnVktO0OijqLrvVr8A0+IVMeg/Ro9ROZwSLYIyX7
+         SqJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696885370; x=1697490170;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SJz0h0Tx8tbmQIBwQkViScvt69REAVK+f5XbSP6AYKE=;
-        b=DBFh06CkkttP/46HkNIrWYX3njNpM73vG+munAnlE34rIG6g3DU/6oDArelzGZGRjm
-         vPITUVlsmlM8LWOJoQSmv75/bVTxkmfTlpLxkrDTy38FBnsnknP2x7ACrqCp6lDXh7wq
-         FSUQnZS0j3DPt9ldqve/dSpTsHrh3VDHMT2Sk2iur7FWTALvE4jCvmRpvE1yj3KykloF
-         Rvy+ZtbE8EoWf6AxOfqgpEMCmZYzFikKhzMn+X/Fg0C3BjSV+b06JJsVPna48FO0oxpD
-         BLohhE5GJ9B5Ku8u6dj6SbA86NIB66O+p/IzXmeIjMTxKcTZx1hHWgq77ywKHLhcBRY1
-         TTKA==
-X-Gm-Message-State: AOJu0YzjomlKi5CtWWObEyPD4LyRpR6eD8yr00A465slvxqfeG+4mWBf
-        783ilh/hLOSi0VAS9+7NdX3qsA0tmlapivKf7JWFcQ==
-X-Google-Smtp-Source: AGHT+IG7zTQ1sPIVq6sSufNIqZ5HokqJWtqPk7b7cMpFUs43lI/+XA7kKBK7iStn8zLZan3BdCgDzKJEQFuFjmdMKw0=
-X-Received: by 2002:a81:49d0:0:b0:56c:f0c7:7d72 with SMTP id
- w199-20020a8149d0000000b0056cf0c77d72mr10143379ywa.4.1696885370504; Mon, 09
- Oct 2023 14:02:50 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696885383; x=1697490183;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=os7QhAKub4KIthm7Pb05vmG1pc3XAljYVBVgNXJPWvs=;
+        b=L2g5Et6IsYKNXHfdJELQXvj8/W66DxeV6VVg4KItb+m1qaY2528B8ypf9C1hwKqIvK
+         Re5BYZGWaggZU393+JS6H/f0/yAyvKfo1zfeOMDLPQtZ1BzfBo1K5E0vzpSKfuRx0UEz
+         avZL3mn5L5W1ZJW94bTIM2reVXtqmxubxJuDYL2zIzr46aX+mqY22Qz3jMzx6pYblt3A
+         X4bdufVJnHZKqpvNkJOgDFYccb8rZ0H68wcjYn1ZsP1QzL1pkoFQ9Y7ItUkAOMGJZPV1
+         FD7v8QsBVrmVCZRyQMySulv4NtLway8j+rM2SWmIXi30+TaK6lasfZvvQW9y49zQzp+x
+         yoHQ==
+X-Gm-Message-State: AOJu0YwfULdHclwXyuvmJx9eafGC+/oaXH70qEm71Y5bVRZQfZjcJFyh
+        CJgA0Q7stTD0p9OhTdl3wLk=
+X-Google-Smtp-Source: AGHT+IHF7rURm2cs2Pj6n58bXbvNQueqFggbxqwL5FDaqybnyUjNXbDI8sVnaoO91ppPmv3o7+BKcw==
+X-Received: by 2002:a17:90b:4f46:b0:267:f9c4:c0a8 with SMTP id pj6-20020a17090b4f4600b00267f9c4c0a8mr13248485pjb.4.1696885383485;
+        Mon, 09 Oct 2023 14:03:03 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id e2-20020a17090a630200b00277337818afsm6484585pjj.0.2023.10.09.14.03.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Oct 2023 14:03:02 -0700 (PDT)
+Message-ID: <c197f024-e504-470e-b4a9-ce6466a4a038@gmail.com>
+Date:   Mon, 9 Oct 2023 14:02:58 -0700
 MIME-Version: 1.0
-References: <20231007060639.725350-1-yangcong5@huaqin.corp-partner.google.com>
- <CACRpkdbek0-Vhk4_34qY+0=EGrQxJS_CfLuF_5fRozMMyc+=Kw@mail.gmail.com> <CAD=FV=UFa_AoJQvUT3BTiRs19WCA2xLVeQOU=+nYu_HaE0_c6Q@mail.gmail.com>
-In-Reply-To: <CAD=FV=UFa_AoJQvUT3BTiRs19WCA2xLVeQOU=+nYu_HaE0_c6Q@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 9 Oct 2023 23:02:39 +0200
-Message-ID: <CACRpkdYrFhTCa9rJ4savOcqRxcnyqoojCnwaCk6cnJv=aWxo4A@mail.gmail.com>
-Subject: Re: [v1 0/2] Break out as separate driver from boe-tv101wum-nl6 panel driver
-To:     Doug Anderson <dianders@google.com>
-Cc:     Cong Yang <yangcong5@huaqin.corp-partner.google.com>,
-        sam@ravnborg.org, neil.armstrong@linaro.org, daniel@ffwll.ch,
-        hsinyi@google.com, swboyd@chromium.org, airlied@gmail.com,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v5 01/16] net: Convert PHYs hwtstamp callback to
+ use kernel_hwtstamp_config
+Content-Language: en-US
+To:     =?UTF-8?Q?K=C3=B6ry_Maincent?= <kory.maincent@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Michael Walle <michael@walle.cc>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>
+References: <20231009155138.86458-1-kory.maincent@bootlin.com>
+ <20231009155138.86458-2-kory.maincent@bootlin.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20231009155138.86458-2-kory.maincent@bootlin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 9, 2023 at 10:53=E2=80=AFPM Doug Anderson <dianders@google.com>=
- wrote:
+On 10/9/23 08:51, Köry Maincent wrote:
+> From: Kory Maincent <kory.maincent@bootlin.com>
+> 
+> The PHYs hwtstamp callback are still getting the timestamp config from
+> ifreq and using copy_from/to_user.
+> Get rid of these functions by using timestamp configuration in parameter.
+> This also allow to move on to kernel_hwtstamp_config and be similar to
+> net devices using the new ndo_hwstamp_get/set.
+> 
+> This adds the possibility to manipulate the timestamp configuration
+> from the kernel which was not possible with the copy_from/to_user.
+> 
+> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 
-> Also: just as a heads up, Hsin-Yi measured the impact of removing the
-> "command table" for init and replacing it with a whole pile of direct
-> function calls. She found that it added over 100K to the driver (!!!).
-> I believe it went from a 45K driver to a 152K driver. Something to
-> keep in mind. ;-)
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
-Sounds like Aarch64 code. I would love a comparison of the same
-driver compiled to ARMv7t thumb code. Just for the academic
-interest. Because I have heard about people running ARM32
-kernels on Aarch64 hardware for this exact reason: so they can
-have thumb, which is compact.
-
-OK OK we definitely need command sequence tables in the core,
-what we have now is each driver rolling its own which is looking bad.
-
-Yours,
-Linus Walleij
