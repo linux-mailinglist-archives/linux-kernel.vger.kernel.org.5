@@ -2,92 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8287BDA8C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 843AF7BDA8E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346384AbjJIMAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 08:00:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34502 "EHLO
+        id S1346398AbjJIMBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 08:01:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232860AbjJIMAs (ORCPT
+        with ESMTP id S1346394AbjJIMBB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 08:00:48 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9173C94;
-        Mon,  9 Oct 2023 05:00:46 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 399Bk93c029864;
-        Mon, 9 Oct 2023 12:00:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=o9r1b72AGzQX2cPr3WsZ4YtvkbsTzQxrKOO5gARLsSg=;
- b=EqS9Eb8QuzhS2rsmdbzg/FEhk6CjLoBgeb2ZxodZgr80/jtVRB/v1t/oYe9xYXbHgg++
- m9vY5hE9lS44rxu4+RjHXogYHDr+P4tdv0vifgUMsiSzLEDYgF2W0xsuP5GLxqPD3ND0
- zatW1t7s2F3ZpspyyLlNa0Te6QBEYoDTKFmCxEJ+Z6uZf0Fe73IhI4ch+MA971Od89WM
- EbKXPSF2GdZ1eoMrMfGPYAKxTOJ4OnZEOB4fvOrZBY1vu187+2duPrD9iFORbXcibe3x
- NXP4hYGibfPgAfMj2huKwl1O09eBmYVzJa4ZXBRvLbIRswsY1c2axJda5LcxQA5hjmVR Jg== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tkh592b8c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Oct 2023 12:00:04 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 399C02Xr000308
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 9 Oct 2023 12:00:02 GMT
-Received: from [10.214.225.95] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 9 Oct
- 2023 04:59:49 -0700
-Message-ID: <a869ec2e-966b-f8ea-7f68-a77c214a45af@quicinc.com>
-Date:   Mon, 9 Oct 2023 17:29:40 +0530
+        Mon, 9 Oct 2023 08:01:01 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A57BAA6
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 05:00:58 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-533c5d10dc7so7739867a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 05:00:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696852857; x=1697457657; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O0e3Kjl0Q+kzKKYQyaEbXG2ZRjDWxSvz8cJxvL5yyWo=;
+        b=E2quLMtOPcMIi59CpudMOk9EdL/Es9T37rSIbAgEumtlr7WrBofU7vBFJxQnfgwUQX
+         McXX5bnziR5VdxWZFypCFODrFu2gKmOEmY0OYm/r1VGuLW3w8ymi8wer+SYNDiDwGGZb
+         98L4HZEY6lDIJS6ZfeIGPVRZKki+mv6ixNFFwjahzzEXLtITKv5NlYTlesa459P0DPpc
+         vUaqtQGPM88ghn686pvhzvdYIT6hUbu1TZ1J3uiSAc7hFAwGn3VUYbp0VaitN5ADMKvX
+         IqQUjCmu0kylzZ1KHWpdpUYqn2AOoU+Le7w274WIDUkAm3Qx/JSMXbk62IrDvzoRq1A0
+         pB+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696852857; x=1697457657;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=O0e3Kjl0Q+kzKKYQyaEbXG2ZRjDWxSvz8cJxvL5yyWo=;
+        b=UK+LwM198gjk3nVNTBVFDEdiRj4XYzg6hPdt65kULPYQpm+/MRqqzd5m4jn2WadtmS
+         Ho6Oo0A99Hh06BxUDzGZ13glnor1iKu1LY21l6+1NPITt0Aqv1H5QrjMBa9fswVBPVK6
+         aqpFfAsOwVzD08HhxuvNzSVzEt/zGHWGgcFMFbqR8HwPAoUL1Qughe2tC0j/Q4sIekDP
+         otkIEOZBuzgngEz8fdZNHhOK+phZpKc1tHy6KELr7BKLyCOlGlxkQ/sEtckHtx4j6Oix
+         bo8TeLjd1tFLQsblmkorx+v4UY3u1CiAUky9IdGBlO2aJ/KhZHP0ydsxe9IILBzfB0JI
+         AEHA==
+X-Gm-Message-State: AOJu0YweKXKXTh423CI70/wn3PFk4xPtV3JXPDbX5YiYP3jKrZyRxnb8
+        aw4QNhGjjEDwl5uVy+jyyCkDGzvvCWXNzWTiyf/IGkMbp2HSCg==
+X-Google-Smtp-Source: AGHT+IHHGwXp1BLyQ3x9ITLRnODDkHvjp+lwqNLimyDz229pNDPelgQSv0X+4h9bHnu5J47KR2HaE7NS6yxKxVHr0cg=
+X-Received: by 2002:aa7:dc0f:0:b0:52d:212d:78e8 with SMTP id
+ b15-20020aa7dc0f000000b0052d212d78e8mr13351385edu.34.1696852856718; Mon, 09
+ Oct 2023 05:00:56 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [REBASE PATCH v5 10/17] pstore: Add pstore_region_defined()
- helper and export it
-To:     Kees Cook <keescook@chromium.org>
-CC:     <corbet@lwn.net>, <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <tony.luck@intel.com>, <gpiccoli@igalia.com>,
-        <mathieu.poirier@linaro.org>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <linus.walleij@linaro.org>,
-        <andy.shevchenko@gmail.com>, <vigneshr@ti.com>, <nm@ti.com>,
-        <matthias.bgg@gmail.com>, <kgene@kernel.org>,
-        <alim.akhtar@samsung.com>, <bmasney@redhat.com>,
-        <quic_tsoni@quicinc.com>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-hardening@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-gpio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <kernel@quicinc.com>
-References: <1694429639-21484-1-git-send-email-quic_mojha@quicinc.com>
- <1694429639-21484-11-git-send-email-quic_mojha@quicinc.com>
- <202309131620.34EB0F6972@keescook>
-Content-Language: en-US
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <202309131620.34EB0F6972@keescook>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: DDbFoX8caW9i9Gk7bqvbx_eyrZSMb8tu
-X-Proofpoint-GUID: DDbFoX8caW9i9Gk7bqvbx_eyrZSMb8tu
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-09_11,2023-10-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- clxscore=1015 suspectscore=0 priorityscore=1501 mlxlogscore=999
- bulkscore=0 phishscore=0 impostorscore=0 lowpriorityscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310090098
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+References: <20231004145137.86537-1-ubizjak@gmail.com> <20231004145137.86537-5-ubizjak@gmail.com>
+ <CAHk-=wgepFm=jGodFQYPAaEvcBhR3-f_h1BLBYiVQsutCwCnUQ@mail.gmail.com>
+ <CAFULd4YWjxoSTyCtMN0OzKgHtshMQOuMH1Z0n_OaWKVnUjy2iA@mail.gmail.com>
+ <CAHk-=whq=+LNHmsde8LaF4pdvKxqKt5GxW+Tq+U35_aDcV0ADg@mail.gmail.com>
+ <CAHk-=wi6U-O1wdPOESuCE6QO2OaPu0hEzaig0uDOU4L5CREhug@mail.gmail.com>
+ <CAFULd4Z3C771u8Y==8h6hi=mhGmy=7RJRAEBGfNZ0SmynxF41g@mail.gmail.com>
+ <ZSPm6Z/lTK1ZlO8m@gmail.com> <ZSPpW3zLTn7IohOJ@gmail.com>
+In-Reply-To: <ZSPpW3zLTn7IohOJ@gmail.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Mon, 9 Oct 2023 14:00:45 +0200
+Message-ID: <CAFULd4bjnro3CFQLY=qR0S5M0WY3NkrVUW-JUk4nB4mV7xhWNg@mail.gmail.com>
+Subject: Re: [PATCH 4/4] x86/percpu: Use C for percpu read/write accessors
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Nadav Amit <namit@vmware.com>, Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -96,84 +82,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the review.
+On Mon, Oct 9, 2023 at 1:51=E2=80=AFPM Ingo Molnar <mingo@kernel.org> wrote=
+:
+>
+>
+> * Ingo Molnar <mingo@kernel.org> wrote:
+>
+> >
+> > * Uros Bizjak <ubizjak@gmail.com> wrote:
+> >
+> > > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> > > index ecb256954351..1edf4a5b93ca 100644
+> > > --- a/arch/x86/Kconfig
+> > > +++ b/arch/x86/Kconfig
+> > > @@ -2393,7 +2393,7 @@ config CC_HAS_NAMED_AS
+> > >
+> > >  config USE_X86_SEG_SUPPORT
+> > >     def_bool y
+> > > -   depends on CC_HAS_NAMED_AS && SMP
+> > > +   depends on CC_HAS_NAMED_AS && SMP && !KASAN
+> > > +   depends on CC_HAS_NAMED_AS && SMP && !KASAN
+> >
+> > So I'd rather express this as a Kconfig quirk line, and explain each qu=
+irk.
+> >
+> > Something like:
+> >
+> >       depends on CC_HAS_NAMED_AS
+> >       depends on SMP
+> >       #
+> >       # -fsanitize=3Dkernel-address (KASAN) is at the moment incompatib=
+le
+> >       # with named address spaces - see GCC bug #12345.
+> >       #
+> >       depends on !KASAN
+> >
+> > ... or so.
+>
+> BTW., while this OK for testing, this is too heavy handed for release
+> purposes, so please only disable the KASAN instrumentation for the affect=
+ed
+> percpu accessors.
+>
+> See the various __no_sanitize* attributes available.
 
-On 9/14/2023 4:54 AM, Kees Cook wrote:
-> On Mon, Sep 11, 2023 at 04:23:52PM +0530, Mukesh Ojha wrote:
->> There are users like Qualcomm minidump which is interested in
->> knowing the pstore frontend addresses and sizes from the backend
->> (ram) to be able to register it with firmware to finally collect
->> them during crash for debugging.
->>
->> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
->> ---
->>   fs/pstore/platform.c   | 15 +++++++++++++++
->>   fs/pstore/ram.c        | 42 ++++++++++++++++++++++++++++++++++++++++++
->>   include/linux/pstore.h |  6 ++++++
->>   3 files changed, 63 insertions(+)
->>
->> diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
->> index e5bca9a004cc..fdac951059c1 100644
->> --- a/fs/pstore/platform.c
->> +++ b/fs/pstore/platform.c
->> @@ -139,6 +139,21 @@ enum pstore_type_id pstore_name_to_type(const char *name)
->>   }
->>   EXPORT_SYMBOL_GPL(pstore_name_to_type);
->>   
->> +int pstore_region_defined(struct pstore_record *record,
->> +			  void **virt, phys_addr_t *phys,
->> +			  size_t *size, unsigned int *max_dump_cnt)
->> +{
->> +	if (!psinfo)
->> +		return -EINVAL;
->> +
->> +	record->psi = psinfo;
-> 
-> Uh, this makes no sense to me. If this is a real pstore_record, you
-> cannot just assign psi here.
+These attributes are for function declarations. The percpu casts can
+not be implemented with separate static inline functions. Also,
+__no_sanitize_address is mutually exclusive with __always_inline.
 
-Ok.
+Uros.
 
-> 
->> +
->> +	return psinfo->region_info ?
->> +	       psinfo->region_info(record, virt, phys, size, max_dump_cnt) :
->> +	       -EINVAL;
-> 
-> Common code style for this kind of thing is usually like this:
-> 
-> 	if (!psinfo->region_info)
-> 		return -EINVAL;
-> 
-> 	return psinfo->region_info(...)
-
-Thanks.
-
--Mukesh
-> 
->> +}
->> +EXPORT_SYMBOL_GPL(pstore_region_defined);
->> +
->>   static void pstore_timer_kick(void)
->>   {
->>   	if (pstore_update_ms < 0)
->> diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
->> index ab551caa1d2a..62202f3ddf63 100644
->> --- a/fs/pstore/ram.c
->> +++ b/fs/pstore/ram.c
->> @@ -437,6 +437,47 @@ static int ramoops_pstore_erase(struct pstore_record *record)
->>   	return 0;
->>   }
->>   
->> +static int ramoops_region_info(struct pstore_record *record,
->> +			       void **virt, phys_addr_t *phys,
->> +			       size_t *size, unsigned int *max_dump_cnt)
-> 
-> But there's a larger problem here -- "virt", "phys" and likely
-> "max_dump_cnt" are aspects _specific to the ram backend_. This can't be
-> a generic pstore interface.
-> 
-> I'm not opposed to it being exposed only from ramoops, though.
-> 
-> But I think you'll want a pstore generic way to iterate over the
-> records..
+> I'd even suggest introducing a new attribute variant, specific to x86,
+> prefixed with __no_sanitize_x86_seg or so, which would allow the eventual
+> KASAN-instrumentation of the percpu accessors once the underlying GCC bug
+> is fixed.
+>
+> Thanks,
+>
+>         Ingo
