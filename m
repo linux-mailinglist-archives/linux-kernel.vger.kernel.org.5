@@ -2,319 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48DBC7BE3B9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 16:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEBB67BE3C0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 16:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346452AbjJIO7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 10:59:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
+        id S1376339AbjJIO7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 10:59:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234568AbjJIO7C (ORCPT
+        with ESMTP id S1346549AbjJIO72 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 10:59:02 -0400
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39301AF;
-        Mon,  9 Oct 2023 07:59:00 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id CAF8A20007;
-        Mon,  9 Oct 2023 14:58:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1696863536;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=126zzcvk0mJisUtQ8CjtSWhBmbZb9Wnd02ClNiOICi0=;
-        b=aKRtxqo+3v2seS3ng2zOCzci13hdKDfmvBeLjtzMdoVJYs3++SUZBUKlkTu27LxIdCr9LM
-        JKCf9dQ8U5Psg22Nk3lkcVRzjti5hRLuqp41wpT5vvyFzkABsWtbQY7xd2ylGxceKbyyRN
-        EEz+eAsMxxjerDBuuJgrjKJ1h6Pz0g0IspVM+OkHkSnH9KcfJoQcoVtdxZh2+vJYfzzjCu
-        F8ALIh7n0GweKZfqDT22Yr7qYY0gTrQW7fn4NeMZmpftyFJBvqgo+oP24Al2qjVX4i1f4C
-        jVu2bXOyMPN6j+BAi9B43DeM3BdvHLFplQr2X9eEV+CRAdY2pPs0P0ISQCBhRQ==
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        =?utf-8?Q?Th=C3=A9o?= Lebrun <theo.lebrun@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Chanho Min <chanho.min@lge.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Russell King <linux@armlinux.org.uk>
-Subject: Re: [PATCH 10/11] MIPS: generic: Add support for Mobileye EyeQ5
-In-Reply-To: <86db0fe5-930d-4cbb-bd7d-03367da38951@app.fastmail.com>
-References: <20231004161038.2818327-11-gregory.clement@bootlin.com>
- <202310050726.GDpZbMDO-lkp@intel.com>
- <86db0fe5-930d-4cbb-bd7d-03367da38951@app.fastmail.com>
-Date:   Mon, 09 Oct 2023 16:58:53 +0200
-Message-ID: <87pm1nc05u.fsf@BL-laptop>
+        Mon, 9 Oct 2023 10:59:28 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CCB7C5
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 07:59:26 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3af65455e7cso3390660b6e.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 07:59:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1696863565; x=1697468365; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gremNSB3d9SyFHcL1LlmJRtVUMpoQGmg6IJzbQmBl54=;
+        b=seHY4i9KKfpCxSJAJK2e50XT3NwsxB8C0ZuF2/PNl5C1zlFaT/P4iHgHMr+Bwto22Y
+         10Tlr3f0XShEtQgRU5QXvFau9Hw6+zPztCM+YfOvR+kPzpLmzcs8ZTwl3Ms/cgoILfRc
+         b2KGkxLeV7lyhFSDasuGB1S9pxeOyr8bYG1kcbLRoWfQCNlM9THRloaSZhkSpaJ3Q4Br
+         HL5R+NXlsSt3mElioyu2OCdW36k9f/zFdw5xg8IPPXuBR3ExewySSTTLVxkPaLqgF7Y7
+         c7yx5h4gPINSAnqMtCgpppHy0fgHIX3ZEMfgjnsmdxzNYgE28ss70iAXsWbmW4+AW7OH
+         VUmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696863565; x=1697468365;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gremNSB3d9SyFHcL1LlmJRtVUMpoQGmg6IJzbQmBl54=;
+        b=jswaM1ySDCd56eyPrs8vGlSSA9gyG/Ub0BjnnLm3eDrRTLwfD+7tjPPLFV0bbl/bCK
+         gr8HuMVZ0uDmN2FnAoXANvthJ++aWVMoCeOWN79aqUkRuOQGAUmhjARY4iEseFmn/hcf
+         aXP5kj0S+05LtiZtIDKIKURDKAdVGLWAJud/85FkwBVpgC6WkcgxluTHNbXPqO0aA6ZK
+         /fjZNCYudgBg5h3vCLzoZ74gmDMXc9GbZamYI1U8mSdeG5ZKBInn/Fn7DaXihdPtwjY2
+         WzU04/LAOQ9RRvhCQP1hnjRqHD7ZTgLJxwV6txvxZwRk54YvfgFQTTZkuWE0nvkBPCrt
+         Jkxw==
+X-Gm-Message-State: AOJu0Yxhrfl9B8pLA1yWlqL0oz9A0jTBWB1YPg2V22LZ/mxunf/MLIsR
+        we+i6r6OTPFIanodK3DnPBHLJw==
+X-Google-Smtp-Source: AGHT+IFYy9l29dEpiDaimL5a3XAFRuyoA772ghfVXLzJSXypiGc/Ts/jVpBhpkvrQjwoxhJ+y8jQfA==
+X-Received: by 2002:a05:6870:d187:b0:1b0:60ff:b73f with SMTP id a7-20020a056870d18700b001b060ffb73fmr19038396oac.8.1696863565494;
+        Mon, 09 Oct 2023 07:59:25 -0700 (PDT)
+Received: from localhost.localdomain ([50.212.55.89])
+        by smtp.gmail.com with ESMTPSA id u21-20020ae9c015000000b0076ef29f3429sm3559275qkk.120.2023.10.09.07.59.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Oct 2023 07:59:25 -0700 (PDT)
+From:   Ben Wolsieffer <ben.wolsieffer@hefring.com>
+To:     linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Christophe Roullier <christophe.roullier@st.com>,
+        Ben Wolsieffer <ben.wolsieffer@hefring.com>
+Subject: [PATCH net-next] net: stmmac: dwmac-stm32: refactor clock config
+Date:   Mon,  9 Oct 2023 10:59:04 -0400
+Message-ID: <20231009145904.3776703-1-ben.wolsieffer@hefring.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-GND-Sasl: gregory.clement@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Currently, clock configuration is spread throughout the driver and
+partially duplicated for the STM32MP1 and STM32 MCU variants. This makes
+it difficult to keep track of which clocks need to be enabled or disabled
+in various scenarios.
 
-> On Thu, Oct 5, 2023, at 02:08, kernel test robot wrote:
->> Hi Gregory,
->>
->> kernel test robot noticed the following build errors:
->>
->> [auto build test ERROR on robh/for-next]
->> [also build test ERROR on lee-mfd/for-mfd-next linus/master v6.6-rc4 
->> next-20231004]
->> [cannot apply to lee-mfd/for-mfd-fixes]
->> [If your patch is applied to the wrong git tree, kindly drop us a note.
->> And when submitting patch, we suggest to use '--base' as documented in
->> https://git-scm.com/docs/git-format-patch#_base_tree_information]
->
->
->> If you fix the issue in a separate patch/commit (i.e. not just a new 
->> version of
->> the same patch/commit), kindly add following tags
->> | Reported-by: kernel test robot <lkp@intel.com>
->> | Closes: 
->> https://lore.kernel.org/oe-kbuild-all/202310050726.GDpZbMDO-lkp@intel.com/
->>
->> All error/warnings (new ones prefixed by >>):
->>
->>    drivers/tty/serial/amba-pl011.c: In function 'pl011_sgbuf_init':
->>>> drivers/tty/serial/amba-pl011.c:380:30: error: implicit declaration of function 'phys_to_page'; did you mean 'pfn_to_page'? [-Werror=implicit-function-declaration]
->>      380 |         sg_set_page(&sg->sg, phys_to_page(dma_addr),
->>          |                              ^~~~~~~~~~~~
->>          |                              pfn_to_page
->
-> I discussed this with Gregory on IRC, and prototyped a
-> possible fix. The issue was caused by the use of coherent memory
-> for the buffer and passing that into a scatterlist structure.
->
-> Since there is no guarantee that the memory returned by
-> dma_alloc_coherent() is associated with a 'struct page', using
-> the architecture specific phys_to_page() is wrong, but using
-> virt_to_page() would be as well.
->
-> An easy workaround is to stop using sg lists altogether and
-> just use the *_single() functions instead. This also simplifies
-> the code a bit since the scatterlists in this driver always have
-> only one entry anyway.
->
-> Fixes: cb06ff102e2d7 ("ARM: PL011: Add support for Rx DMA buffer polling.")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+This patch adds symmetric stm32_dwmac_clk_enable/disable() functions
+that handle all clock configuration, including quirks required while
+suspending or resuming. syscfg_clk and clk_eth_ck are not present on
+STM32 MCUs, but it is fine to try to configure them anyway since NULL
+clocks are ignored.
 
-I tested the following patch and it didn't introduce any regression and
-when using the same defconfig than the bot there is no more any error.
+Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
+---
+This is a followup to my recent STM32 ethernet resume bug fix [1] that
+tries to address the underlying issues that led to that bug.
 
-So we can add, 
+[1] https://lore.kernel.org/all/20230927175749.1419774-1-ben.wolsieffer@hefring.com/ 
 
-Tested-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+ .../net/ethernet/stmicro/stmmac/dwmac-stm32.c | 113 +++++++-----------
+ 1 file changed, 45 insertions(+), 68 deletions(-)
 
-However, we don't use DMA on our platform for UART so the tests are
-limited.
-
-Linus; I know that you have a couple of boards that used the same UART
-controller. By any chance do you have some of them with DMA support that
-you could test ?
-
-Gregory
-
-PS: we are going to send series of clean-up and improvement for the
-pl011, but there are not mandatory for using the EyeQ5 platform. We
-hope being able to send them soon.
-
->
-> diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
-> index 0667e045ccb31..a3d92a91ff17d 100644
-> --- a/drivers/tty/serial/amba-pl011.c
-> +++ b/drivers/tty/serial/amba-pl011.c
-> @@ -219,8 +219,9 @@ static struct vendor_data vendor_st = {
->  /* Deals with DMA transactions */
->  
->  struct pl011_sgbuf {
-> -	struct scatterlist sg;
-> -	char *buf;
-> +	dma_addr_t		dma;
-> +	size_t			len;
-> +	char			*buf;
->  };
->  
->  struct pl011_dmarx_data {
-> @@ -241,7 +242,8 @@ struct pl011_dmarx_data {
->  
->  struct pl011_dmatx_data {
->  	struct dma_chan		*chan;
-> -	struct scatterlist	sg;
-> +	dma_addr_t		dma;
-> +	size_t			len;
->  	char			*buf;
->  	bool			queued;
->  };
-> @@ -369,18 +371,11 @@ static int pl011_fifo_to_tty(struct uart_amba_port *uap)
->  static int pl011_sgbuf_init(struct dma_chan *chan, struct pl011_sgbuf *sg,
->  	enum dma_data_direction dir)
->  {
-> -	dma_addr_t dma_addr;
-> -
-> -	sg->buf = dma_alloc_coherent(chan->device->dev,
-> -		PL011_DMA_BUFFER_SIZE, &dma_addr, GFP_KERNEL);
-> +	sg->buf = dma_alloc_coherent(chan->device->dev, PL011_DMA_BUFFER_SIZE,
-> +				     &sg->dma, GFP_KERNEL);
->  	if (!sg->buf)
->  		return -ENOMEM;
-> -
-> -	sg_init_table(&sg->sg, 1);
-> -	sg_set_page(&sg->sg, phys_to_page(dma_addr),
-> -		PL011_DMA_BUFFER_SIZE, offset_in_page(dma_addr));
-> -	sg_dma_address(&sg->sg) = dma_addr;
-> -	sg_dma_len(&sg->sg) = PL011_DMA_BUFFER_SIZE;
-> +	sg->len = PL011_DMA_BUFFER_SIZE;
->  
->  	return 0;
->  }
-> @@ -390,8 +385,7 @@ static void pl011_sgbuf_free(struct dma_chan *chan, struct pl011_sgbuf *sg,
->  {
->  	if (sg->buf) {
->  		dma_free_coherent(chan->device->dev,
-> -			PL011_DMA_BUFFER_SIZE, sg->buf,
-> -			sg_dma_address(&sg->sg));
-> +				  PL011_DMA_BUFFER_SIZE, sg->buf, sg->dma);
->  	}
->  }
->  
-> @@ -552,8 +546,8 @@ static void pl011_dma_tx_callback(void *data)
->  
->  	uart_port_lock_irqsave(&uap->port, &flags);
->  	if (uap->dmatx.queued)
-> -		dma_unmap_sg(dmatx->chan->device->dev, &dmatx->sg, 1,
-> -			     DMA_TO_DEVICE);
-> +		dma_unmap_single(dmatx->chan->device->dev, dmatx->dma,
-> +				dmatx->len, DMA_TO_DEVICE);
->  
->  	dmacr = uap->dmacr;
->  	uap->dmacr = dmacr & ~UART011_TXDMAE;
-> @@ -639,18 +633,19 @@ static int pl011_dma_tx_refill(struct uart_amba_port *uap)
->  			memcpy(&dmatx->buf[first], &xmit->buf[0], second);
->  	}
->  
-> -	dmatx->sg.length = count;
-> -
-> -	if (dma_map_sg(dma_dev->dev, &dmatx->sg, 1, DMA_TO_DEVICE) != 1) {
-> +	dmatx->len = count;
-> +	dmatx->dma = dma_map_single(dma_dev->dev, dmatx->buf, count,
-> +				    DMA_TO_DEVICE);
-> +	if (dmatx->dma == DMA_MAPPING_ERROR) {
->  		uap->dmatx.queued = false;
->  		dev_dbg(uap->port.dev, "unable to map TX DMA\n");
->  		return -EBUSY;
->  	}
->  
-> -	desc = dmaengine_prep_slave_sg(chan, &dmatx->sg, 1, DMA_MEM_TO_DEV,
-> +	desc = dmaengine_prep_slave_single(chan, dmatx->dma, dmatx->len, DMA_MEM_TO_DEV,
->  					     DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
->  	if (!desc) {
-> -		dma_unmap_sg(dma_dev->dev, &dmatx->sg, 1, DMA_TO_DEVICE);
-> +		dma_unmap_single(dma_dev->dev, dmatx->dma, dmatx->len, DMA_TO_DEVICE);
->  		uap->dmatx.queued = false;
->  		/*
->  		 * If DMA cannot be used right now, we complete this
-> @@ -813,8 +808,8 @@ __acquires(&uap->port.lock)
->  	dmaengine_terminate_async(uap->dmatx.chan);
->  
->  	if (uap->dmatx.queued) {
-> -		dma_unmap_sg(uap->dmatx.chan->device->dev, &uap->dmatx.sg, 1,
-> -			     DMA_TO_DEVICE);
-> +		dma_unmap_single(uap->dmatx.chan->device->dev, uap->dmatx.dma,
-> +				 uap->dmatx.len, DMA_TO_DEVICE);
->  		uap->dmatx.queued = false;
->  		uap->dmacr &= ~UART011_TXDMAE;
->  		pl011_write(uap->dmacr, uap, REG_DMACR);
-> @@ -836,7 +831,7 @@ static int pl011_dma_rx_trigger_dma(struct uart_amba_port *uap)
->  	/* Start the RX DMA job */
->  	sgbuf = uap->dmarx.use_buf_b ?
->  		&uap->dmarx.sgbuf_b : &uap->dmarx.sgbuf_a;
-> -	desc = dmaengine_prep_slave_sg(rxchan, &sgbuf->sg, 1,
-> +	desc = dmaengine_prep_slave_single(rxchan, sgbuf->dma, sgbuf->len,
->  					DMA_DEV_TO_MEM,
->  					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
->  	/*
-> @@ -886,7 +881,7 @@ static void pl011_dma_rx_chars(struct uart_amba_port *uap,
->  
->  	if (uap->dmarx.poll_rate) {
->  		/* The data can be taken by polling */
-> -		dmataken = sgbuf->sg.length - dmarx->last_residue;
-> +		dmataken = sgbuf->len - dmarx->last_residue;
->  		/* Recalculate the pending size */
->  		if (pending >= dmataken)
->  			pending -= dmataken;
-> @@ -911,7 +906,7 @@ static void pl011_dma_rx_chars(struct uart_amba_port *uap,
->  
->  	/* Reset the last_residue for Rx DMA poll */
->  	if (uap->dmarx.poll_rate)
-> -		dmarx->last_residue = sgbuf->sg.length;
-> +		dmarx->last_residue = sgbuf->len;
->  
->  	/*
->  	 * Only continue with trying to read the FIFO if all DMA chars have
-> @@ -969,7 +964,7 @@ static void pl011_dma_rx_irq(struct uart_amba_port *uap)
->  	pl011_write(uap->dmacr, uap, REG_DMACR);
->  	uap->dmarx.running = false;
->  
-> -	pending = sgbuf->sg.length - state.residue;
-> +	pending = sgbuf->len - state.residue;
->  	BUG_ON(pending > PL011_DMA_BUFFER_SIZE);
->  	/* Then we terminate the transfer - we now know our residue */
->  	dmaengine_terminate_all(rxchan);
-> @@ -1015,7 +1010,7 @@ static void pl011_dma_rx_callback(void *data)
->  	 * the DMA irq handler. So we check the residue here.
->  	 */
->  	rxchan->device->device_tx_status(rxchan, dmarx->cookie, &state);
-> -	pending = sgbuf->sg.length - state.residue;
-> +	pending = sgbuf->len - state.residue;
->  	BUG_ON(pending > PL011_DMA_BUFFER_SIZE);
->  	/* Then we terminate the transfer - we now know our residue */
->  	dmaengine_terminate_all(rxchan);
-> @@ -1074,7 +1069,7 @@ static void pl011_dma_rx_poll(struct timer_list *t)
->  	sgbuf = dmarx->use_buf_b ? &uap->dmarx.sgbuf_b : &uap->dmarx.sgbuf_a;
->  	rxchan->device->device_tx_status(rxchan, dmarx->cookie, &state);
->  	if (likely(state.residue < dmarx->last_residue)) {
-> -		dmataken = sgbuf->sg.length - dmarx->last_residue;
-> +		dmataken = sgbuf->len - dmarx->last_residue;
->  		size = dmarx->last_residue - state.residue;
->  		dma_count = tty_insert_flip_string(port, sgbuf->buf + dmataken,
->  				size);
-> @@ -1123,7 +1118,7 @@ static void pl011_dma_startup(struct uart_amba_port *uap)
->  		return;
->  	}
->  
-> -	sg_init_one(&uap->dmatx.sg, uap->dmatx.buf, PL011_DMA_BUFFER_SIZE);
-> +	uap->dmatx.len = PL011_DMA_BUFFER_SIZE;
->  
->  	/* The DMA buffer is now the FIFO the TTY subsystem can use */
->  	uap->port.fifosize = PL011_DMA_BUFFER_SIZE;
-> @@ -1200,8 +1195,9 @@ static void pl011_dma_shutdown(struct uart_amba_port *uap)
->  		/* In theory, this should already be done by pl011_dma_flush_buffer */
->  		dmaengine_terminate_all(uap->dmatx.chan);
->  		if (uap->dmatx.queued) {
-> -			dma_unmap_sg(uap->dmatx.chan->device->dev, &uap->dmatx.sg, 1,
-> -				     DMA_TO_DEVICE);
-> +			dma_unmap_single(uap->dmatx.chan->device->dev,
-> +					 uap->dmatx.dma, uap->dmatx.len,
-> +					 DMA_TO_DEVICE);
->  			uap->dmatx.queued = false;
->  		}
->  
-
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
+index d8d3c729f219..c92dfc4ecf57 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
+@@ -98,7 +98,6 @@ struct stm32_dwmac {
+ 
+ struct stm32_ops {
+ 	int (*set_mode)(struct plat_stmmacenet_data *plat_dat);
+-	int (*clk_prepare)(struct stm32_dwmac *dwmac, bool prepare);
+ 	int (*suspend)(struct stm32_dwmac *dwmac);
+ 	void (*resume)(struct stm32_dwmac *dwmac);
+ 	int (*parse_data)(struct stm32_dwmac *dwmac,
+@@ -107,62 +106,55 @@ struct stm32_ops {
+ 	bool clk_rx_enable_in_suspend;
+ };
+ 
+-static int stm32_dwmac_init(struct plat_stmmacenet_data *plat_dat)
++static int stm32_dwmac_clk_enable(struct stm32_dwmac *dwmac, bool resume)
+ {
+-	struct stm32_dwmac *dwmac = plat_dat->bsp_priv;
+ 	int ret;
+ 
+-	if (dwmac->ops->set_mode) {
+-		ret = dwmac->ops->set_mode(plat_dat);
+-		if (ret)
+-			return ret;
+-	}
+-
+ 	ret = clk_prepare_enable(dwmac->clk_tx);
+ 	if (ret)
+-		return ret;
++		goto err_clk_tx;
+ 
+-	if (!dwmac->ops->clk_rx_enable_in_suspend ||
+-	    !dwmac->dev->power.is_suspended) {
++	if (!dwmac->ops->clk_rx_enable_in_suspend || !resume) {
+ 		ret = clk_prepare_enable(dwmac->clk_rx);
+-		if (ret) {
+-			clk_disable_unprepare(dwmac->clk_tx);
+-			return ret;
+-		}
++		if (ret)
++			goto err_clk_rx;
+ 	}
+ 
+-	if (dwmac->ops->clk_prepare) {
+-		ret = dwmac->ops->clk_prepare(dwmac, true);
+-		if (ret) {
+-			clk_disable_unprepare(dwmac->clk_rx);
+-			clk_disable_unprepare(dwmac->clk_tx);
+-		}
++	ret = clk_prepare_enable(dwmac->syscfg_clk);
++	if (ret)
++		goto err_syscfg_clk;
++
++	if (dwmac->enable_eth_ck) {
++		ret = clk_prepare_enable(dwmac->clk_eth_ck);
++		if (ret)
++			goto err_clk_eth_ck;
+ 	}
+ 
+ 	return ret;
++
++err_clk_eth_ck:
++	clk_disable_unprepare(dwmac->syscfg_clk);
++err_syscfg_clk:
++	if (!dwmac->ops->clk_rx_enable_in_suspend || !resume)
++		clk_disable_unprepare(dwmac->clk_rx);
++err_clk_rx:
++	clk_disable_unprepare(dwmac->clk_tx);
++err_clk_tx:
++	return ret;
+ }
+ 
+-static int stm32mp1_clk_prepare(struct stm32_dwmac *dwmac, bool prepare)
++static int stm32_dwmac_init(struct plat_stmmacenet_data *plat_dat, bool resume)
+ {
+-	int ret = 0;
++	struct stm32_dwmac *dwmac = plat_dat->bsp_priv;
++	int ret;
+ 
+-	if (prepare) {
+-		ret = clk_prepare_enable(dwmac->syscfg_clk);
++	if (dwmac->ops->set_mode) {
++		ret = dwmac->ops->set_mode(plat_dat);
+ 		if (ret)
+ 			return ret;
+-		if (dwmac->enable_eth_ck) {
+-			ret = clk_prepare_enable(dwmac->clk_eth_ck);
+-			if (ret) {
+-				clk_disable_unprepare(dwmac->syscfg_clk);
+-				return ret;
+-			}
+-		}
+-	} else {
+-		clk_disable_unprepare(dwmac->syscfg_clk);
+-		if (dwmac->enable_eth_ck)
+-			clk_disable_unprepare(dwmac->clk_eth_ck);
+ 	}
+-	return ret;
++
++	return stm32_dwmac_clk_enable(dwmac, resume);
+ }
+ 
+ static int stm32mp1_set_mode(struct plat_stmmacenet_data *plat_dat)
+@@ -252,13 +244,15 @@ static int stm32mcu_set_mode(struct plat_stmmacenet_data *plat_dat)
+ 				 dwmac->ops->syscfg_eth_mask, val << 23);
+ }
+ 
+-static void stm32_dwmac_clk_disable(struct stm32_dwmac *dwmac)
++static void stm32_dwmac_clk_disable(struct stm32_dwmac *dwmac, bool suspend)
+ {
+ 	clk_disable_unprepare(dwmac->clk_tx);
+-	clk_disable_unprepare(dwmac->clk_rx);
++	if (!dwmac->ops->clk_rx_enable_in_suspend || !suspend)
++		clk_disable_unprepare(dwmac->clk_rx);
+ 
+-	if (dwmac->ops->clk_prepare)
+-		dwmac->ops->clk_prepare(dwmac, false);
++	clk_disable_unprepare(dwmac->syscfg_clk);
++	if (dwmac->enable_eth_ck)
++		clk_disable_unprepare(dwmac->clk_eth_ck);
+ }
+ 
+ static int stm32_dwmac_parse_data(struct stm32_dwmac *dwmac,
+@@ -397,7 +391,7 @@ static int stm32_dwmac_probe(struct platform_device *pdev)
+ 
+ 	plat_dat->bsp_priv = dwmac;
+ 
+-	ret = stm32_dwmac_init(plat_dat);
++	ret = stm32_dwmac_init(plat_dat, false);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -408,7 +402,7 @@ static int stm32_dwmac_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ err_clk_disable:
+-	stm32_dwmac_clk_disable(dwmac);
++	stm32_dwmac_clk_disable(dwmac, false);
+ 
+ 	return ret;
+ }
+@@ -421,7 +415,7 @@ static void stm32_dwmac_remove(struct platform_device *pdev)
+ 
+ 	stmmac_dvr_remove(&pdev->dev);
+ 
+-	stm32_dwmac_clk_disable(priv->plat->bsp_priv);
++	stm32_dwmac_clk_disable(dwmac, false);
+ 
+ 	if (dwmac->irq_pwr_wakeup >= 0) {
+ 		dev_pm_clear_wake_irq(&pdev->dev);
+@@ -431,18 +425,7 @@ static void stm32_dwmac_remove(struct platform_device *pdev)
+ 
+ static int stm32mp1_suspend(struct stm32_dwmac *dwmac)
+ {
+-	int ret = 0;
+-
+-	ret = clk_prepare_enable(dwmac->clk_ethstp);
+-	if (ret)
+-		return ret;
+-
+-	clk_disable_unprepare(dwmac->clk_tx);
+-	clk_disable_unprepare(dwmac->syscfg_clk);
+-	if (dwmac->enable_eth_ck)
+-		clk_disable_unprepare(dwmac->clk_eth_ck);
+-
+-	return ret;
++	return clk_prepare_enable(dwmac->clk_ethstp);
+ }
+ 
+ static void stm32mp1_resume(struct stm32_dwmac *dwmac)
+@@ -450,14 +433,6 @@ static void stm32mp1_resume(struct stm32_dwmac *dwmac)
+ 	clk_disable_unprepare(dwmac->clk_ethstp);
+ }
+ 
+-static int stm32mcu_suspend(struct stm32_dwmac *dwmac)
+-{
+-	clk_disable_unprepare(dwmac->clk_tx);
+-	clk_disable_unprepare(dwmac->clk_rx);
+-
+-	return 0;
+-}
+-
+ #ifdef CONFIG_PM_SLEEP
+ static int stm32_dwmac_suspend(struct device *dev)
+ {
+@@ -468,6 +443,10 @@ static int stm32_dwmac_suspend(struct device *dev)
+ 	int ret;
+ 
+ 	ret = stmmac_suspend(dev);
++	if (ret)
++		return ret;
++
++	stm32_dwmac_clk_disable(dwmac, true);
+ 
+ 	if (dwmac->ops->suspend)
+ 		ret = dwmac->ops->suspend(dwmac);
+@@ -485,7 +464,7 @@ static int stm32_dwmac_resume(struct device *dev)
+ 	if (dwmac->ops->resume)
+ 		dwmac->ops->resume(dwmac);
+ 
+-	ret = stm32_dwmac_init(priv->plat);
++	ret = stm32_dwmac_init(priv->plat, true);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -500,13 +479,11 @@ static SIMPLE_DEV_PM_OPS(stm32_dwmac_pm_ops,
+ 
+ static struct stm32_ops stm32mcu_dwmac_data = {
+ 	.set_mode = stm32mcu_set_mode,
+-	.suspend = stm32mcu_suspend,
+ 	.syscfg_eth_mask = SYSCFG_MCU_ETH_MASK
+ };
+ 
+ static struct stm32_ops stm32mp1_dwmac_data = {
+ 	.set_mode = stm32mp1_set_mode,
+-	.clk_prepare = stm32mp1_clk_prepare,
+ 	.suspend = stm32mp1_suspend,
+ 	.resume = stm32mp1_resume,
+ 	.parse_data = stm32mp1_parse_data,
 -- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+2.42.0
+
