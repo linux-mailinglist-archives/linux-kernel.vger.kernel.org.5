@@ -2,120 +2,383 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB677BEC41
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE977BEC43
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378197AbjJIVEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 17:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39026 "EHLO
+        id S1378204AbjJIVEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 17:04:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378239AbjJIVE2 (ORCPT
+        with ESMTP id S1378144AbjJIVEn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 17:04:28 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CAC118;
-        Mon,  9 Oct 2023 14:04:17 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c9b1e3a809so547235ad.2;
-        Mon, 09 Oct 2023 14:04:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696885456; x=1697490256; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GNBV7INRIgyeXhVbCD9dGMkZulR+GcLVmLyfrSfkaoA=;
-        b=nCiq55DXPbJN3gs4EUUU2Ymj17VdxGVFLOVchQ1tFNw5eHGrqIfiwLrnuhvrIYW0H9
-         QaCDAJTXKEcmYNtO/6Cj5NcQ3JmIBpXXltO91pGOfFhsknodDpPu4xhsHp9YQqmWDi/M
-         Ic9MF0AlPfMZZPSmlPXaNiP0aCKrjYlmYEJ7P1Uwkk+g22a82q5NoY6ojCe0r17/jghE
-         WUyriVXj2tOH8GHKKE+a4V77uC8vEPs4pRqAo/ncF6Sal5QLM3i5qbO1A6tYQp84rNBU
-         eDAKOINuWviVDFJUwZgR/Z9mKoTG4/C1u8wja8v7R5CpKlCA0k/jY2i8meJu8nsg1MpS
-         sJWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696885456; x=1697490256;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GNBV7INRIgyeXhVbCD9dGMkZulR+GcLVmLyfrSfkaoA=;
-        b=DhhsBH3h+QxmOgpUn7DpOwOGyN7tAMquW+Ao9/BU/l8CPkns7RkBupV/FOo4DdUQbz
-         REv6Lvf3IoVp6VoRL9diKH5efNftzfSIREHmvToSVwAZCN+3zRVnobzc/vCqzczmxnHn
-         FyE7dzF0S+MvoMJ6U5VwORWV4mdmq4N+vczTNhfDN4mTjQKdnjWx5qa0Lcun4YbNp/+o
-         zVce+vXefup66a+AUjSW5rzu1fmA0JrdtUjPcHz+F5hbvCg9Is+tXT683QBz/tq94dn+
-         h2Jdq/4H9gU4lDbVK6+p1mg6kdqzzMsbW2zy6A6xpEaDPRv4zyIW2asRwkLfuSZKn3tj
-         t7EA==
-X-Gm-Message-State: AOJu0YwhJ43Ch1FH2q0nG030YP4i9sDXchks1ehEZ9VENyMGrvMnik6Y
-        Oqh9/PTgYPdsD+HP6kxjiWw=
-X-Google-Smtp-Source: AGHT+IHaP93TiFRG9ImFSB1oQ/7JMch7QSOZF4r13lzoqiI2LxHYDfc/gRmRbD1nyK47/RuC9jx4TA==
-X-Received: by 2002:a17:90a:a393:b0:278:fa86:13d8 with SMTP id x19-20020a17090aa39300b00278fa8613d8mr13023890pjp.41.1696885456465;
-        Mon, 09 Oct 2023 14:04:16 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id e2-20020a17090a630200b00277337818afsm6484585pjj.0.2023.10.09.14.04.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 14:04:15 -0700 (PDT)
-Message-ID: <c13fd6a3-be6b-4970-9897-ed28b9a3cdeb@gmail.com>
-Date:   Mon, 9 Oct 2023 14:04:13 -0700
+        Mon, 9 Oct 2023 17:04:43 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F4E2AC;
+        Mon,  9 Oct 2023 14:04:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=pV2vO5314ghs1+5B0S4wyhRSc2XzWZFqjOwqRnCj9Ww=; b=kOhH5W9K7DfUPfvZ1kiaZCo2pW
+        5pM+bb2DbS7T3vTF6W745IcC8RIOmsOLD3crHZCtsPYjIB+6O1ScFMVhGIgjNbsXAwU2rotr1de/W
+        xKwHdBKwhkemDi4P/CUTKKcmfo0wF1lmkGfFWvG+EfITrr/0ecJpFTGR/zOz5g5u5ke/k6BdQ9kpW
+        OUGKb7n941wa8Db5dFFEov+WPmaVxzww6X5ju8li6+mx+FzMqOb6B5HVJLYvRmsttsW+0U4fEGkkR
+        xwwJFHOJQVBmYEe6FVb5+1ZWYu4lKBpEVrT6aWfRasoAa/zqoaoMrMKi2/iDySx/U6tYUjxVHYOHF
+        3L2m/UXA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qpxQO-00G8XD-0O;
+        Mon, 09 Oct 2023 21:04:26 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 33C89300454; Mon,  9 Oct 2023 23:04:25 +0200 (CEST)
+Date:   Mon, 9 Oct 2023 23:04:25 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] perf/core: Introduce cpuctx->cgrp_ctx_list
+Message-ID: <20231009210425.GC6307@noisy.programming.kicks-ass.net>
+References: <20231004040844.797044-1-namhyung@kernel.org>
+ <20231004160224.GB6307@noisy.programming.kicks-ass.net>
+ <CAM9d7cizC0J85ByuF5fBmc_Bqi=wpNJpiVsw+3F1Avusn2aQog@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v5 02/16] net: phy: Remove the call to
- phy_mii_ioctl in phy_hwstamp_get/set
-Content-Language: en-US
-To:     =?UTF-8?Q?K=C3=B6ry_Maincent?= <kory.maincent@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Michael Walle <michael@walle.cc>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-References: <20231009155138.86458-1-kory.maincent@bootlin.com>
- <20231009155138.86458-3-kory.maincent@bootlin.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20231009155138.86458-3-kory.maincent@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7cizC0J85ByuF5fBmc_Bqi=wpNJpiVsw+3F1Avusn2aQog@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/9/23 08:51, Köry Maincent wrote:
-> From: Kory Maincent <kory.maincent@bootlin.com>
-> 
-> __phy_hwtstamp_set function were calling the phy_mii_ioctl function
-> which will then use the ifreq pointer to call the hwtstamp callback.
-> Now that ifreq has been removed from the hwstamp callback parameters
-> it seems more logical to not go through the phy_mii_ioctl function and pass
-> directly kernel_hwtstamp_config parameter to the hwtstamp callback.
-> 
-> Lets do the same for __phy_hwtstamp_get function and return directly
-> EOPNOTSUPP as SIOCGHWTSTAMP is not supported for now for the PHYs.
-> 
-> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+On Wed, Oct 04, 2023 at 09:32:24AM -0700, Namhyung Kim wrote:
 
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+> Yeah, I know.. but I couldn't come up with a better solution.
 
+Not been near a compiler, and haven't fully thought it through, but
+could something like the work work?
+
+
+---
+ include/linux/perf_event.h |   1 +
+ kernel/events/core.c       | 115 +++++++++++++++++++++++----------------------
+ 2 files changed, 61 insertions(+), 55 deletions(-)
+
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index f31f962a6445..0367d748fae0 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -878,6 +878,7 @@ struct perf_event_pmu_context {
+ 	unsigned int			embedded : 1;
+ 
+ 	unsigned int			nr_events;
++	unsigned int			nr_cgroups;
+ 
+ 	atomic_t			refcount; /* event <-> epc */
+ 	struct rcu_head			rcu_head;
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 708d474c2ede..f3d5d47ecdfc 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -375,6 +375,7 @@ enum event_type_t {
+ 	EVENT_TIME = 0x4,
+ 	/* see ctx_resched() for details */
+ 	EVENT_CPU = 0x8,
++	EVENT_CGROUP = 0x10,
+ 	EVENT_ALL = EVENT_FLEXIBLE | EVENT_PINNED,
+ };
+ 
+@@ -684,20 +685,26 @@ do {									\
+ 	___p;								\
+ })
+ 
+-static void perf_ctx_disable(struct perf_event_context *ctx)
++static void perf_ctx_disable(struct perf_event_context *ctx, bool cgroup)
+ {
+ 	struct perf_event_pmu_context *pmu_ctx;
+ 
+-	list_for_each_entry(pmu_ctx, &ctx->pmu_ctx_list, pmu_ctx_entry)
++	list_for_each_entry(pmu_ctx, &ctx->pmu_ctx_list, pmu_ctx_entry) {
++		if (cgroup && !pmu_ctx->nr_cgroups)
++			continue;
+ 		perf_pmu_disable(pmu_ctx->pmu);
++	}
+ }
+ 
+-static void perf_ctx_enable(struct perf_event_context *ctx)
++static void perf_ctx_enable(struct perf_event_context *ctx. bool cgroup)
+ {
+ 	struct perf_event_pmu_context *pmu_ctx;
+ 
+-	list_for_each_entry(pmu_ctx, &ctx->pmu_ctx_list, pmu_ctx_entry)
++	list_for_each_entry(pmu_ctx, &ctx->pmu_ctx_list, pmu_ctx_entry) {
++		if (cgroup && !pmu_ctx->nr_cgroups)
++			continue;
+ 		perf_pmu_enable(pmu_ctx->pmu);
++	}
+ }
+ 
+ static void ctx_sched_out(struct perf_event_context *ctx, enum event_type_t event_type);
+@@ -856,9 +863,9 @@ static void perf_cgroup_switch(struct task_struct *task)
+ 		return;
+ 
+ 	perf_ctx_lock(cpuctx, cpuctx->task_ctx);
+-	perf_ctx_disable(&cpuctx->ctx);
++	perf_ctx_disable(&cpuctx->ctx, true);
+ 
+-	ctx_sched_out(&cpuctx->ctx, EVENT_ALL);
++	ctx_sched_out(&cpuctx->ctx, EVENT_ALL|EVENT_CGROUP);
+ 	/*
+ 	 * must not be done before ctxswout due
+ 	 * to update_cgrp_time_from_cpuctx() in
+@@ -870,9 +877,9 @@ static void perf_cgroup_switch(struct task_struct *task)
+ 	 * perf_cgroup_set_timestamp() in ctx_sched_in()
+ 	 * to not have to pass task around
+ 	 */
+-	ctx_sched_in(&cpuctx->ctx, EVENT_ALL);
++	ctx_sched_in(&cpuctx->ctx, EVENT_ALL|EVENT_CGROUP);
+ 
+-	perf_ctx_enable(&cpuctx->ctx);
++	perf_ctx_enable(&cpuctx->ctx, true);
+ 	perf_ctx_unlock(cpuctx, cpuctx->task_ctx);
+ }
+ 
+@@ -965,6 +972,8 @@ perf_cgroup_event_enable(struct perf_event *event, struct perf_event_context *ct
+ 	if (!is_cgroup_event(event))
+ 		return;
+ 
++	event->pmu_ctx->nr_cgroups++;
++
+ 	/*
+ 	 * Because cgroup events are always per-cpu events,
+ 	 * @ctx == &cpuctx->ctx.
+@@ -985,6 +994,8 @@ perf_cgroup_event_disable(struct perf_event *event, struct perf_event_context *c
+ 	if (!is_cgroup_event(event))
+ 		return;
+ 
++	event->pmu_ctx->nr_cgroups--;
++
+ 	/*
+ 	 * Because cgroup events are always per-cpu events,
+ 	 * @ctx == &cpuctx->ctx.
+@@ -2677,9 +2688,9 @@ static void ctx_resched(struct perf_cpu_context *cpuctx,
+ 
+ 	event_type &= EVENT_ALL;
+ 
+-	perf_ctx_disable(&cpuctx->ctx);
++	perf_ctx_disable(&cpuctx->ctx, false);
+ 	if (task_ctx) {
+-		perf_ctx_disable(task_ctx);
++		perf_ctx_disable(task_ctx, false);
+ 		task_ctx_sched_out(task_ctx, event_type);
+ 	}
+ 
+@@ -2697,9 +2708,9 @@ static void ctx_resched(struct perf_cpu_context *cpuctx,
+ 
+ 	perf_event_sched_in(cpuctx, task_ctx);
+ 
+-	perf_ctx_enable(&cpuctx->ctx);
++	perf_ctx_enable(&cpuctx->ctx, false);
+ 	if (task_ctx)
+-		perf_ctx_enable(task_ctx);
++		perf_ctx_enable(task_ctx, false);
+ }
+ 
+ void perf_pmu_resched(struct pmu *pmu)
+@@ -3244,6 +3255,9 @@ ctx_sched_out(struct perf_event_context *ctx, enum event_type_t event_type)
+ 	struct perf_cpu_context *cpuctx = this_cpu_ptr(&perf_cpu_context);
+ 	struct perf_event_pmu_context *pmu_ctx;
+ 	int is_active = ctx->is_active;
++	bool cgroup = event_type & EVENT_CGROUP;
++
++	event_type &= ~EVENT_CGROUP;
+ 
+ 	lockdep_assert_held(&ctx->lock);
+ 
+@@ -3290,8 +3304,11 @@ ctx_sched_out(struct perf_event_context *ctx, enum event_type_t event_type)
+ 
+ 	is_active ^= ctx->is_active; /* changed bits */
+ 
+-	list_for_each_entry(pmu_ctx, &ctx->pmu_ctx_list, pmu_ctx_entry)
++	list_for_each_entry(pmu_ctx, &ctx->pmu_ctx_list, pmu_ctx_entry) {
++		if (cgroup && !pmu_ctx->nr_cgroups)
++			continue;
+ 		__pmu_ctx_sched_out(pmu_ctx, is_active);
++	}
+ }
+ 
+ /*
+@@ -3482,7 +3499,7 @@ perf_event_context_sched_out(struct task_struct *task, struct task_struct *next)
+ 		raw_spin_lock_nested(&next_ctx->lock, SINGLE_DEPTH_NESTING);
+ 		if (context_equiv(ctx, next_ctx)) {
+ 
+-			perf_ctx_disable(ctx);
++			perf_ctx_disable(ctx, false);
+ 
+ 			/* PMIs are disabled; ctx->nr_pending is stable. */
+ 			if (local_read(&ctx->nr_pending) ||
+@@ -3502,7 +3519,7 @@ perf_event_context_sched_out(struct task_struct *task, struct task_struct *next)
+ 			perf_ctx_sched_task_cb(ctx, false);
+ 			perf_event_swap_task_ctx_data(ctx, next_ctx);
+ 
+-			perf_ctx_enable(ctx);
++			perf_ctx_enable(ctx, false);
+ 
+ 			/*
+ 			 * RCU_INIT_POINTER here is safe because we've not
+@@ -3526,13 +3543,13 @@ perf_event_context_sched_out(struct task_struct *task, struct task_struct *next)
+ 
+ 	if (do_switch) {
+ 		raw_spin_lock(&ctx->lock);
+-		perf_ctx_disable(ctx);
++		perf_ctx_disable(ctx, false);
+ 
+ inside_switch:
+ 		perf_ctx_sched_task_cb(ctx, false);
+ 		task_ctx_sched_out(ctx, EVENT_ALL);
+ 
+-		perf_ctx_enable(ctx);
++		perf_ctx_enable(ctx, false);
+ 		raw_spin_unlock(&ctx->lock);
+ 	}
+ }
+@@ -3818,47 +3835,32 @@ static int merge_sched_in(struct perf_event *event, void *data)
+ 	return 0;
+ }
+ 
+-static void ctx_pinned_sched_in(struct perf_event_context *ctx, struct pmu *pmu)
++static void pmu_groups_sched_in(struct perf_event_context *ctx,
++				struct perf_event_groups *groups,
++				struct pmu *pmu)
+ {
+-	struct perf_event_pmu_context *pmu_ctx;
+ 	int can_add_hw = 1;
+-
+-	if (pmu) {
+-		visit_groups_merge(ctx, &ctx->pinned_groups,
+-				   smp_processor_id(), pmu,
+-				   merge_sched_in, &can_add_hw);
+-	} else {
+-		list_for_each_entry(pmu_ctx, &ctx->pmu_ctx_list, pmu_ctx_entry) {
+-			can_add_hw = 1;
+-			visit_groups_merge(ctx, &ctx->pinned_groups,
+-					   smp_processor_id(), pmu_ctx->pmu,
+-					   merge_sched_in, &can_add_hw);
+-		}
+-	}
++	visit_groups_merge(ctx, groups, smp_processor_id(), pmu,
++			   merge_sched_in, &can_add_hw);
+ }
+ 
+-static void ctx_flexible_sched_in(struct perf_event_context *ctx, struct pmu *pmu)
++static void ctx_groups_sched_in(struct perf_event_context *ctx,
++				struct perf_event_groups *groups,
++				bool cgroup)
+ {
+ 	struct perf_event_pmu_context *pmu_ctx;
+-	int can_add_hw = 1;
+ 
+-	if (pmu) {
+-		visit_groups_merge(ctx, &ctx->flexible_groups,
+-				   smp_processor_id(), pmu,
+-				   merge_sched_in, &can_add_hw);
+-	} else {
+-		list_for_each_entry(pmu_ctx, &ctx->pmu_ctx_list, pmu_ctx_entry) {
+-			can_add_hw = 1;
+-			visit_groups_merge(ctx, &ctx->flexible_groups,
+-					   smp_processor_id(), pmu_ctx->pmu,
+-					   merge_sched_in, &can_add_hw);
+-		}
++	list_for_each_entry(pmu_ctx, &ctx->pmu_ctx_list, pmu_ctx_entry) {
++		if (cgroup && !pmu_ctx->nr_cgroups)
++			continue;
++		pmu_groups_sched_in(ctx, groups, pmu_ctx->pmu);
+ 	}
+ }
+ 
+-static void __pmu_ctx_sched_in(struct perf_event_context *ctx, struct pmu *pmu)
++static void __pmu_ctx_sched_in(struct perf_event_context *ctx,
++			       struct pmu *pmu)
+ {
+-	ctx_flexible_sched_in(ctx, pmu);
++	pmu_groups_sched_in(ctx, &ctx->flexible_groups, pmu);
+ }
+ 
+ static void
+@@ -3866,6 +3868,9 @@ ctx_sched_in(struct perf_event_context *ctx, enum event_type_t event_type)
+ {
+ 	struct perf_cpu_context *cpuctx = this_cpu_ptr(&perf_cpu_context);
+ 	int is_active = ctx->is_active;
++	bool cgroup = event_type & EVENT_CGROUP;
++
++	event_type &= ~EVENT_CGROUP;
+ 
+ 	lockdep_assert_held(&ctx->lock);
+ 
+@@ -3898,11 +3903,11 @@ ctx_sched_in(struct perf_event_context *ctx, enum event_type_t event_type)
+ 	 * in order to give them the best chance of going on.
+ 	 */
+ 	if (is_active & EVENT_PINNED)
+-		ctx_pinned_sched_in(ctx, NULL);
++		ctx_groups_sched_in(ctx, &ctx->pinned_groups, cgroup);
+ 
+ 	/* Then walk through the lower prio flexible groups */
+ 	if (is_active & EVENT_FLEXIBLE)
+-		ctx_flexible_sched_in(ctx, NULL);
++		ctx_groups_sched_in(ctx, &ctx->flexible_groups, cgroup);
+ }
+ 
+ static void perf_event_context_sched_in(struct task_struct *task)
+@@ -3917,11 +3922,11 @@ static void perf_event_context_sched_in(struct task_struct *task)
+ 
+ 	if (cpuctx->task_ctx == ctx) {
+ 		perf_ctx_lock(cpuctx, ctx);
+-		perf_ctx_disable(ctx);
++		perf_ctx_disable(ctx, false);
+ 
+ 		perf_ctx_sched_task_cb(ctx, true);
+ 
+-		perf_ctx_enable(ctx);
++		perf_ctx_enable(ctx, false);
+ 		perf_ctx_unlock(cpuctx, ctx);
+ 		goto rcu_unlock;
+ 	}
+@@ -3934,7 +3939,7 @@ static void perf_event_context_sched_in(struct task_struct *task)
+ 	if (!ctx->nr_events)
+ 		goto unlock;
+ 
+-	perf_ctx_disable(ctx);
++	perf_ctx_disable(ctx, false);
+ 	/*
+ 	 * We want to keep the following priority order:
+ 	 * cpu pinned (that don't need to move), task pinned,
+@@ -3944,7 +3949,7 @@ static void perf_event_context_sched_in(struct task_struct *task)
+ 	 * events, no need to flip the cpuctx's events around.
+ 	 */
+ 	if (!RB_EMPTY_ROOT(&ctx->pinned_groups.tree)) {
+-		perf_ctx_disable(&cpuctx->ctx);
++		perf_ctx_disable(&cpuctx->ctx, false);
+ 		ctx_sched_out(&cpuctx->ctx, EVENT_FLEXIBLE);
+ 	}
+ 
+@@ -3953,9 +3958,9 @@ static void perf_event_context_sched_in(struct task_struct *task)
+ 	perf_ctx_sched_task_cb(cpuctx->task_ctx, true);
+ 
+ 	if (!RB_EMPTY_ROOT(&ctx->pinned_groups.tree))
+-		perf_ctx_enable(&cpuctx->ctx);
++		perf_ctx_enable(&cpuctx->ctx, false);
+ 
+-	perf_ctx_enable(ctx);
++	perf_ctx_enable(ctx, false);
+ 
+ unlock:
+ 	perf_ctx_unlock(cpuctx, ctx);
