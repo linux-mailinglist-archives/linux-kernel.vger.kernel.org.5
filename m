@@ -2,46 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C03C7BD2D9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 07:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D47D7BD2E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 07:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345116AbjJIFly convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Oct 2023 01:41:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50318 "EHLO
+        id S1345132AbjJIFvr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Oct 2023 01:51:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345049AbjJIFlx (ORCPT
+        with ESMTP id S1345049AbjJIFvq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 01:41:53 -0400
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00216A4;
-        Sun,  8 Oct 2023 22:41:51 -0700 (PDT)
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-27b0d0c0ba0so3182964a91.1;
-        Sun, 08 Oct 2023 22:41:51 -0700 (PDT)
+        Mon, 9 Oct 2023 01:51:46 -0400
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 658129E;
+        Sun,  8 Oct 2023 22:51:45 -0700 (PDT)
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-27736c2a731so3178992a91.3;
+        Sun, 08 Oct 2023 22:51:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696830111; x=1697434911;
+        d=1e100.net; s=20230601; t=1696830705; x=1697435505;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2RX7tLaR5cxlZGvCt5yVuBVmtnOHN5nH9geYt6ELosk=;
-        b=RbIkAhdpuztmdKVcGKcTgLthZGnxPL+FRcI0hUinWt9wr4eseRCbUXHPwmxBfJnbJm
-         APbrSyZNxyFpVNvjfJA7sjyfeX7N39m6ZkG9tLgQDQDEpMlL1J7CVGVuRh76+/S9kU+C
-         c/Y7k4cYW5DULmDssO8L7FpAPJ2tfJLdkH2CK6KeX8dm/Z6yR1i/xCTDuQHqH1tTPO8x
-         Hj3sA5CirILXI2vBP1D+ze4eD81nzIdjvQYLJYZgca7o5UP0So95pvHeS/j64+Qu93og
-         XvlfkNnlxCzneSILTpmCCxscXGPmUTnTSRG9svx/2zzrEicsGX25/3DfdAHLWcHTVPw3
-         gEhQ==
-X-Gm-Message-State: AOJu0YyC9H2Yv2J/tDcQm9wsy5oIeZOFOD7Q8Lr9fIfxFifXoXb/HYqV
-        JypJSwxYnOhnfbr4qbRqIlB3XiNnaVkffYLF2Pc=
-X-Google-Smtp-Source: AGHT+IGE0tedBFfLbmKhVN5DwRDxqT1mpIyYE7VWdPjl5uPqunimpunTgmJdNT28U9fMQdA+O0b56HxncBIqBMuQf5M=
-X-Received: by 2002:a17:90b:3e87:b0:274:755b:63b8 with SMTP id
- rj7-20020a17090b3e8700b00274755b63b8mr14069468pjb.43.1696830111351; Sun, 08
- Oct 2023 22:41:51 -0700 (PDT)
+        bh=a6To/XFZla//NDfF2btRt6lbatBC8d81aAvKQzzrLLY=;
+        b=YUWPfM2iB9Hba3uH1AsuT9HFGzU9zX/wIF1IuF27dkITTF549Jv+4gZSSQzemWbze0
+         lgniInAOpM8wxfm5Z1+hMtBooF80ALYwu4bL4F+LbupP0knpsDDMeOkezVG+Q3Tg2fGa
+         YIT1iCE8ZToS5MBmQZwEHwrl7wwhhITQbQgxmPR/S+YmcJADF0AYLGoBAWTpiwg22W/n
+         5quQOwptj3e28xbBJSKBkaGorJV2BeVj1WVmnzI6jBPtHbFG3Q/FWrhhu4i2pDUUQP6/
+         M9SYXD/6Ri/phmsZwRRI7A3sIzIcoimAvRjjApsQgmNDvGRA9tLA7xL9PbRZqVu8AEWx
+         06wg==
+X-Gm-Message-State: AOJu0Yz+fCdFylaW4rQYsSw4rXRsYxiu+LOQfTg/c0CCyMc7s176g1Uq
+        WnfrURS1zdmCL3zvbRwrcincT3DbUDQ1w29jlZY=
+X-Google-Smtp-Source: AGHT+IFe+yFp/6ZZtgoksaQEaoA0GtB4qRd6BdyhzEmVCwEhguqPFr5Jdk1nmY7VZfEA4x2t+lec7Svvd6Cx87wSVKk=
+X-Received: by 2002:a17:90a:c293:b0:268:18e:9dfa with SMTP id
+ f19-20020a17090ac29300b00268018e9dfamr14452873pjt.5.1696830704800; Sun, 08
+ Oct 2023 22:51:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231005230851.3666908-1-irogers@google.com> <20231005230851.3666908-5-irogers@google.com>
-In-Reply-To: <20231005230851.3666908-5-irogers@google.com>
+References: <20231005230851.3666908-1-irogers@google.com> <20231005230851.3666908-6-irogers@google.com>
+In-Reply-To: <20231005230851.3666908-6-irogers@google.com>
 From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Sun, 8 Oct 2023 22:41:40 -0700
-Message-ID: <CAM9d7ch4SLLbORdhkanCoPQZX=f-p-HxsYX2YWYbtLR4beD4wg@mail.gmail.com>
-Subject: Re: [PATCH v2 04/18] perf hisi-ptt: Fix potential memory leak
+Date:   Sun, 8 Oct 2023 22:51:33 -0700
+Message-ID: <CAM9d7chmVRrFgEZMYk3EWG+1wjXqLC3suu-xrX64hmfBSAFi0A@mail.gmail.com>
+Subject: Re: [PATCH v2 05/18] perf bench uprobe: Fix potential use of memory
+ after free
 To:     Ian Rogers <irogers@google.com>
 Cc:     Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
@@ -81,89 +82,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Thu, Oct 5, 2023 at 4:09 PM Ian Rogers <irogers@google.com> wrote:
 >
-> Fix clang-tidy found potential memory leak and unread value:
+> Found by clang-tidy:
 > ```
-> tools/perf/util/hisi-ptt.c:108:3: warning: Value stored to 'data_offset' is never read [clang-analyzer-deadcode.DeadStores]
->                 data_offset = 0;
->                 ^             ~
-> tools/perf/util/hisi-ptt.c:108:3: note: Value stored to 'data_offset' is never read
->                 data_offset = 0;
->                 ^             ~
-> tools/perf/util/hisi-ptt.c:112:12: warning: Potential leak of memory pointed to by 'data' [clang-analyzer-unix.Malloc]
->                         return -errno;
->                                 ^
-> /usr/include/errno.h:38:18: note: expanded from macro 'errno'
->                  ^
-> tools/perf/util/hisi-ptt.c:100:15: note: Memory is allocated
->         void *data = malloc(size);
->                      ^~~~~~~~~~~~
-> tools/perf/util/hisi-ptt.c:104:6: note: Assuming 'data' is non-null
->         if (!data)
->             ^~~~~
-> tools/perf/util/hisi-ptt.c:104:2: note: Taking false branch
->         if (!data)
->         ^
-> tools/perf/util/hisi-ptt.c:107:6: note: Assuming the condition is false
->         if (perf_data__is_pipe(session->data)) {
->             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> tools/perf/util/hisi-ptt.c:107:2: note: Taking false branch
->         if (perf_data__is_pipe(session->data)) {
->         ^
-> tools/perf/util/hisi-ptt.c:111:7: note: Assuming the condition is true
->                 if (data_offset == -1)
->                     ^~~~~~~~~~~~~~~~~
-> tools/perf/util/hisi-ptt.c:111:3: note: Taking true branch
->                 if (data_offset == -1)
->                 ^
-> tools/perf/util/hisi-ptt.c:112:12: note: Potential leak of memory pointed to by 'data'
->                         return -errno;
->                                 ^
-> /usr/include/errno.h:38:18: note: expanded from macro 'errno'
+> bench/uprobe.c:98:3: warning: Use of memory after it is freed [clang-analyzer-unix.Malloc]
+>                 bench_uprobe_bpf__destroy(skel);
 > ```
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-We already have
-
-  https://lore.kernel.org/r/20230930072719.1267784-1-visitorckw@gmail.com
+I'm ok with the change but I think it won't call
+bench_uprobe__teardown_bpf_skel() if the setup function
+returns a negative value.  Maybe we also need to set the
+err in the default case of `switch (bench)` statement.
 
 Thanks,
 Namhyung
 
 
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
 > ---
->  tools/perf/util/hisi-ptt.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+>  tools/perf/bench/uprobe.c | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> diff --git a/tools/perf/util/hisi-ptt.c b/tools/perf/util/hisi-ptt.c
-> index 45b614bb73bf..ea297329c526 100644
-> --- a/tools/perf/util/hisi-ptt.c
-> +++ b/tools/perf/util/hisi-ptt.c
-> @@ -98,18 +98,18 @@ static int hisi_ptt_process_auxtrace_event(struct perf_session *session,
->         int fd = perf_data__fd(session->data);
->         int size = event->auxtrace.size;
->         void *data = malloc(size);
-> -       off_t data_offset;
->         int err;
+> diff --git a/tools/perf/bench/uprobe.c b/tools/perf/bench/uprobe.c
+> index 914c0817fe8a..5c71fdc419dd 100644
+> --- a/tools/perf/bench/uprobe.c
+> +++ b/tools/perf/bench/uprobe.c
+> @@ -89,6 +89,7 @@ static int bench_uprobe__setup_bpf_skel(enum bench_uprobe bench)
+>         return err;
+>  cleanup:
+>         bench_uprobe_bpf__destroy(skel);
+> +       skel = NULL;
+>         return err;
+>  }
 >
->         if (!data)
->                 return -errno;
->
-> -       if (perf_data__is_pipe(session->data)) {
-> -               data_offset = 0;
-> -       } else {
-> -               data_offset = lseek(fd, 0, SEEK_CUR);
-> -               if (data_offset == -1)
-> +       if (!perf_data__is_pipe(session->data)) {
-> +               off_t data_offset = lseek(fd, 0, SEEK_CUR);
-> +
-> +               if (data_offset == -1) {
-> +                       free(data);
->                         return -errno;
-> +               }
->         }
->
->         err = readn(fd, data, size);
 > --
 > 2.42.0.609.gbb76f46606-goog
 >
