@@ -2,114 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3E87BD747
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 039B37BD736
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:36:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345968AbjJIJjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 05:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39362 "EHLO
+        id S1345929AbjJIJgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 05:36:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345950AbjJIJjV (ORCPT
+        with ESMTP id S1345875AbjJIJgS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 05:39:21 -0400
-X-Greylist: delayed 323 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 09 Oct 2023 02:39:19 PDT
-Received: from gimli.rothwell.id.au (unknown [IPv6:2404:9400:2:0:216:3eff:fee1:997a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C898ABA;
-        Mon,  9 Oct 2023 02:39:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rothwell.id.au;
-        s=201702; t=1696844030;
-        bh=7Tii3g9U6G/x9SePXuUyMBs1rZtti85D/mR5NtmK/qE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=q7iW/nXMZFqka2P7UXx4t3Vn70Dq7yAJQKdkKBIhSR7IF3bfSV5cM7lOdpad9vYLC
-         cey0b8iaoz8y+ENHu1XHBD5/fJbpBuoSvFEoQdqZSWcAiX3lSdgqXLCxtkQXksFDh/
-         X7nw0JgLHNVFXoTgFDl7zzBC63Ljgul0p9jmsZ2BsEjwqCo7hDzA5DLdyL4l2SXQ2x
-         hpL2SB0SM6RXfa5Qx0waQ/VIAPygqxKl4dXR8YeIDXQiNteTDflmPJgD5LlK8K075z
-         oB8vplm8gl4J3AvlP1wv9YxHCY3vqpBqvWRQdC41eVCFJO8Y7m2+5IhWr/Rog0PVtS
-         47+uuWb2b5paA==
-Received: from authenticated.rothwell.id.au (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.rothwell.id.au (Postfix) with ESMTPSA id 4S3v3s2vcZzyP5;
-        Mon,  9 Oct 2023 20:33:45 +1100 (AEDT)
-Date:   Mon, 9 Oct 2023 20:33:24 +1100
-From:   Stephen Rothwell <sfr@rothwell.id.au>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sohil Mehta <sohil.mehta@intel.com>
-Subject: Re: linux-next: manual merge of the block tree with the asm-generic
- tree
-Message-ID: <20231009203324.4199996a@li-c0a070c6-1ab2-11ed-80f2-9c2dcd447373>
-In-Reply-To: <20231009084812.GB14330@noisy.programming.kicks-ass.net>
-References: <20231009123118.4487a0e1@canb.auug.org.au>
-        <20231009084812.GB14330@noisy.programming.kicks-ass.net>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Mon, 9 Oct 2023 05:36:18 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE97101
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:36:15 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-77409065623so246972685a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 02:36:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696844175; x=1697448975; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NbPQn5PYDTYWmHehcflWH6rr2b2zYJNRYM1EffH3dP8=;
+        b=q+zQqYGHKC3VdKkSBxfAKFApTLXq+oKJxK6lXPVPlQmk877rKcPXXoNSP0uCCbw3aH
+         kDKgEsptNC4JuJlwHwkZ4LXgbF60inltIh40ilxDtTwVnpQHff+gIlEggYFi1Z7SyJjQ
+         O+U7UjEsOVbA/IaLWCcNTtWT9/2NvuIMScCC2qWfiBul3WiNgDP96ZaZCMaPluAGFQuZ
+         nBlffRcutdlzbsvFQ2r7xg3NGG9YRjHZpAJg5mnpXY+VwWbxpphtNwyVbKfq8zp+0s1A
+         oUhlnna1+TRBryGhR0DOex19FpMZgY+cQOhbl2zpMzB3d9+L+FbSNgvaYO/uYD9OxaRY
+         NLeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696844175; x=1697448975;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NbPQn5PYDTYWmHehcflWH6rr2b2zYJNRYM1EffH3dP8=;
+        b=Xhd4tpyfgr926XKThiNJnb+2Blh/jCQ//rD+KBHju5hlZQrzLXsy8oqr4M8Tt7Avun
+         b3epYzStbosQzmmiDTM8lORNEeNuZ0vxrm71Ml6KDnxpLxKJiyUy8ru8ffnR/J2Ea/Cf
+         SI9AzyOHfiL/VGztWiMzE6EnXGmqXkrs3mX9qoH1NQCpMx9hARz+Galv5tVoIRkNzq64
+         1XgfBlrdVcCr21mDy9cXjV2hXWbkj6UsXwuvcHO5HWgVT2dG3urXg0H61pZSmurh3NDX
+         Nij5LXEt3bi/JW3G5S92TtXgjTIAiPO0ChzafhIXY7iVBYhHrxLElEbtVSTvxpBpfHaR
+         U0Aw==
+X-Gm-Message-State: AOJu0Ywx5aaT6N0t7DnV8dGqPCq3laz3/FVsfdlL1Xxj/kl4YdEi/kgB
+        kNotB/sSXw4ECHoMmV37wiv9EE4fhJehcloOi5qB5g==
+X-Google-Smtp-Source: AGHT+IHl7GhqKVn2QASGrGlQPWIZs4lZeCDhb0GypUERFjZpZgQ73PUH9sqPw5uitx2hqKLaBTMDwKiIGXFneLYscbE=
+X-Received: by 2002:ad4:5d6a:0:b0:65a:f5e9:8ecf with SMTP id
+ fn10-20020ad45d6a000000b0065af5e98ecfmr19993574qvb.60.1696844174006; Mon, 09
+ Oct 2023 02:36:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/4/QzaOFuP7i.EOVOmikz9T+";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1694625260.git.andreyknvl@google.com> <bbf482643e882f9f870d80cb35342c61955ea291.1694625260.git.andreyknvl@google.com>
+ <CAG_fn=VspORKG5+xdkmnULq3C64mWCb-XGDvnV9htayf5CL-PQ@mail.gmail.com>
+In-Reply-To: <CAG_fn=VspORKG5+xdkmnULq3C64mWCb-XGDvnV9htayf5CL-PQ@mail.gmail.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Mon, 9 Oct 2023 11:35:38 +0200
+Message-ID: <CAG_fn=VSSQuR2VLEv-t+ByG7AbfDxjeR=oPvpaPkMOq4ZoEs4A@mail.gmail.com>
+Subject: Re: [PATCH v2 07/19] lib/stackdepot: rework helpers for depot_alloc_stack
+To:     andrey.konovalov@linux.dev
+Cc:     Marco Elver <elver@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
+        Evgenii Stepanov <eugenis@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/4/QzaOFuP7i.EOVOmikz9T+
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi Peter,
-
-On Mon, 9 Oct 2023 10:48:12 +0200 Peter Zijlstra <peterz@infradead.org> wro=
-te:
+On Mon, Oct 9, 2023 at 10:59=E2=80=AFAM Alexander Potapenko <glider@google.=
+com> wrote:
 >
-> >   #define __NR_fchmodat2 452
-> >   __SYSCALL(__NR_fchmodat2, sys_fchmodat2)
-> > + #define __NR_futex_wake 454
-> > + __SYSCALL(__NR_futex_wake, sys_futex_wake)
-> > + #define __NR_futex_wait 455
-> > + __SYSCALL(__NR_futex_wait, sys_futex_wait)
-> > + #define __NR_futex_requeue 456
-> > + __SYSCALL(__NR_futex_requeue, sys_futex_requeue)
-> >  =20
-> >  +#define __NR_map_shadow_stack 453
-> >  +__SYSCALL(__NR_map_shadow_stack, sys_map_shadow_stack)
-> >  +
-> >   #undef __NR_syscalls
-> > - #define __NR_syscalls 454
-> > + #define __NR_syscalls 457
-> >  =20
-> >   /*
-> >    * 32 bit systems traditionally used different =20
->=20
-> This seems to have the hunks in the wrong order, 453 should come before
-> 454 no?
+> On Wed, Sep 13, 2023 at 7:15=E2=80=AFPM <andrey.konovalov@linux.dev> wrot=
+e:
+> >
+> > From: Andrey Konovalov <andreyknvl@google.com>
+> >
+> > Split code in depot_alloc_stack and depot_init_pool into 3 functions:
+> >
+> > 1. depot_keep_next_pool that keeps preallocated memory for the next poo=
+l
+> >    if required.
+> >
+> > 2. depot_update_pools that moves on to the next pool if there's no spac=
+e
+> >    left in the current pool, uses preallocated memory for the new curre=
+nt
+> >    pool if required, and calls depot_keep_next_pool otherwise.
+> >
+> > 3. depot_alloc_stack that calls depot_update_pools and then allocates
+> >    a stack record as before.
+> >
+> > This makes it somewhat easier to follow the logic of depot_alloc_stack
+> > and also serves as a preparation for implementing the eviction of stack
+> > records from the stack depot.
+> >
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Reviewed-by: Alexander Potapenko <glider@google.com>
+>
+>
+> > +static void depot_keep_next_pool(void **prealloc)
+> >  {
+> >         /*
+> > -        * If the next pool is already initialized or the maximum numbe=
+r of
+> > +        * If the next pool is already saved or the maximum number of
+> >          * pools is reached, do not use the preallocated memory.
+> >          */
+> >         if (!next_pool_required)
+> It's not mentioned at the top of the file that next_pool_required is
+> protected by pool_lock, but it is, correct?
+> Can you please update the comment to reflect that?
 
-Oops, fixed thanks.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/4/QzaOFuP7i.EOVOmikz9T+
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUjyOQACgkQAVBC80lX
-0GxJkgf/V9M3tXfSUDDtjMGFt3l0mBHvvrZV/qOYoRDWmqSpZViaAuuKgeUA89OO
-+tTkNN1fnSBAkHAPb/WAfDFl9pj9a/3rV9R3vhLhIyU8zgEUhGQDV7e9kT0fYtF3
-ttitXpVLxEmB0vtAB8fQf7JIh205Xuoj7uqkcdSBHKCwmamq+Yck42uk+ujrV5c2
-lkgtzdF3PNDnwBAfXt2WXeZx85ZEqZgmJyUJ9oyz9v76FFbL7OlC8UVUZxFfL+FG
-Tdefdc+sn2nKBzM1wItAU0OPsKYcbahG5yVVkVjzC3dxscGmydWD1XWhk7tyjPy5
-Y239TROjJ1wHeDRfdVot9VNqsHOnZw==
-=SS1c
------END PGP SIGNATURE-----
-
---Sig_/4/QzaOFuP7i.EOVOmikz9T+--
+You're adding lockdep annotations in patch 11, which are pretty
+self-descriptive.
+Feel free to ignore my comment above.
