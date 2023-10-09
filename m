@@ -2,140 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E057F7BE5A6
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD8AA7BE5AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376948AbjJIP43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 11:56:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50696 "EHLO
+        id S1377074AbjJIP7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 11:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377086AbjJIP41 (ORCPT
+        with ESMTP id S230326AbjJIP7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 11:56:27 -0400
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1AF99;
-        Mon,  9 Oct 2023 08:56:25 -0700 (PDT)
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 399D7P9l030790;
-        Mon, 9 Oct 2023 17:56:03 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=72yN/PJtKSRJXmtVA+yut3IcjcusVBV+3vh9OJ6jXMI=; b=0U
-        F6OFshRICcuO2W9xvyThnUicqt2zch1ApwS7VOhnC0+fo2Fs2nvIi9c88XwJ0MMC
-        MVd7MoC2faveq64tHhqp0uCamd0Br6OAirAngFphh6rkAyPVWzq2DKJv08JhLCNf
-        /b6+sY8NVBg8/AQOBNu4/FyisRSpyO4TGSz1ulfB0U43Gz47llPtU08vkJ4WDcQU
-        82GSjJ/bEJR8MUOpOlGc1WOys9OpnQNl5/3XTwzqTNZjULVoYO/+ANEitNZyyn5p
-        bk1HjRWc8UBig5Ie848l+czpH1eHzj6cO92Q/YYCdwQO4lU8BxhsBwbZWQ9c4ne6
-        SdT8CmVtj/+SJGH+samQ==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3tkhfdx0sx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Oct 2023 17:56:03 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C4DB710005E;
-        Mon,  9 Oct 2023 17:56:01 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B7DED26DDAC;
-        Mon,  9 Oct 2023 17:56:01 +0200 (CEST)
-Received: from [10.201.20.120] (10.201.20.120) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 9 Oct
- 2023 17:56:00 +0200
-Message-ID: <13aa532e-5fbe-b8d4-d005-1973f589cef3@foss.st.com>
-Date:   Mon, 9 Oct 2023 17:56:00 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 3/7] dt-bindings: media: Document STM32MP25 VENC video
- encoder
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        <linux-media@vger.kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
+        Mon, 9 Oct 2023 11:59:43 -0400
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A2B92;
+        Mon,  9 Oct 2023 08:59:40 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 78ED060009;
+        Mon,  9 Oct 2023 15:59:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1696867179;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FNWPAUWStk7EM/U4IDIbEqdIo2c3DWzVp72/sDXri9A=;
+        b=TDEN3C7yUBzWGXAGJDcmaTSbkJ7LyB2P2TOKJBj4iMdc2RiR4xBJgm1gwPuP/4+Zqr5R5b
+        99vHl2hS4hRzWufb7Voumk928DN0kRBPMkWR6u0RhYL4/5OojbzHEnI+Y4PNAA0d+4B/cK
+        RV/x/hqX7sMN7liS4x9d2T7Plv3idwYYOEnSbAESa+LXfQHyB2lNrlEU2JEYnVdiJgpoVl
+        YLFcMm7rTFD6jXST0rW0xwQhvdHBbPludTE4yaRIat2dzqgWk3Pu4f+curPvqflCm+15/D
+        F+PqZaXOb1dpjiRkZj3nF2ohK/EczwU7hedj1f2nRzEjcGqImp1xpA4AkMQ4LA==
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        "paulburton@kernel.org" <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>
-CC:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-References: <20231004091552.3531659-1-hugues.fruchet@foss.st.com>
- <20231004091552.3531659-4-hugues.fruchet@foss.st.com>
- <6bc60e4a-ddf1-4125-ba27-53ab55a553d2@linaro.org>
- <0de2ae74-2ba1-0e8d-aa7b-77806ac8b252@foss.st.com>
- <1e2a4d87-5478-4655-993d-7f404d507c82@linaro.org>
- <fa0e6187-ab7d-bc23-299c-a491c8ff1d8f@foss.st.com>
- <d3f56d51-beb0-4f7a-a1f6-3ae03bbc9826@linaro.org>
-From:   Hugues FRUCHET <hugues.fruchet@foss.st.com>
-In-Reply-To: <d3f56d51-beb0-4f7a-a1f6-3ae03bbc9826@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.20.120]
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-09_14,2023-10-09_01,2023-05-22_02
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        =?utf-8?Q?Th=C3=A9o?= Lebrun <theo.lebrun@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 03/11] MIPS: support RAM beyond 32-bit
+In-Reply-To: <f98d0cf9-6339-4cb1-8019-56bc71bfb822@app.fastmail.com>
+References: <20231004161038.2818327-1-gregory.clement@bootlin.com>
+ <20231004161038.2818327-4-gregory.clement@bootlin.com>
+ <f98d0cf9-6339-4cb1-8019-56bc71bfb822@app.fastmail.com>
+Date:   Mon, 09 Oct 2023 17:59:38 +0200
+Message-ID: <87edi3bxcl.fsf@BL-laptop>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: gregory.clement@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+Hello Jiaxun,
 
-On 10/9/23 16:28, Krzysztof Kozlowski wrote:
-> On 09/10/2023 16:24, Hugues FRUCHET wrote:
->> Hi Krzysztof,
+> =E5=9C=A82023=E5=B9=B410=E6=9C=884=E6=97=A5=E5=8D=81=E6=9C=88 =E4=B8=8B=
+=E5=8D=885:10=EF=BC=8CGregory CLEMENT=E5=86=99=E9=81=93=EF=BC=9A
+>> From: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
 >>
->> On 10/9/23 15:56, Krzysztof Kozlowski wrote:
->>> On 09/10/2023 15:49, Hugues FRUCHET wrote:
->>>> Hi Krzysztof,
->>>>
->>>> On 10/5/23 21:45, Krzysztof Kozlowski wrote:
->>>>> On 04/10/2023 11:15, Hugues Fruchet wrote:
->>>>>> Add STM32MP25 VENC video encoder bindings.
->>>>>>
->>>>>
->>>>> I don't understand why this binding is separate from video decoder.
->>>>> Merge them.
->>>> VDEC and VENC are two independent IPs with their own clock, reset,
->>>> interrupt & register set, they have their own access to APB/AXI bus.
->>>> Moreover future chipsets may embed only VENC or VDEC.
->>>>
->>>> Hoping that this clarifies the reason of two different bindings.
->>>
->>> No, it does not. These are no reasons to have independent bindings,
->>> except when having actual impact on the bindings. The bindings look
->>> identical. What are the differences?
->> I'm sorry but I really don't understand your point, these are two
->> different IPs with very different registers in it, so why should
->> I share that in a single binding ?
-> 
-> Because the binding is identical. If not, maybe I missed something, so
-> please point me to differences in the binding.
+>> Support platforms where RAM is mapped beyond 32-bit.
+>>
+>> The kernel parameter ddr32_alias allows to setup the alias to point
+>> outside the first 4 GB of memory.
+>
+> Are you trying to fix the problem that if kernel text is loaded in
+> XKPHYS there is no way to to set EBASE to that region?
 
-OK, currently they are identical so I will merge into a single one
-even if I disagree on that.
-I hope that in future this will not change otherwise I'll need to 
-revisit that and make separate bindings as initially proposed...
-I'll so push a v2 with merged version proposal.
+Yes that exactly we try to fix.
 
-> 
-> Best regards,
-> Krzysztof
-> 
+>
+> The common practice for other 64bit MIPS system is to load kernel
+> in KSEG0 and add low 4G mirror with rest of the high memory to buddy
+> system. By doing this Kernel still have access to all memory beyond
+> 32 bit, the only draw back is Kernel's text and data can't be relocted
+> beyond 32-bit.
+>
+> Loading kernel into KSEG0 (i.e. with KBUILD_SYM32) have significant benef=
+it
+> on performance, so I think you shouldn't try to load kernel into XKPHYS
+> without a good reason, but it might be helpful to add a BUG_ON at
+> CPS driver to handle such situation.
 
-BR,
-Hugues.
+I guess that being in KSEG0 allows to use shorter pointer.  But in our
+case the RAM is physically connected beyond 32bits, so it is not
+accessible in KSEG0.
+
+>
+> Btw: Is your target hardware publicly available? Folks at CIP United
+> are looking for EyeQ5 boards for a while, they are supporting MIPS R6
+> support at various projects.
+
+We use evaluation boards and I don't know if they are publicly
+available.
+
+Gregory
+
+>
+> Thanks
+> Jiaxun
+>
+>>
+>> Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+>> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+>> ---
+>>  arch/mips/kernel/smp-cps.c | 12 +++++++++++-
+>>  1 file changed, 11 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
+>> index 47e76722a306..fcfb19487612 100644
+>> --- a/arch/mips/kernel/smp-cps.c
+>> +++ b/arch/mips/kernel/smp-cps.c
+>> @@ -34,6 +34,16 @@ static unsigned __init core_vpe_count(unsigned int=20
+>> cluster, unsigned core)
+>>  	return min(smp_max_threads, mips_cps_numvps(cluster, core));
+>>  }
+>>=20
+>> +static int ddr32_alias;
+>> +
+>> +static int __init ddr32_alias_setup(char *str)
+>> +{
+>> +	get_option(&str, &ddr32_alias);
+>> +
+>> +	return 0;
+>> +}
+>> +early_param("ddr32_alias", ddr32_alias_setup);
+>> +
+>>  /**
+>>   * plat_core_entry - query reset vector for NMI/reset
+>>   *
+>> @@ -52,7 +62,7 @@ static u32 plat_core_entry(void)
+>>  {
+>>  #if defined(CONFIG_USE_XKPHYS)
+>>  	return (UNCAC_ADDR(mips_cps_core_entry) & 0xffffffff)
+>> -			| CM_GCR_Cx_RESET_BASE_MODE;
+>> +			| ddr32_alias | CM_GCR_Cx_RESET_BASE_MODE;
+>>  #else
+>>  	return CKSEG1ADDR((unsigned long)mips_cps_core_entry);
+>>  #endif
+>> --=20
+>> 2.40.1
+>
+> --=20
+> - Jiaxun
+
+--=20
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
