@@ -2,68 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 162BE7BE889
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBC37BE88B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377499AbjJIRoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 13:44:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57208 "EHLO
+        id S1377959AbjJIRom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 13:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233250AbjJIRoR (ORCPT
+        with ESMTP id S1377460AbjJIRol (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 13:44:17 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE22E9D
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 10:44:15 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4064867903cso48622855e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 10:44:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696873454; x=1697478254; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=STStuPO/b+1eXhTjhf6QGffrCRQ+SU82tm0zQBraBwI=;
-        b=Lq/GzIn+6AwVnkUmcMRjcvRKYuaLneqf9h8eBuiJbjgDtD+0MmOtQqlnVvnie5A7FN
-         N1cvVjHy199GA1RMfjdBCODs349QQzK3e2TGyOwIe+ux+yurk0bEUloOgLdxI5iEt5G3
-         q+4cRuEa+MAELnFbOWt36BbJH42y1w6fY99gQZucRxmkPcZsvyXYq/2PMB3TngttzbHs
-         spAzw2aYkBcf3HrnMrcKfLNYc8mQKwk83RI2HteJ8mWBGSY9MRrt/H1mANYkeIRnpMSi
-         5EW5hPwX1qEuv41yypgzJ6fHNHgP5DK1LqKGYNQ9JGrDWQKpKVlh765eL3KFZ7/xCNoR
-         WALQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696873454; x=1697478254;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=STStuPO/b+1eXhTjhf6QGffrCRQ+SU82tm0zQBraBwI=;
-        b=tq4iwX7SZUvDtvwUViJzhHJG6PFkUfJdwF1nBtDRn1OPcfa3p7d4wG773trPKWSsIP
-         2fvnqdx8Iun0P3bc0eZDS8BDmlTCmWxU8rn50DlcQ/qPEezPlQ7+a3cPy/2DbvX/aWS0
-         Heb+c7N4Agiymf9P3IQsruiCQQg5mGkHRpEOemdaBIor3yQyjyxK29cGc+3I4pfFHNfY
-         cJfsjQEo1X9bE91BRVyI6njFOQF5smF/WHOIJhRkD8TZFP+J5nic91j9mSFYWJ8j2DeK
-         KjD81lfaP5hXbV0uXbjkgy30CfZQp1gLMi00FsKsY4oPRrT1+inN0AEWawBCLQPaIZtQ
-         fMbg==
-X-Gm-Message-State: AOJu0Ywux/ItlpJ2SvpboMALFaKxJIyZ45c1TbREoI/Sv4nEPy7dCFFE
-        ddSNmia7/+twAZBBz1uCHiime/F7mPThVjEQUQSm2A==
-X-Google-Smtp-Source: AGHT+IE5oG/4dHDjcFOdclPDQpiBN2b/xlhPzhtW2vhtlr7qTel6GyJ3xa3Fhqt4F0hvEkmg77ljb16nzFS+7kNb6uo=
-X-Received: by 2002:adf:e6cd:0:b0:31f:a4fa:130a with SMTP id
- y13-20020adfe6cd000000b0031fa4fa130amr14430019wrm.14.1696873453889; Mon, 09
- Oct 2023 10:44:13 -0700 (PDT)
+        Mon, 9 Oct 2023 13:44:41 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC70A91;
+        Mon,  9 Oct 2023 10:44:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DF78C433C8;
+        Mon,  9 Oct 2023 17:44:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696873479;
+        bh=ulFW6LSt301EIno4tTQsbIE1fUhJGazrjkE/8EDaSCs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QEdHryOD48pncmxLlJ5bft0gnmB6asyRNvX8CTbb0MXa8fZ0eAENZl+KtMKmQbHKS
+         yhT+hyKLUdn35HtHpNzlCUfcjjemV4Yog1YAbymyIPQqSfH47Evb0bt/sd/KC7jIY8
+         bx3GhLcK0h1TvK2QDKcmVm9wi5gIiOkvzVbkoIdQQ3FuBx4yT7t94XBiYMgM7C+NTH
+         NLXgzI4lgHivPc9uivID3N9XA58XeuB/slfArvnLKF1BCzraY1RTRKDxPM+clyJjZP
+         YDl6St49lCgkCHxF1LGhbUesBPJrmGX2DpborkV2t8poSgbMVnUmHTDRIPZCfueH8+
+         APEwo5gOMCCzg==
+Date:   Mon, 9 Oct 2023 10:44:38 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     John Garry <john.g.garry@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        martin.petersen@oracle.com, david@fromorbit.com,
+        himanshu.madhani@oracle.com
+Subject: Re: [PATCH 2/4] readv.2: Document RWF_ATOMIC flag
+Message-ID: <20231009174438.GE21283@frogsfrogsfrogs>
+References: <20230929093717.2972367-1-john.g.garry@oracle.com>
+ <20230929093717.2972367-3-john.g.garry@oracle.com>
 MIME-Version: 1.0
-References: <20231007170448.505487-1-masahiroy@kernel.org> <20231007170448.505487-3-masahiroy@kernel.org>
-In-Reply-To: <20231007170448.505487-3-masahiroy@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 9 Oct 2023 10:43:59 -0700
-Message-ID: <CAKwvOdkP-28Z51UZcDL4434Uns9pb0kYYFwzHmQCg7x2V0E_TQ@mail.gmail.com>
-Subject: Re: [PATCH 3/5] modpost: define TO_NATIVE() using bswap_* functions
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230929093717.2972367-3-john.g.garry@oracle.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,115 +51,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 7, 2023 at 10:05=E2=80=AFAM Masahiro Yamada <masahiroy@kernel.o=
-rg> wrote:
->
-> The current TO_NATIVE() has some limitations:
->
->  1) You cannot cast the argument.
->
->  2) You cannot pass a variable marked as 'const'.
->
->  3) Passing an array is a bug, but it is not detected.
->
-> Impelement TO_NATIVE() using bswap_*() functions. These are GNU
-> extensions. If we face portability issues, we can port the code from
-> include/uapi/linux/swab.h.
->
-> With this change, get_rel_type_and_sym() can be simplified by casting
-> the arguments directly.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+On Fri, Sep 29, 2023 at 09:37:15AM +0000, John Garry wrote:
+> From: Himanshu Madhani <himanshu.madhani@oracle.com>
+> 
+> Add RWF_ATOMIC flag description for pwritev2().
+> 
+> Signed-off-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+> #jpg: complete rewrite
+> Signed-off-by: John Garry <john.g.garry@oracle.com>
 > ---
->
->  scripts/mod/modpost.c | 13 ++++---------
->  scripts/mod/modpost.h | 25 ++++++++++++-------------
->  2 files changed, 16 insertions(+), 22 deletions(-)
->
-> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-> index 2f3b0fe6f68d..99476a9695c5 100644
-> --- a/scripts/mod/modpost.c
-> +++ b/scripts/mod/modpost.c
-> @@ -1410,15 +1410,10 @@ static void get_rel_type_and_sym(struct elf_info =
-*elf, uint64_t r_info,
->                 return;
->         }
->
-> -       if (is_64bit) {
-> -               Elf64_Xword r_info64 =3D r_info;
-> -
-> -               r_info =3D TO_NATIVE(r_info64);
-> -       } else {
-> -               Elf32_Word r_info32 =3D r_info;
-> -
-> -               r_info =3D TO_NATIVE(r_info32);
-> -       }
-> +       if (is_64bit)
-> +               r_info =3D TO_NATIVE((Elf64_Xword)r_info);
-> +       else
-> +               r_info =3D TO_NATIVE((Elf32_Word)r_info);
->
->         *r_type =3D ELF_R_TYPE(r_info);
->         *r_sym =3D ELF_R_SYM(r_info);
-> diff --git a/scripts/mod/modpost.h b/scripts/mod/modpost.h
-> index 6413f26fcb6b..1392afec118c 100644
-> --- a/scripts/mod/modpost.h
-> +++ b/scripts/mod/modpost.h
-> @@ -1,4 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
-> +#include <byteswap.h>
->  #include <stdbool.h>
->  #include <stdio.h>
->  #include <stdlib.h>
-> @@ -51,21 +52,19 @@
->  #define ELF_R_TYPE  ELF64_R_TYPE
->  #endif
->
-> +#define bswap(x) \
-> +({ \
-> +       _Static_assert(sizeof(x) =3D=3D 1 || sizeof(x) =3D=3D 2 || \
+>  man2/readv.2 | 45 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 45 insertions(+)
+> 
+> diff --git a/man2/readv.2 b/man2/readv.2
+> index fa9b0e4e44a2..ff09f3bc9792 100644
+> --- a/man2/readv.2
+> +++ b/man2/readv.2
+> @@ -193,6 +193,51 @@ which provides lower latency, but may use additional resources.
+>  .B O_DIRECT
+>  flag.)
+>  .TP
+> +.BR RWF_ATOMIC " (since Linux 6.7)"
+> +Allows block-based filesystems to indicate that write operations will be issued
 
-Seems fine, but do we need to support folks trying to swap 1B values?
-i.e. is someone calling TO_NATIVE with 1B values?  Seems silly unless
-one of these types is variable length dependent on the target machine
-type?
+"Require regular file write operations to be issued with torn write
+protection."
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> +with torn-write protection. Torn-write protection means that for a power or any
+> +other hardware failure, all or none of the data from the write will be stored,
+> +but never a mix of old and new data. This flag is meaningful only for
+> +.BR pwritev2 (),
+> +and its effect applies only to the data range written by the system call.
+> +The total write length must be power-of-2 and must be sized between
+> +stx_atomic_write_unit_min and stx_atomic_write_unit_max, both inclusive. The
+> +write must be at a natural offset within the file with respect to the total
 
-> +                      sizeof(x) =3D=3D 4 || sizeof(x) =3D=3D 8, "bug"); =
-\
-> +       (typeof(x))(sizeof(x) =3D=3D 2 ? bswap_16(x) : \
-> +                   sizeof(x) =3D=3D 4 ? bswap_32(x) : \
-> +                   sizeof(x) =3D=3D 8 ? bswap_64(x) : \
-> +                   x); \
-> +})
-> +
->  #if KERNEL_ELFDATA !=3D HOST_ELFDATA
->
-> -static inline void __endian(const void *src, void *dest, unsigned int si=
-ze)
-> -{
-> -       unsigned int i;
-> -       for (i =3D 0; i < size; i++)
-> -               ((unsigned char*)dest)[i] =3D ((unsigned char*)src)[size =
-- i-1];
-> -}
-> -
-> -#define TO_NATIVE(x)                                           \
-> -({                                                             \
-> -       typeof(x) __x;                                          \
-> -       __endian(&(x), &(__x), sizeof(__x));                    \
-> -       __x;                                                    \
-> -})
-> +#define TO_NATIVE(x) (bswap(x))
->
->  #else /* endianness matches */
->
-> --
-> 2.39.2
->
+What is a "natural" offset?  That should be defined with more
+specificity.  Does that mean that the position of a XX-KiB write must
+also be aligned to XX-KiB?  e.g. a 32K untorn write can only start at a
+multiple of 32K?  What if the device supports untorn writes between 4K
+and 64K, does that mean I /cannot/ issue a 32K untorn write at offset
+48K?
 
+> +write length. Torn-write protection only works with
+> +.B O_DIRECT
+> +flag, i.e. buffered writes are not supported. To guarantee consistency from
+> +the write between a file's in-core state with the storage device,
+> +.BR fdatasync (2)
+> +or
+> +.BR fsync (2)
+> +or
+> +.BR open (2)
+> +and
+> +.B O_SYNC
+> +or
+> +.B O_DSYNC
+> +or
+> +.B pwritev2 ()
+> +flag
+> +.B RWF_SYNC
+> +or
+> +.B RWF_DSYNC
+> +is required.
 
---=20
-Thanks,
-~Nick Desaulniers
+I'm starting to think that this manpage shouldn't be restating
+durability information here.
+
+"Application programs with data or file integrity completion
+requirements must configure synchronous writes with the DSYNC
+or SYNC flags, as explained above."
+
+> +For when regular files are opened with
+> +.BR open (2)
+> +but without
+> +.B O_SYNC
+> +or
+> +.B O_DSYNC
+> +and the
+> +.BR pwritev2()
+> +call is made without
+> +.B RWF_SYNC
+> +or
+> +.BR RWF_DSYNC
+> +set, the range metadata must already be flushed to storage and the data range
+> +must not be in unwritten state, shared, a preallocation, or a hole.
+
+I think that we can drop all of these flags requirements, since the
+contiguous small space allocation requirement means that the fs can
+provide all-or-nothing writes even if metadata updates are needed:
+
+If the file range is allocated and marked unwritten (i.e. a
+preallocation), the ioend will clear the unwritten bit from the file
+mapping atomically.  After a crash, the application sees either zeroes
+or all the data that was written.
+
+If the file range is shared, the ioend will map the COW staging extent
+into the file atomically.  After a crash, the application sees either
+the old contents from the old blocks, or the new contents from the new
+blocks.
+
+If the file range is a sparse hole, the directio setup will allocate
+space and create an unwritten mapping before issuing the write bio.  The
+rest of the process works the same as preallocations and has the same
+behaviors.
+
+If the file range is allocated and was previously written, the write is
+issued and that's all that's needed from the fs.  After a crash, reads
+of the storage device produce the old contents or the new contents.
+
+Summarizing:
+
+An (ATOMIC|SYNC) request provides the strongest guarantees (data
+will not be torn, and all file metadata updates are persisted before
+the write is returned to userspace.  Programs see either the old data or
+the new data, even if there's a crash.
+
+(ATOMIC|DSYNC) is less strong -- data will not be torn, and any file
+updates for just that region are persisted before the write is returned.
+
+(ATOMIC) is the least strong -- data will not be torn.  Neither the
+filesystem nor the device make guarantees that anything ended up on
+stable storage, but if it does, programs see either the old data or the
+new data.
+
+Maybe we should rename the whole UAPI s/atomic/untorn/...
+
+--D
+
+> +.TP
+>  .BR RWF_SYNC " (since Linux 4.7)"
+>  .\" commit e864f39569f4092c2b2bc72c773b6e486c7e3bd9
+>  Provide a per-write equivalent of the
+> -- 
+> 2.31.1
+> 
