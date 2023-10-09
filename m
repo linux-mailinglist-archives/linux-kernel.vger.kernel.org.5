@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAC067BE9B0
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 20:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE2707BE9B3
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 20:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378135AbjJIShS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 14:37:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49662 "EHLO
+        id S1378297AbjJISh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 14:37:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378161AbjJIShG (ORCPT
+        with ESMTP id S1377787AbjJIShM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 14:37:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D2FBA3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 11:36:17 -0700 (PDT)
+        Mon, 9 Oct 2023 14:37:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD51AA4
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 11:36:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696876576;
+        s=mimecast20190719; t=1696876581;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=gALg4BuzDzCCCf3P05cRSMli/frUwAArjCkEkdq6b1A=;
-        b=fQwC0Ds4FqNWCrHTCfYdKe2jIEgyxA/wwBviRNELkDTMuKARnb4MD2qMmp0DCeKcT5xM7p
-        CbE4vvwymyZk8TfCyWFQqEwi0dUOAEsad8PXWKsK0iiTfGsuyKedsO19/UtRuEILnbiKJQ
-        yA8shttz2Krw2d/MKJrU/9Ekv9AsY1k=
+        bh=j5ZrsHwzLorvUYPP8a8dcsR2FiW1aaopcCHsyKU7r9w=;
+        b=UBzBED79ZspZUSpwFPDhuu77j5bq3SV7TBGTPYtEI/0e6++NXZWZk/I8tqXeMN2/cs81rc
+        vLEsewLqO0fXVZSaklH/GSIGuNTUu8jEMDcYvXWv66D97yYY8uQPhxf4C/GYyv4N1msTGy
+        Bt1tUcBrDmf7ZdQvQJfRoZPt4F7jV8A=
 Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
  [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-154-yCexfcQ5MXKWHHX38_mBcw-1; Mon, 09 Oct 2023 14:36:05 -0400
-X-MC-Unique: yCexfcQ5MXKWHHX38_mBcw-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3296bd73d91so2050804f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 11:36:04 -0700 (PDT)
+ us-mta-639-5X6HZGfrPbeygmPqagbHJA-1; Mon, 09 Oct 2023 14:36:05 -0400
+X-MC-Unique: 5X6HZGfrPbeygmPqagbHJA-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-323334992fbso3420622f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 11:36:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696876563; x=1697481363;
+        d=1e100.net; s=20230601; t=1696876564; x=1697481364;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gALg4BuzDzCCCf3P05cRSMli/frUwAArjCkEkdq6b1A=;
-        b=UkdMku92zn4gX1ixqfFC8SAHwDnFu9kNylTeW2om2KowHRSeYFbQ8XYB/iOtCDsqbi
-         p83CsGFhMIl7wYzzTenAlyqMomAf/p8I8QhNbMSbXE2yC8pH8cxwFMFdwOAfDMpa9o3o
-         teLx5TgfENN7t9Ifx8MFF88wGsqoclr3zFqQfMzo8G/bu71ih4Q47KuYryt+gBwmb8/J
-         CLINF9yCSwmVPH7hKsmeOLgPNnj63nsQ8OPRc2xTojPUcfn6UCWKKfRhi8GPcp/DrS8j
-         Ppe4lMaL7vK2UIKbHs1t2Cu+on+Kg2TH7SqhI9DaV/ytCvURY3Xj/vA0WkxaFNlm4dv+
-         rywA==
-X-Gm-Message-State: AOJu0YxKjua68Td99MXM9bnRqASIUZ/lOq48ZQpyRUjbPfI3IKsmGBcy
-        W70Z+tJdtadkPVkwPGzDYYZO5MZwDYVFi8HThbKn+LI5kHWT0iEKG2HHTvuYIaiT4VadM9MxuGG
-        GBbHIB3WFIfn3/D0LQBUg8C5TqBmZM+JIuz1b2sIGZj+XST0BgO6ePzLJkh7XLz4nIzY45QDb+0
-        FlwGzrFd0=
-X-Received: by 2002:a05:6000:1e08:b0:329:6662:ac1d with SMTP id bj8-20020a0560001e0800b003296662ac1dmr11185855wrb.24.1696876563002;
+        bh=j5ZrsHwzLorvUYPP8a8dcsR2FiW1aaopcCHsyKU7r9w=;
+        b=sZmxvDMGHE5pdZbgeOY6rr31VEISZAMfgjY8ApUBS6Mv59MlwnEIpaIhMgmJr3y2PP
+         HiLl6b2WsNZhAreChxKfdKzKED0Tu/TqN40ndU7oA7j4dlinfkg49ImJbBO5m3zHWJ1y
+         hm3hHc/YSuPQ8kMBdDU0fEgEjU4ZueBESMappCYkfKtu8nqxlBpOmzcYRhcU+gP5Y/7D
+         Zkozs5/oDzwUwa5+0DzdxKOlu/OLaJ82jtT0yCZI4KrRnLYcL2dBdD/Iu07kakd0Slrz
+         OY691F0b1uJ26erkmcSQxYIbHFRkN3ntnHGjkT1bWZ/5JU4wucsgKgd6/LDWvIxPmrGg
+         hTSQ==
+X-Gm-Message-State: AOJu0Yz5Cip8n320gB3AEC+e0chgFNzlwQkRswXVk1ydHATATKud51Jh
+        tQWygg2qXuoqkKf3gYcUPhLc8SyiI3HO/8W8sm+2lG0bmR/U43mpzW5EEjOZoWOdjcsZpUnIvDB
+        eD+P/0BvV4nbCKI1XR9WGgzgsV20MGK3hdnMN1YAyaG6BZ3BOroSKyZD/wjKy0UzGXFBjxskmYv
+        ktigy7TgQ=
+X-Received: by 2002:a5d:5187:0:b0:31f:ec06:20f with SMTP id k7-20020a5d5187000000b0031fec06020fmr13559055wrv.14.1696876564247;
+        Mon, 09 Oct 2023 11:36:04 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEqZW1dmkwdaHjEnu5wPTZrKs4GUXK67CJwBipf1KKjzq7yNzfyAyt2SuzJkZ1eYkixZxo4Qg==
+X-Received: by 2002:a5d:5187:0:b0:31f:ec06:20f with SMTP id k7-20020a5d5187000000b0031fec06020fmr13559037wrv.14.1696876563940;
         Mon, 09 Oct 2023 11:36:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IECJPV6fQzltcRPHfYUiuUATolHxklI0ViN4dcGzNMpNc2h6oW6hYsnrP1UmTcgV1MSDxmuGw==
-X-Received: by 2002:a05:6000:1e08:b0:329:6662:ac1d with SMTP id bj8-20020a0560001e0800b003296662ac1dmr11185837wrb.24.1696876562733;
-        Mon, 09 Oct 2023 11:36:02 -0700 (PDT)
 Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id k21-20020adfb355000000b003296b913bbesm9770081wrd.12.2023.10.09.11.36.01
+        by smtp.gmail.com with ESMTPSA id x8-20020adfcc08000000b003296bb21c77sm9747623wrh.80.2023.10.09.11.36.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 11:36:02 -0700 (PDT)
+        Mon, 09 Oct 2023 11:36:03 -0700 (PDT)
 From:   Javier Martinez Canillas <javierm@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Maxime Ripard <mripard@kernel.org>,
@@ -67,9 +67,9 @@ Cc:     Maxime Ripard <mripard@kernel.org>,
         David Airlie <airlied@gmail.com>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH 3/8] drm/ssd13xx: Replace .page_height field in device info with a constant
-Date:   Mon,  9 Oct 2023 20:34:17 +0200
-Message-ID: <20231009183522.543918-4-javierm@redhat.com>
+Subject: [PATCH 4/8] drm/ssd13xx: Use drm_format_info_min_pitch() to calculate the dest_pitch
+Date:   Mon,  9 Oct 2023 20:34:18 +0200
+Message-ID: <20231009183522.543918-5-javierm@redhat.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231009183522.543918-1-javierm@redhat.com>
 References: <20231009183522.543918-1-javierm@redhat.com>
@@ -77,7 +77,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,181 +85,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This deemed useful to avoid hardcoding a page height and allow to support
-other Solomon controller families, but dividing the screen in pages seems
-to be something that is specific to the SSD130x chip family.
-
-For example, SSD132x chip family divides the screen in segments (columns)
-and common outputs (rows), so the concept of screen pages does not exist
-for the SSD132x family.
-
-Let's drop this field from the device info struct and just use a constant
-SSD130X_PAGE_HEIGHT macro to define the page height. While being there,
-replace hardcoded 8 values in places where it is used as the page height.
+Don't assume bpp of 1 and instead compute the destination pitch using the
+intermediate buffer pixel format info when doing a format conversion.
 
 Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
 ---
 
- drivers/gpu/drm/solomon/ssd13xx.c | 37 +++++++++++++++----------------
- drivers/gpu/drm/solomon/ssd13xx.h |  1 -
- 2 files changed, 18 insertions(+), 20 deletions(-)
+ drivers/gpu/drm/solomon/ssd13xx.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/gpu/drm/solomon/ssd13xx.c b/drivers/gpu/drm/solomon/ssd13xx.c
-index 10a767fb614c..d29be17665b5 100644
+index d29be17665b5..9747f8656636 100644
 --- a/drivers/gpu/drm/solomon/ssd13xx.c
 +++ b/drivers/gpu/drm/solomon/ssd13xx.c
-@@ -42,6 +42,8 @@
- #define DRIVER_MAJOR	1
- #define DRIVER_MINOR	0
- 
-+#define SSD130X_PAGE_HEIGHT 8
-+
- #define SSD130X_PAGE_COL_START_LOW		0x00
- #define SSD130X_PAGE_COL_START_HIGH		0x10
- #define SSD130X_SET_ADDRESS_MODE		0x20
-@@ -102,7 +104,6 @@ const struct ssd13xx_deviceinfo ssd13xx_variants[] = {
- 		.default_width = 132,
- 		.default_height = 64,
- 		.page_mode_only = 1,
--		.page_height = 8,
- 	},
- 	[SSD1305_ID] = {
- 		.default_vcomh = 0x34,
-@@ -110,7 +111,6 @@ const struct ssd13xx_deviceinfo ssd13xx_variants[] = {
- 		.default_dclk_frq = 7,
- 		.default_width = 132,
- 		.default_height = 64,
--		.page_height = 8,
- 	},
- 	[SSD1306_ID] = {
- 		.default_vcomh = 0x20,
-@@ -119,7 +119,6 @@ const struct ssd13xx_deviceinfo ssd13xx_variants[] = {
- 		.need_chargepump = 1,
- 		.default_width = 128,
- 		.default_height = 64,
--		.page_height = 8,
- 	},
- 	[SSD1307_ID] = {
- 		.default_vcomh = 0x20,
-@@ -128,7 +127,6 @@ const struct ssd13xx_deviceinfo ssd13xx_variants[] = {
- 		.need_pwm = 1,
- 		.default_width = 128,
- 		.default_height = 39,
--		.page_height = 8,
- 	},
- 	[SSD1309_ID] = {
- 		.default_vcomh = 0x34,
-@@ -136,7 +134,6 @@ const struct ssd13xx_deviceinfo ssd13xx_variants[] = {
- 		.default_dclk_frq = 10,
- 		.default_width = 128,
- 		.default_height = 64,
--		.page_height = 8,
- 	}
+@@ -148,6 +148,8 @@ struct ssd13xx_plane_state {
+ 	struct drm_shadow_plane_state base;
+ 	/* Intermediate buffer to convert pixels from XRGB8888 to HW format */
+ 	u8 *buffer;
++	/* Pixel format info for the intermediate buffer */
++	const struct drm_format_info *fi;
  };
- EXPORT_SYMBOL_NS_GPL(ssd13xx_variants, DRM_SSD13XX);
-@@ -465,13 +462,13 @@ static int ssd13xx_update_rect(struct ssd13xx_device *ssd13xx,
- 	unsigned int width = drm_rect_width(rect);
- 	unsigned int height = drm_rect_height(rect);
- 	unsigned int line_length = DIV_ROUND_UP(width, 8);
--	unsigned int page_height = ssd13xx->device_info->page_height;
-+	unsigned int page_height = SSD130X_PAGE_HEIGHT;
- 	unsigned int pages = DIV_ROUND_UP(height, page_height);
- 	struct drm_device *drm = &ssd13xx->drm;
- 	u32 array_idx = 0;
- 	int ret, i, j, k;
  
--	drm_WARN_ONCE(drm, y % 8 != 0, "y must be aligned to screen page\n");
-+	drm_WARN_ONCE(drm, y % page_height != 0, "y must be aligned to screen page\n");
+ static inline struct ssd13xx_crtc_state *to_ssd13xx_crtc_state(struct drm_crtc_state *state)
+@@ -602,8 +604,9 @@ static void ssd13xx_clear_screen(struct ssd13xx_device *ssd13xx, u8 *data_array)
  
- 	/*
- 	 * The screen is divided in pages, each having a height of 8
-@@ -503,27 +500,32 @@ static int ssd13xx_update_rect(struct ssd13xx_device *ssd13xx,
- 	 */
- 
- 	if (!ssd13xx->page_address_mode) {
-+		u8 page_start;
-+
- 		/* Set address range for horizontal addressing mode */
- 		ret = ssd13xx_set_col_range(ssd13xx, ssd13xx->col_offset + x, width);
- 		if (ret < 0)
- 			return ret;
- 
--		ret = ssd13xx_set_page_range(ssd13xx, ssd13xx->page_offset + y / 8, pages);
-+		page_start = ssd13xx->page_offset + y / page_height;
-+		ret = ssd13xx_set_page_range(ssd13xx, page_start, pages);
- 		if (ret < 0)
- 			return ret;
- 	}
- 
- 	for (i = 0; i < pages; i++) {
--		int m = 8;
-+		int m = page_height;
- 
- 		/* Last page may be partial */
--		if (8 * (y / 8 + i + 1) > ssd13xx->height)
--			m = ssd13xx->height % 8;
-+		if (page_height * (y / page_height + i + 1) > ssd13xx->height)
-+			m = ssd13xx->height % page_height;
-+
- 		for (j = 0; j < width; j++) {
- 			u8 data = 0;
- 
- 			for (k = 0; k < m; k++) {
--				u8 byte = buf[(8 * i + k) * line_length + j / 8];
-+				u32 idx = (page_height * i + k) * line_length + j / 8;
-+				u8 byte = buf[idx];
- 				u8 bit = (byte >> (j % 8)) & 1;
- 
- 				data |= bit << k;
-@@ -559,8 +561,7 @@ static int ssd13xx_update_rect(struct ssd13xx_device *ssd13xx,
- 
- static void ssd13xx_clear_screen(struct ssd13xx_device *ssd13xx, u8 *data_array)
- {
--	unsigned int page_height = ssd13xx->device_info->page_height;
--	unsigned int pages = DIV_ROUND_UP(ssd13xx->height, page_height);
-+	unsigned int pages = DIV_ROUND_UP(ssd13xx->height, SSD130X_PAGE_HEIGHT);
- 	unsigned int width = ssd13xx->width;
- 	int ret, i;
- 
-@@ -605,14 +606,13 @@ static int ssd13xx_fb_blit_rect(struct drm_framebuffer *fb,
- 				u8 *buf, u8 *data_array)
+ static int ssd13xx_fb_blit_rect(struct drm_framebuffer *fb,
+ 				const struct iosys_map *vmap,
+-				struct drm_rect *rect,
+-				u8 *buf, u8 *data_array)
++				struct drm_rect *rect, u8 *buf,
++				const struct drm_format_info *fi,
++				u8 *data_array)
  {
  	struct ssd13xx_device *ssd13xx = drm_to_ssd13xx(fb->dev);
--	unsigned int page_height = ssd13xx->device_info->page_height;
  	struct iosys_map dst;
- 	unsigned int dst_pitch;
- 	int ret = 0;
+@@ -614,7 +617,7 @@ static int ssd13xx_fb_blit_rect(struct drm_framebuffer *fb,
+ 	rect->y1 = round_down(rect->y1, SSD130X_PAGE_HEIGHT);
+ 	rect->y2 = min_t(unsigned int, round_up(rect->y2, SSD130X_PAGE_HEIGHT), ssd13xx->height);
  
- 	/* Align y to display page boundaries */
--	rect->y1 = round_down(rect->y1, page_height);
--	rect->y2 = min_t(unsigned int, round_up(rect->y2, page_height), ssd13xx->height);
-+	rect->y1 = round_down(rect->y1, SSD130X_PAGE_HEIGHT);
-+	rect->y2 = min_t(unsigned int, round_up(rect->y2, SSD130X_PAGE_HEIGHT), ssd13xx->height);
+-	dst_pitch = DIV_ROUND_UP(drm_rect_width(rect), 8);
++	dst_pitch = drm_format_info_min_pitch(fi, 0, drm_rect_width(rect));
  
- 	dst_pitch = DIV_ROUND_UP(drm_rect_width(rect), 8);
+ 	ret = drm_gem_fb_begin_cpu_access(fb, DMA_FROM_DEVICE);
+ 	if (ret)
+@@ -664,6 +667,8 @@ static int ssd13xx_primary_plane_atomic_check(struct drm_plane *plane,
+ 	if (!ssd13xx_state->buffer)
+ 		return -ENOMEM;
  
-@@ -814,8 +814,7 @@ static int ssd13xx_crtc_atomic_check(struct drm_crtc *crtc,
- 	struct ssd13xx_device *ssd13xx = drm_to_ssd13xx(drm);
- 	struct drm_crtc_state *crtc_state = drm_atomic_get_new_crtc_state(state, crtc);
- 	struct ssd13xx_crtc_state *ssd13xx_state = to_ssd13xx_crtc_state(crtc_state);
--	unsigned int page_height = ssd13xx->device_info->page_height;
--	unsigned int pages = DIV_ROUND_UP(ssd13xx->height, page_height);
-+	unsigned int pages = DIV_ROUND_UP(ssd13xx->height, SSD130X_PAGE_HEIGHT);
- 	int ret;
++	ssd13xx_state->fi = fi;
++
+ 	return 0;
+ }
  
- 	ret = drm_crtc_helper_atomic_check(crtc, state);
-diff --git a/drivers/gpu/drm/solomon/ssd13xx.h b/drivers/gpu/drm/solomon/ssd13xx.h
-index e5abf23196b0..64283935fbc1 100644
---- a/drivers/gpu/drm/solomon/ssd13xx.h
-+++ b/drivers/gpu/drm/solomon/ssd13xx.h
-@@ -39,7 +39,6 @@ struct ssd13xx_deviceinfo {
- 	u32 default_dclk_frq;
- 	u32 default_width;
- 	u32 default_height;
--	u32 page_height;
- 	bool need_pwm;
- 	bool need_chargepump;
- 	bool page_mode_only;
+@@ -695,6 +700,7 @@ static void ssd13xx_primary_plane_atomic_update(struct drm_plane *plane,
+ 
+ 		ssd13xx_fb_blit_rect(fb, &shadow_plane_state->data[0], &dst_clip,
+ 				     ssd13xx_plane_state->buffer,
++				     ssd13xx_plane_state->fi,
+ 				     ssd13xx_crtc_state->data_array);
+ 	}
+ 
 -- 
 2.41.0
 
