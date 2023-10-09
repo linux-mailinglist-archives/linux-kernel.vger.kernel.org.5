@@ -2,128 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 992877BE67E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08EA17BE682
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377242AbjJIQfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 12:35:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47984 "EHLO
+        id S1377643AbjJIQf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 12:35:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377235AbjJIQfV (ORCPT
+        with ESMTP id S1377299AbjJIQfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 12:35:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB9709E;
-        Mon,  9 Oct 2023 09:35:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696869319; x=1728405319;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=+5aTGRPEMm+/zcuFb1ktUrXhpx+ZuGNHWibFsWuZRgI=;
-  b=Cuy2HCSyxdVTRPPOE5RWTDeL+/EMRBcdwFRkvpSWpdD+Ug3HGvHFgSD3
-   y9LGLjyRIk0dk9fkVwjJZFLdQWEmdi/AlpPlbYfh9MLiSxL+JJVOXZpAp
-   V+F+ZmeO67C7sNdEsU8wkA6mcWz5mQTwm0Fas7wybnH6zl+eXxT8Ilp1w
-   DIHm+uw+zOkgEMaQr5tEAvEatrzTKDIiUu3k16cqwnbEIw2cha0b+5BXh
-   kAI8m2WsNhBUHEYglHTEdcfuG7HTTGhspa4ft4bS37pS3pGCHaj5+zQeG
-   AhbuNGgkZR+bRMW4xBsT7tZHtLrXeY6VQW3x9kbGQRaLQEeoIprUWruaj
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="384055074"
-X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="scan'208";a="384055074"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 09:35:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="896836713"
-X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="scan'208";a="896836713"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.36.27])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 09:33:32 -0700
-Message-ID: <7443c574-7f1d-4ee5-b3f9-da42989af90e@intel.com>
-Date:   Mon, 9 Oct 2023 19:35:08 +0300
+        Mon, 9 Oct 2023 12:35:24 -0400
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC55199;
+        Mon,  9 Oct 2023 09:35:22 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-59f6492b415so40738947b3.0;
+        Mon, 09 Oct 2023 09:35:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696869322; x=1697474122; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RsC4B5mELowhLCBdNvaIf+LwPDrz+keu3BL55c6ZynM=;
+        b=ExJqmyPw90udlhP9ASCiGzsxkcH1bmj/pFkmFimTNIWolKEOyNgnO/qXv0eV8+4R7z
+         iqyUl0kMrGbZTYcKpIpF2g4heBKnctCerXdpJxAv8pjL494Ot2gkpHQViTCeZt86tzE9
+         W4hN9db0w+WEJqet2eJSXwiT9Tjd65XtUkV1mRKRSDle/mRWSf913iGF3Rn3Yvi+exJp
+         qip12KbjRfgwYzRYk2lqYO+TatV89d2eds7K85kBTUUA+YcDtN399zBxcMrWIbuUioi5
+         KFhyVw03c4xGGOA5WL1icXbnIauewBLB4zy2LIQNlAXZQAlnDSsJcrQeYntJUnmjOWUg
+         YeBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696869322; x=1697474122;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RsC4B5mELowhLCBdNvaIf+LwPDrz+keu3BL55c6ZynM=;
+        b=irDJwMC+muHoPJ4CKoWycFO9hnMoyOqEyVj4gDY7VkEGSJsf8c5xgs8l74R1AXGA3c
+         vYT3zL1pWKuNIfLdoxsNyyKH0vKSdaUThADTgmAuuaOHPmKkqRogF+RlpB4m4nriCyab
+         8/62Z//8MpIJuAsKC5RKXJE3xVNWOwpIPrUToR7TGTMwgoTse7u1eBs2zVJNwHQnGewI
+         SWb4Xi1PvEjuwu0sJguetHVVB4BT9+beZ6HXfiyqBpbbqj/Tx7sZsN5yqQ5A9Xrnv54n
+         U9Mc91SFhvnormMfrxoW+HUun5cH00QT1BFEFlTv6w7pQ6eLhdv/QSnjlQcKiG9ozqfK
+         7qyQ==
+X-Gm-Message-State: AOJu0YygAEwQd6Mq8M5bdikXutV1oggZzFDj2+gs8+lf7EYzUEg1NHDo
+        dX4axM0iylMf5Kal1HLNP4U=
+X-Google-Smtp-Source: AGHT+IFsvzJ6MeZI8r2v1L+4g/jHEVPfPdzddzGB/p3atEyZSUf9/4/r7GGX68WKl3pdJXGPfRRxWA==
+X-Received: by 2002:a81:a1c2:0:b0:5a4:dde3:6db5 with SMTP id y185-20020a81a1c2000000b005a4dde36db5mr8226753ywg.10.1696869321805;
+        Mon, 09 Oct 2023 09:35:21 -0700 (PDT)
+Received: from localhost ([2607:fb90:be22:da0:a050:8c3a:c782:514b])
+        by smtp.gmail.com with ESMTPSA id s7-20020a817707000000b005707fb5110bsm3798669ywc.58.2023.10.09.09.35.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Oct 2023 09:35:21 -0700 (PDT)
+Date:   Mon, 9 Oct 2023 09:35:20 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Alexander Potapenko <glider@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@kernel.org>,
+        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        netdev@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        dm-devel@redhat.com, ntfs3@lists.linux.dev,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 05/14] s390/cio: rename bitmap_size() ->
+ idset_bitmap_size()
+Message-ID: <ZSQryML6+uySSQ55@yury-ThinkPad>
+References: <20231009151026.66145-1-aleksander.lobakin@intel.com>
+ <20231009151026.66145-6-aleksander.lobakin@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/2] mmc: sdhci-pltfm: Drop unnecessary error messages
- in sdhci_pltfm_init()
-Content-Language: en-US
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231006105803.3374241-1-andriy.shevchenko@linux.intel.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20231006105803.3374241-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231009151026.66145-6-aleksander.lobakin@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/10/23 13:58, Andy Shevchenko wrote:
-> The devm_platform_ioremap_resource() and platform_get_irq() print
-> the error messages themselves and our "failed" one brings no value
-> and just noise. Refactor code to avoid those noisy error messages.
+On Mon, Oct 09, 2023 at 05:10:17PM +0200, Alexander Lobakin wrote:
+> bitmap_size() is a pretty generic name and one may want to use it for
+> a generic bitmap API function. At the same time, its logic is not
+> "generic", i.e. it's not just `nbits -> size of bitmap in bytes`
+> converter as it would be expected from its name.
+> Add the prefix 'idset_' used throughout the file where the function
+> resides.
+
+At the first glance, this custom implementation just duplicates the
+generic one that you introduce in the following patch. If so, why
+don't you switch idset to just use generic bitmap_size()?
+
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-
+> Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 > ---
->  drivers/mmc/host/sdhci-pltfm.c | 22 +++++++---------------
->  1 file changed, 7 insertions(+), 15 deletions(-)
+> idset_new() really wants its vmalloc() + memset() pair to be replaced
+> with vzalloc().
+> ---
+>  drivers/s390/cio/idset.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/mmc/host/sdhci-pltfm.c b/drivers/mmc/host/sdhci-pltfm.c
-> index a72e123a585d..4d1a703a5bdb 100644
-> --- a/drivers/mmc/host/sdhci-pltfm.c
-> +++ b/drivers/mmc/host/sdhci-pltfm.c
-> @@ -115,26 +115,21 @@ struct sdhci_host *sdhci_pltfm_init(struct platform_device *pdev,
+> diff --git a/drivers/s390/cio/idset.c b/drivers/s390/cio/idset.c
+> index 45f9c0736be4..0a1105a483bf 100644
+> --- a/drivers/s390/cio/idset.c
+> +++ b/drivers/s390/cio/idset.c
+> @@ -16,7 +16,7 @@ struct idset {
+>  	unsigned long bitmap[];
+>  };
+>  
+> -static inline unsigned long bitmap_size(int num_ssid, int num_id)
+> +static inline unsigned long idset_bitmap_size(int num_ssid, int num_id)
 >  {
->  	struct sdhci_host *host;
->  	void __iomem *ioaddr;
-> -	int irq, ret;
-> +	int irq;
->  
->  	ioaddr = devm_platform_ioremap_resource(pdev, 0);
-> -	if (IS_ERR(ioaddr)) {
-> -		ret = PTR_ERR(ioaddr);
-> -		goto err;
-> -	}
-> +	if (IS_ERR(ioaddr))
-> +		return ERR_CAST(ioaddr);
->  
->  	irq = platform_get_irq(pdev, 0);
-> -	if (irq < 0) {
-> -		ret = irq;
-> -		goto err;
-> -	}
-> +	if (irq < 0)
-> +		return ERR_PTR(irq);
->  
->  	host = sdhci_alloc_host(&pdev->dev,
->  		sizeof(struct sdhci_pltfm_host) + priv_size);
-> -
->  	if (IS_ERR(host)) {
-> -		ret = PTR_ERR(host);
-> -		goto err;
-> +		dev_err(&pdev->dev, "%s failed %pe\n", __func__, host);
-> +		return ERR_CAST(host);
->  	}
->  
->  	host->ioaddr = ioaddr;
-> @@ -152,9 +147,6 @@ struct sdhci_host *sdhci_pltfm_init(struct platform_device *pdev,
->  	platform_set_drvdata(pdev, host);
->  
->  	return host;
-> -err:
-> -	dev_err(&pdev->dev, "%s failed %d\n", __func__, ret);
-> -	return ERR_PTR(ret);
+>  	return BITS_TO_LONGS(num_ssid * num_id) * sizeof(unsigned long);
 >  }
->  EXPORT_SYMBOL_GPL(sdhci_pltfm_init);
+> @@ -25,11 +25,12 @@ static struct idset *idset_new(int num_ssid, int num_id)
+>  {
+>  	struct idset *set;
 >  
-
+> -	set = vmalloc(sizeof(struct idset) + bitmap_size(num_ssid, num_id));
+> +	set = vmalloc(sizeof(struct idset) +
+> +		      idset_bitmap_size(num_ssid, num_id));
+>  	if (set) {
+>  		set->num_ssid = num_ssid;
+>  		set->num_id = num_id;
+> -		memset(set->bitmap, 0, bitmap_size(num_ssid, num_id));
+> +		memset(set->bitmap, 0, idset_bitmap_size(num_ssid, num_id));
+>  	}
+>  	return set;
+>  }
+> @@ -41,7 +42,8 @@ void idset_free(struct idset *set)
+>  
+>  void idset_fill(struct idset *set)
+>  {
+> -	memset(set->bitmap, 0xff, bitmap_size(set->num_ssid, set->num_id));
+> +	memset(set->bitmap, 0xff,
+> +	       idset_bitmap_size(set->num_ssid, set->num_id));
+>  }
+>  
+>  static inline void idset_add(struct idset *set, int ssid, int id)
+> -- 
+> 2.41.0
