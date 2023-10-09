@@ -2,186 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BBC37BE88B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BED27BE88D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377959AbjJIRom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 13:44:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
+        id S1376863AbjJIRpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 13:45:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377460AbjJIRol (ORCPT
+        with ESMTP id S1346640AbjJIRpg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 13:44:41 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC70A91;
-        Mon,  9 Oct 2023 10:44:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DF78C433C8;
-        Mon,  9 Oct 2023 17:44:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696873479;
-        bh=ulFW6LSt301EIno4tTQsbIE1fUhJGazrjkE/8EDaSCs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QEdHryOD48pncmxLlJ5bft0gnmB6asyRNvX8CTbb0MXa8fZ0eAENZl+KtMKmQbHKS
-         yhT+hyKLUdn35HtHpNzlCUfcjjemV4Yog1YAbymyIPQqSfH47Evb0bt/sd/KC7jIY8
-         bx3GhLcK0h1TvK2QDKcmVm9wi5gIiOkvzVbkoIdQQ3FuBx4yT7t94XBiYMgM7C+NTH
-         NLXgzI4lgHivPc9uivID3N9XA58XeuB/slfArvnLKF1BCzraY1RTRKDxPM+clyJjZP
-         YDl6St49lCgkCHxF1LGhbUesBPJrmGX2DpborkV2t8poSgbMVnUmHTDRIPZCfueH8+
-         APEwo5gOMCCzg==
-Date:   Mon, 9 Oct 2023 10:44:38 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     John Garry <john.g.garry@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        martin.petersen@oracle.com, david@fromorbit.com,
-        himanshu.madhani@oracle.com
-Subject: Re: [PATCH 2/4] readv.2: Document RWF_ATOMIC flag
-Message-ID: <20231009174438.GE21283@frogsfrogsfrogs>
-References: <20230929093717.2972367-1-john.g.garry@oracle.com>
- <20230929093717.2972367-3-john.g.garry@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230929093717.2972367-3-john.g.garry@oracle.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Mon, 9 Oct 2023 13:45:36 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E39EAF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 10:45:35 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d81646fcf3eso6485042276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 10:45:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696873534; x=1697478334; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=TJMcbXJ00xamkrBTzx3uHhqhQOKa6l6LGEaEK6gyhss=;
+        b=KT+JLvtewnJlVx6OvCmKEA4L4q4pZMBpxbZ5bWzJJ+d0KoCUK9OFXYGqzs6N6uB9bw
+         nLzQhLLIACr+UiTRwAsQ2exQ7cOmYKaDC1K4SqcWohJ37Djq8yhwTxDYxuaXzfEegBT5
+         BT77cwyfVO32xjMahyf4P+aRMZwmTjkkZogYVRADWyjuDKFc7YOfcsSONslVNkK/boz3
+         NKWj67Kon4tFohtbn8FRoTxo4RsebK7flcdQB0Z1nQX+oft23DSsjnEp2Pa70Cipekgu
+         V2p0vumlHZR5Raal+1QL9MYZdiPi+DBZ3l0iF4Np/YPXhImCWSyjd0Y1dFlD0GnqCcRU
+         drjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696873534; x=1697478334;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TJMcbXJ00xamkrBTzx3uHhqhQOKa6l6LGEaEK6gyhss=;
+        b=LVnS0b5TRzDTL+jPnpj5UZ4aBPLgzQDJ5LeR4w5kvPZ2vfQqSI0DqXYo7X1Gb8f5Ur
+         tipd/o//al0lCcxHYNg/yAV3m6/kqxjiavqdFbqlMIogUO0noVtnrKBUEHxo3I61c3U8
+         06wYFlYTR3qkgHUpikhqu3ySBkb4z79ya7RtyadPsTxpOmkekq37xH2SUfVwJiuT3Fm8
+         pxgzmS5jkEpUZGEigqAL7A3UrM1nO5xuqKgvRWpy/rNa1MsduPatC0yVnPgJ27yNx6Fh
+         NxTEfJgd0Qed1ZUbow87CNXM+QbXCg5vtavT5JsG6dGBk2ubHdeltjnuynXO9euatK1O
+         6aOA==
+X-Gm-Message-State: AOJu0Yz9GmQvpoDjhmhYygEfeX79gkjqlGTLjEuHvHypF1YMtxzcHNlQ
+        Tn1dUFt0Wkt3uufoGoxrgOpR848ERLEaNbP03Q==
+X-Google-Smtp-Source: AGHT+IE7tymghJNtFEP71xug6O+7lVPRG/C/uX+9/uLwO7gBurZa8Tx5PJcoZPGZvI6LvbYRAVT1+k6vnPTSDu2QdQ==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:870c:0:b0:d9a:3a25:36df with SMTP
+ id a12-20020a25870c000000b00d9a3a2536dfmr30004ybl.8.1696873534723; Mon, 09
+ Oct 2023 10:45:34 -0700 (PDT)
+Date:   Mon, 09 Oct 2023 17:45:33 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIADw8JGUC/6WOTQrCMBSEryJZ+yQ/WKIr7yFF0uSlDWhSXkKwl
+ N7dtFdwN98s5puVZaSAmd1PKyOsIYcUG8jzidnJxBEhuMZMcqkE51fIhaKdF3AUKlKGiAWwTEh
+ 7GChZ4xCGaGDw5hWSBQud9kLdus4rrVkbngl9+B7SZ994CrkkWo4PVeztX7oqQIB23ikupDLeP saUxjdebPqwftu2H8zbCaf1AAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1696873533; l=2189;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=rM6KAt4nKSyIu5CIGMNGinHf3GlvjCeWH2JRJ+yYScw=; b=ya5WEHsKhKCZkEYwZpdgLyCPQhj6xLpDZPA5Qoa8ZjOcAvJXnXWyQJeSdlHbEnKh5PRgBQqhc
+ LK7JbgGgbHhA8Za1Q1yBDoVGJwxeVsoaMSXxxhjeEN/x057SZY0u9ui
+X-Mailer: b4 0.12.3
+Message-ID: <20231009-strncpy-drivers-net-ethernet-brocade-bna-bfa_ioc-c-v2-1-78e0f47985d3@google.com>
+Subject: [PATCH v2] bna: replace deprecated strncpy with strscpy_pad
+From:   Justin Stitt <justinstitt@google.com>
+To:     Rasesh Mody <rmody@marvell.com>,
+        Sudarsana Kalluru <skalluru@marvell.com>,
+        GR-Linux-NIC-Dev@marvell.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 09:37:15AM +0000, John Garry wrote:
-> From: Himanshu Madhani <himanshu.madhani@oracle.com>
-> 
-> Add RWF_ATOMIC flag description for pwritev2().
-> 
-> Signed-off-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-> #jpg: complete rewrite
-> Signed-off-by: John Garry <john.g.garry@oracle.com>
-> ---
->  man2/readv.2 | 45 +++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 45 insertions(+)
-> 
-> diff --git a/man2/readv.2 b/man2/readv.2
-> index fa9b0e4e44a2..ff09f3bc9792 100644
-> --- a/man2/readv.2
-> +++ b/man2/readv.2
-> @@ -193,6 +193,51 @@ which provides lower latency, but may use additional resources.
->  .B O_DIRECT
->  flag.)
->  .TP
-> +.BR RWF_ATOMIC " (since Linux 6.7)"
-> +Allows block-based filesystems to indicate that write operations will be issued
+`strncpy` is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-"Require regular file write operations to be issued with torn write
-protection."
+bfa_ioc_get_adapter_manufacturer() simply copies a string literal into
+`manufacturer`.
 
-> +with torn-write protection. Torn-write protection means that for a power or any
-> +other hardware failure, all or none of the data from the write will be stored,
-> +but never a mix of old and new data. This flag is meaningful only for
-> +.BR pwritev2 (),
-> +and its effect applies only to the data range written by the system call.
-> +The total write length must be power-of-2 and must be sized between
-> +stx_atomic_write_unit_min and stx_atomic_write_unit_max, both inclusive. The
-> +write must be at a natural offset within the file with respect to the total
+Another implementation of bfa_ioc_get_adapter_manufacturer() from
+drivers/scsi/bfa/bfa_ioc.c uses memset + strscpy:
+|	void
+|	bfa_ioc_get_adapter_manufacturer(struct bfa_ioc_s *ioc, char *manufacturer)
+|	{
+|		memset((void *)manufacturer, 0, BFA_ADAPTER_MFG_NAME_LEN);
+|			strscpy(manufacturer, BFA_MFG_NAME, BFA_ADAPTER_MFG_NAME_LEN);
+|	}
 
-What is a "natural" offset?  That should be defined with more
-specificity.  Does that mean that the position of a XX-KiB write must
-also be aligned to XX-KiB?  e.g. a 32K untorn write can only start at a
-multiple of 32K?  What if the device supports untorn writes between 4K
-and 64K, does that mean I /cannot/ issue a 32K untorn write at offset
-48K?
+Let's use `strscpy_pad` to eliminate some redundant work while still
+NUL-terminating and NUL-padding the destination buffer.
 
-> +write length. Torn-write protection only works with
-> +.B O_DIRECT
-> +flag, i.e. buffered writes are not supported. To guarantee consistency from
-> +the write between a file's in-core state with the storage device,
-> +.BR fdatasync (2)
-> +or
-> +.BR fsync (2)
-> +or
-> +.BR open (2)
-> +and
-> +.B O_SYNC
-> +or
-> +.B O_DSYNC
-> +or
-> +.B pwritev2 ()
-> +flag
-> +.B RWF_SYNC
-> +or
-> +.B RWF_DSYNC
-> +is required.
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Changes in v2:
+- don't use sizeof on ptr (thanks Kees)
+- strscpy -> strscpy_pad (thanks Kees)
+- change subject line + commit msg to reflect above
+- Link to v1: https://lore.kernel.org/r/20231005-strncpy-drivers-net-ethernet-brocade-bna-bfa_ioc-c-v1-1-8dfd30123afc@google.com
+---
+Note: build-tested only.
+---
+ drivers/net/ethernet/brocade/bna/bfa_ioc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I'm starting to think that this manpage shouldn't be restating
-durability information here.
+diff --git a/drivers/net/ethernet/brocade/bna/bfa_ioc.c b/drivers/net/ethernet/brocade/bna/bfa_ioc.c
+index b07522ac3e74..9c80ab07a735 100644
+--- a/drivers/net/ethernet/brocade/bna/bfa_ioc.c
++++ b/drivers/net/ethernet/brocade/bna/bfa_ioc.c
+@@ -2839,7 +2839,7 @@ bfa_ioc_get_adapter_optrom_ver(struct bfa_ioc *ioc, char *optrom_ver)
+ static void
+ bfa_ioc_get_adapter_manufacturer(struct bfa_ioc *ioc, char *manufacturer)
+ {
+-	strncpy(manufacturer, BFA_MFG_NAME, BFA_ADAPTER_MFG_NAME_LEN);
++	strscpy_pad(manufacturer, BFA_MFG_NAME, BFA_ADAPTER_MFG_NAME_LEN);
+ }
+ 
+ static void
 
-"Application programs with data or file integrity completion
-requirements must configure synchronous writes with the DSYNC
-or SYNC flags, as explained above."
+---
+base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
+change-id: 20231005-strncpy-drivers-net-ethernet-brocade-bna-bfa_ioc-c-68f13966f388
 
-> +For when regular files are opened with
-> +.BR open (2)
-> +but without
-> +.B O_SYNC
-> +or
-> +.B O_DSYNC
-> +and the
-> +.BR pwritev2()
-> +call is made without
-> +.B RWF_SYNC
-> +or
-> +.BR RWF_DSYNC
-> +set, the range metadata must already be flushed to storage and the data range
-> +must not be in unwritten state, shared, a preallocation, or a hole.
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
-I think that we can drop all of these flags requirements, since the
-contiguous small space allocation requirement means that the fs can
-provide all-or-nothing writes even if metadata updates are needed:
-
-If the file range is allocated and marked unwritten (i.e. a
-preallocation), the ioend will clear the unwritten bit from the file
-mapping atomically.  After a crash, the application sees either zeroes
-or all the data that was written.
-
-If the file range is shared, the ioend will map the COW staging extent
-into the file atomically.  After a crash, the application sees either
-the old contents from the old blocks, or the new contents from the new
-blocks.
-
-If the file range is a sparse hole, the directio setup will allocate
-space and create an unwritten mapping before issuing the write bio.  The
-rest of the process works the same as preallocations and has the same
-behaviors.
-
-If the file range is allocated and was previously written, the write is
-issued and that's all that's needed from the fs.  After a crash, reads
-of the storage device produce the old contents or the new contents.
-
-Summarizing:
-
-An (ATOMIC|SYNC) request provides the strongest guarantees (data
-will not be torn, and all file metadata updates are persisted before
-the write is returned to userspace.  Programs see either the old data or
-the new data, even if there's a crash.
-
-(ATOMIC|DSYNC) is less strong -- data will not be torn, and any file
-updates for just that region are persisted before the write is returned.
-
-(ATOMIC) is the least strong -- data will not be torn.  Neither the
-filesystem nor the device make guarantees that anything ended up on
-stable storage, but if it does, programs see either the old data or the
-new data.
-
-Maybe we should rename the whole UAPI s/atomic/untorn/...
-
---D
-
-> +.TP
->  .BR RWF_SYNC " (since Linux 4.7)"
->  .\" commit e864f39569f4092c2b2bc72c773b6e486c7e3bd9
->  Provide a per-write equivalent of the
-> -- 
-> 2.31.1
-> 
