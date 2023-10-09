@@ -2,334 +2,428 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F00C77BE522
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 403FA7BE528
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377845AbjJIPih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 11:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
+        id S1376909AbjJIPjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 11:39:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377054AbjJIPhz (ORCPT
+        with ESMTP id S1376855AbjJIPjq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 11:37:55 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC0C18B;
-        Mon,  9 Oct 2023 08:37:39 -0700 (PDT)
-X-QQ-mid: bizesmtpipv603t1696865839tqh6
-Received: from localhost.localdomain ( [255.106.65.14])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Mon, 09 Oct 2023 23:37:17 +0800 (CST)
-X-QQ-SSF: 01200000000000402000000A0000000
-X-QQ-FEAT: OICyp1OkQRJP+1acF7qUjmb4xR9pq8JZvV8xeCAOv5rAG9X7hXWQUZgYksVxd
-        hprKpFhsftDGFQI1EJsLVNX6DdCbrfwDV2CXDAvknNS00MPetcq6XM1Zc7QrR9mzFpUegTo
-        piaXz4P2XUVuQ3Chusp4hG4X9m6MUsJNJrLOpVly33WKn1piDttl2w1uPo78wYDG5rjmEGZ
-        EGrALpsL8PRAjSsEh+rf0m5s82zCr5NzTjwxGf6M2byuQqdo2HBjklu9R9eo4OXKtY73xln
-        W6BP7fYP3eGa7ivmd9w0i7w3PtrjZZ8JS5vU5NKNRFL4QGspuypcMn9VoHbkgxSsjRZ4Ce1
-        tVsOaWhTPAI7oQECu6WDQLsonNu0A==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 4095896808000782885
-From:   Jinyu Tang <tangjinyu@tinylab.org>
-To:     rostedt@goodmis.org, mhiramat@kernel.org, bristot@kernel.org
-Cc:     ttjjyystupid@163.com, falcon@tinylab.org, wangjiexun@tinylab.org,
-        linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jinyu Tang <tangjinyu@tinylab.org>
-Subject: [PATCH v1] Ftrace: make sched_wakeup can focus on the target process
-Date:   Mon,  9 Oct 2023 23:37:14 +0800
-Message-Id: <20231009153714.10743-1-tangjinyu@tinylab.org>
-X-Mailer: git-send-email 2.39.2
+        Mon, 9 Oct 2023 11:39:46 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ACCB8F;
+        Mon,  9 Oct 2023 08:39:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696865984; x=1728401984;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=XPmcp3QX7RYooYT+lrKkpKzAN+COiquvuJPbaHa8BpE=;
+  b=HU2WdFSBPcIRTEnmcstucgYhIHKJE+/KwVytKZq3WhNXIkEywVwVZ+pX
+   I+ZAjwHBDL1CJ4ZEztcW1RE4Bq/zL9ED2TXDek3UxYi14xwI6GEc3fXe0
+   VtnwjMrnQGhXBPp/4BF3Xb26x95xISmUAlkkXuEVpgvtbY0P+vXupAXCk
+   FP0Wo5x4+5PjSV4FwTev5pJ3YjN1LgDQUzUGu+0fatecXpi1Su4vyd/qC
+   LO3+A2yT654Uftd28dgehtYPZRcbVsanwDyXnrrE2C6l5gaitYIKUIZuC
+   7MZkQ0fdOUHIZg/CyT2QiFXevpGu58CK2TlziIx3BvjL8Vhm2k1iY6fWf
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="381441116"
+X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
+   d="scan'208";a="381441116"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 08:39:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="869293167"
+X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
+   d="scan'208";a="869293167"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.36.27])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 08:39:40 -0700
+Message-ID: <0932b124-16da-495c-9706-bbadadb3b076@intel.com>
+Date:   Mon, 9 Oct 2023 18:39:35 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpipv:tinylab.org:qybglogicsvrsz:qybglogicsvrsz3a-0
-X-Spam-Status: No, score=0.7 required=5.0 tests=BAYES_00,RCVD_ILLEGAL_IP,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/2] Implement SDHCI CQE support for DesignWare SDHCI.
+Content-Language: en-US
+To:     Sergey Khimich <serghox@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Jyan Chou <jyanchou@realtek.com>
+References: <20231002113301.1531717-1-serghox@gmail.com>
+ <20231002113301.1531717-3-serghox@gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20231002113301.1531717-3-serghox@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we want to know what happened in kernel when our app
-has more latency than we hope, but the larger latency of
-our app may be lower than other process in the syetem.
-We feel sad after waiting a long time but only get other 
-process sched_wakeup trace.
+On 2/10/23 14:33, Sergey Khimich wrote:
+> From: Sergey Khimich <serghox@gmail.com>
+> 
+> For enabling CQE support just set 'supports-cqe' in your DevTree file
+> for appropriate mmc node.
+> 
+> Signed-off-by: Sergey Khimich <serghox@gmail.com>
+> ---
+>  drivers/mmc/host/Kconfig            |   1 +
+>  drivers/mmc/host/sdhci-of-dwcmshc.c | 233 +++++++++++++++++++++++++++-
+>  2 files changed, 232 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+> index 554e67103c1a..f3380b014ca9 100644
+> --- a/drivers/mmc/host/Kconfig
+> +++ b/drivers/mmc/host/Kconfig
+> @@ -233,6 +233,7 @@ config MMC_SDHCI_OF_DWCMSHC
+>  	depends on MMC_SDHCI_PLTFM
+>  	depends on OF
+>  	depends on COMMON_CLK
+> +	select MMC_CQHCI
+>  	help
+>  	  This selects Synopsys DesignWare Cores Mobile Storage Controller
+>  	  support.
+> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> index 3a3bae6948a8..7d43ae011811 100644
+> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
+> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/sizes.h>
+>  
+>  #include "sdhci-pltfm.h"
+> +#include "cqhci.h"
+>  
+>  #define SDHCI_DWCMSHC_ARG2_STUFF	GENMASK(31, 16)
+>  
+> @@ -36,6 +37,9 @@
+>  #define DWCMSHC_ENHANCED_STROBE		BIT(8)
+>  #define DWCMSHC_EMMC_ATCTRL		0x40
+>  
+> +/* DWC IP vendor area 2 pointer */
+> +#define DWCMSHC_P_VENDOR_AREA2		0xea
+> +
+>  /* Rockchip specific Registers */
+>  #define DWCMSHC_EMMC_DLL_CTRL		0x800
+>  #define DWCMSHC_EMMC_DLL_RXCLK		0x804
+> @@ -75,6 +79,10 @@
+>  #define BOUNDARY_OK(addr, len) \
+>  	((addr | (SZ_128M - 1)) == ((addr + len - 1) | (SZ_128M - 1)))
+>  
+> +#define DWCMSHC_SDHCI_CQE_TRNS_MODE	(SDHCI_TRNS_MULTI | \
+> +					 SDHCI_TRNS_BLK_CNT_EN | \
+> +					 SDHCI_TRNS_DMA)
+> +
+>  enum dwcmshc_rk_type {
+>  	DWCMSHC_RK3568,
+>  	DWCMSHC_RK3588,
+> @@ -90,7 +98,8 @@ struct rk35xx_priv {
+>  
+>  struct dwcmshc_priv {
+>  	struct clk	*bus_clk;
+> -	int vendor_specific_area1; /* P_VENDOR_SPECIFIC_AREA reg */
+> +	int vendor_specific_area1; /* P_VENDOR_SPECIFIC_AREA1 reg */
+> +	int vendor_specific_area2; /* P_VENDOR_SPECIFIC_AREA2 reg */
+>  	void *priv; /* pointer to SoC private stuff */
+>  };
+>  
+> @@ -210,6 +219,147 @@ static void dwcmshc_hs400_enhanced_strobe(struct mmc_host *mmc,
+>  	sdhci_writel(host, vendor, reg);
+>  }
+>  
+> +static u32 dwcmshc_cqe_irq_handler(struct sdhci_host *host, u32 intmask)
+> +{
+> +	int cmd_error = 0;
+> +	int data_error = 0;
+> +
+> +	if (!sdhci_cqe_irq(host, intmask, &cmd_error, &data_error))
+> +		return intmask;
+> +
+> +	cqhci_irq(host->mmc, intmask, cmd_error, data_error);
+> +
+> +	return 0;
+> +}
+> +
+> +static void dwcmshc_sdhci_cqe_enable(struct mmc_host *mmc)
+> +{
+> +	struct sdhci_host *host = mmc_priv(mmc);
+> +	u32 pstate;
+> +	u8 ctrl;
+> +	int count = 10;
+> +
+> +	/*
+> +	 * CQE gets stuck if it sees Buffer Read Enable bit set, which can be
+> +	 * the case after tuning, so ensure the buffer is drained.
+> +	 */
+> +	pstate = sdhci_readl(host, SDHCI_PRESENT_STATE);
+> +	while (pstate & SDHCI_DATA_AVAILABLE) {
+> +		sdhci_readl(host, SDHCI_BUFFER);
+> +		pstate = sdhci_readl(host, SDHCI_PRESENT_STATE);
+> +		if (count-- == 0) {
+> +			dev_warn(mmc_dev(host->mmc),
+> +				 "CQE may get stuck because the Buffer Read Enable bit is set\n");
+> +			break;
+> +		}
+> +		mdelay(1);
+> +	}
 
-This Patch can let us only trace target process sched-wakeup 
-time, other process sched-wakeup will be dropped and won't
-change tracing_max_latency.
+An alternative, which might be easier, is to do a
+data reset which may also help allow the device to
+subsequently enter low power states.
+Refer commit f8870ae6e2d6be75b1accc2db981169fdfbea7ab
+and commit 7b7d57fd1b773d25d8358c6017592b4928bf76ce
 
-The patch is tested by the following commands:
+> +
+> +	sdhci_writew(host, DWCMSHC_SDHCI_CQE_TRNS_MODE, SDHCI_TRANSFER_MODE);
+> +
+> +	sdhci_cqe_enable(mmc);
+> +
+> +	/*
+> +	 * The "DesignWare Cores Mobile Storage Host Controller
+> +	 * DWC_mshc / DWC_mshc_lite Databook" says:
+> +	 * when Host Version 4 Enable" is 1 in Host Control 2 register,
+> +	 * SDHCI_CTRL_ADMA32 bit means ADMA2 is selected.
+> +	 * Selection of 32-bit/64-bit System Addressing:
+> +	 * either 32-bit or 64-bit system addressing is selected by
+> +	 * 64-bit Addressing bit in Host Control 2 register.
+> +	 *
+> +	 * On the other hand the "DesignWare Cores Mobile Storage Host
+> +	 * Controller DWC_mshc / DWC_mshc_lite User Guide" says, that we have to
+> +	 * set DMA_SEL to ADMA2 _only_ mode in the Host Control 2 register.
+> +	 */
+> +	ctrl = sdhci_readb(host, SDHCI_HOST_CONTROL);
+> +	ctrl &= ~SDHCI_CTRL_DMA_MASK;
+> +	ctrl |= SDHCI_CTRL_ADMA32;
+> +	sdhci_writeb(host, ctrl, SDHCI_HOST_CONTROL);
+> +}
+> +
+> +static void dwcmshc_sdhci_cqe_disable(struct mmc_host *mmc, bool recovery)
+> +{
+> +	/*
+> +	 * If an ioctl was issued, cqe_disable will be called.
+> +	 * For CQE of sdhci-of-dwcmshc, the previous in-flight cmd will be lost quietly.
+> +	 * So wait for mmc idle state.
 
-$ mount -t tracefs none /sys/kernel/tracing
-$ echo wakeup_rt > /sys/kernel/tracing/current_tracer
-# some other stress-ng options are also tested 
-$ stress-ng --cpu 4 &
-$ cyclictest --mlockall --smp --priority=99 &
-$ cyclictest_pid=$!
-# child thread of cyclictest main process
-$ thread_pid=$((cyclictest_pid + 1))
+This sounds like it should be fixed in the mmc block driver.
+Can you provide an example of when this happens?
 
-$ echo ${thread_pid} > /sys/kernel/tracing/set_wakeup_pid
+> +	 */
+> +	mmc->cqe_ops->cqe_wait_for_idle(mmc);
+> +
+> +	return sdhci_cqe_disable(mmc, recovery);
+> +}
+> +
+> +static void dwcmshc_cqhci_set_tran_desc(u8 *desc, dma_addr_t addr, int len, bool end,
+> +					bool dma64)
+> +{
+> +	__le32 *attr = (__le32 __force *)desc;
+> +
+> +	*attr = (CQHCI_VALID(1) |
+> +		 CQHCI_END(end ? 1 : 0) |
+> +		 CQHCI_INT(0) |
+> +		 CQHCI_ACT(0x4) |
+> +		 CQHCI_DAT_LENGTH(len));
+> +
+> +	if (dma64) {
+> +		__le64 *dataddr = (__le64 __force *)(desc + 4);
+> +
+> +		dataddr[0] = cpu_to_le64(addr);
+> +	} else {
+> +		__le32 *dataddr = (__le32 __force *)(desc + 4);
+> +
+> +		dataddr[0] = cpu_to_le32(addr);
+> +	}
+> +}
 
-$ echo 1 > /sys/kernel/tracing/tracing_on
-$ echo 0 > /sys/kernel/tracing/tracing_max_latency
-$ wait ${cyclictest_pid}
-$ echo 0 > /sys/kernel/tracing/tracing_on
-$ cat /sys/kernel/tracing/trace
+This is the same as cqhci_set_tran_desc(). Might as well export that
+instead.
 
-The maximum latency and backtrace recorded in the trace file will be only
-generated by the target process.
-Then we can eliminate interference from other programs, making it easier 
-to identify the cause of latency.
+> +
+> +static void dwcmshc_cqhci_prep_tran_desc(struct mmc_data *data,
+> +					 struct cqhci_host *cq_host,
+> +					 u8 *desc, int sg_count)
+> +{
+> +	int i, len, tmplen, offset;
+> +	bool end = false;
+> +	bool dma64 = cq_host->dma64;
+> +	dma_addr_t addr;
+> +	struct scatterlist *sg;
+> +
+> +	for_each_sg(data->sg, sg, sg_count, i) {
+> +		addr = sg_dma_address(sg);
+> +		len = sg_dma_len(sg);
+> +
+> +		/*
+> +		 * According to the "DesignWare Cores Mobile Storage Host Controller
+> +		 * DWC_mshc / DWC_mshc_lite Databook" the host memory data buffer size
+> +		 * and start address must not exceed 128 Mb. If it exceeds,
+> +		 * the data buffer must be split using two descritors.
+> +		 */
+> +
+> +		if (likely(BOUNDARY_OK(addr, len))) {
+> +			if ((i + 1) == sg_count)
+> +				end = true;
+> +			dwcmshc_cqhci_set_tran_desc(desc, addr, len, end, dma64);
+> +			desc += cq_host->trans_desc_len;
+> +		} else {
+> +			offset = addr & (SZ_128M - 1);
+> +			tmplen = SZ_128M - offset;
+> +			dwcmshc_cqhci_set_tran_desc(desc, addr, tmplen, end, dma64);
+> +			desc += cq_host->trans_desc_len;
+> +
+> +			if ((i + 1) == sg_count)
+> +				end = true;
+> +
+> +			addr += tmplen;
+> +			len -= tmplen;
+> +			dwcmshc_cqhci_set_tran_desc(desc, addr, len, end, dma64);
+> +			desc += cq_host->trans_desc_len;
+> +		}
+> +	}
+> +}
 
-Tested-by: Jiexun Wang <wangjiexun@tinylab.org>
-Signed-off-by: Jinyu Tang <tangjinyu@tinylab.org>
----
- kernel/trace/trace.h              |   3 +
- kernel/trace/trace_sched_wakeup.c | 179 ++++++++++++++++++++++++++++++
- 2 files changed, 182 insertions(+)
+Could this be done more like dwcmshc_adma_write_desc()
 
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 77debe53f07c..c6f212e8bfd2 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -403,6 +403,9 @@ struct trace_array {
- #endif
- 	/* function tracing enabled */
- 	int			function_enabled;
-+#endif
-+#ifdef CONFIG_SCHED_TRACER
-+	struct trace_pid_list	__rcu *wakeup_pids;
- #endif
- 	int			no_filter_buffering_ref;
- 	struct list_head	hist_vars;
-diff --git a/kernel/trace/trace_sched_wakeup.c b/kernel/trace/trace_sched_wakeup.c
-index 0469a04a355f..b6cb9391e120 100644
---- a/kernel/trace/trace_sched_wakeup.c
-+++ b/kernel/trace/trace_sched_wakeup.c
-@@ -10,6 +10,9 @@
-  *  Copyright (C) 2004-2006 Ingo Molnar
-  *  Copyright (C) 2004 Nadia Yvette Chambers
-  */
-+#include <linux/fs.h>
-+#include <linux/workqueue.h>
-+#include <linux/spinlock.h>
- #include <linux/module.h>
- #include <linux/kallsyms.h>
- #include <linux/uaccess.h>
-@@ -17,6 +20,7 @@
- #include <linux/sched/rt.h>
- #include <linux/sched/deadline.h>
- #include <trace/events/sched.h>
-+#include <linux/tracefs.h>
- #include "trace.h"
- 
- static struct trace_array	*wakeup_trace;
-@@ -361,6 +365,169 @@ static bool report_latency(struct trace_array *tr, u64 delta)
- 	return true;
- }
- 
-+DEFINE_MUTEX(sched_wakeup_mutex);
-+static void *
-+p_next(struct seq_file *m, void *v, loff_t *pos)
-+{
-+	struct trace_array *tr = m->private;
-+	struct trace_pid_list *pid_list = rcu_dereference_sched(tr->wakeup_pids);
-+
-+	return trace_pid_next(pid_list, v, pos);
-+}
-+
-+static void *p_start(struct seq_file *m, loff_t *pos)
-+	__acquires(RCU)
-+{
-+	struct trace_pid_list *pid_list;
-+	struct trace_array *tr = m->private;
-+
-+	/*
-+	 * Grab the mutex, to keep calls to p_next() having the same
-+	 * tr->wakeup_pids as p_start() has.
-+	 * If we just passed the tr->wakeup_pids around, then RCU would
-+	 * have been enough, but doing that makes things more complex.
-+	 */
-+	mutex_lock(&sched_wakeup_mutex);
-+	rcu_read_lock_sched();
-+
-+	pid_list = rcu_dereference_sched(tr->wakeup_pids);
-+
-+	if (!pid_list)
-+		return NULL;
-+
-+	return trace_pid_start(pid_list, pos);
-+}
-+
-+static void p_stop(struct seq_file *m, void *p)
-+	__releases(RCU)
-+{
-+	rcu_read_unlock_sched();
-+	mutex_unlock(&sched_wakeup_mutex);
-+}
-+
-+static const struct seq_operations show_set_pid_seq_ops = {
-+	.start = p_start,
-+	.next = p_next,
-+	.show = trace_pid_show,
-+	.stop = p_stop,
-+};
-+
-+static int
-+ftrace_wakeup_open(struct inode *inode, struct file *file,
-+		  const struct seq_operations *seq_ops)
-+{
-+	struct seq_file *m;
-+	int ret;
-+
-+	ret = seq_open(file, seq_ops);
-+	if (ret < 0)
-+		return ret;
-+	m = file->private_data;
-+	/* copy tr over to seq ops */
-+	m->private = inode->i_private;
-+
-+	return ret;
-+}
-+
-+static void __clear_wakeup_pids(struct trace_array *tr)
-+{
-+	struct trace_pid_list *pid_list;
-+
-+	pid_list = rcu_dereference_protected(tr->wakeup_pids,
-+					     lockdep_is_held(&sched_wakeup_mutex));
-+	if (!pid_list)
-+		return;
-+
-+	rcu_assign_pointer(tr->wakeup_pids, NULL);
-+
-+	synchronize_rcu();
-+	trace_pid_list_free(pid_list);
-+}
-+
-+static void clear_wakeup_pids(struct trace_array *tr)
-+{
-+	mutex_lock(&sched_wakeup_mutex);
-+	__clear_wakeup_pids(tr);
-+	mutex_unlock(&sched_wakeup_mutex);
-+
-+}
-+
-+static int
-+ftrace_set_wakeup_pid_open(struct inode *inode, struct file *file)
-+{
-+	const struct seq_operations *seq_ops = &show_set_pid_seq_ops;
-+	struct trace_array *tr = inode->i_private;
-+	int ret;
-+
-+	if (trace_array_get(tr) < 0)
-+		return -ENODEV;
-+
-+	if ((file->f_mode & FMODE_WRITE) &&
-+	    (file->f_flags & O_TRUNC))
-+		clear_wakeup_pids(tr);
-+
-+	ret = ftrace_wakeup_open(inode, file, seq_ops);
-+
-+	if (ret < 0)
-+		trace_array_put(tr);
-+	return ret;
-+}
-+
-+static ssize_t
-+ftrace_set_wakeup_pid_write(struct file *filp, const char __user *ubuf,
-+		       size_t cnt, loff_t *ppos)
-+{
-+	struct seq_file *m = filp->private_data;
-+	struct trace_array *tr = m->private;
-+	struct trace_pid_list *filtered_pids = NULL;
-+	struct trace_pid_list *pid_list;
-+	ssize_t ret;
-+
-+	if (!cnt)
-+		return 0;
-+
-+	mutex_lock(&sched_wakeup_mutex);
-+
-+	filtered_pids = rcu_dereference_protected(tr->wakeup_pids,
-+					     lockdep_is_held(&sched_wakeup_mutex));
-+
-+	ret = trace_pid_write(filtered_pids, &pid_list, ubuf, cnt);
-+	if (ret < 0)
-+		goto out;
-+
-+	rcu_assign_pointer(tr->wakeup_pids, pid_list);
-+
-+	if (filtered_pids) {
-+		synchronize_rcu();
-+		trace_pid_list_free(filtered_pids);
-+	}
-+
-+ out:
-+	mutex_unlock(&sched_wakeup_mutex);
-+
-+	if (ret > 0)
-+		*ppos += ret;
-+
-+	return ret;
-+}
-+
-+static int ftrace_set_wakeup_pid_release(struct inode *inode, struct file *file)
-+{
-+	struct trace_array *tr = inode->i_private;
-+
-+	trace_array_put(tr);
-+
-+	return seq_release(inode, file);
-+}
-+
-+static const struct file_operations ftrace_set_wakeup_pid_fops = {
-+	.open = ftrace_set_wakeup_pid_open,
-+	.read = seq_read,
-+	.write = ftrace_set_wakeup_pid_write,
-+	.llseek = seq_lseek,
-+	.release = ftrace_set_wakeup_pid_release,
-+};
-+
- static void
- probe_wakeup_migrate_task(void *ignore, struct task_struct *task, int cpu)
- {
-@@ -437,6 +604,7 @@ probe_wakeup_sched_switch(void *ignore, bool preempt,
- 	long disabled;
- 	int cpu;
- 	unsigned int trace_ctx;
-+	struct trace_pid_list *pid_list;
- 
- 	tracing_record_cmdline(prev);
- 
-@@ -466,6 +634,14 @@ probe_wakeup_sched_switch(void *ignore, bool preempt,
- 
- 	arch_spin_lock(&wakeup_lock);
- 
-+	rcu_read_lock_sched();
-+	pid_list = rcu_dereference_sched(wakeup_trace->wakeup_pids);
-+	rcu_read_unlock_sched();
-+
-+	/* We could race with grabbing wakeup_lock */
-+	if (likely(trace_ignore_this_task(pid_list, NULL, next)))
-+		goto out_unlock;
-+
- 	/* We could race with grabbing wakeup_lock */
- 	if (unlikely(!tracer_enabled || next != wakeup_task))
- 		goto out_unlock;
-@@ -674,6 +850,9 @@ static int __wakeup_tracer_init(struct trace_array *tr)
- 	set_tracer_flag(tr, TRACE_ITER_OVERWRITE, 1);
- 	set_tracer_flag(tr, TRACE_ITER_LATENCY_FMT, 1);
- 
-+	tracefs_create_file("set_wakeup_pid", 0644, NULL,
-+				    tr, &ftrace_set_wakeup_pid_fops);
-+
- 	tr->max_latency = 0;
- 	wakeup_trace = tr;
- 	ftrace_init_array_ops(tr, wakeup_tracer_call);
--- 
-2.34.1
+> +
+> +static void dwcmshc_cqhci_dumpregs(struct mmc_host *mmc)
+> +{
+> +	sdhci_dumpregs(mmc_priv(mmc));
+> +}
+> +
+>  static void dwcmshc_rk3568_set_clock(struct sdhci_host *host, unsigned int clock)
+>  {
+>  	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> @@ -345,6 +495,7 @@ static const struct sdhci_ops sdhci_dwcmshc_ops = {
+>  	.get_max_clock		= dwcmshc_get_max_clock,
+>  	.reset			= sdhci_reset,
+>  	.adma_write_desc	= dwcmshc_adma_write_desc,
+> +	.irq			= dwcmshc_cqe_irq_handler,
+>  };
+>  
+>  static const struct sdhci_ops sdhci_dwcmshc_rk35xx_ops = {
+> @@ -379,6 +530,70 @@ static const struct sdhci_pltfm_data sdhci_dwcmshc_rk35xx_pdata = {
+>  		   SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN,
+>  };
+>  
+> +static const struct cqhci_host_ops dwcmshc_cqhci_ops = {
+> +	.enable		= dwcmshc_sdhci_cqe_enable,
+> +	.disable	= dwcmshc_sdhci_cqe_disable,
+> +	.dumpregs	= dwcmshc_cqhci_dumpregs,
+> +	.prep_tran_desc	= dwcmshc_cqhci_prep_tran_desc,
+> +};
+> +
+> +static void dwcmshc_cqhci_init(struct sdhci_host *host, struct platform_device *pdev)
+> +{
+> +	struct cqhci_host *cq_host;
+> +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> +	struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
+> +	bool dma64 = false;
+> +	u16 clk;
+> +	int err;
+> +
+> +	host->mmc->caps2 |= MMC_CAP2_CQE | MMC_CAP2_CQE_DCMD;
+> +	cq_host = devm_kzalloc(&pdev->dev, sizeof(*cq_host), GFP_KERNEL);
+> +	if (!cq_host) {
+> +		dev_err(mmc_dev(host->mmc), "Unable to setup CQE: not enough memory\n");
+> +		return;
+> +	}
+> +
+> +	/*
+> +	 * For dwcmshc host controller we have to enable internal clock
+> +	 * before access to some registers from Vendor Specific Aria 2.
+> +	 */
+> +	clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> +	clk |= SDHCI_CLOCK_INT_EN;
+> +	sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
+> +	clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> +	if (!(clk & SDHCI_CLOCK_INT_EN)) {
+> +		dev_err(mmc_dev(host->mmc), "Unable to setup CQE: internal clock enable error\n");
+> +		goto free_cq_host;
+> +	}
+> +
+> +	cq_host->mmio = host->ioaddr + priv->vendor_specific_area2;
+> +	cq_host->ops = &dwcmshc_cqhci_ops;
+> +
+> +	/* Enable using of 128-bit task descriptors */
+> +	dma64 = host->flags & SDHCI_USE_64_BIT_DMA;
+> +	if (dma64) {
+> +		dev_dbg(mmc_dev(host->mmc), "128-bit task descriptors\n");
+> +		cq_host->caps |= CQHCI_TASK_DESC_SZ_128;
+> +	}
+> +	err = cqhci_init(cq_host, host->mmc, dma64);
+> +	if (err) {
+> +		dev_err(mmc_dev(host->mmc), "Unable to setup CQE: error %d\n", err);
+> +		goto int_clok_disable;
+> +	}
+> +
+> +	dev_dbg(mmc_dev(host->mmc), "CQE init done\n");
+> +
+> +	return;
+> +
+> +int_clok_disable:
+
+'clok' is an odd abbreviation of 'clock'.  Perhaps 'clk' or just 'clock'
+
+> +	clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> +	clk &= ~SDHCI_CLOCK_INT_EN;
+> +	sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
+> +
+> +free_cq_host:
+> +	devm_kfree(&pdev->dev, cq_host);
+> +}
+> +
+>  static int dwcmshc_rk35xx_init(struct sdhci_host *host, struct dwcmshc_priv *dwc_priv)
+>  {
+>  	int err;
+> @@ -471,7 +686,7 @@ static int dwcmshc_probe(struct platform_device *pdev)
+>  	struct rk35xx_priv *rk_priv = NULL;
+>  	const struct sdhci_pltfm_data *pltfm_data;
+>  	int err;
+> -	u32 extra;
+> +	u32 extra, caps;
+>  
+>  	pltfm_data = device_get_match_data(&pdev->dev);
+>  	if (!pltfm_data) {
+> @@ -519,6 +734,8 @@ static int dwcmshc_probe(struct platform_device *pdev)
+>  
+>  	priv->vendor_specific_area1 =
+>  		sdhci_readl(host, DWCMSHC_P_VENDOR_AREA1) & DWCMSHC_AREA1_MASK;
+> +	priv->vendor_specific_area2 =
+> +		sdhci_readw(host, DWCMSHC_P_VENDOR_AREA2);
+>  
+>  	host->mmc_host_ops.request = dwcmshc_request;
+>  	host->mmc_host_ops.hs400_enhanced_strobe = dwcmshc_hs400_enhanced_strobe;
+> @@ -547,6 +764,10 @@ static int dwcmshc_probe(struct platform_device *pdev)
+>  		sdhci_enable_v4_mode(host);
+>  #endif
+>  
+> +	caps = sdhci_readl(host, SDHCI_CAPABILITIES);
+> +	if (caps & SDHCI_CAN_64BIT_V4)
+> +		sdhci_enable_v4_mode(host);
+> +
+>  	host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
+>  
+>  	pm_runtime_get_noresume(dev);
+> @@ -557,6 +778,14 @@ static int dwcmshc_probe(struct platform_device *pdev)
+>  	if (err)
+>  		goto err_rpm;
+>  
+> +	/* Setup Command Queue Engine if enabled */
+> +	if (device_property_read_bool(&pdev->dev, "supports-cqe")) {
+> +		if (caps & SDHCI_CAN_64BIT_V4)
+> +			dwcmshc_cqhci_init(host, pdev);
+> +		else
+> +			dev_warn(dev, "Cannot enable CQE without V4 mode support\n");
+> +	}
+> +
+>  	if (rk_priv)
+>  		dwcmshc_rk35xx_postinit(host, priv);
+>  
 
