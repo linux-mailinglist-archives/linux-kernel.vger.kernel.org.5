@@ -2,125 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB457BE2AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 16:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7470B7BE2AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 16:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376964AbjJIOZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 10:25:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49498 "EHLO
+        id S1376920AbjJIO0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 10:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346526AbjJIOZb (ORCPT
+        with ESMTP id S234088AbjJIO0o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 10:25:31 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F8C9C;
-        Mon,  9 Oct 2023 07:25:25 -0700 (PDT)
-Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 399D7FQb012945;
-        Mon, 9 Oct 2023 16:25:02 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=zayNHG01hD7SoipP4cr3YE823OncQrlcIxbIlovpurY=; b=bc
-        9rpABeH8vTnol3/l+5Ly3ssLWnLy3/e25zP66iOFn4tkBcWy96oHWyhgTUXCi2QL
-        Lub43y6ZklmSU45fIGxlqaXeoZ3g2ccL7VABlmlLboVNtRM7riHntKdxzzY6s9br
-        Y+Yr8V6xjKESRIwzrnTHJNUrVXkOQP6VK877JBqFweIqiVbzVTvkrPR45uMTm8c1
-        VLTv21bmq7J109mjPoxWExoSleWuh+BhipUYstU2z+EhLb34E9UYCgmP3KFQnUkt
-        k4v8olLJ6NZofkKhCF0CrldnlbFWrfaGvA1YFlz20sB90QwEP11d/p+onyGXZ4g/
-        kJebhUODwDWC7F0BOsBQ==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3tkhk3dk2a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Oct 2023 16:25:02 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3FFAC100063;
-        Mon,  9 Oct 2023 16:25:01 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2D7F6255514;
-        Mon,  9 Oct 2023 16:25:01 +0200 (CEST)
-Received: from [10.201.20.120] (10.201.20.120) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 9 Oct
- 2023 16:25:00 +0200
-Message-ID: <fa0e6187-ab7d-bc23-299c-a491c8ff1d8f@foss.st.com>
-Date:   Mon, 9 Oct 2023 16:24:59 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 3/7] dt-bindings: media: Document STM32MP25 VENC video
- encoder
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        <linux-media@vger.kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
+        Mon, 9 Oct 2023 10:26:44 -0400
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D3B99;
+        Mon,  9 Oct 2023 07:26:40 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2E7FF60003;
+        Mon,  9 Oct 2023 14:26:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1696861598;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=92a8cVu3f6Pk3ndmVwnkeBH7DnuU13PZsLWlEFgkb+8=;
+        b=ptdUM/7cMSJVYbBrfF6v7pOBngBBoqD2a0R/MUuEMeanPcoDEjfHKfSoM8A8bH79+drPz+
+        rV97RU0p5QyeWtYFPXNPPjzGoSwoAmb7zdtM9zta8Rt3qazcKpntePvK1epyDuMN8Yy2hm
+        c/19/YApYNnYXqqPcSlzxHZDNltzGOFF0avCXI1W6tyEQLx7YzapC/yKZuEgCSulDYhE2G
+        tiyCi8WMCoTIVnh6t72FOyCiEhCyW0D3+DoI+D5rSdROAfpCBAIJTfQNC5r7tEla35zU7C
+        xa3pdnMAu7WiFZoTgbzZKx+vu0/qFQeygmLxg4z1lzB3Rw48ksl43ELSnmswNA==
+Date:   Mon, 9 Oct 2023 16:26:32 +0200
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>
-CC:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-References: <20231004091552.3531659-1-hugues.fruchet@foss.st.com>
- <20231004091552.3531659-4-hugues.fruchet@foss.st.com>
- <6bc60e4a-ddf1-4125-ba27-53ab55a553d2@linaro.org>
- <0de2ae74-2ba1-0e8d-aa7b-77806ac8b252@foss.st.com>
- <1e2a4d87-5478-4655-993d-7f404d507c82@linaro.org>
-From:   Hugues FRUCHET <hugues.fruchet@foss.st.com>
-In-Reply-To: <1e2a4d87-5478-4655-993d-7f404d507c82@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.20.120]
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-09_12,2023-10-09_01,2023-05-22_02
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Linus Walleij <linus.walleij@linaro.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        Simon Horman <horms@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v7 10/30] net: wan: Add support for QMC HDLC
+Message-ID: <20231009162632.7f11a6d9@bootlin.com>
+In-Reply-To: <20231006144702.778c165e@kernel.org>
+References: <20230928070652.330429-1-herve.codina@bootlin.com>
+        <20230928070652.330429-11-herve.codina@bootlin.com>
+        <20231006144702.778c165e@kernel.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+Hi Jakub,
 
-On 10/9/23 15:56, Krzysztof Kozlowski wrote:
-> On 09/10/2023 15:49, Hugues FRUCHET wrote:
->> Hi Krzysztof,
->>
->> On 10/5/23 21:45, Krzysztof Kozlowski wrote:
->>> On 04/10/2023 11:15, Hugues Fruchet wrote:
->>>> Add STM32MP25 VENC video encoder bindings.
->>>>
->>>
->>> I don't understand why this binding is separate from video decoder.
->>> Merge them.
->> VDEC and VENC are two independent IPs with their own clock, reset,
->> interrupt & register set, they have their own access to APB/AXI bus.
->> Moreover future chipsets may embed only VENC or VDEC.
->>
->> Hoping that this clarifies the reason of two different bindings.
+On Fri, 6 Oct 2023 14:47:02 -0700
+Jakub Kicinski <kuba@kernel.org> wrote:
+
+> On Thu, 28 Sep 2023 09:06:28 +0200 Herve Codina wrote:
+> > +static int qmc_hdlc_close(struct net_device *netdev)
+> > +{
+> > +	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
+> > +	struct qmc_hdlc_desc *desc;
+> > +	int i;
+> > +
+> > +	netif_stop_queue(netdev);
+> > +
+> > +	qmc_chan_stop(qmc_hdlc->qmc_chan, QMC_CHAN_ALL);
+> > +	qmc_chan_reset(qmc_hdlc->qmc_chan, QMC_CHAN_ALL);  
 > 
-> No, it does not. These are no reasons to have independent bindings,
-> except when having actual impact on the bindings. The bindings look
-> identical. What are the differences?
-I'm sorry but I really don't understand your point, these are two 
-different IPs with very different registers in it, so why should
-I share that in a single binding ?
+> stopping the queue looks a bit racy, a completion may come in 
+> and restart the queue
+
+Indeed, qmc_hdlc_xmit_complete() completion can restart the queue.
+
+I will call netif_stop_queue() after calling qmc_chan_stop/reset().
+This is the simple way to fix that without adding an internal flag.
+
+Thanks for pointing that.
+
+Best regards,
+Hervé
 
 > 
-> Best regards,
-> Krzysztof
-> 
-
-BR,
-Hugues.
+> > +	for (i = 0; i < ARRAY_SIZE(qmc_hdlc->tx_descs); i++) {
+> > +		desc = &qmc_hdlc->tx_descs[i];
+> > +		if (!desc->skb)
+> > +			continue;
+> > +		dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size,
+> > +				 DMA_TO_DEVICE);
+> > +		kfree_skb(desc->skb);
+> > +		desc->skb = NULL;
+> > +	}
+> > +
+> > +	for (i = 0; i < ARRAY_SIZE(qmc_hdlc->rx_descs); i++) {
+> > +		desc = &qmc_hdlc->rx_descs[i];
+> > +		if (!desc->skb)
+> > +			continue;
+> > +		dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size,
+> > +				 DMA_FROM_DEVICE);
+> > +		kfree_skb(desc->skb);
+> > +		desc->skb = NULL;
+> > +	}
+> > +
+> > +	hdlc_close(netdev);  
