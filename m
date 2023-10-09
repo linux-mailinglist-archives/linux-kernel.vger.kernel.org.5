@@ -2,157 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 555D27BE1EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1587BE1F0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377602AbjJIN4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 09:56:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38092 "EHLO
+        id S1377574AbjJIN46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 09:56:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377585AbjJIN4S (ORCPT
+        with ESMTP id S1377607AbjJIN44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 09:56:18 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C2B137
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 06:56:13 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-4056ce55e7eso42859765e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 06:56:13 -0700 (PDT)
+        Mon, 9 Oct 2023 09:56:56 -0400
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB31FF;
+        Mon,  9 Oct 2023 06:56:49 -0700 (PDT)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5a2244e06c3so8553497b3.1;
+        Mon, 09 Oct 2023 06:56:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696859772; x=1697464572; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bf+VTknUoZfw1J5lcwJIel2zhuZkyXJuLONBP6ZRsxg=;
-        b=WUihW6n+A5o6sZBOKEVmcH4dqnnQ4pQ/nDdtr98ctKaowvXNdYSwo9YRN7VfR3+oo/
-         /VyOsdtr6BGYRxnE0UAARkr4tSgGwMRnPbi9hI1uVG2rGrsCaKGZHv6PFx1uaTtpeXGs
-         LXICeXO/PffiVNUsQLuiiyvumrow7IlebHZrtDxyq7j3pqOuwhmA3lP2ro78co8fHXKv
-         kc+SvrHKYNkHVS8k+N7iNQwlx8aexF89Q8y0J4YIBzzVRLt0sSdoDF+jvEa0JYtO+kbQ
-         e18UKPFbfXUcZbnuWVmti+iy5SuWpvWne7MhURwpq/mBYq0tgms8Poaa66v0b1ERj2gJ
-         pDog==
+        d=gmail.com; s=20230601; t=1696859809; x=1697464609; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=7R+Ed3OVoVGJyxMBNphIrCQkroRIbnjibwGDxMcagv4=;
+        b=SpcnGmaGoqeo3xlZQPFEA608gDNt0hkPZIiQvAI4N7jBruw2B256U9bIAmhUZBVh2J
+         yrow0IeFmx7wcpnqest4EqwGurm9uUXDqswsO9/JOD7Jsqxw9/WpJYlX6ff5imMB5Vv0
+         wSjyVr5ddSNMsGIm2kFVTpwde4CKPuOPb2g1IgntX3Pz+h2LNWLVP7N3oSs8m/J632e+
+         QnPeuIOQyF2v56+83HIAeD2DXTCXE5beI61HLtvfMrKxUz69b/JRYBktgHcqYiOfnHTO
+         93IqaJdUavMAmNoZWdoHQvZuvkEaOHq6Q5Y9nBl/i3IrD3PaRPYgTcF3R6d4I7p3NpMS
+         Dk1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696859772; x=1697464572;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bf+VTknUoZfw1J5lcwJIel2zhuZkyXJuLONBP6ZRsxg=;
-        b=HTfO3o13PL/Sqo7bRKdi4U6vOZEZBCe97Xg/8H1LXyHAyi3WbqY42hw1M8FmxSfQth
-         Rvp2XomfjYXxmdQCQsJecmph0P4Oob3vyHO+VVZ+hTqx8JQe/P/vlglLe95ljopN6iU6
-         /YQmpX/fX/CWAa2osNRio99E4RwOJd+3zdE/0/aGuqMS2jcDoy73z720+KRr5rpLbtGN
-         00jtEMAe3tc+K57Dp0WLeIAoDf1PDWAQDLztRBgjofK0R+cPrTwyLhIUhQXlGK+VXKrn
-         bYVSXR6jceSQp4Xhc+bMqAzyKiR99qZ6KZyAJJ6kGWslnekwADh2yELK9wSxJTtmr7S8
-         Q0LQ==
-X-Gm-Message-State: AOJu0YzeA6Ytqd7sVmhGba+rJ1zmL4zN1KE43AweaG33RRkP2w+oiaio
-        cPPk4XlTjTVH6iqJCyCjt12PJSVojop92atCFnE=
-X-Google-Smtp-Source: AGHT+IELUtRI3QQ2x8pqqwpNaTdzPTGNsZqOjxG9XZaOx/9ROliWPZ4jlFvtE1dTsyvgYe/vswNJpw==
-X-Received: by 2002:a05:600c:2189:b0:405:315f:e681 with SMTP id e9-20020a05600c218900b00405315fe681mr14111622wme.40.1696859772141;
-        Mon, 09 Oct 2023 06:56:12 -0700 (PDT)
-Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id hn32-20020a05600ca3a000b004053e9276easm13546241wmb.32.2023.10.09.06.56.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 06:56:11 -0700 (PDT)
-Message-ID: <1e2a4d87-5478-4655-993d-7f404d507c82@linaro.org>
-Date:   Mon, 9 Oct 2023 15:56:09 +0200
+        d=1e100.net; s=20230601; t=1696859809; x=1697464609;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7R+Ed3OVoVGJyxMBNphIrCQkroRIbnjibwGDxMcagv4=;
+        b=L6R9f2Eo5atH/sVP/HkZps6dxk1XRm+KdbGRYa33eX0QXaRt3SNxNHVCZ2IqLzTPhg
+         NmqTXlKTLpe83lC00laJdJ7RKNKCT19jnzhqAB+oBKwE1Lj+mD7KUOTPYR+/ZLQh9rpp
+         duIJuTXnL5rSlFMY9IshKvtz1zqbyzbv90nMYK0aLogZoeDLqZgSudtrzwdvNuMNC9EN
+         RqbB4LKtBKsrYlG0laz4TH5ix+/k/ZkSrffLEaHbEuVodS+sWXJMcKrNKRIIw2RiZQTM
+         uYwoiWTLXdBaafEXmYuqOMXJ2HZjgJEsudRHD8jblv2UZMUZ0+GygZPVMtvDUTawPNYY
+         GyTA==
+X-Gm-Message-State: AOJu0YxyQzqjtDitBRH3PLRT5VH2Efyk4BMSsm8y5/JNkKkip3TFFK7p
+        7jBg/bq/5vF1LVMwxpTl5njjOtn9yRWTCJ2iMTA=
+X-Google-Smtp-Source: AGHT+IEu5gcpHJZ81LmqyGwxblojiM/y116gIKH4I7qOS/xlUVmyIFarciyB7EASKhQWdTNoirmWT2vqnZibHQs+aOc=
+X-Received: by 2002:a25:aba8:0:b0:d43:a0d8:8daf with SMTP id
+ v37-20020a25aba8000000b00d43a0d88dafmr10377767ybi.6.1696859807950; Mon, 09
+ Oct 2023 06:56:47 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/7] dt-bindings: media: Document STM32MP25 VENC video
- encoder
-Content-Language: en-US
-To:     Hugues FRUCHET <hugues.fruchet@foss.st.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org
-Cc:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-References: <20231004091552.3531659-1-hugues.fruchet@foss.st.com>
- <20231004091552.3531659-4-hugues.fruchet@foss.st.com>
- <6bc60e4a-ddf1-4125-ba27-53ab55a553d2@linaro.org>
- <0de2ae74-2ba1-0e8d-aa7b-77806ac8b252@foss.st.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <0de2ae74-2ba1-0e8d-aa7b-77806ac8b252@foss.st.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231007075148.1759-1-andrew.kanner@gmail.com>
+In-Reply-To: <20231007075148.1759-1-andrew.kanner@gmail.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Mon, 9 Oct 2023 15:56:36 +0200
+Message-ID: <CAJ8uoz2VL0mtQxG6DdUFEK7FWN+MWXUtrEFEsYue4DLBO-WNtw@mail.gmail.com>
+Subject: Re: [PATCH bpf v4] net/xdp: fix zero-size allocation warning in xskq_create()
+To:     Andrew Kanner <andrew.kanner@gmail.com>
+Cc:     martin.lau@linux.dev, bjorn@kernel.org, magnus.karlsson@intel.com,
+        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, aleksander.lobakin@intel.com,
+        xuanzhuo@linux.alibaba.com, ast@kernel.org, hawk@kernel.org,
+        john.fastabend@gmail.com, daniel@iogearbox.net,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+fae676d3cf469331fc89@syzkaller.appspotmail.com,
+        syzbot+b132693e925cbbd89e26@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/10/2023 15:49, Hugues FRUCHET wrote:
-> Hi Krzysztof,
-> 
-> On 10/5/23 21:45, Krzysztof Kozlowski wrote:
->> On 04/10/2023 11:15, Hugues Fruchet wrote:
->>> Add STM32MP25 VENC video encoder bindings.
->>>
->>
->> I don't understand why this binding is separate from video decoder.
->> Merge them.
-> VDEC and VENC are two independent IPs with their own clock, reset, 
-> interrupt & register set, they have their own access to APB/AXI bus.
-> Moreover future chipsets may embed only VENC or VDEC.
-> 
-> Hoping that this clarifies the reason of two different bindings.
+On Sat, 7 Oct 2023 at 09:52, Andrew Kanner <andrew.kanner@gmail.com> wrote:
+>
+> Syzkaller reported the following issue:
+>  ------------[ cut here ]------------
+>  WARNING: CPU: 0 PID: 2807 at mm/vmalloc.c:3247 __vmalloc_node_range (mm/vmalloc.c:3361)
+>  Modules linked in:
+>  CPU: 0 PID: 2807 Comm: repro Not tainted 6.6.0-rc2+ #12
+>  Hardware name: Generic DT based system
+>  unwind_backtrace from show_stack (arch/arm/kernel/traps.c:258)
+>  show_stack from dump_stack_lvl (lib/dump_stack.c:107 (discriminator 1))
+>  dump_stack_lvl from __warn (kernel/panic.c:633 kernel/panic.c:680)
+>  __warn from warn_slowpath_fmt (./include/linux/context_tracking.h:153 kernel/panic.c:700)
+>  warn_slowpath_fmt from __vmalloc_node_range (mm/vmalloc.c:3361 (discriminator 3))
+>  __vmalloc_node_range from vmalloc_user (mm/vmalloc.c:3478)
+>  vmalloc_user from xskq_create (net/xdp/xsk_queue.c:40)
+>  xskq_create from xsk_setsockopt (net/xdp/xsk.c:953 net/xdp/xsk.c:1286)
+>  xsk_setsockopt from __sys_setsockopt (net/socket.c:2308)
+>  __sys_setsockopt from ret_fast_syscall (arch/arm/kernel/entry-common.S:68)
+>
+> xskq_get_ring_size() uses struct_size() macro to safely calculate the
+> size of struct xsk_queue and q->nentries of desc members. But the
+> syzkaller repro was able to set q->nentries with the value initially
+> taken from copy_from_sockptr() high enough to return SIZE_MAX by
+> struct_size(). The next PAGE_ALIGN(size) is such case will overflow
+> the size_t value and set it to 0. This will trigger WARN_ON_ONCE in
+> vmalloc_user() -> __vmalloc_node_range().
+>
+> The issue is reproducible on 32-bit arm kernel.
+>
+> Reported-and-tested-by: syzbot+fae676d3cf469331fc89@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/all/000000000000c84b4705fb31741e@google.com/T/
+> Link: https://syzkaller.appspot.com/bug?extid=fae676d3cf469331fc89
+> Reported-by: syzbot+b132693e925cbbd89e26@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/all/000000000000e20df20606ebab4f@google.com/T/
+> Fixes: 9f78bf330a66 ("xsk: support use vaddr as ring")
+> Signed-off-by: Andrew Kanner <andrew.kanner@gmail.com>
 
-No, it does not. These are no reasons to have independent bindings,
-except when having actual impact on the bindings. The bindings look
-identical. What are the differences?
+Thanks Andrew for fixing this.
 
-Best regards,
-Krzysztof
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
+> ---
+>
+> Notes (akanner):
+>     v4:
+>       - add explanation about SIZE_MAX, suggested by Martin KaFai Lau
+>         <martin.lau@linux.dev>
+>     v3: https://lore.kernel.org/all/20231005193548.515-1-andrew.kanner@gmail.com/T/
+>       - free kzalloc-ed memory before return, the leak was noticed by
+>         Daniel Borkmann <daniel@iogearbox.net>
+>     v2: https://lore.kernel.org/all/20231002222939.1519-1-andrew.kanner@gmail.com/raw
+>       - use unlikely() optimization for the case with SIZE_MAX return from
+>         struct_size(), suggested by Alexander Lobakin
+>         <aleksander.lobakin@intel.com>
+>       - cc-ed 4 more maintainers, mentioned by cc_maintainers patchwork
+>         test
+>
+>     v1: https://lore.kernel.org/all/20230928204440.543-1-andrew.kanner@gmail.com/T/
+>       - RFC notes:
+>         It was found that net/xdp/xsk.c:xsk_setsockopt() uses
+>         copy_from_sockptr() to get the number of entries (int) for cases
+>         with XDP_RX_RING / XDP_TX_RING and XDP_UMEM_FILL_RING /
+>         XDP_UMEM_COMPLETION_RING.
+>
+>         Next in xsk_init_queue() there're 2 sanity checks (entries == 0)
+>         and (!is_power_of_2(entries)) for which -EINVAL will be returned.
+>
+>         After that net/xdp/xsk_queue.c:xskq_create() will calculate the
+>         size multipling the number of entries (int) with the size of u64,
+>         at least.
+>
+>         I wonder if there should be the upper bound (e.g. the 3rd sanity
+>         check inside xsk_init_queue()). It seems that without the upper
+>         limit it's quiet easy to overflow the allocated size (SIZE_MAX),
+>         especially for 32-bit architectures, for example arm nodes which
+>         were used by the syzkaller.
+>
+>         In this patch I added a naive check for SIZE_MAX which helped to
+>         skip zero-size allocation after overflow, but maybe it's not quite
+>         right. Please, suggest if you have any thoughts about the
+>         appropriate limit for the size of these xdp rings.
+>
+>         PS: the initial number of entries is 0x20000000 in syzkaller
+>         repro: syscall(__NR_setsockopt, (intptr_t)r[0], 0x11b, 3,
+>         0x20000040, 0x20);
+>
+>         Link:
+>         https://syzkaller.appspot.com/text?tag=ReproC&x=10910f18280000
+>
+>  net/xdp/xsk_queue.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>
+> diff --git a/net/xdp/xsk_queue.c b/net/xdp/xsk_queue.c
+> index f8905400ee07..d2c264030017 100644
+> --- a/net/xdp/xsk_queue.c
+> +++ b/net/xdp/xsk_queue.c
+> @@ -34,6 +34,16 @@ struct xsk_queue *xskq_create(u32 nentries, bool umem_queue)
+>         q->ring_mask = nentries - 1;
+>
+>         size = xskq_get_ring_size(q, umem_queue);
+> +
+> +       /* size which is overflowing or close to SIZE_MAX will become 0 in
+> +        * PAGE_ALIGN(), checking SIZE_MAX is enough due to the previous
+> +        * is_power_of_2(), the rest will be handled by vmalloc_user()
+> +        */
+> +       if (unlikely(size == SIZE_MAX)) {
+> +               kfree(q);
+> +               return NULL;
+> +       }
+> +
+>         size = PAGE_ALIGN(size);
+>
+>         q->ring = vmalloc_user(size);
+> --
+> 2.39.3
+>
+>
