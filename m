@@ -2,172 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF2E7BD69E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF22A7BD6DA
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345700AbjJIJWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 05:22:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53820 "EHLO
+        id S1345935AbjJIJYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 05:24:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345671AbjJIJWC (ORCPT
+        with ESMTP id S1345823AbjJIJXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 05:22:02 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A47CC97;
-        Mon,  9 Oct 2023 02:22:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1696843320; x=1728379320;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=nl/Pb7yNcrRSIji9Rq2BWcaYNm9rNVSMwfevq+ZJbXU=;
-  b=xUIKuTlT4Hl4zOaiT5pfr5MaQgXYhlSCLkdhy7sIMF/4FCdJnoS82G+h
-   xU6MRhuLH44z+pVuXJT+BKAhJx7ihfHlKQT+TkRfT9dnCI8bCrEhiNL1r
-   Y0fivAgu/GkL2K+wJn8LSWcJu201i1CFlDCeeaGnu8Prgkkfy1iVTYKWi
-   lNgBnWY1Il/198TbfmLlQrJ0yTqr6sE5VAj2JaG5ZszlxWi1H3WjSZ6v2
-   qAWINHtMYq2rMzcAi75kvlf/JyRIYG/YqasGO8z93P/jy2a1/gfP5Kh6n
-   3iJ9NCPTcsoY0Y+b09xYsxBk7zSzfL/NXf2wFV264DxmB+b2ANpjcHvgN
-   A==;
-X-CSE-ConnectionGUID: crs7sF3tRlKn6sEwzlDrPg==
-X-CSE-MsgGUID: 9cWccrISQheTSGzag4PSBQ==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="asc'?scan'208";a="176377026"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Oct 2023 02:21:59 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Mon, 9 Oct 2023 02:21:59 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Mon, 9 Oct 2023 02:21:56 -0700
-Date:   Mon, 9 Oct 2023 10:21:36 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-CC:     <linux-renesas-soc@vger.kernel.org>, <conor@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>
-Subject: Re: [PATCH] soc: renesas: select ERRATA_ANDES for R9A07G043 only
- when alternatives are present
-Message-ID: <20231009-acuteness-nutlike-1f28a2335384@wendy>
-References: <20231009-sandbar-botch-0f398fd2e289@wendy>
- <CAMuHMdVojwgOP8bqHobgbsgUA+7yxUA7v5M6Z800zxrCeuxZjg@mail.gmail.com>
+        Mon, 9 Oct 2023 05:23:43 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30D8134
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:23:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B8A5C433CB;
+        Mon,  9 Oct 2023 09:23:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696843389;
+        bh=MOixYtjgC+jFK+ozB2lXZyQEyZ01mgvzgxPkOoCRIiY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WmNnDvcpgacm8aiHUdsrPgE+ku4g9by7BPLUpUtnAX8gpu7wVnHwNKdv2xfjFAX7A
+         hxJC0kFFNL1iFx9kSn1yLQ8X5df+dwInqg3yejydjK2Okrb2BnD0xhVxYDgPf1vZUh
+         KU4q8quKCa9f8kXQtvmIc2qYwU59R4fDKbxI8yb20DbU43f4sCVz+1NeBcolGRPucW
+         5abtooqX1OSfq+XNlun14gG2rrcKYRbTH4WicZ/ISdZ4JUTa5lfMplFkJegyBQGlDx
+         dHzXT6hkCpukNLi8s9SPlx9ZyZcB6mrESuKL6jfxRfTaqvVVSp5h7UxXd919wwXPt/
+         nTOA8kSLIt0tA==
+Date:   Mon, 9 Oct 2023 11:23:06 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Devarsh Thakkar <devarsht@ti.com>
+Cc:     jyri.sarha@iki.fi, tomi.valkeinen@ideasonboard.com,
+        airlied@gmail.com, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        praneeth@ti.com, nm@ti.com, vigneshr@ti.com, a-bhatia1@ti.com,
+        j-luthra@ti.com, r-ravikumar@ti.com, j-choudhary@ti.com
+Subject: Re: [PATCH] drm/tidss: Power up attached PM domains on probe
+Message-ID: <bmemgnq3emddmjsho3c3h4cj2fyyyp3xll73ozpsxxmxxcr3bn@lffrmuqqpbl3>
+References: <20231009075018.2836020-1-devarsht@ti.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="H8JAiz5CASvgRsHi"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="mrqzgt3fldn3kjr2"
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdVojwgOP8bqHobgbsgUA+7yxUA7v5M6Z800zxrCeuxZjg@mail.gmail.com>
+In-Reply-To: <20231009075018.2836020-1-devarsht@ti.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---H8JAiz5CASvgRsHi
-Content-Type: text/plain; charset=utf-8
+
+--mrqzgt3fldn3kjr2
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 09, 2023 at 10:34:34AM +0200, Geert Uytterhoeven wrote:
-> Hi Conor,
->=20
-> On Mon, Oct 9, 2023 at 10:12=E2=80=AFAM Conor Dooley <conor.dooley@microc=
-hip.com> wrote:
-> > Randy reported a randconfig build issue against linux-next:
-> > WARNING: unmet direct dependencies detected for ERRATA_ANDES
-> >   Depends on [n]: RISCV_ALTERNATIVE [=3Dn] && RISCV_SBI [=3Dy]
-> >   Selected by [y]:
-> >   - ARCH_R9A07G043 [=3Dy] && SOC_RENESAS [=3Dy] && RISCV [=3Dy] && NONP=
-ORTABLE [=3Dy] && RISCV_SBI [=3Dy]
-> >
-> > ../arch/riscv/errata/andes/errata.c:59:54: warning: 'struct alt_entry' =
-declared inside parameter list will not be visible outside of this definiti=
-on or declaration
-> >    59 | void __init_or_module andes_errata_patch_func(struct alt_entry =
-*begin, struct alt_entry *end,
-> >
-> > On RISC-V, alternatives are not usable in XIP kernels, which this
-> > randconfig happened to select. Add a check for whether alternatives are
-> > available before selecting the ERRATA_ANDES config option.
-> >
-> > Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> > Acked-by: Randy Dunlap <rdunlap@infradead.org>
-> > Tested-by: Randy Dunlap <rdunlap@infradead.org>
-> > Closes: https://lore.kernel.org/all/09a6b0f0-76a1-45e3-ab52-329c47393d1=
-d@infradead.org/
-> > Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
->=20
-> Thanks for your patch!
->=20
-> > --- a/drivers/soc/renesas/Kconfig
-> > +++ b/drivers/soc/renesas/Kconfig
-> > @@ -343,7 +343,7 @@ config ARCH_R9A07G043
-> >         select ARCH_RZG2L
-> >         select AX45MP_L2_CACHE if RISCV_DMA_NONCOHERENT
-> >         select DMA_GLOBAL_POOL
-> > -       select ERRATA_ANDES if RISCV_SBI
-> > +       select ERRATA_ANDES if (RISCV_SBI && RISCV_ALTERNATIVE)
->=20
-> Perhaps ARCH_R9A07G043 should depend on RISCV_ALTERNATIVE (and
-> RISCV_SBI) instead?  It's not like RZ/Five is gonna work without the
-> Andes errata handling present (unless all of them are related to cache
-> handling, and we can run uncached; also see below)).
->=20
-> >         select ERRATA_ANDES_CMO if ERRATA_ANDES
->=20
-> And then this "if" can go as well.
->=20
-> Any other hard dependencies?
-> E.g. can RZ/Five work without RISCV_DMA_NONCOHERENT?
+Hi Devarsh,
 
-That seems fair to me, it won't work without any of the above, so it's
-probably fair game to make them actual dependencies & likely more user
-friendly since it'll prevent people creating a kernel that cannot
-function.
+On Mon, Oct 09, 2023 at 01:20:18PM +0530, Devarsh Thakkar wrote:
+> Some SoC's such as AM62P have dedicated power domains
+> for OLDI which need to be powered on separetely along
+> with display controller.
+>=20
+> So during driver probe, power up all attached PM domains
+> enumerated in devicetree node for DSS.
+>=20
+> This also prepares base to add display support for AM62P.
+>=20
+> Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
+> ---
+>  drivers/gpu/drm/tidss/tidss_drv.c | 76 +++++++++++++++++++++++++++++++
+>  drivers/gpu/drm/tidss/tidss_drv.h |  5 ++
+>  2 files changed, 81 insertions(+)
+>=20
+> diff --git a/drivers/gpu/drm/tidss/tidss_drv.c b/drivers/gpu/drm/tidss/ti=
+dss_drv.c
+> index 4d063eb9cd0b..a703a27d17bf 100644
+> --- a/drivers/gpu/drm/tidss/tidss_drv.c
+> +++ b/drivers/gpu/drm/tidss/tidss_drv.c
+> @@ -8,6 +8,7 @@
+>  #include <linux/of.h>
+>  #include <linux/module.h>
+>  #include <linux/pm_runtime.h>
+> +#include <linux/pm_domain.h>
+> =20
+>  #include <drm/drm_atomic.h>
+>  #include <drm/drm_atomic_helper.h>
+> @@ -114,6 +115,72 @@ static const struct drm_driver tidss_driver =3D {
+>  	.minor			=3D 0,
+>  };
+> =20
+> +static int tidss_detach_pm_domains(struct tidss_device *tidss)
+> +{
+> +	int i;
+> +
+> +	if (tidss->num_domains <=3D 1)
+> +		return 0;
+> +
+> +	for (i =3D 0; i < tidss->num_domains; i++) {
+> +		if (tidss->pd_link[i] && !IS_ERR(tidss->pd_link[i]))
+> +			device_link_del(tidss->pd_link[i]);
+> +		if (tidss->pd_dev[i] && !IS_ERR(tidss->pd_dev[i]))
+> +			dev_pm_domain_detach(tidss->pd_dev[i], true);
+> +		tidss->pd_dev[i] =3D NULL;
+> +		tidss->pd_link[i] =3D NULL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int tidss_attach_pm_domains(struct tidss_device *tidss)
+> +{
+> +	struct device *dev =3D tidss->dev;
+> +	int i;
+> +	int ret;
+> +	struct platform_device *pdev =3D to_platform_device(dev);
+> +	struct device_node *np =3D pdev->dev.of_node;
+> +
+> +	tidss->num_domains =3D of_count_phandle_with_args(np, "power-domains",
+> +							"#power-domain-cells");
+> +	if (tidss->num_domains <=3D 1) {
+> +		dev_dbg(dev, "One or less power domains, no need to do attach domains\=
+n");
+> +		return 0;
+> +	}
+> +
+> +	tidss->pd_dev =3D devm_kmalloc_array(dev, tidss->num_domains,
+> +					   sizeof(*tidss->pd_dev), GFP_KERNEL);
+> +	if (!tidss->pd_dev)
+> +		return -ENOMEM;
+> +
+> +	tidss->pd_link =3D devm_kmalloc_array(dev, tidss->num_domains,
+> +					    sizeof(*tidss->pd_link), GFP_KERNEL);
+> +	if (!tidss->pd_link)
+> +		return -ENOMEM;
+> +
+> +	for (i =3D 0; i < tidss->num_domains; i++) {
+> +		tidss->pd_dev[i] =3D dev_pm_domain_attach_by_id(dev, i);
+> +		if (IS_ERR(tidss->pd_dev[i])) {
+> +			ret =3D PTR_ERR(tidss->pd_dev[i]);
+> +			goto fail;
+> +		}
+> +
+> +		tidss->pd_link[i] =3D device_link_add(dev, tidss->pd_dev[i],
+> +						    DL_FLAG_STATELESS |
+> +						    DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE);
+> +		if (!tidss->pd_link[i]) {
+> +			ret =3D -EINVAL;
+> +			goto fail;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +fail:
+> +	tidss_detach_pm_domains(tidss);
+> +	return ret;
+> +}
 
-Cheers,
-Conor.
+My understanding is that this will be done automatically at probe time.
+Why do we need to roll our own there? A comment on top of the function
+and the commit log would help.
 
->=20
-> >         help
-> >           This enables support for the Renesas RZ/Five SoC.
->=20
-> Gr{oetje,eeting}s,
->=20
->                         Geert
->=20
-> --=20
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
-8k.org
->=20
-> In personal conversations with technical people, I call myself a hacker. =
-But
-> when I'm talking to journalists I just say "programmer" or something like=
- that.
->                                 -- Linus Torvalds
+Thanks!
+Maxime
 
---H8JAiz5CASvgRsHi
+--mrqzgt3fldn3kjr2
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSPGIAAKCRB4tDGHoIJi
-0pQdAQDP0EDastcRyfubosMkIjTRJbu3yHBbxDcEIeHUXE1/2QEAgoXMXZl4RxM7
-cxShvCs8UHEpmf2WuY+pPyQiXnxHvQ4=
-=VHI5
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZSPGegAKCRDj7w1vZxhR
+xQblAQDdpRuB3koCfhA6yeFq9+OCkuzwb/iHURYBnN1uENA07AEA25uctX3wDw0u
+/YjPlDpuhGFxweCfFLXH1VeE5ht1NAQ=
+=p9/r
 -----END PGP SIGNATURE-----
 
---H8JAiz5CASvgRsHi--
+--mrqzgt3fldn3kjr2--
