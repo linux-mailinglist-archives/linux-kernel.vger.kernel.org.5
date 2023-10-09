@@ -2,63 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2840D7C5E95
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 22:44:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3657C5E99
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 22:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235164AbjJKUoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 16:44:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60550 "EHLO
+        id S1376394AbjJKUoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 16:44:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233369AbjJKUoG (ORCPT
+        with ESMTP id S233369AbjJKUoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 16:44:06 -0400
-Received: from mail-yw1-x1141.google.com (mail-yw1-x1141.google.com [IPv6:2607:f8b0:4864:20::1141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E46589E;
-        Wed, 11 Oct 2023 13:44:04 -0700 (PDT)
-Received: by mail-yw1-x1141.google.com with SMTP id 00721157ae682-59f6492b415so2124367b3.0;
-        Wed, 11 Oct 2023 13:44:04 -0700 (PDT)
+        Wed, 11 Oct 2023 16:44:07 -0400
+Received: from mail-yw1-x1142.google.com (mail-yw1-x1142.google.com [IPv6:2607:f8b0:4864:20::1142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E67A9;
+        Wed, 11 Oct 2023 13:44:06 -0700 (PDT)
+Received: by mail-yw1-x1142.google.com with SMTP id 00721157ae682-5a7db1f864bso3166057b3.3;
+        Wed, 11 Oct 2023 13:44:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697057044; x=1697661844; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697057045; x=1697661845; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/AKsmkTQtU/rhqiAGHEzho0MRurJuhinBZFCGxQETC4=;
-        b=A9RblMU5uCCTQamjKzeenzEYrFcmuZxsY9CE2iMOFAVSrrbqO7NifM+bxmT1m66VIr
-         IFNdIFuEZroj46RJTxB6lQDKbTpoKKeGMNLf+3Su0Poa/dIV2mU7f67WmgBSbmc/w7nL
-         /VcyNMFgdDfOe8dGeOAaITOins4pVEd+k5uUhw4aEAXjixvxjS01QLwXcL+EitmBesR3
-         d5fxSVkqU5IWB7n6mgP3qXAkWGZvM/k4MkuCe4uWwhbEKWCcBXIyjuueJwwlZ+rGl346
-         l6g0dmrPjv+etqRsw3qYFdMiRW6874xl8gqjvgwtfisUI6y9eGu1gbVDWpw6fiYyQvkS
-         PP0w==
+        bh=W9UI87hogpDREX7ILSAbskFyWe+DuAm4NfdE6acGURg=;
+        b=U8JDKXSnyEemEKTWKbYcx1RgfsreFQEeEsKkhP0/xU21a8AIR1bUe35jyy0G7VJer5
+         +Imv8crFmtCMTjmLYt0xPC9HR2nIAJ73pfWI3FRvYVgbMGf5n4nCe25s3BWgHO+fCB+4
+         BrkwCDKO8D93IQmI4UPB8+k+JQMQyEgaZ5lRinxKEzow61Uz48lK4+bPZKdlAcFjtn+v
+         nSD9J0INtUv56Y3cxF6DqOjYPBurVPo+CKdYccredrauqi7js8JFGbw5ASGA0ufVDNSf
+         z5qbSNF+0WqvWBnrNvM+jgcc+3idPnr/CpHlH726R93B93kZpanK6azY3d9B/Sa9zEvT
+         iITg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697057044; x=1697661844;
+        d=1e100.net; s=20230601; t=1697057045; x=1697661845;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/AKsmkTQtU/rhqiAGHEzho0MRurJuhinBZFCGxQETC4=;
-        b=ephZp6ITKzF7VB2glbLO/0oMJXi+ENQWZOiRkrgpbdjKzFqJpb92RgrVQZD/ijcuKX
-         uhyh2yN+Hv4CpaKNHXGHMONosPvqO7g02CzZIAdTIH6AVx7S/5M0FJvHHEW6jaw+Gz5f
-         pFN4jNRNVsRDqcsW7gCEY3kzFEEhF6pwhyjRx4epjr3JzNql/OGWvh9Zo06wV1Z5oiHP
-         v8yZWmOismoP7utc4yvb6nR8wA6Fzy5ThWbbI+pbK/+ATG0QsapCSZOGqcpex/oVkUly
-         SExegugTe6fp5ZfNbrbOhiRwqxxmPI6/l6MtPbL94AhcORLJRuaS4m6vOzltbla/vs7y
-         8Vng==
-X-Gm-Message-State: AOJu0YyX/i3CGSKN045lMu/NuidQzbJ1tNO+nJQebNR3ACckIsFQ7jMu
-        Fm9FBtIxzKzAWgrtixA3+Q==
-X-Google-Smtp-Source: AGHT+IHk5yLZJeaUXqy1B+rDus9A8q+EqrUxM9q2jVm64kJSM7T3hF2zy2+/xYWfSyGz2fhCfP8TIg==
-X-Received: by 2002:a81:528b:0:b0:5a5:575:e944 with SMTP id g133-20020a81528b000000b005a50575e944mr11929290ywb.4.1697057044087;
-        Wed, 11 Oct 2023 13:44:04 -0700 (PDT)
+        bh=W9UI87hogpDREX7ILSAbskFyWe+DuAm4NfdE6acGURg=;
+        b=dFoSkNwmJKOPTimKgpEKvzWNFDh7PYG8x5Mgtdkk27q5ivmJBrsD49FN63U9UeCzir
+         dW4cAIbEbaFp4i67WncYjMlhXQwzPVLy6TQauLTNjdYWHg8NcwqSh1AyYmHTFj+2/u5b
+         LBC4/2L1BrZdZMZ7aP7+AEEdMxHMehwqS1fqXUWZ10YgxUuFy7Fkz6cHg+gOLXlRbvEE
+         C9IkJiOblRat+EvYp1fsKx5cCg3ejWZnwCHn43LMGCRPkVjWY6Ot7oQ+Bd6+O/aBJ3Ep
+         lHoTzVC/EA+ZlgWhtgsA4NqyRi7Tk7pJuhgbsimLkXItZIH8U+vHSTNcmSGWhbASScJH
+         Xsxg==
+X-Gm-Message-State: AOJu0YwrabHcxXSUTdTc2aV7+2gNxgLPI9/1CV5Kz1EouBEWadPKeQxE
+        qc5KMTlrC5WhznsgOX4G2f+y76YucfwvlQE=
+X-Google-Smtp-Source: AGHT+IFBybVofn8uA1QG5FhUr2s6pjfiaJnoBxHbehRcIa/YpEEJNFJWO1bMZ/d+F+TzB5zVTpZ6LQ==
+X-Received: by 2002:a05:690c:368b:b0:5a5:575:cf42 with SMTP id fu11-20020a05690c368b00b005a50575cf42mr20698083ywb.40.1697057045483;
+        Wed, 11 Oct 2023 13:44:05 -0700 (PDT)
 Received: from fedora.mshome.net (pool-173-79-56-208.washdc.fios.verizon.net. [173.79.56.208])
-        by smtp.gmail.com with ESMTPSA id q2-20020a819902000000b0059bc0d766f8sm1844588ywg.34.2023.10.11.13.44.03
+        by smtp.gmail.com with ESMTPSA id q2-20020a819902000000b0059bc0d766f8sm1844588ywg.34.2023.10.11.13.44.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 13:44:03 -0700 (PDT)
+        Wed, 11 Oct 2023 13:44:05 -0700 (PDT)
 From:   Gregory Price <gourry.memverge@gmail.com>
 X-Google-Original-From: Gregory Price <gregory.price@memverge.com>
 To:     linux-mm@kvack.org
 Cc:     linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
         akpm@linux-foundation.org, sthanneeru@micron.com,
-        ying.huang@intel.com, gregory.price@memverge.com
-Subject: [RFC PATCH v2 1/3] mm/memory-tiers: change mutex to rw semaphore
-Date:   Mon,  9 Oct 2023 16:42:57 -0400
-Message-Id: <20231009204259.875232-2-gregory.price@memverge.com>
+        ying.huang@intel.com, gregory.price@memverge.com,
+        Ravi Jonnalagadda <ravis.opensrc@micron.com>
+Subject: [RFC PATCH v2 2/3] mm/memory-tiers: Introduce sysfs for tier interleave weights
+Date:   Mon,  9 Oct 2023 16:42:58 -0400
+Message-Id: <20231009204259.875232-3-gregory.price@memverge.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20231009204259.875232-1-gregory.price@memverge.com>
 References: <20231009204259.875232-1-gregory.price@memverge.com>
@@ -74,171 +75,263 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tiers will have externally readable information, such as weights,
-which may change at runtime. This information is expected to be
-used by task threads during memory allocation so it cannot be
-protected by hard mutual exclusion.
+Allocating pages across tiers is accomplished by provisioning
+interleave weights for each tier, with the distribution based on
+these weight values.
 
-To support this, change the tiering mutex to a rw semaphore.
+Weights are relative to the node requesting it (i.e. the weight
+for tier2 from node0 may be different than the weight for tier2
+from node1).  This allows for cpu-bound tasks to have more
+precise control over the distribution of memory.
 
+To represent this, tiers are captured as an array of weights,
+where the index is the source node.
+
+tier->interleave_weight[source_node] = weight;
+
+weights are set with the following sysfs mechanism:
+
+Set tier4 weight from node 0 to 85
+echo 0:85 > /sys/devices/virtual/memory_tiering/memory_tier4/interleave_weight
+
+By default, all tiers will have a weight of 1 for all source nodes,
+which maintains the default interleave behavior.
+
+Weights are effectively aligned (up) to the number of nodes in the
+operating nodemask (i.e. (policy_nodes & tier_nodes)) to simplify
+the allocation logic and to avoid having to hold the tiering
+semaphore for a long period of time during bulk allocation.
+
+Weights apply to a tier, not each node in the tier.  The weight is
+split between the nodes in that tier, similar to hardware interleaving.
+However, when the task defines a nodemask that splits a tier's nodes,
+the weight will be split between the remaining nodes - retaining the
+overall weight of the tier.
+
+Signed-off-by: Srinivasulu Thanneeru <sthanneeru@micron.com>
+Co-developed-by: Ravi Jonnalagadda <ravis.opensrc@micron.com>
+Co-developed-by: Gregory Price <gregory.price@memverge.com>
 Signed-off-by: Gregory Price <gregory.price@memverge.com>
 ---
- mm/memory-tiers.c | 39 ++++++++++++++++++++-------------------
- 1 file changed, 20 insertions(+), 19 deletions(-)
+ include/linux/memory-tiers.h |  16 ++++
+ mm/memory-tiers.c            | 140 ++++++++++++++++++++++++++++++++++-
+ 2 files changed, 155 insertions(+), 1 deletion(-)
 
+diff --git a/include/linux/memory-tiers.h b/include/linux/memory-tiers.h
+index 437441cdf78f..a000b9745543 100644
+--- a/include/linux/memory-tiers.h
++++ b/include/linux/memory-tiers.h
+@@ -19,6 +19,8 @@
+  */
+ #define MEMTIER_ADISTANCE_DRAM	((4 * MEMTIER_CHUNK_SIZE) + (MEMTIER_CHUNK_SIZE >> 1))
+ 
++#define MAX_TIER_INTERLEAVE_WEIGHT 100
++
+ struct memory_tier;
+ struct memory_dev_type {
+ 	/* list of memory types that are part of same tier as this type */
+@@ -36,6 +38,9 @@ struct memory_dev_type *alloc_memory_type(int adistance);
+ void put_memory_type(struct memory_dev_type *memtype);
+ void init_node_memory_type(int node, struct memory_dev_type *default_type);
+ void clear_node_memory_type(int node, struct memory_dev_type *memtype);
++unsigned char memtier_get_node_weight(int from_node, int target_node,
++				      nodemask_t *pol_nodes);
++unsigned int memtier_get_total_weight(int from_node, nodemask_t *pol_nodes);
+ #ifdef CONFIG_MIGRATION
+ int next_demotion_node(int node);
+ void node_get_allowed_targets(pg_data_t *pgdat, nodemask_t *targets);
+@@ -97,5 +102,16 @@ static inline bool node_is_toptier(int node)
+ {
+ 	return true;
+ }
++
++unsigned char memtier_get_node_weight(int from_node, int target_node,
++				      nodemask_t *pol_nodes)
++{
++	return 0;
++}
++
++unsigned int memtier_get_total_weight(int from_node, nodemask_t *pol_nodes)
++{
++	return 0;
++}
+ #endif	/* CONFIG_NUMA */
+ #endif  /* _LINUX_MEMORY_TIERS_H */
 diff --git a/mm/memory-tiers.c b/mm/memory-tiers.c
-index 37a4f59d9585..0a3241a2cadc 100644
+index 0a3241a2cadc..37fc4b3f69a4 100644
 --- a/mm/memory-tiers.c
 +++ b/mm/memory-tiers.c
-@@ -5,6 +5,7 @@
- #include <linux/kobject.h>
- #include <linux/memory.h>
- #include <linux/memory-tiers.h>
-+#include <linux/rwsem.h>
- 
- #include "internal.h"
- 
-@@ -33,7 +34,7 @@ struct node_memory_type_map {
- 	int map_count;
- };
- 
--static DEFINE_MUTEX(memory_tier_lock);
-+static DECLARE_RWSEM(memory_tier_sem);
- static LIST_HEAD(memory_tiers);
- static struct node_memory_type_map node_memory_types[MAX_NUMNODES];
- static struct memory_dev_type *default_dram_type;
-@@ -137,10 +138,10 @@ static ssize_t nodelist_show(struct device *dev,
- 	int ret;
- 	nodemask_t nmask;
- 
--	mutex_lock(&memory_tier_lock);
-+	down_read(&memory_tier_sem);
- 	nmask = get_memtier_nodemask(to_memory_tier(dev));
- 	ret = sysfs_emit(buf, "%*pbl\n", nodemask_pr_args(&nmask));
--	mutex_unlock(&memory_tier_lock);
-+	up_read(&memory_tier_sem);
- 	return ret;
+@@ -14,6 +14,11 @@ struct memory_tier {
+ 	struct list_head list;
+ 	/* list of all memory types part of this tier */
+ 	struct list_head memory_types;
++	/*
++	 * By default all tiers will have weight as 1, which means they
++	 * follow default standard allocation.
++	 */
++	unsigned char interleave_weight[MAX_NUMNODES];
+ 	/*
+ 	 * start value of abstract distance. memory tier maps
+ 	 * an abstract distance  range,
+@@ -146,8 +151,72 @@ static ssize_t nodelist_show(struct device *dev,
  }
  static DEVICE_ATTR_RO(nodelist);
-@@ -167,7 +168,7 @@ static struct memory_tier *find_create_memory_tier(struct memory_dev_type *memty
- 	int adistance = memtype->adistance;
- 	unsigned int memtier_adistance_chunk_size = MEMTIER_CHUNK_SIZE;
  
--	lockdep_assert_held_once(&memory_tier_lock);
-+	lockdep_assert_held_write(&memory_tier_sem);
++static ssize_t interleave_weight_show(struct device *dev,
++				      struct device_attribute *attr,
++				      char *buf)
++{
++	int ret = 0;
++	struct memory_tier *tier = to_memory_tier(dev);
++	int node;
++	int count = 0;
++
++	down_read(&memory_tier_sem);
++	for_each_online_node(node) {
++		if (count > 0)
++			ret += sysfs_emit_at(buf, ret, ",");
++		ret += sysfs_emit_at(buf, ret, "%d:%d", node, tier->interleave_weight[node]);
++		count++;
++	}
++	up_read(&memory_tier_sem);
++	sysfs_emit_at(buf, ret++, "\n");
++
++	return ret;
++}
++
++static ssize_t interleave_weight_store(struct device *dev,
++				       struct device_attribute *attr,
++				       const char *buf, size_t size)
++{
++	unsigned char weight;
++	int from_node;
++	char *delim;
++	int ret;
++	struct memory_tier *tier;
++
++	delim = strchr(buf, ':');
++	if (!delim)
++		return -EINVAL;
++	delim[0] = '\0';
++
++	ret = kstrtou32(buf, 10, &from_node);
++	if (ret)
++		return ret;
++
++	if (from_node >= MAX_NUMNODES || !node_online(from_node))
++		return -EINVAL;
++
++	ret = kstrtou8(delim+1, 0, &weight);
++	if (ret)
++		return ret;
++
++	if (weight > MAX_TIER_INTERLEAVE_WEIGHT)
++		return -EINVAL;
++
++	down_write(&memory_tier_sem);
++	tier = to_memory_tier(dev);
++	if (tier)
++		tier->interleave_weight[from_node] = weight;
++	else
++		ret = -ENODEV;
++	up_write(&memory_tier_sem);
++
++	return size;
++}
++static DEVICE_ATTR_RW(interleave_weight);
++
+ static struct attribute *memtier_dev_attrs[] = {
+ 	&dev_attr_nodelist.attr,
++	&dev_attr_interleave_weight.attr,
+ 	NULL
+ };
  
- 	adistance = round_down(adistance, memtier_adistance_chunk_size);
- 	/*
-@@ -230,12 +231,12 @@ static struct memory_tier *__node_get_memory_tier(int node)
- 	if (!pgdat)
- 		return NULL;
- 	/*
--	 * Since we hold memory_tier_lock, we can avoid
-+	 * Since we hold memory_tier_sem, we can avoid
- 	 * RCU read locks when accessing the details. No
- 	 * parallel updates are possible here.
- 	 */
- 	return rcu_dereference_check(pgdat->memtier,
--				     lockdep_is_held(&memory_tier_lock));
-+				     lockdep_is_held(&memory_tier_sem));
+@@ -239,6 +308,72 @@ static struct memory_tier *__node_get_memory_tier(int node)
+ 				     lockdep_is_held(&memory_tier_sem));
  }
  
++unsigned char memtier_get_node_weight(int from_node, int target_node,
++				      nodemask_t *pol_nodes)
++{
++	struct memory_tier *tier;
++	unsigned char tier_weight, node_weight = 1;
++	int tier_nodes;
++	nodemask_t tier_nmask, tier_and_pol;
++
++	/*
++	 * If the lock is already held, revert to a low weight temporarily
++	 * This should revert any interleave behavior to basic interleave
++	 * this only happens if weights are being updated or during init
++	 */
++	if (!down_read_trylock(&memory_tier_sem))
++		return 1;
++
++	tier = __node_get_memory_tier(target_node);
++	if (tier) {
++		tier_nmask = get_memtier_nodemask(tier);
++		nodes_and(tier_and_pol, tier_nmask, *pol_nodes);
++		tier_nodes = nodes_weight(tier_and_pol);
++		tier_weight = tier->interleave_weight[from_node];
++		node_weight = tier_weight / tier_nodes;
++		node_weight += (tier_weight % tier_nodes) ? 1 : 0;
++	}
++	up_read(&memory_tier_sem);
++	return node_weight;
++}
++
++unsigned int memtier_get_total_weight(int from_node, nodemask_t *pol_nodes)
++{
++	unsigned int weight = 0;
++	struct memory_tier *tier;
++	unsigned int min = nodes_weight(*pol_nodes);
++	int node;
++	nodemask_t tier_nmask, tier_and_pol;
++	int tier_nodes;
++	unsigned int tier_weight;
++
++	/*
++	 * If the lock is already held, revert to a low weight temporarily
++	 * This should revert any interleave behavior to basic interleave
++	 * this only happens if weights are being updated or during init
++	 */
++	if (!down_read_trylock(&memory_tier_sem))
++		return nodes_weight(*pol_nodes);
++
++	for_each_node_mask(node, *pol_nodes) {
++		tier = __node_get_memory_tier(node);
++		if (!tier) {
++			weight += 1;
++			continue;
++		}
++		tier_nmask = get_memtier_nodemask(tier);
++		nodes_and(tier_and_pol, tier_nmask, *pol_nodes);
++		tier_nodes = nodes_weight(tier_and_pol);
++		/* divide node weight by number of nodes, take ceil */
++		tier_weight = tier->interleave_weight[from_node];
++		weight += tier_weight / tier_nodes;
++		weight += (tier_weight % tier_nodes) ? 1 : 0;
++	}
++	up_read(&memory_tier_sem);
++
++	return weight >= min ? weight : min;
++}
++
  #ifdef CONFIG_MIGRATION
-@@ -335,7 +336,7 @@ static void disable_all_demotion_targets(void)
- 	for_each_node_state(node, N_MEMORY) {
- 		node_demotion[node].preferred = NODE_MASK_NONE;
- 		/*
--		 * We are holding memory_tier_lock, it is safe
-+		 * We are holding memory_tier_sem, it is safe
- 		 * to access pgda->memtier.
- 		 */
- 		memtier = __node_get_memory_tier(node);
-@@ -364,7 +365,7 @@ static void establish_demotion_targets(void)
- 	int distance, best_distance;
- 	nodemask_t tier_nodes, lower_tier;
- 
--	lockdep_assert_held_once(&memory_tier_lock);
-+	lockdep_assert_held_write(&memory_tier_sem);
- 
- 	if (!node_demotion)
- 		return;
-@@ -479,7 +480,7 @@ static struct memory_tier *set_node_memory_tier(int node)
- 	pg_data_t *pgdat = NODE_DATA(node);
- 
- 
--	lockdep_assert_held_once(&memory_tier_lock);
-+	lockdep_assert_held_write(&memory_tier_sem);
- 
- 	if (!node_state(node, N_MEMORY))
- 		return ERR_PTR(-EINVAL);
-@@ -569,15 +570,15 @@ EXPORT_SYMBOL_GPL(put_memory_type);
- void init_node_memory_type(int node, struct memory_dev_type *memtype)
+ bool node_is_toptier(int node)
  {
- 
--	mutex_lock(&memory_tier_lock);
-+	down_write(&memory_tier_sem);
- 	__init_node_memory_type(node, memtype);
--	mutex_unlock(&memory_tier_lock);
-+	up_write(&memory_tier_sem);
+@@ -490,8 +625,11 @@ static struct memory_tier *set_node_memory_tier(int node)
+ 	memtype = node_memory_types[node].memtype;
+ 	node_set(node, memtype->nodes);
+ 	memtier = find_create_memory_tier(memtype);
+-	if (!IS_ERR(memtier))
++	if (!IS_ERR(memtier)) {
+ 		rcu_assign_pointer(pgdat->memtier, memtier);
++		memset(memtier->interleave_weight, 1,
++		       sizeof(memtier->interleave_weight));
++	}
+ 	return memtier;
  }
- EXPORT_SYMBOL_GPL(init_node_memory_type);
  
- void clear_node_memory_type(int node, struct memory_dev_type *memtype)
- {
--	mutex_lock(&memory_tier_lock);
-+	down_write(&memory_tier_sem);
- 	if (node_memory_types[node].memtype == memtype)
- 		node_memory_types[node].map_count--;
- 	/*
-@@ -588,7 +589,7 @@ void clear_node_memory_type(int node, struct memory_dev_type *memtype)
- 		node_memory_types[node].memtype = NULL;
- 		put_memory_type(memtype);
- 	}
--	mutex_unlock(&memory_tier_lock);
-+	up_write(&memory_tier_sem);
- }
- EXPORT_SYMBOL_GPL(clear_node_memory_type);
- 
-@@ -607,17 +608,17 @@ static int __meminit memtier_hotplug_callback(struct notifier_block *self,
- 
- 	switch (action) {
- 	case MEM_OFFLINE:
--		mutex_lock(&memory_tier_lock);
-+		down_write(&memory_tier_sem);
- 		if (clear_node_memory_tier(arg->status_change_nid))
- 			establish_demotion_targets();
--		mutex_unlock(&memory_tier_lock);
-+		up_write(&memory_tier_sem);
- 		break;
- 	case MEM_ONLINE:
--		mutex_lock(&memory_tier_lock);
-+		down_write(&memory_tier_sem);
- 		memtier = set_node_memory_tier(arg->status_change_nid);
- 		if (!IS_ERR(memtier))
- 			establish_demotion_targets();
--		mutex_unlock(&memory_tier_lock);
-+		up_write(&memory_tier_sem);
- 		break;
- 	}
- 
-@@ -638,7 +639,7 @@ static int __init memory_tier_init(void)
- 				GFP_KERNEL);
- 	WARN_ON(!node_demotion);
- #endif
--	mutex_lock(&memory_tier_lock);
-+	down_write(&memory_tier_sem);
- 	/*
- 	 * For now we can have 4 faster memory tiers with smaller adistance
- 	 * than default DRAM tier.
-@@ -661,7 +662,7 @@ static int __init memory_tier_init(void)
- 			break;
- 	}
- 	establish_demotion_targets();
--	mutex_unlock(&memory_tier_lock);
-+	up_write(&memory_tier_sem);
- 
- 	hotplug_memory_notifier(memtier_hotplug_callback, MEMTIER_HOTPLUG_PRI);
- 	return 0;
 -- 
 2.39.1
 
