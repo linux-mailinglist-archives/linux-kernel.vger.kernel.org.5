@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45FA17BD2BA
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 07:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E7B7BD2BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 07:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345086AbjJIFNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 01:13:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345049AbjJIFNn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1345081AbjJIFNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 9 Oct 2023 01:13:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229477AbjJIFNm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Oct 2023 01:13:42 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E18A4
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 22:13:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F2CE9F
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 22:13:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696828421; x=1728364421;
+  t=1696828420; x=1728364420;
   h=date:from:to:cc:subject:message-id;
-  bh=8ZhoGiH2J4vdCz9JOg4jot3zpEIgoDdpzdPD9cbn4xU=;
-  b=CB7VyGsJeJscQ7ngM44HBkFujWSU/QWaFpTsEZ8P/3ole0MkQnBSTN6Q
-   /GFqFfdu7f9+usyNibWiE/PtgHrfoKnZ5jRmWGUT6stzOBg1E5ULNdqFK
-   tLpjldci2Kd54XUWNK/Sre5KkTOhv94HYFRrV5asnWfXkvVZfGWoD3EPA
-   xwH9GLr4ENA8RhQL/Af2bdTUZegWvgYwTwhc1Kb6/Pns6f5q5COwkwTc3
-   c3cuxqllcyjav0e5UjzA2BRVSs4R8Cp6sVk4RvSL5tRJyrE8O+kTKWVld
-   I6HbMBHJiaxyt+xDfL7INUQrnKwVOg/vPogA1VGc3eiGz8LxFZdWc9OBt
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="386910474"
+  bh=uwRVDEAabDHlBHAdW6rT9web4r5LziGeBKdMynGZUK4=;
+  b=ShLmFt1kWDRz2L3H6eVlFcPD7N+tBdoHQXF9T7+786uZNof6PGUN25c/
+   oCFMBj6hsCxZRxpxnBJ5DRqxWGr6XTgZB2XDnYirHEHLuwkUppgSTQc2f
+   Lmc0msUKHXlZP9PSijJPcsBEn6ESPH1mC8s8EWCNyoZtQN/GrQ4R4pRPo
+   iDHJ36DwbJWCEeX/WfzBuSifTC3UuStdX1oXbXxE6F4dbRzvmjbYU/oBD
+   5eCrat/n+MBFuk/wDp5PgaVYeEV47A+XwxctjB7z6LHU1zC5rUYQ+5yrd
+   Q/SGtaRDwRlaX3CHIoMWSTTlr/0DWr9PtgK/iipxlSKTcWHF6BID6O61X
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="386910476"
 X-IronPort-AV: E=Sophos;i="6.03,209,1694761200"; 
-   d="scan'208";a="386910474"
+   d="scan'208";a="386910476"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
   by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2023 22:13:40 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="729543792"
+X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="729543793"
 X-IronPort-AV: E=Sophos;i="6.03,209,1694761200"; 
-   d="scan'208";a="729543792"
+   d="scan'208";a="729543793"
 Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
   by orsmga006.jf.intel.com with ESMTP; 08 Oct 2023 22:13:38 -0700
 Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qpiaG-000637-1E;
+        id 1qpiaG-00063L-21;
         Mon, 09 Oct 2023 05:13:36 +0000
-Date:   Mon, 09 Oct 2023 13:12:39 +0800
+Date:   Mon, 09 Oct 2023 13:13:02 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:nolibc-rebase.2023.10.08a] BUILD SUCCESS
- ced2d2387b4336697b3f7b99a93e109b27c0705e
-Message-ID: <202310091336.TrO22icM-lkp@intel.com>
+Subject: [paulmck-rcu:nolibc-merge.2023.10.08a] BUILD SUCCESS
+ 553e6deddc3d191508db2526f3644dafb296096c
+Message-ID: <202310091359.xUJ6DE2T-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -60,12 +60,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git nolibc-rebase.2023.10.08a
-branch HEAD: ced2d2387b4336697b3f7b99a93e109b27c0705e  tools/nolibc: automatically detect necessity to use pselect6
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git nolibc-merge.2023.10.08a
+branch HEAD: 553e6deddc3d191508db2526f3644dafb296096c  Merge branches 'nolibc-fixes.2023.10.08a' and 'nolibc-next.2023.10.05a' into HEAD
 
 elapsed time: 727m
 
-configs tested: 132
+configs tested: 139
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -83,7 +83,6 @@ arc                   randconfig-001-20231009   gcc
 arm                              allmodconfig   gcc  
 arm                               allnoconfig   gcc  
 arm                              allyesconfig   gcc  
-arm                         assabet_defconfig   gcc  
 arm                                 defconfig   gcc  
 arm                   randconfig-001-20231009   gcc  
 arm64                            allmodconfig   gcc  
@@ -131,9 +130,10 @@ microblaze                        allnoconfig   gcc
 microblaze                       allyesconfig   gcc  
 microblaze                          defconfig   gcc  
 mips                             allmodconfig   gcc  
+mips                              allnoconfig   clang
 mips                              allnoconfig   gcc  
 mips                             allyesconfig   gcc  
-mips                       rbtx49xx_defconfig   clang
+mips                           ci20_defconfig   gcc  
 nios2                            allmodconfig   gcc  
 nios2                             allnoconfig   gcc  
 nios2                            allyesconfig   gcc  
@@ -142,8 +142,6 @@ openrisc                         allmodconfig   gcc
 openrisc                          allnoconfig   gcc  
 openrisc                         allyesconfig   gcc  
 openrisc                            defconfig   gcc  
-openrisc                  or1klitex_defconfig   gcc  
-openrisc                 simple_smp_defconfig   gcc  
 parisc                           allmodconfig   gcc  
 parisc                            allnoconfig   gcc  
 parisc                           allyesconfig   gcc  
@@ -152,10 +150,13 @@ parisc64                            defconfig   gcc
 powerpc                          allmodconfig   gcc  
 powerpc                           allnoconfig   gcc  
 powerpc                          allyesconfig   gcc  
+powerpc                     ep8248e_defconfig   gcc  
+powerpc64                        alldefconfig   gcc  
 riscv                            allmodconfig   gcc  
 riscv                             allnoconfig   gcc  
 riscv                            allyesconfig   gcc  
 riscv                               defconfig   gcc  
+riscv             nommu_k210_sdcard_defconfig   gcc  
 riscv                 randconfig-001-20231009   gcc  
 riscv                          rv32_defconfig   gcc  
 s390                             allmodconfig   gcc  
@@ -167,6 +168,7 @@ sh                               allmodconfig   gcc
 sh                                allnoconfig   gcc  
 sh                               allyesconfig   gcc  
 sh                                  defconfig   gcc  
+sh                           se7751_defconfig   gcc  
 sparc                            allmodconfig   gcc  
 sparc                             allnoconfig   gcc  
 sparc                            allyesconfig   gcc  
@@ -202,6 +204,12 @@ x86_64                randconfig-013-20231009   gcc
 x86_64                randconfig-014-20231009   gcc  
 x86_64                randconfig-015-20231009   gcc  
 x86_64                randconfig-016-20231009   gcc  
+x86_64                randconfig-071-20231009   gcc  
+x86_64                randconfig-072-20231009   gcc  
+x86_64                randconfig-073-20231009   gcc  
+x86_64                randconfig-074-20231009   gcc  
+x86_64                randconfig-075-20231009   gcc  
+x86_64                randconfig-076-20231009   gcc  
 x86_64                          rhel-8.3-rust   clang
 x86_64                               rhel-8.3   gcc  
 
