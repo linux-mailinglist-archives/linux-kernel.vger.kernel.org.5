@@ -2,117 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1A97BE085
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C810C7BE095
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377316AbjJINlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 09:41:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55612 "EHLO
+        id S1377368AbjJINln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 09:41:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377310AbjJINk7 (ORCPT
+        with ESMTP id S1377331AbjJINlj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 09:40:59 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 159A699
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 06:40:57 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-7a24c86aae3so57698839f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 06:40:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1696858856; x=1697463656; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SVNhOHjJzMqFCSf0hmUndpe+TpUprKUj40Dx+vmyZN8=;
-        b=wGYoje4Ji3bjbae59rWy1Ar6xkM1EkMC41bmX7oxT3lxXLq9YCe49ZVxj8TMmkrKW/
-         2PTCjsGXRXXcvkiz31zgV9bOyBMp6YN1hX7FuYMVzpVdt6ClolkWuEO4n/jgXPE2GKSi
-         M0P0/gzjyOUSUgbZG1K7Xqm5VWVOx7943fN2CqW8hc6NDGBTJuAnsKmsoK5M8Gu+jIXB
-         /17iJ5ZB6zLcCxn0cmaFHGIhCbDwTXTbeAAzsS66vvdQlDfvqnyYVB27zUTAnWiQ1iNN
-         9XyWpiUDUB4GNiECMW5bNXbeII435HSlehVtkAfLAyB3KzZJBfY6xlYPn8zGpledCWB/
-         cFtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696858856; x=1697463656;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SVNhOHjJzMqFCSf0hmUndpe+TpUprKUj40Dx+vmyZN8=;
-        b=H2Rfu3NGpk6Vo7yNnxM1yIuL0n/BUZ1ekO7xy0akO4yDPobJ+21l+L5EdYyMzp/rK2
-         Zv0Vb/a62AAE3Lug7Els0FaO+Buy9MyxzXpuRJ6O7jA9CBd9XfRpUd3aqCYw/tDcSks/
-         g2+t0+aZt8LNIBemI/FeZniQw67p+t9eyt3vtGy4lQwCfPTT1ugsZZfPV6Ueex+gSBiq
-         NdXNLOWHuR3r/Zau7z/XF5gMcMwKmE2YPoqXEejU5ipo+qcuVwimEM0Ybr3FWw6KJ/3J
-         phdkUj6TrGbJjRknCzzlqEy/Bs615N0D7pxFHrN77Ey38tSlH6l3BZKMB8dLtfsi7a7P
-         9WBA==
-X-Gm-Message-State: AOJu0YxrRg0a74p91xyT9NRL+4fFpAHbxm6THzAcwgisfC4x3bDXFEPw
-        E1iZnQ/izX/KSFZqevJbFPsnjw==
-X-Google-Smtp-Source: AGHT+IHIF8ihyfGeM12TK9GxoqQSUooPYEzTkojBBNrrrXPmAwxMXnP76Y+jbfND0qLTdvRNKjRovA==
-X-Received: by 2002:a05:6602:3a11:b0:79f:922b:3809 with SMTP id by17-20020a0566023a1100b0079f922b3809mr16439197iob.1.1696858856343;
-        Mon, 09 Oct 2023 06:40:56 -0700 (PDT)
-Received: from [192.168.1.94] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id c21-20020a056602335500b007870289f4fdsm2361947ioz.51.2023.10.09.06.40.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 06:40:55 -0700 (PDT)
-Message-ID: <23109a06-0f1e-4baf-973b-d0a3d208ea65@kernel.dk>
-Date:   Mon, 9 Oct 2023 07:40:54 -0600
+        Mon, 9 Oct 2023 09:41:39 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E01991;
+        Mon,  9 Oct 2023 06:41:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1696858898; x=1728394898;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=XSmJW9ClZp5/7XxIC/DRM/ldi63Fk1j71dzAvXhfj5U=;
+  b=PSLHL0ix6zWhY02JOnQDoj+/nibzH1qUP3Lkpc8VljhIpfj8szslO+Bj
+   bb7ncBYe6tsWqkYeC80R71ksxi01PSTX6imd3OcDAPH636a0Fho4Shb6g
+   4TRP+VLTFP7FQ/iDV2L9RVYjzEl6xzLy4QX7yPrZZCowceZ5uuiO+WTB9
+   MgMOc/kMYLWRy0WYckFimYtERtpb340t3xgbGANesVfXyxLlkRpdSdQ0q
+   M+ZYO3YfaEn+68diSA1s4jmIuE9pMhRq1voEGGNNA0N/JfmR6HMJd/pTs
+   VR0v1cme8+f2cAMaXEDPHK5kc8pJWRYptTwAKCkCd5tvY8QxOXoX/3Gu+
+   g==;
+X-CSE-ConnectionGUID: l0OiCB+BRwW3jj2zmPqK/Q==
+X-CSE-MsgGUID: 0yKD0BfSTYqfk0rzFgtEeQ==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
+   d="asc'?scan'208";a="176447002"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Oct 2023 06:41:36 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 9 Oct 2023 06:41:36 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Mon, 9 Oct 2023 06:41:33 -0700
+Date:   Mon, 9 Oct 2023 14:41:12 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Minda Chen <minda.chen@starfivetech.com>
+CC:     Daire McNamara <daire.mcnamara@microchip.com>,
+        Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Philipp Zabel" <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Kevin Xie <kevin.xie@starfivetech.com>
+Subject: Re: [PATCH v7 10/19] PCI: microchip: Add num_events field to struct
+ plda_pcie_rp
+Message-ID: <20231009-headrest-service-98a59cb982bb@wendy>
+References: <20230927100802.46620-1-minda.chen@starfivetech.com>
+ <20230927100802.46620-11-minda.chen@starfivetech.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [EXTERNAL] Re: audit: io_uring openat triggers audit reference
- count underflow in worker thread
-Content-Language: en-US
-To:     Dan Clash <Dan.Clash@microsoft.com>,
-        Paul Moore <paul@paul-moore.com>
-Cc:     "audit@vger.kernel.org" <audit@vger.kernel.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "brauner@kernel.org" <brauner@kernel.org>
-References: <MW2PR2101MB1033FFF044A258F84AEAA584F1C9A@MW2PR2101MB1033.namprd21.prod.outlook.com>
- <ab758860-e51e-409c-8353-6205fbe515dc@kernel.dk>
- <e0307260-c438-41d9-97ec-563e9932a60e@kernel.dk>
- <CAHC9VhQ0z4wuH7R=KRcUTyZuRs7adYTiH5JjohJSz4d2-Jd9EQ@mail.gmail.com>
- <MW2PR2101MB1033E52DD9307F9EF15F1E85F1CEA@MW2PR2101MB1033.namprd21.prod.outlook.com>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <MW2PR2101MB1033E52DD9307F9EF15F1E85F1CEA@MW2PR2101MB1033.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="sEI75rBRrFQBXn/N"
+Content-Disposition: inline
+In-Reply-To: <20230927100802.46620-11-minda.chen@starfivetech.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/23 8:38 PM, Dan Clash wrote:
-> I retested with the following change as a sanity check:
-> 
-> -       BUG_ON(name->refcnt <= 0);
-> +       BUG_ON(atomic_read(&name->refcnt) <= 0);
-> 
-> checkpatch.pl suggests using WARN_ON_ONCE rather than BUG.
-> 
-> devvm ~ $ ~/linux/scripts/checkpatch.pl --patch ~/io_uring_audit_hang_atomic.patch 
-> WARNING: Do not crash the kernel unless it is absolutely unavoidable
->   --use WARN_ON_ONCE() plus recovery code (if feasible) instead of BUG() or variants
-> #28: FILE: fs/namei.c:262:
-> +       BUG_ON(atomic_read(&name->refcnt) <= 0);
-> ...
-> 
-> refcount_t uses WARN_ON_ONCE.
-> 
-> I can think of three choices:
-> 
-> 1. Use atomic_t and remove the BUG line.
-> 2. Use refcount_t and remove the BUG line. 
-> 3. Use atomic_t and partially implement the warn behavior of refcount_t.
-> 
-> Choice 1 and 2 seem better than choice 3.
+--sEI75rBRrFQBXn/N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'd probably just make it:
+On Wed, Sep 27, 2023 at 06:07:53PM +0800, Minda Chen wrote:
+> Avoid using NUM_EVENTS macros in common codes.
 
-if (WARN_ON_ONCE(!atomic_read(name->refcnt)))
-	return;
+This isn't common code though, this code is in the Microchip driver.
+It may become common code later, but for now the commit message is
+inaccurate. Otherwise, the change itself seems okay to me, so with an
+accurate commit message
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
-to make it a straightforward conversion.
+Thanks,
+Conor.
 
--- 
-Jens Axboe
+>=20
+> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+> ---
+>  drivers/pci/controller/plda/pcie-microchip-host.c | 7 ++++---
+>  drivers/pci/controller/plda/pcie-plda.h           | 1 +
+>  2 files changed, 5 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/=
+pci/controller/plda/pcie-microchip-host.c
+> index 81aac2d72a2f..d9dd63084e2b 100644
+> --- a/drivers/pci/controller/plda/pcie-microchip-host.c
+> +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
+> @@ -648,7 +648,7 @@ static void plda_handle_event(struct irq_desc *desc)
+> =20
+>  	events =3D mc_get_events(port);
+> =20
+> -	for_each_set_bit(bit, &events, NUM_EVENTS)
+> +	for_each_set_bit(bit, &events, port->num_events)
+>  		generic_handle_domain_irq(port->event_domain, bit);
+> =20
+>  	chained_irq_exit(chip, desc);
+> @@ -811,7 +811,7 @@ static int plda_pcie_init_irq_domains(struct plda_pci=
+e_rp *port)
+>  		return -EINVAL;
+>  	}
+> =20
+> -	port->event_domain =3D irq_domain_add_linear(pcie_intc_node, NUM_EVENTS,
+> +	port->event_domain =3D irq_domain_add_linear(pcie_intc_node, port->num_=
+events,
+>  						   &mc_event_domain_ops, port);
+>  	if (!port->event_domain) {
+>  		dev_err(dev, "failed to get event domain\n");
+> @@ -914,7 +914,7 @@ static int plda_init_interrupts(struct platform_devic=
+e *pdev, struct plda_pcie_r
+>  	if (irq < 0)
+>  		return -ENODEV;
+> =20
+> -	for (i =3D 0; i < NUM_EVENTS; i++) {
+> +	for (i =3D 0; i < port->num_events; i++) {
+>  		event_irq =3D irq_create_mapping(port->event_domain, i);
+>  		if (!event_irq) {
+>  			dev_err(dev, "failed to map hwirq %d\n", i);
+> @@ -1006,6 +1006,7 @@ static int mc_host_probe(struct platform_device *pd=
+ev)
+> =20
+>  	bridge_base_addr =3D port->axi_base_addr + MC_PCIE_BRIDGE_ADDR;
+>  	plda->bridge_addr =3D bridge_base_addr;
+> +	plda->num_events =3D NUM_EVENTS;
+> =20
+>  	/* Allow enabling MSI by disabling MSI-X */
+>  	val =3D readl(bridge_base_addr + PCIE_PCI_IRQ_DW0);
+> diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/contro=
+ller/plda/pcie-plda.h
+> index 32a913d4101f..5b09ffed623c 100644
+> --- a/drivers/pci/controller/plda/pcie-plda.h
+> +++ b/drivers/pci/controller/plda/pcie-plda.h
+> @@ -150,6 +150,7 @@ struct plda_pcie_rp {
+>  	raw_spinlock_t lock;
+>  	struct plda_msi msi;
+>  	void __iomem *bridge_addr;
+> +	int num_events;
+>  };
+> =20
+>  irqreturn_t plda_event_handler(int irq, void *dev_id);
+> --=20
+> 2.17.1
+>=20
 
+--sEI75rBRrFQBXn/N
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSQC+AAKCRB4tDGHoIJi
+0gWCAP9MfVaT63SoQZwNi1fdkEQbfvmc6Ncemk2TYXraL5KyDAEAo8e60IqflnrY
+IKLu5sOyiDtLkZa1h8z3iPSfgyBdDgM=
+=ejRb
+-----END PGP SIGNATURE-----
+
+--sEI75rBRrFQBXn/N--
