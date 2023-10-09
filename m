@@ -2,114 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F04A37BD517
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 10:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF9477BD51B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 10:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234422AbjJIIZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 04:25:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35816 "EHLO
+        id S234415AbjJIIZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 04:25:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234406AbjJIIZI (ORCPT
+        with ESMTP id S234375AbjJIIZn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 04:25:08 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE642AC;
-        Mon,  9 Oct 2023 01:25:06 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3998Os5B113187;
-        Mon, 9 Oct 2023 03:24:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1696839894;
-        bh=Tj7Gy6Xo6sZ11WWNP0dGT0Go1/OTwecYySniex9/ka0=;
-        h=From:To:CC:Subject:Date;
-        b=b9plz3cz3WsGh9Pl1ybaIf4nCkAm1CYMqxyZAy6uGKLiyGCK5D4h8Tvr9SmJhNGfV
-         e9ySf0SfJAdU5hZMP2M13qPvsjTMCWMz3sL9uvVjwA+KPiZhyX8uHBgwsM9VdLr/f4
-         aNyybf3hleshU8qN5qy5lZn2+6OQMDoILB+Y912Q=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3998Ossx034359
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 9 Oct 2023 03:24:54 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 9
- Oct 2023 03:24:54 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 9 Oct 2023 03:24:54 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3998Orre106452;
-        Mon, 9 Oct 2023 03:24:53 -0500
-From:   Vaishnav Achath <vaishnav.a@ti.com>
-To:     <vigneshr@ti.com>, <nm@ti.com>, <kristo@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <afd@ti.com>
-CC:     <devicetree@vger.kernel.org>,
+        Mon, 9 Oct 2023 04:25:43 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DF1AA6;
+        Mon,  9 Oct 2023 01:25:41 -0700 (PDT)
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3997fCIn001364;
+        Mon, 9 Oct 2023 10:24:54 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=selector1; bh=YAiMtH1
+        WN1ZSofJZ2d2JMLIB05s+WCXSQFpdn3fuvVU=; b=HzWTIyYjSLBMvi4XTl2KnnL
+        SmhhoBF3o9/3b+si7Ya8bSxPUjQkSutp57DRKO/OWwTSgSF87GFB9ZHwmTu6i44D
+        YPS9EUB8Ee6MJDRhPPGFNWoOs74MZHGngGbhFophPS3zh6TQuIR/mmIpevlFKglf
+        5LBP4+eb09nqSVGqhzyzJi9lAMpmyqiCAgmeK3MkS04JMPAP0mP1SNe0s90518XL
+        cmqZxiT+Y5dAFT/RZHtYH1ampsTebk11tteLKNu0RgJdHIDiQdfbRMJL+bUm5Ozm
+        +JoY5JIP3d1+30fv0eb5bZPblDMf/o3bpHPDuA60JbnB0A7WZGu+oZNNNnPRqIg=
+        =
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3tkhg5v22x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 09 Oct 2023 10:24:54 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A60CC10006B;
+        Mon,  9 Oct 2023 10:24:51 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9CE582194DE;
+        Mon,  9 Oct 2023 10:24:51 +0200 (CEST)
+Received: from localhost (10.201.20.208) by SHFDAG1NODE3.st.com (10.75.129.71)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 9 Oct
+ 2023 10:24:51 +0200
+From:   Amelie Delaunay <amelie.delaunay@foss.st.com>
+To:     Vinod Koul <vkoul@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        M'boumba Cedric Madianga <cedric.madianga@gmail.com>,
+        Pierre-Yves MORDRET <pierre-yves.mordret@st.com>
+CC:     Alain Volmat <alain.volmat@foss.st.com>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>,
+        <stable@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
-        <u-kumar1@ti.com>, <vaishnav.a@ti.com>
-Subject: [PATCH v4 0/2] arm64: dts: ti: k3-j7200: Fixes for various dtbs_checks warnings
-Date:   Mon, 9 Oct 2023 13:54:50 +0530
-Message-ID: <20231009082452.30684-1-vaishnav.a@ti.com>
-X-Mailer: git-send-email 2.17.1
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] dmaengine: stm32-mdma: correct desc prep when channel running
+Date:   Mon, 9 Oct 2023 10:24:50 +0200
+Message-ID: <20231009082450.452877-1-amelie.delaunay@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.201.20.208]
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE3.st.com
+ (10.75.129.71)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-09_07,2023-10-06_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Alain Volmat <alain.volmat@foss.st.com>
 
-Few fixups for j7200 dtbs_check warnings.
+In case of the prep descriptor while the channel is already running, the
+CCR register value stored into the channel could already have its EN bit
+set.  This would lead to a bad transfer since, at start transfer time,
+enabling the channel while other registers aren't yet properly set.
+To avoid this, ensure to mask the CCR_EN bit when storing the ccr value
+into the mdma channel structure.
 
-This is V4 for the following series rebased and tested with 6.6-rc5,
+Fixes: a4ffb13c8946 ("dmaengine: Add STM32 MDMA driver")
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Cc: stable@vger.kernel.org
+---
+ drivers/dma/stm32-mdma.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-V3 : https://lore.kernel.org/all/20230513101343.785-1-vaishnav.a@ti.com
-V2 : https://lore.kernel.org/all/20230505115858.7391-1-vaishnav.a@ti.com/
-V1 : https://lore.kernel.org/all/20230424173623.477577-1-nm@ti.com/
-
-Bootlog with basic hyperflash testing (6.6.0-rc5-next-20231009):
-https://gist.github.com/vaishnavachath/f7265e932725fd992dbc4e48b993e9c0
-
-Patch 2/2 depends on the following patch under review which enables reg-mux
-to be used when parent node is not syscon :
-https://lore.kernel.org/all/20230911151030.71100-1-afd@ti.com/
-
-Changelog:
-
-V3->V4:
-  * Rebase and tested with 6.6-rc5
-
-V2->V3:
-  * Drop pinctrl fix patch as the fix [2]  is already merged to next.
-  * Keep register regions unchanged as it is correct according to memory
-  map, update commit message.
-
-V1->V2:
- * Address feedback as recommended in [3].
- * Address feedback from Udit to limit the FSS register region size as
- per TRM.
- * Use reg-mux changes in [4] to simplify the hbmc-mux modelling   
-
-[1] https://lore.kernel.org/all/76da0b98-3274-b047-db11-ecabc117ae11@ti.com/
-[2] https://lore.kernel.org/all/20230510091850.28881-1-tony@atomide.com/
-[3] https://lore.kernel.org/all/20230503115130.c7m4a7crub7kmfjw@gluten/
-[4] https://lore.kernel.org/all/20230911151030.71100-1-afd@ti.com/
-
-Nishanth Menon (2):
-  arm64: dts: ti: k3-j7200-mcu-wakeup: Switch mcu_syscon to
-    ti,j721e-system-controller
-  arm64: dts: ti: k3-j7200-mcu-wakeup: Update fss node and hbmc_mux
-
- arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
+diff --git a/drivers/dma/stm32-mdma.c b/drivers/dma/stm32-mdma.c
+index bae08b3f55c7..f414efdbd809 100644
+--- a/drivers/dma/stm32-mdma.c
++++ b/drivers/dma/stm32-mdma.c
+@@ -489,7 +489,7 @@ static int stm32_mdma_set_xfer_param(struct stm32_mdma_chan *chan,
+ 	src_maxburst = chan->dma_config.src_maxburst;
+ 	dst_maxburst = chan->dma_config.dst_maxburst;
+ 
+-	ccr = stm32_mdma_read(dmadev, STM32_MDMA_CCR(chan->id));
++	ccr = stm32_mdma_read(dmadev, STM32_MDMA_CCR(chan->id)) & ~STM32_MDMA_CCR_EN;
+ 	ctcr = stm32_mdma_read(dmadev, STM32_MDMA_CTCR(chan->id));
+ 	ctbr = stm32_mdma_read(dmadev, STM32_MDMA_CTBR(chan->id));
+ 
+@@ -965,7 +965,7 @@ stm32_mdma_prep_dma_memcpy(struct dma_chan *c, dma_addr_t dest, dma_addr_t src,
+ 	if (!desc)
+ 		return NULL;
+ 
+-	ccr = stm32_mdma_read(dmadev, STM32_MDMA_CCR(chan->id));
++	ccr = stm32_mdma_read(dmadev, STM32_MDMA_CCR(chan->id)) & ~STM32_MDMA_CCR_EN;
+ 	ctcr = stm32_mdma_read(dmadev, STM32_MDMA_CTCR(chan->id));
+ 	ctbr = stm32_mdma_read(dmadev, STM32_MDMA_CTBR(chan->id));
+ 	cbndtr = stm32_mdma_read(dmadev, STM32_MDMA_CBNDTR(chan->id));
 -- 
-2.17.1
+2.25.1
 
