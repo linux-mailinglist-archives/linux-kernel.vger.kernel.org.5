@@ -2,160 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC7127BD95D
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7FC87BD962
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346195AbjJILQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 07:16:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58676 "EHLO
+        id S1346199AbjJILRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 07:17:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345822AbjJILQy (ORCPT
+        with ESMTP id S1345822AbjJILRf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 07:16:54 -0400
-Received: from out-208.mta1.migadu.com (out-208.mta1.migadu.com [IPv6:2001:41d0:203:375::d0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB2A94
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 04:16:52 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1696850210;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=iXX/1lVwKrWymkXfI3JV+KmeWnDZTSV8t81NoepFl1M=;
-        b=BwdVQ61iisKUdcwp0cDeBS0BaWp7Pr84P53tpMsWcjG+HUU5Q2ey3f2+yPAUS4O0v8Gfhq
-        aKGeOfXjgI6U8TGTA4jtmejSuvMmAiPvO99YXzaxs9UemrP7Yzrzf94lDg5aPzBpQx/CkQ
-        JGCuupGlyLGYtrE77U2KO4zCoWX9kso=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>
-Subject: [PATCH net-next v8] net/core: Introduce netdev_core_stats_inc()
-Date:   Mon,  9 Oct 2023 19:16:33 +0800
-Message-Id: <20231009111633.2319304-1-yajun.deng@linux.dev>
+        Mon, 9 Oct 2023 07:17:35 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E9D8E94;
+        Mon,  9 Oct 2023 04:17:33 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4D6271FB;
+        Mon,  9 Oct 2023 04:18:14 -0700 (PDT)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 75EA43F762;
+        Mon,  9 Oct 2023 04:17:32 -0700 (PDT)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Cristian Marussi <cristian.marussi@arm.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>, Peng Fan <peng.fan@nxp.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH v5 0/2] firmware: arm_scmi: clock: support parents commands
+Date:   Mon,  9 Oct 2023 12:17:29 +0100
+Message-ID: <169685012752.1328773.11061683004057797364.b4-ty@arm.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231004-scmi-clock-v3-v5-0-1b8a1435673e@nxp.com>
+References: <20231004-scmi-clock-v3-v5-0-1b8a1435673e@nxp.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Although there is a kfree_skb_reason() helper function that can be used to
-find the reason why this skb is dropped, but most callers didn't increase
-one of rx_dropped, tx_dropped, rx_nohandler and rx_otherhost_dropped.
+On Wed, 04 Oct 2023 07:42:22 +0800, Peng Fan (OSS) wrote:
+> SCMI v3.2 spec adds parents commands, this patchset is to support them:
+> CLOCK_POSSIBLE_PARENTS_GET
+> CLOCK_PARENT_SET
+> CLOCK_PARENT_GET
+> 
+> Besides firmware api clock driver update, the clk_scmi driver also
+> updated to support set_parent and get_parent ops.
+> 
+> [...]
 
-For the users, people are more concerned about why the dropped in ip
-is increasing.
+Hi Stephen,
 
-Introduce netdev_core_stats_inc() for trace the caller of
-dev_core_stats_*_inc().
+Since you have acked other changes in the same driver and agreed to take it
+via SoC tree, I have applied these changes as well.
 
-Also, add __code to netdev_core_stats_alloc(), as it's called with small
-probability. And add noinline make sure netdev_core_stats_inc was never
-inlined.
+Applied(with minor edits to the subject and the commit messages) to
+sudeep.holla/linux (for-next/scmi/updates), thanks!
 
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-Suggested-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
-v8: use noinline and this_cpu_inc in netdev_core_stats_inc.
-v7: use WRITE_ONCE and READ_ONCE instead of '++'
-v6: merge netdev_core_stats and netdev_core_stats_inc together
-v5: Access the per cpu pointer before reach the relevant offset.
-v4: Introduce netdev_core_stats_inc() instead of export dev_core_stats_*_inc()
-v3: __cold should be added to the netdev_core_stats_alloc().
-v2: use __cold instead of inline in dev_core_stats().
-v1: https://lore.kernel.org/netdev/20230911082016.3694700-1-yajun.deng@linux.dev/
----
- include/linux/netdevice.h | 21 ++++-----------------
- net/core/dev.c            | 21 +++++++++++++++++++--
- 2 files changed, 23 insertions(+), 19 deletions(-)
-
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index e070a4540fba..11d704bfec9b 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -4002,32 +4002,19 @@ static __always_inline bool __is_skb_forwardable(const struct net_device *dev,
- 	return false;
- }
- 
--struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct net_device *dev);
--
--static inline struct net_device_core_stats __percpu *dev_core_stats(struct net_device *dev)
--{
--	/* This READ_ONCE() pairs with the write in netdev_core_stats_alloc() */
--	struct net_device_core_stats __percpu *p = READ_ONCE(dev->core_stats);
--
--	if (likely(p))
--		return p;
--
--	return netdev_core_stats_alloc(dev);
--}
-+void netdev_core_stats_inc(struct net_device *dev, u32 offset);
- 
- #define DEV_CORE_STATS_INC(FIELD)						\
- static inline void dev_core_stats_##FIELD##_inc(struct net_device *dev)		\
- {										\
--	struct net_device_core_stats __percpu *p;				\
--										\
--	p = dev_core_stats(dev);						\
--	if (p)									\
--		this_cpu_inc(p->FIELD);						\
-+	netdev_core_stats_inc(dev,						\
-+			offsetof(struct net_device_core_stats, FIELD));		\
- }
- DEV_CORE_STATS_INC(rx_dropped)
- DEV_CORE_STATS_INC(tx_dropped)
- DEV_CORE_STATS_INC(rx_nohandler)
- DEV_CORE_STATS_INC(rx_otherhost_dropped)
-+#undef DEV_CORE_STATS_INC
- 
- static __always_inline int ____dev_forward_skb(struct net_device *dev,
- 					       struct sk_buff *skb,
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 606a366cc209..02949a929e7f 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -10497,7 +10497,8 @@ void netdev_stats_to_stats64(struct rtnl_link_stats64 *stats64,
- }
- EXPORT_SYMBOL(netdev_stats_to_stats64);
- 
--struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct net_device *dev)
-+static __cold struct net_device_core_stats __percpu *netdev_core_stats_alloc(
-+		struct net_device *dev)
- {
- 	struct net_device_core_stats __percpu *p;
- 
-@@ -10510,7 +10511,23 @@ struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct net_device
- 	/* This READ_ONCE() pairs with the cmpxchg() above */
- 	return READ_ONCE(dev->core_stats);
- }
--EXPORT_SYMBOL(netdev_core_stats_alloc);
-+
-+noinline void netdev_core_stats_inc(struct net_device *dev, u32 offset)
-+{
-+	/* This READ_ONCE() pairs with the write in netdev_core_stats_alloc() */
-+	struct net_device_core_stats __percpu *p = READ_ONCE(dev->core_stats);
-+	unsigned long __percpu *field;
-+
-+	if (unlikely(!p)) {
-+		p = netdev_core_stats_alloc(dev);
-+		if (!p)
-+			return;
-+	}
-+
-+	field = (__force unsigned long __percpu *)((__force void *)p + offset);
-+	this_cpu_inc(*field);
-+}
-+EXPORT_SYMBOL_GPL(netdev_core_stats_inc);
- 
- /**
-  *	dev_get_stats	- get network device statistics
--- 
-2.25.1
+[1/2] firmware: arm_scmi: clock: support clock parents
+      https://git.kernel.org/sudeep.holla/c/77bbfe607b1d
+[2/2] clk: scmi: add set/get_parent support
+      https://git.kernel.org/sudeep.holla/c/65a8a3dd3b95
+--
+Regards,
+Sudeep
 
