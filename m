@@ -2,88 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C65B97BEB7A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 22:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC8F7BEB87
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 22:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378594AbjJIUUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 16:20:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52156 "EHLO
+        id S1378637AbjJIUUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 16:20:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378544AbjJIUUL (ORCPT
+        with ESMTP id S1378544AbjJIUU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 16:20:11 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E74694
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 13:20:09 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a22eb73cb3so88386057b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 13:20:09 -0700 (PDT)
+        Mon, 9 Oct 2023 16:20:28 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFB2CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 13:20:26 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2c28e35752cso62462021fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 13:20:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696882808; x=1697487608; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=X6+GJ5cI4z2TlJw5nJFvkv7FETWY362gjhrvcMB9XFc=;
-        b=LYMPNRYaGtJ0B7jCpzJLOeAOt4N5rEjxApu3zMBe7oeVCCTl5ExTQEGkDjkQ2VquMi
-         5JzYk5VrNtmkSZEbCJr7LuTLXgPgdswazaskUq4r/nb2MwvQlY/7bin9K4mSEOb1nh23
-         aQGNHQR5OCxv8ouCA5FnKE6fg5l2yOVe8wE0MnBeOdtEv7qlv4UWIW+YwoP7fCYOmhM7
-         IcxngCv54vmqWR2K7rpaTfwzdEBwnwv880xHoxJbZg5AP9sNmeXJ1XIbmh7dlza/cfMf
-         uAMOiB3KSGkQK0ZsaI/eD8AuVIIoMseYxZAZliaW6DQNB32qGbBHGpSYxiTQAKR6ts1H
-         BB/w==
+        d=ionos.com; s=google; t=1696882824; x=1697487624; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y+Vz1bOKclq9QVOuzcbH1aPgn89tmrsRZHycaiZatEw=;
+        b=ZXApSf+xs3DWZi9glvHF1ftND6nJHcuKyZNMhSXqRfpzyjpe56h3jtGPbf0ReTYeIR
+         RoqIRMnNlo5c4iYjSTI3QLMoSrSL3Rs4N1wpJYkT7wNvk55NM8Kj09YWfoihk3uwDV0N
+         j3DLQGPgNtVUZ1Xe3iQddIydsZZGVwfsNomkvREBIGMDV5eJ9Swc92sSWIp/4FFJLqSW
+         cxpBEqBDyMXZseJ7uDuknWrKTq/l6vorjNDBaNeMsX/00U5lU9RwVZ4B+UfgR9Phi2Nn
+         Kmrm7CQdyUv/4Oz1E2zyTUl+ziSyCKtPfjZ+tJ8buhGvk4n7GbHom+dqb86i8kTuCv48
+         ctcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696882808; x=1697487608;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=X6+GJ5cI4z2TlJw5nJFvkv7FETWY362gjhrvcMB9XFc=;
-        b=E7CpW7ykcZzmXXwbd8+2w2ueW5nHjblkAAm8BnW3A3xBtiBEyhOdT3OGkMp6uDKWuE
-         um/RhN7aWpauxnDYCwhuKLERosy7BZPcc3WzoYPvPDhtUNRXaPHlLgI+qNd936EJh+iH
-         PfWR7c8kPRP4Kpf1V2vNLitgOnDVuROQNNj/EMZOKmM0CgORVS0QMh6gMqG19ea8txHe
-         Yy9N5IpxuDIzU35xCdbu70KuehMudzAGDs+eV+b8rUUV8RUQZ026kdVEHlWlQctSNooj
-         kSBfPc2cEA5rvsecaxJ7I5/ZuRcZ490EaIbm81AW58X4FZYehLLvsi09mwqfAXB+Q+DT
-         FgqA==
-X-Gm-Message-State: AOJu0YyIZitdcvcI7tCYE37ELz6qRuAPQ2YijN1LqIoXZSngbjML2BqH
-        iNMwAHAU5kh8v8O/ys+/WYeyq3dC/c8=
-X-Google-Smtp-Source: AGHT+IFY1JX42tQvUiQbHjxHOd20j5m7plZ8L4JheDy574ZvKTNtyQEZK75VDZPRx5P3o6rzL4rbdqXGQyM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a5b:b50:0:b0:d80:904d:c211 with SMTP id
- b16-20020a5b0b50000000b00d80904dc211mr241176ybr.7.1696882808446; Mon, 09 Oct
- 2023 13:20:08 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 13:20:06 -0700
-In-Reply-To: <20231009200608.GJ800259@ZenIV>
-Mime-Version: 1.0
-References: <20230928180651.1525674-1-pbonzini@redhat.com> <169595365500.1386813.6579237770749312873.b4-ty@google.com>
- <20231009022248.GD800259@ZenIV> <ZSQO4fHaAxDkbGyz@google.com> <20231009200608.GJ800259@ZenIV>
-Message-ID: <ZSRgdgQe3fseEQpf@google.com>
-Subject: Re: [PATCH gmem FIXUP] kvm: guestmem: do not use a file system
-From:   Sean Christopherson <seanjc@google.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1696882824; x=1697487624;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y+Vz1bOKclq9QVOuzcbH1aPgn89tmrsRZHycaiZatEw=;
+        b=l+1V411ERp4FagvCOZaWd6rusipikMNX++Qbt6Ik+YPFCOJ8pQwM1uVCjSwCuws+CF
+         1D4sHb/VSmLSN6p59UX5MgEMlDBTGT4Pi3vQWAuZ+Bz2q0tFj7/MxWckY2kYaYjGgG9G
+         uLbOX7J8HjNUUsPBf7uiAyQyAgjU4RqF17RX0W3RV7f7GjceFhtm6wYl20nGkDIQQjqr
+         UFEnRpfKk3RICGBtmy/i8LsqB5EwZfhtP843E2zGeIfSuBhtObKIDPjBT+g8HMSkcu1T
+         J2ddyrvEGFGWwrWLg5vUoVPYIOQFUcuuCJ5qXXx+FhS4XavwIqsVNsIsM1D/NDgSEpFZ
+         K23w==
+X-Gm-Message-State: AOJu0YwOEo0dQbJewXLGzsKMq4ReRMhIRxClIhG5I2cO9jbb5rWpBna1
+        Emk/k0/HSyRa0KWwlImxHZvwySatfBw5dQKjnvRVNw==
+X-Google-Smtp-Source: AGHT+IEX6TNoPqier59OSFRvkXjcha7x9rPtvBMuDMX6o39QQshLcsk0zSX1nZ378MTMsNUvnOr8e/pohr3AIc4q14M=
+X-Received: by 2002:a05:651c:120e:b0:2bf:fbe7:67dd with SMTP id
+ i14-20020a05651c120e00b002bffbe767ddmr14845991lja.28.1696882824611; Mon, 09
+ Oct 2023 13:20:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231009165741.746184-1-max.kellermann@ionos.com>
+ <20231009165741.746184-6-max.kellermann@ionos.com> <2023100921-that-jasmine-2240@gregkh>
+In-Reply-To: <2023100921-that-jasmine-2240@gregkh>
+From:   Max Kellermann <max.kellermann@ionos.com>
+Date:   Mon, 9 Oct 2023 22:20:13 +0200
+Message-ID: <CAKPOu+9=WBabTBExH1GQxhXrNH9xWciceavi6QF1nbfn9cXcig@mail.gmail.com>
+Subject: Re: [PATCH 6/7] fs/sysfs/group: make attribute_group pointers const
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Richter <rric@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+        nvdimm@lists.linux.dev, linux-nvme@lists.infradead.org,
+        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-leds@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023, Al Viro wrote:
-> On Mon, Oct 09, 2023 at 07:32:48AM -0700, Sean Christopherson wrote:
-> 
-> > Yeah, we found that out the hard way.  Is using the "secure" variant to get a
-> > per-file inode a sane approach, or is that abuse that's going to bite us too?
-> > 
-> > 	/*
-> > 	 * Use the so called "secure" variant, which creates a unique inode
-> > 	 * instead of reusing a single inode.  Each guest_memfd instance needs
-> > 	 * its own inode to track the size, flags, etc.
-> > 	 */
-> > 	file = anon_inode_getfile_secure(anon_name, &kvm_gmem_fops, gmem,
-> > 					 O_RDWR, NULL);
-> 
-> Umm...  Is there any chance that your call site will ever be in a module?
-> If not, you are probably OK with that variant.
+On Mon, Oct 9, 2023 at 7:26=E2=80=AFPM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> "*const*groups"?   That's a parsing nightmare, really hard for humans to
+> read and understand.  Doesn't checkpatch complain about this?
 
-Yes, this code can be compiled as a module.  I assume there issues with the inode
-outliving the module?
+No, checkpatch does not implement a check/warning for this style (see
+my other email). There's no rule for this in coding-style.rst. Should
+there be one?
