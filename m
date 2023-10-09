@@ -2,217 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3ABA7BD4A4
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 09:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 180737BD4BA
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 09:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345428AbjJIHux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 03:50:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51750 "EHLO
+        id S1345462AbjJIHxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 03:53:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232666AbjJIHuv (ORCPT
+        with ESMTP id S1345456AbjJIHx3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 03:50:51 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8193794
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 00:50:49 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3997oKU9105316;
-        Mon, 9 Oct 2023 02:50:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1696837820;
-        bh=hMhNhiQXIqGgkhXjrKdWywjOqrAnsFm8Fb6SqEbSumo=;
-        h=From:To:CC:Subject:Date;
-        b=V+zpjydLJUEB+8gWr7uWNdNyjZzRIHxJSsvsVC9v4efGhsveFmQUXxtwcXdkPlJRq
-         J8bwQfROhUEb75G3JUhRt0BRLeRlKKITrTahD5XBRj+SRUAfLX6Koi7zzfdlja8yOc
-         /GBvgbdAcVS7DPUB26GdTeq1pnNoh9UgXKckJ8ec=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3997oKqa093936
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 9 Oct 2023 02:50:20 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 9
- Oct 2023 02:50:20 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 9 Oct 2023 02:50:20 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3997oJ5K031125;
-        Mon, 9 Oct 2023 02:50:19 -0500
-From:   Devarsh Thakkar <devarsht@ti.com>
-To:     <jyri.sarha@iki.fi>, <tomi.valkeinen@ideasonboard.com>,
-        <airlied@gmail.com>, <daniel@ffwll.ch>,
-        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-        <tzimmermann@suse.de>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <praneeth@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
-        <a-bhatia1@ti.com>, <j-luthra@ti.com>, <r-ravikumar@ti.com>,
-        <j-choudhary@ti.com>, <devarsht@ti.com>
-Subject: [PATCH] drm/tidss: Power up attached PM domains on probe
-Date:   Mon, 9 Oct 2023 13:20:18 +0530
-Message-ID: <20231009075018.2836020-1-devarsht@ti.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 9 Oct 2023 03:53:29 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80422AB;
+        Mon,  9 Oct 2023 00:53:25 -0700 (PDT)
+Date:   Mon, 09 Oct 2023 07:53:22 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1696838003;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+dwhAdu+dK6gdMFGQDF0djpFFjXv4g52ZJN2XbmiTL0=;
+        b=sD12rEYhuqhyCQE6K1Ze0W6+TA5nm3zqajxPIPfGWCIiMr8eG0F3kOFLD2zIjrdDXB6pmU
+        VG1bvYz8W5cEKOdhW2t7omJJnJzRImIx1xODknyGGbmF+pWHo/MVKhvfvH8f8ZBdZetXwB
+        z+ZR37LhZb1KhFVCbvBlZD5lS2QjvSRMSLftzI8LxSLgN1AewSuF33TuXGu9AYGlyuJUMX
+        h2GPHh9qJuNsUTqyUYjDOToiVQ7DEhz25Tn7jKaD5V+uzU+UFNjri+ZNTCW1LczdQOD+yO
+        NRW4HdmXXgEYQmBSJsxIkmFpnrwp+vvOzJD+dtzr8kguvuNrgbuv40MVUeeIpg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1696838003;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+dwhAdu+dK6gdMFGQDF0djpFFjXv4g52ZJN2XbmiTL0=;
+        b=McCohBNg0bAVP/iFTocI4n/mgV7GIBb5+LwXn3swbcYir0c3JW/tsAtbhzOyOTB4ccfd8o
+        m45QGO9hyqlGuWAQ==
+From:   "tip-bot2 for Benjamin Segall" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/urgent] sched/eevdf: Fix pick_eevdf()
+Cc:     Ben Segall <bsegall@google.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <xm261qego72d.fsf_-_@google.com>
+References: <xm261qego72d.fsf_-_@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <169683800234.3135.15770408392571000845.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some SoC's such as AM62P have dedicated power domains
-for OLDI which need to be powered on separetely along
-with display controller.
+The following commit has been merged into the sched/urgent branch of tip:
 
-So during driver probe, power up all attached PM domains
-enumerated in devicetree node for DSS.
+Commit-ID:     b01db23d5923a35023540edc4f0c5f019e11ac7d
+Gitweb:        https://git.kernel.org/tip/b01db23d5923a35023540edc4f0c5f019e11ac7d
+Author:        Benjamin Segall <bsegall@google.com>
+AuthorDate:    Fri, 29 Sep 2023 17:09:30 -07:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Mon, 09 Oct 2023 09:48:33 +02:00
 
-This also prepares base to add display support for AM62P.
+sched/eevdf: Fix pick_eevdf()
 
-Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
+The old pick_eevdf() could fail to find the actual earliest eligible
+deadline when it descended to the right looking for min_deadline, but
+it turned out that that min_deadline wasn't actually eligible. In that
+case we need to go back and search through any left branches we
+skipped looking for the actual best _eligible_ min_deadline.
+
+This is more expensive, but still O(log n), and at worst should only
+involve descending two branches of the rbtree.
+
+I've run this through a userspace stress test (thank you
+tools/lib/rbtree.c), so hopefully this implementation doesn't miss any
+corner cases.
+
+Fixes: 147f3efaa241 ("sched/fair: Implement an EEVDF-like scheduling policy")
+Signed-off-by: Ben Segall <bsegall@google.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/xm261qego72d.fsf_-_@google.com
 ---
- drivers/gpu/drm/tidss/tidss_drv.c | 76 +++++++++++++++++++++++++++++++
- drivers/gpu/drm/tidss/tidss_drv.h |  5 ++
- 2 files changed, 81 insertions(+)
+ kernel/sched/fair.c | 72 +++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 58 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/gpu/drm/tidss/tidss_drv.c b/drivers/gpu/drm/tidss/tidss_drv.c
-index 4d063eb9cd0b..a703a27d17bf 100644
---- a/drivers/gpu/drm/tidss/tidss_drv.c
-+++ b/drivers/gpu/drm/tidss/tidss_drv.c
-@@ -8,6 +8,7 @@
- #include <linux/of.h>
- #include <linux/module.h>
- #include <linux/pm_runtime.h>
-+#include <linux/pm_domain.h>
- 
- #include <drm/drm_atomic.h>
- #include <drm/drm_atomic_helper.h>
-@@ -114,6 +115,72 @@ static const struct drm_driver tidss_driver = {
- 	.minor			= 0,
- };
- 
-+static int tidss_detach_pm_domains(struct tidss_device *tidss)
-+{
-+	int i;
-+
-+	if (tidss->num_domains <= 1)
-+		return 0;
-+
-+	for (i = 0; i < tidss->num_domains; i++) {
-+		if (tidss->pd_link[i] && !IS_ERR(tidss->pd_link[i]))
-+			device_link_del(tidss->pd_link[i]);
-+		if (tidss->pd_dev[i] && !IS_ERR(tidss->pd_dev[i]))
-+			dev_pm_domain_detach(tidss->pd_dev[i], true);
-+		tidss->pd_dev[i] = NULL;
-+		tidss->pd_link[i] = NULL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int tidss_attach_pm_domains(struct tidss_device *tidss)
-+{
-+	struct device *dev = tidss->dev;
-+	int i;
-+	int ret;
-+	struct platform_device *pdev = to_platform_device(dev);
-+	struct device_node *np = pdev->dev.of_node;
-+
-+	tidss->num_domains = of_count_phandle_with_args(np, "power-domains",
-+							"#power-domain-cells");
-+	if (tidss->num_domains <= 1) {
-+		dev_dbg(dev, "One or less power domains, no need to do attach domains\n");
-+		return 0;
-+	}
-+
-+	tidss->pd_dev = devm_kmalloc_array(dev, tidss->num_domains,
-+					   sizeof(*tidss->pd_dev), GFP_KERNEL);
-+	if (!tidss->pd_dev)
-+		return -ENOMEM;
-+
-+	tidss->pd_link = devm_kmalloc_array(dev, tidss->num_domains,
-+					    sizeof(*tidss->pd_link), GFP_KERNEL);
-+	if (!tidss->pd_link)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < tidss->num_domains; i++) {
-+		tidss->pd_dev[i] = dev_pm_domain_attach_by_id(dev, i);
-+		if (IS_ERR(tidss->pd_dev[i])) {
-+			ret = PTR_ERR(tidss->pd_dev[i]);
-+			goto fail;
-+		}
-+
-+		tidss->pd_link[i] = device_link_add(dev, tidss->pd_dev[i],
-+						    DL_FLAG_STATELESS |
-+						    DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE);
-+		if (!tidss->pd_link[i]) {
-+			ret = -EINVAL;
-+			goto fail;
-+		}
-+	}
-+
-+	return 0;
-+fail:
-+	tidss_detach_pm_domains(tidss);
-+	return ret;
-+}
-+
- static int tidss_probe(struct platform_device *pdev)
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index a4b904a..061a30a 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -872,14 +872,16 @@ struct sched_entity *__pick_first_entity(struct cfs_rq *cfs_rq)
+  *
+  * Which allows an EDF like search on (sub)trees.
+  */
+-static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
++static struct sched_entity *__pick_eevdf(struct cfs_rq *cfs_rq)
  {
- 	struct device *dev = &pdev->dev;
-@@ -136,6 +203,13 @@ static int tidss_probe(struct platform_device *pdev)
+ 	struct rb_node *node = cfs_rq->tasks_timeline.rb_root.rb_node;
+ 	struct sched_entity *curr = cfs_rq->curr;
+ 	struct sched_entity *best = NULL;
++	struct sched_entity *best_left = NULL;
  
- 	platform_set_drvdata(pdev, tidss);
+ 	if (curr && (!curr->on_rq || !entity_eligible(cfs_rq, curr)))
+ 		curr = NULL;
++	best = curr;
  
-+	/* powering up associated OLDI domains */
-+	ret = tidss_attach_pm_domains(tidss);
-+	if (ret < 0) {
-+		dev_err(dev, "failed to attach power domains %d\n", ret);
-+		return ret;
+ 	/*
+ 	 * Once selected, run a task until it either becomes non-eligible or
+@@ -900,33 +902,75 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
+ 		}
+ 
+ 		/*
+-		 * If this entity has an earlier deadline than the previous
+-		 * best, take this one. If it also has the earliest deadline
+-		 * of its subtree, we're done.
++		 * Now we heap search eligible trees for the best (min_)deadline
+ 		 */
+-		if (!best || deadline_gt(deadline, best, se)) {
++		if (!best || deadline_gt(deadline, best, se))
+ 			best = se;
+-			if (best->deadline == best->min_deadline)
+-				break;
+-		}
+ 
+ 		/*
+-		 * If the earlest deadline in this subtree is in the fully
+-		 * eligible left half of our space, go there.
++		 * Every se in a left branch is eligible, keep track of the
++		 * branch with the best min_deadline
+ 		 */
++		if (node->rb_left) {
++			struct sched_entity *left = __node_2_se(node->rb_left);
++
++			if (!best_left || deadline_gt(min_deadline, best_left, left))
++				best_left = left;
++
++			/*
++			 * min_deadline is in the left branch. rb_left and all
++			 * descendants are eligible, so immediately switch to the second
++			 * loop.
++			 */
++			if (left->min_deadline == se->min_deadline)
++				break;
++		}
++
++		/* min_deadline is at this node, no need to look right */
++		if (se->deadline == se->min_deadline)
++			break;
++
++		/* else min_deadline is in the right branch. */
++		node = node->rb_right;
 +	}
 +
- 	ret = dispc_init(tidss);
- 	if (ret) {
- 		dev_err(dev, "failed to initialize dispc: %d\n", ret);
-@@ -193,6 +267,7 @@ static int tidss_probe(struct platform_device *pdev)
- 	dispc_runtime_suspend(tidss->dispc);
- #endif
- 	pm_runtime_disable(dev);
-+	tidss_detach_pm_domains(tidss);
- 
- 	return ret;
- }
-@@ -220,6 +295,7 @@ static void tidss_remove(struct platform_device *pdev)
- 	/* devm allocated dispc goes away with the dev so mark it NULL */
- 	dispc_remove(tidss);
- 
-+	tidss_detach_pm_domains(tidss);
- 	dev_dbg(dev, "%s done\n", __func__);
- }
- 
-diff --git a/drivers/gpu/drm/tidss/tidss_drv.h b/drivers/gpu/drm/tidss/tidss_drv.h
-index d7f27b0b0315..3c8b37b3aba6 100644
---- a/drivers/gpu/drm/tidss/tidss_drv.h
-+++ b/drivers/gpu/drm/tidss/tidss_drv.h
-@@ -31,6 +31,11 @@ struct tidss_device {
- 
- 	spinlock_t wait_lock;	/* protects the irq masks */
- 	dispc_irq_t irq_mask;	/* enabled irqs in addition to wait_list */
++	/*
++	 * We ran into an eligible node which is itself the best.
++	 * (Or nr_running == 0 and both are NULL)
++	 */
++	if (!best_left || (s64)(best_left->min_deadline - best->deadline) > 0)
++		return best;
 +
-+	int num_domains; /* Handle attached PM domains */
-+	struct device **pd_dev;
-+	struct device_link **pd_link;
++	/*
++	 * Now best_left and all of its children are eligible, and we are just
++	 * looking for deadline == min_deadline
++	 */
++	node = &best_left->run_node;
++	while (node) {
++		struct sched_entity *se = __node_2_se(node);
 +
- };
++		/* min_deadline is the current node */
++		if (se->deadline == se->min_deadline)
++			return se;
++
++		/* min_deadline is in the left branch */
+ 		if (node->rb_left &&
+ 		    __node_2_se(node->rb_left)->min_deadline == se->min_deadline) {
+ 			node = node->rb_left;
+ 			continue;
+ 		}
  
- #define to_tidss(__dev) container_of(__dev, struct tidss_device, ddev)
--- 
-2.34.1
-
++		/* else min_deadline is in the right branch */
+ 		node = node->rb_right;
+ 	}
++	return NULL;
++}
+ 
+-	if (!best || (curr && deadline_gt(deadline, best, curr)))
+-		best = curr;
++static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
++{
++	struct sched_entity *se = __pick_eevdf(cfs_rq);
+ 
+-	if (unlikely(!best)) {
++	if (!se) {
+ 		struct sched_entity *left = __pick_first_entity(cfs_rq);
+ 		if (left) {
+ 			pr_err("EEVDF scheduling fail, picking leftmost\n");
+@@ -934,7 +978,7 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
+ 		}
+ 	}
+ 
+-	return best;
++	return se;
+ }
+ 
+ #ifdef CONFIG_SCHED_DEBUG
