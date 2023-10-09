@@ -2,55 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB937BDE21
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFB8C7BDCFB
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376936AbjJINQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 09:16:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35376 "EHLO
+        id S1376643AbjJINAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 09:00:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376431AbjJINQI (ORCPT
+        with ESMTP id S1376642AbjJINAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 09:16:08 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA139D;
-        Mon,  9 Oct 2023 06:16:04 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09AD7C433C8;
-        Mon,  9 Oct 2023 13:16:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696857363;
-        bh=RdNtMeV1UtAvDONvbVU2rXMiCc1JJH5N58MRnvzvdxI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=t1NUvguRqYLRAIZpW5oMiCyUEh8tQPn9b4ltzTm6b2dDGxVUPYq2aXdHUL200mZG4
-         a3X+gNTgJF6IA+NSm2aqy5cQ60Lcmxj3yLK7h/QgVK/Gfd8+yVqfx7E2yE3V6GeQ4d
-         bN08zlX61Z8gTTNwmK+LoCrNkdbU1QZm+mwUckco=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: [PATCH 6.1 000/162] 6.1.57-rc1 review
-Date:   Mon,  9 Oct 2023 14:59:41 +0200
-Message-ID: <20231009130122.946357448@linuxfoundation.org>
-X-Mailer: git-send-email 2.42.0
+        Mon, 9 Oct 2023 09:00:15 -0400
+X-Greylist: delayed 21923 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 09 Oct 2023 06:00:10 PDT
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 709E38F;
+        Mon,  9 Oct 2023 06:00:10 -0700 (PDT)
+Received: from spock.localnet (unknown [94.142.239.106])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 3B27B15356C3;
+        Mon,  9 Oct 2023 15:00:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1696856403;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jv2ouviQ9JRHif0I/YLnvZflUpDg+74ZEHaRP9yz9pQ=;
+        b=SyC27gtbDH3QDTNFIdvBJtuFRvpF3fh3D0LX8kavoo6AzY2DbprZSgzRAhoaHiwd/fsFuZ
+        K6pZ+u6mhpNuWagg++7qU8tnR2W/PV+iFtZdeKKdqlPHKLBj+EHA8DhGldGz/a8HiPzfWU
+        BzIKKFI0dffSU2nmJEWn0xeN1UTLJuA=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        "Huang, Ray" <Ray.Huang@amd.com>,
+        "Meng, Li (Jassmine)" <Li.Meng@amd.com>
+Cc:     "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Fontenot, Nathan" <Nathan.Fontenot@amd.com>,
+        "Sharma, Deepak" <Deepak.Sharma@amd.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Limonciello, Mario" <Mario.Limonciello@amd.com>,
+        "Huang, Shimmer" <Shimmer.Huang@amd.com>,
+        "Yuan, Perry" <Perry.Yuan@amd.com>,
+        "Du, Xiaojian" <Xiaojian.Du@amd.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@alien8.de>
+Subject: Re: [PATCH V8 0/7] amd-pstate preferred core
+Date:   Mon, 09 Oct 2023 14:59:51 +0200
+Message-ID: <5718037.DvuYhMxLoT@natalenko.name>
+In-Reply-To: <DM4PR12MB63512D20912A9F66561B9FA1F7CEA@DM4PR12MB6351.namprd12.prod.outlook.com>
+References: <20231009024932.2563622-1-li.meng@amd.com>
+ <12301186.O9o76ZdvQC@natalenko.name>
+ <DM4PR12MB63512D20912A9F66561B9FA1F7CEA@DM4PR12MB6351.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.57-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-6.1.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 6.1.57-rc1
-X-KernelTest-Deadline: 2023-10-11T13:01+00:00
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: multipart/signed; boundary="nextPart5979562.lOV4Wx5bFT";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,711 +69,405 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 6.1.57 release.
-There are 162 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+--nextPart5979562.lOV4Wx5bFT
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+Subject: Re: [PATCH V8 0/7] amd-pstate preferred core
+Date: Mon, 09 Oct 2023 14:59:51 +0200
+Message-ID: <5718037.DvuYhMxLoT@natalenko.name>
+MIME-Version: 1.0
+
+Hello.
+
+On pond=C4=9Bl=C3=AD 9. =C5=99=C3=ADjna 2023 9:23:29 CEST Meng, Li (Jassmin=
+e) wrote:
+> [AMD Official Use Only - General]
+>=20
+> Hi Oleksandr:
+>=20
+> > -----Original Message-----
+> > From: Oleksandr Natalenko <oleksandr@natalenko.name>
+> > Sent: Monday, October 9, 2023 2:55 PM
+> > To: Rafael J . Wysocki <rafael.j.wysocki@intel.com>; Huang, Ray
+> > <Ray.Huang@amd.com>; Meng, Li (Jassmine) <Li.Meng@amd.com>
+> > Cc: linux-pm@vger.kernel.org; linux-kernel@vger.kernel.org;
+> > x86@kernel.org; linux-acpi@vger.kernel.org; Shuah Khan
+> > <skhan@linuxfoundation.org>; linux-kselftest@vger.kernel.org; Fontenot,
+> > Nathan <Nathan.Fontenot@amd.com>; Sharma, Deepak
+> > <Deepak.Sharma@amd.com>; Deucher, Alexander
+> > <Alexander.Deucher@amd.com>; Limonciello, Mario
+> > <Mario.Limonciello@amd.com>; Huang, Shimmer
+> > <Shimmer.Huang@amd.com>; Yuan, Perry <Perry.Yuan@amd.com>; Du,
+> > Xiaojian <Xiaojian.Du@amd.com>; Viresh Kumar <viresh.kumar@linaro.org>;
+> > Borislav Petkov <bp@alien8.de>; Meng, Li (Jassmine) <Li.Meng@amd.com>
+> > Subject: Re: [PATCH V8 0/7] amd-pstate preferred core
+> >
+> > Hello.
+> >
+> > On pond=C4=9Bl=C3=AD 9. =C5=99=C3=ADjna 2023 4:49:25 CEST Meng Li wrote:
+> > > Hi all:
+> > >
+> > > The core frequency is subjected to the process variation in semicondu=
+ctors.
+> > > Not all cores are able to reach the maximum frequency respecting the
+> > > infrastructure limits. Consequently, AMD has redefined the concept of
+> > > maximum frequency of a part. This means that a fraction of cores can
+> > > reach maximum frequency. To find the best process scheduling policy
+> > > for a given scenario, OS needs to know the core ordering informed by
+> > > the platform through highest performance capability register of the C=
+PPC
+> > interface.
+> > >
+> > > Earlier implementations of amd-pstate preferred core only support a
+> > > static core ranking and targeted performance. Now it has the ability
+> > > to dynamically change the preferred core based on the workload and
+> > > platform conditions and accounting for thermals and aging.
+> > >
+> > > Amd-pstate driver utilizes the functions and data structures provided
+> > > by the ITMT architecture to enable the scheduler to favor scheduling
+> > > on cores which can be get a higher frequency with lower voltage.
+> > > We call it amd-pstate preferred core.
+> > >
+> > > Here sched_set_itmt_core_prio() is called to set priorities and
+> > > sched_set_itmt_support() is called to enable ITMT feature.
+> > > Amd-pstate driver uses the highest performance value to indicate the
+> > > priority of CPU. The higher value has a higher priority.
+> > >
+> > > Amd-pstate driver will provide an initial core ordering at boot time.
+> > > It relies on the CPPC interface to communicate the core ranking to the
+> > > operating system and scheduler to make sure that OS is choosing the
+> > > cores with highest performance firstly for scheduling the process.
+> > > When amd-pstate driver receives a message with the highest performance
+> > > change, it will update the core ranking.
+> > >
+> > > Changes form V7->V8:
+> > > - all:
+> > > - - pick up Review-By flag added by Mario and Ray.
+> > > - cpufreq: amd-pstate:
+> > > - - use hw_prefcore embeds into cpudata structure.
+> > > - - delete preferred core init from cpu online/off.
+> >
+> > Could you please let me know if this change means a fix for the report =
+I've
+> > sent previously? [1]
+> >
+> [Meng, Li (Jassmine)] Yes.
+> I have deleted online handle function of amd pstate driver.
+> It doesn't re-initialize preferred core.
+> This online function will set incorrect des perf value.
+
+Thank you for the confirmation. I've built v6.5.5 with this patchset applie=
+d, and now the frequency is as expected after the suspend-resume cycle.
+
+I've also added the following modification to accommodate recent feedback:
+
+```
+commit 1450ac395434c532f995521e1a2497d09ddf106c
+Author: Oleksandr Natalenko <oleksandr@natalenko.name>
+Date:   Mon Oct 9 11:19:50 2023 +0200
+
+    cpufreq/amd-pstate: show prefcore_ranking separately
+   =20
+    Signed-off-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+
+diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
+index d3369247c6c9c..86999d861e87b 100644
+=2D-- a/drivers/cpufreq/amd-pstate.c
++++ b/drivers/cpufreq/amd-pstate.c
+@@ -954,6 +954,17 @@ static ssize_t show_amd_pstate_highest_perf(struct cpu=
+freq_policy *policy,
+ 	u32 perf;
+ 	struct amd_cpudata *cpudata =3D policy->driver_data;
+=20
++	perf =3D READ_ONCE(cpudata->highest_perf);
++
++	return sysfs_emit(buf, "%u\n", perf);
++}
++
++static ssize_t show_amd_pstate_prefcore_ranking(struct cpufreq_policy *pol=
+icy,
++						char *buf)
++{
++	u32 perf;
++	struct amd_cpudata *cpudata =3D policy->driver_data;
++
+ 	perf =3D READ_ONCE(cpudata->prefcore_ranking);
+=20
+ 	return sysfs_emit(buf, "%u\n", perf);
+@@ -1172,6 +1183,7 @@ cpufreq_freq_attr_ro(amd_pstate_max_freq);
+ cpufreq_freq_attr_ro(amd_pstate_lowest_nonlinear_freq);
+=20
+ cpufreq_freq_attr_ro(amd_pstate_highest_perf);
++cpufreq_freq_attr_ro(amd_pstate_prefcore_ranking);
+ cpufreq_freq_attr_ro(amd_pstate_hw_prefcore);
+ cpufreq_freq_attr_rw(energy_performance_preference);
+ cpufreq_freq_attr_ro(energy_performance_available_preferences);
+@@ -1182,6 +1194,7 @@ static struct freq_attr *amd_pstate_attr[] =3D {
+ 	&amd_pstate_max_freq,
+ 	&amd_pstate_lowest_nonlinear_freq,
+ 	&amd_pstate_highest_perf,
++	&amd_pstate_prefcore_ranking,
+ 	&amd_pstate_hw_prefcore,
+ 	NULL,
+ };
+@@ -1190,6 +1203,7 @@ static struct freq_attr *amd_pstate_epp_attr[] =3D {
+ 	&amd_pstate_max_freq,
+ 	&amd_pstate_lowest_nonlinear_freq,
+ 	&amd_pstate_highest_perf,
++	&amd_pstate_prefcore_ranking,
+ 	&amd_pstate_hw_prefcore,
+ 	&energy_performance_preference,
+ 	&energy_performance_available_preferences,
+```
+
+with the following output as a result:
+
+```
+[~]> grep . /sys/devices/system/cpu*/cpufreq/policy*/amd_pstate_highest_perf
+/sys/devices/system/cpu/cpufreq/policy0/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy1/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy2/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy3/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy4/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy5/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy6/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy7/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy8/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy9/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy10/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy11/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy12/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy13/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy14/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy15/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy16/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy17/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy18/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy19/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy20/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy21/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy22/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy23/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy24/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy25/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy26/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy27/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy28/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy29/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy30/amd_pstate_highest_perf:166
+/sys/devices/system/cpu/cpufreq/policy31/amd_pstate_highest_perf:166
+
+[~]> grep . /sys/devices/system/cpu*/cpufreq/policy*/amd_pstate_hw_prefcore
+/sys/devices/system/cpu/cpufreq/policy0/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy1/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy2/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy3/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy4/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy5/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy6/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy7/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy8/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy9/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy10/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy11/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy12/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy13/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy14/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy15/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy16/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy17/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy18/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy19/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy20/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy21/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy22/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy23/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy24/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy25/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy26/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy27/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy28/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy29/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy30/amd_pstate_hw_prefcore:supported
+/sys/devices/system/cpu/cpufreq/policy31/amd_pstate_hw_prefcore:supported
+
+[~]> grep . /sys/devices/system/cpu*/cpufreq/policy*/amd_pstate_prefcore_ra=
+nking
+/sys/devices/system/cpu/cpufreq/policy0/amd_pstate_prefcore_ranking:226
+/sys/devices/system/cpu/cpufreq/policy1/amd_pstate_prefcore_ranking:231
+/sys/devices/system/cpu/cpufreq/policy2/amd_pstate_prefcore_ranking:211
+/sys/devices/system/cpu/cpufreq/policy3/amd_pstate_prefcore_ranking:236
+/sys/devices/system/cpu/cpufreq/policy4/amd_pstate_prefcore_ranking:216
+/sys/devices/system/cpu/cpufreq/policy5/amd_pstate_prefcore_ranking:236
+/sys/devices/system/cpu/cpufreq/policy6/amd_pstate_prefcore_ranking:206
+/sys/devices/system/cpu/cpufreq/policy7/amd_pstate_prefcore_ranking:221
+/sys/devices/system/cpu/cpufreq/policy8/amd_pstate_prefcore_ranking:191
+/sys/devices/system/cpu/cpufreq/policy9/amd_pstate_prefcore_ranking:201
+/sys/devices/system/cpu/cpufreq/policy10/amd_pstate_prefcore_ranking:186
+/sys/devices/system/cpu/cpufreq/policy11/amd_pstate_prefcore_ranking:196
+/sys/devices/system/cpu/cpufreq/policy12/amd_pstate_prefcore_ranking:171
+/sys/devices/system/cpu/cpufreq/policy13/amd_pstate_prefcore_ranking:166
+/sys/devices/system/cpu/cpufreq/policy14/amd_pstate_prefcore_ranking:176
+/sys/devices/system/cpu/cpufreq/policy15/amd_pstate_prefcore_ranking:181
+/sys/devices/system/cpu/cpufreq/policy16/amd_pstate_prefcore_ranking:226
+/sys/devices/system/cpu/cpufreq/policy17/amd_pstate_prefcore_ranking:231
+/sys/devices/system/cpu/cpufreq/policy18/amd_pstate_prefcore_ranking:211
+/sys/devices/system/cpu/cpufreq/policy19/amd_pstate_prefcore_ranking:236
+/sys/devices/system/cpu/cpufreq/policy20/amd_pstate_prefcore_ranking:216
+/sys/devices/system/cpu/cpufreq/policy21/amd_pstate_prefcore_ranking:236
+/sys/devices/system/cpu/cpufreq/policy22/amd_pstate_prefcore_ranking:206
+/sys/devices/system/cpu/cpufreq/policy23/amd_pstate_prefcore_ranking:221
+/sys/devices/system/cpu/cpufreq/policy24/amd_pstate_prefcore_ranking:191
+/sys/devices/system/cpu/cpufreq/policy25/amd_pstate_prefcore_ranking:201
+/sys/devices/system/cpu/cpufreq/policy26/amd_pstate_prefcore_ranking:186
+/sys/devices/system/cpu/cpufreq/policy27/amd_pstate_prefcore_ranking:196
+/sys/devices/system/cpu/cpufreq/policy28/amd_pstate_prefcore_ranking:171
+/sys/devices/system/cpu/cpufreq/policy29/amd_pstate_prefcore_ranking:166
+/sys/devices/system/cpu/cpufreq/policy30/amd_pstate_prefcore_ranking:176
+/sys/devices/system/cpu/cpufreq/policy31/amd_pstate_prefcore_ranking:181
+```
+
+When I run `dd if=3D/dev/zero of=3D/dev/null`, the load lands onto cores 3,=
+ 5, 19 or 21, IOW, those that have the highest `amd_pstate_prefcore_ranking=
+` value given `schedutil` is in use.
+
+If all of the above is as expected, please add:
+
+Tested-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+
+> > Would you also be able to Cc me on the next iteration of this patchset?
+> [Meng, Li (Jassmine)] OK.
+
+Thanks.
+
+> >
+> > Thank you!
+> >
+> > [1] https://lore.kernel.org/lkml/5973628.lOV4Wx5bFT@natalenko.name/
+> >
+> > >
+> > > Changes form V6->V7:
+> > > - x86:
+> > > - - Modify kconfig about X86_AMD_PSTATE.
+> > > - cpufreq: amd-pstate:
+> > > - - modify incorrect comments about scheduler_work().
+> > > - - convert highest_perf data type.
+> > > - - modify preferred core init when cpu init and online.
+> > > - acpi: cppc:
+> > > - - modify link of CPPC highest performance.
+> > > - cpufreq:
+> > > - - modify link of CPPC highest performance changed.
+> > >
+> > > Changes form V5->V6:
+> > > - cpufreq: amd-pstate:
+> > > - - modify the wrong tag order.
+> > > - - modify warning about hw_prefcore sysfs attribute.
+> > > - - delete duplicate comments.
+> > > - - modify the variable name cppc_highest_perf to prefcore_ranking.
+> > > - - modify judgment conditions for setting highest_perf.
+> > > - - modify sysfs attribute for CPPC highest perf to pr_debug message.
+> > > - Documentation: amd-pstate:
+> > > - - modify warning: title underline too short.
+> > >
+> > > Changes form V4->V5:
+> > > - cpufreq: amd-pstate:
+> > > - - modify sysfs attribute for CPPC highest perf.
+> > > - - modify warning about comments
+> > > - - rebase linux-next
+> > > - cpufreq:
+> > > - - Moidfy warning about function declarations.
+> > > - Documentation: amd-pstate:
+> > > - - align with ``amd-pstat``
+> > >
+> > > Changes form V3->V4:
+> > > - Documentation: amd-pstate:
+> > > - - Modify inappropriate descriptions.
+> > >
+> > > Changes form V2->V3:
+> > > - x86:
+> > > - - Modify kconfig and description.
+> > > - cpufreq: amd-pstate:
+> > > - - Add Co-developed-by tag in commit message.
+> > > - cpufreq:
+> > > - - Modify commit message.
+> > > - Documentation: amd-pstate:
+> > > - - Modify inappropriate descriptions.
+> > >
+> > > Changes form V1->V2:
+> > > - acpi: cppc:
+> > > - - Add reference link.
+> > > - cpufreq:
+> > > - - Moidfy link error.
+> > > - cpufreq: amd-pstate:
+> > > - - Init the priorities of all online CPUs
+> > > - - Use a single variable to represent the status of preferred core.
+> > > - Documentation:
+> > > - - Default enabled preferred core.
+> > > - Documentation: amd-pstate:
+> > > - - Modify inappropriate descriptions.
+> > > - - Default enabled preferred core.
+> > > - - Use a single variable to represent the status of preferred core.
+> > >
+> > > Meng Li (7):
+> > >   x86: Drop CPU_SUP_INTEL from SCHED_MC_PRIO for the expansion.
+> > >   acpi: cppc: Add get the highest performance cppc control
+> > >   cpufreq: amd-pstate: Enable amd-pstate preferred core supporting.
+> > >   cpufreq: Add a notification message that the highest perf has chang=
+ed
+> > >   cpufreq: amd-pstate: Update amd-pstate preferred core ranking
+> > >     dynamically
+> > >   Documentation: amd-pstate: introduce amd-pstate preferred core
+> > >   Documentation: introduce amd-pstate preferrd core mode kernel
+> > command
+> > >     line options
+> > >
+> > >  .../admin-guide/kernel-parameters.txt         |   5 +
+> > >  Documentation/admin-guide/pm/amd-pstate.rst   |  59 +++++-
+> > >  arch/x86/Kconfig                              |   5 +-
+> > >  drivers/acpi/cppc_acpi.c                      |  13 ++
+> > >  drivers/acpi/processor_driver.c               |   6 +
+> > >  drivers/cpufreq/amd-pstate.c                  | 186 ++++++++++++++++=
+=2D-
+> > >  drivers/cpufreq/cpufreq.c                     |  13 ++
+> > >  include/acpi/cppc_acpi.h                      |   5 +
+> > >  include/linux/amd-pstate.h                    |  10 +
+> > >  include/linux/cpufreq.h                       |   5 +
+> > >  10 files changed, 285 insertions(+), 22 deletions(-)
+> > >
+> > >
+> >
+> >
+> > --
+> > Oleksandr Natalenko (post-factum)
+>=20
+
+
+=2D-=20
+Oleksandr Natalenko (post-factum)
+--nextPart5979562.lOV4Wx5bFT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEZUOOw5ESFLHZZtOKil/iNcg8M0sFAmUj+UcACgkQil/iNcg8
+M0ufew//Uuqt6V9vN3k5my7d3pOKc0mdisLT/VGfY8gXDB2P3CAhpYHmo5yvEZ16
+0OJgF/uWTWcw0USw6ITTO9UhcaLrxAk3nVkkJcUZY0WEjvjtoAdA2ubkVb97p2dy
+6P521zyPeeVZNvBW/lP0d/5KrIWl44LFCumJOYGRnumn68I0+HCb7LzN2tPsAZvX
+vU8G/Jur9dqsSQ0y/bKKVvweocwgeBezKIaXUnl+SaemXg231pW2t68/OigUqFWM
+JdtY8CFf6Q+YQ5oDuSULCBJR5PbwPikc24B0IL9aKkWnZXgPBKQoLkStrDtZhPdS
+GGqSom7vm+0jU+PmJjf5MtOch4+P3rIzSfCOIFSPMoaxNlSMDSfJwtfI80dRosNO
+1WodeheGhaSRYnO9nw0hn/LszptAFJSBO7wBeYygHSwDRZd5HyZmCBRopP5nepWu
+a4k7vrNzwwj9K6Llxe2n3/rUbfvUX1ozLSsIjRGknEP0/nrKdA+o6v3RyNzV9Qni
+xjZWEr3dDI2qpfqkviDytFSbR4OZO6tZF0pshaBZQWWCF+77qZcJr8V9BMDegA5R
+lcTsjSQHi/5/l2ruE0La6SW2Fv+DFAKdn9fk8/QjbZs6hbjwB3NExkW+GdBbad9t
+2GAZWLtVS3+2l/KEAO8gHUhrAcyHogxSiN5qYn3OQZIPcuTvXI4=
+=VmGM
+-----END PGP SIGNATURE-----
+
+--nextPart5979562.lOV4Wx5bFT--
 
-Responses should be made by Wed, 11 Oct 2023 13:00:55 +0000.
-Anything received after that time might be too late.
-
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.57-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-and the diffstat can be found below.
-
-thanks,
-
-greg k-h
-
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 6.1.57-rc1
-
-Jakub Kicinski <kuba@kernel.org>
-    netlink: remove the flex array from struct nlmsghdr
-
-Filipe Manana <fdmanana@suse.com>
-    btrfs: fix fscrypt name leak after failure to join log transaction
-
-Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-    btrfs: fix an error handling path in btrfs_rename()
-
-Ido Schimmel <idosch@nvidia.com>
-    vrf: Fix lockdep splat in output path
-
-Eric Dumazet <edumazet@google.com>
-    ipv6: remove nexthop_fib6_nh_bh()
-
-John David Anglin <dave@parisc-linux.org>
-    parisc: Restore __ldcw_align for PA-RISC 2.0 processors
-
-luosili <rootlab@huawei.com>
-    ksmbd: fix uaf in smb20_oplock_break_ack
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: fix race condition between session lookup and expire
-
-Tom Lendacky <thomas.lendacky@amd.com>
-    x86/sev: Use the GHCB protocol when available for SNP CPUID requests
-
-Kailang Yang <kailang@realtek.com>
-    ALSA: hda/realtek - Fixed two speaker platform
-
-Colin Ian King <colin.i.king@gmail.com>
-    ALSA: hda/realtek: Fix spelling mistake "powe" -> "power"
-
-Shay Drory <shayd@nvidia.com>
-    RDMA/mlx5: Fix NULL string error
-
-Hamdan Igbaria <hamdani@nvidia.com>
-    RDMA/mlx5: Fix mutex unlocking on error flow for steering anchor creation
-
-Bernard Metzler <bmt@zurich.ibm.com>
-    RDMA/siw: Fix connection failure handling
-
-Bart Van Assche <bvanassche@acm.org>
-    RDMA/srp: Do not call scsi_done() from srp_abort()
-
-Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-    RDMA/uverbs: Fix typo of sizeof argument
-
-Leon Romanovsky <leon@kernel.org>
-    RDMA/cma: Fix truncation compilation warning in make_cma_ports
-
-Mark Zhang <markzhang@nvidia.com>
-    RDMA/cma: Initialize ib_sa_multicast structure to 0 when join
-
-Duje Mihanović <duje.mihanovic@skole.hr>
-    gpio: pxa: disable pinctrl calls for MMP_GPIO
-
-Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-    gpio: aspeed: fix the GPIO number passed to pinctrl_gpio_set_config()
-
-Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-    IB/mlx4: Fix the size of a buffer in add_port_entries()
-
-Dan Carpenter <dan.carpenter@linaro.org>
-    of: dynamic: Fix potential memory leak in of_changeset_action()
-
-Leon Romanovsky <leon@kernel.org>
-    RDMA/core: Require admin capabilities to set system parameters
-
-Fedor Pchelkin <pchelkin@ispras.ru>
-    dm zoned: free dmz->ddev array in dmz_put_zoned_devices
-
-Helge Deller <deller@gmx.de>
-    parisc: Fix crash with nr_cpus=1 option
-
-Jordan Rife <jrife@google.com>
-    smb: use kernel_connect() and kernel_bind()
-
-Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-    intel_idle: add Emerald Rapids Xeon support
-
-Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-    HID: intel-ish-hid: ipc: Disable and reenable ACPI GPE bit
-
-Jiri Kosina <jkosina@suse.cz>
-    HID: sony: remove duplicate NULL check before calling usb_free_urb()
-
-Eric Dumazet <edumazet@google.com>
-    netlink: annotate data-races around sk->sk_err
-
-Tao Chen <chentao.kernel@linux.alibaba.com>
-    netlink: Fix potential skb memleak in netlink_ack
-
-Jakub Kicinski <kuba@kernel.org>
-    netlink: split up copies in the ack construction
-
-Xin Long <lucien.xin@gmail.com>
-    sctp: update hb timer immediately after users change hb_interval
-
-Xin Long <lucien.xin@gmail.com>
-    sctp: update transport state when processing a dupcook packet
-
-Neal Cardwell <ncardwell@google.com>
-    tcp: fix delayed ACKs for MSS boundary condition
-
-Neal Cardwell <ncardwell@google.com>
-    tcp: fix quick-ack counting to count actual ACKs of new data
-
-Chengfeng Ye <dg573847474@gmail.com>
-    tipc: fix a potential deadlock on &tx->lock
-
-Ben Wolsieffer <ben.wolsieffer@hefring.com>
-    net: stmmac: dwmac-stm32: fix resume on STM32 MCU
-
-Benjamin Poirier <bpoirier@nvidia.com>
-    ipv4: Set offload_failed flag in fibmatch results
-
-Florian Westphal <fw@strlen.de>
-    netfilter: nf_tables: nft_set_rbtree: fix spurious insertion failure
-
-Phil Sutter <phil@nwl.cc>
-    netfilter: nf_tables: Deduplicate nft_register_obj audit logs
-
-Phil Sutter <phil@nwl.cc>
-    selftests: netfilter: Extend nft_audit.sh
-
-Phil Sutter <phil@nwl.cc>
-    selftests: netfilter: Test nf_tables audit logging
-
-Xin Long <lucien.xin@gmail.com>
-    netfilter: handle the connecting collision properly in nf_conntrack_proto_sctp
-
-David Wilder <dwilder@us.ibm.com>
-    ibmveth: Remove condition to recompute TCP header checksum.
-
-Dan Carpenter <dan.carpenter@linaro.org>
-    net: ethernet: ti: am65-cpsw: Fix error code in am65_cpsw_nuss_init_tx_chns()
-
-Jeremy Cline <jeremy@jcline.org>
-    net: nfc: llcp: Add lock when modifying device list
-
-Shigeru Yoshida <syoshida@redhat.com>
-    net: usb: smsc75xx: Fix uninit-value access in __smsc75xx_read_reg
-
-Ilya Maximets <i.maximets@ovn.org>
-    ipv6: tcp: add a missing nf_reset_ct() in 3WHS handling
-
-Fabio Estevam <festevam@denx.de>
-    net: dsa: mv88e6xxx: Avoid EEPROM timeout when EEPROM is absent
-
-Dinghao Liu <dinghao.liu@zju.edu.cn>
-    ptp: ocp: Fix error handling in ptp_ocp_device_init
-
-David Howells <dhowells@redhat.com>
-    ipv4, ipv6: Fix handling of transhdrlen in __ip{,6}_append_data()
-
-Eric Dumazet <edumazet@google.com>
-    neighbour: fix data-races around n->output
-
-Eric Dumazet <edumazet@google.com>
-    neighbour: switch to standard rcu, instead of rcu_bh
-
-Eric Dumazet <edumazet@google.com>
-    neighbour: annotate lockless accesses to n->nud_state
-
-Martin KaFai Lau <martin.lau@kernel.org>
-    bpf: Add BPF_FIB_LOOKUP_SKIP_NEIGH for bpf_fib_lookup
-
-Eric Dumazet <edumazet@google.com>
-    net: fix possible store tearing in neigh_periodic_work()
-
-Mauricio Faria de Oliveira <mfo@canonical.com>
-    modpost: add missing else to the "of" check
-
-Jakub Sitnicki <jakub@cloudflare.com>
-    bpf, sockmap: Reject sk_msg egress redirects to non-TCP sockets
-
-John Fastabend <john.fastabend@gmail.com>
-    bpf, sockmap: Do not inc copied_seq when PEEK flag set
-
-John Fastabend <john.fastabend@gmail.com>
-    bpf: tcp_read_skb needs to pop skb regardless of seq
-
-Trond Myklebust <trond.myklebust@hammerspace.com>
-    NFSv4: Fix a nfs4_state_manager() race
-
-Arnd Bergmann <arnd@arndb.de>
-    ima: rework CONFIG_IMA dependency block
-
-Junxiao Bi <junxiao.bi@oracle.com>
-    scsi: target: core: Fix deadlock due to recursive locking
-
-Oleksandr Tymoshenko <ovt@google.com>
-    ima: Finish deprecation of IMA_TRUSTED_KEYRING Kconfig
-
-Michał Mirosław <mirq-linux@rere.qmqm.pl>
-    regulator/core: regulator_register: set device->class earlier
-
-Yong Wu <yong.wu@mediatek.com>
-    iommu/mediatek: Fix share pgtable for iova over 4GB
-
-Breno Leitao <leitao@debian.org>
-    perf/x86/amd: Do not WARN() on every IRQ
-
-Johannes Berg <johannes.berg@intel.com>
-    wifi: mac80211: fix potential key use-after-free
-
-Richard Fitzgerald <rf@opensource.cirrus.com>
-    regmap: rbtree: Fix wrong register marked as in-cache when creating new node
-
-Sandipan Das <sandipan.das@amd.com>
-    perf/x86/amd/core: Fix overflow reset on hotplug
-
-Felix Fietkau <nbd@nbd.name>
-    wifi: mt76: mt76x02: fix MT76x0 external LNA gain handling
-
-Alexandra Diupina <adiupina@astralinux.ru>
-    drivers/net: process the result of hdlc_open() and add call of hdlc_close() in uhdlc_close()
-
-Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-    Bluetooth: ISO: Fix handling of listen for unicast
-
-Yao Xiao <xiaoyao@rock-chips.com>
-    Bluetooth: Delete unused hci_req_prepare_suspend() declaration
-
-Chen-Yu Tsai <wenst@chromium.org>
-    regulator: mt6358: split ops for buck and linear range LDO regulators
-
-Chen-Yu Tsai <wenst@chromium.org>
-    regulator: mt6358: Use linear voltage helpers for single range regulators
-
-Chen-Yu Tsai <wenst@chromium.org>
-    regulator: mt6358: Drop *_SSHUB regulators
-
-Leon Hwang <hffilwlqm@gmail.com>
-    bpf: Fix tr dereferencing
-
-Marek Behún <kabel@kernel.org>
-    leds: Drop BUG_ON check for LED_COLOR_ID_MULTI
-
-Pin-yen Lin <treapking@chromium.org>
-    wifi: mwifiex: Fix oob check condition in mwifiex_process_rx_packet
-
-Johannes Berg <johannes.berg@intel.com>
-    wifi: cfg80211: add missing kernel-doc for cqm_rssi_work
-
-Johannes Berg <johannes.berg@intel.com>
-    wifi: cfg80211: fix cqm_config access race
-
-Johannes Berg <johannes.berg@intel.com>
-    wifi: cfg80211: add a work abstraction with special semantics
-
-Johannes Berg <johannes.berg@intel.com>
-    wifi: cfg80211: move wowlan disable under locks
-
-Johannes Berg <johannes.berg@intel.com>
-    wifi: cfg80211: hold wiphy lock in auto-disconnect
-
-Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-    wifi: iwlwifi: mvm: Fix a memory corruption issue
-
-Arnd Bergmann <arnd@arndb.de>
-    wifi: iwlwifi: dbg_ini: fix structure packing
-
-Gao Xiang <xiang@kernel.org>
-    erofs: fix memory leak of LZMA global compressed deduplication
-
-Zhihao Cheng <chengzhihao1@huawei.com>
-    ubi: Refuse attaching if mtd's erasesize is 0
-
-Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-    HID: sony: Fix a potential memory leak in sony_probe()
-
-Rob Herring <robh@kernel.org>
-    arm64: errata: Add Cortex-A520 speculative unprivileged load workaround
-
-Rob Herring <robh@kernel.org>
-    arm64: Add Cortex-A520 CPU part definition
-
-Mario Limonciello <mario.limonciello@amd.com>
-    drm/amd: Fix logic error in sienna_cichlid_update_pcie_parameters()
-
-Mario Limonciello <mario.limonciello@amd.com>
-    drm/amd: Fix detection of _PR3 on the PCIe root port
-
-Jordan Rife <jrife@google.com>
-    net: prevent rewrite of msg_name in sock_sendmsg()
-
-Qu Wenruo <wqu@suse.com>
-    btrfs: reject unknown mount options early
-
-Jordan Rife <jrife@google.com>
-    net: replace calls to sock->ops->connect() with kernel_connect()
-
-Sricharan Ramabadhran <quic_srichara@quicinc.com>
-    PCI: qcom: Fix IPQ8074 enumeration
-
-David Jeffery <djeffery@redhat.com>
-    md/raid5: release batch_last before waiting for another stripe_head
-
-Gustavo A. R. Silva <gustavoars@kernel.org>
-    wifi: mwifiex: Fix tlv_buf_left calculation
-
-Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-    Bluetooth: hci_sync: Fix handling of HCI_QUIRK_STRICT_DUPLICATE_FILTER
-
-Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-    Bluetooth: hci_codec: Fix leaking content of local_codecs
-
-Gustavo A. R. Silva <gustavoars@kernel.org>
-    qed/red_ll2: Fix undefined behavior bug in struct qed_ll2_info
-
-Geliang Tang <geliang.tang@suse.com>
-    mptcp: userspace pm allow creating id 0 subflow
-
-Christian Marangi <ansuelsmth@gmail.com>
-    net: ethernet: mediatek: disable irq before schedule napi
-
-Stefano Garzarella <sgarzare@redhat.com>
-    vringh: don't use vringh_kiov_advance() in vringh_iov_xfer()
-
-Zhang Rui <rui.zhang@intel.com>
-    iommu/vt-d: Avoid memory allocation in iommu_suspend()
-
-Dinghao Liu <dinghao.liu@zju.edu.cn>
-    scsi: zfcp: Fix a double put in zfcp_port_enqueue()
-
-Yajun Deng <yajun.deng@linux.dev>
-    i40e: fix the wrong PTP frequency calculation
-
-Aleksandr Mezin <mezin.alexander@gmail.com>
-    hwmon: (nzxt-smart2) add another USB ID
-
-Herman Fries <baracoder@googlemail.com>
-    hwmon: (nzxt-smart2) Add device id
-
-Ming Lei <ming.lei@redhat.com>
-    block: fix use-after-free of q->q_usage_counter
-
-Ilya Dryomov <idryomov@gmail.com>
-    rbd: take header_rwsem in rbd_dev_refresh() only when updating
-
-Ilya Dryomov <idryomov@gmail.com>
-    rbd: decouple parent info read-in from updating rbd_dev
-
-Ilya Dryomov <idryomov@gmail.com>
-    rbd: decouple header read-in from updating rbd_dev->header
-
-Ilya Dryomov <idryomov@gmail.com>
-    rbd: move rbd_dev_refresh() definition
-
-Robin Murphy <robin.murphy@arm.com>
-    iommu/arm-smmu-v3: Avoid constructing invalid range commands
-
-Robin Murphy <robin.murphy@arm.com>
-    iommu/arm-smmu-v3: Set TTL invalidation hint better
-
-Wayne Lin <wayne.lin@amd.com>
-    drm/amd/display: Adjust the MST resume flow
-
-Kristina Martsenko <kristina.martsenko@arm.com>
-    arm64: cpufeature: Fix CLRBHB and BC detection
-
-Patrick Rohr <prohr@google.com>
-    net: release reference to inet6_dev pointer
-
-Patrick Rohr <prohr@google.com>
-    net: change accept_ra_min_rtr_lft to affect all RA lifetimes
-
-Patrick Rohr <prohr@google.com>
-    net: add sysctl accept_ra_min_rtr_lft
-
-Gabriel Krisman Bertazi <krisman@suse.de>
-    arm64: Avoid repeated AA64MMFR1_EL1 register read on pagefault path
-
-Benjamin Coddington <bcodding@redhat.com>
-    Revert "NFSv4: Retry LOCK on OLD_STATEID during delegation return"
-
-Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-    btrfs: use struct fscrypt_str instead of struct qstr
-
-Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-    btrfs: setup qstr from dentrys using fscrypt helper
-
-Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-    btrfs: use struct qstr instead of name and namelen pairs
-
-Zheng Yejian <zhengyejian1@huawei.com>
-    ring-buffer: Fix bytes info in per_cpu buffer stats
-
-Vlastimil Babka <vbabka@suse.cz>
-    ring-buffer: remove obsolete comment for free_buffer_page()
-
-Johannes Weiner <hannes@cmpxchg.org>
-    mm: page_alloc: fix CMA and HIGHATOMIC landing on the wrong buddy list
-
-Mel Gorman <mgorman@techsingularity.net>
-    mm/page_alloc: leave IRQs enabled for per-cpu page allocations
-
-Mel Gorman <mgorman@techsingularity.net>
-    mm/page_alloc: always remove pages from temporary list
-
-Yang Shi <yang@os.amperecomputing.com>
-    mm: mempolicy: keep VMA walk if both MPOL_MF_STRICT and MPOL_MF_MOVE are specified
-
-Vishal Moola (Oracle) <vishal.moola@gmail.com>
-    mm/mempolicy: convert migrate_page_add() to migrate_folio_add()
-
-Vishal Moola (Oracle) <vishal.moola@gmail.com>
-    mm/mempolicy: convert queue_pages_pte_range() to queue_folios_pte_range()
-
-Vishal Moola (Oracle) <vishal.moola@gmail.com>
-    mm/mempolicy: convert queue_pages_pmd() to queue_folios_pmd()
-
-Vishal Moola (Oracle) <vishal.moola@gmail.com>
-    mm/memory: add vm_normal_folio()
-
-Trond Myklebust <trond.myklebust@hammerspace.com>
-    NFSv4: Fix a state manager thread deadlock regression
-
-Benjamin Coddington <bcodding@redhat.com>
-    NFS: rename nfs_client_kset to nfs_kset
-
-Benjamin Coddington <bcodding@redhat.com>
-    NFS: Cleanup unused rpc_clnt variable
-
-Damien Le Moal <dlemoal@kernel.org>
-    ata: libata-scsi: Fix delayed scsi_rescan_device() execution
-
-Damien Le Moal <dlemoal@kernel.org>
-    scsi: Do not attempt to rescan suspended devices
-
-Bart Van Assche <bvanassche@acm.org>
-    scsi: core: Improve type safety of scsi_rescan_device()
-
-Damien Le Moal <dlemoal@kernel.org>
-    scsi: sd: Do not issue commands to suspended disks on shutdown
-
-Damien Le Moal <dlemoal@kernel.org>
-    scsi: sd: Differentiate system and runtime start/stop management
-
-Damien Le Moal <dlemoal@kernel.org>
-    ata,scsi: do not issue START STOP UNIT on resume
-
-Paolo Abeni <pabeni@redhat.com>
-    mptcp: process pending subflow error on close
-
-Paolo Abeni <pabeni@redhat.com>
-    mptcp: move __mptcp_error_report in protocol.c
-
-Eric Dumazet <edumazet@google.com>
-    mptcp: annotate lockless accesses to sk->sk_err
-
-Paolo Abeni <pabeni@redhat.com>
-    mptcp: fix dangling connection hang-up
-
-Paolo Abeni <pabeni@redhat.com>
-    mptcp: rename timer related helper to less confusing names
-
-Sameer Pujar <spujar@nvidia.com>
-    ASoC: tegra: Fix redundant PLLA and PLLA_OUT0 updates
-
-Sameer Pujar <spujar@nvidia.com>
-    ASoC: soc-utils: Export snd_soc_dai_is_dummy() symbol
-
-Kailang Yang <kailang@realtek.com>
-    ALSA: hda/realtek - ALC287 Realtek I2S speaker platform support
-
-Kailang Yang <kailang@realtek.com>
-    ALSA: hda/realtek - ALC287 I2S speaker platform support
-
-Fabian Vogt <fabian@ritter-vogt.de>
-    ALSA: hda/realtek: Add quirk for mute LEDs on HP ENVY x360 15-eu0xxx
-
-SungHwan Jung <onenowy@gmail.com>
-    ALSA: hda/realtek: Add quirk for HP Victus 16-d1xxx to enable mute LED
-
-Shenghao Ding <shenghao-ding@ti.com>
-    ALSA: hda/tas2781: Add tas2781 HDA driver
-
-Johan Hovold <johan+linaro@kernel.org>
-    spi: zynqmp-gqspi: fix clock imbalance on probe failure
-
-Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-    spi: zynqmp-gqspi: Convert to platform remove callback returning void
-
-
--------------
-
-Diffstat:
-
- Documentation/arm64/silicon-errata.rst             |   2 +
- Documentation/networking/ip-sysctl.rst             |   8 +
- Makefile                                           |   4 +-
- arch/arm64/Kconfig                                 |  13 +
- arch/arm64/include/asm/cpufeature.h                |   8 +-
- arch/arm64/include/asm/cputype.h                   |   2 +
- arch/arm64/kernel/cpu_errata.c                     |   8 +
- arch/arm64/kernel/cpufeature.c                     |   3 +-
- arch/arm64/kernel/entry.S                          |   4 +
- arch/arm64/tools/cpucaps                           |   1 +
- arch/arm64/tools/sysreg                            |   6 +-
- arch/parisc/include/asm/ldcw.h                     |  36 +-
- arch/parisc/include/asm/spinlock_types.h           |   5 -
- arch/parisc/kernel/smp.c                           |   4 +-
- arch/x86/events/amd/core.c                         |  24 +-
- arch/x86/kernel/sev-shared.c                       |  69 +++-
- block/blk-sysfs.c                                  |   3 +-
- drivers/ata/libata-core.c                          |  16 +
- drivers/ata/libata-scsi.c                          |  43 ++-
- drivers/base/regmap/regcache-rbtree.c              |   3 +-
- drivers/block/rbd.c                                | 412 +++++++++++----------
- drivers/firewire/sbp2.c                            |   9 +-
- drivers/gpio/gpio-aspeed.c                         |   2 +-
- drivers/gpio/gpio-pxa.c                            |   1 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         |   2 +-
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  |  93 ++++-
- .../drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c    |  41 +-
- drivers/hid/hid-sony.c                             |   2 +
- drivers/hid/intel-ish-hid/ipc/pci-ish.c            |   8 +
- drivers/hwmon/nzxt-smart2.c                        |   2 +
- drivers/idle/intel_idle.c                          |   2 +
- drivers/infiniband/core/cma.c                      |   2 +-
- drivers/infiniband/core/cma_configfs.c             |   2 +-
- drivers/infiniband/core/nldev.c                    |   1 +
- drivers/infiniband/core/uverbs_main.c              |   2 +-
- drivers/infiniband/hw/mlx4/sysfs.c                 |   2 +-
- drivers/infiniband/hw/mlx5/fs.c                    |   2 +-
- drivers/infiniband/hw/mlx5/main.c                  |   2 +-
- drivers/infiniband/sw/siw/siw_cm.c                 |  16 +-
- drivers/infiniband/ulp/srp/ib_srp.c                |  16 +-
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c        |  18 +-
- drivers/iommu/intel/iommu.c                        |  16 -
- drivers/iommu/intel/iommu.h                        |   2 +-
- drivers/iommu/mtk_iommu.c                          |   9 +-
- drivers/leds/led-core.c                            |   4 -
- drivers/md/dm-zoned-target.c                       |  15 +-
- drivers/md/raid5.c                                 |   7 +
- drivers/mtd/ubi/build.c                            |   7 +
- drivers/net/dsa/mv88e6xxx/chip.c                   |   6 +-
- drivers/net/dsa/mv88e6xxx/global1.c                |  31 --
- drivers/net/dsa/mv88e6xxx/global1.h                |   1 -
- drivers/net/dsa/mv88e6xxx/global2.c                |   2 +-
- drivers/net/dsa/mv88e6xxx/global2.h                |   1 +
- drivers/net/ethernet/ibm/ibmveth.c                 |  25 +-
- drivers/net/ethernet/intel/i40e/i40e_ptp.c         |   4 +-
- drivers/net/ethernet/mediatek/mtk_eth_soc.c        |   4 +-
- drivers/net/ethernet/qlogic/qed/qed_ll2.h          |   2 +-
- drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c  |   7 +-
- drivers/net/ethernet/ti/am65-cpsw-nuss.c           |   1 +
- drivers/net/usb/smsc75xx.c                         |   4 +-
- drivers/net/vrf.c                                  |  12 +-
- drivers/net/vxlan/vxlan_core.c                     |   4 +-
- drivers/net/wan/fsl_ucc_hdlc.c                     |  12 +-
- drivers/net/wireless/intel/iwlwifi/fw/error-dump.h |   6 +-
- drivers/net/wireless/intel/iwlwifi/mvm/fw.c        |   2 +-
- .../net/wireless/marvell/mwifiex/11n_rxreorder.c   |   4 +-
- drivers/net/wireless/marvell/mwifiex/sta_rx.c      |  16 +-
- .../net/wireless/mediatek/mt76/mt76x02_eeprom.c    |   7 -
- drivers/net/wireless/mediatek/mt76/mt76x2/eeprom.c |  13 +-
- drivers/of/dynamic.c                               |   6 +-
- drivers/pci/controller/dwc/pcie-qcom.c             |   4 +-
- drivers/ptp/ptp_ocp.c                              |   1 -
- drivers/regulator/core.c                           |   4 +-
- drivers/regulator/mt6358-regulator.c               | 153 +++-----
- drivers/s390/scsi/zfcp_aux.c                       |   9 +-
- drivers/scsi/aacraid/commsup.c                     |   2 +-
- drivers/scsi/mvumi.c                               |   2 +-
- drivers/scsi/scsi_lib.c                            |   2 +-
- drivers/scsi/scsi_priv.h                           |   1 -
- drivers/scsi/scsi_scan.c                           |  20 +-
- drivers/scsi/scsi_sysfs.c                          |   4 +-
- drivers/scsi/sd.c                                  | 110 ++++--
- drivers/scsi/sd.h                                  |   1 +
- drivers/scsi/smartpqi/smartpqi_init.c              |   2 +-
- drivers/scsi/storvsc_drv.c                         |   2 +-
- drivers/scsi/virtio_scsi.c                         |   2 +-
- drivers/spi/spi-zynqmp-gqspi.c                     |  18 +-
- drivers/target/target_core_device.c                |  11 +-
- drivers/vhost/vringh.c                             |  12 +-
- fs/btrfs/ctree.h                                   |  28 +-
- fs/btrfs/dir-item.c                                |  50 ++-
- fs/btrfs/inode-item.c                              |  73 ++--
- fs/btrfs/inode-item.h                              |  20 +-
- fs/btrfs/inode.c                                   | 267 ++++++++-----
- fs/btrfs/ioctl.c                                   |   7 +-
- fs/btrfs/root-tree.c                               |  19 +-
- fs/btrfs/send.c                                    |  12 +-
- fs/btrfs/super.c                                   |   7 +-
- fs/btrfs/transaction.c                             |  40 +-
- fs/btrfs/tree-log.c                                | 279 +++++++-------
- fs/btrfs/tree-log.h                                |   4 +-
- fs/erofs/decompressor_lzma.c                       |   5 +-
- fs/nfs/nfs4proc.c                                  |  10 +-
- fs/nfs/nfs4state.c                                 |  47 ++-
- fs/nfs/sysfs.c                                     |  16 +-
- fs/smb/client/connect.c                            |  10 +-
- fs/smb/server/connection.c                         |   2 +
- fs/smb/server/connection.h                         |   1 +
- fs/smb/server/mgmt/user_session.c                  |  10 +-
- fs/smb/server/smb2pdu.c                            |   4 +-
- include/linux/bpf.h                                |   2 +-
- include/linux/ipv6.h                               |   1 +
- include/linux/mm.h                                 |   2 +
- include/linux/netfilter/nf_conntrack_sctp.h        |   1 +
- include/linux/regulator/mt6358-regulator.h         |   4 -
- include/net/arp.h                                  |   8 +-
- include/net/cfg80211.h                             |  99 ++++-
- include/net/ndisc.h                                |  12 +-
- include/net/neighbour.h                            |  10 +-
- include/net/netlink.h                              |  21 ++
- include/net/nexthop.h                              |  23 --
- include/net/tcp.h                                  |   6 +-
- include/scsi/scsi_device.h                         |   6 +-
- include/scsi/scsi_host.h                           |   2 +-
- include/uapi/linux/bpf.h                           |   6 +
- include/uapi/linux/ipv6.h                          |   1 +
- kernel/trace/ring_buffer.c                         |  32 +-
- mm/memory.c                                        |  10 +
- mm/mempolicy.c                                     | 122 +++---
- mm/page_alloc.c                                    | 138 ++++---
- net/bluetooth/hci_core.c                           |   1 +
- net/bluetooth/hci_event.c                          |   1 +
- net/bluetooth/hci_request.h                        |   2 -
- net/bluetooth/hci_sync.c                           |  14 +-
- net/bluetooth/iso.c                                |   9 +-
- net/bridge/br_arp_nd_proxy.c                       |   4 +-
- net/bridge/br_netfilter_hooks.c                    |   5 +-
- net/core/filter.c                                  |  59 +--
- net/core/neighbour.c                               | 106 +++---
- net/core/sock_map.c                                |   4 +
- net/ipv4/arp.c                                     |   8 +-
- net/ipv4/fib_semantics.c                           |   8 +-
- net/ipv4/ip_output.c                               |   6 +-
- net/ipv4/nexthop.c                                 |  12 +-
- net/ipv4/route.c                                   |   8 +-
- net/ipv4/tcp.c                                     |  10 +-
- net/ipv4/tcp_bpf.c                                 |   4 +-
- net/ipv4/tcp_input.c                               |  13 +
- net/ipv4/tcp_output.c                              |   7 +-
- net/ipv6/addrconf.c                                |  27 +-
- net/ipv6/ip6_fib.c                                 |  16 +-
- net/ipv6/ip6_output.c                              |  12 +-
- net/ipv6/ndisc.c                                   |  17 +-
- net/ipv6/route.c                                   |  14 +-
- net/ipv6/tcp_ipv6.c                                |  10 +-
- net/l2tp/l2tp_ip6.c                                |   2 +-
- net/mac80211/cfg.c                                 |   3 +
- net/mac80211/key.c                                 |   2 +-
- net/mptcp/pm_netlink.c                             |   2 +-
- net/mptcp/pm_userspace.c                           |   6 -
- net/mptcp/protocol.c                               | 177 +++++----
- net/mptcp/protocol.h                               |  24 +-
- net/mptcp/subflow.c                                |  41 +-
- net/netfilter/ipvs/ip_vs_sync.c                    |   4 +-
- net/netfilter/nf_conntrack_proto_sctp.c            |  43 ++-
- net/netfilter/nf_tables_api.c                      |  44 ++-
- net/netfilter/nft_set_rbtree.c                     |  46 ++-
- net/netlink/af_netlink.c                           |  37 +-
- net/nfc/llcp_core.c                                |   2 +
- net/rds/tcp_connect.c                              |   2 +-
- net/sctp/associola.c                               |   3 +-
- net/sctp/socket.c                                  |   1 +
- net/socket.c                                       |  29 +-
- net/tipc/crypto.c                                  |   4 +-
- net/wireless/core.c                                | 150 +++++++-
- net/wireless/core.h                                |  14 +-
- net/wireless/nl80211.c                             |  93 +++--
- net/wireless/sme.c                                 |   4 +-
- net/wireless/sysfs.c                               |   8 +-
- scripts/mod/file2alias.c                           |   2 +-
- security/integrity/ima/Kconfig                     |  22 +-
- sound/pci/hda/patch_realtek.c                      | 154 +++++++-
- sound/soc/soc-utils.c                              |   1 +
- sound/soc/tegra/tegra_audio_graph_card.c           |  30 +-
- tools/include/uapi/linux/bpf.h                     |   6 +
- tools/testing/selftests/netfilter/.gitignore       |   1 +
- tools/testing/selftests/netfilter/Makefile         |   4 +-
- tools/testing/selftests/netfilter/audit_logread.c  | 165 +++++++++
- tools/testing/selftests/netfilter/config           |   1 +
- tools/testing/selftests/netfilter/nft_audit.sh     | 193 ++++++++++
- 190 files changed, 2961 insertions(+), 1642 deletions(-)
 
 
