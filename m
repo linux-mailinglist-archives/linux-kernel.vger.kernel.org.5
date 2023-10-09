@@ -2,61 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E47F7BDF14
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:26:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB577BDF3B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376765AbjJIN0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 09:26:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43350 "EHLO
+        id S1376822AbjJIN16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 09:27:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376701AbjJIN0D (ORCPT
+        with ESMTP id S1376816AbjJIN15 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 09:26:03 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0C0D6
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 06:26:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD895C433C9;
-        Mon,  9 Oct 2023 13:25:59 +0000 (UTC)
-Date:   Mon, 9 Oct 2023 14:25:57 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     Patrick Wang <patrick.wang.shcn@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] mm/kmemleak: fix print format of pointer in
- pr_debug()
-Message-ID: <ZSP/ZR5P/xRiiq7D@arm.com>
-References: <20231008023317.3015699-1-liushixin2@huawei.com>
- <20231008023317.3015699-5-liushixin2@huawei.com>
+        Mon, 9 Oct 2023 09:27:57 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F615A3;
+        Mon,  9 Oct 2023 06:27:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=Upzz23gM7CFVJCcFBQEZrdbmDiHFsFQK+Y+xE1IddiY=; b=mXBfR6M937X0CooRhB5p1qQeET
+        EpoVcaViV4YWfVL4jbUHqF4GhcQybjC4HJhD34LkZsM/yhGwaWaKbfOZ6/le5fvdVo1xE8YC9o0lN
+        isHZXwpnl11W+AbBQ4JHPX7BTHDpvBlEqj8XbXBvmVuI3x9q6uO1Vaq/Oqx37EfbV//TEL5BjhTki
+        s1Xe7UAYUBOn+gTzC9ey4jUNUJtRQfYMbN8EgnR5UZm/h7649fzmaHwqTl+BsO15nrB7aSzb/rP+w
+        pW1UdujmrRQ+q04MI4kLxftupV3zerRcQEzU3qBAS6Z0SQOIoIsfWPjZ8e72g5nE7kT044vtqAi0F
+        6njg/gUQ==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qpqIa-000PVk-3i; Mon, 09 Oct 2023 15:27:52 +0200
+Received: from [178.197.249.27] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qpqIZ-000SIq-Ka; Mon, 09 Oct 2023 15:27:51 +0200
+Subject: Re: [PATCH bpf 0/2] riscv, bpf: Properly sign-extend return values
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Pu Lehui <pulehui@huawei.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+        linux-kernel@vger.kernel.org, Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>, linux-riscv@lists.infradead.org
+References: <20231004120706.52848-1-bjorn@kernel.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <6dbba8a3-b07c-5247-f2c1-c6b484e9a16e@iogearbox.net>
+Date:   Mon, 9 Oct 2023 15:27:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231008023317.3015699-5-liushixin2@huawei.com>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231004120706.52848-1-bjorn@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27056/Mon Oct  9 09:40:11 2023)
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 08, 2023 at 10:33:17AM +0800, Liu Shixin wrote:
-> With 0x%p, the pointer will be hashed and print (____ptrval____) instead.
-> And with 0x%pa, the pointer can be successfully printed but with duplicate
-> prefixes, which looks like:
+On 10/4/23 2:07 PM, Björn Töpel wrote:
+> From: Björn Töpel <bjorn@rivosinc.com>
+[...]
+> The following test_progs now pass, which were previously broken:
 > 
->  kmemleak: kmemleak_free(0x(____ptrval____))
->  kmemleak: kmemleak_free_percpu(0x(____ptrval____))
->  kmemleak: kmemleak_free_part_phys(0x0x0000000a1af86000)
-> 
-> Use 0x%px instead of 0x%p or 0x%pa to print the pointer. Then the print
-> will be like:
-> 
->  kmemleak: kmemleak_free(0xffff9111c145b020)
->  kmemleak: kmemleak_free_percpu(0x00000000000333b0)
->  kmemleak: kmemleak_free_part_phys(0x0000000a1af80000)
-> 
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+>    | 13      bpf_cookie
+>    | 19      bpf_mod_race
+>    | 68      deny_namespace
+>    | 119     libbpf_get_fd_by_id_opts
+>    | 135     lookup_key
+>    | 137     lsm_cgroup
+>    | 284     test_lsm
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Thanks for the fixes, took them into bpf tree. I was wondering whether this could be
+backed by specific tests, but looks like the above list already takes care of it.
+
+Thanks,
+Daniel
