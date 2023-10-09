@@ -2,221 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3529F7BE319
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 16:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 231337BE326
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 16:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232987AbjJIOj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 10:39:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37012 "EHLO
+        id S233240AbjJIOk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 10:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230326AbjJIOj0 (ORCPT
+        with ESMTP id S233214AbjJIOkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 10:39:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1101BAC
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 07:38:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696862320;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=j5S0u5gaTjMHujObA+IkbhZqVdwJqY3N87xRM3sPrJM=;
-        b=XawqUMakaIhPwrygylY9hOsi4ol8KD5Camb3ouvR2Dujo+nYhwQDqRsHuQfCfierii1/fh
-        nsH6nDXbTfPj9K22XYuBf4ez4TFLzBReTNErJ5s3sE4gVxy9u1XqinZcMu3fWpacgtII8M
-        RsXQ/sbsK/Lu7Cipzc968NoR2yuThwg=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-55-319ywWQLNU-tOEbnOdU6Sw-1; Mon, 09 Oct 2023 10:38:23 -0400
-X-MC-Unique: 319ywWQLNU-tOEbnOdU6Sw-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3f5df65fa35so29521545e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 07:38:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696862303; x=1697467103;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=j5S0u5gaTjMHujObA+IkbhZqVdwJqY3N87xRM3sPrJM=;
-        b=ZjsLUL0kSANJnGdh8KN+unjIvVwoUlYZXk5o9DfYulzmgYIDd1nA1HCZ1cXFa0Bqv3
-         kz3EY9uFZzsmOKuJ4swZho6qmvqoAmvwtFz2k7yYrfvmNy+nU7CmpIdE8h+DL1aaJ/B3
-         6rC5d14TSCfANA1q87bAlUYIVg/t7izoBWwTL7v+vDJq6mSys8coPPpvQFntEn44lDRs
-         VNcBRZRa1zrGh6c2e8rjWhRoExM5m20sc5aPl0TSecotezZ/ytN3x2FCRUmYx6/Yy1aq
-         Rh8Je1BmA9FgmgyuW8BsQL2bQWTtzL0q/ipo4ptCzB/RiFo9aytx4NWaK1qlD3jWw4Ni
-         e5ZQ==
-X-Gm-Message-State: AOJu0YxbKUaAoDNz8C0r7MN4i2RbBfjRlZlj6qJAl/7Uq03A5ftzg9z5
-        Vi7nefn2ckt8Dc0q5guFApzS+K62DX/cRgV1t2l1wxcfQdFG/Hz1LaWsT1b+ruzY+t+cZertu35
-        p721fiyZYOvIAGarusxu95K/q
-X-Received: by 2002:a05:600c:255:b0:405:3d83:2b76 with SMTP id 21-20020a05600c025500b004053d832b76mr13725670wmj.13.1696862302694;
-        Mon, 09 Oct 2023 07:38:22 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE/lgJh9xLkSgPGi1UDBVlS9dc93GXgV1bUU7zwzwIH/LQSAB3KVA+j1T7kMzmAEhw6poQhlQ==
-X-Received: by 2002:a05:600c:255:b0:405:3d83:2b76 with SMTP id 21-20020a05600c025500b004053d832b76mr13725617wmj.13.1696862302236;
-        Mon, 09 Oct 2023 07:38:22 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c733:6400:ae10:4bb7:9712:8548? (p200300cbc7336400ae104bb797128548.dip0.t-ipconnect.de. [2003:cb:c733:6400:ae10:4bb7:9712:8548])
-        by smtp.gmail.com with ESMTPSA id k22-20020a7bc416000000b00404719b05b5sm11395985wmi.27.2023.10.09.07.38.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 07:38:21 -0700 (PDT)
-Message-ID: <214b78ed-3842-5ba1-fa9c-9fa719fca129@redhat.com>
-Date:   Mon, 9 Oct 2023 16:38:20 +0200
+        Mon, 9 Oct 2023 10:40:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C1F9E
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 07:40:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5923EC433CA;
+        Mon,  9 Oct 2023 14:40:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696862423;
+        bh=Qi8x1VMzL9xY8Ggs+lCxTdXpkKrxNatc88uic+xNA0c=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=pM7oO7mwOvaqH+hHooZ9UcwrUtxALjCYc/GKb6Cn+njhtUCBJeFyU3y8KOaskiYjB
+         DQ6PTB3xDjNvDjureoSXN8aLI2pLqoqx1oL72m0/N0uOECa0BpHKRCoVT1ppYrNazN
+         OwulwYbeJTDDVkBd6zMlaM1HME6ESZObVRbFoBJEL8AsBr8vMYVJtyHESD04Prh1Aj
+         +SzQFvCgGqpGymE36VHIKwbKbFfADGMg6VCaiQquPUHLT10EOkNVRtdmRq9d2mwB4o
+         Hb5uaCm4pZW02MjUM3bxh0bGGO99cDIKSYJMd/7sBESb4Nm0tm63KAKClrymDsmvCF
+         5OLJQ/96lirQw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 41FDEE11F46;
+        Mon,  9 Oct 2023 14:40:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
-Content-Language: en-US
-To:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
-        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-References: <20231009064230.2952396-1-surenb@google.com>
- <20231009064230.2952396-3-surenb@google.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20231009064230.2952396-3-surenb@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Subject: Re: [PATCH bpf-next v2 0/2] bpf: Add ability to pin bpf timer to calling
+ CPU
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169686242326.26391.4445179958402601494.git-patchwork-notify@kernel.org>
+Date:   Mon, 09 Oct 2023 14:40:23 +0000
+References: <20231004162339.200702-1-void@manifault.com>
+In-Reply-To: <20231004162339.200702-1-void@manifault.com>
+To:     David Vernet <void@manifault.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yonghong.song@linux.dev, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.10.23 08:42, Suren Baghdasaryan wrote:
-> From: Andrea Arcangeli <aarcange@redhat.com>
-> 
-> Implement the uABI of UFFDIO_MOVE ioctl.
-> UFFDIO_COPY performs ~20% better than UFFDIO_MOVE when the application
-> needs pages to be allocated [1]. However, with UFFDIO_MOVE, if pages are
-> available (in userspace) for recycling, as is usually the case in heap
-> compaction algorithms, then we can avoid the page allocation and memcpy
-> (done by UFFDIO_COPY). Also, since the pages are recycled in the
-> userspace, we avoid the need to release (via madvise) the pages back to
-> the kernel [2].
-> We see over 40% reduction (on a Google pixel 6 device) in the compacting
-> thread’s completion time by using UFFDIO_MOVE vs. UFFDIO_COPY. This was
-> measured using a benchmark that emulates a heap compaction implementation
-> using userfaultfd (to allow concurrent accesses by application threads).
-> More details of the usecase are explained in [2].
-> Furthermore, UFFDIO_MOVE enables moving swapped-out pages without
-> touching them within the same vma. Today, it can only be done by mremap,
-> however it forces splitting the vma.
-> 
-> [1] https://lore.kernel.org/all/1425575884-2574-1-git-send-email-aarcange@redhat.com/
-> [2] https://lore.kernel.org/linux-mm/CA+EESO4uO84SSnBhArH4HvLNhaUQ5nZKNKXqxRCyjniNVjp0Aw@mail.gmail.com/
-> 
-> Update for the ioctl_userfaultfd(2)  manpage:
-> 
->     UFFDIO_MOVE
->         (Since Linux xxx)  Move a continuous memory chunk into the
->         userfault registered range and optionally wake up the blocked
->         thread. The source and destination addresses and the number of
->         bytes to move are specified by the src, dst, and len fields of
->         the uffdio_move structure pointed to by argp:
-> 
->             struct uffdio_move {
->                 __u64 dst;    /* Destination of move */
->                 __u64 src;    /* Source of move */
->                 __u64 len;    /* Number of bytes to move */
->                 __u64 mode;   /* Flags controlling behavior of move */
->                 __s64 move;   /* Number of bytes moved, or negated error */
->             };
-> 
->         The following value may be bitwise ORed in mode to change the
->         behavior of the UFFDIO_MOVE operation:
-> 
->         UFFDIO_MOVE_MODE_DONTWAKE
->                Do not wake up the thread that waits for page-fault
->                resolution
-> 
->         UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES
->                Allow holes in the source virtual range that is being moved.
->                When not specified, the holes will result in ENOENT error.
->                When specified, the holes will be accounted as successfully
->                moved memory. This is mostly useful to move hugepage aligned
->                virtual regions without knowing if there are transparent
->                hugepages in the regions or not, but preventing the risk of
->                having to split the hugepage during the operation.
-> 
->         The move field is used by the kernel to return the number of
->         bytes that was actually moved, or an error (a negated errno-
->         style value).  If the value returned in move doesn't match the
->         value that was specified in len, the operation fails with the
->         error EAGAIN.  The move field is output-only; it is not read by
->         the UFFDIO_MOVE operation.
-> 
->         The operation may fail for various reasons. Usually, remapping of
->         pages that are not exclusive to the given process fail; once KSM
->         might deduplicate pages or fork() COW-shares pages during fork()
->         with child processes, they are no longer exclusive. Further, the
->         kernel might only perform lightweight checks for detecting whether
->         the pages are exclusive, and return -EBUSY in case that check fails.
->         To make the operation more likely to succeed, KSM should be
->         disabled, fork() should be avoided or MADV_DONTFORK should be
->         configured for the source VMA before fork().
-> 
->         This ioctl(2) operation returns 0 on success.  In this case, the
->         entire area was moved.  On error, -1 is returned and errno is
->         set to indicate the error.  Possible errors include:
-> 
->         EAGAIN The number of bytes moved (i.e., the value returned in
->                the move field) does not equal the value that was
->                specified in the len field.
-> 
->         EINVAL Either dst or len was not a multiple of the system page
->                size, or the range specified by src and len or dst and len
->                was invalid.
-> 
->         EINVAL An invalid bit was specified in the mode field.
-> 
->         ENOENT
->                The source virtual memory range has unmapped holes and
->                UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES is not set.
-> 
->         EEXIST
->                The destination virtual memory range is fully or partially
->                mapped.
-> 
->         EBUSY
->                The pages in the source virtual memory range are not
->                exclusive to the process. The kernel might only perform
->                lightweight checks for detecting whether the pages are
->                exclusive. To make the operation more likely to succeed,
->                KSM should be disabled, fork() should be avoided or
->                MADV_DONTFORK should be configured for the source virtual
->                memory area before fork().
-> 
->         ENOMEM Allocating memory needed for the operation failed.
-> 
->         ESRCH
->                The faulting process has exited at the time of a
->                UFFDIO_MOVE operation.
-> 
+Hello:
 
-A general comment simply because I realized that just now: does anything 
-speak against limiting the operations now to a single MM?
+This series was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-The use cases I heard so far don't need it. If ever required, we could 
-consider extending it.
+On Wed,  4 Oct 2023 11:23:37 -0500 you wrote:
+> BPF supports creating high resolution timers using bpf_timer_* helper
+> functions. Currently, only the BPF_F_TIMER_ABS flag is supported, which
+> specifies that the timeout should be interpreted as absolute time. It
+> would also be useful to be able to pin that timer to a core. For
+> example, if you wanted to make a subset of cores run without timer
+> interrupts, and only have the timer be invoked on a single core.
+> 
+> [...]
 
-Let's reduce complexity and KIS unless really required.
+Here is the summary with links:
+  - [bpf-next,v2,1/2] bpf: Add ability to pin bpf timer to calling CPU
+    https://git.kernel.org/bpf/bpf-next/c/d6247ecb6c1e
+  - [bpf-next,v2,2/2] bpf/selftests: Test pinning bpf timer to a core
+    https://git.kernel.org/bpf/bpf-next/c/0d7ae0686075
 
-
-Further: see "22) Do not crash the kernel" in coding-style.rst. All 
-these BUG_ON need to go. Ideally, use WARN_ON_ONCE() or just VM_WARN_ON().
-
+You are awesome, thank you!
 -- 
-Cheers,
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-David / dhildenb
 
