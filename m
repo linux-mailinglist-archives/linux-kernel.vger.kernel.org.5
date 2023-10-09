@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F5D7BE411
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C91A7BE413
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376461AbjJIPMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 11:12:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53042 "EHLO
+        id S1376482AbjJIPNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 11:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376375AbjJIPMv (ORCPT
+        with ESMTP id S1376519AbjJIPND (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 11:12:51 -0400
+        Mon, 9 Oct 2023 11:13:03 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD0AA3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 08:12:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89AFBCF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 08:12:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696864326;
+        s=mimecast20190719; t=1696864331;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=dWheL9NPpP28/IT7qBTiYxZ/8MEfuddV0O/NUpo7MnE=;
-        b=E1qUsZBQzMSsqmTC48gBNYns+Fz5Zfd4+xxzM7GCpX+orE81bkTwP8QEPSgVkciq7ObSab
-        BGjAL9/x98B6lJpB5GBPLD4VfSZnISJMOBLEu7O4YuQJeV/t6eScgO34uNHPFZj+rTfjkV
-        u2aufFGZxnxKHfUhuvHy5T0O/Qwz2K4=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=4qfZPKhe4D8OCEELO/RpTfN5G0X8gflsKKhK6pkYfv0=;
+        b=Z9MLekZpagAdcwMvDz/QySI9qxZaTVjE8jzBDB8SWae9rRvxwa6CYPo+7qs6fuPMWALhWJ
+        fSBZpCeiD8Likw9xtf91vPI22z/3XDJRSohT2HeCawPqOP9V7bbdeTkbCmxAQoz14ugWwi
+        htKcRVAxiOjpVsXwggGSGykhUvfNa6s=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-290-FNlJbYrgMp227rMS2-xE2w-1; Mon, 09 Oct 2023 11:12:05 -0400
-X-MC-Unique: FNlJbYrgMp227rMS2-xE2w-1
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-4180bc4227bso88706521cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 08:12:04 -0700 (PDT)
+ us-mta-294-Bi75ZB-bP126ZD6wtQpOLg-1; Mon, 09 Oct 2023 11:12:10 -0400
+X-MC-Unique: Bi75ZB-bP126ZD6wtQpOLg-1
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-65af7b636easo61194276d6.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 08:12:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696864324; x=1697469124;
+        d=1e100.net; s=20230601; t=1696864330; x=1697469130;
         h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dWheL9NPpP28/IT7qBTiYxZ/8MEfuddV0O/NUpo7MnE=;
-        b=fM7cLX+h2XOKUubdIlELocc25rKo0N5tszqreCNd5SQUZjp2+NxKBYWi/GRaadIFLH
-         DDtLGN6Mp7NzYQW6gXiNBmhrUPaNJU/1kXB2A0AJjZazNZTLOU7Vi8uCPVxXsuprCwbz
-         gNjPgmY6zCTlmIz12XBPYCPQew7mFxA+JH3FfzJeIgzWTjClgvAwiwmXBbSoYkKX10FK
-         g4UhOO8K+k1kSbKmCKwMdLalE610DfOCijeHGVmg24PnX9UYwF+Ba9iE8QN2S25amP0G
-         kzi7x24r6sVAGMvUw7Y9Uy9qFXWBav+Rb2MZPIKolXCxoiHZTH7Qog7N9N3lqS9tzAZS
-         MR4g==
-X-Gm-Message-State: AOJu0YxEf2TKUGw2ZCs5AWnmylsmRL3ySRw/Htgc52lH4TBxxaLZZqTW
-        +gDuJrlyaMJNlHTB0npwg4Nhk+jnwjGZAIw3tJaSWAEpNmcFeaNxJCBEDx1Jdvm7v5fgDzPfUWF
-        OLXHXIScaeTnCzIrNAfVbsscL4OJsaTnf
-X-Received: by 2002:ac8:7d8c:0:b0:415:1804:d9ee with SMTP id c12-20020ac87d8c000000b004151804d9eemr15289308qtd.16.1696864324410;
-        Mon, 09 Oct 2023 08:12:04 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF/8LPmeDeSvnmvknyt8UY5KqeAQPZ473cqIuwzMSe8130s3hhWp5rCz2VdJFee0PE7ktMtyg==
-X-Received: by 2002:ac8:7d8c:0:b0:415:1804:d9ee with SMTP id c12-20020ac87d8c000000b004151804d9eemr15289288qtd.16.1696864324168;
-        Mon, 09 Oct 2023 08:12:04 -0700 (PDT)
+        bh=4qfZPKhe4D8OCEELO/RpTfN5G0X8gflsKKhK6pkYfv0=;
+        b=N5LEH3Y7tFkfd13WRIimlTtBPkLr+70hUwGYeQS2AAGtW9gcrMNpPb2P2VMO21j5nR
+         dh24yzMVB1evRLRpkf8jSiSSAuleqBn85G3GYyDTDZrAShIUyJHk6+LWSU0vy6NB0kPx
+         TeXfBmmqLY14ErRcR7032cI7KVwiRWwWZ6L6h8q9RvtzkVDSEtGr9WszH04dBYNXgmGp
+         W4LLm5RNwN2Tu4hUQXCp7U0sow4u8pIQdBa3J5O150YczX2leRsG00+9BgBo36Ak08zT
+         XKsh9sGpQqfQySCddXvUBRt1yNGkVhRblWaNA3KH5GE/l0PhcBjTV8Xn9paPM+SsFL4y
+         4OaQ==
+X-Gm-Message-State: AOJu0YyyPBDpiN75rrhFowaFvWIeDUjTfdLSfXqrPrU6UzxysQ4F+TAp
+        fL8oNUDts5dN3z9FksrwxgYOsi5QzOOM6NkGogdLpbjTROzLYuwdFRwpmgcEmYaX+kWwlQt7PXC
+        p0OO7xTOzr0wROR7irWd2Z2oV
+X-Received: by 2002:a0c:f2d4:0:b0:668:dd6b:6cbd with SMTP id c20-20020a0cf2d4000000b00668dd6b6cbdmr15849814qvm.46.1696864329855;
+        Mon, 09 Oct 2023 08:12:09 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFiRw3UpxKj8WXRyOtwVOg38QyfJskKdQC95sLHfqSeo421hVHmQH13cUXqSbWHJLqUbR9Jhg==
+X-Received: by 2002:a0c:f2d4:0:b0:668:dd6b:6cbd with SMTP id c20-20020a0cf2d4000000b00668dd6b6cbdmr15849799qvm.46.1696864329649;
+        Mon, 09 Oct 2023 08:12:09 -0700 (PDT)
 Received: from vschneid.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id g10-20020ac84b6a000000b00417dd1dd0adsm3753683qts.87.2023.10.09.08.12.01
+        by smtp.gmail.com with ESMTPSA id fh16-20020a0562141a1000b0065aff6b49afsm3912638qvb.110.2023.10.09.08.12.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 08:12:03 -0700 (PDT)
+        Mon, 09 Oct 2023 08:12:09 -0700 (PDT)
 From:   Valentin Schneider <vschneid@redhat.com>
 To:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -66,12 +66,13 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 1/3] sched/nohz: Update idle load-balancing (ILB) comments
-In-Reply-To: <20231006102518.2452758-2-mingo@kernel.org>
+Subject: Re: [PATCH 2/3] sched/nohz: Use consistent variable names in
+ find_new_ilb() and kick_ilb()
+In-Reply-To: <20231006102518.2452758-3-mingo@kernel.org>
 References: <20231006102518.2452758-1-mingo@kernel.org>
- <20231006102518.2452758-2-mingo@kernel.org>
-Date:   Mon, 09 Oct 2023 17:12:00 +0200
-Message-ID: <xhsmhfs2jomnz.mognet@vschneid.remote.csb>
+ <20231006102518.2452758-3-mingo@kernel.org>
+Date:   Mon, 09 Oct 2023 17:12:06 +0200
+Message-ID: <xhsmhedi3omnt.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -85,13 +86,7 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 06/10/23 12:25, Ingo Molnar wrote:
->  - Fix incorrect/misleading comments,
->
->  - clarify some others,
->
->  - fix typos & grammar,
->
->  - and use more consistent style throughout.
+> Use 'ilb_cpu' consistently in both functions.
 >
 > Signed-off-by: Ingo Molnar <mingo@kernel.org>
 > Cc: linux-kernel@vger.kernel.org
