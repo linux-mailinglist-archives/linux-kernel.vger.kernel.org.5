@@ -2,376 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CBD47BED62
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 465597BED59
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378727AbjJIV31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 17:29:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50706 "EHLO
+        id S1378686AbjJIV2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 17:28:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378722AbjJIV3Y (ORCPT
+        with ESMTP id S1378259AbjJIV2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 17:29:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B96B9C
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 14:28:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696886918;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HbgTwu+Sc8hGI0EzdVEZj0VYB/A8KVFIZ5yH1IhJnR4=;
-        b=VyJzdahf5baJ9Wag7tArIj0O88xM8kcgWsL5o2ir/hcnKjx3z74EUXpF49zlU4uv/D4J7z
-        XMhQ2abjsoy7V6B77hUIu3ivTR/w1xeVgwFvua4ZSNangd3au9CblqQHTptXTUaiO+xWQX
-        xUqnzFRJDVpb6PKEfjBFaT8ClbCsH38=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-104-YOq5ROwHPy2cvaSI7zMmjA-1; Mon, 09 Oct 2023 17:28:32 -0400
-X-MC-Unique: YOq5ROwHPy2cvaSI7zMmjA-1
-Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-7742bab9c0cso520941985a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 14:28:32 -0700 (PDT)
+        Mon, 9 Oct 2023 17:28:45 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28686A7
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 14:28:44 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-77063481352so487873285a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 14:28:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1696886923; x=1697491723; darn=vger.kernel.org;
+        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xDjMLvomrGk6FCSJUNzqCdTJAAUKKzTMIxQhSzvSVpU=;
+        b=OpHYZ4mhNmxHjhCJGVScCuJ9L3BpJhU/fjvQEgBfCNyNXAHawudlSOHtXI3d5T22b7
+         gwNjhasLxyo/chWnHBy8hnKj7kSuUXdvJxt33GFF7MuavRqrUda2nwLx2SvsXZBtWFo0
+         yu7L6b7CnUlbfo0LlFIkpnE1eDdfkvDr/Pyu4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696886911; x=1697491711;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HbgTwu+Sc8hGI0EzdVEZj0VYB/A8KVFIZ5yH1IhJnR4=;
-        b=hUOJ6OasgpIn7e4Ex7j1jNJdj3YCPBMT/3Jd9nrFawV5mfQVPDoEwFm+PxE0LdFPo0
-         OgL5HgF87YnQorQ/fZlLzzyXIWv1pkerGOqf3SLhtUOe+bPBItFCKX+nAaSrVXlW4SIn
-         +0D9H+5VIfls3laQ8I4VS0alT6BR2J/ec3pO17lwt4WcY/G0iPjnAy6Ss5NUi/netU08
-         zsBkJB+UdtukVRGz5/CtNwvA0tbCdnwErzqD9nO9G4RswUE0/kF/XVxgyFdzEAjn7Cx0
-         q0N5Sxw/iD9eMOGfbEMHzkgyKLBBPp0rabgSugqmYxzq1u4esbgvjYvgFhYaztIXatGj
-         +eTA==
-X-Gm-Message-State: AOJu0YyxC/Ck/qYnIbRzng8datB0iw+YUjiR/qIptJsXZAkhOK4bgl+u
-        dk9x0Lv7HxPhsNHcp07jlipUgMwCyYJpFPcQDNLEuPXPdLqc/p0Mc5IhEdkFj8Mn/6Ol0SYkbl1
-        +0Xc+GqYR1opyAWLTsNH249fF
-X-Received: by 2002:a05:620a:22b1:b0:76c:e5a2:444f with SMTP id p17-20020a05620a22b100b0076ce5a2444fmr13294070qkh.72.1696886911465;
-        Mon, 09 Oct 2023 14:28:31 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHkoRbuV0enbNnjYtdfo/pgK2wr/oh1oVx7ENJNu2d0aFBfln5GEmWPCa5XiSNiJa9ccN2PLQ==
-X-Received: by 2002:a05:620a:22b1:b0:76c:e5a2:444f with SMTP id p17-20020a05620a22b100b0076ce5a2444fmr13294063qkh.72.1696886911094;
-        Mon, 09 Oct 2023 14:28:31 -0700 (PDT)
-Received: from fedora ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id 2-20020a05620a078200b007742bc74184sm3792620qka.110.2023.10.09.14.28.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 14:28:30 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 16:28:28 -0500
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Elliot Berman <quic_eberman@quicinc.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Guru Das Srinagesh <quic_gurus@quicinc.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v3 04/15] firmware: qcom: add a dedicated TrustZone
- buffer allocator
-Message-ID: <f6jspdoeyv6ntcrl6qndy2ud3mcdkoxxcnzqm3qpbtcd3ztdpi@7iw5f5og7is2>
-References: <20231009153427.20951-1-brgl@bgdev.pl>
- <20231009153427.20951-5-brgl@bgdev.pl>
+        d=1e100.net; s=20230601; t=1696886923; x=1697491723;
+        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=xDjMLvomrGk6FCSJUNzqCdTJAAUKKzTMIxQhSzvSVpU=;
+        b=mbtpnvnuUrFSPWtwIiwPuvAeDWOwcYZbkPqNSqSwCY3LiAzm6t/kLGaXiFPzsgMhPh
+         eMajnaUujpnIkKWgMlw+ue25siXC9wPi21zv+qPA/R7WZg+3XLLdzgS9tpnezepH0q0D
+         5CPBR/eEzfOWo+YqleRJ5iYBTNzmhDIozAgfbAFqHkPC3eIy0dCSW/SuimHp6W4yAc17
+         PEreQbFc4K2qqyzsQenScI5LKI50/EqvZWn0RfZvWRw05W4j3abiUcQRqaEcpdrGzavx
+         jRJNFWZ3qJlGWi7c1yYwIeFirMecsA8Z1Znxt47IA0+oQmQSgUHMTSsBD++OM83aiwrm
+         t0AA==
+X-Gm-Message-State: AOJu0YzLvQQHp3SGbQ5sEqFetdjLXh6e/a8GPHkzE0NWpnwcogc/IQev
+        rZesvdOSuTvum/w7Q9vd3oNZBA==
+X-Google-Smtp-Source: AGHT+IFgp3bUAlUoo5MfQBEIlkw4t2l7WjSsKcgXrBp0lZALYD6Rqry4DBu4aiY69rQKNXHRePOt2g==
+X-Received: by 2002:a05:620a:288a:b0:774:21d8:b0bb with SMTP id j10-20020a05620a288a00b0077421d8b0bbmr17564830qkp.24.1696886922904;
+        Mon, 09 Oct 2023 14:28:42 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id s17-20020a05620a031100b00767177a5bebsm3783508qkm.56.2023.10.09.14.28.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Oct 2023 14:28:42 -0700 (PDT)
+Message-ID: <ac520b3b-bf70-4643-a259-83e91dd330a6@broadcom.com>
+Date:   Mon, 9 Oct 2023 14:28:38 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231009153427.20951-5-brgl@bgdev.pl>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v5 15/16] net ethtool: net: Let the active time
+ stamping layer be selectable
+To:     =?UTF-8?Q?K=C3=B6ry_Maincent?= <kory.maincent@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Michael Walle <michael@walle.cc>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>
+References: <20231009155138.86458-1-kory.maincent@bootlin.com>
+ <20231009155138.86458-16-kory.maincent@bootlin.com>
+From:   Florian Fainelli <florian.fainelli@broadcom.com>
+Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
+ 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
+In-Reply-To: <20231009155138.86458-16-kory.maincent@bootlin.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000487b1306074f4627"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 05:34:16PM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+--000000000000487b1306074f4627
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+On 10/9/23 08:51, Köry Maincent wrote:
+> From: Kory Maincent <kory.maincent@bootlin.com>
 > 
-> We have several SCM calls that require passing buffers to the TrustZone
-> on top of the SMC core which allocates memory for calls that require
-> more than 4 arguments.
+> Now that the current timestamp is saved in a variable lets add the
+> ETHTOOL_MSG_TS_SET ethtool netlink socket to make it selectable.
 > 
-> Currently every user does their own thing which leads to code
-> duplication. Many users call dma_alloc_coherent() for every call which
-> is terribly unperformant (speed- and size-wise).
-> 
-> Provide a set of library functions for creating and managing pool of
-> memory which is suitable for sharing with the TrustZone, that is:
-> page-aligned, contiguous and non-cachable as well as provides a way of
-> mapping of kernel virtual addresses to physical space.
-> 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 > ---
->  drivers/firmware/qcom/Kconfig            |  19 ++
->  drivers/firmware/qcom/Makefile           |   1 +
->  drivers/firmware/qcom/qcom_tzmem.c       | 301 +++++++++++++++++++++++
->  drivers/firmware/qcom/qcom_tzmem.h       |  13 +
->  include/linux/firmware/qcom/qcom_tzmem.h |  28 +++
->  5 files changed, 362 insertions(+)
->  create mode 100644 drivers/firmware/qcom/qcom_tzmem.c
->  create mode 100644 drivers/firmware/qcom/qcom_tzmem.h
->  create mode 100644 include/linux/firmware/qcom/qcom_tzmem.h
-> 
-> diff --git a/drivers/firmware/qcom/Kconfig b/drivers/firmware/qcom/Kconfig
-> index 3f05d9854ddf..b80269a28224 100644
-> --- a/drivers/firmware/qcom/Kconfig
-> +++ b/drivers/firmware/qcom/Kconfig
-> @@ -9,6 +9,25 @@ menu "Qualcomm firmware drivers"
->  config QCOM_SCM
->  	tristate
->  
-> +config QCOM_TZMEM
-> +	tristate
-> +
-> +choice
-> +	prompt "TrustZone interface memory allocator mode"
-> +	default QCOM_TZMEM_MODE_DEFAULT
-> +	help
-> +	  Selects the mode of the memory allocator providing memory buffers of
-> +	  suitable format for sharing with the TrustZone. If in doubt, select
-> +	  'Default'.
-> +
-> +config QCOM_TZMEM_MODE_DEFAULT
-> +	bool "Default"
-> +	help
-> +	  Use the default allocator mode. The memory is page-aligned, non-cachable
-> +	  and contiguous.
-> +
-> +endchoice
-> +
->  config QCOM_SCM_DOWNLOAD_MODE_DEFAULT
->  	bool "Qualcomm download mode enabled by default"
->  	depends on QCOM_SCM
-> diff --git a/drivers/firmware/qcom/Makefile b/drivers/firmware/qcom/Makefile
-> index c9f12ee8224a..0be40a1abc13 100644
-> --- a/drivers/firmware/qcom/Makefile
-> +++ b/drivers/firmware/qcom/Makefile
-> @@ -5,5 +5,6 @@
->  
->  obj-$(CONFIG_QCOM_SCM)		+= qcom-scm.o
->  qcom-scm-objs += qcom_scm.o qcom_scm-smc.o qcom_scm-legacy.o
-> +obj-$(CONFIG_QCOM_TZMEM)	+= qcom_tzmem.o
->  obj-$(CONFIG_QCOM_QSEECOM)	+= qcom_qseecom.o
->  obj-$(CONFIG_QCOM_QSEECOM_UEFISECAPP) += qcom_qseecom_uefisecapp.o
-> diff --git a/drivers/firmware/qcom/qcom_tzmem.c b/drivers/firmware/qcom/qcom_tzmem.c
-> new file mode 100644
-> index 000000000000..eee51fed756e
-> --- /dev/null
-> +++ b/drivers/firmware/qcom/qcom_tzmem.c
-> @@ -0,0 +1,301 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Memory allocator for buffers shared with the TrustZone.
-> + *
-> + * Copyright (C) 2023 Linaro Ltd.
-> + */
-> +
-> +#include <linux/bug.h>
-> +#include <linux/cleanup.h>
-> +#include <linux/dma-mapping.h>
-> +#include <linux/err.h>
-> +#include <linux/firmware/qcom/qcom_tzmem.h>
-> +#include <linux/genalloc.h>
-> +#include <linux/gfp.h>
-> +#include <linux/mm.h>
-> +#include <linux/radix-tree.h>
-> +#include <linux/slab.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/types.h>
-> +
-> +#include "qcom_tzmem.h"
-> +
-> +struct qcom_tzmem_pool {
-> +	void *vbase;
-> +	phys_addr_t pbase;
-> +	size_t size;
-> +	struct gen_pool *pool;
-> +	void *priv;
-> +};
-> +
-> +struct qcom_tzmem_chunk {
-> +	phys_addr_t paddr;
-> +	size_t size;
-> +	struct qcom_tzmem_pool *owner;
-> +};
-> +
-> +static struct device *qcom_tzmem_dev;
-> +static RADIX_TREE(qcom_tzmem_chunks, GFP_ATOMIC);
-> +static DEFINE_SPINLOCK(qcom_tzmem_chunks_lock);
-> +
-> +#if IS_ENABLED(CONFIG_QCOM_TZMEM_MODE_DEFAULT)
-> +
-> +static int qcom_tzmem_init(void)
+
+[snip]
+
+> +static int ethnl_set_ts_validate(struct ethnl_req_info *req_info,
+> +				 struct genl_info *info)
 > +{
-> +	return 0;
+> +	struct nlattr **tb = info->attrs;
+> +	const struct net_device_ops *ops = req_info->dev->netdev_ops;
+> +
+> +	if (!tb[ETHTOOL_A_TS_LAYER])
+> +		return 0;
+> +
+> +	if (!ops->ndo_hwtstamp_set)
+> +		return -EOPNOTSUPP;
+
+I would check for this first, in all likelihood this is what most 
+drivers currently do not support, no need to event de-reference the 
+array of attributes.
+
+> +
+> +	return 1;
 > +}
 > +
-> +static int qcom_tzmem_init_pool(struct qcom_tzmem_pool *pool)
+> +static int ethnl_set_ts(struct ethnl_req_info *req_info, struct genl_info *info)
 > +{
-> +	return 0;
-> +}
+> +	struct net_device *dev = req_info->dev;
+> +	const struct ethtool_ops *ops = dev->ethtool_ops;
+> +	struct kernel_hwtstamp_config config = {0};
+> +	struct nlattr **tb = info->attrs;
+> +	bool mod = false;
+> +	u32 ts_layer;
+> +	int ret;
 > +
-> +static void qcom_tzmem_cleanup_pool(struct qcom_tzmem_pool *pool)
-> +{
+> +	ts_layer = dev->ts_layer;
+> +	ethnl_update_u32(&ts_layer, tb[ETHTOOL_A_TS_LAYER], &mod);
 > +
-> +}
+> +	if (!mod)
+> +		return 0;
 > +
-> +#endif /* CONFIG_QCOM_TZMEM_MODE_DEFAULT */
-> +
-> +/**
-> + * qcom_tzmem_pool_new() - Create a new TZ memory pool.
-> + * @size - Size of the new pool in bytes.
-> + *
-> + * Create a new pool of memory suitable for sharing with the TrustZone.
-> + *
-> + * Must not be used in atomic context.
-> + *
-> + * Returns:
-> + * New memory pool address or ERR_PTR() on error.
-> + */
-> +struct qcom_tzmem_pool *qcom_tzmem_pool_new(size_t size)
-> +{
-> +	struct qcom_tzmem_pool *pool;
-> +	int ret = -ENOMEM;
-> +
-> +	if (!size)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	size = PAGE_ALIGN(size);
-> +
-> +	pool = kzalloc(sizeof(*pool), GFP_KERNEL);
-> +	if (!pool)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	pool->size = size;
-> +
-> +	pool->vbase = dma_alloc_coherent(qcom_tzmem_dev, size, &pool->pbase,
-> +					 GFP_KERNEL);
-> +	if (!pool->vbase)
-> +		goto err_kfree_pool;
-> +
-> +	pool->pool = gen_pool_create(PAGE_SHIFT, -1);
-> +	if (!pool)
-> +		goto err_dma_free;
-> +
-> +	gen_pool_set_algo(pool->pool, gen_pool_best_fit, NULL);
-> +
-> +	ret = gen_pool_add_virt(pool->pool, (unsigned long)pool->vbase,
-> +				pool->pbase, size, -1);
-> +	if (ret)
-> +		goto err_destroy_genpool;
-> +
-> +	ret = qcom_tzmem_init_pool(pool);
-> +	if (ret)
-> +		goto err_destroy_genpool;
-> +
-> +	return pool;
-> +
-> +err_destroy_genpool:
-> +	gen_pool_destroy(pool->pool);
-> +err_dma_free:
-> +	dma_free_coherent(qcom_tzmem_dev, size, pool->vbase, pool->pbase);
-> +err_kfree_pool:
-> +	kfree(pool);
-> +	return ERR_PTR(ret);
-> +}
-> +EXPORT_SYMBOL_GPL(qcom_tzmem_pool_new);
-> +
-> +/**
-> + * qcom_tzmem_pool_free() - Destroy a TZ memory pool and free all resources.
-> + * @pool: Memory pool to free.
-> + *
-> + * Must not be called if any of the allocated chunks has not been freed.
-> + * Must not be used in atomic context.
-> + */
-> +void qcom_tzmem_pool_free(struct qcom_tzmem_pool *pool)
-> +{
-> +	struct qcom_tzmem_chunk *chunk;
-> +	struct radix_tree_iter iter;
-> +	bool non_empty = false;
-> +	void **slot;
-> +
-> +	if (!pool)
-> +		return;
-> +
-> +	qcom_tzmem_cleanup_pool(pool);
-> +
-> +	scoped_guard(spinlock_irqsave, &qcom_tzmem_chunks_lock) {
-> +		radix_tree_for_each_slot(slot, &qcom_tzmem_chunks, &iter, 0) {
-> +			chunk = *slot;
-> +
-> +			if (chunk->owner == pool)
-> +				non_empty = true;
-> +		}
+> +	if (ts_layer & NETDEV_TIMESTAMPING && !ops->get_ts_info) {
+> +		NL_SET_ERR_MSG_ATTR(info->extack, tb[ETHTOOL_A_TS_LAYER],
+> +				    "this device cannot support timestamping");
+
+Maybe expand the extended ack with "this devices does not support 
+MAC-based timestamping"
+
+> +		return -EINVAL;
 > +	}
 > +
-> +	WARN(non_empty, "Freeing TZ memory pool with memory still allocated");
+> +	if (ts_layer & PHYLIB_TIMESTAMPING && !phy_has_tsinfo(dev->phydev)) {
+> +		NL_SET_ERR_MSG_ATTR(info->extack, tb[ETHTOOL_A_TS_LAYER],
+> +				    "this device cannot support timestamping");
+
+Likewise, detail which kind of timestamping is not supported.
+
+> +		return -EINVAL;
+> +	}
 > +
-> +	gen_pool_destroy(pool->pool);
-> +	dma_free_coherent(qcom_tzmem_dev, pool->size, pool->vbase, pool->pbase);
-> +	kfree(pool);
+> +	/* Disable time stamping in the current layer. */
+> +	if (netif_device_present(dev) &&
+> +	    dev->ts_layer & (PHYLIB_TIMESTAMPING | NETDEV_TIMESTAMPING)) {
+> +		ret = dev_set_hwtstamp_phylib(dev, &config, info->extack);
+
+Can we still land in this function even if no changes to the 
+timestamping configuration has been made? If so, would suggest first 
+getting the current configuration and compare it with the user-supplied 
+configuration if there are no changes, return.
+
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+> +	dev->ts_layer = ts_layer;
+> +
+> +	return 1;
 > +}
-> +EXPORT_SYMBOL_GPL(qcom_tzmem_pool_free);
+> +
+>   const struct ethnl_request_ops ethnl_ts_request_ops = {
+>   	.request_cmd		= ETHTOOL_MSG_TS_GET,
+>   	.reply_cmd		= ETHTOOL_MSG_TS_GET_REPLY,
+> @@ -69,6 +132,9 @@ const struct ethnl_request_ops ethnl_ts_request_ops = {
+>   	.prepare_data		= ts_prepare_data,
+>   	.reply_size		= ts_reply_size,
+>   	.fill_reply		= ts_fill_reply,
+> +
+> +	.set_validate		= ethnl_set_ts_validate,
+> +	.set			= ethnl_set_ts,
+>   };
+>   
+>   /* TS_LIST_GET */
 
-I got these warnings with this series:
-
-    ahalaney@fedora ~/git/linux-next (git)-[7204cc6c3d73] % ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make W=1 C=2 drivers/firmware/qcom/
-    drivers/firmware/qcom/qcom_tzmem.c:137: warning: Function parameter or member 'size' not described in 'qcom_tzmem_pool_new'
-      CHECK   drivers/firmware/qcom/qcom_tzmem.c
-    drivers/firmware/qcom/qcom_tzmem.c:204:17: warning: incorrect type in assignment (different address spaces)
-    drivers/firmware/qcom/qcom_tzmem.c:204:17:    expected void **slot
-    drivers/firmware/qcom/qcom_tzmem.c:204:17:    got void [noderef] __rcu **
-    drivers/firmware/qcom/qcom_tzmem.c:204:17: warning: incorrect type in assignment (different address spaces)
-    drivers/firmware/qcom/qcom_tzmem.c:204:17:    expected void **slot
-    drivers/firmware/qcom/qcom_tzmem.c:204:17:    got void [noderef] __rcu **
-    drivers/firmware/qcom/qcom_tzmem.c:204:17: warning: incorrect type in argument 1 (different address spaces)
-    drivers/firmware/qcom/qcom_tzmem.c:204:17:    expected void [noderef] __rcu **slot
-    drivers/firmware/qcom/qcom_tzmem.c:204:17:    got void **slot
-    drivers/firmware/qcom/qcom_tzmem.c:204:17: warning: incorrect type in assignment (different address spaces)
-    drivers/firmware/qcom/qcom_tzmem.c:204:17:    expected void **slot
-    drivers/firmware/qcom/qcom_tzmem.c:204:17:    got void [noderef] __rcu **
-    drivers/firmware/qcom/qcom_tzmem.c:339:13: warning: context imbalance in 'qcom_tzmem_to_phys' - wrong count at exit
+-- 
+Florian
 
 
-All are confusing me, size seems described, I don't know much about
-radix tree usage / rcu, and the locking in qcom_tzmem_to_phys seems sane
-to me but I'm still grappling with the new syntax.
+--000000000000487b1306074f4627
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-For the one address space one, I _think_ maybe a diff like this is in
-order?
-
-    diff --git a/drivers/firmware/qcom/qcom_tzmem.c b/drivers/firmware/qcom/qcom_tzmem.c
-    index b3137844fe43..5b409615198d 100644
-    --- a/drivers/firmware/qcom/qcom_tzmem.c
-    +++ b/drivers/firmware/qcom/qcom_tzmem.c
-    @@ -193,7 +193,7 @@ void qcom_tzmem_pool_free(struct qcom_tzmem_pool *pool)
-            struct qcom_tzmem_chunk *chunk;
-            struct radix_tree_iter iter;
-            bool non_empty = false;
-    -       void **slot;
-    +       void __rcu **slot;
-     
-            if (!pool)
-                    return;
-    @@ -202,7 +202,7 @@ void qcom_tzmem_pool_free(struct qcom_tzmem_pool *pool)
-     
-            scoped_guard(spinlock_irqsave, &qcom_tzmem_chunks_lock) {
-                    radix_tree_for_each_slot(slot, &qcom_tzmem_chunks, &iter, 0) {
-    -                       chunk = *slot;
-    +                       chunk = radix_tree_deref_slot_protected(slot, &qcom_tzmem_chunks_lock);
-     
-                            if (chunk->owner == pool)
-                                    non_empty = true;
-
-
-Still planning on reviewing/testing the rest, but got tripped up there
-so thought I'd highlight it before doing the rest.
-
-Thanks,
-Andrew
-
+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
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
+9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
+UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
+KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
+nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
+Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
+BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
+KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
+kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
+2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
+3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
+NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
+AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
+LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIIf/6XE3BfUopc+V
+y0OkflRisSZyFRRuXwaIRIRD+zhqMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMTAwOTIxMjg0M1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDtm3DH1tl6+cYNVr16s32yu0ThVtG87SBj
+KXCJnPJlBiWd1LfYkbAOFUJm5HbsN7qPh9Jq2wYQtuZEuaZ+BQnLFAxWoc7kcGsJeLOtStlUvz6l
+QJYHG/ABWPEvGO87k/NDGBrp2jNZboJ1x1sZCIqR9iys41ZLp6wKKX/mheuXt6ySNEAd/V8GQmrC
+pfaQQ7PBB/TEqck4AYzgN4MxXgaS+otXWg6XK/eShvsrrZF/F+LnPyoeHC1xnmntrNlmbqbpxzE5
+Tw9ak6qHpxp1lrO+7S8ugO/9psmUgVOmH8T5zwDB2mvabagMKCCtcimDfo/hyBwvgovYbSyKuYU8
+YxAX
+--000000000000487b1306074f4627--
