@@ -2,100 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E525D7BE721
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42DA57BE73D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377774AbjJIQ56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 12:57:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42916 "EHLO
+        id S1377892AbjJIQ71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 12:59:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377353AbjJIQ5y (ORCPT
+        with ESMTP id S1377909AbjJIQ7P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 12:57:54 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58139AC
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 09:57:53 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-50306b2920dso5805769e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 09:57:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696870671; x=1697475471; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=v4ilr7+Ii0ToMA97+lVnUxlCmyGDEQu3lXxCcYih3U4=;
-        b=FILyCg35fxc/LoWPjx0vBT5uxOdSZC+NKfDQ2EzhaCHcp2uXm30EBuGShRo6zHqRbO
-         PAn52tRAZmVEOWjZk3v5wgrnIumD8nkVzXb9t07U1UsujDMeL2hMY34+FG/Ypy/d1NQY
-         +zCDrw1f5wCQunBwz0vhvPceo6l8zvwBitqjwYGWZ7tH3p4TFnmfCK3Nbhbr1qmy+OYW
-         VrhU+/uZw0lSuAccCOM7Vl3ga5oo3PAQ+v/SyAp/+6tlOxXlcGMtFhEVJxTf1vqtacvP
-         APXQEwXvR3kfqri6RnaWBWf5sRbT92mcfCfR8ySaV3YlCGLMj4KgkcoOxxiMTIxrL8JD
-         llyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696870671; x=1697475471;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=v4ilr7+Ii0ToMA97+lVnUxlCmyGDEQu3lXxCcYih3U4=;
-        b=few9SbBmkvK7wnw2J8HTNFhxa2UjEs9/paW6WbMPooePV1Q4AIgdBZkK3FZW0n+wmb
-         h0oMgNImyPmR9mbckZafAy6FM8uqhfyNHE1+mLbtuNwWP4dgAx5Yqz/ta038v3psJxj4
-         Fmyf1CiiXxKsgTMwa7BZ6bwNmyn0W0fkfr3P8iJE8NHYsF3uzcF7e7y/W3/NpC/2jBmN
-         FUzzg/h6Gpfxgn/QH0CqOqhEJVacdvZiiit9LUOzCiU6sV/bp21+NigKGnP/RQ/UIlP0
-         udonKfK7SN236Hic7NlfZFNVzXBwHIDqfkZ3dZK8Vt4Rwr7bx8dsUJ5b2qiCRbNHfhx4
-         pkFg==
-X-Gm-Message-State: AOJu0YypP81Qx5PS7zwTiCzKmp9a0j07H33tz+8W/d03X7uj01+TTos1
-        P0q27vk5Cgt8xgwOyrP43xmHBg==
-X-Google-Smtp-Source: AGHT+IFwJmsKn/WUgJqM2TLCE9a+ICJ+nX962Esuh3YK7V9GVQk/E/b+LB5Mvk9da1r9nlDr/KyWEw==
-X-Received: by 2002:ac2:4da3:0:b0:4ff:9a91:6b73 with SMTP id h3-20020ac24da3000000b004ff9a916b73mr9544388lfe.17.1696870671536;
-        Mon, 09 Oct 2023 09:57:51 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
-        by smtp.gmail.com with ESMTPSA id q18-20020a19a412000000b005047baf3385sm1488987lfc.181.2023.10.09.09.57.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 09:57:51 -0700 (PDT)
-Message-ID: <8d586220-eb79-446a-b789-5a7131c7a2ad@linaro.org>
-Date:   Mon, 9 Oct 2023 19:57:50 +0300
+        Mon, 9 Oct 2023 12:59:15 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A408A12F;
+        Mon,  9 Oct 2023 09:58:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696870738; x=1728406738;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=Q29YeVJ6SEdzMCGQboPJ3/kbexbcCTC5iwptf8BQKWg=;
+  b=Qb2IJc45kqbhj5mcCzQnvfBxBPreLMTp69x+l6vX2X7XB8PmIJBWfq4b
+   00tbI8IXhmbUNKMjiRnDxX2F6wex3qVKPv+1AFVBsqkOnzaLF9iZqGP6e
+   fsBnOLTP+vZS4kClXLzic/WorNc1Mfsjp1EHF5Tv9VqSbnuBVIj8fZr9b
+   UfaMiM3Q7Qt/Fuvd2fAezH2OqYm414Nb6RTE2XhYC4u2eKYjwfdGptwu5
+   D/9DZefNz31X9/lqSQ3AZq+YWQeqotp0VMtSODjTESX/cBo6Rymdct2Ib
+   TK//Y/isorNLTMUk0+THTJiNC/wmCcOF3/TyHUjemj2SCb6B/pHJRt8hN
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="2784858"
+X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
+   d="scan'208";a="2784858"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 09:58:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="788230421"
+X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
+   d="scan'208";a="788230421"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.36.27])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 09:58:54 -0700
+Message-ID: <eeb70bd9-e347-4d19-a597-bd7857b96306@intel.com>
+Date:   Mon, 9 Oct 2023 19:58:50 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 1/5] drm/msm: dpu1: create a dpu_hw_clk_force_ctrl()
- helper
-Content-Language: en-GB
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20231009-topic-sm8550-graphics-sspp-split-clk-v1-0-806c0dee4e43@linaro.org>
- <20231009-topic-sm8550-graphics-sspp-split-clk-v1-1-806c0dee4e43@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <20231009-topic-sm8550-graphics-sspp-split-clk-v1-1-806c0dee4e43@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH v1 2/2] mmc: sdhci-pltfm: Make driver OF independent
+Content-Language: en-US
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231006105803.3374241-1-andriy.shevchenko@linux.intel.com>
+ <20231006105803.3374241-2-andriy.shevchenko@linux.intel.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20231006105803.3374241-2-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/10/2023 19:36, Neil Armstrong wrote:
-> Add an helper to setup the force clock control as it will
-> be used in multiple HW files.
+On 6/10/23 13:58, Andy Shevchenko wrote:
+> Since we have device_is_compatible() API, drop OF dependency
+> in the driver.
 > 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+
 > ---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_top.c  | 23 +----------------------
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c | 21 +++++++++++++++++++++
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h |  4 ++++
->   3 files changed, 26 insertions(+), 22 deletions(-)
-
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-
--- 
-With best wishes
-Dmitry
+>  drivers/mmc/host/sdhci-pltfm.c | 16 ++++++----------
+>  1 file changed, 6 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci-pltfm.c b/drivers/mmc/host/sdhci-pltfm.c
+> index 4d1a703a5bdb..62753d72198a 100644
+> --- a/drivers/mmc/host/sdhci-pltfm.c
+> +++ b/drivers/mmc/host/sdhci-pltfm.c
+> @@ -19,7 +19,6 @@
+>  #include <linux/err.h>
+>  #include <linux/module.h>
+>  #include <linux/property.h>
+> -#include <linux/of.h>
+>  #ifdef CONFIG_PPC
+>  #include <asm/machdep.h>
+>  #endif
+> @@ -56,19 +55,16 @@ static bool sdhci_wp_inverted(struct device *dev)
+>  
+>  static void sdhci_get_compatibility(struct platform_device *pdev)
+>  {
+> +	struct device *dev = &pdev->dev;
+>  	struct sdhci_host *host = platform_get_drvdata(pdev);
+> -	struct device_node *np = pdev->dev.of_node;
+>  
+> -	if (!np)
+> -		return;
+> -
+> -	if (of_device_is_compatible(np, "fsl,p2020-rev1-esdhc"))
+> +	if (device_is_compatible(dev, "fsl,p2020-rev1-esdhc"))
+>  		host->quirks |= SDHCI_QUIRK_BROKEN_DMA;
+>  
+> -	if (of_device_is_compatible(np, "fsl,p2020-esdhc") ||
+> -	    of_device_is_compatible(np, "fsl,p1010-esdhc") ||
+> -	    of_device_is_compatible(np, "fsl,t4240-esdhc") ||
+> -	    of_device_is_compatible(np, "fsl,mpc8536-esdhc"))
+> +	if (device_is_compatible(dev, "fsl,p2020-esdhc") ||
+> +	    device_is_compatible(dev, "fsl,p1010-esdhc") ||
+> +	    device_is_compatible(dev, "fsl,t4240-esdhc") ||
+> +	    device_is_compatible(dev, "fsl,mpc8536-esdhc"))
+>  		host->quirks |= SDHCI_QUIRK_BROKEN_TIMEOUT_VAL;
+>  }
+>  
 
