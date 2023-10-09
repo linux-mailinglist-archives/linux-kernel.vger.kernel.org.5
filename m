@@ -2,79 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 147077BEAD4
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 21:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4514A7BEAD6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 21:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378459AbjJITsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 15:48:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44414 "EHLO
+        id S1378465AbjJITuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 15:50:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378397AbjJITsV (ORCPT
+        with ESMTP id S1377401AbjJITuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 15:48:21 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ABD493
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 12:48:19 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-690bd8f89baso3636019b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 12:48:19 -0700 (PDT)
+        Mon, 9 Oct 2023 15:50:20 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC6F794
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 12:50:18 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-5890aa0573aso2322966a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 12:50:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696880899; x=1697485699; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YnnGBorqi/0sryABcLeiVXw4usVlXXVKQE9toG3inJM=;
-        b=e23yKq1wv/lY0x9LjebsVqZvLDC3yPdbjBtEyEgGrIxa5/qW5r8N3OKAZN6Fe4AI2C
-         iBYNB18joJFFK+/Of93yr1coecNoCqRoHQOzFzxtTQvgQzAVc+JKy3yXUm0PscC5TDD8
-         VyIz40oa3DURNPKhXQnNorxfjCrCgHOEwuaXU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696880899; x=1697485699;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1696881018; x=1697485818; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YnnGBorqi/0sryABcLeiVXw4usVlXXVKQE9toG3inJM=;
-        b=HhUTe58G3AafCTGVgczPWu1iPsu7T6PwsInfRhARSfLlvvQFrUSYqQkdrNhs/fJ2zf
-         OHlofanAkr3s4KmJhcrMeDzR7zzG6TFiVCqwwYYPL4yLLxUuAFZC4hfbQJiV9mhn98tR
-         /N6QfQUayfIigfX0ko9epKN1lKAvCMc98O/lEr1fYaGXwJxUI5xawK91BiB3SdwsXSwv
-         iYMyz6EMVEhagcoIpzFepEeO35oQrk+9XVnE0CS6LyEzbhDucU8QfACNbQIOz5tjg6dV
-         9+/2/i4Tnu76op2gGFC4w802FmLM/VeaK3fbHt81oMBVLa0TqdFxhk/pX45S/g7QX7ly
-         xw9A==
-X-Gm-Message-State: AOJu0YxsY7XBuhl3FaQbhKn+zegyW7STr3zshbLT2rPRv6CXr96nPCVg
-        8suYtbnc3IOaEABcsVe9oXOzZw==
-X-Google-Smtp-Source: AGHT+IH/EU8sCax66tncCUgtwE24oZqKUnAw5nHePbac/qTNhw0neUzqI+uVELgQYBYwoASCkEKRUQ==
-X-Received: by 2002:a05:6a00:1516:b0:691:da6:47b with SMTP id q22-20020a056a00151600b006910da6047bmr16111870pfu.10.1696880898803;
-        Mon, 09 Oct 2023 12:48:18 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id fn27-20020a056a002fdb00b00688435a9915sm6820661pfb.189.2023.10.09.12.48.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 12:48:18 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 12:48:15 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Chun-Yi Lee <jlee@suse.com>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        stable@vger.kernel.org, Iulia Tanasescu <iulia.tanasescu@nxp.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        linux-bluetooth@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Bluetooth: mark bacmp() and bacpy() as __always_inline
-Message-ID: <202310091246.ED5A2AFB21@keescook>
-References: <20231009134826.1063869-1-arnd@kernel.org>
- <2abaad09-b6e0-4dd5-9796-939f20804865@app.fastmail.com>
- <202310090902.10ED782652@keescook>
- <73f552a4-4ff5-441a-a624-ddc34365742f@app.fastmail.com>
+        bh=e8wgkR84iWM9wxhviglgJUbOlzdCkXj/+h+ORKDao4Y=;
+        b=csENhR/Nyz2ClMCKc7JRU4Bvimzri0c4R5dqdKEfJgaxgJLZQ2H5rDNmCrKw/FO9AU
+         wdAKDcNsM6VkLQmPLWfZ4xy9LCYrdjNLo7sUbnsOf6QjkPQp74T4MgJEFDcIj71g9l+E
+         54p3IR8jtNnjxMFAHx++VOm0k+mgzdP0i0s9skDw5iKiBGxpkcOi+LlbwrZxTrlBWn6i
+         F1azN1Ow/NHq/nP0s+ewsYWE2ILAXtrLMeg+DWNlkoNjoSl7kVs56REsiCLXwOMnhN+l
+         IS7rkCSJCe4meeDqP5xEilVLciNwMi7oEVqiHjURJYU7O4iKRoPz9EZdn1QHhn0skGZd
+         n16Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696881018; x=1697485818;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e8wgkR84iWM9wxhviglgJUbOlzdCkXj/+h+ORKDao4Y=;
+        b=BK5uGLlSntHd7dYUAemrZwBPwUXioXBwJCsJEg6GzNE+EPwyHc7HrTw6AyHRITrOzg
+         gqh3ccxtbRNyDFoQZfmiPP/1x9Nq/pdiNliQbXaKPQYxJGKY1n+5iyZp+jOn5KbZ3xY8
+         kI22sWfQHwy23yCZclw8CBvRbe3hOnZowF5Y09jvPLhGRA/XNdUKYDsu86lm/OKyz9Y8
+         cAPXY2MZwdthynm4LDuIIMzBENFrCrUG8Fc1jPsebrHpQ9UafqDB6xkXwHX13i5M1pvr
+         1P4kyQRCuysBWR+2AaSoWDsf9zc7zDhpo3SuVlFyNzibIwqmqPyz3UCaWyXepvNtMmMC
+         IdKA==
+X-Gm-Message-State: AOJu0Yx62o+hgCsQXoqY/4wdJ15UNJuaPi3sCRcSYLmhdoyGGVYY8nz0
+        8dIaqOmAlfBNHJ2i+/dZ7bSM+6pwUslsBJaiuYvpZqkMXWfdAh1Y
+X-Google-Smtp-Source: AGHT+IHkheL0g3ZGB52fFGNOzJ6Kj9LAtixQZ7+kZQ+spP/PH7eHPuBlCXDPM6lMAjTqqFHKSQgbkQBVESUgi3jz/gA=
+X-Received: by 2002:a17:90a:b97:b0:273:4672:98b5 with SMTP id
+ 23-20020a17090a0b9700b00273467298b5mr12577856pjr.42.1696881018348; Mon, 09
+ Oct 2023 12:50:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <73f552a4-4ff5-441a-a624-ddc34365742f@app.fastmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+References: <cover.1696605143.git.andreyknvl@google.com> <6f621966c6f52241b5aaa7220c348be90c075371.1696605143.git.andreyknvl@google.com>
+ <CANpmjNOHPRHOOPNwx04S_CE5OoQMAmfxHjxqeqy=YUpU+sY7yA@mail.gmail.com>
+In-Reply-To: <CANpmjNOHPRHOOPNwx04S_CE5OoQMAmfxHjxqeqy=YUpU+sY7yA@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Mon, 9 Oct 2023 21:50:06 +0200
+Message-ID: <CA+fCnZc+JVdxzfiaSon+0V6-5c7SsXv8pNUvjWsfiLPyvMr9Ow@mail.gmail.com>
+Subject: Re: [PATCH 3/5] kasan: use unchecked __memset internally
+To:     Marco Elver <elver@google.com>
+Cc:     andrey.konovalov@linux.dev,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        kasan-dev@googlegroups.com,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,54 +76,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 08:23:08PM +0200, Arnd Bergmann wrote:
-> On Mon, Oct 9, 2023, at 18:02, Kees Cook wrote:
-> > On Mon, Oct 09, 2023 at 05:36:55PM +0200, Arnd Bergmann wrote:
-> >> On Mon, Oct 9, 2023, at 15:48, Arnd Bergmann wrote:
-> >> 
-> >> Sorry, I have to retract this, something went wrong on my
-> >> testing and I now see the same problem in some configs regardless
-> >> of whether the patch is applied or not.
+On Mon, Oct 9, 2023 at 10:46=E2=80=AFAM Marco Elver <elver@google.com> wrot=
+e:
+>
+> On Fri, 6 Oct 2023 at 17:18, <andrey.konovalov@linux.dev> wrote:
 > >
-> > Perhaps turn them into macros instead?
-> 
-> I just tried that and still see the problem even with the macro,
-> so whatever gcc is doing must be a different issue. Maybe it
-> has correctly found a codepath that triggers this?
-> 
-> If you are able to help debug the issue better,
-> see these defconfigs for examples:
-> 
-> https://pastebin.com/raw/pC8Lnrn2
-> https://pastebin.com/raw/yb965unC
+> > From: Andrey Konovalov <andreyknvl@google.com>
+> >
+> > KASAN code is supposed to use the unchecked __memset implementation whe=
+n
+> > accessing its metadata.
+> >
+> > Change uses of memset to __memset in mm/kasan/.
+> >
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+>
+> Do we need a "Fixes" tag?
 
-This seems like a GCC bug. It is complaining about &hdev->bdaddr for
-some reason. This silences it:
+Good idea, let's add them:
 
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 6f4409b4c364..509e86b36576 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -3266,6 +3266,7 @@ static void hci_conn_request_evt(struct hci_dev *hdev, void *data,
- 	int mask = hdev->link_mode;
- 	struct inquiry_entry *ie;
- 	struct hci_conn *conn;
-+	bdaddr_t a;
- 	__u8 flags = 0;
- 
- 	bt_dev_dbg(hdev, "bdaddr %pMR type 0x%x", &ev->bdaddr, ev->link_type);
-@@ -3273,7 +3274,8 @@ static void hci_conn_request_evt(struct hci_dev *hdev, void *data,
- 	/* Reject incoming connection from device with same BD ADDR against
- 	 * CVE-2020-26555
- 	 */
--	if (!bacmp(&hdev->bdaddr, &ev->bdaddr)) {
-+	a = hdev->bdaddr;
-+	if (!bacmp(&a, &ev->bdaddr)) {
- 		bt_dev_dbg(hdev, "Reject connection with same BD_ADDR %pMR\n",
- 			   &ev->bdaddr);
- 		hci_reject_conn(hdev, &ev->bdaddr);
+Fixes: 59e6e098d1c1 ("kasan: introduce kasan_complete_mode_report_info")
+Fixes: 3c5c3cfb9ef4 ("kasan: support backing vmalloc space with real
+shadow memory")
 
-:(
+> Reviewed-by: Marco Elver <elver@google.com>
 
--- 
-Kees Cook
+Thanks!
