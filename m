@@ -2,136 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 854BF7BDBC0
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A71A7BDBC5
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376343AbjJIM1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 08:27:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54460 "EHLO
+        id S1376322AbjJIM2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 08:28:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346402AbjJIM1v (ORCPT
+        with ESMTP id S1346402AbjJIM2k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 08:27:51 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DD9F999
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 05:27:48 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E8AA61FB;
-        Mon,  9 Oct 2023 05:28:28 -0700 (PDT)
-Received: from [10.57.3.51] (unknown [10.57.3.51])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9F4363F762;
-        Mon,  9 Oct 2023 05:27:46 -0700 (PDT)
-Message-ID: <b6050a3f-d464-6b0a-dc79-18103dd7d527@arm.com>
-Date:   Mon, 9 Oct 2023 13:27:45 +0100
+        Mon, 9 Oct 2023 08:28:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6699499;
+        Mon,  9 Oct 2023 05:28:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696854519; x=1728390519;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=RfddNvi5x0wejZG5QzaCfI3Qcz87rv0fDzUvwx9WuLY=;
+  b=fUDPshpfWyU0gstdvmwc7yu5vRQjt5H8WEwzNEyynd1VWg/F4XMp6Qhy
+   Y7JOYJpT5EZv8imQGi8sv5IPX3QxVx6e6aZGjP5o9zimyj7r2jYMGp4UY
+   tfeF0n3CxHlz9nCS1MG9uLfYC8Mb2/R+sy5zcrevYcRVWCnnmHG5ohvnB
+   Kylf0jTO1+G3MruC70DrSnfFsOEkF39xiMdLUu3u/AU9la93Qa6FSLIYC
+   5NofFMSgsLm78Daos+ZIopxmRZHdDbIHGPPeLMgpruFJQdnHTtL5bMeZI
+   6aTM4zBVNqGJGFfwZPrzxQd3VxQrOXdL/pqDHihIsw8oOQ8j2laPNDUsW
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="384004945"
+X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
+   d="scan'208";a="384004945"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 05:28:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="746656325"
+X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
+   d="scan'208";a="746656325"
+Received: from ibrahim2-mobl2.gar.corp.intel.com (HELO intel.com) ([10.213.42.185])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 05:28:26 -0700
+Date:   Mon, 9 Oct 2023 14:28:20 +0200
+From:   Andi Shyti <andi.shyti@linux.intel.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        John Harrison <John.C.Harrison@intel.com>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Michal Wajdeczko <michal.wajdeczko@intel.com>,
+        Matt Roper <matthew.d.roper@intel.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-hardening@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Andi Shyti <andi.shyti@linux.intel.com>,
+        Nirmoy Das <nirmoy.das@intel.com>,
+        Jonathan Cavitt <jonathan.cavitt@intel.com>,
+        Fei Yang <fei.yang@intel.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH] drm/i915/guc: Annotate struct ct_incoming_msg with
+ __counted_by
+Message-ID: <ZSPx5OrMBm0O6wpL@ashyti-mobl2.lan>
+References: <20231006201744.work.135-kees@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH] coresight: Fix crash when Perf and sysfs modes are used
- concurrently
-To:     James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        hejunhao3@huawei.com
-Cc:     Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231006131452.646721-1-james.clark@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20231006131452.646721-1-james.clark@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231006201744.work.135-kees@kernel.org>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Junhao He,
+Hi Kees,
 
-Please could you test the patch and let us know if it resolves the
-problem for you ?
-
-On 06/10/2023 14:14, James Clark wrote:
-> Partially revert the change in commit 6148652807ba ("coresight: Enable
-> and disable helper devices adjacent to the path") which changed the bare
-> call from source_ops(csdev)->enable() to coresight_enable_source() for
-> Perf sessions. It was missed that coresight_enable_source() is
-> specifically for the sysfs interface, rather than being a generic call.
-> This interferes with the sysfs reference counting to cause the following
-> crash:
+On Fri, Oct 06, 2023 at 01:17:45PM -0700, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
+> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
 > 
->    $ perf record -e cs_etm/@tmc_etr0/ -C 0 &
->    $ echo 1 > /sys/bus/coresight/devices/tmc_etr0/enable_sink
->    $ echo 1 > /sys/bus/coresight/devices/etm0/enable_source
->    $ echo 0 > /sys/bus/coresight/devices/etm0/enable_source
+> As found with Coccinelle[1], add __counted_by for struct ct_incoming_msg.
 > 
->    Unable to handle kernel NULL pointer dereference at virtual
->    address 00000000000001d0
->    Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
->    ...
->    Call trace:
->     etm4_disable+0x54/0x150 [coresight_etm4x]
->     coresight_disable_source+0x6c/0x98 [coresight]
->     coresight_disable+0x74/0x1c0 [coresight]
->     enable_source_store+0x88/0xa0 [coresight]
->     dev_attr_store+0x20/0x40
->     sysfs_kf_write+0x4c/0x68
->     kernfs_fop_write_iter+0x120/0x1b8
->     vfs_write+0x2dc/0x3b0
->     ksys_write+0x70/0x108
->     __arm64_sys_write+0x24/0x38
->     invoke_syscall+0x50/0x128
->     el0_svc_common.constprop.0+0x104/0x130
->     do_el0_svc+0x40/0xb8
->     el0_svc+0x2c/0xb8
->     el0t_64_sync_handler+0xc0/0xc8
->     el0t_64_sync+0x1a4/0x1a8
->    Code: d53cd042 91002000 b9402a81 b8626800 (f940ead5)
->    ---[ end trace 0000000000000000 ]---
-> 
-> This commit linked below also fixes the issue, but has unlocked updates
-> to the mode which could potentially race. So until we come up with a
-> more complete solution that takes all locking and interaction between
-> both modes into account, just revert back to the old behavior for Perf.
-> 
-> Reported-by: Junhao He <hejunhao3@huawei.com>
-> Closes: https://lore.kernel.org/linux-arm-kernel/20230921132904.60996-1-hejunhao3@huawei.com/
-> Fixes: 6148652807ba ("coresight: Enable and disable helper devices adjacent to the path")
-> Signed-off-by: James Clark <james.clark@arm.com>
+> Cc: Jani Nikula <jani.nikula@linux.intel.com>
+> Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+> Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+> Cc: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+> Cc: David Airlie <airlied@gmail.com>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+> Cc: John Harrison <John.C.Harrison@Intel.com>
+> Cc: Matthew Brost <matthew.brost@intel.com>
+> Cc: Michal Wajdeczko <michal.wajdeczko@intel.com>
+> Cc: Matt Roper <matthew.d.roper@intel.com>
+> Cc: intel-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-hardening@vger.kernel.org
+> Link: https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci [1]
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-The patch looks good to me. I will wait for Junhao to test this before
-pulling it in.
+merged in drm-intel-gt-next.
 
-Suzuki
-
-
-
-
-> ---
->   drivers/hwtracing/coresight/coresight-etm-perf.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-> index 5ca6278baff4..89e8ed214ea4 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-> @@ -493,7 +493,7 @@ static void etm_event_start(struct perf_event *event, int flags)
->   		goto fail_end_stop;
->   
->   	/* Finally enable the tracer */
-> -	if (coresight_enable_source(csdev, CS_MODE_PERF, event))
-> +	if (source_ops(csdev)->enable(csdev, event, CS_MODE_PERF))
->   		goto fail_disable_path;
->   
->   	/*
-> @@ -587,7 +587,7 @@ static void etm_event_stop(struct perf_event *event, int mode)
->   		return;
->   
->   	/* stop tracer */
-> -	coresight_disable_source(csdev, event);
-> +	source_ops(csdev)->disable(csdev, event);
->   
->   	/* tell the core */
->   	event->hw.state = PERF_HES_STOPPED;
-
+Thanks,
+Andi
