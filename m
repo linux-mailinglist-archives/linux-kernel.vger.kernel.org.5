@@ -2,84 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B7837BD946
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55EF87BD94B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346179AbjJILKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 07:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44296 "EHLO
+        id S1346190AbjJILLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 07:11:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346171AbjJILKS (ORCPT
+        with ESMTP id S1346171AbjJILLB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 07:10:18 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B592BA6;
-        Mon,  9 Oct 2023 04:10:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696849816; x=1728385816;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=pa/hUMltIcQcrQ6tgeOUqEiyuzE3UCtC/iY4kx/jAPE=;
-  b=Bp+SwkegZGWKLc2S9Wa3weOYy9jONsGtquYRxnVV5yZXdnov+1MCH1l1
-   HULTy1DD0+fc0wo7xdBLL8hPQgy/+rdJ+e8RgsWSvpsk379qvUa7Wa0iL
-   3UvTfn1ZErShyrkXvzf1d05fy8g1ynGeAzbFl3s9A8rSVMh3db0EfiHNz
-   QaBHuoCSfMSdkyoDYRBtWVRzh1GOPwPpaYrTJxzTaRe/vHZ+kJRf/bMNe
-   OeZsbX1etYhmAypOoNYGXGgueAann3ByTJX8PCvaspy537ny8kVMx67I2
-   1X+utfOSMFxUt8PFrRjmv1VP34OGRYSenqbdXLSBFQnFk1oy+x93WDFSN
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="387981919"
-X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="scan'208";a="387981919"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 04:10:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="823298035"
-X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="scan'208";a="823298035"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga004.fm.intel.com with ESMTP; 09 Oct 2023 04:10:14 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-        id D6EE022B; Mon,  9 Oct 2023 14:10:12 +0300 (EEST)
-Date:   Mon, 9 Oct 2023 14:10:12 +0300
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 05/20] pinctrl: intel: cherryview: Convert to platform
- remove callback returning void
-Message-ID: <20231009111012.GE3208943@black.fi.intel.com>
-References: <20231009083856.222030-1-u.kleine-koenig@pengutronix.de>
- <20231009083856.222030-6-u.kleine-koenig@pengutronix.de>
+        Mon, 9 Oct 2023 07:11:01 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E1E94
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 04:10:56 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 399BAZnH029406;
+        Mon, 9 Oct 2023 06:10:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1696849835;
+        bh=gF3ltA5crJt+JrOf3lwJUGac88GUPpKqmKtpfO96kSo=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=ywhUeh3NcbHDhCo4C4TZLyH8RuZ7wfJcPY501IF/1caj3C1SDkrtW2l1Jq8c20zLi
+         HYUJU5LYd7U2szDazrrzKPB5KZzV5OUT59NapIbhLHO4+n7H51gSTCASO78BIxt/cT
+         NFkM9su9hYmh0KwXXnqgGzC9JKreG8nLAfPZL1Wc=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 399BAZJC006911
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 9 Oct 2023 06:10:35 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 9
+ Oct 2023 06:10:34 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 9 Oct 2023 06:10:34 -0500
+Received: from [172.24.227.6] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 399BASAh024013;
+        Mon, 9 Oct 2023 06:10:29 -0500
+Message-ID: <3c6e6538-bce6-e9f0-4307-72b3ffe6030e@ti.com>
+Date:   Mon, 9 Oct 2023 16:40:28 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231009083856.222030-6-u.kleine-koenig@pengutronix.de>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] drm/tidss: Power up attached PM domains on probe
+Content-Language: en-US
+To:     Maxime Ripard <mripard@kernel.org>
+CC:     <jyri.sarha@iki.fi>, <tomi.valkeinen@ideasonboard.com>,
+        <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <maarten.lankhorst@linux.intel.com>, <tzimmermann@suse.de>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <praneeth@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
+        <a-bhatia1@ti.com>, <j-luthra@ti.com>, <r-ravikumar@ti.com>,
+        <j-choudhary@ti.com>
+References: <20231009075018.2836020-1-devarsht@ti.com>
+ <bmemgnq3emddmjsho3c3h4cj2fyyyp3xll73ozpsxxmxxcr3bn@lffrmuqqpbl3>
+From:   Devarsh Thakkar <devarsht@ti.com>
+In-Reply-To: <bmemgnq3emddmjsho3c3h4cj2fyyyp3xll73ozpsxxmxxcr3bn@lffrmuqqpbl3>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 10:38:41AM +0200, Uwe Kleine-König wrote:
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is ignored (apart
-> from emitting a warning) and this typically results in resource leaks.
-> 
-> To improve here there is a quest to make the remove callback return
-> void. In the first step of this quest all drivers are converted to
-> .remove_new(), which already returns void. Eventually after all drivers
-> are converted, .remove_new() will be renamed to .remove().
-> 
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
-> 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Hi Maxime,
 
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Thanks for the review.
+
+On 09/10/23 14:53, Maxime Ripard wrote:
+> Hi Devarsh,
+> 
+> On Mon, Oct 09, 2023 at 01:20:18PM +0530, Devarsh Thakkar wrote:
+>> Some SoC's such as AM62P have dedicated power domains
+>> for OLDI which need to be powered on separetely along
+>> with display controller.
+>>
+>> So during driver probe, power up all attached PM domains
+>> enumerated in devicetree node for DSS.
+>>
+>> This also prepares base to add display support for AM62P.
+>>
+>> Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
+>> ---
+>>  drivers/gpu/drm/tidss/tidss_drv.c | 76 +++++++++++++++++++++++++++++++
+>>  drivers/gpu/drm/tidss/tidss_drv.h |  5 ++
+>>  2 files changed, 81 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/tidss/tidss_drv.c b/drivers/gpu/drm/tidss/tidss_drv.c
+>> index 4d063eb9cd0b..a703a27d17bf 100644
+>> --- a/drivers/gpu/drm/tidss/tidss_drv.c
+>> +++ b/drivers/gpu/drm/tidss/tidss_drv.c
+>> @@ -8,6 +8,7 @@
+>>  #include <linux/of.h>
+>>  #include <linux/module.h>
+>>  #include <linux/pm_runtime.h>
+>> +#include <linux/pm_domain.h>
+>>  
+>>  #include <drm/drm_atomic.h>
+>>  #include <drm/drm_atomic_helper.h>
+>> @@ -114,6 +115,72 @@ static const struct drm_driver tidss_driver = {
+>>  	.minor			= 0,
+>>  };
+>>  
+>> +static int tidss_detach_pm_domains(struct tidss_device *tidss)
+>> +{
+>> +	int i;
+>> +
+>> +	if (tidss->num_domains <= 1)
+>> +		return 0;
+>> +
+>> +	for (i = 0; i < tidss->num_domains; i++) {
+>> +		if (tidss->pd_link[i] && !IS_ERR(tidss->pd_link[i]))
+>> +			device_link_del(tidss->pd_link[i]);
+>> +		if (tidss->pd_dev[i] && !IS_ERR(tidss->pd_dev[i]))
+>> +			dev_pm_domain_detach(tidss->pd_dev[i], true);
+>> +		tidss->pd_dev[i] = NULL;
+>> +		tidss->pd_link[i] = NULL;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int tidss_attach_pm_domains(struct tidss_device *tidss)
+>> +{
+>> +	struct device *dev = tidss->dev;
+>> +	int i;
+>> +	int ret;
+>> +	struct platform_device *pdev = to_platform_device(dev);
+>> +	struct device_node *np = pdev->dev.of_node;
+>> +
+>> +	tidss->num_domains = of_count_phandle_with_args(np, "power-domains",
+>> +							"#power-domain-cells");
+>> +	if (tidss->num_domains <= 1) {
+>> +		dev_dbg(dev, "One or less power domains, no need to do attach domains\n");
+>> +		return 0;
+>> +	}
+>> +
+>> +	tidss->pd_dev = devm_kmalloc_array(dev, tidss->num_domains,
+>> +					   sizeof(*tidss->pd_dev), GFP_KERNEL);
+>> +	if (!tidss->pd_dev)
+>> +		return -ENOMEM;
+>> +
+>> +	tidss->pd_link = devm_kmalloc_array(dev, tidss->num_domains,
+>> +					    sizeof(*tidss->pd_link), GFP_KERNEL);
+>> +	if (!tidss->pd_link)
+>> +		return -ENOMEM;
+>> +
+>> +	for (i = 0; i < tidss->num_domains; i++) {
+>> +		tidss->pd_dev[i] = dev_pm_domain_attach_by_id(dev, i);
+>> +		if (IS_ERR(tidss->pd_dev[i])) {
+>> +			ret = PTR_ERR(tidss->pd_dev[i]);
+>> +			goto fail;
+>> +		}
+>> +
+>> +		tidss->pd_link[i] = device_link_add(dev, tidss->pd_dev[i],
+>> +						    DL_FLAG_STATELESS |
+>> +						    DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE);
+>> +		if (!tidss->pd_link[i]) {
+>> +			ret = -EINVAL;
+>> +			goto fail;
+>> +		}
+>> +	}
+>> +
+>> +	return 0;
+>> +fail:
+>> +	tidss_detach_pm_domains(tidss);
+>> +	return ret;
+>> +}
+> 
+> My understanding is that this will be done automatically at probe time.
+> Why do we need to roll our own there? A comment on top of the function
+> and the commit log would help.
+
+By default, the TI SCI power domain controller driver only powers up one power
+domain associated with device, With AM62P, we now have separate power domains
+for OLDI Tx ports (for more efficient power-saving control) which is different
+from core DSS device power domain, so this patch powers on the associated
+power domains too if enumerated in device-tree.
+
+Regards
+Devarsh
+
+> 
+> Thanks!
+> Maxime
