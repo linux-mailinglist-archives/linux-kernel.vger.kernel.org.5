@@ -2,162 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33DCC7BD2D8
+	by mail.lfdr.de (Postfix) with ESMTP id 8C03C7BD2D9
 	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 07:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345122AbjJIFlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 01:41:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57134 "EHLO
+        id S1345116AbjJIFly convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Oct 2023 01:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345049AbjJIFlI (ORCPT
+        with ESMTP id S1345049AbjJIFlx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 01:41:08 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D959E;
-        Sun,  8 Oct 2023 22:41:05 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3995eZMZ056348;
-        Mon, 9 Oct 2023 00:40:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1696830035;
-        bh=uH1s6pUcj06GVFmMzVsYyW292JwkPCIrAGTeZPFkZrI=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=KHDtihLb5/nkre8mGz6ZsxjQbhIUSuhMoNmGdRCaSURHNnGDmJfE9XnTxjQ/fvnbh
-         CEJhh/zcFr75PmyqL83NaZRSuXfwJr+Tq7AjJ8Rh2yeQiEPnyM/d4Zym3JYhoS7Fqi
-         20qH3sZbn2o/eT/M1hYtTeCCtvmJdBC+PvZtWq64=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3995eZF2018233
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 9 Oct 2023 00:40:35 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 9
- Oct 2023 00:40:35 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 9 Oct 2023 00:40:35 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3995eYQV043957;
-        Mon, 9 Oct 2023 00:40:35 -0500
-Date:   Mon, 9 Oct 2023 11:10:34 +0530
-From:   Dhruva Gole <d-gole@ti.com>
-To:     Muhammed Efe Cetin <efectn@6tel.net>
-CC:     <conor+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <heiko@sntech.de>, <jonas@kwiboo.se>,
-        <krzysztof.kozlowski+dt@linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>, <megi@xff.cz>,
-        <robh+dt@kernel.org>, <sebastian.reichel@collabora.com>
-Subject: Re: [PATCH v3 3/3] arm64: dts: rockchip: Add Orange Pi 5
-Message-ID: <20231009054034.am2e4hcmwoworeml@dhruva>
-References: <20230928105137.5ljhuoxjc7et5thw@dhruva>
- <20231005135405.257495-1-efectn@6tel.net>
+        Mon, 9 Oct 2023 01:41:53 -0400
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00216A4;
+        Sun,  8 Oct 2023 22:41:51 -0700 (PDT)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-27b0d0c0ba0so3182964a91.1;
+        Sun, 08 Oct 2023 22:41:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696830111; x=1697434911;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2RX7tLaR5cxlZGvCt5yVuBVmtnOHN5nH9geYt6ELosk=;
+        b=RbIkAhdpuztmdKVcGKcTgLthZGnxPL+FRcI0hUinWt9wr4eseRCbUXHPwmxBfJnbJm
+         APbrSyZNxyFpVNvjfJA7sjyfeX7N39m6ZkG9tLgQDQDEpMlL1J7CVGVuRh76+/S9kU+C
+         c/Y7k4cYW5DULmDssO8L7FpAPJ2tfJLdkH2CK6KeX8dm/Z6yR1i/xCTDuQHqH1tTPO8x
+         Hj3sA5CirILXI2vBP1D+ze4eD81nzIdjvQYLJYZgca7o5UP0So95pvHeS/j64+Qu93og
+         XvlfkNnlxCzneSILTpmCCxscXGPmUTnTSRG9svx/2zzrEicsGX25/3DfdAHLWcHTVPw3
+         gEhQ==
+X-Gm-Message-State: AOJu0YyC9H2Yv2J/tDcQm9wsy5oIeZOFOD7Q8Lr9fIfxFifXoXb/HYqV
+        JypJSwxYnOhnfbr4qbRqIlB3XiNnaVkffYLF2Pc=
+X-Google-Smtp-Source: AGHT+IGE0tedBFfLbmKhVN5DwRDxqT1mpIyYE7VWdPjl5uPqunimpunTgmJdNT28U9fMQdA+O0b56HxncBIqBMuQf5M=
+X-Received: by 2002:a17:90b:3e87:b0:274:755b:63b8 with SMTP id
+ rj7-20020a17090b3e8700b00274755b63b8mr14069468pjb.43.1696830111351; Sun, 08
+ Oct 2023 22:41:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231005135405.257495-1-efectn@6tel.net>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231005230851.3666908-1-irogers@google.com> <20231005230851.3666908-5-irogers@google.com>
+In-Reply-To: <20231005230851.3666908-5-irogers@google.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Sun, 8 Oct 2023 22:41:40 -0700
+Message-ID: <CAM9d7ch4SLLbORdhkanCoPQZX=f-p-HxsYX2YWYbtLR4beD4wg@mail.gmail.com>
+Subject: Re: [PATCH v2 04/18] perf hisi-ptt: Fix potential memory leak
+To:     Ian Rogers <irogers@google.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Yuan Can <yuancan@huawei.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        James Clark <james.clark@arm.com>, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Oct 5, 2023 at 4:09 PM Ian Rogers <irogers@google.com> wrote:
+>
+> Fix clang-tidy found potential memory leak and unread value:
+> ```
+> tools/perf/util/hisi-ptt.c:108:3: warning: Value stored to 'data_offset' is never read [clang-analyzer-deadcode.DeadStores]
+>                 data_offset = 0;
+>                 ^             ~
+> tools/perf/util/hisi-ptt.c:108:3: note: Value stored to 'data_offset' is never read
+>                 data_offset = 0;
+>                 ^             ~
+> tools/perf/util/hisi-ptt.c:112:12: warning: Potential leak of memory pointed to by 'data' [clang-analyzer-unix.Malloc]
+>                         return -errno;
+>                                 ^
+> /usr/include/errno.h:38:18: note: expanded from macro 'errno'
+>                  ^
+> tools/perf/util/hisi-ptt.c:100:15: note: Memory is allocated
+>         void *data = malloc(size);
+>                      ^~~~~~~~~~~~
+> tools/perf/util/hisi-ptt.c:104:6: note: Assuming 'data' is non-null
+>         if (!data)
+>             ^~~~~
+> tools/perf/util/hisi-ptt.c:104:2: note: Taking false branch
+>         if (!data)
+>         ^
+> tools/perf/util/hisi-ptt.c:107:6: note: Assuming the condition is false
+>         if (perf_data__is_pipe(session->data)) {
+>             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> tools/perf/util/hisi-ptt.c:107:2: note: Taking false branch
+>         if (perf_data__is_pipe(session->data)) {
+>         ^
+> tools/perf/util/hisi-ptt.c:111:7: note: Assuming the condition is true
+>                 if (data_offset == -1)
+>                     ^~~~~~~~~~~~~~~~~
+> tools/perf/util/hisi-ptt.c:111:3: note: Taking true branch
+>                 if (data_offset == -1)
+>                 ^
+> tools/perf/util/hisi-ptt.c:112:12: note: Potential leak of memory pointed to by 'data'
+>                         return -errno;
+>                                 ^
+> /usr/include/errno.h:38:18: note: expanded from macro 'errno'
+> ```
 
-On Oct 05, 2023 at 16:54:04 +0300, Muhammed Efe Cetin wrote:
-> Hello,
-> 
-> On 28.09.2023 13:51, Dhruva Gole wrote:
-> > Hi,
-> > 
-> > On Aug 21, 2023 at 18:47:59 +0300, Muhammed Efe Cetin wrote:
-> >> Add initial support for OPi5 that includes support for USB2, PCIe2, Sata,
-> >> Sdmmc, SPI Flash, PMIC.
-> >>
-> >> Signed-off-by: Muhammed Efe Cetin <efectn@6tel.net>
-> >> Reviewed-by: Ondřej Jirman <megi@xff.cz>
-> >> ---
-> >>   arch/arm64/boot/dts/rockchip/Makefile         |   1 +
-> >>   .../boot/dts/rockchip/rk3588s-orangepi-5.dts  | 673 ++++++++++++++++++
-> >>   2 files changed, 674 insertions(+)
-> >>   create mode 100644 arch/arm64/boot/dts/rockchip/rk3588s-orangepi-5.dts
-> >>
-> > ...
-> > 
-> > Can you provide some sort of documentation on how I can build and boot
-> > the kernel on this board? I was unable to use the upstream arm64
-> > defconfig with this exact series applied to boot the board.
-> 
-> What was wrong when you tried to compile & boot the board? Can you provide some logs?
+We already have
 
-Umm don't have logs at hand, but I remember it didn't really reach the
-linux first line either, it went into sort of a bootloop just after
-the uboot stage.
+  https://lore.kernel.org/r/20230930072719.1267784-1-visitorckw@gmail.com
 
-> 
-> > 
-> >> +
-> >> +&i2c6 {
-> >> +	pinctrl-names = "default";
-> >> +	pinctrl-0 = <&i2c6m3_xfer>;
-> >> +	status = "okay";
-> >> +
-> >> +	hym8563: rtc@51 {
-> >> +		compatible = "haoyu,hym8563";
-> >> +		reg = <0x51>;
-> >> +		#clock-cells = <0>;
-> >> +		clock-output-names = "hym8563";
-> >> +		pinctrl-names = "default";
-> >> +		pinctrl-0 = <&hym8563_int>;
-> >> +		interrupt-parent = <&gpio0>;
-> >> +		interrupts = <RK_PB0 IRQ_TYPE_LEVEL_LOW>;
-> >> +		wakeup-source;
-> > 
-> > Are you able to actually use rtc as a wakeup source? I tried this
-> > on a downstream kernel that I mention below..
-> > 
-> > rtcwake -s 10 -m mem
-> > 
-> > didn't actually seem to wake the device from deepsleep after 10 seconds.
-> > Do you know what other pins I can use as wakeup sources?
-> 
-> No, i've not tried it before.
+Thanks,
+Namhyung
 
-ah okay
 
-> 
-> > 
-> >> +	};
-> >> +};
-> >> +
-> >> +&mdio1 {
-> >> +	rgmii_phy1: ethernet-phy@1 {
-> >> +		compatible = "ethernet-phy-ieee802.3-c22";
-> > 
-> > Just wondering, can you please give some logs of the board with eth
-> > working? The image that I have from opi seems to fail eth? As in I am
-> > not able to see any ip address. here are the logs:
-> > 
-> > https://gist.github.com/DhruvaG2000/eda2762e35013c8d5ac9f37e818103a3
-> 
-> Unfortunately the board is not near me currently. However, i was able to use GMAC ethernet in both the upstreram and downstream kernels. Did you try any images other than Orange Pi ones?
-
-Nope, are there any other images that maybe more suitable? Please can you point me to them?
-
-> 
-> > 
-> > ...
-> > 
-> 
-
--- 
-Best regards,
-Dhruva Gole <d-gole@ti.com>
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/hisi-ptt.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/tools/perf/util/hisi-ptt.c b/tools/perf/util/hisi-ptt.c
+> index 45b614bb73bf..ea297329c526 100644
+> --- a/tools/perf/util/hisi-ptt.c
+> +++ b/tools/perf/util/hisi-ptt.c
+> @@ -98,18 +98,18 @@ static int hisi_ptt_process_auxtrace_event(struct perf_session *session,
+>         int fd = perf_data__fd(session->data);
+>         int size = event->auxtrace.size;
+>         void *data = malloc(size);
+> -       off_t data_offset;
+>         int err;
+>
+>         if (!data)
+>                 return -errno;
+>
+> -       if (perf_data__is_pipe(session->data)) {
+> -               data_offset = 0;
+> -       } else {
+> -               data_offset = lseek(fd, 0, SEEK_CUR);
+> -               if (data_offset == -1)
+> +       if (!perf_data__is_pipe(session->data)) {
+> +               off_t data_offset = lseek(fd, 0, SEEK_CUR);
+> +
+> +               if (data_offset == -1) {
+> +                       free(data);
+>                         return -errno;
+> +               }
+>         }
+>
+>         err = readn(fd, data, size);
+> --
+> 2.42.0.609.gbb76f46606-goog
+>
