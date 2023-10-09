@@ -2,84 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD9F7BD5FC
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED0407BD601
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345610AbjJIJAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 05:00:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53944 "EHLO
+        id S1345620AbjJIJAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 05:00:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345584AbjJIJAL (ORCPT
+        with ESMTP id S1345584AbjJIJAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 05:00:11 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC1A6A3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:00:08 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99c1c66876aso774880766b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 02:00:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696842007; x=1697446807; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=16Pp5mIXsXhcKY6/PNwMMISjDcrkfl3XOTTQoKRx0Sg=;
-        b=YjuHPoOR+QrShHWwABZQDZOM6nIurk1s676xl33hh9UkBPZdJG+MpxYmif5Kjpb9WY
-         zs8lWb/0UC7iLqgETgmLZ+AuEBWwMm3VkRUqEl2thSmh5h+Nqzj4mRCnj32+sZHNiq/e
-         ngr/4mPwT9XHexI8FC5SWzhl3ckICER+IGUNXhgdl6a1DOps4TI2J0HCgQ89m2J2dFZa
-         uRqtyOdd+6eYAYyvvGMNBICuaZAhrkfpqXXYF8tdFw8Bryi7P21QKym1Z77ZDSPlAVqo
-         0x67e2vdXwIg+o3BX/roRSfC+HgCK4RCr7fIbmJtcwsh5aW+AGHy7Qq0j/HJU5EcetIH
-         BQ0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696842007; x=1697446807;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=16Pp5mIXsXhcKY6/PNwMMISjDcrkfl3XOTTQoKRx0Sg=;
-        b=gydYeMMhF9Q8EXKTaDS8sRuUywVzEdagj+PEtLPpwppoBte8Tz3zPU1NkRixVd9gGA
-         et+5MbXKss+bQwDUf2l6AlhQH2pRBEKyq06MjsxK5Xa+C34iBSeoBJtXn8hRvL/bWNPp
-         iVcJaz/QQor6TCGINHN9GKNBFslX0IkQDs0JCXCglaXSp/RRVibpzWamIa022FoPuUVd
-         OpsAVp7WvSlK1Zs3ArXGoaweXW6E4I3v6gD+5w47Ydxt7F2Ecyb3/4M2QUXtnlBXy/xX
-         UtkDzV7RLw3vIID13f0sxe5xK0XbSmLTQuUrfJ5Zywp/j70Cg8dWGG5A4/BKlQ2UazjF
-         7DBg==
-X-Gm-Message-State: AOJu0YwBtQKAznf1/72L+TtZNp6KglOfx/Ix+sdpsErEdfc07IYpMnDc
-        5LEcFA+ktFc0S/qXoq+y7Q==
-X-Google-Smtp-Source: AGHT+IFZ2Vekv6DwvVXAs8HpHQDb6nMrYTbl+PtZBP4YBQXuGYf/JHzH0Llzp6k5rWKYnotnyC+0zw==
-X-Received: by 2002:a17:906:8467:b0:9ae:62ec:f4a1 with SMTP id hx7-20020a170906846700b009ae62ecf4a1mr12591350ejc.33.1696842006933;
-        Mon, 09 Oct 2023 02:00:06 -0700 (PDT)
-Received: from p183 ([46.53.254.83])
-        by smtp.gmail.com with ESMTPSA id p27-20020a17090635db00b009b654751c14sm6453778ejb.47.2023.10.09.02.00.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 02:00:06 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 12:00:04 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org, hughd@google.com,
-        swarupkotikalapudi@gmail.com
-Subject: Re: + selftests-proc-add-proc-pid-statm-output-validation.patch
- added to mm-nonmm-unstable branch
-Message-ID: <f50cfce5-5e46-433f-be48-a8c733843457@p183>
-References: <20231004201701.87CB5C433C7@smtp.kernel.org>
- <9ce82fc2-4e09-40c4-b5a5-a9a049c2f493@p183>
+        Mon, 9 Oct 2023 05:00:45 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 197EDBA;
+        Mon,  9 Oct 2023 02:00:43 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id CB11D3200A39;
+        Mon,  9 Oct 2023 05:00:41 -0400 (EDT)
+Received: from imap50 ([10.202.2.100])
+  by compute5.internal (MEProxy); Mon, 09 Oct 2023 05:00:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1696842041; x=1696928441; bh=o/
+        wzvx34TIgXR11wBM5KYdkH55zx4SvySDjKi5HnqWM=; b=baMvRfbpiizIGEKynj
+        8QKUMDhCWWf9WXAbY67udr5Lfse6o0EJBzz90WcfFdU4fPoSXQN761RMqtGkZahQ
+        GlOJFeCBVJJtH2xrZp5VPjPzItoqF2xewuDdMNMENZDS2Jm8Kh27ZPAJznLOvhu0
+        SDv4q5//k8h5Kz2gIXR5vxcw96JaygSkfU6G1sTxejIHEaKBZHrasfsh7XwJfNNa
+        1w+VF3COjk1Z54wSt8s0hw1wJp85p7wJklZdRjstLhkUA689elRyIjs6T3IU+cUE
+        YxNW1d49mj0Ov+zmUaGf6XHeQmhpAG/ZVpAN+Z6VD0RRBg85dslqcP/IrwbIa3jl
+        jGcg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1696842041; x=1696928441; bh=o/wzvx34TIgXR
+        11wBM5KYdkH55zx4SvySDjKi5HnqWM=; b=c1nEUkMF/Uxb8yYlIMwUldweLushx
+        +H39Iv6GVqx7z1WDNp9SjmI6YrG9mzLsWqH3w+YOihhG01HQySGH6a9UJBxfupC7
+        nwfqExLhbJcydnMB2lMG06OjnX5OLJl4iQcnYEFQp0NrphOTZYa/Pzx1/Sf/sc2h
+        6ogvBDNk8U/eFfsYDZo5dSrxFGcUkSnqyWdMMTjq/UxOaZdejUAaVnXUVbPoAuK7
+        jJFKy1GUmjSVDGHipy1riHl2sAxDde7WQIAPrnhYdsGAalSe/GRYwJkdq0KIO3Tb
+        oBmKUAlyvlhO4CSrMSEe3iJuTv7mip2MHPLFFVrAC33RcOkk3pE68dKAw==
+X-ME-Sender: <xms:OMEjZfCWyqIz3tyzRfv7z5jG9Cjz7BQpPov5pycFlpbkAanYU96Mlw>
+    <xme:OMEjZVgAFOH-SuF-T1fOtlxU6F-iPEUKSVhF1lc7keGZuRSIZL-bFt1C__G0iieIb
+    XP6IfA8MfiX_-NDO4Y>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrheefgddutdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:OMEjZamNU2YfNjlUineL7MxC3XWUVH1-dp5AGa7hRVorrkAl6mu4IA>
+    <xmx:OMEjZRyTiA0MZZgU7oGRMIHp9i6KMl49Y4RUAc2Jle2D32kN6RxH5A>
+    <xmx:OMEjZUSPZZlRE_m62m7UvN4qEl3wqXVoCWBqhT90mSGZiA1JBCgjFA>
+    <xmx:OcEjZaccwJ4H3IPTseV3QxUzB5MAyHHhT-e_dZgRtCgD6Nggb0X-qA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id ACCDB1700089; Mon,  9 Oct 2023 05:00:39 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-958-g1b1b911df8-fm-20230927.002-g1b1b911d
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <9ce82fc2-4e09-40c4-b5a5-a9a049c2f493@p183>
+Message-Id: <cb4bb8e2-7dfe-4ca4-aa70-060f7b2f8f95@app.fastmail.com>
+In-Reply-To: <20231009084812.GB14330@noisy.programming.kicks-ass.net>
+References: <20231009123118.4487a0e1@canb.auug.org.au>
+ <20231009084812.GB14330@noisy.programming.kicks-ass.net>
+Date:   Mon, 09 Oct 2023 11:00:19 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Peter Zijlstra" <peterz@infradead.org>,
+        "Stephen Rothwell" <sfr@canb.auug.org.au>
+Cc:     "Jens Axboe" <axboe@kernel.dk>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        linux-next <linux-next@vger.kernel.org>,
+        "Sohil Mehta" <sohil.mehta@intel.com>
+Subject: Re: linux-next: manual merge of the block tree with the asm-generic tree
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 09:14:53AM +0300, Alexey Dobriyan wrote:
-> On Wed, Oct 04, 2023 at 01:17:00PM -0700, Andrew Morton wrote:
+On Mon, Oct 9, 2023, at 10:48, Peter Zijlstra wrote:
+> On Mon, Oct 09, 2023 at 12:31:18PM +1100, Stephen Rothwell wrote:
+>> diff --cc arch/alpha/kernel/syscalls/syscall.tbl
+>> index 5d05ab716a74,b1865f9bb31e..000000000000
+>> --- a/arch/alpha/kernel/syscalls/syscall.tbl
+>> +++ b/arch/alpha/kernel/syscalls/syscall.tbl
+>> @@@ -492,4 -492,6 +492,7 @@@
+>>   560	common	set_mempolicy_home_node		sys_ni_syscall
+>>   561	common	cachestat			sys_cachestat
+>>   562	common	fchmodat2			sys_fchmodat2
+>>  -563	common	futex_wake			sys_futex_wake
+>>  -564	common	futex_wait			sys_futex_wait
+>>  -565	common	futex_requeue			sys_futex_requeue
+>>  +563	common	map_shadow_stack		sys_map_shadow_stack
+>> ++564	common	futex_wake			sys_futex_wake
+>> ++565	common	futex_wait			sys_futex_wait
+>> ++566	common	futex_requeue			sys_futex_requeue
+>
+> So this renumbers the (futex) stuff on Alpha, does anybody care? AFAICT
+> Alpha does not follow the unistd order and meh.
 
-> > +		if (errno == ENOENT) {
-> > +			/*
-> > +			 * /proc/${pid}/statm is under CONFIG_PROC_PAGE_MONITOR,
-> > +			 * it doesn't necessarily exist.
+Let's not make it worse for now. All the numbers since the
+introduction of the time64 syscalls are offset by exactly 120
+on alpha, and I'd prefer to keep it that way for the moment.
 
-Oh, and /proc/*/statm is _not_ under CONFIG_PROC_PAGE_MONITOR,
-it always exists.
+I still hope to eventually finish the conversion of all architectures
+to a single syscall.tbl for numbers >400, and if that happens before
+the end of alpha, a different ordering would just be extra pain.
+
+    Arnd
