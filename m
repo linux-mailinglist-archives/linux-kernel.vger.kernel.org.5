@@ -2,74 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 729847BDC38
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9A777BDC44
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376440AbjJIMfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 08:35:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34124 "EHLO
+        id S1376409AbjJIMhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 08:37:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346571AbjJIMfn (ORCPT
+        with ESMTP id S1346437AbjJIMhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 08:35:43 -0400
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CEAF8F
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 05:35:40 -0700 (PDT)
-Received: by mail-vs1-xe2c.google.com with SMTP id ada2fe7eead31-4527d65354bso1898774137.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 05:35:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696854939; x=1697459739; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wOKyQdcpzYH1S2DyazYIOAoD7VFJ1kfohupYEjtWCjA=;
-        b=Vq2buXPKPs+lTz5qet9MIBDSqx8oLhBQNKhUg3SCYZgF5x0V7hjcYID0zbJW7EADgT
-         dmcgkyfuNm5I5WGA10uvMX1selKUEt6bW2CFPYvpvn7VavYnZTw3VWHpmtqHAYcOds77
-         /e19jyyn1U+Ct2zsVfCF6jsU3WDlr0HQ2FtmplRKtXkl5Oxc50ODakHt2VMy+611dSMi
-         xUyMlNLKXfDzXoWpGtnm6RVpf/v+DT5qy+m2ud2akIv9XmU9k6xknWYwj3SgiH2k6j2g
-         +ffGxAS0Cx8ppKNDLYmZbonfbEDGDhII10eLX9nIhgWvTKysWvdJpyXGYuTIRXVdw4sC
-         5xwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696854939; x=1697459739;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wOKyQdcpzYH1S2DyazYIOAoD7VFJ1kfohupYEjtWCjA=;
-        b=XG+/Joe6fRrzEB5SPiKagxrgD8REQBfAT3YXqlCvd4/0jUo5mhZbLbsY+YrSaH3jrA
-         XmVZq9YSZFpyJCaGaRPeAgogXqIaQGrAFxJmgHbDtMl9ovz/30AjwNO1h272vzN0YaJk
-         FtSe+oBphXjPMPGz+sKDrI3TjcOgsNJ54UQx0fqxXvi7zFyL2XzwiyzJ+AOJDuynEQ6g
-         kZV4116BclWLPgc/h2YJj2R+CT3bUbiRnb6y5nvJQ70BXTtr9ry2yGUhWETndbpFDLvP
-         vQKdYcRt1hM7+5wadq2+PrPxpH4F41tICMeqiPF3z7UedKNULDe91wLBTB4QFPf8Z4k0
-         kivA==
-X-Gm-Message-State: AOJu0YyakkSJVGfMKvc+0Cz9Na+NLikdhO/8mQgFMIONMnEe1Sma661F
-        iC9Wke0PzGpSpiHS5Mn51StSsUSLN6B30F+VbO3fAg==
-X-Google-Smtp-Source: AGHT+IEpyX0LBMZJRB6KI2ixkBt1XvV/E8Mxkh2tyDV96XdcIEKorle9qeJ5tkvEALrBkBNrzqtoEjdoTJvMRmuLNJg=
-X-Received: by 2002:a05:6102:7c2:b0:44e:98d8:c62e with SMTP id
- y2-20020a05610207c200b0044e98d8c62emr12922722vsg.33.1696854939344; Mon, 09
- Oct 2023 05:35:39 -0700 (PDT)
+        Mon, 9 Oct 2023 08:37:16 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A26AAC;
+        Mon,  9 Oct 2023 05:37:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696855033; x=1728391033;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Rw32ScfJPeLaNgNAcjsRTBfEMkPu9/ApTs6pmxzg8bI=;
+  b=dhRPmYjDj43O4ywCR4QUu1VAevDFJphpU+nH+zyhNIDTHf6popbJ+zRI
+   2m374XTKcDD8Exhx8TvT8GfFnhKGeGF+2T/2JKgNkNorddGw0Vt2RdQdp
+   Af5b9hMIis07Lh3XjuQhANy/NTDh2zEVu1mvY/VogJqM86BjdqCc9drEG
+   pl1E21PeZ+410UNNhkSh5KZWcWyIWfGhbK8osgQwwP74FsYc1fvnLkOS6
+   m0BNG9O0RGARlHLeFYuk2M6ZtmgV9wbuOwrTkt/0ghuevOfk0Hr0nJxWE
+   kdg2PQj1s0KC+h95886/aHcCKpEAHDc/BeyGpg3QnNwTORwFMHgaFxchD
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="450631022"
+X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
+   d="scan'208";a="450631022"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 05:37:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="753003189"
+X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
+   d="scan'208";a="753003189"
+Received: from lkp-server02.sh.intel.com (HELO 4ed589823ba4) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 09 Oct 2023 05:37:07 -0700
+Received: from kbuild by 4ed589823ba4 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qppVQ-0000Cu-2E;
+        Mon, 09 Oct 2023 12:37:04 +0000
+Date:   Mon, 9 Oct 2023 20:36:16 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sandipan Das <sandipan.das@amd.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, x86@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, peterz@infradead.org,
+        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
+        tglx@linutronix.de, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, eranian@google.com, ananth.narayan@amd.com,
+        ravi.bangoria@amd.com, santosh.shukla@amd.com, sandipan.das@amd.com
+Subject: Re: [PATCH v2 2/6] perf/x86/amd/uncore: Move discovery and
+ registration
+Message-ID: <202310092019.yMh3nlyD-lkp@intel.com>
+References: <e6c447e48872fcab8452e0dd81b1c9cb09f39eb4.1696425185.git.sandipan.das@amd.com>
 MIME-Version: 1.0
-References: <cover.1694625260.git.andreyknvl@google.com> <CA+fCnZckOM0ycja3-=08=B3jwoWrYgn1w91eT=b6no9EN0UWLw@mail.gmail.com>
-In-Reply-To: <CA+fCnZckOM0ycja3-=08=B3jwoWrYgn1w91eT=b6no9EN0UWLw@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 9 Oct 2023 14:35:03 +0200
-Message-ID: <CANpmjNNoBuNCf5+ETLOgMbjjYFT0ssfb4yyYL21XRrOgMc_mfg@mail.gmail.com>
-Subject: Re: [PATCH v2 00/19] stackdepot: allow evicting stack traces
-To:     Andrey Konovalov <andreyknvl@gmail.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
-        Evgenii Stepanov <eugenis@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>,
-        andrey.konovalov@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e6c447e48872fcab8452e0dd81b1c9cb09f39eb4.1696425185.git.sandipan.das@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,90 +72,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Oct 2023 at 22:36, Andrey Konovalov <andreyknvl@gmail.com> wrote:
->
-> On Wed, Sep 13, 2023 at 7:14=E2=80=AFPM <andrey.konovalov@linux.dev> wrot=
-e:
-> >
-> > From: Andrey Konovalov <andreyknvl@google.com>
-> >
-> > Currently, the stack depot grows indefinitely until it reaches its
-> > capacity. Once that happens, the stack depot stops saving new stack
-> > traces.
-> >
-> > This creates a problem for using the stack depot for in-field testing
-> > and in production.
-> >
-> > For such uses, an ideal stack trace storage should:
-> >
-> > 1. Allow saving fresh stack traces on systems with a large uptime while
-> >    limiting the amount of memory used to store the traces;
-> > 2. Have a low performance impact.
-> >
-> > Implementing #1 in the stack depot is impossible with the current
-> > keep-forever approach. This series targets to address that. Issue #2 is
-> > left to be addressed in a future series.
-> >
-> > This series changes the stack depot implementation to allow evicting
-> > unneeded stack traces from the stack depot. The users of the stack depo=
-t
-> > can do that via new stack_depot_save_flags(STACK_DEPOT_FLAG_GET) and
-> > stack_depot_put APIs.
-> >
-> > Internal changes to the stack depot code include:
-> >
-> > 1. Storing stack traces in fixed-frame-sized slots; the slot size is
-> >    controlled via CONFIG_STACKDEPOT_MAX_FRAMES (vs precisely-sized
-> >    slots in the current implementation);
-> > 2. Keeping available slots in a freelist (vs keeping an offset to the n=
-ext
-> >    free slot);
-> > 3. Using a read/write lock for synchronization (vs a lock-free approach
-> >    combined with a spinlock).
-> >
-> > This series also integrates the eviction functionality in the tag-based
-> > KASAN modes.
-> >
-> > Despite wasting some space on rounding up the size of each stack record=
-,
-> > with CONFIG_STACKDEPOT_MAX_FRAMES=3D32, the tag-based KASAN modes end u=
-p
-> > consuming ~5% less memory in stack depot during boot (with the default
-> > stack ring size of 32k entries). The reason for this is the eviction of
-> > irrelevant stack traces from the stack depot, which frees up space for
-> > other stack traces.
-> >
-> > For other tools that heavily rely on the stack depot, like Generic KASA=
-N
-> > and KMSAN, this change leads to the stack depot capacity being reached
-> > sooner than before. However, as these tools are mainly used in fuzzing
-> > scenarios where the kernel is frequently rebooted, this outcome should
-> > be acceptable.
-> >
-> > There is no measurable boot time performance impact of these changes fo=
-r
-> > KASAN on x86-64. I haven't done any tests for arm64 modes (the stack
-> > depot without performance optimizations is not suitable for intended us=
-e
-> > of those anyway), but I expect a similar result. Obtaining and copying
-> > stack trace frames when saving them into stack depot is what takes the
-> > most time.
-> >
-> > This series does not yet provide a way to configure the maximum size of
-> > the stack depot externally (e.g. via a command-line parameter). This wi=
-ll
-> > be added in a separate series, possibly together with the performance
-> > improvement changes.
->
-> Hi Marco and Alex,
->
-> Could you PTAL at the not-yet-reviewed patches in this series when you
-> get a chance?
+Hi Sandipan,
 
-There'll be a v3 with a few smaller still-pending fixes, right? I
-think I looked at it a while back and the rest that I didn't comment
-on looked fine, just waiting for v3.
+kernel test robot noticed the following build warnings:
 
-Feel free to send a v3 by end of week. I'll try to have another look
-today/tomorrow just in case I missed something, but if there are no
-more comments please send v3 later in the week.
+[auto build test WARNING on tip/perf/core]
+[also build test WARNING on perf-tools/perf-tools acme/perf/core linus/master v6.6-rc5 next-20231009]
+[cannot apply to perf-tools-next/perf-tools-next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Sandipan-Das/perf-x86-amd-uncore-Move-discovery-and-registration/20231006-005053
+base:   tip/perf/core
+patch link:    https://lore.kernel.org/r/e6c447e48872fcab8452e0dd81b1c9cb09f39eb4.1696425185.git.sandipan.das%40amd.com
+patch subject: [PATCH v2 2/6] perf/x86/amd/uncore: Move discovery and registration
+config: i386-randconfig-061-20231009 (https://download.01.org/0day-ci/archive/20231009/202310092019.yMh3nlyD-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231009/202310092019.yMh3nlyD-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310092019.yMh3nlyD-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> arch/x86/events/amd/uncore.c:601:10: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got union amd_uncore_info * @@
+   arch/x86/events/amd/uncore.c:601:10: sparse:     expected void const [noderef] __percpu *__vpp_verify
+   arch/x86/events/amd/uncore.c:601:10: sparse:     got union amd_uncore_info *
+   arch/x86/events/amd/uncore.c:730:10: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got union amd_uncore_info * @@
+   arch/x86/events/amd/uncore.c:730:10: sparse:     expected void const [noderef] __percpu *__vpp_verify
+   arch/x86/events/amd/uncore.c:730:10: sparse:     got union amd_uncore_info *
+>> arch/x86/events/amd/uncore.c:847:30: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected union amd_uncore_info *[noderef] info @@     got union amd_uncore_info [noderef] __percpu * @@
+   arch/x86/events/amd/uncore.c:847:30: sparse:     expected union amd_uncore_info *[noderef] info
+   arch/x86/events/amd/uncore.c:847:30: sparse:     got union amd_uncore_info [noderef] __percpu *
+>> arch/x86/events/amd/uncore.c:881:43: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __percpu *__pdata @@     got union amd_uncore_info *[noderef] info @@
+   arch/x86/events/amd/uncore.c:881:43: sparse:     expected void [noderef] __percpu *__pdata
+   arch/x86/events/amd/uncore.c:881:43: sparse:     got union amd_uncore_info *[noderef] info
+   arch/x86/events/amd/uncore.c:904:35: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __percpu *__pdata @@     got union amd_uncore_info *[noderef] info @@
+   arch/x86/events/amd/uncore.c:904:35: sparse:     expected void [noderef] __percpu *__pdata
+   arch/x86/events/amd/uncore.c:904:35: sparse:     got union amd_uncore_info *[noderef] info
+   arch/x86/events/amd/uncore.c:358:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got union amd_uncore_info * @@
+   arch/x86/events/amd/uncore.c:358:39: sparse:     expected void const [noderef] __percpu *__vpp_verify
+   arch/x86/events/amd/uncore.c:358:39: sparse:     got union amd_uncore_info *
+>> arch/x86/events/amd/uncore.c:358:39: sparse: sparse: dereference of noderef expression
+   arch/x86/events/amd/uncore.c:358:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got union amd_uncore_info * @@
+   arch/x86/events/amd/uncore.c:358:39: sparse:     expected void const [noderef] __percpu *__vpp_verify
+   arch/x86/events/amd/uncore.c:358:39: sparse:     got union amd_uncore_info *
+>> arch/x86/events/amd/uncore.c:358:39: sparse: sparse: dereference of noderef expression
+   arch/x86/events/amd/uncore.c:601:10: sparse: sparse: dereference of noderef expression
+>> arch/x86/events/amd/uncore.c:593:31: sparse: sparse: invalid access past the end of 'info' (4 8)
+   arch/x86/events/amd/uncore.c:598:48: sparse: sparse: invalid access past the end of 'info' (4 8)
+   arch/x86/events/amd/uncore.c:365:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got union amd_uncore_info * @@
+   arch/x86/events/amd/uncore.c:365:39: sparse:     expected void const [noderef] __percpu *__vpp_verify
+   arch/x86/events/amd/uncore.c:365:39: sparse:     got union amd_uncore_info *
+   arch/x86/events/amd/uncore.c:365:39: sparse: sparse: dereference of noderef expression
+   arch/x86/events/amd/uncore.c:730:10: sparse: sparse: dereference of noderef expression
+   arch/x86/events/amd/uncore.c:724:31: sparse: sparse: invalid access past the end of 'info' (4 8)
+   arch/x86/events/amd/uncore.c:365:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got union amd_uncore_info * @@
+   arch/x86/events/amd/uncore.c:365:39: sparse:     expected void const [noderef] __percpu *__vpp_verify
+   arch/x86/events/amd/uncore.c:365:39: sparse:     got union amd_uncore_info *
+   arch/x86/events/amd/uncore.c:365:39: sparse: sparse: dereference of noderef expression
+   arch/x86/events/amd/uncore.c:848:22: sparse: sparse: dereference of noderef expression
+   arch/x86/events/amd/uncore.c:880:21: sparse: sparse: dereference of noderef expression
+   arch/x86/events/amd/uncore.c:881:37: sparse: sparse: dereference of noderef expression
+   arch/x86/events/amd/uncore.c:882:25: sparse: sparse: dereference of noderef expression
+   arch/x86/events/amd/uncore.c:901:22: sparse: sparse: dereference of noderef expression
+   arch/x86/events/amd/uncore.c:904:29: sparse: sparse: dereference of noderef expression
+   arch/x86/events/amd/uncore.c:905:17: sparse: sparse: dereference of noderef expression
+
+vim +601 arch/x86/events/amd/uncore.c
+
+   582	
+   583	static
+   584	void amd_uncore_df_ctx_scan(struct amd_uncore *uncore, unsigned int cpu)
+   585	{
+   586		union cpuid_0x80000022_ebx ebx;
+   587		union amd_uncore_info info;
+   588	
+   589		if (!boot_cpu_has(X86_FEATURE_PERFCTR_NB))
+   590			return;
+   591	
+   592		info.split.aux_data = 0;
+ > 593		info.split.num_pmcs = NUM_COUNTERS_NB;
+   594		info.split.cid = topology_die_id(cpu);
+   595	
+   596		if (pmu_version >= 2) {
+   597			ebx.full = cpuid_ebx(EXT_PERFMON_DEBUG_FEATURES);
+   598			info.split.num_pmcs = ebx.split.num_df_pmc;
+   599		}
+   600	
+ > 601		*per_cpu_ptr(uncore->info, cpu) = info;
+   602	}
+   603	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
