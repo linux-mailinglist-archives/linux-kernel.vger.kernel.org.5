@@ -2,136 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B3657BD85C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 12:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0397F7BD862
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 12:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346135AbjJIKRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 06:17:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50866 "EHLO
+        id S1346089AbjJIKTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 06:19:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346130AbjJIKQ4 (ORCPT
+        with ESMTP id S1346048AbjJIKTL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 06:16:56 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65913F0
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 03:16:54 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c296e6543fso52026861fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 03:16:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696846612; x=1697451412; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HuYv4b6pLjydapaBtZop4O37DiFGBbAGIm3D4cVug5g=;
-        b=hnz+IwKRROHGKsTD2NNtpIZXyQgL3Ome02mc8FtBfJMMORpPoibOt7YZaGoEvcDhqZ
-         N+36+tSfxj/23qNpesgvePyPXqpAAcbtxCc7H7xhrGLdUC81QjePbdYhLCxCTO+H4d+j
-         PeIy3iFXDzPf7PLy4IGhvHzY8/STkmxIwaDnrvAAn40bYTZ8HdWY7kiY+E7QyDRh9+d4
-         gMmZ2ZwPVUBWvsdCzncU/2UXrCN+7h4HihimWIc3gikyR7CT4KsrMUQI7Z/asdU4gdKa
-         eBcx9VA/0hC5MAoaFILywUBr0OnpVB1DldPxH/X1zkcl4R5r6hRYnQdBn8DiB8X0N3tk
-         72UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696846612; x=1697451412;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HuYv4b6pLjydapaBtZop4O37DiFGBbAGIm3D4cVug5g=;
-        b=JhvO0vPJyS57gprbJqZX+CVI65z+aKlaiTh5LovT/GzkdUmh12VQ7n7bMpeOWKCukS
-         t/X6J7zPH+/Lxpyf71y0A9wNj6faRVbUvAOP6k5Cu7eMSWYWGuWsZZpI95EN5V6AGm62
-         xFSLzITtFIuO4DyZXRMXSsNzb06dr4Mjnj3weYVweYXyaZqFneEQ8bVtfQYg1/0lL7Yp
-         y84hpHQbQUPAZU1g2mweg0LNm4ph4JrBQ797NpI5hUK2yN1LIEjWwkVOuPBKs/iI64WC
-         h3fMgqOniFzaJkpFb7BoZtTgo/+6ckzRBK0nqXoYbfgK2lTNkpgCOY3Mr0dOV+DK9PVZ
-         C73g==
-X-Gm-Message-State: AOJu0YzmWR3Zk/xd80XwDJlpd6lYytpF0EywIIbJv6zdQfe3FG7XVK+i
-        ubQXMCu4pjdJBwXzyA8rGuCEqw==
-X-Google-Smtp-Source: AGHT+IFDxuwnrTw9oBX4OgnlazccY+uFAtoj++5xgItlpzobK2civqYU0difdDwxMAWL3MPK3GDdqg==
-X-Received: by 2002:a2e:8745:0:b0:2c0:158f:8133 with SMTP id q5-20020a2e8745000000b002c0158f8133mr13449820ljj.28.1696846612558;
-        Mon, 09 Oct 2023 03:16:52 -0700 (PDT)
-Received: from [192.168.200.173] (178235177147.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.147])
-        by smtp.gmail.com with ESMTPSA id h25-20020a2e3a19000000b002b9e20d0356sm1996314lja.114.2023.10.09.03.16.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 03:16:52 -0700 (PDT)
-Message-ID: <0a3cd2f3-85e9-4769-9749-62353e842625@linaro.org>
-Date:   Mon, 9 Oct 2023 12:16:49 +0200
+        Mon, 9 Oct 2023 06:19:11 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC882A3;
+        Mon,  9 Oct 2023 03:19:09 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 399ABsY2005081;
+        Mon, 9 Oct 2023 10:18:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=u/wEYaoVMDSRX5EwZsNkzHNREQGGUju3+A/F6dL5KMQ=;
+ b=C+BuRSuezti4S6hCz2X9YkHiC9ez+BZmSsExhmFM0NzC6cdINcfKDvEHGHt2e7AI3Ru2
+ rkBzKTbYmBL2W3CQfRgsEwM9wMu+U/UggxheZmQihLFBZQOTFs/wQzy3wvilh+3CPDY9
+ NpUWgqkmaKqzLN1TkTSX1zSy+u8y0aARpuSFjCS6U3R2XX79mfow2E89aZPieI2xqM28
+ /n0v8Ja+ntOAqAu/cm+fhVRSkHb1tfJ112vbPu5v3Ubp/5ulYrJG0bg4jmGjTQ8yP+ws
+ lOA7ljx/uB/yPd6zW3xhj9QTEXZit9VfUB9OAtzkB8ZHvbk82F+DVwNeqfz0ikDmCqem 7w== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tkh5e24re-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 09 Oct 2023 10:18:32 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 399AIVE7017102
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 9 Oct 2023 10:18:31 GMT
+Received: from [10.217.219.52] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 9 Oct
+ 2023 03:18:28 -0700
+Message-ID: <2145b2d5-cade-eda0-8325-edf09b6f534c@quicinc.com>
+Date:   Mon, 9 Oct 2023 15:48:25 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/5] i2c: qcom-cci: Add sc8280xp compatible
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH RESEND] xhci: Keep interrupt disabled in initialization
+ until host is running.
 Content-Language: en-US
-To:     Andi Shyti <andi.shyti@kernel.org>
-Cc:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, agross@kernel.org,
-        andersson@kernel.org, loic.poulain@linaro.org, rfoss@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, todor.too@gmail.com, mchehab@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231006120159.3413789-1-bryan.odonoghue@linaro.org>
- <20231006120159.3413789-3-bryan.odonoghue@linaro.org>
- <b8f2d7f1-16e2-4e6a-9c84-37da393f74a3@linaro.org>
- <20231008212824.cs6e6hc7zur67v6k@zenone.zhora.eu>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20231008212824.cs6e6hc7zur67v6k@zenone.zhora.eu>
-Content-Type: text/plain; charset=UTF-8
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <linux-kernel@vger.kernel.org>, Hongyu Xie <xy521521@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>, <stable@kernel.org>,
+        Hongyu Xie <xiehongyu1@kylinos.cn>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        "# 5 . 15" <stable@vger.kernel.org>
+References: <1695379724-28628-1-git-send-email-quic_prashk@quicinc.com>
+ <2023100753-jargon-resolute-0e55@gregkh>
+From:   Prashanth K <quic_prashk@quicinc.com>
+In-Reply-To: <2023100753-jargon-resolute-0e55@gregkh>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: nfCD0h4TulTXiaq5B-V2Ue80ZbNZWIbO
+X-Proofpoint-ORIG-GUID: nfCD0h4TulTXiaq5B-V2Ue80ZbNZWIbO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-09_08,2023-10-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ priorityscore=1501 spamscore=0 suspectscore=0 phishscore=0 malwarescore=0
+ lowpriorityscore=0 mlxlogscore=399 mlxscore=0 adultscore=0 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310090084
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8.10.2023 23:28, Andi Shyti wrote:
-> Hi Konrad,
-> 
->>> Add sc8280xp compatible with cci_v2_data parameters.
->>>
->>> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
->>> ---
->> Drop this patch, it adds nothing useful
-> 
-> what about the rest of the series?
-> 
-> Could you please be a bit more explicative?
-This patch introduces a new compatible in the driver that does
-exactly nothing, as the bindings require the use of
-"qcom,sc8280xp-cci" with a fallback of "qcom,msm8996-cci". The
-latter one already has a match table entry.
 
-Konrad
+
+On 07-10-23 04:50 pm, Greg Kroah-Hartman wrote:
+> On Fri, Sep 22, 2023 at 04:18:44PM +0530, Prashanth K wrote:
+>> From: Hongyu Xie <xy521521@gmail.com>
+>>
+>> [ Upstream commit 808925075fb750804a60ff0710614466c396db4 ]
+> 
+> This is not a valid git commit id in Linus's tree, where is it from?
+> 
+> confused,
+> 
+> greg k-h
+
+The commit ID is a808925075fb750804a60ff0710614466c396db4. Missed the 
+first letter. Sorry fir the confusion. Will Resend the patch with 
+updated commit text.
+
+- Prashanth K
