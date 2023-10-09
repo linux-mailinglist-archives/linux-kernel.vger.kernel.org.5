@@ -2,171 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBBA67BD824
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 12:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C09187BD828
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 12:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346073AbjJIKIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 06:08:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48544 "EHLO
+        id S1346081AbjJIKIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 06:08:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346048AbjJIKII (ORCPT
+        with ESMTP id S1346048AbjJIKI2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 06:08:08 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D909F;
-        Mon,  9 Oct 2023 03:08:06 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id a1e0cc1a2514c-7ab8696d047so1686299241.1;
-        Mon, 09 Oct 2023 03:08:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696846085; x=1697450885; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vbHOermRMrKRk+X0HGNdbhFKu1xqDfORpCgcvsbzg3U=;
-        b=cCBn5jiriDqSzevJshBcOQc8IDRPUcX1eQmDGtDWD6utbaNLS2p+kOUmCBfmOsda9V
-         FFU7YCticytSCMEExNC3iTruqgwYbLzWa8x3PeNQAfU0bSFiVIi8OllX8uBEXvX992oB
-         JnPDpf6brX95o0WJ2a7kyP9cUdqQ069JKUyROoZt6tzEco7pdexv9xtVYDShlHLplPZL
-         ycPJqUG6RGq+XrLhAxy+3Ve9l0sjPeGHDYa0/jTegwMftoxMvZlUqAmQxu9Cs2CpVa0j
-         45yLDr1cXlYgLeuHVL59XKfUIirCqq8k3gcQ6TRgyxc73bAVv4UegFDa8YNIeEXvY7uS
-         fz+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696846085; x=1697450885;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vbHOermRMrKRk+X0HGNdbhFKu1xqDfORpCgcvsbzg3U=;
-        b=t+XF1YUcQ7iH4duBzNtXuzMCRGg9agH99CmjZDgw5G0uIYLAhAGiLmPTjzkMK2EmyM
-         lCdVdlxYpSQMJ+ECOAbM54EtkSuDDaxMz9d4vgvAXSlNAEnOmd7MLo+Phzjz2UcK38g+
-         twMy8Jiynxm3PjQ9WareubC9oQ6Wd/BXwppTU84a3wIJ/gOU+cmhq1E3CTdPVAmE2sDh
-         s+LpMS62RJEZd6+GyXx8G19uSaOaka9uVsNOyMSyFS+Q0SrOszdaYSS788Tf+hhJ72b6
-         D39TQqKNKb/H9+cwA0j0t8LeDWBtlN00Te4cRfI1aWEzUJMbwpMJDsYyNBJuiBsl2cDZ
-         as0g==
-X-Gm-Message-State: AOJu0Yw/grej5DmUdMAZu3J5ySG7DkQNyoje8QIq8SHtXhC7+81IIjrI
-        H3evpq+qv4Z9cAOQ4Ezoq7+ooSxaQO2cdOAc7Lw=
-X-Google-Smtp-Source: AGHT+IG82LZdEm7dgg1DL81gRs2joX/UTWwc13ELsnkSS/9qkVDl7Yrdteu4VB0eB/VoXi+UEInbHeRPlZZV7wmkSdg=
-X-Received: by 2002:a67:f6c1:0:b0:452:635e:2710 with SMTP id
- v1-20020a67f6c1000000b00452635e2710mr13995568vso.0.1696846085188; Mon, 09 Oct
- 2023 03:08:05 -0700 (PDT)
+        Mon, 9 Oct 2023 06:08:28 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE9297;
+        Mon,  9 Oct 2023 03:08:27 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 18EE421847;
+        Mon,  9 Oct 2023 10:08:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1696846106; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KI8iGmDacbjyfpujQS0BFEqs/bpz2R47Nq98pWnN1Kg=;
+        b=kLdsgi8ijKHDs7ueTrlwHESoADuAyKkXPOBTNwBbQdKHrIzCOAZY6lro9s2/pv6+f5QqQg
+        +xBHbSs2QyDGx3z+s4/R9INchqMqHlLs0myYWnOwJzZ4GQ1LJSCIELKjXaaRbMcaRpHkku
+        1fc1gKrlUleAhXjt3lZ6s/3uq6EyNT8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1696846106;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KI8iGmDacbjyfpujQS0BFEqs/bpz2R47Nq98pWnN1Kg=;
+        b=Ezey8VTIiHbqUPl9cBkACsMHidTrypgIsvLLrLo1GXWsO+A+pyht3ciFWhBNDIN4wEAUnN
+        OQ3sn7AuaxPnIyDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 072C313905;
+        Mon,  9 Oct 2023 10:08:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 5aG1ARrRI2XpdQAAMHmgww
+        (envelope-from <jack@suse.cz>); Mon, 09 Oct 2023 10:08:26 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 94439A04B2; Mon,  9 Oct 2023 12:08:25 +0200 (CEST)
+Date:   Mon, 9 Oct 2023 12:08:25 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Lizhi Xu <lizhi.xu@windriver.com>
+Cc:     syzbot+23bc20037854bb335d59@syzkaller.appspotmail.com,
+        axboe@kernel.dk, brauner@kernel.org, dave.kleikamp@oracle.com,
+        hare@suse.de, hch@lst.de, jack@suse.cz,
+        jfs-discussion@lists.sourceforge.net, johannes.thumshirn@wdc.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shaggy@kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] jfs: fix log->bdev_handle null ptr deref in lbmStartIO
+Message-ID: <20231009100825.dkkaylsrj4db3ekp@quack3>
+References: <0000000000005239cf060727d3f6@google.com>
+ <20231009094557.1398920-1-lizhi.xu@windriver.com>
 MIME-Version: 1.0
-References: <20231008052101.144422-1-akihiko.odaki@daynix.com>
- <20231008052101.144422-6-akihiko.odaki@daynix.com> <CAF=yD-K2MQt4nnfwJrx6h6Nii_rho7j1o6nb_jYaSwcWY45pPw@mail.gmail.com>
- <48e20be1-b658-4117-8856-89ff1df6f48f@daynix.com> <CAF=yD-K4bCBpUVtDR_cv=bagRL+vM4Rusez+uHFTb4_kR8XkpA@mail.gmail.com>
- <6a698c99-6f02-4cfb-a709-ba02296a05f7@daynix.com>
-In-Reply-To: <6a698c99-6f02-4cfb-a709-ba02296a05f7@daynix.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Mon, 9 Oct 2023 03:07:27 -0700
-Message-ID: <CAF=yD-+WFy8us0wUWo-0KpZUKHx2Q82cJ8teO0qRkK-_R1e0cA@mail.gmail.com>
-Subject: Re: [RFC PATCH 5/7] tun: Introduce virtio-net hashing feature
-To:     Akihiko Odaki <akihiko.odaki@daynix.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, rdunlap@infradead.org, willemb@google.com,
-        gustavoars@kernel.org, herbert@gondor.apana.org.au,
-        steffen.klassert@secunet.com, nogikh@google.com,
-        pablo@netfilter.org, decui@microsoft.com, cai@lca.pw,
-        jakub@cloudflare.com, elver@google.com, pabeni@redhat.com,
-        Yuri Benditovich <yuri.benditovich@daynix.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231009094557.1398920-1-lizhi.xu@windriver.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 9, 2023 at 3:05=E2=80=AFAM Akihiko Odaki <akihiko.odaki@daynix.=
-com> wrote:
->
->
->
-> On 2023/10/09 18:54, Willem de Bruijn wrote:
-> > On Mon, Oct 9, 2023 at 3:44=E2=80=AFAM Akihiko Odaki <akihiko.odaki@day=
-nix.com> wrote:
-> >>
-> >> On 2023/10/09 17:13, Willem de Bruijn wrote:
-> >>> On Sun, Oct 8, 2023 at 12:22=E2=80=AFAM Akihiko Odaki <akihiko.odaki@=
-daynix.com> wrote:
-> >>>>
-> >>>> virtio-net have two usage of hashes: one is RSS and another is hash
-> >>>> reporting. Conventionally the hash calculation was done by the VMM.
-> >>>> However, computing the hash after the queue was chosen defeats the
-> >>>> purpose of RSS.
-> >>>>
-> >>>> Another approach is to use eBPF steering program. This approach has
-> >>>> another downside: it cannot report the calculated hash due to the
-> >>>> restrictive nature of eBPF.
-> >>>>
-> >>>> Introduce the code to compute hashes to the kernel in order to overc=
-ome
-> >>>> thse challenges. An alternative solution is to extend the eBPF steer=
-ing
-> >>>> program so that it will be able to report to the userspace, but it m=
-akes
-> >>>> little sense to allow to implement different hashing algorithms with
-> >>>> eBPF since the hash value reported by virtio-net is strictly defined=
- by
-> >>>> the specification.
-> >>>>
-> >>>> The hash value already stored in sk_buff is not used and computed
-> >>>> independently since it may have been computed in a way not conforman=
-t
-> >>>> with the specification.
-> >>>>
-> >>>> Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
-> >>>
-> >>>> @@ -2116,31 +2172,49 @@ static ssize_t tun_put_user(struct tun_struc=
-t *tun,
-> >>>>           }
-> >>>>
-> >>>>           if (vnet_hdr_sz) {
-> >>>> -               struct virtio_net_hdr gso;
-> >>>> +               union {
-> >>>> +                       struct virtio_net_hdr hdr;
-> >>>> +                       struct virtio_net_hdr_v1_hash v1_hash_hdr;
-> >>>> +               } hdr;
-> >>>> +               int ret;
-> >>>>
-> >>>>                   if (iov_iter_count(iter) < vnet_hdr_sz)
-> >>>>                           return -EINVAL;
-> >>>>
-> >>>> -               if (virtio_net_hdr_from_skb(skb, &gso,
-> >>>> -                                           tun_is_little_endian(tun=
-), true,
-> >>>> -                                           vlan_hlen)) {
-> >>>> +               if ((READ_ONCE(tun->vnet_hash.flags) & TUN_VNET_HASH=
-_REPORT) &&
-> >>>> +                   vnet_hdr_sz >=3D sizeof(hdr.v1_hash_hdr) &&
-> >>>> +                   skb->tun_vnet_hash) {
-> >>>
-> >>> Isn't vnet_hdr_sz guaranteed to be >=3D hdr.v1_hash_hdr, by virtue of
-> >>> the set hash ioctl failing otherwise?
-> >>>
-> >>> Such checks should be limited to control path where possible
-> >>
-> >> There is a potential race since tun->vnet_hash.flags and vnet_hdr_sz a=
-re
-> >> not read at once.
-> >
-> > It should not be possible to downgrade the hdr_sz once v1 is selected.
->
-> I see nothing that prevents shrinking the header size.
->
-> tun->vnet_hash.flags is read after vnet_hdr_sz so the race can happen
-> even for the case the header size grows though this can be fixed by
-> reordering the two reads.
+On Mon 09-10-23 17:45:57, Lizhi Xu wrote:
+> When sbi->flag is JFS_NOINTEGRITY in lmLogOpen(), log->bdev_handle can't
+> be inited, so it value will be NULL.
+> Therefore, add the "log ->no_integrity=1" judgment in lbmStartIO() to avoid such
+> problems.
+> 
+> Reported-and-tested-by: syzbot+23bc20037854bb335d59@syzkaller.appspotmail.com
+> Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
 
-One option is to fail any control path that tries to re-negotiate
-header size once this hash option is enabled?
+Ah, good catch. Who would think someone creates bios for NULL bdev only to
+release them shortly afterwards ;). Anyway the fix looks good. Feel free to
+add:
 
-There is no practical reason to allow feature re-negotiation at any
-arbitrary time.
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+Christian, please pick up this fixup into your tree. Thanks!
+
+								Honza
+
+> ---
+>  fs/jfs/jfs_logmgr.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/jfs/jfs_logmgr.c b/fs/jfs/jfs_logmgr.c
+> index c911d838b8ec..c41a76164f84 100644
+> --- a/fs/jfs/jfs_logmgr.c
+> +++ b/fs/jfs/jfs_logmgr.c
+> @@ -2110,10 +2110,14 @@ static void lbmStartIO(struct lbuf * bp)
+>  {
+>  	struct bio *bio;
+>  	struct jfs_log *log = bp->l_log;
+> +	struct block_device *bdev = NULL;
+>  
+>  	jfs_info("lbmStartIO");
+>  
+> -	bio = bio_alloc(log->bdev_handle->bdev, 1, REQ_OP_WRITE | REQ_SYNC,
+> +	if (!log->no_integrity) 
+> +		bdev = log->bdev_handle->bdev;	
+> +
+> +	bio = bio_alloc(bdev, 1, REQ_OP_WRITE | REQ_SYNC,
+>  			GFP_NOFS);
+>  	bio->bi_iter.bi_sector = bp->l_blkno << (log->l2bsize - 9);
+>  	__bio_add_page(bio, bp->l_page, LOGPSIZE, bp->l_offset);
+> -- 
+> 2.25.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
