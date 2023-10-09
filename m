@@ -2,156 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3970C7BE887
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 162BE7BE889
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377933AbjJIRnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 13:43:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
+        id S1377499AbjJIRoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 13:44:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377485AbjJIRns (ORCPT
+        with ESMTP id S233250AbjJIRoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 13:43:48 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF2B9E
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 10:43:46 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9a3e0f8872so587583276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 10:43:46 -0700 (PDT)
+        Mon, 9 Oct 2023 13:44:17 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE22E9D
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 10:44:15 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4064867903cso48622855e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 10:44:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696873425; x=1697478225; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9ymQW1hU5KSRzFFrnXvWvbt7y6O9V4+IynB4heEg3lo=;
-        b=e9VunNJlgalq31091voI+9oLPQ6aeyVlsfYRpvltQmNxqyA6WMoua2LcAxcuqnes9t
-         lQjt5DKhdX2RIwQgliibtLT3yhwEMS5DJxaHbm8K+b8/MElEF+5jccSrdysOZ7WOgl65
-         K43rOPhzTfC1xK1oTKz8tKZi9Wfo2ouIxUlzNURx6fsGb57LYX/N0St7xJYwBJFLCV6V
-         VaE5CNdW9nHRpvN8v0NhKvc9Cq7oTE/869jVFwpwHYt0Loh/VT+4pNAxzz4BMkm/HYS9
-         CpCqPs8LiR9XxCDqaUkkeTIhdnl9g6nabnQ6JCUy4/x0GCyhjoFfCNJPu/+DkEcYr8Ba
-         thhw==
+        d=google.com; s=20230601; t=1696873454; x=1697478254; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=STStuPO/b+1eXhTjhf6QGffrCRQ+SU82tm0zQBraBwI=;
+        b=Lq/GzIn+6AwVnkUmcMRjcvRKYuaLneqf9h8eBuiJbjgDtD+0MmOtQqlnVvnie5A7FN
+         N1cvVjHy199GA1RMfjdBCODs349QQzK3e2TGyOwIe+ux+yurk0bEUloOgLdxI5iEt5G3
+         q+4cRuEa+MAELnFbOWt36BbJH42y1w6fY99gQZucRxmkPcZsvyXYq/2PMB3TngttzbHs
+         spAzw2aYkBcf3HrnMrcKfLNYc8mQKwk83RI2HteJ8mWBGSY9MRrt/H1mANYkeIRnpMSi
+         5EW5hPwX1qEuv41yypgzJ6fHNHgP5DK1LqKGYNQ9JGrDWQKpKVlh765eL3KFZ7/xCNoR
+         WALQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696873425; x=1697478225;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9ymQW1hU5KSRzFFrnXvWvbt7y6O9V4+IynB4heEg3lo=;
-        b=hY6nLmY/e710WGNZDViq796kUoZw04oGHTwPTQEcJ1hApHPbXoA3+a366HsaWMJKJz
-         D8sAl29wkL1EGbWoZGwGr13I7erZi2HW8wQAGRxLN2Qui82gC459Wcymr7GdRa4TdSpU
-         34+qb3flFCRboGJu5ANl7LZDtTgH+jsAQ0r2LnHwy7qdUK2F06yoTZx/ytBt231SQJ5Z
-         vuRZ1N4lP46N7+zuoAPdKWmeEO57rSnS995Of/5XamvLt6qPv2m8vuUoIXL5tiMaFUSL
-         WnNMVA4dK5ESLDspzUY9bBxv5zSMfllAw50hj41Cz0aBqtQl1hwRduWbi03y2IkgWMMY
-         aWJQ==
-X-Gm-Message-State: AOJu0YzHaW+zxbpXZpGlK/y/eWauaAPHrHQp9Yj2kFx57jakJO5lJ/Xa
-        7FLVc9fbmH18uyBQVtkerFDFLNRKNrs=
-X-Google-Smtp-Source: AGHT+IGEmaOt2mh4KqFW8J8GXYKlV0xk6lT0+epcV6SYF2UB9CpR6D/6Os1YBzFC4/6x25fxaRK99HgOCUQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:4197:0:b0:d78:f45:d7bd with SMTP id
- o145-20020a254197000000b00d780f45d7bdmr254742yba.4.1696873425494; Mon, 09 Oct
- 2023 10:43:45 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 10:43:43 -0700
-In-Reply-To: <20231006205415.3501535-1-kuba@kernel.org>
-Mime-Version: 1.0
-References: <20231006205415.3501535-1-kuba@kernel.org>
-Message-ID: <ZSQ7z8gqIemJQXI6@google.com>
-Subject: Re: [PATCH] KVM: deprecate KVM_WERROR in favor of general WERROR
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     pbonzini@redhat.com, workflows@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1696873454; x=1697478254;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=STStuPO/b+1eXhTjhf6QGffrCRQ+SU82tm0zQBraBwI=;
+        b=tq4iwX7SZUvDtvwUViJzhHJG6PFkUfJdwF1nBtDRn1OPcfa3p7d4wG773trPKWSsIP
+         2fvnqdx8Iun0P3bc0eZDS8BDmlTCmWxU8rn50DlcQ/qPEezPlQ7+a3cPy/2DbvX/aWS0
+         Heb+c7N4Agiymf9P3IQsruiCQQg5mGkHRpEOemdaBIor3yQyjyxK29cGc+3I4pfFHNfY
+         cJfsjQEo1X9bE91BRVyI6njFOQF5smF/WHOIJhRkD8TZFP+J5nic91j9mSFYWJ8j2DeK
+         KjD81lfaP5hXbV0uXbjkgy30CfZQp1gLMi00FsKsY4oPRrT1+inN0AEWawBCLQPaIZtQ
+         fMbg==
+X-Gm-Message-State: AOJu0Ywux/ItlpJ2SvpboMALFaKxJIyZ45c1TbREoI/Sv4nEPy7dCFFE
+        ddSNmia7/+twAZBBz1uCHiime/F7mPThVjEQUQSm2A==
+X-Google-Smtp-Source: AGHT+IE5oG/4dHDjcFOdclPDQpiBN2b/xlhPzhtW2vhtlr7qTel6GyJ3xa3Fhqt4F0hvEkmg77ljb16nzFS+7kNb6uo=
+X-Received: by 2002:adf:e6cd:0:b0:31f:a4fa:130a with SMTP id
+ y13-20020adfe6cd000000b0031fa4fa130amr14430019wrm.14.1696873453889; Mon, 09
+ Oct 2023 10:44:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231007170448.505487-1-masahiroy@kernel.org> <20231007170448.505487-3-masahiroy@kernel.org>
+In-Reply-To: <20231007170448.505487-3-masahiroy@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 9 Oct 2023 10:43:59 -0700
+Message-ID: <CAKwvOdkP-28Z51UZcDL4434Uns9pb0kYYFwzHmQCg7x2V0E_TQ@mail.gmail.com>
+Subject: Re: [PATCH 3/5] modpost: define TO_NATIVE() using bswap_* functions
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023, Jakub Kicinski wrote:
-> Setting WERROR for random subsystems make life really hard
-> for subsystems which want to build-test their stuff with W=1.
-> WERROR for the entire kernel now exists and can be used
-> instead. W=1 people probably know how to deal with the global
-> W=1 already, tracking all per-subsystem WERRORs is too much...
-
-I assume s/W=1/WERROR=y in this line?
-
-> Link: https://lore.kernel.org/all/0da9874b6e9fcbaaa5edeb345d7e2a7c859fc818.1696271334.git.thomas.lendacky@amd.com/
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+On Sat, Oct 7, 2023 at 10:05=E2=80=AFAM Masahiro Yamada <masahiroy@kernel.o=
+rg> wrote:
+>
+> The current TO_NATIVE() has some limitations:
+>
+>  1) You cannot cast the argument.
+>
+>  2) You cannot pass a variable marked as 'const'.
+>
+>  3) Passing an array is a bug, but it is not detected.
+>
+> Impelement TO_NATIVE() using bswap_*() functions. These are GNU
+> extensions. If we face portability issues, we can port the code from
+> include/uapi/linux/swab.h.
+>
+> With this change, get_rel_type_and_sym() can be simplified by casting
+> the arguments directly.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 > ---
->  Documentation/process/maintainer-kvm-x86.rst |  2 +-
->  arch/x86/kvm/Kconfig                         | 14 --------------
->  arch/x86/kvm/Makefile                        |  1 -
->  3 files changed, 1 insertion(+), 16 deletions(-)
-> 
-> diff --git a/Documentation/process/maintainer-kvm-x86.rst b/Documentation/process/maintainer-kvm-x86.rst
-> index 9183bd449762..cd70c0351108 100644
-> --- a/Documentation/process/maintainer-kvm-x86.rst
-> +++ b/Documentation/process/maintainer-kvm-x86.rst
-> @@ -243,7 +243,7 @@ context and disambiguate the reference.
->  Testing
->  -------
->  At a bare minimum, *all* patches in a series must build cleanly for KVM_INTEL=m
-> -KVM_AMD=m, and KVM_WERROR=y.  Building every possible combination of Kconfigs
-> +KVM_AMD=m, and WERROR=y.  Building every possible combination of Kconfigs
->  isn't feasible, but the more the merrier.  KVM_SMM, KVM_XEN, PROVE_LOCKING, and
->  X86_64 are particularly interesting knobs to turn.
->  
-> diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-> index ed90f148140d..12929324ac3e 100644
-> --- a/arch/x86/kvm/Kconfig
-> +++ b/arch/x86/kvm/Kconfig
-> @@ -63,20 +63,6 @@ config KVM
->  
->  	  If unsure, say N.
->  
-> -config KVM_WERROR
-> -	bool "Compile KVM with -Werror"
-> -	# KASAN may cause the build to fail due to larger frames
-> -	default y if X86_64 && !KASAN
+>
+>  scripts/mod/modpost.c | 13 ++++---------
+>  scripts/mod/modpost.h | 25 ++++++++++++-------------
+>  2 files changed, 16 insertions(+), 22 deletions(-)
+>
+> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+> index 2f3b0fe6f68d..99476a9695c5 100644
+> --- a/scripts/mod/modpost.c
+> +++ b/scripts/mod/modpost.c
+> @@ -1410,15 +1410,10 @@ static void get_rel_type_and_sym(struct elf_info =
+*elf, uint64_t r_info,
+>                 return;
+>         }
+>
+> -       if (is_64bit) {
+> -               Elf64_Xword r_info64 =3D r_info;
+> -
+> -               r_info =3D TO_NATIVE(r_info64);
+> -       } else {
+> -               Elf32_Word r_info32 =3D r_info;
+> -
+> -               r_info =3D TO_NATIVE(r_info32);
+> -       }
+> +       if (is_64bit)
+> +               r_info =3D TO_NATIVE((Elf64_Xword)r_info);
+> +       else
+> +               r_info =3D TO_NATIVE((Elf32_Word)r_info);
+>
+>         *r_type =3D ELF_R_TYPE(r_info);
+>         *r_sym =3D ELF_R_SYM(r_info);
+> diff --git a/scripts/mod/modpost.h b/scripts/mod/modpost.h
+> index 6413f26fcb6b..1392afec118c 100644
+> --- a/scripts/mod/modpost.h
+> +++ b/scripts/mod/modpost.h
+> @@ -1,4 +1,5 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+> +#include <byteswap.h>
+>  #include <stdbool.h>
+>  #include <stdio.h>
+>  #include <stdlib.h>
+> @@ -51,21 +52,19 @@
+>  #define ELF_R_TYPE  ELF64_R_TYPE
+>  #endif
+>
+> +#define bswap(x) \
+> +({ \
+> +       _Static_assert(sizeof(x) =3D=3D 1 || sizeof(x) =3D=3D 2 || \
 
-Hrm, I am loath to give up KVM's targeted -Werror as it allows for more aggresive
-enabling, e.g. enabling CONFIG_WERROR for i386 builds with other defaults doesn't
-work because of CONFIG_FRAME_WARN=1024.  That in turns means making WERROR=y a
-requirement in maintainer-kvm-x86.rst is likely unreasonable.
+Seems fine, but do we need to support folks trying to swap 1B values?
+i.e. is someone calling TO_NATIVE with 1B values?  Seems silly unless
+one of these types is variable length dependent on the target machine
+type?
 
-And arguably KVM_WERROR is doing its job by flagging the linked W=1 error.  The
-problem there lies more in my build testing, which I'll go fix by adding a W=1
-configuration or three.  As the changelog notes, I highly doubt W=1 builds work
-with WERROR, whereas keeping KVM x86 warning-free even with W=1 is feasible.
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-> -	# We use the dependency on !COMPILE_TEST to not be enabled
-> -	# blindly in allmodconfig or allyesconfig configurations
-> -	depends on KVM
-> -	depends on (X86_64 && !KASAN) || !COMPILE_TEST
+> +                      sizeof(x) =3D=3D 4 || sizeof(x) =3D=3D 8, "bug"); =
+\
+> +       (typeof(x))(sizeof(x) =3D=3D 2 ? bswap_16(x) : \
+> +                   sizeof(x) =3D=3D 4 ? bswap_32(x) : \
+> +                   sizeof(x) =3D=3D 8 ? bswap_64(x) : \
+> +                   x); \
+> +})
+> +
+>  #if KERNEL_ELFDATA !=3D HOST_ELFDATA
+>
+> -static inline void __endian(const void *src, void *dest, unsigned int si=
+ze)
+> -{
+> -       unsigned int i;
+> -       for (i =3D 0; i < size; i++)
+> -               ((unsigned char*)dest)[i] =3D ((unsigned char*)src)[size =
+- i-1];
+> -}
+> -
+> -#define TO_NATIVE(x)                                           \
+> -({                                                             \
+> -       typeof(x) __x;                                          \
+> -       __endian(&(x), &(__x), sizeof(__x));                    \
+> -       __x;                                                    \
+> -})
+> +#define TO_NATIVE(x) (bswap(x))
+>
+>  #else /* endianness matches */
+>
+> --
+> 2.39.2
+>
 
-On a related topic, this is comically stale as WERROR is on by default for both
-allmodconfig and allyesconfig, which work because they trigger 64-bit builds.
-And KASAN on x86 is 64-bit only.
 
-Rather than yank out KVM_WERROR entirely, what if we make default=n and trim the
-depends down to "KVM && EXPERT && !KASAN"?  E.g.
-
-diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-index 8452ed0228cb..c2466304aa6a 100644
---- a/arch/x86/kvm/Kconfig
-+++ b/arch/x86/kvm/Kconfig
-@@ -65,13 +65,12 @@ config KVM
- 
- config KVM_WERROR
-        bool "Compile KVM with -Werror"
--       # KASAN may cause the build to fail due to larger frames
--       default y if X86_64 && !KASAN
--       # We use the dependency on !COMPILE_TEST to not be enabled
--       # blindly in allmodconfig or allyesconfig configurations
--       depends on KVM
--       depends on (X86_64 && !KASAN) || !COMPILE_TEST
--       depends on EXPERT
-+       # Disallow KVM's -Werror if KASAN=y, e.g. to guard against randomized
-+       # configs from selecting KVM_WERROR=y.  KASAN builds generates warnings
-+       # for the default FRAME_WARN, i.e. KVM_WERROR=y with KASAN=y requires
-+       # special tuning.  Building KVM with -Werror and KASAN is still doable
-+       * via enabling the kernel-wide WERROR=y.
-+       depends on KVM && EXPERT && !KASAN
-        help
-          Add -Werror to the build flags for KVM.
+--=20
+Thanks,
+~Nick Desaulniers
