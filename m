@@ -2,104 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5394B7BD2FE
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 08:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 543577BD301
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 08:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345145AbjJIGDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 02:03:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42486 "EHLO
+        id S1345150AbjJIGDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 02:03:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345128AbjJIGC7 (ORCPT
+        with ESMTP id S1345128AbjJIGDx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 02:02:59 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC7AFA4
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 23:02:57 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40675f06f1fso29793125e9.1
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 23:02:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696831376; x=1697436176; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4N3ATREkXvK843TZ23OVVz5eoxmZn5m1pt06q8AVw8o=;
-        b=r3bderavc+mbDo4NIckVzyPhccG8/iq6EfSdIZkLpgiaRDtiy27XASc9vOzLEf6E6I
-         3dqRT0Y5MGFgjS+g6tXgvCQ3dHgzFHgNwoh+l5yFAPOkDo8iWYqQvKYh6dTYwHgWI/Ef
-         gEsoBY8W4LZElxGVTlTj6m1+xrcvR99lf7p74SsjkGVX81XUuiCROppoVb90UDggBSRP
-         OAynwYDyuLfW6lR/KRuLfDGGsKOintrFcpg9Ld0zurNLoDzwOos0mKyiBWeGpFgaVrfO
-         c2QyiXd9GIb4sKzPmMxUFcFHmyL/zJHocW0Mmu9I3IgeDEn2oXdfZRYheEYi5MktCQu0
-         h7gA==
+        Mon, 9 Oct 2023 02:03:53 -0400
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 433D39E;
+        Sun,  8 Oct 2023 23:03:52 -0700 (PDT)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-9b9faf05f51so465725566b.2;
+        Sun, 08 Oct 2023 23:03:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696831376; x=1697436176;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1696831431; x=1697436231;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4N3ATREkXvK843TZ23OVVz5eoxmZn5m1pt06q8AVw8o=;
-        b=wR7yCEvl7AcZmIyhBdwARYEzdexW13IblGcDaEeto5zjlcadU67skhQoDscIb9MVWl
-         f/+0dR/tV75JdIrF434okzzk/fYw/zfkmly1aYh5OFPDjh5X1V2ZLgrMmQLnEVnb5Anm
-         GTgxz1t+RUUYKcEVJVTRfaZZkJAWcBfPnWfHoh7R2SDsaDyMiBz9priB8aZjWefNbgeS
-         4/SWdGzjxdJ0kD8dlnZ9/3kkvoLiHESG1fQKkZEz5MslHTBVaCY6vTUuF7f970t6Ijr7
-         hZenI+n0KkhfwuyghF50JBJR9tAeRksA1XoxmOrHIH9jYzbk3Dz1IB8IiEj+VyuI1qQ6
-         YUmw==
-X-Gm-Message-State: AOJu0YzUj1Wcbl8nq/Qhy8QRhf0iyS0Xd627P2i9BxD0lfL+UThuTH9a
-        jfZjZPXb9tVOfdNZAr0rV+PFkw==
-X-Google-Smtp-Source: AGHT+IGdfiblx37cmyiMJPmbu5ee0oKAHqGuGtxnKYAOTurlL996uBf+3Sda8V3WezqZmlwMERGp1A==
-X-Received: by 2002:adf:fece:0:b0:329:2306:91a7 with SMTP id q14-20020adffece000000b00329230691a7mr9184153wrs.2.1696831376119;
-        Sun, 08 Oct 2023 23:02:56 -0700 (PDT)
-Received: from [192.168.2.107] ([79.115.63.123])
-        by smtp.gmail.com with ESMTPSA id p4-20020a5d68c4000000b003232f167df5sm8518043wrw.108.2023.10.08.23.02.54
+        bh=1rqQIE2tSCVvRi3+hOn6TUFncCXIMdVf8RTEYbciBYQ=;
+        b=EvuGVeg5mUc6HkgnoHKAhFJzNFNdtFJOSjzhrQ6vh3LIq1SlUsrN9mLHmGxYOkYR6E
+         tiAPb1H4Bf52SFpD2vaGvlpjEaPb2bgx64g1K+hwXRNMXpKngH+5U7Vyofk7GTEa77DF
+         8s3ltUKVcY3uW5wL95/UyXS2wfxgMWzZqRdVC5eGw2Y8xFUmxSsfuPqiXx6HpCXVNlFJ
+         rT7rCmNUlBMV+Gym4kfxuX9hGLlZKeS/qnadVTH9Nj3//KOAMKTRcaWd2Xtw0pKYBA2r
+         IRS2KoL5QOgOyGCYrRgVit5zQ7j72o/iTQQnAVNvesHA90F35OwAFU0iAAArLtGRtk6S
+         pM4g==
+X-Gm-Message-State: AOJu0YxO3J5R7Z8IT836l0AOG7TupSmHKHsUWainHxpcnynrOXdpM/D7
+        n0z763t8r/pbciBQnqVmNTE=
+X-Google-Smtp-Source: AGHT+IEpUD9rN2WKMDFcHPGTD+DzIsmmThM5r4FlW2dQqqJwu1Kvqdn4FoEv715pvxC9BZou4d+gjQ==
+X-Received: by 2002:a17:906:2210:b0:9b2:8323:d916 with SMTP id s16-20020a170906221000b009b28323d916mr13997909ejs.17.1696831430631;
+        Sun, 08 Oct 2023 23:03:50 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id jp20-20020a170906f75400b0099bcb44493fsm6359252ejb.147.2023.10.08.23.03.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Oct 2023 23:02:55 -0700 (PDT)
-Message-ID: <3fe1db30-038c-4ff5-8344-5b824503bd7d@linaro.org>
-Date:   Mon, 9 Oct 2023 07:02:53 +0100
+        Sun, 08 Oct 2023 23:03:49 -0700 (PDT)
+Message-ID: <33bd60a8-77ea-426d-a158-f289e020d21a@kernel.org>
+Date:   Mon, 9 Oct 2023 08:03:49 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] soc: samsung: usi: remove superfluous parameter
+Subject: Re: [PATCH v2] serial: add PORT_GENERIC definition
 Content-Language: en-US
-To:     Sam Protsenko <semen.protsenko@linaro.org>
-Cc:     krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        peter.griffin@linaro.org
-References: <20231006090014.277448-1-tudor.ambarus@linaro.org>
- <CAPLW+4==D1OVB+rY92NVEmfv08=0FBF0LJ07xoHh4YZZPOneXQ@mail.gmail.com>
-From:   Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <CAPLW+4==D1OVB+rY92NVEmfv08=0FBF0LJ07xoHh4YZZPOneXQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+To:     Max Filippov <jcmvbkbc@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <20231008001804.889727-1-jcmvbkbc@gmail.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <20231008001804.889727-1-jcmvbkbc@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 10/7/23 00:08, Sam Protsenko wrote:
-> On Fri, Oct 6, 2023 at 4:00 AM Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
->>
->> exynos_usi_set_sw_conf() has a single caller, exynos_usi_configure,
->> which called it with exynos_usi_set_sw_conf(usi, usi->mode). Since the
->> mode is already defined in struct exynos_usi, remove the superfluous
->> pass of the mode parameter. While in exynos_usi_set_sw_conf(), remove the
->> reinitialization of usi->mode with its same value.
->>
->> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
->> ---
+On 08. 10. 23, 2:18, Max Filippov wrote:
+> Current pattern in the linux kernel is that every new serial driver adds
+> one or more new PORT_ definitions because uart_ops::config_port()
+> callback documentation prescribes setting port->type according to the
+> type of port found, or to PORT_UNKNOWN if no port was detected.
 > 
-> This driver was designed with the easiness of its further possible
-> extension in mind. For example, passing the "mode" into
-> exynos_usi_set_sw_conf() allows one to implement some sysfs nodes for
-> switching USI configuration manually, just by passing the user's mode
-> into exynos_usi_set_sw_conf(). Other things which might also appear as
-> over-engineered, make it easy to add USI_V1 implementation, as we
-> discussed that possibility at the time. So yeah, it was done for a
-> reason, and I'd prefer to leave it as is.
+> When the specific type of the port is not important to the userspace
+> there's no need for a unique PORT_ value, but so far there's no suitable
+> identifier for that case.
 > 
+> Provide generic port type identifier other than PORT_UNKNOWN for ports
+> which type is not important to userspace.
 
-Fine by me, thanks for the explanation.
-Cheers,
-ta
+Oh, finally someone submitted this.
+
+> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+In that case metoo [1]:
+Suggested-by: Jiri Slaby <jirislaby@kernel.org>
+and
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+
+[1] 
+https://lore.kernel.org/all/75375f8d-e157-a364-3da5-9c8d5b832927@kernel.org/
+
+> Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+> ---
+> Changes v1->v2:
+> - move to the end of PORT_ definition list
+> - rename to PORT_GENERIC
+> 
+>   include/uapi/linux/serial_core.h | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/include/uapi/linux/serial_core.h b/include/uapi/linux/serial_core.h
+> index add349889d0a..0a5090e08657 100644
+> --- a/include/uapi/linux/serial_core.h
+> +++ b/include/uapi/linux/serial_core.h
+> @@ -245,4 +245,7 @@
+>   /* Sunplus UART */
+>   #define PORT_SUNPLUS	123
+>   
+> +/* Generic type identifier for ports which type is not important to userspace. */
+> +#define PORT_GENERIC	(-1)
+> +
+>   #endif /* _UAPILINUX_SERIAL_CORE_H */
+
+-- 
+js
+suse labs
+
