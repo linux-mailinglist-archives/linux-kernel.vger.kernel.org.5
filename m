@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2723C7BDC6D
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EACA7BDC6F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376496AbjJIMmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 08:42:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60376 "EHLO
+        id S1376513AbjJIMmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 08:42:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346437AbjJIMmT (ORCPT
+        with ESMTP id S1346437AbjJIMmV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 08:42:19 -0400
+        Mon, 9 Oct 2023 08:42:21 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97FF794;
-        Mon,  9 Oct 2023 05:42:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29EB0C433C8;
-        Mon,  9 Oct 2023 12:42:15 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0696A8E;
+        Mon,  9 Oct 2023 05:42:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A23E8C433CB;
+        Mon,  9 Oct 2023 12:42:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696855337;
-        bh=U5dRpNkQ/fqBLnscaXBlROlahn0CmiCXkgV4c0FDvI0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=kI5SrLE3zsToT0oF3qzS1NvJht0qifBdMCiFQK/v9FTbI5L5n0EW6pYd5tuRl6ieP
-         HjcPlaqvxs2P1rdLZGTTdzoWudgM8hzKId9mZWBwXs6pCuJX6vnz+0E3ALlL+YFXWU
-         94ijd1tGExFHZ3B8P8E7hnKvTc3OsQF3vsMruK2UOg3+xlAFI12HkS7zNoWgeU9j5P
-         RqbGaNnpNq4mlV5D/TDLteQavy7GJgmfuO1Z3pz5lFVya+ir9OBnfBnLIK8QmIx8rd
-         QlNvlPOE9wtrWmdoNHUNCCaM0evOSeld2l1CPXbYgNd4+aOygWhRolJf7rUglqPuUx
-         wwtq9TTnaNu1Q==
+        s=k20201202; t=1696855340;
+        bh=0Mvn9evzK2eDTt9ImjWv6gFTvimaT+Ux65IlUsSU9J4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=a+nTKzlQYxS210dCgf5bEFFzKx9iYFpjdrYTH5DJ6GVdRyI9ueR8xc3qJhRYOTEt+
+         hGNE7G28BPmLvowjslnpOULS/Gij+RwY5hxX6KdVqrON7G+tGhMAoH1kCQmoX+GbD2
+         SwDW8g6Y2b5udj3KUO+ZS95oNT//z+FLa5v8TMzOHOOtnx4wsUULlfbZBBnFkzOfII
+         f0eEVUOXXZg7LVO+2scQ9jU18eJfnam2vELwA7kFzSfLe8O6IajPX+tb2QVp6+SZxN
+         0J4oVhunK66t5+4zMUgOeLUbA7VI540cA73O4xzziJ6Lrs8MQRVZ65g4f6pOczPY0j
+         txTCCRRjkdTFQ==
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     linux-kbuild@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
@@ -35,11 +35,19 @@ Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-um@lists.infradead.org, loongarch@lists.linux.dev,
         sparclinux@vger.kernel.org, x86@kernel.org,
         Masahiro Yamada <masahiroy@kernel.org>,
-        Guo Ren <guoren@kernel.org>
-Subject: [PATCH 1/5] csky: remove unused cmd_vdso_install
-Date:   Mon,  9 Oct 2023 21:42:06 +0900
-Message-Id: <20231009124210.1064021-1-masahiroy@kernel.org>
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Richard Weinberger <richard@nod.at>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 2/5] UML: remove unused cmd_vdso_install
+Date:   Mon,  9 Oct 2023 21:42:07 +0900
+Message-Id: <20231009124210.1064021-2-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231009124210.1064021-1-masahiroy@kernel.org>
+References: <20231009124210.1064021-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -52,7 +60,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-You cannot run this code because arch/csky/Makefile does not define the
+You cannot run this code because arch/um/Makefile does not define the
 vdso_install target.
 
 It appears that this code was blindly copied from another architecture.
@@ -62,27 +70,29 @@ Remove the dead code.
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- arch/csky/kernel/vdso/Makefile | 10 ----------
- 1 file changed, 10 deletions(-)
+ arch/x86/um/vdso/Makefile | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-diff --git a/arch/csky/kernel/vdso/Makefile b/arch/csky/kernel/vdso/Makefile
-index 299e4e41ebc5..ddf784a62c11 100644
---- a/arch/csky/kernel/vdso/Makefile
-+++ b/arch/csky/kernel/vdso/Makefile
-@@ -58,13 +58,3 @@ quiet_cmd_vdsold = VDSOLD  $@
- # that contains the same symbols at the same offsets.
- quiet_cmd_so2s = SO2S    $@
-       cmd_so2s = $(NM) -D $< | $(srctree)/$(src)/so2s.sh > $@
+diff --git a/arch/x86/um/vdso/Makefile b/arch/x86/um/vdso/Makefile
+index 6825e146a62f..b86d634730b2 100644
+--- a/arch/x86/um/vdso/Makefile
++++ b/arch/x86/um/vdso/Makefile
+@@ -67,15 +67,3 @@ quiet_cmd_vdso = VDSO    $@
+ 
+ VDSO_LDFLAGS = -fPIC -shared -Wl,--hash-style=sysv -z noexecstack
+ GCOV_PROFILE := n
 -
--# install commands for the unstripped file
+-#
+-# Install the unstripped copy of vdso*.so listed in $(vdso-install-y).
+-#
 -quiet_cmd_vdso_install = INSTALL $@
 -      cmd_vdso_install = cp $(obj)/$@.dbg $(MODLIB)/vdso/$@
--
--vdso.so: $(obj)/vdso.so.dbg
+-$(vdso-install-y): %.so: $(obj)/%.so.dbg FORCE
 -	@mkdir -p $(MODLIB)/vdso
 -	$(call cmd,vdso_install)
 -
--vdso_install: vdso.so
+-PHONY += vdso_install $(vdso-install-y)
+-vdso_install: $(vdso-install-y)
 -- 
 2.39.2
 
