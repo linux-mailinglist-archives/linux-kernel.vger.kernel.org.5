@@ -2,120 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A877BEC37
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE7E7BEC3B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378199AbjJIVDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 17:03:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57524 "EHLO
+        id S1378145AbjJIVEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 17:04:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378151AbjJIVDI (ORCPT
+        with ESMTP id S1378204AbjJIVDz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 17:03:08 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F50EB;
-        Mon,  9 Oct 2023 14:03:04 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-584bfb14c59so3058625a12.0;
-        Mon, 09 Oct 2023 14:03:04 -0700 (PDT)
+        Mon, 9 Oct 2023 17:03:55 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84021E9
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 14:03:49 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c00e1d4c08so63368411fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 14:03:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696885383; x=1697490183; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1696885427; x=1697490227; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=os7QhAKub4KIthm7Pb05vmG1pc3XAljYVBVgNXJPWvs=;
-        b=bwH7MeQHRw1XFbkokWtrNqX3zzyQ1eHixqM66/wVMpaE+apb29VZdCCn38ITlKSxmr
-         VPmRqXTHo3QTrrK67zJxtXQ5mopESqwzyKuYWSyiCcwUJkZNLs1neFQIJnNHS2gOndYr
-         wilrgzcerO0pgthQi7DrOmXhSn7LEpcZzcngXy7hjAc/D2JK8eq82AnkY277kEkHAfau
-         VnwdS3xHO+MukOlFPsUS2Mpv7XzOSsg9dbWkQZdtYsjnwQQWeVF/blvIiD/bPJ2yaa5s
-         Z3lG351t4/YWaUnV4YwrgNOs5jytNnVktO0OijqLrvVr8A0+IVMeg/Ro9ROZwSLYIyX7
-         SqJg==
+        bh=43JczQhR06svhP3+MFO67a4XDgSpc7xK7wWPqbVY3mc=;
+        b=Tf09s6ZuTFQ61khnhibD7Law+sJmp194b8dKjNVEczJTXEhSz/iVrQ/og+vR7IueXD
+         iPeRaN50OUwiiJwg3v5pn9mrFTc1IBPzFhe/41h9cogtoH64juBQPq7CPoMyd1ux+nfT
+         TsvA3ttggXKCHyvvNk2XEnqpYC38TW8Jg0kOUB2zIw0sGUGwVUMnbMz/UohfBJQqT9Ua
+         XwikSQjW3z7gF5C+sh5o18UHRX0BYYQRMSaXwMZybOf7wWaYhC8ejAYBrBm/BV5Pcgft
+         15l42CY0jrN8qqG5NVelUakkdT0BdfXGJxcpjPvuaRv2qKoRXShg27SwaHAv43H2ZeXJ
+         Sw8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696885383; x=1697490183;
+        d=1e100.net; s=20230601; t=1696885427; x=1697490227;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=os7QhAKub4KIthm7Pb05vmG1pc3XAljYVBVgNXJPWvs=;
-        b=L2g5Et6IsYKNXHfdJELQXvj8/W66DxeV6VVg4KItb+m1qaY2528B8ypf9C1hwKqIvK
-         Re5BYZGWaggZU393+JS6H/f0/yAyvKfo1zfeOMDLPQtZ1BzfBo1K5E0vzpSKfuRx0UEz
-         avZL3mn5L5W1ZJW94bTIM2reVXtqmxubxJuDYL2zIzr46aX+mqY22Qz3jMzx6pYblt3A
-         X4bdufVJnHZKqpvNkJOgDFYccb8rZ0H68wcjYn1ZsP1QzL1pkoFQ9Y7ItUkAOMGJZPV1
-         FD7v8QsBVrmVCZRyQMySulv4NtLway8j+rM2SWmIXi30+TaK6lasfZvvQW9y49zQzp+x
-         yoHQ==
-X-Gm-Message-State: AOJu0YwfULdHclwXyuvmJx9eafGC+/oaXH70qEm71Y5bVRZQfZjcJFyh
-        CJgA0Q7stTD0p9OhTdl3wLk=
-X-Google-Smtp-Source: AGHT+IHF7rURm2cs2Pj6n58bXbvNQueqFggbxqwL5FDaqybnyUjNXbDI8sVnaoO91ppPmv3o7+BKcw==
-X-Received: by 2002:a17:90b:4f46:b0:267:f9c4:c0a8 with SMTP id pj6-20020a17090b4f4600b00267f9c4c0a8mr13248485pjb.4.1696885383485;
-        Mon, 09 Oct 2023 14:03:03 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id e2-20020a17090a630200b00277337818afsm6484585pjj.0.2023.10.09.14.03.00
+        bh=43JczQhR06svhP3+MFO67a4XDgSpc7xK7wWPqbVY3mc=;
+        b=dWI5rNbxvNY9KgukMNUWaPcbiNrM+cAkffuC/6Mw3/irMdaA0eOStGl9Fl8/S8MeLw
+         NowyaTpsP/BDac/aHY69ZycfB67aOkHtY2oGFbDi51O+YW6A+Jd72m7PsHkuUxnZFenu
+         Sq4puORr6daCYOap8UTvvYZErw/spiSYTwmZoNPIfkV53GmpzYRbPjYeZGgoaxm2Xi7x
+         Ad0wUv8vlFXGFQGIovkAKO8C68IgM2Ti0xexLGwrDZlwLRulKIRfTXYpFGhs7dxUL32r
+         ZuDE9GfXsZD2rYIcMljiyWqBNXfJOdD9GkaPTUjQJOOE4sXhB5gXGT+xUhPiSjyFrQZh
+         sVTQ==
+X-Gm-Message-State: AOJu0YymkymKr+5Uoxqglcsx18J2E8YAFsUfh8jVStvM72MzOqdBy8/W
+        HFUZPsNlW8RLkhoc/AIXH3nDig==
+X-Google-Smtp-Source: AGHT+IFMY7QqUdgo8VEEaNfc3AJxOGVDc5LmcHQuYLgMIPjPJlsAadiflZalp6ZB8QmqLruGsgB5CQ==
+X-Received: by 2002:a05:651c:104:b0:2c0:240:b564 with SMTP id a4-20020a05651c010400b002c00240b564mr13779157ljb.15.1696885427576;
+        Mon, 09 Oct 2023 14:03:47 -0700 (PDT)
+Received: from [172.30.204.90] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id a19-20020a05651c011300b002bff365c7bfsm2155195ljb.35.2023.10.09.14.03.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 14:03:02 -0700 (PDT)
-Message-ID: <c197f024-e504-470e-b4a9-ce6466a4a038@gmail.com>
-Date:   Mon, 9 Oct 2023 14:02:58 -0700
+        Mon, 09 Oct 2023 14:03:47 -0700 (PDT)
+Message-ID: <0a039a5a-46c8-4f63-a9e4-fd5b197340ab@linaro.org>
+Date:   Mon, 9 Oct 2023 23:03:45 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v5 01/16] net: Convert PHYs hwtstamp callback to
- use kernel_hwtstamp_config
+Subject: Re: [PATCH v5 1/2] dt-bindings: arm: Add new compatible for smc/hvc
+ transport for SCMI
 Content-Language: en-US
-To:     =?UTF-8?Q?K=C3=B6ry_Maincent?= <kory.maincent@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Michael Walle <michael@walle.cc>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-References: <20231009155138.86458-1-kory.maincent@bootlin.com>
- <20231009155138.86458-2-kory.maincent@bootlin.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20231009155138.86458-2-kory.maincent@bootlin.com>
+To:     Nikunj Kela <quic_nkela@quicinc.com>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Cc:     cristian.marussi@arm.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        andersson@kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20230718160833.36397-1-quic_nkela@quicinc.com>
+ <20231006164206.40710-1-quic_nkela@quicinc.com>
+ <20231006164206.40710-2-quic_nkela@quicinc.com>
+ <20231009144154.vfx5caqxtyezulxx@bogus>
+ <b1c9ad08-5aad-ccbd-247c-a5b2aaa42b5b@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <b1c9ad08-5aad-ccbd-247c-a5b2aaa42b5b@quicinc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/9/23 08:51, Köry Maincent wrote:
-> From: Kory Maincent <kory.maincent@bootlin.com>
-> 
-> The PHYs hwtstamp callback are still getting the timestamp config from
-> ifreq and using copy_from/to_user.
-> Get rid of these functions by using timestamp configuration in parameter.
-> This also allow to move on to kernel_hwtstamp_config and be similar to
-> net devices using the new ndo_hwstamp_get/set.
-> 
-> This adds the possibility to manipulate the timestamp configuration
-> from the kernel which was not possible with the copy_from/to_user.
-> 
-> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
 
+On 10/9/23 16:52, Nikunj Kela wrote:
+> 
+> On 10/9/2023 7:41 AM, Sudeep Holla wrote:
+>> On Fri, Oct 06, 2023 at 09:42:05AM -0700, Nikunj Kela wrote:
+>>> Introduce compatible "qcom,scmi-smc" for SCMI smc/hvc transport 
+>>> channel for
+>>> Qualcomm virtual platforms.
+>>>
+>>> This compatible mandates populating an additional parameter 
+>>> 'capability-id'
+>>> from the last 8 bytes of the shmem channel.
+>>>
+>> While I am happy with the simplification here, I am also bit nervous how
+>> long before Qualcomm abandons this. I hope this is adopted as is in all
+>> internal and downstream code without any modifications and this is not
+>> just a push for upstreaming some change to minimise delta with internal/
+>> downstream code.
+>>
+>> -- 
+>> Regards,
+>> Sudeep
+> 
+> Qualcomm is using patch on all the virtual auto platforms using 
+> shmem/doorbell as scmi channel. This is already being used without any 
+> modifications in our downstream code. No delta for this patch series. 
+> Thanks!
+AFAICT Sudeep is looking for a solid guarantee that it will continue to 
+be used as-is, on more than one platform and on more than one BSP version.
+
+There have been cases where such firmware interfaces had silent ABI 
+breaks (or were replaced altogether) between qc downstream branches and 
+this would be unacceptable. Understandably, having a unified means of 
+communication for *all* Qualcomm chips (i.e. not only auto) going 
+forward would likely be expected..
+
+Konrad
