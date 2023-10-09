@@ -2,270 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8967F7BD69A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF2E7BD69E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345691AbjJIJVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 05:21:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53496 "EHLO
+        id S1345700AbjJIJWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 05:22:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345671AbjJIJVK (ORCPT
+        with ESMTP id S1345671AbjJIJWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 05:21:10 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16E897
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:21:07 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-5041335fb9cso5411333e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 02:21:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696843266; x=1697448066; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=jcRTJtu5/xplXYf4mxgpTZIYcsNwbD0mhUQlRdvZ5Jw=;
-        b=dfWobpuGkVeAzfhXUsLhRoViJ2LS6VUQHiI2HwMK/LQ7JQ+b6zOEm4HaPCqg+SrS79
-         1G+LR5mmt1yTCJIgJ5v+5wu4kQDxUL9fikkmJsb1GhxiRBRLJnXb2v49AOD0wwZ8xP8P
-         /uz3T5uE3oSSqkg4R+bSkb1bW2rIhpmYPwIQLgJRfyN6ZkUDv7c/EQcqkucYuwZsTC/D
-         jWZyyg+e6vyiWkXRyzqfxq9O6RvFJKIco6OkMhuzEi9XQX9A8uPAYAa6PKOnNiLihCEv
-         SYX+fl/JbwdnxqWZ8OoIH/ClSdZ/PUE4R6XW6Qkwe9q6BwjhQFwbx5ZPO1mBUqvHCglJ
-         Keiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696843266; x=1697448066;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jcRTJtu5/xplXYf4mxgpTZIYcsNwbD0mhUQlRdvZ5Jw=;
-        b=mlcSox0fwaw9JpTg3OhX7LWnHnkjoES2V8mbutx1odcywLIExk68YfmhM2EZLQe0BD
-         ga/1DKceHchqvsCHzd2KAjcXpS6FF0MqXtB1sv90+T7O+BBzgHzHwd4aEZECmy53/5cQ
-         h4VXaOG6xci91sZbu8Y4XnTmF0y0/btsQYzUGw/LvbCI0x5zX8oHLSjcrj7fF6OzUzGE
-         SLRsaxFSIw6KcuAtp7ATMEKp+HKEFD2RIuEXCWQWWbwGqIaX+rqU4hcBQXI0eprVZqx9
-         +mRqCqB37HEayBwIfNh0sxVhAMHd3/EebIxpov5CeJl3qZ+XUlwA7k8TIJptnnLgpa0i
-         ffhw==
-X-Gm-Message-State: AOJu0Yyuvyk+EKH6hCWsHMXK4uWgmF1XeYV9azcGRrRFaCpDz4gTODNW
-        xZXCa9TLkGGbSO+nBNn7aF45Lg==
-X-Google-Smtp-Source: AGHT+IGht+RvnWroW3ujbIVtFNoEpt6TS29+ZsWLWowpvwWhX2hK9fCxDFD93GaUGI0u0FoeaydCUg==
-X-Received: by 2002:a05:6512:68a:b0:503:26bc:b08f with SMTP id t10-20020a056512068a00b0050326bcb08fmr15658141lfe.24.1696843265916;
-        Mon, 09 Oct 2023 02:21:05 -0700 (PDT)
-Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
-        by smtp.gmail.com with ESMTPSA id n5-20020a05600c294500b003fc02e8ea68sm12764192wmd.13.2023.10.09.02.21.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 02:21:05 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 10:21:03 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Cc:     Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Helge Deller <deller@gmx.de>, Karel Balej <balejk@matfyz.cz>,
-        dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fbdev@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH 2/2] backlight: Add Kinetic KTD2801 driver
-Message-ID: <20231009092103.GB96854@aspen.lan>
-References: <20231005-ktd2801-v1-0-43cd85b0629a@skole.hr>
- <20231005-ktd2801-v1-2-43cd85b0629a@skole.hr>
+        Mon, 9 Oct 2023 05:22:02 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A47CC97;
+        Mon,  9 Oct 2023 02:22:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1696843320; x=1728379320;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=nl/Pb7yNcrRSIji9Rq2BWcaYNm9rNVSMwfevq+ZJbXU=;
+  b=xUIKuTlT4Hl4zOaiT5pfr5MaQgXYhlSCLkdhy7sIMF/4FCdJnoS82G+h
+   xU6MRhuLH44z+pVuXJT+BKAhJx7ihfHlKQT+TkRfT9dnCI8bCrEhiNL1r
+   Y0fivAgu/GkL2K+wJn8LSWcJu201i1CFlDCeeaGnu8Prgkkfy1iVTYKWi
+   lNgBnWY1Il/198TbfmLlQrJ0yTqr6sE5VAj2JaG5ZszlxWi1H3WjSZ6v2
+   qAWINHtMYq2rMzcAi75kvlf/JyRIYG/YqasGO8z93P/jy2a1/gfP5Kh6n
+   3iJ9NCPTcsoY0Y+b09xYsxBk7zSzfL/NXf2wFV264DxmB+b2ANpjcHvgN
+   A==;
+X-CSE-ConnectionGUID: crs7sF3tRlKn6sEwzlDrPg==
+X-CSE-MsgGUID: 9cWccrISQheTSGzag4PSBQ==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
+   d="asc'?scan'208";a="176377026"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Oct 2023 02:21:59 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 9 Oct 2023 02:21:59 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Mon, 9 Oct 2023 02:21:56 -0700
+Date:   Mon, 9 Oct 2023 10:21:36 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+CC:     <linux-renesas-soc@vger.kernel.org>, <conor@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>
+Subject: Re: [PATCH] soc: renesas: select ERRATA_ANDES for R9A07G043 only
+ when alternatives are present
+Message-ID: <20231009-acuteness-nutlike-1f28a2335384@wendy>
+References: <20231009-sandbar-botch-0f398fd2e289@wendy>
+ <CAMuHMdVojwgOP8bqHobgbsgUA+7yxUA7v5M6Z800zxrCeuxZjg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="H8JAiz5CASvgRsHi"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231005-ktd2801-v1-2-43cd85b0629a@skole.hr>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <CAMuHMdVojwgOP8bqHobgbsgUA+7yxUA7v5M6Z800zxrCeuxZjg@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 08:49:09PM +0200, Duje Mihanović wrote:
-> Add driver for the Kinetic KTD2801 backlight driver.
->
-> Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
-> ---
->  MAINTAINERS                                 |   6 ++
->  drivers/video/backlight/Kconfig             |   7 ++
->  drivers/video/backlight/Makefile            |   1 +
->  drivers/video/backlight/ktd2801-backlight.c | 151 ++++++++++++++++++++++++++++
->  4 files changed, 165 insertions(+)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 35977b269d5e..7da78f06a65d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -11777,6 +11777,12 @@ S:	Maintained
->  F:	Documentation/devicetree/bindings/leds/backlight/kinetic,ktd253.yaml
->  F:	drivers/video/backlight/ktd253-backlight.c
->
-> +KTD2801 BACKLIGHT DRIVER
-> +M:	Duje Mihanović <duje.mihanovic@skole.hr>
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/leds/backlight/kinetic,ktd2801.yaml
-> +F:	drivers/video/backlight/ktd2801-backlight.c
-> +
->  KTEST
->  M:	Steven Rostedt <rostedt@goodmis.org>
->  M:	John Hawley <warthog9@eaglescrag.net>
-> diff --git a/drivers/video/backlight/Kconfig b/drivers/video/backlight/Kconfig
-> index 51387b1ef012..a2b268293345 100644
-> --- a/drivers/video/backlight/Kconfig
-> +++ b/drivers/video/backlight/Kconfig
-> @@ -183,6 +183,13 @@ config BACKLIGHT_KTD253
->  	  which is a 1-wire GPIO-controlled backlight found in some mobile
->  	  phones.
->
-> +config BACKLIGHT_KTD2801
-> +	tristate "Backlight Driver for Kinetic KTD2801"
-> +	depends on GPIOLIB || COMPILE_TEST
-> +	help
-> +	  Say Y to enable the backlight driver for the Kinetic KTD2801 1-wire
-> +	  GPIO-controlled backlight found in Samsung Galaxy Core Prime VE LTE.
-> +
->  config BACKLIGHT_KTZ8866
->  	tristate "Backlight Driver for Kinetic KTZ8866"
->  	depends on I2C
-> diff --git a/drivers/video/backlight/Makefile b/drivers/video/backlight/Makefile
-> index f72e1c3c59e9..b33b647f31ca 100644
-> --- a/drivers/video/backlight/Makefile
-> +++ b/drivers/video/backlight/Makefile
-> @@ -35,6 +35,7 @@ obj-$(CONFIG_BACKLIGHT_HP680)		+= hp680_bl.o
->  obj-$(CONFIG_BACKLIGHT_HP700)		+= jornada720_bl.o
->  obj-$(CONFIG_BACKLIGHT_IPAQ_MICRO)	+= ipaq_micro_bl.o
->  obj-$(CONFIG_BACKLIGHT_KTD253)		+= ktd253-backlight.o
-> +obj-$(CONFIG_BACKLIGHT_KTD2801)		+= ktd2801-backlight.o
->  obj-$(CONFIG_BACKLIGHT_KTZ8866)		+= ktz8866.o
->  obj-$(CONFIG_BACKLIGHT_LM3533)		+= lm3533_bl.o
->  obj-$(CONFIG_BACKLIGHT_LM3630A)		+= lm3630a_bl.o
-> diff --git a/drivers/video/backlight/ktd2801-backlight.c b/drivers/video/backlight/ktd2801-backlight.c
-> new file mode 100644
-> index 000000000000..24a5f9e5d606
-> --- /dev/null
-> +++ b/drivers/video/backlight/ktd2801-backlight.c
-> @@ -0,0 +1,151 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +#include <linux/backlight.h>
-> +#include <linux/delay.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/property.h>
-> +
-> +#define EW_DELAY	150
-> +#define EW_DET		270
-> +#define LOW_BIT_HIGH	5
-> +#define LOW_BIT_LOW	(4 * HIGH_BIT_LOW)
-> +#define HIGH_BIT_LOW	5
-> +#define HIGH_BIT_HIGH	(4 * HIGH_BIT_LOW)
+--H8JAiz5CASvgRsHi
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-These names are pretty cryptic (they don't even mention that they
-are time values and that the unit is microseconds). They also look
-like they were derived by tuning so comments would be nice explaining
-where they come from (or, failing that, why they are correct).
+On Mon, Oct 09, 2023 at 10:34:34AM +0200, Geert Uytterhoeven wrote:
+> Hi Conor,
+>=20
+> On Mon, Oct 9, 2023 at 10:12=E2=80=AFAM Conor Dooley <conor.dooley@microc=
+hip.com> wrote:
+> > Randy reported a randconfig build issue against linux-next:
+> > WARNING: unmet direct dependencies detected for ERRATA_ANDES
+> >   Depends on [n]: RISCV_ALTERNATIVE [=3Dn] && RISCV_SBI [=3Dy]
+> >   Selected by [y]:
+> >   - ARCH_R9A07G043 [=3Dy] && SOC_RENESAS [=3Dy] && RISCV [=3Dy] && NONP=
+ORTABLE [=3Dy] && RISCV_SBI [=3Dy]
+> >
+> > ../arch/riscv/errata/andes/errata.c:59:54: warning: 'struct alt_entry' =
+declared inside parameter list will not be visible outside of this definiti=
+on or declaration
+> >    59 | void __init_or_module andes_errata_patch_func(struct alt_entry =
+*begin, struct alt_entry *end,
+> >
+> > On RISC-V, alternatives are not usable in XIP kernels, which this
+> > randconfig happened to select. Add a check for whether alternatives are
+> > available before selecting the ERRATA_ANDES config option.
+> >
+> > Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> > Acked-by: Randy Dunlap <rdunlap@infradead.org>
+> > Tested-by: Randy Dunlap <rdunlap@infradead.org>
+> > Closes: https://lore.kernel.org/all/09a6b0f0-76a1-45e3-ab52-329c47393d1=
+d@infradead.org/
+> > Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+>=20
+> Thanks for your patch!
+>=20
+> > --- a/drivers/soc/renesas/Kconfig
+> > +++ b/drivers/soc/renesas/Kconfig
+> > @@ -343,7 +343,7 @@ config ARCH_R9A07G043
+> >         select ARCH_RZG2L
+> >         select AX45MP_L2_CACHE if RISCV_DMA_NONCOHERENT
+> >         select DMA_GLOBAL_POOL
+> > -       select ERRATA_ANDES if RISCV_SBI
+> > +       select ERRATA_ANDES if (RISCV_SBI && RISCV_ALTERNATIVE)
+>=20
+> Perhaps ARCH_R9A07G043 should depend on RISCV_ALTERNATIVE (and
+> RISCV_SBI) instead?  It's not like RZ/Five is gonna work without the
+> Andes errata handling present (unless all of them are related to cache
+> handling, and we can run uncached; also see below)).
+>=20
+> >         select ERRATA_ANDES_CMO if ERRATA_ANDES
+>=20
+> And then this "if" can go as well.
+>=20
+> Any other hard dependencies?
+> E.g. can RZ/Five work without RISCV_DMA_NONCOHERENT?
 
+That seems fair to me, it won't work without any of the above, so it's
+probably fair game to make them actual dependencies & likely more user
+friendly since it'll prevent people creating a kernel that cannot
+function.
 
-> +#define DS		5
-> +#define EOD_L		10
-> +#define EOD_H		350
-> +#define PWR_DOWN_DELAY	2600
-> +
-> +#define KTD2801_DEFAULT_BRIGHTNESS	100
-> +#define KTD2801_MAX_BRIGHTNESS		255
-> +
-> +struct ktd2801_backlight {
-> +	struct device *dev;
-> +	struct backlight_device *bd;
-> +	struct gpio_desc *desc;
-> +	bool was_on;
-> +};
-> +
-> +static int ktd2801_update_status(struct backlight_device *bd)
-> +{
-> +	struct ktd2801_backlight *ktd2801 = bl_get_data(bd);
-> +	u8 brightness = (u8) backlight_get_brightness(bd);
-> +
-> +	if (backlight_is_blank(bd)) {
-> +		gpiod_set_value(ktd2801->desc, 1);
-> +		udelay(PWR_DOWN_DELAY);
-> +		ktd2801->was_on = false;
-> +		return 0;
-> +	}
-> +
-> +	if (!ktd2801->was_on) {
-> +		gpiod_set_value(ktd2801->desc, 0);
-> +		udelay(EW_DELAY);
-> +		gpiod_set_value(ktd2801->desc, 1);
-> +		udelay(EW_DET);
-> +		gpiod_set_value(ktd2801->desc, 0);
-> +		ktd2801->was_on = true;
-> +	}
+Cheers,
+Conor.
 
-Isn't this implementing the same single GPIO line protocol used by
-drivers/leds/flash/leds-ktd2692.c?
+>=20
+> >         help
+> >           This enables support for the Renesas RZ/Five SoC.
+>=20
+> Gr{oetje,eeting}s,
+>=20
+>                         Geert
+>=20
+> --=20
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
+8k.org
+>=20
+> In personal conversations with technical people, I call myself a hacker. =
+But
+> when I'm talking to journalists I just say "programmer" or something like=
+ that.
+>                                 -- Linus Torvalds
 
-If so, it would be good to pull the expresswire handling into a library
-so it can be shared between drivers. leds-ktd2692.c does a pretty
-good job of decomposing the expresswire management into functions (e.g.
-separating data framing from setting of control values). Expresswire is
-a data framing protocol rather than a bus so I think just implementing
-it as library code is probably sufficient.
+--H8JAiz5CASvgRsHi
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Also, can the expresswire code have protocol-violation watchdogs that
-trigger a re-transmit of the message if we get pre-empted in the middle
-of sending a message to the backlight (see calls to ktime_get_ns() in
-ktd253-backlight.c ).
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSPGIAAKCRB4tDGHoIJi
+0pQdAQDP0EDastcRyfubosMkIjTRJbu3yHBbxDcEIeHUXE1/2QEAgoXMXZl4RxM7
+cxShvCs8UHEpmf2WuY+pPyQiXnxHvQ4=
+=VHI5
+-----END PGP SIGNATURE-----
 
-> +
-> +	gpiod_set_value(ktd2801->desc, 0);
-> +	udelay(DS);
-> +
-> +	for (int i = 0; i < 8; i++) {
-> +		u8 next_bit = (brightness & 0x80) >> 7;
-> +
-> +		if (!next_bit) {
-> +			gpiod_set_value(ktd2801->desc, 1);
-> +			udelay(LOW_BIT_LOW);
-> +			gpiod_set_value(ktd2801->desc, 0);
-> +			udelay(LOW_BIT_HIGH);
-> +		} else {
-> +			gpiod_set_value(ktd2801->desc, 1);
-> +			udelay(HIGH_BIT_LOW);
-> +			gpiod_set_value(ktd2801->desc, 0);
-> +			udelay(HIGH_BIT_HIGH);
-> +		}
-> +		brightness <<= 1;
-> +	}
-> +	gpiod_set_value(ktd2801->desc, 1);
-> +	udelay(EOD_L);
-> +	gpiod_set_value(ktd2801->desc, 0);
-> +	udelay(EOD_H);
-> +	return 0;
-> +}
-> +
-> +static const struct backlight_ops ktd2801_backlight_ops = {
-> +	.update_status = ktd2801_update_status,
-> +};
-> +
-> +static int ktd2801_backlight_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct backlight_device *bd;
-> +	struct ktd2801_backlight *ktd2801;
-> +	u32 brightness, max_brightness;
-> +	int ret;
-> +
-> +	ktd2801 = devm_kzalloc(dev, sizeof(*ktd2801), GFP_KERNEL);
-> +	if (!ktd2801)
-> +		return -ENOMEM;
-> +	ktd2801->dev = dev;
-
-This appears to be a write-only variable.
-
-Overall the driver looks good but it would be nice to figure out how to
-share expresswire framing between drivers (don't worry about ktd253, it
-uses a different protocol).
-
-
-Daniel.
+--H8JAiz5CASvgRsHi--
