@@ -2,119 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D47D7BD2E5
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 07:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB08E7BD2F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 08:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345132AbjJIFvr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Oct 2023 01:51:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54522 "EHLO
+        id S1345140AbjJIGAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 02:00:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345049AbjJIFvq (ORCPT
+        with ESMTP id S1345049AbjJIGAe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 01:51:46 -0400
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 658129E;
-        Sun,  8 Oct 2023 22:51:45 -0700 (PDT)
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-27736c2a731so3178992a91.3;
-        Sun, 08 Oct 2023 22:51:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696830705; x=1697435505;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a6To/XFZla//NDfF2btRt6lbatBC8d81aAvKQzzrLLY=;
-        b=YUWPfM2iB9Hba3uH1AsuT9HFGzU9zX/wIF1IuF27dkITTF549Jv+4gZSSQzemWbze0
-         lgniInAOpM8wxfm5Z1+hMtBooF80ALYwu4bL4F+LbupP0knpsDDMeOkezVG+Q3Tg2fGa
-         YIT1iCE8ZToS5MBmQZwEHwrl7wwhhITQbQgxmPR/S+YmcJADF0AYLGoBAWTpiwg22W/n
-         5quQOwptj3e28xbBJSKBkaGorJV2BeVj1WVmnzI6jBPtHbFG3Q/FWrhhu4i2pDUUQP6/
-         M9SYXD/6Ri/phmsZwRRI7A3sIzIcoimAvRjjApsQgmNDvGRA9tLA7xL9PbRZqVu8AEWx
-         06wg==
-X-Gm-Message-State: AOJu0Yz+fCdFylaW4rQYsSw4rXRsYxiu+LOQfTg/c0CCyMc7s176g1Uq
-        WnfrURS1zdmCL3zvbRwrcincT3DbUDQ1w29jlZY=
-X-Google-Smtp-Source: AGHT+IFe+yFp/6ZZtgoksaQEaoA0GtB4qRd6BdyhzEmVCwEhguqPFr5Jdk1nmY7VZfEA4x2t+lec7Svvd6Cx87wSVKk=
-X-Received: by 2002:a17:90a:c293:b0:268:18e:9dfa with SMTP id
- f19-20020a17090ac29300b00268018e9dfamr14452873pjt.5.1696830704800; Sun, 08
- Oct 2023 22:51:44 -0700 (PDT)
+        Mon, 9 Oct 2023 02:00:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D308EB3;
+        Sun,  8 Oct 2023 23:00:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696831232; x=1728367232;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version:content-transfer-encoding;
+  bh=hpaPgeIMG2zlYHoqAZdtDRddF3V5fjkDFzWnHtt29sc=;
+  b=BBBe7DK8ShUUCP3rkz48w+U9IH1nqK1P8rki0JMXw7Uchj0/VUneXUrj
+   grUXGjO0gmoB8hr/pa36pHsrKpXXAPLItPqio8t+jR7lUQFGIMSVL1GQ1
+   SJXzS9Jn6gW1BIICfGn9NRgS0kUXbQqJErOm9vfVsVVNGf02Y11S9DFfE
+   DSPmKRHblQ8xP+dUeKOJA1S2M4fuF33r/iu7r3YNrk8ib1fEvwnl3DCU/
+   cDj59hdtRhW72s2bJN84aIpSQnLs/kVPnZyOH0Y5sb+kCLipOHQytTASy
+   SPsUjjum0laTKw8Uj6ltX/gLdIHjeUerhHeS3sgcBjquaxy208qyB4MUP
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="383952888"
+X-IronPort-AV: E=Sophos;i="6.03,209,1694761200"; 
+   d="scan'208";a="383952888"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2023 23:00:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="1000069872"
+X-IronPort-AV: E=Sophos;i="6.03,209,1694761200"; 
+   d="scan'208";a="1000069872"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2023 23:00:25 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Jianlin Lv <iecedge@gmail.com>
+Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        corbet@lwn.net, mhocko@kernel.org, roman.gushchin@linux.dev,
+        shakeelb@google.com, muchun.song@linux.dev,
+        akpm@linux-foundation.org, yosryahmed@google.com,
+        willy@infradead.org, linmiaohe@huawei.com,
+        wangkefeng.wang@huawei.com, laoar.shao@gmail.com,
+        yuzhao@google.com, wuyun.abel@bytedance.com, david@redhat.com,
+        peterx@redhat.com, vishal.moola@gmail.com, hughd@google.com,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, jianlv@ebay.com
+Subject: Re: [PATCH] memcg: add interface to force disable swap
+References: <20231007130905.78554-1-jianlv@ebay.com>
+        <87mswtkj8x.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <CAFA-uR9ymPTktMbi96cb+smjQHB4Y=8SQfAqmsqTbniGbkGTLA@mail.gmail.com>
+        <87il7hjzdp.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <CAFA-uR9n-rKw4k26Bhm=P16jOMtAncRsno7o=yYJ1kTxmB_mRw@mail.gmail.com>
+Date:   Mon, 09 Oct 2023 13:58:10 +0800
+In-Reply-To: <CAFA-uR9n-rKw4k26Bhm=P16jOMtAncRsno7o=yYJ1kTxmB_mRw@mail.gmail.com>
+        (Jianlin Lv's message of "Sun, 8 Oct 2023 17:34:44 +0800")
+Message-ID: <87edi4jq19.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-References: <20231005230851.3666908-1-irogers@google.com> <20231005230851.3666908-6-irogers@google.com>
-In-Reply-To: <20231005230851.3666908-6-irogers@google.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Sun, 8 Oct 2023 22:51:33 -0700
-Message-ID: <CAM9d7chmVRrFgEZMYk3EWG+1wjXqLC3suu-xrX64hmfBSAFi0A@mail.gmail.com>
-Subject: Re: [PATCH v2 05/18] perf bench uprobe: Fix potential use of memory
- after free
-To:     Ian Rogers <irogers@google.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ming Wang <wangming01@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Yuan Can <yuancan@huawei.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        James Clark <james.clark@arm.com>, llvm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 5, 2023 at 4:09 PM Ian Rogers <irogers@google.com> wrote:
->
-> Found by clang-tidy:
-> ```
-> bench/uprobe.c:98:3: warning: Use of memory after it is freed [clang-analyzer-unix.Malloc]
->                 bench_uprobe_bpf__destroy(skel);
-> ```
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
+Jianlin Lv <iecedge@gmail.com> writes:
 
-I'm ok with the change but I think it won't call
-bench_uprobe__teardown_bpf_skel() if the setup function
-returns a negative value.  Maybe we also need to set the
-err in the default case of `switch (bench)` statement.
-
-Thanks,
-Namhyung
-
-
-> ---
->  tools/perf/bench/uprobe.c | 1 +
->  1 file changed, 1 insertion(+)
+> On Sun, Oct 8, 2023 at 4:26=E2=80=AFPM Huang, Ying <ying.huang@intel.com>=
+ wrote:
+>>
+>> Jianlin Lv <iecedge@gmail.com> writes:
+>>
+>> > On Sun, Oct 8, 2023 at 9:17=E2=80=AFAM Huang, Ying <ying.huang@intel.c=
+om> wrote:
+>> >>
+>> >> Jianlin Lv <iecedge@gmail.com> writes:
+>> >>
+>> >> > From: Jianlin Lv <iecedge@gmail.com>
+>> >> >
+>> >> > Global reclaim will swap even if swappiness is set to 0.
+>> >>
+>> >> Why?  Can you elaborate the situation?
+>> >
+>> > We reproduced the issue of pages being swapped out even when swappines=
+s is
+>> > set to 0 in the production environment through the following test prog=
+ram.
+>> > Not sure whether this program can reproduce the issue in any environme=
+nt.
+>> >
+>> > From the implementation of the get_scan_count code, it can be seen tha=
+t,
+>> > based on the current runtime situation, memory reclamation will choose=
+ a
+>> > scanning method (SCAN_ANON/SCAN_FILE/SCAN_FRACT) to determine how
+>> > aggressively the anon and file LRU are scanned. However, this introduc=
+es
+>> > uncertainty.
+>> >
+>> > For the JVM issue at hand, we expect deterministic SCAN_FILE scan to a=
+void
+>> > swapping out anon pages.
+>>
+>> Why doesn't memory.swap.max work?
 >
-> diff --git a/tools/perf/bench/uprobe.c b/tools/perf/bench/uprobe.c
-> index 914c0817fe8a..5c71fdc419dd 100644
-> --- a/tools/perf/bench/uprobe.c
-> +++ b/tools/perf/bench/uprobe.c
-> @@ -89,6 +89,7 @@ static int bench_uprobe__setup_bpf_skel(enum bench_uprobe bench)
->         return err;
->  cleanup:
->         bench_uprobe_bpf__destroy(skel);
-> +       skel = NULL;
->         return err;
->  }
->
-> --
-> 2.42.0.609.gbb76f46606-goog
->
+> The main reason is that deployed nodes  are kept on cgroups v1.
+
+Check the code again.  IIUC, for swappiness =3D=3D 0, anonymous pages will
+only be reclaimed if sc->file_is_tiny is true.  If we don't swap in that
+situation, OOM may be triggerred.  I don't think that it's a good idea
+to do that.  Or I miss something?
+
+--
+Best Regards,
+Huang, Ying
