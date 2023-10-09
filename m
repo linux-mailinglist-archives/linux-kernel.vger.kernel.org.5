@@ -2,78 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7612A7BD249
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 05:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8907BD24B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 05:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345019AbjJIDCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 23:02:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58732 "EHLO
+        id S1345096AbjJIDEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 23:04:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232267AbjJIDCa (ORCPT
+        with ESMTP id S1345042AbjJIDEF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 23:02:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 896C5A6
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 20:01:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696820502;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HfPpj/NYnLhR9rt7gcQcCsZvzAr7nC8MCFto+fdVExs=;
-        b=Z3r0heBOdXA3pQnaCoz5MVQJWiEMmWXcuvRtcRDh2AtB1UnIMYnfU8WmHI6nqMuG+/B1QV
-        B0clrZhBdI439sPpVKE2aFSxefU8LehhgU14pDspNhTF01ODosHUxEi1Ay2qnUaucyZZl6
-        BgbxWCf/5v22JM0s5J8f/BYVttADTLk=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-518-E42dOnmwOPSwVlMOGGQ3Uw-1; Sun, 08 Oct 2023 23:01:41 -0400
-X-MC-Unique: E42dOnmwOPSwVlMOGGQ3Uw-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9b97f1b493dso326999566b.3
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 20:01:40 -0700 (PDT)
+        Sun, 8 Oct 2023 23:04:05 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ED30A6
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 20:04:03 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5a1ec43870cso49935987b3.0
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 20:04:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umich.edu; s=google-2016-06-03; t=1696820642; x=1697425442; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2a553ugT14gjtyNjW9GJo1PsSp2t+o25j6K104CIqPk=;
+        b=R8xGukhiMZktIpz3teLsPIKTYDkTUYQj9ED/wpW+aOON8FXB+l88h931MxYjQEI/rr
+         uuU3x+DuU2unty9tFbFqhc7bFhefZmPQ+4FB7y9F70LMa7YBAc/OGpPQO9jUKJTCtfsv
+         WMKDemxbBQht4NDOqDK4ZGTlV/mqVh8/6sAKDbcFhEGOFMGqbsaxB1/ChzGdhvcCSk4z
+         tQTtIqlM6SBarJ4MwmCwyJybormHIc1ldTT2CBtkReD7vl8mwLgMNki2uG0s2AsNPjm9
+         dynpQ85r57T1iD00I/R2IAjTrqKfVeNc5q+rZTI7s684BgJTSco2ZTvF24/XahcYGST+
+         8pRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696820499; x=1697425299;
+        d=1e100.net; s=20230601; t=1696820642; x=1697425442;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HfPpj/NYnLhR9rt7gcQcCsZvzAr7nC8MCFto+fdVExs=;
-        b=uWsnwYRCJECzUbTIVZeuXdchMpeS93zOj1qquWfaqYxxJQNg8iSi0illuHjbktaODr
-         zLR69KYb5Xrriq7OM5kvrQRb9WdoOzaVLObtx31auJ5EZyNmmBmwcH1DfoNz/V3jpBcP
-         EAysU/6riuQAZGR3WqT4PCDx1JqVAnwiOE/Jm/dAmDeGldK+PrAsYF/xIRCu50vN43OM
-         lh6qMTLkZ6FjC0R6CeJNOHpQvrn65ycxU+TfTqvZWJfzi4L+pyGoqdMBkAhj+43upjLz
-         CLIRHgtDMzUNUQhfWHQGv0XhKn6I8MnMxILcNjjew79ySFxyIxgyEjSmZyBVXrvmwSP6
-         E6Ug==
-X-Gm-Message-State: AOJu0YzQ0fWI0Omf2neqhqMwL3KjhNJ79/oYeF4PLhcfWscElfylxLqi
-        rdHt2yD1lUP2BM2idumS7tvXmAYAkCdi6fbIb+E6LetuF2Qc6lr01OD7Lfc/2WvBv+iVswwogyf
-        SSzqOOuQYZZbtpRyjLTM5Q7aDkJbYJOI1O1/oYTWkKvrBdnNl
-X-Received: by 2002:aa7:da83:0:b0:533:d81b:36d5 with SMTP id q3-20020aa7da83000000b00533d81b36d5mr11984919eds.15.1696820498955;
-        Sun, 08 Oct 2023 20:01:38 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHg4sPgUHGxpJD5KhVuPwe4H/WIDtwx1mSl/00KPjO0l64EypHEQ5kVl/x8SOlNYipG4eXQiG5yboehI1B3TtU=
-X-Received: by 2002:aa7:da83:0:b0:533:d81b:36d5 with SMTP id
- q3-20020aa7da83000000b00533d81b36d5mr11984907eds.15.1696820498625; Sun, 08
- Oct 2023 20:01:38 -0700 (PDT)
+        bh=2a553ugT14gjtyNjW9GJo1PsSp2t+o25j6K104CIqPk=;
+        b=CGV8LMB8Eb9K5rMnWLmt+h0pVpOEqtRE0+lQLyhVNAuxwM2qPCoKe47tWQs8kDN8U9
+         inFR3MwTP5DXIms9aXsugWtyNyHiQb5H2Jmk2dZXpnkuLR0NcJKlxpZfU2mxwy00ZMX+
+         1hulgzkicW9B8NKsAL/tm3Dw1NIDFX99kP2lXYQBOFHp0/a4I4MhdHYwcDC6tsOw2gLe
+         j8o2/WUH3UgsJwB7112Nd0pMiCiokGa/zMSQpkYIDFq0IqUm0TZfKIkYLEnPQcXrKti5
+         KeMyaeSsOh0FO8XYGv1nH8Y/B3YWerP2DYmq8dFTtg4WJBDQhTJyYqUKqSwGDdbIdLjH
+         Qi6A==
+X-Gm-Message-State: AOJu0YxHk4ARWJmSzXHD+/IPRDA1Ya86h8eC7J4EbNBFLltCsRicbnAk
+        cwZDlAlu32a783yTzijwehBCyljn3Tk0s+HciGhwWA==
+X-Google-Smtp-Source: AGHT+IGm38cgjsXeOz4waMlzo48yKVI+uickgE8vzurAuKu/TBgRk0fD1VLhqMfXvURX1bzd3NFVtl8FN3kY3OGaNHg=
+X-Received: by 2002:a05:690c:460e:b0:5a5:eb:f51f with SMTP id
+ gw14-20020a05690c460e00b005a500ebf51fmr11554915ywb.29.1696820642761; Sun, 08
+ Oct 2023 20:04:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230912030008.3599514-1-lulu@redhat.com> <20230912030008.3599514-5-lulu@redhat.com>
- <CACGkMEtCYG8-Pt+V-OOwUV7fYFp_cnxU68Moisfxju9veJ-=qw@mail.gmail.com>
- <CACLfguW3NS_4+YhqTtGqvQb70mVazGVfheryHx4aCBn+=Skf9w@mail.gmail.com>
- <CACGkMEt-m9bOh9YnqLw0So5wqbZ69D0XRVBbfG73Oh7Q8qTJsQ@mail.gmail.com> <6c4cd924-0d44-582e-13a4-791f38d10fe8@redhat.com>
-In-Reply-To: <6c4cd924-0d44-582e-13a4-791f38d10fe8@redhat.com>
-From:   Cindy Lu <lulu@redhat.com>
-Date:   Mon, 9 Oct 2023 11:00:30 +0800
-Message-ID: <CACLfguVTxZR2U-CFhkFWYFcgvB-6TLcQjUaEvtm+oka2XstVqw@mail.gmail.com>
-Subject: Re: [RFC v2 4/4] vduse: Add new ioctl VDUSE_GET_RECONNECT_INFO
-To:     Maxime Coquelin <maxime.coquelin@redhat.com>
-Cc:     Jason Wang <jasowang@redhat.com>, mst@redhat.com,
-        xieyongji@bytedance.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        stable@vger.kernel.org
+References: <20231008094816.320424-1-tmgross@umich.edu> <8a6a2133-92a0-4478-8f3a-e1c7ba38ff18@gmail.com>
+In-Reply-To: <8a6a2133-92a0-4478-8f3a-e1c7ba38ff18@gmail.com>
+From:   Trevor Gross <tmgross@umich.edu>
+Date:   Sun, 8 Oct 2023 23:03:50 -0400
+Message-ID: <CALNs47vj=whnF1FcmmXHz=msB2j=GAnrnwx-OKHciW6iR+GUMw@mail.gmail.com>
+Subject: Re: [PATCH] rust: macros: update 'paste!' macro to accept string literals
+To:     Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        FUJITA Tomonori <fujita.tomonori@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -82,166 +77,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 5:08=E2=80=AFPM Maxime Coquelin
-<maxime.coquelin@redhat.com> wrote:
+On Sun, Oct 8, 2023 at 8:27=E2=80=AFAM Martin Rodriguez Reboredo
+<yakoyoku@gmail.com> wrote:
 >
+> Next time I think you should put this in `Fixes:`.
 >
->
-> On 9/25/23 04:57, Jason Wang wrote:
-> > On Thu, Sep 21, 2023 at 10:07=E2=80=AFPM Cindy Lu <lulu@redhat.com> wro=
-te:
-> >>
-> >> On Mon, Sep 18, 2023 at 4:49=E2=80=AFPM Jason Wang <jasowang@redhat.co=
-m> wrote:
-> >>>
-> >>> On Tue, Sep 12, 2023 at 11:01=E2=80=AFAM Cindy Lu <lulu@redhat.com> w=
-rote:
-> >>>>
-> >>>> In VDUSE_GET_RECONNECT_INFO, the Userspace App can get the map size
-> >>>> and The number of mapping memory pages from the kernel. The userspac=
-e
-> >>>> App can use this information to map the pages.
-> >>>>
-> >>>> Signed-off-by: Cindy Lu <lulu@redhat.com>
-> >>>> ---
-> >>>>   drivers/vdpa/vdpa_user/vduse_dev.c | 15 +++++++++++++++
-> >>>>   include/uapi/linux/vduse.h         | 15 +++++++++++++++
-> >>>>   2 files changed, 30 insertions(+)
-> >>>>
-> >>>> diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_=
-user/vduse_dev.c
-> >>>> index 680b23dbdde2..c99f99892b5c 100644
-> >>>> --- a/drivers/vdpa/vdpa_user/vduse_dev.c
-> >>>> +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-> >>>> @@ -1368,6 +1368,21 @@ static long vduse_dev_ioctl(struct file *file=
-, unsigned int cmd,
-> >>>>                  ret =3D 0;
-> >>>>                  break;
-> >>>>          }
-> >>>> +       case VDUSE_GET_RECONNECT_INFO: {
-> >>>> +               struct vduse_reconnect_mmap_info info;
-> >>>> +
-> >>>> +               ret =3D -EFAULT;
-> >>>> +               if (copy_from_user(&info, argp, sizeof(info)))
-> >>>> +                       break;
-> >>>> +
-> >>>> +               info.size =3D PAGE_SIZE;
-> >>>> +               info.max_index =3D dev->vq_num + 1;
-> >>>> +
-> >>>> +               if (copy_to_user(argp, &info, sizeof(info)))
-> >>>> +                       break;
-> >>>> +               ret =3D 0;
-> >>>> +               break;
-> >>>> +       }
-> >>>>          default:
-> >>>>                  ret =3D -ENOIOCTLCMD;
-> >>>>                  break;
-> >>>> diff --git a/include/uapi/linux/vduse.h b/include/uapi/linux/vduse.h
-> >>>> index d585425803fd..ce55e34f63d7 100644
-> >>>> --- a/include/uapi/linux/vduse.h
-> >>>> +++ b/include/uapi/linux/vduse.h
-> >>>> @@ -356,4 +356,19 @@ struct vhost_reconnect_vring {
-> >>>>          _Bool avail_wrap_counter;
-> >>>>   };
-> >>>>
-> >>>> +/**
-> >>>> + * struct vduse_reconnect_mmap_info
-> >>>> + * @size: mapping memory size, always page_size here
-> >>>> + * @max_index: the number of pages allocated in kernel,just
-> >>>> + * use for check
-> >>>> + */
-> >>>> +
-> >>>> +struct vduse_reconnect_mmap_info {
-> >>>> +       __u32 size;
-> >>>> +       __u32 max_index;
-> >>>> +};
-> >>>
-> >>> One thing I didn't understand is that, aren't the things we used to
-> >>> store connection info belong to uAPI? If not, how can we make sure th=
-e
-> >>> connections work across different vendors/implementations. If yes,
-> >>> where?
-> >>>
-> >>> Thanks
-> >>>
-> >> The process for this reconnecttion  is
-> >> A.The first-time connection
-> >> 1> The userland app checks if the device exists
-> >> 2>  use the ioctl to create the vduse device
-> >> 3> Mapping the kernel page to userland and save the
-> >> App-version/features/other information to this page
-> >> 4>  if the Userland app needs to exit, then the Userland app will only
-> >> unmap the page and then exit
-> >>
-> >> B, the re-connection
-> >> 1> the userland app finds the device is existing
-> >> 2> Mapping the kernel page to userland
-> >> 3> check if the information in shared memory is satisfied to
-> >> reconnect,if ok then continue to reconnect
-> >> 4> continue working
-> >>
-> >>   For now these information are all from userland,So here the page wil=
-l
-> >> be maintained by the userland App
-> >> in the previous code we only saved the api-version by uAPI .  if  we
-> >> need to support reconnection maybe we need to add 2 new uAPI for this,
-> >> one of the uAPI is to save the reconnect  information and another is
-> >> to get the information
-> >>
-> >> maybe something like
-> >>
-> >> struct vhost_reconnect_data {
-> >> uint32_t version;
-> >> uint64_t features;
-> >> uint8_t status;
-> >> struct virtio_net_config config;
-> >> uint32_t nr_vrings;
-> >> };
-> >
-> > Probably, then we can make sure the re-connection works across
-> > different vduse-daemon implementations.
->
-> +1, we need to have this defined in the uAPI to support interoperability
-> across different VDUSE userspace implementations.
->
-> >
-> >>
-> >> #define VDUSE_GET_RECONNECT_INFO _IOR (VDUSE_BASE, 0x1c, struct
-> >> vhost_reconnect_data)
-> >>
-> >> #define VDUSE_SET_RECONNECT_INFO  _IOWR(VDUSE_BASE, 0x1d, struct
-> >> vhost_reconnect_data)
-> >
-> > Not sure I get this, but the idea is to map those pages to user space,
-> > any reason we need this uAPI?
->
-> It should not be necessary if the mmapped layout is properly defined.
->
-> Thanks,
-> Maxime
->
-Sure , I will use mmap to sync the reconnect status
-Thanks
-cindy
-> > Thanks
-> >
-> >>
-> >> Thanks
-> >> Cindy
-> >>
-> >>
-> >>
-> >>
-> >>>> +
-> >>>> +#define VDUSE_GET_RECONNECT_INFO \
-> >>>> +       _IOWR(VDUSE_BASE, 0x1b, struct vduse_reconnect_mmap_info)
-> >>>> +
-> >>>>   #endif /* _UAPI_VDUSE_H_ */
-> >>>> --
-> >>>> 2.34.3
-> >>>>
-> >>>
-> >>
-> >
+> > [...]
+> Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
 >
 
+Good point, thanks! I'll add that if there is a v2 (or Miguel can
+probably add it if not)
