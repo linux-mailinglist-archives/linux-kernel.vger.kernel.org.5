@@ -2,161 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B1A07BDA74
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F87C7BDA80
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:57:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346382AbjJIL4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 07:56:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48668 "EHLO
+        id S1346389AbjJIL54 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Oct 2023 07:57:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346380AbjJIL4m (ORCPT
+        with ESMTP id S1346354AbjJIL5y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 07:56:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56321A6
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 04:56:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696852601; x=1728388601;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Ey3XBOcNaPEGg9atuzfryV6OFS88AnMowraWktvyqqM=;
-  b=Y9YqrN1iG/xUKgnFT2lrHcqgkKizS7ihTStqIPVZ8JtrbK9k3rsNkzhh
-   iEKilBpltd1LGlSZWoSLRvHNNrrYs+//0k77GUhkJe3tsNAddk3gk4kp6
-   OM8ptTyvgIcg7wBARDVwNAt6wwalIyotUHbqu9x+JhGd8LVO3xrRegPHK
-   fEiQNx4cIymaAK9Pj05J8+lip7BPOwmZBgbnjdd7+w8Vl75SCpcvhaNS5
-   M+gAMlz09FbTLPcIOJB/b9DIJ1yASszpzO0QxtJKIyWvvdakeiSbrOC9N
-   TBFUVmYSq/fYnqO67SA0aX8tDzRqrH+yI+WJMsq7K9Tk4LuGrB2FSwg66
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="364417628"
-X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="scan'208";a="364417628"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 04:56:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="782463584"
-X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="scan'208";a="782463584"
-Received: from swoop-mobl.amr.corp.intel.com (HELO [10.249.36.226]) ([10.249.36.226])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 04:56:35 -0700
-Message-ID: <697abd63-3ed9-116e-a719-b9de74e6a8d8@linux.intel.com>
-Date:   Mon, 9 Oct 2023 13:56:33 +0200
+        Mon, 9 Oct 2023 07:57:54 -0400
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D6C99;
+        Mon,  9 Oct 2023 04:57:52 -0700 (PDT)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5a7af20c488so766257b3.1;
+        Mon, 09 Oct 2023 04:57:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696852671; x=1697457471;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9f0PTv84uwB8e7Frsy1nJ0Q69ieHgE7cDk3dtnj/+BE=;
+        b=rWO97CYX/yvxXutuSPIEOSpJUP7+A8mPmqV2fhJsqbISajtO1X44kbUGgdhRwMI9Cw
+         5TaUjO35xq8EI8nF+Zt7EHI39YK+OMb4x4wMHUTSjwJKNy80blc9C7fhokD7ZEvo7zbA
+         LCJ/492kc6EIDOrvA5mMnwm/SMr3dgI7v5N7lWHMHzo8T/L4fUnQqA1uO5uxtXeIWcuQ
+         9w0iGfpN8ghTn0OqrnaTNzgVcwG4qlQjOrrKLfLvHzcu3xZ35TpaXyKuJ7EMv5PqPzRf
+         RPrz0LuMXiQJJqvrEIOcnMyt7tIomAEec0cqBGktxLWN94ghrmdQmvr24xpL9xhsKOp7
+         98CQ==
+X-Gm-Message-State: AOJu0YyxgwUHv5tUPHVuKUVT0NS0jBS7ISjKretPGSRi9+ageTNg7IOu
+        NOb2N2KYFR/Pivww0DlUKSM1/HvxRMWxAw==
+X-Google-Smtp-Source: AGHT+IHhc33szlhZCOgodX5aT1yqL7F0k04W0I4Y5OfqHlKE0gqx1D4i4dS8q2o7cfiCtAu8OARmDg==
+X-Received: by 2002:a81:5387:0:b0:591:8d06:e4e8 with SMTP id h129-20020a815387000000b005918d06e4e8mr15952268ywb.38.1696852671468;
+        Mon, 09 Oct 2023 04:57:51 -0700 (PDT)
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com. [209.85.128.180])
+        by smtp.gmail.com with ESMTPSA id u17-20020a81a511000000b0059af9f2ee68sm3563640ywg.66.2023.10.09.04.57.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Oct 2023 04:57:51 -0700 (PDT)
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5a505762c9dso54520607b3.2;
+        Mon, 09 Oct 2023 04:57:50 -0700 (PDT)
+X-Received: by 2002:a0d:ea95:0:b0:5a1:ed8d:111f with SMTP id
+ t143-20020a0dea95000000b005a1ed8d111fmr15870851ywe.1.1696852670754; Mon, 09
+ Oct 2023 04:57:50 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v6 11/12] ASoC: SOF: Intel: Move binding to display driver
- outside of deferred probe
-To:     Takashi Iwai <tiwai@suse.de>, Maarten Lankhorst <dev@lankhorst.se>
-Cc:     =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Alsa-devel <alsa-devel@alsa-project.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
-References: <20231004145540.32321-1-maarten.lankhorst@linux.intel.com>
- <20231004145540.32321-12-maarten.lankhorst@linux.intel.com>
- <alpine.DEB.2.22.394.2310041953090.3390143@eliteleevi.tm.intel.com>
- <b4a010aa-b547-42ad-844f-849f287abd54@linux.intel.com>
- <ee92964c-c277-a258-5081-cf0a19ccff79@lankhorst.se>
- <87jzrwtiuk.wl-tiwai@suse.de>
-Content-Language: en-US
-From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-In-Reply-To: <87jzrwtiuk.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230929053915.1530607-1-claudiu.beznea@bp.renesas.com>
+ <20230929053915.1530607-12-claudiu.beznea@bp.renesas.com> <CAMuHMdX8wPNr4LsPJR7zk3Ktb8NnqcSMUEjsAURc2NJ_dpiDHw@mail.gmail.com>
+In-Reply-To: <CAMuHMdX8wPNr4LsPJR7zk3Ktb8NnqcSMUEjsAURc2NJ_dpiDHw@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 9 Oct 2023 13:57:39 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdX5W60nG_iPgDzcQiD2zByu734gM3d8J5Bn3V2RTTG=jg@mail.gmail.com>
+Message-ID: <CAMuHMdX5W60nG_iPgDzcQiD2zByu734gM3d8J5Bn3V2RTTG=jg@mail.gmail.com>
+Subject: Re: [PATCH v2 11/28] clk: renesas: rzg2l: add a divider clock for RZ/G3S
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linus.walleij@linaro.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, magnus.damm@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        quic_bjorande@quicinc.com, konrad.dybcio@linaro.org, arnd@arndb.de,
+        neil.armstrong@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey,
+Hi Claudiu,
 
-On 2023-10-09 08:23, Takashi Iwai wrote:
-> On Thu, 05 Oct 2023 13:26:18 +0200,
-> Maarten Lankhorst wrote:
->>
->>
->>
->> On 2023-10-05 12:58, Péter Ujfalusi wrote:
->>>
->>>
->>> On 04/10/2023 19:59, Kai Vehmanen wrote:
->>>> Hi,
->>>>
->>>> I'm good with rest of the series, but one patch requires work.
->>>>
->>>> On Wed, 4 Oct 2023, Maarten Lankhorst wrote:
->>>>
->>>>> Now that we can use -EPROBE_DEFER, it's no longer required to spin off
->>>>> the snd_hdac_i915_init into a workqueue.
->>>>>
->>>>> Use the -EPROBE_DEFER mechanism instead, which must be returned in the
->>>>> probe function.
->>>>>
->>>>> The previously added probe_early can be used for this,
->>>>> and we also use the newly added remove_late for unbinding afterwards.
->>>> [...]
->>>>> --- a/sound/soc/sof/intel/hda-common-ops.c
->>>>> +++ b/sound/soc/sof/intel/hda-common-ops.c
->>>>> @@ -19,6 +19,7 @@ struct snd_sof_dsp_ops sof_hda_common_ops = {
->>>>>    	.probe_early	= hda_dsp_probe_early,
->>>>>    	.probe		= hda_dsp_probe,
->>>>>    	.remove		= hda_dsp_remove,
->>>>> +	.remove_late	= hda_dsp_remove_late,
->>>>>      	/* Register IO uses direct mmio */
->>>>>    diff --git a/sound/soc/sof/intel/hda.c
->>>>> b/sound/soc/sof/intel/hda.c
->>>>> index 86a2571488bc..4eb7f04b8ae1 100644
->>>>> --- a/sound/soc/sof/intel/hda.c
->>>>> +++ b/sound/soc/sof/intel/hda.c
->>>>> @@ -1160,6 +1160,7 @@ int hda_dsp_probe_early(struct snd_sof_dev *sdev)
->>>>>    		return -ENOMEM;
->>>>>    	sdev->pdata->hw_pdata = hdev;
->>>>>    	hdev->desc = chip;
->>>>> +	ret = hda_init(sdev);
->>>>>      err:
->>>>>    	return ret;
->>>>
->>>> I don't think this works. The hda_codec_i915_init() errors are ignored in
->>>> hda_init() so this never returns -EPROBE_DEFER.
->>>>
->>>> So something like this is needed on top (tested quickly on one SOF
->>>> machine and this blocks SOF load until i915 or xe driver is loaded):
->>>>
->>>> --cut--
->>>> diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
->>>> index 9025bfaf6a7e..8b17c82dcc89 100644
->>>> --- a/sound/soc/sof/intel/hda.c
->>>> +++ b/sound/soc/sof/intel/hda.c
->>>> @@ -863,13 +863,20 @@ static int hda_init(struct snd_sof_dev *sdev)
->>>>           /* init i915 and HDMI codecs */
->>>>           ret = hda_codec_i915_init(sdev);
->>>>           if (ret < 0)
->>>> -               dev_warn(sdev->dev, "init of i915 and HDMI codec
->>>> failed\n");
->>>> +               dev_warn(sdev->dev, "init of i915 and HDMI codec failed
->>>> (%d)\n", ret);
->>>
->>> we should not print anything or maximum dev_dbg in case of EPROBE_DEFER.
->> There's dev_err_probe, which is dev_err on error, or sets the reason
->> for deferred probe to the arguments if the error is -EPROBE_DEFER.
-> 
-> I expect you'll respin v7 for addressing this?
-> 
-> I'd love to merge the series for 6.7, and the time ticks...
-Done, added the error handling early in the series as a bugfix.
+On Wed, Oct 4, 2023 at 2:30 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Fri, Sep 29, 2023 at 7:39 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> > From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> >
+> > Add a divider clock driver for RZ/G3S. This will be used in RZ/G3S
+> > by SDHI, SPI, OCTA, I, I2, I3, P0, P1, P2, P3 core clocks.
+> > The divider has some limitation for SDHI and OCTA clocks:
+> > - SD div cannot be 1 if parent rate is 800MHz
+> > - OCTA div cannot be 1 if parent rate is 400MHz
+> > For these clocks a notifier could be registered from platform specific
+> > clock driver and proper actions are taken before clock rate is changed,
+> > if needed.
+> >
+> > Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> > ---
+> >
+> > Changes in v2:
+> > - removed DIV_NOTIF macro
 
-Cheers,
-~Maarten
+> > --- a/drivers/clk/renesas/rzg2l-cpg.c
+> > +++ b/drivers/clk/renesas/rzg2l-cpg.c
+
+> > +static struct clk * __init
+> > +rzg3s_cpg_div_clk_register(const struct cpg_core_clk *core, struct clk **clks,
+> > +                          void __iomem *base, struct rzg2l_cpg_priv *priv)
+> > +{
+> > +       struct div_hw_data *div_hw_data;
+> > +       struct clk_init_data init = {};
+> > +       const struct clk_div_table *clkt;
+> > +       struct clk_hw *clk_hw;
+> > +       const struct clk *parent;
+> > +       const char *parent_name;
+> > +       u32 max;
+> > +       int ret;
+> > +
+> > +       parent = clks[core->parent & 0xffff];
+> > +       if (IS_ERR(parent))
+> > +               return ERR_CAST(parent);
+> > +
+> > +       parent_name = __clk_get_name(parent);
+> > +
+> > +       div_hw_data = devm_kzalloc(priv->dev, sizeof(*div_hw_data), GFP_KERNEL);
+> > +       if (!div_hw_data)
+> > +               return ERR_PTR(-ENOMEM);
+> > +
+> > +       init.name = core->name;
+> > +       init.flags = core->flag;
+> > +       init.ops = &rzg3s_div_clk_ops;
+> > +       init.parent_names = &parent_name;
+> > +       init.num_parents = 1;
+> > +
+> > +       /* Get the maximum divider to retrieve div width. */
+> > +       for (clkt = core->dtable; clkt->div; clkt++) {
+> > +               if (max < clkt->div)
+>
+> "max" is used uninitialized
+>
+> > +                       max = clkt->div;
+> > +       }
+> > +
+> > +       div_hw_data->hw_data.priv = priv;
+> > +       div_hw_data->hw_data.conf = core->conf;
+> > +       div_hw_data->hw_data.sconf = core->sconf;
+> > +       div_hw_data->dtable = core->dtable;
+> > +       div_hw_data->invalid_rate = core->invalid_rate;
+> > +       div_hw_data->width = fls(max) - 1;
+>
+> Isn't that
+
+My apologies for not finishing my sentence; I wanted to write "Isn't
+that identical to __fls(max)?".  But as the latter generates slightly
+worse code, it's not worth making that change.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
