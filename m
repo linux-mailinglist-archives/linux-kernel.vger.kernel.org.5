@@ -2,82 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8CEB7BE741
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8407BE706
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376950AbjJIRAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 13:00:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44116 "EHLO
+        id S1377310AbjJIQy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 12:54:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377376AbjJIRAr (ORCPT
+        with ESMTP id S1376588AbjJIQy0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 13:00:47 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D475ED;
-        Mon,  9 Oct 2023 10:00:43 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Mon, 9 Oct 2023 12:54:26 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4814A92;
+        Mon,  9 Oct 2023 09:54:25 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 41F8340E01AA;
+        Mon,  9 Oct 2023 16:54:23 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Eg-mIj4-9Y-F; Mon,  9 Oct 2023 16:54:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1696870461; bh=8/VIaB2dsUmSUa5umukeymyvERJHKFx4z55N2OwnzdQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LrPrMyP2D5AGbbxKJZ8TqX/VIZcIlbiKRxHCmGOdDauTEqRdAWobkmpt5TCV9Ot6M
+         RlegexBi2QP+gl4N8QQQ/CgbHx5jP8yCq4rn+ihvuC8JUi51q56HPmCkFjTFtjFJ97
+         XOONr5AzjLwd7ILeuzEH9Hjr72J42698oO3qJBdo3mGU2Fj7wJ1+oM7vEhBTDB5vS+
+         ADzfMpPX/ozYyezMAQACjjtgCcw/sw4wx9Ni1JeBySMoFuXtll0Nhd/JYsyT6/RWE5
+         fPKMpQC3B8pV4sq8JPbY7dZ2+P6NWBK85i9l7zDxztloAwciVTJXHt01WAZu4QI8yP
+         cpW40gJgFZ29yqbIpWUDyutFK3RdTJdImbWYvwDnRwoiOt2M65RB+33YH4UltUcdER
+         DC3xitTaGwcxA0G5SHh5rRQ4AEm1HJFKI4RRtQ0OoPgaBa32YbgmfG9Y9WMBjMU/HF
+         J6qRy5yNTUC4EKZT6NVdaxz6VWg6cEwUZ8oj/iPwYCcNytRhG3z36UlMjeWN938Drm
+         UwLuyu2LaQikRuZ5h2+YxScBs51cEsICatQJq72b2rtZuuiwwLbXodX0ij9UYV6F2K
+         VThQtcLXMRFAUekmKB5X0tmLsK/LqXWi/09sqE7CcF41yDJeI3uK7zoy4TTLYAAHDy
+         1iHPm1PkwVW3tKJfB65pnrSk=
+Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E074B21885;
-        Mon,  9 Oct 2023 17:00:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1696870841;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xFUIqiMe3bOMJeRTS3G+peu5DBbnk7Gw51HKAJIe3NQ=;
-        b=v6ieNDnUNdiEbtgBiDAEKrFZCzGRDf2rHyCMjNRg+9xbrHFCyo1XFPOMJbrd0C4+zIt6Cy
-        hIPCU/04m2jNaFWlDKiFHIh4PARO3GBHWAHuHQZpsz9utPLZDBnL+qeEBrBwFVc4x0YipK
-        HWQAtldMhrVrsbJR1a+sumUwZF2ffJA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1696870841;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xFUIqiMe3bOMJeRTS3G+peu5DBbnk7Gw51HKAJIe3NQ=;
-        b=fL03+ZZQ6IZFhXL86++eIB16tkJD5TVxA8f0okTSyRyt4EBmSVlw9jr/OwGvKZ4B58HnKv
-        t2F1uhA7i0QqvJCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BC9F513905;
-        Mon,  9 Oct 2023 17:00:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id QTY9LbkxJGWCYQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 09 Oct 2023 17:00:41 +0000
-Date:   Mon, 9 Oct 2023 18:53:56 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 23/89] btrfs: convert to new timestamp accessors
-Message-ID: <20231009165356.GU28758@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20231004185221.80802-1-jlayton@kernel.org>
- <20231004185347.80880-1-jlayton@kernel.org>
- <20231004185347.80880-21-jlayton@kernel.org>
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5447640E0187;
+        Mon,  9 Oct 2023 16:54:09 +0000 (UTC)
+Date:   Mon, 9 Oct 2023 18:54:03 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+Cc:     Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
+        fenghua.yu@intel.com, tglx@linutronix.de, mingo@redhat.com,
+        dave.hansen@linux.intel.com, corbet@lwn.net, x86@kernel.org,
+        hpa@zytor.com, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, ilpo.jarvinen@linux.intel.com
+Subject: Re: [PATCH v4 0/4] x86/resctrl: Non-contiguous bitmasks in Intel CAT
+Message-ID: <20231009165403.GCZSQwKwjGifBIQTpq@fat_crate.local>
+References: <cover.1696493034.git.maciej.wieczor-retman@intel.com>
+ <533ccc1b-7566-444e-8549-184fd272f666@intel.com>
+ <20231009124033.GBZSP0wcAT494wHWqG@fat_crate.local>
+ <0587b6f5-51d7-4d5a-9114-6c836b12f6f9@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231004185347.80880-21-jlayton@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <0587b6f5-51d7-4d5a-9114-6c836b12f6f9@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 02:52:08PM -0400, Jeff Layton wrote:
-> Convert to using the new inode timestamp accessor functions.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+On Mon, Oct 09, 2023 at 08:32:07AM -0700, Reinette Chatre wrote:
+> This is just a term I made up for when a series is deemed ready to be 
+> considered for inclusion by x86 maintainer team.
 
-Acked-by: David Sterba <dsterba@suse.com>
+Aha. :-)
+
+> I believe that Babu's series is ready for inclusion and can be merged first.
+> It is at:
+> https://lore.kernel.org/lkml/20231003235430.1231238-1-babu.moger@amd.com/
+
+Ok, lemme look at it.
+
+> Maciej is already planning to send a new version of this series and can
+> rebase on top of Babu's work at that time.
+
+Ok, you'll get the tip-bot notifications and then you'll know when and
+ontop of what branch to rebase.
+ 
+> Thank you very much.
+
+Thanks too!
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
