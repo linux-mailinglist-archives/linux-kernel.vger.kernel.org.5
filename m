@@ -2,68 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2637BD3CC
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 08:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C42967BD3CF
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 08:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345231AbjJIGvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 02:51:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57286 "EHLO
+        id S1345255AbjJIGxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 02:53:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234202AbjJIGvg (ORCPT
+        with ESMTP id S234202AbjJIGxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 02:51:36 -0400
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB7FA3
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 23:51:34 -0700 (PDT)
-Received: by mail-ua1-x933.google.com with SMTP id a1e0cc1a2514c-7aae07e7ba4so1269499241.1
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 23:51:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696834293; x=1697439093; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kBDSaY0/ASjdBE7rCbqSIiyhd+2s1GCtZituRbz4r4E=;
-        b=jGk0U/yHEw60pkwn4+7oXf/1xLJEGy6cUrEO6gYaGm6B9ZZB3fJLrQWNlwRT6jZXXt
-         cQKHLl4AN2yb8kSJKLa7dRz4LciLj1sw2Aa/v8OItkwmg8gW127noO3CmXP1dEWMkaDI
-         1er7HBipihkgG3RkDZRvqLOoqmLJY4ngJzabLfvznlNR5mMpVdlmAj1xpVQOYmC9jxh2
-         R+lohTZ8HcJeh4NB1HQ3Zcy931ZSjMJJZfmOoDCZzPCz4F+9Ih2FEHbBmSmaw3ZT4S8r
-         RcWLS7NCFhee+smv8TyrxN2pp7Y1+cuy8nJ4R6kzRgRkrobKvhJ1uFw3er0FhRWUPzVZ
-         J98Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696834293; x=1697439093;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kBDSaY0/ASjdBE7rCbqSIiyhd+2s1GCtZituRbz4r4E=;
-        b=MPbz/zXbIFW9CHE6/27WJw+5Lyp5SNQIpP+SsemH7t8eT5Uit0RUsoFcA6nQel/3fd
-         uARjLvV7jtc8rRxtQ/N+kzP6318lWgel0TgtiomN1XbbbIUGjP5uC4Pb+UJ80oHYLxt1
-         M/v4HCpLks79tyryuUrCIsaqB16Q4mF+4ebPosYfWXsNfxhoJS/a7O+J4SFpmYRXiP0I
-         To174fglPisPB/785MVS6WoCYD4hZJfDMBlZYnc7QGCzfQVRJsmNzNwvg5NPvlh+Lanv
-         4ATDj5OyqpPxMm7bgExCVxxUqo0xRdDduCwKwhhDCFrDpS1sr3mQ4GU9aSKTlQSl7VoI
-         GUog==
-X-Gm-Message-State: AOJu0Yw4f/4MLwNrMiqlh4YoDyGGsjRts5+wCaVrltJdf1Oiqs4cxhJA
-        lW5m/ZqJM51JVtx5sdypSl8QJSoTKiYKapzlC9qaGJMaWUVXNK6b
-X-Google-Smtp-Source: AGHT+IH1LWeJKXPZE+vvTZ4Oau9CzNroYWz1QipmerCrdTudthpWuwe8ud3nA9hbzuN+ZUJaN3IsyD6+sAOH3HFrDjA=
-X-Received: by 2002:a1f:c6c7:0:b0:49a:3538:18e3 with SMTP id
- w190-20020a1fc6c7000000b0049a353818e3mr9876309vkf.6.1696834293585; Sun, 08
- Oct 2023 23:51:33 -0700 (PDT)
+        Mon, 9 Oct 2023 02:53:42 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F48A3;
+        Sun,  8 Oct 2023 23:53:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E0A5C433C7;
+        Mon,  9 Oct 2023 06:53:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696834421;
+        bh=Ou978eSAT3Bd15YEWuzFJAGjPe+8cG1d3P2RihzVcsM=;
+        h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+        b=RsYkMTXtygwPp457b0EM3YfNvfh2wlBhmg3S6W0DJTPASPz3ZoH91lQjsv1FGXEQ6
+         sLY0u9K5VJkht47xdLesENZQng6lA5ZmhTRerilBtvUdWTzHwj5OPyq3jtfae+0Bm0
+         oseKqkWHxM2u3dKaQStX0jXBINiXSe5gVt6F5JGWb4ctdKL+gdhaQ2Uw1l1QTDEE+G
+         quXMEz1BwkeCp6ObrKpHSp6hQd5R5BG2xtR8pK0y3z6OXXzZ7NbEe0TAffBHcjzUJn
+         Y1FHxQft28k3Swyb0JeCPtpM0qZzErKT06MSX7OmMQBjmZR3h28wX6azwp17O8Tt7H
+         SMIroUuUPVs8g==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20231007125550.529700-1-peng.fan@oss.nxp.com>
-In-Reply-To: <20231007125550.529700-1-peng.fan@oss.nxp.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 9 Oct 2023 08:51:22 +0200
-Message-ID: <CAMRc=MdBRndJTGBhUPNkVGtRUpjaqph1aduzhDoitwjUy7VCyA@mail.gmail.com>
-Subject: Re: [PATCH] gpio: vf610: update comment for i.MX8ULP and i.MX93
- legacy compatibles
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     linus.walleij@linaro.org, andy@kernel.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>,
-        Marco Felsch <m.felsch@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3 1/8] wifi: wfx: fix power_save setting when AP is
+ stopped
+From:   Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20231004172843.195332-2-jerome.pouiller@silabs.com>
+References: <20231004172843.195332-2-jerome.pouiller@silabs.com>
+To:     =?utf-8?b?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?utf-8?b?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <169683441797.2071896.13428503955043948509.kvalo@kernel.org>
+Date:   Mon,  9 Oct 2023 06:53:40 +0000 (UTC)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,50 +51,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 7, 2023 at 2:51=E2=80=AFPM Peng Fan (OSS) <peng.fan@oss.nxp.com=
-> wrote:
->
-> From: Peng Fan <peng.fan@nxp.com>
->
-> i.MX8ULP and i.MX93 legacy compatible strings use dual regs, while
-> new compatible strings use one reg. The "support old compatible strings"
-> is not clear to reflect the fact, so update it.
->
-> Suggested-by: Marco Felsch <m.felsch@pengutronix.de>
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->
-> To address:
->  https://lore.kernel.org/all/20231004050428.o7l2e23xjcjkzzck@pengutronix.=
-de/
-> Marco:
->  I added your tag with Suggested-by, since you suggested this.
->
->  drivers/gpio/gpio-vf610.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpio/gpio-vf610.c b/drivers/gpio/gpio-vf610.c
-> index c03dfda41d4c..a89ae84a1fa0 100644
-> --- a/drivers/gpio/gpio-vf610.c
-> +++ b/drivers/gpio/gpio-vf610.c
-> @@ -287,7 +287,10 @@ static int vf610_gpio_probe(struct platform_device *=
-pdev)
->
->         dual_base =3D port->sdata->have_dual_base;
->
-> -       /* support old compatible strings */
-> +       /*
-> +        * Handle legacy compatible combinations which used two reg value=
-s
-> +        * for the i.MX8ULP and i.MX93.
-> +        */
->         if (device_is_compatible(dev, "fsl,imx7ulp-gpio") &&
->             (device_is_compatible(dev, "fsl,imx93-gpio") ||
->             (device_is_compatible(dev, "fsl,imx8ulp-gpio"))))
-> --
-> 2.37.1
->
+Jérôme Pouiller  <jerome.pouiller@silabs.com> wrote:
 
-Applied, thanks!
+> The WF200 allow to start two network interfaces (one AP, one station) on
+> two different channels. Since magic does not exist, it only works if the
+> station interface enables power save.
+> 
+> Thus, the driver detects this case and enforce power save as necessary.
+> 
+> This patch fixes the case where the AP interface is stopped and it is no
+> more necessary to enforce power saving on the station interface.
+> 
+> Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
 
-Bart
+8 patches applied to wireless-next.git, thanks.
+
+8b27aed225ca wifi: wfx: fix power_save setting when AP is stopped
+94c104d51830 wifi: wfx: relocate wfx_rate_mask_to_hw()
+cf0cc05c8c23 wifi: wfx: move wfx_skb_*() out of the header file
+fc5cb24fd50e wifi: wfx: introduce hif_scan_uniq()
+f091bcb62dc6 wifi: wfx: simplify exclusion between scan and Rx filters
+04106ec5bb02 wifi: wfx: scan_lock is global to the device
+f7385a20249e wifi: wfx: allow to send frames during ROC
+fc627dad3f01 wifi: wfx: implement wfx_remain_on_channel()
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20231004172843.195332-2-jerome.pouiller@silabs.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
