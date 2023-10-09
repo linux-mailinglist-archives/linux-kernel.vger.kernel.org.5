@@ -2,88 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43C577BE9BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 20:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 032457BE9C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 20:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378174AbjJISjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 14:39:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58276 "EHLO
+        id S1378227AbjJISjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 14:39:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378087AbjJISjI (ORCPT
+        with ESMTP id S1378156AbjJISjb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 14:39:08 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D2CE9D
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 11:39:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=u7Mt6gxRcunuNffKT3Q+uY/sMVS+mgj8T6rNkHpVN0U=; b=B6a71+pPymETTBBzg4iZ67F34w
-        kgjcK8n/1bbbShUR185ZYH2FSKLFBrgnioL4Jnri7uH4aM7wnloORaCBf0oxfRc/1P6dTVXmVyzZ4
-        AGp6J7IYUq4LR4ZF/Fc9Haj4kyOmO+6vKwJ9kLJawBeIc7PgsfD3HU9zGqGWo/wChW6ZUywrWULt9
-        VamCHrLfegKISpPFNEfDF2ulecNLqoPETIle646qrjjZMMRAe2ZXPL6khRVs/pViv9WvkCh4uzIhB
-        vpvXL5NyJtpaQq1XkOP9kVa9BKLTp6MgxqrCMJdflx0iIwe3mG0FRYn7fI+XG72aEN5lbC6QuRuzF
-        aIgnJCbA==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qpv9j-00BPQm-1V;
-        Mon, 09 Oct 2023 18:39:03 +0000
-Message-ID: <3010dc8a-18a0-4f8e-9b9b-f5b16c7ff052@infradead.org>
-Date:   Mon, 9 Oct 2023 11:39:02 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: kernel/fork.c:1134: warning: Function parameter or member 'mm'
- not described in 'set_mm_exe_file'
-Content-Language: en-US
-To:     kernel test robot <lkp@intel.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <202310100237.RjecPfNo-lkp@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <202310100237.RjecPfNo-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 9 Oct 2023 14:39:31 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6500CA6
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 11:39:29 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a213b4d0efso73084397b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 11:39:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696876768; x=1697481568; darn=vger.kernel.org;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mqO+Ua8t6nlwvlcHvKwWAEoEKjeWve4b13tLAZbDaS4=;
+        b=TKxbdCDkBWdYhlDTIxIVylHp7xWFWu79iK2O8lraz+QDiWTJx6k3QpxaoGQYe5R260
+         tpPX5YRHBNoLzTx9lxfzsvzwUgnUixUpG3YF2qJEh+f3W+upCMFj39WhJ1RFlhbqOdIE
+         zv46yB5jOSK/FWrAIP0xI7qMdCrB4ZSVoT3nbBaOpLMAcdrtSdT0jL0loH98XA0aLhZr
+         dtufYrU14jAAPjxsrLyBTcCiXb+YzC2NCauiChbTmXQrsb85qRMCpph6A2PcgVAraVVn
+         OrxbsQEQRXqHNBTfBJUgL0GTbYGBPSVPi2Y7YtJmK7ZJ5MvFYRP3/q1E6AFfrfXkTO8Y
+         00wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696876768; x=1697481568;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mqO+Ua8t6nlwvlcHvKwWAEoEKjeWve4b13tLAZbDaS4=;
+        b=CJXsUOPMLnOwtmbcZumSd3+MFSLggWxP5PrCQWfw7Ms0ejtXqra6KvOkm27JgMBSRE
+         PLPbmD2T0Y44v1HTnjMWBR5g6cmGxQIta31CvONbxsNlTbD/5SyPBC/Nv66WGX9NxUdu
+         Oovbk3wsuhMJkI+trnce0ArBoZJj4z+JlaGG6B415uJS4GEoc/EzZfIKRWfUVL6Zkpih
+         StH9crgXmllcPMKyD747J2tKWG7Gocsc4lGUvVFz+kHfnFrzZlIUr2BIcoQ/QAnP8Pst
+         u5OaGapEjGtT1d0GS35i/MWffbihtFuuy5fXPzcDDIHLWL7GYqPacXr6n26+Dt3LY8Kh
+         RO/w==
+X-Gm-Message-State: AOJu0YxY6xcKR5OQsJIRtLdcGiBr4s+rxxgPV5tiNnd0uO3vxYdv/xHM
+        kqCwrw3WXuLHeAXweQmq/3B5sLpF/mFz
+X-Google-Smtp-Source: AGHT+IE8rbiHTWNG1mYNALTAoi+/t0J7e5qpPykiWnCmQtpQDmBIpJJlxaAEE5cILLQqAZstEZU8apjPkO6F
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:ac4a:9b94:7158:3f4e])
+ (user=irogers job=sendgmr) by 2002:a81:bc03:0:b0:59b:c6bb:babb with SMTP id
+ a3-20020a81bc03000000b0059bc6bbbabbmr297622ywi.6.1696876768652; Mon, 09 Oct
+ 2023 11:39:28 -0700 (PDT)
+Date:   Mon,  9 Oct 2023 11:39:02 -0700
+In-Reply-To: <20231009183920.200859-1-irogers@google.com>
+Message-Id: <20231009183920.200859-2-irogers@google.com>
+Mime-Version: 1.0
+References: <20231009183920.200859-1-irogers@google.com>
+X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
+Subject: [PATCH v3 01/18] gen_compile_commands: Allow the line prefix to still
+ be cmd_
+From:   Ian Rogers <irogers@google.com>
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Ming Wang <wangming01@loongson.cn>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Builds in tools still use the cmd_ prefix in .cmd files, so don't
+require the saved part. Name the groups in the line pattern match so
+that changing the regular expression is more robust and works with the
+addition of a new match group.
 
+Signed-off-by: Ian Rogers <irogers@google.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ scripts/clang-tools/gen_compile_commands.py | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-On 10/9/23 11:30, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   94f6f0550c625fab1f373bb86a6669b45e9748b3
-> commit: b1fbfcb4a20949df08dd995927cdc5ad220c128d kbuild: make single target builds even faster
-> date:   3 years, 11 months ago
-> config: openrisc-allnoconfig (https://download.01.org/0day-ci/archive/20231010/202310100237.RjecPfNo-lkp@intel.com/config)
-> compiler: or1k-linux-gcc (GCC) 12.3.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231010/202310100237.RjecPfNo-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202310100237.RjecPfNo-lkp@intel.com/
-> 
-
-Fixes for kernel/fork.c are here:
-  https://lore.kernel.org/all/20230824193644.3029141-1-willy@infradead.org/
-
-are should be in the docs-next tree (I guess).
-
-> All warnings (new ones prefixed by >>):
-> 
->>> kernel/fork.c:1134: warning: Function parameter or member 'mm' not described in 'set_mm_exe_file'
->>> kernel/fork.c:1134: warning: Function parameter or member 'new_exe_file' not described in 'set_mm_exe_file'
->>> kernel/fork.c:1158: warning: Function parameter or member 'mm' not described in 'get_mm_exe_file'
->>> kernel/fork.c:1178: warning: Function parameter or member 'task' not described in 'get_task_exe_file'
->>> kernel/fork.c:1203: warning: Function parameter or member 'task' not described in 'get_task_mm'
-> --
-
-
+diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
+index a84cc5737c2c..b43f9149893c 100755
+--- a/scripts/clang-tools/gen_compile_commands.py
++++ b/scripts/clang-tools/gen_compile_commands.py
+@@ -19,7 +19,7 @@ _DEFAULT_OUTPUT = 'compile_commands.json'
+ _DEFAULT_LOG_LEVEL = 'WARNING'
+ 
+ _FILENAME_PATTERN = r'^\..*\.cmd$'
+-_LINE_PATTERN = r'^savedcmd_[^ ]*\.o := (.* )([^ ]*\.[cS]) *(;|$)'
++_LINE_PATTERN = r'^(saved)?cmd_[^ ]*\.o := (?P<command_prefix>.* )(?P<file_path>[^ ]*\.[cS]) *(;|$)'
+ _VALID_LOG_LEVELS = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
+ # The tools/ directory adopts a different build system, and produces .cmd
+ # files in a different format. Do not support it.
+@@ -213,8 +213,8 @@ def main():
+                 result = line_matcher.match(f.readline())
+                 if result:
+                     try:
+-                        entry = process_line(directory, result.group(1),
+-                                             result.group(2))
++                        entry = process_line(directory, result.group('command_prefix'),
++                                             result.group('file_path'))
+                         compile_commands.append(entry)
+                     except ValueError as err:
+                         logging.info('Could not add line from %s: %s',
 -- 
-~Randy
+2.42.0.609.gbb76f46606-goog
+
