@@ -2,126 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 151E37BD96E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A81FD7BD973
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346016AbjJILUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 07:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46594 "EHLO
+        id S1346213AbjJILWR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Oct 2023 07:22:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345822AbjJILUi (ORCPT
+        with ESMTP id S1345822AbjJILWP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 07:20:38 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CFF999
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 04:20:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 339EFC433C7;
-        Mon,  9 Oct 2023 11:20:35 +0000 (UTC)
-Date:   Mon, 9 Oct 2023 12:20:32 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Petr Tesarik <petr.tesarik.ext@huawei.com>
-Subject: Re: [RESEND PATCH] mm: slab: Do not create kmalloc caches smaller
- than arch_slab_minalign()
-Message-ID: <ZSPiAE6c4rzhilRy@arm.com>
-References: <20231006163934.3273940-1-catalin.marinas@arm.com>
- <a09a6fe5-2352-8922-e575-54bf74ae64e5@suse.cz>
+        Mon, 9 Oct 2023 07:22:15 -0400
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EF4099;
+        Mon,  9 Oct 2023 04:22:14 -0700 (PDT)
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-579de633419so54080837b3.3;
+        Mon, 09 Oct 2023 04:22:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696850533; x=1697455333;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NPwjpLn9USlrr/tk2CipqLIIg/Q3mvsVfg6prhm4tx8=;
+        b=MWvf845F13D75kdhCkHvZcwQndcV0R/0KjY+JVSoXumfNzp33p1gmiOp0xv/yNgEjY
+         9X78iS6uHQv5pt6FmAGhKl9JEXDzprwZHs5KFP1p9lDz9D1nlsY64BE+nugdW9p15Z9R
+         Z07uoJ1owfH/Lt9o2SEXkqB6lWPa2KLL9iYaBLkNAy+/jwEWdynP9pBatCe/MZCxcm+Z
+         oJhO+mzvohemgtLzKgGCa/rNnKSE4LIW75m77uqoqEmRzwnbaHC4Rtwy32VSzIxPE2ho
+         KAlkFEYJyyrWd31miUup03e6UAlwkomGPkDPerJmtY/uQGuymt0tdrBpyCgfBoWKySrH
+         AZQQ==
+X-Gm-Message-State: AOJu0YyHCTgf4FRCMhMFDbpkmG6QSkK70rVSYRkUxvkYX4PvQxJ7Wplx
+        w3W14w8QQb4YajNWgPIGBdD6lORJqSabGw==
+X-Google-Smtp-Source: AGHT+IF0l0Knea3PBEbzvFVLpFbCAXs5gro0QJNj9gTe8Qq6N/omFdRQCud00fWq3TdnofmZ/2UPgg==
+X-Received: by 2002:a0d:f405:0:b0:583:741c:5fe6 with SMTP id d5-20020a0df405000000b00583741c5fe6mr13004724ywf.52.1696850533241;
+        Mon, 09 Oct 2023 04:22:13 -0700 (PDT)
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com. [209.85.128.169])
+        by smtp.gmail.com with ESMTPSA id h64-20020a816c43000000b0059bc980b1eesm3602599ywc.6.2023.10.09.04.22.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Oct 2023 04:22:12 -0700 (PDT)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-579de633419so54080597b3.3;
+        Mon, 09 Oct 2023 04:22:12 -0700 (PDT)
+X-Received: by 2002:a0d:ea95:0:b0:5a1:ed8d:111f with SMTP id
+ t143-20020a0dea95000000b005a1ed8d111fmr15792790ywe.1.1696850532452; Mon, 09
+ Oct 2023 04:22:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a09a6fe5-2352-8922-e575-54bf74ae64e5@suse.cz>
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20231003145114.21637-1-brgl@bgdev.pl> <20231003145114.21637-6-brgl@bgdev.pl>
+In-Reply-To: <20231003145114.21637-6-brgl@bgdev.pl>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 9 Oct 2023 13:22:00 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVxJYBeK1ntWthZS8PhYuGkGqmT+u89jBZdpph4zYR58g@mail.gmail.com>
+Message-ID: <CAMuHMdVxJYBeK1ntWthZS8PhYuGkGqmT+u89jBZdpph4zYR58g@mail.gmail.com>
+Subject: Re: [PATCH 05/36] gpio: rcar: use new pinctrl GPIO helpers
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-renesas-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 10:22:52AM +0200, Vlastimil Babka wrote:
-> On 10/6/23 18:39, Catalin Marinas wrote:
-> > Commit b035f5a6d852 ("mm: slab: reduce the kmalloc() minimum alignment
-> > if DMA bouncing possible") allows architectures with non-coherent DMA to
-> > define a small ARCH_KMALLOC_MINALIGN (e.g. sizeof(unsigned long long))
-> > and this has been enabled on arm64. With KASAN_HW_TAGS enabled, however,
-> > ARCH_SLAB_MINALIGN becomes 16 on arm64 (arch_slab_minalign() dynamically
-> > selects it since commit d949a8155d13 ("mm: make minimum slab alignment a
-> > runtime property")). This can lead to a situation where kmalloc-8 caches
-> > are attempted to be created with a kmem_caches.size aligned to 16. When
-> > the cache is mergeable, it can lead to kernel warnings like:
-> > 
-> > sysfs: cannot create duplicate filename '/kernel/slab/:d-0000016'
-> > CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.6.0-rc1-00001-gda98843cd306-dirty #5
-> > Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
-> > Call trace:
-> >  dump_backtrace+0x90/0xe8
-> >  show_stack+0x18/0x24
-> >  dump_stack_lvl+0x48/0x60
-> >  dump_stack+0x18/0x24
-> >  sysfs_warn_dup+0x64/0x80
-> >  sysfs_create_dir_ns+0xe8/0x108
-> >  kobject_add_internal+0x98/0x264
-> >  kobject_init_and_add+0x8c/0xd8
-> >  sysfs_slab_add+0x12c/0x248
-> >  slab_sysfs_init+0x98/0x14c
-> >  do_one_initcall+0x6c/0x1b0
-> >  kernel_init_freeable+0x1c0/0x288
-> >  kernel_init+0x24/0x1e0
-> >  ret_from_fork+0x10/0x20
-> > kobject: kobject_add_internal failed for :d-0000016 with -EEXIST, don't try to register things with the same name in the same directory.
-> > SLUB: Unable to add boot slab dma-kmalloc-8 to sysfs
-> > 
-> > Limit the __kmalloc_minalign() return value (used to create the
-> > kmalloc-* caches) to arch_slab_minalign() so that kmalloc-8 caches are
-> > skipped when KASAN_HW_TAGS is enabled (both config and runtime).
-> > 
-> > Fixes: b035f5a6d852 ("mm: slab: reduce the kmalloc() minimum alignment if DMA bouncing possible")
-> > Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-> > Reported-by: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Vlastimil Babka <vbabka@suse.cz>
-> > Cc: Peter Collingbourne <pcc@google.com>
-> > Cc: <stable@vger.kernel.org> # 6.5.x
-> > ---
-> > 
-> > The previous post was messed up by my git send-email configuration, so
-> > sending it again. Also cc'ing Vlastimil since he reviewed the previous
-> > slab changes for ARCH_KMALLOC_MINALIGN. Thanks.
-> 
-> It also touches only slab files so I can take it via slab tree.
+On Tue, Oct 3, 2023 at 4:51 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> Replace the pinctrl helpers taking the global GPIO number as argument
+> with the improved variants that instead take a pointer to the GPIO chip
+> and the controller-relative offset.
+>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Thanks.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-> >  mm/slab_common.c | 7 +++++--
-> >  1 file changed, 5 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/mm/slab_common.c b/mm/slab_common.c
-> > index cd71f9581e67..8b45922ed295 100644
-> > --- a/mm/slab_common.c
-> > +++ b/mm/slab_common.c
-> > @@ -895,10 +895,13 @@ void __init setup_kmalloc_cache_index_table(void)
-> >  
-> >  static unsigned int __kmalloc_minalign(void)
-> >  {
-> > +	unsigned int minalign = dma_get_cache_alignment();
-> > +
-> >  	if (IS_ENABLED(CONFIG_DMA_BOUNCE_UNALIGNED_KMALLOC) &&
-> >  	    is_swiotlb_allocated())
-> > -		return ARCH_KMALLOC_MINALIGN;
-> > -	return dma_get_cache_alignment();
-> > +		minalign = ARCH_KMALLOC_MINALIGN;
-> > +
-> > +	return ALIGN(minalign, arch_slab_minalign());
-> 
-> Could it be max() instead of ALIGN()? It would be more obvious, at least to
-> me :)
+Gr{oetje,eeting}s,
 
-Yeah, max() would do since they are all a power of two. Do you want me
-to repost?
+                        Geert
 
 -- 
-Catalin
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
