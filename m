@@ -2,108 +2,581 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 667B07BDF10
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:26:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E8A7BDA9D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376358AbjJIN0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 09:26:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43220 "EHLO
+        id S1346434AbjJIMDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 08:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376491AbjJINZ6 (ORCPT
+        with ESMTP id S1346428AbjJIMD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 09:25:58 -0400
-Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DA70CA
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 06:25:54 -0700 (PDT)
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4S40Cj14mDz9vBy;
-        Mon,  9 Oct 2023 15:25:53 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Gphn4PpLowuC; Mon,  9 Oct 2023 15:25:53 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4S40Ch6Kpkz9vBQ;
-        Mon,  9 Oct 2023 15:25:52 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D33CB8B794;
-        Mon,  9 Oct 2023 15:25:52 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id O5Nkp0HQcBAB; Mon,  9 Oct 2023 15:25:52 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.232.138])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id AE9738B780;
-        Mon,  9 Oct 2023 15:25:52 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 397AkNme258256
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Sat, 7 Oct 2023 12:46:23 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 397AkMZ8258254;
-        Sat, 7 Oct 2023 12:46:22 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        "Christopher M . Riedl" <cmr@bluescreens.de>
-Subject: [PATCH] powerpc/code-patching: Perform hwsync in __patch_instruction() in case of failure
-Date:   Sat,  7 Oct 2023 12:46:19 +0200
-Message-ID: <e88b154eaf2efd9ff177d472d3411dcdec8ff4f5.1696675567.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.41.0
-MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1696675578; l=1348; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=k9MOIxjlEEg3xQ6FC272ePXV8stsS7VaLfDlN1rnk+A=; b=hLdvCOgOVWYoBIXrpWrB0Ja6rVFEwwkXVLbkWv8R+Sz1AlP6QTmKgTloUS9aOavXUbUvoscOM awoz7adu5idDnnHdGzUiebX+TlKUSisFGdmc+HkXO+O3QDnoXQ2ltYO
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 9 Oct 2023 08:03:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59BD6DB
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 05:02:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696852964;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vsw6MWQRW+N2YsbH4qu0RKFRaC+YmvclR1WLHRhNETc=;
+        b=IEvoawASXQHxQOuX/dom/p02dxWK0GlODiqtJANsfBfCgeQobTgsNJIILUn8tRfDH6qCVZ
+        gqtO6Un+EHQ2ebgbYBs/EAofCHCKfPvPTm6ix4TLscDYjufthrAzw2Qoekcha4irs4npyi
+        7qLg3FgVoKP9f4Pjj6xxMlxJ2kZDFR0=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-145-_w_8izhYMYmaTL1GXQsYUw-1; Mon, 09 Oct 2023 08:02:42 -0400
+X-MC-Unique: _w_8izhYMYmaTL1GXQsYUw-1
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1c5b80fe118so43013295ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 05:02:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696852961; x=1697457761;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vsw6MWQRW+N2YsbH4qu0RKFRaC+YmvclR1WLHRhNETc=;
+        b=jdkQHh5wkD8Q1/dA3f5j7hv2Ds/9S3iGBMzGK7O50PUVD1l2gtqX9h7j8XMiZAzDKD
+         h4W7RR8ZJ5JXcUWZKcWXzccS1nsEmIKlhpYmPwxGJdhLzSkXuN0SXiawmkBA2LmrffIN
+         nEb3wgB74QqzoGqwiFiYvAUR7KPAIf4Q7sXcfqL1UWMuiedgtlFynY8Ukn3kIIkjpTrG
+         siQFSZT76PqByaBvtHKD2RGo/hCizwjU25JfVPeZrbFnMfgpzud5grd2L1LbjixpKxef
+         EyjBV1Oc6uEkCj3hqE/fMvG7+yEaqARnvMAfXWALpH2Dm5DMnMo/ylInqPLhNY4ESTCE
+         8MGA==
+X-Gm-Message-State: AOJu0YzQvCZILtrw0rjXlGbH2MrnVsmzdZcx6R6HnF7nk27zooDrtWGK
+        L4CZCUUZ1vkxdb5zq9xNx5WUSv2sj663Trd/Vps+2McqmqGkPXa6KmeiZh+b4VDwSo/jXsRJfpr
+        dm9H9PjOWIVgRgIIM3x3Uosqb
+X-Received: by 2002:a17:902:d2c3:b0:1c4:4efc:90a6 with SMTP id n3-20020a170902d2c300b001c44efc90a6mr20837877plc.38.1696852961316;
+        Mon, 09 Oct 2023 05:02:41 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHDDSdBFku5EVgEFTYiiw6J5dxw4+WtDstnksVxNrjrfRQvt5cdGw3vhQ3ITSh5+sL6GXkR3w==
+X-Received: by 2002:a17:902:d2c3:b0:1c4:4efc:90a6 with SMTP id n3-20020a170902d2c300b001c44efc90a6mr20837832plc.38.1696852960828;
+        Mon, 09 Oct 2023 05:02:40 -0700 (PDT)
+Received: from smtpclient.apple ([115.96.136.216])
+        by smtp.gmail.com with ESMTPSA id b12-20020a170902d50c00b001b9f032bb3dsm9416020plg.3.2023.10.09.05.02.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 09 Oct 2023 05:02:40 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.120.41.1.4\))
+Subject: Re: [PATCH v8] hv/hv_kvp_daemon:Support for keyfile based connection
+ profile
+From:   Ani Sinha <anisinha@redhat.com>
+In-Reply-To: <1696847920-31125-1-git-send-email-shradhagupta@linux.microsoft.com>
+Date:   Mon, 9 Oct 2023 17:32:35 +0530
+Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Long Li <longli@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Olaf Hering <olaf@aepfle.de>,
+        Shradha Gupta <shradhagupta@microsoft.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <DF08C86E-1EFA-4C74-A5E7-190B52698F85@redhat.com>
+References: <1696847920-31125-1-git-send-email-shradhagupta@linux.microsoft.com>
+To:     Shradha Gupta <shradhagupta@linux.microsoft.com>
+X-Mailer: Apple Mail (2.3696.120.41.1.4)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit c28c15b6d28a ("powerpc/code-patching: Use temporary mm for
-Radix MMU") added a hwsync for when __patch_instruction() fails,
-we results in a quite odd unbalanced logic.
 
-Instead of calling mb() when __patch_instruction() returns an error,
-call mb() in the __patch_instruction()'s error path directly.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Hari Bathini <hbathini@linux.ibm.com>
-Cc: Christopher M. Riedl <cmr@bluescreens.de>
----
- arch/powerpc/lib/code-patching.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+> On 09-Oct-2023, at 4:08 PM, Shradha Gupta =
+<shradhagupta@linux.microsoft.com> wrote:
+>=20
+> Ifcfg config file support in NetworkManger is deprecated. This patch
+> provides support for the new keyfile config format for connection
+> profiles in NetworkManager. The patch modifies the hv_kvp_daemon code
+> to generate the new network configuration in keyfile
+> format(.ini-style format) along with a ifcfg format configuration.
+> The ifcfg format configuration is also retained to support easy
+> backward compatibility for distro vendors. These configurations are
+> stored in temp files which are further translated using the
+> hv_set_ifconfig.sh script. This script is implemented by individual
+> distros based on the network management commands supported.
+> For example, RHEL's implementation could be found here:
+> =
+https://gitlab.com/redhat/centos-stream/src/hyperv-daemons/-/blob/c9s/hv_s=
+et_ifconfig.sh
+> Debian's implementation could be found here:
+> =
+https://github.com/endlessm/linux/blob/master/debian/cloud-tools/hv_set_if=
+config
+>=20
+> The next part of this support is to let the Distro vendors consume
+> these modified implementations to the new configuration format.
+>=20
+> Tested-on: Rhel9(Hyper-V, Azure)(nm and ifcfg files verified)
+> Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+> Reviewed-by: Saurabh Sengar <ssengar@linux.microsoft.com>
 
-diff --git a/arch/powerpc/lib/code-patching.c b/arch/powerpc/lib/code-patching.c
-index b00112d7ad46..7a47a871e6b8 100644
---- a/arch/powerpc/lib/code-patching.c
-+++ b/arch/powerpc/lib/code-patching.c
-@@ -38,6 +38,7 @@ static int __patch_instruction(u32 *exec_addr, ppc_inst_t instr, u32 *patch_addr
- 	return 0;
- 
- failed:
-+	mb();  /* sync */
- 	return -EPERM;
- }
- 
-@@ -309,10 +310,6 @@ static int __do_patch_instruction_mm(u32 *addr, ppc_inst_t instr)
- 
- 	err = __patch_instruction(addr, instr, patch_addr);
- 
--	/* hwsync performed by __patch_instruction (sync) if successful */
--	if (err)
--		mb();  /* sync */
--
- 	/* context synchronisation performed by __patch_instruction (isync or exception) */
- 	stop_using_temp_mm(patching_mm, orig_mm);
- 
--- 
-2.41.0
+Reviewed-by: Ani Sinha <anisinha@redhat.com>
+
+> ---
+> Changes v7->v8
+> * Fix some filename variable names to avoid confusion
+> * Add initialization of is_ipv6 variable
+> * Add a few comments
+> ---
+> tools/hv/hv_kvp_daemon.c    | 233 +++++++++++++++++++++++++++++++-----
+> tools/hv/hv_set_ifconfig.sh |  39 +++++-
+> 2 files changed, 235 insertions(+), 37 deletions(-)
+>=20
+> diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
+> index 27f5e7dfc2f7..264eeb9c46a9 100644
+> --- a/tools/hv/hv_kvp_daemon.c
+> +++ b/tools/hv/hv_kvp_daemon.c
+> @@ -1171,12 +1171,79 @@ static int process_ip_string(FILE *f, char =
+*ip_string, int type)
+> 	return 0;
+> }
+>=20
+> +/*
+> + * Only IPv4 subnet strings needs to be converted to plen
+> + * For IPv6 the subnet is already privided in plen format
+> + */
+> +static int kvp_subnet_to_plen(char *subnet_addr_str)
+> +{
+> +	int plen =3D 0;
+> +	struct in_addr subnet_addr4;
+> +
+> +	/*
+> +	 * Convert subnet address to binary representation
+> +	 */
+> +	if (inet_pton(AF_INET, subnet_addr_str, &subnet_addr4) =3D=3D 1) =
+{
+> +		uint32_t subnet_mask =3D ntohl(subnet_addr4.s_addr);
+> +
+> +		while (subnet_mask & 0x80000000) {
+> +			plen++;
+> +			subnet_mask <<=3D 1;
+> +		}
+> +	} else {
+> +		return -1;
+> +	}
+> +
+> +	return plen;
+> +}
+> +
+> +static int process_ip_string_nm(FILE *f, char *ip_string, char =
+*subnet,
+> +				int is_ipv6)
+> +{
+> +	char addr[INET6_ADDRSTRLEN];
+> +	char subnet_addr[INET6_ADDRSTRLEN];
+> +	int error, i =3D 0;
+> +	int ip_offset =3D 0, subnet_offset =3D 0;
+> +	int plen;
+> +
+> +	memset(addr, 0, sizeof(addr));
+> +	memset(subnet_addr, 0, sizeof(subnet_addr));
+> +
+> +	while (parse_ip_val_buffer(ip_string, &ip_offset, addr,
+> +				   (MAX_IP_ADDR_SIZE * 2)) &&
+> +				   parse_ip_val_buffer(subnet,
+> +						       &subnet_offset,
+> +						       subnet_addr,
+> +						       (MAX_IP_ADDR_SIZE =
+*
+> +							2))) {
+> +		if (!is_ipv6)
+> +			plen =3D kvp_subnet_to_plen((char =
+*)subnet_addr);
+> +		else
+> +			plen =3D atoi(subnet_addr);
+> +
+> +		if (plen < 0)
+> +			return plen;
+> +
+> +		error =3D fprintf(f, "address%d=3D%s/%d\n", ++i, (char =
+*)addr,
+> +				plen);
+> +		if (error < 0)
+> +			return error;
+> +
+> +		memset(addr, 0, sizeof(addr));
+> +		memset(subnet_addr, 0, sizeof(subnet_addr));
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value =
+*new_val)
+> {
+> 	int error =3D 0;
+> -	char if_file[PATH_MAX];
+> -	FILE *file;
+> +	char if_filename[PATH_MAX];
+> +	char nm_filename[PATH_MAX];
+> +	FILE *ifcfg_file, *nmfile;
+> 	char cmd[PATH_MAX];
+> +	int is_ipv6 =3D 0;
+> 	char *mac_addr;
+> 	int str_len;
+>=20
+> @@ -1197,7 +1264,7 @@ static int kvp_set_ip_info(char *if_name, struct =
+hv_kvp_ipaddr_value *new_val)
+> 	 * in a given distro to configure the interface and so are free
+> 	 * ignore information that may not be relevant.
+> 	 *
+> -	 * Here is the format of the ip configuration file:
+> +	 * Here is the ifcfg format of the ip configuration file:
+> 	 *
+> 	 * HWADDR=3Dmacaddr
+> 	 * DEVICE=3Dinterface name
+> @@ -1220,6 +1287,32 @@ static int kvp_set_ip_info(char *if_name, =
+struct hv_kvp_ipaddr_value *new_val)
+> 	 * tagged as IPV6_DEFAULTGW and IPV6 NETMASK will be tagged as
+> 	 * IPV6NETMASK.
+> 	 *
+> +	 * Here is the keyfile format of the ip configuration file:
+> +	 *
+> +	 * [ethernet]
+> +	 * mac-address=3Dmacaddr
+> +	 * [connection]
+> +	 * interface-name=3Dinterface name
+> +	 *
+> +	 * [ipv4]
+> +	 * method=3D<protocol> (where <protocol> is "auto" if DHCP is =
+configured
+> +	 *                       or "manual" if no boot-time protocol =
+should be used)
+> +	 *
+> +	 * address1=3Dipaddr1/plen
+> +	 * address2=3Dipaddr2/plen
+> +	 *
+> +	 * gateway=3Dgateway1;gateway2
+> +	 *
+> +	 * dns=3Ddns1;dns2
+> +	 *
+> +	 * [ipv6]
+> +	 * address1=3Dipaddr1/plen
+> +	 * address2=3Dipaddr2/plen
+> +	 *
+> +	 * gateway=3Dgateway1;gateway2
+> +	 *
+> +	 * dns=3Ddns1;dns2
+> +	 *
+> 	 * The host can specify multiple ipv4 and ipv6 addresses to be
+> 	 * configured for the interface. Furthermore, the configuration
+> 	 * needs to be persistent. A subsequent GET call on the =
+interface
+> @@ -1227,14 +1320,29 @@ static int kvp_set_ip_info(char *if_name, =
+struct hv_kvp_ipaddr_value *new_val)
+> 	 * call.
+> 	 */
+>=20
+> -	snprintf(if_file, sizeof(if_file), "%s%s%s", KVP_CONFIG_LOC,
+> -		"/ifcfg-", if_name);
+> +	/*
+> +	 * We are populating both ifcfg and nmconnection files
+> +	 */
+> +	snprintf(if_filename, sizeof(if_filename), "%s%s%s", =
+KVP_CONFIG_LOC,
+> +		 "/ifcfg-", if_name);
+>=20
+> -	file =3D fopen(if_file, "w");
+> +	ifcfg_file =3D fopen(if_filename, "w");
+>=20
+> -	if (file =3D=3D NULL) {
+> +	if (!ifcfg_file) {
+> 		syslog(LOG_ERR, "Failed to open config file; error: %d =
+%s",
+> -				errno, strerror(errno));
+> +		       errno, strerror(errno));
+> +		return HV_E_FAIL;
+> +	}
+> +
+> +	snprintf(nm_filename, sizeof(nm_filename), "%s%s%s%s", =
+KVP_CONFIG_LOC,
+> +		 "/", if_name, ".nmconnection");
+> +
+> +	nmfile =3D fopen(nm_filename, "w");
+> +
+> +	if (!nmfile) {
+> +		syslog(LOG_ERR, "Failed to open config file; error: %d =
+%s",
+> +		       errno, strerror(errno));
+> +		fclose(ifcfg_file);
+> 		return HV_E_FAIL;
+> 	}
+>=20
+> @@ -1248,14 +1356,31 @@ static int kvp_set_ip_info(char *if_name, =
+struct hv_kvp_ipaddr_value *new_val)
+> 		goto setval_error;
+> 	}
+>=20
+> -	error =3D kvp_write_file(file, "HWADDR", "", mac_addr);
+> -	free(mac_addr);
+> +	error =3D kvp_write_file(ifcfg_file, "HWADDR", "", mac_addr);
+> +	if (error < 0)
+> +		goto setmac_error;
+> +
+> +	error =3D kvp_write_file(ifcfg_file, "DEVICE", "", if_name);
+> +	if (error < 0)
+> +		goto setmac_error;
+> +
+> +	error =3D fprintf(nmfile, "\n[connection]\n");
+> +	if (error < 0)
+> +		goto setmac_error;
+> +
+> +	error =3D kvp_write_file(nmfile, "interface-name", "", if_name);
+> 	if (error)
+> -		goto setval_error;
+> +		goto setmac_error;
+>=20
+> -	error =3D kvp_write_file(file, "DEVICE", "", if_name);
+> +	error =3D fprintf(nmfile, "\n[ethernet]\n");
+> +	if (error < 0)
+> +		goto setmac_error;
+> +
+> +	error =3D kvp_write_file(nmfile, "mac-address", "", mac_addr);
+> 	if (error)
+> -		goto setval_error;
+> +		goto setmac_error;
+> +
+> +	free(mac_addr);
+>=20
+> 	/*
+> 	 * The dhcp_enabled flag is only for IPv4. In the case the host =
+only
+> @@ -1263,47 +1388,91 @@ static int kvp_set_ip_info(char *if_name, =
+struct hv_kvp_ipaddr_value *new_val)
+> 	 * proceed to parse and pass the IPv6 information to the
+> 	 * disto-specific script hv_set_ifconfig.
+> 	 */
+> +
+> +	/*
+> +	 * First populate the ifcfg file format
+> +	 */
+> 	if (new_val->dhcp_enabled) {
+> -		error =3D kvp_write_file(file, "BOOTPROTO", "", "dhcp");
+> +		error =3D kvp_write_file(ifcfg_file, "BOOTPROTO", "", =
+"dhcp");
+> 		if (error)
+> 			goto setval_error;
+> -
+> 	} else {
+> -		error =3D kvp_write_file(file, "BOOTPROTO", "", "none");
+> +		error =3D kvp_write_file(ifcfg_file, "BOOTPROTO", "", =
+"none");
+> 		if (error)
+> 			goto setval_error;
+> 	}
+>=20
+> -	/*
+> -	 * Write the configuration for ipaddress, netmask, gateway and
+> -	 * name servers.
+> -	 */
+> -
+> -	error =3D process_ip_string(file, (char *)new_val->ip_addr, =
+IPADDR);
+> +	error =3D process_ip_string(ifcfg_file, (char =
+*)new_val->ip_addr,
+> +				  IPADDR);
+> 	if (error)
+> 		goto setval_error;
+>=20
+> -	error =3D process_ip_string(file, (char *)new_val->sub_net, =
+NETMASK);
+> +	error =3D process_ip_string(ifcfg_file, (char =
+*)new_val->sub_net,
+> +				  NETMASK);
+> 	if (error)
+> 		goto setval_error;
+>=20
+> -	error =3D process_ip_string(file, (char *)new_val->gate_way, =
+GATEWAY);
+> +	error =3D process_ip_string(ifcfg_file, (char =
+*)new_val->gate_way,
+> +				  GATEWAY);
+> 	if (error)
+> 		goto setval_error;
+>=20
+> -	error =3D process_ip_string(file, (char *)new_val->dns_addr, =
+DNS);
+> +	error =3D process_ip_string(ifcfg_file, (char =
+*)new_val->dns_addr, DNS);
+> 	if (error)
+> 		goto setval_error;
+>=20
+> -	fclose(file);
+> +	if (new_val->addr_family =3D=3D ADDR_FAMILY_IPV6) {
+> +		error =3D fprintf(nmfile, "\n[ipv6]\n");
+> +		if (error < 0)
+> +			goto setval_error;
+> +		is_ipv6 =3D 1;
+> +	} else {
+> +		error =3D fprintf(nmfile, "\n[ipv4]\n");
+> +		if (error < 0)
+> +			goto setval_error;
+> +	}
+> +
+> +	/*
+> +	 * Now we populate the keyfile format
+> +	 */
+> +
+> +	if (new_val->dhcp_enabled) {
+> +		error =3D kvp_write_file(nmfile, "method", "", "auto");
+> +		if (error < 0)
+> +			goto setval_error;
+> +	} else {
+> +		error =3D kvp_write_file(nmfile, "method", "", =
+"manual");
+> +		if (error < 0)
+> +			goto setval_error;
+> +	}
+> +
+> +	/*
+> +	 * Write the configuration for ipaddress, netmask, gateway and
+> +	 * name services
+> +	 */
+> +	error =3D process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
+> +				     (char *)new_val->sub_net, is_ipv6);
+> +	if (error < 0)
+> +		goto setval_error;
+> +
+> +	error =3D fprintf(nmfile, "gateway=3D%s\n", (char =
+*)new_val->gate_way);
+> +	if (error < 0)
+> +		goto setval_error;
+> +
+> +	error =3D fprintf(nmfile, "dns=3D%s\n", (char =
+*)new_val->dns_addr);
+> +	if (error < 0)
+> +		goto setval_error;
+> +
+> +	fclose(nmfile);
+> +	fclose(ifcfg_file);
+>=20
+> 	/*
+> 	 * Now that we have populated the configuration file,
+> 	 * invoke the external script to do its magic.
+> 	 */
+>=20
+> -	str_len =3D snprintf(cmd, sizeof(cmd), KVP_SCRIPTS_PATH "%s %s",
+> -			   "hv_set_ifconfig", if_file);
+> +	str_len =3D snprintf(cmd, sizeof(cmd), KVP_SCRIPTS_PATH "%s %s =
+%s",
+> +			   "hv_set_ifconfig", if_filename, nm_filename);
+> 	/*
+> 	 * This is a little overcautious, but it's necessary to suppress =
+some
+> 	 * false warnings from gcc 8.0.1.
+> @@ -1316,14 +1485,16 @@ static int kvp_set_ip_info(char *if_name, =
+struct hv_kvp_ipaddr_value *new_val)
+>=20
+> 	if (system(cmd)) {
+> 		syslog(LOG_ERR, "Failed to execute cmd '%s'; error: %d =
+%s",
+> -				cmd, errno, strerror(errno));
+> +		       cmd, errno, strerror(errno));
+> 		return HV_E_FAIL;
+> 	}
+> 	return 0;
+> -
+> +setmac_error:
+> +	free(mac_addr);
+> setval_error:
+> 	syslog(LOG_ERR, "Failed to write config file");
+> -	fclose(file);
+> +	fclose(ifcfg_file);
+> +	fclose(nmfile);
+> 	return error;
+> }
+>=20
+> diff --git a/tools/hv/hv_set_ifconfig.sh b/tools/hv/hv_set_ifconfig.sh
+> index d10fe35b7f25..ae5a7a8249a2 100755
+> --- a/tools/hv/hv_set_ifconfig.sh
+> +++ b/tools/hv/hv_set_ifconfig.sh
+> @@ -18,12 +18,12 @@
+> #
+> # This example script is based on a RHEL environment.
+> #
+> -# Here is the format of the ip configuration file:
+> +# Here is the ifcfg format of the ip configuration file:
+> #
+> # HWADDR=3Dmacaddr
+> # DEVICE=3Dinterface name
+> # BOOTPROTO=3D<protocol> (where <protocol> is "dhcp" if DHCP is =
+configured
+> -#                       or "none" if no boot-time protocol should be =
+used)
+> +# 			or "none" if no boot-time protocol should be =
+used)
+> #
+> # IPADDR0=3Dipaddr1
+> # IPADDR1=3Dipaddr2
+> @@ -41,6 +41,32 @@
+> # tagged as IPV6_DEFAULTGW and IPV6 NETMASK will be tagged as
+> # IPV6NETMASK.
+> #
+> +# Here is the keyfile format of the ip configuration file:
+> +#
+> +# [ethernet]
+> +# mac-address=3Dmacaddr
+> +# [connection]
+> +# interface-name=3Dinterface name
+> +#
+> +# [ipv4]
+> +# method=3D<protocol> (where <protocol> is "auto" if DHCP is =
+configured
+> +#                       or "manual" if no boot-time protocol should =
+be used)
+> +#
+> +# address1=3Dipaddr1/plen
+> +# address=3Dipaddr2/plen
+> +#
+> +# gateway=3Dgateway1;gateway2
+> +#
+> +# dns=3Ddns1;
+> +#
+> +# [ipv6]
+> +# address1=3Dipaddr1/plen
+> +# address2=3Dipaddr1/plen
+> +#
+> +# gateway=3Dgateway1;gateway2
+> +#
+> +# dns=3Ddns1;dns2
+> +#
+> # The host can specify multiple ipv4 and ipv6 addresses to be
+> # configured for the interface. Furthermore, the configuration
+> # needs to be persistent. A subsequent GET call on the interface
+> @@ -48,18 +74,19 @@
+> # call.
+> #
+>=20
+> -
+> -
+> echo "IPV6INIT=3Dyes" >> $1
+> echo "NM_CONTROLLED=3Dno" >> $1
+> echo "PEERDNS=3Dyes" >> $1
+> echo "ONBOOT=3Dyes" >> $1
+>=20
+> -
+> cp $1 /etc/sysconfig/network-scripts/
+>=20
+> +chmod 600 $2
+> +interface=3D$(echo $2 | awk -F - '{ print $2 }')
+> +filename=3D"${2##*/}"
+> +
+> +sed '/\[connection\]/a autoconnect=3Dtrue' $2 > =
+/etc/NetworkManager/system-connections/${filename}
+>=20
+> -interface=3D$(echo $1 | awk -F - '{ print $2 }')
+>=20
+> /sbin/ifdown $interface 2>/dev/null
+> /sbin/ifup $interface 2>/dev/null
+> --=20
+> 2.34.1
+>=20
 
