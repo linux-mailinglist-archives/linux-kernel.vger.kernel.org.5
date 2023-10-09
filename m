@@ -2,102 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 723D27BECA3
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F547BECB1
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234614AbjJIVQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 17:16:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59748 "EHLO
+        id S1378368AbjJIVRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 17:17:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234706AbjJIVQ0 (ORCPT
+        with ESMTP id S234662AbjJIVQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 17:16:26 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 297B8192
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 14:15:13 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2c3e23a818bso18494431fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 14:15:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696886111; x=1697490911; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GF8sVvByPhILrt0ONAgfOaeyuIu1HrfcOafsBj1Kszo=;
-        b=jDW6Nw2XwVMmxv3s8Jy+owRjhpcl5rJmP3z0COTeBVfsRHY9GcZUB4KPVeRQSXZH9D
-         4MLHVGV1POq1NppcUkViz3eI+FU59J5Ehm57PoONo/2e1ORENe5noa6zeUVgqrQGrrFo
-         CNJh5uv3xW+mhwd8G64i0pvvugzbzAzpF/Q+WAs7AIbEwMWkMzCjqo3eDS1M0QacNhjH
-         vTyv9oWjeWlhCuBaE+5lfeXcxEsxQTg8fktc902n5xmIA07DOQvQUr2YKbMqy5ZB6ID1
-         XAbQoAR69MwFli0bPcNhzFyFhGDcn+hPZHglfYqSirAIoJdNJ6iOLaLwgQy6YNDRk7Xg
-         bm1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696886111; x=1697490911;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GF8sVvByPhILrt0ONAgfOaeyuIu1HrfcOafsBj1Kszo=;
-        b=THPrepr4xUBnbF+ySWL8b/9k3Bd1nHvfd++JKL5IUBJhE8rz/kCpNammnfCz/iuuqC
-         5m3cYsqdgPQF2+CLL2AEpeCQMYgfL4ehboi69hWhTKdCVUnuJj2c7/8KugE7MRQEQ5oj
-         eH0aK+2zzHCYhaxRKBafX3HlNlrH6NGTQn34qqXBD2UtpAe44ssmi5yHFenko4PG3ktt
-         huAYjGmhUP2LBf6zH/sFo/nO5Br4N8Kub3tP2V99wAxtv3fhyJmesD10fEAhB/Ti2Br0
-         Znijj3qhOrpsU0Bdcx/xIH2UkK9RtjtIN713QMkQhvrEzRxUENpo2WP599Yus0QSs86P
-         WILA==
-X-Gm-Message-State: AOJu0YzNhB0JpY1eLk3aI09zhffhUgPfq06YGB30FiUNzcgO3UFElKIA
-        oA2eFlLv29SI9zuoCnK1nZPSZw==
-X-Google-Smtp-Source: AGHT+IHPANy7utWKq+Nt0JGanJ/qxGKrfFVdkzSlLFJqrNsi+LPmEIbl3s9Am1RcS03FjaY5Al1gyQ==
-X-Received: by 2002:a05:651c:2049:b0:2c0:12f9:3b7c with SMTP id t9-20020a05651c204900b002c012f93b7cmr10214544ljo.11.1696886111428;
-        Mon, 09 Oct 2023 14:15:11 -0700 (PDT)
-Received: from [172.30.204.90] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id n10-20020a2e86ca000000b002c029a4b681sm2175771ljj.15.2023.10.09.14.15.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 14:15:11 -0700 (PDT)
-Message-ID: <c4d418b3-86e7-4768-8d18-bf0c05690ddc@linaro.org>
-Date:   Mon, 9 Oct 2023 23:15:09 +0200
+        Mon, 9 Oct 2023 17:16:45 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600282101
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 14:15:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63D37C433C8;
+        Mon,  9 Oct 2023 21:15:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696886131;
+        bh=TS+C80SAzE+hVZogvc00I7js8dsT05l02Pw/Z87rgEg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dXxlujNjsZzdXVp/sM9i4XQLmCJcOgkfUZeecHLXv3OxI+YWqym200Ob54C1ACJKI
+         8ssnQ0l+Xr7Wop/aj3iD8irF5mfv+XKxc+tWEnpJlLjgucNJqcq+wwVPycRbYD4dKY
+         OeaIEb4Wh39iCxLHDdZBAHqfyy0TfTXjyIFiXuMW8DbLNOtU/KVA/56FOAS4ZOrcqy
+         J7RHUeBHNSeDnUJWeDOsc0fJ65rmuendvX1Al3DyXOnzvEE+oPTT7s/3HuSP/JRkQg
+         YzQI2l+2cTcbQv32XEN0DYvhj9/WN2PLsKE6hNT4p6mYefUsC1TcA79I+F9aZQznqk
+         lr0WnjfKbyQrA==
+Date:   Mon, 9 Oct 2023 23:15:27 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Eric Dumazet <edumazet@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Arjan van de Ven <arjan@infradead.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Siewior <bigeasy@linutronix.de>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>
+Subject: Re: [PATCH v8 09/25] timer: Split out get next timer functionality
+Message-ID: <ZSRtb9Kh-m0laSwL@localhost.localdomain>
+References: <20231004123454.15691-1-anna-maria@linutronix.de>
+ <20231004123454.15691-10-anna-maria@linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6/7] arm64: dts: qcom: sm7125-xiaomi-common: Add UFS nodes
-Content-Language: en-US
-To:     David Wronek <davidwronek@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Joe Mason <buddyjojo06@outlook.com>
-Cc:     cros-qcom-dts-watchers@chromium.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org, linux-scsi@vger.kernel.org,
-        hexdump0815@googlemail.com, ~postmarketos/upstreaming@lists.sr.ht,
-        phone-devel@vger.kernel.org
-References: <20231007140053.1731245-1-davidwronek@gmail.com>
- <20231007140053.1731245-7-davidwronek@gmail.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231007140053.1731245-7-davidwronek@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231004123454.15691-10-anna-maria@linutronix.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/7/23 15:58, David Wronek wrote:
-> Enable the UFS found on the SM7125 Xiaomi smartphones.
+Le Wed, Oct 04, 2023 at 02:34:38PM +0200, Anna-Maria Behnsen a écrit :
+> Split out get next timer functionality to make it reusable in other
+> places. Thereby the order of getting the next expiry, forwarding the base
+> clock and mark timer bases as idle, is changed. This change of order
+> shouldn't have any impact, as nothing inside the function relies on the
+> idle value or the updated timer base clock.
 > 
-> Signed-off-by: David Wronek <davidwronek@gmail.com>
+> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
 > ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>  kernel/time/timer.c | 30 +++++++++++++++++++++---------
+>  1 file changed, 21 insertions(+), 9 deletions(-)
+> 
+> diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+> index 18f8aac9b19a..f443aa807fbc 100644
+> --- a/kernel/time/timer.c
+> +++ b/kernel/time/timer.c
+> @@ -1911,6 +1911,24 @@ static u64 cmp_next_hrtimer_event(u64 basem, u64 expires)
+>  	return DIV_ROUND_UP_ULL(nextevt, TICK_NSEC) * TICK_NSEC;
+>  }
+>  
+> +static inline unsigned long __get_next_timer_interrupt(unsigned long basej,
+> +						       struct timer_base *base)
+> +{
+> +	unsigned long nextevt;
+> +
+> +	if (base->next_expiry_recalc)
+> +		next_expiry_recalc(base);
+> +	nextevt = base->next_expiry;
+> +
+> +	if (base->timers_pending) {
+> +		/* If we missed a tick already, force 0 delta */
+> +		if (time_before(nextevt, basej))
+> +			nextevt = basej;
+> +	}
+> +
+> +	return nextevt;
+> +}
+> +
+>  /**
+>   * get_next_timer_interrupt - return the time (clock mono) of the next timer
+>   * @basej:	base time jiffies
+> @@ -1933,9 +1951,7 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
+>  		return expires;
+>  
+>  	raw_spin_lock(&base->lock);
+> -	if (base->next_expiry_recalc)
+> -		next_expiry_recalc(base);
+> -	nextevt = base->next_expiry;
+> +	nextevt = __get_next_timer_interrupt(basej, base);
+>  
+>  	/*
+>  	 * We have a fresh next event. Check whether we can forward the
+> @@ -1952,14 +1968,10 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
+>  	 */
+>  	base->is_idle = time_after(nextevt, basej + 1);
+>  
+> -	if (base->timers_pending) {
+> -		/* If we missed a tick already, force 0 delta */
+> -		if (time_before(nextevt, basej))
+> -			nextevt = basej;
+> -		expires = basem + (u64)(nextevt - basej) * TICK_NSEC;
+> -	}
+>  	raw_spin_unlock(&base->lock);
+>  
+> +	expires = basem + (u64)(nextevt - basej) * TICK_NSEC;
 
-Konrad
+Does that compute KTIME_MAX when there is no timers pending?
+
+Thanks.
+
+> +
+>  	return cmp_next_hrtimer_event(basem, expires);
+>  }
+>  
+> -- 
+> 2.39.2
+> 
