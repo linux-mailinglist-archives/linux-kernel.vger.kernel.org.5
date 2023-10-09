@@ -2,95 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0736B7BE46E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 523E07BE472
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376407AbjJIPRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 11:17:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55072 "EHLO
+        id S1376654AbjJIPRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 11:17:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376759AbjJIPRO (ORCPT
+        with ESMTP id S1376333AbjJIPRp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 11:17:14 -0400
+        Mon, 9 Oct 2023 11:17:45 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D650110CB
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 08:15:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11ADB112
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 08:16:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696864543;
+        s=mimecast20190719; t=1696864597;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lxbkxsdepLAwI//Nw1rXTrNsOKPrZ+J+qWsPA89lw+E=;
-        b=eLXfk4EiO6rPrDkPGAZJWgUcDa1WjtTK9zyH0+VPq3Ct4rqc8AhkXOGyCCPkGVzlVP5RwT
-        LA+KP5C/FxsGE9OthZGgziH+CtXN1/fxz2v6QTxfWTa54i6dhIFPtT3S5HREfB8NlX2WGO
-        v5RgU+dUnx9ZnfnlcJgXZL85TWVCVyY=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=Zcw7Xf48QXO/muospsKmYzwhUx5W2eR+Pk46hq3VU24=;
+        b=UNAzkGHXenJ3APj2WJMJh2SftBYInMO2dUyATRFnjFM/0D3aITXzywIYawv04dV+tRfJ7D
+        dUtkOi1W1F8YHnblToh8DfEC04eHA7hTxWla98fRfqiHTznwhoQg+nE189MjCphk17YMNh
+        VCHYaCfrHrDvLy4xVS5Vhio9PdXRYL4=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-27-dxTkegOlNWiJLrvIbFxubg-1; Mon, 09 Oct 2023 11:15:42 -0400
-X-MC-Unique: dxTkegOlNWiJLrvIbFxubg-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3248ebee5f4so2912324f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 08:15:42 -0700 (PDT)
+ us-mta-187-QFTg4fTJMfKaQFVENyB7Og-1; Mon, 09 Oct 2023 11:16:35 -0400
+X-MC-Unique: QFTg4fTJMfKaQFVENyB7Og-1
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-534543af820so3932827a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 08:16:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696864541; x=1697469341;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :references:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lxbkxsdepLAwI//Nw1rXTrNsOKPrZ+J+qWsPA89lw+E=;
-        b=Dv27u/Aj5OAx+GwKBguT6bkBLLEKSz1jpUAXoufEI/TP/3trMQ08wCNN1PKDmYafYz
-         RQnEFQ9xyBwpPLlWp9SCgSaYjxhrarWZvSDJxFBvqazgpumFRDkhSYpXMZ888v0Lqj6y
-         3HCVMbP8RXrdBII5eKgSh3Pu3QiigwcJffvgpBCkH5aE33w+l6beTU4Bo5bsnap8gL1I
-         nl5AXOkbC90ZHIGRAsI6LEtsV4DMcZYM68/eBfH9xUv1HQMZyWzOoEbMtUA93j9Feik3
-         4d2rmOrIKzsdfYxVOp9N07keIo+pxoahtncUZ4y2WKHe3pS6R/er+gEAzBJio5kQymwV
-         Lafw==
-X-Gm-Message-State: AOJu0YyuaVemtQlEvo4gwVb4i332cs60QBGwWmREmKTVByay3wNYsExT
-        ArWxTaEBhacG1xJQvv2joR+D6/Mrg1Hv3bHoN+WEy/f7UPMYr+2vjJdpOrMi6KjX22mbXuLa8Pa
-        NzcmN5yFKY+k7gjJ0HDk+NY41
-X-Received: by 2002:a5d:4942:0:b0:323:1a0c:a5e0 with SMTP id r2-20020a5d4942000000b003231a0ca5e0mr13395347wrs.13.1696864541275;
-        Mon, 09 Oct 2023 08:15:41 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF7b2lwzlp+uSM9hiBU+z/Mq/3Q8Bio+XwSc3ICD2i4PuZSt2i99eOmikwZ+NaXx3+BddMdfQ==
-X-Received: by 2002:a5d:4942:0:b0:323:1a0c:a5e0 with SMTP id r2-20020a5d4942000000b003231a0ca5e0mr13395322wrs.13.1696864540855;
-        Mon, 09 Oct 2023 08:15:40 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c733:6400:ae10:4bb7:9712:8548? (p200300cbc7336400ae104bb797128548.dip0.t-ipconnect.de. [2003:cb:c733:6400:ae10:4bb7:9712:8548])
-        by smtp.gmail.com with ESMTPSA id j13-20020adfe50d000000b003196b1bb528sm9921911wrm.64.2023.10.09.08.15.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 08:15:40 -0700 (PDT)
-Message-ID: <0bc29e93-7efe-4bce-ee3f-1fdf76104843@redhat.com>
-Date:   Mon, 9 Oct 2023 17:15:39 +0200
+        d=1e100.net; s=20230601; t=1696864594; x=1697469394;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Zcw7Xf48QXO/muospsKmYzwhUx5W2eR+Pk46hq3VU24=;
+        b=H5Xu1ua/Uih30oEQ4BAK2jeTxcWRL9Rqd3lOkOOrVGLJPfU4W7Fv7eW9zNQAjOP/Qx
+         RMEGyattwHCvgi2Z/1Z1RQ6s4kZhv93nPmWqXI7lworlN41PREy51V3hQV2R7PiauEkX
+         /uDO8FcWr6Y4485IQFRpXKnhEwmIlHqIemfaVQwfiGVnfON4d7pdn/hTwRwUeZVVJ97E
+         QYmPE9QHVnhxKNhdAtv9aBBodGCVacUUAXGwC5oivWOUn75z8I+9vbVx51xEIdLx1iTo
+         VXH2soFe74B9p3a3dxG3vFgxRrjB2BJR6nWkJofdbktdDUCohDhvp+2UlwMTBSwd02VP
+         3Mkg==
+X-Gm-Message-State: AOJu0Yy3KD1Ujg7K6oMrdyxg7elBq2CZGpR1S7lHgeB00A4hBnQJ0OlG
+        CXQ7abPlacLlA1os47Ylraq+6SiI2D0HCJEziD0W3BP1BpUVV3b0JCa2k8j0F+BoTaz8TtCkE52
+        lIlf88oDRLOT4inPQww7xterE
+X-Received: by 2002:a50:ec99:0:b0:531:287d:3232 with SMTP id e25-20020a50ec99000000b00531287d3232mr13988282edr.34.1696864594461;
+        Mon, 09 Oct 2023 08:16:34 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH0KLEqcuDriHZJ1yM5JB/u0ufbqdzycWJhvtP3Z757ZxDgnRbmZFLwTSzKZpzFfwr5usZxkg==
+X-Received: by 2002:a50:ec99:0:b0:531:287d:3232 with SMTP id e25-20020a50ec99000000b00531287d3232mr13988259edr.34.1696864594109;
+        Mon, 09 Oct 2023 08:16:34 -0700 (PDT)
+Received: from sgarzare-redhat (host-82-57-51-114.retail.telecomitalia.it. [82.57.51.114])
+        by smtp.gmail.com with ESMTPSA id bm15-20020a0564020b0f00b005346925a474sm6251903edb.43.2023.10.09.08.16.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Oct 2023 08:16:33 -0700 (PDT)
+Date:   Mon, 9 Oct 2023 17:16:28 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v3 12/12] test/vsock: io_uring rx/tx tests
+Message-ID: <t3xtyfaanhhjyi6mb4ev5q4obktkev5bv24rvdbyyc2yj3cwok@qvrvdlwhn6tj>
+References: <20231007172139.1338644-1-avkrasnov@salutedevices.com>
+ <20231007172139.1338644-13-avkrasnov@salutedevices.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Content-Language: en-US
-To:     "Verma, Vishal L" <vishal.l.verma@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "osalvador@suse.de" <osalvador@suse.de>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Cc:     "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
-        "Hocko, Michal" <mhocko@suse.com>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        "jmoyer@redhat.com" <jmoyer@redhat.com>,
-        "Jonathan.Cameron@Huawei.com" <Jonathan.Cameron@Huawei.com>
-References: <20231005-vv-kmem_memmap-v5-0-a54d1981f0a3@intel.com>
- <20231005-vv-kmem_memmap-v5-1-a54d1981f0a3@intel.com>
- <4ad40b9b-086b-e31f-34bd-c96550bb73e9@redhat.com>
- <45cfd268da63eeddb741e9c9c3026b0e15eade4b.camel@intel.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v5 1/2] mm/memory_hotplug: split memmap_on_memory requests
- across memblocks
-In-Reply-To: <45cfd268da63eeddb741e9c9c3026b0e15eade4b.camel@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20231007172139.1338644-13-avkrasnov@salutedevices.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -99,93 +87,434 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.10.23 00:01, Verma, Vishal L wrote:
-> On Fri, 2023-10-06 at 14:52 +0200, David Hildenbrand wrote:
->> On 05.10.23 20:31, Vishal Verma wrote:
->>>
-> <..>
->>> @@ -2167,47 +2221,28 @@ static int __ref try_remove_memory(u64 start, u64 size)
->>>          if (rc)
->>>                  return rc;
->>>    
->>> +       mem_hotplug_begin();
->>> +
->>>          /*
->>> -        * We only support removing memory added with MHP_MEMMAP_ON_MEMORY in
->>> -        * the same granularity it was added - a single memory block.
->>> +        * For memmap_on_memory, the altmaps could have been added on
->>> +        * a per-memblock basis. Loop through the entire range if so,
->>> +        * and remove each memblock and its altmap.
->>>           */
->>>          if (mhp_memmap_on_memory()) {
->>> -               rc = walk_memory_blocks(start, size, &mem, test_has_altmap_cb);
->>> -               if (rc) {
->>> -                       if (size != memory_block_size_bytes()) {
->>> -                               pr_warn("Refuse to remove %#llx - %#llx,"
->>> -                                       "wrong granularity\n",
->>> -                                       start, start + size);
->>> -                               return -EINVAL;
->>> -                       }
->>> -                       altmap = mem->altmap;
->>> -                       /*
->>> -                        * Mark altmap NULL so that we can add a debug
->>> -                        * check on memblock free.
->>> -                        */
->>> -                       mem->altmap = NULL;
->>> -               }
->>> +               unsigned long memblock_size = memory_block_size_bytes();
->>> +               u64 cur_start;
->>> +
->>> +               for (cur_start = start; cur_start < start + size;
->>> +                    cur_start += memblock_size)
->>> +                       remove_memory_block_and_altmap(nid, cur_start,
->>> +                                                      memblock_size);
->>> +       } else {
->>> +               remove_memory_block_and_altmap(nid, start, size);
->>
->> Better call remove_memory_block_devices() and arch_remove_memory(start,
->> size, altmap) here explicitly instead of using
->> remove_memory_block_and_altmap() that really can only handle a single
->> memory block with any inputs.
->>
-> I'm not sure I follow. Even in the non memmap_on_memory case, we'd have
-> to walk_memory_blocks() to get to the memory_block->altmap, right?
+On Sat, Oct 07, 2023 at 08:21:39PM +0300, Arseniy Krasnov wrote:
+>This adds set of tests which use io_uring for rx/tx. This test suite is
+>implemented as separated util like 'vsock_test' and has the same set of
+>input arguments as 'vsock_test'. These tests only cover cases of data
+>transmission (no connect/bind/accept etc).
+>
+>Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>---
+> Changelog:
+> v1 -> v2:
+>  * Add 'LDLIBS = -luring' to the target 'vsock_uring_test'.
+>  * Add 'vsock_uring_test' to the target 'test'.
+> v2 -> v3:
+>  * Make 'struct vsock_test_data' private by placing it to the .c file.
+>    Rename it and add comments to this struct to clarify sense of its
+>    fields.
+>  * Add 'vsock_uring_test' to the '.gitignore'.
+>  * Add receive loop to the server side - this is needed to read entire
+>    data sent by client.
+>
+> tools/testing/vsock/.gitignore         |   1 +
+> tools/testing/vsock/Makefile           |   7 +-
+> tools/testing/vsock/vsock_uring_test.c | 350 +++++++++++++++++++++++++
+> 3 files changed, 356 insertions(+), 2 deletions(-)
+> create mode 100644 tools/testing/vsock/vsock_uring_test.c
+>
+>diff --git a/tools/testing/vsock/.gitignore b/tools/testing/vsock/.gitignore
+>index a8adcfdc292b..d9f798713cd7 100644
+>--- a/tools/testing/vsock/.gitignore
+>+++ b/tools/testing/vsock/.gitignore
+>@@ -3,3 +3,4 @@
+> vsock_test
+> vsock_diag_test
+> vsock_perf
+>+vsock_uring_test
+>diff --git a/tools/testing/vsock/Makefile b/tools/testing/vsock/Makefile
+>index 1a26f60a596c..b80e7c7def1e 100644
+>--- a/tools/testing/vsock/Makefile
+>+++ b/tools/testing/vsock/Makefile
+>@@ -1,12 +1,15 @@
+> # SPDX-License-Identifier: GPL-2.0-only
+> all: test vsock_perf
+>-test: vsock_test vsock_diag_test
+>+test: vsock_test vsock_diag_test vsock_uring_test
+> vsock_test: vsock_test.o vsock_test_zerocopy.o timeout.o control.o util.o
+> vsock_diag_test: vsock_diag_test.o timeout.o control.o util.o
+> vsock_perf: vsock_perf.o
+>
+>+vsock_uring_test: LDLIBS = -luring
+>+vsock_uring_test: control.o util.o vsock_uring_test.o timeout.o
+>+
+> CFLAGS += -g -O2 -Werror -Wall -I. -I../../include -I../../../usr/include -Wno-pointer-sign -fno-strict-overflow -fno-strict-aliasing -fno-common -MMD -U_FORTIFY_SOURCE -D_GNU_SOURCE
+> .PHONY: all test clean
+> clean:
+>-	${RM} *.o *.d vsock_test vsock_diag_test vsock_perf
+>+	${RM} *.o *.d vsock_test vsock_diag_test vsock_perf vsock_uring_test
+> -include *.d
+>diff --git a/tools/testing/vsock/vsock_uring_test.c b/tools/testing/vsock/vsock_uring_test.c
+>new file mode 100644
+>index 000000000000..889887cf3989
+>--- /dev/null
+>+++ b/tools/testing/vsock/vsock_uring_test.c
+>@@ -0,0 +1,350 @@
+>+// SPDX-License-Identifier: GPL-2.0-only
+>+/* io_uring tests for vsock
+>+ *
+>+ * Copyright (C) 2023 SberDevices.
+>+ *
+>+ * Author: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>+ */
+>+
+>+#include <getopt.h>
+>+#include <stdio.h>
+>+#include <stdlib.h>
+>+#include <string.h>
+>+#include <liburing.h>
+>+#include <unistd.h>
+>+#include <sys/mman.h>
+>+#include <linux/kernel.h>
+>+#include <error.h>
+>+
+>+#include "util.h"
+>+#include "control.h"
+>+#include "msg_zerocopy_common.h"
+>+
+>+#define PAGE_SIZE		4096
 
-See my other reply to, at least with mhp_memmap_on_memory()==false, we 
-don't have to worry about the altmap.
+Ditto.
 
-> 
-> Or is there a more direct way? If we have to walk_memory_blocks, what's
-> the advantage of calling those directly instead of calling the helper
-> created above?
+>+#define RING_ENTRIES_NUM	4
+>+
+>+#define VSOCK_TEST_DATA_MAX_IOV 3
+>+
+>+struct vsock_io_uring_test {
+>+	/* Number of valid elements in 'vecs'. */
+>+	int vecs_cnt;
+>+	/* Array how to allocate buffers for test.
+>+	 * 'iov_base' == NULL -> valid buf: mmap('iov_len').
+>+	 *
+>+	 * 'iov_base' == MAP_FAILED -> invalid buf:
+>+	 *               mmap('iov_len'), then munmap('iov_len').
+>+	 *               'iov_base' still contains result of
+>+	 *               mmap().
+>+	 *
+>+	 * 'iov_base' == number -> unaligned valid buf:
+>+	 *               mmap('iov_len') + number.
+>+	 */
+>+	struct iovec vecs[VSOCK_TEST_DATA_MAX_IOV];
+>+};
+>+
+>+static struct vsock_io_uring_test test_data_array[] = {
+>+	/* All elements have page aligned base and size. */
+>+	{
+>+		.vecs_cnt = 3,
+>+		{
+>+			{ NULL, PAGE_SIZE },
+>+			{ NULL, 2 * PAGE_SIZE },
+>+			{ NULL, 3 * PAGE_SIZE },
+>+		}
+>+	},
+>+	/* Middle element has both non-page aligned base and size. */
+>+	{
+>+		.vecs_cnt = 3,
+>+		{
+>+			{ NULL, PAGE_SIZE },
+>+			{ (void *)1, 200  },
+>+			{ NULL, 3 * PAGE_SIZE },
+>+		}
+>+	}
+>+};
+>+
+>+static void vsock_io_uring_client(const struct test_opts *opts,
+>+				  const struct vsock_io_uring_test *test_data,
+>+				  bool msg_zerocopy)
+>+{
+>+	struct io_uring_sqe *sqe;
+>+	struct io_uring_cqe *cqe;
+>+	struct io_uring ring;
+>+	struct iovec *iovec;
+>+	struct msghdr msg;
+>+	int fd;
+>+
+>+	fd = vsock_stream_connect(opts->peer_cid, 1234);
+>+	if (fd < 0) {
+>+		perror("connect");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	if (msg_zerocopy)
+>+		enable_so_zerocopy(fd);
+>+
+>+	iovec = iovec_from_test_data(test_data->vecs, test_data->vecs_cnt);
 
-I think we have two cases to handle
+Ah, I see this is used also here, so now I get why in util.h
 
-1) All have an altmap. Remove them block-by-block. Probably we should 
-call a function remove_memory_blocks(altmap=true) [or alternatively 
-remove_memory_blocks_and_altmaps()] and just handle iterating internally.
+Okay, it is fine, but please change the name in something like
+`alloc_test_iovec`/`free_test_iovec` and add a bit of documentation
+in util.c about the input and output of that function.
 
-2) All don't have an altmap. We can remove them in one go. Probably we 
-should call that remove_memory_blocks(altmap=false) [or alternatively 
-remove_memory_blocks_no_altmaps()].
+The rest LGMT.
 
-I guess it's best to do a walk upfront to make sure either all have an 
-altmap or none has one. Then we can branch off to the right function 
-knowing whether we have to process altmaps or not.
+Stefano
 
-The existing
-
-if (mhp_memmap_on_memory()) {
-	...
-}
-
-Can be extended for that case.
-
-Please let me know if I failed to express what I mean, then I can 
-briefly prototype it on top of your changes.
-
--- 
-Cheers,
-
-David / dhildenb
+>+
+>+	if (io_uring_queue_init(RING_ENTRIES_NUM, &ring, 0))
+>+		error(1, errno, "io_uring_queue_init");
+>+
+>+	if (io_uring_register_buffers(&ring, iovec, test_data->vecs_cnt))
+>+		error(1, errno, "io_uring_register_buffers");
+>+
+>+	memset(&msg, 0, sizeof(msg));
+>+	msg.msg_iov = iovec;
+>+	msg.msg_iovlen = test_data->vecs_cnt;
+>+	sqe = io_uring_get_sqe(&ring);
+>+
+>+	if (msg_zerocopy)
+>+		io_uring_prep_sendmsg_zc(sqe, fd, &msg, 0);
+>+	else
+>+		io_uring_prep_sendmsg(sqe, fd, &msg, 0);
+>+
+>+	if (io_uring_submit(&ring) != 1)
+>+		error(1, errno, "io_uring_submit");
+>+
+>+	if (io_uring_wait_cqe(&ring, &cqe))
+>+		error(1, errno, "io_uring_wait_cqe");
+>+
+>+	io_uring_cqe_seen(&ring, cqe);
+>+
+>+	control_writeulong(iovec_hash_djb2(iovec, test_data->vecs_cnt));
+>+
+>+	control_writeln("DONE");
+>+	io_uring_queue_exit(&ring);
+>+	free_iovec_test_data(test_data->vecs, iovec, test_data->vecs_cnt);
+>+	close(fd);
+>+}
+>+
+>+static void vsock_io_uring_server(const struct test_opts *opts,
+>+				  const struct vsock_io_uring_test *test_data)
+>+{
+>+	unsigned long remote_hash;
+>+	unsigned long local_hash;
+>+	struct io_uring ring;
+>+	size_t data_len;
+>+	size_t recv_len;
+>+	void *data;
+>+	int fd;
+>+
+>+	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
+>+	if (fd < 0) {
+>+		perror("accept");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	data_len = iovec_bytes(test_data->vecs, test_data->vecs_cnt);
+>+
+>+	data = malloc(data_len);
+>+	if (!data) {
+>+		perror("malloc");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	if (io_uring_queue_init(RING_ENTRIES_NUM, &ring, 0))
+>+		error(1, errno, "io_uring_queue_init");
+>+
+>+	recv_len = 0;
+>+
+>+	while (recv_len < data_len) {
+>+		struct io_uring_sqe *sqe;
+>+		struct io_uring_cqe *cqe;
+>+		struct iovec iovec;
+>+
+>+		sqe = io_uring_get_sqe(&ring);
+>+		iovec.iov_base = data + recv_len;
+>+		iovec.iov_len = data_len;
+>+
+>+		io_uring_prep_readv(sqe, fd, &iovec, 1, 0);
+>+
+>+		if (io_uring_submit(&ring) != 1)
+>+			error(1, errno, "io_uring_submit");
+>+
+>+		if (io_uring_wait_cqe(&ring, &cqe))
+>+			error(1, errno, "io_uring_wait_cqe");
+>+
+>+		recv_len += cqe->res;
+>+		io_uring_cqe_seen(&ring, cqe);
+>+	}
+>+
+>+	if (recv_len != data_len) {
+>+		fprintf(stderr, "expected %zu, got %zu\n", data_len,
+>+			recv_len);
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	local_hash = hash_djb2(data, data_len);
+>+
+>+	remote_hash = control_readulong();
+>+	if (remote_hash != local_hash) {
+>+		fprintf(stderr, "hash mismatch\n");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	control_expectln("DONE");
+>+	io_uring_queue_exit(&ring);
+>+	free(data);
+>+}
+>+
+>+void test_stream_uring_server(const struct test_opts *opts)
+>+{
+>+	int i;
+>+
+>+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
+>+		vsock_io_uring_server(opts, &test_data_array[i]);
+>+}
+>+
+>+void test_stream_uring_client(const struct test_opts *opts)
+>+{
+>+	int i;
+>+
+>+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
+>+		vsock_io_uring_client(opts, &test_data_array[i], false);
+>+}
+>+
+>+void test_stream_uring_msg_zc_server(const struct test_opts *opts)
+>+{
+>+	int i;
+>+
+>+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
+>+		vsock_io_uring_server(opts, &test_data_array[i]);
+>+}
+>+
+>+void test_stream_uring_msg_zc_client(const struct test_opts *opts)
+>+{
+>+	int i;
+>+
+>+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
+>+		vsock_io_uring_client(opts, &test_data_array[i], true);
+>+}
+>+
+>+static struct test_case test_cases[] = {
+>+	{
+>+		.name = "SOCK_STREAM io_uring test",
+>+		.run_server = test_stream_uring_server,
+>+		.run_client = test_stream_uring_client,
+>+	},
+>+	{
+>+		.name = "SOCK_STREAM io_uring MSG_ZEROCOPY test",
+>+		.run_server = test_stream_uring_msg_zc_server,
+>+		.run_client = test_stream_uring_msg_zc_client,
+>+	},
+>+	{},
+>+};
+>+
+>+static const char optstring[] = "";
+>+static const struct option longopts[] = {
+>+	{
+>+		.name = "control-host",
+>+		.has_arg = required_argument,
+>+		.val = 'H',
+>+	},
+>+	{
+>+		.name = "control-port",
+>+		.has_arg = required_argument,
+>+		.val = 'P',
+>+	},
+>+	{
+>+		.name = "mode",
+>+		.has_arg = required_argument,
+>+		.val = 'm',
+>+	},
+>+	{
+>+		.name = "peer-cid",
+>+		.has_arg = required_argument,
+>+		.val = 'p',
+>+	},
+>+	{
+>+		.name = "help",
+>+		.has_arg = no_argument,
+>+		.val = '?',
+>+	},
+>+	{},
+>+};
+>+
+>+static void usage(void)
+>+{
+>+	fprintf(stderr, "Usage: vsock_uring_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid>\n"
+>+		"\n"
+>+		"  Server: vsock_uring_test --control-port=1234 --mode=server --peer-cid=3\n"
+>+		"  Client: vsock_uring_test --control-host=192.168.0.1 --control-port=1234 --mode=client --peer-cid=2\n"
+>+		"\n"
+>+		"Run transmission tests using io_uring. Usage is the same as\n"
+>+		"in ./vsock_test\n"
+>+		"\n"
+>+		"Options:\n"
+>+		"  --help                 This help message\n"
+>+		"  --control-host <host>  Server IP address to connect to\n"
+>+		"  --control-port <port>  Server port to listen on/connect to\n"
+>+		"  --mode client|server   Server or client mode\n"
+>+		"  --peer-cid <cid>       CID of the other side\n"
+>+		);
+>+	exit(EXIT_FAILURE);
+>+}
+>+
+>+int main(int argc, char **argv)
+>+{
+>+	const char *control_host = NULL;
+>+	const char *control_port = NULL;
+>+	struct test_opts opts = {
+>+		.mode = TEST_MODE_UNSET,
+>+		.peer_cid = VMADDR_CID_ANY,
+>+	};
+>+
+>+	init_signals();
+>+
+>+	for (;;) {
+>+		int opt = getopt_long(argc, argv, optstring, longopts, NULL);
+>+
+>+		if (opt == -1)
+>+			break;
+>+
+>+		switch (opt) {
+>+		case 'H':
+>+			control_host = optarg;
+>+			break;
+>+		case 'm':
+>+			if (strcmp(optarg, "client") == 0) {
+>+				opts.mode = TEST_MODE_CLIENT;
+>+			} else if (strcmp(optarg, "server") == 0) {
+>+				opts.mode = TEST_MODE_SERVER;
+>+			} else {
+>+				fprintf(stderr, "--mode must be \"client\" or \"server\"\n");
+>+				return EXIT_FAILURE;
+>+			}
+>+			break;
+>+		case 'p':
+>+			opts.peer_cid = parse_cid(optarg);
+>+			break;
+>+		case 'P':
+>+			control_port = optarg;
+>+			break;
+>+		case '?':
+>+		default:
+>+			usage();
+>+		}
+>+	}
+>+
+>+	if (!control_port)
+>+		usage();
+>+	if (opts.mode == TEST_MODE_UNSET)
+>+		usage();
+>+	if (opts.peer_cid == VMADDR_CID_ANY)
+>+		usage();
+>+
+>+	if (!control_host) {
+>+		if (opts.mode != TEST_MODE_SERVER)
+>+			usage();
+>+		control_host = "0.0.0.0";
+>+	}
+>+
+>+	control_init(control_host, control_port,
+>+		     opts.mode == TEST_MODE_SERVER);
+>+
+>+	run_tests(test_cases, &opts);
+>+
+>+	control_cleanup();
+>+
+>+	return 0;
+>+}
+>-- 
+>2.25.1
+>
 
