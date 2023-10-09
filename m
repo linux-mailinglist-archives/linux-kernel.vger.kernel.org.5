@@ -2,99 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1AC7BD463
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 09:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E327BD466
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 09:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345412AbjJIHd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 03:33:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40264 "EHLO
+        id S1345418AbjJIHeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 03:34:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345419AbjJIHdy (ORCPT
+        with ESMTP id S1345404AbjJIHef (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 03:33:54 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B3994
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 00:33:52 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5a2379a8b69so51038467b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 00:33:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696836832; x=1697441632; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XP7xqMhAKNqUEZKvD5L9l4hvT2pSYO7u42JTWvOuPhA=;
-        b=tx76o7HjafmaALkPkeM7HUnnelXdpVAVjKNwu2MdnPT6oQ7oAoBve9+U6PA5XT1ssi
-         1cKVI68oVHT336hm9IIIZhL0YsiCYfiT7CYv0nDmIuLvcRAZo2WSzclDlm2P2oTabfvi
-         VcwrCzTA6oes58DwdXRYU9SpTYj8+lYL5GPePnKT7j3uTsyIK6NFE+sHWtI9dGAbPcQd
-         4Zlkt7f3aaVq7Co9jixfdT4ZSiU/qabFGADlzxue2ahq5sj1+gt2dfBkurToxGMoIalU
-         XabOYkKGAmgzGRN1nOAgcHVx+drVd/xSFzgH4HOozMLEOqgxgfN/l8rgjWZuhtZgAoFl
-         VFGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696836832; x=1697441632;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XP7xqMhAKNqUEZKvD5L9l4hvT2pSYO7u42JTWvOuPhA=;
-        b=bOY39w75Qr18ajuMOZOTZNZE9/EEceahbbxgAqGPCsSH4nRetpQRE/tRrak6oFjhRh
-         Vjg4Dd0kqLXHtTu593oUnzpA4XYjJv0nvqdUIglRj681t8df8Ya6BSsBLvWbdDCACIlv
-         s6JNDrWt25MqX1lMAmj95TPowPw7qBzNuV9Z2JaoDR0pvsdCx4v7l40Yy5REd8ZWdH5T
-         R2GpcgYjmrXrKGYlw0bGtJPpamyn5QMjdC2gTXACCukQAL93L+DAi1XScL2RRQww7xoj
-         5w4J2Q03JxmVysujuV8HqYWgyW+V1YkGC97fQsy2YLQjPtj/UDjBytt7dm0/s65WnhHM
-         UvSA==
-X-Gm-Message-State: AOJu0Yxs5wvTKp3a2HcNKKQbH7n9gPiHK1QtGEz2HraRuF2XlfR32OpH
-        F9jF1ym9wtXI41PGxn/reeyx6DPv+q31l+4+PcKH9A==
-X-Google-Smtp-Source: AGHT+IEDf+tWdei5nh9+KrKswBou7fmYuReydda8UjjPzL2odlFWlTYW4DCNoTjmggrOubAGLysy56eT9xq/AxYA+4k=
-X-Received: by 2002:a81:840e:0:b0:589:ca07:c963 with SMTP id
- u14-20020a81840e000000b00589ca07c963mr15807832ywf.42.1696836831997; Mon, 09
- Oct 2023 00:33:51 -0700 (PDT)
+        Mon, 9 Oct 2023 03:34:35 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C2794;
+        Mon,  9 Oct 2023 00:34:33 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id BE8B11F38C;
+        Mon,  9 Oct 2023 07:34:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1696836871; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ux/+/9XoY3oQURe42Bewxjm9Kmqy/ecxPscylyqtj2E=;
+        b=Lfy+gS69AXpu3lfZDmrd8R4lwf5xDlm42obXuhcVINuRKO67ywl5EBohdpjiPdRdEyNGBV
+        VLk/c+WHLxkMiBbEjgX96kDpRE0KRKm++tCZ7O+nlJMJ7FdicVtzFqRUkPELaayWTdU21Q
+        IrhmIEa1KPPrqr7SSD/VXYdfxyOqIGs=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9308813905;
+        Mon,  9 Oct 2023 07:34:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ZjJLIwetI2W9JAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Mon, 09 Oct 2023 07:34:31 +0000
+Date:   Mon, 9 Oct 2023 09:34:30 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Jianlin Lv <iecedge@gmail.com>, tj@kernel.org,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org, corbet@lwn.net,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, akpm@linux-foundation.org,
+        yosryahmed@google.com, willy@infradead.org, linmiaohe@huawei.com,
+        wangkefeng.wang@huawei.com, laoar.shao@gmail.com,
+        yuzhao@google.com, wuyun.abel@bytedance.com, david@redhat.com,
+        peterx@redhat.com, vishal.moola@gmail.com, hughd@google.com,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, jianlv@ebay.com
+Subject: Re: [PATCH] memcg: add interface to force disable swap
+Message-ID: <ZSOtBsigRV4RGNXn@dhcp22.suse.cz>
+References: <20231007130905.78554-1-jianlv@ebay.com>
+ <87mswtkj8x.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <CAFA-uR9ymPTktMbi96cb+smjQHB4Y=8SQfAqmsqTbniGbkGTLA@mail.gmail.com>
+ <87il7hjzdp.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <CAFA-uR9n-rKw4k26Bhm=P16jOMtAncRsno7o=yYJ1kTxmB_mRw@mail.gmail.com>
+ <87edi4jq19.fsf@yhuang6-desk2.ccr.corp.intel.com>
 MIME-Version: 1.0
-References: <20231006-descriptors-asoc-mediatek-v1-0-07fe79f337f5@linaro.org>
- <20231006-descriptors-asoc-mediatek-v1-1-07fe79f337f5@linaro.org> <CAMRc=MdY2DU1R5_Ntkhw6UP0Vp+uhyUvti72KChBQqSF1ruWPw@mail.gmail.com>
-In-Reply-To: <CAMRc=MdY2DU1R5_Ntkhw6UP0Vp+uhyUvti72KChBQqSF1ruWPw@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 9 Oct 2023 09:33:40 +0200
-Message-ID: <CACRpkdb9fQUUq5_AOwXewiWfUjmu9r2SHHy-RSjfR_33znLiFQ@mail.gmail.com>
-Subject: Re: [PATCH 1/8] gpiolib: of: Add quirk for mt2701-cs42448 ASoC sound
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Shevchenko <andy@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, alsa-devel@alsa-project.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87edi4jq19.fsf@yhuang6-desk2.ccr.corp.intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 9, 2023 at 9:09=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl> =
-wrote:
+On Mon 09-10-23 13:58:10, Huang, Ying wrote:
+> Jianlin Lv <iecedge@gmail.com> writes:
+> 
+> > On Sun, Oct 8, 2023 at 4:26 PM Huang, Ying <ying.huang@intel.com> wrote:
+> >>
+> >> Jianlin Lv <iecedge@gmail.com> writes:
+> >>
+> >> > On Sun, Oct 8, 2023 at 9:17 AM Huang, Ying <ying.huang@intel.com> wrote:
+> >> >>
+> >> >> Jianlin Lv <iecedge@gmail.com> writes:
+> >> >>
+> >> >> > From: Jianlin Lv <iecedge@gmail.com>
+> >> >> >
+> >> >> > Global reclaim will swap even if swappiness is set to 0.
+> >> >>
+> >> >> Why?  Can you elaborate the situation?
+> >> >
+> >> > We reproduced the issue of pages being swapped out even when swappiness is
+> >> > set to 0 in the production environment through the following test program.
+> >> > Not sure whether this program can reproduce the issue in any environment.
+> >> >
+> >> > From the implementation of the get_scan_count code, it can be seen that,
+> >> > based on the current runtime situation, memory reclamation will choose a
+> >> > scanning method (SCAN_ANON/SCAN_FILE/SCAN_FRACT) to determine how
+> >> > aggressively the anon and file LRU are scanned. However, this introduces
+> >> > uncertainty.
+> >> >
+> >> > For the JVM issue at hand, we expect deterministic SCAN_FILE scan to avoid
+> >> > swapping out anon pages.
+> >>
+> >> Why doesn't memory.swap.max work?
+> >
+> > The main reason is that deployed nodes  are kept on cgroups v1.
 
-> > +#if IS_ENABLED(CONFIG_SND_SOC_MT2701_CS42448)
-> > +               { "i2s1-in-sel-gpio1",  NULL,   "mediatek,mt2701-cs4244=
-8-machine" },
-> > +               { "i2s1-in-sel-gpio2",  NULL,   "mediatek,mt2701-cs4244=
-8-machine" },
-> > +#endif
->
-> I suppose this is a run-time dependency only for the other patches?
-> Can I just pick it up into my tree?
+Please note that cgroups v1 is in the maintenance mode with no new
+functionality to be added. What is the reason you are sticking with v1?
 
-You can, I was just thinking about bisectability and the low risk of collis=
-ions
-with other patches. (Actually no-one gets hurt if it's applied to both tree=
-s
-either, which IMO is perfectly fine in cases like this.)
+> Check the code again.  IIUC, for swappiness == 0, anonymous pages will
+> only be reclaimed if sc->file_is_tiny is true.
 
-Yours,
-Linus Walleij
+For the memcg reclaim (i.e. not the global one) we try to avoid swapping
+even when file_is_tiny IIRC.
+
+> If we don't swap in that
+> situation, OOM may be triggerred.  I don't think that it's a good idea
+> to do that.  Or I miss something?
+
+Or even worse the system might start trashing heavily over that
+remaining tiny page cache.
+
+-- 
+Michal Hocko
+SUSE Labs
