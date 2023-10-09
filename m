@@ -2,95 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12F777BEA3C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 21:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D86947BEA41
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 21:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377520AbjJITBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 15:01:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55592 "EHLO
+        id S1378280AbjJITE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 15:04:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378218AbjJITBd (ORCPT
+        with ESMTP id S1377155AbjJITEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 15:01:33 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE94EA
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 12:01:26 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-690ce3c55f1so3565791b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 12:01:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696878086; x=1697482886; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3IFH55pRhzV5onmAR0V0RcmvgjZQ6iKkHWC3kCd8jJc=;
-        b=RW2u+ZsCtAs38ITe1AJ6KufCuMKAsJwjkNJT4rxdSYjpdQMCv7RbQI+DUqNjjZrruK
-         hxzk2f8rE+QeAsfMutPGo5Htnq3HSKkuPdEZUglq6uBTg8qwvHC4tly7lVp1tIkUqjjy
-         CbqpRqf3gQR9HXoosqwEN6WrDSWQeJBi4HGqE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696878086; x=1697482886;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3IFH55pRhzV5onmAR0V0RcmvgjZQ6iKkHWC3kCd8jJc=;
-        b=DIhXx7G/EqgoGBFYnZkNcDirUxMs0WHUFUsbRcWoNPq8REWhZ1MpdbHgTVxQ3VdDNb
-         HgaKMrFoSyVT9Y/SCiLRpq3HJF2Jm5ASlCncIjSCiiqRzIoSqdsJPzbcyuya3214L/d3
-         s2QD//rvf7eGQ0oljLwyawd9aIslRJ8IaZCRloa97nDgL3+DP6lJv/E/KIK6gshtRW7X
-         K3NCwSPyXwT3pJIU/KsKX+H4LXwsAQR2CNTrSoR+RupB6OdG2BchHohNBvTp5Q8J9BOo
-         xKpACVwCzFFgyXwZpe7Ny6Sc5qp+Ev01KKo3zDP1Hg4HmqMQkNS/pGLltC919LQ6xEDz
-         TovA==
-X-Gm-Message-State: AOJu0Yx/0wc6iJogQF2r1OtvXklb0k3sOmVHp5WRQqHroLeuZxH4gowR
-        gR6UHqXD51wrENnVt4LpOjnmpA==
-X-Google-Smtp-Source: AGHT+IEdiLUEPaXGkHEsA/tYV+jvxhXR25Tgergrl7cSdjdxq9CSr6ZJuinl4dMflGBaKnVK+mZmDw==
-X-Received: by 2002:a05:6a00:b82:b0:68f:e810:e894 with SMTP id g2-20020a056a000b8200b0068fe810e894mr17362981pfj.33.1696878085896;
-        Mon, 09 Oct 2023 12:01:25 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id f24-20020aa78b18000000b0068fd026b496sm6613220pfd.46.2023.10.09.12.01.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 12:01:25 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 12:01:23 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] xen/xenbus: Add __counted_by for struct
- read_buffer and use struct_size()
-Message-ID: <202310091200.2DFF1FE4B5@keescook>
-References: <ZSRMosLuJJS5Y/io@work>
+        Mon, 9 Oct 2023 15:04:25 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBA329D;
+        Mon,  9 Oct 2023 12:04:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696878263; x=1728414263;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=VcIVbkjldo4NhjDRdGLwRnd1Gsbr7VebFElrMtcM+SQ=;
+  b=Gf1yZ1oIFI+E4jiAmiwjwYZ4Y078joufuFe89ldm0ih2knoyqByxmUhf
+   drw/wJU0O+CjgPypddS+kVBPCzIHr1vLhtvR2+Pc5Z8L6K70knmviMUER
+   UsxaQg89WX3ZP7taG3l7e+nZKBVctzyxCFKeR0MbnzAQzWvz/Kdl+/9jz
+   8mMIrNnhEVRjcLEfL5d/KeTWjc2jKsEBU6iP5F08CKFsc2JNgfipK91w9
+   8CLBUSU8fgl/ikKhx1Sk2DjkcUJMddAffpeDSkZF7RMHTAooKK0CMkfcu
+   o2XyTqWvva3rp7utNw4brRg+9lqEsuLuzFJjq9ycfBVcX3fShJQal0HrQ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="364515885"
+X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
+   d="scan'208";a="364515885"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 12:03:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="746783124"
+X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
+   d="scan'208";a="746783124"
+Received: from lkp-server02.sh.intel.com (HELO 4ed589823ba4) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 09 Oct 2023 12:03:27 -0700
+Received: from kbuild by 4ed589823ba4 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qpvXK-0000Y0-0j;
+        Mon, 09 Oct 2023 19:03:26 +0000
+Date:   Tue, 10 Oct 2023 03:02:48 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sumit Gupta <sumitg@nvidia.com>, rafael@kernel.org,
+        rui.zhang@intel.com, lenb@kernel.org, linux-acpi@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, treding@nvidia.com,
+        jonathanh@nvidia.com, bbasu@nvidia.com, sumitg@nvidia.com,
+        sanjayc@nvidia.com, ksitaraman@nvidia.com, srikars@nvidia.com,
+        jbrasen@nvidia.com
+Subject: Re: [Patch v4 2/2] ACPI: processor: reduce CPUFREQ thermal reduction
+ pctg for Tegra241
+Message-ID: <202310100219.lpVzbckv-lkp@intel.com>
+References: <20231009171839.12267-3-sumitg@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZSRMosLuJJS5Y/io@work>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231009171839.12267-3-sumitg@nvidia.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 12:55:30PM -0600, Gustavo A. R. Silva wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
-> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> While there, use struct_size() helper, instead of the open-coded
-> version, to calculate the size for the allocation of the whole
-> flexible structure, including of course, the flexible-array member.
-> 
-> This code was found with the help of Coccinelle, and audited and
-> fixed manually.
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Hi Sumit,
 
-Looks good. There are going to be lots of 1-byte flex array members...
+kernel test robot noticed the following build errors:
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+[auto build test ERROR on rafael-pm/linux-next]
+[also build test ERROR on next-20231009]
+[cannot apply to linus/master v6.6-rc5]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Sumit-Gupta/ACPI-thermal-Add-Thermal-fast-Sampling-Period-_TFP-support/20231010-012229
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
+patch link:    https://lore.kernel.org/r/20231009171839.12267-3-sumitg%40nvidia.com
+patch subject: [Patch v4 2/2] ACPI: processor: reduce CPUFREQ thermal reduction pctg for Tegra241
+config: i386-tinyconfig (https://download.01.org/0day-ci/archive/20231010/202310100219.lpVzbckv-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231010/202310100219.lpVzbckv-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310100219.lpVzbckv-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   ld: arch/x86/kernel/setup.o: in function `acpi_thermal_cpufreq_pctg':
+>> setup.c:(.text+0x3): multiple definition of `acpi_thermal_cpufreq_pctg'; init/main.o:main.c:(.text+0x32): first defined here
+   ld: arch/x86/kernel/x86_init.o: in function `acpi_thermal_cpufreq_pctg':
+   x86_init.c:(.text+0x44): multiple definition of `acpi_thermal_cpufreq_pctg'; init/main.o:main.c:(.text+0x32): first defined here
+   ld: arch/x86/kernel/i8259.o: in function `acpi_thermal_cpufreq_pctg':
+   i8259.c:(.text+0x2dd): multiple definition of `acpi_thermal_cpufreq_pctg'; init/main.o:main.c:(.text+0x32): first defined here
+   ld: arch/x86/kernel/irqinit.o: in function `acpi_thermal_cpufreq_pctg':
+   irqinit.c:(.text+0x0): multiple definition of `acpi_thermal_cpufreq_pctg'; init/main.o:main.c:(.text+0x32): first defined here
+   ld: arch/x86/kernel/bootflag.o: in function `acpi_thermal_cpufreq_pctg':
+   bootflag.c:(.text+0x0): multiple definition of `acpi_thermal_cpufreq_pctg'; init/main.o:main.c:(.text+0x32): first defined here
+   ld: arch/x86/kernel/e820.o: in function `acpi_thermal_cpufreq_pctg':
+   e820.c:(.text+0x144): multiple definition of `acpi_thermal_cpufreq_pctg'; init/main.o:main.c:(.text+0x32): first defined here
+   ld: arch/x86/kernel/pci-dma.o: in function `acpi_thermal_cpufreq_pctg':
+   pci-dma.c:(.text+0x0): multiple definition of `acpi_thermal_cpufreq_pctg'; init/main.o:main.c:(.text+0x32): first defined here
+   ld: arch/x86/kernel/process.o: in function `acpi_thermal_cpufreq_pctg':
+   process.c:(.text+0xe5): multiple definition of `acpi_thermal_cpufreq_pctg'; init/main.o:main.c:(.text+0x32): first defined here
+   ld: kernel/sysctl.o: in function `acpi_thermal_cpufreq_pctg':
+   sysctl.c:(.text+0x48): multiple definition of `acpi_thermal_cpufreq_pctg'; init/main.o:main.c:(.text+0x32): first defined here
+   ld: kernel/dma/mapping.o: in function `acpi_thermal_cpufreq_pctg':
+   mapping.c:(.text+0x5ba): multiple definition of `acpi_thermal_cpufreq_pctg'; init/main.o:main.c:(.text+0x32): first defined here
+   ld: drivers/base/core.o: in function `acpi_thermal_cpufreq_pctg':
+   core.c:(.text+0x13e9): multiple definition of `acpi_thermal_cpufreq_pctg'; init/main.o:main.c:(.text+0x32): first defined here
+   ld: drivers/base/platform.o: in function `acpi_thermal_cpufreq_pctg':
+   platform.c:(.text+0x8b8): multiple definition of `acpi_thermal_cpufreq_pctg'; init/main.o:main.c:(.text+0x32): first defined here
+   ld: drivers/base/cpu.o: in function `acpi_thermal_cpufreq_pctg':
+   cpu.c:(.text+0x128): multiple definition of `acpi_thermal_cpufreq_pctg'; init/main.o:main.c:(.text+0x32): first defined here
+   ld: drivers/base/property.o: in function `acpi_thermal_cpufreq_pctg':
+   property.c:(.text+0xa87): multiple definition of `acpi_thermal_cpufreq_pctg'; init/main.o:main.c:(.text+0x32): first defined here
+   ld: drivers/base/cacheinfo.o: in function `acpi_thermal_cpufreq_pctg':
+   cacheinfo.c:(.text+0x231): multiple definition of `acpi_thermal_cpufreq_pctg'; init/main.o:main.c:(.text+0x32): first defined here
 
 -- 
-Kees Cook
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
