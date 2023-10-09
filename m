@@ -2,145 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B417BD222
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 04:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 389957BD238
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 04:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345091AbjJICvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 22:51:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58036 "EHLO
+        id S1344728AbjJICzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 22:55:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345081AbjJICvG (ORCPT
+        with ESMTP id S232267AbjJICzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 22:51:06 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE8EDB;
-        Sun,  8 Oct 2023 19:51:01 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kcO88dDW9r5MdvwdyHWHoyK0MaDM/3qMjsWBqOmVOVocqanFi+aNFFjthqWGmXIKLWFN8Oa/YjqAFoACkJuBCH0drN93mt347js2EXCKDn7Q0BbSOcgaFaMf5BxFnmzppA7aM7G0E6hUVeCfZjz8Xkyng6VDasKWsewhe4Dyzc7YV3AElI6U1vv30OiLRJoSLjmVmup2COfiKTQva3hGROkEKjxLhrs/SPcQSRHjCRNQyDoO1ULLKmnLGrsjA/NUrphGqAULEPpzRH3jlyiuOTUBIw1KbljSLl5LSjk7wASyUa4+WivAqMEf/7buQ3pVCH1APqZOLNtXg3y7lMF5ug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hneoerr6yrWBbKcNzxSGDk6ANxsTr+qLx51Zn6rqXUA=;
- b=my+ubAc0TU2ZdDfSJu4irmAI+Sot4f2LCyGyXdGy9tbgsMNMtiywBryNBtScRNm/0he11/3uI/XeAc8HQQzyXuWcGuxjBce8u7C6hBQoOMuh2HpZ9ujkupC1ykg74QJcaNaHZ05iCmgaXqenGjDAbBbs5e3Xs5V4/+WiAD8g6DFv/IEeDRNxYAu/NTweO/jA+H04XI+nbxLHtwgdWGE1BtH9extyDnAPfQpE4thmsP3sK6agPbwO+VhTlE8ZF55ahu0bEyHR1gF2FTrvG6kP9JtheF/KJGMtvRsTDsu66+W8ldQdJZ6SFFUNvwYxfMQtONy+LGfjmT/7JmMajTQQ4Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hneoerr6yrWBbKcNzxSGDk6ANxsTr+qLx51Zn6rqXUA=;
- b=kwyuyb65zt32N5f2FeNSLr6hVmqYwQeqV1SuD97TStcGaMW9pOqpAidspU3RAu5tuG3hMl8BT3/cBeGtfDp6F5fm0vwJiHtTQlGe48PffqW+iDbIhLraxzdWJe/slhf8WoeZlkdY2wN1FHkkk5pM4LTe45glpQNt+fcar3214fc=
-Received: from MN2PR20CA0019.namprd20.prod.outlook.com (2603:10b6:208:e8::32)
- by CH3PR12MB8483.namprd12.prod.outlook.com (2603:10b6:610:15c::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.35; Mon, 9 Oct
- 2023 02:50:59 +0000
-Received: from BL6PEPF0001AB4E.namprd04.prod.outlook.com
- (2603:10b6:208:e8:cafe::fb) by MN2PR20CA0019.outlook.office365.com
- (2603:10b6:208:e8::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.36 via Frontend
- Transport; Mon, 9 Oct 2023 02:50:59 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL6PEPF0001AB4E.mail.protection.outlook.com (10.167.242.72) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.14 via Frontend Transport; Mon, 9 Oct 2023 02:50:59 +0000
-Received: from jasmine-meng.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Sun, 8 Oct
- 2023 21:50:54 -0500
-From:   Meng Li <li.meng@amd.com>
-To:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Huang Rui <ray.huang@amd.com>
-CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <x86@kernel.org>, <linux-acpi@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        <linux-kselftest@vger.kernel.org>,
-        "Nathan Fontenot" <nathan.fontenot@amd.com>,
-        Deepak Sharma <deepak.sharma@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Shimmer Huang <shimmer.huang@amd.com>,
-        "Perry Yuan" <Perry.Yuan@amd.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Borislav Petkov <bp@alien8.de>, Meng Li <li.meng@amd.com>,
-        Wyes Karny <wyes.karny@amd.com>
-Subject: [PATCH V8 7/7] Documentation: introduce amd-pstate preferrd core mode kernel command line options
-Date:   Mon, 9 Oct 2023 10:49:32 +0800
-Message-ID: <20231009024932.2563622-8-li.meng@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231009024932.2563622-1-li.meng@amd.com>
-References: <20231009024932.2563622-1-li.meng@amd.com>
+        Sun, 8 Oct 2023 22:55:15 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CEAA4AC;
+        Sun,  8 Oct 2023 19:55:12 -0700 (PDT)
+Received: from loongson.cn (unknown [10.2.5.185])
+        by gateway (Coremail) with SMTP id _____8AxueqOayNlAC4wAA--.16943S3;
+        Mon, 09 Oct 2023 10:55:10 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.2.5.185])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx7y+NayNlRvEbAA--.58139S2;
+        Mon, 09 Oct 2023 10:55:09 +0800 (CST)
+From:   Tianrui Zhao <zhaotianrui@loongson.cn>
+To:     Shuah Khan <shuah@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Vishal Annapurve <vannapurve@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
+        Peter Xu <peterx@redhat.com>,
+        Vipin Sharma <vipinsh@google.com>, maobibo@loongson.cn,
+        zhaotianrui@loongson.cn
+Subject: [PATCH v3 0/4] KVM: selftests: Add LoongArch support
+Date:   Mon,  9 Oct 2023 10:55:06 +0800
+Message-Id: <20231009025510.342681-1-zhaotianrui@loongson.cn>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB4E:EE_|CH3PR12MB8483:EE_
-X-MS-Office365-Filtering-Correlation-Id: fb4bae77-f719-4c60-2102-08dbc8729148
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dPs+KhFcmpizslPneYl4k62+j3RQm0cPBB9/t5cTRrWHRlTpwbOnq6aY91cXXsYAcKT0sHpF++zrrDuhs2FZnB2Ct6QG33SIIX2sWY7IQV3+XVVSXqHK015/O+2pmu77s+rqtcMIkVFHj3vSyrUN6gt8rJSOLky7242Xhcc7tUvbexI+jRxwFwDE7H86Y/6sQX2HxYZ4iJ7/GIBjU4QYA4W4ujIFdgvR4r27HPbxmDoHCEgvPGRdfQgkdSmPL0LMp+4k9ml8sUQ1G+PrKYn1beANMIh5yvK5hqeNYcSnaZcDQc2+SbSt1pIShmK+VBkDTf5/Q04I6/xufCYjSAWBBdda8djtibIWqHA+WfGs7g0sQ0UuS6IU/9nwFfDg5SdSlAcKbpQZZsPInT0+y1pcOgw4YSzUIHigR3bdF3IP2OGSdm0rorPY2eeL4+DPiSybVvcL7rSK3D0newKXe46cSTAjBmY81ZnS7v35rrxjsYtGlra+bTMRYhvIolhkLYUR+PnLn4LayCgtHKD4QIOydFckWwyjJJyJ/79ytCcnspnUAyqPCvw3Qt+ZrVOp+xFIN+GnLYwvHO5Rd/GfP2ZldW4XqyDvoKbWGEoa2mxQfJDdBtapTOGgFUaVMEt4GEr1OfbkIBXe6OmH37WnA6j0+orR76Uxq6Y6EoFLnusAA9hto3ofwHZq2c2V0QLiMGZuRYRS4vYU7qSpkt4YsG7/L4YlEU5RmLFgo7ThE4e8/TbFnZnRf+//YQrr+wUx4Slh23EhCn7yPHofBQTaRjhDFX0sTRBu+KZXYSJQABDk+cYepjrsz0z4oj0e6Kx9B9LJ
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(136003)(346002)(39860400002)(230922051799003)(82310400011)(451199024)(186009)(1800799009)(64100799003)(40470700004)(36840700001)(46966006)(336012)(1076003)(40460700003)(7696005)(478600001)(6666004)(26005)(86362001)(82740400003)(2906002)(356005)(16526019)(81166007)(36860700001)(316002)(110136005)(6636002)(83380400001)(2616005)(426003)(41300700001)(36756003)(8676002)(40480700001)(70586007)(70206006)(8936002)(47076005)(4326008)(5660300002)(54906003)(36900700001)(14943795004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2023 02:50:59.1838
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: fb4bae77-f719-4c60-2102-08dbc8729148
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB4E.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8483
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-CM-TRANSID: AQAAf8Cx7y+NayNlRvEbAA--.58139S2
+X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
+        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
+        nUUI43ZEXa7xR_UUUUUUUUU==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-amd-pstate driver support enable/disable preferred core.
-Default enabled on platforms supporting amd-pstate preferred core.
-Disable amd-pstate preferred core with
-"amd_prefcore=disable" added to the kernel command line.
+This patch series base on the Linux LoongArch KVM patch:
+Based-on: <20230927030959.3629941-1-zhaotianrui@loongson.cn> 
 
-Signed-off-by: Meng Li <li.meng@amd.com>
-Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
-Reviewed-by: Wyes Karny <wyes.karny@amd.com>
-Reviewed-by: Huang Rui <ray.huang@amd.com>
----
- Documentation/admin-guide/kernel-parameters.txt | 5 +++++
- 1 file changed, 5 insertions(+)
+We add LoongArch support into KVM selftests and there are some KVM
+test cases we have passed:
+	demand_paging_test
+	dirty_log_perf_test
+	dirty_log_test
+	guest_print_test
+	kvm_binary_stats_test
+	kvm_create_max_vcpus
+	kvm_page_table_test
+	memslot_modification_stress_test
+	memslot_perf_test
+	set_memory_region_test
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 0a1731a0f0ef..e35b795aa8aa 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -363,6 +363,11 @@
- 			  selects a performance level in this range and appropriate
- 			  to the current workload.
- 
-+	amd_prefcore=
-+			[X86]
-+			disable
-+			  Disable amd-pstate preferred core.
-+
- 	amijoy.map=	[HW,JOY] Amiga joystick support
- 			Map of devices attached to JOY0DAT and JOY1DAT
- 			Format: <a>,<b>
+Changes for v3:
+1. Improve implementation of LoongArch VM page walk.
+2. Add exception handler for LoongArch.
+3. Add dirty_log_test, dirty_log_perf_test, guest_print_test
+test cases for LoongArch.
+4. Add __ASSEMBLER__ macro to distinguish asm file and c file.
+5. Move ucall_arch_do_ucall to the header file and make it as
+static inline to avoid function calls.
+6. Change the DEFAULT_GUEST_TEST_MEM base addr for LoongArch.
+
+Changes for v2:
+1. We should use ".balign 4096" to align the assemble code with 4K in
+exception.S instead of "align 12".
+2. LoongArch only supports 3 or 4 levels page tables, so we remove the
+hanlders for 2-levels page table.
+3. Remove the DEFAULT_LOONGARCH_GUEST_STACK_VADDR_MIN and use the common
+DEFAULT_GUEST_STACK_VADDR_MIN to allocate stack memory in guest.
+4. Reorganize the test cases supported by LoongArch.
+5. Fix some code comments.
+6. Add kvm_binary_stats_test test case into LoongArch KVM selftests.
+
+changes for v1:
+1. Add kvm selftests header files for LoongArch.
+2. Add processor tests for LoongArch KVM.
+3. Add ucall tests for LoongArch KVM.
+4. Add LoongArch tests into makefile.
+
+All of the test cases results:
+1..10
+# timeout set to 120
+# selftests: kvm: demand_paging_test
+# Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+# guest physical test memory: [0xfbfffc000, 0xfffffc000)
+# Finished creating vCPUs and starting uffd threads
+# Started all vCPUs
+# All vCPU threads joined
+# Total guest execution time: 0.200804700s
+# Overall demand paging rate: 326366.862927 pgs/sec
+ok 1 selftests: kvm: demand_paging_test
+# timeout set to 120
+# selftests: kvm: dirty_log_perf_test
+# Test iterations: 2
+# Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+# guest physical test memory: [0xfbfffc000, 0xfffffc000)
+# Random seed: 1
+# Populate memory time: 0.201452560s
+# Enabling dirty logging time: 0.000451670s
+# 
+# Iteration 1 dirty memory time: 0.051582140s
+# Iteration 1 get dirty log time: 0.000010510s
+# Iteration 1 clear dirty log time: 0.000421730s
+# Iteration 2 dirty memory time: 0.046593760s
+# Iteration 2 get dirty log time: 0.000002110s
+# Iteration 2 clear dirty log time: 0.000418020s
+# Disabling dirty logging time: 0.002948490s
+# Get dirty log over 2 iterations took 0.000012620s. (Avg 0.000006310s/iteration)
+# Clear dirty log over 2 iterations took 0.000839750s. (Avg 0.000419875s/iteration)
+ok 2 selftests: kvm: dirty_log_perf_test
+# timeout set to 120
+# selftests: kvm: dirty_log_test
+# Test iterations: 32, interval: 10 (ms)
+# Testing Log Mode 'dirty-log'
+# Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+# guest physical test memory offset: 0xfbfff0000
+# Dirtied 453632 pages
+# Total bits checked: dirty (436564), clear (1595145), track_next (70002)
+# Testing Log Mode 'clear-log'
+# Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+# guest physical test memory offset: 0xfbfff0000
+# Dirtied 425984 pages
+# Total bits checked: dirty (414397), clear (1617312), track_next (68152)
+# Testing Log Mode 'dirty-ring'
+# Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+# dirty ring count: 0x10000
+# guest physical test memory offset: 0xfbfff0000
+# vcpu stops because vcpu is kicked out...
+# Notifying vcpu to continue
+# vcpu continues now.
+# Iteration 1 collected 3201 pages
+# vcpu stops because dirty ring is full...
+# vcpu continues now.
+# vcpu stops because dirty ring is full...
+# Notifying vcpu to continue
+# Iteration 2 collected 65472 pages
+# ......
+# vcpu continues now.
+# vcpu stops because vcpu is kicked out...
+# vcpu continues now.
+# vcpu stops because vcpu is kicked out...
+# Notifying vcpu to continue
+# vcpu continues now.
+# Iteration 31 collected 12642 pages
+# vcpu stops because dirty ring is full...
+# vcpu continues now.
+# Dirtied 7275520 pages
+# Total bits checked: dirty (1165675), clear (866034), track_next (811358)
+ok 3 selftests: kvm: dirty_log_test
+# timeout set to 120
+# selftests: kvm: guest_print_test
+ok 4 selftests: kvm: guest_print_test
+# timeout set to 120
+# selftests: kvm: kvm_binary_stats_test
+# TAP version 13
+# 1..4
+# ok 1 vm0
+# ok 2 vm1
+# ok 3 vm2
+# ok 4 vm3
+# # Totals: pass:4 fail:0 xfail:0 xpass:0 skip:0 error:0
+ok 5 selftests: kvm: kvm_binary_stats_test
+# timeout set to 120
+# selftests: kvm: kvm_create_max_vcpus
+# KVM_CAP_MAX_VCPU_ID: 256
+# KVM_CAP_MAX_VCPUS: 256
+# Testing creating 256 vCPUs, with IDs 0...255.
+ok 6 selftests: kvm: kvm_create_max_vcpus
+# timeout set to 120
+# selftests: kvm: kvm_page_table_test
+# Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+# Testing memory backing src type: anonymous
+# Testing memory backing src granularity: 0x4000
+# Testing memory size(aligned): 0x40000000
+# Guest physical test memory offset: 0xfbfffc000
+# Host  virtual  test memory offset: 0x7fffb0860000
+# Number of testing vCPUs: 1
+# Started all vCPUs successfully
+# KVM_CREATE_MAPPINGS: total execution time: 0.200919330s
+# 
+# KVM_UPDATE_MAPPINGS: total execution time: 0.051182930s
+# 
+# KVM_ADJUST_MAPPINGS: total execution time: 0.010083590s
+# 
+ok 7 selftests: kvm: kvm_page_table_test
+# timeout set to 120
+# selftests: kvm: memslot_modification_stress_test
+# Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+# guest physical test memory: [0xfbfffc000, 0xfffffc000)
+# Finished creating vCPUs
+# Started all vCPUs
+# All vCPU threads joined
+ok 8 selftests: kvm: memslot_modification_stress_test
+# timeout set to 120
+# selftests: kvm: memslot_perf_test
+# Testing map performance with 1 runs, 5 seconds each
+# Memslot count too high for this test, decrease the cap (max is 2053)
+# 
+# Testing unmap performance with 1 runs, 5 seconds each
+# Memslot count too high for this test, decrease the cap (max is 8197)
+# 
+# Testing unmap chunked performance with 1 runs, 5 seconds each
+# Memslot count too high for this test, decrease the cap (max is 8197)
+# 
+# Testing move active area performance with 1 runs, 5 seconds each
+# Test took 0.761678900s for slot setup + 5.000014460s all iterations
+# Done 120167 iterations, avg 0.000041608s each
+# Best runtime result was 0.000041608s per iteration (with 120167 iterations)
+# 
+# Testing move inactive area performance with 1 runs, 5 seconds each
+# Test took 0.771796550s for slot setup + 5.000018520s all iterations
+# Done 136354 iterations, avg 0.000036669s each
+# Best runtime result was 0.000036669s per iteration (with 136354 iterations)
+# 
+# Testing RW performance with 1 runs, 5 seconds each
+# Test took 0.763568840s for slot setup + 5.002233800s all iterations
+# Done 649 iterations, avg 0.007707602s each
+# Best runtime result was 0.007707602s per iteration (with 649 iterations)
+# Best slot setup time for the whole test area was 0.761678900s
+ok 9 selftests: kvm: memslot_perf_test
+# timeout set to 120
+# selftests: kvm: set_memory_region_test
+# Allowed number of memory slots: 32767
+# Adding slots 0..32766, each memory region with 2048K size
+ok 10 selftests: kvm: set_memory_region_test
+
+Tianrui Zhao (4):
+  KVM: selftests: Add KVM selftests header files for LoongArch
+  KVM: selftests: Add core KVM selftests support for LoongArch
+  KVM: selftests: Add ucall test support for LoongArch
+  KVM: selftests: Add test cases for LoongArch
+
+ tools/testing/selftests/kvm/Makefile          |  15 +
+ .../selftests/kvm/include/kvm_util_base.h     |   5 +
+ .../kvm/include/loongarch/processor.h         | 133 +++++++
+ .../selftests/kvm/include/loongarch/ucall.h   |  20 ++
+ .../testing/selftests/kvm/include/memstress.h |  10 +
+ .../selftests/kvm/lib/loongarch/exception.S   |  59 ++++
+ .../selftests/kvm/lib/loongarch/processor.c   | 333 ++++++++++++++++++
+ .../selftests/kvm/lib/loongarch/ucall.c       |  38 ++
+ 8 files changed, 613 insertions(+)
+ create mode 100644 tools/testing/selftests/kvm/include/loongarch/processor.h
+ create mode 100644 tools/testing/selftests/kvm/include/loongarch/ucall.h
+ create mode 100644 tools/testing/selftests/kvm/lib/loongarch/exception.S
+ create mode 100644 tools/testing/selftests/kvm/lib/loongarch/processor.c
+ create mode 100644 tools/testing/selftests/kvm/lib/loongarch/ucall.c
+
 -- 
-2.34.1
+2.39.1
 
