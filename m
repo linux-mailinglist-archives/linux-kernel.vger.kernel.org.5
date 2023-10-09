@@ -2,46 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 443047BD761
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D94E7BD764
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345753AbjJIJni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 05:43:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49602 "EHLO
+        id S1345801AbjJIJoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 05:44:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345326AbjJIJng (ORCPT
+        with ESMTP id S1345758AbjJIJoA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 05:43:36 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0BE048F
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:43:35 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 592F01FB;
-        Mon,  9 Oct 2023 02:44:15 -0700 (PDT)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D6D583F7A6;
-        Mon,  9 Oct 2023 02:43:33 -0700 (PDT)
-Message-ID: <66125bc2-ff2a-a209-a753-c2e3d8310a45@arm.com>
-Date:   Mon, 9 Oct 2023 10:43:34 +0100
+        Mon, 9 Oct 2023 05:44:00 -0400
+Received: from out-210.mta1.migadu.com (out-210.mta1.migadu.com [95.215.58.210])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2FCAB
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:43:57 -0700 (PDT)
+Message-ID: <68eb65c5-1870-0776-0878-694a8b002a6d@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1696844635;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=O0YOF8WiqWV3qWEelhaf9YObeiYly4thXLasaoZJfXw=;
+        b=bG99yCTavxE57bN/sitJRBv3pvuXgFF9RvNFfRAPaLA/yw7LIq18IbInFcZFQahAQDzbrG
+        YgvZMtphcWgi9sGRwruSxGXFM+LmJ86HtdVKsvysqZ+OcE7hl+tnmhZ1Sj7OAQv3ooAkqC
+        ZxCWXIA1dcG1z4QhUKfmSa6R6xxV+UY=
+Date:   Mon, 9 Oct 2023 17:43:43 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] drivers: perf: arm_pmuv3: Update 'pmc_width' based on
- actual HW event width
+Subject: Re: [PATCH net-next v7] net/core: Introduce netdev_core_stats_inc()
 Content-Language: en-US
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh@kernel.org>, raphael.gault@arm.com
-Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org
-References: <20231009043724.175100-1-anshuman.khandual@arm.com>
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <20231009043724.175100-1-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     rostedt@goodmis.org, mhiramat@kernel.org, dennis@kernel.org,
+        tj@kernel.org, cl@linux.com, mark.rutland@arm.com,
+        davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20231007050621.1706331-1-yajun.deng@linux.dev>
+ <CANn89iL-zUw1FqjYRSC7BGB0hfQ5uKpJzUba3YFd--c=GdOoGg@mail.gmail.com>
+ <917708b5-cb86-f233-e878-9233c4e6c707@linux.dev>
+ <CANn89i+navyRe8-AV=ehM3qFce2hmnOEKBqvK5Xnev7KTaS5Lg@mail.gmail.com>
+ <a53a3ff6-8c66-07c4-0163-e582d88843dd@linux.dev>
+ <CANn89i+u5dXdYm_0_LwhXg5Nw+gHXx+nPUmbYhvT=k9P4+9JRQ@mail.gmail.com>
+ <9f4fb613-d63f-9b86-fe92-11bf4dfb7275@linux.dev>
+ <CANn89iK7bvQtGD=p+fHaWiiaNn=u8vWrt0YQ26pGQY=kZTdfJw@mail.gmail.com>
+ <4a747fda-2bb9-4231-66d6-31306184eec2@linux.dev>
+ <814b5598-5284-9558-8f56-12a6f7a67187@linux.dev>
+ <CANn89iJCTgWTu0mzwj-8_-HiWm4uErY=VASDHoYaod9Nq-ayPA@mail.gmail.com>
+ <508b33f7-3dc0-4536-21f6-4a5e7ade2b5c@linux.dev>
+ <CANn89i+r-pQGpen1mUhybmj+6ybhxSsuoaB07NFzOWyHUMFDNw@mail.gmail.com>
+ <296ca17d-cff0-2d19-f620-eedab004ddde@linux.dev>
+ <CANn89iL=W3fyuH_KawfhKvLyw2Cw=qhHbEZtbKgQEYhHJChy3Q@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yajun Deng <yajun.deng@linux.dev>
+In-Reply-To: <CANn89iL=W3fyuH_KawfhKvLyw2Cw=qhHbEZtbKgQEYhHJChy3Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -49,49 +68,74 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 2023/10/9 17:30, Eric Dumazet wrote:
+> On Mon, Oct 9, 2023 at 10:36 AM Yajun Deng <yajun.deng@linux.dev> wrote:
+>>
+>> On 2023/10/9 16:20, Eric Dumazet wrote:
+>>> On Mon, Oct 9, 2023 at 10:14 AM Yajun Deng <yajun.deng@linux.dev> wrote:
+>>>> On 2023/10/9 15:53, Eric Dumazet wrote:
+>>>>> On Mon, Oct 9, 2023 at 5:07 AM Yajun Deng <yajun.deng@linux.dev> wrote:
+>>>>>
+>>>>>> 'this_cpu_read + this_cpu_write' and 'pr_info + this_cpu_inc' will make
+>>>>>> the trace work well.
+>>>>>>
+>>>>>> They all have 'pop' instructions in them. This may be the key to making
+>>>>>> the trace work well.
+>>>>>>
+>>>>>> Hi all,
+>>>>>>
+>>>>>> I need your help on percpu and ftrace.
+>>>>>>
+>>>>> I do not think you made sure netdev_core_stats_inc() was never inlined.
+>>>>>
+>>>>> Adding more code in it is simply changing how the compiler decides to
+>>>>> inline or not.
+>>>> Yes, you are right. It needs to add the 'noinline' prefix. The
+>>>> disassembly code will have 'pop'
+>>>>
+>>>> instruction.
+>>>>
+>>> The function was fine, you do not need anything like push or pop.
+>>>
+>>> The only needed stuff was the call __fentry__.
+>>>
+>>> The fact that the function was inlined for some invocations was the
+>>> issue, because the trace point
+>>> is only planted in the out of line function.
+>>
+>> But somehow the following code isn't inline? They didn't need to add the
+>> 'noinline' prefix.
+>>
+>> +               field = (unsigned long *)((void *)this_cpu_ptr(p) + offset);
+>> +               WRITE_ONCE(*field, READ_ONCE(*field) + 1);
+>>
+>> Or
+>> +               (*(unsigned long *)((void *)this_cpu_ptr(p) + offset))++;
+>>
+> I think you are very confused.
+>
+> You only want to trace netdev_core_stats_inc() entry point, not
+> arbitrary pieces of it.
 
-On 09/10/2023 05:37, Anshuman Khandual wrote:
-> This updates 'perf_event_mmap_page->pmc_width' based on actual HW event's
-> width that are currently missing i.e ARMPMU_EVT_63BIT and ARMPMU_EVT_47BIT.
-> 
 
-Might be worth adding why this is needed or what the actual effect is.
+Yes, I will trace netdev_core_stats_inc() entry point. I mean to replace
 
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
-> This applies on v6.6-rc5.
-> 
->  drivers/perf/arm_pmuv3.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
-> index fe4db1831662..94723d00548e 100644
-> --- a/drivers/perf/arm_pmuv3.c
-> +++ b/drivers/perf/arm_pmuv3.c
-> @@ -1375,6 +1375,10 @@ void arch_perf_update_userpage(struct perf_event *event,
->  	if (userpg->cap_user_rdpmc) {
->  		if (event->hw.flags & ARMPMU_EVT_64BIT)
->  			userpg->pmc_width = 64;
-> +		else if (event->hw.flags & ARMPMU_EVT_63BIT)
-> +			userpg->pmc_width = 63;
-> +		else if (event->hw.flags & ARMPMU_EVT_47BIT)
-> +			userpg->pmc_width = 47;
++                                       field = (__force unsigned long 
+__percpu *)((__force void *)p + offset);
++                                       this_cpu_inc(*field);
 
-Although it doesn't explicitly say it, the bit of the docs about
-pmc_width in Documentation/arch/arm64/perf.rst loosely implies that this
-is always either 64 or 32. Now that this isn't the case it could mislead
-someone in userspace that they don't have to handle the now arbitrary
-bit widths rather than just whole bytes/ints.
+with
 
-I think the fix is as simple as adding something like "the width may not
-match the requested value or necessarily be a multiple of 8". Unless we
-think this is already widely known and I suppose we could leave it as
-is. (The existing bit in perf that uses it already handles it correctly).
++               field = (unsigned long *)((void *)this_cpu_ptr(p) + offset);
++               WRITE_ONCE(*field, READ_ONCE(*field) + 1);
 
->  		else
->  			userpg->pmc_width = 32;
->  	}
+Or
++               (*(unsigned long *)((void *)this_cpu_ptr(p) + offset))++;
+
+The netdev_core_stats_inc() entry point will work fine even if it doesn't
+have 'noinline' prefix.
+
+I don't know why this code needs to add 'noinline' prefix.
++               field = (__force unsigned long __percpu *)((__force void *)p + offset);
++               this_cpu_inc(*field);
+
