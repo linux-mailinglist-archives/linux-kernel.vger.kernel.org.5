@@ -2,186 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD587BE633
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53AC07BE5D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377058AbjJIQTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 12:19:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49620 "EHLO
+        id S1376862AbjJIQEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 12:04:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377358AbjJIPOP (ORCPT
+        with ESMTP id S234156AbjJIQEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 11:14:15 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F4F10E;
-        Mon,  9 Oct 2023 08:14:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696864446; x=1728400446;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=MDqxXWy3FQK4bmmnOnFrjc86dXXtL75Q8r+lD3avrI0=;
-  b=SIGwEomj3Rhy5xumK/gV9ijGyIOYKp3OZkAx24fGojKPIAngXpO40WtO
-   NHnyBnZYtALEqGCJ6uiFwUP8mX5pknU8Mnt4k3kDpM3k+uQ8sz1bjm1iW
-   5UnqNLfyv7z1s+cHTZY93EtVdpQICd5T/zknX7GTPBVS1QW7i95W9Xi+x
-   IvzW039OI4l0R2pi6xOmboFd6/7j/IwKKsxlx9ZDvWDPFLGiNARNGOOYr
-   u4sk6Y5Tc1jFnvQ4HKIkPR7ukbz3p11sGYnJU5k0PkuEGFTdqvKvib1Dv
-   ghGgE+30j44kK7/3pk2rqwqgjR8FYkQfOS+J8OmVVOYXDljOb+AqvCCzI
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="369232534"
-X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="scan'208";a="369232534"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 08:13:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="869288197"
-X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="scan'208";a="869288197"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmsmga002.fm.intel.com with ESMTP; 09 Oct 2023 08:13:48 -0700
-From:   Alexander Lobakin <aleksander.lobakin@intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Alexander Potapenko <glider@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@kernel.org>,
-        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        netdev@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        dm-devel@redhat.com, ntfs3@lists.linux.dev,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 13/14] lib/bitmap: add tests for bitmap_{get,set}_bits()
-Date:   Mon,  9 Oct 2023 17:10:25 +0200
-Message-ID: <20231009151026.66145-14-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231009151026.66145-1-aleksander.lobakin@intel.com>
-References: <20231009151026.66145-1-aleksander.lobakin@intel.com>
+        Mon, 9 Oct 2023 12:04:45 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07477A6
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 09:04:44 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5a7af52ee31so4113257b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 09:04:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1696867483; x=1697472283; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C9fDlNvOmnLtg5Op0t4a2gYADf6L/TQ4pS3//DFpv4Y=;
+        b=Zd5STm59FoJsi3k5D876d90iOOjfR6B38r+qNuFlVmk0Hk0HAlgbTQ2Y3CqGbpvg7/
+         h20rrLzzMYnsQ+PO8Tl+EXUPsue4zIPa5LNqCY4VNET7wlRqXgSGzhTtySc3DgDHQfEh
+         jdWlUps295VLoKZYWcvHCNpsnNKZLIIuAehcnOMFAeom/FsfrorGX5puUNbQahHy3lu/
+         XWw/mQ523ZhC7Tl6qManggDvuMmYRce01m9dfP49bTuVNQEIQUhj5GotkXlMnPf8Rv/g
+         hyVCd0b48jn9DyBGeW1dcFgN4hGyuiTHbwP364KgfCGAfH92UGXv3FqKTai/A/ochCEX
+         wGrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696867483; x=1697472283;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=C9fDlNvOmnLtg5Op0t4a2gYADf6L/TQ4pS3//DFpv4Y=;
+        b=xB/dT4mtIDsGGNloVRIEvfYjAs8aH7lRojkZw1Nc4PcYQLZftEq6AOYtO9BlfadZY4
+         +1yA081NKHksxBANleQFmSpdnjIM046qAzJuJdyI5wAo2JmQOtaisWwmUGtCQ9XbOma7
+         PaVhvbDeENUj34AMgetViB6BOoYyDj2e0nqrd5CZX2wdJ4cFtpZjEy5WhkSrZRR4fKFg
+         132l0hEFAd6T7wyIXD5RjmL+7rOKKTYfSXODFoVnaMuSl0323RFLiWphLHWBqzn1zwPX
+         C4WDy25HhYYPhhQjVc8hpbOS7O+YQpZQ1IuCOsauf3rgjdZu8CB/iTvdtlAD0/w0lkFR
+         jvWQ==
+X-Gm-Message-State: AOJu0YwIsrTa7T25VD+KHRW1sK3nT9A+agbzLCf3tN2iqF3iuHWmFNAj
+        yMKGudruXiv6qjzjkQH0YMEBb2jCqaYvb2HhqJxO
+X-Google-Smtp-Source: AGHT+IG289Jk17vEztzyThvi6KHoyIoAnumxy2kyOt6T/0bQ9I8E6+Ff1KHXg3mIX4GLMEPGX9TcMjbz2O+cpsfjwe0=
+X-Received: by 2002:a25:db08:0:b0:d9a:3adf:95a0 with SMTP id
+ g8-20020a25db08000000b00d9a3adf95a0mr1147643ybf.27.1696867482619; Mon, 09 Oct
+ 2023 09:04:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230912205658.3432-1-casey@schaufler-ca.com> <20230912205658.3432-5-casey@schaufler-ca.com>
+ <20231003.kooghohS2Aiz@digikod.net> <CAHC9VhT_ijmqo9ap-EokWHuALsMAqome2qcWgst3eRP6m+vbRA@mail.gmail.com>
+ <20231009.MieQu5ou2loo@digikod.net>
+In-Reply-To: <20231009.MieQu5ou2loo@digikod.net>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 9 Oct 2023 12:04:31 -0400
+Message-ID: <CAHC9VhS_pFy=WUq8F7jXQ3gstdM36FG52NQ+OeESHRSa54h7MQ@mail.gmail.com>
+Subject: Re: [PATCH v15 04/11] LSM: syscalls for current process attributes
+To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>,
+        linux-security-module@vger.kernel.org, jmorris@namei.org,
+        serge@hallyn.com, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bitmap_{get,set}_value8() is now bitmap_{get,set}_bits(). The former
-didn't have any dedicated tests in the bitmap test suite.
-Add a pack of test cases with variable offset, width, and value to set
-(for _set_bits()), randomly generated with the only limitation:
-``offset % 32 + width <= 32``, to make sure the tests won't fail or
-trigger kernel warnings on 32-bit platforms. For _get_bits(), compare
-the return values with the expected ones, calculated and saved manually.
-For _set_bit(), do several modifications of the source bitmap and then
-compare against the expected resulting one, also pre-calculated.
+On Mon, Oct 9, 2023 at 11:37=E2=80=AFAM Micka=C3=ABl Sala=C3=BCn <mic@digik=
+od.net> wrote:
+> On Thu, Oct 05, 2023 at 09:04:34PM -0400, Paul Moore wrote:
+> > On Tue, Oct 3, 2023 at 10:09=E2=80=AFAM Micka=C3=ABl Sala=C3=BCn <mic@d=
+igikod.net> wrote:
+> > > On Tue, Sep 12, 2023 at 01:56:49PM -0700, Casey Schaufler wrote:
+> > > > Create a system call lsm_get_self_attr() to provide the security
+> > > > module maintained attributes of the current process.
+> > > > Create a system call lsm_set_self_attr() to set a security
+> > > > module maintained attribute of the current process.
+> > > > Historically these attributes have been exposed to user space via
+> > > > entries in procfs under /proc/self/attr.
+> > > >
+> > > > The attribute value is provided in a lsm_ctx structure. The structu=
+re
+> > > > identifies the size of the attribute, and the attribute value. The =
+format
+> > > > of the attribute value is defined by the security module. A flags f=
+ield
+> > > > is included for LSM specific information. It is currently unused an=
+d must
+> > > > be 0. The total size of the data, including the lsm_ctx structure a=
+nd any
+> > > > padding, is maintained as well.
+> > > >
+> > > > struct lsm_ctx {
+> > > >         __u64 id;
+> > > >         __u64 flags;
+> > > >         __u64 len;
+> > > >         __u64 ctx_len;
+> > > >         __u8 ctx[];
+> > > > };
+> > > >
+> > > > Two new LSM hooks are used to interface with the LSMs.
+> > > > security_getselfattr() collects the lsm_ctx values from the
+> > > > LSMs that support the hook, accounting for space requirements.
+> > > > security_setselfattr() identifies which LSM the attribute is
+> > > > intended for and passes it along.
+> > > >
+> > > > Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+> > > > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > > > Reviewed-by: Serge Hallyn <serge@hallyn.com>
+> > > > Reviewed-by: John Johansen <john.johansen@canonical.com>
+> > > > ---
+> > > >  Documentation/userspace-api/lsm.rst |  70 +++++++++++++
+> > > >  include/linux/lsm_hook_defs.h       |   4 +
+> > > >  include/linux/lsm_hooks.h           |   1 +
+> > > >  include/linux/security.h            |  19 ++++
+> > > >  include/linux/syscalls.h            |   5 +
+> > > >  include/uapi/linux/lsm.h            |  36 +++++++
+> > > >  kernel/sys_ni.c                     |   2 +
+> > > >  security/Makefile                   |   1 +
+> > > >  security/lsm_syscalls.c             |  57 +++++++++++
+> > > >  security/security.c                 | 152 ++++++++++++++++++++++++=
+++++
+> > > >  10 files changed, 347 insertions(+)
+> > > >  create mode 100644 Documentation/userspace-api/lsm.rst
+> > > >  create mode 100644 security/lsm_syscalls.c
+> >
+> > ...
+> >
+> > > > diff --git a/security/security.c b/security/security.c
+> > > > index a3489c04b783..0d179750d964 100644
+> > > > --- a/security/security.c
+> > > > +++ b/security/security.c
+> > > > @@ -3837,6 +3837,158 @@ void security_d_instantiate(struct dentry *=
+dentry, struct inode *inode)
+> > > >  }
+> > > >  EXPORT_SYMBOL(security_d_instantiate);
+> > > >
+> > > > +/*
+> > > > + * Please keep this in sync with it's counterpart in security/lsm_=
+syscalls.c
+> > > > + */
+> > > > +
+> > > > +/**
+> > > > + * security_getselfattr - Read an LSM attribute of the current pro=
+cess.
+> > > > + * @attr: which attribute to return
+> > > > + * @uctx: the user-space destination for the information, or NULL
+> > > > + * @size: pointer to the size of space available to receive the da=
+ta
+> > > > + * @flags: special handling options. LSM_FLAG_SINGLE indicates tha=
+t only
+> > > > + * attributes associated with the LSM identified in the passed @ct=
+x be
+> > > > + * reported.
+> > > > + *
+> > > > + * A NULL value for @uctx can be used to get both the number of at=
+tributes
+> > > > + * and the size of the data.
+> > > > + *
+> > > > + * Returns the number of attributes found on success, negative val=
+ue
+> > > > + * on error. @size is reset to the total size of the data.
+> > > > + * If @size is insufficient to contain the data -E2BIG is returned=
+.
+> > > > + */
+> > > > +int security_getselfattr(unsigned int attr, struct lsm_ctx __user =
+*uctx,
+> > > > +                      size_t __user *size, u32 flags)
+> > > > +{
+> > > > +     struct security_hook_list *hp;
+> > > > +     struct lsm_ctx lctx =3D { .id =3D LSM_ID_UNDEF, };
+> > > > +     u8 __user *base =3D (u8 __user *)uctx;
+> > > > +     size_t total =3D 0;
+> > > > +     size_t entrysize;
+> > > > +     size_t left;
+> > > > +     bool toobig =3D false;
+> > > > +     bool single =3D false;
+> > > > +     int count =3D 0;
+> > > > +     int rc;
+> > > > +
+> > > > +     if (attr =3D=3D LSM_ATTR_UNDEF)
+> > > > +             return -EINVAL;
+> > > > +     if (size =3D=3D NULL)
+> > > > +             return -EINVAL;
+> > > > +     if (get_user(left, size))
+> > > > +             return -EFAULT;
+> > > > +
+> > > > +     if (flags) {
+> > > > +             /*
+> > > > +              * Only flag supported is LSM_FLAG_SINGLE
+> > > > +              */
+> > > > +             if (flags !=3D LSM_FLAG_SINGLE)
+> > > > +                     return -EINVAL;
+> > > > +             if (uctx && copy_from_user(&lctx, uctx, sizeof(lctx))=
+)
+> > >
+> > > I'm not sure if we should return -EINVAL or -EFAULT when uctx =3D=3D =
+NULL.
+> > > Because uctx is optional (when LSM_FLAG_SINGLE is not set), I guess
+> > > -EINVAL is OK.
+> >
+> > That's a good point, we should probably the error codes here: if uctx
+> > is NULL in the LSM_FLAG_SINGLE case we should return -EINVAL, if the
+> > copy_from_user() fails we should return -EFAULT.
+> >
+> > > > +                     return -EFAULT;
+> > > > +             /*
+> > > > +              * If the LSM ID isn't specified it is an error.
+> > > > +              */
+> > > > +             if (lctx.id =3D=3D LSM_ID_UNDEF)
+> > > > +                     return -EINVAL;
+> > > > +             single =3D true;
+> > > > +     }
+> > > > +
+> > > > +     /*
+> > > > +      * In the usual case gather all the data from the LSMs.
+> > > > +      * In the single case only get the data from the LSM specifie=
+d.
+> > > > +      */
+> > > > +     hlist_for_each_entry(hp, &security_hook_heads.getselfattr, li=
+st) {
+> > > > +             if (single && lctx.id !=3D hp->lsmid->id)
+> > > > +                     continue;
+> > > > +             entrysize =3D left;
+> > > > +             if (base)
+> > > > +                     uctx =3D (struct lsm_ctx __user *)(base + tot=
+al);
+> > > > +             rc =3D hp->hook.getselfattr(attr, uctx, &entrysize, f=
+lags);
+> > > > +             if (rc =3D=3D -EOPNOTSUPP) {
+> > > > +                     rc =3D 0;
+> > > > +                     continue;
+> > > > +             }
+> > > > +             if (rc =3D=3D -E2BIG) {
+> > > > +                     toobig =3D true;
+> > > > +                     left =3D 0;
+> > > > +             } else if (rc < 0)
+> > > > +                     return rc;
+> > > > +             else
+> > > > +                     left -=3D entrysize;
+> > > > +
+> > > > +             total +=3D entrysize;
+> > > > +             count +=3D rc;
+> > >
+> > > There is a bug if rc =3D=3D -E2BIG
+> >
+> > Can you elaborate a bit more on this? Nothing is jumping out at me as
+> > obviously broken... are you talking about @count becoming garbage due
+> > to @rc being equal to -E2BIG?  If that is the case it should be okay
+> > since we explicitly return -E2BIG, not @count, if @toobig is true.
+>
+> Indeed, in this case count will not be returned thanks to toobig. I'd
+> suggest to "continue" if rc =3D=3D -E2BIG (like for -EOPNOTSUPP) to avoid=
+ an
+> inconsistent count value, which could bite us one day.
 
-Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
- lib/test_bitmap.c | 77 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 77 insertions(+)
+Okay, how about we reset @rc to zero in the -E2BIG case?  We don't
+want to bypass the lower part of the loop in this case as we still
+need to update @total.
 
-diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
-index cbf1b9611616..6037b66fd30a 100644
---- a/lib/test_bitmap.c
-+++ b/lib/test_bitmap.c
-@@ -1161,6 +1161,82 @@ static void __init test_bitmap_print_buf(void)
- 	}
- }
- 
-+struct getset_test {
-+	u16	offset;
-+	u16	width;
-+	union {
-+		u32	expect;
-+		u32	value;
-+	};
-+};
-+
-+#define GETSET_TEST(o, w, v) {	\
-+	.offset	= (o),		\
-+	.width	= (w),		\
-+	.value	= (v),		\
-+}
-+
-+static const unsigned long getset_src[] __initconst = {
-+	BITMAP_FROM_U64(0x4329c918b472468eULL),
-+	BITMAP_FROM_U64(0xb2c20a622474a119ULL),
-+	BITMAP_FROM_U64(0x3a08cb5591cea40dULL),
-+	BITMAP_FROM_U64(0xc9a7550384e145f8ULL),
-+};
-+
-+static const struct getset_test get_bits_test[] __initconst = {
-+	GETSET_TEST(208, 16, 0x84e1),
-+	GETSET_TEST(104, 8, 0xa),
-+	GETSET_TEST(224, 32, 0xc9a75503),
-+	GETSET_TEST(64, 16, 0xa119),
-+	GETSET_TEST(169, 1, 0x1),
-+	GETSET_TEST(144, 8, 0xce),
-+	GETSET_TEST(80, 4, 0x4),
-+	GETSET_TEST(24, 4, 0x4),
-+};
-+
-+static const struct getset_test set_bits_test[] __initconst = {
-+	GETSET_TEST(56, 4, 0xa),
-+	GETSET_TEST(80, 16, 0xb17a),
-+	GETSET_TEST(112, 8, 0x1b),
-+	GETSET_TEST(0, 32, 0xe8a555f2),
-+	GETSET_TEST(16, 2, 0),
-+	GETSET_TEST(72, 8, 0x7d),
-+	GETSET_TEST(47, 1, 0),
-+	GETSET_TEST(160, 16, 0x1622),
-+};
-+
-+static const unsigned long getset_out[] __initconst = {
-+	BITMAP_FROM_U64(0x4a294918e8a455f2ULL),
-+	BITMAP_FROM_U64(0xb21b0a62b17a7d19ULL),
-+	BITMAP_FROM_U64(0x3a08162291cea40dULL),
-+	BITMAP_FROM_U64(0xc9a7550384e145f8ULL),
-+};
-+
-+#define GETSET_TEST_BITS	BYTES_TO_BITS(sizeof(getset_out))
-+
-+static void __init test_bitmap_getset_bits(void)
-+{
-+	DECLARE_BITMAP(out, GETSET_TEST_BITS);
-+
-+	for (u32 i = 0; i < ARRAY_SIZE(get_bits_test); i++) {
-+		const struct getset_test *test = &get_bits_test[i];
-+		u32 val;
-+
-+		val = bitmap_get_bits(getset_src, test->offset, test->width);
-+		expect_eq_uint(test->expect, val);
-+	}
-+
-+	bitmap_copy(out, getset_src, GETSET_TEST_BITS);
-+
-+	for (u32 i = 0; i < ARRAY_SIZE(set_bits_test); i++) {
-+		const struct getset_test *test = &set_bits_test[i];
-+
-+		bitmap_set_bits(out, test->offset, test->value, test->width);
-+	}
-+
-+	expect_eq_bitmap(getset_out, out, GETSET_TEST_BITS);
-+}
-+
- /*
-  * FIXME: Clang breaks compile-time evaluations when KASAN and GCOV are enabled.
-  * To workaround it, GCOV is force-disabled in Makefile for this configuration.
-@@ -1238,6 +1314,7 @@ static void __init selftest(void)
- 	test_mem_optimisations();
- 	test_bitmap_cut();
- 	test_bitmap_print_buf();
-+	test_bitmap_getset_bits();
- 	test_bitmap_const_eval();
- 
- 	test_find_nth_bit();
--- 
-2.41.0
+  if (rc =3D=3D -E2BIG) {
+    rc =3D 0;
+    left =3D 0;
+    toobig =3D true;
+  }
 
+--=20
+paul-moore.com
