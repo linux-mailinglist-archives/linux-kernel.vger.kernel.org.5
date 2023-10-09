@@ -2,73 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A69A37BD410
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 09:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 181D67BD412
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 09:10:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345366AbjJIHJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 03:09:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36512 "EHLO
+        id S1345373AbjJIHJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 03:09:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232775AbjJIHJt (ORCPT
+        with ESMTP id S1345377AbjJIHJ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 03:09:49 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD92494
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 00:09:48 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id ada2fe7eead31-4526a936dcaso1698815137.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 00:09:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696835388; x=1697440188; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QhLRpwsuxmOsvcZ8fYOZy3OVA1IUIC5Nv3spoy9OsQY=;
-        b=wYUiuaHCIt12QIXTNzhdt5t4QDYrHUIyDySxqGu8Dp15pVnX+Rbr9RiPTOhab6RAYk
-         /7i8gp8cF6A7smr8CG+ppsSLrqDAidC+t0d7fEuUslJnLkWnajXL9RggEOVAdE7obDM8
-         X+0cJVoIanT8pK+ZIkDKKdEjy4HDe1roINYe+1Q2/ZZpCRZ3mDIIqRAW7LcWA7/M5w9I
-         s9PGPJYZwdyluHYGyZqF+cM55whXnyBlHB6PWHkYdylP0PtXac/4M+HHvUXzbA/spJG4
-         4Q7NravOUjQ3rjC3FMqQqGKT3PwkhXO/tIAhr6v7ncWqaLrH1yFwR5icfYP90RPlmjYu
-         UdGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696835388; x=1697440188;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QhLRpwsuxmOsvcZ8fYOZy3OVA1IUIC5Nv3spoy9OsQY=;
-        b=lAuBtJP03JsvwFtAG8f5Lq3/5XcoxaPtwD4kgPUzSpbvVL+I3c5bUcBUBEvbZ5MuDg
-         +1cpWtZFee/0I96o1QooNVxl9Gk6CVm5tCr358bKxiMhbC+XHkizVwKZrLJcyDOgbNIi
-         QwpqeFOLrQVQnwDH5cQfdVTzjT1Fkwjzramo2olF/guwJjxnnhkUvK8/wZsJeTgLcTFN
-         jJ//o176Zw2gRs0rVNvOul2g3erLyoVUUHoqtKzTldfN6dcI/l5NXjKvMQKwEd5GYuoj
-         7V+zDAWWdyXFNeEcMoLx1gXTsEYTvbpYQg/IirM7DUdFjDlaZMFoQ5xKBFx3OWQVJoq6
-         pHKQ==
-X-Gm-Message-State: AOJu0YyMdYdMOtlub3E9uu/EEEuWGWWCZJM2a3Ly6Gp1xaM+QtAwWSsm
-        HloTa+xRuDg4xpURcQqIDZt6JnzzdDNK+WVcriSeww==
-X-Google-Smtp-Source: AGHT+IFVM96RtaqXDXXuEbO13aoAbWj6cTZzjGKLV4l0Aye+LflqahSU0J82oWNmTnQq4Qz8tRzJ+5XZbtX86Rgify4=
-X-Received: by 2002:a05:6102:f09:b0:457:79e5:50df with SMTP id
- v9-20020a0561020f0900b0045779e550dfmr2089711vss.33.1696835387451; Mon, 09 Oct
- 2023 00:09:47 -0700 (PDT)
+        Mon, 9 Oct 2023 03:09:57 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDCC094;
+        Mon,  9 Oct 2023 00:09:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6535C433B6;
+        Mon,  9 Oct 2023 07:09:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696835395;
+        bh=laGQUOyn4KCepo+cHn7ADCkvO41qlO/e9164aDPaDKw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=V0sFDqi/xtkR1ONHTOaiRXroiVD5/XxgniHuHOQr2gl0Vq100F8qAUnOQipmWCjeV
+         qB1elols6WbCZVE2pC4wy0gXZ1eDomX6jjK7eNzIWgksE+Au53j0tSB1GfjT7JOLfa
+         VGhhhhCCa5tx/2PBM8H0HtPIqHTHQx2uJjHmpkM+kpqvn038N4JpAu8juBptghTbUI
+         FEr0URcEivyQuJkmVPesG6cec8FmKTViJn4gdS8x1c9/cAByNlPOVuhZb725d9++vC
+         23Ke8K0pIRnbeuP8UcLEDcHOqu3fiR0Qm+aVM/2KrMNzYUeEHSD9N5hl5PkYMsb9H+
+         6CRjKcIO8nZJw==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     linux-wireless@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [RFH] wireless-next: fix new W=1 warnings
+Date:   Mon, 09 Oct 2023 10:09:53 +0300
+Message-ID: <87fs2k5l1a.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-References: <20231006-descriptors-asoc-mediatek-v1-0-07fe79f337f5@linaro.org> <20231006-descriptors-asoc-mediatek-v1-1-07fe79f337f5@linaro.org>
-In-Reply-To: <20231006-descriptors-asoc-mediatek-v1-1-07fe79f337f5@linaro.org>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 9 Oct 2023 09:09:36 +0200
-Message-ID: <CAMRc=MdY2DU1R5_Ntkhw6UP0Vp+uhyUvti72KChBQqSF1ruWPw@mail.gmail.com>
-Subject: Re: [PATCH 1/8] gpiolib: of: Add quirk for mt2701-cs42448 ASoC sound
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Andy Shevchenko <andy@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, alsa-devel@alsa-project.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,43 +46,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 6, 2023 at 3:46=E2=80=AFPM Linus Walleij <linus.walleij@linaro.=
-org> wrote:
->
-> These gpio names are due to old DT bindings not following the
-> "-gpio"/"-gpios" conventions. Handle it using a quirk so the
-> driver can just look up the GPIOs.
->
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
->  drivers/gpio/gpiolib-of.c | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/drivers/gpio/gpiolib-of.c b/drivers/gpio/gpiolib-of.c
-> index 531faabead0f..d9525d95e818 100644
-> --- a/drivers/gpio/gpiolib-of.c
-> +++ b/drivers/gpio/gpiolib-of.c
-> @@ -512,6 +512,10 @@ static struct gpio_desc *of_find_gpio_rename(struct =
-device_node *np,
->  #if IS_ENABLED(CONFIG_SND_SOC_CS42L56)
->                 { "reset",      "cirrus,gpio-nreset",   "cirrus,cs42l56" =
-},
->  #endif
-> +#if IS_ENABLED(CONFIG_SND_SOC_MT2701_CS42448)
-> +               { "i2s1-in-sel-gpio1",  NULL,   "mediatek,mt2701-cs42448-=
-machine" },
-> +               { "i2s1-in-sel-gpio2",  NULL,   "mediatek,mt2701-cs42448-=
-machine" },
-> +#endif
->  #if IS_ENABLED(CONFIG_SND_SOC_TLV320AIC3X)
->                 { "reset",      "gpio-reset",   "ti,tlv320aic3x" },
->                 { "reset",      "gpio-reset",   "ti,tlv320aic33" },
->
-> --
-> 2.34.1
->
+Hi,
 
-I suppose this is a run-time dependency only for the other patches?
-Can I just pick it up into my tree?
+During the weekend we updated wireless-next tree from v6.5 to v6.6-rc4+.
+It looks like a new warning was enabled for v6.6 as I see with GCC 13.2
+and W=1 several warnings (list below). In v6.5 wireless code was still
+W=1 warning free with GCC.
 
-Bart
+For wireless we get lots of questionable cleanup patches. But actually
+these kind of warnings are what we would prefer to be fixed instead of
+the random churn we always see. Hence I'm sending this Request For Help
+(RFH) in case the cleanup people would fix these. Is there a mailing
+list I should send this to?
+
+The sooner these are fixed the better, it makes it difficult for us to
+see any new warnings from this noise.
+
+Kalle
+
+drivers/net/wireless/intel/ipw2x00/ipw2100.c:5905:63: warning: '%s' directive output may be truncated writing up to 63 bytes into a region of size 32 [-Wformat-truncation=]
+drivers/net/wireless/intel/ipw2x00/ipw2100.c:5905:9: note: 'snprintf' output between 4 and 140 bytes into a destination of size 32
+drivers/net/wireless/intel/ipw2x00/ipw2200.c:10392:63: warning: '%s' directive output may be truncated writing up to 63 bytes into a region of size 32 [-Wformat-truncation=]
+drivers/net/wireless/intel/ipw2x00/ipw2200.c:10392:9: note: 'snprintf' output between 4 and 98 bytes into a destination of size 32
+drivers/net/wireless/intel/iwlwifi/dvm/main.c:1467:19: warning: '%s' directive output may be truncated writing up to 63 bytes into a region of size 32 [-Wformat-truncation=]
+drivers/net/wireless/intel/iwlwifi/dvm/main.c:1465:9: note: 'snprintf' output between 1 and 64 bytes into a destination of size 32
+drivers/net/wireless/intel/iwlwifi/mvm/ops.c:1307:19: warning: '%s' directive output may be truncated writing up to 63 bytes into a region of size 32 [-Wformat-truncation=]
+drivers/net/wireless/intel/iwlwifi/mvm/ops.c:1305:9: note: 'snprintf' output between 1 and 64 bytes into a destination of size 32
+drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c:262:52: warning: '%d' directive output may be truncated writing between 1 and 5 bytes into a region of size 4 [-Wformat-truncation=]
+drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c:262:46: note: directive argument in the range [0, 65535]
+drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c:262:46: note: directive argument in the range [0, 65535]
+drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c:262:9: note: 'snprintf' output between 9 and 17 bytes into a destination of size 9
+drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c:265:55: warning: '%d' directive output may be truncated writing between 1 and 5 bytes into a region of size 4 [-Wformat-truncation=]
+drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c:265:48: note: directive argument in the range [0, 65535]
+drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c:265:48: note: directive argument in the range [0, 65535]
+drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c:265:9: note: 'snprintf' output between 10 and 18 bytes into a destination of size 10
+drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c:342:50: warning: '/' directive output may be truncated writing 1 byte into a region of size between 0 and 4 [-Wformat-truncation=]
+drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c:342:42: note: directive argument in the range [0, 65535]
+drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c:342:9: note: 'snprintf' output between 10 and 18 bytes into a destination of size 10
+drivers/net/wireless/intel/iwlwifi/iwl-drv.c:549:33: warning: '%s' directive output may be truncated writing up to 63 bytes into a region of size between 48 and 56 [-Wformat-truncation=]
+drivers/net/wireless/intel/iwlwifi/iwl-drv.c:547:9: note: 'snprintf' output 9 or more bytes (assuming 80) into a destination of size 64
+drivers/net/wireless/intel/iwlwifi/iwl-drv.c:729:33: warning: '%s' directive output may be truncated writing up to 63 bytes into a region of size between 48 and 56 [-Wformat-truncation=]
+drivers/net/wireless/intel/iwlwifi/iwl-drv.c:727:9: note: 'snprintf' output 9 or more bytes (assuming 80) into a destination of size 64
+drivers/net/wireless/intel/iwlwifi/iwl-drv.c:989:51: warning: '%s' directive output may be truncated writing up to 63 bytes into a region of size between 46 and 58 [-Wformat-truncation=]
+drivers/net/wireless/intel/iwlwifi/iwl-drv.c:987:33: note: 'snprintf' output between 7 and 82 bytes into a destination of size 64
+drivers/net/wireless/intel/iwlwifi/iwl-drv.c:984:53: warning: '%s' directive output may be truncated writing up to 63 bytes into a region of size between 40 and 50 [-Wformat-truncation=]
+drivers/net/wireless/intel/iwlwifi/iwl-drv.c:982:33: note: 'snprintf' output between 15 and 88 bytes into a destination of size 64
+drivers/net/wireless/ath/ath11k/debugfs.c:1597:51: warning: '%d' directive output may be truncated writing between 1 and 3 bytes into a region of size 2 [-Wformat-truncation=]
+drivers/net/wireless/ath/ath11k/debugfs.c:1597:48: note: directive argument in the range [0, 255]
+drivers/net/wireless/ath/ath11k/debugfs.c:1597:9: note: 'snprintf' output between 5 and 7 bytes into a destination of size 5
+drivers/net/wireless/ath/ath9k/hif_usb.c:1223:42: warning: '.0.fw' directive output may be truncated writing 5 bytes into a region of size between 4 and 11 [-Wformat-truncation=]
+drivers/net/wireless/ath/ath9k/hif_usb.c:1222:17: note: 'snprintf' output between 27 and 34 bytes into a destination of size 32
