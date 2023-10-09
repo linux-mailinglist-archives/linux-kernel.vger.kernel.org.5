@@ -2,307 +2,470 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF5B7BDD13
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5957BE172
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376669AbjJINEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 09:04:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60580 "EHLO
+        id S1377284AbjJINuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 09:50:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376800AbjJINEM (ORCPT
+        with ESMTP id S1377240AbjJINuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 09:04:12 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 090E3111;
-        Mon,  9 Oct 2023 06:04:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696856650; x=1728392650;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=S/X7pV0Gw9nr2Okjrb16i5k8FuYLHrnEoU1W+Zq70Dw=;
-  b=hUWgtLxFLaLrovc3r6K6x/7k+uFkC55l1rT7AlkyJJvpmCpcBjmz/l1D
-   a47mU4iN26awzQQgTT603044HyO0T6O7x2MLmq6YEmnlbjZX1blep9DmL
-   XleuMferfKUCeg7MoH0sUDdPVXQUJIR3r1nMEO0ZokSc9K5L0BmtKaeB1
-   XDyBHlj8F83wG1fe6CXcS2NnPxFEqRBTzzqdGuRmrO4snhp+B18zM9nNm
-   RnDDVvmqxhT88HZZ7+X+WxuQPysskEYgy+Jmws4/bYqawJrKxGSNt7dGY
-   JZAxWcHPFvFO0WhS1GG28UXqO5QbxIfIVQXFr+JLuylnCXhG4IG87O0fX
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="5682671"
-X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="scan'208";a="5682671"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 06:03:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="753007131"
-X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="scan'208";a="753007131"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Oct 2023 06:03:26 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Mon, 9 Oct 2023 06:03:25 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Mon, 9 Oct 2023 06:03:25 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Mon, 9 Oct 2023 06:03:25 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mtXRNEcxn5/12hZPIJELUmhoL+4z10GPTFq5PHraSorBWdcYMzx8p3hIgyB7weuyZTyK5aBUBIKuqME6k21ZDnpxVzpxAAjGCw/cHLa4UwG2WVvQ1tZ7JGQpDVwep/1hLHq8koVaLyf2b8pC3FC0OFnT2t1RNV6OJa5hHSwRiYRafn6MgM25EzSmURMCtoKsc90+h0HRBlxkn9w0JxHR3af7iDlVsOPd2CuYNdr3rrJ0kPCNkxQFUEx8BYbVqvhy08Pi1WLAKzylp3PzzhQPsTcLMAk2lq7jlOK/lKgvS1qQcONb/Vb7Uje5IkNgBTtNIHi6tw3KjS3YZJ9oO/NB/Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aPzycL5JZ8wVq5yUwcK1qNOUS5XjQVpy594+NwsXtYc=;
- b=mfvth86tEMllmZu5JRXVIucyIJL1hpF0qUTc6NTj9DmQUlYrj/kYJ2M4yupZAgZ0/gvRCqz8rFSVxLv90yrvMkDR+fmDZVQvyoichtzku5x6KkWT9ylcL6K4kK/Nac5AX4pTsqA7kKEfTroT7pB1NJgTuTKVfRyro6AFHtv5oxg1VX0dW2GuGOeuEJlhuKI3sKoiECPsYA6xUPw9bpHiZHfHPLzbznTn0uRFx5MOgxQeusX/RJTSbvGTSTYdiuuWB+F/Cwo1FS2cYjwnF45kzxXw2kAu0u1NZB8PLP/NLws+acVUQQ+UDTyZcoRgjWmDDU+1TEtP5HWH+La33e/0jw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO6PR11MB5603.namprd11.prod.outlook.com (2603:10b6:5:35c::12)
- by BN0PR11MB5709.namprd11.prod.outlook.com (2603:10b6:408:148::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Mon, 9 Oct
- 2023 13:03:22 +0000
-Received: from CO6PR11MB5603.namprd11.prod.outlook.com
- ([fe80::dbe4:218c:1bdd:510]) by CO6PR11MB5603.namprd11.prod.outlook.com
- ([fe80::dbe4:218c:1bdd:510%4]) with mapi id 15.20.6863.032; Mon, 9 Oct 2023
- 13:03:22 +0000
-Message-ID: <be180b68-d31f-4e7f-aeaa-071be74e2696@intel.com>
-Date:   Mon, 9 Oct 2023 15:03:15 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/6] ACPI: AC: Replace acpi_driver with platform_driver
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-CC:     Andy Shevchenko <andriy.shevchenko@intel.com>,
-        <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <nvdimm@lists.linux.dev>, <rafael.j.wysocki@intel.com>,
-        <lenb@kernel.org>, <dan.j.williams@intel.com>,
-        <vishal.l.verma@intel.com>, <ira.weiny@intel.com>
-References: <20231006173055.2938160-1-michal.wilczynski@intel.com>
- <20231006173055.2938160-4-michal.wilczynski@intel.com>
- <CAJZ5v0jKJ6iw6Q=uYTf0at+ESkdCF0oWaXRmj7P5VLw+QppKPw@mail.gmail.com>
- <ZSEPGmCyhgSlMGRK@smile.fi.intel.com>
- <CAJZ5v0gF0O_d1rjOtiNj5ryXv-PURv0NgiRWyQECZZFcaBEsPQ@mail.gmail.com>
- <CAJZ5v0iDhOFDX=k7xsC_=2jjerWmrP+Na-9PFM=YGA0V-hH2xw@mail.gmail.com>
- <f8ff3c4b-376a-4de0-8674-5789bcbe7aa9@intel.com>
- <CAJZ5v0i4in=oyhXKOQ1MeoRP5fAhHdEFgZZp98N0pF8hB6BtbQ@mail.gmail.com>
-From:   "Wilczynski, Michal" <michal.wilczynski@intel.com>
-In-Reply-To: <CAJZ5v0i4in=oyhXKOQ1MeoRP5fAhHdEFgZZp98N0pF8hB6BtbQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR2P281CA0182.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:9f::10) To CO6PR11MB5603.namprd11.prod.outlook.com
- (2603:10b6:5:35c::12)
+        Mon, 9 Oct 2023 09:50:13 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C6C594;
+        Mon,  9 Oct 2023 06:50:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50A13C433CA;
+        Mon,  9 Oct 2023 13:50:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696859410;
+        bh=dRYwhUOLNiPm+gbR1QJ2/OuqCiMwBKt8gZU58jS1ARU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BO1Ch1TzO12cQapH9MRPII38i6P86+kSjHYrn7dnlXfaSlnJw8W8t2/GVdWnt0RwM
+         9p2sgwE71acJEl4Fr1hQ4aJDIYzJbz8GLLbWnLqPUlU6qYTCYVt6eDbi3WkfQr3/Ac
+         9k5KGVp8mhaOkMk8iN/DfDP0GRuzRXDe/7SmPwyI=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     stable@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: [PATCH 4.19 00/91] 4.19.296-rc1 review
+Date:   Mon,  9 Oct 2023 15:05:32 +0200
+Message-ID: <20231009130111.518916887@linuxfoundation.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR11MB5603:EE_|BN0PR11MB5709:EE_
-X-MS-Office365-Filtering-Correlation-Id: 379d642b-ce86-4e5b-d289-08dbc8c81e01
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dbqhsgw6mRngPzodN795JmuWIhWRwsgPjGXxmJQYLiGvaC+fZW/wqKqNPmrrJJ5veLgBYoBq/XpPnggy3oUz/ak7kUacgBwyxuub0Od6v9Ekf3MgJBPH6ejK2js1u7DzavE6ZhsvvSUzsq4Gr2FPiNNDFw/saB35c3SFmdnVC7PpVeSJox9v9/0K9djrzuy94T8gdQkzTA2kHg/17xKzPPRJTP5mxSnKgrMmSXzW16dO8W0S1H5BkXFD/QC/h8WLQtjLOm6ibBfBO5uKokjXOuax6BOe0nNB8e6D15a7HEicvoVa/LuW+fB8E4Usi8tCgrKCqKKgQzBL40+zhGXnrv1dpVGO7aFnN9Q+2k4Qa67TCJqa5+8yWZZriNutYLaEf/xxPxYe7BPXI/u9Ng9BaCUMqjeWWM5OQ2gCz964CDrXrG7Z78Q1TTV158mpn3AVWdYP0E9jrxgNteAT53E33gzM7dPH3K3wlGIUAcVq6glzccF04V8iV9y+xUrdatkfFj1VdOvNFcC7nvgCmZx4/xI4Y9+C9f1AXw9r9rEqzRAKtthgO+xWKcwtHpnqse5ecEQxT7UyVhTQrPFTWlUvO9ADwIcDsUq0+hMhteg1zEYzEIKKThJPh0EI8gm/8mX2wntC7on5SqMSlrxXNut6hQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR11MB5603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(396003)(136003)(39860400002)(376002)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(31686004)(6506007)(53546011)(107886003)(2616005)(6512007)(82960400001)(36756003)(86362001)(31696002)(38100700002)(26005)(83380400001)(2906002)(6486002)(966005)(41300700001)(6666004)(478600001)(4326008)(8936002)(8676002)(316002)(5660300002)(66476007)(66556008)(66946007)(6916009)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cjNuWVIwTWpadGNaS3hzSjRqeFZJTlloTmhwTnhlVGNoQm5ib0lmQ0c4TmRY?=
- =?utf-8?B?YnJUL2g2L0hFeEN1ZzlKK3VJZFcwemhpV3Z5U3ZiQkZVZkt4T21uWWpCTkhu?=
- =?utf-8?B?WGhZSjVJMTA1RXpobGgxWWpqVjVsVXY3Rndmb0tOcy9SOXlrV25iU2tHWGQy?=
- =?utf-8?B?TWhUQlFIWVlYSEJoa0x5MUxVaWdkVjRmWWVYcEVqZzVsZXJMUW9ic2dBUzAz?=
- =?utf-8?B?TksrUUM0enBmaFhqaVFLK2h4M0RyRFc4aStYYUZ6RFVZYUFFUDFyWDhGcFh4?=
- =?utf-8?B?UmVqT1VJQVJDTnltVFZhNEhjNEE0M3ZGbzdEdjQ3R2U2NHdyUGNzWUNKOUZi?=
- =?utf-8?B?NWtzbytqYXl4eHBSaW12aGdVaWJ2QUNrZWZTL3dnWHBXK09XWFZvT3VaUkl0?=
- =?utf-8?B?clhqbnB1VHBhUFdnZENtNmpJTExwQlV0Nm5yUTlESjVNd1YxdDZRVnJFUXhq?=
- =?utf-8?B?cDhvUTE3YWZ6eW5Ec1pOeGpsV0tISXVaclg1dXpTRXNDTGt5YlNXcHZqdTlm?=
- =?utf-8?B?WGQ4d254VmVqWTNKR3p3eUpMTDRqSkg4bGt2YXA0UFVnOVd4Q1NpMG5ZVks0?=
- =?utf-8?B?UEY3MEhSWDg1cHAwRkMzZmtKR0s5TWRMUy9WeUh2bmJscTBFWll6Y05nbEFj?=
- =?utf-8?B?SEY0NW41NkRuQjQyb28yOFhvd3BTajdONGZIQjYreGd6SkdtSGJnWmxqaWw2?=
- =?utf-8?B?VWtraGJ6WUVSeG8rZk03QzN6TnNQcFIyYjA0aXREa2pFMUoveUJzb2c5T1c5?=
- =?utf-8?B?bkZwdXE2QjNYZFkrNlFGSlVkWU1zaU0zUUdmMkNYeWR1ZXJ2YnJkQkQzRjNK?=
- =?utf-8?B?R1E0SGd4dEh3QjZDU1JhKzZsM2NYM0xRbU5WaDZicGkvQ0JoVFdQYSswemd1?=
- =?utf-8?B?U0ZFZUM3QjNjV2VwU0VTVldwV0dISjhoYTNTSXBBdFNnZ2hqdVBnNWYxVlo2?=
- =?utf-8?B?RlBLYmg1WVZSK3NWZGNUTldYRElKdC8xSVd5cWdITGZKNk5zWFBUMEZsZ1pm?=
- =?utf-8?B?cFpyZ09TWkpBMEZxazdOOUNvRy9uYUV2QW1lRzVnZUpkcDNRTWpsY1RXcitS?=
- =?utf-8?B?UDVtQ2poRWtPeFZraDRuVW1TandqRlBvSEtVMXZZOHQva3dKd0xKVmJJV3Bv?=
- =?utf-8?B?WWE1TmhCU0luaVhOTDdNR242VlYvK2JUQ1RNNERvTGdUMnVHeDV6bHJZK2du?=
- =?utf-8?B?ZVZ0TVBSakZDaWV6UFJkWWdkV2UreW1mUGJtbjU4blphQ0JwY1hhTm83T3A2?=
- =?utf-8?B?enp3UHdFZDl6RWJrU3dFSUk5UlRiYXArVFVKTndvdjd5ZjdVak1kYlJMaUJN?=
- =?utf-8?B?ZVNuUjdpanNGRzcwUE9GaU5EeklCWVg0enhvd2hiaklkUFJxSXkzUnZ5WGR2?=
- =?utf-8?B?My9WTWZxcllmZ09SaDlLWFU3RkpmdHhEZ09VR2N5TEw2RGZBNnJtaVNjdnBv?=
- =?utf-8?B?TktsbjRJNy94Z3o1VVlKK0YzN08wMGFMWVBtSUQ1R0NXNC9wMlJzTzZtM1Mx?=
- =?utf-8?B?TlBYWWF5UkZuejVQaENRRFU0cExFejhYTWhNQ1pkN3NkcWhvT2tMNjhrQ3Ay?=
- =?utf-8?B?TTFMc3F3SXBEMEZScndmeDdnVXg5bkpsTmlFdk1TeDdlc1RhaEJWK1QrSVU4?=
- =?utf-8?B?U21aTzMvcG5vakJSYTUva2hTeGwwemY5a0s5TVdQZm5xSWhVKzlpMWduNXB5?=
- =?utf-8?B?SE45d1BCVlpVcjREbTQwbzQ5cHFCTjJ5d040SnlTRGwwN1h0OUc2Y2djQzFr?=
- =?utf-8?B?bVJpbEZEcUNQcHdrc2tTZitLVGRlU1MvZ29vN2VWc0cwSXQwZlFpbERQQ1hF?=
- =?utf-8?B?KzR2QmNuWVg0cUNFVlhMN2d3SU9mT2VXckhUVG5YVjh4N2FNaGhFU3NzSHV5?=
- =?utf-8?B?SCtHdTlwaFh1RThsN3Y1MTZEUWExamJQUlZOMjl4MkhjTXVWdW1sM1FLdy9J?=
- =?utf-8?B?c3gyZE1QODlRZ2RDZjR5NDZrdW5oZFN4bk9FZm1qTjczNVBOZUxQUW1lOGhT?=
- =?utf-8?B?ZzhrNjU0VkhaSVdyeW41WkpLTUo3eTVZL0taQnRIS3VZaGROVnA3bnprN2ll?=
- =?utf-8?B?NHhOMXcrUEpkdlpENzNsaGlXNmJPenRwazdwZXl3Q0M0a0ZxREIwcFU1a1Ey?=
- =?utf-8?B?eFdBZlZpR1hUZDNTcEcyYm9NRWsraUpPclZXbmtuM1ZwdWRHVkhmUndCMmx4?=
- =?utf-8?B?Qmc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 379d642b-ce86-4e5b-d289-08dbc8c81e01
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR11MB5603.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2023 13:03:22.8207
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lwzYGlgUe+iLkF5c1N9ET5kfwvJJ+ftMsNpqUdVFEQ4Cq5eD+tW6SECQsDu9rDhWnP3E34lIQ8yGUBlkHss9ShOHNGLlbSmyoPkYAlDJsS8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR11MB5709
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: quilt/0.67
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.296-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.19.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.19.296-rc1
+X-KernelTest-Deadline: 2023-10-11T13:01+00:00
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is the start of the stable review cycle for the 4.19.296 release.
+There are 91 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
+
+Responses should be made by Wed, 11 Oct 2023 13:00:55 +0000.
+Anything received after that time might be too late.
+
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.296-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+and the diffstat can be found below.
+
+thanks,
+
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.19.296-rc1
+
+Eric Dumazet <edumazet@google.com>
+    dccp: fix dccp_v4_err()/dccp_v6_err() again
+
+John David Anglin <dave@parisc-linux.org>
+    parisc: Restore __ldcw_align for PA-RISC 2.0 processors
+
+Shay Drory <shayd@nvidia.com>
+    RDMA/mlx5: Fix NULL string error
+
+Leon Romanovsky <leonro@nvidia.com>
+    RDMA/cma: Fix truncation compilation warning in make_cma_ports
+
+Duje Mihanović <duje.mihanovic@skole.hr>
+    gpio: pxa: disable pinctrl calls for MMP_GPIO
+
+Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+    gpio: aspeed: fix the GPIO number passed to pinctrl_gpio_set_config()
+
+Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+    IB/mlx4: Fix the size of a buffer in add_port_entries()
+
+Ivan Babrou <ivan@cloudflare.com>
+    cpupower: add Makefile dependencies for install targets
+
+Xin Long <lucien.xin@gmail.com>
+    sctp: update hb timer immediately after users change hb_interval
+
+Xin Long <lucien.xin@gmail.com>
+    sctp: update transport state when processing a dupcook packet
+
+Neal Cardwell <ncardwell@google.com>
+    tcp: fix delayed ACKs for MSS boundary condition
+
+Neal Cardwell <ncardwell@google.com>
+    tcp: fix quick-ack counting to count actual ACKs of new data
+
+Ben Wolsieffer <ben.wolsieffer@hefring.com>
+    net: stmmac: dwmac-stm32: fix resume on STM32 MCU
+
+Shigeru Yoshida <syoshida@redhat.com>
+    net: usb: smsc75xx: Fix uninit-value access in __smsc75xx_read_reg
+
+David Howells <dhowells@redhat.com>
+    ipv4, ipv6: Fix handling of transhdrlen in __ip{,6}_append_data()
+
+Mauricio Faria de Oliveira <mfo@canonical.com>
+    modpost: add missing else to the "of" check
+
+Junxiao Bi <junxiao.bi@oracle.com>
+    scsi: target: core: Fix deadlock due to recursive locking
+
+Richard Fitzgerald <rf@opensource.cirrus.com>
+    regmap: rbtree: Fix wrong register marked as in-cache when creating new node
+
+Alexandra Diupina <adiupina@astralinux.ru>
+    drivers/net: process the result of hdlc_open() and add call of hdlc_close() in uhdlc_close()
+
+Pin-yen Lin <treapking@chromium.org>
+    wifi: mwifiex: Fix oob check condition in mwifiex_process_rx_packet
+
+Zhihao Cheng <chengzhihao1@huawei.com>
+    ubi: Refuse attaching if mtd's erasesize is 0
+
+Qu Wenruo <wqu@suse.com>
+    btrfs: reject unknown mount options early
+
+Jordan Rife <jrife@google.com>
+    net: replace calls to sock->ops->connect() with kernel_connect()
+
+Gustavo A. R. Silva <gustavoars@kernel.org>
+    wifi: mwifiex: Fix tlv_buf_left calculation
+
+Gustavo A. R. Silva <gustavoars@kernel.org>
+    qed/red_ll2: Fix undefined behavior bug in struct qed_ll2_info
+
+Dinghao Liu <dinghao.liu@zju.edu.cn>
+    scsi: zfcp: Fix a double put in zfcp_port_enqueue()
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Revert "PCI: qcom: Disable write access to read only registers for IP v2.3.3"
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    media: dvb: symbol fixup for dvb_attach() - again
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Revert "drivers core: Use sysfs_emit and sysfs_emit_at for show(device *...) functions"
+
+Niklas Cassel <niklas.cassel@wdc.com>
+    ata: libata: disallow dev-initiated LPM transitions to unsupported states
+
+Shida Zhang <zhangshida@kylinos.cn>
+    ext4: fix rec_len verify error
+
+Greg Ungerer <gerg@kernel.org>
+    fs: binfmt_elf_efpic: fix personality for ELF-FDPIC
+
+Matthias Schiffer <mschiffer@universe-factory.net>
+    ata: libata-sata: increase PMP SRST timeout to 10s
+
+Damien Le Moal <dlemoal@kernel.org>
+    ata: libata-core: Do not register PM operations for SAS ports
+
+Damien Le Moal <dlemoal@kernel.org>
+    ata: libata-core: Fix port and device removal
+
+Damien Le Moal <dlemoal@kernel.org>
+    ata: libata-core: Fix ata_port_request_pm() locking
+
+Mika Westerberg <mika.westerberg@linux.intel.com>
+    net: thunderbolt: Fix TCPv6 GSO checksum calculation
+
+Josef Bacik <josef@toxicpanda.com>
+    btrfs: properly report 0 avail for very full file systems
+
+Heiner Kallweit <hkallweit1@gmail.com>
+    i2c: i801: unregister tco_pdev in i801_probe() error path
+
+Niklas Cassel <niklas.cassel@wdc.com>
+    ata: libata-scsi: ignore reserved bits for REPORT SUPPORTED OPERATION CODES
+
+Kailang Yang <kailang@realtek.com>
+    ALSA: hda: Disable power save for solving pop issue on Lenovo ThinkCentre M70q
+
+Pan Bian <bianpan2016@163.com>
+    nilfs2: fix potential use after free in nilfs_gccache_submit_read_data()
+
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+    serial: 8250_port: Check IRQ data before use
+
+Roberto Sassu <roberto.sassu@huawei.com>
+    smack: Record transmuting in smk_transmuted
+
+Roberto Sassu <roberto.sassu@huawei.com>
+    smack: Retrieve transmuting information in smack_inode_getsecurity()
+
+Vishal Goel <vishal.goel@samsung.com>
+    Smack:- Use overlay inode label in smack_inode_copy_up()
+
+Shivasharan S <shivasharan.srikanteshwara@broadcom.com>
+    scsi: megaraid_sas: Enable msix_load_balance for Invader and later controllers
+
+Felix Riemann <felix.riemann@sma.de>
+    net: Fix unwanted sign extension in netdev_stats_to_stats64()
+
+Mika Westerberg <mika.westerberg@linux.intel.com>
+    watchdog: iTCO_wdt: Set NO_REBOOT if the watchdog is not already running
+
+Mika Westerberg <mika.westerberg@linux.intel.com>
+    watchdog: iTCO_wdt: No need to stop the timer in probe
+
+Pratyush Yadav <ptyadav@amazon.de>
+    nvme-pci: do not set the NUMA node of device if it has none
+
+Thomas Zimmermann <tzimmermann@suse.de>
+    fbdev/sh7760fb: Depend on FB=y
+
+Stanislav Fomichev <sdf@google.com>
+    bpf: Clarify error expectations from bpf_clone_redirect
+
+Niklas Cassel <niklas.cassel@wdc.com>
+    ata: libata-eh: do not clear ATA_PFLAG_EH_PENDING in ata_eh_reset()
+
+Zheng Yejian <zhengyejian1@huawei.com>
+    ring-buffer: Avoid softlockup in ring_buffer_resize()
+
+Zheng Yejian <zhengyejian1@huawei.com>
+    selftests/ftrace: Correctly enable event in instance-event.tc
+
+Helge Deller <deller@gmx.de>
+    parisc: irq: Make irq_stack_union static to avoid sparse warning
+
+Helge Deller <deller@gmx.de>
+    parisc: drivers: Fix sparse warning
+
+Helge Deller <deller@gmx.de>
+    parisc: iosapic.c: Fix sparse warnings
+
+Helge Deller <deller@gmx.de>
+    parisc: sba: Fix compile warning wrt list of SBA devices
+
+Wenhua Lin <Wenhua.Lin@unisoc.com>
+    gpio: pmic-eic-sprd: Add can_sleep flag for PMIC EIC chip
+
+Tony Lindgren <tony@atomide.com>
+    ARM: dts: ti: omap: motorola-mapphone: Fix abe_clkctrl warning on boot
+
+Timo Alho <talho@nvidia.com>
+    clk: tegra: fix error return case for recalc_rate
+
+Christoph Hellwig <hch@lst.de>
+    MIPS: Alchemy: only build mmc support helpers if au1xmmc is enabled
+
+Jan Kara <jack@suse.cz>
+    ext4: do not let fstrim block system suspend
+
+Jan Kara <jack@suse.cz>
+    ext4: move setting of trimmed bit into ext4_try_to_trim_range()
+
+Kemeng Shi <shikemeng@huaweicloud.com>
+    ext4: replace the traditional ternary conditional operator with with max()/min()
+
+Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+    ext4: mark group as trimmed only if it was fully scanned
+
+Lukas Czerner <lczerner@redhat.com>
+    ext4: change s_last_trim_minblks type to unsigned long
+
+Lukas Bulwahn <lukas.bulwahn@gmail.com>
+    ext4: scope ret locally in ext4_try_to_trim_range()
+
+Wang Jianchao <wangjianchao@kuaishou.com>
+    ext4: add new helper interface ext4_try_to_trim_range()
+
+Wang Jianchao <wangjianchao@kuaishou.com>
+    ext4: remove the 'group' parameter of ext4_trim_extent
+
+Junxiao Bi <junxiao.bi@oracle.com>
+    scsi: megaraid_sas: Fix deadlock on firmware crashdump
+
+Shivasharan S <shivasharan.srikanteshwara@broadcom.com>
+    scsi: megaraid_sas: Load balance completions across all MSI-X
+
+Manish Rangankar <mrangankar@marvell.com>
+    scsi: qla2xxx: Remove unsupported ql2xenabledif option
+
+Martin K. Petersen <martin.petersen@oracle.com>
+    scsi: qla2xxx: Add protection mask module parameters
+
+Werner Sembach <wse@tuxedocomputers.com>
+    Input: i8042 - add quirk for TUXEDO Gemini 17 Gen1/Clevo PD70PN
+
+Xiaoke Wang <xkernel.wang@foxmail.com>
+    i2c: mux: demux-pinctrl: check the return value of devm_kstrdup()
+
+Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+    gpio: tb10x: Fix an error handling path in tb10x_gpio_probe()
+
+Ziyang Xuan <william.xuanziyang@huawei.com>
+    team: fix null-ptr-deref when team device type is changed
+
+Eric Dumazet <edumazet@google.com>
+    net: bridge: use DEV_STATS_INC()
+
+Eric Dumazet <edumazet@google.com>
+    net: add atomic_long_t to net_device_stats fields
+
+Jie Wang <wangjie125@huawei.com>
+    net: hns3: add 5ms delay before clear firmware reset irq source
+
+Kajol Jain <kjain@linux.ibm.com>
+    powerpc/perf/hv-24x7: Update domain value check
+
+Kyle Zeng <zengyhkyle@gmail.com>
+    ipv4: fix null-deref in ipv4_link_failure
+
+Sabrina Dubroca <sd@queasysnail.net>
+    selftests: tls: swap the TX and RX sockets in some tests
+
+Kees Cook <keescook@chromium.org>
+    selftests/tls: Add {} to avoid static checker warning
+
+Pablo Neira Ayuso <pablo@netfilter.org>
+    netfilter: nf_tables: disallow element removal on anonymous sets
+
+Szuying Chen <chensiying21@gmail.com>
+    ata: libahci: clear pending interrupt status
+
+Hannes Reinecke <hare@suse.de>
+    ata: ahci: Drop pointless VPRINTK() calls and convert the remaining ones
+
+Trond Myklebust <trond.myklebust@hammerspace.com>
+    NFS/pNFS: Report EINVAL errors from connect() to the server
 
 
-On 10/9/2023 2:27 PM, Rafael J. Wysocki wrote:
-> On Mon, Oct 9, 2023 at 10:40 AM Wilczynski, Michal
-> <michal.wilczynski@intel.com> wrote:
->>
->> Hi !
->>
->> Thanks a lot for a review, to both of you ! :-)
->>
->> On 10/7/2023 12:43 PM, Rafael J. Wysocki wrote:
->>> On Sat, Oct 7, 2023 at 12:41 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
->>>> On Sat, Oct 7, 2023 at 9:56 AM Andy Shevchenko
->>>> <andriy.shevchenko@intel.com> wrote:
->>>>> On Fri, Oct 06, 2023 at 09:47:57PM +0200, Rafael J. Wysocki wrote:
->>>>>> On Fri, Oct 6, 2023 at 8:33 PM Michal Wilczynski
->>>>>> <michal.wilczynski@intel.com> wrote:
->>>>> ...
->>>>>
->>>>>>>  struct acpi_ac {
->>>>>>>         struct power_supply *charger;
->>>>>>>         struct power_supply_desc charger_desc;
->>>>>>> -       struct acpi_device *device;
->>>>>>> +       struct device *dev;
->>>>>> I'm not convinced about this change.
->>>>>>
->>>>>> If I'm not mistaken, you only use the dev pointer above to get the
->>>>>> ACPI_COMPANION() of it, but the latter is already found in _probe(),
->>>>>> so it can be stored in struct acpi_ac for later use and then the dev
->>>>>> pointer in there will not be necessary any more.
->>>>>>
->>>>>> That will save you a bunch of ACPI_HANDLE() evaluations and there's
->>>>>> nothing wrong with using ac->device->handle.  The patch will then
->>>>>> become almost trivial AFAICS and if you really need to get from ac to
->>>>>> the underlying platform device, a pointer to it can be added to struct
->>>>>> acpi_ac without removing the ACPI device pointer from it.
->> Yeah we could add platform device without removing acpi device, and
->> yes that would introduce data duplication, like Andy noticed.
-> But he hasn't answered my question regarding what data duplication he
-> meant, exactly.
->
-> So what data duplication do you mean?
+-------------
 
-So what I meant was that many drivers would find it useful to have
-a struct device embedded in their 'private structure', and in that case
-there would be a duplication of platform_device and acpi_device as
-both pointers would be needed. Mind this if you only have struct device
-it's easy to get acpi device, but it's not the case the other way around.
+Diffstat:
 
-So for this driver it's just a matter of sticking to convention, for the others
-like it would be duplication.
+ Makefile                                           |   4 +-
+ arch/arm/boot/dts/omap4-droid4-xt894.dts           |   4 +-
+ arch/mips/alchemy/devboards/db1000.c               |   4 +
+ arch/mips/alchemy/devboards/db1200.c               |   6 +
+ arch/mips/alchemy/devboards/db1300.c               |   4 +
+ arch/parisc/include/asm/ldcw.h                     |  36 +++---
+ arch/parisc/include/asm/ropes.h                    |   3 +
+ arch/parisc/include/asm/spinlock_types.h           |   5 -
+ arch/parisc/kernel/drivers.c                       |   2 +-
+ arch/parisc/kernel/irq.c                           |   2 +-
+ arch/powerpc/perf/hv-24x7.c                        |   2 +-
+ drivers/ata/ahci.c                                 |  13 +-
+ drivers/ata/ahci_xgene.c                           |   4 -
+ drivers/ata/libahci.c                              |  49 ++++----
+ drivers/ata/libata-core.c                          |  60 ++++++---
+ drivers/ata/libata-eh.c                            |  13 +-
+ drivers/ata/libata-scsi.c                          |   2 +-
+ drivers/ata/libata-transport.c                     |   9 +-
+ drivers/ata/libata.h                               |   2 +
+ drivers/base/arch_topology.c                       |   2 +-
+ drivers/base/cacheinfo.c                           |  18 +--
+ drivers/base/core.c                                |   8 +-
+ drivers/base/cpu.c                                 |  34 ++---
+ drivers/base/firmware_loader/fallback.c            |   2 +-
+ drivers/base/memory.c                              |  24 ++--
+ drivers/base/node.c                                |  34 ++---
+ drivers/base/platform.c                            |   2 +-
+ drivers/base/power/sysfs.c                         |  50 ++++----
+ drivers/base/regmap/regcache-rbtree.c              |   3 +-
+ drivers/base/soc.c                                 |   8 +-
+ drivers/char/agp/parisc-agp.c                      |   2 -
+ drivers/clk/tegra/clk-bpmp.c                       |   2 +-
+ drivers/gpio/gpio-aspeed.c                         |   2 +-
+ drivers/gpio/gpio-pmic-eic-sprd.c                  |   1 +
+ drivers/gpio/gpio-pxa.c                            |   1 +
+ drivers/gpio/gpio-tb10x.c                          |   6 +-
+ drivers/i2c/busses/i2c-i801.c                      |   1 +
+ drivers/i2c/muxes/i2c-demux-pinctrl.c              |   4 +
+ drivers/infiniband/core/cma_configfs.c             |   2 +-
+ drivers/infiniband/hw/mlx4/sysfs.c                 |   2 +-
+ drivers/infiniband/hw/mlx5/main.c                  |   2 +-
+ drivers/input/serio/i8042-x86ia64io.h              |   7 ++
+ drivers/media/dvb-frontends/sp8870.c               |   2 +-
+ drivers/media/tuners/tuner-xc2028.c                |   2 +-
+ drivers/mtd/ubi/build.c                            |   7 ++
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c    |   5 +
+ drivers/net/ethernet/qlogic/qed/qed_ll2.h          |   2 +-
+ drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c  |   7 +-
+ drivers/net/team/team.c                            |  10 +-
+ drivers/net/thunderbolt.c                          |   3 +-
+ drivers/net/usb/smsc75xx.c                         |   4 +-
+ drivers/net/wan/fsl_ucc_hdlc.c                     |  12 +-
+ .../net/wireless/marvell/mwifiex/11n_rxreorder.c   |   4 +-
+ drivers/net/wireless/marvell/mwifiex/sta_rx.c      |  16 +--
+ drivers/nvme/host/pci.c                            |   2 -
+ drivers/parisc/iosapic.c                           |   4 +-
+ drivers/parisc/iosapic_private.h                   |   4 +-
+ drivers/pci/controller/dwc/pcie-qcom.c             |   2 -
+ drivers/s390/scsi/zfcp_aux.c                       |   9 +-
+ drivers/scsi/megaraid/megaraid_sas.h               |   5 +-
+ drivers/scsi/megaraid/megaraid_sas_base.c          |  44 ++++---
+ drivers/scsi/megaraid/megaraid_sas_fusion.c        |  18 ++-
+ drivers/scsi/qla2xxx/qla_attr.c                    |   2 -
+ drivers/scsi/qla2xxx/qla_dbg.c                     |   2 +-
+ drivers/scsi/qla2xxx/qla_os.c                      |  45 +++++--
+ drivers/target/target_core_device.c                |  11 +-
+ drivers/tty/serial/8250/8250_port.c                |   5 +-
+ drivers/video/fbdev/Kconfig                        |   2 +-
+ drivers/watchdog/iTCO_wdt.c                        |  26 +++-
+ fs/binfmt_elf_fdpic.c                              |   5 +-
+ fs/btrfs/super.c                                   |   6 +-
+ fs/ext4/ext4.h                                     |   2 +-
+ fs/ext4/mballoc.c                                  | 138 ++++++++++++---------
+ fs/ext4/namei.c                                    |  26 ++--
+ fs/nfs/flexfilelayout/flexfilelayout.c             |   1 +
+ fs/nilfs2/gcinode.c                                |   6 +-
+ include/linux/if_team.h                            |   2 +
+ include/linux/libata.h                             |   6 +-
+ include/linux/netdevice.h                          |  58 +++++----
+ include/net/dst.h                                  |   5 +-
+ include/net/tcp.h                                  |   6 +-
+ include/uapi/linux/bpf.h                           |   4 +-
+ kernel/trace/ring_buffer.c                         |   2 +
+ net/bridge/br_forward.c                            |   4 +-
+ net/bridge/br_input.c                              |   4 +-
+ net/core/dev.c                                     |  14 +--
+ net/dccp/ipv4.c                                    |   9 +-
+ net/dccp/ipv6.c                                    |   9 +-
+ net/ipv4/route.c                                   |   4 +-
+ net/ipv4/tcp_input.c                               |  13 ++
+ net/ipv4/tcp_output.c                              |   7 +-
+ net/l2tp/l2tp_ip6.c                                |   2 +-
+ net/netfilter/ipvs/ip_vs_sync.c                    |   4 +-
+ net/netfilter/nf_tables_api.c                      |   9 +-
+ net/rds/tcp_connect.c                              |   2 +-
+ net/sctp/associola.c                               |   3 +-
+ net/sctp/socket.c                                  |   1 +
+ scripts/mod/file2alias.c                           |   2 +-
+ security/smack/smack.h                             |   1 +
+ security/smack/smack_lsm.c                         |  65 +++++++---
+ sound/pci/hda/hda_intel.c                          |   1 +
+ tools/include/uapi/linux/bpf.h                     |   4 +-
+ tools/power/cpupower/Makefile                      |   8 +-
+ tools/power/cpupower/bench/Makefile                |   2 +-
+ .../ftrace/test.d/instances/instance-event.tc      |   2 +-
+ tools/testing/selftests/net/tls.c                  |  11 +-
+ 106 files changed, 700 insertions(+), 444 deletions(-)
 
-In my version of this patch we managed to avoid this duplication, thanks
-to the contextual argument introduced before, but look at this patch:
-https://github.com/mwilczy/linux-pm/commit/cc8ef52707341e67a12067d6ead991d56ea017ca
-
-Author of this patch had to introduce platform_device and acpi_device to the struct ac, so
-there was some duplication. That is the case for many drivers to come, so I decided it's better
-to change this and have a pattern with keeping only 'struct device'.
-
->
->> And yes, maybe for this particular driver there is little impact (as struct device is not
->> really used), but in my opinion we should adhere to some common coding
->> pattern among all acpi drivers in order for the code to be easier to maintain
->> and improve readability, also for any newcomer.
-> Well, maybe.
->
-> But then please minimize the number of code lines changed in this
-> particular patch and please avoid changes that are not directly
-> related to the purpose of the patch.
-
-Sure, like I've stated before I felt this is part of this patch, we only narrowly
-escaped the duplication by introducing contextual argument before ;-)
-
->
->>>>> The idea behind is to eliminate data duplication.
->>>> What data duplication exactly do you mean?
->>>>
->>>> struct acpi_device *device is replaced with struct device *dev which
->>>> is the same size.  The latter is then used to obtain a struct
->>>> acpi_device pointer.  Why is it better to do this than to store the
->>>> struct acpi_device itself?
->>> This should be "store the struct acpi_device pointer itself", sorry.
->> Hi,
->> So let me explain the reasoning here:
->>
->> 1) I've had a pleasure to work with different drivers in ACPI directory. In my
->>     opinion the best ones I've seen, were build around the concept of struct
->>     device (e.g NFIT). It's a struct that's well understood in the kernel, and
->>     it's easier to understand without having to read any ACPI specific code.
->>     If I see something like ACPI_HANDLE(dev), I think 'ah-ha -  having a struct
->>     device I can easily get struct acpi_device - they're connected'. And I think
->>     using a standardized macro, instead of manually dereferencing pointers is
->>     also much easier for ACPI newbs reading the code, as it hides a bit complexity
->>     of getting acpi device from struct device. And to be honest I don't think there would
->>     be any measurable performance change, as those code paths are far from
->>     being considered 'hot paths'. So if we can get the code easier to understand
->>     from a newcomer perspective, why not do it.
-> I have a differing opinion on a couple of points above, and let's make
-> one change at a time.
-
-OK
-
->
->> 2) I think it would be good to stick to the convention, and introduce some coding
->>      pattern, for now some drivers store the struct device pointer, and other store
->>      acpi device pointer . As I'm doing this change acpi device pointer become less
->>      relevant, as we're using platform device. So to reflect that loss of relevance
->>      we can choose to adhere to a pattern where we use it less and less, and the
->>      winning approach would be to use 'struct device' by default everywhere we can
->>      so maybe eventually we would be able to lose acpi_device altogether at some point,
->>      as most of the usage is to retrieve acpi handle and execute some AML method.
->>      So in my understanding acpi device is already obsolete at this point, if we can
->>      manage to use it less and less, and eventually wipe it out then why not ;-)
-> No, ACPI device is not obsolete, it will still be needed for various
-> things, like power management and hotplug.
-
-Sure, haven't reviewed all that use cases yet, but the name 'acpi device'
-implies like it's part of a driver framework, and it won't be anymore after
-transformations are completed.
-
->
-> Also, I'd rather store a struct acpi_device than acpi_handle, because
-> the latter is much better from the compile-time type correctness
-> checks and similar.
-
-Sure that makes sense
-
->
-> I can send my version of the $subject patch just fine if you strongly
-> disagree with me.
-
-Well I can disagree, but still change it ;-). Just explained my reasoning so
-you can make a decision with all the data points provided.
-
-Thanks a lot !
-Michał
-
->
 
