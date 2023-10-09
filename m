@@ -2,62 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39AA27BD93A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F78F7BD93B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346164AbjJILHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 07:07:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40854 "EHLO
+        id S1346166AbjJILHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 07:07:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346015AbjJILHU (ORCPT
+        with ESMTP id S1346139AbjJILHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 07:07:20 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2065494
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 04:07:18 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-991c786369cso731086466b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 04:07:18 -0700 (PDT)
+        Mon, 9 Oct 2023 07:07:48 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0566099
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 04:07:47 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-536071e79deso9610435a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 04:07:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696849636; x=1697454436; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=94GrlV6BpXzh9G3J0ul8d01iN4TaQgOhd/Tfg+JX6og=;
-        b=mP6FAKp7VpXGO/fULV1JVkxA+MiPiUfMkfkGCSMWfJU02Po0NOcv8jmtVIo5I/K1UD
-         +svSl8CVudsIRn19Gz3lG7KK37cH5w0ESvCCWP2AGcdxE92Qo1s84k1DXscnrHJszPWf
-         Ayt27IvJRqtJVcE8NvI5Sa435N89iOhaqSfB3oouyVX6T4gPJ0wR0bqwP0QIrbXbyubt
-         hXP62syheD/4xayygaSFhp+aDsN4bYDqikGKAwxhMULEW5qsQNaPL7n5aL9n2HdUBYjX
-         nYIGBv5U9TGbuuQsucvuutfi+xihBfpio5aktffnb/WAVUFQRqJDOU1nlIuedH6pPXpS
-         7ZQQ==
+        d=gmail.com; s=20230601; t=1696849665; x=1697454465; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=guHVdpv8c4ei2FuWUdfrBzoMOIcM0hSMBR/+vC6tUmY=;
+        b=g9boVoutIOJ4Q8JjnCHGbDVFnWyylDszwc0AwH5rXRG+Nfz8yewJXO9OPojtmpApoG
+         XjasYbJRnb4XoXNPjVSDqSpn2T25g7YkAM3bP9LkoeiP+RnBWSVlMyyK4nIalUJk09QE
+         Uds90w01VZM7lSzzDsLse7U9YgxqhyrjVrYsdS8d+rDzKSehDXkAM2tkLrVY4KaZFkv8
+         UK5Xuin1KUZbv4k4ghwh+ViRh/jUfkX35RU0Sgiz+44yRoHAcu0OUuvgp2Hx7E4aq44G
+         oblepXjRcTu84g2O4AnjsVScD5rVxnyQncqp/3eKbfCd6D/+C08QM5Lg2f3XRD82uhvg
+         C5QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696849636; x=1697454436;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=94GrlV6BpXzh9G3J0ul8d01iN4TaQgOhd/Tfg+JX6og=;
-        b=TIkCgUIxjTvIl8GHuVRAnDUDfE6aerDyx69kAsEcV675TYX+MFVPU6I9BqYwLM1B+J
-         JrmMEe01KXnRn9eafoORB5UkCdrTIQmlR/rd1m4pMt6Rz5CtMU+rEJfLiwUvA0hcgfvG
-         jUhx/wZbrGxIHUeWkYFMqOIab8G2SINwDibX5c+zVjflSFyKquBE6VECtBIaulg9GN0B
-         4m5jfdZthcDccliwB67p90ssMeWZ7dtEUXSP2qOn9vlaKyc5pTjzsbGyL2nX7BRnsEKC
-         IyDga6V0nMU0PMDbh5KOEqLU+oJ5/IQhB0tn9a4ib2tPSzVyFNvyx6mEa7A8NMxDsOjK
-         zs8w==
-X-Gm-Message-State: AOJu0YxsPFRt71/V9mCbP8QWO2oSOa8ZzW8AYzi3nWmvCZHh7Q121DIW
-        VAMFv2aFfeTHqdWTTJ6IT0LNcE+j6Q==
-X-Google-Smtp-Source: AGHT+IHAu4nCcMbixG78LVCeC4CkKiFDMQ3xEvc+tqxg+jBzuKhd3fvPDY4cethnaS72EsBu2hlLbw==
-X-Received: by 2002:a17:906:209:b0:9a9:e5bb:eddc with SMTP id 9-20020a170906020900b009a9e5bbeddcmr14496587ejd.16.1696849636330;
-        Mon, 09 Oct 2023 04:07:16 -0700 (PDT)
-Received: from p183 ([46.53.254.83])
-        by smtp.gmail.com with ESMTPSA id r11-20020a170906364b00b009a1a5a7ebacsm6506570ejb.201.2023.10.09.04.07.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 04:07:15 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 14:07:14 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, Hugh Dickins <hughd@google.com>,
-        Shuah Khan <shuah@kernel.org>
-Subject: [PATCH v3] proc: test /proc/${pid}/statm
-Message-ID: <0721ca69-7bb4-40aa-8d01-0c5f91e5f363@p183>
+        d=1e100.net; s=20230601; t=1696849665; x=1697454465;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=guHVdpv8c4ei2FuWUdfrBzoMOIcM0hSMBR/+vC6tUmY=;
+        b=B1eHT+K+I4ofEXlJ3wyqt75KsnGIkRNwZmRNs/GTr7CEHha5CmNjjp2Xud+kdvm4kX
+         QVZCMXL3dDI2MxunsYSNTRrV5d1EMDOhLVCCVr1VXI8F49kSRBBLASqeSqGJq8YgCoF8
+         HGHROQC3Tc2RXJNSH2O8AMUwHt7AILN7wlyoeVLCd8xKV7ec4EJQrj+2CaaNuLca6Hgc
+         O8K2jQmXSm3MhevWCZ4eUmGaeNNTOGbkX5uN4Xd/d+0m/7Ez2sgS1afwhvIIFd78wFLk
+         qdUX2LfBJ8tEH4AsaRHDX2M0lN81eTwSqofk7yZiWj508RrZDCsx5mhw3GlkQL+t0XvE
+         lreQ==
+X-Gm-Message-State: AOJu0YyoDPhgQzWfQ964mwLmfMrP1zrgDd2yocsT8fipALtyXJxKYjLg
+        Awrgl90wuhzeR8UWKfqdegAiqJfQms3z3pTkVcE=
+X-Google-Smtp-Source: AGHT+IHguSL4wgR01UjzXOaSIFVcU+/sQIR6/w2BJeTttZ5NLTK5me/ng9hTzUa6NikJ7Ud6rqXQBcoQUBwutOsTbmI=
+X-Received: by 2002:a05:6402:2813:b0:535:cbe5:a039 with SMTP id
+ h19-20020a056402281300b00535cbe5a039mr10587138ede.12.1696849665249; Mon, 09
+ Oct 2023 04:07:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20231008032908.11448-1-gehao@kylinos.cn>
+In-Reply-To: <20231008032908.11448-1-gehao@kylinos.cn>
+From:   Daniel Baluta <daniel.baluta@gmail.com>
+Date:   Mon, 9 Oct 2023 14:07:33 +0300
+Message-ID: <CAEnQRZBKkFxgpxJVcnmFQe33abQ-36ZXL_GgNgE3jVwH5+dEJQ@mail.gmail.com>
+Subject: Re: [PATCH] firmware/imx-dsp: Fix use_after_free in imx_dsp_setup_channels()
+To:     Hao Ge <gehao@kylinos.cn>
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com,
+        christophe.jaillet@wanadoo.fr, robh@kernel.org, treding@nvidia.com,
+        daniel.baluta@nxp.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, gehao618@163.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -68,137 +72,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
+On Sun, Oct 8, 2023 at 6:30=E2=80=AFAM Hao Ge <gehao@kylinos.cn> wrote:
+>
+> dsp_chan->name and chan_name points to same block of memory,
+> because dev_err still needs to be used it,so we need free
+> it's memory after use to avoid use_after_free.
+>
+> Fixes: e527adfb9b7d ("firmware: imx-dsp: Fix an error handling path in im=
+x_dsp_setup_channels()")
+> Signed-off-by: Hao Ge <gehao@kylinos.cn>
 
-[more or less rewritten. --adobriyan]
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
 
-My original comment lied, output can be "0 A A B 0 0 0\n"
-(see comment in the code).
-
-I don't quite understand why
-
-	get_mm_counter(mm, MM_FILEPAGES) + get_mm_counter(mm, MM_SHMEMPAGES)
-
-can stay positive but get_mm_counter(mm, MM_ANONPAGES) is always 0 after
-everything is unmapped but that's just me.
-
-Signed-off-by: Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
-
- tools/testing/selftests/proc/proc-empty-vm.c |   97 +++++++++++++++++++++++++--
- 1 file changed, 92 insertions(+), 5 deletions(-)
-
---- a/tools/testing/selftests/proc/proc-empty-vm.c
-+++ b/tools/testing/selftests/proc/proc-empty-vm.c
-@@ -303,6 +303,95 @@ static int test_proc_pid_smaps_rollup(pid_t pid)
- 	}
- }
- 
-+static const char *parse_u64(const char *p, const char *const end, uint64_t *rv)
-+{
-+	*rv = 0;
-+	for (; p != end; p += 1) {
-+		if ('0' <= *p && *p <= '9') {
-+			assert(!__builtin_mul_overflow(*rv, 10, rv));
-+			assert(!__builtin_add_overflow(*rv, *p - '0', rv));
-+		} else {
-+			break;
-+		}
-+	}
-+	assert(p != end);
-+	return p;
-+}
-+
-+/*
-+ * There seems to be 2 types of valid output:
-+ * "0 A A B 0 0 0\n" for dynamic exeuctables,
-+ * "0 0 0 B 0 0 0\n" for static executables.
-+ */
-+static int test_proc_pid_statm(pid_t pid)
-+{
-+	char buf[4096];
-+	snprintf(buf, sizeof(buf), "/proc/%u/statm", pid);
-+	int fd = open(buf, O_RDONLY);
-+	if (fd == -1) {
-+		perror("open /proc/${pid}/statm");
-+		return EXIT_FAILURE;
-+	}
-+
-+	ssize_t rv = read(fd, buf, sizeof(buf));
-+	close(fd);
-+
-+	assert(rv >= 0);
-+	assert(rv <= sizeof(buf));
-+	if (0) {
-+		write(1, buf, rv);
-+	}
-+
-+	const char *p = buf;
-+	const char *const end = p + rv;
-+
-+	/* size */
-+	assert(p != end && *p++ == '0');
-+	assert(p != end && *p++ == ' ');
-+
-+	uint64_t resident;
-+	p = parse_u64(p, end, &resident);
-+	assert(p != end && *p++ == ' ');
-+
-+	uint64_t shared;
-+	p = parse_u64(p, end, &shared);
-+	assert(p != end && *p++ == ' ');
-+
-+	uint64_t text;
-+	p = parse_u64(p, end, &text);
-+	assert(p != end && *p++ == ' ');
-+
-+	assert(p != end && *p++ == '0');
-+	assert(p != end && *p++ == ' ');
-+
-+	/* data */
-+	assert(p != end && *p++ == '0');
-+	assert(p != end && *p++ == ' ');
-+
-+	assert(p != end && *p++ == '0');
-+	assert(p != end && *p++ == '\n');
-+
-+	assert(p == end);
-+
-+	/*
-+	 * "text" is "mm->end_code - mm->start_code" at execve(2) time.
-+	 * munmap() doesn't change it. It can be anything (just link
-+	 * statically). It can't be 0 because executing to this point
-+	 * implies at least 1 page of code.
-+	 */
-+	assert(text > 0);
-+
-+	/*
-+	 * These two are always equal. Always 0 for statically linked
-+	 * executables and sometimes 0 for dynamically linked executables.
-+	 * There is no way to tell one from another without parsing ELF
-+	 * which is too much for this test.
-+	 */
-+	assert(resident == shared);
-+
-+	return EXIT_SUCCESS;
-+}
-+
- int main(void)
- {
- 	int rv = EXIT_SUCCESS;
-@@ -389,11 +478,9 @@ int main(void)
- 		if (rv == EXIT_SUCCESS) {
- 			rv = test_proc_pid_smaps_rollup(pid);
- 		}
--		/*
--		 * TODO test /proc/${pid}/statm, task_statm()
--		 * ->start_code, ->end_code aren't updated by munmap().
--		 * Output can be "0 0 0 2 0 0 0\n" where "2" can be anything.
--		 */
-+		if (rv == EXIT_SUCCESS) {
-+			rv = test_proc_pid_statm(pid);
-+		}
- 
- 		/* Cut the rope. */
- 		int wstatus;
+> ---
+>  drivers/firmware/imx/imx-dsp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/firmware/imx/imx-dsp.c b/drivers/firmware/imx/imx-ds=
+p.c
+> index 508eab346fc6..a48a58e0c61f 100644
+> --- a/drivers/firmware/imx/imx-dsp.c
+> +++ b/drivers/firmware/imx/imx-dsp.c
+> @@ -114,11 +114,11 @@ static int imx_dsp_setup_channels(struct imx_dsp_ip=
+c *dsp_ipc)
+>                 dsp_chan->idx =3D i % 2;
+>                 dsp_chan->ch =3D mbox_request_channel_byname(cl, chan_nam=
+e);
+>                 if (IS_ERR(dsp_chan->ch)) {
+> -                       kfree(dsp_chan->name);
+>                         ret =3D PTR_ERR(dsp_chan->ch);
+>                         if (ret !=3D -EPROBE_DEFER)
+>                                 dev_err(dev, "Failed to request mbox chan=
+ %s ret %d\n",
+>                                         chan_name, ret);
+> +                       kfree(dsp_chan->name);
+>                         goto out;
+>                 }
+>
+> --
+> 2.25.1
+>
