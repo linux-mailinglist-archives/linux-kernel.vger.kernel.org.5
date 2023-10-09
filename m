@@ -2,72 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B2F7BED54
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CBD47BED62
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378689AbjJIV1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 17:27:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44048 "EHLO
+        id S1378727AbjJIV31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 17:29:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378308AbjJIV1U (ORCPT
+        with ESMTP id S1378722AbjJIV3Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 17:27:20 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E9D93
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 14:27:18 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9a39444700so624581276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 14:27:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696886837; x=1697491637; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HX+FtgwJVYx+bxFf8ahMX/YKyuKJ1/AGCli8NkEzPOc=;
-        b=4zUiV2DlWNbcz90wLEeyA2LGOamm4EU2wYC2Jb2FZV1dXckv5cYLTi+gnNAz6mAB04
-         Xih6ibHrDYHAQ6gJ+yzNYa3dda7h6uXHdqgMYei56Sph7pwwuB+JZ/k7FSA9/OMoc/QI
-         i+xUak+s3SCS1ACfXV0apbByf8w+JuSfZVYpctxounW7qaAarMkTtHRmDXunvMy30Kcd
-         xFij2HpJLRaIvRsdzP5sKlCVvyZAhEhMsXems/zq7tv+HhuPjyqHb+ZFRzLU6vsvNA0x
-         JuxjhsSZBIUdJSjy27ZqWQZOSE4+iCGnSTivixkw3DEACdXfviJ4BrtgAPCXWl2Gh2+e
-         IP+Q==
+        Mon, 9 Oct 2023 17:29:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B96B9C
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 14:28:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696886918;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HbgTwu+Sc8hGI0EzdVEZj0VYB/A8KVFIZ5yH1IhJnR4=;
+        b=VyJzdahf5baJ9Wag7tArIj0O88xM8kcgWsL5o2ir/hcnKjx3z74EUXpF49zlU4uv/D4J7z
+        XMhQ2abjsoy7V6B77hUIu3ivTR/w1xeVgwFvua4ZSNangd3au9CblqQHTptXTUaiO+xWQX
+        xUqnzFRJDVpb6PKEfjBFaT8ClbCsH38=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-104-YOq5ROwHPy2cvaSI7zMmjA-1; Mon, 09 Oct 2023 17:28:32 -0400
+X-MC-Unique: YOq5ROwHPy2cvaSI7zMmjA-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-7742bab9c0cso520941985a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 14:28:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696886837; x=1697491637;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=HX+FtgwJVYx+bxFf8ahMX/YKyuKJ1/AGCli8NkEzPOc=;
-        b=PUnQgOeCLOUXhl9e7At3a1qxkrZVb/n3lKbx1jOn5cm2k0/vlb9C1E/vGR4EnPkYuE
-         RGIZ0RTmhxicQaK+YY0QmpgOWSDZbgRzHMEtDptw3Vs0g45hZGjjFpdrVlP99fEF0LdV
-         xdBaXGMjNZX+4I0Hno5TktPNQnmeRkUMtCCQdvSgBKDlgv2lInWsvmQWzHhQLyh/sZcQ
-         R7pLoi8UbR/rgaT6tvoDrn+KJLIyQIJxCafa5V2J1pJEvzYupoUSLV1t4eZsTBpqq57U
-         lma0/8PlUaS48pCOrv/ew2IVhE8u8fz2mWynY0sXOavx1MBsDENvMd6/JL5hqvHyCBkp
-         ODNw==
-X-Gm-Message-State: AOJu0YxSWiWj+VEdSa9MeIhdcC8RYQ/ONt+wcIdF7m1zzq+3kNF9eWTy
-        cOf96a5+Em4fHKKLqI730TEvy5gvEaU=
-X-Google-Smtp-Source: AGHT+IFWiTOfG0nHmJ/JJ8R7nO+qQuEsneRtuX/I/bdPUs1K6+cxxUjhWILYVmWKRNgJxMSb3cFDbJl5Rk8=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:2308:0:b0:d91:78b9:b807 with SMTP id
- j8-20020a252308000000b00d9178b9b807mr258474ybj.2.1696886837563; Mon, 09 Oct
- 2023 14:27:17 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 14:27:16 -0700
-In-Reply-To: <ZSRZ_y64UPXBG6lA@google.com>
-Mime-Version: 1.0
-References: <20230714064656.20147-1-yan.y.zhao@intel.com> <20230714065006.20201-1-yan.y.zhao@intel.com>
- <553e3a0f-156b-e5d2-037b-2d9acaf52329@gmail.com> <ZSRZ_y64UPXBG6lA@google.com>
-Message-ID: <ZSRwNO4xWU6Dx1ne@google.com>
-Subject: Re: [PATCH v4 01/12] KVM: x86/mmu: helpers to return if KVM honors
- guest MTRRs
-From:   Sean Christopherson <seanjc@google.com>
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     Yan Zhao <yan.y.zhao@intel.com>, pbonzini@redhat.com,
-        chao.gao@intel.com, kai.huang@intel.com,
-        robert.hoo.linux@gmail.com, yuan.yao@linux.intel.com,
-        kvm list <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        d=1e100.net; s=20230601; t=1696886911; x=1697491711;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HbgTwu+Sc8hGI0EzdVEZj0VYB/A8KVFIZ5yH1IhJnR4=;
+        b=hUOJ6OasgpIn7e4Ex7j1jNJdj3YCPBMT/3Jd9nrFawV5mfQVPDoEwFm+PxE0LdFPo0
+         OgL5HgF87YnQorQ/fZlLzzyXIWv1pkerGOqf3SLhtUOe+bPBItFCKX+nAaSrVXlW4SIn
+         +0D9H+5VIfls3laQ8I4VS0alT6BR2J/ec3pO17lwt4WcY/G0iPjnAy6Ss5NUi/netU08
+         zsBkJB+UdtukVRGz5/CtNwvA0tbCdnwErzqD9nO9G4RswUE0/kF/XVxgyFdzEAjn7Cx0
+         q0N5Sxw/iD9eMOGfbEMHzkgyKLBBPp0rabgSugqmYxzq1u4esbgvjYvgFhYaztIXatGj
+         +eTA==
+X-Gm-Message-State: AOJu0YyxC/Ck/qYnIbRzng8datB0iw+YUjiR/qIptJsXZAkhOK4bgl+u
+        dk9x0Lv7HxPhsNHcp07jlipUgMwCyYJpFPcQDNLEuPXPdLqc/p0Mc5IhEdkFj8Mn/6Ol0SYkbl1
+        +0Xc+GqYR1opyAWLTsNH249fF
+X-Received: by 2002:a05:620a:22b1:b0:76c:e5a2:444f with SMTP id p17-20020a05620a22b100b0076ce5a2444fmr13294070qkh.72.1696886911465;
+        Mon, 09 Oct 2023 14:28:31 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHkoRbuV0enbNnjYtdfo/pgK2wr/oh1oVx7ENJNu2d0aFBfln5GEmWPCa5XiSNiJa9ccN2PLQ==
+X-Received: by 2002:a05:620a:22b1:b0:76c:e5a2:444f with SMTP id p17-20020a05620a22b100b0076ce5a2444fmr13294063qkh.72.1696886911094;
+        Mon, 09 Oct 2023 14:28:31 -0700 (PDT)
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id 2-20020a05620a078200b007742bc74184sm3792620qka.110.2023.10.09.14.28.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Oct 2023 14:28:30 -0700 (PDT)
+Date:   Mon, 9 Oct 2023 16:28:28 -0500
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Elliot Berman <quic_eberman@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v3 04/15] firmware: qcom: add a dedicated TrustZone
+ buffer allocator
+Message-ID: <f6jspdoeyv6ntcrl6qndy2ud3mcdkoxxcnzqm3qpbtcd3ztdpi@7iw5f5og7is2>
+References: <20231009153427.20951-1-brgl@bgdev.pl>
+ <20231009153427.20951-5-brgl@bgdev.pl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231009153427.20951-5-brgl@bgdev.pl>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,184 +89,289 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023, Sean Christopherson wrote:
-> On Sat, Oct 07, 2023, Like Xu wrote:
-> > On 14/7/2023 2:50=E2=80=AFpm, Yan Zhao wrote:
-> > > diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-> > > index 92d5a1924fc1..38bd449226f6 100644
-> > > --- a/arch/x86/kvm/mmu.h
-> > > +++ b/arch/x86/kvm/mmu.h
-> > > @@ -235,6 +235,13 @@ static inline u8 permission_fault(struct kvm_vcp=
-u *vcpu, struct kvm_mmu *mmu,
-> > >   	return -(u32)fault & errcode;
-> > >   }
-> > > +bool __kvm_mmu_honors_guest_mtrrs(struct kvm *kvm, bool vm_has_nonco=
-herent_dma);
-> > > +
-> > > +static inline bool kvm_mmu_honors_guest_mtrrs(struct kvm *kvm)
-> > > +{
-> > > +	return __kvm_mmu_honors_guest_mtrrs(kvm, kvm_arch_has_noncoherent_d=
-ma(kvm));
-> > > +}
-> > > +
-> > >   void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_=
-end);
-> > >   int kvm_arch_write_log_dirty(struct kvm_vcpu *vcpu);
-> > > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > > index 1e5db621241f..b4f89f015c37 100644
-> > > --- a/arch/x86/kvm/mmu/mmu.c
-> > > +++ b/arch/x86/kvm/mmu/mmu.c
-> > > @@ -4516,6 +4516,21 @@ static int kvm_tdp_mmu_page_fault(struct kvm_v=
-cpu *vcpu,
-> > >   }
-> > >   #endif
-> > > +bool __kvm_mmu_honors_guest_mtrrs(struct kvm *kvm, bool vm_has_nonco=
-herent_dma)
-> >=20
-> > According to the motivation provided in the comment, the function will =
-no
-> > longer need to be passed the parameter "struct kvm *kvm" but will rely =
-on
-> > the global parameters (plus vm_has_noncoherent_dma), removing "*kvm" ?
->=20
-> Yeah, I'll fixup the commit to drop @kvm from the inner helper.  Thanks!
+On Mon, Oct 09, 2023 at 05:34:16PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> We have several SCM calls that require passing buffers to the TrustZone
+> on top of the SMC core which allocates memory for calls that require
+> more than 4 arguments.
+> 
+> Currently every user does their own thing which leads to code
+> duplication. Many users call dma_alloc_coherent() for every call which
+> is terribly unperformant (speed- and size-wise).
+> 
+> Provide a set of library functions for creating and managing pool of
+> memory which is suitable for sharing with the TrustZone, that is:
+> page-aligned, contiguous and non-cachable as well as provides a way of
+> mapping of kernel virtual addresses to physical space.
+> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
+>  drivers/firmware/qcom/Kconfig            |  19 ++
+>  drivers/firmware/qcom/Makefile           |   1 +
+>  drivers/firmware/qcom/qcom_tzmem.c       | 301 +++++++++++++++++++++++
+>  drivers/firmware/qcom/qcom_tzmem.h       |  13 +
+>  include/linux/firmware/qcom/qcom_tzmem.h |  28 +++
+>  5 files changed, 362 insertions(+)
+>  create mode 100644 drivers/firmware/qcom/qcom_tzmem.c
+>  create mode 100644 drivers/firmware/qcom/qcom_tzmem.h
+>  create mode 100644 include/linux/firmware/qcom/qcom_tzmem.h
+> 
+> diff --git a/drivers/firmware/qcom/Kconfig b/drivers/firmware/qcom/Kconfig
+> index 3f05d9854ddf..b80269a28224 100644
+> --- a/drivers/firmware/qcom/Kconfig
+> +++ b/drivers/firmware/qcom/Kconfig
+> @@ -9,6 +9,25 @@ menu "Qualcomm firmware drivers"
+>  config QCOM_SCM
+>  	tristate
+>  
+> +config QCOM_TZMEM
+> +	tristate
+> +
+> +choice
+> +	prompt "TrustZone interface memory allocator mode"
+> +	default QCOM_TZMEM_MODE_DEFAULT
+> +	help
+> +	  Selects the mode of the memory allocator providing memory buffers of
+> +	  suitable format for sharing with the TrustZone. If in doubt, select
+> +	  'Default'.
+> +
+> +config QCOM_TZMEM_MODE_DEFAULT
+> +	bool "Default"
+> +	help
+> +	  Use the default allocator mode. The memory is page-aligned, non-cachable
+> +	  and contiguous.
+> +
+> +endchoice
+> +
+>  config QCOM_SCM_DOWNLOAD_MODE_DEFAULT
+>  	bool "Qualcomm download mode enabled by default"
+>  	depends on QCOM_SCM
+> diff --git a/drivers/firmware/qcom/Makefile b/drivers/firmware/qcom/Makefile
+> index c9f12ee8224a..0be40a1abc13 100644
+> --- a/drivers/firmware/qcom/Makefile
+> +++ b/drivers/firmware/qcom/Makefile
+> @@ -5,5 +5,6 @@
+>  
+>  obj-$(CONFIG_QCOM_SCM)		+= qcom-scm.o
+>  qcom-scm-objs += qcom_scm.o qcom_scm-smc.o qcom_scm-legacy.o
+> +obj-$(CONFIG_QCOM_TZMEM)	+= qcom_tzmem.o
+>  obj-$(CONFIG_QCOM_QSEECOM)	+= qcom_qseecom.o
+>  obj-$(CONFIG_QCOM_QSEECOM_UEFISECAPP) += qcom_qseecom_uefisecapp.o
+> diff --git a/drivers/firmware/qcom/qcom_tzmem.c b/drivers/firmware/qcom/qcom_tzmem.c
+> new file mode 100644
+> index 000000000000..eee51fed756e
+> --- /dev/null
+> +++ b/drivers/firmware/qcom/qcom_tzmem.c
+> @@ -0,0 +1,301 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Memory allocator for buffers shared with the TrustZone.
+> + *
+> + * Copyright (C) 2023 Linaro Ltd.
+> + */
+> +
+> +#include <linux/bug.h>
+> +#include <linux/cleanup.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/err.h>
+> +#include <linux/firmware/qcom/qcom_tzmem.h>
+> +#include <linux/genalloc.h>
+> +#include <linux/gfp.h>
+> +#include <linux/mm.h>
+> +#include <linux/radix-tree.h>
+> +#include <linux/slab.h>
+> +#include <linux/spinlock.h>
+> +#include <linux/types.h>
+> +
+> +#include "qcom_tzmem.h"
+> +
+> +struct qcom_tzmem_pool {
+> +	void *vbase;
+> +	phys_addr_t pbase;
+> +	size_t size;
+> +	struct gen_pool *pool;
+> +	void *priv;
+> +};
+> +
+> +struct qcom_tzmem_chunk {
+> +	phys_addr_t paddr;
+> +	size_t size;
+> +	struct qcom_tzmem_pool *owner;
+> +};
+> +
+> +static struct device *qcom_tzmem_dev;
+> +static RADIX_TREE(qcom_tzmem_chunks, GFP_ATOMIC);
+> +static DEFINE_SPINLOCK(qcom_tzmem_chunks_lock);
+> +
+> +#if IS_ENABLED(CONFIG_QCOM_TZMEM_MODE_DEFAULT)
+> +
+> +static int qcom_tzmem_init(void)
+> +{
+> +	return 0;
+> +}
+> +
+> +static int qcom_tzmem_init_pool(struct qcom_tzmem_pool *pool)
+> +{
+> +	return 0;
+> +}
+> +
+> +static void qcom_tzmem_cleanup_pool(struct qcom_tzmem_pool *pool)
+> +{
+> +
+> +}
+> +
+> +#endif /* CONFIG_QCOM_TZMEM_MODE_DEFAULT */
+> +
+> +/**
+> + * qcom_tzmem_pool_new() - Create a new TZ memory pool.
+> + * @size - Size of the new pool in bytes.
+> + *
+> + * Create a new pool of memory suitable for sharing with the TrustZone.
+> + *
+> + * Must not be used in atomic context.
+> + *
+> + * Returns:
+> + * New memory pool address or ERR_PTR() on error.
+> + */
+> +struct qcom_tzmem_pool *qcom_tzmem_pool_new(size_t size)
+> +{
+> +	struct qcom_tzmem_pool *pool;
+> +	int ret = -ENOMEM;
+> +
+> +	if (!size)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	size = PAGE_ALIGN(size);
+> +
+> +	pool = kzalloc(sizeof(*pool), GFP_KERNEL);
+> +	if (!pool)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	pool->size = size;
+> +
+> +	pool->vbase = dma_alloc_coherent(qcom_tzmem_dev, size, &pool->pbase,
+> +					 GFP_KERNEL);
+> +	if (!pool->vbase)
+> +		goto err_kfree_pool;
+> +
+> +	pool->pool = gen_pool_create(PAGE_SHIFT, -1);
+> +	if (!pool)
+> +		goto err_dma_free;
+> +
+> +	gen_pool_set_algo(pool->pool, gen_pool_best_fit, NULL);
+> +
+> +	ret = gen_pool_add_virt(pool->pool, (unsigned long)pool->vbase,
+> +				pool->pbase, size, -1);
+> +	if (ret)
+> +		goto err_destroy_genpool;
+> +
+> +	ret = qcom_tzmem_init_pool(pool);
+> +	if (ret)
+> +		goto err_destroy_genpool;
+> +
+> +	return pool;
+> +
+> +err_destroy_genpool:
+> +	gen_pool_destroy(pool->pool);
+> +err_dma_free:
+> +	dma_free_coherent(qcom_tzmem_dev, size, pool->vbase, pool->pbase);
+> +err_kfree_pool:
+> +	kfree(pool);
+> +	return ERR_PTR(ret);
+> +}
+> +EXPORT_SYMBOL_GPL(qcom_tzmem_pool_new);
+> +
+> +/**
+> + * qcom_tzmem_pool_free() - Destroy a TZ memory pool and free all resources.
+> + * @pool: Memory pool to free.
+> + *
+> + * Must not be called if any of the allocated chunks has not been freed.
+> + * Must not be used in atomic context.
+> + */
+> +void qcom_tzmem_pool_free(struct qcom_tzmem_pool *pool)
+> +{
+> +	struct qcom_tzmem_chunk *chunk;
+> +	struct radix_tree_iter iter;
+> +	bool non_empty = false;
+> +	void **slot;
+> +
+> +	if (!pool)
+> +		return;
+> +
+> +	qcom_tzmem_cleanup_pool(pool);
+> +
+> +	scoped_guard(spinlock_irqsave, &qcom_tzmem_chunks_lock) {
+> +		radix_tree_for_each_slot(slot, &qcom_tzmem_chunks, &iter, 0) {
+> +			chunk = *slot;
+> +
+> +			if (chunk->owner == pool)
+> +				non_empty = true;
+> +		}
+> +	}
+> +
+> +	WARN(non_empty, "Freeing TZ memory pool with memory still allocated");
+> +
+> +	gen_pool_destroy(pool->pool);
+> +	dma_free_coherent(qcom_tzmem_dev, pool->size, pool->vbase, pool->pbase);
+> +	kfree(pool);
+> +}
+> +EXPORT_SYMBOL_GPL(qcom_tzmem_pool_free);
 
-Gah, and I gave more bad advice when I suggested this idea.  There's no nee=
-d to
-explicitly check tdp_enabled, as shadow_memtype_mask is set to zero if TDP =
-is
-disabled.  And that must be the case, e.g. make_spte() would generate a cor=
-rupt
-shadow_memtype_mask were non-zero on Intel with shadow paging.
+I got these warnings with this series:
 
-Yan, can you take a look at what I ended up with (see below) to make sure i=
-t
-looks sane/acceptable to you?
+    ahalaney@fedora ~/git/linux-next (git)-[7204cc6c3d73] % ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make W=1 C=2 drivers/firmware/qcom/
+    drivers/firmware/qcom/qcom_tzmem.c:137: warning: Function parameter or member 'size' not described in 'qcom_tzmem_pool_new'
+      CHECK   drivers/firmware/qcom/qcom_tzmem.c
+    drivers/firmware/qcom/qcom_tzmem.c:204:17: warning: incorrect type in assignment (different address spaces)
+    drivers/firmware/qcom/qcom_tzmem.c:204:17:    expected void **slot
+    drivers/firmware/qcom/qcom_tzmem.c:204:17:    got void [noderef] __rcu **
+    drivers/firmware/qcom/qcom_tzmem.c:204:17: warning: incorrect type in assignment (different address spaces)
+    drivers/firmware/qcom/qcom_tzmem.c:204:17:    expected void **slot
+    drivers/firmware/qcom/qcom_tzmem.c:204:17:    got void [noderef] __rcu **
+    drivers/firmware/qcom/qcom_tzmem.c:204:17: warning: incorrect type in argument 1 (different address spaces)
+    drivers/firmware/qcom/qcom_tzmem.c:204:17:    expected void [noderef] __rcu **slot
+    drivers/firmware/qcom/qcom_tzmem.c:204:17:    got void **slot
+    drivers/firmware/qcom/qcom_tzmem.c:204:17: warning: incorrect type in assignment (different address spaces)
+    drivers/firmware/qcom/qcom_tzmem.c:204:17:    expected void **slot
+    drivers/firmware/qcom/qcom_tzmem.c:204:17:    got void [noderef] __rcu **
+    drivers/firmware/qcom/qcom_tzmem.c:339:13: warning: context imbalance in 'qcom_tzmem_to_phys' - wrong count at exit
 
-New hashes (assuming I didn't botch things and need even more fixup).
 
-[1/5] KVM: x86/mmu: Add helpers to return if KVM honors guest MTRRs
-      https://github.com/kvm-x86/linux/commit/ec1d8217d59b
-[2/5] KVM: x86/mmu: Zap SPTEs when CR0.CD is toggled iff guest MTRRs are ho=
-nored
-      https://github.com/kvm-x86/linux/commit/40de16c10b9d
-[3/5] KVM: x86/mmu: Zap SPTEs on MTRR update iff guest MTRRs are honored
-      https://github.com/kvm-x86/linux/commit/defc3fae8d0f
-[4/5] KVM: x86/mmu: Zap KVM TDP when noncoherent DMA assignment starts/stop=
-s
-      https://github.com/kvm-x86/linux/commit/b344d331adeb
-[5/5] KVM: VMX: drop IPAT in memtype when CD=3D1 for KVM_X86_QUIRK_CD_NW_CL=
-EARED
-      https://github.com/kvm-x86/linux/commit/a4d14445c47d
+All are confusing me, size seems described, I don't know much about
+radix tree usage / rcu, and the locking in qcom_tzmem_to_phys seems sane
+to me but I'm still grappling with the new syntax.
 
-commit ec1d8217d59bd7cb03ae4e80551fee987be98a4e
-Author: Yan Zhao <yan.y.zhao@intel.com>
-Date:   Fri Jul 14 14:50:06 2023 +0800
+For the one address space one, I _think_ maybe a diff like this is in
+order?
 
-    KVM: x86/mmu: Add helpers to return if KVM honors guest MTRRs
-   =20
-    Add helpers to check if KVM honors guest MTRRs instead of open coding t=
-he
-    logic in kvm_tdp_page_fault().  Future fixes and cleanups will also nee=
-d
-    to determine if KVM should honor guest MTRRs, e.g. for CR0.CD toggling =
-and
-    and non-coherent DMA transitions.
-   =20
-    Provide an inner helper, __kvm_mmu_honors_guest_mtrrs(), so that KVM ca=
-n
-    if guest MTRRs were honored when stopping non-coherent DMA.
-   =20
-    Note, there is no need to explicitly check that TDP is enabled, KVM cle=
-ars
-    shadow_memtype_mask when TDP is disabled, i.e. it's non-zero if and onl=
-y
-    if EPT is enabled.
-   =20
-    Suggested-by: Sean Christopherson <seanjc@google.com>
-    Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
-    Link: https://lore.kernel.org/r/20230714065006.20201-1-yan.y.zhao@intel=
-.com
-    Link: https://lore.kernel.org/r/20230714065043.20258-1-yan.y.zhao@intel=
-.com
-    [sean: squash into a one patch, drop explicit TDP check massage changel=
-og]
-    Signed-off-by: Sean Christopherson <seanjc@google.com>
+    diff --git a/drivers/firmware/qcom/qcom_tzmem.c b/drivers/firmware/qcom/qcom_tzmem.c
+    index b3137844fe43..5b409615198d 100644
+    --- a/drivers/firmware/qcom/qcom_tzmem.c
+    +++ b/drivers/firmware/qcom/qcom_tzmem.c
+    @@ -193,7 +193,7 @@ void qcom_tzmem_pool_free(struct qcom_tzmem_pool *pool)
+            struct qcom_tzmem_chunk *chunk;
+            struct radix_tree_iter iter;
+            bool non_empty = false;
+    -       void **slot;
+    +       void __rcu **slot;
+     
+            if (!pool)
+                    return;
+    @@ -202,7 +202,7 @@ void qcom_tzmem_pool_free(struct qcom_tzmem_pool *pool)
+     
+            scoped_guard(spinlock_irqsave, &qcom_tzmem_chunks_lock) {
+                    radix_tree_for_each_slot(slot, &qcom_tzmem_chunks, &iter, 0) {
+    -                       chunk = *slot;
+    +                       chunk = radix_tree_deref_slot_protected(slot, &qcom_tzmem_chunks_lock);
+     
+                            if (chunk->owner == pool)
+                                    non_empty = true;
 
-diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-index 253fb2093d5d..bb8c86eefac0 100644
---- a/arch/x86/kvm/mmu.h
-+++ b/arch/x86/kvm/mmu.h
-@@ -237,6 +237,13 @@ static inline u8 permission_fault(struct kvm_vcpu *vcp=
-u, struct kvm_mmu *mmu,
-        return -(u32)fault & errcode;
- }
-=20
-+bool __kvm_mmu_honors_guest_mtrrs(bool vm_has_noncoherent_dma);
-+
-+static inline bool kvm_mmu_honors_guest_mtrrs(struct kvm *kvm)
-+{
-+       return __kvm_mmu_honors_guest_mtrrs(kvm_arch_has_noncoherent_dma(kv=
-m));
-+}
-+
- void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end);
-=20
- int kvm_arch_write_log_dirty(struct kvm_vcpu *vcpu);
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index f7901cb4d2fa..5d3dc7119e57 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -4479,21 +4479,28 @@ static int kvm_tdp_mmu_page_fault(struct kvm_vcpu *=
-vcpu,
- }
- #endif
-=20
-+bool __kvm_mmu_honors_guest_mtrrs(bool vm_has_noncoherent_dma)
-+{
-+       /*
-+        * If host MTRRs are ignored (shadow_memtype_mask is non-zero), and=
- the
-+        * VM has non-coherent DMA (DMA doesn't snoop CPU caches), KVM's AB=
-I is
-+        * to honor the memtype from the guest's MTRRs so that guest access=
-es
-+        * to memory that is DMA'd aren't cached against the guest's wishes=
-.
-+        *
-+        * Note, KVM may still ultimately ignore guest MTRRs for certain PF=
-Ns,
-+        * e.g. KVM will force UC memtype for host MMIO.
-+        */
-+       return vm_has_noncoherent_dma && shadow_memtype_mask;
-+}
-+
- int kvm_tdp_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault=
-)
- {
-        /*
-         * If the guest's MTRRs may be used to compute the "real" memtype,
-         * restrict the mapping level to ensure KVM uses a consistent memty=
-pe
--        * across the entire mapping.  If the host MTRRs are ignored by TDP
--        * (shadow_memtype_mask is non-zero), and the VM has non-coherent D=
-MA
--        * (DMA doesn't snoop CPU caches), KVM's ABI is to honor the memtyp=
-e
--        * from the guest's MTRRs so that guest accesses to memory that is
--        * DMA'd aren't cached against the guest's wishes.
--        *
--        * Note, KVM may still ultimately ignore guest MTRRs for certain PF=
-Ns,
--        * e.g. KVM will force UC memtype for host MMIO.
-+        * across the entire mapping.
-         */
--       if (shadow_memtype_mask && kvm_arch_has_noncoherent_dma(vcpu->kvm))=
- {
-+       if (kvm_mmu_honors_guest_mtrrs(vcpu->kvm)) {
-                for ( ; fault->max_level > PG_LEVEL_4K; --fault->max_level)=
- {
-                        int page_num =3D KVM_PAGES_PER_HPAGE(fault->max_lev=
-el);
-                        gfn_t base =3D gfn_round_for_level(fault->gfn,
+
+Still planning on reviewing/testing the rest, but got tripped up there
+so thought I'd highlight it before doing the rest.
+
+Thanks,
+Andrew
 
