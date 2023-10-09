@@ -2,139 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E859B7BE455
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAF607BE45C
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376932AbjJIPPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 11:15:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49600 "EHLO
+        id S1377791AbjJIPPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 11:15:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377024AbjJIPOg (ORCPT
+        with ESMTP id S1377709AbjJIPPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 11:14:36 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE3101B4
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 08:14:26 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53636f98538so8080056a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 08:14:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696864465; x=1697469265; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=aMTmr6sptoCQlqK3x/0ZICFaKI2zNpbKV1fPXU/Ez2g=;
-        b=MQodk1T2pEIFYZ7tUCC4D1G3Zvmt2MnLVWPBnvafFXXxtPy8mjQed7dSOj3n2iIPXK
-         c5fSG0+TBgbDW+oC44KEoDkWn7ee9wBuCU3z0tUp8QoUOdFMPe2ETbr3JbH/hj6GSLui
-         nGdlcFBjEOczWqdzpNCrOzAHXfhN/ESBui1EU4fD3gmHFwO4IOd7z+tBetiq3IWZwQjT
-         w1TQNkdulgbolgUHGuiXwI7PDeSNhGehZzrOMvCSwWvMboCh4dU1fZ/mLObmLd0EbyIE
-         K5mL03ttkq/cHrnujUMksv5OLuuRXMsMVg/3J16KX5p3xpNuWvs6VFJ60VLOmSLRA5VM
-         1SkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696864465; x=1697469265;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aMTmr6sptoCQlqK3x/0ZICFaKI2zNpbKV1fPXU/Ez2g=;
-        b=wXTBiFjkdq6FjCay1tm3y1eiHrAXv7YoNKpjW7WlO8tm5S6GMc2TesQ7ifJWsOO0Gq
-         Zc/Hd3t1UOQrsPU5mmrCcAIyF8PuGITei93gf6OVTCePE8SDGXwENN3t1cPq5pwAbus1
-         4bB+PNecIH5zjaBdoPSpq5oAZ5omqOb8pyzYKeIIMpyJBBbuIXHHbu4TfzFIsljWETjK
-         n1zFWTF6z2RreY1+dMjXhCJ8mB4r4UbHxnUrTyIapZvC7AwiicCUlRLIEZToniGd+CZy
-         vs8VRUDIMIueL8VLvpmAVLYimwbkolcIIxNkzAJ2Y0gAr/XvuR1KYBpf+Uk0xV2Lw2PS
-         M6jw==
-X-Gm-Message-State: AOJu0Yzl8rGDBfZwCV/8dJp/s6z1ogLPl3HDTkOF/sbQOCkWOpGmDL7M
-        516Qnsx1qRj2Ysne0180Hes=
-X-Google-Smtp-Source: AGHT+IEHh2B8gerGrntmQ/LkrkrTLBJXTi6ay2BvABSRxW3ek7SLAAK24wdU0LO2/Ez42Fxfgjc4jw==
-X-Received: by 2002:a05:6402:2031:b0:52b:d169:b37a with SMTP id ay17-20020a056402203100b0052bd169b37amr14462978edb.28.1696864464692;
-        Mon, 09 Oct 2023 08:14:24 -0700 (PDT)
-Received: from localhost.localdomain ([46.248.82.114])
-        by smtp.gmail.com with ESMTPSA id v18-20020aa7d652000000b00533dad8a9c5sm6224009edr.38.2023.10.09.08.14.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 08:14:24 -0700 (PDT)
-From:   Uros Bizjak <ubizjak@gmail.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Uros Bizjak <ubizjak@gmail.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: [PATCH tip] x86/percpu: Disable named address spaces for KASAN
-Date:   Mon,  9 Oct 2023 17:13:48 +0200
-Message-ID: <20231009151409.53656-1-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Mon, 9 Oct 2023 11:15:08 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF58A11C;
+        Mon,  9 Oct 2023 08:14:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11812C43391;
+        Mon,  9 Oct 2023 15:14:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696864479;
+        bh=+ZfZqRjLTizvALSqDqCC1fwDOV+CINpIZmqOtUE1B8Y=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JpLYQDwIItDww8h1Oe0EKmYLQKZ9gPJ/nBfhUZINrjzcK44E2pH9LbGq4M801/Z7a
+         EpX6F2QfjDIUYddDEH9f24QebJYEInngy55wVMc+zpv9VLkf2UrCmv1UmEO6PFEN55
+         kUpIEhwl+m/phMPOci7nM8DQs/OpMVks0WW7aKz5kVqZNIOQ8teScG2AeZ7LNJYLLi
+         1M0Bp0eB9f6v9ufohRq9MDSevU5v0j35GtKY1hDHZYceh2oSVbLPQDAd9TFg1UCyc8
+         8Xu4CglL2wJfuQjMtlS84+hmS9P5xGqnzFkormcIMpcJ21NLOtO4qEwQR4cJntEBzm
+         lJ/sFKghG7A/w==
+Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6c615df24c0so3159510a34.1;
+        Mon, 09 Oct 2023 08:14:39 -0700 (PDT)
+X-Gm-Message-State: AOJu0YweTN9MurDpLcikIUZpSZLvShTOvZZ225AZ6ms/ljgYe5ldyvYw
+        yV6Almplgogud/+wQ2cTsopdqMsib5J09i2SpVg=
+X-Google-Smtp-Source: AGHT+IFWiJL28KGTKjTzlxHEVuLFAoHmaycE0erMI3hDmoMBOsY3re/CsPHC2i9FwjOYUVcg7eEs5kO7VC+z4HgeVhQ=
+X-Received: by 2002:a05:6870:e307:b0:1bb:a227:7008 with SMTP id
+ z7-20020a056870e30700b001bba2277008mr17284004oad.3.1696864478369; Mon, 09 Oct
+ 2023 08:14:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231005150728.3429-1-msuchanek@suse.de> <CAK7LNAQh7vCQ859RPkL3SDr2d4ptt5OVCr66fkPKGcvxDUHtkw@mail.gmail.com>
+ <20231009085208.GT6241@kitsune.suse.cz> <CAK7LNASeMEKVi5c0PEow5KSdN7rsm7UYEf2smWOSkYOhr_5fVQ@mail.gmail.com>
+ <20231009140733.GV6241@kitsune.suse.cz>
+In-Reply-To: <20231009140733.GV6241@kitsune.suse.cz>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 10 Oct 2023 00:14:01 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQQMFUt4R1m_U8kBY5=BvxD_dMuE4MD4kpd48WK1E+AGA@mail.gmail.com>
+Message-ID: <CAK7LNAQQMFUt4R1m_U8kBY5=BvxD_dMuE4MD4kpd48WK1E+AGA@mail.gmail.com>
+Subject: Re: [PATCH rebased] kbuild: rpm-pkg: Fix build with non-default MODLIB
+To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-modules@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+        Lucas De Marchi <lucas.de.marchi@gmail.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Jiri Slaby <jslaby@suse.com>, Jan Engelhardt <jengelh@inai.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--fsanitize=kernel-address (KASAN) is at the moment incompatible
-with named address spaces - see GCC PR sanitizer/111736.
+On Mon, Oct 9, 2023 at 11:07=E2=80=AFPM Michal Such=C3=A1nek <msuchanek@sus=
+e.de> wrote:
+>
+> On Mon, Oct 09, 2023 at 09:34:10PM +0900, Masahiro Yamada wrote:
+> > On Mon, Oct 9, 2023 at 5:52=E2=80=AFPM Michal Such=C3=A1nek <msuchanek@=
+suse.de> wrote:
+> > >
+> > > Hello,
+> > >
+> > > On Mon, Oct 09, 2023 at 05:31:02PM +0900, Masahiro Yamada wrote:
+> > > > On Fri, Oct 6, 2023 at 12:49=E2=80=AFAM Michal Suchanek <msuchanek@=
+suse.de> wrote:
+> > > > >
+> > > > > The default MODLIB value is composed of two variables and the har=
+dcoded
+> > > > > string '/lib/modules/'.
+> > > > >
+> > > > > MODLIB =3D $(INSTALL_MOD_PATH)/lib/modules/$(KERNELRELEASE)
+> > > > >
+> > > > > Defining this middle part as a variable was rejected on the basis=
+ that
+> > > > > users can pass the whole MODLIB to make, such as
+> > > >
+> > > >
+> > > > In other words, do you want to say
+> > > >
+> > > > "If defining this middle part as a variable had been accepted,
+> > > > this patch would have been unneeded." ?
+> > >
+> > > If it were accepted I would not have to guess what the middle part is=
+,
+> > > and could use the variable that unambiguosly defines it instead.
+> >
+> >
+> > How?
+> >
+> > scripts/package/kernel.spec hardcodes 'lib/modules'
+> > in a couple of places.
+> >
+> > I am asking how to derive the module path.
+>
+> Not sure what you are asking here. The path is hardcoded, everywhere.
+>
+> The current Makefile has
+>
+> MODLIB  =3D $(INSTALL_MOD_PATH)/lib/modules/$(KERNELRELEASE)
+>
+> and there is no reliable way to learn what the middle part was after the
+> fact - $(INSTALL_MOD_PATH) can be non-empty.
+>
+> The rejected patch was changing this to a variable, and also default to
+> adjusting the content to what kmod exports in pkgconfig after applying a
+> proposed patch to make this hardcoded part configurable:
+>
+> export KERNEL_MODULE_DIRECTORY :=3D $(shell pkg-config --print-variables =
+kmod 2>/dev/null | grep '^module_directory$$' >/dev/null && pkg-config --va=
+riable=3Dmodule_directory kmod || echo /lib/modules)
+>
+> MODLIB  =3D $(INSTALL_MOD_PATH)$(KERNEL_MODULE_DIRECTORY)/$(KERNELRELEASE=
+)
+>
+> It would be completely posible to only define the middle part as a
+> variable that could then be used in rpm-pkg:
+>
+> export KERNEL_MODULE_DIRECTORY :=3D /lib/modules
+>
+> MODLIB  =3D $(INSTALL_MOD_PATH)$(KERNEL_MODULE_DIRECTORY)/$(KERNELRELEASE=
+)
+>
+> Thanks
+>
+> Michal
+>
+>
 
-GCC is doing a KASAN check on a percpu address which it shouldn't do,
-and didn't used to do because we did the access using inline asm.
 
-But now that GCC does the accesses as normal (albeit special address
-space) memory accesses, the KASAN code triggers on them too, and it
-all goes to hell in a handbasket very quickly.
+Let me add more context to my question.
 
-Those percpu accessor functions need to disable any KASAN
-checking or other sanitizer checking. Not on the percpu address,
-because that's not a "real" address, it's obviously just the offset
-from the segment register.
 
-And GCC should probably not have generated such code in the first
-place, so arguably this is a bug with -fsanitize=kernel-address.
+I am interested in the timing when
+'pkg-config --print-variables kmod | grep module_directory'
+is executed.
 
-The patch also removes a stale dependency on CONFIG_SMP.
 
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202310071301.a5113890-oliver.sang@intel.com
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Nadav Amit <namit@vmware.com>
-Cc: Brian Gerst <brgerst@gmail.com>
-Cc: Denys Vlasenko <dvlasenk@redhat.com>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
----
- arch/x86/Kconfig | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index ecb256954351..54e79d3061f9 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2393,7 +2393,12 @@ config CC_HAS_NAMED_AS
- 
- config USE_X86_SEG_SUPPORT
- 	def_bool y
--	depends on CC_HAS_NAMED_AS && SMP
-+	depends on CC_HAS_NAMED_AS
-+	#
-+	# -fsanitize=kernel-address (KASAN) is at the moment incompatible
-+	# with named address spaces - see GCC PR sanitizer/111736.
-+	#
-+	depends on !KASAN
- 
- config CC_HAS_SLS
- 	def_bool $(cc-option,-mharden-sls=all)
--- 
-2.41.0
+1.  Build a SRPM on machine A
 
+2.  Copy the SRPM from machine A to machine B
+
+3.  Run rpmbuild on machine B to build the SRPM into a RPM
+
+4.  Copy the RPM from machine B to machine C
+
+5.  Install the RPM to machine C
+
+
+Of course, we are most interested in the module path
+of machine C, but it is difficult/impossible to
+guess it at the time of building.
+
+We can assume machine B =3D=3D machine C.
+
+We are the second most interested in the module
+path on machine B.
+
+The module path of machine A is not important.
+
+
+So, I am asking where you would inject
+'pkg-config --print-variables kmod | grep module_directory'.
+
+
+--=20
+Best Regards
+Masahiro Yamada
