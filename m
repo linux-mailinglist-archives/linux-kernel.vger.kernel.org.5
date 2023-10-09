@@ -2,126 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 039B37BD736
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A84D7BD732
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:36:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345929AbjJIJgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 05:36:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36958 "EHLO
+        id S1345866AbjJIJgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 05:36:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345875AbjJIJgS (ORCPT
+        with ESMTP id S1345804AbjJIJgI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 05:36:18 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE97101
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:36:15 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-77409065623so246972685a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 02:36:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696844175; x=1697448975; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NbPQn5PYDTYWmHehcflWH6rr2b2zYJNRYM1EffH3dP8=;
-        b=q+zQqYGHKC3VdKkSBxfAKFApTLXq+oKJxK6lXPVPlQmk877rKcPXXoNSP0uCCbw3aH
-         kDKgEsptNC4JuJlwHwkZ4LXgbF60inltIh40ilxDtTwVnpQHff+gIlEggYFi1Z7SyJjQ
-         O+U7UjEsOVbA/IaLWCcNTtWT9/2NvuIMScCC2qWfiBul3WiNgDP96ZaZCMaPluAGFQuZ
-         nBlffRcutdlzbsvFQ2r7xg3NGG9YRjHZpAJg5mnpXY+VwWbxpphtNwyVbKfq8zp+0s1A
-         oUhlnna1+TRBryGhR0DOex19FpMZgY+cQOhbl2zpMzB3d9+L+FbSNgvaYO/uYD9OxaRY
-         NLeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696844175; x=1697448975;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NbPQn5PYDTYWmHehcflWH6rr2b2zYJNRYM1EffH3dP8=;
-        b=Xhd4tpyfgr926XKThiNJnb+2Blh/jCQ//rD+KBHju5hlZQrzLXsy8oqr4M8Tt7Avun
-         b3epYzStbosQzmmiDTM8lORNEeNuZ0vxrm71Ml6KDnxpLxKJiyUy8ru8ffnR/J2Ea/Cf
-         SI9AzyOHfiL/VGztWiMzE6EnXGmqXkrs3mX9qoH1NQCpMx9hARz+Galv5tVoIRkNzq64
-         1XgfBlrdVcCr21mDy9cXjV2hXWbkj6UsXwuvcHO5HWgVT2dG3urXg0H61pZSmurh3NDX
-         Nij5LXEt3bi/JW3G5S92TtXgjTIAiPO0ChzafhIXY7iVBYhHrxLElEbtVSTvxpBpfHaR
-         U0Aw==
-X-Gm-Message-State: AOJu0Ywx5aaT6N0t7DnV8dGqPCq3laz3/FVsfdlL1Xxj/kl4YdEi/kgB
-        kNotB/sSXw4ECHoMmV37wiv9EE4fhJehcloOi5qB5g==
-X-Google-Smtp-Source: AGHT+IHl7GhqKVn2QASGrGlQPWIZs4lZeCDhb0GypUERFjZpZgQ73PUH9sqPw5uitx2hqKLaBTMDwKiIGXFneLYscbE=
-X-Received: by 2002:ad4:5d6a:0:b0:65a:f5e9:8ecf with SMTP id
- fn10-20020ad45d6a000000b0065af5e98ecfmr19993574qvb.60.1696844174006; Mon, 09
- Oct 2023 02:36:14 -0700 (PDT)
+        Mon, 9 Oct 2023 05:36:08 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65FA98E;
+        Mon,  9 Oct 2023 02:36:06 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S3v1D3bLvztTHl;
+        Mon,  9 Oct 2023 17:31:28 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 9 Oct
+ 2023 17:36:03 +0800
+Subject: Re: [PATCH net v2] octeontx2-pf: Fix page pool frag allocation
+ failure.
+To:     Ratheesh Kannoth <rkannoth@marvell.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <sgoutham@marvell.com>, <gakula@marvell.com>,
+        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <hawk@kernel.org>, <alexander.duyck@gmail.com>,
+        <ilias.apalodimas@linaro.org>, <bigeasy@linutronix.de>
+References: <20231009032512.3777271-1-rkannoth@marvell.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <e3a86c32-0142-2b80-975c-9c32f6c16bb0@huawei.com>
+Date:   Mon, 9 Oct 2023 17:36:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-References: <cover.1694625260.git.andreyknvl@google.com> <bbf482643e882f9f870d80cb35342c61955ea291.1694625260.git.andreyknvl@google.com>
- <CAG_fn=VspORKG5+xdkmnULq3C64mWCb-XGDvnV9htayf5CL-PQ@mail.gmail.com>
-In-Reply-To: <CAG_fn=VspORKG5+xdkmnULq3C64mWCb-XGDvnV9htayf5CL-PQ@mail.gmail.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Mon, 9 Oct 2023 11:35:38 +0200
-Message-ID: <CAG_fn=VSSQuR2VLEv-t+ByG7AbfDxjeR=oPvpaPkMOq4ZoEs4A@mail.gmail.com>
-Subject: Re: [PATCH v2 07/19] lib/stackdepot: rework helpers for depot_alloc_stack
-To:     andrey.konovalov@linux.dev
-Cc:     Marco Elver <elver@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
-        Evgenii Stepanov <eugenis@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231009032512.3777271-1-rkannoth@marvell.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 9, 2023 at 10:59=E2=80=AFAM Alexander Potapenko <glider@google.=
-com> wrote:
->
-> On Wed, Sep 13, 2023 at 7:15=E2=80=AFPM <andrey.konovalov@linux.dev> wrot=
-e:
-> >
-> > From: Andrey Konovalov <andreyknvl@google.com>
-> >
-> > Split code in depot_alloc_stack and depot_init_pool into 3 functions:
-> >
-> > 1. depot_keep_next_pool that keeps preallocated memory for the next poo=
-l
-> >    if required.
-> >
-> > 2. depot_update_pools that moves on to the next pool if there's no spac=
-e
-> >    left in the current pool, uses preallocated memory for the new curre=
-nt
-> >    pool if required, and calls depot_keep_next_pool otherwise.
-> >
-> > 3. depot_alloc_stack that calls depot_update_pools and then allocates
-> >    a stack record as before.
-> >
-> > This makes it somewhat easier to follow the logic of depot_alloc_stack
-> > and also serves as a preparation for implementing the eviction of stack
-> > records from the stack depot.
-> >
-> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Reviewed-by: Alexander Potapenko <glider@google.com>
->
->
-> > +static void depot_keep_next_pool(void **prealloc)
-> >  {
-> >         /*
-> > -        * If the next pool is already initialized or the maximum numbe=
-r of
-> > +        * If the next pool is already saved or the maximum number of
-> >          * pools is reached, do not use the preallocated memory.
-> >          */
-> >         if (!next_pool_required)
-> It's not mentioned at the top of the file that next_pool_required is
-> protected by pool_lock, but it is, correct?
-> Can you please update the comment to reflect that?
+On 2023/10/9 11:25, Ratheesh Kannoth wrote:
+> Since page pool param's "order" is set to 0, will result
+> in below warn message if interface is configured higher
 
-You're adding lockdep annotations in patch 11, which are pretty
-self-descriptive.
-Feel free to ignore my comment above.
+interface is configured with higher rx buffer size?
+                        ^^^^
+
+> rx buffer size.
+> 
+> Steps to reproduce the issue.
+> 1. devlink dev param set pci/0002:04:00.0 name receive_buffer_size \
+>    value 8196 cmode runtime
+> 2. ifconfig eth0 up
+> 
+> [   19.901356] ------------[ cut here ]------------
+> [   19.901361] WARNING: CPU: 11 PID: 12331 at net/core/page_pool.c:567 page_pool_alloc_frag+0x3c/0x230
+> [   19.901449] pstate: 82401009 (Nzcv daif +PAN -UAO +TCO -DIT +SSBS BTYPE=--)
+> [   19.901451] pc : page_pool_alloc_frag+0x3c/0x230
+> [   19.901453] lr : __otx2_alloc_rbuf+0x60/0xbc [rvu_nicpf]
+> [   19.901460] sp : ffff80000f66b970
+> [   19.901461] x29: ffff80000f66b970 x28: 0000000000000000 x27: 0000000000000000
+> [   19.901464] x26: ffff800000d15b68 x25: ffff000195b5c080 x24: ffff0002a5a32dc0
+> [   19.901467] x23: ffff0001063c0878 x22: 0000000000000100 x21: 0000000000000000
+> [   19.901469] x20: 0000000000000000 x19: ffff00016f781000 x18: 0000000000000000
+> [   19.901472] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
+> [   19.901474] x14: 0000000000000000 x13: ffff0005ffdc9c80 x12: 0000000000000000
+> [   19.901477] x11: ffff800009119a38 x10: 4c6ef2e3ba300519 x9 : ffff800000d13844
+> [   19.901479] x8 : ffff0002a5a33cc8 x7 : 0000000000000030 x6 : 0000000000000030
+> [   19.901482] x5 : 0000000000000005 x4 : 0000000000000000 x3 : 0000000000000a20
+> [   19.901484] x2 : 0000000000001080 x1 : ffff80000f66b9d4 x0 : 0000000000001000
+> [   19.901487] Call trace:
+> [   19.901488]  page_pool_alloc_frag+0x3c/0x230
+> [   19.901490]  __otx2_alloc_rbuf+0x60/0xbc [rvu_nicpf]
+> [   19.901494]  otx2_rq_aura_pool_init+0x1c4/0x240 [rvu_nicpf]
+> [   19.901498]  otx2_open+0x228/0xa70 [rvu_nicpf]
+> [   19.901501]  otx2vf_open+0x20/0xd0 [rvu_nicvf]
+> [   19.901504]  __dev_open+0x114/0x1d0
+> [   19.901507]  __dev_change_flags+0x194/0x210
+> [   19.901510]  dev_change_flags+0x2c/0x70
+> [   19.901512]  devinet_ioctl+0x3a4/0x6c4
+> [   19.901515]  inet_ioctl+0x228/0x240
+> [   19.901518]  sock_ioctl+0x2ac/0x480
+> [   19.901522]  __arm64_sys_ioctl+0x564/0xe50
+> [   19.901525]  invoke_syscall.constprop.0+0x58/0xf0
+> [   19.901529]  do_el0_svc+0x58/0x150
+> [   19.901531]  el0_svc+0x30/0x140
+> [   19.901533]  el0t_64_sync_handler+0xe8/0x114
+> [   19.901535]  el0t_64_sync+0x1a0/0x1a4
+> [   19.901537] ---[ end trace 678c0bf660ad8116 ]---
+> 
+> Fixes: b2e3406a38f0 ("octeontx2-pf: Add support for page pool")
+> Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
+> 
+> ---
+> ChangeLog
+> 
+> v1 -> v2: Removed PAGE_ALIGN.
+> v0 -> v1: Used get_order() and PAGE_ALIGN. Fixed commit message
+> ---
+>  drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+> index 997fedac3a98..83a1a460caed 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+> @@ -1357,7 +1357,7 @@ int otx2_pool_init(struct otx2_nic *pfvf, u16 pool_id,
+>  	struct page_pool_params pp_params = { 0 };
+>  	struct npa_aq_enq_req *aq;
+>  	struct otx2_pool *pool;
+> -	int err;
+> +	int err, sz;
+>  
+>  	pool = &pfvf->qset.pool[pool_id];
+>  	/* Alloc memory for stack which is used to store buffer pointers */
+> @@ -1403,6 +1403,8 @@ int otx2_pool_init(struct otx2_nic *pfvf, u16 pool_id,
+>  		return 0;
+>  	}
+>  
+> +	sz = ALIGN(SKB_DATA_ALIGN(buf_size), OTX2_ALIGN);
+
+Is the above really needed if PAGE_SIZE is bigger than SMP_CACHE_BYTES
+or OTX2_ALIGN? Doesn't get_order() already ensure that the alignment is bigger
+than SMP_CACHE_BYTES or OTX2_ALIGN?
+
+> +	pp_params.order = get_order(sz);
+>  	pp_params.flags = PP_FLAG_PAGE_FRAG | PP_FLAG_DMA_MAP;
+>  	pp_params.pool_size = min(OTX2_PAGE_POOL_SZ, numptrs);
+>  	pp_params.nid = NUMA_NO_NODE;
+> 
