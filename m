@@ -2,127 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92CAE7BEBA1
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 22:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1F3F7BEBA4
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 22:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377883AbjJIUcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 16:32:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34440 "EHLO
+        id S1377879AbjJIUdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 16:33:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377354AbjJIUcq (ORCPT
+        with ESMTP id S1377408AbjJIUdP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 16:32:46 -0400
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B21B2A3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 13:32:44 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 275C35C02BB;
-        Mon,  9 Oct 2023 16:32:44 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Mon, 09 Oct 2023 16:32:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=cc
-        :cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1696883564; x=1696969964; bh=SzCcXEw24lbVQoLDSre4+93FDqVAU/sVIvB
-        TCkxblE4=; b=HO/OHuE6kHokYBVlkHykez21S6VDvdr5Gdj8uzoCr0GpVgruifQ
-        z2EvzdEc+i0Ot5AnVWz81RGSHnjudXQ3xUD78PWToBX5Vs7YmxhAzj9MuA1VV3pa
-        NvcfEuKgRJr2JZ1jmj3V/QQ+wSr4egq/dPryEiVVBOUnQrXr8ErC9hMzMn3bvsrP
-        poeEHolD3/Zfe6YFV82couRd50Ghdk8/PX//RP7dvKHtJF5cjwo3KtbAMeD6Gdlt
-        rC3s/dcipacwuf/C/VDG9uDgFmQ8uxwGZMVPBK7/oUIbJpJ/rp9K7U4MFNmHgSoK
-        CkOmG07Dd1Q7Qohy6B3fFUpsd3bGoJWqMCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-        1696883564; x=1696969964; bh=SzCcXEw24lbVQoLDSre4+93FDqVAU/sVIvB
-        TCkxblE4=; b=cxlJl5XSYwGSdUJuN2SWs1jXmMEgUjXvWe4uTI5C4XzeZIQJGEu
-        RX4VJvhg0Nlb1xSdbHG/RcmJg+Krgga5HiWDk6/WszGY7n8bjJ0pPz1SaZU1L2xs
-        KEItHfvP6P2dtzh6U6h0nkMBcUvVjyckqXnlqFF0Po6r6ye+KOjyiy9886Udb8pC
-        AcfRDwY6G3Sgc3CEyzzWzzDL5GBw0Gn5U/QKRk22o8D/FtidDp5JAf5IPVDuh9Tg
-        RXS7QzAh8HH+I9mIG4avSNNpWVtUlyFtUMVPflGqwbovIQM0YY0VtWB1GRypz95T
-        eV0C4cDS3Mh6RouqBqijHJPDa7vHt1liCAA==
-X-ME-Sender: <xms:bGMkZeHdVG_Yi5UZ5KRSXOuj_KoJg6QGFZM5DSQvcP_NgcVMYMxs7A>
-    <xme:bGMkZfW63JfH8TV2jexitU5UvfZidpTdUMzOM75Fu4dG-f6lDjP2X_lSx_HGznguz
-    -Y_lDc_dogB22xblQ>
-X-ME-Received: <xmr:bGMkZYIQMMDbVMB2T3Fv3CVaqU0Y87OCZR6x7ckDcVvGpnl1Ad0B1n2OwWLkmWoPkG7NUrZCWhKhtJyxGN6sV4Ip28J8jWJYI_ty8sAh5vch5OIs3ABgQOyG>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrheefgdduhedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvvefufffkofgjfhhrggfgsedtqhertdertddtnecuhfhrohhmpegkihcu
-    jggrnhcuoeiiihdrhigrnhesshgvnhhtrdgtohhmqeenucggtffrrghtthgvrhhnpeegge
-    ehudfgudduvdelheehteegledtteeiveeuhfffveekhfevueefieeijeegvdenucevlhhu
-    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpeiiihdrhigrnhessh
-    gvnhhtrdgtohhm
-X-ME-Proxy: <xmx:bGMkZYE_BzxMNmVqUYOC-g2MGdISt7g_tZOJc79qkzgUwxVWDj4mDA>
-    <xmx:bGMkZUW0U7csK56ON3SEpzo0RQuxBgsRqN16hn3zf3v4qZQKJgsH1A>
-    <xmx:bGMkZbNbHMmwX-t2q4A7UIycqkw_YhzLA7oegw5kscx5J8PLq_7UYg>
-    <xmx:bGMkZWJ9qYMN-PXmyE8kEaX9vPVvHP--VGxCo76zcFcUm9g834UkNw>
-Feedback-ID: iccd040f4:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 9 Oct 2023 16:32:43 -0400 (EDT)
-From:   Zi Yan <zi.yan@sent.com>
-To:     Huang Ying <ying.huang@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     Zi Yan <ziy@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>
-Subject: [PATCH 1/1] mm/migrate: correct nr_failed in migrate_pages_sync()
-Date:   Mon,  9 Oct 2023 16:32:31 -0400
-Message-ID: <20231009203231.1715845-2-zi.yan@sent.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231009203231.1715845-1-zi.yan@sent.com>
-References: <20231009203231.1715845-1-zi.yan@sent.com>
-Reply-To: Zi Yan <ziy@nvidia.com>
+        Mon, 9 Oct 2023 16:33:15 -0400
+Received: from omta36.uswest2.a.cloudfilter.net (omta36.uswest2.a.cloudfilter.net [35.89.44.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEBE3A3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 13:33:13 -0700 (PDT)
+Received: from eig-obgw-6006a.ext.cloudfilter.net ([10.0.30.182])
+        by cmsmtp with ESMTP
+        id pvy9qvmMkMZBkpwwDqF81H; Mon, 09 Oct 2023 20:33:13 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id pwwCqHejI5eE1pwwCqYZrZ; Mon, 09 Oct 2023 20:33:13 +0000
+X-Authority-Analysis: v=2.4 cv=HsVlpmfS c=1 sm=1 tr=0 ts=65246389
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
+ a=_Wotqz80AAAA:8 a=ChtT1rbVDKAm23ceNSMA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=buJP51TR1BpY-zbLSsyS:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=kxVhA3iC5cF5Bpjygso+wLdoa0I8qR+aXtKisYTFkO4=; b=BDCqxgX5mHTlxmoSawnMTQPioU
+        x9gE69dpbf0AoFnqb2FawoK+ktCWQuSYHRJ/2153sjUeTW7sy/+e985SeviIrRNc51IX2U9Qw8ZiP
+        QEmTnerYBSWt3XBaLFEpJnEqZ0kuRYBSnxIsO76fKJ67WNxZR/8H8TfeMP+IE1WYzxiEz8XddM1wx
+        tO4h1cds4iwHygj9stQw0HPfbasaSOGLVwMxA6CD0y0ot1dl+XXtSya1suWmesPIgGrwALQshpBmR
+        5A4AO149tqY4yiJG13smvQBxEykXjXM3LvoUZfDgKiEbpDzVqw+FMFAM3cJD+M6KMHhlYXhy/4jfi
+        NuueI7xg==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:46948 helo=[192.168.15.7])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96.1)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qpwwB-000iUk-1l;
+        Mon, 09 Oct 2023 15:33:12 -0500
+Message-ID: <169f782e-9cc4-49bc-9618-ca6acc526e37@embeddedor.com>
+Date:   Mon, 9 Oct 2023 14:33:01 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH][next] hostap: Add __counted_by for struct
+ prism2_download_data and use struct_size()
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <ZSRXXvWMMkm7qqRW@work> <202310091253.665A9C9@keescook>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <202310091253.665A9C9@keescook>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1qpwwB-000iUk-1l
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.7]) [187.162.21.192]:46948
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 2
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfHizR+ql65LJsls5M3ZCwd2fT+pXLVLeu2vDANZ0yxfzRJ+5veoNKTQVdecigvfx9a/8Ya1Od+H5QE75cfdVO6BfpC6yq7fXbg2K5gvfOuYnhlZK+S2s
+ hCppsga8r+65Ooiy+F/K06WwL889kUnjiZyOrA45kMoFWS30amIBzsV97kEYMtrEFQ6mFYjBvl7ANPGH1ejIYBW9XJd4QXB84zwmQLRe0qDREWpUYBaqp2M0
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zi Yan <ziy@nvidia.com>
 
-nr_failed was missing the rc value from migrate_pages_batch() and can
-cause a mismatch between migrate_pages() return value and the number of
-not migrated pages, i.e., when the return value of migrate_pages() is 0,
-there are still pages left in the from page list. It will happen when a
-non-PMD THP large folio fails to migrate due to -ENOMEM and is split
-successfully but not all the split pages are not migrated,
-migrate_pages_batch() would return non-zero, but astats.nr_thp_split =3D 0.
-nr_failed would be 0 and returned to the caller of migrate_pages(), but
-the not migrated pages are left in the from page list without being added
-back to LRU lists.
 
-Fixes: 2ef7dbb26990 ("migrate_pages: try migrate in batch asynchronously fi=
-rstly")
-Signed-off-by: Zi Yan <ziy@nvidia.com>
----
- mm/migrate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 10/9/23 21:54, Kees Cook wrote:
+> On Mon, Oct 09, 2023 at 01:41:18PM -0600, Gustavo A. R. Silva wrote:
+>> Prepare for the coming implementation by GCC and Clang of the __counted_by
+>> attribute. Flexible array members annotated with __counted_by can have
+>> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
+>> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+>> functions).
+>>
+>> While there, use struct_size() helper, instead of the open-coded
+>> version, to calculate the size for the allocation of the whole
+>> flexible structure, including of course, the flexible-array member.
+>>
+>> This code was found with the help of Coccinelle, and audited and
+>> fixed manually.
+>>
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> ---
+>>   drivers/net/wireless/intersil/hostap/hostap_download.c | 3 +--
+>>   drivers/net/wireless/intersil/hostap/hostap_wlan.h     | 2 +-
+>>   2 files changed, 2 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/net/wireless/intersil/hostap/hostap_download.c b/drivers/net/wireless/intersil/hostap/hostap_download.c
+>> index 3672291ced5c..5e5bada28b5b 100644
+>> --- a/drivers/net/wireless/intersil/hostap/hostap_download.c
+>> +++ b/drivers/net/wireless/intersil/hostap/hostap_download.c
+>> @@ -732,8 +732,7 @@ static int prism2_download(local_info_t *local,
+>>   		goto out;
+>>   	}
+>>   
+>> -	dl = kzalloc(sizeof(*dl) + param->num_areas *
+>> -		     sizeof(struct prism2_download_data_area), GFP_KERNEL);
+>> +	dl = kzalloc(struct_size(dl, data, param->num_areas), GFP_KERNEL);
+>>   	if (dl == NULL) {
+>>   		ret = -ENOMEM;
+>>   		goto out;
+>> diff --git a/drivers/net/wireless/intersil/hostap/hostap_wlan.h b/drivers/net/wireless/intersil/hostap/hostap_wlan.h
+>> index c25cd21d18bd..f71c0545c0be 100644
+>> --- a/drivers/net/wireless/intersil/hostap/hostap_wlan.h
+>> +++ b/drivers/net/wireless/intersil/hostap/hostap_wlan.h
+>> @@ -617,7 +617,7 @@ struct prism2_download_data {
+>>   		u32 addr; /* wlan card address */
+>>   		u32 len;
+>>   		u8 *data; /* allocated data */
+>> -	} data[];
+>> +	} data[] __counted_by(num_areas);
+>>   };
+> 
+> Should this be considered a v2 of:
+> https://lore.kernel.org/linux-hardening/94848cc3-6f5c-46d7-8cc7-98a4f10865b3@embeddedor.com/
+> 
+> ?
 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index c602bf6dec97..5348827bd958 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -1834,7 +1834,7 @@ static int migrate_pages_sync(struct list_head *from,=
- new_folio_t get_new_folio,
- 		return rc;
- 	}
- 	stats->nr_thp_failed +=3D astats.nr_thp_split;
--	nr_failed +=3D astats.nr_thp_split;
-+	nr_failed +=3D rc + astats.nr_thp_split;
- 	/*
- 	 * Fall back to migrate all failed folios one by one synchronously. All
- 	 * failed folios except split THPs will be retried, so their failure
---=20
-2.42.0
+Oops... sorry, I forgot I had reviewed this patch of yours.
 
+> 
+> Yours is more complete since it includes the struct_size() change...
+> 
+
+Should I resend this explicitly marking it as a v2?
+
+--
+Gustavo
