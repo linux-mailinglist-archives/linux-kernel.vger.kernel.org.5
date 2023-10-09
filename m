@@ -2,199 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 534277BD175
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 02:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB4E47BD180
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 02:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343799AbjJIAkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 20:40:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60452 "EHLO
+        id S1344552AbjJIAug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 20:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbjJIAkX (ORCPT
+        with ESMTP id S229663AbjJIAuf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 20:40:23 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5DBA6;
-        Sun,  8 Oct 2023 17:40:21 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A52EDC433C8;
-        Mon,  9 Oct 2023 00:40:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696812021;
-        bh=J0GRDxm080uPCD8Am8KeUyA7JKGTDkfvRl5M8xldpxw=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=TaduiPvw4uewX3e7GiHqNWuI+H0eTaDAhLngRqTzr4/1KPmzqP9zCPAxH/lieIm7X
-         v9XTWRvZwIW1I0OTQ27eYokYRysoDYMlOUDdxL+RMQGS+R9nvguwvx2BmS7jK1mJQW
-         RG/bET3ZJgw9NmlpkLm8+TbygS7cV6sgKPGLP02/VL8jntA3bY7Vbv78MukH66EZcV
-         wZpImZdqRyTSzXfyiGTSlbOsaYdDKU+1RKaNaFS4hXdOsVRAsUccU9mP7o78385F20
-         w+a2DyAC9eK/egYLXpMEgdG9d0r+26DueE/IPOhGbQXl/Lj7GORjKntVkSFfn+jhhD
-         yTeHH58wdPrWQ==
-Message-ID: <d33cadd3-4432-44c7-8570-1a28e5669939@kernel.org>
-Date:   Mon, 9 Oct 2023 09:40:16 +0900
+        Sun, 8 Oct 2023 20:50:35 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D1F7AB
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 17:50:33 -0700 (PDT)
+Received: from localhost.localdomain (unknown [179.221.49.143])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: koike)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A0A3A660708F;
+        Mon,  9 Oct 2023 01:50:27 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1696812632;
+        bh=36KY2QEkuekKCMScZo5y6Lh+3n9nQdvTMqIaLNyaUiY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eH1skdqSRGueDk3Mr2wnrHFWGHtP4yMdKtcjtYU3iR/w/5z84AY8DTd9ypS7rSy6V
+         PKZ2MKZ6gIT7YkJ8Lgd33r47/kRicxKgA6U6+kQVtMcymD0BHJVHgWoKwSAvwvPdXC
+         QYX5We+e6K4p4OTg6bOMBJ8CHwNfNpRc0FsZQkQI/xDpgKucwcxoHAi/w6I/emHriV
+         udKFm07UxLRnaRsEPdNUx1myIeaGZQIrZMLK7X1Q6HIvAVlSm2n/i2lzD8fjRfhFu4
+         DmV3P1hTsu/2W0wSRjL1bzvR2N+vPYpBl/z1zY+gOTvVUDWRw9hT8IpG+KmRRlBiE9
+         gUmxAGE3jzOvw==
+From:   Helen Koike <helen.koike@collabora.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     robdclark@chromium.org, dmitry.baryshkov@linaro.org,
+        vignesh.raman@collabora.com, sergi.blanch.torne@collabora.com,
+        guilherme.gallo@collabora.com, david.heidelberg@collabora.com,
+        quic_abhinavk@quicinc.com, quic_jesszhan@quicinc.com,
+        Helen Koike <helen.koike@collabora.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH 0/9] drm/ci: fixes and improvements
+Date:   Sun,  8 Oct 2023 21:49:44 -0300
+Message-Id: <20231009004953.203576-1-helen.koike@collabora.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 20/26] dt-bindings: devfreq: event: convert Rockchip
- DFI binding to yaml
-Content-Language: en-US
-To:     Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-rockchip@lists.infradead.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, kernel@pengutronix.de,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Vincent Legoll <vincent.legoll@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Rob Herring <robh@kernel.org>
-References: <20230704093242.583575-1-s.hauer@pengutronix.de>
- <20230704093242.583575-21-s.hauer@pengutronix.de>
-From:   Chanwoo Choi <chanwoo@kernel.org>
-In-Reply-To: <20230704093242.583575-21-s.hauer@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23. 7. 4. 18:32, Sascha Hauer wrote:
-> Convert the Rockchip DFI binding to yaml.
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
-> 
-> Notes:
->     Changes since v4:
->     
->     - Revert to state of v3 (changes were lost in v4)
-> 
->  .../bindings/devfreq/event/rockchip,dfi.yaml  | 61 +++++++++++++++++++
->  .../bindings/devfreq/event/rockchip-dfi.txt   | 18 ------
->  .../rockchip,rk3399-dmc.yaml                  |  2 +-
->  3 files changed, 62 insertions(+), 19 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/devfreq/event/rockchip,dfi.yaml
->  delete mode 100644 Documentation/devicetree/bindings/devfreq/event/rockchip-dfi.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/devfreq/event/rockchip,dfi.yaml b/Documentation/devicetree/bindings/devfreq/event/rockchip,dfi.yaml
-> new file mode 100644
-> index 0000000000000..7a82f6ae0701e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/devfreq/event/rockchip,dfi.yaml
-> @@ -0,0 +1,61 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/devfreq/event/rockchip,dfi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Rockchip DFI
-> +
-> +maintainers:
-> +  - Sascha Hauer <s.hauer@pengutronix.de>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - rockchip,rk3399-dfi
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    items:
-> +      - const: pclk_ddr_mon
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  rockchip,pmu:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      Phandle to the syscon managing the "PMU general register files".
-> +
-> +required:
-> +  - compatible
-> +  - clocks
-> +  - clock-names
-> +  - interrupts
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/clock/rk3308-cru.h>
-> +
-> +    bus {
-> +      #address-cells = <2>;
-> +      #size-cells = <2>;
-> +
-> +      dfi: dfi@ff630000 {
-> +        compatible = "rockchip,rk3399-dfi";
-> +        reg = <0x00 0xff630000 0x00 0x4000>;
-> +        interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH 0>;
-> +        rockchip,pmu = <&pmugrf>;
-> +        clocks = <&cru PCLK_DDR_MON>;
-> +        clock-names = "pclk_ddr_mon";
-> +      };
-> +    };
-> diff --git a/Documentation/devicetree/bindings/devfreq/event/rockchip-dfi.txt b/Documentation/devicetree/bindings/devfreq/event/rockchip-dfi.txt
-> deleted file mode 100644
-> index 148191b0fc158..0000000000000
-> --- a/Documentation/devicetree/bindings/devfreq/event/rockchip-dfi.txt
-> +++ /dev/null
-> @@ -1,18 +0,0 @@
-> -
-> -* Rockchip rk3399 DFI device
-> -
-> -Required properties:
-> -- compatible: Must be "rockchip,rk3399-dfi".
-> -- reg: physical base address of each DFI and length of memory mapped region
-> -- rockchip,pmu: phandle to the syscon managing the "pmu general register files"
-> -- clocks: phandles for clock specified in "clock-names" property
-> -- clock-names : the name of clock used by the DFI, must be "pclk_ddr_mon";
-> -
-> -Example:
-> -	dfi: dfi@ff630000 {
-> -		compatible = "rockchip,rk3399-dfi";
-> -		reg = <0x00 0xff630000 0x00 0x4000>;
-> -		rockchip,pmu = <&pmugrf>;
-> -		clocks = <&cru PCLK_DDR_MON>;
-> -		clock-names = "pclk_ddr_mon";
-> -	};
-> diff --git a/Documentation/devicetree/bindings/memory-controllers/rockchip,rk3399-dmc.yaml b/Documentation/devicetree/bindings/memory-controllers/rockchip,rk3399-dmc.yaml
-> index fb4920397d08e..aba8649aaeb10 100644
-> --- a/Documentation/devicetree/bindings/memory-controllers/rockchip,rk3399-dmc.yaml
-> +++ b/Documentation/devicetree/bindings/memory-controllers/rockchip,rk3399-dmc.yaml
-> @@ -18,7 +18,7 @@ properties:
->      $ref: /schemas/types.yaml#/definitions/phandle
->      description:
->        Node to get DDR loading. Refer to
-> -      Documentation/devicetree/bindings/devfreq/event/rockchip-dfi.txt.
-> +      Documentation/devicetree/bindings/devfreq/event/rockchip,dfi.yaml.
->  
->    clocks:
->      maxItems: 1
+This series contains the following several fixes, making drm/ci much
+more reliable and useful.
 
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+To work properly, the following patches are also required:
+
+[PATCH 2/2] drm/ci: force-enable CONFIG_MSM_MMCC_8996 as built-in
+https://patchwork.kernel.org/project/linux-arm-msm/patch/20231008132320.762542-2-dmitry.baryshkov@linaro.org/
+
+[PATCH] drm/ci: Enable CONFIG_BACKLIGHT_CLASS_DEVICE
+https://patchwork.kernel.org/project/dri-devel/patch/20231002164715.157298-1-robdclark@gmail.com/
+
+Helen Koike (9):
+  drm/ci: uprev mesa version - fix container build
+  drm/ci: fix DEBIAN_ARCH and get amdgpu probing
+  drm/ci: add helper script update-xfails.py
+  drm/ci: uprev IGT and make sure core_getversion is run
+  drm/ci: clean up xfails (specially flakes list)
+  drm/ci: adjust the number of shards
+  drm/ci: export kernel config
+  drm/ci: do not automatically retry on error
+  drm/ci: docs: add step about how to request priviledges
+
+ Documentation/gpu/automated_testing.rst       |   7 +-
+ drivers/gpu/drm/ci/build.sh                   |   3 +-
+ drivers/gpu/drm/ci/gitlab-ci.yml              |  31 ++-
+ drivers/gpu/drm/ci/igt_runner.sh              |  31 ++-
+ drivers/gpu/drm/ci/image-tags.yml             |   4 +-
+ drivers/gpu/drm/ci/lava-submit.sh             |   6 +-
+ drivers/gpu/drm/ci/test.yml                   |  21 +-
+ .../gpu/drm/ci/xfails/amdgpu-stoney-fails.txt |  13 +-
+ .../drm/ci/xfails/amdgpu-stoney-flakes.txt    |  20 --
+ drivers/gpu/drm/ci/xfails/i915-amly-fails.txt |   9 +
+ .../gpu/drm/ci/xfails/i915-amly-flakes.txt    |  32 ---
+ drivers/gpu/drm/ci/xfails/i915-apl-fails.txt  |  11 -
+ drivers/gpu/drm/ci/xfails/i915-apl-flakes.txt |   1 -
+ drivers/gpu/drm/ci/xfails/i915-cml-fails.txt  |  15 +-
+ drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt |  38 ----
+ drivers/gpu/drm/ci/xfails/i915-glk-fails.txt  |  17 ++
+ drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt |  41 ----
+ drivers/gpu/drm/ci/xfails/i915-kbl-fails.txt  |   7 +
+ drivers/gpu/drm/ci/xfails/i915-kbl-flakes.txt |  26 ---
+ drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt  |   1 -
+ drivers/gpu/drm/ci/xfails/i915-tgl-flakes.txt |   5 -
+ drivers/gpu/drm/ci/xfails/i915-whl-flakes.txt |   1 -
+ .../drm/ci/xfails/mediatek-mt8173-flakes.txt  |   0
+ .../drm/ci/xfails/mediatek-mt8183-fails.txt   |   5 +-
+ .../drm/ci/xfails/mediatek-mt8183-flakes.txt  |  14 --
+ .../gpu/drm/ci/xfails/meson-g12b-fails.txt    |  14 +-
+ .../gpu/drm/ci/xfails/meson-g12b-flakes.txt   |   4 -
+ .../gpu/drm/ci/xfails/msm-apq8016-flakes.txt  |   4 -
+ .../gpu/drm/ci/xfails/msm-apq8096-fails.txt   |   2 +
+ .../gpu/drm/ci/xfails/msm-apq8096-flakes.txt  |   4 -
+ .../gpu/drm/ci/xfails/msm-sc7180-fails.txt    |  15 +-
+ .../gpu/drm/ci/xfails/msm-sc7180-flakes.txt   |  24 ++-
+ .../gpu/drm/ci/xfails/msm-sc7180-skips.txt    |  18 +-
+ .../gpu/drm/ci/xfails/msm-sdm845-fails.txt    |   9 +-
+ .../gpu/drm/ci/xfails/msm-sdm845-flakes.txt   |  20 +-
+ drivers/gpu/drm/ci/xfails/requirements.txt    |  17 ++
+ .../drm/ci/xfails/rockchip-rk3288-fails.txt   |   6 +
+ .../drm/ci/xfails/rockchip-rk3288-flakes.txt  |   9 -
+ .../drm/ci/xfails/rockchip-rk3399-fails.txt   |  40 +++-
+ .../drm/ci/xfails/rockchip-rk3399-flakes.txt  |  28 +--
+ drivers/gpu/drm/ci/xfails/update-xfails.py    | 203 ++++++++++++++++++
+ .../drm/ci/xfails/virtio_gpu-none-flakes.txt  |   0
+ 42 files changed, 445 insertions(+), 331 deletions(-)
+ delete mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-flakes.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-flakes.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/i915-kbl-flakes.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/i915-tgl-flakes.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/i915-whl-flakes.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/meson-g12b-flakes.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/requirements.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt
+ create mode 100755 drivers/gpu/drm/ci/xfails/update-xfails.py
+ delete mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-flakes.txt
 
 -- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+2.34.1
 
