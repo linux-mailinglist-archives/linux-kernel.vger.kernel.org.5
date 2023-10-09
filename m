@@ -2,53 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 170087BDC8B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B1487BDCAB
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376603AbjJIMml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 08:42:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51578 "EHLO
+        id S1376551AbjJIMpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 08:45:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376574AbjJIMmg (ORCPT
+        with ESMTP id S1346623AbjJIMpw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 08:42:36 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10110C6;
-        Mon,  9 Oct 2023 05:42:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AD3BC433C8;
-        Mon,  9 Oct 2023 12:42:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696855351;
-        bh=ohuZp0WsPxcwHw6R6rlObohasBZPv2zNfsGPMOVNB0w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BKSDQENlvCmvcUrtGTpvgpXpECfR89ZihieZKhN8yFEcgvnaQah5u+fu1s9cT4cyh
-         t0XXIrXBr5Wh2tHs5U1wgNNLvlJriRBgYeecMegYSMNkZLiT37eCLJlFIUbu7rxsbG
-         5sr0In6kOsFUzhVpOudgXO5aL4REohZCiaJPgybNzfR2soQZC2ttQ0uYemp5lQ6Wtx
-         vi8oA26zKj5teKiNkX8lGRKZNfEXHLCGSxdgSIRTbQ/cGXWeU3YnKa2qbLlIVXNKLs
-         UbTjRun9wVsuKTpkgtho/Jv5qMGp9UmJAFMvr18c5+F3RNdavwcms6ANinS9j1avAn
-         oEcB4ugnaUyQg==
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-csky@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-um@lists.infradead.org, loongarch@lists.linux.dev,
-        sparclinux@vger.kernel.org, x86@kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>
-Subject: [PATCH 5/5] kbuild: unify no-compiler-targets and no-sync-config-targets
-Date:   Mon,  9 Oct 2023 21:42:10 +0900
-Message-Id: <20231009124210.1064021-5-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231009124210.1064021-1-masahiroy@kernel.org>
-References: <20231009124210.1064021-1-masahiroy@kernel.org>
+        Mon, 9 Oct 2023 08:45:52 -0400
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com [209.85.160.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83ADF93
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 05:45:49 -0700 (PDT)
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1c8c1f34aadso7281488fac.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 05:45:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696855549; x=1697460349;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=e6OHh5e2T1GOn8WrMRABkMpowU1QNe48XcopO7VVx+0=;
+        b=L+FOEX7DJpBlGYF/pmrxTkrIO7qDM945midfHkcpf8G6NCUcyK3lB4IcHWFRjIXCfa
+         lCLaL/sbn6A1RTaOM/AJ55bye9TY3msC0SjeRLUJD4YZQjW8DYGAOJb/9mqhc+yR9V5j
+         uPDsponWMLOO/h0KqRnQOEbpisu+BRKfUzwVXp5xX21LHdCu79uZwun77rKvxPTHCdWz
+         z5S1irvxVn1cjgM+XQ8f59qWIf4dwzXiY3dmip3A6W0t+qSANDTYd3gfiMF5V5mNtcMu
+         fnV6Lcc2WjrNb2UHYwOJ0CxKjW1ScgSdwNIvMtkt0GfNgBNSeyiyXEvC4eZEL0cGE7wB
+         jIIQ==
+X-Gm-Message-State: AOJu0YzRvE7Os0zii8/PvawgLSwvy/ycAGR+fLmqDCpWnq/C8k6qt5N1
+        mZhGnNJffefQy8CWZ/cdC99bp2xGRFhkCjmBrSeABrOAbsPxw0w=
+X-Google-Smtp-Source: AGHT+IHLfIDXqezx5RpiSstr0BXbJV6NuaGlRH09snN7LD9fYfTg9+MjkliTUZH5p1EQLDSsmERL/Ba4EALSlraWYRgLtdW8Dp6v
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Received: by 2002:a05:6870:3b0b:b0:1e5:f51d:ce74 with SMTP id
+ gh11-20020a0568703b0b00b001e5f51dce74mr792985oab.7.1696855548940; Mon, 09 Oct
+ 2023 05:45:48 -0700 (PDT)
+Date:   Mon, 09 Oct 2023 05:45:48 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003ad683060747f8ca@google.com>
+Subject: [syzbot] Monthly media report (Oct 2023)
+From:   syzbot <syzbot+listdfdb213d14073f6190f9@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,61 +54,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that vdso_install does not depend on any in-tree build artifact,
-it no longer invokes a compiler, making no-compiler-targets the same
-as no-sync-config-targets.
+Hello media maintainers/developers,
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+This is a 31-day syzbot report for the media subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/media
+
+During the period, 0 new issues were detected and 0 were fixed.
+In total, 16 issues are still open and 84 have been fixed so far.
+
+Some of the still happening issues:
+
+Ref Crashes Repro Title
+<1> 818     Yes   general protection fault in ir_raw_event_store_with_filter
+                  https://syzkaller.appspot.com/bug?extid=34008406ee9a31b13c73
+<2> 304     Yes   KASAN: use-after-free Read in v4l2_fh_init
+                  https://syzkaller.appspot.com/bug?extid=c025d34b8eaa54c571b8
+<3> 95      Yes   WARNING in media_create_pad_link
+                  https://syzkaller.appspot.com/bug?extid=dd320d114deb3f5bb79b
+<4> 83      Yes   WARNING in smsusb_start_streaming/usb_submit_urb
+                  https://syzkaller.appspot.com/bug?extid=12002a39b8c60510f8fb
+<5> 51      Yes   KASAN: use-after-free Read in send_packet
+                  https://syzkaller.appspot.com/bug?extid=f1a69784f6efe748c3bf
+<6> 5       No    KASAN: slab-use-after-free Read in ir_raw_event_store
+                  https://syzkaller.appspot.com/bug?extid=3edd6754ed84dc732eee
+
 ---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
- Makefile | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
-diff --git a/Makefile b/Makefile
-index 2170d56630e8..982b1ad33287 100644
---- a/Makefile
-+++ b/Makefile
-@@ -277,10 +277,6 @@ no-dot-config-targets := $(clean-targets) \
- 			 $(version_h) headers headers_% archheaders archscripts \
- 			 %asm-generic kernelversion %src-pkg dt_binding_check \
- 			 outputmakefile rustavailable rustfmt rustfmtcheck
--# Installation targets should not require compiler. Unfortunately, vdso_install
--# is an exception where build artifacts may be updated. This must be fixed.
--no-compiler-targets := $(no-dot-config-targets) install dtbs_install \
--			headers_install modules_install modules_sign kernelrelease image_name
- no-sync-config-targets := $(no-dot-config-targets) %install modules_sign kernelrelease \
- 			  image_name
- single-targets := %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.rsi %.s %.symtypes %/
-@@ -288,7 +284,6 @@ single-targets := %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.rsi %.s %.symtypes %
- config-build	:=
- mixed-build	:=
- need-config	:= 1
--need-compiler	:= 1
- may-sync-config	:= 1
- single-build	:=
- 
-@@ -298,12 +293,6 @@ ifneq ($(filter $(no-dot-config-targets), $(MAKECMDGOALS)),)
- 	endif
- endif
- 
--ifneq ($(filter $(no-compiler-targets), $(MAKECMDGOALS)),)
--	ifeq ($(filter-out $(no-compiler-targets), $(MAKECMDGOALS)),)
--		need-compiler :=
--	endif
--endif
--
- ifneq ($(filter $(no-sync-config-targets), $(MAKECMDGOALS)),)
- 	ifeq ($(filter-out $(no-sync-config-targets), $(MAKECMDGOALS)),)
- 		may-sync-config :=
-@@ -675,7 +664,7 @@ endif
- 
- # Include this also for config targets because some architectures need
- # cc-cross-prefix to determine CROSS_COMPILE.
--ifdef need-compiler
-+ifdef may-sync-config
- include $(srctree)/scripts/Makefile.compiler
- endif
- 
--- 
-2.39.2
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
 
+You may send multiple commands in a single email message.
