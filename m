@@ -2,220 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F18F7BD78B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1224A7BD795
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345928AbjJIJsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 05:48:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49608 "EHLO
+        id S1345952AbjJIJtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 05:49:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345692AbjJIJsW (ORCPT
+        with ESMTP id S1345863AbjJIJtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 05:48:22 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C8C594
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:48:20 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40666aa674fso40810265e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 02:48:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696844899; x=1697449699; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lcDBEh9tT+OAEwST3qjndiq/2rC0957sQfGVKrifBjA=;
-        b=xEJYZiraM+YlDG+RzxRN2HcaNyvRxd77tV0hMSU1Y7D8PaTLl0vUbskJCBea5n7nK4
-         gztUQx5XZX5ZAZpIgxbHvhlOpbzZiLTnf0XW3njUnIiZUvsPIQvjhO3cVdoythkXG0u1
-         8AnXqya21BUOdYFmTYLreBtgGvFOZWfJ7Vr/yTcFve0Dbj4e8IfJXLDchtA6O/wg/pKR
-         N7qyJkaoRnquzXsQLaHMUz1k9XrdUdNB509DsZ1HcMkVcqHSmhZAR8Y9rFIT+2FNXsOg
-         yO99TpZ8UNi0izOnSxKaU7t+zwNoxQL6wB5hw0n8E7z1yhu88LjyuladTvP4B3GEcaor
-         tAEg==
+        Mon, 9 Oct 2023 05:49:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA0CBCA
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:48:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696844912;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jf3TvYWdWhL977BhygUU/Yo5mqDW4sxxg/0A8rYNaRM=;
+        b=aO3rGsouGluts/z4O5AiZQ0Ky2SsXTuwYwPXJztV4aJMpb6emTCADcNHwZw51oKRWFMqEC
+        ro4gOs8XOODx3g5yttoKwFBVfinX5FX8qDHDY5XSk/cAq0ayTSI5WeDZDUIr0efv/+Faeb
+        hisM/IDbiZ5dJVzeTUItM4HRhRqBay4=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-513-3pIm2PFSPQeAprIhmqS-Gg-1; Mon, 09 Oct 2023 05:48:30 -0400
+X-MC-Unique: 3pIm2PFSPQeAprIhmqS-Gg-1
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-5041a779c75so3674949e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 02:48:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696844899; x=1697449699;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lcDBEh9tT+OAEwST3qjndiq/2rC0957sQfGVKrifBjA=;
-        b=lnl4pCksLDAP/U7bYdgIxjp/AaPAfJr6r4x5znojbtc+hTXwMzmUFSDm1TJQlb05t0
-         4JvMtgH3HyLwQFnv7EbvlfwCruppy8Y3KY5VarB2YVa3QiQbfXWdj9QZkZLju72sG7X3
-         7TWHityw73hjFLS1wu8cAfNZSyTjrtGM7HOJ+JQC4ypTRuD48Aci7jN1B3c9pWJdILhk
-         pGzPZRBoVirGiZtgSLXW8AP8KrBlCDa3AUrrmoT9edXu8IXZ32GrsR1R6ItT+t1VlvZ2
-         LldNBXgdW6UpKaTXChCjP9NQx/IkhbSPDor/fVtUZias8xwmIdV79T7uuTOuj9+hYhRe
-         x4qg==
-X-Gm-Message-State: AOJu0Yx9OQXhfMerQWmqYOE5nTnHk6nFXtdv53TuZqulx8eKbmIVhPsF
-        uO7s72orGu/azgu4EH3iu62uOw==
-X-Google-Smtp-Source: AGHT+IGPqsFUDbVxTxcPqC8MUtZkS0ZFnpjfkuYliWFnriB/Ftmhga+9P707XkrGvNlqN3auETyENw==
-X-Received: by 2002:a1c:7407:0:b0:401:c338:ab94 with SMTP id p7-20020a1c7407000000b00401c338ab94mr13567584wmc.29.1696844898752;
-        Mon, 09 Oct 2023 02:48:18 -0700 (PDT)
-Received: from [192.168.86.24] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id y24-20020a7bcd98000000b004064741f855sm10629557wmj.47.2023.10.09.02.48.17
+        d=1e100.net; s=20230601; t=1696844908; x=1697449708;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Jf3TvYWdWhL977BhygUU/Yo5mqDW4sxxg/0A8rYNaRM=;
+        b=Pd3iEguL0CfDbWp0CChTrAnKzrlyt14WcwOgRpZKuP8XL7qxl2dyTkPSdGsYdA220I
+         /yxeGPKYrOR5rfwGav+HxMYmVyrTcxdSC3DdB51IEuTdMe/wJ5e3R87YAS2osL3DBjI9
+         2QjEaYgc+1SWU9mWpKhWSAtV+FZMG9z1xqajQScLJAY9jFpAUwmylI64/ri+i94NKEXg
+         YO14MHeG75RQZjCbBNsjU9mhRy3LEJvCSB0HXQJZhkG4bLssUYhLBCDWzj/LOWay7jbC
+         fCLzIAUHZFPrAPmXvbxr4OQdGVhE7QZJV+VBseJPeo5CfaZTojG1HIUvpF18zAuKAR7k
+         vZcQ==
+X-Gm-Message-State: AOJu0YyWh/A5IKakveWBa/DqkYkA1NQ43qrdYys6cg1Vok/i/Hz+Hq3N
+        ZagZOYFbDTFc7cWZWJvBAFSfL1kKBwSYV59nMpupE25NteJQc9gluaIUkdv6mhbDMfeN18u9ukm
+        GPFdJW/nF7eX3ghzS0XCB1c//83SqKC3C
+X-Received: by 2002:a05:6512:ea5:b0:4f8:77db:1d9e with SMTP id bi37-20020a0565120ea500b004f877db1d9emr18579051lfb.12.1696844908484;
+        Mon, 09 Oct 2023 02:48:28 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEfSbe4VgAbM9GSYCr0y7y4QoQnRmdJHr78+uQDitdeZXQT9PczzBKrIbievTmuvvOGZ3G03Q==
+X-Received: by 2002:a05:6512:ea5:b0:4f8:77db:1d9e with SMTP id bi37-20020a0565120ea500b004f877db1d9emr18579003lfb.12.1696844907431;
+        Mon, 09 Oct 2023 02:48:27 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c733:6400:ae10:4bb7:9712:8548? (p200300cbc7336400ae104bb797128548.dip0.t-ipconnect.de. [2003:cb:c733:6400:ae10:4bb7:9712:8548])
+        by smtp.gmail.com with ESMTPSA id 6-20020a05600c22c600b0040303a9965asm13011530wmg.40.2023.10.09.02.48.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 02:48:18 -0700 (PDT)
-Message-ID: <318fe799-f53e-64ed-b631-d099bb5202f4@linaro.org>
-Date:   Mon, 9 Oct 2023 10:48:17 +0100
+        Mon, 09 Oct 2023 02:48:27 -0700 (PDT)
+Message-ID: <d9e28b8a-dc03-42cf-a6f8-69b2d993cc8d@redhat.com>
+Date:   Mon, 9 Oct 2023 11:48:25 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [PATCH v12 7/7] nvmem: core: Expose cells through sysfs
 Content-Language: en-US
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Michael Walle <michael@walle.cc>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Robert Marko <robert.marko@sartura.hr>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Daniel Golle <daniel@makrotopia.org>
-References: <20231005155907.2701706-1-miquel.raynal@bootlin.com>
- <20231005155907.2701706-8-miquel.raynal@bootlin.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20231005155907.2701706-8-miquel.raynal@bootlin.com>
+To:     Stefan Roesch <shr@devkernel.io>
+Cc:     kernel-team@fb.com, akpm@linux-foundation.org, hannes@cmpxchg.org,
+        riel@surriel.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20231004190249.829015-1-shr@devkernel.io>
+ <4509a3b4-16a6-f63e-1dd5-e20c7eadf87d@redhat.com>
+ <87fs2nhg14.fsf@devkernel.io>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v1 0/4] mm/ksm: Add ksm advisor
+In-Reply-To: <87fs2nhg14.fsf@devkernel.io>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 06.10.23 18:17, Stefan Roesch wrote:
+> 
+> David Hildenbrand <david@redhat.com> writes:
+> 
+>> On 04.10.23 21:02, Stefan Roesch wrote:
+>>> What is the KSM advisor?
+>>> =========================
+>>> The ksm advisor automatically manages the pages_to_scan setting to
+>>> achieve a target scan time. The target scan time defines how many seconds
+>>> it should take to scan all the candidate KSM pages. In other words the
+>>> pages_to_scan rate is changed by the advisor to achieve the target scan
+>>> time.
+>>> Why do we need a KSM advisor?
+>>> ==============================
+>>> The number of candidate pages for KSM is dynamic. It can often be observed
+>>> that during the startup of an application more candidate pages need to be
+>>> processed. Without an advisor the pages_to_scan parameter needs to be
+>>> sized for the maximum number of candidate pages. With the scan time
+>>> advisor the pages_to_scan parameter based can be changed based on demand.
+>>> Algorithm
+>>> ==========
+>>> The algorithm calculates the change value based on the target scan time
+>>> and the previous scan time. To avoid pertubations an exponentially
+>>> weighted moving average is applied.
+>>> The algorithm has a max and min
+>>> value to:
+>>> - guarantee responsiveness to changes
+>>> - to avoid to spend too much CPU
+>>> Parameters to influence the KSM scan advisor
+>>> =============================================
+>>> The respective parameters are:
+>>> - ksm_advisor_mode
+>>>     0: None (default), 1: scan time advisor
+>>> - ksm_advisor_target_scan_time
+>>>     how many seconds a scan should of all candidate pages take
+>>> - ksm_advisor_min_pages
+>>>     minimum value for pages_to_scan per batch
+>>> - ksm_advisor_max_pages
+>>>     maximum value for pages_to_scan per batch
+>>> The parameters are exposed as knobs in /sys/kernel/mm/ksm.
+>>> By default the scan time advisor is disabled.
+>>
+>> What would be the main reason to not have this enabled as default?
+>>
+> There might be already exisiting users which directly set pages_to_scan
+> and tuned the KSM settings accordingly, as the default setting of 100 for
+> pages_to_scan is too low for typical workloads.
+
+Good point.
+
+> 
+>> IIUC, it is kind-of an auto-tuning of pages_to_scan. Would "auto-tuning"
+>> describe it better than "advisor" ?
+>>
+>> [...]
+>>
+> 
+> I'm fine with auto-tune. I was also thinking about that name, but I
+> chose advisor, its a bit less strong and it needs input from the user.
+> 
+
+I'm not a native speaker, but "adviser" to me implies that no action is 
+taken, only advises are given :) But again, no native speaker.
+
+>>> How is defining a target scan time better?
+>>> ===========================================
+>>> For an administrator it is more logical to set a target scan time.. The
+>>> administrator can determine how many pages are scanned on each scan.
+>>> Therefore setting a target scan time makes more sense.
+>>> In addition the administrator might have a good idea about the
+>>> memory sizing of its respective workloads.
+>>
+>> Is there any way you could imagine where we could have this just do something
+>> reasonable without any user input? IOW, true auto-tuning?
+>>
+> 
+> True auto-tuning might be difficult as users might want to be able to
+> choose how aggressive KSM is. Some might want it to be as aggressive as
+> possible to get the maximum de-duplication rate. Others might want a
+> more balanced approach that takes CPU-consumption into consideration.
+> 
+> I guess it depends if you are memory-bound, cpu-bound or both.
+
+Agreed, more below.
+
+> 
+>> I read above:
+>>> - guarantee responsiveness to changes
+>>> - to avoid to spend too much CPU
+>>
+>> whereby both things are accountable/measurable to use that as the input for
+>> auto-tuning?
+>>
+> I'm not sure a true auto-tuning can be achieved. I think we need
+> some input from the user
+> - How much resources to consume
+> - How fast memory changes or how stable memory is
+>    (this we might be able to detect)
+
+Setting the pages_to_scan is a bit mystical. Setting upper/lower 
+pages_to_scan bounds is similarly mystical, and highly workload dependent.
+
+So I agree that a better abstraction to automatically tune the scanning 
+is reasonable. I wonder if we can let the user give better inputs that 
+are less workload dependent.
+
+For example, do we need min/max values for pages_to_scan, or can we 
+replace it by something better to the auto-tuning algorithm?
+
+IMHO "target scan time" goes into the right direction, but it can still 
+be fairly workload dependent. Maybe a "max CPU consumption" or sth. like 
+that would similarly help to limit CPU waste, and it could be fairly 
+workload dependent.
 
 
-On 05/10/2023 16:59, Miquel Raynal wrote:
-> , int index);
-> +
-> +static ssize_t nvmem_cell_attr_read(struct file *filp, struct kobject *kobj,
-> +				    struct bin_attribute *attr, char *buf,
-> +				    loff_t pos, size_t count)
-> +{
-> +	struct nvmem_cell_entry *entry;
-> +	struct nvmem_cell *cell = NULL;
-> +	size_t cell_sz, read_len;
-> +	void *content;
-> +
-> +	entry = attr->private;
-> +	cell = nvmem_create_cell(entry, entry->name, 0);
-> +	if (IS_ERR(cell))
-> +		return PTR_ERR(cell);
-> +
-> +	if (!cell)
-> +		return -EINVAL;
-> +
-> +	content = nvmem_cell_read(cell, &cell_sz);
-> +	if (IS_ERR(content)) {
-> +		read_len = PTR_ERR(content);
-> +		goto destroy_cell;
-> +	}
-> +
-> +	read_len = min_t(unsigned int, cell_sz - pos, count);
-> +	memcpy(buf, content + pos, read_len);
-> +	kfree(content);
-> +
-> +destroy_cell:
-> +	kfree_const(cell->id);
-> +	kfree(cell);
-> +
-> +	return read_len;
-> +}
-> +
->   /* default read/write permissions */
->   static struct bin_attribute bin_attr_rw_nvmem = {
->   	.attr	= {
-> @@ -320,11 +357,21 @@ static const struct attribute_group nvmem_bin_group = {
->   	.is_bin_visible = nvmem_bin_attr_is_visible,
->   };
->   
-> +/* Cell attributes will be dynamically allocated */
-> +static struct attribute_group nvmem_cells_group = {
-> +	.name		= "cells",
-> +};
-> +
->   static const struct attribute_group *nvmem_dev_groups[] = {
->   	&nvmem_bin_group,
->   	NULL,
->   };
->   
-> +static const struct attribute_group *nvmem_cells_groups[] = {
-> +	&nvmem_cells_group,
-> +	NULL,
-> +};
-> +
->   static struct bin_attribute bin_attr_nvmem_eeprom_compat = {
->   	.attr	= {
->   		.name	= "eeprom",
-> @@ -380,6 +427,68 @@ static void nvmem_sysfs_remove_compat(struct nvmem_device *nvmem,
->   		device_remove_bin_file(nvmem->base_dev, &nvmem->eeprom);
->   }
->   
-> +static int nvmem_populate_sysfs_cells(struct nvmem_device *nvmem)
-> +{
-> +	struct bin_attribute **cells_attrs, *attrs;
-> +	struct nvmem_cell_entry *entry;
-> +	unsigned int ncells = 0, i = 0;
-> +	int ret = 0;
-> +
-> +	mutex_lock(&nvmem_mutex);
-> +
-> +	if (list_empty(&nvmem->cells) || nvmem->sysfs_cells_populated) {
-> +		nvmem_cells_group.bin_attrs = NULL;
-> +		goto unlock_mutex;
-> +	}
-> +
-> +	/* Allocate an array of attributes with a sentinel */
-> +	ncells = list_count_nodes(&nvmem->cells);
-> +	cells_attrs = devm_kcalloc(&nvmem->dev, ncells + 1,
-> +				   sizeof(struct bin_attribute *), GFP_KERNEL);
-> +	if (!cells_attrs) {
-> +		ret = -ENOMEM;
-> +		goto unlock_mutex;
-> +	}
-> +
-> +	attrs = devm_kcalloc(&nvmem->dev, ncells, sizeof(struct bin_attribute), GFP_KERNEL);
-> +	if (!attrs) {
-> +		ret = -ENOMEM;
-> +		goto unlock_mutex;
-> +	}
-> +
-> +	/* Initialize each attribute to take the name and size of the cell */
-> +	list_for_each_entry(entry, &nvmem->cells, node) {
-> +		sysfs_bin_attr_init(&attrs[i]);
-> +		attrs[i].attr.name = devm_kasprintf(&nvmem->dev, GFP_KERNEL,
-> +						    "%s@%x", entry->name,
-> +						    entry->offset);
-> +		attrs[i].attr.mode = 0444;
-> +		attrs[i].size = entry->bytes;
-> +		attrs[i].read = &nvmem_cell_attr_read;
-> +		attrs[i].private = entry;
-> +		if (!attrs[i].attr.name) {
-> +			ret = -ENOMEM;
-> +			goto unlock_mutex;
-> +		}
-> +
-> +		cells_attrs[i] = &attrs[i];
-> +		i++;
-> +	}
-> +
-> +	nvmem_cells_group.bin_attrs = cells_attrs;
-> +
-> +	ret = devm_device_add_groups(&nvmem->dev, nvmem_cells_groups);
-> +	if (ret)
-> +		goto unlock_mutex;
+-- 
+Cheers,
 
-This is going to create groups after the nvmem device is added, isn't 
-this going to be problem with user space notifications?
+David / dhildenb
 
---srini
-> +
-> +	nvmem->sysfs_cells_populated = true;
-> +
-> +unlock_mutex:
-> +	mutex_unlock(&nvmem_mutex);
-> +
-> +	return ret;
