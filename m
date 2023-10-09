@@ -2,43 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EEF17BE839
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A517BE83B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378117AbjJIRdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 13:33:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50960 "EHLO
+        id S1377991AbjJIRdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 13:33:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378018AbjJIRc7 (ORCPT
+        with ESMTP id S1378110AbjJIRc7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 9 Oct 2023 13:32:59 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB2DF132;
-        Mon,  9 Oct 2023 10:32:51 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BB0BC433C8;
-        Mon,  9 Oct 2023 17:32:50 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33039184;
+        Mon,  9 Oct 2023 10:32:53 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64278C433CB;
+        Mon,  9 Oct 2023 17:32:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696872771;
-        bh=SVXshXiEdwU2vmo+Rd2WRtoCqJf4zLLOZYef9zCZqeM=;
+        s=k20201202; t=1696872772;
+        bh=JQbWPDFsl0qN3wvjJzvnJTkMPT8Tve5fQAAfMjMgSmA=;
         h=From:To:Cc:Subject:Date:From;
-        b=KIiaAQun92uGEzEnXnpSCd6MxUz9S9l94W/P1vnDz2MTFrn61Rip6EzZC7q4cWFgb
-         ZA0UypE1C/YicJpz4OqcALR72Yu4e4OyKLuWvVftWPy7DWEG59nJY0NpoDbo07Btch
-         uSG7qF+InS+Yi1vPANVq286rpM+aDPYQSj0pLuo8SpSe5JtOs2oir7sT8kGlhi2qHl
-         NEIMOWTcubNYEbsEiDlL7TkHclJJTwAT7x8WiA0VjCiuY17mK1cFODuOf2ADlQf46A
-         42pHJbHheRyujLP5NxwtI4IT1LJ9hhUYh/QASvPCod3fcZwbK2EVV27e+h5KJu8RHb
-         Yh/akRVn+ZNGw==
-Received: (nullmailer pid 2532666 invoked by uid 1000);
-        Mon, 09 Oct 2023 17:32:48 -0000
+        b=EcPaWquz30v0eQx4v7wpeCCivFKKYPuLfrITErlF9RNjiBTjCErFwD9riAKfpWQZW
+         8nsOyRjcOa947N9aLyuAG/D9t5A1Z8WRgYfHbLByHuVmU+g5CxCls7SWuMdmb6XuOJ
+         THrY6jYRnqBWYJrQE76l3wHPRo5VzId8m43qTjaHEhhqqoG5QKHfKFJx2Q2RIua/qI
+         inCbIHg/+mG9huqSNUuHOPZwL2M1dH2WwpMStvdWMS48mVywRWAUbe/m3YPdEVrTK4
+         8BTUdNN2jOxmOpqukCRgw/oWuYmpN63DEFsvy+Yw/xjtOSRN2AGrxCqyUwO38ApPMQ
+         oaD8XNJbKMQpA==
+Received: (nullmailer pid 2533476 invoked by uid 1000);
+        Mon, 09 Oct 2023 17:32:51 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] power: reset: vexpress: Use device_get_match_data()
-Date:   Mon,  9 Oct 2023 12:29:14 -0500
-Message-ID: <20231009172923.2457844-19-robh@kernel.org>
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] power: supply: cpcap: Drop non-DT driver matching
+Date:   Mon,  9 Oct 2023 12:29:15 -0500
+Message-ID: <20231009172923.2457844-20-robh@kernel.org>
 X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -52,53 +48,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use preferred device_get_match_data() instead of of_match_device() to
-get the driver match data. With this, adjust the includes to explicitly
-include the correct headers.
+Only DT based probing is used for the Motorola CPCAP charger driver, so
+drop the !CONFIG_OF parts and redundant of_match_device() call.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/power/reset/vexpress-poweroff.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ drivers/power/supply/cpcap-charger.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/power/reset/vexpress-poweroff.c b/drivers/power/reset/vexpress-poweroff.c
-index 17064d7b19f6..bb22b2db5907 100644
---- a/drivers/power/reset/vexpress-poweroff.c
-+++ b/drivers/power/reset/vexpress-poweroff.c
-@@ -7,8 +7,8 @@
- #include <linux/delay.h>
+diff --git a/drivers/power/supply/cpcap-charger.c b/drivers/power/supply/cpcap-charger.c
+index 431e951cccf0..cebca34ff872 100644
+--- a/drivers/power/supply/cpcap-charger.c
++++ b/drivers/power/supply/cpcap-charger.c
+@@ -17,8 +17,7 @@
+ #include <linux/err.h>
+ #include <linux/interrupt.h>
  #include <linux/notifier.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
+-#include <linux/of.h>
+-#include <linux/of_platform.h>
++#include <linux/mod_devicetable.h>
  #include <linux/platform_device.h>
-+#include <linux/property.h>
- #include <linux/reboot.h>
- #include <linux/stat.h>
- #include <linux/vexpress.h>
-@@ -108,20 +108,17 @@ static int _vexpress_register_restart_handler(struct device *dev)
+ #include <linux/power_supply.h>
+ #include <linux/regmap.h>
+@@ -865,7 +864,6 @@ static const struct power_supply_desc cpcap_charger_usb_desc = {
+ 	.property_is_writeable = cpcap_charger_property_is_writeable,
+ };
  
- static int vexpress_reset_probe(struct platform_device *pdev)
+-#ifdef CONFIG_OF
+ static const struct of_device_id cpcap_charger_id_table[] = {
+ 	{
+ 		.compatible = "motorola,mapphone-cpcap-charger",
+@@ -873,20 +871,13 @@ static const struct of_device_id cpcap_charger_id_table[] = {
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, cpcap_charger_id_table);
+-#endif
+ 
+ static int cpcap_charger_probe(struct platform_device *pdev)
  {
--	const struct of_device_id *match =
--			of_match_device(vexpress_reset_of_match, &pdev->dev);
-+	enum vexpress_reset_func func;
- 	struct regmap *regmap;
- 	int ret = 0;
+ 	struct cpcap_charger_ddata *ddata;
+-	const struct of_device_id *of_id;
+ 	struct power_supply_config psy_cfg = {};
+ 	int error;
  
--	if (!match)
+-	of_id = of_match_device(of_match_ptr(cpcap_charger_id_table),
+-				&pdev->dev);
+-	if (!of_id)
 -		return -EINVAL;
 -
- 	regmap = devm_regmap_init_vexpress_config(&pdev->dev);
- 	if (IS_ERR(regmap))
- 		return PTR_ERR(regmap);
- 	dev_set_drvdata(&pdev->dev, regmap);
- 
--	switch ((uintptr_t)match->data) {
-+	func = (uintptr_t)device_get_match_data(&pdev->dev);
-+	switch (func) {
- 	case FUNC_SHUTDOWN:
- 		vexpress_power_off_device = &pdev->dev;
- 		pm_power_off = vexpress_power_off;
+ 	ddata = devm_kzalloc(&pdev->dev, sizeof(*ddata), GFP_KERNEL);
+ 	if (!ddata)
+ 		return -ENOMEM;
+@@ -975,7 +966,7 @@ static struct platform_driver cpcap_charger_driver = {
+ 	.probe = cpcap_charger_probe,
+ 	.driver	= {
+ 		.name	= "cpcap-charger",
+-		.of_match_table = of_match_ptr(cpcap_charger_id_table),
++		.of_match_table = cpcap_charger_id_table,
+ 	},
+ 	.shutdown = cpcap_charger_shutdown,
+ 	.remove_new = cpcap_charger_remove,
 -- 
 2.42.0
 
