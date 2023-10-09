@@ -2,74 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 513437BE6ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E42CB7BE6F2
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377298AbjJIQt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 12:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41106 "EHLO
+        id S1377344AbjJIQuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 12:50:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376275AbjJIQt6 (ORCPT
+        with ESMTP id S1377138AbjJIQuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 12:49:58 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B53F9C
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 09:49:56 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-59963a317fcso349819a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 09:49:56 -0700 (PDT)
+        Mon, 9 Oct 2023 12:50:19 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 206B0A6;
+        Mon,  9 Oct 2023 09:50:18 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5a7ad24b3aaso5227237b3.2;
+        Mon, 09 Oct 2023 09:50:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696870196; x=1697474996; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bMIkGjyRYQaniwgX1VwN1yvNzp3XWIxIueEXO1Vjz9g=;
-        b=SbCb84N/VZPkkbxRHTTJct06OI1YV2Af1WXCHtHn3hqWNfswBvZeQKDSIz0czJa1Me
-         ISRKtX3lG6/DYSQo2OhNvJzRq9Hpizwh+df5qYhCom8db6wU8aKteEXwPyEYjQJDv4pr
-         AmOaG4i9WV8nESu6HnpFYpe9knvdjFIJJVvwGn/APA8g3YLOo2nkvoOlElsyGIP9z4Wj
-         87/NCb1fETEo+CYtPno6rDGiHRa8mL6lOlA3VxTEeZQKIS3SMIz1myeb6UKH9RX0qKJm
-         SAMrjH9xnFRuS9VXu9YZiYmFWOCsvepv7f2Rin08WwxWRp7ytA2216ez6+WLXQJSq5AC
-         SByw==
+        d=gmail.com; s=20230601; t=1696870217; x=1697475017; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yhm7YrqXofK0AegCXETsHz1KMPta2LD8FhGIuFko2pY=;
+        b=LK6ANqyjW2cUasb27hpvpemq1Gv7wXnbzzUJ24o2aFLFv1qVG3/kdsO4p2cQ+duVDM
+         2carBMbaZqP2CBYcC4f+D4JVqpVTOSVUgdaYVAMwbeHkJOZv3fcyimk9sKVjzmTFo7N6
+         tFHONhsepDXlf2Ji8bzfZ7SMUxj/ptKkk2tXsNIQSV0OTV4F7Y9FxkBnlvlSBQ38TYrD
+         x/FDR5AQzlo9yCwg4li7uZZOnBiUqtlpNnefqrX2tKer3L7+1kp5CfA8RPcGO31DKvmB
+         St+Ej46A10/HMKx5tvUNC8UlZmQqdYdHWF7xx2p2g73Yao86wYomsti4EWO5eZEJgpAx
+         gmTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696870196; x=1697474996;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bMIkGjyRYQaniwgX1VwN1yvNzp3XWIxIueEXO1Vjz9g=;
-        b=wxaMaSaqkAtqRhUR+ErgFh6hiFKX8GFVp7bE2ulonlSAyjZcJEdL0NyRSb0k9xUd8x
-         41i6C1xXF4tobBl1SVwqiHn9Z50uI50/3zPCDeQRO8Jdy3Pq1Yo/SxRATUr3ccpmJ7J/
-         efPGIzAuKiQLINBvIjO7k/BjaIOWtK1lJmH9QBLKEhCSHNwrIqTv+EJAoErCwdiYVaXG
-         IcC7xOaQKtVpS3QmUhTDDp330/SY/G6mIsFtKh57acciAR6UeA6sKcsSxAepwqasI2o0
-         tGUBxGz3mhYrxd/v8HzMDWRwYaVYm9DxLgkEGB0pNrXDf3btI6wXQBVl6rv2ChHlYi1m
-         iYcg==
-X-Gm-Message-State: AOJu0YxlEvG7uHNRmxaOEkZHP4Rn+/c3GR77V/BWQrFMNRLky1D9M0ep
-        3eYugb15a/DChOf4WSAzmaPcWP4Egij9WXvqYb0R7UzTfqsLOqftImXa0YuJ11uKl5sXz3g65qL
-        ApSTw3u3LdZEUE3+l
-X-Google-Smtp-Source: AGHT+IFC5L4rKTdUFwItgOfKJkjWgimq+UyPCfXidAeEd6C0SS9TnNX+4cS3h+k/P9b8ejUCqnoU+Pc=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a63:7b4a:0:b0:577:6bf1:499b with SMTP id
- k10-20020a637b4a000000b005776bf1499bmr253491pgn.10.1696870196036; Mon, 09 Oct
- 2023 09:49:56 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 09:49:54 -0700
-In-Reply-To: <20231009160520.20831-1-larysa.zaremba@intel.com>
-Mime-Version: 1.0
-References: <20231009160520.20831-1-larysa.zaremba@intel.com>
-Message-ID: <ZSQvMr3-lY9uTzn_@google.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: add options and frags to xdp_hw_metadata
-From:   Stanislav Fomichev <sdf@google.com>
-To:     Larysa Zaremba <larysa.zaremba@intel.com>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Content-Type: text/plain; charset="utf-8"
-X-ccpol: medium
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        d=1e100.net; s=20230601; t=1696870217; x=1697475017;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yhm7YrqXofK0AegCXETsHz1KMPta2LD8FhGIuFko2pY=;
+        b=cTU3QqdsoJMYCPoMxLyKgAkqU1xJU+KYsGyO6Og9KBYbTFJEqfUAeUCHHQ8FS9+SBD
+         4F93Cbe12Ki6xqdG1kuEt9CvZ+C2GmTsFrCOpV3Heco5FRA/lZwGxcS16V0/hkUW8s24
+         pS9XNOMdqvLwK7YaDgSat+4zHRJV8l03y8h2xk3cPhdbrciII1xP+JCB3kUf5ssZrVPE
+         TSzDso+zdZ8QSkm/ZESn7FzU10M6c2iTjgTZ+XEEp+nmTddt71bR5OxqIEz7cRw1aYuI
+         +5A3wQ+f10xHDOkZaOjhjQjkLYZlSv+SOcey+sNZrSWID/Qvc7uABa13DyaqDPWH/Re5
+         Ze4A==
+X-Gm-Message-State: AOJu0Ywp6vz5rKI+gWnxagT6uIl3PAH8KkgRJbjPl1MpAcgJFT/7SxlS
+        QxF0Wo7FwwohFX6VRiCFmro=
+X-Google-Smtp-Source: AGHT+IGDGieAvy8YgNDMEl5ERI+L5dnLHTLO6C63fhmPXvU26M+Gw4A6t2G+i0jttc7QnLS2senhew==
+X-Received: by 2002:a0d:c207:0:b0:59a:f131:50fa with SMTP id e7-20020a0dc207000000b0059af13150famr16404483ywd.47.1696870217228;
+        Mon, 09 Oct 2023 09:50:17 -0700 (PDT)
+Received: from localhost ([2607:fb90:be22:da0:a050:8c3a:c782:514b])
+        by smtp.gmail.com with ESMTPSA id p6-20020a0dff06000000b0059c8387f673sm3823742ywf.51.2023.10.09.09.50.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Oct 2023 09:50:16 -0700 (PDT)
+Date:   Mon, 9 Oct 2023 09:50:15 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Alexander Potapenko <glider@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@kernel.org>,
+        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        netdev@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        dm-devel@redhat.com, ntfs3@lists.linux.dev,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 06/14] fs/ntfs3: rename bitmap_size() ->
+ ntfs3_bitmap_size()
+Message-ID: <ZSQvR+bQ8PS9/CEa@yury-ThinkPad>
+References: <20231009151026.66145-1-aleksander.lobakin@intel.com>
+ <20231009151026.66145-7-aleksander.lobakin@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231009151026.66145-7-aleksander.lobakin@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,165 +82,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/09, Larysa Zaremba wrote:
-> This is a follow-up to the commit 9b2b86332a9b ("bpf: Allow to use kfunc
-> XDP hints and frags together").
+On Mon, Oct 09, 2023 at 05:10:18PM +0200, Alexander Lobakin wrote:
+> bitmap_size() is a pretty generic name and one may want to use it for
+> a generic bitmap API function. At the same time, its logic is
+> NTFS-specific, as it aligns to the sizeof(u64), not the sizeof(long)
+> (although it uses ideologically right ALIGN() instead of division).
+> Add the prefix 'ntfs3_' used for that FS (not just 'ntfs_' to not mix
+> it with the legacy module).
 > 
-> The are some possible implementations problems that may arise when
-> providing metadata specifically for multi-buffer packets, therefore there
-> must be a possibility to test such option separately.
-> 
-> Add an option to use multi-buffer AF_XDP xdp_hw_metadata and mark used XDP
-> program as capable to use frags.
-> 
-> As for now, xdp_hw_metadata accepts no options, so add simple option
-> parsing logic and a help message.
-> 
-> For quick reference, also add an ingress packet generation command to the
-> help message. The command comes from [0].
-> 
-> Example of output for multi-buffer packet:
-> 
-> xsk_ring_cons__peek: 1
-> 0xead018: rx_desc[15]->addr=10000000000f000 addr=f100 comp_addr=f000
-> rx_hash: 0x5789FCBB with RSS type:0x29
-> rx_timestamp:  1696856851535324697 (sec:1696856851.5353)
-> XDP RX-time:   1696856843158256391 (sec:1696856843.1583)
-> 	delta sec:-8.3771 (-8377068.306 usec)
-> AF_XDP time:   1696856843158413078 (sec:1696856843.1584)
-> 	delta sec:0.0002 (156.687 usec)
-> 0xead018: complete idx=23 addr=f000
-> xsk_ring_cons__peek: 1
-> 0xead018: rx_desc[16]->addr=100000000008000 addr=8100 comp_addr=8000
-> 0xead018: complete idx=24 addr=8000
-> xsk_ring_cons__peek: 1
-> 0xead018: rx_desc[17]->addr=100000000009000 addr=9100 comp_addr=9000 EoP
-> 0xead018: complete idx=25 addr=9000
-> 
-> Metadata is printed for the first packet only.
-> 
-> [0] https://lore.kernel.org/all/20230119221536.3349901-18-sdf@google.com/
-> 
-> Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
+> Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 > ---
->  .../selftests/bpf/progs/xdp_hw_metadata.c     |  2 +-
->  tools/testing/selftests/bpf/xdp_hw_metadata.c | 92 ++++++++++++++++---
->  2 files changed, 79 insertions(+), 15 deletions(-)
+>  fs/ntfs3/bitmap.c  |  4 ++--
+>  fs/ntfs3/fsntfs.c  |  2 +-
+>  fs/ntfs3/index.c   | 11 ++++++-----
+>  fs/ntfs3/ntfs_fs.h |  2 +-
+>  fs/ntfs3/super.c   |  2 +-
+>  5 files changed, 11 insertions(+), 10 deletions(-)
 > 
-> diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> index 63d7de6c6bbb..8767d919c881 100644
-> --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> @@ -21,7 +21,7 @@ extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
->  extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
->  				    enum xdp_rss_hash_type *rss_type) __ksym;
+> diff --git a/fs/ntfs3/bitmap.c b/fs/ntfs3/bitmap.c
+> index 107e808e06ea..a2e18f13e93a 100644
+> --- a/fs/ntfs3/bitmap.c
+> +++ b/fs/ntfs3/bitmap.c
+> @@ -653,7 +653,7 @@ int wnd_init(struct wnd_bitmap *wnd, struct super_block *sb, size_t nbits)
+>  	wnd->total_zeroes = nbits;
+>  	wnd->extent_max = MINUS_ONE_T;
+>  	wnd->zone_bit = wnd->zone_end = 0;
+> -	wnd->nwnd = bytes_to_block(sb, bitmap_size(nbits));
+> +	wnd->nwnd = bytes_to_block(sb, ntfs3_bitmap_size(nbits));
+>  	wnd->bits_last = nbits & (wbits - 1);
+>  	if (!wnd->bits_last)
+>  		wnd->bits_last = wbits;
+> @@ -1345,7 +1345,7 @@ int wnd_extend(struct wnd_bitmap *wnd, size_t new_bits)
+>  		return -EINVAL;
 >  
-> -SEC("xdp")
-> +SEC("xdp.frags")
->  int rx(struct xdp_md *ctx)
->  {
->  	void *data, *data_meta, *data_end;
-> diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> index 17c980138796..25225720346b 100644
-> --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> @@ -26,6 +26,7 @@
->  #include <linux/sockios.h>
->  #include <sys/mman.h>
->  #include <net/if.h>
-> +#include <ctype.h>
->  #include <poll.h>
->  #include <time.h>
+>  	/* Align to 8 byte boundary. */
+> -	new_wnd = bytes_to_block(sb, bitmap_size(new_bits));
+> +	new_wnd = bytes_to_block(sb, ntfs3_bitmap_size(new_bits));
+>  	new_last = new_bits & (wbits - 1);
+>  	if (!new_last)
+>  		new_last = wbits;
+> diff --git a/fs/ntfs3/fsntfs.c b/fs/ntfs3/fsntfs.c
+> index 33afee0f5559..7a14d2347f27 100644
+> --- a/fs/ntfs3/fsntfs.c
+> +++ b/fs/ntfs3/fsntfs.c
+> @@ -522,7 +522,7 @@ static int ntfs_extend_mft(struct ntfs_sb_info *sbi)
+>  	ni->mi.dirty = true;
 >  
-> @@ -49,19 +50,29 @@ struct xsk {
->  struct xdp_hw_metadata *bpf_obj;
->  struct xsk *rx_xsk;
->  const char *ifname;
-> +bool use_frags;
->  int ifindex;
->  int rxq;
+>  	/* Step 2: Resize $MFT::BITMAP. */
+> -	new_bitmap_bytes = bitmap_size(new_mft_total);
+> +	new_bitmap_bytes = ntfs3_bitmap_size(new_mft_total);
 >  
->  void test__fail(void) { /* for network_helpers.c */ }
+>  	err = attr_set_size(ni, ATTR_BITMAP, NULL, 0, &sbi->mft.bitmap.run,
+>  			    new_bitmap_bytes, &new_bitmap_bytes, true, NULL);
+> diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
+> index 124c6e822623..ab53a4b6ddf8 100644
+> --- a/fs/ntfs3/index.c
+> +++ b/fs/ntfs3/index.c
+> @@ -1453,8 +1453,8 @@ static int indx_create_allocate(struct ntfs_index *indx, struct ntfs_inode *ni,
 >  
-> -static int open_xsk(int ifindex, struct xsk *xsk, __u32 queue_id)
-> +static struct xsk_socket_config gen_socket_config(void)
->  {
-> -	int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE;
-> -	const struct xsk_socket_config socket_config = {
-> +	struct xsk_socket_config socket_config = {
->  		.rx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
->  		.tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
->  		.bind_flags = XDP_COPY,
->  	};
-> +
-> +	if (use_frags)
-> +		socket_config.bind_flags |= XDP_USE_SG;
-> +	return socket_config;
-> +}
-
-nit: why not drop const from socket_config and add this 'if (use_frags)'
-directly to open_xsk? Not sure separate function really buys us anything?
-
-> +static int open_xsk(int ifindex, struct xsk *xsk, __u32 queue_id)
-> +{
-> +	int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE;
-> +	struct xsk_socket_config socket_config = gen_socket_config();
->  	const struct xsk_umem_config umem_config = {
->  		.fill_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
->  		.comp_size = XSK_RING_CONS__DEFAULT_NUM_DESCS,
-> @@ -263,11 +274,14 @@ static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd, clockid_t
->  			verify_skb_metadata(server_fd);
+>  	alloc->nres.valid_size = alloc->nres.data_size = cpu_to_le64(data_size);
 >  
->  		for (i = 0; i < rxq; i++) {
-> +			bool first_seg = true;
-> +			bool is_eop = true;
-> +
->  			if (fds[i].revents == 0)
->  				continue;
+> -	err = ni_insert_resident(ni, bitmap_size(1), ATTR_BITMAP, in->name,
+> -				 in->name_len, &bitmap, NULL, NULL);
+> +	err = ni_insert_resident(ni, ntfs3_bitmap_size(1), ATTR_BITMAP,
+> +				 in->name, in->name_len, &bitmap, NULL, NULL);
+>  	if (err)
+>  		goto out2;
 >  
->  			struct xsk *xsk = &rx_xsk[i];
-> -
-> +peek:
->  			ret = xsk_ring_cons__peek(&xsk->rx, 1, &idx);
->  			printf("xsk_ring_cons__peek: %d\n", ret);
->  			if (ret != 1)
-> @@ -276,12 +290,19 @@ static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd, clockid_t
->  			rx_desc = xsk_ring_cons__rx_desc(&xsk->rx, idx);
->  			comp_addr = xsk_umem__extract_addr(rx_desc->addr);
->  			addr = xsk_umem__add_offset_to_addr(rx_desc->addr);
-> -			printf("%p: rx_desc[%u]->addr=%llx addr=%llx comp_addr=%llx\n",
-> -			       xsk, idx, rx_desc->addr, addr, comp_addr);
-> -			verify_xdp_metadata(xsk_umem__get_data(xsk->umem_area, addr),
-> -					    clock_id);
-> +			is_eop = !(rx_desc->options & XDP_PKT_CONTD);
-> +			printf("%p: rx_desc[%u]->addr=%llx addr=%llx comp_addr=%llx%s\n",
-> +			       xsk, idx, rx_desc->addr, addr, comp_addr, is_eop ? " EoP" : "");
-> +			if (first_seg) {
-> +				verify_xdp_metadata(xsk_umem__get_data(xsk->umem_area, addr),
-> +						    clock_id);
-> +				first_seg = false;
-> +			}
-> +
->  			xsk_ring_cons__release(&xsk->rx, 1);
->  			refill_rx(xsk, comp_addr);
-> +			if (!is_eop)
-> +				goto peek;
->  		}
+> @@ -1515,8 +1515,9 @@ static int indx_add_allocate(struct ntfs_index *indx, struct ntfs_inode *ni,
+>  	if (bmp) {
+>  		/* Increase bitmap. */
+>  		err = attr_set_size(ni, ATTR_BITMAP, in->name, in->name_len,
+> -				    &indx->bitmap_run, bitmap_size(bit + 1),
+> -				    NULL, true, NULL);
+> +				    &indx->bitmap_run,
+> +				    ntfs3_bitmap_size(bit + 1), NULL, true,
+> +				    NULL);
+>  		if (err)
+>  			goto out1;
 >  	}
+> @@ -2089,7 +2090,7 @@ static int indx_shrink(struct ntfs_index *indx, struct ntfs_inode *ni,
+>  	if (in->name == I30_NAME)
+>  		ni->vfs_inode.i_size = new_data;
 >  
-> @@ -404,6 +425,54 @@ static void timestamping_enable(int fd, int val)
->  		error(1, errno, "setsockopt(SO_TIMESTAMPING)");
+> -	bpb = bitmap_size(bit);
+> +	bpb = ntfs3_bitmap_size(bit);
+>  	if (bpb * 8 == nbits)
+>  		return 0;
+>  
+> diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
+> index 629403ede6e5..93333156aac6 100644
+> --- a/fs/ntfs3/ntfs_fs.h
+> +++ b/fs/ntfs3/ntfs_fs.h
+> @@ -961,7 +961,7 @@ static inline bool run_is_empty(struct runs_tree *run)
 >  }
 >  
-> +static void print_usage(void)
-> +{
-> +	const char *usage =
-> +		"  Usage: xdp_hw_metadata [OPTIONS] [IFNAME]\n"
-> +		"  Options:\n"
-> +		"  -m            Enable multi-buffer XDP for larger MTU\n"
-> +		"  -h            Display this help and exit\n\n"
-> +		"  Generate test packets on the other machine with:\n"
-> +		"    echo -n xdp | nc -u -q1 <dst_ip> 9091\n";
+>  /* NTFS uses quad aligned bitmaps. */
+> -static inline size_t bitmap_size(size_t bits)
+> +static inline size_t ntfs3_bitmap_size(size_t bits)
+>  {
+>  	return ALIGN((bits + 7) >> 3, 8);
+>  }
 
-nit: any reason we have two spaces in the help description? I don't
-think it's a standard practice, so maybe drop them?
+This looks like duplicating BITS_TO_U64(). If so, why not just switch
+to using the macro while you're here?
+
+> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+> index cfec5e0c7f66..b1fb6efe7084 100644
+> --- a/fs/ntfs3/super.c
+> +++ b/fs/ntfs3/super.c
+> @@ -1285,7 +1285,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
+>  
+>  	/* Check bitmap boundary. */
+>  	tt = sbi->used.bitmap.nbits;
+> -	if (inode->i_size < bitmap_size(tt)) {
+> +	if (inode->i_size < ntfs3_bitmap_size(tt)) {
+>  		ntfs_err(sb, "$Bitmap is corrupted.");
+>  		err = -EINVAL;
+>  		goto put_inode_out;
+> -- 
+> 2.41.0
