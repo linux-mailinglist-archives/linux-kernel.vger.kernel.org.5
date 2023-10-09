@@ -2,194 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 253FE7BE3CA
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31AA27BE3CD
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376273AbjJIPDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 11:03:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58038 "EHLO
+        id S1376356AbjJIPEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 11:04:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344625AbjJIPDP (ORCPT
+        with ESMTP id S234583AbjJIPEE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 11:03:15 -0400
-Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 641B2AF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 08:03:14 -0700 (PDT)
-Received: from eig-obgw-5001a.ext.cloudfilter.net ([10.0.29.139])
-        by cmsmtp with ESMTP
-        id pZ7TqdLDynGhUprmrqeM6S; Mon, 09 Oct 2023 15:03:14 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id prmqqHxKLevEjprmrqsic2; Mon, 09 Oct 2023 15:03:13 +0000
-X-Authority-Analysis: v=2.4 cv=VZbkgXl9 c=1 sm=1 tr=0 ts=65241631
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=wYkD_t78qR0A:10 a=cm27Pg_UAAAA:8
- a=mK_AVkanAAAA:8 a=VwQbUJbxAAAA:8 a=NEAV23lmAAAA:8 a=JpHVVEXmboDBK7eC_9wA:9
- a=QEXdDO2ut3YA:10 a=xmb-EsYY8bH0VWELuYED:22 a=3gWm3jAn84ENXaBijsEo:22
- a=AjGcO6oz07-iQ99wixmX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=kwshnLMBhyxMuxeif4XuR1omG3UT2LUWqR6gAPw6dmc=; b=znvEX22WjX1jnbPoXogMVrmMO7
-        N/kwpYLfNNQtNaU3yGtsaUjkSB67eUuw5TxzjXhReIXhyl7hPPI2lqcsVU5YLOwE0V7Mve0KqevYD
-        ypJCZkTN+dOfUFVfec3O7q2bRn2Qdpg/NmGVDnLNMjNfGU1MbpBc6UTvL/H0cctYtEe6rh7oPUqX/
-        LAYAiSkfvWxsNffMXW/QyWW53Nzbo8UfM7piMD80qMLmwvivSdPfL6Fn7IoYzOBbWoR76WeZwmzQ/
-        lzk/+nCplL4h5w4FCd2mJBCi+7OjEiScT7f1yUAq658AHYKouSotVcRIcBcyVvAtpzJ11GlzPeu2Y
-        zsk6dM0Q==;
-Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:46332 helo=[192.168.15.7])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96.1)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qprmo-004OOb-24;
-        Mon, 09 Oct 2023 10:03:10 -0500
-Message-ID: <9477fcb5-1cca-435e-a1af-e02edff1551c@embeddedor.com>
-Date:   Mon, 9 Oct 2023 09:03:08 -0600
+        Mon, 9 Oct 2023 11:04:04 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B02A6
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 08:04:01 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-405505b07dfso33617785e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 08:04:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696863840; x=1697468640; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=e1irillGm1K54F1NjS0dRMUHvI6dB6odEj9ipygzAW8=;
+        b=k2PoVrlyiwW5jtBmlUeBUss2HZ90vngEHBUJ+lD6OtQURKCKr1foepArIHVFhW/Vj5
+         E5mLn+04OQAmg/wKygMYI9FEktbojZyxzoyjFH/UD6qVf5dOqufBKTnyebPzw48tDllO
+         8aWIFJ9+qt10t6lINw7/DbZ8UFIOx69lJw+op0an8Gu9NA+XzFxBbTg9uLSELWL7nHwe
+         zHOY42znyTNS5A/6A92aiWZf+/tfAgSetgZMAbV/mUI/x/wlZJ7P7iTs4drySN+N9em3
+         Cnzy6AhqnbMDf9bfQy1mQ9I5tqq7fCzgKtW7Lx6W802u954ufvWcehNt0KLxaCRXqvy1
+         vKtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696863840; x=1697468640;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=e1irillGm1K54F1NjS0dRMUHvI6dB6odEj9ipygzAW8=;
+        b=Z8+uxOJNFWn5WV9sHJTt4reagCPI59jonUkjbDTE7L4Qa2O/8Y93iW+Rf5+2/c7P9K
+         jX7Hp9DCu3qjfIa1m4qGq7/5K2wRg/0AOpV5jMczpZVjbCTAR4KzZ7ER3zJdE6WGHt/F
+         mkYI+UzPDhpR4deZZ0TVwD3h8vfxPmaoqnkc6xKS9xcLP2ZKirf1xnGdJxUKY9p82lZG
+         Sog/oTP+kutXXhIUNrX1vot/CfqwZK2L4PBubEyPQE1398yVFoYcAwbEQdZdTBxFyJ51
+         0zE2/AsRYgASnCV99xlzicJDaUZbtnjOH00+gSwbPA/lB090pWkn9dIKHo2iiniEcUsz
+         9ySg==
+X-Gm-Message-State: AOJu0YyOA5fz8fQ1IFV2TmjpcD7f0TCl4PudYv+rRAPvw59FgtsYqcra
+        zY8N20LS//z0NJiutqDUUPo6Zg==
+X-Google-Smtp-Source: AGHT+IEVW2b5IkipYK288nS2F4jTZC+gg5l9CKp0vHOt4ZaUEbQilB9NT6X78idQ/5utMua1lePtVg==
+X-Received: by 2002:a5d:55c7:0:b0:321:6339:f523 with SMTP id i7-20020a5d55c7000000b003216339f523mr10665466wrw.22.1696863839392;
+        Mon, 09 Oct 2023 08:03:59 -0700 (PDT)
+Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
+        by smtp.gmail.com with ESMTPSA id n10-20020a5d4c4a000000b00323287186aasm9886528wrt.32.2023.10.09.08.03.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Oct 2023 08:03:58 -0700 (PDT)
+Message-ID: <2db05110-80e5-4d32-9483-82b7419a7a4d@linaro.org>
+Date:   Mon, 9 Oct 2023 17:03:56 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] wifi: p54: Annotate struct p54_cal_database with
- __counted_by
+Subject: Re: [PATCH v2 1/3] dt-bindings: vendor-prefixes: Add TouchNetix AS
 Content-Language: en-US
-To:     Jason Andryuk <jandryuk@gmail.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Christian Lamparter <chunkeey@googlemail.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-wireless@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-References: <20231006201719.work.356-kees@kernel.org>
- <CAKf6xptEEHJAsrwh_oebK1_AMb+_tvLtiY8sP-Qk=Z9jXhVf7Q@mail.gmail.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <CAKf6xptEEHJAsrwh_oebK1_AMb+_tvLtiY8sP-Qk=Z9jXhVf7Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.21.192
-X-Source-L: No
-X-Exim-ID: 1qprmo-004OOb-24
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.7]) [187.162.21.192]:46332
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 2
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfNd6oqvzdeGNP2PQmNEH/nOumtz9dyLahuJdIt8Mr8Xgf8TKH/SDZBKzt/fyegqBOm5pBzj+l59hJc21NuHd+kjCps5VyaE8ETTKqlnDL4kqW7qG58VX
- KXgYIj8h54stTUIfURfychmMjcJcDOEaYRyIan9rktrtFYHq2KPkPgi6q+OokdJIDo4YX9sNHN2ssaFm2oeFEW1LS2b8WbI3pdIRISvAEAiRX55QSIpBFdaV
+To:     Kamel Bouhara <kamel.bouhara@bootlin.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, mark.satterthwaite@touchnetix.com,
+        pedro.torruella@touchnetix.com, bartp@baasheep.co.uk,
+        hannah.rossiter@touchnetix.com,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        bsp-development.geo@leica-geosystems.com
+References: <20231009134435.36311-1-kamel.bouhara@bootlin.com>
+ <20231009134435.36311-2-kamel.bouhara@bootlin.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231009134435.36311-2-kamel.bouhara@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 09/10/2023 15:44, Kamel Bouhara wrote:
+> Add vendor prefix for TouchNetix AS (https://www.touchnetix.com/products/).
+> 
+> Signed-off-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
+> ---
 
 
-On 10/9/23 16:55, Jason Andryuk wrote:
-> Hi,
-> 
-> I randomly peeked at this patch.  Unfortunately, I am not familiar
-> with the actual p54 code.
-> 
-> On Fri, Oct 6, 2023 at 4:17 PM Kees Cook <keescook@chromium.org> wrote:
->>
->> Prepare for the coming implementation by GCC and Clang of the __counted_by
->> attribute. Flexible array members annotated with __counted_by can have
->> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
->> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
->> functions).
->>
->> As found with Coccinelle[1], add __counted_by for struct p54_cal_database.
->>
->> Cc: Christian Lamparter <chunkeey@googlemail.com>
->> Cc: Kalle Valo <kvalo@kernel.org>
->> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
->> Cc: linux-wireless@vger.kernel.org
->> Cc: linux-hardening@vger.kernel.org
->> Link: https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci [1]
->> Signed-off-by: Kees Cook <keescook@chromium.org>
->> ---
->>   drivers/net/wireless/intersil/p54/p54.h | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/net/wireless/intersil/p54/p54.h b/drivers/net/wireless/intersil/p54/p54.h
->> index 3356ea708d81..770e348d1f6c 100644
->> --- a/drivers/net/wireless/intersil/p54/p54.h
->> +++ b/drivers/net/wireless/intersil/p54/p54.h
->> @@ -126,7 +126,7 @@ struct p54_cal_database {
->>          size_t entry_size;
->>          size_t offset;
->>          size_t len;
->> -       u8 data[];
->> +       u8 data[] __counted_by(entries);
-> 
-> This looks incorrect - I think you want __counted_by(len)?  The
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-I think you're right. More comments below...
+Best regards,
+Krzysztof
 
-> presence of entry_size made me suspicious.
-> 
->>   };
-> 
-> This is the function that creates struct p54_cal_database:
-> 
-> static struct p54_cal_database *p54_convert_db(struct pda_custom_wrapper *src,
->                                                 size_t total_len)
-> {
->          struct p54_cal_database *dst;
->          size_t payload_len, entries, entry_size, offset;
-> 
->          payload_len = le16_to_cpu(src->len);
->          entries = le16_to_cpu(src->entries);
->          entry_size = le16_to_cpu(src->entry_size);
->          offset = le16_to_cpu(src->offset);
->          if (((entries * entry_size + offset) != payload_len) ||
->               (payload_len + sizeof(*src) != total_len))
->                  return NULL;
-> 
->          dst = kmalloc(sizeof(*dst) + payload_len, GFP_KERNEL);
->          if (!dst)
->                  return NULL;
-> 
->          dst->entries = entries;
->          dst->entry_size = entry_size;
->          dst->offset = offset;
->          dst->len = payload_len;
-> 
->          memcpy(dst->data, src->data, payload_len);
->          return dst;
-> }
-> 
-> You can see that kmalloc is performed with `sizeof(*dst) +
-> payload_len`, and payload_len is assigned to ->len.
-
-This should be changed to:
-
--       dst = kmalloc(sizeof(*dst) + payload_len, GFP_KERNEL);
-+       dst = kmalloc(struct_size(dst, data, payload_len), GFP_KERNEL);
-
-> 
-> I don't read Coccinelle, but, if this patch was auto-generated, I
-> wonder if the script has an error.
-
-With the struct_size() change, the Coccinelle script should be able to
-generate a correct patch for this.
-
---
-Gustavo
