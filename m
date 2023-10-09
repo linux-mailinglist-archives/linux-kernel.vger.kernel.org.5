@@ -2,113 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42CAA7BEAED
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 21:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C77BE7BEAF2
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 21:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378480AbjJITw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 15:52:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56994 "EHLO
+        id S1378499AbjJITxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 15:53:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378496AbjJITw5 (ORCPT
+        with ESMTP id S1378511AbjJITxE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 15:52:57 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EEC2BA;
-        Mon,  9 Oct 2023 12:52:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B98E3C433C8;
-        Mon,  9 Oct 2023 19:52:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696881173;
-        bh=kgSu1Cqs2OuHn6PG4+EYDe0mVAXd0o16yDhpNDyy/To=;
-        h=Date:From:To:Cc:Subject:From;
-        b=mhdPJ8HqdLGlIJNxp5NZVxMUyfblvMGfJcgBLM0kNarSBE75oieRwZWrOIO27fbc6
-         l0atd0yFegWWyHlQfkdsxSbycNJlTb0v04VY3kDgV7PoBm/t8xrdTEy7A4G4clJheF
-         oHJuOjuOB76WiT5tHFPqQWbJySM3f675Yif/JuxgcRyYt3dEGfI/PAGClsLDn1KPzS
-         IU7YB7Z1KKoyr2D/ThRqwfXZdFAGRUJ/Lt+cn7xgb0p4NWOsYcrpCFrwzhsgA4M0MS
-         f+Kp7rQ7WL0KoYbH0IjnPkVAXI1xcR0qVBj/Eltue5vb8Tx9Cw6x3pTOfVOqoWjb3Q
-         YALHEZ71AkBfQ==
-Date:   Mon, 9 Oct 2023 13:52:45 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] ima: Add __counted_by for struct modsig and use struct_size()
-Message-ID: <ZSRaDcJNARUUWUwS@work>
+        Mon, 9 Oct 2023 15:53:04 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252B1DE
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 12:53:00 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c63164a2b6so43536205ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 12:53:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1696881179; x=1697485979; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=csxmouwm4ofhF5cKOMzE27Rri8PFeo+HUVsFVEvzccY=;
+        b=Hz72/ybIP9jC9mxMUf4UTw0Bz5TIm09QLh8Oderyl/tI5IWU7LmDFO23VtiM40zZ3a
+         6x0xU4XZzONefqEbO4hFd2eXBLLN41vgGbTWirfGxbTZ9YaiH9PSihBY0con9XQsHMPa
+         UbKwdi+elRJS4YyddjSuj+pNpyfB+JruVO8x4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696881179; x=1697485979;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=csxmouwm4ofhF5cKOMzE27Rri8PFeo+HUVsFVEvzccY=;
+        b=wYTruGOqB5FWjJ9zKlUd5DaRtkyk2+64bTPPV5oK/EmeLzyCyjOHcPiyhbOoGvDUJK
+         UBhY6buu1gN0E9HJQe2icKJcNVbiKOdOP0eXwbfwWnD1bhImuHlmtJCY5wg9SARMvckb
+         MSx5IVxTH5IYLuRweL7YxXCZbDhScA3POqh0vj9hmYGA3CkRQjd7OZwqmQ12WEnoRfGX
+         PXWosLXBzRaWGDtUJ7y/EV8ZO2RiyfTAQ1Fpdbe8A9z97dMQBXJxKbh+CkhapbO9B7LS
+         TkbuyJHBwpYi3LfnVXw4HZM4stMaqKxqQRGzoO3t6Ah288DxXxZGdH+qO68AMcfZZ2Sl
+         MgVA==
+X-Gm-Message-State: AOJu0YynY0ofBoGnM2mD6FeL9ZQhoxGZRs7aMYc8ZivAypyooEkQ2ACy
+        odMvHxXLZe+0lGjzRLShpVMdjw==
+X-Google-Smtp-Source: AGHT+IH8+Ntc+mkBfEJvhkMQnUhAYyhOXnvDI9W+fGYDOJ7tdwlzxtrOGtqb7aH6TTdMvZXTN2zj5Q==
+X-Received: by 2002:a17:902:c404:b0:1c9:9fa6:ce5b with SMTP id k4-20020a170902c40400b001c99fa6ce5bmr4306363plk.16.1696881179581;
+        Mon, 09 Oct 2023 12:52:59 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id t5-20020a170902e84500b001c3f7fd1ef7sm10043902plg.12.2023.10.09.12.52.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Oct 2023 12:52:58 -0700 (PDT)
+Date:   Mon, 9 Oct 2023 12:52:57 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] media: venus: hfi_cmds: Replace one-element array
+ with flex-array member and use __counted_by
+Message-ID: <202310091252.660CFA9@keescook>
+References: <ZSRJfRdUXQOzagKr@work>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZSRJfRdUXQOzagKr@work>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prepare for the coming implementation by GCC and Clang of the __counted_by
-attribute. Flexible array members annotated with __counted_by can have
-their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
-array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-functions).
+On Mon, Oct 09, 2023 at 12:42:05PM -0600, Gustavo A. R. Silva wrote:
+> Array `data` in `struct hfi_sfr` is being used as a fake flexible array
+> at run-time:
+> 
+> drivers/media/platform/qcom/venus/hfi_venus.c:
+> 1033         p = memchr(sfr->data, '\0', sfr->buf_size);
+> 1034         /*
+> 1035          * SFR isn't guaranteed to be NULL terminated since SYS_ERROR indicates
+> 1036          * that Venus is in the process of crashing.
+> 1037          */
+> 1038         if (!p)
+> 1039                 sfr->data[sfr->buf_size - 1] = '\0';
+> 1040
+> 1041         dev_err_ratelimited(dev, "SFR message from FW: %s\n", sfr->data);
+> 
+> Fake flexible arrays are deprecated, and should be replaced by
+> flexible-array members. So, replace one-element array with a
+> flexible-array member in `struct hfi_sfr`.
+> 
+> While there, also annotate array `data` with __counted_by() to prepare
+> for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
+> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> This results in no differences in binary output.
 
-Also, relocate `hdr->raw_pkcs7_len = sig_len;` so that the __counted_by
-annotation has effect, and flex-array member `raw_pkcs7` can be properly
-bounds-checked at run-time.
+Thanks for checking!
 
-While there, use struct_size() helper, instead of the open-coded
-version, to calculate the size for the allocation of the whole
-flexible structure, including of course, the flexible-array member.
+> 
+> This issue was found with the help of Coccinelle, and audited and fixed
+> manually.
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-This code was found with the help of Coccinelle, and audited and
-fixed manually.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- security/integrity/ima/ima_modsig.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/security/integrity/ima/ima_modsig.c b/security/integrity/ima/ima_modsig.c
-index 3e7bee30080f..3265d744d5ce 100644
---- a/security/integrity/ima/ima_modsig.c
-+++ b/security/integrity/ima/ima_modsig.c
-@@ -29,7 +29,7 @@ struct modsig {
- 	 * storing the signature.
- 	 */
- 	int raw_pkcs7_len;
--	u8 raw_pkcs7[];
-+	u8 raw_pkcs7[] __counted_by(raw_pkcs7_len);
- };
- 
- /*
-@@ -65,10 +65,11 @@ int ima_read_modsig(enum ima_hooks func, const void *buf, loff_t buf_len,
- 	buf_len -= sig_len + sizeof(*sig);
- 
- 	/* Allocate sig_len additional bytes to hold the raw PKCS#7 data. */
--	hdr = kzalloc(sizeof(*hdr) + sig_len, GFP_KERNEL);
-+	hdr = kzalloc(struct_size(hdr, raw_pkcs7, sig_len), GFP_KERNEL);
- 	if (!hdr)
- 		return -ENOMEM;
- 
-+	hdr->raw_pkcs7_len = sig_len;
- 	hdr->pkcs7_msg = pkcs7_parse_message(buf + buf_len, sig_len);
- 	if (IS_ERR(hdr->pkcs7_msg)) {
- 		rc = PTR_ERR(hdr->pkcs7_msg);
-@@ -77,7 +78,6 @@ int ima_read_modsig(enum ima_hooks func, const void *buf, loff_t buf_len,
- 	}
- 
- 	memcpy(hdr->raw_pkcs7, buf + buf_len, sig_len);
--	hdr->raw_pkcs7_len = sig_len;
- 
- 	/* We don't know the hash algorithm yet. */
- 	hdr->hash_algo = HASH_ALGO__LAST;
 -- 
-2.34.1
-
+Kees Cook
