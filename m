@@ -2,122 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 865187BD3D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 08:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1509F7BD3FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 09:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345319AbjJIGyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 02:54:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35148 "EHLO
+        id S1345368AbjJIHBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 03:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345305AbjJIGyf (ORCPT
+        with ESMTP id S1345305AbjJIHBe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 02:54:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0EFBA4;
-        Sun,  8 Oct 2023 23:54:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EE01C433C8;
-        Mon,  9 Oct 2023 06:54:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696834474;
-        bh=rZrIcDQhefr0DHgoymWmiWlPeKqu+JDo4LZvNnP0GxI=;
-        h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-        b=SWGMwF5l5eeF+ti9rjZXEHhfcSF0LGQYWh8xIPYIGoj8pM/LqfHI5Cf56YARyJXiz
-         qqFHxhaWOMPc2Ip/YEUPbdK6p4HpVLderIYYmvqlGDn2fxj6jnAUhDIulH/Q5dXXTw
-         +d7ODVAAmKNZWBG3NbTAg0m2LCVgMxWxWP64OXhyn+D58IMKnGqXWtM0KoeXfpT/Y8
-         JuutbfY3TxgbVMHwyFlGOh7c2YlCrGJOqCg31PPTxnw+GqNWful9vnrHT9gVwKT6ND
-         9+Lqp/0vlZtdkQIvlkJo/0MKzv2ubXVSE2zhEWCTF5G4zWGqT/cBghNkYIJQtppym2
-         Y3JAUPFb4CvHQ==
-Content-Type: text/plain; charset="utf-8"
+        Mon, 9 Oct 2023 03:01:34 -0400
+X-Greylist: delayed 387 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 09 Oct 2023 00:01:31 PDT
+Received: from qs51p00im-qukt01072301.me.com (qs51p00im-qukt01072301.me.com [17.57.155.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01731A6
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 00:01:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
+        s=1a1hai; t=1696834502;
+        bh=OOfAgmDYVOQicq5X0MA5p3SFEeB22oSU0yAtNuNFDtI=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+        b=YAFIrWJxeVX4A80lJ1LA07ES9t5RLnSmUzkDsEaAX7SLDCDqP/bxDProMVflLzO0Q
+         vWCTJ6xO/SBpgv/6ZSTkRJWPDODyNN2gG2tYBPszI0OSEz916A/R8/6++rAjbsGemY
+         tbvtI7MJD0Pg+DfD3qcRqCkimb36zZ7aOvCg3SadIjo/k2C+zSvug5/NWdBm+odYuW
+         rin19sWlrrwOkENEkpO/6c/Cbk4mL7Ta+PeSRScwhfN1jcnC6evMqC7G9a8FajiNnZ
+         hZ3PEBHYPH29T/hfqzLyBe/BWwiA2Ht4Akdq5lRudTxhHv163tCsRrQWaRdqFwMUkS
+         0fDE6hkerO+fA==
+Received: from fedora.fritz.box (qs51p00im-dlb-asmtp-mailmevip.me.com [17.57.155.28])
+        by qs51p00im-qukt01072301.me.com (Postfix) with ESMTPSA id 5401425400F5;
+        Mon,  9 Oct 2023 06:54:58 +0000 (UTC)
+Date:   Mon, 9 Oct 2023 08:54:54 +0200
+From:   Lucy Mielke <lucymielke@icloud.com>
+To:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
+        tglx@linutronix.de, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com
+Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] perf/x86/intel/pt: Cleanup kernel-doc comments
+Message-ID: <ZSOjQW3e2nJR4bAo@fedora.fritz.box>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] wifi: wfx: fix case where rates are out of order
-From:   Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20231004123039.157112-1-jerome.pouiller@silabs.com>
-References: <20231004123039.157112-1-jerome.pouiller@silabs.com>
-To:     =?utf-8?b?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Felix Fietkau <nbd@nbd.name>,
-        Felipe Negrelli Wolter <felipe.negrelliwolter@silabs.com>,
-        Olivier Souloumiac <olivier.souloumiac@silabs.com>,
-        Alexandr Suslenko <suslenko.o@ajax.systems>,
-        =?utf-8?b?SsOpcsO0bWUgUG91aWxs?= =?utf-8?b?ZXI=?= 
-        <jerome.pouiller@silabs.com>
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <169683447045.2071896.3998375753268021178.kvalo@kernel.org>
-Date:   Mon,  9 Oct 2023 06:54:32 +0000 (UTC)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Proofpoint-GUID: SkIzOLu8dFU5KpPNtAj0PLHmVMZP7Vdm
+X-Proofpoint-ORIG-GUID: SkIzOLu8dFU5KpPNtAj0PLHmVMZP7Vdm
+X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
+ =?UTF-8?Q?2903e8d5c8f:6.0.138,18.0.790,17.11.62.513.0000000_definitions?=
+ =?UTF-8?Q?=3D2022-01-12=5F02:2020-02-14=5F02,2022-01-12=5F02,2021-12-02?=
+ =?UTF-8?Q?=5F01_signatures=3D0?=
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0 spamscore=0
+ mlxlogscore=999 adultscore=0 mlxscore=0 malwarescore=0 phishscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2310090058
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jérôme Pouiller  <jerome.pouiller@silabs.com> wrote:
+Some parameters or return codes were either wrong or missing, so I
+cleaned it up to the best of my knowledge.
 
-> From: Felipe Negrelli Wolter <felipe.negrelliwolter@silabs.com>
-> 
-> When frames are sent over the air, the device always applies the data
-> rates in descending order. The driver assumed Minstrel also provided
-> rate in descending order.
-> 
-> However, in some cases, Minstrel can a choose a fallback rate greater
-> than the primary rate. In this case, the two rates was inverted, the
-> device try highest rate first and we get many retries.
-> 
-> Since the device always applies rates in descending order, the
-> workaround is to drop the rate when it higher than its predecessor in
-> the rate list. Thus [ 4, 5, 3 ] becomes [ 4, 3 ].
-> 
-> This patch has been tested in isolated room with a series of
-> attenuators. Here are the Minstrel statistics with 80dBm of attenuation:
-> 
->   Without the fix:
-> 
->                   best    ____________rate__________    ____statistics___    _____last____    ______sum-of________
->     mode guard #  rate   [name   idx airtime  max_tp]  [avg(tp) avg(prob)]  [retry|suc|att]  [#success | #attempts]
->     HT20  LGI  1       S  MCS0     0    1477     5.6       5.2      82.7       3     0 0             3   4
->     HT20  LGI  1          MCS1     1     738    10.6       0.0       0.0       0     0 0             0   1
->     HT20  LGI  1     D    MCS2     2     492    14.9      13.5      81.5       5     0 0             5   9
->     HT20  LGI  1    C     MCS3     3     369    18.8      17.6      84.3       5     0 0            76   96
->     HT20  LGI  1  A   P   MCS4     4     246    25.4      22.4      79.5       5     0 0         11268   14026
->     HT20  LGI  1   B   S  MCS5     5     185    30.7      19.7      57.7       5     8 9          3918   9793
->     HT20  LGI  1          MCS6     6     164    33.0       0.0       0.0       5     0 0             6   102
->     HT20  LGI  1          MCS7     7     148    35.1       0.0       0.0       0     0 0             0   44
-> 
->   With the fix:
-> 
->                   best    ____________rate__________    ____statistics___    _____last____    ______sum-of________
->     mode guard #  rate   [name   idx airtime  max_tp]  [avg(tp) avg(prob)]  [retry|suc|att]  [#success | #attempts]
->     HT20  LGI  1       S  MCS0     0    1477     5.6       1.8      28.6       1     0 0             1   5
->     HT20  LGI  1     DP   MCS1     1     738    10.6       9.7      82.6       4     0 0            14   34
->     HT20  LGI  1          MCS2     2     492    14.9       9.2      55.4       5     0 0            52   77
->     HT20  LGI  1   B   S  MCS3     3     369    18.8      15.6      74.9       5     1 1           417   554
->     HT20  LGI  1  A       MCS4     4     246    25.4      16.7      59.2       5     1 1         13812   17951
->     HT20  LGI  1    C  S  MCS5     5     185    30.7      14.0      41.0       5     1 5            57   640
->     HT20  LGI  1          MCS6     6     164    33.0       0.0       0.0       0     0 1             0   48
->     HT20  LGI  1       S  MCS7     7     148    35.1       0.0       0.0       0     0 0             0   36
-> 
-> We can notice the device try now to send with lower rates (and high
-> success rates). At the end, we measured 20-25% better throughput with
-> this patch.
-> 
-> Fixes: 9bca45f3d692 ("staging: wfx: allow to send 802.11 frames")
-> Tested-by: Olivier Souloumiac <olivier.souloumiac@silabs.com>
-> Tested-by: Alexandr Suslenko <suslenko.o@ajax.systems>
-> Reported-by: Alexandr Suslenko <suslenko.o@ajax.systems>
-> Co-developed-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
-> Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
-> Signed-off-by: Felipe Negrelli Wolter <felipe.negrelliwolter@silabs.com>
+If anything I did was wrong, please let me know!
 
-Patch applied to wireless-next.git, thanks.
+Signed-off-by: Lucy Mielke <lucymielke@icloud.com>
+---
+ arch/x86/events/intel/pt.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-ea2274ab0b18 wifi: wfx: fix case where rates are out of order
-
+diff --git a/arch/x86/events/intel/pt.c b/arch/x86/events/intel/pt.c
+index 42a55794004a..8e2a12235e62 100644
+--- a/arch/x86/events/intel/pt.c
++++ b/arch/x86/events/intel/pt.c
+@@ -736,6 +736,7 @@ static bool topa_table_full(struct topa *topa)
+ /**
+  * topa_insert_pages() - create a list of ToPA tables
+  * @buf:	PT buffer being initialized.
++ * @cpu:	CPU on which to allocate.
+  * @gfp:	Allocation flags.
+  *
+  * This initializes a list of ToPA tables with entries from
+@@ -1207,8 +1208,11 @@ static void pt_buffer_fini_topa(struct pt_buffer *buf)
+ /**
+  * pt_buffer_init_topa() - initialize ToPA table for pt buffer
+  * @buf:	PT buffer.
+- * @size:	Total size of all regions within this ToPA.
++ * @cpu:	CPU on which to allocate.
++ * @nr_pages:	No. of pages to allocate.
+  * @gfp:	Allocation flags.
++ *
++ * Return:	0 on success or error code.
+  */
+ static int pt_buffer_init_topa(struct pt_buffer *buf, int cpu,
+ 			       unsigned long nr_pages, gfp_t gfp)
+@@ -1281,7 +1285,7 @@ static int pt_buffer_try_single(struct pt_buffer *buf, int nr_pages)
+ 
+ /**
+  * pt_buffer_setup_aux() - set up topa tables for a PT buffer
+- * @cpu:	Cpu on which to allocate, -1 means current.
++ * @event:	Performance event
+  * @pages:	Array of pointers to buffer pages passed from perf core.
+  * @nr_pages:	Number of pages in the buffer.
+  * @snapshot:	If this is a snapshot/overwrite counter.
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20231004123039.157112-1-jerome.pouiller@silabs.com/
+2.41.0
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
