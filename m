@@ -2,154 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0B57BD7E3
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 12:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F5F7BD7E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 12:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346032AbjJIKEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 06:04:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37614 "EHLO
+        id S1346011AbjJIKEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 06:04:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345822AbjJIKEJ (ORCPT
+        with ESMTP id S1345822AbjJIKD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 06:04:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A3859F
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 03:03:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696845803;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6ZDq+KacwLqN89Pgcuf93P7pKqhNHzHwi+dO6s3fMZs=;
-        b=UL1o74Rw8g4win4Ih4ECQKGz5ci4i9VBJfLZfyYJ5kUuuOE9AFibZXI1ufzD4qTGo6IOqp
-        B6X4/7ZjeULrK3HRbT3TFqIXTKwfgjqbHu2vSsxZxzUeFfVE2YYJicpRqoBkFol2bAHGmY
-        TYneA5Gj3ybCylMjisylx6gSFU5bmAM=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-133-MOlzT0-3PdWW_RfHESy8UA-1; Mon, 09 Oct 2023 06:03:22 -0400
-X-MC-Unique: MOlzT0-3PdWW_RfHESy8UA-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4065d52a83aso28073455e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 03:03:22 -0700 (PDT)
+        Mon, 9 Oct 2023 06:03:58 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7250597
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 03:03:57 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bf55a81eeaso28230175ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 03:03:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shopee.com; s=shopee.com; t=1696845837; x=1697450637; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hMq2jaKv0w7qan5Rleu8o2mGnamgbpb4/RZFYckJiqE=;
+        b=eIN6wv78V6TIKbWZslEO89bntQLmIuBcYQSWGCKiV8hx3qW1IGCESB+Oa1htaV6KpS
+         isOAXUhyeAdED4TzYY++98CVRGuqHD4AToSEcjSRKdiJT1Vx8BwuODWuw50OFghIpAy2
+         cZ6kNNVgBq0tFbObLYRdD4dar+zLGyosiRu09MRlB5rTCLAbEALZZxKeCDcPXLCz10Lt
+         1bZXqUolgxjnIvMGDzjRNSebzBZR7z8w0bZEKlGhfNbKZ7GjtOzImAK03b+S4cO1+87L
+         9AdAN80jZ8+Aik7LTv5Ki7QcU3jfdon1BFoIJlXvUxJ1Ht9KBwTWP+ADnDc3a99FkEeV
+         7ujA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696845801; x=1697450601;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :references:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1696845837; x=1697450637;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=6ZDq+KacwLqN89Pgcuf93P7pKqhNHzHwi+dO6s3fMZs=;
-        b=jFmuIVECcYyhkRq/16GCU0UDbxwPn+uVmrbj7LFJK8hy0mK4doci2CKfhdkoOxHUwa
-         Mn1QEHtFtNhmNUXlW/BKOlBBDYOdNypr9jXSa4yYUDWuZakjaxbCM3/M9vYm8FImOdXu
-         x8hcFWqbanWqUtfzYNhk8FH7mlKkMLn7jz/717Ke0N5W2GBifS6Ru4qNiCv/dZhyudfI
-         DnS7qm1gW36C6iBbksY+4KFv4/dqWOb+aqOoPONlOKOJYUyVMCC/gFklUiXRO+LFXsiB
-         6QF0XdURn4xlpD6KwlchP0YW1TXNEI3X29w0QGBeD4xWF/gWbjM39GOV0/zC+Nn3S0OY
-         t0Mw==
-X-Gm-Message-State: AOJu0YxQV/mJQow7M+KqW3d5im/6sxqphsdeLjZpbOzk/vBTqkZZJwQd
-        oIlwOtY1hHmmUYVGNk6744yIKrjA/TTInFul2ns+oMhK2Gj9rRmIpjIIs509Xx5xUoZDcm5UB4Z
-        QQnGjP75u6nlKE2Vjc0hBG6qm
-X-Received: by 2002:a1c:7917:0:b0:401:d803:624f with SMTP id l23-20020a1c7917000000b00401d803624fmr13718990wme.4.1696845801331;
-        Mon, 09 Oct 2023 03:03:21 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFId6FWrCaw17rUDTNitUjp67GHOR1xHsUpjh7dUepuwDNGG0RB5tNnyfIWHhfq4QTievZWLA==
-X-Received: by 2002:a1c:7917:0:b0:401:d803:624f with SMTP id l23-20020a1c7917000000b00401d803624fmr13718970wme.4.1696845800872;
-        Mon, 09 Oct 2023 03:03:20 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c733:6400:ae10:4bb7:9712:8548? (p200300cbc7336400ae104bb797128548.dip0.t-ipconnect.de. [2003:cb:c733:6400:ae10:4bb7:9712:8548])
-        by smtp.gmail.com with ESMTPSA id e11-20020adfe7cb000000b003176c6e87b1sm9175744wrn.81.2023.10.09.03.03.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 03:03:20 -0700 (PDT)
-Message-ID: <4bf9f174-2d0e-554a-c01f-7188ccde0f3f@redhat.com>
-Date:   Mon, 9 Oct 2023 12:03:19 +0200
+        bh=hMq2jaKv0w7qan5Rleu8o2mGnamgbpb4/RZFYckJiqE=;
+        b=XIXhPzKzJx8huxmhmobnBmMbmpUaodZ8UUSgF32ImbiuEXYagfbqTSthdc03NRnVch
+         9WTFPhPE4s6nVmUomgXu5TGlC0BUn+hHCRQjC/yMnyoMMJB/aXaDXoQFCMcZ+QUcJtXm
+         GYLelBoB7eHN/OLOioLj3KskCwZ1eAG4abS1ZlqksuAOtFP9GqFy3Snw6tbqti6+IwZc
+         titx+cwbuHTVRvljYh/4dV+dJm78EvtJvZvcSKRdgkcRJ3NHgIxddjw/xQquZ4oGNtcI
+         +UVAHcDFFIhvZrTQpdLT+L6QV7RzINxAQZ1KB5EVTQo8kiYb6fjISm12yWUBKBiOCNuH
+         FtLQ==
+X-Gm-Message-State: AOJu0YycJ9YQu0teAj2MWy8bIKRtGeVvp5AmFVrrKp0l3dD0R/2Icm9n
+        iMn835aMSlqocqL++JQwboRoa+FotjdH9FqWhUS12g==
+X-Google-Smtp-Source: AGHT+IHqyeR/SlcADUh0qh+R4VMms4WKkZS0JH3GoHyZjxjZO/4rMaaXkeB8vh9DU/H7/MsJVadC6A==
+X-Received: by 2002:a17:903:1245:b0:1c7:49dd:2df with SMTP id u5-20020a170903124500b001c749dd02dfmr14037224plh.32.1696845836897;
+        Mon, 09 Oct 2023 03:03:56 -0700 (PDT)
+Received: from ubuntu-yizhou.default.svc.cluster.local ([101.127.248.173])
+        by smtp.gmail.com with ESMTPSA id d15-20020a170902cecf00b001c5eb37e92csm9119991plg.305.2023.10.09.03.03.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Oct 2023 03:03:56 -0700 (PDT)
+From:   yizhou.tang@shopee.com
+To:     houtao1@huawei.com, jack@suse.cz, bvanassche@acm.org,
+        kch@nvidia.com
+Cc:     axboe@kernel.dk, tj@kernel.org, corbet@lwn.net,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yingfu.zhou@shopee.com,
+        yizhou.tang@shopee.com, chunguang.xu@shopee.com
+Subject: [PATCH] doc: blk-ioprio: Standardize a few names
+Date:   Mon,  9 Oct 2023 18:03:49 +0800
+Message-Id: <20231009100349.52884-1-yizhou.tang@shopee.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Content-Language: en-US
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>
-References: <20231002142949.235104-1-david@redhat.com>
- <20231002142949.235104-4-david@redhat.com>
- <CAJuCfpHKPDzy0Z4a_rm8K=xnNBD9T+Y-cXCBYmQDG+3xinzuOQ@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v1 3/3] memory: move exclusivity detection in do_wp_page()
- into wp_can_reuse_anon_folio()
-In-Reply-To: <CAJuCfpHKPDzy0Z4a_rm8K=xnNBD9T+Y-cXCBYmQDG+3xinzuOQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.10.23 19:05, Suren Baghdasaryan wrote:
-> On Mon, Oct 2, 2023 at 7:29 AM David Hildenbrand <david@redhat.com> wrote:
->>
->> Let's clean up do_wp_page() a bit, removing two labels and making it
->> a easier to read.
->>
->> wp_can_reuse_anon_folio() now only operates on the whole folio. Move the
->> SetPageAnonExclusive() out into do_wp_page(). No need to do this under
->> page lock -- the page table lock is sufficient.
->>
->> Signed-off-by: David Hildenbrand <david@redhat.com>
->> ---
->>   mm/memory.c | 88 +++++++++++++++++++++++++++--------------------------
->>   1 file changed, 45 insertions(+), 43 deletions(-)
->>
->> diff --git a/mm/memory.c b/mm/memory.c
->> index 1f0e3317cbdd..512f6f05620e 100644
->> --- a/mm/memory.c
->> +++ b/mm/memory.c
->> @@ -3358,6 +3358,44 @@ static vm_fault_t wp_page_shared(struct vm_fault *vmf, struct folio *folio)
->>          return ret;
->>   }
->>
+From: Tang Yizhou <yizhou.tang@shopee.com>
 
-Sorry for the late response.
+Our system administrator have noted that the names 'rt-to-be' and
+'all-to-idle' in the I/O priority policies table appeared without
+explanations, leading to confusion. Let's standardize these names in
+line with the naming in the 'attribute' section.
 
->> +static bool wp_can_reuse_anon_folio(struct folio *folio,
->> +                                   struct vm_area_struct *vma)
-> 
-> Since this function is calling folio_move_anon_rmap(), I would suggest
-> changing its name to wp_reuse_anon_folio(). This would clarify that
+Additionally,
+1. Correct the interface name to 'io.prio.class'.
+2. Add a table entry of 'promote-to-rt' for consistency.
+3. Fix a typo of 'priority'.
 
-folio_move_anon_rmap() is *not* the reuse part, it's just an rmap 
-optimization. You could remove the call here and the whole thing would 
-still work :) In fact, we can call folio_move_anon_rmap() whenever we 
-sure the folio belongs to a single VMA only and we're holding the page 
-lock. ... but we cannot always reuse a folio in that case because there 
-might be GUP references from another process.
+Suggested-by: Yingfu Zhou <yingfu.zhou@shopee.com>
+Signed-off-by: Tang Yizhou <yizhou.tang@shopee.com>
+---
+ Documentation/admin-guide/cgroup-v2.rst | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Reuse is
-* Setting PageAnonExclusive
-* Write fault: wunprotect the page -> wp_page_reuse()
-
-I went a bit back and forth while cleaning that function up, but calling 
-it wp_reuse_anon_folio() would end up being confusing with 
-wp_page_reuse() called afterwards [we should probably rename that one to 
-wp_page_wunprotect() independently]. So I prefer to leave the actual 
-(sub)page reuse part in the caller.
-
-> it's actually doing that operation instead of just checking if it's
-> possible. That would also let us keep unconditional
-> SetPageAnonExclusive() in it and do that under folio lock like it used
-> to do (keeping rules simple). Other than that, it looks good to me.
-
-I really want to avoid passing a "struct page" to that function; once 
-we're dealing with PTE-mapped THP, the page might actually be a tail 
-page of the folio.
-
-Thanks!
-
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 4ef890191196..10461c73c9a3 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -2023,7 +2023,7 @@ IO Priority
+ ~~~~~~~~~~~
+ 
+ A single attribute controls the behavior of the I/O priority cgroup policy,
+-namely the blkio.prio.class attribute. The following values are accepted for
++namely the io.prio.class attribute. The following values are accepted for
+ that attribute:
+ 
+   no-change
+@@ -2052,9 +2052,11 @@ The following numerical values are associated with the I/O priority policies:
+ +----------------+---+
+ | no-change      | 0 |
+ +----------------+---+
+-| rt-to-be       | 2 |
++| promote-to-rt  | 1 |
+ +----------------+---+
+-| all-to-idle    | 3 |
++| restrict-to-be | 2 |
+++----------------+---+
++| idle           | 3 |
+ +----------------+---+
+ 
+ The numerical value that corresponds to each I/O priority class is as follows:
+@@ -2074,7 +2076,7 @@ The algorithm to set the I/O priority class for a request is as follows:
+ - If I/O priority class policy is promote-to-rt, change the request I/O
+   priority class to IOPRIO_CLASS_RT and change the request I/O priority
+   level to 4.
+-- If I/O priorityt class is not promote-to-rt, translate the I/O priority
++- If I/O priority class policy is not promote-to-rt, translate the I/O priority
+   class policy into a number, then change the request I/O priority class
+   into the maximum of the I/O priority class policy number and the numerical
+   I/O priority class.
 -- 
-Cheers,
-
-David / dhildenb
+2.25.1
 
