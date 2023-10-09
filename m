@@ -2,75 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7FC87BD962
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 671AE7BD96C
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346199AbjJILRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 07:17:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46316 "EHLO
+        id S1346208AbjJILT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 07:19:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345822AbjJILRf (ORCPT
+        with ESMTP id S1345822AbjJILT5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 07:17:35 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E9D8E94;
-        Mon,  9 Oct 2023 04:17:33 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4D6271FB;
-        Mon,  9 Oct 2023 04:18:14 -0700 (PDT)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 75EA43F762;
-        Mon,  9 Oct 2023 04:17:32 -0700 (PDT)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Cristian Marussi <cristian.marussi@arm.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>, Peng Fan <peng.fan@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH v5 0/2] firmware: arm_scmi: clock: support parents commands
-Date:   Mon,  9 Oct 2023 12:17:29 +0100
-Message-ID: <169685012752.1328773.11061683004057797364.b4-ty@arm.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231004-scmi-clock-v3-v5-0-1b8a1435673e@nxp.com>
-References: <20231004-scmi-clock-v3-v5-0-1b8a1435673e@nxp.com>
+        Mon, 9 Oct 2023 07:19:57 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A13FD99
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 04:19:56 -0700 (PDT)
+Received: from [IPV6:2804:1b1:a940:c6b8:18b8:5ce:1f77:c31a] (unknown [IPv6:2804:1b1:a940:c6b8:18b8:5ce:1f77:c31a])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: koike)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 7F1426605957;
+        Mon,  9 Oct 2023 12:19:52 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1696850395;
+        bh=se4MQkYBZRlBZRnBE1H+TAMveEHemZnZwrtB2S/ffb4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Ct1L0BTrXqTEc9k7qOFzpuOF9mBYePU+TjYBAHXz6sh1udRRDx4fLLNJthRKfLYrE
+         3cAnPyuWtbi69xP87j7p12eFFmvCCw3vyIUxIgz8XzYd7pNKSk+WLBYHYmhA1X/xWU
+         VGriPXN7CM/m+RHecRLr9VEC693/FD1pM07LO041xcGvBO+5+Q4g2d9RCKJfo4/DY/
+         IaJ1Ssd4M5mfXsfl1FmpPsuA/m/visXVuQvNyJxwUMbH4syeio3leR1iaSaEjNvfIp
+         g5fEoee3R2UoFU02oPzYnHtHpvXFCz7oJlJpwTxYH+gOfpCYwjNEANdSxhlVx3rrMO
+         DKqTjbruW95ww==
+Message-ID: <57967900-d00e-4175-8c82-4a91c60022e5@collabora.com>
+Date:   Mon, 9 Oct 2023 08:19:45 -0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/ci: Default to UART for logging
+Content-Language: en-US
+To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
+Cc:     Emma Anholt <emma@anholt.net>, Rob Clark <robdclark@chromium.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>,
+        Guilherme Alcarde Gallo <guilherme.gallo@collabora.com>
+References: <20231006173205.371205-1-robdclark@gmail.com>
+From:   Helen Koike <helen.koike@collabora.com>
+In-Reply-To: <20231006173205.371205-1-robdclark@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 04 Oct 2023 07:42:22 +0800, Peng Fan (OSS) wrote:
-> SCMI v3.2 spec adds parents commands, this patchset is to support them:
-> CLOCK_POSSIBLE_PARENTS_GET
-> CLOCK_PARENT_SET
-> CLOCK_PARENT_GET
+cc +guilherme
+
+On 06/10/2023 14:32, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
 > 
-> Besides firmware api clock driver update, the clk_scmi driver also
-> updated to support set_parent and get_parent ops.
+> ssh logging is the default for mesa, as it is generally more reliable.
+> But if there are kernel issues, especially at boot, UART logging is
+> infinitely more useful.
 > 
-> [...]
-
-Hi Stephen,
-
-Since you have acked other changes in the same driver and agreed to take it
-via SoC tree, I have applied these changes as well.
-
-Applied(with minor edits to the subject and the commit messages) to
-sudeep.holla/linux (for-next/scmi/updates), thanks!
-
-[1/2] firmware: arm_scmi: clock: support clock parents
-      https://git.kernel.org/sudeep.holla/c/77bbfe607b1d
-[2/2] clk: scmi: add set/get_parent support
-      https://git.kernel.org/sudeep.holla/c/65a8a3dd3b95
---
-Regards,
-Sudeep
-
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+>   drivers/gpu/drm/ci/gitlab-ci.yml | 6 ++++++
+>   1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml b/drivers/gpu/drm/ci/gitlab-ci.yml
+> index 2c4df53f5dfe..7c55f02f7313 100644
+> --- a/drivers/gpu/drm/ci/gitlab-ci.yml
+> +++ b/drivers/gpu/drm/ci/gitlab-ci.yml
+> @@ -27,6 +27,12 @@ variables:
+>   
+>     LAVA_JOB_PRIORITY: 30
+>   
+> +  # Default to UART logging.  Mesa uses ssh by default, as that is more
+> +  # reliable if you have a stable kernel.  But kernel CI is more likely
+> +  # to encounter unstable kernels (and has lower volume of CI jobs so is
+> +  # less likely to be troubled by occasional UART flakes)
+> +  LAVA_FORCE_UART: 1
+> +
+>   default:
+>     before_script:
+>       - export SCRIPTS_DIR=$(mktemp -d)
