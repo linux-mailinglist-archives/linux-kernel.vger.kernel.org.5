@@ -2,98 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C1B7BD3C4
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 08:49:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2637BD3CC
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 08:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345309AbjJIGt1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Oct 2023 02:49:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40458 "EHLO
+        id S1345231AbjJIGvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 02:51:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234248AbjJIGt0 (ORCPT
+        with ESMTP id S234202AbjJIGvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 02:49:26 -0400
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA1AAB;
-        Sun,  8 Oct 2023 23:49:22 -0700 (PDT)
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-59f7f2b1036so50636227b3.3;
-        Sun, 08 Oct 2023 23:49:22 -0700 (PDT)
+        Mon, 9 Oct 2023 02:51:36 -0400
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB7FA3
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 23:51:34 -0700 (PDT)
+Received: by mail-ua1-x933.google.com with SMTP id a1e0cc1a2514c-7aae07e7ba4so1269499241.1
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 23:51:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696834293; x=1697439093; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kBDSaY0/ASjdBE7rCbqSIiyhd+2s1GCtZituRbz4r4E=;
+        b=jGk0U/yHEw60pkwn4+7oXf/1xLJEGy6cUrEO6gYaGm6B9ZZB3fJLrQWNlwRT6jZXXt
+         cQKHLl4AN2yb8kSJKLa7dRz4LciLj1sw2Aa/v8OItkwmg8gW127noO3CmXP1dEWMkaDI
+         1er7HBipihkgG3RkDZRvqLOoqmLJY4ngJzabLfvznlNR5mMpVdlmAj1xpVQOYmC9jxh2
+         R+lohTZ8HcJeh4NB1HQ3Zcy931ZSjMJJZfmOoDCZzPCz4F+9Ih2FEHbBmSmaw3ZT4S8r
+         RcWLS7NCFhee+smv8TyrxN2pp7Y1+cuy8nJ4R6kzRgRkrobKvhJ1uFw3er0FhRWUPzVZ
+         J98Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696834161; x=1697438961;
+        d=1e100.net; s=20230601; t=1696834293; x=1697439093;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GRUDqy2ec1uOO+SkamWEjCsINPtEX2s7XRvtWem4WwU=;
-        b=oHnEfRr34G7Bl2kQKfa0CKutvpY3C+S4r6DDk7KWrPDePhmzml8rXoDFAspdE5ie/h
-         wgFwn91053r7mTpauTfXb+8SHBgJ4531YvR8q4jKLsqqzNOsklrZRkB8XCitnSzu/H3k
-         vpKCdKeiSBvDjMiq356ArxF3yeg0g2Y52jPwNCHeBfHhAQdzGSM7x3HUd1ANAgTWrKAX
-         0MxmvFY5PApgVCwgIqb3FpbUYpLrdJS7ByYPqZGWOEB3tUM6VoFCe+zLIpI4Czm+0g+c
-         ZC6qEJbdXTdKmQV7BK3MEyxILuRpZ3fcrhXr5j1zglkzEFfyl/XaUPCqBvex5vlMfdNE
-         iRXA==
-X-Gm-Message-State: AOJu0Yzjki2lBO6f3GOLbdjIrUVncXZGgpwqWkzALsSAH2SOlfrNCq+r
-        fbTEMzqQ2fjsu4rvlw8pdNvi1BfiVMEezA==
-X-Google-Smtp-Source: AGHT+IHueosdP3+utWq4nycDQ96AORUMippNKzYPOUHS73NO93DjseBReGn7TIb96aru23WgOnIbnw==
-X-Received: by 2002:a0d:d782:0:b0:59f:4e6d:b56b with SMTP id z124-20020a0dd782000000b0059f4e6db56bmr15667728ywd.5.1696834161248;
-        Sun, 08 Oct 2023 23:49:21 -0700 (PDT)
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
-        by smtp.gmail.com with ESMTPSA id z16-20020a81a250000000b0059b24bd4f2asm3449977ywg.57.2023.10.08.23.49.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Oct 2023 23:49:21 -0700 (PDT)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-59f7f2b1036so50636117b3.3;
-        Sun, 08 Oct 2023 23:49:20 -0700 (PDT)
-X-Received: by 2002:a81:4917:0:b0:5a1:d11e:b754 with SMTP id
- w23-20020a814917000000b005a1d11eb754mr15294921ywa.26.1696834160791; Sun, 08
- Oct 2023 23:49:20 -0700 (PDT)
+        bh=kBDSaY0/ASjdBE7rCbqSIiyhd+2s1GCtZituRbz4r4E=;
+        b=MPbz/zXbIFW9CHE6/27WJw+5Lyp5SNQIpP+SsemH7t8eT5Uit0RUsoFcA6nQel/3fd
+         uARjLvV7jtc8rRxtQ/N+kzP6318lWgel0TgtiomN1XbbbIUGjP5uC4Pb+UJ80oHYLxt1
+         M/v4HCpLks79tyryuUrCIsaqB16Q4mF+4ebPosYfWXsNfxhoJS/a7O+J4SFpmYRXiP0I
+         To174fglPisPB/785MVS6WoCYD4hZJfDMBlZYnc7QGCzfQVRJsmNzNwvg5NPvlh+Lanv
+         4ATDj5OyqpPxMm7bgExCVxxUqo0xRdDduCwKwhhDCFrDpS1sr3mQ4GU9aSKTlQSl7VoI
+         GUog==
+X-Gm-Message-State: AOJu0Yw4f/4MLwNrMiqlh4YoDyGGsjRts5+wCaVrltJdf1Oiqs4cxhJA
+        lW5m/ZqJM51JVtx5sdypSl8QJSoTKiYKapzlC9qaGJMaWUVXNK6b
+X-Google-Smtp-Source: AGHT+IH1LWeJKXPZE+vvTZ4Oau9CzNroYWz1QipmerCrdTudthpWuwe8ud3nA9hbzuN+ZUJaN3IsyD6+sAOH3HFrDjA=
+X-Received: by 2002:a1f:c6c7:0:b0:49a:3538:18e3 with SMTP id
+ w190-20020a1fc6c7000000b0049a353818e3mr9876309vkf.6.1696834293585; Sun, 08
+ Oct 2023 23:51:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231009111609.13ac1edb@canb.auug.org.au> <f0d0e8ad-8391-44f3-90e0-d2325daebb64@linux-m68k.org>
-In-Reply-To: <f0d0e8ad-8391-44f3-90e0-d2325daebb64@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 9 Oct 2023 08:49:08 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVo-H+q+X8XCZrVVG3W05B53=ttQ3LUcqbJkCV0-zWTaA@mail.gmail.com>
-Message-ID: <CAMuHMdVo-H+q+X8XCZrVVG3W05B53=ttQ3LUcqbJkCV0-zWTaA@mail.gmail.com>
-Subject: Re: linux-next: duplicate patch in the m68knommu tree
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20231007125550.529700-1-peng.fan@oss.nxp.com>
+In-Reply-To: <20231007125550.529700-1-peng.fan@oss.nxp.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 9 Oct 2023 08:51:22 +0200
+Message-ID: <CAMRc=MdBRndJTGBhUPNkVGtRUpjaqph1aduzhDoitwjUy7VCyA@mail.gmail.com>
+Subject: Re: [PATCH] gpio: vf610: update comment for i.MX8ULP and i.MX93
+ legacy compatibles
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     linus.walleij@linaro.org, andy@kernel.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>,
+        Marco Felsch <m.felsch@pengutronix.de>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On Mon, Oct 9, 2023 at 4:00 AM Greg Ungerer <gerg@linux-m68k.org> wrote:
-> On 9/10/23 10:16, Stephen Rothwell wrote:
-> > The following commit is also in the m68k tree as a different commit
-> > (but the same patch):
-> >
-> >    af580d01acc3 ("m68k: use kernel's generic libgcc functions")
-> >
-> > The is commit
-> >
-> >    a0938a8e2fb3 ("m68k: Use kernel's generic libgcc functions")
-> >
-> > in the m68k tree.
+On Sat, Oct 7, 2023 at 2:51=E2=80=AFPM Peng Fan (OSS) <peng.fan@oss.nxp.com=
+> wrote:
 >
-> Sorry, yes, fixed now. I removed it from the m68kmnommu git tree.
+> From: Peng Fan <peng.fan@nxp.com>
+>
+> i.MX8ULP and i.MX93 legacy compatible strings use dual regs, while
+> new compatible strings use one reg. The "support old compatible strings"
+> is not clear to reflect the fact, so update it.
+>
+> Suggested-by: Marco Felsch <m.felsch@pengutronix.de>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>
+> To address:
+>  https://lore.kernel.org/all/20231004050428.o7l2e23xjcjkzzck@pengutronix.=
+de/
+> Marco:
+>  I added your tag with Suggested-by, since you suggested this.
+>
+>  drivers/gpio/gpio-vf610.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpio/gpio-vf610.c b/drivers/gpio/gpio-vf610.c
+> index c03dfda41d4c..a89ae84a1fa0 100644
+> --- a/drivers/gpio/gpio-vf610.c
+> +++ b/drivers/gpio/gpio-vf610.c
+> @@ -287,7 +287,10 @@ static int vf610_gpio_probe(struct platform_device *=
+pdev)
+>
+>         dual_base =3D port->sdata->have_dual_base;
+>
+> -       /* support old compatible strings */
+> +       /*
+> +        * Handle legacy compatible combinations which used two reg value=
+s
+> +        * for the i.MX8ULP and i.MX93.
+> +        */
+>         if (device_is_compatible(dev, "fsl,imx7ulp-gpio") &&
+>             (device_is_compatible(dev, "fsl,imx93-gpio") ||
+>             (device_is_compatible(dev, "fsl,imx8ulp-gpio"))))
+> --
+> 2.37.1
+>
 
-Thanks, I wasn't aware you had planned to queue it in the m68knommu
-tree.  Sorry for not checking linux-next before.
+Applied, thanks!
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Bart
