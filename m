@@ -2,103 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A33047BE6AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 565C37BE6B0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377672AbjJIQjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 12:39:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55328 "EHLO
+        id S1377702AbjJIQjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 12:39:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377684AbjJIQjM (ORCPT
+        with ESMTP id S1377261AbjJIQjl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 12:39:12 -0400
+        Mon, 9 Oct 2023 12:39:41 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7A009E;
-        Mon,  9 Oct 2023 09:39:11 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1CB6C433C8;
-        Mon,  9 Oct 2023 16:39:10 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF5369C
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 09:39:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DB81C433C8;
+        Mon,  9 Oct 2023 16:39:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696869551;
-        bh=7z+60XSm3ueWD/Rb4nlz+Vx6kE/PtSD/zyuDb2uuKVA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=ZeVwvbsew4OBEZgXJbPtLKAoeYKvOgZkxARjbRxOkfq+0LfDHeRfil98CBH72p960
-         YjDTKW3IlcfIXN2oPpobCBvVx02vEu//3oNTujV5HUyFWGaN0EegpK5bp9nP4uB7ho
-         N+9qDwcb5sCjWAZxWLkLR2SQB/VB/6/1etaipdB03FIHyUi7vSFVUSdaSqXxO5KofO
-         TH7XD4fsOj2jSu9X47H9zI3NdtL4vS4XbezbTztgt/1sa0HjdX1hEhComZJnwzBN8J
-         PizzHSQ8phs9zxf3aR1/oVWYtePxjmax6lLe74PgEAHWAiaWo//cJxOoBWfTDbvzdW
-         Ikx1Wc5spCLHA==
-Date:   Mon, 9 Oct 2023 11:39:09 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Yang Yingliang <yangyingliang@huawei.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [resend, PATCH v1 1/1] PCI: Update the devres documentation
- regarding to pcim_*()
-Message-ID: <20231009163909.GA939056@bhelgaas>
+        s=k20201202; t=1696869579;
+        bh=v2fVq7Ohe9KF3DaMnIet1k+n3F9IC/5waGNh/+ofNBE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Zi7Xm1P80JW3KKWuSpUbQ4Rh2H0/J0wZ4c3QhaCUL+MKGu/hUzz/QOL5b/uZP7/1b
+         Ag07Xe4V/15h9mFeieYWnhTKCYmngFWswM4G9dmYP+XlOsZwTQM7Hn/FAUcJ3UmR3A
+         juzHWhx9MKUdK7ZjBwZvdr7j3zbwZ6LJC6dKcXAs1/xC3w5pSgGXzehTLHrKOZRY12
+         zPhBjEk2lqDvHgwSdieb8yKgX7fBgEQ6M91EvYy2mZ8VBR8BeX22s5wh7N5LvcdmY7
+         od9BuMgwmBsTRL3T0xT2lJz/tdpnCZLPPEZeKPnZSs5NRQBgIRRYLzkAf0TJyNmxIM
+         ZcTk9qcliZOxw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 0044BCE09BE; Mon,  9 Oct 2023 09:39:38 -0700 (PDT)
+Date:   Mon, 9 Oct 2023 09:39:38 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Imran Khan <imran.f.khan@oracle.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Juergen Gross <jgross@suse.com>,
+        Leonardo Bras <leobras@redhat.com>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH smp,csd] Throw an error if a CSD lock is stuck for too
+ long
+Message-ID: <a77da319-3161-4e42-894e-521d29fa8348@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <bc7cc8b0-f587-4451-8bcd-0daae627bcc7@paulmck-laptop>
+ <c87d7939-a88c-ad2d-82f2-866e04692882@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231006150634.3444251-1-andriy.shevchenko@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <c87d7939-a88c-ad2d-82f2-866e04692882@oracle.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 06:06:34PM +0300, Andy Shevchenko wrote:
-> There were many changes to PCI core in scope of managed resources APIs.
-> Update documentation to list the current state of affairs.
+On Fri, Oct 06, 2023 at 10:32:07AM +1100, Imran Khan wrote:
+> Hello Paul,
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> On 6/10/2023 3:48 am, Paul E. McKenney wrote:
+> > The CSD lock seems to get stuck in 2 "modes". When it gets stuck
+> > temporarily, it usually gets released in a few seconds, and sometimes
+> > up to one or two minutes.
+> > 
+> > If the CSD lock stays stuck for more than several minutes, it never
+> > seems to get unstuck, and gradually more and more things in the system
+> > end up also getting stuck.
+> > 
+> > In the latter case, we should just give up, so the system can dump out
+> > a little more information about what went wrong, and, with panic_on_oops
+> > and a kdump kernel loaded, dump a whole bunch more information about
+> > what might have gone wrong.
+> > 
+> > Question: should this have its own panic_on_ipistall switch in
+> > /proc/sys/kernel, or maybe piggyback on panic_on_oops in a different
+> > way than via BUG_ON?
+> > 
+> panic_on_ipistall (set to 1 by default) looks better option to me. For systems
+> where such delay is acceptable and system can eventually get back to sane state,
+> this option (set to 0 after boot) would prevent crashing the system for
+> apparently benign CSD hangs of long duration.
 
-Looks good.
+Good point!  How about like the following?
 
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+							Thanx, Paul
 
-> ---
->  Documentation/driver-api/driver-model/devres.rst | 14 ++++++++++----
->  1 file changed, 10 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/driver-api/driver-model/devres.rst b/Documentation/driver-api/driver-model/devres.rst
-> index 8be086b3f829..c5f99d834ec5 100644
-> --- a/Documentation/driver-api/driver-model/devres.rst
-> +++ b/Documentation/driver-api/driver-model/devres.rst
-> @@ -322,10 +322,8 @@ IOMAP
->    devm_platform_ioremap_resource_byname()
->    devm_platform_get_and_ioremap_resource()
->    devm_iounmap()
-> -  pcim_iomap()
-> -  pcim_iomap_regions()	: do request_region() and iomap() on multiple BARs
-> -  pcim_iomap_table()	: array of mapped addresses indexed by BAR
-> -  pcim_iounmap()
-> +
-> +  Note: For the PCI devices the specific pcim_*() functions may be used, see below.
->  
->  IRQ
->    devm_free_irq()
-> @@ -392,8 +390,16 @@ PCI
->    devm_pci_alloc_host_bridge()  : managed PCI host bridge allocation
->    devm_pci_remap_cfgspace()	: ioremap PCI configuration space
->    devm_pci_remap_cfg_resource()	: ioremap PCI configuration space resource
-> +
->    pcim_enable_device()		: after success, all PCI ops become managed
-> +  pcim_iomap()			: do iomap() on a single BAR
-> +  pcim_iomap_regions()		: do request_region() and iomap() on multiple BARs
-> +  pcim_iomap_regions_request_all() : do request_region() on all and iomap() on multiple BARs
-> +  pcim_iomap_table()		: array of mapped addresses indexed by BAR
-> +  pcim_iounmap()		: do iounmap() on a single BAR
-> +  pcim_iounmap_regions()	: do iounmap() and release_region() on multiple BARs
->    pcim_pin_device()		: keep PCI device enabled after release
-> +  pcim_set_mwi()		: enable Memory-Write-Invalidate PCI transaction
->  
->  PHY
->    devm_usb_get_phy()
-> -- 
-> 2.40.0.1.gaa8946217a0b
-> 
+------------------------------------------------------------------------
+
+commit 6bcf3786291b86f13b3e13d51e998737a8009ec3
+Author: Rik van Riel <riel@surriel.com>
+Date:   Mon Aug 21 16:04:09 2023 -0400
+
+    smp,csd: Throw an error if a CSD lock is stuck for too long
+    
+    The CSD lock seems to get stuck in 2 "modes". When it gets stuck
+    temporarily, it usually gets released in a few seconds, and sometimes
+    up to one or two minutes.
+    
+    If the CSD lock stays stuck for more than several minutes, it never
+    seems to get unstuck, and gradually more and more things in the system
+    end up also getting stuck.
+    
+    In the latter case, we should just give up, so the system can dump out
+    a little more information about what went wrong, and, with panic_on_oops
+    and a kdump kernel loaded, dump a whole bunch more information about what
+    might have gone wrong.  In addition, there is an smp.panic_on_ipistall
+    kernel boot parameter that by default retains the old behavior, but when
+    set enables the panic after the CSD lock has been stuck for more than
+    five minutes.
+    
+    [ paulmck: Apply Imran Khan feedback. ]
+    
+    Link: https://lore.kernel.org/lkml/bc7cc8b0-f587-4451-8bcd-0daae627bcc7@paulmck-laptop/
+    Signed-off-by: Rik van Riel <riel@surriel.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+    Cc: Peter Zijlstra <peterz@infradead.org>
+    Cc: Valentin Schneider <vschneid@redhat.com>
+    Cc: Juergen Gross <jgross@suse.com>
+    Cc: Jonathan Corbet <corbet@lwn.net>
+    Cc: Randy Dunlap <rdunlap@infradead.org>
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 0a1731a0f0ef..592935267ce2 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -5858,6 +5858,11 @@
+ 			This feature may be more efficiently disabled
+ 			using the csdlock_debug- kernel parameter.
+ 
++	smp.panic_on_ipistall= [KNL]
++			If a csd_lock_timeout extends for more than
++			five minutes, panic the system.  By default, let
++			CSD-lock acquisition take as long as they take.
++
+ 	smsc-ircc2.nopnp	[HW] Don't use PNP to discover SMC devices
+ 	smsc-ircc2.ircc_cfg=	[HW] Device configuration I/O port
+ 	smsc-ircc2.ircc_sir=	[HW] SIR base I/O port
+diff --git a/kernel/smp.c b/kernel/smp.c
+index 8455a53465af..b6a0773a7015 100644
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -170,6 +170,8 @@ static DEFINE_PER_CPU(void *, cur_csd_info);
+ 
+ static ulong csd_lock_timeout = 5000;  /* CSD lock timeout in milliseconds. */
+ module_param(csd_lock_timeout, ulong, 0444);
++static bool panic_on_ipistall;
++module_param(panic_on_ipistall, bool, 0444);
+ 
+ static atomic_t csd_bug_count = ATOMIC_INIT(0);
+ 
+@@ -230,6 +232,7 @@ static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *
+ 	}
+ 
+ 	ts2 = sched_clock();
++	/* How long since we last checked for a stuck CSD lock.*/
+ 	ts_delta = ts2 - *ts1;
+ 	if (likely(ts_delta <= csd_lock_timeout_ns || csd_lock_timeout_ns == 0))
+ 		return false;
+@@ -243,9 +246,17 @@ static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *
+ 	else
+ 		cpux = cpu;
+ 	cpu_cur_csd = smp_load_acquire(&per_cpu(cur_csd, cpux)); /* Before func and info. */
++	/* How long since this CSD lock was stuck. */
++	ts_delta = ts2 - ts0;
+ 	pr_alert("csd: %s non-responsive CSD lock (#%d) on CPU#%d, waiting %llu ns for CPU#%02d %pS(%ps).\n",
+-		 firsttime ? "Detected" : "Continued", *bug_id, raw_smp_processor_id(), ts2 - ts0,
++		 firsttime ? "Detected" : "Continued", *bug_id, raw_smp_processor_id(), ts_delta,
+ 		 cpu, csd->func, csd->info);
++	/*
++	 * If the CSD lock is still stuck after 5 minutes, it is unlikely
++	 * to become unstuck. Use a signed comparison to avoid triggering
++	 * on underflows when the TSC is out of sync between sockets.
++	 */
++	BUG_ON(panic_on_ipistall && (s64)ts_delta > 300000000000LL);
+ 	if (cpu_cur_csd && csd != cpu_cur_csd) {
+ 		pr_alert("\tcsd: CSD lock (#%d) handling prior %pS(%ps) request.\n",
+ 			 *bug_id, READ_ONCE(per_cpu(cur_csd_func, cpux)),
