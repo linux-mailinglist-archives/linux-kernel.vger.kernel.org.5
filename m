@@ -2,73 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E09B7BD554
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 10:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B947BD558
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 10:38:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234475AbjJIIhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 04:37:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44384 "EHLO
+        id S234474AbjJIIi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 04:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234443AbjJIIhT (ORCPT
+        with ESMTP id S234407AbjJIIiZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 04:37:19 -0400
+        Mon, 9 Oct 2023 04:38:25 -0400
 Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDBE6A4
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 01:37:17 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3247cefa13aso3884340f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 01:37:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2255A3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 01:38:23 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3296b87aa13so2439853f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 01:38:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696840636; x=1697445436; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1696840702; x=1697445502; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=vw4Ub5eH1Ixa4YzHFtcmyZCEgbv0yUg7yO0faDSefC0=;
-        b=egAW8tQY5KFxO1nUcgpjEV3/NtiOkGSlZzwUlvLXMjry+XbpOM2p4KjtF9jZlosv8O
-         vLG6a5A/SN97So4kd7BNBYmxyqEa9uMjS73wSfEouUESbxnh7hSfQgReb5VO8XJYytPp
-         He0awCZGLui8+DsWtmEI6YuEO4ETunpJpFbmiPe6qvzeJ9KRMDUgsKSFt6xMSAfe0XiG
-         FoSQmt8MQrDNzExAJgIXDjVRBq3MDevzJRQHcUfMWQgo80//9wDUZVeWPhECpieEXwMp
-         yIk8gAeP2Zxh/VfcDhyyuoGNGlQP9UR2GdqeQjLVvQ0dDcmH4BS6q8hL8iDe37WkymEE
-         xlEA==
+        bh=edae1CHzB8lTTJNc4L9E/4ctYtT55CcIfQOgs79tmYg=;
+        b=VPUQ6TkkWrwuFzv1lkz97/GjHMgtePvsHGOfb+/Rrzg4hh9WYXE1y2H87orF+bJzWP
+         uWItSQ0/7WAhcv4cxZRCsWIxkwadb0g/1wggbFRGGx+R3LJDPnkVtazdNkFmBzgN3z0U
+         eLUZo80PuOpuMA6LFeJ/xDJ8Qek3XFTcVFNnLstemIFn4+hwdXZVrw0TGt/QJM8cfskn
+         aYcll2/axfy6JPtduXOKuMo4yP0XjseEWDJnUV0rKRmXQxhC3zYqxRx2oGryXCvkNnp/
+         TXJloogMoXs23+iflKSyzabbA7lYHesb9jlQDwGeKw9ig87jpU1ng1ZSyozjTqX25wOE
+         TXeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696840636; x=1697445436;
+        d=1e100.net; s=20230601; t=1696840702; x=1697445502;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vw4Ub5eH1Ixa4YzHFtcmyZCEgbv0yUg7yO0faDSefC0=;
-        b=dN3yadP22mO5oA1PoA34tLI1DudelbhJt+m86KFMkczPHHQWM+E4fUw/3vURzg96ex
-         SAgEkvJEhWhxVBesLI0fYWkD3wCDr+rjon4sUxmHdps/HeX7xEi9o5O0a0jljvJJI28T
-         0ySkIm/xvOoNPNe71zdlpJJs/3wX3QQAEXgl4e3bVqITuPpv5m1/6OZf129vf7AEaP3b
-         6KKz3bXxaq1NIEOvW9rp1LnLw8hf9GjfXLz7/ArPPMNjqrV/H60nBTSyNgs/J+BOZivX
-         FIcVOw/enzN1S2BJW93lWtU48yMp0/WdHRXBltKUbeQDxh3L1f0PQW4LoV5UELt5V9Sq
-         SQFw==
-X-Gm-Message-State: AOJu0Yz94BdFnTDxUylM3PTTahag3IekCYPZ1fVIroH38oKaJwF7Lg6p
-        BG1z6E1XLRwERznLeDCRo4yFag==
-X-Google-Smtp-Source: AGHT+IEp5g+dedCIfuVAoCu7Gl0pddi83Owd3gJXzdQyH4M3EZmdPkJJp+Lr6t1NyYhcTNWK9iI2eQ==
-X-Received: by 2002:adf:ed88:0:b0:320:28e:b638 with SMTP id c8-20020adfed88000000b00320028eb638mr13968302wro.36.1696840636025;
-        Mon, 09 Oct 2023 01:37:16 -0700 (PDT)
+        bh=edae1CHzB8lTTJNc4L9E/4ctYtT55CcIfQOgs79tmYg=;
+        b=rULgfJEmOSRXcJvJdwrf6Uj8xEIZ1u1V01WldyHeypse6tJyKOOPnfdIH4AX1ImJPv
+         YfbKv8IQ7gtOWL6Hrg8J8zrTweG2i56mCVC3KriM8fDEEh8tDFhklswsceqBUI+1VxKH
+         j4IXdo65BMWDD5Wzgm4H59CuVEJ15h1hM8egP5zeJhvi8nsw0p3seZr6FghVVnkTca0S
+         ysqZYULuWl0L9Sqsg1SSOiLzHquz7a9C5EAT2lrMqSo7PPcEC3XbPQMKruSQSTzPBTHn
+         1tyWApfbg4RRHSBYSDvyeYWeIvGV2qfZAKE8jBPVLvHRPSdoD8jGhi3q6Wc8V0kELT2n
+         cy1Q==
+X-Gm-Message-State: AOJu0YzQFoJNk39AsbnYuQNVTWupIIIXlmUsbl+MIHizMQg/QsIuTtgn
+        7ZP7ozH5OwpTcz7SU5dTbVtu3g==
+X-Google-Smtp-Source: AGHT+IG8532heF0b4L0eF8xGaJHiZab0bc5cImh8lvMycsh56bSHqqb6Doye403NOFPRj7uCBn9p8Q==
+X-Received: by 2002:a5d:6f19:0:b0:329:6bd7:470b with SMTP id ay25-20020a5d6f19000000b003296bd7470bmr9162020wrb.58.1696840702154;
+        Mon, 09 Oct 2023 01:38:22 -0700 (PDT)
 Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id l2-20020a5d4802000000b0031fe0576460sm8923180wrq.11.2023.10.09.01.37.14
+        by smtp.gmail.com with ESMTPSA id l2-20020a5d4802000000b0031fe0576460sm8923180wrq.11.2023.10.09.01.38.20
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 01:37:15 -0700 (PDT)
-Message-ID: <9f8561c5-56e1-4f8e-a737-17b02f2eee55@linaro.org>
-Date:   Mon, 9 Oct 2023 10:37:14 +0200
+        Mon, 09 Oct 2023 01:38:21 -0700 (PDT)
+Message-ID: <cb07b48d-1bf7-49a3-a08d-d7ca38a9218e@linaro.org>
+Date:   Mon, 9 Oct 2023 10:38:20 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: arm: rockchip: Add Pine64 QuarzPro64
+Subject: Re: [PATCH] dt-bindings: leds: Last color id is now 14
+ (LED_COLOR_ID_LIME)
 Content-Language: en-US
 To:     =?UTF-8?Q?Ond=C5=99ej_Jirman?= <megi@xff.cz>,
+        linux-kernel@vger.kernel.org
+Cc:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>
-Cc:     Jagan Teki <jagan@edgeble.ai>, Jonas Karlman <jonas@kwiboo.se>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Kever Yang <kever.yang@rock-chips.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231008152703.1196370-1-megi@xff.cz>
- <20231008152703.1196370-2-megi@xff.cz>
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        "open list:LED SUBSYSTEM" <linux-leds@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+References: <20231008142103.1174028-1-megi@xff.cz>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -114,26 +113,29 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231008152703.1196370-2-megi@xff.cz>
+In-Reply-To: <20231008142103.1174028-1-megi@xff.cz>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/10/2023 17:26, Ondřej Jirman wrote:
+On 08/10/2023 16:21, Ondřej Jirman wrote:
 > From: Ondrej Jirman <megi@xff.cz>
 > 
-> Add devicetree binding documentation for Pine64 QuartzPro64 SBC.
+> Increase the limit to match available values in dt-bindings/leds/common.h
 > 
+> Signed-off-by: Ondrej Jirman <megi@xff.cz>
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Fixes: 472d7b9e8141 ("dt-bindings: leds: Expand LED_COLOR_ID definitions")
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
 
 Best regards,
 Krzysztof
