@@ -2,103 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 207567BEEAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 01:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B157BEEAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 01:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378947AbjJIXDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 19:03:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46042 "EHLO
+        id S1378949AbjJIXFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 19:05:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378152AbjJIXDl (ORCPT
+        with ESMTP id S231434AbjJIXFv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 19:03:41 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F242AA6
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 16:03:38 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-7748ca56133so46444439f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 16:03:38 -0700 (PDT)
+        Mon, 9 Oct 2023 19:05:51 -0400
+Received: from mail-ot1-x34a.google.com (mail-ot1-x34a.google.com [IPv6:2607:f8b0:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2BD1D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 16:05:42 -0700 (PDT)
+Received: by mail-ot1-x34a.google.com with SMTP id 46e09a7af769-6c70e93400bso6662349a34.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 16:05:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1696892618; x=1697497418; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=isNibIDfjCBz+AxQha4Vz6XAmq4W2W0frOEb93LFaIw=;
-        b=cRi4SLRTfIaHKGebtDHxeVhrkDaNmTO2X+km9MIRI2HYPR21jhg/hIgyVEXTx+707S
-         RJpr0l3A59dqpSZcLHFk6ysiDA8a+iMo862CTLeqEW7QZLiCW7fPB0AxOcmd54fXlKEi
-         j4nctci4/zt7smJ2dctZDvoANZTSji5o1FYGE=
+        d=google.com; s=20230601; t=1696892742; x=1697497542; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=sf7f7SSFEcioOL4lOh7uG5FMec4NdhZBqO0ftggHptY=;
+        b=LwRVFeYE/YD3ecpcJUBp5ofm5vl2PimabMq29CWUZNbuDyrvHWIPBsHUbI4/sfsVFj
+         Dh5f+pAQX10Az7hZzHBgqjaKqpzG33QfypHaxKIbV9J0Iq0p1jsxh0rg95ZQxbfjCHir
+         uggvJjPVkB/5MnVLDLV5UggUbB+CPYZUrKGi+WZjSBE9sXP37Wirymfmh1prk5fdMJQc
+         mFddu5tb80h7pqzOoXu/YjziCpSGd4k9ueqUkoweQRmiiFOrmj2V3Mlao7Vvs8HK7XWC
+         GVqH1aj++MP6bkUcAxiYET6uRD0AqCgiYHlBjGdxQ/SQ18TFm+OILALK42BkXHPfkSX1
+         XI4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696892618; x=1697497418;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=isNibIDfjCBz+AxQha4Vz6XAmq4W2W0frOEb93LFaIw=;
-        b=rJOI6tgn6bzMr/eZHWNMSW4XnwVOYWVU1t6EB5uwLYidPIaA1vGTm9oZmztjxCFjQv
-         3RjQ+bOWCO3Vp0wcUvt/uirRMOEpHF6Mz88cWZGt3PAAyZOHCCSDQzgN6zyrmh8jUxwQ
-         XFZZhqlYw3LX2Csrqlo2TSgsbS+6xBImk42KPeOTeIF2JzIp17TByHT+OIAyhFDlYmGl
-         ocW3O9rlvVFXfBtMxT0w77REWRU0um7faUE8/YmPHBuJIJimrrzJTE2H5gmj+URRHAfC
-         pYNVlR6fObhfizSd4D8+X0pw93k+zJ+gHE8Ip6Y0vm8+xDA/OkSE1tc3KK//BanZOXXI
-         IKCA==
-X-Gm-Message-State: AOJu0Yw7WA/NQAvIdPpJ4GZDNNycmSM3PUEwj7cJ4Pf/8ZXFfgjJblZ0
-        Cl7UxrCDVP3KbrZaqa+5WJ51Sg==
-X-Google-Smtp-Source: AGHT+IFC7dB+rmhJK94YvLDte9VrWpF4MStdv3nT+6mBzwWpLQzXID6OdAsgCEfdl8dnfczLe/bLCQ==
-X-Received: by 2002:a92:dacc:0:b0:34f:b824:5844 with SMTP id o12-20020a92dacc000000b0034fb8245844mr16033525ilq.3.1696892618299;
-        Mon, 09 Oct 2023 16:03:38 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id c4-20020a92c8c4000000b0035134215863sm3150909ilq.55.2023.10.09.16.03.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 16:03:38 -0700 (PDT)
-Message-ID: <e60e435c-892a-4d9a-ac46-feb7b49b7f18@linuxfoundation.org>
-Date:   Mon, 9 Oct 2023 17:03:37 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4.19 00/91] 4.19.296-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20231009130111.518916887@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20231009130111.518916887@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1696892742; x=1697497542;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sf7f7SSFEcioOL4lOh7uG5FMec4NdhZBqO0ftggHptY=;
+        b=bK8/TJ1sYoCm1eZgLXavixFbgqhdgoUdJ9eCb+hfD2lHpxzbrBESlljn4v+N2Cxl8h
+         TC0/dQ3nmw4W0K+wKlxjPk6xOavGcV22X47OhYRxMsQE5KPZyDNCT5I/ZjoYeq2h/FqN
+         FZ8C+pe4Cb3LalhHVbp1128f9aG3nFtoWCH292latjN4ftKNdzXJLRABI7Ae3S26Zqiv
+         nfiBLCdcjjfDHkacboEm/Z55fNH4Uy+1sdGw/W2Y4zRmwRwXXe/tpGAPbMy5JCxCI2ZO
+         SAZUJVrsV5wc4s/AZxUbexHZHSfkVoVphfOjfTp92ek2nOPBInxlHgDxwi0fwlJqqSpx
+         u3Uw==
+X-Gm-Message-State: AOJu0YzT8BBqx6U0+5CxxTs305/2zrXHllDmJCxBtcr+EDgbMUGoVkpV
+        CFkyYaTOwUzcJaABcQ2/cqdEsCdgSSoVql+tkg==
+X-Google-Smtp-Source: AGHT+IGFgXj6rSXctich+As11kiZfkGnKpf2oXnUdgRc45Epz4XWQpAHX2HulJczcCRybPr4tjMVvrV0XhkuaFFRQw==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6870:5a9a:b0:1e1:82c6:33f9 with
+ SMTP id dt26-20020a0568705a9a00b001e182c633f9mr7399939oab.6.1696892742303;
+ Mon, 09 Oct 2023 16:05:42 -0700 (PDT)
+Date:   Mon, 09 Oct 2023 23:05:41 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAESHJGUC/x2NwQrCMBAFf6Xs2YWk8aD+ioiE9K1d0Fh2S6mU/
+ rvR28xlZiOHKZwu3UaGRV3ftUk8dFTGXB9gHZpTH/oUQzizz1bL9OHBdIE5V8yMeYT9QAzwkp9 gQbm/slYufDpKSCKSQ4rUupNBdP0/r7d9/wLeKqFqgwAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1696892741; l=1913;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=b46EvaWEvLxv9FsIZoOXRs8eHWo6xtQQKTHMNok8KSk=; b=I1zIPrcYrC6V+htWsXEMmmSTST/RmDVaCy58n10tqsm8+ntpoa4LnmiS37cPkusLtOQ0/Iumf
+ omEl4t6dkYhAIRCLgVsvvoMW5H1hqfyd88cYBQN9rR7tOLGSn1wrk55
+X-Mailer: b4 0.12.3
+Message-ID: <20231009-strncpy-drivers-net-ethernet-freescale-fec_main-c-v1-1-4166833f1431@google.com>
+Subject: [PATCH] net: fec: replace deprecated strncpy with ethtool_sprintf
+From:   Justin Stitt <justinstitt@google.com>
+To:     Wei Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/9/23 07:05, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.296 release.
-> There are 91 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 11 Oct 2023 13:00:55 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.296-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+`strncpy` is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-Compiled and booted on my test system. No dmesg regressions.
+ethtool_sprintf() is designed specifically for get_strings() usage.
+Let's replace strncpy in favor of this more robust and easier to
+understand interface.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Also, while we're here, let's change memcpy() over to ethtool_sprintf()
+for consistency.
 
-thanks,
--- Shuah
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
+---
+ drivers/net/ethernet/freescale/fec_main.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+index 77c8e9cfb445..78bddcbfb5d9 100644
+--- a/drivers/net/ethernet/freescale/fec_main.c
++++ b/drivers/net/ethernet/freescale/fec_main.c
+@@ -2907,12 +2907,10 @@ static void fec_enet_get_strings(struct net_device *netdev,
+ 	switch (stringset) {
+ 	case ETH_SS_STATS:
+ 		for (i = 0; i < ARRAY_SIZE(fec_stats); i++) {
+-			memcpy(data, fec_stats[i].name, ETH_GSTRING_LEN);
+-			data += ETH_GSTRING_LEN;
++			ethtool_sprintf(&data, "%s", fec_stats[i].name);
+ 		}
+ 		for (i = 0; i < ARRAY_SIZE(fec_xdp_stat_strs); i++) {
+-			strncpy(data, fec_xdp_stat_strs[i], ETH_GSTRING_LEN);
+-			data += ETH_GSTRING_LEN;
++			ethtool_sprintf(&data, "%s", fec_xdp_stat_strs[i]);
+ 		}
+ 		page_pool_ethtool_stats_get_strings(data);
+ 
+
+---
+base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
+change-id: 20231009-strncpy-drivers-net-ethernet-freescale-fec_main-c-84f03fffa031
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
