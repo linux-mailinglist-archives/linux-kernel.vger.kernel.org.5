@@ -2,69 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D647BE881
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95DD67BE884
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376833AbjJIRmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 13:42:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37336 "EHLO
+        id S1377385AbjJIRnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 13:43:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233372AbjJIRmY (ORCPT
+        with ESMTP id S234538AbjJIRnP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 13:42:24 -0400
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C46494
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 10:42:22 -0700 (PDT)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5a7afd45199so4863477b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 10:42:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696873341; x=1697478141; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Cb0uZrY/3TILfAVALBuGEDwFiKHgMkaqJMCkS/04CB0=;
-        b=4ifFbbafcNFvRuONQ0Ek7mXv7E+UzMVlmN0I9UlhvT0WKEPBI7wkgImwJYBkD19axl
-         01tYwmwbPiPhfjuCYuDD4liYN20J0oRHOdB6Th0MCpTd2+V2K8/M8XdE4St6t800lLyl
-         TMZR37bM9EPUgF9knV8iLoITp4GXOe/JubV52gjOULFdi4MkHjsMImawqd1mNc5A/K8d
-         bAu+wNu/FH5MjVc07HyqvH9FnGC8/S8AyXq0uFWKsEMi+rl8tRVL9zDk7WqjEQJ7zVFm
-         OmXxlS8/M3fw0s9ctRwgnmK2mw3+/dlbG9igbXywW1257CoX5ZD29/1BHyKe8L1OX+0b
-         pYcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696873341; x=1697478141;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Cb0uZrY/3TILfAVALBuGEDwFiKHgMkaqJMCkS/04CB0=;
-        b=B1Rt5itKlogRbd3Z1JN9yca9e8ZUB8hIY9hEyXftv+ksBifoz3Yiitcy09j8CKEZAK
-         q/o5az2dI2Sg4kSQ0VUGgV5hpOgW0AzHQUC5jRny/9QMVXqysZWEMk67AleN5LN1PvTD
-         sfKUg9VSLiMimAPwcn8Y35Je+/YwCNwJlCuyeV/sdN02KWy3SXeGVa1k1Dz8JLRYSIw/
-         NxSW+EI9DhLOqNyI4G0t8NNWLPmgpq5Hz0gV0Q3+XRz9rH5BpYb7W9sYutaLksnWZW/I
-         agQbKtqvLIMLtUt4xLCNvvA8hlj3R5eW3MsLczi4TXnkKLLhBQ82V9FkQqkPevDfvMmr
-         HDHQ==
-X-Gm-Message-State: AOJu0YwC4sU+gXFp/6vi/aKlqdv6/oxBj1HFsxYsdF3M1OyimY9GYRCm
-        clmBU05uwpr4spOPK40FGGDCrTQJFWcAgyJTQki8Bg==
-X-Google-Smtp-Source: AGHT+IHMH3wuv6VHnU1LFK6j5ABUDadWUen6GvhH1X9fEE8784TzsZ7qLpN9Ols3i1rWVHoiWUoehTs/WUyECkmP1UU=
-X-Received: by 2002:a25:d310:0:b0:d2c:32cb:c631 with SMTP id
- e16-20020a25d310000000b00d2c32cbc631mr14321282ybf.27.1696873341362; Mon, 09
- Oct 2023 10:42:21 -0700 (PDT)
+        Mon, 9 Oct 2023 13:43:15 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D66FC91
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 10:43:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E997CC433C8;
+        Mon,  9 Oct 2023 17:43:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696873392;
+        bh=Zn+DcSBRn3nC6VrNG1vRv79aiObq/TAjICpZU36ujr8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nHnLHPO9POXKffYsKb+t2w9Sdt4zfWNLQeHo2nom6BqxqjWC5VKA3RPykld47dXcT
+         mjQZ5aQCgaGg4zVzXEg0X6C36QgsCb8RXuhxj0X7qJcVam1cZmZGSlwErU9Yv66WNp
+         8zMfkLwMzpBlUr8mNjn9qAEnoVUg+2wGuaPO1hI0=
+Date:   Mon, 9 Oct 2023 19:43:09 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Hardik Gajjar <hgajjar@de.adit-jv.com>
+Cc:     mathias.nyman@intel.com, stern@rowland.harvard.edu,
+        yangyingliang@huawei.com, jinpu.wang@ionos.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        erosca@de.adit-jv.com
+Subject: Re: [PATCH v2] usb: core: hub: Add quirks for reducing device
+ address timeout
+Message-ID: <2023100921-likeness-possible-032c@gregkh>
+References: <--in-reply-to=20231006153808.9758-1-hgajjar@de.adit-jv.com>
+ <20231009161402.104224-1-hgajjar@de.adit-jv.com>
 MIME-Version: 1.0
-References: <ZSPayGSz6HQBp+3W@gmail.com> <202310092030430136422@zte.com.cn> <ZSP3cuEsgwWcIKRw@gmail.com>
-In-Reply-To: <ZSP3cuEsgwWcIKRw@gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 9 Oct 2023 10:42:08 -0700
-Message-ID: <CAJuCfpFabCn8gcuLV322RKC=xzVm0C+64HQP+CkFNJZ4VO42ZA@mail.gmail.com>
-Subject: Re: [PATCH linux-next 2/3] sched/psi: Avoid update triggers and
- rtpoll_total when it is unnecessary
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     yang.yang29@zte.com.cn, peterz@infradead.org, hannes@cmpxchg.org,
-        mingo@redhat.com, linux-kernel@vger.kernel.org,
-        juri.lelli@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231009161402.104224-1-hgajjar@de.adit-jv.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,55 +50,233 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 9, 2023 at 5:52=E2=80=AFAM Ingo Molnar <mingo@kernel.org> wrote=
-:
->
->
-> * yang.yang29@zte.com.cn <yang.yang29@zte.com.cn> wrote:
->
-> > From: Yang Yang <yang.yang29@zte.com.cn>
-> >
-> > When psimon wakes up and there are no state changes for rtpoll_states,
-> > it's unnecessary to update triggers and rtpoll_total because the pressu=
-res
-> > being monitored by user had not changed. This will help to slightly red=
-uce
-> > unnecessary computations of psi.
-> >
-> > And update group->rtpoll_next_update after called update_triggers() and
-> > update rtpoll_total. This will prevent bugs if update_triggers() uses
-> > group->rtpoll_next_update in the future, and it makes more sense
-> > to set the next update time after we finished the current update.
->
-> >       if (now >=3D group->rtpoll_next_update) {
-> > -             update_triggers(group, now, &update_total, PSI_POLL);
-> > -             group->rtpoll_next_update =3D now + group->rtpoll_min_per=
-iod;
-> > -             if (update_total)
-> > +             if (changed_states & group->rtpoll_states) {
-> > +                     update_triggers(group, now, &update_total, PSI_PO=
-LL);
-> >                       memcpy(group->rtpoll_total, group->total[PSI_POLL=
-],
-> >                                  sizeof(group->rtpoll_total));
-> > +             }
-> > +             group->rtpoll_next_update =3D now + group->rtpoll_min_per=
-iod;
->
-> So please also split out the second change into a separate patch as well,
-> as it's an unrelated patch to the state-change optimization.
+On Mon, Oct 09, 2023 at 06:14:02PM +0200, Hardik Gajjar wrote:
+> Currently, the timeout for the set address command is fixed at
+> 5 seconds in the xhci driver. This means the host waits up to 5
+> seconds to receive a response for the set_address command from
+> the device.
+> 
+> In the automotive context, most smartphone enumerations, including
+> screen projection, should ideally complete within 3 seconds.
+> Achieving this is impossible in scenarios where the set_address is
+> not successful and waits for a timeout.
+> 
+> The shortened address device timeout quirks provide the flexibility
+> to align with a 3-second time limit in the event of errors.
+> By swiftly triggering a failure response and swiftly initiating
+> retry procedures, these quirks ensure efficient and rapid recovery,
+> particularly in automotive contexts where rapid smartphone enumeration
+> and screen projection are vital.
 
-I think that the second part could have been done in the first patch
-to place the "group->rtpoll_next_update =3D now +
-group->rtpoll_min_period" line at the right place from the beginning.
-Also when posting the next version please add the version number to
-all the patch titles in the patchset, not only to the cover letter.
-That helps with finding the latest version.
-Thanks!
+So you have known-broken devices where you want a shorter error timeout?
+But you don't list those devices in this patch adding the quirk
+settings, shouldn't that be required, otherwise this looks like an
+unused quirk.
 
->
-> We have a "one conceptual change per patch" rule for most things.
->
-> Thanks,
->
->         Ingo
+> The quirk will set the timeout to 500 ms from 5 seconds.
+> 
+> To use the quirk, please write "vendor_id:product_id:p" to
+> /sys/bus/usb/drivers/hub/module/parameter/quirks
+> 
+> For example,
+> echo "0x2c48:0x0132:p" > /sys/bus/usb/drivers/hub/module/parameter/quirks"
+> 
+> Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
+> ---
+> changes since version 1:
+> 	- implement quirk instead of new API in xhci driver
+> ---
+>  drivers/usb/core/hub.c       | 15 +++++++++++++--
+>  drivers/usb/core/quirks.c    |  3 +++
+>  drivers/usb/host/xhci-mem.c  |  1 +
+>  drivers/usb/host/xhci-ring.c |  3 ++-
+>  drivers/usb/host/xhci.c      |  9 +++++----
+>  drivers/usb/host/xhci.h      |  1 +
+>  include/linux/usb/hcd.h      |  3 ++-
+>  include/linux/usb/quirks.h   |  3 +++
+>  8 files changed, 30 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+> index 3c54b218301c..975449b03426 100644
+> --- a/drivers/usb/core/hub.c
+> +++ b/drivers/usb/core/hub.c
+> @@ -54,6 +54,9 @@
+>  #define USB_TP_TRANSMISSION_DELAY_MAX	65535	/* ns */
+>  #define USB_PING_RESPONSE_TIME		400	/* ns */
+>  
+> +#define USB_DEFAULT_ADDR_DEVICE_TIMEOUT		(HZ * 5) /* 5000ms */
+> +#define USB_SHORT_ADDR_DEVICE_TIMEOUT		125  /* ~500ms */
+> +
+>  /* Protect struct usb_device->state and ->children members
+>   * Note: Both are also protected by ->dev.sem, except that ->state can
+>   * change to USB_STATE_NOTATTACHED even when the semaphore isn't held. */
+> @@ -4626,8 +4629,16 @@ EXPORT_SYMBOL_GPL(usb_ep0_reinit);
+>  static int hub_set_address(struct usb_device *udev, int devnum)
+>  {
+>  	int retval;
+> +	int timeout = USB_DEFAULT_ADDR_DEVICE_TIMEOUT;
+>  	struct usb_hcd *hcd = bus_to_hcd(udev->bus);
+>  
+> +	struct usb_hub *hub = usb_hub_to_struct_hub(udev->parent);
+> +
+> +	if (hub->hdev->quirks & USB_QUIRK_SHORT_DEVICE_ADDR_TIMEOUT)
+> +		timeout = USB_SHORT_ADDR_DEVICE_TIMEOUT;
+> +
+> +	dev_dbg(&udev->dev, "address_device timeout %d\n", timeout);
+
+Is this debugging code still needed?
+
+>  	/*
+>  	 * The host controller will choose the device address,
+>  	 * instead of the core having chosen it earlier
+> @@ -4639,11 +4650,11 @@ static int hub_set_address(struct usb_device *udev, int devnum)
+>  	if (udev->state != USB_STATE_DEFAULT)
+>  		return -EINVAL;
+>  	if (hcd->driver->address_device)
+> -		retval = hcd->driver->address_device(hcd, udev);
+> +		retval = hcd->driver->address_device(hcd, udev, timeout);
+>  	else
+>  		retval = usb_control_msg(udev, usb_sndaddr0pipe(),
+>  				USB_REQ_SET_ADDRESS, 0, devnum, 0,
+> -				NULL, 0, USB_CTRL_SET_TIMEOUT);
+> +				NULL, 0, jiffies_to_msecs(timeout));
+>  	if (retval == 0) {
+>  		update_devnum(udev, devnum);
+>  		/* Device now using proper address. */
+> diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+> index 15e9bd180a1d..01ed26bd41f0 100644
+> --- a/drivers/usb/core/quirks.c
+> +++ b/drivers/usb/core/quirks.c
+> @@ -138,6 +138,9 @@ static int quirks_param_set(const char *value, const struct kernel_param *kp)
+>  			case 'o':
+>  				flags |= USB_QUIRK_HUB_SLOW_RESET;
+>  				break;
+> +			case 'p':
+> +				flags |= USB_QUIRK_SHORT_DEVICE_ADDR_TIMEOUT;
+> +				break;
+>  			/* Ignore unrecognized flag characters */
+>  			}
+>  		}
+> diff --git a/drivers/usb/host/xhci-mem.c b/drivers/usb/host/xhci-mem.c
+> index 8714ab5bf04d..492433fdac77 100644
+> --- a/drivers/usb/host/xhci-mem.c
+> +++ b/drivers/usb/host/xhci-mem.c
+> @@ -1729,6 +1729,7 @@ struct xhci_command *xhci_alloc_command(struct xhci_hcd *xhci,
+>  	}
+>  
+>  	command->status = 0;
+> +	command->timeout = 0;
+>  	INIT_LIST_HEAD(&command->cmd_list);
+>  	return command;
+>  }
+> diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
+> index 1dde53f6eb31..0bd19a1efdec 100644
+> --- a/drivers/usb/host/xhci-ring.c
+> +++ b/drivers/usb/host/xhci-ring.c
+> @@ -4301,7 +4301,8 @@ static int queue_command(struct xhci_hcd *xhci, struct xhci_command *cmd,
+>  	/* if there are no other commands queued we start the timeout timer */
+>  	if (list_empty(&xhci->cmd_list)) {
+>  		xhci->current_cmd = cmd;
+> -		xhci_mod_cmd_timer(xhci, XHCI_CMD_DEFAULT_TIMEOUT);
+> +		xhci_mod_cmd_timer(xhci, (cmd->timeout) ? cmd->timeout :
+> +				XHCI_CMD_DEFAULT_TIMEOUT);
+>  	}
+>  
+>  	list_add_tail(&cmd->cmd_list, &xhci->cmd_list);
+> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+> index e1b1b64a0723..1d088ceb2b74 100644
+> --- a/drivers/usb/host/xhci.c
+> +++ b/drivers/usb/host/xhci.c
+> @@ -4002,7 +4002,7 @@ int xhci_alloc_dev(struct usb_hcd *hcd, struct usb_device *udev)
+>   * SetAddress request to the device.
+>   */
+>  static int xhci_setup_device(struct usb_hcd *hcd, struct usb_device *udev,
+> -			     enum xhci_setup_dev setup)
+> +			     enum xhci_setup_dev setup, int timeout)
+
+What is the units of timeout here?
+
+>  {
+>  	const char *act = setup == SETUP_CONTEXT_ONLY ? "context" : "address";
+>  	unsigned long flags;
+> @@ -4059,6 +4059,7 @@ static int xhci_setup_device(struct usb_hcd *hcd, struct usb_device *udev,
+>  	}
+>  
+>  	command->in_ctx = virt_dev->in_ctx;
+> +	command->timeout = timeout;
+>  
+>  	slot_ctx = xhci_get_slot_ctx(xhci, virt_dev->in_ctx);
+>  	ctrl_ctx = xhci_get_input_control_ctx(virt_dev->in_ctx);
+> @@ -4185,14 +4186,14 @@ static int xhci_setup_device(struct usb_hcd *hcd, struct usb_device *udev,
+>  	return ret;
+>  }
+>  
+> -static int xhci_address_device(struct usb_hcd *hcd, struct usb_device *udev)
+> +static int xhci_address_device(struct usb_hcd *hcd, struct usb_device *udev, int timeout)
+>  {
+> -	return xhci_setup_device(hcd, udev, SETUP_CONTEXT_ADDRESS);
+> +	return xhci_setup_device(hcd, udev, SETUP_CONTEXT_ADDRESS, timeout);
+>  }
+>  
+>  static int xhci_enable_device(struct usb_hcd *hcd, struct usb_device *udev)
+>  {
+> -	return xhci_setup_device(hcd, udev, SETUP_CONTEXT_ONLY);
+> +	return xhci_setup_device(hcd, udev, SETUP_CONTEXT_ONLY, 0);
+
+0 is no timeout at all?  Or max timeout?  Where is this documented?
+
+And why is this only added to the xhci driver and not all other host
+controllers?
+
+>  }
+>  
+>  /*
+> diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
+> index 7e282b4522c0..ebdca8dd01c2 100644
+> --- a/drivers/usb/host/xhci.h
+> +++ b/drivers/usb/host/xhci.h
+> @@ -818,6 +818,7 @@ struct xhci_command {
+>  	struct completion		*completion;
+>  	union xhci_trb			*command_trb;
+>  	struct list_head		cmd_list;
+> +	int				timeout;
+
+What is the units here.
+
+>  };
+>  
+>  /* drop context bitmasks */
+> diff --git a/include/linux/usb/hcd.h b/include/linux/usb/hcd.h
+> index 61d4f0b793dc..b0fda87ad3a2 100644
+> --- a/include/linux/usb/hcd.h
+> +++ b/include/linux/usb/hcd.h
+> @@ -373,7 +373,8 @@ struct hc_driver {
+>  		 */
+>  	void	(*reset_bandwidth)(struct usb_hcd *, struct usb_device *);
+>  		/* Returns the hardware-chosen device address */
+> -	int	(*address_device)(struct usb_hcd *, struct usb_device *udev);
+> +	int	(*address_device)(struct usb_hcd *, struct usb_device *udev,
+> +				  int timeout);
+
+Again, units please.
+
+>  		/* prepares the hardware to send commands to the device */
+>  	int	(*enable_device)(struct usb_hcd *, struct usb_device *udev);
+>  		/* Notifies the HCD after a hub descriptor is fetched.
+> diff --git a/include/linux/usb/quirks.h b/include/linux/usb/quirks.h
+> index eeb7c2157c72..0cb464e3eaf4 100644
+> --- a/include/linux/usb/quirks.h
+> +++ b/include/linux/usb/quirks.h
+> @@ -72,4 +72,7 @@
+>  /* device has endpoints that should be ignored */
+>  #define USB_QUIRK_ENDPOINT_IGNORE		BIT(15)
+>  
+> +/* short device address timeout */
+> +#define USB_QUIRK_SHORT_DEVICE_ADDR_TIMEOUT	BIT(16)
+
+Don't you also need to have a Documentation/ update for the new
+user/kernel api you are adding?
+
+thanks,
+
+greg k-h
