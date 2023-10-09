@@ -2,54 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B447BDCD4
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E13F7BDCD5
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346643AbjJIMur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 08:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55262 "EHLO
+        id S1376577AbjJIMvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 08:51:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376601AbjJIMug (ORCPT
+        with ESMTP id S1346562AbjJIMvv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 08:50:36 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A348F;
-        Mon,  9 Oct 2023 05:50:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 925C4C433C9;
-        Mon,  9 Oct 2023 12:50:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696855833;
-        bh=am1r6BTG/XmXtORcHF6USty0gqCaUscj0/AmTY4W23A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OvK3rnOotvxVgvWV5m5YztYaMp2e1yGXx1dGKQ2ORtvR9KAO92CJJAkD6pZHwmRi/
-         eg49JuXXQkuAl4Gwno+ECJVWLVVXnwNWX318d8s4p7XqIFR5NwIrNi+W5aBgwU99NP
-         s7YF4eomr70lkkOCcSggSGbSh87R6WLg38KuoZgsGLufrY4rqavHZw0dt9xVOgqH6n
-         K/fvGLhz21qqZO4K2/oel5ypPIfMRsmLgHiuvFasSVq9Rwjfg8SrpNHXsqmGTLY4eS
-         nQImGOTjYxFWAK2kORMmef+Dyh3LLQUsON1l0JvHXdybTG/dKJlvW9dcWfESIV8EUq
-         EyeTSQNh5Tqhg==
-Date:   Mon, 9 Oct 2023 13:50:24 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Wentong Wu <wentong.wu@intel.com>
-Cc:     gregkh@linuxfoundation.org, oneukum@suse.com, wsa@kernel.org,
-        andi.shyti@linux.intel.com, bartosz.golaszewski@linaro.org,
-        linus.walleij@linaro.org, hdegoede@redhat.com,
-        linux-usb@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-spi@vger.kernel.org, sakari.ailus@linux.intel.com,
-        zhifeng.wang@intel.com, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v20 3/4] spi: Add support for Intel LJCA USB SPI driver
-Message-ID: <6084346e-48d7-4f70-b49a-46b5aeda2c9a@sirena.org.uk>
-References: <1696833205-16716-1-git-send-email-wentong.wu@intel.com>
- <1696833205-16716-4-git-send-email-wentong.wu@intel.com>
+        Mon, 9 Oct 2023 08:51:51 -0400
+Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB0B8F
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 05:51:50 -0700 (PDT)
+Received: by mail-vk1-xa2b.google.com with SMTP id 71dfb90a1353d-49dc95be8c3so1420351e0c.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 05:51:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696855909; x=1697460709; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=44AhXoT4Z1Vbq/hvZ2n7ymqD0GYzk4VzWb6rLbi44DU=;
+        b=PYJzrWX9utYaA4QfjzKhhE2rTEZkgRuguqCMtX26XqsFEXFJKgjp7RuLuMOKP54x1B
+         A4SnwpgfrPYPyhqbULZ4v2ImpTLF/zPmXXwd+kvq820oaS1ykg/1B0ySJQZQFk/82n70
+         /fcnMVclTfWdzlsQdneVt7w2+QftK4nnUGQG+QiHJZt0Wl5RG43nnMdsx0gL5O5g42sF
+         YpMXdywDJiCQHw/vBBvs8g2/KGYybFBUkNuD+LG4WxyrHvBEVIxLs08yXIhHdSUH7nYy
+         tc6OrbHBEbcvnxOx+dS3n89ZmM8xIR0eN2rQ7CyuQvyUQ8IZP2ntNIRoLHGJtbDCqs0Q
+         RUvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696855909; x=1697460709;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=44AhXoT4Z1Vbq/hvZ2n7ymqD0GYzk4VzWb6rLbi44DU=;
+        b=QkqOaV5yYyRpfCEG5K8+Tu3N8UA9Q2bLEx7XFH9Ilv4zC3Sll9Oo0Ogx8dQZZl9Lgc
+         JWIuvVNEO5SWNynu7BaKJ5T1ejJAEt/GFc2tM2P3KTpJgic6teKGmk18uf7Kf//9kIk3
+         YW+9vzk8zoSubHAuCGR9//uApF1pL5YRlIbq3CzGBYfYfQn0uMsDcULJQOlDnTOYo+dg
+         NwNip9Eqp5IIMc9bJ3E2Ct2d/taJAOh1FuA7x3SlKsYKNKP6UNJAG+HP/v7FqFblY9Cd
+         gRXyUGpXiU1Ekes/57wqZ31o7xvRq4OzAAvDRZjkFQIO0Eaj5eLmmj2Kk6z07Nzrr1Is
+         XJcg==
+X-Gm-Message-State: AOJu0YzWulkb9388O1JSAVTdVk11zDVc0cQWbaMpVSiQ+5rsCDcsQfID
+        Dbfuer74aUDbBTzZrVoVFUCZRz1nezWJ6DA+29PYHA==
+X-Google-Smtp-Source: AGHT+IF8LTFz2coNqxy5ZU+3pMsnn72accLWIc/3GC/vPCtjUhTxhK2Lvq326NjzFIx4R8++vQGfi/4IzlNNVEHCwZY=
+X-Received: by 2002:a1f:ca83:0:b0:495:bd61:a184 with SMTP id
+ a125-20020a1fca83000000b00495bd61a184mr9190355vkg.2.1696855909499; Mon, 09
+ Oct 2023 05:51:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="et45qnm/EusVI4JP"
-Content-Disposition: inline
-In-Reply-To: <1696833205-16716-4-git-send-email-wentong.wu@intel.com>
-X-Cookie: What is the sound of one hand clapping?
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230920075500.96260-1-brgl@bgdev.pl>
+In-Reply-To: <20230920075500.96260-1-brgl@bgdev.pl>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 9 Oct 2023 14:51:38 +0200
+Message-ID: <CAMRc=Me8dpwygBo7ZFbj1sz_==R=KfiW=L=r4Rxmhg2K=L8CUQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] genirq/irq_sim: misc updates
+To:     Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,32 +72,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 20, 2023 at 9:55=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
+>
+> Here are a couple of updates to the interrupt simulator. Two are minor:
+> remove an unused field and reorder includes for readability. The third
+> one simplifies the error paths by using new cleanup macros. To that end
+> we also add a cleanup definition for dynamic bitmaps.
+>
+> v1 -> v2:
+> - add a NULL-pointer check to the bitmap cleanup macro as advised by
+>   Peter Zijlstra
+> - initialize managed pointers when declaring them to create a clear pairi=
+ng
+>   between the type and the cleanup action
+>
+> Bartosz Golaszewski (4):
+>   bitmap: define a cleanup function for bitmaps
+>   genirq/irq_sim: remove unused field from struct irq_sim_irq_ctx
+>   genirq/irq_sim: order headers alphabetically
+>   genirq/irq_sim: shrink code by using cleanup helpers
+>
+>  include/linux/bitmap.h |  3 +++
+>  kernel/irq/irq_sim.c   | 30 ++++++++++++------------------
+>  2 files changed, 15 insertions(+), 18 deletions(-)
+>
+> --
+> 2.39.2
+>
 
---et45qnm/EusVI4JP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi!
 
-On Mon, Oct 09, 2023 at 02:33:24PM +0800, Wentong Wu wrote:
-> Implements the SPI function of Intel USB-I2C/GPIO/SPI adapter device
-> named "La Jolla Cove Adapter" (LJCA). It communicate with LJCA SPI
-> module with specific protocol through interfaces exported by LJCA USB
-> driver.
+Gentle ping for any comments on this series.
 
-Reviewed-by: Mark Brown <broonie@kernel.org>
-
---et45qnm/EusVI4JP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUj9xAACgkQJNaLcl1U
-h9AHpAf+Lcv/GJXaWMla2DduP+3qig0ZxjVPLwTRsDGNWY7btA80cDUxQBWMjvRC
-hDzi621fgKj33PT6wws2CVq+GwZhhLAYrtSh6+0bpXWusY2TRIwLxnfo96cKN6tk
-p5T8hdfRGYUyFZEAXtWBGd0+5aObdIWc/a+CtwzmXqpjY7+YHLnD4Fc+2HqTapyL
-EZ2nhADF0KSaRkJ/VLtSSIj+Rr+DHPYVG2Zzsm4i3rALtrwL3DFoBK9ZDmhQ7/GN
-Dhyf3HAcc6kGD/10SCbRtJVN3nzzTEm+1yVrPGQUT65BK0YsjzVIp0KS1s5mKb1s
-iYidXdqI15muRrJUH6XSUjr21nkEgw==
-=hHSh
------END PGP SIGNATURE-----
-
---et45qnm/EusVI4JP--
+Bart
