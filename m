@@ -2,129 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A827BE637
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88BB27BE63D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376413AbjJIQUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 12:20:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39640 "EHLO
+        id S1377055AbjJIQVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 12:21:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346619AbjJIQUl (ORCPT
+        with ESMTP id S1376782AbjJIQVi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 12:20:41 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BBE6A6;
-        Mon,  9 Oct 2023 09:20:37 -0700 (PDT)
-Received: from localhost.localdomain (unknown [116.71.10.238])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 028206607038;
-        Mon,  9 Oct 2023 17:20:32 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696868436;
-        bh=KAhhKO4g/GCRCekMIhf+cXHcdkyda+W3DvR4reXU71Q=;
-        h=From:To:Cc:Subject:Date:From;
-        b=a0xU1lr7jX1hDVGJIPpbK+z/xLeaBa5BctJgH0/H9L9DDq3NqBjL2VPpkeUu1QTdj
-         JXUOdxSX4SsLLYZaO1ggNwlUOGkVIrHjLk924CjzPhqhEyXM0JE/cvlWFi/FDqbPOR
-         3OePQjYqNv1wOTrw/tJ3rjFqKqQXR6y6qL+KJqvzL/Z1AeuKOsZyBvtNoHgcJf8G0i
-         n7Wsb/tpkvCxaaFaSWQdyBO7EAB+Xccws80sKknJyI4ZX4x/Zaf5BK8oa3nZvLT0yd
-         HMUeepbvH9gOi9/BCrdOmO/bFAaF/h6Uq154ezlE7XfnL34HoEWVjOk6SBb50VjpyT
-         U36WuxfVjevWg==
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, Ingo Molnar <mingo@elte.hu>
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        kernel@collabora.com, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: [PATCH v4] tty/sysrq: replace smp_processor_id() with get_cpu()
-Date:   Mon,  9 Oct 2023 21:20:20 +0500
-Message-Id: <20231009162021.3607632-1-usama.anjum@collabora.com>
-X-Mailer: git-send-email 2.40.1
+        Mon, 9 Oct 2023 12:21:38 -0400
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFEA49F
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 09:21:36 -0700 (PDT)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-59bebd5bdadso57660217b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 09:21:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696868496; x=1697473296; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cWEDMabBDXVAf1Pbn/AZJ5/IlrMxaWW3Jbubn56F5tM=;
+        b=N53IZmLIDcm0yOwa2+sSztIosQJUc+byeCa1cygVedgzTwWE5s04TQEDrnZh3iARrN
+         rb6OJgnmYFSZ7e6+9dsC0PwhSj3ksmh3hoFKVo9sQu4elvSv7LpsY14eV71OLM0/co9c
+         zKoz65IO3hB4l4Ty/5keQBM9LstZkZCNL+KQgWIGIgWy01L4Em6y09DmzogxpV+aofdN
+         gYd9s5d6+AQGCRiXDDcNqSSmtcbv47tVBZ6kxpPRQdogPOF8sIcsHOpJ8QSnhLP25MZn
+         CSpoOjPMpu7pDR53RQP+NVRw4+yyKvT8KiQfuCzzd9dmvGK/HakWS24tNN6zX3FnkSdi
+         Z1LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696868496; x=1697473296;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cWEDMabBDXVAf1Pbn/AZJ5/IlrMxaWW3Jbubn56F5tM=;
+        b=awt0lhbUglhYWEVHpXfR6LqsCgw34RrRXukygWYhaDZWoVKfBfebyJoWS5zwdBCf3h
+         6wjm+n1AmviSVJFZnVGPJsm/3j5jf9yMpp+IusiI45vukxb3qcdf3E+pnaNj1pIVeZKI
+         T5KzXcJEORQInZRiwGXrd5WB8hh6hw/wSwXKoKTABgaAdW7yoCfi8CBhrtR2sK7bUdu8
+         bpmEyVa6+BadV1DGa204h0aDQeQpJtCP8BjeS09J9bwkr6wGuGrjyZ8I7qggvM1ZZTAY
+         ttuy5OUi+yDVylSckNsGhy9/Fl9vsNJ4P/8iEM3HcXoxio9UR53+fMR/YKrIA/fZlBqY
+         jA2w==
+X-Gm-Message-State: AOJu0YzVhL2A4mYOEpnyS+0XJuE6GK20JY5IFt9+nXqSzO6DIODriGC3
+        czPYmYzxD67/cRYh4scnsDlp0HWgZlFd9QMFfi/vGQ==
+X-Google-Smtp-Source: AGHT+IF2OmOB0yghUAKz3DlOALSAWglmgSJNOvrM1rf3LA5p2DLe0WzUxprQASiV/coW0oDcUEKKvfaqc6HIZ2m8nlU=
+X-Received: by 2002:a0d:c546:0:b0:595:80e4:907d with SMTP id
+ h67-20020a0dc546000000b0059580e4907dmr16646576ywd.32.1696868495792; Mon, 09
+ Oct 2023 09:21:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231009064230.2952396-1-surenb@google.com> <20231009064230.2952396-3-surenb@google.com>
+ <214b78ed-3842-5ba1-fa9c-9fa719fca129@redhat.com>
+In-Reply-To: <214b78ed-3842-5ba1-fa9c-9fa719fca129@redhat.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Mon, 9 Oct 2023 09:21:22 -0700
+Message-ID: <CAJuCfpHzSm+z9b6uxyYFeqr5b5=6LehE9O0g192DZdJnZqmQEw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
+To:     David Hildenbrand <david@redhat.com>
+Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        lokeshgidra@google.com, peterx@redhat.com, hughd@google.com,
+        mhocko@suse.com, axelrasmussen@google.com, rppt@kernel.org,
+        willy@infradead.org, Liam.Howlett@oracle.com, jannh@google.com,
+        zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The smp_processor_id() shouldn't be called from preemptible code.
-Instead use get_cpu() and put_cpu() which disables preemption in
-addition to getting the processor id. Enable preemption back after
-calling schedule_work() to make sure that the work gets scheduled on all
-cores other than the current core. We want to avoid a scenario where
-current core's stack trace is printed multiple times and one core's
-stack trace isn't printed because of scheduling of current task.
+On Mon, Oct 9, 2023 at 7:38=E2=80=AFAM David Hildenbrand <david@redhat.com>=
+ wrote:
+>
+> On 09.10.23 08:42, Suren Baghdasaryan wrote:
+> > From: Andrea Arcangeli <aarcange@redhat.com>
+> >
+> > Implement the uABI of UFFDIO_MOVE ioctl.
+> > UFFDIO_COPY performs ~20% better than UFFDIO_MOVE when the application
+> > needs pages to be allocated [1]. However, with UFFDIO_MOVE, if pages ar=
+e
+> > available (in userspace) for recycling, as is usually the case in heap
+> > compaction algorithms, then we can avoid the page allocation and memcpy
+> > (done by UFFDIO_COPY). Also, since the pages are recycled in the
+> > userspace, we avoid the need to release (via madvise) the pages back to
+> > the kernel [2].
+> > We see over 40% reduction (on a Google pixel 6 device) in the compactin=
+g
+> > thread=E2=80=99s completion time by using UFFDIO_MOVE vs. UFFDIO_COPY. =
+This was
+> > measured using a benchmark that emulates a heap compaction implementati=
+on
+> > using userfaultfd (to allow concurrent accesses by application threads)=
+.
+> > More details of the usecase are explained in [2].
+> > Furthermore, UFFDIO_MOVE enables moving swapped-out pages without
+> > touching them within the same vma. Today, it can only be done by mremap=
+,
+> > however it forces splitting the vma.
+> >
+> > [1] https://lore.kernel.org/all/1425575884-2574-1-git-send-email-aarcan=
+ge@redhat.com/
+> > [2] https://lore.kernel.org/linux-mm/CA+EESO4uO84SSnBhArH4HvLNhaUQ5nZKN=
+KXqxRCyjniNVjp0Aw@mail.gmail.com/
+> >
+> > Update for the ioctl_userfaultfd(2)  manpage:
+> >
+> >     UFFDIO_MOVE
+> >         (Since Linux xxx)  Move a continuous memory chunk into the
+> >         userfault registered range and optionally wake up the blocked
+> >         thread. The source and destination addresses and the number of
+> >         bytes to move are specified by the src, dst, and len fields of
+> >         the uffdio_move structure pointed to by argp:
+> >
+> >             struct uffdio_move {
+> >                 __u64 dst;    /* Destination of move */
+> >                 __u64 src;    /* Source of move */
+> >                 __u64 len;    /* Number of bytes to move */
+> >                 __u64 mode;   /* Flags controlling behavior of move */
+> >                 __s64 move;   /* Number of bytes moved, or negated erro=
+r */
+> >             };
+> >
+> >         The following value may be bitwise ORed in mode to change the
+> >         behavior of the UFFDIO_MOVE operation:
+> >
+> >         UFFDIO_MOVE_MODE_DONTWAKE
+> >                Do not wake up the thread that waits for page-fault
+> >                resolution
+> >
+> >         UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES
+> >                Allow holes in the source virtual range that is being mo=
+ved.
+> >                When not specified, the holes will result in ENOENT erro=
+r.
+> >                When specified, the holes will be accounted as successfu=
+lly
+> >                moved memory. This is mostly useful to move hugepage ali=
+gned
+> >                virtual regions without knowing if there are transparent
+> >                hugepages in the regions or not, but preventing the risk=
+ of
+> >                having to split the hugepage during the operation.
+> >
+> >         The move field is used by the kernel to return the number of
+> >         bytes that was actually moved, or an error (a negated errno-
+> >         style value).  If the value returned in move doesn't match the
+> >         value that was specified in len, the operation fails with the
+> >         error EAGAIN.  The move field is output-only; it is not read by
+> >         the UFFDIO_MOVE operation.
+> >
+> >         The operation may fail for various reasons. Usually, remapping =
+of
+> >         pages that are not exclusive to the given process fail; once KS=
+M
+> >         might deduplicate pages or fork() COW-shares pages during fork(=
+)
+> >         with child processes, they are no longer exclusive. Further, th=
+e
+> >         kernel might only perform lightweight checks for detecting whet=
+her
+> >         the pages are exclusive, and return -EBUSY in case that check f=
+ails.
+> >         To make the operation more likely to succeed, KSM should be
+> >         disabled, fork() should be avoided or MADV_DONTFORK should be
+> >         configured for the source VMA before fork().
+> >
+> >         This ioctl(2) operation returns 0 on success.  In this case, th=
+e
+> >         entire area was moved.  On error, -1 is returned and errno is
+> >         set to indicate the error.  Possible errors include:
+> >
+> >         EAGAIN The number of bytes moved (i.e., the value returned in
+> >                the move field) does not equal the value that was
+> >                specified in the len field.
+> >
+> >         EINVAL Either dst or len was not a multiple of the system page
+> >                size, or the range specified by src and len or dst and l=
+en
+> >                was invalid.
+> >
+> >         EINVAL An invalid bit was specified in the mode field.
+> >
+> >         ENOENT
+> >                The source virtual memory range has unmapped holes and
+> >                UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES is not set.
+> >
+> >         EEXIST
+> >                The destination virtual memory range is fully or partial=
+ly
+> >                mapped.
+> >
+> >         EBUSY
+> >                The pages in the source virtual memory range are not
+> >                exclusive to the process. The kernel might only perform
+> >                lightweight checks for detecting whether the pages are
+> >                exclusive. To make the operation more likely to succeed,
+> >                KSM should be disabled, fork() should be avoided or
+> >                MADV_DONTFORK should be configured for the source virtua=
+l
+> >                memory area before fork().
+> >
+> >         ENOMEM Allocating memory needed for the operation failed.
+> >
+> >         ESRCH
+> >                The faulting process has exited at the time of a
+> >                UFFDIO_MOVE operation.
+> >
+>
+> A general comment simply because I realized that just now: does anything
+> speak against limiting the operations now to a single MM?
+>
+> The use cases I heard so far don't need it. If ever required, we could
+> consider extending it.
+>
+> Let's reduce complexity and KIS unless really required.
 
-This fixes the following bug:
+Let me check if there are use cases that require moves between MMs.
+Andrea seems to have put considerable effort to make it work between
+MMs and it would be a pity to lose that. I can send a follow-up patch
+to recover that functionality and even if it does not get merged, it
+can be used in the future as a reference. But first let me check if we
+can drop it.
 
-[  119.143590] sysrq: Show backtrace of all active CPUs
-[  119.143902] BUG: using smp_processor_id() in preemptible [00000000] code: bash/873
-[  119.144586] caller is debug_smp_processor_id+0x20/0x30
-[  119.144827] CPU: 6 PID: 873 Comm: bash Not tainted 5.10.124-dirty #3
-[  119.144861] Hardware name: QEMU QEMU Virtual Machine, BIOS 2023.05-1 07/22/2023
-[  119.145053] Call trace:
-[  119.145093]  dump_backtrace+0x0/0x1a0
-[  119.145122]  show_stack+0x18/0x70
-[  119.145141]  dump_stack+0xc4/0x11c
-[  119.145159]  check_preemption_disabled+0x100/0x110
-[  119.145175]  debug_smp_processor_id+0x20/0x30
-[  119.145195]  sysrq_handle_showallcpus+0x20/0xc0
-[  119.145211]  __handle_sysrq+0x8c/0x1a0
-[  119.145227]  write_sysrq_trigger+0x94/0x12c
-[  119.145247]  proc_reg_write+0xa8/0xe4
-[  119.145266]  vfs_write+0xec/0x280
-[  119.145282]  ksys_write+0x6c/0x100
-[  119.145298]  __arm64_sys_write+0x20/0x30
-[  119.145315]  el0_svc_common.constprop.0+0x78/0x1e4
-[  119.145332]  do_el0_svc+0x24/0x8c
-[  119.145348]  el0_svc+0x10/0x20
-[  119.145364]  el0_sync_handler+0x134/0x140
-[  119.145381]  el0_sync+0x180/0x1c0
+>
+>
+> Further: see "22) Do not crash the kernel" in coding-style.rst. All
+> these BUG_ON need to go. Ideally, use WARN_ON_ONCE() or just VM_WARN_ON()=
+.
 
-Cc: jirislaby@kernel.org
-Cc: stable@vger.kernel.org
-Fixes: 47cab6a722d4 ("debug lockups: Improve lockup detection, fix generic arch fallback")
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
----
-Changes since v3:
-- Update commit message to explain why preemption reenabling must happen
-  after calling schedule_work()
+Yeah, it might be the right time to clean that up. Will do.
+Thanks,
+Suren.
 
-Changes since v2:
-- Add changelog and resend
-
-Changes since v1:
-- Add "Cc: stable@vger.kernel.org" tag
----
- drivers/tty/sysrq.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
-index 23198e3f1461a..6b4a28bcf2f5f 100644
---- a/drivers/tty/sysrq.c
-+++ b/drivers/tty/sysrq.c
-@@ -262,13 +262,14 @@ static void sysrq_handle_showallcpus(u8 key)
- 		if (in_hardirq())
- 			regs = get_irq_regs();
- 
--		pr_info("CPU%d:\n", smp_processor_id());
-+		pr_info("CPU%d:\n", get_cpu());
- 		if (regs)
- 			show_regs(regs);
- 		else
- 			show_stack(NULL, NULL, KERN_INFO);
- 
- 		schedule_work(&sysrq_showallcpus);
-+		put_cpu();
- 	}
- }
- 
--- 
-2.40.1
-
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
