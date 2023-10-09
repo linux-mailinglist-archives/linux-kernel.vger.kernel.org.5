@@ -2,164 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 096FA7BD854
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 12:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B3657BD85C
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 12:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346103AbjJIKQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 06:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51640 "EHLO
+        id S1346135AbjJIKRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 06:17:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346061AbjJIKQf (ORCPT
+        with ESMTP id S1346130AbjJIKQ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 06:16:35 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 592A09F
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 03:16:33 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-3296a998234so2502046f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 03:16:33 -0700 (PDT)
+        Mon, 9 Oct 2023 06:16:56 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65913F0
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 03:16:54 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c296e6543fso52026861fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 03:16:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696846592; x=1697451392; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=j4BbKsqKlQLHMSNY1pU1xD6CYGPW9vVmTSsJ1wdl4ZU=;
-        b=jjUnfsOgKjwFcuRkapv/Jq7xfR3RHgS5Q+2NQdJOFwDlX4ydWDZPRRY8axpit7B7/N
-         opYbDy6TcODZapeHd4i/WD7wb4VfJN1FgHGixh3wVTQRto+1VzPG0TDwnJjdROdo0ICM
-         pjL7pNV1z2uDcvNVkM63FEgD7y8gfIz/CeI5Dr0KDcYASYVfGYaVLCNFVa41Oyz9WCgR
-         5jE7mgeWggSI7/PLufl/QfMUJEMQjSqkqxDKs3GEtAwp8u820YyxN7gO29LZxtKnpaA4
-         tWN5t07mye5nHrGeGXi7exTbivs4FdCVav8rTnc6UdDFV2CZVIQIOnqDBFLCn4xnpH2I
-         9MsQ==
+        d=linaro.org; s=google; t=1696846612; x=1697451412; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HuYv4b6pLjydapaBtZop4O37DiFGBbAGIm3D4cVug5g=;
+        b=hnz+IwKRROHGKsTD2NNtpIZXyQgL3Ome02mc8FtBfJMMORpPoibOt7YZaGoEvcDhqZ
+         N+36+tSfxj/23qNpesgvePyPXqpAAcbtxCc7H7xhrGLdUC81QjePbdYhLCxCTO+H4d+j
+         PeIy3iFXDzPf7PLy4IGhvHzY8/STkmxIwaDnrvAAn40bYTZ8HdWY7kiY+E7QyDRh9+d4
+         gMmZ2ZwPVUBWvsdCzncU/2UXrCN+7h4HihimWIc3gikyR7CT4KsrMUQI7Z/asdU4gdKa
+         eBcx9VA/0hC5MAoaFILywUBr0OnpVB1DldPxH/X1zkcl4R5r6hRYnQdBn8DiB8X0N3tk
+         72UQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696846592; x=1697451392;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j4BbKsqKlQLHMSNY1pU1xD6CYGPW9vVmTSsJ1wdl4ZU=;
-        b=jcqK77SUTRv2LJxDVX6dPQWwYvGPBR3CbHPvNTqulXMhkfhtkNOh475nTvvy9XIG/a
-         D/15mVi49O7qnSVM0vdtZKpQfLxD2nJNQfnK2Wo5n8yMLXHSgVHC1S5uMdNVynUNXqnG
-         MukZaHUyesAq2uGxQLsTpRdqE1ScIn++ROKFfZhgl032Szwl4y4yrJn72Cu+VDT1eGPE
-         LWGI/Fafolki1331hB488HtwcgXJHhZBDYBuo9PDJqxIDWBEXH8dP6/Da+LqJ+hN8Kcw
-         z9Z3pJXKsMqkrEx/2gdIh2dM0urLbNN6lINwN+gAUdHvc1bEoXeFd8dbDJ8r8S6itH12
-         CJkg==
-X-Gm-Message-State: AOJu0YwTwboSTZc7Y3E8jPWIXoY5kpTZmnY0d0CmtLrqfdwOTYhEcaRP
-        rbRiq8NtUPAIqBvEZUnD2t66LDV2vow=
-X-Google-Smtp-Source: AGHT+IGYUHiHQMWZ0vZDGSrw9CQX6YvOWNgzgw2UNkCYznS6/wkL0c8uPOIn4UqKEMTEy36CVjnQ/A==
-X-Received: by 2002:a5d:6e85:0:b0:317:50b7:2ce3 with SMTP id k5-20020a5d6e85000000b0031750b72ce3mr12231386wrz.51.1696846591473;
-        Mon, 09 Oct 2023 03:16:31 -0700 (PDT)
-Received: from gmail.com (1F2EF237.nat.pool.telekom.hu. [31.46.242.55])
-        by smtp.gmail.com with ESMTPSA id d9-20020adff2c9000000b00324887a13f7sm9239728wrp.0.2023.10.09.03.16.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 03:16:28 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 9 Oct 2023 12:16:26 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] sched/rt: Move sched_rt_entity::back to under the
- CONFIG_RT_GROUP_SCHED block
-Message-ID: <ZSPS+jMcJEd+ZR28@gmail.com>
-References: <20231005162317.3343678-1-yajun.deng@linux.dev>
- <20231005162317.3343678-3-yajun.deng@linux.dev>
+        d=1e100.net; s=20230601; t=1696846612; x=1697451412;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HuYv4b6pLjydapaBtZop4O37DiFGBbAGIm3D4cVug5g=;
+        b=JhvO0vPJyS57gprbJqZX+CVI65z+aKlaiTh5LovT/GzkdUmh12VQ7n7bMpeOWKCukS
+         t/X6J7zPH+/Lxpyf71y0A9wNj6faRVbUvAOP6k5Cu7eMSWYWGuWsZZpI95EN5V6AGm62
+         xFSLzITtFIuO4DyZXRMXSsNzb06dr4Mjnj3weYVweYXyaZqFneEQ8bVtfQYg1/0lL7Yp
+         y84hpHQbQUPAZU1g2mweg0LNm4ph4JrBQ797NpI5hUK2yN1LIEjWwkVOuPBKs/iI64WC
+         h3fMgqOniFzaJkpFb7BoZtTgo/+6ckzRBK0nqXoYbfgK2lTNkpgCOY3Mr0dOV+DK9PVZ
+         C73g==
+X-Gm-Message-State: AOJu0YzmWR3Zk/xd80XwDJlpd6lYytpF0EywIIbJv6zdQfe3FG7XVK+i
+        ubQXMCu4pjdJBwXzyA8rGuCEqw==
+X-Google-Smtp-Source: AGHT+IFDxuwnrTw9oBX4OgnlazccY+uFAtoj++5xgItlpzobK2civqYU0difdDwxMAWL3MPK3GDdqg==
+X-Received: by 2002:a2e:8745:0:b0:2c0:158f:8133 with SMTP id q5-20020a2e8745000000b002c0158f8133mr13449820ljj.28.1696846612558;
+        Mon, 09 Oct 2023 03:16:52 -0700 (PDT)
+Received: from [192.168.200.173] (178235177147.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.147])
+        by smtp.gmail.com with ESMTPSA id h25-20020a2e3a19000000b002b9e20d0356sm1996314lja.114.2023.10.09.03.16.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Oct 2023 03:16:52 -0700 (PDT)
+Message-ID: <0a3cd2f3-85e9-4769-9749-62353e842625@linaro.org>
+Date:   Mon, 9 Oct 2023 12:16:49 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231005162317.3343678-3-yajun.deng@linux.dev>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/5] i2c: qcom-cci: Add sc8280xp compatible
+Content-Language: en-US
+To:     Andi Shyti <andi.shyti@kernel.org>
+Cc:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, agross@kernel.org,
+        andersson@kernel.org, loic.poulain@linaro.org, rfoss@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, todor.too@gmail.com, mchehab@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231006120159.3413789-1-bryan.odonoghue@linaro.org>
+ <20231006120159.3413789-3-bryan.odonoghue@linaro.org>
+ <b8f2d7f1-16e2-4e6a-9c84-37da393f74a3@linaro.org>
+ <20231008212824.cs6e6hc7zur67v6k@zenone.zhora.eu>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20231008212824.cs6e6hc7zur67v6k@zenone.zhora.eu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Yajun Deng <yajun.deng@linux.dev> wrote:
-
-> The member back in struct sched_rt_entity only related to RT_GROUP_SCHED,
-> So move sched_rt_entity::back to under the CONFIG_RT_GROUP_SCHED block. It
-> will save a few bytes.
+On 8.10.2023 23:28, Andi Shyti wrote:
+> Hi Konrad,
 > 
-> Also, init child when parent isn't NULL in init_tg_rt_entry().
+>>> Add sc8280xp compatible with cci_v2_data parameters.
+>>>
+>>> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+>>> ---
+>> Drop this patch, it adds nothing useful
 > 
-> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> ---
->  include/linux/sched.h |  2 +-
->  kernel/sched/rt.c     | 18 +++++++++---------
->  2 files changed, 10 insertions(+), 10 deletions(-)
+> what about the rest of the series?
 > 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 292c31697248..d0fe56603e60 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -597,8 +597,8 @@ struct sched_rt_entity {
->  	unsigned short			on_rq;
->  	unsigned short			on_list;
->  
-> -	struct sched_rt_entity		*back;
->  #ifdef CONFIG_RT_GROUP_SCHED
-> +	struct sched_rt_entity		*back;
->  	struct sched_rt_entity		*parent;
->  	/* rq on which this entity is (to be) queued: */
->  	struct rt_rq			*rt_rq;
+> Could you please be a bit more explicative?
+This patch introduces a new compatible in the driver that does
+exactly nothing, as the bindings require the use of
+"qcom,sc8280xp-cci" with a fallback of "qcom,msm8996-cci". The
+latter one already has a match table entry.
 
-Title claims this change - the rest of the changes should be in a separate 
-patch:
-
-> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-> index 642edbd24ffb..7b3105b875f1 100644
-> --- a/kernel/sched/rt.c
-> +++ b/kernel/sched/rt.c
-> @@ -233,8 +233,10 @@ void init_tg_rt_entry(struct task_group *tg, struct rt_rq *rt_rq,
->  
->  	if (!parent)
->  		rt_se->rt_rq = &rq->rt;
-> -	else
-> +	else {
->  		rt_se->rt_rq = parent->my_q;
-> +		parent->back = rt_se;
-> +	}
->  
->  	rt_se->my_q = rt_rq;
->  	rt_se->parent = parent;
-> @@ -1441,23 +1443,21 @@ static void __dequeue_rt_entity(struct sched_rt_entity *rt_se, unsigned int flag
->   */
->  static void dequeue_rt_stack(struct sched_rt_entity *rt_se, unsigned int flags)
->  {
-> -	struct sched_rt_entity *back = NULL;
-> +	struct sched_rt_entity *root = NULL;
->  	unsigned int rt_nr_running;
->  
-> -	for_each_sched_rt_entity(rt_se) {
-> -		rt_se->back = back;
-> -		back = rt_se;
-> -	}
-> +	for_each_sched_rt_entity(rt_se)
-> +		root = rt_se;
->  
-> -	rt_nr_running = rt_rq_of_se(back)->rt_nr_running;
-> +	rt_nr_running = rt_rq_of_se(root)->rt_nr_running;
->  
-> -	rt_se = back;
-> +	rt_se = root;
->  	for_each_sched_rt_entity_back(rt_se) {
->  		if (on_rt_rq(rt_se))
->  			__dequeue_rt_entity(rt_se, flags);
->  	}
->  
-> -	dequeue_top_rt_rq(rt_rq_of_se(back), rt_nr_running);
-> +	dequeue_top_rt_rq(rt_rq_of_se(root), rt_nr_running);
->  }
->  
->  static void enqueue_rt_entity(struct sched_rt_entity *rt_se, unsigned int flags)
-> -- 
-> 2.25.1
-
-Thanks,
-
-	Ingo
+Konrad
