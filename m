@@ -2,104 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2DFE7BDA39
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3CE67BDA38
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346295AbjJILqH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Oct 2023 07:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42994 "EHLO
+        id S1346277AbjJILpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 07:45:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346306AbjJILqD (ORCPT
+        with ESMTP id S234532AbjJILpu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 07:46:03 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB14DDE;
-        Mon,  9 Oct 2023 04:46:00 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qpohe-000uNi-LJ; Mon, 09 Oct 2023 13:45:38 +0200
-Received: from p5b13aee9.dip0.t-ipconnect.de ([91.19.174.233] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qpohe-000QOe-CA; Mon, 09 Oct 2023 13:45:38 +0200
-Message-ID: <61d3b62380fb78b87003a09cc08827fb28de7942.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH/RFC] m68k: Add full preempt support
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Date:   Mon, 09 Oct 2023 13:45:37 +0200
-In-Reply-To: <CAMuHMdVT7QEfagWcLx9z7YGtFiKRW5-J3F6gyxKYEzFBb=2_Gg@mail.gmail.com>
-References: <7858a184cda66e0991fd295c711dfed7e4d1248c.1696603287.git.geert@linux-m68k.org>
-         <CAMuHMdVT7QEfagWcLx9z7YGtFiKRW5-J3F6gyxKYEzFBb=2_Gg@mail.gmail.com>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; prefer-encrypt=mutual;
- keydata=mQINBE3JE9wBEADMrYGNfz3oz6XLw9XcWvuIxIlPWoTyw9BxTicfGAv0d87wngs9U+d52t/REggPePf34gb7/k8FBY1IgyxnZEB5NxUb1WtW0M3GUxpPx6gBZqOm7SK1ZW3oSORw+T7Aezl3Zq4Nr4Nptqx7fnLpXfRDs5iYO/GX8WuL8fkGS/gIXtxKewd0LkTlb6jq9KKq8qn8/BN5YEKqJlM7jsENyA5PIe2npN3MjEg6p+qFrmrzJRuFjjdf5vvGfzskrXCAKGlNjMMA4TgZvugOFmBI/iSyV0IOaj0uKhes0ZNX+lQFrOB4j6I5fTBy7L/T3W/pCWo3wVkknNYa8TDYT73oIZ7Aimv+k7OzRfnxsSOAZT8Re1Yt8mvzr6FHVFjr/VdyTtO5JgQZ6LEmvo4Ro+2ByBmCHORCQ0NJhD1U3avjGfvfslG999W0WEZLTeaGkBAN1yG/1bgGAytQQkD9NsVXqBy7S3LVv9bB844ysW5Aj1nvtgIz14E2WL8rbpfjJMXi7B5ha6Lxf3rFOgxpr6ZoEn+bGG4hmrO+/ReA4SerfMqwSTnjZsZvxMJsx2B9c8DaZE8GsA4I6lsihbJmXhw8i7Cta8Dx418wtEbXhL6m/UEk60O7QD1VBgGqDMnJDFSlvKa9D+tZde/kHSNmQmLLzxtDbNgBgmR0jUlmxirijnm8bwARAQABtEBKb2huIFBhdWwgQWRyaWFuIEdsYXViaXR6IChEZWJpYW4gUHJvamVjdCkgPGdsYXViaXR6QGRlYmlhbi5vcmc+iQI3BBMBCAAhBQJRnmPwAhsDBQsJCAcDBRUKCQgLBRYCAwEAAh4BAheAAAoJEHQmOzf1tfkTF0gQAJgvGiKf5YW6+Qyss1qGwf+KHXb/6gIThY6GpSIro9vL/UxaakRCOloaXXAs3KpgBULOO8+prqU8GIqcd8tE3YvQFvvO3rN+8bhOiiD0lFmQSEHcpCW5ZRpdh
-        J5wy1t9Ddb1K/7XGzen3Uzx9bjKgDyikM3js1VtJHaFr8FGt5gtZIBDgp8QM9IRCv/32mPQxqmsaTczEzSNxTBM6Tc2NwNLus3Yh5OnFdxk1jzk+Ajpnqd/E/M7/CU5QznDgIJyopcMtOArv9Er+xe3gAXHkFvnPqcP+9UpzHB5N0HPYn4k4hsOTiJ41FHUapq8d1AuzrWyqzF9aMUi2kbHJdUmt9V39BbJIgjCysZPyGtFhR42fXHDnPARjxtRRPesEhjOeHei9ioAsZfT6bX+l6kSf/9gaxEKQe3UCXd3wbw68sXcvhzBVBxhXM91+Y7deHhNihMtqPyEmSyGXTHOMODysRU453E+XXTr2HkZPx4NV1dA8Vlid2NcMQ0iItD+85xeVznc8xquY/c1vPBeqneBWaE530Eo5e3YA7OGrxHwHbet3E210ng+xU8zUjQrFXMJm3xNpOe45RwmhCAt5z1gDTk5qNgjNgnU3mDp9DX6IffS3g2UJ02JeTrBY4hMpdVlmGCVOm9xipcPHreVGEBbM4eQnYnwbaqjVBBvy2DyfyN/tFRKb2huIFBhdWwgQWRyaWFuIEdsYXViaXR6IChGcmVpZSBVbml2ZXJzaXRhZXQgQmVybGluKSA8Z2xhdWJpdHpAcGh5c2lrLmZ1LWJlcmxpbi5kZT6JAlEEEwEIADsCGwMFCwkIBwMFFQoJCAsFFgIDAQACHgECF4AWIQRi/4p1hOApVpVGAAZ0Jjs39bX5EwUCWhQoUgIZAQAKCRB0Jjs39bX5Ez/ID/98r9c4WUSgOHVPSMVcOVziMOi+zPWfF1OhOXW+atpTM4LSSp66196xOlDFHOdNNmO6kxckXAX9ptvpBc0mRxa7OrC168fKzqR7P75eTsJnVaOu+uI/vvgsbUIosYdkkekCxDAbYCUwmzNotIspnFbxiSPMNrpw7Ud/yQkS9TDYeXnrZDhBp7p5+naWCD/yMvh7yVCA4Ea8+xDVoX
-        +kjv6EHJrwVupOpMa39cGs2rKYZbWTazcflKH+bXG3FHBrwh9XRjA6A1CTeC/zTVNgGF6wvw/qT2x9tS7WeeZ1jvBCJub2cb07qIfuvxXiGcYGr+W4z9GuLCiWsMmoff/Gmo1aeMZDRYKLAZLGlEr6zkYh1Abtiz0YLqIYVbZAnf8dCjmYhuwPq77IeqSjqUqI2Cb0oOOlwRKVWDlqAeo0Bh8DrvZvBAojJf4HnQZ/pSz0yaRed/0FAmkVfV+1yR6BtRXhkRF6NCmguSITC96IzE26C6n5DBb43MR7Ga/mof4MUufnKADNG4qz57CBwENHyx6ftWJeWZNdRZq10o0NXuCJZf/iulHCWS/hFOM5ygfONq1Vsj2ZDSWvVpSLj+Ufd2QnmsnrCr1ZGcl72OC24AmqFWJY+IyReHWpuABEVZVeVDQooJ0K4yqucmrFR7HyH7oZGgR0CgYHCI+9yhrXHrQpyLQ/Sm9obiBQYXVsIEFkcmlhbiBHbGF1Yml0eiAoU1VTRSBMSU5VWCBHbWJIKSA8Z2xhdWJpdHpAc3VzZS5jb20+iQJOBBMBCAA4FiEEYv+KdYTgKVaVRgAGdCY7N/W1+RMFAloSyhICGwMFCwkIBwMFFQoJCAsFFgIDAQACHgECF4AACgkQdCY7N/W1+ROnkQ//X6LVYXPi1D8/XFsoi0HDCvZhbWSzcGw6MQZKmTk42mNFKm/OrYBJ9d1St4Q3nRwH/ELzGb8liA02d4Ul+DV1Sv3P540LzZ4mmCi9wV+4Ohn6cXfaJNaTmHy1dFvg1NrVjMqGAFZkhTXRAvjRIQItyRvL//gKaciyKB/T0C3CIzbuTLBqtZMIIuP5nIgkwBvdw6H7EQ7kqOAO85S4FDSum/cLwLzdKygyvmPNOOtxvxa9QIryLf6h7HfWg68DvGDqIV9ZBoi8JjYZrZzaBmlPV8Iwm52uYnzsKM/LoyZ0G4v2u/WEtQEl7deLJjKby3kKmZGh9hQ
-        YImvOkrd9z8LQSvu0e8Qm8+JbRCCqUGkAPrRDFIzH8nFCFGCU/V+4LT2j68KMbApLkDQAFEDBcQVJYGnOZf7eU/EtYQIqVmGEjdOP7Qf/yMFzhc9GBXeE5mbe0LwA5LOO74FDH5qjwB5KI6VkTWPoXJoZA5waVC2sUSYOnmwFINkCLyyDoWaL9ubSbU9KTouuNm4F6XIssMHuX4OIKA7b2Kn5qfUFbd0ls8d5mY2gKcXBfEY+eKkhmuwZhd/7kP10awC3DF3QGhgqpaS100JW8z78el7moijZONwqXCS3epUol6q1pJ+zcapcFzO3KqcHTdVOKh6CXQci3Yv5NXuWDs/l2dMH4t2NvZC5Ag0ETckULgEQAKwmloVWzF8PYh5jB9ATf07kpnirVYf/kDk+QuVMPlydwPjh6/awfkqZ3SRHAyIb+9IC66RLpaF4WSPVWGs307+pa5AmTm16vzYA0DJ7vvRPxPzxPYq6p2WTjFqbq0EYeNTIm0YotIkq/gB9iIUS+gjdnoGSA+n/dwnbu1Eud2aiMW16ILqhgdgitdeW3J7LMDFvWIlXoBQOSfXQDLAiPf+jPJYvgkmCAovYKtC3aTg3bFX2sZqOPsWBXV6Azd92/GMs4W4fyOYLVSEaXy/mI35PMQLH8+/MM4n0g3JEgdzRjwF77Oh8SnOdG73/j+rdrS6Zgfyq6aM5WWs6teopLWPe0LpchGPSVgohIA7OhCm+ME8fpVHuMkvXqPeXAVfmJS/gV5CUgDMsYEjst+QXgWnlEiK2Knx6WzZ+v54ncA4YP58cibPJj5Qbx4gi8KLY3tgIbWJ3QxIRkChLRGjEBIQ4vTLAhh3vtNEHoAr9xUb3h8MxqYWNWJUSLS4xeE3Bc9UrB599Hu7i0w3v6VDGVCndcVO91lq9DZVhtYOPSE8mgacHb/3LP0UOZWmGHor52oPNU3Dwg205u814sKOd2i0DmY+Lt4EkLwFIYGE0FLLTHZDjDp9D
-        0iKclQKt86xBRGH+2zUk3HRq4MArggXuA4CN1buCzqAHiONvLdnY9StRABEBAAGJAh8EGAEIAAkFAk3JFC4CGwwACgkQdCY7N/W1+ROvNxAAtYbssC+AZcU4+xU5uxYinefyhB+f6GsS0Ddupp/MkZD/y98cIql8XXdIZ6z8lHvJlDq0oOyizLpfqUkcT4GhwMbdSNYUGd9HCdY/0pAyFdiJkn++WM8+b+9nz4mC6vfh96imcK4KH/cjP7NG37El/xlshWrb6CqKPk4KxNK5rUMPNr7+/3GwwGHHkJtW0QfDa/GoD8hl2HI6IQI+zSXK2uIZ7tcFMN8g9OafwUZ7b+zbz1ldzqOwygliEuEaRHeiOhPrTdxgnj6kTnitZw7/hSVi5Mr8C4oHzWgi66Ov9vdmClTHQSEjWDeLOiBj61xhr6A8KPUVaOpAYZWBH4OvtnmjwsKuNCFXym2DcCywdjEdrLC+Ms5g6Dkd60BQz4/kHA7x+P9IAkPqkaWAEyHoEvM1OcUPJzy/JW2vWDXo2jjM8PEQfNIPtqDzid1s8aDLJsPLWlJnfUyMP2ydlTtR54oiVBlFwqqHoPIaJrwTkND5lgFiMIwup3+giLiDOBILtiOSpYxBfSJkz3GGacOb4Xcj8AXV1tpUo1dxAKpJ1ro0YHLJvOJ8nLiZyJsCabUePNRFprbh+srI+WIUVRm0D33bI1VEH2XUXZBL+AmfdKXbHAYtZ0anKgDbcwvlkBcHpA85NpRqjUQ4OerPqtCrWLHDpEwGUBlaQ//AGix+L9c=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.50.0 
+        Mon, 9 Oct 2023 07:45:50 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 188A79E
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 04:45:49 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5B14E1FB;
+        Mon,  9 Oct 2023 04:46:29 -0700 (PDT)
+Received: from [10.57.66.97] (unknown [10.57.66.97])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 205683F762;
+        Mon,  9 Oct 2023 04:45:46 -0700 (PDT)
+Message-ID: <25d1cdee-3da8-4728-aa0d-dc07eb28ea95@arm.com>
+Date:   Mon, 9 Oct 2023 12:45:44 +0100
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.174.233
-X-ZEDAT-Hint: PO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 6/9] mm: thp: Add "recommend" option for anon_orders
+Content-Language: en-GB
+To:     Yu Zhao <yuzhao@google.com>, David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20230929114421.3761121-1-ryan.roberts@arm.com>
+ <20230929114421.3761121-7-ryan.roberts@arm.com>
+ <2f64809e-0d0d-cc61-71ac-8d9b072efc3a@redhat.com>
+ <CAOUHufb=qurWDFaX2TPQrsmUpEz+VRwm=SxivYuuDiJ4D-f0+g@mail.gmail.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAOUHufb=qurWDFaX2TPQrsmUpEz+VRwm=SxivYuuDiJ4D-f0+g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert!
+On 06/10/2023 23:28, Yu Zhao wrote:
+> On Fri, Oct 6, 2023 at 2:08 PM David Hildenbrand <david@redhat.com> wrote:
+>>
+>> On 29.09.23 13:44, Ryan Roberts wrote:
+>>> In addition to passing a bitfield of folio orders to enable for THP,
+>>> allow the string "recommend" to be written, which has the effect of
+>>> causing the system to enable the orders preferred by the architecture
+>>> and by the mm. The user can see what these orders are by subsequently
+>>> reading back the file.
+>>>
+>>> Note that these recommended orders are expected to be static for a given
+>>> boot of the system, and so the keyword "auto" was deliberately not used,
+>>> as I want to reserve it for a possible future use where the "best" order
+>>> is chosen more dynamically at runtime.
+>>>
+>>> Recommended orders are determined as follows:
+>>>    - PMD_ORDER: The traditional THP size
+>>>    - arch_wants_pte_order() if implemented by the arch
+>>>    - PAGE_ALLOC_COSTLY_ORDER: The largest order kept on per-cpu free list
+>>>
+>>> arch_wants_pte_order() can be overridden by the architecture if desired.
+>>> Some architectures (e.g. arm64) can coalsece TLB entries if a contiguous
+>>> set of ptes map physically contigious, naturally aligned memory, so this
+>>> mechanism allows the architecture to optimize as required.
+>>>
+>>> Here we add the default implementation of arch_wants_pte_order(), used
+>>> when the architecture does not define it, which returns -1, implying
+>>> that the HW has no preference.
+>>>
+>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>> ---
+>>>   Documentation/admin-guide/mm/transhuge.rst |  4 ++++
+>>>   include/linux/pgtable.h                    | 13 +++++++++++++
+>>>   mm/huge_memory.c                           | 14 +++++++++++---
+>>>   3 files changed, 28 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/Documentation/admin-guide/mm/transhuge.rst b/Documentation/admin-guide/mm/transhuge.rst
+>>> index 732c3b2f4ba8..d6363d4efa3a 100644
+>>> --- a/Documentation/admin-guide/mm/transhuge.rst
+>>> +++ b/Documentation/admin-guide/mm/transhuge.rst
+>>> @@ -187,6 +187,10 @@ pages (=16K if the page size is 4K). The example above enables order-9
+>>>   By enabling multiple orders, allocation of each order will be
+>>>   attempted, highest to lowest, until a successful allocation is made.
+>>>   If the PMD-order is unset, then no PMD-sized THPs will be allocated.
+>>> +It is also possible to enable the recommended set of orders, which
+>>> +will be optimized for the architecture and mm::
+>>> +
+>>> +     echo recommend >/sys/kernel/mm/transparent_hugepage/anon_orders
+>>>
+>>>   The kernel will ignore any orders that it does not support so read the
+>>>   file back to determine which orders are enabled::
+>>> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+>>> index af7639c3b0a3..0e110ce57cc3 100644
+>>> --- a/include/linux/pgtable.h
+>>> +++ b/include/linux/pgtable.h
+>>> @@ -393,6 +393,19 @@ static inline void arch_check_zapped_pmd(struct vm_area_struct *vma,
+>>>   }
+>>>   #endif
+>>>
+>>> +#ifndef arch_wants_pte_order
+>>> +/*
+>>> + * Returns preferred folio order for pte-mapped memory. Must be in range [0,
+>>> + * PMD_ORDER) and must not be order-1 since THP requires large folios to be at
+>>> + * least order-2. Negative value implies that the HW has no preference and mm
+>>> + * will choose it's own default order.
+>>> + */
+>>> +static inline int arch_wants_pte_order(void)
+>>> +{
+>>> +     return -1;
+>>> +}
+>>> +#endif
+>>> +
+>>>   #ifndef __HAVE_ARCH_PTEP_GET_AND_CLEAR
+>>>   static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
+>>>                                      unsigned long address,
+>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>>> index bcecce769017..e2e2d3906a21 100644
+>>> --- a/mm/huge_memory.c
+>>> +++ b/mm/huge_memory.c
+>>> @@ -464,10 +464,18 @@ static ssize_t anon_orders_store(struct kobject *kobj,
+>>>       int err;
+>>>       int ret = count;
+>>>       unsigned int orders;
+>>> +     int arch;
+>>>
+>>> -     err = kstrtouint(buf, 0, &orders);
+>>> -     if (err)
+>>> -             ret = -EINVAL;
+>>> +     if (sysfs_streq(buf, "recommend")) {
+>>> +             arch = max(arch_wants_pte_order(), PAGE_ALLOC_COSTLY_ORDER);
+>>> +             orders = BIT(arch);
+>>> +             orders |= BIT(PAGE_ALLOC_COSTLY_ORDER);
+>>> +             orders |= BIT(PMD_ORDER);
+>>> +     } else {
+>>> +             err = kstrtouint(buf, 0, &orders);
+>>> +             if (err)
+>>> +                     ret = -EINVAL;
+>>> +     }
+>>>
+>>>       if (ret > 0) {
+>>>               orders &= THP_ORDERS_ALL_ANON;
+>>
+>> :/ don't really like that. Regarding my proposal, one could have
+>> something like that in an "auto" setting for the "enabled" value, or a
+>> "recommended" setting [not sure].
+> 
+> Me either.
+> 
+> Again this is something I call random --  we only discussed "auto",
+> and yes, the commit message above explained why "recommended" here but
+> it has never surfaced in previous discussions, has it?
 
-On Mon, 2023-10-09 at 13:29 +0200, Geert Uytterhoeven wrote:
-> On Fri, Oct 6, 2023 at 4:49 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > Currently, a Preemptible Kernel is only supported on the Coldfire CPU
-> > family.  Extend preempt support to the full Classic M68K CPU family
-> > (68020+ with MMU, and 68000-derivatives without MMU).
-> > 
-> > Make sure preemption is disabled in loops involving cache and TLB
-> > flushing.
-> > 
-> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > ---
-> > Tested on ARAnyM, using none/voluntary/full preemption.
-> 
-> bloat-o-meter summaries for atari_defconfig:
-> 
-> PREEMPT_NONE -> PREEMPT_VOLUNTARY:
-> 
->     add/remove: 0/0 grow/shrink: 238/30 up/down: 2804/-748 (2056)
->     Total: Before=4478149, After=4480205, chg +0.05%
-> 
-> PREEMPT_VOLUNTARY -> PREEMPT:
-> 
->     add/remove: 735/277 grow/shrink: 3050/347 up/down: 244359/-11440 (232919)
->     Total: Before=4480205, After=4713124, chg +5.20%
-> 
-> Ouch.
+The context in which we discussed "auto" was for a future aspiration to
+automatically determine the order that should be used for a given allocation to
+balance perf vs internal fragmentation.
 
-What exactly does the change document? More scheduling events?
+The case we are talking about here is completely different; I had a pre-existing
+feature from previous versions of the series, which would allow the arch to
+specify its preferred order (originally proposed by Yu, IIRC). In moving the
+allocation size decision to user space, I felt that we still needed a mechanism
+whereby the arch could express its preference. And "recommend" is what I came up
+with.
 
-Adrian
+All of the friction we are currently having is around this feature, I think?
+Certainly all the links you provided in the other thread all point to
+conversations skirting around it. How about I just drop it for this initial
+patch set? Just let user space decide what sizes it wants (per David's interface
+proposal)? I can see I'm trying to get a square peg into a round hole.
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+> 
+> If so, this reinforces what I said here [1].
+> 
+> [1] https://lore.kernel.org/mm-commits/CAOUHufYEKx5_zxRJkeqrmnStFjR+pVQdpZ40ATSTaxLA_iRPGw@mail.gmail.com/
+
