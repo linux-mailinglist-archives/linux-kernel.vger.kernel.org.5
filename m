@@ -2,183 +2,361 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C810C7BE095
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E327BE0A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377368AbjJINln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 09:41:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43010 "EHLO
+        id S1377382AbjJINme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 09:42:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377331AbjJINlj (ORCPT
+        with ESMTP id S1377381AbjJINmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 09:41:39 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E01991;
-        Mon,  9 Oct 2023 06:41:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1696858898; x=1728394898;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=XSmJW9ClZp5/7XxIC/DRM/ldi63Fk1j71dzAvXhfj5U=;
-  b=PSLHL0ix6zWhY02JOnQDoj+/nibzH1qUP3Lkpc8VljhIpfj8szslO+Bj
-   bb7ncBYe6tsWqkYeC80R71ksxi01PSTX6imd3OcDAPH636a0Fho4Shb6g
-   4TRP+VLTFP7FQ/iDV2L9RVYjzEl6xzLy4QX7yPrZZCowceZ5uuiO+WTB9
-   MgMOc/kMYLWRy0WYckFimYtERtpb340t3xgbGANesVfXyxLlkRpdSdQ0q
-   M+ZYO3YfaEn+68diSA1s4jmIuE9pMhRq1voEGGNNA0N/JfmR6HMJd/pTs
-   VR0v1cme8+f2cAMaXEDPHK5kc8pJWRYptTwAKCkCd5tvY8QxOXoX/3Gu+
-   g==;
-X-CSE-ConnectionGUID: l0OiCB+BRwW3jj2zmPqK/Q==
-X-CSE-MsgGUID: 0yKD0BfSTYqfk0rzFgtEeQ==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="asc'?scan'208";a="176447002"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Oct 2023 06:41:36 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Mon, 9 Oct 2023 06:41:36 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Mon, 9 Oct 2023 06:41:33 -0700
-Date:   Mon, 9 Oct 2023 14:41:12 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Minda Chen <minda.chen@starfivetech.com>
-CC:     Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-Subject: Re: [PATCH v7 10/19] PCI: microchip: Add num_events field to struct
- plda_pcie_rp
-Message-ID: <20231009-headrest-service-98a59cb982bb@wendy>
-References: <20230927100802.46620-1-minda.chen@starfivetech.com>
- <20230927100802.46620-11-minda.chen@starfivetech.com>
+        Mon, 9 Oct 2023 09:42:33 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B3E59C
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 06:42:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94081C433CC;
+        Mon,  9 Oct 2023 13:42:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696858951;
+        bh=jxAyKleb6zm6TJN0EHQvMhr1MxPI2j6kig5knsdipQc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kaSwIE9ug6X6WuObEk1WUSUcgKgXVAvj9Ugz8ljTC6MTERFy9dnNc+aQ5cS4hiAOD
+         rQOpby9ykGJ3tM5XZH3hxqnj0G92U/aypGi6CKVW3px3MfcXRRYKhkOwl0XzU6p9eA
+         e7dYkQMb2nYx3KCrVI+Hhc4oT2mEYkAK0lndSXgqPxTlzQFkyq+05Gudt3h+QZ9KjK
+         0hZ5bzIQjWDUpZWxPAUme1YJJx9s4vUoxd5QAH0ACwe46UpdQT6b0Nw4QDAuhxRlFI
+         6WZsJuoM5jsIcXDpE55ieyKXBIIU894kZ0pO+4N2Gxj9AAunCQ4jTz21GiOVEbf5kl
+         4MrzbPxiY/nuw==
+Date:   Mon, 9 Oct 2023 15:42:26 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Jijie Shao <shaojijie@huawei.com>
+Cc:     yisen.zhuang@huawei.com, salil.mehta@huawei.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, shenjian15@huawei.com, wangjie125@huawei.com,
+        liuyonglong@huawei.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Leon Romanovsky <leon@kernel.org>
+Subject: Re: [PATCH V2 net-next 2/2] net: hns3: add vf fault detect support
+Message-ID: <ZSQDQll8rwbucNpP@kernel.org>
+References: <20231007031215.1067758-1-shaojijie@huawei.com>
+ <20231007031215.1067758-3-shaojijie@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="sEI75rBRrFQBXn/N"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230927100802.46620-11-minda.chen@starfivetech.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231007031215.1067758-3-shaojijie@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---sEI75rBRrFQBXn/N
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
++ Leon
 
-On Wed, Sep 27, 2023 at 06:07:53PM +0800, Minda Chen wrote:
-> Avoid using NUM_EVENTS macros in common codes.
-
-This isn't common code though, this code is in the Microchip driver.
-It may become common code later, but for now the commit message is
-inaccurate. Otherwise, the change itself seems okay to me, so with an
-accurate commit message
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-Thanks,
-Conor.
-
->=20
-> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+On Sat, Oct 07, 2023 at 11:12:15AM +0800, Jijie Shao wrote:
+> From: Jie Wang <wangjie125@huawei.com>
+> 
+> Currently hns3 driver supports vf fault detect feature. Several ras caused
+> by VF resources don't need to do PF function reset for recovery. The driver
+> only needs to reset the specified VF.
+> 
+> So this patch adds process in ras module. New process will get detailed
+> information about ras and do the most correct measures based on these
+> accurate information.
+> 
+> Signed-off-by: Jie Wang <wangjie125@huawei.com>
+> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
 > ---
->  drivers/pci/controller/plda/pcie-microchip-host.c | 7 ++++---
->  drivers/pci/controller/plda/pcie-plda.h           | 1 +
->  2 files changed, 5 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/=
-pci/controller/plda/pcie-microchip-host.c
-> index 81aac2d72a2f..d9dd63084e2b 100644
-> --- a/drivers/pci/controller/plda/pcie-microchip-host.c
-> +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
-> @@ -648,7 +648,7 @@ static void plda_handle_event(struct irq_desc *desc)
-> =20
->  	events =3D mc_get_events(port);
-> =20
-> -	for_each_set_bit(bit, &events, NUM_EVENTS)
-> +	for_each_set_bit(bit, &events, port->num_events)
->  		generic_handle_domain_irq(port->event_domain, bit);
-> =20
->  	chained_irq_exit(chip, desc);
-> @@ -811,7 +811,7 @@ static int plda_pcie_init_irq_domains(struct plda_pci=
-e_rp *port)
->  		return -EINVAL;
->  	}
-> =20
-> -	port->event_domain =3D irq_domain_add_linear(pcie_intc_node, NUM_EVENTS,
-> +	port->event_domain =3D irq_domain_add_linear(pcie_intc_node, port->num_=
-events,
->  						   &mc_event_domain_ops, port);
->  	if (!port->event_domain) {
->  		dev_err(dev, "failed to get event domain\n");
-> @@ -914,7 +914,7 @@ static int plda_init_interrupts(struct platform_devic=
-e *pdev, struct plda_pcie_r
->  	if (irq < 0)
->  		return -ENODEV;
-> =20
-> -	for (i =3D 0; i < NUM_EVENTS; i++) {
-> +	for (i =3D 0; i < port->num_events; i++) {
->  		event_irq =3D irq_create_mapping(port->event_domain, i);
->  		if (!event_irq) {
->  			dev_err(dev, "failed to map hwirq %d\n", i);
-> @@ -1006,6 +1006,7 @@ static int mc_host_probe(struct platform_device *pd=
-ev)
-> =20
->  	bridge_base_addr =3D port->axi_base_addr + MC_PCIE_BRIDGE_ADDR;
->  	plda->bridge_addr =3D bridge_base_addr;
-> +	plda->num_events =3D NUM_EVENTS;
-> =20
->  	/* Allow enabling MSI by disabling MSI-X */
->  	val =3D readl(bridge_base_addr + PCIE_PCI_IRQ_DW0);
-> diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/contro=
-ller/plda/pcie-plda.h
-> index 32a913d4101f..5b09ffed623c 100644
-> --- a/drivers/pci/controller/plda/pcie-plda.h
-> +++ b/drivers/pci/controller/plda/pcie-plda.h
-> @@ -150,6 +150,7 @@ struct plda_pcie_rp {
->  	raw_spinlock_t lock;
->  	struct plda_msi msi;
->  	void __iomem *bridge_addr;
-> +	int num_events;
+> changeLog:
+> v1 -> v2:
+>   - fix the wrong use of vf recovery notify interface
+>   - add BUILD_BUG_ON to gurantee macros
+>   - optimise hclge_handle_vf_queue_err_ras for unsupported firmware
+>   v1: https://lore.kernel.org/netdev/20230113020829.48451-1-lanhao@huawei.com/ 
+
+Hi Leon,
+
+I believe you reviewed v1 of this back in January and February.
+Could you find some time to look at v2?
+
+> ---
+>  drivers/net/ethernet/hisilicon/hns3/hnae3.h   |   1 +
+>  .../hns3/hns3_common/hclge_comm_cmd.h         |   1 +
+>  .../hisilicon/hns3/hns3pf/hclge_err.c         | 116 +++++++++++++++++-
+>  .../hisilicon/hns3/hns3pf/hclge_err.h         |   2 +
+>  .../hisilicon/hns3/hns3pf/hclge_main.c        |   3 +-
+>  .../hisilicon/hns3/hns3pf/hclge_main.h        |   2 +
+>  .../hisilicon/hns3/hns3pf/hclge_mbx.c         |   2 +-
+>  7 files changed, 120 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.h b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
+> index 46062106fc6a..d7e175a9cb49 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hnae3.h
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
+> @@ -275,6 +275,7 @@ enum hnae3_reset_type {
+>  	HNAE3_GLOBAL_RESET,
+>  	HNAE3_IMP_RESET,
+>  	HNAE3_NONE_RESET,
+> +	HNAE3_VF_EXP_RESET,
+>  	HNAE3_MAX_RESET,
 >  };
-> =20
->  irqreturn_t plda_event_handler(int irq, void *dev_id);
-> --=20
-> 2.17.1
->=20
-
---sEI75rBRrFQBXn/N
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSQC+AAKCRB4tDGHoIJi
-0gWCAP9MfVaT63SoQZwNi1fdkEQbfvmc6Ncemk2TYXraL5KyDAEAo8e60IqflnrY
-IKLu5sOyiDtLkZa1h8z3iPSfgyBdDgM=
-=ejRb
------END PGP SIGNATURE-----
-
---sEI75rBRrFQBXn/N--
+>  
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.h b/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.h
+> index 92e73d44f0e5..533c19d25e4f 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.h
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.h
+> @@ -93,6 +93,7 @@ enum hclge_opcode_type {
+>  	HCLGE_OPC_DFX_SSU_REG_2		= 0x004F,
+>  
+>  	HCLGE_OPC_QUERY_DEV_SPECS	= 0x0050,
+> +	HCLGE_OPC_GET_QUEUE_ERR_VF      = 0x0067,
+>  
+>  	/* MAC command */
+>  	HCLGE_OPC_CONFIG_MAC_MODE	= 0x0301,
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.c
+> index 3f35227ef1fa..d63e114f93d0 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.c
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.c
+> @@ -1301,10 +1301,12 @@ static const struct hclge_hw_type_id hclge_hw_type_id_st[] = {
+>  		.msg = "tqp_int_ecc_error"
+>  	}, {
+>  		.type_id = PF_ABNORMAL_INT_ERROR,
+> -		.msg = "pf_abnormal_int_error"
+> +		.msg = "pf_abnormal_int_error",
+> +		.cause_by_vf = true
+>  	}, {
+>  		.type_id = MPF_ABNORMAL_INT_ERROR,
+> -		.msg = "mpf_abnormal_int_error"
+> +		.msg = "mpf_abnormal_int_error",
+> +		.cause_by_vf = true
+>  	}, {
+>  		.type_id = COMMON_ERROR,
+>  		.msg = "common_error"
+> @@ -2759,7 +2761,7 @@ void hclge_handle_occurred_error(struct hclge_dev *hdev)
+>  		hclge_handle_error_info_log(ae_dev);
+>  }
+>  
+> -static void
+> +static bool
+>  hclge_handle_error_type_reg_log(struct device *dev,
+>  				struct hclge_mod_err_info *mod_info,
+>  				struct hclge_type_reg_err_info *type_reg_info)
+> @@ -2770,6 +2772,7 @@ hclge_handle_error_type_reg_log(struct device *dev,
+>  	u8 mod_id, total_module, type_id, total_type, i, is_ras;
+>  	u8 index_module = MODULE_NONE;
+>  	u8 index_type = NONE_ERROR;
+> +	bool cause_by_vf = false;
+>  
+>  	mod_id = mod_info->mod_id;
+>  	type_id = type_reg_info->type_id & HCLGE_ERR_TYPE_MASK;
+> @@ -2788,6 +2791,7 @@ hclge_handle_error_type_reg_log(struct device *dev,
+>  	for (i = 0; i < total_type; i++) {
+>  		if (type_id == hclge_hw_type_id_st[i].type_id) {
+>  			index_type = i;
+> +			cause_by_vf = hclge_hw_type_id_st[i].cause_by_vf;
+>  			break;
+>  		}
+>  	}
+> @@ -2805,6 +2809,8 @@ hclge_handle_error_type_reg_log(struct device *dev,
+>  	dev_err(dev, "reg_value:\n");
+>  	for (i = 0; i < type_reg_info->reg_num; i++)
+>  		dev_err(dev, "0x%08x\n", type_reg_info->hclge_reg[i]);
+> +
+> +	return cause_by_vf;
+>  }
+>  
+>  static void hclge_handle_error_module_log(struct hnae3_ae_dev *ae_dev,
+> @@ -2815,6 +2821,7 @@ static void hclge_handle_error_module_log(struct hnae3_ae_dev *ae_dev,
+>  	struct device *dev = &hdev->pdev->dev;
+>  	struct hclge_mod_err_info *mod_info;
+>  	struct hclge_sum_err_info *sum_info;
+> +	bool cause_by_vf = false;
+>  	u8 mod_num, err_num, i;
+>  	u32 offset = 0;
+>  
+> @@ -2843,12 +2850,16 @@ static void hclge_handle_error_module_log(struct hnae3_ae_dev *ae_dev,
+>  
+>  			type_reg_info = (struct hclge_type_reg_err_info *)
+>  					    &buf[offset++];
+> -			hclge_handle_error_type_reg_log(dev, mod_info,
+> -							type_reg_info);
+> +			if (hclge_handle_error_type_reg_log(dev, mod_info,
+> +							    type_reg_info))
+> +				cause_by_vf = true;
+>  
+>  			offset += type_reg_info->reg_num;
+>  		}
+>  	}
+> +
+> +	if (hnae3_ae_dev_vf_fault_supported(hdev->ae_dev) && cause_by_vf)
+> +		set_bit(HNAE3_VF_EXP_RESET, &ae_dev->hw_err_reset_req);
+>  }
+>  
+>  static int hclge_query_all_err_bd_num(struct hclge_dev *hdev, u32 *bd_num)
+> @@ -2940,3 +2951,98 @@ int hclge_handle_error_info_log(struct hnae3_ae_dev *ae_dev)
+>  out:
+>  	return ret;
+>  }
+> +
+> +static bool hclge_reset_vf_in_bitmap(struct hclge_dev *hdev,
+> +				     unsigned long *bitmap)
+> +{
+> +	struct hclge_vport *vport;
+> +	bool exist_set = false;
+> +	int func_id;
+> +	int ret;
+> +
+> +	func_id = find_first_bit(bitmap, HCLGE_VPORT_NUM);
+> +	if (func_id == PF_VPORT_ID)
+> +		return false;
+> +
+> +	while (func_id != HCLGE_VPORT_NUM) {
+> +		vport = hclge_get_vf_vport(hdev,
+> +					   func_id - HCLGE_VF_VPORT_START_NUM);
+> +		if (!vport) {
+> +			dev_err(&hdev->pdev->dev, "invalid func id(%d)\n",
+> +				func_id);
+> +			return false;
+> +		}
+> +
+> +		dev_info(&hdev->pdev->dev, "do function %d recovery.", func_id);
+> +
+> +		ret = hclge_reset_tqp(&vport->nic);
+> +		if (ret) {
+> +			dev_err(&hdev->pdev->dev,
+> +				"failed to reset tqp, ret = %d.", ret);
+> +			return false;
+> +		}
+> +
+> +		ret = hclge_inform_vf_reset(vport, HNAE3_VF_FUNC_RESET);
+> +		if (ret) {
+> +			dev_err(&hdev->pdev->dev,
+> +				"failed to reset func %d, ret = %d.",
+> +				func_id, ret);
+> +			return false;
+> +		}
+> +
+> +		exist_set = true;
+> +		clear_bit(func_id, bitmap);
+> +		func_id = find_first_bit(bitmap, HCLGE_VPORT_NUM);
+> +	}
+> +
+> +	return exist_set;
+> +}
+> +
+> +static void hclge_get_vf_fault_bitmap(struct hclge_desc *desc,
+> +				      unsigned long *bitmap)
+> +{
+> +#define HCLGE_FIR_FAULT_BYTES	24
+> +#define HCLGE_SEC_FAULT_BYTES	8
+> +
+> +	u8 *buff;
+> +
+> +	BUILD_BUG_ON(HCLGE_FIR_FAULT_BYTES + HCLGE_SEC_FAULT_BYTES !=
+> +		     BITS_TO_BYTES(HCLGE_VPORT_NUM));
+> +
+> +	memcpy(bitmap, desc[0].data, HCLGE_FIR_FAULT_BYTES);
+> +	buff = (u8 *)bitmap + HCLGE_FIR_FAULT_BYTES;
+> +	memcpy(buff, desc[1].data, HCLGE_SEC_FAULT_BYTES);
+> +}
+> +
+> +int hclge_handle_vf_queue_err_ras(struct hclge_dev *hdev)
+> +{
+> +	unsigned long vf_fault_bitmap[BITS_TO_LONGS(HCLGE_VPORT_NUM)];
+> +	struct hclge_desc desc[2];
+> +	bool cause_by_vf = false;
+> +	int ret;
+> +
+> +	if (!test_and_clear_bit(HNAE3_VF_EXP_RESET,
+> +				&hdev->ae_dev->hw_err_reset_req) ||
+> +	    !hnae3_ae_dev_vf_fault_supported(hdev->ae_dev))
+> +		return 0;
+> +
+> +	hclge_comm_cmd_setup_basic_desc(&desc[0], HCLGE_OPC_GET_QUEUE_ERR_VF,
+> +					true);
+> +	desc[0].flag |= cpu_to_le16(HCLGE_COMM_CMD_FLAG_NEXT);
+> +	hclge_comm_cmd_setup_basic_desc(&desc[1], HCLGE_OPC_GET_QUEUE_ERR_VF,
+> +					true);
+> +
+> +	ret = hclge_comm_cmd_send(&hdev->hw.hw, desc, 2);
+> +	if (ret) {
+> +		dev_err(&hdev->pdev->dev,
+> +			"failed to get vf bitmap, ret = %d.\n", ret);
+> +		return ret;
+> +	}
+> +	hclge_get_vf_fault_bitmap(desc, vf_fault_bitmap);
+> +
+> +	cause_by_vf = hclge_reset_vf_in_bitmap(hdev, vf_fault_bitmap);
+> +	if (cause_by_vf)
+> +		hdev->ae_dev->hw_err_reset_req = 0;
+> +
+> +	return 0;
+> +}
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.h
+> index 86be6fb32990..68b738affa66 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.h
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.h
+> @@ -196,6 +196,7 @@ struct hclge_hw_module_id {
+>  struct hclge_hw_type_id {
+>  	enum hclge_err_type_list type_id;
+>  	const char *msg;
+> +	bool cause_by_vf; /* indicate the error may from vf exception */
+>  };
+>  
+>  struct hclge_sum_err_info {
+> @@ -228,4 +229,5 @@ int hclge_handle_hw_msix_error(struct hclge_dev *hdev,
+>  			       unsigned long *reset_requests);
+>  int hclge_handle_error_info_log(struct hnae3_ae_dev *ae_dev);
+>  int hclge_handle_mac_tnl(struct hclge_dev *hdev);
+> +int hclge_handle_vf_queue_err_ras(struct hclge_dev *hdev);
+>  #endif
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+> index c42574e29747..99c0576e6383 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+> @@ -3424,7 +3424,7 @@ static int hclge_get_status(struct hnae3_handle *handle)
+>  	return hdev->hw.mac.link;
+>  }
+>  
+> -static struct hclge_vport *hclge_get_vf_vport(struct hclge_dev *hdev, int vf)
+> +struct hclge_vport *hclge_get_vf_vport(struct hclge_dev *hdev, int vf)
+>  {
+>  	if (!pci_num_vf(hdev->pdev)) {
+>  		dev_err(&hdev->pdev->dev,
+> @@ -4468,6 +4468,7 @@ static void hclge_handle_err_recovery(struct hclge_dev *hdev)
+>  	if (hclge_find_error_source(hdev)) {
+>  		hclge_handle_error_info_log(ae_dev);
+>  		hclge_handle_mac_tnl(hdev);
+> +		hclge_handle_vf_queue_err_ras(hdev);
+>  	}
+>  
+>  	hclge_handle_err_reset_request(hdev);
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
+> index 7bc2049b723d..02c7aab3546e 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
+> @@ -1146,4 +1146,6 @@ int hclge_dbg_dump_rst_info(struct hclge_dev *hdev, char *buf, int len);
+>  int hclge_push_vf_link_status(struct hclge_vport *vport);
+>  int hclge_enable_vport_vlan_filter(struct hclge_vport *vport, bool request_en);
+>  int hclge_mac_update_stats(struct hclge_dev *hdev);
+> +struct hclge_vport *hclge_get_vf_vport(struct hclge_dev *hdev, int vf);
+> +int hclge_inform_vf_reset(struct hclge_vport *vport, u16 reset_type);
+>  #endif
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
+> index 04ff9bf12185..4b0d07ca2505 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
+> @@ -124,7 +124,7 @@ static int hclge_send_mbx_msg(struct hclge_vport *vport, u8 *msg, u16 msg_len,
+>  	return status;
+>  }
+>  
+> -static int hclge_inform_vf_reset(struct hclge_vport *vport, u16 reset_type)
+> +int hclge_inform_vf_reset(struct hclge_vport *vport, u16 reset_type)
+>  {
+>  	__le16 msg_data;
+>  	u8 dest_vfid;
+> -- 
+> 2.30.0
+> 
+> 
