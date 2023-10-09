@@ -2,123 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A14CA7BED89
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 029A67BED88
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378808AbjJIVqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 17:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50988 "EHLO
+        id S1378801AbjJIVq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 17:46:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378813AbjJIVqi (ORCPT
+        with ESMTP id S1378682AbjJIVqZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 17:46:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A2F8AC
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 14:45:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696887954;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kc+EooNjRuIGaZlba0n715rKNgOK/kSBjOsmerqWaRg=;
-        b=Kteuzo78Fdw/9v4kPUy5f+XdPjhKiDUSD0F/8TFIu0Nz9gHiGJiOUtsbRDII87ychW4iGz
-        VpVsVtlSjB2FoS4nPIfUiN0A6KBxww6t5PQDJp2Ec9htZiyy2L6upO4USiJi77QFrR1hxb
-        kfVzV8gSbnsIUMlCHx9+WAjr32Pl3Jg=
-Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com
- [209.85.160.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-509-XAsGdxN4O_y5v98ls9-4cA-1; Mon, 09 Oct 2023 17:45:51 -0400
-X-MC-Unique: XAsGdxN4O_y5v98ls9-4cA-1
-Received: by mail-oa1-f71.google.com with SMTP id 586e51a60fabf-1e1dc572fbeso8065409fac.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 14:45:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696887950; x=1697492750;
-        h=mime-version:user-agent:content-transfer-encoding:organization
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kc+EooNjRuIGaZlba0n715rKNgOK/kSBjOsmerqWaRg=;
-        b=rtAJdy1P86FdDbwL9i8LjLS7xiX4N2ZYAEYqJuoAke5wlIWCkmTn+fCa+D3Z6t+od0
-         q7EBhkTKPNTRbUBF8IJayzft397bM/7aIvtKNI1sh6XB7wBqOFqonoGKfEd0UQh9o0e9
-         QSwZL2jPv77bNxehErxOYlIeeRJQwbFhO2YSfGtK72mItX6InlKp3nm6Fq3IAjDF0ZEV
-         Zx0SOyS9E5p6zmqcQe7jzXi3jeIqiGDUatHhiAytJG1gAexjuPeJzywBFRR3JXVjqvy6
-         6dRXGed0qDrnP02y59CkNL8uTGFh5xNHisNKsxllhlqtMHPf4N9rI1MwaxpR8m222iqG
-         3oYw==
-X-Gm-Message-State: AOJu0YyhT3Fo5poTyDzDKg8+NVueqrmxHgz7/foRV69svRX/D23mcUrK
-        ddw3WJvcusEyc/2O09Cf/jC7hFJ5LivT6Cru4jb5Bb9RBhTsaNALfN+x6TNLFWVm0GGgo0qUW/2
-        BstqSHAk9gM4Le8zs7VkqCZRw
-X-Received: by 2002:a05:6870:f599:b0:1b0:2f63:4ff6 with SMTP id eh25-20020a056870f59900b001b02f634ff6mr18738570oab.1.1696887950711;
-        Mon, 09 Oct 2023 14:45:50 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGA4GSK6GSMuEXs3YrDvKAZYcLFQXhm0ZOhmAvnxNzzFaJM60xpMGR10412D3pre/KXhgfm7Q==
-X-Received: by 2002:a05:6870:f599:b0:1b0:2f63:4ff6 with SMTP id eh25-20020a056870f59900b001b02f634ff6mr18738558oab.1.1696887950418;
-        Mon, 09 Oct 2023 14:45:50 -0700 (PDT)
-Received: from ?IPv6:2600:4040:5c6c:a300::feb? ([2600:4040:5c6c:a300::feb])
-        by smtp.gmail.com with ESMTPSA id r6-20020a0c8d06000000b0065655bb349csm4188877qvb.141.2023.10.09.14.45.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 14:45:49 -0700 (PDT)
-Message-ID: <2346aa93e2479f2ebd8849c5b2ead36a50ce43a0.camel@redhat.com>
-Subject: Re: [PATCH] drm/i2c/ch7006: fix a possible null pointer dereference
-From:   Lyude Paul <lyude@redhat.com>
-To:     Ma Ke <make_ruc2021@163.com>, airlied@gmail.com, daniel@ffwll.ch,
-        javierm@redhat.com, mripard@kernel.org,
-        u.kleine-koenig@pengutronix.de, noralf@tronnes.org,
-        tzimmermann@suse.de
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Date:   Mon, 09 Oct 2023 17:45:48 -0400
-In-Reply-To: <20231007031712.3997144-1-make_ruc2021@163.com>
-References: <20231007031712.3997144-1-make_ruc2021@163.com>
-Organization: Red Hat Inc.
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Mon, 9 Oct 2023 17:46:25 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A737EA9
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 14:46:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 416FBC433C8;
+        Mon,  9 Oct 2023 21:46:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696887983;
+        bh=hOV1TPaxRK6lKBeU8FkupnPDNPfBklnFK2iqPujS67E=;
+        h=Date:From:To:Cc:Subject:From;
+        b=DbzY3biDgO4mfCIA4qPzupLl+uX9GQuhb11X3aVuywb+Bl5IiANsNQ87Dq6LSmK2G
+         N+NCZxZ6Io0Elk4NgT8Tu4MX/Wbc/Zlyh+3yaAk2picUd7NwkzG2epTTBf92SeO7Zn
+         H+iQ5RERpBZ9vTb3eOW5ELre2i0mPtM7mA2AkKXShWbogN5G9ftpllRSnRVZDjiX+u
+         Z6gHzuzsir9EofnMs4F0iGxxpYt+rRTCLF4k2fA0rHNG8r99DhPaFICqWsqKebAfxR
+         EltoEEpdN8DY7vzaPZL+x8Im429T6LSYjnYmhGiioMo6fjMsYsbjcQft4CvhkJ7dap
+         wytsDX0E0V9tg==
+Date:   Mon, 9 Oct 2023 15:46:18 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
+        Intel Corporation <linuxwwan@intel.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
+        Liu Haijun <haijun.liu@mediatek.com>,
+        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
+        Ricardo Martinez <ricardo.martinez@linux.intel.com>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] net: wwan: t7xx: Add __counted_by for struct
+ t7xx_fsm_event and use struct_size()
+Message-ID: <ZSR0qh5dEV5qoBW4@work>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2023-10-07 at 11:17 +0800, Ma Ke wrote:
-> In ch7006_encoder_get_modes(), the return value of drm_mode_duplicate()
-> is assigned to mode, which will lead to a NULL pointer dereference
-> on failure of drm_mode_duplicate(). Add a check to avoid npd.
->=20
-> Signed-off-by: Ma Ke <make_ruc2021@163.com>
-> ---
->  drivers/gpu/drm/i2c/ch7006_drv.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/i2c/ch7006_drv.c b/drivers/gpu/drm/i2c/ch700=
-6_drv.c
-> index 131512a5f3bd..27c2f02f5b43 100644
-> --- a/drivers/gpu/drm/i2c/ch7006_drv.c
-> +++ b/drivers/gpu/drm/i2c/ch7006_drv.c
-> @@ -236,8 +236,10 @@ static int ch7006_encoder_get_modes(struct drm_encod=
-er *encoder,
->  		    ~mode->valid_norms & 1<<priv->norm)
->  			continue;
-> =20
-> -		drm_mode_probed_add(connector,
-> -				drm_mode_duplicate(encoder->dev, &mode->mode));
-> +		struct drm_display_mode *encoder_mode;
-> +		encoder_mode =3D drm_mode_duplicate(encoder->dev, &mode->mode);
+Prepare for the coming implementation by GCC and Clang of the __counted_by
+attribute. Flexible array members annotated with __counted_by can have
+their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
+array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+functions).
 
-I think the kernel prefers to have variable declaration at the top of the
-scope, and as well: this breaks things because you don't add back the
-drm_mode_probed_add() call.
+While there, use struct_size() helper, instead of the open-coded
+version, to calculate the size for the allocation of the whole
+flexible structure, including of course, the flexible-array member.
 
-> +		if (!mode)
-> +			continue;
-> =20
->  		n++;
->  	}
+This code was found with the help of Coccinelle, and audited and
+fixed manually.
 
---=20
-Cheers,
- Lyude Paul (she/her)
- Software Engineer at Red Hat
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/wwan/t7xx/t7xx_state_monitor.c | 3 ++-
+ drivers/net/wwan/t7xx/t7xx_state_monitor.h | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wwan/t7xx/t7xx_state_monitor.c b/drivers/net/wwan/t7xx/t7xx_state_monitor.c
+index 80edb8e75a6a..0bc97430211b 100644
+--- a/drivers/net/wwan/t7xx/t7xx_state_monitor.c
++++ b/drivers/net/wwan/t7xx/t7xx_state_monitor.c
+@@ -445,7 +445,8 @@ int t7xx_fsm_append_event(struct t7xx_fsm_ctl *ctl, enum t7xx_fsm_event_state ev
+ 		return -EINVAL;
+ 	}
+ 
+-	event = kmalloc(sizeof(*event) + length, in_interrupt() ? GFP_ATOMIC : GFP_KERNEL);
++	event = kmalloc(struct_size(event, data, length),
++			in_interrupt() ? GFP_ATOMIC : GFP_KERNEL);
+ 	if (!event)
+ 		return -ENOMEM;
+ 
+diff --git a/drivers/net/wwan/t7xx/t7xx_state_monitor.h b/drivers/net/wwan/t7xx/t7xx_state_monitor.h
+index b6e76f3903c8..b0b3662ae6d7 100644
+--- a/drivers/net/wwan/t7xx/t7xx_state_monitor.h
++++ b/drivers/net/wwan/t7xx/t7xx_state_monitor.h
+@@ -102,7 +102,7 @@ struct t7xx_fsm_event {
+ 	struct list_head	entry;
+ 	enum t7xx_fsm_event_state event_id;
+ 	unsigned int		length;
+-	unsigned char		data[];
++	unsigned char		data[] __counted_by(length);
+ };
+ 
+ struct t7xx_fsm_command {
+-- 
+2.34.1
 
