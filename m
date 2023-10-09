@@ -2,175 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 545607BEAC8
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 21:44:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D25D67BEACE
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 21:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378444AbjJITn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 15:43:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33770 "EHLO
+        id S1378454AbjJITo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 15:44:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346674AbjJITnx (ORCPT
+        with ESMTP id S1378433AbjJIToy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 15:43:53 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E6B93
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 12:43:51 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59A64C433C7;
-        Mon,  9 Oct 2023 19:43:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696880631;
-        bh=YfxqTSYOT3VS+bRSZm1IokFfH9SJpPuVC57XIHPEazM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jZQrpLLa+O8FD3mcAg/kZXws2IqrU5KE7NC8BhjKtYoS4Wh0V95J3DbXqVVsdQ0wo
-         E77MJtmvY5Jh5rBuhAvMKkSK6pp+nEHyKLrai3ps3UxZEHqia+3y0VPgPAPAtDXdTu
-         vhgafmCDi5B97DYvx5yYdB0DCg5bq9aqMHjzrYkl1rQBVyf0NrcntDBid9mbYPp1FF
-         RMLJ5LjbpeY4eLR5bttaBKGYqL8C5/6lKuD4nsPXbH+TSNlvRZ5g5pV3n/Xqp9+sdM
-         Dap7fMsY5FnGpVY8VqrTQN4q0PALJGZ0wYxYA1I10uME5vWOuL7QUq94Sz8Nk5q3uq
-         PE0ivw3SRxXQg==
-Date:   Mon, 9 Oct 2023 20:43:44 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Martin =?utf-8?Q?Povi=C5=A1er?= <povik+lin@cutebit.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, asahi@lists.linux.dev,
-        alsa-devel@alsa-project.org, Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] ASoC: apple: mca: Annotate struct mca_data with
- __counted_by
-Message-ID: <6d665575-7658-4619-a763-438e0d3aaf2e@sirena.org.uk>
-References: <20230922175050.work.819-kees@kernel.org>
- <202310061321.E7247C52B@keescook>
- <6c7db067-78f2-4637-8064-3dc7c0489b90@sirena.org.uk>
- <202310090958.27F5025BDB@keescook>
+        Mon, 9 Oct 2023 15:44:54 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D59B394
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 12:44:52 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-5859b06509cso2992322a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 12:44:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696880692; x=1697485492; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CRsKl3JqqRRAbEyiv7681Tqjj5VSz9Ev6khWg1QXw4E=;
+        b=He54bgVsqP5oejQJKEI2yXDr7hXTp7xt4lx+CXW2GCXcXZXiuKSQSZ6E6LgewHJqqn
+         EVziVbnk0N+sVkselZGRDcB2VuVyUUluAvL1a2CDTFIJC2UuCF4gnGbqze6AgfsEa+uc
+         qrg5t0b+FDEOAu6tjkuycrHZemwOKfmwqMV3E7PVDYocXQxMy3kAEm4dqhaFDT4X7sYi
+         /qa8zbvB/t9/pldf7q6v8QJvGkMUzxuknvIzay28I1EwtJCNnVpKwtpr5F267hLOQL9t
+         G/gq9X2q8AafUxDlc1RIet+U0ehyo/2YLx7yvZspyp504ipbMJKc9pOMJTwKUJh0dk3r
+         DvAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696880692; x=1697485492;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CRsKl3JqqRRAbEyiv7681Tqjj5VSz9Ev6khWg1QXw4E=;
+        b=dDGghK2sc3DOsiDbHJdKctN476QQUhalGwhL92wSfEQJmf5x787XZYd8VG4Dgxbnss
+         VWH6JjPDIzYKLntqzcDySy78lSxDimNElMgk+gIkgtYwN00TCIWD4Srw44ujstPNePcO
+         a+6wL08MAaFrpGctI31mzZrIM1Gab8B2BGaJTSmvf9YXFi+oV4+v8Prk0Lnt7rRj2sRj
+         ABx6uzdUGx9TZCJuMM+dbi2G8R/QcI03yLuxkPqmo0jxFb6XnzFvLD6uD3iQjq8zBJLi
+         +Yzs0GC2KU7DHCIGpCEyXtkHcauSCpPSnb8CCvJZuTG/D3B2urje/qmd45yUIo3C1FGd
+         Lctg==
+X-Gm-Message-State: AOJu0Yxh4qBicc11d9t+8FEtdT+jBrDJindMI450Ty2tCfw0rCCvgpUJ
+        yR7/gvwTks/VLOdObl7xvmiJm/5fCUuzri87ytw=
+X-Google-Smtp-Source: AGHT+IHl/NX9qBbfRWmE32BSXA1ZsoedFsSk1mwxVtK9d9aSIyFDl3ATnkGE1IpUfYgdTE7OmchkACFzGTjRAE/WGAA=
+X-Received: by 2002:a17:90b:384c:b0:276:caee:db4d with SMTP id
+ nl12-20020a17090b384c00b00276caeedb4dmr12491204pjb.10.1696880692336; Mon, 09
+ Oct 2023 12:44:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wbIehCkvRN7FYjXS"
-Content-Disposition: inline
-In-Reply-To: <202310090958.27F5025BDB@keescook>
-X-Cookie: What is the sound of one hand clapping?
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1696605143.git.andreyknvl@google.com> <1c4eb354a3a7b8ab56bf0c2fc6157c22050793ca.1696605143.git.andreyknvl@google.com>
+ <CANpmjNM7rytkGRjyG3Pf5PakCdibtpvsm7o-K3am-U0kT-d2Rw@mail.gmail.com>
+In-Reply-To: <CANpmjNM7rytkGRjyG3Pf5PakCdibtpvsm7o-K3am-U0kT-d2Rw@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Mon, 9 Oct 2023 21:44:40 +0200
+Message-ID: <CA+fCnZdkug_UEkj7de7YeYn7Ynre2mR9kgH_3CNQG7VC-WzCEg@mail.gmail.com>
+Subject: Re: [PATCH 5/5] Documentation: *san: drop "the" from article titles
+To:     Marco Elver <elver@google.com>
+Cc:     andrey.konovalov@linux.dev,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        kasan-dev@googlegroups.com,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Oct 7, 2023 at 9:01=E2=80=AFAM Marco Elver <elver@google.com> wrote=
+:
+>
+> On Fri, 6 Oct 2023 at 17:18, <andrey.konovalov@linux.dev> wrote:
+> >
+> > From: Andrey Konovalov <andreyknvl@google.com>
+> >
+> > Drop "the" from the titles of documentation articles for KASAN, KCSAN,
+> > and KMSAN, as it is redundant.
+> >
+> > Also add SPDX-License-Identifier for kasan.rst.
+> >
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > ---
+> >  Documentation/dev-tools/kasan.rst | 7 +++++--
+> >  Documentation/dev-tools/kcsan.rst | 4 ++--
+> >  Documentation/dev-tools/kmsan.rst | 6 +++---
+>
+> UBSan also has it: https://docs.kernel.org/dev-tools/ubsan.html
 
---wbIehCkvRN7FYjXS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ah, right, forgot that one. I'll send a fix up next week.
 
-On Mon, Oct 09, 2023 at 10:17:33AM -0700, Kees Cook wrote:
-> On Fri, Oct 06, 2023 at 09:53:49PM +0100, Mark Brown wrote:
+(Once again I wonder if we should rename UBSAN to KUBSAN. :)
 
-> > Please don't send content free pings and please allow a reasonable time
-> > for review.  People get busy, go on holiday, attend conferences and so=
-=20
-> > on so unless there is some reason for urgency (like critical bug fixes)
-> > please allow at least a couple of weeks for review.  If there have been
-> > review comments then people may be waiting for those to be addressed.
+> Reviewed-by: Marco Elver <elver@google.com>
 
-> I'm happy to do whatever you'd like for this kind of thing, but I'm
-> annoyed by this likely automated response seems to ask for the things
-> that have already happened or generally don't make sense. :P
-
-It's a form letter so not quite automated but sure.  Since it's the same
-form letter I send for all these pings it covers a bunch of things that
-might not apply in each individual case.
-
-> - It _has_ been 2 weeks.
-
-That's *at least* two weeks.  For a non-urgent change like this I'd
-generally go with longer than that, for example I'd originally had these
-changes queued for -rc5 to give the driver maintainers a couple of weeks
-to look at them (my scripting understands -rcs more than dates so you'll
-see more patches going in on Mondays). =20
-
-> - Review comments have _not_ required changes.
-> - Sending a no-change patch is just as much email as sending a ping.
-
-A no-change patch is directly and readily actionable, a ping typically
-requires going and digging out the original mail or sending a reply
-asking for a resend.
-
-> - It's not content-free: I'm asking if you're going to take it;
->   patches have gotten lost in the past, so it's a valid question.
-
-That is not something I can meaningfully distinguish from being content
-free, it provides no new information.  Something with content would be
-for example information about dependencies progressing.
-
-> - I'm not interested in other subsystems, I'm interested in yours. :P
-
-> You've made it clear you don't want me to pick up these kinds of trivial
-> patches that would normally go through your tree, so I'm left waiting
-> with no indication if you've seen the patch.
-
-Sure, but that seems fairly normal for the kernel - when sending this
-sort of stuff myself I'd be leaving it more like a month before I got
-particularly worried.  One way or another it seems fairly common for
-things to be left for at least a couple of weeks with things like
-waiting for review, restrictions on when patches actually get applied
-and just people being busy or whatever.
-
-Personally for incoming patches when I'm leaving time for driver
-maintainers I tend to go for leaving things for a -rc or two - things
-like who's involved, how early it is in the week when the original patch
-gets sent and how late in the release cycle we are will factor in there.
-More urgent things like fixes will tend to go faster, minor stuff that
-just needs to be handled sometime before the next release will tend to
-be slower.
-
-I don't send out mails saying that I've reviewed and queued things
-before actually applying them since doing that tends to discourage other
-people from doing review and I'd rather they did, this means I don't
-generally send out entirely positive review comments prior to applying
-anything unless I'm actively chasing for feedback from someone.  It can
-also be a bit confusing for people if I tell them something is OK then
-later run into test issues.
-
-> My normal routine with treewide changes is to pick up trivial stuff that
-> has gotten review but the traditional maintainer hasn't responded to
-> in 2 weeks.
-
-> Do you want these kinds of patches to be re-sent every 2 weeks if they
-> haven't been replied to by you?
-
-No, please leave it longer - that's the main thing here, you're not
-leaving adequate time for non-urgent patches like this.  If you leave it
-two weeks for maintainer review and I also leave it two weeks for
-maintainer review then we will both expire the timers at the same time
-and we're going to trample over each other.  For me it will typically be
-a bit more or less than two weeks rather than two weeks to the day but
-IIRC the time you applied something it was while the patch was actually
-running through my CI.
-
-Off the top of my head I'd say wait at least three weeks for this sort
-of patch before doing anything and then prefer to do a resend, that's
-should avoid most issues.  If you're going to just apply things yourself
-I'd suggest waiting for -rc6 or so before doing so (assuming the patches
-were initially sent reasonably early), that does seem like a reasonable
-backstop so things don't completely miss releases.
-
---wbIehCkvRN7FYjXS
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUkV/AACgkQJNaLcl1U
-h9Cx6wf+Mp6vpDV8u/RSsfNyyeauwAka4z1Hlk5P6r1BUk1ILsu1HZenW134Gs9B
-TVvsTnRHXt+ncyEVjC/JOrPHanYdJ1mAuTeYA9zYpmq1KnxE/Nkj+wUwbyytSpq4
-JDiC5X03Vfra9BWkTKlFzOTpRkfOj5nXukvKxsHPZS2g3j5eEH/V2ZbEk6Wp0b8b
-M9dU6NviQJtpgCPKtj1R4D7HQ5MZ6IWagIHWk0P8sxU6aM6QJkTJlUv4eZ/gWh+Y
-0gMPR0XkpoITVUbXrpvpPN2jAthOMMm+erfm9E8pb1eceGv+UKTJR8f6ELtojzU/
-4jy8hXGLu/8ghtVcLfX+6p9YQAP1wA==
-=d//l
------END PGP SIGNATURE-----
-
---wbIehCkvRN7FYjXS--
+Thanks!
