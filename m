@@ -2,312 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B5C7BD19C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 03:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F076E7BD1AA
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 03:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344662AbjJIBDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 21:03:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48468 "EHLO
+        id S1344656AbjJIBIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 21:08:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbjJIBDi (ORCPT
+        with ESMTP id S229704AbjJIBIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 21:03:38 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 377C9AB;
-        Sun,  8 Oct 2023 18:03:36 -0700 (PDT)
-Received: from [192.168.0.206] (unknown [179.221.49.143])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: koike)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4A3CF660708F;
-        Mon,  9 Oct 2023 02:03:32 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696813415;
-        bh=35nrW3gO/6HnAGH/9ZbIoMBKqyABKYke37kZEOGECPw=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=MWgvA4fPTMiJ8XcYVwh/DLS7FU9hQXlyHE4dJXuNACbckkLlDRQYceu18dvlYnFJy
-         zAUZd4TSSDFVxdMHjisTWWkHKg0bIv9RYS8HSYVYVTqeQuhOGZGqACQ2rCp+hXY0pB
-         sb0Q5tuoEPO+6OzYbb9hkwXRECy/Om6ll3OEN4HxpVDKdCWCctM9+kvw3W23p5e+JT
-         M91PF14Jg7BIqIRES7SfwCE5xP9KmpZswbtqGWkHEX4JZoOVdmbEjpehVxHYu7a8hw
-         fICgJpMHHraWGcfk1K+6Xd5w94zUt7ODAVw4LIwXqrxEEu/ZWEr82sPRE80HlEqG2q
-         b+kmCGWF1zcfw==
-Message-ID: <a8feac7b-11aa-495a-837c-e6083ac8fa03@collabora.com>
-Date:   Sun, 8 Oct 2023 22:03:27 -0300
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/ci: Uprev IGT to pull in fixes
-Content-Language: en-US
-From:   Helen Koike <helen.koike@collabora.com>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Rob Clark <robdclark@chromium.org>, linux-arm-msm@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        "open list:ARM/Rockchip SoC support" 
-        <linux-rockchip@lists.infradead.org>,
-        "moderated list:ARM/Rockchip SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Daniel Stone <daniels@collabora.com>
-References: <20230920180526.137369-1-robdclark@gmail.com>
- <CAF6AEGvUOX-D+-vwov-FDp46rJdo8wq1Do-9Gj3k5v313wVJhA@mail.gmail.com>
- <2ec320ca-d768-89ec-200f-695839e48538@collabora.com>
- <CAF6AEGvhav3kX0fRpjeGbJYqQ_J5gonng-wYjZUeRunOBuUC1A@mail.gmail.com>
- <7318d141-12b7-eab7-52dd-8953305d85c6@collabora.com>
-In-Reply-To: <7318d141-12b7-eab7-52dd-8953305d85c6@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Sun, 8 Oct 2023 21:08:31 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1876AAB
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 18:08:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696813709; x=1728349709;
+  h=date:from:to:cc:subject:message-id;
+  bh=AvMsdhFFcbx9jrUgVXoaekccRdtaiV6kHWVHO7Vhytw=;
+  b=KCJLond23hhaDpnsNmH6Yvlre8RLzE1RFmZRGvjLVOEo5TexbVojklnT
+   15YHyWinlw4YAe2AMkRaifu7md6+i7ngKoSvifBcZMXutmRJdwxea2cJX
+   Qd7lIG+wnPYyxaAWkJeKVu/RQ+ROsN2k1GeYnkdQPJC82hG77tDDPagMx
+   sw1Vd0ci8qly2ObYK2pDbshliPQwTGAPZCLAnoGJYjVPHB5I1o1fOqhbN
+   YsB6eh0Y+yIoTwOrF0ICG+jfMWmUfiGwS628Hy8DBVgBxIxDSmX+oeKWH
+   UFF0oM4ThQM9JPMDDFtYzPKAVxJ5xdDzeikN7mMD60Q0+x9e+s++ET6Ho
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="374369487"
+X-IronPort-AV: E=Sophos;i="6.03,209,1694761200"; 
+   d="scan'208";a="374369487"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2023 18:08:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="926598829"
+X-IronPort-AV: E=Sophos;i="6.03,209,1694761200"; 
+   d="scan'208";a="926598829"
+Received: from lkp-server01.sh.intel.com (HELO 8a3a91ad4240) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 08 Oct 2023 18:08:28 -0700
+Received: from kbuild by 8a3a91ad4240 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qpel0-0005vx-1Z;
+        Mon, 09 Oct 2023 01:08:26 +0000
+Date:   Mon, 09 Oct 2023 09:07:33 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ e5f83f51a48fa65e50f029ef43c7c7db6d234c45
+Message-ID: <202310090931.cRlSSfpC-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: e5f83f51a48fa65e50f029ef43c7c7db6d234c45  Merge branch into tip/master: 'x86/tdx'
 
+elapsed time: 857m
 
-On 20/09/2023 20:22, Helen Koike wrote:
-> 
-> 
-> On 20/09/2023 16:44, Rob Clark wrote:
->> On Wed, Sep 20, 2023 at 11:53 AM Helen Koike 
->> <helen.koike@collabora.com> wrote:
->>>
->>> Hi Rob,
->>>
->>> Thanks for the patch.
->>>
->>> On 20/09/2023 15:10, Rob Clark wrote:
->>>> On Wed, Sep 20, 2023 at 11:06 AM Rob Clark <robdclark@gmail.com> wrote:
->>>>>
->>>>> From: Rob Clark <robdclark@chromium.org>
->>>>>
->>>>> There have been a few igt test fixes compared to the commit that we 
->>>>> were
->>>>> currently using.  Pull in a newer igt and update expectations.
->>>>>
->>>>> Signed-off-by: Rob Clark <robdclark@chromium.org>
->>>>> ---
->>>
->>> Could you send here the url of a pipeline run with this change?
->>
->> https://gitlab.freedesktop.org/drm/msm/-/pipelines/989913
-> 
-> Thanks, lgtm.
-> 
-> Acked-by: Helen Koike <helen.koike@collabora.com>
+configs tested: 145
+configs skipped: 3
 
-Dear maintainers,
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-I talked with Rob, after his igt patch got merged, we made a few fixes 
-and updates to the xfails, so we are dropping this patch in favor of the 
-series:
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20231008   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                      jornada720_defconfig   gcc  
+arm                   randconfig-001-20231008   gcc  
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20231008   gcc  
+i386         buildonly-randconfig-002-20231008   gcc  
+i386         buildonly-randconfig-003-20231008   gcc  
+i386         buildonly-randconfig-004-20231008   gcc  
+i386         buildonly-randconfig-005-20231008   gcc  
+i386         buildonly-randconfig-006-20231008   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231008   gcc  
+i386                  randconfig-002-20231008   gcc  
+i386                  randconfig-003-20231008   gcc  
+i386                  randconfig-004-20231008   gcc  
+i386                  randconfig-005-20231008   gcc  
+i386                  randconfig-006-20231008   gcc  
+i386                  randconfig-011-20231008   gcc  
+i386                  randconfig-012-20231008   gcc  
+i386                  randconfig-013-20231008   gcc  
+i386                  randconfig-014-20231008   gcc  
+i386                  randconfig-015-20231008   gcc  
+i386                  randconfig-016-20231008   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231008   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                            ar7_defconfig   gcc  
+mips                    maltaup_xpa_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                     akebono_defconfig   clang
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+powerpc                  iss476-smp_defconfig   gcc  
+powerpc                         ps3_defconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20231008   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20231008   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                 kfr2r09-romimage_defconfig   gcc  
+sh                          r7785rp_defconfig   gcc  
+sh                           se7750_defconfig   gcc  
+sh                   sh7724_generic_defconfig   gcc  
+sh                   sh7770_generic_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                 randconfig-001-20231008   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20231008   gcc  
+x86_64       buildonly-randconfig-002-20231008   gcc  
+x86_64       buildonly-randconfig-003-20231008   gcc  
+x86_64       buildonly-randconfig-004-20231008   gcc  
+x86_64       buildonly-randconfig-005-20231008   gcc  
+x86_64       buildonly-randconfig-006-20231008   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231008   gcc  
+x86_64                randconfig-002-20231008   gcc  
+x86_64                randconfig-003-20231008   gcc  
+x86_64                randconfig-004-20231008   gcc  
+x86_64                randconfig-005-20231008   gcc  
+x86_64                randconfig-006-20231008   gcc  
+x86_64                randconfig-011-20231008   gcc  
+x86_64                randconfig-012-20231008   gcc  
+x86_64                randconfig-013-20231008   gcc  
+x86_64                randconfig-014-20231008   gcc  
+x86_64                randconfig-015-20231008   gcc  
+x86_64                randconfig-016-20231008   gcc  
+x86_64                randconfig-071-20231008   gcc  
+x86_64                randconfig-072-20231008   gcc  
+x86_64                randconfig-073-20231008   gcc  
+x86_64                randconfig-074-20231008   gcc  
+x86_64                randconfig-075-20231008   gcc  
+x86_64                randconfig-076-20231008   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
 
-	[PATCH 0/9] drm/ci: fixes and improvements
-
-https://lists.freedesktop.org/archives/dri-devel/2023-October/425909.html
-
-Thanks,
-Helen
-
-> 
->>
->> That was before I wrote a proper commit msg so you can ignore the
->> checkpatch job.. and there is an unrelated issue with the sdm845
->> runners not booting w/ v6.6-rc2, which still needs to be tracked down.
->>
->> BR,
->> -R
->>
->>>>>    drivers/gpu/drm/ci/gitlab-ci.yml               |  2 +-
->>>>>    .../gpu/drm/ci/xfails/amdgpu-stoney-fails.txt  |  4 ++--
->>>>>    drivers/gpu/drm/ci/xfails/i915-apl-fails.txt   | 11 -----------
->>>>>    drivers/gpu/drm/ci/xfails/i915-cml-fails.txt   |  2 +-
->>>>>    drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt   |  1 -
->>>>>    drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt | 18 
->>>>> +-----------------
->>>>>    .../drm/ci/xfails/rockchip-rk3288-fails.txt    |  2 ++
->>>>>    7 files changed, 7 insertions(+), 33 deletions(-)
->>>>>
->>>>> diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml 
->>>>> b/drivers/gpu/drm/ci/gitlab-ci.yml
->>>>> index 2c4df53f5dfe..3ecb5879e80f 100644
->>>>> --- a/drivers/gpu/drm/ci/gitlab-ci.yml
->>>>> +++ b/drivers/gpu/drm/ci/gitlab-ci.yml
->>>>> @@ -5,7 +5,7 @@ variables:
->>>>>      UPSTREAM_REPO: git://anongit.freedesktop.org/drm/drm
->>>>>      TARGET_BRANCH: drm-next
->>>>>
->>>>> -  IGT_VERSION: 471bfababd070e1dac0ebb87470ac4f2ae85e663
->>>>> +  IGT_VERSION: 2517e42d612e0c1ca096acf8b5f6177f7ef4bce7
->>>>>
->>>>>      DEQP_RUNNER_GIT_URL: 
->>>>> https://gitlab.freedesktop.org/anholt/deqp-runner.git
->>>>>      DEQP_RUNNER_GIT_TAG: v0.15.0
->>>>> diff --git a/drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt 
->>>>> b/drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt
->>>>> index bd9392536e7c..bab21930a0d4 100644
->>>>> --- a/drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt
->>>>> +++ b/drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt
->>>>> @@ -1,7 +1,6 @@
->>>>>    kms_addfb_basic@bad-pitch-65536,Fail
->>>>>    kms_addfb_basic@bo-too-small,Fail
->>>>>    kms_async_flips@invalid-async-flip,Fail
->>>>> -kms_atomic@plane-immutable-zpos,Fail
->>>>>    kms_atomic_transition@plane-toggle-modeset-transition,Fail
->>>>>    kms_bw@linear-tiling-1-displays-2560x1440p,Fail
->>>>>    kms_bw@linear-tiling-1-displays-3840x2160p,Fail
->>>>> @@ -11,9 +10,10 @@ kms_color@degamma,Fail
->>>>>    kms_cursor_crc@cursor-size-change,Fail
->>>>>    kms_cursor_crc@pipe-A-cursor-size-change,Fail
->>>>>    kms_cursor_crc@pipe-B-cursor-size-change,Fail
->>>>> -kms_cursor_legacy@forked-move,Fail
->>>>>    kms_hdr@bpc-switch,Fail
->>>>>    kms_hdr@bpc-switch-dpms,Fail
->>>>>    kms_plane_multiple@atomic-pipe-A-tiling-none,Fail
->>>>>    kms_rmfb@close-fd,Fail
->>>>>    kms_rotation_crc@primary-rotation-180,Fail
->>>>> +kms_flip@flip-vs-modeset-vs-hang,Fail
->>>>> +kms_flip@flip-vs-panning-vs-hang,Fail
->>>>> diff --git a/drivers/gpu/drm/ci/xfails/i915-apl-fails.txt 
->>>>> b/drivers/gpu/drm/ci/xfails/i915-apl-fails.txt
->>>>> index 46397ce38d5a..2e3b7c5dac3c 100644
->>>>> --- a/drivers/gpu/drm/ci/xfails/i915-apl-fails.txt
->>>>> +++ b/drivers/gpu/drm/ci/xfails/i915-apl-fails.txt
->>>>> @@ -8,13 +8,6 @@ kms_bw@linear-tiling-3-displays-3840x2160p,Fail
->>>>>    kms_bw@linear-tiling-4-displays-1920x1080p,Fail
->>>>>    kms_bw@linear-tiling-4-displays-2560x1440p,Fail
->>>>>    kms_bw@linear-tiling-4-displays-3840x2160p,Fail
->>>>> -kms_color@ctm-0-25,Fail
->>>>> -kms_color@ctm-0-50,Fail
->>>>> -kms_color@ctm-0-75,Fail
->>>>> -kms_color@ctm-max,Fail
->>>>> -kms_color@ctm-negative,Fail
->>>>> -kms_color@ctm-red-to-blue,Fail
->>>>> -kms_color@ctm-signed,Fail
->>>>>    
->>>>> kms_flip_scaled_crc@flip-32bpp-linear-to-64bpp-linear-downscaling,Fail
->>>>>    
->>>>> kms_flip_scaled_crc@flip-32bpp-linear-to-64bpp-linear-upscaling,Fail
->>>>>    
->>>>> kms_flip_scaled_crc@flip-32bpp-xtile-to-64bpp-xtile-downscaling,Fail
->>>>> @@ -38,8 +31,6 @@ 
->>>>> kms_flip_scaled_crc@flip-64bpp-ytile-to-32bpp-ytile-upscaling,Fail
->>>>>    
->>>>> kms_flip_scaled_crc@flip-64bpp-ytile-to-32bpp-ytilegen12rcccs-upscaling,Fail
->>>>>    
->>>>> kms_flip_scaled_crc@flip-64bpp-ytile-to-32bpp-ytilercccs-downscaling,Fail
->>>>>    
->>>>> kms_flip_scaled_crc@flip-64bpp-ytile-to-32bpp-ytilercccs-upscaling,Fail
->>>>> -kms_hdmi_inject@inject-4k,Timeout
->>>>> -kms_plane@plane-position-hole,Timeout
->>>>>    kms_plane_alpha_blend@alpha-basic,Fail
->>>>>    kms_plane_alpha_blend@alpha-opaque-fb,Fail
->>>>>    kms_plane_alpha_blend@alpha-transparent-fb,Fail
->>>>> @@ -53,6 +44,4 @@ kms_plane_alpha_blend@pipe-B-constant-alpha-max,Fail
->>>>>    kms_plane_alpha_blend@pipe-C-alpha-opaque-fb,Fail
->>>>>    kms_plane_alpha_blend@pipe-C-alpha-transparent-fb,Fail
->>>>>    kms_plane_alpha_blend@pipe-C-constant-alpha-max,Fail
->>>>> -kms_plane_multiple@tiling-y,Timeout
->>>>> -kms_pwrite_crc,Timeout
->>>>>    kms_sysfs_edid_timing,Fail
->>>>> diff --git a/drivers/gpu/drm/ci/xfails/i915-cml-fails.txt 
->>>>> b/drivers/gpu/drm/ci/xfails/i915-cml-fails.txt
->>>>> index 6139b410e767..13c0a25fc627 100644
->>>>> --- a/drivers/gpu/drm/ci/xfails/i915-cml-fails.txt
->>>>> +++ b/drivers/gpu/drm/ci/xfails/i915-cml-fails.txt
->>>>> @@ -1,4 +1,3 @@
->>>>> -kms_color@ctm-0-25,Fail
->>>>>    
->>>>> kms_flip_scaled_crc@flip-32bpp-linear-to-64bpp-linear-downscaling,Fail
->>>>>    
->>>>> kms_flip_scaled_crc@flip-32bpp-linear-to-64bpp-linear-upscaling,Fail
->>>>>    
->>>>> kms_flip_scaled_crc@flip-32bpp-xtile-to-64bpp-xtile-downscaling,Fail
->>>>> @@ -16,3 +15,4 @@ kms_plane_alpha_blend@alpha-basic,Fail
->>>>>    kms_plane_alpha_blend@alpha-opaque-fb,Fail
->>>>>    kms_plane_alpha_blend@alpha-transparent-fb,Fail
->>>>>    kms_plane_alpha_blend@constant-alpha-max,Fail
->>>>> +kms_async_flips@crc,Fail
->>>>> diff --git a/drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt 
->>>>> b/drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt
->>>>> index a6da5544e198..27bfca1c6f2c 100644
->>>>> --- a/drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt
->>>>> +++ b/drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt
->>>>> @@ -8,7 +8,6 @@ kms_bw@linear-tiling-4-displays-3840x2160p,Fail
->>>>>    kms_bw@linear-tiling-5-displays-1920x1080p,Fail
->>>>>    kms_bw@linear-tiling-5-displays-2560x1440p,Fail
->>>>>    kms_bw@linear-tiling-5-displays-3840x2160p,Fail
->>>>> -kms_color@ctm-0-25,Fail
->>>>>    kms_flip@flip-vs-panning-vs-hang,Timeout
->>>>>    
->>>>> kms_flip_scaled_crc@flip-32bpp-linear-to-64bpp-linear-downscaling,Fail
->>>>>    
->>>>> kms_flip_scaled_crc@flip-32bpp-linear-to-64bpp-linear-upscaling,Fail
->>>>> diff --git a/drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt 
->>>>> b/drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt
->>>>> index 410e0eeb3161..e59a2fddfde0 100644
->>>>> --- a/drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt
->>>>> +++ b/drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt
->>>>
->>>> Side note, I noticed for sc7180-skips (and a lot of other boards) we 
->>>> have:
->>>>
->>>> # Suspend to RAM seems to be broken on this machine
->>>> .*suspend.*
->>>>
->>>> Locally I've not had problems with the suspend tests, I'm guessing the
->>>> actual issue is usb-ethernet vs nfsroot.  But maybe the filesys for
->>>> igt jobs is small enough that we can do initramfs instead?  Someone
->>>> should probably confirm what the root issue is and update the
->>>> comments, so developers aren't thinking that suspend is something that
->>>> needs to be debugged
->>>
->>> Agreed.
->>>
->>> Regards,
->>> Helen
->>>
->>>>
->>>> BR,
->>>> -R
->>>>
->>>>
->>>>> @@ -4,20 +4,4 @@
->>>>>    # Test incorrectly assumes that CTM support implies gamma/degamma
->>>>>    # LUT support.  None of the subtests handle the case of only having
->>>>>    # CTM support
->>>>> -kms_color.*
->>>>> -
->>>>> -# 4k@60 is not supported on this hw, but driver doesn't handle it
->>>>> -# too gracefully.. https://gitlab.freedesktop.org/drm/msm/-/issues/15
->>>>> -kms_bw@linear-tiling-.*-displays-3840x2160p
->>>>> -
->>>>> -# Until igt fix lands: 
->>>>> https://patchwork.freedesktop.org/patch/493175/
->>>>> -kms_bw@linear-tiling-2.*
->>>>> -kms_bw@linear-tiling-3.*
->>>>> -kms_bw@linear-tiling-4.*
->>>>> -kms_bw@linear-tiling-5.*
->>>>> -kms_bw@linear-tiling-6.*
->>>>> -
->>>>> -# igt fix posted: https://patchwork.freedesktop.org/patch/499926/
->>>>> -# failure mode is flakey due to randomization but fails frequently
->>>>> -# enough to be detected as a Crash or occasionally UnexpectedPass.
->>>>> -kms_plane_multiple@atomic-pipe-A-tiling-none
->>>>> +#kms_color.*
->>>>> diff --git a/drivers/gpu/drm/ci/xfails/rockchip-rk3288-fails.txt 
->>>>> b/drivers/gpu/drm/ci/xfails/rockchip-rk3288-fails.txt
->>>>> index 2a1baa948e12..15ac861a58bf 100644
->>>>> --- a/drivers/gpu/drm/ci/xfails/rockchip-rk3288-fails.txt
->>>>> +++ b/drivers/gpu/drm/ci/xfails/rockchip-rk3288-fails.txt
->>>>> @@ -46,3 +46,5 @@ kms_properties@connector-properties-legacy,Crash
->>>>>    kms_properties@get_properties-sanity-atomic,Crash
->>>>>    kms_properties@get_properties-sanity-non-atomic,Crash
->>>>>    kms_setmode@invalid-clone-single-crtc,Crash
->>>>> +kms_flip@flip-vs-modeset-vs-hang,Crash
->>>>> +kms_flip@flip-vs-panning-vs-hang,Crash
->>>>> -- 
->>>>> 2.41.0
->>>>>
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
