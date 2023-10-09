@@ -2,184 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 838B37BDDA0
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:11:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B8F17BDDE4
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376784AbjJINLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 09:11:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54426 "EHLO
+        id S1376830AbjJINOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 09:14:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376915AbjJINLI (ORCPT
+        with ESMTP id S1376960AbjJINNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 09:11:08 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 938FD1AC;
-        Mon,  9 Oct 2023 06:10:31 -0700 (PDT)
-Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 399D7FAX012942;
-        Mon, 9 Oct 2023 15:10:12 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=dfLHM8Y/UzU7etH/A55fKiYTRZ0gEKXngehJqU3T/I4=; b=rl
-        PHqK7uLpGElo7aPc2ynDZjZdrdMI1PGlvuA8yPxnSS/0AZRuM/uMd/UPLm9rt0Wx
-        EuEeQZ1IK+8IUHZiBWhiThDPOHxnqGAGotdjN+QFeyq7marVITHx78VGcy2+SQIO
-        l/ikBrPFHjaDK0kyQnamiAaHyD4bfLSo9olcY+5GoQuCoKRwzUe5TVMZv4LgF9v3
-        5T3AFJr8yNHQbcBJmuK0xZJvw9QvdlKmxe84W50z+03p5gdtxiaAmiMvaIqH0cdt
-        jJ7oHazCg3ng0BHT5jP6ktR6fP5aMHlQEWjhU1K06PYcv8Q2GMElfefPD2b5MuH9
-        GSs96KProJ6rztMrpAYw==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3tkhk3d8vw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Oct 2023 15:10:12 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 056C310005E;
-        Mon,  9 Oct 2023 15:10:12 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id F0E38245508;
-        Mon,  9 Oct 2023 15:10:11 +0200 (CEST)
-Received: from [10.201.20.120] (10.201.20.120) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 9 Oct
- 2023 15:10:11 +0200
-Message-ID: <b4367291-9e9e-dae3-3b56-c487e714683c@foss.st.com>
-Date:   Mon, 9 Oct 2023 15:10:10 +0200
+        Mon, 9 Oct 2023 09:13:46 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1AB4FF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 06:13:36 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d8164e661abso4681709276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 06:13:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696857216; x=1697462016; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kKZKnrRJ3sYtky/2h2Hus8kthq+g2qZ6Wg41eu1H8Lg=;
+        b=bm00HPNOX1W0TXsn3nZTubMYOd4U2VYtG5z5sgnF3NZ3jNgl7keFI1QaIujZxL+Ul/
+         ULXUqfU/kXpd2NTSTjDQ7WNBx9AwRAxNy/OAWm6hqyKweQY8mwNpso13k6ZMtiyjep+E
+         y7TTA/n5PoAG4gGyquc4uJqn0Y3xF2wFzB1KiHMlkaO9Z0OoGCg4ccJ2gM67EsqEXW7q
+         9ZaEdmO/KI4ElXiMgsOIUSeC0lJRqaN9Hw7Xlg+f+0KvyLOH9Bx9o/LcVXUs2vkvm5X+
+         iFy7xmDb8h2x06/yh/zaB+7rdLwYjpkSCZt6oip+uFKX2gBSGV3GeofttNg3b6teJJLZ
+         OM4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696857216; x=1697462016;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kKZKnrRJ3sYtky/2h2Hus8kthq+g2qZ6Wg41eu1H8Lg=;
+        b=VTG1PsJ5LZqBsIjjRF3brAqeBb9bKGtfQK9o52YNXajx5UqO+5IR6EYcCI0KnK0rZR
+         uj8SnPxQTmo6LuFLvAswbXlPtu76pfXv2SmvEyRBqtSPyXVF/HbDBUl4DkKShF2KrkzP
+         zV+FURvegNNY1T3zfF4Q6eZB1gMh0xaQfL/Jd6HHPTC2TjqvV6hg5xJBuwrDuBTgTE6Y
+         vts/TMiz9C6ieyD54aC0W5QsTVzuC3PNlYjGQtuDausxY2HvGFZdXjXjInwPy2XVZJ4e
+         AKv10RtPFHfbvnL+z2/n/BTZfR5U9d9f3w2UTpVJrCRNt7Mie4Gncl2Psd4fBv6bxbMi
+         D7yA==
+X-Gm-Message-State: AOJu0Yzyt+NphUWwBnrZi7oU3/xaVYwEMFygRepzNVP6hUj81Ng8Maxi
+        O5gvMr8FZ3/HdfKynAq6MJ3Zx+6y3+muyOPVoj6Lzg==
+X-Google-Smtp-Source: AGHT+IGt4o+K7vRBblvmGc6ypN/viBqCTAHECrQcma5UGrocmzfjWytyeGJeKtv1Oy5/0dhqamzM1xbB19zZG60qbYE=
+X-Received: by 2002:a25:768d:0:b0:d7a:e0f6:54cc with SMTP id
+ r135-20020a25768d000000b00d7ae0f654ccmr14186498ybc.26.1696857216181; Mon, 09
+ Oct 2023 06:13:36 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 1/7] dt-bindings: media: Document STM32MP25 VDEC video
- decoder
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        <linux-media@vger.kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>
-CC:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-References: <20231004091552.3531659-1-hugues.fruchet@foss.st.com>
- <20231004091552.3531659-2-hugues.fruchet@foss.st.com>
- <d5dc9b70-00b5-4bda-8fe9-9438f19ecba6@linaro.org>
-From:   Hugues FRUCHET <hugues.fruchet@foss.st.com>
-In-Reply-To: <d5dc9b70-00b5-4bda-8fe9-9438f19ecba6@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.20.120]
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-09_11,2023-10-09_01,2023-05-22_02
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231005025843.508689-1-takahiro.akashi@linaro.org>
+ <20231005025843.508689-6-takahiro.akashi@linaro.org> <20231006132346.GA3426353-robh@kernel.org>
+ <CACRpkdaLsfSBEG-h9ZNT2_Lm8tW8AZO7tedDVNeuZoQAqSkyjw@mail.gmail.com> <ZSPDILYZkxvTnQia@e120937-lin>
+In-Reply-To: <ZSPDILYZkxvTnQia@e120937-lin>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 9 Oct 2023 15:13:24 +0200
+Message-ID: <CACRpkdY=eza0TuBRDb_cWk9LM2qNQg76rZSgWa-RP4TYLL=Ppw@mail.gmail.com>
+Subject: Re: [RFC v2 5/5] dt-bindings: gpio: Add bindings for pinctrl based
+ generic gpio driver
+To:     Cristian Marussi <cristian.marussi@arm.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        sudeep.holla@arm.com, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, Oleksii_Moisieiev@epam.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+On Mon, Oct 9, 2023 at 11:08=E2=80=AFAM Cristian Marussi
+<cristian.marussi@arm.com> wrote:
 
-On 10/5/23 21:45, Krzysztof Kozlowski wrote:
-> On 04/10/2023 11:15, Hugues Fruchet wrote:
->> Add STM32MP25 VDEC video decoder bindings.
->>
->> Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
->> ---
->>   .../bindings/media/st,stm32mp25-vdec.yaml     | 56 +++++++++++++++++++
->>   1 file changed, 56 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/media/st,stm32mp25-vdec.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/media/st,stm32mp25-vdec.yaml b/Documentation/devicetree/bindings/media/st,stm32mp25-vdec.yaml
->> new file mode 100644
->> index 000000000000..cf41f704113f
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/media/st,stm32mp25-vdec.yaml
->> @@ -0,0 +1,56 @@
->> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->> +
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/media/st,stm32mp25-vdec.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: STMicroelectronics STM32MP25 VDEC video decoder
->> +
->> +maintainers:
->> +  - Hugues Fruchet <hugues.fruchet@foss.st.com>
->> +
->> +description:
->> +  The STMicroelectronics STM32MP25 SOCs embeds a VDEC video hardware decoder
->> +  peripheral based on Verisilicon VC8000NanoD IP (former Hantro G1).
->> +
->> +properties:
->> +  compatible:
->> +    const: st,stm32mp25-vdec
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  interrupts:
->> +    maxItems: 1
->> +
->> +  interrupt-names:
->> +    maxItems: 1
-> 
-> This must be specific or just drop (little use of names for one entry)
-I'll drop in v2.
+> > > +    gpio0: gpio@0 {
+> > > +        compatible =3D "pin-control-gpio";
+> > > +        gpio-controller;
+> > > +        #gpio-cells =3D <2>;
+> > > +        gpio-ranges =3D <&scmi_pinctrl 0 10 5>,
+> > > +                      <&scmi_pinctrl 5 0 0>;
+> > > +        gpio-ranges-group-names =3D "",
+> > > +                                  "pinmux_gpio";
+> > > +    };
+> >
+>
+> Assuming the above &scmi_pinctrl refers to the protocol node as we
+> usually do,
 
-> 
->> +
->> +  clocks:
->> +    maxItems: 1
->> +
->> +  clock-names:
->> +    maxItems: 1
-> 
-> Same problem.
-I'll drop in v2.
+No it does not, it is a three-layer cake.
 
-> 
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - interrupts
->> +  - interrupt-names
->> +  - clocks
->> +  - clock-names
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
->> +    vdec: vdec@580d0000 {
-> 
-> Drop label. Node name: video-codec
-> (assuming this is video coder/decoder)
-> 
-> Node names should be generic. See also an explanation and list of
-> examples (not exhaustive) in DT specification:
-> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-I'll do in v2, thanks for pointing-out the "video-codec" generic name.
+scmi <-> scmi_pinctrl <-> scmi_gpio
 
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
+it refers to the scmi_pinctrl node.
 
-BR,
-Hugues.
+There is no SCMI GPIO protocol, instead SCMI is using the
+operations already available in the pin controller to exercise
+GPIO. Generic pin control has operations to drive lines for
+example, and Takahiro is adding the ability for a generic pin
+controller to also read a line.
+
+Yours,
+Linus Walleij
