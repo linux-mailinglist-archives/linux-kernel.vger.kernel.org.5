@@ -2,169 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 112397BD331
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 08:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C21A7BD335
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 08:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345207AbjJIGPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 02:15:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58914 "EHLO
+        id S1345213AbjJIGQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 02:16:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345176AbjJIGPB (ORCPT
+        with ESMTP id S1345193AbjJIGQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 02:15:01 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 965AEAB
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 23:14:58 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99357737980so720703866b.2
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 23:14:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696832097; x=1697436897; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=P23SOHfgTa3e7Ak8Wub57wHs43gpPbuk/YCIa0JR4k8=;
-        b=i2scqwCvW11zGtYa9YlkIJYeoduJcaxgkCP9345YIKfrvchxywKGNwNbSq/sD39mul
-         UgL9yFAqhCDWUnrwR1gg+bqHLecec0f5cp8jjqlRlxiTT6Lfdta2m+d8W4U8xtt/41a+
-         IXZhtugmO7DAaMccfZQ4DJXfq1u1qn3LjVmzV9O33dUGBnd2Dr/nMXk82jSZAqFpI4K5
-         9DZTjzqmYkjETJCJzxUg7O5NGkNV9m7CNgRiyTAz5kTLEHb2llSrd/aoS1duevDGvZI5
-         KcXhdBSNwv/DaoTZv6QduZ5vJViUvlpefLxXyXJbGNaM8MR9jiUTQGIyMD5udA9XiaRO
-         c9pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696832097; x=1697436897;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P23SOHfgTa3e7Ak8Wub57wHs43gpPbuk/YCIa0JR4k8=;
-        b=BfsR/DvQHYSXJVcn4JZJWd8wAOj1IDmoEbPv+cAiDiKc5mjCI5syqM70bEfhaZQMDl
-         KUxkSnZsadpZf+mt9kJeNO+atWltwod0fwV2QJ8UJJrE13QlU7Dg6HJbcPACsbOXTmmF
-         9g2u4UnxXprfIg2bbDCfWoWzLx/N8f6SPO3sr8IuLQBP1FFPCL/qEXUn72+J9VJoJd1N
-         Ajr+WyqAJ9gPVT1zguCt9z28Zkoyo1vLDTOYXRLWutTq5dMs+dI2+QVecUrbf0eKNl7H
-         VSRszMo9QPk6Zcpw7mKQNOLtT7Le+ent8wAJELdCpPdsCNzYcSW/Iuh3L+zFTDpSJgHI
-         GYuQ==
-X-Gm-Message-State: AOJu0YwtQ89BvSjk+EsQu6axQOUG2eFYDnujkmn0GB044oGBchY5Pjte
-        yaoHcG9KsPGF1KqjyfMWwM6M3kDc4A==
-X-Google-Smtp-Source: AGHT+IH9dYLjKjyRbNLNxCGr2aitLHgL/WpSDYrBjYwtMgmm0ESrkkcaR7vIKbmh3YnCCkjUMn1Eug==
-X-Received: by 2002:a17:906:30db:b0:9b2:f941:6916 with SMTP id b27-20020a17090630db00b009b2f9416916mr13677295ejb.17.1696832096832;
-        Sun, 08 Oct 2023 23:14:56 -0700 (PDT)
-Received: from p183 ([46.53.254.83])
-        by smtp.gmail.com with ESMTPSA id f16-20020a1709062c5000b00992e94bcfabsm6261019ejh.167.2023.10.08.23.14.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Oct 2023 23:14:55 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 09:14:53 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org, hughd@google.com,
-        swarupkotikalapudi@gmail.com
-Subject: Re: + selftests-proc-add-proc-pid-statm-output-validation.patch
- added to mm-nonmm-unstable branch
-Message-ID: <9ce82fc2-4e09-40c4-b5a5-a9a049c2f493@p183>
-References: <20231004201701.87CB5C433C7@smtp.kernel.org>
+        Mon, 9 Oct 2023 02:16:10 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADCCA9E;
+        Sun,  8 Oct 2023 23:16:08 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 399381Uf008612;
+        Mon, 9 Oct 2023 06:15:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=9xnVisqg50meGti2HSYLDC8UjxUYc57KFi5Pop78p1k=;
+ b=gUKlDjsIfftvMEtMneRE2nDEYXIMWKgG5SQ078XvvAZhXpJgvkRQVA6HSoHY06SMkVxC
+ lRvQHuzveCxpaJI6Yfwous5aT+Lg2zzf+rKaiT0yybgOjgD2jwOL9tKMLMGK8poze/36
+ 1PPFXMdJsXq9YE04lKnCznHblswSyaax8w0yalZtz36Oithw07C243QVQKEtJUNRf5pG
+ yCXNd7+X/7H4GVZaNJuE4brq8Qfx+xEl/5OO6/EvmYF6ywySoxZ4DOj3pwQ78xMTTSnM
+ 7J+xuF/uLS5vBkU6IqAfxfDHstk2AynHEvRUhpv3mzBkYnve12rkvKDBiRG0LQZnDwzX 9A== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tkh3s1nc3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 09 Oct 2023 06:15:40 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3996FdEJ013455
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 9 Oct 2023 06:15:39 GMT
+Received: from [10.201.200.63] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Sun, 8 Oct
+ 2023 23:15:32 -0700
+Message-ID: <3492bff2-5d81-4bd4-a53c-b46513c40b5a@quicinc.com>
+Date:   Mon, 9 Oct 2023 11:45:25 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231004201701.87CB5C433C7@smtp.kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6/6] arm64: dts: qcom: ipq5018: Enable PCIe
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <lpieralisi@kernel.org>, <kw@linux.com>,
+        <robh@kernel.org>, <bhelgaas@google.com>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <vkoul@kernel.org>, <kishon@kernel.org>, <mani@kernel.org>,
+        <p.zabel@pengutronix.de>, <quic_srichara@quicinc.com>,
+        <quic_varada@quicinc.com>, <quic_ipkumar@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>
+References: <20231003120846.28626-1-quic_nsekar@quicinc.com>
+ <20231003120846.28626-7-quic_nsekar@quicinc.com>
+ <54ed2500-1d06-4f36-b2c5-418b878e9de4@linaro.org>
+From:   Nitheesh Sekar <quic_nsekar@quicinc.com>
+In-Reply-To: <54ed2500-1d06-4f36-b2c5-418b878e9de4@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: XFJUgqDogRhEwILorPzdADmtqwqn8Fgx
+X-Proofpoint-ORIG-GUID: XFJUgqDogRhEwILorPzdADmtqwqn8Fgx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-09_04,2023-10-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 malwarescore=0 mlxscore=0 spamscore=0 adultscore=0
+ suspectscore=0 phishscore=0 mlxlogscore=619 bulkscore=0 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310090053
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 01:17:00PM -0700, Andrew Morton wrote:
-> 
-> The patch titled
->      Subject: selftests: proc: add /proc/$(pid)/statm output validation
-> has been added to the -mm mm-nonmm-unstable branch.  Its filename is
->      selftests-proc-add-proc-pid-statm-output-validation.patch
-> 
-> This patch will shortly appear at
->      https://git.kernel.org/pub/scm/linux/kernel/git/akpm/25-new.git/tree/patches/selftests-proc-add-proc-pid-statm-output-validation.patch
-> 
-> This patch will later appear in the mm-nonmm-unstable branch at
->     git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
-> 
-> Before you just go and hit "reply", please:
->    a) Consider who else should be cc'ed
->    b) Prefer to cc a suitable mailing list as well
->    c) Ideally: find the original patch on the mailing list and do a
->       reply-to-all to that, adding suitable additional cc's
-> 
-> *** Remember to use Documentation/process/submit-checklist.rst when testing your code ***
-> 
-> The -mm tree is included into linux-next via the mm-everything
-> branch at git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
-> and is updated there every 2-3 working days
-> 
-> ------------------------------------------------------
-> From: Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
-> Subject: selftests: proc: add /proc/$(pid)/statm output validation
-> Date: Wed, 4 Oct 2023 01:13:19 +0530
-> 
-> Add /proc/${pid}/statm validation
-> 
-> /proc/$(pid)/statm output is expected to be:
->  "0 0 0 * 0 0 0\n"
-> Here * can be any value
-> 
-> Read output of /proc/$(pid)/statm and check except for 4th position, all
-> other positions have value zero.
-> 
-> Link: https://lkml.kernel.org/r/20231003194319.602646-1-swarupkotikalapudi@gmail.com
-> Signed-off-by: Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
-> Cc: Alexey Dobriyan <adobriyan@gmail.com>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Shuah Khan <shuah@kernel.org>
-> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> ---
-> 
->  tools/testing/selftests/proc/proc-empty-vm.c |   57 +++++++++++++++--
->  1 file changed, 52 insertions(+), 5 deletions(-)
-> 
-> --- a/tools/testing/selftests/proc/proc-empty-vm.c~selftests-proc-add-proc-pid-statm-output-validation
-> +++ a/tools/testing/selftests/proc/proc-empty-vm.c
-> @@ -303,6 +303,56 @@ static int test_proc_pid_smaps_rollup(pi
->  	}
->  }
->  
-> +static int test_proc_pid_statm(pid_t pid)
-> +{
-> +	char buf[4096];
-> +	char *tok;
-> +	char *string;
-> +	int non_zero_value_indx = 4;
-> +	int i = 1;
-> +
-> +	snprintf(buf, sizeof(buf), "/proc/%u/statm", pid);
-> +
-> +	/*
-> +	 *  Output can be "0 0 0 2 0 0 0\n" where "2" can be anything.
-> +	 */
-> +	int fd = open(buf, O_RDONLY);
-> +
-> +	if (fd == -1) {
-> +		if (errno == ENOENT) {
-> +			/*
-> +			 * /proc/${pid}/statm is under CONFIG_PROC_PAGE_MONITOR,
-> +			 * it doesn't necessarily exist.
-> +			 */
-> +			return EXIT_SUCCESS;
-> +		}
-> +		perror("open /proc/${pid}/statm");
-> +		return EXIT_FAILURE;
-> +	} else {
-> +		ssize_t rv = read(fd, buf, sizeof(buf));
-> +
-> +		close(fd);
-> +		assert(rv);
-> +		string = buf;
-> +
-> +		while ((tok = strsep(&string, " ")) != NULL) {
 
-This is unreliable too. read() doesn't terminate the buffer so this relies
-on termination from
+On 10/7/2023 5:57 AM, Konrad Dybcio wrote:
+> On 3.10.2023 14:08, Nitheesh Sekar wrote:
+>> Enable the PCIe controller and PHY nodes for RDP 432-c2.
+>>
+>> Signed-off-by: Nitheesh Sekar <quic_nsekar@quicinc.com>
+>> ---
+>>   arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts | 9 +++++++++
+>>   1 file changed, 9 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts b/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
+>> index e636a1cb9b77..be7d92700517 100644
+>> --- a/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
+>> +++ b/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
+>> @@ -28,6 +28,15 @@
+>>   	status = "okay";
+>>   };
+>>   
+>> +&pcie_x2 {
+>> +	status = "ok";
+> "okay" is preferred
+>
+> It's also preferred to keep status as the last property within
+> a node.
+>
+> Konrad
 
-	snprintf(buf, sizeof(buf), "/proc/%u/statm", pid);
+Sure. will update.
 
-Buggy kernel could return a lot of data and overwrite it.
+Thanks,
+Nitheesh
+
