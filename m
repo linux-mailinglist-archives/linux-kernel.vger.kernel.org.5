@@ -2,75 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A92B7BE754
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 391687BE757
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377781AbjJIREY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 13:04:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52084 "EHLO
+        id S1377353AbjJIRGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 13:06:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377770AbjJIREV (ORCPT
+        with ESMTP id S1377233AbjJIRGT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 13:04:21 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E2AE0;
-        Mon,  9 Oct 2023 10:04:19 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5a200028437so59285467b3.1;
-        Mon, 09 Oct 2023 10:04:19 -0700 (PDT)
+        Mon, 9 Oct 2023 13:06:19 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC91B0;
+        Mon,  9 Oct 2023 10:06:17 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-58d26cfe863so593618a12.2;
+        Mon, 09 Oct 2023 10:06:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696871059; x=1697475859; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GrtA6lKuYWUe++j58BXstURMH0ObpUyX8a0STO/sotc=;
-        b=K6jLv5cdIQU+SaHszFfqY1VFnxkSC3nwghT0YoNrHAE0NRDR7mpix5d+HXaQU17Lk0
-         06BDVP47MPdCpLivJciHNdpJKrJU+3UgNY+ZaFDYEsX7t0S/lHAgmAJbjzVYdxPosgdc
-         jDXGgrtorFpN8Xuft8/7ZFP0PRqXhmCSWw35z60A+BB6l+zfr2iUjQIOxNfsGLFMv6Dl
-         bE2czH9gv2BbpuB/2tQCH1UyxC9BhVA+XVM0dcRiIY8NZtK3MepgiTQO8Bm5divKxVbT
-         UgMtWE4PnqoKIyh45djGZ2OsvPavSS9u3eP6lW6HMoz8y3xpiurw4S76YKuhmcxr4AsR
-         BIlA==
+        d=gmail.com; s=20230601; t=1696871176; x=1697475976; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=alAM6VWvT7w5zEUZ/EOiNWxb+e/a+sG0fmbQb63mpTg=;
+        b=XzOEWQrSyyQgDG6RibL9RbtzFZ/GgxFcXLdL82l2fAFWNyd52gsnRnHLieMFVOOu57
+         EWCxNS8AzG+Dfi2Ljy14q0ZStcB/uhHDGoi+UpaIdv4eRzpczhC0TMr5ufewokxghbMj
+         MmLo1mhs+kL6dmqJncTJgnajc2iWMgSzYaAy1k0TpBZANItuewYnrXq6AyVT0LeCK37w
+         HE6RV3fR5AZxv/dIIgWt0Fzc+qtZN4Eur20ZILyj7O3IAv6In9xKvCN+kLF4ftZLsggq
+         mW6CZUfqtUdPpUI3rK4qhmh6kXJ4BAY7rvJUrWDFU5xcily7tw2y/8nUAjQR6t0To96k
+         lnSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696871059; x=1697475859;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GrtA6lKuYWUe++j58BXstURMH0ObpUyX8a0STO/sotc=;
-        b=vDEYQ7xDJksEXZmSEP2IsSjXR68hzcNxTEt305bPOCqk83aCsLmvP+PHcsWaOY0Gys
-         M3XIFBY6lgcSAjQawBpEEDZxlJNejE2Mpv10V3BU/rsXpo6Af9pVe3/m+ukX77xfpqL1
-         yDsz0koSygjyC7EzU/qXNak5CqXXBf0IB3OfKMGUwaZaXl2/1izw+0tPEUmixOmopPOB
-         XL/ZGZSEBaemI8RDgLfZxYrLU8YTqv5LpZidh88gWPozD15wfFqF/gdveOhdkzeOKWsL
-         yZAvH/JFJ9mEu4KmnD4l4r1cmzjRpnYGdFkjd6g9Ch7WYwfwTH7xa1r9cK0fm1xHLvN4
-         E6hg==
-X-Gm-Message-State: AOJu0Yyzb0HR1tIwalnFmUcTKyipL53GOgHOkSXjx7Nu309gaxcj+EOF
-        Y4v8MOuwqpDI+WpakKn4iOk=
-X-Google-Smtp-Source: AGHT+IFCaKLUIQtaVFO6RZQ7mzNkB38jHP0WXbG7WaO+K53JI2BYGR30cn9swjnv1mxH93LfVRqHVw==
-X-Received: by 2002:a0d:f542:0:b0:59f:5361:d18c with SMTP id e63-20020a0df542000000b0059f5361d18cmr15848023ywf.41.1696871058634;
-        Mon, 09 Oct 2023 10:04:18 -0700 (PDT)
-Received: from localhost ([2607:fb90:be22:da0:a050:8c3a:c782:514b])
-        by smtp.gmail.com with ESMTPSA id g192-20020a0dddc9000000b0054bfc94a10dsm3799789ywe.47.2023.10.09.10.04.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 10:04:18 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 10:04:16 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Alexander Potapenko <glider@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@kernel.org>,
-        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        netdev@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        dm-devel@redhat.com, ntfs3@lists.linux.dev,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 08/14] bitmap: introduce generic optimized bitmap_size()
-Message-ID: <ZSQykJtkemZTiYHP@yury-ThinkPad>
-References: <20231009151026.66145-1-aleksander.lobakin@intel.com>
- <20231009151026.66145-9-aleksander.lobakin@intel.com>
+        d=1e100.net; s=20230601; t=1696871176; x=1697475976;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=alAM6VWvT7w5zEUZ/EOiNWxb+e/a+sG0fmbQb63mpTg=;
+        b=urfzjYtctYIRziXx/6p0w04fB4mYRHuGh5UQ91z+sXVYmUXigR6zjVyQONiQluR08w
+         yiBx3CIe7DPopT0Od12t35YeVFUut3Ofb+GMMkt4+CwF2qUAOwqZIrer8WUA8Tbn1DN5
+         q2XtPMnjQRoh8yTRlng1NmFHq0GON94ludI7jSfUTBQXnbM2V9JO8KnRaYwyVd9Z2i1K
+         wMgzV0JmGJWorC6huO2kF6qiB744mrDHkyhcPo7m//dgBUc9t/KiX0IXfU6Q7Ne9uiIv
+         Dka8NWwFvmWq0BGIUmMCc9dOXNZBFOiBT606K+Fu2LhSgmo8iu4lHwaIUj3ok/QRCjpW
+         ET+A==
+X-Gm-Message-State: AOJu0YzvqzRCPiDjvpgl/DhvcMoOJ8TD+cGVYCUB2m6kReBRXNYRIzxa
+        /+obHPfhkkG5M/2yIc21Nyl+1UOSOZKSu15MoyE6YMnGDek=
+X-Google-Smtp-Source: AGHT+IH6QxZ3mx0DIzoTCEKf3EGXdsoPVbvKtwcSvIpq93komXDs8RQpUCraup1ygBbMl1MwougJSd3FlV2lcEsIxKw=
+X-Received: by 2002:a17:90a:fb83:b0:262:ded7:63d with SMTP id
+ cp3-20020a17090afb8300b00262ded7063dmr13683164pjb.17.1696871176124; Mon, 09
+ Oct 2023 10:06:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231009151026.66145-9-aleksander.lobakin@intel.com>
+From:   Manish Shakya <manishshakya.nd@gmail.com>
+Date:   Mon, 9 Oct 2023 13:06:04 -0400
+Message-ID: <CAAPJt9JsAE6Q7ce8fRraw6-AcZm=_4tdfPaCBMSrSLJp+G=J4w@mail.gmail.com>
+Subject: zynq7k: boot failure at internal_create_group
+To:     kernel-testers@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -81,174 +62,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 05:10:20PM +0200, Alexander Lobakin wrote:
-> The number of times yet another open coded
-> `BITS_TO_LONGS(nbits) * sizeof(long)` can be spotted is huge.
-> Some generic helper is long overdue.
+I have a zynq 7020 embedded board running openwrt with 5.15.118
+kernel. When I do a power cycle test, the board generally boots up but
+occasionally fails with following logs.
 
-OK, I see your point. Indeed, opencoding this again and again may be
-annoying. 
+[    0.730000] 8<--- cut here ---
+[    0.740000] Unable to handle kernel paging request at virtual
+address ffffffff
+[    0.740000] pgd = (ptrval)
+[    0.750000] [ffffffff] *pgd=200f6861, *pte=00000000, *ppte=00000000
+[    0.750000] Internal error: Oops: 37 [#1] SMP ARM
+[    0.750000] Modules linked in:
+[    0.750000] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.15.118 #0
+[    0.750000] Hardware name: Xilinx Zynq Platform
+[    0.750000] PC is at internal_create_group+0x94/0x3ac
+[    0.750000] LR is at internal_create_group+0x78/0x3ac
+[    0.750000] pc : [<c02b68f0>]    lr : [<c02b68d4>]    psr: a0000053
+[    0.750000] sp : c0055e30  ip : 00000000  fp : 00000000
+[    0.750000] r10: c083efe0  r9 : c0f88d68  r8 : c0fc0044
+[    0.750000] r7 : 00000000  r6 : c097d3f4  r5 : ffffffff  r4 : c0fc0000
+[    0.750000] r3 : 00000000  r2 : 00000000  r1 : 00000000  r0 : c0f88d68
+[    0.750000] Flags: NzCv  IRQs on  FIQs off  Mode SVC_32  ISA ARM
+Segment none
+[    0.750000] Control: 18c5387d  Table: 0020404a  DAC: 00000051
+[    0.750000] Register r0 information: slab kernfs_node_cache start
+c0f88d68 pointer offset 0
+[    0.750000] Register r1 information: NULL pointer
+[    0.750000] Register r2 information: NULL pointer
+[    0.750000] Register r3 information: NULL pointer
+[    0.750000] Register r4 information: slab request_queue start
+c0fc0000 pointer offset 0
+[    0.750000] Register r5 information: non-paged memory
+[    0.750000] Register r6 information: non-slab/vmalloc memory
+[    0.750000] Register r7 information: NULL pointer
+[    0.750000] Register r8 information: slab request_queue start
+c0fc0000 pointer offset 68
+[    0.750000] Register r9 information: slab kernfs_node_cache start
+c0f88d68 pointer offset 0
+[    0.750000] Register r10 information: non-slab/vmalloc memory
+[    0.750000] Register r11 information: NULL pointer
+[    0.750000] Register r12 information: NULL pointer
+[    0.750000] Process swapper/0 (pid: 1, stack limit = 0x(ptrval))
+[    0.750000] Stack: (0xc0055e30 to 0xc0056000)
+[    0.750000] 5e20:                                     c097e580
+c097e580 c0fc0044 00000000
+[    0.750000] 5e40: 00000000 00000000 00000000 00000000 c0a40368
+c0fc0000 00000000 c0a40368
+[    0.750000] 5e60: c0fc0044 c0fc0470 c0a40368 c083efe0 00000000
+c0368e58 c0f55240 c0a40340
+[    0.750000] 5e80: c0a40340 c09c58d0 00000000 c0a40368 c083efe0
+c037a9e4 c0f55240 00000004
+[    0.750000] 5ea0: c0f5f5c0 00000000 c0f5524c c0995020 c083efe0
+c043ffcc c0a10b28 306d6172
+[    0.750000] 5ec0: c0753000 c0253348 c0a12220 c0a10b28 c0a12220
+c0334360 c0995008 7450f831
+[    0.750000] 5ee0: c0983f70 c09c6e68 00000001 c0983f78 c083701c
+c081eec8 c0995008 c081edf8
+[    0.750000] 5f00: ffffe000 00000000 c083701c c01017ec c01751d0
+00000000 00000081 00000000
+[    0.750000] 5f20: c003f2e0 c003f2e6 c07c305c 00000080 00000081
+c013ca18 c0761f90 00000000
+[    0.750000] 5f40: 00000006 00000006 c003f2e6 00000000 c083ec44
+00000081 c003f280 7450f831
+[    0.750000] 5f60: 00000006 00000081 c003f280 c083703c 00000006
+c08013d0 00000006 00000006
+[    0.750000] 5f80: 00000000 c0800524 00000000 c0669474 00000000
+00000000 00000000 00000000
+[    0.750000] 5fa0: 00000000 c0669488 00000000 c0100130 00000000
+00000000 00000000 00000000
+[    0.750000] 5fc0: 00000000 00000000 00000000 00000000 00000000
+00000000 00000000 00000000
+[    0.750000] 5fe0: 00000000 00000000 00000000 00000000 00000013
+00000000 00000000 00000000
+[    0.750000] [<c02b68f0>] (internal_create_group) from [<c0368e58>]
+(blk_register_queue+0x5c/0x194)
+[    0.750000] [<c0368e58>] (blk_register_queue) from [<c037a9e4>]
+(device_add_disk+0x1a4/0x3f0)
+[    0.750000] [<c037a9e4>] (device_add_disk) from [<c043ffcc>]
+(brd_alloc+0x220/0x2a8)
+[    0.750000] [<c043ffcc>] (brd_alloc) from [<c081eec8>] (brd_init+0xd0/0x150)
+[    0.750000] [<c081eec8>] (brd_init) from [<c01017ec>]
+(do_one_initcall+0x54/0x1f4)
+[    0.750000] [<c01017ec>] (do_one_initcall) from [<c08013d0>]
+(kernel_init_freeable+0x228/0x27c)
+[    0.750000] [<c08013d0>] (kernel_init_freeable) from [<c0669488>]
+(kernel_init+0x14/0x124)
+[    0.750000] [<c0669488>] (kernel_init) from [<c0100130>]
+(ret_from_fork+0x14/0x24)
+[    0.750000] Exception stack(0xc0055fb0 to 0xc0055ff8)
+[    0.750000] 5fa0:                                     00000000
+00000000 00000000 00000000
+[    0.750000] 5fc0: 00000000 00000000 00000000 00000000 00000000
+00000000 00000000 00000000
+[    0.750000] 5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[    0.750000] Code: e3550000 e59d301c e58d3010 0a000042 (e5953000)
+[    0.760000] ---[ end trace a4ae197d2ac7d4bd ]---
+[    0.770000] Kernel panic - not syncing: Fatal exception
+[    0.770000] Rebooting in 1 seconds..
+[    0.770000] Reboot failed -- System halted
 
-Acked-by: Yury Norov <yury.norov@gmail.com>
- 
-> Add one, bitmap_size(), but with one detail.
-> BITS_TO_LONGS() uses DIV_ROUND_UP(). The latter works well when both
-> divident and divisor are compile-time constants or when the divisor
-> is not a pow-of-2. When it is however, the compilers sometimes tend
-> to generate suboptimal code (GCC 13):
-> 
-> 48 83 c0 3f          	add    $0x3f,%rax
-> 48 c1 e8 06          	shr    $0x6,%rax
-> 48 8d 14 c5 00 00 00 00	lea    0x0(,%rax,8),%rdx
-> 
-> %BITS_PER_LONG is always a pow-2 (either 32 or 64), but GCC still does
-> full division of `nbits + 63` by it and then multiplication by 8.
-> Instead of BITS_TO_LONGS(), use ALIGN() and then divide by 8. GCC:
-> 
-> 8d 50 3f             	lea    0x3f(%rax),%edx
-> c1 ea 03             	shr    $0x3,%edx
-> 81 e2 f8 ff ff 1f    	and    $0x1ffffff8,%edx
-> 
-> Now it divides `nbits + 63` by 8 and then masks bits[2:0].
-> bloat-o-meter:
-> 
-> add/remove: 0/0 grow/shrink: 20/133 up/down: 156/-773 (-617)
-> 
-> Clang does it better and generates the same code before/after starting
-> from -O1, except that with the ALIGN() approach it uses %edx and thus
-> still saves some bytes:
-> 
-> add/remove: 0/0 grow/shrink: 9/133 up/down: 18/-538 (-520)
-> 
-> Note that we can't expand DIV_ROUND_UP() by adding a check and using
-> this approach there, as it's used in array declarations where
-> expressions are not allowed.
-> Add this helper to tools/ as well.
-> 
-> Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-> ---
->  drivers/md/dm-clone-metadata.c | 5 -----
->  include/linux/bitmap.h         | 8 +++++---
->  include/linux/cpumask.h        | 2 +-
->  lib/math/prime_numbers.c       | 2 --
->  tools/include/linux/bitmap.h   | 8 +++++---
->  5 files changed, 11 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/md/dm-clone-metadata.c b/drivers/md/dm-clone-metadata.c
-> index c43d55672bce..47c1fa7aad8b 100644
-> --- a/drivers/md/dm-clone-metadata.c
-> +++ b/drivers/md/dm-clone-metadata.c
-> @@ -465,11 +465,6 @@ static void __destroy_persistent_data_structures(struct dm_clone_metadata *cmd)
->  
->  /*---------------------------------------------------------------------------*/
->  
-> -static size_t bitmap_size(unsigned long nr_bits)
-> -{
-> -	return BITS_TO_LONGS(nr_bits) * sizeof(long);
-> -}
-> -
->  static int __dirty_map_init(struct dirty_map *dmap, unsigned long nr_words,
->  			    unsigned long nr_regions)
->  {
-> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-> index 03644237e1ef..63e422f8ba3d 100644
-> --- a/include/linux/bitmap.h
-> +++ b/include/linux/bitmap.h
-> @@ -237,9 +237,11 @@ extern int bitmap_print_list_to_buf(char *buf, const unsigned long *maskp,
->  #define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
->  #define BITMAP_LAST_WORD_MASK(nbits) (~0UL >> (-(nbits) & (BITS_PER_LONG - 1)))
->  
-> +#define bitmap_size(nbits)	(ALIGN(nbits, BITS_PER_LONG) / BITS_PER_BYTE)
-> +
->  static inline void bitmap_zero(unsigned long *dst, unsigned int nbits)
->  {
-> -	unsigned int len = BITS_TO_LONGS(nbits) * sizeof(unsigned long);
-> +	unsigned int len = bitmap_size(nbits);
->  
->  	if (small_const_nbits(nbits))
->  		*dst = 0;
-> @@ -249,7 +251,7 @@ static inline void bitmap_zero(unsigned long *dst, unsigned int nbits)
->  
->  static inline void bitmap_fill(unsigned long *dst, unsigned int nbits)
->  {
-> -	unsigned int len = BITS_TO_LONGS(nbits) * sizeof(unsigned long);
-> +	unsigned int len = bitmap_size(nbits);
->  
->  	if (small_const_nbits(nbits))
->  		*dst = ~0UL;
-> @@ -260,7 +262,7 @@ static inline void bitmap_fill(unsigned long *dst, unsigned int nbits)
->  static inline void bitmap_copy(unsigned long *dst, const unsigned long *src,
->  			unsigned int nbits)
->  {
-> -	unsigned int len = BITS_TO_LONGS(nbits) * sizeof(unsigned long);
-> +	unsigned int len = bitmap_size(nbits);
->  
->  	if (small_const_nbits(nbits))
->  		*dst = *src;
-> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-> index f10fb87d49db..dbdbf1451cad 100644
-> --- a/include/linux/cpumask.h
-> +++ b/include/linux/cpumask.h
-> @@ -821,7 +821,7 @@ static inline int cpulist_parse(const char *buf, struct cpumask *dstp)
->   */
->  static inline unsigned int cpumask_size(void)
->  {
-> -	return BITS_TO_LONGS(large_cpumask_bits) * sizeof(long);
-> +	return bitmap_size(large_cpumask_bits);
->  }
->  
->  /*
-> diff --git a/lib/math/prime_numbers.c b/lib/math/prime_numbers.c
-> index d42cebf7407f..d3b64b10da1c 100644
-> --- a/lib/math/prime_numbers.c
-> +++ b/lib/math/prime_numbers.c
-> @@ -6,8 +6,6 @@
->  #include <linux/prime_numbers.h>
->  #include <linux/slab.h>
->  
-> -#define bitmap_size(nbits) (BITS_TO_LONGS(nbits) * sizeof(unsigned long))
-> -
->  struct primes {
->  	struct rcu_head rcu;
->  	unsigned long last, sz;
-> diff --git a/tools/include/linux/bitmap.h b/tools/include/linux/bitmap.h
-> index f3566ea0f932..81a2299ace15 100644
-> --- a/tools/include/linux/bitmap.h
-> +++ b/tools/include/linux/bitmap.h
-> @@ -2,6 +2,7 @@
->  #ifndef _TOOLS_LINUX_BITMAP_H
->  #define _TOOLS_LINUX_BITMAP_H
->  
-> +#include <linux/align.h>
->  #include <string.h>
->  #include <linux/bitops.h>
->  #include <linux/find.h>
-> @@ -25,13 +26,14 @@ bool __bitmap_intersects(const unsigned long *bitmap1,
->  #define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
->  #define BITMAP_LAST_WORD_MASK(nbits) (~0UL >> (-(nbits) & (BITS_PER_LONG - 1)))
->  
-> +#define bitmap_size(nbits)	(ALIGN(nbits, BITS_PER_LONG) / BITS_PER_BYTE)
-> +
->  static inline void bitmap_zero(unsigned long *dst, unsigned int nbits)
->  {
->  	if (small_const_nbits(nbits))
->  		*dst = 0UL;
->  	else {
-> -		int len = BITS_TO_LONGS(nbits) * sizeof(unsigned long);
-> -		memset(dst, 0, len);
-> +		memset(dst, 0, bitmap_size(nbits));
->  	}
->  }
->  
-> @@ -83,7 +85,7 @@ static inline void bitmap_or(unsigned long *dst, const unsigned long *src1,
->   */
->  static inline unsigned long *bitmap_zalloc(int nbits)
->  {
-> -	return calloc(1, BITS_TO_LONGS(nbits) * sizeof(unsigned long));
-> +	return calloc(1, bitmap_size(nbits));
->  }
->  
->  /*
-> -- 
-> 2.41.0
+ If I move to the 6.1.55 kernel, I have a similar failure  at
+internal_create_group but the path is a bit different.
+
+[    0.790000]  internal_create_group from internal_create_groups+0x48/0x8c
+[    0.790000]  internal_create_groups from device_add+0x2a0/0x7a8
+[    0.790000]  device_add from __mdiobus_register+0xb8/0x340
+[    0.790000]  __mdiobus_register from fixed_mdio_bus_init+0xc0/0xec
+[    0.790000]  fixed_mdio_bus_init from do_one_initcall+0x48/0x244
+[    0.790000]  do_one_initcall from kernel_init_freeable+0x208/0x25c
+[    0.790000]  kernel_init_freeable from kernel_init+0x1c/0x12c
+[    0.790000]  kernel_init from ret_from_fork+0x14/0x28
+[    0.790000] Exception stack(0xc005bfb0 to 0xc005bff8)
+
+What might be the issue?
