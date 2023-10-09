@@ -2,115 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 047897BD9AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B737BD9BA
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346292AbjJIL01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 07:26:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45196 "EHLO
+        id S1346252AbjJIL2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 07:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346291AbjJILZs (ORCPT
+        with ESMTP id S1346348AbjJIL2V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 07:25:48 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C04ADD5A
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 04:25:28 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40684f53d11so44151765e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 04:25:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696850727; x=1697455527; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wBNpO06xDlLtemDkhIFD5UcIdTdCSdjnqaYsWe9vtps=;
-        b=V9In6ZTJ4YaXCgX2Zyi8UxnM8E3JIURn5WfzsdbSSJ6XyDu6eC8iOWK9ZOAbCY4tKy
-         /rJURhtdY4+HDrQDbCWEPA0d7at2CJJAhZdpnruWV6+P0Gt1WmuX0VaGzfSavVLJluA0
-         jRza+3KMOcoQyCCUJGAVaOHaR57T+Rkhb56hu1YiOK9zTY/EXztElOYntuj7ZK5lCpvA
-         vCt/jHOHJ+B01rLiG+tEuGPZmZJM3UdeY15LKloUKr2OCEBjitcXIr1xQwpSAaInJ2OF
-         GcaVIDL/wOpdODnFQFfk4GsuzgoqN6X5noFbzqvDC48q/c2pEkxpRT/REiz0DH7/SwXe
-         dPMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696850727; x=1697455527;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wBNpO06xDlLtemDkhIFD5UcIdTdCSdjnqaYsWe9vtps=;
-        b=pqUBd6q1j61g9C8J8kA/PdoQZpELegKrm+Wj434CYmVup3K7rnM1tmBaUrdq+IjbX+
-         9rTbJP6Eso44KhYP5BOjkLhLkkCdIMP/PS6CobolYWnTmggnjbJfKVc6AI4Ccw9aVf+w
-         RGvScYh7C1Ell3Tdn8+dOttTaE9nybvFAR2dnF53+HkCtgdKYcGOBWh3fV5P9zodmhI8
-         Z9n54i4W/b3MHJxJhz/R6D9sHPSanBXJU4xqwnC7tHtZVVTx1WiHRdBKcdAIOKMKeIO/
-         nlbV3TweSyT0oIEPV9G/rUX20vU1S1D3fWRyPvaZnJfuVrs5WanDxt4vrYnCgI6/BehM
-         46MQ==
-X-Gm-Message-State: AOJu0YySLPSZ2Wk8gGkYC+Om5ZUzhiPaEbDhCdZ4tkqoqtGnLjI/G/uj
-        EGnjYlXmUqovv/7MFFpd+vA=
-X-Google-Smtp-Source: AGHT+IH5Tlq3h4iu5WAA4aadlRX//LfTIMeJ6T7QMkoc1zj0mv+gfP5DnMbdXC+FPY9L9o21xGRDCQ==
-X-Received: by 2002:a05:600c:220b:b0:406:7029:c4f2 with SMTP id z11-20020a05600c220b00b004067029c4f2mr13012322wml.26.1696850726540;
-        Mon, 09 Oct 2023 04:25:26 -0700 (PDT)
-Received: from gmail.com (1F2EF237.nat.pool.telekom.hu. [31.46.242.55])
-        by smtp.gmail.com with ESMTPSA id j31-20020a05600c1c1f00b004068e09a70bsm10946714wms.31.2023.10.09.04.25.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 04:25:25 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 9 Oct 2023 13:25:23 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Vineeth Pillai <vineethrp@google.com>,
-        Suleiman Souhlal <suleiman@google.com>,
-        Hsin Yi <hsinyi@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH RFC] sched/fair: Avoid unnecessary IPIs for ILB
-Message-ID: <ZSPjIwWxSdKAsKZD@gmail.com>
-References: <20231005161727.1855004-1-joel@joelfernandes.org>
- <20231006200129.GJ36277@noisy.programming.kicks-ass.net>
- <20231008163912.GA2338308@google.com>
+        Mon, 9 Oct 2023 07:28:21 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6765121
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 04:26:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1696850758;
+        bh=Hy25GDR9YOkuc82F1YNLc6FmnygowORg3Yb5hqiF6RY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YxjDhAxeTVv6aLqmIfdfS5VNxnBXg0TQna/QkWcwq5O53A5NBNVQJEmJZRuz04IjH
+         cAseyr5nkZLIUDuN+9sLERz9h1B3w5UOV+LPOhURktN5X0XQ3vSDxl5K28mhNdd0iq
+         iH27bBisyU/cuEo8g5SbgclUaVrDQ35n8YLOHtUY=
+Date:   Mon, 9 Oct 2023 13:25:58 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Willy Tarreau <w@1wt.eu>, Shuah Khan <skhan@linuxfoundation.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: nolibc changes since 6.6-rc1 for linux-next
+Message-ID: <cfd43fe2-41db-41e1-be43-87755f7b7cce@t-8ch.de>
+References: <11a790c0-f9c0-49eb-b14f-56b962af6d2d@t-8ch.de>
+ <dcfa99da-eb3e-4c85-9e7f-092bbb1be801@linuxfoundation.org>
+ <48c01af3-d373-4546-a8f2-d81fa447eaaa@t-8ch.de>
+ <25382680-956a-4612-b930-f6823c71cf8d@paulmck-laptop>
+ <696fc488-63d3-444c-a9f2-14d7a7379143@linuxfoundation.org>
+ <23bc3841-4cda-4a23-a67f-a944e1104f1d@paulmck-laptop>
+ <20231007070630.GB20998@1wt.eu>
+ <d80c1da1-56f8-4b94-b1e2-eef75a52d022@paulmck-laptop>
+ <fad7814f-0bbd-43f0-a205-9ba2c08bac22@t-8ch.de>
+ <76a51116-46bb-4271-b5ac-c101e02d5a63@paulmck-laptop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231008163912.GA2338308@google.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <76a51116-46bb-4271-b5ac-c101e02d5a63@paulmck-laptop>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023-10-08 09:27:43-0700, Paul E. McKenney wrote:
 
-* Joel Fernandes <joel@joelfernandes.org> wrote:
+> [..]
 
-> > > Fixes: 7fd7a9e0caba ("sched/fair: Trigger nohz.next_balance updates when a CPU goes NOHZ-idle")
-> > 
-> > Hurm.. does this really warrant a Fixes tag? Afaict nothing is currently
-> > broken -- this is a pure optimization question, no?
+> The other approach involves rebasing the "nolibc/next" stack
+> on top of the "nolibc/fixes" stack.  Please see the -rcu branch
+> nolibc-rebase.2023.10.08a to see how that would look.  Note that the
+> rebase process detected and eliminated the duplicate commits.
+> In this case, I actually used "git cherry-pick":
 > 
-> IMHO it is a breakage as it breaks NOHZ -- a lot of times the ILB kicks 
-> back the CPU stopping the tick out of idle (effectively breaking NOHZ). 
-> The large number of IPIs also wrecks power and it happens only on 6.1 and 
-> after. Having the fixes tag means it will also goto all stable kernels >= 
-> 6.1. Hope that sounds reasonable and thank you for taking a look!
+> 	git checkout -b nolibc-rebase.2023.10.08a nolibc/fixes
+> 	git cherry-pick v6.6-rc1..nolibc/next
+> 	git cherry-pick skip # After complaint about first duplicate
+> 	git cherry-pick --continue
+> 	git cherry-pick skip # After complaint about second duplicate
+> 	git cherry-pick --continue
+> 	git diff nolibc-merge.2023.10.08a # Verify no differences
+> 
+> You could just as easily do this:
+> 
+> 	git branch nolibc-rebase.2023.10.08a nolibc/next
+> 	git rebase --onto nolibc/next v6.6-rc1 nolibc-rebase.2023.10.08a
+> 
+> There would be the same complaints about duplicate commits and
+> similar response (it prompts you with your alternatives).
+> 
+> And then I send the fixes portion of the branch to Linus after a few
+> days of exposure to -next testing, and the full branch for the upcoming
+> merge window.
+> 
+> Test results for nolibc-rebase.2023.10.08a:
+> "make run": 160 test(s): 158 passed,   2 skipped,   0 failed => status: warning
+> "make run-user": 160 test(s): 158 passed,   2 skipped,   0 failed => status: warning
+> 
+> This approach has its strenghts and weaknesses.
+> 
+> 1.	It avoids all the weaknesses called out for merging.
+> 
+> 2.	It can require more testing when moving yet another commit
+> 	down into urgent-fixes portion of the branch.
+> 
+> 3.	Many people are much less comfortable rebasing and mass
+> 	cherry-picking than they are with merging.
+> 
+> Again, I am happy to do this either way (especially since I now have
+> both ways set up in -rcu), but felt the need to call out the strengths
+> and weaknesses of each approach.  Your guys' choice.
 
-So it's basically a fix of a NOHZ performance regression, introduced by 
-7fd7a9e0caba or so, correct?
+Your proposed aproach sounds great, thanks for all your patience.
 
-As long as the fixes have a good hope of being backported with a low amount 
-of overhead, a Fixes: tag for a ~2 years old performance regression is 
-unusual but not unprecedented.
+I implemented it now at
+https://git.kernel.org/pub/scm/linux/kernel/git/nolibc/linux-nolibc.git/
 
-We just need to make sure we don't put too much of a burden on the 
-shoulders of -stable maintainers ...
+Please pull the changes in this repository since the v6.6-rc1 tag.
 
-Thanks,
+The branch 'fixes' up to and including
+5579b93524ab2d360e2250bdd12ba32635a4300b for the v6.6 cycle.
 
-	Ingo
+The branch 'next' up to and including
+d423dcd4ac21041618ab83455c09440d76dbc099 for linux-next.
+
+The branch 'next', based upon 'fixes', was tested as follows:
+
+i386:          160 test(s): 160 passed,   0 skipped,   0 failed => status: success
+x86_64:        160 test(s): 160 passed,   0 skipped,   0 failed => status: success
+arm64:         160 test(s): 160 passed,   0 skipped,   0 failed => status: success
+arm:           160 test(s): 160 passed,   0 skipped,   0 failed => status: success
+mips:          160 test(s): 159 passed,   1 skipped,   0 failed => status: warning
+ppc:           160 test(s): 160 passed,   0 skipped,   0 failed => status: success
+ppc64:         160 test(s): 160 passed,   0 skipped,   0 failed => status: success
+ppc64le:       160 test(s): 160 passed,   0 skipped,   0 failed => status: success
+riscv:         160 test(s): 160 passed,   0 skipped,   0 failed => status: success
+s390:          160 test(s): 159 passed,   1 skipped,   0 failed => status: warning
+loongarch:     160 test(s): 159 passed,   1 skipped,   0 failed => status: warning
+
+> While in the area, would the following (absolutely not urgent or even
+> particularly important) patch be a good idea?  This gets rid of a line
+> of noise from "git status" after running the tests.
+> 
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> diff --git a/tools/testing/selftests/nolibc/.gitignore b/tools/testing/selftests/nolibc/.gitignore
+> index 52f613cdad54..3487da96e12e 100644
+> --- a/tools/testing/selftests/nolibc/.gitignore
+> +++ b/tools/testing/selftests/nolibc/.gitignore
+> @@ -3,3 +3,4 @@
+>  /nolibc-test
+>  /run.out
+>  /sysroot/
+> +/initramfs.cpio
+
+Thanks, I folded this into commit
+fdaa5901424c ("selftests/nolibc: don't embed initramfs into kernel image"),
+where it belongs.
+
+Thomas
