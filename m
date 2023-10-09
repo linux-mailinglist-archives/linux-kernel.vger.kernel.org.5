@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3DE7BE9CF
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 20:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6157BE9D1
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 20:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378274AbjJISjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 14:39:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46046 "EHLO
+        id S1378337AbjJISjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 14:39:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378229AbjJISjk (ORCPT
+        with ESMTP id S1378201AbjJISjl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 14:39:40 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F33A4
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 11:39:36 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59b5a586da6so39519087b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 11:39:36 -0700 (PDT)
+        Mon, 9 Oct 2023 14:39:41 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC627FB
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 11:39:38 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9a4ae873edso293127276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 11:39:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696876776; x=1697481576; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1696876778; x=1697481578; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=husYgJZI8HkXIeEAlVmrxb2HP2ESjHLdcuso9o2l4OQ=;
-        b=pbgOyqyvlD011FRFCZ/wnDOEV5NneFzPc1aVqQOX6e9vd71ycHrFTGtTrzsDZpbS51
-         bRy1bc23HNVBTWBUNkbaWEyH0I0zxun1ux+KOKqJdfWvCiDaZO9S4CbXOwftQbK1Fbew
-         G23hRCOPe+DEonYi44XWLaeZ1p+gdsUNgOChZUfpNqKZLan1DooqYNIvPUDMJDMFqB1V
-         jMgQk0o1Ileg0vhoIrVvllaRXwzBaEhJAiwIAP5sWVw9AmMJ7KRmvOcrEaf4nZ0e0AIA
-         ENkf4UU409d3SGJ6YzaCbgQqFvY63FzZkGo6S/PQ5g8GIpqgku46+K3o655OJ3C/qArk
-         IqmQ==
+        bh=i2XqQMJ0GkpZoKYBOeb+AHUkFWOwFAfTNDekNOfqFv8=;
+        b=yJ7plmLe4lpsv+raN9xFF/rU7/DGO5wkyB71VErLaVEJqqPFzGWQmA4JONtB/J867G
+         W60pawhGLCANJV9jhSoZt3DqwXzlvCm/0p7Clz84lfk0JOFiiAtkUKb3lV5G5WgQKPfX
+         OWgp77Zs2c+ZO90MAfurYZUD+RINLwhHyAJ23aBWeacroCgeEC6I80dxnI3Pk+15o6XX
+         rgyTB1WIqwDEneGrUOjs7qFxpVkA7oEHynZMTclaq4zZms7BXm3/Ef0rnQeVfA51sT5O
+         dtOryD5Mh9C8II+5L8/3QFOP8+tVguAmgjp0l+lr9VoDJqeGqQ/lnjTUHLAWnX7naP4e
+         X5gA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696876776; x=1697481576;
+        d=1e100.net; s=20230601; t=1696876778; x=1697481578;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=husYgJZI8HkXIeEAlVmrxb2HP2ESjHLdcuso9o2l4OQ=;
-        b=O9X41lfo7jG0zDljaGTwkRWLlYhVpra2xrRy/v5jU4k/NuJN2Qg3+B9SuZZf1fwvBh
-         UXXgyh7qaTz/av6EmwpbwCMggfao5STCDnh6wNDjy2A/cOHHzQAXo85vqHoANJY4MTIc
-         1/fiLvk9NnA8ZTZWHoSmWgRzisWQmdTadTDKOqZTi/3w3aj9EWPAujnZQjMxCXwZFgb8
-         GEaO+OdqikJhs9YL/WNzZtTd5gsQfNURTh6k4dlMQisGcfQ9ymWC6msynWplDYVAvF2D
-         X9yvfj66Vbj7idDwGjOMNROm0bcve5RQA4HX9rhfJgQu2FoWhXiKTSiVvErXLtdVFaB3
-         PUOw==
-X-Gm-Message-State: AOJu0YwNGS64e0QVT2f9nsBOySnUtCICCLOjJLk3zgXs4xMP/xE1u/T7
-        T09MoAfCWOPp4XMSjiyvQ/pIEEgaYSqC
-X-Google-Smtp-Source: AGHT+IEmIpves+ngQa/FnxLG2CDSAz+zgDHCABHfkgCw1xRVBQfEO08K/FXFPnYfqQ71+Ihm3xsKsmi3qj2I
+        bh=i2XqQMJ0GkpZoKYBOeb+AHUkFWOwFAfTNDekNOfqFv8=;
+        b=ps/pse+c2sDUUH0TZ7oKuwgkgxYDuTiqyVvAp5ZaQedIaI8okrcmz/by6SzcZJ+Wxi
+         87gH+GBBJC+xn1+9KSCcSyejfpi0kmmL52QtpShqmLIEzfsQz5Iqx8P8K+wIa6aZpTHY
+         eSWJPvlqFmpKFhKXS7WdNMnJPGtRk9FItETpnW/y+5cniPYTtWnGpCNht1B6PylT9Pqs
+         xrUP0Cij52LuLmg9z9h105DoAzFt1l0MWu6VKnNxu38m2Hmz3yAqCGCkR+7hW2/sjzg8
+         9BpZMgdWHLcEOiwbly8Kbg8Nnzez+TJpUWncCCRbh3F6YCGWZ3oMmyt9ZGf8/+Kinutv
+         oSjw==
+X-Gm-Message-State: AOJu0YxJt7xz5w2wdDq5gO27CeBazaUeAm+VEkLKNry0kw4r2lv5+gIY
+        ntuguUNoW5lrAhn/VhucT3h+QxZV7rl9
+X-Google-Smtp-Source: AGHT+IFVQJ/rmIGeQNoKkkKpAugRtmgnX9tZ+jNylIGNTuhY5/8aroNIOiM/mRV+TG9ICzlWJvJ2+NMEzLcQ
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:ac4a:9b94:7158:3f4e])
- (user=irogers job=sendgmr) by 2002:a05:690c:c90:b0:59b:b0b1:d75a with SMTP id
- cm16-20020a05690c0c9000b0059bb0b1d75amr262884ywb.4.1696876775752; Mon, 09 Oct
- 2023 11:39:35 -0700 (PDT)
-Date:   Mon,  9 Oct 2023 11:39:05 -0700
+ (user=irogers job=sendgmr) by 2002:a25:bec9:0:b0:d9a:5349:4bdd with SMTP id
+ k9-20020a25bec9000000b00d9a53494bddmr423ybm.8.1696876777869; Mon, 09 Oct 2023
+ 11:39:37 -0700 (PDT)
+Date:   Mon,  9 Oct 2023 11:39:06 -0700
 In-Reply-To: <20231009183920.200859-1-irogers@google.com>
-Message-Id: <20231009183920.200859-5-irogers@google.com>
+Message-Id: <20231009183920.200859-6-irogers@google.com>
 Mime-Version: 1.0
 References: <20231009183920.200859-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Subject: [PATCH v3 03/18] run-clang-tools: Add pass through checks and
- header-filter arguments
+Subject: [PATCH v3 04/18] perf bench uprobe: Fix potential use of memory after free
 From:   Ian Rogers <irogers@google.com>
 To:     Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
@@ -85,70 +84,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a -checks argument to allow the checks passed to the clang-tool to
-be set on the command line.
-
-Add a pass through -header-filter option.
-
-Don't run analysis on non-C or CPP files.
+Found by clang-tidy:
+```
+bench/uprobe.c:98:3: warning: Use of memory after it is freed [clang-analyzer-unix.Malloc]
+                bench_uprobe_bpf__destroy(skel);
+```
 
 Signed-off-by: Ian Rogers <irogers@google.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 ---
- scripts/clang-tools/run-clang-tools.py | 32 ++++++++++++++++++++------
- 1 file changed, 25 insertions(+), 7 deletions(-)
+ tools/perf/bench/uprobe.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/scripts/clang-tools/run-clang-tools.py b/scripts/clang-tools/run-clang-tools.py
-index 3266708a8658..f31ffd09e1ea 100755
---- a/scripts/clang-tools/run-clang-tools.py
-+++ b/scripts/clang-tools/run-clang-tools.py
-@@ -33,6 +33,11 @@ def parse_arguments():
-     path_help = "Path to the compilation database to parse"
-     parser.add_argument("path", type=str, help=path_help)
+diff --git a/tools/perf/bench/uprobe.c b/tools/perf/bench/uprobe.c
+index 914c0817fe8a..5c71fdc419dd 100644
+--- a/tools/perf/bench/uprobe.c
++++ b/tools/perf/bench/uprobe.c
+@@ -89,6 +89,7 @@ static int bench_uprobe__setup_bpf_skel(enum bench_uprobe bench)
+ 	return err;
+ cleanup:
+ 	bench_uprobe_bpf__destroy(skel);
++	skel = NULL;
+ 	return err;
+ }
  
-+    checks_help = "Checks to pass to the analysis"
-+    parser.add_argument("-checks", type=str, default=None, help=checks_help)
-+    header_filter_help = "Pass the -header-filter value to the tool"
-+    parser.add_argument("-header-filter", type=str, default=None, help=header_filter_help)
-+
-     return parser.parse_args()
- 
- 
-@@ -45,14 +50,27 @@ def init(l, a):
- 
- def run_analysis(entry):
-     # Disable all checks, then re-enable the ones we want
--    checks = []
--    checks.append("-checks=-*")
--    if args.type == "clang-tidy":
--        checks.append("linuxkernel-*")
-+    global args
-+    checks = None
-+    if args.checks:
-+        checks = args.checks.split(',')
-     else:
--        checks.append("clang-analyzer-*")
--        checks.append("-clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling")
--    p = subprocess.run(["clang-tidy", "-p", args.path, ",".join(checks), entry["file"]],
-+        checks = ["-*"]
-+        if args.type == "clang-tidy":
-+            checks.append("linuxkernel-*")
-+        else:
-+            checks.append("clang-analyzer-*")
-+            checks.append("-clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling")
-+    file = entry["file"]
-+    if not file.endswith(".c") and not file.endswith(".cpp"):
-+        with lock:
-+            print(f"Skipping non-C file: '{file}'", file=sys.stderr)
-+        return
-+    pargs = ["clang-tidy", "-p", args.path, "-checks=" + ",".join(checks)]
-+    if args.header_filter:
-+        pargs.append("-header-filter=" + args.header_filter)
-+    pargs.append(file)
-+    p = subprocess.run(pargs,
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.STDOUT,
-                        cwd=entry["directory"])
 -- 
 2.42.0.609.gbb76f46606-goog
 
