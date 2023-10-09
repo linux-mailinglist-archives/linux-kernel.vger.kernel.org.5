@@ -2,128 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 390907BD680
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1E3B7BD74F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345648AbjJIJNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 05:13:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51360 "EHLO
+        id S1345981AbjJIJja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 05:39:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345657AbjJIJNM (ORCPT
+        with ESMTP id S1345982AbjJIJj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 05:13:12 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF2A4B6
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:13:09 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-32487efc319so4088665f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 02:13:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696842788; x=1697447588; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=riy2ohNnJTI8tyOBkVxN9+KyXQ2yc80mwJGtwl0WMgc=;
-        b=ckI2uJTLQhGZNVBJdnLWclwcNcBtYhEilwWZhTK7Lbtsr4GvIcTSq6+borBYbbdJCz
-         IN80eqYlf7KXBPtzdHIxWRPhCpMMMn3v7O36Mp0hCyTIsn1EmloVAdcv4SvRCAmygvw1
-         WzUvN+TmLN7KSd4BQaRU0x56jrgAC9iUAFlLfOwlUO0XwjTLQ3J1ox1wUXtO51KoeE07
-         +CnUegihTcLzdCwD3ySTq+G5zbm3f8VX4H2L93QNMTu+a16wwk8/LS0qSJ0PCFC4d8en
-         jAAPk0blJV/ILf1eXh+/HdxxPzChTz3dEcTKvcbxOVTO70LjEM3eIUi4mSJv9po71ml5
-         NpRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696842788; x=1697447588;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=riy2ohNnJTI8tyOBkVxN9+KyXQ2yc80mwJGtwl0WMgc=;
-        b=Rw1mHMnqMu7J5ZHky+heskI6uP/y3FD9/YvyvWZtvmMXy1+J1UGfIXmRaIHyRWikn2
-         tEq7hEaPWO6UkPIS8lVN4LEIFQa7ENVs1hdefYqXGrgRfEBnkwyZNeLZwxnb6P8pN2CI
-         FmP2b7/0oEt3HK7NssNYq985jPiuv7Rye1jO9k5GEJzKzp1toMPGqiNdMmnjjr7dIGXk
-         vMrknSpBweSJhPGv/xwvay8NAif9wAuKTZaRH7W2Pz9I+KW0Uw+i5zqiw/bbCPKHBvLA
-         FDwULzTh2oB9li/QYGMIZ48OBjUNAGxVY3bfdjKwtKGKK95cxKsju2SHMBXzOtsCiY+t
-         MwLw==
-X-Gm-Message-State: AOJu0Yy+Uj+z4onD3OvArOB0ogBblDW17MJhutfFbSwp29giKVxHTnI9
-        UMnqfkKRNnH09mpRVq6UTiTaqw==
-X-Google-Smtp-Source: AGHT+IGUWNNjEgJ0FR3882pEmsZ7c1/CLbNVn8Kj5cKMrT9umktbrGd+rVu/jugoM9qaPAym4jSJug==
-X-Received: by 2002:adf:fdd0:0:b0:324:8353:716f with SMTP id i16-20020adffdd0000000b003248353716fmr12227404wrs.20.1696842788387;
-        Mon, 09 Oct 2023 02:13:08 -0700 (PDT)
-Received: from [192.168.27.65] (home.beaume.starnux.net. [82.66.176.246])
-        by smtp.gmail.com with ESMTPSA id e18-20020adffd12000000b0031980783d78sm9021939wrr.54.2023.10.09.02.13.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 02:13:08 -0700 (PDT)
-Message-ID: <e6384e25-dae3-4488-b1ca-e0c07a601741@linaro.org>
-Date:   Mon, 9 Oct 2023 11:13:08 +0200
+        Mon, 9 Oct 2023 05:39:29 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E17D3BA
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:39:26 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1qpmjP-0000d1-MB; Mon, 09 Oct 2023 11:39:19 +0200
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1qpmjN-000Nea-QY; Mon, 09 Oct 2023 11:39:17 +0200
+Received: from pengutronix.de (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 5FD11232713;
+        Mon,  9 Oct 2023 09:15:14 +0000 (UTC)
+Date:   Mon, 9 Oct 2023 11:15:13 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        linux-can <linux-can@vger.kernel.org>, kernel@pengutronix.de
+Subject: Re: [PATCH v4 4/4] spi: Use struct_size() helper
+Message-ID: <20231009-onshore-underage-c58415adfd92-mkl@pengutronix.de>
+References: <20230714091748.89681-1-andriy.shevchenko@linux.intel.com>
+ <20230714091748.89681-5-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v2] drm/panel/panel-tpo-tpg110: fix a possible null
- pointer dereference
-Content-Language: en-US, fr
-To:     Ma Ke <make_ruc2021@163.com>, linus.walleij@linaro.org,
-        sam@ravnborg.org, airlied@gmail.com, daniel@ffwll.ch
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20231009090446.4043798-1-make_ruc2021@163.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20231009090446.4043798-1-make_ruc2021@163.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="byg2avbsrmzwgr6r"
+Content-Disposition: inline
+In-Reply-To: <20230714091748.89681-5-andriy.shevchenko@linux.intel.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/10/2023 11:04, Ma Ke wrote:
-> In tpg110_get_modes(), the return value of drm_mode_duplicate() is
-> assigned to mode, which will lead to a NULL pointer dereference on
-> failure of drm_mode_duplicate(). Add a check to avoid npd.
-> 
-> Signed-off-by: Ma Ke <make_ruc2021@163.com>
-> ---
->   drivers/gpu/drm/panel/panel-tpo-tpg110.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/panel/panel-tpo-tpg110.c b/drivers/gpu/drm/panel/panel-tpo-tpg110.c
-> index 845304435e23..f6a212e542cb 100644
-> --- a/drivers/gpu/drm/panel/panel-tpo-tpg110.c
-> +++ b/drivers/gpu/drm/panel/panel-tpo-tpg110.c
-> @@ -379,6 +379,8 @@ static int tpg110_get_modes(struct drm_panel *panel,
->   	connector->display_info.bus_flags = tpg->panel_mode->bus_flags;
->   
->   	mode = drm_mode_duplicate(connector->dev, &tpg->panel_mode->mode);
-> +	if (!mode)
-> +		return -ENOMEM;
->   	drm_mode_set_name(mode);
->   	mode->type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
->   
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+--byg2avbsrmzwgr6r
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello,
+
+this change (75e308ffc4f0 ("spi: Use struct_size() helper")) reached
+mainline with v6.6-rc1 and causes the following warning in my mcp251xfd
+CAN driver.
+
+On 14.07.2023 12:17:48, Andy Shevchenko wrote:
+> The Documentation/process/deprecated.rst suggests to use flexible array
+> members to provide a way to declare having a dynamically sized set of
+> trailing elements in a structure.This makes code robust agains bunch of
+> the issues described in the documentation, main of which is about the
+> correctness of the sizeof() calculation for this data structure.
+>
+> Due to above, prefer struct_size() over open-coded versions.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  include/linux/spi/spi.h | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
+>
+> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+> index 04daf61dfd3f..7f8b478fdeb3 100644
+> --- a/include/linux/spi/spi.h
+> +++ b/include/linux/spi/spi.h
+> @@ -13,6 +13,7 @@
+>  #include <linux/gpio/consumer.h>
+>  #include <linux/kthread.h>
+>  #include <linux/mod_devicetable.h>
+> +#include <linux/overflow.h>
+>  #include <linux/scatterlist.h>
+>  #include <linux/slab.h>
+>  #include <linux/u64_stats_sync.h>
+> @@ -1085,6 +1086,8 @@ struct spi_transfer {
+>   * @state: for use by whichever driver currently owns the message
+>   * @resources: for resource management when the SPI message is processed
+>   * @prepared: spi_prepare_message was called for the this message
+> + * @t: for use with spi_message_alloc() when message and transfers have
+> + *	been allocated together
+>   *
+>   * A @spi_message is used to execute an atomic sequence of data transfer=
+s,
+>   * each represented by a struct spi_transfer.  The sequence is "atomic"
+> @@ -1139,6 +1142,9 @@ struct spi_message {
+>
+>  	/* List of spi_res resources when the SPI message is processed */
+>  	struct list_head        resources;
+> +
+> +	/* For embedding transfers into the memory of the message */
+> +	struct spi_transfer	t[];
+
+|   CHECK   drivers/net/can/spi/mcp251xfd/mcp251xfd-chip-fifo.c
+| drivers/net/can/spi/mcp251xfd/mcp251xfd-chip-fifo.c: note: in included fi=
+le:
+| drivers/net/can/spi/mcp251xfd/mcp251xfd.h:632:38: warning: array of flexi=
+ble structures
+| drivers/net/can/spi/mcp251xfd/mcp251xfd.h:547:36: warning: array of flexi=
+ble structures
+
+Line 632 is an array of struct mcp251xfd_tef_ring in the struct mcp251xfd_p=
+riv:
+
+| struct mcp251xfd_priv {
+[...]
+| 	struct mcp251xfd_tef_ring tef[MCP251XFD_FIFO_TEF_NUM];
+[...]
+| }
+
+=2E..and struct mcp251xfd_tef_ring contains a struct spi_transfer:
+
+| struct mcp251xfd_tef_ring {
+| 	unsigned int head;
+| 	unsigned int tail;
+|=20
+| 	/* u8 obj_num equals tx_ring->obj_num */
+| 	/* u8 obj_size equals sizeof(struct mcp251xfd_hw_tef_obj) */
+|=20
+| 	union mcp251xfd_write_reg_buf irq_enable_buf;
+| 	struct spi_transfer irq_enable_xfer;
+| 	struct spi_message irq_enable_msg;
+|=20
+| 	union mcp251xfd_write_reg_buf uinc_buf;
+| 	union mcp251xfd_write_reg_buf uinc_irq_disable_buf;
+| 	struct spi_transfer uinc_xfer[MCP251XFD_TX_OBJ_NUM_MAX];
+| };
+
+The warning in line 547 is similar, but for the TX ring.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--byg2avbsrmzwgr6r
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmUjxJ8ACgkQvlAcSiqK
+BOjJ4gf/bk1cLR7h+ToiM55xZZJ7zSij0pPzDrb3UXKY9PAtVRew1qG9c6gng5mT
+6eOeeE+3b5TuTQ5pSG5iPWqM49YBYBJA63+NJH7uR5ovmajqILrfuvo1tdhTyvo4
+s1HGCQtuMpiORVM3/6Gl4UjkynuQCNSH6wBsr4bjk0OLxad7qz6soETRGPup6lNx
+9qJrZc8pYP5SQ5n5ory79I0+K/LH9A/d+SQKPoQsXWWtMwBXQw94JkvXbmoh104Y
+rphNNFO5/LmgAFoq1GZU17vDhKB/nhRt6SGmHajODb7otkRyH4TTeuSgQ/khcghk
+MHMUJp6XKmWogO5kmfnM3X9B5sWHXg==
+=bTCd
+-----END PGP SIGNATURE-----
+
+--byg2avbsrmzwgr6r--
