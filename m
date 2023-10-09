@@ -2,187 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BE7A7BD338
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 08:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0FCB7BD33E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 08:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345209AbjJIGRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 02:17:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55722 "EHLO
+        id S1345218AbjJIGTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 02:19:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345152AbjJIGR3 (ORCPT
+        with ESMTP id S1345177AbjJIGTc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 02:17:29 -0400
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2042.outbound.protection.outlook.com [40.107.105.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B4BA4;
-        Sun,  8 Oct 2023 23:17:27 -0700 (PDT)
+        Mon, 9 Oct 2023 02:19:32 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2070.outbound.protection.outlook.com [40.107.220.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD93A4;
+        Sun,  8 Oct 2023 23:19:31 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kUytP0jPASNhaWShYPQpNyAPiF/GYS2RBSDbrsZcRSLf6vOWK5UteUqyRRzv9LhMuYmBFc2T79XjeydFhp2knaIXNywHxflJTx1Df0F2UN4Ejc9313vycliOB3216DOQZzpj8jQY8sxu90uJS+mOUR0Z5zUJZtjxOyoOZ2ASI7bZwRgQNBGHc2OJhNYvaTl6J8/mNyVGwq2HNXVjJyJoC0hFMH0OnBxOCX60cJhW+Yv3HruZmphfC14lYheWwsdu2nEzaUbgk/dygWHQLQMlovyUQLJkFgj6nERwnSl4XSEdLSDYNhjxd+eASM6idGGR5cnkb7F19BMHGpsrT6GrXg==
+ b=H/AFXgcJ4NnYcg7QMcarPomnPSqxZ4FD5clZM0O0DKetgZ5FYkFsHXYFy/Llau6+bTwEPf33YobU+ZCDC4UBPr8wbVzfz+4nfEfUQAjhTvJJzjfrNKgDFAx9/DDqDy7JjjEc6Jayze4kfcaG8E0kuGVG99bgKbnrDrZA1xw8o8y5SooTVcdRWGhRuo7AA999snMryjrGPYLGhCiayg64UAXq2gMeWcfiO06M8wuMMjEwGJewkNg1XQ55MZeeeItz3zsJL+BgzrIZp6/0jkowQnxg6nEai2RQLaRWdDt90Vq0AASRGXCMPFNEdTBdsqLuu2okkmtYV+n2AhcdZH9wnw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XQE/xybe27mioLAKdciL1Y0hNRpYPvKtGZ2NdXL5CyI=;
- b=KT1L9xDqogiULAZTX/4eCREWtMyCpZX/CqAuXHIeHmXZH/wA8ddxAbHedKYY4klpneIcRlvdxI8K7IMWpVs6GsKSL3uH0LQZ/5j2u67XTk7u/7pu6qml9GjvZlz1XU44euJyONIzqA3u4Oz7qVRn5N0FbtPtDEc8+dcqfwfCMWG0soqFEFIB433lOHkYHrLV98oH6IJJiX5yzPCPAj44Sur6AHyvtN1O7NRcJGPGBiPV1zfKdRp2w62YuohHPx9k4lQ/y3ts7ZhnQRqjw2mA7HpD6PSj7KfwFTTmQKaKacWgWVD8Gw7qk78UONfiDLRjTFHdBjQMi1u9hSnmEJd3Uw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ bh=WqC8VuNGif3oYAT80V9LQKYxosisrbD1HTPgTXKK40Y=;
+ b=JwWXZcS5xvxnzo9qtj79tDmJpfbEmIq9vRmNMkT64h0d0wAAgJO8kuZTAUiy4iSpiRBmKJsbt0qSy5S/qQeKXS8rCgoo2BJl0RAG1UNY/L7XlZ/hKApe+jQrEnjPbsBHic8KJq30mMQwFL9tmlTAoxKbGcDtxSkQMbMLsxYs6h8Sae5i5ENvYKvdJTEJtjMt5yIPfOthCmlMt4wc9knurG8nifW9HLDN2d7r5fNdlAsGcgmGfJAjhiEV1BNF8+A8JoSJumA43RTFWuO2/6jQWdW17H+U2FuHY5e/QvBYGO3bdoacEu+4iHSy7dRE+j9e0kZWl8y+VEg7Pr1Z3tYjKg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XQE/xybe27mioLAKdciL1Y0hNRpYPvKtGZ2NdXL5CyI=;
- b=DB/xiqy7mE2xzkRNEgVR0e0IHOZfXaeurX4yt9YNAPh8si2NJiIdM82YQcGIcMB6qm4aPvrXO0DtA0Bof8ctPmidN5WD5fTAy//BpPJHaTe2O1Y98C8HnprAoCl8oxEB/R78j/ltBOs/qkyFo6icMpydFF2/CtAVBId0SEMNN30=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB6341.eurprd04.prod.outlook.com (2603:10a6:20b:d8::14)
- by PA4PR04MB7951.eurprd04.prod.outlook.com (2603:10a6:102:ca::18) with
+ bh=WqC8VuNGif3oYAT80V9LQKYxosisrbD1HTPgTXKK40Y=;
+ b=goJ+Ojk1rHWhba/CJ30VHV2aFwcw9c3wfAoH2Zlf9RqHzLzhSH6EGlKWFmJQ+KPzknd50FWYgwXR6gNfhx+M199qrmHVQQF0kVL9KBvuwWAGxgSeoW5zM7UaXQ/8nUrF2ZNy5Cmaws75I0aj82AzTiPpYuQLDkuQ6SUNmkJ7TIQ=
+Received: from MW2PR16CA0018.namprd16.prod.outlook.com (2603:10b6:907::31) by
+ CH3PR12MB9028.namprd12.prod.outlook.com (2603:10b6:610:123::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.36; Mon, 9 Oct
- 2023 06:17:24 +0000
-Received: from AM6PR04MB6341.eurprd04.prod.outlook.com
- ([fe80::71e6:21de:ecb2:560f]) by AM6PR04MB6341.eurprd04.prod.outlook.com
- ([fe80::71e6:21de:ecb2:560f%4]) with mapi id 15.20.6863.032; Mon, 9 Oct 2023
- 06:17:24 +0000
-From:   Ming Qian <ming.qian@nxp.com>
-To:     mchehab@kernel.org, mirela.rabulea@oss.nxp.com,
-        hverkuil-cisco@xs4all.nl
-Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, xiahong.bao@nxp.com, eagle.zhou@nxp.com,
-        tao.jiang_2@nxp.com, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2] media: imx-jpeg: notify source chagne event when the first picture parsed
-Date:   Mon,  9 Oct 2023 14:16:57 +0800
-Message-Id: <20231009061657.15319-1-ming.qian@nxp.com>
-X-Mailer: git-send-email 2.38.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI1PR02CA0036.apcprd02.prod.outlook.com
- (2603:1096:4:1f6::20) To AM6PR04MB6341.eurprd04.prod.outlook.com
- (2603:10a6:20b:d8::14)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.37; Mon, 9 Oct
+ 2023 06:19:28 +0000
+Received: from CO1PEPF000044F0.namprd05.prod.outlook.com
+ (2603:10b6:907:0:cafe::31) by MW2PR16CA0018.outlook.office365.com
+ (2603:10b6:907::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.36 via Frontend
+ Transport; Mon, 9 Oct 2023 06:19:28 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1PEPF000044F0.mail.protection.outlook.com (10.167.241.70) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6838.22 via Frontend Transport; Mon, 9 Oct 2023 06:19:28 +0000
+Received: from BLR-5CG13462PL.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 9 Oct
+ 2023 01:19:22 -0500
+From:   Wyes Karny <wyes.karny@amd.com>
+To:     Meng Li <li.meng@amd.com>
+CC:     Wyes Karny <wyes.karny@amd.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Huang Rui <ray.huang@amd.com>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
+        <linux-acpi@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        <linux-kselftest@vger.kernel.org>,
+        Nathan Fontenot <nathan.fontenot@amd.com>,
+        Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Shimmer Huang <shimmer.huang@amd.com>,
+        Perry Yuan <Perry.Yuan@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@alien8.de>
+Subject: Re: [PATCH V8 1/7] x86: Drop CPU_SUP_INTEL from SCHED_MC_PRIO for the expansion.
+Date:   Mon, 9 Oct 2023 11:49:03 +0530
+Message-ID: <20231009060917.ayqb2akceu5jf5qa@BLR-5CG13462PL.amd.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231009024932.2563622-2-li.meng@amd.com>
+References: <20231009024932.2563622-1-li.meng@amd.com> <20231009024932.2563622-2-li.meng@amd.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB6341:EE_|PA4PR04MB7951:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1be617e8-1cb9-4b90-7de9-08dbc88f672a
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044F0:EE_|CH3PR12MB9028:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0a12029f-18d4-46b6-db46-08dbc88fb145
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Qt4YF070bQ+rUydk3MX4HXA0Cm2mfaSiOFXWql2qrgEieuKf0+r7aIvhdPhzRfMgdx/yYXwLIulfBSSUNqR5fKbZ05isuHngYRYy4kNxtFHFR1l+YTL3dZQ/ODwSr8cCVpSk7ctqlopL2/l8anvUP4jmC8UEcT/IovRsTLgN4RAO53klFm5aGvA/hQiUjR278h2lHZSvt6AGGqvYs6iJ/ONDJ/0vZCYelnlNkEdz4xGgLbkHXojssuImE/iYOJKmKpkt54tLlsnvXEdfQ3lVWT0fzEMFJ/9hAtYqZhTa/EBqYO6s2gOdGOcHCjvBYckMUBtTbFEvKCzWqyvK/ajCiy0OA6WY6LgBtBflJ4PunyE9taGxXdCPJHLMk3HtOVVJGXlyuasWScCwbel3TCkIzN/ZU1NM1mJuYrq/jt45swulcyLQGk71QIWF9pbe4UnMX/5d/UUocc2xxM7xAgfYbhDUMtwH+7JMqIBkvrphUvyssjnIFBhMzLDRUrjvdmizsMdWHEImN/+W7GLlOA1DMdA7gTOZuOr5IU24H5D/uqauzRUU0fxarSKqDc4gzzDDD0qxIchH9x3kyT6AqxDsapUZXYK2DvUJ9g+Z4eS+J7I=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6341.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39860400002)(366004)(346002)(376002)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(83380400001)(1076003)(2616005)(26005)(316002)(66476007)(66556008)(66946007)(8936002)(8676002)(4326008)(5660300002)(41300700001)(44832011)(6506007)(6666004)(2906002)(6512007)(966005)(6486002)(478600001)(52116002)(36756003)(38100700002)(38350700002)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?o7iVxsacQQTZLGYyq7UIKFdVwvZmTaF0R+Kw3bm7DrB5pM4CDMrtcW1Foisx?=
- =?us-ascii?Q?JpkZhxtJU787wXZmG/R3lUSH4Dj4DKtOBZcJMx4CO0C6+AC5T988GRbq7l6L?=
- =?us-ascii?Q?4RkanaSZlxU/ixDzToJXclJwvS+xQ7eO4t8FEI7R7zRJQCuSRpMOJbD6JG2Z?=
- =?us-ascii?Q?ohkhXOpQ8SePvNCI1b2BBVUWssqzHK+Pe9vxNnp+WanQI+7DRmSnbFoBf9nS?=
- =?us-ascii?Q?O0tfiAixXtnKCd88Qr4HnGRDOGdvxCx1M4+UpCVytFoFDDMZG4QSs1fOY8bh?=
- =?us-ascii?Q?oWCAiZ/hTsBm31i5DGR/SJlwhdZ4d5SLXDCO05/xh9rAVndn0d0PQDWc5mFN?=
- =?us-ascii?Q?bow/MeAXZT1QiiB13LR88xHUKm8R5Uxjw42zRHCNOLBL8SWVHXK/sAcNIWUS?=
- =?us-ascii?Q?+wlrD0UsgdXnXiVjj9hqsJsttpKc4XZPX7TlhihdZDElyd3wUsSDbYJYXGgs?=
- =?us-ascii?Q?FmwbOBAi5ay2ugFx7XCvbjGzhBw98SnSMAqLHmKOizMFgmVPWKUQ44njRtAf?=
- =?us-ascii?Q?pmfq9FXQlEIgYlE+KZTaer2AXQcH1lUC73cRU13uY60ESf9Y3tOA8FHSxuaQ?=
- =?us-ascii?Q?VYcvidpg4NaBKmONzDYrkJI2iD1r4Zq1c7ahu8IDleGyRVae962xp3Cqy8UR?=
- =?us-ascii?Q?yKTB1VTsXDbn6HTXdsF+ppPgoAVVBpUWFKTGatt6DRNl+soiaJ3BfdV6niE+?=
- =?us-ascii?Q?6GbZmb2wyDK+Bhe84CxVKqRVa1R8aquuSAz+c4ff9pURvMnJEg1DsfCLfVRo?=
- =?us-ascii?Q?B9Emn8v7As5slyrEkKvS21XgUiRMqfUZtZl26iX5kRpe63lO0ksyE87BVI3S?=
- =?us-ascii?Q?AJiZEpWiZjBEn9/IeYwaHvqLEVoAVZMjdmiIYZ60yDA8aI7wlDDpwUjuM0ZI?=
- =?us-ascii?Q?v7/YhL6uFzuOHHrMr30592w/I4k1bLA2lDzv0gQh9Nq3aA1pNfoAiJ6SUJ/d?=
- =?us-ascii?Q?DkiZJyIW4pUmdCpzO9C/RMLzl3Yj9ZD3FHOwYqCht4zhZ05A0WkCROlDEzIJ?=
- =?us-ascii?Q?uYBDs/FVPpsMqXEQeuKNzT1Z0btXKqMO/zJ2O55RVdVU9UVE4vKAudhXZUjq?=
- =?us-ascii?Q?T4YFPnCeQT+T+7N76J5NUvB2esOIT0Gc95e4LsflsWkyIYks46KkPXqP9bV+?=
- =?us-ascii?Q?ZLBZ+jD0Xj3RGn/tuelKQtWBgnA9hG2tp5L+22yeZawtYXOzxuFzq0iKfpqa?=
- =?us-ascii?Q?3Bt4nw2Z9UjG9x/135VkoHDi92CZlBUOjLMt2QNZSXDwU/twiymCIXlHeQVQ?=
- =?us-ascii?Q?NuVyMXHLLihJrCv/+lVUxvkQFhBE4rf5mXBd54RQteSz2kFzW3ZRXkYxq10/?=
- =?us-ascii?Q?Gn73QKATzGSkVXT+eWwbfRxUV33os2JYE08AztkohVkhn70M4XO8AqKOn8FC?=
- =?us-ascii?Q?5viqEmNjNM2vQ+Fu05fINMcVSWeJo3CBK0eU3KBOcyouHD3uGU6CkAKMRfMG?=
- =?us-ascii?Q?DK/2bZliA7UdE/DPZSzDwiSxoi7gZ42jncmpySwhyXM0mtdM3aTxDrPPSMJq?=
- =?us-ascii?Q?M4PMlF2TqiNlyRasVht7xuYD751dnrzhK4iFwPf4KNme84Mgr7qACaaNcmhr?=
- =?us-ascii?Q?lVFJW+MeENhpBpLV6hiUFVy7MTaRNNNiQ31DpTDN?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1be617e8-1cb9-4b90-7de9-08dbc88f672a
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6341.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2023 06:17:24.3266
+X-Microsoft-Antispam-Message-Info: JUlDFznctJ3dJpSUr24ZXHcuKDMWBgcgNjEabyz0jQ9nisld2ZMGn58A7KdWXv6Hc6XEEarurgP7iorD3S4KxZ9DoCwRCz9VVMhWtiZYi2AEUdj/tLkpmpVtAarLKyc7A86EwEm12MVztpgZqZFCobs3pj7WOslgPogu9ixXL3KyWFtdLT83N/P2mW+h6jajLdBWNs1MRpsSqRMpDkGF2WoahWN+Z6fElr437QourztE9rdN8tsWxW/nvOO0/rqxwCk+Ld0qxnmj7kvRLzUpXRz9lZmIZPRsomnvOkSwEPtrhQCoMTyhFaqN4P2+iwqtMwwZqTFHP8HJsqSv50a4/WZkpti1ALGKetFu0T4QjeZh+5h4UtzjyjFIF7uwPRGA5eT9trZsbgGP0iUwQKTkmHoNFTqWaskfgC0zB/hJmnRVIvCGujE1mQYQQZhrSx1PSp+T3atmLnlC8xYGuEbBhebp9GJ7OOU7lzn/eX67Tq9hhNSRvjkBcpJlJRfgY8ZYx5gOkXHLHAUyVR4CEmw0xAL9JR7bsW07uRcAEohnTSwvaIrLeTWCQPg7oM3e7WN4t6k9fp5FiwfcOJOKkIBM05i2wtPyqRDLyfttPxHBpIgAherFEn7PUoV238+OM+QPQQq09Q9xncg62fRvV2rfLPpAtrHjrBkD0cQr+xg4OPobdmJWRohM8h0kuTo+fnwvfA+oGDOVDR1yAij7j+Xm5kdD1WdkIYJfAIVvRhKG+/hWSlnZ5b+hKt3UIlxUHAsRApCzsmsTczwSPS/KB01xaQ==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(136003)(396003)(346002)(230922051799003)(82310400011)(451199024)(186009)(1800799009)(64100799003)(36840700001)(46966006)(40470700004)(55016003)(7696005)(1076003)(478600001)(41300700001)(6666004)(336012)(426003)(47076005)(26005)(16526019)(83380400001)(4744005)(2906002)(44832011)(5660300002)(70586007)(70206006)(54906003)(6636002)(4326008)(6862004)(8676002)(8936002)(316002)(40460700003)(82740400003)(36860700001)(356005)(81166007)(40480700001)(86362001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2023 06:19:28.1518
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6PyxNZ5Lld3UoummkS2DmMtzgm45gZRw1kein6sxAQ0xbbswXi7pW4aGa8AeQgjDQ69sA0qQ32gbxDNvZdaplg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7951
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0a12029f-18d4-46b6-db46-08dbc88fb145
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044F0.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9028
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After gstreamer rework the dynamic resolution change handling, gstreamer
-stop doing capture buffer allocation based on guesses and wait for the
-source change event when available. It requires driver always notify
-source change event in the initialization, even if the size parsed is
-equal to the size set on capture queue. otherwise, the pipeline will be
-stalled.
-
-Currently driver may not notify source change event if the parsed format
-and size are equal to those previously established, but it may stall the
-gstreamer pipeline.
-
-The link of gstreamer patch is
-https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4437
-
-Fixes: b4e1fb8643da ("media: imx-jpeg: Support dynamic resolution change")
-Signed-off-by: Ming Qian <ming.qian@nxp.com>
----
-v2
-- rename a confusing field
-
- drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c | 7 ++++++-
- drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.h | 1 +
- 2 files changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c b/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c
-index 3af0af8ac07b..c538440abe8d 100644
---- a/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c
-+++ b/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c
-@@ -1348,7 +1348,8 @@ static bool mxc_jpeg_source_change(struct mxc_jpeg_ctx *ctx,
- 	q_data_cap = mxc_jpeg_get_q_data(ctx, V4L2_BUF_TYPE_VIDEO_CAPTURE);
- 	if (mxc_jpeg_compare_format(q_data_cap->fmt, jpeg_src_buf->fmt))
- 		jpeg_src_buf->fmt = q_data_cap->fmt;
--	if (q_data_cap->fmt != jpeg_src_buf->fmt ||
-+	if (ctx->need_initial_source_change_evt ||
-+	    q_data_cap->fmt != jpeg_src_buf->fmt ||
- 	    q_data_cap->w != jpeg_src_buf->w ||
- 	    q_data_cap->h != jpeg_src_buf->h) {
- 		dev_dbg(dev, "Detected jpeg res=(%dx%d)->(%dx%d), pixfmt=%c%c%c%c\n",
-@@ -1392,6 +1393,7 @@ static bool mxc_jpeg_source_change(struct mxc_jpeg_ctx *ctx,
- 		mxc_jpeg_sizeimage(q_data_cap);
- 		notify_src_chg(ctx);
- 		ctx->source_change = 1;
-+		ctx->need_initial_source_change_evt = false;
- 		if (vb2_is_streaming(v4l2_m2m_get_dst_vq(ctx->fh.m2m_ctx)))
- 			mxc_jpeg_set_last_buffer(ctx);
- 	}
-@@ -1611,6 +1613,9 @@ static int mxc_jpeg_queue_setup(struct vb2_queue *q,
- 	for (i = 0; i < *nplanes; i++)
- 		sizes[i] = mxc_jpeg_get_plane_size(q_data, i);
- 
-+	if (V4L2_TYPE_IS_OUTPUT(q->type))
-+		ctx->need_initial_source_change_evt = true;
-+
- 	return 0;
- }
- 
-diff --git a/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.h b/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.h
-index d80e94cc9d99..dc4afeeff5b6 100644
---- a/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.h
-+++ b/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.h
-@@ -99,6 +99,7 @@ struct mxc_jpeg_ctx {
- 	enum mxc_jpeg_enc_state		enc_state;
- 	int				slot;
- 	unsigned int			source_change;
-+	bool				need_initial_source_change_evt;
- 	bool				header_parsed;
- 	struct v4l2_ctrl_handler	ctrl_handler;
- 	u8				jpeg_quality;
--- 
-2.38.1
-
+On 09 Oct 10:49, Meng Li wrote:
+> amd-pstate driver also uses SCHED_MC_PRIO, so decouple the requirement
+> of CPU_SUP_INTEL from the dependencies to allow compilation in kernels
+> without Intel CPU support.
+> 
+> Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+> Reviewed-by: Huang Rui <ray.huang@amd.com>
+Reviewed-by: Wyes Karny <wyes.karny@amd.com>
+> Signed-off-by: Meng Li <li.meng@amd.com>
+> ---
+>  arch/x86/Kconfig | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 66bfabae8814..a2e163acf623 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -1054,8 +1054,9 @@ config SCHED_MC
+>  
+>  config SCHED_MC_PRIO
+>  	bool "CPU core priorities scheduler support"
+> -	depends on SCHED_MC && CPU_SUP_INTEL
+> -	select X86_INTEL_PSTATE
+> +	depends on SCHED_MC
+> +	select X86_INTEL_PSTATE if CPU_SUP_INTEL
+> +	select X86_AMD_PSTATE if CPU_SUP_AMD && ACPI
+>  	select CPU_FREQ
+>  	default y
+>  	help
+> -- 
+> 2.34.1
+> 
