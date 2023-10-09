@@ -2,96 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE32D7BDFE6
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E8007BE009
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377176AbjJINfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 09:35:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52726 "EHLO
+        id S1377202AbjJINgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 09:36:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377169AbjJINfQ (ORCPT
+        with ESMTP id S1377203AbjJINgx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 09:35:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D1F599
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 06:35:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696858515; x=1728394515;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=a8KWFLu3eVLALOO0s2Gfw3D3r4t41MgJmAmOQhK1GqY=;
-  b=RwcbvQX4vTxV2SjYxjaf1K0WLu5sdFnpBIlX9CZKO27ZTULr68Ku1gnB
-   iWC8xj9LCPKk0fb9Yj2xNkpfMGEaloWdSQHu2GVRKHU1EIm/1++7te0xS
-   raINBpBiD3oUFQ1XYGW/Zp2RhaXG6yDimMXi5D72O6RrVUVzWIez4pT+i
-   G8XClAWM9IH4fivWPvAAo8hFE1ZRMxHldeY+qO+AiWmYete7o27QeR5f7
-   HjVWxWDfT8utAkZHI4rWhi6CTOi5nz1M89TZV33bxlB0EK7I9Da+5qu54
-   DLXwKuyb53AruBjenTb83AMoym1ttgZWABcQCzm/mSfqT09ZwvHakvgcR
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="448332827"
-X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="scan'208";a="448332827"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 06:35:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="1000209164"
-X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="scan'208";a="1000209164"
-Received: from ahuge-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.40.233])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 06:35:03 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 6EDC110A196; Mon,  9 Oct 2023 16:35:00 +0300 (+03)
-Date:   Mon, 9 Oct 2023 16:35:00 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Baoquan He <bhe@redhat.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        Jun Nakajima <jun.nakajima@intel.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        kexec@lists.infradead.org, linux-coco@lists.linux.dev,
+        Mon, 9 Oct 2023 09:36:53 -0400
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8BABE0;
+        Mon,  9 Oct 2023 06:36:49 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 699C0FF805;
+        Mon,  9 Oct 2023 13:36:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1696858608;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ecp+PzDuojrF4dVn0YXTODlKCvKpXLTXA6CoVDUgfhU=;
+        b=mV5XpggpxwV309tZ+u4iSdRAQN+OqPXFAuLCjisPIGfNJ8DmhxJl1H869NCu75zzo8uC0T
+        bXu+/A/NZ66wzxM97X1EPXCi8iXKv/m1z9BKDUM2Zg1XOEAjJL3JEO/IMxe8CsQScXozj6
+        83jXpfepGYkCvIDGXXQBmb9x1qNCtjL35Vlqkduc4Z24MnjR099sMqUmYN9OhNP2yPgESk
+        08yhPDf2mJU+GrwT2ZPJeXDCaGBgbjtoPC7Ljj9Mk3SIOarRvt7GfkCXPQ3M+Aq83NsAed
+        uho0IF2jtm/AfAVH4z/Gmx5m9+MXOJD9dN7RlZL1UFriyObgxKhtUheIRMiNbw==
+From:   =?UTF-8?q?K=C3=B6ry=20Maincent?= <kory.maincent@bootlin.com>
+To:     Michal Kubecek <mkubecek@suse.cz>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/13] x86/tdx: Convert shared memory back to private on
- kexec
-Message-ID: <20231009133500.su4ylwpbnaiyln4d@box.shutemov.name>
-References: <20231005131402.14611-1-kirill.shutemov@linux.intel.com>
- <20231005131402.14611-11-kirill.shutemov@linux.intel.com>
- <ZSJpzw2e7KgtJAZy@MiWiFi-R3L-srv>
+Cc:     Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Simon Horman <horms@kernel.org>,
+        Kory Maincent <kory.maincent@bootlin.com>,
+        thomas.petazzoni@bootlin.com, Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Subject: [PATCH net v3 1/1] ethtool: Fix mod state of verbose no_mask bitset
+Date:   Mon,  9 Oct 2023 15:36:45 +0200
+Message-Id: <20231009133645.44503-1-kory.maincent@bootlin.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZSJpzw2e7KgtJAZy@MiWiFi-R3L-srv>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: kory.maincent@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 08, 2023 at 04:35:27PM +0800, Baoquan He wrote:
-> On 10/05/23 at 04:13pm, Kirill A. Shutemov wrote:
-> > TDX guests allocate shared buffers to perform I/O. It is done by
-> > allocating pages normally from the buddy allocator and converting them
-> > to shared with set_memory_decrypted().
-> > 
-> > The target kernel has no idea what memory is converted this way. It only
->       ~~~~~~~~~~~~~
-> > sees E820_TYPE_RAM.
-> 
-> I finally realized it means the 2nd kernel of kexec rebooting. Maybe we
-> can call it 2nd kernel always, it works for both kexec and kdump
-> jumping. 
+From: Kory Maincent <kory.maincent@bootlin.com>
 
-Okay. Will fix. I am new to kexec and I don't know proper terminology :)
+A bitset without mask in a _SET request means we want exactly the bits in
+the bitset to be set. This works correctly for compact format but when
+verbose format is parsed, ethnl_update_bitset32_verbose() only sets the
+bits present in the request bitset but does not clear the rest. The commit
+6699170376ab fixes this issue by clearing the whole target bitmap before we
+start iterating. The solution proposed brought an issue with the behavior
+of the mod variable. As the bitset is always cleared the old val will
+always differ to the new val.
 
+Fix it by adding a new temporary variable which save the state of the old
+bitmap.
+
+Fixes: 6699170376ab ("ethtool: fix application of verbose no_mask bitset")
+Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+---
+
+Changes in v2:
+- Fix the allocated size.
+
+Changes in v3:
+- Add comment.
+- Updated variable naming.
+- Add orig_bitmap variable to avoid n_mask condition in the
+  nla_for_each_nested() loop.
+---
+ net/ethtool/bitset.c | 32 ++++++++++++++++++++++++++------
+ 1 file changed, 26 insertions(+), 6 deletions(-)
+
+diff --git a/net/ethtool/bitset.c b/net/ethtool/bitset.c
+index 0515d6604b3b..883ed9be81f9 100644
+--- a/net/ethtool/bitset.c
++++ b/net/ethtool/bitset.c
+@@ -431,8 +431,10 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int nbits,
+ 			      ethnl_string_array_t names,
+ 			      struct netlink_ext_ack *extack, bool *mod)
+ {
++	u32 *orig_bitmap, *saved_bitmap = NULL;
+ 	struct nlattr *bit_attr;
+ 	bool no_mask;
++	bool dummy;
+ 	int rem;
+ 	int ret;
+ 
+@@ -448,8 +450,22 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int nbits,
+ 	}
+ 
+ 	no_mask = tb[ETHTOOL_A_BITSET_NOMASK];
+-	if (no_mask)
+-		ethnl_bitmap32_clear(bitmap, 0, nbits, mod);
++	if (no_mask) {
++		unsigned int nwords = DIV_ROUND_UP(nbits, 32);
++		unsigned int nbytes = nwords * sizeof(u32);
++
++		/* The bitmap size is only the size of the map part without
++		 * its mask part.
++		 */
++		saved_bitmap = kcalloc(nwords, sizeof(u32), GFP_KERNEL);
++		if (!saved_bitmap)
++			return -ENOMEM;
++		memcpy(saved_bitmap, bitmap, nbytes);
++		ethnl_bitmap32_clear(bitmap, 0, nbits, &dummy);
++		orig_bitmap = saved_bitmap;
++	} else {
++		orig_bitmap = bitmap;
++	}
+ 
+ 	nla_for_each_nested(bit_attr, tb[ETHTOOL_A_BITSET_BITS], rem) {
+ 		bool old_val, new_val;
+@@ -458,13 +474,14 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int nbits,
+ 		if (nla_type(bit_attr) != ETHTOOL_A_BITSET_BITS_BIT) {
+ 			NL_SET_ERR_MSG_ATTR(extack, bit_attr,
+ 					    "only ETHTOOL_A_BITSET_BITS_BIT allowed in ETHTOOL_A_BITSET_BITS");
+-			return -EINVAL;
++			ret = -EINVAL;
++			goto out;
+ 		}
+ 		ret = ethnl_parse_bit(&idx, &new_val, nbits, bit_attr, no_mask,
+ 				      names, extack);
+ 		if (ret < 0)
+-			return ret;
+-		old_val = bitmap[idx / 32] & ((u32)1 << (idx % 32));
++			goto out;
++		old_val = orig_bitmap[idx / 32] & ((u32)1 << (idx % 32));
+ 		if (new_val != old_val) {
+ 			if (new_val)
+ 				bitmap[idx / 32] |= ((u32)1 << (idx % 32));
+@@ -474,7 +491,10 @@ ethnl_update_bitset32_verbose(u32 *bitmap, unsigned int nbits,
+ 		}
+ 	}
+ 
+-	return 0;
++	ret = 0;
++out:
++	kfree(saved_bitmap);
++	return ret;
+ }
+ 
+ static int ethnl_compact_sanity_checks(unsigned int nbits,
 -- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+2.25.1
+
