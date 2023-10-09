@@ -2,110 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB3077BD233
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 04:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4840C7BD226
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 04:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345040AbjJICzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 22:55:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60722 "EHLO
+        id S1344825AbjJICyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 22:54:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232350AbjJICzP (ORCPT
+        with ESMTP id S230429AbjJICyf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 22:55:15 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E7951B9;
-        Sun,  8 Oct 2023 19:55:12 -0700 (PDT)
-Received: from loongson.cn (unknown [10.2.5.185])
-        by gateway (Coremail) with SMTP id _____8BxY_CPayNlEy4wAA--.27036S3;
-        Mon, 09 Oct 2023 10:55:11 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.2.5.185])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx7y+NayNlRvEbAA--.58139S6;
-        Mon, 09 Oct 2023 10:55:10 +0800 (CST)
-From:   Tianrui Zhao <zhaotianrui@loongson.cn>
-To:     Shuah Khan <shuah@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Vishal Annapurve <vannapurve@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
-        Peter Xu <peterx@redhat.com>,
-        Vipin Sharma <vipinsh@google.com>, maobibo@loongson.cn,
-        zhaotianrui@loongson.cn
-Subject: [PATCH v3 4/4] KVM: selftests: Add test cases for LoongArch
-Date:   Mon,  9 Oct 2023 10:55:10 +0800
-Message-Id: <20231009025510.342681-5-zhaotianrui@loongson.cn>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20231009025510.342681-1-zhaotianrui@loongson.cn>
-References: <20231009025510.342681-1-zhaotianrui@loongson.cn>
+        Sun, 8 Oct 2023 22:54:35 -0400
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92388A4;
+        Sun,  8 Oct 2023 19:54:33 -0700 (PDT)
+X-UUID: 32ffd98f3bf5458f9196de2ce6920fc6-20231009
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:5774f625-9af4-41ad-8b8e-617d319afdd0,IP:-15
+        ,URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+        ON:release,TS:-20
+X-CID-INFO: VERSION:1.1.32,REQID:5774f625-9af4-41ad-8b8e-617d319afdd0,IP:-15,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+        :release,TS:-20
+X-CID-META: VersionHash:5f78ec9,CLOUDID:6fb8b8bf-14cc-44ca-b657-2d2783296e72,B
+        ulkID:231009105417AZF97K5Y,BulkQuantity:0,Recheck:0,SF:100|17|19|42|101|24
+        |102,TC:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil
+        ,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS
+X-UUID: 32ffd98f3bf5458f9196de2ce6920fc6-20231009
+X-User: guodongtai@kylinos.cn
+Received: from localhost.localdomain [(39.156.73.14)] by mailgw
+        (envelope-from <guodongtai@kylinos.cn>)
+        (Generic MTA)
+        with ESMTP id 260471370; Mon, 09 Oct 2023 10:54:16 +0800
+From:   George Guo <guodongtai@kylinos.cn>
+To:     fw@strlen.de
+Cc:     coreteam@netfilter.org, davem@davemloft.net, dongtai.guo@linux.dev,
+        edumazet@google.com, guodongtai@kylinos.cn, kadlec@netfilter.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pabeni@redhat.com, pablo@netfilter.org
+Subject: [PATCH v2] netfilter: cleanup struct nft_table
+Date:   Mon,  9 Oct 2023 10:55:48 +0800
+Message-Id: <20231009025548.3522409-1-guodongtai@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231007105335.GB20662@breakpoint.cc>
+References: <20231007105335.GB20662@breakpoint.cc>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Cx7y+NayNlRvEbAA--.58139S6
-X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
-        nUUI43ZEXa7xR_UUUUUUUUU==
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are some KVM common test cases supported by LoongArch:
-	demand_paging_test
-	dirty_log_perf_test
-	dirty_log_test
-	guest_print_test
-	kvm_binary_stats_test
-	kvm_create_max_vcpus
-	kvm_page_table_test
-	memslot_modification_stress_test
-	memslot_perf_test
-	set_memory_region_test
-And other test cases are not supported by LoongArch. For example,
-we do not support rseq_test, as the glibc do not support it.
+Add comments for nlpid, family, udlen and udata in struct nft_table, and
+afinfo is no longer a member of struct nft_table, so remove the comment
+for it.
 
-Based-on: <20230927030959.3629941-1-zhaotianrui@loongson.cn>
-Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
+Signed-off-by: George Guo <guodongtai@kylinos.cn>
 ---
- tools/testing/selftests/kvm/Makefile | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ include/net/netfilter/nf_tables.h | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index a3bb36fb3c..7d264dbf14 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -56,6 +56,10 @@ LIBKVM_s390x += lib/s390x/ucall.c
- LIBKVM_riscv += lib/riscv/processor.c
- LIBKVM_riscv += lib/riscv/ucall.c
- 
-+LIBKVM_loongarch += lib/loongarch/processor.c
-+LIBKVM_loongarch += lib/loongarch/ucall.c
-+LIBKVM_loongarch += lib/loongarch/exception.S
-+
- # Non-compiled test targets
- TEST_PROGS_x86_64 += x86_64/nx_huge_pages_test.sh
- 
-@@ -190,6 +194,17 @@ TEST_GEN_PROGS_riscv += kvm_binary_stats_test
- 
- SPLIT_TESTS += get-reg-list
- 
-+TEST_GEN_PROGS_loongarch += demand_paging_test
-+TEST_GEN_PROGS_loongarch += dirty_log_perf_test
-+TEST_GEN_PROGS_loongarch += dirty_log_test
-+TEST_GEN_PROGS_loongarch += guest_print_test
-+TEST_GEN_PROGS_loongarch += kvm_binary_stats_test
-+TEST_GEN_PROGS_loongarch += kvm_create_max_vcpus
-+TEST_GEN_PROGS_loongarch += kvm_page_table_test
-+TEST_GEN_PROGS_loongarch += memslot_modification_stress_test
-+TEST_GEN_PROGS_loongarch += memslot_perf_test
-+TEST_GEN_PROGS_loongarch += set_memory_region_test
-+
- TEST_PROGS += $(TEST_PROGS_$(ARCH_DIR))
- TEST_GEN_PROGS += $(TEST_GEN_PROGS_$(ARCH_DIR))
- TEST_GEN_PROGS_EXTENDED += $(TEST_GEN_PROGS_EXTENDED_$(ARCH_DIR))
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
+index 7c816359d5a9..9fb16485d08f 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -1198,10 +1198,13 @@ static inline void nft_use_inc_restore(u32 *use)
+  *	@hgenerator: handle generator state
+  *	@handle: table handle
+  *	@use: number of chain references to this table
++ *	@family:address family
+  *	@flags: table flag (see enum nft_table_flags)
+  *	@genmask: generation mask
+- *	@afinfo: address family info
++ *	@nlpid: netlink port ID
+  *	@name: name of the table
++ *	@udlen: length of the user data
++ *	@udata: user data
+  *	@validate_state: internal, set when transaction adds jumps
+  */
+ struct nft_table {
 -- 
-2.39.1
+2.34.1
 
