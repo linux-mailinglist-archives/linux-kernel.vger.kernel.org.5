@@ -2,141 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31AA27BE3CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9EB67BE3D0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376356AbjJIPEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 11:04:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33988 "EHLO
+        id S1376348AbjJIPEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 11:04:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234583AbjJIPEE (ORCPT
+        with ESMTP id S230326AbjJIPEE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 9 Oct 2023 11:04:04 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B02A6
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 08:04:01 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-405505b07dfso33617785e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 08:04:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696863840; x=1697468640; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=e1irillGm1K54F1NjS0dRMUHvI6dB6odEj9ipygzAW8=;
-        b=k2PoVrlyiwW5jtBmlUeBUss2HZ90vngEHBUJ+lD6OtQURKCKr1foepArIHVFhW/Vj5
-         E5mLn+04OQAmg/wKygMYI9FEktbojZyxzoyjFH/UD6qVf5dOqufBKTnyebPzw48tDllO
-         8aWIFJ9+qt10t6lINw7/DbZ8UFIOx69lJw+op0an8Gu9NA+XzFxBbTg9uLSELWL7nHwe
-         zHOY42znyTNS5A/6A92aiWZf+/tfAgSetgZMAbV/mUI/x/wlZJ7P7iTs4drySN+N9em3
-         Cnzy6AhqnbMDf9bfQy1mQ9I5tqq7fCzgKtW7Lx6W802u954ufvWcehNt0KLxaCRXqvy1
-         vKtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696863840; x=1697468640;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=e1irillGm1K54F1NjS0dRMUHvI6dB6odEj9ipygzAW8=;
-        b=Z8+uxOJNFWn5WV9sHJTt4reagCPI59jonUkjbDTE7L4Qa2O/8Y93iW+Rf5+2/c7P9K
-         jX7Hp9DCu3qjfIa1m4qGq7/5K2wRg/0AOpV5jMczpZVjbCTAR4KzZ7ER3zJdE6WGHt/F
-         mkYI+UzPDhpR4deZZ0TVwD3h8vfxPmaoqnkc6xKS9xcLP2ZKirf1xnGdJxUKY9p82lZG
-         Sog/oTP+kutXXhIUNrX1vot/CfqwZK2L4PBubEyPQE1398yVFoYcAwbEQdZdTBxFyJ51
-         0zE2/AsRYgASnCV99xlzicJDaUZbtnjOH00+gSwbPA/lB090pWkn9dIKHo2iiniEcUsz
-         9ySg==
-X-Gm-Message-State: AOJu0YyOA5fz8fQ1IFV2TmjpcD7f0TCl4PudYv+rRAPvw59FgtsYqcra
-        zY8N20LS//z0NJiutqDUUPo6Zg==
-X-Google-Smtp-Source: AGHT+IEVW2b5IkipYK288nS2F4jTZC+gg5l9CKp0vHOt4ZaUEbQilB9NT6X78idQ/5utMua1lePtVg==
-X-Received: by 2002:a5d:55c7:0:b0:321:6339:f523 with SMTP id i7-20020a5d55c7000000b003216339f523mr10665466wrw.22.1696863839392;
-        Mon, 09 Oct 2023 08:03:59 -0700 (PDT)
-Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id n10-20020a5d4c4a000000b00323287186aasm9886528wrt.32.2023.10.09.08.03.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 08:03:58 -0700 (PDT)
-Message-ID: <2db05110-80e5-4d32-9483-82b7419a7a4d@linaro.org>
-Date:   Mon, 9 Oct 2023 17:03:56 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] dt-bindings: vendor-prefixes: Add TouchNetix AS
-Content-Language: en-US
-To:     Kamel Bouhara <kamel.bouhara@bootlin.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, mark.satterthwaite@touchnetix.com,
-        pedro.torruella@touchnetix.com, bartp@baasheep.co.uk,
-        hannah.rossiter@touchnetix.com,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        bsp-development.geo@leica-geosystems.com
-References: <20231009134435.36311-1-kamel.bouhara@bootlin.com>
- <20231009134435.36311-2-kamel.bouhara@bootlin.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231009134435.36311-2-kamel.bouhara@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9166BAF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 08:04:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 668CAC433C7;
+        Mon,  9 Oct 2023 15:03:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696863842;
+        bh=zB+vI20UfPAoIRDFm4Wc3RigAKAOlJQXx6ZG9XBMgtU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=X6kFfEI4HpwGjzHjtOzXmkTx/+6u72xXY8H7ww/5qDY2nhVN81Fj6QaE58qWjoxng
+         NsYO21WczbjklYww+dY+HfEEmT5pywPC1VFv35AGphK7rOxfnsUHfPEBwQUFRZwGwZ
+         8z78vN4K8b0BGXjXV596E9NN8EwUX5bLb7G7GSLfLG9uXNC35stIsbhlrkBDz6qTf/
+         5dCXhoxKBix+k807kRU7R/e7mTylWjKvBBPytgUSC83b2O/YHmHlyf0YXwkAbiOaq4
+         LM41jMrd3WKOTsERWM56INn6efOz0yeEkJx1I/JQtK1KjcI8Fc3NdgfxNlUXx933Xc
+         by1xxCh/24I6w==
+Date:   Tue, 10 Oct 2023 00:03:56 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Atul Kumar Pant <atulpant.linux@gmail.com>,
+        naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
+        davem@davemloft.net, mhiramat@kernel.org,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org, shuah@kernel.org
+Subject: Re: [PATCH v1] samples: kprobes: Fixes a typo
+Message-Id: <20231010000356.1805c6e0f517245161ebdf03@kernel.org>
+In-Reply-To: <20231009095103.6d08e72a@gandalf.local.home>
+References: <20230817170819.77857-1-atulpant.linux@gmail.com>
+        <20230923173040.GA159038@atom0118>
+        <20231007153900.GA20160@atom0118>
+        <20231009095103.6d08e72a@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/10/2023 15:44, Kamel Bouhara wrote:
-> Add vendor prefix for TouchNetix AS (https://www.touchnetix.com/products/).
+On Mon, 9 Oct 2023 09:51:03 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> On Sat, 7 Oct 2023 21:09:00 +0530
+> Atul Kumar Pant <atulpant.linux@gmail.com> wrote:
 > 
-> Signed-off-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
-> ---
+> > On Sat, Sep 23, 2023 at 11:00:46PM +0530, Atul Kumar Pant wrote:
+> > > On Thu, Aug 17, 2023 at 10:38:19PM +0530, Atul Kumar Pant wrote:  
+> > > > Fixes typo in a function name.
+> > > > 
+> > > > Signed-off-by: Atul Kumar Pant <atulpant.linux@gmail.com>
+> > > > ---
+> > > >  samples/kprobes/kretprobe_example.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/samples/kprobes/kretprobe_example.c b/samples/kprobes/kretprobe_example.c
+> > > > index cbf16542d84e..ed79fd3d48fb 100644
+> > > > --- a/samples/kprobes/kretprobe_example.c
+> > > > +++ b/samples/kprobes/kretprobe_example.c
+> > > > @@ -35,7 +35,7 @@ struct my_data {
+> > > >  	ktime_t entry_stamp;
+> > > >  };
+> > > >  
+> > > > -/* Here we use the entry_hanlder to timestamp function entry */
+> > > > +/* Here we use the entry_handler to timestamp function entry */
+> > > >  static int entry_handler(struct kretprobe_instance *ri, struct pt_regs *regs)
+> > > >  {
+> > > >  	struct my_data *data;
+> > > > -- 
+> > > > 2.25.1
+> > > >   
+> > > 
+> > > 	Hi all, can someone provide comments on this change.  
+> > 
+> > 			Hi all, can someone please review this change. It has been not
+> > 			reviewed for quite some time.
+> 
+> That's because trivial typos in comments are considered very low priority,
+> and are usually only added (if they are ever added) if the maintainer has
+> extra time, which may not be for a while.
+
+Anyway, let me pick this. I found this in my inbox now. :)
+
+Thank you,
+
+> 
+> -- Steve
 
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
-
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
