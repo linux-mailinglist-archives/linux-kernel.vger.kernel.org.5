@@ -2,101 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3BF57BD701
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 569287BD70D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345844AbjJIJ3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 05:29:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36832 "EHLO
+        id S1345765AbjJIJaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 05:30:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345765AbjJIJ32 (ORCPT
+        with ESMTP id S1345675AbjJIJad (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 05:29:28 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 183A4A3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:29:26 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3247d69ed2cso4142661f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 02:29:26 -0700 (PDT)
+        Mon, 9 Oct 2023 05:30:33 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E000F1
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:30:31 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-534694a9f26so10354a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 02:30:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696843764; x=1697448564; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=X8m4m0ieEJ2SA5cCHHqMfizD1ZJJDz/TnRHcokgUvn4=;
-        b=XI0PPwQ06rDSlCLpr68nDNoKTMKv98UsyZR0SJc5Uxvs91vts0ykziX76nILvSEMGq
-         Od3PB+10EvCoLvW+vH4fCK8KEoitd5VlnZoN0GZj9Lf3372M0X3nY1+BQ5HEOp+kQXCb
-         vatxSuhws1ELs9EoaL+Jn4ZIGsX6XFpbHM9U2UvtghswsDBZf4xXFMLzyr3NLFgGrdhA
-         4UoNjEVgCUBHpN0hJffMPYGWGjtEoGuiWb880Z5MSsTLqLYNYM7zXqvGnWPaUzveeljv
-         7i/rcMPEb0Cv/R7QVE7VsFICRSBkg2HH9Keon06p/rjncWtZkvz4X4TZDZZRGsLoJS6q
-         jXiA==
+        d=google.com; s=20230601; t=1696843829; x=1697448629; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TLyudqSMOhmAh3CWo49NCC+vFjpCOk99m8pKFm0PjdI=;
+        b=RODB1RLCy4JZ8rAIylWofuDDGtig5YVjofIrBdwlqD5FlNpGeV0sjfk086F3+37zon
+         vSF8RHoNQ1Fml5a/io5tooghYoMuLRqejfMI2GviVQgJ8XF36oJKdh0C2J4cU32hi9yD
+         U2NPB0E0Mx7c32hwul+sb7HLtEmmvSj7xkywnK4KDaw6KU1+H5UTmDwOM1b8o6UgXSfh
+         CCFOq5EhBjZrRknIkvmBme3K9iwC3FFSEkheAOVdMPfZF3CvnFL3puaQ028yiTVdjp1b
+         EaAlHLzBNak7Uk0FfxpeSEgbmFAHetkZzWdR1VhPXSYnO3S9Rl03kyiQfzFH99/pr96h
+         cJGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696843764; x=1697448564;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=X8m4m0ieEJ2SA5cCHHqMfizD1ZJJDz/TnRHcokgUvn4=;
-        b=kXkdKNR5zPTcQ48+SYx/GIoKGBqWqtmL24IvdRF1i1bLfONbNEYKA25Xw+JatFrVXO
-         rb+3U9mnP8pMASpXvFN8zBtQ+xrTXncdh2faWv+z4t76rL7E0C+Wis0XL1a5T8L9N7rX
-         3uuz1r8hk5yZiTGqmkFWuKlaT0h1voYtm6ETCVMfN0Mbh/OLodjeyYS4TaDX+VJZ6o/6
-         u3UiedaRycPk9bhwv+GJlgR0t+SyFis7EHhu5yXKrOddZ5JGnolnEoZGO0v69zNKuFVU
-         KBENzRSQPvfQy8ZMoO+tBIuL8VkG0T93L2ndQoNPsQTFZutrqsqCKY+TJAup0bolb04d
-         IvlQ==
-X-Gm-Message-State: AOJu0Yzkvr4a51tKG0lUer9b6PMqFK2Qn4337lizN8VyyEbIqkzdSKtU
-        jvQTPLC2xftFJi6ItafxLSNLhw==
-X-Google-Smtp-Source: AGHT+IEXeYstdXT6TbrSO2yEei8azH2660L8AX7ojU3STjxM7Q8gohifEoelTb8KAy2MvYiMxGH00g==
-X-Received: by 2002:a05:6000:38b:b0:329:6bd7:470c with SMTP id u11-20020a056000038b00b003296bd7470cmr9256860wrf.58.1696843764410;
-        Mon, 09 Oct 2023 02:29:24 -0700 (PDT)
-Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
-        by smtp.gmail.com with ESMTPSA id r18-20020adfe692000000b0031912c0ffebsm9059425wrm.23.2023.10.09.02.29.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 02:29:24 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 10:29:22 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Cc:     Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Helge Deller <deller@gmx.de>, Karel Balej <balejk@matfyz.cz>,
-        dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fbdev@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH 1/2] dt-bindings: backlight: add Kinetic KTD2801 binding
-Message-ID: <20231009092922.GA223751@aspen.lan>
-References: <20231005-ktd2801-v1-0-43cd85b0629a@skole.hr>
- <20231005-ktd2801-v1-1-43cd85b0629a@skole.hr>
- <20231006123014.GA96854@aspen.lan>
- <5984411.lOV4Wx5bFT@radijator>
+        d=1e100.net; s=20230601; t=1696843829; x=1697448629;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TLyudqSMOhmAh3CWo49NCC+vFjpCOk99m8pKFm0PjdI=;
+        b=lIib3G32Xi7bhubfjcriC9Cd4/RK5TcpqOS6GtZXoFvB3c6uF6Z5NYTKkONyF2nE03
+         E7m7R/tQN01voJM1ZSbhy9bCc2Zanl6qek3tO7FHYJsrgfeG5LEOaZwA+yv1f2Sirbyx
+         tGjmguYAJb91rv4f92ni8OjqIGEFxnnOf7PLY1foEd4qgeA0ZEOP+QSaX/+5fmUXPBkE
+         2lNXjFbcPS39c3nz8tvOiYNOg3Rr9kwHrTi+ETUCR2+SSMMqW58sRPBwFeABjOB6yJoz
+         7A/A53Vf/0fhROfeIYUR2ooolnHyxGfHGMZBL874OpXuCVQrqgy+Z4uMlK+80sJtqz6E
+         HPFg==
+X-Gm-Message-State: AOJu0YwoxCX9VbHvoPD57giic9PtOgeUHsd/cPLhcCTIZceW4iSLSNoY
+        GCz4D1SNVAOe2fVVopKl3L33D8nvj150zLW8St5uaQ==
+X-Google-Smtp-Source: AGHT+IH7RuJLlU9VtC9SLyybEZiZajTmMC0WMqzGd7Km+auMypxpw0+MwbkeqMcolnOdB0KiX2W1XHJoOY0T3sx9t0k=
+X-Received: by 2002:a50:8d5a:0:b0:538:2941:ad10 with SMTP id
+ t26-20020a508d5a000000b005382941ad10mr358835edt.5.1696843829278; Mon, 09 Oct
+ 2023 02:30:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5984411.lOV4Wx5bFT@radijator>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20231007050621.1706331-1-yajun.deng@linux.dev>
+ <CANn89iL-zUw1FqjYRSC7BGB0hfQ5uKpJzUba3YFd--c=GdOoGg@mail.gmail.com>
+ <917708b5-cb86-f233-e878-9233c4e6c707@linux.dev> <CANn89i+navyRe8-AV=ehM3qFce2hmnOEKBqvK5Xnev7KTaS5Lg@mail.gmail.com>
+ <a53a3ff6-8c66-07c4-0163-e582d88843dd@linux.dev> <CANn89i+u5dXdYm_0_LwhXg5Nw+gHXx+nPUmbYhvT=k9P4+9JRQ@mail.gmail.com>
+ <9f4fb613-d63f-9b86-fe92-11bf4dfb7275@linux.dev> <CANn89iK7bvQtGD=p+fHaWiiaNn=u8vWrt0YQ26pGQY=kZTdfJw@mail.gmail.com>
+ <4a747fda-2bb9-4231-66d6-31306184eec2@linux.dev> <814b5598-5284-9558-8f56-12a6f7a67187@linux.dev>
+ <CANn89iJCTgWTu0mzwj-8_-HiWm4uErY=VASDHoYaod9Nq-ayPA@mail.gmail.com>
+ <508b33f7-3dc0-4536-21f6-4a5e7ade2b5c@linux.dev> <CANn89i+r-pQGpen1mUhybmj+6ybhxSsuoaB07NFzOWyHUMFDNw@mail.gmail.com>
+ <296ca17d-cff0-2d19-f620-eedab004ddde@linux.dev>
+In-Reply-To: <296ca17d-cff0-2d19-f620-eedab004ddde@linux.dev>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Mon, 9 Oct 2023 11:30:15 +0200
+Message-ID: <CANn89iL=W3fyuH_KawfhKvLyw2Cw=qhHbEZtbKgQEYhHJChy3Q@mail.gmail.com>
+Subject: Re: [PATCH net-next v7] net/core: Introduce netdev_core_stats_inc()
+To:     Yajun Deng <yajun.deng@linux.dev>
+Cc:     rostedt@goodmis.org, mhiramat@kernel.org, dennis@kernel.org,
+        tj@kernel.org, cl@linux.com, mark.rutland@arm.com,
+        davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 03:08:42PM +0200, Duje Mihanović wrote:
-> On Friday, October 6, 2023 2:30:14 PM CEST Daniel Thompson wrote:
-> > On Thu, Oct 05, 2023 at 08:49:08PM +0200, Duje Mihanović wrote:
-> > > +  enable-gpios:
-> > > +    maxItems: 1
-> >
-> > Why "enable"? This is the line we are going to us to bitbang the
-> > ExpressWire protocol. Doesn't that make it a control or data pin?
+On Mon, Oct 9, 2023 at 10:36=E2=80=AFAM Yajun Deng <yajun.deng@linux.dev> w=
+rote:
 >
-> I named it "enable" because the KTD253 driver does so too, but also because
-> that pin is also used to power down the IC. If "enable" isn't right
-> regardless, is just "gpios" fine for this?
+>
+> On 2023/10/9 16:20, Eric Dumazet wrote:
+> > On Mon, Oct 9, 2023 at 10:14=E2=80=AFAM Yajun Deng <yajun.deng@linux.de=
+v> wrote:
+> >>
+> >> On 2023/10/9 15:53, Eric Dumazet wrote:
+> >>> On Mon, Oct 9, 2023 at 5:07=E2=80=AFAM Yajun Deng <yajun.deng@linux.d=
+ev> wrote:
+> >>>
+> >>>> 'this_cpu_read + this_cpu_write' and 'pr_info + this_cpu_inc' will m=
+ake
+> >>>> the trace work well.
+> >>>>
+> >>>> They all have 'pop' instructions in them. This may be the key to mak=
+ing
+> >>>> the trace work well.
+> >>>>
+> >>>> Hi all,
+> >>>>
+> >>>> I need your help on percpu and ftrace.
+> >>>>
+> >>> I do not think you made sure netdev_core_stats_inc() was never inline=
+d.
+> >>>
+> >>> Adding more code in it is simply changing how the compiler decides to
+> >>> inline or not.
+> >>
+> >> Yes, you are right. It needs to add the 'noinline' prefix. The
+> >> disassembly code will have 'pop'
+> >>
+> >> instruction.
+> >>
+> > The function was fine, you do not need anything like push or pop.
+> >
+> > The only needed stuff was the call __fentry__.
+> >
+> > The fact that the function was inlined for some invocations was the
+> > issue, because the trace point
+> > is only planted in the out of line function.
+>
+>
+> But somehow the following code isn't inline? They didn't need to add the
+> 'noinline' prefix.
+>
+> +               field =3D (unsigned long *)((void *)this_cpu_ptr(p) + off=
+set);
+> +               WRITE_ONCE(*field, READ_ONCE(*field) + 1);
+>
+> Or
+> +               (*(unsigned long *)((void *)this_cpu_ptr(p) + offset))++;
+>
 
-KTD2692 implements ExpressWire and calls this signal ctrl-gpios. I'd
-suggest copying that prior art for now.
+I think you are very confused.
 
-
-Daniel.
+You only want to trace netdev_core_stats_inc() entry point, not
+arbitrary pieces of it.
