@@ -2,75 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF3E7BD5AB
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 10:51:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D56D17BD5C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 10:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345571AbjJIIv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 04:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58082 "EHLO
+        id S1345634AbjJIIwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 04:52:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345540AbjJIIvZ (ORCPT
+        with ESMTP id S1345587AbjJIIvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 04:51:25 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C917AC;
-        Mon,  9 Oct 2023 01:51:24 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4AF27660716C;
-        Mon,  9 Oct 2023 09:51:22 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696841482;
-        bh=AeV4F+YxzIjrv5/reJdTrfUYSuarpl9kOSA1kuEAPvM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=C0fx5MLHjUZ5LPSlk6G1axwyJy0cOqyKNZ52QU6lB43BTBR0w0Mf7fjyUyON7X6H+
-         TKUnseRy62LLKr9BPLlejzLwT53I/XgvNNxfkkc5A9mewZd1tLHHFwF9PEXM48chFe
-         Z5w6QWRFgGPai6iV2dnoN/ojzmI+WT3ugpjIdLLlTmXzaiuob7RhvaIhbDSZXby/Pe
-         6KZousTG9vwzBtpwb2Pu75Veo4pc2hAWE8z3A/9zb56bB+t4pRtmVuC60UKU5RN5a8
-         7cDpfFVf6M3EUqOONlJjhPiq2hIwvBrB7wPQNZ7l9hNhod8O/O9UW2Wdke2vXdbXfg
-         YFbyQYJAGyibA==
-Message-ID: <dfcd36ac-712b-5169-5320-0e1591107252@collabora.com>
-Date:   Mon, 9 Oct 2023 10:51:19 +0200
+        Mon, 9 Oct 2023 04:51:36 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F235410F;
+        Mon,  9 Oct 2023 01:51:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696841495; x=1728377495;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=5oSl+8ABY4vMSX9OU2YlTePC4xhTypHD8FVbeS8l5Dc=;
+  b=X06F2lsQCmdC4Ka44hq+k5KesMR3Q+SUElVwwZRwKpivOAa121mKChHK
+   qHSByYnis09eXYObQRt5s/2+RmU71ed/7SQWqGFwxCSOzNs3aKqx373tv
+   QZPk2TSkQ19ChGQb9ASCh/5PspfMAQH3VQxLWH7e/IVYUBNy0UvH5hwi+
+   4XDulU3/JeENyI7CxLOCoJPyYgsJp9a90wVKFNJrdv1Vns5q3jaAWpCV5
+   5DiSpqnm65gPIK6aJMf00ggiHPyLUWXS6ILm50V+KuaYHwJRUXdwx9gso
+   TSGYqsQQidwF8vRD8q1O9u5wiZH96ro4oRAs6Yn7l/vsGPBYytGf9cwyo
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="364390811"
+X-IronPort-AV: E=Sophos;i="6.03,209,1694761200"; 
+   d="scan'208";a="364390811"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 01:51:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="818781686"
+X-IronPort-AV: E=Sophos;i="6.03,209,1694761200"; 
+   d="scan'208";a="818781686"
+Received: from 984fee00a4c6.jf.intel.com ([10.165.58.231])
+  by fmsmga008.fm.intel.com with ESMTP; 09 Oct 2023 01:51:33 -0700
+From:   Yi Liu <yi.l.liu@intel.com>
+To:     joro@8bytes.org, alex.williamson@redhat.com, jgg@nvidia.com,
+        kevin.tian@intel.com, robin.murphy@arm.com,
+        baolu.lu@linux.intel.com
+Cc:     cohuck@redhat.com, eric.auger@redhat.com, nicolinc@nvidia.com,
+        kvm@vger.kernel.org, mjrosato@linux.ibm.com,
+        chao.p.peng@linux.intel.com, yi.l.liu@intel.com,
+        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
+Subject: [RFC 4/7] iommufd: Support attach/replace for SIOV virtual device {dev, pasid}
+Date:   Mon,  9 Oct 2023 01:51:20 -0700
+Message-Id: <20231009085123.463179-5-yi.l.liu@intel.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231009085123.463179-1-yi.l.liu@intel.com>
+References: <20231009085123.463179-1-yi.l.liu@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 1/8] gpiolib: of: Add quirk for mt2701-cs42448 ASoC sound
-Content-Language: en-US
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, alsa-devel@alsa-project.org
-References: <20231006-descriptors-asoc-mediatek-v1-0-07fe79f337f5@linaro.org>
- <20231006-descriptors-asoc-mediatek-v1-1-07fe79f337f5@linaro.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231006-descriptors-asoc-mediatek-v1-1-07fe79f337f5@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 06/10/23 15:46, Linus Walleij ha scritto:
-> These gpio names are due to old DT bindings not following the
-> "-gpio"/"-gpios" conventions. Handle it using a quirk so the
-> driver can just look up the GPIOs.
-> 
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+From: Kevin Tian <kevin.tian@intel.com>
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+SIOV devices allows driver to tag different PASIDs for the virtual devices
+within it. Such driver should call iommufd_device_bind_pasid() to connect
+the pasid of the device to iommufd, and then driver is able to attach the
+virtual device to IOAS/HWPT with the iommufd_device_attach() API.
+
+Unlike physical devices, for SIOV virtual devices, iommufd_device_attach()
+eventually uses the idev->default_pasid when the virtual device is attached
+to an IOAS/HWPT. Also, there is no need to do immediate_attach per iommu
+domain allocation in the attach/replace path if any iommu domain allocation
+happens since the attach/replace is eventually pasid attach/replace.
+
+Signed-off-by: Kevin Tian <kevin.tian@intel.com>
+Signed-off-by: Yi Liu <yi.l.liu@intel.com>
+---
+ drivers/iommu/iommufd/device.c | 21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/iommu/iommufd/device.c b/drivers/iommu/iommufd/device.c
+index 35c1419ee96b..4882e3106b2e 100644
+--- a/drivers/iommu/iommufd/device.c
++++ b/drivers/iommu/iommufd/device.c
+@@ -841,7 +841,11 @@ int iommufd_device_attach(struct iommufd_device *idev, u32 *pt_id)
+ 		.pasid = IOMMU_PASID_INVALID
+ 	};
+ 
+-	rc = iommufd_device_change_pt(idev, pt_id, &data);
++	if (idev->igroup)
++		rc = iommufd_device_change_pt(idev, pt_id, &data);
++	else
++		/* SIOV device follows generic pasid attach flow */
++		rc = iommufd_device_pasid_attach(idev, idev->default_pasid, pt_id);
+ 	if (rc)
+ 		return rc;
+ 
+@@ -876,7 +880,12 @@ int iommufd_device_replace(struct iommufd_device *idev, u32 *pt_id)
+ 		.pasid = IOMMU_PASID_INVALID
+ 	};
+ 
+-	return iommufd_device_change_pt(idev, pt_id, &data);
++	if (idev->igroup) {
++		return iommufd_device_change_pt(idev, pt_id, &data);
++	} else {
++		/* SIOV device follows generic pasid replace flow */
++		return iommufd_device_pasid_replace(idev, idev->default_pasid, pt_id);
++	}
+ }
+ EXPORT_SYMBOL_NS_GPL(iommufd_device_replace, IOMMUFD);
+ 
+@@ -891,8 +900,12 @@ void iommufd_device_detach(struct iommufd_device *idev)
+ {
+ 	struct iommufd_hw_pagetable *hwpt;
+ 
+-	hwpt = iommufd_hw_pagetable_detach(idev);
+-	iommufd_hw_pagetable_put(idev->ictx, hwpt);
++	if (idev->igroup) {
++		hwpt = iommufd_hw_pagetable_detach(idev);
++		iommufd_hw_pagetable_put(idev->ictx, hwpt);
++	} else {
++		iommufd_device_pasid_detach(idev, idev->default_pasid);
++	}
+ 	refcount_dec(&idev->obj.users);
+ }
+ EXPORT_SYMBOL_NS_GPL(iommufd_device_detach, IOMMUFD);
+-- 
+2.34.1
 
