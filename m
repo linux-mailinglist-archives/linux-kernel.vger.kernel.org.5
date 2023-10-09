@@ -2,169 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A270E7BD965
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7127BD95D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346198AbjJILTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 07:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40606 "EHLO
+        id S1346195AbjJILQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 07:16:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345822AbjJILTG (ORCPT
+        with ESMTP id S1345822AbjJILQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 07:19:06 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D3C99;
-        Mon,  9 Oct 2023 04:19:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1696850344; x=1728386344;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=J9XfCfLh3uUBpLPinWOH535XxsKH9kUB5wldTFik5pY=;
-  b=E9BikLWWeFyudoC+2DVq/J+TaFPLJLd4/XslZbUiwm2jUP+UriKhXgEQ
-   a0pbBCK2Og7h5UhDMT3dcUYeLMdTYiIi7ONpBubHlRtcQhXEJhtPO9Xs0
-   pbtYsdfLxv7+WLIcAdjy5J3HIv/cz6x2HiwmHAQ0NwA3ho7PExTj5gjhG
-   buSU2GUVVfBRpKccvr/PC542cuBT/Jk28EFhpThhJgQB5gQ2Kjc6q2BWc
-   NfSJgmjrEcpXYN6vJCGofL2+GtCUTfznChmPtROPV+e7BhmPKznhtX7VO
-   yWMRIWo7wuOUjFBbCyeSBKUKZ0WPlBPTn6uXDvBA7VGlvVBaUhtr/FZZO
-   g==;
-X-CSE-ConnectionGUID: NZ7vyGJUSvi3vJgcsAydsg==
-X-CSE-MsgGUID: wK/7D4VzS0GphfD8pkrksQ==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="asc'?scan'208";a="9659116"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Oct 2023 04:16:55 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Mon, 9 Oct 2023 04:16:51 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Mon, 9 Oct 2023 04:16:48 -0700
-Date:   Mon, 9 Oct 2023 12:16:27 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Minda Chen <minda.chen@starfivetech.com>
-CC:     Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-Subject: Re: [PATCH v7 0/19] Refactoring Microchip PCIe driver and add
- StarFive PCIe
-Message-ID: <20231009-matchless-confined-d0d0d3188f76@wendy>
-References: <20230927100802.46620-1-minda.chen@starfivetech.com>
- <fd5b8d0f-67d0-4e0e-9a15-6f3ae53b6db2@starfivetech.com>
+        Mon, 9 Oct 2023 07:16:54 -0400
+Received: from out-208.mta1.migadu.com (out-208.mta1.migadu.com [IPv6:2001:41d0:203:375::d0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB2A94
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 04:16:52 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1696850210;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=iXX/1lVwKrWymkXfI3JV+KmeWnDZTSV8t81NoepFl1M=;
+        b=BwdVQ61iisKUdcwp0cDeBS0BaWp7Pr84P53tpMsWcjG+HUU5Q2ey3f2+yPAUS4O0v8Gfhq
+        aKGeOfXjgI6U8TGTA4jtmejSuvMmAiPvO99YXzaxs9UemrP7Yzrzf94lDg5aPzBpQx/CkQ
+        JGCuupGlyLGYtrE77U2KO4zCoWX9kso=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yajun Deng <yajun.deng@linux.dev>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>
+Subject: [PATCH net-next v8] net/core: Introduce netdev_core_stats_inc()
+Date:   Mon,  9 Oct 2023 19:16:33 +0800
+Message-Id: <20231009111633.2319304-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="1VqoUkWDs6YiGRyl"
-Content-Disposition: inline
-In-Reply-To: <fd5b8d0f-67d0-4e0e-9a15-6f3ae53b6db2@starfivetech.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---1VqoUkWDs6YiGRyl
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Although there is a kfree_skb_reason() helper function that can be used to
+find the reason why this skb is dropped, but most callers didn't increase
+one of rx_dropped, tx_dropped, rx_nohandler and rx_otherhost_dropped.
 
-On Mon, Oct 09, 2023 at 06:58:42PM +0800, Minda Chen wrote:
->=20
->=20
-> On 2023/9/27 18:07, Minda Chen wrote:
-> > This patchset final purpose is add PCIe driver for StarFive JH7110 SoC.
-> > JH7110 using PLDA XpressRICH PCIe IP. Microchip PolarFire Using the
-> > same IP and have commit their codes, which are mixed with PLDA
-> > controller codes and Microchip platform codes.
-> >=20
-> > For re-use the PLDA controller codes, I request refactoring microchip
-> > codes, move PLDA common codes to PLDA files.
-> > Desigware and Cadence is good example for refactoring codes.
-> >=20
-> > So first step is extract the PLDA common codes from microchip, and
-> > refactoring the microchip codes.(patch1 - 16)
-> > Then, add Starfive codes. (patch17 - 19)
-> >=20
-> > This patchset is base on v6.6-rc3
-> >=20
-> > patch1 is move PLDA XpressRICH PCIe host common properties dt-binding
-> >        docs from microchip,pcie-host.yaml
-> > patch2 is move PolarFire codes to PLDA directory.
-> > patch3 is move PLDA IP register macros to plda-pcie.h
-> > patch4 is rename data structure in microchip codes.
-> > patch5 is rename two setup functions in microchip codes, prepare to move
-> > to common file.
-> > patch6 is change the arguments of plda_pcie_setup_iomems()
-> > patch7 is move the two setup functions to common file pcie-plda-host.c
-> > patch8 is Add PLDA event interrupt codes and IRQ domain ops.
-> > patch9 is rename the IRQ related functions, prepare to move to
-> > pcie-plda-host.
-> > patch10 - 14 is modify the event codes, preparing for support starfive
-> > and microchip two platforms.
-> > patch15 is move IRQ related functions to pcie-plda-host.c
-> > patch16 is set plda_event_handler to static.
-> > patch17 is add StarFive JH7110 PCIe dt-binding doc.
-> > patch18 is add StarFive JH7110 Soc PCIe codes.
-> > patch19 is Starfive dts config
-> >=20
-> Hi Conor and Daire
-> Have you ever test this patchset=EF=BC=9F I'm sure I am not  change logic=
- of the PolarFire PCIe driver,
-> But I can not test it.
-> Since this series patch is delegate to nobody and no response now. I don'=
-t know when this patch set can be accepted.
+For the users, people are more concerned about why the dropped in ip
+is increasing.
 
-I'll try to look at this series again this week. I've been AFK a bit
-with holidays etc recently, and been a bit delayed in general. I was
-mostly happy with it before, and had left reviewed-bys on most of the
-series I think.
+Introduce netdev_core_stats_inc() for trace the caller of
+dev_core_stats_*_inc().
 
-> I still hope the refactoring patches can be accepted first
+Also, add __code to netdev_core_stats_alloc(), as it's called with small
+probability. And add noinline make sure netdev_core_stats_inc was never
+inlined.
 
-The last patchset Daire sent has been applied:
-https://lore.kernel.org/all/169149233963.79399.5232296870054239065.b4-ty@ke=
-rnel.org/
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+Suggested-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+---
+v8: use noinline and this_cpu_inc in netdev_core_stats_inc.
+v7: use WRITE_ONCE and READ_ONCE instead of '++'
+v6: merge netdev_core_stats and netdev_core_stats_inc together
+v5: Access the per cpu pointer before reach the relevant offset.
+v4: Introduce netdev_core_stats_inc() instead of export dev_core_stats_*_inc()
+v3: __cold should be added to the netdev_core_stats_alloc().
+v2: use __cold instead of inline in dev_core_stats().
+v1: https://lore.kernel.org/netdev/20230911082016.3694700-1-yajun.deng@linux.dev/
+---
+ include/linux/netdevice.h | 21 ++++-----------------
+ net/core/dev.c            | 21 +++++++++++++++++++--
+ 2 files changed, 23 insertions(+), 19 deletions(-)
 
-> (I know you want to add the function of inbound and outbound address tran=
-slation, Hope this series patch do not influence your upstream plan)
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index e070a4540fba..11d704bfec9b 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -4002,32 +4002,19 @@ static __always_inline bool __is_skb_forwardable(const struct net_device *dev,
+ 	return false;
+ }
+ 
+-struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct net_device *dev);
+-
+-static inline struct net_device_core_stats __percpu *dev_core_stats(struct net_device *dev)
+-{
+-	/* This READ_ONCE() pairs with the write in netdev_core_stats_alloc() */
+-	struct net_device_core_stats __percpu *p = READ_ONCE(dev->core_stats);
+-
+-	if (likely(p))
+-		return p;
+-
+-	return netdev_core_stats_alloc(dev);
+-}
++void netdev_core_stats_inc(struct net_device *dev, u32 offset);
+ 
+ #define DEV_CORE_STATS_INC(FIELD)						\
+ static inline void dev_core_stats_##FIELD##_inc(struct net_device *dev)		\
+ {										\
+-	struct net_device_core_stats __percpu *p;				\
+-										\
+-	p = dev_core_stats(dev);						\
+-	if (p)									\
+-		this_cpu_inc(p->FIELD);						\
++	netdev_core_stats_inc(dev,						\
++			offsetof(struct net_device_core_stats, FIELD));		\
+ }
+ DEV_CORE_STATS_INC(rx_dropped)
+ DEV_CORE_STATS_INC(tx_dropped)
+ DEV_CORE_STATS_INC(rx_nohandler)
+ DEV_CORE_STATS_INC(rx_otherhost_dropped)
++#undef DEV_CORE_STATS_INC
+ 
+ static __always_inline int ____dev_forward_skb(struct net_device *dev,
+ 					       struct sk_buff *skb,
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 606a366cc209..02949a929e7f 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -10497,7 +10497,8 @@ void netdev_stats_to_stats64(struct rtnl_link_stats64 *stats64,
+ }
+ EXPORT_SYMBOL(netdev_stats_to_stats64);
+ 
+-struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct net_device *dev)
++static __cold struct net_device_core_stats __percpu *netdev_core_stats_alloc(
++		struct net_device *dev)
+ {
+ 	struct net_device_core_stats __percpu *p;
+ 
+@@ -10510,7 +10511,23 @@ struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct net_device
+ 	/* This READ_ONCE() pairs with the cmpxchg() above */
+ 	return READ_ONCE(dev->core_stats);
+ }
+-EXPORT_SYMBOL(netdev_core_stats_alloc);
++
++noinline void netdev_core_stats_inc(struct net_device *dev, u32 offset)
++{
++	/* This READ_ONCE() pairs with the write in netdev_core_stats_alloc() */
++	struct net_device_core_stats __percpu *p = READ_ONCE(dev->core_stats);
++	unsigned long __percpu *field;
++
++	if (unlikely(!p)) {
++		p = netdev_core_stats_alloc(dev);
++		if (!p)
++			return;
++	}
++
++	field = (__force unsigned long __percpu *)((__force void *)p + offset);
++	this_cpu_inc(*field);
++}
++EXPORT_SYMBOL_GPL(netdev_core_stats_inc);
+ 
+ /**
+  *	dev_get_stats	- get network device statistics
+-- 
+2.25.1
 
-I'd expect this series to go in before the inbound/outbound translation
-one, since this is a lot closer to ready & is being resent more often.
-
-Cheers,
-Conor.
-
---1VqoUkWDs6YiGRyl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSPhCwAKCRB4tDGHoIJi
-0maLAQDzkRvnyxGPUhY4gLfqG7RjqaP+WSm0vTPY+S4QtyzXMAD/QLl+XDX+f8iN
-8iCOQE83MPGAVCqa5pRd+mCx1i/2Gw4=
-=OAEx
------END PGP SIGNATURE-----
-
---1VqoUkWDs6YiGRyl--
