@@ -2,103 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3179E7BD59B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 10:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2417BD5A0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 10:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345529AbjJIIsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 04:48:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51724 "EHLO
+        id S1345557AbjJIIuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 04:50:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345490AbjJIIsu (ORCPT
+        with ESMTP id S1345549AbjJIIuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 04:48:50 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6883BA3;
-        Mon,  9 Oct 2023 01:48:49 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50435ad51bbso5084269e87.2;
-        Mon, 09 Oct 2023 01:48:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696841327; x=1697446127; darn=vger.kernel.org;
-        h=in-reply-to:references:from:subject:cc:to:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wgoMovMkZSAvfqa8PGZ/v+zEqtovHRzU+CUakuAURFw=;
-        b=VTgTiD5Jc7FLqi/zHR+VOWqdGfZg4/JtXFd8lAZQhRymskaFcA5s9req4DTYhlhWuX
-         gyajzAhRmP31s0x3LJ6FT88iYCaFL3sRA1iwJUuaKTAV8Ac64Gc6QbNl1UvPUgTCzGEo
-         4/u/rYA9ehHMk9zA4mHBMcdgWhprBVJgA61QomvtTuxesdWAFSAylQaAd1xFqrjfRIco
-         xQ9xJUBiU9tg+/2yoBG2cUe3Db2rUi95FtwoWnf9KVJDTkB2yAk+wL5pmIJTh5gkFqnb
-         pEg5AoqxJQzxLq3r5t++kcaJkhPWH/yaox7WxkBYQRLz/VFLIKWfT1OERatVzJrJ/KWp
-         CaxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696841327; x=1697446127;
-        h=in-reply-to:references:from:subject:cc:to:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=wgoMovMkZSAvfqa8PGZ/v+zEqtovHRzU+CUakuAURFw=;
-        b=ikEjgLWH+YTC5Y3AMtmyJn9jwE6iy0I6mVUP21rDV6AqbjSD9JpM5p13wE/SkL87ZJ
-         46GrY7bjvK1NdG83LOszjznxTtqJx4t9V7kzyPm4KEAW3wU029wzMJ0aYi1AKjd4jBD4
-         QqbMtG4TKROy/+zODXhvI2tw6yVcI89MSVtLf+MisLZo631PDZxjZudn8heIsV9GZ2IA
-         6xpsngRroh8eVu5vECpizATnyhhmD6Vt5z2CDamNix8m583IuEQfT7nD7J2jeS6L96jp
-         ZLy9i7ejS0IM4CZ4dy7i32QiYYxWsnMpn/pUvacig9InaYpNkxrePi10rrVElnT5In7J
-         tu1A==
-X-Gm-Message-State: AOJu0YyDv9LoO50ylL7b8OTWYI3Flkju42Ps9tCzvfUE1gfPAhlBFv54
-        urYdIxvjqsY3CRDm0VuM3Rg=
-X-Google-Smtp-Source: AGHT+IHhcU61xBBMKUOeAY+GkinxHfngiCQlhzFkKDaovUc9VGDTf0uGVwn3pv1PsqFdx4nfWpAV0Q==
-X-Received: by 2002:a19:8c48:0:b0:504:3a7c:66ce with SMTP id i8-20020a198c48000000b005043a7c66cemr10896001lfj.68.1696841327347;
-        Mon, 09 Oct 2023 01:48:47 -0700 (PDT)
-Received: from localhost ([146.70.182.19])
-        by smtp.gmail.com with ESMTPSA id y2-20020a197502000000b0050467be30ccsm1361737lfe.89.2023.10.09.01.48.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 01:48:47 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 09 Oct 2023 10:48:45 +0200
-Message-Id: <CW3S1RNMMQKE.3DP29TLAE53AD@gmail.com>
-To:     "Miguel Ojeda" <ojeda@kernel.org>,
-        "Wedson Almeida Filho" <wedsonaf@gmail.com>,
-        "Alex Gaynor" <alex.gaynor@gmail.com>
-Cc:     "Boqun Feng" <boqun.feng@gmail.com>, "Gary Guo" <gary@garyguo.net>,
-        =?utf-8?q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        "Benno Lossin" <benno.lossin@proton.me>,
-        "Andreas Hindborg" <a.hindborg@samsung.com>,
-        "Alice Ryhl" <aliceryhl@google.com>,
-        <rust-for-linux@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <patches@lists.linux.dev>
-Subject: Re: [PATCH 2/3] rust: print: use explicit link in documentation
-From:   "Vincenzo Palazzo" <vincenzopalazzodev@gmail.com>
-X-Mailer: aerc 0.15.2-211-g37d5fc691aff
-References: <20231005210556.466856-1-ojeda@kernel.org>
- <20231005210556.466856-3-ojeda@kernel.org>
-In-Reply-To: <20231005210556.466856-3-ojeda@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 9 Oct 2023 04:50:06 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773D0B6;
+        Mon,  9 Oct 2023 01:50:05 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08C01C433C9;
+        Mon,  9 Oct 2023 08:50:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696841405;
+        bh=v/wmFXeFO8DxY0ma5UxE0sJMP9dgiKFa27sxu++CIu8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bsFIjY0VLVYQaqLRnSrTz6IwoA0CpE/WsT34CJe9hMZyePmmJm4Eh35/kWXhW6GiJ
+         B4mKBygdefdqEK6Tpgrteu7YfB9jKMBN0mpAHrTivi7q5ugHo4NKTUk1xYYXHpa+jN
+         QjoOdTpg+Tf/h0rj9ZrhFHLHUDpnnq7lr6vQiMby+f6pZC1xWbAAYu8sPxt5FIAaO+
+         Vd1Yji1o7N40FlZtJ0UBfd79LNJ9KKumOYm6uMvWrds04P6rGydA8rB2mffzifBs8w
+         eEbk0a/2BZ7yJi1WFjCebFxQkr5bthgJTwtQbZ8JRmoLaucs/R3bU09gfz0wHKnOMN
+         1azUB+Nsnbd6w==
+Date:   Mon, 9 Oct 2023 11:49:11 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Alejandro Colomar <alx@kernel.org>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Peter Xu <peterx@redhat.com>, linux-man@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 07/10] ioctl_userfaultfd.2: correct and update UFFDIO_API
+ ioctl error codes
+Message-ID: <20231009084911.GK3303@kernel.org>
+References: <20230919190206.388896-1-axelrasmussen@google.com>
+ <20230919190206.388896-8-axelrasmussen@google.com>
+ <5ddepg57wqnidtvsio2pse44dot6pvr3rcmhwld6ml3sflwcz3@ijd3h4teqblr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5ddepg57wqnidtvsio2pse44dot6pvr3rcmhwld6ml3sflwcz3@ijd3h4teqblr>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The future `rustdoc` in the Rust 1.73.0 upgrade requires an explicit
-> link for `pr_info!`:
->
->     error: unresolved link to `pr_info`
->        --> rust/kernel/print.rs:395:63
->         |
->     395 | /// Use only when continuing a previous `pr_*!` macro (e.g. [`p=
-r_info!`]).
->         |                                                               ^=
-^^^^^^^ no item named `pr_info` in scope
->         |
->         =3D note: `macro_rules` named `pr_info` exists in this crate, but=
- it is not in scope at this link's location
->         =3D note: `-D rustdoc::broken-intra-doc-links` implied by `-D war=
-nings`
->
-> Thus do so to avoid a broken link while upgrading.
->
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
-> ---
-Reviewed-by: Vincenzo Palazzo <vincenzopalazzodev@gmail.com>
+On Tue, Sep 26, 2023 at 01:52:34AM +0200, Alejandro Colomar wrote:
+> Hi Axel,
+> 
+> On Tue, Sep 19, 2023 at 12:02:03PM -0700, Axel Rasmussen wrote:
+> > First, it is not correct that repeated UFFDIO_API calls result in
+> > EINVAL. This is true *if both calls enable features*, but in the case
+> > where we're doing a two-step feature detection handshake, the kernel
+> > explicitly expects 2 calls (one with no features set). So, correct this
+> > description.
+> > 
+> > Then, some new error cases have been added to the kernel recently, and
+> > the man page wasn't updated to note these. So, add in descriptions of
+> > these new error cases.
+> > 
+> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> > ---
+> >  man2/ioctl_userfaultfd.2 | 24 +++++++++++++++++++-----
+> >  1 file changed, 19 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/man2/ioctl_userfaultfd.2 b/man2/ioctl_userfaultfd.2
+> > index 53b1f473f..1aa9654be 100644
+> > --- a/man2/ioctl_userfaultfd.2
+> > +++ b/man2/ioctl_userfaultfd.2
+> > @@ -280,17 +280,31 @@ refers to an address that is outside the calling process's
+> >  accessible address space.
+> >  .TP
+> >  .B EINVAL
+> > -The userfaultfd has already been enabled by a previous
+> > -.B UFFDIO_API
+> > -operation.
+> > -.TP
+> > -.B EINVAL
+> >  The API version requested in the
+> >  .I api
+> >  field is not supported by this kernel, or the
+> >  .I features
+> >  field passed to the kernel includes feature bits that are not supported
+> >  by the current kernel version.
+> > +.TP
+> > +.B EPERM
+> 
+> This EPERM should probably be at the end.  Unless you have a good reason
+> to break alphabetic order.
+
+I agree with Alex here, other than that feel free to add
+
+Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
+
+ 
+> Thanks,
+> Alex
+> 
+> > +The
+> > +.B UFFD_FEATURE_EVENT_FORK
+> > +feature was enabled,
+> > +but the calling process doesn't have the
+> > +.B CAP_SYS_PTRACE
+> > +capability.
+> > +.TP
+> > +.B EINVAL
+> > +A previous
+> > +.B UFFDIO_API
+> > +call already enabled one or more features for this userfaultfd.
+> > +Calling
+> > +.B UFFDIO_API
+> > +twice,
+> > +the first time with no features set,
+> > +is explicitly allowed
+> > +as per the two-step feature detection handshake.
+> >  .\" FIXME In the above error case, the returned 'uffdio_api' structure is
+> >  .\" zeroed out. Why is this done? This should be explained in the manual page.
+> >  .\"
+> > -- 
+> > 2.42.0.459.ge4e396fd5e-goog
+> > 
+
+
+
+-- 
+Sincerely yours,
+Mike.
