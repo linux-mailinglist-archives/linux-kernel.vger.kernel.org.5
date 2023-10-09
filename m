@@ -2,56 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D813B7BEA1B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 20:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A241C7BEA22
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 20:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378209AbjJISvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 14:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55504 "EHLO
+        id S1378229AbjJISxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 14:53:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377383AbjJISvG (ORCPT
+        with ESMTP id S1378139AbjJISxC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 14:51:06 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19F19C
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 11:51:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32660C433CA;
-        Mon,  9 Oct 2023 18:51:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696877465;
-        bh=EWYoHUxU9PfwIcw6RRafcY/b9jcGCDKgwtSwZ93vXkk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TRF0Ttm8MJ0ovlRSLQWoooPhqsT+UAvgs1OOYowfWsb+HQKayDzkMSozkTrJldIA+
-         6bDX75HHnX6Tv7XDvSJxmv/d2Csx6YSHWU7b9AQV4JjRuNa+zNsIXEV2g+BhxAitg7
-         QCtH7GXLcozgItxfOnEUwUdUCjV8yFsv6L9qjvd187YXfEixVcGKGBHx4TV0Yv/Fh2
-         J8BdOK0pbJIfxECi9BLj9KueY8NlSYhJ6b4kecg8GzPjfA0wSGxNPlKUJ9nvFb/Xsm
-         VSAHOAj/da4x8EvrhWD6gcWglOBtkIpel9cd2+8omHCgi/lpYLQ37JiUO104Xh6Auy
-         Xb8DuPZBDAMKQ==
-Date:   Mon, 9 Oct 2023 19:50:59 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Chen Wang <unicorn_wang@outlook.com>
-Cc:     Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
-        chao.wei@sophgo.com, devicetree@vger.kernel.org, guoren@kernel.org,
-        jszhang@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org,
-        xiaoguang.xing@sophgo.com, apatel@ventanamicro.com
-Subject: Re: [PATCH v5 00/10] Add Milk-V Pioneer RISC-V board support
-Message-ID: <20231009-pretext-snowy-1cfb49990ddb@spud>
-References: <cover.1696663037.git.unicorn_wang@outlook.com>
- <20231007-grasp-retake-0463858c13df@spud>
- <MA0P287MB0332F80102F534CBD7412ED3FEC8A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
- <20231007-kennel-lustily-59b0a9867aaa@spud>
- <MA0P287MB03329460B9F3B79B1148A6FDFEC8A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
- <20231007-green-correct-11d08f650ddd@spud>
- <MA0P287MB0332B11A8481F491E4F0536DFEC8A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+        Mon, 9 Oct 2023 14:53:02 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A05A0AF;
+        Mon,  9 Oct 2023 11:53:00 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id a640c23a62f3a-991c786369cso814835966b.1;
+        Mon, 09 Oct 2023 11:53:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696877579; x=1697482379; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4iEFw2KWu0uLaXIWh95J9DkXgQ94Tm3AGN4RoICln98=;
+        b=Lv21Htebuds0cZAr+gOXmTjJMSbr2Z3yuu4bb9jt0U2CPeab+yAh31yIXeBTjmBrZb
+         Ujn7HtoPX3MzXJQKyj4ozksyVnoMVyMsfV0JXF2FKLv7y7QHt0omlDDjWeu473ubdS3N
+         eD2bQORfMkDZVNd9fj+kfUiwO3BKuYuKdZt5wE94D+Y9lYyJ5dgZ7GjbRGbh80ATREUE
+         lFakJ2AvQc5RZlXz5zIJ7+DrG6pi3NypNek1LcjwdZKRvFP6k4+XrYXQeSTMI8vOCdJ9
+         NKGVT0hpAUFpsLcIwcyIdIncG+yRHgZn7rYjeDbt+bdChLpERT7H5lN0IQd5bGf4YoEq
+         EDXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696877579; x=1697482379;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4iEFw2KWu0uLaXIWh95J9DkXgQ94Tm3AGN4RoICln98=;
+        b=InXUxhHfQJx2sKjVFTjVIhgJkxqYnW1D79Oiaxs7lHQc9uy6mpFn0Nq2WFs436irET
+         rH1oiioYu3xDHHVyQBUTbMe+rWr5nGbW2PMUhKyEW+bWiFbMZPCayw4jR9UkrMjUbWmE
+         pXd72odMF5xacHwGe5lNrgG6+803c563E0+2FEo9H4ih55VllQaPDHcJ2KMfsMa0lA1M
+         fSqqNq5Re7eyP+DkR0hJO0fDuwi1W/HVOmDGW6eA97uudFH4hlk+EZRnsorScntayFLr
+         8fETbZ9ywRa1qZwF5THzbrzQY5wchl0/CTN/B1NncFy4P0PMYiHEcdFkVd4jIo8ZsIdy
+         +9/w==
+X-Gm-Message-State: AOJu0YyarLPo8JIHT1XR0xSc+Ms1htpK4JoXAls4kCUzFslCYw8jSY7X
+        2RKwjy5amKTnsOP00TDDkY0=
+X-Google-Smtp-Source: AGHT+IHstENxO/CXBuztPUegYH2i+Eluu2FwXYIb3oRGpR+JbD37gpX5p6/pDya5W/Q4FEg4oGasbA==
+X-Received: by 2002:a17:906:fe4a:b0:9ae:5120:5147 with SMTP id wz10-20020a170906fe4a00b009ae51205147mr17596835ejb.38.1696877579020;
+        Mon, 09 Oct 2023 11:52:59 -0700 (PDT)
+Received: from [127.0.1.1] (2a02-8389-41cf-e200-0d7c-652f-4e74-10b8.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:d7c:652f:4e74:10b8])
+        by smtp.gmail.com with ESMTPSA id dc4-20020a170906c7c400b0098e34446464sm7115079ejb.25.2023.10.09.11.52.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Oct 2023 11:52:58 -0700 (PDT)
+From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Date:   Mon, 09 Oct 2023 20:52:55 +0200
+Subject: [PATCH] net: usb: dm9601: fix uninitialized variable use in
+ dm9601_mdio_read
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="LPpjd4457YnzLrjL"
-Content-Disposition: inline
-In-Reply-To: <MA0P287MB0332B11A8481F491E4F0536DFEC8A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231009-topic-dm9601_uninit_mdio_read-v1-1-d4d775e24e3b@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAAZMJGUC/x2NQQrDIBAAvxL2XEFTGmq/UoqscW32oIbVlELI3
+ 2t6HAZmdqgkTBUeww5CH65ccgdzGWBeML9JcegMox6vRmurWll5ViHZSRu3Zc7cXApcnBAGheZ
+ mzT1GH6YIveGxkvKCeV7OSsLaSE6xCkX+/sfP13H8APazsqmIAAAA
+To:     Peter Korsgaard <peter@korsgaard.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        syzbot+1f53a30781af65d2c955@syzkaller.appspotmail.com
+Cc:     netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Javier Carrasco <javier.carrasco.cruz@gmail.com>
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1696877577; l=1746;
+ i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
+ bh=mr8zo8GkO8oFsYnOO1Ir3z/Ohnh9ZkCWi74Q+XjdrAw=;
+ b=Ci4voJZHNqhGCYzpafxEBwQNK2Id3/J6q0wWFflh/IM3YXHIfzqgqFA9hmTzXxoS1OJAXksGz
+ LWVNIUycrJ1C1HWJbFsXM1X/UmIAfk6Gh9utnaVXx36HBu1VipFOaVJ
+X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
+ pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,68 +87,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot has found an uninit-value bug triggered by the dm9601 driver [1].
 
---LPpjd4457YnzLrjL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This error happens because the variable res is not updated if the call
+to dm_read_shared_word returns an error or if no data is read (see
+__usbnet_read_cmd()). In this particular case -EPROTO was returned and
+res stayed uninitialized.
 
-On Sat, Oct 07, 2023 at 08:48:34PM +0800, Chen Wang wrote:
->=20
-> On 2023/10/7 20:36, Conor Dooley wrote:
-> > On Sat, Oct 07, 2023 at 08:25:55PM +0800, Chen Wang wrote:
-> > > On 2023/10/7 19:04, Conor Dooley wrote:
-> > > > On Sat, Oct 07, 2023 at 06:58:51PM +0800, Chen Wang wrote:
-> > > > > On 2023/10/7 18:17, Conor Dooley wrote:
-> > > > > > On Sat, Oct 07, 2023 at 03:52:04PM +0800, Chen Wang wrote:
-> > > > > > > From: Chen Wang <unicorn_wang@outlook.com>
-> > > > > > > Changes in v5:
-> > > > > > >      The patch series is based on v6.6-rc1. You can simply re=
-view or test
-> > > > > > >      the patches at the link [7].
-> > > > > > >      - dts: changed plic to support external interrupt
-> > > > > > >      - pickup improvements from Conor, details refer to [8].
-> > > > > > Did you? I only see them partially picked up. I'll just replace=
- patch 8
-> > > > > > with the patch 8 from this series I think.
-> > > > > Yes, only the patch 8 of this series(v5) is updated for plic node=
-=2E For other
-> > > > > patches, I just cherry-picked them from previous "sophon" branch.
-> > > > But added my signoff? I ended up seeing my signoff on the patch whe=
-re I
-> > > > disagreed with the commit message, which was confusing to me.
-> > > Oh, I used to think I can keep the exising signoff and I didn't mean =
-to add
-> > > it.
-> > I added mine when I applied the patches. It no longer makes sense when
-> > you resent another version.
-> >=20
-> > > Anyway, I agree your suggestion to create a new patch with only one
-> > > change should be better, I will follow this in later work.
-> > :)
-> >=20
-> > > Regarding your changes on sg2042 series, I have acked in another emai=
-l : https://lore.kernel.org/linux-riscv/MA0P287MB0332BA73D0135CC73CAEA16DFE=
-C8A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM/.
-> > > If anything else required, please feel free let me know.
-> > An ack on Jisheng's series for the cv1800b would be nice.
->=20
-> Done, I have reviewed and acked all the files related to sophgo.
+This can be avoided by checking the return value of dm_read_shared_word
+and returning an error if the read operation failed or no data was read.
 
-Cool. Both your and Jisheng's series should end up in linux-next
-tomorrow, I've pushed both to the riscv-dt-for-next branch.
+[1] https://syzkaller.appspot.com/bug?extid=1f53a30781af65d2c955
 
-Thanks!
+Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Reported-and-tested-by: syzbot+1f53a30781af65d2c955@syzkaller.appspotmail.com
+---
+ drivers/net/usb/dm9601.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---LPpjd4457YnzLrjL
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/drivers/net/usb/dm9601.c b/drivers/net/usb/dm9601.c
+index 48d7d278631e..e223daa93229 100644
+--- a/drivers/net/usb/dm9601.c
++++ b/drivers/net/usb/dm9601.c
+@@ -222,13 +222,20 @@ static int dm9601_mdio_read(struct net_device *netdev, int phy_id, int loc)
+ 	struct usbnet *dev = netdev_priv(netdev);
+ 
+ 	__le16 res;
++	int err;
+ 
+ 	if (phy_id) {
+ 		netdev_dbg(dev->net, "Only internal phy supported\n");
+ 		return 0;
+ 	}
+ 
+-	dm_read_shared_word(dev, 1, loc, &res);
++	err = dm_read_shared_word(dev, 1, loc, &res);
++	if (err <= 0) {
++		if (err == 0)
++			err = -ENODATA;
++		netdev_err(dev->net, "MDIO read error: %d\n", err);
++		return err;
++	}
+ 
+ 	netdev_dbg(dev->net,
+ 		   "dm9601_mdio_read() phy_id=0x%02x, loc=0x%02x, returns=0x%04x\n",
 
------BEGIN PGP SIGNATURE-----
+---
+base-commit: 94f6f0550c625fab1f373bb86a6669b45e9748b3
+change-id: 20231009-topic-dm9601_uninit_mdio_read-a15918ffbd6f
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSRLkwAKCRB4tDGHoIJi
-0rW9AQCgH7wH465HHkJZUgXkFxDSIGwT+zdKUMYezzCSJmzTiQD/RSTBvwNO9iLX
-1JL/GhqiRgflLbNTazQ/f2/5CdoDRgA=
-=mpd6
------END PGP SIGNATURE-----
+Best regards,
+-- 
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
 
---LPpjd4457YnzLrjL--
