@@ -2,142 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 557FD7BEE10
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 00:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54FDE7BEE13
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 00:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378842AbjJIWGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 18:06:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46886 "EHLO
+        id S1378850AbjJIWH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 18:07:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378741AbjJIWGE (ORCPT
+        with ESMTP id S1377059AbjJIWH5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 18:06:04 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D37A6
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 15:06:01 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-690d2441b95so3658575b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 15:06:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696889161; x=1697493961; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=845MK78LxhnwOhYyBjmLLC+lpa1q0nrX/E0dElEn/Cc=;
-        b=chejwi6w0gnStM8GPNcL5n3DcdgQYMRYnrMOSRFqRvgIfwGKtXcJxTHp7/dupjFFEN
-         yZSF31fEKqHW6wKbi1DPo5tDElBXywPfxDGQq0jkQHC9vDNAGMIvK8hD9MBJjfD5D6oI
-         2Xr8Hg5NcmzdW2dfmWnyD9Aclv63i/RVCzLPg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696889161; x=1697493961;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=845MK78LxhnwOhYyBjmLLC+lpa1q0nrX/E0dElEn/Cc=;
-        b=wakPZZZLZyFGGAx5uZ1w/Xfg+Ss46wtC1dGtolAMdV4MC6KBLAHD7FFECtLS5cAR+d
-         LAZ8/bm0n0zBlFUfvYAiiuNAesO29WX+bqjUBwq8tV6aqTUzO3Hx4wNbXSFZ6j2jpg2R
-         GEUavsVUa8giJVqWYT7FoVz1J76vtTsoEQzp9gQaDSJ48u8JeLxO33sFojU0d5bIhqhx
-         ROHugsz6dO7LGxg+Ofb8NxD/YOkuH7MH6NhhwWniFeEwiHH436MhuzBmGors6zydGzlo
-         67arqGA67Z3oIFf7UwTXpolMqrBNAh+4+jxg3S4+yuoc7Z0LJgUa7vBf6KrNiFonPUYH
-         yWHw==
-X-Gm-Message-State: AOJu0Yz2viKFJXPDLSTcxdLeFKGVs2RTgCdqN5u4EpZq48S/NiKk2KLB
-        ki8zRPGvr2UX6+I2RqX5Xy1FLJr08KkMgB74MLk=
-X-Google-Smtp-Source: AGHT+IHqaBNQQQRLJKp65sZWW9PKzkYfF+M26/Xgf+6qN4PKsORHoYdOSJWUwzqVcOHLSVA68vcuuw==
-X-Received: by 2002:a05:6a00:2d94:b0:68f:cc67:e709 with SMTP id fb20-20020a056a002d9400b0068fcc67e709mr19253695pfb.16.1696889161154;
-        Mon, 09 Oct 2023 15:06:01 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id c17-20020aa78c11000000b0068c10187dc3sm6849915pfd.168.2023.10.09.15.06.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 15:06:00 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 15:05:57 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
-        Intel Corporation <linuxwwan@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
-        Liu Haijun <haijun.liu@mediatek.com>,
-        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
-        Ricardo Martinez <ricardo.martinez@linux.intel.com>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] net: wwan: t7xx: Add __counted_by for struct
- t7xx_fsm_event and use struct_size()
-Message-ID: <202310091505.49082C790A@keescook>
-References: <ZSR0qh5dEV5qoBW4@work>
+        Mon, 9 Oct 2023 18:07:57 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3540999
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 15:07:56 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C762FC15
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 15:08:36 -0700 (PDT)
+Received: from e110455-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BD6533F5A1
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 15:07:55 -0700 (PDT)
+Date:   Mon, 9 Oct 2023 23:07:33 +0100
+From:   Liviu Dudau <liviu.dudau@arm.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] power: reset: vexpress: Use device_get_match_data()
+Message-ID: <ZSR5pd_Uzk0s2XZw@e110455-lin.cambridge.arm.com>
+References: <20231009172923.2457844-19-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZSR0qh5dEV5qoBW4@work>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231009172923.2457844-19-robh@kernel.org>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 03:46:18PM -0600, Gustavo A. R. Silva wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
-> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
+Hi Rob,
+
+On Mon, Oct 09, 2023 at 12:29:14PM -0500, Rob Herring wrote:
+> Use preferred device_get_match_data() instead of of_match_device() to
+> get the driver match data. With this, adjust the includes to explicitly
+> include the correct headers.
 > 
-> While there, use struct_size() helper, instead of the open-coded
-> version, to calculate the size for the allocation of the whole
-> flexible structure, including of course, the flexible-array member.
-> 
-> This code was found with the help of Coccinelle, and audited and
-> fixed manually.
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-
-Looks right to me.
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--Kees
-
+> Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
->  drivers/net/wwan/t7xx/t7xx_state_monitor.c | 3 ++-
->  drivers/net/wwan/t7xx/t7xx_state_monitor.h | 2 +-
->  2 files changed, 3 insertions(+), 2 deletions(-)
+>  drivers/power/reset/vexpress-poweroff.c | 11 ++++-------
+>  1 file changed, 4 insertions(+), 7 deletions(-)
 > 
-> diff --git a/drivers/net/wwan/t7xx/t7xx_state_monitor.c b/drivers/net/wwan/t7xx/t7xx_state_monitor.c
-> index 80edb8e75a6a..0bc97430211b 100644
-> --- a/drivers/net/wwan/t7xx/t7xx_state_monitor.c
-> +++ b/drivers/net/wwan/t7xx/t7xx_state_monitor.c
-> @@ -445,7 +445,8 @@ int t7xx_fsm_append_event(struct t7xx_fsm_ctl *ctl, enum t7xx_fsm_event_state ev
->  		return -EINVAL;
->  	}
+> diff --git a/drivers/power/reset/vexpress-poweroff.c b/drivers/power/reset/vexpress-poweroff.c
+> index 17064d7b19f6..bb22b2db5907 100644
+> --- a/drivers/power/reset/vexpress-poweroff.c
+> +++ b/drivers/power/reset/vexpress-poweroff.c
+> @@ -7,8 +7,8 @@
+>  #include <linux/delay.h>
+>  #include <linux/notifier.h>
+>  #include <linux/of.h>
+> -#include <linux/of_device.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/property.h>
+>  #include <linux/reboot.h>
+>  #include <linux/stat.h>
+>  #include <linux/vexpress.h>
+> @@ -108,20 +108,17 @@ static int _vexpress_register_restart_handler(struct device *dev)
 >  
-> -	event = kmalloc(sizeof(*event) + length, in_interrupt() ? GFP_ATOMIC : GFP_KERNEL);
-> +	event = kmalloc(struct_size(event, data, length),
-> +			in_interrupt() ? GFP_ATOMIC : GFP_KERNEL);
->  	if (!event)
->  		return -ENOMEM;
+>  static int vexpress_reset_probe(struct platform_device *pdev)
+>  {
+> -	const struct of_device_id *match =
+> -			of_match_device(vexpress_reset_of_match, &pdev->dev);
+> +	enum vexpress_reset_func func;
+>  	struct regmap *regmap;
+>  	int ret = 0;
 >  
-> diff --git a/drivers/net/wwan/t7xx/t7xx_state_monitor.h b/drivers/net/wwan/t7xx/t7xx_state_monitor.h
-> index b6e76f3903c8..b0b3662ae6d7 100644
-> --- a/drivers/net/wwan/t7xx/t7xx_state_monitor.h
-> +++ b/drivers/net/wwan/t7xx/t7xx_state_monitor.h
-> @@ -102,7 +102,7 @@ struct t7xx_fsm_event {
->  	struct list_head	entry;
->  	enum t7xx_fsm_event_state event_id;
->  	unsigned int		length;
-> -	unsigned char		data[];
-> +	unsigned char		data[] __counted_by(length);
->  };
+> -	if (!match)
+> -		return -EINVAL;
+> -
+>  	regmap = devm_regmap_init_vexpress_config(&pdev->dev);
+>  	if (IS_ERR(regmap))
+>  		return PTR_ERR(regmap);
+>  	dev_set_drvdata(&pdev->dev, regmap);
 >  
->  struct t7xx_fsm_command {
+> -	switch ((uintptr_t)match->data) {
+> +	func = (uintptr_t)device_get_match_data(&pdev->dev);
+> +	switch (func) {
+>  	case FUNC_SHUTDOWN:
+>  		vexpress_power_off_device = &pdev->dev;
+>  		pm_power_off = vexpress_power_off;
+
+device_get_match_data() is badly un-documented but I think it can still
+return NULL if no match. At the moment we're checking for a match earlier
+and avoid calling devm_regmap_init_vexpress_config() needlessly, with your
+patch not so. Can you not replace each line with the equivalent code and
+keep the NULL check?
+
+Best regards,
+Liviu
+
+
 > -- 
-> 2.34.1
-> 
+> 2.42.0
 > 
 
 -- 
-Kees Cook
+====================
+| I would like to |
+| fix the world,  |
+| but they're not |
+| giving me the   |
+ \ source code!  /
+  ---------------
+    ¯\_(ツ)_/¯
