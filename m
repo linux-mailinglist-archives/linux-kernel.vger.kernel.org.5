@@ -2,141 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32CB37BD7FD
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 12:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E195E7BD805
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 12:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346090AbjJIKGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 06:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44636 "EHLO
+        id S1346047AbjJIKHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 06:07:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346067AbjJIKGe (ORCPT
+        with ESMTP id S1346110AbjJIKGy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 06:06:34 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C869100;
-        Mon,  9 Oct 2023 03:06:30 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hpmYJ2yCNRo/a6zkS68ehf+Outn4LWowxP7Dx6/Ilm8katjOJubgcVL4u9ylDP5Ia1cZ1CsZB3XolzuQl+Vw1dlNsZJEh93mgfa18VQx+I6fx90Ctd1wxG/6Ojs6wsH1ktLl3F7Af4l76lBFnvYLu/yDumN6lxaETajTFE5BtgbL7xZV7HxjaLy7/Vpd24sj3iZ1OCG2eN79Nz/FqY7bUqyCAQKNb7LrKa+k8oeH8F2RUlL0aYdbFioMgxgsLZTExIfQhyyjsESlYRMM6dYTOX1Aie+v5OfXRgtjUEpeXQPaFiLUzyIVCJ87sWH+7X0dO2F152VQlCZviqAwC3/oXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cAyZrQ+jo6RyAs6uhaLZoFpVuY2bEE01tn17f33UPTA=;
- b=c72DjYY9wjG1HirW5/QvdtwExbuYK6vW8GMiqFk7OfLxlqnzG9hqfTnH4vJ9pQOPJm3JqqAV9Xkv0PrpX+qI0XEWe1VNt1Z0vMy3MegCwnfSpLgSrXbhRttxtsDFdX8vn8t/vVnJmTahYnF3Xi00nWun+XzleuvAC5H2WHNEMyJXDP3bJVQ9X+u6rUfvmm0OSKPHo233OQqoJSrDvHQsuLh7Ln487dEqcIkKC1RVM8lPgoaeqcwnpNaCQp7liCurFaIXq7tAlhAEsIVTtrwK558699JrFEM9vG1QUL5GjdcpvTyRmmqstQlEPsx8L58frtDaZrGDbnE9v1mu8K+TtA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cAyZrQ+jo6RyAs6uhaLZoFpVuY2bEE01tn17f33UPTA=;
- b=fwfh0OGVrFvWyAs460G2fUq+CRSp4cYBTyPSjInQ2jZZqi81Y+mu5Z6GRJR23kY8BN67npqoCXl4FHJ8qXJp76g8EGPfYVsV5KrRxQfo3ciIuzvFIDA0bNdWyY5FsIAP5JOOaAFiJTEMesdDsq1p1poD8D9NWW2k+4HC66GI//BqMz2C/uyBBoa1q3UNsQbVcKN/9tq+ipIAPP8Wlm1tOhR3AaH7oupDrXWvqJBpIww6JHIc0amzM6xyuNVYy8kzk1GaknIh8YPdRYfqki0BWoEh/S82HguvUq3N1wTt2yOB8gZ8ads8nGDbA6dwXFN+gghf4jnHp/YMQDUmLI46Nw==
-Received: from MW4PR03CA0300.namprd03.prod.outlook.com (2603:10b6:303:b5::35)
- by MN0PR12MB5929.namprd12.prod.outlook.com (2603:10b6:208:37c::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.37; Mon, 9 Oct
- 2023 10:06:27 +0000
-Received: from CO1PEPF000044F7.namprd21.prod.outlook.com
- (2603:10b6:303:b5:cafe::72) by MW4PR03CA0300.outlook.office365.com
- (2603:10b6:303:b5::35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.37 via Frontend
- Transport; Mon, 9 Oct 2023 10:06:25 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- CO1PEPF000044F7.mail.protection.outlook.com (10.167.241.197) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6907.2 via Frontend Transport; Mon, 9 Oct 2023 10:06:25 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 9 Oct 2023
- 03:06:16 -0700
-Received: from drhqmail203.nvidia.com (10.126.190.182) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Mon, 9 Oct 2023 03:06:15 -0700
-Received: from sumitg-l4t.nvidia.com (10.127.8.10) by mail.nvidia.com
- (10.126.190.182) with Microsoft SMTP Server id 15.2.986.41 via Frontend
- Transport; Mon, 9 Oct 2023 03:06:13 -0700
-From:   Sumit Gupta <sumitg@nvidia.com>
-To:     <treding@nvidia.com>, <jonathanh@nvidia.com>,
-        <krzysztof.kozlowski@linaro.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <bbasu@nvidia.com>, <sumitg@nvidia.com>
-Subject: [Patch v2 2/2] memory: tegra: set BPMP msg flags to reset IPC channels
-Date:   Mon, 9 Oct 2023 15:35:57 +0530
-Message-ID: <20231009100557.18224-3-sumitg@nvidia.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231009100557.18224-1-sumitg@nvidia.com>
-References: <20231009100557.18224-1-sumitg@nvidia.com>
-X-NVConfidentiality: public
+        Mon, 9 Oct 2023 06:06:54 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E8CC97;
+        Mon,  9 Oct 2023 03:06:51 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id ada2fe7eead31-4526b9404b0so3687960137.0;
+        Mon, 09 Oct 2023 03:06:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696846010; x=1697450810; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KUulTN1h38HfKtLoczTxDqQh9DCfOrCmaxardUNW3tA=;
+        b=H8+1A5NUj1Ns4BMSQGYNeq07qjAqcHTNxBt2ckfSYv131nmJwQU0lX71MSvTdB2eJF
+         MQDV5gC5JGyHzIOKin3dulQko8S6JI9q/LGtEd4m6lcYJUY02aWh5xQx9MJXbNMkPztp
+         wYQZW8exDLzUj75XJJQSdZtxuXEPAS0LCP9w3arENQ84PScxD3pshlvPhZcijt5XW2P/
+         iefTErOow0/loEF2fB84xzrkC4jzG+KXxFvwhP/zWJNNCX2zFkh8GhtBix1+PVpK38NG
+         GXqsOMNMdFMI+iz1uW6picVTsSovnlVvAhR46XGJghIrRJHkfosOMdmqa3mq87nRVDSo
+         4sVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696846010; x=1697450810;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KUulTN1h38HfKtLoczTxDqQh9DCfOrCmaxardUNW3tA=;
+        b=Wz0WzgPoo3WTK9BuHbFqrpk2uuDE5Y0hcoddFmFMYM0QvIUBUNE0azjeI4o53AKuZE
+         s6NpVOhd7zEYaZ9pQRUEqKXBQkOj6ZZHzZLsdtBgxliOj823sH+tUPSwS1KnXGg/bAup
+         /KES58ypSzzVO/98Qsl5/O+PFK+xNPO0/f3UvAcIY2zIGmulOR03fgs8RZ/H8kfzVoK4
+         b9WqaSefTrICfIIzuaybj62mN2Kj6jwUWPNVZy9slG2gS8qlwMN0W+9PJru67Jz/4P75
+         Lhjz5h4hUHFk/i7HaNdZnak8V5ir52vq8o+kwbBVqG3LtnkG+mHEaKX9/irOzKALn4o+
+         bLJw==
+X-Gm-Message-State: AOJu0YxxnL+gAzbG6vEQbhSDRKwljPLoMNphnydw66bz7n7ZLWI6LWQQ
+        fIaxLWpOBk1JGCTfW2fV0N1AnbltBmJUkSld6ks=
+X-Google-Smtp-Source: AGHT+IGeiHftpvohpaihVWI8j4pdDM3FdFbyTLW7xo376tPGFfTL1jLnkf6qSqJR0XyB8zSyHHRzZVF0eAddRpMqimY=
+X-Received: by 2002:a67:ee49:0:b0:452:d5cb:a211 with SMTP id
+ g9-20020a67ee49000000b00452d5cba211mr6160893vsp.15.1696846010494; Mon, 09 Oct
+ 2023 03:06:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044F7:EE_|MN0PR12MB5929:EE_
-X-MS-Office365-Filtering-Correlation-Id: 84942fa8-638c-448b-6dcd-08dbc8af65c5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ynyQB67M/lQi3wNOZKkVNfoqNFUaSZsDgfFm64/yxObyqzOSUcHH3EEcIQ+He/m03UIitM5opb5l3Rais2zxkAvjVVAR4Ft1DgCBeW6J9RAqEGmOJMz+NR9tZKxKUTdGGwgvVO1Wh2eLe77MIC0sLQlf72ax2W3GNcRJJbsfkO7UDe72NnORm56q41lwAa1AMvplCgUT1DNY9mNaTMfepuyw08G2tkZs6VpzlGMzAyxgYEpKg/ryMpfLDYEDc+sds1LpH+ciVMS+cJZjHZjhlWXyvLSvV2mo0NMgiGY6oj8mXz4eTlalkFuddIZVpq5L++WsesNTLoo7DQND5iirzLCu8NFrOq7mPIlU0F8Vm+KBEVae99tD/VXzyF7Vzxv4Mxo6UysKIws1eipvaSQXPaUwNqXSU+hSPSPa7NDQMfrQR0OGrZgMvfncRE/lxiQU597TW60HG9Ty5Dd1BpfdlgIcnKh0h2Yazj7i7sBhUki+Ymp3Hg9hT7paF5lfauHaEhvorC8AAs3FjAY6dS9GsxScRAk6OdDzPZFZxIWEty/s1EK80GvujNjhywBmKuM8J1PN2mGW6UVv9wdl7FKwikoq3SWQy2/uNaI/fIuljULT3GUsZHx9kOmPsJDFHZdNDxk24RtRwMPoAYc+4FkgmlrLXhmcWP28jTzk0DX7AQtCrXCsUnVsB+X9bVjNcFPGyP01WKXUMXPptTw6FdMQZREQuCpRSiij8OMmM289In/UuWTS/vIdnNQevbKO8nbH
-X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(376002)(396003)(136003)(346002)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(82310400011)(46966006)(36840700001)(40470700004)(40480700001)(40460700003)(83380400001)(1076003)(107886003)(2616005)(336012)(426003)(26005)(47076005)(316002)(36860700001)(110136005)(54906003)(70206006)(70586007)(8936002)(8676002)(4326008)(5660300002)(41300700001)(7696005)(6666004)(2906002)(82740400003)(478600001)(36756003)(356005)(7636003)(86362001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2023 10:06:25.4389
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 84942fa8-638c-448b-6dcd-08dbc8af65c5
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044F7.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5929
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20231008052101.144422-1-akihiko.odaki@daynix.com>
+ <20231008052101.144422-6-akihiko.odaki@daynix.com> <CAF=yD-LdwcXKK66s5gvJNOH8qCWRt3SvEL-GkkVif=kkOaYGhg@mail.gmail.com>
+ <8f4ad5bc-b849-4ef4-ac1f-8d5a796205e9@daynix.com> <CAF=yD-+DjDqE9iBu+PvbeBby=C4CCwG=fMFONQONrsErmps3ww@mail.gmail.com>
+ <286508a3-3067-456d-8bbf-176b00dcc0c6@daynix.com> <CAF=yD-+syCSJz_wp25rEaHTXMFRHgLh1M-uTdNWPb4fnrKgpFw@mail.gmail.com>
+ <8711b549-094d-4be2-b7af-bd93b7516c05@daynix.com> <CAF=yD-+M75o2=yDy5d03fChuNTeeTRkUU7rPRG1i6O9aZGhLmQ@mail.gmail.com>
+ <695a0611-2b19-49f9-8d32-cfea3b7df0b2@daynix.com>
+In-Reply-To: <695a0611-2b19-49f9-8d32-cfea3b7df0b2@daynix.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Mon, 9 Oct 2023 03:06:13 -0700
+Message-ID: <CAF=yD-+_PLPt9qfXy1Ljr=Lou0W8hCJLi6HwPcZYCjJy+SKtbA@mail.gmail.com>
+Subject: Re: [RFC PATCH 5/7] tun: Introduce virtio-net hashing feature
+To:     Akihiko Odaki <akihiko.odaki@daynix.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, rdunlap@infradead.org, willemb@google.com,
+        gustavoars@kernel.org, herbert@gondor.apana.org.au,
+        steffen.klassert@secunet.com, nogikh@google.com,
+        pablo@netfilter.org, decui@microsoft.com, jakub@cloudflare.com,
+        elver@google.com, pabeni@redhat.com,
+        Yuri Benditovich <yuri.benditovich@daynix.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thierry Reding <treding@nvidia.com>
+On Mon, Oct 9, 2023 at 3:02=E2=80=AFAM Akihiko Odaki <akihiko.odaki@daynix.=
+com> wrote:
+>
+> On 2023/10/09 18:57, Willem de Bruijn wrote:
+> > On Mon, Oct 9, 2023 at 3:57=E2=80=AFAM Akihiko Odaki <akihiko.odaki@day=
+nix.com> wrote:
+> >>
+> >> On 2023/10/09 17:04, Willem de Bruijn wrote:
+> >>> On Sun, Oct 8, 2023 at 3:46=E2=80=AFPM Akihiko Odaki <akihiko.odaki@d=
+aynix.com> wrote:
+> >>>>
+> >>>> On 2023/10/09 5:08, Willem de Bruijn wrote:
+> >>>>> On Sun, Oct 8, 2023 at 10:04=E2=80=AFPM Akihiko Odaki <akihiko.odak=
+i@daynix.com> wrote:
+> >>>>>>
+> >>>>>> On 2023/10/09 4:07, Willem de Bruijn wrote:
+> >>>>>>> On Sun, Oct 8, 2023 at 7:22=E2=80=AFAM Akihiko Odaki <akihiko.oda=
+ki@daynix.com> wrote:
+> >>>>>>>>
+> >>>>>>>> virtio-net have two usage of hashes: one is RSS and another is h=
+ash
+> >>>>>>>> reporting. Conventionally the hash calculation was done by the V=
+MM.
+> >>>>>>>> However, computing the hash after the queue was chosen defeats t=
+he
+> >>>>>>>> purpose of RSS.
+> >>>>>>>>
+> >>>>>>>> Another approach is to use eBPF steering program. This approach =
+has
+> >>>>>>>> another downside: it cannot report the calculated hash due to th=
+e
+> >>>>>>>> restrictive nature of eBPF.
+> >>>>>>>>
+> >>>>>>>> Introduce the code to compute hashes to the kernel in order to o=
+vercome
+> >>>>>>>> thse challenges. An alternative solution is to extend the eBPF s=
+teering
+> >>>>>>>> program so that it will be able to report to the userspace, but =
+it makes
+> >>>>>>>> little sense to allow to implement different hashing algorithms =
+with
+> >>>>>>>> eBPF since the hash value reported by virtio-net is strictly def=
+ined by
+> >>>>>>>> the specification.
+> >>>>>>>>
+> >>>>>>>> The hash value already stored in sk_buff is not used and compute=
+d
+> >>>>>>>> independently since it may have been computed in a way not confo=
+rmant
+> >>>>>>>> with the specification.
+> >>>>>>>>
+> >>>>>>>> Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
+> >>>>>>>> ---
+> >>>>>>>
+> >>>>>>>> +static const struct tun_vnet_hash_cap tun_vnet_hash_cap =3D {
+> >>>>>>>> +       .max_indirection_table_length =3D
+> >>>>>>>> +               TUN_VNET_HASH_MAX_INDIRECTION_TABLE_LENGTH,
+> >>>>>>>> +
+> >>>>>>>> +       .types =3D VIRTIO_NET_SUPPORTED_HASH_TYPES
+> >>>>>>>> +};
+> >>>>>>>
+> >>>>>>> No need to have explicit capabilities exchange like this? Tun eit=
+her
+> >>>>>>> supports all or none.
+> >>>>>>
+> >>>>>> tun does not support VIRTIO_NET_RSS_HASH_TYPE_IP_EX,
+> >>>>>> VIRTIO_NET_RSS_HASH_TYPE_TCP_EX, and VIRTIO_NET_RSS_HASH_TYPE_UDP_=
+EX.
+> >>>>>>
+> >>>>>> It is because the flow dissector does not support IPv6 extensions.=
+ The
+> >>>>>> specification is also vague, and does not tell how many TLVs shoul=
+d be
+> >>>>>> consumed at most when interpreting destination option header so I =
+chose
+> >>>>>> to avoid adding code for these hash types to the flow dissector. I=
+ doubt
+> >>>>>> anyone will complain about it since nobody complains for Linux.
+> >>>>>>
+> >>>>>> I'm also adding this so that we can extend it later.
+> >>>>>> max_indirection_table_length may grow for systems with 128+ CPUs, =
+or
+> >>>>>> types may have other bits for new protocols in the future.
+> >>>>>>
+> >>>>>>>
+> >>>>>>>>             case TUNSETSTEERINGEBPF:
+> >>>>>>>> -               ret =3D tun_set_ebpf(tun, &tun->steering_prog, a=
+rgp);
+> >>>>>>>> +               bpf_ret =3D tun_set_ebpf(tun, &tun->steering_pro=
+g, argp);
+> >>>>>>>> +               if (IS_ERR(bpf_ret))
+> >>>>>>>> +                       ret =3D PTR_ERR(bpf_ret);
+> >>>>>>>> +               else if (bpf_ret)
+> >>>>>>>> +                       tun->vnet_hash.flags &=3D ~TUN_VNET_HASH=
+_RSS;
+> >>>>>>>
+> >>>>>>> Don't make one feature disable another.
+> >>>>>>>
+> >>>>>>> TUNSETSTEERINGEBPF and TUNSETVNETHASH are mutually exclusive
+> >>>>>>> functions. If one is enabled the other call should fail, with EBU=
+SY
+> >>>>>>> for instance.
+> >>>>>>>
+> >>>>>>>> +       case TUNSETVNETHASH:
+> >>>>>>>> +               len =3D sizeof(vnet_hash);
+> >>>>>>>> +               if (copy_from_user(&vnet_hash, argp, len)) {
+> >>>>>>>> +                       ret =3D -EFAULT;
+> >>>>>>>> +                       break;
+> >>>>>>>> +               }
+> >>>>>>>> +
+> >>>>>>>> +               if (((vnet_hash.flags & TUN_VNET_HASH_REPORT) &&
+> >>>>>>>> +                    (tun->vnet_hdr_sz < sizeof(struct virtio_ne=
+t_hdr_v1_hash) ||
+> >>>>>>>> +                     !tun_is_little_endian(tun))) ||
+> >>>>>>>> +                    vnet_hash.indirection_table_mask >=3D
+> >>>>>>>> +                    TUN_VNET_HASH_MAX_INDIRECTION_TABLE_LENGTH)=
+ {
+> >>>>>>>> +                       ret =3D -EINVAL;
+> >>>>>>>> +                       break;
+> >>>>>>>> +               }
+> >>>>>>>> +
+> >>>>>>>> +               argp =3D (u8 __user *)argp + len;
+> >>>>>>>> +               len =3D (vnet_hash.indirection_table_mask + 1) *=
+ 2;
+> >>>>>>>> +               if (copy_from_user(vnet_hash_indirection_table, =
+argp, len)) {
+> >>>>>>>> +                       ret =3D -EFAULT;
+> >>>>>>>> +                       break;
+> >>>>>>>> +               }
+> >>>>>>>> +
+> >>>>>>>> +               argp =3D (u8 __user *)argp + len;
+> >>>>>>>> +               len =3D virtio_net_hash_key_length(vnet_hash.typ=
+es);
+> >>>>>>>> +
+> >>>>>>>> +               if (copy_from_user(vnet_hash_key, argp, len)) {
+> >>>>>>>> +                       ret =3D -EFAULT;
+> >>>>>>>> +                       break;
+> >>>>>>>> +               }
+> >>>>>>>
+> >>>>>>> Probably easier and less error-prone to define a fixed size contr=
+ol
+> >>>>>>> struct with the max indirection table size.
+> >>>>>>
+> >>>>>> I made its size variable because the indirection table and key may=
+ grow
+> >>>>>> in the future as I wrote above.
+> >>>>>>
+> >>>>>>>
+> >>>>>>> Btw: please trim the CC: list considerably on future patches.
+> >>>>>>
+> >>>>>> I'll do so in the next version with the TUNSETSTEERINGEBPF change =
+you
+> >>>>>> proposed.
+> >>>>>
+> >>>>> To be clear: please don't just resubmit with that one change.
+> >>>>>
+> >>>>> The skb and cb issues are quite fundamental issues that need to be =
+resolved.
+> >>>>>
+> >>>>> I'd like to understand why adjusting the existing BPF feature for t=
+his
+> >>>>> exact purpose cannot be amended to return the key it produced.
+> >>>>
+> >>>> eBPF steering program is not designed for this particular problem in=
+ my
+> >>>> understanding. It was introduced to derive hash values with an
+> >>>> understanding of application-specific semantics of packets instead o=
+f
+> >>>> generic IP/TCP/UDP semantics.
+> >>>>
+> >>>> This problem is rather different in terms that the hash derivation i=
+s
+> >>>> strictly defined by virtio-net. I don't think it makes sense to
+> >>>> introduce the complexity of BPF when you always run the same code.
+> >>>>
+> >>>> It can utilize the existing flow dissector and also make it easier t=
+o
+> >>>> use for the userspace by implementing this in the kernel.
+> >>>
+> >>> Ok. There does appear to be overlap in functionality. But it might be
+> >>> easier to deploy to just have standard Toeplitz available without
+> >>> having to compile and load an eBPF program.
+> >>>
+> >>> As for the sk_buff and cb[] changes. The first is really not needed.
+> >>> sk_buff simply would not scale if every edge case needs a few bits.
+> >>
+> >> An alternative is to move the bit to cb[] and clear it for every code
+> >> paths that lead to ndo_start_xmit(), but I'm worried that it is error-=
+prone.
+> >>
+> >> I think we can put the bit in sk_buff for now. We can implement the
+> >> alternative when we are short of bits.
+> >
+> > I disagree. sk_buff fields add a cost to every code path. They cannot
+> > be added for every edge case.
+>
+> It only takes an unused bit and does not grow the sk_buff size so I
+> think it has practically no cost for now.
 
-Set the 'TEGRA_BPMP_MESSAGE_RESET' bit in newly added 'flags' field
-of 'struct tegra_bpmp_message' to request for the reset of BPMP IPC
-channels. This is used along with the 'suspended' check in BPMP driver
-for handling early bandwidth requests due to the hotplug of CPU's
-during system resume before the driver gets resumed.
+The problem is that that thinking leads to death by a thousand cuts.
 
-Fixes: f41e1442ac5b ("cpufreq: tegra194: add OPP support and set bandwidth")
-Signed-off-by: Thierry Reding <treding@nvidia.com>
-Co-developed-by: Sumit Gupta <sumitg@nvidia.com>
-Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
----
- drivers/memory/tegra/tegra234.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/memory/tegra/tegra234.c b/drivers/memory/tegra/tegra234.c
-index 9e5b5dbd9c8d..2845041f32d6 100644
---- a/drivers/memory/tegra/tegra234.c
-+++ b/drivers/memory/tegra/tegra234.c
-@@ -986,6 +986,10 @@ static int tegra234_mc_icc_set(struct icc_node *src, struct icc_node *dst)
- 	msg.rx.data = &bwmgr_resp;
- 	msg.rx.size = sizeof(bwmgr_resp);
- 
-+	if (pclient->bpmp_id >= TEGRA_ICC_BPMP_CPU_CLUSTER0 &&
-+	    pclient->bpmp_id <= TEGRA_ICC_BPMP_CPU_CLUSTER2)
-+		msg.flags = TEGRA_BPMP_MESSAGE_RESET;
-+
- 	ret = tegra_bpmp_transfer(mc->bpmp, &msg);
- 	if (ret < 0) {
- 		dev_err(mc->dev, "BPMP transfer failed: %d\n", ret);
--- 
-2.17.1
-
+"for now" forces the cost of having to think hard how to avoid growing
+sk_buff onto the next person. Let's do it right from the start.
