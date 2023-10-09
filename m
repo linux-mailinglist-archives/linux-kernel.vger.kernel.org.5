@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 006697BD9B9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B34A7BD9BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234588AbjJIL2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 07:28:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52868 "EHLO
+        id S234528AbjJIL2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 07:28:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346307AbjJIL2T (ORCPT
+        with ESMTP id S1346281AbjJIL2h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 07:28:19 -0400
+        Mon, 9 Oct 2023 07:28:37 -0400
 Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02olkn2037.outbound.protection.outlook.com [40.92.44.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77216D55;
-        Mon,  9 Oct 2023 04:27:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE0D6AB;
+        Mon,  9 Oct 2023 04:28:11 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BS0DGXP/lCEfI9GwhRYnH0Yji+hA2K/UtTQCwFNIa07NJ9BPP7NIPQTmrr6gPLzhB3fVi7YzKgzekXBawScbgxxPB6R/iHLk49rScvWgPRj71O5ztbjoN32bhWn4HaM055/Qu9jGGWy2o7qcCl55pFMpd5qNhNzbkWzGSjPn9639B2NfpPhjmzKTp5zp3r0/Tjtc9bKOkfI5DQjS+1ZoEIL51c4/LrHxBfF9s8nxXKM2bl4THz+pl0ZvP2IWvWe+C9H4lBNim72LZC0IgV181423QPjoVCb6Mmf4ZEcpry+ep0U5vCvBP2mD8qTMuH3poUIJUQRTopS2U1ltE2kcuw==
+ b=mebWXH6KM0IOlwUkzPCdMd5Jlbmzvknxo2omosZ3zEUCrHLg5e83J9bPng5z3ZHqtxm6fthXXXeQ+cweEDGztLnPUO0ww4iIXK5r4Rs+LKXYmmRZlX1yjK+VuKcMtQzBtGDBbrBiQFRZTLVOvY3E5SMCY7pdhlsPhL1x+QlciHVgrmAx/Rdv0wSTQdC4cdUry45uaiXMLvAqFwo9apwq5ojgXWcxwIK0HCtN23s5GeV1wRuS8VOIZjcb+ScT+PyktHAcfe8OeEQxn8xvM0zhCQhnjAb4Cj22rTI1pv46LRv21b0n/IIYevAly7LQ29wGPxU0fckSVn+uEQwgpjohpA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KXnbB5CW4hcWd2KYzqwgPMuwW8QdiH7A4QDaJ5+6seE=;
- b=BoA+d7QpTFCRklGFVU1n2GSXejdKLvp9l+a7wxZP46iC5MohkvP31HdIHoz4lkpPfGhZ0W5z9MxTEWqDoyU5RWVOu3go2JgwrFcx844S/B+9xij1c1SyGe0RaCUqf2AhNPLsEI0rI77jPE7y/EMdSSp9/5ZjaUuR/mnrqXPuSXP5dKh8YAzukd6Bs8RDPg8V00dkm08ZjCdS+bNJZRwUtQ+CjrLOLr0sGpFscu6rS3nN+6lZoWjk0KXpDRrfr0s/Ht+YctwcCn7B0/opvqp0Xa1cB+heRVkM0k6Gkp7fRQS3rG4xBl6oD3J+hbg5k5E1z1NizRJ1F+sGp+2ggo+vPw==
+ bh=6IttFsZmWbuo/ioO2E6XMM0wPsbeCqH6n87b8vDr/Ho=;
+ b=XukAV85qCY2arppXDn7/O/h6MBxwM0sWAzJGuZ3rNLEXQyqae3ChWHOeIIASySL2Y9jLGJWurv/yKUvLx9UhtmUY5RB46/kp6j6CjBE5mnMtYe7WrLeHBuBUzbloIxdMH0REFW2vOs23WSZkp7fr/nnbMGXgoGiGCv7evOUWumCTrxoR0Ug00va5sA2YeCiaiP5zKLRTsqwszpGstynf8Es4mE8ORjYj46IFcpPB4+wocrdt5HD19x71FjDxLgPUYTeFhHv3Jp+4OLHNmozbelI0vlRMYZfMNlzI0QrBjzQ27JqtPG8Ch7Hc50l4APrkkU46f7g56MfMOXuU93n03w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KXnbB5CW4hcWd2KYzqwgPMuwW8QdiH7A4QDaJ5+6seE=;
- b=UqWYWpjPjQW2LdQN3b+OapyiEfmOBVL4YT8hTNtvkxAmCPIKPx40JWyivvFSbBz8C31nnj1uGL8K9MxsqPfep4+yTZt3XXWgMbYBF3lLeD9UHRRS18IthFlunHFDuTSQQWeV1yYpJtJE52WDqj5JZ+BC/tMMNkZk+GljPR1b24SgeW4XKD+j04izE7Mb2Wo4rxApZXIrLWJvSYu2zna93QhcEviiu+EAan9BaQjXpxPDUeR25tGYjt3UZYZ3AuoyHrgapvO9u2zmTYo9ldVRCn+eTapWqdOIg/rPw8dMy9yjBVf8NfplPG6fAyfeZMSa4OSHmkXrS7msr7AqLB8ZJA==
+ bh=6IttFsZmWbuo/ioO2E6XMM0wPsbeCqH6n87b8vDr/Ho=;
+ b=GgIHnoQRESyQxe13+CRftlzsG+yx6jwoE0QDyvNBYOYYO9ix3A+sgrTDHg1PVVhquKVGr5z+jlu3Ego6z3aXw5fKfAKSV9KOzJi26Mzm9NX+HmtqbBYgewev41OuhzmPaeZSrotfl8qrYnvj4HRyTCQW28VY9ILoLLdzniliRLsAVFbrHBUt51LwIQ4drbr/amnHhqWhmaZcJQ82bNX6e7Uu/uUQyMLS5B29uxCwMFKEDAp4Msk4BSqXuk8QMOu5bY3gsl64am1Cd9iaC7guFTLh4Mpr2dWtIYg9NnjLf9Q+3renunrVzVWXig5iNVt65QurQqyZSEb4qH6n1Esj5g==
 Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
  by PH0PR20MB6129.namprd20.prod.outlook.com (2603:10b6:510:2a2::21) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.37; Mon, 9 Oct
- 2023 11:26:51 +0000
+ 2023 11:26:58 +0000
 Received: from IA1PR20MB4953.namprd20.prod.outlook.com
  ([fe80::d050:882f:a8a7:8263]) by IA1PR20MB4953.namprd20.prod.outlook.com
  ([fe80::d050:882f:a8a7:8263%5]) with mapi id 15.20.6838.040; Mon, 9 Oct 2023
- 11:26:51 +0000
+ 11:26:58 +0000
 From:   Inochi Amaoto <inochiama@outlook.com>
 To:     Chao Wei <chao.wei@sophgo.com>,
         Chen Wang <unicorn_wang@outlook.com>,
@@ -51,55 +51,55 @@ Cc:     Jisheng Zhang <jszhang@kernel.org>,
         Inochi Amaoto <inochiama@outlook.com>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         linux-riscv@lists.infradead.org
-Subject: [PATCH v2 3/7] dt-bindings: riscv: Add SOPHGO Huashan Pi board compatibles
-Date:   Mon,  9 Oct 2023 19:26:34 +0800
-Message-ID: <IA1PR20MB4953765820AEB14EF4BE75BABBCEA@IA1PR20MB4953.namprd20.prod.outlook.com>
+Subject: [PATCH v2 4/7] riscv: dts: sophgo: Separate common devices from cv1800b soc
+Date:   Mon,  9 Oct 2023 19:26:35 +0800
+Message-ID: <IA1PR20MB49532560A3CA2670A0EAB846BBCEA@IA1PR20MB4953.namprd20.prod.outlook.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231009112642.477337-1-inochiama@outlook.com>
 References: <IA1PR20MB49531C1C34C3E972DBBA4151BBCEA@IA1PR20MB4953.namprd20.prod.outlook.com>
  <20231009112642.477337-1-inochiama@outlook.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-TMN:  [69MCxFUQEp9rWRv/prgSpYGs4OJyIc4GX0Lw1vl1K2Y=]
-X-ClientProxiedBy: TY2PR04CA0023.apcprd04.prod.outlook.com
- (2603:1096:404:f6::35) To IA1PR20MB4953.namprd20.prod.outlook.com
+X-TMN:  [VoTnJ72mA8S040VgJxervUTWhdojVV3liCHQszPll70=]
+X-ClientProxiedBy: TYCP301CA0049.JPNP301.PROD.OUTLOOK.COM
+ (2603:1096:400:384::13) To IA1PR20MB4953.namprd20.prod.outlook.com
  (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID: <20231009112642.477337-3-inochiama@outlook.com>
+X-Microsoft-Original-Message-ID: <20231009112642.477337-4-inochiama@outlook.com>
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|PH0PR20MB6129:EE_
-X-MS-Office365-Filtering-Correlation-Id: 76b7759d-4d1a-4de6-ce83-08dbc8baa1ab
+X-MS-Office365-Filtering-Correlation-Id: df777fea-78ed-462c-e53c-08dbc8baa61c
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aSk6UeiwPjhtVlxUZe+XRo4j+4sxNh6zk+sr14d+WKhNQd44grVhXkUhWYmYpTegWkcvwfKr36N+EwGDt2zoZhPuFE/o6ZNOcfxWkxRmDYSNrpJSbzJPcYbhnmpvbxBzb7N1wU94L/u792p4HpC7ADJL74dtBFkVKe5LhM4LpAWZwz7TFctki9s0DN4xqJcslJwpkUGTpQ0x3SvBEYVIkNQOqtVNyXWHhlx7r13Ag/ZUf/8QlOMr1oLzDPK9CKj0uo97qGory0EVRNWpwjOa8/mV0Qzb+LAr+t1vG/7E1mTCJac9n0VoiggB6RNGPs1MB30JwJyUqqzO//vkuppJ5PU33aov+vXWxBHCKbT3Zihijk68clyzhh0akue1glWAwg5/c8rmxrg5Jnpf4XITODWRW/R5/7Jlz7ITxpkUX5Bf6Vr4Tam40fC01t52RyGgzGChpVTsmC2eJkEqUR4RvdDqLIiC3GHKcgXFAgK7TQWQgDfhxZlqH9z99uPv73++AvJAontpk/W6eY4o3wTdmG5aRjkU+9yzlQ95L63HXQGDI0Kt8OKi2WXtZiogPqNC9z5pH2N2C0TqbvWwabJofeHe1K/e9RuLnLSGK4NuPQETD97n+8kpq5B8ImGR5isT5UbMBNd65I4LGGwFXTZpy22YaApxOzIg8ImDLa/VjkQ=
+X-Microsoft-Antispam-Message-Info: Yh5YgJejdk2XQeQNIqiPzTdsEEaot33VAyQhC9HbCYcAvKHtuY0ezlwVf9CHwfdJVtFXUJLiIe7LVlTM/LCPxSKsdnAhl0e0boodH6ozctoVxqB0SpGHjvRNBeyM2idGI3sqP+y9iZo/NYGhSzC6FuuoyHQuEdll/1Vxn98rJwSQps+vaUeSFSgmzk8RKAO2AT/HrekM+JDB2R9qwTv6MHudxCeiwYPe4eSXxPf7mFjHVAjaMQ7jR0IGNlqBNvEsSjwqqC5hfpEYAYTvty1Jh/QTT8eC+CoHghmdmYugeyRtM2ZJ2bw4rJo9nV82XKrQzIGJadbvpK31q4+d56pIV0HMT+HeHnYSqi0czJCd3qXmYCDWoJ98K4OXmj1h2BHPzfnOZOBT/jXF9X2z7NmIxqqemK1nGzxPrLw1fZ1Xk9jidElLjdKR5loJgy8yW5UmDRCpqVR5eCKeuPQgPDO+Vu75SI01z0a6yY+vUusB3kZbl75WFGfoTkBoxcRIc/8OFSvIk3qnPhVs7bZ4+rkaZJbKPJ4UEGrcOu9hQyh3TT2TcxdLBWlt4d1hOAdGcyDp2Ab86XUzu+Wb8V0wL9mH+Ia5NhUF7Tu6j8R4BUM1vE623xHa4Y/TtgbIoiGyV2bv
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?lDRt2/gueHkLy2T1x63fwA3gBXf4CsWVuCM0D3/u2LIXftZFEfuuFp6qRf1P?=
- =?us-ascii?Q?pjuQm2LynJ/hTAaEAQsDRrL8KCOti8vdOI3LH7rwEd8o6i9tmeXMsLGA8OCD?=
- =?us-ascii?Q?1lHxj9gQ+s3w5nW+EEegqY6JGPgrW1923KiPhJUU1SQxqvXxHcGD6c9c4WTi?=
- =?us-ascii?Q?0iE+cksFHyGHFbdRH1wJhLkGPJvN4zld7k3leqoTl/eBM8BCeaiJnKXawJDE?=
- =?us-ascii?Q?Xcr/t9egXwUOuleb6w+BtJ1KL15JwKVKyp8RPDd+TeemIeyLjIHhdeqwETn3?=
- =?us-ascii?Q?1ORvSNGDc6eMeW15+2Ws0Jd0mGA/8QlP4DapOIdGRqb2GGHlE4G9qgozKd4o?=
- =?us-ascii?Q?ADHt31RA7Itk1eFfG2HOpvueQwBRKANzwCQRtcztrMSw5+1pxj/EZ3m7OZhU?=
- =?us-ascii?Q?D3d+TrmUZ6rejw5ZjKhL8Il5/5onrwCIskA17GO11ZeOF4iqdCqGUkm6gbP/?=
- =?us-ascii?Q?y2tonMjGUokdrZr45lC0OAZMqoyWL+m8Mg4co5D+A2FBGClJZ+jVzrIXY6m1?=
- =?us-ascii?Q?1s/hWf7RdauODu38j7O7v/vFaPlblT6H8pXzysK7FXQl+eOd/jj1FGrZrUAh?=
- =?us-ascii?Q?BHmkZAsvMzaDIO6hrNJYC0I2zl4xcVcclF6xT95BjYa36tKLixX5w8A+PyNy?=
- =?us-ascii?Q?fO9OXtLSjQBQfeYv3fLPrhHkJKwccV1uiVcs3nej4AmSWWsAilneoz/bqFyy?=
- =?us-ascii?Q?gsPqLhbYrTbnedShxECl91h/v2ACn8tOsIFwawsZ4/CfuYOTVd4b/LrWQszo?=
- =?us-ascii?Q?bDw3OHexTLxAmr3Qj0QafS3j5eY6jE8NDbJK99BLPYosC4MBRcHy8xSNoLpk?=
- =?us-ascii?Q?5LRD+2k6BQzQKOMO6gLq0dFYdJjue+6pOU80Cnmic4hJREYC7O0llKZGjUTy?=
- =?us-ascii?Q?mx+3ONoNZKTdI6OvcVdMPRt0Xkf35l0lL+xpQqBF0hG/I6HxQ9N5gznP3aQ2?=
- =?us-ascii?Q?ftlLnLqeIPyYZxhejb1UTedjbjU1qj29VQdylR09wuss44UK6c6YzBRAX6lU?=
- =?us-ascii?Q?l+Z8RYZnucmCcpyk4qbYM/lM9cQcIz2fG23xtdoK4FPHpZ1q/R9zCcFdT5zB?=
- =?us-ascii?Q?gckOoXyruDf4yWChKvZ3rFeKhJJQf66eAx3m5n9gCymu2/moafoRT02u3/Ki?=
- =?us-ascii?Q?k77moGq7z4cGwu5gXBgEDwQKRWaj9P2GpNYOWRGKbi9V8SAp9QxZ/GXfGYo+?=
- =?us-ascii?Q?i/VSs8X+/8mNcw+oa+BkhKKSwDe/es/KS/pExVFv0VXSKgfqE2ye/LJTtCk?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?E2ZnhJGqZEJbDqcQz9Rh4ZLMT2VY50BjwyxrVjnQO2b5+iIuixDu496j0y58?=
+ =?us-ascii?Q?JfM+2miWKSIdnCxuP3f1z/23dh97gMNMoFhAZQ/RQcbNBri3no4UAwwv4/Fm?=
+ =?us-ascii?Q?cdQ56g/2f/FOEo3MY6Vu7sq4iYV0GECI6YEj2W/pm2K8BVu7G54opIp6SZyJ?=
+ =?us-ascii?Q?sMnRJeKsLcIn61a2Gb8XrEljmMxTqikHk7p3HrZ1oL7I6/emGnNPS/vK5/Ug?=
+ =?us-ascii?Q?9HUAga5VatHLUPNzK2iVH2vs5zEehnQtqylItz5XPjFFLb9iqp3iq73LYocx?=
+ =?us-ascii?Q?Y7TjjiCjj2vkctVfOtSqdFt3iQnHIsFwn+3HLb10KxGLa9dl69g+2U9FKCcQ?=
+ =?us-ascii?Q?uhVjw9agahJtnvVIzlzUJHSm1z8zmxplYJIgoO1ZG6rO9jqqTNrZh8haEXoI?=
+ =?us-ascii?Q?TBVL26L5EP0zXNEUKn4aNBdPdqQa38y/WWw2hIWb94Dk4sLNd+F5Hgkaj8Li?=
+ =?us-ascii?Q?W81AjwSuQxpsrz3fLtZb8wZIcCTqHUFZ0PotNqmwit5BBW1uVcw/kG4UaPyP?=
+ =?us-ascii?Q?FjnOLCQ2tqAfoNlC+/9AbYDu1ErbsmJJxO8k98F9Al07FGiQ1VRpYDFmwoEG?=
+ =?us-ascii?Q?/7bncrFq8CVduPqS1jtv2GFEuOxxQ5nYr1C4Kne/bHlhVlFYzvHspByCA0xE?=
+ =?us-ascii?Q?NHOjj91eGsSdCfMESxObP09mZsYS0Y0QYHkjlCKpDbhu1sB8YBp4Fx9DClTV?=
+ =?us-ascii?Q?ACpi8/Y75g/Xg7o10SqQNDM59nPVzw5+ijXkmbrSpmp8h/Spz2oCQLKPuJf6?=
+ =?us-ascii?Q?/za3Zb6LkOEAM4FwZlPCo2UuXW37eUSdrrq4CPOf44hD0FIMHraNQdfdRegc?=
+ =?us-ascii?Q?WwLtsMqsPxyerK5UPomxkNUpadYJSwxafoj7jihvcpjNcIR7wmbiUZiVCqBP?=
+ =?us-ascii?Q?krupgSp29huz/VVFkU+3Z9n0c1R3YwHuxkHgwj/ccL0Skc2PD1QfD3WarPty?=
+ =?us-ascii?Q?1NOBPBiU2q2jdnUg9h9SJfTlhfGLezso/yKC+tOXFaJxSZA69lzQScAPeGyN?=
+ =?us-ascii?Q?AZkiA2iKBAk9h0zIx2E+Gp3goNWMeDhRqohCqQdHDS4xCx0ek10844vFHbeg?=
+ =?us-ascii?Q?C8hf6EZiBt2UF3LbhARfmC4OgWeCuvjtuO2sCB/21HnWz6sbVWr+V3eql4SU?=
+ =?us-ascii?Q?lam35eFZc9Hy0tUA2YrYYICDeM91tByoKyj6U5UAeoAc/EXtO+L9tM9VzcOP?=
+ =?us-ascii?Q?tg0qXSElc4HzDfo53dFkEDb6u5y/ioc3/xAOoBgmgMPfmRQPBrW5c03swwA?=
  =?us-ascii?Q?=3D?=
 X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 76b7759d-4d1a-4de6-ce83-08dbc8baa1ab
+X-MS-Exchange-CrossTenant-Network-Message-Id: df777fea-78ed-462c-e53c-08dbc8baa61c
 X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2023 11:26:51.4101
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2023 11:26:58.8555
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
@@ -115,32 +115,178 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the compatible strings for the SOPHGO Huashan Pi board which
-uses the SOPHGO CV1812H SoC.
+Move the cpu and the common peripherals of CV181x and CV180x to new file.
 
 Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
-Link: https://en.sophgo.com/product/introduce/huashan.html
-Link: https://en.sophgo.com/product/introduce/cv181xH.html
-Acked-by: Chen Wang <unicorn_wang@outlook.com>
 ---
- Documentation/devicetree/bindings/riscv/sophgo.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/riscv/boot/dts/sophgo/cv1800b.dtsi       | 95 +------------------
+ .../dts/sophgo/{cv1800b.dtsi => cv180x.dtsi}  | 19 +---
+ 2 files changed, 2 insertions(+), 112 deletions(-)
+ copy arch/riscv/boot/dts/sophgo/{cv1800b.dtsi => cv180x.dtsi} (80%)
 
-diff --git a/Documentation/devicetree/bindings/riscv/sophgo.yaml b/Documentation/devicetree/bindings/riscv/sophgo.yaml
-index 86748c5390be..9bc813dad098 100644
---- a/Documentation/devicetree/bindings/riscv/sophgo.yaml
-+++ b/Documentation/devicetree/bindings/riscv/sophgo.yaml
-@@ -22,6 +22,10 @@ properties:
-           - enum:
-               - milkv,duo
-           - const: sophgo,cv1800b
-+      - items:
-+          - enum:
-+              - sophgo,huashan-pi
-+          - const: sophgo,cv1812h
-       - items:
-           - enum:
-               - milkv,pioneer
+diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+index df40e87ee063..0904154f9829 100644
+--- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
++++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+@@ -3,106 +3,13 @@
+  * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
+  */
+
+-#include <dt-bindings/interrupt-controller/irq.h>
++#include "cv180x.dtsi"
+
+ / {
+ 	compatible = "sophgo,cv1800b";
+-	#address-cells = <1>;
+-	#size-cells = <1>;
+-
+-	cpus: cpus {
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		timebase-frequency = <25000000>;
+-
+-		cpu0: cpu@0 {
+-			compatible = "thead,c906", "riscv";
+-			device_type = "cpu";
+-			reg = <0>;
+-			d-cache-block-size = <64>;
+-			d-cache-sets = <512>;
+-			d-cache-size = <65536>;
+-			i-cache-block-size = <64>;
+-			i-cache-sets = <128>;
+-			i-cache-size = <32768>;
+-			mmu-type = "riscv,sv39";
+-			riscv,isa = "rv64imafdc";
+-			riscv,isa-base = "rv64i";
+-			riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "zicntr", "zicsr",
+-					       "zifencei", "zihpm";
+-
+-			cpu0_intc: interrupt-controller {
+-				compatible = "riscv,cpu-intc";
+-				interrupt-controller;
+-				#address-cells = <0>;
+-				#interrupt-cells = <1>;
+-			};
+-		};
+-	};
+-
+-	osc: oscillator {
+-		compatible = "fixed-clock";
+-		clock-output-names = "osc_25m";
+-		#clock-cells = <0>;
+-	};
+
+ 	soc {
+-		compatible = "simple-bus";
+ 		interrupt-parent = <&plic>;
+-		#address-cells = <1>;
+-		#size-cells = <1>;
+-		dma-noncoherent;
+-		ranges;
+-
+-		uart0: serial@4140000 {
+-			compatible = "snps,dw-apb-uart";
+-			reg = <0x04140000 0x100>;
+-			interrupts = <44 IRQ_TYPE_LEVEL_HIGH>;
+-			clocks = <&osc>;
+-			reg-shift = <2>;
+-			reg-io-width = <4>;
+-			status = "disabled";
+-		};
+-
+-		uart1: serial@4150000 {
+-			compatible = "snps,dw-apb-uart";
+-			reg = <0x04150000 0x100>;
+-			interrupts = <45 IRQ_TYPE_LEVEL_HIGH>;
+-			clocks = <&osc>;
+-			reg-shift = <2>;
+-			reg-io-width = <4>;
+-			status = "disabled";
+-		};
+-
+-		uart2: serial@4160000 {
+-			compatible = "snps,dw-apb-uart";
+-			reg = <0x04160000 0x100>;
+-			interrupts = <46 IRQ_TYPE_LEVEL_HIGH>;
+-			clocks = <&osc>;
+-			reg-shift = <2>;
+-			reg-io-width = <4>;
+-			status = "disabled";
+-		};
+-
+-		uart3: serial@4170000 {
+-			compatible = "snps,dw-apb-uart";
+-			reg = <0x04170000 0x100>;
+-			interrupts = <47 IRQ_TYPE_LEVEL_HIGH>;
+-			clocks = <&osc>;
+-			reg-shift = <2>;
+-			reg-io-width = <4>;
+-			status = "disabled";
+-		};
+-
+-		uart4: serial@41c0000 {
+-			compatible = "snps,dw-apb-uart";
+-			reg = <0x041c0000 0x100>;
+-			interrupts = <48 IRQ_TYPE_LEVEL_HIGH>;
+-			clocks = <&osc>;
+-			reg-shift = <2>;
+-			reg-io-width = <4>;
+-			status = "disabled";
+-		};
+
+ 		plic: interrupt-controller@70000000 {
+ 			compatible = "sophgo,cv1800b-plic", "thead,c900-plic";
+diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dts/sophgo/cv180x.dtsi
+similarity index 80%
+copy from arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+copy to arch/riscv/boot/dts/sophgo/cv180x.dtsi
+index df40e87ee063..ffaf51724c98 100644
+--- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
++++ b/arch/riscv/boot/dts/sophgo/cv180x.dtsi
+@@ -1,12 +1,12 @@
+ // SPDX-License-Identifier: (GPL-2.0 OR MIT)
+ /*
+  * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
++ * Copyright (C) 2023 Inochi Amaoto <inochiama@outlook.com>
+  */
+
+ #include <dt-bindings/interrupt-controller/irq.h>
+
+ / {
+-	compatible = "sophgo,cv1800b";
+ 	#address-cells = <1>;
+ 	#size-cells = <1>;
+
+@@ -48,7 +48,6 @@ osc: oscillator {
+
+ 	soc {
+ 		compatible = "simple-bus";
+-		interrupt-parent = <&plic>;
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+ 		dma-noncoherent;
+@@ -103,21 +102,5 @@ uart4: serial@41c0000 {
+ 			reg-io-width = <4>;
+ 			status = "disabled";
+ 		};
+-
+-		plic: interrupt-controller@70000000 {
+-			compatible = "sophgo,cv1800b-plic", "thead,c900-plic";
+-			reg = <0x70000000 0x4000000>;
+-			interrupts-extended = <&cpu0_intc 11>, <&cpu0_intc 9>;
+-			interrupt-controller;
+-			#address-cells = <0>;
+-			#interrupt-cells = <2>;
+-			riscv,ndev = <101>;
+-		};
+-
+-		clint: timer@74000000 {
+-			compatible = "sophgo,cv1800b-clint", "thead,c900-clint";
+-			reg = <0x74000000 0x10000>;
+-			interrupts-extended = <&cpu0_intc 3>, <&cpu0_intc 7>;
+-		};
+ 	};
+ };
 --
 2.42.0
 
