@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C95397BE4E7
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F52E7BE4E9
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377691AbjJIPfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 11:35:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41802 "EHLO
+        id S1376992AbjJIPfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 11:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377044AbjJIPey (ORCPT
+        with ESMTP id S1377547AbjJIPey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 9 Oct 2023 11:34:54 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94BC2D6
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 08:34:48 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3231d67aff2so4680564f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 08:34:48 -0700 (PDT)
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 243E4E4
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 08:34:50 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-32615eaa312so4296247f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 08:34:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696865687; x=1697470487; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696865688; x=1697470488; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UnwTp4Lw3p1rKX5DDWLu+LDu8u+Ycx0lOsGSllntXJo=;
-        b=l3zlqMcCBQGt9fTe36WjB/AfJTjo3wM4HYMIaG9x2GFKMXxBK0dsSWbDk6x/dm6zxF
-         ervLPreUI0a3HgZWWiJZJ3wW4h2i9hopap3FdNr2TlwHU/tY/AiT5uXKtmO4qrQU7RSb
-         h66J43wMZtvTSe8khKuB6kRMkk/yHKOABhAy5EhSkwGau2EwZyrSDo2Zoizvh6vzRGh7
-         v8UciTn2byfRHJbZvU9jDvVSfaYkHehohMSDWC0GZBJ/FCAV/0Sfr+5mDrhjg54j6VKv
-         wFJ8pvA2BRuGzIoTIC8pdn5oVLAi0tlx/pZoJPlh+COls8vNaff/ekzRVEHaqGdtYwTX
-         k6Ww==
+        bh=gVGoERFE3fa+HCgKC7RA440wyH71tSjIV08rhDsASMw=;
+        b=X7vybApTRgCjfCDK1DL3z+8qOfAjmQpAea0AsTSC8GuBNiPjdoTrzjNj+vs1ShvKXC
+         Z0o0txg24FT4aWBJs25b5vjNz+cTf/PrSCVZHqW/Gba8NnPeb5VpV3sGtXZhhdlgQU8H
+         P8B7ybdSFjIzd5Au4zeMb4CN/TvsYV/7YXmX+JXSxhvCnNHQ2f2+lLQ2FYPBsdOteSua
+         sOeo62NmHZ7BP1wYBLjReVfVDGSzp56yVPp8bab0wc//K7NsHhw9wQ0tmwH7RNN5hMPN
+         RiHxoS2AG1owiRRTsQv1PETs3vx6OCFbhVZwdZ0c/y0Q39zpupaXbfu/8W8GzqiY1qoM
+         wuAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696865687; x=1697470487;
+        d=1e100.net; s=20230601; t=1696865688; x=1697470488;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UnwTp4Lw3p1rKX5DDWLu+LDu8u+Ycx0lOsGSllntXJo=;
-        b=VkVm9mvmeEyJFtg9FO3n+MfMym6EWQcML0XvaI9Wzci/Ln63wP45af9tkGVL7tUjDW
-         uuMi41+V/K3EH1U8sh8gsptdcce+QiAUkkpOlQh2WfmX2fYV/tW656wXbAHf2BwZ0DHF
-         rYnhR6r1wRsaXAM2Lve4ppbgYM7SQCCybTjrhPDkqfuFHa4tDytx3qoAq0IdI+JD1OTr
-         XBJc3SvjkpOApUtaqSI7ipzDaPE9DTDqEDDHOxaNPdknRxrcsMdE9mxPMuXYb958FfnV
-         BeTvY1V9QKPCNrlsEwxf1ONKGBxETYusqoZLHYn4r4E7dQ+s3YULV8fEz4By+MnslVa4
-         dHPQ==
-X-Gm-Message-State: AOJu0YwNVZGJWyf1vjmKpyYxcsTENOeWGHqgKtGef3gjIcaTyugv/Hd1
-        /k3PVHy8PJPguFoNkLQWtuocSA==
-X-Google-Smtp-Source: AGHT+IGLjnHniMAjzx5YA9kSNp3FSmqF7ZGnRmOAQ4To9QUDJhLfsrlElrqxtpxfypXNLeKa+MM9Iw==
-X-Received: by 2002:adf:f452:0:b0:31f:fed4:d79d with SMTP id f18-20020adff452000000b0031ffed4d79dmr14359230wrp.30.1696865686884;
-        Mon, 09 Oct 2023 08:34:46 -0700 (PDT)
+        bh=gVGoERFE3fa+HCgKC7RA440wyH71tSjIV08rhDsASMw=;
+        b=ZpWg569oHXyt5BL8k2VXoE9ALR8FqPclF5lxyMCFyAWfIUOWt3X+oCEwRY/rIRc2Le
+         IIa6+sEyO3GQDHwyKSuxNOlzvudLWAdS7FGcMKTx1R5ERBff0mYWZxKr57MGT1iqnuZI
+         1TTUrLpz28b6L7HHDNNhsyE/OunoBnmhZ2zrYr3bmNsHp3ryN2FVEA+AkaQip+0Ty3k4
+         79uqvvIJ7KH9N77+5+GTEAlb/ePTiw6xXMSZiuOzsd8Bvc5Tgnhff6wzsg7uF7oeqES0
+         0vRSHXjToy0WQDuD2pCGwt8H4ScbNk/zAvCp0jFOESfB8y/NoT9TzENEAwRUY5UC9UTu
+         ckfg==
+X-Gm-Message-State: AOJu0YwnPQaFmCW78qHT08y+75YvLd3Qh+TL5tXjojeR9RHwjXleMO8x
+        rVkGa7F315tOyvRMcu9giBYn5g==
+X-Google-Smtp-Source: AGHT+IGmR2OVbb8Xjr+DkHBylNE3rUpt0NZEh1/jquLYFhGjN/bGj4/O5LQWquHImkG2t/Wp9xDlbw==
+X-Received: by 2002:adf:e6ce:0:b0:31f:b7b2:d4e1 with SMTP id y14-20020adfe6ce000000b0031fb7b2d4e1mr13710904wrm.20.1696865688018;
+        Mon, 09 Oct 2023 08:34:48 -0700 (PDT)
 Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:f20d:2959:7545:e99f])
-        by smtp.gmail.com with ESMTPSA id b3-20020adff243000000b0031431fb40fasm10016521wrp.89.2023.10.09.08.34.45
+        by smtp.gmail.com with ESMTPSA id b3-20020adff243000000b0031431fb40fasm10016521wrp.89.2023.10.09.08.34.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 08:34:46 -0700 (PDT)
+        Mon, 09 Oct 2023 08:34:47 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -64,9 +64,9 @@ To:     Andy Gross <agross@kernel.org>,
 Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v3 06/15] firmware: qcom: scm: smc: switch to using the SCM allocator
-Date:   Mon,  9 Oct 2023 17:34:18 +0200
-Message-Id: <20231009153427.20951-7-brgl@bgdev.pl>
+Subject: [PATCH v3 07/15] firmware: qcom: scm: make qcom_scm_assign_mem() use the TZ allocator
+Date:   Mon,  9 Oct 2023 17:34:19 +0200
+Message-Id: <20231009153427.20951-8-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231009153427.20951-1-brgl@bgdev.pl>
 References: <20231009153427.20951-1-brgl@bgdev.pl>
@@ -83,133 +83,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-We need to allocate, map and pass a buffer to the trustzone if we have
-more than 4 arguments for a given SCM calls. Let's use the new TrustZone
-allocator for that memory and shrink the code in process.
-
-As this code lives in a different compilation unit than the rest of the
-SCM code, we need to provide a helper in the form of
-qcom_scm_get_tzmem_pool() that allows the SMC low-level routines to
-access the SCM memory pool.
+Let's use the new TZ memory allocator to obtain a buffer for this call
+instead of using dma_alloc_coherent().
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- drivers/firmware/qcom/qcom_scm-smc.c | 28 ++++++++--------------------
- drivers/firmware/qcom/qcom_scm.c     |  5 +++++
- drivers/firmware/qcom/qcom_scm.h     |  3 +++
- 3 files changed, 16 insertions(+), 20 deletions(-)
+ drivers/firmware/qcom/qcom_scm.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/firmware/qcom/qcom_scm-smc.c b/drivers/firmware/qcom/qcom_scm-smc.c
-index 16cf88acfa8e..1a423d1cba6c 100644
---- a/drivers/firmware/qcom/qcom_scm-smc.c
-+++ b/drivers/firmware/qcom/qcom_scm-smc.c
-@@ -2,6 +2,7 @@
- /* Copyright (c) 2015,2019 The Linux Foundation. All rights reserved.
-  */
- 
-+#include <linux/cleanup.h>
- #include <linux/io.h>
- #include <linux/errno.h>
- #include <linux/delay.h>
-@@ -9,6 +10,7 @@
- #include <linux/slab.h>
- #include <linux/types.h>
- #include <linux/firmware/qcom/qcom_scm.h>
-+#include <linux/firmware/qcom/qcom_tzmem.h>
- #include <linux/arm-smccc.h>
- #include <linux/dma-mapping.h>
- 
-@@ -150,11 +152,10 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
- 		   enum qcom_scm_convention qcom_convention,
- 		   struct qcom_scm_res *res, bool atomic)
- {
-+	struct qcom_tzmem_pool *mempool = qcom_scm_get_tzmem_pool();
- 	int arglen = desc->arginfo & 0xf;
- 	int i, ret;
--	dma_addr_t args_phys = 0;
--	void *args_virt = NULL;
--	size_t alloc_len;
-+	void *args_virt __free(qcom_tzmem) = NULL;
- 	gfp_t flag = atomic ? GFP_ATOMIC : GFP_KERNEL;
- 	u32 smccc_call_type = atomic ? ARM_SMCCC_FAST_CALL : ARM_SMCCC_STD_CALL;
- 	u32 qcom_smccc_convention = (qcom_convention == SMC_CONVENTION_ARM_32) ?
-@@ -172,9 +173,9 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
- 		smc.args[i + SCM_SMC_FIRST_REG_IDX] = desc->args[i];
- 
- 	if (unlikely(arglen > SCM_SMC_N_REG_ARGS)) {
--		alloc_len = SCM_SMC_N_EXT_ARGS * sizeof(u64);
--		args_virt = kzalloc(PAGE_ALIGN(alloc_len), flag);
--
-+		args_virt = qcom_tzmem_alloc(mempool,
-+					     SCM_SMC_N_EXT_ARGS * sizeof(u64),
-+					     flag);
- 		if (!args_virt)
- 			return -ENOMEM;
- 
-@@ -192,25 +193,12 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
- 						      SCM_SMC_FIRST_EXT_IDX]);
- 		}
- 
--		args_phys = dma_map_single(dev, args_virt, alloc_len,
--					   DMA_TO_DEVICE);
--
--		if (dma_mapping_error(dev, args_phys)) {
--			kfree(args_virt);
--			return -ENOMEM;
--		}
--
--		smc.args[SCM_SMC_LAST_REG_IDX] = args_phys;
-+		smc.args[SCM_SMC_LAST_REG_IDX] = qcom_tzmem_to_phys(args_virt);
- 	}
- 
- 	/* ret error check follows after args_virt cleanup*/
- 	ret = __scm_smc_do(dev, &smc, &smc_res, atomic);
- 
--	if (args_virt) {
--		dma_unmap_single(dev, args_phys, alloc_len, DMA_TO_DEVICE);
--		kfree(args_virt);
--	}
--
- 	if (ret)
- 		return ret;
- 
 diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-index 0d4c028be0c1..71e98b666391 100644
+index 71e98b666391..754f6056b99f 100644
 --- a/drivers/firmware/qcom/qcom_scm.c
 +++ b/drivers/firmware/qcom/qcom_scm.c
-@@ -201,6 +201,11 @@ static void qcom_scm_bw_disable(void)
- enum qcom_scm_convention qcom_scm_convention = SMC_CONVENTION_UNKNOWN;
- static DEFINE_SPINLOCK(scm_query_lock);
+@@ -4,6 +4,7 @@
+  */
  
-+struct qcom_tzmem_pool *qcom_scm_get_tzmem_pool(void)
-+{
-+	return __scm->mempool;
-+}
+ #include <linux/arm-smccc.h>
++#include <linux/cleanup.h>
+ #include <linux/clk.h>
+ #include <linux/completion.h>
+ #include <linux/cpumask.h>
+@@ -998,14 +999,13 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
+ 	struct qcom_scm_mem_map_info *mem_to_map;
+ 	phys_addr_t mem_to_map_phys;
+ 	phys_addr_t dest_phys;
+-	dma_addr_t ptr_phys;
++	phys_addr_t ptr_phys;
+ 	size_t mem_to_map_sz;
+ 	size_t dest_sz;
+ 	size_t src_sz;
+ 	size_t ptr_sz;
+ 	int next_vm;
+ 	__le32 *src;
+-	void *ptr;
+ 	int ret, i, b;
+ 	u64 srcvm_bits = *srcvm;
+ 
+@@ -1015,10 +1015,13 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
+ 	ptr_sz = ALIGN(src_sz, SZ_64) + ALIGN(mem_to_map_sz, SZ_64) +
+ 			ALIGN(dest_sz, SZ_64);
+ 
+-	ptr = dma_alloc_coherent(__scm->dev, ptr_sz, &ptr_phys, GFP_KERNEL);
++	void *ptr __free(qcom_tzmem) = qcom_tzmem_alloc(__scm->mempool,
++							ptr_sz, GFP_KERNEL);
+ 	if (!ptr)
+ 		return -ENOMEM;
+ 
++	ptr_phys = qcom_tzmem_to_phys(ptr);
 +
- static enum qcom_scm_convention __get_convention(void)
- {
- 	unsigned long flags;
-diff --git a/drivers/firmware/qcom/qcom_scm.h b/drivers/firmware/qcom/qcom_scm.h
-index 4532907e8489..aa7d06939f8e 100644
---- a/drivers/firmware/qcom/qcom_scm.h
-+++ b/drivers/firmware/qcom/qcom_scm.h
-@@ -5,6 +5,7 @@
- #define __QCOM_SCM_INT_H
+ 	/* Fill source vmid detail */
+ 	src = ptr;
+ 	i = 0;
+@@ -1047,7 +1050,6 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
  
- struct device;
-+struct qcom_tzmem_pool;
- 
- enum qcom_scm_convention {
- 	SMC_CONVENTION_UNKNOWN,
-@@ -78,6 +79,8 @@ int scm_legacy_call_atomic(struct device *dev, const struct qcom_scm_desc *desc,
- int scm_legacy_call(struct device *dev, const struct qcom_scm_desc *desc,
- 		    struct qcom_scm_res *res);
- 
-+struct qcom_tzmem_pool *qcom_scm_get_tzmem_pool(void);
-+
- #define QCOM_SCM_SVC_BOOT		0x01
- #define QCOM_SCM_BOOT_SET_ADDR		0x01
- #define QCOM_SCM_BOOT_TERMINATE_PC	0x02
+ 	ret = __qcom_scm_assign_mem(__scm->dev, mem_to_map_phys, mem_to_map_sz,
+ 				    ptr_phys, src_sz, dest_phys, dest_sz);
+-	dma_free_coherent(__scm->dev, ptr_sz, ptr, ptr_phys);
+ 	if (ret) {
+ 		dev_err(__scm->dev,
+ 			"Assign memory protection call failed %d\n", ret);
 -- 
 2.39.2
 
