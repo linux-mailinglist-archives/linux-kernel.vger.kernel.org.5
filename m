@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 910F97BE79D
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF13D7BE7A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377543AbjJIRTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 13:19:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34228 "EHLO
+        id S1377794AbjJIRTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 13:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377495AbjJIRTF (ORCPT
+        with ESMTP id S1377634AbjJIRTP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 13:19:05 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2063.outbound.protection.outlook.com [40.107.237.63])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D4794;
-        Mon,  9 Oct 2023 10:19:04 -0700 (PDT)
+        Mon, 9 Oct 2023 13:19:15 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2065.outbound.protection.outlook.com [40.107.220.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE65CB9;
+        Mon,  9 Oct 2023 10:19:12 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KHUL70zGivipWn7hXOcEtxd6yr3eVN8QSrgR+OTC2OTQdNbSHOd02L0yIsfm+zyjoS7bZjsS37IzGfqjW+nrL3mbgjYUkuIpcDYGYFq5naXBBDj4YAMfTum3p8aEpqLATOhlnI8qjsZfurvxH8QvTp8u+WVE2norFIZJrwhbRUFuttSAaxLziNqmRsTzEw+t6sMPOte+PGa1fTMMNQQNNFvwJTjnGDHuK9jhSMPUU5EeBdOoJYmdPAnCXxZlXiyhk8cXQ4QWp0TYcaScjefJZGJfug3Vx4CbaGI7tKac2n9CIWcdxKNM1HXR1dkakcCEjPO6liDA/0utWI/AcSkY8Q==
+ b=IUGIhZSgQhb3ro38uvWzPSut+GmGWKwonUl5sGaI3jDG66A4+u3IA/bScnJQ0pN1wjXNiQdph2qk3hdDp8PBKk8WV1ozdq8ox2FAXYLcsGUhR93GXsXw27UZosZAjY7GzZK80bqB8xgrfFlv+L1FRVuZd/UUClLBbuDM90ykyKEaBjwHl1LsQUu6A18+64I2lgyOxp6obl0iphhRkI+HkxjEJMemC5lARGeecp7fXgqUxokhPjLQUJLYRdjgUbScpH2VaccLxJIqMMgRtr9WGW0broMrX/6sR574qJ8F5zS2ejwDPgZjhNUpeDpFZUHlX4KNTcpVUZ619pAbP00GoQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cy5I2jucoEMzyo6VymD6meBrAITop+xJ7h9KkdPX/3U=;
- b=JVHKDbP4JGa2XudTl6TqzOvmvJEtdoGEKdKfi8h8MdhsegDEo91zPiAlyaI7zZ3vEe42z5QrpURfleOEePdHQRbHShIH1R9rOqXffx1xktZ55aEak22L0Z7bX6sWAMI3vPbofHTtem0AOcGVw1czEgvKo+alf99lt8UxHywC61sAwqk+MyIrEsfiPrj7vj9vpVz3eW7gO610AXU4++eaz2zqPwV8LuV6ZSJaWxjIVSIfpvspIdA7I/NVvgATfXfLwbArKO3pwVgaYgKe9nDcy/lV1WEvp080qD+R1DQTaJo5H2g43VvQXBKUZbvsKTXX+bG7q1jKH/fp2ZG7hL+PoQ==
+ bh=qDeXdDo90VaiTGL6pyucbmL+eGTtCKZ4n5Z33toR1U4=;
+ b=L23XRMfWl2JCYzhJ9umS9gx3SBcs4n9Dtdtd1exwwVApAE4qoDnQYj6zlDsr5p18bTPG4Rp1D3qrqzLfoodpiuOl7/eaJ2DrTA/j6cNL/rJB4ASxi9Ap1YKrawahiaYDK8Cwx6+DT/A7kd379Wo3HWStWixAXJV1af54KD6/eouE3tIGFVgCX0/c+9fk7wfmLdXSLFDSuM+/8N9ih0TKE2LqWP3z5NKkhHsAIzx6RUfcEIEu1IpqwktC9e2rUXahaATLmTBZL25Zz53+AaSrO6N5xMgZUwVHP/H8C4j+t1fBnPnObzY+DhzNw/Unp9B4NiLqyFEbrbfoCbhzwlIsww==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.117.160) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -29,18 +29,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cy5I2jucoEMzyo6VymD6meBrAITop+xJ7h9KkdPX/3U=;
- b=jGyRaUR5WR4aqnXjVXq8f6/pEksdboqshW0DkeRYvE1F8sNG29ptcR3RZxPxo++WThVFHenAiYD3Ke2R234WyDwYCLc+vVOhOtsfuk+z425/0/bRVUfWXPW8kgBPEwgf6n1++SKp6Nd3aITbq/nxupzvx1WUpF01MJYi0ZbrDNS5yECQoksS7g+nV4o1rp08ZDb2dKU6+3S7jaLQ6t5hNuGN7XnsWFiS6bSB8+hLI8ChYE3HGzNTp2l+ScXoPWIshRKX+zFRtWsQXtbvybCjTUmjc3epf2nQoDyk4CkKp3vjosdi5xqj3zdW5BQYfRt43Zg80SKaloH2x2HDYlvRjA==
-Received: from CY5PR22CA0102.namprd22.prod.outlook.com (2603:10b6:930:65::29)
- by SN7PR12MB6766.namprd12.prod.outlook.com (2603:10b6:806:26a::21) with
+ bh=qDeXdDo90VaiTGL6pyucbmL+eGTtCKZ4n5Z33toR1U4=;
+ b=cOLes37GOBeVoowwRSqM1IZ7r7z5gVyjSsUi3ATIqf69b8r3Uj+E22qYZrY61GVxbMzUusPAF27RRruDtMrOuzIXjX9QQLd3nQXWXqjVVTU0NMDONIzT+KkhDIiHgFf4WCMXiH4Udexiv0Oa53YL7FKKWlfW5T1SUnKXTyI14+OGLn3v+b8pCPXiAeZGMhdNeDm8oCP1uw89cVxyhPDscUlFXYomezZl31NsVdYwHi+tBLXNPOyyYPvC+Atuiv6CnBzuYpKe8jUnIX4jSoCW1gk9q7UPvqlaYbme+KIpIc1wTvdxIBH9EsydZo6MYMcMdErnCFQbNNF/ktYhV2ohPQ==
+Received: from CY5PR22CA0101.namprd22.prod.outlook.com (2603:10b6:930:65::15)
+ by CY8PR12MB8412.namprd12.prod.outlook.com (2603:10b6:930:6f::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.41; Mon, 9 Oct
- 2023 17:19:02 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Mon, 9 Oct
+ 2023 17:19:11 +0000
 Received: from CY4PEPF0000E9D0.namprd03.prod.outlook.com
- (2603:10b6:930:65:cafe::70) by CY5PR22CA0102.outlook.office365.com
- (2603:10b6:930:65::29) with Microsoft SMTP Server (version=TLS1_2,
+ (2603:10b6:930:65:cafe::2f) by CY5PR22CA0101.outlook.office365.com
+ (2603:10b6:930:65::15) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38 via Frontend
- Transport; Mon, 9 Oct 2023 17:19:01 +0000
+ Transport; Mon, 9 Oct 2023 17:19:11 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -50,18 +50,18 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
 Received: from mail.nvidia.com (216.228.117.160) by
  CY4PEPF0000E9D0.mail.protection.outlook.com (10.167.241.143) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6838.22 via Frontend Transport; Mon, 9 Oct 2023 17:19:01 +0000
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ 15.20.6838.22 via Frontend Transport; Mon, 9 Oct 2023 17:19:10 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
  (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 9 Oct 2023
- 10:18:46 -0700
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail205.nvidia.com
- (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ 10:18:54 -0700
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 9 Oct 2023
- 10:18:46 -0700
+ 10:18:54 -0700
 Received: from sumitg-l4t.nvidia.com (10.127.8.10) by mail.nvidia.com
  (10.129.68.7) with Microsoft SMTP Server id 15.2.986.41 via Frontend
- Transport; Mon, 9 Oct 2023 10:18:42 -0700
+ Transport; Mon, 9 Oct 2023 10:18:50 -0700
 From:   Sumit Gupta <sumitg@nvidia.com>
 To:     <rafael@kernel.org>, <rui.zhang@intel.com>, <lenb@kernel.org>,
         <linux-acpi@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
@@ -69,33 +69,35 @@ To:     <rafael@kernel.org>, <rui.zhang@intel.com>, <lenb@kernel.org>,
 CC:     <treding@nvidia.com>, <jonathanh@nvidia.com>, <bbasu@nvidia.com>,
         <sumitg@nvidia.com>, <sanjayc@nvidia.com>, <ksitaraman@nvidia.com>,
         <srikars@nvidia.com>, <jbrasen@nvidia.com>
-Subject: [Patch v4 0/2] Add support for _TFP and change throttle pctg
-Date:   Mon, 9 Oct 2023 22:48:37 +0530
-Message-ID: <20231009171839.12267-1-sumitg@nvidia.com>
+Subject: [Patch v4 1/2] ACPI: thermal: Add Thermal fast Sampling Period (_TFP) support
+Date:   Mon, 9 Oct 2023 22:48:38 +0530
+Message-ID: <20231009171839.12267-2-sumitg@nvidia.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20231009171839.12267-1-sumitg@nvidia.com>
+References: <20231009171839.12267-1-sumitg@nvidia.com>
 X-NVConfidentiality: public
 MIME-Version: 1.0
 Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D0:EE_|SN7PR12MB6766:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8fbb2967-7262-43a3-2d09-08dbc8ebd4f0
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D0:EE_|CY8PR12MB8412:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4ba80d6e-682e-4145-9f28-08dbc8ebda73
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IIxoPLM4H2+qZzMxDrc0yoZRLsUIH7UJBE48bAwMHaudTKfNABHZG7TESct/4xfX998V/ALVaS9OBtPIoZJfRt9esLg3AC+XXeGFMOvmkR1rjojmy6h8iIHcKdAGgaj6EVPDFbUCXjUhcbbMp8qJa73S/yyNeR92THDEGjx/jryhRQp4mhZhT6fa5J2L1uZGO3wLGRDZoIWc4F0LYEtNuoTt2QiFCnHC4m+W9BiWw6VzQmAlg3aJxji6CLCr3Iy+qs6UX8ffX/fB3p5GXpk9TJQCboBJThcoXehnQ/NHCSYwfTOrPDfUNxpcj3V1TmCfetDqzTJarobwHUxckT1cIwJcdAj2Hf0ccP4UTooavgn/L7MER1vbMBcy0Zi/Uw54h4oP6iXsOuzKdNKs7VIX9YKAZ1hdkka01kAoHW0OWcQgfuat6IwqiBluYNDT1OiP6EApWoTa1ExLLxoWSmS5gNilHKSw7Fjn7awefhUdvQTqsOegjsS5ImtDtDYBE6b8csq4lftkIbrVg27T5+HiEEGxqeQmr1FuaMSeqp0EfouMbjzFg2dn3iW+J4fb+Li+0GJwS6la2vdGGcFkxKI5RV8xUJfSceI+NFTZvgB9Bx2vD0NbCG675Dx0YcBBtWyx/z5BHu/jt0aJ3r+D7+HqW8JULM8G4/R9antvcLHvhKc69v1lXgAnltK+h+XMSk9/ncbhe1Dbpfjl1rVltfijqAiXkJefD0CujiFTqN34HpZAIfRugLlV5GdtNUKnTu3FqhGxx5CCeIVrFHLteDtDc4jUgopFHEBI2zqBkWuqy5FL6pswMBAN8eCh6+TWonE1FPn4v1Bw8Zn/m9EZtMqTUA==
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(136003)(346002)(376002)(39860400002)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(82310400011)(40470700004)(46966006)(36840700001)(966005)(40460700003)(107886003)(6666004)(336012)(26005)(426003)(70586007)(86362001)(7696005)(1076003)(70206006)(478600001)(36860700001)(54906003)(47076005)(82740400003)(83380400001)(40480700001)(8936002)(41300700001)(7636003)(356005)(2906002)(36756003)(110136005)(4326008)(8676002)(5660300002)(316002)(2616005)(2101003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: ST1xfje7w+S/tettbRS19238mBFAAQz2ALjRfxU6YGWjHiYJpgbOjoIhRuSFD/rPlAXKQnnCLhzW5atR3DAUgOCo32l/ku0dkoPmzNAC5ONJ4tLDyurZhxHMFFrP5akdub6kg6x0DgHXvWGmROJCigtq8tE0wgjEb6a5naaMQp5fFEtC6CcaHHl4EvA3l6DJrB8EbhsmqftmC6TplkC0iqiPQe6vt/LPjwOjxNcNH96u6TmUoqeEpeEfPcvl1uGcEEOG6IPBBHcgU3C4yzHI+ZtCI3wrxnv68GxpQjokQ/GOmEKbidNTHa3fqz5Mkirb0iw5KbIuht/nb1YXuUtz5vgrVlKm3wLYP7OgB8TybabCq+0arxSXmuRxj/4qyCYbdR5UDCHr5wydecUyKd6bMVL9KmtI4KAEOuYbUtK1f5DpVBQ5uMxb8jIt1tl0LE3TYqndzVqVpwXlPgLSXJ9RVdA05I/qlp3fIWsM0R0c/URe/r17qonOrbZ6T6l/TJdJdaLfiAAgJxh5rgDJ7bfmvIW9GXG/TgoIFuXyNqpGddDbk+0xmJv/w0OBbS3+nfmzRD+SGLj4DTRMDQkDm+0KJdQqcTcWKhEn4U5I8f9xJrzZauwT3iAN4KoX0O77LmG0eFHZEmW0XGnX4Gt6p+1N45n+5fZtP8ZCHf0bwHvfUiXVoK2ywidfooAPU9/JT1B+SI3dHxH5aVr2NzaBLM9exw2UpmUG3RoAFTWRH99+8u1+J8rwmxQFlRlDl0ukLi+lSFa6wSwh75dXR3jivoAccQ==
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(346002)(396003)(136003)(376002)(230922051799003)(82310400011)(64100799003)(1800799009)(186009)(451199024)(46966006)(40470700004)(36840700001)(40480700001)(316002)(26005)(47076005)(336012)(426003)(83380400001)(8936002)(7636003)(82740400003)(36860700001)(356005)(8676002)(40460700003)(4326008)(70206006)(478600001)(70586007)(41300700001)(54906003)(110136005)(2616005)(5660300002)(107886003)(2906002)(6666004)(7696005)(1076003)(36756003)(86362001)(2101003);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2023 17:19:01.7030
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2023 17:19:10.9531
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8fbb2967-7262-43a3-2d09-08dbc8ebd4f0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4ba80d6e-682e-4145-9f28-08dbc8ebda73
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D0.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6766
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB8412
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
@@ -106,55 +108,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch set adds two improvements to get a finer control over the
-impact of thermal throttling on performance.
+From: Jeff Brasen <jbrasen@nvidia.com>
 
- 1) Patch 1: Adds support to read "Thermal fast Sampling Period (_TFP)"
-    ACPI object and use it over "Thermal Sampling Period (_TSP)" for
-    Passive cooling if both are present.
+Add support of "Thermal fast Sampling Period (_TFP)" for Passive cooling.
+As per [1], _TFP overrides the "Thermal Sampling Period (_TSP)" if both
+are present in a Thermal zone.
 
- 2) Patch 2: Adds support to reduce the CPUFREQ reduction percentage
-    and not always cause throttling in steps of "20%" for Tegra241 SoC.
+[1] ACPI Specification 6.4 - section 11.4.17. _TFP (Thermal fast Sampling
+    Period)"
 
-Both patches can be applied independently.
-
+Signed-off-by: Jeff Brasen <jbrasen@nvidia.com>
+Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
 ---
-v3[3] -> 4:
-- Patch 2: move ARM code from generic to new file 'thermal_cpufreq.c'.
-         : get 'cpufreq_thermal_pctg' value for Tegra241 from new file. 
-         : move dummy/null function to 'acpi.h'.
+ drivers/acpi/thermal.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-v2[2] -> v3:
-- Patch1: rebased on top of linux-next.
-- Patch2: use __read_mostly for the cpufreq_thermal_* variables.
-        : add static to new function acpi_thermal_cpufreq_config_nvidia.
-        : add null function if CONFIG_HAVE_ARM_SMCCC_DISCOVERY undefined
-        : removed redundant parenthesis.
-
-v1[1] -> v2:
-- Patch1: add ACPI spec section info in commit description and rebased.
-- Patch2: add info about hardware in the commit description.
-        : switched CPUFREQ THERMAL tuning macros to static variables.
-        : update the tunings for Tegra241 SoC only using soc_id check.
-
-Jeff Brasen (1):
-  ACPI: thermal: Add Thermal fast Sampling Period (_TFP) support
-
-Srikar Srimath Tirumala (1):
-  ACPI: processor: reduce CPUFREQ thermal reduction pctg for Tegra241
-
- drivers/acpi/arm64/Makefile          |  1 +
- drivers/acpi/arm64/thermal_cpufreq.c | 20 ++++++++++++++++
- drivers/acpi/processor_thermal.c     | 35 +++++++++++++++++++++++++---
- drivers/acpi/thermal.c               | 17 +++++++++-----
- include/linux/acpi.h                 |  9 +++++++
- 5 files changed, 73 insertions(+), 9 deletions(-)
- create mode 100644 drivers/acpi/arm64/thermal_cpufreq.c
-
-[3] https://lore.kernel.org/linux-acpi/20231006153612.5851-1-sumitg@nvidia.com/ 
-[2] https://lore.kernel.org/lkml/20230913164659.9345-1-sumitg@nvidia.com/
-[1] https://lore.kernel.org/lkml/20230817093011.1378-1-sumitg@nvidia.com/
-
+diff --git a/drivers/acpi/thermal.c b/drivers/acpi/thermal.c
+index 356d577689ff..e360aeebd249 100644
+--- a/drivers/acpi/thermal.c
++++ b/drivers/acpi/thermal.c
+@@ -90,7 +90,7 @@ struct acpi_thermal_passive {
+ 	struct acpi_thermal_trip trip;
+ 	unsigned long tc1;
+ 	unsigned long tc2;
+-	unsigned long tsp;
++	unsigned long passive_delay;
+ };
+ 
+ struct acpi_thermal_active {
+@@ -404,11 +404,16 @@ static bool passive_trip_params_init(struct acpi_thermal *tz)
+ 
+ 	tz->trips.passive.tc2 = tmp;
+ 
+-	status = acpi_evaluate_integer(tz->device->handle, "_TSP", NULL, &tmp);
+-	if (ACPI_FAILURE(status))
+-		return false;
++	status = acpi_evaluate_integer(tz->device->handle, "_TFP", NULL, &tmp);
++	if (ACPI_FAILURE(status)) {
++		status = acpi_evaluate_integer(tz->device->handle, "_TSP", NULL, &tmp);
++		if (ACPI_FAILURE(status))
++			return false;
+ 
+-	tz->trips.passive.tsp = tmp;
++		tz->trips.passive.passive_delay = tmp * 100;
++	} else {
++		tz->trips.passive.passive_delay = tmp;
++	}
+ 
+ 	return true;
+ }
+@@ -904,7 +909,7 @@ static int acpi_thermal_add(struct acpi_device *device)
+ 
+ 	acpi_trip = &tz->trips.passive.trip;
+ 	if (acpi_thermal_trip_valid(acpi_trip)) {
+-		passive_delay = tz->trips.passive.tsp * 100;
++		passive_delay = tz->trips.passive.passive_delay;
+ 
+ 		trip->type = THERMAL_TRIP_PASSIVE;
+ 		trip->temperature = acpi_thermal_temp(tz, acpi_trip->temp_dk);
 -- 
 2.17.1
 
