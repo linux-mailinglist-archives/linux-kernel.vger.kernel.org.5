@@ -2,151 +2,546 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBC6A7BDA15
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5D57BDA24
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346240AbjJILhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 07:37:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39586 "EHLO
+        id S1346206AbjJILj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 07:39:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234518AbjJILhP (ORCPT
+        with ESMTP id S234507AbjJILjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 07:37:15 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2079.outbound.protection.outlook.com [40.107.223.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE30694;
-        Mon,  9 Oct 2023 04:37:12 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PqxBJmiKhhWe2vjtgAgZUqjxKpShPob6I7pdvBCseneFO5UTIcmB0NSFN1rWR3PFgcZtGn+czfpqRwaCjXt0hS6mzOepucuKButJ3snkSaJOlfbMy0tIoZV9FVNiJoPgODsl1HoYJ65pI2evVsoUD5XF1J3/XuiMWEyawDYPbp3l/meislh8RVMNMSldyWmIjMRq99ftwZbX3vpIk1KSCr4MuGZ5+RhEapTPmq8fINmWtBLVv6f5XNznl3yXJ2uT0zYU0ybhm7S5iD6+TrjVPWzmQAaJIPM/gdVCW+3gsfXsIuUAKum+7IUNyf3EvZ+QdzzNm7FTu/dDLAKWg1pNvA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1VIY+Sw25htvtyxLbQ9nkkLSH+8IYN5mP0NVAQpHsf8=;
- b=jWAb0bWND9xd1tituUHI0AFR4XB3rSC434kx1x2FRdNTSPChfTBX5Qre2iSxty67YmKY+tdci1u+7HlVLJ8xZ3EvXsSa/uBxMRcl062jlvI6/Hx4D6qEFytfcRim6CSlobG1AD8nVsyGb9lDen/PglgGphad6fmNT8SMC5Hi9FRpxU7bnL0ryLSXtKx37yAHJVcdVtpQLtJpMjZRUl+00LoluKlTbc89mGAIPvxtVOMvkXBBw+t7AM1fxShPZsgbk0WmLwC1ceDeRth1z887ia0mDuPTvdQG6HcCdOtgQnCpck3OYtHuva00b/6H4vzq1ERKtiUgaCEaQu7AGOnc6g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1VIY+Sw25htvtyxLbQ9nkkLSH+8IYN5mP0NVAQpHsf8=;
- b=rsB65FuqcHuuSgr4Q14HLL6/UrT0SyV8RdgGtnDKvPodRVGmoN92Yy/3DfuWVUi5VvEd+gAkEJTXmXsM0sEZQiKEaOpjW7432K4NDoLZMxcsxrOulrzdtWdk/5+cm4lONdWGTZ/GhkI6BGF0gTGtvDEaIOzBq6kgTIB0cL/MbjAu22/NQwBqoa7pZZa1MuJMeRD9Vl4UaVh83eM6u9gCMjq+sUSenGVPgYzGuLT+RiQnGN3eq+EI0QwwLexGlc2hiUtHm0Z93DngDolzDiKa0RGtcOKJB7bo2FMo9hRVarJWEpjyGBFcJg4ol+m+w1iOK7x9t8t8wViRx1+TgQBWYA==
-Received: from CH0PR03CA0434.namprd03.prod.outlook.com (2603:10b6:610:10e::16)
- by CH2PR12MB4938.namprd12.prod.outlook.com (2603:10b6:610:34::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Mon, 9 Oct
- 2023 11:37:05 +0000
-Received: from DS3PEPF000099D5.namprd04.prod.outlook.com
- (2603:10b6:610:10e:cafe::b4) by CH0PR03CA0434.outlook.office365.com
- (2603:10b6:610:10e::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.29 via Frontend
- Transport; Mon, 9 Oct 2023 11:37:04 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- DS3PEPF000099D5.mail.protection.outlook.com (10.167.17.6) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6838.14 via Frontend Transport; Mon, 9 Oct 2023 11:37:04 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 9 Oct 2023
- 04:36:51 -0700
-Received: from [10.41.21.79] (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 9 Oct 2023
- 04:36:48 -0700
-Message-ID: <72e9f769-9cbb-274e-e99d-10c71f84bbe0@nvidia.com>
-Date:   Mon, 9 Oct 2023 17:06:40 +0530
+        Mon, 9 Oct 2023 07:39:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 186EC94
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 04:39:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696851545;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=A5cHCzl7VI+H6cNSypkyM1+3KZyqfOyl5seT6jE682U=;
+        b=O8yFQ3gq50BI0ynD5ebrUQ/klo8Wu5nnCygD/M66J4J06QdetGWHLcTClmFUKW3E+wZJEL
+        mwmjivvVccldbpsOsZN2lg3gNqzxsqleu9v7OrsUzki0z3sHMZqIsLlf5FNYz9SXYhexFH
+        OSBxgyRwIejtIIO4z/oTASSfLD+f+1I=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-203-_WRbx3PJMlC67sc7pIVnTw-1; Mon, 09 Oct 2023 07:39:04 -0400
+X-MC-Unique: _WRbx3PJMlC67sc7pIVnTw-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9ae70250ef5so591203966b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 04:39:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696851543; x=1697456343;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=A5cHCzl7VI+H6cNSypkyM1+3KZyqfOyl5seT6jE682U=;
+        b=nGa7ezHv3/cAvFdygxWPsgKJ2qwEU3oXJNmplarN06lwYC7MAwrEGadUcMPBITlr96
+         pONIipBsFm+Tw7AAkumQjSXEj1bfRlZKCm5+IEkJXzmp4Q8OaKzrFfOix26H9/ugkXFZ
+         UzRwy4sV7DF0coPPwWrxTBGfqECi8WI/rydI3HJskIrxm9jpCH+2Xde9bTnzVHgcNB+Z
+         tSu1j36fNvnT1G0aOdRyc/cGn8tyjf4KPowmSnG5da4+HrlJOvWsev7YAq45E1eNnPuf
+         c4bW6zBgPWCMGHOofB8pezN54aliCzPeLlO/PfuQR451uV6LYFopZWPQ13va0PN7blpR
+         SAuA==
+X-Gm-Message-State: AOJu0YwAhRGnx4y/Sa6l+adS1ViJZZJ4jI29jZhe480DNRoZ09i4E4Kc
+        bd2zdIhHjeam5TsrKyNufyK9TXwelMt4j2DIQa7l4FbB2/j9eR8zQN8UIOwD19n6u6KQCuul/kf
+        fCZcEgLXK8Qf/0A/RBqaHyVG3
+X-Received: by 2002:a17:907:808:b0:9b2:cee1:1f82 with SMTP id wv8-20020a170907080800b009b2cee11f82mr9053459ejb.7.1696851542820;
+        Mon, 09 Oct 2023 04:39:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG6GE0TWGCoHhBQPpCuA170vwL/JBVH8ySezdUL20l+P9F5cvBRaDF2LcRPgqlAsVJEqXyCLw==
+X-Received: by 2002:a17:907:808:b0:9b2:cee1:1f82 with SMTP id wv8-20020a170907080800b009b2cee11f82mr9053426ejb.7.1696851542424;
+        Mon, 09 Oct 2023 04:39:02 -0700 (PDT)
+Received: from redhat.com ([2a02:14f:16f:5caf:857a:f352:c1fc:cf50])
+        by smtp.gmail.com with ESMTPSA id a6-20020a170906468600b009a5f7fb51dcsm6572550ejr.42.2023.10.09.04.38.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Oct 2023 04:39:01 -0700 (PDT)
+Date:   Mon, 9 Oct 2023 07:38:52 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, rdunlap@infradead.org, willemb@google.com,
+        gustavoars@kernel.org, herbert@gondor.apana.org.au,
+        steffen.klassert@secunet.com, nogikh@google.com,
+        pablo@netfilter.org, decui@microsoft.com, cai@lca.pw,
+        jakub@cloudflare.com, elver@google.com, pabeni@redhat.com,
+        Yuri Benditovich <yuri.benditovich@daynix.com>,
+        Akihiko Odaki <akihiko.odaki@daynix.com>
+Cc:     xuanzhuo@linux.alibaba.com, shuah@kernel.org
+Subject: Re: [RFC PATCH 5/7] tun: Introduce virtio-net hashing feature
+Message-ID: <20231009071226-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [Patch v3 0/2] Improvements to the Tegra CPUFREQ driver
-Content-Language: en-US
-To:     <rafael@kernel.org>, <viresh.kumar@linaro.org>,
-        <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <treding@nvidia.com>, <jonathanh@nvidia.com>, <bbasu@nvidia.com>,
-        <amiettinen@nvidia.com>, Sumit Gupta <sumitg@nvidia.com>
-References: <20231004140537.1954-1-sumitg@nvidia.com>
-From:   Sumit Gupta <sumitg@nvidia.com>
-In-Reply-To: <20231004140537.1954-1-sumitg@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.126.231.35]
-X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099D5:EE_|CH2PR12MB4938:EE_
-X-MS-Office365-Filtering-Correlation-Id: d3fb7de4-1549-450c-3aa3-08dbc8bc0fd7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sAkTnJVz+vbqs5CRWQZXMutPZ+IidJmjs1yyB14w0SI5yGVT8tGAYL4tQQgkZ520BERl0hrQO/vrmYchb2iaKiAHvuLyN15Mxq6YE3cItmQDtDwnm8b7G0IZUR2O7JIqq7E6Frx0IOde06PQ7SjR3uktjs7QnldRic7PP+i5I4iYeWoAJXm9J5HHunwl41ueBUprr+li3RtBGsUQVCSlETr/1joIvHsMCkBt4fIXM/7xlSbZsYkcrJmH1UT0NEI+/aZSDbl7d+zMzoaL68dXn2JisJwAGnOYm/+4dWKhRpmEyxfoskxF4aLH6vUv3zLExsWcYXG9teuBeP0KQymzC88biXn4Ap6RoNXd3GzxeThCHExySjnDm6RYi2cHl+Bpqne4GzMMQ7nITH6GcgCPffcxi93Q7MAa8yCdd4Tjlf0jRijHY8jystE/mL/sBnAeKEKU0w9NobHc3JchoGdCQ2YmRd0hKGQ0Rbo9QCBaaz1tbozuNzp9ZhNbFy1HTbrM1PN7Vrtcng1gZ6eEynzODQyc9NW8x1GWchKd69XeNxgL2efuf3ng//CbhzUP4Bj4VDeSJy7avrETqVdvy/ExIt4qy3nw7yc8qyTo4SdR5K2DEmIycXrpeL4e5UF7YSxwKRiYfPoHXwLTNjMLkYFY80It58MCKVCWk0j6k/QhBoFkTnBafIDIUIY/mNy99VNzoex+Pn4+2d/WZqQ9pUSUQv9i8tb0QEppoD25Kn13e4EO09ZPdvUBYViJLYwtcTx40xx8vI1SfsNb26AzPbYhcrcc95bEjNr0SW2zPY4Y8Q8EhXWa3dZUH1Lusr4l8xgJLheFnYTD6q4yCoHf+1gW1rkPdKAWYC++KIpwQ+Z9kUw=
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(136003)(376002)(346002)(39860400002)(396003)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(82310400011)(46966006)(40470700004)(36840700001)(31686004)(2616005)(26005)(336012)(16526019)(426003)(53546011)(40460700003)(36756003)(82740400003)(31696002)(86362001)(40480700001)(356005)(7636003)(83380400001)(107886003)(4326008)(2906002)(478600001)(6666004)(8676002)(36860700001)(47076005)(966005)(8936002)(316002)(16576012)(5660300002)(41300700001)(70586007)(54906003)(110136005)(70206006)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2023 11:37:04.6664
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d3fb7de4-1549-450c-3aa3-08dbc8bc0fd7
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS3PEPF000099D5.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4938
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231008052101.144422-6-akihiko.odaki@daynix.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Akihiko Odaki sorry about reposts.
+Having an email with two "@" in the CC list:
+	 xuanzhuo@linux.alibaba.comshuah@kernel.org
+tripped up mutt's reply-all for me and made it send to you only.
+
+I am guessing you meant two addresses: xuanzhuo@linux.alibaba.com
+and shuah@kernel.org.
 
 
-On 04/10/23 19:35, Sumit Gupta wrote:
-> This patch set adds below improvements to the Tegra194 CPUFREQ driver.
-> They are applicable to all the Tegra SoC's supported by the driver.
+On Sun, Oct 08, 2023 at 02:20:49PM +0900, Akihiko Odaki wrote:
+> virtio-net have two usage of hashes: one is RSS and another is hash
+> reporting. Conventionally the hash calculation was done by the VMM.
+> However, computing the hash after the queue was chosen defeats the
+> purpose of RSS.
 > 
-> 1) Patch 1: Avoid making SMP call on every frequency request to reduce
->     the time for frequency set and get calls.
+> Another approach is to use eBPF steering program. This approach has
+> another downside: it cannot report the calculated hash due to the
+> restrictive nature of eBPF.
 > 
-> 2) Patch 2: Use reference clock count based loop instead of udelay()
->     to improve the accuracy of re-generated CPU frequency.
+> Introduce the code to compute hashes to the kernel in order to overcome
+> thse challenges. An alternative solution is to extend the eBPF steering
+> program so that it will be able to report to the userspace, but it makes
+> little sense to allow to implement different hashing algorithms with
+> eBPF since the hash value reported by virtio-net is strictly defined by
+> the specification.
 > 
-> The patches are not related but have minor conflict. So, need to be
-> applied in order of patch numbers. If 'Patch 2' is to be applied first
-> then will rebase that and send separately.
+> The hash value already stored in sk_buff is not used and computed
+> independently since it may have been computed in a way not conformant
+> with the specification.
 > 
+> Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
 > ---
-> v1[2] -> v3:
-> - Patch 1: used sizeof(*data->cpu_data) in devm_kcalloc().
+>  drivers/net/tun.c           | 187 ++++++++++++++++++++++++++++++++----
+>  include/uapi/linux/if_tun.h |  16 +++
+>  2 files changed, 182 insertions(+), 21 deletions(-)
 > 
-> v1[1] -> v2:
-> - Patch 1: added new patch.
-> - Patch 2: changed subject and patch order.
-> 
-> Sumit Gupta (2):
->    cpufreq: tegra194: save CPU data to avoid repeated SMP calls
->    cpufreq: tegra194: use refclk delta based loop instead of udelay
-> 
->   drivers/cpufreq/tegra194-cpufreq.c | 151 ++++++++++++++++++++---------
->   1 file changed, 106 insertions(+), 45 deletions(-)
-> 
-> [2] https://lore.kernel.org/lkml/20230901164113.29139-1-sumitg@nvidia.com/
-> [1] https://lore.kernel.org/lkml/20230901152046.25662-1-sumitg@nvidia.com/
-> 
+> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+> index 89ab9efe522c..561a573cd008 100644
+> --- a/drivers/net/tun.c
+> +++ b/drivers/net/tun.c
+> @@ -171,6 +171,9 @@ struct tun_prog {
+>  	struct bpf_prog *prog;
+>  };
+>  
+> +#define TUN_VNET_HASH_MAX_KEY_SIZE 40
+> +#define TUN_VNET_HASH_MAX_INDIRECTION_TABLE_LENGTH 128
+> +
 
-Hi Viresh,
+where do these come from?
 
-If there is no further comment.
-Can we please still apply these patches for 6.7 ?
+>  /* Since the socket were moved to tun_file, to preserve the behavior of persist
+>   * device, socket filter, sndbuf and vnet header size were restore when the
+>   * file were attached to a persist device.
+> @@ -209,6 +212,9 @@ struct tun_struct {
+>  	struct tun_prog __rcu *steering_prog;
+>  	struct tun_prog __rcu *filter_prog;
+>  	struct ethtool_link_ksettings link_ksettings;
+> +	struct tun_vnet_hash vnet_hash;
+> +	u16 vnet_hash_indirection_table[TUN_VNET_HASH_MAX_INDIRECTION_TABLE_LENGTH];
+> +	u32 vnet_hash_key[TUN_VNET_HASH_MAX_KEY_SIZE / 4];
 
-Best Regards,
-Sumit Gupta
+That's quite a lot of data to add in this struct, and will be used
+by a small minority of users. Are you pushing any hot data out of cache
+with this? Why not allocate these as needed?
+
+>  	/* init args */
+>  	struct file *file;
+>  	struct ifreq *ifr;
+> @@ -219,6 +225,13 @@ struct veth {
+>  	__be16 h_vlan_TCI;
+>  };
+>  
+> +static const struct tun_vnet_hash_cap tun_vnet_hash_cap = {
+> +	.max_indirection_table_length =
+> +		TUN_VNET_HASH_MAX_INDIRECTION_TABLE_LENGTH,
+> +
+> +	.types = VIRTIO_NET_SUPPORTED_HASH_TYPES
+> +};
+> +
+>  static void tun_flow_init(struct tun_struct *tun);
+>  static void tun_flow_uninit(struct tun_struct *tun);
+>  
+> @@ -320,10 +333,16 @@ static long tun_set_vnet_be(struct tun_struct *tun, int __user *argp)
+>  	if (get_user(be, argp))
+>  		return -EFAULT;
+>  
+> -	if (be)
+> +	if (be) {
+> +		if (!(tun->flags & TUN_VNET_LE) &&
+> +		    (tun->vnet_hash.flags & TUN_VNET_HASH_REPORT)) {
+> +			return -EINVAL;
+> +		}
+> +
+>  		tun->flags |= TUN_VNET_BE;
+> -	else
+> +	} else {
+>  		tun->flags &= ~TUN_VNET_BE;
+> +	}
+>  
+>  	return 0;
+>  }
+> @@ -558,15 +577,47 @@ static u16 tun_ebpf_select_queue(struct tun_struct *tun, struct sk_buff *skb)
+>  	return ret % numqueues;
+>  }
+>  
+> +static u16 tun_vnet_select_queue(struct tun_struct *tun, struct sk_buff *skb)
+> +{
+> +	u32 value = qdisc_skb_cb(skb)->tun_vnet_hash_value;
+> +	u32 numqueues;
+> +	u32 index;
+> +	u16 queue;
+> +
+> +	numqueues = READ_ONCE(tun->numqueues);
+> +	if (!numqueues)
+> +		return 0;
+> +
+> +	index = value & READ_ONCE(tun->vnet_hash.indirection_table_mask);
+> +	queue = READ_ONCE(tun->vnet_hash_indirection_table[index]);
+> +	if (!queue)
+> +		queue = READ_ONCE(tun->vnet_hash.unclassified_queue);
+
+Apparently 0 is an illegal queue value? You are making this part
+of UAPI better document things like this.
+
+> +
+> +	return queue % numqueues;
+> +}
+> +
+>  static u16 tun_select_queue(struct net_device *dev, struct sk_buff *skb,
+>  			    struct net_device *sb_dev)
+>  {
+>  	struct tun_struct *tun = netdev_priv(dev);
+> +	u8 vnet_hash_flags = READ_ONCE(tun->vnet_hash.flags);
+> +	struct virtio_net_hash hash;
+>  	u16 ret;
+>  
+> +	if (vnet_hash_flags & (TUN_VNET_HASH_RSS | TUN_VNET_HASH_REPORT)) {
+> +		virtio_net_hash(skb, READ_ONCE(tun->vnet_hash.types),
+> +				tun->vnet_hash_key, &hash);
+> +
+
+What are all these READ_ONCE things doing?
+E.g. you seem to be very content to have tun->vnet_hash.types read twice apparently?
+This is volatile which basically breaks all compiler's attempts
+to optimize code - needs to be used judiciously.
+
+
+
+> +		skb->tun_vnet_hash = true;
+> +		qdisc_skb_cb(skb)->tun_vnet_hash_value = hash.value;
+> +		qdisc_skb_cb(skb)->tun_vnet_hash_report = hash.report;
+> +	}
+> +
+>  	rcu_read_lock();
+>  	if (rcu_dereference(tun->steering_prog))
+>  		ret = tun_ebpf_select_queue(tun, skb);
+> +	else if (vnet_hash_flags & TUN_VNET_HASH_RSS)
+> +		ret = tun_vnet_select_queue(tun, skb);
+>  	else
+>  		ret = tun_automq_select_queue(tun, skb);
+>  	rcu_read_unlock();
+> @@ -2088,10 +2139,15 @@ static ssize_t tun_put_user(struct tun_struct *tun,
+>  			    struct iov_iter *iter)
+>  {
+>  	struct tun_pi pi = { 0, skb->protocol };
+> +	struct virtio_net_hash vnet_hash = {
+> +		.value = qdisc_skb_cb(skb)->tun_vnet_hash_value,
+> +		.report = qdisc_skb_cb(skb)->tun_vnet_hash_report
+> +	};
+>  	ssize_t total;
+>  	int vlan_offset = 0;
+>  	int vlan_hlen = 0;
+>  	int vnet_hdr_sz = 0;
+> +	size_t vnet_hdr_content_sz;
+>  
+>  	if (skb_vlan_tag_present(skb))
+>  		vlan_hlen = VLAN_HLEN;
+> @@ -2116,31 +2172,49 @@ static ssize_t tun_put_user(struct tun_struct *tun,
+>  	}
+>  
+>  	if (vnet_hdr_sz) {
+> -		struct virtio_net_hdr gso;
+> +		union {
+> +			struct virtio_net_hdr hdr;
+> +			struct virtio_net_hdr_v1_hash v1_hash_hdr;
+> +		} hdr;
+> +		int ret;
+>  
+>  		if (iov_iter_count(iter) < vnet_hdr_sz)
+>  			return -EINVAL;
+>  
+> -		if (virtio_net_hdr_from_skb(skb, &gso,
+> -					    tun_is_little_endian(tun), true,
+> -					    vlan_hlen)) {
+> +		if ((READ_ONCE(tun->vnet_hash.flags) & TUN_VNET_HASH_REPORT) &&
+> +		    vnet_hdr_sz >= sizeof(hdr.v1_hash_hdr) &&
+> +		    skb->tun_vnet_hash) {
+> +			vnet_hdr_content_sz = sizeof(hdr.v1_hash_hdr);
+> +			ret = virtio_net_hdr_v1_hash_from_skb(skb,
+> +							      &hdr.v1_hash_hdr,
+> +							      true,
+> +							      vlan_hlen,
+> +							      &vnet_hash);
+> +		} else {
+> +			vnet_hdr_content_sz = sizeof(hdr.hdr);
+> +			ret = virtio_net_hdr_from_skb(skb, &hdr.hdr,
+> +						      tun_is_little_endian(tun),
+> +						      true, vlan_hlen);
+> +		}
+> +
+> +		if (ret) {
+>  			struct skb_shared_info *sinfo = skb_shinfo(skb);
+>  			pr_err("unexpected GSO type: "
+>  			       "0x%x, gso_size %d, hdr_len %d\n",
+> -			       sinfo->gso_type, tun16_to_cpu(tun, gso.gso_size),
+> -			       tun16_to_cpu(tun, gso.hdr_len));
+> +			       sinfo->gso_type, tun16_to_cpu(tun, hdr.hdr.gso_size),
+> +			       tun16_to_cpu(tun, hdr.hdr.hdr_len));
+>  			print_hex_dump(KERN_ERR, "tun: ",
+>  				       DUMP_PREFIX_NONE,
+>  				       16, 1, skb->head,
+> -				       min((int)tun16_to_cpu(tun, gso.hdr_len), 64), true);
+> +				       min((int)tun16_to_cpu(tun, hdr.hdr.hdr_len), 64), true);
+>  			WARN_ON_ONCE(1);
+>  			return -EINVAL;
+>  		}
+>  
+> -		if (copy_to_iter(&gso, sizeof(gso), iter) != sizeof(gso))
+> +		if (copy_to_iter(&hdr, vnet_hdr_content_sz, iter) != vnet_hdr_content_sz)
+>  			return -EFAULT;
+>  
+> -		iov_iter_advance(iter, vnet_hdr_sz - sizeof(gso));
+> +		iov_iter_advance(iter, vnet_hdr_sz - vnet_hdr_content_sz);
+>  	}
+>  
+>  	if (vlan_hlen) {
+> @@ -3007,24 +3081,27 @@ static int tun_set_queue(struct file *file, struct ifreq *ifr)
+>  	return ret;
+>  }
+>  
+> -static int tun_set_ebpf(struct tun_struct *tun, struct tun_prog __rcu **prog_p,
+> -			void __user *data)
+> +static struct bpf_prog *tun_set_ebpf(struct tun_struct *tun,
+> +				     struct tun_prog __rcu **prog_p,
+> +				     void __user *data)
+>  {
+>  	struct bpf_prog *prog;
+>  	int fd;
+> +	int ret;
+>  
+>  	if (copy_from_user(&fd, data, sizeof(fd)))
+> -		return -EFAULT;
+> +		return ERR_PTR(-EFAULT);
+>  
+>  	if (fd == -1) {
+>  		prog = NULL;
+>  	} else {
+>  		prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SOCKET_FILTER);
+>  		if (IS_ERR(prog))
+> -			return PTR_ERR(prog);
+> +			return prog;
+>  	}
+>  
+> -	return __tun_set_ebpf(tun, prog_p, prog);
+> +	ret = __tun_set_ebpf(tun, prog_p, prog);
+> +	return ret ? ERR_PTR(ret) : prog;
+>  }
+>  
+>  /* Return correct value for tun->dev->addr_len based on tun->dev->type. */
+> @@ -3082,6 +3159,11 @@ static long __tun_chr_ioctl(struct file *file, unsigned int cmd,
+>  	int le;
+>  	int ret;
+>  	bool do_notify = false;
+> +	struct bpf_prog *bpf_ret;
+> +	struct tun_vnet_hash vnet_hash;
+> +	u16 vnet_hash_indirection_table[TUN_VNET_HASH_MAX_INDIRECTION_TABLE_LENGTH];
+> +	u8 vnet_hash_key[TUN_VNET_HASH_MAX_KEY_SIZE];
+> +	size_t len;
+>  
+>  	if (cmd == TUNSETIFF || cmd == TUNSETQUEUE ||
+>  	    (_IOC_TYPE(cmd) == SOCK_IOC_TYPE && cmd != SIOCGSKNS)) {
+> @@ -3295,7 +3377,10 @@ static long __tun_chr_ioctl(struct file *file, unsigned int cmd,
+>  			ret = -EFAULT;
+>  			break;
+>  		}
+> -		if (vnet_hdr_sz < (int)sizeof(struct virtio_net_hdr)) {
+> +		if (vnet_hdr_sz <
+> +		    (int)((tun->vnet_hash.flags & TUN_VNET_HASH_REPORT) ?
+> +			  sizeof(struct virtio_net_hdr_v1_hash) :
+> +			  sizeof(struct virtio_net_hdr))) {
+>  			ret = -EINVAL;
+>  			break;
+>  		}
+> @@ -3314,10 +3399,16 @@ static long __tun_chr_ioctl(struct file *file, unsigned int cmd,
+>  			ret = -EFAULT;
+>  			break;
+>  		}
+> -		if (le)
+> +		if (le) {
+>  			tun->flags |= TUN_VNET_LE;
+> -		else
+> +		} else {
+> +			if (!tun_legacy_is_little_endian(tun)) {
+> +				ret = -EINVAL;
+> +				break;
+> +			}
+> +
+>  			tun->flags &= ~TUN_VNET_LE;
+> +		}
+>  		break;
+>  
+>  	case TUNGETVNETBE:
+> @@ -3360,11 +3451,17 @@ static long __tun_chr_ioctl(struct file *file, unsigned int cmd,
+>  		break;
+>  
+>  	case TUNSETSTEERINGEBPF:
+> -		ret = tun_set_ebpf(tun, &tun->steering_prog, argp);
+> +		bpf_ret = tun_set_ebpf(tun, &tun->steering_prog, argp);
+> +		if (IS_ERR(bpf_ret))
+> +			ret = PTR_ERR(bpf_ret);
+> +		else if (bpf_ret)
+> +			tun->vnet_hash.flags &= ~TUN_VNET_HASH_RSS;
+
+what is this doing?
+
+>  		break;
+>  
+>  	case TUNSETFILTEREBPF:
+> -		ret = tun_set_ebpf(tun, &tun->filter_prog, argp);
+> +		bpf_ret = tun_set_ebpf(tun, &tun->filter_prog, argp);
+> +		if (IS_ERR(bpf_ret))
+> +			ret = PTR_ERR(bpf_ret);
+>  		break;
+>  
+>  	case TUNSETCARRIER:
+> @@ -3382,6 +3479,54 @@ static long __tun_chr_ioctl(struct file *file, unsigned int cmd,
+>  		ret = open_related_ns(&net->ns, get_net_ns);
+>  		break;
+>  
+> +	case TUNGETVNETHASHCAP:
+> +		if (copy_to_user(argp, &tun_vnet_hash_cap,
+> +				 sizeof(tun_vnet_hash_cap)))
+> +			ret = -EFAULT;
+> +		break;
+> +
+> +	case TUNSETVNETHASH:
+> +		len = sizeof(vnet_hash);
+> +		if (copy_from_user(&vnet_hash, argp, len)) {
+> +			ret = -EFAULT;
+> +			break;
+> +		}
+
+
+what if flags has some bits set you don't know how to handle?
+should these be ignored as now or cause a failure?
+these decisions all affect uapi.
+
+> +
+> +		if (((vnet_hash.flags & TUN_VNET_HASH_REPORT) &&
+> +		     (tun->vnet_hdr_sz < sizeof(struct virtio_net_hdr_v1_hash) ||
+> +		      !tun_is_little_endian(tun))) ||
+> +		     vnet_hash.indirection_table_mask >=
+> +		     TUN_VNET_HASH_MAX_INDIRECTION_TABLE_LENGTH) {
+> +			ret = -EINVAL;
+> +			break;
+> +		}
+
+Given this is later used to index within an array one has to
+be very careful about spectre things here, which this code isn't.
+
+
+> +
+> +		argp = (u8 __user *)argp + len;
+> +		len = (vnet_hash.indirection_table_mask + 1) * 2;
+
+comment pointer math tricks like this extensively please.
+
+> +		if (copy_from_user(vnet_hash_indirection_table, argp, len)) {
+> +			ret = -EFAULT;
+> +			break;
+> +		}
+> +
+> +		argp = (u8 __user *)argp + len;
+> +		len = virtio_net_hash_key_length(vnet_hash.types);
+> +
+> +		if (copy_from_user(vnet_hash_key, argp, len)) {
+> +			ret = -EFAULT;
+> +			break;
+> +		}
+> +
+> +		tun->vnet_hash = vnet_hash;
+> +		memcpy(tun->vnet_hash_indirection_table,
+> +		       vnet_hash_indirection_table,
+> +		       (vnet_hash.indirection_table_mask + 1) * 2);
+> +		memcpy(tun->vnet_hash_key, vnet_hash_key, len);
+> +
+> +		if (vnet_hash.flags & TUN_VNET_HASH_RSS)
+> +			__tun_set_ebpf(tun, &tun->steering_prog, NULL);
+> +
+> +		break;
+> +
+>  	default:
+>  		ret = -EINVAL;
+>  		break;
+> diff --git a/include/uapi/linux/if_tun.h b/include/uapi/linux/if_tun.h
+> index 287cdc81c939..dc591cd897c8 100644
+> --- a/include/uapi/linux/if_tun.h
+> +++ b/include/uapi/linux/if_tun.h
+> @@ -61,6 +61,8 @@
+>  #define TUNSETFILTEREBPF _IOR('T', 225, int)
+>  #define TUNSETCARRIER _IOW('T', 226, int)
+>  #define TUNGETDEVNETNS _IO('T', 227)
+> +#define TUNGETVNETHASHCAP _IO('T', 228)
+> +#define TUNSETVNETHASH _IOW('T', 229, unsigned int)
+>  
+>  /* TUNSETIFF ifr flags */
+>  #define IFF_TUN		0x0001
+> @@ -115,4 +117,18 @@ struct tun_filter {
+>  	__u8   addr[][ETH_ALEN];
+>  };
+>  
+> +struct tun_vnet_hash_cap {
+> +	__u16 max_indirection_table_length;
+> +	__u32 types;
+> +};
+> +
+
+There's hidden padding in this struct - not good, copy
+will leak kernel info out.
+
+
+
+> +#define TUN_VNET_HASH_RSS	0x01
+> +#define TUN_VNET_HASH_REPORT	0x02
+
+
+Do you intend to add more flags down the road?
+How will userspace know what is supported?
+
+> +struct tun_vnet_hash {
+> +	__u8 flags;
+> +	__u32 types;
+> +	__u16 indirection_table_mask;
+> +	__u16 unclassified_queue;
+> +};
+> +
+
+Padding here too. Best avoided.
+
+In any case, document UAPI please.
+
+
+>  #endif /* _UAPI__IF_TUN_H */
+> -- 
+> 2.42.0
+
