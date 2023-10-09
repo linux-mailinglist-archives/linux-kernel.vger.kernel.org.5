@@ -2,45 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0F8D7BD6AE
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8214F7BD6CD
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:23:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345784AbjJIJWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 05:22:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36364 "EHLO
+        id S1345959AbjJIJXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 05:23:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345745AbjJIJWk (ORCPT
+        with ESMTP id S1345892AbjJIJW6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 05:22:40 -0400
+        Mon, 9 Oct 2023 05:22:58 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C312C6
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:22:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 635C0114
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:22:47 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qpmTF-0006uJ-JM; Mon, 09 Oct 2023 11:22:37 +0200
+        id 1qpmTF-0006uV-Pq; Mon, 09 Oct 2023 11:22:37 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qpmTF-000NXC-6U; Mon, 09 Oct 2023 11:22:37 +0200
+        id 1qpmTF-000NXG-Cw; Mon, 09 Oct 2023 11:22:37 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1qpmTE-00C4pf-Tc; Mon, 09 Oct 2023 11:22:36 +0200
+        id 1qpmTF-00C4pj-3q; Mon, 09 Oct 2023 11:22:37 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 14/20] pinctrl: tb10x: Convert to platform remove callback returning void
-Date:   Mon,  9 Oct 2023 10:38:50 +0200
-Message-Id: <20231009083856.222030-15-u.kleine-koenig@pengutronix.de>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 15/20] pinctrl: qcom: spmi-gpio: Convert to platform remove callback returning void
+Date:   Mon,  9 Oct 2023 10:38:51 +0200
+Message-Id: <20231009083856.222030-16-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231009083856.222030-1-u.kleine-koenig@pengutronix.de>
 References: <20231009083856.222030-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1762; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=DKr3s0/IU/9sggic3G90VxKYmkp4LOaBG2R8uqmIaBI=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlI7wPHaUEnsZbOMDT1bwDG9HhpL7Mrhfl6NcXM XP1WUpvkImJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZSO8DwAKCRCPgPtYfRL+ TqOkB/4+mvvSTSCbIkonA1f363duBm9ycbAcAL+Qj6k7tBYZT9yRJi1bt8NK7NGDgWUOJRKVDVt iU29qId7bbp5GSMZsDVj3RCQVISSzx8K5mGddUCpF2HCbJ3GsMh2Y1nq6DeWLAy4qEYqp/8jUAo Kj6wLoJaD5pyOuDOqZ0AJBhGbmNlUQcNz0EWkeqkVT/LGyTy9Xc94XQZZ1vQL2+vdRinKxTRvnR TPNDuXVMA/cYQOUvAlmTVC20vg23+XoxtE2AIL4hFxRBuvBvcJcU44n0zQZ5MeLBdomrnV1ZRPo 633k1yS3UHwHRNGH5q7O7VW3j6jHRdGca620Oyg9s6g7fN9Q
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1785; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=iUS4SwEkb7r81ttsiZuCAWGZ8BPSgfZwboQcZSPLTn8=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlI7wQMOny6ci1vflQLeBPNgnGEOvIztvOzj2IO go4zjz8LpGJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZSO8EAAKCRCPgPtYfRL+ TqlWB/4icqIp1ueWLdYJ0x2M3biO6YlUZ53y9wFVw/r0HWXI3KfVN2PuVBFCBgXpHxAcQ/8x746 yw1fM8SiMBH/xSuk4oJIqkenN3SNZo1LdJRh1D9DcAV550NqhNOY+cS2Psv5VeSxT9BYb/BqEKl EnLZSSIG2lqHuv7eZKZDewzkP0tsLOJBoIQqoEQIps7nrfgwokxfv6AH05yCxDY4P7e75IARECZ eaBLe8Ybr9RrvVOp69tdQ6SDnYACvUbgFYRQDsGYfJlgg8oWaEsY3PWNCSmJV1c0II1djf9W4F5 7ux4ZDhGCgaDR90Gg1HoHUKVrS5yyFDBWkm8x+Ami2TztYzH
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -71,37 +75,36 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/pinctrl/pinctrl-tb10x.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/pinctrl/qcom/pinctrl-spmi-gpio.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pinctrl/pinctrl-tb10x.c b/drivers/pinctrl/pinctrl-tb10x.c
-index ab49bd708969..c3b76e6511ac 100644
---- a/drivers/pinctrl/pinctrl-tb10x.c
-+++ b/drivers/pinctrl/pinctrl-tb10x.c
-@@ -804,13 +804,11 @@ static int tb10x_pinctrl_probe(struct platform_device *pdev)
+diff --git a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
+index deded9c6fd7d..f4e2c88a7c82 100644
+--- a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
++++ b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
+@@ -1185,12 +1185,11 @@ static int pmic_gpio_probe(struct platform_device *pdev)
  	return ret;
  }
  
--static int tb10x_pinctrl_remove(struct platform_device *pdev)
-+static void tb10x_pinctrl_remove(struct platform_device *pdev)
+-static int pmic_gpio_remove(struct platform_device *pdev)
++static void pmic_gpio_remove(struct platform_device *pdev)
  {
- 	struct tb10x_pinctrl *state = platform_get_drvdata(pdev);
+ 	struct pmic_gpio_state *state = platform_get_drvdata(pdev);
  
- 	mutex_destroy(&state->mutex);
--
+ 	gpiochip_remove(&state->chip);
 -	return 0;
  }
  
+ static const struct of_device_id pmic_gpio_of_match[] = {
+@@ -1265,7 +1264,7 @@ static struct platform_driver pmic_gpio_driver = {
+ 		   .of_match_table = pmic_gpio_of_match,
+ 	},
+ 	.probe	= pmic_gpio_probe,
+-	.remove = pmic_gpio_remove,
++	.remove_new = pmic_gpio_remove,
+ };
  
-@@ -822,7 +820,7 @@ MODULE_DEVICE_TABLE(of, tb10x_pinctrl_dt_ids);
- 
- static struct platform_driver tb10x_pinctrl_pdrv = {
- 	.probe   = tb10x_pinctrl_probe,
--	.remove  = tb10x_pinctrl_remove,
-+	.remove_new = tb10x_pinctrl_remove,
- 	.driver  = {
- 		.name  = "tb10x_pinctrl",
- 		.of_match_table = of_match_ptr(tb10x_pinctrl_dt_ids),
+ module_platform_driver(pmic_gpio_driver);
 -- 
 2.40.1
 
