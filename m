@@ -2,215 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBC87BD6EC
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A564A7BD6F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345802AbjJIJ0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 05:26:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38778 "EHLO
+        id S1345702AbjJIJ1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 05:27:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346028AbjJIJ0F (ORCPT
+        with ESMTP id S1345862AbjJIJ05 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 05:26:05 -0400
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05144172E
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:24:51 -0700 (PDT)
-Received: by mail-ua1-x929.google.com with SMTP id a1e0cc1a2514c-7b0ec7417bdso1260158241.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 02:24:51 -0700 (PDT)
+        Mon, 9 Oct 2023 05:26:57 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30993D7F
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:25:44 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-405361bba99so39253795e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 02:25:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696843490; x=1697448290; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UF4HHtAjsWoW8COUfPjIq04oTy0Y9WnIOpm6XrK+h+s=;
-        b=YS7xzKT46ZMifl9oguA8263a5DF7FCAM9sN3edMXX9XJ7+Q3rOFpuGhmM+bMuezBZY
-         g8MDqQBksM/+6adprZMFR2fUwDOK0C4JTiB286ouhont4CIiB81GlkK+kS/HcOLpYDWG
-         QWlwORx/6+y1m38t/Q1u1NBP33amrg18IJMbH+OLK1Mbt8yi2mPoE+PR5WBpo3B8elkU
-         JIS9qpfGhM03SRcslNE1tIswUXFhD4QwLeD59nHgCy9GgBUrfSDy6ihgGKHBRi9WXQ1N
-         VAjqVwlaMq6sbE+EJK9vDKTEgH4myDWeNlAJ1RHv9h7qUAhg6ol8Vz3IEDJT/bYdl9br
-         pzCA==
+        d=linaro.org; s=google; t=1696843542; x=1697448342; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tfQehytd154kLft/C6yCF4s9r73XIYt4SKOC9+YlYHc=;
+        b=me4D9fpOnvg/FdEIxiR3mlEN7mDLOlqnbd/B1FKvBMfqiN2o7qLdp8kUvTcYyqKSFu
+         2B5un7CywJkjneGpPUUxzIjnXlA63NZhINmuMi9Uzniu7WAi5hKmZypfWjddz1+Hcekj
+         sBswRTwSwExpoK9yaZch/qfsmKGUGPvtdvJikYqG7HdWld8EcRdw+Ysp+xgkaexxSgiG
+         5sMPSYdOaWlHvc3LHfmG+mA71+f29LeJ/6PlCheQxyNqpx8qEVBinUPVuKG0PPnSUud8
+         iItx9BhwqMmaMyeC5Tl+3tCjUWlG392Mr6rhHLxlmk94rOvGsQT0c7tffDY1Ypcbs8SV
+         ExGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696843490; x=1697448290;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UF4HHtAjsWoW8COUfPjIq04oTy0Y9WnIOpm6XrK+h+s=;
-        b=ofy/Wz8NmneUe4gZOjUFrHtTM6/DX1PBhIhWKfXuOL1iZN7SKjQmUdfNdpPcvSkrz3
-         mDFn/QdV1GzmUb1m0bWAYimuu6VyPBVjGUlhShWPjej45zTa1nbq92MZhK8pJf2yzLMY
-         5L+MKc1HXX1cfilACWTM7Q3Yk7h4U510YxmE6SfI+DksjAYhBb/XMDKimUMpwjXym6Hk
-         30EoCwguMkwf9S0oyuQZ6EwKjJRW0SKPPRzfffidSSdnQlC5ieYgqUyqHOm9vdH8LkJ2
-         eZ89joe0NTB6E4aUozSSDml5Uu4gmCqGI1ZOJSI4DeDIgJO8m9Z05eOMR4N0sKdpk5ld
-         bbcw==
-X-Gm-Message-State: AOJu0Yw/jhO/rkmLhPblQjRu9b9NRCd3g58M7K8hy+QKveudkMlMiL9O
-        VsDXFGDsdlcWBDbv5NHwQ1U2gmYMjOlgaBjnNRnbEw==
-X-Google-Smtp-Source: AGHT+IGgWAVLAZj1yB/wjLE5o7mTLCnmR/2SrPqFD4z1Q5u8A8TRq2SpTPP6kwJLE+IAk/1YdShomytIZ8BM7R6Qo5g=
-X-Received: by 2002:a67:fc86:0:b0:452:7380:5517 with SMTP id
- x6-20020a67fc86000000b0045273805517mr13662328vsp.32.1696843490622; Mon, 09
- Oct 2023 02:24:50 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696843542; x=1697448342;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tfQehytd154kLft/C6yCF4s9r73XIYt4SKOC9+YlYHc=;
+        b=vS+yZvWb/xFjPeaURyDQVzV3SQDlYNNM4gJ4Y28O6euumQTbjnc3REKEsrXre9FrIq
+         VuFFEljM2msgeRjQZ0CwOGG0CtwA+6c7vyWfM+7vgVEOldD1gwuqn7Tgw+3Owm6iJEQh
+         rGAyCaV3LuzKchgCri2jbHNfgjwOfhAaJO/LyGqNIm7+Au4cl8WFY8Kw6EBUTL4B1O19
+         ENXC0m+7QcxKhiSluRHWf/skMecvtVVbBRNGDRspO+MzwDLhJ966Bsp7k1jisCJN6lGB
+         0YtNq+kwpg6JkKBHaoZwaKygDH5/G6m77r7IybUcLswRCL81BL6gsZhogXPPBa0OVzIx
+         jsuA==
+X-Gm-Message-State: AOJu0Yz0l5r0tVK1Ihj4ezF8F4DmyGL1EpIE2DhqWFJ9Ptw98vyLObHL
+        1DBl2M1J0FMVNhCRMG8GGdBL0A==
+X-Google-Smtp-Source: AGHT+IFlldmcM+fIiLceHqDyQnRJB9r7mDcTQpF5n0Z7h8ddwL3MgPBGAo6qS22nswBhPvB1bwB5PA==
+X-Received: by 2002:a5d:484a:0:b0:320:1d1:71c4 with SMTP id n10-20020a5d484a000000b0032001d171c4mr13600684wrs.23.1696843542542;
+        Mon, 09 Oct 2023 02:25:42 -0700 (PDT)
+Received: from [192.168.100.102] ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id i17-20020adffdd1000000b00326c952716esm8979393wrs.61.2023.10.09.02.25.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Oct 2023 02:25:42 -0700 (PDT)
+Message-ID: <3edb10ab-2c14-4750-962c-c0b874c34b88@linaro.org>
+Date:   Mon, 9 Oct 2023 10:25:41 +0100
 MIME-Version: 1.0
-References: <20231007170448.505487-1-masahiroy@kernel.org> <CAFA6WYNqe-e_ZqbxXW5BcmMOxQr42mdJV-o4W4U4XcOsPe0P+Q@mail.gmail.com>
- <CAK7LNASAPYAUQsKEp9Z-Bm=wJgb_Cebg02K26XGNz=j2Rgajag@mail.gmail.com>
-In-Reply-To: <CAK7LNASAPYAUQsKEp9Z-Bm=wJgb_Cebg02K26XGNz=j2Rgajag@mail.gmail.com>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Mon, 9 Oct 2023 14:54:39 +0530
-Message-ID: <CAFA6WYNLvCF9NXvSOZNGJV2c5W_ZG11iq3Sy7Lr=ismD2ckiYw@mail.gmail.com>
-Subject: Re: [PATCH 1/5] modpost: fix tee MODULE_DEVICE_TABLE built on big
- endian host
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: build failure after merge of the v4l-dvb-next tree
+Content-Language: en-US
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20231009110852.36b0bd42@canb.auug.org.au>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20231009110852.36b0bd42@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Oct 2023 at 12:27, Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Mon, Oct 9, 2023 at 3:27=E2=80=AFPM Sumit Garg <sumit.garg@linaro.org>=
- wrote:
-> >
-> > Hi Masahiro,
-> >
-> > On Sat, 7 Oct 2023 at 22:34, Masahiro Yamada <masahiroy@kernel.org> wro=
-te:
-> > >
-> > > When MODULE_DEVICE_TABLE(tee, ) is built on a host with a different
-> > > endianness from the target architecture, it results in an incorrect
-> > > MODULE_ALIAS().
-> > >
-> > > For example, see a case where drivers/char/hw_random/optee-rng.c
-> > > is built as a module.
-> > >
-> > > If you build it on a little endian host, you will get the correct
-> > > MODULE_ALIAS:
-> > >
-> > >     $ grep MODULE_ALIAS drivers/char/hw_random/optee-rng.mod.c
-> > >     MODULE_ALIAS("tee:ab7a617c-b8e7-4d8f-8301-d09b61036b64*");
-> > >
-> > > However, if you build it on a big endian host, you will get a wrong
-> > > MODULE_ALIAS:
-> > >
-> > >     $ grep MODULE_ALIAS drivers/char/hw_random/optee-rng.mod.c
-> > >     MODULE_ALIAS("tee:646b0361-9bd0-0183-8f4d-e7b87c617aab*");
-> > >
-> > > This issue has been unnoticed because the ARM kernel is most likely b=
-uilt
-> > > on a little endian host (cross-build on x86 or native-build on ARM).
-> > >
-> > > The uuid field must not be reversed because uuid_t is an array of __u=
-8.
-> > >
-> >
-> > To me it wasn't obvious that DEF_FIELD() has certain endianness limitat=
-ions.
-> >
-> > > Fixes: 0fc1db9d1059 ("tee: add bus driver framework for TEE based dev=
-ices")
-> > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > > ---
-> > >
-> > >  scripts/mod/file2alias.c | 10 +++++-----
-> > >  1 file changed, 5 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c
-> > > index 7056751c29b1..70bf6a2f585c 100644
-> > > --- a/scripts/mod/file2alias.c
-> > > +++ b/scripts/mod/file2alias.c
-> > > @@ -1348,13 +1348,13 @@ static int do_typec_entry(const char *filenam=
-e, void *symval, char *alias)
-> > >  /* Looks like: tee:uuid */
-> > >  static int do_tee_entry(const char *filename, void *symval, char *al=
-ias)
-> > >  {
-> > > -       DEF_FIELD(symval, tee_client_device_id, uuid);
-> >
-> > As you have mentioned in patch #3: the limitations of TO_NATIVE(), if
-> > you can update comments for DEF_FIELD() as well to make it clear that
-> > it doesn't support byte arrays/strings would be helpful. I think the
-> > following check that you have introduced in patch #3 can still be
-> > bypassed for byte arrays/strings.
-> >
-> > + _Static_assert(sizeof(x) =3D=3D 1 || sizeof(x) =3D=3D 2 || \
-> > +       sizeof(x) =3D=3D 4 || sizeof(x) =3D=3D 8, "bug");
->
->
->
->
-> I am afraid you missed the point.
->
-> bswap_2, bswap_4, bswap_8 do not take a pointer.
->
-> If you pass an array or a string,
-> it will result in a build error
-> due to the compiler's prototype checking.
->
-> The kbuild test robot will catch a build error anyway.
->
+On 09/10/2023 01:08, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the v4l-dvb-next tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+> 
+> drivers/media/platform/qcom/camss/camss.c: In function 'camss_probe':
+> drivers/media/platform/qcom/camss/camss.c:1634:17: error: label 'err_cleanup' used but not defined
+>   1634 |                 goto err_cleanup;
+>        |                 ^~~~
+> 
+> Caused by commits
+> 
+>    7405116519ad ("media: qcom: camss: Fix pm_domain_on sequence in probe")
+>    b278080a89f4 ("media: qcom: camss: Fix V4L2 async notifier error path")
+> 
+> interacting with commit
+> 
+>    2c1bae27df78 ("media: qcom: camss: Fix pm_domain_on sequence in probe")
+> 
+> from the v4l-dvb tree.
+> 
+> I have applied the following merge resolution patch for today.
+> 
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Mon, 9 Oct 2023 11:05:26 +1100
+> Subject: [PATCH] v4l-dvb-next: fix up for bad automatic merge.
+> 
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>   drivers/media/platform/qcom/camss/camss.c | 6 ------
+>   1 file changed, 6 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
+> index 38d20b12cdd8..8e78dd8d5961 100644
+> --- a/drivers/media/platform/qcom/camss/camss.c
+> +++ b/drivers/media/platform/qcom/camss/camss.c
+> @@ -1628,12 +1628,6 @@ static int camss_probe(struct platform_device *pdev)
+>   		return ret;
+>   	}
+>   
+> -	ret = camss_configure_pd(camss);
+> -	if (ret < 0) {
+> -		dev_err(dev, "Failed to configure power domains: %d\n", ret);
+> -		goto err_cleanup;
+> -	}
+> -
+>   	ret = camss_init_subdevices(camss);
+>   	if (ret < 0)
+>   		goto err_genpd_cleanup;
 
-I see your point.
+commit: f69791c39745e ("media: qcom: camss: Fix genpd cleanup") already 
+appears in linux-next/master @ next-20231009 which commit: 2c1bae27df78 
+("media: qcom: camss: Fix pm_domain_on sequence in probe") depends on.
 
->
-> "You cannot build it in the first place"
-> is better than a comment.
->
+Already looks resolved.
 
-That's fine with me as long as it's a build problem.
+---
+bod
 
--Sumit
 
->
->
->
->
->
->
->
->
->
-> > BTW, for this fix feel free to add:
-> >
-> > Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
-> >
-> > -Sumit
-> >
-> > > +       DEF_FIELD_ADDR(symval, tee_client_device_id, uuid);
-> > >
-> > >         sprintf(alias, "tee:%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%0=
-2x-%02x%02x%02x%02x%02x%02x",
-> > > -               uuid.b[0], uuid.b[1], uuid.b[2], uuid.b[3], uuid.b[4]=
-,
-> > > -               uuid.b[5], uuid.b[6], uuid.b[7], uuid.b[8], uuid.b[9]=
-,
-> > > -               uuid.b[10], uuid.b[11], uuid.b[12], uuid.b[13], uuid.=
-b[14],
-> > > -               uuid.b[15]);
-> > > +               uuid->b[0], uuid->b[1], uuid->b[2], uuid->b[3], uuid-=
->b[4],
-> > > +               uuid->b[5], uuid->b[6], uuid->b[7], uuid->b[8], uuid-=
->b[9],
-> > > +               uuid->b[10], uuid->b[11], uuid->b[12], uuid->b[13], u=
-uid->b[14],
-> > > +               uuid->b[15]);
-> > >
-> > >         add_wildcard(alias);
-> > >         return 1;
-> > > --
-> > > 2.39.2
-> > >
->
->
->
-> --
-> Best Regards
-> Masahiro Yamada
