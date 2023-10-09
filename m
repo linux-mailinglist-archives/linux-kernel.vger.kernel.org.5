@@ -2,418 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 656507BE27A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 16:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 314A77BE294
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 16:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377669AbjJIOUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 10:20:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52274 "EHLO
+        id S1377754AbjJIOV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 10:21:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377618AbjJIOTq (ORCPT
+        with ESMTP id S1377705AbjJIOVJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 10:19:46 -0400
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF1A9C
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 07:19:40 -0700 (PDT)
-Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3af609cb0bdso5866468b6e.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 07:19:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696861180; x=1697465980;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0TGWQAlp8UuYQhA52ZWaujZvCAShLjeIRZ1glRL7WKI=;
-        b=ZzckROzWtqtdEYh1YhZxXg/c7AfdFm71OScc5EDEHsWSqCgYljWqZkGCtFeHh0WSJr
-         Yg13dRdGA3n7CaqXk8NUmfefZFwIushWU4sDbSu4/KLQryhfHDLOy8ZH8FIbMI0/aMsH
-         11c4MGD6k+oeam/2ZqS8tWXC1VCf5U7FVYVYU/lufv4iS+MuJn0jiCqYyO16/dY5O7Zn
-         wX7tQUOvAc4pRD4Ndbbt+9gus41EA/pfRjz3eeOF5gZpuW7JZdszvwGBAM344WeNl10N
-         BangJ4lAHsRLgQmcMz6xqCwbdlkeGOMDuiDt+6X5FmeKza3p0sE59l17y+EFuMs+gEDL
-         9MZQ==
-X-Gm-Message-State: AOJu0YxZpYQASm2T0MNaQQ+3i0Mja0PMyc7naJWgI3F/36Dx9bxAqxJ5
-        BqaxxUaxpY/CsQ7tDUMlZe1anS1WER9HcKga/xw5z4FsqnIg
-X-Google-Smtp-Source: AGHT+IF8k7g0eSiSkI0Ync143FSHXVQo54adV+KV5FBCMFaXl+hqfgqHiK68ktgDtgtIhiy6neQ2zCz/2mSRkRXFkrZ/R/d9uXLc
+        Mon, 9 Oct 2023 10:21:09 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 942E2D4D;
+        Mon,  9 Oct 2023 07:20:40 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 399DvUFo009578;
+        Mon, 9 Oct 2023 14:20:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=7qdfQioX1zXubJuPh0HpCefHEHuSrBYDOMSQ4QrcvWM=;
+ b=aerRDdPVoitYbuaf7LeSir/QWWhVEh0vffpdXcP9vyqKzFp6EqGVV2Nkr+1s51p8WxP6
+ /8xj/SE1BR6usNYMhLuzs+/7DwW8O8JeaDfdV8XI9oXVyiinjc70C0h8Ervlf1yO+8Nb
+ 3tH5fCqayL89020+0vvYSl2/kCxnfy7sIlfkX28qCYp7IHRCJe8+jky3fR+O0BOvPN4R
+ zvzVk6m5+O1uZNpNb8PrMRfe122ETlgMeDULd6OjhLwu+KO15HTimWamtKUZJppeW703
+ zNFkUD2dsSULhjn3M6lz8rMyQBe5HuJRqpWXBpSDrZh9lHJ69Oz4CTX/5wMPEHLK2FiP vg== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tkhx2jjdq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 09 Oct 2023 14:20:36 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 399EKLsx008053
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 9 Oct 2023 14:20:21 GMT
+Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Mon, 9 Oct 2023 07:20:16 -0700
+From:   Krishna Kurapati <quic_kriskura@quicinc.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
+        onathan Corbet <corbet@lwn.net>,
+        Linyu Yuan <quic_linyyuan@quicinc.com>
+CC:     <linux-usb@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_ppratap@quicinc.com>,
+        <quic_wcheng@quicinc.com>, <quic_jackp@quicinc.com>,
+        Krishna Kurapati <quic_kriskura@quicinc.com>
+Subject: [PATCH 1/2] Documentation: usb: Update NCM configfs parameters
+Date:   Mon, 9 Oct 2023 19:50:04 +0530
+Message-ID: <20231009142005.21338-1-quic_kriskura@quicinc.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:2190:b0:3a8:45f0:b83a with SMTP id
- be16-20020a056808219000b003a845f0b83amr6406561oib.5.1696861179851; Mon, 09
- Oct 2023 07:19:39 -0700 (PDT)
-Date:   Mon, 09 Oct 2023 07:19:39 -0700
-In-Reply-To: <20231009-leihgabe-abseilen-26e86d03f787@brauner>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000dbce480607494722@google.com>
-Subject: Re: [syzbot] [reiserfs?] possible deadlock in super_lock
-From:   syzbot <syzbot+062317ea1d0a6d5e29e7@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, brauner@kernel.org, chao@kernel.org,
-        daniel.vetter@ffwll.ch, hdanton@sina.com, jack@suse.cz,
-        jaegeuk@kernel.org, jinpu.wang@ionos.com,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mairacanal@riseup.net, mcanal@igalia.com,
-        reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        terrelln@fb.com, willy@infradead.org, yukuai3@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Xx960gByasl8Il6ueXmcyg3i4O4ybp_X
+X-Proofpoint-ORIG-GUID: Xx960gByasl8Il6ueXmcyg3i4O4ybp_X
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-09_12,2023-10-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 malwarescore=0 mlxscore=0 lowpriorityscore=0 phishscore=0
+ bulkscore=0 adultscore=0 priorityscore=1501 spamscore=0 mlxlogscore=688
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310090118
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Updateed NCM configfs parameters by adding max_segment_size
+property and describing its effect on MTU configuration of
+NCM interface.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-INFO: task hung in blkdev_put
+Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+---
+ Documentation/usb/gadget-testing.rst | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-INFO: task syz-executor.1:6676 blocked for more than 143 seconds.
-      Not tainted 6.6.0-rc5-syzkaller-gb6ab131813c2 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.1  state:D stack:0     pid:6676  ppid:6383   flags:0x00000005
-Call trace:
- __switch_to+0x320/0x754 arch/arm64/kernel/process.c:556
- context_switch kernel/sched/core.c:5382 [inline]
- __schedule+0x1364/0x23b4 kernel/sched/core.c:6695
- schedule+0xc4/0x170 kernel/sched/core.c:6771
- schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6830
- __mutex_lock_common+0xbd8/0x21a0 kernel/locking/mutex.c:679
- __mutex_lock kernel/locking/mutex.c:747 [inline]
- mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
- blkdev_put+0xec/0x740 block/bdev.c:884
- blkdev_release+0x84/0x9c block/fops.c:604
- __fput+0x324/0x7f8 fs/file_table.c:384
- __fput_sync+0x60/0x9c fs/file_table.c:465
- __do_sys_close fs/open.c:1572 [inline]
- __se_sys_close fs/open.c:1557 [inline]
- __arm64_sys_close+0x150/0x1e0 fs/open.c:1557
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-INFO: task syz-executor.2:6678 blocked for more than 143 seconds.
-      Not tainted 6.6.0-rc5-syzkaller-gb6ab131813c2 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.2  state:D stack:0     pid:6678  ppid:6377   flags:0x00000005
-Call trace:
- __switch_to+0x320/0x754 arch/arm64/kernel/process.c:556
- context_switch kernel/sched/core.c:5382 [inline]
- __schedule+0x1364/0x23b4 kernel/sched/core.c:6695
- schedule+0xc4/0x170 kernel/sched/core.c:6771
- schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6830
- __mutex_lock_common+0xbd8/0x21a0 kernel/locking/mutex.c:679
- __mutex_lock kernel/locking/mutex.c:747 [inline]
- mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
- blkdev_put+0xec/0x740 block/bdev.c:884
- blkdev_release+0x84/0x9c block/fops.c:604
- __fput+0x324/0x7f8 fs/file_table.c:384
- __fput_sync+0x60/0x9c fs/file_table.c:465
- __do_sys_close fs/open.c:1572 [inline]
- __se_sys_close fs/open.c:1557 [inline]
- __arm64_sys_close+0x150/0x1e0 fs/open.c:1557
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-INFO: task syz-executor.0:6682 blocked for more than 143 seconds.
-      Not tainted 6.6.0-rc5-syzkaller-gb6ab131813c2 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.0  state:D stack:0     pid:6682  ppid:6389   flags:0x0000000d
-Call trace:
- __switch_to+0x320/0x754 arch/arm64/kernel/process.c:556
- context_switch kernel/sched/core.c:5382 [inline]
- __schedule+0x1364/0x23b4 kernel/sched/core.c:6695
- schedule+0xc4/0x170 kernel/sched/core.c:6771
- schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6830
- __mutex_lock_common+0xbd8/0x21a0 kernel/locking/mutex.c:679
- __mutex_lock kernel/locking/mutex.c:747 [inline]
- mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
- bd_finish_claiming+0x218/0x3dc block/bdev.c:566
- blkdev_get_by_dev+0x3f4/0x55c block/bdev.c:799
- journal_init_dev fs/reiserfs/journal.c:2616 [inline]
- journal_init+0xb08/0x1e68 fs/reiserfs/journal.c:2783
- reiserfs_fill_super+0xd58/0x2058 fs/reiserfs/super.c:2029
- mount_bdev+0x1e8/0x2b4 fs/super.c:1629
- get_super_block+0x44/0x58 fs/reiserfs/super.c:2605
- legacy_get_tree+0xd4/0x16c fs/fs_context.c:638
- vfs_get_tree+0x90/0x288 fs/super.c:1750
- do_new_mount+0x25c/0x8c8 fs/namespace.c:3335
- path_mount+0x590/0xe04 fs/namespace.c:3662
- do_mount fs/namespace.c:3675 [inline]
- __do_sys_mount fs/namespace.c:3884 [inline]
- __se_sys_mount fs/namespace.c:3861 [inline]
- __arm64_sys_mount+0x45c/0x594 fs/namespace.c:3861
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-INFO: task syz-executor.3:6690 blocked for more than 143 seconds.
-      Not tainted 6.6.0-rc5-syzkaller-gb6ab131813c2 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.3  state:D stack:0     pid:6690  ppid:6373   flags:0x0000000d
-Call trace:
- __switch_to+0x320/0x754 arch/arm64/kernel/process.c:556
- context_switch kernel/sched/core.c:5382 [inline]
- __schedule+0x1364/0x23b4 kernel/sched/core.c:6695
- schedule+0xc4/0x170 kernel/sched/core.c:6771
- super_lock+0x23c/0x328 fs/super.c:134
- super_lock_shared fs/super.c:146 [inline]
- super_lock_shared_active fs/super.c:1431 [inline]
- fs_bdev_sync+0xa4/0x168 fs/super.c:1466
- blkdev_flushbuf block/ioctl.c:372 [inline]
- blkdev_common_ioctl+0x848/0x2884 block/ioctl.c:502
- blkdev_ioctl+0x35c/0xae4 block/ioctl.c:624
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:857
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-INFO: task syz-executor.3:6695 blocked for more than 143 seconds.
-      Not tainted 6.6.0-rc5-syzkaller-gb6ab131813c2 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.3  state:D stack:0     pid:6695  ppid:6373   flags:0x00000005
-Call trace:
- __switch_to+0x320/0x754 arch/arm64/kernel/process.c:556
- context_switch kernel/sched/core.c:5382 [inline]
- __schedule+0x1364/0x23b4 kernel/sched/core.c:6695
- schedule+0xc4/0x170 kernel/sched/core.c:6771
- schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6830
- __mutex_lock_common+0xbd8/0x21a0 kernel/locking/mutex.c:679
- __mutex_lock kernel/locking/mutex.c:747 [inline]
- mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
- bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
- loop_configure+0x15c/0xfd4 drivers/block/loop.c:1018
- lo_ioctl+0xc70/0x1d04
- blkdev_ioctl+0x3e4/0xae4 block/ioctl.c:630
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:857
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-INFO: task syz-executor.5:6696 blocked for more than 143 seconds.
-      Not tainted 6.6.0-rc5-syzkaller-gb6ab131813c2 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.5  state:D stack:0     pid:6696  ppid:6381   flags:0x00000005
-Call trace:
- __switch_to+0x320/0x754 arch/arm64/kernel/process.c:556
- context_switch kernel/sched/core.c:5382 [inline]
- __schedule+0x1364/0x23b4 kernel/sched/core.c:6695
- schedule+0xc4/0x170 kernel/sched/core.c:6771
- schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6830
- __mutex_lock_common+0xbd8/0x21a0 kernel/locking/mutex.c:679
- __mutex_lock kernel/locking/mutex.c:747 [inline]
- mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
- blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
- blkdev_open+0x128/0x2b0 block/fops.c:589
- do_dentry_open+0x6fc/0x118c fs/open.c:929
- vfs_open+0x7c/0x90 fs/open.c:1063
- do_open fs/namei.c:3639 [inline]
- path_openat+0x1f2c/0x27f8 fs/namei.c:3796
- do_filp_open+0x1bc/0x3cc fs/namei.c:3823
- do_sys_openat2+0x124/0x1b8 fs/open.c:1422
- do_sys_open fs/open.c:1437 [inline]
- __do_sys_openat fs/open.c:1453 [inline]
- __se_sys_openat fs/open.c:1448 [inline]
- __arm64_sys_openat+0x1f0/0x240 fs/open.c:1448
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-INFO: task syz-executor.5:6703 blocked for more than 143 seconds.
-      Not tainted 6.6.0-rc5-syzkaller-gb6ab131813c2 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.5  state:D stack:0     pid:6703  ppid:6381   flags:0x00000005
-Call trace:
- __switch_to+0x320/0x754 arch/arm64/kernel/process.c:556
- context_switch kernel/sched/core.c:5382 [inline]
- __schedule+0x1364/0x23b4 kernel/sched/core.c:6695
- schedule+0xc4/0x170 kernel/sched/core.c:6771
- schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6830
- __mutex_lock_common+0xbd8/0x21a0 kernel/locking/mutex.c:679
- __mutex_lock kernel/locking/mutex.c:747 [inline]
- mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
- bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
- loop_configure+0x15c/0xfd4 drivers/block/loop.c:1018
- lo_ioctl+0xc70/0x1d04
- blkdev_ioctl+0x3e4/0xae4 block/ioctl.c:630
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:857
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-INFO: task syz-executor.4:6698 blocked for more than 143 seconds.
-      Not tainted 6.6.0-rc5-syzkaller-gb6ab131813c2 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.4  state:D stack:0     pid:6698  ppid:6384   flags:0x00000005
-Call trace:
- __switch_to+0x320/0x754 arch/arm64/kernel/process.c:556
- context_switch kernel/sched/core.c:5382 [inline]
- __schedule+0x1364/0x23b4 kernel/sched/core.c:6695
- schedule+0xc4/0x170 kernel/sched/core.c:6771
- schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6830
- __mutex_lock_common+0xbd8/0x21a0 kernel/locking/mutex.c:679
- __mutex_lock kernel/locking/mutex.c:747 [inline]
- mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
- blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
- blkdev_open+0x128/0x2b0 block/fops.c:589
- do_dentry_open+0x6fc/0x118c fs/open.c:929
- vfs_open+0x7c/0x90 fs/open.c:1063
- do_open fs/namei.c:3639 [inline]
- path_openat+0x1f2c/0x27f8 fs/namei.c:3796
- do_filp_open+0x1bc/0x3cc fs/namei.c:3823
- do_sys_openat2+0x124/0x1b8 fs/open.c:1422
- do_sys_open fs/open.c:1437 [inline]
- __do_sys_openat fs/open.c:1453 [inline]
- __se_sys_openat fs/open.c:1448 [inline]
- __arm64_sys_openat+0x1f0/0x240 fs/open.c:1448
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-INFO: task syz-executor.4:6704 blocked for more than 143 seconds.
-      Not tainted 6.6.0-rc5-syzkaller-gb6ab131813c2 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.4  state:D stack:0     pid:6704  ppid:6384   flags:0x00000005
-Call trace:
- __switch_to+0x320/0x754 arch/arm64/kernel/process.c:556
- context_switch kernel/sched/core.c:5382 [inline]
- __schedule+0x1364/0x23b4 kernel/sched/core.c:6695
- schedule+0xc4/0x170 kernel/sched/core.c:6771
- schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6830
- __mutex_lock_common+0xbd8/0x21a0 kernel/locking/mutex.c:679
- __mutex_lock kernel/locking/mutex.c:747 [inline]
- mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
- bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
- loop_configure+0x15c/0xfd4 drivers/block/loop.c:1018
- lo_ioctl+0xc70/0x1d04
- blkdev_ioctl+0x3e4/0xae4 block/ioctl.c:630
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:857
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+diff --git a/Documentation/usb/gadget-testing.rst b/Documentation/usb/gadget-testing.rst
+index 29072c166d23..6e5d96668e8e 100644
+--- a/Documentation/usb/gadget-testing.rst
++++ b/Documentation/usb/gadget-testing.rst
+@@ -448,15 +448,17 @@ Function-specific configfs interface
+ The function name to use when creating the function directory is "ncm".
+ The NCM function provides these attributes in its function directory:
+ 
+-	=============== ==================================================
+-	ifname		network device interface name associated with this
+-			function instance
+-	qmult		queue length multiplier for high and super speed
+-	host_addr	MAC address of host's end of this
+-			Ethernet over USB link
+-	dev_addr	MAC address of device's end of this
+-			Ethernet over USB link
+-	=============== ==================================================
++	================= ====================================================
++	ifname		  network device interface name associated with this
++			  function instance
++	qmult		  queue length multiplier for high and super speed
++	host_addr	  MAC address of host's end of this
++			  Ethernet over USB link
++	dev_addr	  MAC address of device's end of this
++			  Ethernet over USB link
++	max_segment_size  Segment size required for P2P connections. This
++			  will inturn set MTU to (max_segment_size - 14 bytes)
++	================= ====================================================
+ 
+ and after creating the functions/ncm.<instance name> they contain default
+ values: qmult is 5, dev_addr and host_addr are randomly selected.
+-- 
+2.42.0
 
-Showing all locks held in the system:
-1 lock held by khungtaskd/30:
- #0: ffff80008e3739c0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0xc/0x44 include/linux/rcupdate.h:302
-2 locks held by kworker/u4:6/235:
-2 locks held by getty/5770:
- #0: ffff0000d6cf20a0 (&tty->ldisc_sem){++++}-{0:0}, at: ldsem_down_read+0x3c/0x4c drivers/tty/tty_ldsem.c:340
- #1: ffff8000959f02f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x414/0x1214 drivers/tty/n_tty.c:2206
-1 lock held by syz-executor.1/6676:
- #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_put+0xec/0x740 block/bdev.c:884
-1 lock held by syz-executor.2/6678:
- #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_put+0xec/0x740 block/bdev.c:884
-3 locks held by syz-executor.0/6682:
- #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
- #1: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_finish_claiming+0x84/0x3dc block/bdev.c:557
- #2: ffff0000c1543a88 (&bdev->bd_holder_lock){+.+.}-{3:3}, at: bd_finish_claiming+0x218/0x3dc block/bdev.c:566
-1 lock held by syz-executor.3/6690:
- #0: ffff0000c1543a88 (&bdev->bd_holder_lock){+.+.}-{3:3}, at: blkdev_flushbuf block/ioctl.c:370 [inline]
- #0: ffff0000c1543a88 (&bdev->bd_holder_lock){+.+.}-{3:3}, at: blkdev_common_ioctl+0x7fc/0x2884 block/ioctl.c:502
-1 lock held by syz-executor.3/6695:
- #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
-1 lock held by syz-executor.5/6696:
- #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
-1 lock held by syz-executor.5/6703:
- #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
-1 lock held by syz-executor.4/6698:
- #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
-1 lock held by syz-executor.4/6704:
- #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
-1 lock held by syz-executor.0/6872:
- #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
-1 lock held by syz-executor.1/6939:
- #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
-1 lock held by syz-executor.1/6940:
- #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
-1 lock held by syz-executor.2/6956:
- #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
-1 lock held by syz-executor.2/6957:
- #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
-1 lock held by syz-executor.5/6959:
- #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
-1 lock held by syz-executor.5/6960:
- #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
-1 lock held by syz-executor.3/6976:
- #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
-1 lock held by syz-executor.3/6977:
- #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
-1 lock held by syz-executor.4/6979:
- #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
-1 lock held by syz-executor.4/6980:
- #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
-1 lock held by syz-executor.1/6999:
- #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
-1 lock held by syz-executor.1/7000:
- #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
-1 lock held by syz-executor.2/7054:
- #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
-1 lock held by syz-executor.2/7055:
- #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
-1 lock held by syz-executor.5/7067:
- #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
-1 lock held by syz-executor.5/7068:
- #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
-1 lock held by syz-executor.3/7075:
- #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
-1 lock held by syz-executor.3/7078:
- #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
-1 lock held by syz-executor.4/7083:
- #0: ffff0000c9ce34c8 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x114/0x55c block/bdev.c:786
-1 lock held by syz-executor.4/7084:
- #0: ffff80008e1748a8 (bdev_lock){+.+.}-{3:3}, at: bd_prepare_to_claim+0x1a4/0x49c block/bdev.c:508
-
-=============================================
-
-
-
-Tested on:
-
-commit:         b6ab1318 reiserfs: fix journal device opening
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git b4/vfs-fixes-reiserfs
-console output: https://syzkaller.appspot.com/x/log.txt?x=125bdcde680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1b8c825e0d5f3f72
-dashboard link: https://syzkaller.appspot.com/bug?extid=062317ea1d0a6d5e29e7
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-
-Note: no patches were applied.
