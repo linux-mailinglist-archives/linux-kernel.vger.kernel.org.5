@@ -2,73 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8997BD470
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 09:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FDB17BD475
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 09:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345421AbjJIHgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 03:36:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40034 "EHLO
+        id S1345430AbjJIHhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 03:37:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345404AbjJIHgv (ORCPT
+        with ESMTP id S1345374AbjJIHha (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 03:36:51 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA58594;
-        Mon,  9 Oct 2023 00:36:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16153C433C8;
-        Mon,  9 Oct 2023 07:36:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696837010;
-        bh=cyOr9wKSZbKTmoYhGi29W/BehcsluNpyqFhmV/79LkU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cuorHarbeq5vdYq06nmPq8nGX2pDzlhYY2aIguVOKLx86qrspW9qfoRixSiD2oG1N
-         BX1bPZiKVWe177iMU3qJ145/6+2QVdLkcYwZxGa8AO5oMtIqJfoIk3nVEGqVXjIFOK
-         veC1rvqC5QOFNQ1rskp5a1QGWowZeU/MLKC+k7IX27yaqQPwaC/2E0+1aTIIPnF7Zi
-         jRQ0blTp93aKHoihZBYvcrr6adET4DoQoSOx+8sYbZ4o9kQCrjGdrCzmS/dXLNJkwz
-         3hZTLiNv/d324k7T+CNsBKZE4Ai4/PYv3wZJOz/fGp/BoLGTd6qJlk9ik3kuHHAfUA
-         f5I0X9VQZ9jOA==
-Date:   Mon, 9 Oct 2023 09:36:43 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Hugh Dickins <hughd@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        David Laight <David.Laight@aculab.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH next] iov_iter: fix copy_page_from_iter_atomic()
-Message-ID: <20231009-bannen-hochwasser-3f0268372b80@brauner>
-References: <356ef449-44bf-539f-76c0-7fe9c6e713bb@google.com>
- <20230925120309.1731676-9-dhowells@redhat.com>
- <20230925120309.1731676-1-dhowells@redhat.com>
- <1809398.1696238751@warthog.procyon.org.uk>
- <231155.1696663754@warthog.procyon.org.uk>
+        Mon, 9 Oct 2023 03:37:30 -0400
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D9394;
+        Mon,  9 Oct 2023 00:37:28 -0700 (PDT)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id AEADC1C006C; Mon,  9 Oct 2023 09:37:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+        t=1696837046;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VROa/yOdjUP7j141oZYlPLZTrHtS+uByc1BoliKMXok=;
+        b=CWwL/DhF3ni/dRFy6yM4Y7s/7ymLPl7f8uYhDFxojWGrLzDc2eoDC6k52HlcKgOF0F/LEw
+        vcj/R4GzCJ3Ztfkl8+FNkAKvlAm3MT4rWK9uU5ogJQP/agcxYxa5CPp7GIkSUuhv8I4hyj
+        8accRU4q3E4tzuWZY/imFW1s0Kz96BE=
+Date:   Mon, 9 Oct 2023 09:37:26 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        David Thompson <davthompson@nvidia.com>,
+        Asmaa Mnebhi <asmaa@nvidia.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        sre@kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 6.1 01/12] pwr-mlxbf: extend Kconfig to include
+ gpio-mlxbf3 dependency
+Message-ID: <ZSOttlayEEJL+my1@duo.ucw.cz>
+References: <20231008004929.3767992-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="sR/u3r9Tclf6Wud4"
 Content-Disposition: inline
-In-Reply-To: <231155.1696663754@warthog.procyon.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231008004929.3767992-1-sashal@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 07, 2023 at 08:29:14AM +0100, David Howells wrote:
-> Hugh Dickins <hughd@google.com> wrote:
-> 
-> > -		__copy_from_iter(p, n, i);
-> > +		n = __copy_from_iter(p, n, i);
-> 
-> Yeah, that looks right.  Can you fold it in, Christian?
 
-Of course. Folded into
-c9eec08bac96 ("iov_iter: Don't deal with iter->copy_mc in memcpy_from_iter_mc()")
-on vfs.iov_iter.
+--sR/u3r9Tclf6Wud4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+hi!
+
+> From: David Thompson <davthompson@nvidia.com>
+>=20
+> [ Upstream commit 82f07f1acf417b81e793145c167dd5e156024de4 ]
+>=20
+> The BlueField power handling driver (pwr-mlxbf.c) provides
+> functionality for both BlueField-2 and BlueField-3 based
+> platforms.  This driver also depends on the SoC-specific
+> BlueField GPIO driver, whether gpio-mlxbf2 or gpio-mlxbf3.
+> This patch extends the Kconfig definition to include the
+> dependency on the gpio-mlxbf3 driver, if applicable.
+
+There's no GPIO_MLXBF3 in 6.1, please drop.
+
+BR,
+							Pavel
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
+
+--sR/u3r9Tclf6Wud4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZSOttgAKCRAw5/Bqldv6
+8q/GAJ9t3+xf3Momf4efdOWblR5rGzmbqgCeLtszZMdQCGfWFkOdqZQJ167aLWA=
+=YIfg
+-----END PGP SIGNATURE-----
+
+--sR/u3r9Tclf6Wud4--
