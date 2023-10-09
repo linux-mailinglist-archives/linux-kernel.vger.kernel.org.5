@@ -2,104 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6B47BDB34
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2BE7BDB6D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376292AbjJIMQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 08:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41112 "EHLO
+        id S1376319AbjJIMTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 08:19:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346491AbjJIMPT (ORCPT
+        with ESMTP id S1346558AbjJIMSv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 08:15:19 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8741D1FC8;
-        Mon,  9 Oct 2023 05:13:24 -0700 (PDT)
-Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3997rFWx025374;
-        Mon, 9 Oct 2023 14:13:09 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=Js7aNeSM/SCYmsb14dgCNvgdxI7cquNA2ZnKLbNhFyE=; b=Nj
-        v3Izd41BIlnR9vOrf1uVhFLA8s3JCkVpAi3cohJSSOAy9XJ5VJZaSMjT/nxUavT6
-        eOCCl6Q6zpoXEb3NCPaWbeF4sRyRi9tGM3siErqlqODkKyr4IximXf0E/1e90Y/o
-        KUS2D4mKzUx/E5MuQc3bUEN4mcJAjqK0pKHPPXJV9ddgVSRrFaHoVGXwug3k30hS
-        LKh6A6sHn47ofgUeW5FDvSixAMoSOdA5xtKhIOjOCM/5g9v23YC6FvcuECq3j5V0
-        nYA5Jy/41k4TTDSsVIbU4cQhPLmig7/13trQEJ8YeVKZY/4YTFMy7U88lL8wQHuX
-        mGYblL7//oPyns1L0rHQ==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3tkhk3d1np-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Oct 2023 14:13:09 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1862710005E;
-        Mon,  9 Oct 2023 14:13:08 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0EE2F2171DF;
-        Mon,  9 Oct 2023 14:13:08 +0200 (CEST)
-Received: from [10.201.21.122] (10.201.21.122) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 9 Oct
- 2023 14:13:07 +0200
-Message-ID: <be5521e7-5093-e8c2-9a9b-ebd09cb11386@foss.st.com>
-Date:   Mon, 9 Oct 2023 14:13:06 +0200
+        Mon, 9 Oct 2023 08:18:51 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D90E93870
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 05:16:02 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-65afd746330so27322966d6.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 05:16:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696853762; x=1697458562; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iw95tEeWB9saYTjeuqfwDCk67AfASMwamONQ4Q2lXGY=;
+        b=D7fYYAak61ciJboQ4Wt9EBlt0lhIx4vvspagxHDouOBQ5BPQeGpbhMpQmVTA1vF8UE
+         KEIFIKfd5QW5QQLsB1aKaXun6chYdOC+Qt1h8vZxX3IP+gDoeHINv4geS36ZQ3Lgtqwv
+         YAphlcclHpi4yKKqikC1L6GbYT0JcnvqlyNNVyGgcOEcUSmY2g4wqo3XrQuj64p6MV/f
+         i96w/+cx/yqMESo1OPl304jNaQ63wZ1lbBkIojW7DBMaCRVa0HUEpFl6AcxvdSVvWbvW
+         Niqn+cbyhI0++IIvqMCT9aXFOtT3Qu71MDdc/ZjzyGO7w9TM6m98xrtiYJ/ZpbURolao
+         sHbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696853762; x=1697458562;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iw95tEeWB9saYTjeuqfwDCk67AfASMwamONQ4Q2lXGY=;
+        b=QvFJMFJ33PEgKq2JPBRE+daDVdt6aCGv+LLh3+r3Aa0arcxZ8pyXVz16XP/v3unc6r
+         XSrXbGUc6c53gI7s4v1xI9KeSeRzBxbmOM+QEPX33ce1PZf0oBLrYZ95+CFNpalY67EP
+         c4ho5wNVzO/CJjHJ9wF+gvxeWUHypwZdZYKuJNLXBsJ3Po05cOu+IFn1gACqaUYpJ7sA
+         gposo2uEw8rd4UkqaCIKIYvyCTLlj9RtiZSIZ+n+0oHMeRDdLiNZsxLM5T/xBDOvSSSX
+         c0/TXW5oMj7U4uWKFZp98ptHtzsBGr9D9NVMBJpdsGU+t/tpJ75/MzKoK9NnyI0NuOBG
+         nMlw==
+X-Gm-Message-State: AOJu0Yw4yERiQNb8mZdItbRfKm8cQC+VYh75HizTTap3dH3KBspuzQdm
+        XJt8PIZ4vqQMr8camaIwh7UkoHSscop+f923anQuIw==
+X-Google-Smtp-Source: AGHT+IEJxXM/xTsmEX/IkrwKYO8Wl9OBkKBFQveDekw2SADwckQ7HwXu/jVY1YyfS4fU9QTcerTLDfajbJ4m3cRb/AQ=
+X-Received: by 2002:ad4:55d3:0:b0:641:8b09:98ac with SMTP id
+ bt19-20020ad455d3000000b006418b0998acmr13512054qvb.37.1696853761812; Mon, 09
+ Oct 2023 05:16:01 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 0/2] ARM: dts: stm32: add SDIO pinctrl sleep support on
- stm32f7
-Content-Language: en-US
-To:     Ben Wolsieffer <ben.wolsieffer@hefring.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-References: <20231002171339.1594470-1-ben.wolsieffer@hefring.com>
-From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
-In-Reply-To: <20231002171339.1594470-1-ben.wolsieffer@hefring.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.21.122]
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-09_11,2023-10-09_01,2023-05-22_02
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1694625260.git.andreyknvl@google.com> <d94caa60d28349ca5a3c709fdb67545d9374e0dc.1694625260.git.andreyknvl@google.com>
+ <20230916174334.GA1030024@mutt> <20230916130412.bdd04e5344f80af583332e9d@linux-foundation.org>
+In-Reply-To: <20230916130412.bdd04e5344f80af583332e9d@linux-foundation.org>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Mon, 9 Oct 2023 14:15:25 +0200
+Message-ID: <CAG_fn=W0OO4GGS0-pnHFpnWGsBN3dZJ9tnRxPmEKRkkP4Vh48A@mail.gmail.com>
+Subject: Re: [PATCH v2 12/19] lib/stackdepot: use list_head for stack record links
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        andrey.konovalov@linux.dev
+Cc:     Anders Roxell <anders.roxell@linaro.org>,
+        Marco Elver <elver@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
+        Evgenii Stepanov <eugenis@google.com>,
+        Oscar Salvador <osalvador@suse.de>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>, arnd@arndb.de,
+        sfr@canb.auug.org.au
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ben
+On Sat, Sep 16, 2023 at 10:04=E2=80=AFPM Andrew Morton
+<akpm@linux-foundation.org> wrote:
+>
+> On Sat, 16 Sep 2023 19:43:35 +0200 Anders Roxell <anders.roxell@linaro.or=
+g> wrote:
+>
+> > On 2023-09-13 19:14, andrey.konovalov@linux.dev wrote:
+> > > From: Andrey Konovalov <andreyknvl@google.com>
+> > >
+> > > Switch stack_record to use list_head for links in the hash table
+> > > and in the freelist.
+> > >
+> > > This will allow removing entries from the hash table buckets.
+> > >
+> > > This is preparatory patch for implementing the eviction of stack reco=
+rds
+> > > from the stack depot.
+> > >
+> > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > >
+> >
+> > Building on an arm64 kernel from linux-next tag next-20230915, and boot
+> > that in QEMU. I see the following kernel panic.
+> >
+> > ...
+> >
+> > The full log can be found [1] and the .config file [2]. I bisected down
+> > to this commit, see the bisect log [3].
 
-On 10/2/23 19:13, Ben Wolsieffer wrote:
-> Add support for switching the SDIO pins on the STM32F7 series to analog
-> mode when not in use to save power.
-> 
-> I don't have any of the disco/eval boards to test, but I have tested
-> this on an Emcraft STM32F746 SOM with a UCL-SOM-BSB carrier (using an
-> out-of-tree DT) and our custom carrier board.
-> 
-> Ben Wolsieffer (2):
->    ARM: dts: stm32: add stm32f7 SDIO sleep pins
->    ARM: dts: stm32: add SDIO pinctrl sleep support on stm32f7 boards
-> 
->   arch/arm/boot/dts/st/stm32746g-eval.dts   |  3 ++-
->   arch/arm/boot/dts/st/stm32f7-pinctrl.dtsi | 22 ++++++++++++++++++++++
->   arch/arm/boot/dts/st/stm32f746-disco.dts  |  3 ++-
->   arch/arm/boot/dts/st/stm32f769-disco.dts  |  3 ++-
->   4 files changed, 28 insertions(+), 3 deletions(-)
-> 
+I am also seeing similar crashes on an x86 KMSAN build.
 
-Series applied on stm32-next.
+They are happening when in the following code:
 
-Regards
-Alex
+        list_for_each(pos, bucket) {
+                found =3D list_entry(pos, struct stack_record, list);
+                if (found->hash =3D=3D hash &&
+                    found->size =3D=3D size &&
+                    !stackdepot_memcmp(entries, found->entries, size))
+                        return found;
+        }
+
+`found` is NULL
+
+@Andrey, could you please take a look?
