@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E6247BEC98
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA9F7BEC92
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378765AbjJIVPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 17:15:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60378 "EHLO
+        id S1378714AbjJIVPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 17:15:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378682AbjJIVPN (ORCPT
+        with ESMTP id S1378745AbjJIVOg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 17:15:13 -0400
+        Mon, 9 Oct 2023 17:14:36 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4CA4D62;
-        Mon,  9 Oct 2023 14:14:40 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C301C433C7;
-        Mon,  9 Oct 2023 21:14:39 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5E3D182;
+        Mon,  9 Oct 2023 14:14:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5B08C433CA;
+        Mon,  9 Oct 2023 21:14:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696886080;
-        bh=pRTsya/t7TdWrezPtSMk6IUt3fMvEjFpaEopjd4gbVI=;
+        s=k20201202; t=1696886069;
+        bh=dIK0eztLKLhOrJx/1hv/oFxFtwcERv2fSJBqJLVAAEE=;
         h=From:To:Cc:Subject:Date:From;
-        b=o6sICD0Dp8hm9by3EoXOmN7rZyOxzy41mzWWZeA2edPwQKT4Z4j6XD/A4HeeLJ6vz
-         lyn5Iv+WTYGaD3Cfvxl7or7KTR1OYRWCj/43eohEq8mCmXybQYcJ2l/qacVv9r7lw9
-         6z7i3jOEbPWAgfT+VupGMt7hbz+o81sKpe7rr1lR/H1jujYnWjz7v5ldFMVt/9QwuD
-         kh7L2NISfOSQ8WIkLOC6pEm2hc3WWoGMl9OjofWsTfD/lmLodu+ZoC63or6+IsxrAa
-         nq+kC1GriFqr7nDM5vWByChxsWqzTD0rCqzyG3WwuJhNSvFs7ctF9W+l6bV8ca/GeP
-         ICeXprpD6LE4g==
-Received: (nullmailer pid 3246318 invoked by uid 1000);
-        Mon, 09 Oct 2023 21:14:14 -0000
+        b=DecivvvwvlMRjoXnCEQrTvTknYTc7SczXSJvD0ipc6a6lbAbEtsyPBIAv4cMcUQd4
+         sVJxODgiIlIpGNzcpyz7LZ0JIXdMQ+Sx1sTxk18RPwHH9fYyPgtN/+YHMP9MS4YZHE
+         w8JftZD+GXJIxiHEfNWFf/xahDskYHvvEJyOwDurwDdP2RZ4KrWSEKlRPP0cfpdoHC
+         WPvRMAYcSqvMlm1Ce8BUYH3kp0GIzUKktU3NL8lVFi8GhGsjQV5fb3pjLLhuq7VdEv
+         oPkpxgWQXO4OPKeblCdcWgu2Yc/WT+1BYYUgjJ0qav3tFWe2v+So5/vMj5ipQsMg8k
+         3ST+eTMeNF6fw==
+Received: (nullmailer pid 3246395 invoked by uid 1000);
+        Mon, 09 Oct 2023 21:14:15 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Alain Volmat <alain.volmat@foss.st.com>,
-        Mark Brown <broonie@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc:     linux-spi@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] spi: stm32: Explicitly include correct DT includes
-Date:   Mon,  9 Oct 2023 16:13:44 -0500
-Message-ID: <20231009211356.3242037-14-robh@kernel.org>
+To:     zhanghongchen <zhanghongchen@loongson.cn>,
+        Yinbo Zhu <zhuyinbo@loongson.cn>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] thermal: loongson2: Replace of_device.h with explicit includes
+Date:   Mon,  9 Oct 2023 16:13:45 -0500
+Message-ID: <20231009211356.3242037-15-robh@kernel.org>
 X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -56,30 +56,32 @@ The DT of_device.h and of_platform.h date back to the separate
 of_platform_bus_type before it as merged into the regular platform bus.
 As part of that merge prepping Arm DT support 13 years ago, they
 "temporarily" include each other. They also include platform_device.h
-and of.h. As a result, there's a pretty much random mix of those include
-files used throughout the tree. In order to detangle these headers and
-replace the implicit includes with struct declarations, users need to
-explicitly include the correct includes.
+and of.h.
+
+of_device.h isn't needed, but mod_devicetable.h and property.h were
+implicitly included.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/spi/spi-stm32.c | 3 ++-
+ drivers/thermal/loongson2_thermal.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index ef665f470c5b..e6e3e4ea29f9 100644
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -13,7 +13,8 @@
+diff --git a/drivers/thermal/loongson2_thermal.c b/drivers/thermal/loongson2_thermal.c
+index 133098dc0854..644596f5e3bb 100644
+--- a/drivers/thermal/loongson2_thermal.c
++++ b/drivers/thermal/loongson2_thermal.c
+@@ -8,9 +8,10 @@
  #include <linux/interrupt.h>
- #include <linux/iopoll.h>
+ #include <linux/io.h>
+ #include <linux/minmax.h>
++#include <linux/mod_devicetable.h>
  #include <linux/module.h>
--#include <linux/of_platform.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/pinctrl/consumer.h>
- #include <linux/pm_runtime.h>
- #include <linux/reset.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
++#include <linux/property.h>
+ #include <linux/thermal.h>
+ #include <linux/units.h>
+ #include "thermal_hwmon.h"
 -- 
 2.42.0
 
