@@ -2,133 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B3D7BE963
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 20:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C29EA7BE968
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 20:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377449AbjJISdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 14:33:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55696 "EHLO
+        id S1378051AbjJISeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 14:34:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376281AbjJISdp (ORCPT
+        with ESMTP id S1376990AbjJISeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 14:33:45 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 182B2A3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 11:33:42 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c6185cafb3so296995ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 11:33:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696876421; x=1697481221; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hbawRUEwL9/zR8hpVKzzXxK+1LBrSHSBk1bYuOQZmBA=;
-        b=YZEz0bktkrehiO+IUVn17qS+9zbtJodkAWUBOg/+dLNinbFifPM7YKm+fQA5Oue+LW
-         DLccQM/VQ9WxaNoEqZdMokt8fDG+j8Po8prHUJodKDBCVIVazCBaLPgRXk+alsZpok+h
-         FBPt4c0q6kLjvvsAMal+IEAiVzrXtiwBnAjW6ypXns2gyh63Y9PvEncyAkzH5jh/ucu6
-         8d2oVFlJBIfBy0azSkIcmjwTnPjmze+CQVqtbhT3iw+lR7qxT+nyegIxCHTEK2Kz+3Ub
-         ICnFwNkT/PxuVR3F5RPY7s6Ezq0wdJuzwloOJb/2N/M8dT9Pfw1r2SOJI3aQXzliWKz9
-         ouEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696876421; x=1697481221;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hbawRUEwL9/zR8hpVKzzXxK+1LBrSHSBk1bYuOQZmBA=;
-        b=qCS1olhVzY8f3XfhyI30lnePFL24tqEhLOS7CqAx2Ov/ow+mt4hzXbndZzfL9s5GxQ
-         bbt7YgBbkvn/kcNfaZM99Qp8DnseoWldg9ZzlzXjSFvJAoH3uBH4y0Y4NN8jE+jiZZ6e
-         rNHYNlu0RQ5v5yt9L4rzwlQXZ/Fn7/pMkZ9APOcuXJF8Ji3tWsvKxObaoAxbzHv15OY5
-         qtCvF9aqwtPO157czu2aw/Y78GFQ9T/Sqvx9NLGPEiHkRNuOiHvbtOOnFhh1tLPwp9Tv
-         b78VGW8owwqLE1x8OtrHXLT3ZpxiOiRHJ/sfXrhCXWD7Eyw4cw5ENCMeXEQiy/Pjk0tl
-         lD7A==
-X-Gm-Message-State: AOJu0Yx1J/h110g0tRRBQmbswkQ5Fb4fvj5/Tk4ThQ/X+6VJfeMgAvfB
-        ELSXuMvVPWAsz+/9DyzvaBjtKdFaN2qtoqLBRwDfQQ==
-X-Google-Smtp-Source: AGHT+IFIJSSW6R6i1TDa7gjcURkjDyXJSxHM1LIWjVeLdl2+mRZ0a1ao35LJlIjyfG384hkX4eXIrzP6CEwTJXWByJo=
-X-Received: by 2002:a17:903:183:b0:1b9:d96c:bca7 with SMTP id
- z3-20020a170903018300b001b9d96cbca7mr744200plg.25.1696876421161; Mon, 09 Oct
- 2023 11:33:41 -0700 (PDT)
+        Mon, 9 Oct 2023 14:34:18 -0400
+Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5467BA4;
+        Mon,  9 Oct 2023 11:34:15 -0700 (PDT)
+Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+        by mx.skole.hr (mx.skole.hr) with ESMTP id 8CE5B84F15;
+        Mon,  9 Oct 2023 20:34:13 +0200 (CEST)
+From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Subject: [PATCH RFT v7 0/6] ARM: pxa: GPIO descriptor conversions
+Date:   Mon, 09 Oct 2023 20:33:57 +0200
+Message-Id: <20231009-pxa-gpio-v7-0-c8f5f403e856@skole.hr>
 MIME-Version: 1.0
-References: <20231005161727.1855004-1-joel@joelfernandes.org>
- <ZR/mvd8Uw8PG+jx0@gmail.com> <20231008173535.GD2338308@google.com>
-In-Reply-To: <20231008173535.GD2338308@google.com>
-From:   Vineeth Pillai <vineethrp@google.com>
-Date:   Mon, 9 Oct 2023 14:33:30 -0400
-Message-ID: <CA+HDTgSwoO+uXQ0xmmBzaDy3ViZcZ765P6_GsAmxKedRVKyY_A@mail.gmail.com>
-Subject: Re: [PATCH RFC] sched/fair: Avoid unnecessary IPIs for ILB
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Suleiman Souhlal <suleiman@google.com>,
-        Hsin Yi <hsinyi@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAJVHJGUC/13Pu2rEMBAF0F9ZVEdBr9EjVap8wLJdSCF7xmuRs
+ DZSMBsW/3uEikS4HI3OHe6DFcqJCns5PVimLZW03Orgnk5snOPtSjxhnZkSSgsvHF/vkV/XtHA
+ 9kgIEZ7w0rH5fM03p3qLe2fntwj7q45zK95J/Wvwm26olBWX+kzbJBVdewOAdeh/Ma/lcvuh5z
+ i1jU72znVPVBW+MNSgtIB6c7l3onK4uTh6BAOWkj/fMn5NCyM6Z6sSkh+CALCEcHPSu7wfVYQi
+ R7DQSRX9wtnd9P9v6ycEEKRBC6Ny+779wKZyzvAEAAA==
+To:     Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Russell King <linux@armlinux.org.uk>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-spi@vger.kernel.org,
+        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3356;
+ i=duje.mihanovic@skole.hr; h=from:subject:message-id;
+ bh=9HISThLWXYrKw02vad3s3jjv7OIK+LTjobe89BliE1o=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlJEebqRxXPSHSkqz3VzFiWmCYluOEsVC6FdrVX
+ kdBjEH03BqJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZSRHmwAKCRCaEZ6wQi2W
+ 4d/PEACEBwdEFzScJK2AKBhR+Sh2TExixXRhlHrijlQj6TpxuD3ccuPKBwNKoZx1nfg5Z14ao05
+ kzPcyamJc9OOofLeF+CSKg1kXy9MnQx4NPmIhk/HiZI5ZkbsbTRPUHhji7GXpD7vy37vLW8SmW+
+ U/aVMCAv2sXe3Iism4UxDi4Qgp6khIb4t3K2T2o7efDiM+9aaZOsK/5d5z+lwdTcQfZsYN04//+
+ SmnmRIZHrBREnhjCn/M0VF7Y6fXBtfcnxIXY57RfNpRjKCjF1z4gWdVaK/utVHdPBqhUHK4S5YO
+ qxxR8DmS9jOLL04bafaq9UR4ayEsQTdmIVmOE26pufWaT1MV8OAyOGuyUxnrqLIWfoDzFnPZGM4
+ lHtEhuh6t2CIVK/Yo2H7ym0MoJiZtkGgcr1g7Snch/ktNt3fLXO5WMhO7cgWmPxWQ90eaOIaAF2
+ SlRDrw10T7ZMqn2gcbMcszt9tse57mDNwMbFw8UH2C1qWphXlWa7iQ9jMWdDZ1U0Lx76PAbS1Gh
+ ozJ0uyhzzM/yc04meQpxIiI7d3+mk5yKmneRV0H96L1j8vC7QGT8Otzqnds8r0Jv3BWdnwcQVoN
+ 8LY0KS6bRzLQx+4qnIhQQtSv4Bl5dMYZK0dQHvuNsIgTIgRwMUlsk6tJ9wewoObMT3UypmEGldh
+ udURqlb2X3xSY3Q==
+X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
+ fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 8, 2023 at 1:35=E2=80=AFPM Joel Fernandes <joel@joelfernandes.o=
-rg> wrote:
->
-[...snip...]
-> > The patch does make _nohz_idle_balance() run more parallel, as previous=
-ly
-> > it would be generally run by the first-idle CPU in nohz.idle_cpus_mask =
-(at
-> > least for next_balance updates), but I think it's still SMP-safe, as al=
-l
-> > key data structure updates are already rq-locked AFAICS.
->
-> One thing I am confused about in the original code is:
->
-> tick_nohz_idle_stop_tick() is what sets the nohz.idle_cpus_mask.
-> However, nohz_run_idle_balance() is called before that can happen, in
-> do_idle(). So it is possible that NOHZ_NEWILB_KICK is set for a CPU but i=
-t is
-> not yet in the mask.
->
-> So will this code in _nohz_idle_balance() really run in such a scenario?
->
->                 if (flags & NOHZ_STATS_KICK)
->                         has_blocked_load |=3D update_nohz_stats(rq);
->
-> AFAICS, this loop may not select the CPU due to its absence from the mask=
-:
->         for_each_cpu_wrap(balance_cpu,  nohz.idle_cpus_mask, this_cpu+1)
->
-I have traced this a bit further. As Joel mentioned, the
-nohz.idle_cpus_mask shouldn't contain this cpu when
-nohz_run_idle_balance () is called from do_idle(), but on tracing I
-have seen that it does have it mostly with HIGHRES. And I feel this is
-a bug. We call nohz_balance_enter_idle() when we turn off the tick,
-but we don't always call nohz_balance_exit_idle() when we turn the
-tick back on. We call it only on the next tick on this cpu in
-nohz_balancer_kick. If a wakeup happens on this cpu while the tick is
-off, we re-enable the tick, but do not remove ourselves from the
-nohz.idle_cpus_mask. So, ILB will consider this cpu to be a valid pick
-until the next tick on this cpu where it gets removed. I am not sure
-if this is intentional.
+Hello,
 
-If this is a bug and we fix it by calling nohz_balance_exit_idle
-during restart_tick, then we might not probably need NOHZ_NEWIDLE_KICK
-flag and could use NOHZ_STATS_KICK as there will not be any overlap
-between nohz_run_idle_balance and nohz_idle_balance.
+Small series to convert some of the board files in the mach-pxa directory
+to use the new GPIO descriptor interface.
 
-Thanks,
-Vineeth
+Most notably, the am200epd, am300epd and Spitz matrix keypad among
+others are not converted in this series.
+
+Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+---
+Changes in v7:
+- Address maintainer comments:
+  - Drop gpiod_put in OHCI
+  - Make "struct gpio_descs *leds" in Spitz LEDs global
+- Link to v6: https://lore.kernel.org/r/20231006-pxa-gpio-v6-0-981b4910d599@skole.hr
+
+Changes in v6:
+- Address maintainer comments:
+  - Use devm_gpiod_get_optional() in OHCI
+  - Use gpiod_get_array() in Spitz LEDs
+- Update trailers
+- Link to v5: https://lore.kernel.org/r/20231004-pxa-gpio-v5-0-d99ae6fceea8@skole.hr
+
+Changes in v5:
+- Address maintainer comments:
+  - Rename "reset generator" GPIO to "reset"
+  - Rename ads7846_wait_for_sync() to ads7846_wait_for_sync_gpio()
+  - Properly bail out when requesting USB host GPIO fails
+  - Use dev_err_probe() when requesting touchscreen sync GPIO fails
+  - Use static gpio_desc for gumstix bluetooth reset
+- Pulse gumstix bluetooth reset line correctly (assert, then deassert)
+- Fix style issue in ads7846_wait_for_sync_gpio()
+- Update trailers
+- Link to v4: https://lore.kernel.org/r/20231001-pxa-gpio-v4-0-0f3b975e6ed5@skole.hr
+
+Changes in v4:
+- Address maintainer comments:
+  - Move wait_for_sync() from spitz.c to driver
+  - Register LED platform device before getting its gpiod-s
+- Add Linus' Reviewed-by
+- Link to v3: https://lore.kernel.org/r/20230929-pxa-gpio-v3-0-af8d5e5d1f34@skole.hr
+
+Changes in v3:
+- Address maintainer comments:
+  - Use GPIO_LOOKUP_IDX for LEDs
+  - Drop unnecessary NULL assignments
+  - Don't give up on *all* SPI devices if hsync cannot be set up
+- Add Linus' Acked-by
+- Link to v2: https://lore.kernel.org/r/20230926-pxa-gpio-v2-0-984464d165dd@skole.hr
+
+Changes in v2:
+- Address maintainer comments:
+  - Change mentions of function to function()
+  - Drop cast in OHCI driver dev_warn() call
+  - Use %pe in OHCI and reset drivers
+  - Use GPIO _optional() API in OHCI driver
+  - Drop unnecessary not-null check in OHCI driver
+  - Use pr_err() instead of printk() in reset driver
+- Rebase on v6.6-rc3
+- Link to v1: https://lore.kernel.org/r/20230924-pxa-gpio-v1-0-2805b87d8894@skole.hr
+
+---
+Duje Mihanović (6):
+      ARM: pxa: Convert Spitz OHCI to GPIO descriptors
+      ARM: pxa: Convert Spitz LEDs to GPIO descriptors
+      ARM: pxa: Convert Spitz CF power control to GPIO descriptors
+      ARM: pxa: Convert reset driver to GPIO descriptors
+      ARM: pxa: Convert gumstix Bluetooth to GPIO descriptors
+      input: ads7846: Move wait_for_sync() logic to driver
+
+ arch/arm/mach-pxa/gumstix.c         | 22 ++++++------
+ arch/arm/mach-pxa/reset.c           | 39 +++++++-------------
+ arch/arm/mach-pxa/reset.h           |  3 +-
+ arch/arm/mach-pxa/spitz.c           | 71 +++++++++++++++++++++++++------------
+ drivers/input/touchscreen/ads7846.c | 22 ++++++++----
+ drivers/usb/host/ohci-pxa27x.c      |  5 +++
+ include/linux/spi/ads7846.h         |  1 -
+ 7 files changed, 94 insertions(+), 69 deletions(-)
+---
+base-commit: 8a749fd1a8720d4619c91c8b6e7528c0a355c0aa
+change-id: 20230807-pxa-gpio-3ce25d574814
+
+Best regards,
+-- 
+Duje Mihanović <duje.mihanovic@skole.hr>
+
+
