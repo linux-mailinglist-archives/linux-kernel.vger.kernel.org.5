@@ -2,78 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98CEF7BD160
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 02:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B637BD166
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 02:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232190AbjJIAJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 20:09:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53462 "EHLO
+        id S229553AbjJIAP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 20:15:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345024AbjJIAJM (ORCPT
+        with ESMTP id S229845AbjJIAPz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 20:09:12 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A47B9DB;
-        Sun,  8 Oct 2023 17:09:09 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-534659061afso6592285a12.3;
-        Sun, 08 Oct 2023 17:09:09 -0700 (PDT)
+        Sun, 8 Oct 2023 20:15:55 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D71B9
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 17:15:51 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c871a095ceso28169315ad.2
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 17:15:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696810148; x=1697414948; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9OeAouwbiIW3oa603x3NICDHKjYzU+b9TyziED7iPnQ=;
-        b=hdsOkWMvZSLQh05K23+96pq8i7m2JeDvadGLLmvLkO2eBRNFRuUh8GdHOk036MUVNs
-         qGOnSTIevt30ummmuvQVR/zKq5IbhaP2SxUQZD+oXmmmQ9+TqHr7d375HINTNWwB/G+f
-         9CXUuqAjKmeXBD1rIkMCWVgHmhoWG5herx/29F+wF+DMqGUf/25CPdriCXzD3U6wHeoL
-         +qhjtXySm8DnDuEsT1ROZlYTM4vk9yb2brY7+bkGBhA8QDVEjRLlKK3ZHgIL7A0jobm1
-         NiZ2CVkPovo5RqslmwC/43wDzeVCyGu4YsW4E+kC4fOdrbsudtKjklTcqvNVQbHLkCq6
-         Dl8g==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1696810551; x=1697415351; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5pMbdaei/dF0n16cuejvm6nYTMm6wJ9kYRo603Y9tXY=;
+        b=QdmKix3yy3E1Ui3bJJ0ES5EF0MArsMkQ6sjKQpgbckyBkn8y88kvYo4oJY3F/U6JJc
+         9f7WCXSdpD6M/dOXuDhKaBKD/f4mCiwLsjHz7X6pRFM9V9xo9rPyOgAOEb3XJYQ0wP5B
+         gh2ZxL+ryUMigElWCKzn4JSoZQfq5CZOhuENpI4AyqqYk+GsSAeyrMiFssyRK8wtQOT/
+         dwsZsAUAZ8bS0Mpe3eswW9Ed5rCtu2FwT6eI8blDryhOiG4XR2/+EsJ0AurVlQJ4apml
+         UlvIMSj58bMqPqK/n+HzA/63/nA9/yHeeTANgqO02AK4A615h1R9npV0TJyERfkOOsOr
+         vVMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696810148; x=1697414948;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9OeAouwbiIW3oa603x3NICDHKjYzU+b9TyziED7iPnQ=;
-        b=E21uTxhaX9irUpsRxHHgqYj+wc39VIboj6NAPZe/5xsOV17XRf+L1TnxB/sNkcSx5E
-         jFd/RvUYkYSlMi9ATcGKl4qovIbKJAGqRXxFwC7p5uexaW9Kt6sqMqtf0aoVl/26IgC/
-         9G27SQZuOYUEhs9x4OxxM0XR1v+QE1faYHDoqjvw6TcLy1R4sKQcpgd4KNImoF8X758I
-         EFxyMraM2NyOx0f9MCZIC2FzJFdmtxtNs6vcZFXCrdNeh5YK5JrmgYtF7Q1UlwK/WCTk
-         3ruhOW81G1kwYNrphnpIMW/glwpiaccot2Uprzt2FZfVRRVE/0ITWssv4SYbCjMD6Prs
-         Pexw==
-X-Gm-Message-State: AOJu0YwKNae6swZ/kJ8O083fzVxrRZVYnItri7IJNcMRqayMIe8z210i
-        V0tnI5pY/xy0UI2365YS6YAIoqATlrcNPs9RmHA=
-X-Google-Smtp-Source: AGHT+IEmRGETHMC0oZivK2NW82/PXGmCkgOWv6RewoLXm/o/GSIZ8n2ZVNbmKSZMKbASRhS9km/BFJ9w09k2uM9DQC8=
-X-Received: by 2002:aa7:da44:0:b0:532:aaca:d39d with SMTP id
- w4-20020aa7da44000000b00532aacad39dmr11921076eds.6.1696810147764; Sun, 08 Oct
- 2023 17:09:07 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696810551; x=1697415351;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5pMbdaei/dF0n16cuejvm6nYTMm6wJ9kYRo603Y9tXY=;
+        b=Sw68dzhB5nKUp1MzQcnjmFZVYQxQaS9JpoZ50eUGxvz24vPn+4u9nZU8MLsHMwTZ8k
+         CEgrZXU8QMiILdrMGW0sEK071711vcURct8Uu5vlQx/RLY9mwxZSRDI0+uFm9fH9J1g0
+         w/t5MR+oJVEUwfzncJeVy45v84vR7WFWVfm9pWk93w2JLyKsAxeUdWucoLBjp/tjgdpS
+         o343rNUmziKtSI0Jfev+wlbAa4XWZNfuV9a5yqS3/KPjXBsWJlVc7/TnjqX9Omf2/b1u
+         9EtdzkG/Krb1CsKCQdLtDCsJZBwloZbbiWGC5lvO4qmcuGxNiljgWPU4+kO/Ecs1R9iU
+         zV1w==
+X-Gm-Message-State: AOJu0YybRaYO/GPjKCBCj29Nh2WdJC4aWU4uPup7E0keREJkrekY8k7n
+        Gd7c2h5enafovlQgVnPEAJmbrQ==
+X-Google-Smtp-Source: AGHT+IGJkPv/XYegx4s9UEyZ39lWpjWST9+uJFQQhOB9GWsqna9kS2F0bIydpa24vxmPrUY9+UdkaQ==
+X-Received: by 2002:a05:6a21:6d9f:b0:13f:b028:7892 with SMTP id wl31-20020a056a216d9f00b0013fb0287892mr14836860pzb.2.1696810550803;
+        Sun, 08 Oct 2023 17:15:50 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id ix1-20020a170902f80100b001b53953f306sm8122275plb.178.2023.10.08.17.15.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Oct 2023 17:15:50 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qpdw2-00BIkj-31;
+        Mon, 09 Oct 2023 11:15:46 +1100
+Date:   Mon, 9 Oct 2023 11:15:46 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Tim Chen <tim.c.chen@intel.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Carlos Maiolino <cem@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 8/8] shmem,percpu_counter: add _limited_add(fbc, limit,
+ amount)
+Message-ID: <ZSNGMvICWWaKAaJL@dread.disaster.area>
+References: <c7441dc6-f3bb-dd60-c670-9f5cbd9f266@google.com>
+ <bb817848-2d19-bcc8-39ca-ea179af0f0b4@google.com>
+ <ZR3wzVJ019gH0DvS@dread.disaster.area>
+ <2451f678-38b3-46c7-82fe-8eaf4d50a3a6@google.com>
 MIME-Version: 1.0
-References: <20231008175615.413497-1-robdclark@gmail.com> <CAA8EJppgUmkLrhTw779tq5wkgXfu4sypGrQbJFYtrnCrbwa3=Q@mail.gmail.com>
- <526457dd-37f2-467d-b583-b710a5e84b97@collabora.com>
-In-Reply-To: <526457dd-37f2-467d-b583-b710a5e84b97@collabora.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Sun, 8 Oct 2023 17:08:55 -0700
-Message-ID: <CAF6AEGukUgPfa2h17oNt9QEP7b6AqUWR5EwK3bP3W9tj6yX2Lg@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/dpu: Use the encoder for default CRC source
-To:     Helen Koike <helen.koike@collabora.com>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Daniel Stone <daniels@collabora.com>,
-        Vinod Polimera <quic_vpolimer@quicinc.com>,
-        Kalyan Thota <quic_kalyant@quicinc.com>,
-        Jiasheng Jiang <jiasheng@iscas.ac.cn>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2451f678-38b3-46c7-82fe-8eaf4d50a3a6@google.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,55 +88,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 8, 2023 at 4:21=E2=80=AFPM Helen Koike <helen.koike@collabora.c=
-om> wrote:
->
->
->
-> On 08/10/2023 16:59, Dmitry Baryshkov wrote:
-> > On Sun, 8 Oct 2023 at 20:56, Rob Clark <robdclark@gmail.com> wrote:
-> >>
-> >> From: Rob Clark <robdclark@chromium.org>
-> >>
-> >> i-g-t expects the CRC to reflect any applied CTM.  But the layer mixer
-> >> source is upstream of the DSPP, so it is before the CTM is applied.
-> >>
-> >> Switch the default source to 'encoder' instead so that the CRC is
-> >> captured downstream of the DSPP.
-> >>
-> >> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> >> ---
-> >>   drivers/gpu/drm/ci/xfails/msm-sc7180-fails.txt |  4 ----
-> >>   drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt |  5 -----
-> >>   drivers/gpu/drm/ci/xfails/msm-sdm845-fails.txt | 11 +----------
-> >>   drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c       |  6 +++---
-> >
-> > I'm not sure, if updating the CI skip list together with the
-> > functional changs is a good idea, my preference would be towards two
-> > separate patches.
->
-> On the other hand, having both together in the same patch documents
-> which tests this PATCH is fixing.
+On Thu, Oct 05, 2023 at 10:35:33PM -0700, Hugh Dickins wrote:
+> On Thu, 5 Oct 2023, Dave Chinner wrote:
+> > On Fri, Sep 29, 2023 at 08:42:45PM -0700, Hugh Dickins wrote:
+> > > Percpu counter's compare and add are separate functions: without locking
+> > > around them (which would defeat their purpose), it has been possible to
+> > > overflow the intended limit.  Imagine all the other CPUs fallocating
+> > > tmpfs huge pages to the limit, in between this CPU's compare and its add.
+> > > 
+> > > I have not seen reports of that happening; but tmpfs's recent addition
+> > > of dquot_alloc_block_nodirty() in between the compare and the add makes
+> > > it even more likely, and I'd be uncomfortable to leave it unfixed.
+> > > 
+> > > Introduce percpu_counter_limited_add(fbc, limit, amount) to prevent it.
+> > > 
+> > > I believe this implementation is correct, and slightly more efficient
+> > > than the combination of compare and add (taking the lock once rather
+> > > than twice when nearing full - the last 128MiB of a tmpfs volume on a
+> > > machine with 128 CPUs and 4KiB pages); but it does beg for a better
+> > > design - when nearing full, there is no new batching, but the costly
+> > > percpu counter sum across CPUs still has to be done, while locked.
+> > > 
+> > > Follow __percpu_counter_sum()'s example, including cpu_dying_mask as
+> > > well as cpu_online_mask: but shouldn't __percpu_counter_compare() and
+> > > __percpu_counter_limited_add() then be adding a num_dying_cpus() to
+> > > num_online_cpus(), when they calculate the maximum which could be held
+> > > across CPUs?  But the times when it matters would be vanishingly rare.
+> > > 
+> > > Signed-off-by: Hugh Dickins <hughd@google.com>
+> > > Cc: Tim Chen <tim.c.chen@intel.com>
+> > > Cc: Dave Chinner <dchinner@redhat.com>
+> > > Cc: Darrick J. Wong <djwong@kernel.org>
+> > > ---
+> > > Tim, Dave, Darrick: I didn't want to waste your time on patches 1-7,
+> > > which are just internal to shmem, and do not affect this patch (which
+> > > applies to v6.6-rc and linux-next as is): but want to run this by you.
+> > 
+> > Hmmmm. IIUC, this only works for addition that approaches the limit
+> > from below?
+> 
+> That's certainly how I was thinking about it, and what I need for tmpfs.
+> Precisely what its limitations (haha) are, I'll have to take care to
+> spell out.
+> 
+> (IIRC - it's a while since I wrote it - it can be used for subtraction,
+> but goes the very slow way when it could go the fast way - uncompared
+> percpu_counter_sub() much better for that.  You might be proposing that
+> a tweak could adjust it to going the fast way when coming down from the
+> "limit", but going the slow way as it approaches 0 - that would be neat,
+> but I've not yet looked into whether it's feasily done.)
+> 
+> > 
+> > So if we are approaching the limit from above (i.e. add of a
+> > negative amount, limit is zero) then this code doesn't work the same
+> > as the open-coded compare+add operation would?
+> 
+> To it and to me, a limit of 0 means nothing positive can be added
+> (and it immediately returns false for that case); and adding anything
+> negative would be an error since the positive would not have been allowed.
+> 
+> Would a negative limit have any use?
 
-on the mesa side of things, where we have more experience with CI,
-I've found updating expectations in same patch as code change to be
-hugely useful.  I *might* end up dropping the xfails changes when I
-apply this patch (because there are some dependencies on igt uprev and
-I'm not sure we have enough CI runs to be confident about flakes) but
-I definitely believe that we should be updating expectations along
-with code changes.
+I don't have any use for it, but the XFS case is decrementing free
+space to determine if ENOSPC has been hit. It's the opposite
+implemention to shmem, which increments used space to determine if
+ENOSPC is hit.
 
-BR,
--R
+> It's definitely not allowing all the possibilities that you could arrange
+> with a separate compare and add; whether it's ruling out some useful
+> possibilities to which it can easily be generalized, I'm not sure.
+> 
+> Well worth a look - but it'll be easier for me to break it than get
+> it right, so I might just stick to adding some comments.
+> 
+> I might find that actually I prefer your way round: getting slower
+> as approaching 0, without any need for specifying a limit??  That the
+> tmpfs case pushed it in this direction, when it's better reversed?  Or
+> that might be an embarrassing delusion which I'll regret having mentioned.
 
-> Regards,
-> Helen
->
-> >
-> > Nevertheless:
-> >
-> > Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> >
-> >>   4 files changed, 4 insertions(+), 22 deletions(-)
-> >
-> >
+I think there's cases for both approaching and upper limit from
+before and a lower limit from above. Both are the same "compare and
+add" algorithm, just with minor logic differences...
+
+> > Hence I think this looks like a "add if result is less than"
+> > operation, which is distinct from then "add if result is greater
+> > than" operation that we use this same pattern for in XFS and ext4.
+> > Perhaps a better name is in order?
+> 
+> The name still seems good to me, but a comment above it on its
+> assumptions/limitations well worth adding.
+> 
+> I didn't find a percpu_counter_compare() in ext4, and haven't got
+
+Go search for EXT4_FREECLUSTERS_WATERMARK....
+
+> far yet with understanding the XFS ones: tomorrow...
+
+XFS detects being near ENOSPC to change the batch update size so
+taht when near ENOSPC the percpu counter always aggregates to the
+global sum on every modification. i.e. it becomes more accurate (but
+slower) near the ENOSPC threshold. Then if the result of the
+subtraction ends up being less than zero, it takes a lock (i.e. goes
+even slower!), undoes the subtraction that took it below zero, and
+determines if it can dip into the reserve pool or ENOSPC should be
+reported.
+
+Some of that could be optimised, but we need that external "lock and
+undo" mechanism to manage the reserve pool space atomically at
+ENOSPC...
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
