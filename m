@@ -2,123 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBFDF7BE92A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 20:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1CF7BE92C
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 20:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377518AbjJISYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 14:24:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41774 "EHLO
+        id S1377559AbjJISYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 14:24:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377527AbjJISYX (ORCPT
+        with ESMTP id S1377544AbjJISYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 14:24:23 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5D1EB0
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 11:24:21 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d918aef0d0dso6700406276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 11:24:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696875861; x=1697480661; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=wOe87dtF8f2vVZaLo1VI1Io3ZSRwFhO2mL6l5vDJPeU=;
-        b=AqBNLc/ODmGvM7i/zIVnKQqJjEdspQKkLMYCrOP0O4dsv0EK4w/qzW1N8wbI2v0dOK
-         7bl4niVWr9fPwgEOpgzL+52Qo4a4FzYX2FO/AokgNoB8lCDfoLJHnbZ9KeU8xz8SsVKf
-         2hoEUOtMb4n/CSzQ2VgJV8lQoqh4xe9He9gG8G1Xo9eNWyjBTNC3rgaY8yTepspHc2Xo
-         QeV3VyXixgyW5mvgjJKF7ICiDHVhursTYSyTjl8QjgK0ddgDmY+xM2ikl0ZOScDMyT3C
-         +v1FXT99cIkN0Qof/tgnwmY7Q5W8e2vxzrMf4Gihj875RnivpSWYQec12bQgmUtSi0RU
-         36vQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696875861; x=1697480661;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wOe87dtF8f2vVZaLo1VI1Io3ZSRwFhO2mL6l5vDJPeU=;
-        b=VpC2mLGFNtaHnmHk+sCxNgqu1kt64eFynup+b1BEuTrC+0G2EbgacIaMtmOS73oPMf
-         kW3otY8jEjpsKZAarPwbi5PDwO42mPWI3TXOl8ZBIRuonlbVGgWF/HBMCEqmUdfHvdrn
-         llGRF076vQMyf/RkfovdFYWbGZhqpmF4Lp/hJWZwrWpCyTeRqT2pZxYY5a4h9Nt8F4If
-         KYljmG+QkpsWIZKq0gPNne2Y9eNgIj/uYc7fsdPUscpxygJCpF9GIBeBAXKElmiDnni4
-         /GY9QVU2ntGjEsPAMLClXoG1URA5QsdihPl1hCLZtzA0JDqdQvRjOgpanYt1QJ8EYizA
-         Z5DQ==
-X-Gm-Message-State: AOJu0YwdQvPmKk+jxAPR3Lb+etoRFE0q2GYpq6Jplm8sMbXfNgTcn1GI
-        tH3IXgUgpS5+0DfZn3f4sneVBMVj0VnDJEAQ/Q==
-X-Google-Smtp-Source: AGHT+IFC3hmo2rb6A5NbfvWHcFjCc5J7pyx/Rhtkmp7wRH/7V9F5MIpIoRZWCZ2zcQy/pl6DX5rSzrkN8x4djDXjig==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:9349:0:b0:d80:12c:d49b with SMTP
- id g9-20020a259349000000b00d80012cd49bmr282372ybo.8.1696875861177; Mon, 09
- Oct 2023 11:24:21 -0700 (PDT)
-Date:   Mon, 09 Oct 2023 18:24:20 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAFNFJGUC/x3N3QrCMAxA4VcZuTbQ/TNfRURKm20BiTUp0zH27
- hYvv5tzDjBSJoNrdYDSxsYvKagvFYTVy0LIsRga17S1cz1aVglpx6i8kRoKZYzm8ekl8/ux2Ic TBqRAk5t8O3TzCCWWlGb+/ke3+3n+AK2SqrB4AAAA
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1696875860; l=1558;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=yDFBSw0V7Cy1imQVxlIU4QmZCv9EuU9vec23gtxIRXc=; b=S39+gdooJRUg9dxjjjTV4pncP9RRL3ek8BSE4LJUNtiVQoov+qSTSt31Ueu4JkQi5Jm3KLRY+
- TTGzmzYRNojAbqsXC8gje4J8QrdHXbrGwPbScinRm52YP0QGIhMbjhg
-X-Mailer: b4 0.12.3
-Message-ID: <20231009-strncpy-drivers-net-dsa-lantiq_gswip-c-v1-1-d55a986a14cc@google.com>
-Subject: [PATCH] net: dsa: lantiq_gswip: replace deprecated strncpy with ethtool_sprintf
-From:   Justin Stitt <justinstitt@google.com>
-To:     Hauke Mehrtens <hauke@hauke-m.de>, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Mon, 9 Oct 2023 14:24:32 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 728E7D8
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 11:24:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA41DC433C7;
+        Mon,  9 Oct 2023 18:24:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696875871;
+        bh=GX827MInhdg+9mFXDOrIyDM25nqfnAIqJdLH+cnFaYc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=kfb/PFt1GOw5zC7CWQpYjFj1PXHizJBGvSfYLfMzu1Fu153G6IibmU7pIiE36MWaz
+         Wq5Mbd63mgNvyj381SHoYS/kgRDRAwW4svc1+EjTpZytGPUC6BnHmjhe/1TbQKluOd
+         lJwEvwm99bGucNKSkxo8yjWenMOkgH1X/PTJSUNlhE85Jmh4tatu/HsNRN2tGkdr8f
+         n//Ox8QHbqjDlpowcP8WVokEry8qPiiQFpPH/FDZZnxgZuHZUJw0iYZbRVLeH7Bc6P
+         33Axz2LTWi6+hZU7n2PdSHI6Q19g4MdzRer4+pDnB+9NDTvZrWNKAMdz3katFpP7Xh
+         pO6IoFkkMbihA==
+Date:   Mon, 9 Oct 2023 12:24:27 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>
+Cc:     virtualization@lists.linux-foundation.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] iommu/virtio: Add __counted_by for struct
+ viommu_request and use struct_size()
+Message-ID: <ZSRFW0yDlDo8+at3@work>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+Prepare for the coming implementation by GCC and Clang of the __counted_by
+attribute. Flexible array members annotated with __counted_by can have
+their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
+array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+functions).
 
-ethtool_sprintf() is designed specifically for get_strings() usage.
-Let's replace strncpy in favor of this more robust and easier to
-understand interface.
+While there, use struct_size() helper, instead of the open-coded
+version, to calculate the size for the allocation of the whole
+flexible structure, including of course, the flexible-array member.
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
+This code was found with the help of Coccinelle, and audited and
+fixed manually.
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
-Note: build-tested only.
----
- drivers/net/dsa/lantiq_gswip.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/iommu/virtio-iommu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/dsa/lantiq_gswip.c b/drivers/net/dsa/lantiq_gswip.c
-index 3c76a1a14aee..d60bc2e37701 100644
---- a/drivers/net/dsa/lantiq_gswip.c
-+++ b/drivers/net/dsa/lantiq_gswip.c
-@@ -1759,8 +1759,7 @@ static void gswip_get_strings(struct dsa_switch *ds, int port, u32 stringset,
- 		return;
+diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
+index 17dcd826f5c2..379ebe03efb6 100644
+--- a/drivers/iommu/virtio-iommu.c
++++ b/drivers/iommu/virtio-iommu.c
+@@ -85,7 +85,7 @@ struct viommu_request {
+ 	void				*writeback;
+ 	unsigned int			write_offset;
+ 	unsigned int			len;
+-	char				buf[];
++	char				buf[] __counted_by(len);
+ };
  
- 	for (i = 0; i < ARRAY_SIZE(gswip_rmon_cnt); i++)
--		strncpy(data + i * ETH_GSTRING_LEN, gswip_rmon_cnt[i].name,
--			ETH_GSTRING_LEN);
-+		ethtool_sprintf(&data, "%s", gswip_rmon_cnt[i].name);
- }
+ #define VIOMMU_FAULT_RESV_MASK		0xffffff00
+@@ -230,7 +230,7 @@ static int __viommu_add_req(struct viommu_dev *viommu, void *buf, size_t len,
+ 	if (write_offset <= 0)
+ 		return -EINVAL;
  
- static u32 gswip_bcm_ram_entry_read(struct gswip_priv *priv, u32 table,
-
----
-base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
-change-id: 20231005-strncpy-drivers-net-dsa-lantiq_gswip-c-ece909a364f7
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+-	req = kzalloc(sizeof(*req) + len, GFP_ATOMIC);
++	req = kzalloc(struct_size(req, buf, len), GFP_ATOMIC);
+ 	if (!req)
+ 		return -ENOMEM;
+ 
+-- 
+2.34.1
 
