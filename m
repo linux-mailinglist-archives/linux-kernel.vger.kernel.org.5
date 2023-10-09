@@ -2,119 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CED417BEDF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 00:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 649A87BEDF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 00:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378718AbjJIWAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 18:00:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46590 "EHLO
+        id S1378627AbjJIWAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 18:00:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378370AbjJIWAQ (ORCPT
+        with ESMTP id S1378238AbjJIWAx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 18:00:16 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B15CB9F;
-        Mon,  9 Oct 2023 15:00:14 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696888812;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hmf/kzB+2aw/kt0IWABgG/NdeS+iXHJx8qCtuTlAbR8=;
-        b=lycAmvKRMnB+ZpfWdOSV6rb9MSTwmhBF6tEYVR7ht2LhrRc6P/NUhhw1n2Qk35iPNU0JUP
-        neNHtr/1YjYS1jn8CYlpE1D2hlB/kc9bxUZCaHmlKlRt2dVU/uz1MQkNa/369nA1b62Prf
-        AzHx7Uxiq4j2MhEmqyfMXSECAJErukcp4+u7lv+9zIizFb2tc3VUL+AtFH1hxA+Q1rt2sZ
-        +FBlDNnDqtCo70KJ3WI7L8145qUL2F6dAUPFh3uFdkVhcHLjrx0lh9+Q8F36+Ld3mqcMuA
-        Z8i7b/i5MJ+3E+/vuua4kMJfsKALekdJtoH6rDU41++BOE2otjOjKjooNkzK4A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696888812;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hmf/kzB+2aw/kt0IWABgG/NdeS+iXHJx8qCtuTlAbR8=;
-        b=cy6tX36HTqjQxVe+C9e5sS0YK58Clw+HjT/rvGI6c3c1cT4p8GlFyblgIXi4SNjNV5t3a8
-        KTWdcE7sYex30uAg==
-To:     Biju Das <biju.das.jz@bp.renesas.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Biju Das <biju.das.au@gmail.com>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>
-Subject: RE: [PATCH v2] alarmtimer: Fix rebind failure
-In-Reply-To: <TYCPR01MB11269C6BF3934F9AAC44F855186CEA@TYCPR01MB11269.jpnprd01.prod.outlook.com>
-References: <20230922081208.26334-1-biju.das.jz@bp.renesas.com>
- <87il7fq1al.ffs@tglx>
- <TYCPR01MB112697A5D4B57101CDE27C88D86CEA@TYCPR01MB11269.jpnprd01.prod.outlook.com>
- <87fs2jpznr.ffs@tglx>
- <TYCPR01MB11269C6BF3934F9AAC44F855186CEA@TYCPR01MB11269.jpnprd01.prod.outlook.com>
-Date:   Tue, 10 Oct 2023 00:00:12 +0200
-Message-ID: <87bkd7pic3.ffs@tglx>
+        Mon, 9 Oct 2023 18:00:53 -0400
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0320A9;
+        Mon,  9 Oct 2023 15:00:50 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-59e88a28b98so43203227b3.1;
+        Mon, 09 Oct 2023 15:00:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696888850; x=1697493650; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YaFaP65UCsCQ7UFZs55oDxqvd/C/aEIgYAqZMLZc35k=;
+        b=QRCJjEXmn2gwi0XYp+xDv/TLLOhjeSuKIRzEfql676/7UqQG7PILVET/iAlqtAPcl0
+         MfofxQ80AXgrsaNe5eOlQypUfTuT0lc4DdrayDWUmLYC7zTEhv4JbFu+pF7gBJ/+NXQq
+         r0e4w+DaVA9E/WWYTKA9zH0EPt7S5wHcb21FnOFPRO8iulFuk0F/4vfYCI9Ha0hty5t/
+         QS5XWTMRsYcd9xxyH6gTD7AaHhJEcajPq35JR5TAao0Q7DMfsKB9RReerKYpR73jyZ91
+         +M08jCMKhTzxedOdyMhbfC6dixEqUVbrf7wOVfRo73ZiVqZLwmRnB9gssZp6bqqxeIg7
+         F+7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696888850; x=1697493650;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YaFaP65UCsCQ7UFZs55oDxqvd/C/aEIgYAqZMLZc35k=;
+        b=APBq+IxXl7DTEFwCoSgHE/WiEzkQL3YksvVmP0iD3l4WI1LoB4kqAJZC3cQq8+339W
+         aGlFfeJJzuZF8s38+o1dj2vHnzYHd6xhHd/bkwoUWwzh5SQQrRmdfaJbvSQNCWSi2GV0
+         Z+gDlvSnEJWlY4Otlhth7F29exn04odnF/11W5/BLalRruEzKZGxR0OQUr4vnHzUD1mA
+         k6Q8X8m0j0j7VBCZgc/xdBwiQ8zAQ2RePjLVS4AbsC+suBBkeCtN1tbyOIMkOR6/aE3o
+         4dxgAnNAH5+UCugJh/WMBnmePnXORcwJNTPOqL0lAMV/JRXVUx719HBIS0Yhk3mU1gcz
+         OdOQ==
+X-Gm-Message-State: AOJu0YxmgL4vA6Afl5gbn7dKXQkdKyGDqxZSU3z2rMis999+s4gKYWFu
+        UoB6gz4ImYY55RjYnR3hGQ9fj41RMoRTW1qR24c=
+X-Google-Smtp-Source: AGHT+IHJn5aLVv8I0nHEAFYZqkKXk9+RdR00KxRNGwBs89E5Tf4VBtacqDxZFEYWVNFBVlRVBv9vOmV6h2CUAHAtCNw=
+X-Received: by 2002:a81:6e44:0:b0:577:3f8c:fc60 with SMTP id
+ j65-20020a816e44000000b005773f8cfc60mr8032221ywc.1.1696888850022; Mon, 09 Oct
+ 2023 15:00:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231005214057.759089-1-mmaurer@google.com> <CAK7LNATBBk-a0EJcxpWGJ9n+9BHQUw3a4s41LTtC-R8fYrVMpw@mail.gmail.com>
+In-Reply-To: <CAK7LNATBBk-a0EJcxpWGJ9n+9BHQUw3a4s41LTtC-R8fYrVMpw@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 10 Oct 2023 00:00:38 +0200
+Message-ID: <CANiq72=Dsaa77n-OKDZCcv6TWgxZf7R00n=X137WbsUzwgU4RA@mail.gmail.com>
+Subject: Re: [PATCH v4] rust: Respect HOSTCC when linking for host
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Matthew Maurer <mmaurer@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09 2023 at 17:02, Biju Das wrote:
->> On Mon, Oct 09 2023 at 15:30, Biju Das wrote:
->> > You mean we should update[1] (charger-manager driver)as it is the one
->> > using alarmtimer_get_rtcdev()??
->> 
->> # git grep -c alarmtimer_get_rtcdev
->> drivers/power/supply/charger-manager.c:1
->> include/linux/alarmtimer.h:2
->> kernel/time/alarmtimer.c:10
+On Sat, Oct 7, 2023 at 5:38=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.or=
+g> wrote:
 >
-> kernel/time/alarmtimer.c has alarmtimer_get_rtcdev()check everywhere,
-> that is missing in charger-manager.c. I will add the same, is it ok?
+> Acked-by: Masahiro Yamada <masahiroy@kernel.org>
+>
+> if Miguel picked this up.
+>
+> Please let me know if I should pick this up.
 
-The code does in the init function:
+Thanks a lot for taking a look Masahiro -- either way is fine for me.
+If you want to take it, please feel free to add my `Acked-by`.
 
-      if (alarmtimer_get_rtcdev()) {
-         ....
-      }
-
-IOW, charger-manager.c expects that alarm is working when
-alarmtimer_get_rtcdev() returns non NULL at init. So ripping the RTC
-device out under it is going to result in a disfunctional driver. I'm
-not convinced that you can fix this by sprinkling a ton of checks around
-the code.
-
-But that's not the worst of it. The alarmtimer infrastructure is
-generally not designed for device/module removal. Why?
-
-The posix timer interface is fundamentally expecting that an armed alarm
-timer is actually functional. The fact that the class interface does not
-have a remove_dev callback is not an oversight and holding a reference
-on the module and a reference on the device is intended to ensure that
-the device cannot vanish.
-
-The changelog lacks any form of explanation why this is required and how
-removal of the registered RTC device is actually possible. Neither does
-it provide any analysis why this cannot result in malfunction.
-
-Thanks,
-
-        tglx
-
-
-
-
-
-
-
-
-
-
-
+Cheers,
+Miguel
