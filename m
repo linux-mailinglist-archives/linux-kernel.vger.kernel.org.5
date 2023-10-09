@@ -2,82 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60E9B7BE1E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:54:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2B897BE1E7
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377595AbjJINyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 09:54:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37192 "EHLO
+        id S1377566AbjJINzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 09:55:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377570AbjJINyq (ORCPT
+        with ESMTP id S1377599AbjJINzS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 09:54:46 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7568ECF;
-        Mon,  9 Oct 2023 06:54:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A043C433CB;
-        Mon,  9 Oct 2023 13:54:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696859684;
-        bh=ompOgLLvmlaZ/tZHb2NKNh+AWkXSSBfmdsowsHpjK1Q=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I9o9dDnp3E7CyoCXUH0vvzI9zyOVbFPT79OCHoI+Ops84d00hoDR+hLMweUsU2oEb
-         1KNscg7x7tj+4tD46Fz/Rx75OlaYlkypHxdpCCfTx5gw3XnqDh+AmmC9ICw9upSA2s
-         X/d+VnTA/XzHoblJdENjh1ej6qTpgotK7bCtJK0td03/kIw+2o5mLrP8OHEjoc9esi
-         Xh7KpUyBTP0rV6mW1kQI21C8tmD9fod1PHGfTu/5EHd4epEkubnNLFkQjXRzJGVJVC
-         1WqO2LAL3+/pDlolNKPS34ybeTYj6anBHy24XnV6vdCFe8lt0gYzYPr/Iee2BIBiwp
-         EC7BDRB7YGYqQ==
-From:   Christian Brauner <brauner@kernel.org>
-To:     jack@suse.cz,
-        syzbot+23bc20037854bb335d59@syzkaller.appspotmail.com,
-        Lizhi Xu <lizhi.xu@windriver.com>
-Cc:     Christian Brauner <brauner@kernel.org>, axboe@kernel.dk,
-        dave.kleikamp@oracle.com, hare@suse.de, hch@lst.de,
-        jfs-discussion@lists.sourceforge.net, johannes.thumshirn@wdc.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shaggy@kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] jfs: fix log->bdev_handle null ptr deref in lbmStartIO
-Date:   Mon,  9 Oct 2023 15:54:36 +0200
-Message-Id: <20231009-vielsagend-halbmarathon-2c0c448544db@brauner>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231009094557.1398920-1-lizhi.xu@windriver.com>
-References: <0000000000005239cf060727d3f6@google.com> <20231009094557.1398920-1-lizhi.xu@windriver.com>
+        Mon, 9 Oct 2023 09:55:18 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 098B9B9;
+        Mon,  9 Oct 2023 06:55:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1696859715; x=1728395715;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=gyAyyVVpeXrkP6kYXa6+1hGK7jwZaqHDO7BPBGN0kt4=;
+  b=b00qfY6XO5TgKGsHWnQjxlc/FdjKG7r6j8KR8V7ousu2w38b41zUN7bF
+   7SjyVFv+xN73AHxxRwIpVlphux0p0oWgGtHXBVoBKz+8ngDOHZfJdDUTY
+   8PXn1zpY/2K1bswPCARyKsRyK7jmw0NuLaAnreRKll3QSo/YqfotTEIeB
+   AMNWgWxJXDiRP51Ob52NIsbanE7SPLRW6mDGjOrKuSG3k6xUXWvGlupzm
+   OBNhujXilGGyPo3BHa9ZuKZ+SYeF5BarLhhq45/WvJT0oDB/vQ7WWVK9s
+   HrmkIFtKw0VJT+edZHY2MW9SfI8ueFJwbBhRRpEwDnJ1PEYQLonwckcnD
+   Q==;
+X-CSE-ConnectionGUID: BCeMba0SR+ms7gMS9QQd6g==
+X-CSE-MsgGUID: BpGGr/ejTDuwg8VyZ1RHXw==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
+   d="asc'?scan'208";a="9287955"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Oct 2023 06:55:11 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 9 Oct 2023 06:55:11 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Mon, 9 Oct 2023 06:55:08 -0700
+Date:   Mon, 9 Oct 2023 14:54:47 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Minda Chen <minda.chen@starfivetech.com>
+CC:     Daire McNamara <daire.mcnamara@microchip.com>,
+        Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Philipp Zabel" <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Kevin Xie <kevin.xie@starfivetech.com>
+Subject: Re: [PATCH v7 14/19] PCI: microchip: Add event IRQ domain ops to
+ struct plda_event
+Message-ID: <20231009-walk-tranquil-915f1a35f58c@wendy>
+References: <20230927100802.46620-1-minda.chen@starfivetech.com>
+ <20230927100802.46620-15-minda.chen@starfivetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1043; i=brauner@kernel.org; h=from:subject:message-id; bh=ompOgLLvmlaZ/tZHb2NKNh+AWkXSSBfmdsowsHpjK1Q=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaSqsIldct10g/m5hvdFjvWpMi8eV+r9PKmnnHh43gHrtwwe 8xucO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACYiEMrwT3H38iLBBev7S5eWTD3H81 f0zAnuJWk/urcZbgo6y1GXLszIsERhh8bvVO37ifPzrFIPFYQq2jOY3pWPO7zAtq9tT/5PfgA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="m6KZbs29qDbK8z+n"
+Content-Disposition: inline
+In-Reply-To: <20230927100802.46620-15-minda.chen@starfivetech.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 09 Oct 2023 17:45:57 +0800, Lizhi Xu wrote:
-> When sbi->flag is JFS_NOINTEGRITY in lmLogOpen(), log->bdev_handle can't
-> be inited, so it value will be NULL.
-> Therefore, add the "log ->no_integrity=1" judgment in lbmStartIO() to avoid such
-> problems.
-> 
-> 
+--m6KZbs29qDbK8z+n
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Applied to the vfs.super branch of the vfs/vfs.git tree.
-Patches in the vfs.super branch should appear in linux-next soon.
+Hey,
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+On Wed, Sep 27, 2023 at 06:07:57PM +0800, Minda Chen wrote:
+> For register different event domain ops, Add domain_ops
+> pointer to struct plda_event.
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
+Again, the motivation for making this change should, IMO, be mentioned
+in the commit message. The code change itself seems fine to me.
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
+Thanks,
+Conor.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.super
+>=20
+> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+> ---
+>  drivers/pci/controller/plda/pcie-microchip-host.c | 12 +++++++++---
+>  drivers/pci/controller/plda/pcie-plda.h           |  1 +
+>  2 files changed, 10 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/=
+pci/controller/plda/pcie-microchip-host.c
+> index 875bdb03ce22..49e09d24eb8f 100644
+> --- a/drivers/pci/controller/plda/pcie-microchip-host.c
+> +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
+> @@ -810,13 +810,15 @@ static const struct plda_event_ops mc_event_ops =3D=
+ {
+>  };
+> =20
+>  static const struct plda_event mc_event =3D {
+> +	.domain_ops             =3D &mc_event_domain_ops,
+>  	.event_ops              =3D &mc_event_ops,
+>  	.request_event_irq      =3D mc_request_event_irq,
+>  	.intx_event             =3D EVENT_LOCAL_PM_MSI_INT_INTX,
+>  	.msi_event              =3D EVENT_LOCAL_PM_MSI_INT_MSI,
+>  };
+> =20
+> -static int plda_pcie_init_irq_domains(struct plda_pcie_rp *port)
+> +static int plda_pcie_init_irq_domains(struct plda_pcie_rp *port,
+> +				      const struct irq_domain_ops *ops)
+>  {
+>  	struct device *dev =3D port->dev;
+>  	struct device_node *node =3D dev->of_node;
+> @@ -830,7 +832,8 @@ static int plda_pcie_init_irq_domains(struct plda_pci=
+e_rp *port)
+>  	}
+> =20
+>  	port->event_domain =3D irq_domain_add_linear(pcie_intc_node, port->num_=
+events,
+> -						   &mc_event_domain_ops, port);
+> +						   ops, port);
+> +
+>  	if (!port->event_domain) {
+>  		dev_err(dev, "failed to get event domain\n");
+>  		of_node_put(pcie_intc_node);
+> @@ -923,13 +926,16 @@ static int plda_init_interrupts(struct platform_dev=
+ice *pdev,
+>  	int irq;
+>  	int i, intx_irq, msi_irq, event_irq;
+>  	int ret;
+> +	const struct irq_domain_ops *irq_dom_ops;
+> =20
+>  	if (!event->event_ops || !event->event_ops->get_events) {
+>  		dev_err(dev, "no get events ops\n");
+>  		return -EINVAL;
+>  	}
+> =20
+> -	ret =3D plda_pcie_init_irq_domains(port);
+> +	irq_dom_ops =3D event->domain_ops ? event->domain_ops : &mc_event_domai=
+n_ops;
+> +
+> +	ret =3D plda_pcie_init_irq_domains(port, irq_dom_ops);
+>  	if (ret) {
+>  		dev_err(dev, "failed creating IRQ domains\n");
+>  		return ret;
+> diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/contro=
+ller/plda/pcie-plda.h
+> index 48d7bc471137..122084a3318a 100644
+> --- a/drivers/pci/controller/plda/pcie-plda.h
+> +++ b/drivers/pci/controller/plda/pcie-plda.h
+> @@ -155,6 +155,7 @@ struct plda_pcie_rp {
+>  };
+> =20
+>  struct plda_event {
+> +	const struct irq_domain_ops *domain_ops;
+>  	const struct plda_event_ops *event_ops;
+>  	int (*request_event_irq)(struct plda_pcie_rp *pcie,
+>  				 int event_irq, int event);
+> --=20
+> 2.17.1
+>=20
 
-[1/1] jfs: fix log->bdev_handle null ptr deref in lbmStartIO
-      https://git.kernel.org/vfs/vfs/c/dc869ef84f26
+--m6KZbs29qDbK8z+n
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSQGJwAKCRB4tDGHoIJi
+0gYuAP9YmN8fqrCvIcDZ84hExyo6Vu/F1CIxaPdG74xU36uKvQEAqgc/XKWQMzpn
+ynbUEg/q3dgQSY95wyw26lrTyWvOrAg=
+=jw9K
+-----END PGP SIGNATURE-----
+
+--m6KZbs29qDbK8z+n--
