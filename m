@@ -2,73 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0F07BEA34
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 20:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B37B7BEA39
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 21:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378247AbjJIS53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 14:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58172 "EHLO
+        id S1378293AbjJITA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 15:00:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377444AbjJIS51 (ORCPT
+        with ESMTP id S1378172AbjJITAy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 14:57:27 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5767A4
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 11:57:22 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-690f7bf73ddso3271005b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 11:57:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696877842; x=1697482642; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ef2KltIf/Jizj+cWsThstfJI8FTNgm2Gv7ZqircULnk=;
-        b=lpO2oNy6rAUVMqUJwdzK9SfX0IgGOBBDrVu9kPv+W3YBwUBE6DDo2Uis7+f31qOLxe
-         xCjOdkEOGfVkzJVsxZ5cwIbfnkSAkoAVNBF12e/XHsjuPjNnI29nBAJdapMefJbp2uUT
-         2/iVht4Z0z1D4nN5WcvRnOCc2aq82qvEwGZn4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696877842; x=1697482642;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ef2KltIf/Jizj+cWsThstfJI8FTNgm2Gv7ZqircULnk=;
-        b=IRuVWAxVXyM5JmUF2JUbQtHbcM0C7i+1zmN/egOcIs1CSebAoy5MnOZ7BaYwM/NOdz
-         c9kdRjDeuEGzVbQDild3XuSSH4SwaMehGRhEOrSMWm1A+kZgU7jMKZWHdp8GfXKeHor/
-         7AGD/EVfH+KyvXcvE8U4krjxy7dcGNEvND+48fL0hNlt2fjfdUFL+atgrfBp0R4NVyTZ
-         3hwfzP7+11LHajvSM1b5UEds3898me5bX7T2D9o7HgnXmTOxSjDxwraYs9SytUdMgdPa
-         vfjkvdB4jfu1+wAj+G2rzzWsLoehXLppmmY0X4P4RmK+CGPd0XqnOr0dvMlfHoG8Mdn5
-         YTEg==
-X-Gm-Message-State: AOJu0Yy6bvIF0FUzFoX8cLVwVAWV+4h5ymZ+zH3Ku9Q1peKCA/xlj6mM
-        VA9KX6PXdaUYrVDbve5gLJV4HQ==
-X-Google-Smtp-Source: AGHT+IE4vqs9atio0N5fkJGlaREins6sf7uxHziFBJfwRZO5gxQHdqS9RWYAu7UcEcHK+4OWLtOB9g==
-X-Received: by 2002:a05:6a20:841b:b0:137:2f8c:fab0 with SMTP id c27-20020a056a20841b00b001372f8cfab0mr16715873pzd.49.1696877842295;
-        Mon, 09 Oct 2023 11:57:22 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id p18-20020aa78612000000b00689f5940061sm6902037pfn.17.2023.10.09.11.57.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 11:57:21 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 11:57:19 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Hauke Mehrtens <hauke@hauke-m.de>, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] net: dsa: lantiq_gswip: replace deprecated strncpy with
- ethtool_sprintf
-Message-ID: <202310091156.978D4E1@keescook>
-References: <20231009-strncpy-drivers-net-dsa-lantiq_gswip-c-v1-1-d55a986a14cc@google.com>
- <202310091134.67A4236E@keescook>
+        Mon, 9 Oct 2023 15:00:54 -0400
+Received: from forward100b.mail.yandex.net (forward100b.mail.yandex.net [178.154.239.147])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1FC99C;
+        Mon,  9 Oct 2023 12:00:51 -0700 (PDT)
+Received: from mail-nwsmtp-smtp-production-main-63.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-63.sas.yp-c.yandex.net [IPv6:2a02:6b8:c14:6e01:0:640:627f:0])
+        by forward100b.mail.yandex.net (Yandex) with ESMTP id 513D460A9E;
+        Mon,  9 Oct 2023 22:00:49 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-63.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id Z0imEe6DeSw0-tb5Kw72p;
+        Mon, 09 Oct 2023 22:00:48 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=6tel.net; s=mail;
+        t=1696878048; bh=Q0kzR1Hkqz2cOVD+5iFO30kiqBo+q8tCC8dS7GzQR8s=;
+        h=Cc:Message-ID:References:Date:In-Reply-To:Subject:To:From;
+        b=JLtChTSwho6cSk5GB+t52/2PP2CUNKzRSTrNKHb+N57FkOR2uUdsrbIYNfZlz8kdc
+         vBL6blQzTg9Pzjdd5BBkGTM+cWB+SYJ+S4Cy3h8rHOz8B2QzTOXmt2PARTJoUcnyjl
+         f6I8oD/FvT/m4sRE/bwTkJthJi0cYmSIX9T7NbeM=
+Authentication-Results: mail-nwsmtp-smtp-production-main-63.sas.yp-c.yandex.net; dkim=pass header.i=@6tel.net
+From:   Muhammed Efe Cetin <efectn@6tel.net>
+To:     d-gole@ti.com
+Cc:     conor+dt@kernel.org, devicetree@vger.kernel.org, efectn@6tel.net,
+        heiko@sntech.de, jonas@kwiboo.se,
+        krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, megi@xff.cz,
+        robh+dt@kernel.org, sebastian.reichel@collabora.com
+Subject: Re: [PATCH v3 3/3] arm64: dts: rockchip: Add Orange Pi 5
+Date:   Mon,  9 Oct 2023 22:00:26 +0300
+Message-ID: <20231009190027.10304-1-efectn@6tel.net>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231009054034.am2e4hcmwoworeml@dhruva>
+References: <20231009054034.am2e4hcmwoworeml@dhruva>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202310091134.67A4236E@keescook>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,T_SPF_PERMERROR autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,46 +55,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 11:34:27AM -0700, Kees Cook wrote:
-> On Mon, Oct 09, 2023 at 06:24:20PM +0000, Justin Stitt wrote:
-> > `strncpy` is deprecated for use on NUL-terminated destination strings
-> > [1] and as such we should prefer more robust and less ambiguous string
-> > interfaces.
-> > 
-> > ethtool_sprintf() is designed specifically for get_strings() usage.
-> > Let's replace strncpy in favor of this more robust and easier to
-> > understand interface.
-> > 
-> > Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> > Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> > Link: https://github.com/KSPP/linux/issues/90
-> > Cc: linux-hardening@vger.kernel.org
-> > Signed-off-by: Justin Stitt <justinstitt@google.com>
-> > ---
-> > Note: build-tested only.
-> > ---
-> >  drivers/net/dsa/lantiq_gswip.c | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/net/dsa/lantiq_gswip.c b/drivers/net/dsa/lantiq_gswip.c
-> > index 3c76a1a14aee..d60bc2e37701 100644
-> > --- a/drivers/net/dsa/lantiq_gswip.c
-> > +++ b/drivers/net/dsa/lantiq_gswip.c
-> > @@ -1759,8 +1759,7 @@ static void gswip_get_strings(struct dsa_switch *ds, int port, u32 stringset,
-> >  		return;
-> >  
-> >  	for (i = 0; i < ARRAY_SIZE(gswip_rmon_cnt); i++)
-> > -		strncpy(data + i * ETH_GSTRING_LEN, gswip_rmon_cnt[i].name,
-> > -			ETH_GSTRING_LEN);
-> > +		ethtool_sprintf(&data, "%s", gswip_rmon_cnt[i].name);
+Hi,
+
+On 9.10.2023 08:40, Dhruva Gole wrote:
+> Hello,
 > 
-> Sorry, I read too fast: this should be "data", not "&data", yeah?
+> On Oct 05, 2023 at 16:54:04 +0300, Muhammed Efe Cetin wrote:
+>> Hello,
+>>
+>> On 28.09.2023 13:51, Dhruva Gole wrote:
+>>> Hi,
+>>>
+>>> On Aug 21, 2023 at 18:47:59 +0300, Muhammed Efe Cetin wrote:
+>>>> Add initial support for OPi5 that includes support for USB2, PCIe2, Sata,
+>>>> Sdmmc, SPI Flash, PMIC.
+>>>>
+>>>> Signed-off-by: Muhammed Efe Cetin <efectn@6tel.net>
+>>>> Reviewed-by: Ondřej Jirman <megi@xff.cz>
+>>>> ---
+>>>>    arch/arm64/boot/dts/rockchip/Makefile         |   1 +
+>>>>    .../boot/dts/rockchip/rk3588s-orangepi-5.dts  | 673 ++++++++++++++++++
+>>>>    2 files changed, 674 insertions(+)
+>>>>    create mode 100644 arch/arm64/boot/dts/rockchip/rk3588s-orangepi-5.dts
+>>>>
+>>> ...
+>>>
+>>> Can you provide some sort of documentation on how I can build and boot
+>>> the kernel on this board? I was unable to use the upstream arm64
+>>> defconfig with this exact series applied to boot the board.
+>>
+>> What was wrong when you tried to compile & boot the board? Can you provide some logs?
+> 
+> Umm don't have logs at hand, but I remember it didn't really reach the
+> linux first line either, it went into sort of a bootloop just after
+> the uboot stage.
 
-As I said in the other email, please ignore me. &data is correct. I'm
-not used to ethtool_sprintf(), clearly. :) My original Reviewed-by
-stands. Sorry for the noise!
+Hmm there might be issue with your uboot compilation. It'd be better if you provide useful logs.
 
--Kees
+> 
+>>
+>>>
+>>>> +
+>>>> +&i2c6 {
+>>>> +	pinctrl-names = "default";
+>>>> +	pinctrl-0 = <&i2c6m3_xfer>;
+>>>> +	status = "okay";
+>>>> +
+>>>> +	hym8563: rtc@51 {
+>>>> +		compatible = "haoyu,hym8563";
+>>>> +		reg = <0x51>;
+>>>> +		#clock-cells = <0>;
+>>>> +		clock-output-names = "hym8563";
+>>>> +		pinctrl-names = "default";
+>>>> +		pinctrl-0 = <&hym8563_int>;
+>>>> +		interrupt-parent = <&gpio0>;
+>>>> +		interrupts = <RK_PB0 IRQ_TYPE_LEVEL_LOW>;
+>>>> +		wakeup-source;
+>>>
+>>> Are you able to actually use rtc as a wakeup source? I tried this
+>>> on a downstream kernel that I mention below..
+>>>
+>>> rtcwake -s 10 -m mem
+>>>
+>>> didn't actually seem to wake the device from deepsleep after 10 seconds.
+>>> Do you know what other pins I can use as wakeup sources?
+>>
+>> No, i've not tried it before.
+> 
+> ah okay
+> 
+>>
+>>>
+>>>> +	};
+>>>> +};
+>>>> +
+>>>> +&mdio1 {
+>>>> +	rgmii_phy1: ethernet-phy@1 {
+>>>> +		compatible = "ethernet-phy-ieee802.3-c22";
+>>>
+>>> Just wondering, can you please give some logs of the board with eth
+>>> working? The image that I have from opi seems to fail eth? As in I am
+>>> not able to see any ip address. here are the logs:
+>>>
+>>> https://gist.github.com/DhruvaG2000/eda2762e35013c8d5ac9f37e818103a3
+>>
+>> Unfortunately the board is not near me currently. However, i was able to use GMAC ethernet in both the upstreram and downstream kernels. Did you try any images other than Orange Pi ones?
+> 
+> Nope, are there any other images that maybe more suitable? Please can you point me to them?
 
--- 
-Kees Cook
+You can check the images below the Third Party Images section in OPi's download page. GMAC should work properly with most of them.
+
+> 
+>>
+>>>
+>>> ...
+>>>
+>>
+> 
