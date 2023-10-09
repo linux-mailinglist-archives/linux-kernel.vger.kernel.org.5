@@ -2,86 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED36D7BE1D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60E9B7BE1E0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377573AbjJINyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 09:54:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42188 "EHLO
+        id S1377595AbjJINyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 09:54:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377572AbjJINyd (ORCPT
+        with ESMTP id S1377570AbjJINyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 09:54:33 -0400
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 197CCDF;
-        Mon,  9 Oct 2023 06:54:30 -0700 (PDT)
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 399D7FtN016203;
-        Mon, 9 Oct 2023 15:54:14 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=VYzUeQtCRSwWQdye7rKIPm5i7nIiZjO3UlgmNVPCqnM=; b=P3
-        uZlUed27OO16Q43zRjjfq56m6C5YKBlmR/dUZcgmb5hiRQMkXRIjWxkgSxKvKZYv
-        OUmy1GQeMyAnOxAWvwM3XXSXsamrjwc/j5SDQZvQGikG/sPqQXCeI6n9g4wsfKKv
-        Ljg6Prw7K/QzzDF3BUaolsWsW4GWWnxKDI0hAOvpbzmE8CcvnJC/3NzO78nvSBwB
-        7OU4EP9tBMXy2C/D0+ZCGOFyRiNboGYuhdbwahuQ5bpu8L/VruQwCb4PypE4dMl6
-        QVcePMl/rePH4DIPe/L1j6HH/l/RqGnl1z8ycOPrgGLgEYTxjgVN6/XOVOuWw22B
-        pfNWsXzYVfNsHzMd+XYw==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3tkhf7dg40-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Oct 2023 15:54:14 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2235810005E;
-        Mon,  9 Oct 2023 15:54:14 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 18595229A87;
-        Mon,  9 Oct 2023 15:54:14 +0200 (CEST)
-Received: from [10.201.20.120] (10.201.20.120) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 9 Oct
- 2023 15:54:13 +0200
-Message-ID: <26e0112b-6420-c583-4462-d5ab2a2c4197@foss.st.com>
-Date:   Mon, 9 Oct 2023 15:54:12 +0200
+        Mon, 9 Oct 2023 09:54:46 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7568ECF;
+        Mon,  9 Oct 2023 06:54:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A043C433CB;
+        Mon,  9 Oct 2023 13:54:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696859684;
+        bh=ompOgLLvmlaZ/tZHb2NKNh+AWkXSSBfmdsowsHpjK1Q=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=I9o9dDnp3E7CyoCXUH0vvzI9zyOVbFPT79OCHoI+Ops84d00hoDR+hLMweUsU2oEb
+         1KNscg7x7tj+4tD46Fz/Rx75OlaYlkypHxdpCCfTx5gw3XnqDh+AmmC9ICw9upSA2s
+         X/d+VnTA/XzHoblJdENjh1ej6qTpgotK7bCtJK0td03/kIw+2o5mLrP8OHEjoc9esi
+         Xh7KpUyBTP0rV6mW1kQI21C8tmD9fod1PHGfTu/5EHd4epEkubnNLFkQjXRzJGVJVC
+         1WqO2LAL3+/pDlolNKPS34ybeTYj6anBHy24XnV6vdCFe8lt0gYzYPr/Iee2BIBiwp
+         EC7BDRB7YGYqQ==
+From:   Christian Brauner <brauner@kernel.org>
+To:     jack@suse.cz,
+        syzbot+23bc20037854bb335d59@syzkaller.appspotmail.com,
+        Lizhi Xu <lizhi.xu@windriver.com>
+Cc:     Christian Brauner <brauner@kernel.org>, axboe@kernel.dk,
+        dave.kleikamp@oracle.com, hare@suse.de, hch@lst.de,
+        jfs-discussion@lists.sourceforge.net, johannes.thumshirn@wdc.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shaggy@kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] jfs: fix log->bdev_handle null ptr deref in lbmStartIO
+Date:   Mon,  9 Oct 2023 15:54:36 +0200
+Message-Id: <20231009-vielsagend-halbmarathon-2c0c448544db@brauner>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231009094557.1398920-1-lizhi.xu@windriver.com>
+References: <0000000000005239cf060727d3f6@google.com> <20231009094557.1398920-1-lizhi.xu@windriver.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 5/7] arm64: dts: st: add soc & rifsc structure to
- stm32mp255
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        <linux-media@vger.kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>
-CC:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-References: <20231004091552.3531659-1-hugues.fruchet@foss.st.com>
- <20231004091552.3531659-6-hugues.fruchet@foss.st.com>
- <86886ecb-dd39-49fb-a575-9e9bf303a8b1@linaro.org>
-From:   Hugues FRUCHET <hugues.fruchet@foss.st.com>
-In-Reply-To: <86886ecb-dd39-49fb-a575-9e9bf303a8b1@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.20.120]
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-09_11,2023-10-09_01,2023-05-22_02
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1043; i=brauner@kernel.org; h=from:subject:message-id; bh=ompOgLLvmlaZ/tZHb2NKNh+AWkXSSBfmdsowsHpjK1Q=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaSqsIldct10g/m5hvdFjvWpMi8eV+r9PKmnnHh43gHrtwwe 8xucO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACYiEMrwT3H38iLBBev7S5eWTD3H81 f0zAnuJWk/urcZbgo6y1GXLszIsERhh8bvVO37ifPzrFIPFYQq2jOY3pWPO7zAtq9tT/5PfgA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,39 +56,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
-
-On 10/5/23 21:46, Krzysztof Kozlowski wrote:
-> On 04/10/2023 11:15, Hugues Fruchet wrote:
->> Add soc & rifsc structure to stm32mp255.
->>
->> Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
->> ---
->>   arch/arm64/boot/dts/st/stm32mp255.dtsi | 4 ++++
->>   1 file changed, 4 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/st/stm32mp255.dtsi b/arch/arm64/boot/dts/st/stm32mp255.dtsi
->> index e6fa596211f5..4f2b224fe077 100644
->> --- a/arch/arm64/boot/dts/st/stm32mp255.dtsi
->> +++ b/arch/arm64/boot/dts/st/stm32mp255.dtsi
->> @@ -6,4 +6,8 @@
->>   #include "stm32mp253.dtsi"
->>   
->>   / {
->> +	soc@0 {
->> +		rifsc: rifsc-bus@42080000 {
+On Mon, 09 Oct 2023 17:45:57 +0800, Lizhi Xu wrote:
+> When sbi->flag is JFS_NOINTEGRITY in lmLogOpen(), log->bdev_handle can't
+> be inited, so it value will be NULL.
+> Therefore, add the "log ->no_integrity=1" judgment in lbmStartIO() to avoid such
+> problems.
 > 
-> 
-> This change on its own makes little sense. We do not add empty
-> placeholders...
-
-So I will add it with introduction of vdec node... will do in v2.
-
-> 
-> 
-> Best regards,
-> Krzysztof
 > 
 
-BR,
-Hugues.
+Applied to the vfs.super branch of the vfs/vfs.git tree.
+Patches in the vfs.super branch should appear in linux-next soon.
+
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.super
+
+[1/1] jfs: fix log->bdev_handle null ptr deref in lbmStartIO
+      https://git.kernel.org/vfs/vfs/c/dc869ef84f26
