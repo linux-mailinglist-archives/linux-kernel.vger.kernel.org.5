@@ -2,175 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 759E37BD606
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA42A7BD61A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345601AbjJIJCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 05:02:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33610 "EHLO
+        id S1345703AbjJIJCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 05:02:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234477AbjJIJCI (ORCPT
+        with ESMTP id S1345682AbjJIJCv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 05:02:08 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2057.outbound.protection.outlook.com [40.107.243.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40717A3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:02:02 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SoYtdqZNgNAUjcQeiAVLl3cNKF5C35kT44HJEzxYDsfhp17sWPgxZBWVQ6PgZOgmon/FC1153z/6W88zDB7n1FcXYMp4G1GZnOB3XxgOtTVFYhwCepirQc6OnY92wadBkvxiB5cdgaPNOn0GG+S1rPuhkyePR6mlWh9qfjOUJO+NbWQDdmzG01YHQCI2KkJ4BpoTowY+xEGxzGRu71sc6ro+tf0pMGRzJ5TLgabNtVEp2/2ro4Ea2JUxE6FHmL54zKm1DypI2CTKYUUaklUZFBJQ9bTq16+zgUKzt3FeoNE9OUh2XJemWfV3SD1E1wJFLgdMdEMlnpLgQmny8qynfA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GNPDjFoS8tfCaoDZptJOWraFSs599DRskDojcFGvNFc=;
- b=Nre2b2Z/eCubUNKiygiMAEafM13XKgA2ms80Z4fLZwCqcUu8jXb0+KZVGEO6dOdMllyHwnmAj6SI6Grln0TCX1zF9wDJnLykauXdA9iUWcl+tAybXU6hUcN78bM7nvw4invOROhh7tA3LUtOBjIPa7h4xAiw3MmQiFwncIJcL4IEyqUEU85xJI84wtUInIr3+tu0j1quuZZvb73MzLt/0t1/hR+FHhNKbNmgE/8V8WVXiINgiaJo8YvWmEvjKDNaosIqHoNlFRREHLYqky/AIxRordP6TGoEZE5xZ1vmMcsk7ar9Do+QYllxK9n9BB3eMcqtP9GD4FBMEon63rehPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GNPDjFoS8tfCaoDZptJOWraFSs599DRskDojcFGvNFc=;
- b=aT68swQHhmxqOX0qkGeFW7+vHgaDzskDuj4hZPYAQqGJTqfcmp2NQq4jaFRhEX+Cq5DTosZUKiEvMZ7vI23BQ8oZVZz8o/wYTU15bZ9hKc1hbXHr3a6XrEbIkQ6pY2E4HN2YLzDt3O929oyTol3wyNwGATustwThO2QxSNVgoJo=
-Received: from MW4PR12MB5667.namprd12.prod.outlook.com (2603:10b6:303:18a::10)
- by SJ2PR12MB7963.namprd12.prod.outlook.com (2603:10b6:a03:4c1::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.38; Mon, 9 Oct
- 2023 09:01:59 +0000
-Received: from MW4PR12MB5667.namprd12.prod.outlook.com
- ([fe80::c65c:9847:210d:2f2d]) by MW4PR12MB5667.namprd12.prod.outlook.com
- ([fe80::c65c:9847:210d:2f2d%6]) with mapi id 15.20.6838.033; Mon, 9 Oct 2023
- 09:01:59 +0000
-From:   "Sharma, Shashank" <Shashank.Sharma@amd.com>
-To:     Icenowy Zheng <uwu@icenowy.me>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Yadav, Arvind" <Arvind.Yadav@amd.com>
-CC:     "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] drm/amdgpu: fix SI failure due to doorbells allocation
-Thread-Topic: [PATCH] drm/amdgpu: fix SI failure due to doorbells allocation
-Thread-Index: AQHZ+bNEZINILWR0QkekftsQ4JLIPbBBKfzw
-Date:   Mon, 9 Oct 2023 09:01:59 +0000
-Message-ID: <MW4PR12MB5667743E5B759FFE85F204ACF2CEA@MW4PR12MB5667.namprd12.prod.outlook.com>
-References: <20231008064649.3184677-1-uwu@icenowy.me>
-In-Reply-To: <20231008064649.3184677-1-uwu@icenowy.me>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=248a72f2-3d7b-40fa-9a49-39a7179bc852;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2023-10-09T08:57:55Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MW4PR12MB5667:EE_|SJ2PR12MB7963:EE_
-x-ms-office365-filtering-correlation-id: 07a7c4de-c819-4b92-2542-08dbc8a66558
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 8mihW8E/TiiQjbV8/whMvQQiel/w5w6wjCpCMEVAi1hT/ViYuyOGivyBCXNC4YvZLrrEZolz31BM3I9tDW2DFoTV2uIZ734fGuWm00oWjL0taLwoxjxP2VWrxlIdLQ5f1+/Ndz4ENYknFRoGuZ0wDOnwj/yav0iBgJufSG20/8LojeSgxma23aukKJUAbr+AVyov+vx5kU9AauPobe3PINnQD2rbv7D1hbqw6ghHFmkmo101dgNOQ6VUog6Wvu3L4VPHStqjb2wMMLR7w/L25N5054dHpNhS16aW/1DX3MbLMitbSN0PiWhjhyQp6w+yIsA8vSZa0FFIFKqjoHrsPqRkBBn4FyakGzI8VaDd0OKcH+vMBr3zCxNcp+UlNVG5mlEQrsx2gFzaulTGy65k9ZYXgX7LPjIWHCo2i22o3qfgKwsj8d9Ti0SP7I74ZCRSIEdSZbwJ/5MXKAnhTMPzQGGR7ILbTr6fuz9wjqdQZgjZiHBca40+Q+lFk6wTEBLmM6Cq8Xi62czkwhf5pgOVY5r9SuRcA1jFErlPrfh1iSDaTfYOhVyON7uNI8G2gPH7bO4C4drr+MHLOdMjzXunGBBskR5W7jPyCNfEAf6+w/ldG8cwTvyGv4K7wUSjKxiDUa4Mz6N3MzQkjV2HXxihTA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB5667.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(39860400002)(136003)(376002)(346002)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(921005)(38070700005)(38100700002)(122000001)(86362001)(33656002)(52536014)(53546011)(55016003)(9686003)(71200400001)(7696005)(41300700001)(8936002)(5660300002)(2906002)(4326008)(478600001)(8676002)(83380400001)(6506007)(316002)(66446008)(6636002)(66556008)(64756008)(66946007)(110136005)(76116006)(66476007)(54906003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Hzs/gtoe87IUdaaNYuWpLjdGuAgH2a2FVgQhIJ3l+Wxjw3Zq8X4xJd9NMetv?=
- =?us-ascii?Q?3MCwKyfmtaf4m0czyQ8RSV1ZhsMZWTSG7OJI2Bsb9QwEkL5/d8vpP+pDkXCP?=
- =?us-ascii?Q?Cep3iBGLuAlM8/NX90JPmfezF0pVNjp5GNJErTskYFkOTfeqt83cJDQlH4H3?=
- =?us-ascii?Q?OoM+czPN8ZdDh05OEnGBmhJ4xY7dq1iI9TZDXrUa5fXoV7hsjrQ7r382R+jH?=
- =?us-ascii?Q?67z9cQntcKGZLE9XIi/LrwD0+szfCQMYpAwbqjFRP4Ajt2gttzo5Yn0pDiFL?=
- =?us-ascii?Q?gs8SJhkdctipf+tVsrlRpJ9bGbeflOPqTCVH9CT1jvMRhi/lKR37MwTuyug7?=
- =?us-ascii?Q?kn62j4gdICuq3TftQ7jhPfSs5YDFe7mwn+qWo7d0zuI+rySCqGo2NOAJswPS?=
- =?us-ascii?Q?AdvDFu+ls+zBjuwMdn1UZmG/rBZEKJ59a9rLW8jTfny9eSc5nZQNS5xPZxBv?=
- =?us-ascii?Q?rAlP1LGKm++KeBPQVXMthyEWLkz8FF9Xko7tUSeRAXv5qmqNS4psHnSsQBFC?=
- =?us-ascii?Q?Jqx1N0x7ke+CtNXigagecT4884e2JLZvHOT1iwi7JoXbsvKum+eEBOcPI9L0?=
- =?us-ascii?Q?rYHdAKxVCkwnFmLDiZdX8vsf+25egBgvZDg7VVadqXIjSYEORshG14w6RlG4?=
- =?us-ascii?Q?ywSWs7+boI89DvRJ0rUu2cKdGOjHT2DciPeJPTwQ51ZvIaD626Pw5H/4FOqG?=
- =?us-ascii?Q?6GpsJwZev2zHCvVeZYown25+dp1Ki80BsjHqKeZIbu7ldqLAhUVbEvYlbiEQ?=
- =?us-ascii?Q?ANjLeXD5JCKilzItYHED5y5Kv4RxCygKzH1W4c89w1T+8aeW/p0xX5ln1TuR?=
- =?us-ascii?Q?/ZE+vrtzKWrEsDsd0xmrg4d+Vo/OS+bbtFfiuLgYHVWFi3ygPOoBTpXwEydV?=
- =?us-ascii?Q?WwIgHLwwnKeTI5BnCtclgZN+lyUBlOOJIx/jhQBsxaG5WBHbUZ/v/TD0mZbX?=
- =?us-ascii?Q?Uvoy/UuM3OpXztGHombM1Nbu5IahP2/hCw95Q2Tz/9N2+X3EdCErab2WOjWe?=
- =?us-ascii?Q?oJtKYP7rc4ki1qG/eh9EfoYxou/bdNKf9jzWIyTrzlE0Vsb8OI4XhryPBlMv?=
- =?us-ascii?Q?loFse1SfP5upM3exy22DWLgCThfqHn+M65Y6s24W1M/c8ZS0UMMnLxReGs1t?=
- =?us-ascii?Q?JUJw43IvdK4rAoBNcfcNpr2DCYZr8C676s91BMoafYhVRN+5YqXUWGg3JpUC?=
- =?us-ascii?Q?4/Gn6u603srklZWB1BsP4z4bt66Eyf5yMbP/eXK3SOBxcOESUxvgQMFxg2Nx?=
- =?us-ascii?Q?fMlx4q7rkjmtpNlJ1Fc7vtmtVsBp5gUx5RxZjJS8ucSAbGncctUm+yiN1MJ+?=
- =?us-ascii?Q?yyNN5MTw8VyThCF9jJh0Dd5S7csWyezp1u2gY72k9SJHSqR4F0y84wCG8u26?=
- =?us-ascii?Q?Z8oeuWATlGxOaqxlmvNqhfwiq6JpBNSzMpo6Jv8/h0MkBpU3zeQ04FB3Hl1e?=
- =?us-ascii?Q?bxKcGbgmsNm/PFqM59jxIbQz/dofltCvZf8LKiCSM4nVfXtJ1rhF7YlvfT/A?=
- =?us-ascii?Q?Fm6ADbNPbUs7QhtSpz/C2zXmumxJQcNpssMp3CYkVnrjeV0TyDxIFKb1Zg?=
- =?us-ascii?Q?=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 9 Oct 2023 05:02:51 -0400
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC9EFDE;
+        Mon,  9 Oct 2023 02:02:42 -0700 (PDT)
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3997kBj8016515;
+        Mon, 9 Oct 2023 11:02:20 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=
+        selector1; bh=G45xnPIUX9Ez29Qgnji13Rx5Rf0f5sWrQjcrxGxi2dI=; b=z3
+        Bvtq2jdON1aVCMbQCY3h/qaVoQmvOeYcE46qodM8z0atcV2aqWKIOtEre8sEFx42
+        2tsVZvqLIgZh86AzjZBZytYNTCwQGtG+PqYrWflFBWrJGBpLv7Ltvlbof+N1xoub
+        bYreB6WtLnSuLDda9OysxNMUwqAsQarrf97cEpWBk8Tdp1bIrqfK3po3Kf+8iu2s
+        Od/HYR8ColJa0HYl/jUeEe07lCt6eIEY5wV/B6mW+Ow7bdwsFHKafHgMTvr8pw3u
+        G5NFg7GKQWB5Fn7ly55XrRTvgf0q3X0ZsR4DBFwtvx1DNCTKCCwH0dD99mUiaWzY
+        kLFWvaxZa1roOwcw55gw==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3tkhfdv8d5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 09 Oct 2023 11:02:20 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5425E100063;
+        Mon,  9 Oct 2023 11:02:20 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4C01621ADB2;
+        Mon,  9 Oct 2023 11:02:20 +0200 (CEST)
+Received: from gnbcxd0016.gnb.st.com (10.129.178.213) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 9 Oct
+ 2023 11:02:19 +0200
+Date:   Mon, 9 Oct 2023 11:02:13 +0200
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     Amelie Delaunay <amelie.delaunay@foss.st.com>
+CC:     Vinod Koul <vkoul@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        M'boumba Cedric Madianga <cedric.madianga@gmail.com>,
+        Pierre-Yves MORDRET <pierre-yves.mordret@st.com>,
+        <stable@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] dmaengine: stm32-mdma: correct desc prep when channel
+ running
+Message-ID: <20231009090213.GA1547647@gnbcxd0016.gnb.st.com>
+Mail-Followup-To: Amelie Delaunay <amelie.delaunay@foss.st.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        M'boumba Cedric Madianga <cedric.madianga@gmail.com>,
+        Pierre-Yves MORDRET <pierre-yves.mordret@st.com>,
+        stable@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231009082450.452877-1-amelie.delaunay@foss.st.com>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB5667.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 07a7c4de-c819-4b92-2542-08dbc8a66558
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Oct 2023 09:01:59.3344
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bB4hCw/FiPzjmCy1qCXHJ+4DfMKMw7kzCuCcma59AaFOSFctveQOhB1hYAeDoWCwNM8iqqWmIVxA5+q0d/OHHA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7963
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231009082450.452877-1-amelie.delaunay@foss.st.com>
+X-Disclaimer: ce message est personnel / this message is private
+X-Originating-IP: [10.129.178.213]
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-09_07,2023-10-06_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[AMD Official Use Only - General]
+Hi Amélie,
 
-Reviewed-by: Shashank Sharma <shashank.sharma@amd.com>
+thanks a lot.
 
-Regards
-Shashank
------Original Message-----
-From: Icenowy Zheng <uwu@icenowy.me>
-Sent: Sunday, October 8, 2023 8:47 AM
-To: Deucher, Alexander <Alexander.Deucher@amd.com>; Koenig, Christian <Chri=
-stian.Koenig@amd.com>; Pan, Xinhui <Xinhui.Pan@amd.com>; David Airlie <airl=
-ied@gmail.com>; Daniel Vetter <daniel@ffwll.ch>; Sharma, Shashank <Shashank=
-.Sharma@amd.com>; Yadav, Arvind <Arvind.Yadav@amd.com>
-Cc: amd-gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org; linux-k=
-ernel@vger.kernel.org; Icenowy Zheng <uwu@icenowy.me>
-Subject: [PATCH] drm/amdgpu: fix SI failure due to doorbells allocation
+Tested-by: Alain Volmat <alain.volmat@foss.st.com>
 
-SI hardware does not have doorbells at all, however currently the code will=
- try to do the allocation and thus fail, makes SI AMDGPU not usable.
+Regards,
+Alain
 
-Fix this failure by skipping doorbells allocation when doorbells count is z=
-ero.
-
-Fixes: 54c30d2a8def ("drm/amdgpu: create kernel doorbell pages")
-Signed-off-by: Icenowy Zheng <uwu@icenowy.me>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c b/drivers/gpu=
-/drm/amd/amdgpu/amdgpu_doorbell_mgr.c
-index d0249ada91d30..599aece42017a 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_doorbell_mgr.c
-@@ -142,6 +142,10 @@ int amdgpu_doorbell_create_kernel_doorbells(struct amd=
-gpu_device *adev)
-        int r;
-        int size;
-
-+       /* SI HW does not have doorbells, skip allocation */
-+       if (adev->doorbell.num_kernel_doorbells =3D=3D 0)
-+               return 0;
-+
-        /* Reserve first num_kernel_doorbells (page-aligned) for kernel ops=
- */
-        size =3D ALIGN(adev->doorbell.num_kernel_doorbells * sizeof(u32), P=
-AGE_SIZE);
-
---
-2.39.1
-
+On Mon, Oct 09, 2023 at 10:24:50AM +0200, Amelie Delaunay wrote:
+> From: Alain Volmat <alain.volmat@foss.st.com>
+> 
+> In case of the prep descriptor while the channel is already running, the
+> CCR register value stored into the channel could already have its EN bit
+> set.  This would lead to a bad transfer since, at start transfer time,
+> enabling the channel while other registers aren't yet properly set.
+> To avoid this, ensure to mask the CCR_EN bit when storing the ccr value
+> into the mdma channel structure.
+> 
+> Fixes: a4ffb13c8946 ("dmaengine: Add STM32 MDMA driver")
+> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+> Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+> Cc: stable@vger.kernel.org
+> ---
+>  drivers/dma/stm32-mdma.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/dma/stm32-mdma.c b/drivers/dma/stm32-mdma.c
+> index bae08b3f55c7..f414efdbd809 100644
+> --- a/drivers/dma/stm32-mdma.c
+> +++ b/drivers/dma/stm32-mdma.c
+> @@ -489,7 +489,7 @@ static int stm32_mdma_set_xfer_param(struct stm32_mdma_chan *chan,
+>  	src_maxburst = chan->dma_config.src_maxburst;
+>  	dst_maxburst = chan->dma_config.dst_maxburst;
+>  
+> -	ccr = stm32_mdma_read(dmadev, STM32_MDMA_CCR(chan->id));
+> +	ccr = stm32_mdma_read(dmadev, STM32_MDMA_CCR(chan->id)) & ~STM32_MDMA_CCR_EN;
+>  	ctcr = stm32_mdma_read(dmadev, STM32_MDMA_CTCR(chan->id));
+>  	ctbr = stm32_mdma_read(dmadev, STM32_MDMA_CTBR(chan->id));
+>  
+> @@ -965,7 +965,7 @@ stm32_mdma_prep_dma_memcpy(struct dma_chan *c, dma_addr_t dest, dma_addr_t src,
+>  	if (!desc)
+>  		return NULL;
+>  
+> -	ccr = stm32_mdma_read(dmadev, STM32_MDMA_CCR(chan->id));
+> +	ccr = stm32_mdma_read(dmadev, STM32_MDMA_CCR(chan->id)) & ~STM32_MDMA_CCR_EN;
+>  	ctcr = stm32_mdma_read(dmadev, STM32_MDMA_CTCR(chan->id));
+>  	ctbr = stm32_mdma_read(dmadev, STM32_MDMA_CTBR(chan->id));
+>  	cbndtr = stm32_mdma_read(dmadev, STM32_MDMA_CBNDTR(chan->id));
+> -- 
+> 2.25.1
+> 
