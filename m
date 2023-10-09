@@ -2,327 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B8E47BE895
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 424E17BE8A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377427AbjJIRqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 13:46:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47016 "EHLO
+        id S1377467AbjJIRtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 13:49:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234587AbjJIRqj (ORCPT
+        with ESMTP id S1377097AbjJIRsw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 13:46:39 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2089.outbound.protection.outlook.com [40.107.94.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6A2AF;
-        Mon,  9 Oct 2023 10:46:37 -0700 (PDT)
+        Mon, 9 Oct 2023 13:48:52 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BE5494;
+        Mon,  9 Oct 2023 10:48:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696873731; x=1728409731;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=uCXJ04EA3FkZkjdCy+K0F/UB2aaZWB4AqFTzREBgbDg=;
+  b=RvIAmjHrF8crK4wDZW1G7FhRzRvKHbAh9ICyo3qDUb5op6rHjkmc2Vi8
+   vuO+kqbTygMOknPWTxSGjg4Swkkk9BR4bU19GCR/sDYNDDXD627kLAkNw
+   2tul3wSuQnvMJX3puGiQ3dOwwbBgMH5ORbXMSUc1oCA+hfCaAsQWd4B0+
+   dQesWhzcBwF+bwB2aCeNBFgLz0LNuRtti22ziRht01MvgVHUAmu0UrsGn
+   aYs2MQr6kS/DMs3V3Ve/0Fl3IbpmRL0gSwriwRaC/jcg4faFdyr07jSkD
+   yEzgUjPEjs3HvncV4pi1GYABdDKTq/7iciQ4DVKzJp42z+Q/9Yk5VjzTg
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="364498518"
+X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
+   d="scan'208";a="364498518"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 10:48:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="788252527"
+X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
+   d="scan'208";a="788252527"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Oct 2023 10:48:45 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Mon, 9 Oct 2023 10:48:44 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Mon, 9 Oct 2023 10:48:44 -0700
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.40) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Mon, 9 Oct 2023 10:48:44 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RCxovDdVrXyk/nnCBcoJhzBnPWn9vDMfCwpyaKsf2TMeRCxhp++6Vtehd7KMtAFMCJ5mXVEuwtwqAHgHWe5/Hlt65A9Rj5aWEiSBAYGJv5kNnNhCrfiBe+d7dXhErapj2ozNF+m2ktc/uiHu6YM0ASBEiMIFFHqZoDGqh9ZkS8NKl7cvEu6uOGOUxWFRVNIrPl1/TLoSTlBvIOtQ0IjQRo4rBGalWzgUWqgezqYY+U6dJ4suhljrO4cdE+peqFbGvHMdxp16OQhNhyAab3RAsgbnt0tVaw2GI7cPMRsy647FhU0u76VELwl/u3IfKB5p0pX43h2GOZTJPft3qq/rBA==
+ b=Cz9lQUxMcM+p8NhKfv42/jpmHLm220AL4JWk6HH5u5DFFHOd3H0NYqGOehP20GalCOBM50LkPAx4EwqLKFlzXJZCGlzcAq0+7i732WyC60/WKKNycYk1d9u9Jo4bBmgQ/GYVSyjv7m8J/r5R6L+xFOmyZftxaa9ujIOWVIbTg7qUd753IEcf99OE3WUgy9te1gg3ZMZ+iABiQgnbquNNg1wuJdIQgUWX75iZqvItR41EO8bz5e2NZRKEcy+udAdaINaM4XQe9GRmTKKIk8u2oGDyieUCneb8eAO/L81IdDSp+WhkkIk+MCdqSTz+YQkndWf9TOnwSUasclYv2WRYxg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hgPoizulzTeD8xeGBXMrepjQQEusDby8l0YcbpWXQI0=;
- b=fWlR9XOFjr4We3sJ5r8X/90M5bUprzRvZlGK9oLbI6X3c7UzkpfoRyMefqX8x5aXQTlqP7OahuBhyPoYQ6soi7OSbQp8hcdrUmZxlonFvFTeHGCETRh/te++rlzsDjsOUlAKgUveFaQZ0q3y/eB4pVQY9n//4X3FtBpA6EsykAFHKNqiAO1f7mDZh3m6ZuG2axz3lsr0huMTwJS15k0kR24Z5FSWsz2VRRyCsXIChB9F1rFBgG9hB06Q1By/zF0ub3RD/4hQ37daf5n7GfsKsIxVX7w2BlDo/Xi/Jw47LnqklVVu0IjViTJTEFttxlMSUHTdua2v8cxSIpK+MR5NKg==
+ bh=pj3BCl/XiJslu1E0x56rr3CVm7AXZu4t9vtQMBKfwPs=;
+ b=YtkzzcKqY7THPzTuL6VnsrIFzs/8deVhnk4FMXdhrU4L/KvnQl4su/6NcgXiEvkeXBIKf5vFJWcEVknpc7mu/gcRQYT9BF4ibNwwPoUO5hbhpYX2OQVyUX736ou5qRqns268tpz80gfPLZyxneHqpVEdrhe0zahk6308OVNgsnAwpRL70EP9D7vJFAD9x8fHbxXtNrQT4DATkAMe70ySFZ01h6EyVvEkz93P0DSrnVhGhNgV/IY+Yw8snVlOzofV17UdMOnCGiQjikz0PJdm3FjalTKPxWn/7VWM9hvPaJKMEE9KGaAo1u15rPYwDXLhY3xmHxCordz1t4fDiCIHoQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hgPoizulzTeD8xeGBXMrepjQQEusDby8l0YcbpWXQI0=;
- b=lCTbUt0TOmd2byJ98tsN5/jKhcwGH9qMtpIetHrFgv9GboH0KCH7gYr0q60XZOGWSs8/uFkXS94dD1IY1/oeMD8Y2t0GbN0w3Wi6GOxj4iqM50U1rPHTfwz5EYX/Oj7lbsbUkLVV0bnzuSaeEJVRbZ7CNuC6N8nTLRlF9JY06bo8o/fOMROW6cYYyTpNGGNXFHEZjCbK+10X5N6t9NShWRBzYOrn5W2k2RVHlObMAF40IQDfsDoK6iu5q4WeX1zuNzrDJMcMO8LtxGIepaTo/loAJpY4MDb8dm71cebmevlRFaMKhbPaNdAyzaSsjy3gjS/d7LHq9w5Ts/g7GqMCag==
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from IA1PR12MB6604.namprd12.prod.outlook.com (2603:10b6:208:3a0::7)
- by DS7PR12MB8323.namprd12.prod.outlook.com (2603:10b6:8:da::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6863.36; Mon, 9 Oct 2023 17:46:33 +0000
-Received: from IA1PR12MB6604.namprd12.prod.outlook.com
- ([fe80::8814:146:e28e:6eea]) by IA1PR12MB6604.namprd12.prod.outlook.com
- ([fe80::8814:146:e28e:6eea%4]) with mapi id 15.20.6863.032; Mon, 9 Oct 2023
- 17:46:33 +0000
-Message-ID: <b3ea777a-9471-0458-af2b-32a2adef4dec@nvidia.com>
-Date:   Mon, 9 Oct 2023 10:46:28 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [RFT PATCH 14/21] hte: tegra194: don't access struct gpio_chip
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by PH0PR11MB7709.namprd11.prod.outlook.com (2603:10b6:510:296::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.37; Mon, 9 Oct
+ 2023 17:48:41 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::bd70:f215:4a97:c84e]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::bd70:f215:4a97:c84e%6]) with mapi id 15.20.6863.032; Mon, 9 Oct 2023
+ 17:48:41 +0000
+Message-ID: <1f571145-90ac-45be-9da1-681dc200051e@intel.com>
+Date:   Mon, 9 Oct 2023 10:48:38 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11 03/10] x86/resctrl: Rename rftype flags for
+ consistency
 Content-Language: en-US
-From:   Dipen Patel <dipenp@nvidia.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-acpi@vger.kernel.org, timestamp@lists.linux.dev,
-        linux-tegra@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-References: <20230905185309.131295-1-brgl@bgdev.pl>
- <20230905185309.131295-15-brgl@bgdev.pl>
- <CACRpkda9=VULj4Cy_sit-UpUQnVEbS-RJKAeULVCw8ZCRTq1sw@mail.gmail.com>
- <CAMRc=MdTk1B4MEh9C624Upm_EcaQgJd9OU-AGfU0G-DU1+qk6A@mail.gmail.com>
- <36b17290-c643-8d8e-e82b-49afa6b34fbb@nvidia.com>
- <3624e973-d09a-d211-c6d0-d0ffb8c20c4b@nvidia.com>
- <90b5f887-8af4-a80d-ea4d-cf2199752de4@nvidia.com>
- <0e7cae42-0b81-c038-8beb-49102feea8a6@nvidia.com>
- <CAMRc=McSG6qajxt6P3vWQEeT63Pk5tggD05pUoMD1zd5ApZxgA@mail.gmail.com>
- <647d3b52-1daf-175d-d5c2-45653dd2604c@nvidia.com>
- <CAMRc=Mc_+LxcbV+=KPwAh4DinJAAetHrK+W3jbNp4AZBzg63TA@mail.gmail.com>
- <b0f37601-39d6-618e-fa16-3b1c9e7c0e2c@nvidia.com>
- <CAMRc=MfSGY691-sFhx8GeP43g0xGk1JzNa=9q5oemQoHHAM-5Q@mail.gmail.com>
- <3a54df71-d5cc-f538-75b8-f2193e27d65b@nvidia.com>
-In-Reply-To: <3a54df71-d5cc-f538-75b8-f2193e27d65b@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SJ0PR03CA0275.namprd03.prod.outlook.com
- (2603:10b6:a03:39e::10) To IA1PR12MB6604.namprd12.prod.outlook.com
- (2603:10b6:208:3a0::7)
+To:     Borislav Petkov <bp@alien8.de>, Babu Moger <babu.moger@amd.com>
+CC:     <corbet@lwn.net>, <tglx@linutronix.de>, <mingo@redhat.com>,
+        <fenghua.yu@intel.com>, <dave.hansen@linux.intel.com>,
+        <x86@kernel.org>, <hpa@zytor.com>, <paulmck@kernel.org>,
+        <akpm@linux-foundation.org>, <quic_neeraju@quicinc.com>,
+        <rdunlap@infradead.org>, <damien.lemoal@opensource.wdc.com>,
+        <songmuchun@bytedance.com>, <peterz@infradead.org>,
+        <jpoimboe@kernel.org>, <pbonzini@redhat.com>,
+        <chang.seok.bae@intel.com>, <pawan.kumar.gupta@linux.intel.com>,
+        <jmattson@google.com>, <daniel.sneddon@linux.intel.com>,
+        <sandipan.das@amd.com>, <tony.luck@intel.com>,
+        <james.morse@arm.com>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bagasdotme@gmail.com>,
+        <eranian@google.com>, <christophe.leroy@csgroup.eu>,
+        <jarkko@kernel.org>, <adrian.hunter@intel.com>,
+        <quic_jiles@quicinc.com>, <peternewman@google.com>
+References: <20231003235430.1231238-1-babu.moger@amd.com>
+ <20231003235430.1231238-4-babu.moger@amd.com>
+ <20231009171918.GPZSQ2Frs/qp129wsP@fat_crate.local>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <20231009171918.GPZSQ2Frs/qp129wsP@fat_crate.local>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR04CA0360.namprd04.prod.outlook.com
+ (2603:10b6:303:8a::35) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR12MB6604:EE_|DS7PR12MB8323:EE_
-X-MS-Office365-Filtering-Correlation-Id: dfc6035b-2f15-4580-0a16-08dbc8efad37
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|PH0PR11MB7709:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7d7b19c9-edad-45eb-5092-08dbc8eff9a9
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MHuVX08q9G4/93LkdqaSox1tWdPt2kcptrlkzhM6/f0kozPZ61bC4CMrYxjxNZmwUeCw7RVCD8KzanJtbBW9z8Pujo6oiPv055dyW9B6HlF9+RcEZ6UmuHtWyUnmDMcZoZ9Kp8kZOCzx9xO1VXg4J8kSLxm8XhAnbpE0A8Q3aQUsM5bYetMtMVNPiDp4RsX7qD/lL/g3mLt9hmjX4JUuFnHzia9PiY/2VRNLFlbEkfNkZNqAlG3sePL0ePuMbeDMmTvqM0s0S9rkEDZbJGXk59VORPjSm4RnSEGtuVPJVeVDLzHr+qFJUZYsk4XCuLWw1NJMGidTsZ+8juvZ9222ypEByw74HIU64im+ERXa1SlNFRyhkwpWr64EBzwrKtBvvQl3/MDPwh8/LnJLE9FTQcsBDoWscu4G4L8Ozu4HygSbGSPr6QN5nUAjTcgcRXdYSsRwiil9a9hFmfhaMYz5bzEgYaxZCEY4eTvYIkXlfEy4XLKPJoEpPo4p5F3mz22lBypwLJ273zWz7B25B4OVq9pTFk9AwnXeCDeYQwMoGmEygKJk2vwXi4+bp+JWF0Fl6brjWfzSxF0y3RFhnDg5rLUBYFjH1fjXsTNDjJpSqcBZoDuIekQ+hPM6DwxV/Bs4oUOSKc7lfTlcUupUPzJpBnA+F3jbGDcmOZxxQQup5dB0MHUV0cV309hcoP5ebYlH
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB6604.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39860400002)(376002)(136003)(346002)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(2906002)(6506007)(53546011)(83380400001)(2616005)(7416002)(26005)(66476007)(316002)(54906003)(6916009)(66946007)(66556008)(8936002)(4326008)(5660300002)(41300700001)(6666004)(966005)(478600001)(6512007)(6486002)(8676002)(36756003)(38100700002)(86362001)(31696002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: rJsK7WBskDY4KfANutGY8Wrht0/sUD2KcpI3fS8mRtFO4Zl5B/wEyjcZivguijnZb+zsfsXMejx4HLZQ1w3Rx7+TyrnSYaPbxpcYC5AgJy/2qQ2KdjVl0t5zv7/WLRx0Q+ozeKq56t0/d0aNZYUbn8bV3iUJa68RGnb10t5TXVY30VWnbbOqStGtXc0cf1qBgzgyn/H0HmXxkq02S55c4y2Jnnq819VqdJBgo/SbsIRrAjDy+8lV4YOv2IU9EFfWjVME+PWN6qNBu3Wbwed+XpjbLDZRHhztL3pLM27KG1x0AJlJJU7F6S7VBxril5TMt69G7il4Wjmvf/DDigR4ggVtSnSbi+c75CweYweUmfA2qb6QvUyuBrovbRIAxF8nn2FmQuthcjWY9HsK2glcKb5oUvqf4fXys31GZgB3T4VdmG2P8e31JQSacvymmyCByUAK8C5Uw6rCFonRe4pVcYLSQc0/otzH6eQjYQGRYq8Nb28Y5IvmjdEFq2UfExLpcITWOt+S88pk7VjtTQBJRKR97O8QklAKBaaktJqxeF3A574yc5B2hXiqZXEyLnWOnY+msdUbWFgl3OF4pzo0Nqd5cZ/yfoOFCg8eTk/hleh+kJAqZE2xw4+9d7oz7dxoaPbqdnCwW/DqOzdKZCWAqg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(396003)(376002)(366004)(346002)(230922051799003)(1800799009)(451199024)(186009)(64100799003)(53546011)(6512007)(2616005)(6506007)(478600001)(41300700001)(66476007)(4744005)(2906002)(44832011)(83380400001)(7406005)(7416002)(6486002)(316002)(110136005)(5660300002)(66946007)(66556008)(4326008)(26005)(8676002)(8936002)(36756003)(82960400001)(38100700002)(86362001)(31696002)(6666004)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bFN5UHZGN3A1MkFiWDYrK3p2bUU3ODBvNjJydCtNSGF5cnU0NVpJcHBacGNp?=
- =?utf-8?B?bXBSck1ianhQaUVlUWdjMnlDT2JRMUlMQktEUC91U0REcGw3R3lJeDJqaWlx?=
- =?utf-8?B?My91UVhBRmZiTHA1Vi9vLzZReHVpYmU1dFpXYUNJMzJxeVFiOElQbFMxa2xl?=
- =?utf-8?B?Y3ZRaVBmNjJGcldTeTBYdDFDU2hNcXEzMFo3Q0J3MC94NU1NSHMrZGlobDJU?=
- =?utf-8?B?V1hsbThxVDNrR0hNaXRzN0h3MTZjUEkrQzJpbHN4dHFrTUcvUVFyc1ZrQm1j?=
- =?utf-8?B?aGNHTjJoZnIxTFYwb2YyWGIzZllqNmViWDIyb0dSSmd2cmV0SWtLZHZ5Y1M1?=
- =?utf-8?B?ZXYwclZzTDk2NWtpbGtaOGVtdVJaZ3haSzFnWFByYVZOMXpBWTdDSklaeEJ6?=
- =?utf-8?B?Mm1OdjVONG4ySG9XU09OamJURyt6dzBtT05UQzBVcVNZcnI3ZDErbmNKZkNz?=
- =?utf-8?B?SkVQbFJSTGF4aThvaGFnbTJlemtYVjVIUWJKWDhFNUNEbFY4eEIwbEFmQXpZ?=
- =?utf-8?B?cVh0RWlGbGdZVEljYWI0WDdoN0xScndVWmh4bXZmcGJ0YXpPdjRTaGtCNVQx?=
- =?utf-8?B?L2hnSHJSVHFRK2xIc0dKK3ZmVUFKbzdnYmNDb2RJS0JqWVJDTHp5N3FJK0FR?=
- =?utf-8?B?WlhoRi8xeVY1OHd0VWVQQXl6MTZHb2RYTEhaRjBmVERXcGV4eVcreDVrc213?=
- =?utf-8?B?YU5ReVZ4RERaQzNZTXh1SlBnd1dxUE5aNXJ3RzVZdDRjN2NPaUtKazQrTTZV?=
- =?utf-8?B?elZOQURuSFQ3b0lIN1FoVDJUTXYrMU5kbnVuUUl2bXJvTzVMT3dyVXd1RWFr?=
- =?utf-8?B?bFdOczN6TjhEZkxpTHlRRUZCRUpvQVNEdzV0WFRnRkI5amI4VFVzd3FXZ051?=
- =?utf-8?B?TklRT3JLZTB5MGM3akVrZkRyT2ZxbmMyTmV3SkNEOUU4NXNpQkt3MHRkRlhX?=
- =?utf-8?B?VmgvZWU4dm1oaHB2ZnZZbDkxai9weXl2bDVjQmliZzRzL2ZuT3hFNTBiZ1ZR?=
- =?utf-8?B?cWtEaWQ4UHlmRXlBRjFQN2xwWFpNWVRRajlXWG5wWEwxd1A0cmhkK3RnWUpQ?=
- =?utf-8?B?NWt5TytqTk5yeDAwRCtHZGJPYmFMbFlLM2JNWWhtVXdjVW4zUmxVWUtyUStO?=
- =?utf-8?B?RDNXeEwwNlRyaWNtRjZ5MzZXMHV3ZUZadEs5YWxyak56aXlLR3BpY0tDUkhP?=
- =?utf-8?B?RmtYMS9OZXl4TkNSdXpNeDJYanJoV1ppNWJnaVNyd2tmNUIrVTdRMVBsUnFw?=
- =?utf-8?B?aVZsUnVhTFl2R2pQTDJOUjByNVVOVGQ0aXRkWXRiTGh4RTROVVIzakdBWGtX?=
- =?utf-8?B?Mk5Mb2U1WVo3dTZiQzJONHY5T2dEdUNkNmlWNDdaVUVlMUMrYTFPZ0J3dWh0?=
- =?utf-8?B?TEgvc0tuaTVkcm9nMkFuR0tzaEJXMll1a3NhK0dkSHhaTDlXN0d0d1NLR0xx?=
- =?utf-8?B?OXJSZFg3WWxQMWVvYnVlaUxwTWQvNGEycEM4VkRMZUZCa2VHN3cwTEJaMS9D?=
- =?utf-8?B?RzhjS1lvWEJZWGM0OG41NEN1UFpzajQ5ZW9TVWJ4R2J2ZTNlalhKRHBYTHhN?=
- =?utf-8?B?ZkJjb040ZDVkbzQ2QzhKdzhkZUI4ZGRDckRwd3FlZVdTVDJSTzE5VTU5SVlx?=
- =?utf-8?B?Q0o4RjVIWUp2NlljS1RIdmRXUXR4VmloV2VGamVaSnF1dTNYKzd6ZTFUSjIz?=
- =?utf-8?B?TWlVNnNuYmJjdk1iMW9TVURrRktjVzVzNExleDdIQ05PR2JjWHVnVktmRGVy?=
- =?utf-8?B?c1hxcmFDWktzRUpGU2ZlL1RaNGJQOTZ1UDMyL1lFb24ya2F5TEJKdVZ5Z0NW?=
- =?utf-8?B?SmtTZU5XRjBNT0NSdjFPaGRBTFIvbnNEWUdsUTFKWk14dlB2QlZ4WUpxV2RC?=
- =?utf-8?B?bzI5aE5YYVNmL1AvZVBlZkl4SEVNRllWWjBjZ2pEVlIxLzZ1T0hnajNWY2JC?=
- =?utf-8?B?L3RySk5xVUdFc1Rsb2UxRWduWkxHcjE1REdHMDJNdUtiK1BLOE9NR1E1bXNt?=
- =?utf-8?B?M0t5b0dKc0lBSjFSeDd2NmkrbFZSMkI3S0tQNnU4YUVwTThaa09VQkE4VEhB?=
- =?utf-8?B?UEZTcy96YTVvOEMxRlhseHJMVG5ZaDBycTgrQjh1eWkrRzJpc1FDa3RQbUxG?=
- =?utf-8?Q?gwXee6et4NSSGsJfDzyvwBmc+?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dfc6035b-2f15-4580-0a16-08dbc8efad37
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB6604.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OTVkeEtZVSsyVktoN0RwNzRZWklRVmFpRGp4RUFoM3VaZ3d3Z2x5b0xpVENo?=
+ =?utf-8?B?ZXl3ejRnRWZ6UUNDRkhRS1EzZzlqVS9GeUlvaXhFVkZxSzVmY1dLcEVoUk4y?=
+ =?utf-8?B?WHdrWXJ3V2NOUjEyQlRWTzZRTHprbzlKOWdJU2xGaXVBMVhyWTZET0FxUEJs?=
+ =?utf-8?B?UEk4alJ0SGxGVVFPaGZibFJFSHRDMUdTajBtZ0VHOHdmVXd2VENhUHA1Z2Ey?=
+ =?utf-8?B?WmdWM0hmdnA0cUVtYW8vaXZXRzlHU3JWSkZzMkE5VW5rZjI4UWhHY3FUbDRH?=
+ =?utf-8?B?UVRWY2lTQnJtMVZFMzJuelV0ckFTY2x0bXR5c1pMOUFZQ3Bidm4zWm1vYlM3?=
+ =?utf-8?B?bmswb2VodXVBUk10Y3N6cGxUYTJTWHBZUUdNdXNlMkhHVCtCb3Jpd1FycnZz?=
+ =?utf-8?B?RG43WEdzbzZyUHlrc1VNVnNyYlNhTXU1ZTJHc1UwSEFGZTF6NFlUOGpnMzlt?=
+ =?utf-8?B?bWFqT09WcXJzTVllZklENEFmUTIvTVh1SkpPQmhBdDR2UHM4WnJiVTZsK3VL?=
+ =?utf-8?B?bDlnR09rYW50UWdBOTRuTys0UzIvc1FMVVB6eEVKWUNYSzVZdERBRWFtUmg3?=
+ =?utf-8?B?ZHFHbHV6UVpDVWdwTDhJTmdDMGo4SWlBdVZ6SDd1cnpWVGJnUlZpRG1uZmFC?=
+ =?utf-8?B?VXA0T0pxTE01dGo0T0xZYkY5NkhpcC81b0dyOWc5eUZYVkEyQ29td0RKSy85?=
+ =?utf-8?B?NzMzWGYwRWc2ditXTTFLcjY2MzFjUysxMGRmeHhvWWtEN1N5ZExWYXQ5WGQv?=
+ =?utf-8?B?dlBnMkFrZTNtN0U5M2FZSWlHS0xjNTkyVjJtalFtbHVOb290K2NNSmJyME9Q?=
+ =?utf-8?B?Mkl5bFdjWmdWbi9SczNWZzVERHRKdXFpT3ZSN0RNa0dDUjdIR0dQYkVQODVl?=
+ =?utf-8?B?L0xaKzFwck9TMFQ1WXNjMDE5L3BEMHFLYnlzdFNnaWJHMmVaZkNDdkVLMkFO?=
+ =?utf-8?B?TzlldHBsaHJUalZIdGRSU2lkdHB4QUt1MUQ2U0N6RjhyeklYeVZrQzlESmNs?=
+ =?utf-8?B?b2oxaitSSFY2RjJiUGVWVVkyQU10dzA2b3hXcXBrZFlhTU9CQzJIUEw3SDJX?=
+ =?utf-8?B?djQ2ajczMXgza0IxZ1grWXVnN1c0SHJ0eXNFcXh2aDJXM2ZwK0JvdTZVMUht?=
+ =?utf-8?B?cWtQakppQVJFRE5XbU1xeUM0dkZBS01zMlV0dTNiVUExS21vNUlRbmZPQTJQ?=
+ =?utf-8?B?aFJkQVFBUGplaDBpYUxoYnFMaVliN3N1SDVVK1hRVDN3eUEwaFl2TytXcytT?=
+ =?utf-8?B?TGRlN1RRaUEya0lGYVBKSU03Tm9qRXFNV2tDK2V0TXRmWlBsSkZkdm9tZ2h1?=
+ =?utf-8?B?MVpMUndrWmE5cHFTcWZOMWlUVDR4b2x0OFRkUFk4QkhUT0oyN1d4dU42d0dh?=
+ =?utf-8?B?ZlIvNFFjZEdhOW9GZ3lxMVVJeFRXSUZvNElwNFlFc0h1Y1llbnBTRUNmbXBG?=
+ =?utf-8?B?d2wvMXVrb282L0NyU0ZDS3hSS2YrMUlPTXVaWDJQOXE4Nmd2enlNdEN4NzdO?=
+ =?utf-8?B?SHhHODRxWk55bEhFeDU0bEgreTZPQUlrbXd1OHJjTjk1eVQrdFhzVnA2REls?=
+ =?utf-8?B?RTRyQ3Y2ZEM5aGJsd2Q1QTMyTWtXdXFrbHdWSnAwT3BEMEZpbzlQU1prSVB4?=
+ =?utf-8?B?dUhodFpFUVFvalhjOVd1S0IwUGdGQjlmU1JTWUZob2UrcERFc2RPUWZ3aVZk?=
+ =?utf-8?B?R1ZHaVpDM3IyNzIxc3RNUDlvN2FUb2xWbzlZS2QyVGVlektteTlSYVpZaE9F?=
+ =?utf-8?B?OWJTK2hIZjJ0aDltUjMza0tpUmhLWEw5dC9VWXNyOHZlRkhZRVJPVEZ3Znlx?=
+ =?utf-8?B?ZHFYT0N6TkRaK3dNVDdKbE5lMm04OGRybUpqUWlXYWN6UEs3dmptM2V0QXAx?=
+ =?utf-8?B?bnNNM05zdVRzOVcxaTNuRFFlS2FXUi9UNVh1RlB1L0VpTGNaQy9RQUZ2WDNx?=
+ =?utf-8?B?TnhqT2RvaENhL2lJaHVDMW84cXZMWHZIRjFUWFdMdU5RRGpCbGtkSjl0N0lY?=
+ =?utf-8?B?cnVrcXkwNlUzWDBXMHk4N2E1ZXc5enhrSDVNVVJlbjhTOUhsZ1FWQWpORzZR?=
+ =?utf-8?B?SFJHcGxrVzNpU2l2UW9RWHJtbTZ1ODdWSWFpbHlpdEhjamc1c0g1WkdHMHQ0?=
+ =?utf-8?B?VnVtSzJRclgzYlJrUmRkVXVJRGdkWVZwa3A5ZW5vbm9OWGYzZEp0UCtIWExT?=
+ =?utf-8?B?Rnc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7d7b19c9-edad-45eb-5092-08dbc8eff9a9
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2023 17:46:33.4220
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2023 17:48:41.6484
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /E0s9DozjuZtUT6tZrNsgiOJAvhQaiTm4qbG3mafOWcx7tz4mRZe9weGXp3SQHvsJfUiKFjC+i/ums9glf1Udg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8323
+X-MS-Exchange-CrossTenant-UserPrincipalName: dN1a7LAGCXzUSZScszLGKtd9TASv5L6AWCjGHgfbid8uCs8oTWMfOLYi/IPnTZ2lPZFcrXRbKfTSh6h74p5gi84HF4VUe+PCJGQdn6PAOTg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB7709
+X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/9/23 9:34 AM, Dipen Patel wrote:
-> On 10/8/23 11:48 PM, Bartosz Golaszewski wrote:
->> On Thu, Oct 5, 2023 at 9:43 PM Dipen Patel <dipenp@nvidia.com> wrote:
->>>
->>> On 10/5/23 12:05 PM, Bartosz Golaszewski wrote:
->>>> On Thu, Oct 5, 2023 at 8:12 PM Dipen Patel <dipenp@nvidia.com> wrote:
->>>>>
->>>>> On 10/5/23 6:48 AM, Bartosz Golaszewski wrote:
->>>>>> On Thu, Oct 5, 2023 at 1:52 AM Dipen Patel <dipenp@nvidia.com> wrote:
->>>>>>>
->>>>>>> On 10/4/23 3:54 PM, Dipen Patel wrote:
->>>>>>>> On 10/4/23 1:33 PM, Dipen Patel wrote:
->>>>>>>>> On 10/4/23 1:30 PM, Dipen Patel wrote:
->>>>>>>>>> On 10/4/23 5:00 AM, Bartosz Golaszewski wrote:
->>>>>>>>>>> On Thu, Sep 7, 2023 at 9:28 AM Linus Walleij <linus.walleij@linaro.org> wrote:
->>>>>>>>>>>>
->>>>>>>>>>>> On Tue, Sep 5, 2023 at 8:53 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->>>>>>>>>>>>
->>>>>>>>>>>>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->>>>>>>>>>>>>
->>>>>>>>>>>>> Using struct gpio_chip is not safe as it will disappear if the
->>>>>>>>>>>>> underlying driver is unbound for any reason. Switch to using reference
->>>>>>>>>>>>> counted struct gpio_device and its dedicated accessors.
->>>>>>>>>>>>>
->>>>>>>>>>>>> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->>>>>>>>>>>>
->>>>>>>>>>>> As Andy points out add <linux/cleanup.h>, with that fixed:
->>>>>>>>>>>> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
->>>>>>>>>>>>
->>>>>>>>>>>> I think this can be merged into the gpio tree after leaving some
->>>>>>>>>>>> slack for the HTE maintainer to look at it, things look so much
->>>>>>>>>>>> better after this.
->>>>>>>>>>>>
->>>>>>>>>>>> Yours,
->>>>>>>>>>>> Linus Walleij
->>>>>>>>>>>
->>>>>>>>>>> Dipen,
->>>>>>>>>>>
->>>>>>>>>>> if you could give this patch a test and possibly ack it for me to take
->>>>>>>>>>> it through the GPIO tree (or go the immutable tag from HTE route) then
->>>>>>>>>>> it would be great. This is the last user of gpiochip_find() treewide,
->>>>>>>>>>> so with it we could remove it entirely for v6.7.
->>>>>>>>>>
->>>>>>>>>> Progress so far for the RFT...
->>>>>>>>>>
->>>>>>>>>> I tried applying the patch series on 6.6-rc1 and it did not apply cleanly,
->>>>>>>>>> some patches I needed to manually apply and correct. With all this, it failed
->>>>>>>>>> compilation at some spi/spi-bcm2835 driver. I disabled that and was able to
->>>>>>>>>> compile. I thought I should let you know this part.
->>>>>>>>>>
->>>>>>>>>> Now, I tried to test the hte and it seems to fail finding the gpio device,
->>>>>>>>>> roughly around this place [1]. I thought it would be your patch series so
->>>>>>>>>> tried to just use 6.6rc1 without your patches and it still failed at the
->>>>>>>>>> same place. I have to trace back now from which kernel version it broke.
->>>>>>>>>
->>>>>>>>> [1].
->>>>>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/pateldipen1984/linux.git/tree/drivers/hte/hte-tegra194.c?h=for-next#n781
->>>>>>>>>
->>>>>>>>> of course with your patches it would fail for the gdev instead of the chip.
->>>>>>>>
->>>>>>>> Small update:
->>>>>>>>
->>>>>>>> I put some debugging prints in the gpio match function in the hte-tegra194.c as
->>>>>>>> below:
->>>>>>>>
->>>>>>>> static int tegra_gpiochip_match(struct gpio_chip *chip, void *data)
->>>>>>>>  {
->>>>>>>> +       struct device_node *node = data;
->>>>>>>> +       struct fwnode_handle *fw = of_node_to_fwnode(data);
->>>>>>>> +       if (!fw || !chip->fwnode)
->>>>>>>> +               pr_err("dipen patel: fw is null\n");
->>>>>>>>
->>>>>>>> -       pr_err("%s:%d\n", __func__, __LINE__);
->>>>>>>> +       pr_err("dipen patel, %s:%d: %s, %s, %s, match?:%d, fwnode name:%s\n",
->>>>>>>> __func__, __LINE__, chip->label, node->name, node->full_name, (chip->fwnode ==
->>>>>>>> fw), fw->dev->init_name);
->>>>>>>>         return chip->fwnode == of_node_to_fwnode(data);
->>>>>>>>  }
->>>>>>>>
->>>>>>>> The output of the printfs looks like below:
->>>>>>>> [    3.955194] dipen patel: fw is null -----> this message started appearing
->>>>>>>> when I added !chip->fwnode test in the if condition line.
->>>>>>>>
->>>>>>>> [    3.958864] dipen patel, tegra_gpiochip_match:689: tegra234-gpio, gpio,
->>>>>>>> gpio@c2f0000, match?:0, fwnode name:(null)
->>>>>>>>
->>>>>>>> I conclude that chip->fwnode is empty. Any idea in which conditions that node
->>>>>>>> would be empty?
->>>>>>>
->>>>>>> sorry for spamming, one last message before I sign off for the day....
->>>>>>>
->>>>>>> Seems, adding below in the tegra gpio driver resolved the issue I am facing, I
->>>>>>> was able to verify your patch series.
->>>>>>>
->>>>>>> diff --git a/drivers/gpio/gpio-tegra186.c b/drivers/gpio/gpio-tegra186.c
->>>>>>> index d87dd06db40d..a56c159d7136 100644
->>>>>>> --- a/drivers/gpio/gpio-tegra186.c
->>>>>>> +++ b/drivers/gpio/gpio-tegra186.c
->>>>>>> @@ -989,6 +989,8 @@ static int tegra186_gpio_probe(struct platform_device *pdev)
->>>>>>>                 offset += port->pins;
->>>>>>>         }
->>>>>>>
->>>>>>> +       gpio->gpio.fwnode = of_node_to_fwnode(pdev->dev.of_node);
->>>>>>> +
->>>>>>>         return devm_gpiochip_add_data(&pdev->dev, &gpio->gpio, gpio);
->>>>>>>  }
->>>>>>>
->>>>>>> Now, few follow up questions:
->>>>>>> 1) is this the correct way of setting the chip fwnode in the gpio driver?
->>>>>>
->>>>>> You shouldn't need this. This driver already does:
->>>>>>
->>>>>>     gpio->gpio.parent = &pdev->dev;
->>>>>>
->>>>>> so fwnode should be assigned in gpiochip_add_data_with_key(). Can you
->>>>>> check why this doesn't happen?
->>>>>
->>>>> I do not see anywhere chip->fwnode being set in the gpiochip_add_* function.
->>>>> The only reference I see is here [1]. Does it mean I need to change my match
->>>>> function from:
->>>>>
->>>>> chip->fwnode == of_node_to_fwnode(data)
->>>>>
->>>>> to:
->>>>> dev_fwnode(chip->parent) == of_node_to_fwnode(data)?
->>>>
->>>> No! chip->fwnode is only used to let GPIOLIB know which fwnode to
->>>> assign to the GPIO device (struct gpio_device).
->>> What do you suggest I should use for the match as I do not see chip->fwnode
->>> being set?
->>>
+Hi Boris,
+
+On 10/9/2023 10:19 AM, Borislav Petkov wrote:
+> On Tue, Oct 03, 2023 at 06:54:23PM -0500, Babu Moger wrote:
+>> resctrl associates rftype flags with its files so that files can be chosen
+>> based on the resource, whether it is info or base, and if it is control
+>> or monitor type file. These flags use the RF_ as well as RFTYPE_ prefixes.
 >>
->> This is most likely going to be a longer discussion. I suggest that in
->> the meantime you just assign the gc->fwnode pointer explicitly from
->> the platform device in the tegra GPIO driver and use it in the lookup
->> function. Note that this is NOT wrong or a hack. It's just that most
->> devices don't need to be looked up using gpio_device_find().
+>> Change the prefix to RFTYPE_ for all these flags to be consistent.
+>>
+>> Add RFTYPE_MON_BASE that will be used in a later patch. RFTYPE_MON_BASE
+>> complements existing RFTYPE_CTRL_BASE and represents files
+>> belonging to monitoring groups.
 > 
-> Sure, at the same time, I am also find to use any other method/s.
-
-(Correction) I am also fine*
-
-With patch
-https://patchwork.ozlabs.org/project/linux-gpio/patch/20231009173858.723686-1-dipenp@nvidia.com/
-
-Tested-by: Dipen Patel <dipenp@nvidia.com>
-
->>
->> Bart
->>
->>>>
->>>> Bart
->>>>
->>>>>
->>>>> [1]:
->>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/gpio/gpiolib.c?h=v6.6-rc1#n767
->>>>>
->>>>>>
->>>>>> Bart
->>>>>>
->>>>>>> 2) Or should I use something else in hte matching function instead of fwnode so
->>>>>>> to avoid adding above line in the gpio driver?
->>>>>>>
->>>>>>>>
->>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> Bart
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>
->>>>>>>
->>>>>
->>>
+> First of all, the concept of "later patch" has no meaning when the
+> patches go into git, depending on the listing order.
 > 
+> Second, why isn't this define added in the patch that's using it?
+> 
+> A patch needs to be a logically separate, possibly self-contained
+> change - remember that.
+
+My apologies here. Babu was following my guidance on this. 
+
+Reinette
 
