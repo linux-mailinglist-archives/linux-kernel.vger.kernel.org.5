@@ -2,143 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5287BE70D
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ACDC7BE710
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377329AbjJIQ4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 12:56:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40636 "EHLO
+        id S1377313AbjJIQ4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 12:56:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377245AbjJIQ4Q (ORCPT
+        with ESMTP id S1376894AbjJIQ4V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 12:56:16 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A12F39E
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 09:56:14 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-692779f583fso3181332b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 09:56:14 -0700 (PDT)
+        Mon, 9 Oct 2023 12:56:21 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40039AC
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 09:56:20 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2c15463ddd4so53118011fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 09:56:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696870574; x=1697475374; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BI1wdHvupQf0LaYbc5/G8p3qu/45NR/6x8pz02yh3PE=;
-        b=Q4wh+a/oJyOU0GBAbt9uc99A9WiOgV+YcRmeLb4UUfMf4VlgokwcP92m70XoytoW2e
-         r2MufKKMFTXq3o64nhVKe72u7EPn7Lr6bIVjrgMzp7pzau4PHAgLKfFXp6jUTMDWA3Vh
-         sYQOz50kVGk65u59a0k3ZgJrugAZK/to1QcA4=
+        d=linaro.org; s=google; t=1696870578; x=1697475378; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WlhqBQl9oFMKzadsnusYrJDuDpk68abfiZiL1f4YOiY=;
+        b=e1RnG2rGAJ5pYOCfwlD3tDUon6SBQvXbNpPLBZp9v9GX90y28V/6ksBOryahdqjXdH
+         jw5qT7FxZU5en5waqS9BliPcFMVe+5TII9yXhfWs8dxaKVNfSl6V9G7GpPj6rv9eNbO3
+         gnmrZhVIGEyA4gC6cwQHkdEB7bHHLhw6BaFwxEl7nU3HSw+1CiZFjadFqn3swOGs5cR3
+         kZYr1iAX++CiYFR3vggWfa5yDUvy5aVC6TVkipojlOeW5FFxZdWSt4fY9hFc3YjxOueo
+         LMLvsuD2HFRQUjpIn63sOrgWUyruRn0MfO/AEtenBQ5FwmQ+/2RAtYiNuDRauouVlUU/
+         H0mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696870574; x=1697475374;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BI1wdHvupQf0LaYbc5/G8p3qu/45NR/6x8pz02yh3PE=;
-        b=Z9w9Zyu3Uc5e9Nm6Bg8n5VceTwrj2rYtO/Jq5GHDpGDR0rApGb1Qjlcp2yTKBOp9cC
-         Wm6aviD6LEmRGVHDHDdxObu5OlAgrv7hppb7IH1zdJxt4KneN/XGO5PuQIZ+qcnolv/X
-         JsJPcqZjuqaf2qSpPjZGwhGQBYa1MSCxPd6u5TaeY68vrcoA9KcEc3cADtO1e8eGLjpn
-         v8GzyYGw/tOLQ0nftv4o/s3i7NrgyyZSbxJgQTkBe5VCuOLwtUNQpusVrIzfZYKgIoWK
-         WunGJZZuk3Ep3Cchlhv01aR/mW+QUVCarMQpY2pQbDuySReYhkisUW470supwzQLwzzq
-         Bijg==
-X-Gm-Message-State: AOJu0YwMWSwTIYG0gTVZ4v4pXb771gXXc54Cx3lgpLj4C3lFWE5FrKgb
-        SvYfu1LBuntHFwNubo9HRbfXIA==
-X-Google-Smtp-Source: AGHT+IExmUks9+I/YiKBGr4BtICx6xzlqORwNadZpHtAORGWPchSbI37a3pFI+AKwfNa/ZHilpgCWw==
-X-Received: by 2002:a05:6a00:124a:b0:690:ce30:47e5 with SMTP id u10-20020a056a00124a00b00690ce3047e5mr14761348pfi.6.1696870574128;
-        Mon, 09 Oct 2023 09:56:14 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id l3-20020a62be03000000b00688c733fe92sm6540299pff.215.2023.10.09.09.56.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 09:56:13 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 09:56:11 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Ping-Ke Shih <pkshih@realtek.com>
-Cc:     "kvalo@kernel.org" <kvalo@kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "nathan@kernel.org" <nathan@kernel.org>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        "gustavoars@kernel.org" <gustavoars@kernel.org>
-Subject: Re: [PATCH] wifi: rtw89: coex: Annotate struct
- rtw89_btc_btf_set_slot_table with __counted_by
-Message-ID: <202310090953.B7CE5CF4B@keescook>
-References: <20231006201715.work.239-kees@kernel.org>
- <4716f3c7bf3d34ea25229edd5250f5f0cff639d8.camel@realtek.com>
+        d=1e100.net; s=20230601; t=1696870578; x=1697475378;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WlhqBQl9oFMKzadsnusYrJDuDpk68abfiZiL1f4YOiY=;
+        b=fnRTXe1MRgTsaKOhK7CuBOBjLUZqFP8oLDvO/i/1vfkzQRROF60yyv0Q8qQw2wFDWt
+         Vni3y8r9s+opF/rk8VHoj5jQlxUPVeajRu7TTr5ksE9nb4sS3R2cHsAFyPMTZHF0ryo3
+         YwzH4kuIwb3W83AzmG1fC3DBL52F1oanPUCaTBpsKW1m3p2F+iMa3xmEZHJibbO3Mr8w
+         3Mf0XYG0zf24+jM0AmMLbZhWhzS7B3tTzUZw0vB/p7zAiFEp5RJ0MMHRIys0hjKcgU8/
+         b3wGhD9RtrAOWFSAcwZKkEp7FEsV5oGvy/S5Up2SQ46WppkOoyk5fMqvt+mrFp1BFi2A
+         4+YA==
+X-Gm-Message-State: AOJu0YxRBMTDkY9vv90Ibs/yll6RBJ4Enc9OHjrTvVEEQGeEk7YwjzFU
+        kOAVbR/jrgFlSmCOdMMLu28imw==
+X-Google-Smtp-Source: AGHT+IEzc+wWdYLx/D2ts2ez2S94HZ9kZNSnVve1pOz142p3GNd2sRYfgrX3YVCBmxnsKQjBUkC4Lw==
+X-Received: by 2002:ac2:5fa7:0:b0:4ff:7004:545e with SMTP id s7-20020ac25fa7000000b004ff7004545emr12437678lfe.4.1696870578282;
+        Mon, 09 Oct 2023 09:56:18 -0700 (PDT)
+Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
+        by smtp.gmail.com with ESMTPSA id q18-20020a19a412000000b005047baf3385sm1488987lfc.181.2023.10.09.09.56.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Oct 2023 09:56:17 -0700 (PDT)
+Message-ID: <ce15113b-c032-44ad-ab03-ff1b719fcb99@linaro.org>
+Date:   Mon, 9 Oct 2023 19:56:17 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4716f3c7bf3d34ea25229edd5250f5f0cff639d8.camel@realtek.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/msm/dpu: enable smartdma on sm8350
+Content-Language: en-GB
+To:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, quic_jesszhan@quicinc.com,
+        quic_parellan@quicinc.com, nespera@igalia.com,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230908193314.27008-1-quic_abhinavk@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+In-Reply-To: <20230908193314.27008-1-quic_abhinavk@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 07, 2023 at 01:20:43AM +0000, Ping-Ke Shih wrote:
-> On Fri, 2023-10-06 at 13:17 -0700, Kees Cook wrote:
-> > 
-> > Prepare for the coming implementation by GCC and Clang of the __counted_by
-> > attribute. Flexible array members annotated with __counted_by can have
-> > their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
-> > array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> > functions).
-> > 
-> > As found with Coccinelle[1], add __counted_by for struct
-> > rtw89_btc_btf_set_slot_table.
-> > 
-> > Cc: Ping-Ke Shih <pkshih@realtek.com>
-> > Cc: Kalle Valo <kvalo@kernel.org>
-> > Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> > Cc: linux-wireless@vger.kernel.org
-> > Cc: linux-hardening@vger.kernel.org
-> > Link: https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci [1]
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  drivers/net/wireless/realtek/rtw89/coex.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/wireless/realtek/rtw89/coex.c b/drivers/net/wireless/realtek/rtw89/coex.c
-> > index 4ba8b3df70ae..d66a1152c3f5 100644
-> > --- a/drivers/net/wireless/realtek/rtw89/coex.c
-> > +++ b/drivers/net/wireless/realtek/rtw89/coex.c
-> > @@ -237,7 +237,7 @@ struct rtw89_btc_btf_set_report {
-> >  struct rtw89_btc_btf_set_slot_table {
-> >         u8 fver;
-> >         u8 tbl_num;
-> > -       u8 buf[];
-> > +       u8 buf[] __counted_by(tbl_num);
+On 08/09/2023 22:33, Abhinav Kumar wrote:
+> To support high resolutions on sm8350, enable smartdma
+> in its catalog.
 > 
-> This struct isn't defined properly. It should be 
-> 
-> struct rtw89_btc_btf_set_slot_table {
-> 	u8 fver;
-> 	u8 tbl_num;
-> 	struct rtw89_btc_fbtc_slot tbl[] __counted_by(tbl_num);
-> } __packed;
-> 
-> And, we should modify rtw89_btc_fw_set_slots() as well. 
-> 
-> Another struct 'rtw89_btc_btf_set_mon_reg' has similar problem.
-> 
-> So, NACK this patch. I will prepare one or two patches for them next week. 
+> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
 
-Ah-ha; thank you!
+Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-> By the way, I have question about __counted_by(). Can I apply it to little/big-
-> endian 'num'? Like
+> ---
 > 
-> struct foo {
-> 	...
-> 	__le32 num;
-> 	__le32 data[] __counted_by(num);
-> }
-
-Unfortunately not yet. I hope to see it extended in the future to allow
-for arbitrary expressions. For this first step, it only handles native
-sizes.
+> Notes:
+>      only compile tested, to be landed after sufficient testing
 
 -- 
-Kees Cook
+With best wishes
+Dmitry
+
