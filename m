@@ -2,97 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE5BA7BE21C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 16:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57C697BE21E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 16:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376905AbjJIOIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 10:08:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42998 "EHLO
+        id S1376929AbjJIOJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 10:09:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376728AbjJIOIU (ORCPT
+        with ESMTP id S1376431AbjJIOJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 10:08:20 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE12E8E;
-        Mon,  9 Oct 2023 07:08:18 -0700 (PDT)
-Date:   Mon, 09 Oct 2023 14:08:16 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696860497;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uCuOoJ3iQR9hMZJKIvfJQ4xYZUuuXDNUWmc3XV54GBU=;
-        b=WvGOUFckko3HMd2q42KF2A2QW999Ns9RqLNPlqmC204l+XGdwLxs9Y4OyoSTO947Y2fDOu
-        Og+4oFSCmaxu+wcJZY+TjgClrZsVIMyf4qjqF+4Rg753rO8Ci5KvNfQiAQncQjOHUPAgeF
-        Lm8uh8JyRBya7MCVKnGw6gEiA/wNbh+Fm5DKxIZwXQHHqyRLo8hzOmYaEvIVUcsYJkSlUj
-        BR/kaUv4DUGWmstVKnXbafoRyhr9XvvAdsYPaaw3XS8fha8JEGziD0S2RUdPmdjb1Qvxq+
-        rcLJdG1Qvv3ZoELycAt937eKaEzjttsUhKQIzE0j//t7LTG80LpRgz9a03X9DA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696860497;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uCuOoJ3iQR9hMZJKIvfJQ4xYZUuuXDNUWmc3XV54GBU=;
-        b=/Oik8rpVLLRHF+51TootX39235r0639WgAea8pyNP8t7kgUz/dL41jtT2jF5uAJ046PWu6
-        qJDm4alyD8256OBQ==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/urgent] Merge tag 'irqchip-fixes-6.6-2' of
- git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into
- irq/urgent
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20231007121933.3840357-1-maz@kernel.org>
-References: <20231007121933.3840357-1-maz@kernel.org>
+        Mon, 9 Oct 2023 10:09:27 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E719C99;
+        Mon,  9 Oct 2023 07:09:25 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 1E69232009CC;
+        Mon,  9 Oct 2023 10:09:22 -0400 (EDT)
+Received: from imap50 ([10.202.2.100])
+  by compute5.internal (MEProxy); Mon, 09 Oct 2023 10:09:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1696860561; x=1696946961; bh=f4
+        6k7jCKAySj37IySZF/TE6Spebue7lQjPpeIOI8W7c=; b=WjCI0tN5l+Dt2B7duw
+        45qSABlcGtXaHOUkkYJHoFAocFesKxup835qIQa+XPhr4kpCTq7qXR9lsscllJs7
+        Vl6dQfd3Bxx6vUKW+2Oxpbk6MYEozs4yZt/FX0Pcpo+4sPKPBElswm8SC07m3SWW
+        6CvUSEjKNSpiDlErrk3/1rnBImhAHURT5ORA6uJXAvD/yHcDZ5EKUlwCfqry+EYq
+        LCyQvshQGjjdZ5m4kNWOmf/nW0rF45EBsAXNckydP0Xly1MzCTkLowKP8wkB+Wjg
+        YYJ/ypqmRKdim5fX9TvEtNvKbnw68PyS2OaS7PYPnup94/jXkTdPXJ51WvMxQocY
+        xJdg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1696860561; x=1696946961; bh=f46k7jCKAySj3
+        7IySZF/TE6Spebue7lQjPpeIOI8W7c=; b=FFzR38AdgLcnOHWixJhHcQvGKw2YT
+        2yLlslO+s3FdtflecRzshxRL99w8db42qjpOUnIbUC6vIn9+W0+qFV7UpU+S8aGn
+        Q2ulfMPTsJsOY2Zeed8VtK70RhC2JHJ6BoZeF1xHnjkSQMh+s+JFhXPEKdeMUiSQ
+        7Zjjcn7gCrXH6H8qcQtFybyAbHNSeTv1KJE5pgykLhu+7SUKXEm0rUD9Ca59mxMV
+        wHPpsILlDatZrKOhldQ7Cd3BjBQCCmehmwx+GRPzzjUzyV924hH4KZlHu3jpZJKR
+        NSzuHlqSqnKYdhBdtkp9RzeLA2EB8NeDTpdWg/H2Wkbv5LOKLWytguVPw==
+X-ME-Sender: <xms:kQkkZWhNIJxCw3ZixMT3myHuv3rxpGlsALGcN2Q8J8hoW38UTWX11w>
+    <xme:kQkkZXCBIlPPdVG5nx-t1WFKkmmDSt5SvtxGUvHVs7So5sinlacpQAhVzNlEPDdjE
+    stKu83XZjPC8Vi9HZ4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrheefgdejfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeevhfffledtgeehfeffhfdtgedvheejtdfgkeeuvefgudffteettdekkeeufeeh
+    udenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:kQkkZeEUnNBBXmp_vAfQD_ReaPeFLZGBRC67TdlnZ0nZj2WGC9RWNQ>
+    <xmx:kQkkZfR1hq_okhrOdBTHDxOE3I9FNXOd0xL1UxGxMfJuJEaG2Gj76A>
+    <xmx:kQkkZTw1bRufWChj0FgnsIsZ9UmCMTyIMahKajGqHvYpucBkuQfE0Q>
+    <xmx:kQkkZaxH7_kusC6d9wM5-sA01BxXUv5mvRL4hlaSPzJJbl0gr0r2HA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 03ADB1700090; Mon,  9 Oct 2023 10:09:20 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-958-g1b1b911df8-fm-20230927.002-g1b1b911d
 MIME-Version: 1.0
-Message-ID: <169686049676.3135.7685393730075598660.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Message-Id: <cace6f63-42a2-4848-9880-c48fb2b31fdf@app.fastmail.com>
+In-Reply-To: <20231004115220.5c3776eb@kernel.org>
+References: <20230927090029.44704-2-gregkh@linuxfoundation.org>
+ <20231004115220.5c3776eb@kernel.org>
+Date:   Mon, 09 Oct 2023 16:08:59 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Jakub Kicinski" <kuba@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+Cc:     Netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        linux-spdx@vger.kernel.org, "Prarit Bhargava" <prarit@redhat.com>,
+        "Christoph Hellwig" <hch@infradead.org>,
+        "Vitaly Kuznetsov" <vkuznets@redhat.com>, jschlst@samba.org,
+        "Doug Brown" <doug@schmorgal.com>
+Subject: Re: [PATCH] net: appletalk: remove cops support
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/urgent branch of tip:
+On Wed, Oct 4, 2023, at 20:52, Jakub Kicinski wrote:
+> On Wed, 27 Sep 2023 11:00:30 +0200 Greg Kroah-Hartman wrote:
+>> The COPS Appletalk support is very old, never said to actually work
+>> properly, and the firmware code for the devices are under a very suspect
+>> license.  Remove it all to clear up the license issue, if it is still
+>> needed and actually used by anyone, we can add it back later once the
+>> license is cleared up.
+>
+> Nice, Doug and Arnd also mentioned this in the past so let me add
+> them to the CC as I apply this...
 
-Commit-ID:     4dc5af1fee55e38b5016e45b66bec1e1312973f5
-Gitweb:        https://git.kernel.org/tip/4dc5af1fee55e38b5016e45b66bec1e1312973f5
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 09 Oct 2023 16:01:55 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Mon, 09 Oct 2023 16:01:55 +02:00
+Yes, definitely, thanks Greg for getting this done. I think every
+time this came up we concluded that it can be removed, we just never
+finished the job.
 
-Merge tag 'irqchip-fixes-6.6-2' of git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/urgent
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/netdev/e490dd0c-a65d-4acf-89c6-c06cb48ec880@app.fastmail.com/
+Link: https://lore.kernel.org/netdev/9cac4fbd-9557-b0b8-54fa-93f0290a6fb8@schmorgal.com/
 
-Pull irqchip fixes from Marc Zyngier:
+Semi-related:
 
-  - DT binding updates for Renesas r8a779f0 and rzg2l
+Since this removes one of the two callers of the .ndo_do_ioctl()
+callback, I've had a new look at that bit as well and ended up
+with a refresh of the missing bits of [1], which I'll submit next.
 
-  - Let GICv3 honor the "dma-non-coherent" attribute for systems that
-    rely on SW guessing what the HW supports
+     Arnd
 
-  - Fix the RISC-V INTC probing by marking all devices as initialised
-    at once
-
-  - Properly translate interrupt numbers from DT on stm32-exti
-
-  - Use irq_data_get_irq_chip_data() in the rzg2l driver instead of
-    blindly dereferencing the irq_data structure
-
-  - Add a MAINTAINERS entry for the various ARM GIC irqchip drivers
-
-  - Remove myself as the top-level irqchip/irqdomain maintainer
-
-Link: https://lore.kernel.org/all/20231007121933.3840357-1-maz@kernel.org
----
+[1] https://lore.kernel.org/lkml/20201106221743.3271965-1-arnd@kernel.org/
