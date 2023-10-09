@@ -2,103 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D97DE7BEA5A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 21:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 852437BEA58
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 21:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378289AbjJITJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 15:09:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54136 "EHLO
+        id S1378218AbjJITJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 15:09:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346660AbjJITJh (ORCPT
+        with ESMTP id S1346660AbjJITJM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 15:09:37 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5EC87A6;
-        Mon,  9 Oct 2023 12:09:36 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 95D441FB;
-        Mon,  9 Oct 2023 12:10:16 -0700 (PDT)
-Received: from bogus (unknown [10.57.93.106])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 249D33F5A1;
-        Mon,  9 Oct 2023 12:09:32 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 20:08:00 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Nikunj Kela <quic_nkela@quicinc.com>
-Cc:     cristian.marussi@arm.com, robh+dt@kernel.org,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] firmware: arm_scmi: Add qcom smc/hvc transport
- support
-Message-ID: <20231009190800.ydkmmt2hgieazgfl@bogus>
-References: <20230718160833.36397-1-quic_nkela@quicinc.com>
- <20231006164206.40710-1-quic_nkela@quicinc.com>
- <20231006164206.40710-3-quic_nkela@quicinc.com>
- <20231009144744.yi44ljq4llaxjsb7@bogus>
- <e6d9fbbb-eb61-0736-aa7b-a5e5d1a91db1@quicinc.com>
- <20231009152952.dww3fgh5q7fqysps@bogus>
- <535bbc68-74bb-21e8-0e72-8de1df9cfc99@quicinc.com>
+        Mon, 9 Oct 2023 15:09:12 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B259D;
+        Mon,  9 Oct 2023 12:09:11 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-693375d2028so4345554b3a.2;
+        Mon, 09 Oct 2023 12:09:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696878551; x=1697483351; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2WB2O+ZBzB4ZMkeQ2reQ4/yBz+9uB3jIVkq0VzlaCUY=;
+        b=MZSHmExeSeBfbLThBj5mbMPFrCmIjRfqA6onajkf6lWvKZjzR2WFdEQyqqio7tUiXU
+         KJ62chzJ0T21JY1rSRLHMu9kJ5RLIiSnbBUsV6jhUhtOSNHEeVLiOcAer5i9QVsDaMdP
+         MOq4czUvlUxj7Q+2WxABdHjlrX8+d7y+cbz3oaZxer1lAg3fXa0sPavsFIsYj1CTXx2r
+         Zn26RAhn6yOWFS+sNaYuTU84xUKFXpxH4sc2Fguml6D7/mBVtkctCUjta2DYFE6u4PIB
+         qNCHOgcwu9idqaYbGTrdu3DEOkd8EHA2Gr69eLefQuJV3YijleXfwQuKYhlPKLHJq32N
+         Wj1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696878551; x=1697483351;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2WB2O+ZBzB4ZMkeQ2reQ4/yBz+9uB3jIVkq0VzlaCUY=;
+        b=hxLcqF1UCB4UeP+2yylQCvb0fIYhzgyL01lc979F26JV8jJBL7uRarm41z+Aa7a4Sx
+         w+pSmzDF9AJuYV1tTj2F+pMCa/kRJqVc8yTZhr0ohdaoQIRn70RUO/StQD7yrbBhukaJ
+         dleJeJQ+mQd6sTKL98oxecqC4rYbb0vhBl8pM63yFejDf45j9H5jAJtWHdDWAzbCsBz7
+         6QWkCBdoZRDuxqAkKuAAGeXmADfpsUqNzcG0f4RcqU1l+K1NIFMlSyJoX7FYuYTUK9yD
+         EdEBRe6NrNRFM1OyhvHwHeAMIvV1x73niVhN565dGSTctRXPEJjSgcA61L+o7X6/f6RV
+         OOwg==
+X-Gm-Message-State: AOJu0Yz7HjAkiutXufN/yRTFIjxO568ecwP581trRhKkF2JuKkpjaosD
+        B3I+xPQ+PdFsyOULpReLpA8=
+X-Google-Smtp-Source: AGHT+IHqi/Arp5jO9UE8mGcTD2ZBtMrBThOiTbPkKB2cIKERsnzlL7P8eOjGCjenBXvVB4E+NMPaQQ==
+X-Received: by 2002:a05:6a00:2394:b0:690:2ad9:1454 with SMTP id f20-20020a056a00239400b006902ad91454mr20897163pfc.33.1696878551009;
+        Mon, 09 Oct 2023 12:09:11 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id gx9-20020a056a001e0900b00692b2a63cccsm6729012pfb.210.2023.10.09.12.09.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Oct 2023 12:09:10 -0700 (PDT)
+Message-ID: <cb16ada8-4c7a-4134-aca9-41983521e388@gmail.com>
+Date:   Mon, 9 Oct 2023 12:09:08 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <535bbc68-74bb-21e8-0e72-8de1df9cfc99@quicinc.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.4 000/131] 5.4.258-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+References: <20231009130116.329529591@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20231009130116.329529591@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 10:49:44AM -0700, Nikunj Kela wrote:
+On 10/9/23 06:00, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.258 release.
+> There are 131 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> On 10/9/2023 8:29 AM, Sudeep Holla wrote:
-> > On Mon, Oct 09, 2023 at 07:59:08AM -0700, Nikunj Kela wrote:
-> > > On 10/9/2023 7:47 AM, Sudeep Holla wrote:
-> > > > On Fri, Oct 06, 2023 at 09:42:06AM -0700, Nikunj Kela wrote:
-> > > > > This change adds the support for SCMI message exchange on Qualcomm
-> > > > > virtual platforms.
-> > > > > 
-> > > > > The hypervisor associates an object-id also known as capability-id
-> > > > > with each smc/hvc doorbell object. The capability-id is used to
-> > > > > identify the doorbell from the VM's capability namespace, similar
-> > > > > to a file-descriptor.
-> > > > > 
-> > > > > The hypervisor, in addition to the function-id, expects the capability-id
-> > > > > to be passed in x1 register when SMC/HVC call is invoked.
-> > > > > 
-> > > > > The capability-id is allocated by the hypervisor on bootup and is stored in
-> > > > > the shmem region by the firmware before starting Linux.
-> > > > > 
-> > > > Since you are happy to move to signed value, I assume you are happy to loose
-> > > > upper half of the range values ?
-> > > > 
-> > > > Anyways after Bjorn pointed out inconsistency, I am thinking of moving
-> > > > all the values to unsigned long to work with both 32bit and 64bit.
-> > > > 
-> > > > Does the below delta on top of this patch works for you and makes sense?
-> > > This looks good to me. Will do some testing and float v6 with the changes
-> > > you suggested below. Thanks
-> > > 
-> > Please refer or use the patch from [1] when reposting. I rebased on my
-> > patch[2] that I posted few minutes back. I am trying to finalise the branch
-> > and send PR in next couple of days, so please test and post sooner. Sorry
-> > for the rush.
+> Responses should be made by Wed, 11 Oct 2023 13:00:55 +0000.
+> Anything received after that time might be too late.
 > 
-> Validated the patch from [1] below on Qualcomm ARM64 virtual platform using
-> SMC64 convention. Thanks!
->
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.258-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Thanks, since I have patched a bit, it is better if you post them so that
-we have a link for the exact patch on the list. Just pick up the patches
-from the branch[1] and post them as v6 with a change log so that all the
-details are captured for reference purposes.
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
-Regards,
-Sudeep
+Florian
 
-[1] https://git.kernel.org/sudeep.holla/h/for-next/scmi/updates
-[2] https://lore.kernel.org/r/20231009152049.1428872-1-sudeep.holla@arm.com
