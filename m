@@ -2,121 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F48A7BE662
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1A07BE664
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377208AbjJIQ3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 12:29:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44646 "EHLO
+        id S1377209AbjJIQaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 12:30:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376275AbjJIQ3x (ORCPT
+        with ESMTP id S1376275AbjJIQaF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 12:29:53 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF84792
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 09:29:52 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a1eb48d346so82451297b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 09:29:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696868992; x=1697473792; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rqY7KKcbXF3xUWGU4wT3dqp32k/36wxckx8YA28nXEY=;
-        b=2jRZ3KX0B6IOGCxhNIVzbudTqLC/TNY8so4YAsUR7e2aLoZIPaCh7GssWxPmwwCO9t
-         bS5qPjefeQcYibCCakz9dV+ZZHAKOqbV4qLtQn+c/klJyb/p7tUj/FM87VlD6YDFTsls
-         ogn7NScS0YiE0/nFbdt3Ik2Y7b4NSfHAvGBPVEw5p9FCQf5xEo0iFxtUkw4ohpXFUENE
-         +L956OtXXgljTFYVdB/uuIYoU16/m969JP4MxC6GWsR+0s57BCmJoedmUrWg3uSkY0ZW
-         o5YlBNw9ByuTDMUAGQ2ufXeEKnNk09nuUUXxuP5s9wXXiD+q7tJJvjlTAyuC9C9SjVa8
-         hJWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696868992; x=1697473792;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rqY7KKcbXF3xUWGU4wT3dqp32k/36wxckx8YA28nXEY=;
-        b=uRW1Ir+4GMr911RP/r8JtArIHCHio+XKsqU37dN8UpLrQPH4oEcdWnJZkOyYZ4RQw+
-         A8lNOu0ywGZPp6Sb9TUl+OHWOLSFiD81CsPzibmkFvzWeEi3A6aWj71SWcIXu2D9kH5t
-         pkXsAUe6Oox1DOKYXZLS9OF9Og+a1deJIM3xQ8G+r9GLT1t/OHS9qKaoU1kiLQTL+PaV
-         Y75Wggj2jiy/cdvX/GI9yHRYlkkm3w3mYlyimfxIBt14miNqGFIKBV59YnLU7If1K4oQ
-         T3UsiYD+GEIgsvWocjV+nIJqaFTfckDwHkfBlsZ+UoW1hWxluVwff8wNkg5ils4ey910
-         vU/A==
-X-Gm-Message-State: AOJu0Yy40+Ue3uyd9U0LpHSn17KlN31JtWli7XFIDt0olESNomfG2OIS
-        8NnMbu7AVNnlYOZx5JsoNgvkP+2+Ong=
-X-Google-Smtp-Source: AGHT+IFczvQ2UyFbt9J+8jf9SjSk/hCP3ruErRSBZVfUfVJwQHUAJnIuKo5VnY3DDHB7QaZzSZ3tTfpjOD8=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:ae26:0:b0:5a7:b8d1:ef65 with SMTP id
- m38-20020a81ae26000000b005a7b8d1ef65mr6581ywh.3.1696868991924; Mon, 09 Oct
- 2023 09:29:51 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 09:29:50 -0700
-In-Reply-To: <20231007203411.GA8085@noisy.programming.kicks-ass.net>
-Mime-Version: 1.0
-References: <ZSGpl_hT23B6ix0M@mainframe> <20231007203411.GA8085@noisy.programming.kicks-ass.net>
-Message-ID: <ZSQqfr96SfZM_OEk@google.com>
-Subject: Re: [PATCH] perf/x86/p4: Fix "Wunused-but-set-variable" warning
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Lucy Mielke <lucymielke@icloud.com>, mingo@redhat.com,
-        acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-        tglx@linutronix.de, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 9 Oct 2023 12:30:05 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE94C9C;
+        Mon,  9 Oct 2023 09:30:03 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9EE1321885;
+        Mon,  9 Oct 2023 16:30:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1696869002; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iJ25GEH2pINt3gABXbLxbOv+SPlRzVibKTVz/BRVbHI=;
+        b=E7mwfyKJO5ILDPNPhyHNBZtMlYw9bRajg/xKfY4ftf5Z2kgqdciwaAGVRjTphiYfXa7T+r
+        DOvTvmbRVzrmDy4V2taoWR7E5+N/+Ro5yCFwfiQTv9KG97SE3CxtulN7snbM3utqrIgH2O
+        plWLCJxlm+vSKM5xSEu046lzsv2yeI8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1696869002;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iJ25GEH2pINt3gABXbLxbOv+SPlRzVibKTVz/BRVbHI=;
+        b=PM7LMvvCUpOxI33nQ1Hzyf+Cen1eGQw//R0AbELg6yvkKDop/+NWHnuFMPVZm/PZFPcoX0
+        HnCim9crdGFGP2DA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 805AC13905;
+        Mon,  9 Oct 2023 16:30:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id BEC0HooqJGWiUQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Mon, 09 Oct 2023 16:30:02 +0000
+Message-ID: <fe147a1e-6fe5-309f-b2e7-48f5f3c97bae@suse.cz>
+Date:   Mon, 9 Oct 2023 18:30:02 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 4/4] mm: abstract VMA extension and merge into
+ vma_merge_extend() helper
+Content-Language: en-US
+To:     Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     "=Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        linux-fsdevel@vger.kernel.org
+References: <cover.1696795837.git.lstoakes@gmail.com>
+ <1ed3d1ba0069104e1685298aa2baf980c38a85ff.1696795837.git.lstoakes@gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <1ed3d1ba0069104e1685298aa2baf980c38a85ff.1696795837.git.lstoakes@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 07, 2023, Peter Zijlstra wrote:
-> On Sat, Oct 07, 2023 at 08:55:19PM +0200, Lucy Mielke wrote:
-> > This fixes a compiler warning when compiling an allyesconfig with W=3D1=
-:
-> > warning: variable =C2=B4high=C2=B4 set but not used [-Wunused-but-set-v=
-ariable]
->=20
-> What compiler and what .config?
->=20
-> > Signed-off-by: Lucy Mielke <lucymielke@icloud.com>
-> > ---
-> >  arch/x86/events/intel/p4.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >=20
-> > diff --git a/arch/x86/events/intel/p4.c b/arch/x86/events/intel/p4.c
-> > index 35936188db01..69aaf7c0f340 100644
-> > --- a/arch/x86/events/intel/p4.c
-> > +++ b/arch/x86/events/intel/p4.c
-> > @@ -1366,7 +1366,7 @@ static __initconst const struct x86_pmu p4_pmu =
-=3D {
-> > =20
-> >  __init int p4_pmu_init(void)
-> >  {
-> > -	unsigned int low, high;
-> > +	unsigned int low, __maybe_unused high;
-> >  	int i, reg;
-> > =20
-> >  	/* If we get stripped -- indexing fails */
->=20
-> Right after this we have:
->=20
-> 	rdmsr(MSR_IA32_MISC_ENABLE, low, high);
->=20
-> which should get high unconditionally used. If there's a problem then
-> it's probably inside that rdmsr macro.
+On 10/8/23 22:23, Lorenzo Stoakes wrote:
+> mremap uses vma_merge() in the case where a VMA needs to be extended. This
+> can be significantly simplified and abstracted.
+> 
+> This makes it far easier to understand what the actual function is doing,
+> avoids future mistakes in use of the confusing vma_merge() function and
+> importantly allows us to make future changes to how vma_merge() is
+> implemented by knowing explicitly which merge cases each invocation uses.
+> 
+> Note that in the mremap() extend case, we perform this merge only when
+> old_len == vma->vm_end - addr. The extension_start, i.e. the start of the
+> extended portion of the VMA is equal to addr + old_len, i.e. vma->vm_end.
+> 
+> With this refactoring, vma_merge() is no longer required anywhere except
+> mm/mmap.c, so mark it static.
+> 
+> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
 
-rdmsr() writes to "high", but nothing ever reads from high.  FWIW, I would =
-_love_
-for rdmsrl() to have return semantics, e.g. to be able to do:
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
-	low  =3D (u32)rdmsrl(MSR_IA32_MISC_ENABLE);
+Nit:
+> @@ -2546,6 +2546,24 @@ static struct vm_area_struct *vma_merge_new_vma(struct vma_iterator *vmi,
+>  			 vma->vm_userfaultfd_ctx, anon_vma_name(vma));
+>  }
+>  
+> +/*
+> + * Expand vma by delta bytes, potentially merging with an immediately adjacent
+> + * VMA with identical properties.
+> + */
+> +struct vm_area_struct *vma_merge_extend(struct vma_iterator *vmi,
+> +					struct vm_area_struct *vma,
+> +					unsigned long delta)
+> +{
+> +	pgoff_t pgoff = vma->vm_pgoff +
+> +		((vma->vm_end - vma->vm_start) >> PAGE_SHIFT);
 
-or even
+could use vma_pages() here
 
-	if (!(rdmsrl(MSR_IA32_MISC_ENABLE) & BIT(7)))
+> +
+> +	/* vma is specified as prev, so case 1 or 2 will apply. */
+> +	return vma_merge(vmi, vma->vm_mm, vma, vma->vm_end, vma->vm_end + delta,
+> +			 vma->vm_flags, vma->anon_vma, vma->vm_file, pgoff,
+> +			 vma_policy(vma), vma->vm_userfaultfd_ctx,
+> +			 anon_vma_name(vma));
+> +}
+> +
+>  /*
+>   * do_vmi_align_munmap() - munmap the aligned region from @start to @end.
+>   * @vmi: The vma iterator
