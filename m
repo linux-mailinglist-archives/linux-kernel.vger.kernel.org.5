@@ -2,71 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E00817BDCC5
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CDD27BDCD0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376573AbjJIMuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 08:50:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57774 "EHLO
+        id S1376613AbjJIMug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 08:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376284AbjJIMt7 (ORCPT
+        with ESMTP id S1376584AbjJIMu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 08:49:59 -0400
-Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A45F993
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 05:49:58 -0700 (PDT)
-Received: by mail-vs1-xe29.google.com with SMTP id ada2fe7eead31-45765b55fb1so473026137.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 05:49:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696855798; x=1697460598; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rqVHBhsbROUYrkVKqcZNTMEbfx9Kq7hgDbRTjOfBx4Q=;
-        b=TD1KH/s9wbTWECAbs0LvQcLKqYvLAdaDhMYOWGlr5Lzw78IsyGECowME0mMeGM+bxg
-         RX5uYnEykgdNzSkhHv8LuOqrUTK+PNkaUHRa4mHrVMQ3i7ocxk5cDFpuY3ZAuEl66fkp
-         hD1oMEGnodxdBHdpRn6pht/d9oIPiwbyAYmgXtNWuaGSpjnbfbEolP1hSldyXxd+X8Rs
-         lVgiGuLXjOUE5TG/JYc/qrl+5CvsxolVuQ6RE74EMgs1+mW+a+yGjT8r8BW0A9LeQOjn
-         J1ar3Fw7+ct/Q9AeOTUqt+RCwVbrggCpvXwjIqyWIwwOZOHUa0d/XGxn4V8jWfqYVW1d
-         SzkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696855798; x=1697460598;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rqVHBhsbROUYrkVKqcZNTMEbfx9Kq7hgDbRTjOfBx4Q=;
-        b=om+fihRY8PlSEijxeWFTik5HclLV14jrnEDlZl2ApBwiugyticRP56w/yn80XhNcUp
-         VFOabdnlCrif6KnoX8MqK5CRT36S3GrgZ7OehRBgBrHA41XUtEpxpMRVCjWI2Ue7sXWb
-         hlm6vg83iSSvJ/GtgG6szjZ6qRCiXgcZKuoTTmLp04VJ/VGhXfKqIpI1HkGgU1r9I/6l
-         LQWEGrrmtI4GS1e8bFsuZ6apqALolVe9atoSjaIBWPLNgAlrq7vIlrlTbGcQ5OLzRErX
-         JikMVCbXBX3j5fXsqiXhEwI9fzbSJ/pAgZjs0Rk1QlC1878Z1iJD/JnOGwI4bQLUy7Ln
-         6Bqg==
-X-Gm-Message-State: AOJu0Yy0C4VTYZr02GP8YOzH+8YhZ9mTocQ4L4bC5iqrguRch8cmxdYW
-        A26ygFFIEekfuxGxnoNgWav6ec2LyeQb+Chk3NwQIw==
-X-Google-Smtp-Source: AGHT+IF8OlnQr0BKaBgObH7+v22TsSrBXBeHAOtNhq4x6SIT97e5mjB7RqcAehoKyOTYt/mv5/OuA3sc2lBTTsdGwGs=
-X-Received: by 2002:a67:f585:0:b0:44e:8e28:2853 with SMTP id
- i5-20020a67f585000000b0044e8e282853mr11274007vso.35.1696855797782; Mon, 09
- Oct 2023 05:49:57 -0700 (PDT)
+        Mon, 9 Oct 2023 08:50:27 -0400
+Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 89D3A8E;
+        Mon,  9 Oct 2023 05:50:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=KXXre
+        BVQdXZOPq21+dI2Ub8P0pQKFmcLRcl/V0uA8iQ=; b=mF2TVrA4nV5zi2oqQhR8a
+        cSiUNotrGUBi0vUv7sjG6fK38SJwumPdkJPf/VGvYoOg/Dg3O60BnZRodrZ0j0EN
+        htK6bnKWFnYgI4vjchlkGVIpHQBJG5YXXl8gpJcMg3msFxq1stQ1ySrXTrHJOPgl
+        rJfwG3gpca6gt1DFuFJ1d0=
+Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
+        by zwqz-smtp-mta-g4-3 (Coremail) with SMTP id _____wDnD9D09iNlFqBXAA--.35653S4;
+        Mon, 09 Oct 2023 20:50:03 +0800 (CST)
+From:   Ma Ke <make_ruc2021@163.com>
+To:     dlemoal@kernel.org
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ma Ke <make_ruc2021@163.com>
+Subject: [PATCH v2] ata: sata_mv: aspeed: fix value check in mv_platform_probe()
+Date:   Mon,  9 Oct 2023 20:49:55 +0800
+Message-Id: <20231009124955.4046988-1-make_ruc2021@163.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-References: <20230926145943.42814-1-brgl@bgdev.pl> <20230926145943.42814-5-brgl@bgdev.pl>
-In-Reply-To: <20230926145943.42814-5-brgl@bgdev.pl>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 9 Oct 2023 14:49:47 +0200
-Message-ID: <CAMRc=MevHb5pyrcCaGkC7uWChMtzovoP4OA5MZ2Ky7RPT4hn9A@mail.gmail.com>
-Subject: Re: [RFT PATCH 4/4] gpio: acpi: remove acpi_get_and_request_gpiod()
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>
-Cc:     linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wDnD9D09iNlFqBXAA--.35653S4
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Jr4rAw4fGw18tFy5tr17Awb_yoWfGwcEka
+        y7urW7Wr429r4Dtw15Jw1ayrZ7KF4vvrsYvas2yw1ayr17Xw43XrWDXwnxu3yDWw48XFy0
+        yr4UC3y3Cry5GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRtoGHUUUUUU==
+X-Originating-IP: [183.174.60.14]
+X-CM-SenderInfo: 5pdnvshuxfjiisr6il2tof0z/1tbiyB0EC1p7MEUB+QAAs2
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
+        RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,16 +52,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 4:59=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
- wrote:
->
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> With no more users, we can remove acpi_get_and_request_gpiod().
->
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
+In mv_platform_probe(), check the return value of clk_prepare_enable()
+and return the error code if clk_prepare_enable() returns an
+unexpected value.
 
-With Hans' patches applied, I queued this on top.
+Signed-off-by: Ma Ke <make_ruc2021@163.com>
+---
+ drivers/ata/sata_mv.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Bart
+diff --git a/drivers/ata/sata_mv.c b/drivers/ata/sata_mv.c
+index 45e48d653c60..df3a02e7a50b 100644
+--- a/drivers/ata/sata_mv.c
++++ b/drivers/ata/sata_mv.c
+@@ -4125,8 +4125,10 @@ static int mv_platform_probe(struct platform_device *pdev)
+ 	hpriv->clk = clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(hpriv->clk))
+ 		dev_notice(&pdev->dev, "cannot get optional clkdev\n");
+-	else
+-		clk_prepare_enable(hpriv->clk);
++	else {
++		rc = clk_prepare_enable(hpriv->clk);
++		goto err;
++	}
+ 
+ 	for (port = 0; port < n_ports; port++) {
+ 		char port_number[16];
+-- 
+2.37.2
+
