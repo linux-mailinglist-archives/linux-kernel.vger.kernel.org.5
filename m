@@ -2,128 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2CF7BD68A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7703A7BD684
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345771AbjJIJOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 05:14:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40632 "EHLO
+        id S1345706AbjJIJNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 05:13:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345651AbjJIJNx (ORCPT
+        with ESMTP id S1345660AbjJIJNS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 05:13:53 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B25B6;
-        Mon,  9 Oct 2023 02:13:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D231C433C7;
-        Mon,  9 Oct 2023 09:13:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696842830;
-        bh=jhipQjsWiEs+Ekubf342gQBtzevOfGi2BJ5QvrVCXa8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XoVD/LVv8aVw/fiyc7REZB4iBGjkQiMDiIXjJ1NUvGS912djNzCzSccBrjVnA+B8p
-         QuINxv9JhjARUPo061A4lil0hWTiXPcrh+ZqqouR3fDxSnMnSajcFWBvPm9d1WPLe4
-         PuSmHoiF9ObcPxlL4eujAkAUsCkEMj7YZzWL8VuvPqtwuWm0mVpu3Xt8eQji7zPR81
-         sgg9LhNcKSushKV2A2D1/k+twz+uWzbWBdJdkiYqcVT8K38J6uUy0T0SrCfYddWkBu
-         YiS+jP7rYMqxhA3i9wjwmIAtIgC+zMWjw1BsCeQescVFaEsFNdRaPIrYH0nZnzX28w
-         IVrbomr9ZLrRA==
-Date:   Mon, 9 Oct 2023 12:12:56 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Alejandro Colomar <alx@kernel.org>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Peter Xu <peterx@redhat.com>, linux-man@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] ioctl_userfaultfd.2: clarify the state of the
- uffdio_api structure on error
-Message-ID: <20231009091256.GN3303@kernel.org>
-References: <20231003194547.2237424-1-axelrasmussen@google.com>
- <20231003194547.2237424-4-axelrasmussen@google.com>
- <ZSMkuf3g5hGk1Kjk@debian>
+        Mon, 9 Oct 2023 05:13:18 -0400
+Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA9BC5;
+        Mon,  9 Oct 2023 02:13:15 -0700 (PDT)
+Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1dcdfeb7e44so3038335fac.0;
+        Mon, 09 Oct 2023 02:13:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696842793; x=1697447593; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=+6j4vvxY4EqozcmVPKocYKAhoEnZR1RKLlrR38PBlyo=;
+        b=d6ziKF0S2B2Sl1ewD2umYwSmLlmj3LWmdBQgnVrRNnwxBuwGo9Gco/pfaLj0V945/t
+         tIO0kWWckdVF6LLUP2rT3i2LJMayvOiXPj2fWYGWkQgm9uRjEmIa/Tv9ZoPfuMUU/gDd
+         Nh+dCBIuhTQQYeqsSTSNN/2TTLwDQHp6h9zKDTKUByJep1OqU3xP1KMnpHfHgNhp9O2D
+         vEBQaa4cPcoXnMw2XltATKY9PNEfA6gtk1ZeQ3fCckvdQWE15vYplhm6gfvSPyapjLSX
+         zqcIfS3mnPf/BqNtX5HTvXKecR9zSEralYad7sj43qWcX2HT3un9DHc73fLwtczD05NR
+         w1yQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696842793; x=1697447593;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+6j4vvxY4EqozcmVPKocYKAhoEnZR1RKLlrR38PBlyo=;
+        b=rslnCnzN44sURSdwQhT4bGfPwtfjxa551Q34b2nOxwr1Dz/AGafKbL6tqo+hGMpeOf
+         AleXiPuL4cuo+gisOc6EqqANn4VKhlWefQgbNGi4tXTGM9fqkeGkuUDtpoyF3SzNQW8Q
+         zs6XHt1ZUM+Pdi/x3nOD+go2+5/iE61FzoPukMayIqZvJ97auLwWS4WTV6Shhz/Rf97h
+         ohm+O/dVZhpvAgJ7ZJ4y6V1h8n/GrfzCMaA+4SYKxMjmMklcwX0xoG+3PJl3tFgQQhI7
+         tlqHfdZE0DYiN8ESSqrTPD0Q25llS+bEUXVzZtD0qljCG4vvtKaQQLn3/xKshq6g5sBY
+         r5cA==
+X-Gm-Message-State: AOJu0YxZKkCg5KDAizzAJ7Ae4Isl4TKoCtJ6n3uYvyPDxfgmSQEtR6m+
+        fkYyKQkEFXKfvgamXBo9HRY7uFKBoDL/X32lyUKAs0RMSF3/MA==
+X-Google-Smtp-Source: AGHT+IFC5K5ukyGxfSgYqssv30cv3lVT+tGyeW1gq1ro6ijzaWIOfHM87jWQp/uZiGRud8xNqHx7+THodnZg3ePCxhs=
+X-Received: by 2002:a05:6870:5ba0:b0:1be:f8d9:7bdd with SMTP id
+ em32-20020a0568705ba000b001bef8d97bddmr18638659oab.6.1696842793555; Mon, 09
+ Oct 2023 02:13:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZSMkuf3g5hGk1Kjk@debian>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230918-strncpy-drivers-gpu-drm-etnaviv-etnaviv_perfmon-c-v2-1-8ae12071c138@google.com>
+ <202310061323.05B262D@keescook>
+In-Reply-To: <202310061323.05B262D@keescook>
+From:   Christian Gmeiner <christian.gmeiner@gmail.com>
+Date:   Mon, 9 Oct 2023 11:13:02 +0200
+Message-ID: <CAH9NwWfM2E=M1u_LnRLXkXqbJapR0aga2kex=uc3YBMkdP2fHg@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/etnaviv: refactor deprecated strncpy
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Justin Stitt <justinstitt@google.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, etnaviv@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, Bo YU <tsu.yubo@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 08, 2023 at 11:52:56PM +0200, Alejandro Colomar wrote:
-> Hi Axel,
-> 
-> On Tue, Oct 03, 2023 at 12:45:45PM -0700, Axel Rasmussen wrote:
-> > The old FIXME noted that the zeroing was done to differentiate the two
-> > EINVAL cases. It's possible something like this was true historically,
-> > but in current Linux we zero it in *both* EINVAL cases, so this is at
-> > least no longer true.
-> > 
-> > After reading the code, I can't determine any clear reason why we zero
-> > it in some cases but not in others. So, some simple advice we can give
-> > userspace is: if an error occurs, treat the contents of the structure as
-> > unspecified. Just re-initialize it before retrying UFFDIO_API again.
-> > 
-> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> > ---
-> >  man2/ioctl_userfaultfd.2 | 16 ++++++++--------
-> >  1 file changed, 8 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/man2/ioctl_userfaultfd.2 b/man2/ioctl_userfaultfd.2
-> > index 28dd2fcdd..2ee6a0532 100644
-> > --- a/man2/ioctl_userfaultfd.2
-> > +++ b/man2/ioctl_userfaultfd.2
-> > @@ -248,6 +248,14 @@ operation returns 0 on success.
-> >  On error, \-1 is returned and
-> >  .I errno
-> >  is set to indicate the error.
-> > +If an error occurs,
-> > +the kernel may zero the provided
-> > +.I uffdio_api
-> > +structure.
-> > +The caller should treat its contents as unspecified,
-> > +and reinitialize it before re-attempting another
-> > +.B UFFDIO_API
-> > +call.
-> >  Possible errors include:
-> >  .TP
-> >  .B EFAULT
-> > @@ -281,14 +289,6 @@ feature was enabled,
-> >  but the calling process doesn't have the
-> >  .B CAP_SYS_PTRACE
-> >  capability.
-> > -.\" FIXME In the above error case, the returned 'uffdio_api' structure is
-> > -.\" zeroed out. Why is this done? This should be explained in the manual page.
-> > -.\"
-> > -.\" Mike Rapoport:
-> > -.\"     In my understanding the uffdio_api
-> > -.\"     structure is zeroed to allow the caller
-> > -.\"     to distinguish the reasons for -EINVAL.
-> > -.\"
-> 
-> I've added Mike to the thread in case he wants to comment.
+Am Fr., 6. Okt. 2023 um 22:23 Uhr schrieb Kees Cook <keescook@chromium.org>:
+>
+> On Mon, Sep 18, 2023 at 01:34:08PM +0000, Justin Stitt wrote:
+> > `strncpy` is deprecated for use on NUL-terminated destination strings [1].
+> >
+> > We should prefer more robust and less ambiguous string interfaces.
+> >
+> > A suitable replacement is `strscpy_pad` due to the fact that it
+> > guarantees NUL-termination on the destination buffer whilst maintaining
+> > the NUL-padding behavior that strncpy provides.
+>
+> Friend ping. Who can pick this change up?
+>
 
-Thanks, Alex!
+Lucas is the one who is responsible for this job.
 
-It looks like I reviewed v1 of the patchset though :)
- 
-> Thanks,
-> Alex
-> 
-> >  .SS UFFDIO_REGISTER
-> >  (Since Linux 4.3.)
-> >  Register a memory address range with the userfaultfd object.
-> > -- 
-> > 2.42.0.609.gbb76f46606-goog
-> > 
-> 
-> -- 
-> <https://www.alejandro-colomar.es/>
+>
+> Thanks!
+>
+> -Kees
+>
+> >
+> > Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> > Link: https://github.com/KSPP/linux/issues/90
+> > Cc: linux-hardening@vger.kernel.org
+> > Cc: Bo YU <tsu.yubo@gmail.com>
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-
+Reviewed-by: Christian Gmeiner <cgmeiner@igalia.com>
 
 -- 
-Sincerely yours,
-Mike.
+greets
+--
+Christian Gmeiner, MSc
+
+https://christian-gmeiner.info/privacypolicy
