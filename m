@@ -2,57 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB027BE1F5
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 104077BE1FF
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 16:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377551AbjJIN6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 09:58:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52364 "EHLO
+        id S1377585AbjJIOAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 10:00:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376852AbjJIN6R (ORCPT
+        with ESMTP id S1376693AbjJIOAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 09:58:17 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00BB199;
-        Mon,  9 Oct 2023 06:58:15 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id AEDA81F381;
-        Mon,  9 Oct 2023 13:58:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1696859894; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=7OgkSL2KmvIM/AbVLqY0l7mLuBK7eG7eLJyEbA5Dmic=;
-        b=lIh9JNcNFzDdUWqqH8dgPFjtVoPjAPJ09+D6/ZnUe8PNohHlnvGctLowI4oJOpavAYxv7F
-        ma3yxEFptZfEIw+MDkv0aIq9J4oaFF/RR6rFuDoa+qftptY8yTsVBnCjMIdO7u2fGZYmTx
-        mhr3/E0pYJ26quX4KXWSRf1+fUg5cgQ=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 93BCE13586;
-        Mon,  9 Oct 2023 13:58:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id M2NmI/YGJGV6fAAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Mon, 09 Oct 2023 13:58:14 +0000
-From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Firo Yang <firo.yang@suse.com>
-Subject: [PATCH] cgroup: Remove duplicates in cgroup v1 tasks file
-Date:   Mon,  9 Oct 2023 15:58:11 +0200
-Message-ID: <20231009135811.2627-1-mkoutny@suse.com>
-X-Mailer: git-send-email 2.42.0
+        Mon, 9 Oct 2023 10:00:52 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 327CD99;
+        Mon,  9 Oct 2023 07:00:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69F54C433C7;
+        Mon,  9 Oct 2023 14:00:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696860050;
+        bh=8dVUagdGNC5FwwkHDRtNMhAMiOn3f8fiNVQH6CjW9lk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lDw4VxspF/aZja0dt3g0BaHJnFbxKKkpUeJguSagp5qXuIpaucUoP41n6vjvZh10U
+         EzTkmw2cZVhFN03Q1LJvyKD0Wp56nyR26OF2FPfuAipuEJfrv4VpRCTUf0u7vjb5f+
+         t4cf1tIMF4JpOuU58XjrKA3PcfmSKHz+c9Pp7pVsmgRL2TVqVQODGX8bMh85ciquDH
+         C1c85X94mrTXJcg4auQnBeH99suZ5w9GF5lukK6iyTdO2ZenEYGkTLf2YDPr11lIcg
+         Ok2Z5B+eENtNltp4gRiJUNGfmF6FJd5wJ/ieiRyXliF4TuvarT6/QcmV8CsIdl10FI
+         7j0ICfeq3+W5A==
+Date:   Mon, 9 Oct 2023 16:00:41 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the vfs-brauner tree
+Message-ID: <20231009-behaarten-hotel-17e3c1e7de74@brauner>
+References: <20230928105443.1b1ad98c@canb.auug.org.au>
+ <20231002112142.bfjj54ikijf4iwfr@quack3>
+ <20231003132711.djftyh7vltljy2hh@moria.home.lan>
+ <20231004154628.kgrvqbwphkjbkne6@quack3>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231004154628.kgrvqbwphkjbkne6@quack3>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,45 +53,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One PID may appear multiple times in a preloaded pidlist.
-(Possibly due to PID recycling but we have reports of the same
-task_struct appearing with different PIDs, thus possibly involving
-transfer of PID via de_thread().)
+> But the merge at this point would be somewhat difficult because you'd need
+> to pull Christian's branch into your tree to get bdev_open_by_path() in the
+> first place. And that branch already depends on some changes in the btrfs
+> tree. So to save ourselves some headaches during the merge window, I think
+> not removing the old functions until bcachefs gets merged is the easiest
+> solution.
 
-Because v1 seq_file iterator uses PIDs as position, it leads to
-a message:
-> seq_file: buggy .next function kernfs_seq_next did not update position index
+I dropped
 
-Conservative and quick fix consists of removing duplicates from `tasks`
-file (as opposed to removing pidlists altogether). It doesn't affect
-correctness (it's sufficient to show a PID once), performance impact
-would be hidden by unconditional sorting of the pidlist already in place
-(asymptotically).
+commit 8ea3ec0740bdea9105eb416f07eef5d031b9385a
+Author:     Jan Kara <jack@suse.cz>
+AuthorDate: Wed Sep 27 11:34:35 2023 +0200
+Commit:     Christian Brauner <brauner@kernel.org>
+CommitDate: Thu Sep 28 16:51:49 2023 +0200
 
-Link: https://lore.kernel.org/r/20230823174804.23632-1-mkoutny@suse.com/
-Suggested-by: Firo Yang <firo.yang@suse.com>
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
----
- kernel/cgroup/cgroup-v1.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+    block: Remove blkdev_get_by_*() functions
 
-diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-index c487ffef6652..76db6c67e39a 100644
---- a/kernel/cgroup/cgroup-v1.c
-+++ b/kernel/cgroup/cgroup-v1.c
-@@ -360,10 +360,9 @@ static int pidlist_array_load(struct cgroup *cgrp, enum cgroup_filetype type,
- 	}
- 	css_task_iter_end(&it);
- 	length = n;
--	/* now sort & (if procs) strip out duplicates */
-+	/* now sort & strip out duplicates (tgids or recycled thread PIDs) */
- 	sort(array, length, sizeof(pid_t), cmppid, NULL);
--	if (type == CGROUP_FILE_PROCS)
--		length = pidlist_uniq(array, length);
-+	length = pidlist_uniq(array, length);
- 
- 	l = cgroup_pidlist_find_create(cgrp, type);
- 	if (!l) {
--- 
-2.42.0
+    blkdev_get_by_*() and blkdev_put() functions are now unused. Remove
+    them.
 
+    Acked-by: Christoph Hellwig <hch@lst.de>
+    Reviewed-by: Christian Brauner <brauner@kernel.org>
+    Signed-off-by: Jan Kara <jack@suse.cz>
+    Link: https://lore.kernel.org/r/20230927093442.25915-29-jack@suse.cz
+    Signed-off-by: Christian Brauner <brauner@kernel.org>
+
+for now. You can find an archive of that branch including that commit
+under the tag vfs.super.2023-10-09
+
+Thanks!
