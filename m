@@ -2,104 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8A17BEF5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 01:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFEA17BEF5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 01:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379102AbjJIXuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 19:50:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39810 "EHLO
+        id S1379043AbjJIXua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 19:50:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379043AbjJIXuF (ORCPT
+        with ESMTP id S1379099AbjJIXu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 19:50:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020779D
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 16:49:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696895359;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type;
-        bh=CJp54onwz9CzThNkzWbc4cU/t9wT9W7SbdG3CEP0yEc=;
-        b=Dl/KjhnVxbuKZ2hwVLtOFpw/PhjLzatuEGAz4l2oxHaRitb3enyf8jiskCTKreI/6gd+0n
-        S1RlERHuAqGfblV6455vMKFoWbmY9TBVgKvm2qjKpgESFyqkKcBDIASbW3y1r0EuD/4huv
-        vammwSnVQRH8g/4HGzvXoUxxQVBN4sQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-575-XDwre3y_Nv64Bidao9AK6Q-1; Mon, 09 Oct 2023 19:49:01 -0400
-X-MC-Unique: XDwre3y_Nv64Bidao9AK6Q-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Mon, 9 Oct 2023 19:50:28 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5269D;
+        Mon,  9 Oct 2023 16:50:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1696895425;
+        bh=dnZV4RzzP9FMaCBlEyghmh9sjDpcoyZ4mg0YcWIuolc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tSkHXXoM9Sjk+lz7z09c2ciLGLCcVnS/Z6WPaGHThiUe99eaxykYGk3XiyPfs23dU
+         4ApY/LNgrBKn0HIgDiFP+CcOvsmFPDT4hpXMEh1xEcFwI68lq6KC+akAGXbPyJYMi9
+         273bcE5qhTN6LW9fOoyyzUOZ9SgH79Q1RrCeYLfS+ehynpJa2dzO/6Icyd3MxWUxSq
+         T9iz4cGpMIkuPDEZH3S2c5jaRYoJDBE+md2cN20DXgLSRUqrDwbDNrEjng4ffKdHWO
+         nZz2wb3tzTuH9005LjNVtBeZfrVmPB2gVtQJ/L7IHmGsIhF7piRsY7OzxzMTRi4JDK
+         9iy15hN9Eig/Q==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6A9628002B2;
-        Mon,  9 Oct 2023 23:49:00 +0000 (UTC)
-Received: from localhost (unknown [10.22.33.188])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E30AB2027045;
-        Mon,  9 Oct 2023 23:48:59 +0000 (UTC)
-Date:   Mon, 9 Oct 2023 20:48:58 -0300
-From:   "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        stable-rt <stable-rt@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Jeff Brady <jeffreyjbrady@gmail.com>,
-        Luis Goncalves <lgoncalv@redhat.com>
-Subject: [ANNOUNCE] 5.10.197-rt96
-Message-ID: <ZSSRanGeJ1RXwnvk@uudg.org>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S4G4G6MkRz4x1p;
+        Tue, 10 Oct 2023 10:50:22 +1100 (AEDT)
+Date:   Tue, 10 Oct 2023 10:50:21 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christian Brauner <brauner@kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Amir Goldstein <amir73il@gmail.com>
+Cc:     Alexander Larsson <alexl@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Wedson Almeida Filho <walmeida@microsoft.com>
+Subject: linux-next: manual merge of the vfs-brauner tree with the overlayfs
+ tree
+Message-ID: <20231010105021.57fa4379@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/ZKIpQ573POdotYh0BhHD3UK";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+--Sig_/ZKIpQ573POdotYh0BhHD3UK
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I'm pleased to announce the 5.10.197-rt96 stable release.
+Hi all,
 
-This release is just an update to the new stable 5.10.197 version
-and no RT-specific changes have been performed.
+Today's linux-next merge of the vfs-brauner tree got a conflict in:
 
-You can get this release via the git tree at:
+  fs/overlayfs/super.c
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+between commit:
 
-  branch: v5.10-rt
-  Head SHA1: 2140f78d1da2b7ba8913fb8d009d6b394bf1b813
+  1e97d6e67406 ("ovl: Move xattr support to new xattrs.c file")
 
-Or to build 5.10.197-rt96 directly, the following patches should be applied:
+from the overlayfs tree and commit:
 
-  https://www.kernel.org/pub/linux/kernel/v5.x/linux-5.10.tar.xz
+  3f644c1cd7b5 ("overlayfs: move xattr tables to .rodata")
 
-  https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.10.197.xz
+from the vfs-brauner tree.
 
-  https://www.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patch-5.10.197-rt96.patch.xz
+I fixed it up (I used the former version of this file and applied the
+following merge fix patch) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-Signing key fingerprint:
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Tue, 10 Oct 2023 10:47:16 +1100
+Subject: [PATCH] fix up for "ovl: Move xattr support to new xattrs.c file"
 
-  9354 0649 9972 8D31 D464  D140 F394 A423 F8E6 7C26
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ fs/overlayfs/xattrs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-All keys used for the above files and repositories can be found on the
-following git repository:
+diff --git a/fs/overlayfs/xattrs.c b/fs/overlayfs/xattrs.c
+index 1b16b0abdf91..8a9c76adbf5c 100644
+--- a/fs/overlayfs/xattrs.c
++++ b/fs/overlayfs/xattrs.c
+@@ -251,13 +251,13 @@ static const struct xattr_handler ovl_other_xattr_han=
+dler =3D {
+ 	.set =3D ovl_other_xattr_set,
+ };
+=20
+-static const struct xattr_handler *ovl_trusted_xattr_handlers[] =3D {
++static const struct xattr_handler * const ovl_trusted_xattr_handlers[] =3D=
+ {
+ 	&ovl_own_trusted_xattr_handler,
+ 	&ovl_other_xattr_handler,
+ 	NULL
+ };
+=20
+-static const struct xattr_handler *ovl_user_xattr_handlers[] =3D {
++static const struct xattr_handler * const ovl_user_xattr_handlers[] =3D {
+ 	&ovl_own_user_xattr_handler,
+ 	&ovl_other_xattr_handler,
+ 	NULL
+--=20
+2.40.1
 
-   git://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git
+--=20
+Cheers,
+Stephen Rothwell
 
-Enjoy!
-Luis
+--Sig_/ZKIpQ573POdotYh0BhHD3UK
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUkkb0ACgkQAVBC80lX
+0GzaWgf/cC2TeY5OJwDdyGfsM7vDQfmIA7qSksnT7pm2cCw++vrT9j1guCo2is9D
+EOrfFlh54szOgU7R/L3r5EZiIuHbI4xao4dOZ4qvwi0wOjcZWYkrOLlgKxoWJjXm
+oJghbxa8KUKpExlBizXO+85bJzsmKm2AycHpT2KEAZiRVxmKTDFFSKxYte9mHqWw
+jLc1JlmMpHBkXehx1tKehqNIggQ31Jcjcwtv6NvL4hiFcjKtDg679pM6LMaaTJCj
+fysUEioo4E3Ek9sgNfdj3omQpru410OCu+t8S5P67NvAsElsCO1joV1Vj59vSyQF
+YpX84VWKhDZJS83hTr4eMjhEgESuAw==
+=Q+Y+
+-----END PGP SIGNATURE-----
+
+--Sig_/ZKIpQ573POdotYh0BhHD3UK--
