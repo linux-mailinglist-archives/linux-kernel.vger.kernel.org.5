@@ -2,105 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2197BEE7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 00:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F207BEEA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 00:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378870AbjJIWtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 18:49:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42244 "EHLO
+        id S1378970AbjJIW5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 18:57:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378935AbjJIWtI (ORCPT
+        with ESMTP id S1378939AbjJIW52 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 18:49:08 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17514B4
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 15:49:07 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-7a24c86aae3so64926339f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 15:49:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1696891746; x=1697496546; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MD4vOLEn+ODCKC4aNr/ZHy2GXrVIqzwTElTE2Jci6B4=;
-        b=ZrU5yRX2J2eXOkMg60zXeLgk77jtjR+7w+8y2Fw/UbxRNKnbxpIRSQQ+9d/6VEGKuU
-         6LV1gAGBkLNRwMSGLur66ppFtsyb1LjxL2IsvzCJAJOo8cUWoWlkqfWR7DpGg23H23w2
-         y7TetbbPep0qRH9ULJJyCEliuHVnP7EI7xjtk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696891746; x=1697496546;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MD4vOLEn+ODCKC4aNr/ZHy2GXrVIqzwTElTE2Jci6B4=;
-        b=R9zpG5KcczPKoTc+DOZd5Col9LbkeUASreiK/BtdsyRWKNMhVj7/0arqq9X8MyrNSf
-         BGfsyW5mDqbTYqeMinYZKst1Ye9Xpy7AbGCUyVDbuky+54+Y08F/m5WfBM1BXxXbZpqc
-         5TfZvQf7RaTKgy0CP1iaR2xvjcGKKK0IZmWdmCDOLfMxJiEQiOScZWXrEy+GpoIuXrFD
-         /e1Z6JmhzOmRWNpC3pcWL/qFhQpc3GCMbBDksta5/cf1ptzDHzDIszHy00v7e/hQHwAW
-         IrRfMy/Y99AsMNaZihX1mjrvEKR8jYG8Qad4+1bu0uhH4Qp8vBaUHWxDFXFs/vJXPIFx
-         xBfQ==
-X-Gm-Message-State: AOJu0YzcbNY4OozHD3jJss1jxdPss5AwecFxCcwacJBELTsMfL/xv6kf
-        mhjWgGMs3/Wjr0onqyFqXXzDvA==
-X-Google-Smtp-Source: AGHT+IGLHs++IFJz8wlEpI8qgfbggIA6BhZ2M0hqNsP9yD+fAKnhBOBLIGGd5dJqyph0EZxYxePapQ==
-X-Received: by 2002:a05:6602:140c:b0:79f:a8c2:290d with SMTP id t12-20020a056602140c00b0079fa8c2290dmr22053272iov.0.1696891746444;
-        Mon, 09 Oct 2023 15:49:06 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id q6-20020a02a306000000b004290985a1efsm2344564jai.43.2023.10.09.15.49.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 15:49:06 -0700 (PDT)
-Message-ID: <92b78aaa-1ea6-4040-ab81-e30a8980fcf9@linuxfoundation.org>
-Date:   Mon, 9 Oct 2023 16:49:05 -0600
+        Mon, 9 Oct 2023 18:57:28 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B81689E;
+        Mon,  9 Oct 2023 15:57:26 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 34A131F749;
+        Mon,  9 Oct 2023 22:57:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1696892245;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=K1K6GA4qTGDqXWpFRxrEm61sNBMBFVNz4axizC84FNY=;
+        b=bHFvowq1UnXaHVoyWJY34ZXhrRtAajazy7yjrQpIpggfFqsKdXi/E38v4JWGMIxirTFiNx
+        +iN8l4hlkLFzLN9r9//F7mIK5+MPz1wnZOQRHlMCb/4q1fEfjk/a4PBNWR78DIGm4Nl8XK
+        08U6vS3O/H7Y7IXVvGNiZAziAlH7ob4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1696892245;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=K1K6GA4qTGDqXWpFRxrEm61sNBMBFVNz4axizC84FNY=;
+        b=yI9+v5vsSiN78nmWR0+r6JM2Ll2LHT7pCfM2yO1ImkVw4tIDfMTFR1Xn44zH7IRpPKl03y
+        nEThFg04amL8E8BA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0C47513586;
+        Mon,  9 Oct 2023 22:57:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id muFHAlWFJGVHdwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 09 Oct 2023 22:57:25 +0000
+Date:   Tue, 10 Oct 2023 00:50:39 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] btrfs: Add __counted_by for struct
+ btrfs_delayed_item and use struct_size()
+Message-ID: <20231009225039.GX28758@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <ZSRmRj7leOsdUmJm@work>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.1 000/162] 6.1.57-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20231009130122.946357448@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20231009130122.946357448@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZSRmRj7leOsdUmJm@work>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/9/23 06:59, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.57 release.
-> There are 162 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, Oct 09, 2023 at 02:44:54PM -0600, Gustavo A. R. Silva wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
+> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
 > 
-> Responses should be made by Wed, 11 Oct 2023 13:00:55 +0000.
-> Anything received after that time might be too late.
+> While there, use struct_size() helper, instead of the open-coded
+> version, to calculate the size for the allocation of the whole
+> flexible structure, including of course, the flexible-array member.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.57-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
+> This code was found with the help of Coccinelle, and audited and
+> fixed manually.
 > 
-> thanks,
-> 
-> greg k-h
-> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Compiled and booted on my test system. No dmesg regressions.
-
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
-
+Added to misc-next, thanks.
