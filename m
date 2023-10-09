@@ -2,116 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D12B7BDD2F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 429117BDD3C
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376723AbjJINIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 09:08:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41476 "EHLO
+        id S1376709AbjJINIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 09:08:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376706AbjJINIL (ORCPT
+        with ESMTP id S1376672AbjJINIk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 09:08:11 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE1194;
-        Mon,  9 Oct 2023 06:08:10 -0700 (PDT)
-Date:   Mon, 09 Oct 2023 13:08:06 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696856887;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bEr1MM8/2JauJrDARdrIFSYd1FdtFHHP6Pk0B7CMA2I=;
-        b=HVmt6K9QB/yYEVM52Y+FaIxtig6OAjuph9R5H/+p7YEn7lK9FynWgoF40YU8TM4nkAEQsB
-        0xbsjh+r/Bct2JOWoyGafp44d9+qJVIteDOTfPBY5YRUWuEedXaDUa5Np15LxyzlA0TwIN
-        1u2BAEWSpaApHKQPDk4I9WVNSBSp/3ISPCP70OZBmEiNIGHh3cgFVXR2nl6UBdeTljOUKd
-        jXyZ0AspFtE4F4YHvlukYXKrH7AfZd360SJEUAfgtxn8B9n8vcvozjVtgAeuVyvbCJ+9/k
-        z0EiVis47+0LebOZmYtgHSUemb6hdm7jBGKpS6CoQskxivaD/yK29AHlpTiLBA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696856887;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bEr1MM8/2JauJrDARdrIFSYd1FdtFHHP6Pk0B7CMA2I=;
-        b=WO1Act2IKjSzxOrweWFXbQNaj6TQi1eEVRRwqpOLpeg2gLddHpActWv4dBXPiw4zBIxHuT
-        y4TmzpwQusJu3lBA==
-From:   "tip-bot2 for Guenter Roeck" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] rtc: Add API function to return alarm time bound
- by hardware limit
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230915152238.1144706-2-linux@roeck-us.net>
-References: <20230915152238.1144706-2-linux@roeck-us.net>
+        Mon, 9 Oct 2023 09:08:40 -0400
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A8EE99;
+        Mon,  9 Oct 2023 06:08:37 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R931e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0VtodbAQ_1696856913;
+Received: from 30.240.114.194(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VtodbAQ_1696856913)
+          by smtp.aliyun-inc.com;
+          Mon, 09 Oct 2023 21:08:35 +0800
+Message-ID: <262abac1-39ea-7612-e198-6bc08c76dd39@linux.alibaba.com>
+Date:   Mon, 9 Oct 2023 21:08:32 +0800
 MIME-Version: 1.0
-Message-ID: <169685688633.3135.80139071644224201.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH v6 3/4] drivers/perf: add DesignWare PCIe PMU driver
+Content-Language: en-US
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+To:     Yicong Yang <yangyicong@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     yangyicong@hisilicon.com, chengyou@linux.alibaba.com,
+        kaishen@linux.alibaba.com, helgaas@kernel.org, will@kernel.org,
+        baolin.wang@linux.alibaba.com, robin.murphy@arm.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, rdunlap@infradead.org,
+        mark.rutland@arm.com, zhuo.song@linux.alibaba.com
+References: <20230606074938.97724-1-xueshuai@linux.alibaba.com>
+ <20230606074938.97724-4-xueshuai@linux.alibaba.com>
+ <31e2b012-3a29-d063-842d-e3f7736816e7@huawei.com>
+ <20230727103929.00000544@Huawei.com>
+ <12958abe-4bdb-8532-bf67-8e772ed2a9dd@linux.alibaba.com>
+ <edc056aa-1c53-a31e-087f-6076b795d5cc@huawei.com>
+ <10176239-78c1-e276-e74f-a6e79b9c0751@linux.alibaba.com>
+ <f14c9acd-1549-1a65-4e57-a5e434cbe18d@huawei.com>
+ <1ebf5862-441f-729a-32c1-8e59ac452168@linux.alibaba.com>
+In-Reply-To: <1ebf5862-441f-729a-32c1-8e59ac452168@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
 
-Commit-ID:     a0fddaa0b5a587cc8d185f8802fe7e48493c43ed
-Gitweb:        https://git.kernel.org/tip/a0fddaa0b5a587cc8d185f8802fe7e48493c43ed
-Author:        Guenter Roeck <linux@roeck-us.net>
-AuthorDate:    Fri, 15 Sep 2023 08:22:37 -07:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Mon, 09 Oct 2023 15:03:28 +02:00
 
-rtc: Add API function to return alarm time bound by hardware limit
+On 2023/8/4 11:09, Shuai Xue wrote:
+> 
+> 
+> On 2023/8/4 10:28, Yicong Yang wrote:
+>> On 2023/8/4 9:39, Shuai Xue wrote:
+>>>
+>>>
+>>> On 2023/8/1 19:46, Yicong Yang wrote:
+>>>> On 2023/7/28 20:41, Shuai Xue wrote:
+>>>>>
+>>>>>
+>>>>> On 2023/7/27 17:39, Jonathan Cameron wrote:
+>>>>>> On Tue, 6 Jun 2023 23:14:07 +0800
+>>>>>> Yicong Yang <yangyicong@huawei.com> wrote:
+>>>>>>
+>>>>>>> On 2023/6/6 15:49, Shuai Xue wrote:
+>>>>>>>> This commit adds the PCIe Performance Monitoring Unit (PMU) driver support
+>>>>>>>> for T-Head Yitian SoC chip. Yitian is based on the Synopsys PCI Express
+>>>>>>>> Core controller IP which provides statistics feature. The PMU is not a PCIe
+>>>>>>>> Root Complex integrated End Point(RCiEP) device but only register counters
+>>>>>>>> provided by each PCIe Root Port.
+>>>>>>>>
+>>>>>>>> To facilitate collection of statistics the controller provides the
+>>>>>>>> following two features for each Root Port:
+>>>>>>>>
+>>>>>>>> - Time Based Analysis (RX/TX data throughput and time spent in each
+>>>>>>>>   low-power LTSSM state)
+>>>>>>>> - Event counters (Error and Non-Error for lanes)
+>>>>>>>>
+>>>>>>>> Note, only one counter for each type and does not overflow interrupt.
+>>>>>>>>
+>>>>>>>> This driver adds PMU devices for each PCIe Root Port. And the PMU device is
+>>>>>>>> named based the BDF of Root Port. For example,
+>>>>>>>>
+>>>>>>>>     30:03.0 PCI bridge: Device 1ded:8000 (rev 01)
+>>>>>>>>
+>>>>>>>> the PMU device name for this Root Port is dwc_rootport_3018.
+>>>>>>>>
+>>>>>>>> Example usage of counting PCIe RX TLP data payload (Units of 16 bytes)::
+>>>>>>>>
+>>>>>>>>     $# perf stat -a -e dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/
+>>>>>>>>
+>>>>>>>> average RX bandwidth can be calculated like this:
+>>>>>>>>
+>>>>>>>>     PCIe TX Bandwidth = PCIE_TX_DATA * 16B / Measure_Time_Window
+>>>>>>>>
+>>>>>>>> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+>>>>>>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>>>>>> Link: https://lore.kernel.org/oe-kbuild-all/202305170639.XU3djFZX-lkp@intel.com/
+>>>>>>>> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>>>>>>
+>>>>>> I'll review on top to avoid any duplication with Yicong.
+>>>>>
+>>>>> Thank you! It also served as a reminder that I missed Yicong's email. It appears
+>>>>> that Thunderbird mistakenly moved his email to the junk folder, resulting in me
+>>>>> overlooking it.
+>>>>>
+>>>>>>
+>>>>>> Note I've cropped the stuff neither of us commented on so it's
+>>>>>> easier to spot the feedback.
+>>>>>
+>>>>> Thank you for noting that. My feedback is replied inline.
+>>>>>
+>>>>>>
+>>>>>> Jonathan
+>>>>>>
+>>>>>>>> ---
+>>>>>>>>  drivers/perf/Kconfig        |   7 +
+>>>>>>>>  drivers/perf/Makefile       |   1 +
+>>>>>>>>  drivers/perf/dwc_pcie_pmu.c | 706 ++++++++++++++++++++++++++++++++++++
+>>>>>>>>  3 files changed, 714 insertions(+)
+>>>>>>>>  create mode 100644 drivers/perf/dwc_pcie_pmu.c
+>>>>>>>>
+>>>>>>>> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
+>>>>>>>> index 711f82400086..6ff3921d7a62 100644
+>>>>>>>> --- a/drivers/perf/Kconfig
+>>>>>>>> +++ b/drivers/perf/Kconfig
+>>>>>>>> @@ -209,6 +209,13 @@ config MARVELL_CN10K_DDR_PMU
+>>>>>>>>  	  Enable perf support for Marvell DDR Performance monitoring
+>>>>>>>>  	  event on CN10K platform.
+>>>>>>>>  
+>>>>>>>> +config DWC_PCIE_PMU
+>>>>>>>> +	tristate "Enable Synopsys DesignWare PCIe PMU Support"
+>>>>>>>> +	depends on (ARM64 && PCI)
+>>>>>>>> +	help
+>>>>>>>> +	  Enable perf support for Synopsys DesignWare PCIe PMU Performance
+>>>>>>>> +	  monitoring event on Yitian 710 platform.
+>>>>>>
+>>>>>> The documentation kind of implies this isn't platform specific.
+>>>>>> If some parts are (such as which events exist) then you may want to push
+>>>>>> that to userspace / perftool with appropriate matching against specific SoC.
+>>>>>>
+>>>>>> If it is generic, then change this text to "event on platform including the Yitian 710."
+>>>>>
+>>>>> It is generic without any platform specific, so I will change it as you expected.
+>>>>>
+>>>>>>
+>>>>>>>> +
+>>>>>>>>  source "drivers/perf/arm_cspmu/Kconfig"
+>>>>>>>>  
+>>>>>>>>  source "drivers/perf/amlogic/Kconfig"
+>>>>>>
+>>>>>>>> new file mode 100644
+>>>>>>>> index 000000000000..8bfcf6e0662d
+>>>>>>>> --- /dev/null
+>>>>>>>> +++ b/drivers/perf/dwc_pcie_pmu.c
+>>>>>>>> @@ -0,0 +1,706 @@
+>>>>>>
+>>>>>> ...
+>>>>>>
+>>>>>>>> +
+>>>>>>>> +struct dwc_pcie_pmu {
+>>>>>>>> +	struct pci_dev		*pdev;		/* Root Port device */  
+>>>>>>>
+>>>>>>> If the root port removed after the probe of this PCIe PMU driver, we'll access the NULL
+>>>>>>> pointer. I didn't see you hold the root port to avoid the removal.
+>>>>>
+>>>>> Do you mean that I should have a reference count of rootport by pci_dev_get() when allocating
+>>>>> pcie_pmu?
+>>>>>
+>>>>>      pcie_pmu->pdev = pci_dev_get();
+>>>>
+>>>> It could be one option, but will block the removal of device from userspace. Another option
+>>>> is to register a PCI bus notifier then on removal/added the driver can get notified and handle
+>>>> it, for example, remove the related PMU on the removal of the root ports.
+>>>
+>>> I see, but can root port be removed from userspace? I check the hotplug slot interface, no root
+>>> port is available to power off.
+>>>
+>>
+>> For hotplug maybe not, but user can remove certian device through sysfs:
+>>
+>> echo 1 > /sys/bus/pci/devices/<root port>/remove
+>>
+> 
+> Thank you, I will add a notifier for removal/added action.
+> 
+> Best Regards,
+> Shuai
 
-Add rtc_bound_alarmtime() to return the requested alarm timeout bound by
-the maxmum alarm timeout that is supported by a given RTC.
+Hi, Yicong,
 
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20230915152238.1144706-2-linux@roeck-us.net
+I am confused when adding a notifier by bus_register_notifier(). If I have added a action to
+pdev->dev to unregister pmu:
 
----
- include/linux/rtc.h | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+		ret = perf_pmu_register(&pcie_pmu->pmu, name, -1);
+		if (ret) {
+			pci_err(pcie_pmu->pdev,
+				"Error %d registering PMU @%x\n", ret, bdf);
+			goto out;
+		}
+		ret = devm_add_action_or_reset(
+			&pdev->dev, dwc_pcie_pmu_unregister_pmu, &pcie_pmu->pmu);
 
-diff --git a/include/linux/rtc.h b/include/linux/rtc.h
-index 4c0bcbe..5f8e438 100644
---- a/include/linux/rtc.h
-+++ b/include/linux/rtc.h
-@@ -225,6 +225,23 @@ static inline bool is_leap_year(unsigned int year)
- 	return (!(year % 4) && (year % 100)) || !(year % 400);
- }
- 
-+/**
-+ * rtc_bound_alarmtime() - Return alarm time bound by rtc limit
-+ * @rtc: Pointer to rtc device structure
-+ * @requested: Requested alarm timeout
-+ *
-+ * Return: Alarm timeout bound by maximum alarm time supported by rtc.
-+ */
-+static inline ktime_t rtc_bound_alarmtime(struct rtc_device *rtc,
-+					  ktime_t requested)
-+{
-+	if (rtc->alarm_offset_max &&
-+	    rtc->alarm_offset_max * MSEC_PER_SEC < ktime_to_ms(requested))
-+		return ms_to_ktime(rtc->alarm_offset_max * MSEC_PER_SEC);
-+
-+	return requested;
-+}
-+
- #define devm_rtc_register_device(device) \
- 	__devm_rtc_register_device(THIS_MODULE, device)
- 
+the pmu will be unregister when the port removes, so accessing the NULL pointer will never happen,
+right? Do we still need the bus_register_notifier()?
+
+Thank you.
+
+Best Regards,
+Shuai
+
