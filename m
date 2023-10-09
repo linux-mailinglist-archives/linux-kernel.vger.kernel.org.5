@@ -2,44 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A47D87BE8D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 20:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A6A7BE8DC
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 20:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377446AbjJISGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 14:06:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34870 "EHLO
+        id S1377424AbjJISJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 14:09:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376935AbjJISGQ (ORCPT
+        with ESMTP id S1376898AbjJISJu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 14:06:16 -0400
+        Mon, 9 Oct 2023 14:09:50 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7393194;
-        Mon,  9 Oct 2023 11:06:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1684C433C7;
-        Mon,  9 Oct 2023 18:06:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696874775;
-        bh=qqVvnqpRR2N4XysEim0lFNvDHLgFX3LGkETYl0RUp4A=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=g3TE2KEeFA9h+2fmDP9XZhcbQc0uMpaGwj7ccP0sJbXdxGQQHNymKHn3YUj4OrhjM
-         UXzja3eHHsmyiRHb+bWSj9pFXrXLL8a6JE7SSWJPxKq/6M+s6ky94JbqAURdhJHsB7
-         7vKVKTBkklWclrMCflsCU1u+Io306z4YQtA+LyY1gwkjLbZNvP6+PqiKU0pqrq3N+/
-         opSASAs5D9NG5dfUbCyOP05KhdS2zlR3acolnen7rrWHLzBVjdTR1FX1nEXPQBfwSi
-         cOAg557HhXwoZVS1IEqr2jSKmgPAMVSuANlP26pKsjBWedsRbD1B4V7zoC/OfANosz
-         /MrrZ4pDjclUA==
-Date:   Mon, 9 Oct 2023 11:06:13 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     pbonzini@redhat.com, workflows@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH] KVM: deprecate KVM_WERROR in favor of general WERROR
-Message-ID: <20231009110613.2405ff47@kernel.org>
-In-Reply-To: <ZSQ7z8gqIemJQXI6@google.com>
-References: <20231006205415.3501535-1-kuba@kernel.org>
-        <ZSQ7z8gqIemJQXI6@google.com>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD5E94;
+        Mon,  9 Oct 2023 11:09:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38AD9C433C7;
+        Mon,  9 Oct 2023 18:09:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696874987;
+        bh=55mBdPux7Faa+MTMfhzDfhcLUi40zyKZ0NpJ/3a3pcI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o8H/ukR+KYxcZZzJWnnwdyKPt+JA+nb6tZkMCHtSBtn1jOzDg5vGkrfaX4Jf57lCD
+         zlwvmPnfyJIlA6S0FhT7B+GC4D/QNTajBMCBXPOMvY9w/gCA7qNXP+saLnrbZZPMsW
+         h4IT/msBBFYLiRTvKuBC77JlNLpKEquBREqOVt7E=
+Date:   Mon, 9 Oct 2023 20:09:44 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>
+Cc:     Bryan Jennings <bryjen423@gmail.com>, sashal@kernel.org,
+        airlied@linux.ie, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, olvaffe@gmail.com,
+        amd-gfx@lists.freedesktop.org, alexander.deucher@amd.com,
+        stable@vger.kernel.org, Lang.Yu@amd.com, christian.koenig@amd.com
+Subject: Re: [PATCH AUTOSEL 5.10 13/22] drm/amdgpu: install stub fence into
+ potential unused fence pointers
+Message-ID: <2023100908-chaperone-squishier-4f10@gregkh>
+References: <2023083119-phoney-ascend-d4ec@gregkh>
+ <d32d6919-47cf-4ddc-955a-0759088220ae@gmail.com>
+ <2023100750-unraveled-propeller-3697@gregkh>
+ <0eb8750d-79c5-4508-ac36-7f91bc8cbaf9@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0eb8750d-79c5-4508-ac36-7f91bc8cbaf9@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -50,82 +55,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Oct 2023 10:43:43 -0700 Sean Christopherson wrote:
-> On Fri, Oct 06, 2023, Jakub Kicinski wrote:
-> > Setting WERROR for random subsystems make life really hard
-> > for subsystems which want to build-test their stuff with W=1.
-> > WERROR for the entire kernel now exists and can be used
-> > instead. W=1 people probably know how to deal with the global
-> > W=1 already, tracking all per-subsystem WERRORs is too much...  
+On Mon, Oct 09, 2023 at 02:46:40PM +0200, Christian König wrote:
+> Am 07.10.23 um 11:50 schrieb Greg KH:
+> > On Sun, Sep 10, 2023 at 03:43:01PM -0500, Bryan Jennings wrote:
+> > > This is also causing log spam on 5.15.  It was included in 5.15.128 as
+> > > commit 4921792e04f2125b5eadef9dbe9417a8354c7eff.  I encountered this and
+> > > found https://gitlab.freedesktop.org/drm/amd/-/issues/2820 while researching
+> > > the problem.
+> > Confused, what should we do here?
 > 
-> I assume s/W=1/WERROR=y in this line?
+> If this patch was backported to even more older kernels then please revert
+> that immediately!
 
-Yes, sorry about that.
+It only went to 5.10 and 5.15 and has been reverted from both of them
+now.
 
-> > Link: https://lore.kernel.org/all/0da9874b6e9fcbaaa5edeb345d7e2a7c859fc818.1696271334.git.thomas.lendacky@amd.com/
-> > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> > ---
-> >  Documentation/process/maintainer-kvm-x86.rst |  2 +-
-> >  arch/x86/kvm/Kconfig                         | 14 --------------
-> >  arch/x86/kvm/Makefile                        |  1 -
-> >  3 files changed, 1 insertion(+), 16 deletions(-)
-> > 
-> > diff --git a/Documentation/process/maintainer-kvm-x86.rst b/Documentation/process/maintainer-kvm-x86.rst
-> > index 9183bd449762..cd70c0351108 100644
-> > --- a/Documentation/process/maintainer-kvm-x86.rst
-> > +++ b/Documentation/process/maintainer-kvm-x86.rst
-> > @@ -243,7 +243,7 @@ context and disambiguate the reference.
-> >  Testing
-> >  -------
-> >  At a bare minimum, *all* patches in a series must build cleanly for KVM_INTEL=m
-> > -KVM_AMD=m, and KVM_WERROR=y.  Building every possible combination of Kconfigs
-> > +KVM_AMD=m, and WERROR=y.  Building every possible combination of Kconfigs
-> >  isn't feasible, but the more the merrier.  KVM_SMM, KVM_XEN, PROVE_LOCKING, and
-> >  X86_64 are particularly interesting knobs to turn.
-> >  
-> > diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-> > index ed90f148140d..12929324ac3e 100644
-> > --- a/arch/x86/kvm/Kconfig
-> > +++ b/arch/x86/kvm/Kconfig
-> > @@ -63,20 +63,6 @@ config KVM
-> >  
-> >  	  If unsure, say N.
-> >  
-> > -config KVM_WERROR
-> > -	bool "Compile KVM with -Werror"
-> > -	# KASAN may cause the build to fail due to larger frames
-> > -	default y if X86_64 && !KASAN  
-> 
-> Hrm, I am loath to give up KVM's targeted -Werror as it allows for more aggresive
-> enabling, e.g. enabling CONFIG_WERROR for i386 builds with other defaults doesn't
-> work because of CONFIG_FRAME_WARN=1024.  That in turns means making WERROR=y a
-> requirement in maintainer-kvm-x86.rst is likely unreasonable.
-> 
-> And arguably KVM_WERROR is doing its job by flagging the linked W=1 error.  The
-> problem there lies more in my build testing, which I'll go fix by adding a W=1
-> configuration or three.  As the changelog notes, I highly doubt W=1 builds work
-> with WERROR, whereas keeping KVM x86 warning-free even with W=1 is feasible.
-> 
-> > -	# We use the dependency on !COMPILE_TEST to not be enabled
-> > -	# blindly in allmodconfig or allyesconfig configurations
-> > -	depends on KVM
-> > -	depends on (X86_64 && !KASAN) || !COMPILE_TEST  
-> 
-> On a related topic, this is comically stale as WERROR is on by default for both
-> allmodconfig and allyesconfig, which work because they trigger 64-bit builds.
-> And KASAN on x86 is 64-bit only.
-> 
-> Rather than yank out KVM_WERROR entirely, what if we make default=n and trim the
-> depends down to "KVM && EXPERT && !KASAN"?  E.g.
+thanks,
 
-IMO setting WERROR is a bit perverse. The way I see it WERROR is a
-crutch for people who don't have the time / infra to properly build
-test changes they send to Linus. Or wait for build bots to do their job.
-We do have sympathy for these folks, we are mostly volunteers after
-all. At the same time someone's under-investment should not be causing
-pain to those of us who _do_ build test stuff carefully.
-
-Rather than tweak stuff I'd prefer if we could agree that local -Werror
-is anti-social :(
-
-The global WERROR seems to be a good compromise.
+greg k-h
