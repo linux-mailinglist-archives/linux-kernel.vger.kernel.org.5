@@ -2,131 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E17647BD9E8
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 388DB7BD9EC
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346239AbjJILc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 07:32:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36758 "EHLO
+        id S1346293AbjJILcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 07:32:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234526AbjJILc2 (ORCPT
+        with ESMTP id S234521AbjJILcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 07:32:28 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12olkn2052.outbound.protection.outlook.com [40.92.22.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3638A9D;
-        Mon,  9 Oct 2023 04:32:26 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=khXOXNbfCHlMRvWRdF2QXR9Zzkl24bWDWjmsRnJMiRbxVyhpn0aZkuxh2CmHg3goV3NorIB5s8cS1JBUVbAL9w+TJvbNv20GGF2afz0dBLod69oCnmHjmAY36Aim4C+D7iuPvMOeGq6FOpW4uwuPsRiz5JE4F7AvfiM1P+a+1VXhN+y0icz6tKVROdMVZlzZqA6dKL9y6KeBLYXsZLUVpmlt0ZFQ58KNhDEvqKy5YTWq5aq5Krp2cmRMljBRHxhT8hbtQ1/cc/sHyQl1N8BEcupNFfVXh4Xsvz1DjdzfjeN++YfQWqWoSJg+rj8mVWimoHjbU1vu3eSxsOs5D2rW1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pKGvNJOh8VmEhhVf9A1v8k86P0PMBv9zUocJ89PQrKc=;
- b=VIgLIjxAFEA1qxW1SmK/dxNHR07YmsNFIM4SNsKj7W90H45m3vpD0fOAAqk3g3nEh2CTxF4vvYsKzneFgJocXPi8lfGVspFbwnTEmO5nEDCcxi+PIYJip2AzUFb2Zz23fgUu5GirfjiLy5xX03wXWodQ67b9DIWgHuc9vkZbU6cW2+YZC84uUaGaQzcp5kvrDxfbf04BzphDbxJ3Ui1i11sjMB39g7k2Ftcf+II/pLcRDjBq5OUDwCZ2e23+vnD/2x9L75iWqkyYv76YngJZMgjSAPfariEX9vR8jmBc2zD6FxwVsiTQLMSNi7MaCFg4l+pftMkMekf3UUCfZCTjBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pKGvNJOh8VmEhhVf9A1v8k86P0PMBv9zUocJ89PQrKc=;
- b=f8RzG/kMZ00sXhw+fFQ2mFIoLEmJ1fGOObsNLz7mT9IeY3aZTDVERCP84E2MfvRX2mLhJE6CkYCZyie88V0/ekKEWdI+hLpNjg6K899SHQhR1NM6AZbHAfhGaiHeoMqbEMvVbqcFj+caqB8L7cgr5FaLz1dHaAtGv564MZgmnDYYunCmaJwjMKPCBi4JF4oV3tRjhkeRRw/JFIMKDS887h6DVEcoZqFpQxU5u4OU4G3jj5/nVoQRcH/np7e8ZwUd/JNYgHomZWFO8pOKVcHcczTt8CfzdXb8yeTlvudPts/ag9VPL1Lxo5YGi+xeriXHeHY7KSIy5vFNlUec/nAS8w==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by PH7PR20MB5782.namprd20.prod.outlook.com (2603:10b6:510:269::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.41; Mon, 9 Oct
- 2023 11:32:23 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::d050:882f:a8a7:8263]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::d050:882f:a8a7:8263%5]) with mapi id 15.20.6838.040; Mon, 9 Oct 2023
- 11:32:23 +0000
-From:   Inochi Amaoto <inochiama@outlook.com>
-To:     Chao Wei <chao.wei@sophgo.com>,
-        Chen Wang <unicorn_wang@outlook.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     Inochi Amaoto <inochiama@outlook.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] riscv: dts: sophgo: add initial CV1812H SoC device tree
-Date:   Mon,  9 Oct 2023 19:32:02 +0800
-Message-ID: <IA1PR20MB49538CBC1CD831FBE666A568BBCEA@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <f1277686-2dd6-4f86-b249-0d9729e7ee6f@linaro.org>
-References: <f1277686-2dd6-4f86-b249-0d9729e7ee6f@linaro.org>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [Pza0iW39wD5ehD2aGdtQf7izfQEyXILtoQGsPUWUTCk=]
-X-ClientProxiedBy: TYCPR01CA0010.jpnprd01.prod.outlook.com (2603:1096:405::22)
- To IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID: <20231009113202.478068-1-inochiama@outlook.com>
+        Mon, 9 Oct 2023 07:32:43 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4417FAB;
+        Mon,  9 Oct 2023 04:32:40 -0700 (PDT)
+Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S3xcV6WgTzNpC0;
+        Mon,  9 Oct 2023 19:28:42 +0800 (CST)
+Received: from [10.174.178.66] (10.174.178.66) by
+ dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 9 Oct 2023 19:32:37 +0800
+Message-ID: <1a3c2bf5-1984-be4e-79d3-edbe702d5a14@huawei.com>
+Date:   Mon, 9 Oct 2023 19:32:37 +0800
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|PH7PR20MB5782:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4ab860f2-97ec-48ad-a537-08dbc8bb67b8
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IQy6U68Yl45m8JOmrCpvOdfjPhPb50qPn51aIOlrNsSAwwLojTjZWRF4Am5TBypyoGp2v69gVXFsKEekj0U5PoyEk0HDfgQ59MqeLECHUcmbNHm3MR4imgXXxPM2FVIWUrmTG5+FEQ8zTh6ZxTnNrw3Uu84IVYTWFOteRq8xFK7IdfroKdcAHvTWxLW9Cwhhw60RUCGLtuDGUNEys0N8517Swa6K2VtBuYqUfPuPpPkYmHVEZou4tHUehonFPBJUrzrc98fOPqjEPX6isEIMpbGlbWqGBxasJ0H4Zt2A2SFPk04AJnJAVP04aR7yOg+XGUQiwLAaFihqmpNO4NFnvdovL6VY5tRqO1Osv9p67U94jTvF/XCUyDVQuC/KTL4uiJ1FmUMGUoGxXgyWMh1unBgN+2P2/JaB/if3IKBpzYlLS9B66Zh/oCZ+39DzcfTt60LrdzuPeVerbvhyIFidr3XpCRBpVmL0eyNcyBlheKkOWA4/Uw6L6GDCMNJsKhUCw6RIXRvYGeQXAtKWEQC42i0cCiRdE5au2BBDeU8jdR2if7CM/vXDom+PSPqol2dED8k/Qw9v+nk+d9vKoiaE0Vb4c5IQaCE3ykndMLINHHJbhV3wnxOdDrlxwePsfbzU
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/m9n88c2mrcwYJ2cm5f1ddhKqWbtFcaDCEpwabnKoCq7RT6isrn9IM3Jb9zx?=
- =?us-ascii?Q?rzniIjFpXryNzoxqiHVSGf+FWXZlWQHKXtBsqsCNOT3bjB1IFHUGcvX97xYi?=
- =?us-ascii?Q?rBihRZocdbCF329kgbiYbQf+W4JtrADE9ajFqEXVWDCr+wdvJyCzPXYpi3O+?=
- =?us-ascii?Q?3Rs286TuBOcxD3DmnInpjjEDY86M4dtJnOzHZQleO2dr0HVLuKH6S6CfvaW1?=
- =?us-ascii?Q?aB7wKBV1IPfVoYF3O+pOqRDatbsQKivsZqaOYDx1FRjVHb3e6Ox4BeND45UN?=
- =?us-ascii?Q?MbguOH3xRFxLXhGnmCW4pUkFkCFCy+7Na8si/tE9J5VRXEdlrxgl7s3xbu/A?=
- =?us-ascii?Q?E1nUkRY3CVsl9ZJ89KZVocic6gkio6QrINuA2Gf+UQM7KbfjZUArJwxJNAqa?=
- =?us-ascii?Q?N28uQ8jCunTcFNZil1qYpYYlOVCeXwkBsbZh6lgom8E5ALYnqnFed7el2B4Y?=
- =?us-ascii?Q?a2HfZYl69ReEcrMhX03y0cCvUJB950BUtU4HHhEbUTQqM6YlGKb5quuECnax?=
- =?us-ascii?Q?ayFRLagyjmx+9b9OcfUVkBZa2uqUU/GSnNo5+wDPMEr+j9Y/eRiX7SGk1Dic?=
- =?us-ascii?Q?JtBfugs/JgJFoiTnol6mmEpOTnsyRnl9D5QXYsOYlk9N1zelCFDz9lv8A7jM?=
- =?us-ascii?Q?M6np9pi14Qz/WP9XhCFiML0saFd66yrnGhg1P2Tqkg5/OBoy90c+mlAk6icQ?=
- =?us-ascii?Q?n7n0OfvWxu/neNNrWdRPD2Nxu1g9odwtzVzs9txOUWUHlk+i7ZWwM7yzjTRE?=
- =?us-ascii?Q?iIuNvGrVGVm+6ny3vBasrCWdfZT3DaK3+z7XWZNrfAoHDdwEx3duvAP2fqov?=
- =?us-ascii?Q?oMZAXkVcf4fl4nS84PlwsJIe+Gv+IzNAZwY5oye4biyTToaCB/JbVl+Xa3RB?=
- =?us-ascii?Q?VASvA7rdDMN/KAG8I/yXLbps1Ykeli/mEE8lGZDt48Cplip4eOVQ1fTpDc1t?=
- =?us-ascii?Q?AlM1erKKnddaPoDOJuQzsEtc59gIkCYsYDU9rWe04StrS3TFRdHicb2OuGL2?=
- =?us-ascii?Q?GGbVFWFo7YGdkQAuBgBS9TlHrCPl46kTRZ4HD/4qPPa5NAyAGJkkNg4NPodb?=
- =?us-ascii?Q?LqRn01lu8mXkasFVA0KDDMrBr7cVyY6qR4Fvr8WiZ7Z8UtfQ2DHui0nUNv73?=
- =?us-ascii?Q?p6FoS45WXHA1aimKTRoFDvcOcMQaBhBMxEi+21VW9ViX9To+IU0Viz+Ad+D5?=
- =?us-ascii?Q?arUw4lWkEFPL97I0IhJGdusXiZXnZ+NrIN9V3bpizoV8U6l93QFIAqwB65k?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4ab860f2-97ec-48ad-a537-08dbc8bb67b8
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2023 11:32:23.6874
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR20MB5782
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0.2
+Subject: Re: [syzbot] [bluetooth?] KASAN: slab-out-of-bounds Read in
+ create_monitor_event
+To:     syzbot <syzbot+c90849c50ed209d77689@syzkaller.appspotmail.com>,
+        <davem@davemloft.net>, <edumazet@google.com>,
+        <johan.hedberg@gmail.com>, <kuba@kernel.org>,
+        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <luiz.dentz@gmail.com>, <luiz.von.dentz@intel.com>,
+        <marcel@holtmann.org>, <netdev@vger.kernel.org>,
+        <pabeni@redhat.com>, <syzkaller-bugs@googlegroups.com>
+References: <000000000000ae9ff70607461186@google.com>
+From:   shaozhengchao <shaozhengchao@huawei.com>
+In-Reply-To: <000000000000ae9ff70607461186@google.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.66]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500026.china.huawei.com (7.185.36.106)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SORTED_RECIPS,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->On 08/10/2023 13:16, Inochi Amaoto wrote:
->> Add initial device tree for the CV1812H RISC-V SoC by SOPHGO.
->>
->> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
->> ---
->>  arch/riscv/boot/dts/sophgo/cv1800b.dtsi |  95 +------------
->>  arch/riscv/boot/dts/sophgo/cv180x.dtsi  | 178 ++++++++++++++++++++++++
->>  arch/riscv/boot/dts/sophgo/cv1812h.dtsi |  36 +++++
->
->You need to split moving existing code into common file and then send it
->with proper -M/-B/-C argument so the move/copy will be detected.
->
->Best regards,
->Krzysztof
->
 
-Thanks for reminding me. It seems only -C work for this.
+
+On 2023/10/9 18:29, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    f291209eca5e Merge tag 'net-6.6-rc5' of git://git.kernel.o..
+> git tree:       upstream
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=11011862680000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=7a5682d32a74b423
+> dashboard link: https://syzkaller.appspot.com/bug?extid=c90849c50ed209d77689
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14d8746e680000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1388dbae680000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/c35c46fb9748/disk-f291209e.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/f0cdf2349ddb/vmlinux-f291209e.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/2f4c7b7ed7c4/bzImage-f291209e.xz
+> 
+> The issue was bisected to:
+> 
+> commit dcda165706b9fbfd685898d46a6749d7d397e0c0
+> Author: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+> Date:   Fri Sep 15 21:42:27 2023 +0000
+> 
+>      Bluetooth: hci_core: Fix build warnings
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1279df95680000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=1179df95680000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1679df95680000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+c90849c50ed209d77689@syzkaller.appspotmail.com
+> Fixes: dcda165706b9 ("Bluetooth: hci_core: Fix build warnings")
+> 
+> ==================================================================
+> BUG: KASAN: slab-out-of-bounds in create_monitor_event+0x88d/0x930 net/bluetooth/hci_sock.c:491
+> Read of size 8 at addr ffff88801e5458c7 by task syz-executor191/5038
+> 
+> CPU: 0 PID: 5038 Comm: syz-executor191 Not tainted 6.6.0-rc4-syzkaller-00158-gf291209eca5e #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+> Call Trace:
+>   <TASK>
+>   __dump_stack lib/dump_stack.c:88 [inline]
+>   dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+>   print_address_description mm/kasan/report.c:364 [inline]
+>   print_report+0x163/0x540 mm/kasan/report.c:475
+>   kasan_report+0x175/0x1b0 mm/kasan/report.c:588
+>   create_monitor_event+0x88d/0x930 net/bluetooth/hci_sock.c:491
+>   send_monitor_replay+0x7a/0x5d0 net/bluetooth/hci_sock.c:723
+>   hci_sock_bind+0x85c/0x1140 net/bluetooth/hci_sock.c:1387
+>   __sys_bind+0x23a/0x2e0 net/socket.c:1849
+>   __do_sys_bind net/socket.c:1860 [inline]
+>   __se_sys_bind net/socket.c:1858 [inline]
+>   __x64_sys_bind+0x7a/0x90 net/socket.c:1858
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x7fa90faa64f9
+> Code: 48 83 c4 28 c3 e8 17 19 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffc6a6f17b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000031
+> RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007fa90faa64f9
+> RDX: 0000000000000006 RSI: 0000000020000000 RDI: 0000000000000004
+> RBP: 0000000000000003 R08: 000000ff00ffb650 R09: 000000ff00ffb650
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000055555604a370
+> R13: 0000000000000072 R14: 00007fa90fb2a5b0 R15: 0000000000000001
+>   </TASK>
+> 
+> Allocated by task 5038:
+>   kasan_save_stack mm/kasan/common.c:45 [inline]
+>   kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
+>   ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+>   __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:383
+>   kasan_kmalloc include/linux/kasan.h:198 [inline]
+>   __do_kmalloc_node mm/slab_common.c:1023 [inline]
+>   __kmalloc_node_track_caller+0xb6/0x230 mm/slab_common.c:1043
+>   kvasprintf+0xdf/0x190 lib/kasprintf.c:25
+>   kobject_set_name_vargs+0x61/0x120 lib/kobject.c:272
+>   dev_set_name+0xd5/0x120 drivers/base/core.c:3427
+>   hci_register_dev+0x153/0xa40 net/bluetooth/hci_core.c:2620
+>   __vhci_create_device drivers/bluetooth/hci_vhci.c:434 [inline]
+>   vhci_create_device+0x3ba/0x720 drivers/bluetooth/hci_vhci.c:475
+>   vhci_get_user drivers/bluetooth/hci_vhci.c:532 [inline]
+>   vhci_write+0x3c7/0x480 drivers/bluetooth/hci_vhci.c:612
+>   call_write_iter include/linux/fs.h:1956 [inline]
+>   new_sync_write fs/read_write.c:491 [inline]
+>   vfs_write+0x782/0xaf0 fs/read_write.c:584
+>   ksys_write+0x1a0/0x2c0 fs/read_write.c:637
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+> The buggy address belongs to the object at ffff88801e5458c0
+>   which belongs to the cache kmalloc-8 of size 8
+> The buggy address is located 2 bytes to the right of
+>   allocated 5-byte region [ffff88801e5458c0, ffff88801e5458c5)
+> 
+> The buggy address belongs to the physical page:
+> page:ffffea0000795140 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1e545
+> flags: 0xfff00000000800(slab|node=0|zone=1|lastcpupid=0x7ff)
+> page_type: 0xffffffff()
+> raw: 00fff00000000800 ffff888012841280 ffffea00004db540 dead000000000002
+> raw: 0000000000000000 0000000000660066 00000001ffffffff 0000000000000000
+> page dumped because: kasan: bad access detected
+> page_owner tracks the page as allocated
+> page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12c40(GFP_NOFS|__GFP_NOWARN|__GFP_NORETRY), pid 25, tgid 25 (kdevtmpfs), ts 9275165846, free_ts 9274763750
+>   set_page_owner include/linux/page_owner.h:31 [inline]
+>   post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1536
+>   prep_new_page mm/page_alloc.c:1543 [inline]
+>   get_page_from_freelist+0x31db/0x3360 mm/page_alloc.c:3170
+>   __alloc_pages+0x255/0x670 mm/page_alloc.c:4426
+>   alloc_slab_page+0x6a/0x160 mm/slub.c:1870
+>   allocate_slab mm/slub.c:2017 [inline]
+>   new_slab+0x84/0x2f0 mm/slub.c:2070
+>   ___slab_alloc+0xc85/0x1310 mm/slub.c:3223
+>   __slab_alloc mm/slub.c:3322 [inline]
+>   __slab_alloc_node mm/slub.c:3375 [inline]
+>   slab_alloc_node mm/slub.c:3468 [inline]
+>   __kmem_cache_alloc_node+0x1af/0x270 mm/slub.c:3517
+>   __do_kmalloc_node mm/slab_common.c:1022 [inline]
+>   __kmalloc_node_track_caller+0xa5/0x230 mm/slab_common.c:1043
+>   kstrdup+0x3a/0x70 mm/util.c:62
+>   smack_inode_init_security+0x5ed/0x740 security/smack/smack_lsm.c:1046
+>   security_inode_init_security+0x1a1/0x470 security/security.c:1648
+>   shmem_mknod+0xc6/0x1d0 mm/shmem.c:3221
+>   vfs_mknod+0x308/0x350 fs/namei.c:3998
+>   handle_create drivers/base/devtmpfs.c:219 [inline]
+>   handle drivers/base/devtmpfs.c:384 [inline]
+>   devtmpfs_work_loop+0x95c/0x1030 drivers/base/devtmpfs.c:399
+>   devtmpfsd+0x48/0x50 drivers/base/devtmpfs.c:441
+>   kthread+0x2d3/0x370 kernel/kthread.c:388
+> page last free stack trace:
+>   reset_page_owner include/linux/page_owner.h:24 [inline]
+>   free_pages_prepare mm/page_alloc.c:1136 [inline]
+>   free_unref_page_prepare+0x8c3/0x9f0 mm/page_alloc.c:2312
+>   free_unref_page+0x37/0x3f0 mm/page_alloc.c:2405
+>   mm_free_pgd kernel/fork.c:803 [inline]
+>   __mmdrop+0xb8/0x3d0 kernel/fork.c:919
+>   free_bprm+0x144/0x330 fs/exec.c:1492
+>   kernel_execve+0x8f5/0xa10 fs/exec.c:2026
+>   call_usermodehelper_exec_async+0x233/0x370 kernel/umh.c:110
+>   ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+>   ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+> 
+> Memory state around the buggy address:
+>   ffff88801e545780: 05 fc fc fc fc 05 fc fc fc fc 05 fc fc fc fc 05
+>   ffff88801e545800: fc fc fc fc 05 fc fc fc fc 00 fc fc fc fc 00 fc
+>> ffff88801e545880: fc fc fc 00 fc fc fc fc 05 fc fc fc fc 00 fc fc
+>                                             ^
+>   ffff88801e545900: fc fc 00 fc fc fc fc 00 fc fc fc fc 05 fc fc fc
+>   ffff88801e545980: fc 05 fc fc fc fc fa fc fc fc fc 00 fc fc fc fc
+> ==================================================================
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> 
+> If the bug is already fixed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+> 
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+> 
+> If you want to overwrite bug's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+> 
+> If the bug is a duplicate of another bug, reply with:
+> #syz dup: exact-subject-of-another-report
+> 
+> If you want to undo deduplication, reply with:
+> #syz undup
+> 
+>
+The size of the member name in struct hci_mon_new_index is fixed at 8
+bytes. The size of the member name in struct hci_dev is not fixed. When 
+the size of the member name in struct hci_dev is less than 8 bytes,
+out-of-bounds read will occur.
+
+It seems that the member name in struct hci_mon_new_index is no longer
+used and can be removed directly.
+
+Zhengchao Shao
