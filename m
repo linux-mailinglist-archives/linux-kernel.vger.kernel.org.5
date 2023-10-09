@@ -2,255 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 236BD7BD1C8
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 03:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5897BD1CE
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 03:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344748AbjJIBXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 21:23:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42844 "EHLO
+        id S1344880AbjJIBb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 21:31:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbjJIBXo (ORCPT
+        with ESMTP id S232267AbjJIBb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 21:23:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D3908F
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 18:23:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696814623; x=1728350623;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=D0qblN0iYwp3w7UxFU1xGAhzendADndoZBwAskUgyck=;
-  b=DbKg0aFWsaFXbXQwD5grltXS+qaeUOArneJJR/2fXNuH/U9+4rdNgy47
-   7dnxy+fPYd/MB0L09eNixrZb+xvFYRsdTHuPxUP91RxF/GnXbr1U4KMGg
-   I8Q3KJttWzKrlIyFUsx1ifIgTL0Ji1k4FZ7qCfSDPEaxAPy+mmtZhNjp6
-   eyg/FYqluOhx5se8mhqDKbmq09x96w/Smx81ceMGbQNSsJmqcW5FFI9/E
-   5lp67l6d+9mWD5ifdqL29GmbsTl+QjM/EnJn6SuMlJYpcgIfsRVGmVnZ4
-   YwFTY1zkfOXkCOv4VAlci2ViNrvnqtOZOUlD7YB6EHpBfUOSWDKeyrtXh
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="386886830"
-X-IronPort-AV: E=Sophos;i="6.03,209,1694761200"; 
-   d="scan'208";a="386886830"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2023 18:23:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10857"; a="818668475"
-X-IronPort-AV: E=Sophos;i="6.03,209,1694761200"; 
-   d="scan'208";a="818668475"
-Received: from dmunger-mobl1.amr.corp.intel.com (HELO [10.212.207.208]) ([10.212.207.208])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2023 18:23:42 -0700
-Message-ID: <cf7360cb-6e9b-4550-8179-44bfc3a6e1b2@linux.intel.com>
-Date:   Sun, 8 Oct 2023 18:23:41 -0700
+        Sun, 8 Oct 2023 21:31:27 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4101799;
+        Sun,  8 Oct 2023 18:31:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1696815083;
+        bh=RF58q+xXgFqMy1W+kf6f5efUO8YDOhVnUo6mzSypuPA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=gEOc2+2PSwcdFd9tQ5V9fn/DDOwyYub5ThVajV3WkX3YFpbh+Rm9N5rNyTvX0olB2
+         2x2V4U/02u1iaJj5X3JkQTxnrfzpJXL8u017SvSxwxaSPnO9TN7n4CORz9UhKp4eep
+         rQoWNLGOspz6WlyxLFI1/8yvDlrj3+2AkeGEvLlUt1YPWcRQyZDyFavGqZnDCGMxda
+         RRsiVTdhXkphpaVAMAl5v1ESE9QPx0muS4OWQLVkcicXUUgT6z0Ep9gp74fR0CV9Yr
+         MmGLFHWL8eKhlyyP5S7J524qVXXXsKYbirUO4+scEzgnFOeVflf2nvqeoudA0/iXVi
+         j0S8dNU8cpCtQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S3hMG4fTQz4x5q;
+        Mon,  9 Oct 2023 12:31:20 +1100 (AEDT)
+Date:   Mon, 9 Oct 2023 12:31:18 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sohil Mehta <sohil.mehta@intel.com>
+Subject: linux-next: manual merge of the block tree with the asm-generic
+ tree
+Message-ID: <20231009123118.4487a0e1@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] x86/tdx: Dump TDX version During the TD Bootup
-Content-Language: en-US
-To:     Yi Sun <yi.sun@intel.com>, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, peterz@infradead.org,
-        x86@kernel.org
-Cc:     kirill.shutemov@linux.intel.com, kai.huang@intel.com,
-        linux-kernel@vger.kernel.org, heng.su@intel.com,
-        yi.sun@linux.intel.com, Dongcheng Yan <dongcheng.yan@intel.com>
-References: <20231006062855.875631-1-yi.sun@intel.com>
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20231006062855.875631-1-yi.sun@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/teycTZNgREgDu/GHd9yJThK";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/teycTZNgREgDu/GHd9yJThK
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 10/5/2023 11:28 PM, Yi Sun wrote:
-> It is essential for TD users to be aware of the vendor and version of
-> the current TDX. Additionally, they can reference the TDX version when
-> reporting bugs or issues.
-> 
-> Furthermore, the applications or device drivers running in TD can achieve
-> enhanced reliability and flexibility by following the TDX Module ABI
-> specification, because there are significant differences between different
-> versions of TDX, as mentioned in the "Intel® TDX Module Incompatibilities
-> between v1.0 and v1.5" reference. Here are a few examples:
-> 
-> MSR Name		Index		Reason
-> ----------------------------------------------
-> IA32_UARCH_MISC_CTL	0x1B01		From v1.5
-> IA32_ARCH_CAPABILITIES	0x010A		Changed in v1.5
-> IA32_TSX_CTRL		0x0122		Changed in v1.5
-> 
-> CPUID Leaf	Sub-leaf	Reason
-> ---------------------------------------
-> 0x7		2		From v1.5
-> 0x22		0		From v1.5
-> 0x23		0~3		From v1.5
-> 0x80000007	0		From v1.5
-> 
-> During TD initialization, the TDX version info can be obtained by calling
-> TDG.SYS.RD. This will fetch the current version of TDX, including the major
-> and minor version numbers and vendor ID.
-> 
-> The TDCALL TDG.SYS.RD originates from TDX version 1.5. If the error
-> TDCALL_INVALID_OPERAND occurs, it should be treated as TDX version 1.0.
-> 
-> If the __tdcall_ret fails, expect a zero value for all tdx sys info.
-> No additional error code is necessary to avoid introducing noise during
-> the bootup.
-> 
-> Co-developed-by: Dongcheng Yan <dongcheng.yan@intel.com>
-> Signed-off-by: Dongcheng Yan <dongcheng.yan@intel.com>
-> Signed-off-by: Yi Sun <yi.sun@intel.com>
-> 
-> diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
-> index 3e6dbd2199cf..991f7dc695bd 100644
-> --- a/arch/x86/coco/tdx/tdx.c
-> +++ b/arch/x86/coco/tdx/tdx.c
-> @@ -37,6 +37,24 @@
->  
->  #define TDREPORT_SUBTYPE_0	0
->  
-> +/*
-> + * TDX metadata base field id, used by TDCALL TDG.SYS.RD
-> + * See TDX ABI Spec section 3.3.2.3 Global Metadata Fields
-> + */
-> +#define TDX_SYS_VENDOR_ID_FID		0x0800000200000000ULL
-> +#define TDX_SYS_MINOR_FID		0x0800000100000003ULL
-> +#define TDX_SYS_MAJOR_FID		0x0800000100000004ULL
-> +#define TDX_VENDOR_INTEL		0x8086
-> +
-> +/*
-> + * The global-scope metadata field via TDG.SYS.RD TDCALL
-> + */
+Today's linux-next merge of the block tree got conflicts in:
 
-I think you can just say "struct used to cache TDX Module version info"
+  arch/alpha/kernel/syscalls/syscall.tbl
+  arch/arm/tools/syscall.tbl
+  arch/arm64/include/asm/unistd.h
+  arch/arm64/include/asm/unistd32.h
+  arch/m68k/kernel/syscalls/syscall.tbl
+  arch/microblaze/kernel/syscalls/syscall.tbl
+  arch/mips/kernel/syscalls/syscall_n32.tbl
+  arch/mips/kernel/syscalls/syscall_n64.tbl
+  arch/mips/kernel/syscalls/syscall_o32.tbl
+  arch/parisc/kernel/syscalls/syscall.tbl
+  arch/powerpc/kernel/syscalls/syscall.tbl
+  arch/s390/kernel/syscalls/syscall.tbl
+  arch/sh/kernel/syscalls/syscall.tbl
+  arch/sparc/kernel/syscalls/syscall.tbl
+  arch/x86/entry/syscalls/syscall_32.tbl
+  arch/xtensa/kernel/syscalls/syscall.tbl
+  include/uapi/asm-generic/unistd.h
 
-> +struct tdg_sys_info {
-> +	u32 vendor_id;
-> +	u16 major_version;
-> +	u16 minor_version;
-> +};
-> +
->  /* Called from __tdx_hypercall() for unrecoverable failure */
->  noinstr void __noreturn __tdx_hypercall_failed(void)
->  {
-> @@ -800,6 +818,60 @@ static bool tdx_enc_status_change_finish(unsigned long vaddr, int numpages,
->  	return true;
->  }
->  
-> +/*
-> + * Parse the tdx module version info from the global-scope metadata fields.
-> + *
-> + * Refer to Intel TDX Application Binary Interface (ABI) section
-> + * "TDG.SYS.RD".
-> + */
+between commits:
 
-How about "Parse TDX Module version info from TDG.SYS.RD TDCALL"?
+  2fd0ebad27bc ("arch: Reserve map_shadow_stack() syscall number for all ar=
+chitectures")
 
-> +static void tdg_get_sysinfo(struct tdg_sys_info *td_sys)
-> +{
-> +	u64 ret;
-> +	struct tdx_module_args args = {
-> +		.rdx = TDX_SYS_VENDOR_ID_FID,
-> +	};
-> +
-> +	if (!td_sys)
-> +		return;
+from the asm-generic tree and commits:
 
-This check can be removed. It will never be NULL as per current usage.
+  9f6c532f59b2 ("futex: Add sys_futex_wake()")
+  cb8c4312afca ("futex: Add sys_futex_wait()")
+  0f4b5f972216 ("futex: Add sys_futex_requeue()")
 
-> +
-> +	memset(td_sys, 0, sizeof(struct tdg_sys_info));
-> +
-> +	/*
-> +	 * TDCALL leaf TDX_SYS_RD
-> +	 * Input Field Identifier via RDX and get the output via R8.
-> +	 */
+from the block tree.
 
-Since you are using a wrapper, I think you don't need to explain the register details here.
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-> +	ret = __tdcall_ret(TDX_SYS_RD, &args);
-> +	/*
-> +	 * The TDCALL TDG.SYS.RD originates from TDX version 1.5.
-> +	 * Treat TDCALL_INVALID_OPERAND error as TDX version 1.0.
-> +	 * If other errors occur, return with zero td_sys.
-> +	 */
-> +	if (TDCALL_RETURN_CODE(ret) == TDCALL_INVALID_OPERAND)
-> +		goto version_1_0;
-> +	else if (ret)
-> +		return;
-> +
-> +	td_sys->vendor_id = (u32)args.r8;
-> +
-> +	args.rdx = TDX_SYS_MAJOR_FID;
-> +	__tdcall_ret(TDX_SYS_RD, &args);
+--=20
+Cheers,
+Stephen Rothwell
 
-Why not check the return value?
+diff --cc arch/alpha/kernel/syscalls/syscall.tbl
+index 5d05ab716a74,b1865f9bb31e..000000000000
+--- a/arch/alpha/kernel/syscalls/syscall.tbl
++++ b/arch/alpha/kernel/syscalls/syscall.tbl
+@@@ -492,4 -492,6 +492,7 @@@
+  560	common	set_mempolicy_home_node		sys_ni_syscall
+  561	common	cachestat			sys_cachestat
+  562	common	fchmodat2			sys_fchmodat2
+ -563	common	futex_wake			sys_futex_wake
+ -564	common	futex_wait			sys_futex_wait
+ -565	common	futex_requeue			sys_futex_requeue
+ +563	common	map_shadow_stack		sys_map_shadow_stack
+++564	common	futex_wake			sys_futex_wake
+++565	common	futex_wait			sys_futex_wait
+++566	common	futex_requeue			sys_futex_requeue
+diff --cc arch/arm/tools/syscall.tbl
+index 45ec6e1dc872,93d0d46cbb15..000000000000
+--- a/arch/arm/tools/syscall.tbl
++++ b/arch/arm/tools/syscall.tbl
+@@@ -466,4 -466,6 +466,7 @@@
+  450	common	set_mempolicy_home_node		sys_set_mempolicy_home_node
+  451	common	cachestat			sys_cachestat
+  452	common	fchmodat2			sys_fchmodat2
+ +453	common	map_shadow_stack		sys_map_shadow_stack
++ 454	common	futex_wake			sys_futex_wake
++ 455	common	futex_wait			sys_futex_wait
++ 456	common	futex_requeue			sys_futex_requeue
+diff --cc arch/arm64/include/asm/unistd.h
+index 6a28fb91b85d,531effca5f1f..000000000000
+--- a/arch/arm64/include/asm/unistd.h
++++ b/arch/arm64/include/asm/unistd.h
+diff --cc arch/arm64/include/asm/unistd32.h
+index 0774d9cbe563,c453291154fd..000000000000
+--- a/arch/arm64/include/asm/unistd32.h
++++ b/arch/arm64/include/asm/unistd32.h
+@@@ -911,8 -911,12 +911,14 @@@ __SYSCALL(__NR_set_mempolicy_home_node
+  __SYSCALL(__NR_cachestat, sys_cachestat)
+  #define __NR_fchmodat2 452
+  __SYSCALL(__NR_fchmodat2, sys_fchmodat2)
+ +#define __NR_map_shadow_stack 453
+ +__SYSCALL(__NR_map_shadow_stack, sys_map_shadow_stack)
++ #define __NR_futex_wake 454
++ __SYSCALL(__NR_futex_wake, sys_futex_wake)
++ #define __NR_futex_wait 455
++ __SYSCALL(__NR_futex_wait, sys_futex_wait)
++ #define __NR_futex_requeue 456
++ __SYSCALL(__NR_futex_requeue, sys_futex_requeue)
+ =20
+  /*
+   * Please add new compat syscalls above this comment and update
+diff --cc arch/m68k/kernel/syscalls/syscall.tbl
+index 12d0ce43b094,f7f997a88bab..000000000000
+--- a/arch/m68k/kernel/syscalls/syscall.tbl
++++ b/arch/m68k/kernel/syscalls/syscall.tbl
+@@@ -452,4 -452,6 +452,7 @@@
+  450	common	set_mempolicy_home_node		sys_set_mempolicy_home_node
+  451	common	cachestat			sys_cachestat
+  452	common	fchmodat2			sys_fchmodat2
+ +453	common	map_shadow_stack		sys_map_shadow_stack
++ 454	common	futex_wake			sys_futex_wake
++ 455	common	futex_wait			sys_futex_wait
++ 456	common	futex_requeue			sys_futex_requeue
+diff --cc arch/microblaze/kernel/syscalls/syscall.tbl
+index de8219c4300c,2967ec26b978..000000000000
+--- a/arch/microblaze/kernel/syscalls/syscall.tbl
++++ b/arch/microblaze/kernel/syscalls/syscall.tbl
+@@@ -458,4 -458,6 +458,7 @@@
+  450	common	set_mempolicy_home_node		sys_set_mempolicy_home_node
+  451	common	cachestat			sys_cachestat
+  452	common	fchmodat2			sys_fchmodat2
+ +453	common	map_shadow_stack		sys_map_shadow_stack
++ 454	common	futex_wake			sys_futex_wake
++ 455	common	futex_wait			sys_futex_wait
++ 456	common	futex_requeue			sys_futex_requeue
+diff --cc arch/mips/kernel/syscalls/syscall_n32.tbl
+index a5096a064fb4,383abb1713f4..000000000000
+--- a/arch/mips/kernel/syscalls/syscall_n32.tbl
++++ b/arch/mips/kernel/syscalls/syscall_n32.tbl
+@@@ -391,4 -391,6 +391,7 @@@
+  450	n32	set_mempolicy_home_node		sys_set_mempolicy_home_node
+  451	n32	cachestat			sys_cachestat
+  452	n32	fchmodat2			sys_fchmodat2
+ +453	n32	map_shadow_stack		sys_map_shadow_stack
++ 454	n32	futex_wake			sys_futex_wake
++ 455	n32	futex_wait			sys_futex_wait
++ 456	n32	futex_requeue			sys_futex_requeue
+diff --cc arch/mips/kernel/syscalls/syscall_n64.tbl
+index 0044031d9c70,c9bd09ba905f..000000000000
+--- a/arch/mips/kernel/syscalls/syscall_n64.tbl
++++ b/arch/mips/kernel/syscalls/syscall_n64.tbl
+@@@ -367,4 -367,6 +367,7 @@@
+  450	common	set_mempolicy_home_node		sys_set_mempolicy_home_node
+  451	n64	cachestat			sys_cachestat
+  452	n64	fchmodat2			sys_fchmodat2
+ +453	n64	map_shadow_stack		sys_map_shadow_stack
++ 454	n64	futex_wake			sys_futex_wake
++ 455	n64	futex_wait			sys_futex_wait
++ 456	n64	futex_requeue			sys_futex_requeue
+diff --cc arch/mips/kernel/syscalls/syscall_o32.tbl
+index cf44a6ac38fa,ba5ef6cea97a..000000000000
+--- a/arch/mips/kernel/syscalls/syscall_o32.tbl
++++ b/arch/mips/kernel/syscalls/syscall_o32.tbl
+@@@ -440,4 -440,6 +440,7 @@@
+  450	o32	set_mempolicy_home_node		sys_set_mempolicy_home_node
+  451	o32	cachestat			sys_cachestat
+  452	o32	fchmodat2			sys_fchmodat2
+ +453	o32	map_shadow_stack		sys_map_shadow_stack
++ 454	o32	futex_wake			sys_futex_wake
++ 455	o32	futex_wait			sys_futex_wait
++ 456	o32	futex_requeue			sys_futex_requeue
+diff --cc arch/parisc/kernel/syscalls/syscall.tbl
+index 4048ed480a04,9f0f6df55361..000000000000
+--- a/arch/parisc/kernel/syscalls/syscall.tbl
++++ b/arch/parisc/kernel/syscalls/syscall.tbl
+@@@ -451,4 -451,6 +451,7 @@@
+  450	common	set_mempolicy_home_node		sys_set_mempolicy_home_node
+  451	common	cachestat			sys_cachestat
+  452	common	fchmodat2			sys_fchmodat2
+ +453	common	map_shadow_stack		sys_map_shadow_stack
++ 454	common	futex_wake			sys_futex_wake
++ 455	common	futex_wait			sys_futex_wait
++ 456	common	futex_requeue			sys_futex_requeue
+diff --cc arch/powerpc/kernel/syscalls/syscall.tbl
+index d845e14c38f3,26fc41904266..000000000000
+--- a/arch/powerpc/kernel/syscalls/syscall.tbl
++++ b/arch/powerpc/kernel/syscalls/syscall.tbl
+@@@ -539,4 -539,6 +539,7 @@@
+  450 	nospu	set_mempolicy_home_node		sys_set_mempolicy_home_node
+  451	common	cachestat			sys_cachestat
+  452	common	fchmodat2			sys_fchmodat2
+ +453	common	map_shadow_stack		sys_ni_syscall
++ 454	common	futex_wake			sys_futex_wake
++ 455	common	futex_wait			sys_futex_wait
++ 456	common	futex_requeue			sys_futex_requeue
+diff --cc arch/s390/kernel/syscalls/syscall.tbl
+index 416645f1c1fb,31be90b241f7..000000000000
+--- a/arch/s390/kernel/syscalls/syscall.tbl
++++ b/arch/s390/kernel/syscalls/syscall.tbl
+@@@ -455,4 -455,6 +455,7 @@@
+  450  common	set_mempolicy_home_node	sys_set_mempolicy_home_node	sys_set_m=
+empolicy_home_node
+  451  common	cachestat		sys_cachestat			sys_cachestat
+  452  common	fchmodat2		sys_fchmodat2			sys_fchmodat2
+ +453  common	map_shadow_stack	sys_map_shadow_stack		sys_map_shadow_stack
++ 454  common	futex_wake		sys_futex_wake			sys_futex_wake
++ 455  common	futex_wait		sys_futex_wait			sys_futex_wait
++ 456  common	futex_requeue		sys_futex_requeue			sys_futex_requeue
+diff --cc arch/sh/kernel/syscalls/syscall.tbl
+index bf36587b87b5,4bc5d488ab17..000000000000
+--- a/arch/sh/kernel/syscalls/syscall.tbl
++++ b/arch/sh/kernel/syscalls/syscall.tbl
+@@@ -455,4 -455,6 +455,7 @@@
+  450	common	set_mempolicy_home_node		sys_set_mempolicy_home_node
+  451	common	cachestat			sys_cachestat
+  452	common	fchmodat2			sys_fchmodat2
+ +453	common	map_shadow_stack		sys_map_shadow_stack
++ 454	common	futex_wake			sys_futex_wake
++ 455	common	futex_wait			sys_futex_wait
++ 456	common	futex_requeue			sys_futex_requeue
+diff --cc arch/sparc/kernel/syscalls/syscall.tbl
+index f45f8c5ed076,8404c8e50394..000000000000
+--- a/arch/sparc/kernel/syscalls/syscall.tbl
++++ b/arch/sparc/kernel/syscalls/syscall.tbl
+@@@ -498,4 -498,6 +498,7 @@@
+  450	common	set_mempolicy_home_node		sys_set_mempolicy_home_node
+  451	common	cachestat			sys_cachestat
+  452	common	fchmodat2			sys_fchmodat2
+ +453	common	map_shadow_stack		sys_map_shadow_stack
++ 454	common	futex_wake			sys_futex_wake
++ 455	common	futex_wait			sys_futex_wait
++ 456	common	futex_requeue			sys_futex_requeue
+diff --cc arch/x86/entry/syscalls/syscall_32.tbl
+index 54748f6d7c45,31c48bc2c3d8..000000000000
+--- a/arch/x86/entry/syscalls/syscall_32.tbl
++++ b/arch/x86/entry/syscalls/syscall_32.tbl
+@@@ -457,4 -457,6 +457,7 @@@
+  450	i386	set_mempolicy_home_node		sys_set_mempolicy_home_node
+  451	i386	cachestat		sys_cachestat
+  452	i386	fchmodat2		sys_fchmodat2
+ +453	i386	map_shadow_stack	sys_map_shadow_stack
++ 454	i386	futex_wake		sys_futex_wake
++ 455	i386	futex_wait		sys_futex_wait
++ 456	i386	futex_requeue		sys_futex_requeue
+diff --cc arch/xtensa/kernel/syscalls/syscall.tbl
+index 10a7eecbedf0,dd71ecce8b86..000000000000
+--- a/arch/xtensa/kernel/syscalls/syscall.tbl
++++ b/arch/xtensa/kernel/syscalls/syscall.tbl
+@@@ -423,4 -423,6 +423,7 @@@
+  450	common	set_mempolicy_home_node		sys_set_mempolicy_home_node
+  451	common	cachestat			sys_cachestat
+  452	common	fchmodat2			sys_fchmodat2
+ +453	common	map_shadow_stack		sys_map_shadow_stack
++ 454	common	futex_wake			sys_futex_wake
++ 455	common	futex_wait			sys_futex_wait
++ 456	common	futex_requeue			sys_futex_requeue
+diff --cc include/uapi/asm-generic/unistd.h
+index 00df5af71ca1,d9e9cd13e577..000000000000
+--- a/include/uapi/asm-generic/unistd.h
++++ b/include/uapi/asm-generic/unistd.h
+@@@ -822,12 -822,15 +822,18 @@@ __SYSCALL(__NR_cachestat, sys_cachestat
+ =20
+  #define __NR_fchmodat2 452
+  __SYSCALL(__NR_fchmodat2, sys_fchmodat2)
++ #define __NR_futex_wake 454
++ __SYSCALL(__NR_futex_wake, sys_futex_wake)
++ #define __NR_futex_wait 455
++ __SYSCALL(__NR_futex_wait, sys_futex_wait)
++ #define __NR_futex_requeue 456
++ __SYSCALL(__NR_futex_requeue, sys_futex_requeue)
+ =20
+ +#define __NR_map_shadow_stack 453
+ +__SYSCALL(__NR_map_shadow_stack, sys_map_shadow_stack)
+ +
+  #undef __NR_syscalls
+- #define __NR_syscalls 454
++ #define __NR_syscalls 457
+ =20
+  /*
+   * 32 bit systems traditionally used different
 
-> +
-> +	td_sys->major_version = (u16)args.r8;
-> +
-> +	args.rdx = TDX_SYS_MINOR_FID;
-> +	__tdcall_ret(TDX_SYS_RD, &args);
+--Sig_/teycTZNgREgDu/GHd9yJThK
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Same as above.
+-----BEGIN PGP SIGNATURE-----
 
-> +
-> +	td_sys->minor_version = (u16)args.r8;
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUjV+YACgkQAVBC80lX
+0Gx9zQf+JGLvql1cyUt9KyBLnbeU6r4aHpl6g7jTI2UC5seWwR/Kl+U/ySATiZ8M
+Jg6GuUFQZ50VIuxZa5Mq1ubrAUba+1MDUNXZqT7p1dDf26gdrAP0z5Tzub7q4ESA
+BN5jJgxV3ezD7ZB22K/RKFNLee15Lr8QO2R2LSYM0k9PXF88PnrPyaBH7ytEMefY
++UVMGyaL7ouTYrBU/FeK8jpPTHaePNNzct/xUF4Oh6xDHqx6RHrw+X4Lrh6gtwKh
+gydOzsJ8aLnNyfKnnelxb/f7XRdT90HRMxI2QJ98RZKxlnPyHXN8NT/xrNDC6QnB
+sRMCvkSqySbPDa21IIwL5nUCNxp7MA==
+=zL5A
+-----END PGP SIGNATURE-----
 
-I recommend updating td_sys after executing both TDCALLs.
-
-> +
-> +	return;
-> +
-> +	/* TDX 1.0 does not have the TDCALL TDG.SYS.RD */
-> +version_1_0:
-> +	td_sys->vendor_id = TDX_VENDOR_INTEL;
-> +	td_sys->major_version = 1;
-> +	td_sys->minor_version = 0;
-> +}
-> +
->  void __init tdx_early_init(void)
->  {
->  	struct tdx_module_args args = {
-> @@ -808,6 +880,7 @@ void __init tdx_early_init(void)
->  	};
->  	u64 cc_mask;
->  	u32 eax, sig[3];
-> +	struct tdg_sys_info td_sys_info;
->  
->  	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[2],  &sig[1]);
->  
-> @@ -867,5 +940,9 @@ void __init tdx_early_init(void)
->  	 */
->  	x86_cpuinit.parallel_bringup = false;
->  
-> -	pr_info("Guest detected\n");
-> +	tdg_get_sysinfo(&td_sys_info);
-> +
-> +	pr_info("Guest detected. TDX version:%u.%u VendorID: %x\n",
-> +		td_sys_info.major_version, td_sys_info.minor_version,
-> +		td_sys_info.vendor_id);
->  }
-> diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
-> index f74695dea217..d326509832e6 100644
-> --- a/arch/x86/include/asm/shared/tdx.h
-> +++ b/arch/x86/include/asm/shared/tdx.h
-> @@ -17,6 +17,7 @@
->  #define TDG_MR_REPORT			4
->  #define TDG_MEM_PAGE_ACCEPT		6
->  #define TDG_VM_WR			8
-> +#define TDX_SYS_RD			11
->  
->  /* TDCS fields. To be used by TDG.VM.WR and TDG.VM.RD module calls */
->  #define TDCS_NOTIFY_ENABLES		0x9100000000000010
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+--Sig_/teycTZNgREgDu/GHd9yJThK--
