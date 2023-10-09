@@ -2,75 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5127BEF0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 01:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C260C7BEF1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 01:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379065AbjJIXYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 19:24:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53390 "EHLO
+        id S1379009AbjJIXdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 19:33:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379014AbjJIXYF (ORCPT
+        with ESMTP id S231434AbjJIXdh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 19:24:05 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF6D9D;
-        Mon,  9 Oct 2023 16:24:04 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id ada2fe7eead31-457584c824dso1120334137.0;
-        Mon, 09 Oct 2023 16:24:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696893843; x=1697498643; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cA2IGKu/7FNKv/PuZySh+4g16dqwPNHFTAWtDeYeE8g=;
-        b=htAJwmosPQz52arIWO2NspiihQmXDFEcUtelh6t/7cFedIkrTrNTFt1gy+J88FgQ/g
-         P3bVM7cA78oaqreJqQ6G75l8NgUcYWaBS3Jfym/FJzVVcMo2f9OiVPIztst2iFmmI6+Z
-         eA4dyEjusexXrPg6ayJ52kv9xgMXqOk2v6VfTQv2bQPCD43tUxBkIwiL8/TMw/q4EAiY
-         B5gywA5eAKw7/2gg04n2V6v+aO6X9+y6/PYnczjgEQdyvxunoh2/Ot1xIu/wpe6Xbk4F
-         kknd+g449N1FwohNNP4n6nIaTQTSBGvHWJp0rj6Z28bS6FVnDre/ls6HReUENmRai2Vm
-         4k1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696893843; x=1697498643;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cA2IGKu/7FNKv/PuZySh+4g16dqwPNHFTAWtDeYeE8g=;
-        b=SzyZnw1HgvhlO40z2u12A+QaeNNq5VCu7NI2bOWEO6lXHxf8GGP6XHxv1SSRHAynZa
-         cjD8MpQpbCrQZFdIGjL4+KIXUc9Q4wOjK0FVmhbCqCgaXc3LGnrqAG466LQindoK2wOg
-         ecRQ8anKe0Fi4moTcnAER0l/oF3FNu/+phg75BTS0bvQ6DzO2W7w/OOciWjS05YmYry8
-         F6uYKyxmYJKprvEk8YXEeM26UERFPfd0ysqy5Xke0K2fPVstQt0viQXHr84KSql2XisW
-         VCTvtSq97kDgavM9c9Kcv3KwpEY2eCwiZDak42640noAaKL3/zYUCh+GwEdRLEBeuBJ4
-         tDug==
-X-Gm-Message-State: AOJu0YxzwevwYRwQXCoqq4XfM/qBxzFfJJ8HcpEcKoFqN0o9lzajX+vY
-        jLbs5KMEh28XvPgFfkxoQF/x2pSsOBc=
-X-Google-Smtp-Source: AGHT+IHP2HhxMOnlmXGK+txRl7Q9zJjy0sGy9q8G/opaA9agV7Dw8UPXhRzE49CDXfuCShdQ5cJ5CA==
-X-Received: by 2002:a05:6102:441c:b0:457:7138:fa74 with SMTP id df28-20020a056102441c00b004577138fa74mr5156466vsb.35.1696893843473;
-        Mon, 09 Oct 2023 16:24:03 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id d9-20020a05620a166900b00773fe8971bbsm3887010qko.90.2023.10.09.16.24.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 16:24:02 -0700 (PDT)
-Message-ID: <99e90f84-d95d-4438-8b4a-03c3956644ae@gmail.com>
-Date:   Mon, 9 Oct 2023 16:23:58 -0700
+        Mon, 9 Oct 2023 19:33:37 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 781D79E;
+        Mon,  9 Oct 2023 16:33:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 132A8C433C7;
+        Mon,  9 Oct 2023 23:33:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696894416;
+        bh=XjQLpSnKKBl6+0xF9NMa4bIa1sm/2ewlpC0N4jCimOE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=B3/Sd+/0rbIP/kuEe8ctsT36Q6YoxRJHI8kIx9Yt41lR/rQVuitEOGD2xWRhnXD/2
+         RfcaOWnTGF+i8VqXIuBcYbPtcz+0bqdarbMFbaPU0BzPbfCSl4M727ymP8KUNpC7lN
+         EcW0I4wfqx9eArZpbAhEEDZG5i6ETgRG5OB3HvS3Yt0rmtYeYGD/vjOktV/MalBNq+
+         o1cOL4RM+elpHRx37c8jImwozWVPxPeGemOprKbHvZTrQ9P70RvoHhkg9edPI+C3Vw
+         o9NbhREJkR3CwToGVpNBVlLSHGCjtiHpTJTkIOyXPyv79LDLKCIdupnMmKjYew+Ofw
+         Ubj9bB7CItMUg==
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5041d6d8b10so6488183e87.2;
+        Mon, 09 Oct 2023 16:33:35 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yzh5emAI5kglN8RA3Y+9ohgRmBknmceQvooYDUQ+xVcndkcvR7M
+        UelUGaSGQcDn80DTFdkOlainoiPT6HBdUmIlmB4=
+X-Google-Smtp-Source: AGHT+IEe8UnWWmB8TjnYm6kXN3/n4gTehWA7M3N+LLdCj3vmBzJ2nj558NPt0sri4b6EqBcTNhACrt/vvi763Dg113M=
+X-Received: by 2002:ac2:58cf:0:b0:502:b1b9:88c5 with SMTP id
+ u15-20020ac258cf000000b00502b1b988c5mr12461478lfo.26.1696894414220; Mon, 09
+ Oct 2023 16:33:34 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.1 000/162] 6.1.57-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20231009130122.946357448@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20231009130122.946357448@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+References: <20231007112105.407449-1-yukuai1@huaweicloud.com>
+In-Reply-To: <20231007112105.407449-1-yukuai1@huaweicloud.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 9 Oct 2023 16:33:22 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5Lv4SEJtVmH2AO1b0cNxErqazHH8Ew7jXt784rR59c8g@mail.gmail.com>
+Message-ID: <CAPhsuW5Lv4SEJtVmH2AO1b0cNxErqazHH8Ew7jXt784rR59c8g@mail.gmail.com>
+Subject: Re: [PATCH -next] md/raid1: don't split discard io for write behind
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,29 +58,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/9/23 05:59, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.57 release.
-> There are 162 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 11 Oct 2023 13:00:55 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.57-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On Fri, Oct 6, 2023 at 8:24=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> wr=
+ote:
+>
+> From: Yu Kuai <yukuai3@huawei.com>
+>
+> Currently, discad io is treated the same as normal write io, and for
+> write behind case, io size is limited to:
+>
+> BIO_MAX_VECS * (PAGE_SIZE >> 9)
+>
+> For 0.5KB sector size and 4KB PAGE_SIZE, this is just 1MB. For
+> consequence, if 'WriteMostly' is set to one of the underlying disks,
+> then diskcard io will be splited into 1MB and it will take a long time
+> for the diskcard to finish.
+>
+> Fix this problem by disable write behind for discard io.
+>
+> Reported-by: Roman Mamedov <rm@romanrm.net>
+> Closes: https://lore.kernel.org/all/6a1165f7-c792-c054-b8f0-1ad4f7b8ae01@=
+ultracoder.org/
+> Reported-and-tested-by: Kirill Kirilenko <kirill@ultracoder.org>
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+Applied to md-next. Thanks!
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+Song
 
+> ---
+>  drivers/md/raid1.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+> index 3a78f79ee6d5..35d12948e0a9 100644
+> --- a/drivers/md/raid1.c
+> +++ b/drivers/md/raid1.c
+> @@ -1345,6 +1345,7 @@ static void raid1_write_request(struct mddev *mddev=
+, struct bio *bio,
+>         int first_clone;
+>         int max_sectors;
+>         bool write_behind =3D false;
+> +       bool is_discard =3D (bio_op(bio) =3D=3D REQ_OP_DISCARD);
+>
+>         if (mddev_is_clustered(mddev) &&
+>              md_cluster_ops->area_resyncing(mddev, WRITE,
+> @@ -1405,7 +1406,7 @@ static void raid1_write_request(struct mddev *mddev=
+, struct bio *bio,
+>                  * write-mostly, which means we could allocate write behi=
+nd
+>                  * bio later.
+>                  */
+> -               if (rdev && test_bit(WriteMostly, &rdev->flags))
+> +               if (!is_discard && rdev && test_bit(WriteMostly, &rdev->f=
+lags))
+>                         write_behind =3D true;
+>
+>                 if (rdev && unlikely(test_bit(Blocked, &rdev->flags))) {
+> --
+> 2.39.2
+>
