@@ -2,198 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0F67BEAA8
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 21:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D46D7BEAAB
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 21:34:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378416AbjJITd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 15:33:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45770 "EHLO
+        id S1378427AbjJITdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 15:33:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377727AbjJITd1 (ORCPT
+        with ESMTP id S1378412AbjJITdu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 15:33:27 -0400
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C78A4;
-        Mon,  9 Oct 2023 12:33:24 -0700 (PDT)
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id DCAD41C006C; Mon,  9 Oct 2023 21:33:22 +0200 (CEST)
-Date:   Mon, 9 Oct 2023 21:33:22 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Chris.Paterson2@renesas.com
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Subject: Re: [PATCH 5.10 000/226] 5.10.198-rc1 review
-Message-ID: <ZSRVgj5AqJbDXqZU@duo.ucw.cz>
-References: <20231009130126.697995596@linuxfoundation.org>
+        Mon, 9 Oct 2023 15:33:50 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29415B6;
+        Mon,  9 Oct 2023 12:33:49 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED7C2C433C7;
+        Mon,  9 Oct 2023 19:33:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696880028;
+        bh=3vSQGl8AKGsrfujKMh0CxRfl2/dxm1puOS4ZfrVqiOQ=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=kqFhJBLbV57LCCJaaGa4Cb6xeE1pwKxBLjp1vrm0M8gC8Jmygrgbw44uVuMC1xJcL
+         iIwWM0BMCU0VDZ97wHTtrGSr9jBN9zS4XQKyptleasbRpyzlDxP8vuq0ds579CS79q
+         9cqIOB4W+MAevB2BsAgJy5UyEcK1qYoCJZNFIZEzN1XFgDcWNN9l4v4+htQbiULn9x
+         3A489kPRl5cgnkrkQuOGQ2QFmbovWkMf0fjokrDYa6EW5lxFKXV5dfHCd5cv660Pqa
+         P2da3GVyqDBCKdGJLaM+b0/ybnr+3q4r45vgAyV29YJUXP0zigXz5NjG6XRsVovFdq
+         gzFlhg72cEHTQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, alsa-devel@alsa-project.org
+In-Reply-To: <20231006-descriptors-asoc-mediatek-v1-0-07fe79f337f5@linaro.org>
+References: <20231006-descriptors-asoc-mediatek-v1-0-07fe79f337f5@linaro.org>
+Subject: Re: [PATCH 0/8] Convert Mediatek ASoC codecs to use GPIO
+ descriptors
+Message-Id: <169688002562.148554.2449511739055608946.b4-ty@kernel.org>
+Date:   Mon, 09 Oct 2023 20:33:45 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="+7JMdyyWGl6EnF8R"
-Content-Disposition: inline
-In-Reply-To: <20231009130126.697995596@linuxfoundation.org>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_NEUTRAL autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 06 Oct 2023 15:46:23 +0200, Linus Walleij wrote:
+> Convert over the Mediatek codecs to use GPIO descriptors.
+> 
+> One few-liner affects gpiolib-of.h, I don't think there
+> will be conflicts so I suggest that all of this can be
+> merged through ASoC after review.
+> 
+> 
+> [...]
 
---+7JMdyyWGl6EnF8R
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to
 
-Hi!
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> This is the start of the stable review cycle for the 5.10.198 release.
-> There are 226 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->=20
-> Responses should be made by Wed, 11 Oct 2023 13:00:55 +0000.
-> Anything received after that time might be too late.
+Thanks!
 
-4.14, 4.19 and 6.1 tests ok, 5.10 seems to have problems:
+[1/8] gpiolib: of: Add quirk for mt2701-cs42448 ASoC sound
+      commit: 9e189e80dcb68528dea9e061d9704993f98cb84f
+[2/8] ASoC: mediatek: mt2701-cs42448: Convert to GPIO descriptors
+      commit: 654a23724072f37c0d07b31395e1d9f45f5563ab
+[3/8] ASoC: mt8173-max98090: Drop unused include
+      commit: b1306c3b6140f0c299f727edc9bb90ec79700614
+[4/8] ASoC: mt8173-rt5650-rt5514: Drop unused includes
+      commit: 94a7f618211652235f3e4b88aca477391078dba6
+[5/8] ASoC: mt8173-rt5650-rt5676: Drop unused includes
+      commit: cb1c18e8a7337c7f3ee461b613a52a45c3f723d5
+[6/8] ASoC: mt8173-rt5650: Drop unused includes
+      commit: 6dffd1f38ad76660e7fff8e269889284e892603d
+[7/8] ASoC: mt8186-mt6366-rt1019-rt5682s: Drop unused include
+      commit: 73e1f8a05bd8289ab5154c703a0592729267e979
+[8/8] ASoC: mt8192-afe-gpio: Drop unused include
+      commit: 3b5d22bdf33c4e44016fdcfc8904a0b0bf218e75
 
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/pipelines/1=
-030540843
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Lets see arm64_defconfig:
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/jobs/525461=
-0954
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-=2E..and this seems  to be real failure:
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-https://lava.ciplatform.org/scheduler/job/1018088
+Thanks,
+Mark
 
-[   62.871632] renesas_sdhi_internal_dmac ee100000.mmc: Got CD GPIO
-[   62.874253] rcar-dmac e6700000.dma-controller: deferred probe timeout, i=
-gnoring dependency
-[   62.889345] rcar-dmac e7300000.dma-controller: deferred probe timeout, i=
-gnoring dependency
-[   62.892139] Unable to handle kernel NULL pointer dereference at virtual =
-address 0000000000000018
-[   62.901256] rcar-dmac e7310000.dma-controller: deferred probe timeout, i=
-gnoring dependency
-[   62.906431] Mem abort info:
-[   62.906438]   ESR =3D 0x96000004
-[   62.917751] rcar-dmac ec700000.dma-controller: deferred probe timeout, i=
-gnoring dependency
-[   62.920548]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
-[   62.920551]   SET =3D 0, FnV =3D 0
-[   62.920554]   EA =3D 0, S1PTW =3D 0
-[   62.920559] Data abort info:
-[   62.927031] renesas_sdhi_internal_dmac ee100000.mmc: mmc1 base at 0x0000=
-0000ee100000, max clock rate 200 MHz
-[   62.931976] rcar-dmac ec720000.dma-controller: deferred probe timeout, i=
-gnoring dependency
-[   62.934138]   ISV =3D 0, ISS =3D 0x00000004
-[   62.934145]   CM =3D 0, WnR =3D 0
-[   62.940844] ravb e6800000.ethernet: deferred probe timeout, ignoring dep=
-endency
-[   62.943210] [0000000000000018] user address but active_mm is swapper
-[   62.943221] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-[   62.954866] ravb e6800000.ethernet eth0: Base address at 0xe6800000, fc:=
-28:99:92:7b:e0, IRQ 118.
-[   62.961296] Modules linked in:
-[   62.961313] CPU: 5 PID: 135 Comm: kworker/u12:2 Not tainted 5.10.198-rc1=
--g18c65c1b4996 #1
-[   63.007289] Hardware name: HopeRun HiHope RZ/G2M with sub board (DT)
-[   63.013658] Workqueue: events_unbound async_run_entry_fn
-[   63.018971] pstate: 20000005 (nzCv daif -PAN -UAO -TCO BTYPE=3D--)
-[   63.024982] pc : renesas_sdhi_reset_scc+0x94/0xe0
-[   63.029681] lr : renesas_sdhi_reset_scc+0x60/0xe0
-[   63.034379] sp : ffff800012353ab0
-[   63.037688] x29: ffff800012353ab0 x28: ffff80001110b2c0=20
-[   63.042998] x27: 0000000000000000 x26: ffff0005c03f6e80=20
-[   63.048308] x25: ffff0005c11c7a90 x24: ffff0005c0822010=20
-[   63.053618] x23: ffff0005c0822000 x22: ffff0005c08221d0=20
-[   63.058928] x21: ffff0005c11c7a80 x20: 0000000000000020
-
-Let's see bbb_defconfig:
-
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/jobs/525461=
-1119
-
-Fails:
-
-https://lava.ciplatform.org/scheduler/job/1018083
-
-bootz 0x82000000 - 0x88000000
-zimage: Bad magic!
-bootloader-commands timed out after 281 seconds
-end: 2.4.3 bootloader-commands (duration 00:04:41) [common]
-
-Not sure about this one.
-
-Lets see arm_shmobile_defconfig:
-
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/jobs/525461=
-1233
-
-That's:
-
-https://lava.ciplatform.org/scheduler/job/1018084
-
-Seems similar to previous failure:
-
-2.092944] usbcore: registered new interface driver usbhid
-[    2.098710] sh_mobile_sdhi ee140000.mmc: Got CD GPIO
-[    2.103206] usbhid: USB HID core driver
-[    2.108224] sh_mobile_sdhi ee140000.mmc: Got WP GPIO
-[    2.124168] 8<--- cut here ---
-[    2.124476] sgtl5000 0-000a: sgtl5000 revision 0x11
-[    2.127222] Unable to handle kernel NULL pointer dereference at virtual =
-address 0000000c
-[    2.127228] pgd =3D (ptrval)
-[    2.140755] rcar_sound ec500000.sound: probed
-[    2.142917] [0000000c] *pgd=3D00000000
-[    2.147915] NET: Registered protocol family 10
-[    2.150849] Internal error: Oops: 5 [#1] SMP ARM
-[    2.155700] sh_mmcif ee200000.mmc: Chip version 0x0003, clock rate 12MHz
-[    2.159894] CPU: 1 PID: 7 Comm: kworker/u4:0 Not tainted 5.10.198-rc1-g1=
-8c65c1b4996 #1
-[    2.174486] Hardware name: Generic RZ/G1 (Flattened Device Tree)
-[    2.174540] Segment Routing with IPv6
-[    2.180501] Workqueue: events_unbound async_run_entry_fn
-[    2.184234] sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
-[    2.189455] PC is at renesas_sdhi_reset_scc+0x34/0x50
-[    2.189462] LR is at sd_ctrl_write16+0x30/0x48
-[    2.195810] NET: Registered protocol family 17
-[    2.200409] pc : [<c05da960>]    lr : [<c05da754>]    psr: 60000013
-[    2.200415] sp : c10a9e30  ip : 00000024  fp : c11b3cc0
-[    2.204877] can: controller area network core
-[    2.209282] r10: c11ae410  r9 : c11ae400  r8 : c18e9d48
-[    2.209288] r7 : fffffe00  r6 : c18e9d48  r5 : c18e9d40  r4 : c1970b80
-[    2.215590] NET: Registered protocol family 29
-[    2.220759] r3 : 0000000c  r2 : 00000006  r1 : 00000001  r0 : 00000000
-[    2.225117] can: raw protocol
-[    2.230322] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment=
- none
-[    2.236848] can: broadcast manager protocol
-
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,        Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---+7JMdyyWGl6EnF8R
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZSRVggAKCRAw5/Bqldv6
-8iUSAJ4zccITOyGdlz5sQNJNYGO6ftZ4TACeKDAlNWbmdERfrC9VmYPkwfBkrMk=
-=xitt
------END PGP SIGNATURE-----
-
---+7JMdyyWGl6EnF8R--
