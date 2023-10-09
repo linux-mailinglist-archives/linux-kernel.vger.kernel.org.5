@@ -2,47 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BFC97BEC8C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F5B7BEC8F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378597AbjJIVO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 17:14:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59788 "EHLO
+        id S1378740AbjJIVPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 17:15:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378710AbjJIVOe (ORCPT
+        with ESMTP id S1378801AbjJIVO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 17:14:34 -0400
+        Mon, 9 Oct 2023 17:14:59 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFBCFC6
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 14:14:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E0C1C433CC;
-        Mon,  9 Oct 2023 21:14:26 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E378BFD
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 14:14:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E3B9C433CB;
+        Mon,  9 Oct 2023 21:14:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696886067;
-        bh=bcVRBerKLN3z3a+n5ySbsO9a5UW+yPFpaZA09Z5pSJk=;
+        s=k20201202; t=1696886074;
+        bh=ESmiH/TEMoyx2a7FlX65mUwzXaBIM0ko/o8gmuHHSoo=;
         h=From:To:Cc:Subject:Date:From;
-        b=GXEcZDA6r/rvEEam379V7bL2vQA6BSnMY/2ii+6JzoSKwAZ7fCq4dvF2giTpe2LgD
-         dRHLvHwuzHOHW0qi1/g923ZkJLX6U8xVJMm+3YBYtnzq+1PvH1mg0gzVP75oQN95hl
-         UIRGfg7IUGUqcwXrY9FEKK9huJzVdjBlk0hiSJgDFPUt14CQztmQ+JpUUXTkY6padr
-         qMype6Kyk8Lin20Tm5giIT0/q3jqVLFSLocLdRMRzJ11/VoKNeYQll+KSKnLoOcnKg
-         iVrOQrGhzcu75mrrpWLJowrpSc8ax9RluLmdXcq9+UYQB83go3Hnb+r4LZSUQ63+uG
-         eg4CwyTfHiQxg==
-Received: (nullmailer pid 3246090 invoked by uid 1000);
+        b=ZZGGPv8QSL2rXh+PxVZvekJ/yuCN1VFSLEc6tXQOTwetm5HnA7ds3y1wIY5M4MFmc
+         IEsixsfZBC9jQmqsIWRIFeMaO2bVmZ20Jo5sKT2I/VLE4HOMKflQsPekscqYoQLeYn
+         g19UzVvIb+iH7kIwnnwCFo8H8/GVVjYyS2Xkq1MVPg57e5pk9iqjpyHNEdavd+UQ5f
+         1b4Ql9ZUueL3emkuU2N4q/utxrQhHks5VjKvLRuweDt7tkBeyAgFQiXmJHL4lsM0Uu
+         Np/IHyxjMvCbvOvOuVAPir61fSQGmMyD1q/F47sTZG2Q+oaGfIZ0IfMPoR0Be4rQW+
+         4n7YjbV4LfsjA==
+Received: (nullmailer pid 3246161 invoked by uid 1000);
         Mon, 09 Oct 2023 21:14:13 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Patrice Chotard <patrice.chotard@foss.st.com>
-Cc:     openbmc@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] reset: Use device_get_match_data()
-Date:   Mon,  9 Oct 2023 16:13:41 -0500
-Message-ID: <20231009211356.3242037-11-robh@kernel.org>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rtc: omap: Use device_get_match_data()
+Date:   Mon,  9 Oct 2023 16:13:42 -0500
+Message-ID: <20231009211356.3242037-12-robh@kernel.org>
 X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -61,70 +54,46 @@ include the correct headers.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/reset/reset-npcm.c       |  5 ++---
- drivers/reset/sti/reset-syscfg.c | 11 ++++++-----
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/rtc/rtc-omap.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/reset/reset-npcm.c b/drivers/reset/reset-npcm.c
-index f6c4f854f2be..8935ef95a2d1 100644
---- a/drivers/reset/reset-npcm.c
-+++ b/drivers/reset/reset-npcm.c
-@@ -6,8 +6,8 @@
- #include <linux/io.h>
- #include <linux/init.h>
+diff --git a/drivers/rtc/rtc-omap.c b/drivers/rtc/rtc-omap.c
+index 5b10ab06cd2e..c6155c48a4ac 100644
+--- a/drivers/rtc/rtc-omap.c
++++ b/drivers/rtc/rtc-omap.c
+@@ -18,12 +18,12 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
  #include <linux/of.h>
 -#include <linux/of_device.h>
+ #include <linux/pinctrl/pinctrl.h>
+ #include <linux/pinctrl/pinconf.h>
+ #include <linux/pinctrl/pinconf-generic.h>
  #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
 +#include <linux/property.h>
- #include <linux/reboot.h>
- #include <linux/reset-controller.h>
- #include <linux/spinlock.h>
-@@ -351,8 +351,7 @@ static int npcm_usb_reset(struct platform_device *pdev, struct npcm_rc_data *rc)
- 		}
- 	}
+ #include <linux/rtc.h>
+ #include <linux/rtc/rtc-omap.h>
  
--	rc->info = (const struct npcm_reset_info *)
--			of_match_device(dev->driver->of_match_table, dev)->data;
-+	rc->info = device_get_match_data(dev);
- 	switch (rc->info->bmc_id) {
- 	case BMC_NPCM7XX:
- 		npcm_usb_reset_npcm7xx(rc);
-diff --git a/drivers/reset/sti/reset-syscfg.c b/drivers/reset/sti/reset-syscfg.c
-index c1ba04f6f155..2324060b747c 100644
---- a/drivers/reset/sti/reset-syscfg.c
-+++ b/drivers/reset/sti/reset-syscfg.c
-@@ -7,10 +7,11 @@
-  */
- #include <linux/kernel.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
- #include <linux/module.h>
- #include <linux/err.h>
- #include <linux/types.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/regmap.h>
- #include <linux/mfd/syscon.h>
+@@ -729,16 +729,14 @@ static int omap_rtc_probe(struct platform_device *pdev)
+ 	struct omap_rtc	*rtc;
+ 	u8 reg, mask, new_ctrl;
+ 	const struct platform_device_id *id_entry;
+-	const struct of_device_id *of_id;
+ 	int ret;
  
-@@ -183,14 +184,14 @@ static int syscfg_reset_controller_register(struct device *dev,
- int syscfg_reset_probe(struct platform_device *pdev)
- {
- 	struct device *dev = pdev ? &pdev->dev : NULL;
--	const struct of_device_id *match;
-+	const void *data;
+ 	rtc = devm_kzalloc(&pdev->dev, sizeof(*rtc), GFP_KERNEL);
+ 	if (!rtc)
+ 		return -ENOMEM;
  
- 	if (!dev || !dev->driver)
- 		return -ENODEV;
- 
--	match = of_match_device(dev->driver->of_match_table, dev);
--	if (!match || !match->data)
-+	data = device_get_match_data(&pdev->dev);
-+	if (!data)
- 		return -EINVAL;
- 
--	return syscfg_reset_controller_register(dev, match->data);
-+	return syscfg_reset_controller_register(dev, data);
- }
+-	of_id = of_match_device(omap_rtc_of_match, &pdev->dev);
+-	if (of_id) {
+-		rtc->type = of_id->data;
++	rtc->type = device_get_match_data(&pdev->dev);
++	if (rtc->type) {
+ 		rtc->is_pmic_controller = rtc->type->has_pmic_mode &&
+ 			of_device_is_system_power_controller(pdev->dev.of_node);
+ 	} else {
 -- 
 2.42.0
 
