@@ -2,90 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 671AE7BD96C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 151E37BD96E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 13:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346208AbjJILT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 07:19:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53078 "EHLO
+        id S1346016AbjJILUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 07:20:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345822AbjJILT5 (ORCPT
+        with ESMTP id S1345822AbjJILUi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 07:19:57 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A13FD99
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 04:19:56 -0700 (PDT)
-Received: from [IPV6:2804:1b1:a940:c6b8:18b8:5ce:1f77:c31a] (unknown [IPv6:2804:1b1:a940:c6b8:18b8:5ce:1f77:c31a])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: koike)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 7F1426605957;
-        Mon,  9 Oct 2023 12:19:52 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696850395;
-        bh=se4MQkYBZRlBZRnBE1H+TAMveEHemZnZwrtB2S/ffb4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Ct1L0BTrXqTEc9k7qOFzpuOF9mBYePU+TjYBAHXz6sh1udRRDx4fLLNJthRKfLYrE
-         3cAnPyuWtbi69xP87j7p12eFFmvCCw3vyIUxIgz8XzYd7pNKSk+WLBYHYmhA1X/xWU
-         VGriPXN7CM/m+RHecRLr9VEC693/FD1pM07LO041xcGvBO+5+Q4g2d9RCKJfo4/DY/
-         IaJ1Ssd4M5mfXsfl1FmpPsuA/m/visXVuQvNyJxwUMbH4syeio3leR1iaSaEjNvfIp
-         g5fEoee3R2UoFU02oPzYnHtHpvXFCz7oJlJpwTxYH+gOfpCYwjNEANdSxhlVx3rrMO
-         DKqTjbruW95ww==
-Message-ID: <57967900-d00e-4175-8c82-4a91c60022e5@collabora.com>
-Date:   Mon, 9 Oct 2023 08:19:45 -0300
+        Mon, 9 Oct 2023 07:20:38 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CFF999
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 04:20:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 339EFC433C7;
+        Mon,  9 Oct 2023 11:20:35 +0000 (UTC)
+Date:   Mon, 9 Oct 2023 12:20:32 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Petr Tesarik <petr.tesarik.ext@huawei.com>
+Subject: Re: [RESEND PATCH] mm: slab: Do not create kmalloc caches smaller
+ than arch_slab_minalign()
+Message-ID: <ZSPiAE6c4rzhilRy@arm.com>
+References: <20231006163934.3273940-1-catalin.marinas@arm.com>
+ <a09a6fe5-2352-8922-e575-54bf74ae64e5@suse.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/ci: Default to UART for logging
-Content-Language: en-US
-To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
-Cc:     Emma Anholt <emma@anholt.net>, Rob Clark <robdclark@chromium.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        open list <linux-kernel@vger.kernel.org>,
-        Guilherme Alcarde Gallo <guilherme.gallo@collabora.com>
-References: <20231006173205.371205-1-robdclark@gmail.com>
-From:   Helen Koike <helen.koike@collabora.com>
-In-Reply-To: <20231006173205.371205-1-robdclark@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a09a6fe5-2352-8922-e575-54bf74ae64e5@suse.cz>
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cc +guilherme
+On Mon, Oct 09, 2023 at 10:22:52AM +0200, Vlastimil Babka wrote:
+> On 10/6/23 18:39, Catalin Marinas wrote:
+> > Commit b035f5a6d852 ("mm: slab: reduce the kmalloc() minimum alignment
+> > if DMA bouncing possible") allows architectures with non-coherent DMA to
+> > define a small ARCH_KMALLOC_MINALIGN (e.g. sizeof(unsigned long long))
+> > and this has been enabled on arm64. With KASAN_HW_TAGS enabled, however,
+> > ARCH_SLAB_MINALIGN becomes 16 on arm64 (arch_slab_minalign() dynamically
+> > selects it since commit d949a8155d13 ("mm: make minimum slab alignment a
+> > runtime property")). This can lead to a situation where kmalloc-8 caches
+> > are attempted to be created with a kmem_caches.size aligned to 16. When
+> > the cache is mergeable, it can lead to kernel warnings like:
+> > 
+> > sysfs: cannot create duplicate filename '/kernel/slab/:d-0000016'
+> > CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.6.0-rc1-00001-gda98843cd306-dirty #5
+> > Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
+> > Call trace:
+> >  dump_backtrace+0x90/0xe8
+> >  show_stack+0x18/0x24
+> >  dump_stack_lvl+0x48/0x60
+> >  dump_stack+0x18/0x24
+> >  sysfs_warn_dup+0x64/0x80
+> >  sysfs_create_dir_ns+0xe8/0x108
+> >  kobject_add_internal+0x98/0x264
+> >  kobject_init_and_add+0x8c/0xd8
+> >  sysfs_slab_add+0x12c/0x248
+> >  slab_sysfs_init+0x98/0x14c
+> >  do_one_initcall+0x6c/0x1b0
+> >  kernel_init_freeable+0x1c0/0x288
+> >  kernel_init+0x24/0x1e0
+> >  ret_from_fork+0x10/0x20
+> > kobject: kobject_add_internal failed for :d-0000016 with -EEXIST, don't try to register things with the same name in the same directory.
+> > SLUB: Unable to add boot slab dma-kmalloc-8 to sysfs
+> > 
+> > Limit the __kmalloc_minalign() return value (used to create the
+> > kmalloc-* caches) to arch_slab_minalign() so that kmalloc-8 caches are
+> > skipped when KASAN_HW_TAGS is enabled (both config and runtime).
+> > 
+> > Fixes: b035f5a6d852 ("mm: slab: reduce the kmalloc() minimum alignment if DMA bouncing possible")
+> > Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+> > Reported-by: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Vlastimil Babka <vbabka@suse.cz>
+> > Cc: Peter Collingbourne <pcc@google.com>
+> > Cc: <stable@vger.kernel.org> # 6.5.x
+> > ---
+> > 
+> > The previous post was messed up by my git send-email configuration, so
+> > sending it again. Also cc'ing Vlastimil since he reviewed the previous
+> > slab changes for ARCH_KMALLOC_MINALIGN. Thanks.
+> 
+> It also touches only slab files so I can take it via slab tree.
 
-On 06/10/2023 14:32, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
+Thanks.
+
+> >  mm/slab_common.c | 7 +++++--
+> >  1 file changed, 5 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/mm/slab_common.c b/mm/slab_common.c
+> > index cd71f9581e67..8b45922ed295 100644
+> > --- a/mm/slab_common.c
+> > +++ b/mm/slab_common.c
+> > @@ -895,10 +895,13 @@ void __init setup_kmalloc_cache_index_table(void)
+> >  
+> >  static unsigned int __kmalloc_minalign(void)
+> >  {
+> > +	unsigned int minalign = dma_get_cache_alignment();
+> > +
+> >  	if (IS_ENABLED(CONFIG_DMA_BOUNCE_UNALIGNED_KMALLOC) &&
+> >  	    is_swiotlb_allocated())
+> > -		return ARCH_KMALLOC_MINALIGN;
+> > -	return dma_get_cache_alignment();
+> > +		minalign = ARCH_KMALLOC_MINALIGN;
+> > +
+> > +	return ALIGN(minalign, arch_slab_minalign());
 > 
-> ssh logging is the default for mesa, as it is generally more reliable.
-> But if there are kernel issues, especially at boot, UART logging is
-> infinitely more useful.
-> 
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> ---
->   drivers/gpu/drm/ci/gitlab-ci.yml | 6 ++++++
->   1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml b/drivers/gpu/drm/ci/gitlab-ci.yml
-> index 2c4df53f5dfe..7c55f02f7313 100644
-> --- a/drivers/gpu/drm/ci/gitlab-ci.yml
-> +++ b/drivers/gpu/drm/ci/gitlab-ci.yml
-> @@ -27,6 +27,12 @@ variables:
->   
->     LAVA_JOB_PRIORITY: 30
->   
-> +  # Default to UART logging.  Mesa uses ssh by default, as that is more
-> +  # reliable if you have a stable kernel.  But kernel CI is more likely
-> +  # to encounter unstable kernels (and has lower volume of CI jobs so is
-> +  # less likely to be troubled by occasional UART flakes)
-> +  LAVA_FORCE_UART: 1
-> +
->   default:
->     before_script:
->       - export SCRIPTS_DIR=$(mktemp -d)
+> Could it be max() instead of ALIGN()? It would be more obvious, at least to
+> me :)
+
+Yeah, max() would do since they are all a power of two. Do you want me
+to repost?
+
+-- 
+Catalin
