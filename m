@@ -2,47 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43F4F7BE840
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1349F7BE7F2
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377477AbjJIRdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 13:33:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32826 "EHLO
+        id S1377902AbjJIR3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 13:29:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378148AbjJIRdC (ORCPT
+        with ESMTP id S1377524AbjJIR3a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 13:33:02 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E35FD8;
-        Mon,  9 Oct 2023 10:32:58 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 671D5C433CA;
-        Mon,  9 Oct 2023 17:32:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696872777;
-        bh=k9GQF3dFjUZ/8wGvGz0nYy9OjUlIAHfJQ/PEH5MjWN0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=tf1eMtFdYCl04xz1yl70rIFn+Qf2Gn9KQUiqG26EMJ7qIeQfM/MJZKZ3dpzZiEmo5
-         N+uAT1ywuxKsVD1QCtqdSTedCp2fKGQhsn0KyOEwC8FA8tKIVtbndM+j0rKEIuyq9L
-         fC5xtS0YsS+MpMO4QeJhpA+DcXxrgzZEDtA0HZq5nWwmsVAVRIRS6u1KglmSLHBsId
-         URS4Y5okmGJ5JcRwvyuPyCMeu6uGgs1JGbm/Syq0S4wy9EkKaa8HReyFLzRDBwqDK8
-         X4GMlSebCiaKviSDDzjeLwhkB0DJWx36SqK55Hoi+U4eJuteIF6i65V/iIby0VLbaK
-         j404VSRK1dxgA==
-Received: (nullmailer pid 2535184 invoked by uid 1000);
-        Mon, 09 Oct 2023 17:32:56 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] pwm: pxa: Explicitly include correct DT includes
-Date:   Mon,  9 Oct 2023 12:29:17 -0500
-Message-ID: <20231009172923.2457844-22-robh@kernel.org>
-X-Mailer: git-send-email 2.42.0
+        Mon, 9 Oct 2023 13:29:30 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A79F3B6
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 10:29:27 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-692779f583fso3210880b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 10:29:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1696872567; x=1697477367; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xmOFJ7BPS0CGwUS7ZxzIQam3KgDjrxQW8SgccLQm/wg=;
+        b=W+LO7eJ8NduQhx2ab6yej00MuKZEMBVFNWOA1bgBDXr4JtClsqXJMmUfcmdhqSN53M
+         uoeDjownN2FPtlyFRi0yd+dRy7P+BoAxwB1Ppps/92TJi4sLYl3MOa2CTpAmjnFZhGqV
+         ai9SGZJl5n9BpTmZd5B0cyLb8P/6YSsvIy4fw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696872567; x=1697477367;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xmOFJ7BPS0CGwUS7ZxzIQam3KgDjrxQW8SgccLQm/wg=;
+        b=H73vnZZ6cq14wu3X7mRzgPvoOXHztfgae3/XFkCvUTq+bjahi4JBKQXwimuJidQCLU
+         I1ZQ/bEUFPLyqXwoENJrO3HFXCqAZCXjwDskwzPG3hy4h6HDOvGiRIs32VJXZ8FUeo/3
+         gqnVGl3U0lfiXrdJuwZhvAOWXQozVrABC4CeQwtWgdkHuVdUc3QaymCsRAJSELcpFd0y
+         8z17ARJ0pA2kVuJi0AgoguU2v/NAAwfen94O1ffI32wiF/0VbVZJ7RiklCuVA88FG9bZ
+         TVthVtOJDoPzw10MwcN/aZeLBSykq6wjIiMjDKqZxAdM6oOZTAL2Vy8y1Q3DQF8hS4jF
+         5lcw==
+X-Gm-Message-State: AOJu0YyCEPjaINLYJRZTk1njphTfmZRxoBAN2eHP5Q8IkGu3XU65sn0/
+        ZNAZjiFdh5p1kgnMg6R90lUdBw==
+X-Google-Smtp-Source: AGHT+IGZBkYyLr1mAtcevkwX0r0BAUIUeuDmh/qvFnx7ofbkwmEk9cxHjoRpI21wTaFaYWBooUAtNQ==
+X-Received: by 2002:a05:6a20:7f9a:b0:140:a25:1c1d with SMTP id d26-20020a056a207f9a00b001400a251c1dmr17552800pzj.51.1696872567107;
+        Mon, 09 Oct 2023 10:29:27 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id i73-20020a636d4c000000b0057c29fec795sm6126977pgc.37.2023.10.09.10.29.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Oct 2023 10:29:26 -0700 (PDT)
+Date:   Mon, 9 Oct 2023 10:29:25 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Nick Terrell <terrelln@fb.com>,
+        syzbot <syzbot+1f2eb3e8cd123ffce499@syzkaller.appspotmail.com>,
+        clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        linux-hardening@vger.kernel.org
+Subject: Re: [syzbot] [zstd] UBSAN: array-index-out-of-bounds in
+ FSE_decompress_wksp_body_bmi2
+Message-ID: <202310091025.4939AEBC9@keescook>
+References: <00000000000049964e06041f2cbf@google.com>
+ <20231007210556.GA174883@sol.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231007210556.GA174883@sol.localdomain>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,33 +74,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DT of_device.h and of_platform.h date back to the separate
-of_platform_bus_type before it as merged into the regular platform bus.
-As part of that merge prepping Arm DT support 13 years ago, they
-"temporarily" include each other. They also include platform_device.h
-and of.h. As a result, there's a pretty much random mix of those include
-files used throughout the tree. In order to detangle these headers and
-replace the implicit includes with struct declarations, users need to
-explicitly include the correct includes.
+On Sat, Oct 07, 2023 at 02:05:56PM -0700, Eric Biggers wrote:
+> Hi Nick,
+> 
+> On Wed, Aug 30, 2023 at 12:49:53AM -0700, syzbot wrote:
+> > UBSAN: array-index-out-of-bounds in lib/zstd/common/fse_decompress.c:345:30
+> > index 33 is out of range for type 'FSE_DTable[1]' (aka 'unsigned int[1]')
+> 
+> Zstandard needs to be converted to use C99 flex-arrays instead of length-1
+> arrays.  https://github.com/facebook/zstd/pull/3785 would fix this in upstream
+> Zstandard, though it doesn't work well with the fact that upstream Zstandard
+> supports C90.  Not sure how you want to handle this.
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- drivers/pwm/pwm-pxa.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+For the kernel, we just need:
 
-diff --git a/drivers/pwm/pwm-pxa.c b/drivers/pwm/pwm-pxa.c
-index 1e475ed10180..78b04e017c49 100644
---- a/drivers/pwm/pwm-pxa.c
-+++ b/drivers/pwm/pwm-pxa.c
-@@ -24,7 +24,7 @@
- #include <linux/clk.h>
- #include <linux/io.h>
- #include <linux/pwm.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
+diff --git a/lib/zstd/common/fse_decompress.c b/lib/zstd/common/fse_decompress.c
+index a0d06095be83..b11e87fff261 100644
+--- a/lib/zstd/common/fse_decompress.c
++++ b/lib/zstd/common/fse_decompress.c
+@@ -312,7 +312,7 @@ size_t FSE_decompress_wksp(void* dst, size_t dstCapacity, const void* cSrc, size
  
- #include <asm/div64.h>
+ typedef struct {
+     short ncount[FSE_MAX_SYMBOL_VALUE + 1];
+-    FSE_DTable dtable[1]; /* Dynamically sized */
++    FSE_DTable dtable[]; /* Dynamically sized */
+ } FSE_DecompressWksp;
  
+ 
+And if upstream wants to stay C89 compat, perhaps:
+
+#if __STDC_VERSION__ >= 199901L
+# define __FLEX_ARRAY_DIM	/*C99*/
+#else
+# define __FLEX_ARRAY_DIM	0
+#endif
+
+and then use __FLEX_ARRAY_DIM as needed (and keep the other "-1" changes
+in the github commit):
+
+ typedef struct {
+     short ncount[FSE_MAX_SYMBOL_VALUE + 1];
+-    FSE_DTable dtable[1]; /* Dynamically sized */
++    FSE_DTable dtable[__FLEX_ARRAY_DIM]; /* Dynamically sized */
+ } FSE_DecompressWksp;
+ 
+
 -- 
-2.42.0
-
+Kees Cook
