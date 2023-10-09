@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19FA07BE82F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 554A87BE832
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378022AbjJIRck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 13:32:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60714 "EHLO
+        id S1378077AbjJIRcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 13:32:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377997AbjJIRcd (ORCPT
+        with ESMTP id S1377985AbjJIRch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 13:32:33 -0400
+        Mon, 9 Oct 2023 13:32:37 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 531ADB6;
-        Mon,  9 Oct 2023 10:32:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 414E0C433C7;
-        Mon,  9 Oct 2023 17:32:28 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 241CBDA
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 10:32:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02AC6C433C8;
+        Mon,  9 Oct 2023 17:32:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696872748;
-        bh=hOqxwwj4R1P+EKnufjhjvIS/kNuMb6T35WWc1dRZ9O4=;
+        s=k20201202; t=1696872751;
+        bh=CZdCFg11N/zBqMQWFE5ZUMyNjYxDelPKhHZLSs4IVs4=;
         h=From:To:Cc:Subject:Date:From;
-        b=uEcN4iqpBBPTXSuTJmmsQW0XBmgffVYlQgaBjmqqdTkRMVBG3BPa8lkOyWVCiwydU
-         3UuptraJO6PiL4/jHqCtCVy7SBukoRQZkIpSXQM74DtScLLZeIn6rEoAdqqv44LPlq
-         hTyApjxodLZmzbOPa81Mzs0EvyUJ1mMNGXa2ZCpkIb0AhuQGzdOkz6h/wsixIaX67b
-         AqDMNmUTbTAFH+gmagJH7m1KciVoh8iecrwwuRs7IDflPBSn6msD4mUb4WKZscDXo3
-         ZVBsOTMkYpgYhuo0I8Fi1xNzkEWqhft5b3tfUaMhb7EkdATxM03er2qwuR78FSd7FX
-         1lhz54xTAGRjg==
-Received: (nullmailer pid 2526325 invoked by uid 1000);
-        Mon, 09 Oct 2023 17:32:27 -0000
+        b=kIFdLJ8yXsE71IACu88BR6lk6dguuyvgahZ9KcbbkAajShZk8c4YYOoHOIbDNxH+K
+         tYNk55pqMaxVEjeHTRdn62O1hVNO8gFAfffb7rGJs9MlYXe88AwUpOVW3sDvsYp1jd
+         L6LdJZyaikFRsRygzPn7zb55q6MRXrL7dvBx6q8aNelrr84yx0DQ0Q8wcdze5igO6y
+         jFAFHozwAYU02C6qOmH0QycVi/xxK+JnHvbwzGILRNrjPToFOIGeeA+gKVQh4by8Bz
+         C3o9jPFGYWWNrQoZG1qDqRL5oDUWiy3dkIG+p4DMl7qjY6VovGGX64TRfL+cKX3RPq
+         2YHKx9JbRPYLQ==
+Received: (nullmailer pid 2527181 invoked by uid 1000);
+        Mon, 09 Oct 2023 17:32:29 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] opp: ti: Use device_get_match_data()
-Date:   Mon,  9 Oct 2023 12:29:08 -0500
-Message-ID: <20231009172923.2457844-13-robh@kernel.org>
+To:     Khuong Dinh <khuong@os.amperecomputing.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drivers/perf: xgene: Use device_get_match_data()
+Date:   Mon,  9 Oct 2023 12:29:09 -0500
+Message-ID: <20231009172923.2457844-14-robh@kernel.org>
 X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -49,49 +50,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Use preferred device_get_match_data() instead of of_match_device() and
+acpi_match_device() to get the driver match data. With this, adjust the
+includes to explicitly include the correct headers.
+
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/opp/ti-opp-supply.c | 13 +++----------
- 1 file changed, 3 insertions(+), 10 deletions(-)
+ drivers/perf/xgene_pmu.c | 37 +++++++++++++------------------------
+ 1 file changed, 13 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/opp/ti-opp-supply.c b/drivers/opp/ti-opp-supply.c
-index 8f3f13fbbb25..e3b97cd1fbbf 100644
---- a/drivers/opp/ti-opp-supply.c
-+++ b/drivers/opp/ti-opp-supply.c
-@@ -18,6 +18,7 @@
- #include <linux/of.h>
+diff --git a/drivers/perf/xgene_pmu.c b/drivers/perf/xgene_pmu.c
+index 9972bfc11a5c..7ce344248dda 100644
+--- a/drivers/perf/xgene_pmu.c
++++ b/drivers/perf/xgene_pmu.c
+@@ -16,11 +16,9 @@
+ #include <linux/mfd/syscon.h>
+ #include <linux/module.h>
+ #include <linux/of_address.h>
+-#include <linux/of_fdt.h>
+-#include <linux/of_irq.h>
+-#include <linux/of_platform.h>
+ #include <linux/perf_event.h>
  #include <linux/platform_device.h>
- #include <linux/pm_opp.h>
 +#include <linux/property.h>
- #include <linux/regulator/consumer.h>
+ #include <linux/regmap.h>
  #include <linux/slab.h>
  
-@@ -373,23 +374,15 @@ static int ti_opp_supply_probe(struct platform_device *pdev)
+@@ -1731,6 +1729,12 @@ static const struct xgene_pmu_data xgene_pmu_v2_data = {
+ 	.id   = PCP_PMU_V2,
+ };
+ 
++#ifdef CONFIG_ACPI
++static const struct xgene_pmu_data xgene_pmu_v3_data = {
++	.id   = PCP_PMU_V3,
++};
++#endif
++
+ static const struct xgene_pmu_ops xgene_pmu_ops = {
+ 	.mask_int = xgene_pmu_mask_int,
+ 	.unmask_int = xgene_pmu_unmask_int,
+@@ -1773,9 +1777,9 @@ static const struct of_device_id xgene_pmu_of_match[] = {
+ MODULE_DEVICE_TABLE(of, xgene_pmu_of_match);
+ #ifdef CONFIG_ACPI
+ static const struct acpi_device_id xgene_pmu_acpi_match[] = {
+-	{"APMC0D5B", PCP_PMU_V1},
+-	{"APMC0D5C", PCP_PMU_V2},
+-	{"APMC0D83", PCP_PMU_V3},
++	{"APMC0D5B", (kernel_ulong_t)&xgene_pmu_data},
++	{"APMC0D5C", (kernel_ulong_t)&xgene_pmu_v2_data},
++	{"APMC0D83", (kernel_ulong_t)&xgene_pmu_v3_data},
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(acpi, xgene_pmu_acpi_match);
+@@ -1831,7 +1835,6 @@ static int xgene_pmu_offline_cpu(unsigned int cpu, struct hlist_node *node)
+ static int xgene_pmu_probe(struct platform_device *pdev)
  {
- 	struct device *dev = &pdev->dev;
- 	struct device *cpu_dev = get_cpu_device(0);
--	const struct of_device_id *match;
- 	const struct ti_opp_supply_of_data *of_data;
- 	int ret = 0;
+ 	const struct xgene_pmu_data *dev_data;
+-	const struct of_device_id *of_id;
+ 	struct xgene_pmu *xgene_pmu;
+ 	int irq, rc;
+ 	int version;
+@@ -1850,24 +1853,10 @@ static int xgene_pmu_probe(struct platform_device *pdev)
+ 	xgene_pmu->dev = &pdev->dev;
+ 	platform_set_drvdata(pdev, xgene_pmu);
  
--	match = of_match_device(ti_opp_supply_of_match, dev);
--	if (!match) {
--		/* We do not expect this to happen */
--		dev_err(dev, "%s: Unable to match device\n", __func__);
--		return -ENODEV;
+-	version = -EINVAL;
+-	of_id = of_match_device(xgene_pmu_of_match, &pdev->dev);
+-	if (of_id) {
+-		dev_data = (const struct xgene_pmu_data *) of_id->data;
+-		version = dev_data->id;
 -	}
--	if (!match->data) {
-+	of_data = device_get_match_data(dev);
-+	if (!of_data) {
- 		/* Again, unlikely.. but mistakes do happen */
- 		dev_err(dev, "%s: Bad data in match\n", __func__);
- 		return -EINVAL;
- 	}
--	of_data = match->data;
 -
- 	dev_set_drvdata(dev, (void *)of_data);
+-#ifdef CONFIG_ACPI
+-	if (ACPI_COMPANION(&pdev->dev)) {
+-		const struct acpi_device_id *acpi_id;
+-
+-		acpi_id = acpi_match_device(xgene_pmu_acpi_match, &pdev->dev);
+-		if (acpi_id)
+-			version = (int) acpi_id->driver_data;
+-	}
+-#endif
+-	if (version < 0)
++	dev_data = device_get_match_data(&pdev->dev);
++	if (!dev_data)
+ 		return -ENODEV;
++	version = dev_data->id;
  
- 	/* If we need optimized voltage */
+ 	if (version == PCP_PMU_V3)
+ 		xgene_pmu->ops = &xgene_pmu_v3_ops;
 -- 
 2.42.0
 
