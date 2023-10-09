@@ -2,260 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF57E7BE562
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 623937BE564
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 17:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377019AbjJIPve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 11:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43830 "EHLO
+        id S1377079AbjJIPvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 11:51:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344542AbjJIPvc (ORCPT
+        with ESMTP id S1377063AbjJIPvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 11:51:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B509E
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 08:50:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696866645;
+        Mon, 9 Oct 2023 11:51:48 -0400
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C525D6;
+        Mon,  9 Oct 2023 08:51:46 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 55EF11C0003;
+        Mon,  9 Oct 2023 15:51:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1696866705;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=O8lVe7axHHYscKZXFbEXrxOyJs8hdVECqH+D/vMLRVA=;
-        b=FOSQlBKd9aSygpyTrm9cNv1IsjqOhZpsQu3U8G6pfqNYGLJZVBQxnYklRUoF3iNUmcoQt4
-        j4rK3dc64bTgo+AEBZXhVBg6GlzFNP5w7qOHFZGkcUo4yMK1lM8lAnL0JwFPMQ3rkjgaz1
-        DBGjj+p4sEgROf+OnCYKAJ8GBjdarzQ=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-169-PaEYgMHhNp2cIa2Ia39xww-1; Mon, 09 Oct 2023 11:50:43 -0400
-X-MC-Unique: PaEYgMHhNp2cIa2Ia39xww-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4054743df06so34182645e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 08:50:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696866642; x=1697471442;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=O8lVe7axHHYscKZXFbEXrxOyJs8hdVECqH+D/vMLRVA=;
-        b=TSzYEQB4EEXqUY5r7CS6UlKa9KkXRPawpkKRjUiLyU8hJE1Ir5PBnu9gV6NWwhqJez
-         FdjcvXsTaDD2upzo3wxtbGBG5pGPy91yxJ+Z3LvSIVjiuKqRH0dBsb2AN0bsV+Ltz2SF
-         suHnBPbNx9nLo4cIEoB61T+FfE7+Su2jz3tC26SeNDNHwKH5NxIiegTsddECRy177Sfn
-         8Sxq9MT2XxJSysD7/OpniSLJkk8+pwEqZonrrGqYqwl4q/9Oxl4DL8lB6uXEXWMEnQB7
-         aqopXh6ceChm9VjuHZwhH3RiA+rU+hNfHqB1jYdkniOaNCG+LcX7WDRVmXcbb/XkSPC5
-         BySw==
-X-Gm-Message-State: AOJu0Yxd+O6NMDCL9crKTP6fMuAeFpgpIKPVVpDvoPI6WVPSPljkCtBl
-        29bLxxPn/yNITQGTyH60rkoTwpDQm7upbF2qVhfn77MnjSwdz/uZ3b7HA7yYVCZdtVglNXDeo0w
-        /U48vk8zjMtQyEmAJNxtu0NQ5d7iR6++/
-X-Received: by 2002:a5d:4049:0:b0:323:33cf:7872 with SMTP id w9-20020a5d4049000000b0032333cf7872mr13268727wrp.6.1696866642394;
-        Mon, 09 Oct 2023 08:50:42 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFYqEO2mlrfiZcjFN7Zvhq/J263TbutqXmvr3srcAGgJkp784Y34zAf/gti0FnzGrYUcdMO7g==
-X-Received: by 2002:a5d:4049:0:b0:323:33cf:7872 with SMTP id w9-20020a5d4049000000b0032333cf7872mr13268714wrp.6.1696866641994;
-        Mon, 09 Oct 2023 08:50:41 -0700 (PDT)
-Received: from starship ([89.237.100.246])
-        by smtp.gmail.com with ESMTPSA id a9-20020a5d5709000000b0032320a9b010sm10078471wrv.28.2023.10.09.08.50.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 08:50:41 -0700 (PDT)
-Message-ID: <ac45ac86a17c68e0b76edaf06d60ca2948c0723f.camel@redhat.com>
-Subject: Re: [PATCH v7] KVM: x86/tsc: Don't sync user-written TSC against
- startup values
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Like Xu <like.xu.linux@gmail.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Oliver Upton <oliver.upton@linux.dev>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 09 Oct 2023 18:50:39 +0300
-In-Reply-To: <20231008025335.7419-1-likexu@tencent.com>
-References: <20231008025335.7419-1-likexu@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=d+vplipnnIWIzmNSzthBNOqx4T8NoqkpkC2gykdesK8=;
+        b=FNpZC8N6MIxp3OfN4IJMd1lHXfjnF2RXmlnDiH3Lx6GEdspNWJYG84yxHvA4GBA+AHeyOF
+        kaU+5AM3NDtGR1Ew+fpdjwD7Vhtp5bv+ZrDNk7PcHAXR8cxdYRyaVac4llbF4BsOgPf9dA
+        Lukykm3s1ERmcXdIff/lBjWYXtLSUH6cU0trifpPLlqOAXcOe6/y+x+UO4lyOaY5S7SmNV
+        cD3VX09c3pmNC2zdX0PVBAeiu7HmGZU/1S3gZ6XGsLC/daCTLoVrOCD++KuI4oJxtiCIeD
+        IV7GhOJ4aovV1tjG70sSYLaANw8hJOrHJMN0kAAXlzopIeiyZ7A77uqp1bl2EQ==
+From:   =?UTF-8?q?K=C3=B6ry=20Maincent?= <kory.maincent@bootlin.com>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Michael Walle <michael@walle.cc>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Kory Maincent <kory.maincent@bootlin.com>
+Subject: [PATCH net-next v5 00/16] net: Make timestamping selectable
+Date:   Mon,  9 Oct 2023 17:51:22 +0200
+Message-Id: <20231009155138.86458-1-kory.maincent@bootlin.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-GND-Sasl: kory.maincent@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-У нд, 2023-10-08 у 10:53 +0800, Like Xu пише:
-> From: Like Xu <likexu@tencent.com>
-> 
-> The legacy API for setting the TSC is fundamentally broken, and only
-> allows userspace to set a TSC "now", without any way to account for
-> time lost to preemption between the calculation of the value, and the
-> kernel eventually handling the ioctl.
-> 
-> To work around this we have had a hack which, if a TSC is set with a
-> value which is within a second's worth of a previous vCPU, assumes that
-> userspace actually intended them to be in sync and adjusts the newly-
-> written TSC value accordingly.
-> 
-> Thus, when a VMM restores a guest after suspend or migration using the
-> legacy API, the TSCs aren't necessarily *right*, but at least they're
-> in sync.
-> 
-> This trick falls down when restoring a guest which genuinely has been
-> running for less time than the 1 second of imprecision which we allow
-> for in the legacy API. On *creation* the first vCPU starts its TSC
-> counting from zero, and the subsequent vCPUs synchronize to that. But
-> then when the VMM tries to set the intended TSC value, because that's
-> within a second of what the last TSC synced to, KVM just adjusts it
-> to match that.
-> 
-> But we can pile further hacks onto our existing hackish ABI, and
-> declare that the *first* value written by userspace (on any vCPU)
-> should not be subject to this 'correction' to make it sync up with
-> values that only come from the kernel's default vCPU creation.
-> 
-> To that end: Add a flag in kvm->arch.user_set_tsc, protected by
-> kvm->arch.tsc_write_lock, to record that a TSC for at least one vCPU in
-> this KVM *has* been set by userspace. Make the 1-second slop hack only
-> trigger if that flag is already set.
-> 
-> Note that userspace can explicitly request a *synchronization* of the
-> TSC by writing zero. For the purpose of this patch, this counts as
-> "setting" the TSC. If userspace then subsequently writes an explicit
-> non-zero value which happens to be within 1 second of the previous
-> value, it will be 'corrected'. For that case, this preserves the prior
-> behaviour of KVM (which always applied the 1-second 'correction'
-> regardless of user vs. kernel).
-> 
-> Reported-by: Yong He <alexyonghe@tencent.com>
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217423
-> Suggested-by: Oliver Upton <oliver.upton@linux.dev>
-> Original-by: Oliver Upton <oliver.upton@linux.dev>
-> Original-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Like Xu <likexu@tencent.com>
-> Tested-by: Yong He <alexyonghe@tencent.com>
-> ---
-> V6 -> V7 Changelog:
-> - Refine commit message and comments to make more sense; (David & Sean)
-> - A @user_value of '0' would still force synchronization; (Sean)
-> V6: https://lore.kernel.org/kvm/20230913103729.51194-1-likexu@tencent.com/
->  arch/x86/include/asm/kvm_host.h |  1 +
->  arch/x86/kvm/x86.c              | 34 +++++++++++++++++++++++----------
->  2 files changed, 25 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 41558d13a9a6..7c228ae05df0 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1334,6 +1334,7 @@ struct kvm_arch {
->  	int nr_vcpus_matched_tsc;
->  
->  	u32 default_tsc_khz;
-> +	bool user_set_tsc;
->  
->  	seqcount_raw_spinlock_t pvclock_sc;
->  	bool use_master_clock;
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index fdb2b0e61c43..776506a77e1b 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -2709,8 +2709,9 @@ static void __kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 offset, u64 tsc,
->  	kvm_track_tsc_matching(vcpu);
->  }
->  
-> -static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data)
-> +static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 *user_value)
->  {
-> +	u64 data = user_value ? *user_value : 0;
->  	struct kvm *kvm = vcpu->kvm;
->  	u64 offset, ns, elapsed;
->  	unsigned long flags;
-> @@ -2725,25 +2726,37 @@ static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data)
->  	if (vcpu->arch.virtual_tsc_khz) {
->  		if (data == 0) {
->  			/*
-> -			 * detection of vcpu initialization -- need to sync
-> -			 * with other vCPUs. This particularly helps to keep
-> -			 * kvm_clock stable after CPU hotplug
-> +			 * Force synchronization when creating a vCPU, or when
-> +			 * userspace explicitly writes a zero value.
->  			 */
->  			synchronizing = true;
-> -		} else {
-> +		} else if (kvm->arch.user_set_tsc) {
->  			u64 tsc_exp = kvm->arch.last_tsc_write +
->  						nsec_to_cycles(vcpu, elapsed);
->  			u64 tsc_hz = vcpu->arch.virtual_tsc_khz * 1000LL;
->  			/*
-> -			 * Special case: TSC write with a small delta (1 second)
-> -			 * of virtual cycle time against real time is
-> -			 * interpreted as an attempt to synchronize the CPU.
-> +			 * Here lies UAPI baggage: when a user-initiated TSC write has
-> +			 * a small delta (1 second) of virtual cycle time against the
-> +			 * previously set vCPU, we assume that they were intended to be
-> +			 * in sync and the delta was only due to the racy nature of the
-> +			 * legacy API.
-> +			 *
-> +			 * This trick falls down when restoring a guest which genuinely
-> +			 * has been running for less time than the 1 second of imprecision
-> +			 * which we allow for in the legacy API. In this case, the first
-> +			 * value written by userspace (on any vCPU) should not be subject
-> +			 * to this 'correction' to make it sync up with values that only
-> +			 * come from the kernel's default vCPU creation. Make the 1-second
-> +			 * slop hack only trigger if the user_set_tsc flag is already set.
->  			 */
->  			synchronizing = data < tsc_exp + tsc_hz &&
->  					data + tsc_hz > tsc_exp;
->  		}
->  	}
->  
-> +	if (user_value)
-> +		kvm->arch.user_set_tsc = true;
-> +
->  	/*
->  	 * For a reliable TSC, we can match TSC offsets, and for an unstable
->  	 * TSC, we add elapsed time in this computation.  We could let the
-> @@ -3869,7 +3882,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->  		break;
->  	case MSR_IA32_TSC:
->  		if (msr_info->host_initiated) {
-> -			kvm_synchronize_tsc(vcpu, data);
-> +			kvm_synchronize_tsc(vcpu, &data);
->  		} else {
->  			u64 adj = kvm_compute_l1_tsc_offset(vcpu, data) - vcpu->arch.l1_tsc_offset;
->  			adjust_tsc_offset_guest(vcpu, adj);
-> @@ -5639,6 +5652,7 @@ static int kvm_arch_tsc_set_attr(struct kvm_vcpu *vcpu,
->  		tsc = kvm_scale_tsc(rdtsc(), vcpu->arch.l1_tsc_scaling_ratio) + offset;
->  		ns = get_kvmclock_base_ns();
->  
-> +		kvm->arch.user_set_tsc = true;
->  		__kvm_synchronize_tsc(vcpu, offset, tsc, ns, matched);
->  		raw_spin_unlock_irqrestore(&kvm->arch.tsc_write_lock, flags);
->  
-> @@ -12073,7 +12087,7 @@ void kvm_arch_vcpu_postcreate(struct kvm_vcpu *vcpu)
->  	if (mutex_lock_killable(&vcpu->mutex))
->  		return;
->  	vcpu_load(vcpu);
-> -	kvm_synchronize_tsc(vcpu, 0);
-> +	kvm_synchronize_tsc(vcpu, NULL);
->  	vcpu_put(vcpu);
->  
->  	/* poll control enabled by default */
-> 
-> base-commit: 86701e115030e020a052216baa942e8547e0b487
+From: Kory Maincent <kory.maincent@bootlin.com>
 
+Up until now, there was no way to let the user select the layer at
+which time stamping occurs. The stack assumed that PHY time stamping
+is always preferred, but some MAC/PHY combinations were buggy.
 
-Just small note: Note that qemu resets TSC on the CPU reset,
-But recently it started to reset it to '1' instead of '0' to avoid trigerring this synchronization.
+This series updates the default MAC/PHY default timestamping and aims to
+allow the user to select the desired layer administratively.
 
-As far as I can see, this patch should still work in this case,
-because vCPU reset usually happens long after the vCPUs are all created and running, 
-but this is still something to keep in the mind.
+Changes in v2:
+- Move selected_timestamping_layer variable of the concerned patch.
+- Use sysfs_streq instead of strmcmp.
+- Use the PHY timestamp only if available.
 
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+Changes in v3:
+- Expose the PTP choice to ethtool instead of sysfs.
+  You can test it with the ethtool source on branch feature_ptp of:
+  https://github.com/kmaincent/ethtool
+- Added a devicetree binding to select the preferred timestamp.
 
+Changes in v4:
+- Move on to ethtool netlink instead of ioctl.
+- Add a netdev notifier to allow packet trapping by the MAC in case of PHY
+  time stamping.
+- Add a PHY whitelist to not break the old PHY default time-stamping
+  preference API.
 
-Best regards,
-	Maxim Levitsky
+Change in v5:
+- Update to ndo_hwstamp_get/set. This bring several new patches.
+- Add few patches to make the glue.
+- Convert macb to ndo_hwstamp_get/set.
+- Add netlink specs description of new ethtool commands.
+- Removed netdev notifier.
+- Split the patches that expose the timestamping to userspace to separate
+  the core and ethtool development.
+- Add description of software timestamping.
+- Convert PHYs hwtstamp callback to use kernel_hwtstamp_config.
 
+Kory Maincent (15):
+  net: Convert PHYs hwtstamp callback to use kernel_hwtstamp_config
+  net: phy: Remove the call to phy_mii_ioctl in phy_hwstamp_get/set
+  net: macb: Convert to ndo_hwtstamp_get() and ndo_hwtstamp_set()
+  net: Make dev_set_hwtstamp_phylib accessible
+  net_tstamp: Add TIMESTAMPING SOFTWARE and HARDWARE mask
+  net: phy: micrel: fix ts_info value in case of no phc
+  net: ethtool: Add a command to expose current time stamping layer
+  netlink: specs: Introduce new netlink command to get current timestamp
+  net: ethtool: Add a command to list available time stamping layers
+  netlink: specs: Introduce new netlink command to list available time
+    stamping layers
+  net: Replace hwtstamp_source by timestamping layer
+  net: Change the API of PHY default timestamp to MAC
+  net: ethtool: ts: Update GET_TS to reply the current selected
+    timestamp
+  net ethtool: net: Let the active time stamping layer be selectable
+  netlink: specs: Introduce time stamping set command
+
+Richard Cochran (1):
+  net: ethtool: Refactor identical get_ts_info implementations.
+
+ Documentation/netlink/specs/ethtool.yaml      |  57 +++++
+ Documentation/networking/ethtool-netlink.rst  |  63 ++++++
+ drivers/net/bonding/bond_main.c               |  27 +--
+ drivers/net/ethernet/cadence/macb.h           |  15 +-
+ drivers/net/ethernet/cadence/macb_main.c      |  42 +++-
+ drivers/net/ethernet/cadence/macb_ptp.c       |  28 +--
+ .../ethernet/microchip/lan966x/lan966x_main.c |   6 +-
+ drivers/net/macvlan.c                         |  14 +-
+ drivers/net/phy/bcm-phy-ptp.c                 |  15 +-
+ drivers/net/phy/dp83640.c                     |  24 +-
+ drivers/net/phy/micrel.c                      |  44 ++--
+ drivers/net/phy/mscc/mscc_ptp.c               |  18 +-
+ drivers/net/phy/nxp-c45-tja11xx.c             |  17 +-
+ drivers/net/phy/phy.c                         |  28 ++-
+ drivers/net/phy/phy_device.c                  |  68 ++++++
+ drivers/ptp/ptp_ines.c                        |  16 +-
+ include/linux/ethtool.h                       |   8 +
+ include/linux/mii_timestamper.h               |   4 +-
+ include/linux/net_tstamp.h                    |  11 +-
+ include/linux/netdevice.h                     |   8 +
+ include/linux/phy.h                           |   6 +-
+ include/uapi/linux/ethtool_netlink.h          |  29 +++
+ include/uapi/linux/net_tstamp.h               |  22 ++
+ net/8021q/vlan_dev.c                          |  15 +-
+ net/core/dev.c                                |   3 +
+ net/core/dev_ioctl.c                          |  42 ++--
+ net/core/timestamping.c                       |   9 +
+ net/ethtool/Makefile                          |   2 +-
+ net/ethtool/common.c                          |  22 +-
+ net/ethtool/common.h                          |   1 +
+ net/ethtool/netlink.c                         |  28 +++
+ net/ethtool/netlink.h                         |   4 +
+ net/ethtool/ts.c                              | 210 ++++++++++++++++++
+ 33 files changed, 707 insertions(+), 199 deletions(-)
+ create mode 100644 net/ethtool/ts.c
+
+-- 
+2.25.1
 
