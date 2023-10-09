@@ -2,327 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C18C97BE759
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D44B7BE75D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 19:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377349AbjJIRHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 13:07:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57908 "EHLO
+        id S1377272AbjJIRH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 13:07:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344542AbjJIRHH (ORCPT
+        with ESMTP id S1376329AbjJIRH2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 13:07:07 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C305B9D
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 10:07:04 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2bfed7c4e6dso53393291fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 10:07:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696871223; x=1697476023; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tW+ewvN6hJ7uOk+NGT2wDDdLEYtVkyOMF8rZuJ8lphE=;
-        b=sDUSVkEZnydCG2/RuAydlLniFHmdcoqwIJYEAZdaikkft1W3HH/nQDqEi7LCDEVorY
-         iwqcLIlKj+urGgujWgqkdjPI9+FwvcNGbnxseqKioFw6Q6J9mD3gb6AtFuNxvuJaEPcP
-         6xNoghm/ousKyKW7C7NBdWP28CU9/bul8k6Q+NivT2s2KTambKQSAurLFfXW/CTI5KFw
-         ZcxTiexEWGXAIjU3qqPbo/WsuFQDXgByGXbpt5jfK3U6gT36/kDt61W8Q2mhTSjUZ2PO
-         T5QqkBr8/2qq8+v13aye6woOyWPjfMCubOV2x3mbGA6eVG7NV85X8e8YXBFFE6BqTPGX
-         5WhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696871223; x=1697476023;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tW+ewvN6hJ7uOk+NGT2wDDdLEYtVkyOMF8rZuJ8lphE=;
-        b=e+U1yXOeHLvPytZDF/lrf7QEb7y9lG50DL7cOUenPN/kkXi97uiKY6V1LuDJl7nX2x
-         gCiiBcw8vEzbZLth9yxz1Blte3D0HiiF1LWSDODpNoEQNx88yonb6qErH0ZkBy7L7y51
-         PJhWbMRQ2LIEgns+LTVEu/VKArZOTIDY2fpJbiqRtF1iHz5E21Z58aiQaTWgMWIVwehW
-         usr/n2uKHAPGjYWKdPiD4nv5ptJj8ZmW0SqWPg7fFJYAfKCwvpg0QqdW6AWRfZJ4zmV1
-         u3UMfZkZ+BdeCEdw2sdleMUJUALtrF4e2eyWdlpvlx+cE9MPunKdOT+YG1197kLKQHql
-         Tc0A==
-X-Gm-Message-State: AOJu0Yx/jMAQ6fH38roBV5UlrpSh0y+JoiOcbInwPxEU+HWGHaSbhI5I
-        8a0SFuj0z/dVnHYjaZ3R40NeKw==
-X-Google-Smtp-Source: AGHT+IFrkUoKkOkj2tFzwpCXVCFkSZlmd2GFj41AeaJ4RiJrQ2T+t2wTeaS0ESuErkGBQ0CSn6HSrw==
-X-Received: by 2002:a2e:7310:0:b0:2bc:fd50:573a with SMTP id o16-20020a2e7310000000b002bcfd50573amr13968869ljc.6.1696871222765;
-        Mon, 09 Oct 2023 10:07:02 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
-        by smtp.gmail.com with ESMTPSA id t16-20020a2e9c50000000b002c123b976a5sm2095411ljj.123.2023.10.09.10.07.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 10:07:02 -0700 (PDT)
-Message-ID: <e1f70025-f93d-4d1f-bafa-1e834324ce62@linaro.org>
-Date:   Mon, 9 Oct 2023 20:07:01 +0300
-MIME-Version: 1.0
+        Mon, 9 Oct 2023 13:07:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02549E
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 10:07:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696871244; x=1728407244;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=yiC3drxqQyp9xFjtDj1t024La7gB59DNuBIP3qcq+8k=;
+  b=eZuMb8wujZZl131LexS2wul0WTtAhU2CFgyJ8+beakD9X6lDNxI34+/B
+   kt5WfmWMSr9zLf0it/5CuffCGRiNp65aqSOrxMH/BsR04lbj31LVksqvW
+   YQ1WCXmFXz+12KBsRrJotMX+ud75Q6IdubxAwIFWMW3Nk0X6pyABPdrXF
+   u1JUJ1usTKWJ3tpI78S3S7PwZd3whcugEkPVIeHfB5uistrjLeRXaOeLF
+   YTq+yn51FcY5pPm6I3B7A7TFE3/0HX9VA5pW7bTp0YK+uD5GAJpZLTq64
+   wW6c4SRhFW5Kfqu+M6AfK5Fjvn/C7FYkXsICw0DHnd9zavgcx048htk0e
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="470458257"
+X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
+   d="scan'208";a="470458257"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 10:07:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="756779128"
+X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
+   d="scan'208";a="756779128"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Oct 2023 10:07:07 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Mon, 9 Oct 2023 10:07:06 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Mon, 9 Oct 2023 10:07:06 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Mon, 9 Oct 2023 10:07:06 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mhhU9n35RVUsAU6YpHNZh9kgLOQo1Z2wNSnsPKPdlpiws2sKpXK/LjJkaoWsVwY0+qMNyWtSpw/LhGDp2z1gKzlK1ECycGDrRfboCev51eE0B6j+7HQY3nlqF3FN/vrO676LyFg8uAmybEQbRzP6jpBQ+PuIe/i0NPwFyYvYKxGy2g+MKEKUgz4gqd10MgXw+KwmXmVfv73YJ8sFebUBt7j9I9At0lDIurpewysgA8hTtDW/sTHvQfphjUZMScWqYO4+HnFnAIp8qPD5cIZh9Q5IEoov99ZFlLd1/JIg5orqdlz2VQVBdEHLmu84OhJ+9yYdOHFa9FxAvvhGuvdlUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1qBe5DrSUPb3npFEpOXhed76KiqjfX08ePhDyf4Ym/U=;
+ b=bEj18s+WmOYg0ViSs1RfsM43a/FieQ/pD3HcrIUt/CcdHuGmPVgnI9yntIBauHd+UKahKUnYOxwP0pUDIClUae9024hPbWxesfavf8QPdH96mmnR+I4e+SIneeyJqO2bqniUtl3RqNRMjGswCQkG+o5yvKH27sd3AaZMhtIDCOqA6e8I9zSZO2OpTtr70o+XzB73NX04DUf0kLxEGAl3ypy8dCr5PkLE3tQ0CDeJPndsC8XNdYjc1PFCnxqobi2xq8oTkBLBEzcbPrgRZ//26uGzG6wfLtosY4PJ3DIGZsMv00XaDEE/fr7xyLZq63bbFaJzTChtcwJ5mqIWa++jXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by DM4PR11MB5277.namprd11.prod.outlook.com (2603:10b6:5:388::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Mon, 9 Oct
+ 2023 17:07:05 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::bd70:f215:4a97:c84e]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::bd70:f215:4a97:c84e%6]) with mapi id 15.20.6863.032; Mon, 9 Oct 2023
+ 17:07:04 +0000
+Message-ID: <5589e93d-9a9c-4199-a187-ab60fb127236@intel.com>
+Date:   Mon, 9 Oct 2023 10:07:02 -0700
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 4/5] drm/msm: dpu1: call wb & sspp clk_force_ctrl op
- if split clock control
-Content-Language: en-GB
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20231009-topic-sm8550-graphics-sspp-split-clk-v1-0-806c0dee4e43@linaro.org>
- <20231009-topic-sm8550-graphics-sspp-split-clk-v1-4-806c0dee4e43@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <20231009-topic-sm8550-graphics-sspp-split-clk-v1-4-806c0dee4e43@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH] x86/intel_rdt/cqm: fix kernel-doc warnings
+Content-Language: en-US
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     kernel test robot <lkp@intel.com>,
+        Vikas Shivappa <vikas.shivappa@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>
+References: <20231006235132.16227-1-rdunlap@infradead.org>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <20231006235132.16227-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: MW4PR04CA0249.namprd04.prod.outlook.com
+ (2603:10b6:303:88::14) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|DM4PR11MB5277:EE_
+X-MS-Office365-Filtering-Correlation-Id: 73e1b6a0-0e31-401d-7e08-08dbc8ea2985
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5ykETDcxueU10uS/3GkDozmoqMWdgIF37qrJE1nLbos94dloDmR5Zl0tP5xBdqBagqe+AoZBn5cIgEl0FUE30K+s08j89bhtdPLe+b3MLQXh4VZspFp/ks76RUAFDEdRWOIlsGA0V6DamTYfkWV9vVhMMh1bosHzFV3e7RJXGpcZru0tEX4ZRoA3X4rf6uCj7AghABpGmXmNC/1w9TC2OdG/t2eK0ks6SLQKIe5A5sfAilAgPzBchvE1fEjQf2kzlsdeUajthYPn+CwM9k9HYl2B2fOT54BvqyhS6x1fVciuGXOSG5CX3p5XWpeGRN1m0iD0HABb9DMhFN2iirGat3GY2nq/S6qe0WIikrQGwa83x9HESjA/TNlntWyEbGdyV8Z2TCrHggZOE9asqsK0bKPGFnpcit2Mh9mJ/ggFa26v+rB/E0rfOn+E1wH5FhbJFYyWL7wOLAg1NtOqCDw1qSGAkOt2gwO8lxPfvb1+cIXBTQ5QuuY6l0mvqLOkwKcO1fOZstcqsGULMJOzvVpldziWUSI8aDOZWcYu84f2RPa0CkQx/hkiLbdCM7Tp56wqsULU/3gorC9A3Z1EzI3zXu3Rv463n9+j7gglivunQfdDnokJN8rV4VWkX52Z20ra
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(366004)(346002)(39860400002)(396003)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(2616005)(53546011)(26005)(6512007)(478600001)(8676002)(83380400001)(4326008)(44832011)(2906002)(6506007)(8936002)(54906003)(66476007)(66946007)(5660300002)(6486002)(41300700001)(316002)(66556008)(966005)(82960400001)(38100700002)(36756003)(31696002)(86362001)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eHNLZTlhWFgvVC9mdm5NTzJUbEZaeTF2ZDR4SS96OWo4T3BEMW5EUENUaFYr?=
+ =?utf-8?B?RWl4S3p4K3dZNUxXclM1aGM2RnRXUHg2RnljaXA0UmNJVlY0T0sxSmp2dSt0?=
+ =?utf-8?B?a1UyZFlVZThFbDJsY1pRSjJVV25BYUpKcGRZVnh1Y2pkRTc4aVdEYUtEbGxQ?=
+ =?utf-8?B?NUJ6VDBjanpaaHY0cTB5SVRaaldWSVE1YXBrb2hsTDFLWEJaMk5Ia0owV2d4?=
+ =?utf-8?B?Tndhb2xxcnpXRG5IV25zcGd6R01laGF5OEU4QVZycmEreFA2NmxncnpHUFVz?=
+ =?utf-8?B?ZlVLTnRtazR4UTg4SlBnZXJ0UXNCY3E0aWswcnNJM0swUkF2OGJyQTl5dS91?=
+ =?utf-8?B?cjRnTFU5UCtCRTNCUXFWSlNycHZFUk1DaGt6Y09ta29PQmoxL2xSejBmSGF5?=
+ =?utf-8?B?cnREKy9BdFFkUnBWcXNucGtDd1dsaFR5MWFDQ0hhcVZCRC9qTFV5L1JPczA4?=
+ =?utf-8?B?Qy9vRUlJaTAyNmV5YlVHRnJ5U0JhL05XSW1xaU1MNnRvSytSZUx1dFdCZEpC?=
+ =?utf-8?B?R1p6bTdLOXlTUlhaZFY0YUJnREtUTkllanF3b3dGSjBmd3ErR3E1SWhtdjBm?=
+ =?utf-8?B?ZUFlUkliVUdBRUgxNnp0TGQzZXlrMXdCVlNKK0t4TU5vbDRyL1pYSml5SzBV?=
+ =?utf-8?B?TFhIOXBBQmhzemFFM2N3ZHp6NVFYcU1OWTQrQXJsTmEwVVRpeFN0L2tFNWF6?=
+ =?utf-8?B?T3BwOGR5WFUxOVFNdWFQOGFxaCtUVEdzbVo5ekRvNzRGSEdSVnJlUGdFOEd2?=
+ =?utf-8?B?WWpzRjV6NlVsTThodUsyaTcxLzk2VzJGTFZ6TkIvVUdFSWNPak81QUVCUi9Y?=
+ =?utf-8?B?UDBya1l5SlBsZTQ4STRoN2dnZGE3T1NBdXhhZ3NEWFpQQm10bkpUdVBVOU1T?=
+ =?utf-8?B?eDdsMWREYlJqRGNiWThnTm1RTUR1L0dyMmZwbHEzS3poNUtMSWhZU0sxdnkx?=
+ =?utf-8?B?SnFpSE9ubTNIYTVWM2lXOCtTRThNbEJwS05EVklsTDVrcGFWRlBRY0NxZVN4?=
+ =?utf-8?B?aFNOcElvU1lkWGo1VjQyelBWdEFJZHo2NWZ3cFRwVU5lSWNIWmVjanZ2d2t0?=
+ =?utf-8?B?ekR5U2x3eXhaZklBalNIMDk4VDkwdVpLYWFDcmVKaFAzNm15L3dsQXhPTFJS?=
+ =?utf-8?B?eVoyY2NpVFV6NXZOVDZRWXN3RGRWOTAwVkxZTDZ2aWVGZ2c3UVVFZEJVSngy?=
+ =?utf-8?B?VHNkYy9ENEF3ZzlNTlZxQXZZUDVqUkRQanR5NEFtMXNTdkw5S2M4Tm8wVUZL?=
+ =?utf-8?B?amkxVHhOdlhqakQ0MjdVeEhnbUN6NGsvUjVUdVJ4b3dKVnErdXl1S3FVbzRR?=
+ =?utf-8?B?OGc3Rng1VXVYUkZtUXB2MXl5V0syZnRtYXdDU0p5UEprVFI4TlV4dE0ybDZL?=
+ =?utf-8?B?LzEzSHplaGR4TTBqZE9XbG1NUVVIYzZwTytMRE9nVm1kUEtoUncvcTMxMmd0?=
+ =?utf-8?B?ZU5IRVI5eXY2SWpRMGF0aGx3OTJkOTc5b2JFUGZackhMVlc1NDF0cW9LdStT?=
+ =?utf-8?B?QUdKN3J0c2c2bFUzeC9NSGtFOFBEZDR1K0VsK0FLeVVXWi9oN0NBN2lTdzZY?=
+ =?utf-8?B?VHpSLzRNajBjNjNMeE1HaThiNzBaanJ4cWYyMTcxTzl3RFN1RW11UE1YSzNn?=
+ =?utf-8?B?cStEOGliZEFMakZ2dnRpSjYwZ0ZLZ0FNQXZwYWcrNzdBNGE5K0RzMmFDTzU2?=
+ =?utf-8?B?Ry8veTVETzJyUHFqcFNTWi9pQ2FlSjFKMG9JTHFKMUtKTC94UjV1ZDFueHJi?=
+ =?utf-8?B?WDhDcjF4U3RnVWVwMXZXbVJiSXJlcDdGTDhiNjYyV3ovS3pqMkt3OHhMdFlE?=
+ =?utf-8?B?OUM2QzJKZUs1aWwxWmEvcWVwK25uRm81TGlWcnQxV21WYW5tM0lxVVhnNnBw?=
+ =?utf-8?B?WjVRVTh6cUs5WW0vVGRwanFBNTRVbEdRVWxRNkgwR1VVc3ZFeHJRN2dkZlFp?=
+ =?utf-8?B?Z0NQemJhb0x5MnNzNEk3NnRpT3FwdGE4NzFyMkJlTXNDMlFocGxlempOeGRG?=
+ =?utf-8?B?a0RhN0hnS3N5YUdjMit0YmtYTzI3V3QwYUxreHdNanljVkVQMWRpRkk2Vkht?=
+ =?utf-8?B?Q2VqM2oweVpwUWFTcGxjK05qTUU4S1Z5dEJxczlWTzl3VFdCZ2JZRGtmbHln?=
+ =?utf-8?B?UFJvekpoQTFqellZSkZXME85N3d2T1E1WTlpSkhOM1dGbnFNaUFZS01nLysr?=
+ =?utf-8?B?dXc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 73e1b6a0-0e31-401d-7e08-08dbc8ea2985
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2023 17:07:04.9052
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Li/OR9yy6I5HGADvfeeN0+6cgQOqu8FqmWAo9tHASkfA5XNVLVrLjDkVdxArW+F3YyKds9er/kEbr9Kng9UnzWL9MFVFKx47wPyRY9HOwaI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5277
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/10/2023 19:36, Neil Armstrong wrote:
-> Now clk_ctrl IDs can be optional and the clk_ctrl_reg can be specified
-> on the SSPP & WB caps directly, pass the SSPP & WB hw struct to the
-> qos & limit params then call the clk_force_ctrl() op accordingly.
+Hi Randy,
+
+Thank you very much for noticing the bug report and taking the time
+to fix it.
+
+To match the custom of this area, could you please modify
+the subject to be:
+	x86/resctrl: Fix kernel-doc warnings
+
+On 10/6/2023 4:51 PM, Randy Dunlap wrote:
+> The kernel test robot reported kernel-doc warnings here:
 > 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> monitor.c:34: warning: Cannot understand  * @rmid_free_lru    A least recently used list of free RMIDs
+>  on line 34 - I thought it was a doc line
+> monitor.c:41: warning: Cannot understand  * @rmid_limbo_count     count of currently unused but (potentially)
+>  on line 41 - I thought it was a doc line
+> monitor.c:50: warning: Cannot understand  * @rmid_entry - The entry in the limbo and free lists.
+>  on line 50 - I thought it was a doc line
+> 
+> We don't have a syntax for documenting individual data items via
+> kernel-doc, so remove the "/**" kernel-doc markers and add a hyphen
+> for consistency.
+> 
+> Fixes: 6a445edce657 ("x86/intel_rdt/cqm: Add RDT monitoring initialization")
+> Fixes: 24247aeeabe9 ("x86/intel_rdt/cqm: Improve limbo list processing")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+
+Could you please swap the above two tags to follow the tag ordering
+custom followed by the tip maintainers? For reference you can find the
+details in section "Ordering of commit tags" of 
+Documentation/process/maintainer-tip.rst
+
+Also, below the "Link:" follows the "Cc:".
+
+> Link: https://lore.kernel.org/all/202310062356.lX3xpLP9-lkp@intel.com/
+> Cc: Vikas Shivappa <vikas.shivappa@linux.intel.com>
+> Cc: Tony Luck <tony.luck@intel.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Fenghua Yu <fenghua.yu@intel.com>
+> Cc: Reinette Chatre <reinette.chatre@intel.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: x86@kernel.org
 > ---
->   .../gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c    |  4 +--
->   drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c          |  9 +++---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c           | 37 +++++++++++++++-------
->   drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.h           | 12 ++++---
->   4 files changed, 40 insertions(+), 22 deletions(-)
+> Not using Closes: since this patch only addresses some of the issues
+>   reported.
+
+I am aware of these issues. The person working on this previously
+seems to have moved on. I'll share this work with folks looking for
+this type of opportunity and ensure that it is completed this time.
+ 
+>  arch/x86/kernel/cpu/resctrl/monitor.c |   10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
-> index 78037a697633..e4dfe0be7207 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
-> @@ -45,6 +45,7 @@ static void dpu_encoder_phys_wb_set_ot_limit(
->   	struct dpu_vbif_set_ot_params ot_params;
->   
->   	memset(&ot_params, 0, sizeof(ot_params));
-> +	ot_params.wb = hw_wb;
->   	ot_params.xin_id = hw_wb->caps->xin_id;
->   	ot_params.num = hw_wb->idx - WB_0;
->   	ot_params.width = phys_enc->cached_mode.hdisplay;
-> @@ -52,7 +53,6 @@ static void dpu_encoder_phys_wb_set_ot_limit(
->   	ot_params.is_wfd = true;
->   	ot_params.frame_rate = drm_mode_vrefresh(&phys_enc->cached_mode);
->   	ot_params.vbif_idx = hw_wb->caps->vbif_idx;
-> -	ot_params.clk_ctrl = hw_wb->caps->clk_ctrl;
->   	ot_params.rd = false;
->   
->   	dpu_vbif_set_ot_limit(phys_enc->dpu_kms, &ot_params);
-> @@ -81,9 +81,9 @@ static void dpu_encoder_phys_wb_set_qos_remap(
->   	hw_wb = phys_enc->hw_wb;
->   
->   	memset(&qos_params, 0, sizeof(qos_params));
-> +	qos_params.wb = hw_wb;
->   	qos_params.vbif_idx = hw_wb->caps->vbif_idx;
->   	qos_params.xin_id = hw_wb->caps->xin_id;
-> -	qos_params.clk_ctrl = hw_wb->caps->clk_ctrl;
->   	qos_params.num = hw_wb->idx - WB_0;
->   	qos_params.is_rt = false;
->   
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-> index c2aaaded07ed..b0b662068377 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-> @@ -350,6 +350,7 @@ static void _dpu_plane_set_ot_limit(struct drm_plane *plane,
->   	struct dpu_kms *dpu_kms = _dpu_plane_get_kms(plane);
->   
->   	memset(&ot_params, 0, sizeof(ot_params));
-> +	ot_params.sspp = pipe->sspp;
->   	ot_params.xin_id = pipe->sspp->cap->xin_id;
->   	ot_params.num = pipe->sspp->idx - SSPP_NONE;
->   	ot_params.width = drm_rect_width(&pipe_cfg->src_rect);
-> @@ -357,7 +358,6 @@ static void _dpu_plane_set_ot_limit(struct drm_plane *plane,
->   	ot_params.is_wfd = !pdpu->is_rt_pipe;
->   	ot_params.frame_rate = frame_rate;
->   	ot_params.vbif_idx = VBIF_RT;
-> -	ot_params.clk_ctrl = pipe->sspp->cap->clk_ctrl;
->   	ot_params.rd = true;
->   
->   	dpu_vbif_set_ot_limit(dpu_kms, &ot_params);
-> @@ -377,16 +377,15 @@ static void _dpu_plane_set_qos_remap(struct drm_plane *plane,
->   
->   	memset(&qos_params, 0, sizeof(qos_params));
->   	qos_params.vbif_idx = VBIF_RT;
-> -	qos_params.clk_ctrl = pipe->sspp->cap->clk_ctrl;
-> +	qos_params.sspp = pipe->sspp;
->   	qos_params.xin_id = pipe->sspp->cap->xin_id;
->   	qos_params.num = pipe->sspp->idx - SSPP_VIG0;
->   	qos_params.is_rt = pdpu->is_rt_pipe;
->   
-> -	DPU_DEBUG_PLANE(pdpu, "pipe:%d vbif:%d xin:%d rt:%d, clk_ctrl:%d\n",
-> +	DPU_DEBUG_PLANE(pdpu, "pipe:%d vbif:%d xin:%d rt:%d\n",
->   			qos_params.num,
->   			qos_params.vbif_idx,
-> -			qos_params.xin_id, qos_params.is_rt,
-> -			qos_params.clk_ctrl);
-> +			qos_params.xin_id, qos_params.is_rt);
->   
->   	dpu_vbif_set_qos_remap(dpu_kms, &qos_params);
->   }
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
-> index 2ae5cba1848b..a79559084a91 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c
-> @@ -158,11 +158,19 @@ static u32 _dpu_vbif_get_ot_limit(struct dpu_hw_vbif *vbif,
->   	return ot_lim;
->   }
->   
-> -static bool dpu_vbif_setup_clk_force_ctrl(struct dpu_hw_mdp *mdp,
-> -					  unsigned int clk_ctrl,
-> +static bool dpu_vbif_setup_clk_force_ctrl(struct dpu_hw_sspp *sspp,
-> +					  struct dpu_hw_wb *wb,
-> +					  struct dpu_hw_mdp *mdp,
->   					  bool enable)
->   {
-> -	return mdp->ops.setup_clk_force_ctrl(mdp, clk_ctrl, enable);
-> +	if (sspp && sspp->cap->clk_ctrl_reg)
-> +		return sspp->ops.setup_clk_force_ctrl(sspp, enable);
-> +	else if (wb && wb->caps->clk_ctrl_reg)
-> +		return wb->ops.setup_clk_force_ctrl(wb, enable);
-> +	else
+> diff -- a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
+> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+> @@ -30,15 +30,15 @@ struct rmid_entry {
+>  	struct list_head		list;
+>  };
+>  
+> -/**
+> - * @rmid_free_lru    A least recently used list of free RMIDs
+> +/*
+> + * @rmid_free_lru - A least recently used list of free RMIDs
+>   *     These RMIDs are guaranteed to have an occupancy less than the
+>   *     threshold occupancy
+>   */
+>  static LIST_HEAD(rmid_free_lru);
+>  
+> -/**
+> - * @rmid_limbo_count     count of currently unused but (potentially)
+> +/*
+> + * @rmid_limbo_count - count of currently unused but (potentially)
+>   *     dirty RMIDs.
+>   *     This counts RMIDs that no one is currently using but that
+>   *     may have a occupancy value > resctrl_rmid_realloc_threshold. User can
+> @@ -46,7 +46,7 @@ static LIST_HEAD(rmid_free_lru);
+>   */
+>  static unsigned int rmid_limbo_count;
+>  
+> -/**
+> +/*
+>   * @rmid_entry - The entry in the limbo and free lists.
+>   */
+>  static struct rmid_entry	*rmid_ptrs;
 
-This is what I wanted to avoid.
+Thank you very much.
 
-If we move the caller function to the sspp / WB, we will not need this 
-kind of wrapper.
+I just have the comments regarding this area's customs. With that
+addressed:
 
-> +		return mdp->ops.setup_clk_force_ctrl(mdp,
-> +				sspp ? sspp->cap->clk_ctrl : wb->caps->clk_ctrl,
-> +				enable);
->   }
->   
->   /**
-> @@ -190,9 +198,13 @@ void dpu_vbif_set_ot_limit(struct dpu_kms *dpu_kms,
->   		return;
->   	}
->   
-> -	if (!mdp->ops.setup_clk_force_ctrl ||
-> -			!vbif->ops.set_limit_conf ||
-> -			!vbif->ops.set_halt_ctrl)
-> +	if ((!params->sspp && !params->wb) ||
-> +	    (params->sspp && !params->sspp->ops.setup_clk_force_ctrl) ||
-> +	    (params->wb && !params->wb->ops.setup_clk_force_ctrl) ||
-> +	    !mdp->ops.setup_clk_force_ctrl)
-> +		return;
-> +
-> +	if (!vbif->ops.set_limit_conf || !vbif->ops.set_halt_ctrl)
->   		return;
->   
->   	/* set write_gather_en for all write clients */
-> @@ -207,7 +219,7 @@ void dpu_vbif_set_ot_limit(struct dpu_kms *dpu_kms,
->   	trace_dpu_perf_set_ot(params->num, params->xin_id, ot_lim,
->   		params->vbif_idx);
->   
-> -	forced_on = dpu_vbif_setup_clk_force_ctrl(mdp, params->clk_ctrl, true);
-> +	forced_on = dpu_vbif_setup_clk_force_ctrl(params->sspp, params->wb, mdp, true);
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
 
-I'd suggest removing the setup_clk_force_ctrl from 
-dpu_vbif_set_ot_limit() and dpu_vbif_set_qos_remap(). Instead make 
-dpu_plane / dpu_encoder_phys_wb call into dpu_hw_sspp / dpu_hw_wb, which 
-will enable the clock, call dpu_vbif then disable the clock.
-
-In my opinion this is simpler than the condition in the previous chunk.
-
->   
->   	vbif->ops.set_limit_conf(vbif, params->xin_id, params->rd, ot_lim);
->   
-> @@ -220,7 +232,7 @@ void dpu_vbif_set_ot_limit(struct dpu_kms *dpu_kms,
->   	vbif->ops.set_halt_ctrl(vbif, params->xin_id, false);
->   
->   	if (forced_on)
-> -		dpu_vbif_setup_clk_force_ctrl(mdp,  params->clk_ctrl, false);
-> +		dpu_vbif_setup_clk_force_ctrl(params->sspp, params->wb, mdp, false);
->   }
->   
->   void dpu_vbif_set_qos_remap(struct dpu_kms *dpu_kms,
-> @@ -245,7 +257,10 @@ void dpu_vbif_set_qos_remap(struct dpu_kms *dpu_kms,
->   		return;
->   	}
->   
-> -	if (!vbif->ops.set_qos_remap || !mdp->ops.setup_clk_force_ctrl) {
-> +	if ((!params->sspp && !params->wb) ||
-> +	    (params->sspp && !params->sspp->ops.setup_clk_force_ctrl) ||
-> +	    (params->wb && !params->wb->ops.setup_clk_force_ctrl) ||
-> +	    !mdp->ops.setup_clk_force_ctrl || !vbif->ops.set_qos_remap) {
->   		DRM_DEBUG_ATOMIC("qos remap not supported\n");
->   		return;
->   	}
-> @@ -258,7 +273,7 @@ void dpu_vbif_set_qos_remap(struct dpu_kms *dpu_kms,
->   		return;
->   	}
->   
-> -	forced_on = dpu_vbif_setup_clk_force_ctrl(mdp, params->clk_ctrl, true);
-> +	forced_on = dpu_vbif_setup_clk_force_ctrl(params->sspp, params->wb, mdp, true);
->   
->   	for (i = 0; i < qos_tbl->npriority_lvl; i++) {
->   		DRM_DEBUG_ATOMIC("%s xin:%d lvl:%d/%d\n",
-> @@ -269,7 +284,7 @@ void dpu_vbif_set_qos_remap(struct dpu_kms *dpu_kms,
->   	}
->   
->   	if (forced_on)
-> -		dpu_vbif_setup_clk_force_ctrl(mdp, params->clk_ctrl, false);
-> +		dpu_vbif_setup_clk_force_ctrl(params->sspp, params->wb, mdp, false);
->   }
->   
->   void dpu_vbif_clear_errors(struct dpu_kms *dpu_kms)
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.h
-> index ab490177d886..a4fe76e390d9 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.h
-> @@ -7,7 +7,12 @@
->   
->   #include "dpu_kms.h"
->   
-> +struct dpu_hw_sspp;
-> +struct dpu_hw_wb;
-> +
->   struct dpu_vbif_set_ot_params {
-> +	struct dpu_hw_sspp *sspp;
-> +	struct dpu_hw_wb *wb;
->   	u32 xin_id;
->   	u32 num;
->   	u32 width;
-> @@ -16,28 +21,27 @@ struct dpu_vbif_set_ot_params {
->   	bool rd;
->   	bool is_wfd;
->   	u32 vbif_idx;
-> -	u32 clk_ctrl;
->   };
->   
->   struct dpu_vbif_set_memtype_params {
->   	u32 xin_id;
->   	u32 vbif_idx;
-> -	u32 clk_ctrl;
->   	bool is_cacheable;
->   };
->   
->   /**
->    * struct dpu_vbif_set_qos_params - QoS remapper parameter
-> + * @sspp: backing SSPP
->    * @vbif_idx: vbif identifier
->    * @xin_id: client interface identifier
-> - * @clk_ctrl: clock control identifier of the xin
->    * @num: pipe identifier (debug only)
->    * @is_rt: true if pipe is used in real-time use case
->    */
->   struct dpu_vbif_set_qos_params {
-> +	struct dpu_hw_sspp *sspp;
-> +	struct dpu_hw_wb *wb;
->   	u32 vbif_idx;
->   	u32 xin_id;
-> -	u32 clk_ctrl;
->   	u32 num;
->   	bool is_rt;
->   };
-> 
-
--- 
-With best wishes
-Dmitry
-
+Reinette
