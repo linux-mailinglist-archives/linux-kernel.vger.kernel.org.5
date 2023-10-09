@@ -2,178 +2,605 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7837BE11F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E5B47BE117
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 15:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377433AbjJINrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 09:47:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40258 "EHLO
+        id S1377420AbjJINrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 09:47:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377451AbjJINrH (ORCPT
+        with ESMTP id S1377478AbjJINqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 09:47:07 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC60DE;
-        Mon,  9 Oct 2023 06:47:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1696859220; x=1728395220;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SlvDLYB0oglmklYG+xENDJiKBJ2G7iU9PK0HzxKFLAw=;
-  b=CZzsiW7rgBCMq9saiq9m6SCD0Ens1qfBSk1wlS308pWrk4dJbufNJSP2
-   pjvZ76qjC3T5hU11n0fe/KYxNokoaDf6jto2vC6v1O3VcZkAVCa+nHpEf
-   bR82+IjRd7nqmpF54C0n0PijpCKEDNV+dvLWzMpThQFi60haHmegwYf98
-   u0XATcUC01pqCIL31nZ+CwO4LO49s/cUxWKZv2Pv16Tra531fDfkvAAfT
-   NDQU3gpgzKmY2Lsb6f79ERCGYMFgq0+XjmhRqOtdnd8VkOT0SD5r6n2Q+
-   NDsY9hkyHypBbx2fS4dZUnYDTFxlsnoxFuKVp/PYJQSfcsPD+DrnXmyRl
-   A==;
-X-CSE-ConnectionGUID: 8CTYty34Syqm9xqn5/aKfw==
-X-CSE-MsgGUID: IysqB0iZTpy7oqmZ6t34yA==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="asc'?scan'208";a="9487183"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Oct 2023 06:46:59 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Mon, 9 Oct 2023 06:46:59 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Mon, 9 Oct 2023 06:46:55 -0700
-Date:   Mon, 9 Oct 2023 14:46:35 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Minda Chen <minda.chen@starfivetech.com>
-CC:     Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-Subject: Re: [PATCH v7 12/19] PCI: microchip: Add INTx and MSI event num to
- struct plda_event
-Message-ID: <20231009-remix-commodore-b034a3b71861@wendy>
-References: <20230927100802.46620-1-minda.chen@starfivetech.com>
- <20230927100802.46620-13-minda.chen@starfivetech.com>
+        Mon, 9 Oct 2023 09:46:50 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE4FA3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 06:46:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D17DFC433C8;
+        Mon,  9 Oct 2023 13:46:40 +0000 (UTC)
+Date:   Mon, 9 Oct 2023 09:47:59 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ajay Kaher <akaher@vmware.com>, chinglinyu@google.com,
+        lkp@intel.com, namit@vmware.com, oe-lkp@lists.linux.dev,
+        amakhalov@vmware.com, er.ajay.kaher@gmail.com,
+        srivatsa@csail.mit.edu, tkundu@vmware.com, vsirnapalli@vmware.com
+Subject: Re: [PATCH v4] eventfs: Remove eventfs_file and just use
+ eventfs_inode
+Message-ID: <20231009094759.054616e3@gandalf.local.home>
+In-Reply-To: <20231007194445.444c1447fc694cefd31bfecd@kernel.org>
+References: <20231003184059.4924468e@gandalf.local.home>
+        <20231007194445.444c1447fc694cefd31bfecd@kernel.org>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="wD+DKiC4dNhhAd6L"
-Content-Disposition: inline
-In-Reply-To: <20230927100802.46620-13-minda.chen@starfivetech.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---wD+DKiC4dNhhAd6L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Sat, 7 Oct 2023 19:44:45 +0900
+Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 
-Hey,
+> [...]
+> > @@ -118,6 +72,7 @@ static struct dentry *create_file(const char *name, umode_t mode,
+> >  	if (WARN_ON_ONCE(!S_ISREG(mode)))
+> >  		return NULL;
+> >  
+> > +	WARN_ON_ONCE(!parent);  
+> 
+> Nit: This looks a wrong case and should not create a file under root directory.
+>      So it should return NULL. (but it shouldn't happen.)
 
-On Wed, Sep 27, 2023 at 06:07:55PM +0800, Minda Chen wrote:
-> The INTx and MSI interrupt event num is different
-> in Microchip and StarFive platform.
+Yes it should never happen (hence the warn on), but if it does happen, it
+shouldn't cause any real harm, so I decided not to return early.
 
-BTW, please use the full 72 columns, not just 50, for your commit
-messages.
-
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
-Thanks,
-Conor.
+> 
+> >  	dentry = eventfs_start_creating(name, parent);
+> >  
+> >  	if (IS_ERR(dentry))  
+> 
+>
 
 
->=20
-> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
-> ---
->  drivers/pci/controller/plda/pcie-microchip-host.c | 6 ++++--
->  drivers/pci/controller/plda/pcie-plda.h           | 2 ++
->  2 files changed, 6 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/=
-pci/controller/plda/pcie-microchip-host.c
-> index e3c7d5e66150..fb09b6c34e01 100644
-> --- a/drivers/pci/controller/plda/pcie-microchip-host.c
-> +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
-> @@ -807,6 +807,8 @@ static int mc_request_event_irq(struct plda_pcie_rp *=
-plda, int event_irq,
-> =20
->  static const struct plda_event mc_event =3D {
->  	.request_event_irq      =3D mc_request_event_irq,
-> +	.intx_event             =3D EVENT_LOCAL_PM_MSI_INT_INTX,
-> +	.msi_event              =3D EVENT_LOCAL_PM_MSI_INT_MSI,
->  };
-> =20
->  static int plda_pcie_init_irq_domains(struct plda_pcie_rp *port)
-> @@ -947,7 +949,7 @@ static int plda_init_interrupts(struct platform_devic=
-e *pdev,
->  	}
-> =20
->  	intx_irq =3D irq_create_mapping(port->event_domain,
-> -				      EVENT_LOCAL_PM_MSI_INT_INTX);
-> +				      event->intx_event);
->  	if (!intx_irq) {
->  		dev_err(dev, "failed to map INTx interrupt\n");
->  		return -ENXIO;
-> @@ -957,7 +959,7 @@ static int plda_init_interrupts(struct platform_devic=
-e *pdev,
->  	irq_set_chained_handler_and_data(intx_irq, plda_handle_intx, port);
-> =20
->  	msi_irq =3D irq_create_mapping(port->event_domain,
-> -				     EVENT_LOCAL_PM_MSI_INT_MSI);
-> +				     event->msi_event);
->  	if (!msi_irq)
->  		return -ENXIO;
-> =20
-> diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/contro=
-ller/plda/pcie-plda.h
-> index 4e0712c9365e..af5e69718342 100644
-> --- a/drivers/pci/controller/plda/pcie-plda.h
-> +++ b/drivers/pci/controller/plda/pcie-plda.h
-> @@ -156,6 +156,8 @@ struct plda_pcie_rp {
->  struct plda_event {
->  	int (*request_event_irq)(struct plda_pcie_rp *pcie,
->  				 int event_irq, int event);
-> +	int intx_event;
-> +	int msi_event;
->  };
-> =20
->  irqreturn_t plda_event_handler(int irq, void *dev_id);
-> --=20
-> 2.17.1
->=20
+> > +static struct dentry *
+> > +create_file_dentry(struct eventfs_inode *ei, struct dentry **e_dentry,
+> > +		   struct dentry *parent, const char *name, umode_t mode, void *data,
+> > +		   const struct file_operations *fops, bool lookup)
+> > +{
+> > +	struct dentry *dentry;
+> > +	bool invalidate = false;
+> > +
+> > +	mutex_lock(&eventfs_mutex);
+> > +	/* If the e_dentry already has a dentry, use it */
+> > +	if (*e_dentry) {
+> > +		/* lookup does not need to up the ref count */
+> > +		if (!lookup)
+> > +			dget(*e_dentry);
+> > +		mutex_unlock(&eventfs_mutex);
+> > +		return *e_dentry;
+> > +	}
+> > +	mutex_unlock(&eventfs_mutex);
+> > +
+> > +	/* The lookup already has the parent->d_inode locked */
+> > +	if (!lookup)
+> > +		inode_lock(parent->d_inode);
+> > +
+> > +	dentry = create_file(name, mode, parent, data, fops);
+> > +
+> > +	if (!lookup)
+> > +		inode_unlock(parent->d_inode);
+> > +
+> > +	mutex_lock(&eventfs_mutex);
+> > +
+> > +	if (IS_ERR_OR_NULL(dentry)) {
+> > +		/*
+> > +		 * When the mutex was released, something else could have
+> > +		 * created the dentry for this e_dentry. In which case
+> > +		 * use that one.
+> > +		 *
+> > +		 * Note, with the mutex held, the e_dentry cannot have content
+> > +		 * and the ei->is_freed be true at the same time.
+> > +		 */
+> > +		WARN_ON_ONCE(ei->is_freed);
+> > +		dentry = *e_dentry;
+> > +		/* The lookup does not need to up the dentry refcount */
+> > +		if (dentry && !lookup)
+> > +			dget(dentry);
+> > +		mutex_unlock(&eventfs_mutex);
+> > +		return dentry;
+> > +	}
+> > +
+> > +	if (!*e_dentry && !ei->is_freed) {
+> > +		*e_dentry = dentry;
+> > +		dentry->d_fsdata = ei;  
+> 
+> Nit: If we use LSB for existing flag, this should be checked. e.g. WARN_ON_ONCE(ei & 1).
 
---wD+DKiC4dNhhAd6L
-Content-Type: application/pgp-signature; name="signature.asc"
+But ei->is_freed is set before we set that LSB. Why should we check it here
+if we already checked ei->is_freed?
 
------BEGIN PGP SIGNATURE-----
+> 
+> 
+> > +	} else {
+> > +		/*
+> > +		 * Should never happen unless we get here due to being freed.
+> > +		 * Otherwise it means two dentries exist with the same name.
+> > +		 */
+> > +		WARN_ON_ONCE(!ei->is_freed);
+> > +		invalidate = true;
+> > +	}
+> > +	mutex_unlock(&eventfs_mutex);
+> > +
+> > +	if (invalidate)
+> > +		d_invalidate(dentry);
+> > +
+> > +	if (lookup || invalidate)
+> > +		dput(dentry);
+> > +
+> > +	return invalidate ? NULL : dentry;
+> > +}
+> > +
+> >  /**
+> >   * eventfs_post_create_dir - post create dir routine
+> > - * @ef: eventfs_file of recently created dir
+> > + * @ei: eventfs_inode of recently created dir
+> >   *
+> >   * Map the meta-data of files within an eventfs dir to their parent dentry
+> >   */
+> > -static void eventfs_post_create_dir(struct eventfs_file *ef)
+> > +static void eventfs_post_create_dir(struct eventfs_inode *ei)
+> >  {
+> > -	struct eventfs_file *ef_child;
+> > +	struct eventfs_inode *ei_child;
+> >  	struct tracefs_inode *ti;
+> >  
+> >  	/* srcu lock already held */
+> >  	/* fill parent-child relation */
+> > -	list_for_each_entry_srcu(ef_child, &ef->ei->e_top_files, list,
+> > +	list_for_each_entry_srcu(ei_child, &ei->children, list,
+> >  				 srcu_read_lock_held(&eventfs_srcu)) {
+> > -		ef_child->d_parent = ef->dentry;
+> > +		ei_child->d_parent = ei->dentry;
+> >  	}
+> >  
+> > -	ti = get_tracefs(ef->dentry->d_inode);
+> > -	ti->private = ef->ei;
+> > +	ti = get_tracefs(ei->dentry->d_inode);
+> > +	ti->private = ei;
+> >  }
+> >  
+> >  /**
+> > - * create_dentry - helper function to create dentry
+> > - * @ef: eventfs_file of file or directory to create
+> > - * @parent: parent dentry
+> > - * @lookup: true if called from lookup routine
+> > + * create_dir_dentry - Create a directory dentry for the eventfs_inode
+> > + * @ei: The eventfs_inode to create the directory for
+> > + * @parent: The dentry of the parent of this directory
+> > + * @lookup: True if this is called by the lookup code
+> >   *
+> > - * Used to create a dentry for file/dir, executes post dentry creation routine
+> > + * This creates and attaches a directory dentry to the eventfs_inode @ei.
+> >   */
+> >  static struct dentry *
+> > -create_dentry(struct eventfs_file *ef, struct dentry *parent, bool lookup)
+> > +create_dir_dentry(struct eventfs_inode *ei, struct dentry *parent, bool lookup)
+> >  {
+> >  	bool invalidate = false;
+> > -	struct dentry *dentry;
+> > +	struct dentry *dentry = NULL;
+> >  
+> >  	mutex_lock(&eventfs_mutex);
+> > -	if (ef->is_freed) {
+> > -		mutex_unlock(&eventfs_mutex);
+> > -		return NULL;
+> > -	}
+> > -	if (ef->dentry) {
+> > -		dentry = ef->dentry;
+> > -		/* On dir open, up the ref count */
+> > +	if (ei->dentry) {
+> > +		/* If the dentry already has a dentry, use it */
+> > +		dentry = ei->dentry;
+> > +		/* lookup does not need to up the ref count */
+> >  		if (!lookup)
+> >  			dget(dentry);
+> >  		mutex_unlock(&eventfs_mutex);
+> > @@ -302,42 +343,44 @@ create_dentry(struct eventfs_file *ef, struct dentry *parent, bool lookup)
+> >  	}
+> >  	mutex_unlock(&eventfs_mutex);
+> >  
+> > +	/* The lookup already has the parent->d_inode locked */
+> >  	if (!lookup)
+> >  		inode_lock(parent->d_inode);
+> >  
+> > -	if (ef->ei)
+> > -		dentry = create_dir(ef->name, parent, ef->data);
+> > -	else
+> > -		dentry = create_file(ef->name, ef->mode, parent,
+> > -				     ef->data, ef->fop);
+> > +	dentry = create_dir(ei->name, parent);
+> >  
+> >  	if (!lookup)
+> >  		inode_unlock(parent->d_inode);
+> >  
+> >  	mutex_lock(&eventfs_mutex);
+> > -	if (IS_ERR_OR_NULL(dentry)) {
+> > -		/* If the ef was already updated get it */
+> > -		dentry = ef->dentry;
+> > +
+> > +	if (IS_ERR_OR_NULL(dentry) && !ei->is_freed) {
+> > +		/*
+> > +		 * When the mutex was released, something else could have
+> > +		 * created the dentry for this e_dentry. In which case
+> > +		 * use that one.
+> > +		 *
+> > +		 * Note, with the mutex held, the e_dentry cannot have content
+> > +		 * and the ei->is_freed be true at the same time.
+> > +		 */
+> > +		dentry = ei->dentry;
+> >  		if (dentry && !lookup)
+> >  			dget(dentry);
+> >  		mutex_unlock(&eventfs_mutex);
+> >  		return dentry;
+> >  	}
+> >  
+> > -	if (!ef->dentry && !ef->is_freed) {
+> > -		ef->dentry = dentry;
+> > -		if (ef->ei)
+> > -			eventfs_post_create_dir(ef);
+> > -		dentry->d_fsdata = ef;
+> > +	if (!ei->dentry && !ei->is_freed) {
+> > +		ei->dentry = dentry;
+> > +		eventfs_post_create_dir(ei);
+> > +		dentry->d_fsdata = ei;  
+> 
+> Ditto.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSQEOwAKCRB4tDGHoIJi
-0vf7AP0f+KHqn88qjg0XQA9OArkRPsMZ5RNRAOJQ8uJiiVp75wEArXl7IgtlC7l9
-Voc6hFgZ+1ST01jjkJ5eKHnkn3g4rgw=
-=13zv
------END PGP SIGNATURE-----
+And again, the LSB is set after ei->is_freed is set.
 
---wD+DKiC4dNhhAd6L--
+> 
+> >  	} else {
+> > -		/* A race here, should try again (unless freed) */
+> > -		invalidate = true;
+> > -
+> >  		/*
+> >  		 * Should never happen unless we get here due to being freed.
+> >  		 * Otherwise it means two dentries exist with the same name.
+> >  		 */
+> > -		WARN_ON_ONCE(!ef->is_freed);
+> > +		WARN_ON_ONCE(!ei->is_freed);
+> > +		invalidate = true;
+> >  	}
+> >  	mutex_unlock(&eventfs_mutex);
+> >  	if (invalidate)
+> > @@ -349,50 +392,82 @@ create_dentry(struct eventfs_file *ef, struct dentry *parent, bool lookup)
+> >  	return invalidate ? NULL : dentry;
+> >  }
+> >  
+> > -static bool match_event_file(struct eventfs_file *ef, const char *name)
+> > -{
+> > -	bool ret;
+> > -
+> > -	mutex_lock(&eventfs_mutex);
+> > -	ret = !ef->is_freed && strcmp(ef->name, name) == 0;
+> > -	mutex_unlock(&eventfs_mutex);
+> > -
+> > -	return ret;
+> > -}
+> > -
+> >  /**
+> >   * eventfs_root_lookup - lookup routine to create file/dir
+> >   * @dir: in which a lookup is being done
+> >   * @dentry: file/dir dentry
+> > - * @flags: to pass as flags parameter to simple lookup
+> > + * @flags: Just passed to simple_lookup()
+> >   *
+> > - * Used to create a dynamic file/dir within @dir. Use the eventfs_inode
+> > - * list of meta data to find the information needed to create the file/dir.
+> > + * Used to create dynamic file/dir with-in @dir, search with-in @ei
+> > + * list, if @dentry found go ahead and create the file/dir
+> >   */
+> > +
+> >  static struct dentry *eventfs_root_lookup(struct inode *dir,
+> >  					  struct dentry *dentry,
+> >  					  unsigned int flags)
+> >  {
+> > +	const struct file_operations *fops;
+> > +	const struct eventfs_entry *entry;
+> > +	struct eventfs_inode *ei_child;
+> >  	struct tracefs_inode *ti;
+> >  	struct eventfs_inode *ei;
+> > -	struct eventfs_file *ef;
+> >  	struct dentry *ret = NULL;
+> > +	const char *name = dentry->d_name.name;
+> > +	bool created = false;
+> > +	umode_t mode;
+> > +	void *data;
+> >  	int idx;
+> > +	int i;
+> > +	int r;
+> >  
+> >  	ti = get_tracefs(dir);
+> >  	if (!(ti->flags & TRACEFS_EVENT_INODE))
+> >  		return NULL;
+> >  
+> > -	ei = ti->private;
+> > +	/* Grab srcu to prevent the ei from going away */
+> >  	idx = srcu_read_lock(&eventfs_srcu);
+> > -	list_for_each_entry_srcu(ef, &ei->e_top_files, list,
+> > +
+> > +	/*
+> > +	 * Grab the eventfs_mutex to consistent value from ti->private.
+> > +	 * This s
+> > +	 */
+> > +	mutex_lock(&eventfs_mutex);
+> > +	ei = READ_ONCE(ti->private);
+> > +	mutex_unlock(&eventfs_mutex);
+> > +
+> > +	if (!ei)
+> > +		goto out;
+> > +
+> > +	data = ei->data;
+> > +
+> > +	list_for_each_entry_srcu(ei_child, &ei->children, list,
+> >  				 srcu_read_lock_held(&eventfs_srcu)) {
+> > -		if (!match_event_file(ef, dentry->d_name.name))
+> > +		if (strcmp(ei_child->name, name) != 0)
+> >  			continue;
+> >  		ret = simple_lookup(dir, dentry, flags);  
+> 
+> Don't we check this return value?
+
+It's the return code from this function.
+
+It shouldn't affect the next lines.
+
+> 
+> > -		create_dentry(ef, ef->d_parent, true);
+> > +		create_dir_dentry(ei_child, ei->dentry, true);
+> > +		created = true;
+> >  		break;
+> >  	}
+> > +
+> > +	if (created)
+> > +		goto out;
+> > +
+> > +	for (i = 0; i < ei->nr_entries; i++) {
+> > +		entry = &ei->entries[i];
+> > +		if (strcmp(name, entry->name) == 0) {
+> > +			void *cdata = data;
+> > +			r = entry->callback(name, &mode, &cdata, &fops);
+> > +			if (r <= 0)
+> > +				continue;
+> > +			ret = simple_lookup(dir, dentry, flags);  
+> 
+> Ditto.
+
+The same as above. It's just the return code of the function.
+
+> 
+> > +			create_file_dentry(ei, &ei->d_children[i],
+> > +					   ei->dentry, name, mode, cdata,
+> > +					   fops, true);
+> > +			break;
+> > +		}
+> > +	}
+> > + out:
+> >  	srcu_read_unlock(&eventfs_srcu, idx);
+> >  	return ret;
+> >  }  
+> [...]
+> > @@ -2400,15 +2416,134 @@ event_define_fields(struct trace_event_call *call)
+> >  	return ret;
+> >  }
+> >  
+> > +static int event_callback(const char *name, umode_t *mode, void **data,
+> > +			  const struct file_operations **fops)
+> > +{
+> > +	struct trace_event_file *file = *data;
+> > +	struct trace_event_call *call = file->event_call;
+> > +
+> > +	if (strcmp(name, "format") == 0) {
+> > +		*mode = TRACE_MODE_READ;
+> > +		*fops = &ftrace_event_format_fops;
+> > +		*data = call;
+> > +		return 1;
+> > +	}
+> > +
+> > +	/*
+> > +	 * Only event directories that can be enabled should have
+> > +	 * triggers or filters, with the exception of the "print"
+> > +	 * event that can have a "trigger" file.
+> > +	 */
+> > +	if (!(call->flags & TRACE_EVENT_FL_IGNORE_ENABLE)) {
+> > +		if (call->class->reg && strcmp(name, "enable") == 0) {
+> > +			*mode = TRACE_MODE_WRITE;
+> > +			*fops = &ftrace_enable_fops;
+> > +			return 1;
+> > +		}
+> > +
+> > +		if (strcmp(name, "filter") == 0) {
+> > +			*mode = TRACE_MODE_WRITE;
+> > +			*fops = &ftrace_event_filter_fops;
+> > +			return 1;
+> > +		}
+> > +	}
+> > +
+> > +	if (!(call->flags & TRACE_EVENT_FL_IGNORE_ENABLE) ||
+> > +	    strcmp(trace_event_name(call), "print") == 0) {
+> > +		if (strcmp(name, "trigger") == 0) {
+> > +			*mode = TRACE_MODE_WRITE;
+> > +			*fops = &event_trigger_fops;
+> > +			return 1;
+> > +		}
+> > +	}
+> > +
+> > +#ifdef CONFIG_PERF_EVENTS
+> > +	if (call->event.type && call->class->reg &&
+> > +	    strcmp(name, "id") == 0) {
+> > +		*mode = TRACE_MODE_READ;
+> > +		*data = (void *)(long)call->event.type;
+> > +		*fops = &ftrace_event_id_fops;
+> > +		return 1;
+> > +	}
+> > +#endif
+> > +
+> > +#ifdef CONFIG_HIST_TRIGGERS
+> > +	if (strcmp(name, "hist") == 0) {
+> > +		*mode = TRACE_MODE_READ;
+> > +		*fops = &event_hist_fops;
+> > +		return 1;
+> > +	}
+> > +#endif
+> > +#ifdef CONFIG_HIST_TRIGGERS_DEBUG
+> > +	if (strcmp(name, "hist_debug") == 0) {
+> > +		*mode = TRACE_MODE_READ;
+> > +		*fops = &event_hist_debug_fops;
+> > +		return 1;
+> > +	}
+> > +#endif
+> > +#ifdef CONFIG_TRACE_EVENT_INJECT
+> > +	if (call->event.type && call->class->reg &&
+> > +	    strcmp(name, "inject") == 0) {
+> > +		*mode = 0200;
+> > +		*fops = &event_inject_fops;
+> > +		return 1;
+> > +	}
+> > +#endif
+> > +	return 0;
+> > +}
+> > +
+> >  static int
+> > -event_create_dir(struct dentry *parent, struct trace_event_file *file)
+> > +event_create_dir(struct eventfs_inode *parent, struct trace_event_file *file)
+> >  {
+> >  	struct trace_event_call *call = file->event_call;
+> > -	struct eventfs_file *ef_subsystem = NULL;
+> >  	struct trace_array *tr = file->tr;
+> > -	struct eventfs_file *ef;
+> > +	struct eventfs_inode *e_events;
+> > +	struct eventfs_inode *ei;
+> >  	const char *name;
+> > +	int nr_entries;
+> >  	int ret;
+> > +	static struct eventfs_entry event_entries[] = {
+> > +		{
+> > +			.name		= "enable",
+> > +			.callback	= event_callback,
+> > +		},
+> > +		{
+> > +			.name		= "filter",
+> > +			.callback	= event_callback,
+> > +		},
+> > +		{
+> > +			.name		= "trigger",
+> > +			.callback	= event_callback,
+> > +		},
+> > +		{
+> > +			.name		= "format",
+> > +			.callback	= event_callback,
+> > +		},
+> > +#ifdef CONFIG_PERF_EVENTS
+> > +		{
+> > +			.name		= "id",
+> > +			.callback	= event_callback,
+> > +		},
+> > +#endif
+> > +#ifdef CONFIG_HIST_TRIGGERS
+> > +		{
+> > +			.name		= "hist",
+> > +			.callback	= event_callback,
+> > +		},
+> > +#endif
+> > +#ifdef CONFIG_HIST_TRIGGERS_DEBUG
+> > +		{
+> > +			.name		= "hist_debug",
+> > +			.callback	= event_callback,
+> > +		},
+> > +#endif
+> > +#ifdef CONFIG_TRACE_EVENT_INJECT
+> > +		{
+> > +			.name		= "inject",
+> > +			.callback	= event_callback,
+> > +		},
+> > +#endif  
+> 
+> Q: I wonder why these uses the same 'event_callback'? it seems those have
+> different callbacks...
+
+It really is just a preference. I could have it use a different callback,
+but if you look at the event_callback(), it looks at the name passed in to
+determine what to do. So yes, they do different things when the name passed
+in is different.
+
+
+> [...]
+> 
+> > +static int events_callback(const char *name, umode_t *mode, void **data,
+> > +			   const struct file_operations **fops)
+> > +{
+> > +	if (strcmp(name, "enable") == 0) {
+> > +		*mode = TRACE_MODE_WRITE;
+> > +		*fops = &ftrace_tr_enable_fops;
+> > +		return 1;
+> > +	}
+> > +
+> > +	if (strcmp(name, "header_page") == 0)
+> > +		*data = ring_buffer_print_page_header;
+> > +
+> > +	else if (strcmp(name, "header_event") == 0)
+> > +		*data = ring_buffer_print_entry_header;
+> > +
+> > +	else
+> > +		return 0;
+> > +
+> > +	*mode = TRACE_MODE_READ;
+> > +	*fops = &ftrace_show_header_fops;
+> > +	return 1;
+> > +}
+> > +
+> >  /* Expects to have event_mutex held when called */
+> >  static int
+> >  create_event_toplevel_files(struct dentry *parent, struct trace_array *tr)
+> >  {
+> > -	struct dentry *d_events;
+> > +	struct eventfs_inode *e_events;
+> >  	struct dentry *entry;
+> > -	int error = 0;
+> > +	int nr_entries;
+> > +	static struct eventfs_entry events_entries[] = {
+> > +		{
+> > +			.name		= "enable",
+> > +			.callback	= events_callback,
+> > +		},
+> > +		{
+> > +			.name		= "header_page",
+> > +			.callback	= events_callback,
+> > +		},
+> > +		{
+> > +			.name		= "header_event",
+> > +			.callback	= events_callback,
+> > +		},
+> > +	};  
+> 
+> Here too.
+
+Same reason.
+
+> 
+> Thank you,
+> 
+
+Thanks for reviewing.
+
+-- Steve
+
