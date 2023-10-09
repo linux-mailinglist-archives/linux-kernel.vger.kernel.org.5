@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3307BED3B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D9547BED41
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 23:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378687AbjJIVW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 17:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38120 "EHLO
+        id S1378811AbjJIVWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 17:22:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378713AbjJIVV6 (ORCPT
+        with ESMTP id S234615AbjJIVWW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 17:21:58 -0400
-Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 293A0D62;
-        Mon,  9 Oct 2023 14:21:05 -0700 (PDT)
+        Mon, 9 Oct 2023 17:22:22 -0400
+Received: from smtp-fw-9106.amazon.com (smtp-fw-9106.amazon.com [207.171.188.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FEDE107;
+        Mon,  9 Oct 2023 14:21:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1696886465; x=1728422465;
+  t=1696886483; x=1728422483;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=RUDwz1l5hzO981PWBA46Zx7o0h4TJAKxWSeZDmBzK9k=;
-  b=ZxhReIvWh857zhaZfHhmbLUKzxExV/0XQe04puMuYIQHFnFGL+yl8nXp
-   dVq+oUN8A/jh3tuSPhRGwzCaIkj4DS/nvWmRXGJPFg4MK2p/gnyhmLE0X
-   ncO/JFwNOTJSlZMPEvR78x7HfWwaXHZ1/Ioh3I9Z97olXrCR6+hCrDxn7
-   c=;
+  bh=35IwS/iLiLMjaXIJQst4tQldxkeCAcLKYkq8xWTIHus=;
+  b=KoCzJOI21oe2J1VXV77mjRyOMV72WTNihenT+OO9x6sYmivQaoADlMn2
+   9o0wFJsIQJAP78r7UnvotqFN4flamm8sl/bjy6AjWV8XwQLkZ5QfDWaED
+   CKFDFp5nMj98v9cad/Z6TZEZKOGyGAT5aGFwk8GCHiyxYQpYiuNATTxRs
+   8=;
 X-IronPort-AV: E=Sophos;i="6.03,211,1694736000"; 
-   d="scan'208";a="360945226"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-ed19f671.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-6002.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 21:21:02 +0000
-Received: from EX19MTAUWC002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-pdx-2b-m6i4x-ed19f671.us-west-2.amazon.com (Postfix) with ESMTPS id D8BC380EC0;
-        Mon,  9 Oct 2023 21:21:00 +0000 (UTC)
+   d="scan'208";a="676641398"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-9694bb9e.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-9106.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 21:21:16 +0000
+Received: from EX19MTAUWC001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-iad-1e-m6i4x-9694bb9e.us-east-1.amazon.com (Postfix) with ESMTPS id 4943982ED8;
+        Mon,  9 Oct 2023 21:21:12 +0000 (UTC)
 Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
- EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Mon, 9 Oct 2023 21:21:00 +0000
+ 15.2.1118.37; Mon, 9 Oct 2023 21:21:02 +0000
 Received: from dev-dsk-graf-1a-5ce218e4.eu-west-1.amazon.com (10.253.83.51) by
  EX19D020UWC004.ant.amazon.com (10.13.138.149) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Mon, 9 Oct 2023 21:20:57 +0000
+ 15.2.1118.37; Mon, 9 Oct 2023 21:21:00 +0000
 From:   Alexander Graf <graf@amazon.com>
 To:     <linux-kernel@vger.kernel.org>
 CC:     <linux-crypto@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
@@ -54,9 +54,9 @@ CC:     <linux-crypto@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
         Jason Wang <jasowang@redhat.com>,
         Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
         Kyunghwan Kwon <k@mononn.com>
-Subject: [PATCH v4 1/2] Import CBOR library
-Date:   Mon, 9 Oct 2023 21:20:52 +0000
-Message-ID: <20231009212053.2007-2-graf@amazon.com>
+Subject: [PATCH v4 2/2] misc: Add Nitro Secure Module driver
+Date:   Mon, 9 Oct 2023 21:20:53 +0000
+Message-ID: <20231009212053.2007-3-graf@amazon.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231009212053.2007-1-graf@amazon.com>
 References: <20231009212053.2007-1-graf@amazon.com>
@@ -66,1651 +66,1785 @@ X-ClientProxiedBy: EX19D035UWB002.ant.amazon.com (10.13.138.97) To
  EX19D020UWC004.ant.amazon.com (10.13.138.149)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To fully support the Nitro Secure Module communication protocol, we need
-to encode and decode CBOR binary data. Import an MIT licensed library
-from https://github.com/libmcu/cbor (commit f3d1696f886) so that we can
-easily consume CBOR data.
+When running Linux inside a Nitro Enclave, the hypervisor provides a
+special virtio device called "NSM". This device has 3 main functions:
 
-On top of the upstream code base, I added kernel module as well as
-kernel header path awareness and made checkpatch happy.
+  1) Provide attestation reports
+  2) Modify PCR state
+  3) Provide entropy
 
+This patch adds a driver for NSM that exposes a /dev/nsm device node which
+user space can issue ioctls on to request attestation documents, influence
+PCR states, read entropy and enumerate status of the device. In addition,
+the driver implements a hwrng backend and exposes some of the NSM device
+metadata as sysfs entries.
+
+Originally-by: Petre Eftime <petre.eftime@gmail.com>
 Signed-off-by: Alexander Graf <graf@amazon.com>
 
 ---
 
+v1 -> v2:
+
+  - Remove boilerplate
+  - Add uapi header
+
+v2 -> v3:
+
+  - Move globals to device struct
+  - Add compat handling
+  - Simplify some naming
+  - Remove debug prints
+  - Use module_virtio_driver
+  - Drop use of uio.h
+
 v3 -> v4:
 
-  - New in v4
+  - Merge hwrng into the misc driver
+  - Add dependency on CBOR library
+  - Add internal and ioctl logic for all current NSM actions
+  - Use in-struct arrays instead of kvecs
+  - Add sysfs entries for NSM metadata
+  - Use dev_ print and devm_ allocation helpers
 ---
- MAINTAINERS                  |   8 ++
- include/linux/cbor/base.h    |  94 ++++++++++++++
- include/linux/cbor/cbor.h    |  22 ++++
- include/linux/cbor/decoder.h |  42 ++++++
- include/linux/cbor/encoder.h |  48 +++++++
- include/linux/cbor/helper.h  |  41 ++++++
- include/linux/cbor/ieee754.h |  52 ++++++++
- include/linux/cbor/parser.h  |  32 +++++
- lib/Kconfig                  |   3 +
- lib/Makefile                 |   2 +
- lib/cbor/Makefile            |  12 ++
- lib/cbor/common.c            | 105 +++++++++++++++
- lib/cbor/decoder.c           | 170 ++++++++++++++++++++++++
- lib/cbor/encoder.c           | 218 +++++++++++++++++++++++++++++++
- lib/cbor/helper.c            | 175 +++++++++++++++++++++++++
- lib/cbor/ieee754.c           | 205 +++++++++++++++++++++++++++++
- lib/cbor/parser.c            | 243 +++++++++++++++++++++++++++++++++++
- 17 files changed, 1472 insertions(+)
- create mode 100644 include/linux/cbor/base.h
- create mode 100644 include/linux/cbor/cbor.h
- create mode 100644 include/linux/cbor/decoder.h
- create mode 100644 include/linux/cbor/encoder.h
- create mode 100644 include/linux/cbor/helper.h
- create mode 100644 include/linux/cbor/ieee754.h
- create mode 100644 include/linux/cbor/parser.h
- create mode 100644 lib/cbor/Makefile
- create mode 100644 lib/cbor/common.c
- create mode 100644 lib/cbor/decoder.c
- create mode 100644 lib/cbor/encoder.c
- create mode 100644 lib/cbor/helper.c
- create mode 100644 lib/cbor/ieee754.c
- create mode 100644 lib/cbor/parser.c
+ MAINTAINERS              |    9 +
+ drivers/misc/Kconfig     |   13 +
+ drivers/misc/Makefile    |    1 +
+ drivers/misc/nsm.c       | 1466 ++++++++++++++++++++++++++++++++++++++
+ include/uapi/linux/nsm.h |  188 +++++
+ 5 files changed, 1677 insertions(+)
+ create mode 100644 drivers/misc/nsm.c
+ create mode 100644 include/uapi/linux/nsm.h
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 6c4cce45a09d..5c23081ede95 100644
+index 5c23081ede95..28f861eea8e5 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -4661,6 +4661,14 @@ S:	Odd Fixes
- F:	Documentation/devicetree/bindings/arm/cavium-thunder2.txt
- F:	arch/arm64/boot/dts/cavium/thunder2-99xx*
+@@ -15104,6 +15104,15 @@ F:	include/linux/nitro_enclaves.h
+ F:	include/uapi/linux/nitro_enclaves.h
+ F:	samples/nitro_enclaves/
  
-+CBOR LIBRARY
++NITRO SECURE MODULE (NSM)
 +M:	Alexander Graf <graf@amazon.com>
 +L:	linux-kernel@vger.kernel.org
 +L:	The AWS Nitro Enclaves Team <aws-nitro-enclaves-devel@amazon.com>
 +S:	Supported
-+F:	include/linux/cbor/
-+F:	lib/cbor/
++W:	https://aws.amazon.com/ec2/nitro/nitro-enclaves/
++F:	drivers/misc/nsm.c
++F:	include/uapi/linux/nsm.h
 +
- CBS/ETF/TAPRIO QDISCS
- M:	Vinicius Costa Gomes <vinicius.gomes@intel.com>
- L:	netdev@vger.kernel.org
-diff --git a/include/linux/cbor/base.h b/include/linux/cbor/base.h
+ NOHZ, DYNTICKS SUPPORT
+ M:	Frederic Weisbecker <frederic@kernel.org>
+ M:	Thomas Gleixner <tglx@linutronix.de>
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index cadd4a820c03..236f36a8e8d4 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -562,6 +562,19 @@ config TPS6594_PFSM
+ 	  This driver can also be built as a module.  If so, the module
+ 	  will be called tps6594-pfsm.
+ 
++config NSM
++	tristate "Nitro (Enclaves) Security Module support"
++	depends on VIRTIO
++	select HW_RANDOM
++	select CBOR
++	help
++	  This driver provides support for the Nitro Security Module
++	  in AWS EC2 Nitro based Enclaves. The driver exposes a /dev/nsm
++	  device user space can use to communicate with the hypervisor.
++
++	  To compile this driver as a module, choose M here.
++	  The module will be called nsm.
++
+ source "drivers/misc/c2port/Kconfig"
+ source "drivers/misc/eeprom/Kconfig"
+ source "drivers/misc/cb710/Kconfig"
+diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+index f2a4d1ff65d4..ea6ea5bbbc9c 100644
+--- a/drivers/misc/Makefile
++++ b/drivers/misc/Makefile
+@@ -67,3 +67,4 @@ obj-$(CONFIG_TMR_MANAGER)      += xilinx_tmr_manager.o
+ obj-$(CONFIG_TMR_INJECT)	+= xilinx_tmr_inject.o
+ obj-$(CONFIG_TPS6594_ESM)	+= tps6594-esm.o
+ obj-$(CONFIG_TPS6594_PFSM)	+= tps6594-pfsm.o
++obj-$(CONFIG_NSM)		+= nsm.o
+diff --git a/drivers/misc/nsm.c b/drivers/misc/nsm.c
 new file mode 100644
-index 000000000000..db15fb834b4f
+index 000000000000..8baa91233cab
 --- /dev/null
-+++ b/include/linux/cbor/base.h
-@@ -0,0 +1,94 @@
-+/* SPDX-License-Identifier: MIT */
++++ b/drivers/misc/nsm.c
+@@ -0,0 +1,1466 @@
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * SPDX-FileCopyrightText: 2021 Kyunghwan Kwon <k@mononn.com>
-+ */
-+
-+#ifndef CBOR_BASE_H
-+#define CBOR_BASE_H
-+
-+#if defined(__cplusplus)
-+extern "C" {
-+#endif
-+
-+#include <linux/stddef.h>
-+#include <linux/types.h>
-+
-+#if !defined(CBOR_RECURSION_MAX_LEVEL)
-+#define CBOR_RECURSION_MAX_LEVEL		8
-+#endif
-+
-+#define CBOR_INDEFINITE_VALUE			(-1)
-+#define CBOR_RESERVED_VALUE			(-2)
-+
-+#define CBOR_ADDITIONAL_INFO_MASK		0x1fu /* the low-order 5 bits */
-+#define get_cbor_major_type(data_item)		((data_item) >> 5)
-+#define get_cbor_additional_info(major_type)	\
-+	((major_type) & CBOR_ADDITIONAL_INFO_MASK)
-+
-+typedef enum {
-+	CBOR_SUCCESS, /**< well-formed */
-+	CBOR_ILLEGAL, /**< not well-formed */
-+	CBOR_INVALID, /**< well-formed but invalid */
-+	CBOR_OVERRUN, /**< more items than given buffer space */
-+	CBOR_BREAK,
-+	CBOR_EXCESSIVE, /**< recursion more than @ref CBOR_RECURSION_MAX_LEVEL */
-+} cbor_error_t;
-+
-+typedef enum {
-+	CBOR_ITEM_UNKNOWN,
-+	CBOR_ITEM_INTEGER, /**< unsigned integer and negative integer */
-+	CBOR_ITEM_STRING, /**< byte string and text string */
-+	CBOR_ITEM_ARRAY,
-+	CBOR_ITEM_MAP,
-+	CBOR_ITEM_FLOAT,
-+	CBOR_ITEM_SIMPLE_VALUE,
-+} cbor_item_data_t;
-+
-+typedef struct {
-+	cbor_item_data_t type;
-+	size_t offset;
-+	size_t size; /**< either of the length of value in bytes or the number
-+		       of items in case of container type */
-+} cbor_item_t;
-+
-+typedef struct {
-+	uint8_t const *msg;
-+	size_t msgsize;
-+	size_t msgidx;
-+
-+	cbor_item_t *items;
-+	size_t itemidx;
-+	size_t maxitems;
-+} cbor_reader_t;
-+
-+typedef struct {
-+	uint8_t *buf;
-+	size_t bufsize;
-+	size_t bufidx;
-+} cbor_writer_t;
-+
-+/**
-+ * Initialize the reader for CBOR encoded messages.
++ * Amazon Nitro Secure Module driver.
 + *
-+ * @param[in,out] reader reader context for the actual encoded message
-+ * @param[out] items a pointer to item buffers
-+ * @param[in] maxitems the maximum number of items to be stored in @p items
-+ */
-+void cbor_reader_init(cbor_reader_t *reader, cbor_item_t *items, size_t maxitems);
-+void cbor_writer_init(cbor_writer_t *writer, void *buf, size_t bufsize);
-+size_t cbor_writer_len(cbor_writer_t const *writer);
-+uint8_t const *cbor_writer_get_encoded(cbor_writer_t const *writer);
-+
-+cbor_item_data_t cbor_get_item_type(cbor_item_t const *item);
-+size_t cbor_get_item_size(cbor_item_t const *item);
-+
-+uint8_t cbor_get_following_bytes(uint8_t additional_info);
-+
-+size_t cbor_copy(uint8_t *dst, uint8_t const *src, size_t len);
-+size_t cbor_copy_be(uint8_t *dst, uint8_t const *src, size_t len);
-+
-+#if defined(__cplusplus)
-+}
-+#endif
-+
-+#endif /* CBOR_BASE_H */
-diff --git a/include/linux/cbor/cbor.h b/include/linux/cbor/cbor.h
-new file mode 100644
-index 000000000000..92d69ac7ae40
---- /dev/null
-+++ b/include/linux/cbor/cbor.h
-@@ -0,0 +1,22 @@
-+/* SPDX-License-Identifier: MIT */
-+/*
-+ * SPDX-FileCopyrightText: 2021 Kyunghwan Kwon <k@mononn.com>
++ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
++ *
++ * The Nitro Secure Module implements the following commands via CBOR over virtio:
++ *
++ *   DescribePCR(u16 index) -> { bool lock, u8[] data }
++ *   ExtendPCR(u16 index, u8[] data) -> { u8[] data }
++ *   LockPCR(u16 index) -> {}
++ *   LockPCRs(u16 range_from_zero) -> {}
++ *   DescribeNSM() -> { u16 version_major, u16 version_minor,
++ *                      u16 version_patch, String module_id,
++ *                      u16 max_pcrs, u16[] locked_pcrs, String digest }
++ *   Attestation(u8[] user_data, u8[] nonce, u8[] public_key) -> { u8[] document }
++ *   GetRandom() -> { u8[] random }
++ *
++ * This driver exposes them directly to user space as ioctls on /dev/nsm.
 + */
 +
-+#ifndef CBOR_H
-+#define CBOR_H
-+
-+#if defined(__cplusplus)
-+extern "C" {
-+#endif
-+
-+#include <linux/cbor/parser.h>
++#include <linux/file.h>
++#include <linux/fs.h>
++#include <linux/interrupt.h>
++#include <linux/hw_random.h>
++#include <linux/miscdevice.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/slab.h>
++#include <linux/string.h>
++#include <linux/uaccess.h>
++#include <linux/uio.h>
++#include <linux/virtio_config.h>
++#include <linux/virtio_ids.h>
++#include <linux/virtio.h>
++#include <linux/wait.h>
 +#include <linux/cbor/decoder.h>
 +#include <linux/cbor/encoder.h>
-+#include <linux/cbor/helper.h>
++#include <linux/cbor/parser.h>
++#include <uapi/linux/nsm.h>
 +
-+#if defined(__cplusplus)
-+}
-+#endif
++/* Timeout for NSM virtqueue respose in milliseconds. */
++#define NSM_DEFAULT_TIMEOUT_MSECS (120000) /* 2 minutes */
 +
-+#endif /* CBOR_H */
-diff --git a/include/linux/cbor/decoder.h b/include/linux/cbor/decoder.h
-new file mode 100644
-index 000000000000..846f0d215662
---- /dev/null
-+++ b/include/linux/cbor/decoder.h
-@@ -0,0 +1,42 @@
-+/* SPDX-License-Identifier: MIT */
-+/*
-+ * SPDX-FileCopyrightText: 2021 Kyunghwan Kwon <k@mononn.com>
-+ */
-+
-+#ifndef CBOR_DECODER_H
-+#define CBOR_DECODER_H
-+
-+#if defined(__cplusplus)
-+extern "C" {
-+#endif
-+
-+#include <linux/cbor/base.h>
-+
-+/**
-+ * Decode a CBOR data item
-+ *
-+ * @param[in] reader reader context for the actual encoded message
-+ * @param[in] item meta data about the item to be decoded
-+ * @param[out] buf the buffer where decoded value to be written in
-+ * @param[in] bufsize the buffer size
-+ *
-+ * @return a code of @ref cbor_error_t
-+ */
-+cbor_error_t cbor_decode(cbor_reader_t const *reader, cbor_item_t const *item,
-+		void *buf, size_t bufsize);
-+/**
-+ * Get the pointer to an item value
-+ *
-+ * @param[in] reader reader context for the actual encoded message
-+ * @param[in] item meta data about the item to be decoded
-+ *
-+ * @return the pointer to the item value
-+ */
-+void const *cbor_decode_pointer(cbor_reader_t const *reader,
-+		cbor_item_t const *item);
-+
-+#if defined(__cplusplus)
-+}
-+#endif
-+
-+#endif /* CBOR_DECODER_H */
-diff --git a/include/linux/cbor/encoder.h b/include/linux/cbor/encoder.h
-new file mode 100644
-index 000000000000..360568825454
---- /dev/null
-+++ b/include/linux/cbor/encoder.h
-@@ -0,0 +1,48 @@
-+/* SPDX-License-Identifier: MIT */
-+/*
-+ * SPDX-FileCopyrightText: 2021 Kyunghwan Kwon <k@mononn.com>
-+ */
-+
-+#ifndef CBOR_ENCODER_H
-+#define CBOR_ENCODER_H
-+
-+#if defined(__cplusplus)
-+extern "C" {
-+#endif
-+
-+#include <linux/cbor/base.h>
-+
-+cbor_error_t cbor_encode_unsigned_integer(cbor_writer_t *writer, uint64_t value);
-+cbor_error_t cbor_encode_negative_integer(cbor_writer_t *writer, int64_t value);
-+
-+cbor_error_t cbor_encode_byte_string(cbor_writer_t *writer,
-+		uint8_t const *data, size_t datasize);
-+cbor_error_t cbor_encode_byte_string_indefinite(cbor_writer_t *writer);
-+
-+cbor_error_t cbor_encode_text_string(cbor_writer_t *writer,
-+		char const *text, size_t textsize);
-+cbor_error_t cbor_encode_null_terminated_text_string(cbor_writer_t *writer,
-+		char const *text);
-+cbor_error_t cbor_encode_text_string_indefinite(cbor_writer_t *writer);
-+
-+cbor_error_t cbor_encode_array(cbor_writer_t *writer, size_t length);
-+cbor_error_t cbor_encode_array_indefinite(cbor_writer_t *writer);
-+
-+cbor_error_t cbor_encode_map(cbor_writer_t *writer, size_t length);
-+cbor_error_t cbor_encode_map_indefinite(cbor_writer_t *writer);
-+
-+cbor_error_t cbor_encode_break(cbor_writer_t *writer);
-+
-+cbor_error_t cbor_encode_simple(cbor_writer_t *writer, uint8_t value);
-+cbor_error_t cbor_encode_bool(cbor_writer_t *writer, bool value);
-+cbor_error_t cbor_encode_null(cbor_writer_t *writer);
-+cbor_error_t cbor_encode_undefined(cbor_writer_t *writer);
-+
-+cbor_error_t cbor_encode_float(cbor_writer_t *writer, float value);
-+cbor_error_t cbor_encode_double(cbor_writer_t *writer, double value);
-+
-+#if defined(__cplusplus)
-+}
-+#endif
-+
-+#endif /* CBOR_ENCODER_H */
-diff --git a/include/linux/cbor/helper.h b/include/linux/cbor/helper.h
-new file mode 100644
-index 000000000000..d366583d2c54
---- /dev/null
-+++ b/include/linux/cbor/helper.h
-@@ -0,0 +1,41 @@
-+/* SPDX-License-Identifier: MIT */
-+/*
-+ * SPDX-FileCopyrightText: 2021 Kyunghwan Kwon <k@mononn.com>
-+ */
-+
-+#ifndef CBOR_HELPER_H
-+#define CBOR_HELPER_H
-+
-+#if defined(__cplusplus)
-+extern "C" {
-+#endif
-+
-+#include <linux/cbor/base.h>
-+
-+struct cbor_parser {
-+	const void *key;
-+	size_t keylen;
-+	void (*run)(const cbor_reader_t *reader,
-+			const struct cbor_parser *parser,
-+			const cbor_item_t *item, void *arg);
++struct nsm {
++	struct list_head      node;
++	struct virtio_device *vdev;
++	struct virtqueue     *vq;
++	struct mutex          lock;
++	wait_queue_head_t     wq;
++	bool                  device_notified;
++	struct miscdevice     misc;
++	struct hwrng          hwrng;
++	struct work_struct    misc_init;
++	u16                   major;
++	u16                   minor;
++	u16                   patch;
++	u16                   max_pcrs;
++	char                  module_id[256];
++	char                  digest[16];
 +};
 +
-+bool cbor_unmarshal(cbor_reader_t *reader,
-+		const struct cbor_parser *parsers, size_t nr_parsers,
-+		const void *msg, size_t msglen, void *arg);
-+
-+size_t cbor_iterate(const cbor_reader_t *reader,
-+		    const cbor_item_t *parent,
-+		    void (*callback_each)(const cbor_reader_t *reader,
-+			    const cbor_item_t *item, const cbor_item_t *parent,
-+			    void *arg),
-+		    void *arg);
-+
-+const char *cbor_stringify_error(cbor_error_t err);
-+const char *cbor_stringify_item(cbor_item_t *item);
-+
-+#if defined(__cplusplus)
-+}
-+#endif
-+
-+#endif /* CBOR_HELPER_H */
-diff --git a/include/linux/cbor/ieee754.h b/include/linux/cbor/ieee754.h
-new file mode 100644
-index 000000000000..1362f3774d7c
---- /dev/null
-+++ b/include/linux/cbor/ieee754.h
-@@ -0,0 +1,52 @@
-+/* SPDX-License-Identifier: MIT */
-+/*
-+ * SPDX-FileCopyrightText: 2021 Kyunghwan Kwon <k@mononn.com>
-+ */
-+
-+#ifndef CBOR_IEEE754_H
-+#define CBOR_IEEE754_H
-+
-+#if defined(__cplusplus)
-+extern "C" {
-+#endif
-+
-+#include <linux/cbor/base.h>
-+
-+typedef union {
-+	uint16_t value;
-+	struct {
-+		uint32_t m: 10;
-+		uint32_t e: 5;
-+		uint32_t sign: 1;
-+	} components;
-+} ieee754_half_t;
-+
-+typedef union {
-+	float value;
-+	struct {
-+		uint32_t m: 23;
-+		uint32_t e: 8;
-+		uint32_t sign: 1;
-+	} components;
-+} ieee754_single_t;
-+
-+typedef union {
-+	double value;
-+	struct {
-+		uint64_t m: 52;
-+		uint64_t e: 11;
-+		uint64_t sign: 1;
-+	} components;
-+} ieee754_double_t;
-+
-+uint16_t ieee754_convert_single_to_half(float value);
-+double ieee754_convert_half_to_double(uint16_t value);
-+
-+bool ieee754_is_shrinkable_to_half(float value);
-+bool ieee754_is_shrinkable_to_single(double value);
-+
-+#if defined(__cplusplus)
-+}
-+#endif
-+
-+#endif /* CBOR_IEEE754_H */
-diff --git a/include/linux/cbor/parser.h b/include/linux/cbor/parser.h
-new file mode 100644
-index 000000000000..554004799f0a
---- /dev/null
-+++ b/include/linux/cbor/parser.h
-@@ -0,0 +1,32 @@
-+/* SPDX-License-Identifier: MIT */
-+/*
-+ * SPDX-FileCopyrightText: 2021 Kyunghwan Kwon <k@mononn.com>
-+ */
-+
-+#ifndef CBOR_PARSER_H
-+#define CBOR_PARSER_H
-+
-+#if defined(__cplusplus)
-+extern "C" {
-+#endif
-+
-+#include <linux/cbor/base.h>
-+
-+/**
-+ * Parse the encoded CBOR messages into items.
-+ *
-+ * @param[in,out] reader reader context for the actual encoded message
-+ * @param[in] msg CBOR encoded message
-+ * @param[in] msgsize the @p msg size in bytes
-+ * @param[out] nitems_parsed the number of items parsed gets stored if not null
-+ *
-+ * @return a code of @ref cbor_error_t
-+ */
-+cbor_error_t cbor_parse(cbor_reader_t *reader, void const *msg, size_t msgsize,
-+		size_t *nitems_parsed);
-+
-+#if defined(__cplusplus)
-+}
-+#endif
-+
-+#endif /* CBOR_PARSER_H */
-diff --git a/lib/Kconfig b/lib/Kconfig
-index c686f4adc124..12fb3d68cd9a 100644
---- a/lib/Kconfig
-+++ b/lib/Kconfig
-@@ -764,3 +764,6 @@ config ASN1_ENCODER
- 
- config POLYNOMIAL
-        tristate
-+
-+config CBOR
-+	tristate
-diff --git a/lib/Makefile b/lib/Makefile
-index 740109b6e2c8..287f3dcaff31 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -317,6 +317,8 @@ obj-$(CONFIG_ASN1_ENCODER) += asn1_encoder.o
- 
- obj-$(CONFIG_FONT_SUPPORT) += fonts/
- 
-+obj-$(CONFIG_CBOR) += cbor/
-+
- hostprogs	:= gen_crc32table
- hostprogs	+= gen_crc64table
- clean-files	:= crc32table.h
-diff --git a/lib/cbor/Makefile b/lib/cbor/Makefile
-new file mode 100644
-index 000000000000..6b090ae0f4a8
---- /dev/null
-+++ b/lib/cbor/Makefile
-@@ -0,0 +1,12 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+obj-$(CONFIG_CBOR) += cbor.o
-+
-+cbor-y := \
-+	common.o \
-+	decoder.o \
-+	encoder.o \
-+	helper.o \
-+	parser.o \
-+
-+cbor-$(CONFIG_CBOR_FLOAT) += ieee754.o
-diff --git a/lib/cbor/common.c b/lib/cbor/common.c
-new file mode 100644
-index 000000000000..a4677a9bc0a3
---- /dev/null
-+++ b/lib/cbor/common.c
-@@ -0,0 +1,105 @@
-+// SPDX-License-Identifier: MIT
-+/*
-+ * SPDX-FileCopyrightText: 2021 Kyunghwan Kwon <k@mononn.com>
-+ */
-+
-+#include <linux/cbor/base.h>
-+#include <linux/module.h>
-+
-+#if !defined(assert)
-+#define assert(expr)
-+#endif
-+
-+static size_t copy_le(uint8_t *dst, uint8_t const *src, size_t len)
-+{
-+	for (size_t i = 0; i < len; i++)
-+		dst[len - i - 1] = src[i];
-+
-+	return len;
-+}
-+
-+static size_t copy_be(uint8_t *dst, uint8_t const *src, size_t len)
-+{
-+	for (size_t i = 0; i < len; i++)
-+		dst[i] = src[i];
-+
-+	return len;
-+}
-+
-+size_t cbor_copy(uint8_t *dst, uint8_t const *src, size_t len)
-+{
-+#if defined(CBOR_BIG_ENDIAN)
-+	return copy_be(dst, src, len);
-+#else
-+	return copy_le(dst, src, len);
-+#endif
-+}
-+EXPORT_SYMBOL_GPL(cbor_copy);
-+
-+size_t cbor_copy_be(uint8_t *dst, uint8_t const *src, size_t len)
-+{
-+	return copy_be(dst, src, len);
-+}
-+EXPORT_SYMBOL_GPL(cbor_copy_be);
-+
-+uint8_t cbor_get_following_bytes(uint8_t additional_info)
-+{
-+	if (additional_info < 24)
-+		return 0;
-+	else if (additional_info == 31)
-+		return (uint8_t)CBOR_INDEFINITE_VALUE;
-+	else if (additional_info >= 28)
-+		return (uint8_t)CBOR_RESERVED_VALUE;
-+
-+	return (uint8_t)(1u << (additional_info - 24));
-+}
-+EXPORT_SYMBOL_GPL(cbor_get_following_bytes);
-+
-+cbor_item_data_t cbor_get_item_type(cbor_item_t const *item)
-+{
-+	return item->type;
-+}
-+EXPORT_SYMBOL_GPL(cbor_get_item_type);
-+
-+size_t cbor_get_item_size(cbor_item_t const *item)
-+{
-+	return item->size;
-+}
-+EXPORT_SYMBOL_GPL(cbor_get_item_size);
-+
-+void cbor_reader_init(cbor_reader_t *reader, cbor_item_t *items, size_t maxitems)
-+{
-+	assert(reader != NULL);
-+
-+	reader->items = items;
-+	reader->maxitems = maxitems;
-+	reader->itemidx = 0;
-+}
-+EXPORT_SYMBOL_GPL(cbor_reader_init);
-+
-+void cbor_writer_init(cbor_writer_t *writer, void *buf, size_t bufsize)
-+{
-+	assert(writer != NULL);
-+	assert(buf != NULL);
-+
-+	writer->buf = (uint8_t *)buf;
-+	writer->bufsize = bufsize;
-+	writer->bufidx = 0;
-+}
-+EXPORT_SYMBOL_GPL(cbor_writer_init);
-+
-+size_t cbor_writer_len(cbor_writer_t const *writer)
-+{
-+	return writer->bufidx;
-+}
-+EXPORT_SYMBOL_GPL(cbor_writer_len);
-+
-+uint8_t const *cbor_writer_get_encoded(cbor_writer_t const *writer)
-+{
-+	return (uint8_t const *)writer->buf;
-+}
-+EXPORT_SYMBOL_GPL(cbor_writer_get_encoded);
-+
-+MODULE_DESCRIPTION("CBOR helper functions");
-+MODULE_AUTHOR("Kyunghwan Kwon");
-+MODULE_LICENSE("GPL");
-diff --git a/lib/cbor/decoder.c b/lib/cbor/decoder.c
-new file mode 100644
-index 000000000000..1ec0b17ecf6c
---- /dev/null
-+++ b/lib/cbor/decoder.c
-@@ -0,0 +1,170 @@
-+// SPDX-License-Identifier: MIT
-+/*
-+ * SPDX-FileCopyrightText: 2021 Kyunghwan Kwon <k@mononn.com>
-+ */
-+
-+#include <linux/cbor/decoder.h>
-+#include <linux/types.h>
-+#include <linux/string.h>
-+#include <linux/module.h>
-+
-+#if !defined(MIN)
-+#define MIN(a, b)				(((a) > (b)) ? (b) : (a))
-+#endif
-+
-+typedef cbor_error_t (*item_decoder_t)(cbor_item_t const *item,
-+		uint8_t const *msg, uint8_t *buf, size_t bufsize);
-+
-+static cbor_error_t decode_pass(cbor_item_t const *item, uint8_t const *msg,
-+		uint8_t *buf, size_t bufsize);
-+static cbor_error_t decode_integer(cbor_item_t const *item, uint8_t const *msg,
-+		uint8_t *buf, size_t bufsize);
-+static cbor_error_t decode_string(cbor_item_t const *item, uint8_t const *msg,
-+		uint8_t *buf, size_t bufsize);
-+static cbor_error_t decode_float(cbor_item_t const *item, uint8_t const *msg,
-+		uint8_t *buf, size_t bufsize);
-+static cbor_error_t decode_simple(cbor_item_t const *item, uint8_t const *msg,
-+		uint8_t *buf, size_t bufsize);
-+
-+static const item_decoder_t decoders[] = {
-+	decode_pass,		/* 0: CBOR_ITEM_UNKNOWN */
-+	decode_integer,		/* 1: CBOR_ITEM_INTEGER */
-+	decode_string,		/* 2: CBOR_ITEM_STRING */
-+	decode_pass,		/* 3: CBOR_ITEM_ARRAY */
-+	decode_pass,		/* 4: CBOR_ITEM_MAP */
-+	decode_float,		/* 5: CBOR_ITEM_FLOAT */
-+	decode_simple,		/* 6: CBOR_ITEM_SIMPLE_VALUE */
++/* NSM device ID */
++static const struct virtio_device_id id_table[] = {
++	{ VIRTIO_ID_NITRO_SEC_MOD, VIRTIO_DEV_ANY_ID },
++	{ 0 },
 +};
 +
-+static uint8_t get_simple_value(uint8_t val)
++/* Full NSM request/response message */
++struct nsm_msg {
++	struct nsm_data_req req;
++	struct nsm_data_resp resp;
++};
++
++static inline struct nsm *file_to_nsm(struct file *file)
 +{
-+	switch (val) {
-+	case 20: /* false */
-+		return 0;
-+	case 21: /* true */
-+		return 1;
-+	case 22: /* null */
-+		return '\0';
-+	case 23: /* undefined */
-+	default:
-+		return val;
++	return container_of(file->private_data, struct nsm, misc);
++}
++
++static inline struct nsm *hwrng_to_nsm(struct hwrng *rng)
++{
++	return container_of(rng, struct nsm, hwrng);
++}
++
++static inline struct nsm *misc_dev_to_nsm(struct miscdevice *misc)
++{
++	return container_of(misc, struct nsm, misc);
++}
++
++static bool cbor_is_str(cbor_reader_t *reader, cbor_item_t *item,
++			const char *str)
++{
++	int len = strlen(str);
++
++	if (item->size != len)
++		return false;
++	return !memcmp(&reader->msg[item->offset], str, len);
++}
++
++/* Copy the request of a raw message to kernel space */
++static int fill_req_raw(struct nsm *nsm, struct nsm_data_req *req,
++			struct nsm_raw *raw)
++{
++	/* Only root has access to raw requests */
++	if (!capable(CAP_SYS_ADMIN))
++		return -EACCES;
++
++	/* Verify the user input size. */
++	if (raw->request.len > sizeof(req->data))
++		return -EMSGSIZE;
++
++	/* Copy the request payload */
++	if (copy_from_user(req->data, u64_to_user_ptr(raw->request.addr),
++			   raw->request.len))
++		return -EFAULT;
++
++	req->len = raw->request.len;
++
++	return 0;
++}
++
++static int _fill_req_raw(struct nsm *nsm, struct nsm_data_req *req,
++			 void *buffer)
++{
++	return fill_req_raw(nsm, req, buffer);
++}
++
++/* Copy the response of a raw message back to user-space */
++static int parse_resp_raw(struct nsm *nsm, struct nsm_data_resp *resp,
++			  struct nsm_raw *raw)
++{
++	/* Truncate any message that does not fit. */
++	raw->response.len = min_t(u64, raw->response.len, resp->len);
++
++	/* Copy the response content to user space */
++	if (copy_to_user(u64_to_user_ptr(raw->response.addr),
++			 resp->data, raw->response.len))
++		return -EFAULT;
++
++	return 0;
++}
++
++static int _parse_resp_raw(struct nsm *nsm, struct nsm_data_resp *resp,
++			   void *buffer)
++{
++	return parse_resp_raw(nsm, resp, buffer);
++}
++
++/* Virtqueue interrupt handler */
++static void nsm_vq_callback(struct virtqueue *vq)
++{
++	struct nsm *nsm = vq->vdev->priv;
++
++	nsm->device_notified = true;
++	wake_up(&nsm->wq);
++}
++
++/* Forward a message to the NSM device and wait for the response from it */
++static int nsm_sendrecv_msg(struct nsm *nsm, struct nsm_msg *msg)
++{
++	struct device *dev = &nsm->vdev->dev;
++	struct scatterlist sg_in, sg_out;
++	struct virtqueue *vq = nsm->vq;
++	unsigned int len;
++	void *queue_buf;
++	bool kicked;
++	int rc;
++
++	/* Initialize scatter-gather lists with request and response buffers. */
++	sg_init_one(&sg_out, msg->req.data, msg->req.len);
++	sg_init_one(&sg_in, msg->resp.data, sizeof(msg->resp.data));
++
++	mutex_lock(&nsm->lock);
++
++	/* Add the request buffer (read by the device). */
++	rc = virtqueue_add_outbuf(vq, &sg_out, 1, msg->req.data, GFP_KERNEL);
++	if (rc) {
++		mutex_unlock(&nsm->lock);
++		return rc;
 +	}
++
++	/* Add the response buffer (written by the device). */
++	rc = virtqueue_add_inbuf(vq, &sg_in, 1, msg->resp.data, GFP_KERNEL);
++	if (rc)
++		goto cleanup;
++
++	nsm->device_notified = false;
++	kicked = virtqueue_kick(vq);
++	if (!kicked) {
++		/* Cannot kick the virtqueue. */
++		rc = -EIO;
++		goto cleanup;
++	}
++
++	/* If the kick succeeded, wait for the device's response. */
++	rc = wait_event_timeout(nsm->wq,
++		nsm->device_notified == true,
++		msecs_to_jiffies(NSM_DEFAULT_TIMEOUT_MSECS));
++	if (!rc) {
++		rc = -ETIMEDOUT;
++		goto cleanup;
++	}
++
++	queue_buf = virtqueue_get_buf(vq, &len);
++	if (!queue_buf || (queue_buf != msg->req.data)) {
++		dev_err(dev, "wrong request buffer.");
++		rc = -ENODATA;
++		goto cleanup;
++	}
++
++	queue_buf = virtqueue_get_buf(vq, &len);
++	if (!queue_buf || (queue_buf != msg->resp.data)) {
++		dev_err(dev, "wrong response buffer.");
++		rc = -ENODATA;
++		goto cleanup;
++	}
++
++	msg->resp.len = len;
++
++	rc = 0;
++
++cleanup:
++	if (rc) {
++		/* Clean the virtqueue. */
++		while (virtqueue_get_buf(vq, &len) != NULL)
++			;
++	}
++
++	mutex_unlock(&nsm->lock);
++	return rc;
 +}
 +
-+static bool is_break(cbor_item_t const *item)
++/*
++ * DescribePCR request structure:
++ *
++ * {
++ *   Map(1) {
++ *     key = String("DescribePCR"),
++ *     value = Map(1) {
++ *       key = String("index"),
++ *       value = Int(pcr)
++ *     }
++ *   }
++ * }
++ */
++static int fill_req_describe_pcr(struct nsm *nsm, struct nsm_data_req *req,
++				 union nsm_describe_pcr *desc_union)
 +{
-+	return item->type == CBOR_ITEM_FLOAT && item->size == 0xff;
-+}
++	struct nsm_describe_pcr_req *desc = &desc_union->req;
++	cbor_writer_t writer;
++	cbor_error_t err;
 +
-+static cbor_error_t decode_unsigned_integer(cbor_item_t const *item,
-+		uint8_t const *msg, uint8_t *buf, size_t bufsize)
-+{
-+	uint8_t additional_info = get_cbor_additional_info(msg[item->offset]);
-+	uint8_t following_bytes = cbor_get_following_bytes(additional_info);
-+
-+	if (following_bytes == 0)
-+		buf[0] = additional_info;
-+
-+	cbor_copy(buf, &msg[item->offset + 1], following_bytes);
-+
-+	(void)bufsize;
-+	return CBOR_SUCCESS;
-+}
-+
-+static cbor_error_t decode_negative_integer(cbor_item_t const *item,
-+		uint8_t const *msg, uint8_t *buf, size_t bufsize)
-+{
-+	cbor_error_t err = decode_unsigned_integer(item, msg, buf, bufsize);
-+
++	cbor_writer_init(&writer, req->data, sizeof(req->data));
++	err = cbor_encode_map(&writer, 1);
 +	if (err != CBOR_SUCCESS)
-+		return err;
++		return -ENOMEM;
 +
-+	uint64_t val = 0;
-+	size_t len = item->size ? item->size : 1;
++	err = cbor_encode_null_terminated_text_string(&writer, "DescribePCR");
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
 +
-+	cbor_copy_be((uint8_t *)&val, buf, len);
++	err = cbor_encode_map(&writer, 1);
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
 +
-+	val = ~val;
++	err = cbor_encode_null_terminated_text_string(&writer, "index");
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
 +
-+	/*
-+	 * The value becomes a positive one if the data type size of the
-+	 * variable is larger than the value size. So we set MSB first here to
-+	 * keep it negative.
-+	 */
-+	for (uint8_t i = 0; i < MIN(bufsize, 8u); i++)
-+		buf[i] = 0xff;
++	err = cbor_encode_unsigned_integer(&writer, desc->index);
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
 +
-+	cbor_copy_be(buf, (uint8_t *)&val, len);
++	req->len = cbor_writer_len(&writer);
 +
-+	return CBOR_SUCCESS;
++	return 0;
 +}
 +
-+static cbor_error_t decode_integer(cbor_item_t const *item, uint8_t const *msg,
-+		uint8_t *buf, size_t bufsize)
++static int _fill_req_describe_pcr(struct nsm *nsm, struct nsm_data_req *req,
++				  void *buffer)
 +{
-+	switch (get_cbor_major_type(msg[item->offset])) {
-+	case 0: /* unsigned integer */
-+		return decode_unsigned_integer(item, msg, buf, bufsize);
-+	case 1: /* negative integer */
-+		return decode_negative_integer(item, msg, buf, bufsize);
-+	default:
-+		return CBOR_ILLEGAL;
-+	}
++	return fill_req_describe_pcr(nsm, req, buffer);
 +}
 +
-+static cbor_error_t decode_string(cbor_item_t const *item, uint8_t const *msg,
-+		uint8_t *buf, size_t bufsize)
-+{
-+	for (size_t i = 0; i < item->size; i++)
-+		buf[i] = msg[item->offset + i];
-+
-+	(void)bufsize;
-+	return CBOR_SUCCESS;
-+}
-+
-+static cbor_error_t decode_float(cbor_item_t const *item, uint8_t const *msg,
-+		uint8_t *buf, size_t bufsize)
-+{
-+	return decode_unsigned_integer(item, msg, buf, bufsize);
-+}
-+
-+static cbor_error_t decode_simple(cbor_item_t const *item, uint8_t const *msg,
-+		uint8_t *buf, size_t bufsize)
-+{
-+	cbor_error_t err = decode_unsigned_integer(item, msg, buf, bufsize);
-+
-+	buf[0] = get_simple_value(buf[0]);
-+
-+	return err;
-+}
-+
-+static cbor_error_t decode_pass(cbor_item_t const *item, uint8_t const *msg,
-+		uint8_t *buf, size_t bufsize)
-+{
-+	(void)item;
-+	(void)msg;
-+	(void)buf;
-+	(void)bufsize;
-+	return CBOR_SUCCESS;
-+}
-+
-+void const *cbor_decode_pointer(cbor_reader_t const *reader,
-+		cbor_item_t const *item)
-+{
-+	return &reader->msg[item->offset];
-+}
-+EXPORT_SYMBOL_GPL(cbor_decode_pointer);
-+
-+cbor_error_t cbor_decode(cbor_reader_t const *reader, cbor_item_t const *item,
-+		void *buf, size_t bufsize)
-+{
-+	if (is_break(item))
-+		return CBOR_BREAK;
-+	if (item->size > bufsize || bufsize == 0 || buf == NULL)
-+		return CBOR_OVERRUN;
-+
-+	memset(buf, 0, bufsize);
-+
-+	return decoders[item->type](item, reader->msg, (uint8_t *)buf, bufsize);
-+}
-+EXPORT_SYMBOL_GPL(cbor_decode);
-diff --git a/lib/cbor/encoder.c b/lib/cbor/encoder.c
-new file mode 100644
-index 000000000000..9b3f8ac8f670
---- /dev/null
-+++ b/lib/cbor/encoder.c
-@@ -0,0 +1,218 @@
-+// SPDX-License-Identifier: MIT
 +/*
-+ * SPDX-FileCopyrightText: 2021 Kyunghwan Kwon <k@mononn.com>
++ * DescribePCR response structure:
++ *
++ * {
++ *   Map(1) {
++ *     key = String("DescribePCR"),
++ *     value = Map(2) {
++ *       key = String("data"),
++ *       value = Array(),
++ *       key = String("lock"),
++ *       value = Bool()
++ *     }
++ *   }
++ * }
 + */
-+
-+#include <linux/cbor/encoder.h>
-+#include <linux/string.h>
-+#include <linux/module.h>
-+
-+#ifdef CONFIG_CBOR_FLOAT
-+#include <linux/cbor/ieee754.h>
-+#endif
-+
-+#define MAJOR_TYPE_BIT			5
-+
-+#if !defined(MIN)
-+#define MIN(a, b)			(((a) > (b)) ? (b) : (a))
-+#endif
-+
-+static uint8_t get_additional_info(uint64_t value)
++static int parse_resp_describe_pcr(struct nsm *nsm, struct nsm_data_resp *resp,
++				   union nsm_describe_pcr *desc_union)
 +{
-+	uint8_t additional_info = 0;
++	struct nsm_describe_pcr_resp *desc = &desc_union->resp;
++	struct device *dev = &nsm->vdev->dev;
++	cbor_item_t items[7];
++	cbor_reader_t reader;
++	cbor_error_t err;
++	size_t n;
 +
-+	if (value & ~(0x100000000ull - 1)) /* 8-byte following */
-+		additional_info = 27;
-+	else if (value & ~(0x10000ull - 1)) /* 4-byte following */
-+		additional_info = 26;
-+	else if (value & ~(0x100ull - 1)) /* 2-byte following */
-+		additional_info = 25;
-+	else if (value >= 24) /* 1-byte following */
-+		additional_info = 24;
-+	else /* 0 ~ 23 */
-+		additional_info = (uint8_t)value;
-+
-+	return additional_info;
-+}
-+
-+static cbor_error_t encode_core(cbor_writer_t *writer, uint8_t major_type,
-+		uint8_t const *data, uint64_t datasize, bool indefinite)
-+{
-+	uint8_t *buf = &writer->buf[writer->bufidx];
-+	uint8_t additional_info = get_additional_info(datasize);
-+	uint8_t following_bytes = cbor_get_following_bytes(additional_info);
-+
-+	if (indefinite) {
-+		additional_info = 31;
-+		following_bytes = 0;
++	cbor_reader_init(&reader, items, ARRAY_SIZE(items));
++	err = cbor_parse(&reader, resp->data, resp->len, &n);
++	if (err != CBOR_SUCCESS) {
++		dev_dbg(dev, "Invalid DescribePCR response");
++		return -EINVAL;
 +	}
 +
-+	size_t bytes_to_write = (size_t)datasize + following_bytes + 1;
-+	/*
-+	 * NOTE: if not string, `datasize` is the actual value to be written.
-+	 * And the `following_bytes` is the length of it.
-+	 */
-+	if (!(major_type == 2 || major_type == 3))
-+		bytes_to_write -= (size_t)datasize;
-+
-+	if (bytes_to_write > (writer->bufsize - writer->bufidx))
-+		return CBOR_OVERRUN;
-+
-+	buf[0] = (uint8_t)(major_type << MAJOR_TYPE_BIT) | additional_info;
-+	cbor_copy(&buf[1], (uint8_t const *)&datasize, following_bytes);
-+	if (data != NULL)
-+		cbor_copy_be(&buf[1 + following_bytes], data, (size_t)datasize);
-+
-+	writer->bufidx += bytes_to_write;
-+
-+	return CBOR_SUCCESS;
-+}
-+
-+static cbor_error_t encode_simple(cbor_writer_t *writer, uint8_t value)
-+{
-+	return encode_core(writer, 7, NULL, value, false);
-+}
-+
-+cbor_error_t cbor_encode_unsigned_integer(cbor_writer_t *writer, uint64_t value)
-+{
-+	return encode_core(writer, 0, NULL, value, false);
-+}
-+EXPORT_SYMBOL_GPL(cbor_encode_unsigned_integer);
-+
-+cbor_error_t cbor_encode_negative_integer(cbor_writer_t *writer, int64_t value)
-+{
-+	return encode_core(writer, 1, NULL, ((uint64_t)-value) - 1, false);
-+}
-+EXPORT_SYMBOL_GPL(cbor_encode_negative_integer);
-+
-+cbor_error_t cbor_encode_byte_string(cbor_writer_t *writer,
-+		uint8_t const *data, size_t datasize)
-+{
-+	return encode_core(writer, 2, data, datasize, false);
-+}
-+EXPORT_SYMBOL_GPL(cbor_encode_byte_string);
-+
-+cbor_error_t cbor_encode_byte_string_indefinite(cbor_writer_t *writer)
-+{
-+	return encode_core(writer, 2, NULL, 0, true);
-+}
-+EXPORT_SYMBOL_GPL(cbor_encode_byte_string_indefinite);
-+
-+
-+cbor_error_t cbor_encode_text_string(cbor_writer_t *writer,
-+		char const *text, size_t textsize)
-+{
-+	return encode_core(writer, 3,
-+			(uint8_t const *)text, textsize, false);
-+}
-+EXPORT_SYMBOL_GPL(cbor_encode_text_string);
-+
-+cbor_error_t cbor_encode_null_terminated_text_string(cbor_writer_t *writer,
-+		char const *text)
-+{
-+	size_t len = 0;
-+
-+	if (text != NULL)
-+		len = MIN(strlen(text), writer->bufsize - writer->bufidx);
-+
-+	return encode_core(writer, 3, (uint8_t const *)text, len, false);
-+}
-+EXPORT_SYMBOL_GPL(cbor_encode_null_terminated_text_string);
-+
-+cbor_error_t cbor_encode_array(cbor_writer_t *writer, size_t length)
-+{
-+	return encode_core(writer, 4, NULL, length, false);
-+}
-+EXPORT_SYMBOL_GPL(cbor_encode_array);
-+
-+cbor_error_t cbor_encode_array_indefinite(cbor_writer_t *writer)
-+{
-+	return encode_core(writer, 4, NULL, 0, true);
-+}
-+EXPORT_SYMBOL_GPL(cbor_encode_array_indefinite);
-+
-+cbor_error_t cbor_encode_map(cbor_writer_t *writer, size_t length)
-+{
-+	return encode_core(writer, 5, NULL, length, false);
-+}
-+EXPORT_SYMBOL_GPL(cbor_encode_map);
-+
-+cbor_error_t cbor_encode_map_indefinite(cbor_writer_t *writer)
-+{
-+	return encode_core(writer, 5, NULL, 0, true);
-+}
-+EXPORT_SYMBOL_GPL(cbor_encode_map_indefinite);
-+
-+cbor_error_t cbor_encode_break(cbor_writer_t *writer)
-+{
-+	return encode_core(writer, 7, NULL, 0xff, true);
-+}
-+EXPORT_SYMBOL_GPL(cbor_encode_break);
-+
-+cbor_error_t cbor_encode_simple(cbor_writer_t *writer, uint8_t value)
-+{
-+	return encode_simple(writer, value);
-+}
-+EXPORT_SYMBOL_GPL(cbor_encode_simple);
-+
-+cbor_error_t cbor_encode_bool(cbor_writer_t *writer, bool value)
-+{
-+	return encode_simple(writer, (uint8_t)(value + 20));
-+}
-+EXPORT_SYMBOL_GPL(cbor_encode_bool);
-+
-+cbor_error_t cbor_encode_null(cbor_writer_t *writer)
-+{
-+	return encode_simple(writer, 22);
-+}
-+EXPORT_SYMBOL_GPL(cbor_encode_null);
-+
-+cbor_error_t cbor_encode_undefined(cbor_writer_t *writer)
-+{
-+	return encode_simple(writer, 23);
-+}
-+EXPORT_SYMBOL_GPL(cbor_encode_undefined);
-+
-+#ifdef CONFIG_CBOR_FLOAT
-+static cbor_error_t encode_float(cbor_writer_t *writer, float value)
-+{
-+	if (ieee754_is_shrinkable_to_half(value)) {
-+		uint16_t half = ieee754_convert_single_to_half(value);
-+
-+		writer->buf[writer->bufidx++] = 0xF9;
-+		writer->bufidx += cbor_copy(&writer->buf[writer->bufidx],
-+				(uint8_t const *)&half, sizeof(half));
-+
-+		return CBOR_SUCCESS;
++	if (n != 7) {
++		dev_dbg(dev, "Invalid DescribePCR response elements (%zd)", n);
++		return -EINVAL;
 +	}
 +
-+	writer->buf[writer->bufidx++] = 0xFA;
-+	writer->bufidx += cbor_copy(&writer->buf[writer->bufidx],
-+			(uint8_t const *)&value, sizeof(value));
++	if (!cbor_is_str(&reader, &items[1], "DescribePCR")) {
++		dev_dbg(dev, "Invalid DescribePCR response items[1]");
++		return -EINVAL;
++	}
 +
-+	return CBOR_SUCCESS;
++	if (!cbor_is_str(&reader, &items[3], "data")) {
++		dev_dbg(dev, "Invalid DescribePCR response items[3]");
++		return -EINVAL;
++	}
++
++	if (items[4].type != CBOR_ITEM_STRING) {
++		dev_dbg(dev, "Invalid DescribePCR response items[4]");
++		return -EINVAL;
++	}
++
++	desc->data.len = items[4].size;
++	memcpy(desc->data.data, &resp->data[items[4].offset],
++	       desc->data.len);
++
++	if (!cbor_is_str(&reader, &items[5], "lock")) {
++		dev_dbg(dev, "Invalid DescribePCR response items[5]");
++		return -EINVAL;
++	}
++
++	if (items[6].type != CBOR_ITEM_SIMPLE_VALUE) {
++		dev_dbg(dev, "Invalid DescribePCR response items[6]");
++		return -EINVAL;
++	}
++
++	desc->lock = 0;
++	err = cbor_decode(&reader, &items[6], &desc->lock, sizeof(u16));
++	if (err != CBOR_SUCCESS) {
++		dev_dbg(dev, "Invalid DescribePCR respons items[6]");
++		return -EINVAL;
++	}
++
++	return 0;
 +}
 +
-+cbor_error_t cbor_encode_float(cbor_writer_t *writer, float value)
++static int _parse_resp_describe_pcr(struct nsm *nsm, struct nsm_data_resp *resp,
++				    void *buffer)
 +{
-+	return encode_float(writer, value);
++	return parse_resp_describe_pcr(nsm, resp, buffer);
 +}
 +
-+cbor_error_t cbor_encode_double(cbor_writer_t *writer, double value)
-+{
-+	if (ieee754_is_shrinkable_to_single(value))
-+		return encode_float(writer, (float)value);
-+
-+	writer->buf[writer->bufidx++] = 0xFB;
-+	writer->bufidx += cbor_copy(&writer->buf[writer->bufidx],
-+			(uint8_t const *)&value, sizeof(value));
-+
-+	return CBOR_SUCCESS;
-+}
-+#endif
-+
-+cbor_error_t cbor_encode_text_string_indefinite(cbor_writer_t *writer)
-+{
-+	return encode_core(writer, 3, NULL, 0, true);
-+}
-+EXPORT_SYMBOL_GPL(cbor_encode_text_string_indefinite);
-diff --git a/lib/cbor/helper.c b/lib/cbor/helper.c
-new file mode 100644
-index 000000000000..f7b3e7deea67
---- /dev/null
-+++ b/lib/cbor/helper.c
-@@ -0,0 +1,175 @@
-+// SPDX-License-Identifier: MIT
 +/*
-+ * SPDX-FileCopyrightText: 2021 Kyunghwan Kwon <k@mononn.com>
++ * ExtendPCR request structure:
++ *
++ * {
++ *   Map(1) {
++ *     key = String("ExtendPCR"),
++ *     value = Map(2) {
++ *       key = String("index"),
++ *       value = Int(pcr),
++ *       key = String("data"),
++ *       value = Array(data),
++ *     }
++ *   }
++ * }
 + */
++static int fill_req_extend_pcr(struct nsm *nsm, struct nsm_data_req *req,
++			       union nsm_extend_pcr *extend_union)
++{
++	struct nsm_extend_pcr_req *extend = &extend_union->req;
++	cbor_writer_t writer;
++	cbor_error_t err;
 +
-+#include <linux/cbor/helper.h>
-+#include <linux/cbor/parser.h>
-+#include <linux/cbor/decoder.h>
++	cbor_writer_init(&writer, req->data, sizeof(req->data));
++	err = cbor_encode_map(&writer, 1);
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
 +
-+#include <linux/string.h>
-+#include <linux/module.h>
++	err = cbor_encode_null_terminated_text_string(&writer, "ExtendPCR");
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
 +
-+struct parser_ctx {
-+	const struct cbor_parser *parsers;
-+	size_t nr_parsers;
-+	void *arg;
++	err = cbor_encode_map(&writer, 2);
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	err = cbor_encode_null_terminated_text_string(&writer, "index");
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	err = cbor_encode_unsigned_integer(&writer, extend->index);
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	err = cbor_encode_null_terminated_text_string(&writer, "data");
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	if (extend->data.len > sizeof(extend->data.data))
++		return -EINVAL;
++
++	err = cbor_encode_byte_string(&writer, extend->data.data,
++				      extend->data.len);
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	req->len = cbor_writer_len(&writer);
++
++	return 0;
++}
++
++static int _fill_req_extend_pcr(struct nsm *nsm, struct nsm_data_req *req,
++				void *buffer)
++{
++	return fill_req_extend_pcr(nsm, req, buffer);
++}
++
++/*
++ * ExtendPCR response structure:
++ *
++ * {
++ *   Map(1) {
++ *     key = String("ExtendPCR"),
++ *     value = Map(1) {
++ *       key = String("data"),
++ *       value = Array()
++ *     }
++ *   }
++ * }
++ */
++static int parse_resp_extend_pcr(struct nsm *nsm, struct nsm_data_resp *resp,
++				 union nsm_extend_pcr *extend_union)
++{
++	struct nsm_extend_pcr_resp *extend = &extend_union->resp;
++	struct device *dev = &nsm->vdev->dev;
++	cbor_item_t items[7];
++	cbor_reader_t reader;
++	cbor_error_t err;
++	size_t n;
++
++	cbor_reader_init(&reader, items, ARRAY_SIZE(items));
++	err = cbor_parse(&reader, resp->data, resp->len, &n);
++	if (err != CBOR_SUCCESS) {
++		dev_dbg(dev, "Invalid ExtendPCR response");
++		return -EINVAL;
++	}
++
++	if (n != 5) {
++		dev_dbg(dev, "Invalid ExtendPCR response elements (%zd)", n);
++		return -EINVAL;
++	}
++
++	if (!cbor_is_str(&reader, &items[1], "ExtendPCR")) {
++		dev_dbg(dev, "Invalid ExtendPCR response items[1]");
++		return -EINVAL;
++	}
++
++	if (!cbor_is_str(&reader, &items[3], "data")) {
++		dev_dbg(dev, "Invalid ExtendPCR response items[3]");
++		return -EINVAL;
++	}
++
++	if (items[4].type != CBOR_ITEM_STRING) {
++		dev_dbg(dev, "Invalid ExtendPCR response items[4]");
++		return -EINVAL;
++	}
++
++	extend->data.len = items[4].size;
++	memcpy(extend->data.data, &resp->data[items[4].offset],
++	       extend->data.len);
++
++	return 0;
++}
++
++static int _parse_resp_extend_pcr(struct nsm *nsm, struct nsm_data_resp *resp,
++				  void *buffer)
++{
++	return parse_resp_extend_pcr(nsm, resp, buffer);
++}
++
++/*
++ * LockPCR request structure:
++ *
++ * {
++ *   Map(1) {
++ *     key = String("LockPCR"),
++ *     value = Map(1) {
++ *       key = String("index"),
++ *       value = Int(pcr)
++ *     }
++ *   }
++ * }
++ */
++static int fill_req_lock_pcr(struct nsm *nsm, struct nsm_data_req *req,
++			     union nsm_lock_pcr *lock_union)
++{
++	struct nsm_lock_pcr_req *lock = &lock_union->req;
++	cbor_writer_t writer;
++	cbor_error_t err;
++
++	cbor_writer_init(&writer, req->data, sizeof(req->data));
++	err = cbor_encode_map(&writer, 1);
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	err = cbor_encode_null_terminated_text_string(&writer, "LockPCR");
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	err = cbor_encode_map(&writer, 1);
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	err = cbor_encode_null_terminated_text_string(&writer, "index");
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	err = cbor_encode_unsigned_integer(&writer, lock->index);
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	req->len = cbor_writer_len(&writer);
++
++	return 0;
++}
++
++static int _fill_req_lock_pcr(struct nsm *nsm, struct nsm_data_req *req,
++			      void *buffer)
++{
++	return fill_req_lock_pcr(nsm, req, buffer);
++}
++
++/*
++ * LockPCR error response structure:
++ *
++ * {
++ *   Map(1) {
++ *     key = String("Error"),
++ *     value = String("ReadOnlyIndex"),
++ *   }
++ * }
++ *
++ * Any other response means success.
++ */
++static int parse_resp_lock_pcr(struct nsm *nsm, struct nsm_data_resp *resp)
++{
++	struct device *dev = &nsm->vdev->dev;
++	cbor_item_t items[7];
++	cbor_reader_t reader;
++	cbor_error_t err;
++	size_t n;
++
++	cbor_reader_init(&reader, items, ARRAY_SIZE(items));
++	err = cbor_parse(&reader, resp->data, resp->len, &n);
++	if (err != CBOR_SUCCESS) {
++		dev_dbg(dev, "Invalid LockPCR response");
++		return -EINVAL;
++	}
++
++	if (n == 3 &&
++	    cbor_is_str(&reader, &items[1], "Error"))
++		return -EINVAL;
++
++	return 0;
++}
++
++static int _parse_resp_lock_pcr(struct nsm *nsm, struct nsm_data_resp *resp,
++				void *buffer)
++{
++	return parse_resp_lock_pcr(nsm, resp);
++}
++
++/*
++ * LockPCRs request structure:
++ *
++ * {
++ *   Map(1) {
++ *     key = String("LockPCRs"),
++ *     value = Map(1) {
++ *       key = String("range"),
++ *       value = Int(pcr)
++ *     }
++ *   }
++ * }
++ */
++static int fill_req_lock_pcrs(struct nsm *nsm, struct nsm_data_req *req,
++			      union nsm_lock_pcrs *lock_union)
++{
++	struct nsm_lock_pcrs_req *lock = &lock_union->req;
++	cbor_writer_t writer;
++	cbor_error_t err;
++
++	cbor_writer_init(&writer, req->data, sizeof(req->data));
++	err = cbor_encode_map(&writer, 1);
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	err = cbor_encode_null_terminated_text_string(&writer, "LockPCRs");
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	err = cbor_encode_map(&writer, 1);
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	err = cbor_encode_null_terminated_text_string(&writer, "range");
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	err = cbor_encode_unsigned_integer(&writer, lock->range_from_zero);
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	req->len = cbor_writer_len(&writer);
++
++	return 0;
++}
++
++static int _fill_req_lock_pcrs(struct nsm *nsm, struct nsm_data_req *req,
++			       void *buffer)
++{
++	return fill_req_lock_pcrs(nsm, req, buffer);
++}
++
++/*
++ * LockPCRs error response structure:
++ *
++ * {
++ *   Map(1) {
++ *     key = String("Error"),
++ *     value = String("ReadOnlyIndex"),
++ *   }
++ * }
++ *
++ * Any other response means success.
++ */
++static int parse_resp_lock_pcrs(struct nsm *nsm, struct nsm_data_resp *resp)
++{
++	struct device *dev = &nsm->vdev->dev;
++	cbor_item_t items[7];
++	cbor_reader_t reader;
++	cbor_error_t err;
++	size_t n;
++
++	cbor_reader_init(&reader, items, ARRAY_SIZE(items));
++	err = cbor_parse(&reader, resp->data, resp->len, &n);
++	if (err != CBOR_SUCCESS) {
++		dev_dbg(dev, "Invalid LockPCRs response");
++		return -EINVAL;
++	}
++
++	if (n == 3 &&
++	    cbor_is_str(&reader, &items[1], "Error"))
++		return -EINVAL;
++
++	return 0;
++}
++
++static int _parse_resp_lock_pcrs(struct nsm *nsm, struct nsm_data_resp *resp,
++				 void *buffer)
++{
++	return parse_resp_lock_pcrs(nsm, resp);
++}
++
++/*
++ * DescribeNSM request structure:
++ *
++ * {
++ *   String("DescribeNSM"),
++ * }
++ */
++static int fill_req_describe_nsm(struct nsm *nsm, struct nsm_data_req *req)
++{
++	cbor_writer_t writer;
++	cbor_error_t err;
++
++	cbor_writer_init(&writer, req->data, sizeof(req->data));
++
++	err = cbor_encode_null_terminated_text_string(&writer, "DescribeNSM");
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	req->len = cbor_writer_len(&writer);
++
++	return 0;
++}
++
++static int _fill_req_describe_nsm(struct nsm *nsm, struct nsm_data_req *req,
++				  void *buffer)
++{
++	return fill_req_describe_nsm(nsm, req);
++}
++
++/*
++ * DescribeNSM response structure:
++ *
++ * {
++ *   Map(1) {
++ *     key = String("DescribeNSM"),
++ *     value = Map(7) {
++ *       key = String("digest"),
++ *       value = String("SHA384"),
++ *       key = String("max_pcrs"),
++ *       value = Int(32),
++ *       key = String("module_id"),
++ *       value = String("i-1234-enc5678"),
++ *       key = String("locked_pcrs"),
++ *       value = Array<u16>() (libcbor lists every element as item)
++ *       key = String("version_major"),
++ *       value = Int(1),
++ *       key = String("version_minor"),
++ *       value = Int(0),
++ *       key = String("version_patch"),
++ *       value = Int(0)
++ *     }
++ *   }
++ * }
++ */
++static int parse_resp_describe_nsm(struct nsm *nsm, struct nsm_data_resp *resp,
++				   union nsm_describe_nsm *desc_union)
++{
++	struct nsm_describe_nsm_resp *desc = &desc_union->resp;
++	struct device *dev = &nsm->vdev->dev;
++	cbor_item_t items[64];
++	cbor_reader_t reader;
++	cbor_error_t err;
++	size_t n;
++	int i;
++
++	cbor_reader_init(&reader, items, ARRAY_SIZE(items));
++	err = cbor_parse(&reader, resp->data, resp->len, &n);
++	if (err != CBOR_SUCCESS) {
++		dev_dbg(dev, "Invalid DescribeNSM response");
++		return -EINVAL;
++	}
++
++	if (n < 11) {
++		dev_dbg(dev, "Invalid DescribeNSM response elements (%zd)", n);
++		return -EINVAL;
++	}
++
++	if (!cbor_is_str(&reader, &items[1], "DescribeNSM")) {
++		dev_dbg(dev, "Invalid DescribeNSM response items[1]");
++		return -EINVAL;
++	}
++
++	if (!cbor_is_str(&reader, &items[3], "digest")) {
++		dev_dbg(dev, "Invalid DescribeNSM response items[3]");
++		return -EINVAL;
++	}
++
++	if (items[4].type != CBOR_ITEM_STRING) {
++		dev_dbg(dev, "Invalid DescribeNSM response items[4]");
++		return -EINVAL;
++	}
++
++	memset(desc->digest, 0, sizeof(desc->digest));
++	memcpy(desc->digest, &resp->data[items[4].offset],
++	       min_t(size_t, items[4].size, sizeof(desc->digest)));
++
++	if (!cbor_is_str(&reader, &items[5], "max_pcrs")) {
++		dev_dbg(dev, "Invalid DescribeNSM response items[5]");
++		return -EINVAL;
++	}
++
++	desc->max_pcrs = 0;
++	err = cbor_decode(&reader, &items[6], &desc->max_pcrs,
++			  sizeof(desc->max_pcrs));
++	if (err != CBOR_SUCCESS) {
++		dev_dbg(dev, "Invalid DescribeNSM respons items[6]");
++		return -EINVAL;
++	}
++
++	if (!cbor_is_str(&reader, &items[7], "module_id")) {
++		dev_dbg(dev, "Invalid DescribeNSM response items[7]");
++		return -EINVAL;
++	}
++
++	memset(desc->module_id, 0, sizeof(desc->module_id));
++	memcpy(desc->module_id, &resp->data[items[8].offset],
++	       min_t(size_t, items[8].size, sizeof(desc->module_id)));
++
++	if (!cbor_is_str(&reader, &items[9], "locked_pcrs")) {
++		dev_dbg(dev, "Invalid DescribeNSM response items[9]");
++		return -EINVAL;
++	}
++
++	desc->locked_pcrs.u16s = min_t(size_t, ARRAY_SIZE(desc->locked_pcrs.u16),
++				       items[10].size);
++	memcpy(desc->locked_pcrs.u16, &resp->data[items[10].offset],
++	       desc->locked_pcrs.u16s * sizeof(u16));
++
++	/* libcbor interprets each array element as item, use dynamic index */
++	i = 11 + desc->locked_pcrs.u16s;
++
++	if (i > n)
++		return -EINVAL;
++
++	if (!cbor_is_str(&reader, &items[i], "version_major")) {
++		dev_dbg(dev, "Invalid DescribeNSM response items[%d]", i);
++		return -EINVAL;
++	}
++
++	if (++i > n)
++		return -EINVAL;
++
++	desc->major = 0;
++	err = cbor_decode(&reader, &items[i], &desc->major,
++			  sizeof(desc->major));
++
++	if (++i > n)
++		return -EINVAL;
++
++	if (!cbor_is_str(&reader, &items[i], "version_minor")) {
++		dev_dbg(dev, "Invalid DescribeNSM response items[%d]", i);
++		return -EINVAL;
++	}
++
++	if (++i > n)
++		return -EINVAL;
++
++	desc->minor = 0;
++	err = cbor_decode(&reader, &items[i], &desc->minor,
++			  sizeof(desc->minor));
++
++	if (++i > n)
++		return -EINVAL;
++
++	if (!cbor_is_str(&reader, &items[i], "version_patch")) {
++		dev_dbg(dev, "Invalid DescribeNSM response items[%d]", i);
++		return -EINVAL;
++	}
++
++	if (++i > n)
++		return -EINVAL;
++
++	desc->patch = 0;
++	err = cbor_decode(&reader, &items[i], &desc->patch,
++			  sizeof(desc->patch));
++
++	return 0;
++}
++
++static int _parse_resp_describe_nsm(struct nsm *nsm, struct nsm_data_resp *resp,
++				    void *buffer)
++{
++	return parse_resp_describe_nsm(nsm, resp, buffer);
++}
++
++/*
++ * Attestation request structure:
++ *
++ *   Map(1) {
++ *     key = String("Attestation"),
++ *     value = Map(3) {
++ *       key = String("user_data"),
++ *       value = Array(),
++ *       key = String("nonce"),
++ *       value = Array(),
++ *       key = String("public_key"),
++ *       value = Array(),
++ *     }
++ *   }
++ * }
++ */
++static int fill_req_attestation(struct nsm *nsm, struct nsm_data_req *req,
++				union nsm_attestation *att_union)
++{
++	struct nsm_attestation_req *att = &att_union->req;
++	cbor_writer_t writer;
++	cbor_error_t err;
++
++	cbor_writer_init(&writer, req->data, sizeof(req->data));
++
++	err = cbor_encode_map(&writer, 1);
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	err = cbor_encode_null_terminated_text_string(&writer, "Attestation");
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	err = cbor_encode_map(&writer, 3);
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	err = cbor_encode_null_terminated_text_string(&writer, "user_data");
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	att->user_data.len = min_t(u32, att->user_data.len,
++				   sizeof(att->user_data.data));
++	err = cbor_encode_byte_string(&writer, att->user_data.data,
++				      att->user_data.len);
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	err = cbor_encode_null_terminated_text_string(&writer, "nonce");
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	att->nonce.len = min_t(u32, att->nonce.len, sizeof(att->nonce.data));
++	err = cbor_encode_byte_string(&writer, att->nonce.data,
++				      att->nonce.len);
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	err = cbor_encode_null_terminated_text_string(&writer, "public_key");
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	att->public_key.len = min_t(u32, att->public_key.len,
++				    sizeof(att->public_key.data));
++	err = cbor_encode_byte_string(&writer, att->public_key.data,
++				      att->public_key.len);
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++
++	req->len = cbor_writer_len(&writer);
++
++	return 0;
++}
++
++static int _fill_req_attestation(struct nsm *nsm, struct nsm_data_req *req,
++				 void *buffer)
++{
++	return fill_req_attestation(nsm, req, buffer);
++}
++
++/*
++ * Attestation response structure:
++ *
++ * {
++ *   Map(1) {
++ *     key = String("Attestation"),
++ *     value = Map(1) {
++ *       key = String("document"),
++ *       value = Array()
++ *     }
++ *   }
++ * }
++ */
++static int parse_resp_attestation(struct nsm *nsm, struct nsm_data_resp *resp,
++				  union nsm_attestation *att_union)
++{
++	struct nsm_attestation_resp *att = &att_union->resp;
++	struct device *dev = &nsm->vdev->dev;
++	cbor_item_t items[6];
++	cbor_reader_t reader;
++	cbor_error_t err;
++	size_t n;
++
++	cbor_reader_init(&reader, items, ARRAY_SIZE(items));
++	err = cbor_parse(&reader, resp->data, resp->len, &n);
++	if (err != CBOR_SUCCESS) {
++		dev_dbg(dev, "Invalid Attestation response");
++		return -EINVAL;
++	}
++
++	if (n != 5) {
++		dev_dbg(dev, "Invalid Attestation response elements (%zd)", n);
++		return -EINVAL;
++	}
++
++	if (!cbor_is_str(&reader, &items[1], "Attestation")) {
++		dev_dbg(dev, "Invalid Attestation response items[1]");
++		return -EINVAL;
++	}
++
++	if (!cbor_is_str(&reader, &items[3], "document")) {
++		dev_dbg(dev, "Invalid Attestation response items[3]");
++		return -EINVAL;
++	}
++
++	if (items[4].type != CBOR_ITEM_STRING) {
++		dev_dbg(dev, "Invalid Attestation response items[4]");
++		return -EINVAL;
++	}
++
++	att->document.len = items[4].size;
++	memcpy(att->document.data, &resp->data[items[4].offset],
++	       att->document.len);
++
++	return 0;
++}
++
++static int _parse_resp_attestation(struct nsm *nsm, struct nsm_data_resp *resp,
++				   void *buffer)
++{
++	return parse_resp_attestation(nsm, resp, buffer);
++}
++
++/*
++ * GetRandom request structure:
++ *
++ * {
++ *   String("GetRandom")
++ * }
++ */
++static int fill_req_get_random(struct nsm *nsm, struct nsm_data_req *req)
++{
++	cbor_writer_t writer;
++	cbor_error_t err;
++
++	cbor_writer_init(&writer, req->data, sizeof(req->data));
++	err = cbor_encode_null_terminated_text_string(&writer, "GetRandom");
++	if (err != CBOR_SUCCESS)
++		return -ENOMEM;
++	req->len = cbor_writer_len(&writer);
++
++	return 0;
++}
++
++static int _fill_req_get_random(struct nsm *nsm, struct nsm_data_req *req,
++				void *buffer)
++{
++	return fill_req_get_random(nsm, req);
++}
++
++/*
++ * GetRandom response structure:
++ *
++ * {
++ *   Map(1) {
++ *     key = String("GetRandom"),
++ *     value = Map(1) {
++ *       key = String("random"),
++ *       value = Array()
++ *     }
++ *   }
++ * }
++ */
++static int parse_resp_get_random(struct nsm *nsm, struct nsm_data_resp *resp,
++				 union nsm_get_random *random_union)
++{
++	struct nsm_get_random_resp *random = &random_union->resp;
++	struct device *dev = &nsm->vdev->dev;
++	cbor_item_t items[6];
++	cbor_reader_t reader;
++	cbor_error_t err;
++	size_t n;
++
++	cbor_reader_init(&reader, items, ARRAY_SIZE(items));
++	err = cbor_parse(&reader, resp->data, resp->len, &n);
++	if (err != CBOR_SUCCESS) {
++		dev_dbg(dev, "Invalid GetRandom response");
++		return -EINVAL;
++	}
++
++	if (n != 5) {
++		dev_dbg(dev, "Invalid GetRandom response elements (%zd)", n);
++		return -EINVAL;
++	}
++
++	if (!cbor_is_str(&reader, &items[1], "GetRandom")) {
++		dev_dbg(dev, "Invalid GetRandom response items[1]");
++		return -EINVAL;
++	}
++
++	if (!cbor_is_str(&reader, &items[3], "random")) {
++		dev_dbg(dev, "Invalid GetRandom response items[3]");
++		return -EINVAL;
++	}
++
++	if (items[4].type != CBOR_ITEM_STRING) {
++		dev_dbg(dev, "Invalid GetRandom response items[4]");
++		return -EINVAL;
++	}
++
++	random->random.len = items[4].size;
++	memcpy(random->random.data, &resp->data[items[4].offset],
++	       random->random.len);
++
++	return 0;
++}
++
++static int _parse_resp_get_random(struct nsm *nsm, struct nsm_data_resp *resp,
++				  void *buffer)
++{
++	return parse_resp_get_random(nsm, resp, buffer);
++}
++
++/*
++ * HwRNG implementation
++ */
++static int nsm_rng_read(struct hwrng *rng, void *data, size_t max, bool wait)
++{
++	struct nsm *nsm = hwrng_to_nsm(rng);
++	struct device *dev = &nsm->vdev->dev;
++	union nsm_get_random *random = NULL;
++	struct nsm_msg *msg;
++	int rc = 0;
++
++	/* NSM always needs to wait for a response */
++	if (!wait)
++		return 0;
++
++	msg = devm_kzalloc(dev, sizeof(*msg), GFP_KERNEL);
++	if (!msg)
++		return -ENOMEM;
++
++	rc = -ENOMEM;
++	random = devm_kzalloc(dev, sizeof(*random), GFP_KERNEL);
++	if (!random)
++		goto out;
++
++	rc = fill_req_get_random(nsm, &msg->req);
++	if (rc != 0)
++		goto out;
++
++	rc = nsm_sendrecv_msg(nsm, msg);
++	if (rc != 0)
++		goto out;
++
++	rc = parse_resp_get_random(nsm, &msg->resp, random);
++	if (rc != 0)
++		goto out;
++
++	rc = min_t(size_t, random->resp.random.len, max);
++	memcpy(data, random->resp.random.data, rc);
++
++	dev_dbg(dev, "RNG: returning rand bytes = %d", rc);
++out:
++	devm_kfree(dev, random);
++	devm_kfree(dev, msg);
++	return rc;
++}
++
++static ssize_t version_show(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	struct miscdevice *misc_dev = dev_get_drvdata(dev);
++	struct nsm *nsm = misc_dev_to_nsm(misc_dev);
++
++	return sysfs_emit(buf, "%d.%d.%d\n", nsm->major, nsm->minor, nsm->patch);
++}
++static DEVICE_ATTR_RO(version);
++
++static ssize_t max_pcrs_show(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	struct miscdevice *misc_dev = dev_get_drvdata(dev);
++	struct nsm *nsm = misc_dev_to_nsm(misc_dev);
++
++	return sysfs_emit(buf, "%d\n", nsm->max_pcrs);
++}
++static DEVICE_ATTR_RO(max_pcrs);
++
++static ssize_t digest_show(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	struct miscdevice *misc_dev = dev_get_drvdata(dev);
++	struct nsm *nsm = misc_dev_to_nsm(misc_dev);
++
++	return sysfs_emit(buf, "%s\n", nsm->digest);
++}
++static DEVICE_ATTR_RO(digest);
++
++static ssize_t module_id_show(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	struct miscdevice *misc_dev = dev_get_drvdata(dev);
++	struct nsm *nsm = misc_dev_to_nsm(misc_dev);
++
++	return sysfs_emit(buf, "%s\n", nsm->module_id);
++}
++static DEVICE_ATTR_RO(module_id);
++
++/* Sysfs files to access NSM state in addition to ioctls */
++static struct attribute *nsm_dev_attrs[] = {
++	&dev_attr_version.attr,
++	&dev_attr_max_pcrs.attr,
++	&dev_attr_digest.attr,
++	&dev_attr_module_id.attr,
++	NULL
++};
++ATTRIBUTE_GROUPS(nsm_dev);
++
++/*
++ * IOCTL handlers. We always follow the same pattern for each of these: We copy
++ * the full user struct to kernel space, then we generate a device message from
++ * it, send it to the device and parse the response back into the in-kernel
++ * struct. Then we copy the full result back to user space.
++ */
++struct nsm_ioctl_handler {
++	int cmd;
++	int (*fill_req)(struct nsm *nsm, struct nsm_data_req *req, void *buffer);
++	int (*parse_resp)(struct nsm *nsm, struct nsm_data_resp *resp, void *buffer);
 +};
 +
-+static const struct cbor_parser *get_parser(const struct parser_ctx *ctx,
-+		intptr_t intkey, const void *strkey, size_t strkey_len)
++static const struct nsm_ioctl_handler nsm_ioctls[] = {
++	{ NSM_IOCTL_RAW, _fill_req_raw, _parse_resp_raw },
++	{ NSM_IOCTL_DESCRIBE_PCR, _fill_req_describe_pcr, _parse_resp_describe_pcr },
++	{ NSM_IOCTL_EXTEND_PCR, _fill_req_extend_pcr, _parse_resp_extend_pcr },
++	{ NSM_IOCTL_LOCK_PCR, _fill_req_lock_pcr, _parse_resp_lock_pcr },
++	{ NSM_IOCTL_LOCK_PCRS, _fill_req_lock_pcrs, _parse_resp_lock_pcrs },
++	{ NSM_IOCTL_DESCRIBE_NSM, _fill_req_describe_nsm, _parse_resp_describe_nsm },
++	{ NSM_IOCTL_ATTESTATION, _fill_req_attestation, _parse_resp_attestation },
++	{ NSM_IOCTL_RANDOM, _fill_req_get_random, _parse_resp_get_random },
++};
++
++static const struct nsm_ioctl_handler *nsm_dev_ioctl_handler(int cmd)
 +{
-+	for (size_t i = 0; i < ctx->nr_parsers; i++) {
-+		const struct cbor_parser *p = &ctx->parsers[i];
++	int i;
 +
-+		if (!p->key)
-+			continue;
-+
-+		if (strkey && strkey_len && p->keylen >= strkey_len) {
-+			if (memcmp(p->key, strkey, strkey_len) == 0)
-+				return p;
-+		} else if (intkey == (intptr_t)p->key) {
-+			return p;
-+		}
-+	}
++	for (i = 0; i < ARRAY_SIZE(nsm_ioctls); i++)
++		if (nsm_ioctls[i].cmd == cmd)
++			return &nsm_ioctls[i];
 +
 +	return NULL;
 +}
 +
-+static void parse_item(const cbor_reader_t *reader, const cbor_item_t *item,
-+		    const cbor_item_t *parent, void *arg)
++static long nsm_dev_ioctl(struct file *file, unsigned int cmd,
++	unsigned long arg)
 +{
-+	struct parser_ctx *ctx = (struct parser_ctx *)arg;
-+	const void *strkey = NULL;
-+	size_t strkey_len = 0;
-+	intptr_t intkey = -1;
++	void __user *argp = u64_to_user_ptr((u64)arg);
++	const struct nsm_ioctl_handler *handler;
++	struct nsm *nsm = file_to_nsm(file);
++	struct device *dev = &nsm->vdev->dev;
++	struct nsm_msg *msg = NULL;
++	void *buffer = NULL;
++	int r = 0;
 +
-+	if (parent && parent->type == CBOR_ITEM_MAP) {
-+		if ((item - parent) % 2) { /* key */
-+			return;
-+		}
++	/* Find handler for this ioctl */
++	r = -EINVAL;
++	handler = nsm_dev_ioctl_handler(cmd);
++	if (!handler)
++		goto out;
 +
-+		if ((item-1)->type == CBOR_ITEM_INTEGER) {
-+			cbor_decode(reader, item-1, &intkey, sizeof(intkey));
-+		} else {
-+			strkey = cbor_decode_pointer(reader, item-1);
-+			strkey_len = (item-1)->size;
-+		}
-+	}
++	/* Allocate message buffers to device */
++	r = -ENOMEM;
++	msg = devm_kzalloc(dev, sizeof(*msg), GFP_KERNEL);
++	if (!msg)
++		goto out;
 +
-+	if (strkey || intkey != -1) {
-+		const struct cbor_parser *parser = get_parser(ctx,
-+				intkey, strkey, strkey_len);
++	/* Allocate kernel copy of ioctl argument */
++	r = -ENOMEM;
++	buffer = devm_kmalloc(dev, _IOC_SIZE(cmd), GFP_KERNEL);
++	if (!buffer)
++		goto out;
 +
-+		if (parser && parser->run)
-+			parser->run(reader, parser, item, ctx->arg);
-+	}
++	/* Copy user argument struct to kernel argument struct */
++	r = -EFAULT;
++	if (copy_from_user(buffer, argp, _IOC_SIZE(cmd)))
++		goto out;
++
++	/* Convert kernel argument struct to device request */
++	r = handler->fill_req(nsm, &msg->req, buffer);
++	if (r)
++		goto out;
++
++	/* Send message to NSM and read reply */
++	r = nsm_sendrecv_msg(nsm, msg);
++	if (r)
++		goto out;
++
++	/* Parse device response into kernel argument struct */
++	r = handler->parse_resp(nsm, &msg->resp, buffer);
++	if (r)
++		goto out;
++
++	/* Copy kernel argument struct  back to user argument struct */
++	r = -EFAULT;
++	if (copy_to_user(argp, buffer, _IOC_SIZE(cmd)))
++		goto out;
++
++	r = 0;
++
++out:
++	devm_kfree(dev, msg);
++	devm_kfree(dev, buffer);
++	return r;
 +}
 +
-+static size_t iterate_each(const cbor_reader_t *reader,
-+		    const cbor_item_t *items, size_t nr_items,
-+		    const cbor_item_t *parent,
-+		    void (*callback_each)(const cbor_reader_t *reader,
-+			    const cbor_item_t *item, const cbor_item_t *parent,
-+			    void *arg),
-+		    void *arg)
++static int nsm_dev_file_open(struct inode *node, struct file *file)
 +{
-+	size_t offset = 0;
-+	size_t i = 0;
-+
-+	for (i = 0; i < nr_items; i++) {
-+		const cbor_item_t *item = &items[i+offset];
-+
-+		if (item->type == CBOR_ITEM_MAP
-+				|| item->type == CBOR_ITEM_ARRAY) {
-+			size_t len = item->type == CBOR_ITEM_MAP ?
-+					item->size*2 : item->size;
-+			offset += iterate_each(reader, item+1, len, item,
-+					callback_each, arg);
-+			continue;
-+		}
-+
-+		if (cbor_decode(reader, item, 0, 0) == CBOR_BREAK)
-+			break;
-+
-+		(*callback_each)(reader, item, parent, arg);
-+	}
-+
-+	return i + offset;
++	return 0;
 +}
 +
-+bool cbor_unmarshal(cbor_reader_t *reader,
-+		const struct cbor_parser *parsers, size_t nr_parsers,
-+		const void *msg, size_t msglen, void *arg)
++static int nsm_dev_file_close(struct inode *inode, struct file *file)
 +{
-+	size_t n;
-+	cbor_error_t err = cbor_parse(reader, msg, msglen, &n);
-+
-+	if (err != CBOR_SUCCESS && err != CBOR_BREAK)
-+		return false;
-+
-+	struct parser_ctx ctx = {
-+		.parsers = parsers,
-+		.nr_parsers = nr_parsers,
-+		.arg = arg,
-+	};
-+
-+	iterate_each(reader, reader->items, n, 0, parse_item, &ctx);
-+
-+	return true;
-+}
-+EXPORT_SYMBOL_GPL(cbor_unmarshal);
-+
-+size_t cbor_iterate(const cbor_reader_t *reader,
-+		    const cbor_item_t *parent,
-+		    void (*callback_each)(const cbor_reader_t *reader,
-+			    const cbor_item_t *item, const cbor_item_t *parent,
-+			    void *arg),
-+		    void *arg)
-+{
-+	return iterate_each(reader, reader->items, reader->itemidx,
-+			parent, callback_each, arg);
-+}
-+EXPORT_SYMBOL_GPL(cbor_iterate);
-+
-+const char *cbor_stringify_error(cbor_error_t err)
-+{
-+	switch (err) {
-+	case CBOR_SUCCESS:
-+		return "success";
-+	case CBOR_INVALID:
-+		return "invalid";
-+	case CBOR_OVERRUN:
-+		return "out of memory";
-+	case CBOR_BREAK:
-+		return "break";
-+	case CBOR_EXCESSIVE:
-+		return "too deep recursion";
-+	case CBOR_ILLEGAL:
-+	default:
-+		return "not well-formed";
-+	}
-+}
-+EXPORT_SYMBOL_GPL(cbor_stringify_error);
-+
-+const char *cbor_stringify_item(cbor_item_t *item)
-+{
-+	switch (item->type) {
-+	case CBOR_ITEM_INTEGER:
-+		return "integer";
-+	case CBOR_ITEM_STRING:
-+		return "string";
-+	case CBOR_ITEM_ARRAY:
-+		return "array";
-+	case CBOR_ITEM_MAP:
-+		return "map";
-+	case CBOR_ITEM_FLOAT:
-+		return "float";
-+	case CBOR_ITEM_SIMPLE_VALUE:
-+		return "simple value";
-+	case CBOR_ITEM_UNKNOWN:
-+	default:
-+		return "unknown";
-+	}
-+}
-+EXPORT_SYMBOL_GPL(cbor_stringify_item);
-diff --git a/lib/cbor/ieee754.c b/lib/cbor/ieee754.c
-new file mode 100644
-index 000000000000..acf180a99f01
---- /dev/null
-+++ b/lib/cbor/ieee754.c
-@@ -0,0 +1,205 @@
-+// SPDX-License-Identifier: MIT
-+/*
-+ * SPDX-FileCopyrightText: 2021 Kyunghwan Kwon <k@mononn.com>
-+ */
-+
-+/*
-+ * | precision | sign | exponent | mantissa | bias |   exp range  |
-+ * | --------- | ---- | -------- | -------- | ---- | ------------ |
-+ * | half      | 1    |  5       | 10       |   15 |   -14 ~   15 |
-+ * | single    | 1    |  8       | 23       |  127 |  -126 ~  127 |
-+ * | double    | 1    | 11       | 52       | 1023 | -1022 ~ 1023 |
-+ *
-+ * ## Special cases
-+ * | s |   e  | m  |     desc.     |
-+ * | - | -----| -- | ------------- |
-+ * | 0 |    0 |  0 | +0.0          |
-+ * | 1 |    0 |  0 | -0.0          |
-+ * | 0 |    0 | !0 | 0.m * 2^-126  |
-+ * | 1 |    0 | !0 | -0.m * 2^-126 |
-+ * | 0 | 0xff |  0 | infinity      |
-+ * | 1 | 0xff |  0 | -infinity     |
-+ * | X | 0xff | -1 | Quiet NaN     |
-+ * | X | 0xff | !0 | Signaling NaN |
-+ *
-+ * ## Terms
-+ * - f: source bias
-+ * - t: target bias
-+ * - e: exponent
-+ * - m: mantissa
-+ */
-+
-+#include <linux/cbor/ieee754.h>
-+
-+#define BIAS_HALF				15
-+#define BIAS_SINGLE				127
-+#define BIAS_DOUBLE				1023
-+
-+#define E_MASK_HALF				((1u << 5) - 1)
-+#define E_MASK_SINGLE				((1ul << 8) - 1)
-+#define E_MASK_DOUBLE				((1ul << 11) - 1)
-+
-+#define M_BIT_HALF				10
-+#define M_BIT_SINGLE				23
-+#define M_BIT_DOUBLE				52
-+
-+#define M_MASK_HALF				((1u << M_BIT_HALF) - 1)
-+#define M_MASK_SINGLE				((1ul << M_BIT_SINGLE) - 1)
-+#define M_MASK_DOUBLE				((1ull << M_BIT_DOUBLE) - 1)
-+
-+static int find_last_set_bit(unsigned int value)
-+{
-+	int cnt = 0;
-+
-+	while (value != 0) {
-+		value >>= 1;
-+		cnt++;
-+	}
-+
-+	return cnt;
++	return 0;
 +}
 +
-+static bool is_over_range(unsigned int e, unsigned int f, unsigned int t)
++static int nsm_device_init_vq(struct virtio_device *vdev)
 +{
-+	return e > (f + t);
++	struct virtqueue *vq = virtio_find_single_vq(vdev,
++		nsm_vq_callback, "nsm.vq.0");
++	struct nsm *nsm = vdev->priv;
++
++	if (IS_ERR(vq))
++		return PTR_ERR(vq);
++
++	nsm->vq = vq;
++
++	return 0;
 +}
 +
-+static bool is_under_range(unsigned int e, unsigned int f, unsigned int t)
-+{
-+	return e < (f - t + 1);
-+}
-+
-+static bool is_in_range(unsigned int e, unsigned int f, unsigned int t)
-+{
-+	return !is_over_range(e, f, t) && !is_under_range(e, f, t);
-+}
-+
-+static bool is_in_subrange(unsigned int e, unsigned int target_m_bits,
-+		unsigned int f, unsigned int t)
-+{
-+	return is_under_range(e, f, t) && ((f - e - t) < target_m_bits);
-+}
-+
-+static bool is_precision_lost(uint64_t m, unsigned int f, unsigned int t)
-+{
-+	return (m & ((1ull << (f - t)) - 1)) != 0;
-+}
-+
-+uint16_t ieee754_convert_single_to_half(float value)
-+{
-+	ieee754_single_t single = { .value = value };
-+	ieee754_half_t half = { .value = 0 };
-+	uint8_t exp = M_BIT_SINGLE - M_BIT_HALF;
-+
-+	half.components.sign = single.components.sign;
-+	if (single.components.e == E_MASK_SINGLE) { /* NaN or infinity */
-+		half.components.e = E_MASK_HALF;
-+	} else if (is_over_range(single.components.e, BIAS_SINGLE, BIAS_HALF)) {
-+		/* make it NaN */
-+		half.components.e = E_MASK_HALF;
-+		single.components.m = 0;
-+	} else if (is_under_range(single.components.e, BIAS_SINGLE, BIAS_HALF)) {
-+		/* expand the exponent to the mantissa to make it subnormal */
-+		exp = (uint8_t)(exp + ((BIAS_SINGLE - single.components.e) - BIAS_HALF));
-+		single.components.m = M_MASK_SINGLE;
-+	} else { /* zero, normal */
-+		if (single.components.e != 0) {
-+			half.components.e = (uint8_t)(single.components.e
-+				- BIAS_SINGLE + BIAS_HALF) & E_MASK_HALF;
-+		}
-+	}
-+
-+	/* precision may be lost discarding outrange lower bits */
-+	half.components.m = ((uint32_t)single.components.m >> exp) & M_MASK_HALF;
-+
-+	return half.value;
-+}
-+
-+double ieee754_convert_half_to_double(uint16_t value)
-+{
-+	ieee754_half_t half = { .value = value };
-+	ieee754_double_t d;
-+
-+	d.components.sign = half.components.sign;
-+	d.components.e = half.components.e;
-+	d.components.m = half.components.m;
-+
-+	if (half.components.e == E_MASK_HALF) { /* NaN or infinity */
-+		d.components.e = E_MASK_DOUBLE;
-+		if (half.components.m == M_MASK_HALF) /* Quiet NaN */
-+			d.components.m = M_MASK_DOUBLE;
-+		else if (half.components.m != 0) /* Signaling NaN */
-+			d.components.m = (1ull << (M_BIT_DOUBLE - 1));
-+	} else if (half.components.e == 0) { /* zero or subnormal */
-+		if (half.components.m != 0) { /* subnormal */
-+			/* find the leading 1 to nomalize */
-+			uint64_t leading_shift = (uint64_t)(M_BIT_HALF -
-+					find_last_set_bit(half.components.m) + 1);
-+			d.components.m <<= leading_shift;
-+			d.components.e =
-+				(BIAS_DOUBLE - BIAS_HALF - leading_shift + 1)
-+				& E_MASK_DOUBLE;
-+		}
-+	} else { /* normal */
-+		d.components.e = (uint32_t)(BIAS_DOUBLE + (half.components.e
-+					- BIAS_HALF)) & 0x7FFu/*11-bit*/;
-+	}
-+
-+	d.components.m <<= M_BIT_DOUBLE - M_BIT_HALF;
-+
-+	return d.value;
-+}
-+
-+bool ieee754_is_shrinkable_to_half(float value)
-+{
-+	ieee754_single_t single = { .value = value };
-+
-+	if (single.components.e == 0) {
-+		if (single.components.m == 0) { /* zero */
-+			return true;
-+		}
-+		/* subnormal */
-+		if (!is_precision_lost(single.components.m,
-+					M_BIT_SINGLE, M_BIT_HALF)) {
-+			return true;
-+		}
-+	} else if (single.components.e == E_MASK_SINGLE) { /* NaN or infinity */
-+		return true;
-+	} else if (is_in_range(single.components.e, BIAS_SINGLE, BIAS_HALF) &&
-+			!is_precision_lost(single.components.m, M_BIT_SINGLE,
-+				M_BIT_HALF)) {
-+		return true;
-+	} else if (is_in_subrange(single.components.e, M_BIT_HALF,
-+				BIAS_SINGLE, BIAS_HALF)) {
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
-+bool ieee754_is_shrinkable_to_single(double value)
-+{
-+	ieee754_double_t d = { .value = value };
-+
-+	if (d.components.e == 0) {
-+		if (d.components.m == 0) { /* zero */
-+			return true;
-+		}
-+		/* subnormal */
-+		if (!is_precision_lost(d.components.m,
-+					M_BIT_DOUBLE, M_BIT_SINGLE)) {
-+			return true;
-+		}
-+	} else if (d.components.e == E_MASK_DOUBLE) { /* NaN or infinity */
-+		return true;
-+	} else if (is_in_range(d.components.e, BIAS_DOUBLE, BIAS_SINGLE) &&
-+			!is_precision_lost(d.components.m, M_BIT_DOUBLE,
-+				M_BIT_SINGLE)) {
-+		return true;
-+	} else if (is_in_subrange(d.components.e, M_BIT_SINGLE,
-+				BIAS_DOUBLE, BIAS_SINGLE)) {
-+		return true;
-+	}
-+
-+	return false;
-+}
-diff --git a/lib/cbor/parser.c b/lib/cbor/parser.c
-new file mode 100644
-index 000000000000..c997834f7c48
---- /dev/null
-+++ b/lib/cbor/parser.c
-@@ -0,0 +1,243 @@
-+// SPDX-License-Identifier: MIT
-+/*
-+ * SPDX-FileCopyrightText: 2021 Kyunghwan Kwon <k@mononn.com>
-+ */
-+
-+#include <linux/cbor/parser.h>
-+#include <linux/module.h>
-+
-+#if !defined(assert)
-+#define assert(expr)
-+#endif
-+
-+struct parser_context {
-+	cbor_reader_t *reader;
-+
-+	uint8_t major_type;
-+	uint8_t additional_info;
-+	uint8_t following_bytes;
-+
-+	uint8_t recursion_depth;
-+
-+	_Static_assert(CBOR_RECURSION_MAX_LEVEL < 256, "");
++static const struct file_operations nsm_dev_fops = {
++	.open = nsm_dev_file_open,
++	.release = nsm_dev_file_close,
++	.unlocked_ioctl = nsm_dev_ioctl,
++	.compat_ioctl = compat_ptr_ioctl,
 +};
 +
-+typedef cbor_error_t (*type_parser_t)(struct parser_context *ctx);
-+
-+static cbor_error_t do_integer(struct parser_context *ctx);
-+static cbor_error_t do_string(struct parser_context *ctx);
-+static cbor_error_t do_recursive(struct parser_context *ctx);
-+static cbor_error_t do_tag(struct parser_context *ctx);
-+static cbor_error_t do_float_and_other(struct parser_context *ctx);
-+
-+/* 8 parsers for 3-bit major type */
-+static const type_parser_t parsers[] = {
-+	do_integer,		/* 0: unsigned integer */
-+	do_integer,		/* 1: negative integer */
-+	do_string,		/* 2: byte string */
-+	do_string,		/* 3: text string encoded as utf-8 */
-+	do_recursive,		/* 4: array */
-+	do_recursive,		/* 5: map */
-+	do_tag,			/* 6: tag */
-+	do_float_and_other,	/* 7: float, simple value, and break */
-+};
-+
-+static bool has_valid_following_bytes(const struct parser_context *ctx,
-+		cbor_error_t *err)
++static int nsm_init_sysfs(struct nsm *nsm)
 +{
-+	*err = CBOR_SUCCESS;
++	struct device *dev = &nsm->vdev->dev;
++	union nsm_describe_nsm *desc = NULL;
++	struct nsm_msg *msg = NULL;
++	int rc = 0;
 +
-+	if (ctx->following_bytes == (uint8_t)CBOR_RESERVED_VALUE) {
-+		*err = CBOR_ILLEGAL;
-+		return false;
-+	} else if (ctx->following_bytes == (uint8_t)CBOR_INDEFINITE_VALUE) {
-+		return true;
++	rc = -ENOMEM;
++	msg = devm_kzalloc(dev, sizeof(*msg), GFP_KERNEL);
++	if (!msg)
++		goto out;
++
++	rc = -ENOMEM;
++	desc = devm_kzalloc(dev, sizeof(*desc), GFP_KERNEL);
++	if (!desc)
++		goto out;
++
++	rc = fill_req_describe_nsm(nsm, &msg->req);
++	if (rc != 0)
++		goto out;
++
++	rc = nsm_sendrecv_msg(nsm, msg);
++	if (rc != 0)
++		goto out;
++
++	rc = parse_resp_describe_nsm(nsm, &msg->resp, desc);
++	if (rc != 0)
++		goto out;
++
++	nsm->major = desc->resp.major;
++	nsm->minor = desc->resp.minor;
++	nsm->patch = desc->resp.patch;
++	memcpy(nsm->module_id, desc->resp.module_id, sizeof(nsm->module_id));
++	memcpy(nsm->digest, desc->resp.digest, sizeof(nsm->digest));
++
++out:
++	kfree(desc);
++	kfree(msg);
++	return rc;
++}
++
++static void nsm_misc_init(struct work_struct *work)
++{
++	struct nsm *nsm = container_of(work, struct nsm, misc_init);
++	struct device *dev = &nsm->vdev->dev;
++	int rc;
++
++	/* Initialize sysfs data */
++	rc = nsm_init_sysfs(nsm);
++	if (rc) {
++		dev_err(dev, "Initializing sysfs failed: %d\n", rc);
++		return;
 +	}
 +
-+	if ((ctx->following_bytes + 1u)
-+			> ctx->reader->msgsize - ctx->reader->msgidx) {
-+		*err = CBOR_ILLEGAL;
-+		return false;
-+	}
-+
-+	return true;
-+}
-+
-+static size_t go_get_item_length(struct parser_context *ctx)
-+{
-+	uint64_t len = 0;
-+	size_t offset = 0;
-+
-+	if (ctx->following_bytes == (uint8_t)CBOR_INDEFINITE_VALUE) {
-+		len = (uint64_t)CBOR_INDEFINITE_VALUE;
-+	} else if (ctx->following_bytes == 0) {
-+		len = ctx->additional_info;
-+	} else {
-+		const uint8_t *msg = &ctx->reader->msg[ctx->reader->msgidx];
-+
-+		cbor_copy((uint8_t *)&len, &msg[1], ctx->following_bytes);
-+		offset = ctx->following_bytes;
-+	}
-+
-+	ctx->reader->msgidx += offset + 1;
-+
-+	return (size_t)len;
-+}
-+
-+static cbor_error_t parse(struct parser_context *ctx, size_t maxitems)
-+{
-+	cbor_error_t err = CBOR_SUCCESS;
-+
-+	if (++ctx->recursion_depth > CBOR_RECURSION_MAX_LEVEL)
-+		return CBOR_EXCESSIVE;
-+
-+	for (size_t i = 0; i < maxitems &&
-+			ctx->reader->itemidx < ctx->reader->maxitems &&
-+			ctx->reader->msgidx < ctx->reader->msgsize; i++) {
-+		uint8_t val = ctx->reader->msg[ctx->reader->msgidx];
-+
-+		ctx->major_type = get_cbor_major_type(val);
-+		ctx->additional_info = get_cbor_additional_info(val);
-+		ctx->following_bytes =
-+			cbor_get_following_bytes(ctx->additional_info);
-+
-+		if (!has_valid_following_bytes(ctx, &err))
-+			break;
-+
-+		err = parsers[ctx->major_type](ctx);
-+
-+		if (err == CBOR_BREAK) {
-+			if ((maxitems == (size_t)CBOR_INDEFINITE_VALUE) ||
-+					(ctx->reader->msgidx ==
-+						ctx->reader->msgsize)) {
-+				break;
-+			}
-+		} else if (err != CBOR_SUCCESS) {
-+			break;
-+		}
-+
-+		err = CBOR_SUCCESS;
-+	}
-+
-+	ctx->recursion_depth--;
-+
-+	assert(ctx->msgidx <= ctx->msgsize);
-+
-+	return err;
-+}
-+
-+static cbor_error_t do_integer(struct parser_context *ctx)
-+{
-+	if (ctx->following_bytes == (uint8_t)CBOR_INDEFINITE_VALUE)
-+		return CBOR_ILLEGAL;
-+
-+	cbor_item_t *item = &ctx->reader->items[ctx->reader->itemidx];
-+
-+	item->type = CBOR_ITEM_INTEGER;
-+	item->size = (size_t)ctx->following_bytes;
-+	item->offset = ctx->reader->msgidx;
-+
-+	ctx->reader->msgidx += (size_t)(ctx->following_bytes + 1);
-+	ctx->reader->itemidx++;
-+
-+	return CBOR_SUCCESS;
-+}
-+
-+static cbor_error_t do_string(struct parser_context *ctx)
-+{
-+	cbor_item_t *item = &ctx->reader->items[ctx->reader->itemidx];
-+	size_t len = go_get_item_length(ctx);
-+
-+	item->type = CBOR_ITEM_STRING;
-+	item->size = len;
-+	item->offset = ctx->reader->msgidx;
-+
-+	if (len == (size_t)CBOR_INDEFINITE_VALUE) {
-+		ctx->reader->itemidx++;
-+		return parse(ctx, ctx->reader->maxitems - ctx->reader->itemidx);
-+	}
-+	if (len > ctx->reader->msgsize - ctx->reader->msgidx)
-+		return CBOR_ILLEGAL;
-+
-+	ctx->reader->msgidx += len;
-+	ctx->reader->itemidx++;
-+
-+	return CBOR_SUCCESS;
-+}
-+
-+static cbor_error_t do_recursive(struct parser_context *ctx)
-+{
-+	size_t current_item_index = ctx->reader->itemidx;
-+	cbor_item_t *item = &ctx->reader->items[current_item_index];
-+	size_t len = go_get_item_length(ctx);
-+
-+	item->type = (cbor_item_data_t)(ctx->major_type - 1);
-+	item->offset = ctx->reader->msgidx;
-+	item->size = len;
-+	if (len != (size_t)CBOR_INDEFINITE_VALUE &&
-+			len > ctx->reader->msgsize - ctx->reader->msgidx) {
-+		return CBOR_ILLEGAL;
-+	}
-+
-+	ctx->reader->itemidx++;
-+
-+	return parse(ctx, len);
-+}
-+
-+/* TODO: Implement tag */
-+static cbor_error_t do_tag(struct parser_context *ctx)
-+{
-+	(void)ctx;
-+	return CBOR_INVALID;
-+}
-+
-+static cbor_error_t do_float_and_other(struct parser_context *ctx)
-+{
-+	cbor_item_t *item = &ctx->reader->items[ctx->reader->itemidx];
-+	cbor_error_t err = CBOR_SUCCESS;
-+
-+	item->type = CBOR_ITEM_FLOAT;
-+	item->size = (size_t)ctx->following_bytes;
-+	item->offset = ctx->reader->msgidx;
-+
-+	if (ctx->following_bytes == (uint8_t)CBOR_INDEFINITE_VALUE) {
-+		ctx->reader->msgidx++;
-+		ctx->reader->itemidx++;
-+		return CBOR_BREAK;
-+	} else if (!has_valid_following_bytes(ctx, &err)) {
-+		return err;
-+	} else if (ctx->following_bytes <= 1) {
-+		item->type = CBOR_ITEM_SIMPLE_VALUE;
-+	}
-+
-+	ctx->reader->msgidx += item->size + 1;
-+	ctx->reader->itemidx++;
-+
-+	return err;
-+}
-+
-+cbor_error_t cbor_parse(cbor_reader_t *reader, void const *msg, size_t msgsize,
-+		size_t *nitems_parsed)
-+{
-+	assert(reader->items != NULL);
-+	reader->itemidx = 0;
-+
-+	reader->msg = (uint8_t const *)msg;
-+	reader->msgsize = msgsize;
-+	reader->msgidx = 0;
-+
-+	struct parser_context ctx = {
-+		.reader = reader,
++	/* Register /dev/nsm device node */
++	nsm->misc = (struct miscdevice) {
++		.minor	= MISC_DYNAMIC_MINOR,
++		.name	= "nsm",
++		.fops	= &nsm_dev_fops,
++		.mode	= 0666,
++		.groups = nsm_dev_groups,
 +	};
 +
-+	cbor_error_t err = parse(&ctx, reader->maxitems);
-+
-+	if (err == CBOR_SUCCESS && reader->msgidx < reader->msgsize)
-+		err = CBOR_OVERRUN;
-+
-+	if (nitems_parsed != NULL)
-+		*nitems_parsed = reader->itemidx;
-+
-+	return err;
++	rc = misc_register(&nsm->misc);
++	if (rc)
++		dev_err(dev, "misc device registration error: %d.\n", rc);
 +}
-+EXPORT_SYMBOL_GPL(cbor_parse);
++
++/* Handler for probing the NSM device */
++static int nsm_device_probe(struct virtio_device *vdev)
++{
++	struct device *dev = &vdev->dev;
++	struct nsm *nsm;
++	int rc;
++
++	nsm = devm_kzalloc(&vdev->dev, sizeof(*nsm), GFP_KERNEL);
++	if (!nsm)
++		return -ENOMEM;
++
++	vdev->priv = nsm;
++	nsm->vdev = vdev;
++
++	rc = nsm_device_init_vq(vdev);
++	if (rc) {
++		dev_err(dev, "queue failed to initialize: %d.\n", rc);
++		goto err_init_vq;
++	}
++
++	mutex_init(&nsm->lock);
++	init_waitqueue_head(&nsm->wq);
++
++	/* Register as hwrng provider */
++	nsm->hwrng = (struct hwrng) {
++		.read = nsm_rng_read,
++		.name = "nsm-hwrng",
++		.quality = 1000,
++	};
++
++	rc = devm_hwrng_register(&vdev->dev, &nsm->hwrng);
++	if (rc) {
++		dev_err(dev, "RNG initialization error: %d.\n", rc);
++		goto err_hwrng;
++	}
++
++	/*
++	 * To initialize the misc device's sysfs properties we need to
++	 * communicate with NSM which only works after probe is finished.
++	 * Trigger work so we can delay the misc device registration.
++	 */
++	INIT_WORK(&nsm->misc_init, nsm_misc_init);
++	schedule_work(&nsm->misc_init);
++
++	return 0;
++
++err_hwrng:
++	vdev->config->del_vqs(vdev);
++err_init_vq:
++	kfree(nsm);
++	return rc;
++}
++
++/* Handler for removing the NSM device */
++static void nsm_device_remove(struct virtio_device *vdev)
++{
++	struct nsm *nsm = vdev->priv;
++
++	hwrng_unregister(&nsm->hwrng);
++
++	vdev->config->del_vqs(vdev);
++	misc_deregister(&nsm->misc);
++	list_del(&nsm->node);
++}
++
++/* NSM device configuration structure */
++static struct virtio_driver virtio_nsm_driver = {
++	.feature_table             = 0,
++	.feature_table_size        = 0,
++	.feature_table_legacy      = 0,
++	.feature_table_size_legacy = 0,
++	.driver.name               = KBUILD_MODNAME,
++	.driver.owner              = THIS_MODULE,
++	.id_table                  = id_table,
++	.probe                     = nsm_device_probe,
++	.remove                    = nsm_device_remove,
++};
++
++module_virtio_driver(virtio_nsm_driver);
++MODULE_DEVICE_TABLE(virtio, id_table);
++MODULE_DESCRIPTION("Virtio NSM driver");
++MODULE_LICENSE("GPL");
+diff --git a/include/uapi/linux/nsm.h b/include/uapi/linux/nsm.h
+new file mode 100644
+index 000000000000..4b5c02f0fbf6
+--- /dev/null
++++ b/include/uapi/linux/nsm.h
+@@ -0,0 +1,188 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/*
++ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
++ */
++
++#ifndef __UAPI_LINUX_NSM_H
++#define __UAPI_LINUX_NSM_H
++
++#include <linux/ioctl.h>
++#include <linux/types.h>
++
++#define NSM_MAGIC		0x0A
++
++#define NSM_REQUEST_MAX_SIZE	0x1000
++#define NSM_RESPONSE_MAX_SIZE	0x3000
++#define NSM_PCR_MAX_SIZE        0x200
++#define NSM_MAX_PCRS            0x100
++
++struct nsm_iovec {
++	__u64 addr; /* Virtual address of target buffer */
++	__u64 len;  /* Length of target buffer */
++};
++
++/* Raw NSM message. Only available with CAP_SYS_ADMIN. */
++struct nsm_raw {
++	/* Request from user */
++	struct nsm_iovec request;
++	/* Response to user */
++	struct nsm_iovec response;
++};
++#define NSM_IOCTL_RAW		_IOWR(NSM_MAGIC, 0x0, struct nsm_raw)
++
++/* Maximum length input data */
++struct nsm_data_req {
++	__u32 len;
++	__u8  data[NSM_REQUEST_MAX_SIZE];
++};
++
++/* Maximum length output data */
++struct nsm_data_resp {
++	__u32 len;
++	__u8  data[NSM_RESPONSE_MAX_SIZE];
++};
++
++/* PCR hash. Currently at most 512 bits, but let's leave room for up to 4096. */
++struct nsm_pcr_data {
++	__u32 len;
++	__u8  data[NSM_PCR_MAX_SIZE];
++};
++
++/*
++ * DescribePCR
++ *
++ * Queries the PCR contents of a single PCR. Returns whether the PCR is
++ * currently in locked state and the PCR hash value.
++ */
++struct nsm_describe_pcr_req {
++	__u16 index;
++};
++
++struct nsm_describe_pcr_resp {
++	__u16 lock;
++	struct nsm_pcr_data data;
++};
++
++union nsm_describe_pcr {
++	struct nsm_describe_pcr_req req;
++	struct nsm_describe_pcr_resp resp;
++};
++#define NSM_IOCTL_DESCRIBE_PCR	_IOWR(NSM_MAGIC, 0x1, union nsm_describe_pcr)
++
++/*
++ * ExtendPCR
++ *
++ * Extends the PCR hash with additional binary data. Returns the new PCR
++ * hash value after extension.
++ */
++struct nsm_extend_pcr_req {
++	__u16 index;
++	__u16 pad;
++	struct nsm_data_req data;
++};
++
++struct nsm_extend_pcr_resp {
++	struct nsm_pcr_data data;
++};
++
++union nsm_extend_pcr {
++	struct nsm_extend_pcr_req req;
++	struct nsm_extend_pcr_resp resp;
++};
++#define NSM_IOCTL_EXTEND_PCR	_IOWR(NSM_MAGIC, 0x2, union nsm_extend_pcr)
++
++/*
++ * LockPCR
++ *
++ * Enables lock state for a single PCR. After this operation, the PCR becomes
++ * unmodifyable until Enclave destruction.
++ */
++struct nsm_lock_pcr_req {
++	__u16 index;
++};
++
++union nsm_lock_pcr {
++	struct nsm_lock_pcr_req req;
++};
++#define NSM_IOCTL_LOCK_PCR	_IOWR(NSM_MAGIC, 0x3, union nsm_lock_pcr)
++
++/*
++ * LockPCRs
++ *
++ * Enables lock state for all PCR from 0 up to the given range_from_zero
++ * parameter. After this operation, all PCR in range become unmodifyable
++ * until Enclave destruction.
++ */
++struct nsm_lock_pcrs_req {
++	__u16 range_from_zero;
++};
++
++union nsm_lock_pcrs {
++	struct nsm_lock_pcrs_req req;
++};
++#define NSM_IOCTL_LOCK_PCRS	_IOWR(NSM_MAGIC, 0x4, union nsm_lock_pcrs)
++
++/*
++ * DescribeNSM
++ *
++ * Provides metadata information about the NSM backend implementation,
++ * such as version and maximum number of PCRs.
++ */
++struct nsm_u16_resp {
++	__u32 u16s;
++	__u16 u16[NSM_MAX_PCRS];
++};
++
++struct nsm_describe_nsm_resp {
++	__u16 major;
++	__u16 minor;
++	__u16 patch;
++	char module_id[256];			/* null-terminated C string */
++	__u16 max_pcrs;
++	struct nsm_u16_resp locked_pcrs;
++	char digest[16];			/* null-terminated C string */
++};
++
++union nsm_describe_nsm {
++	struct nsm_describe_nsm_resp resp;
++};
++#define NSM_IOCTL_DESCRIBE_NSM	_IOWR(NSM_MAGIC, 0x5, union nsm_describe_nsm)
++
++/*
++ * Attestation
++ *
++ * Provides an attestation document that you can use to attest the Enclave
++ * against external services. Takes 3 binary input parameters that get
++ * reflected 1:1 inside the attestation document.
++ */
++struct nsm_attestation_req {
++	struct nsm_data_req user_data;
++	struct nsm_data_req nonce;
++	struct nsm_data_req public_key;
++};
++
++struct nsm_attestation_resp {
++	struct nsm_data_resp document;
++};
++
++union nsm_attestation {
++	struct nsm_attestation_req req;
++	struct nsm_attestation_resp resp;
++};
++#define NSM_IOCTL_ATTESTATION	_IOWR(NSM_MAGIC, 0x6, union nsm_attestation)
++
++/*
++ * GetRandom
++ *
++ * Returns random bytes.
++ */
++struct nsm_get_random_resp {
++	struct nsm_data_resp random;
++};
++
++union nsm_get_random {
++	struct nsm_get_random_resp resp;
++};
++#define NSM_IOCTL_RANDOM	_IOWR(NSM_MAGIC, 0x7, union nsm_get_random)
++
++#endif /* __UAPI_LINUX_NSM_H */
 -- 
 2.40.1
 
