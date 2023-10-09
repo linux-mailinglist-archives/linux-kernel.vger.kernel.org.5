@@ -2,81 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 514F37BD421
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 09:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4E37BD42A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 09:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345385AbjJIHQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 03:16:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40528 "EHLO
+        id S1345305AbjJIHTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 03:19:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344984AbjJIHQB (ORCPT
+        with ESMTP id S232625AbjJIHTP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 03:16:01 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F15DC94;
-        Mon,  9 Oct 2023 00:15:59 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id 5614622812f47-3af609c5736so2384585b6e.3;
-        Mon, 09 Oct 2023 00:15:59 -0700 (PDT)
+        Mon, 9 Oct 2023 03:19:15 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FD1BA4
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 00:19:14 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so11739a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 00:19:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696835759; x=1697440559; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=981xbSeR8TpIYzWGYl0PB1lUEIKuWhMy2DNMbMSYphU=;
-        b=JUV3qAv4HxWRShJZALWiXh2N9YAhMnt7x4uFYTYRjP5RdZzz7AjRtxYtVCNXNMi5/B
-         TPq8Uw7SRBz5ZS0W9vhy2d7FfYeo1Kv2xX2E57XsIe9LoEFqRpYwdHxULcOTPu6W2CSR
-         dQ/kqzdHPzFRYONBRT60SEty8JQEA1Rym6797Cl1D4CCS9yWlEjbKppdcLbOS3r/oZZf
-         7+CAjO8j2p3mbKF9yGda97NzTO5u3/mH2i76bJ7ONNqNKmAOW9jq08Xppzx+ZmSnTDGZ
-         l28Fiy4emfYo2fsi42Fl34WqJj/XGWUDGepCfCqG8jeIrWVujlKqo9Kd3dsXYnzNjUPs
-         YWcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696835759; x=1697440559;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1696835952; x=1697440752; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=981xbSeR8TpIYzWGYl0PB1lUEIKuWhMy2DNMbMSYphU=;
-        b=h/2UZMewPsU08fY7p6+dpPlmXdYQlUHW5UgqxYKslpAuDzLj0gQX7uy1zmGLPjCP7F
-         HplvovQ3miw0IXP4NNl9rSn5LXsT9n5j3xQHgwyEp28zdwrU8nCmkUrAFGqNfyphogJ+
-         phfH2cRQ4lHVdLzcng9KrAE6WgQ1zmrNXoihemfF53DZvXWLTorl85Xngm0L1RbtIhCp
-         67yLMW5h7KSgga3fAg3VaJRoIT5F6PKJYfYpmuhahKUHHy3l8pgghs1U0wfpdXhf8ai0
-         btNURsBgSZ7//8a2JbiroUNhOYp5p7VVaMRDrpmQhqk0Irvfce+T/YdtPKhXb6T3Njhz
-         cv3g==
-X-Gm-Message-State: AOJu0Yza+vFeq6+/7DB7Ac0/yhomYPUgYwDyzP+ROWq6EZ8wwqtCEcs2
-        2VauUkmN0ZzyBtHrBbkVr7E=
-X-Google-Smtp-Source: AGHT+IFQQiXVS4QtEJTFMoOjdBDLxVAa0Dh8puoiqXJ+JyVL07j+ifb8NSMtZpJyEPNhZcmNBpCgpw==
-X-Received: by 2002:a05:6808:1311:b0:3ae:84b6:1f6c with SMTP id y17-20020a056808131100b003ae84b61f6cmr17793738oiv.52.1696835759220;
-        Mon, 09 Oct 2023 00:15:59 -0700 (PDT)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id m29-20020a638c1d000000b0057406c4306fsm7468831pgd.12.2023.10.09.00.15.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 00:15:58 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 5F9A38050991; Mon,  9 Oct 2023 14:15:55 +0700 (WIB)
-Date:   Mon, 9 Oct 2023 14:15:54 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Bruce Perens <bruce@perens.com>,
-        "chaosesqueteam@yahoo.com" <chaosesqueteam@yahoo.com>
-Cc:     Linux Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Julia Lawall <julia.lawall@inria.fr>
-Subject: Re: I can't get contributors for my C project. Can you help?
-Message-ID: <ZSOoqgsDsOoPENN-@debian.me>
-References: <875007189.3298572.1696619900247.ref@mail.yahoo.com>
- <875007189.3298572.1696619900247@mail.yahoo.com>
- <ZSEdS8a5imvsAE8F@debian.me>
- <457035954.3503192.1696688953071@mail.yahoo.com>
- <CAK2MWOsK=pTKADr1kUuj=fvmRB=X2Z0+SkWQ9PTSxCqOVCq39A@mail.gmail.com>
+        bh=0G4lnIm/L/2jfjUpl8BGvD5ApP4hc/7MaXZs13qmiX4=;
+        b=wZQwOMnT3SVMeaeyCon8U4P6CWLcCmxgvIYd/DazndX/EgQFSfV9uOTikaOSOEhHGM
+         +BgxW7oorkWQR/ocPjEMwqQwpIrj8sDyTT/vLXiOHnaQgQUyfelrz6KxTmtiL5oO9O0r
+         h43YIPeBTvyb8qHoiyKz9n/qqKy5IGlHb1IzKhmnr7KYy6s980EHL0M03GrJfCaRE7px
+         JQ+18sD+Lj/60Cue5LnRJOXaFJnZQgngF/QymwS33cVlOJAePn8Vj8gMgosQO6ydK8wE
+         OsRcp5OkrWyGBaJcQ0MuLt41XSKe3B41ev35y+tDFZBfjp19UqkOotAf2rb+PgjPuDE6
+         rasQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696835952; x=1697440752;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0G4lnIm/L/2jfjUpl8BGvD5ApP4hc/7MaXZs13qmiX4=;
+        b=k1h18zGZhQhEnouk+CPlNFTxHlDxdXaW4QRoVeyIOvX44oV6BDIAOlJE805JRdknMI
+         rsJ7o2vXNKJWHhGt+QZUnQXGyE/ilLwl7QYbVDSu007KL2gBY57ltOrq6oHniYqJ6G2r
+         qT/6VV8byzXCtZmdjqdbjkln9eymDCi2xSrkorkytq0f4kTXCcaIlKDrNjTdTcbx7ldb
+         mjMWF1h6HYTit4BqzSFX9gG80RGL1Cii/aczZtf7TJ0p7O+fILFMauu4EyNbw2Mig7NH
+         NYX3fcU7K58LSbuGO1XDnHo60wV9qh2amcc96SNE4O5yhECLstIfo2Hg1EuamE8rPvl0
+         XX7Q==
+X-Gm-Message-State: AOJu0YzqBRcm8eTL2shTZlu8GigUBbB8mGMaVtrE6A1CZNGGCS8Hq2T6
+        qP5nxo3hCRO3c71f5mi2OEF7xEdbd9ldGdGhHYYhMw==
+X-Google-Smtp-Source: AGHT+IE+jq9PyYLsYHpsrvCUuH0lJPTbZB/gGk8VPqkFRBMyIAGs6DNDsRIAtLDoPdM/SUAadTJzmjrpa3ookyfrHnU=
+X-Received: by 2002:a50:cd5c:0:b0:538:47bb:3e88 with SMTP id
+ d28-20020a50cd5c000000b0053847bb3e88mr350456edj.6.1696835952079; Mon, 09 Oct
+ 2023 00:19:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uUsmC1c0/dRqtCqI"
-Content-Disposition: inline
-In-Reply-To: <CAK2MWOsK=pTKADr1kUuj=fvmRB=X2Z0+SkWQ9PTSxCqOVCq39A@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20231007105019.GA20662@breakpoint.cc> <20231009021108.3203928-1-guodongtai@kylinos.cn>
+In-Reply-To: <20231009021108.3203928-1-guodongtai@kylinos.cn>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Mon, 9 Oct 2023 09:18:58 +0200
+Message-ID: <CANn89i+OL_kPwmHEW-KBGdd-prAGC3NaQG4MNq4ZEvWpw7Q-7A@mail.gmail.com>
+Subject: Re: [PATCH v2] tcp: cleanup secure_{tcp, tcpv6}_ts_off
+To:     George Guo <guodongtai@kylinos.cn>
+Cc:     fw@strlen.de, davem@davemloft.net, dongtai.guo@linux.dev,
+        dsahern@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,34 +71,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 9, 2023 at 5:12=E2=80=AFAM George Guo <guodongtai@kylinos.cn> w=
+rote:
+>
+> Correct secure_tcp_ts_off and secure_tcpv6_ts_off call parameter order
+>
 
---uUsmC1c0/dRqtCqI
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I do not think this patch is correct.
 
-On Sun, Oct 08, 2023 at 05:25:27PM -0700, Bruce Perens wrote:
-> Mikey,
->=20
-> This is *why* nobody wants to help you.
->=20
+We have to exchange saddr/daddr from an incoming packet in order to compute
+a hash if the function expects saddr to be the local host address, and
+daddr being the remote peer address.
 
-Ah! The original sender didn't do his own homework attempt then.
+For instance, tcp_v4_connect() uses :
 
-Thanks anyway.
+WRITE_ONCE(tp->tsoffset,
+                          secure_tcp_ts_off(net, inet->inet_saddr,
+                                                        inet->inet_daddr));
 
---=20
-An old man doll... just what I always wanted! - Clara
+While when receiving a packet from the other peer, it correctly swaps
+saddr/daddr
 
---uUsmC1c0/dRqtCqI
-Content-Type: application/pgp-signature; name="signature.asc"
+tcp_v4_init_ts_off(const struct net *net, const struct sk_buff *skb)
+{
+ return secure_tcp_ts_off(net, ip_hdr(skb)->daddr, ip_hdr(skb)->saddr);
+}
 
------BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZSOolwAKCRD2uYlJVVFO
-oxRRAPwLtCpRPWlN683ACdJWpPvx31Wm93hjuUKec7ZoVo0dYwD/Ug9n8Vq76FcM
-f5S9IgE7INpLZHKFmrNDP1WpHOPzDQk=
-=r4Ju
------END PGP SIGNATURE-----
-
---uUsmC1c0/dRqtCqI--
+> Signed-off-by: George Guo <guodongtai@kylinos.cn>
+> ---
+>  net/ipv4/syncookies.c | 4 ++--
+>  net/ipv4/tcp_ipv4.c   | 2 +-
+>  net/ipv6/syncookies.c | 4 ++--
+>  net/ipv6/tcp_ipv6.c   | 4 ++--
+>  4 files changed, 7 insertions(+), 7 deletions(-)
+>
+> diff --git a/net/ipv4/syncookies.c b/net/ipv4/syncookies.c
+> index dc478a0574cb..537f368a0b66 100644
+> --- a/net/ipv4/syncookies.c
+> +++ b/net/ipv4/syncookies.c
+> @@ -360,8 +360,8 @@ struct sock *cookie_v4_check(struct sock *sk, struct =
+sk_buff *skb)
+>
+>         if (tcp_opt.saw_tstamp && tcp_opt.rcv_tsecr) {
+>                 tsoff =3D secure_tcp_ts_off(sock_net(sk),
+> -                                         ip_hdr(skb)->daddr,
+> -                                         ip_hdr(skb)->saddr);
+> +                                         ip_hdr(skb)->saddr,
+> +                                         ip_hdr(skb)->daddr);
+>                 tcp_opt.rcv_tsecr -=3D tsoff;
+>         }
+>
+> diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+> index a441740616d7..54717d261693 100644
+> --- a/net/ipv4/tcp_ipv4.c
+> +++ b/net/ipv4/tcp_ipv4.c
+> @@ -104,7 +104,7 @@ static u32 tcp_v4_init_seq(const struct sk_buff *skb)
+>
+>  static u32 tcp_v4_init_ts_off(const struct net *net, const struct sk_buf=
+f *skb)
+>  {
+> -       return secure_tcp_ts_off(net, ip_hdr(skb)->daddr, ip_hdr(skb)->sa=
+ddr);
+> +       return secure_tcp_ts_off(net, ip_hdr(skb)->saddr, ip_hdr(skb)->da=
+ddr);
+>  }
+>
+>  int tcp_twsk_unique(struct sock *sk, struct sock *sktw, void *twp)
+> diff --git a/net/ipv6/syncookies.c b/net/ipv6/syncookies.c
+> index 5014aa663452..9af484a4d518 100644
+> --- a/net/ipv6/syncookies.c
+> +++ b/net/ipv6/syncookies.c
+> @@ -162,8 +162,8 @@ struct sock *cookie_v6_check(struct sock *sk, struct =
+sk_buff *skb)
+>
+>         if (tcp_opt.saw_tstamp && tcp_opt.rcv_tsecr) {
+>                 tsoff =3D secure_tcpv6_ts_off(sock_net(sk),
+> -                                           ipv6_hdr(skb)->daddr.s6_addr3=
+2,
+> -                                           ipv6_hdr(skb)->saddr.s6_addr3=
+2);
+> +                                           ipv6_hdr(skb)->saddr.s6_addr3=
+2,
+> +                                           ipv6_hdr(skb)->daddr.s6_addr3=
+2);
+>                 tcp_opt.rcv_tsecr -=3D tsoff;
+>         }
+>
+> diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
+> index bfe7d19ff4fd..7e2f924725c6 100644
+> --- a/net/ipv6/tcp_ipv6.c
+> +++ b/net/ipv6/tcp_ipv6.c
+> @@ -119,8 +119,8 @@ static u32 tcp_v6_init_seq(const struct sk_buff *skb)
+>
+>  static u32 tcp_v6_init_ts_off(const struct net *net, const struct sk_buf=
+f *skb)
+>  {
+> -       return secure_tcpv6_ts_off(net, ipv6_hdr(skb)->daddr.s6_addr32,
+> -                                  ipv6_hdr(skb)->saddr.s6_addr32);
+> +       return secure_tcpv6_ts_off(net, ipv6_hdr(skb)->saddr.s6_addr32,
+> +                                  ipv6_hdr(skb)->daddr.s6_addr32);
+>  }
+>
+>  static int tcp_v6_pre_connect(struct sock *sk, struct sockaddr *uaddr,
+> --
+> 2.34.1
+>
