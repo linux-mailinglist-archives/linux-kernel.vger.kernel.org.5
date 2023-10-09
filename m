@@ -2,66 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 193917BD917
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 12:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B003A7BD91A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 12:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346151AbjJIK6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 06:58:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60172 "EHLO
+        id S1346137AbjJIK7L convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Oct 2023 06:59:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346159AbjJIK6m (ORCPT
+        with ESMTP id S234504AbjJIK7K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 06:58:42 -0400
-Received: from out-190.mta0.migadu.com (out-190.mta0.migadu.com [91.218.175.190])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53DE4EB
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 03:58:40 -0700 (PDT)
-Message-ID: <078f662d-a73f-766b-3a07-c82cd37026c5@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1696849118;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Av797t4dNKwG+wqfE+a/y9KCDOqvnvEdbCJ5Vx3i870=;
-        b=a0E96JbiIRUyr8kY6MLTFtyZD2JisWG5Z99r291YdCB/sA+9C95xpPHYIAFDuYrAKHxVw/
-        VBzt4GQCWFGkGwPFJgpHq/brUy2mq0076TvrN4TuHPx++JScChCtAhUqLG0DnxsA3r92tT
-        QK54+aT2duzdyTkkS3ijpXRVZm7O0r0=
-Date:   Mon, 9 Oct 2023 18:58:27 +0800
+        Mon, 9 Oct 2023 06:59:10 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D97619C;
+        Mon,  9 Oct 2023 03:59:07 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 70B5C24E225;
+        Mon,  9 Oct 2023 18:59:00 +0800 (CST)
+Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 9 Oct
+ 2023 18:59:00 +0800
+Received: from [192.168.125.85] (183.27.97.165) by EXMBX171.cuchost.com
+ (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 9 Oct
+ 2023 18:58:59 +0800
+Message-ID: <fd5b8d0f-67d0-4e0e-9a15-6f3ae53b6db2@starfivetech.com>
+Date:   Mon, 9 Oct 2023 18:58:42 +0800
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next v7] net/core: Introduce netdev_core_stats_inc()
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 0/19] Refactoring Microchip PCIe driver and add
+ StarFive PCIe
+To:     Daire McNamara <daire.mcnamara@microchip.com>,
+        Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Kevin Xie <kevin.xie@starfivetech.com>
+References: <20230927100802.46620-1-minda.chen@starfivetech.com>
 Content-Language: en-US
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     rostedt@goodmis.org, mhiramat@kernel.org, dennis@kernel.org,
-        tj@kernel.org, cl@linux.com, mark.rutland@arm.com,
-        davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20231007050621.1706331-1-yajun.deng@linux.dev>
- <917708b5-cb86-f233-e878-9233c4e6c707@linux.dev>
- <CANn89i+navyRe8-AV=ehM3qFce2hmnOEKBqvK5Xnev7KTaS5Lg@mail.gmail.com>
- <a53a3ff6-8c66-07c4-0163-e582d88843dd@linux.dev>
- <CANn89i+u5dXdYm_0_LwhXg5Nw+gHXx+nPUmbYhvT=k9P4+9JRQ@mail.gmail.com>
- <9f4fb613-d63f-9b86-fe92-11bf4dfb7275@linux.dev>
- <CANn89iK7bvQtGD=p+fHaWiiaNn=u8vWrt0YQ26pGQY=kZTdfJw@mail.gmail.com>
- <4a747fda-2bb9-4231-66d6-31306184eec2@linux.dev>
- <814b5598-5284-9558-8f56-12a6f7a67187@linux.dev>
- <CANn89iJCTgWTu0mzwj-8_-HiWm4uErY=VASDHoYaod9Nq-ayPA@mail.gmail.com>
- <508b33f7-3dc0-4536-21f6-4a5e7ade2b5c@linux.dev>
- <CANn89i+r-pQGpen1mUhybmj+6ybhxSsuoaB07NFzOWyHUMFDNw@mail.gmail.com>
- <296ca17d-cff0-2d19-f620-eedab004ddde@linux.dev>
- <CANn89iL=W3fyuH_KawfhKvLyw2Cw=qhHbEZtbKgQEYhHJChy3Q@mail.gmail.com>
- <68eb65c5-1870-0776-0878-694a8b002a6d@linux.dev>
- <CANn89iJHtYJjp6zPc2PVLAWuN88BQc5OntjrAf7f6QOcqP+B=g@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yajun Deng <yajun.deng@linux.dev>
-In-Reply-To: <CANn89iJHtYJjp6zPc2PVLAWuN88BQc5OntjrAf7f6QOcqP+B=g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Minda Chen <minda.chen@starfivetech.com>
+In-Reply-To: <20230927100802.46620-1-minda.chen@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Originating-IP: [183.27.97.165]
+X-ClientProxiedBy: EXCAS061.cuchost.com (172.16.6.21) To EXMBX171.cuchost.com
+ (172.16.6.91)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -69,85 +68,46 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2023/10/9 18:16, Eric Dumazet wrote:
-> On Mon, Oct 9, 2023 at 11:43 AM Yajun Deng <yajun.deng@linux.dev> wrote:
->>
->> On 2023/10/9 17:30, Eric Dumazet wrote:
->>> On Mon, Oct 9, 2023 at 10:36 AM Yajun Deng <yajun.deng@linux.dev> wrote:
->>>> On 2023/10/9 16:20, Eric Dumazet wrote:
->>>>> On Mon, Oct 9, 2023 at 10:14 AM Yajun Deng <yajun.deng@linux.dev> wrote:
->>>>>> On 2023/10/9 15:53, Eric Dumazet wrote:
->>>>>>> On Mon, Oct 9, 2023 at 5:07 AM Yajun Deng <yajun.deng@linux.dev> wrote:
->>>>>>>
->>>>>>>> 'this_cpu_read + this_cpu_write' and 'pr_info + this_cpu_inc' will make
->>>>>>>> the trace work well.
->>>>>>>>
->>>>>>>> They all have 'pop' instructions in them. This may be the key to making
->>>>>>>> the trace work well.
->>>>>>>>
->>>>>>>> Hi all,
->>>>>>>>
->>>>>>>> I need your help on percpu and ftrace.
->>>>>>>>
->>>>>>> I do not think you made sure netdev_core_stats_inc() was never inlined.
->>>>>>>
->>>>>>> Adding more code in it is simply changing how the compiler decides to
->>>>>>> inline or not.
->>>>>> Yes, you are right. It needs to add the 'noinline' prefix. The
->>>>>> disassembly code will have 'pop'
->>>>>>
->>>>>> instruction.
->>>>>>
->>>>> The function was fine, you do not need anything like push or pop.
->>>>>
->>>>> The only needed stuff was the call __fentry__.
->>>>>
->>>>> The fact that the function was inlined for some invocations was the
->>>>> issue, because the trace point
->>>>> is only planted in the out of line function.
->>>> But somehow the following code isn't inline? They didn't need to add the
->>>> 'noinline' prefix.
->>>>
->>>> +               field = (unsigned long *)((void *)this_cpu_ptr(p) + offset);
->>>> +               WRITE_ONCE(*field, READ_ONCE(*field) + 1);
->>>>
->>>> Or
->>>> +               (*(unsigned long *)((void *)this_cpu_ptr(p) + offset))++;
->>>>
->>> I think you are very confused.
->>>
->>> You only want to trace netdev_core_stats_inc() entry point, not
->>> arbitrary pieces of it.
->>
->> Yes, I will trace netdev_core_stats_inc() entry point. I mean to replace
->>
->> +                                       field = (__force unsigned long
->> __percpu *)((__force void *)p + offset);
->> +                                       this_cpu_inc(*field);
->>
->> with
->>
->> +               field = (unsigned long *)((void *)this_cpu_ptr(p) + offset);
->> +               WRITE_ONCE(*field, READ_ONCE(*field) + 1);
->>
->> Or
->> +               (*(unsigned long *)((void *)this_cpu_ptr(p) + offset))++;
->>
->> The netdev_core_stats_inc() entry point will work fine even if it doesn't
->> have 'noinline' prefix.
->>
->> I don't know why this code needs to add 'noinline' prefix.
->> +               field = (__force unsigned long __percpu *)((__force void *)p + offset);
->> +               this_cpu_inc(*field);
->>
-> C compiler decides to inline or not, depending on various factors.
->
-> The most efficient (and small) code is generated by this_cpu_inc()
-> version, allowing the compiler to inline it.
->
-> If you copy/paste this_cpu_inc()  twenty times, then the compiler
-> would  not inline the function anymore.
 
-
-Got it. Thank you.
-
+On 2023/9/27 18:07, Minda Chen wrote:
+> This patchset final purpose is add PCIe driver for StarFive JH7110 SoC.
+> JH7110 using PLDA XpressRICH PCIe IP. Microchip PolarFire Using the
+> same IP and have commit their codes, which are mixed with PLDA
+> controller codes and Microchip platform codes.
+> 
+> For re-use the PLDA controller codes, I request refactoring microchip
+> codes, move PLDA common codes to PLDA files.
+> Desigware and Cadence is good example for refactoring codes.
+> 
+> So first step is extract the PLDA common codes from microchip, and
+> refactoring the microchip codes.(patch1 - 16)
+> Then, add Starfive codes. (patch17 - 19)
+> 
+> This patchset is base on v6.6-rc3
+> 
+> patch1 is move PLDA XpressRICH PCIe host common properties dt-binding
+>        docs from microchip,pcie-host.yaml
+> patch2 is move PolarFire codes to PLDA directory.
+> patch3 is move PLDA IP register macros to plda-pcie.h
+> patch4 is rename data structure in microchip codes.
+> patch5 is rename two setup functions in microchip codes, prepare to move
+> to common file.
+> patch6 is change the arguments of plda_pcie_setup_iomems()
+> patch7 is move the two setup functions to common file pcie-plda-host.c
+> patch8 is Add PLDA event interrupt codes and IRQ domain ops.
+> patch9 is rename the IRQ related functions, prepare to move to
+> pcie-plda-host.
+> patch10 - 14 is modify the event codes, preparing for support starfive
+> and microchip two platforms.
+> patch15 is move IRQ related functions to pcie-plda-host.c
+> patch16 is set plda_event_handler to static.
+> patch17 is add StarFive JH7110 PCIe dt-binding doc.
+> patch18 is add StarFive JH7110 Soc PCIe codes.
+> patch19 is Starfive dts config
+> 
+Hi Conor and Daire
+Have you ever test this patchset？ I'm sure I am not  change logic of the PolarFire PCIe driver,
+But I can not test it.
+Since this series patch is delegate to nobody and no response now. I don't know when this patch set can be accepted.
+I still hope the refactoring patches can be accepted first. 
+(I know you want to add the function of inbound and outbound address translation, Hope this series patch do not influence your upstream plan)
