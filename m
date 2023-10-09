@@ -2,182 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B0137BDB69
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 899817BDAB1
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376315AbjJIMSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 08:18:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54642 "EHLO
+        id S1346445AbjJIMKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 08:10:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346490AbjJIMRu (ORCPT
+        with ESMTP id S1346308AbjJIMKc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 08:17:50 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B412D79;
-        Mon,  9 Oct 2023 05:15:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6D4BC433B6;
-        Mon,  9 Oct 2023 12:14:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696853700;
-        bh=o3F0gqwirOzTh8gwGkZMmsXM7Yu/yi+gPnGo/AGnFQM=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=H6L2zm3OMsRyXQZfw5aCB2cQkw9G1wWr2dacwbrbjZXZPIvYK/weMVGb/cCzZKiC7
-         ZWZE+3KXbORqpB/LvrPa2XKaZcYAjAFSMj4QWQFzw3QNTXKDYCgERhCXIRuk6Sjumc
-         zB5fHswdhfFPA4MwUbxsr8ag7wUXWXMvOwCfogAugBxO+lLIGF8fBuDPcfcrWt9bL/
-         UfwoJNGMVjZIYaA2ZzmhBY6HI7q3jqJtDEajWrgfdPB+xTlJBBPSLdojTFkIx10j12
-         ZNBSMSXaS2qYh9yW/wlBi/EargZA/4mUtrGrQO91UPNkTiaKE8IffZTX8D3vhoHTR8
-         OG9JYN3wJLxnw==
-From:   Mark Brown <broonie@kernel.org>
-Date:   Mon, 09 Oct 2023 13:09:12 +0100
-Subject: [PATCH v6 38/38] kselftest/arm64: Enable GCS for the FP stress
- tests
+        Mon, 9 Oct 2023 08:10:32 -0400
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5485C99
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 05:10:30 -0700 (PDT)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20231009121026euoutp0171e879a36b519814c2c04d5766e5a9c0~MbzOTEjIM3187731877euoutp01K
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 12:10:26 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20231009121026euoutp0171e879a36b519814c2c04d5766e5a9c0~MbzOTEjIM3187731877euoutp01K
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1696853426;
+        bh=+oeF9tduJROpDtEILgnH87XCwSDj3+xudliDOb9i4c0=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=JpYvnAD49jvrdbgZD5e7a6H8MuDp/a0YCS84UmjwewbqYI8jIGJuBo3sG0w5T7Wcf
+         8M2cFksRLgj2usgPEy48M46SKMj+BTcBSogjDv1+5QKgMMbJTNX4otaNxvXQXgHsWh
+         I/jP84wFGbE1ypNi8tMEs03fq26ha4jOGZWjpwWM=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20231009121026eucas1p1adad209218fa1a3c4958ca50071ebcad~MbzOFgJgu0583105831eucas1p1W;
+        Mon,  9 Oct 2023 12:10:26 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id BC.2B.11320.2BDE3256; Mon,  9
+        Oct 2023 13:10:26 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20231009121026eucas1p19ed2a6a88fa6b899ef9b915a73ad87b5~MbzNqHT6W1046310463eucas1p1H;
+        Mon,  9 Oct 2023 12:10:26 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20231009121026eusmtrp2daf61cd3394bda244624e4b47fc2aa5f~MbzNpQuTW0414604146eusmtrp2e;
+        Mon,  9 Oct 2023 12:10:26 +0000 (GMT)
+X-AuditID: cbfec7f4-993ff70000022c38-1f-6523edb292fb
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 33.91.10549.2BDE3256; Mon,  9
+        Oct 2023 13:10:26 +0100 (BST)
+Received: from AMDC4653.digital.local (unknown [106.120.51.32]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20231009121025eusmtip124de06fbf785870495bda711da01db0c~MbzNS2WFR1780317803eusmtip1P;
+        Mon,  9 Oct 2023 12:10:25 +0000 (GMT)
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+To:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Subject: [PATCH] Input: cyapa - add missing input core locking to
+ suspend/resume functions
+Date:   Mon,  9 Oct 2023 14:10:18 +0200
+Message-Id: <20231009121018.1075318-1-m.szyprowski@samsung.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmphleLIzCtJLcpLzFFi42LZduzned1Nb5VTDeb9VbFY9vgei8XhRS8Y
+        LW5++sZqcXnXHDaLtUfusjuweuy4u4TRY+esu+wefVtWMXp83iQXwBLFZZOSmpNZllqkb5fA
+        lfHufD9jwXfFinUd7WwNjF2yXYycHBICJhInN6xg6mLk4hASWMEocevXZHYI5wujxO6+hywQ
+        zmdGiSeT+plhWma33GOGSCxnlPjc8ZsVruXytEssIFVsAoYSXW+72EBsEQFbiR0rpoMtYRbo
+        Z5RYu2wvO0hCWCBGouXGdyYQm0VAVeLhopdgNq+AvcTp+59YINbJS+w/eJYZIi4ocXLmE7A4
+        M1C8eetssDMkBDo5JF7uOMoG0eAi8X/GJShbWOLV8S3sELaMxP+d85kgGtoZJRb8vg/lTGCU
+        aHh+ixGiylrizrlfQN0cQCs0Jdbv0ocIO0q0/NrLBBKWEOCTuPFWEOIIPolJ26YzQ4R5JTra
+        hCCq1SRmHV8Ht/bghUtQJR4SDW3pIGEhgViJySvnMk1gVJiF5LNZSD6bhXDCAkbmVYziqaXF
+        uempxUZ5qeV6xYm5xaV56XrJ+bmbGIEJ5fS/4192MC5/9VHvECMTB+MhRgkOZiURXt1ShVQh
+        3pTEyqrUovz4otKc1OJDjNIcLErivKop8qlCAumJJanZqakFqUUwWSYOTqkGJjNZOZ3z9Uf6
+        tXcorzha/2b+/73NfUoPtS/oaxmuNauJLri5KdtmxWc7f2sJVs9NT+SrOCY0NyamJs1x3GIr
+        e6iD9VlWwK/4y7LZ8V9Mtfktp9ztCj3Mr/u+dE3A2RXHfLnXzXwid/+x8tfX2w4pZDJf6zgk
+        yfZap79tUp3b25cveT8+Ee5b+3Zb3Ix0/11GhYuUr31ZqBU91dNvaRd/h8Qfrhy19YV/Zdeo
+        3ni2vZzN5v8jqUCnkne5Z1/bPF17wVH37+ysMoXatFyx3++LNnxMfLVSyvfWEUezNSu985vc
+        YmWTnnNmqli5iZlanuX42OtRKs0mcqxNvHFyemyWrqlPeqrVNL4nu9y2dLApsRRnJBpqMRcV
+        JwIAmx9H+JcDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrFLMWRmVeSWpSXmKPExsVy+t/xu7qb3iqnGixdxmWx7PE9FovDi14w
+        Wtz89I3V4vKuOWwWa4/cZXdg9dhxdwmjx85Zd9k9+rasYvT4vEkugCVKz6Yov7QkVSEjv7jE
+        Vina0MJIz9DSQs/IxFLP0Ng81srIVEnfziYlNSezLLVI3y5BL+Pd+X7Ggu+KFes62tkaGLtk
+        uxg5OSQETCRmt9xj7mLk4hASWMoocezJRHaIhIzEyWkNrBC2sMSfa11sEEWfGCX2n9rFCJJg
+        EzCU6HoLkuDkEBGwlzj8Zg0LSBGzwERGiVX3m5lBEsICURKTJlwEs1kEVCUeLnrJBGLzAjWc
+        vv+JBWKDvMT+g2eZIeKCEidnPgGLMwPFm7fOZp7AyDcLSWoWktQCRqZVjCKppcW56bnFhnrF
+        ibnFpXnpesn5uZsYgYG87djPzTsY5736qHeIkYmD8RCjBAezkgivbqlCqhBvSmJlVWpRfnxR
+        aU5q8SFGU6D7JjJLiSbnA2MpryTe0MzA1NDEzNLA1NLMWEmc17OgI1FIID2xJDU7NbUgtQim
+        j4mDU6qByWNp9b+98zYdtPbOPN0UxPIz0iNj8waO117qb1O76gNZzt2fmN+neal12zUhz+LQ
+        jUKKK/czuL+d05ggFSd8vrL3cmXo9+yqxlARMT6uOc0T2d64vziu2tu9/YhBxm7Th6I7+Y4o
+        m7UZLvTemnJ2aU9nbmOE0Icq7t7/r1MWhKYreLSIcPIemlrwne3rTFb7sODX2m92h9kFnjtk
+        rFK64/1CjjkzdOfcOd7V09JYcuawz6eDyY/Uky8z/uv/UCsn/eZNbs/chZ+8RI80ORT5fu3I
+        lil02eD62FX58b9zDftiS668kOSYNKO9jO3l7SuxW44/umd+vz3ZWaXvtvGpFt6zFW9Vr6WK
+        rHt1a+UnJZbijERDLeai4kQAxLaD4u0CAAA=
+X-CMS-MailID: 20231009121026eucas1p19ed2a6a88fa6b899ef9b915a73ad87b5
+X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231009-arm64-gcs-v6-38-78e55deaa4dd@kernel.org>
-References: <20231009-arm64-gcs-v6-0-78e55deaa4dd@kernel.org>
-In-Reply-To: <20231009-arm64-gcs-v6-0-78e55deaa4dd@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Cc:     "H.J. Lu" <hjl.tools@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Florian Weimer <fweimer@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3085; i=broonie@kernel.org;
- h=from:subject:message-id; bh=o3F0gqwirOzTh8gwGkZMmsXM7Yu/yi+gPnGo/AGnFQM=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlI+2vG7XbuVEpS5pxDaAIrEX013t37tEVAfRK24qD
- lhEdNXWJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZSPtrwAKCRAk1otyXVSH0O9gB/
- 9FoGr0eST8WBd+FIsUjhsE3d9wYovTCREYw/+Ayy30NkoVgB2HmjZh7K+hb1YN/LMp4ABI6gQv9m7U
- CD4WfBwvZ66QhtkrTfCIAGZpIQukSOsbVk6gdZYFnG7YW+e8eW3WDSRw9MC8WvY4S8Se1kCKCSUCeb
- Qz3siqGYszHBGhCUXtGLknYBqrkRfkRcrLwD25GetvYNDznn9zMYXqk6yRPx0AfSoebviB+WXqPi2L
- dbp5/fysyysuQlZh6LF/DXv7rc3dApbApo0DQVkQsmIg1LX6vsrhlBVTV2UmFdpn3sqVmIl8CtGlBA
- iYNaW3vGcLHl9DSvc6WgiC/Kg5uRyg
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-RootMTR: 20231009121026eucas1p19ed2a6a88fa6b899ef9b915a73ad87b5
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20231009121026eucas1p19ed2a6a88fa6b899ef9b915a73ad87b5
+References: <CGME20231009121026eucas1p19ed2a6a88fa6b899ef9b915a73ad87b5@eucas1p1.samsung.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While it's a bit off topic for them the floating point stress tests do give
-us some coverage of context thrashing cases, and also of active signal
-delivery separate to the relatively complicated framework in the actual
-signals tests. Have the tests enable GCS on startup, ignoring failures so
-they continue to work as before on systems without GCS.
+Grab input->mutex during suspend/resume functions like it is done in
+other input drivers. This fixes the following warning during system
+suspend/resume cycle on Samsung Exynos5250-based Snow Chromebook:
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 1680 at drivers/input/input.c:2291 input_device_enabled+0x68/0x6c
+Modules linked in: ...
+CPU: 1 PID: 1680 Comm: kworker/u4:12 Tainted: G        W          6.6.0-rc5-next-20231009 #14109
+Hardware name: Samsung Exynos (Flattened Device Tree)
+Workqueue: events_unbound async_run_entry_fn
+ unwind_backtrace from show_stack+0x10/0x14
+ show_stack from dump_stack_lvl+0x58/0x70
+ dump_stack_lvl from __warn+0x1a8/0x1cc
+ __warn from warn_slowpath_fmt+0x18c/0x1b4
+ warn_slowpath_fmt from input_device_enabled+0x68/0x6c
+ input_device_enabled from cyapa_gen3_set_power_mode+0x13c/0x1dc
+ cyapa_gen3_set_power_mode from cyapa_reinitialize+0x10c/0x15c
+ cyapa_reinitialize from cyapa_resume+0x48/0x98
+ cyapa_resume from dpm_run_callback+0x90/0x298
+ dpm_run_callback from device_resume+0xb4/0x258
+ device_resume from async_resume+0x20/0x64
+ async_resume from async_run_entry_fn+0x40/0x15c
+ async_run_entry_fn from process_scheduled_works+0xbc/0x6a8
+ process_scheduled_works from worker_thread+0x188/0x454
+ worker_thread from kthread+0x108/0x140
+ kthread from ret_from_fork+0x14/0x28
+Exception stack(0xf1625fb0 to 0xf1625ff8)
+...
+---[ end trace 0000000000000000 ]---
+...
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 1680 at drivers/input/input.c:2291 input_device_enabled+0x68/0x6c
+Modules linked in: ...
+CPU: 1 PID: 1680 Comm: kworker/u4:12 Tainted: G        W          6.6.0-rc5-next-20231009 #14109
+Hardware name: Samsung Exynos (Flattened Device Tree)
+Workqueue: events_unbound async_run_entry_fn
+ unwind_backtrace from show_stack+0x10/0x14
+ show_stack from dump_stack_lvl+0x58/0x70
+ dump_stack_lvl from __warn+0x1a8/0x1cc
+ __warn from warn_slowpath_fmt+0x18c/0x1b4
+ warn_slowpath_fmt from input_device_enabled+0x68/0x6c
+ input_device_enabled from cyapa_gen3_set_power_mode+0x13c/0x1dc
+ cyapa_gen3_set_power_mode from cyapa_reinitialize+0x10c/0x15c
+ cyapa_reinitialize from cyapa_resume+0x48/0x98
+ cyapa_resume from dpm_run_callback+0x90/0x298
+ dpm_run_callback from device_resume+0xb4/0x258
+ device_resume from async_resume+0x20/0x64
+ async_resume from async_run_entry_fn+0x40/0x15c
+ async_run_entry_fn from process_scheduled_works+0xbc/0x6a8
+ process_scheduled_works from worker_thread+0x188/0x454
+ worker_thread from kthread+0x108/0x140
+ kthread from ret_from_fork+0x14/0x28
+Exception stack(0xf1625fb0 to 0xf1625ff8)
+...
+---[ end trace 0000000000000000 ]---
+
+Fixes: d69f0a43c677 ("Input: use input_device_enabled()")
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
 ---
- tools/testing/selftests/arm64/fp/assembler.h   | 15 +++++++++++++++
- tools/testing/selftests/arm64/fp/fpsimd-test.S |  2 ++
- tools/testing/selftests/arm64/fp/sve-test.S    |  2 ++
- tools/testing/selftests/arm64/fp/za-test.S     |  2 ++
- tools/testing/selftests/arm64/fp/zt-test.S     |  2 ++
- 5 files changed, 23 insertions(+)
+ drivers/input/mouse/cyapa.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/arm64/fp/assembler.h b/tools/testing/selftests/arm64/fp/assembler.h
-index 9b38a0da407d..7012f9f796de 100644
---- a/tools/testing/selftests/arm64/fp/assembler.h
-+++ b/tools/testing/selftests/arm64/fp/assembler.h
-@@ -65,4 +65,19 @@ endfunction
- 	bl	puts
- .endm
+diff --git a/drivers/input/mouse/cyapa.c b/drivers/input/mouse/cyapa.c
+index a84098448f5b..cf23f95b5f11 100644
+--- a/drivers/input/mouse/cyapa.c
++++ b/drivers/input/mouse/cyapa.c
+@@ -1347,10 +1347,16 @@ static int cyapa_suspend(struct device *dev)
+ 	u8 power_mode;
+ 	int error;
  
-+#define PR_SET_SHADOW_STACK_STATUS      72
-+# define PR_SHADOW_STACK_ENABLE         (1UL << 0)
-+
-+.macro enable_gcs
-+	// Run with GCS
-+	mov	x0, PR_SET_SHADOW_STACK_STATUS
-+	mov	x1, PR_SHADOW_STACK_ENABLE
-+	mov	x2, xzr
-+	mov	x3, xzr
-+	mov	x4, xzr
-+	mov	x5, xzr
-+	mov	x8, #__NR_prctl
-+	svc	#0
-+.endm
-+
- #endif /* ! ASSEMBLER_H */
-diff --git a/tools/testing/selftests/arm64/fp/fpsimd-test.S b/tools/testing/selftests/arm64/fp/fpsimd-test.S
-index 8b960d01ed2e..b16fb7f42e3e 100644
---- a/tools/testing/selftests/arm64/fp/fpsimd-test.S
-+++ b/tools/testing/selftests/arm64/fp/fpsimd-test.S
-@@ -215,6 +215,8 @@ endfunction
- // Main program entry point
- .globl _start
- function _start
-+	enable_gcs
-+
- 	mov	x23, #0		// signal count
+-	error = mutex_lock_interruptible(&cyapa->state_sync_lock);
++	error = mutex_lock_interruptible(&cyapa->input->mutex);
+ 	if (error)
+ 		return error;
  
- 	mov	w0, #SIGINT
-diff --git a/tools/testing/selftests/arm64/fp/sve-test.S b/tools/testing/selftests/arm64/fp/sve-test.S
-index 4328895dfc87..486634bc7def 100644
---- a/tools/testing/selftests/arm64/fp/sve-test.S
-+++ b/tools/testing/selftests/arm64/fp/sve-test.S
-@@ -378,6 +378,8 @@ endfunction
- // Main program entry point
- .globl _start
- function _start
-+	enable_gcs
++	error = mutex_lock_interruptible(&cyapa->state_sync_lock);
++	if (error) {
++		mutex_unlock(&cyapa->input->mutex);
++		return error;
++	}
 +
- 	mov	x23, #0		// Irritation signal count
+ 	/*
+ 	 * Runtime PM is enable only when device is in operational mode and
+ 	 * users in use, so need check it before disable it to
+@@ -1385,6 +1391,8 @@ static int cyapa_suspend(struct device *dev)
+ 		cyapa->irq_wake = (enable_irq_wake(client->irq) == 0);
  
- 	mov	w0, #SIGINT
-diff --git a/tools/testing/selftests/arm64/fp/za-test.S b/tools/testing/selftests/arm64/fp/za-test.S
-index 9dcd70911397..f789694fa3ea 100644
---- a/tools/testing/selftests/arm64/fp/za-test.S
-+++ b/tools/testing/selftests/arm64/fp/za-test.S
-@@ -231,6 +231,8 @@ endfunction
- // Main program entry point
- .globl _start
- function _start
-+	enable_gcs
+ 	mutex_unlock(&cyapa->state_sync_lock);
++	mutex_unlock(&cyapa->input->mutex);
 +
- 	mov	x23, #0		// signal count
+ 	return 0;
+ }
  
- 	mov	w0, #SIGINT
-diff --git a/tools/testing/selftests/arm64/fp/zt-test.S b/tools/testing/selftests/arm64/fp/zt-test.S
-index d63286397638..ea5e55310705 100644
---- a/tools/testing/selftests/arm64/fp/zt-test.S
-+++ b/tools/testing/selftests/arm64/fp/zt-test.S
-@@ -200,6 +200,8 @@ endfunction
- // Main program entry point
- .globl _start
- function _start
-+	enable_gcs
-+
- 	mov	x23, #0		// signal count
+@@ -1394,6 +1402,7 @@ static int cyapa_resume(struct device *dev)
+ 	struct cyapa *cyapa = i2c_get_clientdata(client);
+ 	int error;
  
- 	mov	w0, #SIGINT
-
++	mutex_lock(&cyapa->input->mutex);
+ 	mutex_lock(&cyapa->state_sync_lock);
+ 
+ 	if (device_may_wakeup(dev) && cyapa->irq_wake) {
+@@ -1412,6 +1421,7 @@ static int cyapa_resume(struct device *dev)
+ 	enable_irq(client->irq);
+ 
+ 	mutex_unlock(&cyapa->state_sync_lock);
++	mutex_unlock(&cyapa->input->mutex);
+ 	return 0;
+ }
+ 
 -- 
-2.30.2
+2.34.1
 
