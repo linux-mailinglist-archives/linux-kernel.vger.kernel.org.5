@@ -2,122 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5AE7BD597
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 10:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4C27BD59A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 10:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345507AbjJIIsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 04:48:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34614 "EHLO
+        id S1345516AbjJIIsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 04:48:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234477AbjJIIsC (ORCPT
+        with ESMTP id S1345489AbjJIIsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 04:48:02 -0400
-Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E03B1AB
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 01:48:00 -0700 (PDT)
-Received: by mail-vk1-xa35.google.com with SMTP id 71dfb90a1353d-49d6bd3610cso1324757e0c.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 01:48:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696841280; x=1697446080; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dE3lQgYQrglH+136jeW6uJyH+jXehuS7mvTlptTmP9s=;
-        b=sjP/CK2QclDmAPix6CZDvC+6aSYEEmbGt2EpRDFDrUNV64goE7Xw+098Hp7IqHgKoO
-         QuIrPULLwwJjG462nExLW+cfdMSBjE+dBa9xg4XwTndWO5BeBWnzC3qY6gS5eiiHktyP
-         fRSIUaUH90XtB/A7JsnKlz15f00pgL1YURLi24zv6hU+KlXDWorZ/9TIQdTR4Wk1wlHW
-         0uOUWJIw0zblyMZuywOApb7w74eFJg0+2oajBwnmCPhfExI9v8VXpJfxURbUBXoy/exN
-         2l17Y4l/vLaGheeO+BcTX0xsTtUoLFIyjZgrtvnlFltlwFQsUTxckTARUcAC494cm4YP
-         aafA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696841280; x=1697446080;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dE3lQgYQrglH+136jeW6uJyH+jXehuS7mvTlptTmP9s=;
-        b=SQyakrR9iwQFrPxYAnzKQdXQVK2LwwBEHonyEIgOy/cSqDT2mqY/fxhXThgdtXaurN
-         wVHA390LZIA6kJ5qb9nMd7nn1aVF50UoymW962+tKOrarNsW7xscVs/F+9VKawO6P/BA
-         ms6iplwCVwna+Bv88QP3aC729GVlT9aX7NdenXbRgg/IgWj1f3AnzF1Nl9aYfe56Fnol
-         rF9gNhGOXb1XjZY+MOre0E9qB0CQhUyaLp4JZkA8oWBzAs74/D787K1DIl0E/a4RodsL
-         nOe+ds6ioeI5BZ64lSxiAamFZbWK2xVBU38iV4pZeq4IVyKL99OLg/EisiaWf2K7pOyW
-         JRlg==
-X-Gm-Message-State: AOJu0YyGphsmqnrb4goEAB8rFUmq2H8H982hxeEDNsH/583zbRn3XyzS
-        OBV1ymiw/ZnmkK1Le3zMYTx+Zz4TCV/zyfxdzOAvkA==
-X-Google-Smtp-Source: AGHT+IGkEHB9+FkrxEWHBni/C8fdR2BOIvdSvmE0rrDALznxAP9Fyr8BrrEt9+PRFjg9zwhFRR42opgPmUXdx0/JIOM=
-X-Received: by 2002:a1f:d3c4:0:b0:49a:b9ed:8c22 with SMTP id
- k187-20020a1fd3c4000000b0049ab9ed8c22mr11374478vkg.9.1696841279791; Mon, 09
- Oct 2023 01:47:59 -0700 (PDT)
+        Mon, 9 Oct 2023 04:48:30 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0762A3;
+        Mon,  9 Oct 2023 01:48:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=vsEYVvFd0zJLjsdD17x+dxYbHK8LYUuMJRmfVCrYGtw=; b=B2txYrQOk6U8asYJhO+g+1IPzN
+        8SSELzSqQOMyNwfIJdlnHnQMcDlRRrdfw2kZatVBOvRfbY/d/LMSRbu9wgMgq7eRIaH3Z13CT2CzA
+        Z2/c3mGlHjnujHrYfP45/88GvhlpFpD1ZS0lFv8ZwtR1q+UDRZPUxR3XoCk7ZwmB6vQr0p3XKC7fH
+        4I1kRx2bz+xplVnj2DcKATmaINoUgfg+HZTvWds9BrRLEU74q05vIEwSYrH+/DZajm97/smj+R48N
+        4ImKw2qs2ixiqFwG/jiqC8n/eS3x5WL2ZgDDVIhMR4u4G+Gn/TGd7rh/f+zcGtWqcYLUw6m0WC3wr
+        Md6BcMmg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qplvv-00Fjac-15;
+        Mon, 09 Oct 2023 08:48:13 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6F8EE300454; Mon,  9 Oct 2023 10:48:12 +0200 (CEST)
+Date:   Mon, 9 Oct 2023 10:48:12 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sohil Mehta <sohil.mehta@intel.com>
+Subject: Re: linux-next: manual merge of the block tree with the asm-generic
+ tree
+Message-ID: <20231009084812.GB14330@noisy.programming.kicks-ass.net>
+References: <20231009123118.4487a0e1@canb.auug.org.au>
 MIME-Version: 1.0
-References: <cover.1696605143.git.andreyknvl@google.com> <6fad6661e72c407450ae4b385c71bc4a7e1579cd.1696605143.git.andreyknvl@google.com>
-In-Reply-To: <6fad6661e72c407450ae4b385c71bc4a7e1579cd.1696605143.git.andreyknvl@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 9 Oct 2023 10:47:23 +0200
-Message-ID: <CANpmjNOp0yq2vQmSmTim=AF7bm9XdStbaQE9B=wVwpKkO_y6tQ@mail.gmail.com>
-Subject: Re: [PATCH 4/5] kasan: fix and update KUNIT_EXPECT_KASAN_FAIL comment
-To:     andrey.konovalov@linux.dev
-Cc:     Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        kasan-dev@googlegroups.com,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20231009123118.4487a0e1@canb.auug.org.au>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Oct 2023 at 17:18, <andrey.konovalov@linux.dev> wrote:
->
-> From: Andrey Konovalov <andreyknvl@google.com>
->
-> Update the comment for KUNIT_EXPECT_KASAN_FAIL to describe the parameters
-> this macro accepts.
->
-> Also drop the mention of the "kasan_status" KUnit resource, as it no
-> longer exists.
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202308171757.7V5YUcje-lkp@intel.com/
+On Mon, Oct 09, 2023 at 12:31:18PM +1100, Stephen Rothwell wrote:
+> Hi all,
+>=20
+> Today's linux-next merge of the block tree got conflicts in:
+>=20
+>   arch/alpha/kernel/syscalls/syscall.tbl
+>   arch/arm/tools/syscall.tbl
+>   arch/arm64/include/asm/unistd.h
+>   arch/arm64/include/asm/unistd32.h
+>   arch/m68k/kernel/syscalls/syscall.tbl
+>   arch/microblaze/kernel/syscalls/syscall.tbl
+>   arch/mips/kernel/syscalls/syscall_n32.tbl
+>   arch/mips/kernel/syscalls/syscall_n64.tbl
+>   arch/mips/kernel/syscalls/syscall_o32.tbl
+>   arch/parisc/kernel/syscalls/syscall.tbl
+>   arch/powerpc/kernel/syscalls/syscall.tbl
+>   arch/s390/kernel/syscalls/syscall.tbl
+>   arch/sh/kernel/syscalls/syscall.tbl
+>   arch/sparc/kernel/syscalls/syscall.tbl
+>   arch/x86/entry/syscalls/syscall_32.tbl
+>   arch/xtensa/kernel/syscalls/syscall.tbl
+>   include/uapi/asm-generic/unistd.h
+>=20
+> between commits:
+>=20
+>   2fd0ebad27bc ("arch: Reserve map_shadow_stack() syscall number for all =
+architectures")
+>=20
+> from the asm-generic tree and commits:
+>=20
+>   9f6c532f59b2 ("futex: Add sys_futex_wake()")
+>   cb8c4312afca ("futex: Add sys_futex_wait()")
+>   0f4b5f972216 ("futex: Add sys_futex_requeue()")
+>=20
+> from the block tree.
 
-"Closes" isn't a valid tag? Reported-by + Link should be enough to attribute.
+fun fun fun..
 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-Reviewed-by: Marco Elver <elver@google.com>
+> diff --cc arch/alpha/kernel/syscalls/syscall.tbl
+> index 5d05ab716a74,b1865f9bb31e..000000000000
+> --- a/arch/alpha/kernel/syscalls/syscall.tbl
+> +++ b/arch/alpha/kernel/syscalls/syscall.tbl
+> @@@ -492,4 -492,6 +492,7 @@@
+>   560	common	set_mempolicy_home_node		sys_ni_syscall
+>   561	common	cachestat			sys_cachestat
+>   562	common	fchmodat2			sys_fchmodat2
+>  -563	common	futex_wake			sys_futex_wake
+>  -564	common	futex_wait			sys_futex_wait
+>  -565	common	futex_requeue			sys_futex_requeue
+>  +563	common	map_shadow_stack		sys_map_shadow_stack
+> ++564	common	futex_wake			sys_futex_wake
+> ++565	common	futex_wait			sys_futex_wait
+> ++566	common	futex_requeue			sys_futex_requeue
 
-> ---
->  mm/kasan/kasan_test.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
->
-> diff --git a/mm/kasan/kasan_test.c b/mm/kasan/kasan_test.c
-> index c707d6c6e019..2030c7ff7de9 100644
-> --- a/mm/kasan/kasan_test.c
-> +++ b/mm/kasan/kasan_test.c
-> @@ -91,10 +91,11 @@ static void kasan_test_exit(struct kunit *test)
->  }
->
->  /**
-> - * KUNIT_EXPECT_KASAN_FAIL() - check that the executed expression produces a
-> - * KASAN report; causes a test failure otherwise. This relies on a KUnit
-> - * resource named "kasan_status". Do not use this name for KUnit resources
-> - * outside of KASAN tests.
-> + * KUNIT_EXPECT_KASAN_FAIL - check that the executed expression produces a
-> + * KASAN report; causes a KUnit test failure otherwise.
-> + *
-> + * @test: Currently executing KUnit test.
-> + * @expression: Expression that must produce a KASAN report.
->   *
->   * For hardware tag-based KASAN, when a synchronous tag fault happens, tag
->   * checking is auto-disabled. When this happens, this test handler reenables
-> --
-> 2.25.1
->
+So this renumbers the (futex) stuff on Alpha, does anybody care? AFAICT
+Alpha does not follow the unistd order and meh.
+
+> diff --cc include/uapi/asm-generic/unistd.h
+> index 00df5af71ca1,d9e9cd13e577..000000000000
+> --- a/include/uapi/asm-generic/unistd.h
+> +++ b/include/uapi/asm-generic/unistd.h
+> @@@ -822,12 -822,15 +822,18 @@@ __SYSCALL(__NR_cachestat, sys_cachestat
+>  =20
+>   #define __NR_fchmodat2 452
+>   __SYSCALL(__NR_fchmodat2, sys_fchmodat2)
+> + #define __NR_futex_wake 454
+> + __SYSCALL(__NR_futex_wake, sys_futex_wake)
+> + #define __NR_futex_wait 455
+> + __SYSCALL(__NR_futex_wait, sys_futex_wait)
+> + #define __NR_futex_requeue 456
+> + __SYSCALL(__NR_futex_requeue, sys_futex_requeue)
+>  =20
+>  +#define __NR_map_shadow_stack 453
+>  +__SYSCALL(__NR_map_shadow_stack, sys_map_shadow_stack)
+>  +
+>   #undef __NR_syscalls
+> - #define __NR_syscalls 454
+> + #define __NR_syscalls 457
+>  =20
+>   /*
+>    * 32 bit systems traditionally used different
+
+This seems to have the hunks in the wrong order, 453 should come before
+454 no?
+
