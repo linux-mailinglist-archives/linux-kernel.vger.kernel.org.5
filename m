@@ -2,242 +2,487 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B81D07BD8D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 12:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA5C27BD8DA
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 12:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345931AbjJIKib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 06:38:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49332 "EHLO
+        id S1345871AbjJIKir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 06:38:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345926AbjJIKi2 (ORCPT
+        with ESMTP id S1345825AbjJIKiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 06:38:28 -0400
-Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A21BAB
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 03:38:25 -0700 (PDT)
-Received: by mail-ua1-x92f.google.com with SMTP id a1e0cc1a2514c-7ab8696d047so1697745241.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 03:38:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696847904; x=1697452704; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=TC96PcHwbVa6mXdy6p1iyfYaO6sKkhGaSgd90ZPbnyA=;
-        b=D1X4y7sO/NA1Ou5clX3aC41yjk1UiPaxJXbHdpWwAqLk0DghaAr0tHhvYQiLFlcVL7
-         m5IcfUUXxql2ydEWpJtdtRbBQphusG+GMqP6Bex84a8jgYHYeIyh1BYlsPTz+OnaCup4
-         fTxlXkXFEtMwlqkBi4yTLHVhhrHwIzCO0XDHrAHLu6MR/0PvxytyCHkPzn+3hEBQc9Vq
-         r2uM2WvsJQBon6/HRj79mE5T1wmSXhpCYbOqSuisaIFBwEPb81e+L8ZfPeqYiU/Yrdei
-         5a9QS2Hoau8YzQLGxeoR8HKTl5W8hdwe4IWlr3bYfTVpCZSZq7DkGFnJ1fVPNyZytOjv
-         /0lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696847904; x=1697452704;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TC96PcHwbVa6mXdy6p1iyfYaO6sKkhGaSgd90ZPbnyA=;
-        b=GE0m2Y2vHsHKYMrWhGXZO7xSxrUSnv8R/UUStWgdtc5kksB0DP/+5de9Ip+zdePD1D
-         svA6ANMSjHPGYnfkZ5FfM52Vsuq9x4MHzu7IKSKbhKb8PLGviSah/IJnfuSy8tnpRt0L
-         AvDDZM4RqlLz/wB60SGS1FQeYJOUCHXVPHtftq4xYAeOkFxHBApdXkaLHPnJy+9XAghn
-         D2+hDuRUrvTuSF1g+cXtwW4vdyepxZp8Qr7cGg9vkbIkUSf6dI9+YbtPeq/y6sOXNAYE
-         T/G3SOezpA4lYKKtZC/5LcaGmTTjF7ZpnBoVvNH1D/uULOTz21VstF/beBe3FpS+Xj+K
-         uWsw==
-X-Gm-Message-State: AOJu0YzKERaO68eQKsrx/J/LYvWipDCpxnzOYWqhiP/cRjtwZOJ4Fnet
-        MSgXpgbCUEr+zwYSvEYmGVlSaX/TopE57wB1qEAWpg==
-X-Google-Smtp-Source: AGHT+IFcTYb2v0rxujleX8LbqmPAp49m2hsL23BGGbGneKo8PgPvR5ypkpt01khlJ670YgDjXuhfzyVscrJsINq+H+4=
-X-Received: by 2002:a67:fe10:0:b0:44d:55a4:226d with SMTP id
- l16-20020a67fe10000000b0044d55a4226dmr12690142vsr.4.1696847904580; Mon, 09
- Oct 2023 03:38:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+G9fYsJA4fkLCDdXfCdjqJz3q3K0TErgKjypuLmPZ=EU3MbDg@mail.gmail.com>
- <ZSLNQjzoYcLq1hEo@P9FQF9L96D>
-In-Reply-To: <ZSLNQjzoYcLq1hEo@P9FQF9L96D>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 9 Oct 2023 16:08:13 +0530
-Message-ID: <CA+G9fYuH_-fRHS2Kjvc8FcoV=pz9jBtYvXHOcsvUgcAHOeqXWA@mail.gmail.com>
-Subject: Re: selftests: cgroup: test_core - Unable to handle kernel NULL
- pointer dereference at virtual address
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, lkft-triage@lists.linaro.org,
-        Lucas Karpinski <lkarpins@redhat.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>,
-        Shuah Khan <shuah@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        David Rientjes <rientjes@google.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 9 Oct 2023 06:38:46 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B7946DF;
+        Mon,  9 Oct 2023 03:38:42 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+        id 13AA520B74C0; Mon,  9 Oct 2023 03:38:42 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 13AA520B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1696847922;
+        bh=8t4DccgWqnr6psKnRsXTe03NOylAAYCSsi0VKFkhpaQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kfskilnjb3NCdmPC7F3c4VlP/dmYEM78Cs7GpPP314BlSim11Rctr9aULZXilYjwn
+         ZR/U9V1lAzQjL9dzxcsIjkWjOPwYUSl1XQWJqeRWLpdOWqox9JCQId9SuGE7HNfQE2
+         b3Gdi+U6U/TfgNpX3G7UWEgci/OvJZJlOPZgS1SE=
+From:   Shradha Gupta <shradhagupta@linux.microsoft.com>
+To:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
+Cc:     Shradha Gupta <shradhagupta@linux.microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Long Li <longli@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Olaf Hering <olaf@aepfle.de>, Ani Sinha <anisinha@redhat.com>,
+        Shradha Gupta <shradhagupta@microsoft.com>
+Subject: [PATCH v8] hv/hv_kvp_daemon:Support for keyfile based connection profile
+Date:   Mon,  9 Oct 2023 03:38:40 -0700
+Message-Id: <1696847920-31125-1-git-send-email-shradhagupta@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 8 Oct 2023 at 21:09, Roman Gushchin <roman.gushchin@linux.dev> wrote:
->
-> On Sun, Oct 08, 2023 at 11:30:52AM +0530, Naresh Kamboju wrote:
-> > While running selftests: cgroup: test_kmem on FVP following kernel crash
-> > noticed on Linux next 6.6.0-rc4-next-20231006.
->
-> Hi Naresh!
->
-> Thank you for the report!
->
-> I've tried to reproduce it, but wasn't successful so far: I've run test_kmem
-> for several hundred times and haven't seen the crash.
+Ifcfg config file support in NetworkManger is deprecated. This patch
+provides support for the new keyfile config format for connection
+profiles in NetworkManager. The patch modifies the hv_kvp_daemon code
+to generate the new network configuration in keyfile
+format(.ini-style format) along with a ifcfg format configuration.
+The ifcfg format configuration is also retained to support easy
+backward compatibility for distro vendors. These configurations are
+stored in temp files which are further translated using the
+hv_set_ifconfig.sh script. This script is implemented by individual
+distros based on the network management commands supported.
+For example, RHEL's implementation could be found here:
+https://gitlab.com/redhat/centos-stream/src/hyperv-daemons/-/blob/c9s/hv_set_ifconfig.sh
+Debian's implementation could be found here:
+https://github.com/endlessm/linux/blob/master/debian/cloud-tools/hv_set_ifconfig
 
-If you look at the problematic test case is
-selftests: cgroup: test_core
+The next part of this support is to let the Distro vendors consume
+these modified implementations to the new configuration format.
 
-I recommend to run
-./run_kselftest.sh -c cgroup
+Tested-on: Rhel9(Hyper-V, Azure)(nm and ifcfg files verified)
+Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+Reviewed-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+---
+ Changes v7->v8
+ * Fix some filename variable names to avoid confusion
+ * Add initialization of is_ipv6 variable
+ * Add a few comments
+---
+ tools/hv/hv_kvp_daemon.c    | 233 +++++++++++++++++++++++++++++++-----
+ tools/hv/hv_set_ifconfig.sh |  39 +++++-
+ 2 files changed, 235 insertions(+), 37 deletions(-)
 
->
-> Can you, please, provide some additional information?
-> How easy to reproduce it?
+diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
+index 27f5e7dfc2f7..264eeb9c46a9 100644
+--- a/tools/hv/hv_kvp_daemon.c
++++ b/tools/hv/hv_kvp_daemon.c
+@@ -1171,12 +1171,79 @@ static int process_ip_string(FILE *f, char *ip_string, int type)
+ 	return 0;
+ }
+ 
++/*
++ * Only IPv4 subnet strings needs to be converted to plen
++ * For IPv6 the subnet is already privided in plen format
++ */
++static int kvp_subnet_to_plen(char *subnet_addr_str)
++{
++	int plen = 0;
++	struct in_addr subnet_addr4;
++
++	/*
++	 * Convert subnet address to binary representation
++	 */
++	if (inet_pton(AF_INET, subnet_addr_str, &subnet_addr4) == 1) {
++		uint32_t subnet_mask = ntohl(subnet_addr4.s_addr);
++
++		while (subnet_mask & 0x80000000) {
++			plen++;
++			subnet_mask <<= 1;
++		}
++	} else {
++		return -1;
++	}
++
++	return plen;
++}
++
++static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
++				int is_ipv6)
++{
++	char addr[INET6_ADDRSTRLEN];
++	char subnet_addr[INET6_ADDRSTRLEN];
++	int error, i = 0;
++	int ip_offset = 0, subnet_offset = 0;
++	int plen;
++
++	memset(addr, 0, sizeof(addr));
++	memset(subnet_addr, 0, sizeof(subnet_addr));
++
++	while (parse_ip_val_buffer(ip_string, &ip_offset, addr,
++				   (MAX_IP_ADDR_SIZE * 2)) &&
++				   parse_ip_val_buffer(subnet,
++						       &subnet_offset,
++						       subnet_addr,
++						       (MAX_IP_ADDR_SIZE *
++							2))) {
++		if (!is_ipv6)
++			plen = kvp_subnet_to_plen((char *)subnet_addr);
++		else
++			plen = atoi(subnet_addr);
++
++		if (plen < 0)
++			return plen;
++
++		error = fprintf(f, "address%d=%s/%d\n", ++i, (char *)addr,
++				plen);
++		if (error < 0)
++			return error;
++
++		memset(addr, 0, sizeof(addr));
++		memset(subnet_addr, 0, sizeof(subnet_addr));
++	}
++
++	return 0;
++}
++
+ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
+ {
+ 	int error = 0;
+-	char if_file[PATH_MAX];
+-	FILE *file;
++	char if_filename[PATH_MAX];
++	char nm_filename[PATH_MAX];
++	FILE *ifcfg_file, *nmfile;
+ 	char cmd[PATH_MAX];
++	int is_ipv6 = 0;
+ 	char *mac_addr;
+ 	int str_len;
+ 
+@@ -1197,7 +1264,7 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
+ 	 * in a given distro to configure the interface and so are free
+ 	 * ignore information that may not be relevant.
+ 	 *
+-	 * Here is the format of the ip configuration file:
++	 * Here is the ifcfg format of the ip configuration file:
+ 	 *
+ 	 * HWADDR=macaddr
+ 	 * DEVICE=interface name
+@@ -1220,6 +1287,32 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
+ 	 * tagged as IPV6_DEFAULTGW and IPV6 NETMASK will be tagged as
+ 	 * IPV6NETMASK.
+ 	 *
++	 * Here is the keyfile format of the ip configuration file:
++	 *
++	 * [ethernet]
++	 * mac-address=macaddr
++	 * [connection]
++	 * interface-name=interface name
++	 *
++	 * [ipv4]
++	 * method=<protocol> (where <protocol> is "auto" if DHCP is configured
++	 *                       or "manual" if no boot-time protocol should be used)
++	 *
++	 * address1=ipaddr1/plen
++	 * address2=ipaddr2/plen
++	 *
++	 * gateway=gateway1;gateway2
++	 *
++	 * dns=dns1;dns2
++	 *
++	 * [ipv6]
++	 * address1=ipaddr1/plen
++	 * address2=ipaddr2/plen
++	 *
++	 * gateway=gateway1;gateway2
++	 *
++	 * dns=dns1;dns2
++	 *
+ 	 * The host can specify multiple ipv4 and ipv6 addresses to be
+ 	 * configured for the interface. Furthermore, the configuration
+ 	 * needs to be persistent. A subsequent GET call on the interface
+@@ -1227,14 +1320,29 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
+ 	 * call.
+ 	 */
+ 
+-	snprintf(if_file, sizeof(if_file), "%s%s%s", KVP_CONFIG_LOC,
+-		"/ifcfg-", if_name);
++	/*
++	 * We are populating both ifcfg and nmconnection files
++	 */
++	snprintf(if_filename, sizeof(if_filename), "%s%s%s", KVP_CONFIG_LOC,
++		 "/ifcfg-", if_name);
+ 
+-	file = fopen(if_file, "w");
++	ifcfg_file = fopen(if_filename, "w");
+ 
+-	if (file == NULL) {
++	if (!ifcfg_file) {
+ 		syslog(LOG_ERR, "Failed to open config file; error: %d %s",
+-				errno, strerror(errno));
++		       errno, strerror(errno));
++		return HV_E_FAIL;
++	}
++
++	snprintf(nm_filename, sizeof(nm_filename), "%s%s%s%s", KVP_CONFIG_LOC,
++		 "/", if_name, ".nmconnection");
++
++	nmfile = fopen(nm_filename, "w");
++
++	if (!nmfile) {
++		syslog(LOG_ERR, "Failed to open config file; error: %d %s",
++		       errno, strerror(errno));
++		fclose(ifcfg_file);
+ 		return HV_E_FAIL;
+ 	}
+ 
+@@ -1248,14 +1356,31 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
+ 		goto setval_error;
+ 	}
+ 
+-	error = kvp_write_file(file, "HWADDR", "", mac_addr);
+-	free(mac_addr);
++	error = kvp_write_file(ifcfg_file, "HWADDR", "", mac_addr);
++	if (error < 0)
++		goto setmac_error;
++
++	error = kvp_write_file(ifcfg_file, "DEVICE", "", if_name);
++	if (error < 0)
++		goto setmac_error;
++
++	error = fprintf(nmfile, "\n[connection]\n");
++	if (error < 0)
++		goto setmac_error;
++
++	error = kvp_write_file(nmfile, "interface-name", "", if_name);
+ 	if (error)
+-		goto setval_error;
++		goto setmac_error;
+ 
+-	error = kvp_write_file(file, "DEVICE", "", if_name);
++	error = fprintf(nmfile, "\n[ethernet]\n");
++	if (error < 0)
++		goto setmac_error;
++
++	error = kvp_write_file(nmfile, "mac-address", "", mac_addr);
+ 	if (error)
+-		goto setval_error;
++		goto setmac_error;
++
++	free(mac_addr);
+ 
+ 	/*
+ 	 * The dhcp_enabled flag is only for IPv4. In the case the host only
+@@ -1263,47 +1388,91 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
+ 	 * proceed to parse and pass the IPv6 information to the
+ 	 * disto-specific script hv_set_ifconfig.
+ 	 */
++
++	/*
++	 * First populate the ifcfg file format
++	 */
+ 	if (new_val->dhcp_enabled) {
+-		error = kvp_write_file(file, "BOOTPROTO", "", "dhcp");
++		error = kvp_write_file(ifcfg_file, "BOOTPROTO", "", "dhcp");
+ 		if (error)
+ 			goto setval_error;
+-
+ 	} else {
+-		error = kvp_write_file(file, "BOOTPROTO", "", "none");
++		error = kvp_write_file(ifcfg_file, "BOOTPROTO", "", "none");
+ 		if (error)
+ 			goto setval_error;
+ 	}
+ 
+-	/*
+-	 * Write the configuration for ipaddress, netmask, gateway and
+-	 * name servers.
+-	 */
+-
+-	error = process_ip_string(file, (char *)new_val->ip_addr, IPADDR);
++	error = process_ip_string(ifcfg_file, (char *)new_val->ip_addr,
++				  IPADDR);
+ 	if (error)
+ 		goto setval_error;
+ 
+-	error = process_ip_string(file, (char *)new_val->sub_net, NETMASK);
++	error = process_ip_string(ifcfg_file, (char *)new_val->sub_net,
++				  NETMASK);
+ 	if (error)
+ 		goto setval_error;
+ 
+-	error = process_ip_string(file, (char *)new_val->gate_way, GATEWAY);
++	error = process_ip_string(ifcfg_file, (char *)new_val->gate_way,
++				  GATEWAY);
+ 	if (error)
+ 		goto setval_error;
+ 
+-	error = process_ip_string(file, (char *)new_val->dns_addr, DNS);
++	error = process_ip_string(ifcfg_file, (char *)new_val->dns_addr, DNS);
+ 	if (error)
+ 		goto setval_error;
+ 
+-	fclose(file);
++	if (new_val->addr_family == ADDR_FAMILY_IPV6) {
++		error = fprintf(nmfile, "\n[ipv6]\n");
++		if (error < 0)
++			goto setval_error;
++		is_ipv6 = 1;
++	} else {
++		error = fprintf(nmfile, "\n[ipv4]\n");
++		if (error < 0)
++			goto setval_error;
++	}
++
++	/*
++	 * Now we populate the keyfile format
++	 */
++
++	if (new_val->dhcp_enabled) {
++		error = kvp_write_file(nmfile, "method", "", "auto");
++		if (error < 0)
++			goto setval_error;
++	} else {
++		error = kvp_write_file(nmfile, "method", "", "manual");
++		if (error < 0)
++			goto setval_error;
++	}
++
++	/*
++	 * Write the configuration for ipaddress, netmask, gateway and
++	 * name services
++	 */
++	error = process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
++				     (char *)new_val->sub_net, is_ipv6);
++	if (error < 0)
++		goto setval_error;
++
++	error = fprintf(nmfile, "gateway=%s\n", (char *)new_val->gate_way);
++	if (error < 0)
++		goto setval_error;
++
++	error = fprintf(nmfile, "dns=%s\n", (char *)new_val->dns_addr);
++	if (error < 0)
++		goto setval_error;
++
++	fclose(nmfile);
++	fclose(ifcfg_file);
+ 
+ 	/*
+ 	 * Now that we have populated the configuration file,
+ 	 * invoke the external script to do its magic.
+ 	 */
+ 
+-	str_len = snprintf(cmd, sizeof(cmd), KVP_SCRIPTS_PATH "%s %s",
+-			   "hv_set_ifconfig", if_file);
++	str_len = snprintf(cmd, sizeof(cmd), KVP_SCRIPTS_PATH "%s %s %s",
++			   "hv_set_ifconfig", if_filename, nm_filename);
+ 	/*
+ 	 * This is a little overcautious, but it's necessary to suppress some
+ 	 * false warnings from gcc 8.0.1.
+@@ -1316,14 +1485,16 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
+ 
+ 	if (system(cmd)) {
+ 		syslog(LOG_ERR, "Failed to execute cmd '%s'; error: %d %s",
+-				cmd, errno, strerror(errno));
++		       cmd, errno, strerror(errno));
+ 		return HV_E_FAIL;
+ 	}
+ 	return 0;
+-
++setmac_error:
++	free(mac_addr);
+ setval_error:
+ 	syslog(LOG_ERR, "Failed to write config file");
+-	fclose(file);
++	fclose(ifcfg_file);
++	fclose(nmfile);
+ 	return error;
+ }
+ 
+diff --git a/tools/hv/hv_set_ifconfig.sh b/tools/hv/hv_set_ifconfig.sh
+index d10fe35b7f25..ae5a7a8249a2 100755
+--- a/tools/hv/hv_set_ifconfig.sh
++++ b/tools/hv/hv_set_ifconfig.sh
+@@ -18,12 +18,12 @@
+ #
+ # This example script is based on a RHEL environment.
+ #
+-# Here is the format of the ip configuration file:
++# Here is the ifcfg format of the ip configuration file:
+ #
+ # HWADDR=macaddr
+ # DEVICE=interface name
+ # BOOTPROTO=<protocol> (where <protocol> is "dhcp" if DHCP is configured
+-#                       or "none" if no boot-time protocol should be used)
++# 			or "none" if no boot-time protocol should be used)
+ #
+ # IPADDR0=ipaddr1
+ # IPADDR1=ipaddr2
+@@ -41,6 +41,32 @@
+ # tagged as IPV6_DEFAULTGW and IPV6 NETMASK will be tagged as
+ # IPV6NETMASK.
+ #
++# Here is the keyfile format of the ip configuration file:
++#
++# [ethernet]
++# mac-address=macaddr
++# [connection]
++# interface-name=interface name
++#
++# [ipv4]
++# method=<protocol> (where <protocol> is "auto" if DHCP is configured
++#                       or "manual" if no boot-time protocol should be used)
++#
++# address1=ipaddr1/plen
++# address=ipaddr2/plen
++#
++# gateway=gateway1;gateway2
++#
++# dns=dns1;
++#
++# [ipv6]
++# address1=ipaddr1/plen
++# address2=ipaddr1/plen
++#
++# gateway=gateway1;gateway2
++#
++# dns=dns1;dns2
++#
+ # The host can specify multiple ipv4 and ipv6 addresses to be
+ # configured for the interface. Furthermore, the configuration
+ # needs to be persistent. A subsequent GET call on the interface
+@@ -48,18 +74,19 @@
+ # call.
+ #
+ 
+-
+-
+ echo "IPV6INIT=yes" >> $1
+ echo "NM_CONTROLLED=no" >> $1
+ echo "PEERDNS=yes" >> $1
+ echo "ONBOOT=yes" >> $1
+ 
+-
+ cp $1 /etc/sysconfig/network-scripts/
+ 
++chmod 600 $2
++interface=$(echo $2 | awk -F - '{ print $2 }')
++filename="${2##*/}"
++
++sed '/\[connection\]/a autoconnect=true' $2 > /etc/NetworkManager/system-connections/${filename}
+ 
+-interface=$(echo $1 | awk -F - '{ print $2 }')
+ 
+ /sbin/ifdown $interface 2>/dev/null
+ /sbin/ifup $interface 2>/dev/null
+-- 
+2.34.1
 
-It is always reproducible on qemu-arm64, FVP, x86 with a given config.
-
-> Do you see it every time or with some probability?
-
-Always with selftests: cgroup: test_core.
-I generally run all selftests: cgroup: *
-
-> Do you see it on other platforms?
-qemu-arm64, FVP, x86.
-
-> Can you, please, check where exactly the crash happens using addr2line?
-
-I have provided links to build, test logs and steps to reproduce scripts.
-
-Is this an interesting log ?
-
-# selftests: cgroup: test_core
-# ok 1 test_cgcore_internal_process_constraint
-# ok 2 test_cgcore_top_down_constraint_enable
-# ok 3 test_cgcore_top_down_constraint_disable
-# ok 4 test_cgcore_no_internal_process_constraint_on_threads
-# ok 5 test_cgcore_parent_becomes_threaded
-# ok 6 test_cgcore_invalid_domain
-# ok 7 test_cgcore_populated
-# ok 8 test_cgcore_proc_migration
-# ok 9 test_cgcore_thread_migration
-# ok 10 test_cgcore_destroy
-# ok 11 test_cgcore_lesser_euid_open
-# ok 12 test_cgcore_lesser_ns_open
-<1>[  188.504854] Unable to handle kernel NULL pointer dereference at
-virtual address 0000000000000000
-<1>[  188.505724] Mem abort info:
-<1>[  188.506036]   ESR = 0x0000000096000044
-<1>[  188.507539]   EC = 0x25: DABT (current EL), IL = 32 bits
-<1>[  188.508268]   SET = 0, FnV = 0
-<1>[  188.508895]   EA = 0, S1PTW = 0
-<1>[  188.509517]   FSC = 0x04: level 0 translation fault
-<1>[  188.510279] Data abort info:
-<1>[  188.511513]   ISV = 0, ISS = 0x00000044, ISS2 = 0x00000000
-<1>[  188.512757]   CM = 0, WnR = 1, TnD = 0, TagAccess = 0
-<1>[  188.513333]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-<1>[  188.514316] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000104934000
-<1>[  188.516277] [0000000000000000] pgd=0000000000000000, p4d=0000000000000000
-<0>[  188.517886] Internal error: Oops: 0000000096000044 [#1] PREEMPT SMP
-<4>[  188.518838] Modules linked in: crct10dif_ce sm3_ce sm3 sha3_ce
-sha512_ce sha512_arm64 fuse drm backlight dm_mod ip_tables x_tables
-<4>[  188.521105] CPU: 0 PID: 57 Comm: kworker/0:2 Not tainted
-6.6.0-rc4-next-20231006 #1
-<4>[  188.521750] Hardware name: linux,dummy-virt (DT)
-<4>[  188.522915] Workqueue: cgroup_destroy css_free_rwork_fn
-<4>[  188.523572] pstate: 03400009 (nzcv daif +PAN -UAO +TCO +DIT
--SSBS BTYPE=--)
-<4>[ 188.524569] pc : percpu_ref_put_many.constprop.0
-(arch/arm64/include/asm/atomic_lse.h:169 (discriminator 1)
-arch/arm64/include/asm/atomic_lse.h:184 (discriminator 1)
-arch/arm64/include/asm/atomic_lse.h:204 (discriminator 1)
-arch/arm64/include/asm/atomic.h:92 (discriminator 1)
-include/linux/atomic/atomic-arch-fallback.h:2886 (discriminator 1)
-include/linux/atomic/atomic-arch-fallback.h:4351 (discriminator 1)
-include/linux/atomic/atomic-long.h:1543 (discriminator 1)
-include/linux/atomic/atomic-instrumented.h:4486 (discriminator 1)
-include/linux/percpu-refcount.h:334 (discriminator 1))
-<4>[ 188.525451] lr : percpu_ref_put_many.constprop.0
-(include/linux/percpu-refcount.h:174 (discriminator 2)
-include/linux/percpu-refcount.h:332 (discriminator 2))
-<4>[  188.526230] sp : ffff8000803d3ca0
-<4>[  188.526902] x29: ffff8000803d3ca0 x28: 0000000000000000 x27:
-0000000000000000
-<4>[  188.527976] x26: 0000000000000000 x25: ffff0000c1112e80 x24:
-ffff0000c002da05
-<4>[  188.528965] x23: 0000000000000030 x22: ffffafd0c976a000 x21:
-ffffafd0c976cb70
-<4>[  188.529927] x20: ffff0000d67fa000 x19: ffff0000d32f44c0 x18:
-0000000000000000
-<4>[  188.531096] x17: 0000000000000000 x16: 0000000000000000 x15:
-0000000000000000
-<4>[  188.532244] x14: 0000000000000004 x13: ffffafd0c9787258 x12:
-0000000000000000
-<4>[  188.533548] x11: ffff0000c0402e58 x10: ffff0000c0402db0 x9 :
-ffffafd0c6f86a90
-<4>[  188.535274] x8 : ffff8000803d3b68 x7 : 0000000000000000 x6 :
-0000000000000001
-<4>[  188.536318] x5 : ffffafd0c976a000 x4 : ffffafd0c976a288 x3 :
-0000000000000000
-<4>[  188.537144] x2 : ffff0000c0acbe00 x1 : 0000000000000000 x0 :
-ffffffffffffffff
-<4>[  188.538091] Call trace:
-<4>[ 188.538883] percpu_ref_put_many.constprop.0
-(arch/arm64/include/asm/atomic_lse.h:169 (discriminator 1)
-arch/arm64/include/asm/atomic_lse.h:184 (discriminator 1)
-arch/arm64/include/asm/atomic_lse.h:204 (discriminator 1)
-arch/arm64/include/asm/atomic.h:92 (discriminator 1)
-include/linux/atomic/atomic-arch-fallback.h:2886 (discriminator 1)
-include/linux/atomic/atomic-arch-fallback.h:4351 (discriminator 1)
-include/linux/atomic/atomic-long.h:1543 (discriminator 1)
-include/linux/atomic/atomic-instrumented.h:4486 (discriminator 1)
-include/linux/percpu-refcount.h:334 (discriminator 1))
-<4>[ 188.539208] __mem_cgroup_free (include/linux/find.h:203
-include/linux/nodemask.h:266 mm/memcontrol.c:5446)
-<4>[ 188.539559] mem_cgroup_css_free (mm/memcontrol.c:5682)
-<4>[ 188.543093] css_free_rwork_fn (include/linux/spinlock.h:356
-kernel/cgroup/cgroup.c:350 kernel/cgroup/cgroup.c:5377)
-<4>[ 188.544324] process_one_work (kernel/workqueue.c:2635)
-<4>[ 188.545045] worker_thread (kernel/workqueue.c:2697 (discriminator
-2) kernel/workqueue.c:2784 (discriminator 2))
-<4>[ 188.545710] kthread (kernel/kthread.c:388)
-<4>[ 188.546690] ret_from_fork (arch/arm64/kernel/entry.S:858)
-<0>[ 188.547769] Code: d65f03c0 f9400661 d503201f 92800000 (f8e00020)
-All code
-========
-   0: d65f03c0 ret
-   4: f9400661 ldr x1, [x19, #8]
-   8: d503201f nop
-   c: 92800000 mov x0, #0xffffffffffffffff    // #-1
-  10:* f8e00020 ldaddal x0, x0, [x1] <-- trapping instruction
-
-Code starting with the faulting instruction
-===========================================
-   0: f8e00020 ldaddal x0, x0, [x1]
-<4>[  188.549059] ---[ end trace 0000000000000000 ]---
-ok 3 selftests: cgroup: test_core
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-
-Links:
-logs: https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/naresh/tests/2WWLlrB6hfNAc0btHy8LPxuQefp
-
-Build: https://storage.tuxsuite.com/public/linaro/naresh/builds/2WWGnN6pGnGdueSyID8ZTdS5EVv/
-Config: https://storage.tuxsuite.com/public/linaro/naresh/builds/2WWGnN6pGnGdueSyID8ZTdS5EVv/config
-
-Steps to reproduce:
-- https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/naresh/tests/2WWLlrB6hfNAc0btHy8LPxuQefp/reproducer
-
-- Naresh
