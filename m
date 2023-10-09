@@ -2,101 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0767B7BEABD
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 21:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 330277BEAC0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 21:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378404AbjJITkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 15:40:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50310 "EHLO
+        id S1378440AbjJITlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 15:41:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346683AbjJITkB (ORCPT
+        with ESMTP id S1346674AbjJITlX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 15:40:01 -0400
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 523A894
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 12:40:00 -0700 (PDT)
-Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-57b811a6ce8so2805024eaf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 12:40:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696880399; x=1697485199; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uQ3ZfP4NZWf00Sp5FRs8A4GOic8A7MU965Tw6O82KGM=;
-        b=k7hnlZ1i+LRb+ifysDdVQzZ/P8daRByx0NUijYkdIRFNUUpDSugAPTxGYuWz0y0d6Y
-         N7+24o4QhAmCkKDQPyrH+WlkV5rcGT65iT0c9V59OcRqxp1uhGs9hZquGJ3oHmd8+iiI
-         +xLTvTsji1VlxU+hhinLsKHTx93Uj6VUMN82+NLiOK9ObyAsD4R4PNqnLc5g1szQxQRo
-         M1m04W9xEPwjgjwjFsTQciJnvcgWs7oZS28UdEf7Gw4wVY38iVlrJdJkaXGZwq70KtdO
-         3BkJrNSLC/+JzWUb1VIC0NAk3bksJN5sKNStMywQvU9CEFR4SwkyoDGUdpS9v+hyxfOW
-         /PPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696880399; x=1697485199;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uQ3ZfP4NZWf00Sp5FRs8A4GOic8A7MU965Tw6O82KGM=;
-        b=KWv+3rTK9trrRValE9nPadi08bTOG/hjESrREvigmyy/dXo3x771QfIDGnP2OGrdMp
-         pPT6+PP5VF11EjUKZcOugax5mzVsMeD0cl6R6+MVmoaOUosuu7MmJA7ezNW1l6WGwbVY
-         dfr2nYJeGhZf5VpMnEvwge4FEmuehzyoTnqtdyPlqwOiN/sCYYlxDJ5hIAAmaf1hck0Y
-         MOjAbPS4Ofz+YfsWO2d4RpdIz4sqIeCoHZJSEHnUU/xhJiBhH9iK5tSebVAG8EKFpi+t
-         fH12BnLVLu+5oBzTYXi0MK+HLt2uV20Yp6IGZ1CLnXW26uD8/gGT6uMzn12SDiO+2lit
-         jK3g==
-X-Gm-Message-State: AOJu0Ywr7C+y6YQsyW7KZd5S34VX0pbK0JSIM35L4TMKhsrYg8LgFBvG
-        sbdAB4PPBCQ/jPUhz3e+ALrevDHZLTq96OpWBAVdt9+kpH7M8g==
-X-Google-Smtp-Source: AGHT+IFQ1z0iLfWVYTfPMKFRhmfh3lWF2cmkbzgQ0myasZOx1Pd1MA1sOEywCGMNDjh4BHTU7zOvZVAvfdrCcdKPidI=
-X-Received: by 2002:a05:6358:591c:b0:143:7d73:6e63 with SMTP id
- g28-20020a056358591c00b001437d736e63mr18655566rwf.2.1696880399492; Mon, 09
- Oct 2023 12:39:59 -0700 (PDT)
+        Mon, 9 Oct 2023 15:41:23 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B6D793;
+        Mon,  9 Oct 2023 12:41:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01C09C433C7;
+        Mon,  9 Oct 2023 19:41:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696880481;
+        bh=3m8vfJotEQ3gbSMgx24f32JgP5HmYW7wJZrzxltQSBs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=uhC6t7VJO+HL06uaAHUWAJUdKbYI1U0I4lHAaKZd4bTG5TO0SzI4JO02sEqNYsuDE
+         ZT5ovm+BxxZ/PabeZEwHa5iWpZ7qTf0S7GezI4mDDGLsZ8KxhENtVfi7xXIMiXj9yu
+         NB5aARhXR239GMlhoDAunPLa/kPwWmrjOfGUiQ1xW1nHrAv1j445CAlIYuhhHMTwub
+         TmgB3wSrGsv/yyDQyCgjpfJ9+CNla5nIkaRna/JnEnLkt9+Ezyy2DK6wNr4KxU36fS
+         /3xkom5ZGapfi75jW1iWdXlGkjIkss4HPI92i5JKnWHM/Fstt0+Hv1y0qcIQV64cvV
+         qmnl8EpzozcQw==
+Date:   Mon, 9 Oct 2023 13:41:18 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Kalle Valo <kvalo@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] hostap: Add __counted_by for struct
+ prism2_download_data and use struct_size()
+Message-ID: <ZSRXXvWMMkm7qqRW@work>
 MIME-Version: 1.0
-References: <cover.1694625260.git.andreyknvl@google.com> <CA+fCnZckOM0ycja3-=08=B3jwoWrYgn1w91eT=b6no9EN0UWLw@mail.gmail.com>
- <CANpmjNNoBuNCf5+ETLOgMbjjYFT0ssfb4yyYL21XRrOgMc_mfg@mail.gmail.com>
-In-Reply-To: <CANpmjNNoBuNCf5+ETLOgMbjjYFT0ssfb4yyYL21XRrOgMc_mfg@mail.gmail.com>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Mon, 9 Oct 2023 21:39:47 +0200
-Message-ID: <CA+fCnZd3HdXyx3dS0-3TQMDFbm1=qFQK7-2drHE1LE1ON=Ao8w@mail.gmail.com>
-Subject: Re: [PATCH v2 00/19] stackdepot: allow evicting stack traces
-To:     Marco Elver <elver@google.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
-        Evgenii Stepanov <eugenis@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>,
-        andrey.konovalov@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 9, 2023 at 2:35=E2=80=AFPM Marco Elver <elver@google.com> wrote=
-:
->
-> > Hi Marco and Alex,
-> >
-> > Could you PTAL at the not-yet-reviewed patches in this series when you
-> > get a chance?
->
-> There'll be a v3 with a few smaller still-pending fixes, right? I
-> think I looked at it a while back and the rest that I didn't comment
-> on looked fine, just waiting for v3.
->
-> Feel free to send a v3 by end of week. I'll try to have another look
-> today/tomorrow just in case I missed something, but if there are no
-> more comments please send v3 later in the week.
+Prepare for the coming implementation by GCC and Clang of the __counted_by
+attribute. Flexible array members annotated with __counted_by can have
+their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
+array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+functions).
 
-Yes, definitely, there will be v3. I just wanted to collect more
-feedback before spamming the list again.
+While there, use struct_size() helper, instead of the open-coded
+version, to calculate the size for the allocation of the whole
+flexible structure, including of course, the flexible-array member.
 
-I will send v3 that addresses all the issues and new Alexander's
-comments (thanks!) next week (travelling for a conference right now).
+This code was found with the help of Coccinelle, and audited and
+fixed manually.
 
-Thank you!
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/wireless/intersil/hostap/hostap_download.c | 3 +--
+ drivers/net/wireless/intersil/hostap/hostap_wlan.h     | 2 +-
+ 2 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/intersil/hostap/hostap_download.c b/drivers/net/wireless/intersil/hostap/hostap_download.c
+index 3672291ced5c..5e5bada28b5b 100644
+--- a/drivers/net/wireless/intersil/hostap/hostap_download.c
++++ b/drivers/net/wireless/intersil/hostap/hostap_download.c
+@@ -732,8 +732,7 @@ static int prism2_download(local_info_t *local,
+ 		goto out;
+ 	}
+ 
+-	dl = kzalloc(sizeof(*dl) + param->num_areas *
+-		     sizeof(struct prism2_download_data_area), GFP_KERNEL);
++	dl = kzalloc(struct_size(dl, data, param->num_areas), GFP_KERNEL);
+ 	if (dl == NULL) {
+ 		ret = -ENOMEM;
+ 		goto out;
+diff --git a/drivers/net/wireless/intersil/hostap/hostap_wlan.h b/drivers/net/wireless/intersil/hostap/hostap_wlan.h
+index c25cd21d18bd..f71c0545c0be 100644
+--- a/drivers/net/wireless/intersil/hostap/hostap_wlan.h
++++ b/drivers/net/wireless/intersil/hostap/hostap_wlan.h
+@@ -617,7 +617,7 @@ struct prism2_download_data {
+ 		u32 addr; /* wlan card address */
+ 		u32 len;
+ 		u8 *data; /* allocated data */
+-	} data[];
++	} data[] __counted_by(num_areas);
+ };
+ 
+ 
+-- 
+2.34.1
+
