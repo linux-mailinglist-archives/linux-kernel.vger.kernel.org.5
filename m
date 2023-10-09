@@ -2,56 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5880A7BD1E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 04:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED987BD1E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 04:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344859AbjJICJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Oct 2023 22:09:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55602 "EHLO
+        id S1344963AbjJICQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Oct 2023 22:16:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232250AbjJICJv (ORCPT
+        with ESMTP id S231542AbjJICQs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Oct 2023 22:09:51 -0400
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD08A4;
-        Sun,  8 Oct 2023 19:09:49 -0700 (PDT)
-X-UUID: 28fed6466eed4b1790d911464d79c826-20231009
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:6dfe2cf6-c1da-45e0-bbd1-da03b007062d,IP:-15
-        ,URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-        ON:release,TS:-24
-X-CID-INFO: VERSION:1.1.32,REQID:6dfe2cf6-c1da-45e0-bbd1-da03b007062d,IP:-15,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:-24
-X-CID-META: VersionHash:5f78ec9,CLOUDID:636fb8bf-14cc-44ca-b657-2d2783296e72,B
-        ulkID:2310091009398OGIRJL5,BulkQuantity:0,Recheck:0,SF:24|17|19|43|102,TC:
-        nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,O
-        SI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 28fed6466eed4b1790d911464d79c826-20231009
-X-User: guodongtai@kylinos.cn
-Received: from localhost.localdomain [(39.156.73.14)] by mailgw
-        (envelope-from <guodongtai@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 1526781071; Mon, 09 Oct 2023 10:09:37 +0800
-From:   George Guo <guodongtai@kylinos.cn>
-To:     fw@strlen.de
-Cc:     davem@davemloft.net, dongtai.guo@linux.dev, dsahern@kernel.org,
-        edumazet@google.com, guodongtai@kylinos.cn, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com
-Subject: [PATCH v2] tcp: cleanup secure_{tcp, tcpv6}_ts_off
-Date:   Mon,  9 Oct 2023 10:11:08 +0800
-Message-Id: <20231009021108.3203928-1-guodongtai@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231007105019.GA20662@breakpoint.cc>
-References: <20231007105019.GA20662@breakpoint.cc>
+        Sun, 8 Oct 2023 22:16:48 -0400
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71AB0A6;
+        Sun,  8 Oct 2023 19:16:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+ikwgjd5P87YDm6DAAABio5shAHyVQAKb6s8sL0xDbs=; b=Yk5olfnstsZOt42gMU2pwbE+/P
+        I73K9LJLvR4iEtJ/s5y6n4IQjaKIkM8cmRmZN5emSmm3iLZuSMvt2iV9C8CLbYqM0FrsfrFN8619w
+        AxI4KUiKUrEXYmS1L+cn9CZ6K5vmv/rxoT3/ieUylhZOaN5ETEOkPAilQWB07G85GqGLj2IHdDyyX
+        N7plTsm2uGwCra52CsvjmOJL5rZB0HiPquWOcLEbSnLrgaUIfTJHULMNC42LwL5EGtGkCw2LNQG78
+        QtOHRQ6BkgSmfpTFKZ3h9aU1HUIcby3pj5GDHLq0sbSrH/GJUb7ygJ2jbrKPkPt/l4BlbIv19GpnO
+        ZGJcC55Q==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qpfp6-00H4BX-1x;
+        Mon, 09 Oct 2023 02:16:44 +0000
+Date:   Mon, 9 Oct 2023 03:16:44 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        seanjc@google.com
+Subject: Re: [PATCH gmem FIXUP] kvm: guestmem: do not use a file system
+Message-ID: <20231009021644.GC800259@ZenIV>
+References: <20230928180651.1525674-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230928180651.1525674-1-pbonzini@redhat.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,74 +50,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correct secure_tcp_ts_off and secure_tcpv6_ts_off call parameter order
+On Thu, Sep 28, 2023 at 02:06:51PM -0400, Paolo Bonzini wrote:
+> Use a run-of-the-mill anonymous inode, there is nothing useful
+> being provided by kvm_gmem_fs.
 
-Signed-off-by: George Guo <guodongtai@kylinos.cn>
----
- net/ipv4/syncookies.c | 4 ++--
- net/ipv4/tcp_ipv4.c   | 2 +-
- net/ipv6/syncookies.c | 4 ++--
- net/ipv6/tcp_ipv6.c   | 4 ++--
- 4 files changed, 7 insertions(+), 7 deletions(-)
+> -	inode = alloc_anon_inode(mnt->mnt_sb);
+> -	if (IS_ERR(inode))
+> -		return PTR_ERR(inode);
+> +	fd = get_unused_fd_flags(0);
+> +	if (fd < 0)
+> +		return fd;
+>  
+> -	err = security_inode_init_security_anon(inode, &qname, NULL);
+> -	if (err)
+> -		goto err_inode;
+> +	gmem = kzalloc(sizeof(*gmem), GFP_KERNEL);
+> +	if (!gmem) {
+> +		err = -ENOMEM;
+> +		goto err_fd;
+> +	}
+> +
+> +	file = anon_inode_getfile(anon_name, &kvm_gmem_fops, gmem,
+> +				  O_RDWR);
 
-diff --git a/net/ipv4/syncookies.c b/net/ipv4/syncookies.c
-index dc478a0574cb..537f368a0b66 100644
---- a/net/ipv4/syncookies.c
-+++ b/net/ipv4/syncookies.c
-@@ -360,8 +360,8 @@ struct sock *cookie_v4_check(struct sock *sk, struct sk_buff *skb)
- 
- 	if (tcp_opt.saw_tstamp && tcp_opt.rcv_tsecr) {
- 		tsoff = secure_tcp_ts_off(sock_net(sk),
--					  ip_hdr(skb)->daddr,
--					  ip_hdr(skb)->saddr);
-+					  ip_hdr(skb)->saddr,
-+					  ip_hdr(skb)->daddr);
- 		tcp_opt.rcv_tsecr -= tsoff;
- 	}
- 
-diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
-index a441740616d7..54717d261693 100644
---- a/net/ipv4/tcp_ipv4.c
-+++ b/net/ipv4/tcp_ipv4.c
-@@ -104,7 +104,7 @@ static u32 tcp_v4_init_seq(const struct sk_buff *skb)
- 
- static u32 tcp_v4_init_ts_off(const struct net *net, const struct sk_buff *skb)
- {
--	return secure_tcp_ts_off(net, ip_hdr(skb)->daddr, ip_hdr(skb)->saddr);
-+	return secure_tcp_ts_off(net, ip_hdr(skb)->saddr, ip_hdr(skb)->daddr);
- }
- 
- int tcp_twsk_unique(struct sock *sk, struct sock *sktw, void *twp)
-diff --git a/net/ipv6/syncookies.c b/net/ipv6/syncookies.c
-index 5014aa663452..9af484a4d518 100644
---- a/net/ipv6/syncookies.c
-+++ b/net/ipv6/syncookies.c
-@@ -162,8 +162,8 @@ struct sock *cookie_v6_check(struct sock *sk, struct sk_buff *skb)
- 
- 	if (tcp_opt.saw_tstamp && tcp_opt.rcv_tsecr) {
- 		tsoff = secure_tcpv6_ts_off(sock_net(sk),
--					    ipv6_hdr(skb)->daddr.s6_addr32,
--					    ipv6_hdr(skb)->saddr.s6_addr32);
-+					    ipv6_hdr(skb)->saddr.s6_addr32,
-+					    ipv6_hdr(skb)->daddr.s6_addr32);
- 		tcp_opt.rcv_tsecr -= tsoff;
- 	}
- 
-diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
-index bfe7d19ff4fd..7e2f924725c6 100644
---- a/net/ipv6/tcp_ipv6.c
-+++ b/net/ipv6/tcp_ipv6.c
-@@ -119,8 +119,8 @@ static u32 tcp_v6_init_seq(const struct sk_buff *skb)
- 
- static u32 tcp_v6_init_ts_off(const struct net *net, const struct sk_buff *skb)
- {
--	return secure_tcpv6_ts_off(net, ipv6_hdr(skb)->daddr.s6_addr32,
--				   ipv6_hdr(skb)->saddr.s6_addr32);
-+	return secure_tcpv6_ts_off(net, ipv6_hdr(skb)->saddr.s6_addr32,
-+				   ipv6_hdr(skb)->daddr.s6_addr32);
- }
- 
- static int tcp_v6_pre_connect(struct sock *sk, struct sockaddr *uaddr,
--- 
-2.34.1
+> +	inode = file->f_inode;
+> +	WARN_ON(file->f_mapping != inode->i_mapping);
+>  
+>  	inode->i_private = (void *)(unsigned long)flags;
+>  	inode->i_op = &kvm_gmem_iops;
 
+That's very badly broken.  The whole point of anon_inode_getfile() is
+that *ALL* resulting files share the same inode.  You are not allowed
+to modify the damn thing.
