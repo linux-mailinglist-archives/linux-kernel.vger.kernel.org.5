@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A68A37BDBFD
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8577BDBF2
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 14:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346556AbjJIMas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 08:30:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38770 "EHLO
+        id S1376564AbjJIMaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 08:30:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346578AbjJIM3z (ORCPT
+        with ESMTP id S1346551AbjJIM3y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 08:29:55 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36428AB;
+        Mon, 9 Oct 2023 08:29:54 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63CBFD6;
         Mon,  9 Oct 2023 05:29:51 -0700 (PDT)
-Date:   Mon, 09 Oct 2023 12:29:48 -0000
+Date:   Mon, 09 Oct 2023 12:29:49 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696854589;
+        s=2020; t=1696854590;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EXhdpgwjWyporZWyLmEhrdJWuPsKhHaJ7ztA3tdWGz4=;
-        b=3b3pb7Js6Y6SHyZeyGp/ju0bvtZDoVYBMyoMNDydkjMPzv+LLm7fxlosVg79JSXQlxNp1Y
-        Blsrhhd/VkP6XeTi2neLbm2so3SmnY5fPtQaMfdoEFLYClM7M5yaKoPCPXKxD/hIPRJrES
-        weq6b9ahC//Ka+Dj/h4Zr75K06ZBt4sLgsAuTaGGGknSZcvOzJ9meen1Rd4vct5gFsF7G+
-        7R3NB9qUFsG4Y1aVSaUMvsbQ6qRusUMxX10mnt7zzUrI/DcSYGhu44C/HRQ3SyNgM8bmgX
-        YqLiac4v0fBZ+1+Y/uWxP81kezfwXl5LAbCdHTg+bGk49Xj2ck7piddm4Frciw==
+        bh=BIFOTLwgFf0FxaK/QbeXOF0TQu5Vo6hgzhc06FG0EXE=;
+        b=dRAm4q2jAhIh2eJ1YJ5K3w8NyKY/CwZeZPup/FYR80gEnDTZn6T2jgxvpsYQMc7Tq4R3TY
+        YRajbahj7W7pgbITocwBfm9DHRsKmgMueViQJxVKwqKdI+ZdKYAZ0PUF7bFMLfhUEmezEr
+        efu/S9YqPddd8dU9/gjoEPYTo9u5FLJFFJORP6zLQrkCDJfND65weaC5LWrgQ8PWqkOJ/W
+        aernaYbBgvadSMPi1Yzs8pwEE5mZH4LqO2nsDm8ueGscXI7jPofIZocT2sbTM1pWyqqn3C
+        PpEie0VJIAtSg5ltJc9Oano0cpEws00NUSwgWarl5PGe2hoMK3TqUwoXHzoh4g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696854589;
+        s=2020e; t=1696854590;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EXhdpgwjWyporZWyLmEhrdJWuPsKhHaJ7ztA3tdWGz4=;
-        b=1JkYwof3kV6EbPeF4zpczha4yyaEef6HuO3mnahvcw9EDhhvT4vQOeJLpk2SclMkCspmpW
-        L6Mp89T+goGV50Bg==
+        bh=BIFOTLwgFf0FxaK/QbeXOF0TQu5Vo6hgzhc06FG0EXE=;
+        b=PGBmfs4Bv0Q74K6SCeZCXPIMe01KzoXWpWAd0hTBiMDKMB+6vnAQAxhBS2G5L4elHSmCZF
+        natTIiW2JT8KiHCQ==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/microcode] x86/microcode: Clarify the late load logic
+Subject: [tip: x86/microcode] x86/microcode: Clean up mc_cpu_down_prep()
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Borislav Petkov (AMD)" <bp@alien8.de>,
-        Nikolay Borisov <nik.borisov@suse.com>, x86@kernel.org,
+        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20231002115903.145048840@linutronix.de>
-References: <20231002115903.145048840@linutronix.de>
+In-Reply-To: <20231002115903.028651784@linutronix.de>
+References: <20231002115903.028651784@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <169685458837.3135.11309041430023311324.tip-bot2@tip-bot2>
+Message-ID: <169685458938.3135.206662791860103089.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -67,105 +66,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/microcode branch of tip:
 
-Commit-ID:     f696f2fbae3dd52a4e79f0a02b8cb31fe0dc69ce
-Gitweb:        https://git.kernel.org/tip/f696f2fbae3dd52a4e79f0a02b8cb31fe0dc69ce
+Commit-ID:     75d0be07daa201cd283e00d09eb27b30c0b0261e
+Gitweb:        https://git.kernel.org/tip/75d0be07daa201cd283e00d09eb27b30c0b0261e
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 02 Oct 2023 13:59:57 +02:00
+AuthorDate:    Mon, 02 Oct 2023 13:59:55 +02:00
 Committer:     Borislav Petkov (AMD) <bp@alien8.de>
 CommitterDate: Fri, 06 Oct 2023 15:12:23 +02:00
 
-x86/microcode: Clarify the late load logic
+x86/microcode: Clean up mc_cpu_down_prep()
 
-reload_store() is way too complicated. Split the inner workings out and
-make the following enhancements:
+This function has nothing to do with suspend. It's a hotplug
+callback. Remove the bogus comment.
 
- - Taint the kernel only when the microcode was actually updated. If. e.g.
-   the rendezvous fails, then nothing happened and there is no reason for
-   tainting.
-
- - Return useful error codes
+Drop the pointless debug printk. The hotplug core provides tracepoints
+which track the invocation of those callbacks.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Reviewed-by: Nikolay Borisov <nik.borisov@suse.com>
-Link: https://lore.kernel.org/r/20231002115903.145048840@linutronix.de
+Link: https://lore.kernel.org/r/20231002115903.028651784@linutronix.de
 ---
- arch/x86/kernel/cpu/microcode/core.c | 41 ++++++++++++---------------
- 1 file changed, 19 insertions(+), 22 deletions(-)
+ arch/x86/kernel/cpu/microcode/core.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
 diff --git a/arch/x86/kernel/cpu/microcode/core.c b/arch/x86/kernel/cpu/microcode/core.c
-index 02e9e5d..d82d763 100644
+index 17b7578..0038126 100644
 --- a/arch/x86/kernel/cpu/microcode/core.c
 +++ b/arch/x86/kernel/cpu/microcode/core.c
-@@ -391,11 +391,11 @@ static int microcode_reload_late(void)
- 		pr_info("Reload succeeded, microcode revision: 0x%x -> 0x%x\n",
- 			old, boot_cpu_data.microcode);
- 		microcode_check(&prev_info);
-+		add_taint(TAINT_CPU_OUT_OF_SPEC, LOCKDEP_STILL_OK);
- 	} else {
- 		pr_info("Reload failed, current microcode revision: 0x%x\n",
- 			boot_cpu_data.microcode);
- 	}
--
- 	return ret;
- }
+@@ -536,16 +536,10 @@ static int mc_cpu_online(unsigned int cpu)
  
-@@ -428,40 +428,37 @@ static bool ensure_cpus_are_online(void)
- 	return true;
- }
- 
-+static int ucode_load_late_locked(void)
-+{
-+	if (!ensure_cpus_are_online())
-+		return -EBUSY;
-+
-+	switch (microcode_ops->request_microcode_fw(0, &microcode_pdev->dev)) {
-+	case UCODE_NEW:
-+		return microcode_reload_late();
-+	case UCODE_NFOUND:
-+		return -ENOENT;
-+	default:
-+		return -EBADFD;
-+	}
-+}
-+
- static ssize_t reload_store(struct device *dev,
- 			    struct device_attribute *attr,
- 			    const char *buf, size_t size)
+ static int mc_cpu_down_prep(unsigned int cpu)
  {
--	enum ucode_state tmp_ret = UCODE_OK;
--	int bsp = boot_cpu_data.cpu_index;
- 	unsigned long val;
--	ssize_t ret = 0;
-+	ssize_t ret;
+-	struct device *dev;
+-
+-	dev = get_cpu_device(cpu);
++	struct device *dev = get_cpu_device(cpu);
  
- 	ret = kstrtoul(buf, 0, &val);
- 	if (ret || val != 1)
- 		return -EINVAL;
- 
- 	cpus_read_lock();
+ 	microcode_fini_cpu(cpu);
 -
--	if (!ensure_cpus_are_online()) {
--		ret = -EBUSY;
--		goto put;
--	}
+-	/* Suspend is in progress, only remove the interface */
+ 	sysfs_remove_group(&dev->kobj, &mc_attr_group);
+-	pr_debug("%s: CPU%d\n", __func__, cpu);
 -
--	tmp_ret = microcode_ops->request_microcode_fw(bsp, &microcode_pdev->dev);
--	if (tmp_ret != UCODE_NEW)
--		goto put;
--
--	ret = microcode_reload_late();
--put:
-+	ret = ucode_load_late_locked();
- 	cpus_read_unlock();
- 
--	if (ret == 0)
--		ret = size;
--
--	add_taint(TAINT_CPU_OUT_OF_SPEC, LOCKDEP_STILL_OK);
--
--	return ret;
-+	return ret ? : size;
+ 	return 0;
  }
  
- static DEVICE_ATTR_WO(reload);
