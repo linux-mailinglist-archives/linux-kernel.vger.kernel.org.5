@@ -2,154 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 080C47BD359
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 08:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 673FA7BD35F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 08:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345228AbjJIG1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 02:27:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45092 "EHLO
+        id S1345206AbjJIGbP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Oct 2023 02:31:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345168AbjJIG1O (ORCPT
+        with ESMTP id S230475AbjJIGbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 02:27:14 -0400
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A39AAA4
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Oct 2023 23:27:12 -0700 (PDT)
-Received: by mail-ua1-x933.google.com with SMTP id a1e0cc1a2514c-7a7e11a53c3so3554400241.1
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Oct 2023 23:27:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696832832; x=1697437632; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=H2fxCUSPL89877g5I8VIeATWezF+t3F3yjBwJkxQ/GY=;
-        b=OFgJ68XmziJUX3RXCZnLMAjcLe7TuG6xSpg20meNsf+7h8IKj1FIvXEY3quFRinjuC
-         XuDkfeszFUOOCIjMWYUQ7YvOeiaT7/eVxB/TwVVO1l9PZAvhZ82H4YxasJrHV2mACXNj
-         Inli+K8fmUERGnPUw7HWDgK+Yz0lsP3xYYgPRw/TGZDnbgKOT1AuGjihxDo80kUMvkEn
-         71GiI9g7HzRVBg8rL91do+OJQNAZHRH4uOJ9et1g58mb1z3jWJO6l7zz8tWjdhA9IIGT
-         Rxkf7lQsPCBOr7KIarWD11RUQ3p28sjxUOwlR5DygNsWIw05E0n8rYEKjh8rMqRY5ow/
-         21oA==
+        Mon, 9 Oct 2023 02:31:14 -0400
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF98A4;
+        Sun,  8 Oct 2023 23:31:12 -0700 (PDT)
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso3376430a12.3;
+        Sun, 08 Oct 2023 23:31:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696832832; x=1697437632;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=H2fxCUSPL89877g5I8VIeATWezF+t3F3yjBwJkxQ/GY=;
-        b=b5SFW3tpxG7iBgXM+/E0esns4uGYRnzWUlCqOb5+Mf1ZzyBDuw4jgN4aPX8YYDWDK3
-         E1x3mIk3L0IaL6Zl47MNtCXZvWEH9xEZz+H35YPbJmiGPgfSaGJl/4dmWmvj37Z/2Q0e
-         //wjG5tJYCxWH630QEhT3HdKbsDbeAwNt8vQxGPAsNmj6TFmsQNl2vrI1HsujKBPkhMV
-         NVBJs1ecz/MJimm4CicHxIBOAbp0iqIFc/V6Q9m6EI/f2CqyiqmSgmvVMNnbQRHIVrMA
-         IKinM9p73g7Zw1jlAeYNC7Z2OEC4KfEBbFjDmKDXSsxTeoPicqjiia2j1ETkgDqyPL35
-         s7Aw==
-X-Gm-Message-State: AOJu0YxTbPVkRkfcVfuGFWDoyAf54JVB99FVbtggeA/fMMw2N0qWVn2j
-        gBGiW1mn3bIfU7TCW3QrFnBJWaK+j8myJ12YKzjA6w==
-X-Google-Smtp-Source: AGHT+IHFuxIhjnW/F72VTuEWd0kd22F+rcKApMM/YlpphAXb/O+8udGUreXU3bqh1QrPTD1qFcFbPYCafuFoSOTuE2c=
-X-Received: by 2002:a67:f656:0:b0:452:61fa:1e04 with SMTP id
- u22-20020a67f656000000b0045261fa1e04mr5510020vso.9.1696832831704; Sun, 08 Oct
- 2023 23:27:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696833072; x=1697437872;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vD0Fv9cM67zX2LwKdhCrzGLuQATLW6HXC5O4/Nd4nTE=;
+        b=XQx9nJdNInB7FMmd3ZJTpmO4FS24dWqb1hmTV34meNbtFJzWEWbYnEPI4nCnz5MGug
+         h8JeDO/etFa9bWZt7S70L9lC8il0yulMAgzIEF6fprs7MJpcrkzIJPbagJ81F+d+pqw6
+         9/8znFo5jqUqbb5h2a99ige5sucIMWMfRl/WrbwQQngNn6tvlDdHX+G1J525e+6kD7Ef
+         oS2sYP5qfHxC9Ut/rXsFkHsK/SFz4omAMk9FZBndx17pijibbI0emY9RXlPG7PJ9gfYV
+         4eo4pFhgi3IHhqtYrjyB5UU2yAaaoTAwaL0DwvDxiT5NpViiI3X8wOt3NjijZ9VBH851
+         Qd3Q==
+X-Gm-Message-State: AOJu0YyGTJJBPrjacvj0F4QVe8W2wA9LGSf3rWYsQYKT2sQS/E/hQdrj
+        KHbjHi3+UHISKo83F9O1IFaEwI9O+waVvOMbHN/V3occ
+X-Google-Smtp-Source: AGHT+IEOQspT2cmBHQKFmpyVLLR+19S0QFb8macQedL/e+/KbEJLcVDbtXZ0lZH43XNvVA3aOx01YcU7aI64n/+lMyk=
+X-Received: by 2002:a17:90b:11cc:b0:277:6d6a:33ba with SMTP id
+ gv12-20020a17090b11cc00b002776d6a33bamr14075416pjb.28.1696833072180; Sun, 08
+ Oct 2023 23:31:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231007170448.505487-1-masahiroy@kernel.org>
-In-Reply-To: <20231007170448.505487-1-masahiroy@kernel.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Mon, 9 Oct 2023 11:57:00 +0530
-Message-ID: <CAFA6WYNqe-e_ZqbxXW5BcmMOxQr42mdJV-o4W4U4XcOsPe0P+Q@mail.gmail.com>
-Subject: Re: [PATCH 1/5] modpost: fix tee MODULE_DEVICE_TABLE built on big
- endian host
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bhupesh Sharma <bhsharma@redhat.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Nathan Chancellor <nathan@kernel.org>,
+References: <20231005230851.3666908-1-irogers@google.com> <20231005230851.3666908-14-irogers@google.com>
+In-Reply-To: <20231005230851.3666908-14-irogers@google.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Sun, 8 Oct 2023 23:31:01 -0700
+Message-ID: <CAM9d7cj-ANu1j-6WxGDQ_+pJtDt1xfyuGCNyC_dTpCDECZZgCQ@mail.gmail.com>
+Subject: Re: [PATCH v2 13/18] perf svghelper: Avoid memory leak
+To:     Ian Rogers <irogers@google.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>
+        Tom Rix <trix@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Yuan Can <yuancan@huawei.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        James Clark <james.clark@arm.com>, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masahiro,
-
-On Sat, 7 Oct 2023 at 22:34, Masahiro Yamada <masahiroy@kernel.org> wrote:
+On Thu, Oct 5, 2023 at 4:09 PM Ian Rogers <irogers@google.com> wrote:
 >
-> When MODULE_DEVICE_TABLE(tee, ) is built on a host with a different
-> endianness from the target architecture, it results in an incorrect
-> MODULE_ALIAS().
+> On success path the sib_core and sib_thr values weren't being
+> freed. Detected by clang-tidy.
 >
-> For example, see a case where drivers/char/hw_random/optee-rng.c
-> is built as a module.
->
-> If you build it on a little endian host, you will get the correct
-> MODULE_ALIAS:
->
->     $ grep MODULE_ALIAS drivers/char/hw_random/optee-rng.mod.c
->     MODULE_ALIAS("tee:ab7a617c-b8e7-4d8f-8301-d09b61036b64*");
->
-> However, if you build it on a big endian host, you will get a wrong
-> MODULE_ALIAS:
->
->     $ grep MODULE_ALIAS drivers/char/hw_random/optee-rng.mod.c
->     MODULE_ALIAS("tee:646b0361-9bd0-0183-8f4d-e7b87c617aab*");
->
-> This issue has been unnoticed because the ARM kernel is most likely built
-> on a little endian host (cross-build on x86 or native-build on ARM).
->
-> The uuid field must not be reversed because uuid_t is an array of __u8.
->
-
-To me it wasn't obvious that DEF_FIELD() has certain endianness limitations.
-
-> Fixes: 0fc1db9d1059 ("tee: add bus driver framework for TEE based devices")
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> Signed-off-by: Ian Rogers <irogers@google.com>
 > ---
+>  tools/perf/builtin-lock.c   | 1 +
+>  tools/perf/util/svghelper.c | 5 +++--
+>  2 files changed, 4 insertions(+), 2 deletions(-)
 >
->  scripts/mod/file2alias.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+> diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+> index d4b22313e5fc..1b40b00c9563 100644
+> --- a/tools/perf/builtin-lock.c
+> +++ b/tools/perf/builtin-lock.c
+> @@ -2463,6 +2463,7 @@ static int parse_call_stack(const struct option *opt __maybe_unused, const char
+>                 entry = malloc(sizeof(*entry) + strlen(tok) + 1);
+>                 if (entry == NULL) {
+>                         pr_err("Memory allocation failure\n");
+> +                       free(s);
+>                         return -1;
+>                 }
 >
-> diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c
-> index 7056751c29b1..70bf6a2f585c 100644
-> --- a/scripts/mod/file2alias.c
-> +++ b/scripts/mod/file2alias.c
-> @@ -1348,13 +1348,13 @@ static int do_typec_entry(const char *filename, void *symval, char *alias)
->  /* Looks like: tee:uuid */
->  static int do_tee_entry(const char *filename, void *symval, char *alias)
->  {
-> -       DEF_FIELD(symval, tee_client_device_id, uuid);
 
-As you have mentioned in patch #3: the limitations of TO_NATIVE(), if
-you can update comments for DEF_FIELD() as well to make it clear that
-it doesn't support byte arrays/strings would be helpful. I think the
-following check that you have introduced in patch #3 can still be
-bypassed for byte arrays/strings.
+This is unrelated.  Please put it in a separate patch.
 
-+ _Static_assert(sizeof(x) == 1 || sizeof(x) == 2 || \
-+       sizeof(x) == 4 || sizeof(x) == 8, "bug");
+Thanks,
+Namhyung
 
-BTW, for this fix feel free to add:
 
-Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
-
--Sumit
-
-> +       DEF_FIELD_ADDR(symval, tee_client_device_id, uuid);
+> diff --git a/tools/perf/util/svghelper.c b/tools/perf/util/svghelper.c
+> index 0e4dc31c6c9c..1892e9b6aa7f 100644
+> --- a/tools/perf/util/svghelper.c
+> +++ b/tools/perf/util/svghelper.c
+> @@ -754,6 +754,7 @@ int svg_build_topology_map(struct perf_env *env)
+>         int i, nr_cpus;
+>         struct topology t;
+>         char *sib_core, *sib_thr;
+> +       int ret = -1;
 >
->         sprintf(alias, "tee:%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
-> -               uuid.b[0], uuid.b[1], uuid.b[2], uuid.b[3], uuid.b[4],
-> -               uuid.b[5], uuid.b[6], uuid.b[7], uuid.b[8], uuid.b[9],
-> -               uuid.b[10], uuid.b[11], uuid.b[12], uuid.b[13], uuid.b[14],
-> -               uuid.b[15]);
-> +               uuid->b[0], uuid->b[1], uuid->b[2], uuid->b[3], uuid->b[4],
-> +               uuid->b[5], uuid->b[6], uuid->b[7], uuid->b[8], uuid->b[9],
-> +               uuid->b[10], uuid->b[11], uuid->b[12], uuid->b[13], uuid->b[14],
-> +               uuid->b[15]);
+>         nr_cpus = min(env->nr_cpus_online, MAX_NR_CPUS);
 >
->         add_wildcard(alias);
->         return 1;
+> @@ -799,11 +800,11 @@ int svg_build_topology_map(struct perf_env *env)
+>
+>         scan_core_topology(topology_map, &t, nr_cpus);
+>
+> -       return 0;
+> +       ret = 0;
+>
+>  exit:
+>         zfree(&t.sib_core);
+>         zfree(&t.sib_thr);
+>
+> -       return -1;
+> +       return ret;
+>  }
 > --
-> 2.39.2
+> 2.42.0.609.gbb76f46606-goog
 >
