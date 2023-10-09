@@ -2,74 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 344857BD77B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F017E7BD77D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 11:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345697AbjJIJqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 05:46:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44998 "EHLO
+        id S1345865AbjJIJqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 05:46:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345699AbjJIJp7 (ORCPT
+        with ESMTP id S1345608AbjJIJqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 05:45:59 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4CD88F
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 02:45:56 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-65b08bbd8b1so29032226d6.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 02:45:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696844756; x=1697449556; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y350VwO6015lGO7ERBdBbOV3S2AzDXdRMs/XXWO/P3w=;
-        b=16YWreNy9aMyICdnKhrSDp3Bdoi1fHnRskPmq54KhqtTuGzcrBjuoBPQ1aSGvjZbr7
-         9C27GNKq6SE9yXYmcGbhmSLAWTzO4BGl/hZs2No9vrfEPq+qWmU3Bl+AYKue+wmf7bcQ
-         SkFW+6DPTofAbM6BCLD1+WfLRgBFI08tGDu5ZzqFKntWnTf6HnmvRPBpXvKBJ6UODygW
-         H9GMWJca0TvNI5iyrWob43yXCdcQ2hTxqToGWjv+eacZYIaGSVckqE3/2ff7kuXMZPjE
-         aCkNNf3iimyEu+2yh7GLGo6TkenDF+BOvq/5t7Fxr4tjE1PUCmn0r335LbMTxGpzo1m9
-         KTvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696844756; x=1697449556;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y350VwO6015lGO7ERBdBbOV3S2AzDXdRMs/XXWO/P3w=;
-        b=mJw2L4oK+OI9DQXLe4ygLf+OYBqGmNqt6nRQXAVqlzE7Dgetf1+gZN3nELIbUvdVFb
-         jMuw7rtfa1gxu/+uQgh1pLQd2VLO/LRtfMfoqB7nyItciShD5qxqEvEMprTwscZSCMq+
-         cg9vKtJ5gHpBplP+qTrkB3McT6JhU9Ek8XXC2nZ0CWcbAkmeHByMdt1Py3FPl+uO9GLp
-         EsP/GYxcIBWyz+WuqiPeWGNfTtdCz75NZRgGDGMbXLMlO+pCoV5KTPMB3d6rY26cFyFl
-         9+b0udosU4td6Ljc7FA1U5ECUr5QaTlF+5bmpMssRzEbImgCpwTFjf1jItV/qPuh9nCH
-         3CmA==
-X-Gm-Message-State: AOJu0YwZ2Ru9hRj/jx0X4oEk1ymCOaqEKmRNPLm6S9Hj9ysi5Wd7qhIu
-        6PN6F3DrFPMmJAmq2H/QOFbMFpmSpxSijD2O+sIcyQ==
-X-Google-Smtp-Source: AGHT+IG4QwTOaXmfQuuDncJC4R3XFNA73CgEYP7+INF5jvwiHov6qqKlmNdOP31YsGcbP1khrk2f7OBVjVJhB5+zGjI=
-X-Received: by 2002:a05:6214:3d0d:b0:651:69d7:3d6a with SMTP id
- ol13-20020a0562143d0d00b0065169d73d6amr16569724qvb.15.1696844755772; Mon, 09
- Oct 2023 02:45:55 -0700 (PDT)
+        Mon, 9 Oct 2023 05:46:45 -0400
+Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF7548F;
+        Mon,  9 Oct 2023 02:46:42 -0700 (PDT)
+Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3997oubK021800;
+        Mon, 9 Oct 2023 02:46:03 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
+         h=from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding:content-type; s=
+        PPS06212021; bh=gbKq1gtSDc+O2vuPRtkIcpNC6/iJ+SOTe8Xsyqj7Jms=; b=
+        ljCMD14xhKF/hicNBrq1JAJ9hrqpWq/3njuUvQCEc+uG9Mn7AZh8gcsE6d8ehU8Q
+        UrOQpUvrHPZoJCsaY9LiDBF2xdRBbVe7Gojix8KoLue3YlDYKbxb4fpIMagdP75I
+        1xAQ89mVDsTRHu5pz4I8L8hFX40SnS7fI++cvwFDVN7U1L7WeTPE9sDyeAWQP/x1
+        c2DEYNQ+GgPIJn4QOTe7A2Z9VYQEEXnqqTNe9RDPCh6Jwp36QHnnz+/nyHNSnJfK
+        8WFk8/GTkgyC6rDGNBfkk6EBt7LgcqRjU/9Qf9JS2o4Tfq2NWVFS3udteo6zAoui
+        5Nlf0cNhI4i2fiEBHv0zhA==
+Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.wrs.com [147.11.82.252])
+        by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3tk2m0he20-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 09 Oct 2023 02:46:02 -0700 (PDT)
+Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Mon, 9 Oct 2023 02:46:01 -0700
+Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
+ 15.1.2507.32 via Frontend Transport; Mon, 9 Oct 2023 02:45:58 -0700
+From:   Lizhi Xu <lizhi.xu@windriver.com>
+To:     <syzbot+23bc20037854bb335d59@syzkaller.appspotmail.com>
+CC:     <axboe@kernel.dk>, <brauner@kernel.org>,
+        <dave.kleikamp@oracle.com>, <hare@suse.de>, <hch@lst.de>,
+        <jack@suse.cz>, <jfs-discussion@lists.sourceforge.net>,
+        <johannes.thumshirn@wdc.com>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <shaggy@kernel.org>,
+        <syzkaller-bugs@googlegroups.com>
+Subject: [PATCH] jfs: fix log->bdev_handle null ptr deref in lbmStartIO
+Date:   Mon, 9 Oct 2023 17:45:57 +0800
+Message-ID: <20231009094557.1398920-1-lizhi.xu@windriver.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <0000000000005239cf060727d3f6@google.com>
+References: <0000000000005239cf060727d3f6@google.com>
 MIME-Version: 1.0
-References: <cover.1694625260.git.andreyknvl@google.com> <5c5eca8a53ea53352794de57c87440ec509c9bbc.1694625260.git.andreyknvl@google.com>
-In-Reply-To: <5c5eca8a53ea53352794de57c87440ec509c9bbc.1694625260.git.andreyknvl@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Mon, 9 Oct 2023 11:45:19 +0200
-Message-ID: <CAG_fn=VBAN+JPtqRRacd69DOK9rZ-RMpzn+QDJTsZgQ68sOS=Q@mail.gmail.com>
-Subject: Re: [PATCH v2 11/19] lib/stackdepot: use read/write lock
-To:     andrey.konovalov@linux.dev
-Cc:     Marco Elver <elver@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
-        Evgenii Stepanov <eugenis@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: tFDM0zeFcUxp2M-7km3gquoA9XDeWls_
+X-Proofpoint-ORIG-GUID: tFDM0zeFcUxp2M-7km3gquoA9XDeWls_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-09_08,2023-10-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ adultscore=0 suspectscore=0 phishscore=0 clxscore=1011 lowpriorityscore=0
+ bulkscore=0 mlxlogscore=716 impostorscore=0 priorityscore=1501
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2309180000 definitions=main-2310090080
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,54 +76,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 7:16=E2=80=AFPM <andrey.konovalov@linux.dev> wrote:
->
-> From: Andrey Konovalov <andreyknvl@google.com>
->
-> Currently, stack depot uses the following locking scheme:
->
-> 1. Lock-free accesses when looking up a stack record, which allows to
->    have multiple users to look up records in parallel;
-> 2. Spinlock for protecting the stack depot pools and the hash table
->    when adding a new record.
->
-> For implementing the eviction of stack traces from stack depot, the
-> lock-free approach is not going to work anymore, as we will need to be
-> able to also remove records from the hash table.
->
-> Convert the spinlock into a read/write lock, and drop the atomic accesses=
-,
-> as they are no longer required.
->
-> Looking up stack traces is now protected by the read lock and adding new
-> records - by the write lock. One of the following patches will add a new
-> function for evicting stack records, which will be protected by the write
-> lock as well.
->
-> With this change, multiple users can still look up records in parallel.
->
-> This is preparatory patch for implementing the eviction of stack records
-> from the stack depot.
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+When sbi->flag is JFS_NOINTEGRITY in lmLogOpen(), log->bdev_handle can't
+be inited, so it value will be NULL.
+Therefore, add the "log ->no_integrity=1" judgment in lbmStartIO() to avoid such
+problems.
 
-Reviewed-by: Alexander Potapenko <glider@google.com>
-(but see the comment below)
+Reported-and-tested-by: syzbot+23bc20037854bb335d59@syzkaller.appspotmail.com
+Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
+---
+ fs/jfs/jfs_logmgr.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
->  static struct stack_record *depot_fetch_stack(depot_stack_handle_t handl=
-e)
->  {
->         union handle_parts parts =3D { .handle =3D handle };
-> -       /*
-> -        * READ_ONCE pairs with potential concurrent write in
-> -        * depot_init_pool.
-> -        */
-> -       int pools_num_cached =3D READ_ONCE(pools_num);
->         void *pool;
->         size_t offset =3D parts.offset << DEPOT_STACK_ALIGN;
->         struct stack_record *stack;
->
-> -       if (parts.pool_index > pools_num_cached) {
-> +       lockdep_assert_held(&pool_rwlock);
+diff --git a/fs/jfs/jfs_logmgr.c b/fs/jfs/jfs_logmgr.c
+index c911d838b8ec..c41a76164f84 100644
+--- a/fs/jfs/jfs_logmgr.c
++++ b/fs/jfs/jfs_logmgr.c
+@@ -2110,10 +2110,14 @@ static void lbmStartIO(struct lbuf * bp)
+ {
+ 	struct bio *bio;
+ 	struct jfs_log *log = bp->l_log;
++	struct block_device *bdev = NULL;
+ 
+ 	jfs_info("lbmStartIO");
+ 
+-	bio = bio_alloc(log->bdev_handle->bdev, 1, REQ_OP_WRITE | REQ_SYNC,
++	if (!log->no_integrity) 
++		bdev = log->bdev_handle->bdev;	
++
++	bio = bio_alloc(bdev, 1, REQ_OP_WRITE | REQ_SYNC,
+ 			GFP_NOFS);
+ 	bio->bi_iter.bi_sector = bp->l_blkno << (log->l2bsize - 9);
+ 	__bio_add_page(bio, bp->l_page, LOGPSIZE, bp->l_offset);
+-- 
+2.25.1
 
-Shouldn't it be lockdep_assert_held_read()?
