@@ -2,145 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08EA17BE682
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCF9C7BE699
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Oct 2023 18:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377643AbjJIQf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 12:35:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48020 "EHLO
+        id S1377712AbjJIQgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 12:36:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377299AbjJIQfY (ORCPT
+        with ESMTP id S1377189AbjJIQga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 12:35:24 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC55199;
-        Mon,  9 Oct 2023 09:35:22 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-59f6492b415so40738947b3.0;
-        Mon, 09 Oct 2023 09:35:22 -0700 (PDT)
+        Mon, 9 Oct 2023 12:36:30 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F017AB0
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 09:36:24 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3215f19a13aso4709092f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 09:36:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696869322; x=1697474122; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RsC4B5mELowhLCBdNvaIf+LwPDrz+keu3BL55c6ZynM=;
-        b=ExJqmyPw90udlhP9ASCiGzsxkcH1bmj/pFkmFimTNIWolKEOyNgnO/qXv0eV8+4R7z
-         iqyUl0kMrGbZTYcKpIpF2g4heBKnctCerXdpJxAv8pjL494Ot2gkpHQViTCeZt86tzE9
-         W4hN9db0w+WEJqet2eJSXwiT9Tjd65XtUkV1mRKRSDle/mRWSf913iGF3Rn3Yvi+exJp
-         qip12KbjRfgwYzRYk2lqYO+TatV89d2eds7K85kBTUUA+YcDtN399zBxcMrWIbuUioi5
-         KFhyVw03c4xGGOA5WL1icXbnIauewBLB4zy2LIQNlAXZQAlnDSsJcrQeYntJUnmjOWUg
-         YeBA==
+        d=linaro.org; s=google; t=1696869383; x=1697474183; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EXZYxUfPWeEMbPPzEeZyYMMduShzQMUg3B8T4BraI4A=;
+        b=HXlUt7ulv75Mk15YMiP4PiityU/gLGJC/fQCWK6azAw573f3T/O9MHrRbv7SPnoXRw
+         y1udQOkYSJAoCGCl/CBBnjhu7R9AjS0/DADbGYOhswR3jvhtpAKpCr+/6/sh1iHlLTqJ
+         a6NkeQ7aTVGwk8NjerjwNbrZy3fVmXCjAj49Cvv8bqBPUqMprz8FCnvcezcUUI3pYfz7
+         G5LY9o6i37IMRvQZfuj9muJlmQP9/U6tIilEftE6r2J6/959OsEQrxfaplMNBmPU3V2w
+         gUEoUksxbxKDChQ4R0Qxp9YW5eRVezHzKOrsc0Na9MaQjk9X2IrJ6/bMxnVYWhfebPMl
+         48PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696869322; x=1697474122;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RsC4B5mELowhLCBdNvaIf+LwPDrz+keu3BL55c6ZynM=;
-        b=irDJwMC+muHoPJ4CKoWycFO9hnMoyOqEyVj4gDY7VkEGSJsf8c5xgs8l74R1AXGA3c
-         vYT3zL1pWKuNIfLdoxsNyyKH0vKSdaUThADTgmAuuaOHPmKkqRogF+RlpB4m4nriCyab
-         8/62Z//8MpIJuAsKC5RKXJE3xVNWOwpIPrUToR7TGTMwgoTse7u1eBs2zVJNwHQnGewI
-         SWb4Xi1PvEjuwu0sJguetHVVB4BT9+beZ6HXfiyqBpbbqj/Tx7sZsN5yqQ5A9Xrnv54n
-         U9Mc91SFhvnormMfrxoW+HUun5cH00QT1BFEFlTv6w7pQ6eLhdv/QSnjlQcKiG9ozqfK
-         7qyQ==
-X-Gm-Message-State: AOJu0YygAEwQd6Mq8M5bdikXutV1oggZzFDj2+gs8+lf7EYzUEg1NHDo
-        dX4axM0iylMf5Kal1HLNP4U=
-X-Google-Smtp-Source: AGHT+IFsvzJ6MeZI8r2v1L+4g/jHEVPfPdzddzGB/p3atEyZSUf9/4/r7GGX68WKl3pdJXGPfRRxWA==
-X-Received: by 2002:a81:a1c2:0:b0:5a4:dde3:6db5 with SMTP id y185-20020a81a1c2000000b005a4dde36db5mr8226753ywg.10.1696869321805;
-        Mon, 09 Oct 2023 09:35:21 -0700 (PDT)
-Received: from localhost ([2607:fb90:be22:da0:a050:8c3a:c782:514b])
-        by smtp.gmail.com with ESMTPSA id s7-20020a817707000000b005707fb5110bsm3798669ywc.58.2023.10.09.09.35.21
+        d=1e100.net; s=20230601; t=1696869383; x=1697474183;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EXZYxUfPWeEMbPPzEeZyYMMduShzQMUg3B8T4BraI4A=;
+        b=b6lkD8wHj4w0PtOhImxSAYWEUdSYAUQXzpyKDIlhCRMhJzAmKmVRcjY50Y3wjFRQY3
+         biLyiXbJLj8mwgtJqTfQZ5mUVwvhjTaco8aYAjwKNk7viqF4behgCAHzT37Quoo6Rjvl
+         Hd3p5XTzIF9HcUBxajuu8etytOg4tPGFBsIQj3apFRrMCl13rce8Y8Sw+AAeXRk6ZzTr
+         ItSKYFlJ3UYlpatRro9S7WrHM0/lipmzC4z0WpiQeLPvf+Ou8he2DKDmnt1RfH0JPUG6
+         lOvkgzGGEa+6/OvIPRGOQI/Z4/Lv7oNQvIpu61KcaTbg90+UFYhEMvrD61EMHsxYnxgn
+         Xeiw==
+X-Gm-Message-State: AOJu0YzfHw6btVpsryWE31I+TDhK+P5U3oLBIfcnQKeqdyuul7qmeLaP
+        uMc5t2qsSnFMEYCuIJ1Y6QfUKQ==
+X-Google-Smtp-Source: AGHT+IGfPJmsMImnHmzvAO8xrXt2MI6NFXdIDCwux3FoksfLHJQZ7/IkZmXps3K6YqevUMp8u/IW0Q==
+X-Received: by 2002:a05:6000:613:b0:329:6d09:61ff with SMTP id bn19-20020a056000061300b003296d0961ffmr10295329wrb.62.1696869383104;
+        Mon, 09 Oct 2023 09:36:23 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
+        by smtp.gmail.com with ESMTPSA id f11-20020a5d50cb000000b00325c7295450sm10141046wrt.3.2023.10.09.09.36.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 09:35:21 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 09:35:20 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Alexander Potapenko <glider@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@kernel.org>,
-        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        netdev@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        dm-devel@redhat.com, ntfs3@lists.linux.dev,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 05/14] s390/cio: rename bitmap_size() ->
- idset_bitmap_size()
-Message-ID: <ZSQryML6+uySSQ55@yury-ThinkPad>
-References: <20231009151026.66145-1-aleksander.lobakin@intel.com>
- <20231009151026.66145-6-aleksander.lobakin@intel.com>
+        Mon, 09 Oct 2023 09:36:22 -0700 (PDT)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Subject: [PATCH RFC 0/5] drm/msm: dpu1: correctly implement SSPP & WB Clock
+ Control Split
+Date:   Mon, 09 Oct 2023 18:36:11 +0200
+Message-Id: <20231009-topic-sm8550-graphics-sspp-split-clk-v1-0-806c0dee4e43@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231009151026.66145-6-aleksander.lobakin@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAPsrJGUC/x3NTQrCQAxA4auUrA1MZ1q1bgUP4La4GGNsQ//Cp
+ IhQencHl9/mvQ2Mk7DBpdgg8UdMljmjPBRAfZw7Rnllg3c+lM41uC4qhDad69phl6L2QoZmqmg
+ 6yoo0DlgFCp7D6XmMEXJKE7/l+9+0cL9d4bHvP2vk8Z17AAAA
+To:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1804;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=WMVu6zB/8xSeIulwWvxZuEDPQa3MLgZ5mjmIqZUD7wY=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlJCwBGferdDhV/PAijeBb5bJQvrI61bNdVSbUFY5T
+ rIoZZi+JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZSQsAQAKCRB33NvayMhJ0QiHD/
+ 9D6FIMZpLwfqZp2UUrtb2IdPiquBICrYhqO6Z0k42QZ24cD48YY+DCxApdhmbKAj45y9U34LCHqIMz
+ 0t4HiA1XQxjjb6kCNEbjxOUpHtQpVIrP+WSi2Ha39/FOmlVT7Q6Mad5sEFLj62cATXA0zMFPdjQ38l
+ gIANUQDQhJW+ZBzrFkaJIwy7KDdTtCjd9ot8iKAH/Ta409r0SPUC3UeZv77qdKa4VNIx9qbC041gbY
+ jMJzFPBPoh5l8GBXdzq1VKzKyad56vN2vscDd9UWRVQTQ9O3t+O5NQCUa7gIhve1YDVWxsDU/NDFpX
+ O40miRhVtStYVtgK/xbOoqoL5QXpd2Yibg9TgoIR+jmqyM+J9WCxyF9CfW4FulQBaR3MAmylpEqIYl
+ snrfk0mw7KB6GZ2LybSfehaJovTSZGc/Ndul90gjHHOKnvmhoA//m4e653T4IQeLVPZBkADCaRB8Mz
+ CM2J2PPv/3jvMTTOVmRkrRhIdarjkJY72Zc/wq83Zn8NvO8M1ey8NmVWydmjjlXjlsOdxe/SwSH335
+ qadfr9V9BpZw9pOj1nFqXACjlhgxyuqXdwN4sA1arWikzd2HRJOYqTOtmCs6ahZG22Xiu2f80zvyz+
+ R2Q1+8VqgVbbuVc2dvVrbbSQ3X997muyXa2jjW8+LvbGXMTwTMRbOxp29gqQ==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 05:10:17PM +0200, Alexander Lobakin wrote:
-> bitmap_size() is a pretty generic name and one may want to use it for
-> a generic bitmap API function. At the same time, its logic is not
-> "generic", i.e. it's not just `nbits -> size of bitmap in bytes`
-> converter as it would be expected from its name.
-> Add the prefix 'idset_' used throughout the file where the function
-> resides.
+Starting with the SM8550 platform, the SSPP & WB Clock Controls are
+no more in the MDP TOP registers, but in the SSPP & WB register space.
 
-At the first glance, this custom implementation just duplicates the
-generic one that you introduce in the following patch. If so, why
-don't you switch idset to just use generic bitmap_size()?
+Add the corresponding SSPP & WB ops and use them from the vbif QoS
+and OT limit setup functions.
 
-> 
-> Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-> ---
-> idset_new() really wants its vmalloc() + memset() pair to be replaced
-> with vzalloc().
-> ---
->  drivers/s390/cio/idset.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/s390/cio/idset.c b/drivers/s390/cio/idset.c
-> index 45f9c0736be4..0a1105a483bf 100644
-> --- a/drivers/s390/cio/idset.c
-> +++ b/drivers/s390/cio/idset.c
-> @@ -16,7 +16,7 @@ struct idset {
->  	unsigned long bitmap[];
->  };
->  
-> -static inline unsigned long bitmap_size(int num_ssid, int num_id)
-> +static inline unsigned long idset_bitmap_size(int num_ssid, int num_id)
->  {
->  	return BITS_TO_LONGS(num_ssid * num_id) * sizeof(unsigned long);
->  }
-> @@ -25,11 +25,12 @@ static struct idset *idset_new(int num_ssid, int num_id)
->  {
->  	struct idset *set;
->  
-> -	set = vmalloc(sizeof(struct idset) + bitmap_size(num_ssid, num_id));
-> +	set = vmalloc(sizeof(struct idset) +
-> +		      idset_bitmap_size(num_ssid, num_id));
->  	if (set) {
->  		set->num_ssid = num_ssid;
->  		set->num_id = num_id;
-> -		memset(set->bitmap, 0, bitmap_size(num_ssid, num_id));
-> +		memset(set->bitmap, 0, idset_bitmap_size(num_ssid, num_id));
->  	}
->  	return set;
->  }
-> @@ -41,7 +42,8 @@ void idset_free(struct idset *set)
->  
->  void idset_fill(struct idset *set)
->  {
-> -	memset(set->bitmap, 0xff, bitmap_size(set->num_ssid, set->num_id));
-> +	memset(set->bitmap, 0xff,
-> +	       idset_bitmap_size(set->num_ssid, set->num_id));
->  }
->  
->  static inline void idset_add(struct idset *set, int ssid, int id)
-> -- 
-> 2.41.0
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+---
+Neil Armstrong (5):
+      drm/msm: dpu1: create a dpu_hw_clk_force_ctrl() helper
+      drm/msm: dpu1: add setup_clk_force_ctrl() op to sspp & wb
+      drm/msm: dpu1: vbif: add dpu_vbif_setup_clk_force_ctrl() helper
+      drm/msm: dpu1: call wb & sspp clk_force_ctrl op if split clock control
+      drm/msm: dpu1: sm8550: move split clock controls to sspp entries
+
+ .../gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h | 35 +++++++++-----------
+ .../gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c    |  4 +--
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h     |  4 +++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_sspp.c        |  9 +++++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_sspp.h        |  9 +++++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_top.c         | 23 +------------
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c        | 21 ++++++++++++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h        |  4 +++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_wb.c          |  9 +++++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_wb.h          |  4 +++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c          |  9 +++--
+ drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.c           | 38 +++++++++++++++++-----
+ drivers/gpu/drm/msm/disp/dpu1/dpu_vbif.h           | 12 ++++---
+ 13 files changed, 120 insertions(+), 61 deletions(-)
+---
+base-commit: 9119cf579b4432b36be9d33a92f4331922067d92
+change-id: 20231009-topic-sm8550-graphics-sspp-split-clk-43c32e37b6aa
+
+Best regards,
+-- 
+Neil Armstrong <neil.armstrong@linaro.org>
+
