@@ -2,210 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B5D7BEFEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 02:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5DE47BEFF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 02:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379265AbjJJAvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 20:51:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38500 "EHLO
+        id S1379280AbjJJAvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 20:51:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379258AbjJJAvS (ORCPT
+        with ESMTP id S1379282AbjJJAvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 20:51:18 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB0EFAF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 17:51:16 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9b2c5664cb4so195296666b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 17:51:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696899075; x=1697503875; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=55gaZnD/4pQGBcN72gUyG/yKfxNgh2xfAKCxk2KMWDU=;
-        b=BtKWXKFGtjNv7cfYs0dsDIJ1Hlw/k3s3bWF1BDrxyeFB1L2vhgX7iTguFbngwmf1G7
-         uMhQGeisHlbUEjkL0UHrfaq5KMBINcQMs36whj6I5cMDHgBNYX4ZJ+DSgdxPdsLffDXk
-         1p/WMfZTU0u3kaJSoVQWv05Gtx4VtGDiC/C34=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696899075; x=1697503875;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=55gaZnD/4pQGBcN72gUyG/yKfxNgh2xfAKCxk2KMWDU=;
-        b=rdp5HzWsuefFQMz2jwcKzXA09DqN2JpQAJqQrGLaQz8801iakvX7dCU43wyn2AdHoF
-         175Q3WyJE1W3SYQ+5+Arlc7mEhVWapuedUf50K+c0/TFtlhxT6lQhdmtP/4F9Ef1m6a+
-         JFFkQwzDbE0xsWHh14WDOZnvZEQkGLsJ/C9CHpdgbqLpb3MZas6tB4YbJvnLdvDkgYUl
-         3wkNRjjjc3eLLn4kYVZk6EFl3obiDEjDcoDyZTUBgTSYaqBWccgwLGvQ3Ed2OoDfXj1E
-         mXZWc1z/FDZ/A89cpkebcbcxMWSWNBeq/S2cT8LShPL4SgiuT0oDx7HEnmcDaWcv5b7F
-         /Vuw==
-X-Gm-Message-State: AOJu0Yx/kcE6hvsFyT1PaIv1AfMybg0lpgXz2LDHwU2+QWM4ZSnzEO9k
-        hfriK/u4LrWalb8MNvQuindzqGHvU+0J/kAM5fHEvg==
-X-Google-Smtp-Source: AGHT+IG+Av6cJcBeqoqezcSAP3jXBGx1EFz3zpdji0z5DlPz8aC81gppZRaPONcKwWOymdqBDNXT5vGTzMX7VvBjUbk=
-X-Received: by 2002:a17:906:24e:b0:9a5:9f3c:961f with SMTP id
- 14-20020a170906024e00b009a59f3c961fmr13406395ejl.3.1696899075094; Mon, 09 Oct
- 2023 17:51:15 -0700 (PDT)
+        Mon, 9 Oct 2023 20:51:39 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00F25B6;
+        Mon,  9 Oct 2023 17:51:35 -0700 (PDT)
+Received: from Monstersaurus.local (aztw-30-b2-v4wan-166917-cust845.vm26.cable.virginm.net [82.37.23.78])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 559F5512;
+        Tue, 10 Oct 2023 02:51:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1696899092;
+        bh=1H4cFl+GfvAjihnYXGrLxSTEhemF5I7Tx+xJzhwuvnM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=i4X1s3ouPNFTmH1mOBAb3rdgqwUSGamaha1GaZdMotyM2hlKOku3Xlavyfmqc3vMn
+         4A4g2eia6zy0LLVYfUWA8niy8712ObZeZCiMpkVatPCYac5du/2aW2JOH05RAyTXdX
+         tPuEX0s+xMnNEu+PbZ+2quT75WK1SqWwikfPA+Ls=
+From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
+To:     linux-media@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        "Paul J. Murphy" <paul.j.murphy@intel.com>,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/FREESCALE IMX
+        / MXC ARM ARCHITECTURE), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/5] media: dt-bindings: media: imx335: Add supply bindings
+Date:   Tue, 10 Oct 2023 01:51:22 +0100
+Message-Id: <20231010005126.3425444-2-kieran.bingham@ideasonboard.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231010005126.3425444-1-kieran.bingham@ideasonboard.com>
+References: <20231010005126.3425444-1-kieran.bingham@ideasonboard.com>
 MIME-Version: 1.0
-References: <20230531115839.089944915@infradead.org> <dlbtvvm5cewqzh5bcpl4cqhcwxmnnjb6pdle5jzywiiznlactd@cmhnpim42m3p>
- <20230906131356.GG38741@noisy.programming.kicks-ass.net> <CA+q576MS0-MV1Oy-eecvmYpvNT3tqxD8syzrpxQ-Zk310hvRbw@mail.gmail.com>
- <20231002184136.GA1539@noisy.programming.kicks-ass.net> <20231005120557.GA743@noisy.programming.kicks-ass.net>
- <20231007220400.GA5581@noisy.programming.kicks-ass.net>
-In-Reply-To: <20231007220400.GA5581@noisy.programming.kicks-ass.net>
-From:   Youssef Esmat <youssefesmat@chromium.org>
-Date:   Mon, 9 Oct 2023 19:51:03 -0500
-Message-ID: <CA+q576Mov1jpdfZhPBoy_hiVh3xSWuJjXdP3nS4zfpqfOXtq7Q@mail.gmail.com>
-Subject: Re: [PATCH 00/15] sched: EEVDF and latency-nice and/or slice-attr
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>, mingo@kernel.org,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, corbet@lwn.net, qyousef@layalina.io,
-        chris.hyser@oracle.com, patrick.bellasi@matbug.net, pjt@google.com,
-        pavel@ucw.cz, qperret@google.com, tim.c.chen@linux.intel.com,
-        joshdon@google.com, timj@gnu.org, kprateek.nayak@amd.com,
-        yu.c.chen@intel.com, joel@joelfernandes.org, efault@gmx.de,
-        tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 7, 2023 at 5:04=E2=80=AFPM Peter Zijlstra <peterz@infradead.org=
-> wrote:
->
-> On Thu, Oct 05, 2023 at 02:05:57PM +0200, Peter Zijlstra wrote:
->
-> > t=3D10 V=3D4                                                t=3D10 V=3D=
-4
-> >  A       |----<                                          A       |----<
-> >  B      |<                                              >B      |<
-> > >C   |----------------<                                  C   |---------=
--------<
-> >    |---*-----|---------|---------|---------|----           |---*-----|-=
---------|---------|---------|----
-> >
->
-> >
-> > t=3D52 V=3D18                                               t=3D36 V=3D=
-13
-> >  A                   |----<                              A             =
-      |----<
-> > >B                  |<                                   B             =
-       |<
-> >  C                     |----------------<               >C   |---------=
--------<
-> >    |---------|-------*-|---------|---------|----           |---------|-=
--*------|---------|---------|----
-> >
->
-> >
-> > BAaaBCccccccccBBBAaaBBBAaaBB                            BBAaaBBBAaaBBBA=
-aaBCccccccccB
-> >
-> >
-> >
-> > As I wrote before; EVDF has worse lag bounds, but this is not
-> > insurmountable. The biggest problem that I can see is that of wakeup
-> > preemption. Currently we allow to preempt when 'current' has reached V
-> > (RUN_TO_PARITY in pick_eevdf()).
-> >
-> > With these rules, when EEVDF schedules C (our large slice task) at t=3D=
-10
-> > above, it is only a little behind C and can be reaily preempted after
-> > about 2 time units.
-> >
-> > However, EVDF will delay scheduling C until much later, see how A and B
-> > walk far ahead of V until t=3D36. Only when will we pick C. But this me=
-ans
-> > that we're firmly stuck with C for at least 11 time units. A newly
-> > placed task will be around V and will have no chance to preempt.
->
-> Playing around with it a little:
->
-> EEVDF                                   EVDF
->
-> slice 30000000                          slice 30000000
-> # Min Latencies: 00014                  # Min Latencies: 00048
-> # Avg Latencies: 00692                  # Avg Latencies: 188239
-> # Max Latencies: 94633                  # Max Latencies: 961241
->
-> slice 3000000                           slice 3000000
-> # Min Latencies: 00054                  # Min Latencies: 00055
-> # Avg Latencies: 00522                  # Avg Latencies: 00673
-> # Max Latencies: 41475                  # Max Latencies: 13297
->
-> slice 300000                            slice 300000
-> # Min Latencies: 00018                  # Min Latencies: 00024
-> # Avg Latencies: 00344                  # Avg Latencies: 00056
-> # Max Latencies: 20061                  # Max Latencies: 00860
->
+Add the bindings for the supply references used on the IMX335.
 
-Thanks for sharing. Which workload was used to generate these numbers?
+Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+---
+ .../bindings/media/i2c/sony,imx335.yaml          | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-I think looking at the sched latency numbers alone does not show the
-complete picture. I ran the same input latency test again and tried to
-capture some of these numbers for the chrome processes.
+diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx335.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx335.yaml
+index a167dcdb3a32..1863b5608a5c 100644
+--- a/Documentation/devicetree/bindings/media/i2c/sony,imx335.yaml
++++ b/Documentation/devicetree/bindings/media/i2c/sony,imx335.yaml
+@@ -32,6 +32,15 @@ properties:
+     description: Clock frequency from 6 to 27 MHz, 37.125MHz, 74.25MHz
+     maxItems: 1
+ 
++  avdd-supply:
++    description: Analog power supply (2.9V)
++
++  ovdd-supply:
++    description: Interface power supply (1.8V)
++
++  dvdd-supply:
++    description: Digital power supply (1.2V)
++
+   reset-gpios:
+     description: Reference to the GPIO connected to the XCLR pin, if any.
+     maxItems: 1
+@@ -60,6 +69,9 @@ required:
+   - compatible
+   - reg
+   - clocks
++  - avdd-supply
++  - ovdd-supply
++  - dvdd-supply
+   - port
+ 
+ additionalProperties: false
+@@ -79,6 +91,10 @@ examples:
+             assigned-clock-parents = <&imx335_clk_parent>;
+             assigned-clock-rates = <24000000>;
+ 
++            avdd-supply = <&camera_vdda_2v9>;
++            ovdd-supply = <&camera_vddo_1v8>;
++            dvdd-supply = <&camera_vddd_1v2>;
++
+             port {
+                 imx335: endpoint {
+                     remote-endpoint = <&cam>;
+-- 
+2.34.1
 
-EEVDF 1.5ms slice:
-
-Input latency test result: 226ms
-perf sched latency:
-switches: 1,084,694
-avg:   1.139 ms
-max: 408.397 ms
-
-EEVDF 6.0ms slice:
-
-Input latency test result: 178ms
-perf sched latency:
-switches: 892,306
-avg:   1.145 ms
-max: 354.344 ms
-
-EVDF 6.0ms slice:
-
-Input latency test result: 112ms
-perf sched latency:
-switches: 134,200
-avg:   2.610 ms
-max: 374.888 ms
-
-EVDF 6.0ms slice
-(no run_to_parity, no place_lag, no place_deadline_initial):
-
-Input latency test result: 110ms
-perf sched latency:
-switches: 531,656
-avg:   0.830 ms
-max: 520.463 ms
-
-For our scenario, it is very expensive to interrupt UI threads. It
-will increase the input latency significantly. Lowering the scheduling
-latency at the cost of switching out important threads can be very
-detrimental in this workload. UI and input threads run with a nice
-value of -8.
-
-This also seems to match Daniel's message earlier in this thread where
-using 12ms base slice improved their benchmarks.
-
-That said, this might not be beneficial for all workloads, and we are
-still trying our other workloads out.
-
->
-> So while it improves the short slices, it completely blows up the large
-> slices -- utterly slaughters the large slices in fact.
->
-> And all the many variants of BIAS_ELIGIBLE that I've tried so far only
-> manage to murder the high end while simultaneously not actually helping
-> the low end -- so that's a complete write off.
->
->
-> By far the sanest option so far is PLACE_SLEEPER -- and that is very
-> much not a nice option either :-(
