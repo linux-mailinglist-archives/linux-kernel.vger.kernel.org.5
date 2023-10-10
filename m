@@ -2,157 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F1C97BF5D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56DEC7BF5D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442640AbjJJI2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 04:28:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41238 "EHLO
+        id S1442747AbjJJI3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 04:29:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442726AbjJJI2e (ORCPT
+        with ESMTP id S1442800AbjJJI2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 04:28:34 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5FDD09F
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 01:28:31 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AC73F1FB;
-        Tue, 10 Oct 2023 01:29:11 -0700 (PDT)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BC76A3F7A6;
-        Tue, 10 Oct 2023 01:28:29 -0700 (PDT)
-Message-ID: <948c6cdd-5a46-6b4b-37a9-9f971a4853a8@arm.com>
-Date:   Tue, 10 Oct 2023 09:28:10 +0100
+        Tue, 10 Oct 2023 04:28:53 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B03AC9;
+        Tue, 10 Oct 2023 01:28:49 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 50F2A40E0187;
+        Tue, 10 Oct 2023 08:28:47 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id jobyFDhhothj; Tue, 10 Oct 2023 08:28:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1696926525; bh=DYiV+Ej1tarfC6A9PK5bqkKaTuLXYHPLvB0ukzNjf98=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jRcQuJtnZglx2Sk9NaC7dZV11XzZ+MKNLUjw7z8fux0RAqVLiZOA8P1TyCQg0UGwH
+         6/ShC1fHFmE+DFJZHe/8vei5LJCqvMSwQLssAp14S9lybecyjvxRO0C4xplzru86pi
+         oXwbPWx0OugsqkoXze0bGjyn+hvDn0jjNNO0Q5EzxU/HXGrC24z905gR0v+Crj1YfR
+         TFV9VbEcT2LaO/n/UeJTF2xGuTnVQ+KSxpT3j/pLZvjBsgxy4d/0VBBNT9k3W60C4M
+         BGtstg7ypXHCj9rv49L5aTUQyIXGDta0aUcvmWBc01llmM9YoElgvJsOsF7yU+QdTF
+         PK8fznCwexHjwbyEpkExR6/FTZa7JTKkEY1bzjDy7AZEW2nLzFfK/l/1+ZOT229Nks
+         VEqwHIgPfyxeZ9zdGqfZRR3F7jsRanGs0gVYhg50xwAd0fetdeSY3NPqaIBZmS+WJY
+         5vO87kJD58QRSzphSPhTCdDJgLXbi+tnhiMJtklsXHnhQI2VN+CADaChpakGVF4n1y
+         bHF2sBOjTfaKcq1zOpUfFd022cL4nRxA5XUhIcqEh2FTBIbkYqfi5ygQvtt6DCqgr4
+         2FpmPjFCYOdyVswOpKwdqegokRlo0PgQHdChCyE1N6jI1R5zBiT/byu5oB03hbL7OV
+         HmOVC0x6r2tnLBVVsv2MNv5U=
+Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 11AC540E01AD;
+        Tue, 10 Oct 2023 08:28:37 +0000 (UTC)
+Date:   Tue, 10 Oct 2023 10:28:36 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Zhiquan Li <zhiquan1.li@intel.com>
+Cc:     x86@kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        tony.luck@intel.com, naoya.horiguchi@nec.com,
+        Youquan Song <youquan.song@intel.com>
+Subject: Re: [PATCH RESEND v2] x86/mce: Set PG_hwpoison page flag to avoid
+ the capture kernel panic
+Message-ID: <20231010082836.GDZSULNGto0cPRPU26@fat_crate.local>
+References: <20230914030539.1622477-1-zhiquan1.li@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] drivers: perf: arm_pmuv3: Update 'pmc_width' based on
- actual HW event width
-Content-Language: en-US
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh@kernel.org>, raphael.gault@arm.com
-Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org
-References: <20231009043724.175100-1-anshuman.khandual@arm.com>
- <66125bc2-ff2a-a209-a753-c2e3d8310a45@arm.com>
- <8a5d2411-3fab-4f21-adb5-f99a2d4b3bee@arm.com>
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <8a5d2411-3fab-4f21-adb5-f99a2d4b3bee@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230914030539.1622477-1-zhiquan1.li@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 14, 2023 at 11:05:39AM +0800, Zhiquan Li wrote:
+> Kdump can exclude the HWPosion page to avoid touch the error page
+> again, the prerequisite is the PG_hwpoison page flag is set.
+> However, for some MCE fatal error cases, there is no opportunity
+> to queue a task for calling memory_failure(), as a result,
+> the capture kernel touches the error page again and panics.
+> 
+> Add function mce_set_page_hwpoison_now() which marks a page as
+> HWPoison before kernel panic() for MCE error, so that the dump
+> program can check and skip the error page and prevent the capture
+> kernel panic.
 
+This commit message should explain the full scenario, like you did in
+your other reply.
 
-On 10/10/2023 04:03, Anshuman Khandual wrote:
-> Hi James,
-> 
-> On 10/9/23 15:13, James Clark wrote:
->>
->>
->> On 09/10/2023 05:37, Anshuman Khandual wrote:
->>> This updates 'perf_event_mmap_page->pmc_width' based on actual HW event's
->>> width that are currently missing i.e ARMPMU_EVT_63BIT and ARMPMU_EVT_47BIT.
->>>
->>
->> Might be worth adding why this is needed or what the actual effect is.
-> 
-> To have correct 'pmc_width' visible to the user space ?
+Also explain how the poison flag is consumed by the kdump kernel and put
+that in the comment below.
 
-Well yeah, but for example I didn't know what that was. And it's not
-clear why it needs updating at this point in time without a link to any
-other commit or relevant section from the Arm ARM. So I had a kind of a
-"why now" question.
+> [Tony: Changed TestSetPageHWPoison() to SetPageHWPoison()]
+> 
+> Co-developed-by: Youquan Song <youquan.song@intel.com>
+> Signed-off-by: Youquan Song <youquan.song@intel.com>
+> Signed-off-by: Zhiquan Li <zhiquan1.li@intel.com>
+> Signed-off-by: Tony Luck <tony.luck@intel.com>
 
-"To have correct 'pmc_width' visible to the user space" is definitely
-more of a what than a why.
+What does Tony's SOB mean here?
 
-> 
->>
->>> Cc: Will Deacon <will@kernel.org>
->>> Cc: Mark Rutland <mark.rutland@arm.com>
->>> Cc: linux-arm-kernel@lists.infradead.org
->>> Cc: linux-kernel@vger.kernel.org
->>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>> ---
->>> This applies on v6.6-rc5.
->>>
->>>  drivers/perf/arm_pmuv3.c | 4 ++++
->>>  1 file changed, 4 insertions(+)
->>>
->>> diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
->>> index fe4db1831662..94723d00548e 100644
->>> --- a/drivers/perf/arm_pmuv3.c
->>> +++ b/drivers/perf/arm_pmuv3.c
->>> @@ -1375,6 +1375,10 @@ void arch_perf_update_userpage(struct perf_event *event,
->>>  	if (userpg->cap_user_rdpmc) {
->>>  		if (event->hw.flags & ARMPMU_EVT_64BIT)
->>>  			userpg->pmc_width = 64;
->>> +		else if (event->hw.flags & ARMPMU_EVT_63BIT)
->>> +			userpg->pmc_width = 63;
->>> +		else if (event->hw.flags & ARMPMU_EVT_47BIT)
->>> +			userpg->pmc_width = 47;
->>
->> Although it doesn't explicitly say it, the bit of the docs about
->> pmc_width in Documentation/arch/arm64/perf.rst loosely implies that this
->> is always either 64 or 32. Now that this isn't the case it could mislead
->> someone in userspace that they don't have to handle the now arbitrary
->> bit widths rather than just whole bytes/ints.
-> 
-> Are you suggesting that the user space would not handle pmc_width correctly
-> , once it deviates from a whole bytes/ints format ? In that case user space
-> handling might need some fixing.
-> 
+If I read it correctly, it is him sending this patch now. But you're
+sending it so you folks need to read up on SOB chains.
 
-Not really, I'm just suggesting that anyone writing a new tool and only
-reading the docs could make that assumption. Seeing as only 32 and 64
-bit options are mentioned. So it's more to avoid misleading someone in
-the future than about fixing any existing code, as updating the docs
-wouldn't have that effect.
+> Reviewed-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> 
+> ---
+> V2 RESEND notes:
+> - No changes on this, just rebasing as v6.6-rc1 is out.
+> - Added the tag from Naoya.
+>   Link: https://lore.kernel.org/all/20230719211625.298785-1-tony.luck@intel.com/#t
+> 
+> Changes since V1:
+> - Revised the commit message as per Naoya's suggestion.
+> - Replaced "TODO" comment in code with comments based on mailing list
+>   discussion on the lack of value in covering other page types.
+>   Link: https://lore.kernel.org/all/20230127015030.30074-1-tony.luck@intel.com/
+> ---
+>  arch/x86/kernel/cpu/mce/core.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+> index 6f35f724cc14..2725698268f3 100644
+> --- a/arch/x86/kernel/cpu/mce/core.c
+> +++ b/arch/x86/kernel/cpu/mce/core.c
+> @@ -156,6 +156,22 @@ void mce_unregister_decode_chain(struct notifier_block *nb)
+>  }
+>  EXPORT_SYMBOL_GPL(mce_unregister_decode_chain);
+>  
+> +/*
+> + * Kdump can exclude the HWPosion page to avoid touch the error page again,
+> + * the prerequisite is the PG_hwpoison page flag is set. However, for some
+> + * MCE fatal error cases, there are no opportunity to queue a task
+> + * for calling memory_failure(), as a result, the capture kernel panics.
+> + * This function marks the page as HWPoison before kernel panic() for MCE.
+> + */
+> +static void mce_set_page_hwpoison_now(unsigned long pfn)
+> +{
+> +	struct page *p;
+> +
+> +	p = pfn_to_online_page(pfn);
+> +	if (p)
+> +		SetPageHWPoison(p);
+> +}
 
->>
->> I think the fix is as simple as adding something like "the width may not
->> match the requested value or necessarily be a multiple of 8". Unless we
->> think this is already widely known and I suppose we could leave it as
->> is. (The existing bit in perf that uses it already handles it correctly).
-> 
-> This is from perf_event_mmap_page definition where it does not assert the
-> width to be multiple of bytes or ints. Hence the assumption should not be
-> made into the user space tools.
-> 
+there's no need for that function - just put everything...
 
-Yeah I know its already ok for Perf which is why I mentioned it. But
-there are more tools out there than Perf, and ones that don't even exist
-yet, which people would normally read the documentation before writing.
+> +
+>  static void __print_mce(struct mce *m)
+>  {
+>  	pr_emerg(HW_ERR "CPU %d: Machine Check%s: %Lx Bank %d: %016Lx\n",
+> @@ -286,6 +302,8 @@ static noinstr void mce_panic(const char *msg, struct mce *final, char *exp)
+>  	if (!fake_panic) {
+>  		if (panic_timeout == 0)
+>  			panic_timeout = mca_cfg.panic_timeout;
+> +		if (final && (final->status & MCI_STATUS_ADDRV))
+> +			mce_set_page_hwpoison_now(final->addr >> PAGE_SHIFT);
 
->         /*
->          * If cap_user_rdpmc this field provides the bit-width of the value
->          * read using the rdpmc() or equivalent instruction. This can be used
->          * to sign extend the result like:
->          *
->          *   pmc <<= 64 - width;
->          *   pmc >>= 64 - width; // signed shift right
->          *   count += pmc;
->          */
->         __u16   pmc_width;
-> 
-> Moreover, on x86 too 'userpg->pmc_width' gets assigned to different values
-> although multiple of 8.
-> 
-> userpg->pmc_width = x86_pmu.cntval_bits
-> arch/x86/events/amd/core.c:     .cntval_bits            = 48
-> arch/x86/events/intel/knc.c:    .cntval_bits            = 40
-> arch/x86/events/intel/p6.c:     .cntval_bits            = 32
-> 
->>
->>>  		else
->>>  			userpg->pmc_width = 32;
->>>  	}
+... here, along with the comment.
+
+>  		panic(msg);
+>  	} else
+>  		pr_emerg(HW_ERR "Fake kernel panic: %s\n", msg);
+> -- 
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
