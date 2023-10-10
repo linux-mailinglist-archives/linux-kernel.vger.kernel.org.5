@@ -2,62 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A78217C04D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 21:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEDF57C04E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 21:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234322AbjJJTlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 15:41:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39012 "EHLO
+        id S1343594AbjJJTpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 15:45:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbjJJTlv (ORCPT
+        with ESMTP id S230442AbjJJTpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 15:41:51 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25CA5DB;
-        Tue, 10 Oct 2023 12:41:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35D94C433C8;
-        Tue, 10 Oct 2023 19:41:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696966907;
-        bh=YbjcVPLcZSTQEmDpKd/PlJwKdY9kwZW4f2hfoRMYoIU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UUQ3ZaPZAwveJxmaNiOlKKQp+kxSRUP5C7euw0+Tbfx/+OL+XcfcvaOq5WSwdL9j2
-         ZFiobaBI8at/xf6jf/L3Oq68/kVx1e76sjYK+F6ZAHFO8rAqXGaGL7BcUZjVbChkKV
-         H6fYG3G+w71RCAmaKrPiHp4r0QXmUcAQu0eYJlIsMmgKUCgr1R1NOkfSTGc6RIuP+t
-         fwGQA25z1Wu6PYGyN20l2jYBiNDm6lcZ0WPOA+Rlrk3GrZwQoe4T87smFv1MK232Hz
-         symlBQYLtGl8KKEidMI6fwC8QxwF0/UuhrZhuq61Da4J07Hj43ecPWxEJE5sVVnlE5
-         CHxyfdDwrqomQ==
-Date:   Tue, 10 Oct 2023 21:41:44 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-        Tony Lindgren <tony@atomide.com>, Vignesh R <vigneshr@ti.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org
-Subject: Re: [PATCH] i2c: Use device_get_match_data()
-Message-ID: <ZSWo+FoFBYTqwIGd@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-        Tony Lindgren <tony@atomide.com>, Vignesh R <vigneshr@ti.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org
-References: <20231006224446.443015-1-robh@kernel.org>
+        Tue, 10 Oct 2023 15:45:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D3493
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 12:44:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696967061;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/WTF4IjZRVNLzcWoBo3IdCRt0pqwqBlvFBeX4No5+68=;
+        b=Jp4EuljFLcsWRC3ZzxFSq8W7wfZpORGgkUclJKG9VdNaKbaWJyyAYt1UM6tQADysxBMOQ6
+        92RN13MRWDyf9WBXeGxRgdLJm7Jt36cBqM3cSFvuOFvpE4fvupL+ySwa9KSutRjBXTVQEE
+        Xv+L9Z2BoJybr3G3L4s768pzMNBSmHw=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-292-pYtH3YNbNCqx4oS4SN0ksw-1; Tue, 10 Oct 2023 15:44:13 -0400
+X-MC-Unique: pYtH3YNbNCqx4oS4SN0ksw-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DFE57185A790;
+        Tue, 10 Oct 2023 19:44:12 +0000 (UTC)
+Received: from [10.22.9.34] (unknown [10.22.9.34])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E4A35492B04;
+        Tue, 10 Oct 2023 19:44:11 +0000 (UTC)
+Message-ID: <6b769316-6434-5054-43f5-7933fc2bee01@redhat.com>
+Date:   Tue, 10 Oct 2023 15:44:11 -0400
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tp39jzaLqYpPOoAn"
-Content-Disposition: inline
-In-Reply-To: <20231006224446.443015-1-robh@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] cgroup/cpuset: Change nr_deadline_tasks to an atomic_t
+ value
+Content-Language: en-US
+To:     Juri Lelli <juri.lelli@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Qais Yousef <qyousef@layalina.io>, Hao Luo <haoluo@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Xia Fukun <xiafukun@huawei.com>
+References: <20231009191515.3262292-1-longman@redhat.com>
+ <ZSTiULEnD7SF9n7y@localhost.localdomain>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <ZSTiULEnD7SF9n7y@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -65,39 +74,26 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---tp39jzaLqYpPOoAn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 10/10/23 01:34, Juri Lelli wrote:
+> Hi,
+>
+> On 09/10/23 15:15, Waiman Long wrote:
+>> The nr_deadline_tasks field in cpuset structure was introduced by
+>> commit 6c24849f5515 ("sched/cpuset: Keep track of SCHED_DEADLINE task
+>> in cpusets"). Unlike nr_migrate_dl_tasks which is only modified under
+>> cpuset_mutex, nr_deadline_tasks can be updated in various contexts
+>> under different locks. As a result, data races may happen that cause
+>> incorrect value to be stored in nr_deadline_tasks leading to incorrect
+> Could you please make an example of such data races?
 
-On Fri, Oct 06, 2023 at 05:44:46PM -0500, Rob Herring wrote:
-> Use preferred device_get_match_data() instead of of_match_device() to
-> get the driver match data. With this, adjust the includes to explicitly
-> include the correct headers.
->=20
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Since update to cs->nr_deadline_tasks is not protected by a single lock, 
+it is possible that multiple CPUs may try to modify it at the same 
+time.  It is possible that nr_deadline_tasks++ and nr_deadline_tasks-- 
+can be done in a single instruction like in x86 and hence atomic. 
+However, operation like "cs->nr_deadline_tasks += 
+cs->nr_migrate_dl_tasks" is likely a RMW operation and so is subjected 
+to racing. It is mostly theoretical, but probably not impossible.
 
-Applied to for-next, thanks!
+Cheers,
+Longman
 
-
---tp39jzaLqYpPOoAn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUlqPgACgkQFA3kzBSg
-KbYOuhAArYYwQ5CXnRdoJfFsVTfI32jFJtSkGywgLNffPFNnGQ1iqCc3BaYSI6+w
-3NqFCi6V9e1mk73kIAFCo0Dd3p0wQ3LYuDl71mh3dvmhXeWJaHOOh1Y5OhQaxyey
-dQUXxw5700pHN93jI7Z+z7Zmo4iTA8xzm6GVyvWwmutcBd8GofUtK5ra7vNCIuI2
-WnOTzv1k6aRNchrxkXTJFoHZAiymfCU537jgIj/xiqoYxlszzhh9gRd6UaWmPcnY
-sUM+AnlCt9QyN89lDmoKmrgl81CfOT6YEgU1uIDMdq4WA/ApUyM7KSBdtPFvhHr0
-QmN4XWUJDkDTeRHWI/cWBYEEvHqvkbCic3xh+qrfCIBHmdmwOazB1CnUeEml9TOi
-BuiEzZOjBemavM7O/28m7hOZS8nLGiKXSpcUQ76Uzyg2Ch46MUfL8wqlzJO5KmY7
-O676lje1KlanrvYwUJ/Eamk/aWzEuMYD6Mh1uRC+cMd4wMvTUVglV1th1YEf7Xnc
-KivfGaP9GSq4UulQcZxY4hUHct14H0lqAB4m9kAJ33Ho2eLQ/CC8dL7wuEjBAwpv
-iXmLjSH84LIFkXH39rGmBbElvYjjSI/YgFWTHsZTcb0Fosq/LSfngRdZKw3w/uGZ
-gTugvMLt3Wdz2Hh4c1s9u0J4tkPM7HvMT6H379us/5bDLHN5IjU=
-=gsIk
------END PGP SIGNATURE-----
-
---tp39jzaLqYpPOoAn--
