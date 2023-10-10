@@ -2,51 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F26297C019D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 743BC7C01A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232523AbjJJQ24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 12:28:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49810 "EHLO
+        id S232756AbjJJQ3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 12:29:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233062AbjJJQ2w (ORCPT
+        with ESMTP id S231231AbjJJQ3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 12:28:52 -0400
+        Tue, 10 Oct 2023 12:29:50 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8694F9D;
-        Tue, 10 Oct 2023 09:28:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C5BDC433C8;
-        Tue, 10 Oct 2023 16:28:46 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6BE93;
+        Tue, 10 Oct 2023 09:29:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7414FC433C7;
+        Tue, 10 Oct 2023 16:29:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696955330;
-        bh=dZZKpZb7/IrHqlUDIL57KB0JnLLJTBKUAfjmfWFKd3k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=IUrtf2ZnIH79dMMyNf+Ugws9XsYhHqEF5n1FQKToIOY7tDeeesubk3zQ4pwrpJcLP
-         PQOp96npG8t6fluGUNlfcLCFdnMKSuznJEiULqz7zZpKgInNR4GSKiE03TB/0u4JKk
-         tjNOUVEHWHVWhdKVtZvHkWPChZn+F/OqoccYYKL1yVLQDn9aoPNmAHQO4dauUuJ+UE
-         OWB0Y8z6nWKopSrSvJCO+EIAaBIDdzZGsUC5Y3AIyBiv94vjkZ3VLg+VUUQfIUUbwu
-         U+N1/UyOlxGI230H5ZNafLr8RZYHHmidVOvgStxEnLKzlyTDFsxg4BbnyjfNh2zdG5
-         oMSs5VDrcxPPQ==
-Date:   Tue, 10 Oct 2023 17:28:59 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Cosmin Tanislav <cosmin.tanislav@analog.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: iio: add missing reset-gpios constrain
-Message-ID: <20231010172859.45efe481@jic23-huawei>
-In-Reply-To: <20231005-thrift-backer-d2f58a1bd441@spud>
-References: <20231005083650.92222-1-krzysztof.kozlowski@linaro.org>
-        <20231005-thrift-backer-d2f58a1bd441@spud>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        s=k20201202; t=1696955387;
+        bh=2yjmYeF5BHJBKV8W3tqM5P5MMJUgXgPBqJIgjiDA92w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Nr6M0O3MHp7l6KVRca4pqzSgQ+Ik2CGxx12mR4Xa+AAprnubSwBbyPYlwiAdwqcoS
+         qYAPsmTgG8I8i7V35I9x8sPwKP2BMxe2TsbmDjBmFO3BeNvobB2kceq+XoV4xEfm+N
+         I0tMDULKeTSQLoViAi5Nq2NHZUgqbqjOGRwVZ496JPB7jQ8quHHID2Rwik7wyWWKR2
+         2SqVLYWH19rZXyYwWjaGbYVf5TZvT9V/6L2v9vulZnTh3aiF5xFxg3SCsirGh0VKdp
+         2rbwDlmfhWuXy/pgJU6oOcLBuOmtdYd+s04fpHUhZvp5GsXpeEVyJTZUTeBBx2S/Ph
+         7G9GFOLmF8lZw==
+Date:   Tue, 10 Oct 2023 11:29:45 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     lpieralisi@kernel.org, kw@linux.com, bhelgaas@google.com,
+        robh@kernel.org, gustavo.pimentel@synopsys.com,
+        jingoohan1@gmail.com, andersson@kernel.org,
+        konrad.dybcio@linaro.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] PCI: qcom: Enable ASPM for platforms supporting
+ 1.9.0 ops
+Message-ID: <20231010162945.GA978270@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231010155914.9516-3-manivannan.sadhasivam@linaro.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -56,92 +51,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Oct 2023 11:41:07 +0100
-Conor Dooley <conor@kernel.org> wrote:
+On Tue, Oct 10, 2023 at 09:29:14PM +0530, Manivannan Sadhasivam wrote:
+> ASPM is supported by Qcom host controllers/bridges on most of the recent
+> platforms and so the devices tested so far. But for enabling ASPM by
+> default (without Kconfig/cmdline/sysfs), BIOS has to enable ASPM on both
+> host bridge and downstream devices during boot. Unfortunately, none of the
+> BIOS available on Qcom platforms enables ASPM.
 
-> On Thu, Oct 05, 2023 at 10:36:50AM +0200, Krzysztof Kozlowski wrote:
-> > The Documentation/devicetree/bindings/gpio/gpio-consumer-common.yaml
-> > schema does not enforce number of reset GPIOs, thus each device binding
-> > must do it.
-> > 
-> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>  
+I think this covers over a PCI core defect.  If the devices advertise
+ASPM support, which both the qcom host controller and the endpoint
+devices do, the PCI core should be able to enable it without being
+prodded as this patch does.
+
+We had a long conversation about this at [1], but never came to a good
+resolution.  Since we don't know how to fix the PCI core issue, I
+guess we have no choice but to do things like this patch, at least for
+now.
+
+If/when we ever *do* fix the PCI core issue, it would likely result in
+enabling ASPM (if advertised by both ends of the link) for *all* qcom
+controllers, not just the 1.9.0 ones.
+
+And I think that even today, users can enable ASPM on non-1.9.0
+controllers via sysfs.  So if you are concerned about ASPM not being
+tested on those controllers, you may want to make them not advertise
+ASPM support.
+
+Even with this patch, I guess hot-added devices don't get ASPM
+enabled?  That's basically what [1] is about.
+
+Bjorn
+
+[1] https://lore.kernel.org/linux-pci/20230615070421.1704133-1-kai.heng.feng@canonical.com/
+
+> Due to this, the platforms
+> making use of Qcom SoCs draw high power during runtime.
 > 
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
-Applied to the fixes-togreg branch of iio.git
-
-Thanks,
-
-Jonathan
-
+> To fix this power issue, users/distros have to enable ASPM using configs
+> such as (Kconfig/cmdline/sysfs) or the BIOS has to start enabling ASPM.
+> The latter may happen in the future, but that won't address the issue on
+> current platforms. Also, asking users/distros to enable a feature to get
+> the power management right would provide an unpleasant out-of-the-box
+> experience.
 > 
-> Thanks,
-> Conor.
+> So the apt solution is to enable ASPM in the controller driver itself. And
+> this is being accomplished by calling pci_enable_link_state() in the newly
+> introduced host_post_init() callback for all the devices connected to the
+> bus. This function enables all supported link low power states for both
+> host bridge and the downstream devices.
 > 
-> > ---
-> >  Documentation/devicetree/bindings/iio/addac/adi,ad74115.yaml | 3 ++-
-> >  Documentation/devicetree/bindings/iio/dac/adi,ad5758.yaml    | 3 ++-
-> >  Documentation/devicetree/bindings/iio/health/ti,afe4403.yaml | 3 ++-
-> >  Documentation/devicetree/bindings/iio/health/ti,afe4404.yaml | 3 ++-
-> >  4 files changed, 8 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/iio/addac/adi,ad74115.yaml b/Documentation/devicetree/bindings/iio/addac/adi,ad74115.yaml
-> > index 2594fa192f93..2a04906531fb 100644
-> > --- a/Documentation/devicetree/bindings/iio/addac/adi,ad74115.yaml
-> > +++ b/Documentation/devicetree/bindings/iio/addac/adi,ad74115.yaml
-> > @@ -32,7 +32,8 @@ properties:
-> >  
-> >    spi-cpol: true
-> >  
-> > -  reset-gpios: true
-> > +  reset-gpios:
-> > +    maxItems: 1
-> >  
-> >    interrupts:
-> >      minItems: 1
-> > diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ad5758.yaml b/Documentation/devicetree/bindings/iio/dac/adi,ad5758.yaml
-> > index 4e508bfcc9d8..5121685337b5 100644
-> > --- a/Documentation/devicetree/bindings/iio/dac/adi,ad5758.yaml
-> > +++ b/Documentation/devicetree/bindings/iio/dac/adi,ad5758.yaml
-> > @@ -78,7 +78,8 @@ properties:
-> >            - const: -1000
-> >            - const: 22000
-> >  
-> > -  reset-gpios: true
-> > +  reset-gpios:
-> > +    maxItems: 1
-> >  
-> >    adi,dc-dc-ilim-microamp:
-> >      enum: [150000, 200000, 250000, 300000, 350000, 400000]
-> > diff --git a/Documentation/devicetree/bindings/iio/health/ti,afe4403.yaml b/Documentation/devicetree/bindings/iio/health/ti,afe4403.yaml
-> > index b9b5beac33b2..5b6cde86b5a5 100644
-> > --- a/Documentation/devicetree/bindings/iio/health/ti,afe4403.yaml
-> > +++ b/Documentation/devicetree/bindings/iio/health/ti,afe4403.yaml
-> > @@ -23,7 +23,8 @@ properties:
-> >      maxItems: 1
-> >      description: Connected to ADC_RDY pin.
-> >  
-> > -  reset-gpios: true
-> > +  reset-gpios:
-> > +    maxItems: 1
-> >  
-> >  required:
-> >    - compatible
-> > diff --git a/Documentation/devicetree/bindings/iio/health/ti,afe4404.yaml b/Documentation/devicetree/bindings/iio/health/ti,afe4404.yaml
-> > index 2958c4ca75b4..167d10bd60af 100644
-> > --- a/Documentation/devicetree/bindings/iio/health/ti,afe4404.yaml
-> > +++ b/Documentation/devicetree/bindings/iio/health/ti,afe4404.yaml
-> > @@ -23,7 +23,8 @@ properties:
-> >      maxItems: 1
-> >      description: Connected to ADC_RDY pin.
-> >  
-> > -  reset-gpios: true
-> > +  reset-gpios:
-> > +    maxItems: 1
-> >  
-> >  additionalProperties: false
-> >  
-> > -- 
-> > 2.34.1
-> >   
-
+> Due to limited testing, ASPM is only enabled for platforms making use of
+> ops_1_9_0 callbacks.
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  drivers/pci/controller/dwc/pcie-qcom.c | 28 ++++++++++++++++++++++++++
+>  1 file changed, 28 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 367acb419a2b..c324c3daaa5a 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -222,6 +222,7 @@ struct qcom_pcie_ops {
+>  	int (*get_resources)(struct qcom_pcie *pcie);
+>  	int (*init)(struct qcom_pcie *pcie);
+>  	int (*post_init)(struct qcom_pcie *pcie);
+> +	void (*host_post_init)(struct qcom_pcie *pcie);
+>  	void (*deinit)(struct qcom_pcie *pcie);
+>  	void (*ltssm_enable)(struct qcom_pcie *pcie);
+>  	int (*config_sid)(struct qcom_pcie *pcie);
+> @@ -967,6 +968,22 @@ static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
+>  	return 0;
+  }
+>  
+> +static int qcom_pcie_enable_aspm(struct pci_dev *pdev, void *userdata)
+> +{
+> +	/* Downstream devices need to be in D0 state before enabling PCI PM substates */
+> +	pci_set_power_state(pdev, PCI_D0);
+> +	pci_enable_link_state(pdev, PCIE_LINK_STATE_ALL);
+> +
+> +	return 0;
+> +}
+> +
+> +static void qcom_pcie_host_post_init_2_7_0(struct qcom_pcie *pcie)
+> +{
+> +	struct dw_pcie_rp *pp = &pcie->pci->pp;
+> +
+> +	pci_walk_bus(pp->bridge->bus, qcom_pcie_enable_aspm, NULL);
+> +}
+> +
+>  static void qcom_pcie_deinit_2_7_0(struct qcom_pcie *pcie)
+>  {
+>  	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
+> @@ -1219,9 +1236,19 @@ static void qcom_pcie_host_deinit(struct dw_pcie_rp *pp)
+>  	pcie->cfg->ops->deinit(pcie);
+>  }
+>  
+> +static void qcom_pcie_host_post_init(struct dw_pcie_rp *pp)
+> +{
+> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> +	struct qcom_pcie *pcie = to_qcom_pcie(pci);
+> +
+> +	if (pcie->cfg->ops->host_post_init)
+> +		pcie->cfg->ops->host_post_init(pcie);
+> +}
+> +
+>  static const struct dw_pcie_host_ops qcom_pcie_dw_ops = {
+>  	.host_init	= qcom_pcie_host_init,
+>  	.host_deinit	= qcom_pcie_host_deinit,
+> +	.host_post_init	= qcom_pcie_host_post_init,
+>  };
+>  
+>  /* Qcom IP rev.: 2.1.0	Synopsys IP rev.: 4.01a */
+> @@ -1283,6 +1310,7 @@ static const struct qcom_pcie_ops ops_1_9_0 = {
+>  	.get_resources = qcom_pcie_get_resources_2_7_0,
+>  	.init = qcom_pcie_init_2_7_0,
+>  	.post_init = qcom_pcie_post_init_2_7_0,
+> +	.host_post_init = qcom_pcie_host_post_init_2_7_0,
+>  	.deinit = qcom_pcie_deinit_2_7_0,
+>  	.ltssm_enable = qcom_pcie_2_3_2_ltssm_enable,
+>  	.config_sid = qcom_pcie_config_sid_1_9_0,
+> -- 
+> 2.25.1
+> 
