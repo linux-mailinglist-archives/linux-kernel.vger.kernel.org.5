@@ -2,235 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 524E47BF855
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 12:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 409A17BF858
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 12:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230515AbjJJKQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 06:16:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40368 "EHLO
+        id S229787AbjJJKQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 06:16:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230473AbjJJKQo (ORCPT
+        with ESMTP id S231160AbjJJKQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 06:16:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23CE6101;
-        Tue, 10 Oct 2023 03:16:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696932999; x=1728468999;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=SBKJbfScbC8O7PragttfsiK5GsA19YlgI7tsRkSnlbg=;
-  b=J4l9ywriSBGMLwGmzJznzkNzBRqN5vpmjhAZ9bElWPBZbcKl02KHZxrL
-   Sn/Y++uyJYXe838VSO2f11LQnNFwWE2HXpLpuXRjqcTuIP0fnWYroUBha
-   b2WcH2GM1VJzQvmJhBRpE2pHjp3UCdZPxWB7OKnNkCScav5VqmK0Rtick
-   RE3jhYlGUAACFoOY9wGVri2ZWGuOI+p4yZb3TgD7zhDZmPWIbpM0tHSqH
-   mZzz0C16067+i183hnitXGBruOU7L6qSsucKvaemRBQzmGiU68I4hFKMA
-   toZ3SlCYWZDiyL1QqpucoCB2Ktfvosy+v7NZCLpcv4NKDc/vbPbm8mg9m
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="364652617"
-X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
-   d="scan'208";a="364652617"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 03:16:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="703252960"
-X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
-   d="scan'208";a="703252960"
-Received: from asalaman-mobl.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.16.145])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 03:16:35 -0700
-From:   Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-To:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     ilpo.jarvinen@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH RESEND v7 2/2] selftests/resctrl: Move run_benchmark() to a more fitting file
-Date:   Tue, 10 Oct 2023 12:16:11 +0200
-Message-ID: <6b1def8917a0718a34c38fea4c4e81f3117e7572.1696932728.git.maciej.wieczor-retman@intel.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <cover.1696932728.git.maciej.wieczor-retman@intel.com>
-References: <cover.1696932728.git.maciej.wieczor-retman@intel.com>
+        Tue, 10 Oct 2023 06:16:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423F1116;
+        Tue, 10 Oct 2023 03:16:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Zb6A2kfpJa7lPS8yNIr1mX5OvpeUAPwA3IcDR1IaKKc=; b=ueKzQLcnmzerXnYo62eevFkVL0
+        KreQh9Q1gUxYYHjpqpbTjp3oivGIICOfNTpJsJUVb7fbPeXYvxGghlyUqpUMTKfmKJoPJwwNEoquJ
+        8h03g2rYT14em69rgkufYtaf8BTgHY/b7IOchJm9iMQ0Lez6CKSrDRc9HBM/AG7UJe6tAzW/yqppG
+        Isa6IYCM58qFZnGUyiApip5VbPWJztRzWrgrqCEj8uSHvCihYTUQv/SXWoijuZ01bliAhmGHfU/Pr
+        mCcr+KCQEm3VK1Hdq7/chubA0yWFKc9MsuJjfYSmgYBHZf3S/slGtqLoWQjQMB62KnJ737HCbwLkB
+        SdpMivgg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qq9mn-00417M-OM; Tue, 10 Oct 2023 10:16:21 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 68AF6300392; Tue, 10 Oct 2023 12:16:21 +0200 (CEST)
+Date:   Tue, 10 Oct 2023 12:16:21 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        Fei Yang <fei.yang@intel.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] x86/alternatives: Disable KASAN on text_poke_early() in
+ apply_alternatives()
+Message-ID: <20231010101621.GG377@noisy.programming.kicks-ass.net>
+References: <20231010053716.2481-1-kirill.shutemov@linux.intel.com>
+ <20231010081938.GBZSUJGlSvEkFIDnES@fat_crate.local>
+ <20231010101056.GF377@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231010101056.GF377@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-resctrlfs.c contains mostly functions that interact in some way with
-resctrl FS entries while functions inside resctrl_val.c deal with
-measurements and benchmarking.
+On Tue, Oct 10, 2023 at 12:10:56PM +0200, Peter Zijlstra wrote:
 
-run_benchmark() is located in resctrlfs.c even though it's purpose
-is not interacting with the resctrl FS but to execute cache checking
-logic.
+> That said, I don't particularly like the patch, I think it should, at
+> the veyr least, cover all of apply_alternatives, not just
+> text_poke_early().
 
-Move run_benchmark() to resctrl_val.c just before resctrl_val() that
-makes use of run_benchmark(). Make run_benchmark() static since it's
-not used between multiple files anymore.
-
-Remove return comment from kernel-doc since the function is type void.
-
-Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
----
-Changelog v4:
-- Reword patch message very slightly. (Reinette)
-
-Changelog v3:
-- Make run_benchmark() static and remove it from the header. (Reinette)
-- Remove return void kernel-doc comment. (Ilpo)
-- Added Ilpo's reviewed-by tag.
-
- tools/testing/selftests/resctrl/resctrl.h     |  1 -
- tools/testing/selftests/resctrl/resctrl_val.c | 50 ++++++++++++++++++
- tools/testing/selftests/resctrl/resctrlfs.c   | 52 -------------------
- 3 files changed, 50 insertions(+), 53 deletions(-)
-
-diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
-index 8578a8b4e145..a33f414f6019 100644
---- a/tools/testing/selftests/resctrl/resctrl.h
-+++ b/tools/testing/selftests/resctrl/resctrl.h
-@@ -86,7 +86,6 @@ int validate_bw_report_request(char *bw_report);
- bool validate_resctrl_feature_request(const char *resource, const char *feature);
- char *fgrep(FILE *inf, const char *str);
- int taskset_benchmark(pid_t bm_pid, int cpu_no);
--void run_benchmark(int signum, siginfo_t *info, void *ucontext);
- int write_schemata(char *ctrlgrp, char *schemata, int cpu_no,
- 		   char *resctrl_val);
- int write_bm_pid_to_resctrl(pid_t bm_pid, char *ctrlgrp, char *mongrp,
-diff --git a/tools/testing/selftests/resctrl/resctrl_val.c b/tools/testing/selftests/resctrl/resctrl_val.c
-index a9fe61133119..0577e983067a 100644
---- a/tools/testing/selftests/resctrl/resctrl_val.c
-+++ b/tools/testing/selftests/resctrl/resctrl_val.c
-@@ -625,6 +625,56 @@ measure_vals(struct resctrl_val_param *param, unsigned long *bw_resc_start)
- 	return 0;
- }
- 
-+/*
-+ * run_benchmark - Run a specified benchmark or fill_buf (default benchmark)
-+ *		   in specified signal. Direct benchmark stdio to /dev/null.
-+ * @signum:	signal number
-+ * @info:	signal info
-+ * @ucontext:	user context in signal handling
-+ */
-+static void run_benchmark(int signum, siginfo_t *info, void *ucontext)
-+{
-+	int operation, ret, memflush;
-+	char **benchmark_cmd;
-+	size_t span;
-+	bool once;
-+	FILE *fp;
-+
-+	benchmark_cmd = info->si_ptr;
-+
-+	/*
-+	 * Direct stdio of child to /dev/null, so that only parent writes to
-+	 * stdio (console)
-+	 */
-+	fp = freopen("/dev/null", "w", stdout);
-+	if (!fp)
-+		PARENT_EXIT("Unable to direct benchmark status to /dev/null");
-+
-+	if (strcmp(benchmark_cmd[0], "fill_buf") == 0) {
-+		/* Execute default fill_buf benchmark */
-+		span = strtoul(benchmark_cmd[1], NULL, 10);
-+		memflush =  atoi(benchmark_cmd[2]);
-+		operation = atoi(benchmark_cmd[3]);
-+		if (!strcmp(benchmark_cmd[4], "true"))
-+			once = true;
-+		else if (!strcmp(benchmark_cmd[4], "false"))
-+			once = false;
-+		else
-+			PARENT_EXIT("Invalid once parameter");
-+
-+		if (run_fill_buf(span, memflush, operation, once))
-+			fprintf(stderr, "Error in running fill buffer\n");
-+	} else {
-+		/* Execute specified benchmark */
-+		ret = execvp(benchmark_cmd[0], benchmark_cmd);
-+		if (ret)
-+			perror("wrong\n");
-+	}
-+
-+	fclose(stdout);
-+	PARENT_EXIT("Unable to run specified benchmark");
-+}
-+
- /*
-  * resctrl_val:	execute benchmark and measure memory bandwidth on
-  *			the benchmark
-diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
-index 05390afd4d6f..5ebd43683876 100644
---- a/tools/testing/selftests/resctrl/resctrlfs.c
-+++ b/tools/testing/selftests/resctrl/resctrlfs.c
-@@ -294,58 +294,6 @@ int taskset_benchmark(pid_t bm_pid, int cpu_no)
- 	return 0;
- }
- 
--/*
-- * run_benchmark - Run a specified benchmark or fill_buf (default benchmark)
-- *		   in specified signal. Direct benchmark stdio to /dev/null.
-- * @signum:	signal number
-- * @info:	signal info
-- * @ucontext:	user context in signal handling
-- *
-- * Return: void
-- */
--void run_benchmark(int signum, siginfo_t *info, void *ucontext)
--{
--	int operation, ret, memflush;
--	char **benchmark_cmd;
--	size_t span;
--	bool once;
--	FILE *fp;
--
--	benchmark_cmd = info->si_ptr;
--
--	/*
--	 * Direct stdio of child to /dev/null, so that only parent writes to
--	 * stdio (console)
--	 */
--	fp = freopen("/dev/null", "w", stdout);
--	if (!fp)
--		PARENT_EXIT("Unable to direct benchmark status to /dev/null");
--
--	if (strcmp(benchmark_cmd[0], "fill_buf") == 0) {
--		/* Execute default fill_buf benchmark */
--		span = strtoul(benchmark_cmd[1], NULL, 10);
--		memflush =  atoi(benchmark_cmd[2]);
--		operation = atoi(benchmark_cmd[3]);
--		if (!strcmp(benchmark_cmd[4], "true"))
--			once = true;
--		else if (!strcmp(benchmark_cmd[4], "false"))
--			once = false;
--		else
--			PARENT_EXIT("Invalid once parameter");
--
--		if (run_fill_buf(span, memflush, operation, once))
--			fprintf(stderr, "Error in running fill buffer\n");
--	} else {
--		/* Execute specified benchmark */
--		ret = execvp(benchmark_cmd[0], benchmark_cmd);
--		if (ret)
--			perror("wrong\n");
--	}
--
--	fclose(stdout);
--	PARENT_EXIT("Unable to run specified benchmark");
--}
--
- /*
-  * create_grp - Create a group only if one doesn't exist
-  * @grp_name:	Name of the group
--- 
-2.42.0
-
+kasan_arch_is_ready() is another option, x86 doesn't currently define
+that, but that would allow us to shut kasan down harder around patching.
+Not sure if it's worth the trouble though.
