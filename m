@@ -2,145 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 343A57C0082
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 506BC7C0087
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233479AbjJJPjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 11:39:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54600 "EHLO
+        id S233478AbjJJPk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 11:40:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233484AbjJJPjN (ORCPT
+        with ESMTP id S233454AbjJJPky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 11:39:13 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70158AC
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:39:11 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-405497850dbso53889555e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:39:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696952350; x=1697557150; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q85Z+29P0POqGNSysfbjieXJTAmPSCNOKhS6TwE+BLQ=;
-        b=J7EzO7R/zAL/s8+fDz9SkEjHwONd2UIf285diDBSlzfEg+xbx1AdNYRNheiPRp5+a6
-         7kc27KO8aRTmtQlnVcuNzlLOihXjXrmRQR5YDytE9BTrDVTUUPlvMOu+vU5p7pVTCbTt
-         pKOcjGSBjIRaLicrZVYJa1muT0pUCSRtsJvlD9nI6WNd91e607Mn5xiBmRFL1neXFOxQ
-         vvgOmKIF25dFn/4UzAtyuy/7VHNKyWpqzDTpBmB7dZ18gGmZyhUXYWth+Mn7JvFE+cuF
-         bjX0TLC8o6e9NZjV1aW+bsQc34BFn+1uj8zAie8OQ2gFl/xotW32Df6/IvmtWYDnMZRa
-         +Spg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696952350; x=1697557150;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q85Z+29P0POqGNSysfbjieXJTAmPSCNOKhS6TwE+BLQ=;
-        b=IEY1P3l5toZ3oRnolAK+1xAcugheV+i5qqhUjJ2ZlNRQzuUK6R4IFIfmEdjeYdFyIU
-         I+QmCrj11KEJbjclnk15oRCxUtRZhR5XZ3r06Rtokb7gKzPivBllh39XLcQ9FdSQrXGJ
-         wJJAXSHKz8iNQueqUhQJiRZPSbi3l1se70ZqjEeM6bGEhWAFu06TK+YRs1VxW0Py3aZ0
-         8Q84yXsSjpZbVrYl5BCWsqqT6VyoGFWCmW+VJ8xDlqyjZjioV33qEfvT/GdfsRIMKsfb
-         peq7tNbYYT3NZRvgFryBv6cdS1DaAUGwVRIHr1NdKBY49xrjQREoLY3H2K/xGhI2pqvm
-         suDQ==
-X-Gm-Message-State: AOJu0YyVY7r1otB0BGYj1WpWxNU7sZqhC+23QIPJqoKhuzmPJDdOwoDx
-        sogKWVaXB7PkBn/ltxGB7tIrDBxK85yGRPCA3KLOMw==
-X-Google-Smtp-Source: AGHT+IGag0UvyVnSwYEnOyoH2ugnO1sNkoJ7csMjCJZTs0oRO+juByboNpvXU9ptXwj/6VOXxlAPomx+fqu8Lc2ACQ0=
-X-Received: by 2002:a7b:ce89:0:b0:402:f07c:4b48 with SMTP id
- q9-20020a7bce89000000b00402f07c4b48mr15737826wmj.28.1696952349723; Tue, 10
- Oct 2023 08:39:09 -0700 (PDT)
+        Tue, 10 Oct 2023 11:40:54 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C12AC
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:40:53 -0700 (PDT)
+Received: from [192.168.2.166] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 50861660297B;
+        Tue, 10 Oct 2023 16:40:50 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1696952451;
+        bh=Fn9PGvEa9Yc7DpxexISLyAMG9NitNBFOZPUGBK8Mwr8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=EVCfOjeCtyWiIkX7YwniYZCBwWr/sV8dBMsVzDkF4b6wbS6S5tTGmNv+MFji27UTT
+         KGNkwAeIzO3eb3jIR9+v+q0+myzoVs2/Wf2vA7AzPA071Ca1+mKJ8aw1MdFi+dUcv5
+         Iy6Fu88f0mTypNe+PyhwaEkMaXFWjLlpXwtCZxOXRBccRNecWqSKdfIrr5Y3l86F5R
+         e18dXtzfGr70Q35os1/wjMWJ+JoJkUKz7WWQaRx3E0xcmm887pSy6xDOqSS8V6Xbo4
+         iyLbErkDr4HVT6PTl5Sy7F30lfC3tYTTWndZWxaNylJfizAzXAJPG5vuDgR8TmpAF2
+         dxT1JitiyzRow==
+Message-ID: <2f8bcce1-6551-6c2d-481c-67502c82bc68@collabora.com>
+Date:   Tue, 10 Oct 2023 18:40:47 +0300
 MIME-Version: 1.0
-References: <20231009224347.2076221-1-mmaurer@google.com> <20231010081220.GD377@noisy.programming.kicks-ass.net>
-In-Reply-To: <20231010081220.GD377@noisy.programming.kicks-ass.net>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 10 Oct 2023 08:38:58 -0700
-Message-ID: <CAKwvOdk1c3N05R9fya6HsZwPZzrkDhC3LrK=nRVOoUwyXsiXQg@mail.gmail.com>
-Subject: Re: [PATCH] x86: Enable IBT in Rust if enabled in C
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Matthew Maurer <mmaurer@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3] drm/virtio: add new virtio gpu capset definitions
+Content-Language: en-US
+To:     Huang Rui <ray.huang@amd.com>, dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, David Airlie <airlied@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Akihiko Odaki <akihiko.odaki@daynix.com>,
+        =?UTF-8?Q?Marc-Andr=c3=a9_Lureau?= <marcandre.lureau@gmail.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Xenia Ragiadakou <xenia.ragiadakou@amd.com>,
+        Stefano Stabellini <stefano.stabellini@amd.com>,
+        Honglei Huang <honglei1.huang@amd.com>,
+        Julia Zhang <julia.zhang@amd.com>,
+        Chen Jiqian <Jiqian.Chen@amd.com>
+References: <20231010135722.1142265-1-ray.huang@amd.com>
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <20231010135722.1142265-1-ray.huang@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 1:13=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
->
-> On Mon, Oct 09, 2023 at 10:42:54PM +0000, Matthew Maurer wrote:
-> > These flags are not made conditional on compiler support because at the
-> > moment exactly one version of rustc supported, and that one supports
-> > these flags.
-> >
-> > Building without these additional flags will manifest as objtool
-> > printing a large number of errors about missing ENDBR and if CFI is
-> > enabled (not currently possible) will result in incorrectly structured
-> > function prefixes.
->
-> Well, I would also imagine running it on actual IBT enabled hardware
-> will get you a non-booting kernel.
+On 10/10/23 16:57, Huang Rui wrote:
+> These definitions are used fro qemu, and qemu imports this marco in the
+> headers to enable gfxstream, venus, cross domain, and drm (native
+> context) for virtio gpu. So it should add them even kernel doesn't use
+> this.
+> 
+> Signed-off-by: Huang Rui <ray.huang@amd.com>
+> Reviewed-by: Akihiko Odaki <akihiko.odaki@daynix.com>
+> ---
+> 
+> Changes V1 -> V2:
+> - Add all capsets including gfxstream and venus in kernel header (Dmitry Osipenko)
+> 
+> Changes V2 -> V3:
+> - Add missed capsets including cross domain and drm (native context)
+>   (Dmitry Osipenko)
+> 
+> v1: https://lore.kernel.org/lkml/20230915105918.3763061-1-ray.huang@amd.com/
+> v2: https://lore.kernel.org/lkml/20231010032553.1138036-1-ray.huang@amd.com/
+> 
+>  include/uapi/linux/virtio_gpu.h | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/include/uapi/linux/virtio_gpu.h b/include/uapi/linux/virtio_gpu.h
+> index f556fde07b76..240911c8da31 100644
+> --- a/include/uapi/linux/virtio_gpu.h
+> +++ b/include/uapi/linux/virtio_gpu.h
+> @@ -309,6 +309,10 @@ struct virtio_gpu_cmd_submit {
+>  
+>  #define VIRTIO_GPU_CAPSET_VIRGL 1
+>  #define VIRTIO_GPU_CAPSET_VIRGL2 2
+> +#define VIRTIO_GPU_CAPSET_GFXSTREAM 3
 
-Do you know what machine type in QEMU first supports IBT?
+The GFXSTREAM capset isn't correct, it should be GFXSTREAM_VULKAN in
+accordance to [1] and [2]. There are more capsets for GFXSTREAM.
 
->
-> > Signed-off-by: Matthew Maurer <mmaurer@google.com>
+[1]
+https://github.com/google/crosvm/blob/main/rutabaga_gfx/src/rutabaga_utils.rs#L172
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+[2]
+https://patchwork.kernel.org/project/qemu-devel/patch/20231006010835.444-7-gurchetansingh@chromium.org/
 
-> > https://godbolt.org/z/bc4n6sq5q
+-- 
+Best regards,
+Dmitry
 
-Intel asm syntax...my eyes!!!
-
-> > ---
-> >
-> > Split out the IBT additions as per
-> > https://lkml.kernel.org/linux-fsdevel/CANiq72kK6ppBE7j=3Dz7uua1cJMKaLoR=
-5U3NUAZXT5MrNEs9ZhfQ@mail.gmail.com/
-> >
-> > arch/x86/Makefile | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-> > index 5bfe5caaa444..941f7abf6dbf 100644
-> > --- a/arch/x86/Makefile
-> > +++ b/arch/x86/Makefile
-> > @@ -81,6 +81,7 @@ ifeq ($(CONFIG_X86_KERNEL_IBT),y)
-> >  #   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D104816
-> >  #
-> >  KBUILD_CFLAGS +=3D $(call cc-option,-fcf-protection=3Dbranch -fno-jump=
--tables)
-> > +KBUILD_RUSTFLAGS +=3D -Zcf-protection=3Dbranch -Zno-jump-tables
->
-> One question, -Zcf-protection=3Dbranch, will that ever emit NOTRACK
-> prefix? The kernel very explicitly does not support (enable) NOTRACK.
->
-> >  else
-> >  KBUILD_CFLAGS +=3D $(call cc-option,-fcf-protection=3Dnone)
-> >  endif
-> > --
-> > 2.42.0.609.gbb76f46606-goog
-> >
->
-
-
---=20
-Thanks,
-~Nick Desaulniers
