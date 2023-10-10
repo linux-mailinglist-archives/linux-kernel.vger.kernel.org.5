@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 541EB7C0373
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 20:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 494607C0374
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 20:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343597AbjJJSdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 14:33:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50916 "EHLO
+        id S1343610AbjJJSdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 14:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343588AbjJJSdU (ORCPT
+        with ESMTP id S1343631AbjJJSdc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 14:33:20 -0400
+        Tue, 10 Oct 2023 14:33:32 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF5594
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 11:33:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7561BC433C7;
-        Tue, 10 Oct 2023 18:33:08 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05BEAB8
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 11:33:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58551C433C7;
+        Tue, 10 Oct 2023 18:33:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696962798;
-        bh=AcS8Zc9KTvC26PE2oyNEgA9mQE9nsQvcbnKUkaT2eCM=;
+        s=k20201202; t=1696962810;
+        bh=TD+nNrMs7Ka9gbbvwhiSbbShWQAcXDb6ypAqBq/kzqM=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=Y5GTX+7tmYMKeo+0sNLFdw9X7w9Irrvpg0L40MoMnxjxi4lUcnjplVGspHN/uhE7T
-         TEUA9DMeD94c5POY54edefpOZiE81k/Weo0vQwTpklg6qHwYK61N9ItOk/W9XN2QL9
-         l77yD4dc0m2we/ZipHpYDWnUAkIWjCTpo5cWYZUBt5tQQ1Vh0VzejjOtpt2++yzzK7
-         s6JwD39leoiS+PIt0Q6CX6D2BtwbHbD4cQMkL7Ea0pywHdRF1XvdT4b/R+gGogDJ26
-         V9umKUWklwqfRYDs/xap/gJA9XscjIxBS3C2mcTBBPy4UHclFJaDRBXqWyIphEyHYs
-         /EqrJDudTh3OQ==
+        b=AQOWLjK2hbh4erAVcclHzik682RWE1TlLameD3PmoJ3Uo1EdHIJ3I8/svUjMmldVS
+         XKGHGno3DQjgda+yYyDLV2RgAr+QriR0weN/s6GlrLt2EP2nrnM3k7FqjHSo4shDkw
+         4YmAJnWUU4FAAo1DHwnLIb8T2QihDbJHWsAQp7ljuhV/SoB2Z783yD6vtQBBzc/IRQ
+         0ur+GjZeh2BTN51SAEQ8MnAsJz1GmthDlzy8kQP5bEiQOBHYYqI08ijmcdvovR3rTe
+         mdNfvNNct9aXKnVZ5lIyJsNKZBp2NOzY5e0WdSm6aWk8sQkZRfGYEl2Hl/agRRXcRK
+         XSovxYLIK9kMw==
 From:   Mark Brown <broonie@kernel.org>
 To:     Claudiu Beznea <claudiu.beznea@tuxon.dev>,
         Jaroslav Kysela <perex@perex.cz>,
@@ -50,7 +50,7 @@ To:     Claudiu Beznea <claudiu.beznea@tuxon.dev>,
         Banajit Goswami <bgoswami@quicinc.com>,
         Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
         Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Ban Tao <"fengz heng923"@gmail.com>,
+        Ban Tao <fengzheng923@gmail.com>,
         Peter Ujfalusi <peter.ujfalusi@gmail.com>,
         Jarkko Nikula <jarkko.nikula@bitmer.com>,
         Cezary Rojewski <cezary.rojewski@intel.com>,
@@ -68,11 +68,11 @@ Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
         linuxppc-dev@lists.ozlabs.org,
         Jernej Skrabec <jernej.skrabec@gmail.com>,
         Charles Keepax <ckeepax@opensource.cirrus.com>
-In-Reply-To: <20231004-dt-asoc-header-cleanups-v2-0-e77765080cbc@kernel.org>
-References: <20231004-dt-asoc-header-cleanups-v2-0-e77765080cbc@kernel.org>
-Subject: Re: [PATCH v2 0/5] ASoC: DT matching and header cleanups
-Message-Id: <169696278799.221758.12785192823442242064.b4-ty@kernel.org>
-Date:   Tue, 10 Oct 2023 19:33:07 +0100
+In-Reply-To: <20231006-dt-asoc-header-cleanups-v3-0-13a4f0f7fee6@kernel.org>
+References: <20231006-dt-asoc-header-cleanups-v3-0-13a4f0f7fee6@kernel.org>
+Subject: Re: [PATCH v3 0/5] ASoC: DT matching and header cleanups
+Message-Id: <169696280106.221758.12652834857695234139.b4-ty@kernel.org>
+Date:   Tue, 10 Oct 2023 19:33:21 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -87,7 +87,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 04 Oct 2023 10:58:04 -0500, Rob Herring wrote:
+On Fri, 06 Oct 2023 15:09:09 -0500, Rob Herring wrote:
 > (trimmed the recipient list due to bounces on v1)
 > 
 > This is a series is part of ongoing clean-ups related to device
