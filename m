@@ -2,153 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF257BF4D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 09:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE82D7BF4E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 09:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442646AbjJJHwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 03:52:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59110 "EHLO
+        id S1442598AbjJJHxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 03:53:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442632AbjJJHv7 (ORCPT
+        with ESMTP id S1442480AbjJJHxv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 03:51:59 -0400
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04078C4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 00:51:51 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 57D9140005;
-        Tue, 10 Oct 2023 07:51:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1696924310;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=USilIgMsNbS10KLiGwlOraTVUj4wmhatBdmP9jLwLMs=;
-        b=IIq1jLbM9v33XJ7hiIW5p49ICAYlbIBytS/d+ZsUS5VsFUIxntw6CG5TMngugXLaJtwmUI
-        FkZHDbvG5AqCe/IQkIZNHB8lrBfRSTXlfwStzuw/z5WgLaBfFarZPm/jP3oi3MbfGUANK3
-        Wyn19JZ4XNUT+Z8hAQUO2+phVU5CdS9r8TZN5S5WOmFyMC88a/76PDanL2WxBrxbNmdGv1
-        9L9bdd05xXy2fqapBdMNFolw05QizTP5vkFbXvYTS3emzTm3Ysuh3+NlyVgHjqK7DHbxUh
-        n2zID1RS6dA1/4FrvG37Cs4UmOZjh7zR8hidTIduVH4oBTB/AFCjyH26zU1AfQ==
-Date:   Tue, 10 Oct 2023 09:51:44 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     dregan@mail.com
-Cc:     bcm-kernel-feedback-list@broadcom.com,
-        linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
-        rafal@milecki.pl, joel.peshkin@broadcom.com,
-        computersforpeace@gmail.com, dan.beygelman@broadcom.com,
-        william.zhang@broadcom.com, frieder.schrempf@kontron.de,
-        linux-kernel@vger.kernel.org, vigneshr@ti.com, richard@nod.at,
-        bbrezillon@kernel.org, kdasu.kdev@gmail.com,
-        JaimeLiao <jaimeliao.tw@gmail.com>,
-        Arseniy Krasnov <AVKrasnov@sberdevices.ru>,
-        Adam Borowski <kilobyte@angband.pl>
-Subject: Re: [PATCH 1/3] mtd: rawnand: Add destructive operation
-Message-ID: <20231010095144.520c9b2c@xps-13>
-In-Reply-To: <trinity-003579bf-615b-47b8-b1a9-f0d37f650f45-1696905960546@3c-app-mailcom-lxa01>
-References: <trinity-003579bf-615b-47b8-b1a9-f0d37f650f45-1696905960546@3c-app-mailcom-lxa01>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Tue, 10 Oct 2023 03:53:51 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245BF92;
+        Tue, 10 Oct 2023 00:53:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9CBDC433C7;
+        Tue, 10 Oct 2023 07:53:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696924429;
+        bh=gh+wF2cOm71mHLeriwt1ClLG5cXqexAVx/dzA0lWn7Q=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=mMI+ffJ9AN/y2qJ9AO9MU2AgEBE2589Kk1bIOq7YWkAqx0RkIlzhYh+Ao4AX8SWbE
+         ZGZqrhh99+Fc+JLDnzskHqNAwMN/XXxPBZvpYNaysSBwHFteSyO4bBzXAVlDXtEhaI
+         AwMLnIym/vAicYnaFHcrBk/S15Ts20bfzNZ7Q4N+fpxyL2tCAvBhvTarqvAvquH1uQ
+         IlelyzJ8gkUCzxvPdsa56+zfyZWYS/6f6iDlsAkp69k4+iPB6l0BLP5G+JJ0f7qJLh
+         +gtPdZXxSiOURBYlwBG/AMGd9Yv3YoydGu7xKaELp2uDkCpSeIH50t6xxNsoEWzczC
+         h4QEDqjDnez+A==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Rodolfo Zitellini <rwz@xhero.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Netdev <netdev@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-wireless@vger.kernel.org,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-wpan@vger.kernel.org,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, Doug Brown <doug@schmorgal.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v2] appletalk: make localtalk and ppp support conditional
+Date:   Tue, 10 Oct 2023 09:53:37 +0200
+Message-Id: <20231010075337.3100563-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <DE61EEA5-D560-40B6-8F4D-22F299AC61ED@xhero.org>
+References: <DE61EEA5-D560-40B6-8F4D-22F299AC61ED@xhero.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+From: Arnd Bergmann <arnd@arndb.de>
 
-dregan@mail.com wrote on Tue, 10 Oct 2023 04:46:00 +0200:
+The last localtalk driver is gone now, and ppp support was never fully
+merged, but the code to support them for phase1 networking still calls
+the deprecated .ndo_do_ioctl() helper.
 
-For the next iteration, would you mind sending the series with
-git-send-email or at least handle the fact that patch 2 and 3 should be
-an answer of patch 1 so that the three mails are kept together?
+In order to better isolate the localtalk and ppp portions of appletalk,
+guard all of the corresponding code with CONFIG_DEV_APPLETALK checks,
+including a preprocessor conditional that guards the internal ioctl calls.
 
-> Erase and program operations need the write protect (wp) pin to be
-> de-asserted to take effect. Add the concept of destructive
-> operation and pass the information to exec_op() so controllers know
-> when they should de-assert this pin without having to decode
-> the command opcode. Based on changes proposed by Boris Brezillon.
->=20
-> https://github.com/bbrezillon/linux/commit/e612e1f2c69a33ac5f2c91d13669f0=
-f172d58717
->=20
-> Signed-off-by: David Regan <dregan@mail.com>
+This is currently all dead code and will now be left out of the
+module since this Kconfig symbol is always undefined, but there are
+plans to add a new driver for localtalk again in the future. When
+that happens, the logic can be cleaned up to work properly without
+the need for the ioctl.
 
-Given that there are almost no changes in this patch the author and
-first SoB should remain Boris and you should add your SoB after.
+Link: https://lore.kernel.org/lkml/790BA488-B6F6-41ED-96EF-2089EF1C043B@xhero.org/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+v2: don't actually remove the code, just make it conditional since we
+are likely to need it again.
 
->=20
-> ---
->  drivers/mtd/nand/raw/nand_base.c | 6 ++++--
->  include/linux/mtd/rawnand.h      | 9 +++++++++
->  2 files changed, 13 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand=
-_base.c
-> index d4b55155aeae..47cc2c35153b 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -1494,7 +1494,8 @@ static int nand_exec_prog_page_op(struct nand_chip =
-*chip, unsigned int page,
->  			    NAND_COMMON_TIMING_NS(conf, tWB_max)),
->  		NAND_OP_WAIT_RDY(NAND_COMMON_TIMING_MS(conf, tPROG_max), 0),
->  	};
-> -	struct nand_operation op =3D NAND_OPERATION(chip->cur_cs, instrs);
-> +	struct nand_operation op =3D NAND_DESTRUCTIVE_OPERATION(chip->cur_cs,
-> +							      instrs);
->  	int naddrs =3D nand_fill_column_cycles(chip, addrs, offset_in_page);
->=20
->  	if (naddrs < 0)
-> @@ -1917,7 +1918,8 @@ int nand_erase_op(struct nand_chip *chip, unsigned =
-int eraseblock)
->  			NAND_OP_WAIT_RDY(NAND_COMMON_TIMING_MS(conf, tBERS_max),
->  					 0),
->  		};
-> -		struct nand_operation op =3D NAND_OPERATION(chip->cur_cs, instrs);
-> +		struct nand_operation op =3D NAND_DESTRUCTIVE_OPERATION(chip->cur_cs,
-> +								      instrs);
->=20
->  		if (chip->options & NAND_ROW_ADDR_3)
->  			instrs[1].ctx.addr.naddrs++;
-> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> index 90a141ba2a5a..31aceda8616c 100644
-> --- a/include/linux/mtd/rawnand.h
-> +++ b/include/linux/mtd/rawnand.h
-> @@ -1008,6 +1008,7 @@ struct nand_op_parser {
->   */
->  struct nand_operation {
->  	unsigned int cs;
-> +	bool deassert_wp;
->  	const struct nand_op_instr *instrs;
->  	unsigned int ninstrs;
->  };
-> @@ -1019,6 +1020,14 @@ struct nand_operation {
->  		.ninstrs =3D ARRAY_SIZE(_instrs),			\
->  	}
->=20
-> +#define NAND_DESTRUCTIVE_OPERATION(_cs, _instrs)		\
-> +	{							\
-> +		.cs =3D _cs,					\
-> +		.deassert_wp =3D true,				\
-> +		.instrs =3D _instrs,				\
-> +		.ninstrs =3D ARRAY_SIZE(_instrs),			\
-> +	}
-> +
->  int nand_op_parser_exec_op(struct nand_chip *chip,
->  			   const struct nand_op_parser *parser,
->  			   const struct nand_operation *op, bool check_only);
-> --
-> 2.37.3
->=20
->=20
+ include/linux/atalk.h  |  1 -
+ net/appletalk/Makefile |  3 ++-
+ net/appletalk/aarp.c   | 24 +++++++++++++++---------
+ net/appletalk/ddp.c    | 24 +++++++++++++-----------
+ 4 files changed, 30 insertions(+), 22 deletions(-)
 
+diff --git a/include/linux/atalk.h b/include/linux/atalk.h
+index a55bfc6567d01..2896f2ac9568e 100644
+--- a/include/linux/atalk.h
++++ b/include/linux/atalk.h
+@@ -121,7 +121,6 @@ static inline struct atalk_iface *atalk_find_dev(struct net_device *dev)
+ #endif
+ 
+ extern struct atalk_addr *atalk_find_dev_addr(struct net_device *dev);
+-extern struct net_device *atrtr_get_dev(struct atalk_addr *sa);
+ extern int		 aarp_send_ddp(struct net_device *dev,
+ 				       struct sk_buff *skb,
+ 				       struct atalk_addr *sa, void *hwaddr);
+diff --git a/net/appletalk/Makefile b/net/appletalk/Makefile
+index 33164d972d379..410d52f9113e2 100644
+--- a/net/appletalk/Makefile
++++ b/net/appletalk/Makefile
+@@ -5,6 +5,7 @@
+ 
+ obj-$(CONFIG_ATALK) += appletalk.o
+ 
+-appletalk-y			:= aarp.o ddp.o dev.o
++appletalk-y			:= aarp.o ddp.o
+ appletalk-$(CONFIG_PROC_FS)	+= atalk_proc.o
+ appletalk-$(CONFIG_SYSCTL)	+= sysctl_net_atalk.o
++appletalk-$(CONFIG_DEV_APPLETALK) += dev.o
+diff --git a/net/appletalk/aarp.c b/net/appletalk/aarp.c
+index 9fa0b246902be..b15f67293ac4c 100644
+--- a/net/appletalk/aarp.c
++++ b/net/appletalk/aarp.c
+@@ -438,14 +438,17 @@ static struct atalk_addr *__aarp_proxy_find(struct net_device *dev,
+  */
+ static void aarp_send_probe_phase1(struct atalk_iface *iface)
+ {
++#if IS_ENABLED(CONFIG_DEV_APPLETALK)
+ 	struct ifreq atreq;
+ 	struct sockaddr_at *sa = (struct sockaddr_at *)&atreq.ifr_addr;
+ 	const struct net_device_ops *ops = iface->dev->netdev_ops;
+ 
+ 	sa->sat_addr.s_node = iface->address.s_node;
+ 	sa->sat_addr.s_net = ntohs(iface->address.s_net);
+-
+-	/* We pass the Net:Node to the drivers/cards by a Device ioctl. */
++	/*
++	 * We used to pass the address via device ioctl, this has to
++	 *  be rewritten if we bring back localtalk.
++	 */
+ 	if (!(ops->ndo_do_ioctl(iface->dev, &atreq, SIOCSIFADDR))) {
+ 		ops->ndo_do_ioctl(iface->dev, &atreq, SIOCGIFADDR);
+ 		if (iface->address.s_net != htons(sa->sat_addr.s_net) ||
+@@ -455,13 +458,15 @@ static void aarp_send_probe_phase1(struct atalk_iface *iface)
+ 		iface->address.s_net  = htons(sa->sat_addr.s_net);
+ 		iface->address.s_node = sa->sat_addr.s_node;
+ 	}
++#endif
+ }
+ 
+ 
+ void aarp_probe_network(struct atalk_iface *atif)
+ {
+-	if (atif->dev->type == ARPHRD_LOCALTLK ||
+-	    atif->dev->type == ARPHRD_PPP)
++	if (IS_ENABLED(CONFIG_DEV_APPLETALK) &&
++	    (atif->dev->type == ARPHRD_LOCALTLK ||
++	     atif->dev->type == ARPHRD_PPP))
+ 		aarp_send_probe_phase1(atif);
+ 	else {
+ 		unsigned int count;
+@@ -488,8 +493,9 @@ int aarp_proxy_probe_network(struct atalk_iface *atif, struct atalk_addr *sa)
+ 	 * we don't currently support LocalTalk or PPP for proxy AARP;
+ 	 * if someone wants to try and add it, have fun
+ 	 */
+-	if (atif->dev->type == ARPHRD_LOCALTLK ||
+-	    atif->dev->type == ARPHRD_PPP)
++	if (IS_ENABLED(CONFIG_DEV_APPLETALK) &&
++	    (atif->dev->type == ARPHRD_LOCALTLK ||
++	     atif->dev->type == ARPHRD_PPP))
+ 		goto out;
+ 
+ 	/*
+@@ -550,7 +556,8 @@ int aarp_send_ddp(struct net_device *dev, struct sk_buff *skb,
+ 	skb_reset_network_header(skb);
+ 
+ 	/* Check for LocalTalk first */
+-	if (dev->type == ARPHRD_LOCALTLK) {
++	if (IS_ENABLED(CONFIG_DEV_APPLETALK) &&
++	    dev->type == ARPHRD_LOCALTLK) {
+ 		struct atalk_addr *at = atalk_find_dev_addr(dev);
+ 		struct ddpehdr *ddp = (struct ddpehdr *)skb->data;
+ 		int ft = 2;
+@@ -588,7 +595,7 @@ int aarp_send_ddp(struct net_device *dev, struct sk_buff *skb,
+ 	}
+ 
+ 	/* On a PPP link we neither compress nor aarp.  */
+-	if (dev->type == ARPHRD_PPP) {
++	if (IS_ENABLED(CONFIG_DEV_APPLETALK) && dev->type == ARPHRD_PPP) {
+ 		skb->protocol = htons(ETH_P_PPPTALK);
+ 		skb->dev = dev;
+ 		goto sendit;
+@@ -674,7 +681,6 @@ int aarp_send_ddp(struct net_device *dev, struct sk_buff *skb,
+ drop:
+ 	return NET_XMIT_DROP;
+ }
+-EXPORT_SYMBOL(aarp_send_ddp);
+ 
+ /*
+  *	An entry in the aarp unresolved queue has become resolved. Send
+diff --git a/net/appletalk/ddp.c b/net/appletalk/ddp.c
+index 8978fb6212ffb..d4dc6a9fd3b6b 100644
+--- a/net/appletalk/ddp.c
++++ b/net/appletalk/ddp.c
+@@ -473,7 +473,7 @@ static struct atalk_route *atrtr_find(struct atalk_addr *target)
+  * Given an AppleTalk network, find the device to use. This can be
+  * a simple lookup.
+  */
+-struct net_device *atrtr_get_dev(struct atalk_addr *sa)
++static struct net_device *atrtr_get_dev(struct atalk_addr *sa)
+ {
+ 	struct atalk_route *atr = atrtr_find(sa);
+ 	return atr ? atr->dev : NULL;
+@@ -1947,10 +1947,6 @@ static struct packet_type ppptalk_packet_type __read_mostly = {
+ 
+ static unsigned char ddp_snap_id[] = { 0x08, 0x00, 0x07, 0x80, 0x9B };
+ 
+-/* Export symbols for use by drivers when AppleTalk is a module */
+-EXPORT_SYMBOL(atrtr_get_dev);
+-EXPORT_SYMBOL(atalk_find_dev_addr);
+-
+ /* Called by proto.c on kernel start up */
+ static int __init atalk_init(void)
+ {
+@@ -1971,8 +1967,10 @@ static int __init atalk_init(void)
+ 		goto out_sock;
+ 	}
+ 
+-	dev_add_pack(&ltalk_packet_type);
+-	dev_add_pack(&ppptalk_packet_type);
++	if (IS_ENABLED(CONFIG_DEV_APPLETALK)) {
++		dev_add_pack(&ltalk_packet_type);
++		dev_add_pack(&ppptalk_packet_type);
++	}
+ 
+ 	rc = register_netdevice_notifier(&ddp_notifier);
+ 	if (rc)
+@@ -1998,8 +1996,10 @@ static int __init atalk_init(void)
+ out_dev:
+ 	unregister_netdevice_notifier(&ddp_notifier);
+ out_snap:
+-	dev_remove_pack(&ppptalk_packet_type);
+-	dev_remove_pack(&ltalk_packet_type);
++	if (IS_ENABLED(CONFIG_DEV_APPLETALK)) {
++		dev_remove_pack(&ppptalk_packet_type);
++		dev_remove_pack(&ltalk_packet_type);
++	}
+ 	unregister_snap_client(ddp_dl);
+ out_sock:
+ 	sock_unregister(PF_APPLETALK);
+@@ -2026,8 +2026,10 @@ static void __exit atalk_exit(void)
+ 	atalk_proc_exit();
+ 	aarp_cleanup_module();	/* General aarp clean-up. */
+ 	unregister_netdevice_notifier(&ddp_notifier);
+-	dev_remove_pack(&ltalk_packet_type);
+-	dev_remove_pack(&ppptalk_packet_type);
++	if (IS_ENABLED(CONFIG_DEV_APPLETALK)) {
++		dev_remove_pack(&ltalk_packet_type);
++		dev_remove_pack(&ppptalk_packet_type);
++	}
+ 	unregister_snap_client(ddp_dl);
+ 	sock_unregister(PF_APPLETALK);
+ 	proto_unregister(&ddp_proto);
+-- 
+2.39.2
 
-Thanks,
-Miqu=C3=A8l
