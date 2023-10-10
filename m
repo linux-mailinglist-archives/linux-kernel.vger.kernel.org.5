@@ -2,98 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEB27BF634
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E087BF63B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230328AbjJJIkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 04:40:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49772 "EHLO
+        id S229731AbjJJIlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 04:41:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232004AbjJJIkL (ORCPT
+        with ESMTP id S229892AbjJJIkw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 04:40:11 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC8311C
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 01:40:08 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-32157c8e4c7so5352671f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 01:40:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696927207; x=1697532007; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5V8neVpY2GyLdSJsnZ8MOddhcYp6sdc0BYbuhT9I1jQ=;
-        b=Rla+HRJR4uNt057FNJ4pzabPt5gobkC9EYVQU7cow/olgk6KpSujFIn/h9jgR3k1TG
-         Vh6gEIRmQeKbqsp1uN9nhzxUC/aAXdEQMSAkETpnGjSTZcgaaniSS5XjENOYkzi9fvk0
-         OhmbIjSJIbWT466LCp1CUwErYTyFmvZ4hxBYjjCljfryUGbBKDxk6g0eb4tI5FW6QoLH
-         5dVt9UY8oHCf5vrT45MtIB7BKJwlEzeZ6j1u3x4ZUdlYBa8yJ6NFaLbslABOSbtU1RKD
-         RHxeuz+scIsFjD2aqKuIh0YjQpw2GtNlL9gwwTuh5qUI+hrzEpiovJbwW+xyiIK4L5Lz
-         rosA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696927207; x=1697532007;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5V8neVpY2GyLdSJsnZ8MOddhcYp6sdc0BYbuhT9I1jQ=;
-        b=SelFkv6xXLwRJxYMRev/i7zfvvJEape0NZR94e6Yhf/et9DEC3wDu7suiCmsUZdStl
-         ddIFH1S2RDEqwp0qi5q9vs2tb95OszFU1uLJckNt7+9lfn7OIUdmpOt9cwhr28NFGcDg
-         jyTeQq61ZeBHBEsXu3H2HpoV/zz07PeyjeJT9VjYWAYL9cRhIh4ZbJKBldkYontfN5GH
-         dFnoAgv9U/tuPksXigXsIgAN1QMT63o5x04cbH6GfuJ6YEMmE/hZUfNGJhfnH1OE0lhI
-         EKLUZFRCn6srvKg7jRXnvZhUAi3jizcY6VU/01Jb4UCMUNu/ipQb/Cz9IPwZfJ99oxOR
-         mv9g==
-X-Gm-Message-State: AOJu0YxjDp8RxDhXjSpc88apu1Qk7MpQldJ9A2TECJORz97O/mFEgYzI
-        ZYQNbzJTOn65byEYnp/KAHQgWg==
-X-Google-Smtp-Source: AGHT+IH1kmpxEfIe7fVGzRzvDNu56x2D7KkVclXW4oI19nKrGRc3frP0Z8AyVAk1RdaBj0q63jEwVQ==
-X-Received: by 2002:adf:f48e:0:b0:324:8239:2873 with SMTP id l14-20020adff48e000000b0032482392873mr16993689wro.37.1696927206711;
-        Tue, 10 Oct 2023 01:40:06 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id h9-20020a5d5489000000b003179d5aee67sm12052874wrv.94.2023.10.10.01.40.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 01:40:06 -0700 (PDT)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-To:     quic_jesszhan@quicinc.com, sam@ravnborg.org,
-        yangcong5@huaqin.corp-partner.google.com,
-        Ruihai Zhou <zhouruihai@huaqin.corp-partner.google.com>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-In-Reply-To: <20231007064949.22668-1-zhouruihai@huaqin.corp-partner.google.com>
-References: <20231007064949.22668-1-zhouruihai@huaqin.corp-partner.google.com>
-Subject: Re: [PATCH v2] drm/panel: boe-tv101wum-nl6: Completely pull GPW to
- VGL before TP term
-Message-Id: <169692720597.2649526.6802678685318841336.b4-ty@linaro.org>
-Date:   Tue, 10 Oct 2023 10:40:05 +0200
+        Tue, 10 Oct 2023 04:40:52 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B03A4;
+        Tue, 10 Oct 2023 01:40:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696927250; x=1728463250;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Q/HQZfWfUh0bAp2HPigWMWS7Bdx/WkAzNBzfM90GuJU=;
+  b=aGywAkpnWqe7PtgnuIWmGgcKcmCupCpoWwg+SpWRIVIp6CH9+SbgUZej
+   R1Pc4iBygfltGOZGfIad5N2q/7K2NWSmFeBYA0v7v2yq38n8iGAFCrc7Q
+   Tpd600NMIVEUQgetQDtt/dqBzozpFHB47fdB2gV8Ycc+NLDdl63Tv7DMy
+   dkKEGnhNv7gPYw+c3oGQAl5Ixe4hvyfAQP7xQIiCLq0ParvdcNkSFeKzH
+   vK04NDivZbBjKzYqvke9P5HiVBCofla4utM/tZezcBbKIRSPoAYeGo7C4
+   udbDkmxyWzkCfo1AK2ddeiRjJ0+FCOBRXWKK4+/9YDKbv9G1dh4N9AKQW
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="383220527"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="383220527"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 01:40:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="927059933"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="927059933"
+Received: from albertmo-mobl2.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.208.38])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 01:40:45 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id CC6FC10A1A3; Tue, 10 Oct 2023 11:40:41 +0300 (+03)
+Date:   Tue, 10 Oct 2023 11:40:41 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        Fei Yang <fei.yang@intel.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] x86/alternatives: Disable KASAN on text_poke_early() in
+ apply_alternatives()
+Message-ID: <20231010084041.ut5sshyrofh27yyx@box.shutemov.name>
+References: <20231010053716.2481-1-kirill.shutemov@linux.intel.com>
+ <20231010081938.GBZSUJGlSvEkFIDnES@fat_crate.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231010081938.GBZSUJGlSvEkFIDnES@fat_crate.local>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Sat, 07 Oct 2023 14:49:49 +0800, Ruihai Zhou wrote:
-> The sta_himax83102 panel sometimes shows abnormally flickering
-> horizontal lines. The front gate output will precharge the X point of
-> the next pole circuit before TP(TouchPanel Enable) term starts, and wait
-> until the end of the TP term to resume the CLK. For this reason, the X
-> point must be maintained during the TP term. In abnormal case, we
-> measured a slight leakage at point X. This because during the TP term,
-> the GPW does not fully pull the VGL low, causing the TFT to not be
-> closed tightly.
+On Tue, Oct 10, 2023 at 10:19:38AM +0200, Borislav Petkov wrote:
+> On Tue, Oct 10, 2023 at 08:37:16AM +0300, Kirill A. Shutemov wrote:
+> > On machines with 5-level paging, cpu_feature_enabled(X86_FEATURE_LA57)
+> > got patched. It includes KASAN code, where KASAN_SHADOW_START depends on
+> > __VIRTUAL_MASK_SHIFT, which is defined with the cpu_feature_enabled().
 > 
-> [...]
+> So use boot_cpu_has(X86_FEATURE_LA57).
 
-Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-fixes)
+__VIRTUAL_MASK_SHIFT used in many places. I don't think it is good idea to
+give up on patching completely.
 
-[1/1] drm/panel: boe-tv101wum-nl6: Completely pull GPW to VGL before TP term
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=258dd5e6e65995ee85a941eed9a06708a36b1bfe
+> > It seems that KASAN gets confused when apply_alternatives() patches the
+> 
+> It seems?
+
+Admittedly, I don't understand KASAN well enough. I confirmed my idea
+indirectly, by patching KASASN_SHADOW_START, as I mentioned.
+
+> > KASAN_SHADOW_START users. A test patch that makes KASAN_SHADOW_START
+> > static, by replacing __VIRTUAL_MASK_SHIFT with 56, fixes the issue.
+> > 
+> > During text_poke_early() in apply_alternatives(), KASAN should be
+> > disabled. KASAN is already disabled in non-_early() text_poke().
+> > 
+> > It is unclear why the issue was not reported earlier. Bisecting does not
+> > help. Older kernels trigger the issue less frequently, but it still
+> > occurs. In the absence of any other clear offenders, the initial dynamic
+> > 5-level paging support is to blame.
+> 
+> This whole thing sounds like it is still not really clear what is
+> actually happening...
+
+Maybe KASAN folks can help to understand the situation.
 
 -- 
-Neil
-
+  Kiryl Shutsemau / Kirill A. Shutemov
