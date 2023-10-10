@@ -2,88 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6067C0072
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D91C7C0070
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:35:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233411AbjJJPfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 11:35:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45050 "EHLO
+        id S233379AbjJJPfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 11:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230448AbjJJPfW (ORCPT
+        with ESMTP id S230448AbjJJPfS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 11:35:22 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A3DAC;
-        Tue, 10 Oct 2023 08:35:17 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-6c64c2c0f97so3328897a34.3;
-        Tue, 10 Oct 2023 08:35:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696952116; x=1697556916; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ndVd81mClEz/kosBkdySEFgzYfmv4B+oObJpOfkcufc=;
-        b=IeT/u7G4psMEi4MzEe/Ce+isjkPADg1alwkNDnLxPL0XmooXdHvhlLTZID595k8MsK
-         m+d8CjqC7kR2aXfiJE4GKFlip7kHg7YGr2b996jrG3+f0OBgS2v2HplWbPKcCGEcMoMo
-         6g+O5ab8iGS5lJH1JWZndyRp2B7huYs57Lpcosoe7l8jDeyJRir9twCSG813JDmoHVLK
-         /E26/2fa1bJyND9qLIEs9PP4nwgeGuzlTar5BcpFd1pitr6FlYhqNWUJNqtOH/jwYsz7
-         evnObzHdEJRstaMqAuKtBqqxHShF8sxVRV+V3zY6DboXkgiJOvjwZRf8V/+AN8aBIBXm
-         JacQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696952116; x=1697556916;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ndVd81mClEz/kosBkdySEFgzYfmv4B+oObJpOfkcufc=;
-        b=GI4CpdHvr4DuxDdaPX9Ygc35uf7jXAzqrLzn0Nt8+qWynB0yy9xfbkl9KtsiBYXfj8
-         UvmuK8WE2rNN4HVWNA/IYmbpzGhGDfY/VSAqBSG6pkRp/oqhyLlc6oZLe2aCeXEjRIA7
-         vgFVaCXOyZUB6qaowvcpeuRz6UbDBxcmGSB+gWl0FrsDhsFktAZ8aqY10+51aeo00vRf
-         esG5Gp7iozXKwbHdgMwq1wusUFJ4p0ZbmnwK6AIzYCH0E8B8H7zkTowCtcB5ZbB2jpi7
-         Bojq9/AzHg6VnN+Ygwd9VZwabSG0r5PD5bwsG1xaY9CHH+MPgZJgKbt3oXHiYkfv/TaN
-         h9KA==
-X-Gm-Message-State: AOJu0YwKwrkiR97EMBTg8ytRKBU5Ubj67U74Ck7OSywNgZlPaPY0Gl5j
-        MCf3yVkAdUnu96WwLRdzOQs3PBRucAMdIlW5wOw=
-X-Google-Smtp-Source: AGHT+IG+N+IBLEN5nf+W/LpicPkI30Fm/1TM+Prf6jRCdidly8Zin8PnZ6g64ry3oTTHTVSlAOtuL7FxHV1uFzE8BLg=
-X-Received: by 2002:a05:6870:c6a4:b0:1d5:a4bd:6028 with SMTP id
- cv36-20020a056870c6a400b001d5a4bd6028mr18931770oab.8.1696952116450; Tue, 10
- Oct 2023 08:35:16 -0700 (PDT)
+        Tue, 10 Oct 2023 11:35:18 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE0099;
+        Tue, 10 Oct 2023 08:35:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=YSj7Og7GMhEdxDFXztAZwfRfzfreB00qr43Omn8psvw=; b=LdI9Vg1qcYWMu7L/YG0+MEsMr7
+        CHqIGpLjgQSBovApfjNZYfKQQO875Rzb6vTsq2rrObdbwI1+3vXzUn0rmOuWlcWHebidwk/mU0Fw8
+        daY1G/8CFraYZFjafpgJy8imIJa8z/fFLBFHjL9MFbKRI01rvr1VX9jPn3AkMD0v/B3Sk1vOWicT0
+        6SFQIz5+sRjk17JPCVvoJUpAqfq2ozJHkRAxeUVcuuE0Pg2bfZlEzcX4G9xjP0Zb/Vmm6u9oHrCSj
+        h8ctudMOmYgYDNeQ2xreHm6rGpLMz4RtvmGN8Ej24pCiieUwc1pDjtKAxZc++Dcoft3vmdleaYVPB
+        FC5qNFlg==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qqElG-0006TP-V3; Tue, 10 Oct 2023 17:35:06 +0200
+Received: from [178.197.249.27] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qqElG-000PTn-ET; Tue, 10 Oct 2023 17:35:06 +0200
+Subject: Re: [PATCH bpf-next] Detect jumping to reserved code during
+ check_cfg()
+To:     Hao Sun <sunhao.th@gmail.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231009-jmp-into-reserved-fields-v1-1-d8006e2ac1f6@gmail.com>
+ <6524f6f77b896_66abc2084d@john.notmuch>
+ <92f824ec-9538-501c-e63e-8483ffe14bad@iogearbox.net>
+ <CACkBjsbM8=NLwwEUea21vqCrn-w9cn21gL3BNpU4AupYnuCvJg@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <0c892e68-3092-0b21-3331-a5e3cad43800@iogearbox.net>
+Date:   Tue, 10 Oct 2023 17:35:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20231009083856.222030-1-u.kleine-koenig@pengutronix.de>
- <20231009083856.222030-7-u.kleine-koenig@pengutronix.de> <20231009111048.GF3208943@black.fi.intel.com>
-In-Reply-To: <20231009111048.GF3208943@black.fi.intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 10 Oct 2023 18:34:40 +0300
-Message-ID: <CAHp75VdWnN1Uv0s=gFGp62DRs6SXk17FfEC6NYAEqQtgW_kGpg@mail.gmail.com>
-Subject: Re: [PATCH 06/20] pinctrl: intel: lynxpoint: Convert to platform
- remove callback returning void
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CACkBjsbM8=NLwwEUea21vqCrn-w9cn21gL3BNpU4AupYnuCvJg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27057/Tue Oct 10 09:39:11 2023)
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 9, 2023 at 2:10=E2=80=AFPM Mika Westerberg
-<mika.westerberg@linux.intel.com> wrote:
-> On Mon, Oct 09, 2023 at 10:38:42AM +0200, Uwe Kleine-K=C3=B6nig wrote:
+On 10/10/23 11:17 AM, Hao Sun wrote:
+[...]
+> I regard this as a fix, because the verifier log is not correct, since
+> the program does
+> not contain any invalid ld_imm64 instructions in this case.
+> 
+> I haven't met other cases not captured via check_ld_imm(), but somehow, I think
+> we probably want to convert the check there as an internal bug,
+> because we already
+> have bpf_opcode_in_insntable() check in resolve_pseudo_ldimm64(). Once we meet
+> invalid insn code here, then somewhere else in the verifier is
+> probably wrong. But
+> I'm not sure, maybe something like this:
 
-...
+Makes sense, you could probably add this into your series as a separate commit.
 
-> Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index eed7350e15f4..bed97de568a5 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -14532,8 +14532,8 @@ static int check_ld_imm(struct
+> bpf_verifier_env *env, struct bpf_insn *insn)
+>          int err;
+> 
+>          if (BPF_SIZE(insn->code) != BPF_DW) {
+> -               verbose(env, "invalid BPF_LD_IMM insn\n");
+> -               return -EINVAL;
+> +               verbose(env, "verifier internal bug, invalid BPF_LD_IMM\n");
 
-Actually this one got skipped as there is no more ->remove() in the driver!
+If so please stick to the common style as we have in other locations:
 
---=20
-With Best Regards,
-Andy Shevchenko
+verbose(env, "verifier internal error: <xyz>\n");
+
+> +               return -EFAULT;
+>          }
+>          if (insn->off != 0) {
+>                  verbose(env, "BPF_LD_IMM64 uses reserved fields\n");
+> 
