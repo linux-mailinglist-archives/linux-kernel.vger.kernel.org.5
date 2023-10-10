@@ -2,170 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CBB7C00F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC95D7C00E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233694AbjJJP7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 11:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59256 "EHLO
+        id S233773AbjJJP7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 11:59:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233678AbjJJP7l (ORCPT
+        with ESMTP id S233597AbjJJP7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 11:59:41 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 604FDCC
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:59:38 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-690fe10b6a4so4791332b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:59:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696953578; x=1697558378; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Mr4EIMH8RidVLiQCjZesTsiyIho+EqgKqP+n2ghexZ0=;
-        b=V/tno/VmWysmqS8GOvQPddbaRMCx+TH7RqH5h3STf1QZxqf7isva4RjLNMYD2J07yI
-         sLGXZQ7KpjRPEfVhTyV2uYeQs2H1l5Gv25OJG1LedvHNasURibT+DuICyaCBqDrBQ2B9
-         XXngnFQL76rNf7VBqF3BFm50V+ZkDN85yrvbkeJxJcWFPrjo2cK7EeDy6IcTl3Up+8EQ
-         bUpDYxEXZhrqpv7SX7fCKQ7CZihQrFN0D491wHwK1fwGSy0GHICrQe85jbfSq2tpDgr1
-         HpCPODOQypOKnnj2g9/ltLiToBqLCDjPCn1oSRtA5aU0T1b4YtPMlziGqJ6JZ4jmICY6
-         tq3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696953578; x=1697558378;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Mr4EIMH8RidVLiQCjZesTsiyIho+EqgKqP+n2ghexZ0=;
-        b=P+L2pH7Fk5DDK0quxMlv7IsSuNtEgGSoCrpAbjsWDT1N0ijgEJY39+0OvfqkWV1Qwi
-         LWepbYmcvepagTNvvUvZYBkTd4/t/o8907P16oZB5Ntr+9itLxrmyjgiz7WhRtqjvSj5
-         UiSattuGHey/nHpXRZLDoLb/qW17GVYaiLYWqs8EeegE8gkdultQCQuFpBBwmnjlqY4Z
-         n0275ijlOFPUYGTYIgOSL/ugNBsp9QmBKoaX0SJMzqEChMz+s9wqIOY7L30ML81eM1QO
-         TkePIdm3Y2sfwub2HYJWs2Nkqa9h0o1dx24Qw6Bnbj0zFfKOlol9Tnx2EDXV7/F8BXIT
-         AGIQ==
-X-Gm-Message-State: AOJu0Yy3xm7A8P41z9Qj982rVtRByXlyz0X6jIygKvjGXEaV9IPjLp/8
-        Pxo3fbkUqPI91lV213PgIsmocEamTohAh2gNRw==
-X-Google-Smtp-Source: AGHT+IGZsh/8Q0P3Q/53kwfHSFlOV+p4RTFFqq7TsSk24jv7/qLF1y3Fthhkiyz3Aep4/SuzlKbqbQ==
-X-Received: by 2002:a05:6a20:258f:b0:14d:d9f8:83f8 with SMTP id k15-20020a056a20258f00b0014dd9f883f8mr22767237pzd.1.1696953577720;
-        Tue, 10 Oct 2023 08:59:37 -0700 (PDT)
-Received: from localhost.localdomain ([117.217.182.234])
-        by smtp.gmail.com with ESMTPSA id c24-20020a637258000000b0055c178a8df1sm6537023pgn.94.2023.10.10.08.59.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 08:59:37 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     lpieralisi@kernel.org, kw@linux.com, bhelgaas@google.com
-Cc:     robh@kernel.org, gustavo.pimentel@synopsys.com,
-        jingoohan1@gmail.com, andersson@kernel.org,
-        konrad.dybcio@linaro.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v2 2/2] PCI: qcom: Enable ASPM for platforms supporting 1.9.0 ops
-Date:   Tue, 10 Oct 2023 21:29:14 +0530
-Message-Id: <20231010155914.9516-3-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231010155914.9516-1-manivannan.sadhasivam@linaro.org>
-References: <20231010155914.9516-1-manivannan.sadhasivam@linaro.org>
+        Tue, 10 Oct 2023 11:59:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BCB197;
+        Tue, 10 Oct 2023 08:59:06 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A371C433C7;
+        Tue, 10 Oct 2023 15:59:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696953545;
+        bh=OPlhF+ij5+nDi2Y2jm7qw/gg2jrqcnUYBRVJO1XRlb0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Bqj9z/XeQGfxu4j6A0XiLOGIh8HkXHcboAxtwTHV6c4oF/W2HIYcaYxRRG7CB1BIz
+         mYR9CQKK8jHVaBmq7WbptMzxeSTI+kBaEP76geWkg5XQbUaLvDDMKALHw6DYZGs1I7
+         nHpH1fq5FddAHADlDIwLYxQhFxrau3Cq0XJ/gocKSWMtvlRYXrAkvtSyuZ9HvnRtx2
+         LnBfO9MOfNDtxc9oUFzSJZKoXPx6NccxmusjZF6a6B1a8kOePTUBCM+wxcjXP2xuVF
+         y0u0JoEdzkUVzpCK2O+XpOsDO91i2/axucjFyBi9OdyWDJSTSVzJpx0eMjzBgN5Fel
+         nU0cV7DUQLLmg==
+Date:   Tue, 10 Oct 2023 16:59:17 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     David Lechner <dlechner@baylibre.com>
+Cc:     linux-iio@vger.kernel.org, linux-staging@lists.linux.dev,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
+        Axel Haslam <ahaslam@baylibre.com>,
+        Philip Molloy <pmolloy@baylibre.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 12/17] iio: event: add optional event label support
+Message-ID: <20231010165917.4c1cb0a9@jic23-huawei>
+In-Reply-To: <20231005-ad2s1210-mainline-v4-12-ec00746840fc@baylibre.com>
+References: <20231005-ad2s1210-mainline-v4-0-ec00746840fc@baylibre.com>
+        <20231005-ad2s1210-mainline-v4-12-ec00746840fc@baylibre.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ASPM is supported by Qcom host controllers/bridges on most of the recent
-platforms and so the devices tested so far. But for enabling ASPM by
-default (without Kconfig/cmdline/sysfs), BIOS has to enable ASPM on both
-host bridge and downstream devices during boot. Unfortunately, none of the
-BIOS available on Qcom platforms enables ASPM. Due to this, the platforms
-making use of Qcom SoCs draw high power during runtime.
+On Thu,  5 Oct 2023 19:50:29 -0500
+David Lechner <dlechner@baylibre.com> wrote:
 
-To fix this power issue, users/distros have to enable ASPM using configs
-such as (Kconfig/cmdline/sysfs) or the BIOS has to start enabling ASPM.
-The latter may happen in the future, but that won't address the issue on
-current platforms. Also, asking users/distros to enable a feature to get
-the power management right would provide an unpleasant out-of-the-box
-experience.
+> This adds a new optional field to struct iio_info to allow drivers to
+> specify a label for the event. This is useful for cases where there are
+> many events or the event attribute name is not descriptive enough or
+> where an event doesn't have any other attributes.
+> 
+> The implementation is based on the existing label support for channels.
+> So either all events of a device have a label attribute or none do.
+> 
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
 
-So the apt solution is to enable ASPM in the controller driver itself. And
-this is being accomplished by calling pci_enable_link_state() in the newly
-introduced host_post_init() callback for all the devices connected to the
-bus. This function enables all supported link low power states for both
-host bridge and the downstream devices.
+Was going to moan about lack of docs, but I see they are in later patches.
 
-Due to limited testing, ASPM is only enabled for platforms making use of
-ops_1_9_0 callbacks.
+Ok. General feature is fine. Applied.
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/pci/controller/dwc/pcie-qcom.c | 28 ++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+Jonathan
 
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index 367acb419a2b..c324c3daaa5a 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -222,6 +222,7 @@ struct qcom_pcie_ops {
- 	int (*get_resources)(struct qcom_pcie *pcie);
- 	int (*init)(struct qcom_pcie *pcie);
- 	int (*post_init)(struct qcom_pcie *pcie);
-+	void (*host_post_init)(struct qcom_pcie *pcie);
- 	void (*deinit)(struct qcom_pcie *pcie);
- 	void (*ltssm_enable)(struct qcom_pcie *pcie);
- 	int (*config_sid)(struct qcom_pcie *pcie);
-@@ -967,6 +968,22 @@ static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
- 	return 0;
- }
- 
-+static int qcom_pcie_enable_aspm(struct pci_dev *pdev, void *userdata)
-+{
-+	/* Downstream devices need to be in D0 state before enabling PCI PM substates */
-+	pci_set_power_state(pdev, PCI_D0);
-+	pci_enable_link_state(pdev, PCIE_LINK_STATE_ALL);
-+
-+	return 0;
-+}
-+
-+static void qcom_pcie_host_post_init_2_7_0(struct qcom_pcie *pcie)
-+{
-+	struct dw_pcie_rp *pp = &pcie->pci->pp;
-+
-+	pci_walk_bus(pp->bridge->bus, qcom_pcie_enable_aspm, NULL);
-+}
-+
- static void qcom_pcie_deinit_2_7_0(struct qcom_pcie *pcie)
- {
- 	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
-@@ -1219,9 +1236,19 @@ static void qcom_pcie_host_deinit(struct dw_pcie_rp *pp)
- 	pcie->cfg->ops->deinit(pcie);
- }
- 
-+static void qcom_pcie_host_post_init(struct dw_pcie_rp *pp)
-+{
-+	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-+	struct qcom_pcie *pcie = to_qcom_pcie(pci);
-+
-+	if (pcie->cfg->ops->host_post_init)
-+		pcie->cfg->ops->host_post_init(pcie);
-+}
-+
- static const struct dw_pcie_host_ops qcom_pcie_dw_ops = {
- 	.host_init	= qcom_pcie_host_init,
- 	.host_deinit	= qcom_pcie_host_deinit,
-+	.host_post_init	= qcom_pcie_host_post_init,
- };
- 
- /* Qcom IP rev.: 2.1.0	Synopsys IP rev.: 4.01a */
-@@ -1283,6 +1310,7 @@ static const struct qcom_pcie_ops ops_1_9_0 = {
- 	.get_resources = qcom_pcie_get_resources_2_7_0,
- 	.init = qcom_pcie_init_2_7_0,
- 	.post_init = qcom_pcie_post_init_2_7_0,
-+	.host_post_init = qcom_pcie_host_post_init_2_7_0,
- 	.deinit = qcom_pcie_deinit_2_7_0,
- 	.ltssm_enable = qcom_pcie_2_3_2_ltssm_enable,
- 	.config_sid = qcom_pcie_config_sid_1_9_0,
--- 
-2.25.1
+> ---
+> 
+> v4 changes: New patch in v4.
+> 
+>  drivers/iio/industrialio-event.c | 55 ++++++++++++++++++++++++++++++++++++++++
+>  include/linux/iio/iio.h          |  8 ++++++
+>  2 files changed, 63 insertions(+)
+> 
+> diff --git a/drivers/iio/industrialio-event.c b/drivers/iio/industrialio-event.c
+> index 19f7a91157ee..910c1f14abd5 100644
+> --- a/drivers/iio/industrialio-event.c
+> +++ b/drivers/iio/industrialio-event.c
+> @@ -355,6 +355,21 @@ static ssize_t iio_ev_value_store(struct device *dev,
+>  	return len;
+>  }
+>  
+> +static ssize_t iio_ev_label_show(struct device *dev,
+> +				 struct device_attribute *attr,
+> +				 char *buf)
+> +{
+> +	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+> +	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
+> +
+> +	if (indio_dev->info->read_event_label)
+> +		return indio_dev->info->read_event_label(indio_dev,
+> +				 this_attr->c, iio_ev_attr_type(this_attr),
+> +				 iio_ev_attr_dir(this_attr), buf);
+> +
+> +	return -EINVAL;
+> +}
+> +
+>  static int iio_device_add_event(struct iio_dev *indio_dev,
+>  	const struct iio_chan_spec *chan, unsigned int spec_index,
+>  	enum iio_event_type type, enum iio_event_direction dir,
+> @@ -411,6 +426,41 @@ static int iio_device_add_event(struct iio_dev *indio_dev,
+>  	return attrcount;
+>  }
+>  
+> +static int iio_device_add_event_label(struct iio_dev *indio_dev,
+> +				      const struct iio_chan_spec *chan,
+> +				      unsigned int spec_index,
+> +				      enum iio_event_type type,
+> +				      enum iio_event_direction dir)
+> +{
+> +	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
+> +	char *postfix;
+> +	int ret;
+> +
+> +	if (!indio_dev->info->read_event_label)
+> +		return 0;
+> +
+> +	if (dir != IIO_EV_DIR_NONE)
+> +		postfix = kasprintf(GFP_KERNEL, "%s_%s_label",
+> +				iio_ev_type_text[type],
+> +				iio_ev_dir_text[dir]);
+> +	else
+> +		postfix = kasprintf(GFP_KERNEL, "%s_label",
+> +				iio_ev_type_text[type]);
+> +	if (postfix == NULL)
+> +		return -ENOMEM;
+> +
+> +	ret = __iio_add_chan_devattr(postfix, chan, &iio_ev_label_show, NULL,
+> +				spec_index, IIO_SEPARATE, &indio_dev->dev, NULL,
+> +				&iio_dev_opaque->event_interface->dev_attr_list);
+> +
+> +	kfree(postfix);
+> +
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return 1;
+> +}
+> +
+>  static int iio_device_add_event_sysfs(struct iio_dev *indio_dev,
+>  	struct iio_chan_spec const *chan)
+>  {
+> @@ -448,6 +498,11 @@ static int iio_device_add_event_sysfs(struct iio_dev *indio_dev,
+>  		if (ret < 0)
+>  			return ret;
+>  		attrcount += ret;
+> +
+> +		ret = iio_device_add_event_label(indio_dev, chan, i, type, dir);
+> +		if (ret < 0)
+> +			return ret;
+> +		attrcount += ret;
+>  	}
+>  	ret = attrcount;
+>  	return ret;
+> diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
+> index 7bfa1b9bc8a2..d0ce3b71106a 100644
+> --- a/include/linux/iio/iio.h
+> +++ b/include/linux/iio/iio.h
+> @@ -427,6 +427,8 @@ struct iio_trigger; /* forward declaration */
+>   * @write_event_config:	set if the event is enabled.
+>   * @read_event_value:	read a configuration value associated with the event.
+>   * @write_event_value:	write a configuration value for the event.
+> + * @read_event_label:	function to request label name for a specified label,
+> + *			for better event identification.
+>   * @validate_trigger:	function to validate the trigger when the
+>   *			current trigger gets changed.
+>   * @update_scan_mode:	function to configure device and scan buffer when
+> @@ -511,6 +513,12 @@ struct iio_info {
+>  				 enum iio_event_direction dir,
+>  				 enum iio_event_info info, int val, int val2);
+>  
+> +	int (*read_event_label)(struct iio_dev *indio_dev,
+> +				struct iio_chan_spec const *chan,
+> +				enum iio_event_type type,
+> +				enum iio_event_direction dir,
+> +				char *label);
+> +
+>  	int (*validate_trigger)(struct iio_dev *indio_dev,
+>  				struct iio_trigger *trig);
+>  	int (*update_scan_mode)(struct iio_dev *indio_dev,
+> 
 
