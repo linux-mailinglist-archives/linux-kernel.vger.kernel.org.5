@@ -2,194 +2,364 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B60D7C4255
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 23:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E2D7C4260
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 23:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234609AbjJJVWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 17:22:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42876 "EHLO
+        id S234666AbjJJVXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 17:23:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbjJJVWU (ORCPT
+        with ESMTP id S1344040AbjJJVXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 17:22:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C600B9;
-        Tue, 10 Oct 2023 14:22:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696972938; x=1728508938;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=ku/7RprgdpatBpBmqGTSqE6iGqP+1z5Hd/XUqTl8geM=;
-  b=a0uZfKwPMfEc39X+2Y3e5BFSg//qD8BpxIy0ZjsgAotdY9V/S9HzgcFf
-   VKO+gSaxEIR4RnuVeVoLE5qXjfTvN8zwdK4e3gxtggek6ErthqwYlDS8J
-   +gD0QRXULFXzTU6dDBS+jCnT7fgYIa9BYHsZBQ9kQVOdZ/P+dG6fUIBmi
-   wMCnqBfBg5dqz8TXEZPTwcwgRmx2Ifm2wc6li70AA6M/g/z3SX57yrXPm
-   EH5XizD5AtuoMitVr5MUq8aq8Q6flF0auGleX6CkvAjrQSF7OxQrB7BQl
-   5mdewGZdWYou37uF/sO7q6K3wMTBExfPXzbfcxN3dLDmd7lpnCgeWP9v5
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="374851999"
-X-IronPort-AV: E=Sophos;i="6.03,213,1694761200"; 
-   d="scan'208";a="374851999"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 14:22:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="753551997"
-X-IronPort-AV: E=Sophos;i="6.03,213,1694761200"; 
-   d="scan'208";a="753551997"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 10 Oct 2023 14:22:17 -0700
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Tue, 10 Oct 2023 14:22:16 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Tue, 10 Oct 2023 14:22:16 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Tue, 10 Oct 2023 14:22:16 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lbTsCW+IqslghrgYL4bKXPCm0x0RpcccFClsHmOx9No3Ni6ATuG3FmwrycCtl71slEWzWDbLUUhFPiLbZYcsnt7qpPQ3IJQjAHcT4BiGNVPMe8Y4tHnyn6wes1n++Hw6PQMdiOn/NGrzMzNEMj/iDbUEsvf48tMvnofyFwKH5+NlY4NSXQeU835POWSUdWoLA1uN0D6zjJbVlZN+nm8Gn2UJcjmVHgJ1cdGp/zXyZVLPVUuoDJZYjFKtTXqhI4obUCnTMaZhJZWiySgH19ZvkjSu40x64MYfggakp2S98UMPdZW+kVK009VO9fwUVjSopreUq87CHOEvwBiWV76rQQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PKxpgtcTBXLOilktjjH5v6PFAzp8Dv9gf7Sfp0QfcBU=;
- b=ZEMDYTbHPxevgRFC3Q56U4/UJyrlKji9fjr9R6QR1DMnCiIWsiLcZl3TSQIbmGw+OsnAc2/sBK2b92+m23QPLbpj5IozPLb/i9oMTY1IN3KjqiNncTB8Vamli7BiBFvJg++VeNdoMsMAKt3spUnSAH8iUEpI6Eii6E55ssvGI6dsZ93v0IeqMJHEGH4JUcC+2UmZMdrevJjj91AwANyHIUbfV7XeqaUyMTmJh3beo2Hf9dSEzpl3yiiZh3kw/tH8+vEc0ql+qkURO4J/rH+jDANmLVo1CU+OPODib5SQoqfMiWEAhE7hl+ITFpeLrA0V1uTzxSwHNjDkxeNg6pUwgg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB4914.namprd11.prod.outlook.com (2603:10b6:303:90::24)
- by DS0PR11MB7286.namprd11.prod.outlook.com (2603:10b6:8:13c::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Tue, 10 Oct
- 2023 21:22:13 +0000
-Received: from CO1PR11MB4914.namprd11.prod.outlook.com
- ([fe80::b598:4b13:38aa:893e]) by CO1PR11MB4914.namprd11.prod.outlook.com
- ([fe80::b598:4b13:38aa:893e%6]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
- 21:22:13 +0000
-Message-ID: <128f5692-982a-7bba-d9b3-174881cba49e@intel.com>
-Date:   Tue, 10 Oct 2023 14:22:12 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.15.1
-Subject: Re: [PATCH] igc: replace deprecated strncpy with strscpy
-Content-Language: en-US
-To:     Justin Stitt <justinstitt@google.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Tue, 10 Oct 2023 17:23:13 -0400
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA40D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 14:23:08 -0700 (PDT)
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id EAB0E40342
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 21:23:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1696972987;
+        bh=dt6CcgwPKCSIkpNUiMjupKuZt3x+WJihxFdlJEsepTg=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=t8Td2yPhPFUefrEVe4qS6bBIst3tMn1wGi9ada9h5ImrZ52DnwxY52UaX4ZITNMUR
+         WnWmSxHaY5BV+phSqzKFb5yK9PGoBkEWvjQJFbLuEm4ZQqEfLVexg5FYXFzww8m4Ee
+         SVJO9Gzf8mFJW8PSBzCAETHURq9NqknLve14u8XFZPvkv90TjgPbq6RFVP2d4HkRdF
+         kGTsnD8iBxXyILaEqdpOhLJoIQ46Vksyn7zT6l/FKwf8owW1q2Wi3gqE41vjNPjev9
+         vTYJyJxsI3uJGi1VkIIOjpTa4b0JlC9JifhO944z4tCYbmWX0N+sVpuMFW3un1+vPw
+         9lm/acrdt7LJA==
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1c9b15b2481so11709705ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 14:23:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696972984; x=1697577784;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dt6CcgwPKCSIkpNUiMjupKuZt3x+WJihxFdlJEsepTg=;
+        b=S2q7ooSyqoxcF8gYuJ7tde4t/uDq80qd84HlN24F+ZbWvGvIiSPA7/j/2fSCXrFxit
+         aiN7KJhYyIo9RjuxybuOd3CZZKQntbqPjNoKd/9PArfXCIklDKWj6AeybnRzdJ4jSGeZ
+         7HF3n4gGV7/kFKFfBsJc8+Tw/0/MANIlt+bcghvxJgdsT1Okpz6r3BWOaANqCwd92QgD
+         PzqrKAAHJIHgkJtvUduOY2M44DrBAUCCrvIkoc3nlR5d5bmIHGjAifH9XLz7s6OfnOve
+         3bxTJKrd/BCE2M6WwHVDUefjbVRIuWUm1rtQTbfURntIRm+tBOXL7F7v88zFil/6dPxg
+         JAiQ==
+X-Gm-Message-State: AOJu0YxAZ/s5P8BcwlahUtECHAlcSYE3zQmN83S9ifeIzm9tQtz1whS1
+        7EhBfYpgk4xxdE/x+2MoEThX4ZC8zt/OTh69pYZVYsRVcpnTqmFpn1AXAObY0xRQDLd3BW7JrvD
+        tL7oXb62XYQv/pEIQVG7rv/AbtfNFsPlPo4DOi9nAs0+Gbjnpi2b1xdA=
+X-Received: by 2002:a17:903:2307:b0:1c6:21b4:30bb with SMTP id d7-20020a170903230700b001c621b430bbmr21303356plh.15.1696972983585;
+        Tue, 10 Oct 2023 14:23:03 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGiwyknU53ojn8a4oUiYoLhkOlE4XAyEIp8hrkD35e7rfCj2gBH09CDF2PKa2CnilwyFDQlBQ==
+X-Received: by 2002:a17:903:2307:b0:1c6:21b4:30bb with SMTP id d7-20020a170903230700b001c621b430bbmr21303327plh.15.1696972983003;
+        Tue, 10 Oct 2023 14:23:03 -0700 (PDT)
+Received: from localhost ([2001:67c:1560:8007::aac:c15c])
+        by smtp.gmail.com with ESMTPSA id h3-20020a170902b94300b001c5c370d4desm12277833pls.246.2023.10.10.14.23.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 14:23:02 -0700 (PDT)
+From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+To:     David Howells <dhowells@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
-        "Eric Dumazet" <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-CC:     <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-hardening@vger.kernel.org>
-References: <20231010-strncpy-drivers-net-ethernet-intel-igc-igc_main-c-v1-1-f1f507ecc476@google.com>
-From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
-In-Reply-To: <20231010-strncpy-drivers-net-ethernet-intel-igc-igc_main-c-v1-1-f1f507ecc476@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR03CA0327.namprd03.prod.outlook.com
- (2603:10b6:303:dd::32) To CO1PR11MB4914.namprd11.prod.outlook.com
- (2603:10b6:303:90::24)
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-modules@vger.kernel.org
+Subject: [PATCH] crypto: pkcs7: remove sha1 support
+Date:   Tue, 10 Oct 2023 22:22:38 +0100
+Message-Id: <20231010212240.61637-1-dimitri.ledkov@canonical.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB4914:EE_|DS0PR11MB7286:EE_
-X-MS-Office365-Filtering-Correlation-Id: 98b9ef7f-a6e2-45d3-d668-08dbc9d6f8b1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jKepu6k04N0w3RGuQb0kxZmDCDQCvvvxdrO1gqTt77LbPXy/7U58F/3g/IxpHII+dIasotTMuILQyQbosUzf5tWx5NPeUBB+QwtJmeYedvut5BbQA4RZlD0HQIDdKaaCXZUYo6c6n4E2u5JU9pnXRs+57aKYIbBbfsPKs4c9rP22/LgUooPuYrgMlaAQ9E3yGQQnyAiMIrWxKnbP0K8LkzbE0/mtqUkLpD236yAqHX5a6D2oRbTb+x3es++qttv9tzhej4PJ3tDQroMT+oqlxJQdHMMyl7QQOtvDUiv8mTJxJpX4Hav/IVOYJVRFmTa3weREtzC3RlxGEFBaHQu8HMWgLRttJm4+SctUYGG+GXoCSaNzB426Lk9fpK3SKcRrVMguC4ij9Zafbu9QBdHE65KTaO2dmHDSa8V5lBi+HcbxkVhRDwo17TLjouJjMDe2uKM/QPGlY+BYdoAeB1FfEk8he02TxiQlXdLFFwgBg7jGUOpg2l9LuANjaeMktNECRPTkiXoRfNbtgPeUi33tQGb06Xffzjq+uaUhFPCmsEPH3MXSnXOHnsqlEeaf5Ej6Xzt0Q9LcbgmJvJOrfbEHK/F9+OiKcigHhSZsfmjdC6eodC84baqtejAOUWN/77ZG2J2qwnPB5q1lMKpx7XAVifQxbkejq1e3WW85lQMe15OvzdQ+jPocPx3rkl9dXXjO
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4914.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(136003)(39860400002)(396003)(376002)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(6512007)(53546011)(6506007)(478600001)(26005)(2616005)(66556008)(6486002)(44832011)(31696002)(83380400001)(2906002)(5660300002)(110136005)(66476007)(66946007)(8676002)(8936002)(4326008)(41300700001)(316002)(82960400001)(36756003)(38100700002)(86362001)(31686004)(156123004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bWtZWFVRODU1UGNEMG9BMGJ1Sjd2ejJ4eFlMbUJPRDg4b0piUjBkRm5Pc2Rk?=
- =?utf-8?B?S0ZuY0NCMnIvalNyT0E3WXlVc1BZcW5lNzR1bkxib28xdXhhNnd5ODZKcmpH?=
- =?utf-8?B?RWVoTklac2p4SWdyemdLeUxrbFZud2dvNHlvMTBoNUNxeVVvY1IxbzRUNUEz?=
- =?utf-8?B?SjFaOXhVeFY3WlZJWURmUGUxbGF0bmkrQUY5VzEzY1N3RmRqWUlINEc3d1dh?=
- =?utf-8?B?ZkpTaHhYeWJrWXlKS0VuME1wVHdxaGZIZi9QdVBaUGRLWUhnVkRrSVVpbzdE?=
- =?utf-8?B?ZnFPL3IxNnliQUtvM09LNDBobG5rYStXbTB6QXNTVG90cVFVNnJCK2kxN2VU?=
- =?utf-8?B?cUY4Lzd4MGtwaElWZW1tWUFwK292aEZPbHRZaXNkeUorckM1L1c2N2k4VGJV?=
- =?utf-8?B?RTcyd2JTL0doVU9DMGcwU0xXSitLMHdMbzB2ejYyWlNNYXA5Vld0cmhCV0Zr?=
- =?utf-8?B?Sy9SVWJOV3lFbjh6SDZiaGJSZklUVHVzWG1NWnlZbHZKU3NBcGRoUVdDdEcy?=
- =?utf-8?B?MnBHVmlMN2RuNko5ZHpKYnNGVVpOMHY3N0N6aVZGczluZTc2c2N0cGk2SWRv?=
- =?utf-8?B?ZUlackFQOXZIMVdBMEdUSTJjcUhmSmhabkZnOUQ2emtTNEQxcEtqaUR6bHZu?=
- =?utf-8?B?aTVoS1g0QjJEVFYxRkV4R2xuYmxqMVRPR2FKUXNGZUc4NUFyYWV6QldWQWV3?=
- =?utf-8?B?dU03N2FBM1UwcmNWbUpMMC9YWG5hdmhUam9JajYyanRscWd2b1IzN3FwTlZB?=
- =?utf-8?B?S2ZzVm1ySXNsdXVpbkZDaFZLYXU2STZYenJWc0pCbWxFdzJPOS9JWkN1eUZG?=
- =?utf-8?B?dXhIU1pZbjFzWUVPYndqRHl4dU9sQndvMzZOTmxXNk9Mdk1CWG93OVcycy85?=
- =?utf-8?B?T3hZTS9jdlh4TXRKLzlmUWx3d01OUWgrV3N2dXBJL1dESzArdG9oYzZ1QWo2?=
- =?utf-8?B?NGFzeGNsSlZzNEN3VFhsT3UzdDNaQVZaTnBSc3RNcGIwMC9RWkt3R25ZMGVz?=
- =?utf-8?B?VXdwT2V4UXB5ZzlRUVE4amFHUndWQ3k0eUx1QjNiT0NCNkVuaDFjUzkxNVp0?=
- =?utf-8?B?TTRvalZGa0VrSWUrK0V5Rit4ZUN0am5NWXVNOElOOHJWalZlZ3Z0blNjTmd1?=
- =?utf-8?B?TlhIYUZYZ0FqMU5sa3BpQllHbTlvSzN2OW1CdFlUcTV6TzVwY2RuRGVLZU5O?=
- =?utf-8?B?T2JHdDBIeXRPa2NJS25pUm91VkpDa0NWVnYxWEU0Znc5aFR5Y0xlazFKSTBr?=
- =?utf-8?B?OFluRzY2ZTd3dkRXQ1ZRdjF5ajFydTJOSHgwRGdGTi9LYU9URUc2VTQxR0Ev?=
- =?utf-8?B?QnVLeTFTWFJhNGZydndUN2Rmdjc0bC9wUXZ3RnY1bHhFeEJTZXhXbW5VUDFJ?=
- =?utf-8?B?T0o3bDhaa1pNV2Z1UmcxUVA3aFg2WWZib3VWK3c1aVptNTZML3VJWEdkMjgy?=
- =?utf-8?B?WCsxT3BHVjJ0N2ZzWmYvY0wwMUhuelhwU0Z2MTlHU3cyVnk0SnZ6enNRa0cv?=
- =?utf-8?B?OGhkT3BPY2N4TTFUN3hkaTVhUk9NcUx6WTg0TEhMMnFkM3FyckVVclFHMGlp?=
- =?utf-8?B?MWd3MWxUbFplRjBmK21SSkE4RHEvYmovS3BITWcxckRsN29BUlFIM1ZZWU5x?=
- =?utf-8?B?QWtRZ2dZS0wxN0R1WkR6c2FmZjlFTXNKNDl3cGg5disyakJrMlVUd25ib0ZO?=
- =?utf-8?B?bHBlUmp0alBwR1RNR2czUzgyT285Wk5UYWR6SHoxVVErZUQ0V2lBeDhnUEhy?=
- =?utf-8?B?eTcxSzZkYUlLaWVLWGd2VGVZT1YyRnNnbEJWT0lpKzBvbTliSTFCeEhrdDl4?=
- =?utf-8?B?MnIrNFhQbnBxaDlBK3A0b1BWMnJNdzRYcWd3UXFnVlkzODdNZTRlS3plWnJi?=
- =?utf-8?B?eFQvTVRXeG4vZlEyQWxEZWdkR1Z1SlpnL01vbUpUQ05iRlB2QnZqYzdnMS9L?=
- =?utf-8?B?amhSN2VBSFJYa0tXUjErbVkybWxZWmtGWGdrQk5ubEpmalRSa3FYY1NwWmFU?=
- =?utf-8?B?TGVWL0RlbTg3ZXRiUDhZM2c0OTJYZWpNaktyWlZQc3B3UURPNi9aRm9QdG9i?=
- =?utf-8?B?OUhVMWtwVXpJVXFYS3Z2VCtyZlNEalMwRXFlUHhYM1dob0JJU3FwYWpXNGRG?=
- =?utf-8?B?aDB6akpvMDBLeW9zUzYyelMzVXp1QzViOGd5YWQxaWVjM0ZnZERqVVNDS2h3?=
- =?utf-8?B?SXc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 98b9ef7f-a6e2-45d3-d668-08dbc9d6f8b1
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4914.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 21:22:13.7010
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gSeAnjpOxt8P56RfzVyI1eWzrTdRIaegxAVUvCbKkknH+zyIXJwA8tMgs/3JD4YQ9NAACnckdLcKjXq/SgAIucNs2Xa+vwAaug/TPlbPoy4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7286
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/2023 2:15 PM, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> We expect netdev->name to be NUL-terminated based on its use with format
-> strings:
-> |       if (q_vector->rx.ring && q_vector->tx.ring)
-> |               sprintf(q_vector->name, "%s-TxRx-%u", netdev->name,
-> 
-> Furthermore, we do not need NUL-padding as netdev is already
-> zero-allocated:
-> |       netdev = alloc_etherdev_mq(sizeof(struct igc_adapter),
-> |                                  IGC_MAX_TX_QUEUES);
-> ...
-> alloc_etherdev() -> alloc_etherdev_mq() -> alloc_etherdev_mqs() ->
-> alloc_netdev_mqs() ...
-> |       p = kvzalloc(alloc_size, GFP_KERNEL_ACCOUNT | __GFP_RETRY_MAYFAIL);
-> 
-> Considering the above, a suitable replacement is `strscpy` [2] due to
-> the fact that it guarantees NUL-termination on the destination buffer
-> without unnecessarily NUL-padding.
-> 
-> Let's also opt for the more idiomatic strscpy usage of (dest, src,
-> sizeof(dest)) instead of (dest, src, SOME_LEN).
-> 
+Removes support for sha1 signed kernel modules, importing sha1 signed
+x.509 certificates.
 
+rsa-pkcs1pad keeps sha1 padding support, which seems to be used by
+virtio driver.
 
-Please see my comments on the igbvf patch.
+sha1 remains available as there are many drivers and subsystems using
+it. Note only hmac(sha1) with secret keys remains cryptographically
+secure.
 
+In the kernel there are filesystems, IMA, tpm/pcr that appear to be
+using sha1. Maybe they can all start to be slowly upgraded to
+something else i.e. blake3, ParallelHash, SHAKE256 as needed.
+
+Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+---
+ crypto/asymmetric_keys/mscode_parser.c    |  3 -
+ crypto/asymmetric_keys/pkcs7_parser.c     |  4 --
+ crypto/asymmetric_keys/public_key.c       |  3 +-
+ crypto/asymmetric_keys/signature.c        |  2 +-
+ crypto/asymmetric_keys/x509_cert_parser.c |  8 ---
+ crypto/testmgr.h                          | 80 -----------------------
+ include/linux/oid_registry.h              |  4 --
+ kernel/module/Kconfig                     |  5 --
+ 8 files changed, 2 insertions(+), 107 deletions(-)
+
+diff --git a/crypto/asymmetric_keys/mscode_parser.c b/crypto/asymmetric_keys/mscode_parser.c
+index 690405ebe7..6416bded0e 100644
+--- a/crypto/asymmetric_keys/mscode_parser.c
++++ b/crypto/asymmetric_keys/mscode_parser.c
+@@ -75,9 +75,6 @@ int mscode_note_digest_algo(void *context, size_t hdrlen,
+ 
+ 	oid = look_up_OID(value, vlen);
+ 	switch (oid) {
+-	case OID_sha1:
+-		ctx->digest_algo = "sha1";
+-		break;
+ 	case OID_sha256:
+ 		ctx->digest_algo = "sha256";
+ 		break;
+diff --git a/crypto/asymmetric_keys/pkcs7_parser.c b/crypto/asymmetric_keys/pkcs7_parser.c
+index cf4caab962..ab647cb4d7 100644
+--- a/crypto/asymmetric_keys/pkcs7_parser.c
++++ b/crypto/asymmetric_keys/pkcs7_parser.c
+@@ -227,9 +227,6 @@ int pkcs7_sig_note_digest_algo(void *context, size_t hdrlen,
+ 	struct pkcs7_parse_context *ctx = context;
+ 
+ 	switch (ctx->last_oid) {
+-	case OID_sha1:
+-		ctx->sinfo->sig->hash_algo = "sha1";
+-		break;
+ 	case OID_sha256:
+ 		ctx->sinfo->sig->hash_algo = "sha256";
+ 		break;
+@@ -272,7 +269,6 @@ int pkcs7_sig_note_pkey_algo(void *context, size_t hdrlen,
+ 		ctx->sinfo->sig->pkey_algo = "rsa";
+ 		ctx->sinfo->sig->encoding = "pkcs1";
+ 		break;
+-	case OID_id_ecdsa_with_sha1:
+ 	case OID_id_ecdsa_with_sha224:
+ 	case OID_id_ecdsa_with_sha256:
+ 	case OID_id_ecdsa_with_sha384:
+diff --git a/crypto/asymmetric_keys/public_key.c b/crypto/asymmetric_keys/public_key.c
+index abeecb8329..5bf0452c17 100644
+--- a/crypto/asymmetric_keys/public_key.c
++++ b/crypto/asymmetric_keys/public_key.c
+@@ -116,8 +116,7 @@ software_key_determine_akcipher(const struct public_key *pkey,
+ 		 */
+ 		if (!hash_algo)
+ 			return -EINVAL;
+-		if (strcmp(hash_algo, "sha1") != 0 &&
+-		    strcmp(hash_algo, "sha224") != 0 &&
++		if (strcmp(hash_algo, "sha224") != 0 &&
+ 		    strcmp(hash_algo, "sha256") != 0 &&
+ 		    strcmp(hash_algo, "sha384") != 0 &&
+ 		    strcmp(hash_algo, "sha512") != 0)
+diff --git a/crypto/asymmetric_keys/signature.c b/crypto/asymmetric_keys/signature.c
+index 2deff81f8a..398983be77 100644
+--- a/crypto/asymmetric_keys/signature.c
++++ b/crypto/asymmetric_keys/signature.c
+@@ -115,7 +115,7 @@ EXPORT_SYMBOL_GPL(decrypt_blob);
+  * Sign the specified data blob using the private key specified by params->key.
+  * The signature is wrapped in an encoding if params->encoding is specified
+  * (eg. "pkcs1").  If the encoding needs to know the digest type, this can be
+- * passed through params->hash_algo (eg. "sha1").
++ * passed through params->hash_algo (eg. "sha512").
+  *
+  * Returns the length of the data placed in the signature buffer or an error.
+  */
+diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
+index 2c30928621..68ef1ffbbe 100644
+--- a/crypto/asymmetric_keys/x509_cert_parser.c
++++ b/crypto/asymmetric_keys/x509_cert_parser.c
+@@ -198,10 +198,6 @@ int x509_note_sig_algo(void *context, size_t hdrlen, unsigned char tag,
+ 	default:
+ 		return -ENOPKG; /* Unsupported combination */
+ 
+-	case OID_sha1WithRSAEncryption:
+-		ctx->cert->sig->hash_algo = "sha1";
+-		goto rsa_pkcs1;
+-
+ 	case OID_sha256WithRSAEncryption:
+ 		ctx->cert->sig->hash_algo = "sha256";
+ 		goto rsa_pkcs1;
+@@ -218,10 +214,6 @@ int x509_note_sig_algo(void *context, size_t hdrlen, unsigned char tag,
+ 		ctx->cert->sig->hash_algo = "sha224";
+ 		goto rsa_pkcs1;
+ 
+-	case OID_id_ecdsa_with_sha1:
+-		ctx->cert->sig->hash_algo = "sha1";
+-		goto ecdsa;
+-
+ 	case OID_id_ecdsa_with_sha224:
+ 		ctx->cert->sig->hash_algo = "sha224";
+ 		goto ecdsa;
+diff --git a/crypto/testmgr.h b/crypto/testmgr.h
+index 3cfe91e2d1..98f83c32e0 100644
+--- a/crypto/testmgr.h
++++ b/crypto/testmgr.h
+@@ -653,30 +653,6 @@ static const struct akcipher_testvec rsa_tv_template[] = {
+ static const struct akcipher_testvec ecdsa_nist_p192_tv_template[] = {
+ 	{
+ 	.key =
+-	"\x04\xf7\x46\xf8\x2f\x15\xf6\x22\x8e\xd7\x57\x4f\xcc\xe7\xbb\xc1"
+-	"\xd4\x09\x73\xcf\xea\xd0\x15\x07\x3d\xa5\x8a\x8a\x95\x43\xe4\x68"
+-	"\xea\xc6\x25\xc1\xc1\x01\x25\x4c\x7e\xc3\x3c\xa6\x04\x0a\xe7\x08"
+-	"\x98",
+-	.key_len = 49,
+-	.params =
+-	"\x30\x13\x06\x07\x2a\x86\x48\xce\x3d\x02\x01\x06\x08\x2a\x86\x48"
+-	"\xce\x3d\x03\x01\x01",
+-	.param_len = 21,
+-	.m =
+-	"\xcd\xb9\xd2\x1c\xb7\x6f\xcd\x44\xb3\xfd\x63\xea\xa3\x66\x7f\xae"
+-	"\x63\x85\xe7\x82",
+-	.m_size = 20,
+-	.algo = OID_id_ecdsa_with_sha1,
+-	.c =
+-	"\x30\x35\x02\x19\x00\xba\xe5\x93\x83\x6e\xb6\x3b\x63\xa0\x27\x91"
+-	"\xc6\xf6\x7f\xc3\x09\xad\x59\xad\x88\x27\xd6\x92\x6b\x02\x18\x10"
+-	"\x68\x01\x9d\xba\xce\x83\x08\xef\x95\x52\x7b\xa0\x0f\xe4\x18\x86"
+-	"\x80\x6f\xa5\x79\x77\xda\xd0",
+-	.c_size = 55,
+-	.public_key_vec = true,
+-	.siggen_sigver_test = true,
+-	}, {
+-	.key =
+ 	"\x04\xb6\x4b\xb1\xd1\xac\xba\x24\x8f\x65\xb2\x60\x00\x90\xbf\xbd"
+ 	"\x78\x05\x73\xe9\x79\x1d\x6f\x7c\x0b\xd2\xc3\x93\xa7\x28\xe1\x75"
+ 	"\xf7\xd5\x95\x1d\x28\x10\xc0\x75\x50\x5c\x1a\x4f\x3f\x8f\xa5\xee"
+@@ -780,32 +756,6 @@ static const struct akcipher_testvec ecdsa_nist_p192_tv_template[] = {
+ static const struct akcipher_testvec ecdsa_nist_p256_tv_template[] = {
+ 	{
+ 	.key =
+-	"\x04\xb9\x7b\xbb\xd7\x17\x64\xd2\x7e\xfc\x81\x5d\x87\x06\x83\x41"
+-	"\x22\xd6\x9a\xaa\x87\x17\xec\x4f\x63\x55\x2f\x94\xba\xdd\x83\xe9"
+-	"\x34\x4b\xf3\xe9\x91\x13\x50\xb6\xcb\xca\x62\x08\xe7\x3b\x09\xdc"
+-	"\xc3\x63\x4b\x2d\xb9\x73\x53\xe4\x45\xe6\x7c\xad\xe7\x6b\xb0\xe8"
+-	"\xaf",
+-	.key_len = 65,
+-	.params =
+-	"\x30\x13\x06\x07\x2a\x86\x48\xce\x3d\x02\x01\x06\x08\x2a\x86\x48"
+-	"\xce\x3d\x03\x01\x07",
+-	.param_len = 21,
+-	.m =
+-	"\xc2\x2b\x5f\x91\x78\x34\x26\x09\x42\x8d\x6f\x51\xb2\xc5\xaf\x4c"
+-	"\x0b\xde\x6a\x42",
+-	.m_size = 20,
+-	.algo = OID_id_ecdsa_with_sha1,
+-	.c =
+-	"\x30\x46\x02\x21\x00\xf9\x25\xce\x9f\x3a\xa6\x35\x81\xcf\xd4\xe7"
+-	"\xb7\xf0\x82\x56\x41\xf7\xd4\xad\x8d\x94\x5a\x69\x89\xee\xca\x6a"
+-	"\x52\x0e\x48\x4d\xcc\x02\x21\x00\xd7\xe4\xef\x52\x66\xd3\x5b\x9d"
+-	"\x8a\xfa\x54\x93\x29\xa7\x70\x86\xf1\x03\x03\xf3\x3b\xe2\x73\xf7"
+-	"\xfb\x9d\x8b\xde\xd4\x8d\x6f\xad",
+-	.c_size = 72,
+-	.public_key_vec = true,
+-	.siggen_sigver_test = true,
+-	}, {
+-	.key =
+ 	"\x04\x8b\x6d\xc0\x33\x8e\x2d\x8b\x67\xf5\xeb\xc4\x7f\xa0\xf5\xd9"
+ 	"\x7b\x03\xa5\x78\x9a\xb5\xea\x14\xe4\x23\xd0\xaf\xd7\x0e\x2e\xa0"
+ 	"\xc9\x8b\xdb\x95\xf8\xb3\xaf\xac\x00\x2c\x2c\x1f\x7a\xfd\x95\x88"
+@@ -916,36 +866,6 @@ static const struct akcipher_testvec ecdsa_nist_p256_tv_template[] = {
+ 
+ static const struct akcipher_testvec ecdsa_nist_p384_tv_template[] = {
+ 	{
+-	.key = /* secp384r1(sha1) */
+-	"\x04\x89\x25\xf3\x97\x88\xcb\xb0\x78\xc5\x72\x9a\x14\x6e\x7a\xb1"
+-	"\x5a\xa5\x24\xf1\x95\x06\x9e\x28\xfb\xc4\xb9\xbe\x5a\x0d\xd9\x9f"
+-	"\xf3\xd1\x4d\x2d\x07\x99\xbd\xda\xa7\x66\xec\xbb\xea\xba\x79\x42"
+-	"\xc9\x34\x89\x6a\xe7\x0b\xc3\xf2\xfe\x32\x30\xbe\xba\xf9\xdf\x7e"
+-	"\x4b\x6a\x07\x8e\x26\x66\x3f\x1d\xec\xa2\x57\x91\x51\xdd\x17\x0e"
+-	"\x0b\x25\xd6\x80\x5c\x3b\xe6\x1a\x98\x48\x91\x45\x7a\x73\xb0\xc3"
+-	"\xf1",
+-	.key_len = 97,
+-	.params =
+-	"\x30\x10\x06\x07\x2a\x86\x48\xce\x3d\x02\x01\x06\x05\x2b\x81\x04"
+-	"\x00\x22",
+-	.param_len = 18,
+-	.m =
+-	"\x12\x55\x28\xf0\x77\xd5\xb6\x21\x71\x32\x48\xcd\x28\xa8\x25\x22"
+-	"\x3a\x69\xc1\x93",
+-	.m_size = 20,
+-	.algo = OID_id_ecdsa_with_sha1,
+-	.c =
+-	"\x30\x66\x02\x31\x00\xf5\x0f\x24\x4c\x07\x93\x6f\x21\x57\x55\x07"
+-	"\x20\x43\x30\xde\xa0\x8d\x26\x8e\xae\x63\x3f\xbc\x20\x3a\xc6\xf1"
+-	"\x32\x3c\xce\x70\x2b\x78\xf1\x4c\x26\xe6\x5b\x86\xcf\xec\x7c\x7e"
+-	"\xd0\x87\xd7\xd7\x6e\x02\x31\x00\xcd\xbb\x7e\x81\x5d\x8f\x63\xc0"
+-	"\x5f\x63\xb1\xbe\x5e\x4c\x0e\xa1\xdf\x28\x8c\x1b\xfa\xf9\x95\x88"
+-	"\x74\xa0\x0f\xbf\xaf\xc3\x36\x76\x4a\xa1\x59\xf1\x1c\xa4\x58\x26"
+-	"\x79\x12\x2a\xb7\xc5\x15\x92\xc5",
+-	.c_size = 104,
+-	.public_key_vec = true,
+-	.siggen_sigver_test = true,
+-	}, {
+ 	.key = /* secp384r1(sha224) */
+ 	"\x04\x69\x6c\xcf\x62\xee\xd0\x0d\xe5\xb5\x2f\x70\x54\xcf\x26\xa0"
+ 	"\xd9\x98\x8d\x92\x2a\xab\x9b\x11\xcb\x48\x18\xa1\xa9\x0d\xd5\x18"
+diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
+index 4d04fa5d1e..8b79e55cfc 100644
+--- a/include/linux/oid_registry.h
++++ b/include/linux/oid_registry.h
+@@ -17,12 +17,10 @@
+  *	  build_OID_registry.pl to generate the data for look_up_OID().
+  */
+ enum OID {
+-	OID_id_dsa_with_sha1,		/* 1.2.840.10030.4.3 */
+ 	OID_id_dsa,			/* 1.2.840.10040.4.1 */
+ 	OID_id_ecPublicKey,		/* 1.2.840.10045.2.1 */
+ 	OID_id_prime192v1,		/* 1.2.840.10045.3.1.1 */
+ 	OID_id_prime256v1,		/* 1.2.840.10045.3.1.7 */
+-	OID_id_ecdsa_with_sha1,		/* 1.2.840.10045.4.1 */
+ 	OID_id_ecdsa_with_sha224,	/* 1.2.840.10045.4.3.1 */
+ 	OID_id_ecdsa_with_sha256,	/* 1.2.840.10045.4.3.2 */
+ 	OID_id_ecdsa_with_sha384,	/* 1.2.840.10045.4.3.3 */
+@@ -30,7 +28,6 @@ enum OID {
+ 
+ 	/* PKCS#1 {iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-1(1)} */
+ 	OID_rsaEncryption,		/* 1.2.840.113549.1.1.1 */
+-	OID_sha1WithRSAEncryption,	/* 1.2.840.113549.1.1.5 */
+ 	OID_sha256WithRSAEncryption,	/* 1.2.840.113549.1.1.11 */
+ 	OID_sha384WithRSAEncryption,	/* 1.2.840.113549.1.1.12 */
+ 	OID_sha512WithRSAEncryption,	/* 1.2.840.113549.1.1.13 */
+@@ -67,7 +64,6 @@ enum OID {
+ 	OID_PKU2U,			/* 1.3.5.1.5.2.7 */
+ 	OID_Scram,			/* 1.3.6.1.5.5.14 */
+ 	OID_certAuthInfoAccess,		/* 1.3.6.1.5.5.7.1.1 */
+-	OID_sha1,			/* 1.3.14.3.2.26 */
+ 	OID_id_ansip384r1,		/* 1.3.132.0.34 */
+ 	OID_sha256,			/* 2.16.840.1.101.3.4.2.1 */
+ 	OID_sha384,			/* 2.16.840.1.101.3.4.2.2 */
+diff --git a/kernel/module/Kconfig b/kernel/module/Kconfig
+index 33a2e991f6..19a53d5e77 100644
+--- a/kernel/module/Kconfig
++++ b/kernel/module/Kconfig
+@@ -236,10 +236,6 @@ choice
+ 	  possible to load a signed module containing the algorithm to check
+ 	  the signature on that module.
+ 
+-config MODULE_SIG_SHA1
+-	bool "Sign modules with SHA-1"
+-	select CRYPTO_SHA1
+-
+ config MODULE_SIG_SHA224
+ 	bool "Sign modules with SHA-224"
+ 	select CRYPTO_SHA256
+@@ -261,7 +257,6 @@ endchoice
+ config MODULE_SIG_HASH
+ 	string
+ 	depends on MODULE_SIG || IMA_APPRAISE_MODSIG
+-	default "sha1" if MODULE_SIG_SHA1
+ 	default "sha224" if MODULE_SIG_SHA224
+ 	default "sha256" if MODULE_SIG_SHA256
+ 	default "sha384" if MODULE_SIG_SHA384
+-- 
+2.34.1
 
