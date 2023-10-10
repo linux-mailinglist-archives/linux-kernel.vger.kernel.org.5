@@ -2,111 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC69B7BF680
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE25F7BF683
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230062AbjJJIwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 04:52:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57054 "EHLO
+        id S229941AbjJJIwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 04:52:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjJJIwP (ORCPT
+        with ESMTP id S229449AbjJJIwe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 04:52:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 269A9A9
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 01:52:14 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B0F4C433C8;
-        Tue, 10 Oct 2023 08:52:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696927933;
-        bh=XJynC3FVhVB5RPnfUzpYV78TXawY3XcAs4e1JfEyljQ=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=o9wwu4UrznOZpfdZX7oqvMRLJk0mD61f6BIJ1INfdsdsymjZ4gRjo9Kau+5y3AYwm
-         qs2/Fa4+Gj31ZGOFprfnW5V3dOP5sgf2zwrH5YNSmKXVbK3rw3OP0Grgh5BBhLEjMQ
-         FibLRVELC/hZ9uJwGh7FMqtQcGRqgUPOBFn1Dky0eHFf6BMlcaKQ1Zkb98qPYHnYk5
-         7yUtWh6ThBgm+wL2J5pRpDspCijDnRd8AjRiJ0Xl87C2plDpV5hxwHDxAlb7nC2QQk
-         ++zDF65ChxJxHfm1/6NxL0vEnYZ6LAEpyWSh7PyluUgp8Vo0400KOYDhlXpkHEAOjr
-         KCCwrv6n09xVQ==
-Message-ID: <74a4dc35-eed2-79c2-2b57-ed0857cbc96a@kernel.org>
-Date:   Tue, 10 Oct 2023 10:52:09 +0200
+        Tue, 10 Oct 2023 04:52:34 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64CAEC6;
+        Tue, 10 Oct 2023 01:52:32 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c008042211so65470261fa.2;
+        Tue, 10 Oct 2023 01:52:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696927950; x=1697532750; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TeEaic7DEAY9zd0WyuqM/4JYbRdrtkfWh/cZqj1+uHU=;
+        b=NvikLWBBYBXGNzOZWvhhwrwfiW0JOpSCaPjmSJGCOdN3ybiGq9SmTi4b2w6DK6s/md
+         VayrGSrom8RctkAPXOC63W/VEqIGyAYlAoDlbSy350hxFvLTpMS3w3L7k/TQ4a0M1igO
+         wUorzM8pSh3PHyhZ1tLLjkJmA28jtjv+LI+9pmCmcuL4THPvkCDT4lWMu9TQtmQ8lvov
+         c7x60rtJWN4x3o+fCBnbAMb9tq1i4gZ5UJEjkR3DIPbb8Ard3+wm/fpRo/oqjRrXOOMh
+         CUOdbvvSht15Rf1UqcW/qmud7sXupjwV+V1Ck7wSUgcQnb8BF0DU9SeYNPbHPPGlb0Wm
+         9XZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696927950; x=1697532750;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TeEaic7DEAY9zd0WyuqM/4JYbRdrtkfWh/cZqj1+uHU=;
+        b=Dhq2Jz/kKfyXvUDEhKBslwbNKI50qMCn9NIeFOc5cBl7Yc40jQvR7Cp9XdFc98IGQ8
+         9QjD+6sPfM5SScr789boVqQRwWeBGLGHmc1vUM+j/YxDpNiAsB6U2RcQe6z6WQ25CqGu
+         9MVTpSyDPpcjTpYpBxloyiqVV+IOMVApHGipVNhK2P9oq1CnxNzVVImOnCgutX3nDWIh
+         05thSEBYFMNDTiqgWnmrUdHbWOWbDm5HrN2X2QMsOK/V63ef/hanjksVo7dNUbCq2WQB
+         UB9OvgaciZdcrvUMENcXOQzaBLdFFDqRuQWyLAaNQWjMuIJa5RNkrZoh48tEOa0r/OqJ
+         6wTw==
+X-Gm-Message-State: AOJu0YyXrPNOL/aGr/t2BTgmqkoRRjQS8GuHmv2WjG5ftV3zaW4CJi3T
+        Pioovtd4/5PY1+JQp/6lV8o=
+X-Google-Smtp-Source: AGHT+IFRDeEjYXjaBWFWXr0sryFJAu3lGH0OBSOOIm/FGuRn05jaZpgsOGgCZmg/jBQkRmA66inhew==
+X-Received: by 2002:a2e:870f:0:b0:2b6:da1e:d063 with SMTP id m15-20020a2e870f000000b002b6da1ed063mr14278324lji.45.1696927950311;
+        Tue, 10 Oct 2023 01:52:30 -0700 (PDT)
+Received: from ?IPV6:2001:14ba:16f8:1500::7? (dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::7])
+        by smtp.gmail.com with ESMTPSA id r25-20020a2e9959000000b002bfba0d26bcsm2368605ljj.8.2023.10.10.01.52.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Oct 2023 01:52:29 -0700 (PDT)
+Message-ID: <2c6ff28f-9031-beb2-f8d0-e7f12b0a07b4@gmail.com>
+Date:   Tue, 10 Oct 2023 11:52:28 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v3] spmi: mtk-pmif: Serialize PMIF status check and
- command submission
-Content-Language: en-US
-To:     =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
-        <nfraprado@collabora.com>, Stephen Boyd <sboyd@kernel.org>
-Cc:     Chen-Yu Tsai <wenst@google.com>, kernel@collabora.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        James Lo <james.lo@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-References: <20230724154739.493724-1-nfraprado@collabora.com>
- <a4684a81-eb04-492a-bff6-a5ff78fe6b0f@notapiano>
- <7b407eda-702a-444a-b644-5e8dc31f3991@notapiano>
-From:   AngeloGioacchino Del Regno <angelogioacchino.delregno@kernel.org>
-In-Reply-To: <7b407eda-702a-444a-b644-5e8dc31f3991@notapiano>
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/2] dt-bindings: iio: light: Avago APDS9306
+Content-Language: en-US, en-GB
+To:     Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paul Gazzillo <paul@pgazz.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>
+References: <20231008154857.24162-1-subhajit.ghosh@tweaklogic.com>
+ <20231008154857.24162-2-subhajit.ghosh@tweaklogic.com>
+From:   Matti Vaittinen <mazziesaccount@gmail.com>
+In-Reply-To: <20231008154857.24162-2-subhajit.ghosh@tweaklogic.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 19/09/23 22:12, Nícolas F. R. A. Prado ha scritto:
-> On Thu, Aug 10, 2023 at 06:03:53PM -0400, Nícolas F. R. A. Prado wrote:
->> On Mon, Jul 24, 2023 at 11:47:33AM -0400, Nícolas F. R. A. Prado wrote:
->>> Before writing the read or write command to the SPMI arbiter through the
->>> PMIF interface, the current status of the channel is checked to ensure
->>> it is idle. However, since the status only changes from idle when the
->>> command is written, it is possible for two concurrent calls to determine
->>> that the channel is idle and simultaneously send their commands. At this
->>> point the PMIF interface hangs, with the status register no longer being
->>> updated, and thus causing all subsequent operations to time out.
->>>
->>> This was observed on the mt8195-cherry-tomato-r2 machine, particularly
->>> after commit 46600ab142f8 ("regulator: Set PROBE_PREFER_ASYNCHRONOUS for
->>> drivers between 5.10 and 5.15") was applied, since then the two MT6315
->>> devices present on the SPMI bus would probe assynchronously and
->>> sometimes (during probe or at a later point) read the bus
->>> simultaneously, breaking the PMIF interface and consequently slowing
->>> down the whole system.
->>>
->>> To fix the issue at its root cause, introduce locking around the channel
->>> status check and the command write, so that both become an atomic
->>> operation, preventing race conditions between two (or more) SPMI bus
->>> read/write operations. A spinlock is used since this is a fast bus, as
->>> indicated by the usage of the atomic variant of readl_poll, and
->>> '.fast_io = true' being used in the mt6315 driver, so spinlocks are
->>> already used for the regmap access.
->>>
->>> Fixes: b45b3ccef8c0 ("spmi: mediatek: Add support for MT6873/8192")
->>> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
->>
->> Hi,
->>
->> gentle ping on this one. MT8195 Chromebooks sometimes boot to a broken state
->> without it.
+On 10/8/23 18:48, Subhajit Ghosh wrote:
+> Add devicetree bindings for Avago APDS9306 Ambient Light Sensor.
 > 
-> Hi Stephen,
+> Signed-off-by: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+> ---
+>   .../bindings/iio/light/avago,apds9306.yaml    | 49 +++++++++++++++++++
+>   1 file changed, 49 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/iio/light/avago,apds9306.yaml
 > 
-> once again kindling reminding you of this important fix for MediaTek platforms,
-> solving a real issue impacting basic functionality observed on the MT8195
-> Chromebook.
-> 
+> diff --git a/Documentation/devicetree/bindings/iio/light/avago,apds9306.yaml b/Documentation/devicetree/bindings/iio/light/avago,apds9306.yaml
+> new file mode 100644
+> index 000000000000..e8bb897782fc
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/light/avago,apds9306.yaml
+> @@ -0,0 +1,49 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/light/avago,apds9306.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Avago APDS9306 Ambient Light Sensor
+> +
+> +maintainers:
+> +  - Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+> +
+> +description:
+> +  Datasheet at https://docs.broadcom.com/doc/AV02-4755EN
+> +
+> +properties:
+> +  compatible:
+> +    const: avago,apds9306
 
-Hello Stephen,
+I see the driver supports two different variants of this IC, 
+differentiated by the part-ID register. Variants are named as apds9306 
+and apds9306-065. I wonder if we could/should have different compatibles 
+for them?
 
-can you please pick this one ASAP?
-MT8195 is broken without.
+Yours,
+	-- Matti
 
-Thanks,
-Angelo
+-- 
+Matti Vaittinen
+Linux kernel developer at ROHM Semiconductors
+Oulu Finland
+
+~~ When things go utterly wrong vim users can always type :help! ~~
+
