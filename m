@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E7887BF6C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 11:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F627BF6CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 11:06:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbjJJJFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 05:05:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33318 "EHLO
+        id S229812AbjJJJFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 05:05:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229721AbjJJJFq (ORCPT
+        with ESMTP id S229729AbjJJJFr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 05:05:46 -0400
+        Tue, 10 Oct 2023 05:05:47 -0400
 Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28FBDCA
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29537A9
         for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 02:05:43 -0700 (PDT)
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39A804bs017830;
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39A7xExN022226;
         Tue, 10 Oct 2023 09:05:37 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references; s=corp-2023-03-30;
- bh=OMuWF+ib0rZpZceqxHvEWuT+8aI6hH6IoBKKRKDUxqQ=;
- b=cbcrn05DehNm2FC9NaVjr7SBJLN7aIKRHY/OVM+w8R6Xj9siw6c+h5UFe5234+bR8lf6
- zrskHKjNc5xMqoz7gsyzsxrdDTOrvkvqsNRkg5X8i7cJElPAdhSW84R7SmBT6STDbt1U
- sf02MXbqjLj3yss2lnMvEPlbRAkjV2r7ILw9a9vcFu6Ihvyhl+H61h3UMJXBFoJFQu+1
- dQGcgIwTMhUoks4iNCVk9h1N4wxvJlrccaCrWnoEw3QRxXX1pcM3XYqirxLS2B5g9gqn
- g50FUf1ptXULdekmcjooqqm8jRPIBssvXsyG5IepZ8km/qLuNV/2CKewl2JiMetLSpgc WQ== 
+ bh=+ssyG8n1VyDRfdFSLjL3zxxCG5zJZGN6cRxBgPvs3Cs=;
+ b=cFWVJECgHMx6UtCawOTgxY6aL92qmoIVI0c5OJNyJxzkvjNp6sHiK027WCFa7BvjFy4t
+ uXqmSGxDSDaerxmGTKHHYuc+qvCzIfRCLo/1iQiE8kIerKjxc+h4gBpdLwGI8T3zJl7a
+ QStu/Kh7SsLE/8fIUuxFYiNd/zA/6BQXEMx7+6skNCIm1NxnuJO5hNshDLFrhChXFkom
+ QtCG/tajlr71sDnxDVQpEqLyMnqRzlv6RgyDafFPxCYAnQ6o9j02dHy2xLooL7I9erpV
+ 05QuNUyaQBmV3JvPZMObx8UtSQuORxEi+7NsF/LyPzkchvRyj5yNKkEst/lCAKaph8Il lQ== 
 Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tjx8cck9b-1
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tjwx24jay-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Tue, 10 Oct 2023 09:05:37 +0000
 Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39A6sxrF021395;
-        Tue, 10 Oct 2023 09:05:35 GMT
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39A6sxrG021395;
+        Tue, 10 Oct 2023 09:05:36 GMT
 Received: from ban25x6uut24.us.oracle.com (ban25x6uut24.us.oracle.com [10.153.73.24])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3tjwsc5cy2-4;
-        Tue, 10 Oct 2023 09:05:35 +0000
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3tjwsc5cy2-5;
+        Tue, 10 Oct 2023 09:05:36 +0000
 From:   Si-Wei Liu <si-wei.liu@oracle.com>
 To:     jasowang@redhat.com, mst@redhat.com, eperezma@redhat.com,
         xuanzhuo@linux.alibaba.com, dtatulea@nvidia.com
 Cc:     virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 3/4] vhost-vdpa: introduce IOTLB_PERSIST backend feature bit
-Date:   Tue, 10 Oct 2023 02:02:59 -0700
-Message-Id: <1696928580-7520-4-git-send-email-si-wei.liu@oracle.com>
+Subject: [PATCH 4/4] vdpa/mlx5: implement .reset_map driver op
+Date:   Tue, 10 Oct 2023 02:03:00 -0700
+Message-Id: <1696928580-7520-5-git-send-email-si-wei.liu@oracle.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1696928580-7520-1-git-send-email-si-wei.liu@oracle.com>
 References: <1696928580-7520-1-git-send-email-si-wei.liu@oracle.com>
@@ -51,11 +51,11 @@ X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-10-10_04,2023-10-09_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 suspectscore=0
- malwarescore=0 adultscore=0 spamscore=0 mlxlogscore=999 phishscore=0
+ malwarescore=0 adultscore=0 spamscore=0 mlxlogscore=992 phishscore=0
  bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2309180000 definitions=main-2310100067
-X-Proofpoint-ORIG-GUID: tiCYM9t-hsTeWDq1eosaeRopCiPEuEdj
-X-Proofpoint-GUID: tiCYM9t-hsTeWDq1eosaeRopCiPEuEdj
+X-Proofpoint-GUID: tG7hUu3eOdF7C5akQ9-eoLWMKPyF4ijF
+X-Proofpoint-ORIG-GUID: tG7hUu3eOdF7C5akQ9-eoLWMKPyF4ijF
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
@@ -66,94 +66,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Userspace needs this feature flag to distinguish if vhost-vdpa
-iotlb in the kernel supports persistent IOTLB mapping across
-device reset. Without it, userspace has no way to tell apart
-if it's running on an older kernel, which could silently drop
-all iotlb mapping across vDPA reset.
+Since commit 6f5312f80183 ("vdpa/mlx5: Add support for running with
+virtio_vdpa"), mlx5_vdpa starts with preallocate 1:1 DMA MR at device
+creation time. This 1:1 DMA MR will be implicitly destroyed while
+the first .set_map call is invoked, in which case callers like
+vhost-vdpa will start to set up custom mappings. When the .reset
+callback is invoked, the custom mappings will be cleared and the 1:1
+DMA MR will be re-created.
 
-There are 3 cases that backend may claim this feature bit on:
+In order to reduce excessive memory mapping cost in live migration,
+it is desirable to decouple the vhost-vdpa IOTLB abstraction from
+the virtio device life cycle, i.e. mappings can be kept around intact
+across virtio device reset. Leverage the .reset_map callback, which
+is meant to destroy the regular MR on the given ASID and recreate the
+initial DMA mapping. That way, the device .reset op can run free from
+having to maintain and clean up memory mappings by itself.
 
-- parent device that has to work with platform IOMMU
-- parent device with on-chip IOMMU that has the expected
-  .reset_map support in driver
-- parent device with vendor specific IOMMU implementation
-  that explicitly declares the specific backend feature
+The cvq mapping also needs to be cleared if is in the given ASID.
 
-The reason why .reset_map is being one of the pre-condition for
-persistent iotlb is because without it, vhost-vdpa can't switch
-back iotlb to the initial state later on, especially for the
-on-chip IOMMU case which starts with identity mapping at device
-creation. virtio-vdpa requires on-chip IOMMU to perform 1:1
-passthrough translation from PA to IOVA as-is to begin with, and
-.reset_map is the only means to turn back iotlb to the identity
-mapping mode after vhost-vdpa is gone.
-
+Co-developed-by: Dragos Tatulea <dtatulea@nvidia.com>
+Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
 Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
 ---
- drivers/vhost/vdpa.c             | 15 +++++++++++++++
- include/uapi/linux/vhost_types.h |  2 ++
- 2 files changed, 17 insertions(+)
+ drivers/vdpa/mlx5/core/mlx5_vdpa.h |  1 +
+ drivers/vdpa/mlx5/core/mr.c        | 17 +++++++++++++++++
+ drivers/vdpa/mlx5/net/mlx5_vnet.c  | 18 +++++++++++++-----
+ 3 files changed, 31 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-index a3f8160..c92794f 100644
---- a/drivers/vhost/vdpa.c
-+++ b/drivers/vhost/vdpa.c
-@@ -413,6 +413,15 @@ static bool vhost_vdpa_has_desc_group(const struct vhost_vdpa *v)
- 	return ops->get_vq_desc_group;
+diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+index db988ce..84547d9 100644
+--- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
++++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+@@ -127,6 +127,7 @@ int mlx5_vdpa_update_cvq_iotlb(struct mlx5_vdpa_dev *mvdev,
+ 				struct vhost_iotlb *iotlb,
+ 				unsigned int asid);
+ int mlx5_vdpa_create_dma_mr(struct mlx5_vdpa_dev *mvdev);
++int mlx5_vdpa_reset_mr(struct mlx5_vdpa_dev *mvdev, unsigned int asid);
+ 
+ #define mlx5_vdpa_warn(__dev, format, ...)                                                         \
+ 	dev_warn((__dev)->mdev->device, "%s:%d:(pid %d) warning: " format, __func__, __LINE__,     \
+diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
+index 66530e28..2197c46 100644
+--- a/drivers/vdpa/mlx5/core/mr.c
++++ b/drivers/vdpa/mlx5/core/mr.c
+@@ -645,3 +645,20 @@ int mlx5_vdpa_create_dma_mr(struct mlx5_vdpa_dev *mvdev)
+ 
+ 	return mlx5_vdpa_update_cvq_iotlb(mvdev, NULL, 0);
+ }
++
++int mlx5_vdpa_reset_mr(struct mlx5_vdpa_dev *mvdev, unsigned int asid)
++{
++	if (asid >= MLX5_VDPA_NUM_AS)
++		return -EINVAL;
++
++	mlx5_vdpa_destroy_mr(mvdev, mvdev->mr[asid]);
++
++	if (asid == 0 && MLX5_CAP_GEN(mvdev->mdev, umem_uid_0)) {
++		if (mlx5_vdpa_create_dma_mr(mvdev))
++			mlx5_vdpa_warn(mvdev, "create DMA MR failed\n");
++	} else {
++		mlx5_vdpa_update_cvq_iotlb(mvdev, NULL, asid);
++	}
++
++	return 0;
++}
+diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+index 6abe023..928e71b 100644
+--- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
++++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+@@ -2838,7 +2838,6 @@ static int mlx5_vdpa_reset(struct vdpa_device *vdev)
+ 	unregister_link_notifier(ndev);
+ 	teardown_driver(ndev);
+ 	clear_vqs_ready(ndev);
+-	mlx5_vdpa_destroy_mr_resources(&ndev->mvdev);
+ 	ndev->mvdev.status = 0;
+ 	ndev->mvdev.suspended = false;
+ 	ndev->cur_num_vqs = 0;
+@@ -2849,10 +2848,6 @@ static int mlx5_vdpa_reset(struct vdpa_device *vdev)
+ 	init_group_to_asid_map(mvdev);
+ 	++mvdev->generation;
+ 
+-	if (MLX5_CAP_GEN(mvdev->mdev, umem_uid_0)) {
+-		if (mlx5_vdpa_create_dma_mr(mvdev))
+-			mlx5_vdpa_warn(mvdev, "create MR failed\n");
+-	}
+ 	up_write(&ndev->reslock);
+ 
+ 	return 0;
+@@ -2932,6 +2927,18 @@ static int mlx5_vdpa_set_map(struct vdpa_device *vdev, unsigned int asid,
+ 	return err;
  }
  
-+static bool vhost_vdpa_has_persistent_map(const struct vhost_vdpa *v)
++static int mlx5_vdpa_reset_map(struct vdpa_device *vdev, unsigned int asid)
 +{
-+	struct vdpa_device *vdpa = v->vdpa;
-+	const struct vdpa_config_ops *ops = vdpa->config;
++	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
++	struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
++	int err;
 +
-+	return (!ops->set_map && !ops->dma_map) || ops->reset_map ||
-+	       vhost_vdpa_get_backend_features(v) & BIT_ULL(VHOST_BACKEND_F_IOTLB_PERSIST);
++	down_write(&ndev->reslock);
++	err = mlx5_vdpa_reset_mr(mvdev, asid);
++	up_write(&ndev->reslock);
++	return err;
 +}
 +
- static long vhost_vdpa_get_features(struct vhost_vdpa *v, u64 __user *featurep)
+ static struct device *mlx5_get_vq_dma_dev(struct vdpa_device *vdev, u16 idx)
  {
- 	struct vdpa_device *vdpa = v->vdpa;
-@@ -725,6 +734,7 @@ static long vhost_vdpa_unlocked_ioctl(struct file *filep,
- 			return -EFAULT;
- 		if (features & ~(VHOST_VDPA_BACKEND_FEATURES |
- 				 BIT_ULL(VHOST_BACKEND_F_DESC_ASID) |
-+				 BIT_ULL(VHOST_BACKEND_F_IOTLB_PERSIST) |
- 				 BIT_ULL(VHOST_BACKEND_F_SUSPEND) |
- 				 BIT_ULL(VHOST_BACKEND_F_RESUME) |
- 				 BIT_ULL(VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK)))
-@@ -741,6 +751,9 @@ static long vhost_vdpa_unlocked_ioctl(struct file *filep,
- 		if ((features & BIT_ULL(VHOST_BACKEND_F_DESC_ASID)) &&
- 		     !vhost_vdpa_has_desc_group(v))
- 			return -EOPNOTSUPP;
-+		if ((features & BIT_ULL(VHOST_BACKEND_F_IOTLB_PERSIST)) &&
-+		     !vhost_vdpa_has_persistent_map(v))
-+			return -EOPNOTSUPP;
- 		vhost_set_backend_features(&v->vdev, features);
- 		return 0;
- 	}
-@@ -796,6 +809,8 @@ static long vhost_vdpa_unlocked_ioctl(struct file *filep,
- 			features |= BIT_ULL(VHOST_BACKEND_F_RESUME);
- 		if (vhost_vdpa_has_desc_group(v))
- 			features |= BIT_ULL(VHOST_BACKEND_F_DESC_ASID);
-+		if (vhost_vdpa_has_persistent_map(v))
-+			features |= BIT_ULL(VHOST_BACKEND_F_IOTLB_PERSIST);
- 		features |= vhost_vdpa_get_backend_features(v);
- 		if (copy_to_user(featurep, &features, sizeof(features)))
- 			r = -EFAULT;
-diff --git a/include/uapi/linux/vhost_types.h b/include/uapi/linux/vhost_types.h
-index 18ad6ae..d765690 100644
---- a/include/uapi/linux/vhost_types.h
-+++ b/include/uapi/linux/vhost_types.h
-@@ -190,5 +190,7 @@ struct vhost_vdpa_iova_range {
-  * buffers may reside. Requires VHOST_BACKEND_F_IOTLB_ASID.
-  */
- #define VHOST_BACKEND_F_DESC_ASID    0x7
-+/* IOTLB don't flush memory mapping across device reset */
-+#define VHOST_BACKEND_F_IOTLB_PERSIST  0x8
- 
- #endif
+ 	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
+@@ -3199,6 +3206,7 @@ static int mlx5_set_group_asid(struct vdpa_device *vdev, u32 group,
+ 	.set_config = mlx5_vdpa_set_config,
+ 	.get_generation = mlx5_vdpa_get_generation,
+ 	.set_map = mlx5_vdpa_set_map,
++	.reset_map = mlx5_vdpa_reset_map,
+ 	.set_group_asid = mlx5_set_group_asid,
+ 	.get_vq_dma_dev = mlx5_get_vq_dma_dev,
+ 	.free = mlx5_vdpa_free,
 -- 
 1.8.3.1
 
