@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16DBF7BFA89
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F2E07BFA87
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231523AbjJJL76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 07:59:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47416 "EHLO
+        id S231739AbjJJMAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 08:00:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231638AbjJJL7v (ORCPT
+        with ESMTP id S231574AbjJJL7z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 07:59:51 -0400
+        Tue, 10 Oct 2023 07:59:55 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFF11C4;
-        Tue, 10 Oct 2023 04:59:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11956C433C9;
-        Tue, 10 Oct 2023 11:59:45 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC37B99;
+        Tue, 10 Oct 2023 04:59:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBB98C433CB;
+        Tue, 10 Oct 2023 11:59:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696939188;
-        bh=glrA/NSJlcH7U+M885gEF/l+fOqb3Q+HVQRs7NsZOT4=;
+        s=k20201202; t=1696939191;
+        bh=6SHl5yfLgLqz1a6BKYTG8WutUg7DP24A8wyXyXhog08=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fb3L1l57Mv3evugY4hyyesMCFEfc8CbjShKC3FqdHpFYgNH8PNKC6pjOVmvXbXaeC
-         tD0bxibYHjllUcZTUxe1B2lS7cJoW3mLm8bWoo0wVCgd8MRN0DtxdivUxqxU1X7oAL
-         /BCrf566nWVrq0Qvi6GChA6KUm8LQNmuZ1h6z/X3kJKLguYup/jIlL1EbwKP6Pmtes
-         5XRrLw2iEb3S63TbMQZREAh+Y9fZj9Oy79WjAl1YFmAtScbzKVMnsex2b4T0YlFnQ+
-         TLNM7DJxlHshJBdy4EVhfD6Hk5JITK0SfxpQAo0aA3DglbTumpR5zKsvdk6iMcPF9d
-         mferUxjepKADA==
+        b=lo9wKiLolE7HeqR3SyrggItEhXe1sKN/TT5jSQmc+wC7lONQtjTehFXue8moGRqyF
+         O9S8vZ4vJAPqswjraWZPC4kfkl6j9SLbkxg3EdNVfQKVv8XRHKvK9J6rDCP1D5+4Fm
+         zkAuSFAIw7B+WYm+2BH4A72RhNSAUD8YDBLZCr1OEFSq5/Nki1kMXT2sw4pXDnQTNu
+         UdNvk1eYf1NYMnmq7HxjIjTsIab25JMihPI8M+sbLELkEJJrFkJdEjjTdNICsIG2Ab
+         iE6g2eZz0vQsadvzvEZidjUMs54qZYib2bqLvBCSFAt0PAQRaecXTcwCvbcAJ0q3NB
+         r9ZLtcUh74YfQ==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
@@ -38,9 +38,9 @@ Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH 05/23] torture: Move rcutorture_sched_setaffinity() out of rcutorture
-Date:   Tue, 10 Oct 2023 13:59:03 +0200
-Message-Id: <20231010115921.988766-6-frederic@kernel.org>
+Subject: [PATCH 06/23] locktorture: Add readers_bind and writers_bind module parameters
+Date:   Tue, 10 Oct 2023 13:59:04 +0200
+Message-Id: <20231010115921.988766-7-frederic@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231010115921.988766-1-frederic@kernel.org>
 References: <20231010115921.988766-1-frederic@kernel.org>
@@ -58,96 +58,121 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The rcutorture_sched_setaffinity() function is needed by locktorture,
-so move its declaration from rcu.h to torture.h and rename it to the
-more generic torture_sched_setaffinity() name.
-
-Please note that use of this function is still restricted to torture
-tests, and of those, currently only rcutorture and locktorture.
+This commit adds readers_bind and writers_bind module parameters to
+locktorture in order to skew tests across socket boundaries.  This skewing
+is intended to provide additional variable-latency stress on the primitive
+under test.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- include/linux/torture.h | 5 +++++
- kernel/rcu/rcu.h        | 4 ----
- kernel/rcu/rcutorture.c | 2 +-
- kernel/rcu/update.c     | 8 ++++----
- 4 files changed, 10 insertions(+), 9 deletions(-)
+ kernel/locking/locktorture.c | 64 ++++++++++++++++++++++++++++++++++--
+ 1 file changed, 62 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/torture.h b/include/linux/torture.h
-index 017f0f710815..c98d0c83d117 100644
---- a/include/linux/torture.h
-+++ b/include/linux/torture.h
-@@ -121,10 +121,15 @@ void _torture_stop_kthread(char *m, struct task_struct **tp);
- #define torture_stop_kthread(n, tp) \
- 	_torture_stop_kthread("Stopping " #n " task", &(tp))
+diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
+index 270c7f80ce84..441866259278 100644
+--- a/kernel/locking/locktorture.c
++++ b/kernel/locking/locktorture.c
+@@ -56,6 +56,55 @@ module_param(torture_type, charp, 0444);
+ MODULE_PARM_DESC(torture_type,
+ 		 "Type of lock to torture (spin_lock, spin_lock_irq, mutex_lock, ...)");
  
-+/* Scheduler-related definitions. */
- #ifdef CONFIG_PREEMPTION
- #define torture_preempt_schedule() __preempt_schedule()
- #else
- #define torture_preempt_schedule()	do { } while (0)
- #endif
- 
-+#if IS_ENABLED(CONFIG_RCU_TORTURE_TEST) || IS_MODULE(CONFIG_RCU_TORTURE_TEST) || IS_ENABLED(CONFIG_LOCK_TORTURE_TEST) || IS_MODULE(CONFIG_LOCK_TORTURE_TEST)
-+long torture_sched_setaffinity(pid_t pid, const struct cpumask *in_mask);
-+#endif
++static cpumask_var_t readers_bind; // Bind the readers to the specified set of CPUs.
++static cpumask_var_t writers_bind; // Bind the writers to the specified set of CPUs.
 +
- #endif /* __LINUX_TORTURE_H */
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index 98e13be411af..567bd3d72e39 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -568,10 +568,6 @@ void do_trace_rcu_torture_read(const char *rcutorturename,
- static inline void rcu_gp_set_torture_wait(int duration) { }
- #endif
- 
--#if IS_ENABLED(CONFIG_RCU_TORTURE_TEST) || IS_MODULE(CONFIG_RCU_TORTURE_TEST)
--long rcutorture_sched_setaffinity(pid_t pid, const struct cpumask *in_mask);
--#endif
--
- #ifdef CONFIG_TINY_SRCU
- 
- static inline void srcutorture_get_gp_data(enum rcutorture_type test_type,
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index ade42d6a9d9b..7e82fb887d09 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -810,7 +810,7 @@ static void synchronize_rcu_trivial(void)
- 	int cpu;
- 
- 	for_each_online_cpu(cpu) {
--		rcutorture_sched_setaffinity(current->pid, cpumask_of(cpu));
-+		torture_sched_setaffinity(current->pid, cpumask_of(cpu));
- 		WARN_ON_ONCE(raw_smp_processor_id() != cpu);
- 	}
++// Parse a cpumask kernel parameter.  If there are more users later on,
++// this might need to got to a more central location.
++static int param_set_cpumask(const char *val, const struct kernel_param *kp)
++{
++	cpumask_var_t *cm_bind = kp->arg;
++	int ret;
++	char *s;
++
++	if (!alloc_cpumask_var(cm_bind, GFP_KERNEL)) {
++		s = "Out of memory";
++		ret = -ENOMEM;
++		goto out_err;
++	}
++	ret = cpulist_parse(val, *cm_bind);
++	if (!ret)
++		return ret;
++	s = "Bad CPU range";
++out_err:
++	pr_warn("%s: %s, all CPUs set\n", kp->name, s);
++	cpumask_setall(*cm_bind);
++	return ret;
++}
++
++// Output a cpumask kernel parameter.
++static int param_get_cpumask(char *buffer, const struct kernel_param *kp)
++{
++	cpumask_var_t *cm_bind = kp->arg;
++
++	return sprintf(buffer, "%*pbl", cpumask_pr_args(*cm_bind));
++}
++
++static bool cpumask_nonempty(cpumask_var_t mask)
++{
++	return cpumask_available(mask) && !cpumask_empty(mask);
++}
++
++static const struct kernel_param_ops lt_bind_ops = {
++	.set = param_set_cpumask,
++	.get = param_get_cpumask,
++};
++
++module_param_cb(readers_bind, &lt_bind_ops, &readers_bind, 0644);
++module_param_cb(writers_bind, &lt_bind_ops, &writers_bind, 0644);
++
++long torture_sched_setaffinity(pid_t pid, const struct cpumask *in_mask);
++
+ static struct task_struct *stats_task;
+ static struct task_struct **writer_tasks;
+ static struct task_struct **reader_tasks;
+@@ -986,16 +1035,23 @@ static int lock_torture_stats(void *arg)
+ 	return 0;
  }
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index 9d3c2e6ba667..c534d6806d3d 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -525,17 +525,17 @@ EXPORT_SYMBOL_GPL(do_trace_rcu_torture_read);
- 	do { } while (0)
- #endif
  
--#if IS_ENABLED(CONFIG_RCU_TORTURE_TEST) || IS_MODULE(CONFIG_RCU_TORTURE_TEST)
-+#if IS_ENABLED(CONFIG_RCU_TORTURE_TEST) || IS_MODULE(CONFIG_RCU_TORTURE_TEST) || IS_ENABLED(CONFIG_LOCK_TORTURE_TEST) || IS_MODULE(CONFIG_LOCK_TORTURE_TEST)
- /* Get rcutorture access to sched_setaffinity(). */
--long rcutorture_sched_setaffinity(pid_t pid, const struct cpumask *in_mask)
-+long torture_sched_setaffinity(pid_t pid, const struct cpumask *in_mask)
++
+ static inline void
+ lock_torture_print_module_parms(struct lock_torture_ops *cur_ops,
+ 				const char *tag)
  {
- 	int ret;
- 
- 	ret = sched_setaffinity(pid, in_mask);
--	WARN_ONCE(ret, "%s: sched_setaffinity() returned %d\n", __func__, ret);
-+	WARN_ONCE(ret, "%s: sched_setaffinity(%d) returned %d\n", __func__, pid, ret);
- 	return ret;
++	static cpumask_t cpumask_all;
++	cpumask_t *rcmp = cpumask_nonempty(readers_bind) ? readers_bind : &cpumask_all;
++	cpumask_t *wcmp = cpumask_nonempty(writers_bind) ? writers_bind : &cpumask_all;
++
++	cpumask_setall(&cpumask_all);
+ 	pr_alert("%s" TORTURE_FLAG
+-		 "--- %s%s: nwriters_stress=%d nreaders_stress=%d nested_locks=%d stat_interval=%d verbose=%d shuffle_interval=%d stutter=%d shutdown_secs=%d onoff_interval=%d onoff_holdoff=%d\n",
++		 "--- %s%s: nwriters_stress=%d nreaders_stress=%d nested_locks=%d stat_interval=%d verbose=%d shuffle_interval=%d stutter=%d shutdown_secs=%d onoff_interval=%d onoff_holdoff=%d readers_bind=%*pbl writers_bind=%*pbl\n",
+ 		 torture_type, tag, cxt.debug_lock ? " [debug]": "",
+ 		 cxt.nrealwriters_stress, cxt.nrealreaders_stress,
+ 		 nested_locks, stat_interval, verbose, shuffle_interval,
+-		 stutter, shutdown_secs, onoff_interval, onoff_holdoff);
++		 stutter, shutdown_secs, onoff_interval, onoff_holdoff,
++		 cpumask_pr_args(rcmp), cpumask_pr_args(wcmp));
  }
--EXPORT_SYMBOL_GPL(rcutorture_sched_setaffinity);
-+EXPORT_SYMBOL_GPL(torture_sched_setaffinity);
- #endif
  
- #ifdef CONFIG_RCU_STALL_COMMON
+ static void lock_torture_cleanup(void)
+@@ -1250,6 +1306,8 @@ static int __init lock_torture_init(void)
+ 						     writer_fifo ? sched_set_fifo : NULL);
+ 		if (torture_init_error(firsterr))
+ 			goto unwind;
++		if (cpumask_nonempty(writers_bind))
++			torture_sched_setaffinity(writer_tasks[i]->pid, writers_bind);
+ 
+ 	create_reader:
+ 		if (cxt.cur_ops->readlock == NULL || (j >= cxt.nrealreaders_stress))
+@@ -1259,6 +1317,8 @@ static int __init lock_torture_init(void)
+ 						  reader_tasks[j]);
+ 		if (torture_init_error(firsterr))
+ 			goto unwind;
++		if (cpumask_nonempty(readers_bind))
++			torture_sched_setaffinity(reader_tasks[j]->pid, readers_bind);
+ 	}
+ 	if (stat_interval > 0) {
+ 		firsterr = torture_create_kthread(lock_torture_stats, NULL,
 -- 
 2.34.1
 
