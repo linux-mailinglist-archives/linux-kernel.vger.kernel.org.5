@@ -2,69 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF2B57C0062
+	by mail.lfdr.de (Postfix) with ESMTP id 197607C0060
 	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232976AbjJJP2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 11:28:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47230 "EHLO
+        id S233343AbjJJP2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 11:28:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229955AbjJJP2q (ORCPT
+        with ESMTP id S233249AbjJJP2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 11:28:46 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD34AF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:28:43 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-5068b69f4aeso13701e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:28:43 -0700 (PDT)
+        Tue, 10 Oct 2023 11:28:48 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F0FF99;
+        Tue, 10 Oct 2023 08:28:47 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-533c5d10dc7so10241294a12.3;
+        Tue, 10 Oct 2023 08:28:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696951721; x=1697556521; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1696951726; x=1697556526; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ekO9fiWw5dM/5weaz3ceIzr6MnGrpqT9loFE7MOGyrU=;
-        b=FMzgRh7nFfJZT1vSt5yVw4JXV++TtBXraW2kKnZAKQ7lzX/0RSzo6PjXlAvg/n8n+4
-         JsS8JEPnJItkFgjPIeodqbf+TOHgo5FLAlp54T1KEpiBcPLfNrF9vYeO+/wJpJbPwZma
-         2NAgOhxBI09+7bCMnoMytBe0CXmhxYyC/72w4fH4Kqn+xmhfONU4qpIqzo2BulTy4onv
-         Z98rXcpUIwxS2NPj/BQGTZki1iJ8XoUlbXcgtBnHoL5dv9NmzwbodCXBnPEx3xbe/4oL
-         4qJpLaL9He7OdZQn7RoU3XQBdnmx1wqkMcYIMaE2F0pkG8zUnnWWpc+u7RqXHn0VFMu+
-         03HQ==
+        bh=/G6ejQKMQhHXkFl4KtoQA7cEqCddO07ycizXIhPaPkg=;
+        b=KAVQZiDQZY/gbAQxtAJG3rJcHK8ntSRxBhppOPjd+6kz0b7kTPfDhzd218YBkwznzL
+         TZFNxz0e+3IwU2NtEs7Xm4IAy3EJS7zc5+spuCS8ZHyJo5toNT0/xD4At6uCrcgRHKrq
+         n0f8AvxBOhAidYK94FBNAYuW/Hs7U5/l6z8T+cq7ES4cRaW/sV1sobp9xgXLNIeazaol
+         w994viRuXch+ak7+b7YMrkLUO6R4ks96hbgAL+Mg7AZJnJ+dBsR945YMng7+bV/zYtBb
+         9QvnGMOsszJj7tBpB+5wCvHgkX+szr2VJlqELBwJDVAk4BTDyyco8pV8KActSkefABjO
+         uoHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696951721; x=1697556521;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696951726; x=1697556526;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ekO9fiWw5dM/5weaz3ceIzr6MnGrpqT9loFE7MOGyrU=;
-        b=W0pa1szbhjaA9Uppk+MXYeo2QnQmOEmSBobx/VqBd5u0K6TiYCC7DiH6wjFszJEf6r
-         wwmLGjmMiGSPp3oex91bdHZf7+CBMhq/9R513BOLVNUaUBujp/62nXXucEExAPNi66Wa
-         wGDobzamfqxrqt6NNTvjTCK/AmDFn/LHgrUa2zfkOaLRWsDW8kk3BhUGXQGxTJNeJAdv
-         BxittWPnPDXJIUracLCp0cLsXBrJb75tk56ugXNxuJ9bGKep3YEgdHZBLxLQUz3Hx3XB
-         02tdPyhfxpTiwu0PpwkGUeR0vEYC/4NhvMft04p6E+X6l+hw6V0L6cf1PwEIEkUDaSoU
-         fQjQ==
-X-Gm-Message-State: AOJu0Yyf+F1e0iLX3wH6ec1X03MteFFe+XAttFeLCj+EAY8ZXsKnth6t
-        C+kaXCnT4cDWFfvpihl08FS8AW1N86xH5I0lsLqwieqEc+q0DGhnwLvmdA==
-X-Google-Smtp-Source: AGHT+IFUfVTdI3DGmUSL2RAl8Kh9AQ/SR5mm4YaKckWRqnUiZrfDiBbiehIs91u221NVNLchLwUcJr+ww0Wg7om+KoE=
-X-Received: by 2002:ac2:44a1:0:b0:501:3d3:cbc0 with SMTP id
- c1-20020ac244a1000000b0050103d3cbc0mr329938lfm.2.1696951721128; Tue, 10 Oct
- 2023 08:28:41 -0700 (PDT)
+        bh=/G6ejQKMQhHXkFl4KtoQA7cEqCddO07ycizXIhPaPkg=;
+        b=V/fMprt8aTi4kXEuaycY3eaT5E+otEtei9BuGlkAp+P67xLhVeIV1awz4FmvmC3PD2
+         kEALE+dKpLE4SGEHc8PuXcEKJ9W7xotvR+J/C27pnvmlkOnmWs86xas49mNBbKezIjCL
+         kRz6SegGHcAtBt9gWe1xQ99p8UJOlqVYgfzVkMZ1U7cwWHFhVXBcuc5sMCU5QKygBiKp
+         rC+tHDe2QuyZ6Zbk9ySch2mys9fjzI4k8lNUZmf0fiu39TwqHP91nx2AoB7Q1R2S1dpm
+         ZUGN0K1nKFsHS5Cbp3TG3341J+CElFBn1kE1cuGEXa6AApSRSkRN7GPmL6d5/nV+Fk2t
+         hPCw==
+X-Gm-Message-State: AOJu0Yz76aAKG8RveeaUCV4fRJqdnKz0asxvwy/02+14JLCZAZcp4NfT
+        QYWPDf6du6foZ9D9ZK+XTPg=
+X-Google-Smtp-Source: AGHT+IEDkZ2Bbac1OspEoQ14qb4STQ+50PQBxeRkKLlrIzUqPBOnNLqRS1m81/DzBZor6WxgPLiNnA==
+X-Received: by 2002:aa7:d88e:0:b0:532:e24d:34f4 with SMTP id u14-20020aa7d88e000000b00532e24d34f4mr15983184edq.39.1696951725720;
+        Tue, 10 Oct 2023 08:28:45 -0700 (PDT)
+Received: from orome.fritz.box (p200300e41f3f4900f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f3f:4900:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id l8-20020a056402344800b0053537ad3936sm7811005edc.21.2023.10.10.08.28.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 08:28:45 -0700 (PDT)
+Date:   Tue, 10 Oct 2023 17:28:43 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Sui Jingfeng <suijingfeng@loongson.cn>
+Cc:     Mikko Perttunen <mperttunen@nvidia.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] drm/tegra: Remove surplus else after return
+Message-ID: <ZSVtqxTdTuPp7aTf@orome.fritz.box>
+References: <20230626143331.640454-1-suijingfeng@loongson.cn>
+ <20230626143331.640454-2-suijingfeng@loongson.cn>
 MIME-Version: 1.0
-References: <20231005190451.175568-1-adrian.hunter@intel.com> <20231010142234.20061-1-adrian.hunter@intel.com>
-In-Reply-To: <20231010142234.20061-1-adrian.hunter@intel.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 10 Oct 2023 08:28:29 -0700
-Message-ID: <CAP-5=fUcC32Qa8vdS5WEa0n-hX_9CeZvbraTJ5+6duQ+2hUJ0A@mail.gmail.com>
-Subject: Re: [PATCH] perf tools: Add unaligned.h to check-headers.sh
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="jzKm22+bkF0mQ8Ka"
+Content-Disposition: inline
+In-Reply-To: <20230626143331.640454-2-suijingfeng@loongson.cn>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,198 +79,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 7:22=E2=80=AFAM Adrian Hunter <adrian.hunter@intel.=
-com> wrote:
->
-> Add include/asm-generic/unaligned.h to check-headers.sh bringing
-> tools/include/asm-generic/unaligned.h up to date so that the kernel and
-> tools versions match.
->
-> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+--jzKm22+bkF0mQ8Ka
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Ian
-
+On Mon, Jun 26, 2023 at 10:33:31PM +0800, Sui Jingfeng wrote:
+> else is not generally useful after return
+>=20
+> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
 > ---
->
->
-> Based on top of 5 patch set "perf intel-pt: Use of get_unaligned_le16() e=
-tc"
->
->
->  tools/include/asm-generic/unaligned.h | 129 ++++++++++++++++++++++++--
->  tools/perf/check-headers.sh           |   1 +
->  2 files changed, 122 insertions(+), 8 deletions(-)
->
-> diff --git a/tools/include/asm-generic/unaligned.h b/tools/include/asm-ge=
-neric/unaligned.h
-> index 9140bb4e16c6..156743d399ae 100644
-> --- a/tools/include/asm-generic/unaligned.h
-> +++ b/tools/include/asm-generic/unaligned.h
-> @@ -1,11 +1,11 @@
-> -/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __ASM_GENERIC_UNALIGNED_H
-> +#define __ASM_GENERIC_UNALIGNED_H
-> +
->  /*
-> - * Copied from the kernel sources to tools/perf/:
-> + * This is the most generic implementation of unaligned accesses
-> + * and should work almost anywhere.
->   */
-> -
-> -#ifndef __TOOLS_LINUX_ASM_GENERIC_UNALIGNED_H
-> -#define __TOOLS_LINUX_ASM_GENERIC_UNALIGNED_H
-> -
->  #pragma GCC diagnostic push
->  #pragma GCC diagnostic ignored "-Wpacked"
->
-> @@ -37,7 +37,120 @@ static inline u64 get_unaligned_le64(const void *p)
->         return le64_to_cpu(__get_unaligned_t(__le64, p));
->  }
->
-> -#pragma GCC diagnostic pop
-> +static inline void put_unaligned_le16(u16 val, void *p)
-> +{
-> +       __put_unaligned_t(__le16, cpu_to_le16(val), p);
-> +}
-> +
-> +static inline void put_unaligned_le32(u32 val, void *p)
-> +{
-> +       __put_unaligned_t(__le32, cpu_to_le32(val), p);
-> +}
-> +
-> +static inline void put_unaligned_le64(u64 val, void *p)
-> +{
-> +       __put_unaligned_t(__le64, cpu_to_le64(val), p);
-> +}
-> +
-> +static inline u16 get_unaligned_be16(const void *p)
-> +{
-> +       return be16_to_cpu(__get_unaligned_t(__be16, p));
-> +}
-> +
-> +static inline u32 get_unaligned_be32(const void *p)
-> +{
-> +       return be32_to_cpu(__get_unaligned_t(__be32, p));
-> +}
-> +
-> +static inline u64 get_unaligned_be64(const void *p)
-> +{
-> +       return be64_to_cpu(__get_unaligned_t(__be64, p));
-> +}
-> +
-> +static inline void put_unaligned_be16(u16 val, void *p)
-> +{
-> +       __put_unaligned_t(__be16, cpu_to_be16(val), p);
-> +}
-> +
-> +static inline void put_unaligned_be32(u32 val, void *p)
-> +{
-> +       __put_unaligned_t(__be32, cpu_to_be32(val), p);
-> +}
-> +
-> +static inline void put_unaligned_be64(u64 val, void *p)
-> +{
-> +       __put_unaligned_t(__be64, cpu_to_be64(val), p);
-> +}
-> +
-> +static inline u32 __get_unaligned_be24(const u8 *p)
-> +{
-> +       return p[0] << 16 | p[1] << 8 | p[2];
-> +}
->
-> -#endif /* __TOOLS_LINUX_ASM_GENERIC_UNALIGNED_H */
-> +static inline u32 get_unaligned_be24(const void *p)
-> +{
-> +       return __get_unaligned_be24(p);
-> +}
-> +
-> +static inline u32 __get_unaligned_le24(const u8 *p)
-> +{
-> +       return p[0] | p[1] << 8 | p[2] << 16;
-> +}
-> +
-> +static inline u32 get_unaligned_le24(const void *p)
-> +{
-> +       return __get_unaligned_le24(p);
-> +}
-> +
-> +static inline void __put_unaligned_be24(const u32 val, u8 *p)
-> +{
-> +       *p++ =3D val >> 16;
-> +       *p++ =3D val >> 8;
-> +       *p++ =3D val;
-> +}
-> +
-> +static inline void put_unaligned_be24(const u32 val, void *p)
-> +{
-> +       __put_unaligned_be24(val, p);
-> +}
-> +
-> +static inline void __put_unaligned_le24(const u32 val, u8 *p)
-> +{
-> +       *p++ =3D val;
-> +       *p++ =3D val >> 8;
-> +       *p++ =3D val >> 16;
-> +}
-> +
-> +static inline void put_unaligned_le24(const u32 val, void *p)
-> +{
-> +       __put_unaligned_le24(val, p);
-> +}
-> +
-> +static inline void __put_unaligned_be48(const u64 val, u8 *p)
-> +{
-> +       *p++ =3D val >> 40;
-> +       *p++ =3D val >> 32;
-> +       *p++ =3D val >> 24;
-> +       *p++ =3D val >> 16;
-> +       *p++ =3D val >> 8;
-> +       *p++ =3D val;
-> +}
-> +
-> +static inline void put_unaligned_be48(const u64 val, void *p)
-> +{
-> +       __put_unaligned_be48(val, p);
-> +}
-> +
-> +static inline u64 __get_unaligned_be48(const u8 *p)
-> +{
-> +       return (u64)p[0] << 40 | (u64)p[1] << 32 | (u64)p[2] << 24 |
-> +               p[3] << 16 | p[4] << 8 | p[5];
-> +}
-> +
-> +static inline u64 get_unaligned_be48(const void *p)
-> +{
-> +       return __get_unaligned_be48(p);
-> +}
-> +#pragma GCC diagnostic pop
->
-> +#endif /* __ASM_GENERIC_UNALIGNED_H */
-> diff --git a/tools/perf/check-headers.sh b/tools/perf/check-headers.sh
-> index 4314c9197850..d09c3d46f08f 100755
-> --- a/tools/perf/check-headers.sh
-> +++ b/tools/perf/check-headers.sh
-> @@ -161,6 +161,7 @@ check arch/x86/lib/memcpy_64.S        '-I "^EXPORT_SY=
-MBOL" -I "^#include <asm/ex
->  check arch/x86/lib/memset_64.S        '-I "^EXPORT_SYMBOL" -I "^#include=
- <asm/export.h>" -I"^SYM_FUNC_START\(_LOCAL\)*(memset_\(erms\|orig\))"'
->  check arch/x86/include/asm/amd-ibs.h  '-I "^#include [<\"]\(asm/\)*msr-i=
-ndex.h"'
->  check arch/arm64/include/asm/cputype.h '-I "^#include [<\"]\(asm/\)*sysr=
-eg.h"'
-> +check include/asm-generic/unaligned.h '-I "^#include <linux/unaligned/pa=
-cked_struct.h>" -I "^#include <asm/byteorder.h>" -I "^#pragma GCC diagnosti=
-c"'
->  check include/uapi/asm-generic/mman.h '-I "^#include <\(uapi/\)*asm-gene=
-ric/mman-common\(-tools\)*.h>"'
->  check include/uapi/linux/mman.h       '-I "^#include <\(uapi/\)*asm/mman=
-.h>"'
->  check include/linux/build_bug.h       '-I "^#\(ifndef\|endif\)\( \/\/\)*=
- static_assert$"'
-> --
-> 2.34.1
->
+>  drivers/gpu/drm/tegra/gem.c | 19 ++++++++++---------
+>  1 file changed, 10 insertions(+), 9 deletions(-)
+
+Applied, thanks.
+
+Thierry
+
+--jzKm22+bkF0mQ8Ka
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmUlbakACgkQ3SOs138+
+s6FCUg/+OD33m/0vdz7o+NyI0mZZyDfZVh2DgPER+q3n6LDkKCpEYQpawTh879En
+YNGwa0fX1Ug8IGwFEJK1zoVVALT9kHbkO33U0O5XgE9SpRigIdyYeeuubT4sBYFb
+ikHphXIQ1MXfVvAs3opcwbuWvI++r19Lsxo/TMq+TbABwfUPdOTB4yjnw0JEZnEL
+nUkL1ZGdITv86GXhxV3f+5Nc+jd16QeJDu7sAFpZUISdm2JQ1s+hSbMDAZOn0u7I
+5Iqp+vbQMc5Kobmxn5PpxLIMGD5BecRwNtqhSbrrcGZ+KziRc/rd9O5SdMAaxSv2
+YOFM8TEsPng4FqJgk7ui98OHhSRka+WHKCWPoPQ+lfVTazoyz8yeksELqNEuIrCt
+BeRYGugLpbjCR3PXPHjB5xjS9rZ/DtU2CByIC1G/TZ14eGFQCHAN39Ou70FE7Fc2
+QyHcAVhwRgiy4VQOCi3gxX7kJOJcEt/x4AirXdmgoowXRu1rif+xjndH1zEIx4/1
+4huPz7V7/GuO1jjO1C4P+i/8LIFTnVRkEVExj2abf515Q7eevlMKNDRp18bXupen
+AAhX+Ab23qPKbXpVhTwmEItA7ni6IokCwdeagAp507kM8poRt6e5UIsXTdjxtk0D
+0XCLPtjB5tuJ7MJKspaOsjPINXPp2Edw6LRIDbdxIGPyAi/UKKY=
+=JkQa
+-----END PGP SIGNATURE-----
+
+--jzKm22+bkF0mQ8Ka--
