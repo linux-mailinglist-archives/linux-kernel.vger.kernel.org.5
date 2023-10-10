@@ -2,76 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6B5B7BFCFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 923067BFD03
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231864AbjJJNLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 09:11:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55578 "EHLO
+        id S232047AbjJJNLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 09:11:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231792AbjJJNLX (ORCPT
+        with ESMTP id S231663AbjJJNL3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 09:11:23 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682619E
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 06:11:20 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id EE53540E014B;
-        Tue, 10 Oct 2023 13:11:17 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id WjwUpLhPDHOh; Tue, 10 Oct 2023 13:11:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1696943476; bh=s6hwso6prMDxVtqqxwRgLVjr6kJJ/eMt+5h8SrEfaZI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D7HjwvgaEuwNjby0WAPT/Le2DYgCXACPXm21ti5Srgr9Ml+u0PjDZHRqbPkYvrItm
-         xAd1Af4xlme+kQEvI2rPtAQW6RNQVeZRXyVpop5IH96Mo15BAKIgccKqCIdKXojtYI
-         6hYIa5IsOwwJhim39J3YpLSjdCjk91B48N0udOEzmHVZIAcWrUqasV6CJcvc947KnG
-         e2ZTyhKPwckfHPaLAeREr57FJrunRTGLTiLrfJkVpLCMqfTMvzAjYElR5iWt/DvHv8
-         vsseuS0KqGQV9makU16QKEu+6NmumZc2rGT8D5T12pY/z6Pg2+vCRQo1PftJtMsyl+
-         3Qd2BLfFN42UAj/7c/uOE2YNnfwfouZC3aKotFWlDBwlhRqDFfOtAAJj9jwirV7gt2
-         mF+VRJkIyRS9ULEJvWYlF6R0MjCGcNb54g8hlpCxNh79y/mX2oWly5MLAYhrfRdMbd
-         xR5S/MWhdQuFXTrift2BcgcAkc6w4bgKVIHIA1jJBNQgyJZS9Md9HAeVgM1OqJPuVp
-         xOFFm81+ZEws8Os9u7aVu71cnZNERL0JjAe02qF+O45DnZlBwJHtXTj12PvO9QDn8a
-         cBo9lD7sKEE184oNMFZUoj+mwH1RL0/yXCrNvxUiL/gqEkGnIo0+T7H3i4Q5T+J4ZP
-         E/d1mmRBiy69wibl71K1BJEs=
-Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
+        Tue, 10 Oct 2023 09:11:29 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F9A4AC;
+        Tue, 10 Oct 2023 06:11:27 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1931340E01AE;
-        Tue, 10 Oct 2023 13:11:00 +0000 (UTC)
-Date:   Tue, 10 Oct 2023 15:10:54 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        Fei Yang <fei.yang@intel.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] x86/alternatives: Disable KASAN on text_poke_early() in
- apply_alternatives()
-Message-ID: <20231010131054.GHZSVNXhruJIx0iCzq@fat_crate.local>
-References: <20231010053716.2481-1-kirill.shutemov@linux.intel.com>
- <20231010081938.GBZSUJGlSvEkFIDnES@fat_crate.local>
- <20231010101056.GF377@noisy.programming.kicks-ass.net>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id F1D9821835;
+        Tue, 10 Oct 2023 13:11:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1696943486; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OcnlPdXPp8TEZItcZ/fLRAEfXrmV/4GaCHnIViuZCTA=;
+        b=C/wakAH4lemrhHu3dIC3LUtIoy/4S/UlQUABM9ptLGmxKpW1IE9kYco9vDmkp2gbZNr9B7
+        EmD54OO+2et7g38dq3yeWvw9TLUVU9yJqZygW9LJpIKcahptzeyM9MLP1fAblgiyTyg7u5
+        6R6CR4/rQP/WBlV2knXyqoOY7O5DmkU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1696943486;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OcnlPdXPp8TEZItcZ/fLRAEfXrmV/4GaCHnIViuZCTA=;
+        b=AGkrC0RoW+lXLQy4ntRnDXvQCf2jvkdPTYmPpInT4rb0FwGZZ2TRu7EG+jQIkHaAPfobmo
+        4PWHJif4CsnmnRDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E4D5D1358F;
+        Tue, 10 Oct 2023 13:11:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id R4reN31NJWVGYQAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 10 Oct 2023 13:11:25 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 818B6A061C; Tue, 10 Oct 2023 15:11:25 +0200 (CEST)
+Date:   Tue, 10 Oct 2023 15:11:25 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Max Kellermann <max.kellermann@ionos.com>
+Cc:     Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>,
+        Dave Kleikamp <shaggy@kernel.org>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net
+Subject: Re: [PATCH v2] fs/{posix_acl,ext2,jfs,ceph}: apply umask if ACL
+ support is disabled
+Message-ID: <20231010131125.3uyfkqbcetfcqsve@quack3>
+References: <69dda7be-d7c8-401f-89f3-7a5ca5550e2f@oracle.com>
+ <20231009144340.418904-1-max.kellermann@ionos.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231010101056.GF377@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+In-Reply-To: <20231009144340.418904-1-max.kellermann@ionos.com>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,19 +76,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 12:10:56PM +0200, Peter Zijlstra wrote:
-> Now, obviously you really don't want boot_cpu_has() in
-> __VIRTUAL_MASK_SHIFT, that would be really bad (Linus recently
-> complained about how horrible the code-gen is around this already, must
-> not make it far worse).
+On Mon 09-10-23 16:43:39, Max Kellermann wrote:
+> One important implementation detail of the posix_acl_create() function
+> is that it applies the umask to the "mode" parameter.  If
+> CONFIG_FS_POSIX_ACL is disabled, this detail is missing and the umask
+> may not get applied.
+> 
+> This patch adds the missing code to posix_acl_create() and to three
+> filesystems that omit the posix_acl_create() call if their individual
+> ACL support is disabled (CONFIG_EXT2_FS_POSIX_ACL,
+> CONFIG_JFS_POSIX_ACL, CONFIG_CEPH_FS_POSIX_ACL).  If
+> posix_acl_create() never gets called, the umask needs to be applied
+> anyway.
+> 
+> This bug used to be exploitable easily with O_TMPFILE (see
+> https://bugzilla.kernel.org/show_bug.cgi?id=203625) but that part was
+> fixed by commit ac6800e279a2 ("fs: Add missing umask strip in
+> vfs_tmpfile") last year.  The bug may not be reachable by userspace
+> anymore, but since it is apparently still necessary to apply the umask
+> again in posix_acl_create(), there is no reason to assume it's not
+> necessary with ACL support is disabled.
+> 
+> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
 
-You mean a MOV (%rip) and a TEST are so horrible there because it is
-a mask?
+Thanks for the updated changelog! But as I'm looking into VFS code isn't
+this already handled by mode_strip_umask() / vfs_prepare_mode() in
+fs/namei.c? Because posix_acl_create() doesn't do anything to 'mode' for
+!IS_POSIXACL() filesystems either. So at least ext2 (where I've checked
+the mount option handling) does seem to have umask properly applied in all
+the cases. But I might be missing something...
 
-I'd experiment with it when I get a chance...
+								Honza
 
+> ---
+>  fs/ceph/super.h           | 6 ++++++
+>  fs/ext2/acl.h             | 6 ++++++
+>  fs/jfs/jfs_acl.h          | 6 ++++++
+>  include/linux/posix_acl.h | 1 +
+>  4 files changed, 19 insertions(+)
+> 
+> diff --git a/fs/ceph/super.h b/fs/ceph/super.h
+> index 51c7f2b14f6f..58349639bd57 100644
+> --- a/fs/ceph/super.h
+> +++ b/fs/ceph/super.h
+> @@ -1194,6 +1194,12 @@ static inline void ceph_forget_all_cached_acls(struct inode *inode)
+>  static inline int ceph_pre_init_acls(struct inode *dir, umode_t *mode,
+>  				     struct ceph_acl_sec_ctx *as_ctx)
+>  {
+> +	/* usually, the umask is applied by posix_acl_create(), but if
+> +	 * ACL support is disabled at compile time, we need to do it
+> +	 * here, because posix_acl_create() will never be called
+> +	 */
+> +	*mode &= ~current_umask();
+> +
+>  	return 0;
+>  }
+>  static inline void ceph_init_inode_acls(struct inode *inode,
+> diff --git a/fs/ext2/acl.h b/fs/ext2/acl.h
+> index 4a8443a2b8ec..0ecaa9c20c0c 100644
+> --- a/fs/ext2/acl.h
+> +++ b/fs/ext2/acl.h
+> @@ -67,6 +67,12 @@ extern int ext2_init_acl (struct inode *, struct inode *);
+>  
+>  static inline int ext2_init_acl (struct inode *inode, struct inode *dir)
+>  {
+> +	/* usually, the umask is applied by posix_acl_create(), but if
+> +	 * ACL support is disabled at compile time, we need to do it
+> +	 * here, because posix_acl_create() will never be called
+> +	 */
+> +	inode->i_mode &= ~current_umask();
+> +
+>  	return 0;
+>  }
+>  #endif
+> diff --git a/fs/jfs/jfs_acl.h b/fs/jfs/jfs_acl.h
+> index f892e54d0fcd..64a05e663a45 100644
+> --- a/fs/jfs/jfs_acl.h
+> +++ b/fs/jfs/jfs_acl.h
+> @@ -17,6 +17,12 @@ int jfs_init_acl(tid_t, struct inode *, struct inode *);
+>  static inline int jfs_init_acl(tid_t tid, struct inode *inode,
+>  			       struct inode *dir)
+>  {
+> +	/* usually, the umask is applied by posix_acl_create(), but if
+> +	 * ACL support is disabled at compile time, we need to do it
+> +	 * here, because posix_acl_create() will never be called
+> +	 */
+> +	inode->i_mode &= ~current_umask();
+> +
+>  	return 0;
+>  }
+>  
+> diff --git a/include/linux/posix_acl.h b/include/linux/posix_acl.h
+> index 0e65b3d634d9..54bc9b1061ca 100644
+> --- a/include/linux/posix_acl.h
+> +++ b/include/linux/posix_acl.h
+> @@ -128,6 +128,7 @@ static inline void cache_no_acl(struct inode *inode)
+>  static inline int posix_acl_create(struct inode *inode, umode_t *mode,
+>  		struct posix_acl **default_acl, struct posix_acl **acl)
+>  {
+> +	*mode &= ~current_umask();
+>  	*default_acl = *acl = NULL;
+>  	return 0;
+>  }
+> -- 
+> 2.39.2
+> 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
