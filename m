@@ -2,106 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 358FF7BF5E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7667BF5EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442853AbjJJIaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 04:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50590 "EHLO
+        id S1442850AbjJJIbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 04:31:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442845AbjJJIaP (ORCPT
+        with ESMTP id S1344471AbjJJIa5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 04:30:15 -0400
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 804CFB7;
-        Tue, 10 Oct 2023 01:30:03 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 182D9E0008;
-        Tue, 10 Oct 2023 08:29:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1696926600;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NaOw8PSc0VULjmhxAa6nnKNT5QXhrjoUDdxFuVyTpCM=;
-        b=d2/GYvHBSkcMRXi9pmcOlLcCOzYlqnrIh22gZ99/gFbL/M7ys56o4fhkMnDPId8GrsjWCC
-        5ouyZmnYSGtztbw5b3KORr9N47KIDYuaBQUiGc3Xf/ZDdUH8+/jT/SFGq05ljDkT54hN13
-        hx19s0wFiBqyB6uDlurPSlGYgMd3j25Og2nZrBv+EZ8JoEtmpYOsJTJFZCGD6qgRxTFCDK
-        FZ/Gn35OaUtNi/MGYMXczmwjExd6qASdYRlrPa0Xtf0BY5UrQHKeqALrbgvp/3zYz4JUyV
-        QEMOADOF32CCiQH10GW8t3f+hFHXxsyHOaUNrGK7QRLSZ6PLjrkZyGoU9RNvDQ==
-Date:   Tue, 10 Oct 2023 10:29:45 +0200
-From:   Herve Codina <herve.codina@bootlin.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Simon Horman <horms@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v7 26/30] net: wan: framer: Add support for the Lantiq
- PEF2256 framer
-Message-ID: <20231010102945.39c27b1d@bootlin.com>
-In-Reply-To: <20231006150252.6d45be95@kernel.org>
-References: <20230928070652.330429-1-herve.codina@bootlin.com>
-        <20230928070652.330429-27-herve.codina@bootlin.com>
-        <20231006150252.6d45be95@kernel.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Tue, 10 Oct 2023 04:30:57 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CDAC1AF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 01:30:54 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 51A741FB;
+        Tue, 10 Oct 2023 01:31:35 -0700 (PDT)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AFAD13F7A6;
+        Tue, 10 Oct 2023 01:30:53 -0700 (PDT)
+Message-ID: <72d358f1-bcee-ee6d-48ca-a38b47aadf29@arm.com>
+Date:   Tue, 10 Oct 2023 09:30:45 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] drivers: perf: arm_pmuv3: Update 'pmc_width' based on
+ actual HW event width
+Content-Language: en-US
+From:   James Clark <james.clark@arm.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh@kernel.org>, raphael.gault@arm.com
+Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org
+References: <20231009043724.175100-1-anshuman.khandual@arm.com>
+ <66125bc2-ff2a-a209-a753-c2e3d8310a45@arm.com>
+ <8a5d2411-3fab-4f21-adb5-f99a2d4b3bee@arm.com>
+ <948c6cdd-5a46-6b4b-37a9-9f971a4853a8@arm.com>
+In-Reply-To: <948c6cdd-5a46-6b4b-37a9-9f971a4853a8@arm.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jakub,
 
-On Fri, 6 Oct 2023 15:02:52 -0700
-Jakub Kicinski <kuba@kernel.org> wrote:
 
-> On Thu, 28 Sep 2023 09:06:44 +0200 Herve Codina wrote:
-> > +	for (i = 0; i < count; i++) {
-> > +		(audio_devs + i)->name = "framer-codec";
-> > +		(audio_devs + i)->of_compatible = compatible;
-> > +		(audio_devs + i)->id = i;  
+On 10/10/2023 09:28, James Clark wrote:
 > 
-> Why not array notation?
-
-Will be change in the next iteration.
-
 > 
-> > +	}
-> > +
-> > +	ret = mfd_add_devices(pef2256->dev, 0, audio_devs, count, NULL, 0, NULL);  
+> On 10/10/2023 04:03, Anshuman Khandual wrote:
+>> Hi James,
+>>
+>> On 10/9/23 15:13, James Clark wrote:
+>>>
+>>>
+>>> On 09/10/2023 05:37, Anshuman Khandual wrote:
+>>>> This updates 'perf_event_mmap_page->pmc_width' based on actual HW event's
+>>>> width that are currently missing i.e ARMPMU_EVT_63BIT and ARMPMU_EVT_47BIT.
+>>>>
+>>>
+>>> Might be worth adding why this is needed or what the actual effect is.
+>>
+>> To have correct 'pmc_width' visible to the user space ?
 > 
-> Should Lee be CCed for the MFD part?
+> Well yeah, but for example I didn't know what that was. And it's not
+> clear why it needs updating at this point in time without a link to any
+> other commit or relevant section from the Arm ARM. So I had a kind of a
+> "why now" question.
+> 
+> "To have correct 'pmc_width' visible to the user space" is definitely
+> more of a what than a why.
+> 
 
-Will be added to the CC list.
+If anything this should at least have a fixes: tag on it. If you're
+saying that it's now correct.
 
-Best regards,
-Hervé
+>>
+>>>
+>>>> Cc: Will Deacon <will@kernel.org>
+>>>> Cc: Mark Rutland <mark.rutland@arm.com>
+>>>> Cc: linux-arm-kernel@lists.infradead.org
+>>>> Cc: linux-kernel@vger.kernel.org
+>>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>>> ---
+>>>> This applies on v6.6-rc5.
+>>>>
+>>>>  drivers/perf/arm_pmuv3.c | 4 ++++
+>>>>  1 file changed, 4 insertions(+)
+>>>>
+>>>> diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
+>>>> index fe4db1831662..94723d00548e 100644
+>>>> --- a/drivers/perf/arm_pmuv3.c
+>>>> +++ b/drivers/perf/arm_pmuv3.c
+>>>> @@ -1375,6 +1375,10 @@ void arch_perf_update_userpage(struct perf_event *event,
+>>>>  	if (userpg->cap_user_rdpmc) {
+>>>>  		if (event->hw.flags & ARMPMU_EVT_64BIT)
+>>>>  			userpg->pmc_width = 64;
+>>>> +		else if (event->hw.flags & ARMPMU_EVT_63BIT)
+>>>> +			userpg->pmc_width = 63;
+>>>> +		else if (event->hw.flags & ARMPMU_EVT_47BIT)
+>>>> +			userpg->pmc_width = 47;
+>>>
+>>> Although it doesn't explicitly say it, the bit of the docs about
+>>> pmc_width in Documentation/arch/arm64/perf.rst loosely implies that this
+>>> is always either 64 or 32. Now that this isn't the case it could mislead
+>>> someone in userspace that they don't have to handle the now arbitrary
+>>> bit widths rather than just whole bytes/ints.
+>>
+>> Are you suggesting that the user space would not handle pmc_width correctly
+>> , once it deviates from a whole bytes/ints format ? In that case user space
+>> handling might need some fixing.
+>>
+> 
+> Not really, I'm just suggesting that anyone writing a new tool and only
+> reading the docs could make that assumption. Seeing as only 32 and 64
+> bit options are mentioned. So it's more to avoid misleading someone in
+> the future than about fixing any existing code, as updating the docs
+> wouldn't have that effect.
+> 
+>>>
+>>> I think the fix is as simple as adding something like "the width may not
+>>> match the requested value or necessarily be a multiple of 8". Unless we
+>>> think this is already widely known and I suppose we could leave it as
+>>> is. (The existing bit in perf that uses it already handles it correctly).
+>>
+>> This is from perf_event_mmap_page definition where it does not assert the
+>> width to be multiple of bytes or ints. Hence the assumption should not be
+>> made into the user space tools.
+>>
+> 
+> Yeah I know its already ok for Perf which is why I mentioned it. But
+> there are more tools out there than Perf, and ones that don't even exist
+> yet, which people would normally read the documentation before writing.
+> 
+>>         /*
+>>          * If cap_user_rdpmc this field provides the bit-width of the value
+>>          * read using the rdpmc() or equivalent instruction. This can be used
+>>          * to sign extend the result like:
+>>          *
+>>          *   pmc <<= 64 - width;
+>>          *   pmc >>= 64 - width; // signed shift right
+>>          *   count += pmc;
+>>          */
+>>         __u16   pmc_width;
+>>
+>> Moreover, on x86 too 'userpg->pmc_width' gets assigned to different values
+>> although multiple of 8.
+>>
+>> userpg->pmc_width = x86_pmu.cntval_bits
+>> arch/x86/events/amd/core.c:     .cntval_bits            = 48
+>> arch/x86/events/intel/knc.c:    .cntval_bits            = 40
+>> arch/x86/events/intel/p6.c:     .cntval_bits            = 32
+>>
+>>>
+>>>>  		else
+>>>>  			userpg->pmc_width = 32;
+>>>>  	}
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
