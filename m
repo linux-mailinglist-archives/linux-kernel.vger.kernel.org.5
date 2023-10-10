@@ -2,115 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 506BC7C0087
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00DA67C0085
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233478AbjJJPk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 11:40:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52832 "EHLO
+        id S233401AbjJJPkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 11:40:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233454AbjJJPky (ORCPT
+        with ESMTP id S232740AbjJJPkt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 11:40:54 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C12AC
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:40:53 -0700 (PDT)
-Received: from [192.168.2.166] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 50861660297B;
-        Tue, 10 Oct 2023 16:40:50 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696952451;
-        bh=Fn9PGvEa9Yc7DpxexISLyAMG9NitNBFOZPUGBK8Mwr8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=EVCfOjeCtyWiIkX7YwniYZCBwWr/sV8dBMsVzDkF4b6wbS6S5tTGmNv+MFji27UTT
-         KGNkwAeIzO3eb3jIR9+v+q0+myzoVs2/Wf2vA7AzPA071Ca1+mKJ8aw1MdFi+dUcv5
-         Iy6Fu88f0mTypNe+PyhwaEkMaXFWjLlpXwtCZxOXRBccRNecWqSKdfIrr5Y3l86F5R
-         e18dXtzfGr70Q35os1/wjMWJ+JoJkUKz7WWQaRx3E0xcmm887pSy6xDOqSS8V6Xbo4
-         iyLbErkDr4HVT6PTl5Sy7F30lfC3tYTTWndZWxaNylJfizAzXAJPG5vuDgR8TmpAF2
-         dxT1JitiyzRow==
-Message-ID: <2f8bcce1-6551-6c2d-481c-67502c82bc68@collabora.com>
-Date:   Tue, 10 Oct 2023 18:40:47 +0300
+        Tue, 10 Oct 2023 11:40:49 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 793F993;
+        Tue, 10 Oct 2023 08:40:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36A0AC433C8;
+        Tue, 10 Oct 2023 15:40:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696952448;
+        bh=Bns2XY9k0e9ThFmHo3x2+L8G5fFyPtlK1e6YKoRto9M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RVjr6yXORxZIobDS/hkTiOZX/wAlelhrNwLoRUciv7VDfByEpoJZrgYp1VzCJcRsR
+         LB0POM2c3OyvHQviGCeuWG414/XCmUnmm44uzGEHqbp20mbwwT3Dt4Br68E/bqB4Rk
+         5+Hg3fnxcU/DdYLn/zHSRvKz8P2w1LLgs0mQnZ8PXjTvVGmnh8+/e/s0cU1oyK/Bbn
+         b9y1vqTQtPTag5/mwQVujrOcLnVtsTw4TJQJU2/Sm2jw0CSpmVIUWrIxybXpc7Job8
+         DNaCLY08P2LakVd2rnu6kcqFp3veInA2ksGwhPRwrG8leFM20LvvHG468GMbZNZMQh
+         zoPZK618+aEHg==
+Date:   Tue, 10 Oct 2023 16:40:58 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     David Lechner <dlechner@baylibre.com>
+Cc:     linux-iio@vger.kernel.org, linux-staging@lists.linux.dev,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
+        Axel Haslam <ahaslam@baylibre.com>,
+        Philip Molloy <pmolloy@baylibre.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 02/17] staging: iio: resolver: ad2s1210: implement
+ hysteresis as channel attr
+Message-ID: <20231010164058.29ee52b4@jic23-huawei>
+In-Reply-To: <20231005-ad2s1210-mainline-v4-2-ec00746840fc@baylibre.com>
+References: <20231005-ad2s1210-mainline-v4-0-ec00746840fc@baylibre.com>
+        <20231005-ad2s1210-mainline-v4-2-ec00746840fc@baylibre.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3] drm/virtio: add new virtio gpu capset definitions
-Content-Language: en-US
-To:     Huang Rui <ray.huang@amd.com>, dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, David Airlie <airlied@redhat.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Akihiko Odaki <akihiko.odaki@daynix.com>,
-        =?UTF-8?Q?Marc-Andr=c3=a9_Lureau?= <marcandre.lureau@gmail.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Xenia Ragiadakou <xenia.ragiadakou@amd.com>,
-        Stefano Stabellini <stefano.stabellini@amd.com>,
-        Honglei Huang <honglei1.huang@amd.com>,
-        Julia Zhang <julia.zhang@amd.com>,
-        Chen Jiqian <Jiqian.Chen@amd.com>
-References: <20231010135722.1142265-1-ray.huang@amd.com>
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <20231010135722.1142265-1-ray.huang@amd.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/23 16:57, Huang Rui wrote:
-> These definitions are used fro qemu, and qemu imports this marco in the
-> headers to enable gfxstream, venus, cross domain, and drm (native
-> context) for virtio gpu. So it should add them even kernel doesn't use
-> this.
+On Thu,  5 Oct 2023 19:50:19 -0500
+David Lechner <dlechner@baylibre.com> wrote:
+
+> The AD2S1210 resolver has a hysteresis feature that can be used to
+> prevent flicker in the LSB of the position register. This can be either
+> enabled or disabled. Disabling hysteresis is useful for increasing
+> precision by oversampling.
 > 
-> Signed-off-by: Huang Rui <ray.huang@amd.com>
-> Reviewed-by: Akihiko Odaki <akihiko.odaki@daynix.com>
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
+Applied
+
 > ---
 > 
-> Changes V1 -> V2:
-> - Add all capsets including gfxstream and venus in kernel header (Dmitry Osipenko)
+> v4 changes:
+> * Fixed hysteresis raw values when st->resolution != 16.
 > 
-> Changes V2 -> V3:
-> - Add missed capsets including cross domain and drm (native context)
->   (Dmitry Osipenko)
+> v3 changes:
+> * Refactored into more functions to reduce complexity of switch statements.
+> * Use early return instead of break in switch statements.
 > 
-> v1: https://lore.kernel.org/lkml/20230915105918.3763061-1-ray.huang@amd.com/
-> v2: https://lore.kernel.org/lkml/20231010032553.1138036-1-ray.huang@amd.com/
 > 
->  include/uapi/linux/virtio_gpu.h | 4 ++++
->  1 file changed, 4 insertions(+)
+>  drivers/staging/iio/resolver/ad2s1210.c | 91 +++++++++++++++++++++++++++++++--
+>  1 file changed, 88 insertions(+), 3 deletions(-)
 > 
-> diff --git a/include/uapi/linux/virtio_gpu.h b/include/uapi/linux/virtio_gpu.h
-> index f556fde07b76..240911c8da31 100644
-> --- a/include/uapi/linux/virtio_gpu.h
-> +++ b/include/uapi/linux/virtio_gpu.h
-> @@ -309,6 +309,10 @@ struct virtio_gpu_cmd_submit {
+> diff --git a/drivers/staging/iio/resolver/ad2s1210.c b/drivers/staging/iio/resolver/ad2s1210.c
+> index 8fbde9517fe9..af063eb25e9c 100644
+> --- a/drivers/staging/iio/resolver/ad2s1210.c
+> +++ b/drivers/staging/iio/resolver/ad2s1210.c
+> @@ -76,7 +76,8 @@ struct ad2s1210_state {
+>  	struct regmap *regmap;
+>  	/** The external oscillator frequency in Hz. */
+>  	unsigned long clkin_hz;
+> -	bool hysteresis;
+> +	/** Available raw hysteresis values based on resolution. */
+> +	int hysteresis_available[2];
+>  	u8 resolution;
+>  	/** For reading raw sample value via SPI. */
+>  	__be16 sample __aligned(IIO_DMA_MINALIGN);
+> @@ -311,6 +312,7 @@ static ssize_t ad2s1210_store_resolution(struct device *dev,
+>  		goto error_ret;
 >  
->  #define VIRTIO_GPU_CAPSET_VIRGL 1
->  #define VIRTIO_GPU_CAPSET_VIRGL2 2
-> +#define VIRTIO_GPU_CAPSET_GFXSTREAM 3
-
-The GFXSTREAM capset isn't correct, it should be GFXSTREAM_VULKAN in
-accordance to [1] and [2]. There are more capsets for GFXSTREAM.
-
-[1]
-https://github.com/google/crosvm/blob/main/rutabaga_gfx/src/rutabaga_utils.rs#L172
-
-[2]
-https://patchwork.kernel.org/project/qemu-devel/patch/20231006010835.444-7-gurchetansingh@chromium.org/
-
--- 
-Best regards,
-Dmitry
+>  	st->resolution = udata;
+> +	st->hysteresis_available[1] = 1 << (16 - st->resolution);
+>  	ret = len;
+>  
+>  error_ret:
+> @@ -447,6 +449,35 @@ static int ad2s1210_single_conversion(struct ad2s1210_state *st,
+>  	return ret;
+>  }
+>  
+> +static int ad2s1210_get_hysteresis(struct ad2s1210_state *st, int *val)
+> +{
+> +	int ret;
+> +
+> +	mutex_lock(&st->lock);
+> +	ret = regmap_test_bits(st->regmap, AD2S1210_REG_CONTROL,
+> +			       AD2S1210_ENABLE_HYSTERESIS);
+> +	mutex_unlock(&st->lock);
+> +
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	*val = ret << (16 - st->resolution);
+> +	return IIO_VAL_INT;
+> +}
+> +
+> +static int ad2s1210_set_hysteresis(struct ad2s1210_state *st, int val)
+> +{
+> +	int ret;
+> +
+> +	mutex_lock(&st->lock);
+> +	ret = regmap_update_bits(st->regmap, AD2S1210_REG_CONTROL,
+> +				 AD2S1210_ENABLE_HYSTERESIS,
+> +				 val ? AD2S1210_ENABLE_HYSTERESIS : 0);
+> +	mutex_unlock(&st->lock);
+> +
+> +	return ret;
+> +}
+> +
+>  static const int ad2s1210_velocity_scale[] = {
+>  	17089132, /* 8.192MHz / (2*pi * 2500 / 2^15) */
+>  	42722830, /* 8.192MHz / (2*pi * 1000 / 2^15) */
+> @@ -479,7 +510,55 @@ static int ad2s1210_read_raw(struct iio_dev *indio_dev,
+>  		default:
+>  			return -EINVAL;
+>  		}
+> +	case IIO_CHAN_INFO_HYSTERESIS:
+> +		switch (chan->type) {
+> +		case IIO_ANGL:
+> +			return ad2s1210_get_hysteresis(st, val);
+> +		default:
+> +			return -EINVAL;
+> +		}
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static int ad2s1210_read_avail(struct iio_dev *indio_dev,
+> +			       struct iio_chan_spec const *chan,
+> +			       const int **vals, int *type,
+> +			       int *length, long mask)
+> +{
+> +	struct ad2s1210_state *st = iio_priv(indio_dev);
+> +
+> +	switch (mask) {
+> +	case IIO_CHAN_INFO_HYSTERESIS:
+> +		switch (chan->type) {
+> +		case IIO_ANGL:
+> +			*vals = st->hysteresis_available;
+> +			*type = IIO_VAL_INT;
+> +			*length = ARRAY_SIZE(st->hysteresis_available);
+> +			return IIO_AVAIL_LIST;
+> +		default:
+> +			return -EINVAL;
+> +		}
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+>  
+> +static int ad2s1210_write_raw(struct iio_dev *indio_dev,
+> +			      struct iio_chan_spec const *chan,
+> +			      int val, int val2, long mask)
+> +{
+> +	struct ad2s1210_state *st = iio_priv(indio_dev);
+> +
+> +	switch (mask) {
+> +	case IIO_CHAN_INFO_HYSTERESIS:
+> +		switch (chan->type) {
+> +		case IIO_ANGL:
+> +			return ad2s1210_set_hysteresis(st, val);
+> +		default:
+> +			return -EINVAL;
+> +		}
+>  	default:
+>  		return -EINVAL;
+>  	}
+> @@ -520,7 +599,10 @@ static const struct iio_chan_spec ad2s1210_channels[] = {
+>  		.indexed = 1,
+>  		.channel = 0,
+>  		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+> -				      BIT(IIO_CHAN_INFO_SCALE),
+> +				      BIT(IIO_CHAN_INFO_SCALE) |
+> +				      BIT(IIO_CHAN_INFO_HYSTERESIS),
+> +		.info_mask_separate_available =
+> +					BIT(IIO_CHAN_INFO_HYSTERESIS),
+>  	}, {
+>  		.type = IIO_ANGL_VEL,
+>  		.indexed = 1,
+> @@ -596,6 +678,8 @@ static int ad2s1210_debugfs_reg_access(struct iio_dev *indio_dev,
+>  
+>  static const struct iio_info ad2s1210_info = {
+>  	.read_raw = ad2s1210_read_raw,
+> +	.read_avail = ad2s1210_read_avail,
+> +	.write_raw = ad2s1210_write_raw,
+>  	.attrs = &ad2s1210_attribute_group,
+>  	.debugfs_reg_access = &ad2s1210_debugfs_reg_access,
+>  };
+> @@ -711,8 +795,9 @@ static int ad2s1210_probe(struct spi_device *spi)
+>  
+>  	mutex_init(&st->lock);
+>  	st->sdev = spi;
+> -	st->hysteresis = true;
+>  	st->resolution = 12;
+> +	st->hysteresis_available[0] = 0;
+> +	st->hysteresis_available[1] = 1 << (16 - st->resolution);
+>  
+>  	ret = ad2s1210_setup_clocks(st);
+>  	if (ret < 0)
+> 
 
