@@ -2,107 +2,473 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF957BFAAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE3D97BFAB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231927AbjJJMDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 08:03:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41350 "EHLO
+        id S231519AbjJJMEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 08:04:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231634AbjJJMDl (ORCPT
+        with ESMTP id S231861AbjJJMDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 08:03:41 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC32123
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:02:44 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qqBRP-0000LI-KU; Tue, 10 Oct 2023 14:02:23 +0200
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qqBRN-000eQg-Vv; Tue, 10 Oct 2023 14:02:22 +0200
-Received: from pengutronix.de (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 8E0702335EC;
-        Tue, 10 Oct 2023 12:02:21 +0000 (UTC)
-Date:   Tue, 10 Oct 2023 14:02:21 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
-        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
-        Michal Simek <michal.simek@amd.com>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH net-next] net: can: Use device_get_match_data()
-Message-ID: <20231010-bronzing-protegee-6d30d36fd9d7-mkl@pengutronix.de>
-References: <20231009172923.2457844-7-robh@kernel.org>
+        Tue, 10 Oct 2023 08:03:46 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDCDB11F
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:03:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696939383; x=1728475383;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=a4c3M+Jokf+rlTYMTvfK4kVpcRX4L5tV26F4pNU+sFo=;
+  b=FPe2+V1h6IPrpWc4xOsmOd7DRRLAEfapJpgKLhdVQL7YFYQHcDtdN1Pd
+   qSyH4bJLfNBF09h00DOcA6fKB97Y5w3cR5Z2nE1d1ytpmvKgl3kNnjZzJ
+   lvLZ/UNtB8ciO+iXFevm+n9kFSCORqFY9SZ2kCXvsV+MoacXBUqLzHvmE
+   Rxu3zpWQpY3BqaC0MOiIFywuS0QIz0356qlhNMgGvMrDXbgOBgWuSmMT6
+   Cm7maaa5T3CelwMpEAwEnoeYnVeTitWp8fU2eoyHiHpfDL2w6EkbgmZ7E
+   SmKElHsNZYqNayYDUuDjfIm7nALjkF4+E7OTh3S72Tu7oLoslqcddDxjg
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="415382895"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="415382895"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 05:02:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="819214237"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="819214237"
+Received: from ahajda-mobl.ger.corp.intel.com (HELO [10.213.14.169]) ([10.213.14.169])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 05:02:57 -0700
+Message-ID: <e0f9f143-b2b7-4281-8954-e981e744f0f6@intel.com>
+Date:   Tue, 10 Oct 2023 14:02:54 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="fp36lzpijx6cnf33"
-Content-Disposition: inline
-In-Reply-To: <20231009172923.2457844-7-robh@kernel.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] debugobjects: stop accessing objects after releasing
+ spinlock
+Content-Language: en-US
+To:     linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        linux-mm@kvack.org, Thomas Gleixner <tglx@linutronix.de>
+Cc:     Andi Shyti <andi.shyti@linux.intel.com>,
+        Nirmoy Das <nirmoy.das@intel.com>,
+        Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
+References: <20230925131359.2948827-1-andrzej.hajda@intel.com>
+From:   Andrzej Hajda <andrzej.hajda@intel.com>
+Organization: Intel Technology Poland sp. z o.o. - ul. Slowackiego 173, 80-298
+ Gdansk - KRS 101882 - NIP 957-07-52-316
+In-Reply-To: <20230925131359.2948827-1-andrzej.hajda@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 25.09.2023 15:13, Andrzej Hajda wrote:
+> After spinlock release object can be modified/freed by concurrent thread.
+> Using it in such case is error prone, even for printing object state.
+> To avoid such situation local copy of the object is created if necessary.
+>
+> Signed-off-by: Andrzej Hajda <andrzej.hajda@intel.com>
+> ---
+> v2: add missing switch breaks
+> ---
 
---fp36lzpijx6cnf33
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ping, any volunteer to review?
 
-On 09.10.2023 12:29:02, Rob Herring wrote:
-> Use preferred device_get_match_data() instead of of_match_device() to
-> get the driver match data. With this, adjust the includes to explicitly
-> include the correct headers.
->=20
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Regards
+Andrzej
 
-Applied to linux-can-next/testing.
 
-Thanks,
-Marc
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
---fp36lzpijx6cnf33
-Content-Type: application/pgp-signature; name="signature.asc"
+>   lib/debugobjects.c | 206 +++++++++++++++++++++------------------------
+>   1 file changed, 97 insertions(+), 109 deletions(-)
+>
+> diff --git a/lib/debugobjects.c b/lib/debugobjects.c
+> index a517256a270b71..3afff2f668fc1e 100644
+> --- a/lib/debugobjects.c
+> +++ b/lib/debugobjects.c
+> @@ -620,9 +620,8 @@ static void debug_objects_fill_pool(void)
+>   static void
+>   __debug_object_init(void *addr, const struct debug_obj_descr *descr, int onstack)
+>   {
+> -	enum debug_obj_state state;
+>   	struct debug_bucket *db;
+> -	struct debug_obj *obj;
+> +	struct debug_obj *obj, o;
+>   	unsigned long flags;
+>   
+>   	debug_objects_fill_pool();
+> @@ -644,23 +643,19 @@ __debug_object_init(void *addr, const struct debug_obj_descr *descr, int onstack
+>   	case ODEBUG_STATE_INACTIVE:
+>   		obj->state = ODEBUG_STATE_INIT;
+>   		break;
+> -
+> -	case ODEBUG_STATE_ACTIVE:
+> -		state = obj->state;
+> -		raw_spin_unlock_irqrestore(&db->lock, flags);
+> -		debug_print_object(obj, "init");
+> -		debug_object_fixup(descr->fixup_init, addr, state);
+> -		return;
+> -
+> -	case ODEBUG_STATE_DESTROYED:
+> -		raw_spin_unlock_irqrestore(&db->lock, flags);
+> -		debug_print_object(obj, "init");
+> -		return;
+>   	default:
+> -		break;
+> +		o = *obj;
+> +		obj = NULL;
+>   	}
+>   
+>   	raw_spin_unlock_irqrestore(&db->lock, flags);
+> +
+> +	if (obj)
+> +		return;
+> +
+> +	debug_print_object(&o, "init");
+> +	if (o.state == ODEBUG_STATE_ACTIVE)
+> +		debug_object_fixup(descr->fixup_init, addr, o.state);
+>   }
+>   
+>   /**
+> @@ -700,12 +695,9 @@ EXPORT_SYMBOL_GPL(debug_object_init_on_stack);
+>    */
+>   int debug_object_activate(void *addr, const struct debug_obj_descr *descr)
+>   {
+> -	struct debug_obj o = { .object = addr, .state = ODEBUG_STATE_NOTAVAILABLE, .descr = descr };
+> -	enum debug_obj_state state;
+>   	struct debug_bucket *db;
+> -	struct debug_obj *obj;
+> +	struct debug_obj *obj, o;
+>   	unsigned long flags;
+> -	int ret;
+>   
+>   	if (!debug_objects_enabled)
+>   		return 0;
+> @@ -717,49 +709,47 @@ int debug_object_activate(void *addr, const struct debug_obj_descr *descr)
+>   	raw_spin_lock_irqsave(&db->lock, flags);
+>   
+>   	obj = lookup_object_or_alloc(addr, db, descr, false, true);
+> -	if (likely(!IS_ERR_OR_NULL(obj))) {
+> -		bool print_object = false;
+> -
+> +	if (unlikely(!obj)) {
+> +		raw_spin_unlock_irqrestore(&db->lock, flags);
+> +		debug_objects_oom();
+> +		return 0;
+> +	} else if (likely(!IS_ERR(obj))) {
+>   		switch (obj->state) {
+>   		case ODEBUG_STATE_INIT:
+>   		case ODEBUG_STATE_INACTIVE:
+>   			obj->state = ODEBUG_STATE_ACTIVE;
+> -			ret = 0;
+>   			break;
+> -
+>   		case ODEBUG_STATE_ACTIVE:
+> -			state = obj->state;
+> -			raw_spin_unlock_irqrestore(&db->lock, flags);
+> -			debug_print_object(obj, "activate");
+> -			ret = debug_object_fixup(descr->fixup_activate, addr, state);
+> -			return ret ? 0 : -EINVAL;
+> -
+>   		case ODEBUG_STATE_DESTROYED:
+> -			print_object = true;
+> -			ret = -EINVAL;
+> +			o = *obj;
+> +			obj = NULL;
+>   			break;
+>   		default:
+> -			ret = 0;
+>   			break;
+>   		}
+> -		raw_spin_unlock_irqrestore(&db->lock, flags);
+> -		if (print_object)
+> -			debug_print_object(obj, "activate");
+> -		return ret;
+> +	} else {
+> +		o.object = addr;
+> +		o.state = ODEBUG_STATE_NOTAVAILABLE;
+> +		o.descr = descr;
+> +		obj = NULL;
+>   	}
+>   
+>   	raw_spin_unlock_irqrestore(&db->lock, flags);
+>   
+> -	/* If NULL the allocation has hit OOM */
+> -	if (!obj) {
+> -		debug_objects_oom();
+> +	if (obj)
+>   		return 0;
+> -	}
+>   
+> -	/* Object is neither static nor tracked. It's not initialized */
+>   	debug_print_object(&o, "activate");
+> -	ret = debug_object_fixup(descr->fixup_activate, addr, ODEBUG_STATE_NOTAVAILABLE);
+> -	return ret ? 0 : -EINVAL;
+> +
+> +	switch (o.state) {
+> +	case ODEBUG_STATE_ACTIVE:
+> +	case ODEBUG_STATE_NOTAVAILABLE:
+> +		if (debug_object_fixup(descr->fixup_activate, addr, o.state))
+> +			return 0;
+> +		fallthrough;
+> +	default:
+> +		return -EINVAL;
+> +	}
+>   }
+>   EXPORT_SYMBOL_GPL(debug_object_activate);
+>   
+> @@ -771,9 +761,8 @@ EXPORT_SYMBOL_GPL(debug_object_activate);
+>   void debug_object_deactivate(void *addr, const struct debug_obj_descr *descr)
+>   {
+>   	struct debug_bucket *db;
+> -	struct debug_obj *obj;
+> +	struct debug_obj *obj, o;
+>   	unsigned long flags;
+> -	bool print_object = false;
+>   
+>   	if (!debug_objects_enabled)
+>   		return;
+> @@ -788,30 +777,29 @@ void debug_object_deactivate(void *addr, const struct debug_obj_descr *descr)
+>   		case ODEBUG_STATE_INIT:
+>   		case ODEBUG_STATE_INACTIVE:
+>   		case ODEBUG_STATE_ACTIVE:
+> -			if (!obj->astate)
+> +			if (!obj->astate) {
+>   				obj->state = ODEBUG_STATE_INACTIVE;
+> -			else
+> -				print_object = true;
+> -			break;
+> -
+> +				break;
+> +			}
+> +			fallthrough;
+>   		case ODEBUG_STATE_DESTROYED:
+> -			print_object = true;
+> +			o = *obj;
+> +			obj = NULL;
+>   			break;
+>   		default:
+>   			break;
+>   		}
+> +	} else {
+> +		o.object = addr;
+> +		o.state = ODEBUG_STATE_NOTAVAILABLE;
+> +		o.descr = descr;
+> +		obj = NULL;
+>   	}
+>   
+>   	raw_spin_unlock_irqrestore(&db->lock, flags);
+> -	if (!obj) {
+> -		struct debug_obj o = { .object = addr,
+> -				       .state = ODEBUG_STATE_NOTAVAILABLE,
+> -				       .descr = descr };
+>   
+> +	if (!obj)
+>   		debug_print_object(&o, "deactivate");
+> -	} else if (print_object) {
+> -		debug_print_object(obj, "deactivate");
+> -	}
+>   }
+>   EXPORT_SYMBOL_GPL(debug_object_deactivate);
+>   
+> @@ -822,11 +810,9 @@ EXPORT_SYMBOL_GPL(debug_object_deactivate);
+>    */
+>   void debug_object_destroy(void *addr, const struct debug_obj_descr *descr)
+>   {
+> -	enum debug_obj_state state;
+>   	struct debug_bucket *db;
+> -	struct debug_obj *obj;
+> +	struct debug_obj *obj, o;
+>   	unsigned long flags;
+> -	bool print_object = false;
+>   
+>   	if (!debug_objects_enabled)
+>   		return;
+> @@ -836,8 +822,10 @@ void debug_object_destroy(void *addr, const struct debug_obj_descr *descr)
+>   	raw_spin_lock_irqsave(&db->lock, flags);
+>   
+>   	obj = lookup_object(addr, db);
+> -	if (!obj)
+> -		goto out_unlock;
+> +	if (!obj) {
+> +		raw_spin_unlock_irqrestore(&db->lock, flags);
+> +		return;
+> +	}
+>   
+>   	switch (obj->state) {
+>   	case ODEBUG_STATE_NONE:
+> @@ -846,22 +834,23 @@ void debug_object_destroy(void *addr, const struct debug_obj_descr *descr)
+>   		obj->state = ODEBUG_STATE_DESTROYED;
+>   		break;
+>   	case ODEBUG_STATE_ACTIVE:
+> -		state = obj->state;
+> -		raw_spin_unlock_irqrestore(&db->lock, flags);
+> -		debug_print_object(obj, "destroy");
+> -		debug_object_fixup(descr->fixup_destroy, addr, state);
+> -		return;
+> -
+>   	case ODEBUG_STATE_DESTROYED:
+> -		print_object = true;
+> +		o = *obj;
+> +		obj = NULL;
+>   		break;
+>   	default:
+>   		break;
+>   	}
+> -out_unlock:
+> +
+>   	raw_spin_unlock_irqrestore(&db->lock, flags);
+> -	if (print_object)
+> -		debug_print_object(obj, "destroy");
+> +
+> +	if (obj)
+> +		return;
+> +
+> +	debug_print_object(&o, "destroy");
+> +
+> +	if (o.state == ODEBUG_STATE_ACTIVE)
+> +		debug_object_fixup(descr->fixup_destroy, addr, o.state);
+>   }
+>   EXPORT_SYMBOL_GPL(debug_object_destroy);
+>   
+> @@ -872,9 +861,8 @@ EXPORT_SYMBOL_GPL(debug_object_destroy);
+>    */
+>   void debug_object_free(void *addr, const struct debug_obj_descr *descr)
+>   {
+> -	enum debug_obj_state state;
+>   	struct debug_bucket *db;
+> -	struct debug_obj *obj;
+> +	struct debug_obj *obj, o;
+>   	unsigned long flags;
+>   
+>   	if (!debug_objects_enabled)
+> @@ -885,24 +873,29 @@ void debug_object_free(void *addr, const struct debug_obj_descr *descr)
+>   	raw_spin_lock_irqsave(&db->lock, flags);
+>   
+>   	obj = lookup_object(addr, db);
+> -	if (!obj)
+> -		goto out_unlock;
+> +	if (!obj) {
+> +		raw_spin_unlock_irqrestore(&db->lock, flags);
+> +		return;
+> +	}
+>   
+>   	switch (obj->state) {
+>   	case ODEBUG_STATE_ACTIVE:
+> -		state = obj->state;
+> -		raw_spin_unlock_irqrestore(&db->lock, flags);
+> -		debug_print_object(obj, "free");
+> -		debug_object_fixup(descr->fixup_free, addr, state);
+> -		return;
+> +		o = *obj;
+> +		obj = NULL;
+> +		break;
+>   	default:
+>   		hlist_del(&obj->node);
+> -		raw_spin_unlock_irqrestore(&db->lock, flags);
+> +	}
+> +
+> +	raw_spin_unlock_irqrestore(&db->lock, flags);
+> +
+> +	if (obj) {
+>   		free_object(obj);
+>   		return;
+>   	}
+> -out_unlock:
+> -	raw_spin_unlock_irqrestore(&db->lock, flags);
+> +
+> +	debug_print_object(&o, "free");
+> +	debug_object_fixup(descr->fixup_free, addr, o.state);
+>   }
+>   EXPORT_SYMBOL_GPL(debug_object_free);
+>   
+> @@ -955,9 +948,8 @@ debug_object_active_state(void *addr, const struct debug_obj_descr *descr,
+>   			  unsigned int expect, unsigned int next)
+>   {
+>   	struct debug_bucket *db;
+> -	struct debug_obj *obj;
+> +	struct debug_obj *obj, o;
+>   	unsigned long flags;
+> -	bool print_object = false;
+>   
+>   	if (!debug_objects_enabled)
+>   		return;
+> @@ -970,28 +962,27 @@ debug_object_active_state(void *addr, const struct debug_obj_descr *descr,
+>   	if (obj) {
+>   		switch (obj->state) {
+>   		case ODEBUG_STATE_ACTIVE:
+> -			if (obj->astate == expect)
+> +			if (obj->astate == expect) {
+>   				obj->astate = next;
+> -			else
+> -				print_object = true;
+> -			break;
+> -
+> +				break;
+> +			}
+> +			fallthrough;
+>   		default:
+> -			print_object = true;
+> +			o = *obj;
+> +			obj = NULL;
+>   			break;
+>   		}
+> +	} else {
+> +		o.object = addr;
+> +		o.state = ODEBUG_STATE_NOTAVAILABLE;
+> +		o.descr = descr;
+> +		obj = NULL;
+>   	}
+>   
+>   	raw_spin_unlock_irqrestore(&db->lock, flags);
+> -	if (!obj) {
+> -		struct debug_obj o = { .object = addr,
+> -				       .state = ODEBUG_STATE_NOTAVAILABLE,
+> -				       .descr = descr };
+>   
+> +	if (!obj)
+>   		debug_print_object(&o, "active_state");
+> -	} else if (print_object) {
+> -		debug_print_object(obj, "active_state");
+> -	}
+>   }
+>   EXPORT_SYMBOL_GPL(debug_object_active_state);
+>   
+> @@ -999,11 +990,9 @@ EXPORT_SYMBOL_GPL(debug_object_active_state);
+>   static void __debug_check_no_obj_freed(const void *address, unsigned long size)
+>   {
+>   	unsigned long flags, oaddr, saddr, eaddr, paddr, chunks;
+> -	const struct debug_obj_descr *descr;
+> -	enum debug_obj_state state;
+>   	struct debug_bucket *db;
+>   	struct hlist_node *tmp;
+> -	struct debug_obj *obj;
+> +	struct debug_obj *obj, o;
+>   	int cnt, objs_checked = 0;
+>   
+>   	saddr = (unsigned long) address;
+> @@ -1026,12 +1015,11 @@ static void __debug_check_no_obj_freed(const void *address, unsigned long size)
+>   
+>   			switch (obj->state) {
+>   			case ODEBUG_STATE_ACTIVE:
+> -				descr = obj->descr;
+> -				state = obj->state;
+> +				o = *obj;
+>   				raw_spin_unlock_irqrestore(&db->lock, flags);
+> -				debug_print_object(obj, "free");
+> -				debug_object_fixup(descr->fixup_free,
+> -						   (void *) oaddr, state);
+> +				debug_print_object(&o, "free");
+> +				debug_object_fixup(o.descr->fixup_free,
+> +						   (void *) oaddr, o.state);
+>   				goto repeat;
+>   			default:
+>   				hlist_del(&obj->node);
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmUlPUkACgkQvlAcSiqK
-BOjGlAf/Wu1rDWKGmVmdavgNhMNVSqXrYMNsmKOt9IeYsgzCLPQXTBwg0SaVZrwG
-8r+cImT/Tf0Rjy9/5PYgmb+Gwmo3Wr1JIT/wVMCEtx1S7s6rQOXV6Njl9+RKxEvn
-GjWEnTj0MjylffXF7VLmcH2s9/AcBd9Ot1dSgxwZumuie/dn7gpzS4mxsz+YEkbh
-8qBhV4J3AiQiqSlvkQH48VwWHeoON24Z2wyAcpc99+weKAcrRpS1tqvWmwPDjFAx
-9JJGcZIKUGqTQHE7w+F2XaYVyJ/cvWx8AfCb0ly/mMbq2R5nci9yX/aErs45MyUH
-Fbn6z+zJqcIITgEfYuwb96FKRdp2Fg==
-=3YxV
------END PGP SIGNATURE-----
-
---fp36lzpijx6cnf33--
