@@ -2,109 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9B67BF26A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 07:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4757BF270
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 07:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442170AbjJJFqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 01:46:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37470 "EHLO
+        id S1442166AbjJJFrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 01:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442162AbjJJFql (ORCPT
+        with ESMTP id S1379414AbjJJFrs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 01:46:41 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23C6511A;
-        Mon,  9 Oct 2023 22:46:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696916797; x=1728452797;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=ueFvf7JJaks5mJOm09moID6hWZ9bgKShkkmMs8XC9kA=;
-  b=VROw0XHmop17NRiaefiA8M6kbbI7dvEEB08QWgNZJPNLvvAoOj1TmFJE
-   U+7dAY3HQYSAhENS6EipftzB0XiQAe0fBLuZNxqB1nM57t02N62H91NTD
-   b1/Z/a8HQa61Na7RTNYEns7IfUpWS8F1cdsAWUvZ1CLXSbpcsMyQyEGWx
-   B4lhESJHkQHnwZF11M9Q5ZJSYc7h6DUdvOBr1An6BI0rV1fMESGqQkwfn
-   VZGxpLkB6QVBa7pCWwxzLl0O3ozk469eRQJ8xHdU91x3WX3ausavh19qJ
-   rNTcJyYtBgW70Lzh6tnsywNccn223oeQpOm86Rtl/x3q81aVVy3OwiQgf
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="381574063"
-X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
-   d="scan'208";a="381574063"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 22:46:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="843990705"
-X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
-   d="scan'208";a="843990705"
-Received: from geigerri-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.41.165])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 22:46:34 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id A273310A196; Tue, 10 Oct 2023 08:46:31 +0300 (+03)
-Date:   Tue, 10 Oct 2023 08:46:31 +0300
-From:   kirill.shutemov@linux.intel.com
-To:     Binbin Wu <binbin.wu@linux.intel.com>
-Cc:     dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        shuah@kernel.org, linux-kselftest@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, weihong.zhang@intel.com
-Subject: Re: [PATCH] selftests/x86/lam: Zero out buffer for readlink()
-Message-ID: <20231010054631.kud3zvv57je2buad@box.shutemov.name>
-References: <20230923233346.12726-1-binbin.wu@linux.intel.com>
- <20230927110219.b5n3fbbwrxtcwtzp@box.shutemov.name>
- <1793b780-cd15-b6a3-f951-c19a14a1310c@linux.intel.com>
+        Tue, 10 Oct 2023 01:47:48 -0400
+Received: from bird.elm.relay.mailchannels.net (bird.elm.relay.mailchannels.net [23.83.212.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74AF692;
+        Mon,  9 Oct 2023 22:47:40 -0700 (PDT)
+X-Sender-Id: dreamhost|x-authsender|cosmos@claycon.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id 983C5761605;
+        Tue, 10 Oct 2023 05:47:39 +0000 (UTC)
+Received: from pdx1-sub0-mail-a261.dreamhost.com (unknown [127.0.0.6])
+        (Authenticated sender: dreamhost)
+        by relay.mailchannels.net (Postfix) with ESMTPA id 27DC77611AA;
+        Tue, 10 Oct 2023 05:47:39 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1696916859; a=rsa-sha256;
+        cv=none;
+        b=3Z1e2c5Gqc2xgCnjewSbdWiqgp5EWzzAh1cooBlA68uNeMxNfXF7LqyqsyYei3XzERgfHd
+        JU+anznxsGCAaXKF+WQVmpjMLp9A/ncivPLYuR3u2OS4PkcecbapXNfBtM28ho4LJhsSvU
+        4gdlPWV+LS8g/nqgLXSEO4MRqe+f5qzRmKcVEaAyz7cnh1Mv3ETxGWsu2mU5Vha3x/lIhi
+        tkA7GcRyLqIz21KOlmBVC6vZ1wOyArEwbPnz6ju5rpPQIQCxaQRvaKopZedQOp4brJkBrH
+        ELBPtm3g8YNvejCrDBWcS2Ng1pTbcJiUe/v5NOuTj8y33N9ggJS5o9WrfzwweQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+        s=arc-2022; t=1696916859;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:dkim-signature;
+        bh=1zJT0VoGrkLAtBvhsAQ+j3jJoyvQlLyGd/QNJF4U6d8=;
+        b=JsGi1WTL7PegJ2AJ2gkBsup3Lk3lxOerUAaqdnDDs+h1tuLYtG9DdYwB3qfWN4lpXzxsu/
+        6qmnWOpec2X0SoqM5MYd0QOXFtEjx18de83mHe1D7xpUvTWIqnU5BGPBALm0n46t1thZZv
+        7t8WFCru1+9rtsq8kWYEEUm/JTyDoy8xFlJGuuJC7Qx4yUz5Om4aBDMQumJtrqZiXPXb9X
+        U/TYVLLX64drNYCEaVHfx6m37O5lkBLwQ8ziHAgGHyoBtSSgch4iTS8hmlynEG5MvNtqIX
+        siuJ1p/S0/SuggU07JWvyUeGjTLTJDN/0v0mnwLwVSiHAfNOidwk4oIOl0B5Eg==
+ARC-Authentication-Results: i=1;
+        rspamd-7c449d4847-9wgh4;
+        auth=pass smtp.auth=dreamhost smtp.mailfrom=bugs@claycon.org
+X-Sender-Id: dreamhost|x-authsender|cosmos@claycon.org
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: dreamhost|x-authsender|cosmos@claycon.org
+X-MailChannels-Auth-Id: dreamhost
+X-Scare-Tangy: 23e2acda17cb4c22_1696916859459_3115200803
+X-MC-Loop-Signature: 1696916859459:1200585657
+X-MC-Ingress-Time: 1696916859458
+Received: from pdx1-sub0-mail-a261.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+        by 100.103.131.218 (trex/6.9.1);
+        Tue, 10 Oct 2023 05:47:39 +0000
+Received: from vps46052.dreamhostps.com (vps46052.dreamhostps.com [69.163.237.247])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: cosmos@claycon.org)
+        by pdx1-sub0-mail-a261.dreamhost.com (Postfix) with ESMTPSA id 4S4Q0V6Kd6z3H;
+        Mon,  9 Oct 2023 22:47:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=claycon.org;
+        s=dreamhost; t=1696916858;
+        bh=1zJT0VoGrkLAtBvhsAQ+j3jJoyvQlLyGd/QNJF4U6d8=;
+        h=Date:From:To:Cc:Subject:Content-Type:Content-Transfer-Encoding;
+        b=IHdXtsVEqd6iCHMau92UV943x3KhHWkAZtYK2DWLmbX8zDC9bVTEQhs6EH0tPXqNa
+         LkjQ1xd1VAJ90uF8XBvq5AN/S0+zQ7D8CVuoVU7AJjdzOcd0xijCq+VcRF5PadSfsx
+         OvCLW/kBnA+V+7yVExOpf3pIidagcKoh+AtNExjTRPGUwFHjUi4wmlff0AX0CEHt1y
+         Nu1fsWjgEj5yECIPeXmmCKKpkiio8OgPFEDCHHKxd3syH+bibtp0MphRGomXAxRybh
+         L7TEfDF0+UNU2XK+GFeJEZMgaTVqzEFZubRlZvxpHbygMm3tVjugnFmTOcihsIl6eI
+         qIDkI2G7dtYcw==
+Date:   Tue, 10 Oct 2023 00:47:37 -0500
+From:   Clay Harris <bugs@claycon.org>
+To:     Luis Henriques <lhenriques@suse.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        io-uring@vger.kernel.org
+Subject: Re: [RFC PATCH] fs: add AT_EMPTY_PATH support to unlinkat()
+Message-ID: <ZSTleVf6eNII3dg3@vps46052.dreamhostps.com>
+References: <20230929140456.23767-1-lhenriques@suse.de>
+ <20231009020623.GB800259@ZenIV>
+ <87lecbrfos.fsf@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1793b780-cd15-b6a3-f951-c19a14a1310c@linux.intel.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <87lecbrfos.fsf@suse.de>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,T_SPF_TEMPERROR,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 11:51:32AM +0800, Binbin Wu wrote:
-> 
-> 
-> On 9/27/2023 7:02 PM, kirill.shutemov@linux.intel.com wrote:
-> > On Sun, Sep 24, 2023 at 07:33:46AM +0800, Binbin Wu wrote:
-> > > Zero out the buffer for readlink() since readlink() does not append a
-> > > terminating null byte to the buffer.
-> > > 
-> > > Fixes: 833c12ce0f430 ("selftests/x86/lam: Add inherit test cases for linear-address masking")
-> > > 
-> > > Signed-off-by: Binbin Wu <binbin.wu@linux.intel.com>
-> > > ---
-> > >   tools/testing/selftests/x86/lam.c | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/tools/testing/selftests/x86/lam.c b/tools/testing/selftests/x86/lam.c
-> > > index eb0e46905bf9..9f06942a8e25 100644
-> > > --- a/tools/testing/selftests/x86/lam.c
-> > > +++ b/tools/testing/selftests/x86/lam.c
-> > > @@ -680,7 +680,7 @@ static int handle_execve(struct testcases *test)
-> > >   		perror("Fork failed.");
-> > >   		ret = 1;
-> > >   	} else if (pid == 0) {
-> > > -		char path[PATH_MAX];
-> > > +		char path[PATH_MAX] = {0};
-> > Shouldn't it be PATH_MAX+1 to handle the case when readlink(2) stores
-> > exactly PATH_MAX bytes into the buffer?
-> According to the definition of PATH_MAX in include/uapi/linux/limits.h
-> #define PATH_MAX        4096    /* # chars in a path name including nul */
-> 
-> IIUC, Linux limits the path length to 4095 and PATH_MAX includes the
-> terminating nul.
+Apologies, this message was intended as a reply to Al Viro, but I accidentally
+deleted that message so I'm replying to the reply instead.
 
-Consider the case when kernel bump PATH_MAX to 8192. The binary that
-compiled from lam.c against the older kernel headers will get compromised.
+On Mon, Oct 09 2023 at 16:14:27 +0100, Luis Henriques quoth thus:
 
-Increase the size of the buffer by one or pass PATH_MAX - 1 as buffer size
-to readlink(2).
+> Al Viro <viro@zeniv.linux.org.uk> writes:
+> 
+> > On Fri, Sep 29, 2023 at 03:04:56PM +0100, Luis Henriques wrote:
+> >
+> >> -int do_unlinkat(int dfd, struct filename *name)
+> >> +int do_unlinkat(int dfd, struct filename *name, int flags)
+> >>  {
+> >>  	int error;
+> >> -	struct dentry *dentry;
+> >> +	struct dentry *dentry, *parent;
+> >>  	struct path path;
+> >>  	struct qstr last;
+> >>  	int type;
+> >>  	struct inode *inode = NULL;
+> >>  	struct inode *delegated_inode = NULL;
+> >>  	unsigned int lookup_flags = 0;
+> >> -retry:
+> >> -	error = filename_parentat(dfd, name, lookup_flags, &path, &last, &type);
+> >> -	if (error)
+> >> -		goto exit1;
+> >> +	bool empty_path = (flags & AT_EMPTY_PATH);
+> >>  
+> >> -	error = -EISDIR;
+> >> -	if (type != LAST_NORM)
+> >> -		goto exit2;
+> >> +retry:
+> >> +	if (empty_path) {
+> >> +		error = filename_lookup(dfd, name, 0, &path, NULL);
+> >> +		if (error)
+> >> +			goto exit1;
+> >> +		parent = path.dentry->d_parent;
+> >> +		dentry = path.dentry;
+> >> +	} else {
+> >> +		error = filename_parentat(dfd, name, lookup_flags, &path, &last, &type);
+> >> +		if (error)
+> >> +			goto exit1;
+> >> +		error = -EISDIR;
+> >> +		if (type != LAST_NORM)
+> >> +			goto exit2;
+> >> +		parent = path.dentry;
+> >> +	}
+> >>  
+> >>  	error = mnt_want_write(path.mnt);
+> >>  	if (error)
+> >>  		goto exit2;
+> >>  retry_deleg:
+> >> -	inode_lock_nested(path.dentry->d_inode, I_MUTEX_PARENT);
+> >> -	dentry = lookup_one_qstr_excl(&last, path.dentry, lookup_flags);
+> >> +	inode_lock_nested(parent->d_inode, I_MUTEX_PARENT);
+> >> +	if (!empty_path)
+> >> +		dentry = lookup_one_qstr_excl(&last, parent, lookup_flags);
+> >
+> > For starters, your 'parent' might have been freed under you, just as you'd
+> > been trying to lock its inode.  Or it could have become negative just as you'd
+> > been fetching its ->d_inode, while we are at it.
+> >
+> > Races aside, you are changing permissions required for removing files.  For
+> > unlink() you need to be able to get to the parent directory; if it's e.g.
+> > outside of your namespace, you can't do anything to it.  If file had been
+> > opened there by somebody who could reach it and passed to you (via SCM_RIGHTS,
+> > for example) you currently can't remove the sucker.  With this change that
+> > is no longer true.
+> >
+> > The same goes for the situation when file is bound into your namespace (or
+> > chroot jail, for that matter).  path.dentry might very well be equal to
+> > root of path.mnt; path.dentry->d_parent might be in part of tree that is
+> > no longer visible *anywhere*.  rmdir() should not be able to do anything
+> > with it...
+> >
+> > IMO it's fundamentally broken; not just implementation, but the concept
+> > itself.
+> >
+> > NAKed-by: Al Viro <viro@zeniv.linux.org.uk>
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Al, thank you for this information.  It does shine a little light on where
+dragons may be hiding.  I was wondering if you could comment on a related
+issue.
+
+linkat does allow specifing AT_EMPTY_PATH.  However, it requires
+CAP_DAC_READ_SEARCH.  I saw that a patch went into the kernel to remove
+this restriction, but was shortly thereafter reverted with a comment
+to the effect of "We'll have to think about this a little more".  Then,
+radio silence.  Other than requiring /proc be mounted to bypass, what
+problem does this restriction solve?
+
+Also related, the thing I'm even more interested in is the ability to
+create an O_TMPFILE, populate it, set permissions, etc, and then make
+it appear in a directory.  The problem is I almost always don't want it
+to just appear, but rather atomically replace an older version of the
+file.
+
+dfd = openat(x, "y", O_RDONLY | O_CLOEXEC | O_DIRECTORY, 0)
+fd = openat(dfd, ".", O_RDWR | O_CLOEXEC | O_TMPFILE, 0600)
+do stuff with fd
+fsync(fd)
+linkat(fd, "", dfd, "z", AT_EMPTY_PATH | AT_REPLACE?)
+close(fd)
+fsync(dfd)
+close(dfd)
+
+The AT_REPLACE flag has been suggested before to work around the EEXIST
+behavior.  Alternatively, renameat2 could accept AT_EMPTY_PATH for
+olddirfd/oldpath, but fixing up linkat seems a little cleaner.  Without
+this, it hardly seems worthwhile to use O_TMPFILE at all, and instead
+just go through the hassle of creating the file with a random name
+(plus exposing that file and having to possibly rm it in case of an error).
+
+I haven't been able to find any explanation for the AT_REPLACE idea not
+gaining traction.  Is there some security reason for this?
+
+Thanks
+
+
+> Thank you for your review, which made me glad I sent out the patch early
+> as an RFC.  I (think I) understand the issues you pointed out and,
+> although some of them could be fixed (the races), I guess there's no point
+> pursuing this any further, since you consider the concept itself to be
+> broken.  Again, thank you for your time.
+> 
+> Cheers,
+> -- 
+> Luís
