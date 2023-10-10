@@ -2,96 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B0D57C04C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 21:36:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 359D57C04C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 21:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343980AbjJJTgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 15:36:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40534 "EHLO
+        id S1343915AbjJJTiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 15:38:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343922AbjJJTgq (ORCPT
+        with ESMTP id S231596AbjJJTip (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 15:36:46 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72EDCAC
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 12:36:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF304C433C7;
-        Tue, 10 Oct 2023 19:36:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696966605;
-        bh=uD7ClMOlrXNZucpoYnlZ28XUQ78JwLXF5AuAtp1WUwQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k7vWiM/Yz0PhW0Ss7wKsaKqgBHZaO7QBO00j3RtRK6zfBXxWhUDD6o7xMvc60QjQ1
-         RcMDye+IPKtZrBCDB+F6DoQjOmMh4oQccmwfrbsM9YQLpxX+Ktj0hG9cN4aq+F90h0
-         tQrj4cTkWnfTinCP1gTSH1/T4R1iPkQ8b7sCdVkDrRwZNPuRK//hej2o8N6n8mdYhZ
-         D2s+1lS+ZH5NwQGmqAkko3jMz/dypR6jMOqsmYuLlmiLoTWC8kz07kfSmPGqeWwBFR
-         F94iXliE/hPeGq3/ZTh+KOhEGZIYTefAv8d+N3C3MrFU8XRPCnQdmoE9mhG6+ndzo6
-         OAQXy4SU2G4qQ==
-Date:   Tue, 10 Oct 2023 12:36:43 -0700
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     David Kaplan <david.kaplan@amd.com>
-Cc:     x86@kernel.org, luto@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] x86/retpoline: Ensure default return thunk isn't
- used at runtime
-Message-ID: <20231010193643.su6iqjniuxqqke6d@treble>
-References: <20231010171020.462211-1-david.kaplan@amd.com>
- <20231010171020.462211-4-david.kaplan@amd.com>
+        Tue, 10 Oct 2023 15:38:45 -0400
+Received: from mail-oi1-f207.google.com (mail-oi1-f207.google.com [209.85.167.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 793ABAC
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 12:38:43 -0700 (PDT)
+Received: by mail-oi1-f207.google.com with SMTP id 5614622812f47-3ae4cefe17dso10100606b6e.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 12:38:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696966723; x=1697571523;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KyVaqlX6OagJqZRcmPYALwnKUIfCaD9oKeX/SFNHo7Q=;
+        b=JtcHJMaLk59lwxjwfsPdf1b2CAHDPcnErQDwd3/xrQ7KbwNKd+g9l54QY0xWfBXMcK
+         QDCVGV5NU4LfY6zR7ZxWIvjFs1DRZy/Eg9j3zolrDiE/alpzmidEOS8HR63UNo8/KUVz
+         guppP0yWQyv2e0APP2OSpkC8V0R2KICppCA1cULw9nFFdaXynAMQWC+o8lu2RQhhm/9m
+         m7PlLMKN6e7n7VNzy1wH8enWAg15kmi0v9TqKzwlxw8MPN3piR2mfRXSRc94cj7aj+Y5
+         xxn2sXwHnWWrhW15/qy4P/L5DzaPbu3l1/30elGp78iEwLP1lcUFxKGMaO/OA9oHwhlN
+         ddqQ==
+X-Gm-Message-State: AOJu0YyjFkeetDht82MQcKbRJ/ysgwaQjOisChkvCUIMyoMBqj9/TQ/E
+        EHDpl40kdU0e5yyArJW+0Z6bBTq+kpeNbatwEHjCYBSQ7g0c
+X-Google-Smtp-Source: AGHT+IEBEfxxJ6eHhBGa9pXZ2nwIOCfyK/amQ/eC4kdaZM0L2vuzz1YFUICrlFQBwWX1pHcCO+vU+N6gjjwEJIndGyXJGKfK54dG
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231010171020.462211-4-david.kaplan@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:208a:b0:3ae:11ee:b66f with SMTP id
+ s10-20020a056808208a00b003ae11eeb66fmr10438498oiw.3.1696966722911; Tue, 10
+ Oct 2023 12:38:42 -0700 (PDT)
+Date:   Tue, 10 Oct 2023 12:38:42 -0700
+In-Reply-To: <000000000000cc15ee05ed0ca085@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b70395060761da97@google.com>
+Subject: Re: [syzbot] [reiserfs?] possible deadlock in filename_create
+From:   syzbot <syzbot+95cb07e3840546a4827b@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 12:10:20PM -0500, David Kaplan wrote:
-> All CPU bugs that require a return thunk define a special return thunk
-> to use (e.g., srso_return_thunk).  The default thunk,
-> __x86_return_thunk, should never be used after apply_returns() completes.
-> Otherwise this could lead to potential speculation holes.
-> 
-> Enforce this by replacing this thunk with a ud2 when alternatives are
-> applied.  Alternative instructions are applied after apply_returns().
-> 
-> The default thunk is only used during kernel boot, it is not used during
-> module init since that occurs after apply_returns().
-> 
-> Signed-off-by: David Kaplan <david.kaplan@amd.com>
-> ---
->  arch/x86/lib/retpoline.S | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
-> index 3da768a71cf9..10212cf4a9af 100644
-> --- a/arch/x86/lib/retpoline.S
-> +++ b/arch/x86/lib/retpoline.S
-> @@ -358,15 +358,17 @@ SYM_FUNC_END(call_depth_return_thunk)
->   * This function name is magical and is used by -mfunction-return=thunk-extern
->   * for the compiler to generate JMPs to it.
->   *
-> - * This code is only used during kernel boot or module init.  All
-> + * This code is only used during kernel boot.  All
->   * 'JMP __x86_return_thunk' sites are changed to something else by
->   * apply_returns().
-> + *
-> + * This thunk is turned into a ud2 to ensure it is never used at runtime.
-> + * Alternative instructions are applied after apply_returns().
->   */
->  SYM_CODE_START(__x86_return_thunk)
->  	UNWIND_HINT_FUNC
->  	ANNOTATE_NOENDBR
-> -	ANNOTATE_UNRET_SAFE
-> -	ret
-> +	ALTERNATIVE __stringify(ANNOTATE_UNRET_SAFE;ret),"ud2", X86_FEATURE_RETHUNK
+syzbot has found a reproducer for the following issue on:
 
-If it's truly never used after boot (even for non-rethunk cases) then
-can we use X86_FEATURE_ALWAYS?
+HEAD commit:    19af4a4ed414 Merge branch 'for-next/core', remote-tracking..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=15da0ec9680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=80eedef55cd21fa4
+dashboard link: https://syzkaller.appspot.com/bug?extid=95cb07e3840546a4827b
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11957c65680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1304e6ba680000
 
--- 
-Josh
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/702d996331e0/disk-19af4a4e.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/2a48ce0aeb32/vmlinux-19af4a4e.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/332eb4a803d2/Image-19af4a4e.gz.xz
+mounted in repro #1: https://storage.googleapis.com/syzbot-assets/a4536cf3a09f/mount_0.gz
+mounted in repro #2: https://storage.googleapis.com/syzbot-assets/88a36e03ffba/mount_3.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+95cb07e3840546a4827b@syzkaller.appspotmail.com
+
+REISERFS (device loop0): Created .reiserfs_priv - reserved for xattr storage.
+======================================================
+WARNING: possible circular locking dependency detected
+6.6.0-rc4-syzkaller-g19af4a4ed414 #0 Not tainted
+------------------------------------------------------
+syz-executor324/6098 is trying to acquire lock:
+ffff0000dd376640 (&type->i_mutex_dir_key#6/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:837 [inline]
+ffff0000dd376640 (&type->i_mutex_dir_key#6/1){+.+.}-{3:3}, at: filename_create+0x204/0x468 fs/namei.c:3889
+
+but task is already holding lock:
+ffff0000d494e410 (sb_writers#8){.+.+}-{0:0}, at: mnt_want_write+0x44/0x9c fs/namespace.c:403
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (sb_writers#8){.+.+}-{0:0}:
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1571 [inline]
+       sb_start_write+0x60/0x2ec include/linux/fs.h:1646
+       mnt_want_write_file+0x64/0x1e8 fs/namespace.c:447
+       reiserfs_ioctl+0x188/0x42c fs/reiserfs/ioctl.c:103
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:871 [inline]
+       __se_sys_ioctl fs/ioctl.c:857 [inline]
+       __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:857
+       __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+       el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+
+-> #1 (&sbi->lock){+.+.}-{3:3}:
+       __mutex_lock_common+0x190/0x21a0 kernel/locking/mutex.c:603
+       __mutex_lock kernel/locking/mutex.c:747 [inline]
+       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
+       reiserfs_write_lock+0x7c/0xe8 fs/reiserfs/lock.c:27
+       reiserfs_lookup+0x128/0x45c fs/reiserfs/namei.c:364
+       lookup_one_qstr_excl+0x108/0x230 fs/namei.c:1608
+       filename_create+0x230/0x468 fs/namei.c:3890
+       do_mkdirat+0xac/0x610 fs/namei.c:4135
+       __do_sys_mkdirat fs/namei.c:4158 [inline]
+       __se_sys_mkdirat fs/namei.c:4156 [inline]
+       __arm64_sys_mkdirat+0x90/0xa8 fs/namei.c:4156
+       __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+       el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+
+-> #0 (
+&type->i_mutex_dir_key#6/1){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain kernel/locking/lockdep.c:3868 [inline]
+       __lock_acquire+0x3370/0x75e8 kernel/locking/lockdep.c:5136
+       lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5753
+       down_write_nested+0x58/0xcc kernel/locking/rwsem.c:1689
+       inode_lock_nested include/linux/fs.h:837 [inline]
+       filename_create+0x204/0x468 fs/namei.c:3889
+       do_mkdirat+0xac/0x610 fs/namei.c:4135
+       __do_sys_mkdirat fs/namei.c:4158 [inline]
+       __se_sys_mkdirat fs/namei.c:4156 [inline]
+       __arm64_sys_mkdirat+0x90/0xa8 fs/namei.c:4156
+       __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+       el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+
+other info that might help us debug this:
+
+Chain exists of:
+  &type->i_mutex_dir_key#6/1 --> &sbi->lock --> sb_writers#8
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  rlock(sb_writers#8);
+                               lock(&sbi->lock);
+                               lock(sb_writers#8);
+  lock(&type->i_mutex_dir_key#6/1);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor324/6098:
+ #0: ffff0000d494e410 (sb_writers#8){.+.+}-{0:0}, at: mnt_want_write+0x44/0x9c fs/namespace.c:403
+
+stack backtrace:
+CPU: 1 PID: 6098 Comm: syz-executor324 Not tainted 6.6.0-rc4-syzkaller-g19af4a4ed414 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+Call trace:
+ dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
+ show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
+ dump_stack+0x1c/0x28 lib/dump_stack.c:113
+ print_circular_bug+0x150/0x1b8 kernel/locking/lockdep.c:2060
+ check_noncircular+0x310/0x404 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain kernel/locking/lockdep.c:3868 [inline]
+ __lock_acquire+0x3370/0x75e8 kernel/locking/lockdep.c:5136
+ lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5753
+ down_write_nested+0x58/0xcc kernel/locking/rwsem.c:1689
+ inode_lock_nested include/linux/fs.h:837 [inline]
+ filename_create+0x204/0x468 fs/namei.c:3889
+ do_mkdirat+0xac/0x610 fs/namei.c:4135
+ __do_sys_mkdirat fs/namei.c:4158 [inline]
+ __se_sys_mkdirat fs/namei.c:4156 [inline]
+ __arm64_sys_mkdirat+0x90/0xa8 fs/namei.c:4156
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x58/0x16c arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
