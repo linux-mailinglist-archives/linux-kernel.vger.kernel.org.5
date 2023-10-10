@@ -2,108 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A557C4407
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 00:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9107B7C4411
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 00:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234778AbjJJW2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 18:28:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47214 "EHLO
+        id S229769AbjJJW3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 18:29:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234573AbjJJW1x (ORCPT
+        with ESMTP id S233082AbjJJW3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 18:27:53 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE0CAC
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 15:27:42 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-7742da399a2so409717385a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 15:27:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696976861; x=1697581661; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CkLtTpyq6hhRKA1Cd8NmRte6SMNGKfwrDP5J91+SqxM=;
-        b=sOLzgyavxmNPuIxJT66RHVRJKPM4L7Y9mosU4527HC4w8KJRNktEAYHaiOvOQgSk1W
-         WgDXRkFGo2xLRGU3Eek+jCG4D0655oAzIpaEmUvKLlz9gC4+1srsdf640xGp/hMxnMJB
-         VI6e4mzHz8VGpe7Gibg3n7Nox0eAy4azTsx1/hd74JY/Sh2gbeQnrqmWf0Ug4VMud0gp
-         gEZoVEoqLrmoJQLPyNKJcNMdeMj4uAIYxWDoVlT9WrATIxVQb0axKhX8KXqvTlezx/0T
-         CxZSH2FaCGcV1lUwERDBgx6SFAqdgeW6kzeRn+UnLXDocf6UZXePvumzIzchPf/o7XlC
-         de5Q==
+        Tue, 10 Oct 2023 18:29:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65847130
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 15:28:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696976913;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0lY8Usb/WxC44Vf0gXOx0P0lksQ7vtbcR6F+u6qCVDk=;
+        b=A0rFe8xtB8CG44B4A31lp5sYhnGb7C+ROz6penp12BxyJsvb7wywxOcJt5dhQe7wEhB0sI
+        rTmOqSnh5qPnu3bGkrfYhCIYY/9tAZi7eXzxo59f/0aR7TH2L3fhP7LhPAxHyKmbqY6p9s
+        kwV+ZRrjXWat0qZlQY4o+VeMnOguhfY=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-600-yg4JAO_8N6q6HV_O8lQ16A-1; Tue, 10 Oct 2023 18:28:17 -0400
+X-MC-Unique: yg4JAO_8N6q6HV_O8lQ16A-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-65b0d19bfd0so73669526d6.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 15:28:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696976861; x=1697581661;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CkLtTpyq6hhRKA1Cd8NmRte6SMNGKfwrDP5J91+SqxM=;
-        b=Lrvur1YoBYHh5rJZv9+xU2jezwYhXgjWPTafEKqjuYzeo+AcwAA5t2Axrm2H/N3AY1
-         qYlDEaXLIQma1bQPED2mEnbLEQS4Bp/qsl/u745URYyHkAXj03UXwsW6cZmwTAnUkf6h
-         XMjZzttTLfSJoI2N1N5K20uBTkKDGo1e+lX9cWJmEn93xYY3mlFzdHVjPvdjXl/2bBT/
-         bjjMoiK2PgXzj8swKIOb1Qb9RUBG3Z+nU2s+M08L8D/ryeZlwcg9aF4RkWzAj73m1Gig
-         wMW33d/s0IdrF/1ZY0WRESm4ffSNNDwecB6CczsbLUkQOFxCMg8ppPA/+VQQ/t0HSXZp
-         RK8A==
-X-Gm-Message-State: AOJu0YwWRpGq2gPPcTgxZTJk3FR7MPl1JAt1wk3cuGxYp9eNuaYx7kTe
-        RU6nyxG3ioMrnYBZ1YlVW2VOU/wh6/OwToNAmZOQSg==
-X-Google-Smtp-Source: AGHT+IFxlqxkA6VpJQ6lG3e6PyJG8lq0tpawjVN6OqIO8lL7DWTY3wjUGELV0v4sDHNRAaW6jqwWvjwYUgNF1SZ5uZw=
-X-Received: by 2002:a0c:8cca:0:b0:656:3317:b926 with SMTP id
- q10-20020a0c8cca000000b006563317b926mr16022671qvb.17.1696976861005; Tue, 10
- Oct 2023 15:27:41 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696976896; x=1697581696;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0lY8Usb/WxC44Vf0gXOx0P0lksQ7vtbcR6F+u6qCVDk=;
+        b=f3Qd4kmluNxyWn8Q0cHld30iuwujksNZLu7wb8JwSDIEfqvWtSyQqTHrIu0y88wprF
+         Rfiw0lGegocFtao/rsUXe0P4WiXyvoyPACf9jmr/ZSP9MjWXOjko4f1QuUx1+2p8gjN8
+         JAB6xFr5ZBP1LZUeXjko839GzBcvP85qWpWqaHQpKbFzrqWWo7aEvhFvSl4gKpKuXTHt
+         lqXb7J5DDcY9gap8Lf9HG2THosgsH54mDqWscQTw0VOgSHWtnmDvVbUyBX/xmL8KzrCI
+         5yP/NzqSoxpsD6K9LwCh/cOLN1vgq7bOgQoS2xDoKNYZd6xVe5nhb5AM4pam1BD7K8F2
+         a3jw==
+X-Gm-Message-State: AOJu0YzWY6+7Oe67NDfBNjceCO/g2t6az0xsXg2i8sHHxJUFnmIjAeGC
+        NCOMAgFLt4G6w0YR/I+WxiAq52nBzVqo84x0QZe4Nu5P6uKbsaUJQvAkOQEgdesP9FViTzyTc+q
+        wf9ZWvtqv5ICdBHY1f+Gp5zgl
+X-Received: by 2002:a0c:e78b:0:b0:64f:6199:a8e with SMTP id x11-20020a0ce78b000000b0064f61990a8emr21136776qvn.23.1696976896687;
+        Tue, 10 Oct 2023 15:28:16 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEboajQ4nZ/cXl5Vu15HueXN7j73Nk31by1J1VEP3/o43Up0wBONY+hFPXHf9IFVwfeRzmEYw==
+X-Received: by 2002:a0c:e78b:0:b0:64f:6199:a8e with SMTP id x11-20020a0ce78b000000b0064f61990a8emr21136757qvn.23.1696976896459;
+        Tue, 10 Oct 2023 15:28:16 -0700 (PDT)
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id jy11-20020a0562142b4b00b00641899958efsm328378qvb.130.2023.10.10.15.28.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 15:28:16 -0700 (PDT)
+Date:   Tue, 10 Oct 2023 17:28:13 -0500
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Elliot Berman <quic_eberman@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v3 10/15] firmware: qcom: scm: make
+ qcom_scm_qseecom_app_get_id() use the TZ allocator
+Message-ID: <z3gxzr5cttdhie2svrz7binuxvjqjn5jojkifvvys5hvbyklb3@4tjzaaocr7ft>
+References: <20231009153427.20951-1-brgl@bgdev.pl>
+ <20231009153427.20951-11-brgl@bgdev.pl>
 MIME-Version: 1.0
-References: <1696965810-8315-1-git-send-email-haiyangz@microsoft.com> <20231010151404.3f7faa87@hermes.local>
-In-Reply-To: <20231010151404.3f7faa87@hermes.local>
-From:   Yuchung Cheng <ycheng@google.com>
-Date:   Tue, 10 Oct 2023 15:27:05 -0700
-Message-ID: <CAK6E8=c576Gt=G9Wdk0gQi=2EiL_=6g1SA=mJ3HhzPCsLRk9tw@mail.gmail.com>
-Subject: Re: [PATCH net-next,v2] tcp: Set pingpong threshold via sysctl
-To:     Stephen Hemminger <stephen@networkplumber.org>
-Cc:     Haiyang Zhang <haiyangz@microsoft.com>,
-        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        kys@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, corbet@lwn.net,
-        dsahern@kernel.org, ncardwell@google.com, kuniyu@amazon.com,
-        morleyd@google.com, mfreemon@cloudflare.com, mubashirq@google.com,
-        linux-doc@vger.kernel.org, weiwan@google.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231009153427.20951-11-brgl@bgdev.pl>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 3:14=E2=80=AFPM Stephen Hemminger
-<stephen@networkplumber.org> wrote:
->
-> On Tue, 10 Oct 2023 12:23:30 -0700
-> Haiyang Zhang <haiyangz@microsoft.com> wrote:
->
-> > TCP pingpong threshold is 1 by default. But some applications, like SQL=
- DB
-> > may prefer a higher pingpong threshold to activate delayed acks in quic=
-k
-> > ack mode for better performance.
-> >
-> > The pingpong threshold and related code were changed to 3 in the year
-> > 2019 in:
-> >   commit 4a41f453bedf ("tcp: change pingpong threshold to 3")
-> > And reverted to 1 in the year 2022 in:
-> >   commit 4d8f24eeedc5 ("Revert "tcp: change pingpong threshold to 3"")
-> >
-> > There is no single value that fits all applications.
-> > Add net.ipv4.tcp_pingpong_thresh sysctl tunable, so it can be tuned for
-> > optimal performance based on the application needs.
-> >
-> > Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
->
-> If this an application specific optimization, it should be in a socket op=
-tion
-> rather than system wide via sysctl.
-Initially I had a similar comment but later decided a sysctl could
-still be useful if
-1) the entire host (e.g. virtual machine) is dedicated to that application
-2) that application is difficult to change
+On Mon, Oct 09, 2023 at 05:34:22PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> Let's use the new TZ memory allocator to obtain a buffer for this call
+> instead of manually kmalloc()ing it and then mapping to physical space.
+> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+
+Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
+
+> ---
+>  drivers/firmware/qcom/qcom_scm.c | 18 ++++--------------
+>  1 file changed, 4 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
+> index 11638daa2fe5..3a6cefb4eb2e 100644
+> --- a/drivers/firmware/qcom/qcom_scm.c
+> +++ b/drivers/firmware/qcom/qcom_scm.c
+> @@ -1525,37 +1525,27 @@ int qcom_scm_qseecom_app_get_id(const char *app_name, u32 *app_id)
+>  	unsigned long app_name_len = strlen(app_name);
+>  	struct qcom_scm_desc desc = {};
+>  	struct qcom_scm_qseecom_resp res = {};
+> -	dma_addr_t name_buf_phys;
+> -	char *name_buf;
+>  	int status;
+>  
+>  	if (app_name_len >= name_buf_size)
+>  		return -EINVAL;
+>  
+> -	name_buf = kzalloc(name_buf_size, GFP_KERNEL);
+> +	char *name_buf __free(qcom_tzmem) = qcom_tzmem_alloc(__scm->mempool,
+> +							     name_buf_size,
+> +							     GFP_KERNEL);
+>  	if (!name_buf)
+>  		return -ENOMEM;
+>  
+>  	memcpy(name_buf, app_name, app_name_len);
+>  
+> -	name_buf_phys = dma_map_single(__scm->dev, name_buf, name_buf_size, DMA_TO_DEVICE);
+> -	status = dma_mapping_error(__scm->dev, name_buf_phys);
+> -	if (status) {
+> -		kfree(name_buf);
+> -		dev_err(__scm->dev, "qseecom: failed to map dma address\n");
+> -		return status;
+> -	}
+> -
+>  	desc.owner = QSEECOM_TZ_OWNER_QSEE_OS;
+>  	desc.svc = QSEECOM_TZ_SVC_APP_MGR;
+>  	desc.cmd = QSEECOM_TZ_CMD_APP_LOOKUP;
+>  	desc.arginfo = QCOM_SCM_ARGS(2, QCOM_SCM_RW, QCOM_SCM_VAL);
+> -	desc.args[0] = name_buf_phys;
+> +	desc.args[0] = qcom_tzmem_to_phys(name_buf);
+>  	desc.args[1] = app_name_len;
+>  
+>  	status = qcom_scm_qseecom_call(&desc, &res);
+> -	dma_unmap_single(__scm->dev, name_buf_phys, name_buf_size, DMA_TO_DEVICE);
+> -	kfree(name_buf);
+>  
+>  	if (status)
+>  		return status;
+> -- 
+> 2.39.2
+> 
+
