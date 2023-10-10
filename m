@@ -2,85 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5CE7C03A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 20:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAFA17C03A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 20:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343507AbjJJSnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 14:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43446 "EHLO
+        id S234123AbjJJSpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 14:45:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233829AbjJJSnD (ORCPT
+        with ESMTP id S232771AbjJJSpi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 14:43:03 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2200893;
-        Tue, 10 Oct 2023 11:43:02 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33A2EC433C8;
-        Tue, 10 Oct 2023 18:43:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696963381;
-        bh=xuJQBkZ40eoYwA9Ihdt5nQEAu4U80UA46rmFAeOlETI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J+CeRgYmUqznuNK3A1KzeBLqZHQ6qj7M/VIMOvqj6S4LJDKZvHbAb0CjoVfWkmSVz
-         DXuyk2QQe0sIYUDeqO6aboVmJA1mzWP3TBBtiwpfEjLT+ulusGDrdH3COfezqj9cov
-         QwDVkw6uNkkCQ7+fBpVofXKsoJ42YtHLCOOQC58w=
-Date:   Tue, 10 Oct 2023 20:42:59 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Wang Yugui <wangyugui@e16-tech.com>
-Cc:     wqu@suse.com, stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Subject: Re: [PATCH 6.1 000/162] 6.1.57-rc1 review
-Message-ID: <2023101053-heading-chase-e2c2@gregkh>
-References: <20231010161046.7861.409509F4@e16-tech.com>
- <2023101008-argue-impart-a6ad@gregkh>
- <20231010194221.C1C3.409509F4@e16-tech.com>
+        Tue, 10 Oct 2023 14:45:38 -0400
+Received: from bues.ch (bues.ch [IPv6:2a01:138:9005::1:4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 574B494;
+        Tue, 10 Oct 2023 11:45:35 -0700 (PDT)
+Received: by bues.ch with esmtpsa (Exim 4.96)
+        (envelope-from <m@bues.ch>)
+        id 1qqHjR-0004TG-1n;
+        Tue, 10 Oct 2023 20:45:24 +0200
+Date:   Tue, 10 Oct 2023 20:43:46 +0200
+From:   Michael =?UTF-8?B?QsO8c2No?= <m@bues.ch>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
+Subject: Re: [RFC PATCH] ssb: relax SSB_EMBEDDED dependencies
+Message-ID: <20231010204346.78961fc4@barney>
+In-Reply-To: <e551fb4c-1e3d-4e1a-a465-5b88842789c6@infradead.org>
+References: <20231007182443.32300-1-rdunlap@infradead.org>
+        <20231008093520.42ead15f@barney>
+        <22bc05d3-86e9-4cf6-aec6-10d11df1acc3@infradead.org>
+        <e551fb4c-1e3d-4e1a-a465-5b88842789c6@infradead.org>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231010194221.C1C3.409509F4@e16-tech.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/FN/=Ev6SLbQKxhIfhwxFUxO";
+ protocol="application/pgp-signature"; micalg=pgp-sha512
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 07:42:22PM +0800, Wang Yugui wrote:
-> Hi,
-> 
-> > On Tue, Oct 10, 2023 at 04:10:48PM +0800, Wang Yugui wrote:
-> > > Hi,
-> > > 
-> > > > This is the start of the stable review cycle for the 6.1.57 release.
-> > > > There are 162 patches in this series, all will be posted as a response
-> > > > to this one.  If anyone has any issues with these being applied, please
-> > > > let me know.
-> > > > 
-> > > > Responses should be made by Wed, 11 Oct 2023 13:00:55 +0000.
-> > > > Anything received after that time might be too late.
-> > > 
-> > > 
-> > > drop this patch from 6.5/6.1/5.15/... please, 
-> > >   Qu Wenruo <wqu@suse.com>
-> > >      btrfs: reject unknown mount options early
-> > > 
-> > > becuase of this report.
-> > > https://lore.kernel.org/linux-btrfs/f3ac7b74-c011-4d1f-a510-677679fc9743@gmx.com/T/#t
-> > 
-> > Is there a revert somewhere for this already?
-> 
-> Yet not.
-> 
-> but we can suspend to apply this patch(drop this patch) for stable.
+--Sig_/FN/=Ev6SLbQKxhIfhwxFUxO
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Now dropped, thanks.
+On Sun, 8 Oct 2023 23:12:49 -0700
+Randy Dunlap <rdunlap@infradead.org> wrote:
 
-greg k-h
+> -	depends on SSB_DRIVER_MIPS && SSB_PCICORE_HOSTMODE
+> +	depends on PCI=3Dn || SSB_PCICORE_HOSTMODE
+
+I thought about something like this:
+
+depends on (SSB_DRIVER_MIPS && PCI=3Dn) || (SSB_DRIVER_MIPS && SSB_PCICORE_=
+HOSTMODE)
+
+Would that solve the warning?
+
+--=20
+Michael B=C3=BCsch
+https://bues.ch/
+
+--Sig_/FN/=Ev6SLbQKxhIfhwxFUxO
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEihRzkKVZOnT2ipsS9TK+HZCNiw4FAmUlm2IACgkQ9TK+HZCN
+iw5urA/+NOSFVeXgWibs9YUNACLlI2Qwzqc47vH9YbRl6mLSljFSWOcbeA21KWK7
+kfZt/Iw08MQiRGPgZ/fb754lLrp+5GS/Fur5qE6Og4qk8GIXDotteWCLmQdUshdD
+CC9F7y7oFXXrMVxl7ChEDjEhOx1cWK8kVst0TjFQTqxgzPdMXbhvMShsTLXjUb3H
+uHv8FXbOPQ2IsYBXb5vdYOvLGSW/OrVoSLuRnvrXhLxDVmagFmfpaTu/uFx96X4o
+gOUzcmoJAFwWPW9EzRIGQTRvpOnHhU474fMsc4mI6rgqp+X0qs0z96uMDO6iDZ1U
+fqwecJ/6IxRSs5xtytND2Wz7E7mY5+kjEJh8qrTFIt3tivs38FHAIw9HT0Brgx2d
++/JcFmcyzcAsF6AJ/ZFXY1XcRg8pA7CGqP8GJQ7EVf1JULX8pJFY7b5mjU2G/wLE
++1UVHf1Iz9n5XWTIJi6xrWscDghN9jS4bmerfrwy06DkgLbSZBGzllTTFR3+/dWb
+SrnW3OE3sx6Pob3PpUYcbYkIYKGIA8x4Y66thqqUbx47US/qdYtGwbG2P3yf4d+F
+e38ysvlv6sR+lHTmd+b2CxR2/qCs/rfld09XcJnCW1mPElUhfBqoYl3KqDhhZtOs
+IuzdFiyowbt1XYXadCIXa95BV4K3KBacMealYRsQFMd/y0+ONd8=
+=feI5
+-----END PGP SIGNATURE-----
+
+--Sig_/FN/=Ev6SLbQKxhIfhwxFUxO--
