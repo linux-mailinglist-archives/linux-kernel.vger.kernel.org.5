@@ -2,142 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B637BF533
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BEA07BF537
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442709AbjJJICA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 04:02:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44986 "EHLO
+        id S1442653AbjJJIDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 04:03:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442536AbjJJIB4 (ORCPT
+        with ESMTP id S1442525AbjJJIC7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 04:01:56 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D296592;
-        Tue, 10 Oct 2023 01:01:53 -0700 (PDT)
+        Tue, 10 Oct 2023 04:02:59 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 350C394
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 01:02:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=QM5Im+7k5GpQA/JxbJgORC477jL0+OQeMFKuqizFCv0=; b=HimaW3MEuVu9hIyFdVUHaS9/Mz
-        3vW+IpvgwTDGEpiu3fRopt4gwLwu7QR6pTroCqHtp9VWuy/jSf7T4a4KBrHQclHYC5lN8TFngSck3
-        cd6nf91a41FyK3G+2LbUYztywiE17/LR97+bNRXEXFASbPd6SbFCyJ8Iul1PmaD9l5nshTbJC5wso
-        i6eI8HPopLF77xx7G/mpkYZNiY3/QRdLVa91l6Bpp4fXphDw/mokWbb+/qYvXSiw9uNJaiI9sV7ja
-        wJ4ipg10tL/ygP5CzdhD7YvHq2AMaeiA1XYCytHU2+wGzD8jpkpU9mUwriuJIH7mnYHUYTIi8UZ5c
-        GdQS0PCA==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qq7ge-000OeD-3m; Tue, 10 Oct 2023 10:01:52 +0200
-Received: from [178.197.249.27] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qq7gd-000Lqg-Qs; Tue, 10 Oct 2023 10:01:51 +0200
-Subject: Re: [PATCH bpf-next v4 0/8] Add Open-coded task, css_task and css
- iters
-To:     Chuyi Zhou <zhouchuyi@bytedance.com>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, andrii@kernel.org, martin.lau@kernel.org,
-        tj@kernel.org, linux-kernel@vger.kernel.org
-References: <20231007124522.34834-1-zhouchuyi@bytedance.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <d25f9b70-e958-c229-c275-95ed664bf0ed@iogearbox.net>
-Date:   Tue, 10 Oct 2023 10:01:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=cpAt5iVG7Way5FzBP9yMZ8IQuk91smI+CwYPCmk6OKo=; b=l0XATpaIXlue167p8SPdbIpAOg
+        jtw9xOrVS5FEyouEbrTDZpuUyZHoWXXGJ6ZvIfAYp7L2jGHybUpiIJbWpuX9Upo0rkIb3NrAYPSi+
+        hFrPApadG+vjhMAj9hQdPU5bMZLXcL9y6DSOkfCEnyIe6HuiZ+0SxwsC0njkx8e9vc1ezZtkmlEqw
+        5minCKWzEl9gnfBMyBNKfeT8XTtmKqfn9x+29MH95VHwv+AN6sG0SZJ7ydqK+e204DU18sfTcHK2d
+        fRmxDMCAs3WlDnTCJX3nm+fcLAn6uCXmXZnRLK5fHwX+2E2rmmVP9+hjWmljttF0MAA8t7hoVPVpI
+        v8Bdv2tw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qq7gg-00GhFn-0V;
+        Tue, 10 Oct 2023 08:01:56 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 45241300392; Tue, 10 Oct 2023 10:01:55 +0200 (CEST)
+Date:   Tue, 10 Oct 2023 10:01:55 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Youssef Esmat <youssefesmat@chromium.org>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>, mingo@kernel.org,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, corbet@lwn.net, qyousef@layalina.io,
+        chris.hyser@oracle.com, patrick.bellasi@matbug.net, pjt@google.com,
+        pavel@ucw.cz, qperret@google.com, tim.c.chen@linux.intel.com,
+        joshdon@google.com, timj@gnu.org, kprateek.nayak@amd.com,
+        yu.c.chen@intel.com, joel@joelfernandes.org, efault@gmx.de,
+        tglx@linutronix.de
+Subject: Re: [PATCH 00/15] sched: EEVDF and latency-nice and/or slice-attr
+Message-ID: <20231010080155.GB377@noisy.programming.kicks-ass.net>
+References: <20230531115839.089944915@infradead.org>
+ <dlbtvvm5cewqzh5bcpl4cqhcwxmnnjb6pdle5jzywiiznlactd@cmhnpim42m3p>
+ <20230906131356.GG38741@noisy.programming.kicks-ass.net>
+ <CA+q576MS0-MV1Oy-eecvmYpvNT3tqxD8syzrpxQ-Zk310hvRbw@mail.gmail.com>
+ <20231002184136.GA1539@noisy.programming.kicks-ass.net>
+ <20231005120557.GA743@noisy.programming.kicks-ass.net>
+ <20231007220400.GA5581@noisy.programming.kicks-ass.net>
+ <CA+q576Mov1jpdfZhPBoy_hiVh3xSWuJjXdP3nS4zfpqfOXtq7Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20231007124522.34834-1-zhouchuyi@bytedance.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27056/Mon Oct  9 09:40:11 2023)
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+q576Mov1jpdfZhPBoy_hiVh3xSWuJjXdP3nS4zfpqfOXtq7Q@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/7/23 2:45 PM, Chuyi Zhou wrote:
-> Hi,
-> 
-> This is version 4 of task, css_task and css iters support.
-> Thanks for your review!
-> 
-> --- Changelog ---
-> 
-> v3 -> v4:https://lore.kernel.org/all/20230925105552.817513-1-zhouchuyi@bytedance.com/
-> 
-> * Address all the comments from Andrii in patch-3 ~ patch-6
-> * Collect Tejun's ack
-> * Add a extra patch to rename bpf_iter_task.c to bpf_iter_tasks.c
-> * Seperate three BPF program files for selftests (iters_task.c iters_css_task.c iters_css.c)
+On Mon, Oct 09, 2023 at 07:51:03PM -0500, Youssef Esmat wrote:
 
-This fails to build BPF selftests:
+> > Playing around with it a little:
+> >
+> > EEVDF                                   EVDF
+> >
+> > slice 30000000                          slice 30000000
+> > # Min Latencies: 00014                  # Min Latencies: 00048
+> > # Avg Latencies: 00692                  # Avg Latencies: 188239
+> > # Max Latencies: 94633                  # Max Latencies: 961241
+> >
+> > slice 3000000                           slice 3000000
+> > # Min Latencies: 00054                  # Min Latencies: 00055
+> > # Avg Latencies: 00522                  # Avg Latencies: 00673
+> > # Max Latencies: 41475                  # Max Latencies: 13297
+> >
+> > slice 300000                            slice 300000
+> > # Min Latencies: 00018                  # Min Latencies: 00024
+> > # Avg Latencies: 00344                  # Avg Latencies: 00056
+> > # Max Latencies: 20061                  # Max Latencies: 00860
+> >
+> 
+> Thanks for sharing. Which workload was used to generate these numbers?
 
-[...]
-  /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:166:6: error: variable 'skel' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
-           if (!ASSERT_OK(err, "setup_cgroup_environment"))
-               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:190:26: note: uninitialized use occurs here
-           iters_css_task__destroy(skel);
-                                   ^~~~
-   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:166:2: note: remove the 'if' if its condition is always false
-           if (!ASSERT_OK(err, "setup_cgroup_environment"))
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:162:6: error: variable 'skel' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
-           if (!ASSERT_GE(cg_fd, 0, "cg_create"))
-     TEST-OBJ [test_progs] xdp.test.o
-               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:190:26: note: uninitialized use occurs here
-           iters_css_task__destroy(skel);
-                                   ^~~~
-   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:162:2: note: remove the 'if' if its condition is always false
-           if (!ASSERT_GE(cg_fd, 0, "cg_create"))
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:159:6: error: variable 'skel' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
-           if (!ASSERT_OK(err, "setup_cgroup_environment"))
-               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:190:26: note: uninitialized use occurs here
-           iters_css_task__destroy(skel);
-                                   ^~~~
-   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:159:2: note: remove the 'if' if its condition is always false
-           if (!ASSERT_OK(err, "setup_cgroup_environment"))
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:154:29: note: initialize the variable 'skel' to silence this warning
-           struct iters_css_task *skel;
-                                      ^
-                                       = NULL
-   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:213:7: error: variable 'skel' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
-                   if (!ASSERT_GE(cgs[i].fd, 0, "cg_create"))
-                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:244:21: note: uninitialized use occurs here
-           iters_css__destroy(skel);
-                              ^~~~
-   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:213:3: note: remove the 'if' if its condition is always false
-                   if (!ASSERT_GE(cgs[i].fd, 0, "cg_create"))
-                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:209:6: error: variable 'skel' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
-           if (!ASSERT_OK(err, "setup_cgroup_environment"))
-               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:244:21: note: uninitialized use occurs here
-           iters_css__destroy(skel);
-                              ^~~~
-   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:209:2: note: remove the 'if' if its condition is always false
-           if (!ASSERT_OK(err, "setup_cgroup_environment"))
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/iters.c:195:24: note: initialize the variable 'skel' to silence this warning
-           struct iters_css *skel;
-                                 ^
-                                  = NULL
-   5 errors generated.
-   make: *** [Makefile:605: /tmp/work/bpf/bpf/tools/testing/selftests/bpf/iters.test.o] Error 1
-   make: *** Waiting for unfinished jobs....
-   make: Leaving directory '/tmp/work/bpf/bpf/tools/testing/selftests/bpf'
-   Error: Process completed with exit code 2.
+This is hackbench vs cyclictest, where cyclictest gets a custom slice
+set, the big slice is 10 * normal, the middle slice is normal (equal to
+hackbench) and the short slice is normal / 10.
