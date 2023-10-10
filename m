@@ -2,132 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8490E7BF513
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 09:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E180A7BF4F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 09:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442679AbjJJH6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 03:58:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49752 "EHLO
+        id S1442628AbjJJHzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 03:55:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442653AbjJJH6j (ORCPT
+        with ESMTP id S1442525AbjJJHzr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 03:58:39 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A0229F;
-        Tue, 10 Oct 2023 00:58:38 -0700 (PDT)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S4Sq34TDvzNnxh;
-        Tue, 10 Oct 2023 15:54:39 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 10 Oct 2023 15:58:34 +0800
-From:   Junxian Huang <huangjunxian6@hisilicon.com>
-To:     <jgg@ziepe.ca>, <leon@kernel.org>, <dsahern@gmail.com>,
-        <stephen@networkplumber.org>
-CC:     <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
-        <huangjunxian6@hisilicon.com>
-Subject: [PATCH v2 iproute2-next 2/2] rdma: Add support to dump SRQ resource in raw format
-Date:   Tue, 10 Oct 2023 15:55:26 +0800
-Message-ID: <20231010075526.3860869-3-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20231010075526.3860869-1-huangjunxian6@hisilicon.com>
-References: <20231010075526.3860869-1-huangjunxian6@hisilicon.com>
+        Tue, 10 Oct 2023 03:55:47 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DAB491;
+        Tue, 10 Oct 2023 00:55:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696924544; x=1728460544;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=o9KXt3CWPr1jno2uTLIRYflTe5fXU4Oamiy/W1dyREI=;
+  b=OtJ2vKjjF2/y2CugZrcDoTdZVUST5OIvkZ7fG/ZzF4/oaomUZLM+ey2e
+   Rk2zkdmrMggNB02lH5rM2ceJDIN+SmSsn6OWrLzyTgDSBtsNcbY1VNIeu
+   NqXD9hc0YeX4Tp10cjr8pmRFhIER5KXgntnIwqxmWGZVr6LZXUIii+GIh
+   O1VX8RAMm21a/ckhaB1JnSaGV5nQRQKOMKNKNEoSqnQVg0DunKj5Sgg0Z
+   nPwNv1GkJ83MJQyt26G/IxPFHpipN2T6rtGXPMJI9klVguQWI3/yxmsvq
+   ptrm7w+6WwgtTM6JkC++EqNdDF6hFov1i2VZHzrDNW4mnxvPpseRmOoNV
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="374679002"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="374679002"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 00:55:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="746979915"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="746979915"
+Received: from asalaman-mobl.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.16.145])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 00:55:41 -0700
+From:   Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+To:     shuah@kernel.org, fenghua.yu@intel.com, reinette.chatre@intel.com
+Cc:     ilpo.jarvinen@linux.intel.com, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH v7 0/2] selftests/resctrl: Bug fix and optimization
+Date:   Tue, 10 Oct 2023 09:55:30 +0200
+Message-ID: <cover.1696923907.git.maciej.wieczor-retman@intel.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500006.china.huawei.com (7.221.188.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wenglianfa <wenglianfa@huawei.com>
+Write_schemata() uses fprintf() to write a bitmask into a schemata file
+inside resctrl FS. It checks fprintf() return value but it doesn't check
+fclose() return value. Error codes from fprintf() such as write errors,
+are buffered and flushed back to the user only after fclose() is executed
+which means any invalid bitmask can be written into the schemata file.
 
-Add support to dump SRQ resource in raw format.
+Rewrite write_schemata() to use syscalls instead of stdio file
+operations to avoid the buffering.
 
-This patch relies on the corresponding kernel commit aebf8145e11a
-("RDMA/core: Add support to dump SRQ resource in RAW format")
+The resctrlfs.c defines functions that interact with the resctrl FS
+while resctrl_val.c defines functions that perform measurements on
+the cache. Run_benchmark() fits logically into the second file before
+resctrl_val() that uses it.
 
-Example:
-$ rdma res show srq -r
-dev hns3 149000...
+Move run_benchmark() from resctrlfs.c to resctrl_val.c and remove
+redundant part of the kernel-doc comment. Make run_benchmark() static
+and remove it from the header file.
 
-$ rdma res show srq -j -r
-[{"ifindex":0,"ifname":"hns3","data":[149,0,0,...]}]
+Patch series is based on [1] which is based on [2] which are based on
+kselftest next branch.
 
-Signed-off-by: wenglianfa <wenglianfa@huawei.com>
----
- rdma/res-srq.c | 20 ++++++++++++++++++--
- rdma/res.h     |  2 ++
- 2 files changed, 20 insertions(+), 2 deletions(-)
+Changelog v7:
+- Add label for non-empty schema error case to Patch 1/2. (Reinette)
+- Add Reinette's reviewed-by tag to Patch 1/2.
 
-diff --git a/rdma/res-srq.c b/rdma/res-srq.c
-index 186ae281..cf9209d7 100644
---- a/rdma/res-srq.c
-+++ b/rdma/res-srq.c
-@@ -162,6 +162,20 @@ out:
- 	return -EINVAL;
- }
- 
-+static int res_srq_line_raw(struct rd *rd, const char *name, int idx,
-+			    struct nlattr **nla_line)
-+{
-+	if (!nla_line[RDMA_NLDEV_ATTR_RES_RAW])
-+		return MNL_CB_ERROR;
-+
-+	open_json_object(NULL);
-+	print_dev(rd, idx, name);
-+	print_raw_data(rd, nla_line);
-+	newline(rd);
-+
-+	return MNL_CB_OK;
-+}
-+
- static int res_srq_line(struct rd *rd, const char *name, int idx,
- 			struct nlattr **nla_line)
- {
-@@ -248,7 +262,8 @@ int res_srq_idx_parse_cb(const struct nlmsghdr *nlh, void *data)
- 	name = mnl_attr_get_str(tb[RDMA_NLDEV_ATTR_DEV_NAME]);
- 	idx = mnl_attr_get_u32(tb[RDMA_NLDEV_ATTR_DEV_INDEX]);
- 
--	return res_srq_line(rd, name, idx, tb);
-+	return (rd->show_raw) ? res_srq_line_raw(rd, name, idx, tb) :
-+		res_srq_line(rd, name, idx, tb);
- }
- 
- int res_srq_parse_cb(const struct nlmsghdr *nlh, void *data)
-@@ -276,7 +291,8 @@ int res_srq_parse_cb(const struct nlmsghdr *nlh, void *data)
- 		if (ret != MNL_CB_OK)
- 			break;
- 
--		ret = res_srq_line(rd, name, idx, nla_line);
-+		ret = (rd->show_raw) ? res_srq_line_raw(rd, name, idx, nla_line) :
-+		       res_srq_line(rd, name, idx, nla_line);
- 		if (ret != MNL_CB_OK)
- 			break;
- 	}
-diff --git a/rdma/res.h b/rdma/res.h
-index 70e51acd..e880c28b 100644
---- a/rdma/res.h
-+++ b/rdma/res.h
-@@ -39,6 +39,8 @@ static inline uint32_t res_get_command(uint32_t command, struct rd *rd)
- 		return RDMA_NLDEV_CMD_RES_CQ_GET_RAW;
- 	case RDMA_NLDEV_CMD_RES_MR_GET:
- 		return RDMA_NLDEV_CMD_RES_MR_GET_RAW;
-+	case RDMA_NLDEV_CMD_RES_SRQ_GET:
-+		return RDMA_NLDEV_CMD_RES_SRQ_GET_RAW;
- 	default:
- 		return command;
- 	}
+Changelog v6:
+- Align schema_len error checking with typical snprintf format.
+  (Reinette)
+- Initialize schema string for early return eventuality. (Reinette)
+
+Changelog v5:
+- Add Ilpo's reviewed-by tag to Patch 1/2.
+- Reword patch messages slightly.
+- Add error check to schema_len variable.
+
+Changelog v4:
+- Change git signature from Wieczor-Retman Maciej to Maciej
+  Wieczor-Retman.
+- Rebase onto [1] which is based on [2]. (Reinette)
+- Add fcntl.h explicitly to provide glibc backward compatibility.
+  (Reinette)
+
+Changelog v3:
+- Use snprintf() return value instead of strlen() in write_schemata().
+  (Ilpo)
+- Make run_benchmark() static and remove it from the header file.
+  (Reinette)
+- Add Ilpo's reviewed-by tag to Patch 2/2.
+- Patch messages and cover letter rewording.
+
+Changelog v2:
+- Change sprintf() to snprintf() in write_schemata().
+- Redo write_schemata() with syscalls instead of stdio functions.
+- Fix typos and missing dots in patch messages.
+- Branch printf attribute patch to a separate series.
+
+[v1] https://lore.kernel.org/all/cover.1692880423.git.maciej.wieczor-retman@intel.com/
+[v2] https://lore.kernel.org/all/cover.1693213468.git.maciej.wieczor-retman@intel.com/
+[v3] https://lore.kernel.org/all/cover.1693575451.git.maciej.wieczor-retman@intel.com/
+[v4] https://lore.kernel.org/all/cover.1695369120.git.maciej.wieczor-retman@intel.com/
+[v5] https://lore.kernel.org/all/cover.1695975327.git.maciej.wieczor-retman@intel.com/
+[v6] https://lore.kernel.org/all/cover.1696848653.git.maciej.wieczor-retman@intel.com/
+
+[1] https://lore.kernel.org/all/20231002094813.6633-1-ilpo.jarvinen@linux.intel.com/
+[2] https://lore.kernel.org/all/20230904095339.11321-1-ilpo.jarvinen@linux.intel.com/
+
+Maciej Wieczor-Retman (2):
+  selftests/resctrl: Fix schemata write error check
+  selftests/resctrl: Move run_benchmark() to a more fitting file
+
+ tools/testing/selftests/resctrl/resctrl.h     |  1 -
+ tools/testing/selftests/resctrl/resctrl_val.c | 50 ++++++++++
+ tools/testing/selftests/resctrl/resctrlfs.c   | 93 ++++++-------------
+ 3 files changed, 76 insertions(+), 68 deletions(-)
+
 -- 
-2.30.0
+2.42.0
 
