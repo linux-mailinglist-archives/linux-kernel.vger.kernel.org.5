@@ -2,91 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C20547BF676
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC69B7BF680
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230148AbjJJIuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 04:50:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49254 "EHLO
+        id S230062AbjJJIwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 04:52:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbjJJIu3 (ORCPT
+        with ESMTP id S229655AbjJJIwP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 04:50:29 -0400
+        Tue, 10 Oct 2023 04:52:15 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E08A97;
-        Tue, 10 Oct 2023 01:50:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9079DC433D9;
-        Tue, 10 Oct 2023 08:50:26 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 269A9A9
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 01:52:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B0F4C433C8;
+        Tue, 10 Oct 2023 08:52:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696927826;
-        bh=BWYz99hPfOyV0YYy1JV3gaQkQ3l1oiI/vIyh35+qab0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=sRPm4PmDPvy5hdYY0p1OlEV0Jk52dUl9+w4gwy+zywmyDd7Y9XX9ymxsKlJqU8CZc
-         OUm8rHfLKf9j7otgLFR86hLH3Yq+Zfh9q40EzeCtP+UNghaxIhBR7D2SwLRCTAR3gU
-         vEVxDKfQV/8/vY30GHYBe9/UCaJ0rvh5mo5o4fi+jhXiguZvfNFUfdN0xLFlat0BDu
-         JLco5/m3Y9KwLlz4qQdOlBOAFDTpDkb1LMg/V7l2lhf64bnJ1LKdIY6gL7BapjGNw/
-         00lYWrf7+0XCkBzbDNUIraq1HWfsmjQ3MQTwaUaiMXYnKzqzhQnld3jpRdhU6G9x2Y
-         S5mZ6T2jkU23g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 686C0C595C5;
-        Tue, 10 Oct 2023 08:50:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1696927933;
+        bh=XJynC3FVhVB5RPnfUzpYV78TXawY3XcAs4e1JfEyljQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=o9wwu4UrznOZpfdZX7oqvMRLJk0mD61f6BIJ1INfdsdsymjZ4gRjo9Kau+5y3AYwm
+         qs2/Fa4+Gj31ZGOFprfnW5V3dOP5sgf2zwrH5YNSmKXVbK3rw3OP0Grgh5BBhLEjMQ
+         FibLRVELC/hZ9uJwGh7FMqtQcGRqgUPOBFn1Dky0eHFf6BMlcaKQ1Zkb98qPYHnYk5
+         7yUtWh6ThBgm+wL2J5pRpDspCijDnRd8AjRiJ0Xl87C2plDpV5hxwHDxAlb7nC2QQk
+         ++zDF65ChxJxHfm1/6NxL0vEnYZ6LAEpyWSh7PyluUgp8Vo0400KOYDhlXpkHEAOjr
+         KCCwrv6n09xVQ==
+Message-ID: <74a4dc35-eed2-79c2-2b57-ed0857cbc96a@kernel.org>
+Date:   Tue, 10 Oct 2023 10:52:09 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v3] spmi: mtk-pmif: Serialize PMIF status check and
+ command submission
+Content-Language: en-US
+To:     =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@collabora.com>, Stephen Boyd <sboyd@kernel.org>
+Cc:     Chen-Yu Tsai <wenst@google.com>, kernel@collabora.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        James Lo <james.lo@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+References: <20230724154739.493724-1-nfraprado@collabora.com>
+ <a4684a81-eb04-492a-bff6-a5ff78fe6b0f@notapiano>
+ <7b407eda-702a-444a-b644-5e8dc31f3991@notapiano>
+From:   AngeloGioacchino Del Regno <angelogioacchino.delregno@kernel.org>
+In-Reply-To: <7b407eda-702a-444a-b644-5e8dc31f3991@notapiano>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v7 0/4] Add update_pn flag
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169692782642.27521.12623155757527966309.git-patchwork-notify@kernel.org>
-Date:   Tue, 10 Oct 2023 08:50:26 +0000
-References: <20231005180636.672791-1-radu-nicolae.pirea@oss.nxp.com>
-In-Reply-To: <20231005180636.672791-1-radu-nicolae.pirea@oss.nxp.com>
-To:     Radu Pirea (NXP OSS) <radu-nicolae.pirea@oss.nxp.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, sgoutham@marvell.com,
-        gakula@marvell.com, sbhatta@marvell.com, hkelam@marvell.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, borisp@nvidia.com, saeedm@nvidia.com,
-        leon@kernel.org, sd@queasysnail.net, andrew@lunn.ch,
-        hkallweit1@gmail.com, linux@armlinux.org.uk,
-        richardcochran@gmail.com, sebastian.tobuschat@oss.nxp.com,
-        phaddad@nvidia.com, ehakim@nvidia.com, raeds@nvidia.com,
-        atenart@kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Thu,  5 Oct 2023 21:06:32 +0300 you wrote:
-> Patches extracted from
-> https://lore.kernel.org/all/20230928084430.1882670-1-radu-nicolae.pirea@oss.nxp.com/
-> Update_pn flag will let the offloaded MACsec implementations to know when
-> the PN is updated.
+Il 19/09/23 22:12, Nícolas F. R. A. Prado ha scritto:
+> On Thu, Aug 10, 2023 at 06:03:53PM -0400, Nícolas F. R. A. Prado wrote:
+>> On Mon, Jul 24, 2023 at 11:47:33AM -0400, Nícolas F. R. A. Prado wrote:
+>>> Before writing the read or write command to the SPMI arbiter through the
+>>> PMIF interface, the current status of the channel is checked to ensure
+>>> it is idle. However, since the status only changes from idle when the
+>>> command is written, it is possible for two concurrent calls to determine
+>>> that the channel is idle and simultaneously send their commands. At this
+>>> point the PMIF interface hangs, with the status register no longer being
+>>> updated, and thus causing all subsequent operations to time out.
+>>>
+>>> This was observed on the mt8195-cherry-tomato-r2 machine, particularly
+>>> after commit 46600ab142f8 ("regulator: Set PROBE_PREFER_ASYNCHRONOUS for
+>>> drivers between 5.10 and 5.15") was applied, since then the two MT6315
+>>> devices present on the SPMI bus would probe assynchronously and
+>>> sometimes (during probe or at a later point) read the bus
+>>> simultaneously, breaking the PMIF interface and consequently slowing
+>>> down the whole system.
+>>>
+>>> To fix the issue at its root cause, introduce locking around the channel
+>>> status check and the command write, so that both become an atomic
+>>> operation, preventing race conditions between two (or more) SPMI bus
+>>> read/write operations. A spinlock is used since this is a fast bus, as
+>>> indicated by the usage of the atomic variant of readl_poll, and
+>>> '.fast_io = true' being used in the mt6315 driver, so spinlocks are
+>>> already used for the regmap access.
+>>>
+>>> Fixes: b45b3ccef8c0 ("spmi: mediatek: Add support for MT6873/8192")
+>>> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+>>
+>> Hi,
+>>
+>> gentle ping on this one. MT8195 Chromebooks sometimes boot to a broken state
+>> without it.
 > 
-> Radu P.
+> Hi Stephen,
 > 
-> [...]
+> once again kindling reminding you of this important fix for MediaTek platforms,
+> solving a real issue impacting basic functionality observed on the MT8195
+> Chromebook.
+> 
 
-Here is the summary with links:
-  - [net,v7,1/4] net: macsec: indicate next pn update when offloading
-    https://git.kernel.org/netdev/net/c/0412cc846a1e
-  - [net,v7,2/4] octeontx2-pf: mcs: update PN only when update_pn is true
-    https://git.kernel.org/netdev/net/c/4dcf38ae3ca1
-  - [net,v7,3/4] net: phy: mscc: macsec: reject PN update requests
-    https://git.kernel.org/netdev/net/c/e0a8c918daa5
-  - [net,v7,4/4] net/mlx5e: macsec: use update_pn flag instead of PN comparation
-    https://git.kernel.org/netdev/net/c/fde2f2d7f23d
+Hello Stephen,
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+can you please pick this one ASAP?
+MT8195 is broken without.
 
-
+Thanks,
+Angelo
