@@ -2,61 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F907BEFD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 02:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF1D7BEFDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 02:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379235AbjJJAmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 20:42:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59638 "EHLO
+        id S1379188AbjJJAox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 20:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379194AbjJJAmL (ORCPT
+        with ESMTP id S1378721AbjJJAow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 20:42:11 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAB0399
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 17:42:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696898529; x=1728434529;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=xbTeq6oartpAp98wc9nskAZ+4fewvxTX2qr7rQTiNR4=;
-  b=kbgh+RXh6s/85+MjG3KiSGXEq2TojZfC98U4QnMUEfRNu2kUtAio/iIo
-   xdx2T0Vm/+rc4jxc76IWUfAJF2vazK+8gt7Ihaw7Xusm92i6sXYVGP8NJ
-   USJzvzYUdmhllfVSkbWl00WMdxwo8bmA/08+lImpks/wiZj73xwO6EgQo
-   HMEHKM98Z4QBwKvc6+vrABycw+aUIqyYua2OSx/ENILz0ClSg+ziMU6Fo
-   6+Kjeh+Mqhnw+WHbeqYYr2Kker9CFWP1Zdq2U6OIiVTU4XVwfg8QUcuSW
-   U1EtM5RLbieVIo/grcTJByaFe0XDADIIqS2RDtogu07lZzI2dVltDFQ4a
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="384139905"
-X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
-   d="scan'208";a="384139905"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 17:42:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="1000446374"
-X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
-   d="scan'208";a="1000446374"
-Received: from lkp-server02.sh.intel.com (HELO 4ed589823ba4) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 09 Oct 2023 17:42:06 -0700
-Received: from kbuild by 4ed589823ba4 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qq0p2-0000se-0t;
-        Tue, 10 Oct 2023 00:42:04 +0000
-Date:   Tue, 10 Oct 2023 08:41:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: kernel/trace/ftrace.c:5675: warning: Function parameter or member
- 'ops' not described in 'ftrace_set_filter_ips'
-Message-ID: <202310100857.YpF7BNZH-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Mon, 9 Oct 2023 20:44:52 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A238C9F
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 17:44:50 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-2777d237229so3803687a91.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 17:44:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696898690; x=1697503490; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GjWqPSaGLXcalBvg3vbKJZBRfdwwxJm8ORCUVRBFN2k=;
+        b=nliD91NADAj3P8mRtEEHzzIQK9EKu/4+SW4MYtOA2bwhlnxLNMDHX1dlNoO9E3UZdm
+         0HLahyNu8BuUz4429RaqGyY3qkhrK00X8b/fy47F3/JzYXBlYWrlUvoq4iWNPMgRwRiI
+         B1m5ytvh6z/q3yMO0VL2rRj1JMXMXwaRsp9qg5X+jybjdD+NBWfc7cy1AnEzHJ6jqBbu
+         TeKpv14R8Y+ohWEmS5ls8U0infG2SKCOMlbne3lyk60ldvKM9Jaghy6FAMI+vdjyRZij
+         LWhmGnkqElOgdwQAQv/fKexyYrsaavCaACAHtwJofqXSTB8m/zVGl1Z4Sm6Z2xG1gu4D
+         klFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696898690; x=1697503490;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GjWqPSaGLXcalBvg3vbKJZBRfdwwxJm8ORCUVRBFN2k=;
+        b=w0HB3wpiHvQvvb/fhxQk3F5BjRLjeB39EAFS8hY/xk+6O5RJGZP0Z5+Waq1UWxS6CS
+         vavMJ8V61Y+ZNm7cwF4gNNR2u2J+DcHtafarfO1nLjqYYBgxRMOfR0EJmUkUZDOMwNcT
+         kNOWWDyKh1uQpOptU019r3N7KMS72nmBx+fX9fFBgMdg9v6dDW+wgQkaACC865HzEXsE
+         GYxJwEKSpgDuIhWrJlgrAhfZ8ygIpeP5e31tZdgGlD5fG15+06hevjkDYSyaDIUZByEk
+         88QRUS9p2ubfFTGeiYIe9fRs7knTdB0E6yn26szzZQA7a65zgTotZ4qpoNH+ZrZ7OWsU
+         Ybqg==
+X-Gm-Message-State: AOJu0Yz+rDw2tleuWt6w9SxE/rcmapMiDefwiiw1U+jeTdaU1HrUyOwq
+        bIPSlZ2oWu433KD6C4ECwpO0+jc3Qk0=
+X-Google-Smtp-Source: AGHT+IHks1xinxBpntMCi1lJzcobNtsVg0K7o78+ChOATaq1C8mIgIHSbN9sGo+h7fwAELRBj6ylyMI6yKs=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90a:e548:b0:277:5c9b:14dd with SMTP id
+ ei8-20020a17090ae54800b002775c9b14ddmr285423pjb.2.1696898690129; Mon, 09 Oct
+ 2023 17:44:50 -0700 (PDT)
+Date:   Mon,  9 Oct 2023 17:44:32 -0700
+In-Reply-To: <20231008025335.7419-1-likexu@tencent.com>
+Mime-Version: 1.0
+References: <20231008025335.7419-1-likexu@tencent.com>
+X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
+Message-ID: <169689823852.390348.16203872510226635933.b4-ty@google.com>
+Subject: Re: [PATCH v7] KVM: x86/tsc: Don't sync user-written TSC against
+ startup values
+From:   Sean Christopherson <seanjc@google.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Like Xu <like.xu.linux@gmail.com>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Oliver Upton <oliver.upton@linux.dev>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,73 +72,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   94f6f0550c625fab1f373bb86a6669b45e9748b3
-commit: 4f554e955614f19425cee86de4669351741a6280 ftrace: Add ftrace_set_filter_ips function
-date:   1 year, 7 months ago
-config: i386-debian-10.3 (https://download.01.org/0day-ci/archive/20231010/202310100857.YpF7BNZH-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231010/202310100857.YpF7BNZH-lkp@intel.com/reproduce)
+On Sun, 08 Oct 2023 10:53:35 +0800, Like Xu wrote:
+> The legacy API for setting the TSC is fundamentally broken, and only
+> allows userspace to set a TSC "now", without any way to account for
+> time lost to preemption between the calculation of the value, and the
+> kernel eventually handling the ioctl.
+> 
+> To work around this we have had a hack which, if a TSC is set with a
+> value which is within a second's worth of a previous vCPU, assumes that
+> userspace actually intended them to be in sync and adjusts the newly-
+> written TSC value accordingly.
+> 
+> [...]
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310100857.YpF7BNZH-lkp@intel.com/
+Applied to kvm-x86 misc, thanks!  I massaged away most of the pronouns in the
+changelog.  Yes, they bug me that much, and I genuinely had a hard time following
+some of the paragraphs even though I already knew what the patch is doing.
 
-All warnings (new ones prefixed by >>):
+Everyone, please take a look and make sure I didn't botch anything.  I tried my
+best to keep the existing "voice" and tone of the changelog (sans pronouns
+obviously).  I definitely don't want to bikeshed this thing any further.  If
+I've learned anything by this patch, it's that the only guaranteed outcome of
+changelog-by-committee is that no one will walk away 100% happy :-)
 
-   kernel/trace/ftrace.c:5553: warning: Function parameter or member 'addr' not described in 'unregister_ftrace_direct_multi'
-   kernel/trace/ftrace.c:5656: warning: Function parameter or member 'ops' not described in 'ftrace_set_filter_ip'
-   kernel/trace/ftrace.c:5656: warning: Function parameter or member 'ip' not described in 'ftrace_set_filter_ip'
-   kernel/trace/ftrace.c:5656: warning: Function parameter or member 'remove' not described in 'ftrace_set_filter_ip'
-   kernel/trace/ftrace.c:5656: warning: Function parameter or member 'reset' not described in 'ftrace_set_filter_ip'
->> kernel/trace/ftrace.c:5675: warning: Function parameter or member 'ops' not described in 'ftrace_set_filter_ips'
->> kernel/trace/ftrace.c:5675: warning: Function parameter or member 'ips' not described in 'ftrace_set_filter_ips'
->> kernel/trace/ftrace.c:5675: warning: Function parameter or member 'cnt' not described in 'ftrace_set_filter_ips'
->> kernel/trace/ftrace.c:5675: warning: Function parameter or member 'remove' not described in 'ftrace_set_filter_ips'
->> kernel/trace/ftrace.c:5675: warning: Function parameter or member 'reset' not described in 'ftrace_set_filter_ips'
-   kernel/trace/ftrace.c:5689: warning: Function parameter or member 'ops' not described in 'ftrace_ops_set_global_filter'
-   kernel/trace/ftrace.c:5717: warning: Function parameter or member 'ops' not described in 'ftrace_set_filter'
-   kernel/trace/ftrace.c:5717: warning: Function parameter or member 'buf' not described in 'ftrace_set_filter'
-   kernel/trace/ftrace.c:5717: warning: Function parameter or member 'len' not described in 'ftrace_set_filter'
-   kernel/trace/ftrace.c:5717: warning: Function parameter or member 'reset' not described in 'ftrace_set_filter'
-   kernel/trace/ftrace.c:5736: warning: Function parameter or member 'ops' not described in 'ftrace_set_notrace'
-   kernel/trace/ftrace.c:5736: warning: Function parameter or member 'buf' not described in 'ftrace_set_notrace'
-   kernel/trace/ftrace.c:5736: warning: Function parameter or member 'len' not described in 'ftrace_set_notrace'
-   kernel/trace/ftrace.c:5736: warning: Function parameter or member 'reset' not described in 'ftrace_set_notrace'
-   kernel/trace/ftrace.c:5751: warning: Function parameter or member 'buf' not described in 'ftrace_set_global_filter'
-   kernel/trace/ftrace.c:5751: warning: Function parameter or member 'len' not described in 'ftrace_set_global_filter'
-   kernel/trace/ftrace.c:5751: warning: Function parameter or member 'reset' not described in 'ftrace_set_global_filter'
-   kernel/trace/ftrace.c:5767: warning: Function parameter or member 'buf' not described in 'ftrace_set_global_notrace'
-   kernel/trace/ftrace.c:5767: warning: Function parameter or member 'len' not described in 'ftrace_set_global_notrace'
-   kernel/trace/ftrace.c:5767: warning: Function parameter or member 'reset' not described in 'ftrace_set_global_notrace'
-   kernel/trace/ftrace.c:7843: warning: Function parameter or member 'ops' not described in 'register_ftrace_function'
-   kernel/trace/ftrace.c:7865: warning: Function parameter or member 'ops' not described in 'unregister_ftrace_function'
+[1/1] KVM: x86/tsc: Don't sync user-written TSC against startup values
+      https://github.com/kvm-x86/linux/commit/bf328e22e472
 
-
-vim +5675 kernel/trace/ftrace.c
-
-  5661	
-  5662	/**
-  5663	 * ftrace_set_filter_ips - set functions to filter on in ftrace by addresses
-  5664	 * @ops - the ops to set the filter with
-  5665	 * @ips - the array of addresses to add to or remove from the filter.
-  5666	 * @cnt - the number of addresses in @ips
-  5667	 * @remove - non zero to remove ips from the filter
-  5668	 * @reset - non zero to reset all filters before applying this filter.
-  5669	 *
-  5670	 * Filters denote which functions should be enabled when tracing is enabled
-  5671	 * If @ips array or any ip specified within is NULL , it fails to update filter.
-  5672	 */
-  5673	int ftrace_set_filter_ips(struct ftrace_ops *ops, unsigned long *ips,
-  5674				  unsigned int cnt, int remove, int reset)
-> 5675	{
-  5676		ftrace_ops_init(ops);
-  5677		return ftrace_set_addr(ops, ips, cnt, remove, reset, 1);
-  5678	}
-  5679	EXPORT_SYMBOL_GPL(ftrace_set_filter_ips);
-  5680	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--
+https://github.com/kvm-x86/linux/tree/next
