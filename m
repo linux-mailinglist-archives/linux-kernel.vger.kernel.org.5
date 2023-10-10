@@ -2,125 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE77B7BF1B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 05:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05CD07BF1B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 05:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442078AbjJJDxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 23:53:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48616 "EHLO
+        id S1442083AbjJJDyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 23:54:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442068AbjJJDxQ (ORCPT
+        with ESMTP id S1441993AbjJJDyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 23:53:16 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 728019D;
-        Mon,  9 Oct 2023 20:53:14 -0700 (PDT)
-Received: from [IPV6:2405:201:2033:3002:3848:5d20:59c9:c87c] (unknown [IPv6:2405:201:2033:3002:3848:5d20:59c9:c87c])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 705013D6;
-        Tue, 10 Oct 2023 05:53:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1696909991;
-        bh=4Gqs0eLo+EBbzG39UcwXadyv2NlIUjuZuyQ9YKGzG5c=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=WVx4SFqeA/RWgByXG8dJR/FAvRgOVKCApWuj/zhn51BQ2CkvFMaTanD909h1kzVvj
-         +tHtsVQBo0M/rRIn0D5rBPDpMsb0mbUmxR9eAy8aH0et9RoYifUI4vtQqieQHWimZ3
-         Qbki7vlMRYeal+JPLp1XtdGr/shHRGGxPMFc6VoY=
-Message-ID: <4b319504-45e8-5ad6-7c7a-e503a3c98428@ideasonboard.com>
-Date:   Tue, 10 Oct 2023 09:23:02 +0530
+        Mon, 9 Oct 2023 23:54:16 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5A69D;
+        Mon,  9 Oct 2023 20:54:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1696910053;
+        bh=8bV4SCcom7j/uKEvPwyzbYLkGNfVEznGZi6GQ4ZyQEY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=VFZWYElaGRbOdDBLdDA/45PtdmgVuk8gFBZsQ8vvIe0Xw2NzItD4pSaW7XrbBgMjL
+         3Kd1ks7NzoePtb4bGsKjLM+fq200Zm4OJ/UlGNidwva674V5BDXpJsaGpTsHN77Y/i
+         Gfm3nwPVmBQfedi7xayk50V/gA8GLIEk9dH9UC4/Lnt56JRSnrVIGx3oUgVVKg0N74
+         0CIpyxHNJZu66io7jWq4OAIH3fS4bQNIiTI0zvO1OAHfCFk6w3MZYPWTYPWPmAP+tC
+         Z2L9N3Nm5OOnWWeFgse4EOMBNd4nBvgcVtfgaNxEao6wFhmsK7SFlyDssZK+XqxHM3
+         ij5pd8ZCf2QxA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S4MTc6PrKz4xM4;
+        Tue, 10 Oct 2023 14:54:12 +1100 (AEDT)
+Date:   Tue, 10 Oct 2023 14:54:12 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the dmaengine tree
+Message-ID: <20231010145412.4a758f9d@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH 1/5] media: dt-bindings: media: imx335: Add supply
- bindings
-Content-Language: en-US
-To:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     "Paul J. Murphy" <paul.j.murphy@intel.com>,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20231010005126.3425444-1-kieran.bingham@ideasonboard.com>
- <20231010005126.3425444-2-kieran.bingham@ideasonboard.com>
-From:   Umang Jain <umang.jain@ideasonboard.com>
-In-Reply-To: <20231010005126.3425444-2-kieran.bingham@ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_///poTgS=XLb/fPh_1ybezjW";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kieran,
+--Sig_///poTgS=XLb/fPh_1ybezjW
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thank you for the patch
+Hi all,
 
-On 10/10/23 6:21 AM, Kieran Bingham wrote:
-> Add the bindings for the supply references used on the IMX335.
->
-> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+After merging the dmaengine tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-LGTM,
+drivers/dma/mmp_tdma.c: In function 'mmp_tdma_probe':
+drivers/dma/mmp_tdma.c:638:36: error: unused variable 'of_id' [-Werror=3Dun=
+used-variable]
+  638 |         const struct of_device_id *of_id;
+      |                                    ^~~~~
+cc1: all warnings being treated as errors
 
-Reviewed-by: Umang Jain <umang.jain@ideasonboard.com>
+Caused by commit
 
-> ---
->   .../bindings/media/i2c/sony,imx335.yaml          | 16 ++++++++++++++++
->   1 file changed, 16 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx335.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx335.yaml
-> index a167dcdb3a32..1863b5608a5c 100644
-> --- a/Documentation/devicetree/bindings/media/i2c/sony,imx335.yaml
-> +++ b/Documentation/devicetree/bindings/media/i2c/sony,imx335.yaml
-> @@ -32,6 +32,15 @@ properties:
->       description: Clock frequency from 6 to 27 MHz, 37.125MHz, 74.25MHz
->       maxItems: 1
->   
-> +  avdd-supply:
-> +    description: Analog power supply (2.9V)
-> +
-> +  ovdd-supply:
-> +    description: Interface power supply (1.8V)
-> +
-> +  dvdd-supply:
-> +    description: Digital power supply (1.2V)
-> +
->     reset-gpios:
->       description: Reference to the GPIO connected to the XCLR pin, if any.
->       maxItems: 1
-> @@ -60,6 +69,9 @@ required:
->     - compatible
->     - reg
->     - clocks
-> +  - avdd-supply
-> +  - ovdd-supply
-> +  - dvdd-supply
->     - port
->   
->   additionalProperties: false
-> @@ -79,6 +91,10 @@ examples:
->               assigned-clock-parents = <&imx335_clk_parent>;
->               assigned-clock-rates = <24000000>;
->   
-> +            avdd-supply = <&camera_vdda_2v9>;
-> +            ovdd-supply = <&camera_vddo_1v8>;
-> +            dvdd-supply = <&camera_vddd_1v2>;
-> +
->               port {
->                   imx335: endpoint {
->                       remote-endpoint = <&cam>;
+  a67ba97dfb30 ("dmaengine: Use device_get_match_data()")
 
+I have used the dmaengine tree from next-20231009 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_///poTgS=XLb/fPh_1ybezjW
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUkyuQACgkQAVBC80lX
+0GxJNwgAj/T/zrh3yBei8Kw9tbx4y+FDl9S8wcLyN1lsAaf/dYBcd0xQ80qaYVkh
+R8Y8T+PmfX+Bhj5+RIpGRHCo48RclTSZ2WL1WfdoJOrp1OmhHIiEaCoEJyulzMk2
+tYQippeES5AnPtQBFUMlJsHUzE9G5AirZcBlpyKTE2bmCj7eKmyI01LR4HceCrzQ
+Vh3gCh/K3B9b/a+Zdk8cTKpiaDSV37f7AYD+URRvvEdn0cqwmH0gxUWxLteTjBl0
+bUQH3gr+5AIQax1imE/MrSENETep43d+zk53EVCnlHu7fUHjYMUQ4k5/fU6QPSIa
+E/FKMNRWQwcDsniKAIIKeqVF2OvABA==
+=UF4g
+-----END PGP SIGNATURE-----
+
+--Sig_///poTgS=XLb/fPh_1ybezjW--
