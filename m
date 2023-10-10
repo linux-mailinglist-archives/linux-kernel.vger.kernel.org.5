@@ -2,319 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB147BF91F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 13:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE047BF926
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 13:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230446AbjJJLD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 07:03:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55672 "EHLO
+        id S229770AbjJJLFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 07:05:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjJJLD2 (ORCPT
+        with ESMTP id S229541AbjJJLFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 07:03:28 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6E3559E;
-        Tue, 10 Oct 2023 04:03:26 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E3A451FB;
-        Tue, 10 Oct 2023 04:04:06 -0700 (PDT)
-Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D45193F7A6;
-        Tue, 10 Oct 2023 04:03:24 -0700 (PDT)
-Message-ID: <bf8f09d4-2057-4b45-ba50-0bf4bb62b94c@arm.com>
-Date:   Tue, 10 Oct 2023 12:03:23 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/2] arm64: perf: Add support for event counting
- threshold
-To:     James Clark <james.clark@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Zaid Al-Bassam <zalbassam@google.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230919095137.360963-1-james.clark@arm.com>
- <20230919095137.360963-2-james.clark@arm.com>
- <b72d321f-0cea-1049-3bbb-224d38a94749@arm.com>
- <f24a78d3-0cf2-5be4-c4bd-2552e6b69ef1@arm.com>
+        Tue, 10 Oct 2023 07:05:09 -0400
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2139.outbound.protection.outlook.com [40.107.22.139])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 017EF94;
+        Tue, 10 Oct 2023 04:05:08 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OLx4RYEp9c7WlC2lWoQD6g77HbdK5SSAQt+jVNFFh21Ht95nx2VeHWEdcRrfvajjT5XyVUZuAu9I7ZiYrYc8U7WSdH/Lf3ScgX/pen9dhlNDfrmva16C86LHbksuQm41PzGV0ug5lgBe3fRgt8v37QbfBqURjPWsXNBg7onLCcrSp7CrltFOB6nyyKrVn40/0ThRdcrsgnn+XEYWVc9q78aDmrMl/26GixJx562RxiofGEOSz7fMtqI+e4uK6izLt/8X/X0+YY4jQfQxjskAZ3DoD1qEVX/7UwM3MJBtkan90zM+Het/iq4Tslhx98KqzWTXt5BHsuKa2JGERyaNeQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3vXhlDOgIjRxJ4spgsnebm0qC+OrG2CknNZx1kLuAPQ=;
+ b=dbjHr/uPHuzC2pVcHvSHZ4bzBwRaZG0b6+gj79T0Tgf16gQ46r13+8wCqzcmhXB/IzABjmo9Q+5q60I70LFujS9k1gRZc7wPerlrqmwG7qxGNcw36lhFVTlhlB8FuwRGufm+u+8KchVIPhKAbXwzDFKQ6cIqqGT/qNaig+zDg/C50Y2WfrxIXNnyfwiQh0+a+Jio3228J5gXRm9rJv3HNAYrIF5CG3pyRK7AC6cy3tBcH3S9OBWI+sst3b7Q0s49W5FG6ekgpT0/KQPNLwdtTOxAjHfN0ltXTmRNuJ7t6DjPADIGFq1Bj/fNxMG6Flr9gOHPbgcYnTk+GUJGz9jxfA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bang-olufsen.dk; dmarc=pass action=none
+ header.from=bang-olufsen.dk; dkim=pass header.d=bang-olufsen.dk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bang-olufsen.dk;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3vXhlDOgIjRxJ4spgsnebm0qC+OrG2CknNZx1kLuAPQ=;
+ b=kTP5h0SPE8dN0sfeDAxtMy1tWihse3QzvQaK53B3wcmOk416sMrIAjgZttannvYXM6qvFTs2CJGG2U4VvPQ0AKeshZlaB+MmMFvKjLnaZm4xbC1rfPraHgD3e8xaBczJapuXnGdttm5Guo2Jq+Xn8porKWd5H0YAirr34qJnLSg=
+Received: from AM6PR03MB3943.eurprd03.prod.outlook.com (2603:10a6:20b:26::24)
+ by AS8PR03MB6728.eurprd03.prod.outlook.com (2603:10a6:20b:29f::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Tue, 10 Oct
+ 2023 11:05:05 +0000
+Received: from AM6PR03MB3943.eurprd03.prod.outlook.com
+ ([fe80::fb3c:4931:e74e:c691]) by AM6PR03MB3943.eurprd03.prod.outlook.com
+ ([fe80::fb3c:4931:e74e:c691%3]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
+ 11:05:04 +0000
+From:   =?utf-8?B?QWx2aW4gxaBpcHJhZ2E=?= <ALSI@bang-olufsen.dk>
+To:     Justin Stitt <justinstitt@google.com>
+CC:     Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Subject: Re: [PATCH] net: dsa: realtek: rtl8365mb: replace deprecated strncpy
+ with ethtool_sprintf
+Thread-Topic: [PATCH] net: dsa: realtek: rtl8365mb: replace deprecated strncpy
+ with ethtool_sprintf
+Thread-Index: AQHZ+wIbcwTMjUrkiUmY/MMUWpl2xrBC3TkA
+Date:   Tue, 10 Oct 2023 11:05:04 +0000
+Message-ID: <gcp232latw2qcszw47fpverzp5bw6jwcc7ktj3y2t3xlnwigff@n4lqte6u5eav>
+References: <20231009-strncpy-drivers-net-dsa-realtek-rtl8365mb-c-v1-1-0537fe9fb08c@google.com>
+In-Reply-To: <20231009-strncpy-drivers-net-dsa-realtek-rtl8365mb-c-v1-1-0537fe9fb08c@google.com>
+Accept-Language: en-US
 Content-Language: en-US
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <f24a78d3-0cf2-5be4-c4bd-2552e6b69ef1@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=bang-olufsen.dk;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AM6PR03MB3943:EE_|AS8PR03MB6728:EE_
+x-ms-office365-filtering-correlation-id: 156ab21a-41f2-49be-daf5-08dbc980c1c6
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: EOTl/xwlf7PnmD7H1M6V0r8JsR+fv8C15RyQsvHb7WR43EFPJuaaiLkFmC+gZSRPbyHvK0Eca8bgp+HqTMivcxwK/lUR7137llaNxL7iqo0Rp2Lkf3wtbUStD9ij9tG1117gUxEyM3Cnck0Is5oe+bJ0Br3ZnLnZpJS8lv/A9nyobtNEFZyXTXXbx/TwsqWAe8UB/EbQ5CqfyIEeAlmnUA9QiUHRJ1oabd/jqatkXGyo/utOjCOthAu8GLMobS05QY/44Fa3xTRuXvnOhKr6HzrAaoaEsTgVB86NLjZVYBjFZTXvW0137Tg22LTaRS20t9lMiK42qwkDHIKIuWChnm1DTPk2A5WfkQmsNB4G1ToaK2Q11C+nnDJQCSW9P6Kn8hUV6Uf9RNx1XeRmc60TqW1vwjyZpixprvePnOUUjBGdjaoeQoa2+4wlKukGX+o3fd8Lxe3oY+la0YtiLVY+jGBzLsw9xkUFUrL4EdKHwH34pPqg2NBBJWuKlh2Xfc883qXdv2aPy1V2TPKm52dRSO+lmPsCQirJryRQZdgn/LSVNs6H4/o4jw6/SkakjKsCRcb3mChb19J7saWOQa4CkVRYHRxx0kMMHu2nDtmfXe4=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR03MB3943.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(346002)(136003)(39850400004)(376002)(396003)(366004)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(85182001)(85202003)(71200400001)(478600001)(66574015)(33716001)(26005)(83380400001)(38070700005)(9686003)(122000001)(6512007)(6506007)(86362001)(2906002)(6486002)(966005)(38100700002)(41300700001)(5660300002)(66556008)(66446008)(66946007)(91956017)(66476007)(316002)(64756008)(6916009)(54906003)(8676002)(4326008)(8936002)(76116006)(7416002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dDhyVWR2ZVU4TTVrTnhFWGgzeVZJdjRKT0NkZnU0dVlRbjlsYnRxbzRiWEVH?=
+ =?utf-8?B?VjdWWk0vRFY2djEwS1NFb2ZXYVluWm5TaEsrdGxSaS9IOWc1SmhDZVNhRDhZ?=
+ =?utf-8?B?SEFhZytFVlIrT01IWmFHQVBHdmp1OCtGaHZPakpnVlJ5SjdiOGhzMWJaNnJp?=
+ =?utf-8?B?Vy92STJ0cDVzQ2Fjc3FsU29tVlczUFUxajduU0wrRTRMdHAzVVVKVWJ5bTli?=
+ =?utf-8?B?MWpuRWRpWEgzLzE0dXRYMkVMeTIzL3FuZmhwME13VzQ1ZU5lWm1WakRYZzJi?=
+ =?utf-8?B?RmlDNkVEMTk0Ni83RXdFWlorM2FqZnBaRjVQMTVLRFBUeHlEL3NtMWwyYkRw?=
+ =?utf-8?B?U3JMaTVQY2Y1TGdyM2xDZlNiajNEamhPeVo1dUVjR2NEMkp5VUc5bGlJRnlD?=
+ =?utf-8?B?Ulh3Rm1acENKbEh2bmJjeTVRRThSWEw2MHVKTVBrbitWMDRVMDg4MEt0Wlpp?=
+ =?utf-8?B?UDZWZ1N3Njcxcys5Z202NXlXRC9ONklsMEhkRUxxZUg3b1JJczQwN2UrU1Fa?=
+ =?utf-8?B?RzMrNXFOV1FTMlhKSXdyWWxwa1dVT3N2QmtvMjlXT252ei9nMnQ4aXpqSEtt?=
+ =?utf-8?B?K0xKWnFWb0xIVUZTRGxXeXp3Qm10Z2ljcFcrckhDOTlLZU9pc2dBUk80M09p?=
+ =?utf-8?B?Mk10dCtoYlBEemZGNi9OOHdyZzR0S0IvaTQrVFhhbW53TkZvVjk2OWpLK3RN?=
+ =?utf-8?B?L2pSQWNHZW12YmtxYjNiZXQ5NW9vS2ZmZ2JHNVNWeEhLQnd2SGhLUUdqTG1o?=
+ =?utf-8?B?USs5VW13RUs3cm53dGhtd1labjJQdXUxYkF1ajU2ME5HVXJkTG5uMDV3bFFS?=
+ =?utf-8?B?ZEJWN1duOHZSZ0Y2eVVzSTlHc3JoMmFCT0pHZ1llZXQ5QkpzME9Ybk94amZ6?=
+ =?utf-8?B?dHVtNWs2QzRqNWJOWDRCb2NGYWlTL1lUN3o4d3cxQ21rL1VLckNRbURlbTV6?=
+ =?utf-8?B?bHdSM0lDd3ZuOFp5MmR1Nnh0MktaZ0JzenlSbklLMmhSRkc1emowY1ExVzJN?=
+ =?utf-8?B?aU1RSDNMd24rakZuN2pBbW9mblpvbHRPK2J3YTEyVE1UalBHVWkzU2E5ZzlN?=
+ =?utf-8?B?TlFHdzlyUG1wZGgrYTk0bC9XeTkxTllneDBhOTN6WlNiT2pXS1haUWY3alpu?=
+ =?utf-8?B?a0VIYUc5clBuemtnTkpkZjBCUjR4T1RLdzhSWjdXekJuWnJaNnlldC9vV0k3?=
+ =?utf-8?B?MERPR1JQQ2NPdnpMaEptVVNZZlQ0SXMzNGNGQjZoRER4R0ZWOUhJY2I2a1JU?=
+ =?utf-8?B?THRheGlreDBUU1lJUG9QYkZZa0ZJWGhXYUxHTFQvRUxoUDBmYnZUaFluRkEy?=
+ =?utf-8?B?NWlkVFBRV1h2dVFNQ3RraFVkb3JqSVpLK1diZFlOU1B2aFp6RzF6amdjN04w?=
+ =?utf-8?B?UFhQOWNkSTZBQXlDOGdFYTU5L005a2IxemZkOThNaTBSTXY2RXlqaDk3aDZJ?=
+ =?utf-8?B?aGxscXhydFFhS2QxTHozRnltcjdaaWRrWkZIUkxRclZBa00ySzczTDY0dkFj?=
+ =?utf-8?B?dU90TGRORnRvL1VIWTFackxvaWJYbG13SlNGbkNIR0NqdDR4UXFYUXpkNWd1?=
+ =?utf-8?B?SWxtU3Q0Q3hyZm5kS1ZnZXZreWxDdm9pY3FoUUhTS3ROREZvTi93a3N2Vzhj?=
+ =?utf-8?B?dFdIQkMrdmU5M1o5Vk1TY3pYYzJGc3hZSXRTKzc1TE9mcFpZZ0VpT3gyamRw?=
+ =?utf-8?B?TUVWRUZ3Zmc3bHZLbEt6dWd6TmZzUUphK25SVUFOYWNiR2hpVVh0ZHk2SGpH?=
+ =?utf-8?B?emo2eTFGNlB6YWxtNTdVenZJYTBMdHQveXZHRVB5MU03U1dMUzFEZFQ2WXlK?=
+ =?utf-8?B?REJFeE5DclRESmhZZGJvZm9BbytTV0VRZ1dOTGNqYVk0Mjh2NGh0cWVzSkdI?=
+ =?utf-8?B?dVJCbmh5Vk9DSjlKbjd2d0hrWUc0LytQaDB6WGFSdUJ2WTBTcEJnZjdzOGtz?=
+ =?utf-8?B?clZWYzNKaS9Ic1pveUk2UERUYkhGbGhQY1BINnNPMVFWZXBZYXZ0dGFsck52?=
+ =?utf-8?B?OTZSYTEzWUNVc0V5WFlvQWhSL0NwQlRjRDU5QXFOWjZpYmoyNDBPSVk3Z1Rm?=
+ =?utf-8?B?VVp4RHRkTzZtRGtlRlYzRkZPbDVvdURBZ0MzTTRwV1dyL1d5aGtWOEhYODkw?=
+ =?utf-8?Q?TD5BD8EopbeDtfx8K6vaNhsav?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <36D414BC04F399449DC165FAC2D57080@eurprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: bang-olufsen.dk
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB3943.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 156ab21a-41f2-49be-daf5-08dbc980c1c6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Oct 2023 11:05:04.6895
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 210d08b8-83f7-470a-bc96-381193ca14a1
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XQjUf/oNG4bJJwH3JL+hZe8J8sfYwpw8soNgxoxbsyQ79f4rL8RIoEG7j/03VddBdFEIXMrJm/C5e8gjoQKkGA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR03MB6728
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/10/2023 17:30, James Clark wrote:
-> 
-> 
-> On 09/10/2023 13:50, Suzuki K Poulose wrote:
->> Hi James
->>
->> On 19/09/2023 10:51, James Clark wrote:
->>> FEAT_PMUv3_TH (Armv8.8) permits a PMU counter to increment only on
->>> events whose count meets a specified threshold condition. For example if
->>> PMEVTYPERn.TC (Threshold Control) is set to 0b101 (Greater than or
->>> equal, count), and the threshold is set to 2, then the PMU counter will
->>> now only increment by 1 when an event would have previously incremented
->>> the PMU counter by 2 or more on a single processor cycle.
->>>
->>> Two new Perf event config fields, 'threshold' and 'threshold_control'
->>> have been added for controlling the feature:
->>>
->>>     $ perf stat -e stall_slot/threshold=2,threshold_control=5/
->>>
->>> A new capability for reading out the maximum supported threshold value
->>> has also been added:
->>>
->>>     $ cat /sys/bus/event_source/devices/armv8_pmuv3/caps/threshold_max
->>>
->>>     0x000000ff
->>>
->>> If a threshold higher than threshold_max is provided, then no error is
->>> generated but the threshold is clamped to the max value. If
->>> FEAT_PMUv3_TH isn't implemented, then threshold_max reads zero, and
->>> neither the 'threshold' nor 'threshold_control' parameters will be used.
->>>
->>> The threshold is per PMU counter, and there are potentially different
->>> threshold_max values per PMU type on heterogeneous systems.
->>>
->>> Bits higher than 32 now need to be written into PMEVTYPER, so
->>> armv8pmu_write_evtype() has to be updated to take a u64 value rather
->>> than u32.
->>
->> Is this supported in the Aarch32 state ? If so, do we need to change
->> the arch specific register read/write "helpers" ?
->>
-> 
-> It's half supported. PMMIR.THWIDTH is readable and non-zero in aarch32,
-> but the threshold value can't be written because it's in the high part
-> of the event type register. Thresholding does affect aarch32 guests when
-> enabled from the host, but that doesn't really concern the code.
-> 
-> But yes you're right, it isn't building on aarch32 at the moment so I
-> need to do a V2. I'm going to make it so the max width is reported as 0
-> in sysfs for aarch32, and then don't ever try to write to the high part
-> of the event type (which was part of the compilation error anyway). No
-> change will be needed to the read/write helpers though, they already
-> handle 32/64 bits for the right platforms.
-> 
->>>
->>> Signed-off-by: James Clark <james.clark@arm.com>
->>> ---
->>>    drivers/perf/arm_pmuv3.c       | 59 +++++++++++++++++++++++++++++++++-
->>>    include/linux/perf/arm_pmuv3.h |  7 +++-
->>>    2 files changed, 64 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
->>> index e5a2ac4155f6..ad6574b2bdab 100644
->>> --- a/drivers/perf/arm_pmuv3.c
->>> +++ b/drivers/perf/arm_pmuv3.c
->>> @@ -294,9 +294,16 @@ static const struct attribute_group
->>> armv8_pmuv3_events_attr_group = {
->>>        .is_visible = armv8pmu_event_attr_is_visible,
->>>    };
->>>    +#define TH_LO    2
->>> +#define TH_HI    13
->>> +#define TH_CNTL_LO    14
->>> +#define TH_CNTL_HI    16
->>> +
->>>    PMU_FORMAT_ATTR(event, "config:0-15");
->>>    PMU_FORMAT_ATTR(long, "config1:0");
->>>    PMU_FORMAT_ATTR(rdpmc, "config1:1");
->>> +PMU_FORMAT_ATTR(threshold, "config1:" __stringify(TH_LO) "-"
->>> __stringify(TH_HI));
->>> +PMU_FORMAT_ATTR(threshold_control, "config1:" __stringify(TH_CNTL_LO)
->>> "-" __stringify(TH_CNTL_HI));
->>
->> The perf core doesn't yet support adding aliases for
->> fields other than "events". May be we could add
->> some support for that in the future and use it
->> to provide meaningful aliases for the threshold
->> control.
->>
-> 
-> I think it could be useful, but I'm wondering about the use case. To
-> make use of this feature you would probably need to have the docs or
-> reference manual open anyway, and that gives you the names of the
-> control values. Any tool could trivially hold the list of names too.
-> 
-> But I suppose you could say the same about event names, and we go
-> through some effort to report those.
-> 
->> Not sure if we can extrapolate threshold_control[0]
->> to be another config field => "counting_mode"
->> We would need to check with the architecture folks
->> to confirm that the meaning wouldn't change though.
->>
-> 
-> I think if was planned to be fixed in that way it would have already
-> been written that way? And I doubt they would agree to promise to not
-> re-use another value that didn't fit the pattern in the future. Then
-> we'd be in a big mess because we deviated from the reference manual and
-> it would be hard to re-map around whatever new value was introduced.
-
-Having looked at the spec again, it is indeed fixed. All 8 possible
-values are defined for the TC and all of them follow the rule of
-bit0 => 1 => counting mode
-
-That kind of makes it easier for people to go one step closer to
-use the field without having to refer to the Arm ARM all the time.
-
-Suzuki
-
-
-
-> 
->>>      static int sysctl_perf_user_access __read_mostly;
->>>    @@ -310,10 +317,22 @@ static inline bool
->>> armv8pmu_event_want_user_access(struct perf_event *event)
->>>        return event->attr.config1 & 0x2;
->>>    }
->>>    +static inline u32 armv8pmu_event_threshold(struct perf_event_attr
->>> *attr)
->>> +{
->>> +    return FIELD_GET(GENMASK(TH_HI, TH_LO), attr->config1);
->>> +}
->>> +
->>> +static inline u8 armv8pmu_event_threshold_control(struct
->>> perf_event_attr *attr)
->>> +{
->>> +    return FIELD_GET(GENMASK(TH_CNTL_HI, TH_CNTL_LO), attr->config1);
->>> +}
->>> +
->>>    static struct attribute *armv8_pmuv3_format_attrs[] = {
->>>        &format_attr_event.attr,
->>>        &format_attr_long.attr,
->>>        &format_attr_rdpmc.attr,
->>> +    &format_attr_threshold.attr,
->>> +    &format_attr_threshold_control.attr,
->>>        NULL,
->>>    };
->>>    @@ -365,10 +384,31 @@ static ssize_t bus_width_show(struct device
->>> *dev, struct device_attribute *attr,
->>>      static DEVICE_ATTR_RO(bus_width);
->>>    +static u32 threshold_max(struct arm_pmu *cpu_pmu)
->>> +{
->>> +    /*
->>> +     * The largest value that can be written to PMEVTYPER<n>_EL0.TH is
->>> +     * (2 ^ PMMIR.THWIDTH) - 1
->>> +     */
->>> +    return (1 << FIELD_GET(ARMV8_PMU_THWIDTH, cpu_pmu->reg_pmmir)) - 1;
->>> +}
->>> +
->>> +static ssize_t threshold_max_show(struct device *dev,
->>> +                  struct device_attribute *attr, char *page)
->>> +{
->>> +    struct pmu *pmu = dev_get_drvdata(dev);
->>> +    struct arm_pmu *cpu_pmu = container_of(pmu, struct arm_pmu, pmu);
->>> +
->>> +    return sysfs_emit(page, "0x%08x\n", threshold_max(cpu_pmu));
->>> +}
->>> +
->>> +static DEVICE_ATTR_RO(threshold_max);
->>> +
->>>    static struct attribute *armv8_pmuv3_caps_attrs[] = {
->>>        &dev_attr_slots.attr,
->>>        &dev_attr_bus_slots.attr,
->>>        &dev_attr_bus_width.attr,
->>> +    &dev_attr_threshold_max.attr,
->>>        NULL,
->>>    };
->>>    @@ -552,7 +592,7 @@ static void armv8pmu_write_counter(struct
->>> perf_event *event, u64 value)
->>>            armv8pmu_write_hw_counter(event, value);
->>>    }
->>>    -static inline void armv8pmu_write_evtype(int idx, u32 val)
->>> +static inline void armv8pmu_write_evtype(int idx, u64 val)>>   {
->>>        u32 counter = ARMV8_IDX_TO_COUNTER(idx);
->>>    @@ -912,6 +952,10 @@ static int armv8pmu_set_event_filter(struct
->>> hw_perf_event *event,
->>>                         struct perf_event_attr *attr)
->>>    {
->>>        unsigned long config_base = 0;
->>> +    struct perf_event *perf_event = container_of(attr, struct
->>> perf_event,
->>> +                             attr);
->>> +    struct arm_pmu *cpu_pmu = to_arm_pmu(perf_event->pmu);
->>> +    u32 th, th_max;
->>>          if (attr->exclude_idle)
->>>            return -EPERM;
->>> @@ -943,6 +987,19 @@ static int armv8pmu_set_event_filter(struct
->>> hw_perf_event *event,
->>>        if (attr->exclude_user)
->>>            config_base |= ARMV8_PMU_EXCLUDE_EL0;
->>>    +    /*
->>> +     * Insert event counting threshold (FEAT_PMUv3_TH) values. If
->>> +     * FEAT_PMUv3_TH isn't implemented, then THWIDTH (threshold_max)
->>> will be
->>> +     * 0 and no values will be written.
->>> +     */
->>> +    th_max = threshold_max(cpu_pmu);
->>> +    if (th_max) {
->>> +        th = min(armv8pmu_event_threshold(attr), th_max);
->>> +        config_base |= FIELD_PREP(ARMV8_PMU_EVTYPE_TH, th);
->>> +        config_base |= FIELD_PREP(ARMV8_PMU_EVTYPE_TC,
->>> +                      armv8pmu_event_threshold_control(attr));
->>> +    }
->>> +
->>>        /*
->>>         * Install the filter into config_base as this is used to
->>>         * construct the event type.
->>> diff --git a/include/linux/perf/arm_pmuv3.h
->>> b/include/linux/perf/arm_pmuv3.h
->>> index e3899bd77f5c..0e2a3c927150 100644
->>> --- a/include/linux/perf/arm_pmuv3.h
->>> +++ b/include/linux/perf/arm_pmuv3.h
->>> @@ -228,7 +228,11 @@
->>>    /*
->>>     * PMXEVTYPER: Event selection reg
->>>     */
->>> -#define ARMV8_PMU_EVTYPE_MASK    0xc800ffff    /* Mask for writable
->>> bits */
->>> +#define ARMV8_PMU_EVTYPE_TH    GENMASK(43, 32)
->>> +#define ARMV8_PMU_EVTYPE_TC    GENMASK(63, 61)
->>> +/* Mask for writable bits */
->>> +#define ARMV8_PMU_EVTYPE_MASK    (0xc800ffff | ARMV8_PMU_EVTYPE_TH | \
->>> +                ARMV8_PMU_EVTYPE_TC)
->>
->> May need to be UL suffixed for safety ?
->>
-> 
-> I don't think it's strictly needed because GENMASK makes a UL so the
-> whole expression is auto promoted anyway. But I can add it for
-> completeness.
-> 
-> Also these will be split across the two asm/arm_pmuv3.h files in v2
-> because I need to keep the original mask for aarch32, so it will look a
-> little bit different.
-> 
-> Thanks
-> James
-> 
->>
->> Suzuki
->>
->>>    #define ARMV8_PMU_EVTYPE_EVENT    0xffff        /* Mask for EVENT
->>> bits */
->>>      /*
->>> @@ -254,6 +258,7 @@
->>>    #define ARMV8_PMU_BUS_SLOTS_MASK 0xff
->>>    #define ARMV8_PMU_BUS_WIDTH_SHIFT 16
->>>    #define ARMV8_PMU_BUS_WIDTH_MASK 0xf
->>> +#define ARMV8_PMU_THWIDTH GENMASK(23, 20)
->>>      /*
->>>     * This code is really good
->>
->>
-
+T24gTW9uLCBPY3QgMDksIDIwMjMgYXQgMTA6NDM6NTlQTSArMDAwMCwgSnVzdGluIFN0aXR0IHdy
+b3RlOg0KPiBbWW91IGRvbid0IG9mdGVuIGdldCBlbWFpbCBmcm9tIGp1c3RpbnN0aXR0QGdvb2ds
+ZS5jb20uIExlYXJuIHdoeSB0aGlzIGlzIGltcG9ydGFudCBhdCBodHRwczovL2FrYS5tcy9MZWFy
+bkFib3V0U2VuZGVySWRlbnRpZmljYXRpb24gXQ0KPiANCj4gYHN0cm5jcHlgIGlzIGRlcHJlY2F0
+ZWQgZm9yIHVzZSBvbiBOVUwtdGVybWluYXRlZCBkZXN0aW5hdGlvbiBzdHJpbmdzDQo+IFsxXSBh
+bmQgYXMgc3VjaCB3ZSBzaG91bGQgcHJlZmVyIG1vcmUgcm9idXN0IGFuZCBsZXNzIGFtYmlndW91
+cyBzdHJpbmcNCj4gaW50ZXJmYWNlcy4NCj4gDQo+IGV0aHRvb2xfc3ByaW50ZigpIGlzIGRlc2ln
+bmVkIHNwZWNpZmljYWxseSBmb3IgZ2V0X3N0cmluZ3MoKSB1c2FnZS4NCj4gTGV0J3MgcmVwbGFj
+ZSBzdHJuY3B5IGluIGZhdm9yIG9mIHRoaXMgbW9yZSByb2J1c3QgYW5kIGVhc2llciB0bw0KPiB1
+bmRlcnN0YW5kIGludGVyZmFjZS4NCj4gDQo+IExpbms6IGh0dHBzOi8vd3d3Lmtlcm5lbC5vcmcv
+ZG9jL2h0bWwvbGF0ZXN0L3Byb2Nlc3MvZGVwcmVjYXRlZC5odG1sI3N0cm5jcHktb24tbnVsLXRl
+cm1pbmF0ZWQtc3RyaW5ncyBbMV0NCj4gTGluazogaHR0cHM6Ly9tYW5wYWdlcy5kZWJpYW4ub3Jn
+L3Rlc3RpbmcvbGludXgtbWFudWFsLTQuOC9zdHJzY3B5LjkuZW4uaHRtbCBbMl0NCj4gTGluazog
+aHR0cHM6Ly9naXRodWIuY29tL0tTUFAvbGludXgvaXNzdWVzLzkwDQo+IENjOiBsaW51eC1oYXJk
+ZW5pbmdAdmdlci5rZXJuZWwub3JnDQo+IFNpZ25lZC1vZmYtYnk6IEp1c3RpbiBTdGl0dCA8anVz
+dGluc3RpdHRAZ29vZ2xlLmNvbT4NCg0KUmV2aWV3ZWQtYnk6IEFsdmluIMWgaXByYWdhIDxhbHNp
+QGJhbmctb2x1ZnNlbi5kaz4NCg0KPiAtLS0NCj4gTm90ZTogYnVpbGQtdGVzdGVkIG9ubHkuDQo+
+IC0tLQ0KPiAgZHJpdmVycy9uZXQvZHNhL3JlYWx0ZWsvcnRsODM2NW1iLmMgfCAzICstLQ0KPiAg
+MSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAyIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlm
+ZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2RzYS9yZWFsdGVrL3J0bDgzNjVtYi5jIGIvZHJpdmVycy9u
+ZXQvZHNhL3JlYWx0ZWsvcnRsODM2NW1iLmMNCj4gaW5kZXggNDFlYTNiNWE0MmIxLi5kMTcxYzE4
+ZGQzNTQgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbmV0L2RzYS9yZWFsdGVrL3J0bDgzNjVtYi5j
+DQo+ICsrKyBiL2RyaXZlcnMvbmV0L2RzYS9yZWFsdGVrL3J0bDgzNjVtYi5jDQo+IEBAIC0xMzAz
+LDggKzEzMDMsNyBAQCBzdGF0aWMgdm9pZCBydGw4MzY1bWJfZ2V0X3N0cmluZ3Moc3RydWN0IGRz
+YV9zd2l0Y2ggKmRzLCBpbnQgcG9ydCwgdTMyIHN0cmluZ3NldA0KPiANCj4gICAgICAgICBmb3Ig
+KGkgPSAwOyBpIDwgUlRMODM2NU1CX01JQl9FTkQ7IGkrKykgew0KPiAgICAgICAgICAgICAgICAg
+c3RydWN0IHJ0bDgzNjVtYl9taWJfY291bnRlciAqbWliID0gJnJ0bDgzNjVtYl9taWJfY291bnRl
+cnNbaV07DQo+IC0NCj4gLSAgICAgICAgICAgICAgIHN0cm5jcHkoZGF0YSArIGkgKiBFVEhfR1NU
+UklOR19MRU4sIG1pYi0+bmFtZSwgRVRIX0dTVFJJTkdfTEVOKTsNCj4gKyAgICAgICAgICAgICAg
+IGV0aHRvb2xfc3ByaW50ZigmZGF0YSwgIiVzIiwgbWliLT5uYW1lKTsNCj4gICAgICAgICB9DQo+
+ICB9DQo+IA0KPiANCj4gLS0tDQo+IGJhc2UtY29tbWl0OiBjYmYzYTJjYjE1NmEyYzkxMWQ4ZjM4
+ZDgyNDc4MTRiNGMwN2Y0OWEyDQo+IGNoYW5nZS1pZDogMjAyMzEwMDktc3RybmNweS1kcml2ZXJz
+LW5ldC1kc2EtcmVhbHRlay1ydGw4MzY1bWItYy1iYjEwNmU0YzExMGMNCj4gDQo+IEJlc3QgcmVn
+YXJkcywNCj4gLS0NCj4gSnVzdGluIFN0aXR0IDxqdXN0aW5zdGl0dEBnb29nbGUuY29tPg0KPg==
