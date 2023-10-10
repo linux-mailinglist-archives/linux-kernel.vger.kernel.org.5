@@ -2,222 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9AF7BF3BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 09:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB7C7BF3C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 09:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442429AbjJJHEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 03:04:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40686 "EHLO
+        id S1442367AbjJJHID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 03:08:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377808AbjJJHE2 (ORCPT
+        with ESMTP id S1377808AbjJJHIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 03:04:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3060D9E;
-        Tue, 10 Oct 2023 00:04:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696921467; x=1728457467;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=QzWpFvDaJHvmkToEy7no3ioBWVCBUs+c4gOsmO5SnR0=;
-  b=GN1sKsfLdb/9yxRypxDb4ZmGtQpNogaE8UyvIIJGgtt1c9GTbGDl/zGG
-   64oafo1kMMEIBR889jHwg2cj2/wykKIdkFQ7z23rSYx/4e5dp9W/3DoP9
-   RxdfxMYLRjxr+ZnmbMzNPdhU+717Vo5HZFpb3PcwsG8Poe2Q44/N4MZPS
-   5MyCAB4pnhyQ/ghTxioudK9WoHEapUCQ/aa+HVkwVDpH9xOvK35A6ENAn
-   PqBLIZNOOgdmIlvvXs5ksUoRgs8D8nGWwMXPdd3aqkOHfQx98YmAL00PQ
-   /6G3brWmk7lBjmMF8w2l3hf1OwmCjdnIwMb/n4L+IH9x1/hIg+BuNQSVH
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="5883826"
-X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
-   d="scan'208";a="5883826"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 00:04:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="729977507"
-X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
-   d="scan'208";a="729977507"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.36.106])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 00:04:24 -0700
-Message-ID: <b35ef5aa-08c8-4316-9699-50ce907324a5@intel.com>
-Date:   Tue, 10 Oct 2023 10:04:20 +0300
+        Tue, 10 Oct 2023 03:08:01 -0400
+Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B3A92;
+        Tue, 10 Oct 2023 00:07:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
+        t=1696921675; bh=4lNplERnI6yZsihONwZhR1SOQRzefzq61EbgYbT+Bl4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=u9HA17p7oMjX7AEpQ9GGFvYeQ7rA7lsBRNbzq6/RpIbGCbQ2KQlco8lZ1vw3O/EGP
+         b2BGQhYZEx5gRHcbg2QDf/VgPjNTUaB2+jby10JNMtqUDC5886z2UoC2MA22NHh0B8
+         UwURBQ4Cf8MkSqwyXU9boo2KWNtYDH/pHBm3FU9A=
+From:   =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megi@xff.cz>
+To:     linux-rockchip@lists.infradead.org
+Cc:     Ondrej Jirman <megi@xff.cz>,
+        Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
+        Nicholas Roth <nicholas@rothemail.net>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org (open list:OMNIVISION OV8858 SENSOR DRIVER),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] media: i2c: ov8858: Don't set fwnode in the driver
+Date:   Tue, 10 Oct 2023 09:07:44 +0200
+Message-ID: <20231010070747.1781612-1-megi@xff.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] [02/03] mmc: Add Synopsys DesignWare mmc cmdq host
- driver
-To:     Jyan Chou <jyanchou@realtek.com>, ulf.hansson@linaro.org,
-        jh80.chung@samsung.com
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        james.tai@realtek.com
-References: <cover.1693991785.git.jyanchou@realtek.com>
- <9617f04133ba8b6907b253c4154083f75956a341.1693991785.git.jyanchou@realtek.com>
-Content-Language: en-US
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <9617f04133ba8b6907b253c4154083f75956a341.1693991785.git.jyanchou@realtek.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please put version numbers in the patch subject.  Refer to:
+From: Ondrej Jirman <megi@xff.cz>
 
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+This makes the driver work with the new check in
+v4l2_async_register_subdev() that was introduced recently in 6.6-rc1.
+Without this change, probe fails with:
 
-On 6/09/23 12:28, Jyan Chou wrote:
-> We implemented cmdq feature on Synopsys DesignWare mmc driver.
-> The difference between dw_mmc.c and dw_mmc_cqe.c were distinct
-> register definitions and the addition of cmdq.
+ov8858 1-0036: Detected OV8858 sensor, revision 0xb2
+ov8858 1-0036: sub-device fwnode is an endpoint!
+ov8858 1-0036: v4l2 async register subdev failed
+ov8858: probe of 1-0036 failed with error -22
 
-Register differences can be abstracted away, for example
-by providing callbacks for reading / writing registers.
-So this still needs much more explanation.
+This also simplifies the driver a bit.
 
-> 
-> More over, the flow of abort command sequence had change.
-> We added a wait status function to satisfy synopsys user guide's
-> description, since this flow might be specific in synopsys host
-> driver only.
-> 
-> Signed-off-by: Jyan Chou <jyanchou@realtek.com>
-> 
-> —
-> v0 to v1 change:
-> 1. Seperate different support into single patch.
-> 2. Fix the compiler complains.
-> ---
->  drivers/mmc/host/Kconfig      |   13 +
->  drivers/mmc/host/Makefile     |    1 +
->  drivers/mmc/host/dw_mmc_cqe.c | 1634 +++++++++++++++++++++++++++++++++
->  drivers/mmc/host/dw_mmc_cqe.h |  443 +++++++++
->  4 files changed, 2091 insertions(+)
->  create mode 100644 drivers/mmc/host/dw_mmc_cqe.c
->  create mode 100644 drivers/mmc/host/dw_mmc_cqe.h
+Signed-off-by: Ondrej Jirman <megi@xff.cz>
+---
+v2:
+- call fwnode_handle_put earlier to avoid multiple calls to it in
+  error code paths (suggested by Jacopo Mondi)
 
-My comments pertain only to the use of cqhci.
+ drivers/media/i2c/ov8858.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-[SNIP]
+diff --git a/drivers/media/i2c/ov8858.c b/drivers/media/i2c/ov8858.c
+index 3af6125a2eee..4d9fd76e2f60 100644
+--- a/drivers/media/i2c/ov8858.c
++++ b/drivers/media/i2c/ov8858.c
+@@ -1850,9 +1850,9 @@ static int ov8858_parse_of(struct ov8858 *ov8858)
+ 	}
+ 
+ 	ret = v4l2_fwnode_endpoint_parse(endpoint, &vep);
++	fwnode_handle_put(endpoint);
+ 	if (ret) {
+ 		dev_err(dev, "Failed to parse endpoint: %d\n", ret);
+-		fwnode_handle_put(endpoint);
+ 		return ret;
+ 	}
+ 
+@@ -1864,12 +1864,9 @@ static int ov8858_parse_of(struct ov8858 *ov8858)
+ 	default:
+ 		dev_err(dev, "Unsupported number of data lanes %u\n",
+ 			ov8858->num_lanes);
+-		fwnode_handle_put(endpoint);
+ 		return -EINVAL;
+ 	}
+ 
+-	ov8858->subdev.fwnode = endpoint;
+-
+ 	return 0;
+ }
+ 
+@@ -1913,7 +1910,7 @@ static int ov8858_probe(struct i2c_client *client)
+ 
+ 	ret = ov8858_init_ctrls(ov8858);
+ 	if (ret)
+-		goto err_put_fwnode;
++		return ret;
+ 
+ 	sd = &ov8858->subdev;
+ 	sd->flags |= V4L2_SUBDEV_FL_HAS_DEVNODE | V4L2_SUBDEV_FL_HAS_EVENTS;
+@@ -1964,8 +1961,6 @@ static int ov8858_probe(struct i2c_client *client)
+ 	media_entity_cleanup(&sd->entity);
+ err_free_handler:
+ 	v4l2_ctrl_handler_free(&ov8858->ctrl_handler);
+-err_put_fwnode:
+-	fwnode_handle_put(ov8858->subdev.fwnode);
+ 
+ 	return ret;
+ }
+@@ -1978,7 +1973,6 @@ static void ov8858_remove(struct i2c_client *client)
+ 	v4l2_async_unregister_subdev(sd);
+ 	media_entity_cleanup(&sd->entity);
+ 	v4l2_ctrl_handler_free(&ov8858->ctrl_handler);
+-	fwnode_handle_put(ov8858->subdev.fwnode);
+ 
+ 	pm_runtime_disable(&client->dev);
+ 	if (!pm_runtime_status_suspended(&client->dev))
+-- 
+2.42.0
 
-> +static void dw_mci_cqe_set_tran_desc(u8 *desc,
-> +					dma_addr_t addr,
-> +					int len,
-> +					bool end,
-> +					bool dma64)
-> +{
-> +	__le32 *attr = (__le32 __force *)desc;
-> +
-> +	*attr = (CQHCI_VALID(1) |
-> +		 CQHCI_END(end ? 1 : 0) |
-> +		 CQHCI_INT(0) |
-> +		 CQHCI_ACT(0x4) |
-> +		 CQHCI_DAT_LENGTH(len));
-> +
-> +	if (dma64) {
-> +		__le64 *dataddr = (__le64 __force *)(desc + 4);
-> +
-> +		dataddr[0] = cpu_to_le64(addr);
-> +	} else {
-> +		__le32 *dataddr = (__le32 __force *)(desc + 4);
-> +
-> +		dataddr[0] = cpu_to_le32(addr);
-> +	}
-> +}
-> +
-> +static void dw_mci_cqe_setup_tran_desc(struct mmc_data *data,
-> +				      struct cqhci_host *cq_host,
-> +				      u8 *desc,
-> +				      int sg_count)
-> +{
-> +	struct scatterlist *sg;
-> +	u32 cur_blk_cnt, remain_blk_cnt;
-> +	unsigned int begin, end;
-> +	int i, len;
-> +	bool last = false;
-> +	bool dma64 = cq_host->dma64;
-> +	dma_addr_t addr;
-> +
-> +	for_each_sg(data->sg, sg, sg_count, i) {
-> +		addr = sg_dma_address(sg);
-> +		len = sg_dma_len(sg);
-> +		remain_blk_cnt  = len >> 9;
-> +
-> +		while (remain_blk_cnt) {
-> +			/*DW_MCI_MAX_SCRIPT_BLK is tha max for each descriptor record*/
-> +			if (remain_blk_cnt > DW_MCI_MAX_SCRIPT_BLK)
-> +				cur_blk_cnt = DW_MCI_MAX_SCRIPT_BLK;
-> +			else
-> +				cur_blk_cnt = remain_blk_cnt;
-> +
-> +			/* In Synopsys DesignWare Databook Page 84,
-> +			 * They mentioned the DMA 128MB restriction
-> +			 */
-> +			begin = addr / SZ_128M;
-> +			end = (addr + cur_blk_cnt * SZ_512) / SZ_128M;
-> +
-> +			if (begin != end)
-> +				cur_blk_cnt = (end * SZ_128M - addr) / SZ_512;
-> +
-> +			if ((i+1) == sg_count && (remain_blk_cnt == cur_blk_cnt))
-> +				last = true;
-> +
-> +			dw_mci_cqe_set_tran_desc(desc, addr,
-> +					(cur_blk_cnt << 9), last, dma64);
-> +
-> +			addr = addr + (cur_blk_cnt << 9);
-> +			remain_blk_cnt -= cur_blk_cnt;
-> +			desc += cq_host->trans_desc_len;
-> +		}
-> +	}
-> +}
-
-It would be preferable to use a callback only for setting
-the descriptor.
-Please see comments about dwcmshc_cqhci_set_tran_desc()
-and dwcmshc_cqhci_prep_tran_desc() made here:
-https://lore.kernel.org/linux-mmc/0932b124-16da-495c-9706-bbadadb3b076@intel.com/
-
-[SNIP]
-
-> +static void dw_mci_cqe_request(struct mmc_host *mmc, struct mmc_request *mrq)
-> +{
-> +	struct dw_mci_slot *slot = mmc_priv(mmc);
-> +	struct dw_mci *host = slot->host;
-> +
-> +	WARN_ON(slot->mrq);
-> +
-> +	/*
-> +	 * The check for card presence and queueing of the request must be
-> +	 * atomic, otherwise the card could be removed in between and the
-> +	 * request wouldn't fail until another card was inserted.
-> +	 */
-> +
-> +	if (!dw_mci_cqe_get_cd(mmc)) {
-> +		mrq->cmd->error = -ENOMEDIUM;
-> +		mmc_request_done(mmc, mrq);
-> +		return;
-> +	}
-> +
-> +	down_write(&host->cr_rw_sem);
-> +
-> +	/*cmdq case needs extra check*/
-> +	if (host->pdata && (host->pdata->caps2 & MMC_CAP2_CQE)) {
-> +		if ((host->cqe) == NULL) {
-> +			dev_err(host->dev, "dw_mci_request_cqe not done yet\n");
-> +			mdelay(2);
-> +		}
-> +
-> +		if (mmc->cqe_on == false && host->cqe->activated == true)
-> +			cqhci_deactivate(mmc);
-
-This should not be necessary.  Instead, please try to use
-->pre_enable() and ->post_disable() like in mtk-sd.c
-
-[SNIP]
