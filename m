@@ -2,58 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B19347BFE8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D73A7BFE92
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232344AbjJJNzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 09:55:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58886 "EHLO
+        id S232460AbjJJN4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 09:56:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232258AbjJJNzm (ORCPT
+        with ESMTP id S231792AbjJJN4m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 09:55:42 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC5A89E;
-        Tue, 10 Oct 2023 06:55:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5121AC433C8;
-        Tue, 10 Oct 2023 13:55:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696946141;
-        bh=CAC3ydJqdRBVcEoBwK9bf67K3RO2fxSTF5IMiNQO4dg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=pZ5IVSp/ybAsYDh+hx4w80XtSoyiLhJiumboqq+iPlqTNn9eJarj1uDzYk6xgiEbI
-         Vq7fUkNTHi2wE15vKo9fwJMLyOXrDKf6/ULWdUShAE/fWprfbziD5D0yjxt6r4SwUn
-         lV1RpCL0H681Q+gSiswgQUBR9jtF1gu0hZ9y8AheVt1KYKPnrf2HZU6HG6DAc1/i86
-         Qz7O3IIOJygTKD6ombCkvx6tYUwrDcrODM75WOX3m2CFQ3lL6FDISusfe7/4Mf6IiR
-         irWI5sydAAFcpHqsOCjZgW7ImjbXEZSoxViPKsOR5thF7rH57nH+d6Cg6Q1DdAJymF
-         sVlc3OdAYK18g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id EB10BCE0C54; Tue, 10 Oct 2023 06:55:40 -0700 (PDT)
-Date:   Tue, 10 Oct 2023 06:55:40 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>
-Subject: Re: [PATCH 23/23] locktorture: Check the correct variable for
- allocation failure
-Message-ID: <97ecfb49-e500-45f4-86bb-769b2d32e91c@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231010115921.988766-1-frederic@kernel.org>
- <20231010115921.988766-24-frederic@kernel.org>
+        Tue, 10 Oct 2023 09:56:42 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDB42A9;
+        Tue, 10 Oct 2023 06:56:39 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6910ea9cca1so4149861b3a.1;
+        Tue, 10 Oct 2023 06:56:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696946199; x=1697550999; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=One8tdSFLa+G5R3uW9c+lPYATRm9PNZP9LLd+yohDZc=;
+        b=av6oPsFKBYOmJhfvOfm6lACOhEYhw6Nui2Jcz4dJMyiS7K5dMVHP8PwaNbkXbf0yoI
+         Eh+Z1hcLG8uZsqVielqnlJ0Q5HRuZ9YTnx88y6zjVdIFJ5njaGIWzAFCnMXoJj2GuZqu
+         tgqYXUtEAh2d1deqBv7xevbCC3bCfyNCIE1oWImJtNbRy+k0o/TOuO8vL/CpUaXPQSJS
+         EEwjCdDOKgTa/7m2y2eC9C/rD3psRwPiDhjOkyNnur2ijgpOIlIx95LEM617vx+xhVhW
+         rldTeahmEYIDgiRygneO5DxjiUdraDu0jx9EFquA2rIIYukWOcyBCNHSVn4N/HFUQHap
+         0lQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696946199; x=1697550999;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=One8tdSFLa+G5R3uW9c+lPYATRm9PNZP9LLd+yohDZc=;
+        b=takzlhK5EYaZKVZQX2POmDyHZjr5uQ+dLhXEPASq9bTuOn+mxvrnkuEXgChiXFTLz6
+         kIrAK4OII810n99rcEl8wa6ue5sLP7jhQBnqkKQohbZHW++nLxg4oX7GuoPt8y03btSp
+         A9wrGg1G8uOqrFiRp6ueVKH6dgXpEgQugf3gbng/MB0a5rXdgQSxbkSMXXcKJD6PHUI4
+         ATwryqpiC+RRF6klpLqOAgYJFNisNbXmDpTrJchtFePj0haS59XzUHp+icVGSADBsuph
+         hF5jwTrkNC1gpUIBsD74NqXJfAUy3Z7Y9xNFo+Emx+uALP/1ZS8hfMIFbQdIYrfKIRS/
+         2q5g==
+X-Gm-Message-State: AOJu0YxrOTe/fHzhue2pyjYdoFnTFFBnf+qYAHJAPiHDvXESxAr0QUOT
+        zZW7QAUXMznbu6ZhRvGOSiw=
+X-Google-Smtp-Source: AGHT+IFAJe97RQBU9IrmP6CBGTTCTSbI/CNbpn+aJ6KoJybMQXZxThC0c70sbGshwgQQuXMu2dfxuQ==
+X-Received: by 2002:a05:6a21:181:b0:15e:dca8:1224 with SMTP id le1-20020a056a21018100b0015edca81224mr18905408pzb.55.1696946199234;
+        Tue, 10 Oct 2023 06:56:39 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v5-20020aa78505000000b00696ca62d5f5sm8280638pfn.8.2023.10.10.06.56.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 06:56:38 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 10 Oct 2023 06:56:37 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Nik Bune <n2h9z4@gmail.com>, wim@linux-watchdog.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+        skhan@linuxfoundation.org, claudiu.beznea@microchip.com,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v3] dt-bindings: watchdog: atmel,at91rm9200-wdt: convert
+ txt to yaml
+Message-ID: <0ec4f647-77b9-4b3f-9cbd-6fb122f09462@roeck-us.net>
+References: <20230924181959.64264-1-n2h9z4@gmail.com>
+ <20231010132921.GA628810-robh@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231010115921.988766-24-frederic@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <20231010132921.GA628810-robh@kernel.org>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,38 +81,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 01:59:21PM +0200, Frederic Weisbecker wrote:
-> From: Dan Carpenter <dan.carpenter@linaro.org>
+On Tue, Oct 10, 2023 at 08:29:21AM -0500, Rob Herring wrote:
+> On Sun, Sep 24, 2023 at 08:19:59PM +0200, Nik Bune wrote:
+> > Convert txt file to yaml.
+> > 
+> > Signed-off-by: Nik Bune <n2h9z4@gmail.com>
+> > Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > ---
+> > 
+> > Changes in v3:
+> > - Removed trailing whitespace in an element of the maintainers list.
+> > 
+> > v2 patch: https://lore.kernel.org/linux-devicetree/20230924172004.59208-1-n2h9z4@gmail.com/ 
+> > 
+> >  .../watchdog/atmel,at91rm9200-wdt.yaml        | 33 +++++++++++++++++++
+> >  .../watchdog/atmel-at91rm9200-wdt.txt         |  9 -----
+> >  2 files changed, 33 insertions(+), 9 deletions(-)
+> >  create mode 100644 Documentation/devicetree/bindings/watchdog/atmel,at91rm9200-wdt.yaml
+> >  delete mode 100644 Documentation/devicetree/bindings/watchdog/atmel-at91rm9200-wdt.txt
 > 
-> There is a typo so this checks the wrong variable.  "chains" plural vs
-> "chain" singular.  We already know that "chains" is non-zero.
+> Are the watchdog maintainers going to pick up this and other watchdog 
+> bindings?
 > 
-> Fixes: 7f993623e9eb ("locktorture: Add call_rcu_chains module parameter")
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+Tricky question. I am way behind with my reviews, and historically you have
+picked up some of themm, so I really never know what to do with bindings.
 
-A name change to increase the Hamming distance would of course also be
-good, though less urgent.  ;-)
-
-> ---
->  kernel/locking/locktorture.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-> index a3abcd136f56..69d3cd2cfc3b 100644
-> --- a/kernel/locking/locktorture.c
-> +++ b/kernel/locking/locktorture.c
-> @@ -1075,7 +1075,7 @@ static int call_rcu_chain_init(void)
->  	if (call_rcu_chains <= 0)
->  		return 0;
->  	call_rcu_chain = kcalloc(call_rcu_chains, sizeof(*call_rcu_chain), GFP_KERNEL);
-> -	if (!call_rcu_chains)
-> +	if (!call_rcu_chain)
->  		return -ENOMEM;
->  	for (i = 0; i < call_rcu_chains; i++) {
->  		call_rcu_chain[i].crc_stop = false;
-> -- 
-> 2.34.1
-> 
+Guenter
