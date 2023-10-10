@@ -2,110 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD797BF267
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 07:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9B67BF26A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 07:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442147AbjJJFq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 01:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59888 "EHLO
+        id S1442170AbjJJFqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 01:46:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442142AbjJJFqX (ORCPT
+        with ESMTP id S1442162AbjJJFql (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 01:46:23 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8647CC;
-        Mon,  9 Oct 2023 22:46:21 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c760b34d25so35879715ad.3;
-        Mon, 09 Oct 2023 22:46:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696916781; x=1697521581; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nZV2ZA/8PD3wKvcF+YbrnJdD7O9iGtRQwpgfooTt3pA=;
-        b=fzzwIQd87dTpeLC+oIE5/L6NbJr4fyGlaF8OMHSxuvDfwTR495GN+B194401LbaclD
-         OJTOr2FhJqL4l+ZMgsnuCvvCbfj2QQxTwfdVkMttUBnBve/oYrTesjM7lPX18P3IWDrr
-         z6o9Sq9Ci8fYsWDhr8qcU8zsibUsdlQrrqhmzUOWZ/TSBjD9UM15dw1Q+TWl4eVR5XeT
-         F5LNR8Y6PzZpcLv4HumjPhwgOPQe2wNOLEAGMN9NKvuIGRMPX+nY7uTyMRakrI4P7iQv
-         A3ALL9n51OvDzMWpz3xMIiAwdUU49VpPreR2J1DB55n+xgs/HJDTrtzPn1x6NSAMD9BF
-         7J8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696916781; x=1697521581;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=nZV2ZA/8PD3wKvcF+YbrnJdD7O9iGtRQwpgfooTt3pA=;
-        b=dHM3CxonBTWSq2RNIbc3JeYfmUa+pWgskgHcAfUNOW3pIKMuMjFO1RFr3HSfy4RFxW
-         piiwlvZeXgDvhJNmECfcxx2EgxmLzpnqj/a8YpGrFoguNELkV4jDV6AjmHOzCsVckarR
-         pSq+Xfozuqt/fa7gUq/Xie5RuUn99lYu3EdSp3ELKy0GHAYfF1l6xF4S9+BB9yIkFAA/
-         t5MP8ly72HbWvLM0tIYgGpZsyztCeXnLXCWHjZUlLPamnFS47RdrzTqHJXE4AiHzUy3P
-         PxCiDc9A+bIekWSM8cQeHtsiB/x3h0KWKxCaf4R0khccqU1rvniUvauoztXO8ZyiG52H
-         F7YQ==
-X-Gm-Message-State: AOJu0Yz6jGNG34oi3crszq7QcqA9Jj4yh9lAJGYgAF8KBZsOtEOo6zxw
-        5DLhKLGI8Vin+qi/D77t9dM=
-X-Google-Smtp-Source: AGHT+IGgwGdDAROMc9rbopS3EWpWn4e/KTwUWLS+/exKVAfJ/dS8C+Y6v8zEnWJU3rCBrhg6eGwfNA==
-X-Received: by 2002:a17:902:aa05:b0:1bf:c59:c944 with SMTP id be5-20020a170902aa0500b001bf0c59c944mr14195900plb.22.1696916781099;
-        Mon, 09 Oct 2023 22:46:21 -0700 (PDT)
-Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:2749:d38c:68c4:434f])
-        by smtp.gmail.com with ESMTPSA id u10-20020a170902b28a00b001c60a2b5c61sm10590084plr.134.2023.10.09.22.46.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 22:46:20 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
-Subject: [PATCH v2 2/2] perf lock contention: Check tstamp elem creation
-Date:   Mon,  9 Oct 2023 22:46:17 -0700
-Message-ID: <20231010054617.1901616-2-namhyung@kernel.org>
-X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-In-Reply-To: <20231010054617.1901616-1-namhyung@kernel.org>
-References: <20231010054617.1901616-1-namhyung@kernel.org>
+        Tue, 10 Oct 2023 01:46:41 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23C6511A;
+        Mon,  9 Oct 2023 22:46:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696916797; x=1728452797;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=ueFvf7JJaks5mJOm09moID6hWZ9bgKShkkmMs8XC9kA=;
+  b=VROw0XHmop17NRiaefiA8M6kbbI7dvEEB08QWgNZJPNLvvAoOj1TmFJE
+   U+7dAY3HQYSAhENS6EipftzB0XiQAe0fBLuZNxqB1nM57t02N62H91NTD
+   b1/Z/a8HQa61Na7RTNYEns7IfUpWS8F1cdsAWUvZ1CLXSbpcsMyQyEGWx
+   B4lhESJHkQHnwZF11M9Q5ZJSYc7h6DUdvOBr1An6BI0rV1fMESGqQkwfn
+   VZGxpLkB6QVBa7pCWwxzLl0O3ozk469eRQJ8xHdU91x3WX3ausavh19qJ
+   rNTcJyYtBgW70Lzh6tnsywNccn223oeQpOm86Rtl/x3q81aVVy3OwiQgf
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="381574063"
+X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
+   d="scan'208";a="381574063"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 22:46:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="843990705"
+X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
+   d="scan'208";a="843990705"
+Received: from geigerri-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.41.165])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 22:46:34 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id A273310A196; Tue, 10 Oct 2023 08:46:31 +0300 (+03)
+Date:   Tue, 10 Oct 2023 08:46:31 +0300
+From:   kirill.shutemov@linux.intel.com
+To:     Binbin Wu <binbin.wu@linux.intel.com>
+Cc:     dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        shuah@kernel.org, linux-kselftest@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, weihong.zhang@intel.com
+Subject: Re: [PATCH] selftests/x86/lam: Zero out buffer for readlink()
+Message-ID: <20231010054631.kud3zvv57je2buad@box.shutemov.name>
+References: <20230923233346.12726-1-binbin.wu@linux.intel.com>
+ <20230927110219.b5n3fbbwrxtcwtzp@box.shutemov.name>
+ <1793b780-cd15-b6a3-f951-c19a14a1310c@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <1793b780-cd15-b6a3-f951-c19a14a1310c@linux.intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To be more conservative, let's check the return value of
-bpf_map_update_elem() for the tstamp map for a task and change
-the flag to BPF_NOEXIST so that it cannot update any existing
-element.
+On Tue, Oct 10, 2023 at 11:51:32AM +0800, Binbin Wu wrote:
+> 
+> 
+> On 9/27/2023 7:02 PM, kirill.shutemov@linux.intel.com wrote:
+> > On Sun, Sep 24, 2023 at 07:33:46AM +0800, Binbin Wu wrote:
+> > > Zero out the buffer for readlink() since readlink() does not append a
+> > > terminating null byte to the buffer.
+> > > 
+> > > Fixes: 833c12ce0f430 ("selftests/x86/lam: Add inherit test cases for linear-address masking")
+> > > 
+> > > Signed-off-by: Binbin Wu <binbin.wu@linux.intel.com>
+> > > ---
+> > >   tools/testing/selftests/x86/lam.c | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/tools/testing/selftests/x86/lam.c b/tools/testing/selftests/x86/lam.c
+> > > index eb0e46905bf9..9f06942a8e25 100644
+> > > --- a/tools/testing/selftests/x86/lam.c
+> > > +++ b/tools/testing/selftests/x86/lam.c
+> > > @@ -680,7 +680,7 @@ static int handle_execve(struct testcases *test)
+> > >   		perror("Fork failed.");
+> > >   		ret = 1;
+> > >   	} else if (pid == 0) {
+> > > -		char path[PATH_MAX];
+> > > +		char path[PATH_MAX] = {0};
+> > Shouldn't it be PATH_MAX+1 to handle the case when readlink(2) stores
+> > exactly PATH_MAX bytes into the buffer?
+> According to the definition of PATH_MAX in include/uapi/linux/limits.h
+> #define PATH_MAX        4096    /* # chars in a path name including nul */
+> 
+> IIUC, Linux limits the path length to 4095 and PATH_MAX includes the
+> terminating nul.
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/util/bpf_skel/lock_contention.bpf.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Consider the case when kernel bump PATH_MAX to 8192. The binary that
+compiled from lam.c against the older kernel headers will get compromised.
 
-diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-index b11179452e19..69d31fd77cd0 100644
---- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-+++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-@@ -328,7 +328,11 @@ int contention_begin(u64 *ctx)
- 	if (pelem == NULL) {
- 		struct tstamp_data zero = {};
- 
--		bpf_map_update_elem(&tstamp, &pid, &zero, BPF_ANY);
-+		if (bpf_map_update_elem(&tstamp, &pid, &zero, BPF_NOEXIST) < 0) {
-+			__sync_fetch_and_add(&task_fail, 1);
-+			return 0;
-+		}
-+
- 		pelem = bpf_map_lookup_elem(&tstamp, &pid);
- 		if (pelem == NULL) {
- 			__sync_fetch_and_add(&task_fail, 1);
+Increase the size of the buffer by one or pass PATH_MAX - 1 as buffer size
+to readlink(2).
+
 -- 
-2.42.0.609.gbb76f46606-goog
-
+  Kiryl Shutsemau / Kirill A. Shutemov
