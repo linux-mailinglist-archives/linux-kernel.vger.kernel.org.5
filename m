@@ -2,71 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0A07BFE49
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B75C7BFE73
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232517AbjJJNpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 09:45:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53672 "EHLO
+        id S232957AbjJJNww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 09:52:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232364AbjJJNoz (ORCPT
+        with ESMTP id S232663AbjJJNwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 09:44:55 -0400
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11D2198D
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 06:44:21 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5a7b92cd0ccso13076547b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 06:44:21 -0700 (PDT)
+        Tue, 10 Oct 2023 09:52:41 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CEF726BA;
+        Tue, 10 Oct 2023 06:45:18 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6969b391791so3880912b3a.3;
+        Tue, 10 Oct 2023 06:45:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696945460; x=1697550260; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NHv90yeM59s0sxqLXofNmRkQi512BP/YIHCc5n2XRV8=;
-        b=Hfd6muxuY+9Eds1eZ+RBD0C2c48CH5u9Dx6Cd2hpm7k5jL8xrI3/TEKmfRwjQfrzoR
-         uIv3AbVVXbCh+0OlS4InjO1VJwUuXyR1hGgQ+boH4qYdbNa0EWlzLsRA3VTQ2t2FyNP+
-         xbR901yxHOr8lGLdWD1Xc3NiKXZUpx2yGDQH/mmrDC2NW9nWsgK1+ETKHLDwYqtpTd2C
-         ZgqX7TgJvQxlpmjs1a/RoS/4cEaAsyJm8SSE1dRWP+oinhTk/ZvXX5eZYnVYcEnaMVYb
-         QBb2I+HSQgzEqVsYdlwot2gjBXT7OEQuvJLfpWBK2ea6kkSvbxvpJ2+g/+DVbTkMZOaT
-         glyA==
+        d=gmail.com; s=20230601; t=1696945517; x=1697550317; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8l2RdI3GFEPsUV4izDgB+ReS+fUuBzrkfgodsUfx59E=;
+        b=NEZaRF6XdarTyqq7WhTh6Ppmj3rHgDi3u42y0blJQvIp6q9r5inkGCvDUZGKAdwFxB
+         6b4Raag+FyX9wSDgjGX/gpnDxVvZxGxvBueAQMrgDm27a8LOV4m7xjIXU4WYxkXaSH5s
+         H7/v6ASKspCPgVc7aJcyBssNtzSgWby8Aj5TNoZjo259Hjx1JVig/QfRkOBJZEc9fw0I
+         t6E863ANh+LMGgPjbuu8xm8DOITRV7dpc1MZYLBFW0tMjwg92Tf2lkdnFM2MxhMoCfHT
+         3yh6lFnaVFD7A7v/QeCZKsnsmvmfRX4MqfgBpFhnxEGopoHmIEfHD/K/7wbcJBXpM8Wv
+         Vrmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696945460; x=1697550260;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NHv90yeM59s0sxqLXofNmRkQi512BP/YIHCc5n2XRV8=;
-        b=jkvBkUcYJte/4vfZhX442srUC6qw3MzjpAx/hK/9YaEn4V1xj4gIGrevFbBe2WlJJ4
-         zdNYpEkF5+koBYnIUAS+m7AafQnGvEJqKVK+TtbnNVj/QB6QpnvI96HU11cN2F5XnMz0
-         jdmTyuMqZubjw387lYRqBJCVVUhh8Sfvg/BhmMPbSZxFpYJGsojjEGDqtPoCYCcZUefM
-         M6n5++xL3OfL5QXxuhoI2y+KDYpkyKnymEUBiCD5T/GQaNWWoGEXQ2Q7tNhpaYKpnPHh
-         QtEkBTr1t8+10EWHUXwDCFTJoDhYS7qvYehV1AB3+Wd3GLs80i6psJFT2UkVDpK+a1yE
-         vEbw==
-X-Gm-Message-State: AOJu0Yw8WOV/k928DgjJZsZqxdAmHFdCSaxunj26799PGvq8dfo15zl9
-        JCzy/Y4MfU8jWJG7QLGTesx5xWzsLPWx3PorPuGntHC/RIZLRe2dtW8=
-X-Google-Smtp-Source: AGHT+IGPzgwlYn1dXJ4egxXKG1Kdn0b5UQFiIXiF327ltewq5kCECA8LJ4iu/KXiC6IHbqEToMvv5nzVhLpzxUCU0lw=
-X-Received: by 2002:a0d:df11:0:b0:5a7:b81a:7f5d with SMTP id
- i17-20020a0ddf11000000b005a7b81a7f5dmr3036369ywe.18.1696945460664; Tue, 10
- Oct 2023 06:44:20 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696945517; x=1697550317;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:sender:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8l2RdI3GFEPsUV4izDgB+ReS+fUuBzrkfgodsUfx59E=;
+        b=WUvauxw2JQxzwpexGR8MIo90ujj3+kQLnuhwShnyMUlgbevhd8me99v81Zwutg+ezZ
+         ZWigJp+Drmhk5hpdWGaP4TYrLqCYrzu/TnZcxn7rVdpTodJ8mdKeU5HPKLq7T75bCSpR
+         ms8s6NZW+EQqVkYsXFJDNLBLbZh9/oQJxOP0xWA7ySd7X/PHOuo6miIVpowbu6sWipdB
+         zEgUChUSv9BrkyRyBs6/LKvd3ZsZM/Svm49xsIeqp8A0DLyWdhB7s92+LqFTZDCL8Yze
+         jvlGQpzToZnGkbpMJGWr3saZnvWKFqqYnk0pFkw/bSONGRAUtbxAfaNasOK7v6jw5eyc
+         yoKg==
+X-Gm-Message-State: AOJu0YwZ6vjynDnCqesrGeZX8/4tGK/Wdl9COKH0H43vMuCTYAq2BXdk
+        ppXaW+4iJczjO47iCSHiHbA=
+X-Google-Smtp-Source: AGHT+IFXY9oUPaVxKEnn6g6JYYGtzSzrMoSdMofrv/KTOwLE9fLvIeTEWiBIFB3Tz8IdPnDmUMrc6Q==
+X-Received: by 2002:a05:6a20:2451:b0:14d:5580:8ff0 with SMTP id t17-20020a056a20245100b0014d55808ff0mr18099934pzc.25.1696945517276;
+        Tue, 10 Oct 2023 06:45:17 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j6-20020aa783c6000000b0068ffb8da107sm8231769pfn.212.2023.10.10.06.45.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 06:45:16 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 10 Oct 2023 06:45:15 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Wolfram Sang <wsa@kernel.org>,
+        Lakshmi Yadlapati <lakshmiy@us.ibm.com>,
+        sumit.semwal@linaro.org, christian.koenig@amd.com,
+        jdelvare@suse.com, joel@jms.id.au, andrew@aj.id.au,
+        eajames@linux.ibm.com, ninad@linux.ibm.com,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v1 0/2] [PATCH] hwmon: (pmbus/max31785) Add minimum delay
+ between bus accesses
+Message-ID: <1284830f-025e-4e25-8ed0-50a6cc00d223@roeck-us.net>
+References: <20231009211420.3454026-1-lakshmiy@us.ibm.com>
+ <ZSUaDIfWmEn5edrE@shikoro>
 MIME-Version: 1.0
-References: <20231009083856.222030-1-u.kleine-koenig@pengutronix.de> <20231009083856.222030-19-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <20231009083856.222030-19-u.kleine-koenig@pengutronix.de>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 10 Oct 2023 15:44:09 +0200
-Message-ID: <CACRpkdZ9F94MzSCcoTh99MxNuvgnns+=_WEAX3kMGaRoV0CLZA@mail.gmail.com>
-Subject: Re: [PATCH 18/20] pinctrl: qcom: ssbi-mpp: Convert to platform remove
- callback returning void
-To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZSUaDIfWmEn5edrE@shikoro>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,25 +81,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 9, 2023 at 11:22=E2=80=AFAM Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
+On Tue, Oct 10, 2023 at 11:31:56AM +0200, Wolfram Sang wrote:
+> Hi,
+> 
+> thanks for this series!
+> 
+> > Reference to Andrew's previous proposal:
+> > https://lore.kernel.org/all/20200914122811.3295678-1-andrew@aj.id.au/
+> 
+> I do totally agree with Guenter's comment[1], though. This just affects
+> a few drivers and this patch is way too intrusive for the I2C core. The
+> later suggested prepare_device() callback[2] sounds better to me. I
+> still haven't fully understood why this all cannot be handled in the
+> driver's probe. Could someone give me a small summary about that?
+> 
 
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is ignored (apart
-> from emitting a warning) and this typically results in resource leaks.
->
-> To improve here there is a quest to make the remove callback return
-> void. In the first step of this quest all drivers are converted to
-> .remove_new(), which already returns void. Eventually after all drivers
-> are converted, .remove_new() will be renamed to .remove().
->
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
->
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+Lots of PMBus devices have the same problem, we have always handled
+it in PMBus drivers by implementing local wait code, and your references
+point that out. What other summary are you looking for ?
 
-Patch applied.
+On a side note, if anyone plans to implement the prepare_device() callback,
+please make sure that it covers all requirements. It would be unfortunate
+if such a callback was implemented if that would still require per-driver
+code (besides the callback).
 
-Yours,
-Linus Walleij
+Thanks,
+Guenter
