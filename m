@@ -2,184 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B710F7BF645
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18AF97BF647
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbjJJImX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 04:42:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56164 "EHLO
+        id S229741AbjJJImm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 04:42:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbjJJImV (ORCPT
+        with ESMTP id S229690AbjJJIml (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 04:42:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5085CA9;
-        Tue, 10 Oct 2023 01:42:20 -0700 (PDT)
+        Tue, 10 Oct 2023 04:42:41 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546E8AF;
+        Tue, 10 Oct 2023 01:42:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696927340; x=1728463340;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=/gFCE4Qd65omaVfzD7Nz+2xDxDa3WXvUJYP+a3au63M=;
-  b=c8b8QZJeHdZmiZ3jJikrmwK5Ny85kI0mMIloFneROYdq9ifsi40xHUfp
-   RypgwZx+r6h29tge9aH3ek/zxQomRtdIxVKZv36l3ALBelnnOTcNAsWr9
-   foNKZ+AgybzdwvNH2S8GvdVdMd0CAluGnzy/WRTCwzrjsM+MjUDXnTiff
-   fFCJrQpKbJv8LKmWX1EVHm+L2tIxS+UURIMlqy8/Vohs/WlZ0rWETqL+n
-   +9IKaCq7OEZtiHdPPyIPNnaTkHLYbfkotoBRqMEWa6t9P+6WBQShSIat8
-   XGpwQpDv2oLh9tI4ARrQTV/h4AChKFmwZQ4+Q2pB677C/sMxT75ydbrnR
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="387178549"
+  t=1696927359; x=1728463359;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=kkyLSf4/qcEQkbIbtLZI4kvgbwssKuyY44JGAodpz8k=;
+  b=NVxKT9UEXxURGiWVMOqhqqedsZpP2Z1SnuU0cDnaVWgfLg+uL+HqBnuv
+   ycsTUX595037eTirAZ21iW610m6aXUDr6MsXqhwgtkGn7KNfxbjRvhP6I
+   PQ5VO0YcysaGWcQ92z55i3ugRHAJTjbHEb8PLsNSxPg5hiudTXQHMOH3z
+   sha1vw6RSkA/ybsF0VxB1fmTVTvq6LJE/efxZTdvBXhXadPyP4tBLEOIn
+   va5SFTwzT3GeqIimdbe0mg6hliceD7ER/oyIKtPGYboUz6+O+r9zywKOB
+   rJrvcMpu+sLCntvzseFgKgjjbxIFllfBoK4zs1QDs232RNX6T+0RcWIm8
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="364637356"
 X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
-   d="scan'208";a="387178549"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 01:42:19 -0700
+   d="scan'208";a="364637356"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 01:42:36 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="730003030"
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="757041419"
 X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
-   d="scan'208";a="730003030"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 10 Oct 2023 01:42:18 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Tue, 10 Oct 2023 01:42:18 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Tue, 10 Oct 2023 01:42:18 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Tue, 10 Oct 2023 01:42:16 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F4GOslGZW3sDvaZqSfiMOql1nmKw2R5UyLUeu/8xAbJmNhLc+Cassc/3mxM7A/34N5Ifjf3GhBQwatfuuDEcZJNn+qTaUOEAdQiZo4i6PNYwemAXQn7PEKyxOg/o1D1IhZZMFhop1/8PWFr2dV60/CBOL9Oq0efAI89Gk9xxU4qN+T1qkXo2S4I6hEyBnUiwNARaWRFTbHKTMOqCrJmfkyHpqmgT1L5n2a83YGAQkJDBRLiiVwNWsGmdHyxIZFrKqX+Fe205a77XSogXhfJzXfbuCkaPnM2/IEKtBoaZo4HNiBNbnPov4QH3l3q6DVc27Zv15Q1FqgMkyLorYK1+Qw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/gFCE4Qd65omaVfzD7Nz+2xDxDa3WXvUJYP+a3au63M=;
- b=LCEflUw3MQXuvs9nYuLf0h+ykQSqhBT85MYiu+RCs/QBAfLCKFjyb84WpuJMINQkXPUg2fliVRp+r0SjHeJdwHmnnttBLQr0qFHe/AgTnEPejH0+HVw1Cyr2kHaZ7V6nlwdAP2nboVqN3drklTI3lf1/p1tCcGu6Eo4wc4ZXcZFy5wAHrDYjHDquxc2KLGX/inFuSXQtknSX4nmOwbcNH7/m+RI6HNZngxyZ320XiYCbc4SZWbSEB9L7XgulHaz2ajX2hC0O17xfhmk0o3NJS9jLoZ+acJ5O+4UXAd/p3BkF3fusGQUcEbVtMamMdf05IRoGOSz5lIip/aDMnsSEgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by PH8PR11MB6973.namprd11.prod.outlook.com (2603:10b6:510:226::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Tue, 10 Oct
- 2023 08:42:13 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::7116:9866:8367:95b4]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::7116:9866:8367:95b4%3]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
- 08:42:13 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     "ankita@nvidia.com" <ankita@nvidia.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "yishaih@nvidia.com" <yishaih@nvidia.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>
-CC:     "aniketa@nvidia.com" <aniketa@nvidia.com>,
-        "cjia@nvidia.com" <cjia@nvidia.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "targupta@nvidia.com" <targupta@nvidia.com>,
-        "vsethi@nvidia.com" <vsethi@nvidia.com>,
-        "Currid, Andy" <acurrid@nvidia.com>,
-        "apopple@nvidia.com" <apopple@nvidia.com>,
-        "jhubbard@nvidia.com" <jhubbard@nvidia.com>,
-        "danw@nvidia.com" <danw@nvidia.com>,
-        "anuaggarwal@nvidia.com" <anuaggarwal@nvidia.com>,
-        "dnigam@nvidia.com" <dnigam@nvidia.com>,
-        "udhoke@nvidia.com" <udhoke@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v11 1/1] vfio/nvgpu: Add vfio pci variant module for grace
- hopper
-Thread-Topic: [PATCH v11 1/1] vfio/nvgpu: Add vfio pci variant module for
- grace hopper
-Thread-Index: AQHZ+VwgDWGk0VCFcUeltplt5s48drBCtrFA
-Date:   Tue, 10 Oct 2023 08:42:13 +0000
-Message-ID: <BN9PR11MB52762EE10CBBDF8AB98A53788CCDA@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20231007202254.30385-1-ankita@nvidia.com>
-In-Reply-To: <20231007202254.30385-1-ankita@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|PH8PR11MB6973:EE_
-x-ms-office365-filtering-correlation-id: 3f87de3c-c21c-485b-84be-08dbc96cccda
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: H9raAZSBzr8pLAHBxC88kAwSDpMFbEKhJ0zYFA7OgduXc1guKTppE5Nbmc+WT4G1FkPhMzeEvDU+7Jjr83EjrkVpGx6ZtUmNuzr8TwT2fVwKz+uapF8lH89fKUIOYbJV0S3pEQPBuh2GcSWdTufCza5zNm1/EpE2NngUBuIA2LiTI3UT4uGcHLefZWJTwYH2NWBsZJAevdNSyuqLeZ/ZeWR5N3TQ7d3lRdoOoEmig/B+aY1wIi9sPxSHMo6sXkkxpFxtoMdOSCGpMndff/wb5E0YCoZZXxlAbj0qbIMIxxUUiWVubAqWwdLv2cbyTd/ar9Kg1rv38VZkMhELh0Y72XuhnBjOiMOqj6sZKmYslSbDjqLeSrL+H71AvPO0PkIPVMP8rJbASMt8OzSyy0XCnfkutxwCodDyphrBQw9nuVHPoN/v36MUlIVMHrIsTwv+sTAEGAICCDU8fyUHuvR2tcVMvJQbqmgYXbMOas4mE66/MhFEGDs05oUebus4pJhKEUzqDuABYcsb0yrI0+M5JSaCNlxZF5Vv41q7aFd8rKGEVsiye+2IqBgMNk6WtPqPRaeDcF3N7qfbYNzkPHZrY6zHpQRsY12gL7okRC5IAwOYIVrXGu/xzAkW1WM9jtdo
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(136003)(346002)(39860400002)(376002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(110136005)(316002)(66476007)(66556008)(66446008)(66946007)(64756008)(54906003)(38100700002)(41300700001)(5660300002)(7416002)(8936002)(4326008)(52536014)(76116006)(8676002)(4744005)(33656002)(86362001)(83380400001)(38070700005)(7696005)(6506007)(9686003)(122000001)(2906002)(71200400001)(55016003)(26005)(82960400001)(478600001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?SYB1oSVUfGUsyJd2aCfi0tSKoV+bHJGX+3l3gfgPh7jDdHQjOCMqm+VfZx/u?=
- =?us-ascii?Q?3KXG33RRzx+O1c3zWyd+rBrpTp50vdbCh4h4fAxLSfyxuSQ9/5wE4yntOqy1?=
- =?us-ascii?Q?W9Bpw8dpdpGniJHeMmEEP65Lm8cvxltJKnDpEMMU6mStKQucprRMBn1xr5l/?=
- =?us-ascii?Q?YyVvOdivphg00FpNjnQPhL0OcC3A80Ys3DDnvVFLJUzprqtgmHTGc8MQ/pOO?=
- =?us-ascii?Q?1qqraP1QAU0qiu3fR9sr3/LZzPPI0n38T8VV/e7YSBbTKcLBhukRpXhm33Kg?=
- =?us-ascii?Q?z9Iz09sV81dMkVGxLOqh/xJ9AxuOe6MGdVN0fAvS3b9vjukxDwNZPeOMXl2d?=
- =?us-ascii?Q?SBlRs2gZiWZOj3y34tvfoucpUVT5HucDn1Wrbkm/mqaqWrs8390GVaquF6SO?=
- =?us-ascii?Q?cQFe71VPK06wumq45rMMOQVfV73vYLHLTu7ff9agGRNWuOynd20yLrc0vZUl?=
- =?us-ascii?Q?vq8GSeqXWf+XxGZnk/jkJJUz2AcyU8dF5lfuGUjMgt2U/PGVa91j/NTh+IVN?=
- =?us-ascii?Q?Zx920FIi24ytudJPsLHl7LZgOWfqz1D4KQugxJmvJXklnv9zpIZexNXUI4Es?=
- =?us-ascii?Q?7o9krK+X5U/xBWG+IqBwg9M4WlPwSKiC06R8EsvrIN39GaZ9r7knnjXqtyjd?=
- =?us-ascii?Q?mF9Lz2/MdVwIJ3ohf2FRtA3BWfAbnbN1Ytos7Fc0KpqzMjh5nqiMzixtyZHl?=
- =?us-ascii?Q?rjeGcrNRhrGKZh8Q75T2ZXi3aByCQnx2ZasKr7cttqL+YTugrCiANHkE3Aun?=
- =?us-ascii?Q?1vkj0OTiJwBXgaNrpBP6ijpzg/Iv3edcfEblimyUFdUQpYNEiclRu2o+i6Xq?=
- =?us-ascii?Q?IlgNkMPeE1dglQ/L7ItXq+8VQeiHkJAWE85308JOzmerZHBYqfmZkR3enn0h?=
- =?us-ascii?Q?eepbta8P3X6oNz13wB3refLtkEv2WZfGqZ4h9SZMyz29qrMIMI1IryAUSh3w?=
- =?us-ascii?Q?7ZmirwStV/Dp83W/le4KE+A+mE45rLbSpLJlk5bjjQXqFaHJCQboRCxHATer?=
- =?us-ascii?Q?Ob27VmLNrxqcshdWqKY5mmzIKl/jfDDu39xyKrQxBIMYYbUpUhFwBajkMPNg?=
- =?us-ascii?Q?xzUUENFqMFMQgH5921F38M9LbTCOmI35yyzRGep8h6NcaVm5xtyuIiKmUuNC?=
- =?us-ascii?Q?mzSD4yME4GYVZIO+RxwQOEzC1FBtW8FDf/KP0WwzstT4ajG7tbzBm6xWjhdK?=
- =?us-ascii?Q?gLWML0yd+1+icgkT7k2zEYt/OzOgc4q/YuPatbAs8Jy6YZ9wRk5bxLDFdD1m?=
- =?us-ascii?Q?+jk690BmlpBkSg9EAQqy1ocveVFVblZ9B5dKr0LJIDo3LOtE8S9iZLoN0lr3?=
- =?us-ascii?Q?1ItvCgK4oeN5MCirxXSYKo6vdOsyQI7dqb03rtBNe1YHzdrtRghR1XfOOiMU?=
- =?us-ascii?Q?r9LjoQUsGB8jictdOkh4aXoZXB6Mxp/suQysmlJIcWq//ASrbjoZFCgQyH53?=
- =?us-ascii?Q?IBjQnNIfvQckrvc9lV/lemk2s8a9mJfyEtszffeVdpsPwH8whcrtneFbctfU?=
- =?us-ascii?Q?h0Kx44GxVMG7FbH+gqtzXE4J3ny6/J5/cqn9etDj/1ePqvgCMvoWMTc6fUmc?=
- =?us-ascii?Q?CPw8q64YaP+yoBg+3jJ3j/RqdDtsDcCY0R1KW8h5?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+   d="scan'208";a="757041419"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by fmsmga007.fm.intel.com with SMTP; 10 Oct 2023 01:42:29 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 10 Oct 2023 11:42:25 +0300
+Date:   Tue, 10 Oct 2023 11:42:25 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     gregkh@linuxfoundation.org, wsa@kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexander.Deucher@amd.com, Richard.Gong@amd.com,
+        kai.heng.feng@canonical.com, sebastian.reichel@collabora.com
+Subject: Re: [PATCH v3] usb: typec: ucsi: Use GET_CAPABILITY attributes data
+ to set power supply scope
+Message-ID: <ZSUOcdtWQ/AlAH+c@kuha.fi.intel.com>
+References: <20231009184643.129986-1-mario.limonciello@amd.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f87de3c-c21c-485b-84be-08dbc96cccda
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Oct 2023 08:42:13.3342
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bOXiclflphoJNqTXuSCeutTnfKybfXGNQOW28CRARdt0NGd36H5Lme3soedt2T5IRXr6H4whLRYeDtzMpDtSWQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6973
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231009184643.129986-1-mario.limonciello@amd.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: ankita@nvidia.com <ankita@nvidia.com>
-> Sent: Sunday, October 8, 2023 4:23 AM
->=20
-> PCI BAR are aligned to the power-of-2, but the actual memory on the
-> device may not. A read or write access to the physical address from the
-> last device PFN up to the next power-of-2 aligned physical address
-> results in reading ~0 and dropped writes.
->=20
+On Mon, Oct 09, 2023 at 01:46:43PM -0500, Mario Limonciello wrote:
+> On some OEM systems, adding a W7900 dGPU triggers RAS errors and hangs
+> at a black screen on startup.  This issue occurs only if `ucsi_acpi` has
+> loaded before `amdgpu` has loaded.  The reason for this failure is that
+> `amdgpu` uses power_supply_is_system_supplied() to determine if running
+> on AC or DC power at startup. If this value is reported incorrectly the
+> dGPU will also be programmed incorrectly and trigger errors.
+> 
+> power_supply_is_system_supplied() reports the wrong value because UCSI
+> power supplies provided as part of the system don't properly report the
+> scope as "DEVICE" scope (not powering the system).
+> 
+> In order to fix this issue check the capabilities reported from the UCSI
+> power supply to ensure that it supports charging a battery and that it can
+> be powered by AC.  Mark the scope accordingly.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: a7fbfd44c020 ("usb: typec: ucsi: Mark dGPUs as DEVICE scope")
+> Link: https://www.intel.com/content/www/us/en/products/docs/io/universal-serial-bus/usb-type-c-ucsi-spec.html p28
+> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
 
-my question to v10 was not answered. posted again:
---
-Though the variant driver emulates the access to the offset beyond
-the available memory size, how does the userspace driver or the guest
-learn to know the actual size and avoid using the invalid hole to hold
-valid data?
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+> ---
+> Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> Cc: Alex Deucher <Alexander.Deucher@amd.com>>
+> Cc: Richard Gong <Richard.Gong@amd.com>
+> 
+> v2->v3:
+>  * Pick up tag
+>  * Add missing stable tag
+>  * Drop patch 2, we'll just avoid upstreaming it.
+> ---
+>  drivers/usb/typec/ucsi/psy.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/drivers/usb/typec/ucsi/psy.c b/drivers/usb/typec/ucsi/psy.c
+> index 384b42267f1f..b35c6e07911e 100644
+> --- a/drivers/usb/typec/ucsi/psy.c
+> +++ b/drivers/usb/typec/ucsi/psy.c
+> @@ -37,6 +37,15 @@ static int ucsi_psy_get_scope(struct ucsi_connector *con,
+>  	struct device *dev = con->ucsi->dev;
+>  
+>  	device_property_read_u8(dev, "scope", &scope);
+> +	if (scope == POWER_SUPPLY_SCOPE_UNKNOWN) {
+> +		u32 mask = UCSI_CAP_ATTR_POWER_AC_SUPPLY |
+> +			   UCSI_CAP_ATTR_BATTERY_CHARGING;
+> +
+> +		if (con->ucsi->cap.attributes & mask)
+> +			scope = POWER_SUPPLY_SCOPE_SYSTEM;
+> +		else
+> +			scope = POWER_SUPPLY_SCOPE_DEVICE;
+> +	}
+>  	val->intval = scope;
+>  	return 0;
+>  }
+> -- 
+> 2.34.1
+
+-- 
+heikki
