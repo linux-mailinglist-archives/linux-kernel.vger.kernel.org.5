@@ -2,106 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 507207BF6EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 11:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0267BF6ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 11:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229827AbjJJJMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 05:12:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35374 "EHLO
+        id S229872AbjJJJNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 05:13:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjJJJM3 (ORCPT
+        with ESMTP id S229516AbjJJJNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 05:12:29 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DA3AC9F;
-        Tue, 10 Oct 2023 02:12:26 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5E6C9C15;
-        Tue, 10 Oct 2023 02:13:07 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 714683F762;
-        Tue, 10 Oct 2023 02:12:25 -0700 (PDT)
-Date:   Tue, 10 Oct 2023 10:12:23 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     cristian.marussi@arm.com, linux-arm-kernel@lists.infradead.org,
-        Sudeep Holla <sudeep.holla@arm.com>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ranjani.vaidyanathan@nxp.com,
-        glen.wienecke@nxp.com, Peng Fan <peng.fan@nxp.com>
-Subject: Re: [RFC] firmware: arm_scmi: clock: add fixed clock attribute
- support
-Message-ID: <20231010091223.rvcyrgbjcrmjzmvp@bogus>
-References: <20231010022911.4106863-1-peng.fan@oss.nxp.com>
+        Tue, 10 Oct 2023 05:13:06 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31F8093;
+        Tue, 10 Oct 2023 02:13:05 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0420540E01A5;
+        Tue, 10 Oct 2023 09:13:03 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id zIxRtCHyP9KY; Tue, 10 Oct 2023 09:13:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1696929177; bh=r19Pofs5YPEJUqm6xMsNDsii8MPrvf//VmD3Yjpm95U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Dm3EQFpfNtri1vigfMJccC2yNJbZT6vhdQioD8q3IYIze751eDuMqvVDiZ+MrPpPg
+         WkFFqZ1ghjebGRdhZzgSssger6VJDsuV3ITVEludS7a6b0/yxKkl+NvlIF3cwa9CPv
+         OrmCnjFJw85mimCLrpzqEs5oyGMsBQMpWDARfBYOD+M6tPtf1DObiYYG+Lkke6LDhD
+         pskfIp34JLZokB/2P3mBwzWzFeiWUNIXAlPsfFvztCOasxL1oW084EDtJHeL73EfjF
+         GiDtM02o2bsB2D4CDz7LlKQQzmIpbcS/ZYCkWR8KF5RbLANUvPemWEytmIse8+X7qa
+         aJeAZ9jIHp7nb8Nd2pNcGRB7OXOmfAFzslhpdJd457SGlWPLuKg9Z8rWOyCWdKja6z
+         zG2FrWlPABRvCjw3IRNp/mKopIWLRtzpuccoJIAuEQK52OcJ44LKvL3opxPqVDx1Tj
+         8vElxElD/Xl+nZO2y56417G37ie1sOlSodtgxW9asZJOKTUt6BYOB/5Y2pXw4tmUPp
+         FtOgkBYdcwpl38XsbuYU8loqJqPjUoAIAzbdWMPWnpaIDgprFcvV+/C/BV1ND/r1Ku
+         AEVRVQKDpltaQXwe5m7KLGQ8jSjcBEydWvToyWCuLlOm1KmQGEzV62oqK4ITubTB9K
+         rCydKoJLthx4FhKYXMBS3Tao=
+Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2137E40E01AA;
+        Tue, 10 Oct 2023 09:12:41 +0000 (UTC)
+Date:   Tue, 10 Oct 2023 11:12:35 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        Fei Yang <fei.yang@intel.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] x86/alternatives: Disable KASAN on text_poke_early() in
+ apply_alternatives()
+Message-ID: <20231010091235.GFZSUVgzTetLj2K+s8@fat_crate.local>
+References: <20231010053716.2481-1-kirill.shutemov@linux.intel.com>
+ <20231010081938.GBZSUJGlSvEkFIDnES@fat_crate.local>
+ <20231010084041.ut5sshyrofh27yyx@box.shutemov.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231010022911.4106863-1-peng.fan@oss.nxp.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231010084041.ut5sshyrofh27yyx@box.shutemov.name>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 10:29:11AM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> There are clocks:
->  system critical, not allow linux to disable, change rate
->  allow linux to get rate, because some periphals will use the frequency
->  to configure periphals.
-> 
->  So introduce an attribute to indicated FIXED clock
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  drivers/clk/clk-scmi.c            | 6 ++++++
->  drivers/firmware/arm_scmi/clock.c | 5 ++++-
->  include/linux/scmi_protocol.h     | 1 +
->  3 files changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
-> index 8cbe24789c24..a539a35bd45a 100644
-> --- a/drivers/clk/clk-scmi.c
-> +++ b/drivers/clk/clk-scmi.c
-> @@ -182,6 +182,10 @@ static const struct clk_ops scmi_clk_ops = {
->  	.determine_rate = scmi_clk_determine_rate,
->  };
->  
-> +static const struct clk_ops scmi_fixed_rate_clk_ops = {
-> +	.recalc_rate = scmi_clk_recalc_rate,
-> +};
-> +
->  static const struct clk_ops scmi_atomic_clk_ops = {
->  	.recalc_rate = scmi_clk_recalc_rate,
->  	.round_rate = scmi_clk_round_rate,
-> @@ -293,6 +297,8 @@ static int scmi_clocks_probe(struct scmi_device *sdev)
->  		if (is_atomic &&
->  		    sclk->info->enable_latency <= atomic_threshold)
->  			scmi_ops = &scmi_atomic_clk_ops;
-> +		else if (sclk->info->rate_fixed)
-> +			scmi_ops = &scmi_fixed_rate_clk_ops;
->  		else
->  			scmi_ops = &scmi_clk_ops;
->  
-> diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
-> index ddaef34cd88b..8c52db539e54 100644
-> --- a/drivers/firmware/arm_scmi/clock.c
-> +++ b/drivers/firmware/arm_scmi/clock.c
-> @@ -46,6 +46,7 @@ struct scmi_msg_resp_clock_attributes {
->  #define SUPPORTS_RATE_CHANGE_REQUESTED_NOTIF(x)	((x) & BIT(30))
->  #define SUPPORTS_EXTENDED_NAMES(x)		((x) & BIT(29))
->  #define SUPPORTS_PARENT_CLOCK(x)		((x) & BIT(28))
-> +#define SUPPORTS_FIXED_RATE_CLOCK(x)		((x) & BIT(27))
+On Tue, Oct 10, 2023 at 11:40:41AM +0300, Kirill A. Shutemov wrote:
+> __VIRTUAL_MASK_SHIFT used in many places. I don't think it is good idea to
+> give up on patching completely.
 
-I don't see this in the specification, am I missing something ?
+Have you even looked at boot_cpu_has()'s asm?
 
-And why do we need it. Can't this be discrete clock with only one clock
-rate ? Or step clock with both lowest and highest the same and step being 0.
-At-least I don't see the need to change the spec for this and hence no need
-to assign any attribute bit-field to represent the same.
+-- 
+Regards/Gruss,
+    Boris.
 
---
-Regards,
-Sudeep
+https://people.kernel.org/tglx/notes-about-netiquette
