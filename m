@@ -2,62 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F497C039B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 20:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC33F7C03A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 20:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233931AbjJJSlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 14:41:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39900 "EHLO
+        id S1343633AbjJJSnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 14:43:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234123AbjJJSlp (ORCPT
+        with ESMTP id S234154AbjJJSnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 14:41:45 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092A7AC
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 11:41:42 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-53627feca49so9986268a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 11:41:41 -0700 (PDT)
+        Tue, 10 Oct 2023 14:43:11 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A13BA7
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 11:43:09 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99c1c66876aso1087408666b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 11:43:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696963300; x=1697568100; darn=vger.kernel.org;
+        d=linux-foundation.org; s=google; t=1696963387; x=1697568187; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VrDykPNOztjeY31ZVQWWVQc0urUqz95uIAKgkC/bOGw=;
-        b=Xc7OFsVuUNszyKaK9wtr1cV08zFDz/2ZgSdlY6I554X/ZZg/J6JWCKHcsTwCWikNwt
-         h3blVrhuMjWz9QzyTpuHu+fF4a81XxPpz0lVUF4pob0kEQ40Jm/78vg0dP9guGufCfkU
-         ltgLuhqkMlEcTxHUXx8lgIw03CfHZGwf9ExLzy/irwqxLJDGOs3xXifLuHkb8TN9W2H5
-         aXcyogJ3Lo7Dw4ovDB0qokceJX5PxrRRVi3QelEk0gn5bm48aZwX7jUjhofs/Jifybpu
-         Dqmznxd+F3g1+mG+prkVwHR5MufjennhyQagf16SU0oHfeJ5tDmmHiUXAQzdlDg5uNBE
-         qoyQ==
+        bh=//91C+yAgD4Kx0xcvFBJTPE6fkDuCSSSI18S0IW457E=;
+        b=LzjX/hzwObLfeQl1HZFPSjKSEKdRYJ0Sm+R/MkJR4rnKIR8Zth3lD0ZtFLWx5t8T9t
+         X14/EM15pnYtFcFNaRYRlV9MTg1qMytBH6QCdEKNydHvgygbr0gCXzW3Qy+YUYIZ0lhp
+         Jtoj4dk3ctMWEsjcR2unaPPh4o4I2v02kNobI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696963300; x=1697568100;
+        d=1e100.net; s=20230601; t=1696963387; x=1697568187;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VrDykPNOztjeY31ZVQWWVQc0urUqz95uIAKgkC/bOGw=;
-        b=kuLagZ6X1weAwMZta+J4WDo1qBqb57YeCje912tou6jRnwQGVGwt7Hk/LlfKfnGukP
-         seQjswO8TfgMf+765BC5A5HtRFuK8wd3cmYD9MYZq/06/74Z4G8+8DRm9E/CK7ViC5N6
-         v3ygvkZRSgQWPLQkGm3oFjym+t0hC8waJaQwGyD9h3ZIO4JsFmWnu5T+mCxM640h9mF0
-         ecHYkkSOGRlMXbzw9tnQUHA7rSKNp+C0KmWh2aVAWnkCORfoosbBSxAlWTTRlOV//XOn
-         dWn7FMy9kTRngrhH/VJnqwFFyHrfPl6Sc1s2rqWLW2FMhXyZUaGVI4KcTpWe2uYICLMZ
-         9vnw==
-X-Gm-Message-State: AOJu0YzYnBKJF6ehaPwo9xDNgSlrOBeREVv8E+fQg8/JMHlng0jRz/Bp
-        sNAxzrw/hZIdX983gnDBg1Nh2uxpm+7KbCMVeFM=
-X-Google-Smtp-Source: AGHT+IHgr9nynCS/ucqavDyQ3SYRMfgb3QOx1xUZ1hm5wRiKVquIatGYzXl9/X49jc+z424OFoYDuEjaadgYJjevFsc=
-X-Received: by 2002:a05:6402:217:b0:533:4c15:c337 with SMTP id
- t23-20020a056402021700b005334c15c337mr16681534edv.16.1696963300188; Tue, 10
- Oct 2023 11:41:40 -0700 (PDT)
+        bh=//91C+yAgD4Kx0xcvFBJTPE6fkDuCSSSI18S0IW457E=;
+        b=jseJGoHzvdZO0v9UtrnpNZXQous2HMluOKGRcvGLAPM9x29IvOIsvuxN+/RG2R9gDU
+         c555gYd866D75ljXD3M5rCox0OgxZjbUtMTbwYQHaw5IJTklRTc7vPDNE0uOJdpF/q4h
+         azDED7SOe1W5u4oqcwOjwfFIfoUho+EnK/0C0iaj4z6ge1VPykXkcy6Jj2lRUBlbGOB1
+         uu++NkvU1Q/+ZQjmiyS3BnvPOPCjoQEqswmigLjJO0fyerYw/KqmI/tsmW9kiD7y9Dov
+         pW1qeOPIqx2tJ55E6CQfDbBFRXqTuAmPv6W7V3yQqaJL71dRN0Yv1AxmHbpd1g5Wu3OG
+         /S5g==
+X-Gm-Message-State: AOJu0YyKA0rm27xihDb1BCIHfTvgfgFwkjJPPe5p9v1N7OHxz539R1y0
+        b1DT5JcNi6Nm0LBunokoHP0fL91uATZdoYYjw8Lm7oar
+X-Google-Smtp-Source: AGHT+IGn1ZpJ2yK64+G4AI5QPP190m5jYdFHLgL/2+2O+7R0u7LssihkvfB4IlV/L/3a2vYm440Ruw==
+X-Received: by 2002:a17:906:8467:b0:9ae:62ec:f4a1 with SMTP id hx7-20020a170906846700b009ae62ecf4a1mr16380882ejc.33.1696963387364;
+        Tue, 10 Oct 2023 11:43:07 -0700 (PDT)
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com. [209.85.218.54])
+        by smtp.gmail.com with ESMTPSA id rv18-20020a17090710d200b0099364d9f0e6sm8776027ejb.117.2023.10.10.11.43.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Oct 2023 11:43:06 -0700 (PDT)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-9ae75ece209so1088792366b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 11:43:06 -0700 (PDT)
+X-Received: by 2002:a17:907:2704:b0:9ae:5492:64e with SMTP id
+ w4-20020a170907270400b009ae5492064emr14580442ejk.25.1696963386250; Tue, 10
+ Oct 2023 11:43:06 -0700 (PDT)
 MIME-Version: 1.0
 References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
- <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com> <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
-In-Reply-To: <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Tue, 10 Oct 2023 20:41:29 +0200
-Message-ID: <CAFULd4Y8NSArDqH=VMy8F97eNosUUGxrBMEyHH=MytjUBSCmjg@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com> <108536FC-445C-41F9-8A87-B7D31A45AC4B@vmware.com>
+In-Reply-To: <108536FC-445C-41F9-8A87-B7D31A45AC4B@vmware.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 10 Oct 2023 11:42:49 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj9dGfmA_zPof+CZdcZq6ZA41e6ycQus6P5CShLPiMoVw@mail.gmail.com>
+Message-ID: <CAHk-=wj9dGfmA_zPof+CZdcZq6ZA41e6ycQus6P5CShLPiMoVw@mail.gmail.com>
 Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Nadav Amit <namit@vmware.com>,
+To:     Nadav Amit <namit@vmware.com>
+Cc:     Uros Bizjak <ubizjak@gmail.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Andy Lutomirski <luto@kernel.org>,
         Brian Gerst <brgerst@gmail.com>,
         Denys Vlasenko <dvlasenk@redhat.com>,
@@ -67,28 +75,34 @@ Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
         Josh Poimboeuf <jpoimboe@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 8:38=E2=80=AFPM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Tue, 10 Oct 2023 at 11:25, Nadav Amit <namit@vmware.com> wrote:
 >
-> On Tue, 10 Oct 2023 at 11:22, Uros Bizjak <ubizjak@gmail.com> wrote:
-> >
-> > Please note that besides propagation of the addition into address, the
-> > patch also exposes memory load to the compiler, with the anticipation
-> > that the compiler CSEs the load from this_cpu_off from eventual
-> > multiple addresses. For this to work, we have to get rid of the asms.
->
-> I actually checked that the inline asm gets combined, the same way the
-> this_cpu_read_stable cases do (which we use for 'current').
+> As a minor note the proposed assembly version seems to be missing
+> __FORCE_ORDER as an input argument to prevent reordering past preempt_ena=
+ble
+> and preempt_disable. But that=E2=80=99s really not the main point.
 
-Yes, but does it CSE the load from multiple addresses?
+Hmm. No, it's probably *is* the main point - see my reply to Uros that
+the CSE on the inline asm itself gets rid of duplication.
 
-Uros.
+And yes, we currently rely on that asm CSE for doing 'current' and not
+reloading the value all the time.
+
+So yes, we'd like to have a barrier for not moving it across the
+preemption barriers, and __FORCE_ORDER would seem to be a good way to
+do that.
+
+I really suspect that 'rdgsbase' is better than a memory load in
+practice, but I have no numbers to back that up, apart from a "it's
+not a slow instruction, and core CPU is generally better than memory".
+
+          Linus
