@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7FB27BF424
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 09:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBA477BF437
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 09:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442564AbjJJHYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 03:24:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
+        id S1442583AbjJJHYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 03:24:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442434AbjJJHXm (ORCPT
+        with ESMTP id S1442470AbjJJHXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 03:23:42 -0400
+        Tue, 10 Oct 2023 03:23:44 -0400
 Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE4AA9;
-        Tue, 10 Oct 2023 00:23:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB7F8B4;
+        Tue, 10 Oct 2023 00:23:42 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4S4S7963pZz4f3kpL;
-        Tue, 10 Oct 2023 15:23:33 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4S4S7B1VLkz4f3khw;
+        Tue, 10 Oct 2023 15:23:34 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgDHXd31+yRl1AZbCg--.36859S10;
-        Tue, 10 Oct 2023 15:23:38 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgDHXd31+yRl1AZbCg--.36859S11;
+        Tue, 10 Oct 2023 15:23:39 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     song@kernel.org, xni@redhat.com
 Cc:     linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
         yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
         yangerkun@huawei.com
-Subject: [PATCH -next v4 06/19] md/dm-raid: use new apis to suspend array
-Date:   Tue, 10 Oct 2023 23:19:45 +0800
-Message-Id: <20231010151958.145896-7-yukuai1@huaweicloud.com>
+Subject: [PATCH -next v4 07/19] md/md-bitmap: use new apis to suspend array for location_store()
+Date:   Tue, 10 Oct 2023 23:19:46 +0800
+Message-Id: <20231010151958.145896-8-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231010151958.145896-1-yukuai1@huaweicloud.com>
 References: <20231010151958.145896-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgDHXd31+yRl1AZbCg--.36859S10
-X-Coremail-Antispam: 1UD129KBjvJXoW7WF4fXFy5ZF1kZryxXr43Jrb_yoW8uryrpF
-        s3Ja98Ww4DJrW3XayDAw1DWFy5tw1Y9rZFyrZ3Wa95J3WfKw13ur1rWr47XFWkta4xAF15
-        Aw4UA3yDuFW0g37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUPF14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2048vs2IY02
-        0E87I2jVAFwI0_JF0E3s1l82xGYIkIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0
-        rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6x
-        IIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xv
-        wVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFc
-        xC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_
-        Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2
-        IErcIFxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-        14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIx
-        kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAF
-        wI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJV
-        W8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjTRKfOw
-        UUUUU
+X-CM-TRANSID: gCh0CgDHXd31+yRl1AZbCg--.36859S11
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFWUZF4ftw17tF15ur1Utrb_yoWDXFXEka
+        1kZrWrJrnxurW5Jr13Kw4xZrW0kFs5W3Z7XFWSya4SvF9rW3Z5KrWFyr1Yq3yvvFWUC345
+        KryFv3y7Ar1jgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbDAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M28IrcIa0xkI8V
+        A2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJ
+        M28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2I
+        x0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK
+        6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4
+        xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8
+        JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20V
+        AGYxC7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAF
+        wI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc4
+        0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AK
+        xVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r
+        4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0pRvJPtU
+        UUUU=
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
@@ -67,64 +67,40 @@ From: Yu Kuai <yukuai3@huawei.com>
 
 Convert to use new apis, the old apis will be removed eventually.
 
-These are not hot path, so performance is not concerned.
+This is not hot path, so performance is not concerned.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/dm-raid.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ drivers/md/md-bitmap.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
-index 69805d37e113..05dd6ccf6f48 100644
---- a/drivers/md/dm-raid.c
-+++ b/drivers/md/dm-raid.c
-@@ -3244,7 +3244,7 @@ static int raid_ctr(struct dm_target *ti, unsigned int argc, char **argv)
- 	set_bit(MD_RECOVERY_FROZEN, &rs->md.recovery);
+diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
+index 0c661e5036bb..7d21e2a5b06e 100644
+--- a/drivers/md/md-bitmap.c
++++ b/drivers/md/md-bitmap.c
+@@ -2348,11 +2348,10 @@ location_store(struct mddev *mddev, const char *buf, size_t len)
+ {
+ 	int rv;
  
- 	/* Has to be held on running the array */
--	mddev_lock_nointr(&rs->md);
-+	mddev_suspend_and_lock_nointr(&rs->md);
- 	r = md_run(&rs->md);
- 	rs->md.in_sync = 0; /* Assume already marked dirty */
- 	if (r) {
-@@ -3268,7 +3268,6 @@ static int raid_ctr(struct dm_target *ti, unsigned int argc, char **argv)
- 		}
+-	rv = mddev_lock(mddev);
++	rv = mddev_suspend_and_lock(mddev);
+ 	if (rv)
+ 		return rv;
+ 
+-	mddev_suspend(mddev);
+ 	if (mddev->pers) {
+ 		if (mddev->recovery || mddev->sync_thread) {
+ 			rv = -EBUSY;
+@@ -2429,8 +2428,7 @@ location_store(struct mddev *mddev, const char *buf, size_t len)
  	}
- 
--	mddev_suspend(&rs->md);
- 	set_bit(RT_FLAG_RS_SUSPENDED, &rs->runtime_flags);
- 
- 	/* Try to adjust the raid4/5/6 stripe cache size to the stripe size */
-@@ -3798,9 +3797,7 @@ static void raid_postsuspend(struct dm_target *ti)
- 		if (!test_bit(MD_RECOVERY_FROZEN, &rs->md.recovery))
- 			md_stop_writes(&rs->md);
- 
--		mddev_lock_nointr(&rs->md);
--		mddev_suspend(&rs->md);
--		mddev_unlock(&rs->md);
-+		__mddev_suspend(&rs->md, false);
- 	}
- }
- 
-@@ -4012,7 +4009,7 @@ static int raid_preresume(struct dm_target *ti)
- 	}
- 
- 	/* Check for any resize/reshape on @rs and adjust/initiate */
--	/* Be prepared for mddev_resume() in raid_resume() */
-+	/* Be prepared for __mddev_resume() in raid_resume() */
- 	set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
- 	if (mddev->recovery_cp && mddev->recovery_cp < MaxSector) {
- 		set_bit(MD_RECOVERY_REQUESTED, &mddev->recovery);
-@@ -4059,8 +4056,7 @@ static void raid_resume(struct dm_target *ti)
- 		clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
- 		mddev->ro = 0;
- 		mddev->in_sync = 0;
--		mddev_resume(mddev);
--		mddev_unlock(mddev);
-+		mddev_unlock_and_resume(mddev);
- 	}
- }
- 
+ 	rv = 0;
+ out:
+-	mddev_resume(mddev);
+-	mddev_unlock(mddev);
++	mddev_unlock_and_resume(mddev);
+ 	if (rv)
+ 		return rv;
+ 	return len;
 -- 
 2.39.2
 
