@@ -2,95 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E71CA7BFB0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D162E7BFB14
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231614AbjJJMRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 08:17:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47146 "EHLO
+        id S231788AbjJJMTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 08:19:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231681AbjJJMRp (ORCPT
+        with ESMTP id S231800AbjJJMSz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 08:17:45 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08BDFCA
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:17:43 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-98377c5d53eso956710766b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:17:42 -0700 (PDT)
+        Tue, 10 Oct 2023 08:18:55 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB6DD7
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:18:52 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-2776ca9adb7so3425613a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:18:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696940261; x=1697545061; darn=vger.kernel.org;
+        d=tweaklogic.com; s=google; t=1696940332; x=1697545132; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=2hRT2SJvh76ItidEme0pVqcc7N97rm2ZUS1fSYhtaag=;
-        b=GgBkm3265EX9yPKqAqSEGJFE+G7Aj7OXtsBgCvCvj/eB37A2YuJa2WsXzg/FbVfFCE
-         MQotqCWFuvdhpDzPhdopM2OQ1SU9G123pEB41pTLl2Eb1bwXpjMDtqgeQJvnHf/Ho2H7
-         3YwytHZYPQt3h9JOTq9r6wMY9bsHVT2WD/j7n9KJmLlR1GdvndxRevJI6NP/SX6B4QMj
-         adQA+lRgvl8kF3jrejF4clbu2OaS7qH0nZ5IIQc4/aiYcui/X8ebpFGwazE8pvKlvccd
-         xZYVE9aCg9CzZKV7h67dH4CjS6xN5FusaxzMUll0KjYPcZMWP0AjhSpOb38p9RkoaPPC
-         mwvg==
+        bh=m/uEl57rkB9FlUc8/Z3IPGgI3YZRBzcpqKdiv4r4u1s=;
+        b=Lm8NHp89ZTc1yIw7DQiuYLMD2DwyugXiiwUDN6hC5oevK3OKa9X6nlPx+oNbDdAlqv
+         d03Wey1yPycLxV1ADWVSCMSEEZUngFQZxPdOfx4u1nMAKLC0RGiEEdbrstfMqUEmAeIi
+         D3pWh+gpsxJr7DxvqYf/UYNiNUwdBgDnvufwUm9yBopNRoffjsf0Z/0rzL1Aijj97poU
+         1Pnl7yLDb7ghgZOtmFewjNbmw5srWcnIdiqh2IMrOq9jfiHlVNdhzmvk8hQ1ka29qWwP
+         iBldJk5Xqs5l+eebWgGlyN+3WKYWK2uXvsod51ZYlzYwq2efiJ5N6nOJHHJL4KZqIrJR
+         KvVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696940261; x=1697545061;
+        d=1e100.net; s=20230601; t=1696940332; x=1697545132;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2hRT2SJvh76ItidEme0pVqcc7N97rm2ZUS1fSYhtaag=;
-        b=hatzkYfDYZXlJ4lsQ/i++3sRZYES9JBshBwNDpXwbRAeQ8nMd+qyAnJhr5BRRy/S6h
-         FQ0/dLm4x+U0HOlVYiYs6cku/k8+z7RibRGEna9OBBiCrGhFDN6dP0oi88otzLsyaaH/
-         iYBFLlT+tPAFjdstap95ST1QpWZfOrmM/8N0s4NJsJr0zPBr9CikiWtVLKN7BGF1HeLc
-         +SYNX+wHjXtAGkpf+aFDdu/chr2DSg1dXSjgHoxDccPXNnULvPV2VuYdNLyZnVBwWLIg
-         3AkdwLb4ugN/tm6Fe3iC+7egPa6PXOkJzpfZPkt/VrZsJk50WHtYAruT/yoNYZTzwDwX
-         6ZLg==
-X-Gm-Message-State: AOJu0YzBYcGeuyoOCSwnxWSoGx1GPe7kKQ7wc9rpYP+YTzBqJjtYDEqQ
-        11iVCCEYpaQcddbHXpM5Kh9uHA==
-X-Google-Smtp-Source: AGHT+IE+V2cLrQpGWVua2yJmj70qAuFvQv3wkupweNiqkbOavf527f0ImxH5CbIZPFmvrxP11OS20A==
-X-Received: by 2002:a17:906:5193:b0:9ae:5848:3f8e with SMTP id y19-20020a170906519300b009ae58483f8emr17053067ejk.49.1696940261458;
-        Tue, 10 Oct 2023 05:17:41 -0700 (PDT)
-Received: from [192.168.1.172] ([93.5.22.158])
-        by smtp.gmail.com with ESMTPSA id k16-20020a1709062a5000b0099315454e76sm8293803eje.211.2023.10.10.05.17.40
+        bh=m/uEl57rkB9FlUc8/Z3IPGgI3YZRBzcpqKdiv4r4u1s=;
+        b=RXlzXctygrbYkkPtxdiDkP8n8J7eip6v7GBuAxg/RaNAe3kyboprorIyAKjVia6vh9
+         X0g06E+kd9X7Z9bpo9IXzJXesPz8foX4gsnt5/CYTRjV8zfilsSxHFsIvGV1DWC8yqet
+         vANhkFM+CrX20vEsWlYtNCwUGNFc7NqlRDXiHAbDFd68br2qp1fiPWjyP3wf8QWfHUc/
+         sIKA9DCyV+Cka6mhs4qYGHdIktJbDf+vmeSOtCdATZvn0IOBRFCUvXR0ICBCXLL7jx6F
+         9EoCG4ya0ZLkPi8D+W7Vzv9H4i2/5JMRBXWLkLTBHxQsNjBXtbHv5bqs9Xme5RbEkve/
+         m0Hw==
+X-Gm-Message-State: AOJu0Yx5a8HO4E7Gh2Qz1HfcibsQZEnhH7qZ54oiJdLsbboRonj0Ev1P
+        aN1TF8Y4ZspvhZDFdsEzmhneYw==
+X-Google-Smtp-Source: AGHT+IHw/JvHNya/HvLyiP3273/LTzyAj8keMwXYe74c2W6FN1+g3m3s4WDbkHEV195vAl+vK+qsew==
+X-Received: by 2002:a17:90b:1d03:b0:26b:5205:525e with SMTP id on3-20020a17090b1d0300b0026b5205525emr14171953pjb.42.1696940332153;
+        Tue, 10 Oct 2023 05:18:52 -0700 (PDT)
+Received: from ?IPV6:2403:580d:82f4:0:4346:670f:8942:33b? (2403-580d-82f4-0-4346-670f-8942-33b.ip6.aussiebb.net. [2403:580d:82f4:0:4346:670f:8942:33b])
+        by smtp.gmail.com with ESMTPSA id ev7-20020a17090aeac700b00274922d4b38sm10128842pjb.27.2023.10.10.05.18.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Oct 2023 05:17:41 -0700 (PDT)
-Message-ID: <3500ad51-b220-41f7-926f-bb5b9d415698@baylibre.com>
-Date:   Tue, 10 Oct 2023 14:17:40 +0200
+        Tue, 10 Oct 2023 05:18:51 -0700 (PDT)
+Message-ID: <83bb2425-aff1-6359-37f4-4182d4f8ed05@tweaklogic.com>
+Date:   Tue, 10 Oct 2023 22:48:43 +1030
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] media: platform: mtk-mdp3: Use devicetree phandle
- to retrieve SCP
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 1/2] dt-bindings: iio: light: Avago APDS9306
 Content-Language: en-US
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, mchehab@kernel.org
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, matthias.bgg@gmail.com, moudy.ho@mediatek.com,
-        hverkuil-cisco@xs4all.nl, sakari.ailus@linux.intel.com,
-        u.kleine-koenig@pengutronix.de, linqiheng@huawei.com,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, kernel@collabora.com,
-        wenst@chromium.org
-References: <20231005104905.120544-1-angelogioacchino.delregno@collabora.com>
- <20231005104905.120544-3-angelogioacchino.delregno@collabora.com>
-From:   Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <20231005104905.120544-3-angelogioacchino.delregno@collabora.com>
+To:     Matti Vaittinen <mazziesaccount@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paul Gazzillo <paul@pgazz.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>
+References: <20231008154857.24162-1-subhajit.ghosh@tweaklogic.com>
+ <20231008154857.24162-2-subhajit.ghosh@tweaklogic.com>
+ <2c6ff28f-9031-beb2-f8d0-e7f12b0a07b4@gmail.com>
+From:   Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+In-Reply-To: <2c6ff28f-9031-beb2-f8d0-e7f12b0a07b4@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+On 10/10/23 19:22, Matti Vaittinen wrote:
 
-On 05/10/2023 12:49, AngeloGioacchino Del Regno wrote:
-> Instead of walking the entire parent node for something that has the 
-> right compatible, use the scp_get() function provided by the MediaTek 
-> SCP remoteproc driver to retrieve a handle to mtk_scp through the 
-> devicetree "mediatek,scp" (phandle) property. In case of multi-core SCP, 
-> this also allows to select a specific core.
+>> +properties:
+>> +  compatible:
+>> +    const: avago,apds9306
+> 
+> I see the driver supports two different variants of this IC, differentiated by the part-ID register. Variants are named as apds9306 and apds9306-065. I wonder if we could/should have different compatibles for them?
+> 
 
--- 
+Yes, we can. It makes sense. I'll implement that.
+
 Regards,
-Alexandre
+Subhajit Ghosh
+
