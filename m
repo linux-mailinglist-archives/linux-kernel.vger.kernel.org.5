@@ -2,206 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB4D7BFF07
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 16:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01F9D7BFF02
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 16:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232793AbjJJOVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 10:21:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47682 "EHLO
+        id S232621AbjJJOVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 10:21:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232907AbjJJOU7 (ORCPT
+        with ESMTP id S232878AbjJJOU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 10:20:59 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B32A8FF
+        Tue, 10 Oct 2023 10:20:58 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A81101
         for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 07:20:52 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d84d883c1b6so5906640276.0
+Received: by mail-qt1-x844.google.com with SMTP id d75a77b69052e-4180adafdc6so36234471cf.2
         for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 07:20:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696947652; x=1697552452; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=L5saximkGAFfDMGoSqxxv3pak34i8pSAVoPDQ6N1HI8=;
-        b=DZSeq2C/GS/hYX/fXRUM93mRHcMjbWK1oisT1ra/o56C+YgfYHti9gb19fbesXQsEQ
-         cpuTfL/7G8gfq1rLBrQW1r0w3nOtu/vs3Rn30k3ObhAucw5p9tlEZLt698chaVZkAGZq
-         jYZJeCWmcxYEqrr952wnQEv+sbWD91FBmihWfNSAP7ZQ5Dw7f8iVGsq+XNt/9MJpCbT/
-         aB88I9dR5Q7xp0PM1DO6uWw5VwH6lHrpeNN4OE21GYTBNxYxM57cDgw1GG5nx4+cpVD1
-         RO4u9sEANbJlBRWcW+SnTzNta3JwnR4XBmfFbpvkFuKlxp0d8mCnVhfU8zeW/NGrtUNr
-         uoLw==
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696947652; x=1697552452; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RauVDwCZ6u0rcUr+gmJviY5+pWPqnBMyOCfnWtt3YIs=;
+        b=ig5K0gMlG6fJxAPuwdhBMEEeN8Ai8RQC4EBAr6jXEZ+4Zm1kQ6IqhAbaXOb8pc81/O
+         CnyifNI5WWjMqCkk83otepqaLXsONwYeat6o5MVZLm52pLGdBFnZPDJWwh/ecK4Vo8a2
+         AXw/CvHe3YcdjQ8B6W9CHUgnHU62Y617mrsfM6qV6pd8H2MtM002yPhyy2OQI/1E06/L
+         jDB25klQp843QYF3MpD21Q2Nq48G7/w2Yc/dh6VLmObp3mi7R6npOAvBQK1vbWrM3Hdm
+         ogzSk48iDrUylQrzQC8uzfIyTrgPcNnPyJmDeNMSLjHr52GsPyIrT60cjNEiaTY9U9PO
+         Lgyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1696947652; x=1697552452;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=L5saximkGAFfDMGoSqxxv3pak34i8pSAVoPDQ6N1HI8=;
-        b=PY50bEu6mS+pAOgw24kHYtuDUczsEYr1sGw6dzgrYT9k6EvyUGGwrqbFXkjlE2YkNR
-         Jc8HQtGAvNzK72zFWk/GXSa2Q+n5+tAroqnIPbYn9HvoLXojiluRVEmEKZQRc5vXaVGE
-         G0lI28mXTkSNFEbqOl/K9ZLS4gSXW5v3/Enbak28eQSfxZLiR10JGMYUwqK6v0pe+3WW
-         IuhUAy1UnjxZDY0X4G0LLMf5U1WaMZGHgg6zWlXmr/YowJXkrPRTRmpMj0Ex1LrWrL4O
-         GD8iMDuDB3KFx3/rn8cLE61X0xw/3c8G93mSWxfmAMthnMCOTeErJZRDQIIB6amOldKB
-         7m4Q==
-X-Gm-Message-State: AOJu0YyxmZB3NaLJJYk6uWj01MZ97o7jusLPQd2lm7+N/8xOgAlGy6hb
-        6D7wgFu3NS/na8PTUK+1zdI7lGN3nLJnIrnk47sRoA==
-X-Google-Smtp-Source: AGHT+IGqsbf9Cft3GMS6ZzUHyLPHpOdO9coUmpkw9k/ubwVwdymppEUwRE4Aoy8YAOTMVFnJ/zBmoslNaE0gzCGb0uc=
-X-Received: by 2002:a25:b30e:0:b0:d89:c969:beee with SMTP id
- l14-20020a25b30e000000b00d89c969beeemr9738349ybj.1.1696947651870; Tue, 10 Oct
- 2023 07:20:51 -0700 (PDT)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RauVDwCZ6u0rcUr+gmJviY5+pWPqnBMyOCfnWtt3YIs=;
+        b=MhjcHu5XFz+IyzgsQYF/Y6dnHMrx9NiWCpNm1XWNYJg7CcHMYLVRvjeagxVM67yRdx
+         xvIHNGmXfLFUkD8zApNfNgwJ3H8bz9GaGaFZIgMDhagV0ZapGusdWWmKN/bmzi8zdxQ6
+         1U8cBo2s6EJZ56BcLtkd/IzhIl0jtOnEqMOcG+l2ugnTDqE2YQ0t0YW+x1lAxIdRiAgs
+         sFzdFIW0LIzpKTkRdxKH8utEB659E8XVFw9nKBmYkhWphSTloQO96KxVTm/dOAW4Psiz
+         91GW8k4mVZM8kJH/YJk9HfF9Gj7mFI5B4hAcVjIy5qaKe0YzRA6aa+g0t334gwA9Wiel
+         Mn+g==
+X-Gm-Message-State: AOJu0YzFIiSsbAR2uNbWhz8o3LTBIYwKi4A8L6kB7qu4S1zbmRa3iW+B
+        D7o/k3Y+8YSYX54DCGk0OPVGkg==
+X-Google-Smtp-Source: AGHT+IEliuUCFDxSpOfLDRYhT6ks1EAn9dsueLogYHl/+td/ofq+7V4XKDqQRhN9MtOWA3xWnn5cdw==
+X-Received: by 2002:ac8:1383:0:b0:418:11de:ce1 with SMTP id h3-20020ac81383000000b0041811de0ce1mr16506979qtj.24.1696947651775;
+        Tue, 10 Oct 2023 07:20:51 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:66a6])
+        by smtp.gmail.com with ESMTPSA id q5-20020ac84505000000b0041b0a7d1872sm3563448qtn.70.2023.10.10.07.20.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 07:20:51 -0700 (PDT)
+Date:   Tue, 10 Oct 2023 10:20:50 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     syzbot <syzbot+831ba898b5db8d5617ea@syzkaller.appspotmail.com>
+Cc:     akpm@linux-foundation.org, bpf@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [cgroups?] [mm?] WARNING in mem_cgroup_migrate
+Message-ID: <20231010142050.GA128254@cmpxchg.org>
+References: <0000000000001db97f06075bf98b@google.com>
 MIME-Version: 1.0
-References: <20231001194943.658299-1-beanhuo@iokpp.de>
-In-Reply-To: <20231001194943.658299-1-beanhuo@iokpp.de>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 10 Oct 2023 16:20:15 +0200
-Message-ID: <CAPDyKFpgPEhVuTbxe5YhYQ0W6907SwJRxSQLB1F2FbVW3zKHxg@mail.gmail.com>
-Subject: Re: [PATCH v4] mmc: Add quirk MMC_QUIRK_BROKEN_CACHE_FLUSH for Micron
- eMMC Q2J54A
-To:     Bean Huo <beanhuo@iokpp.de>
-Cc:     adrian.hunter@intel.com, beanhuo@micron.com,
-        jakub.kwapisz@toradex.com, rafael.beims@toradex.com,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0000000000001db97f06075bf98b@google.com>
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 1 Oct 2023 at 21:50, Bean Huo <beanhuo@iokpp.de> wrote:
->
-> From: Bean Huo <beanhuo@micron.com>
->
-> Micron MTFC4GACAJCN eMMC supports cache but requires that flush cache
-> operation be allowed only after a write has occurred. Otherwise, the
-> cache flush command or subsequent commands will time out.
->
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
-> Signed-off-by: Rafael Beims <rafael.beims@toradex.com>
-> Cc: stable@vger.kernel.org
->
+On Tue, Oct 10, 2023 at 05:37:43AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    7d730f1bf6f3 Add linux-next specific files for 20231005
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1716036e680000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=f532286be4fff4b5
+> dashboard link: https://syzkaller.appspot.com/bug?extid=831ba898b5db8d5617ea
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/1d7f28a4398f/disk-7d730f1b.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/d454d124268e/vmlinux-7d730f1b.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/dbca966175cb/bzImage-7d730f1b.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+831ba898b5db8d5617ea@syzkaller.appspotmail.com
+> 
+>  kernel_init+0x1c/0x2a0 init/main.c:1437
+>  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+>  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 5208 at mm/memcontrol.c:7552 mem_cgroup_migrate+0x2fa/0x390 mm/memcontrol.c:7552
+
+This is the earlier version of the hugetlb cgroup accounting patches
+that trigger on an uncharged hugetlbfs:
+
+  7547          /*
+  7548           * Note that it is normal to see !memcg for a hugetlb folio.
+  7549           * It could have been allocated when memory_hugetlb_accounting was not
+  7550           * selected, for e.g.
+  7551           */
+  7552          VM_WARN_ON_ONCE_FOLIO(!memcg, old);
+
+It's been fixed in the revision that's in the latest next release:
+
+  7539          /*
+  7540           * Note that it is normal to see !memcg for a hugetlb folio.
+  7541           * For e.g, itt could have been allocated when memory_hugetlb_accounting
+  7542           * was not selected.
+  7543           */
+  7544          VM_WARN_ON_ONCE_FOLIO(!folio_test_hugetlb(old) && !memcg, old);
+  7545          if (!memcg)
+  7546                  return;
+
+> Modules linked in:
+> CPU: 1 PID: 5208 Comm: syz-executor.1 Not tainted 6.6.0-rc4-next-20231005-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+> RIP: 0010:mem_cgroup_migrate+0x2fa/0x390 mm/memcontrol.c:7552
+> Code: f7 ff e9 36 ff ff ff 80 3d 84 b2 d1 0c 00 0f 85 54 ff ff ff 48 c7 c6 a0 9e 9b 8a 48 89 ef e8 0d 5c df ff c6 05 68 b2 d1 0c 01 <0f> 0b e9 37 ff ff ff 48 c7 c6 e0 9a 9b 8a 48 89 df e8 f0 5b df ff
+> RSP: 0018:ffffc90004b2fa38 EFLAGS: 00010246
+> RAX: 0000000000040000 RBX: ffffea0005338000 RCX: ffffc90005439000
+> RDX: 0000000000040000 RSI: ffffffff81e76463 RDI: ffffffff8ae96da0
+> RBP: ffffea0001d98000 R08: 0000000000000000 R09: fffffbfff1d9db9a
+> R10: ffffffff8ecedcd7 R11: 0000000000000000 R12: 0000000000000000
+> R13: 0000000000000200 R14: 0000000000000000 R15: ffffea0001d98018
+> FS:  00007fc15e89d6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000001b31820000 CR3: 000000007f5e1000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  hugetlbfs_migrate_folio fs/hugetlbfs/inode.c:1066 [inline]
+>  hugetlbfs_migrate_folio+0xd0/0x120 fs/hugetlbfs/inode.c:1049
+>  move_to_new_folio+0x183/0x690 mm/migrate.c:966
+>  unmap_and_move_huge_page mm/migrate.c:1428 [inline]
+>  migrate_hugetlbs mm/migrate.c:1546 [inline]
+>  migrate_pages+0x16ac/0x27c0 mm/migrate.c:1900
+>  migrate_to_node mm/mempolicy.c:1072 [inline]
+>  do_migrate_pages+0x43e/0x690 mm/mempolicy.c:1171
+>  kernel_migrate_pages+0x59b/0x780 mm/mempolicy.c:1682
+>  __do_sys_migrate_pages mm/mempolicy.c:1700 [inline]
+>  __se_sys_migrate_pages mm/mempolicy.c:1696 [inline]
+>  __x64_sys_migrate_pages+0x96/0x100 mm/mempolicy.c:1696
+>  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+>  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
+>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x7fc15da7cae9
+> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007fc15e89d0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000100
+> RAX: ffffffffffffffda RBX: 00007fc15db9bf80 RCX: 00007fc15da7cae9
+> RDX: 0000000020000340 RSI: 0000000000000080 RDI: 0000000000000000
+> RBP: 00007fc15dac847a R08: 0000000000000000 R09: 0000000000000000
+> R10: 00000000200003c0 R11: 0000000000000246 R12: 0000000000000000
+> R13: 000000000000000b R14: 00007fc15db9bf80 R15: 00007ffd87d7c058
+>  </TASK>
+> 
+> 
 > ---
-> Changelog:
->
-> v3--v4:
->     1. Add helper function for this quirk in drivers/mmc/core/card.h.
->     2. Set card->written_flag only for REQ_OP_WRITE.
-> v2--v3:
->     1. Set card->written_flag in mmc_blk_mq_issue_rq().
-> v1--v2:
->     1. Add Rafael's test-tag, and Co-developed-by.
->     2. Check host->card whether NULL or not in __mmc_start_request() before asserting host->card->->quirks
-> ---
->  drivers/mmc/core/block.c  | 5 ++++-
->  drivers/mmc/core/card.h   | 4 ++++
->  drivers/mmc/core/mmc.c    | 5 +++++
->  drivers/mmc/core/quirks.h | 7 ++++---
->  include/linux/mmc/card.h  | 2 ++
->  5 files changed, 19 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> index 3a8f27c3e310..dfa67d9c80bb 100644
-> --- a/drivers/mmc/core/block.c
-> +++ b/drivers/mmc/core/block.c
-> @@ -2381,8 +2381,11 @@ enum mmc_issued mmc_blk_mq_issue_rq(struct mmc_queue *mq, struct request *req)
->                         }
->                         ret = mmc_blk_cqe_issue_flush(mq, req);
->                         break;
-> -               case REQ_OP_READ:
->                 case REQ_OP_WRITE:
-> +                       if (mmc_card_broken_cache_flush(card) && !card->written_flag)
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> If the bug is already fixed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
 
-It looks superfluous to me to check mmc_card_broken_cache_flush() and
-!card->written_flag. Just set the card->written_flag unconditionally.
-
-> +                               card->written_flag = true;
-> +                       fallthrough;
-> +               case REQ_OP_READ:
->                         if (host->cqe_enabled)
->                                 ret = mmc_blk_cqe_issue_rw_rq(mq, req);
->                         else
-> diff --git a/drivers/mmc/core/card.h b/drivers/mmc/core/card.h
-> index 4edf9057fa79..b7754a1b8d97 100644
-> --- a/drivers/mmc/core/card.h
-> +++ b/drivers/mmc/core/card.h
-> @@ -280,4 +280,8 @@ static inline int mmc_card_broken_sd_cache(const struct mmc_card *c)
->         return c->quirks & MMC_QUIRK_BROKEN_SD_CACHE;
->  }
->
-> +static inline int mmc_card_broken_cache_flush(const struct mmc_card *c)
-> +{
-> +       return c->quirks & MMC_QUIRK_BROKEN_CACHE_FLUSH;
-> +}
->  #endif
-> diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-> index 89cd48fcec79..47896c32086e 100644
-> --- a/drivers/mmc/core/mmc.c
-> +++ b/drivers/mmc/core/mmc.c
-> @@ -1929,6 +1929,8 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
->         if (!oldcard)
->                 host->card = card;
->
-> +       card->written_flag = false;
-> +
-
-How about doing this after a successful flush operation instead? In
-other words in _mmc_flush_cache().
-
->         return 0;
->
->  free_card:
-> @@ -2081,6 +2083,9 @@ static int _mmc_flush_cache(struct mmc_host *host)
->  {
->         int err = 0;
->
-> +       if (mmc_card_broken_cache_flush(host->card) && !host->card->written_flag)
-> +               return err;
-
-return 0;
-
-> +
->         if (_mmc_cache_enabled(host)) {
->                 err = mmc_switch(host->card, EXT_CSD_CMD_SET_NORMAL,
->                                  EXT_CSD_FLUSH_CACHE, 1,
-> diff --git a/drivers/mmc/core/quirks.h b/drivers/mmc/core/quirks.h
-> index 32b64b564fb1..5e68c8b4cdca 100644
-> --- a/drivers/mmc/core/quirks.h
-> +++ b/drivers/mmc/core/quirks.h
-> @@ -110,11 +110,12 @@ static const struct mmc_fixup __maybe_unused mmc_blk_fixups[] = {
->                   MMC_QUIRK_TRIM_BROKEN),
->
->         /*
-> -        * Micron MTFC4GACAJCN-1M advertises TRIM but it does not seems to
-> -        * support being used to offload WRITE_ZEROES.
-> +        * Micron MTFC4GACAJCN-1M supports TRIM but does not appear to suppor
-> +        * WRITE_ZEROES offloading. It also supports caching, but the cache can
-> +        * only be flushed after a write has occurred.
->          */
->         MMC_FIXUP("Q2J54A", CID_MANFID_MICRON, 0x014e, add_quirk_mmc,
-> -                 MMC_QUIRK_TRIM_BROKEN),
-> +                 MMC_QUIRK_TRIM_BROKEN | MMC_QUIRK_BROKEN_CACHE_FLUSH),
->
->         /*
->          * Kingston EMMC04G-M627 advertises TRIM but it does not seems to
-> diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
-> index daa2f40d9ce6..7b12eebc5586 100644
-> --- a/include/linux/mmc/card.h
-> +++ b/include/linux/mmc/card.h
-> @@ -295,7 +295,9 @@ struct mmc_card {
->  #define MMC_QUIRK_BROKEN_HPI   (1<<13)         /* Disable broken HPI support */
->  #define MMC_QUIRK_BROKEN_SD_DISCARD    (1<<14) /* Disable broken SD discard support */
->  #define MMC_QUIRK_BROKEN_SD_CACHE      (1<<15) /* Disable broken SD cache support */
-> +#define MMC_QUIRK_BROKEN_CACHE_FLUSH   (1<<16) /* Don't flush cache until the write has occurred */
->
-> +       bool                    written_flag;   /* Indicates eMMC has been written since power on */
->         bool                    reenable_cmdq;  /* Re-enable Command Queue */
->
->         unsigned int            erase_size;     /* erase size in sectors */
-> --
-> 2.34.1
->
-
-Kind regards
-Uffe
+#syz fix: next-20231010
