@@ -2,149 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3537C4468
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 00:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 215DC7C4464
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 00:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343967AbjJJWm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 18:42:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
+        id S230363AbjJJWmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 18:42:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230402AbjJJWmz (ORCPT
+        with ESMTP id S229530AbjJJWmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 18:42:55 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0330799
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 15:42:53 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9a9f139cd94so1033980566b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 15:42:52 -0700 (PDT)
+        Tue, 10 Oct 2023 18:42:51 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F76399
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 15:42:49 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-79fca042ec0so248062239f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 15:42:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696977771; x=1697582571; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tb9bykOj2PFr0JPtI/2Jn1spETOn70fv/I2YmNILcfw=;
-        b=CvU9EPj1lUJQyOfAGhYeGOjHZqZh94H8624ZCxtj/g4utxU07Pzp9HavSi9mU6cImZ
-         p8KwpzKyS38reVcjErdfotvGWGeX62qduqXmHaCwNdXi9MaP0w2ZdfAcvbDL/66LhvoA
-         Rnqj9gBEYjcg319GJ4vHBeHraFRVuGXeDWdU4=
+        d=google.com; s=20230601; t=1696977769; x=1697582569; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=l5epg5slVi2ZMZ2XCdkm8B/4iSOhQb3T0qsBgHlWnKI=;
+        b=G5I1941gI6rQBPq7eXyI3NrqWeXDwQ7ztwIrGkYXd0AISTMJnQ5Lf/XpUXcgL8yQ90
+         68Zd8oaptqJ2l2MK61Igc7ZZu4Hy0EOMszfT//Wo8HPX8nJh7q3tQ9xyGxEi7lvSP8jS
+         KCWVbsoMg2s4zZFUhlVfxiVo4Lx0p9Lm0YXjfqqPAHq9ke+gwaO0FSZPSa0ocOKZ/52z
+         baz3RIrYElun1W7JzYEJ3tATUE1Ejwb68dxevy3RjdtbbB9Wupo5TXdcvBQGoJHeWG67
+         +ogZPATQEs93U4yDCR15PKJsPIJQiWmYTimV5zUPxBOob20v5VdnXVGZQTiwdBbpBRRe
+         CE9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696977771; x=1697582571;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tb9bykOj2PFr0JPtI/2Jn1spETOn70fv/I2YmNILcfw=;
-        b=ty/Wc+UWHA1me9i6dmGm/AQLrs3NErEICkYgr6dEiQQEoxr80cgj2DnrDGZl/86M29
-         /dGgFc+4d8Kf3JpAExHWsQyWlr7zIMmd2YsXR7ketJBjj0v4/TV4iOVu4x7yZeAyzBgL
-         ZIk/ihblgUGjbArtp098D96RlDnARGGlMMe29yCv56SBSXsu/ZcTjJNpo3Qqhfv1kiJu
-         myMGtyjxwz5Gd2d76PBCYNUW4bmZPas3x0XafF6jtnbeiKx5H9bEXUpW69PIG5Y6J7Vt
-         v/oDTmbBTIHjih8KRNTa6gsVj95k+Hh3/+t+tQYnrPEu3fDQ4AKe3zrgK5XjiT2orPkH
-         mt0g==
-X-Gm-Message-State: AOJu0YyFjlC7FjMuuREAxr3sxAeGdPMptvj8Jzk/IjaPz6uaVZGEZFXR
-        16+uoQKoybhYaXnZqrEFDAeTZrz+FyY2apT89hftDg==
-X-Google-Smtp-Source: AGHT+IHovl1AnfLJUnwNPKM37IAziJkKti9gYfE82FUNcROx92edpN/rECBAy7Ui9Lg+Iqjm2+QUlHjRja83n7tAqZI=
-X-Received: by 2002:a17:906:9a:b0:9b2:b149:b818 with SMTP id
- 26-20020a170906009a00b009b2b149b818mr17960595ejc.70.1696977771190; Tue, 10
- Oct 2023 15:42:51 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696977769; x=1697582569;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l5epg5slVi2ZMZ2XCdkm8B/4iSOhQb3T0qsBgHlWnKI=;
+        b=QUgAhZSQyRMQYnSMbfJUJFzPYVNJVCeVJ2FviEp8CEBviEDg68bd/7GPo0TUXYRyCN
+         hKq2GQeoUfmOeqFJSVsChy2dvIwmlY8CU5GRoNoXUXVgNANSEDsmJTdHdN4ythrio+j5
+         OhQte+QO86LUpoOMWSMnAzrOBUgde8sMG/5sPdghzoCpg1JDfp8fAjT36LClP5j7nYnH
+         2wxnTPm/imLXtHSp8dDdrGnBdhRnM/7BHx2il/nd9vP1Bd+r/doxn1pVGJpacyVtp/13
+         eCWvy2cz8tqECdSZ1Ks39wtDDy9Lp/pCAnemw/7AaCP9Ao2DQKnQBcnFCPY+WqkVZNW5
+         QxYA==
+X-Gm-Message-State: AOJu0Yyk7fQsx/NsPxb7peuHPS+I1p6YOSQOaM6hMARAuPA/O9eAAafa
+        Rt0E0Na35o4Wf9lG6gjkU3X+Qg==
+X-Google-Smtp-Source: AGHT+IGYNa3gzIhjt40GIF5yGfmofKxjAmOdD0gzDqAUw0ZpUfFc3Tji+MMCm1XS+RHalBJ6bgVecQ==
+X-Received: by 2002:a5e:dd0d:0:b0:786:7100:72de with SMTP id t13-20020a5edd0d000000b00786710072demr20110506iop.16.1696977768722;
+        Tue, 10 Oct 2023 15:42:48 -0700 (PDT)
+Received: from google.com (161.74.123.34.bc.googleusercontent.com. [34.123.74.161])
+        by smtp.gmail.com with ESMTPSA id ee24-20020a056638293800b004332f6537e2sm3057256jab.83.2023.10.10.15.42.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 15:42:48 -0700 (PDT)
+Date:   Tue, 10 Oct 2023 22:42:45 +0000
+From:   Justin Stitt <justinstitt@google.com>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] igc: replace deprecated strncpy with strscpy
+Message-ID: <20231010224245.i57oix72csm7kjp7@google.com>
+References: <20231010-strncpy-drivers-net-ethernet-intel-igc-igc_main-c-v1-1-f1f507ecc476@google.com>
 MIME-Version: 1.0
-References: <20231007012817.3052558-1-sarthakkukreti@chromium.org>
- <20231007012817.3052558-6-sarthakkukreti@chromium.org> <ZSM64EOTVyKNkc/X@dread.disaster.area>
-In-Reply-To: <ZSM64EOTVyKNkc/X@dread.disaster.area>
-From:   Sarthak Kukreti <sarthakkukreti@chromium.org>
-Date:   Tue, 10 Oct 2023 15:42:39 -0700
-Message-ID: <CAG9=OMP_YbfCyjJGGwoZfgwxO-FmR55F5zv3DO8c2-=YzY8iwA@mail.gmail.com>
-Subject: Re: [PATCH v8 5/5] block: Pass unshare intent via REQ_OP_PROVISION
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Brian Foster <bfoster@redhat.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Bart Van Assche <bvanassche@google.com>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231010-strncpy-drivers-net-ethernet-intel-igc-igc_main-c-v1-1-f1f507ecc476@google.com>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 8, 2023 at 4:27=E2=80=AFPM Dave Chinner <david@fromorbit.com> w=
-rote:
+On Tue, Oct 10, 2023 at 09:15:39PM +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
 >
-> On Fri, Oct 06, 2023 at 06:28:17PM -0700, Sarthak Kukreti wrote:
-> > Allow REQ_OP_PROVISION to pass in an extra REQ_UNSHARE bit to
-> > annotate unshare requests to underlying layers. Layers that support
-> > FALLOC_FL_UNSHARE will be able to use this as an indicator of which
-> > fallocate() mode to use.
-> >
-> > Suggested-by: Darrick J. Wong <djwong@kernel.org>
-> > Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
-> > ---
-> >  block/blk-lib.c           |  6 +++++-
-> >  block/fops.c              |  6 ++++--
-> >  drivers/block/loop.c      | 35 +++++++++++++++++++++++++++++------
-> >  include/linux/blk_types.h |  3 +++
-> >  include/linux/blkdev.h    |  3 ++-
-> >  5 files changed, 43 insertions(+), 10 deletions(-)
+> We expect netdev->name to be NUL-terminated based on its use with format
+> strings:
+> |       if (q_vector->rx.ring && q_vector->tx.ring)
+> |               sprintf(q_vector->name, "%s-TxRx-%u", netdev->name,
 >
-> I have no idea how filesystems (or even userspace applications, for
-> that matter) are supposed to use this - they have no idea if the
-> underlying block device has shared blocks for LBA ranges it already
-> has allocated and provisioned. IOWs, I don't know waht the semantics
-> of this function is, it is not documented anywhere, and there is no
-> use case present that tells me how it might get used.
+> Furthermore, we do not need NUL-padding as netdev is already
+> zero-allocated:
+> |       netdev = alloc_etherdev_mq(sizeof(struct igc_adapter),
+> |                                  IGC_MAX_TX_QUEUES);
+> ...
+> alloc_etherdev() -> alloc_etherdev_mq() -> alloc_etherdev_mqs() ->
+> alloc_netdev_mqs() ...
+> |       p = kvzalloc(alloc_size, GFP_KERNEL_ACCOUNT | __GFP_RETRY_MAYFAIL);
 >
-> Yes, unshare at the file level means the filesystem tries to break
-> internal data extent sharing, but if the block layers or backing
-> devices are doing deduplication and sharing unknown to the
-> application or filesystem, how do they ever know that this operation
-> might need to be performed? In what cases do we need to be able to
-> unshare block device ranges, and how is that different to the
-> guarantees that REQ_PROVISION is already supposed to give for
-> provisioned ranges that are then subsequently shared by the block
-> device (e.g. by snapshots)?
+> Considering the above, a suitable replacement is `strscpy` [2] due to
+> the fact that it guarantees NUL-termination on the destination buffer
+> without unnecessarily NUL-padding.
 >
-> Also, from an API perspective, this is an "unshare" data operation,
-> not a "provision" operation. Hence I'd suggest that the API should
-> be blkdev_issue_unshare() rather than optional behaviour to
-> _provision() which - before this patch - had clear and well defined
-> meaning....
+> Let's also opt for the more idiomatic strscpy usage of (dest, src,
+> sizeof(dest)) instead of (dest, src, SOME_LEN).
 >
-Fair points, the intent from the conversation with Darrick was the
-addition of support for FALLOC_FL_UNSHARE_RANGE in patch 2 of v4
-(originally suggested by Brian Forster in [1]): if we allow
-fallocate(UNSHARE_RANGE) on a loop device (ex. for creating a
-snapshot, similar in nature to the FICLONE example you mentioned on
-the loop patch), we'd (ideally) want to pass it through to the
-underlying layers and let them figure out what to do with it. But it
-is only for situations where we are explicitly know what the
-underlying layers are and what's the mecha
-
-I agree though that it clouds the API a bit and I don't think it
-necessarily needs to be a part of the initial patch series: for now, I
-propose keeping just mode zero (and FALLOC_FL_KEEP_SIZE) handling in
-the block series patch and drop this patch for now. WDYT?
-
-Best
-Sarthak
-
-[1] https://patchwork.ozlabs.org/project/linux-ext4/patch/20230414000219.92=
-640-2-sarthakkukreti@chromium.org/#3097746
-
-
-
-
-> Cheers,
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> Note: build-tested only.
+> ---
+>  drivers/net/ethernet/intel/igc/igc_main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> Dave.
+> diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+> index 98de34d0ce07..e9bb403bbacf 100644
+> --- a/drivers/net/ethernet/intel/igc/igc_main.c
+> +++ b/drivers/net/ethernet/intel/igc/igc_main.c
+> @@ -6935,7 +6935,7 @@ static int igc_probe(struct pci_dev *pdev,
+>  	 */
+>  	igc_get_hw_control(adapter);
+>
+> -	strncpy(netdev->name, "eth%d", IFNAMSIZ);
+> +	strscpy(netdev->name, "eth%d", sizeof(netdev->name));
+>  	err = register_netdev(netdev);
+>  	if (err)
+>  		goto err_register;
+>
+> ---
+> base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
+> change-id: 20231010-strncpy-drivers-net-ethernet-intel-igc-igc_main-c-26efa209ddb5
+>
+> Best regards,
 > --
-> Dave Chinner
-> david@fromorbit.com
+> Justin Stitt <justinstitt@google.com>
+>
+Hi, this patch was bundled up with some others. It has a new home:
+
+https://lore.kernel.org/all/20231010-netdev-replace-strncpy-resend-as-series-v1-0-caf9f0f2f021@google.com/
