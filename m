@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7963D7BF60D
+	by mail.lfdr.de (Postfix) with ESMTP id 2150A7BF60C
 	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442956AbjJJIfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 04:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43742 "EHLO
+        id S1442933AbjJJIfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 04:35:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442904AbjJJIfg (ORCPT
+        with ESMTP id S1442898AbjJJIfg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 10 Oct 2023 04:35:36 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3700A9;
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1450DA4;
         Tue, 10 Oct 2023 01:35:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1696926934; x=1728462934;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=P/4mWGyVldhGd+8X9JavsKnqWkSdr5BRdzY15fml+QM=;
-  b=TXtGdIVmyIfDzT0j0xxDxgAhXbLmgFGAG7CP7kOCvDdScSpr+yqifDdn
-   G77awRNEGPB1tib+/yYoa4S/36LoYe2EIfpY98uWGrd/f/4N4rse+jgT4
-   JVTvy6ZB1ktgkHc4N/CdRBd0QOK3r6/9auDfDBbJGaif73i5g3uxKDTvK
-   QrfyvonDpMftCyDQrTPYCirIqyeO6pycWf0mMdI9ghOno4QcFDRDfLxc3
-   JL1eiKYItbu63b7nX9yIIpJ/a72jQwRAf0O5qNt30irQBJTKIYq93jKL0
-   6/+ISSEtMpfG9EzmqQXrK9iOeCQCWwQc1c151b/XyRh/Y67EJ4ChqQTvK
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="387176601"
+  bh=m7pCDbhKS6+u2jcznAubfaRxlAgJtSYbB0zCkXhtCcE=;
+  b=keJcEqYFaOJEYzUkdJs8Jft5Ct6gYDwV5Lf18cWLvqtj64Kif8BUg2r2
+   1dEaf9aaXoipwdTjWVzuXgdfobvcwluduObiJeCQoLSk3p151Kd0C2iMg
+   6vzMDb+Rh+CBdKeE0F0d6RfRqxJ08xEYm9VFMmGFj2zxcV9MPdrskqYoU
+   2srdz334BLAsk0fpy1PBsE1A+1OwIfVGqsg8Wr3Is1gaV4/Gbeg0h5eTY
+   Q3NA/BDiabkx5f0HO6/ec9HBbokMe3edoknx9tN4qEi1Vie1f+64QI7hw
+   SLKBWbUSf4IbLRsfWduakHttw1NZtQWtgKyBdiy8mhzx9lBm8/9t9ymJh
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="363689792"
 X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
-   d="scan'208";a="387176601"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 01:35:33 -0700
+   d="scan'208";a="363689792"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 01:35:33 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="730001332"
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="1084687182"
 X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
-   d="scan'208";a="730001332"
+   d="scan'208";a="1084687182"
 Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 01:35:32 -0700
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 01:35:33 -0700
 From:   isaku.yamahata@intel.com
 To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
@@ -46,9 +46,9 @@ Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
         Paolo Bonzini <pbonzini@redhat.com>,
         Sean Christopherson <seanjc@google.com>,
         linux-coco@lists.linux.dev, Chao Peng <chao.p.peng@linux.intel.com>
-Subject: [PATCH 02/12] X86/mce/inject: Add mcgstatus for mce-inject debugfs
-Date:   Tue, 10 Oct 2023 01:35:10 -0700
-Message-Id: <062049a8ebfaa7bf14fe22ddb5e48f5b660e3332.1696926843.git.isaku.yamahata@intel.com>
+Subject: [PATCH 03/12] x86/mce/inject: Add notrigger entry to suppress MCE injection
+Date:   Tue, 10 Oct 2023 01:35:11 -0700
+Message-Id: <97809b68e427922948044e33599c2fc7c9f6134c.1696926843.git.isaku.yamahata@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1696926843.git.isaku.yamahata@intel.com>
 References: <cover.1696926843.git.isaku.yamahata@intel.com>
@@ -56,9 +56,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -67,60 +66,93 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Isaku Yamahata <isaku.yamahata@intel.com>
 
-To test KVM x86 to inject machine check with memory failure, it wants to
-to set LMCE_S (local machine check exception signaled) for memory failure
-injection test.  The current code sets mcgstatus based on the other values
-and can't set LMCE_S flag.
+The current x86 MCE injection framework injects MCE when writing to
+/sys/kernel/debug/mce-inject/bank.  KVM wants to inject machine check on
+behalf of vcpu context instead of the context of writing to the bank file.
 
-Add mcgstatus entry to allow to set mcgstatus value.
+Because ACPI APEI has a similar requirement and it adds
+/sys/kernel/debug/apei/notrigger to suppress immediate injection.
+By Following it, add /sys/kernel/debug/mce-inject/notrigger to suppress
+MCE injection.
+
+The alternative is add new value "notrigger" to
+/sys/kernel/debug/mce-inject/flags in addition to "sw", "hw", "df", and
+"th".  Because it may break user space ABI, this option follow ACPI APEI
+error injection.
+
+Supposed usage flow:
+$ echo 1 > notrigger
+  ... setup MCE values
+$ echo 0 > bank
+  The last step to setup mce value to inject with MC bank 0.
+  Originally this step injects mce.  With noijnect=1, don't inject.
+
+$ echo 1 > /sys/kernel/debug/kvm/<pid>-<fd>/vcpu<N>/mce-inject
+  tell KVM to inject MCE in the context of vcpu.
 
 Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
 ---
- arch/x86/kernel/cpu/mce/inject.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/x86/kernel/cpu/mce/inject.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
 diff --git a/arch/x86/kernel/cpu/mce/inject.c b/arch/x86/kernel/cpu/mce/inject.c
-index 881898a1d2f4..461858ae18f9 100644
+index 461858ae18f9..88603a6c0afe 100644
 --- a/arch/x86/kernel/cpu/mce/inject.c
 +++ b/arch/x86/kernel/cpu/mce/inject.c
-@@ -72,6 +72,7 @@ static int inj_##reg##_set(void *data, u64 val)				\
- 	return 0;							\
- }
+@@ -34,6 +34,7 @@
+ #include "internal.h"
  
-+MCE_INJECT_SET(mcgstatus);
- MCE_INJECT_SET(status);
- MCE_INJECT_SET(misc);
- MCE_INJECT_SET(addr);
-@@ -86,12 +87,14 @@ static int inj_##reg##_get(void *data, u64 *val)			\
- 	return 0;							\
- }
+ static bool hw_injection_possible;
++static u64 notrigger;
  
-+MCE_INJECT_GET(mcgstatus);
- MCE_INJECT_GET(status);
- MCE_INJECT_GET(misc);
- MCE_INJECT_GET(addr);
- MCE_INJECT_GET(synd);
- MCE_INJECT_GET(ipid);
+ /*
+  * Collect all the MCi_XXX settings
+@@ -598,6 +599,8 @@ static int inj_bank_set(void *data, u64 val)
+ 	}
  
-+DEFINE_SIMPLE_ATTRIBUTE(mcgstatus_fops, inj_mcgstatus_get, inj_mcgstatus_set, "%llx\n");
- DEFINE_SIMPLE_ATTRIBUTE(status_fops, inj_status_get, inj_status_set, "%llx\n");
- DEFINE_SIMPLE_ATTRIBUTE(misc_fops, inj_misc_get, inj_misc_set, "%llx\n");
- DEFINE_SIMPLE_ATTRIBUTE(addr_fops, inj_addr_get, inj_addr_set, "%llx\n");
-@@ -679,6 +682,9 @@ static const char readme_msg[] =
- "\t    APIC interrupt handler to handle the error. \n"
+ 	m->bank = val;
++	if (notrigger)
++		return 0;
+ 
+ 	/*
+ 	 * sw-only injection allows to write arbitrary values into the MCA
+@@ -637,6 +640,21 @@ MCE_INJECT_GET(bank);
+ 
+ DEFINE_SIMPLE_ATTRIBUTE(bank_fops, inj_bank_get, inj_bank_set, "%llu\n");
+ 
++static int inj_notrigger_get(void *data, u64 *val)
++{
++	*val = notrigger;
++	return 0;
++}
++
++static int inj_notrigger_set(void *data, u64 val)
++{
++	notrigger = val;
++	return 0;
++}
++
++DEFINE_SIMPLE_ATTRIBUTE(notrigger_fops, inj_notrigger_get, inj_notrigger_set,
++			"%llx\n");
++
+ static const char readme_msg[] =
+ "Description of the files and their usages:\n"
  "\n"
- "ipid:\t IPID (AMD-specific)\n"
+@@ -685,6 +703,9 @@ static const char readme_msg[] =
+ "\n"
+ "mcgstatus:\t Set MCG_STATUS: the bits in that MSR describes the current state\n"
+ "\t of the processor after the MCE.\n"
 +"\n"
-+"mcgstatus:\t Set MCG_STATUS: the bits in that MSR describes the current state\n"
-+"\t of the processor after the MCE.\n"
++"notrigger:\t Suppress triggering the injection when set to non-zero\n"
++"\t The injection is triggered by other way.\n"
  "\n";
  
  static ssize_t
-@@ -706,6 +712,8 @@ static struct dfs_node {
- 	{ .name = "bank",	.fops = &bank_fops,   .perm = S_IRUSR | S_IWUSR },
- 	{ .name = "flags",	.fops = &flags_fops,  .perm = S_IRUSR | S_IWUSR },
+@@ -714,6 +735,8 @@ static struct dfs_node {
  	{ .name = "cpu",	.fops = &extcpu_fops, .perm = S_IRUSR | S_IWUSR },
-+	{ .name = "mcgstatus",	.fops = &mcgstatus_fops,
+ 	{ .name = "mcgstatus",	.fops = &mcgstatus_fops,
+ 						      .perm = S_IRUSR | S_IWUSR },
++	{ .name = "notrigger",	.fops = &notrigger_fops,
 +						      .perm = S_IRUSR | S_IWUSR },
  	{ .name = "README",	.fops = &readme_fops, .perm = S_IRUSR | S_IRGRP | S_IROTH },
  };
