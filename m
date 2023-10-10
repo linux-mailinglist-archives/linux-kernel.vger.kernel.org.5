@@ -2,201 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D71E37C0495
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 21:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51ACC7C0498
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 21:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343625AbjJJT0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 15:26:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53698 "EHLO
+        id S1343519AbjJJT12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 15:27:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234229AbjJJT0w (ORCPT
+        with ESMTP id S234105AbjJJT10 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 15:26:52 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D258FA
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 12:26:46 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-5068dab8c00so4819919e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 12:26:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696966005; x=1697570805; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=M+6rfPIT5Qs4nYSzMA/UOS/nCpICENl2aTb8ca8T/Zc=;
-        b=oszXq2R5PF4Sxmjfoec91fhXte2lRaPiyRiMvo3KuDlapP3Kdpa0dAEvuxPlN1ckB4
-         azPDc7pk7Bz6V48ObIgnfNkxmpJPBI3LRQP5bruvcjRX5se/7TbYHagb0A2f8FV013Hd
-         zm+bGO8wM9QJ6S62RjX9T3ShF9dbZAYivXGGdfZwwsArkk0TiWVuLUUtPihQgnXGqguu
-         72ONN+bCadOA/eSZ4BnTCYCyqHMVrKKE2xjTzb9U46NgiKcghIFvAFVhugY9AoefME5H
-         9CwVs9kVUbmNRlH/zpu1cpnMDpbUIwR+vzod6qCcTfzFQqi777nLFf2vV2DRnvglovqo
-         bayQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696966005; x=1697570805;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=M+6rfPIT5Qs4nYSzMA/UOS/nCpICENl2aTb8ca8T/Zc=;
-        b=fpaYJvI/DDS+Z9Dc7YA+iaHsyIzgXgAXrHQHy+yf2JbSdkt+ZgvVucnDrgQlfpRjMf
-         SexgiIlivW2cEO3kUBPmSE4U2DexC5FOD8degFng0e8zq3gvb02ep0shU+7moY4YYXQn
-         pFyasA3UsN+2Ip8uyyypcmaIAIdduw3sw0QVYOplPrPGtchMRIToQuj8rWD7rj1njr27
-         NxLoo8WNELgsNMrwqER9zs1pdJ9TGvfaHRELqSoVCtqB/FGRI4MYxOnmKZrDP3qGNnxK
-         R7qNNtTzEOl+tK7ublJoJQgKvm3NPp0lTcOQqTzTlmJNTVPA3Zfcsc90/6MQdGVL2u/T
-         z+RA==
-X-Gm-Message-State: AOJu0YyHP4mJkGwSLuMZmRq5bjPaW9HN2FntZMxDoRHdSqLrbe3sDkW5
-        TsWva66L1vfbQPd5gJQUHvrdtg==
-X-Google-Smtp-Source: AGHT+IFF5XFoH7IUXUg0uaL+/UGO9fbuPocNcepcEnAF4sm6ZJjbyl2BcOi6WWoOG40yH+aowuLq5Q==
-X-Received: by 2002:ac2:5f90:0:b0:505:6fcd:dc41 with SMTP id r16-20020ac25f90000000b005056fcddc41mr13709463lfe.43.1696966004612;
-        Tue, 10 Oct 2023 12:26:44 -0700 (PDT)
-Received: from [172.30.204.182] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id d4-20020ac24c84000000b0050567a8b36esm1927443lfl.251.2023.10.10.12.26.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Oct 2023 12:26:44 -0700 (PDT)
-Message-ID: <017265ae-c9d5-4ea0-94eb-9090945cbc91@linaro.org>
-Date:   Tue, 10 Oct 2023 21:26:40 +0200
+        Tue, 10 Oct 2023 15:27:26 -0400
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2883CA;
+        Tue, 10 Oct 2023 12:27:14 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id CCECF3200A9C;
+        Tue, 10 Oct 2023 15:27:12 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 10 Oct 2023 15:27:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1696966032; x=1697052432; bh=G+
+        O2giSg3nsUU1PmtjUETbakIyQRebZUgOxuV8S3Wko=; b=RbBKakaxR01yy02owi
+        8Gd5RUvkBg8X0tGsC6TH0Aj/8iu+gvTmGowey/8bKcRL9i31/AUzE4HE0RmwKjC8
+        0vddXWeZI68Lrjh+jRNqEJzSC8HcLkukJ9Y3jRcu1MwbgFBGWCJq7lB+fUC7Ov1r
+        MPTuEvuPfuDJjNJBgTffyWrUduDHeEARiYyV/PXbyadmNhu9Fu9kf8SDaKfqX/Uq
+        IRysHs+R8BDLCImwKzZPelmusoLakH7qx5kYOGr8y6XMDc1NeZKl2e5QN9gw1Aic
+        A7qNFGIR1X4WzOuKmibG2zQ1uR3CEk0402cWyjm564moiRH8Qn1N/sB/OSYvuUdQ
+        b/3A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1696966032; x=1697052432; bh=G+O2giSg3nsUU
+        1PmtjUETbakIyQRebZUgOxuV8S3Wko=; b=lE7Ci95rsVy7uu1yNxofaex0A/upg
+        toWEMkTBdujv8KKMAldAIWM5m3BAUs87IwUzZx5kDIvWITdjstSPQJ6ZYxxXlH67
+        0C0V66IjahRlg8/ap5/UO9UrDKAQ2cA/vOyyb0s36uE80ocmDXb5A1OeAUhFTCq4
+        voMrlHVHzfjEy/pZPXwd3gq96Dzno4KD4HlQRrNyrDKVwKw06mjeM0VnK6VooEHZ
+        oX8CqSjmpTyEOrwCh6pTz2aFlb6qV7XwC8ZQw8yCJWZB2nGh6F7AcMp+VM2xCjFB
+        Mks9cYQCq+Ah+M/YETnVevaLxvMXjxTv0gDef0aMxOOKaMZflmr8Bw49Q==
+X-ME-Sender: <xms:j6UlZcsIY4YOfcxTFm5kWR-r9SNvnzm_GHQx3iNNBQCBQCYNDAdjBw>
+    <xme:j6UlZZc8K59RS64WSGWzBhd-NeeWszYWTzSyDb01QQuRXKk0kr4H5dAoga3PLWXHb
+    2ZmVVoEN6cyUvtjZjs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrheehgddufeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepvefhffeltdegheeffffhtdegvdehjedtgfekueevgfduffettedtkeekueef
+    hedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:j6UlZXzObGJYPQwH1C-3EXr4t_iuhjg1a_5gZu56xUYKpv3zR5JQXA>
+    <xmx:j6UlZfO-CtFK2I2kz2QDZW5ILwCdzPFIPgAH8zwRP0CdQ523PRYALQ>
+    <xmx:j6UlZc9jaacYc5wYDjIlNsZ7Iz4NWPSDPfNUFbj4zQyLtNFe4HJemA>
+    <xmx:kKUlZWcpif-uFlmOZSNzyMep3pyZdXMt7Gp51heMTBA5Adp9OmQN8g>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 448A7B60089; Tue, 10 Oct 2023 15:27:11 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1019-ged83ad8595-fm-20231002.001-ged83ad85
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 3/4] cpufreq: qcom-nvmem: add support for IPQ8064
-Content-Language: en-US
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Robert Marko <robimarko@gmail.com>, ilia.lin@kernel.org,
-        vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, agross@kernel.org, andersson@kernel.org,
-        rafael@kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20230930102218.229613-1-robimarko@gmail.com>
- <20230930102218.229613-3-robimarko@gmail.com>
- <5b57e0e0-490e-464d-bdc8-5823ad8da2d8@linaro.org>
- <65255add.df0a0220.ff2f9.021d@mx.google.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <65255add.df0a0220.ff2f9.021d@mx.google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-Id: <a010cff7-176c-47a0-91bf-92177a9945b5@app.fastmail.com>
+In-Reply-To: <7b764568ea372f0a947798fb3c2dac75.sboyd@kernel.org>
+References: <20231009114514.120130-1-arnd@kernel.org>
+ <7b764568ea372f0a947798fb3c2dac75.sboyd@kernel.org>
+Date:   Tue, 10 Oct 2023 21:26:50 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Stephen Boyd" <sboyd@kernel.org>,
+        "Abel Vesa" <abelvesa@kernel.org>,
+        "Arnd Bergmann" <arnd@kernel.org>,
+        "Michael Turquette" <mturquette@baylibre.com>
+Cc:     "Peng Fan" <peng.fan@nxp.com>, "Shawn Guo" <shawnguo@kernel.org>,
+        "Sascha Hauer" <s.hauer@pengutronix.de>,
+        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
+        "Fabio Estevam" <festevam@gmail.com>,
+        "NXP Linux Team" <linux-imx@nxp.com>,
+        "Randy Dunlap" <rdunlap@infradead.org>,
+        "Jesse Taube" <Mr.Bossman075@gmail.com>,
+        "Shengjiu Wang" <shengjiu.wang@nxp.com>, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: imx: imx8: build base support for scu clk
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 10, 2023, at 20:56, Stephen Boyd wrote:
+> Quoting Arnd Bergmann (2023-10-09 04:44:55)
+>> From: Arnd Bergmann <arnd@arndb.de>
+>> 
+>> There is now a dependency on a function from the clk.c file, so
+>> this also needs to be built:
+>> 
+>> aarch64-linux-ld: Unexpected GOT/PLT entries detected!
+>> aarch64-linux-ld: Unexpected run-time procedure linkages detected!
+>> aarch64-linux-ld: drivers/clk/imx/clk-imx8-acm.o: in function `imx8_acm_clk_probe':
+>> clk-imx8-acm.c:(.text+0xbf0): undefined reference to `imx_check_clk_hws'
+>> 
+>> Fixes: d3a0946d7ac9a ("clk: imx: imx8: add audio clock mux driver")
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>> ---
+>
+> Is this another 
+> https://lore.kernel.org/r/20230921093647.3901752-1-abel.vesa@linaro.org
 
+I think that's correct and my patch is not needed any more now.
+It looks like it was already obsolete when I sent it, but I can't
+find out why that is. I'll let you know if it comes back.
 
-On 10/10/23 16:08, Christian Marangi wrote:
-> On Tue, Oct 10, 2023 at 03:39:54PM +0200, Konrad Dybcio wrote:
->>
->>
->> On 9/30/23 12:21, Robert Marko wrote:
->>> From: Christian Marangi <ansuelsmth@gmail.com>
->>>
->>> IPQ8064 comes in 3 families:
->>> * IPQ8062 up to 1.0GHz
->>> * IPQ8064/IPQ8066/IPQ8068 up to 1.4GHz
->>> * IPQ8065/IPQ8069 up to 1.7Ghz
->>>
->>> So, in order to be able to support one OPP table, add support for
->>> IPQ8064 family based of SMEM SoC ID-s and correctly set the version so
->>> opp-supported-hw can be correctly used.
->>>
->>> Bit are set with the following logic:
->>> * IPQ8062 BIT 0
->>> * IPQ8064/IPQ8066/IPQ8068 BIT 1
->>> * IPQ8065/IPQ8069 BIT 2
->>>
->>> speed is never fused, only pvs values are fused.
->>>
->>> IPQ806x SoC doesn't have pvs_version so we drop and we use the new
->>> pattern:
->>> opp-microvolt-speed0-pvs<PSV_VALUE>
->>>
->>> Example:
->>> - for ipq8062 psv2
->>>     opp-microvolt-speed0-pvs2 = < 925000 878750 971250>
->>>
->>> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
->>> Signed-off-by: Robert Marko <robimarko@gmail.com>
->>> ---
->> [...]
->>
->>> +{
->>> +	int speed = 0, pvs = 0, pvs_ver = 0;
->>> +	int msm_id, ret = 0;
->>> +	u8 *speedbin;
->>> +	size_t len;
->>> +
->>> +	speedbin = nvmem_cell_read(speedbin_nvmem, &len);
->>> +
->>> +	if (IS_ERR(speedbin))
->> The stray newline above this line triggers my OCD :D
->>
->>> +		return PTR_ERR(speedbin);
->>> +
->>> +	if (len != 4) {
->>> +		dev_err(cpu_dev, "Unable to read nvmem data. Defaulting to 0!\n");
->>> +		kfree(speedbin);
->>> +		return -ENODEV;
->>> +	}
->>> +
->>> +	get_krait_bin_format_a(cpu_dev, &speed, &pvs, &pvs_ver, speedbin);
->>> +
->>> +	ret = qcom_smem_get_soc_id(&msm_id);
->>> +	if (ret)
->>> +		return ret;
->> speedbin leaks here
->>
->> you can free it right after the get_krait.. call
->>> +
->>> +	switch (msm_id) {
->>> +	case QCOM_ID_IPQ8062:
->>> +		drv->versions = BIT(IPQ8062_VERSION);
->>> +		break;
->>> +	case QCOM_ID_IPQ8064:
->>> +	case QCOM_ID_IPQ8066:
->>> +	case QCOM_ID_IPQ8068:
->>> +		drv->versions = BIT(IPQ8064_VERSION);
->>> +		break;
->>> +	case QCOM_ID_IPQ8065:
->>> +	case QCOM_ID_IPQ8069:
->>> +		drv->versions = BIT(IPQ8065_VERSION);
->>> +		break;
->>> +	default:
->>> +		dev_err(cpu_dev,
->>> +			"SoC ID %u is not part of IPQ8064 family, limiting to 1.0GHz!\n",
->>> +			msm_id);
->>> +		drv->versions = BIT(IPQ8062_VERSION);
->>> +		break;
->>> +	}
->>> +
->>> +	/* IPQ8064 speed is never fused. Only pvs values are fused. */
->>> +	snprintf(*pvs_name, sizeof("speedXX-pvsXX"), "speed%d-pvs%d",
->>> +		 speed, pvs);
->> Then drop the format for `speed` and just throw in a zero!
->>
->> [...]
->>
->>> -	{ .compatible = "qcom,ipq8064", .data = &match_data_krait },
->>> +	{ .compatible = "qcom,ipq8064", .data = &match_data_ipq8064 },
->> This change demands a Fixes tag, because you're essentially saying "the
->> support for this SoC was supposedly there, but it could have never worked
->> and was broken all along".
->>
-> 
-> Mhhh actually no. We are just changing the opp binding and introducing
-> hardcoded versions. But the thing worked and actually it's what was used
-> before this change in openwrt. Also current ipq806x dtsi doesn't have
-> any opp definition so no regression there. (and also 99% downstream either
-> use openwrt or use qcom sdk where this implementation is not used at
-> all)
-> 
-> Given these thing should we still add a fixes tag referencing the commit
-> that introduced the compatible for qcom,ipq8064? It's quite problematic
-> as this depends on qcom_smem_get_soc_id().
-Fixes only hints auto backports, you shouldn't be worried about putting 
-fixes on commits that fix bugs.
-
-I see this as a "didnt work" -> "works" commit, which in my eyes 
-qualifies as a fix.
-
-Konrad
+     Arnd
