@@ -2,150 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A52867BF635
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D96817BF633
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230129AbjJJIkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 04:40:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49604 "EHLO
+        id S229737AbjJJIkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 04:40:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232011AbjJJIkL (ORCPT
+        with ESMTP id S230348AbjJJIkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 10 Oct 2023 04:40:11 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9747211D
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 01:40:08 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 5434140E014B;
-        Tue, 10 Oct 2023 08:40:07 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 3Me0YP-jJVoj; Tue, 10 Oct 2023 08:40:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1696927204; bh=9walowOI8kaX/dL4Mftiv56c3vMqZAoEx0m2sBLeKfU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RpBDNjp1lFmWVnl5E+20pnbbvXbD+G8OwSWCdcXUMPFpiuqNEswaPBhDRpOqDVCwK
-         TSm6P63jP5aSSzN12A2H2XDw2Y2Zq4ucsICb4E6h978/epY7qWYAzYEJPMvpIz/Rq/
-         RtLbYoLLHrmW0Tn2NScPnpIhOqLUpLrCfnSlwkg/MEIsSf1JBGiWvIhby6Fs35OTRb
-         ahPxao16IMYqC+ja7V4Hsucma7asTVsBYYy3rsuUBkVTZIGzGFGkQ1+5ZKXa0H02cL
-         Uwozj8ibMi8SE4BDqbUHuRHUUTD32YDQD+Qy+vRugz7NfD2asnPXRvOd59IiQVyX2r
-         u2p4aFDajDMCmVst/sYosa/+zMsqul5WHVyQ7L9XMOEwazG50fu0gdEMLxJOaU8r8M
-         8qLOC30YMR2dtPFyAsLVFrMsq5bjdisiR6xkvmjOmW4YEywa6yswQaA4Jk9CrRDeaV
-         wpPMxz20H8gVI80cWaTrxzcgorSyMKTJQkFwvVAm0ZuG8ssOCEBUqgXLPtxZX4CYE5
-         z5XvXvAERxUrsLGYA4qC7G5G1bEFILrQSjdFjWhOEI57g+UKA6oDeHTo9PC0IImTjo
-         ko/SjE8IpwGDOILwhxKvhkjOULrSdiB2zBGjGd66Sx9F4NF8w79Urfjbl9xPjr6g4Z
-         wJRkDBCFyTxqK9n/GWWzzLL8=
-Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4047540E01AA;
-        Tue, 10 Oct 2023 08:40:01 +0000 (UTC)
-Date:   Tue, 10 Oct 2023 10:39:56 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     =?utf-8?B?UmVuw6k=?= Rebe <rene@exactcode.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Re: [RFC] AMD Zen4 CPU bug? Spurious SMT Sibling Invalid Opcode
- Speculation
-Message-ID: <20231010083956.GEZSUN3OKuYSyU182V@fat_crate.local>
-References: <D99589F4-BC5D-430B-87B2-72C20370CF57@exactcode.com>
- <20231004222511.GHZR3mR/oNFZuJGB9P@fat_crate.local>
- <797F7A00-541E-4333-B653-1120DF5C56B1@exactcode.com>
- <20231006093244.GAZR/UPJidkn7GIGeL@fat_crate.local>
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2054.outbound.protection.outlook.com [40.107.20.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F53C10B;
+        Tue, 10 Oct 2023 01:40:06 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jPWH53yLjynXkn9FxbXMZ/rhcSvB/VYQroO7967+W7513jQlVgGcuyKhJfY4WQHMwsyg80v1IBBU1D9poz9WESJp9s8buqyabN9P7UixrR1KUCrNTchTkmM6hSj+22KEZM0ZW1q7UxRwB0Xv52ts5XwdUsC6ntH5KbIfR4rWvzGnK9g6UalfEVnC27ee3wNU0OWSnIbXE9HHfYz22gfEnJ4GCj7AgEFP21NtvgmLQpdnXARzrzPN7/cuhPX6cNbpXMbYrMxOJtYkqxgN0Ueq1hBNiQ/amIJr0UyZUONWk3rPJm2Bsg6yAwdh+WMBxaDKMuzNCAXsMrULOPoK2nEo3A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oWYHkwmvA9jrBuIs67grJ25LSNK9wo+TIrzrkO/aXPk=;
+ b=H7X8req2l+jqKjGB5iHevQuk4Qcmn29mLq2QbRpFscq5ErN0d3goQYqCfw2RXo7q4rk2G7fSmN6YGkAnW/rxRttRJnVw9r02i9pKAfWg9PtNUzXS5Gjt8IopXMAwl4923/+t3bkn7B2gRJ2QvCzK6LUqvBK4pMDs7aLEoBMXWfLZOfJR1qyNoEw4a6RuAGfv5G9Kdl2+/tA+/VzWNI1dVq5pT93aEi3g5yPjxPyCo/dVKG9xnMH8sgRDCe11JJTvRD6VTMM2BehFRQLVpsNYwnViDQpytjgC37O1r4q5I0DbJnDKONYbFBuGeDhX8WZDgjWHkshYSGzC06F2SFC45A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 195.60.68.100) smtp.rcpttodomain=linaro.org smtp.mailfrom=axis.com;
+ dmarc=fail (p=none sp=none pct=100) action=none header.from=axis.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oWYHkwmvA9jrBuIs67grJ25LSNK9wo+TIrzrkO/aXPk=;
+ b=AHHH3TrI/ON+1u6FBUHtzWFKQFZlNPaHm+5UqQ1TW2bO/AhFRpAP1KQhkhl8bUT2nbrcpk6RSlwUqnZHN89XZYECPBVWTlJ7n8jxiSlp75iaz01/G4wd/IqgQlvgnzcIRSBd1wJQoIs7Sw4LSPNz5TIe6btIao8wWS+5tWTxez8=
+Received: from AS9PR06CA0118.eurprd06.prod.outlook.com (2603:10a6:20b:465::20)
+ by DB9PR02MB7259.eurprd02.prod.outlook.com (2603:10a6:10:24a::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Tue, 10 Oct
+ 2023 08:40:03 +0000
+Received: from AM4PEPF00027A6B.eurprd04.prod.outlook.com
+ (2603:10a6:20b:465:cafe::d3) by AS9PR06CA0118.outlook.office365.com
+ (2603:10a6:20b:465::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38 via Frontend
+ Transport; Tue, 10 Oct 2023 08:40:03 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 195.60.68.100)
+ smtp.mailfrom=axis.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=none header.from=axis.com;
+Received-SPF: Fail (protection.outlook.com: domain of axis.com does not
+ designate 195.60.68.100 as permitted sender) receiver=protection.outlook.com;
+ client-ip=195.60.68.100; helo=mail.axis.com;
+Received: from mail.axis.com (195.60.68.100) by
+ AM4PEPF00027A6B.mail.protection.outlook.com (10.167.16.89) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6838.22 via Frontend Transport; Tue, 10 Oct 2023 08:40:03 +0000
+Received: from se-mail01w.axis.com (10.20.40.7) by se-mail02w.axis.com
+ (10.20.40.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Tue, 10 Oct
+ 2023 10:40:02 +0200
+Received: from se-intmail02x.se.axis.com (10.0.5.60) by se-mail01w.axis.com
+ (10.20.40.7) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
+ Transport; Tue, 10 Oct 2023 10:40:02 +0200
+Received: from pc36611-1939.se.axis.com (pc36611-1939.se.axis.com [10.88.125.175])
+        by se-intmail02x.se.axis.com (Postfix) with ESMTP id 36A952CD1;
+        Tue, 10 Oct 2023 10:40:02 +0200 (CEST)
+Received: by pc36611-1939.se.axis.com (Postfix, from userid 363)
+        id 19C9362933; Tue, 10 Oct 2023 10:40:02 +0200 (CEST)
+Date:   Tue, 10 Oct 2023 10:40:02 +0200
+From:   Jesper Nilsson <jesper.nilsson@axis.com>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+CC:     Linus Walleij <linus.walleij@linaro.org>,
+        Jesper Nilsson <jesper.nilsson@axis.com>,
+        Lars Persson <lars.persson@axis.com>,
+        <linux-arm-kernel@axis.com>, <linux-gpio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 09/20] pinctrl: artpec6: Convert to platform remove
+ callback returning void
+Message-ID: <20231010084002.GG11306@axis.com>
+References: <20231009083856.222030-1-u.kleine-koenig@pengutronix.de>
+ <20231009083856.222030-10-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-In-Reply-To: <20231006093244.GAZR/UPJidkn7GIGeL@fat_crate.local>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231009083856.222030-10-u.kleine-koenig@pengutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM4PEPF00027A6B:EE_|DB9PR02MB7259:EE_
+X-MS-Office365-Filtering-Correlation-Id: cd674dde-cadb-42a0-12b7-08dbc96c7f80
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9w8VCbrFEjC3Wz5mvx0la+2rgBOnTvDAV9CBoMOqIWBoHZn37AFhonueuAa299DnHFiWw8XtzR6ralGwb/FMtb5/nKoAa7wyHTkRppz5U57annRLgXyp/xZO70tKiypKCewg9DA2nYSLJpOJM2s/94fGKmEpL0eOwki50o0WovrnK7oYjw+jGLdWxYLtMCTsIV3J5hh+YExYOF5UU2PtTfoO9OZQsmKV+Kl+uW7L3Zi32hA8KbjAf00N50ID/+hYj95DGTDTIAJoAWDJYXD3tlzVNFP/Pf/anbcUqMs6HE8OQxJ4j1UlsCdr8GktitKzPedCwa4lsk5zvIIWfqPEiITuODy5rngNaJO1oupg/8PBKK/HsoFQoEogMOmz8YWt+3VqECtlsLwIRARRZ5UPLFFBJ7I9axSgS0nExCRofYTsTHv86DzfLlTGzh/QQAhk3vP0r/KsezcoFpmCc0T72Jj3PtAW4XERNTr5cSjyW+N81dzRAvpuTMIqHDtN2CNu1kEoFmsgMuD45hpwVJXiOPFh1D/iE2sGM9Sql2vTd9Yg6OCJMpkSQwTdG5/wQT10DaeLpCvsl7HwjHbDDw0Iy6TFDfcuVh7a+X69gWAbuohNDa16G417hpI5goQg2J5VK83Bl6qYoYiQ2Lb9uwqT75BDhazcJ60HHmQUjizzMCmH39TuN0cxtjJAF8Jbch4o65MpL4UAtecNRZzuzQcJmTcryQuB6Ai+MdlcH2XAXYQ6sxW+h8WkRyIjuad2mYQcBgrNbk16zGsACpnSPa8i+g==
+X-Forefront-Antispam-Report: CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(39860400002)(396003)(346002)(230922051799003)(64100799003)(186009)(1800799009)(82310400011)(451199024)(36840700001)(40470700004)(46966006)(83380400001)(40460700003)(2616005)(336012)(426003)(1076003)(26005)(40480700001)(70206006)(42186006)(54906003)(316002)(6916009)(356005)(70586007)(33656002)(41300700001)(47076005)(82740400003)(4326008)(8936002)(2906002)(4744005)(8676002)(81166007)(44832011)(5660300002)(6266002)(66574015)(36756003)(86362001)(478600001)(36860700001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: axis.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 08:40:03.5495
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd674dde-cadb-42a0-12b7-08dbc96c7f80
+X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=78703d3c-b907-432f-b066-88f7af9ca3af;Ip=[195.60.68.100];Helo=[mail.axis.com]
+X-MS-Exchange-CrossTenant-AuthSource: AM4PEPF00027A6B.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR02MB7259
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 11:32:44AM +0200, Borislav Petkov wrote:
-> I'm still working on it and I'll have something soon.
+On Mon, Oct 09, 2023 at 10:38:45AM +0200, Uwe Kleine-König wrote:
+> The .remove() callback for a platform driver returns an int which makes
+> many driver authors wrongly assume it's possible to do error handling by
+> returning an error code. However the value returned is ignored (apart
+> from emitting a warning) and this typically results in resource leaks.
+> 
+> To improve here there is a quest to make the remove callback return
+> void. In the first step of this quest all drivers are converted to
+> .remove_new(), which already returns void. Eventually after all drivers
+> are converted, .remove_new() will be renamed to .remove().
+> 
+> Trivially convert this driver from always returning zero in the remove
+> callback to the void returning variant.
+> 
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-Ok, try this below and see whether it fixes your reproducer.
+Acked-by: Jesper Nilsson <jesper.nilsson@axis.com>
 
-Thx.
 
----
-From: "Borislav Petkov (AMD)" <bp@alien8.de>
-Date: Sat, 7 Oct 2023 12:57:02 +0200
-Subject: [PATCH] x86/cpu: Fix AMD erratum #1485 on Zen4-based CPUs
-
-Fix erratum #1485 on Zen4 parts where running with STIBP disabled can
-cause an #UD exception. The performance impact of the fix is negligible.
-
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Cc: <stable@kernel.org>
----
- arch/x86/include/asm/msr-index.h | 9 +++++++--
- arch/x86/kernel/cpu/amd.c        | 8 ++++++++
- 2 files changed, 15 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index 1d111350197f..b37abb55e948 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -637,12 +637,17 @@
- /* AMD Last Branch Record MSRs */
- #define MSR_AMD64_LBR_SELECT			0xc000010e
- 
--/* Fam 17h MSRs */
--#define MSR_F17H_IRPERF			0xc00000e9
-+/* Zen4 */
-+#define MSR_ZEN4_BP_CFG			0xc001102e
-+#define MSR_ZEN4_BP_CFG_SHARED_BTB_FIX_BIT 5
- 
-+/* Zen 2 */
- #define MSR_ZEN2_SPECTRAL_CHICKEN	0xc00110e3
- #define MSR_ZEN2_SPECTRAL_CHICKEN_BIT	BIT_ULL(1)
- 
-+/* Fam 17h MSRs */
-+#define MSR_F17H_IRPERF			0xc00000e9
-+
- /* Fam 16h MSRs */
- #define MSR_F16H_L2I_PERF_CTL		0xc0010230
- #define MSR_F16H_L2I_PERF_CTR		0xc0010231
-diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
-index 03ef962a6992..ece2b5b7b0fe 100644
---- a/arch/x86/kernel/cpu/amd.c
-+++ b/arch/x86/kernel/cpu/amd.c
-@@ -80,6 +80,10 @@ static const int amd_div0[] =
- 	AMD_LEGACY_ERRATUM(AMD_MODEL_RANGE(0x17, 0x00, 0x0, 0x2f, 0xf),
- 			   AMD_MODEL_RANGE(0x17, 0x50, 0x0, 0x5f, 0xf));
- 
-+static const int amd_erratum_1485[] =
-+	AMD_LEGACY_ERRATUM(AMD_MODEL_RANGE(0x19, 0x10, 0x0, 0x1f, 0xf),
-+			   AMD_MODEL_RANGE(0x19, 0x60, 0x0, 0xaf, 0xf));
-+
- static bool cpu_has_amd_erratum(struct cpuinfo_x86 *cpu, const int *erratum)
- {
- 	int osvw_id = *erratum++;
-@@ -1149,6 +1153,10 @@ static void init_amd(struct cpuinfo_x86 *c)
- 		pr_notice_once("AMD Zen1 DIV0 bug detected. Disable SMT for full protection.\n");
- 		setup_force_cpu_bug(X86_BUG_DIV0);
- 	}
-+
-+	if (!cpu_has(c, X86_FEATURE_HYPERVISOR) &&
-+	     cpu_has_amd_erratum(c, amd_erratum_1485))
-+		msr_set_bit(MSR_ZEN4_BP_CFG, MSR_ZEN4_BP_CFG_SHARED_BTB_FIX_BIT);
- }
- 
- #ifdef CONFIG_X86_32
+/^JN - Jesper Nilsson
 -- 
-2.42.0.rc0.25.ga82fb66fed25
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+               Jesper Nilsson -- jesper.nilsson@axis.com
