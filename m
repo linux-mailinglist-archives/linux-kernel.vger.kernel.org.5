@@ -2,73 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 981B87C04EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 21:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65E707C2E3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 21:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343702AbjJJTsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 15:48:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54240 "EHLO
+        id S1343651AbjJJTvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 15:51:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343611AbjJJTsA (ORCPT
+        with ESMTP id S234064AbjJJTvb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 15:48:00 -0400
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CA298E;
-        Tue, 10 Oct 2023 12:47:59 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::646])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 854832B2;
-        Tue, 10 Oct 2023 19:47:58 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 854832B2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1696967278; bh=cSAnQCe5ozuzSh9BgixGZxQQjWIwqW45PYOSq7td7vo=;
-        h=From:To:Subject:In-Reply-To:References:Date:From;
-        b=CbxkbiA2JrjJ87nEvlpd4zsoRbQ4ntUP79tUocWMU9pnJORSrhJCLX37LCi/7ltAo
-         WITACmB4Vlc/964LfUkHgKAF9Y25q5avKFSEcIZ4iZePafCyT4fZ64bvCM64UqBSPS
-         GeGG1lnoJc8IZPoO3YsEYb0B8F5xlys1t70DBIlhp11QUSPjO6vf4Qen522cRhr4ft
-         QzOe7XMIiED2pE+VUcRO3Nu9d2JikRoa6DEM+8obm4ubqwWHuXyB9tVmQAVWDMsypm
-         8o5FZmBcAuol5goJcN6q8iJTK5zIMfq7Mi4Yneo6cunyfjVCZBdeKJ0gLZUzDNlPge
-         ItpJaDMhQrsHA==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Costa Shulyupin <costa.shul@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Federico Vaga <federico.vaga@vaga.pv.it>,
-        Alex Shi <alexs@kernel.org>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Costa Shulyupin <costa.shul@redhat.com>,
-        Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Atish Patra <atishp@rivosinc.com>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Evan Green <evan@rivosinc.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Andy Chiu <andy.chiu@sifive.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Song Shuai <songshuaishuai@tinylab.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
-        Anup Patel <anup@brainfault.org>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Charlie Jenkins <charlie@rivosinc.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Wu XiangCheng <bobwxc@email.cn>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, workflows@vger.kernel.org
-Subject: Re: [PATCH v1] docs: move riscv under arch
-In-Reply-To: <20230930185354.3034118-1-costa.shul@redhat.com>
-References: <87h6nbka8x.fsf@meer.lwn.net>
- <20230930185354.3034118-1-costa.shul@redhat.com>
-Date:   Tue, 10 Oct 2023 13:47:57 -0600
-Message-ID: <87jzru5keq.fsf@meer.lwn.net>
+        Tue, 10 Oct 2023 15:51:31 -0400
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3070B94
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 12:51:30 -0700 (PDT)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5a7be61fe74so14460897b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 12:51:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696967489; x=1697572289; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0t/gb0HX/wguZBehJ5edd61GQW9F6FisjpeCFW72vEs=;
+        b=D5XtSMeXbmeae1DUwD0ohuJzaEE1w/skR4ngNwV2PfvtZL5hnVBR90UKzxAiQZ988e
+         sj1D9LpxikgFTp7OMDGxcVM/b3Ku7oXMv8xfErTqX85QIq3ZfPeOZzt2N0cXFY1OdXK7
+         6GVSLQ9esRI2tHfwoWLxKW0qTHua+dcy5ILVNr3ClO23oxDxhjG/OlpyU+RbMPJFwt9a
+         +XJKxRV4ytVviTilxX66QQJdO9ikggHyH6xHloWKH6DZ4KBMNrPifZbwQEvY49iIInEs
+         Wywllt/DmCGBZLGHLk/SppXOElDSUxXQfXepPBVUZbMBNZMLbb0jUmwnU0mwcMP41XxG
+         qlNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696967489; x=1697572289;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0t/gb0HX/wguZBehJ5edd61GQW9F6FisjpeCFW72vEs=;
+        b=CUK6FUrSjc36/uXXNOS2mtILKFCvqLW5IvUmGBvNuSwF4M8Y5ZodLHiwKZV4ZwPS60
+         z74WD1KNEY2PySkD3QahDFQt9aWPGLTISeA57xiW5bxZECqjrOjQHnydLDkVsTZy2w0x
+         AOQvpkDCxm6ATP+HI+PIWh14iGcx2btbSCST81p9tAvwEItnYAbqznkrhqdRu40GCj6s
+         LfcU79SnzuOS7fChACjWkw1eHXIKW4cVCzUt5Cw/uyDmodACvXYHweTnaOOOFonXK+LL
+         wH+1eHkQ3rzB8Ra6kcu44Khd1edwHcJgdoZVn4pKHYpL3f74y5dkO2EWs3AFMngOqwmU
+         nJqw==
+X-Gm-Message-State: AOJu0YyufbMKdtzKlD4GMKAP2YSE3/BrvnlIpSil19dDtiH5ZS3O0j8q
+        B8POgZEsET7Qea+/EMHgFDKIDnllrkmSnYVj5wD4Mg==
+X-Google-Smtp-Source: AGHT+IEhCcAsDeMJoiEQZQ5RWxC0/XydGDUmR603fyri6YQ94GyZBsLD7Fzb80ytacETl1giUcWrYOVUQ45SVjw5mw8=
+X-Received: by 2002:a81:b40c:0:b0:592:2a17:9d88 with SMTP id
+ h12-20020a81b40c000000b005922a179d88mr21125891ywi.47.1696967489365; Tue, 10
+ Oct 2023 12:51:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20230918080314.11959-1-jagathjog1996@gmail.com>
+ <20230918080314.11959-2-jagathjog1996@gmail.com> <20230924143710.7c6edc4a@jic23-huawei>
+ <CAM+2EuJ8o5X2ucph8gic2=03bbLQmUCX=j3SFLrqD4Y6rwXs9A@mail.gmail.com>
+ <20230930170530.0b8f185c@jic23-huawei> <CAM+2EuKzBVbTF2SrpYEYfzap1wrONboFV-QuTU9Fz7sVjqJLeA@mail.gmail.com>
+ <20231010100002.0163d681@jic23-huawei> <CACRpkdY+K90mN1Q1tf38FLRgEsz3q8dK9SJYSQVwGe=PL3FaUQ@mail.gmail.com>
+ <20231010154216.6032a1c2@jic23-huawei>
+In-Reply-To: <20231010154216.6032a1c2@jic23-huawei>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 10 Oct 2023 21:51:17 +0200
+Message-ID: <CACRpkdY4yJKmc_Sbr=4sJ0WseCEEBOQ7wKj4fBUMG2_cx-Xxbw@mail.gmail.com>
+Subject: Re: [RFC 1/2] dt-bindings: iio: imu: Add DT binding doc for BMI323
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Jagath Jog J <jagathjog1996@gmail.com>,
+        andriy.shevchenko@linux.intel.com, lars@metafoo.de,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -79,20 +77,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Costa Shulyupin <costa.shul@redhat.com> writes:
+On Tue, Oct 10, 2023 at 4:42=E2=80=AFPM Jonathan Cameron <jic23@kernel.org>=
+ wrote:
 
-> and fix all in-tree references.
->
-> Architecture-specific documentation is being moved into Documentation/arch/
-> as a way of cleaning up the top-level documentation directory and making
-> the docs hierarchy more closely match the source hierarchy.
->
-> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
->
+> We kind of lost the question along the way.  Wasn't so much about whether
+> there was a generic binding but more about whether it is worth providing
+> separate controls for the two IRQ pins?  Or just assume no one is crazy
+> enough to play that level of mix and match.
 
-Applied, thanks.
+Ugh no, that's upfront design for a nonexistent use case.
 
-This is the last of the arch moves!  Thanks again for helping push this
-through to a conclusion.
+- First, to even consider open drain the designer need to be really
+  short of IRQ lines/rails, and, despite knowing it's a bad idea, decide
+  to share this line between several peripherals, even though it will
+  require I2C traffic to just determine which one even fired the IRQ.
 
-jon
+- Second, be interested in using two IRQs to distinguish between
+  different events? When we just faced the situation that we had
+  too few IRQ lines so we need to start sharing them with open
+  drain...?
+
+It's not gonna happen.
+
+Stay with just drive-open-drain; and configure them all as that if
+that property is set.
+
+Yours,
+Linus Walleij
