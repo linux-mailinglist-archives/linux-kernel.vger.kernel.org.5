@@ -2,72 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9860C7C00EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73DC87C00F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233663AbjJJP7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 11:59:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59130 "EHLO
+        id S233645AbjJJP7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 11:59:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233597AbjJJP7h (ORCPT
+        with ESMTP id S233597AbjJJP7d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 11:59:37 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF5BAF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:59:34 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id e9e14a558f8ab-35135f69de2so19711805ab.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:59:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696953574; x=1697558374; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3XHRCY63hQtzpYUIBv5+mXIDtPmwcujXauM/JNVB8nw=;
-        b=SDf7MCmQAEga71pshauObsxutTVz/eEpcgeWbSTX4ZcfhwDPBsfKPGDQYgjFXkDfhX
-         A6mjI6wRkp1LfpNm2GTezfYQ7F967XhMFaK+8fCUN6rStRmb3QgtMjqBpp7RaqMeOMHy
-         qY5sw2cfcHX+kLGtCU0SSw6kP+CD9GVwub+cMkoU5tGd2+4gRaI0KcetpEgTzh05RcH5
-         7y39wsrrbEUr3WLU6fZ0wAu0psYY0hKw6xw1quZPVQeQlE7G+uD0nrLj/J6YvXEZM73W
-         BkGpqw6haT22QcjsKOh0exh0caENmVwW3UGHHEUdbo3rFK+teUEKX95nzZAU3QGM1jDo
-         lnvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696953574; x=1697558374;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3XHRCY63hQtzpYUIBv5+mXIDtPmwcujXauM/JNVB8nw=;
-        b=nIM3/cmLfBkJ7HawPL9FMx793wTHusouW8u5kaFcQZG1GzRXyjqBN5dDh7MeUd2Brn
-         oQozrTHFjvR/6wuS8OUSrJNjc5tWfPOxIchPiqO5WD/azBI28JUWcLG0nQWJ68n4uHSN
-         M4PNnEOdciuf45uiCC0lvDkrmk311CP0lhVWLyXD8eSYhUvU7IaGFj2skQ568JjMHuZc
-         FU5zlHC1fyOUz//6frEbN9NvOwVSt2swzpfrAo+b28o5vXVrZoE8eXNMGAqE11ZpTjDE
-         c7trJlYit9UxsR61A0sSCwWtiCxnfiFfDjVnJ3DyNHg5vlk5TDYLSzBpivSp2jxSu68x
-         0b/w==
-X-Gm-Message-State: AOJu0YweQ+yCBREttYXAJLj6l/2l2D743/ZJupcG5mOxhus6tP7v/TDD
-        u/VBTC4CpJkwG3Nu0y34nrUu
-X-Google-Smtp-Source: AGHT+IGk6lhfteareySKoKmtG0TR3ZpRvS2BBgEg1dkurU1opNq04IT4XZ1Vl0Lw4Y6MvCuF22L94A==
-X-Received: by 2002:a05:6e02:ecc:b0:34f:c9b4:5f9c with SMTP id i12-20020a056e020ecc00b0034fc9b45f9cmr16813737ilk.31.1696953574071;
-        Tue, 10 Oct 2023 08:59:34 -0700 (PDT)
-Received: from localhost.localdomain ([117.217.182.234])
-        by smtp.gmail.com with ESMTPSA id c24-20020a637258000000b0055c178a8df1sm6537023pgn.94.2023.10.10.08.59.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 08:59:33 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     lpieralisi@kernel.org, kw@linux.com, bhelgaas@google.com
-Cc:     robh@kernel.org, gustavo.pimentel@synopsys.com,
-        jingoohan1@gmail.com, andersson@kernel.org,
-        konrad.dybcio@linaro.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v2 1/2] PCI: dwc: Add host_post_init() callback
-Date:   Tue, 10 Oct 2023 21:29:13 +0530
-Message-Id: <20231010155914.9516-2-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231010155914.9516-1-manivannan.sadhasivam@linaro.org>
-References: <20231010155914.9516-1-manivannan.sadhasivam@linaro.org>
+        Tue, 10 Oct 2023 11:59:33 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A951B6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:59:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=rJgL4rw3kxKAK5R0je1XMzNfxr6vfwIpg8Oe5KINLE8=; b=Noyw/Q4vI5v1GiqTOZn1BAisZR
+        NRCXGcpJpWD+a6LVCB95S0GjpZZODyf89BU7s/+Q2xsd2TTh2gPCK+1wtRy2auKmJSmiVWHuNMg0G
+        J9/qZPD8Ds/M/6b0aZX8BMsi+U3OU5Ck6VQmM1P8nJfnMmb8nz7PcwguKUstHaZB35O1VXZsjEGQl
+        1k2ndiImIc5Xj5mVPpfRTY3ib/6Rt65ENJN3xg2NPWkIpanW9m7k4y4+GX3sXQYBFp4NxbrPevyFS
+        qgql5rOJiRKT1bseRlVJbX1KT0ljmchDwfk6TQ5yCF/OnTwtRFcTSGuMbhzagWSaAp37NC/BY2Vn/
+        pJeoD1og==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qqF8d-00DjRJ-0x;
+        Tue, 10 Oct 2023 15:59:15 +0000
+Message-ID: <6b5e3bd0-8002-49b0-ae23-f091f9b465b5@infradead.org>
+Date:   Tue, 10 Oct 2023 08:59:14 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] x86/msi: Fix compile error "incomplete typedef
+ 'msi_alloc_info_t'"
+Content-Language: en-US
+To:     yaolu <yaolu@kylinos.cn>, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com
+Cc:     x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org
+References: <20231008082827.279154-1-yaolu@kylinos.cn>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20231008082827.279154-1-yaolu@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,42 +54,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This callback can be used by the platform drivers to do configuration once
-all the devices are scanned. Like changing LNKCTL of all downstream devices
-to enable ASPM etc...
+Hi,
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/pci/controller/dwc/pcie-designware-host.c | 3 +++
- drivers/pci/controller/dwc/pcie-designware.h      | 1 +
- 2 files changed, 4 insertions(+)
+On 10/8/23 01:28, yaolu wrote:
+> When compiling the x86 kernel, if X86_64 || SMP || X86_32_NON_STANDARD ||
+> X86_UP_APIC || PCI_MSI is not enabled in '.config' and GENERIC_MSI_IRQ is
+> selected, the following compilation error will occur:
+> 
+>> include/linux/gpio/driver.h:38:19: error:
+>>   field 'msiinfo' has incomplete type
+>> kernel/irq/msi.c:752:5: error: invalid use of incomplete typedef
+>>   'msi_alloc_info_t' {aka 'struct irq_alloc_info'}
+>> kernel/irq/msi.c:740:1: error: control reaches end of non-void function
+> 
+> This is because 'X86_LOCAL_APIC' is not defined, but file such as
+> 'kernel/irq/msi.c' only depends on 'GENERIC_MSI_IRQ', and uses
+> 'struct msi_alloc_info_t'. When enable 'GENERIC_MSI_IRQ' will select
+> 'IRQ_DOMAIN_HIERARCHY', so exposing this struct using
+> 'IRQ_DOMAIN_HIERARCHY' rather than 'X86_LOCAL_APIC'.
+> 
+> Signed-off-by: yaolu <yaolu@kylinos.cn>
 
-diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-index a7170fd0e847..7991f0e179b2 100644
---- a/drivers/pci/controller/dwc/pcie-designware-host.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-@@ -502,6 +502,9 @@ int dw_pcie_host_init(struct dw_pcie_rp *pp)
- 	if (ret)
- 		goto err_stop_link;
- 
-+	if (pp->ops->host_post_init)
-+		pp->ops->host_post_init(pp);
-+
- 	return 0;
- 
- err_stop_link:
-diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-index ef0b2efa9f93..efb4d4754fc8 100644
---- a/drivers/pci/controller/dwc/pcie-designware.h
-+++ b/drivers/pci/controller/dwc/pcie-designware.h
-@@ -301,6 +301,7 @@ enum dw_pcie_ltssm {
- struct dw_pcie_host_ops {
- 	int (*host_init)(struct dw_pcie_rp *pp);
- 	void (*host_deinit)(struct dw_pcie_rp *pp);
-+	void (*host_post_init)(struct dw_pcie_rp *pp);
- 	int (*msi_host_init)(struct dw_pcie_rp *pp);
- 	void (*pme_turn_off)(struct dw_pcie_rp *pp);
- };
+Thank for the patch. This reduces the build error count from around 190 down to
+two remaining problems for me:
+
+../arch/x86/kernel/hpet.c: In function ‘hpet_create_irq_domain’:
+../arch/x86/kernel/hpet.c:550:13: error: ‘x86_vector_domain’ undeclared (first use in this function)
+  550 |         if (x86_vector_domain == NULL)
+      |             ^~~~~~~~~~~~~~~~~
+../arch/x86/kernel/hpet.c:550:13: note: each undeclared identifier is reported only once for each function it appears in
+../arch/x86/kernel/hpet.c: In function ‘hpet_assign_irq’:
+../arch/x86/kernel/hpet.c:600:9: error: implicit declaration of function ‘init_irq_alloc_info’ [-Werror=implicit-function-declaration]
+  600 |         init_irq_alloc_info(&info, NULL);
+      |         ^~~~~~~~~~~~~~~~~~~
+
+
+I haven't looked into how to fix this yet...
+
+> ---
+>  arch/x86/include/asm/hw_irq.h | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/hw_irq.h b/arch/x86/include/asm/hw_irq.h
+> index 551829884734..b02c3cd3c0f6 100644
+> --- a/arch/x86/include/asm/hw_irq.h
+> +++ b/arch/x86/include/asm/hw_irq.h
+> @@ -28,7 +28,7 @@
+>  #include <asm/irq.h>
+>  #include <asm/sections.h>
+>  
+> -#ifdef	CONFIG_X86_LOCAL_APIC
+> +#ifdef	CONFIG_IRQ_DOMAIN_HIERARCHY
+>  struct irq_data;
+>  struct pci_dev;
+>  struct msi_desc;
+> @@ -105,10 +105,10 @@ static inline void irq_complete_move(struct irq_cfg *c) { }
+>  #endif
+>  
+>  extern void apic_ack_edge(struct irq_data *data);
+> -#else	/*  CONFIG_X86_LOCAL_APIC */
+> +#else	/*  CONFIG_IRQ_DOMAIN_HIERARCHY */
+>  static inline void lock_vector_lock(void) {}
+>  static inline void unlock_vector_lock(void) {}
+> -#endif	/* CONFIG_X86_LOCAL_APIC */
+> +#endif	/* CONFIG_IRQ_DOMAIN_HIERARCHY */
+>  
+>  /* Statistics */
+>  extern atomic_t irq_err_count;
+
 -- 
-2.25.1
-
+~Randy
