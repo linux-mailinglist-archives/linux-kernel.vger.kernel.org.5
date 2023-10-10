@@ -2,105 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2423F7BF88F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 12:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB7B7BF8A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 12:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbjJJK0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 06:26:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42010 "EHLO
+        id S230374AbjJJKaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 06:30:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230511AbjJJK0S (ORCPT
+        with ESMTP id S230110AbjJJKaD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 06:26:18 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59181AF;
-        Tue, 10 Oct 2023 03:26:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1584EC433C8;
-        Tue, 10 Oct 2023 10:26:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696933576;
-        bh=PqLwa/jUv0/v1YHnMTFC+aJ+JxMcrb9OrAWtpCIlSVI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SjGJc9OXY4TmtAKccg9N8dWKXu8WN0fawl0VNIqj4TJBQLwfeThvQ3cim64MtrDnB
-         AVWMnva+eyVktQHmkI83jbsmtWTb+rErQJXK6MnNAlQ4lcLJeokGNc1gK4J1TYqpnr
-         PR0B4014dStxg2v6nFC8wMyixp1gHgFgnnKNGx727ZX7eNSwNwO41WrlpJI2ruxMMd
-         /zvhFNesw7t+FDLmr6SBAMc2w40IrqAirb7fQtlvE9Wh1JROnQyS25hJ595Ea7mY0M
-         jcR9TnVdL02Yeab6mJGg1e20cS+HnjZyOwLau5LurYQpHxZe+s+DldxxueWEgdfYRz
-         T9RGc0ZpcLsQA==
-Date:   Tue, 10 Oct 2023 11:26:21 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Ceclan Dumitru-Ioan <mitrutzceclan@gmail.com>
-Cc:     linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
-        linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Leonard =?UTF-8?B?R8O2aHJz?= <l.goehrs@pengutronix.de>,
-        Mike Looijmans <mike.looijmans@topic.nl>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        Ceclan Dumitru <dumitru.ceclan@analog.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] iio: adc: ad7173: add AD7173 driver
-Message-ID: <20231010112621.0b371e74@jic23-huawei>
-In-Reply-To: <07afa29c-bfef-72dc-d471-f72dfcebe342@gmail.com>
-References: <20231005105921.460657-1-mitrutzceclan@gmail.com>
-        <20231005105921.460657-2-mitrutzceclan@gmail.com>
-        <20231005180131.0518f46c@jic23-huawei>
-        <07afa29c-bfef-72dc-d471-f72dfcebe342@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Tue, 10 Oct 2023 06:30:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA3C9E
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 03:29:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696933756;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aJzuP/A/bgFUoe/uV4FgEOUmqz0biBzCtHevaK0fOw4=;
+        b=WvaY5AcLQPQb6y/dwWBHc3dgAIGAzV8Rj/m3fKZA0dtYub9zSF7taG0eUvTFmLYynK7T8n
+        MKMQ7U3RiNdNC0WJ62STg+f8wgfWRo6ghlTnvxsXfjhHy0Wd9/StcD8GRQ0VrWKK0tOgCa
+        6N9x3wY2bNLPlAvbSqQrqI5Q79WBWUo=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-227-RCquY-SdM4a8_cmJaEy7JQ-1; Tue, 10 Oct 2023 06:29:05 -0400
+X-MC-Unique: RCquY-SdM4a8_cmJaEy7JQ-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9ae56805c41so134637966b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 03:29:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696933744; x=1697538544;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aJzuP/A/bgFUoe/uV4FgEOUmqz0biBzCtHevaK0fOw4=;
+        b=WcRarjxcZcb6dsZ0Cop0/Tbo5itXimEBhj807CdfRG8vG8oPtI7cqqWBq5WKFlhr17
+         BsQoLjAROzICGHkvfsNKzv+FHbQ26m5hCgH8v4oJzgrSN7giF4QCtigDCQGoqNanpiby
+         1SWgplQWY9b2BvBZQWtJaKx7+XmbDwlgNMrm2YdW9mUf8y1f3oTzkzVbTxoG9v8xjoyb
+         c6CVtqReR/7Jngpgzb8OYi8qhfnOr6QzFr9e8TsCg3lR3YwWNmVaKTYd62hpk6tFOGx7
+         v+XKiynhpL1vj/vJqh/GgsJsZZ4Hm/QoTQIbFqz9j7ZYJRkP56Z3+dY2Di+co3zON/+X
+         8INw==
+X-Gm-Message-State: AOJu0YweVo7Ak0pYkqfB2ygxjvBAn1iiNDQ76TgU/F3+wKgtqHTUyw1U
+        rewAjpd3qcgU9f8LTEf32Vu3p+brIA2vZeLhmyIOBU+x+dd0hCqC5zvhYO8u1l9iM02nPLzUGVh
+        2uINWuZxf11q2FxiCYkMZ7pqv
+X-Received: by 2002:a17:907:6d1d:b0:9b9:e641:a978 with SMTP id sa29-20020a1709076d1d00b009b9e641a978mr14820642ejc.2.1696933743930;
+        Tue, 10 Oct 2023 03:29:03 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG8HfWaJOeH6Nh0P9k0lFK1hWlbSTQAqhc5rATKQ4TBHmB5waU8bEDQP4QKKK6bkaoktpmWyg==
+X-Received: by 2002:a17:907:6d1d:b0:9b9:e641:a978 with SMTP id sa29-20020a1709076d1d00b009b9e641a978mr14820617ejc.2.1696933743609;
+        Tue, 10 Oct 2023 03:29:03 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-228-243.dyn.eolo.it. [146.241.228.243])
+        by smtp.gmail.com with ESMTPSA id ci24-20020a170906c35800b009a2235ed496sm8347645ejb.141.2023.10.10.03.29.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 03:29:03 -0700 (PDT)
+Message-ID: <2e7ee087b33fba7e907c76e60d9eaed1807714e2.camel@redhat.com>
+Subject: Re: [PATCH net 3/4] selftests: openvswitch: Skip drop testing on
+ older kernels
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Aaron Conole <aconole@redhat.com>, netdev@vger.kernel.org
+Cc:     dev@openvswitch.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Pravin B Shelar <pshelar@ovn.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Adrian Moreno <amorenoz@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>
+Date:   Tue, 10 Oct 2023 12:29:01 +0200
+In-Reply-To: <20231006151258.983906-4-aconole@redhat.com>
+References: <20231006151258.983906-1-aconole@redhat.com>
+         <20231006151258.983906-4-aconole@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 2023-10-06 at 11:12 -0400, Aaron Conole wrote:
+> Kernels that don't have support for openvswitch drop reasons also
+> won't have the drop counter reasons, so we should skip the test
+> completely.  It previously wasn't possible to build a test case
+> for this without polluting the datapath, so we introduce a mechanism
+> to clear all the flows from a datapath allowing us to test for
+> explicit drop actions, and then clear the flows to build the
+> original test case.
+>=20
+> Fixes: 4242029164d6 ("selftests: openvswitch: add explicit drop testcase"=
+)
+> Signed-off-by: Aaron Conole <aconole@redhat.com>
+> ---
+>  .../selftests/net/openvswitch/openvswitch.sh  | 17 ++++++++++
+>  .../selftests/net/openvswitch/ovs-dpctl.py    | 34 +++++++++++++++++++
+>  2 files changed, 51 insertions(+)
+>=20
+> diff --git a/tools/testing/selftests/net/openvswitch/openvswitch.sh b/too=
+ls/testing/selftests/net/openvswitch/openvswitch.sh
+> index 2a0112be7ead5..ca7090e71bff2 100755
+> --- a/tools/testing/selftests/net/openvswitch/openvswitch.sh
+> +++ b/tools/testing/selftests/net/openvswitch/openvswitch.sh
+> @@ -144,6 +144,12 @@ ovs_add_flow () {
+>  	return 0
+>  }
+> =20
+> +ovs_del_flows () {
+> +	info "Deleting all flows from DP: sbx:$1 br:$2"
+> +	ovs_sbx "$1" python3 $ovs_base/ovs-dpctl.py del-flows "$2"
+> +        return 0
 
-> 
-> >> +		chan[chan_index].differential = fwnode_property_read_bool(child, "bipolar");  
-> > 
-> > bipolar doesn't normally == differential. 
-> > You can have unipolar differential (just that you can't get a negative answer)
-> > Perhaps just a terminology thing?
-> >  
-> 
-> This device supports only differential channels. Here, the differential flag is used to show
-> if bipolar coding should be used.
-
-I'm confused - you are setting differential in the iio_chan_spec with this.
-That affects the sysfs naming and a bunch of other stuff - not merely
-the bipolar nature of the channel.
+The chunk above mixes whitespaces and tabs for indenting, please be
+consistent.
 
 
-> 
-> 
-> >> +	st->info = device_get_match_data(dev);
-> >> +	if (!st->info)
-> >> +		return -ENODEV;  
-> > This works for the cases of DT and ACPI but not for anyone just
-> > using the spi_device_id table. 
-> > There is spi_device_get_match_data() to cover all options.
-> >   
-> I could not find the spi_device_get_match_data() function in the repo.
-> It appears however as a suggestion from Andy Shevchenko in a thread:
-> https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2382960.html
->  Is this it? 
+Thanks!
 
-ah. I got the name wrong.
-spi_get_device_match_data()
+Paolo
 
-
-https://elixir.bootlin.com/linux/v6.6-rc5/source/drivers/spi/spi.c#L364
