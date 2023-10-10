@@ -2,278 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A237C028D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 19:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 836287C029D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 19:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233912AbjJJR11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 13:27:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60422 "EHLO
+        id S234076AbjJJR1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 13:27:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232417AbjJJR10 (ORCPT
+        with ESMTP id S233965AbjJJR1h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 13:27:26 -0400
-Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 668B297
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 10:27:22 -0700 (PDT)
-Received: by mail-vk1-xa2e.google.com with SMTP id 71dfb90a1353d-49dc95be8c3so1975252e0c.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 10:27:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696958841; x=1697563641; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=J/ryk5OUH4AM1D4cLx9s4u47FmouWQaJBw6IMdAQ1wA=;
-        b=mlJ3UDweYGp3kJO3/fORmgscGaeJNwjd49EFXEO5ohxi2ccb/sgAy5iO8MNQrqZVzb
-         h7p9IrJBnknH9NG9vsR31LmmXuxBs5K9gD6Jj5ss4Enj0z96CLsaj7nUsibEDRmGTJ1H
-         RGR/j5Zp6KlzPcPotgq1t+PWk+S8okmKArHp7BhfekCUp8L0HsDiVmnHgjXgSJr7UNfK
-         y/MI/4exwsPuCKjThsKGzlZer0bQZbzQ2ffgq/smslnVY8g6KufvDWCXs/m/tYoCyX63
-         xQh5mHHKbpqoj+y+jAbh3hrOY3SkDjD0mOv2rhSu/Nx+xKPIGA9iP3fRhSXKf/JG7Zjx
-         oA+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696958841; x=1697563641;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=J/ryk5OUH4AM1D4cLx9s4u47FmouWQaJBw6IMdAQ1wA=;
-        b=xNB39XoHSBQX/oV8ycfkGJ/omZNM/LFdawnktHTqg3wDKAyVUr1YoB0XOmbJOEUcxN
-         EXU0OmMANbL9qRpln5rzRSb/EkAMSDPnqSl4yGTJh8hDxgM6D1ZvmZeVxzgtavzGPtJw
-         mS6CUTJ6sLBtiX8lriAH0nKtQEgJi94k1ld5g/wCaXMiLDEt8y5WAK0go13oyZw71/Lp
-         bNH2b3wRIw78ETSfnzdZ7ST8+cDq+iAYQ8ZJvOsuG0Ny2oyVBqE5XXK83VUyHc6ytuP9
-         w8lKYO0N5orTDc9ObBQ3F8W+SfzPhQwEqWtv0dtDcTUcVohtk1Ix96P2rpJ6Sh56HH97
-         Lbqg==
-X-Gm-Message-State: AOJu0YzASR8Bw5ZeXmPAnUTFxlNI/B4IbJeKEHiCtY8FNHHTauxyiSo1
-        SrFxgRVVtLh46QshRcadzP5fBKRr93dsWcp7Xc+cdg==
-X-Google-Smtp-Source: AGHT+IGQ7+ge5xOlOu9T4VQAyXg18tRYbKAMUD/SkIviX/U8Fa2CPfi0xJtpJo6ZSd8ytKLK7Rrzn9AGSl3GYgq/wS4=
-X-Received: by 2002:a1f:4887:0:b0:493:3491:ce89 with SMTP id
- v129-20020a1f4887000000b004933491ce89mr11750079vka.14.1696958841249; Tue, 10
- Oct 2023 10:27:21 -0700 (PDT)
+        Tue, 10 Oct 2023 13:27:37 -0400
+Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B83B6;
+        Tue, 10 Oct 2023 10:27:34 -0700 (PDT)
+Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+        by mx.skole.hr (mx.skole.hr) with ESMTP id 288B885166;
+        Tue, 10 Oct 2023 19:27:31 +0200 (CEST)
+From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Subject: [PATCH v6 0/9] Initial Marvell PXA1908 support
+Date:   Tue, 10 Oct 2023 19:27:17 +0200
+Message-Id: <20231010-pxa1908-lkml-v6-0-b2fe09240cf8@skole.hr>
 MIME-Version: 1.0
-References: <20231009130111.200710898@linuxfoundation.org>
-In-Reply-To: <20231009130111.200710898@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 10 Oct 2023 22:57:09 +0530
-Message-ID: <CA+G9fYuVxDoSZG=hqYR=Jd=7VYP=7KwbuinB86TLj5H7jy-1EQ@mail.gmail.com>
-Subject: Re: [PATCH 5.15 00/75] 5.15.135-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAHWJJWUC/4XOQW7DIBCF4atErIs1MGAgq96j6oLApKZx4ggSl
+ Cry3UsiVXW96XJG+n69OyuUExW23dxZpppKmk7t6F82LAz+9EE8xXYzCRLBAvLzzQsHlo+H48h
+ 7i0A2eqWDYY2cM+3T7Zl7e2/3kMplyl/PesXH9yek/oYqcuCWlN0Hjwacey2HaaRuyOzRqfLXG
+ mlELx24rgcUXPB4/aTumNraqaawgmIJhRQASnZSaNT/SbWca1ZzVZsbdmhNNLhTWq6sXlghV1Y
+ 363XUwqEhQrWw8zx/A+wbGIWSAQAA
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Haojian Zhuang <haojian.zhuang@linaro.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6106;
+ i=duje.mihanovic@skole.hr; h=from:subject:message-id;
+ bh=T3rpe82zRF01j6D68dx4WclHnTLGTWjakaB4Y9bJpKo=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlJYl4Evmb1SA8NsudpzA1GlmN6aqcK+wD3iy3I
+ 28kejfxU76JAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZSWJeAAKCRCaEZ6wQi2W
+ 4d9qEACnEDJWMMgThh7WXvHb0e/yWwWmkNkF1VyRowtA4hwtTLJU6D78nHV8Ud8gP2ZeHcWwd9h
+ eYCe+Ka/H5pP8NEI8Spu/d3aLlia5pUdkKWKuJJyI45v3WIZmh6uqW+vzaKeopB/WwPmmSIo8oL
+ tq6XcdumM2vDz0ThGBzJHSQN/q5dXgvwY8zwLlMKRzgTjG0Dfal6jhlRjuQ0H2jRSdKQqUA8rbH
+ EBu7Pk1/6WmV84x3s7qSkXkgJc617uYGyrQLdSblL4MAH+eCxIFh8oz7HJ3HcqbMtwLSbEWrQfd
+ PiWEilY2QKMUy0U+XBkGeoRRj0MgPAltvPJrOo+Aa5vUPKaH8uVARtsfnclgklup7Iymi+V1KoY
+ 639Vz9jl2ufhM5wo2qTtx4z9TBx6PBS1CrEniJrArHzJpJZb+jcYbsoGFLP8Sjg5oGT/HDM0HQ4
+ m+97sTdltY+CaRZqd9lyxIGtKRlQ2SH3ZFYL1eIBRAeltc2u5rZ8G3drTmLL7sMmIMMyRkwGUTt
+ HKezowMYdCgUiCJ8VeLGAK32MJIZa4JezyFNXofGd+8PigoT4sXy88G0VslWVsdXt7KhHYukzqt
+ PUtlmw8XHNhJntR4QoDDa6YZS7yIYgAtmiavmDSIoe163htP/xzkAT27JVoVfcvtnwYCzDQrLlL
+ LqMt9bJ1BTwvdAw==
+X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
+ fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Oct 2023 at 18:55, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.15.135 release.
-> There are 75 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 11 Oct 2023 13:00:55 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.15.135-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.15.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hello,
+
+This series adds initial support for the Marvell PXA1908 SoC and
+"samsung,coreprimevelte", a smartphone using the SoC.
+
+USB works and the phone can boot a rootfs from an SD card, but there are
+some warnings in the dmesg:
+
+During SMP initialization:
+[    0.006519] CPU features: SANITY CHECK: Unexpected variation in SYS_CNTFRQ_EL0. Boot CPU: 0x000000018cba80, CPU1: 0x00000000000000
+[    0.006542] CPU features: Unsupported CPU feature variation detected.
+[    0.006589] CPU1: Booted secondary processor 0x0000000001 [0x410fd032]
+[    0.010710] Detected VIPT I-cache on CPU2
+[    0.010716] CPU features: SANITY CHECK: Unexpected variation in SYS_CNTFRQ_EL0. Boot CPU: 0x000000018cba80, CPU2: 0x00000000000000
+[    0.010758] CPU2: Booted secondary processor 0x0000000002 [0x410fd032]
+[    0.014849] Detected VIPT I-cache on CPU3
+[    0.014855] CPU features: SANITY CHECK: Unexpected variation in SYS_CNTFRQ_EL0. Boot CPU: 0x000000018cba80, CPU3: 0x00000000000000
+[    0.014895] CPU3: Booted secondary processor 0x0000000003 [0x410fd032]
+
+SMMU probing fails:
+[    0.101798] arm-smmu c0010000.iommu: probing hardware configuration...
+[    0.101809] arm-smmu c0010000.iommu: SMMUv1 with:
+[    0.101816] arm-smmu c0010000.iommu:         no translation support!
+
+On Samsung's PXA1908 phones, the bootloader does not start the ARM
+system timer, and my temporary solution (which isn't present in this
+series) was to put the code for starting the timer in the clock driver.
+Would this hack be accepted upstream in the form of a platform or
+clocksource driver such as drivers/clocksource/timer-mediatek-cpux.c?
+
+A 3.14 based Marvell tree is available on GitHub
+acorn-marvell/brillo_pxa_kernel, and a Samsung one on GitHub
+CoderCharmander/g361f-kernel.
+
+Andreas Färber attempted to upstream support for this SoC in 2017:
+https://lore.kernel.org/lkml/20170222022929.10540-1-afaerber@suse.de/
+
+Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+
+Changes in v6:
+- Address maintainer comments:
+  - Add "marvell,pxa1908-padconf" binding to pinctrl-single driver
+- Drop GPIO patch as it's been pulled
+- Update trailers
+- Rebase on v6.6-rc5
+- Link to v5: https://lore.kernel.org/r/20230812-pxa1908-lkml-v5-0-a5d51937ee34@skole.hr
+
+Changes in v5:
+- Address maintainer comments:
+  - Move *_NR_CLKS to clock driver from dt binding file
+- Allocate correct number of clocks for each block instead of blindly
+  allocating 50 for each
+- Link to v4: https://lore.kernel.org/r/20230807-pxa1908-lkml-v4-0-cb387d73b452@skole.hr
+
+Changes in v4:
+- Address maintainer comments:
+  - Relicense clock binding file to BSD-2
+- Add pinctrl-names to SD card node
+- Add vgic registers to GIC node
+- Rebase on v6.5-rc5
+- Link to v3: https://lore.kernel.org/r/20230804-pxa1908-lkml-v3-0-8e48fca37099@skole.hr
+
+Changes in v3:
+- Address maintainer comments:
+  - Drop GPIO dynamic allocation patch
+  - Move clock register offsets into driver (instead of bindings file)
+  - Add missing Tested-by trailer to u32_fract patch
+  - Move SoC binding to arm/mrvl/mrvl.yaml
+- Add serial0 alias and stdout-path to board dts to enable UART
+  debugging
+- Rebase on v6.5-rc4
+- Link to v2: https://lore.kernel.org/r/20230727162909.6031-1-duje.mihanovic@skole.hr
+
+Changes in v2:
+- Remove earlycon patch as it's been merged into tty-next
+- Address maintainer comments:
+  - Clarify GPIO regressions on older PXA platforms
+  - Add Fixes tag to commit disabling GPIO pinctrl calls for this SoC
+  - Add missing includes to clock driver
+  - Clock driver uses HZ_PER_MHZ, u32_fract and GENMASK
+  - Dual license clock bindings
+  - Change clock IDs to decimal
+  - Fix underscores in dt node names
+  - Move chosen node to top of board dts
+  - Clean up documentation
+  - Reorder commits
+  - Drop pxa,rev-id
+- Rename muic-i2c to i2c-muic
+- Reword some commits
+- Move framebuffer node to chosen
+- Add aliases for mmc nodes
+- Rebase on v6.5-rc3
+- Link to v1: https://lore.kernel.org/r/20230721210042.21535-1-duje.mihanovic@skole.hr
+
+---
+Andy Shevchenko (1):
+      clk: mmp: Switch to use struct u32_fract instead of custom one
+
+Duje Mihanović (8):
+      dt-bindings: pinctrl: pinctrl-single: add marvell,pxa1908-padconf compatible
+      pinctrl: single: add marvell,pxa1908-padconf compatible
+      dt-bindings: clock: Add Marvell PXA1908 clock bindings
+      clk: mmp: Add Marvell PXA1908 clock driver
+      dt-bindings: marvell: Document PXA1908 SoC
+      arm64: Kconfig.platforms: Add config for Marvell PXA1908 platform
+      arm64: dts: Add DTS for Marvell PXA1908 and samsung,coreprimevelte
+      MAINTAINERS: add myself as Marvell PXA1908 maintainer
+
+ .../devicetree/bindings/arm/mrvl/mrvl.yaml         |   5 +
+ .../devicetree/bindings/clock/marvell,pxa1908.yaml |  48 +++
+ .../bindings/pinctrl/pinctrl-single.yaml           |   4 +
+ MAINTAINERS                                        |   9 +
+ arch/arm64/Kconfig.platforms                       |  11 +
+ arch/arm64/boot/dts/marvell/Makefile               |   3 +
+ .../dts/marvell/pxa1908-samsung-coreprimevelte.dts | 333 +++++++++++++++++++++
+ arch/arm64/boot/dts/marvell/pxa1908.dtsi           | 295 ++++++++++++++++++
+ drivers/clk/mmp/Makefile                           |   2 +-
+ drivers/clk/mmp/clk-frac.c                         |  57 ++--
+ drivers/clk/mmp/clk-of-mmp2.c                      |  26 +-
+ drivers/clk/mmp/clk-of-pxa168.c                    |   4 +-
+ drivers/clk/mmp/clk-of-pxa1908.c                   | 328 ++++++++++++++++++++
+ drivers/clk/mmp/clk-of-pxa1928.c                   |   6 +-
+ drivers/clk/mmp/clk-of-pxa910.c                    |   4 +-
+ drivers/clk/mmp/clk.h                              |  10 +-
+ drivers/pinctrl/pinctrl-single.c                   |   1 +
+ include/dt-bindings/clock/marvell,pxa1908.h        |  88 ++++++
+ 18 files changed, 1177 insertions(+), 57 deletions(-)
+---
+base-commit: 94f6f0550c625fab1f373bb86a6669b45e9748b3
+change-id: 20230803-pxa1908-lkml-6830e8da45c7
+
+Best regards,
+-- 
+Duje Mihanović <duje.mihanovic@skole.hr>
 
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-NOTE:
-Following kernel warning noticed on qemu-arm64 with stable-rc 5.15.135-rc1.
-This is hard to reproduce.
-
-Same issue was reported on 6.4.5-rc1 and discussed in the thread,
- - https://lore.kernel.org/lkml/CA+G9fYvgy22wiY=3Dc3wLOrCM6o33636abhtEynXhJ=
-kqxJh4ca0A@mail.gmail.com/
-
-Warning log:
-<4>[   14.987937] ------------[ cut here ]------------
-<4>[   14.990732] WARNING: CPU: 1 PID: 195 at mm/kfence/core.c:936
-__kfence_free+0x84/0xb4
-<4>[   14.993264] Modules linked in: ip_tables x_tables
-<4>[   14.995667] CPU: 1 PID: 195 Comm: mount Not tainted 5.15.135-rc1 #1
-<4>[   14.996447] Hardware name: linux,dummy-virt (DT)
-<4>[   14.997262] pstate: 80400009 (Nzcv daif +PAN -UAO -TCO -DIT
--SSBS BTYPE=3D--)
-<4>[   14.998008] pc : __kfence_free+0x84/0xb4
-<4>[   14.998410] lr : __slab_free+0x468/0x4a0
-
-Configs enabled:
-CONFIG_HAVE_ARCH_KFENCE=3Dy
-CONFIG_KFENCE=3Dy
-CONFIG_KFENCE_SAMPLE_INTERVAL=3D100
-CONFIG_KFENCE_NUM_OBJECTS=3D255
-CONFIG_KFENCE_STRESS_TEST_FAULTS=3D0
-
-Links:
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5=
-.15.134-76-g6b29ebf84608/testrun/20386601/suite/log-parser-boot/test/check-=
-kernel-exception/log
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5=
-.15.134-76-g6b29ebf84608/testrun/20386601/suite/log-parser-boot/tests/
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2WWqfe5nx37NjiVzC=
-Xq7ZjKeOtF/config
-
-## Build
-* kernel: 5.15.135-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.15.y
-* git commit: 6b29ebf8460817018f98911286d0f8b8191d9c9c
-* git describe: v5.15.134-76-g6b29ebf84608
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15=
-.134-76-g6b29ebf84608
-
-## Test Regressions (compared to v5.15.134)
-
-## Metric Regressions (compared to v5.15.134)
-
-## Test Fixes (compared to v5.15.134)
-
-## Metric Fixes (compared to v5.15.134)
-
-## Test result summary
-total: 89616, pass: 71074, fail: 2530, skip: 15928, xfail: 84
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 116 total, 116 passed, 0 failed
-* arm64: 44 total, 44 passed, 0 failed
-* i386: 35 total, 34 passed, 1 failed
-* mips: 26 total, 25 passed, 1 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 26 total, 25 passed, 1 failed
-* riscv: 11 total, 11 passed, 0 failed
-* s390: 12 total, 11 passed, 1 failed
-* sh: 14 total, 12 passed, 2 failed
-* sparc: 7 total, 7 passed, 0 failed
-* x86_64: 37 total, 37 passed, 0 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* perf
-* rcutorture
-
---
-Linaro LKFT
-https://lkft.linaro.org
