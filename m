@@ -2,176 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57A597BF9BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 13:28:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 639CC7BF9C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 13:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231347AbjJJL2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 07:28:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57900 "EHLO
+        id S231199AbjJJLcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 07:32:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229921AbjJJL2u (ORCPT
+        with ESMTP id S230145AbjJJLb6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 07:28:50 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9745094;
-        Tue, 10 Oct 2023 04:28:48 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-77428510fe7so457800185a.1;
-        Tue, 10 Oct 2023 04:28:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696937328; x=1697542128; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vcSSo08SAPJZ3ThH/EN9NJsskGHvIldiErOVapxxF7E=;
-        b=A8i8mN4V49cnnglJg64WrxbR/Ipn2dPnMDSEmX5OnS2Vji7XhFHUsqStQ0D+yCVqvm
-         xReHikr4Qng98tAgLf06g6uRFUnfeLxaJhtKCRNyPJHy5iuLaoy7tvd54f4YkFevINTd
-         +Qp477895T2s/dw7zPTcJdr3Q2Hc2tzTXc3jsSc8igEqiU0Difcbof9Sd2WV38YrmzBw
-         7knrd9wc8yd0mMMHD8IxWbiODYHJI24qpH9hKwhHEGpg83bKEdep1iokWsvO2JZvuN4Y
-         xgs1ePqFPYSr93f72ezazsVzDrL3W+e68zvJIIMlRLx+fq1/YpFJrSeYJOZBEBg1gwa7
-         fAlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696937328; x=1697542128;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vcSSo08SAPJZ3ThH/EN9NJsskGHvIldiErOVapxxF7E=;
-        b=UivAvixwaSjTf7vXX1LKx0TlsRcTHyK9UKVoV81c8Itvxc4p7CLXwhcdmATj3G1S5s
-         OyNKw0jLSfn4/ublJlx4XWYE3KOw1uhE9yTwkMLFiwWjkpvCB/WqIcqogzk53tT/87iJ
-         raxoQRsRvo1Zt2Y0tA24tpwMY1oaGf7QlBf/3avcAe9gzpzpaGVDdAQ2JNtBbbs0qmMN
-         M3ozkFki+dD4l0zf7ubeEedUJFVlp6TkJ1AVBXycJ7QBDtAmjUeRmKLp2iE+enT/RwT9
-         TdrKjWFeH7DQ+0xglLm0NIlaz4f3knjFACvFXk3QNN6lvu3n/0DdScFGF+6HYlchaD8B
-         LErA==
-X-Gm-Message-State: AOJu0YxNER2EKJrD4RWPO1gnie159PxONgjclJKT7SZdTmYpEdD/itdG
-        yLZTRVsJn4epoCwpeAEPfiDwRhnkRLdMQrYCs2A=
-X-Google-Smtp-Source: AGHT+IGvbOqAtyEESrFFsNZv65ts1R9QNQ2A/2PCFJ2xf9pzGp69I+a1slYjW05g3/woRYo5m2hvYKa+uV53A0G0H9Y=
-X-Received: by 2002:a05:620a:410b:b0:773:f6ea:1f59 with SMTP id
- j11-20020a05620a410b00b00773f6ea1f59mr18229652qko.16.1696937327676; Tue, 10
- Oct 2023 04:28:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231010105021.57fa4379@canb.auug.org.au> <20231010111436.46f64716@canb.auug.org.au>
-In-Reply-To: <20231010111436.46f64716@canb.auug.org.au>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Tue, 10 Oct 2023 14:28:36 +0300
-Message-ID: <CAOQ4uxivzEgMxqQkVVH7QfUsq7Dji9KOMcuZAWxKqwXd+MywAg@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the vfs-brauner tree with the
- overlayfs tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Alexander Larsson <alexl@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Wedson Almeida Filho <walmeida@microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 10 Oct 2023 07:31:58 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0617B94
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 04:31:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696937517; x=1728473517;
+  h=date:from:to:cc:subject:message-id;
+  bh=tNt1PAbuhRjpc4lWavDHe92vl1Otp08Do6gTbfMfGTI=;
+  b=RqJwUi2a6S8lyAAfC85++vf8dT2TVzypsezlZAK2ASta1bL4xhzlDGKx
+   dGXQfXnrXN+3UDagCNGywW0yduOXSUmFOsxH65TPzBWFCY03LhC/QnOAW
+   tY+j4q4L6x82fAtRBy+60P8fW3ehzJwlRuxYpV5h9OqO+1uFyuN0GEHSI
+   PG73GdFAjpy7RJJ6OYhvrU/LGuMzy8O3LGwRUZ4qR+hQeb6Ht81NpuYiz
+   hMmTgzKeQSjsFd1ZrktjZekcNgvxnk0XH4CTXQcJnk8mIJ4uZl8yIcW+o
+   x+NaXcnlGcjOn5+gYoLf4dTeYHnr1mJBTnIBxdV0DcsTMMckEEWewGQ/2
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="470634198"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="470634198"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 04:31:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="869653066"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="869653066"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 10 Oct 2023 04:31:55 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qqAxt-0000Kn-25;
+        Tue, 10 Oct 2023 11:31:53 +0000
+Date:   Tue, 10 Oct 2023 19:29:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/percpu] BUILD SUCCESS
+ a3c7a64f9b764e200338130253dfe4488db03f4f
+Message-ID: <202310101947.gTSXmEnC-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 3:14=E2=80=AFAM Stephen Rothwell <sfr@canb.auug.org=
-.au> wrote:
->
-> Hi all,
->
-> On Tue, 10 Oct 2023 10:50:21 +1100 Stephen Rothwell <sfr@canb.auug.org.au=
-> wrote:
-> >
-> > Today's linux-next merge of the vfs-brauner tree got a conflict in:
-> >
-> >   fs/overlayfs/super.c
-> >
-> > between commit:
-> >
-> >   1e97d6e67406 ("ovl: Move xattr support to new xattrs.c file")
-> >
-> > from the overlayfs tree and commit:
-> >
-> >   3f644c1cd7b5 ("overlayfs: move xattr tables to .rodata")
-> >
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/percpu
+branch HEAD: a3c7a64f9b764e200338130253dfe4488db03f4f  x86/percpu: Disable named address spaces for KASAN
 
-Doh! I should've notice that when I acked the constify patch.
+Unverified Warning (likely false positive, please contact us if interested):
 
-> > from the vfs-brauner tree.
-> >
-> > I fixed it up (I used the former version of this file and applied the
-> > following merge fix patch) and can carry the fix as necessary. This
-> > is now fixed as far as linux-next is concerned, but any non trivial
-> > conflicts should be mentioned to your upstream maintainer when your tre=
-e
-> > is submitted for merging.  You may also want to consider cooperating
-> > with the maintainer of the conflicting tree to minimise any particularl=
-y
-> > complex conflicts.
->
-> Actually needs this:
->
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Tue, 10 Oct 2023 10:47:16 +1100
-> Subject: [PATCH] fix up for "ovl: Move xattr support to new xattrs.c file=
-"
->
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  fs/overlayfs/overlayfs.h | 2 +-
->  fs/overlayfs/xattrs.c    | 6 +++---
->  2 files changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/fs/overlayfs/overlayfs.h b/fs/overlayfs/overlayfs.h
-> index 620d89ba4b6e..ca88b2636a57 100644
-> --- a/fs/overlayfs/overlayfs.h
-> +++ b/fs/overlayfs/overlayfs.h
-> @@ -864,7 +864,7 @@ static inline bool ovl_force_readonly(struct ovl_fs *=
-ofs)
->
->  /* xattr.c */
->
-> -const struct xattr_handler **ovl_xattr_handlers(struct ovl_fs *ofs);
-> +const struct xattr_handler * const *ovl_xattr_handlers(struct ovl_fs *of=
-s);
->  int ovl_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
->                 struct iattr *attr);
->  int ovl_getattr(struct mnt_idmap *idmap, const struct path *path,
-> diff --git a/fs/overlayfs/xattrs.c b/fs/overlayfs/xattrs.c
-> index 1b16b0abdf91..383978e4663c 100644
-> --- a/fs/overlayfs/xattrs.c
-> +++ b/fs/overlayfs/xattrs.c
-> @@ -251,19 +251,19 @@ static const struct xattr_handler ovl_other_xattr_h=
-andler =3D {
->         .set =3D ovl_other_xattr_set,
->  };
->
-> -static const struct xattr_handler *ovl_trusted_xattr_handlers[] =3D {
-> +static const struct xattr_handler * const ovl_trusted_xattr_handlers[] =
-=3D {
->         &ovl_own_trusted_xattr_handler,
->         &ovl_other_xattr_handler,
->         NULL
->  };
->
-> -static const struct xattr_handler *ovl_user_xattr_handlers[] =3D {
-> +static const struct xattr_handler * const ovl_user_xattr_handlers[] =3D =
-{
->         &ovl_own_user_xattr_handler,
->         &ovl_other_xattr_handler,
->         NULL
->  };
->
-> -const struct xattr_handler **ovl_xattr_handlers(struct ovl_fs *ofs)
-> +const struct xattr_handler * const *ovl_xattr_handlers(struct ovl_fs *of=
-s)
->  {
->         return ofs->config.userxattr ? ovl_user_xattr_handlers :
->                 ovl_trusted_xattr_handlers;
-> --
+arch/x86/include/asm/desc.h:197:32: sparse: sparse: too many errors
+arch/x86/include/asm/preempt.h:104:16: sparse:    int preempt_offset
+arch/x86/include/asm/tlbflush.h:262:45: sparse: sparse: too many errors
+arch/x86/kernel/tsc_sync.c:100:33: sparse: sparse: too many errors
+include/linux/context_tracking_state.h:92:16: sparse: sparse: too many errors
+include/linux/percpu-refcount.h:205:17: sparse: sparse: too many errors
+include/linux/sched/mm.h:415:23: sparse: sparse: too many errors
+include/linux/seqlock.h:269:9: sparse: sparse: too many errors
+include/linux/u64_stats_sync.h:145:9: sparse: sparse: too many errors
+kernel/bpf/percpu_freelist.c:127:9: sparse: sparse: too many errors
+kernel/locking/osq_lock.c:94:31: sparse: sparse: too many errors
+lib/flex_proportions.c:73:9: sparse: sparse: too many errors
 
-I will rebase overlayfs-next over Christian's vfs.xattr branch and
-squash your fix.
+Warning ids grouped by kconfigs:
 
-Thanks!
-Amir.
+gcc_recent_errors
+|-- i386-randconfig-063-20231005
+|   |-- arch-x86-include-asm-desc.h:sparse:sparse:too-many-errors
+|   |-- arch-x86-include-asm-tlbflush.h:sparse:sparse:too-many-errors
+|   |-- include-linux-context_tracking_state.h:sparse:sparse:too-many-errors
+|   |-- include-linux-percpu-refcount.h:sparse:sparse:too-many-errors
+|   |-- include-linux-sched-mm.h:sparse:sparse:too-many-errors
+|   |-- include-linux-seqlock.h:sparse:sparse:too-many-errors
+|   |-- include-linux-u64_stats_sync.h:sparse:sparse:too-many-errors
+|   |-- kernel-bpf-percpu_freelist.c:sparse:sparse:too-many-errors
+|   |-- kernel-locking-osq_lock.c:sparse:sparse:too-many-errors
+|   `-- lib-flex_proportions.c:sparse:sparse:too-many-errors
+`-- x86_64-randconfig-123-20231009
+    |-- arch-x86-include-asm-preempt.h:sparse:int-preempt_offset
+    `-- arch-x86-kernel-tsc_sync.c:sparse:sparse:too-many-errors
+
+elapsed time: 1001m
+
+configs tested: 52
+configs skipped: 102
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20231010   gcc  
+i386         buildonly-randconfig-002-20231010   gcc  
+i386         buildonly-randconfig-003-20231010   gcc  
+i386         buildonly-randconfig-004-20231010   gcc  
+i386         buildonly-randconfig-005-20231010   gcc  
+i386         buildonly-randconfig-006-20231010   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231010   gcc  
+i386                  randconfig-002-20231010   gcc  
+i386                  randconfig-003-20231010   gcc  
+i386                  randconfig-004-20231010   gcc  
+i386                  randconfig-005-20231010   gcc  
+i386                  randconfig-006-20231010   gcc  
+i386                  randconfig-011-20231010   gcc  
+i386                  randconfig-012-20231010   gcc  
+i386                  randconfig-013-20231010   gcc  
+i386                  randconfig-014-20231010   gcc  
+i386                  randconfig-015-20231010   gcc  
+i386                  randconfig-016-20231010   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20231010   gcc  
+x86_64       buildonly-randconfig-002-20231010   gcc  
+x86_64       buildonly-randconfig-003-20231010   gcc  
+x86_64       buildonly-randconfig-004-20231010   gcc  
+x86_64       buildonly-randconfig-005-20231010   gcc  
+x86_64       buildonly-randconfig-006-20231010   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231010   gcc  
+x86_64                randconfig-002-20231010   gcc  
+x86_64                randconfig-003-20231010   gcc  
+x86_64                randconfig-004-20231010   gcc  
+x86_64                randconfig-005-20231010   gcc  
+x86_64                randconfig-006-20231010   gcc  
+x86_64                randconfig-011-20231010   gcc  
+x86_64                randconfig-012-20231010   gcc  
+x86_64                randconfig-013-20231010   gcc  
+x86_64                randconfig-014-20231010   gcc  
+x86_64                randconfig-015-20231010   gcc  
+x86_64                randconfig-016-20231010   gcc  
+x86_64                randconfig-071-20231010   gcc  
+x86_64                randconfig-072-20231010   gcc  
+x86_64                randconfig-073-20231010   gcc  
+x86_64                randconfig-074-20231010   gcc  
+x86_64                randconfig-075-20231010   gcc  
+x86_64                randconfig-076-20231010   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
