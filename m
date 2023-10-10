@@ -2,114 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 027D27C005A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:26:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C56F17C005C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233320AbjJJP0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 11:26:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48956 "EHLO
+        id S233026AbjJJP1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 11:27:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233249AbjJJP0C (ORCPT
+        with ESMTP id S229955AbjJJP1U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 11:26:02 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B66AF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:26:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52AF7C433C8;
-        Tue, 10 Oct 2023 15:25:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696951560;
-        bh=YodDTkaZ+bcycK00pqPePN0/QiKatfmhX9P+LMDLFh4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ciJ9Kh17CIbzsZylz9Dhiv6Ic/cVCJqmhTy+BBoVtfI8Cq2soIFi/cdmTU2nP5Ali
-         vFevqR3JKFBHM3dPd7Yjp6Fgr78K7+ZW91WBFidPz16aEv6054jmYAfpnLUEXBqn6I
-         biD0Ujni2GK+/Vt2ilLkU5DGIDbwREo3BpRuWCTdBG2YQLaRKepC907LBuUNUAAA/V
-         1ni/Upg+byAdumPHsEEJMu7YgpWhFbHPkEFI72rBl5oMhGphoAKw4Xch9YrgBmUJ+d
-         hsRwrpOO7T2Z5LOtnR2fn+cqWFPFeAU0BSDM/9BfhHweYHwoxXbypQYlqdzaw9Gniq
-         /C+0yQquSzcKw==
-Date:   Tue, 10 Oct 2023 16:25:55 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Ante Knezic <ante.knezic@helmholz.de>
-Cc:     netdev@vger.kernel.org, woojung.huh@microchip.com, andrew@lunn.ch,
-        f.fainelli@gmail.com, olteanv@gmail.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, marex@denx.de, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH net-next 2/2] dt-bindings: net: microchip,ksz: document
- microchip,rmii-clk-internal
-Message-ID: <20231010-unwired-trench-c7a467118879@spud>
-References: <cover.1693482665.git.ante.knezic@helmholz.de>
- <df8490e3a39a6daa66c5a0dd266d9f4a388dfe7b.1693482665.git.ante.knezic@helmholz.de>
+        Tue, 10 Oct 2023 11:27:20 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A3A93;
+        Tue, 10 Oct 2023 08:27:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=xGw5JKNGroV+nJlTtMZo29gp/zDG1Ff4DcIXxL9FLSg=; b=e5cMpPzV0p2fC8a6LvrbQnL+CV
+        umzdLmpEaEjXgawmLVM4bPQhb3wweNa3SWdHUb+Y4RWf0MJyW+C41v73dZWMFy/1zoIKWSnLSRNaV
+        cHwLlUKg1uUfy6N9Y52A6TM8B5J5tpxV+aA+hbV7g6WPeindOmuzdX9oR3oiIQm65nQfDwd9b5yW8
+        f88T3T63gJdcU5sraWh+bUN7R2NQLnRK4/Rl9xz+hjp6qa2pYsz1JLz0HrncQ7Gwc3pgSG8npaPVA
+        C/+RB1yNEjhkBiVsddurbhMdY5xCq8RbRSNtL4w8nVr9EgRZ+AYT+QCGLBrk79NzV77XOJHfNjoTA
+        +jqYhLGQ==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qqEdX-0005Xu-4d; Tue, 10 Oct 2023 17:27:07 +0200
+Received: from [178.197.249.27] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qqEdW-00083o-JE; Tue, 10 Oct 2023 17:27:06 +0200
+Subject: Re: [PATCH bpf-next v2] bpf: Detect jumping to reserved code during
+ check_cfg()
+To:     Eduard Zingerman <eddyz87@gmail.com>,
+        Hao Sun <sunhao.th@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231010-jmp-into-reserved-fields-v2-1-3dd5a94d1e21@gmail.com>
+ <a2a875ca30b2629afe6f9804eb43572ac81dcf42.camel@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <edec9c1b-b181-d9b9-02b5-1f2ee4050022@iogearbox.net>
+Date:   Tue, 10 Oct 2023 17:27:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ZK4vbLQNLyDEl6PG"
-Content-Disposition: inline
-In-Reply-To: <df8490e3a39a6daa66c5a0dd266d9f4a388dfe7b.1693482665.git.ante.knezic@helmholz.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <a2a875ca30b2629afe6f9804eb43572ac81dcf42.camel@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27057/Tue Oct 10 09:39:11 2023)
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/10/23 4:46 PM, Eduard Zingerman wrote:
+> On Tue, 2023-10-10 at 14:03 +0200, Hao Sun wrote:
+>> Currently, we don't check if the branch-taken of a jump is reserved code of
+>> ld_imm64. Instead, such a issue is captured in check_ld_imm(). The verifier
+>> gives the following log in such case:
+>>
+>> func#0 @0
+>> 0: R1=ctx(off=0,imm=0) R10=fp0
+>> 0: (18) r4 = 0xffff888103436000       ; R4_w=map_ptr(off=0,ks=4,vs=128,imm=0)
+>> 2: (18) r1 = 0x1d                     ; R1_w=29
+>> 4: (55) if r4 != 0x0 goto pc+4        ; R4_w=map_ptr(off=0,ks=4,vs=128,imm=0)
+>> 5: (1c) w1 -= w1                      ; R1_w=0
+>> 6: (18) r5 = 0x32                     ; R5_w=50
+>> 8: (56) if w5 != 0xfffffff4 goto pc-2
+>> mark_precise: frame0: last_idx 8 first_idx 0 subseq_idx -1
+>> mark_precise: frame0: regs=r5 stack= before 6: (18) r5 = 0x32
+>> 7: R5_w=50
+>> 7: BUG_ld_00
+>> invalid BPF_LD_IMM insn
+>>
+>> Here the verifier rejects the program because it thinks insn at 7 is an
+>> invalid BPF_LD_IMM, but such a error log is not accurate since the issue
+>> is jumping to reserved code not because the program contains invalid insn.
+>> Therefore, make the verifier check the jump target during check_cfg(). For
+>> the same program, the verifier reports the following log:
+>>
+>> func#0 @0
+>> jump to reserved code from insn 8 to 7
+>>
+>> Also adjust existing tests in ld_imm64.c, testing forward/back jump to
+>> reserved code.
+>>
+>> Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+> 
+> Please see a nitpick below.
+> 
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> 
+>> ---
+>> Changes in v2:
+>> - Adjust existing test cases
+>> - Link to v1: https://lore.kernel.org/bpf/20231009-jmp-into-reserved-fields-v1-1-d8006e2ac1f6@gmail.com/
+>> ---
+>>   kernel/bpf/verifier.c                           | 7 +++++++
+>>   tools/testing/selftests/bpf/verifier/ld_imm64.c | 8 +++-----
+>>   2 files changed, 10 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index eed7350e15f4..725ac0b464cf 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -14980,6 +14980,7 @@ static int push_insn(int t, int w, int e, struct bpf_verifier_env *env,
+>>   {
+>>   	int *insn_stack = env->cfg.insn_stack;
+>>   	int *insn_state = env->cfg.insn_state;
+>> +	struct bpf_insn *insns = env->prog->insnsi;
+>>   
+>>   	if (e == FALLTHROUGH && insn_state[t] >= (DISCOVERED | FALLTHROUGH))
+>>   		return DONE_EXPLORING;
+>> @@ -14993,6 +14994,12 @@ static int push_insn(int t, int w, int e, struct bpf_verifier_env *env,
+>>   		return -EINVAL;
+>>   	}
+>>   
+>> +	if (e == BRANCH && insns[w].code == 0) {
+>> +		verbose_linfo(env, t, "%d", t);
+>> +		verbose(env, "jump to reserved code from insn %d to %d\n", t, w);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>>   	if (e == BRANCH) {
+>>   		/* mark branch target for state pruning */
+>>   		mark_prune_point(env, w);
+>> diff --git a/tools/testing/selftests/bpf/verifier/ld_imm64.c b/tools/testing/selftests/bpf/verifier/ld_imm64.c
+>> index f9297900cea6..c34aa78f1877 100644
+>> --- a/tools/testing/selftests/bpf/verifier/ld_imm64.c
+>> +++ b/tools/testing/selftests/bpf/verifier/ld_imm64.c
+>> @@ -9,22 +9,20 @@
+>>   	BPF_MOV64_IMM(BPF_REG_0, 2),
+>>   	BPF_EXIT_INSN(),
+>>   	},
+>> -	.errstr = "invalid BPF_LD_IMM insn",
+>> -	.errstr_unpriv = "R1 pointer comparison",
+>> +	.errstr = "jump to reserved code",
+>>   	.result = REJECT,
+>>   },
+>>   {
+>>   	"test2 ld_imm64",
+>>   	.insns = {
+>> -	BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 0, 1),
+>>   	BPF_LD_IMM64(BPF_REG_0, 0),
+>> +	BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 0, -2),
+> 
+> This change is not really necessary, the test reports same error
+> either way.
 
---ZK4vbLQNLyDEl6PG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+If we don't have a backward jump covered, we could probably also make this
+a new test case rather than modifying an existing one. Aside from that it
+would probably also make sense to make this a separate commit, so it eases
+backporting a bit.
 
-On Tue, Oct 10, 2023 at 03:18:54PM +0200, Ante Knezic wrote:
-> Add documentation for selecting reference rmii clock on KSZ88X3 devices
->=20
-> Signed-off-by: Ante Knezic <ante.knezic@helmholz.de>
-> ---
->  Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml=
- b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
-> index e51be1ac0362..3df5d2e72dba 100644
-> --- a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
-> +++ b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
-> @@ -49,6 +49,12 @@ properties:
->        Set if the output SYNCLKO clock should be disabled. Do not mix with
->        microchip,synclko-125.
-> =20
-> +  microchip,rmii-clk-internal:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description:
-> +      Set if the RMII reference clock should be provided internally.
+>>   	BPF_LD_IMM64(BPF_REG_0, 0),
+>>   	BPF_LD_IMM64(BPF_REG_0, 1),
+>>   	BPF_LD_IMM64(BPF_REG_0, 1),
+>>   	BPF_EXIT_INSN(),
+>>   	},
+>> -	.errstr = "invalid BPF_LD_IMM insn",
+>> -	.errstr_unpriv = "R1 pointer comparison",
+>> +	.errstr = "jump to reserved code",
+>>   	.result = REJECT,
+>>   },
+>>   {
+>>
+>> ---
+>> base-commit: 3157b7ce14bbf468b0ca8613322a05c37b5ae25d
+>> change-id: 20231009-jmp-into-reserved-fields-fc1a98a8e7dc
+>>
+>> Best regards,
+> 
 
-> Applies only
-> +      to KSZ88X3 devices.
-
-This should be enforced by the schema, the example schema in the docs
-should show you how to do this.
-
-Thanks,
-Conor.
-
-> +
->  required:
->    - compatible
->    - reg
-> --=20
-> 2.11.0
->=20
->=20
-
---ZK4vbLQNLyDEl6PG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSVtAgAKCRB4tDGHoIJi
-0izpAP4vBdiuYP3WAEbZcqrN4YsfFf6tlXSryyiZH534hE8mvAD/V8bf4jyCgfGx
-pDCsIx/r0oOw16zOeOu4EirMC52AUw8=
-=hpzs
------END PGP SIGNATURE-----
-
---ZK4vbLQNLyDEl6PG--
