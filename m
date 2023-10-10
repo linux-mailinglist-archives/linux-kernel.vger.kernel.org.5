@@ -2,116 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8A97BF539
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B375A7BF53C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442527AbjJJIDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 04:03:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41124 "EHLO
+        id S234632AbjJJIE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 04:04:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442525AbjJJID3 (ORCPT
+        with ESMTP id S234631AbjJJIE0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 04:03:29 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F3E97;
-        Tue, 10 Oct 2023 01:03:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D8F3C433C8;
-        Tue, 10 Oct 2023 08:03:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696925007;
-        bh=TMDEK/WmDL+z/eBbCTgn+47DOA7g0CKzr8YciDEyuNE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nDHBkFuY1RbOqWqykAYVdGAfDW7e2ynU/l5+/Dpek8x+rxpdWDlBwtBqgxPpz5rAG
-         XZRTlkBHJ42xELJ9f8G8SoUagNX//yQNxnB8A5PIGC+VAK2WDbb34NJac1k6LmbtmB
-         kt1gV7e1GDLEkzcXMzSDImSt1f6bzawFlzpkcebw=
-Date:   Tue, 10 Oct 2023 10:03:24 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Alexander Graf <graf@amazon.com>
-Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Olivia Mackall <olivia@selenic.com>,
-        Petre Eftime <petre.eftime@gmail.com>,
-        Erdem Meydanlli <meydanli@amazon.nl>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Kyunghwan Kwon <k@mononn.com>
-Subject: Re: [PATCH v4 1/2] Import CBOR library
-Message-ID: <2023101009-accustom-manifesto-8bdb@gregkh>
-References: <20231009212053.2007-1-graf@amazon.com>
- <20231009212053.2007-2-graf@amazon.com>
- <2023101010-overwrite-parakeet-91d5@gregkh>
- <0ee221bc-ea99-4724-9ebd-436e91417e4b@amazon.com>
+        Tue, 10 Oct 2023 04:04:26 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2EC6A4;
+        Tue, 10 Oct 2023 01:04:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696925063; x=1728461063;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=9LiiwaafL7vqK3S5UC+zEZeuqHkrKCe3GV3w9WmVU4k=;
+  b=XtueLShwNhFTt1rfpMfXbn/ayQ6lkipJceGENEZob9WWbOEkhQLyuFQO
+   u24AtSpGBWak0wyABqnpW2Ty//226gZ/q4Em5jko9PwkTzZokxuGZTlBT
+   V1WRmDDetUFnNgTJkFfV3h2hkNTazKE0MJDRbBPskIfdwGXjr9OA8hWoR
+   BbBRzBechS2GhO4qH+pgmaXJ4uq5QrP7f4jmtRAXnBRQcJYLb5cuovGep
+   6k5ECXqiyzbldtqWGd0PIQFe8YeNXk/5rp2ZifKKrfpu4aWQRl/7JL7ar
+   LxdCG9EYez9btVvxaXolKtviW8BLTt68xuZdUF3NJc2zvbaAXqNGPvyJq
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="363684569"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="363684569"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 01:04:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="927050497"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="927050497"
+Received: from pors-mobl3.ger.corp.intel.com (HELO localhost) ([10.252.42.155])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 01:04:20 -0700
+From:   Jani Nikula <jani.nikula@intel.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     pbonzini@redhat.com, workflows@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH] KVM: deprecate KVM_WERROR in favor of general WERROR
+In-Reply-To: <20231009144944.17c8eba3@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20231006205415.3501535-1-kuba@kernel.org>
+ <ZSQ7z8gqIemJQXI6@google.com> <20231009110613.2405ff47@kernel.org>
+ <ZSRVoYbCuDXc7aR7@google.com> <20231009144944.17c8eba3@kernel.org>
+Date:   Tue, 10 Oct 2023 11:04:18 +0300
+Message-ID: <87sf6i6gzh.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0ee221bc-ea99-4724-9ebd-436e91417e4b@amazon.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 09:55:25AM +0200, Alexander Graf wrote:
-> Hey Greg,
-> 
-> On 10.10.23 08:13, Greg Kroah-Hartman wrote:
-> > On Mon, Oct 09, 2023 at 09:20:52PM +0000, Alexander Graf wrote:
-> > > To fully support the Nitro Secure Module communication protocol, we need
-> > > to encode and decode CBOR binary data. Import an MIT licensed library
-> > > from https://github.com/libmcu/cbor (commit f3d1696f886) so that we can
-> > > easily consume CBOR data.
-> > What is "CBOR"?  I don't see a description of it here.
-> 
-> 
-> CBOR is the "Concise Binary Object Representation"
-> (https://en.wikipedia.org/wiki/CBOR) binary format.
-> 
-> 
-> > 
-> > And I guess you are going to keep this in sync with upstream?  Or do you
-> > really need the full library here (you #ifdef the float stuff out), does
-> > your module really need all of the functionality and complexity of this
-> > library, or can it use just a much smaller one instead?
-> 
-> 
-> CBOR knows a total of 9 data types:
-> 
->   - Unsigned integers
->   - Signed integers
->   - Binary string
->   - UTF-8 string
->   - Arrays
->   - Maps (like a python dictionary)
->   - Semantic tag
->   - Bools
->   - Floats
-> 
-> Out of these, the NSM communication protocol uses all except Semantic tags
-> and Floats. The CBOR library that this patch imports does not have special
-> handling for Semantic tags, which leaves only floats which are already
-> #ifdef'ed out. That means there is not much to trim.
-> 
-> What you see here is what's needed to parse CBOR in kernel - if that's what
-> we want to do. I'm happy to rip it out again and make it a pure user space
-> problem to do CBOR :).
+On Mon, 09 Oct 2023, Jakub Kicinski <kuba@kernel.org> wrote:
+> On Mon, 9 Oct 2023 12:33:53 -0700 Sean Christopherson wrote:
+>> > We do have sympathy for these folks, we are mostly volunteers after
+>> > all. At the same time someone's under-investment should not be causing
+>> > pain to those of us who _do_ build test stuff carefully.  
+>> 
+>> This is a bit over the top.  Yeah, I need to add W=1 to my build scripts, but that's
+>> not a lack of investment, just an oversight.  Though in this case it likely wouldn't
+>> have made any difference since Paolo grabbed the patches directly and might have
+>> even bypassed linux-next.  But again I would argue that's bad process, not a lack
+>> of investment.
+>
+> If you do invest in build testing automation, why can't your automation
+> count warnings rather than depend on WERROR? I don't understand.
 
-Yes, why are we parsing this in the kernel?  What could go wrong with
-adding yet-another-parser in privileged context?  :)
+Because having both CI and the subsystem/driver developers enable a
+local WERROR actually works in keeping the subsystem/driver clean of
+warnings.
 
-Why does this have to be in the kernel, the data sent/recieved is over
-virtio, so why does the kernel have to parse it?  I couldn't figure that
-out from the driver, yet the driver seems to have a lot of hard-coded
-parsing logic in it to assume specific message formats?
+For i915, we also enable W=1 warnings and kernel-doc -Werror with it,
+keeping all of them warning clean. I don't much appreciate calling that
+anti-social.
 
-thanks,
+>
+>> > Rather than tweak stuff I'd prefer if we could agree that local -Werror
+>> > is anti-social :(
+>> > 
+>> > The global WERROR seems to be a good compromise.  
+>> 
+>> I disagree.  WERROR simply doesn't provide the same coverage.  E.g. it can't be
+>> enabled for i386 without tuning FRAME_WARN, which (a) won't be at all obvious to
+>> the average contributor and (b) increasing FRAME_WARN effectively reduces the
+>> test coverage of KVM i386.
+>> 
+>> For KVM x86, I want the rules for contributing to be clearly documented, and as
+>> simple as possible.  I don't see a sane way to achieve that with WERROR=y.
+>
+> Linus, you created the global WERROR option. Do you have an opinion
+> on whether random subsystems should create their own WERROR flags?
+> W=1 warning got in thru KVM and since they have a KVM_WERROR which
+> defaults to enabled it broke build testing in networking.
+> Randomly sprinkled -Werrors are fragile. Can we ask people to stop
+> using them now that the global ERROR exists?
 
-greg k-h
+The DRM_I915_WERROR config depends on EXPERT and !COMPILE_TEST, and to
+my knowledge this has never caused issues outside of i915 developers and
+CI.
+
+Maybe the fix to KVM_ERROR config should be
+
+-	depends on (X86_64 && !KASAN) || !COMPILE_TEST
+-	depends on (X86_64 && !KASAN) && !COMPILE_TEST
+
+
+BR,
+Jani.
+
+
+-- 
+Jani Nikula, Intel
