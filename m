@@ -2,207 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2C47C0104
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 437BA7C0105
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233575AbjJJQCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 12:02:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44088 "EHLO
+        id S233612AbjJJQCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 12:02:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232966AbjJJQCq (ORCPT
+        with ESMTP id S233532AbjJJQCs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 12:02:46 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E58A7;
-        Tue, 10 Oct 2023 09:02:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84E2FC433C7;
-        Tue, 10 Oct 2023 16:02:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696953762;
-        bh=8zTGRYTY1WUSPexJBZKSYXIXebpfzjhtEAwIpwHKrgk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DPfnQ4Mqq/LwUfreTwFh2h7CpeWm1aEetozjYfx9hep8O3FN5ECtreNqLxdO38h4D
-         y2M4N0vbTDKEqB0hqR5Gj4wp//6BhUIyeyzarNel8VnlHeGz7zSnawtIJZYoXg0mIB
-         X1kxcEPxUxbVc6CJN4yLmqP9IsVviwIgAl3dk/XdYU2p2AP1HyHTYct6nl7aJAI1Na
-         y1Q73d4THK7/xQV198rpNqDqOIYAxFwUmCYguOeBkMJGCQlLvwH+lSoSSrDxHObl5o
-         FWQmFW0v8FHC/s0zHtU7iOk7N1XpVaO97nOxNcG2mDEAW1GtvKhWjB6l63p7vX3J8t
-         tOM7bgskk4kmA==
-Date:   Tue, 10 Oct 2023 18:02:36 +0200
-From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
-To:     Frank Li <Frank.li@nxp.com>
-Cc:     Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        "open list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linux-pci@vger.kernel.org>,
-        "moderated list:PCI DRIVER FOR FREESCALE LAYERSCAPE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
-Subject: Re: [PATCH 2/3] PCI: layerscape: add suspend/resume for ls1021a
-Message-ID: <ZSV1nJUAbUdLXkt4@lpieralisi>
-References: <20230915184306.2374670-1-Frank.Li@nxp.com>
- <20230915184306.2374670-2-Frank.Li@nxp.com>
- <ZR10SVVBYvfMJPv1@lizhi-Precision-Tower-5810>
- <ZSVdnAsRQA2zHsF7@lizhi-Precision-Tower-5810>
+        Tue, 10 Oct 2023 12:02:48 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 542F8B9
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:02:45 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1696953761;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+Rn5Os1D6mbuIatFwguyX+3/LudvCCUS08zsghsg2yU=;
+        b=flyvWYxF6QixzAxq8OaXHWfBr2icL73xA8nmgYR4T3mYDseJc97PUXgW1uS1kwYet3QwRQ
+        6Q1AKo71jvLGT9m4cRgm2lgciywjNGz8oSpGMIwd2CIDfWi6ZLN9DH4P9jN5WI7oEkfHDm
+        pHrjGLKOdSgMkVrqmAEPHo87nDQ8352N/SMQ2cPEJ36E4IcFBSNR/pQ4XZtoey+/rXsw9J
+        JXd223dgv8xKfk3tftTKKD2ccGKUE5HKD6POOoMrBt5dN9TYBlwSYwn7OVPvsB+5IDMs4A
+        VN0Ac7HUYe5mU3tGS94eqhj2ag/lm/bjbKd7Hdb5L2ZcI0X/35saoLLW5p8fbg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1696953761;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+Rn5Os1D6mbuIatFwguyX+3/LudvCCUS08zsghsg2yU=;
+        b=kFzw+JYJPlK+uVCbLEFFt7QtPU4rNwqdykm69ZKpGVpXY0YKUtzD7Kx7hM0RPMvKmWqSlX
+        gZQ+QcTddQsbG5Dg==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Linus Torvalds <torvalds@linuxfoundation.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: panic context: was: Re: [PATCH printk v2 04/11] printk: nbcon:
+ Provide functions to mark atomic write sections
+In-Reply-To: <ZSQc8ApLjlUpe80o@alley>
+References: <ZRGvn4m2NGCn3Pef@alley> <87h6n5teos.fsf@jogness.linutronix.de>
+ <ZSADUKp8oJ2Ws2vC@alley> <87il7hv2v2.fsf@jogness.linutronix.de>
+ <ZSQc8ApLjlUpe80o@alley>
+Date:   Tue, 10 Oct 2023 18:08:40 +0206
+Message-ID: <874jiy8nz3.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZSVdnAsRQA2zHsF7@lizhi-Precision-Tower-5810>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 10:20:12AM -0400, Frank Li wrote:
-> On Wed, Oct 04, 2023 at 10:23:51AM -0400, Frank Li wrote:
-> > On Fri, Sep 15, 2023 at 02:43:05PM -0400, Frank Li wrote:
-> > > ls1021a add suspend/resume support.
-> > > 
-> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > ---
-> > 
-> > ping
-> > 
-> > Frank
-> 
-> Ping
+On 2023-10-09, Petr Mladek <pmladek@suse.com> wrote:
+> We really have to distinguish emergency and panic context!
 
-Read and follow please (and then ping us):
-https://lore.kernel.org/linux-pci/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com
+OK.
 
-> Frank
-> 
-> > 
-> > >  drivers/pci/controller/dwc/pci-layerscape.c | 88 ++++++++++++++++++++-
-> > >  1 file changed, 87 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
-> > > index 20c48c06e2248..bc5a8ff1a26ce 100644
-> > > --- a/drivers/pci/controller/dwc/pci-layerscape.c
-> > > +++ b/drivers/pci/controller/dwc/pci-layerscape.c
-> > > @@ -35,6 +35,12 @@
-> > >  #define PF_MCR_PTOMR		BIT(0)
-> > >  #define PF_MCR_EXL2S		BIT(1)
-> > >  
-> > > +/* LS1021A PEXn PM Write Control Register */
-> > > +#define SCFG_PEXPMWRCR(idx)	(0x5c + (idx) * 0x64)
-> > > +#define PMXMTTURNOFF		BIT(31)
-> > > +#define SCFG_PEXSFTRSTCR	0x190
-> > > +#define PEXSR(idx)		BIT(idx)
-> > > +
-> > >  #define PCIE_IATU_NUM		6
-> > >  
-> > >  struct ls_pcie_drvdata {
-> > > @@ -48,6 +54,8 @@ struct ls_pcie {
-> > >  	struct dw_pcie *pci;
-> > >  	const struct ls_pcie_drvdata *drvdata;
-> > >  	void __iomem *pf_base;
-> > > +	struct regmap *scfg;
-> > > +	int index;
-> > >  	bool big_endian;
-> > >  };
-> > >  
-> > > @@ -170,13 +178,91 @@ static int ls_pcie_host_init(struct dw_pcie_rp *pp)
-> > >  	return 0;
-> > >  }
-> > >  
-> > > +static void ls1021a_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
-> > > +{
-> > > +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> > > +	struct ls_pcie *pcie = to_ls_pcie(pci);
-> > > +	u32 val;
-> > > +
-> > > +	if (!pcie->scfg) {
-> > > +		dev_dbg(pcie->pci->dev, "SYSCFG is NULL\n");
-> > > +		return;
-> > > +	}
-> > > +
-> > > +	/* Send Turn_off message */
-> > > +	regmap_read(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), &val);
-> > > +	val |= PMXMTTURNOFF;
-> > > +	regmap_write(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), val);
-> > > +
-> > > +	/* There are not register to check ACK, so wait PCIE_PME_TO_L2_TIMEOUT_US */
-> > > +	mdelay(PCIE_PME_TO_L2_TIMEOUT_US/1000);
-> > > +
-> > > +	/* Clear Turn_off message */
-> > > +	regmap_read(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), &val);
-> > > +	val &= ~PMXMTTURNOFF;
-> > > +	regmap_write(pcie->scfg, SCFG_PEXPMWRCR(pcie->index), val);
-> > > +}
-> > > +
-> > > +static void ls1021a_pcie_exit_from_l2(struct dw_pcie_rp *pp)
-> > > +{
-> > > +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> > > +	struct ls_pcie *pcie = to_ls_pcie(pci);
-> > > +	u32 val;
-> > > +
-> > > +	regmap_read(pcie->scfg, SCFG_PEXSFTRSTCR, &val);
-> > > +	val |= PEXSR(pcie->index);
-> > > +	regmap_write(pcie->scfg, SCFG_PEXSFTRSTCR, val);
-> > > +
-> > > +	regmap_read(pcie->scfg, SCFG_PEXSFTRSTCR, &val);
-> > > +	val &= ~PEXSR(pcie->index);
-> > > +	regmap_write(pcie->scfg, SCFG_PEXSFTRSTCR, val);
-> > > +}
-> > > +
-> > > +static int ls1021a_pcie_host_init(struct dw_pcie_rp *pp)
-> > > +{
-> > > +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> > > +	struct ls_pcie *pcie = to_ls_pcie(pci);
-> > > +	struct device *dev = pcie->pci->dev;
-> > > +	u32 index[2];
-> > > +	int ret;
-> > > +
-> > > +	ret = ls_pcie_host_init(pp);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	pcie->scfg = syscon_regmap_lookup_by_phandle(dev->of_node, "fsl,pcie-scfg");
-> > > +	if (IS_ERR(pcie->scfg)) {
-> > > +		ret = PTR_ERR(pcie->scfg);
-> > > +		dev_err(dev, "No syscfg phandle specified\n");
-> > > +		pcie->scfg = NULL;
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	ret = of_property_read_u32_array(dev->of_node, "fsl,pcie-scfg", index, 2);
-> > > +	if (ret) {
-> > > +		pcie->scfg = NULL;
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	pcie->index = index[1];
-> > > +
-> > > +	return ret;
-> > > +}
-> > > +
-> > >  static const struct dw_pcie_host_ops ls_pcie_host_ops = {
-> > >  	.host_init = ls_pcie_host_init,
-> > >  	.pme_turn_off = ls_pcie_send_turnoff_msg,
-> > >  };
-> > >  
-> > > +static const struct dw_pcie_host_ops ls1021a_pcie_host_ops = {
-> > > +	.host_init = ls1021a_pcie_host_init,
-> > > +	.pme_turn_off = ls1021a_pcie_send_turnoff_msg,
-> > > +};
-> > > +
-> > >  static const struct ls_pcie_drvdata ls1021a_drvdata = {
-> > > -	.pm_support = false,
-> > > +	.pm_support = true,
-> > > +	.ops = &ls1021a_pcie_host_ops,
-> > > +	.exit_from_l2 = ls1021a_pcie_exit_from_l2,
-> > >  };
-> > >  
-> > >  static const struct ls_pcie_drvdata layerscape_drvdata = {
-> > > -- 
-> > > 2.34.1
-> > > 
+>> The LPC2022 demo/talk was recorded:
+>> 
+>> https://www.youtube.com/watch?v=TVhNcKQvzxI
+>> 
+>> At 55:55 is where the situation occurred and triggered the conversation,
+>> ultimately leading to this new feature.
+>
+> Thanks for the link. My understanding is that the following scenario
+> has happened:
+>
+> 1. System was booting and messages were being flushed using the kthread.
+>
+> 2. WARN() happened. It printed the 1st line, took over the per-console
+>    console lock and started flushing the backlog. There were still
+>    many pending messages from the boot.
+>
+> 3. NMI came and caused panic(). The panic context printed its first line,
+>    took over the console from the WARN context, flushed the rest
+>    of the backlog and continued printing/flushing more messages from
+>    the panic() context.
+>
+>
+> Problem:
+>
+> People complained that they saw only the first line from WARN().
+> The related detailed info, including backtrace, was missing.
+>
+> It was because panic() interrupted WARN() before it was able
+> to flush the backlog and print/flush all WARN() messages.
+
+Thanks for taking the time to review it in detail.
+
+> Proposed solution:
+>
+> WARN()/emergency context should first store the messages and
+> flush them at the end.
+>
+> It would increase the chance that all WARN() messages will
+> be stored in the ring buffer before NMI/panic() is called.
+>
+> panic() would then flush all pending messages including
+> the stored WARN() messages.
+
+OK.
+
+> Important:
+>
+> The problem is that panic() interrupted WARN().
+
+Ack.
+
+>> You may also want to reread my summary:
+>>
+>> https://lore.kernel.org/lkml/875yheqh6v.fsf@jogness.linutronix.de
+>
+> Again, thanks for the pointer. Let me paste 2 paragraphs here:
+>
+> <paste>
+> - Printing the backlog is important! If some emergency situation occurs,
+>   make sure the backlog gets printed.
+>
+> - When an emergency occurs, put the full backtrace into the ringbuffer
+>   before flushing any backlog. This ensures that the backtrace makes it
+>   into the ringbuffer in case a panic occurs while flushing the backlog.
+> </paste>
+>
+> My understanding is:
+>
+> 1st paragraph is the reason why:
+>
+>    + we have three priorities: normal, emergency, panic
+>
+>    + messages in normal context might be offloaded to kthread
+>
+>    + emergency and panic context should try to flush the messages
+>      from this context.
+>
+>
+> 2nd paragraph talks about that emergency context should first store
+> the messages and flush them later. And the important part:
+>
+>      "in case a panic occurs while flushing the backlog.
+>
+>      => panic might interrupt emergency
+>
+> It clearly distinguishes emergency and panic context.
+>
+>
+>> as well as Linus' follow-up message:
+>> 
+>> https://lore.kernel.org/lkml/CAHk-=wieXPMGEm7E=Sz2utzZdW1d=9hJBwGYAaAipxnMXr0Hvg@mail.gmail.com
+>
+> IMHO, the important part is:
+>
+> <paste>
+> Yeah, I really liked the notion of doing the oops with just filling
+> the back buffer but still getting it printed out if something goes
+> wrong in the middle.
+> </paste>
+>
+> He was talking about oops => emergency context
+>
+> Also he wanted to get it out when something goes wrong in the middle
+>    => panic in the middle ?
+>
+>
+> And another paragraph:
+>
+> <paste>
+> I doubt it ends up being an issue in practice, but basically I wanted
+> to just pipe up and say that the exact details of how much of the back
+> buffer needs to be flushed first _could_ be tweaked if it ever does
+> come up as an issue.
+> </paste>
+>
+> Linus had doubts that there might be problems with too long backlog
+> in practice. And I have the doubts as well.
+>
+> And this is my view. The deferred flush is trying to solve a corner
+> case and we are forgetting what blocked printk kthreads >10 years.
+
+OK. Thank you for the detailed analysis.
+
+For v3 I will do something similar to what you proposed [0], except that
+I will use a per-cpu variable (to track printk emergency nesting)
+instead of adding a new field to the task struct.
+
+John Ogness
+
+[0] https://lore.kernel.org/lkml/ZRLBxsXPCym2NC5Q@alley/
