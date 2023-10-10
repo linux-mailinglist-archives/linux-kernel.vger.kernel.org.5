@@ -2,148 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AAD07BF351
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 08:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C757BF353
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 08:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442312AbjJJGsw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 10 Oct 2023 02:48:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46656 "EHLO
+        id S1442325AbjJJGuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 02:50:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442295AbjJJGst (ORCPT
+        with ESMTP id S1442295AbjJJGuJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 02:48:49 -0400
-Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7060A97
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 23:48:41 -0700 (PDT)
-Received: from omf06.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay08.hostedemail.com (Postfix) with ESMTP id 9C649140199;
-        Tue, 10 Oct 2023 06:48:39 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf06.hostedemail.com (Postfix) with ESMTPA id 379272000F;
-        Tue, 10 Oct 2023 06:48:11 +0000 (UTC)
-Message-ID: <f511170fe61d7e7214a3a062661cf4103980dad6.camel@perches.com>
-Subject: Re: [PATCH 6/7] fs/sysfs/group: make attribute_group pointers const
-From:   Joe Perches <joe@perches.com>
-To:     Max Kellermann <max.kellermann@ionos.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Richter <rric@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
-        nvdimm@lists.linux.dev, linux-nvme@lists.infradead.org,
-        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-leds@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-scsi@vger.kernel.org
-Date:   Mon, 09 Oct 2023 23:48:10 -0700
-In-Reply-To: <CAKPOu+8k2x1CucWSzoouts0AfMJk+srJXWWf3iWVOeY+fWkOpQ@mail.gmail.com>
-References: <20231009165741.746184-1-max.kellermann@ionos.com>
-         <20231009165741.746184-6-max.kellermann@ionos.com>
-         <264fa39d-aed6-4a54-a085-107997078f8d@roeck-us.net>
-         <CAKPOu+8k2x1CucWSzoouts0AfMJk+srJXWWf3iWVOeY+fWkOpQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-MIME-Version: 1.0
-X-Stat-Signature: x66gji9pr8zwbank5ef871m9qoojjjfr
-X-Rspamd-Server: rspamout04
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
-X-Rspamd-Queue-Id: 379272000F
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19bm9nHqj2XrX3TKwatvC/C1GajNvD5h9I=
-X-HE-Tag: 1696920491-749924
-X-HE-Meta: U2FsdGVkX1/+029EmPc9sKVNFK2VRUjBCte/A2E+5y43hxFCP+MAKFoIxkcikfn6Jucu52vLqnvIqQDvdm6WvqlwnI8PH42O3yPwjrf6/Rk44z8SFUR40tWN1QdYZq3HPOEvKn0PLMPTqRRMr7zlpFwkMW85ySQYIyr+J8E4OP6W/LoiP3zYhR+0cmnV5ToftIwEMltweE+g/zUx+NL1fSjTbqk3Sf4w33VMSw7k9oncskJ8CUN/bQZEOiHhpNbgGpLqoQJ7ob3InQymsj8a//o/6ldtQbuoxFCk/RnYuGfC0EahOFEMbfIs5+kJ0g+hK4chvkcdMx/L2QmQgmCvPhqiadvx8BYdkeJ2IpCV5Y5g+W85x67f7ON0uqOVXWab
+        Tue, 10 Oct 2023 02:50:09 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C0269E
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 23:50:07 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id BCFF621889;
+        Tue, 10 Oct 2023 06:50:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1696920605; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=hZP6FaiZeJrj6dMEdfTNfZ4a97jcVOdQitIJoIGOVZ4=;
+        b=VxR8680vDxQy6x1gzogMfco4MXADTDVx2K5pa+KFVnPHwCX2G/dATTwmvMn1aQYcM7PYQU
+        xL8p8WuTQp6QgR7ocKGNvNWLEbznGueNZg3X8bzb/87TPBQeuo3C2eMYKIG2I1/1Rl74iF
+        h5U4mAAzqQZ6eit/RfPHJa/Ft3V/868=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1696920605;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=hZP6FaiZeJrj6dMEdfTNfZ4a97jcVOdQitIJoIGOVZ4=;
+        b=ocjmT15u/HUrcreN8tk38t/8D6pKfthh4LhHqBh0BuNJ2Fy6TgDptxHdbW+Do5j0WEZCAl
+        NEsD1cr5Dj5dZNBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 930CE1358F;
+        Tue, 10 Oct 2023 06:50:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id B7y/Ih30JGXyKAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 10 Oct 2023 06:50:05 +0000
+Date:   Tue, 10 Oct 2023 08:50:05 +0200
+Message-ID: <8734yjrmxu.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] sound fixes for 6.6-rc6
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-10-09 at 22:05 +0200, Max Kellermann wrote:
-> On Mon, Oct 9, 2023 at 7:24â€¯PM Guenter Roeck <linux@roeck-us.net> wrote:
-> > Also, I don't know why checkpatch is happy with all the
-> > 
-> >         const struct attribute_group *const*groups;
-> > 
-> > instead of
-> > 
-> >         const struct attribute_group *const *groups;
-> 
-> I found out that checkpatch has no check for this at all; it does
-> complain about such lines, but only for local variables. But that
-> warning is actually a bug, because this is a check for unary
-> operators: it thinks the asterisk is a dereference operator, not a
-> pointer declaration, and complains that the unary operator must be
-> preceded by a space. Thus warnings on local variable are only correct
-> by coincidence, not by design.
-> 
-> Inside structs or parameters (where my coding style violations can be
-> found), it's a different context and thus checkpatch doesn't apply the
-> rules for unary operators.
+Linus,
 
-My opinion is that const use in the kernel should almost
-always have whitespace before and after it except when
-preceded by a open parenthesis or a newline.
+please pull sound fixes for v6.6-rc6 from:
 
-$ git grep -wh const -- '*.[ch]' | \
-  grep -oP "[ \*\(]?const[ \*]?" | \
-  sort | uniq -c | sort -rn
- 222438  const 
-  83386 const 
-  51667 (const 
-   2766 *const 
-    834 const
-    442  const
-    343  const*
-     88 *const
-     37 (const
-      4 *const*
+  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-6.6-rc6
+
+The topmost commit is 4a63e68a295187ae3c1cb3fa0c583c96a959714f
+
+----------------------------------------------------------------
+
+sound fixes for 6.6-rc6
+
+Here is the collection of pending fixes since a couple of weeks ago,
+which became slightly bigger than usual due to my vacation.
+Most of changes are about ASoC device-specific fixes while USB- and
+HD-audio received quirks as usual.  All fixes, including two ASoC core
+changes, are reasonably small and safe to apply.
+
+----------------------------------------------------------------
+
+Alex Bee (1):
+      dt-bindings: ASoC: rockchip: Add compatible for RK3128 spdif
+
+Amadeusz S³awiñski (2):
+      ASoC: core: Print component name when printing log
+      ASoC: core: Do not call link_exit() on uninitialized rtd objects
+
+Antoine Gennart (1):
+      ASoC: tlv320adc3xxx: BUG: Correct micbias setting
+
+Balamurugan C (2):
+      ASoC: Intel: soc-acpi: Add entry for sof_es8336 in MTL match table.
+      ASoC: Intel: soc-acpi: Add entry for HDMI_In capture support in MTL match table
+
+Christos Skevis (1):
+      ALSA: usb-audio: Fix microphone sound on Nexigo webcam.
+
+Fabio Estevam (1):
+      ASoC: dt-bindings: fsl,micfil: Document #sound-dai-cells
+
+Kailang Yang (2):
+      ALSA: hda/realtek - ALC287 merge RTK codec with CS CS35L41 AMP
+      ALSA: hda/realtek: Change model for Intel RVP board
+
+Kuninori Morimoto (2):
+      ASoC: simple-card-utils: fixup simple_util_startup() error handling
+      ASoC: simple-card: fixup asoc_simple_probe() error handling
+
+Matthias Reichl (1):
+      ASoC: hdmi-codec: Fix broken channel map reporting
+
+Miquel Raynal (1):
+      ASoC: soc-generic-dmaengine-pcm: Fix function name in comment
+
+Pierre-Louis Bossart (2):
+      ASoC: Intel: soc-acpi: fix Dell SKU 0B34
+      ASoC: Intel: sof_sdw: add support for SKU 0B14
+
+Shengjiu Wang (2):
+      ASoC: fsl_sai: Don't disable bitclock for i.MX8MP
+      ASoC: fsl-asoc-card: use integer type for fll_id and pll_id
+
+Stefan Binding (1):
+      ALSA: hda: cs35l41: Cleanup and fix double free in firmware request
+
+Sven Frotscher (1):
+      ASoC: amd: yc: Fix non-functional mic on Lenovo 82YM
+
+Vijendar Mukunda (1):
+      ASoC: SOF: amd: fix for firmware reload failure after playback
+
+WhaleChang (1):
+      ALSA: usb-audio: Fix microphone sound on Opencomm2 Headset
+
+Zhang Shurong (1):
+      ASoC: rt5682: Fix regulator enable/disable sequence
+
+---
+ .../devicetree/bindings/sound/fsl,micfil.yaml      |   3 +
+ .../devicetree/bindings/sound/rockchip-spdif.yaml  |   1 +
+ include/sound/soc.h                                |   2 +
+ sound/pci/hda/cs35l41_hda.c                        | 115 ++++++++++++++-------
+ sound/pci/hda/patch_realtek.c                      |  27 +++--
+ sound/soc/amd/yc/acp6x-mach.c                      |   7 ++
+ sound/soc/codecs/hdmi-codec.c                      |   5 +-
+ sound/soc/codecs/rt5682-i2c.c                      |  10 +-
+ sound/soc/codecs/tlv320adc3xxx.c                   |   4 +-
+ sound/soc/fsl/fsl-asoc-card.c                      |  12 ++-
+ sound/soc/fsl/fsl_sai.c                            |   9 +-
+ sound/soc/generic/simple-card-utils.c              |   3 +-
+ sound/soc/generic/simple-card.c                    |   6 +-
+ sound/soc/intel/boards/sof_es8336.c                |  10 ++
+ sound/soc/intel/boards/sof_sdw.c                   |  10 ++
+ sound/soc/intel/common/soc-acpi-intel-adl-match.c  |  12 +--
+ sound/soc/intel/common/soc-acpi-intel-mtl-match.c  |  25 +++++
+ sound/soc/soc-core.c                               |  24 +++--
+ sound/soc/soc-generic-dmaengine-pcm.c              |   4 +-
+ sound/soc/sof/amd/pci-rmb.c                        |   1 -
+ sound/usb/mixer.c                                  |   7 ++
+ sound/usb/quirks.c                                 |   8 +-
+ 22 files changed, 225 insertions(+), 80 deletions(-)
 
