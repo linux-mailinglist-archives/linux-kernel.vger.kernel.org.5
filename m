@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4937BFA90
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 872F07BFA8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231527AbjJJMAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 08:00:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43608 "EHLO
+        id S231705AbjJJMAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 08:00:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231761AbjJJMAI (ORCPT
+        with ESMTP id S231781AbjJJMAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 08:00:08 -0400
+        Tue, 10 Oct 2023 08:00:10 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FBBFFE;
-        Tue, 10 Oct 2023 05:00:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50140C433CB;
-        Tue, 10 Oct 2023 11:59:57 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7917196;
+        Tue, 10 Oct 2023 05:00:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14DBDC43391;
+        Tue, 10 Oct 2023 11:59:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696939199;
-        bh=FNbwODmxQo3GGwEsJGLAfDuk3+x/AsZx/VjeIBG8CLg=;
+        s=k20201202; t=1696939202;
+        bh=qaLq/eyHDpze8WBnz65vaRdkOfmOKpB2MmuvHIFiCik=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sK6DBDEVVhoqBkJgXSl3qNZo8EM8D6CcrGeHQ2X9GCDvOcEs4adIYpAKzQfKBjt+r
-         dvVxr90w/XTErnjE8nxOIYby/Niy5k9z2Fanlc7ZH0yjJ1l4Z3wV+mYcAenu8Qjl7E
-         TVovnSyrtaplpTAIWhVCRx9BwiiRu97x973I2lbgsVUsl99XNH73hrpMRYYrEkgGZY
-         WgBVeP58vtD6Xy3DRlNBWNKS8UnAcGdwAU4JkB//mVWxbxKufsN/rQlRBoLj09xpd9
-         VKsGKRHBRfBDLOXI/x6zY1/4MLSiC4bSpPrlihFzU1LNG+1uWgAX/Jpi07pck7dEqT
-         UfAdLRI0aFRIA==
+        b=mCRcrQA39pefD1wQ9xLbtVmaVJUEJy45H047G1h/1RMkw+yLxG4KzZQeRFgCHnbEd
+         ky3IoQ1F7i7RImJHGK7BV884RMAcbHPgZx6qMaljCRpoPTVFg/8AEqEVcA5Ev+rmpd
+         y5NT1d/CNDVWqgi/OCxzEvS78qa5CNK3DvcJW4Ckhon5Wg9UG9vxxkGyperQTypHYL
+         tY/6MG0W4ZOp7dHVwEGIwO6MhLvHKa4ZdHNRgqw0NCYl2I2SHBImD4klxXUAytQBGO
+         oRGuvzkmfle7wDK5sbwypvwPO5KZEZifV0FVifbrIONdO8fO4+nIfGsbWocdtsqnjl
+         G/JaOUhMzekhw==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
@@ -38,9 +38,9 @@ Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH 09/23] locktorture: Alphabetize torture_param() entries
-Date:   Tue, 10 Oct 2023 13:59:07 +0200
-Message-Id: <20231010115921.988766-10-frederic@kernel.org>
+Subject: [PATCH 10/23] locktorture: Consolidate "if" statements in lock_torture_writer()
+Date:   Tue, 10 Oct 2023 13:59:08 +0200
+Message-Id: <20231010115921.988766-11-frederic@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231010115921.988766-1-frederic@kernel.org>
 References: <20231010115921.988766-1-frederic@kernel.org>
@@ -58,47 +58,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-There are getting to be too many module parameters for a random list to be
-comfortable, so this commit alphabetizes the list.  Strictly code motion.
+There is a pair of adjacent "if" statements with identical conditions in
+the lock_torture_writer() function.  This commit therefore combines them.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/locking/locktorture.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ kernel/locking/locktorture.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index 441866259278..57ee16cf879d 100644
+index 57ee16cf879d..c8c322e69a90 100644
 --- a/kernel/locking/locktorture.c
 +++ b/kernel/locking/locktorture.c
-@@ -33,21 +33,21 @@
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Paul E. McKenney <paulmck@linux.ibm.com>");
- 
--torture_param(int, nwriters_stress, -1, "Number of write-locking stress-test threads");
--torture_param(int, nreaders_stress, -1, "Number of read-locking stress-test threads");
- torture_param(int, long_hold, 100, "Do occasional long hold of lock (ms), 0=disable");
-+torture_param(int, nested_locks, 0, "Number of nested locks (max = 8)");
-+torture_param(int, nreaders_stress, -1, "Number of read-locking stress-test threads");
-+torture_param(int, nwriters_stress, -1, "Number of write-locking stress-test threads");
- torture_param(int, onoff_holdoff, 0, "Time after boot before CPU hotplugs (s)");
- torture_param(int, onoff_interval, 0, "Time between CPU hotplugs (s), 0=disable");
-+torture_param(int, rt_boost, 2,
-+		   "Do periodic rt-boost. 0=Disable, 1=Only for rt_mutex, 2=For all lock types.");
-+torture_param(int, rt_boost_factor, 50, "A factor determining how often rt-boost happens.");
- torture_param(int, shuffle_interval, 3, "Number of jiffies between shuffles, 0=disable");
- torture_param(int, shutdown_secs, 0, "Shutdown time (j), <= zero to disable.");
- torture_param(int, stat_interval, 60, "Number of seconds between stats printk()s");
- torture_param(int, stutter, 5, "Number of jiffies to run/halt test, 0=disable");
--torture_param(int, rt_boost, 2,
--		   "Do periodic rt-boost. 0=Disable, 1=Only for rt_mutex, 2=For all lock types.");
--torture_param(int, rt_boost_factor, 50, "A factor determining how often rt-boost happens.");
- torture_param(int, writer_fifo, 0, "Run writers at sched_set_fifo() priority");
- torture_param(int, verbose, 1, "Enable verbose debugging printk()s");
--torture_param(int, nested_locks, 0, "Number of nested locks (max = 8)");
- /* Going much higher trips "BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!" errors */
- #define MAX_NESTED_LOCKS 8
- 
+@@ -889,11 +889,10 @@ static int lock_torture_writer(void *arg)
+ 			lock_is_write_held = true;
+ 			if (WARN_ON_ONCE(atomic_read(&lock_is_read_held)))
+ 				lwsp->n_lock_fail++; /* rare, but... */
+-
+ 			lwsp->n_lock_acquired++;
+-		}
+-		if (!skip_main_lock) {
++
+ 			cxt.cur_ops->write_delay(&rand);
++
+ 			lock_is_write_held = false;
+ 			WRITE_ONCE(last_lock_release, jiffies);
+ 			cxt.cur_ops->writeunlock(tid);
 -- 
 2.34.1
 
