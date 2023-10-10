@@ -2,172 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE047BF926
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 13:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAEC47BF92F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 13:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbjJJLFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 07:05:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57092 "EHLO
+        id S231251AbjJJLHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 07:07:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjJJLFJ (ORCPT
+        with ESMTP id S229958AbjJJLHL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 07:05:09 -0400
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2139.outbound.protection.outlook.com [40.107.22.139])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 017EF94;
-        Tue, 10 Oct 2023 04:05:08 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OLx4RYEp9c7WlC2lWoQD6g77HbdK5SSAQt+jVNFFh21Ht95nx2VeHWEdcRrfvajjT5XyVUZuAu9I7ZiYrYc8U7WSdH/Lf3ScgX/pen9dhlNDfrmva16C86LHbksuQm41PzGV0ug5lgBe3fRgt8v37QbfBqURjPWsXNBg7onLCcrSp7CrltFOB6nyyKrVn40/0ThRdcrsgnn+XEYWVc9q78aDmrMl/26GixJx562RxiofGEOSz7fMtqI+e4uK6izLt/8X/X0+YY4jQfQxjskAZ3DoD1qEVX/7UwM3MJBtkan90zM+Het/iq4Tslhx98KqzWTXt5BHsuKa2JGERyaNeQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3vXhlDOgIjRxJ4spgsnebm0qC+OrG2CknNZx1kLuAPQ=;
- b=dbjHr/uPHuzC2pVcHvSHZ4bzBwRaZG0b6+gj79T0Tgf16gQ46r13+8wCqzcmhXB/IzABjmo9Q+5q60I70LFujS9k1gRZc7wPerlrqmwG7qxGNcw36lhFVTlhlB8FuwRGufm+u+8KchVIPhKAbXwzDFKQ6cIqqGT/qNaig+zDg/C50Y2WfrxIXNnyfwiQh0+a+Jio3228J5gXRm9rJv3HNAYrIF5CG3pyRK7AC6cy3tBcH3S9OBWI+sst3b7Q0s49W5FG6ekgpT0/KQPNLwdtTOxAjHfN0ltXTmRNuJ7t6DjPADIGFq1Bj/fNxMG6Flr9gOHPbgcYnTk+GUJGz9jxfA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bang-olufsen.dk; dmarc=pass action=none
- header.from=bang-olufsen.dk; dkim=pass header.d=bang-olufsen.dk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bang-olufsen.dk;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3vXhlDOgIjRxJ4spgsnebm0qC+OrG2CknNZx1kLuAPQ=;
- b=kTP5h0SPE8dN0sfeDAxtMy1tWihse3QzvQaK53B3wcmOk416sMrIAjgZttannvYXM6qvFTs2CJGG2U4VvPQ0AKeshZlaB+MmMFvKjLnaZm4xbC1rfPraHgD3e8xaBczJapuXnGdttm5Guo2Jq+Xn8porKWd5H0YAirr34qJnLSg=
-Received: from AM6PR03MB3943.eurprd03.prod.outlook.com (2603:10a6:20b:26::24)
- by AS8PR03MB6728.eurprd03.prod.outlook.com (2603:10a6:20b:29f::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Tue, 10 Oct
- 2023 11:05:05 +0000
-Received: from AM6PR03MB3943.eurprd03.prod.outlook.com
- ([fe80::fb3c:4931:e74e:c691]) by AM6PR03MB3943.eurprd03.prod.outlook.com
- ([fe80::fb3c:4931:e74e:c691%3]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
- 11:05:04 +0000
-From:   =?utf-8?B?QWx2aW4gxaBpcHJhZ2E=?= <ALSI@bang-olufsen.dk>
-To:     Justin Stitt <justinstitt@google.com>
-CC:     Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-Subject: Re: [PATCH] net: dsa: realtek: rtl8365mb: replace deprecated strncpy
- with ethtool_sprintf
-Thread-Topic: [PATCH] net: dsa: realtek: rtl8365mb: replace deprecated strncpy
- with ethtool_sprintf
-Thread-Index: AQHZ+wIbcwTMjUrkiUmY/MMUWpl2xrBC3TkA
-Date:   Tue, 10 Oct 2023 11:05:04 +0000
-Message-ID: <gcp232latw2qcszw47fpverzp5bw6jwcc7ktj3y2t3xlnwigff@n4lqte6u5eav>
-References: <20231009-strncpy-drivers-net-dsa-realtek-rtl8365mb-c-v1-1-0537fe9fb08c@google.com>
-In-Reply-To: <20231009-strncpy-drivers-net-dsa-realtek-rtl8365mb-c-v1-1-0537fe9fb08c@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bang-olufsen.dk;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AM6PR03MB3943:EE_|AS8PR03MB6728:EE_
-x-ms-office365-filtering-correlation-id: 156ab21a-41f2-49be-daf5-08dbc980c1c6
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: EOTl/xwlf7PnmD7H1M6V0r8JsR+fv8C15RyQsvHb7WR43EFPJuaaiLkFmC+gZSRPbyHvK0Eca8bgp+HqTMivcxwK/lUR7137llaNxL7iqo0Rp2Lkf3wtbUStD9ij9tG1117gUxEyM3Cnck0Is5oe+bJ0Br3ZnLnZpJS8lv/A9nyobtNEFZyXTXXbx/TwsqWAe8UB/EbQ5CqfyIEeAlmnUA9QiUHRJ1oabd/jqatkXGyo/utOjCOthAu8GLMobS05QY/44Fa3xTRuXvnOhKr6HzrAaoaEsTgVB86NLjZVYBjFZTXvW0137Tg22LTaRS20t9lMiK42qwkDHIKIuWChnm1DTPk2A5WfkQmsNB4G1ToaK2Q11C+nnDJQCSW9P6Kn8hUV6Uf9RNx1XeRmc60TqW1vwjyZpixprvePnOUUjBGdjaoeQoa2+4wlKukGX+o3fd8Lxe3oY+la0YtiLVY+jGBzLsw9xkUFUrL4EdKHwH34pPqg2NBBJWuKlh2Xfc883qXdv2aPy1V2TPKm52dRSO+lmPsCQirJryRQZdgn/LSVNs6H4/o4jw6/SkakjKsCRcb3mChb19J7saWOQa4CkVRYHRxx0kMMHu2nDtmfXe4=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR03MB3943.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(346002)(136003)(39850400004)(376002)(396003)(366004)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(85182001)(85202003)(71200400001)(478600001)(66574015)(33716001)(26005)(83380400001)(38070700005)(9686003)(122000001)(6512007)(6506007)(86362001)(2906002)(6486002)(966005)(38100700002)(41300700001)(5660300002)(66556008)(66446008)(66946007)(91956017)(66476007)(316002)(64756008)(6916009)(54906003)(8676002)(4326008)(8936002)(76116006)(7416002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dDhyVWR2ZVU4TTVrTnhFWGgzeVZJdjRKT0NkZnU0dVlRbjlsYnRxbzRiWEVH?=
- =?utf-8?B?VjdWWk0vRFY2djEwS1NFb2ZXYVluWm5TaEsrdGxSaS9IOWc1SmhDZVNhRDhZ?=
- =?utf-8?B?SEFhZytFVlIrT01IWmFHQVBHdmp1OCtGaHZPakpnVlJ5SjdiOGhzMWJaNnJp?=
- =?utf-8?B?Vy92STJ0cDVzQ2Fjc3FsU29tVlczUFUxajduU0wrRTRMdHAzVVVKVWJ5bTli?=
- =?utf-8?B?MWpuRWRpWEgzLzE0dXRYMkVMeTIzL3FuZmhwME13VzQ1ZU5lWm1WakRYZzJi?=
- =?utf-8?B?RmlDNkVEMTk0Ni83RXdFWlorM2FqZnBaRjVQMTVLRFBUeHlEL3NtMWwyYkRw?=
- =?utf-8?B?U3JMaTVQY2Y1TGdyM2xDZlNiajNEamhPeVo1dUVjR2NEMkp5VUc5bGlJRnlD?=
- =?utf-8?B?Ulh3Rm1acENKbEh2bmJjeTVRRThSWEw2MHVKTVBrbitWMDRVMDg4MEt0Wlpp?=
- =?utf-8?B?UDZWZ1N3Njcxcys5Z202NXlXRC9ONklsMEhkRUxxZUg3b1JJczQwN2UrU1Fa?=
- =?utf-8?B?RzMrNXFOV1FTMlhKSXdyWWxwa1dVT3N2QmtvMjlXT252ei9nMnQ4aXpqSEtt?=
- =?utf-8?B?K0xKWnFWb0xIVUZTRGxXeXp3Qm10Z2ljcFcrckhDOTlLZU9pc2dBUk80M09p?=
- =?utf-8?B?Mk10dCtoYlBEemZGNi9OOHdyZzR0S0IvaTQrVFhhbW53TkZvVjk2OWpLK3RN?=
- =?utf-8?B?L2pSQWNHZW12YmtxYjNiZXQ5NW9vS2ZmZ2JHNVNWeEhLQnd2SGhLUUdqTG1o?=
- =?utf-8?B?USs5VW13RUs3cm53dGhtd1labjJQdXUxYkF1ajU2ME5HVXJkTG5uMDV3bFFS?=
- =?utf-8?B?ZEJWN1duOHZSZ0Y2eVVzSTlHc3JoMmFCT0pHZ1llZXQ5QkpzME9Ybk94amZ6?=
- =?utf-8?B?dHVtNWs2QzRqNWJOWDRCb2NGYWlTL1lUN3o4d3cxQ21rL1VLckNRbURlbTV6?=
- =?utf-8?B?bHdSM0lDd3ZuOFp5MmR1Nnh0MktaZ0JzenlSbklLMmhSRkc1emowY1ExVzJN?=
- =?utf-8?B?aU1RSDNMd24rakZuN2pBbW9mblpvbHRPK2J3YTEyVE1UalBHVWkzU2E5ZzlN?=
- =?utf-8?B?TlFHdzlyUG1wZGgrYTk0bC9XeTkxTllneDBhOTN6WlNiT2pXS1haUWY3alpu?=
- =?utf-8?B?a0VIYUc5clBuemtnTkpkZjBCUjR4T1RLdzhSWjdXekJuWnJaNnlldC9vV0k3?=
- =?utf-8?B?MERPR1JQQ2NPdnpMaEptVVNZZlQ0SXMzNGNGQjZoRER4R0ZWOUhJY2I2a1JU?=
- =?utf-8?B?THRheGlreDBUU1lJUG9QYkZZa0ZJWGhXYUxHTFQvRUxoUDBmYnZUaFluRkEy?=
- =?utf-8?B?NWlkVFBRV1h2dVFNQ3RraFVkb3JqSVpLK1diZFlOU1B2aFp6RzF6amdjN04w?=
- =?utf-8?B?UFhQOWNkSTZBQXlDOGdFYTU5L005a2IxemZkOThNaTBSTXY2RXlqaDk3aDZJ?=
- =?utf-8?B?aGxscXhydFFhS2QxTHozRnltcjdaaWRrWkZIUkxRclZBa00ySzczTDY0dkFj?=
- =?utf-8?B?dU90TGRORnRvL1VIWTFackxvaWJYbG13SlNGbkNIR0NqdDR4UXFYUXpkNWd1?=
- =?utf-8?B?SWxtU3Q0Q3hyZm5kS1ZnZXZreWxDdm9pY3FoUUhTS3ROREZvTi93a3N2Vzhj?=
- =?utf-8?B?dFdIQkMrdmU5M1o5Vk1TY3pYYzJGc3hZSXRTKzc1TE9mcFpZZ0VpT3gyamRw?=
- =?utf-8?B?TUVWRUZ3Zmc3bHZLbEt6dWd6TmZzUUphK25SVUFOYWNiR2hpVVh0ZHk2SGpH?=
- =?utf-8?B?emo2eTFGNlB6YWxtNTdVenZJYTBMdHQveXZHRVB5MU03U1dMUzFEZFQ2WXlK?=
- =?utf-8?B?REJFeE5DclRESmhZZGJvZm9BbytTV0VRZ1dOTGNqYVk0Mjh2NGh0cWVzSkdI?=
- =?utf-8?B?dVJCbmh5Vk9DSjlKbjd2d0hrWUc0LytQaDB6WGFSdUJ2WTBTcEJnZjdzOGtz?=
- =?utf-8?B?clZWYzNKaS9Ic1pveUk2UERUYkhGbGhQY1BINnNPMVFWZXBZYXZ0dGFsck52?=
- =?utf-8?B?OTZSYTEzWUNVc0V5WFlvQWhSL0NwQlRjRDU5QXFOWjZpYmoyNDBPSVk3Z1Rm?=
- =?utf-8?B?VVp4RHRkTzZtRGtlRlYzRkZPbDVvdURBZ0MzTTRwV1dyL1d5aGtWOEhYODkw?=
- =?utf-8?Q?TD5BD8EopbeDtfx8K6vaNhsav?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <36D414BC04F399449DC165FAC2D57080@eurprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Tue, 10 Oct 2023 07:07:11 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84BEDA4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 04:07:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696936028; x=1728472028;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=9FJub4UcvGgu+oorE62JwYE9DpYTagtbsI1/NwkqTak=;
+  b=RpnNaMk5ODKLFuJZwexYEPJ+h/FyP7ngcxoVT+WpDJVz7N7ma+98V4Hn
+   FxtbUS/dOqPSU6TxQ9q8bMkuHFaodNJ3zKYeg8KMWtwKV/6qbfm4c5qoj
+   iMIAxzxH80vCufcG6AXY7NWPws3EifOSc8KjS6YY7ape/hBt+2y7GO70K
+   I4eg7ZWUTXQUZkb6QmH5enm+eVsPYG6kYV8026veHStYm0eBG/K1sIiHj
+   uUg57jm3m+eggufke0KgKPGbnzSWabFTy78yXUwu/2/Q9ansztDjgA5S/
+   Fkt/gZI53IrSAoNTb5lE6jIEiai9lianEU+8xGQlJ84dIqXk/LFOG0k0s
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="387203891"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="387203891"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 04:06:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="757074653"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="757074653"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 10 Oct 2023 04:06:39 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qqAZQ-0000IG-1y;
+        Tue, 10 Oct 2023 11:06:36 +0000
+Date:   Tue, 10 Oct 2023 19:06:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sidhartha Kumar <sidhartha.kumar@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        maple-tree@lists.infradead.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        akpm@linux-foundation.org, willy@infradead.org,
+        liam.howlett@oracle.com, zhangpeng.00@bytedance.com,
+        Sidhartha Kumar <sidhartha.kumar@oracle.com>
+Subject: Re: [PATCH 1/3] maple_tree: introduce mas_prealloc_calc()
+Message-ID: <202310101854.kMSUyzOr-lkp@intel.com>
+References: <20231009201639.920512-2-sidhartha.kumar@oracle.com>
 MIME-Version: 1.0
-X-OriginatorOrg: bang-olufsen.dk
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB3943.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 156ab21a-41f2-49be-daf5-08dbc980c1c6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Oct 2023 11:05:04.6895
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 210d08b8-83f7-470a-bc96-381193ca14a1
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: XQjUf/oNG4bJJwH3JL+hZe8J8sfYwpw8soNgxoxbsyQ79f4rL8RIoEG7j/03VddBdFEIXMrJm/C5e8gjoQKkGA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR03MB6728
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231009201639.920512-2-sidhartha.kumar@oracle.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCBPY3QgMDksIDIwMjMgYXQgMTA6NDM6NTlQTSArMDAwMCwgSnVzdGluIFN0aXR0IHdy
-b3RlOg0KPiBbWW91IGRvbid0IG9mdGVuIGdldCBlbWFpbCBmcm9tIGp1c3RpbnN0aXR0QGdvb2ds
-ZS5jb20uIExlYXJuIHdoeSB0aGlzIGlzIGltcG9ydGFudCBhdCBodHRwczovL2FrYS5tcy9MZWFy
-bkFib3V0U2VuZGVySWRlbnRpZmljYXRpb24gXQ0KPiANCj4gYHN0cm5jcHlgIGlzIGRlcHJlY2F0
-ZWQgZm9yIHVzZSBvbiBOVUwtdGVybWluYXRlZCBkZXN0aW5hdGlvbiBzdHJpbmdzDQo+IFsxXSBh
-bmQgYXMgc3VjaCB3ZSBzaG91bGQgcHJlZmVyIG1vcmUgcm9idXN0IGFuZCBsZXNzIGFtYmlndW91
-cyBzdHJpbmcNCj4gaW50ZXJmYWNlcy4NCj4gDQo+IGV0aHRvb2xfc3ByaW50ZigpIGlzIGRlc2ln
-bmVkIHNwZWNpZmljYWxseSBmb3IgZ2V0X3N0cmluZ3MoKSB1c2FnZS4NCj4gTGV0J3MgcmVwbGFj
-ZSBzdHJuY3B5IGluIGZhdm9yIG9mIHRoaXMgbW9yZSByb2J1c3QgYW5kIGVhc2llciB0bw0KPiB1
-bmRlcnN0YW5kIGludGVyZmFjZS4NCj4gDQo+IExpbms6IGh0dHBzOi8vd3d3Lmtlcm5lbC5vcmcv
-ZG9jL2h0bWwvbGF0ZXN0L3Byb2Nlc3MvZGVwcmVjYXRlZC5odG1sI3N0cm5jcHktb24tbnVsLXRl
-cm1pbmF0ZWQtc3RyaW5ncyBbMV0NCj4gTGluazogaHR0cHM6Ly9tYW5wYWdlcy5kZWJpYW4ub3Jn
-L3Rlc3RpbmcvbGludXgtbWFudWFsLTQuOC9zdHJzY3B5LjkuZW4uaHRtbCBbMl0NCj4gTGluazog
-aHR0cHM6Ly9naXRodWIuY29tL0tTUFAvbGludXgvaXNzdWVzLzkwDQo+IENjOiBsaW51eC1oYXJk
-ZW5pbmdAdmdlci5rZXJuZWwub3JnDQo+IFNpZ25lZC1vZmYtYnk6IEp1c3RpbiBTdGl0dCA8anVz
-dGluc3RpdHRAZ29vZ2xlLmNvbT4NCg0KUmV2aWV3ZWQtYnk6IEFsdmluIMWgaXByYWdhIDxhbHNp
-QGJhbmctb2x1ZnNlbi5kaz4NCg0KPiAtLS0NCj4gTm90ZTogYnVpbGQtdGVzdGVkIG9ubHkuDQo+
-IC0tLQ0KPiAgZHJpdmVycy9uZXQvZHNhL3JlYWx0ZWsvcnRsODM2NW1iLmMgfCAzICstLQ0KPiAg
-MSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAyIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2RzYS9yZWFsdGVrL3J0bDgzNjVtYi5jIGIvZHJpdmVycy9u
-ZXQvZHNhL3JlYWx0ZWsvcnRsODM2NW1iLmMNCj4gaW5kZXggNDFlYTNiNWE0MmIxLi5kMTcxYzE4
-ZGQzNTQgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbmV0L2RzYS9yZWFsdGVrL3J0bDgzNjVtYi5j
-DQo+ICsrKyBiL2RyaXZlcnMvbmV0L2RzYS9yZWFsdGVrL3J0bDgzNjVtYi5jDQo+IEBAIC0xMzAz
-LDggKzEzMDMsNyBAQCBzdGF0aWMgdm9pZCBydGw4MzY1bWJfZ2V0X3N0cmluZ3Moc3RydWN0IGRz
-YV9zd2l0Y2ggKmRzLCBpbnQgcG9ydCwgdTMyIHN0cmluZ3NldA0KPiANCj4gICAgICAgICBmb3Ig
-KGkgPSAwOyBpIDwgUlRMODM2NU1CX01JQl9FTkQ7IGkrKykgew0KPiAgICAgICAgICAgICAgICAg
-c3RydWN0IHJ0bDgzNjVtYl9taWJfY291bnRlciAqbWliID0gJnJ0bDgzNjVtYl9taWJfY291bnRl
-cnNbaV07DQo+IC0NCj4gLSAgICAgICAgICAgICAgIHN0cm5jcHkoZGF0YSArIGkgKiBFVEhfR1NU
-UklOR19MRU4sIG1pYi0+bmFtZSwgRVRIX0dTVFJJTkdfTEVOKTsNCj4gKyAgICAgICAgICAgICAg
-IGV0aHRvb2xfc3ByaW50ZigmZGF0YSwgIiVzIiwgbWliLT5uYW1lKTsNCj4gICAgICAgICB9DQo+
-ICB9DQo+IA0KPiANCj4gLS0tDQo+IGJhc2UtY29tbWl0OiBjYmYzYTJjYjE1NmEyYzkxMWQ4ZjM4
-ZDgyNDc4MTRiNGMwN2Y0OWEyDQo+IGNoYW5nZS1pZDogMjAyMzEwMDktc3RybmNweS1kcml2ZXJz
-LW5ldC1kc2EtcmVhbHRlay1ydGw4MzY1bWItYy1iYjEwNmU0YzExMGMNCj4gDQo+IEJlc3QgcmVn
-YXJkcywNCj4gLS0NCj4gSnVzdGluIFN0aXR0IDxqdXN0aW5zdGl0dEBnb29nbGUuY29tPg0KPg==
+Hi Sidhartha,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on akpm-mm/mm-everything]
+[also build test WARNING on linus/master v6.6-rc5 next-20231010]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Sidhartha-Kumar/maple_tree-introduce-mas_prealloc_calc/20231010-041859
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20231009201639.920512-2-sidhartha.kumar%40oracle.com
+patch subject: [PATCH 1/3] maple_tree: introduce mas_prealloc_calc()
+config: um-allnoconfig (https://download.01.org/0day-ci/archive/20231010/202310101854.kMSUyzOr-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231010/202310101854.kMSUyzOr-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310101854.kMSUyzOr-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> lib/maple_tree.c:5428:5: warning: no previous prototype for function 'mas_prealloc_calc' [-Wmissing-prototypes]
+    5428 | int mas_prealloc_calc(struct ma_wr_state *wr_mas)
+         |     ^
+   lib/maple_tree.c:5428:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+    5428 | int mas_prealloc_calc(struct ma_wr_state *wr_mas)
+         | ^
+         | static 
+   lib/maple_tree.c:348:21: warning: unused function 'mte_set_full' [-Wunused-function]
+     348 | static inline void *mte_set_full(const struct maple_enode *node)
+         |                     ^
+   lib/maple_tree.c:353:21: warning: unused function 'mte_clear_full' [-Wunused-function]
+     353 | static inline void *mte_clear_full(const struct maple_enode *node)
+         |                     ^
+   lib/maple_tree.c:358:20: warning: unused function 'mte_has_null' [-Wunused-function]
+     358 | static inline bool mte_has_null(const struct maple_enode *node)
+         |                    ^
+   lib/maple_tree.c:689:29: warning: unused function 'mas_pivot' [-Wunused-function]
+     689 | static inline unsigned long mas_pivot(struct ma_state *mas, unsigned char piv)
+         |                             ^
+   lib/maple_tree.c:4201:20: warning: stack frame size (1032) exceeds limit (1024) in 'mas_wr_modify' [-Wframe-larger-than]
+    4201 | static inline void mas_wr_modify(struct ma_wr_state *wr_mas)
+         |                    ^
+   6 warnings generated.
+
+
+vim +/mas_prealloc_calc +5428 lib/maple_tree.c
+
+  5420	
+  5421	/**
+  5422	 * mas_prealloc_calc() - Calculate number of nodes needed for a
+  5423	 * store operation.
+  5424	 * @wr_mas: The maple write state
+  5425	 *
+  5426	 * Return: Number of nodes required for preallocation.
+  5427	 */
+> 5428	int mas_prealloc_calc(struct ma_wr_state *wr_mas)
+  5429	{
+  5430		struct ma_state *mas = wr_mas->mas;
+  5431		unsigned char node_size;
+  5432	
+  5433		if (unlikely(!mas->index && mas->last == ULONG_MAX))
+  5434			return 1;
+  5435	
+  5436		/* Root expand */
+  5437		if (unlikely(mas_is_none(mas) || mas_is_ptr(mas)))
+  5438			return 1;
+  5439	
+  5440		if (unlikely(!mas_wr_walk(wr_mas))) {
+  5441			/* Spanning store, use worst case for now */
+  5442			return 1 + mas_mt_height(mas) * 3;
+  5443		}
+  5444	
+  5445		/* At this point, we are at the leaf node that needs to be altered. */
+  5446		/* Exact fit, no nodes needed. */
+  5447		if (wr_mas->r_min == mas->index && wr_mas->r_max == mas->last)
+  5448			return 0;
+  5449	
+  5450		mas_wr_end_piv(wr_mas);
+  5451		node_size = mas_wr_new_end(wr_mas);
+  5452		if (node_size >= mt_slots[wr_mas->type]) {
+  5453			/* Split, worst case for now. */
+  5454			return 1 + mas_mt_height(mas) * 2;
+  5455		}
+  5456	
+  5457		/* New root needs a singe node */
+  5458		if (unlikely(mte_is_root(mas->node)))
+  5459			return 1;
+  5460	
+  5461		/* Potential spanning rebalance collapsing a node, use worst-case */
+  5462		if (node_size  - 1 <= mt_min_slots[wr_mas->type])
+  5463			return mas_mt_height(mas) * 2 - 1;
+  5464	
+  5465		/* node store, slot store needs one node */
+  5466		return 1;
+  5467	}
+  5468	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
