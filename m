@@ -2,147 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB5F7C0107
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F4A17C012D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233619AbjJJQDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 12:03:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54136 "EHLO
+        id S234046AbjJJQGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 12:06:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233597AbjJJQDM (ORCPT
+        with ESMTP id S233977AbjJJQF5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 12:03:12 -0400
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2043.outbound.protection.outlook.com [40.107.13.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28EF7D6;
-        Tue, 10 Oct 2023 09:03:08 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LvYB+tu94G/KwNRaA4JMkVXoty8hFo4mVpyUCCbR2ARYpE0Zf3yzq83u7MLb4CBP9gNUkJcA8RfApO/QjcfrDiItI4hXpXFDRU8TZyOKW8oXE054b4On9s7r/x6h6EQVoBnd6N2+G84WNMHxx5QphQ0LEZpWptX+aLAgmkGu6fDS7A925gXO7S7YJYHf3yCBz5/Q2u2qVUfpOa/2i4xSPWEfEDvlopUSL7MuBSHnMmXqZC51MkN9JS3GLb+EnhUzCJ3GuA/VhkLwB+Uq4Yhp1AhqPBLcGqxlBiCz9QIODDeYsaHaplVxK4Q2XA/+miQHEzgH4JcgiGnShofKpaxLSw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ipg9p20F3+8v6FSXXLuGS/+nbNyPLkLEcrm6HhSyKpo=;
- b=e5e+KyAtomhqRLdyvuCVXcfvJIvQ96Zhaukdx8HpsFpJUrI811stYvkP5YqCJpZRY1dqkAjQ5GFfEuJmX7yEvJ8kGQLTUTWwly3VNdzoVbsrROma1n9Nz8NgGf7hIn6DC/vqlX852vGszGV3moRvaKm+2ggwoRa1oRGwMMfVCWqyCBxGfJb1NOhTaVEI7ARkzvwhCWY4mZBuqCz6taeH9NcEV9aw4grFDwDBPRYYpT4k7bHfN4nS+ZVE80ckOyC3vXy2yQujFKNQcDMDfEbHBYKYM4actXozMraJg6SeWkc280VNzVmE3I5F6Ft+cqbPtrJM+deVDvScV0GKApSywA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ipg9p20F3+8v6FSXXLuGS/+nbNyPLkLEcrm6HhSyKpo=;
- b=iYqEpVbiHCeLMQH8MAB/hwRP6+/8O61/7+vAnbTU5wdgvySk+1CU6Hm8QFK3Jop6R5v+lz5wlBoHRu+Fi/sD9T7h55sHyyGWOGW+HVbD2NxrOsNUNC9Ye7CVEB6L8ruDo6Nueu2LljQNG1MHh3rJYNwjH6UYTxriVBJzThuCzZg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by AM8PR04MB8020.eurprd04.prod.outlook.com (2603:10a6:20b:244::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Tue, 10 Oct
- 2023 16:03:05 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
- 16:03:04 +0000
-Date:   Tue, 10 Oct 2023 12:02:56 -0400
-From:   Frank Li <Frank.li@nxp.com>
-To:     Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc:     hch@infradead.org, bhelgaas@google.com,
-        christophe.jaillet@wanadoo.fr, imx@lists.linux.dev, kw@linux.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        minghuan.Lian@nxp.com, mingkai.hu@nxp.com, robh@kernel.org,
-        roy.zang@nxp.com
-Subject: Re: [PATCH v3 1/1] PCI: layerscape-ep: set 64-bit DMA mask
-Message-ID: <ZSV1sINV/2GrAYFr@lizhi-Precision-Tower-5810>
-References: <20230926140445.3855365-1-Frank.Li@nxp.com>
- <169695244699.95067.12901655371819245761.b4-ty@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <169695244699.95067.12901655371819245761.b4-ty@kernel.org>
-X-ClientProxiedBy: BY3PR03CA0008.namprd03.prod.outlook.com
- (2603:10b6:a03:39a::13) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+        Tue, 10 Oct 2023 12:05:57 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8544AD49
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:05:07 -0700 (PDT)
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+        by mailout.nyi.internal (Postfix) with ESMTP id 1F5085C0345;
+        Tue, 10 Oct 2023 12:05:04 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute7.internal (MEProxy); Tue, 10 Oct 2023 12:05:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=devkernel.io; h=
+        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1696953904; x=1697040304; bh=LR
+        mEqSI1v8tnpczO9tpOdCQmOVzZGNRUA1zFNRHlG4A=; b=aLZX01VoyGNxYqS25a
+        L+z6C1EOK65j3yv/t5Hz/kO9ZusGEXX3+RneAwGD1da1wvjG106xYjxHE2tdjmVm
+        9jGHYPKyoQpX6wOrTbAnCY1zeF6zfIKQmRvsNRsqRDfG3lugPW/tmvOuElII7auD
+        aBoiAjYIGmdKmWBY3Zv8OcSc0fbxFT3/14upW0nHf6c/H4Wj1a7lq1uMRA0tlMZD
+        +vxvffliAjaXwN9VPLLQO9R6Smh87lNQ+Yz/03diZkY/XWPEvBBPovsRB9aoiiX+
+        Uk2vVRhguocgHrvLdtJnKILNJDG8T3TuMJhl63lulsg8jwevJ2II09D/kMYCxiqP
+        dcXg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1696953904; x=1697040304; bh=LRmEqSI1v8tnp
+        czO9tpOdCQmOVzZGNRUA1zFNRHlG4A=; b=OrqZmIXGRKEXdb5GXLkEgBGsgzgzm
+        Q51aZV43gYC2BUEmnrxjNfllqR+uyqs1BTCOqb6cYszo4NRP2xte6B9IuEtAFXEZ
+        pf/cvaxuEdgXc+l+GiWiF64wx+UJZbSAdqkR3RgkFvEEyaccYcw74U1Kn06K2gPr
+        M6Zr3pYHXE3f26N9Iy/5pq7ZMgL8A5z8Q1O6JIUXndqPbQZKQfMJ+h8GSCkloeui
+        S0Rz6cNVFQY6r3/j/57+9cjUZNFQMw2eQkFJmhdZHl4cSNg5tNUv/fIzjMtglndo
+        S+aClrji4bJ+UnDu5nsYpCl/bbfDB7ebvCieMqIy7pbUbGnnCqyYFB2+A==
+X-ME-Sender: <xms:L3YlZXv3t-DJ_ySC28v3CKqXpm0t_zbId7QL4zkLXEMKC4tDH9VbVw>
+    <xme:L3YlZYf9Bg71Avq33pP4n7BjcECadF0ZB0Vd3RVUibGr5nC0o6xy2XcwrgjZp7ghj
+    G9xRsQsEpVjpiIB74Y>
+X-ME-Received: <xmr:L3YlZayUlQJSAve7BFtewxlbkM_TbsuNWbjDIgRqOvpe3-cncphsrHKv>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrheehgdelgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpehffgfhvfevufffjgfkgggtsehttdertddtredtnecuhfhrohhmpefuthgvfhgr
+    nhcutfhovghstghhuceoshhhrhesuggvvhhkvghrnhgvlhdrihhoqeenucggtffrrghtth
+    gvrhhnpeevlefggffhheduiedtheejveehtdfhtedvhfeludetvdegieekgeeggfdugeeu
+    tdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehshh
+    hrseguvghvkhgvrhhnvghlrdhioh
+X-ME-Proxy: <xmx:L3YlZWNBtvhIj_1StxFj79Z0UkRaIc2Bp0aKC18pqEqTH1BDu-rp1A>
+    <xmx:L3YlZX-N4AHfGWT_toCt963sWFHWSbsby82zNzZXhYEZvrtXO5x9hw>
+    <xmx:L3YlZWX1tp8tU2RmneKdFjMQvDp5HG5Ab1HsSbqyD22BGXRpYywoSA>
+    <xmx:MHYlZSllQp-1U234jsAC46FZhFca6jT9JcbFXh57ocu1g6fpD3eFaQ>
+Feedback-ID: i84614614:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 10 Oct 2023 12:05:00 -0400 (EDT)
+References: <20231004190249.829015-1-shr@devkernel.io>
+ <4509a3b4-16a6-f63e-1dd5-e20c7eadf87d@redhat.com>
+ <87fs2nhg14.fsf@devkernel.io>
+ <d9e28b8a-dc03-42cf-a6f8-69b2d993cc8d@redhat.com>
+User-agent: mu4e 1.10.3; emacs 29.1
+From:   Stefan Roesch <shr@devkernel.io>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     kernel-team@fb.com, akpm@linux-foundation.org, hannes@cmpxchg.org,
+        riel@surriel.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 0/4] mm/ksm: Add ksm advisor
+Date:   Tue, 10 Oct 2023 09:02:38 -0700
+In-reply-to: <d9e28b8a-dc03-42cf-a6f8-69b2d993cc8d@redhat.com>
+Message-ID: <87bkd61n12.fsf@devkernel.io>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AM8PR04MB8020:EE_
-X-MS-Office365-Filtering-Correlation-Id: 16880fa5-f364-4a33-55ad-08dbc9aa6317
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xSWDK2QRKHFr73B1HBSQXAZMrVBIxrWK/SLj4P9fqXC/SV7DKGf9p/ywh9o/1+NssliQEYOB1f0SLxFhTl37hT2o6+UYZb4muzRnrGqT88Hw0/YeILGLcReKHCACQmWh1ZZcdFkFrBZ6RRrXiNjQMXFelQhEZuWlE+8qBMCAj/mYicZEPRTizs08YUa3PGRz8pUe54ggtLqYoI0q0RvfbX+ty6pV4WNTeI433s2ys1STuZW9NSisXyw2OY+7qksjlXGofB7VS23kvKjFT7OqjlzYkoGxaLeZy9ooJmVPz8HMsAukh4V4PdDp4mEnRuC5cShS6KOtQZl9IBxGumlWtqySOh7P/JbhVqCa0wuUGlfGME5q6aD9mkJ6FAPKGk7TK+iUrprGiz6Wm+5is4i3QAwgp+C2aQP4iQpf9OqYXd3RKywXtyJxRWqvZnY5pHFiHkB+/saBmZTVpDfOAwmmVk2ggPpO9WQYCO9lZfnEko59CtNFZ2JTZVo0n4kttCIvot4Je5UhlDoYYz7dhTb5UQzUADg57aWSnJ7XeW9Pv1THLIkxB/pReaTg4qpnEXK9iQyFeg7QadcKHdyrJYHDjKWZreGIsK/b+9xjflJQ5j4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(39860400002)(366004)(346002)(396003)(376002)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(316002)(66476007)(66556008)(66946007)(6916009)(966005)(6486002)(41300700001)(5660300002)(7416002)(8936002)(4326008)(8676002)(4744005)(2906002)(33716001)(52116002)(6512007)(9686003)(86362001)(26005)(38350700002)(38100700002)(478600001)(6666004)(6506007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?7UOE7Emq+QjSvPA0zzTnSeiv9fbCjllTpXLzyz2hSEWuzXBXjW9y4eL6t/Yt?=
- =?us-ascii?Q?6IkoqbGUKLUEm/zCUVgFh8ci4CjXxMF6VF186X6xSWB0zA71h9zcI6v6RUVL?=
- =?us-ascii?Q?9mckPZhtwuYtHg6Xyj0PLCLhIOiWPxhGH1iJ46Ap3xRJc8xYk3zGLVxjiZ1o?=
- =?us-ascii?Q?ATCwMAeHihF+1Zs96FM9f7BfhgxGMXlFGzjSYvxeDv/36r7qFE61fWTkY1zu?=
- =?us-ascii?Q?sgObKdx7E2x4QTX6laXaDYaX5QVc7UrIPWYRKmfx+7b+GjrHeD/yuBl94uZR?=
- =?us-ascii?Q?Ut7ZzOS60Eba0AlfCbe+V2LPLuPkpAFLBDqrztoQI5GFAStt/O5oSmBN4RHp?=
- =?us-ascii?Q?XymwrtOYt5GfZekOoaRJ8uCSAk9AtL9E90cCrmeLn/Tt2Uo/gMa/FUIQ3gva?=
- =?us-ascii?Q?03mvGMoq/8YNKRgCKOb+XioXPpF2poDG7Vfi+2QoJeNb73zvId1+neg1tJfE?=
- =?us-ascii?Q?QdOmPXwub0e72BzE1QAsLxu67/gf3ws1x4mhdEOo+QElsvtjlvbbonbgDFya?=
- =?us-ascii?Q?KHp0SYKiDyI8af9KssSZzXYL5K/5UiQsihqWITOkahY1bDn0/NVsVFgqrMNp?=
- =?us-ascii?Q?vCBUNo6RuwScEWgQGH0k1skvVKCJZIfmszAGi1zmiJfjjMe1j7nIGpP1WqEX?=
- =?us-ascii?Q?XvEp+1Yd39ezARDtyvf8qy0hojXfItEAcuE0fHcR32gXiJS9Z2DPJu9TvrSp?=
- =?us-ascii?Q?q+2rygpbXiqqSjOn3ToRnPWsdBtVXkNCmrEqWxJXuhtxTxaD9V7ws1Zkyo4Z?=
- =?us-ascii?Q?v9EdHS3xUe5KKmCNopWvyp8q/IDcUfcBn/lW6MRaiRQajUKpBK96eL4gYM7F?=
- =?us-ascii?Q?uiYGr2OtIBQCZI2QU+ddvW95uBKggM21VCi1D72/6F1CGLgJheFtwXoLOG5I?=
- =?us-ascii?Q?JYNgBtvVA3MOjtulBWVv/sFW16IhSjv+e8FBjK1juY7DDlVZ54CloFz4XUrO?=
- =?us-ascii?Q?NDbBW3U95k3J2LtPrKuvfd7iQuTTcy9GyX5eYqgA6GhV5dHg8ZOwi/W9V1D/?=
- =?us-ascii?Q?asn4vXWESxt4yZuqKSDfa1qgy4nHkTHYpAeBbj12gvHZCflMrBBwGfqGaXrt?=
- =?us-ascii?Q?J/CVJ/tJcUvkfe49/hz4CAisiy6rDN77V0xp9kkpiU0nb+UxBufDQsdnGmpt?=
- =?us-ascii?Q?dcGvJ0PQZPVHhxFWDTHqxUilzyhxryRl3P3zvqU/rJL/vXwQtxCkiAwG9+/S?=
- =?us-ascii?Q?eEuXXHXjuhzNbwYpdy7zgHj+2H87oNGoFkt9sJav6f+ye3LgnKCHXWYddNdR?=
- =?us-ascii?Q?S0P4DUSi/R8nE4aXo4nUPMWvGc4UvzqQp+fuqZ5I4yX5u0hLa43zGcOIvxO3?=
- =?us-ascii?Q?ID0HqI59BvbhcGNt5/PI7kPl2v160dXbukENQp+GG4MthCkAiOTpIWuUwMzV?=
- =?us-ascii?Q?2BQwk0X5BBiTePKhTT2Oe0lCrQJyNtKXc5YGmtkTWJjokaqdlHOe7zZ+6GSU?=
- =?us-ascii?Q?7hrSLm3r6sZDpw78Vvk2GSaAZXLKIgIHHxEY9t65RRJrkC1wlrOWr4RL+X/U?=
- =?us-ascii?Q?LmHVgyULRk+rnf3oWUu8ptAfoduvKMeGD+yunA8PUiTT3tHziKx2x0DEkhv/?=
- =?us-ascii?Q?NX6yTRZtcH11QlpvtrI4MKkrQBhFvZY8KSriNtYA?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 16880fa5-f364-4a33-55ad-08dbc9aa6317
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 16:03:04.8310
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JoFCt/0PlHcYIDxLXUj0yEkop+N0YIxm/aoBVIsQPMUA3XAKhw/OKcD+XX0aSQvoUEzaUINAD5OFaiAJU8OT7A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB8020
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 05:44:23PM +0200, Lorenzo Pieralisi wrote:
-> On Tue, 26 Sep 2023 10:04:45 -0400, Frank Li wrote:
-> > Set DMA mask and coherent DMA mask to enable 64-bit addressing.
-> > 
-> > 
-> 
-> Read this:
-> https://lore.kernel.org/linux-pci/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com
-> 
-> Find the issue with the commit log (that I fixed).
 
-Do you means "set" should be "Set"?
+David Hildenbrand <david@redhat.com> writes:
 
-Frank
+> On 06.10.23 18:17, Stefan Roesch wrote:
+>> David Hildenbrand <david@redhat.com> writes:
+>>
+>>> On 04.10.23 21:02, Stefan Roesch wrote:
+>>>> What is the KSM advisor?
+>>>> =========================
+>>>> The ksm advisor automatically manages the pages_to_scan setting to
+>>>> achieve a target scan time. The target scan time defines how many seconds
+>>>> it should take to scan all the candidate KSM pages. In other words the
+>>>> pages_to_scan rate is changed by the advisor to achieve the target scan
+>>>> time.
+>>>> Why do we need a KSM advisor?
+>>>> ==============================
+>>>> The number of candidate pages for KSM is dynamic. It can often be observed
+>>>> that during the startup of an application more candidate pages need to be
+>>>> processed. Without an advisor the pages_to_scan parameter needs to be
+>>>> sized for the maximum number of candidate pages. With the scan time
+>>>> advisor the pages_to_scan parameter based can be changed based on demand.
+>>>> Algorithm
+>>>> ==========
+>>>> The algorithm calculates the change value based on the target scan time
+>>>> and the previous scan time. To avoid pertubations an exponentially
+>>>> weighted moving average is applied.
+>>>> The algorithm has a max and min
+>>>> value to:
+>>>> - guarantee responsiveness to changes
+>>>> - to avoid to spend too much CPU
+>>>> Parameters to influence the KSM scan advisor
+>>>> =============================================
+>>>> The respective parameters are:
+>>>> - ksm_advisor_mode
+>>>>     0: None (default), 1: scan time advisor
+>>>> - ksm_advisor_target_scan_time
+>>>>     how many seconds a scan should of all candidate pages take
+>>>> - ksm_advisor_min_pages
+>>>>     minimum value for pages_to_scan per batch
+>>>> - ksm_advisor_max_pages
+>>>>     maximum value for pages_to_scan per batch
+>>>> The parameters are exposed as knobs in /sys/kernel/mm/ksm.
+>>>> By default the scan time advisor is disabled.
+>>>
+>>> What would be the main reason to not have this enabled as default?
+>>>
+>> There might be already exisiting users which directly set pages_to_scan
+>> and tuned the KSM settings accordingly, as the default setting of 100 for
+>> pages_to_scan is too low for typical workloads.
+>
+> Good point.
+>
+>>
+>>> IIUC, it is kind-of an auto-tuning of pages_to_scan. Would "auto-tuning"
+>>> describe it better than "advisor" ?
+>>>
+>>> [...]
+>>>
+>> I'm fine with auto-tune. I was also thinking about that name, but I
+>> chose advisor, its a bit less strong and it needs input from the user.
+>>
+>
+> I'm not a native speaker, but "adviser" to me implies that no action is taken,
+> only advises are given :) But again, no native speaker.
+>
+>>>> How is defining a target scan time better?
+>>>> ===========================================
+>>>> For an administrator it is more logical to set a target scan time.. The
+>>>> administrator can determine how many pages are scanned on each scan.
+>>>> Therefore setting a target scan time makes more sense.
+>>>> In addition the administrator might have a good idea about the
+>>>> memory sizing of its respective workloads.
+>>>
+>>> Is there any way you could imagine where we could have this just do something
+>>> reasonable without any user input? IOW, true auto-tuning?
+>>>
+>> True auto-tuning might be difficult as users might want to be able to
+>> choose how aggressive KSM is. Some might want it to be as aggressive as
+>> possible to get the maximum de-duplication rate. Others might want a
+>> more balanced approach that takes CPU-consumption into consideration.
+>> I guess it depends if you are memory-bound, cpu-bound or both.
+>
+> Agreed, more below.
+>
+>>
+>>> I read above:
+>>>> - guarantee responsiveness to changes
+>>>> - to avoid to spend too much CPU
+>>>
+>>> whereby both things are accountable/measurable to use that as the input for
+>>> auto-tuning?
+>>>
+>> I'm not sure a true auto-tuning can be achieved. I think we need
+>> some input from the user
+>> - How much resources to consume
+>> - How fast memory changes or how stable memory is
+>>    (this we might be able to detect)
+>
+> Setting the pages_to_scan is a bit mystical. Setting upper/lower pages_to_scan
+> bounds is similarly mystical, and highly workload dependent.
+>
+> So I agree that a better abstraction to automatically tune the scanning is
+> reasonable. I wonder if we can let the user give better inputs that are less
+> workload dependent.
+>
+> For example, do we need min/max values for pages_to_scan, or can we replace it
+> by something better to the auto-tuning algorithm?
+>
+> IMHO "target scan time" goes into the right direction, but it can still be
+> fairly workload dependent. Maybe a "max CPU consumption" or sth. like that would
+> similarly help to limit CPU waste, and it could be fairly workload dependent.
 
-> 
-> This does not apply to v6.6-rc1 so I tweaked it,
-> check that everything is OK please.
-> 
-> Applied to controller/layerscape, thanks!
-
-Thanks, everthing is good!
-
-> 
-> [1/1] PCI: layerscape-ep: set 64-bit DMA mask
->       https://git.kernel.org/pci/pci/c/81ef01bc5934
-> 
-> Thanks,
-> Lorenzo
+I can look into replacing min/max values for pages_to_scan with min/max
+cpu utilization. This might be easier for users to decide on. However I
+still think that we need a target value like scan time to optimize for.
