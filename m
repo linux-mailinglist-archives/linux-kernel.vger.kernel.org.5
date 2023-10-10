@@ -2,111 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A177BF75C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 11:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C26507BF75F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 11:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230129AbjJJJcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 05:32:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42012 "EHLO
+        id S230210AbjJJJcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 05:32:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbjJJJcF (ORCPT
+        with ESMTP id S229568AbjJJJcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 05:32:05 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89E3793;
-        Tue, 10 Oct 2023 02:32:04 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92338C433C7;
-        Tue, 10 Oct 2023 09:32:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696930324;
-        bh=RI4PKFKZirN9lXwh+R0Gc+kBsD9aM9F0KDe9jwrQRh8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r1A0ZUD435XGZf7Tq/wvizauSlKFROKpQiXdfZdJYqDlNkwrEOP6xjPCSRpHjkCl6
-         6kxmoPQq4Q7/fXCbvpno0v2m+j2NK7cLUmpzDILoJ2yjaTgz4hiEuDv05+/rRr+sSq
-         0Ju2cilIMUOb6a41l/oR/PC0ERiS+bH4QcWcQNJZQVY6+q2W1FAJtyRS8FE7lXBof7
-         iZB+B4pHzDebMf4vcqV6qPVwaJahlVd46ioUffYdmbfYJfiIepdV+/vFpIZ+a+qoaB
-         alrs/K8E8W4CH4zQXMrbS46C8IRScPVWZw7yVkhXMLMOfBEwx1uRLdRvjXroBRq7hc
-         uPS4MBgmi0U5g==
-Date:   Tue, 10 Oct 2023 11:31:56 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Lakshmi Yadlapati <lakshmiy@us.ibm.com>
-Cc:     linux@roeck-us.net, sumit.semwal@linaro.org,
-        christian.koenig@amd.com, jdelvare@suse.com, joel@jms.id.au,
-        andrew@aj.id.au, eajames@linux.ibm.com, ninad@linux.ibm.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v1 0/2] [PATCH] hwmon: (pmbus/max31785) Add minimum delay
- between bus accesses
-Message-ID: <ZSUaDIfWmEn5edrE@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Lakshmi Yadlapati <lakshmiy@us.ibm.com>, linux@roeck-us.net,
-        sumit.semwal@linaro.org, christian.koenig@amd.com,
-        jdelvare@suse.com, joel@jms.id.au, andrew@aj.id.au,
-        eajames@linux.ibm.com, ninad@linux.ibm.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <20231009211420.3454026-1-lakshmiy@us.ibm.com>
+        Tue, 10 Oct 2023 05:32:08 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24CBC93
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 02:32:06 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S4Vt76ML3ztT2L;
+        Tue, 10 Oct 2023 17:27:27 +0800 (CST)
+Received: from [10.67.121.177] (10.67.121.177) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 10 Oct 2023 17:32:03 +0800
+CC:     <chenhao418@huawei.com>, <shenjian15@huawei.com>,
+        <wangjie125@huawei.com>, <liuyonglong@huawei.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH drivers/perf: hisi:] drivers/perf: hisi: fix NULL pointer
+ issue when uninstall hns3 pmu driver
+To:     Jijie Shao <shaojijie@huawei.com>, <will@kernel.org>,
+        <jonathan.cameron@huawei.com>, <mark.rutland@arm.com>,
+        <yangyicong@hisilicon.com>
+References: <20231009105038.126040-1-shaojijie@huawei.com>
+From:   Yicong Yang <yangyicong@huawei.com>
+Message-ID: <504cc838-d587-8bd0-601e-85f11b69c72b@huawei.com>
+Date:   Tue, 10 Oct 2023 17:32:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="EIXGnQky11Paxv1b"
-Content-Disposition: inline
-In-Reply-To: <20231009211420.3454026-1-lakshmiy@us.ibm.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231009105038.126040-1-shaojijie@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.121.177]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jijie,
 
---EIXGnQky11Paxv1b
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 2023/10/9 18:50, Jijie Shao wrote:
+> From: Hao Chen <chenhao418@huawei.com>
+> 
+> When uninstall hns3 pmu driver, it will call cpuhp_state_remove_instance()
+> and then callback function hns3_pmu_offline_cpu() is called, it may cause
+> NULL pointer call trace when other driver is installing or uninstalling
+> concurrently.
+> 
 
-Hi,
+More information about the calltrace you've met and how to reproduce this?
+I'm not sure why other drivers are involved.
 
-thanks for this series!
+> As John Garry's opinion, cpuhp_state_remove_instance() is used for shared
+> interrupt, and using cpuhp_state_remove_instance_nocalls() is fine for PCIe
+> or HNS3 pmu.
+> 
 
-> Reference to Andrew's previous proposal:
-> https://lore.kernel.org/all/20200914122811.3295678-1-andrew@aj.id.au/
+I'm a bit confused here. We need to update the using CPU and migrate the perf
+context as well as the interrupt affinity in cpuhp::teardown() callback, so
+it make sense to not call this on driver detachment. But I cannot figure
+out why this is related to the shared interrupt, more details?
 
-I do totally agree with Guenter's comment[1], though. This just affects
-a few drivers and this patch is way too intrusive for the I2C core. The
-later suggested prepare_device() callback[2] sounds better to me. I
-still haven't fully understood why this all cannot be handled in the
-driver's probe. Could someone give me a small summary about that?
+> So, replace cpuhp_state_remove_instance() with
+> cpuhp_state_remove_instance_nocalls() to fix this problem.
+> 
+> Fixes: 66637ab137b4 ("drivers/perf: hisi: add driver for HNS3 PMU")
+> Signed-off-by: Hao Chen <chenhao418@huawei.com>
+> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
+> ---
+>  drivers/perf/hisilicon/hns3_pmu.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/perf/hisilicon/hns3_pmu.c b/drivers/perf/hisilicon/hns3_pmu.c
+> index e0457d84af6b..16869bf5bf4c 100644
+> --- a/drivers/perf/hisilicon/hns3_pmu.c
+> +++ b/drivers/perf/hisilicon/hns3_pmu.c
+> @@ -1556,8 +1556,8 @@ static int hns3_pmu_init_pmu(struct pci_dev *pdev, struct hns3_pmu *hns3_pmu)
+>  	ret = perf_pmu_register(&hns3_pmu->pmu, hns3_pmu->pmu.name, -1);
+>  	if (ret) {
+>  		pci_err(pdev, "failed to register perf PMU, ret = %d.\n", ret);
+> -		cpuhp_state_remove_instance(CPUHP_AP_PERF_ARM_HNS3_PMU_ONLINE,
+> -					    &hns3_pmu->node);
+> +		cpuhp_state_remove_instance_nocalls(CPUHP_AP_PERF_ARM_HNS3_PMU_ONLINE,
+> +						    &hns3_pmu->node);
+>  	}
+>  
+>  	return ret;
+> @@ -1568,8 +1568,8 @@ static void hns3_pmu_uninit_pmu(struct pci_dev *pdev)
+>  	struct hns3_pmu *hns3_pmu = pci_get_drvdata(pdev);
+>  
+>  	perf_pmu_unregister(&hns3_pmu->pmu);
+> -	cpuhp_state_remove_instance(CPUHP_AP_PERF_ARM_HNS3_PMU_ONLINE,
+> -				    &hns3_pmu->node);
+> +	cpuhp_state_remove_instance_nocalls(CPUHP_AP_PERF_ARM_HNS3_PMU_ONLINE,
+> +					    &hns3_pmu->node);
+>  }
+Thanks.
 
-All the best,
-
-   Wolfram
 
 
-[1] https://lore.kernel.org/all/e7a64983-fe1d-1ba2-b0c3-ae4a791f7a75@roeck-us.net/
-[2] https://lore.kernel.org/all/120342ec-f44a-4550-8c54-45b97db41024@www.fastmail.com/
-
-
---EIXGnQky11Paxv1b
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUlGggACgkQFA3kzBSg
-KbajcA//T55K8TsNJtLGqupsxrbujaZlGGmtYUPg71R123SnljP7NL27nCVsszFD
-ADZ7LHBj726el8TDBz9kEO9laIk7MtBjZrAdsaxHziTq9349D382MEwFyEGzVDRE
-cOQWfrdmYP64Q0/OK02wIfr4sZcRo7ruMsOt2/GRRX+SBy6zWSy7p4l1LOyPUbjx
-Xx9RHKSPUQ5rGvSyrl02MYKX9Ny6yI61bQt1SYtv0wHI8NWL26uN9p/K3mT3LYYw
-VjPHz3PNGbmz2FAY5ldzertNJV8TxVt5hBMG6T8nBOZYoVx7wrXSjzsc0UWfghwr
-n8z2dP55p5o8oxXcucnUX/PvEJSfWT/J3jUUa2iWmCtakIb7yapNXFRZmLlvj4bf
-wgXVaoymv0GlTtB1EZKIJlYMLSLfmSQXW1kvscYC2EzFu7SshkpDB6hsvHNtR42J
-5QIl3fuKOoFlO+iSR2qQz5paQ7OkDdUh6+b0zWBAfpQ5a2NV3F9esqneB4bYcgDw
-YAwt66KW2bW9X/I2G4mt45DHJC3OyQ7EgnYcE0gYtFOoAPHUqTt2wHJKIN+KBQ4q
-EPCYz+8EybZ5KfHsM04M0HSlzMysIWmkF7yLKUbucU82hVgU9x/AGRO0oZSRQLof
-bCHZ4nTmXnfKTqwQcqHdwjJJj4mT3dEqie13PzzveC8iuUJqvn0=
-=F3AD
------END PGP SIGNATURE-----
-
---EIXGnQky11Paxv1b--
