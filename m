@@ -2,127 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85AFB7C4485
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 00:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07EDE7C4490
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 00:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343968AbjJJWsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 18:48:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47526 "EHLO
+        id S1344108AbjJJWtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 18:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234654AbjJJWsS (ORCPT
+        with ESMTP id S233161AbjJJWtv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 18:48:18 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 892C9B4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 15:48:15 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-565e395e7a6so3186540a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 15:48:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696978095; x=1697582895; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=umaq0MSSZP4nebV23a71EOhR8vcMwzVfizynVgVctt0=;
-        b=fnmiAPvHgD1J4KRbr7d09EwIph/9ZMIM3Tdth990ImcVjrdVOCQDf4tOrTwtDyomrx
-         j8f2EDFJG9lNIgGWNdY+nSLltRK8Lhk16ZoGVYKXK/TEQRRasO3ENopHH32XsakSTHjv
-         g7Xn6LhY9cCa0TlVSZUrdpwQwKLnQISv54MZE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696978095; x=1697582895;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=umaq0MSSZP4nebV23a71EOhR8vcMwzVfizynVgVctt0=;
-        b=FLGY/QWUcr481pDU5jygorVvt0zyiCHgSxQA2W4jObb7ENDZnQzoMSQlYigFT/uFKD
-         WPZlOqQUT5xBy89YVqvr9HdUR3awmleYWsiWLhGtTprF7DWalPp7Yf17NJIIO7+0WSXm
-         R6ek7DuhMwXbUq0NBx91VsSZJXnWX8FXcz2TXP5jZ4ceQgXmhO0oe1Dv+b/pY82z1ZxF
-         gXMa+RYTegTIkJZyiofBLjLDjIdorth2BimCgJDtgwo7ytJowC/NU9/J/Zg/0725R1ls
-         JIpnpuuPI64RZCV7V2Gf3CLg2XYatlMv0TM5Pu8hTih0Y16pzFEB6t0LheITnmyTY0gN
-         39qg==
-X-Gm-Message-State: AOJu0YyMlllMrpbz63gAIbMnKhiey4Wlja6R48X/x9DH3ANUJXrQwkue
-        gHUnMe+J4XNOUFjNyXGt2Pi96Q==
-X-Google-Smtp-Source: AGHT+IENpAsAI6YM70l2/vXTEjXOUieOiaxbcuD746kJfEGMhyOn6kSyHuft6Mnk/j+JgWdkfG/7Xg==
-X-Received: by 2002:a17:90b:1c0b:b0:268:3f6d:9751 with SMTP id oc11-20020a17090b1c0b00b002683f6d9751mr18076356pjb.23.1696978094874;
-        Tue, 10 Oct 2023 15:48:14 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id s15-20020a17090a5d0f00b00263cca08d95sm12419653pji.55.2023.10.10.15.48.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 15:48:14 -0700 (PDT)
-Date:   Tue, 10 Oct 2023 15:48:11 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Alyssa Ross <hi@alyssa.is>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Eric Biederman <ebiederm@xmission.com>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] exec: allow executing block devices
-Message-ID: <202310101535.CEDA4DB84@keescook>
-References: <20231010092133.4093612-1-hi@alyssa.is>
+        Tue, 10 Oct 2023 18:49:51 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4D5A792;
+        Tue, 10 Oct 2023 15:49:50 -0700 (PDT)
+Received: from [10.0.0.178] (c-76-135-56-23.hsd1.wa.comcast.net [76.135.56.23])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 3767820B74C0;
+        Tue, 10 Oct 2023 15:49:49 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3767820B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1696978189;
+        bh=xNLCGvZHdU71qjHxRgA/1TNMVCHTexDMo8D59LMp6BY=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=CEl3o74J71QRcTdLqoPV7RImMOc17eR9UZgEQBih57CS6OUtzd9dL6Gs4mbxNvO4p
+         UIGFgIlIptnNftQv2rfctEATzmbOcxvAV8WIaaWIZUVN/syakprhhgeazRrZAbou1J
+         gyp8QkiN9EbrL3jsNwha+VZMO9D8arS1yiysou0c=
+Message-ID: <50f1721f-64fb-49ff-9740-0dac7cf832c8@linux.microsoft.com>
+Date:   Tue, 10 Oct 2023 15:49:48 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231010092133.4093612-1-hi@alyssa.is>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 13/15] uapi: hyperv: Add mshv driver headers hvhdk.h,
+ hvhdk_mini.h, hvgdk.h, hvgdk_mini.h
+From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
+To:     Greg KH <gregkh@linuxfoundation.org>, Wei Liu <wei.liu@kernel.org>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, patches@lists.linux.dev,
+        mikelley@microsoft.com, kys@microsoft.com, haiyangz@microsoft.com,
+        decui@microsoft.com, apais@linux.microsoft.com,
+        Tianyu.Lan@microsoft.com, ssengar@linux.microsoft.com,
+        mukeshrathor@microsoft.com, stanislav.kinsburskiy@gmail.com,
+        jinankjain@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, will@kernel.org,
+        catalin.marinas@arm.com
+References: <1692309711-5573-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1692309711-5573-14-git-send-email-nunodasneves@linux.microsoft.com>
+ <ZN6m2gVmtVStuEfA@liuwe-devbox-debian-v2> <2023081923-crown-cake-79f7@gregkh>
+ <c4482a6a-aed0-4750-aa1b-421f0e541cfa@linux.microsoft.com>
+Content-Language: en-US
+In-Reply-To: <c4482a6a-aed0-4750-aa1b-421f0e541cfa@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 09:21:33AM +0000, Alyssa Ross wrote:
-> As far as I can tell, the S_ISREG() check is there to prevent
-> executing files where that would be nonsensical, like directories,
-> fifos, or sockets.  But the semantics for executing a block device are
-> quite obvious — the block device acts just like a regular file.
+On 8/25/2023 11:24 AM, Nuno Das Neves wrote:
+> On 8/19/2023 3:26 AM, Greg KH wrote:
+>>
+>> My "strong" opinion is the one kernel development rule that we have,
+>> "you can not break userspace".  So, if you change these
+>> values/structures/whatever in the future, and userspace tools break,
+>> that's not ok and the changes have to be reverted.
+>>
+>> If you can control both sides of the API here (with open tools that you
+>> can guarantee everyone will always update to), then yes, you can change
+>> the api in the future.
+>>
 > 
-> My use case is having a common VM image that takes a configurable
-> payload to run.  The payload will always be a single ELF file.
+> This is true for us - we contribute and maintain support for this driver
+> in Cloud Hypervisor[1], an open source VMM.
 > 
-> I could share the file with virtio-fs, or I could create a disk image
-> containing a filesystem containing the payload, but both of those add
-> unnecessary layers of indirection when all I need to do is share a
-> single executable blob with the VM.  Sharing it as a block device is
-> the most natural thing to do, aside from the (arbitrary, as far as I
-> can tell) restriction on executing block devices.  (The only slight
-> complexity is that I need to ensure that my payload size is rounded up
-> to a whole number of sectors, but that's trivial and fast in
-> comparison to e.g. generating a filesystem image.)
-> 
-> Signed-off-by: Alyssa Ross <hi@alyssa.is>
 
-Hi,
+Hi Greg,
 
-Thanks for the suggestion! I would prefer to not change this rather core
-behavior in the kernel for a few reasons, but it mostly revolves around
-both user and developer expectations and the resulting fragility.
+Bringing up this discussion again so we can clear up any confusion on the
+uapi headers in this patch set.
 
-For users, this hasn't been possible in the past, so if we make it
-possible, what situations are suddenly exposed on systems that are trying
-to very carefully control their execution environments?
+The headers consist of the ioctls in mshv.h, and the hypervisor ABIs in
+the *hdk.h files. The ioctls depend on the hypervisor ABIs.
 
-For developers, this ends up exercising code areas that have never been
-tested, and could lead to unexpected conditions. For example,
-deny_write_access() is explicitly documented as "for regular files".
-Perhaps it accidentally works with block devices, but this would need
-much more careful examination, etc.
+We will add (to the next version), an ioctl like KVM_GET_API_VERSION [1].
+This will return a version number for the ioctl interface that increments
+any time there is a breaking change. Userspace would be required to check
+this before calling any other ioctl, and it can exit gracefully if there
+is a mismatch.
 
-And while looking at this from a design perspective, it looks like a
-layering violation: roughly speaking, the kernel execute files, from
-filesystems, from block devices. Bypassing layers tends to lead to
-troublesome bugs and other weird problems.
+That's how KVM evolved its userspace ABI. We want to use the same approach.
 
-I wonder, though, if you can already get what you need through other
-existing mechanisms that aren't too much more hassle? For example,
-what about having a tool that creates a memfd from a block device and
-executes that? The memfd code has been used in a lot of odd exec corner
-cases in the past...
+I also wanted to reiterate that we are the only maintainers and users of
+the userspace code for this driver via Cloud Hypervisor [2]. We generate
+rust bindings from these headers using bindgen [3].
 
--Kees
+Taking this into account, is the above a viable path for this patch set?
 
--- 
-Kees Cook
+Thanks,
+Nuno
+
+[1] https://docs.kernel.org/virt/kvm/api.html#kvm-get-api-version
+[2] https://github.com/cloud-hypervisor/cloud-hypervisor
+[3] https://github.com/rust-lang/rust-bindgen
+
