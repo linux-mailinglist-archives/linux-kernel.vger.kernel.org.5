@@ -2,356 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ABD37BF54A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E1E7BF548
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234700AbjJJIJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 04:09:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55724 "EHLO
+        id S234650AbjJJIIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 04:08:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234685AbjJJIJL (ORCPT
+        with ESMTP id S234631AbjJJIII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 04:09:11 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91BA9A4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 01:09:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696925349; x=1728461349;
-  h=from:to:cc:subject:references:date:in-reply-to:
-   message-id:mime-version;
-  bh=fyIYQttk+5+NGZsawMIlcEz5mFyrT6kUPFEx7wD19EM=;
-  b=D/Lj1BfJcHhFTZjmJ5Q+7TunULLwJ3hkPaYw/qrGeKN/P25Lby6XfA1U
-   H7R26Hlw0+T6PypJ4roMNZnOes/cg/KNkR4QRiXuP6DRK6t5shQNIs/DF
-   ekWdgyv9woaVtqo5TGGOVswXpiVqtqQHnEDpeEOI/AXZ1Bwh5ZN4Zlrx+
-   Q/KFWhpUdXWDZgruEaY0WmkxPpNJ03A9+VlaLXAKzGIGxwHXqYJh5ORKi
-   Wt0NSg8r78ViIUVSqZOC1lDtm7V8QSFPlIOVnpqyJJCHFqGF/EjIninih
-   xdqWpGjYJh79qXNAN2thOUMfbtLipNxuiT6oqz8HJq/3Vn5+zJI2zl4qH
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="369403929"
-X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
-   d="scan'208";a="369403929"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 01:09:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="823692426"
-X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
-   d="scan'208";a="823692426"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 01:09:03 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Zi Yan <zi.yan@sent.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Zi Yan <ziy@nvidia.com>, Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        "Yin, Fengwei" <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Kemeng Shi <shikemeng@huaweicloud.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rohan Puri <rohan.puri15@gmail.com>,
-        Mcgrof Chamberlain <mcgrof@kernel.org>,
-        Adam Manzanares <a.manzanares@samsung.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [RFC PATCH 1/4] mm/compaction: add support for >0 order folio
- memory compaction.
-References: <20230912162815.440749-1-zi.yan@sent.com>
-        <20230912162815.440749-2-zi.yan@sent.com>
-Date:   Tue, 10 Oct 2023 16:07:00 +0800
-In-Reply-To: <20230912162815.440749-2-zi.yan@sent.com> (Zi Yan's message of
-        "Tue, 12 Sep 2023 12:28:12 -0400")
-Message-ID: <87mswqhpej.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Tue, 10 Oct 2023 04:08:08 -0400
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2072.outbound.protection.outlook.com [40.107.21.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF7D997;
+        Tue, 10 Oct 2023 01:08:06 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Lvx0sQIxS4wwNPvx0radY+9/O77F7But8Rn0q0EFbfOJa8mLvvy/Fd2u+1p5UpJFgtihmntRg6MZm0OXZmfMhue/YUDZnmYJc4abXmE+3VIBHZZO0fF12OeUEFhvZdPN838UNo/kyVQy/8798lNAek7B8RRxD6oYnHktNwNbj1H1Cg6H/j9A7VGBsUApb6U/bG1mpLtmI2aZ6iPdN9VzTA9G6fApHU7Nlb7Pb7rzFpv4jzZTqwiH1JD7/5MZMycHG62+v7jeOFZ3JnFUxWwTxUT7DX5MCHfj7mNErDqeQUhi41eWJ9vqYUStkNPJH7rj7cDOeMzRo5Xxox8JBklhZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jlx9sUnRFYHei3zaIhudKMOqedRP9g1mGoMtfpb74G4=;
+ b=AQLBvMkgn1+szXlAdJlHQawBDuhcwq25j0W8BEpH9WpCzNMLaI/p+LzizxiJudh9jgdZwR3bp+0mwwHxhNYze5BBF1FpST71v4n9J/dvAnoW2L9Lw9gxd7Vvc9+p2kvx8isC/VA0LqWnRO0sa8nyjXOjNsF6dl8tnkRxWhyvokdJzmV4O25w/XXtP9pWsndyGxiMi94FQ50/1KDI+8xo+njPnoJb3KfsXNYp+blkdQs1Ad5n+pSRKsGDcO+u4JFOCNuLR2Ii6FsFeAYVbeeCgUtWyAi8BvbVPMVipBPcCk5isN/TcgjMC/wcqA2JZYcIyaRx1DkhBVYGIwvTYQZgDw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jlx9sUnRFYHei3zaIhudKMOqedRP9g1mGoMtfpb74G4=;
+ b=LFnu7amolWtECtqiQ01+g9IjnIfdgDcXYkslG6637PUvhbE8cY0CTV03evQupfkJblHSfe2p5D6vX1LSFhCVc7Q8FUXK6fkvb6gGKxFqydY0DrtM9VV5+Im8xPhCAiqjWcnr98cHJCgm/Qjd7I6TCdg/u/cpw12Ko3vZ1hi8T78=
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by DU0PR04MB9394.eurprd04.prod.outlook.com (2603:10a6:10:359::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.43; Tue, 10 Oct
+ 2023 08:08:01 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::2b3:d8de:95c8:b28b]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::2b3:d8de:95c8:b28b%3]) with mapi id 15.20.6838.040; Tue, 10 Oct 2023
+ 08:08:01 +0000
+From:   Peng Fan <peng.fan@nxp.com>
+To:     Cristian Marussi <cristian.marussi@arm.com>,
+        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+CC:     "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ranjani Vaidyanathan <ranjani.vaidyanathan@nxp.com>,
+        Glen G Wienecke <glen.wienecke@nxp.com>,
+        "souvik.chakravarty@arm.com" <souvik.chakravarty@arm.com>,
+        Chuck Cannon <chuck.cannon@nxp.com>
+Subject: RE: [RFC] firmware: arm_scmi: clock: add fixed clock attribute
+ support
+Thread-Topic: [RFC] firmware: arm_scmi: clock: add fixed clock attribute
+ support
+Thread-Index: AQHZ+yDr+00Lv1J4akKijvcbZFMOArBCpluAgAADbnA=
+Date:   Tue, 10 Oct 2023 08:08:01 +0000
+Message-ID: <DU0PR04MB9417DCEC4CA9DA488796194C88CDA@DU0PR04MB9417.eurprd04.prod.outlook.com>
+References: <20231010022911.4106863-1-peng.fan@oss.nxp.com>
+ <ZSUCDdfJjs1blK1T@e120937-lin>
+In-Reply-To: <ZSUCDdfJjs1blK1T@e120937-lin>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|DU0PR04MB9394:EE_
+x-ms-office365-filtering-correlation-id: 7336d60e-e9f6-4842-f213-08dbc96805dd
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: VzqYTxsNbnd5/vXAsWWVlPS75SiH6sEonBIDiUX09yDq+sZBk/nGgbSpQwgo+EtKkK+gerzSSnaGCOehXJgS4B21XbXGrTZxcdf2JoXxN8ft/W1D0I2AY6/d4OaiiQIu1HQbNclqP5v5o/Ca2WzQIXBblca0ISYdXw8fJZu820kEklc0cMbwIa08InfAuDk+C7nnxXUuEn6yBED14atI1PDVl5EJlQB+k5qb7IvUDN3YqxRoyrt6+RxxD3JsS6Glv10KpWJQXTYxvT+VAULqz8awiZvIzynfXbSHrGO0cF+Aoy8LuBNq2SXOiNH+qaHpNIzAC3HVkOrdaVd2NIVbgiOQ2WBAiE1wbqw5Qub4bQugIT3ODRw5dFyMldCH/hAceXfvH5yy8/DIckU2MmqTkKHUP9lJycUvIP7H3/YxMeBjh1iVCYKNqAVDLOc6O4S/uIExDcie0snZvcYvDO9HQj3Q0qISYiX1VP+62BXO/LB7E/L6P3Ms9BAfwksQLFmjO6wVpdN/KILrzajzO1tFxR3XMSec3wRPJKoHu7dC1xld1fm06IdpuFfmGIvU+nvTFLjTLMGkFhxrewOHjc2AIecbw+FxZ4eLDhlP053aUTR1yvqfzCvPTsSad92xobge
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(376002)(366004)(346002)(396003)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(9686003)(6506007)(7696005)(478600001)(71200400001)(44832011)(26005)(83380400001)(2906002)(5660300002)(66476007)(110136005)(76116006)(54906003)(64756008)(66446008)(66556008)(66946007)(316002)(4326008)(8676002)(8936002)(41300700001)(52536014)(33656002)(122000001)(38100700002)(38070700005)(86362001)(55016003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?1+VTqtMzPNvzpeFSzyluuYHx8CerJAXcXqVmVJCQ4OdkXbBd/ZXKLB9qYBGC?=
+ =?us-ascii?Q?JBt9/nI8kkSozpoC/I1EENbo1nSuoHx/OD6IyKzm75uBaFIfwFpeidgsgxyq?=
+ =?us-ascii?Q?eGQlfd5IrwLkuxlesC5UpyThkMyTqrPedLCTrT+CUE18M7SxH6PD9WDP0y3e?=
+ =?us-ascii?Q?VTTUO4G4v/Ds5q2M6eT/tP5NhNujaq7Os8LUSRRDsMDUY5NTCJyHD+Uxb0IL?=
+ =?us-ascii?Q?Is8j/qNaN3r3n3o5gRqpi7t/nPX4O+TM6dlo8sQBORd6c4B3odJs6qkilruo?=
+ =?us-ascii?Q?BWfMmuLzHdjNrRMx1qXmhtjf0O522QCl1q29xvOzHjsnN5tycKbxZuJmiHWR?=
+ =?us-ascii?Q?YVcErOVAMyMJh4z3KQcXuUfDTKdgRkNHAHfwtq8NH6SPFRE6TiiY9VkILZ1D?=
+ =?us-ascii?Q?YItVBJHQipdv2pXLUCGH6R0WodHQwSCOhk0VlEwd+8nyGMaAdIUZlbkPuv0U?=
+ =?us-ascii?Q?wRRSY1FinDiNxIv3eTZE5rkGEak040gNLuDRSSodTap89zhmJvHq6r8OXjo/?=
+ =?us-ascii?Q?mZZUUY5mCaOSUhqnLlCHMofoPVdjrP2DawJIN58fNA4XnEQBDDsPofnA+KJq?=
+ =?us-ascii?Q?UeiyOVKoBRsTYbSMvYK3L6Yc8/E5HSkGY1ly8AY4WTH8mVscOZbsvVdMQJt6?=
+ =?us-ascii?Q?quUYRnn05X9gyOuRtqw+FzIQtdi6kT0kG5gEND1iafdaAu939o7jFkvZ2iqn?=
+ =?us-ascii?Q?J9C0cVy7hFcAlTVX/o8KldfzI50e1hpoGoOBnVoQQxUUjdoUmZ5vL2Id/fbp?=
+ =?us-ascii?Q?eCA/xZx7QYLP09UBZqlRkG/6+UVnvvxnEpm0ulNc6EEbu+S8nxQNW2ivRbPr?=
+ =?us-ascii?Q?C3oT019GqzSOubqBs8cZSRkYfKMZYt8Mca8d3bbOMdJJVCC4Bp2eGrlzgEVa?=
+ =?us-ascii?Q?fZV1E8uBICmNvd6FAC34k8Dy4ogqZ45mfpvz2rEjD3NELYonFfmzhXCEszEr?=
+ =?us-ascii?Q?milVlluNFUuWuKeB2tys87iGF2e9hHzZ/Fzw1a+lEDsFlr/KiwO5PlRNhjrI?=
+ =?us-ascii?Q?OMXZdhZ9s5S6SHIIzBB0hkWg1DZborbZK2SWdaKuTMFITMK4i/xWEigaZb1e?=
+ =?us-ascii?Q?o+Zb68Fn+MmLcgjnqqM3kSIfylvriIVcbscxFWul3d5UT/HY6q54cPY6y70q?=
+ =?us-ascii?Q?sWZ/VZ8dyaThuC04WkTOJcZrieH1jrDsrXItv7bAlWDNeXfQO/GCfY5QBlRN?=
+ =?us-ascii?Q?d4BbN0GV9x+IHy3D8a9vzBD4pfkPnyTgybzye3Ep/0Cxx7UWx9yDQ7ab7exZ?=
+ =?us-ascii?Q?BZIFokkGQ66FkFRQ1QMZ6c6DAa6UdShYtVxJqx0btTHnvKZV9oHS8hyRBCCy?=
+ =?us-ascii?Q?IQV13T1kyuOU+Rq0S+X5ywwce71RP4OKRbM0U6cBKDtH+euK/A4dPVPvz0D4?=
+ =?us-ascii?Q?Bxym9kYG/nWBZq4JIZAUEsAecJkXCS4Ns2QOHAgXZuCU6YQ8C6KlkHdOcI70?=
+ =?us-ascii?Q?fFYWQZAw59bV+It8Imr67BKjvk2f6kE1Hj/gJ/LIXB4Aqk0jG6kVuOJDaCjg?=
+ =?us-ascii?Q?2GCV2QRvSjfMqCdLv3TjeYgNFsm5tXq8qy7LWSBtirOzsk/NhNFtnI1R7X5D?=
+ =?us-ascii?Q?igJeapi0KLGPmMCGn2M=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7336d60e-e9f6-4842-f213-08dbc96805dd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Oct 2023 08:08:01.4853
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Nie3ggvBJaOcfSHVqzD/R8PQ4yOfdzTovLLCYwFrUCAT7HqHrzEsLnOOpn1avN2MP7Lz2EHAy7cHd8eiQFPTyg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR04MB9394
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zi Yan <zi.yan@sent.com> writes:
+> Subject: Re: [RFC] firmware: arm_scmi: clock: add fixed clock attribute
+> support
+>=20
+> On Tue, Oct 10, 2023 at 10:29:11AM +0800, Peng Fan (OSS) wrote:
+> > From: Peng Fan <peng.fan@nxp.com>
+> >
+> > There are clocks:
+> >  system critical, not allow linux to disable, change rate  allow linux
+> > to get rate, because some periphals will use the frequency  to
+> > configure periphals.
+> >
+> >  So introduce an attribute to indicated FIXED clock
+> >
+>=20
+> Hi,
+>=20
+> (CCed souvik.chakravarty@arm.com)
+>=20
+> so AFAIU here you are describing a clock that really is NOT fixed in gene=
+ral, it
+> is just that the Linux SCMI Agent cannot touch it, but other SCMI agents =
+on
+> the system CAN change it and so, on one side, you keep the ability for th=
+e
+> Linux agent to read back the current rate with
+> recalc_rate() and remove all the Clk frameworks callbacks needed to modif=
+y
+> its state, am I right ?
 
-> From: Zi Yan <ziy@nvidia.com>
->
-> Before, memory compaction only migrates order-0 folios and skips >0 order
-> folios. This commit adds support for >0 order folio compaction by keeping
-> isolated free pages at their original size without splitting them into
-> order-0 pages and using them directly during migration process.
->
-> What is different from the prior implementation:
-> 1. All isolated free pages are kept in a MAX_ORDER+1 array of page lists,
->    where each page list stores free pages in the same order.
-> 2. All free pages are not post_alloc_hook() processed nor buddy pages,
->    although their orders are stored in first page's private like buddy
->    pages.
-> 3. During migration, in new page allocation time (i.e., in
->    compaction_alloc()), free pages are then processed by post_alloc_hook().
->    When migration fails and a new page is returned (i.e., in
->    compaction_free()), free pages are restored by reversing the
->    post_alloc_hook() operations.
->
-> Step 3 is done for a latter optimization that splitting and/or merging free
-> pages during compaction becomes easier.
->
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> ---
->  mm/compaction.c | 108 +++++++++++++++++++++++++++++++++++++++---------
->  mm/internal.h   |   7 +++-
->  2 files changed, 94 insertions(+), 21 deletions(-)
->
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 01ba298739dd..868e92e55d27 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -107,6 +107,44 @@ static void split_map_pages(struct list_head *list)
->  	list_splice(&tmp_list, list);
->  }
->  
-> +static unsigned long release_free_list(struct free_list *freepages)
-> +{
-> +	int order;
-> +	unsigned long high_pfn = 0;
-> +
-> +	for (order = 0; order <= MAX_ORDER; order++) {
-> +		struct page *page, *next;
-> +
-> +		list_for_each_entry_safe(page, next, &freepages[order].pages, lru) {
-> +			unsigned long pfn = page_to_pfn(page);
-> +
-> +			list_del(&page->lru);
-> +			/*
-> +			 * Convert free pages into post allocation pages, so
-> +			 * that we can free them via __free_page.
-> +			 */
-> +			post_alloc_hook(page, order, __GFP_MOVABLE);
-> +			__free_pages(page, order);
-> +			if (pfn > high_pfn)
-> +				high_pfn = pfn;
-> +		}
-> +	}
-> +	return high_pfn;
-> +}
-> +
-> +static void sort_free_pages(struct list_head *src, struct free_list *dst)
-> +{
-> +	unsigned int order;
-> +	struct page *page, *next;
-> +
-> +	list_for_each_entry_safe(page, next, src, lru) {
-> +		order = buddy_order(page);
-> +
-> +		list_move(&page->lru, &dst[order].pages);
-> +		dst[order].nr_free++;
-> +	}
-> +}
-> +
->  #ifdef CONFIG_COMPACTION
->  bool PageMovable(struct page *page)
->  {
-> @@ -1422,6 +1460,7 @@ fast_isolate_around(struct compact_control *cc, unsigned long pfn)
->  {
->  	unsigned long start_pfn, end_pfn;
->  	struct page *page;
-> +	LIST_HEAD(freelist);
->  
->  	/* Do not search around if there are enough pages already */
->  	if (cc->nr_freepages >= cc->nr_migratepages)
-> @@ -1439,7 +1478,8 @@ fast_isolate_around(struct compact_control *cc, unsigned long pfn)
->  	if (!page)
->  		return;
->  
-> -	isolate_freepages_block(cc, &start_pfn, end_pfn, &cc->freepages, 1, false);
-> +	isolate_freepages_block(cc, &start_pfn, end_pfn, &freelist, 1, false);
-> +	sort_free_pages(&freelist, cc->freepages);
->  
->  	/* Skip this pageblock in the future as it's full or nearly full */
->  	if (start_pfn == end_pfn && !cc->no_set_skip_hint)
-> @@ -1568,7 +1608,7 @@ static void fast_isolate_freepages(struct compact_control *cc)
->  				nr_scanned += nr_isolated - 1;
->  				total_isolated += nr_isolated;
->  				cc->nr_freepages += nr_isolated;
-> -				list_add_tail(&page->lru, &cc->freepages);
-> +				list_add_tail(&page->lru, &cc->freepages[order].pages);
->  				count_compact_events(COMPACTISOLATED, nr_isolated);
->  			} else {
->  				/* If isolation fails, abort the search */
-> @@ -1642,13 +1682,13 @@ static void isolate_freepages(struct compact_control *cc)
->  	unsigned long isolate_start_pfn; /* exact pfn we start at */
->  	unsigned long block_end_pfn;	/* end of current pageblock */
->  	unsigned long low_pfn;	     /* lowest pfn scanner is able to scan */
-> -	struct list_head *freelist = &cc->freepages;
->  	unsigned int stride;
-> +	LIST_HEAD(freelist);
->  
->  	/* Try a small search of the free lists for a candidate */
->  	fast_isolate_freepages(cc);
->  	if (cc->nr_freepages)
-> -		goto splitmap;
-> +		return;
->  
->  	/*
->  	 * Initialise the free scanner. The starting point is where we last
-> @@ -1708,7 +1748,8 @@ static void isolate_freepages(struct compact_control *cc)
->  
->  		/* Found a block suitable for isolating free pages from. */
->  		nr_isolated = isolate_freepages_block(cc, &isolate_start_pfn,
-> -					block_end_pfn, freelist, stride, false);
-> +					block_end_pfn, &freelist, stride, false);
-> +		sort_free_pages(&freelist, cc->freepages);
->  
->  		/* Update the skip hint if the full pageblock was scanned */
->  		if (isolate_start_pfn == block_end_pfn)
-> @@ -1749,10 +1790,6 @@ static void isolate_freepages(struct compact_control *cc)
->  	 * and the loop terminated due to isolate_start_pfn < low_pfn
->  	 */
->  	cc->free_pfn = isolate_start_pfn;
-> -
-> -splitmap:
-> -	/* __isolate_free_page() does not map the pages */
-> -	split_map_pages(freelist);
->  }
->  
->  /*
-> @@ -1763,18 +1800,21 @@ static struct folio *compaction_alloc(struct folio *src, unsigned long data)
->  {
->  	struct compact_control *cc = (struct compact_control *)data;
->  	struct folio *dst;
-> +	int order = folio_order(src);
->  
-> -	if (list_empty(&cc->freepages)) {
-> +	if (!cc->freepages[order].nr_free) {
->  		isolate_freepages(cc);
-> -
-> -		if (list_empty(&cc->freepages))
-> +		if (!cc->freepages[order].nr_free)
->  			return NULL;
->  	}
->  
-> -	dst = list_entry(cc->freepages.next, struct folio, lru);
-> +	dst = list_first_entry(&cc->freepages[order].pages, struct folio, lru);
-> +	cc->freepages[order].nr_free--;
->  	list_del(&dst->lru);
-> -	cc->nr_freepages--;
-> -
-> +	post_alloc_hook(&dst->page, order, __GFP_MOVABLE);
-> +	if (order)
-> +		prep_compound_page(&dst->page, order);
-> +	cc->nr_freepages -= 1 << order;
->  	return dst;
->  }
->  
-> @@ -1786,9 +1826,34 @@ static struct folio *compaction_alloc(struct folio *src, unsigned long data)
->  static void compaction_free(struct folio *dst, unsigned long data)
->  {
->  	struct compact_control *cc = (struct compact_control *)data;
-> +	int order = folio_order(dst);
-> +	struct page *page = &dst->page;
->  
-> -	list_add(&dst->lru, &cc->freepages);
-> -	cc->nr_freepages++;
-> +	if (order) {
-> +		int i;
-> +
-> +		page[1].flags &= ~PAGE_FLAGS_SECOND;
-> +		for (i = 1; i < (1 << order); i++) {
-> +			page[i].mapping = NULL;
-> +			clear_compound_head(&page[i]);
-> +			page[i].flags &= ~PAGE_FLAGS_CHECK_AT_PREP;
-> +		}
-> +
-> +	}
-> +	/* revert post_alloc_hook() operations */
-> +	page->mapping = NULL;
-> +	page->flags &= ~PAGE_FLAGS_CHECK_AT_PREP;
-> +	set_page_count(page, 0);
-> +	page_mapcount_reset(page);
-> +	reset_page_owner(page, order);
-> +	page_table_check_free(page, order);
-> +	arch_free_page(page, order);
-> +	set_page_private(page, order);
-> +	INIT_LIST_HEAD(&dst->lru);
-> +
-> +	list_add(&dst->lru, &cc->freepages[order].pages);
-> +	cc->freepages[order].nr_free++;
-> +	cc->nr_freepages += 1 << order;
->  }
->  
->  /* possible outcome of isolate_migratepages */
-> @@ -2412,6 +2477,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
->  	const bool sync = cc->mode != MIGRATE_ASYNC;
->  	bool update_cached;
->  	unsigned int nr_succeeded = 0;
-> +	int order;
->  
->  	/*
->  	 * These counters track activities during zone compaction.  Initialize
-> @@ -2421,7 +2487,10 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
->  	cc->total_free_scanned = 0;
->  	cc->nr_migratepages = 0;
->  	cc->nr_freepages = 0;
-> -	INIT_LIST_HEAD(&cc->freepages);
-> +	for (order = 0; order <= MAX_ORDER; order++) {
-> +		INIT_LIST_HEAD(&cc->freepages[order].pages);
-> +		cc->freepages[order].nr_free = 0;
-> +	}
->  	INIT_LIST_HEAD(&cc->migratepages);
->  
->  	cc->migratetype = gfp_migratetype(cc->gfp_mask);
-> @@ -2607,7 +2676,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
->  	 * so we don't leave any returned pages behind in the next attempt.
->  	 */
->  	if (cc->nr_freepages > 0) {
-> -		unsigned long free_pfn = release_freepages(&cc->freepages);
-> +		unsigned long free_pfn = release_free_list(cc->freepages);
->  
->  		cc->nr_freepages = 0;
->  		VM_BUG_ON(free_pfn == 0);
-> @@ -2626,7 +2695,6 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
->  
->  	trace_mm_compaction_end(cc, start_pfn, end_pfn, sync, ret);
->  
-> -	VM_BUG_ON(!list_empty(&cc->freepages));
->  	VM_BUG_ON(!list_empty(&cc->migratepages));
->  
->  	return ret;
-> diff --git a/mm/internal.h b/mm/internal.h
-> index 8c90e966e9f8..f5c691bb5c1c 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -465,6 +465,11 @@ int split_free_page(struct page *free_page,
->  /*
->   * in mm/compaction.c
->   */
-> +
-> +struct free_list {
-> +	struct list_head	pages;
-> +	unsigned long		nr_free;
+Right.
 
-Do we really need nr_free?  Is it enough just to use
-list_empty(&free_list->pages)?
+>=20
+> In this scenario, it is really the SCMI platform fw (server) that has to
+> implement the checks and simply DENY the requests coming from an agent
+> that is not supposed to touch that clock, while allowing the current rate=
+ to be
+> retrieved.
 
-> +};
->  /*
->   * compact_control is used to track pages being migrated and the free pages
->   * they are being migrated to during memory compaction. The free_pfn starts
-> @@ -473,7 +478,7 @@ int split_free_page(struct page *free_page,
->   * completes when free_pfn <= migrate_pfn
->   */
->  struct compact_control {
-> -	struct list_head freepages;	/* List of free pages to migrate to */
-> +	struct free_list freepages[MAX_ORDER + 1];	/* List of free pages to migrate to */
->  	struct list_head migratepages;	/* List of pages being migrated */
->  	unsigned int nr_freepages;	/* Number of isolated free pages */
->  	unsigned int nr_migratepages;	/* Number of pages to migrate */
+Linux will try to enable, get rate, runtime disable the clock.
+But the server does not allow enable/disable the clock, so the driver probe
+will fail.
 
---
-Best Regards,
-Huang, Ying
+The SCMI server could bypass enable/disable and only allow get rate,
+But this introduces heavy RPC, so just wanna whether it is ok to register
+fixed clock and avoid RPC.
+
+>=20
+> JUNO/SCP is an example of how the CPUs clocks are visible to Linux BUT
+> cannot be touched directly via Clock protocol by Linux since in the SCMI
+> world you are supposed to use the Perf protocol instead to change the OPP=
+s
+> when you want to modify the performance level of the runnning CPU.
+>=20
+> This kind of server-side permissions checks, meant to filter access to re=
+sources
+> based on the requesting agent, are part of the SCMI declared aim to push =
+the
+> responsibility of such controls out of the kernel into the platform fw in=
+ order
+> to avoid attacks like CLOCK_SCREW by letting the SCMI firmware be the one
+> and only final arbiter on the requests coming from the agents; you can as=
+k
+> teh server whatever you like as an agent but your request can be DENIED o=
+r
+> silently ignored (in case of shared resources) at the will of the platfor=
+m which
+> has the final say and it is implemented in a physically distinct code-bas=
+e.
+>=20
+> It seems to me that this patch and the possible associated SCMI specifica=
+tion
+> change would give back the control to the Linux agent and could allow the
+> implementation of an SCMI Server that does NOT perform any of these
+> permission checks.
+>=20
+> So, IMO, while this change, on one side, could be certainly useful by rem=
+oving
+> a bunch of unused/uneeded callbacks from the CLK SCMI driver when a fixed
+> clock is identified, it could open the door to a bad implementation like =
+the
+> one mentioned above which does NOT perform any agent-based permission
+> check.
+
+Thanks for detailed information, let me check whether our SCMI firmware
+could do more on the permission side. But if RPC could be removed,
+it could save some time.
+
+Thanks,
+Peng.
+
+>=20
+> Maybe Sudeep or Souvik think differently.
+>=20
+> Thanks,
+> Cristian
+>=20
+>=20
+> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > ---
+> >  drivers/clk/clk-scmi.c            | 6 ++++++
+> >  drivers/firmware/arm_scmi/clock.c | 5 ++++-
+> >  include/linux/scmi_protocol.h     | 1 +
+> >  3 files changed, 11 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c index
+> > 8cbe24789c24..a539a35bd45a 100644
+> > --- a/drivers/clk/clk-scmi.c
+> > +++ b/drivers/clk/clk-scmi.c
+> > @@ -182,6 +182,10 @@ static const struct clk_ops scmi_clk_ops =3D {
+> >  	.determine_rate =3D scmi_clk_determine_rate,  };
+> >
+> > +static const struct clk_ops scmi_fixed_rate_clk_ops =3D {
+> > +	.recalc_rate =3D scmi_clk_recalc_rate, };
+> > +
+> >  static const struct clk_ops scmi_atomic_clk_ops =3D {
+> >  	.recalc_rate =3D scmi_clk_recalc_rate,
+> >  	.round_rate =3D scmi_clk_round_rate,
+> > @@ -293,6 +297,8 @@ static int scmi_clocks_probe(struct scmi_device
+> *sdev)
+> >  		if (is_atomic &&
+> >  		    sclk->info->enable_latency <=3D atomic_threshold)
+> >  			scmi_ops =3D &scmi_atomic_clk_ops;
+> > +		else if (sclk->info->rate_fixed)
+> > +			scmi_ops =3D &scmi_fixed_rate_clk_ops;
+> >  		else
+> >  			scmi_ops =3D &scmi_clk_ops;
+> >
+> > diff --git a/drivers/firmware/arm_scmi/clock.c
+> > b/drivers/firmware/arm_scmi/clock.c
+> > index ddaef34cd88b..8c52db539e54 100644
+> > --- a/drivers/firmware/arm_scmi/clock.c
+> > +++ b/drivers/firmware/arm_scmi/clock.c
+> > @@ -46,6 +46,7 @@ struct scmi_msg_resp_clock_attributes {
+> >  #define SUPPORTS_RATE_CHANGE_REQUESTED_NOTIF(x)	((x) &
+> BIT(30))
+> >  #define SUPPORTS_EXTENDED_NAMES(x)		((x) & BIT(29))
+> >  #define SUPPORTS_PARENT_CLOCK(x)		((x) & BIT(28))
+> > +#define SUPPORTS_FIXED_RATE_CLOCK(x)		((x) & BIT(27))
+> >  	u8 name[SCMI_SHORT_NAME_MAX_SIZE];
+> >  	__le32 clock_enable_latency;
+> >  };
+> > @@ -326,7 +327,9 @@ static int scmi_clock_attributes_get(const struct
+> scmi_protocol_handle *ph,
+> >  			clk->rate_changed_notifications =3D true;
+> >  		if (SUPPORTS_RATE_CHANGE_REQUESTED_NOTIF(attributes))
+> >  			clk->rate_change_requested_notifications =3D true;
+> > -		if (SUPPORTS_PARENT_CLOCK(attributes))
+> > +		if (SUPPORTS_FIXED_RATE_CLOCK(attributes))
+> > +			clk->rate_fixed =3D true;
+> > +		else if (SUPPORTS_PARENT_CLOCK(attributes))
+> >  			scmi_clock_possible_parents(ph, clk_id, clk);
+> >  	}
+> >
+> > diff --git a/include/linux/scmi_protocol.h
+> > b/include/linux/scmi_protocol.h index f2f05fb42d28..e068004c151a
+> > 100644
+> > --- a/include/linux/scmi_protocol.h
+> > +++ b/include/linux/scmi_protocol.h
+> > @@ -47,6 +47,7 @@ struct scmi_clock_info {
+> >  	bool rate_discrete;
+> >  	bool rate_changed_notifications;
+> >  	bool rate_change_requested_notifications;
+> > +	bool rate_fixed;
+> >  	union {
+> >  		struct {
+> >  			int num_rates;
+> > --
+> > 2.37.1
+> >
