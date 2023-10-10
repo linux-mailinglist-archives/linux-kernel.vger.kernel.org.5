@@ -2,116 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F1A7BF09A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 04:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45CBC7BEF75
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 02:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441835AbjJJCCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 22:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37916 "EHLO
+        id S1379120AbjJJAHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 20:07:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379396AbjJJCCp (ORCPT
+        with ESMTP id S1377918AbjJJAHj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 22:02:45 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA13FD7;
-        Mon,  9 Oct 2023 19:02:41 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-692b2bdfce9so4605182b3a.3;
-        Mon, 09 Oct 2023 19:02:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696903361; x=1697508161; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WtdXd8zzfUQBn/Ye5tSm8UdJuve0zGYoqRvrat58Hz4=;
-        b=YfDFt3MUbqGgM/HZkE2Z0BZgFPz4kxIntfVYoquRfJYLracZLwXn07A04W9v4+ckGR
-         mzUZQmMdivzFvfdFTRvMaWVf5rLsoXu6UAmhhUzJpBI3xm2Tr0q4jKvggb6E7tXVWV1G
-         HRLcABEPJUld8TujAJNhhkVYbxc3XziO21zCwwNV0ZOHwe8WW5wIK3bp8SKt7k9nmRji
-         ZF+gzl3KBkjyXGSVmsudoQi2Nvje5Nydc0MOYvVpZgbZPdcKxXGKLyyPp7yMTrZt9WTF
-         a7XGLEkv/lbL9+iJ4+1MLbsqT/RubTpOUEsOezmxrlMkRFwNZGOg9ewAS4q/nWfskEX0
-         tLtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696903361; x=1697508161;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WtdXd8zzfUQBn/Ye5tSm8UdJuve0zGYoqRvrat58Hz4=;
-        b=PUtOR1Bm7vaIcsblnY6/bXIgcT6jg16MKZhazdHLjXYsP5/52cHNpPCVLd9dzrFxN4
-         Qk+CfF0LwJj447g0efMEUxKeHzSPXdFNSvoWMU6peFpjAoSxxREoczYu3/fiIgxlKCmc
-         zuUHuTRcQbplQ42QkB6fwaeHwDtvtVZyF0S2imfS4gdQBV9PSpwypTPPiRACHHmp4xnY
-         Rt/5PE/jfZoHlr/WlEUSqgHLKpKzGTzOh3A3tSm1KoEwmQNwe/on+zNDCU/6iG0UYJw3
-         QM6AcG1OfXwUWxlCFxdn3kFyLnaL98Sxr+mBaSnjpl2vL82A1DDSAZZz39J97Ej0W6ZV
-         FCrQ==
-X-Gm-Message-State: AOJu0YwyM5chVCeZ/NhucUr6UhLTvcQrJvAr18hNwpo32L0sIzjj0GjA
-        yAJxT5kDV3eEDJo5EEVekxbqXlSruMcgyg==
-X-Google-Smtp-Source: AGHT+IGE/Wvfh56YqXKHMKN/e88TuB1AvEwjGLel0rS8MBBVQu8zPnmg96buRkkUG1bSlMZFjoikMw==
-X-Received: by 2002:a05:6a00:2405:b0:68f:cd71:45d5 with SMTP id z5-20020a056a00240500b0068fcd7145d5mr19253361pfh.3.1696903361038;
-        Mon, 09 Oct 2023 19:02:41 -0700 (PDT)
-Received: from ubuntu.. ([43.132.98.112])
-        by smtp.googlemail.com with ESMTPSA id t28-20020aa7939c000000b0068a46cd4120sm7044809pfe.199.2023.10.09.19.02.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 19:02:40 -0700 (PDT)
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     keescook@chromium.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, luto@amacapital.net, wad@chromium.org,
-        alexyonghe@tencent.com, hengqi.chen@gmail.com
-Subject: [PATCH 4/4] selftests/seccomp: Test SECCOMP_LOAD_FILTER and SECCOMP_ATTACH_FILTER
-Date:   Mon,  9 Oct 2023 12:40:46 +0000
-Message-Id: <20231009124046.74710-5-hengqi.chen@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231009124046.74710-1-hengqi.chen@gmail.com>
-References: <20231009124046.74710-1-hengqi.chen@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_12_24,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        Mon, 9 Oct 2023 20:07:39 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03792A6
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 17:07:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD330C433C8;
+        Tue, 10 Oct 2023 00:07:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1696896457;
+        bh=6b49PW5LaeMyJQFy8snvZ2ofXdD/Lial7GWWzU0yfhE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=M8QqAFFMRc3t/UxGKQLvGIV8tdRYA5+JgGdk/vKa7VjQBYOHnaoikyMPusYG+VD3Z
+         oBng8VDURbRPyEpjCJTzj0oTbHLrABaY9NtQ4VgcZ6ddscwqcUpylA80UiHLK7h3Cx
+         +A0fUcfOrN128LZK3iFGviEV2zPB0g+vZracjMyc=
+Date:   Mon, 9 Oct 2023 17:07:10 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Barry Song <21cnbao@gmail.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        linux-kernel@vger.kernel.org, Usama Arif <usama.arif@bytedance.com>
+Subject: Re: [PATCH v6 2/8] hugetlb: restructure pool allocations
+Message-Id: <20231009170710.b52f5a6e57c23d5caecce8ab@linux-foundation.org>
+In-Reply-To: <20231009151513.GB3846@monkey>
+References: <20230925234837.86786-3-mike.kravetz@oracle.com>
+        <ddc10c41-515f-48c9-966d-4ae7756d208c@kernel.org>
+        <20230929205731.GA10357@monkey>
+        <ba5a528d-7e85-77a2-5096-5a143a3b1606@linaro.org>
+        <20231006030836.GC86415@monkey>
+        <5d14b681-a2c9-4210-a0c1-bf38708b7998@linaro.org>
+        <20231006223512.GC3861@monkey>
+        <20231009032926.GA3376@monkey>
+        <070bd916-d4d6-41c2-9f51-af35e80c96b9@linaro.org>
+        <20231009150401.GA3846@monkey>
+        <20231009151513.GB3846@monkey>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a testcase to exercise the newly added SECCOMP_LOAD_FILTER
-and SECCOMP_ATTACH_FILTER operations.
+On Mon, 9 Oct 2023 08:15:13 -0700 Mike Kravetz <mike.kravetz@oracle.com> wrote:
 
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+> > This should also be empty and a noop.
+> > 
+> > Is it possible that the misaligned kernel image could make these lists
+> > appear as non-empty?
+> 
+> Actually, just saw this:
+> 
+> https://lore.kernel.org/linux-mm/20231009145605.2150897-1-usama.arif@bytedance.com/
+> 
+> Will take a look, although as mentioned above prep_and_add_bootmem_folios on
+> an empty list should be a noop.
+
+Konrad, are you able to test Usama's patch?  Thanks.
+
+From: Usama Arif <usama.arif@bytedance.com>
+Subject: mm: hugetlb: only prep and add allocated folios for non-gigantic pages
+Date: Mon, 9 Oct 2023 15:56:05 +0100
+
+Calling prep_and_add_allocated_folios when allocating gigantic pages at
+boot time causes the kernel to crash as folio_list is empty and iterating
+it causes a NULL pointer dereference.  Call this only for non-gigantic
+pages when folio_list has entries.
+
+Link: https://lkml.kernel.org/r/20231009145605.2150897-1-usama.arif@bytedance.com
+Fixes: bfb41d6b2fe148 ("hugetlb: restructure pool allocations")
+Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+Cc: Fam Zheng <fam.zheng@bytedance.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Cc: Punit Agrawal <punit.agrawal@bytedance.com>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Barry Song <21cnbao@gmail.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: James Houghton <jthoughton@google.com>
+Cc: Joao Martins <joao.m.martins@oracle.com>
+Cc: Konrad Dybcio <konradybcio@kernel.org>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@linux.dev>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Xiongchun Duan <duanxiongchun@bytedance.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
- tools/testing/selftests/seccomp/seccomp_bpf.c | 20 +++++++++++++++++++
- 1 file changed, 20 insertions(+)
 
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index 38f651469968..8f7010482194 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -4735,6 +4735,26 @@ TEST(user_notification_wait_killable_fatal)
- 	EXPECT_EQ(SIGTERM, WTERMSIG(status));
- }
+ mm/hugetlb.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- a/mm/hugetlb.c~hugetlb-restructure-pool-allocations-fix
++++ a/mm/hugetlb.c
+@@ -3307,7 +3307,8 @@ static void __init hugetlb_hstate_alloc_
+ 	}
  
-+TEST(seccomp_filter_load_and_attach)
-+{
-+	struct sock_filter filter[] = {
-+		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_ALLOW),
-+	};
-+	struct sock_fprog prog = {
-+		.len = (unsigned short)ARRAY_SIZE(filter),
-+		.filter = filter,
-+	};
-+	int fd, ret;
-+
-+	fd = seccomp(SECCOMP_LOAD_FILTER, 0, &prog);
-+	ASSERT_GT(fd, -1);
-+
-+	ret = seccomp(SECCOMP_ATTACH_FILTER, 0, &fd);
-+	ASSERT_EQ(ret, 0);
-+
-+	close(fd);
-+}
-+
- /*
-  * TODO:
-  * - expand NNP testing
--- 
-2.34.1
+ 	/* list will be empty if hstate_is_gigantic */
+-	prep_and_add_allocated_folios(h, &folio_list);
++	if (!hstate_is_gigantic(h))
++		prep_and_add_allocated_folios(h, &folio_list);
+ 
+ 	if (i < h->max_huge_pages) {
+ 		char buf[32];
+_
 
