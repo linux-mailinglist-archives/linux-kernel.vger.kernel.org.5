@@ -2,132 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 050277BF8FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 12:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3C057BF902
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 12:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbjJJKuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 06:50:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43248 "EHLO
+        id S229770AbjJJKu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 06:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbjJJKuF (ORCPT
+        with ESMTP id S229945AbjJJKuZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 06:50:05 -0400
-Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 037A7B4;
-        Tue, 10 Oct 2023 03:50:03 -0700 (PDT)
-Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
-        by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id BB0DC520587;
-        Tue, 10 Oct 2023 12:50:02 +0200 (CEST)
-Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
- (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.32; Tue, 10 Oct
- 2023 12:50:02 +0200
-Date:   Tue, 10 Oct 2023 12:50:02 +0200
-From:   Hardik Gajjar <hgajjar@de.adit-jv.com>
-To:     Alan Stern <stern@rowland.harvard.edu>
-CC:     Hardik Gajjar <hgajjar@de.adit-jv.com>, <mathias.nyman@intel.com>,
-        <gregkh@linuxfoundation.org>, <yangyingliang@huawei.com>,
-        <jinpu.wang@ionos.com>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <erosca@de.adit-jv.com>
-Subject: Re: [PATCH v2] usb: core: hub: Add quirks for reducing device
- address timeout
-Message-ID: <20231010105002.GB107162@vmlxhi-118.adit-jv.com>
-References: <--in-reply-to=20231006153808.9758-1-hgajjar@de.adit-jv.com>
- <20231009161402.104224-1-hgajjar@de.adit-jv.com>
- <66f874d3-b480-4748-8732-d0cdce3ab4b7@rowland.harvard.edu>
+        Tue, 10 Oct 2023 06:50:25 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E704B9E
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 03:50:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3BB7CC433C7;
+        Tue, 10 Oct 2023 10:50:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696935022;
+        bh=a9Ixs+pZD+1syOpUkOXG7aRBfv3sf5X967JIZ271tuM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=gSaeTU1tOnUOR9T+UKd+U2lkBtPvMhM1q9tzG+Ll6mf2yhLB6QrcpiJrFs7OChbD1
+         9qqIOBQ+8S5C2S5fefv38743sDtJKAJjY9L/GABVJQhOCjFzekOEgUgOijja3VIQp1
+         R98kF8AT7nzRQ7xpo94y6LZDarszlNISmSQbLOXpof8WrSuTfWUV2AA7ovYcu0eLpR
+         mVdFcBM8CZry6qRioTqalnfVY1FgSKHZMFTI+WmZ4gFE+eYuToBUZNaBrbY1CVmCeB
+         yG6ZdnUbsjAqLx8rsDFfvWfBlGCoHYSjttXlIxg12Di3pt27ION3Ig7Q7nD4HvqUlQ
+         waTGZHCWPXg8Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1F9A4C595C5;
+        Tue, 10 Oct 2023 10:50:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <66f874d3-b480-4748-8732-d0cdce3ab4b7@rowland.harvard.edu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [10.72.93.77]
-X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
- hi2exch02.adit-jv.com (10.72.92.28)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] atm: fore200e: Drop unnecessary of_match_device()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169693502211.11220.8874004135364112002.git-patchwork-notify@kernel.org>
+Date:   Tue, 10 Oct 2023 10:50:22 +0000
+References: <20231006214421.339445-1-robh@kernel.org>
+In-Reply-To: <20231006214421.339445-1-robh@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     3chas3@gmail.com, linux-atm-general@lists.sourceforge.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 03:16:25PM -0400, Alan Stern wrote:
-> On Mon, Oct 09, 2023 at 06:14:02PM +0200, Hardik Gajjar wrote:
-> > Currently, the timeout for the set address command is fixed at
-> > 5 seconds in the xhci driver. This means the host waits up to 5
-> > seconds to receive a response for the set_address command from
-> > the device.
-> > 
-> > In the automotive context, most smartphone enumerations, including
-> > screen projection, should ideally complete within 3 seconds.
-> > Achieving this is impossible in scenarios where the set_address is
-> > not successful and waits for a timeout.
+Hello:
+
+This patch was applied to netdev/net-next.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
+
+On Fri,  6 Oct 2023 16:44:21 -0500 you wrote:
+> It is not necessary to call of_match_device() in probe. If we made it to
+> probe, then we've already successfully matched.
 > 
-> What will you do about scenarios where the Set-Address completes very 
-> quickly but the following Get-Device-Descriptor times out after 5 
-> seconds?  Or any of the other transfers involved in device 
-> initialization and enumeration?
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  drivers/atm/fore200e.c | 8 +-------
+>  1 file changed, 1 insertion(+), 7 deletions(-)
 
-This issue occurs when the device first enumerates as full speed and then
-as a high-speed device.
+Here is the summary with links:
+  - atm: fore200e: Drop unnecessary of_match_device()
+    https://git.kernel.org/netdev/net-next/c/f0107b864f00
 
-It appears that the set_address request is issued as soon as the device is
-detected as full speed. However, during the progress of the set_address
-request, the device changes its state from full speed to high speed, causing
-the set_address request to become stuck until it times out.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Stress testing of USB devices indicates that the problem is specific to the
-set_address request. Other requests, such as device descriptor requests,
-consistently fail immediately with a protocol error in almost all cases.
 
-> 
-> > The shortened address device timeout quirks provide the flexibility
-> > to align with a 3-second time limit in the event of errors.
-> > By swiftly triggering a failure response and swiftly initiating
-> > retry procedures, these quirks ensure efficient and rapid recovery,
-> > particularly in automotive contexts where rapid smartphone enumeration
-> > and screen projection are vital.
-> > 
-> > The quirk will set the timeout to 500 ms from 5 seconds.
-> > 
-> > To use the quirk, please write "vendor_id:product_id:p" to
-> > /sys/bus/usb/drivers/hub/module/parameter/quirks
-> > 
-> > For example,
-> > echo "0x2c48:0x0132:p" > /sys/bus/usb/drivers/hub/module/parameter/quirks"
-> > 
-> > Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
-> > ---
-> > changes since version 1:
-> > 	- implement quirk instead of new API in xhci driver
-> > ---
-> >  drivers/usb/core/hub.c       | 15 +++++++++++++--
-> >  drivers/usb/core/quirks.c    |  3 +++
-> >  drivers/usb/host/xhci-mem.c  |  1 +
-> >  drivers/usb/host/xhci-ring.c |  3 ++-
-> >  drivers/usb/host/xhci.c      |  9 +++++----
-> >  drivers/usb/host/xhci.h      |  1 +
-> >  include/linux/usb/hcd.h      |  3 ++-
-> >  include/linux/usb/quirks.h   |  3 +++
-> >  8 files changed, 30 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-> > index 3c54b218301c..975449b03426 100644
-> > --- a/drivers/usb/core/hub.c
-> > +++ b/drivers/usb/core/hub.c
-> > @@ -54,6 +54,9 @@
-> >  #define USB_TP_TRANSMISSION_DELAY_MAX	65535	/* ns */
-> >  #define USB_PING_RESPONSE_TIME		400	/* ns */
-> >  
-> > +#define USB_DEFAULT_ADDR_DEVICE_TIMEOUT		(HZ * 5) /* 5000ms */
-> > +#define USB_SHORT_ADDR_DEVICE_TIMEOUT		125  /* ~500ms */
-> 
-> That number, 125, is meaningless.  It's in units of jiffies, which vary 
-> from one system to another.  If you want the timeout to be about 500 ms, 
-> you should write it as (HZ / 2).
-
-Good Point, Thanks, I will update in patch v3
-
-> 
-> Alan Stern
