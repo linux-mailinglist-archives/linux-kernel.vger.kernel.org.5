@@ -2,121 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84BFD7C02C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 19:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2865D7C02D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 19:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232771AbjJJRco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 13:32:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43836 "EHLO
+        id S233874AbjJJRgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 13:36:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231501AbjJJRcm (ORCPT
+        with ESMTP id S232397AbjJJRgw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 13:32:42 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AB8793
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 10:32:41 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-98377c5d53eso1017600566b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 10:32:41 -0700 (PDT)
+        Tue, 10 Oct 2023 13:36:52 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D8B9E
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 10:36:50 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-538e8eca9c1so10347618a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 10:36:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1696959159; x=1697563959; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZgTrmYAWPAtaolxXsvRAmFG1qzvhKpew3qaaETwLwaw=;
-        b=JHODYA266mdM/OlhX0VvEtrB0/AoIA7cgiqAGy6FajWfhMRG4EY96GkzAxUPTZ8lC6
-         MaH8dBP/oBPx+phQriY++OaoOdMfXqpDZLLE2a0QE05aLQEWv4+7d5FHg55lWCixIP40
-         ZjV9BP/DBGC33Z4kO7lSUdD8iz21+0kVohMbE=
+        d=google.com; s=20230601; t=1696959409; x=1697564209; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZWNVXhOMB/X7Db/z1zWLDue+XTDYtJ9T9vo+cNZEfhw=;
+        b=1zzlZH8cXHkHdZRDMVCSWZMTfaqJJcf9gxAfzNtj+qEkReE6HIZ8Ss0tDAGAyf6Bng
+         L927lSmBL0nPZ6LXlLe0oyUG4UhHj5Jgu+uaYEK6boTmxza+qnbyLa2hv7WAGZmI4+DB
+         f+cUi5/y7Q1fxilYLgSuFB3UPYvwHYSaMA98VKEV0oM5iDc2LO5y0oVeII2giaBoppi9
+         vjD7vSRvj5uTvQAdDgJYU7A/TpjXplrWUM0OUCrNZ6SWN3z016TqdXwZxne0+4cbF2PY
+         l5YmKTDsxn7aVOhylIWtgM7Kh95S5r46H+a1qjQ9aHPDblTU0L/i5QoqkjTG+PSjp+cd
+         EgcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696959159; x=1697563959;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZgTrmYAWPAtaolxXsvRAmFG1qzvhKpew3qaaETwLwaw=;
-        b=RylYmGlkVPtWt6/T6Zxwl4HkS9WLCUi2dXZlegJGHY2jeQ/nRjXHG1B2hE9G+KoIMv
-         E0eadSau/Ka7XwZjLGryGrTi4oe2wP0sttmjeANb93EjKaBEQy8BVwlJcK7IUSBglj1G
-         IVnl/M66qM4z/iPoE4FMGs1SkT9gMD3Uo6NBD0WHrOLK1RA3qwtw18T0abpd4VQbL9zj
-         ybXr6AixKQM3U4vmfTG967vHAjpPboah8D0ZAenShLTEtsEBVpuuQuSUnXCWzj0vHTHP
-         brF1NhCEXjmuXihGc60nB964f0DvFmUlbZ7o0/uRNOOQvrViO66NQYUG16CAGYR7EdV+
-         ci8A==
-X-Gm-Message-State: AOJu0YzFyxOTR1BwvBf3WUSFEZmCy2yWFgDnCOWLllJSp6QXnij9x2MN
-        Lu3ImsOvEyve5Re7IRFp6Pdd6UmvW7f2K03kgO+RDqDb
-X-Google-Smtp-Source: AGHT+IEt4sJYtbCMzZEOFhV3rmIjTqmHuOuDxvW+I1YnVxLIm2YKG259sU90YTPIcU7346ANR3oWgQ==
-X-Received: by 2002:a17:906:76d3:b0:9ae:65a5:b6f4 with SMTP id q19-20020a17090676d300b009ae65a5b6f4mr17578201ejn.20.1696959159444;
-        Tue, 10 Oct 2023 10:32:39 -0700 (PDT)
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
-        by smtp.gmail.com with ESMTPSA id o20-20020a170906289400b009930042510csm8658686ejd.222.2023.10.10.10.32.38
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Oct 2023 10:32:39 -0700 (PDT)
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-53636f98538so10285048a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 10:32:38 -0700 (PDT)
-X-Received: by 2002:aa7:df86:0:b0:52a:1d9c:83ff with SMTP id
- b6-20020aa7df86000000b0052a1d9c83ffmr17044118edy.1.1696959158578; Tue, 10 Oct
- 2023 10:32:38 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696959409; x=1697564209;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZWNVXhOMB/X7Db/z1zWLDue+XTDYtJ9T9vo+cNZEfhw=;
+        b=PJKa/7b2P3jpKf9PmpLmJ3Q5g/xz+oxu4xW/FYGABvPztUAsp6sobemVKpD+LKNGwA
+         Wmu8hqKUwsQf70SudG+YaEVxmdOWOzMAoGk0BoORlh5TvsuhB32U6uoL+2KB6MxkMqrt
+         79of4mT0YeyA/xG/cya4FntDCp4XX9mNgsfsMtdmj0jnY/2Ap4LCE1qH/BzxzggRG5SN
+         DKEmOUfBq3Jcc78R0fARtgbWz+YbgTlxZLrh/9HjrvlanzoeS/ilrB2zzTASE6Jdpna0
+         CgHIki5ZrpXXkPTE+Ml00x7JykjUFiDODD9vtyQddfDwdoRiA7WPbmnSt17bG8VfdZpB
+         lPpQ==
+X-Gm-Message-State: AOJu0YznoF8XVyvy7dkvrS1f/3KftI4nTTQjYTr5i3Tq7XS1Bvm5QUSE
+        ArTRlCls3engGdkEpm/fOoZO8SI/DK1ngdVR8X8Akw==
+X-Google-Smtp-Source: AGHT+IGLNIUhNFg4goSmZvGSOS1oKrfqY+cMA+PaALzrOB69uFcOn6GaHQE6JU/84F7XmflfUBWSo38rtPlyLd1RMJk=
+X-Received: by 2002:aa7:dad2:0:b0:533:5e56:bef2 with SMTP id
+ x18-20020aa7dad2000000b005335e56bef2mr17194800eds.10.1696959408584; Tue, 10
+ Oct 2023 10:36:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231010164234.140750-1-ubizjak@gmail.com>
-In-Reply-To: <20231010164234.140750-1-ubizjak@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 10 Oct 2023 10:32:21 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
-Message-ID: <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
-Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Nadav Amit <namit@vmware.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
+References: <20231009-strncpy-drivers-net-dsa-realtek-rtl8365mb-c-v1-1-0537fe9fb08c@google.com>
+ <20231010110717.cw5sqxm5mlzyi2rq@skbuf>
+In-Reply-To: <20231010110717.cw5sqxm5mlzyi2rq@skbuf>
+From:   Justin Stitt <justinstitt@google.com>
+Date:   Tue, 10 Oct 2023 10:36:36 -0700
+Message-ID: <CAFhGd8pgGij4BXNzrB5fqk_2CNPDBTgf-3nN0i6cJak6vye_bA@mail.gmail.com>
+Subject: Re: [PATCH] net: dsa: realtek: rtl8365mb: replace deprecated strncpy
+ with ethtool_sprintf
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Oct 2023 at 09:43, Uros Bizjak <ubizjak@gmail.com> wrote:
+On Tue, Oct 10, 2023 at 4:07=E2=80=AFAM Vladimir Oltean <olteanv@gmail.com>=
+ wrote:
 >
-> Implementing arch_raw_cpu_ptr() in C, allows the compiler to perform
-> better optimizations, such as setting an appropriate base to compute
-> the address instead of an add instruction.
+> Hello Justin,
+>
+> On Mon, Oct 09, 2023 at 10:43:59PM +0000, Justin Stitt wrote:
+> > `strncpy` is deprecated for use on NUL-terminated destination strings
+> > [1] and as such we should prefer more robust and less ambiguous string
+> > interfaces.
+> >
+> > ethtool_sprintf() is designed specifically for get_strings() usage.
+> > Let's replace strncpy in favor of this more robust and easier to
+> > understand interface.
+> >
+> > Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#st=
+rncpy-on-nul-terminated-strings [1]
+> > Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en=
+.html [2]
+> > Link: https://github.com/KSPP/linux/issues/90
+> > Cc: linux-hardening@vger.kernel.org
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> > ---
+> > Note: build-tested only.
+> > ---
+> >  drivers/net/dsa/realtek/rtl8365mb.c | 3 +--
+> >  1 file changed, 1 insertion(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/net/dsa/realtek/rtl8365mb.c b/drivers/net/dsa/real=
+tek/rtl8365mb.c
+> > index 41ea3b5a42b1..d171c18dd354 100644
+> > --- a/drivers/net/dsa/realtek/rtl8365mb.c
+> > +++ b/drivers/net/dsa/realtek/rtl8365mb.c
+> > @@ -1303,8 +1303,7 @@ static void rtl8365mb_get_strings(struct dsa_swit=
+ch *ds, int port, u32 stringset
+> >
+> >       for (i =3D 0; i < RTL8365MB_MIB_END; i++) {
+> >               struct rtl8365mb_mib_counter *mib =3D &rtl8365mb_mib_coun=
+ters[i];
+> > -
+> > -             strncpy(data + i * ETH_GSTRING_LEN, mib->name, ETH_GSTRIN=
+G_LEN);
+> > +             ethtool_sprintf(&data, "%s", mib->name);
+>
+> Is there any particular reason why you opted for the "%s" printf format
+> specifier when you could have simply given mib->name as the single
+> argument? This comment applies to all the ethtool_sprintf() patches
+> you've submitted.
 
-Hmm. I wonder..
+Yeah, it causes a -Wformat-security warning for me. I briefly mentioned it
+in one of my first patches like this [1].
 
-> +       tcp_ptr__ = __raw_cpu_read(, this_cpu_off) + (unsigned long)(ptr); \
-
-Do we really even want to use __raw_cpu_read(this_cpu_off) at all?
-
-On my machines (I tested an Intel 8th gen laptop, and my AMD Zen 2
-Threadripper machine), 'rdgsbase' seems to be basically two cycles.
-
-I wonder if we'd be better off using that, rather than doing the load.
-
-Yes, a load that hits in L1D$ will schedule better, so it's "cheaper"
-in that sense. The rdgsbase instruction *probably* will end up only
-decoding in the first decoder etc. But we're talking single-cycle kind
-of effects, and the rdgsbase case should be much better from a cache
-perspective and might use fewer memory pipeline resources to offset
-the fact that it uses an unusual front end decoder resource...
-
-Yes, yes, we'd have to make it an alternative, and do something like
-
-    static __always_inline unsigned long new_cpu_offset(void)
-    {
-        unsigned long res;
-        asm(ALTERNATIVE(
-                        "movq %%gs:this_cpu_off,%0",
-                        "rdgsbase %0",
-                        X86_FEATURE_FSGSBASE)
-                : "=r" (res));
-        return res;
-    }
-
-but it still seems fairly straightforward. Hmm?
-
-             Linus
+[1]: https://lore.kernel.org/all/20231005-strncpy-drivers-net-dsa-lan9303-c=
+ore-c-v2-1-feb452a532db@google.com/
