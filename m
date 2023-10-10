@@ -2,181 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5B357BF8E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 12:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95CD57BF8EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 12:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231236AbjJJKnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 06:43:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58674 "EHLO
+        id S231244AbjJJKpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 06:45:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231202AbjJJKm7 (ORCPT
+        with ESMTP id S229597AbjJJKpT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 06:42:59 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0F3CFB7;
-        Tue, 10 Oct 2023 03:42:57 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 874F31FB;
-        Tue, 10 Oct 2023 03:43:37 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D05F3F762;
-        Tue, 10 Oct 2023 03:42:55 -0700 (PDT)
-Date:   Tue, 10 Oct 2023 11:42:52 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Nikunj Kela <quic_nkela@quicinc.com>
-Cc:     cristian.marussi@arm.com, robh+dt@kernel.org,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v6 2/2] firmware: arm_scmi: Add qcom smc/hvc transport
- support
-Message-ID: <20231010104252.dwix4xg766uk2y44@bogus>
-References: <20230718160833.36397-1-quic_nkela@quicinc.com>
- <20231009191437.27926-1-quic_nkela@quicinc.com>
- <20231009191437.27926-3-quic_nkela@quicinc.com>
+        Tue, 10 Oct 2023 06:45:19 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A139E
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 03:45:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1696934716;
+        bh=Keye6tp09f7AaDHq21s2ZPcLTfXNXkaJSM26tkcvZns=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=GsNX9efb9iY0prGMW73Nnj2xFLseuu4l7MCN1wgrNZDmeA+S6RNDOlNnD2F74dUgf
+         vz8QECYtcFm/dK2WZTyBng84y3YC+pjMqUNLPAdeU1+T4mhhZTW0ew/nQuSV7NpPLz
+         kNQSsL/MmeeJiWmRl6S1hPkejirK4ww6v8DbmbcPbgM3BvbPv/2MNkgKgPe5ezANIN
+         JGtpQJC74sCjuuAKv3l3H19pOubSP+3xvvpGysgB1iuBQq18SuQpc3UvygEwvKCcTg
+         jrtHxcqN58MAtgbyod/FQiXGd7QJ1pi1mnTyk4KqRZCmd7Nin3BVFdcox+7OaXGr1H
+         V1oWgFlnJ7fuQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S4Xbw1xFYz4xWL;
+        Tue, 10 Oct 2023 21:45:14 +1100 (AEDT)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] powerpc/85xx: Fix math emulation exception
+In-Reply-To: <066caa6d9480365da9b8ed83692d7101e10ac5f8.1695657339.git.christophe.leroy@csgroup.eu>
+References: <066caa6d9480365da9b8ed83692d7101e10ac5f8.1695657339.git.christophe.leroy@csgroup.eu>
+Date:   Tue, 10 Oct 2023 21:45:10 +1100
+Message-ID: <8734yisqmh.fsf@mail.lhotse>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231009191437.27926-3-quic_nkela@quicinc.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 12:14:37PM -0700, Nikunj Kela wrote:
-> This change adds the support for SCMI message exchange on Qualcomm
-> virtual platforms.
-> 
-> The hypervisor associates an object-id also known as capability-id
-> with each smc/hvc doorbell object. The capability-id is used to
-> identify the doorbell from the VM's capability namespace, similar
-> to a file-descriptor.
-> 
-> The hypervisor, in addition to the function-id, expects the capability-id
-> to be passed in x1 register when SMC/HVC call is invoked.
-> 
-> The capability-id is allocated by the hypervisor on bootup and is stored in
-> the shmem region by the firmware before starting Linux.
-> 
-> Signed-off-by: Nikunj Kela <quic_nkela@quicinc.com>
-> Reviewed-by: Brian Masney <bmasney@redhat.com>
-> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> Booting mpc85xx_defconfig kernel on QEMU leads to:
 
-FYI for the next time. When posting on the list, the senders sign-off must
-be the last. The only reason I signed off is because it is needed as part
-of committer in the git repo. You should have ideally dropped it in this case.
-If there was some other author/co-developer of the patch, then your signoff
-will be always at the end as you are sending the patch.
+What machine/CPU model are you using for that?
 
-Refer "Sign your work - the Developer's Certificate of Origin" section
-in Documentation/process/submitting-patches.rst
+I tried ppce500/e500 and that is working OK for me, ie. boots to
+userspace and I see math instructions being emulated via the emulated
+stats.
 
+cheers
+
+> Bad trap at PC: fe9bab0, SR: 2d000, vector=800
+> awk[82]: unhandled trap (5) at 0 nip fe9bab0 lr fe9e01c code 5 in libc-2.27.so[fe5a000+17a000]
+> awk[82]: code: 3aa00000 3a800010 4bffe03c 9421fff0 7ca62b78 38a00000 93c10008 83c10008
+> awk[82]: code: 38210010 4bffdec8 9421ffc0 7c0802a6 <fc00048e> d8010008 4815190d 93810030
+> Trace/breakpoint trap
+> WARNING: no useful console
+>
+> This is because allthough CONFIG_MATH_EMULATION is selected,
+> Exception 800 calls unknown_exception().
+>
+> Call emulation_assist_interrupt() instead.
+>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 > ---
->  drivers/firmware/arm_scmi/driver.c |  1 +
->  drivers/firmware/arm_scmi/smc.c    | 27 +++++++++++++++++++++++++--
->  2 files changed, 26 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-> index 87383c05424b..09371f40d61f 100644
-> --- a/drivers/firmware/arm_scmi/driver.c
-> +++ b/drivers/firmware/arm_scmi/driver.c
-> @@ -2915,6 +2915,7 @@ static const struct of_device_id scmi_of_match[] = {
->  #ifdef CONFIG_ARM_SCMI_TRANSPORT_SMC
->  	{ .compatible = "arm,scmi-smc", .data = &scmi_smc_desc},
->  	{ .compatible = "arm,scmi-smc-param", .data = &scmi_smc_desc},
-> +	{ .compatible = "qcom,scmi-smc", .data = &scmi_smc_desc},
+>  arch/powerpc/kernel/head_85xx.S | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/powerpc/kernel/head_85xx.S b/arch/powerpc/kernel/head_85xx.S
+> index 97e9ea0c7297..0f1641a31250 100644
+> --- a/arch/powerpc/kernel/head_85xx.S
+> +++ b/arch/powerpc/kernel/head_85xx.S
+> @@ -395,7 +395,7 @@ interrupt_base:
+>  #ifdef CONFIG_PPC_FPU
+>  	FP_UNAVAILABLE_EXCEPTION
+>  #else
+> -	EXCEPTION(0x0800, FP_UNAVAIL, FloatingPointUnavailable, unknown_exception)
+> +	EXCEPTION(0x0800, FP_UNAVAIL, FloatingPointUnavailable, emulation_assist_interrupt)
 >  #endif
->  #ifdef CONFIG_ARM_SCMI_TRANSPORT_VIRTIO
->  	{ .compatible = "arm,scmi-virtio", .data = &scmi_virtio_desc},
-> diff --git a/drivers/firmware/arm_scmi/smc.c b/drivers/firmware/arm_scmi/smc.c
-> index 8eba60a41975..7611e9665038 100644
-> --- a/drivers/firmware/arm_scmi/smc.c
-> +++ b/drivers/firmware/arm_scmi/smc.c
-> @@ -15,6 +15,7 @@
->  #include <linux/of.h>
->  #include <linux/of_address.h>
->  #include <linux/of_irq.h>
-> +#include <linux/limits.h>
->  #include <linux/processor.h>
->  #include <linux/slab.h>
 >  
-> @@ -50,6 +51,8 @@
->   * @func_id: smc/hvc call function id
->   * @param_page: 4K page number of the shmem channel
->   * @param_offset: Offset within the 4K page of the shmem channel
-> + * @cap_id: smc/hvc doorbell's capability id to be used on Qualcomm virtual
-> + *	    platforms
->   */
->  
->  struct scmi_smc {
-> @@ -63,6 +66,7 @@ struct scmi_smc {
->  	unsigned long func_id;
->  	unsigned long param_page;
->  	unsigned long param_offset;
-> +	unsigned long cap_id;
->  };
->  
->  static irqreturn_t smc_msg_done_isr(int irq, void *data)
-> @@ -124,6 +128,7 @@ static int smc_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
->  			  bool tx)
->  {
->  	struct device *cdev = cinfo->dev;
-> +	unsigned long cap_id = ULONG_MAX;
->  	struct scmi_smc *scmi_info;
->  	resource_size_t size;
->  	struct resource res;
-> @@ -162,6 +167,18 @@ static int smc_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
->  	if (ret < 0)
->  		return ret;
->  
-> +	if (of_device_is_compatible(dev->of_node, "qcom,scmi-smc")) {
-> +		void __iomem *ptr = (void __iomem *)scmi_info->shmem + size - 8;
-> +		/* The capability-id is kept in last 8 bytes of shmem.
-> +		 *     +-------+ <-- 0
-> +		 *     | shmem |
-> +		 *     +-------+ <-- size - 8
-> +		 *     | capId |
-> +		 *     +-------+ <-- size
-> +		 */
-> +		memcpy_fromio(&cap_id, ptr, sizeof(cap_id));
-> +	}
-> +
->  	if (of_device_is_compatible(dev->of_node, "arm,scmi-smc-param")) {
->  		scmi_info->param_page = SHMEM_PAGE(res.start);
->  		scmi_info->param_offset = SHMEM_OFFSET(res.start);
-> @@ -184,6 +201,7 @@ static int smc_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
->  	}
->  
->  	scmi_info->func_id = func_id;
-> +	scmi_info->cap_id = cap_id;
->  	scmi_info->cinfo = cinfo;
->  	smc_channel_lock_init(scmi_info);
->  	cinfo->transport_info = scmi_info;
-> @@ -220,8 +238,13 @@ static int smc_send_message(struct scmi_chan_info *cinfo,
->  
->  	shmem_tx_prepare(scmi_info->shmem, xfer, cinfo);
->  
-> -	arm_smccc_1_1_invoke(scmi_info->func_id, scmi_info->param_page,
-> -			     scmi_info->param_offset, 0, 0, 0, 0, 0, &res);
-> +	if (scmi_info->cap_id != ULONG_MAX)
-> +		arm_smccc_1_1_invoke(scmi_info->func_id, scmi_info->cap_id, 0,
-> +				     0, 0, 0, 0, 0, &res);
-> +	else
-> +		arm_smccc_1_1_invoke(scmi_info->func_id, scmi_info->param_page,
-> +				     scmi_info->param_offset, 0, 0, 0, 0, 0,
-> +				     &res);
->  
->  	/* Only SMCCC_RET_NOT_SUPPORTED is valid error code */
->  	if (res.a0) {
+>  	/* System Call Interrupt */
 > -- 
-> 2.17.1
-> 
-
--- 
-Regards,
-Sudeep
+> 2.41.0
