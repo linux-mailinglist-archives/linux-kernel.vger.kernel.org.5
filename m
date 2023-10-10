@@ -2,122 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD2D7BF43F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 09:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 973737BF44C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 09:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442711AbjJJH0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 03:26:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39624 "EHLO
+        id S1442512AbjJJH16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 03:27:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442669AbjJJHYk (ORCPT
+        with ESMTP id S1442600AbjJJH1l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 03:24:40 -0400
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03olkn2013.outbound.protection.outlook.com [40.92.58.13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F2E1184;
-        Tue, 10 Oct 2023 00:24:10 -0700 (PDT)
+        Tue, 10 Oct 2023 03:27:41 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F362711;
+        Tue, 10 Oct 2023 00:25:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696922709; x=1728458709;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=p9HLHs5galXTO+IOSuu2QjJ59DGbX8sF0R3q+wSo4NY=;
+  b=VEVORFf8GfcqPdtDaErkkPu9q9qhGZVAIAWEJazd3Fb3k2XKwhzYzgbd
+   yjHuIsDgYCIAYCFaqmiqoxzWFyX9eUqdA/kwM4l+uwLtny5Jfmt/M16KA
+   TYkUiSJf27DBjv4eZCBLSZ54WeKd9iJA1VH2L/mEl89Lfsg16mzbZJzVD
+   mpLKVLY0MZIvKB/XhqGRjTOUyfQewZhjrkKBn/sUCdSx0eGA0cqAfBYmt
+   eS9G7/acWprrRLyuLY/XFH3JSx12dC/bK0CPbLPcTPGhZLAY1mgeMpoNQ
+   Dn62WOAExD2iaRnpwqdg2Ry8wAMFTGnViZL/JQ1B94DjAEaITtxzuzAYz
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="374672134"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="374672134"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 00:25:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="819125180"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="819125180"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 10 Oct 2023 00:25:04 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Tue, 10 Oct 2023 00:24:58 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Tue, 10 Oct 2023 00:24:58 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Tue, 10 Oct 2023 00:24:58 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N6Zd5xpaqdN4vlxTEvvrAelkLwujZ84ZiZBztMDONo0i7Iiz4mV7xrP7Qep1XWBEJqF2j/bjTd3mFnaeimqkYsVPUEPb1hIspBl3OVq2cG6x6fwyI0gB/LFajCGAxuNamYcI6Cs9T2mbkar7qd6ENUTkR6mvBroAHaXWdB4mh6p+WTQFII5GgrsgVK0Qzv4AxaFVAopAxpDVzLLuvV7HuwrohFkN2lfsJMfJ0U28JiFhjzKFTt/bKsSBlDLWGHOW2ohgzbU4O/eWQFz6S8xBNfLtjE/9zllhZRI4FCRGJOkbJWg7aFHpY7xViF8A/VuTLxAM1RyP7Ost7utyFkaUBg==
+ b=leL5vq6TH34XBDaaHYPkmNaJ3R5GC+NRdTIEDpjaFEUvfFrKg1dEyB9Pu76aOMYlQGeMRnKdA3ZBgZ4klh5lGl2/fjPJWbDt/F9q7aER5jWABrSnHraFXH98OiJ1VK1frkFU6c7FVt4QnLeXmrjHRfv7jvSVlG0xPiFs3Esa8XWQUV2ScuTM+fnghhGXY4XC2M879lfJFx/fM9SHJ8IaumP4WO/b/oFG+QDE8AowjGua/D5+5jUbLirm1Zic8fi1rcjKJHIXBM3AjbxwV5rkoNvXW6Ym347sDo/5XOw0yXhOPdTOq5j2EDMnVPckaJyDFTgXQ3lY+UCXo1pUoE+pCg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jY2beGmCFAXwKd6f2q05xeG5Y7NhL/3MgjNQXTcjJfw=;
- b=AWkI0bwR6TbK7lyllyHcNOnkqGUegf4ZdxEADonaC4YPHbpHntGta7wht0Sh66APoCSp6GQ823ZeOAjMp68nVE7fEoW1VA7pm4Hd7TskLh4lcFLguOCN4Vwwz0uS35f9w90hy/iTOTD6yPePJdxOAYkIyaTzTohDQUOXonV/PiJw61acg7CXaGzYX6Zx3RZaLVLS91v+5daakNTMFhvK+zZuIkXU/fAB2vNzmiGRQ5AMKDR/U5/ky9xRH2SMRRUU5bQ8RRtDsfhzp2vdhBaBjN/+o7Xk+NbgKYrn/ceL7WnLm9ZOEJZH0Tebf0Kc3+XjIfWTeDBI19cXgg0gppObUg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jY2beGmCFAXwKd6f2q05xeG5Y7NhL/3MgjNQXTcjJfw=;
- b=OKv76C7y+EZuNoY+bT9+VkjUftnPQYbEuE0wn2+J0UKlB4LWjMQ7wCUPwGiEWDX0haFqcyr7DEbN13N0dT/KubqChe5CDVHmoL1mOr+x/Mv9AzQHW1WWOFERVT2oRHaDq/ZBeTTNVG00AzLuUvJelR/67eEW52D8rEgxLQ371dQMabB+JBTa/xqCG1WD4tbDpn+BLEYQZ4ORQaLPpEGIS+Sgbrvaw29AT47r1CblkSygzpMgu12cWxXYSns23ECyc7XMlYIdLvO8dH5Ea5NCVDss4IiZiE8htLBytlAG86qy42+9HMypa3mGF7p43rYFg/j+sCrNBm0gjZS5VvLZRQ==
-Received: from AM9PR02MB7010.eurprd02.prod.outlook.com (2603:10a6:20b:266::16)
- by PAXPR02MB7800.eurprd02.prod.outlook.com (2603:10a6:102:223::10) with
+ bh=q/pFVoJYQJw7a1KoUmuOopXLXmDqOgAmDwPD7MAKcI4=;
+ b=f4So5J0RIEnftS0xOH1jptDVvemL6iyaGrgeA2ceIwkPWEz2sDa2c+jK5/c8xS2jMpsAbvKTMJhNjRC/Hkx/R6+MZexX2PkpTPekhv2K8C8D/UZcnEaqIWr9mlFy6pan/2ksfdpfj+D+us3C0rQJfGu6OiEj5rIeZMVuW0uhIi+XYZ/Uc9/3+pXk/cpPXovTDAInlnzTNQWwy1v/3cw8E2gmy8+QeMtjNmeBkbJSJuMAqnJKh2jRPojKzNme90FdZVs3DUeCh5VSIbZgaal/avsdJ/cm70gaN3i32J/HZrk3/k5CrD+3N6eRyEQ+jfZ92djgpavRT0xyfJLD3PDDYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
+ by CY8PR11MB7083.namprd11.prod.outlook.com (2603:10b6:930:51::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Tue, 10 Oct
- 2023 07:24:04 +0000
-Received: from AM9PR02MB7010.eurprd02.prod.outlook.com
- ([fe80::ecb7:be77:2f83:d9f6]) by AM9PR02MB7010.eurprd02.prod.outlook.com
- ([fe80::ecb7:be77:2f83:d9f6%5]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
- 07:24:04 +0000
-From:   Ms Jacquelyn Mitchard <dousamurai@hotmail.com>
-Subject: Re; contact me to my email: ms.jacquelynmit@hotmail.com
-Thread-Topic: Re; contact me to my email: ms.jacquelynmit@hotmail.com
-Thread-Index: AQHZ+0q/imRVcp1TrE+c7eqF5l/aZw==
-Date:   Tue, 10 Oct 2023 07:24:03 +0000
-Message-ID: <AM9PR02MB7010634FC293F4B4348D3787C1CDA@AM9PR02MB7010.eurprd02.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-tmn:  [gquoouuIa6guRQHGQl+RihmnUNM8WVoP]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AM9PR02MB7010:EE_|PAXPR02MB7800:EE_
-x-ms-office365-filtering-correlation-id: ec05ee4a-3ad4-45ce-b01a-08dbc961e1bd
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: RKmbBSflJ7T/QdcuOa9T1cpgpL1AP5thYijpwy5RVIrMLUavlJ7tRQqgZ0bN9fPIBmclK4gf+dNG/H9dC12x4WcWVKUTQKhCOIqUI9CaV2ct724MZw7gt+zKUktbsiR4H2vD9nb04n2tDFLqgXvFJud/5fQb3WM41OCj+yMy6JGm+mWvk5lnz2G/VUYz2VfAdXdM2wKnnfaKasGdX8PU9EAr6XtDGYLePITui1Ho63kJkYkp4p7tH1x7LyAAHA/fBOjAuA9GXbwtOdHn7ut2QwJYZ+I8cFoKsT/J/J8QVUMNpuAkLk1E9AREcjTRTLbMKBcPg4u8WjpZGNLPxZFSpfo+ZpvAT48WdGzlV2biLiGvPGr55i+DSwjx8WUoZAU4c4akRySHYiN+4Gkw+SJQ9G/nR+28r++3VdTqYu4o1IZqoz9VANdXnIXfDjUUqI8LrE2Gl00/SQV+Md5X7etilsjUyM0anq6vdENVzIQaQZK7fzwwU1Fk0OkQQNiDCW0TbnfNkmYzk7ZqXt5y38ko5PShnGuBJ1NOKn35PmyV4UCIQn7ls3WxWXSt8yvn93ZQ
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?GkbZK93eLCv/XaJAXHUOvshooR3EnLOuSXGsW+9NUzUrr4GDtXj+uvc2f4?=
- =?iso-8859-1?Q?2/B1Z1p6DrcV0Jhws1TBs4AKfg+DLayb2Pdbefzc+MDMfSMdTm+rszWbNc?=
- =?iso-8859-1?Q?08Jc1p0MVY6lbIcNosXFmZvkRPMVUhl4HCmeKysNG7qrS1Rw0V7BYut5s1?=
- =?iso-8859-1?Q?57MvBnQPxRsB4qayuB+uuHF9fsxPPZ9aQvHm1vGGnMWUvoSzvWcrk2/lWY?=
- =?iso-8859-1?Q?TbaATP7B3zq7X5eweIbBDhIWDk5WxtaP1pcZZrTsd33U0OfZNwkxexlx/+?=
- =?iso-8859-1?Q?122FWxkaKKaa0AaSwsT9TBbamVKYnyxZt7j256BwVeVFOiQSjgXcjKoYm0?=
- =?iso-8859-1?Q?4AM5kt1BUlrZkNog8giB01sA94wkXCTvLPUuFTiKrfTezdg7JVMVmt5Bs0?=
- =?iso-8859-1?Q?OzkOk1FOei5jw8dNCc0DiWgfDga23lPmG5lZB0KR5dCoQ+bWnZanjLMbYj?=
- =?iso-8859-1?Q?z5djOHB5a2My/Yvn490LJsVNPlQ7sZvs5AjgKKSqmDa7o1Lwv9HdwT/X1d?=
- =?iso-8859-1?Q?N0vJ6fAG+mggGx/kvD3URj2xPMyPmFGYQ/gUYrZaF1IDhZ3XpsIVPuSS0R?=
- =?iso-8859-1?Q?h050n/mZa12s/9GWvGYy3K/E9MpqPvJGZ36Qk3nAoP0Ss7khrLK81B4+Nk?=
- =?iso-8859-1?Q?+lcnttAuo3rLzyIGzSNfokIQffxAGnTzsL00VyS1Wzk2jzWKPZuDqfUBLO?=
- =?iso-8859-1?Q?iQvdX1VSVjZqx9TR9HakwC9xn+yc+6lNOk0/HRrH6/dH4T7hAWORwUoW+n?=
- =?iso-8859-1?Q?K/SwjpkHSOlXo4CPwgEBsTDTFgavAwIhKQmnlo+ykCqKRqnguBrKmTWYjA?=
- =?iso-8859-1?Q?7QdTsV1aSdhyM6H0Zr2zLV/EY8WWks5HYHXaEIYy2KUzxDcK5vzCdnnkFU?=
- =?iso-8859-1?Q?/bim+obUQIKgr9Rx1iz36BPQT78xzAfdbui/bSGB7lAgn9S3EctiRABknw?=
- =?iso-8859-1?Q?n/b9Wa3yL5QyzGGcDaH0Isvj2rN3NIk7wWI56SCL96BtdRvpvvVuslSKii?=
- =?iso-8859-1?Q?Sv447S061pCLSShDWLOi9Dcl6YO5o1eenkChD13JfhX6LoT34V8LipAwd8?=
- =?iso-8859-1?Q?vWh1mSy36LniEoRmhY8nAtv09jGh7SJPCmtT+dw2HyW+sVUusN4BP9wbUv?=
- =?iso-8859-1?Q?xDue7er4/QN1IzklB+krvdYPUx//ZT+62tqa82siabXASXXx72NVmu6Z4m?=
- =?iso-8859-1?Q?//ckYZW9IolwtQsAMv9rwe0d1jZN0UnA7BksX7XktARPd8XNTlIFm8+eOx?=
- =?iso-8859-1?Q?Cj2Jw7vcWq2MPvUEYRCQ=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.37; Tue, 10 Oct
+ 2023 07:24:51 +0000
+Received: from DS0PR11MB7529.namprd11.prod.outlook.com
+ ([fe80::f8f4:bed2:b2f8:cb6b]) by DS0PR11MB7529.namprd11.prod.outlook.com
+ ([fe80::f8f4:bed2:b2f8:cb6b%3]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
+ 07:24:51 +0000
+Date:   Tue, 10 Oct 2023 09:24:41 +0200
+From:   Larysa Zaremba <larysa.zaremba@intel.com>
+To:     Stanislav Fomichev <sdf@google.com>
+CC:     <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Andrii Nakryiko" <andrii@kernel.org>, Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "KP Singh" <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, <linux-kernel@vger.kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: add options and frags to
+ xdp_hw_metadata
+Message-ID: <ZST8OTwh+6y1S170@lzaremba-mobl.ger.corp.intel.com>
+References: <20231009160520.20831-1-larysa.zaremba@intel.com>
+ <ZSQvMr3-lY9uTzn_@google.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZSQvMr3-lY9uTzn_@google.com>
+X-ClientProxiedBy: WA2P291CA0019.POLP291.PROD.OUTLOOK.COM
+ (2603:10a6:1d0:1e::26) To DS0PR11MB7529.namprd11.prod.outlook.com
+ (2603:10b6:8:141::20)
 MIME-Version: 1.0
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-bcc80.templateTenant
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR11MB7529:EE_|CY8PR11MB7083:EE_
+X-MS-Office365-Filtering-Correlation-Id: c2a03055-ae9e-40cc-9878-08dbc961fdd9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tPoHsL6eFmFj7udaHCfXjsChCAsRR5W25LoKVuNF96V46q7pTCGBrw0dtRnWsOI1OzldRpyC2vOLQnWhTeKT2alI6BAb1s1CVGXR7shFYcj3mOfzYNBKBBjazOG57C6GEfgN694eYtV1ucqOuh3WCG3O7nkBA4di1gd1hgtgWfDqoBS4Eib6K1qjJiQu7WrV+Z6kNW5GaJ9KZqBZysVb71dne2LXzE7dE8BmcLMGq9CnbXWPTus/amruaA1Fmkd90v/ESzLqrk3rSvlEXWv3LdqxgOcHBJAQYiSadEOktBy0q6vUKyKmPA1KBkmYvESdgT4yY96puCeVYAzTQpHS9B/afZP0IERmYc+KPwZyUiqoPfa9uFn7oHpdSkPG25Fl66bDFubXrkaWEuWu8HT5bO/v7fmcO/TIZklY1GvwdeyShbKDnpDWRQqCu/DMuaqOYlq/Rpy905zgDo7As6hSIg3dsLCs4l9bWklF+2yd2o6BpHFq3wDghxjf5qUgirRGfqYEhzO7oQ3Y2H7nI7ZGDQInk45Qw6BNeacWgoxZK7npd0nwp1L1PjnFskFpRxQG9TTsF1vhRMmAcTTh1vuybHlRw8VKjYri+XS6Dr+K7BU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(396003)(376002)(39860400002)(136003)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(6506007)(107886003)(6512007)(82960400001)(86362001)(38100700002)(83380400001)(2906002)(6486002)(7416002)(966005)(6666004)(41300700001)(8936002)(478600001)(44832011)(4326008)(8676002)(316002)(26005)(5660300002)(66476007)(6916009)(66556008)(54906003)(66946007)(67856001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Bw8lokzZLUA/lOLLSgAx4t585f7CO3PxGT7PNbOSB5MIYXCjHuEhNcE/el3C?=
+ =?us-ascii?Q?7/5Fp8b91ZrDp8D70hOPtnD/yLnWh6+K4aBRy/XMeSEUYuuMBWrN1j8e8HQW?=
+ =?us-ascii?Q?a5blTZuS1o9aI+OpCCuMRbm+g+VbBvjNMWWylAPTRU+DVqkkd0GxbBuFXe/d?=
+ =?us-ascii?Q?GUfrmp0TdXRA5UuoB4L0EKg98QK0SN3LE+YeWJuIbhGbZr+0XGCv9MwQ7kA2?=
+ =?us-ascii?Q?/eYXWfI4zHYtRl1By8SNQp7oeDk9jyX05Ne+Azc5cC5q/GphOIsjpBavwPTl?=
+ =?us-ascii?Q?hNbf3vu9mJhrgE9Cxy15UJp3nZPNj0RTepgH5xwPohfdop012SoWhasO3Ik3?=
+ =?us-ascii?Q?YJDQGhljxhEwgaXKNXdYHmHiIdzj/62wvWbJdFQHqyjHFAyW4wsLuAksVCf7?=
+ =?us-ascii?Q?R8h7VgvqW3854f7N6sbCaQYjjH2aH5++80Rwv1l5/lVR2RlZ272ZH4wo+RIA?=
+ =?us-ascii?Q?a+O9L5BxDo8qSw4JSvIVPZtnYI6a90xPPz+2JGrHTHP23a3fz7sCm/xrK/ta?=
+ =?us-ascii?Q?TJYVb1VYXkRx4M7+KhmaEqCkL3DRFT1pX3jf8OE2R2NzpLkU2lEvl0axsyz+?=
+ =?us-ascii?Q?tE8C4QdXH4q+L4CSGOq+DmTsjsQdFw524+hhIaeHAcaG1jDO0Vtd6l0Mxa28?=
+ =?us-ascii?Q?FpzAnWupe/ALnOJntX8sZb0f0bZT6xH5ou6kJLM0bb9DcAlL8PJNgVLfjgs8?=
+ =?us-ascii?Q?q6SD4PiVRg8BvzbYSqsq5dsE1/cqqd6+IrH3Ap4jxQ6YOjLgnY3jAjLRT5r8?=
+ =?us-ascii?Q?Y/+CqD6JyZbV5sm8BDFQ7IZL4iGhhIPX/MEwfcySDa1/P6jDcxQWVRPatWFZ?=
+ =?us-ascii?Q?bDZrRU3MdQxgaOMOVsAJCpexvVH2yDS/yMYreXNx0yzvb6o/BsNDQRSFrUB4?=
+ =?us-ascii?Q?3Qm9zI36lzDMfS6pZJFQiJNr00ync5Z0kU8ucNog37O+4L9GhvteUk4i+cf+?=
+ =?us-ascii?Q?SsyKML2weNnoXx5W5DAyqqUctKbXrnU02TQ+w1lUOpZb6MEuy1xKW3WclsmT?=
+ =?us-ascii?Q?dOqHKaGGtkREGj+2c1A2coiueaaYHYOsQpMOtLGnq+cFOFvDbyKXEZTkwfsp?=
+ =?us-ascii?Q?pQ+PumwoFvAJb5RCkU64qTlmcUPf09qDeL2uLea0BSllZX0NJdb3hRFqasZJ?=
+ =?us-ascii?Q?Y36EqH9MZt8+RNMJcuWO77HepT8KB6QzpgpqOdelIB/Gp8DCvc8BLRk7/suu?=
+ =?us-ascii?Q?G9ycdcJvEg6D9DQp+CAHYYzTb/zrJt2bQOvt52usO/zKTeg2z1X3QU9lQPEe?=
+ =?us-ascii?Q?gRcdO2WdLF8lTLBMxki5Hzeu40RY2WxbK93eTqQ0LtyED56y0m4HJ1ifA7Ip?=
+ =?us-ascii?Q?aG8z9wCos4swi73reVNIcMeAWRhsIENd8SMFOUKaOgc5q+W4n4WHGDSEqs+g?=
+ =?us-ascii?Q?QTnWu+5cIBK4rTvwLJFkPUlWlilvYlyVEfY9d+t4HqGahRCb1KCl8qPk8jov?=
+ =?us-ascii?Q?MksaAFfW4mLvjjjA9/AYkm9eBZ5BzBzBPMAzG9JWhrOBk/URbcQsZPJRtT+E?=
+ =?us-ascii?Q?+WUOWt6/qEc3Svha+9izFhqbOzqpuOKbXCtgHyBZ8cN+HJQEsJ8uUAuCGL4F?=
+ =?us-ascii?Q?JqzFIao7Wu/qNzcJGpZaMzR1NwFYbU+MSl8KSrkVGrRSRK7E9bExTr4t8Gxn?=
+ =?us-ascii?Q?fw=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c2a03055-ae9e-40cc-9878-08dbc961fdd9
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM9PR02MB7010.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: ec05ee4a-3ad4-45ce-b01a-08dbc961e1bd
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Oct 2023 07:24:03.8823
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 07:24:51.2469
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR02MB7800
-X-Spam-Status: No, score=2.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
-        MISSING_HEADERS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BjXwsq5jyuHdJm/sM0Rtj/8T89+Qalkx//zqM/tnY7AtnsmpntlL/dxp1jZaRln+Rg2YE2Y6E4ifGPzlkmUt2YsAcBlveuYXy5q6SKtXlOU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7083
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=0A=
-=0A=
-=0A=
-Hello,=0A=
-=0A=
-My name is Ms Jacquelyn Mitchard, a banker by profession. I apologize=0A=
-for contacting you in this manner but the situation at hand demands=0A=
-urgent attention from presumed beneficiary. I have an important=0A=
-subject to share with you, regarding late customer fund's=0A=
-domicile in our bank.=0A=
-=0A=
-Kindly contact me to my email: ms.jacquelynmit@hotmail.com=0A=
-for more detailed information.=0A=
-=0A=
-Thanks=0A=
-Ms Jacq.=
+On Mon, Oct 09, 2023 at 09:49:54AM -0700, Stanislav Fomichev wrote:
+> On 10/09, Larysa Zaremba wrote:
+> > This is a follow-up to the commit 9b2b86332a9b ("bpf: Allow to use kfunc
+> > XDP hints and frags together").
+> > 
+> > The are some possible implementations problems that may arise when
+> > providing metadata specifically for multi-buffer packets, therefore there
+> > must be a possibility to test such option separately.
+> > 
+> > Add an option to use multi-buffer AF_XDP xdp_hw_metadata and mark used XDP
+> > program as capable to use frags.
+> > 
+> > As for now, xdp_hw_metadata accepts no options, so add simple option
+> > parsing logic and a help message.
+> > 
+> > For quick reference, also add an ingress packet generation command to the
+> > help message. The command comes from [0].
+> > 
+> > Example of output for multi-buffer packet:
+> > 
+> > xsk_ring_cons__peek: 1
+> > 0xead018: rx_desc[15]->addr=10000000000f000 addr=f100 comp_addr=f000
+> > rx_hash: 0x5789FCBB with RSS type:0x29
+> > rx_timestamp:  1696856851535324697 (sec:1696856851.5353)
+> > XDP RX-time:   1696856843158256391 (sec:1696856843.1583)
+> > 	delta sec:-8.3771 (-8377068.306 usec)
+> > AF_XDP time:   1696856843158413078 (sec:1696856843.1584)
+> > 	delta sec:0.0002 (156.687 usec)
+> > 0xead018: complete idx=23 addr=f000
+> > xsk_ring_cons__peek: 1
+> > 0xead018: rx_desc[16]->addr=100000000008000 addr=8100 comp_addr=8000
+> > 0xead018: complete idx=24 addr=8000
+> > xsk_ring_cons__peek: 1
+> > 0xead018: rx_desc[17]->addr=100000000009000 addr=9100 comp_addr=9000 EoP
+> > 0xead018: complete idx=25 addr=9000
+> > 
+> > Metadata is printed for the first packet only.
+> > 
+> > [0] https://lore.kernel.org/all/20230119221536.3349901-18-sdf@google.com/
+> > 
+> > Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
+> > ---
+> >  .../selftests/bpf/progs/xdp_hw_metadata.c     |  2 +-
+> >  tools/testing/selftests/bpf/xdp_hw_metadata.c | 92 ++++++++++++++++---
+> >  2 files changed, 79 insertions(+), 15 deletions(-)
+> > 
+> > diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> > index 63d7de6c6bbb..8767d919c881 100644
+> > --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> > +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> > @@ -21,7 +21,7 @@ extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
+> >  extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
+> >  				    enum xdp_rss_hash_type *rss_type) __ksym;
+> >  
+> > -SEC("xdp")
+> > +SEC("xdp.frags")
+> >  int rx(struct xdp_md *ctx)
+> >  {
+> >  	void *data, *data_meta, *data_end;
+> > diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> > index 17c980138796..25225720346b 100644
+> > --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> > +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> > @@ -26,6 +26,7 @@
+> >  #include <linux/sockios.h>
+> >  #include <sys/mman.h>
+> >  #include <net/if.h>
+> > +#include <ctype.h>
+> >  #include <poll.h>
+> >  #include <time.h>
+> >  
+> > @@ -49,19 +50,29 @@ struct xsk {
+> >  struct xdp_hw_metadata *bpf_obj;
+> >  struct xsk *rx_xsk;
+> >  const char *ifname;
+> > +bool use_frags;
+> >  int ifindex;
+> >  int rxq;
+> >  
+> >  void test__fail(void) { /* for network_helpers.c */ }
+> >  
+> > -static int open_xsk(int ifindex, struct xsk *xsk, __u32 queue_id)
+> > +static struct xsk_socket_config gen_socket_config(void)
+> >  {
+> > -	int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE;
+> > -	const struct xsk_socket_config socket_config = {
+> > +	struct xsk_socket_config socket_config = {
+> >  		.rx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
+> >  		.tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
+> >  		.bind_flags = XDP_COPY,
+> >  	};
+> > +
+> > +	if (use_frags)
+> > +		socket_config.bind_flags |= XDP_USE_SG;
+> > +	return socket_config;
+> > +}
+> 
+> nit: why not drop const from socket_config and add this 'if (use_frags)'
+> directly to open_xsk? Not sure separate function really buys us anything?
+>
+
+Considering there will also be ZC/copy option, I thought it would be good to 
+separate socket config creation. After giving this a sencond thought though, 
+for now options would control bind_flags only. What do you this about removing 
+gen_socket_config(), but introducing get_bind_flags()?
+ 
+> > +static int open_xsk(int ifindex, struct xsk *xsk, __u32 queue_id)
+> > +{
+> > +	int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE;
+> > +	struct xsk_socket_config socket_config = gen_socket_config();
+> >  	const struct xsk_umem_config umem_config = {
+> >  		.fill_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
+> >  		.comp_size = XSK_RING_CONS__DEFAULT_NUM_DESCS,
+> > @@ -263,11 +274,14 @@ static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd, clockid_t
+> >  			verify_skb_metadata(server_fd);
+> >  
+> >  		for (i = 0; i < rxq; i++) {
+> > +			bool first_seg = true;
+> > +			bool is_eop = true;
+> > +
+> >  			if (fds[i].revents == 0)
+> >  				continue;
+> >  
+> >  			struct xsk *xsk = &rx_xsk[i];
+> > -
+> > +peek:
+> >  			ret = xsk_ring_cons__peek(&xsk->rx, 1, &idx);
+> >  			printf("xsk_ring_cons__peek: %d\n", ret);
+> >  			if (ret != 1)
+> > @@ -276,12 +290,19 @@ static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd, clockid_t
+> >  			rx_desc = xsk_ring_cons__rx_desc(&xsk->rx, idx);
+> >  			comp_addr = xsk_umem__extract_addr(rx_desc->addr);
+> >  			addr = xsk_umem__add_offset_to_addr(rx_desc->addr);
+> > -			printf("%p: rx_desc[%u]->addr=%llx addr=%llx comp_addr=%llx\n",
+> > -			       xsk, idx, rx_desc->addr, addr, comp_addr);
+> > -			verify_xdp_metadata(xsk_umem__get_data(xsk->umem_area, addr),
+> > -					    clock_id);
+> > +			is_eop = !(rx_desc->options & XDP_PKT_CONTD);
+> > +			printf("%p: rx_desc[%u]->addr=%llx addr=%llx comp_addr=%llx%s\n",
+> > +			       xsk, idx, rx_desc->addr, addr, comp_addr, is_eop ? " EoP" : "");
+> > +			if (first_seg) {
+> > +				verify_xdp_metadata(xsk_umem__get_data(xsk->umem_area, addr),
+> > +						    clock_id);
+> > +				first_seg = false;
+> > +			}
+> > +
+> >  			xsk_ring_cons__release(&xsk->rx, 1);
+> >  			refill_rx(xsk, comp_addr);
+> > +			if (!is_eop)
+> > +				goto peek;
+> >  		}
+> >  	}
+> >  
+> > @@ -404,6 +425,54 @@ static void timestamping_enable(int fd, int val)
+> >  		error(1, errno, "setsockopt(SO_TIMESTAMPING)");
+> >  }
+> >  
+> > +static void print_usage(void)
+> > +{
+> > +	const char *usage =
+> > +		"  Usage: xdp_hw_metadata [OPTIONS] [IFNAME]\n"
+> > +		"  Options:\n"
+> > +		"  -m            Enable multi-buffer XDP for larger MTU\n"
+> > +		"  -h            Display this help and exit\n\n"
+> > +		"  Generate test packets on the other machine with:\n"
+> > +		"    echo -n xdp | nc -u -q1 <dst_ip> 9091\n";
+> 
+> nit: any reason we have two spaces in the help description? I don't
+> think it's a standard practice, so maybe drop them?
+
+I have just copied usage from xskxceiver. As I see, this is not a standard 
+practice indeed, will fix.
