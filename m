@@ -2,124 +2,411 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C6A7BFE84
+	by mail.lfdr.de (Postfix) with ESMTP id B80A67BFE85
 	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232526AbjJJNyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 09:54:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40250 "EHLO
+        id S232377AbjJJNy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 09:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232465AbjJJNy3 (ORCPT
+        with ESMTP id S232047AbjJJNyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 09:54:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F9F39D;
-        Tue, 10 Oct 2023 06:54:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/Q2326nbgNVkzW/VEHSwQCD8IL326flLiX2/oxCqN0g=; b=vwbk4OYTkj+i5hVlzwFJfLP7V8
-        4Wca/Me2pvYsVPi5UmFxhBkFS2Rli0Hl4cs3XiY/gVPYh2aix9MnSTDlNIJ1ZNSSubRiUeGiKI4Fd
-        2uCUvvOpNsOvFMl5ogtHz4C5x1aZ6HSBk5DICSeyAwynTDnoBUftyKtkB6W5p0mFppUxUnSzIN/1N
-        +pgD6/DpPlv1Y08Yrn8y+1qnByWbjf0VmLnW6qiy82RHDXOmZg9dgpk7g6xYtBRVi87Hlz0lzSSye
-        8BZOoxEinlmAC2yhdWhncDkg+yQ+sAAalCckfYRhlMdHLmcSgsGAdJ0NETgV1px/iZcwY7oOnzzUQ
-        wnfhJOkw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qqDB6-004xnI-KK; Tue, 10 Oct 2023 13:53:40 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4E225300392; Tue, 10 Oct 2023 15:53:40 +0200 (CEST)
-Date:   Tue, 10 Oct 2023 15:53:40 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Hao Jia <jiahao.os@bytedance.com>
-Cc:     mingo@redhat.com, mingo@kernel.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Igor Raits <igor.raits@gmail.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Re: [External] Re: [PATCH] sched/core: Fix wrong warning check in
- rq_clock_start_loop_update()
-Message-ID: <20231010135340.GK377@noisy.programming.kicks-ass.net>
-References: <20230913082424.73252-1-jiahao.os@bytedance.com>
- <20230928114159.GJ9829@noisy.programming.kicks-ass.net>
- <979f948c-7611-b137-a06a-ca09ff63f919@bytedance.com>
+        Tue, 10 Oct 2023 09:54:25 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01919B7
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 06:54:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5B53C433C8;
+        Tue, 10 Oct 2023 13:54:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696946063;
+        bh=CNWvC9NpuHMARHhr8MyzieDE2CJlBdi0q9ScP3wU4Pk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WZ9crXHkqfRHOuwF5nSBT/H/QN11ggSEKBro2yDSNAM6nbU6+rc79pvijcGFsp4RK
+         kj27z4TB/14zehVxsb1V4yLR8cg9XMwpyG4oDwxPJ42IgHsCU91qO3m01sSWdES8nY
+         M0G03ThhjBrkEjEEQpB2olWoufBDBEC/n4ey4+C/KWh+lF2rAt9IEVzIVG6IrXzuzO
+         NptVfj5tQgvc5lK23RAeiVWx2C4U0u3sxygBOlbffhN1v4kqn9YgENIyjU1Zkq56Ey
+         9yX1Sc4EmlMNjCd0plo4OFfZ7f7W7Aguu5nJ+RpFjfolPgCUljrueflCbuFCMHDIyl
+         JxT6wHCzBaC6A==
+From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        mhiramat@kernel.org
+Subject: [PATCH] bpf/btf: Move tracing BTF APIs to the BTF library
+Date:   Tue, 10 Oct 2023 22:54:19 +0900
+Message-Id: <169694605862.516358.5321950027838863987.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <979f948c-7611-b137-a06a-ca09ff63f919@bytedance.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 07, 2023 at 04:44:46PM +0800, Hao Jia wrote:
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-> > That is, would not something like the below make more sense?
-> 
-> If we understand correctly, this may not work.
-> 
-> After applying this patch, the following situation will trigger the
-> rq->clock_update_flags < RQCF_ACT_SKIP warning.
-> 
-> If rq_clock_skip_update() is called before __schedule(), so RQCF_REQ_SKIP of
-> rq->clock_update_flags is set.
-> 
-> 
-> 
-> 
-> __schedule() {
-> 	rq_lock(rq, &rf); [rq->clock_update_flags is RQCF_REQ_SKIP]
-> 	rq->clock_update_flags <<= 1;
-> 	update_rq_clock(rq); [rq->clock_update_flags is RQCF_ACT_SKIP]
-> + 	rq->clock_update_flags &= ~(RQCF_ACT_SKIP|RQCF_REQ_SKIP);
-> 	* At this time, rq->clock_update_flags = 0; *
+Move the BTF APIs used in tracing to the BTF library code for sharing it
+with others.
+Previously, to avoid complex dependency in a series I made it on the
+tracing tree, but now it is a good time to move it to BPF tree because
+these functions are pure BTF functions.
 
-Fixed easily enough, just change to:
-
-	rq->clock_updated_flags = RQCF_UPDATED;
-
-> 
->          pick_next_task_fair
->          set_next_entity
->          update_load_avg
->          	assert_clock_updated() <---
-> }
-
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index a0a582c8cf8c..cf9eb1a26c22 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -5357,8 +5357,6 @@ context_switch(struct rq *rq, struct task_struct *prev,
- 	/* switch_mm_cid() requires the memory barriers above. */
- 	switch_mm_cid(rq, prev, next);
+ include/linux/btf.h        |   24 +++++++++
+ kernel/bpf/btf.c           |  115 +++++++++++++++++++++++++++++++++++++++++
+ kernel/trace/Makefile      |    1 
+ kernel/trace/trace_btf.c   |  122 --------------------------------------------
+ kernel/trace/trace_btf.h   |   11 ----
+ kernel/trace/trace_probe.c |    2 -
+ 6 files changed, 140 insertions(+), 135 deletions(-)
+ delete mode 100644 kernel/trace/trace_btf.c
+ delete mode 100644 kernel/trace/trace_btf.h
+
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index 928113a80a95..8372d93ea402 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -507,6 +507,14 @@ btf_get_prog_ctx_type(struct bpf_verifier_log *log, const struct btf *btf,
+ int get_kern_ctx_btf_id(struct bpf_verifier_log *log, enum bpf_prog_type prog_type);
+ bool btf_types_are_same(const struct btf *btf1, u32 id1,
+ 			const struct btf *btf2, u32 id2);
++const struct btf_type *btf_find_func_proto(const char *func_name,
++					   struct btf **btf_p);
++const struct btf_param *btf_get_func_param(const struct btf_type *func_proto,
++					   s32 *nr);
++const struct btf_member *btf_find_struct_member(struct btf *btf,
++						const struct btf_type *type,
++						const char *member_name,
++						u32 *anon_offset);
+ #else
+ static inline const struct btf_type *btf_type_by_id(const struct btf *btf,
+ 						    u32 type_id)
+@@ -559,6 +567,22 @@ static inline bool btf_types_are_same(const struct btf *btf1, u32 id1,
+ {
+ 	return false;
+ }
++static inline const struct btf_type *btf_find_func_proto(const char *func_name,
++							 struct btf **btf_p)
++{
++	return NULL;
++}
++static inline const struct btf_param *
++btf_get_func_param(const struct btf_type *func_proto, s32 *nr)
++{
++	return NULL;
++}
++static inline const struct btf_member *
++btf_find_struct_member(struct btf *btf, const struct btf_type *type,
++		       const char *member_name, u32 *anon_offset)
++{
++	return NULL;
++}
+ #endif
  
--	rq->clock_update_flags &= ~(RQCF_ACT_SKIP|RQCF_REQ_SKIP);
+ static inline bool btf_type_is_struct_ptr(struct btf *btf, const struct btf_type *t)
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 8090d7fb11ef..e5cbf3b31b78 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -912,6 +912,121 @@ static const struct btf_type *btf_type_skip_qualifiers(const struct btf *btf,
+ 	return t;
+ }
+ 
++/*
++ * Find a function proto type by name, and return the btf_type with its btf
++ * in *@btf_p. Return NULL if not found.
++ * Note that caller has to call btf_put(*@btf_p) after using the btf_type.
++ */
++const struct btf_type *btf_find_func_proto(const char *func_name, struct btf **btf_p)
++{
++	const struct btf_type *t;
++	s32 id;
++
++	id = bpf_find_btf_id(func_name, BTF_KIND_FUNC, btf_p);
++	if (id < 0)
++		return NULL;
++
++	/* Get BTF_KIND_FUNC type */
++	t = btf_type_by_id(*btf_p, id);
++	if (!t || !btf_type_is_func(t))
++		goto err;
++
++	/* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
++	t = btf_type_by_id(*btf_p, t->type);
++	if (!t || !btf_type_is_func_proto(t))
++		goto err;
++
++	return t;
++err:
++	btf_put(*btf_p);
++	return NULL;
++}
++
++/*
++ * Get function parameter with the number of parameters.
++ * This can return NULL if the function has no parameters.
++ * It can return -EINVAL if the @func_proto is not a function proto type.
++ */
++const struct btf_param *btf_get_func_param(const struct btf_type *func_proto, s32 *nr)
++{
++	if (!btf_type_is_func_proto(func_proto))
++		return ERR_PTR(-EINVAL);
++
++	*nr = btf_type_vlen(func_proto);
++	if (*nr > 0)
++		return (const struct btf_param *)(func_proto + 1);
++	else
++		return NULL;
++}
++
++#define BTF_ANON_STACK_MAX	16
++
++struct btf_anon_stack {
++	u32 tid;
++	u32 offset;
++};
++
++/*
++ * Find a member of data structure/union by name and return it.
++ * Return NULL if not found, or -EINVAL if parameter is invalid.
++ * If the member is an member of anonymous union/structure, the offset
++ * of that anonymous union/structure is stored into @anon_offset. Caller
++ * can calculate the correct offset from the root data structure by
++ * adding anon_offset to the member's offset.
++ */
++const struct btf_member *btf_find_struct_member(struct btf *btf,
++						const struct btf_type *type,
++						const char *member_name,
++						u32 *anon_offset)
++{
++	struct btf_anon_stack *anon_stack;
++	const struct btf_member *member;
++	u32 tid, cur_offset = 0;
++	const char *name;
++	int i, top = 0;
++
++	anon_stack = kcalloc(BTF_ANON_STACK_MAX, sizeof(*anon_stack), GFP_KERNEL);
++	if (!anon_stack)
++		return ERR_PTR(-ENOMEM);
++
++retry:
++	if (!btf_type_is_struct(type)) {
++		member = ERR_PTR(-EINVAL);
++		goto out;
++	}
++
++	for_each_member(i, type, member) {
++		if (!member->name_off) {
++			/* Anonymous union/struct: push it for later use */
++			type = btf_type_skip_modifiers(btf, member->type, &tid);
++			if (type && top < BTF_ANON_STACK_MAX) {
++				anon_stack[top].tid = tid;
++				anon_stack[top++].offset =
++					cur_offset + member->offset;
++			}
++		} else {
++			name = btf_name_by_offset(btf, member->name_off);
++			if (name && !strcmp(member_name, name)) {
++				if (anon_offset)
++					*anon_offset = cur_offset;
++				goto out;
++			}
++		}
++	}
++	if (top > 0) {
++		/* Pop from the anonymous stack and retry */
++		tid = anon_stack[--top].tid;
++		cur_offset = anon_stack[top].offset;
++		type = btf_type_by_id(btf, tid);
++		goto retry;
++	}
++	member = NULL;
++
++out:
++	kfree(anon_stack);
++	return member;
++}
++
+ #define BTF_SHOW_MAX_ITER	10
+ 
+ #define BTF_KIND_BIT(kind)	(1ULL << kind)
+diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
+index 057cd975d014..64b61f67a403 100644
+--- a/kernel/trace/Makefile
++++ b/kernel/trace/Makefile
+@@ -99,7 +99,6 @@ obj-$(CONFIG_KGDB_KDB) += trace_kdb.o
+ endif
+ obj-$(CONFIG_DYNAMIC_EVENTS) += trace_dynevent.o
+ obj-$(CONFIG_PROBE_EVENTS) += trace_probe.o
+-obj-$(CONFIG_PROBE_EVENTS_BTF_ARGS) += trace_btf.o
+ obj-$(CONFIG_UPROBE_EVENTS) += trace_uprobe.o
+ obj-$(CONFIG_BOOTTIME_TRACING) += trace_boot.o
+ obj-$(CONFIG_FTRACE_RECORD_RECURSION) += trace_recursion_record.o
+diff --git a/kernel/trace/trace_btf.c b/kernel/trace/trace_btf.c
+deleted file mode 100644
+index ca224d53bfdc..000000000000
+--- a/kernel/trace/trace_btf.c
++++ /dev/null
+@@ -1,122 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-#include <linux/btf.h>
+-#include <linux/kernel.h>
+-#include <linux/slab.h>
 -
- 	prepare_lock_switch(rq, next, rf);
- 
- 	/* Here we just switch the register state and the stack. */
-@@ -6596,6 +6594,7 @@ static void __sched notrace __schedule(unsigned int sched_mode)
- 	/* Promote REQ to ACT */
- 	rq->clock_update_flags <<= 1;
- 	update_rq_clock(rq);
-+	rq->clock_update_flags = RQCF_UPDATED;
- 
- 	switch_count = &prev->nivcsw;
- 
-@@ -6675,8 +6674,6 @@ static void __sched notrace __schedule(unsigned int sched_mode)
- 		/* Also unlocks the rq: */
- 		rq = context_switch(rq, prev, next, &rf);
- 	} else {
--		rq->clock_update_flags &= ~(RQCF_ACT_SKIP|RQCF_REQ_SKIP);
+-#include "trace_btf.h"
 -
- 		rq_unpin_lock(rq, &rf);
- 		__balance_callbacks(rq);
- 		raw_spin_rq_unlock_irq(rq);
+-/*
+- * Find a function proto type by name, and return the btf_type with its btf
+- * in *@btf_p. Return NULL if not found.
+- * Note that caller has to call btf_put(*@btf_p) after using the btf_type.
+- */
+-const struct btf_type *btf_find_func_proto(const char *func_name, struct btf **btf_p)
+-{
+-	const struct btf_type *t;
+-	s32 id;
+-
+-	id = bpf_find_btf_id(func_name, BTF_KIND_FUNC, btf_p);
+-	if (id < 0)
+-		return NULL;
+-
+-	/* Get BTF_KIND_FUNC type */
+-	t = btf_type_by_id(*btf_p, id);
+-	if (!t || !btf_type_is_func(t))
+-		goto err;
+-
+-	/* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
+-	t = btf_type_by_id(*btf_p, t->type);
+-	if (!t || !btf_type_is_func_proto(t))
+-		goto err;
+-
+-	return t;
+-err:
+-	btf_put(*btf_p);
+-	return NULL;
+-}
+-
+-/*
+- * Get function parameter with the number of parameters.
+- * This can return NULL if the function has no parameters.
+- * It can return -EINVAL if the @func_proto is not a function proto type.
+- */
+-const struct btf_param *btf_get_func_param(const struct btf_type *func_proto, s32 *nr)
+-{
+-	if (!btf_type_is_func_proto(func_proto))
+-		return ERR_PTR(-EINVAL);
+-
+-	*nr = btf_type_vlen(func_proto);
+-	if (*nr > 0)
+-		return (const struct btf_param *)(func_proto + 1);
+-	else
+-		return NULL;
+-}
+-
+-#define BTF_ANON_STACK_MAX	16
+-
+-struct btf_anon_stack {
+-	u32 tid;
+-	u32 offset;
+-};
+-
+-/*
+- * Find a member of data structure/union by name and return it.
+- * Return NULL if not found, or -EINVAL if parameter is invalid.
+- * If the member is an member of anonymous union/structure, the offset
+- * of that anonymous union/structure is stored into @anon_offset. Caller
+- * can calculate the correct offset from the root data structure by
+- * adding anon_offset to the member's offset.
+- */
+-const struct btf_member *btf_find_struct_member(struct btf *btf,
+-						const struct btf_type *type,
+-						const char *member_name,
+-						u32 *anon_offset)
+-{
+-	struct btf_anon_stack *anon_stack;
+-	const struct btf_member *member;
+-	u32 tid, cur_offset = 0;
+-	const char *name;
+-	int i, top = 0;
+-
+-	anon_stack = kcalloc(BTF_ANON_STACK_MAX, sizeof(*anon_stack), GFP_KERNEL);
+-	if (!anon_stack)
+-		return ERR_PTR(-ENOMEM);
+-
+-retry:
+-	if (!btf_type_is_struct(type)) {
+-		member = ERR_PTR(-EINVAL);
+-		goto out;
+-	}
+-
+-	for_each_member(i, type, member) {
+-		if (!member->name_off) {
+-			/* Anonymous union/struct: push it for later use */
+-			type = btf_type_skip_modifiers(btf, member->type, &tid);
+-			if (type && top < BTF_ANON_STACK_MAX) {
+-				anon_stack[top].tid = tid;
+-				anon_stack[top++].offset =
+-					cur_offset + member->offset;
+-			}
+-		} else {
+-			name = btf_name_by_offset(btf, member->name_off);
+-			if (name && !strcmp(member_name, name)) {
+-				if (anon_offset)
+-					*anon_offset = cur_offset;
+-				goto out;
+-			}
+-		}
+-	}
+-	if (top > 0) {
+-		/* Pop from the anonymous stack and retry */
+-		tid = anon_stack[--top].tid;
+-		cur_offset = anon_stack[top].offset;
+-		type = btf_type_by_id(btf, tid);
+-		goto retry;
+-	}
+-	member = NULL;
+-
+-out:
+-	kfree(anon_stack);
+-	return member;
+-}
+-
+diff --git a/kernel/trace/trace_btf.h b/kernel/trace/trace_btf.h
+deleted file mode 100644
+index 4bc44bc261e6..000000000000
+--- a/kernel/trace/trace_btf.h
++++ /dev/null
+@@ -1,11 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#include <linux/btf.h>
+-
+-const struct btf_type *btf_find_func_proto(const char *func_name,
+-					   struct btf **btf_p);
+-const struct btf_param *btf_get_func_param(const struct btf_type *func_proto,
+-					   s32 *nr);
+-const struct btf_member *btf_find_struct_member(struct btf *btf,
+-						const struct btf_type *type,
+-						const char *member_name,
+-						u32 *anon_offset);
+diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+index 4dc74d73fc1d..b33c424b8ee0 100644
+--- a/kernel/trace/trace_probe.c
++++ b/kernel/trace/trace_probe.c
+@@ -12,7 +12,7 @@
+ #define pr_fmt(fmt)	"trace_probe: " fmt
+ 
+ #include <linux/bpf.h>
+-#include "trace_btf.h"
++#include <linux/btf.h>
+ 
+ #include "trace_probe.h"
+ 
+
