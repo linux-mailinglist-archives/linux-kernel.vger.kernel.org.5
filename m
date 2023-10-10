@@ -2,152 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7887BFE68
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0EF37BFE66
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232353AbjJJNt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 09:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38880 "EHLO
+        id S232184AbjJJNt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 09:49:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231384AbjJJNtz (ORCPT
+        with ESMTP id S231959AbjJJNtz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 10 Oct 2023 09:49:55 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D6D9AC;
-        Tue, 10 Oct 2023 06:49:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09C07C433C9;
-        Tue, 10 Oct 2023 13:49:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696945793;
-        bh=fTiSxm8WZ05Ie9AUU3jVNwVyZoaduYCe0KKtDVoAF/E=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=WfaFEezYalMeFKmX5SZQMUFwkAuTGIqQkfs7mWR/HlweePT1EDXF/t7CruFHtRaQk
-         jA9PwqV63QoZh7NW3pRuKXxaumhMTvxEMNIoT7uv9D0CyK122oLSYtkr7xDtb9Y+X2
-         KhKvDvwSaYZbSIre0Ko0Ss2XpZEzgdfnCOIK/hQMuFKSDolyg23U0Jn6O2PVfkM9fN
-         G3Q3Q0qih5H2jCRnKFAU6pkhS21PPANaHujLZXDzXtuvTtaEEqdNmTqaIQeCwJainl
-         ljwdb/wyVegDZ81vkYV0d09XEGX68sPUX+POiuo8KaGIdvPEPH5cgKt9F/h0fnzuLz
-         bLSc4jvRog3/g==
-Message-ID: <1de1ace90f1645fc629c075826aa67eda8dfd138.camel@kernel.org>
-Subject: Re: [PATCH v2] KEYS: trusted: Remove redundant static calls usage
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     torvalds@linux-foundation.org, peterz@infradead.org,
-        zohar@linux.ibm.com, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org, jejb@linux.ibm.com,
-        David.Kaplan@amd.com, bp@alien8.de, mingo@kernel.org,
-        x86@kernel.org, regressions@leemhuis.info,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Date:   Tue, 10 Oct 2023 16:49:48 +0300
-In-Reply-To: <CAFA6WYNamspdK=RakirdS3fiHrmmaPXcgEcZeNn5z2DRNdE3Rw@mail.gmail.com>
-References: <20231006051801.423973-1-sumit.garg@linaro.org>
-         <8eeac047a59667912a45b21050a6e4c57d7cccd5.camel@kernel.org>
-         <CAFA6WYNamspdK=RakirdS3fiHrmmaPXcgEcZeNn5z2DRNdE3Rw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.46.4-2 
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED07E91
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 06:49:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1696945790;
+        bh=eAfyGGfJOuVrL8HicEi18Nqp3PFUp8dPfG7VSb+fiUE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=s4ES6kyL/RDaZnGzHQnxo6HgvKhsZnNoQ319amA4QBOeAXyiJGVW14ufftsqA+1co
+         aq5J/Bwu1e1Pn2pp33KQBECCYXiKRj7mDUoDk133cl+qkLNDWuCyQOatGdO4T0ELvY
+         gJJuVn559t90epc8w9xWFa3kxr+oPpFiAUc7uiZkHG/pQKc1g5H05V4Iy/y0XAcse4
+         hczuMu5iDcj8gIbrvFRTe6SlNJSIHLutXDsfoxssYOD4RkU2t+WnzMkE7v0LaGOTn9
+         8TpMYnPaU+VgZiDkJUqipbkuJFOc1Vcglb4L1mMqYpBLlLMBPVL0rovNw+0WfPt3DJ
+         Hkk3WLAwNaiAQ==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4S4cht4XxXz1X0Q;
+        Tue, 10 Oct 2023 09:49:50 -0400 (EDT)
+Message-ID: <ebe4e40f-37df-40a9-9dfc-7f2a458151bd@efficios.com>
+Date:   Tue, 10 Oct 2023 09:49:54 -0400
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] sched/fair: Bias runqueue selection towards almost
+ idle prev CPU
+Content-Language: en-US
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        Aaron Lu <aaron.lu@intel.com>, Tim Chen <tim.c.chen@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>, x86@kernel.org
+References: <20230929183350.239721-1-mathieu.desnoyers@efficios.com>
+ <ZRfKKxBzfu+kf0tM@chenyu5-mobl2.ccr.corp.intel.com>
+ <0f3cfff3-0df4-3cb7-95cb-ea378517e13b@efficios.com>
+ <ZSOMOhhkPIFmvz97@chenyu5-mobl2.ccr.corp.intel.com>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <ZSOMOhhkPIFmvz97@chenyu5-mobl2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIzLTEwLTEwIGF0IDE4OjQ0ICswNTMwLCBTdW1pdCBHYXJnIHdyb3RlOgo+IE9u
-IFR1ZSwgMTAgT2N0IDIwMjMgYXQgMTg6MDMsIEphcmtrbyBTYWtraW5lbiA8amFya2tvQGtlcm5l
-bC5vcmc+IHdyb3RlOgo+ID4gCj4gPiBPbiBGcmksIDIwMjMtMTAtMDYgYXQgMTA6NDggKzA1MzAs
-IFN1bWl0IEdhcmcgd3JvdGU6Cj4gPiA+IFN0YXRpYyBjYWxscyBpbnZvY2F0aW9ucyBhcmVuJ3Qg
-d2VsbCBzdXBwb3J0ZWQgZnJvbSBtb2R1bGUgX19pbml0IGFuZAo+ID4gPiBfX2V4aXQgZnVuY3Rp
-b25zLiBFc3BlY2lhbGx5IHRoZSBzdGF0aWMgY2FsbCBmcm9tIGNsZWFudXBfdHJ1c3RlZCgpIGxl
-ZAo+ID4gPiB0byBhIGNyYXNoIG9uIHg4NiBrZXJuZWwgd2l0aCBDT05GSUdfREVCVUdfVklSVFVB
-TD15Lgo+ID4gPiAKPiA+ID4gSG93ZXZlciwgdGhlIHVzYWdlIG9mIHN0YXRpYyBjYWxsIGludm9j
-YXRpb25zIGZvciB0cnVzdGVkX2tleV9pbml0KCkKPiA+ID4gYW5kIHRydXN0ZWRfa2V5X2V4aXQo
-KSBkb24ndCBhZGQgYW55IHZhbHVlIGZyb20gZWl0aGVyIGEgcGVyZm9ybWFuY2Ugb3IKPiA+ID4g
-c2VjdXJpdHkgcGVyc3BlY3RpdmUuIEhlbmNlIHN3aXRjaCB0byB1c2UgaW5kaXJlY3QgZnVuY3Rp
-b24gY2FsbHMgaW5zdGVhZC4KPiA+ID4gCj4gPiA+IE5vdGUgaGVyZSB0aGF0IGFsdGhvdWdoIGl0
-IHdpbGwgZml4IHRoZSBjdXJyZW50IGNyYXNoIHJlcG9ydCwgdWx0aW1hdGVseQo+ID4gPiB0aGUg
-c3RhdGljIGNhbGwgaW5mcmFzdHJ1Y3R1cmUgc2hvdWxkIGJlIGZpeGVkIHRvIGVpdGhlciBzdXBw
-b3J0IGl0cwo+ID4gPiBmdXR1cmUgdXNhZ2UgZnJvbSBtb2R1bGUgX19pbml0IGFuZCBfX2V4aXQg
-ZnVuY3Rpb25zIG9yIG5vdC4KPiA+ID4gCj4gPiA+IFJlcG9ydGVkLWJ5OiBIeWVvbmdnb24gWW9v
-IDw0Mi5oeWV5b29AZ21haWwuY29tPgo+ID4gPiBMaW5rOiBodHRwczovL2xvcmUua2VybmVsLm9y
-Zy9sa21sL1pSaEtxNmU1bkYlMkY0WklWMUBmZWRvcmEvI3QKPiA+ID4gRml4ZXM6IDVkMDY4MmJl
-MzE4OSAoIktFWVM6IHRydXN0ZWQ6IEFkZCBnZW5lcmljIHRydXN0ZWQga2V5cyBmcmFtZXdvcmsi
-KQo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBTdW1pdCBHYXJnIDxzdW1pdC5nYXJnQGxpbmFyby5vcmc+
-Cj4gPiA+IC0tLQo+ID4gPiAKPiA+ID4gQ2hhbmdlcyBpbiB2MjoKPiA+ID4gLSBQb2xpc2ggY29t
-bWl0IG1lc3NhZ2UgYXMgcGVyIGNvbW1lbnRzIGZyb20gTWltaQo+ID4gPiAKPiA+ID4gwqBzZWN1
-cml0eS9rZXlzL3RydXN0ZWQta2V5cy90cnVzdGVkX2NvcmUuYyB8IDEzICsrKysrLS0tLS0tLS0K
-PiA+ID4gwqAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspLCA4IGRlbGV0aW9ucygtKQo+
-ID4gPiAKPiA+ID4gZGlmZiAtLWdpdCBhL3NlY3VyaXR5L2tleXMvdHJ1c3RlZC1rZXlzL3RydXN0
-ZWRfY29yZS5jIGIvc2VjdXJpdHkva2V5cy90cnVzdGVkLWtleXMvdHJ1c3RlZF9jb3JlLmMKPiA+
-ID4gaW5kZXggYzZmYzUwZDY3MjE0Li44NWZiNWMyMjUyOWEgMTAwNjQ0Cj4gPiA+IC0tLSBhL3Nl
-Y3VyaXR5L2tleXMvdHJ1c3RlZC1rZXlzL3RydXN0ZWRfY29yZS5jCj4gPiA+ICsrKyBiL3NlY3Vy
-aXR5L2tleXMvdHJ1c3RlZC1rZXlzL3RydXN0ZWRfY29yZS5jCj4gPiA+IEBAIC00NCwxMyArNDQs
-MTIgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCB0cnVzdGVkX2tleV9zb3VyY2UgdHJ1c3RlZF9rZXlf
-c291cmNlc1tdID0gewo+ID4gPiDCoCNlbmRpZgo+ID4gPiDCoH07Cj4gPiA+IAo+ID4gPiAtREVG
-SU5FX1NUQVRJQ19DQUxMX05VTEwodHJ1c3RlZF9rZXlfaW5pdCwgKnRydXN0ZWRfa2V5X3NvdXJj
-ZXNbMF0ub3BzLT5pbml0KTsKPiA+ID4gwqBERUZJTkVfU1RBVElDX0NBTExfTlVMTCh0cnVzdGVk
-X2tleV9zZWFsLCAqdHJ1c3RlZF9rZXlfc291cmNlc1swXS5vcHMtPnNlYWwpOwo+ID4gPiDCoERF
-RklORV9TVEFUSUNfQ0FMTF9OVUxMKHRydXN0ZWRfa2V5X3Vuc2VhbCwKPiA+ID4gwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqdHJ1c3RlZF9rZXlfc291cmNl
-c1swXS5vcHMtPnVuc2VhbCk7Cj4gPiA+IMKgREVGSU5FX1NUQVRJQ19DQUxMX05VTEwodHJ1c3Rl
-ZF9rZXlfZ2V0X3JhbmRvbSwKPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCAqdHJ1c3RlZF9rZXlfc291cmNlc1swXS5vcHMtPmdldF9yYW5kb20pOwo+
-ID4gPiAtREVGSU5FX1NUQVRJQ19DQUxMX05VTEwodHJ1c3RlZF9rZXlfZXhpdCwgKnRydXN0ZWRf
-a2V5X3NvdXJjZXNbMF0ub3BzLT5leGl0KTsKPiA+ID4gK3N0YXRpYyB2b2lkICgqdHJ1c3RlZF9r
-ZXlfZXhpdCkodm9pZCk7Cj4gPiA+IMKgc3RhdGljIHVuc2lnbmVkIGNoYXIgbWlncmF0YWJsZTsK
-PiA+ID4gCj4gPiA+IMKgZW51bSB7Cj4gPiA+IEBAIC0zNTksMTkgKzM1OCwxNiBAQCBzdGF0aWMg
-aW50IF9faW5pdCBpbml0X3RydXN0ZWQodm9pZCkKPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIGlmICghZ2V0X3JhbmRvbSkKPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBnZXRfcmFuZG9tID0ga2VybmVsX2dldF9yYW5kb207Cj4g
-PiA+IAo+ID4gPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdGF0aWNfY2FsbF91cGRh
-dGUodHJ1c3RlZF9rZXlfaW5pdCwKPiA+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0cnVzdGVkX2tleV9zb3VyY2Vz
-W2ldLm9wcy0+aW5pdCk7Cj4gPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdGF0
-aWNfY2FsbF91cGRhdGUodHJ1c3RlZF9rZXlfc2VhbCwKPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdHJ1c3Rl
-ZF9rZXlfc291cmNlc1tpXS5vcHMtPnNlYWwpOwo+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgc3RhdGljX2NhbGxfdXBkYXRlKHRydXN0ZWRfa2V5X3Vuc2VhbCwKPiA+ID4gwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgdHJ1c3RlZF9rZXlfc291cmNlc1tpXS5vcHMtPnVuc2VhbCk7Cj4gPiA+IMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdGF0aWNfY2FsbF91cGRhdGUodHJ1c3RlZF9rZXlf
-Z2V0X3JhbmRvbSwKPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZ2V0X3JhbmRvbSk7Cj4gPiA+IC3CoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIHN0YXRpY19jYWxsX3VwZGF0ZSh0cnVzdGVkX2tleV9leGl0
-LAo+ID4gPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIHRydXN0ZWRfa2V5X3NvdXJjZXNbaV0ub3BzLT5leGl0KTsKPiA+
-ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdHJ1c3RlZF9rZXlfZXhpdCA9IHRydXN0
-ZWRfa2V5X3NvdXJjZXNbaV0ub3BzLT5leGl0Owo+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgbWlncmF0YWJsZSA9IHRydXN0ZWRfa2V5X3NvdXJjZXNbaV0ub3BzLT5taWdyYXRh
-YmxlOwo+ID4gPiAKPiA+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0ID0gc3Rh
-dGljX2NhbGwodHJ1c3RlZF9rZXlfaW5pdCkoKTsKPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgcmV0ID0gdHJ1c3RlZF9rZXlfc291cmNlc1tpXS5vcHMtPmluaXQoKTsKPiA+ID4g
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlmICghcmV0KQo+ID4gPiDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJyZWFrOwo+ID4gPiDCoMKgwqDC
-oMKgwqDCoCB9Cj4gPiA+IEBAIC0zODgsNyArMzg0LDggQEAgc3RhdGljIGludCBfX2luaXQgaW5p
-dF90cnVzdGVkKHZvaWQpCj4gPiA+IAo+ID4gPiDCoHN0YXRpYyB2b2lkIF9fZXhpdCBjbGVhbnVw
-X3RydXN0ZWQodm9pZCkKPiA+ID4gwqB7Cj4gPiA+IC3CoMKgwqDCoMKgwqAgc3RhdGljX2NhbGxf
-Y29uZCh0cnVzdGVkX2tleV9leGl0KSgpOwo+ID4gPiArwqDCoMKgwqDCoMKgIGlmICh0cnVzdGVk
-X2tleV9leGl0KQo+ID4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAoKnRydXN0ZWRf
-a2V5X2V4aXQpKCk7Cj4gPiA+IMKgfQo+ID4gPiAKPiA+ID4gwqBsYXRlX2luaXRjYWxsKGluaXRf
-dHJ1c3RlZCk7Cj4gPiAKPiA+IFdvdWxkIGl0IGJlIGxlc3MgY29uZnVzaW5nIHRvIHJlcXVpcmUg
-dHJ1c3RlZF9rZXlfZXhpdCBmcm9tIGVhY2g/Cj4gPiAKPiAKPiBJdCBpcyBhbHJlYWR5IHJlcXVp
-cmVkIGZvciBlYWNoIHRydXN0IHNvdXJjZSB0byBwcm92aWRlIGV4aXQgY2FsbGJhY2sKPiBidXQg
-dGhpcyBOVUxMIGNoZWNrIHdhcyBhZGRlZCB2aWEgdGhpcyBmaXggWzFdIGluIGNhc2UgdGhlcmUg
-aXNuJ3QgYW55Cj4gdHJ1c3Qgc291cmNlIHByZXNlbnQuCj4gCj4gWzFdIGh0dHBzOi8vbGttbC5r
-ZXJuZWwub3JnL3N0YWJsZS8yMDIyMDEyNjE4NDE1NS4yMjA4MTQtMS1kYXZlLmtsZWlrYW1wQG9y
-YWNsZS5jb20vCgpJJ2QgY29uc2lkZXJpbmcgY3JlYXRpbmcgYSBwbGFjZWhvbGRlciB0cnVzdGVk
-X2tleV9kZWZhdWx0X2V4aXQoKSB3aXRoCnBlcmhhcHMgcHJfZGVidWcoKSBzdGF0ZW1lbnQgYWNr
-bm93bGVkZ2luZyBpdCBnZXR0aW5nIGNhbGxlZC4KCkhtbS4uIGlmIHdlIGhhZCB0aGF0IEkgd29u
-ZGVyIGlmIHdlIGNvdWxkIGdldCBhd2F5IHdpdGggX193ZWFrLi4uIFRoZW4KeW91IHdvdWxkIG5v
-dCBuZWVkIHRvIGFzc2lnbiBhbnl0aGluZy4gVGhpcyBpcyBub3QgdGhyb3VnaC1vdXQgYW5hbHl6
-ZWQuClRiaCBJJ20gbm90IHN1cmUgaG93IG1vZHVsZSBsb2FkZXIgaGFuZGxlcyB0aGlzIHR5cGUg
-b2Ygc2NlbmFyaW8gYnV0CmF0IGxlYXN0IHRoZSBwbGFjZWhvbGRlciBmdW5jdGlvbiB3b3VsZCBt
-YWtlIHNlbnNlIGluIGFueSBjYXNlLgoKSWYgYWJ1c2luZyB3ZWFrIHN5bWJvbHMgd2FzIGluLWZh
-Y3QgcG9zc2libGUgcHJvYmFibHkgdGhlbiB0aGUgd2hvbGUKaWRlYSBvZiB1c2luZyBzdGF0aWNf
-Y2FsbCBjb3VsZCBiZSB0aHJvd24gdG8gZ2FyYmFnZSBiaW4gYnV0IHRoZXJlJ3MKbm93IGEgbG90
-IG9mIGNvbnRleHQgaGVyZSByZWxhdGVkIG9uIGhvdyBtb2R1bGUgbG9hZGVyIHdvcmtzIGxpbnV4
-CnRoYXQgSSdtIGlnbm9yaW5nLi4uCgpCUiwgSmFya2tvCgoK
+On 2023-10-09 01:14, Chen Yu wrote:
+> On 2023-09-30 at 07:45:38 -0400, Mathieu Desnoyers wrote:
+>> On 9/30/23 03:11, Chen Yu wrote:
+>>> Hi Mathieu,
+>>>
+>>> On 2023-09-29 at 14:33:50 -0400, Mathieu Desnoyers wrote:
+>>>> Introduce the WAKEUP_BIAS_PREV_IDLE scheduler feature. It biases
+>>>> select_task_rq towards the previous CPU if it was almost idle
+>>>> (avg_load <= 0.1%).
+>>>
+>>> Yes, this is a promising direction IMO. One question is that,
+>>> can cfs_rq->avg.load_avg be used for percentage comparison?
+>>> If I understand correctly, load_avg reflects that more than
+>>> 1 tasks could have been running this runqueue, and the
+>>> load_avg is the direct proportion to the load_weight of that
+>>> cfs_rq. Besides, LOAD_AVG_MAX seems to not be the max value
+>>> that load_avg can reach, it is the sum of
+>>> 1024 * (y + y^1 + y^2 ... )
+>>>
+>>> For example,
+>>> taskset -c 1 nice -n -20 stress -c 1
+>>> cat /sys/kernel/debug/sched/debug | grep 'cfs_rq\[1\]' -A 12 | grep "\.load_avg"
+>>>     .load_avg                      : 88763
+>>>     .load_avg                      : 1024
+>>>
+>>> 88763 is higher than LOAD_AVG_MAX=47742
+>>
+>> I would have expected the load_avg to be limited to LOAD_AVG_MAX somehow,
+>> but it appears that it does not happen in practice.
+>>
+>> That being said, if the cutoff is really at 0.1% or 0.2% of the real max,
+>> does it really matter ?
+>>
+>>> Maybe the util_avg can be used for precentage comparison I suppose?
+>> [...]
+>>> Or
+>>> return cpu_util_without(cpu_rq(cpu), p) * 1000 <= capacity_orig_of(cpu) ?
+>>
+>> Unfortunately using util_avg does not seem to work based on my testing.
+>> Even at utilization thresholds at 0.1%, 1% and 10%.
+>>
+>> Based on comments in fair.c:
+>>
+>>   * CPU utilization is the sum of running time of runnable tasks plus the
+>>   * recent utilization of currently non-runnable tasks on that CPU.
+>>
+>> I think we don't want to include currently non-runnable tasks in the
+>> statistics we use, because we are trying to figure out if the cpu is a
+>> idle-enough target based on the tasks which are currently running, for the
+>> purpose of runqueue selection when waking up a task which is considered at
+>> that point in time a non-runnable task on that cpu, and which is about to
+>> become runnable again.
+>>
+> 
+> Although LOAD_AVG_MAX is not the max possible load_avg, we still want to find
+> a proper threshold to decide if the CPU is almost idle. The LOAD_AVG_MAX
+> based threshold is modified a little bit:
+> 
+> The theory is, if there is only 1 task on the CPU, and that task has a nice
+> of 0, the task runs 50 us every 1000 us, then this CPU is regarded as almost
+> idle.
+> 
+> The load_sum of the task is:
+> 50 * (1 + y + y^2 + ... + y^n)
+> The corresponding avg_load of the task is approximately
+> NICE_0_WEIGHT * load_sum / LOAD_AVG_MAX = 50.
+> So:
+> 
+> /* which is close to LOAD_AVG_MAX/1000 = 47 */
+> #define ALMOST_IDLE_CPU_LOAD   50
+
+Sorry to be slow at understanding this concept, but this whole "load" 
+value is still somewhat magic to me.
+
+Should it vary based on CONFIG_HZ_{100,250,300,1000}, or is it 
+independent ? Where is it documented that the load is a value in "us" 
+out of a window of 1000 us ?
+
+And with this value "50", it would cover the case where there is only a 
+single task taking less than 50us per 1000us, and cases where the sum 
+for the set of tasks on the runqueue is taking less than 50us per 1000us 
+overall.
+
+> 
+> static bool
+> almost_idle_cpu(int cpu, struct task_struct *p)
+> {
+>         if (!sched_feat(WAKEUP_BIAS_PREV_IDLE))
+>                 return false;
+>         return cpu_load_without(cpu_rq(cpu), p) <= ALMOST_IDLE_CPU_LOAD;
+> }
+> 
+> Tested this on Intel Xeon Platinum 8360Y, Ice Lake server, 36 core/package,
+> total 72 core/144 CPUs. Slight improvement is observed in hackbench socket mode:
+> 
+> socket mode:
+> hackbench -g 16 -f 20 -l 480000 -s 100
+> 
+> Before patch:
+> Running in process mode with 16 groups using 40 file descriptors each (== 640 tasks)
+> Each sender will pass 480000 messages of 100 bytes
+> Time: 81.084
+> 
+> After patch:
+> Running in process mode with 16 groups using 40 file descriptors each (== 640 tasks)
+> Each sender will pass 480000 messages of 100 bytes
+> Time: 78.083
+> 
+> 
+> pipe mode:
+> hackbench -g 16 -f 20 --pipe  -l 480000 -s 100
+> 
+> Before patch:
+> Running in process mode with 16 groups using 40 file descriptors each (== 640 tasks)
+> Each sender will pass 480000 messages of 100 bytes
+> Time: 38.219
+> 
+> After patch:
+> Running in process mode with 16 groups using 40 file descriptors each (== 640 tasks)
+> Each sender will pass 480000 messages of 100 bytes
+> Time: 38.348
+> 
+> It suggests that, if the workload has larger working-set/cache footprint, waking up
+> the task on its previous CPU could get more benefit.
+
+In those tests, what is the average % of idleness of your cpus ?
+
+Thanks,
+
+Mathieu
+
+> 
+> thanks,
+> Chenyu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
