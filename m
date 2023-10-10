@@ -2,51 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6F67C04C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 21:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0D57C04C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 21:36:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343919AbjJJTgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 15:36:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48706 "EHLO
+        id S1343980AbjJJTgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 15:36:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343946AbjJJTgo (ORCPT
+        with ESMTP id S1343922AbjJJTgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 15:36:44 -0400
+        Tue, 10 Oct 2023 15:36:46 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E939E;
-        Tue, 10 Oct 2023 12:36:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58C8DC433C8;
-        Tue, 10 Oct 2023 19:36:41 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72EDCAC
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 12:36:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF304C433C7;
+        Tue, 10 Oct 2023 19:36:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696966603;
-        bh=cZkzPPFC3wMzzRvvFIDetx465/S9zd2QKLoizRzR0gI=;
+        s=k20201202; t=1696966605;
+        bh=uD7ClMOlrXNZucpoYnlZ28XUQ78JwLXF5AuAtp1WUwQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LYGlVfKg4sSSZjfl2XDMA6KCVaRbQF/bXgrzY8OcHIvKxtXq0Pfw73bxJUGhWtc6e
-         17dTUdIS7RnQy0sCqfZGGQYS5Y/vC2T967KmNtzcgmCHDwe0+BY9K7y5FTWjjc4ek2
-         yU7dtRz6CmPWaHLcyYnVu7wA6Qa9dSaWUNrnxqAMfxWdYLcZPx0ukMqx9hSI3NiGMZ
-         5l0dwTKvv59Yt3MdWjVextK9jf4dqBfu4SSJHO5KeS/brR6ijvhs3lNscCBOd0o8cE
-         kUB9LYxgW2yLb1r07biJ25GjEtFloOyG4qhLSR0t3B2IeVx5QXQDSH0uq0n5gFCwTu
-         Uq1i24pvfu9Ig==
-Received: (nullmailer pid 1423129 invoked by uid 1000);
-        Tue, 10 Oct 2023 19:36:40 -0000
-Date:   Tue, 10 Oct 2023 14:36:40 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Mehdi Djait <mehdi.djait@bootlin.com>
-Cc:     ezequiel@vanguardiasur.com.ar, robh+dt@kernel.org, heiko@sntech.de,
-        linux-media@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        alexandre.belloni@bootlin.com, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org,
-        mchehab@kernel.org, conor+dt@kernel.org, hverkuil-cisco@xs4all.nl,
-        maxime.chevallier@bootlin.com, paul.kocialkowski@bootlin.com
-Subject: Re: [PATCH v7 1/3] media: dt-bindings: media: add bindings for
- Rockchip VIP
-Message-ID: <169696659993.1423074.9501474541283864884.robh@kernel.org>
-References: <cover.1696943295.git.mehdi.djait@bootlin.com>
- <a103d2e4e2c80a97a62574a782eba29f78731471.1696943295.git.mehdi.djait@bootlin.com>
+        b=k7vWiM/Yz0PhW0Ss7wKsaKqgBHZaO7QBO00j3RtRK6zfBXxWhUDD6o7xMvc60QjQ1
+         RcMDye+IPKtZrBCDB+F6DoQjOmMh4oQccmwfrbsM9YQLpxX+Ktj0hG9cN4aq+F90h0
+         tQrj4cTkWnfTinCP1gTSH1/T4R1iPkQ8b7sCdVkDrRwZNPuRK//hej2o8N6n8mdYhZ
+         D2s+1lS+ZH5NwQGmqAkko3jMz/dypR6jMOqsmYuLlmiLoTWC8kz07kfSmPGqeWwBFR
+         F94iXliE/hPeGq3/ZTh+KOhEGZIYTefAv8d+N3C3MrFU8XRPCnQdmoE9mhG6+ndzo6
+         OAQXy4SU2G4qQ==
+Date:   Tue, 10 Oct 2023 12:36:43 -0700
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     David Kaplan <david.kaplan@amd.com>
+Cc:     x86@kernel.org, luto@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] x86/retpoline: Ensure default return thunk isn't
+ used at runtime
+Message-ID: <20231010193643.su6iqjniuxqqke6d@treble>
+References: <20231010171020.462211-1-david.kaplan@amd.com>
+ <20231010171020.462211-4-david.kaplan@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <a103d2e4e2c80a97a62574a782eba29f78731471.1696943295.git.mehdi.djait@bootlin.com>
+In-Reply-To: <20231010171020.462211-4-david.kaplan@amd.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -57,19 +50,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Tue, 10 Oct 2023 15:15:04 +0200, Mehdi Djait wrote:
-> Add a documentation for the Rockchip Video Input Processor
-> binding.
+On Tue, Oct 10, 2023 at 12:10:20PM -0500, David Kaplan wrote:
+> All CPU bugs that require a return thunk define a special return thunk
+> to use (e.g., srso_return_thunk).  The default thunk,
+> __x86_return_thunk, should never be used after apply_returns() completes.
+> Otherwise this could lead to potential speculation holes.
 > 
-> The PX30 SoC is the only platform supported so far.
+> Enforce this by replacing this thunk with a ud2 when alternatives are
+> applied.  Alternative instructions are applied after apply_returns().
 > 
-> Signed-off-by: Mehdi Djait <mehdi.djait@bootlin.com>
+> The default thunk is only used during kernel boot, it is not used during
+> module init since that occurs after apply_returns().
+> 
+> Signed-off-by: David Kaplan <david.kaplan@amd.com>
 > ---
->  .../bindings/media/rockchip,px30-vip.yaml     | 93 +++++++++++++++++++
->  1 file changed, 93 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml
+>  arch/x86/lib/retpoline.S | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
 > 
+> diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
+> index 3da768a71cf9..10212cf4a9af 100644
+> --- a/arch/x86/lib/retpoline.S
+> +++ b/arch/x86/lib/retpoline.S
+> @@ -358,15 +358,17 @@ SYM_FUNC_END(call_depth_return_thunk)
+>   * This function name is magical and is used by -mfunction-return=thunk-extern
+>   * for the compiler to generate JMPs to it.
+>   *
+> - * This code is only used during kernel boot or module init.  All
+> + * This code is only used during kernel boot.  All
+>   * 'JMP __x86_return_thunk' sites are changed to something else by
+>   * apply_returns().
+> + *
+> + * This thunk is turned into a ud2 to ensure it is never used at runtime.
+> + * Alternative instructions are applied after apply_returns().
+>   */
+>  SYM_CODE_START(__x86_return_thunk)
+>  	UNWIND_HINT_FUNC
+>  	ANNOTATE_NOENDBR
+> -	ANNOTATE_UNRET_SAFE
+> -	ret
+> +	ALTERNATIVE __stringify(ANNOTATE_UNRET_SAFE;ret),"ud2", X86_FEATURE_RETHUNK
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+If it's truly never used after boot (even for non-rethunk cases) then
+can we use X86_FEATURE_ALWAYS?
 
+-- 
+Josh
