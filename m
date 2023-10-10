@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EDE17BF43B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 09:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD057BF438
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 09:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442668AbjJJHYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 03:24:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39496 "EHLO
+        id S1442559AbjJJHYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 03:24:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442499AbjJJHXr (ORCPT
+        with ESMTP id S1442500AbjJJHXr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 10 Oct 2023 03:23:47 -0400
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE63FB4;
-        Tue, 10 Oct 2023 00:23:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0678AB8;
+        Tue, 10 Oct 2023 00:23:45 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4S4S7H4KXGz4f3mHl;
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4S4S7H6txRz4f3mHv;
         Tue, 10 Oct 2023 15:23:39 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgDHXd31+yRl1AZbCg--.36859S19;
+        by APP4 (Coremail) with SMTP id gCh0CgDHXd31+yRl1AZbCg--.36859S20;
         Tue, 10 Oct 2023 15:23:42 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     song@kernel.org, xni@redhat.com
 Cc:     linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
         yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
         yangerkun@huawei.com
-Subject: [PATCH -next v4 15/19] md/md-linear: cleanup linear_add()
-Date:   Tue, 10 Oct 2023 23:19:54 +0800
-Message-Id: <20231010151958.145896-16-yukuai1@huaweicloud.com>
+Subject: [PATCH -next v4 16/19] md/raid5: replace suspend with quiesce() callback
+Date:   Tue, 10 Oct 2023 23:19:55 +0800
+Message-Id: <20231010151958.145896-17-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231010151958.145896-1-yukuai1@huaweicloud.com>
 References: <20231010151958.145896-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgDHXd31+yRl1AZbCg--.36859S19
-X-Coremail-Antispam: 1UD129KBjvdXoWrKF17uw18ur13CFWUCrW8tFb_yoWktrbE9F
-        4Du397Ar1UXry7Zr1Yvw4SvF90qryDWw1kZFySgr9aya48Xw1xAr95Jr45A3srZayfGay5
-        Kryxtw4ftr48tjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbqxFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M28IrcIa0xkI8V
-        A2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJ
-        M28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2I
-        x0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK
-        6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4
-        xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8
-        JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20V
-        AGYxC7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAF
-        wI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc4
-        0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AK
-        xVW8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JV
-        WxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7sRiVb
-        yDUUUUU==
+X-CM-TRANSID: gCh0CgDHXd31+yRl1AZbCg--.36859S20
+X-Coremail-Antispam: 1UD129KBjvJXoWxWFykZr18Cry7tr1kGFWfZrb_yoW5Xr4Dpw
+        s0gFsrXr4UWF9xu34DZa1kWFyrK3yUKrWkKryxW39Yva47Gr4kurWfJw45ZFy7G34FyFs7
+        t3y5J34kZFWvqrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUPI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2048vs2IY02
+        0E87I2jVAFwI0_JF0E3s1l82xGYIkIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0
+        rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6x
+        IIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xv
+        wVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFc
+        xC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_
+        Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2
+        IErcIFxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
+        14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIx
+        kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAF
+        wI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr
+        0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0pRv
+        JPtUUUUU=
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
@@ -65,36 +65,76 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Now that caller already suspend the array, there is no need to suspend
-array in liner_add().
+raid5 is the only personality to suspend array in check_reshape() and
+start_reshape() callback, suspend and quiesce() callback can both wait
+for all normal io to be done, and prevent new io to be dispatched, the
+difference is that suspend is implemented in common layer, and quiesce()
+callback is implemented in raid5.
 
-Note that mddev_suspend/resume() is not used anymore.
+In order to cleanup all the usage of mddev_suspend(), the new apis
+__mddev_suspend() need to be called before 'reconfig_mutex' is held,
+and it's not good to affect all the personalities in common layer just
+for raid5. Hence replace suspend with quiesce() callaback, prepare to
+reomove all the users of mddev_suspend().
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/md-linear.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/md/raid5.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/md/md-linear.c b/drivers/md/md-linear.c
-index ae2826e9645b..8eca7693b793 100644
---- a/drivers/md/md-linear.c
-+++ b/drivers/md/md-linear.c
-@@ -183,7 +183,6 @@ static int linear_add(struct mddev *mddev, struct md_rdev *rdev)
- 	 * in linear_congested(), therefore kfree_rcu() is used to free
- 	 * oldconf until no one uses it anymore.
+diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
+index e6b8c0145648..d6de084a85e5 100644
+--- a/drivers/md/raid5.c
++++ b/drivers/md/raid5.c
+@@ -70,6 +70,8 @@ MODULE_PARM_DESC(devices_handle_discard_safely,
+ 		 "Set to Y if all devices in each array reliably return zeroes on reads from discarded regions");
+ static struct workqueue_struct *raid5_wq;
+ 
++static void raid5_quiesce(struct mddev *mddev, int quiesce);
++
+ static inline struct hlist_head *stripe_hash(struct r5conf *conf, sector_t sect)
+ {
+ 	int hash = (sect >> RAID5_STRIPE_SHIFT(conf)) & HASH_MASK;
+@@ -2492,15 +2494,12 @@ static int resize_chunks(struct r5conf *conf, int new_disks, int new_sectors)
+ 	unsigned long cpu;
+ 	int err = 0;
+ 
+-	/*
+-	 * Never shrink. And mddev_suspend() could deadlock if this is called
+-	 * from raid5d. In that case, scribble_disks and scribble_sectors
+-	 * should equal to new_disks and new_sectors
+-	 */
++	/* Never shrink. */
+ 	if (conf->scribble_disks >= new_disks &&
+ 	    conf->scribble_sectors >= new_sectors)
+ 		return 0;
+-	mddev_suspend(conf->mddev);
++
++	raid5_quiesce(conf->mddev, true);
+ 	cpus_read_lock();
+ 
+ 	for_each_present_cpu(cpu) {
+@@ -2514,7 +2513,8 @@ static int resize_chunks(struct r5conf *conf, int new_disks, int new_sectors)
+ 	}
+ 
+ 	cpus_read_unlock();
+-	mddev_resume(conf->mddev);
++	raid5_quiesce(conf->mddev, false);
++
+ 	if (!err) {
+ 		conf->scribble_disks = new_disks;
+ 		conf->scribble_sectors = new_sectors;
+@@ -8551,8 +8551,8 @@ static int raid5_start_reshape(struct mddev *mddev)
+ 	 * the reshape wasn't running - like Discard or Read - have
+ 	 * completed.
  	 */
 -	mddev_suspend(mddev);
- 	oldconf = rcu_dereference_protected(mddev->private,
- 			lockdep_is_held(&mddev->reconfig_mutex));
- 	mddev->raid_disks++;
-@@ -192,7 +191,6 @@ static int linear_add(struct mddev *mddev, struct md_rdev *rdev)
- 	rcu_assign_pointer(mddev->private, newconf);
- 	md_set_array_sectors(mddev, linear_size(mddev, 0, 0));
- 	set_capacity_and_notify(mddev->gendisk, mddev->array_sectors);
 -	mddev_resume(mddev);
- 	kfree_rcu(oldconf, rcu);
- 	return 0;
- }
++	raid5_quiesce(mddev, true);
++	raid5_quiesce(mddev, false);
+ 
+ 	/* Add some new drives, as many as will fit.
+ 	 * We know there are enough to make the newly sized array work.
 -- 
 2.39.2
 
