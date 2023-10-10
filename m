@@ -2,175 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 743BC7C01A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C597C01AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232756AbjJJQ3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 12:29:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37230 "EHLO
+        id S233612AbjJJQcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 12:32:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231231AbjJJQ3u (ORCPT
+        with ESMTP id S232892AbjJJQb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 12:29:50 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6BE93;
-        Tue, 10 Oct 2023 09:29:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7414FC433C7;
-        Tue, 10 Oct 2023 16:29:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696955387;
-        bh=2yjmYeF5BHJBKV8W3tqM5P5MMJUgXgPBqJIgjiDA92w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Nr6M0O3MHp7l6KVRca4pqzSgQ+Ik2CGxx12mR4Xa+AAprnubSwBbyPYlwiAdwqcoS
-         qYAPsmTgG8I8i7V35I9x8sPwKP2BMxe2TsbmDjBmFO3BeNvobB2kceq+XoV4xEfm+N
-         I0tMDULKeTSQLoViAi5Nq2NHZUgqbqjOGRwVZ496JPB7jQ8quHHID2Rwik7wyWWKR2
-         2SqVLYWH19rZXyYwWjaGbYVf5TZvT9V/6L2v9vulZnTh3aiF5xFxg3SCsirGh0VKdp
-         2rbwDlmfhWuXy/pgJU6oOcLBuOmtdYd+s04fpHUhZvp5GsXpeEVyJTZUTeBBx2S/Ph
-         7G9GFOLmF8lZw==
-Date:   Tue, 10 Oct 2023 11:29:45 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     lpieralisi@kernel.org, kw@linux.com, bhelgaas@google.com,
-        robh@kernel.org, gustavo.pimentel@synopsys.com,
-        jingoohan1@gmail.com, andersson@kernel.org,
-        konrad.dybcio@linaro.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] PCI: qcom: Enable ASPM for platforms supporting
- 1.9.0 ops
-Message-ID: <20231010162945.GA978270@bhelgaas>
+        Tue, 10 Oct 2023 12:31:57 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B31AF;
+        Tue, 10 Oct 2023 09:31:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696955516; x=1728491516;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ytB0frCPdmRXHl9oVp9UEDdaPdm875JeU+Ur4Pw4Tgo=;
+  b=I3E2D8xxXY6ZPk65P88BT6VzLgncJb8jTD3IA3FtUPuN14bem3T17X2j
+   DBKjB0JZaH6PhMCj0nIA18Q4aY1PmOcnguJpLGD7I8mhJHnrAqtMgukET
+   qRnf8d7gae44FQf0hYVu8TI6WJJFKgUWz6s5VvjYAT3abHCKO4rlZt5ws
+   IabeNXgwwUfbEMNO4l3e5HXlp/byg1kWWZAxmd5PuGKUDR6HNRI3kGfKC
+   xqRTENeRaBius6JUe5dxT3gptS9/CRb4RHBLoWw4qdS5A4X9a/C6rymRr
+   g9QY3HbQwXJQ+S9P9+i3hKkFpI13pGiy2bLyOY0zKKpgK84H+ZCPt+kXE
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="6006234"
+X-IronPort-AV: E=Sophos;i="6.03,213,1694761200"; 
+   d="scan'208";a="6006234"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 09:31:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="1000761482"
+X-IronPort-AV: E=Sophos;i="6.03,213,1694761200"; 
+   d="scan'208";a="1000761482"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga006.fm.intel.com with ESMTP; 10 Oct 2023 09:31:05 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id D1554128; Tue, 10 Oct 2023 19:31:03 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH v1 1/1] spi: Don't use flexible array in struct spi_message definition
+Date:   Tue, 10 Oct 2023 19:31:00 +0300
+Message-Id: <20231010163100.89734-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231010155914.9516-3-manivannan.sadhasivam@linaro.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 09:29:14PM +0530, Manivannan Sadhasivam wrote:
-> ASPM is supported by Qcom host controllers/bridges on most of the recent
-> platforms and so the devices tested so far. But for enabling ASPM by
-> default (without Kconfig/cmdline/sysfs), BIOS has to enable ASPM on both
-> host bridge and downstream devices during boot. Unfortunately, none of the
-> BIOS available on Qcom platforms enables ASPM.
+The struct spi_message can be embedded into another structures.
+With that the flexible array might be problematic as sparse
+complains about it, although there is no real issue in the code
+because when the message is embedded it doesn't use flexible array
+member. That memeber is a private to spi_message_alloc() API, so
+move it to that API in a form of an inherited data type.
 
-I think this covers over a PCI core defect.  If the devices advertise
-ASPM support, which both the qcom host controller and the endpoint
-devices do, the PCI core should be able to enable it without being
-prodded as this patch does.
+Reported-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Fixes: 75e308ffc4f0 ("spi: Use struct_size() helper"))
+Closes: https://lore.kernel.org/r/20231009-onshore-underage-c58415adfd92-mkl@pengutronix.de
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ include/linux/spi/spi.h | 27 +++++++++++++--------------
+ 1 file changed, 13 insertions(+), 14 deletions(-)
 
-We had a long conversation about this at [1], but never came to a good
-resolution.  Since we don't know how to fix the PCI core issue, I
-guess we have no choice but to do things like this patch, at least for
-now.
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 7f8b478fdeb3..487da1f6e4b7 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -1086,8 +1086,6 @@ struct spi_transfer {
+  * @state: for use by whichever driver currently owns the message
+  * @resources: for resource management when the SPI message is processed
+  * @prepared: spi_prepare_message was called for the this message
+- * @t: for use with spi_message_alloc() when message and transfers have
+- *	been allocated together
+  *
+  * A @spi_message is used to execute an atomic sequence of data transfers,
+  * each represented by a struct spi_transfer.  The sequence is "atomic"
+@@ -1142,9 +1140,6 @@ struct spi_message {
+ 
+ 	/* List of spi_res resources when the SPI message is processed */
+ 	struct list_head        resources;
+-
+-	/* For embedding transfers into the memory of the message */
+-	struct spi_transfer	t[];
+ };
+ 
+ static inline void spi_message_init_no_memset(struct spi_message *m)
+@@ -1203,17 +1198,21 @@ struct spi_transfer *xfers, unsigned int num_xfers)
+  */
+ static inline struct spi_message *spi_message_alloc(unsigned ntrans, gfp_t flags)
+ {
+-	struct spi_message *m;
++	struct spi_message_with_transfers {
++		struct spi_message m;
++		struct spi_transfer t[];
++	} *mwt;
++	unsigned i;
+ 
+-	m = kzalloc(struct_size(m, t, ntrans), flags);
+-	if (m) {
+-		unsigned i;
++	mwt = kzalloc(struct_size(mwt, t, ntrans), flags);
++	if (!mwt)
++		return NULL;
+ 
+-		spi_message_init_no_memset(m);
+-		for (i = 0; i < ntrans; i++)
+-			spi_message_add_tail(&m->t[i], m);
+-	}
+-	return m;
++	spi_message_init_no_memset(&mwt->m);
++	for (i = 0; i < ntrans; i++)
++		spi_message_add_tail(&mwt->t[i], &mwt->m);
++
++	return &mwt->m;
+ }
+ 
+ static inline void spi_message_free(struct spi_message *m)
+-- 
+2.40.0.1.gaa8946217a0b
 
-If/when we ever *do* fix the PCI core issue, it would likely result in
-enabling ASPM (if advertised by both ends of the link) for *all* qcom
-controllers, not just the 1.9.0 ones.
-
-And I think that even today, users can enable ASPM on non-1.9.0
-controllers via sysfs.  So if you are concerned about ASPM not being
-tested on those controllers, you may want to make them not advertise
-ASPM support.
-
-Even with this patch, I guess hot-added devices don't get ASPM
-enabled?  That's basically what [1] is about.
-
-Bjorn
-
-[1] https://lore.kernel.org/linux-pci/20230615070421.1704133-1-kai.heng.feng@canonical.com/
-
-> Due to this, the platforms
-> making use of Qcom SoCs draw high power during runtime.
-> 
-> To fix this power issue, users/distros have to enable ASPM using configs
-> such as (Kconfig/cmdline/sysfs) or the BIOS has to start enabling ASPM.
-> The latter may happen in the future, but that won't address the issue on
-> current platforms. Also, asking users/distros to enable a feature to get
-> the power management right would provide an unpleasant out-of-the-box
-> experience.
-> 
-> So the apt solution is to enable ASPM in the controller driver itself. And
-> this is being accomplished by calling pci_enable_link_state() in the newly
-> introduced host_post_init() callback for all the devices connected to the
-> bus. This function enables all supported link low power states for both
-> host bridge and the downstream devices.
-> 
-> Due to limited testing, ASPM is only enabled for platforms making use of
-> ops_1_9_0 callbacks.
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 28 ++++++++++++++++++++++++++
->  1 file changed, 28 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index 367acb419a2b..c324c3daaa5a 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -222,6 +222,7 @@ struct qcom_pcie_ops {
->  	int (*get_resources)(struct qcom_pcie *pcie);
->  	int (*init)(struct qcom_pcie *pcie);
->  	int (*post_init)(struct qcom_pcie *pcie);
-> +	void (*host_post_init)(struct qcom_pcie *pcie);
->  	void (*deinit)(struct qcom_pcie *pcie);
->  	void (*ltssm_enable)(struct qcom_pcie *pcie);
->  	int (*config_sid)(struct qcom_pcie *pcie);
-> @@ -967,6 +968,22 @@ static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
->  	return 0;
-  }
->  
-> +static int qcom_pcie_enable_aspm(struct pci_dev *pdev, void *userdata)
-> +{
-> +	/* Downstream devices need to be in D0 state before enabling PCI PM substates */
-> +	pci_set_power_state(pdev, PCI_D0);
-> +	pci_enable_link_state(pdev, PCIE_LINK_STATE_ALL);
-> +
-> +	return 0;
-> +}
-> +
-> +static void qcom_pcie_host_post_init_2_7_0(struct qcom_pcie *pcie)
-> +{
-> +	struct dw_pcie_rp *pp = &pcie->pci->pp;
-> +
-> +	pci_walk_bus(pp->bridge->bus, qcom_pcie_enable_aspm, NULL);
-> +}
-> +
->  static void qcom_pcie_deinit_2_7_0(struct qcom_pcie *pcie)
->  {
->  	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
-> @@ -1219,9 +1236,19 @@ static void qcom_pcie_host_deinit(struct dw_pcie_rp *pp)
->  	pcie->cfg->ops->deinit(pcie);
->  }
->  
-> +static void qcom_pcie_host_post_init(struct dw_pcie_rp *pp)
-> +{
-> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> +	struct qcom_pcie *pcie = to_qcom_pcie(pci);
-> +
-> +	if (pcie->cfg->ops->host_post_init)
-> +		pcie->cfg->ops->host_post_init(pcie);
-> +}
-> +
->  static const struct dw_pcie_host_ops qcom_pcie_dw_ops = {
->  	.host_init	= qcom_pcie_host_init,
->  	.host_deinit	= qcom_pcie_host_deinit,
-> +	.host_post_init	= qcom_pcie_host_post_init,
->  };
->  
->  /* Qcom IP rev.: 2.1.0	Synopsys IP rev.: 4.01a */
-> @@ -1283,6 +1310,7 @@ static const struct qcom_pcie_ops ops_1_9_0 = {
->  	.get_resources = qcom_pcie_get_resources_2_7_0,
->  	.init = qcom_pcie_init_2_7_0,
->  	.post_init = qcom_pcie_post_init_2_7_0,
-> +	.host_post_init = qcom_pcie_host_post_init_2_7_0,
->  	.deinit = qcom_pcie_deinit_2_7_0,
->  	.ltssm_enable = qcom_pcie_2_3_2_ltssm_enable,
->  	.config_sid = qcom_pcie_config_sid_1_9_0,
-> -- 
-> 2.25.1
-> 
