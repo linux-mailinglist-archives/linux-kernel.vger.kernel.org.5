@@ -2,60 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C094D7BFF37
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 16:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D093A7BFF3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 16:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233026AbjJJO1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 10:27:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51560 "EHLO
+        id S233112AbjJJO2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 10:28:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232401AbjJJO1q (ORCPT
+        with ESMTP id S233083AbjJJO2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 10:27:46 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6D3E91
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 07:27:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696948065; x=1728484065;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=5WdwfPpssWHEumsq9mc7e5KRo9vNp83NwtHC1MesJUc=;
-  b=hLT4P8TzO9ZjeLCcDW4XF73d41XOUx7lcDNFsBsL0Awp8NSlwaFcPDWH
-   4EtYrbOtfiJG9tdUykoM/8Fwd+c3Zu3p36oeS/jQRKFz4vsATKu1vHFz4
-   I/GdPYenoQ+aAdBvNtAUgD2Drri9eFwOwje4a3EQzytqMB3xhtCFCKeN7
-   B7TiUfApgmbfWZbzIehjOQXBMjvliH3HsAM2xd0LDDmF8LxER07Zr2vKZ
-   A7AsPBxVpD0EqpebQN9GqGBJqiUG5fwBENB24vjHZr+Pyq8UEuD7LdNxg
-   l2Da4vD6K5Z6YlkqCBHPgQrhIvjIPDpV7CSbw5ZOHGyqlq2sPk9YJYH8Q
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="448598110"
-X-IronPort-AV: E=Sophos;i="6.03,213,1694761200"; 
-   d="scan'208";a="448598110"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 07:27:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="869713704"
-X-IronPort-AV: E=Sophos;i="6.03,213,1694761200"; 
-   d="scan'208";a="869713704"
-Received: from agargas-mobl.ger.corp.intel.com (HELO fedora..) ([10.249.254.164])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 07:27:43 -0700
-From:   =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>
-To:     intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Cc:     =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
-        daniel@ffwll.ch, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/gpuvm: Dual-licence the drm_gpuvm code GPL-2.0 OR MIT
-Date:   Tue, 10 Oct 2023 16:27:24 +0200
-Message-ID: <20231010142725.8920-1-thomas.hellstrom@linux.intel.com>
-X-Mailer: git-send-email 2.41.0
+        Tue, 10 Oct 2023 10:28:03 -0400
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BDAFC4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 07:28:02 -0700 (PDT)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-59f6e6b206fso71651517b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 07:28:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696948081; x=1697552881; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=G+bzCawygPfYZQRWEWjzk60GqJiz5rFfjOtmLh7nplo=;
+        b=K4rP0Ygv/I4SvoYv70rISgW7p1M57QcSAw786+766t/xC+pz9fjluzqMY79BLKNhKR
+         RUpCz8qq3rxbFVA81LG8yzezrYU2UZqCD04hbOxCoycJuPx0rcKPcPZJefUpIa4lyU1s
+         F0yo12ixoH8ppEwSkgf7++kz5HhICvbERPg0HPJ4h6fS42k0DFKeRQhG4lSOThjQjFyJ
+         3DcCpzrnekpd8MX8rNUxXWTwHVM93w5IyYyQgfLzT8tJ6Xx/vHoQBAtHjQSgAzNn7YtT
+         6PqcEJ+x3uMdq0lP0yrOlF4+PEYDco0QfKRijPbOB8IOTbmPxRKKeXIeQR7GaW8+2lSM
+         e+pA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696948081; x=1697552881;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=G+bzCawygPfYZQRWEWjzk60GqJiz5rFfjOtmLh7nplo=;
+        b=DYc13btguUwTjAuBBR/gBFcvilkYVpbyGaqYn3BnJOo6EKuQF2c/AUZ7Y9r/bj5PUO
+         CgEv1x6M0zyC4O1Q4dhnrWJ8ypuWUXsVaptVKED3IyHUW3ne/NQsqZkgGY0dxgG4BfDM
+         cjEBH7PnmJxPafUyJtchkF/CnrgtOR2IU2/C6jKjmmGedsQ3IJesm2FuGpMHUXJUvDwS
+         hYQOMV5rX7d4P7iMx4I3HtewSNEGWKI+kjHPAvEfSJPzidAGxi5+JXScQTRiB7dEpxnS
+         Ks3KgZsmRcwutczXCN/6TjIKRyGDL3YR593TSUJqEnBzecElXw+8JWpwAwp2edkM2jDU
+         Q/2g==
+X-Gm-Message-State: AOJu0Yy1BOB1YCGokQh05EbOyIgnHAbtVu5tQGiWtgDc1CG2nMGToMD4
+        Svbyxkc+gWsCEcdpqHuAf6rC8gqsctw2RGHJGmGc2Q==
+X-Google-Smtp-Source: AGHT+IEWokDbVqlkMPFDHZLLeXvpDy2LcMylLq0K1tDaame0w/TBAEIlq4XoMo0X/ee88uUG+47+PxMN4Jyxd7+521A=
+X-Received: by 2002:a25:6b4e:0:b0:d85:b09e:b9c9 with SMTP id
+ o14-20020a256b4e000000b00d85b09eb9c9mr19897738ybm.52.1696948080773; Tue, 10
+ Oct 2023 07:28:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+References: <20230929-mmc-caps-v2-0-11a4c2d94f15@axis.com>
+In-Reply-To: <20230929-mmc-caps-v2-0-11a4c2d94f15@axis.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 10 Oct 2023 16:27:25 +0200
+Message-ID: <CAPDyKFob43kTEXqf4-gXj7CQCpdn2nKHxoAsXv4nFgaQ88s-dQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] mmc: Allow speed modes to be adjusted dynamically
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@axis.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,44 +67,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dual-licence in order to make it possible for other non-GPL os'es
-to re-implement the code. The use of EXPORT_SYMBOL_GPL() is intentionally
-left untouched to prevent use of drm_gpuvm as a proxy for non-GPL drivers
-to access GPL-only kernel symbols.
+On Fri, 29 Sept 2023 at 09:45, Vincent Whitchurch
+<vincent.whitchurch@axis.com> wrote:
+>
+> During board verification, there is a need to test the various supported
+> eMMC/SD speed modes.  However, since the framework chooses the best mode
+> supported by the card and the host controller's caps, this currently
+> necessitates changing the devicetree for every iteration.  This series
+> provides a way to adjust speed modes dynamically via debugfs.
+>
+> --
+> Changes in v2:
+> - Replace module parameter with a debugfs file.
+> - Add patch to move mmc_select_card_type().
+> - Link to v1: https://lore.kernel.org/r/20220623080009.1775574-1-vincent.whitchurch@axis.com/
+>
+> ---
+> Vincent Whitchurch (2):
+>       mmc: core: Always reselect card type
+>       mmc: debugfs: Allow host caps to be modified
+>
+>  drivers/mmc/core/debugfs.c | 51 ++++++++++++++++++++++++++++++++++++++++++++--
+>  drivers/mmc/core/mmc.c     |  7 ++++++-
+>  2 files changed, 55 insertions(+), 3 deletions(-)
+> ---
 
-Much of the ideas and algorithms used in the drm_gpuvm code is already
-present in one way or another in MIT-licensed code.
+Applied for next, thanks!
 
-Cc: Danilo Krummrich <dakr@redhat.com>
-Cc: airlied@gmail.com
-Cc: daniel@ffwll.ch
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
----
- drivers/gpu/drm/drm_gpuvm.c | 2 +-
- include/drm/drm_gpuvm.h     | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/drm_gpuvm.c b/drivers/gpu/drm/drm_gpuvm.c
-index 02ce6baacdad..08c088319652 100644
---- a/drivers/gpu/drm/drm_gpuvm.c
-+++ b/drivers/gpu/drm/drm_gpuvm.c
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: GPL-2.0-only
-+// SPDX-License-Identifier: GPL-2.0 OR MIT
- /*
-  * Copyright (c) 2022 Red Hat.
-  *
-diff --git a/include/drm/drm_gpuvm.h b/include/drm/drm_gpuvm.h
-index 361fea5cb849..21bbf11415b3 100644
---- a/include/drm/drm_gpuvm.h
-+++ b/include/drm/drm_gpuvm.h
-@@ -1,4 +1,4 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
-+/* SPDX-License-Identifier: GPL-2.0 OR MIT */
- 
- #ifndef __DRM_GPUVM_H__
- #define __DRM_GPUVM_H__
--- 
-2.41.0
-
+Kind regards
+Uffe
