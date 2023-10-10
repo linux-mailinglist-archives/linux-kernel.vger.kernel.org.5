@@ -2,354 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B7A7BFF8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 16:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91997BFF95
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 16:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232853AbjJJOr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 10:47:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39882 "EHLO
+        id S233020AbjJJOtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 10:49:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232517AbjJJOrZ (ORCPT
+        with ESMTP id S232419AbjJJOte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 10:47:25 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D26AAC;
-        Tue, 10 Oct 2023 07:47:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24DB6C433C7;
-        Tue, 10 Oct 2023 14:47:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696949243;
-        bh=J1s23ow2XteM/tmUX3lBR7oFYuMZv2lwbzP8uSVNZz0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pRDF+pb4lJfxDDooH0gM0f+Vo+adWlwKsKMTUNT/rynJslzg91V0CgKy8yfAZkGEL
-         oSVNafJupc2bxv2p8phqCDJNtmUoYT2IULKqaALy+Ns2IMTnNqZ51wbWq1EmEQZdCy
-         wX+zEW80jeO6YWjiorLP6eVEBzbOUs/Zwb+U5ZA3Y2Q+SMOjakJzbu4yfBJEtZt0+t
-         5gTkWv399m777wnWbB560WdOeDrXETlsZmkMjQ9EPYbJFAYlse9NVv/81tD/141tu3
-         PBaTyw1DzUJIWThqEAYz843qgCh38qe4RoTlncON+vohEKn+oK+ZMnmt//y0ejrUK7
-         KXgMyo0zHdfGQ==
-Date:   Tue, 10 Oct 2023 15:47:34 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: sanity check available_scan_masks array
-Message-ID: <20231010154734.7728fe2b@jic23-huawei>
-In-Reply-To: <0d05bf24-caa6-0f86-b531-22dc08b9cadc@gmail.com>
-References: <ZRvjuZaQWdZw1U1I@dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi>
-        <20231005163026.2c7707de@jic23-huawei>
-        <751a87c9-a4aa-4e06-1d12-1e2b1a3487de@gmail.com>
-        <20231010110419.00899e0e@jic23-huawei>
-        <0d05bf24-caa6-0f86-b531-22dc08b9cadc@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Tue, 10 Oct 2023 10:49:34 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B84F59E;
+        Tue, 10 Oct 2023 07:49:32 -0700 (PDT)
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39AElOJj031397;
+        Tue, 10 Oct 2023 14:48:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=ZNahRWskOf68tpHbipAclj2L+qVZxUDwB3boZ0BD1qI=;
+ b=YX1h3ujKhXQklB2z4kmtohKBAbNi6UiWNz5bbyBETY8k2vpvuL7MNCWi2Ft9SdFvwxq9
+ kh0QZLdE5OJS69AP65qRW3oeMB33wLywWVwv+d65TTlMvc8IL8IDNsKSheWlSCWbCbNn
+ Ih5g0nx8vDgSC8Q4tq53rlzyWc99I2x/g9gpH/hJ9vmGy+SJEWB7Gwv/pOql+2+wFuoj
+ BnaG2gJpKha12ucF+rjlC7I+PAevgVw4zkx6TgFFy46Ela03ej9rVOqKR5/yHwFRscPo
+ /F1HuApkpZ8cv92crAHYL7YRQY5G/q/uqrd9iCdoJc5pyV/z+hPDeabxetSovlJanmKV UQ== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tjx43ncd3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 10 Oct 2023 14:48:52 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39AEPK45020742;
+        Tue, 10 Oct 2023 14:48:46 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3tjwscmg2v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 10 Oct 2023 14:48:46 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UBNAtdPr9JBwbnIsBJo1yihzQ/6FOFRvCDAo8Ht87JQJZ97U6CRi3lgR8te2R1dwKIpCsCyySj/FIBNnIxXxqQrcV8Ip+SJrStubWbJ6yoDkGuxEqlEMdvRPE1ZQYMaUAEgIVHl+0Sv4O2p6kCbXVzKpr/VjsL/8aapUTaHjWLkuOdSlsUCB/Ti9IJefSy6OT+5XZDQk8cwKrEg38u7ziAGHJbKEBuzB4whzeD5lwrYdzGrsZlMD79ktsCMGdYMzh/9jTN2vHrrMjqNwysI2UlPiFuK0XYkPXrRHIyxWtfHYZKHZk3LBMsqvB4AAzaveAIvf05lRTM7RZ/8hmAFMRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZNahRWskOf68tpHbipAclj2L+qVZxUDwB3boZ0BD1qI=;
+ b=odJTBEqushAPmkmpVQ3Wew3U8acAn9zeUU9+irYVQ50yVLQMTd3hsGW5/kkxuBHnu8tRrtPYVQyUX48HtHZE936EwfpfZpE3ye4mKKIkLy8G48iO93gcditp6WlbS3zzVd7DMyvSng0+eymibzTT+feRdD89SdvJCPx027oNwihJ8H/ahAzstoPrwSdu825FeyA+8hq5vV/hfBAmnFYbc1UyXkTzkBlRwSiu5HT8NdQgunglK0X3piotIIicp0x9OeUwUQJIK5DX8qlvEj6A3SchRS/76vW3+ru/9MWl+pfMvlMpUE60sBqZvHF7Dz3Hjw9yvXRmbcUoQbzCMqqZIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZNahRWskOf68tpHbipAclj2L+qVZxUDwB3boZ0BD1qI=;
+ b=Rh/9RTIG5BbNu8jkfn7/P83AnCw3WWRwBrLpeSJ1z7US6JzgsWxXwPLPt9vwZ+hptc0hTOx04bdUVqC/0I7X2Ti4K/9a1T8ZTjnyGLksz0WHM+54mtedrwX55E0WxAYZb8qngkT7SLOaBNlkOxZO7TvbY2hYWGF5EX5YwrFPfIY=
+Received: from PH8PR10MB6290.namprd10.prod.outlook.com (2603:10b6:510:1c1::7)
+ by PH7PR10MB6060.namprd10.prod.outlook.com (2603:10b6:510:1fc::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Tue, 10 Oct
+ 2023 14:48:43 +0000
+Received: from PH8PR10MB6290.namprd10.prod.outlook.com
+ ([fe80::7e79:4434:561d:fe1f]) by PH8PR10MB6290.namprd10.prod.outlook.com
+ ([fe80::7e79:4434:561d:fe1f%4]) with mapi id 15.20.6838.040; Tue, 10 Oct 2023
+ 14:48:43 +0000
+Message-ID: <fbf8bac2-95a9-a9b5-8207-8661f8aa5ecf@oracle.com>
+Date:   Tue, 10 Oct 2023 20:18:28 +0530
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH 5.15 00/75] 5.15.135-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Vegard Nossum <vegard.nossum@oracle.com>,
+        Darren Kenny <darren.kenny@oracle.com>
+References: <20231009130111.200710898@linuxfoundation.org>
+From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+In-Reply-To: <20231009130111.200710898@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: SG2PR04CA0178.apcprd04.prod.outlook.com
+ (2603:1096:4:14::16) To PH8PR10MB6290.namprd10.prod.outlook.com
+ (2603:10b6:510:1c1::7)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR10MB6290:EE_|PH7PR10MB6060:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9db971da-d62f-4f39-5189-08dbc99fffe7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AnTK2iTvZuJ5OmCDdQe0zE9XwNcbaviORE8tguP6VQlCEzOUDqKXGAzvbJTr1Kd6SfdYLFRYbArH1gAhs1vVPEMqAPBt6RL1XUx2K1rScozgQAKnfIIHY1/rqUQbJQH5XJMBJ7yTQ8mfoGjTaetcgr3uERv44PvOVxdjTmIuxewAlI6cB1pcZt7smQxrpShri0GteyqNVKtHgelvmN6dHCxWZv6E4mdNgVeXzXiOlv8EEWIykGiYSYvbhOQsO0eZYGFG5haxyfhm3OIBSWJS9wRzKF46N6/X6zTrAPXAZ0lTng4p007NxwpM6UYx3+6+p7pgChZZnVxXP/fNhjoQ5jVvQqB+Eq2LQd7IW6NVeeGwnXUzu9P7v59AEYi0dGh118yqMfgpdP+mEaccwUUAGfYoiJPANlU28zBc7Vit7/jmca/lMjYybU8mb+sE/9AvzS2ZDkKgmw1zhSJA3tsvaX25lkpZtoqEtMPaEfjpIBtPLTQrMH9g7o6Ei/mRxc1wVzCfMiXSqSJwAmvjtvYr4d0Ghpz65/lC2c20daHK1CpdP05lrCknyVKQYAOnGPDOKEDNaQG13liVWysYL2h9J9kA+PSp1f17QJjP5m5x+2uLlmc1zqfoJ30VCRQd6HFLnMHrrpDfTXNzCcX201tHwg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR10MB6290.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(366004)(376002)(346002)(136003)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(86362001)(31696002)(38100700002)(36756003)(31686004)(6486002)(478600001)(966005)(4744005)(8936002)(6512007)(6666004)(5660300002)(2906002)(8676002)(53546011)(4326008)(41300700001)(6506007)(107886003)(2616005)(66476007)(66556008)(66946007)(316002)(7416002)(54906003)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Yi9zN05lWFNoYjRHMXlaQjFvaXNydkl4eThPcElSamo2c3RrdjlhOWhOeXo2?=
+ =?utf-8?B?YUlqc0hSV2pVWHpkQXB2Y3NxWGtkbEdtZ1huS01DenY3c0FRK1dnS01GM3Bw?=
+ =?utf-8?B?WmNJSmRReU0vUnE0REtwSlZPcVpoN0k3M1Y5NW93bjR3aWhScHA4YTFQWmpy?=
+ =?utf-8?B?UVBJbWVPWFE5RmVaRG9idEc3RE96Y21RMzNxOGRRS2lWSDRUTm42dDh2WnhW?=
+ =?utf-8?B?cTJWc2c2ZTUyYnFTN0REVFJJMzBuMUJKY1JKVG5HSEdaOVpvdkNYenVLRUV2?=
+ =?utf-8?B?MC96WHBjY0IyaTU1TWJCZm5Ybk9PemFRNnBGUkk0Rm5GWHl5b2NYbFFZcHZr?=
+ =?utf-8?B?UWxoR2lBMnU3bUdwYnllQVFtUGpwdzQrYkJPU3d3VzJmS0srQVZFalVLdjdo?=
+ =?utf-8?B?Qnh4bnNoQVoraDYxNVlDaEp3U1I1bmNVTnhpd2dwdXQyMHZCN3pCNEZoWDVx?=
+ =?utf-8?B?T2V2ZG5WOTJJVFZPclFoWTREWmRTTURRdEpteStKVFFTZ09XZVJXZEd6d1hm?=
+ =?utf-8?B?aktZM2hZK1NqNXZXOWJsczIyM0NUVmplOEhGU1hUUkpiSzBtSGNrUS9TWW1V?=
+ =?utf-8?B?TG5SODlVTG9rMkZkZ3p2aVBHdXozbWFaYlRzOWgwZ2daa0pDRmgzNEgvOWlv?=
+ =?utf-8?B?cnRvT1FPVmRTYnpkTXRuVDZwcmRCbStMaWh6aHFmUk9wVVM0L2pmOUNWaTVX?=
+ =?utf-8?B?ZkNib0daZFRRZUJ3azM1Y08rRGl4eUhJMjhkL1J1YjE0VUo2SjJEOXRJeGhv?=
+ =?utf-8?B?cDc3T3h3OHl2a2pvUjlaQTRJT25yY1JkeGJSWnhlYVZpbUFxVW81VUxOK1JO?=
+ =?utf-8?B?T01zVFhwYmE1MG1HOGNsb0hwY2lCVDJibUxFY1p6dzB4blk4Y2hWbmQrMkFD?=
+ =?utf-8?B?SDcrbExWMnFCZk5rdnQxWUZ3bHViaU1kVXFxVEN0V0J1akhTaDlJZDNlVmQ0?=
+ =?utf-8?B?Q011Wmp1eThMWHl6UmZ4ZmpuU3lweERCcnBWblJzY0gwSDFUNjNSMHQ0ZmRP?=
+ =?utf-8?B?aVljMEZnQ0Y5Y29GNjAweFBLbElDZnVHSEpzc00xMVJ5aHlpdTNEWkZ5YkdO?=
+ =?utf-8?B?QnFXNVBOUDUwZGgxbEdnNWJOL3BwdWl6QUF5OWc0Q29iemZJOVBYNnJFeVRW?=
+ =?utf-8?B?N0NEM2piaFN4dDhEVzdOazNFRXZiVzhoYzZhMjh5VGQyVjM4dzY2M05ndzU0?=
+ =?utf-8?B?aW5UcmZZcWdSam04WExSbXR1OGNpM0JBbTdBUy9NbWxzUU9EelNmckp2SEdx?=
+ =?utf-8?B?eVZZck91aGlLQmxwcHJrUTlvWmFHa2o5UXFBL01MNnRxY0ZNUWQ1KzcrTExl?=
+ =?utf-8?B?aUdPY04xbXIxU1dGWjFFMGJEaFNLRDNyK0xBZHNwbTZ0YStnWmhMRGNQaUo0?=
+ =?utf-8?B?eHBmMmJDVTNXb0Q2VFc2aWthbEN5MnJicGdaRFVmcitjNjhDNm5UaGNEK3Zh?=
+ =?utf-8?B?VjFLbEhPM3RoenN3Sld2N2J3eVZVLzI2NHdUTUhLWitnVlpCbFNzL2RwckNC?=
+ =?utf-8?B?NG45REpQekpVQ2Zac2syUnhGb3dST3dyb0tvYStwemFidElZL0R3THRjUUNv?=
+ =?utf-8?B?SGN6dHBqdEw1WFhOZHY3V1VoRTZadERvY0xKT0xnTGRmQStkOHh0RDZnam1V?=
+ =?utf-8?B?a2g5clhNSTNkL0IrQk5MTU04bEZnVStwV256KzVYcEE4SVpjQlR4QXM3TTBB?=
+ =?utf-8?B?cjdzTXBBYitTSEJ3eVdLRW11TWxibjh2dWpHdURvMzc4UjcwalBBWStOeWt4?=
+ =?utf-8?B?RXFYTVhRNDFkVlNnYnkyU2Jidm1zUDlMWUd2MlJxV3ZpNk9adUdJc0Y5elA5?=
+ =?utf-8?B?c29QUHprMk5BWlVENG0vZitsZ0JpTWdIRHRJbFBwWWxqQlZPS0Rab01wL3lN?=
+ =?utf-8?B?Sk1BUFJPTnZ1blVDZFBTQlNnTWtpZ3RidmpsVmdtZmRTb213S3VibDFvNEJQ?=
+ =?utf-8?B?ZThXQmM3T3dMTWZFcjI0V2ZXMWpyK3lMem1NeHR5Wjh3ZmF4dTB6eFhGdFZD?=
+ =?utf-8?B?VDFUV1lRK0paeFREK1ptdXZTUUJTc1BwNTNvSXFURVloYUtIQXBQSThRVjl6?=
+ =?utf-8?B?ZHpDek0va1diV0VtZUJuYklzUEg2a3FCWUFqM1czNUpacnI0UytEYkk3RjJP?=
+ =?utf-8?B?YTNnQWxMZ21pK1hFeVpaQ2U0cWE5MEY4cXF6U3Z6VXNJN0lpNVJRMHlBd0ho?=
+ =?utf-8?Q?2bcroJcUETmu8RQxgYfXJ+w=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?OURMZ0hPNEYrT01VVUhlWSt3RC9uT0Z1cFh5V2NZZ0VXU1FLV1Y3cUlGelJ4?=
+ =?utf-8?B?U3lBRGU2QUljMUt5OFh6TkQxVGpNR3ZmOHcvMmxwL0FwSGhqN1JpUGZHbW84?=
+ =?utf-8?B?cXVHM21Nb3ZKM0RBYXFkUVNoeklJMDJHOEIvU0RhWlVxN0FWN2I3REkwNWhJ?=
+ =?utf-8?B?TDhLa1BxNGhSb3FUdFc0NEorMHZXTVlPdmQxRzMzcXZGc2xrOGwySzdWWlB1?=
+ =?utf-8?B?YnFYNVM0b2hRNURMOHB2bVQ3V2ZVREoxL0k5UVhhbDVQRkNiMDV3UENOVG1k?=
+ =?utf-8?B?RjVYbU1SVTYyR0VDVmg3NVMrc3VhQVRURFFrdGs1MWZJZDNKa1NMVlR4VXV5?=
+ =?utf-8?B?YndKUVo0V2lkOWlPd1JhcDlOQTdiODZTTkg2MjVodUg0dFRBaWZqaUtVMTdy?=
+ =?utf-8?B?czlYWXg5UUE4ODJDTDEwY2t5RFQ2QUJuSnNETy9VczEwaDl1aWRhTFRVYUpj?=
+ =?utf-8?B?ZWdSTFllSGIxZVcyZWRYRllmaGQ2bzNRUGtwWEI2WWFVckN2Y1NmS0RoQm81?=
+ =?utf-8?B?WFJXejZzaStLSFlDWDhKUEVocWtQblFRUjV4MTI2Ym1PRFMxNnkvVTRMeFQr?=
+ =?utf-8?B?NkVJd3RSVmdBWXlPMWhITHhaQTNzZHR1eXc3MWg2Z1Z1ZXNYUG5LTUpZZ2dK?=
+ =?utf-8?B?Nk5WSW5yaTZObHc2QjRuYURsY2pNcTBtNm1iSjY4aU0reUR5UFIrRXFpOHFG?=
+ =?utf-8?B?ZGp5Tk5aMHBPV1AyeFkyT0V5V0RxOGdTakxlVXNGWnNEWEdHcVRqbExLUkE5?=
+ =?utf-8?B?NEhaYWdKbU4zODU0cnBLbXZ5eUg1QjBGaVFUblNaSU4vdUw5bnNRUzVTOEZa?=
+ =?utf-8?B?NnpKUWE4V3VucFd5MWx3dzhEWkNpQlpGQlQ1cWVBMHBEZjg2L3VTOVNNS2xR?=
+ =?utf-8?B?NGFNR2RYUWVkWWJTRHdwTzA2dzhoL2lFVGMxclkwZ1pLRVNRN1hqUTYvajE2?=
+ =?utf-8?B?Nk1vaEdUM3RtbFE4SkVncVBEMytXMU1pZzYvY2x0MldkZitrZE1Melk0bTBO?=
+ =?utf-8?B?QjdRdWI3RWNFRkhUU1I2aUI1R0VQcVFQZk51eTlYNjFhMHcxRFg4SVd2Wlp0?=
+ =?utf-8?B?eWgwVFVkRTcrR0NzNWtkS3Njd3M1RjZTVG9ubnkvQVBuQU16d0RydzNmYjJ2?=
+ =?utf-8?B?dTAwaCsrZ2tOWWoyYzBuWW9wVHNmdHdoN2ZZWXZ3UU1nZG9ReU83bkk3ci92?=
+ =?utf-8?B?OERRVlRhZ3pFSUh2cHE0RVIySVJydzlsOFV1ZHhZZEZnVml2RGI1MVRYZTB6?=
+ =?utf-8?B?L3o5RGgvKzk5Z1FmSkxUTWFKaTU1ME9VL0xsVGd2WmZ2ZHRVbEwxQjBGbzI4?=
+ =?utf-8?B?b1kva3FFYndOVWRtYXY5d2ZHVVAxOUJ1bGl6RkxqMjNDTjJMMS9LUHNJbFdI?=
+ =?utf-8?B?WWI0Q0s2VzJKenBBN2J4WE5TaVlHS2IwaEtvOHFkcldodmVkYlJlUVdiYW84?=
+ =?utf-8?B?NFdOT3A5SHY4dG1MMU5jQnFMckVtc2tnUGdrcW85MlNYYlg2Y1c2Q1VQdGFY?=
+ =?utf-8?B?RXhLLzZSZ2VwdkxRZm1yaCtIVW1Lb0NqdEhINkNnQ3IxQTExSWpMTTFiWjRr?=
+ =?utf-8?Q?FmCcLZ2E3Qp1uzWQNc9svVEzxNSApaR6+yI3itd/sa6PW9?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9db971da-d62f-4f39-5189-08dbc99fffe7
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR10MB6290.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 14:48:43.4937
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ore0dGO9S3VcA+TPMl1e1WUPUR8YP/9y4IsuMcAkikjL+dxJPxTs7mZkWl9sTrcB7seiQ9SrpaWO+9nbWSxPMT3hC0tGKb3H+0yqeC9ou1/cHWDSAqmCZDw7kQ1qIhJN
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB6060
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-10_10,2023-10-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 suspectscore=0
+ malwarescore=0 adultscore=0 spamscore=0 mlxlogscore=978 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310100108
+X-Proofpoint-ORIG-GUID: NSmNFeuCV6FWdKyKdt3yKR9fRQPUabrk
+X-Proofpoint-GUID: NSmNFeuCV6FWdKyKdt3yKR9fRQPUabrk
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Oct 2023 15:56:22 +0300
-Matti Vaittinen <mazziesaccount@gmail.com> wrote:
+Hi Greg,
 
-> On 10/10/23 13:04, Jonathan Cameron wrote:
-> > On Fri, 6 Oct 2023 14:10:16 +0300
-> > Matti Vaittinen <mazziesaccount@gmail.com> wrote:
-> >   
-> >> Hi Again Jonathan.
-> >>
-> >> On 10/5/23 18:30, Jonathan Cameron wrote:  
-> >>> On Tue, 3 Oct 2023 12:49:45 +0300
-> >>> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
-> >>>      
-> >>>> When IIO goes through the available scan masks in order to select the
-> >>>> best suiting one, it will just accept the first listed subset of channels
-> >>>> which meets the user's requirements. If driver lists a mask which is a
-> >>>> subset of some of the masks previously in the array of
-> >>>> avaliable_scan_masks, then the latter one will never be selected.
-> >>>>
-> >>>> Add a warning if driver registers masks which can't be used due to the
-> >>>> available_scan_masks-array ordering.
-> >>>>
-> >>>> Suggested-by: Jonathan Cameron <jic23@kernel.org>
-> >>>> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>  
-> >>> Hi Matti
-> >>>
-> >>> Thanks for doing this.  A few comments inline + maybe we need to think
-> >>> about a unit test for the matching code. I feel we aren't pushing the
-> >>> corners of that in any drivers so far so it might bite us later.
-> >>>
-> >>> Still that's a job for another day.
-> >>>
-> >>> Jonathan
-> >>>      
-> >>>>
-> >>>> ---
-> >>>> The change was suggested by Jonathan here:
-> >>>> https://lore.kernel.org/lkml/20230924170726.41443502@jic23-huawei/
-> >>>> ---
-> >>>>    drivers/iio/industrialio-core.c | 57 +++++++++++++++++++++++++++++++++
-> >>>>    1 file changed, 57 insertions(+)
-> >>>>
-> >>>> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> >>>> index c77745b594bd..d4f37f4eeec0 100644
-> >>>> --- a/drivers/iio/industrialio-core.c
-> >>>> +++ b/drivers/iio/industrialio-core.c
-> >>>> @@ -1896,6 +1896,53 @@ static int iio_check_extended_name(const struct iio_dev *indio_dev)  
-> >>
-> >> ...
-> >>  
-> >>>> +
-> >>>> +	for (num_masks = 0; *av_masks; num_masks++)  
-> >>>
-> >>> I think we can't just check *av_masks - need bitmap_empty() as first
-> >>> long might be 0 but could be bits set in the next one.
-> >>>      
-> >>>> +		av_masks += longs_per_mask;  
-> >>
-> >> I did switch this to:
-> >> +       for (num_masks = 0; !bitmap_empty(av_masks, masklength);
-> >> num_masks++)
-> >> +               av_masks += longs_per_mask;
-> >>
-> >> but this kind of freaks me out.  
-> > 
-> > Good because I'm fairly sure you need to reduce the masklength int hat
-> > bitmap_empty as well.  It is getting a bit complex.  
+On 09/10/23 6:31 pm, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.135 release.
+> There are 75 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Hm. As far as I can say the masklength is constant telling how many bits 
-> there is in one mask(?) I don't think we can reduce it. Idea is just to 
-> increment the av_masks pointer until we find the zero mask indicating 
-> end of an array. This is how we count the amount of masks in the array.
-I read it wrong  :(    Thought we were iterating over the longs not the
-sets of longs in each mask. oops. I read the same code further down correctly.
-
-I blame spending whole day waiting for a plumber (who hasn't come... sigh)
-
+> Responses should be made by Wed, 11 Oct 2023 13:00:55 +0000.
+> Anything received after that time might be too late.
 > 
-> Caveat being that if driver has used single long '0' to indicate the end 
-> of an array, and if the masklength > 32 - we'll end up reading out of 
-> bounds. (as we agreed later in the mail. OTOH, we also agreed there does 
-> not seem to be drivers with masklength > 32 utilizing the 
-> available_scan_masks - so this is just trying to avoid problems in the 
-> future).
-> 
-> >>
-> >> I think in kernel we see two ways of constructing and passing arrays to
-> >> frameworks. One is creating a NULL terminated array, the other being an
-> >> array which size is given. The available_scan_masks is using the first
-> >> approach.
-> >>
-> >> The array represents bitmasks, which are thought to be of arbitrary
-> >> length. The type of array items is longs though. When building an arry
-> >> like this, it is easy to just do:
-> >>
-> >> unsigned long masks[] = {
-> >> 	mask1_hi,
-> >> 	mask1_lo,
-> >> 	mask2_hi,
-> >> 	mask2_lo,
-> >> 	...
-> >> 	maskN_lo,
-> >> 	/* sentinel */
-> >> 	0
-> >> }
-> >>
-> >> (By the way, I've always hated that 'sentinel' comment as it - in my
-> >> opinion - is not worth adding. I think the meaning of 0 should be
-> >> obvious, but here I just added it to alleviate the problem).
-> >>
-> >> Here, if I'm not mistaken, the check I implemented would go reading out
-> >> of the array bounds.  
-> > 
-> > It does indeed.
-> > 
-> >   
-> >>
-> >> Knowing how easy it would be slip the above array past my reviewing eyes
-> >> - I find this scary. And ugly part of this is that we can't detect this
-> >> in the iio-core side, because we have no way of knowing how big the
-> >> array and sentinel are. What makes this worse is that the core does:
-> >>
-> >> for (i = 0; i < indio_dev->num_channels; i++)
-> >>                           ml = max(ml, channels[i].scan_index + 1);
-> >>                   indio_dev->masklength = ml;
-> >>
-> >> so, masklength may not be what was set in driver.  
-> > 
-> > IIRC this is there to allow for sparse scan_index values.  Those are
-> > very rare, but I think there are a few drivers doing that because
-> > it allowed for slightly simpler code a long time back.  May not even
-> > matter today.  Key is that mask_length is big enough to allow the
-> > bits at all present scan_index values to be set.
-> > 
-> > So it should always match with the drivers where this is used to make
-> > sure available_scan_masks has the right number of longs per entry,
-> > but the drivers may need to be a little clever if they are both
-> > doing large numbers of channels and sparse scan_index values.
-> > AFAIK there are none doing that. Going further I don't recall any
-> > drivers that use the available_scan_masks stuff going beyond 32
-> > channels (so needing more than one unsigned long per element).  
-> 
-> I didn't find one either.
-> 
-> >> I did quick and dirty grep for "_scan_mask\[" in iio directory and
-> >> didn't spot any bigger than a few channels masks. Still, this makes me
-> >> worried.
-> >>
-> >> BTW: I did also:
-> >>
-> >> Author: Matti Vaittinen <mazziesaccount@gmail.com>
-> >> Date:   Fri Oct 6 13:53:11 2023 +0300
-> >>
-> >>       iio: buffer: use bitmap_empty() to find last mask
-> >>
-> >>       When IIO buffer code is scanning the array of available masks for
-> >>       matching the user's enable request to channel configuration
-> >> supported by
-> >>       driver, the code uses a 'check for long 0' as indication of last mask.
-> >>       This does not work right for channel masks greater than BITS_PER_LONG.
-> >>
-> >>       Use bitmap_empty() to find the last element in available_scan_masks
-> >>       array.
-> >>
-> >>       Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
-> >>       ---
-> >>       NOTE: This is potentially hazardous change. Please, don't pick without
-> >>       thorough check and understanding.
-> >>
-> >> diff --git a/drivers/iio/industrialio-buffer.c
-> >> b/drivers/iio/industrialio-buffer.c
-> >> index 176d31d9f9d8..1e59afddcf9a 100644
-> >> --- a/drivers/iio/industrialio-buffer.c
-> >> +++ b/drivers/iio/industrialio-buffer.c
-> >> @@ -413,7 +413,7 @@ static const unsigned long
-> >> *iio_scan_mask_match(const unsigned long *av_masks,
-> >>    {
-> >>           if (bitmap_empty(mask, masklength))
-> >>                   return NULL;
-> >> -       while (*av_masks) {
-> >> +       while (!bitmap_empty(av_masks, masklength)) {
-> >>                   if (strict) {
-> >>                           if (bitmap_equal(mask, av_masks, masklength))
-> >>                                   return av_masks;
-> >>
-> >> but this is just as fragile - for obvious reasons.  
-> > Ah. yes, that is indeed a bug.  I'm not sure your fix is particularly
-> > fragile though.  This comes back to us having no drivers that actually use
-> > big bitmaps yet.
-> > 
-> > Key is that we need the available_scan_masks null terminator to be the
-> > same length as any other entry - so if multiple unsigned longs needed
-> > then multiple 0's should be there.  
-> 
-> Exactly my thinking, and why I think this fix would be fragile. I am not 
-> convinced people would think of adding enough of zeroes.
-> 
-> > We should definitely document that
-> > and ideally add a test case.   We can bulk out the dummy driver
-> > to trigger these and provide an example of how available_scan_masks
-> > should be set.
-> >   
-> >>
-> >> One way around this would be to have the first bit in the long always
-> >> set for a valid mask - and take this into account when going through the
-> >> masks. It's probably somewhat more confusing than current code though -
-> >> but it would allow using just a single long (with all - or  at least
-> >> first - bits zero to indicate end of masks).  
-> > 
-> > Too complex.
-> >   
-> 
-> I think I agree. At least for as long as we don't actually have any 
-> available_scan_masks users with masklength > 32
-> 
-> >>
-> >> Other option I see is to just error out if available_scan_masks array is
-> >> given with larger than one 'long' wide masks and worry things when this
-> >> breaks.  
-> > 
-> > That would kick the problem into the long grass.  
-> 
-> Well, not 100% sure I interpret the idiom correctly ;) In any case, I'd 
-> say this would indeed postpone dealing with the problem to the future. 
-
-It does indeed mean that!  Sorry bad habit to use idioms in discussions like
-this.
-
-> To the point we actually seem to have a problem. The "long grass" as if 
-> hiding the problem is something we can avoid by adding something like:
-> 
-> if (masklength > 32 && idev->available_scan_masks) {
-> 	/*
-> 	 * Comment mowing the long grass.
-> 	 */
-> 	dev_err( ...);
-> 	return -EINVAL;
-> }
-> 
-> to the device registration.
-> 
-> >>
-> >> Anyways, I don't like using bitmap_empty() for array of bitmaps which
-> >> may be longer than BITS_PER_LONG unless we can sanity check the size of
-> >> the array...
-> >>
-> >> How do you feel about this?  
-> > 
-> > Agreed it's problematic as that null terminator isn't clearly forced to
-> > be big enough.  Hmm. Can we cheat for any drivers that actually need large
-> > masks (when they come along) and use an appropriate 2D array.  
-> 
-> I think we could. Or, maybe develop some mask initialization macro 
-> magic. It'd just be cool if one did not need to do things differently 
-> for multi long masks.
-> 
-> > unsigned long available_masks[][2] = {
-> > 	{mask0_ll, mask0_hl},
-> > 	{mask0_ll, mask0_hl},
-> > 	{}
-> > };  
-> 
-> don't know how would it work to have
-> unsigned long available_masks[][1] = {
-> 	{mask0},
-> 	{mask1},
-> 	{}
-> };
-> 
-> for regular masks with 1 long / mask as well? At first look it seems 
-> horrible to me but at least it would be a standard :) Don't know if 
-> there is a sane way to make a macro for it.
-
-Agreed - ugly for one entry so we keep those flat which means we have
-to keep our eyes open for the multiple long version.
-
-I've never come up with a sane way to do a macro to set bits
-in multiple longs or seen one unfortunately.
-
-> 
-> > 	iio_dev->available_scan_masks = (unsigned long *)available_masks;
-> > 
-> > If we put such an example into the dummy / example driver then that might
-> > act to avoid us getting bugs in future + test the fix you have above and
-> > related.  
-> 
-> Well, at least it shouldn't hurt to have some example - although I'm 
-> still tempted to use the "long grass" - option ;)
-
-That is probably a good idea for now.  Though we are carrying other infrastructure
-to support this eventually and it feels weird to error out on it whilst we have
-code to support it (assuming that terminator is long enough).
-
-
-> 
-> Yours,
-> 	-- Matti
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.135-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
 > 
 
+No problems seen on x86_64 and aarch64 with our testing.
+
+Tested-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+
+Thanks,
+Harshit
+
+> thanks,
+> 
+> greg k-h
+> 
