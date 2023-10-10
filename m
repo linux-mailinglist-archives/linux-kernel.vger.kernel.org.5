@@ -2,185 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 727C17C00F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA4A7C0101
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233690AbjJJP7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 11:59:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59364 "EHLO
+        id S233302AbjJJQCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 12:02:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233705AbjJJP7q (ORCPT
+        with ESMTP id S231511AbjJJQCV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 11:59:46 -0400
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2058.outbound.protection.outlook.com [40.107.22.58])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04E9DE
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:59:43 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CB2MhJTx/sJ9vjodkd8CcxHx29grGak+lstSwCdiZLyitg/BGfISueOvAksE5nx4vs98eBGDhsmXNJK2gI/84oP6jtORbO0lkcduq5fmgN7C1P+T1Hbr85BeI8FnEzc8Wd/Guf/nbhvWQi5iNM7Wa9uMkxq1TJuq7H9xn9t7juW4E0l2Okiuu+0pJe2F+u2xAzDkhmVXRJfxczlyCyuEorjT84g7qUwky+KteRkCWnJbYKmUEWX98+rXoWHeDqivyKc7MipuyFbOYn2pS7BmTvNeM3B7WAmacBeG6UTKe59CVPBU7VOYRO05thFvvZAfbYxnX4n4ij+0KqhwEpJYRQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Jc77ksfFaK1feRPbUxPxul/ob2OaEWjXWEBn10A+q2k=;
- b=nGXr/IEJYDWT7I/mjiCithcXdqBz0V9/tKwPilJyH+DNyDtE3VGYxHnx1iBjqaVaUnzjS4ukQcHOEuEB0m0AO3jfWsCHcALPrQONLRjCvgTTcpcC87g1nb7Ftt4qEvQEcNjogk2PcvQRS9FGde0m0IcEVpI18B/Y7c0I5U8dFH8+w6mzv6Ri+4IqYFAaIi1mW3+X013GxOtgHkKj1V1I+UZBapXjt6k4Ul/aj8ZCOTHeQEizOMIefWc3nAJRp24Mc21SwCUrKfB469YJuWEp+jmyvhI/JMi8b40pHbWzbVXJYvF0C10r+PwPsMpNOT1F2HTOEdOl/mrDDUyV0IwcHg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=axis.com; dmarc=pass action=none header.from=axis.com;
- dkim=pass header.d=axis.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Jc77ksfFaK1feRPbUxPxul/ob2OaEWjXWEBn10A+q2k=;
- b=Qt5j3o2WddG7Alfrbd1lTUEC0usa0nTlzuD3v3YDFrCCenkzW29cU2bKkoLB1WDNvI7nD6cxLKhO5goSyytlRi+0xA7oHAxzaeMaM7iBuBu4P5YvZSXqWPNHh3y1kmA1XmxcbPLp7C2cEegY8ieFzSJK9v1k4W4CD4Yji3wz5y0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=axis.com;
-Received: from DU0PR02MB10338.eurprd02.prod.outlook.com (2603:10a6:10:317::22)
- by PAXPR02MB7248.eurprd02.prod.outlook.com (2603:10a6:102:1c7::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.36; Tue, 10 Oct
- 2023 15:59:41 +0000
-Received: from DU0PR02MB10338.eurprd02.prod.outlook.com
- ([fe80::fdb5:ecdf:a6fc:64b7]) by DU0PR02MB10338.eurprd02.prod.outlook.com
- ([fe80::fdb5:ecdf:a6fc:64b7%6]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
- 15:59:40 +0000
-Message-ID: <5c76da14-e34e-afbd-4265-493c66e0bc60@axis.com>
-Date:   Tue, 10 Oct 2023 17:59:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [cocci] [PATCH 2/2] scripts: coccicheck: Separate spatch stdout
- and stderr
-Content-Language: en-GB
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Nicolas Palix <nicolas.palix@imag.fr>, cocci@inria.fr,
-        linux-kernel@vger.kernel.org, kernel@axis.com
-References: <20231003-coccicheck-v1-0-07d2d900a52a@axis.com>
- <20231003-coccicheck-v1-2-07d2d900a52a@axis.com>
- <alpine.DEB.2.22.394.2310072140340.36842@hadrien>
-From:   Anton Eliasson <anton.eliasson@axis.com>
-In-Reply-To: <alpine.DEB.2.22.394.2310072140340.36842@hadrien>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MM0P280CA0013.SWEP280.PROD.OUTLOOK.COM
- (2603:10a6:190:a::19) To DU0PR02MB10338.eurprd02.prod.outlook.com
- (2603:10a6:10:317::22)
+        Tue, 10 Oct 2023 12:02:21 -0400
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DC5493
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:02:17 -0700 (PDT)
+Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-57be3d8e738so3169077eaf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:02:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696953737; x=1697558537; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sh4ahTPKRmXkVHIw4/59uZyq4BNfq37c/buT35WFN4w=;
+        b=ZRXkqBQ7lHmlkoYp956ybK8fSk6B7V6LolCfZqsNKvevfZ/elO6zXT7wSl6nHMH1/a
+         W3hJCHS8m8VxkTOxZ2QYjW8MlhI1CtXcAwbempXgEQ/kDXQD3kXZ2uhkcXNBcojZO4Wq
+         UpxNrfDdacAA5NylEtMFQvjK4SkyJ8Ai4M+MMJby8hOEvcFW1K7YVIrc0pHWIUnO5BYn
+         HmvoIF0cAz0EP/Or7kYQaGSuaNJCqjAYXCK/GyHC69CWLWU/FKir8u1klNqS8EXxeEOb
+         Dwi2NlmcB396r/3PVKJ+i+mdirS/YjOA65t7Uc/AzPI05XGagEJICgI6MsUJ0tN3bxVK
+         ORjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696953737; x=1697558537;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sh4ahTPKRmXkVHIw4/59uZyq4BNfq37c/buT35WFN4w=;
+        b=FRtMmNyz4FkDLnuWKVmQZEu+6NQaqwTpXzkiwij0flZhac4sFJ+IIj5AADgCEWjIDc
+         s1btPug7S668voZ5RSDq1N8/bR4MqG168Nv+tE1wrAIbXP1xVa73wyY8RyBamaypBYw4
+         j5wvhNQGbRxFoyZDTJ72K8OcIyz0nuMJStzUhbbTS+NWLf1iXjH2w8G/iQ+PykeO36kv
+         AvSS1EDN3aSoNKcvMONtYBwHTwbMibXE7WKvg4lhwm0G66LrgB86MbtFWWA5FCmdW+KF
+         SyJt0x08zYhjTLWZOfO93SHncVWjtjw7DC4wZSIs2oYKinTQ5n87g9c9kwPfYUU4I/5Y
+         HouA==
+X-Gm-Message-State: AOJu0YwfBTeDP9fjDqo8AU8N+QtIJnofUyFLqjNnU/WVeQHIY3E4qUhG
+        L8et00SMVAHchqXCqW07diTF/XRs0LQJ22ajtKs=
+X-Google-Smtp-Source: AGHT+IGSPGOEWysnyBUYhjfjCVZZiRPiYnf5nZsP0/X9QKsMY9E/j4t6xfDnNpJA72KiQnlP9g2CN+pP9TgfGedV1qM=
+X-Received: by 2002:a05:6358:98a8:b0:139:b4c0:94d with SMTP id
+ q40-20020a05635898a800b00139b4c0094dmr23158285rwa.12.1696953736540; Tue, 10
+ Oct 2023 09:02:16 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR02MB10338:EE_|PAXPR02MB7248:EE_
-X-MS-Office365-Filtering-Correlation-Id: e5007308-7631-4a07-3a4f-08dbc9a9e98d
-X-LD-Processed: 78703d3c-b907-432f-b066-88f7af9ca3af,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: e6rIqNUsBerGVWxz5angfMMMZbMU3c7UquLeijWQqj57nnnuQhuzj/dsyfho91jt1W7fqpfzG6P05XzaT/iRbFKUd4FYu61ZcJ1TQib8HRnrITFYRYaopbWuM99EUoqPb0CozBSvGOfP9toIPktNALqFcIaAB16eILLbzG2RVyRsR8Z9fy3d7cWZ4gL/9DgsbBNq1u6bHuGvXl2cEUw50q1UrDR6dJV4o4d3+wJuzritc3F0MQS2KWZjcWBtFTJPQZgB1VP2ahKPjhD4PIXwurh7b9q4svgSHBNbExIR0kqHHIXpIXAcOrWBEGMX30iwVTkgXVBJEnSqy7FmulrA0rJX/xNL7M1zQ5BsceZmZMu0CHuK6G/a5sc/Es9v5DiPGl3KHNwoB3RekfoWkmYFnZBoxL3YZOVVvXToWTnL3L7RqxfMx72twQJMXC/+iAzKOvDn6bXuJZyZv4xM0L0+ZEA3c2WRzX+GWwJOhZK0UduC86hu7j56Ivrp57AdhCI0uGa2X/FhRHkuI9DRKb3Gq2PuO+KDjoGQOO6U3dVIP3ySKhlOCkcCs8Pf9l1aw4xq9XbUL1SAPkzj787ho8kKujO/pf0obZTle73OvijVTYm/TbyHdJxkbKqgbkAEXA1m+Fqgl7bmunOqJqdziIMYkg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR02MB10338.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(39860400002)(366004)(136003)(376002)(230922051799003)(1800799009)(64100799003)(186009)(451199024)(31686004)(66899024)(107886003)(6512007)(36756003)(86362001)(31696002)(38100700002)(26005)(44832011)(2906002)(83380400001)(6486002)(2616005)(6506007)(478600001)(8676002)(4326008)(6916009)(8936002)(41300700001)(66476007)(5660300002)(66556008)(66946007)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bTdFdDl4RHMxbWxZZHRic1RXTFRtUTRrVDE2UEsxRW1BWnNld21WQUg5cXND?=
- =?utf-8?B?c2xrQU4xb0RYZXM0azNvMVc5K3B5NGZncExzM3k0WDBxbVdoMzBIQ0JteitO?=
- =?utf-8?B?V1N5eS84b3J3dmdaT1pzc0VIbHprZzNUVUhkYi95WmhvRW1oY0lvalU4QVBG?=
- =?utf-8?B?NDJHdG12UmRkeHlydENBQkNEb2hpekFyM05xajQrVkhIY0FFbnRBNmtRMDUy?=
- =?utf-8?B?U2NyRU54Mk0wd3BSUzl5YjdwNnNPUFZhczdBc29tdldRU2ZkNUwwY2NSRFZi?=
- =?utf-8?B?WFpXQnNDOURCamVla2RDRVdIQWFFL3IrQTZtYTVkd0dsVU54c2plNWhvWkFL?=
- =?utf-8?B?am5aNG80YVNVKzFROElXWGtRNmZLWGhTQUc4cnpoL3IzbWwrczRoWHY4YU1T?=
- =?utf-8?B?Ym54QzNmUEVtcVFWZzh3SHVhTkNVSUhKUFBVWnVVRFk5dDNTYWJBdllncEJR?=
- =?utf-8?B?bXQxZ01WZGYyVkh2N0xSbFU1VU5paUsvbXFwTlUvbW1oemZsTzdDeEVnbnhv?=
- =?utf-8?B?S0JKSW13MDFqUkxMY3lSSmlTa2ZXMi9nK3cvYnVsN3BTQVVuaDB5ZjhuS1k0?=
- =?utf-8?B?aitDZXV3R0pLUE5CNFNaZmNpbWQ1dVB2ZXAxVjFNNGFPWS9oT25CeGd2d2la?=
- =?utf-8?B?a3ROc28yMEwrd0xnK3BFbkxZOFdQZzlURExvVklMMFFLZ2dSbG94aXk0K2Rl?=
- =?utf-8?B?Y25YMXZrV2FjMUJhQ1VRT2hob2ovdjdmOG5VMmhVQzZkZzZHVldZTFFhR05X?=
- =?utf-8?B?R0dVYnlrRFcrWkFTRHp4YWc5ZEc1VWtTZ25PRHBtQk4xWE1lcG1RTEtjell6?=
- =?utf-8?B?NEp2Q3dmNC9tVDloSkZWSCt4YnF5N04rMEV1dENSQmhrMnJieS9NWlFPZk9i?=
- =?utf-8?B?KzRTR3BEdmc2M2JQUVp1MWp0cE9RWmRaOStnNjZqSENzMzBKclFiN3EwTHRU?=
- =?utf-8?B?NFYvVlhkT2p4a0NnVFU5dXBnYzdnMmZUL29XemZBejJMS2xEVm1HeVRvVmh1?=
- =?utf-8?B?NEpjc3NrMkU4Qlh2dDI1MWlTYTNTaWEyeHdUSElyWG5QRVFVM0pXZTdLbXY0?=
- =?utf-8?B?OElKWlVvOVRvRDBUbmxtOTZMSytLYXFFdFU5dS9EbmlWYXhWSFY3b3N2eEYw?=
- =?utf-8?B?TEZkQjdULzFDV0ZHS0FzMmpCcmRuY096Z3oyblVDenhLd2dKSDMrcGorV2pr?=
- =?utf-8?B?RkF0WExnckRKOWlreDZlYVRlejF1NHVWNUFhQU9SaEZiellpd25tejJWOUN2?=
- =?utf-8?B?ay91RTRyVm53TXd5eWdtM3RCT1FFK2VCRUo3UnZna0hKSlZkZ3FFWUVyaGxZ?=
- =?utf-8?B?SnI5RkJSMm5tSlY4R0NHK21SYVNGZm1ubG81ZXl6ODA0NW1jNGNYS1pVbUpz?=
- =?utf-8?B?VThpRTliamdoVTViZGpFOFI0Vnd4ajBNbmFYcUJhRlpsUWczVXVXRWNZcldt?=
- =?utf-8?B?SHFZSzBQWGZWclVweDVUS1owVmpoWW4zQnZVWHNocjl6N0NLeWc5QW1OdHVk?=
- =?utf-8?B?RW40Nm9wTkZwajVjVUtJLzZtblFvUTliWmxPY2ZuZFpqckQxNEFZNFpnc0RX?=
- =?utf-8?B?alNuUll0eDZMNnM3K1I2eFArQ21wRnZFWnJ3RVZUTkFVQUl0MVBZVmsrcnda?=
- =?utf-8?B?ZHRDSWtCanUwWGs3SGk1aGNyY3h0RDYwc05aTnVpZTl1L052OTRQMjNZcjB2?=
- =?utf-8?B?MUNYL0hNN3c1a05YVGJuZ29yQUkyU0hqSVNSamlaRm5oRnJscm41K0NYSUdq?=
- =?utf-8?B?UCtmRVNURnFOSTIvcFJRUFNXNGhpRTNCc1U0em5aMGdkWlNUbDA4dUVITGxV?=
- =?utf-8?B?Y0N6Vjc5ODRxQkxVSlNvTzQyRXhDcGJ5eTlXd2d1MlFMTFcyNjVCc1d1eXEz?=
- =?utf-8?B?QkNrL1JtT2NvTGdNNGNQYXhyZjRnRmlXWmIxNmcrWU9lbXIvTEI4RW1KYXhF?=
- =?utf-8?B?bkFIK1VXM1BadXQ2MjcyekZzRnlERWp5TXdmalYzelpqY0hnSEtOT2JJQzVn?=
- =?utf-8?B?RlJWekMvSFBGUjM1djROVjFuLzdzSlQ5eWE2YWYyeGVYRkVNaU1xU3dNdHB6?=
- =?utf-8?B?RUlWZzFsZWtEbGttYWJyNURLdExlWnh5d3NHa1dsU0g2SU5nMHk2YWo3WDQ2?=
- =?utf-8?Q?Bqzg=3D?=
-X-OriginatorOrg: axis.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e5007308-7631-4a07-3a4f-08dbc9a9e98d
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR02MB10338.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 15:59:40.9360
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JnFlCfVExXkhVfnrFJTsMe3qRTMQSgz6VoNQ6ONWWi2HtKHpLQM7duqw3Yq7KFNc
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR02MB7248
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230915154856.1896062-1-lb@semihalf.com> <CAJfuBxyFYyGCtr5i=P7N=1oX3J=jmdp1VLGLt+z1fAnuvGK2aA@mail.gmail.com>
+ <CAK8ByeJBrPEQSgUc91LQO9Krzjh2pauhMTjEC82M8ozayE76Yg@mail.gmail.com>
+ <CAJfuBxxmL-GtBgt=033F9UNeLCreFbJh3HrQQN2nYKwR_0uTbg@mail.gmail.com>
+ <20231003155810.6df9de16@gandalf.local.home> <CAJfuBxyJyFbFEhRxrtxJ_RazaTODV6Gg64b1aiNEzt6_iE4=Og@mail.gmail.com>
+ <CAK8ByeLNc9UbTNG4x=40AxYqjjRCsvBNtNFai0PMveM2X4XCow@mail.gmail.com>
+ <CAJfuBxyRF4q_T8LmHwR=-PKKDDpiFg2nO03uLnL8aGpRyBByKw@mail.gmail.com> <CAK8ByeLpkSV6o6gPw8eJVqq5+ynQrSDjemY7mXkO1ZmA0rYKfQ@mail.gmail.com>
+In-Reply-To: <CAK8ByeLpkSV6o6gPw8eJVqq5+ynQrSDjemY7mXkO1ZmA0rYKfQ@mail.gmail.com>
+From:   jim.cromie@gmail.com
+Date:   Tue, 10 Oct 2023 10:01:49 -0600
+Message-ID: <CAJfuBxw+ANLwssAGWpkn5PeJb8ZKn4LXQkk2Gfv3aGsSN=S55Q@mail.gmail.com>
+Subject: Re: [PATCH v1] dynamic_debug: add support for logs destination
+To:     =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@google.com>,
+        Yaniv Tzoreff <yanivt@google.com>,
+        Benson Leung <bleung@google.com>, linux-kernel@vger.kernel.org,
+        upstream@semihalf.com,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/10/2023 21.41, Julia Lawall wrote:
+On Mon, Oct 9, 2023 at 4:47=E2=80=AFPM =C5=81ukasz Bartosik <lb@semihalf.co=
+m> wrote:
 >
-> On Tue, 3 Oct 2023, Anton Eliasson wrote:
+> pt., 6 pa=C5=BA 2023 o 22:49 <jim.cromie@gmail.com> napisa=C5=82(a):
+> >
+> > On Wed, Oct 4, 2023 at 4:55=E2=80=AFAM =C5=81ukasz Bartosik <lb@semihal=
+f.com> wrote:
+> > >
+> > > wt., 3 pa=C5=BA 2023 o 22:54 <jim.cromie@gmail.com> napisa=C5=82(a):
+> > > >
+> > > > On Tue, Oct 3, 2023 at 1:57=E2=80=AFPM Steven Rostedt <rostedt@good=
+mis.org> wrote:
+> > > > >
+> > > > > On Mon, 2 Oct 2023 14:49:20 -0600
+> > > > > jim.cromie@gmail.com wrote:
+> > > > >
+> > > > > > hi Lukasz,
+> > > > > >
+> > > > > > sorry my kernel-time has been in my own trees.
+> > > > > >
+> > > > > > What I dont understand is why +T is insufficient.
+> > > > > >
+> > >
+> > > We would like to be able to separate debug logs from different
+> > > subsystem (e.g. thunderbolt and usbcore).
+> > > With +T it is not possible because all debug logs will land in the sa=
+me bucket.
+> > >
+> > > > > > IIUC, tracefs is intended for production use.
+> > > > > > thats why each event can be enabled / disabled
+> > > > > > - to select and minimize whats traced, and not impact the syste=
+m
+> > > > > >
+> > > > > > and +T  can forward all pr_debugs to trace,
+> > > > > > (by 1-few trace events defined similarly to others)
+> > > > > > or very few, giving yet another selection mechanism
+> > > > > > to choose or eliminate specific pr-debugs and reduce traffic to
+> > > > > > interesting stuff.
+> > > > > >
+> > > > > > Once your debug is in the trace-buf,
+> > > > > > shouldnt user-space be deciding what to do with it ?
+> > > > > > a smart daemon could leverage tracefs to good effect.
+> > > > > >
+> > >
+> > > Yes, a daemon could separate the debug logs but IMHO it is much
+> > > easier to separate logs by sending them directly from a given subsyst=
+em
+> > > to a separate trace instance. My proposal allows to configure differe=
+nt
+> > > trace instance as destination for each callsite.
+> > >
+> > > > > > IMO the main value of +T is that it allows feeding existing pr_=
+debugs
+> > > > > > into the place where other trace-data is already integrated and=
+ managed.
+> > > > > >
+> > > > > > At this point, I dont see any extra destination handling as pru=
+dent.
+> > > > > >
+> > > > >
+> > > > >
+> > > > > I'm fine with either approach. I kind of like the creation of the=
+ instance,
+> > > > > as that allows the user to keep this debug separate from other tr=
+acing
+> > > > > going on. We are starting to have multiple applications using the=
+ tracing
+> > > > > buffer (although most are using instances, which is why I'm tryin=
+g to make
+> > > > > them lighter weight with the eventfs code).
+> > > > >
+> > > > > -- Steve
+> > > > >
+> > >
+> > > Steve, thanks for commenting from the trace perspective.
+> > >
+> > > >
+> > > >
+> > > > Ok Im starting to grasp that multiple instances are good
+> > > > (and wondering how I didnt notice)
+> > > >
+> > > > What doesnt thrill me is the new _ddebug field, it enlarges the foo=
+tprint.
+> > > >
+> > >
+> > > Yes it increases _ddebug structure by a pointer size.
+> > >
+> > > > can you make it go away ?
+> > >
+> > > I implemented my proposal with flexibility in mind so that if someone
+> > > would like to add
+> > > another destination in the future it should be easy to do. I
+> > > understand that adding a pointer
+> > > to the _ddebug structure increases footprint size that's why I also
+> > > added CONFIG_DYNAMIC_DEBUG_DST
+> > > kernel configuration option in order to enable/disable this functiona=
+lity.
+> > >
+> > > > I have some thoughts ..
+> > >
+> > > Please share your thoughts. I'm sure we can come to an agreement how
+> > > to incorporate both +T and my proposal.
+> >
+> >
+> > So heres what Im thinking:
+> >
+> > shrink lineno, get 2-3 bits back.
+> > last I checked largest C file is <32kloc
+> > largest header is ~120kloc, but its a data only,
+> > no pr_debugs will suddenly appear there.
+> >
+> > define a dst_id field with 3 bits
 >
->> This helps automating coccicheck runs by discarding stderr and only
->> looking at the output of stdout. In report mode the only remaining
->> output on stdout is the initial "Please check for false positives"
->> message followed by each spatch warning found.
-> What is getting dropped is the spatch command lines indicating the
-> semantic patch.  Is this desirable?
+> The dst_id field would be taken into account only when a callsite has
+> T flag set, is that your assumption ?
+
+Im ambivalent about the +T bit itself,
+it could as easily be another "special" value in the 0-2^N range of dst_id
+
+its a use-case tradeoff:
++T  goes to main tracebuf.
+dst_id>0  goes to separate, pre-registered "flight-recorder"  tracebufs
+
+I'm not sure whether doing both independently is better than having
+2^(n-1)-1 extra bufs.
+
+Actually, demoting +T to just another dest makes sense -
+theres a large population of pr-debugs, and events like vblank-*
+Nobody will send vblank to syslog on purpose either.
+
+
+either way, dyndbg will need both:
+new trace-events, so that prdbgs can get enabled as a single/few event-type=
+s
+trace_array_buf writes to flight recorders
+
+
+
+
+
+
+
+> Can one bit be taken from class_id to increase dst_id to 4 bits ?
+> Decreasing class_id length to 5 bits would still leave its range at
+> [0..31]
+
+31 classes / categories should be enough.
+64 was convenient, BIT* supported.
+
+> > 0 is for main tracebuf
+> > 1-7 is for other instances
+> >
 >
-> julia
-It's not ideal but it's the best compromise that I have found. The 
-problem I'm trying to solve is to be able to diff the output of two 
-coccicheck runs and notify the developer if any new warnings were 
-introduced. That requires the output to be stable. spatch is always 
-invoked for each cocci file in the same order. However, the output from 
-each spatch invocation is not stable as it examines each source file in 
-an arbitrary order.
-
-My workaround is to sort the output before diffing. The line-by-line 
-sorted output only makes sense if the input is one line per warning 
-found and that is why I try to discard all output except the single line 
-per spatch warning. While the terse output doesn't tell which semantic 
-patch file generated the warning, it does usually contain the offending 
-file, line number and a summary of the issue.
-
-
-Anton
+> Do you want to leave trace events as originally implemented with +T flag =
+?
+> If yes then I would like to propose:
+> dst_id =3D 0 - for trace events for pr_debug and dbg_dev logs (default)
+> dst_id =3D 1 - for default trace instance
+> dst_id > 1 - other trace instances
 >
->> Signed-off-by: Anton Eliasson <anton.eliasson@axis.com>
->> ---
->>   scripts/coccicheck | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/scripts/coccicheck b/scripts/coccicheck
->> index 95a312730e98..7e7c44125f47 100755
->> --- a/scripts/coccicheck
->> +++ b/scripts/coccicheck
->> @@ -146,8 +146,8 @@ run_cmd_parmap() {
->>                   echo $@>>$DEBUG_FILE
->>                   $@ 2>>$DEBUG_FILE
->>           else
->> -                echo $@
->> -                $@ 2>&1
->> +                echo $@ >&2
->> +                $@
->>   	fi
->>
->>   	err=$?
->>
->> --
->> 2.30.2
->>
->>
+> > then the alt-dest lookup is avoided except when the dst_id field is >0
+> >
+> > It might work to put the alt-dst-pointer into the classmaps,
+> > so the destination is used for the entire group of debugs
+> > forex DRM_UT_CORE etc.
+> >
+>
+> If we store dst pointers for dst_id > 1 in classmaps then is there a fast=
+ way
+> to get from callsite (_ddebug) to its corresponding classmap
+> (ddebug_class_map) in order to
+> lookup trace instance destination ?  I ask because I don't see it being p=
+ossible
+> without adding a new field to the _ddebug structure.
 
+I agree, theres no good enough way, compared to a small dst-id.
+The "muse" was on the grouping aspect it might bring.
+
+> > But its no better than the dst_id field, which is per-callsite,
+> > and entirely independent of classes.
+> >
+this was me agreeing with your point above :-)
+
+
+>
+> I don't have a real life use case to configure different trace
+> instance for each callsite.
+> I just tried to be as much flexible as possible.
+>
+
+Ive come around to agree - I looked back at some old threads
+(that I was a part of, and barely remembered :-}
+
+At least Sean Paul, Lyude, Simon Ser, Pekka Paalanen
+have expressed a desire for a "flight-recorder"
+it'd be hard to say now that 2-3 such buffers would always be enough,
+esp as theres a performance reason for having your own.
+
+
+> Thanks,
+> Lukasz
+>
+> >
+> > > Thanks,
+> > > Lukasz
