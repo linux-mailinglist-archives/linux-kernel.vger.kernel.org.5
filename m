@@ -2,77 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 494607C0374
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 20:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3C87C0377
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 20:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343610AbjJJSdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 14:33:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53234 "EHLO
+        id S1343625AbjJJSdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 14:33:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343631AbjJJSdc (ORCPT
+        with ESMTP id S1343591AbjJJSdd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 14:33:32 -0400
+        Tue, 10 Oct 2023 14:33:33 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05BEAB8
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 11:33:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58551C433C7;
-        Tue, 10 Oct 2023 18:33:21 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51BCD94
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 11:33:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16B6EC433C8;
+        Tue, 10 Oct 2023 18:33:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696962810;
-        bh=TD+nNrMs7Ka9gbbvwhiSbbShWQAcXDb6ypAqBq/kzqM=;
+        s=k20201202; t=1696962812;
+        bh=men6Wwkv7/TKQYnqRezdvTojzHpVL+WgvG2tg1k2L9k=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=AQOWLjK2hbh4erAVcclHzik682RWE1TlLameD3PmoJ3Uo1EdHIJ3I8/svUjMmldVS
-         XKGHGno3DQjgda+yYyDLV2RgAr+QriR0weN/s6GlrLt2EP2nrnM3k7FqjHSo4shDkw
-         4YmAJnWUU4FAAo1DHwnLIb8T2QihDbJHWsAQp7ljuhV/SoB2Z783yD6vtQBBzc/IRQ
-         0ur+GjZeh2BTN51SAEQ8MnAsJz1GmthDlzy8kQP5bEiQOBHYYqI08ijmcdvovR3rTe
-         mdNfvNNct9aXKnVZ5lIyJsNKZBp2NOzY5e0WdSm6aWk8sQkZRfGYEl2Hl/agRRXcRK
-         XSovxYLIK9kMw==
+        b=G82dDx8ZVosZ4YpJULHQQGTHciFzpRkRuwllcAxqR9+m8qLIWzSSTXMsARDEpBJnn
+         1ZWsnU6cckAfluy6Wr1P8lbFpjYHLrZ52qD0giScchSwSujTzvKjrH0uix3f9Y9Fz0
+         e7fFvcQOQrKkAucFeFoiA99CL+tkVYqyRPE6ooS0hZWK8hkLA9xfr8xm0FHdTcCZ2B
+         0hSJbSYIjyA18rRl9bOP7dyvT3s2ps90lXQ/llp7pLeziQyvH8Mg4NLfu6gUqDcUxa
+         RWQD8YUendklehp9uryDzJrsazV4apLMOSj7PheWofCph59IMp/0YECRz+QnuBqFbI
+         q/bYY7Bsr/bqw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Peter Rosin <peda@axentia.se>,
-        Lars-Peter Clausen <lars@metafoo.de>, nuno.sa@analog.com,
-        James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Shenghao Ding <shenghao-ding@ti.com>,
-        Kevin Lu <kevin-lu@ti.com>, Baojun Xu <baojun.xu@ti.com>,
-        Oder Chiou <oder_chiou@realtek.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Kiseok Jo <kiseok.jo@irondevice.com>,
-        Kevin Cernekee <cernekee@chromium.org>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Ban Tao <fengzheng923@gmail.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Jarkko Nikula <jarkko.nikula@bitmer.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Olivier Moysan <olivier.moysan@foss.st.com>,
-        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>
-In-Reply-To: <20231006-dt-asoc-header-cleanups-v3-0-13a4f0f7fee6@kernel.org>
-References: <20231006-dt-asoc-header-cleanups-v3-0-13a4f0f7fee6@kernel.org>
-Subject: Re: [PATCH v3 0/5] ASoC: DT matching and header cleanups
-Message-Id: <169696280106.221758.12652834857695234139.b4-ty@kernel.org>
-Date:   Tue, 10 Oct 2023 19:33:21 +0100
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
+        alsa-devel@alsa-project.org
+In-Reply-To: <20231009153412.30380-1-rf@opensource.cirrus.com>
+References: <20231009153412.30380-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: cs35l56: ASP1 DOUT must default to Hi-Z when not
+ transmitting
+Message-Id: <169696281081.221758.5630336947565213531.b4-ty@kernel.org>
+Date:   Tue, 10 Oct 2023 19:33:30 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -87,15 +51,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 06 Oct 2023 15:09:09 -0500, Rob Herring wrote:
-> (trimmed the recipient list due to bounces on v1)
+On Mon, 09 Oct 2023 16:34:12 +0100, Richard Fitzgerald wrote:
+> The ASP1 DOUT line must be defaulted to be high-impedance when
+> it is not actually transmitting data for an active channel.
 > 
-> This is a series is part of ongoing clean-ups related to device
-> matching and DT related implicit includes. Essentially of_device.h has
-> a bunch of implicit includes and generally isn't needed any nore except
-> for of_match_device(). As we also generally want to get rid of
-> of_match_device() as well, I've done that so we're not updating the
-> includes twice.
+> In non-SoundWire modes ASP1 will usually be shared by multiple
+> amps so each amp must only drive the line during the slot for
+> an enabled TX channel.
 > 
 > [...]
 
@@ -105,16 +67,8 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: Explicitly include correct DT includes
-      commit: 340d79a14d6ab5066ba40651764db20bd151aea7
-[2/5] ASoC: Drop unnecessary of_match_device() calls
-      commit: 56c075b2d31c626370481a62d334a0575f751522
-[3/5] ASoC: da7218: Use i2c_get_match_data()
-      commit: fe26425518862020449cb2c9709e62cc76a56de2
-[4/5] ASoC: qcom/lpass: Constify struct lpass_variant
-      commit: ec5236c2e6ec1ce62237a2e9345dd2ffc4fc6d56
-[5/5] ASoC: Use device_get_match_data()
-      commit: 9958d85968ed2df4b704105fd2a9c3669eb9cd97
+[1/1] ASoC: cs35l56: ASP1 DOUT must default to Hi-Z when not transmitting
+      commit: 1bba0badff0ede8dc51641cff4b153422baa3369
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
