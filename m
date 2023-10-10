@@ -2,215 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0317BF346
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 08:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CADB67BF347
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 08:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442277AbjJJGqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 02:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41210 "EHLO
+        id S1442299AbjJJGqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 02:46:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442156AbjJJGqM (ORCPT
+        with ESMTP id S1442156AbjJJGqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 02:46:12 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB83A97;
-        Mon,  9 Oct 2023 23:46:09 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7D7641F45E;
-        Tue, 10 Oct 2023 06:46:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1696920368; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/y8kLlMYlCV5svpo9yVALD4uEnUsY8oZYm1/+BvVA3Q=;
-        b=rqG5U9jG9vYBLFqamcNVJxVoEtokWyP4Gjwzx/armsgwiFOgTkZCHPJXvVVa+xUM4R9hqr
-        B8ilRIR5dylzWBJgz1Hr51Dx7d1TkaP9GojhpQEfA730DT9JsqzmfCdMgpkpUYOHhe2p8e
-        RNfwYctosg22nHnudZiP8L5nee0Ys5A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1696920368;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/y8kLlMYlCV5svpo9yVALD4uEnUsY8oZYm1/+BvVA3Q=;
-        b=Jm55PMk/8f0PObDJ7v9TdL7FBNKQKTbiFh51HR6OLr3uWmV83RHH5XgfOMyTNzxZtb+daY
-        ozC0H3tqPC5qSzBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 573591358F;
-        Tue, 10 Oct 2023 06:46:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id GLCBFDDzJGUOJwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Tue, 10 Oct 2023 06:46:08 +0000
-Message-ID: <52d4760a-9d4b-e3c0-d236-5eaa0eb5f96a@suse.cz>
-Date:   Tue, 10 Oct 2023 08:46:07 +0200
+        Tue, 10 Oct 2023 02:46:38 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908F69E;
+        Mon,  9 Oct 2023 23:46:36 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-584a761b301so3997977a12.3;
+        Mon, 09 Oct 2023 23:46:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696920396; x=1697525196; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wIQ5Aqzrs+/ZfndeHL04d8DJFEaWbrXX5z11jTnUuqw=;
+        b=Krzx7F3UWnarFXdch25s+60KRril5Vacoel+aYFVR21jBennHk8AmFtbuey6jruKKX
+         Y8eykzJsDqtpoEiJN0pAyRG54JfplpvgOK8grqp/9Eigi8dJDx2Fz7f4CB/mh15MW+Nz
+         f/az8B61oXVhtvV91C45PR208vSLTqT+RY4gSdw3utGOgyHs/I9Lz4tfky+F634a2Gd9
+         eRNM/IDoDQmxtqVpz9HtpkALkDKON+bZMcw/Xk0E+xaLSBQNN6EJOFrXz4xtOQ7JF3ov
+         eztvaNYob0DRovRayWwhdq220bC+F/g0G3cQCUOvzvrKFE5IuHkIuHGhuzt+84qMhtc9
+         gq8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696920396; x=1697525196;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wIQ5Aqzrs+/ZfndeHL04d8DJFEaWbrXX5z11jTnUuqw=;
+        b=bM+4+Bl4miAnYgVKWMEVi0xGw76mAxB+RmOx0nRRwoIzQ/JOeL7dIlghQmv30f7sv3
+         g5Q0kHNrn1fWJS1DpLhdctLaHVQa71CRbTUiVo8dzX8Z95+9n6M2IB/vFeqR0NK1Vn1y
+         xYkhvdqctsvHxJysjqRXBIqVwdTvbvPtsCYDHxXkUUcbh/ChWtiDPnF3g4kx4FYNo/in
+         cSa0fXBCQO9wnDvWsTaeUb+KurnFJ6Dm4uTluF/QN7TWjErndbmKm0hm8LkQ3oss7/n1
+         IqKkpXqfGzDfkUv0vU4OL4GKc2dDXZNQ5qobrgAXAePbjh/VPXTgJBkEiLkfbTQhsNR6
+         653g==
+X-Gm-Message-State: AOJu0YzyWbtzouJRfJN+dURCgLzgwbMidgiOnNfQKexfvWaBIOPX4slQ
+        47C0p044mgguT7ucOeqIGvQ=
+X-Google-Smtp-Source: AGHT+IGl9lZn6Seoy30vrb0vHHbDaZ4cyNJ61UCdkTmIVLIqmmehlduoneDc8bAWXdYi7VPayrdlRA==
+X-Received: by 2002:a05:6a20:7286:b0:15e:7323:5c0f with SMTP id o6-20020a056a20728600b0015e73235c0fmr21811247pzk.16.1696920395939;
+        Mon, 09 Oct 2023 23:46:35 -0700 (PDT)
+Received: from [192.168.255.10] ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id g18-20020aa78752000000b00692cb1224casm7504782pfo.183.2023.10.09.23.46.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Oct 2023 23:46:35 -0700 (PDT)
+Message-ID: <5144fd23-e737-f23c-ce66-58d58ba13757@gmail.com>
+Date:   Tue, 10 Oct 2023 14:46:27 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 1/5] mm: move vma_policy() and anon_vma_name() decls to
- mm_types.h
-To:     Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     "=Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        linux-fsdevel@vger.kernel.org
-References: <cover.1696884493.git.lstoakes@gmail.com>
- <4f1063f9c0e05ada89458083476e03434498e81e.1696884493.git.lstoakes@gmail.com>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH 2/5] srcu: Only accelerate on enqueue time
 Content-Language: en-US
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <4f1063f9c0e05ada89458083476e03434498e81e.1696884493.git.lstoakes@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Yong He <zhuangel570@gmail.com>
+References: <20231003232903.7109-1-frederic@kernel.org>
+ <20231003232903.7109-3-frederic@kernel.org>
+From:   Like Xu <like.xu.linux@gmail.com>
+In-Reply-To: <20231003232903.7109-3-frederic@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/9/23 22:53, Lorenzo Stoakes wrote:
-> The vma_policy() define is a helper specifically for a VMA field so it
-> makes sense to host it in the memory management types header.
+On 4/10/2023 7:29 am, Frederic Weisbecker wrote:
+> Acceleration in SRCU happens on enqueue time for each new callback. This
+> operation is expected not to fail and therefore any similar attempt
+> from other places shouldn't find any remaining callbacks to accelerate.
 > 
-> The anon_vma_name(), anon_vma_name_alloc() and anon_vma_name_free()
-> functions are a little out of place in mm_inline.h as they define external
-> functions, and so it makes sense to locate them in mm_types.h.
+> Moreover accelerations performed beyond enqueue time are error prone
+> because rcu_seq_snap() then may return the snapshot for a new grace
+> period that is not going to be started.
 > 
-> The purpose of these relocations is to make it possible to abstract static
-> inline wrappers which invoke both of these helpers.
+> Remove these dangerous and needless accelerations and introduce instead
+> assertions reporting leaking unaccelerated callbacks beyond enqueue
+> time.
 > 
-> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
-
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-
+> Co-developed-by: Yong He <zhuangel570@gmail.com>
+> Co-developed-by: Joel Fernandes <joel@joelfernandes.org>
+> Co-developed-by: Neeraj upadhyay <neeraj.iitr10@gmail.com>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 > ---
->  include/linux/mempolicy.h |  4 ----
->  include/linux/mm_inline.h | 20 +-------------------
->  include/linux/mm_types.h  | 27 +++++++++++++++++++++++++++
->  3 files changed, 28 insertions(+), 23 deletions(-)
+>   kernel/rcu/srcutree.c | 6 ++----
+>   1 file changed, 2 insertions(+), 4 deletions(-)
 > 
-> diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
-> index 3c208d4f0ee9..2801d5b0a4e9 100644
-> --- a/include/linux/mempolicy.h
-> +++ b/include/linux/mempolicy.h
-> @@ -89,8 +89,6 @@ static inline struct mempolicy *mpol_dup(struct mempolicy *pol)
->  	return pol;
->  }
->  
-> -#define vma_policy(vma) ((vma)->vm_policy)
-> -
->  static inline void mpol_get(struct mempolicy *pol)
->  {
->  	if (pol)
-> @@ -222,8 +220,6 @@ static inline struct mempolicy *get_vma_policy(struct vm_area_struct *vma,
->  	return NULL;
->  }
->  
-> -#define vma_policy(vma) NULL
-> -
->  static inline int
->  vma_dup_policy(struct vm_area_struct *src, struct vm_area_struct *dst)
->  {
-> diff --git a/include/linux/mm_inline.h b/include/linux/mm_inline.h
-> index 8148b30a9df1..9ae7def16cb2 100644
-> --- a/include/linux/mm_inline.h
-> +++ b/include/linux/mm_inline.h
-> @@ -4,6 +4,7 @@
->  
->  #include <linux/atomic.h>
->  #include <linux/huge_mm.h>
-> +#include <linux/mm_types.h>
->  #include <linux/swap.h>
->  #include <linux/string.h>
->  #include <linux/userfaultfd_k.h>
-> @@ -352,15 +353,6 @@ void lruvec_del_folio(struct lruvec *lruvec, struct folio *folio)
->  }
->  
->  #ifdef CONFIG_ANON_VMA_NAME
-> -/*
-> - * mmap_lock should be read-locked when calling anon_vma_name(). Caller should
-> - * either keep holding the lock while using the returned pointer or it should
-> - * raise anon_vma_name refcount before releasing the lock.
-> - */
-> -extern struct anon_vma_name *anon_vma_name(struct vm_area_struct *vma);
-> -extern struct anon_vma_name *anon_vma_name_alloc(const char *name);
-> -extern void anon_vma_name_free(struct kref *kref);
-> -
->  /* mmap_lock should be read-locked */
->  static inline void anon_vma_name_get(struct anon_vma_name *anon_name)
->  {
-> @@ -415,16 +407,6 @@ static inline bool anon_vma_name_eq(struct anon_vma_name *anon_name1,
->  }
->  
->  #else /* CONFIG_ANON_VMA_NAME */
-> -static inline struct anon_vma_name *anon_vma_name(struct vm_area_struct *vma)
-> -{
-> -	return NULL;
-> -}
-> -
-> -static inline struct anon_vma_name *anon_vma_name_alloc(const char *name)
-> -{
-> -	return NULL;
-> -}
-> -
->  static inline void anon_vma_name_get(struct anon_vma_name *anon_name) {}
->  static inline void anon_vma_name_put(struct anon_vma_name *anon_name) {}
->  static inline void dup_anon_vma_name(struct vm_area_struct *orig_vma,
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index 36c5b43999e6..21eb56145f57 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -546,6 +546,27 @@ struct anon_vma_name {
->  	char name[];
->  };
->  
-> +#ifdef CONFIG_ANON_VMA_NAME
-> +/*
-> + * mmap_lock should be read-locked when calling anon_vma_name(). Caller should
-> + * either keep holding the lock while using the returned pointer or it should
-> + * raise anon_vma_name refcount before releasing the lock.
-> + */
-> +struct anon_vma_name *anon_vma_name(struct vm_area_struct *vma);
-> +struct anon_vma_name *anon_vma_name_alloc(const char *name);
-> +void anon_vma_name_free(struct kref *kref);
-> +#else /* CONFIG_ANON_VMA_NAME */
-> +static inline struct anon_vma_name *anon_vma_name(struct vm_area_struct *vma)
-> +{
-> +	return NULL;
-> +}
-> +
-> +static inline struct anon_vma_name *anon_vma_name_alloc(const char *name)
-> +{
-> +	return NULL;
-> +}
-> +#endif
-> +
->  struct vma_lock {
->  	struct rw_semaphore lock;
->  };
-> @@ -662,6 +683,12 @@ struct vm_area_struct {
->  	struct vm_userfaultfd_ctx vm_userfaultfd_ctx;
->  } __randomize_layout;
->  
-> +#ifdef CONFIG_NUMA
-> +#define vma_policy(vma) ((vma)->vm_policy)
-> +#else
-> +#define vma_policy(vma) NULL
-> +#endif
-> +
->  #ifdef CONFIG_SCHED_MM_CID
->  struct mm_cid {
->  	u64 time;
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 9fab9ac36996..560e99ec5333 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -784,8 +784,7 @@ static void srcu_gp_start(struct srcu_struct *ssp)
+>   	spin_lock_rcu_node(sdp);  /* Interrupts already disabled. */
+>   	rcu_segcblist_advance(&sdp->srcu_cblist,
+>   			      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
+> -	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
+> -				       rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq));
+> +	WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_NEXT_TAIL));
+>   	spin_unlock_rcu_node(sdp);  /* Interrupts remain disabled. */
+>   	WRITE_ONCE(ssp->srcu_sup->srcu_gp_start, jiffies);
+>   	WRITE_ONCE(ssp->srcu_sup->srcu_n_exp_nodelay, 0);
+> @@ -1721,6 +1720,7 @@ static void srcu_invoke_callbacks(struct work_struct *work)
+>   	ssp = sdp->ssp;
+>   	rcu_cblist_init(&ready_cbs);
+>   	spin_lock_irq_rcu_node(sdp);
+> +	WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_NEXT_TAIL));
+>   	rcu_segcblist_advance(&sdp->srcu_cblist,
+>   			      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
+>   	if (sdp->srcu_cblist_invoking ||
+> @@ -1750,8 +1750,6 @@ static void srcu_invoke_callbacks(struct work_struct *work)
+>   	 */
+>   	spin_lock_irq_rcu_node(sdp);
+>   	rcu_segcblist_add_len(&sdp->srcu_cblist, -len);
+> -	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
+> -				       rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq));
 
+We did observe such issues at our farm and the same diff was applied,
+thus this fix is especially appreciated. Thanks.
+
+Reviewed-by: Like Xu <likexu@tencent.com>
+
+>   	sdp->srcu_cblist_invoking = false;
+>   	more = rcu_segcblist_ready_cbs(&sdp->srcu_cblist);
+>   	spin_unlock_irq_rcu_node(sdp);
