@@ -2,100 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 569E37BF1A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 05:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 728A67BF1A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 05:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442037AbjJJDnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 23:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51110 "EHLO
+        id S1442062AbjJJDqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 23:46:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378482AbjJJDnM (ORCPT
+        with ESMTP id S1378482AbjJJDqV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 23:43:12 -0400
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C4B92;
-        Mon,  9 Oct 2023 20:43:11 -0700 (PDT)
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5a24b03e22eso64084637b3.0;
-        Mon, 09 Oct 2023 20:43:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696909391; x=1697514191;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jaC1CNi7JQmmxrWwxbdaMek4eXwXT8OMu+wQdUBVHH8=;
-        b=AlCHB8RLVm/jnH2cdJHHbEWDS5uwiLYvvNGdanxdPiuMKmxQ9TaMTGOE/XBaXOBaN5
-         F/Dpl189PjBIoWmrVDmTTvIF155n1qm9qdAgj+tMMnKoggOzDINj4qLh26Kj3chqJSUI
-         BmLKyYogNlS9q6VMa2jWNdWYtAoKa0UAT806xstpuIxwobxcZD4QxigAlQyOaTkx0jc6
-         6XpvXNpY0ahSC0RpXUxy/JIqn9WhroOWKeqdU+DgpUzMCAaDOzYZIK6BD6fDdr8CreJO
-         jxsKcUfgigZq3h1/5pVHQpy4mZUeaHdPFqnTjoJbIX4JmBuhwvsMjUfLUM2Mv2OHWIsy
-         Uuxg==
-X-Gm-Message-State: AOJu0YyEftlHUqM/nmuW9SiZ9vJiUP1+BUBFiQprFDtZJD9cnfpkjmv/
-        wChCeu3Y5PPTzI+FOwUwveyIpX+UoQw=
-X-Google-Smtp-Source: AGHT+IGkwXsDV84jHLcmj9BirA1TG3zfHkKLT3nhlSDzWQOoTcDELHL36PAkT1Y8XQgJ48Wzzw412A==
-X-Received: by 2002:a81:df04:0:b0:5a1:fb1d:740a with SMTP id c4-20020a81df04000000b005a1fb1d740amr17465761ywn.51.1696909390819;
-        Mon, 09 Oct 2023 20:43:10 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id d9-20020a639909000000b0059b2316be86sm543016pge.46.2023.10.09.20.43.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 20:43:10 -0700 (PDT)
-Date:   Tue, 10 Oct 2023 03:43:08 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Ani Sinha <anisinha@redhat.com>
-Cc:     Shradha Gupta <shradhagupta@linux.microsoft.com>,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Long Li <longli@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Olaf Hering <olaf@aepfle.de>,
-        Shradha Gupta <shradhagupta@microsoft.com>
-Subject: Re: [PATCH v8] hv/hv_kvp_daemon:Support for keyfile based connection
- profile
-Message-ID: <ZSTITGaGzR8wR1+h@liuwe-devbox-debian-v2>
-References: <1696847920-31125-1-git-send-email-shradhagupta@linux.microsoft.com>
- <DF08C86E-1EFA-4C74-A5E7-190B52698F85@redhat.com>
+        Mon, 9 Oct 2023 23:46:21 -0400
+Received: from out-210.mta0.migadu.com (out-210.mta0.migadu.com [91.218.175.210])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF039D
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 20:46:20 -0700 (PDT)
+Message-ID: <7fbf47bf-c26c-8eeb-f803-b9f2bafa6364@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1696909578;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hZJB97dQv1x5vY0R7LD94UsgnKYKd6vyN/0XXr9hYJc=;
+        b=RZopyhFg1RxT0Rdep5vYxJJ7xzF+Ws3zGcvSAn7BpQ/kou3o3Xdg7a/J7bbR/e/YZWTP8F
+        hpn4l064//3J3Gekd3Vhg+rG6BE31qI51cfsDXgAxxYAnPl0bsJ/tALlQo/u4ixpubQP1V
+        3f1baHkeF1EewyEU73MsCO508ivMyJ0=
+Date:   Tue, 10 Oct 2023 11:46:08 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DF08C86E-1EFA-4C74-A5E7-190B52698F85@redhat.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Subject: Re: [PATCH net-next v7] net/core: Introduce netdev_core_stats_inc()
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Eric Dumazet <edumazet@google.com>, mhiramat@kernel.org,
+        dennis@kernel.org, tj@kernel.org, cl@linux.com,
+        mark.rutland@arm.com, davem@davemloft.net, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20231007050621.1706331-1-yajun.deng@linux.dev>
+ <CANn89i+navyRe8-AV=ehM3qFce2hmnOEKBqvK5Xnev7KTaS5Lg@mail.gmail.com>
+ <a53a3ff6-8c66-07c4-0163-e582d88843dd@linux.dev>
+ <CANn89i+u5dXdYm_0_LwhXg5Nw+gHXx+nPUmbYhvT=k9P4+9JRQ@mail.gmail.com>
+ <9f4fb613-d63f-9b86-fe92-11bf4dfb7275@linux.dev>
+ <CANn89iK7bvQtGD=p+fHaWiiaNn=u8vWrt0YQ26pGQY=kZTdfJw@mail.gmail.com>
+ <4a747fda-2bb9-4231-66d6-31306184eec2@linux.dev>
+ <814b5598-5284-9558-8f56-12a6f7a67187@linux.dev>
+ <CANn89iJCTgWTu0mzwj-8_-HiWm4uErY=VASDHoYaod9Nq-ayPA@mail.gmail.com>
+ <508b33f7-3dc0-4536-21f6-4a5e7ade2b5c@linux.dev>
+ <CANn89i+r-pQGpen1mUhybmj+6ybhxSsuoaB07NFzOWyHUMFDNw@mail.gmail.com>
+ <296ca17d-cff0-2d19-f620-eedab004ddde@linux.dev>
+ <CANn89iL=W3fyuH_KawfhKvLyw2Cw=qhHbEZtbKgQEYhHJChy3Q@mail.gmail.com>
+ <68eb65c5-1870-0776-0878-694a8b002a6d@linux.dev>
+ <CANn89iJHtYJjp6zPc2PVLAWuN88BQc5OntjrAf7f6QOcqP+B=g@mail.gmail.com>
+ <078f662d-a73f-766b-3a07-c82cd37026c5@linux.dev>
+ <20231009102833.1b0d35e3@gandalf.local.home>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yajun Deng <yajun.deng@linux.dev>
+In-Reply-To: <20231009102833.1b0d35e3@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 05:32:35PM +0530, Ani Sinha wrote:
-> 
-> 
-> > On 09-Oct-2023, at 4:08 PM, Shradha Gupta <shradhagupta@linux.microsoft.com> wrote:
-> > 
-> > Ifcfg config file support in NetworkManger is deprecated. This patch
-> > provides support for the new keyfile config format for connection
-> > profiles in NetworkManager. The patch modifies the hv_kvp_daemon code
-> > to generate the new network configuration in keyfile
-> > format(.ini-style format) along with a ifcfg format configuration.
-> > The ifcfg format configuration is also retained to support easy
-> > backward compatibility for distro vendors. These configurations are
-> > stored in temp files which are further translated using the
-> > hv_set_ifconfig.sh script. This script is implemented by individual
-> > distros based on the network management commands supported.
-> > For example, RHEL's implementation could be found here:
-> > https://gitlab.com/redhat/centos-stream/src/hyperv-daemons/-/blob/c9s/hv_set_ifconfig.sh
-> > Debian's implementation could be found here:
-> > https://github.com/endlessm/linux/blob/master/debian/cloud-tools/hv_set_ifconfig
-> > 
-> > The next part of this support is to let the Distro vendors consume
-> > these modified implementations to the new configuration format.
-> > 
-> > Tested-on: Rhel9(Hyper-V, Azure)(nm and ifcfg files verified)
-> > Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-> > Reviewed-by: Saurabh Sengar <ssengar@linux.microsoft.com>
-> 
-> Reviewed-by: Ani Sinha <anisinha@redhat.com>
 
-Applied to hyperv-fixes. Thanks.
+On 2023/10/9 22:28, Steven Rostedt wrote:
+> On Mon, 9 Oct 2023 18:58:27 +0800
+> Yajun Deng <yajun.deng@linux.dev> wrote:
+>
+>>> C compiler decides to inline or not, depending on various factors.
+>>>
+>>> The most efficient (and small) code is generated by this_cpu_inc()
+>>> version, allowing the compiler to inline it.
+>>>
+>>> If you copy/paste this_cpu_inc()  twenty times, then the compiler
+>>> would  not inline the function anymore.
+> Yes, if you want something to be visible by ftrace, it must not be inlined
+> (as inlined functions are not function calls by definition). And as Eric
+> stated, the compiler is perfectly allowed to inline something if it
+> believes it will be more efficient. i.e. There may be code around the function
+> call that could be more efficient if it wasn't change to parameters. If you
+> want to make sure a function stays out of line, you must explicitly tell
+> the compiler you want the function not to ever be inlined (hence the
+> "noinline" attribute).
+
+
+Thanks for the details.
+
+>>
+>> Got it. Thank you.
+> Great.
+>
+> -- Steve
