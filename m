@@ -2,68 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D9557C4276
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 23:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 647D57C4284
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 23:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343901AbjJJV04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 17:26:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33184 "EHLO
+        id S229547AbjJJV2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 17:28:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbjJJV0y (ORCPT
+        with ESMTP id S232348AbjJJV2L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 17:26:54 -0400
+        Tue, 10 Oct 2023 17:28:11 -0400
 Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B713F94
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 14:26:52 -0700 (PDT)
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2660DA
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 14:28:06 -0700 (PDT)
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 010953F148
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 21:26:50 +0000 (UTC)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id CC3B23FA63
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 21:28:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1696973210;
-        bh=bbJL2SOs8ojKA5eoIkTwtjiwN0Y17d4pCBALcurYDbM=;
+        s=20210705; t=1696973284;
+        bh=kGYTzfoZ1kv7weJtQlok3IlvagfJw5eAGxwX3/sR+4o=;
         h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=MqO0pWN2TbYSY5U85a/qqr7W9FHeFerpMOrIppwBoSQZWKVY5lSV/QTXIJXKSFLfi
-         AtptO05qrtGRZaYoX1opeERVPS3SEDu4elaYSH9LnR8NP7Vh1IiDGFAqF+13POkPE2
-         6gMy+1NeOiqNY0m3HTCWANLpn8CdSrtW7nfNKmeJZDFvSp0dZbBmPt0iRn/l0MqTYW
-         Jq7AdL20fY9LEkxjLMmxHb/8CPQZNAr2N+HH3TibQp/vNxkLlz/4+ETBO4wlgI7/Rm
-         6K5BB96R+a1OPZbDqpN5sK8ynYonnRDMxTFmUHKblc8woYa2pe5dfGzlEwK2L9su2/
-         Psza+nGlKowFw==
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1c9c943c94aso2692945ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 14:26:49 -0700 (PDT)
+        b=OeNDxuEbraKLdn8fn3ZrQoCYuPU5iyGy0YtNUbOWhJqcwBcrH6zo1u1Gq0AbmNzYs
+         VTcMExs6ry5gnr0oRz+234O18qLbryZJJxGqkKjKzOAdu5/ohMGPQSK2LHUuHmo+rW
+         l/csA7C8rMso8+yUqEhu6r+8xEQFaMN8ALC2QAPnrKd6Yit8SMBOUr3EjAX29mR4Di
+         82wMI2LEeVH2mgI0v6UVwScqXGVZm6B1DViwslKgrsZx5AowZEgIwfUYro5Y2vS50P
+         CG9rsGgmdPZO343EYJbXjzxG6306bUtpd/E6f4idImuWqIkxrkVIKlSSy91XwKQDCk
+         v+Hnz7sec8SyQ==
+Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-27731a63481so5994849a91.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 14:28:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696973208; x=1697578008;
+        d=1e100.net; s=20230601; t=1696973283; x=1697578083;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=bbJL2SOs8ojKA5eoIkTwtjiwN0Y17d4pCBALcurYDbM=;
-        b=mQIx2Nk80HIRYfQydh51NnfUmF1RGNl09LL48u7bCw46bN6i++vubvL91E4WJ+mW0D
-         dP5ZRgkPaKefBsr3cUyxZq5tKx41xdDMo6b+lGEyQhkgUIx58m+rtuDx5+60jRuwuD06
-         ux+l66Oe8WGFmGrqZ1cabtDrSQ55DvjUCoo048UI77XwebhD/P5+IIK2JdWutdagBgHz
-         ruURtDnwa27Y5UMsCd1w3gJRir0tlykiWuSh0WVaMsuwqAncbnE1dEwIjlIq2+0RVoZ4
-         Ss8hyIigt5z2656YKNKT5j8sJyGgpKNvGKFLCV/1Pm8oQWku8P6olOjOLgDv05ssIZiw
-         g6Lg==
-X-Gm-Message-State: AOJu0YwoyN2eFec1CXLcSDSVm+MgqYVLQMBmp+xAvLbZPRM7ZfLTnnVK
-        X6IArs38wc4aMge8sclrHVNVt/8tzr3nHdeVhccuGp1cgBNVUQADffaAyvp5Pbhh3+0wgEZuuWV
-        CBcO13LpetIQr/Dxr5eQdaOepk+yG1GEqSnvTiXLdZA==
-X-Received: by 2002:a17:902:f546:b0:1bb:e74b:39ff with SMTP id h6-20020a170902f54600b001bbe74b39ffmr20923277plf.0.1696973207795;
-        Tue, 10 Oct 2023 14:26:47 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEhPNlPGDhB23VsV1NLFkLmOVxbRADLHq+9HPJKINV5zuYaaLs4kvapjxiGjBumVRZrSs0ziQ==
-X-Received: by 2002:a17:902:f546:b0:1bb:e74b:39ff with SMTP id h6-20020a170902f54600b001bbe74b39ffmr20923258plf.0.1696973207428;
-        Tue, 10 Oct 2023 14:26:47 -0700 (PDT)
+        bh=kGYTzfoZ1kv7weJtQlok3IlvagfJw5eAGxwX3/sR+4o=;
+        b=IFeoC18GBK7zCmsP4rSsxoGlScRpjGaCQBJKP2juaeT/hMQrzrvQwPI8K3FMvwnz4q
+         Pm/rohHizhH5+pWp1iuciguxscENhCeMvSWaBNh9bEX6G/Yx3+CAF8uQYaFl4taImzC3
+         M0dxpmqgwYQmj0c3KalddUuap2QifIfz9te+YxwJCpI6ym/Wh0IiphRzYZ659otSseuw
+         ae8umfpZXl3gStpg3S9Nerj8c+R1X637kvh5wrGL++5tsOXOmoYWm9E3jdJvn8Yr8Tuv
+         4L9DvYuV0Nht27uw2zfInqTgAe44TsduucXVtT1WAj+n89njUw+ZnjPOSgvYAm78bmEB
+         OrHw==
+X-Gm-Message-State: AOJu0YwxgRrqOoQ12UluXaAlMJDOq8KPq0fBzq6yaANjhZtpr6OFg4Vl
+        96plz9fTC3wAHU46VHdz/a4t0Ndj/MxBtoxsgEbcPCReF2Oqx0UQQn6I+s1TWgDJM3qzAJEwG7P
+        aOUAxiopgWg4Gv5/z2Wj9Yt0qVUp6Rc6Nps5k6qh13MkbMBnFSbCUYqo=
+X-Received: by 2002:a17:90a:d994:b0:27c:f305:cf82 with SMTP id d20-20020a17090ad99400b0027cf305cf82mr2076215pjv.24.1696973283199;
+        Tue, 10 Oct 2023 14:28:03 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHHTGkfR5o6XjzlsdIQU0gFnvfe+TOn1Qjq6XWUx1g5sYVOL098jMoAxrBFmurn6Bm/1uScZw==
+X-Received: by 2002:a17:90a:d994:b0:27c:f305:cf82 with SMTP id d20-20020a17090ad99400b0027cf305cf82mr2076207pjv.24.1696973282882;
+        Tue, 10 Oct 2023 14:28:02 -0700 (PDT)
 Received: from localhost ([2001:67c:1560:8007::aac:c15c])
-        by smtp.gmail.com with ESMTPSA id e4-20020a170902d38400b001bb9bc8d232sm12287028pld.61.2023.10.10.14.26.45
+        by smtp.gmail.com with ESMTPSA id 24-20020a17090a001800b002791d5a3e29sm369949pja.6.2023.10.10.14.28.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 14:26:47 -0700 (PDT)
+        Tue, 10 Oct 2023 14:28:02 -0700 (PDT)
 From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
-        linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] module: Do not offer sha224 for built-in module signing
-Date:   Tue, 10 Oct 2023 22:26:33 +0100
-Message-Id: <20231010212633.64042-1-dimitri.ledkov@canonical.com>
+To:     David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>
+Cc:     linux-modules@vger.kernel.org, linux-crypto@vger.kernel.org,
+        herbert@gondor.apana.org.au, mcgrof@kernel.org,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: Limit MODULE_SIG_KEY_TYPE_ECDSA to SHA384 or SHA512
+Date:   Tue, 10 Oct 2023 22:27:55 +0100
+Message-Id: <20231010212755.64744-1-dimitri.ledkov@canonical.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -77,39 +79,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sha224 does not provide enough security against collision attacks
-relative to the default keys used for signing (RSA 4k & P-384). Also
-sha224 never became popular, as sha256 got widely adopter ahead of
-sha224 being introduced.
+NIST FIPS 186-5 states that it is recommended that the security
+strength associated with the bit length of n and the security strength
+of the hash function be the same, or higher upon agreement. Given NIST
+P384 curve is used, force using either SHA384 or SHA512.
 
 Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
 ---
- kernel/module/Kconfig | 5 -----
- 1 file changed, 5 deletions(-)
+ certs/Kconfig | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/module/Kconfig b/kernel/module/Kconfig
-index 19a53d5e77..9d7d45525f 100644
---- a/kernel/module/Kconfig
-+++ b/kernel/module/Kconfig
-@@ -236,10 +236,6 @@ choice
- 	  possible to load a signed module containing the algorithm to check
- 	  the signature on that module.
+diff --git a/certs/Kconfig b/certs/Kconfig
+index 1f109b0708..84582de66b 100644
+--- a/certs/Kconfig
++++ b/certs/Kconfig
+@@ -30,9 +30,11 @@ config MODULE_SIG_KEY_TYPE_RSA
+ config MODULE_SIG_KEY_TYPE_ECDSA
+ 	bool "ECDSA"
+ 	select CRYPTO_ECDSA
++	depends on MODULE_SIG_SHA384 || MODULE_SIG_SHA512
+ 	help
+-	 Use an elliptic curve key (NIST P384) for module signing. Consider
+-	 using a strong hash like sha256 or sha384 for hashing modules.
++	 Use an elliptic curve key (NIST P384) for module signing. Use
++	 a strong hash of same or higher bit length, i.e. sha384 or
++	 sha512 for hashing modules.
  
--config MODULE_SIG_SHA224
--	bool "Sign modules with SHA-224"
--	select CRYPTO_SHA256
--
- config MODULE_SIG_SHA256
- 	bool "Sign modules with SHA-256"
- 	select CRYPTO_SHA256
-@@ -257,7 +253,6 @@ endchoice
- config MODULE_SIG_HASH
- 	string
- 	depends on MODULE_SIG || IMA_APPRAISE_MODSIG
--	default "sha224" if MODULE_SIG_SHA224
- 	default "sha256" if MODULE_SIG_SHA256
- 	default "sha384" if MODULE_SIG_SHA384
- 	default "sha512" if MODULE_SIG_SHA512
+ 	 Note: Remove all ECDSA signing keys, e.g. certs/signing_key.pem,
+ 	 when falling back to building Linux 5.14 and older kernels.
 -- 
 2.34.1
 
