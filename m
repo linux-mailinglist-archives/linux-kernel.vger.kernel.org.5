@@ -2,66 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E75577BF15E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 05:23:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 262627BF160
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 05:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441862AbjJJDXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 23:23:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46468 "EHLO
+        id S1441986AbjJJDYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 23:24:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441969AbjJJDXU (ORCPT
+        with ESMTP id S1441983AbjJJDYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 23:23:20 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6002A6;
-        Mon,  9 Oct 2023 20:23:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40113C433C8;
-        Tue, 10 Oct 2023 03:23:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696908199;
-        bh=svOySVpdTq4zrtHC4TrHg5u+BeEE9tyEDYgZhlD3pCQ=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=vBaoLD918wWXo8ktHuxu9HLV8XPLWeZoEb4PkV7WLRdsS8dJdPwo2Yl3gu3fDN+Kt
-         KFZuZDqxDW0gri1BStfkikMQssLJYUnxfulQBDJ61h0kzHUlJuM20FLNDhuJpvZaeA
-         ed/gsrgXSImJsZpf41m/rvaL5Sl7zUqwIbpAoRipQsu6UcMu5NnPNexkCE/YVL0S0c
-         rsXf3sabsU3K+wfI/209LMAQhY5FKQV7GW8MSWYo68QgcFV8ylxr9L5cbxJB5075Zj
-         O5huJv1ZaYxt7e0uAx0XfiCVXYRjjWHHBNsJzBCs7WH8m8VayReBpoThm6YWeg2kWE
-         YtTO63l0iHtqw==
-Message-ID: <7be6d0f2101b82f423818a2bb82eee90.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20230912175534.2427862-3-sboyd@kernel.org>
-References: <20230912175534.2427862-1-sboyd@kernel.org> <20230912175534.2427862-3-sboyd@kernel.org>
-Subject: Re: [PATCH 2/2] clk: Parameterize clk_leaf_mux_set_rate_parent
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        patches@lists.linux.dev, Guenter Roeck <linux@roeck-us.net>,
-        Maxime Ripard <mripard@kernel.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Date:   Mon, 09 Oct 2023 20:23:16 -0700
-User-Agent: alot/0.10
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 9 Oct 2023 23:24:15 -0400
+Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [63.216.63.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC58BAC
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 20:24:13 -0700 (PDT)
+Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mxhk.zte.com.cn (FangMail) with ESMTPS id 4S4Lpy1sYCz8XrRG;
+        Tue, 10 Oct 2023 11:24:10 +0800 (CST)
+Received: from szxlzmapp06.zte.com.cn ([10.5.230.252])
+        by mse-fl1.zte.com.cn with SMTP id 39A3O1FY006580;
+        Tue, 10 Oct 2023 11:24:01 +0800 (+08)
+        (envelope-from yang.yang29@zte.com.cn)
+Received: from mapi (szxlzmapp03[null])
+        by mapi (Zmail) with MAPI id mid14;
+        Tue, 10 Oct 2023 11:24:03 +0800 (CST)
+Date:   Tue, 10 Oct 2023 11:24:03 +0800 (CST)
+X-Zmail-TransId: 2b056524c3d3ffffffffb7a-bc80c
+X-Mailer: Zmail v1.0
+Message-ID: <202310101124033093148@zte.com.cn>
+In-Reply-To: <CAJuCfpFabCn8gcuLV322RKC=xzVm0C+64HQP+CkFNJZ4VO42ZA@mail.gmail.com>
+References: ZSPayGSz6HQBp+3W@gmail.com,202310092030430136422@zte.com.cn,ZSP3cuEsgwWcIKRw@gmail.com,CAJuCfpFabCn8gcuLV322RKC=xzVm0C+64HQP+CkFNJZ4VO42ZA@mail.gmail.com
+Mime-Version: 1.0
+From:   <yang.yang29@zte.com.cn>
+To:     <surenb@google.com>, <mingo@kernel.org>, <peterz@infradead.org>,
+        <hannes@cmpxchg.org>
+Cc:     <mingo@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <juri.lelli@redhat.com>
+Subject: =?UTF-8?B?W1BBVENIIGxpbnV4LW5leHQgdjIgMy80XcKgc2NoZWQvcHNpOiB1cGRhdGUgcnRwb2xsX25leHRfdXBkYXRlIGFmdGVyIHVwZGF0ZQogdHJpZ2dlcnMgYW5kIHJ0cG9sbF90b3RhbA==?=
+Content-Type: text/plain;
+        charset="UTF-8"
+X-MAIL: mse-fl1.zte.com.cn 39A3O1FY006580
+X-Fangmail-Gw-Spam-Type: 0
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 6524C3DA.000/4S4Lpy1sYCz8XrRG
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Stephen Boyd (2023-09-12 10:55:31)
-> Transform the existing clk_leaf_mux_set_rate_parent test into a
-> parameterized test that calls the various determine rate APIs that exist
-> for clk providers. This ensures that whatever determine rate API is used
-> by a clk provider will return the correct parent in the best_parent_hw
-> pointer of the clk_rate_request because clk_rate_requests are forwarded
-> properly.
->=20
-> Cc: Guenter Roeck <linux@roeck-us.net>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-> ---
+From: Yang Yang <yang.yang29@zte.com.cn>
 
-Applied to clk-next
+Update group->rtpoll_next_update after called update_triggers() and
+update rtpoll_total. This will prevent bugs if update_triggers() uses
+group->rtpoll_next_update in the future, and it makes more sense
+to set the next update time after we finished the current update.
+
+Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
+Suggested-by: Suren Baghdasaryan <surenb@google.com>
+---
+ kernel/sched/psi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index 143f8eb34f9d..79f8db0c6150 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -704,12 +704,12 @@ static void psi_rtpoll_work(struct psi_group *group)
+ 	}
+
+ 	if (now >= group->rtpoll_next_update) {
+-		group->rtpoll_next_update = now + group->rtpoll_min_period;
+ 		if (changed_states & group->rtpoll_states) {
+ 			update_triggers(group, now, &update_total, PSI_POLL);
+ 			memcpy(group->rtpoll_total, group->total[PSI_POLL],
+ 				   sizeof(group->rtpoll_total));
+ 		}
++		group->rtpoll_next_update = now + group->rtpoll_min_period;
+ 	}
+
+ 	psi_schedule_rtpoll_work(group,
+-- 
+2.25.1
