@@ -2,75 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D47877C0343
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 20:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1C57C0345
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 20:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343501AbjJJSSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 14:18:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37292 "EHLO
+        id S1343506AbjJJSS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 14:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234102AbjJJSSr (ORCPT
+        with ESMTP id S234128AbjJJSSv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 14:18:47 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4668B0;
-        Tue, 10 Oct 2023 11:18:45 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c434c33ec0so37336885ad.3;
-        Tue, 10 Oct 2023 11:18:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696961925; x=1697566725; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6XnyoQ1g3Q1HQw6m09F9jRitIO0RjbfZpnIN7z+4Ea8=;
-        b=JcnIql40vRLu+SMjsG3TSTm92lVxX7xMxPO9buFGtd1Qt8TIdrDaDeCLGC83Sv8gB+
-         kba/VEUW/zSQYj5YnunbZZkj/HEDsmSbKAAGdN0D2f04BaG7jueU6f9OYxdkES48Dusc
-         TaagWP4zCWHV1oT4g6tqZFsO+Pi1sBrhLXnGY5Pq9BiFHMjw98jIfodVovq929bxWEcA
-         YKbpNKikl5FTHX5xoE+YOtPXOsW3HkaRQRWxzo5MdkvLAlxGf93xzCM76xBrpdkd0Cmt
-         BttPxCBIbBLa5b9kQz4/RKgXdE4nMpxGeFqN6GgqoQCjEtkure6KHk08jrrugQumu7r5
-         1SmQ==
+        Tue, 10 Oct 2023 14:18:51 -0400
+Received: from mail-ot1-f80.google.com (mail-ot1-f80.google.com [209.85.210.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDFC3B7
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 11:18:50 -0700 (PDT)
+Received: by mail-ot1-f80.google.com with SMTP id 46e09a7af769-6c664c09497so7867491a34.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 11:18:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696961925; x=1697566725;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6XnyoQ1g3Q1HQw6m09F9jRitIO0RjbfZpnIN7z+4Ea8=;
-        b=SznM6c/lnZf0Q9J4ISmr16/MBblHYgo/h4F8iARAgDAW8xF3FW6+/djO+yFbg+jWM4
-         c/nsNbcOKJcLcw8ElfQQ1Khk6AwJFUXFeeWJgWeDL+6JG8hywY6WDGwZm+IKa8u2HgsW
-         Erea8Hvzv7i9LnSYcousAEOd3YL+fXvCcpuemZUMRYBYVKR3PI4L8a7OhRNVbgACcRDe
-         kitADwBKtEPQ3jENKU1FsWUbGru7xfsTNqDoL1k407hk+b1N8x8PIEW9JddF5CUTpXBl
-         KPb3nckLc0y944imEnJoFkyM7VRBYT7kFmDUa5KTZP792cYSr32mVBvUXrJI8CuoWsqo
-         doCA==
-X-Gm-Message-State: AOJu0YyT8UPwNsuaqUqf0bdZdagsBaatkPs9xqAmhVxCloSXrxFlvgS4
-        xwzrpUABV+9JjzNti08rTAM=
-X-Google-Smtp-Source: AGHT+IH0KmVaMdeP2KJmmw2jzVnlGC/X8o7+CPX68/TYmt/Ud6wSXDoKjFg6GTKhy0WTiTAN96ok5w==
-X-Received: by 2002:a17:902:f68b:b0:1c8:a68e:7f1 with SMTP id l11-20020a170902f68b00b001c8a68e07f1mr7081125plg.66.1696961925144;
-        Tue, 10 Oct 2023 11:18:45 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i11-20020a17090332cb00b001b8b1f6619asm12121601plr.75.2023.10.10.11.18.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 11:18:44 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 10 Oct 2023 11:18:43 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 5.10 000/226] 5.10.198-rc1 review
-Message-ID: <63a3fdf2-737a-44c6-9a6d-bf5edd8df964@roeck-us.net>
-References: <20231009130126.697995596@linuxfoundation.org>
+        d=1e100.net; s=20230601; t=1696961930; x=1697566730;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YOOMP7bibDVlN4m76sArU8HLcCMvoN1FZfn53nyMP0g=;
+        b=lKej5KmOwve1qHOmHUsQi8B5iT2+OrP5ivbr8jARixRWt17nMpdnFebp8QU8/0jk1b
+         n7ipdwnzuWRuLp6sxCKFL8/QoMNNP69imC7sqJRPsn6Qytx2i02dULrXxihfwTela84S
+         9KoluvVl/i+opSI1Ke5g7SCoQrwWUm8A38MjZ5oCXxP7YFYaSbF/Vo05yKt5szY07OUP
+         Yigu+Pf+w7Hmpa8z7OtYP/MJeVCJDcwswfPd8G25Iw8anACdIgYG04SE2KO3tP0gQf8S
+         365zx8BqV1dh0aZ0UZ2VWd/hyaAQ33IKwjA/HpORUTHsRSJYaM3+ikMdd8/LxK5w1p8p
+         rpBA==
+X-Gm-Message-State: AOJu0YwTihMSCWIhlPsntds2V0nA8cjgX0eihAlGt1bnF7aNfENNDCQz
+        b88bp5XOwE4wozP81oxknj8cdQACzqNut63I7qJV8TNTEuik
+X-Google-Smtp-Source: AGHT+IGrf5ZcCFwuWMHVkXFkv2Fl5bm0Qb2/foKn8TTf3PhVjWptONsWN+pjSZKVQQHEdvGbHa8NvW73QTnaAemN5SSGOocaFk09
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231009130126.697995596@linuxfoundation.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-Received: by 2002:a05:6830:1142:b0:6c2:10e1:9d6f with SMTP id
+ x2-20020a056830114200b006c210e19d6fmr5854168otq.6.1696961930214; Tue, 10 Oct
+ 2023 11:18:50 -0700 (PDT)
+Date:   Tue, 10 Oct 2023 11:18:50 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000c44b0060760bd00@google.com>
+Subject: [syzbot] [gfs2?] WARNING: suspicious RCU usage in gfs2_permission
+From:   syzbot <syzbot+3e5130844b0c0e2b4948@syzkaller.appspotmail.com>
+To:     agruenba@redhat.com, gfs2@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rpeterso@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,21 +55,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 02:59:21PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.198 release.
-> There are 226 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 11 Oct 2023 13:00:55 +0000.
-> Anything received after that time might be too late.
-> 
+Hello,
 
-Build results:
-	total: 159 pass: 159 fail: 0
-Qemu test results:
-	total: 495 pass: 495 fail: 0
+syzbot found the following issue on:
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+HEAD commit:    7d730f1bf6f3 Add linux-next specific files for 20231005
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=11dd3679680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f532286be4fff4b5
+dashboard link: https://syzkaller.appspot.com/bug?extid=3e5130844b0c0e2b4948
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
-Guenter
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/1d7f28a4398f/disk-7d730f1b.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/d454d124268e/vmlinux-7d730f1b.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/dbca966175cb/bzImage-7d730f1b.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3e5130844b0c0e2b4948@syzkaller.appspotmail.com
+
+gfs2: fsid=syz:syz: Now mounting FS (format 1801)...
+gfs2: fsid=syz:syz.0: journal 0 mapped with 14 extents in 0ms
+gfs2: fsid=syz:syz.0: first mount done, others may mount
+=============================
+WARNING: suspicious RCU usage
+6.6.0-rc4-next-20231005-syzkaller #0 Not tainted
+-----------------------------
+fs/gfs2/inode.c:1876 suspicious rcu_dereference_check() usage!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 1
+no locks held by syz-executor.5/5216.
+
+stack backtrace:
+CPU: 1 PID: 5216 Comm: syz-executor.5 Not tainted 6.6.0-rc4-next-20231005-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
+ lockdep_rcu_suspicious+0x20c/0x3b0 kernel/locking/lockdep.c:6711
+ gfs2_permission+0x3f9/0x4c0 fs/gfs2/inode.c:1876
+ do_inode_permission fs/namei.c:461 [inline]
+ inode_permission fs/namei.c:528 [inline]
+ inode_permission+0x384/0x5e0 fs/namei.c:503
+ may_open+0x11c/0x400 fs/namei.c:3248
+ do_open fs/namei.c:3618 [inline]
+ path_openat+0x17aa/0x2ce0 fs/namei.c:3777
+ do_filp_open+0x1de/0x430 fs/namei.c:3807
+ do_sys_openat2+0x176/0x1e0 fs/open.c:1422
+ do_sys_open fs/open.c:1437 [inline]
+ __do_sys_openat fs/open.c:1453 [inline]
+ __se_sys_openat fs/open.c:1448 [inline]
+ __x64_sys_openat+0x175/0x210 fs/open.c:1448
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f916187b6e0
+Code: 48 89 44 24 20 75 93 44 89 54 24 0c e8 09 82 02 00 44 8b 54 24 0c 89 da 48 89 ee 41 89 c0 bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 77 38 44 89 c7 89 44 24 0c e8 5c 82 02 00 8b 44
+RSP: 002b:00007f916262ce70 EFLAGS: 00000293 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 0000000000010000 RCX: 00007f916187b6e0
+RDX: 0000000000010000 RSI: 0000000020000140 RDI: 00000000ffffff9c
+RBP: 0000000020000140 R08: 0000000000000000 R09: 0000000000000c19
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000020000140
+R13: 00007f916262cf40 R14: 00000000000126ad R15: 00000000200129c0
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
