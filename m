@@ -2,117 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C26507BF75F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 11:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C07FA7BF761
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 11:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbjJJJcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 05:32:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38836 "EHLO
+        id S230254AbjJJJcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 05:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbjJJJcI (ORCPT
+        with ESMTP id S230223AbjJJJcV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 05:32:08 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24CBC93
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 02:32:06 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S4Vt76ML3ztT2L;
-        Tue, 10 Oct 2023 17:27:27 +0800 (CST)
-Received: from [10.67.121.177] (10.67.121.177) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 10 Oct 2023 17:32:03 +0800
-CC:     <chenhao418@huawei.com>, <shenjian15@huawei.com>,
-        <wangjie125@huawei.com>, <liuyonglong@huawei.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH drivers/perf: hisi:] drivers/perf: hisi: fix NULL pointer
- issue when uninstall hns3 pmu driver
-To:     Jijie Shao <shaojijie@huawei.com>, <will@kernel.org>,
-        <jonathan.cameron@huawei.com>, <mark.rutland@arm.com>,
-        <yangyicong@hisilicon.com>
-References: <20231009105038.126040-1-shaojijie@huawei.com>
-From:   Yicong Yang <yangyicong@huawei.com>
-Message-ID: <504cc838-d587-8bd0-601e-85f11b69c72b@huawei.com>
-Date:   Tue, 10 Oct 2023 17:32:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Tue, 10 Oct 2023 05:32:21 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8F9BAA9;
+        Tue, 10 Oct 2023 02:32:18 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 015F61FB;
+        Tue, 10 Oct 2023 02:32:59 -0700 (PDT)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ED4C63F762;
+        Tue, 10 Oct 2023 02:32:16 -0700 (PDT)
+Date:   Tue, 10 Oct 2023 10:32:14 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Peng Fan <peng.fan@nxp.com>
+Cc:     Cristian Marussi <cristian.marussi@arm.com>,
+        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ranjani Vaidyanathan <ranjani.vaidyanathan@nxp.com>,
+        Glen G Wienecke <glen.wienecke@nxp.com>,
+        "souvik.chakravarty@arm.com" <souvik.chakravarty@arm.com>,
+        Chuck Cannon <chuck.cannon@nxp.com>
+Subject: Re: [RFC] firmware: arm_scmi: clock: add fixed clock attribute
+ support
+Message-ID: <20231010093214.fea3axm45adawuvi@bogus>
+References: <20231010022911.4106863-1-peng.fan@oss.nxp.com>
+ <ZSUCDdfJjs1blK1T@e120937-lin>
+ <DU0PR04MB9417DCEC4CA9DA488796194C88CDA@DU0PR04MB9417.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20231009105038.126040-1-shaojijie@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.121.177]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DU0PR04MB9417DCEC4CA9DA488796194C88CDA@DU0PR04MB9417.eurprd04.prod.outlook.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jijie,
-
-On 2023/10/9 18:50, Jijie Shao wrote:
-> From: Hao Chen <chenhao418@huawei.com>
+On Tue, Oct 10, 2023 at 08:08:01AM +0000, Peng Fan wrote:
+> > On Tue, Oct 10, 2023 at 08:49:33AM +0100, Cristian Marussi wrote:
+> > 
+> > (CCed souvik.chakravarty@arm.com)
+> > 
+> > so AFAIU here you are describing a clock that really is NOT fixed in general, it
+> > is just that the Linux SCMI Agent cannot touch it, but other SCMI agents on
+> > the system CAN change it and so, on one side, you keep the ability for the
+> > Linux agent to read back the current rate with
+> > recalc_rate() and remove all the Clk frameworks callbacks needed to modify
+> > its state, am I right ?
 > 
-> When uninstall hns3 pmu driver, it will call cpuhp_state_remove_instance()
-> and then callback function hns3_pmu_offline_cpu() is called, it may cause
-> NULL pointer call trace when other driver is installing or uninstalling
-> concurrently.
-> 
+> Right.
+>
 
-More information about the calltrace you've met and how to reproduce this?
-I'm not sure why other drivers are involved.
+OK, let me try to understand this better. The SCMI platform provides all the
+permissions to change to the Linux(agent) but it is just that you need to
+enforce this policy of fixed rate in the kernel ? Or the SCMI platform
+restricts the Linux agent to do anything other than fetch the rate ?
 
-> As John Garry's opinion, cpuhp_state_remove_instance() is used for shared
-> interrupt, and using cpuhp_state_remove_instance_nocalls() is fine for PCIe
-> or HNS3 pmu.
-> 
+> > 
+> > In this scenario, it is really the SCMI platform fw (server) that has to
+> > implement the checks and simply DENY the requests coming from an agent
+> > that is not supposed to touch that clock, while allowing the current rate to be
+> > retrieved.
 
-I'm a bit confused here. We need to update the using CPU and migrate the perf
-context as well as the interrupt affinity in cpuhp::teardown() callback, so
-it make sense to not call this on driver detachment. But I cannot figure
-out why this is related to the shared interrupt, more details?
++1, that is exactly why I asked the above question.
 
-> So, replace cpuhp_state_remove_instance() with
-> cpuhp_state_remove_instance_nocalls() to fix this problem.
-> 
-> Fixes: 66637ab137b4 ("drivers/perf: hisi: add driver for HNS3 PMU")
-> Signed-off-by: Hao Chen <chenhao418@huawei.com>
-> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
-> ---
->  drivers/perf/hisilicon/hns3_pmu.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/perf/hisilicon/hns3_pmu.c b/drivers/perf/hisilicon/hns3_pmu.c
-> index e0457d84af6b..16869bf5bf4c 100644
-> --- a/drivers/perf/hisilicon/hns3_pmu.c
-> +++ b/drivers/perf/hisilicon/hns3_pmu.c
-> @@ -1556,8 +1556,8 @@ static int hns3_pmu_init_pmu(struct pci_dev *pdev, struct hns3_pmu *hns3_pmu)
->  	ret = perf_pmu_register(&hns3_pmu->pmu, hns3_pmu->pmu.name, -1);
->  	if (ret) {
->  		pci_err(pdev, "failed to register perf PMU, ret = %d.\n", ret);
-> -		cpuhp_state_remove_instance(CPUHP_AP_PERF_ARM_HNS3_PMU_ONLINE,
-> -					    &hns3_pmu->node);
-> +		cpuhp_state_remove_instance_nocalls(CPUHP_AP_PERF_ARM_HNS3_PMU_ONLINE,
-> +						    &hns3_pmu->node);
->  	}
->  
->  	return ret;
-> @@ -1568,8 +1568,8 @@ static void hns3_pmu_uninit_pmu(struct pci_dev *pdev)
->  	struct hns3_pmu *hns3_pmu = pci_get_drvdata(pdev);
->  
->  	perf_pmu_unregister(&hns3_pmu->pmu);
-> -	cpuhp_state_remove_instance(CPUHP_AP_PERF_ARM_HNS3_PMU_ONLINE,
-> -				    &hns3_pmu->node);
-> +	cpuhp_state_remove_instance_nocalls(CPUHP_AP_PERF_ARM_HNS3_PMU_ONLINE,
-> +					    &hns3_pmu->node);
->  }
-Thanks.
+>
+> Linux will try to enable, get rate, runtime disable the clock.
+> But the server does not allow enable/disable the clock, so the driver probe
+> will fail.
+>
 
+Interesting, if you can make the driver work with fixed clock, what can't
+you make it work with failure to adjust the clock rates ?
 
+> The SCMI server could bypass enable/disable and only allow get rate,
+> But this introduces heavy RPC, so just wanna whether it is ok to register
+> fixed clock and avoid RPC.
+>
 
+I need to study the clock layer in details, but would this happen if the
+clock is present with just one fixed clock rate ?
+
+> >
+> > JUNO/SCP is an example of how the CPUs clocks are visible to Linux BUT
+> > cannot be touched directly via Clock protocol by Linux since in the SCMI
+> > world you are supposed to use the Perf protocol instead to change the OPPs
+> > when you want to modify the performance level of the runnning CPU.
+> >
+
+Indeed.
+
+> > This kind of server-side permissions checks, meant to filter access to resources
+> > based on the requesting agent, are part of the SCMI declared aim to push the
+> > responsibility of such controls out of the kernel into the platform fw in order
+> > to avoid attacks like CLOCK_SCREW by letting the SCMI firmware be the one
+> > and only final arbiter on the requests coming from the agents; you can ask
+> > teh server whatever you like as an agent but your request can be DENIED or
+> > silently ignored (in case of shared resources) at the will of the platform which
+> > has the final say and it is implemented in a physically distinct code-base.
+> >
+> > It seems to me that this patch and the possible associated SCMI specification
+> > change would give back the control to the Linux agent and could allow the
+> > implementation of an SCMI Server that does NOT perform any of these
+> > permission checks.
+> >
+
+Unless I am missing something, I already replied to Peng with reasons why
+I don't see the need for change in the specification to represent this case.
+
+> > So, IMO, while this change, on one side, could be certainly useful by removing
+> > a bunch of unused/uneeded callbacks from the CLK SCMI driver when a fixed
+> > clock is identified, it could open the door to a bad implementation like the
+> > one mentioned above which does NOT perform any agent-based permission
+> > check.
+
+Agree.
+
+>
+> Thanks for detailed information, let me check whether our SCMI firmware
+> could do more on the permission side. But if RPC could be removed,
+> it could save some time.
+
+I would like to check why would clk framework ask to recalculate the clock
+rate if it is fixed clock.
+
+Or you are trying to paper over the issue that it is not a fixed clock. The
+other agents can change but not Linux agent but it must always read back the
+set clock rate. It is sort of read only clock. That may be an attribute you
+want to obtain from the firmware and see if that can be utilised in the clk
+framework. But the way you have presented it as fixed is simply wrong to me.
+
+--
+Regards,
+Sudeep
