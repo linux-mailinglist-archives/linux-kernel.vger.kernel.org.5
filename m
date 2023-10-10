@@ -2,196 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B4F7C012C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE0F7C016B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233876AbjJJQFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 12:05:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48684 "EHLO
+        id S233956AbjJJQRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 12:17:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233948AbjJJQFe (ORCPT
+        with ESMTP id S233678AbjJJQRi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 12:05:34 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24C2419A8
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:04:50 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-58530660c1bso3792160a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:04:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696953889; x=1697558689; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2uOLNrftYUCXs6jDTX3A0LMS5b85nq2eL6h5s8Yk9gA=;
-        b=ACR0fxxeDJ1DsOgnjemH31l7mzGgyYPlCtbKPBHXZ94cyOG+cj53P3tNPJc4/V+yIc
-         6c2G+bC+Tb/T8HLi01dLceiC8kdoXzlLhTNJODYr3whYf2msPj3T8GnKK7t2NDO21VrT
-         mjMGzGcsKZq/BaNcH7hjUBGbKo1jI71OOK3NBuso+XbwxYhja5cgxRPJBuX8HWVxuC+z
-         U0GyX2XImHN2/UqW3NW/hdDpsx0HW+yGYGUau9Vm2342qVXgznYCG4hlzklw7/+UTdLp
-         2eEbLZpuIaihds5YJkSR5KgFZv7BNwNQw942pPXt6/DtRkGtiEc+ftFSVkDFU+ZGhnXh
-         KkhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696953889; x=1697558689;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2uOLNrftYUCXs6jDTX3A0LMS5b85nq2eL6h5s8Yk9gA=;
-        b=BvsZF2doh1/1C/hm1MuZrwozhuAaHizhT0T1ivqfo0I72l9OI0GeYdO7Rmy40dRbfk
-         vqZkk4sQP9EI21bsgYO2pYqKdm1gnquvIEn9+sxAE4cdJLftIAJSTtiWXXfgtJFme6+y
-         D4s0UEKbDCS9JuaI0tEhTykqk+zbdP81FfuuqegimS+k23PlgTMPrkYK29925s/s7f0T
-         wdktj7gr6sQKg26jJ8Ds496NbhXi9qhIc+2nZJZLEI+qgTEveZnBVjobDICLwz7/wqrR
-         TBPglK4ohWfZP2Jm4P7MjBouZoHlt/DJoMDnD0kLCNpFJa8jwU1QFLRIEkFQuWlDKrnv
-         GhzQ==
-X-Gm-Message-State: AOJu0YxGSQa2tEE1qUHWznij2OFUDmZAK6kd6BYGHdHiQwRyAwPWSWSq
-        sPPAK/JV1zb66FoHQJs+VmMahOO3q2BdKFQ5wU2ahACiAqjasei5VeeM3S0c4gICj5jdNTUZat2
-        qH21iSay0VWeoGCRp
-X-Google-Smtp-Source: AGHT+IFJitCyVlJKj66I2VbkxR001T+0blrYFon2XBjC0yxEOcmHyys35tQDlE+b2jmi4A2TysJoyWk=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a63:734f:0:b0:59d:852d:148a with SMTP id
- d15-20020a63734f000000b0059d852d148amr25199pgn.1.1696953889298; Tue, 10 Oct
- 2023 09:04:49 -0700 (PDT)
-Date:   Tue, 10 Oct 2023 09:04:47 -0700
-In-Reply-To: <ZST8OTwh+6y1S170@lzaremba-mobl.ger.corp.intel.com>
-Mime-Version: 1.0
-References: <20231009160520.20831-1-larysa.zaremba@intel.com>
- <ZSQvMr3-lY9uTzn_@google.com> <ZST8OTwh+6y1S170@lzaremba-mobl.ger.corp.intel.com>
-Message-ID: <ZSV2HwOhuNr3XLbv@google.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: add options and frags to xdp_hw_metadata
-From:   Stanislav Fomichev <sdf@google.com>
-To:     Larysa Zaremba <larysa.zaremba@intel.com>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Content-Type: text/plain; charset="utf-8"
-X-ccpol: medium
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Tue, 10 Oct 2023 12:17:38 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E090181
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:07:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696954045; x=1728490045;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=9Hn3QKVxb4sctB5kVFZ9VNmukxEB4LZt3lftgaj2lEk=;
+  b=cRwMuPDZ4v+B5wX2kyjf8OU5NR+DsI/ZD2paRxJiOL2SPN10mji75Z+9
+   FEl3EIHoMzFK18OMZnaxYtaFVvFhd8bufyEvpfLhnrXcKVOZD2eF6mxdy
+   UR2GKQnV5w6Z5Ejr7/hqUK6UEkT+t48cW7XQfabsoFOCJR8llXqhFQXOZ
+   FjKp+o43c0IQig2m4wP8/JOg7PvplQpxTqQzqIN3wzEP+Klt3MzevWCIF
+   bIfceILNxroeEYOp3BIFUU2NzIyf6PUKpZt4fKcFdASUAfJtdV1Gu44iQ
+   4cZMHlR6JAg3ny4GNtgVheyhpDWSrLfbK3ba1qhcMlMdt7F+594xq/xdW
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="374783181"
+X-IronPort-AV: E=Sophos;i="6.03,213,1694761200"; 
+   d="scan'208";a="374783181"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 09:05:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="869752929"
+X-IronPort-AV: E=Sophos;i="6.03,213,1694761200"; 
+   d="scan'208";a="869752929"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 10 Oct 2023 09:05:35 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qqFEj-0000jE-0e;
+        Tue, 10 Oct 2023 16:05:33 +0000
+Date:   Wed, 11 Oct 2023 00:04:59 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        "Borislav Petkov (AMD)" <bp@alien8.de>
+Subject: arch/x86/kernel/cpu/mtrr/generic.c:259: warning: Function parameter
+ or member 'var' not described in 'mtrr_overwrite_state'
+Message-ID: <202310102349.gDBgWNwG-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10, Larysa Zaremba wrote:
-> On Mon, Oct 09, 2023 at 09:49:54AM -0700, Stanislav Fomichev wrote:
-> > On 10/09, Larysa Zaremba wrote:
-> > > This is a follow-up to the commit 9b2b86332a9b ("bpf: Allow to use kfunc
-> > > XDP hints and frags together").
-> > > 
-> > > The are some possible implementations problems that may arise when
-> > > providing metadata specifically for multi-buffer packets, therefore there
-> > > must be a possibility to test such option separately.
-> > > 
-> > > Add an option to use multi-buffer AF_XDP xdp_hw_metadata and mark used XDP
-> > > program as capable to use frags.
-> > > 
-> > > As for now, xdp_hw_metadata accepts no options, so add simple option
-> > > parsing logic and a help message.
-> > > 
-> > > For quick reference, also add an ingress packet generation command to the
-> > > help message. The command comes from [0].
-> > > 
-> > > Example of output for multi-buffer packet:
-> > > 
-> > > xsk_ring_cons__peek: 1
-> > > 0xead018: rx_desc[15]->addr=10000000000f000 addr=f100 comp_addr=f000
-> > > rx_hash: 0x5789FCBB with RSS type:0x29
-> > > rx_timestamp:  1696856851535324697 (sec:1696856851.5353)
-> > > XDP RX-time:   1696856843158256391 (sec:1696856843.1583)
-> > > 	delta sec:-8.3771 (-8377068.306 usec)
-> > > AF_XDP time:   1696856843158413078 (sec:1696856843.1584)
-> > > 	delta sec:0.0002 (156.687 usec)
-> > > 0xead018: complete idx=23 addr=f000
-> > > xsk_ring_cons__peek: 1
-> > > 0xead018: rx_desc[16]->addr=100000000008000 addr=8100 comp_addr=8000
-> > > 0xead018: complete idx=24 addr=8000
-> > > xsk_ring_cons__peek: 1
-> > > 0xead018: rx_desc[17]->addr=100000000009000 addr=9100 comp_addr=9000 EoP
-> > > 0xead018: complete idx=25 addr=9000
-> > > 
-> > > Metadata is printed for the first packet only.
-> > > 
-> > > [0] https://lore.kernel.org/all/20230119221536.3349901-18-sdf@google.com/
-> > > 
-> > > Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-> > > ---
-> > >  .../selftests/bpf/progs/xdp_hw_metadata.c     |  2 +-
-> > >  tools/testing/selftests/bpf/xdp_hw_metadata.c | 92 ++++++++++++++++---
-> > >  2 files changed, 79 insertions(+), 15 deletions(-)
-> > > 
-> > > diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> > > index 63d7de6c6bbb..8767d919c881 100644
-> > > --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> > > +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-> > > @@ -21,7 +21,7 @@ extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
-> > >  extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
-> > >  				    enum xdp_rss_hash_type *rss_type) __ksym;
-> > >  
-> > > -SEC("xdp")
-> > > +SEC("xdp.frags")
-> > >  int rx(struct xdp_md *ctx)
-> > >  {
-> > >  	void *data, *data_meta, *data_end;
-> > > diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> > > index 17c980138796..25225720346b 100644
-> > > --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> > > +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> > > @@ -26,6 +26,7 @@
-> > >  #include <linux/sockios.h>
-> > >  #include <sys/mman.h>
-> > >  #include <net/if.h>
-> > > +#include <ctype.h>
-> > >  #include <poll.h>
-> > >  #include <time.h>
-> > >  
-> > > @@ -49,19 +50,29 @@ struct xsk {
-> > >  struct xdp_hw_metadata *bpf_obj;
-> > >  struct xsk *rx_xsk;
-> > >  const char *ifname;
-> > > +bool use_frags;
-> > >  int ifindex;
-> > >  int rxq;
-> > >  
-> > >  void test__fail(void) { /* for network_helpers.c */ }
-> > >  
-> > > -static int open_xsk(int ifindex, struct xsk *xsk, __u32 queue_id)
-> > > +static struct xsk_socket_config gen_socket_config(void)
-> > >  {
-> > > -	int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE;
-> > > -	const struct xsk_socket_config socket_config = {
-> > > +	struct xsk_socket_config socket_config = {
-> > >  		.rx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
-> > >  		.tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
-> > >  		.bind_flags = XDP_COPY,
-> > >  	};
-> > > +
-> > > +	if (use_frags)
-> > > +		socket_config.bind_flags |= XDP_USE_SG;
-> > > +	return socket_config;
-> > > +}
-> > 
-> > nit: why not drop const from socket_config and add this 'if (use_frags)'
-> > directly to open_xsk? Not sure separate function really buys us anything?
-> >
-> 
-> Considering there will also be ZC/copy option, I thought it would be good to 
-> separate socket config creation. After giving this a sencond thought though, 
-> for now options would control bind_flags only. What do you this about removing 
-> gen_socket_config(), but introducing get_bind_flags()?
+Hi Juergen,
 
-In my pending series [0] I ended up adding bind_flags argument
-to open_xsk. Maybe do the same here? This also lets you drop
-global use_frags (if you move option parsing directly into main).
+FYI, the error/warning still remains.
 
-Or maybe add global bind_flags if you want to keep separate parsing
-routine (read_args)? Doesn't seem like we get anything by storing
-separate use_flags/use_copy and then construct bind_flags via extra
-get_bind_flags()?
- 
-0: https://lore.kernel.org/bpf/20231003200522.1914523-10-sdf@google.com/
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   94f6f0550c625fab1f373bb86a6669b45e9748b3
+commit: 29055dc74287467bd7a053d60b4afe753832960d x86/mtrr: Support setting MTRR state for software defined MTRRs
+date:   4 months ago
+config: x86_64-allnoconfig (https://download.01.org/0day-ci/archive/20231010/202310102349.gDBgWNwG-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231010/202310102349.gDBgWNwG-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310102349.gDBgWNwG-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   arch/x86/kernel/cpu/mtrr/generic.c:125: warning: Function parameter or member 'start' not described in 'mtrr_type_lookup_fixed'
+   arch/x86/kernel/cpu/mtrr/generic.c:125: warning: Function parameter or member 'end' not described in 'mtrr_type_lookup_fixed'
+   arch/x86/kernel/cpu/mtrr/generic.c:166: warning: Function parameter or member 'start' not described in 'mtrr_type_lookup_variable'
+   arch/x86/kernel/cpu/mtrr/generic.c:166: warning: Function parameter or member 'end' not described in 'mtrr_type_lookup_variable'
+   arch/x86/kernel/cpu/mtrr/generic.c:166: warning: Function parameter or member 'partial_end' not described in 'mtrr_type_lookup_variable'
+   arch/x86/kernel/cpu/mtrr/generic.c:166: warning: Function parameter or member 'repeat' not described in 'mtrr_type_lookup_variable'
+   arch/x86/kernel/cpu/mtrr/generic.c:166: warning: Function parameter or member 'uniform' not described in 'mtrr_type_lookup_variable'
+>> arch/x86/kernel/cpu/mtrr/generic.c:259: warning: Function parameter or member 'var' not described in 'mtrr_overwrite_state'
+>> arch/x86/kernel/cpu/mtrr/generic.c:259: warning: Function parameter or member 'num_var' not described in 'mtrr_overwrite_state'
+>> arch/x86/kernel/cpu/mtrr/generic.c:259: warning: Function parameter or member 'def_type' not described in 'mtrr_overwrite_state'
+   arch/x86/kernel/cpu/mtrr/generic.c:316: warning: Function parameter or member 'start' not described in 'mtrr_type_lookup'
+   arch/x86/kernel/cpu/mtrr/generic.c:316: warning: Function parameter or member 'end' not described in 'mtrr_type_lookup'
+   arch/x86/kernel/cpu/mtrr/generic.c:316: warning: Function parameter or member 'uniform' not described in 'mtrr_type_lookup'
+
+
+vim +259 arch/x86/kernel/cpu/mtrr/generic.c
+
+   109	
+   110	/**
+   111	 * mtrr_type_lookup_fixed - look up memory type in MTRR fixed entries
+   112	 *
+   113	 * Return the MTRR fixed memory type of 'start'.
+   114	 *
+   115	 * MTRR fixed entries are divided into the following ways:
+   116	 *  0x00000 - 0x7FFFF : This range is divided into eight 64KB sub-ranges
+   117	 *  0x80000 - 0xBFFFF : This range is divided into sixteen 16KB sub-ranges
+   118	 *  0xC0000 - 0xFFFFF : This range is divided into sixty-four 4KB sub-ranges
+   119	 *
+   120	 * Return Values:
+   121	 * MTRR_TYPE_(type)  - Matched memory type
+   122	 * MTRR_TYPE_INVALID - Unmatched
+   123	 */
+   124	static u8 mtrr_type_lookup_fixed(u64 start, u64 end)
+ > 125	{
+   126		int idx;
+   127	
+   128		if (start >= 0x100000)
+   129			return MTRR_TYPE_INVALID;
+   130	
+   131		/* 0x0 - 0x7FFFF */
+   132		if (start < 0x80000) {
+   133			idx = 0;
+   134			idx += (start >> 16);
+   135			return mtrr_state.fixed_ranges[idx];
+   136		/* 0x80000 - 0xBFFFF */
+   137		} else if (start < 0xC0000) {
+   138			idx = 1 * 8;
+   139			idx += ((start - 0x80000) >> 14);
+   140			return mtrr_state.fixed_ranges[idx];
+   141		}
+   142	
+   143		/* 0xC0000 - 0xFFFFF */
+   144		idx = 3 * 8;
+   145		idx += ((start - 0xC0000) >> 12);
+   146		return mtrr_state.fixed_ranges[idx];
+   147	}
+   148	
+   149	/**
+   150	 * mtrr_type_lookup_variable - look up memory type in MTRR variable entries
+   151	 *
+   152	 * Return Value:
+   153	 * MTRR_TYPE_(type) - Matched memory type or default memory type (unmatched)
+   154	 *
+   155	 * Output Arguments:
+   156	 * repeat - Set to 1 when [start:end] spanned across MTRR range and type
+   157	 *	    returned corresponds only to [start:*partial_end].  Caller has
+   158	 *	    to lookup again for [*partial_end:end].
+   159	 *
+   160	 * uniform - Set to 1 when an MTRR covers the region uniformly, i.e. the
+   161	 *	     region is fully covered by a single MTRR entry or the default
+   162	 *	     type.
+   163	 */
+   164	static u8 mtrr_type_lookup_variable(u64 start, u64 end, u64 *partial_end,
+   165					    int *repeat, u8 *uniform)
+   166	{
+   167		int i;
+   168		u64 base, mask;
+   169		u8 prev_match, curr_match;
+   170	
+   171		*repeat = 0;
+   172		*uniform = 1;
+   173	
+   174		prev_match = MTRR_TYPE_INVALID;
+   175		for (i = 0; i < num_var_ranges; ++i) {
+   176			unsigned short start_state, end_state, inclusive;
+   177	
+   178			if (!(mtrr_state.var_ranges[i].mask_lo & MTRR_PHYSMASK_V))
+   179				continue;
+   180	
+   181			base = (((u64)mtrr_state.var_ranges[i].base_hi) << 32) +
+   182			       (mtrr_state.var_ranges[i].base_lo & PAGE_MASK);
+   183			mask = (((u64)mtrr_state.var_ranges[i].mask_hi) << 32) +
+   184			       (mtrr_state.var_ranges[i].mask_lo & PAGE_MASK);
+   185	
+   186			start_state = ((start & mask) == (base & mask));
+   187			end_state = ((end & mask) == (base & mask));
+   188			inclusive = ((start < base) && (end > base));
+   189	
+   190			if ((start_state != end_state) || inclusive) {
+   191				/*
+   192				 * We have start:end spanning across an MTRR.
+   193				 * We split the region into either
+   194				 *
+   195				 * - start_state:1
+   196				 * (start:mtrr_end)(mtrr_end:end)
+   197				 * - end_state:1
+   198				 * (start:mtrr_start)(mtrr_start:end)
+   199				 * - inclusive:1
+   200				 * (start:mtrr_start)(mtrr_start:mtrr_end)(mtrr_end:end)
+   201				 *
+   202				 * depending on kind of overlap.
+   203				 *
+   204				 * Return the type of the first region and a pointer
+   205				 * to the start of next region so that caller will be
+   206				 * advised to lookup again after having adjusted start
+   207				 * and end.
+   208				 *
+   209				 * Note: This way we handle overlaps with multiple
+   210				 * entries and the default type properly.
+   211				 */
+   212				if (start_state)
+   213					*partial_end = base + get_mtrr_size(mask);
+   214				else
+   215					*partial_end = base;
+   216	
+   217				if (unlikely(*partial_end <= start)) {
+   218					WARN_ON(1);
+   219					*partial_end = start + PAGE_SIZE;
+   220				}
+   221	
+   222				end = *partial_end - 1; /* end is inclusive */
+   223				*repeat = 1;
+   224				*uniform = 0;
+   225			}
+   226	
+   227			if ((start & mask) != (base & mask))
+   228				continue;
+   229	
+   230			curr_match = mtrr_state.var_ranges[i].base_lo & MTRR_PHYSBASE_TYPE;
+   231			if (prev_match == MTRR_TYPE_INVALID) {
+   232				prev_match = curr_match;
+   233				continue;
+   234			}
+   235	
+   236			*uniform = 0;
+   237			if (check_type_overlap(&prev_match, &curr_match))
+   238				return curr_match;
+   239		}
+   240	
+   241		if (prev_match != MTRR_TYPE_INVALID)
+   242			return prev_match;
+   243	
+   244		return mtrr_state.def_type;
+   245	}
+   246	
+   247	/**
+   248	 * mtrr_overwrite_state - set static MTRR state
+   249	 *
+   250	 * Used to set MTRR state via different means (e.g. with data obtained from
+   251	 * a hypervisor).
+   252	 * Is allowed only for special cases when running virtualized. Must be called
+   253	 * from the x86_init.hyper.init_platform() hook.  It can be called only once.
+   254	 * The MTRR state can't be changed afterwards.  To ensure that, X86_FEATURE_MTRR
+   255	 * is cleared.
+   256	 */
+   257	void mtrr_overwrite_state(struct mtrr_var_range *var, unsigned int num_var,
+   258				  mtrr_type def_type)
+ > 259	{
+   260		unsigned int i;
+   261	
+   262		/* Only allowed to be called once before mtrr_bp_init(). */
+   263		if (WARN_ON_ONCE(mtrr_state_set))
+   264			return;
+   265	
+   266		/* Only allowed when running virtualized. */
+   267		if (!cpu_feature_enabled(X86_FEATURE_HYPERVISOR))
+   268			return;
+   269	
+   270		/*
+   271		 * Only allowed for special virtualization cases:
+   272		 * - when running as Hyper-V, SEV-SNP guest using vTOM
+   273		 * - when running as Xen PV guest
+   274		 * - when running as SEV-SNP or TDX guest to avoid unnecessary
+   275		 *   VMM communication/Virtualization exceptions (#VC, #VE)
+   276		 */
+   277		if (!cc_platform_has(CC_ATTR_GUEST_SEV_SNP) &&
+   278		    !hv_is_isolation_supported() &&
+   279		    !cpu_feature_enabled(X86_FEATURE_XENPV) &&
+   280		    !cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
+   281			return;
+   282	
+   283		/* Disable MTRR in order to disable MTRR modifications. */
+   284		setup_clear_cpu_cap(X86_FEATURE_MTRR);
+   285	
+   286		if (var) {
+   287			if (num_var > MTRR_MAX_VAR_RANGES) {
+   288				pr_warn("Trying to overwrite MTRR state with %u variable entries\n",
+   289					num_var);
+   290				num_var = MTRR_MAX_VAR_RANGES;
+   291			}
+   292			for (i = 0; i < num_var; i++)
+   293				mtrr_state.var_ranges[i] = var[i];
+   294			num_var_ranges = num_var;
+   295		}
+   296	
+   297		mtrr_state.def_type = def_type;
+   298		mtrr_state.enabled |= MTRR_STATE_MTRR_ENABLED;
+   299	
+   300		mtrr_state_set = 1;
+   301	}
+   302	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
