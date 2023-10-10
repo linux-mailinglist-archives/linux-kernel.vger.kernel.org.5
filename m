@@ -2,133 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56F487C009C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 972497C009E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233502AbjJJPqD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 10 Oct 2023 11:46:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54152 "EHLO
+        id S233571AbjJJPqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 11:46:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232110AbjJJPqC (ORCPT
+        with ESMTP id S233505AbjJJPqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 11:46:02 -0400
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A7DAC;
-        Tue, 10 Oct 2023 08:46:00 -0700 (PDT)
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-59f4f80d084so70026857b3.1;
-        Tue, 10 Oct 2023 08:46:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696952759; x=1697557559;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/BrSS2BkzC0XIs/6Y8FHD371dmDXGrmpx/NKcppkKyM=;
-        b=hJQCFbmzIUB2TymHhLKJFgDulUYL+LIDer4/85QrYydY9bIBZ7Q1SB5RrpIR+fiTNq
-         674PR3xRVsqrwDFCpACIKWfIgTldBDAMDqNIRb5TXJR1n8+zf/bqZtufdLEKdF/Bl+IU
-         fXFB3IhjOi1syX89oTDAmK9yUnKmz90S9HeCVF3xkZNQ3RV6SUPoHTuaLJiaV5eN2J+B
-         sXLXC5wV8z1UXZGuvSFs7FBaAf10JcZtYDVNYEyP/dAFCahaTEcW9/nucB3Ezoz0r5i5
-         vy6pMNN/RVWOcSeQuoV4ahFJQIv/z6piW6p/tl9BPzElqUgBigKhNijjU9D2Vz7/fCxc
-         AsfQ==
-X-Gm-Message-State: AOJu0YwuA+BsbIlfUbQslKj4i540lZF3uxTVbzt78xEDFO+OE31i49B+
-        tM5x/TExnT5soUMDeuk/IDcvq3BAvherfw==
-X-Google-Smtp-Source: AGHT+IFgWODP/RB9wHd1yRRczE16pgDaG2QhveMQUY4lcAuIsgPVvVU+LKi6Zm27A4LqEZbLbbipTA==
-X-Received: by 2002:a0d:c787:0:b0:59f:7fb9:621a with SMTP id j129-20020a0dc787000000b0059f7fb9621amr18863206ywd.22.1696952759182;
-        Tue, 10 Oct 2023 08:45:59 -0700 (PDT)
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
-        by smtp.gmail.com with ESMTPSA id m13-20020a819e0d000000b005a42740fcd4sm4445857ywj.94.2023.10.10.08.45.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Oct 2023 08:45:58 -0700 (PDT)
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-d9a3d737d66so1682147276.2;
-        Tue, 10 Oct 2023 08:45:58 -0700 (PDT)
-X-Received: by 2002:a25:f44:0:b0:d91:b8c7:b423 with SMTP id
- 65-20020a250f44000000b00d91b8c7b423mr13449016ybp.65.1696952758581; Tue, 10
- Oct 2023 08:45:58 -0700 (PDT)
+        Tue, 10 Oct 2023 11:46:08 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E23A7;
+        Tue, 10 Oct 2023 08:46:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D65C0C433C8;
+        Tue, 10 Oct 2023 15:46:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696952766;
+        bh=ImEYFz8ygZcDyI9Y0wXuf3tlwRqjI0LopJdMlkC0WlQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HHrZT8ujsyLGQ4Qk5PYkYw6XVdKNEv6AMtFl3opxCPW8EyMc8O2voIEy+7TebOIRy
+         GQZ5uwIFYpTvbbjg22bfY9jB5u2b/8PPNd5hoMekZYSVAOGaKw7Tks4N55nhmy5+KM
+         Xn0UEa6Qx7I3iEHU+pXgdPmxbpi5TP+tbFHFtMPxvzH8MPnZsXLWoYcHsWNaCOkuhQ
+         1DaSinH+BxxprlhlP6QoBE5vhKXLW+P6Uegi89i5IF8hDn3CEc9IJA8S5DofvSHuk/
+         pJW3eWU4YQCTlvlG7b+r9CD93z2rvv8vbXgpZD6/L0gqMTWTwyq+GKvqW4qViTtoeR
+         w8XKurVXKHhOQ==
+Date:   Tue, 10 Oct 2023 16:46:17 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     David Lechner <dlechner@baylibre.com>
+Cc:     linux-iio@vger.kernel.org, linux-staging@lists.linux.dev,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
+        Axel Haslam <ahaslam@baylibre.com>,
+        Philip Molloy <pmolloy@baylibre.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 05/17] staging: iio: resolver: ad2s1210: add phase
+ lock range support
+Message-ID: <20231010164617.7c318d9b@jic23-huawei>
+In-Reply-To: <20231005-ad2s1210-mainline-v4-5-ec00746840fc@baylibre.com>
+References: <20231005-ad2s1210-mainline-v4-0-ec00746840fc@baylibre.com>
+        <20231005-ad2s1210-mainline-v4-5-ec00746840fc@baylibre.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20230922081208.26334-1-biju.das.jz@bp.renesas.com>
- <87il7fq1al.ffs@tglx> <TYCPR01MB112697A5D4B57101CDE27C88D86CEA@TYCPR01MB11269.jpnprd01.prod.outlook.com>
- <87fs2jpznr.ffs@tglx> <TYCPR01MB11269C6BF3934F9AAC44F855186CEA@TYCPR01MB11269.jpnprd01.prod.outlook.com>
- <87bkd7pic3.ffs@tglx> <TYCPR01MB11269FF2DBFDC96B9C12D2E5E86CDA@TYCPR01MB11269.jpnprd01.prod.outlook.com>
- <87o7h6o6d1.ffs@tglx>
-In-Reply-To: <87o7h6o6d1.ffs@tglx>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 10 Oct 2023 17:45:46 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVJnqkF7xmjfOyoxE_Lq=AO85CDD85qu3O+xcSr-3BLTQ@mail.gmail.com>
-Message-ID: <CAMuHMdVJnqkF7xmjfOyoxE_Lq=AO85CDD85qu3O+xcSr-3BLTQ@mail.gmail.com>
-Subject: Re: [PATCH v2] alarmtimer: Fix rebind failure
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Biju Das <biju.das.au@gmail.com>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+On Thu,  5 Oct 2023 19:50:22 -0500
+David Lechner <dlechner@baylibre.com> wrote:
 
-On Tue, Oct 10, 2023 at 5:16 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> On Tue, Oct 10 2023 at 06:18, Biju Das wrote:
-> > RTC driver is defined as a module, so I was testing
-> > remove/unbind followed by install/bind on RTC driver to check
-> > any resource leakage and found that device is not working properly.
-> >
-> > As you mentioned above, we should not remove RTC driver. So I would
-> > like to drop this patch.
-> >
-> > Is there any place we can document this to avoid another person doing
-> > same mistake?
->
-> The point is that the removal should not happen in the first place.
->
-> Though it seems that even a held refcount on the module is not
-> preventing that, which is bad to begin with.
+> The AD2S1210 chip has a phase lock range feature that allows selecting
+> the allowable phase difference between the excitation output and the
+> sine and cosine inputs. This can be set to either 44 degrees (default)
+> or 360 degrees.
+> 
+> This patch adds a new phase channel with a phase0_mag_rising event that
+> can be used to configure the phase lock range. Actually emitting the
+> event will be added in a subsequent patch.
+> 
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
 
-Indeed.  I had expected to find at least one RTC driver for a device
-on a hot-pluggable bus like USB, but apparently we have none of these
-(yet).  So currently RTC device removal can only be triggered by a
-manual sysfs unbind or delete_device.
+Whilst I'm not feeling totally happy with some of the error condition
+handling we have here, I think it's the best we can do without inventing
+a whole knew path for error records.  Whilst I have some thoughts on that
+and using the tracepoint approach used for RAS event handling for servers
+etc and the heavier weight userspace software that entails, we can always
+bolt that on top later and it doesn't solve the control element anyway..
 
-> That aside I'm not saying that supporting removal is completely
-> impossible. The charger driver can probably be fixed, but as this is a
-> user space visible change this needs a lot of thoughts and proper
-> analysis why such a change would be correct under all circumstances.
+So applied,
 
-The charger manager seems to be considered a legacy driver.
-Devices are only instantiated from the drivers/mfd/88pm860x.c (as used
-on Marvell PXA910 DKB boards), or directly from DT (no upstream
-users). The DT bindings say:
+Thanks,
 
-    Binding for the legacy charger manager driver.
-    Please do not use for new products.
+Jonathan
 
-The "if (alarmtimer_get_rtcdev()) { ... }" you pointed out in the
-probe function  seems to be rather fragile, as it depends on probe
-order. And both CHARGER_MANAGER and RTC_DRV_88PM860X can be modular.
+> ---
+> 
+> v4 changes:
+> * Changed event direction from none to rising.
+> * Fixed missing static qualifier on attribute definition.
+> 
+> v3 changes:
+> * This is a new patch to replace "staging: iio: resolver: ad2s1210: add
+>  phase_lock_range attributes"
+> 
+> 
+>  drivers/staging/iio/resolver/ad2s1210.c | 125 ++++++++++++++++++++++++++++++++
+>  1 file changed, 125 insertions(+)
+> 
+> diff --git a/drivers/staging/iio/resolver/ad2s1210.c b/drivers/staging/iio/resolver/ad2s1210.c
+> index 66ef35fbb6fe..83f6ac890dbc 100644
+> --- a/drivers/staging/iio/resolver/ad2s1210.c
+> +++ b/drivers/staging/iio/resolver/ad2s1210.c
+> @@ -56,6 +56,13 @@
+>  #define AD2S1210_MIN_FCW	0x4
+>  #define AD2S1210_MAX_FCW	0x50
+>  
+> +/* 44 degrees ~= 0.767945 radians */
+> +#define PHASE_44_DEG_TO_RAD_INT 0
+> +#define PHASE_44_DEG_TO_RAD_MICRO 767945
+> +/* 360 degrees ~= 6.283185 radians */
+> +#define PHASE_360_DEG_TO_RAD_INT 6
+> +#define PHASE_360_DEG_TO_RAD_MICRO 283185
+> +
+>  enum ad2s1210_mode {
+>  	MOD_POS = 0b00,
+>  	MOD_VEL = 0b01,
+> @@ -379,6 +386,54 @@ static int ad2s1210_set_hysteresis(struct ad2s1210_state *st, int val)
+>  	return ret;
+>  }
+>  
+> +static int ad2s1210_get_phase_lock_range(struct ad2s1210_state *st,
+> +					 int *val, int *val2)
+> +{
+> +	int ret;
+> +
+> +	mutex_lock(&st->lock);
+> +	ret = regmap_test_bits(st->regmap, AD2S1210_REG_CONTROL,
+> +			       AD2S1210_PHASE_LOCK_RANGE_44);
+> +	mutex_unlock(&st->lock);
+> +
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	if (ret) {
+> +		/* 44 degrees as radians */
+> +		*val = PHASE_44_DEG_TO_RAD_INT;
+> +		*val2 = PHASE_44_DEG_TO_RAD_MICRO;
+> +	} else {
+> +		/* 360 degrees as radians */
+> +		*val = PHASE_360_DEG_TO_RAD_INT;
+> +		*val2 = PHASE_360_DEG_TO_RAD_MICRO;
+> +	}
+> +
+> +	return IIO_VAL_INT_PLUS_MICRO;
+> +}
+> +
+> +static int ad2s1210_set_phase_lock_range(struct ad2s1210_state *st,
+> +					 int val, int val2)
+> +{
+> +	int deg, ret;
+> +
+> +	/* convert radians to degrees - only two allowable values */
+> +	if (val == PHASE_44_DEG_TO_RAD_INT && val2 == PHASE_44_DEG_TO_RAD_MICRO)
+> +		deg = 44;
+> +	else if (val == PHASE_360_DEG_TO_RAD_INT &&
+> +		 val2 == PHASE_360_DEG_TO_RAD_MICRO)
+> +		deg = 360;
+> +	else
+> +		return -EINVAL;
+> +
+> +	mutex_lock(&st->lock);
+> +	ret = regmap_update_bits(st->regmap, AD2S1210_REG_CONTROL,
+> +				 AD2S1210_PHASE_LOCK_RANGE_44,
+> +				 deg == 44 ? AD2S1210_PHASE_LOCK_RANGE_44 : 0);
+> +	mutex_unlock(&st->lock);
+> +	return ret;
+> +}
+> +
+>  static int ad2s1210_get_excitation_frequency(struct ad2s1210_state *st, int *val)
+>  {
+>  	unsigned int reg_val;
+> @@ -551,6 +606,16 @@ static IIO_DEVICE_ATTR(lot_low_thrd, 0644,
+>  		       ad2s1210_show_reg, ad2s1210_store_reg,
+>  		       AD2S1210_REG_LOT_LOW_THRD);
+>  
+> +static const struct iio_event_spec ad2s1210_phase_event_spec[] = {
+> +	{
+> +		/* Phase error fault. */
+> +		.type = IIO_EV_TYPE_MAG,
+> +		.dir = IIO_EV_DIR_RISING,
+> +		/* Phase lock range. */
+> +		.mask_separate = BIT(IIO_EV_INFO_VALUE),
+> +	},
+> +};
+> +
+>  static const struct iio_chan_spec ad2s1210_channels[] = {
+>  	{
+>  		.type = IIO_ANGL,
+> @@ -567,6 +632,14 @@ static const struct iio_chan_spec ad2s1210_channels[] = {
+>  		.channel = 0,
+>  		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+>  				      BIT(IIO_CHAN_INFO_SCALE),
+> +	}, {
+> +		/* used to configure phase lock range and get phase lock error */
+> +		.type = IIO_PHASE,
+> +		.indexed = 1,
+> +		.channel = 0,
+> +		.scan_index = -1,
+> +		.event_spec = ad2s1210_phase_event_spec,
+> +		.num_event_specs = ARRAY_SIZE(ad2s1210_phase_event_spec),
+>  	}, {
+>  		/* excitation frequency output */
+>  		.type = IIO_ALTVOLTAGE,
+> @@ -595,6 +668,21 @@ static const struct attribute_group ad2s1210_attribute_group = {
+>  	.attrs = ad2s1210_attributes,
+>  };
+>  
+> +static IIO_CONST_ATTR(in_phase0_mag_rising_value_available,
+> +		      __stringify(PHASE_44_DEG_TO_RAD_INT) "."
+> +		      __stringify(PHASE_44_DEG_TO_RAD_MICRO) " "
+> +		      __stringify(PHASE_360_DEG_TO_RAD_INT) "."
+> +		      __stringify(PHASE_360_DEG_TO_RAD_MICRO));
+> +
+> +static struct attribute *ad2s1210_event_attributes[] = {
+> +	&iio_const_attr_in_phase0_mag_rising_value_available.dev_attr.attr,
+> +	NULL,
+> +};
+> +
+> +static const struct attribute_group ad2s1210_event_attribute_group = {
+> +	.attrs = ad2s1210_event_attributes,
+> +};
+> +
+>  static int ad2s1210_initial(struct ad2s1210_state *st)
+>  {
+>  	unsigned char data;
+> @@ -619,6 +707,40 @@ static int ad2s1210_initial(struct ad2s1210_state *st)
+>  	return ret;
+>  }
+>  
+> +static int ad2s1210_read_event_value(struct iio_dev *indio_dev,
+> +				     const struct iio_chan_spec *chan,
+> +				     enum iio_event_type type,
+> +				     enum iio_event_direction dir,
+> +				     enum iio_event_info info,
+> +				     int *val, int *val2)
+> +{
+> +	struct ad2s1210_state *st = iio_priv(indio_dev);
+> +
+> +	switch (chan->type) {
+> +	case IIO_PHASE:
+> +		return ad2s1210_get_phase_lock_range(st, val, val2);
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static int ad2s1210_write_event_value(struct iio_dev *indio_dev,
+> +				      const struct iio_chan_spec *chan,
+> +				      enum iio_event_type type,
+> +				      enum iio_event_direction dir,
+> +				      enum iio_event_info info,
+> +				      int val, int val2)
+> +{
+> +	struct ad2s1210_state *st = iio_priv(indio_dev);
+> +
+> +	switch (chan->type) {
+> +	case IIO_PHASE:
+> +		return ad2s1210_set_phase_lock_range(st, val, val2);
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+>  static int ad2s1210_debugfs_reg_access(struct iio_dev *indio_dev,
+>  				       unsigned int reg, unsigned int writeval,
+>  				       unsigned int *readval)
+> @@ -639,10 +761,13 @@ static int ad2s1210_debugfs_reg_access(struct iio_dev *indio_dev,
+>  }
+>  
+>  static const struct iio_info ad2s1210_info = {
+> +	.event_attrs = &ad2s1210_event_attribute_group,
+>  	.read_raw = ad2s1210_read_raw,
+>  	.read_avail = ad2s1210_read_avail,
+>  	.write_raw = ad2s1210_write_raw,
+>  	.attrs = &ad2s1210_attribute_group,
+> +	.read_event_value = ad2s1210_read_event_value,
+> +	.write_event_value = ad2s1210_write_event_value,
+>  	.debugfs_reg_access = &ad2s1210_debugfs_reg_access,
+>  };
+>  
+> 
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
