@@ -2,120 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6347BFEE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 16:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6A17BFEE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 16:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232799AbjJJOPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 10:15:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34044 "EHLO
+        id S232809AbjJJOQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 10:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232782AbjJJOPd (ORCPT
+        with ESMTP id S232734AbjJJOQP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 10:15:33 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38992C6;
-        Tue, 10 Oct 2023 07:15:31 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-405361bb94eso58351385e9.0;
-        Tue, 10 Oct 2023 07:15:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696947329; x=1697552129; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=P5isVXg9lzMhXFoyFy+8mWJrz6qew5JiLkShGec5vJc=;
-        b=cIEB9tM7A4qeWisgatdUalKC57G+HJia/jQQs9bhWRFdEPC8JaO7/VXOBsIt2zl1fh
-         N1CW9ddHAsn4SZvJ+qiI5+sU6+fo4mP5h9fINXWHV4CrSHjORfUq0ZhaQBGCnqQJVC6L
-         jaJEviP8GxJwsuSVC/Pp+rtXwlohHz589GnymyextdYPruoMsO00/VQVN/+wRMOJia/u
-         LPcNVZtyOCZ+Z2iTHCBO/xWMf/LygLrkT7UtTKYn0RuctlOe3WpEzxLpKjLHVfzMGqoS
-         D9aLhGkB/J9ct/DgFUez/fsSxqLYzRI47hoqdO17qjbbYKdLCkKO3pqrTig+ARlXCj3t
-         Bujw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696947329; x=1697552129;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P5isVXg9lzMhXFoyFy+8mWJrz6qew5JiLkShGec5vJc=;
-        b=uY0zEYxBeMcylVIz3tF0pBpF+0XAj42pTLAvzcB/RgMlpQTDKJJepyO75RkCCyWV45
-         0UY32qVu4cIUbeMZfOTTfcEepBsErdvZjbvYAuw8Vm1tSM04r5mD3hUKImTFvp013uOo
-         K79lu+MBpUjJzsgT80ePtXSldTwrf2BbFBxYX+HLrSHOcmmZTvRkOeFVSjt5f53lDU5D
-         nH6HND//rBSOU6f/ADUoKyFOrDsruHcGBzA/1HJAg1R5vgmss4kHQqRqXKKLr7a8slnE
-         a+nZ3C0zmKQR1kINc/hY6iZL7WXNrpDLkyxHoVT1D0Vi+MbQZGtTX/o0qZHNKcRG3PY0
-         /9Xg==
-X-Gm-Message-State: AOJu0YzO0aQqfnr/yGS3CX06wHvbYU5iqdrRFbrLXQ1cr8EmQEnk+DAd
-        GJOysrQ2mEL2d8HGqgCIkJjLVHx+XvxX/g==
-X-Google-Smtp-Source: AGHT+IElqAelb44dzmendgb/GJEYBDTka4QOYwofMc9QMo4cJicO++fSzWjTQOs3hVBxf4rU5sELXA==
-X-Received: by 2002:a05:600c:296:b0:405:3d04:5f4c with SMTP id 22-20020a05600c029600b004053d045f4cmr16774846wmk.38.1696947329504;
-        Tue, 10 Oct 2023 07:15:29 -0700 (PDT)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id hn8-20020a05600ca38800b00405959bbf4fsm14231905wmb.19.2023.10.10.07.15.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 07:15:29 -0700 (PDT)
-Message-ID: <65255c81.050a0220.141f8.7b8f@mx.google.com>
-X-Google-Original-Message-ID: <ZSVcf8gprpILpc5l@Ansuel-xps.>
-Date:   Tue, 10 Oct 2023 16:15:27 +0200
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Robert Marko <robimarko@gmail.com>, ilia.lin@kernel.org,
-        vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, agross@kernel.org, andersson@kernel.org,
-        rafael@kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v5 4/4] ARM: dts: qcom: ipq8064: Add CPU OPP table
-References: <20230930102218.229613-1-robimarko@gmail.com>
- <20230930102218.229613-4-robimarko@gmail.com>
- <e255dcbd-6342-49e6-9bfe-17a47b2a3c8a@linaro.org>
+        Tue, 10 Oct 2023 10:16:15 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BD3AD99;
+        Tue, 10 Oct 2023 07:16:12 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1B99E1FB;
+        Tue, 10 Oct 2023 07:16:52 -0700 (PDT)
+Received: from localhost.localdomain (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id CFC033F762;
+        Tue, 10 Oct 2023 07:16:08 -0700 (PDT)
+From:   James Clark <james.clark@arm.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, suzuki.poulose@arm.com
+Cc:     James Clark <james.clark@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Zaid Al-Bassam <zalbassam@google.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Reiji Watanabe <reijiw@google.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev
+Subject: [PATCH v3 0/3] arm64: perf: Add support for event counting threshold
+Date:   Tue, 10 Oct 2023 15:15:40 +0100
+Message-Id: <20231010141551.2262059-1-james.clark@arm.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e255dcbd-6342-49e6-9bfe-17a47b2a3c8a@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 03:40:32PM +0200, Konrad Dybcio wrote:
-> 
-> 
-> On 9/30/23 12:21, Robert Marko wrote:
-> > From: Christian Marangi <ansuelsmth@gmail.com>
-> > 
-> > Add CPU OPP table for IPQ8062, IPQ8064 and IPQ8065 SoC.
-> > Use opp-supported-hw binding to correctly enable and disable the
-> > frequency as IPQ8062 supports up to 1.0Ghz, IPQ8064 supports up to
-> > 1.4GHz with 1.2GHz as an additional frequency and IPQ8065 supports
-> > 1.7GHZ but doesn't have 1.2GHZ frequency and has to be disabled.
-> > 
-> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > Signed-off-by: Robert Marko <robimarko@gmail.com>
-> > ---
-> Christian/Robert, can you provide a downstream source for this?
-> 
+Changes since v2:
 
-Sure, consider that everything is with +/-5%.
+  * Split threshold_control attribute into two, threshold_compare and
+    threshold_count so that it's easier to use
+  * Add some notes to the first commit message and the cover letter
+    about the behavior in KVM
+  * Update the docs commit with regards to the split attribute
+ 
+Changes since v1:
 
-Qsdk ships with these values but I will link a more secure source that
-is from a very old qsdk source where march-msm was still used instead of
-dt.
+  * Fix build on aarch32 by disabling FEAT_PMUv3_TH and splitting event
+    type mask between the platforms
+  * Change armv8pmu_write_evtype() to take unsigned long instead of u64
+    so it isn't unnecessarily wide on aarch32
+  * Add UL suffix to aarch64 event type mask definition
 
-Here the source [1]. Confirmed by internal verification and also other
-qsdk. At first view you might be scared by confusion but...
+----
 
-- _lite = ipq8062
-- nothing = ipq8064
-- tn_3 = ipq8065
+FEAT_PMUv3_TH (Armv8.8) is a new feature that allows conditional
+counting of PMU events depending on how much the event increments on
+a single cycle. Two new config fields for perf_event_open have been
+added, and a PMU cap file for reading the max_threshold. See the second
+commit message and the docs in the last commit for more details.
 
-and the psv are both in number and slow, nominal, fast and faster and
-they all reflect efuse values.
+The feature is not currently supported on KVM guests, and PMMIR is set
+to read as zero, so it's not advertised as available. But it can be
+added at a later time. Writes to PMEVTYPER.TC and TH from guests are
+ignored.
 
-There is on the left frequency and on the right voltage.
+The change has been validated on the Arm FVP model:
 
-[1] https://github.com/Getnear/R7800/blob/master/git_home/linux.git/sourcecode/arch/arm/mach-msm/acpuclock-ipq806x.c
+  # Zero values, works as expected (as before).
+  $ perf stat -e dtlb_walk/threshold=0,threshold_compare=0/ -- true
 
+    5962      dtlb_walk/threshold=0,threshold_compare=0/
+
+  # Threshold >= 255 causes count to be 0 because dtlb_walk doesn't
+  # increase by more than 1 per cycle.
+  $ perf stat -e dtlb_walk/threshold=255,threshold_compare=2/ -- true
+
+    0      dtlb_walk/threshold=255,threshold_compare=2/
+  
+  # Keeping comparison as >= but lowering the threshold to 1 makes the
+  # count return.
+  $ perf stat -e dtlb_walk/threshold=1,threshold_compare=2/ -- true
+
+    6329      dtlb_walk/threshold=1,threshold_compare=2/
+
+James Clark (3):
+  arm: perf: Include threshold control fields valid in PMEVTYPER mask
+  arm64: perf: Add support for event counting threshold
+  Documentation: arm64: Document the PMU event counting threshold
+    feature
+
+ Documentation/arch/arm64/perf.rst  | 56 +++++++++++++++++++++
+ arch/arm/include/asm/arm_pmuv3.h   |  3 ++
+ arch/arm64/include/asm/arm_pmuv3.h |  4 ++
+ arch/arm64/kvm/pmu-emul.c          |  1 +
+ arch/arm64/kvm/sys_regs.c          |  1 +
+ drivers/perf/arm_pmuv3.c           | 79 +++++++++++++++++++++++++++++-
+ include/linux/perf/arm_pmuv3.h     |  4 +-
+ 7 files changed, 146 insertions(+), 2 deletions(-)
+
+
+base-commit: 94f6f0550c625fab1f373bb86a6669b45e9748b3
 -- 
-	Ansuel
+2.34.1
+
