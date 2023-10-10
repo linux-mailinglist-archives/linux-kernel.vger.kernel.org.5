@@ -2,93 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6B947BFF22
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 16:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA077BFF21
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 16:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232460AbjJJOZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 10:25:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56622 "EHLO
+        id S233003AbjJJOZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 10:25:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233034AbjJJOZ2 (ORCPT
+        with ESMTP id S232460AbjJJOZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 10:25:28 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24DBBC4;
-        Tue, 10 Oct 2023 07:25:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6Nr/KkwCGn5Ob2JlgP9dTNdp/ZUel4tqnxZisHtdBY8=; b=jFy25iGwS0sUAyZWA/Iq77sqbD
-        vaDE+eqrvqmxZhuavEE6oeqorEjpXEvh2VBYLoxOdQUuh/qIhev8rs9Nc14EHf8iGoTaJUzV8QWNS
-        jfHc0SkqaCeo3yXFWAh9r8cSkCEub0amR2x/KNR2O7xCYoAoCRyADSD9Np4ErQr6gTRPP9W3A46zT
-        lUg49GPjEXPZIHyD0vL2iXcJ6CfGXWj0WG/QmzkHoTx5jdDC+8PWsnJ1Dc1IJ3jX3IYFUuSsH2ws7
-        WAWNXx2qASFWB/gmpGV62Io2BjGaSGnpQ4U1OHy+a1xN5MRUyJssyQVcxIE1s0v6zynn1v+am65dG
-        Atg0BYsQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qqDfD-00Gu0i-1m;
-        Tue, 10 Oct 2023 14:24:49 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A6EF0300392; Tue, 10 Oct 2023 16:24:48 +0200 (CEST)
-Date:   Tue, 10 Oct 2023 16:24:48 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Matthew Maurer <mmaurer@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH] x86: Enable IBT in Rust if enabled in C
-Message-ID: <20231010142448.GN377@noisy.programming.kicks-ass.net>
-References: <20231009224347.2076221-1-mmaurer@google.com>
- <20231010081220.GD377@noisy.programming.kicks-ass.net>
- <CAGSQo01=NRosJCzRCWcqZfvdHzH+d6dThN02SpvkF2EHsFXD-g@mail.gmail.com>
+        Tue, 10 Oct 2023 10:25:13 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 571FDB4;
+        Tue, 10 Oct 2023 07:25:12 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="388274687"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="388274687"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 07:25:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="703332710"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="703332710"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 07:25:09 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
+        (envelope-from <andy@kernel.org>)
+        id 1qqDfW-00000004MZ9-42f5;
+        Tue, 10 Oct 2023 17:25:06 +0300
+Date:   Tue, 10 Oct 2023 17:25:06 +0300
+From:   Andy Shevchenko <andy@kernel.org>
+To:     Dipen Patel <dipenp@nvidia.com>
+Cc:     linus.walleij@linaro.org, brgl@bgdev.pl, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, linux-gpio@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] gpio: tegra186: Set fwnode of the GPIO chip
+Message-ID: <ZSVewh61i8JzwxQQ@smile.fi.intel.com>
+References: <20231009173858.723686-1-dipenp@nvidia.com>
+ <ZSVN73ffDkGBzmmI@smile.fi.intel.com>
+ <ZSVWKSVNsBqDcOFS@smile.fi.intel.com>
+ <ZSVcFo2sDVbMCW3Z@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGSQo01=NRosJCzRCWcqZfvdHzH+d6dThN02SpvkF2EHsFXD-g@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZSVcFo2sDVbMCW3Z@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 07:06:32AM -0700, Matthew Maurer wrote:
+On Tue, Oct 10, 2023 at 05:13:42PM +0300, Andy Shevchenko wrote:
+> On Tue, Oct 10, 2023 at 04:48:25PM +0300, Andy Shevchenko wrote:
+> > On Tue, Oct 10, 2023 at 04:13:19PM +0300, Andy Shevchenko wrote:
+> > > On Mon, Oct 09, 2023 at 10:38:58AM -0700, Dipen Patel wrote:
 
-> > > +KBUILD_RUSTFLAGS += -Zcf-protection=branch -Zno-jump-tables
-> >
-> > One question, -Zcf-protection=branch, will that ever emit NOTRACK
-> > prefix? The kernel very explicitly does not support (enable) NOTRACK.
+...
 
-> rustc does this via LLVM, so its code generation works very similarly to clang.
-> It does not create its own explicit NOTRACKs, but LLVM will by default
-> with just -Zcf-protection-branch.
-> I've linked a godbolt showing that at least for the basic case, your
-> no-jump-tables approach from clang ports over.
-> https://godbolt.org/z/bc4n6sq5q
-> Whether rust generates NOTRACK should end up being roughly equivalent
-> to whether clang generates it, and if LLVM gains a code generation
-> flag for NOTRACK being disallowed some day, we can pass that through
-> as well.
+> > > > +	/*
+> > > > +	 * This is needed for driver using gpio device matching where it
+> > > > +	 * has to use gpio_chip fwnode to match the gpio controller.
+> > > > +	 */
+> > > > +	gpio->gpio.fwnode = of_node_to_fwnode(pdev->dev.of_node);
+> > > 
+> > > of_node_to_fwnode() is specific to IRQ, in other places we use generic
+> > > of_fwnode_handle(). That's why better just to use dev_fwnode().
+> > 
+> > On the second thought is there any parent assigned?
+> > At least I see that in tegra186_gpio_probe(). Are you saying
+> > it is not working? Or is it (matching) called _before_ we
+> > add a GPIO device?
+> 
+> Okay, I think I got it. There is a function called tegra_gpiochip_match()
+> in drivers/hte/hte-tegra194.c which fails after my patch. Yeah, if provider
+> doesn't set fwnode, it can't match. But, since the driver sets the parent
+> properly it means that the matching function should be done against the
+> device.
+> 
+> Seems to me that in HTE code the matching function is broken.
 
-IIRC C++ will also emit NOTRACK for things like catch/throw and other
-stack/scope unwinds. Obviously C doesn't have that, but does Rust? (as
-might be obvious, I *really* don't know the language).
+I'll send a patch soon. Please, test it.
 
-ISTR HJL had a GCC patch to force-disable NOTRACK, but I've no idea what
-happened to that.
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
