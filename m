@@ -2,65 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EED17BEF8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 02:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 310E97BEF91
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 02:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379191AbjJJANV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 20:13:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33454 "EHLO
+        id S1379197AbjJJAOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 20:14:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379115AbjJJANT (ORCPT
+        with ESMTP id S1379115AbjJJAOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 20:13:19 -0400
-X-Greylist: delayed 200 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 09 Oct 2023 17:13:18 PDT
-Received: from out-205.mta0.migadu.com (out-205.mta0.migadu.com [IPv6:2001:41d0:1004:224b::cd])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E92329F
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 17:13:18 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 17:13:12 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1696896797;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XZeq0QRWRWi6ocPj6CHnmD55De3FO2vm3Swj0y/CU04=;
-        b=sPH06k4kpYsnUUlTXM40LLCDKORqerwr68VfdM8QOQ4wUV3V6p3Q3HHMdZUCiBrPLFTRvE
-        +7mP4wWsJaRvfrg45J0eH24hka54JixJvNvXJwQRQyXyNitPcvng11f0CLUSackGw6rCRD
-        68RF24lgJFGGJjPsz4BHrkx0zT65arA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: Re: [PATCH v2 0/5] mm: improve performance of accounted kernel
- memory allocations
-Message-ID: <ZSSXGOpkwqs8MOvT@P9FQF9L96D>
-References: <20231010000929.450702-1-roman.gushchin@linux.dev>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231010000929.450702-1-roman.gushchin@linux.dev>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Mon, 9 Oct 2023 20:14:37 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F48AA4
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 17:14:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AE39C433C8;
+        Tue, 10 Oct 2023 00:14:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1696896875;
+        bh=zQK6y7u6qjXeMUWj/O9jsTYxx+DpeLYJg5CFzqy8x0o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kwVhcizAsN80h0tCt2iFYIUN7yrErpynGIp1vjSejGl9TmwbhGgAINMH6t+xazN2D
+         lEZTBL7xALnNa86mD3nica8e30tilKKsk0MWRVKM0UkxDVMPFeoJTHMD5kZO/ivbl/
+         6chrKYnyZvzMQAZAb3IPmigGqjtSPW8raNPQNwGs=
+Date:   Mon, 9 Oct 2023 17:14:15 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
+Cc:     "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
+        Roman Gushchin <guro@fb.com>, Minchan Kim <minchan@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, ke.wang@unisoc.com
+Subject: Re: [PATCHv5] mm: optimization on page allocation when CMA enabled
+Message-Id: <20231009171415.cfc26b45c2f9f4489afe16c2@linux-foundation.org>
+In-Reply-To: <CAGWkznHqQHMN1QXz7os7AQTYdzc3+LEq+z2bWOzLbiseV=560A@mail.gmail.com>
+References: <1683782550-25799-1-git-send-email-zhaoyang.huang@unisoc.com>
+        <20231006141750.5423083520f74bc0746fd249@linux-foundation.org>
+        <CAGWkznHqQHMN1QXz7os7AQTYdzc3+LEq+z2bWOzLbiseV=560A@mail.gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew,
+On Sun, 8 Oct 2023 15:54:40 +0800 Zhaoyang Huang <huangzhaoyang@gmail.com> wrote:
 
-can you, please, drop v1 entirely (with all follow-up fixes)
-and replace it with v2?
+> > Roman previously asked
+> >
+> > : Also I'm a bit concerned about potential performance implications.
+> > : Would be great to provide some benchmarks or some data.  Probably it's
+> > : ok because of we have pcp caches on top, but I'm not 100% sure.
+> >
+> > Are you able to perform such testing and tell us the result?
+> I have applied this patch in a v5.4 based ANDROID system and got no
+> regression problem. Actually, this commit is aimed to have
+> alloc_pages(GFP_USER) use CMA instead of stealing U&R(could lead to
+> GFP_KERNEL fail) only when zone's free pages and free cma are around
+> WATERMARK_LOW/MIN which would NOT affect most scenarios.
 
-Thanks!
+OK, thanks.
+
+Could the appropriate people please take a look at this?  It has been
+in mm-unstable since May.
+
+Thanks.
