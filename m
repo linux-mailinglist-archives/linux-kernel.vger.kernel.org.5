@@ -2,143 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D2CC7BF169
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 05:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B6F7BF163
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 05:24:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442007AbjJJD0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 23:26:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39622 "EHLO
+        id S1441994AbjJJDY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 23:24:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441951AbjJJD0i (ORCPT
+        with ESMTP id S1441995AbjJJDYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 23:26:38 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2082.outbound.protection.outlook.com [40.107.94.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDBB3A3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 20:26:36 -0700 (PDT)
+        Mon, 9 Oct 2023 23:24:25 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 109A8CF;
+        Mon,  9 Oct 2023 20:24:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696908262; x=1728444262;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=/ZyTRtEBcZL9Y+8+G6h3FpsBxdhtGk9ASAEH1AMNBOU=;
+  b=m7D5/lAtqc8zLi28ZpHd7TThVS/18tTd9Ol1wazjGDsNNyFFWwKFSQ14
+   DqibzJfnjPenIJ5uqq8s2/mjFgiML+bJdHtXJRdNXOT0nm4o7gmD7g9bC
+   nURXDB/+Mu1YOCNkVDAtbOvMQMAVWJ/BZlFk2m7MVMzrsDmtO+buvhuKk
+   8fsumgGZ5PoD2V+bifjqzcNMBAqXxkCrJEQ3daJmrdGtITEjm01GuvPcC
+   cd7Axm/IpHjQZ2snOxrTmrTT7OttR2/91M7pTGLxvKKse+fCBd7NnSD5j
+   K62iC3zOdbzm33mPdu0w/Yte6oXzEC9CnG5ARg4Mkja3Z7Y2aDQAzXsa3
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="5856967"
+X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
+   d="scan'208";a="5856967"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 20:24:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="877060380"
+X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
+   d="scan'208";a="877060380"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Oct 2023 20:24:21 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Mon, 9 Oct 2023 20:24:20 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Mon, 9 Oct 2023 20:24:20 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Mon, 9 Oct 2023 20:24:20 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jpE+1n7ihfioPRWx3vrQzKRZNoEBaB/0EqU/yK5QyvoXF3udUMChn8tjWJ1GE0T0y85cEcie2J+zyXWdAOQJA/9Y6LIqAjcwKpjNwOQKLMC8s2Qseh09+yKP8DNWyAmGrWfWW+9MMq2oFZcZGsMf+Y6d6cwO59C6OBZ8ssiFNow3Qwco0JVyBqg5XmnOYDK/SBawN/N3mNThcF25K/2k/i6CHbM+nOE8BJh4kpBfkwM7V0BjH1n8PQA85RPcSOdGfRwEvfLZ3Lo/d3hJzggnVT9ojzQOrq86U8RlnfFUp/WuZwfJT4dy4U15PR/Yt8CCvmm/BHZrKcf3jJbn4Cz3tQ==
+ b=bSaglG9AO/dVzUAOJkWaXkQV1aw3k5hx0OW0Uq2LOzb1XlCyam2jZh4+NlxvLHwgLVnbiM63/n/CE5Pp08xnG3ixiXAYsJk/k9a+MIjZJzlY1DPzr3nJgNTICDSh444SZr9OfGfW16patnFvT/F4hyLSaKOGwrJwTbhxMNSrLamFbcjyhYF0cDaUZrPRO6yq4bUAWAQqDYgQX/p5Znv7VY8EL1ll1yr4il7kq7VzNImg5behzOQfZpvXXrsdgVHqmFxOURZ7GOLmL1dR95FiQtBiJ39YBHnbh5lCRF+/IGMwQZFAH93OKuWkbLOh58Cu2niCKmLFys7dLNSB4QqOew==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=et+fq3nfjxlGJxUzlfGr/Goh0j0iLTLdafj12ws0ABs=;
- b=oKO7H/Z5IWZTm6ACtcq0Hwkrzm5SEORRlGuidGLsicZKlwN5Bt3nQamkEE2+G84PI5qZ6pn8ltQ+jpv974I+dIJb2abhaKHvWiOiZrnwDNDEewKZ/PNjveLCq15e0aHyEfu/HFjFZ2BpJdA5sH023t4XwvKQVnDrxDBB+KXj6DAIll6xlkXIRvzmJJSZPa5QWCBUj4NACWYqNxdi6pT2K38UsectKvdQM3gl2JX1p/OJJDfjmfywUuFkS9SRoJ9IYb+YyV2rrHhC3UvvaRUsUv9QZvgjAzV3+eeJTUQSAShvQFntWjNy5fHlVlx3RZOGdI/hgtY2hSAVUzbNaoBF7A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=et+fq3nfjxlGJxUzlfGr/Goh0j0iLTLdafj12ws0ABs=;
- b=R7wPVzMn7SjpecVMQqRcBotkIynEVDb8qSw7cUmc6IRYoGEWT6ifxfK9EvhDErP/r/u437N7z03woyT/tVy41xlArD3c/JFiLNzaCn6zbRzyY4gE1Yp5S0av9u4dXVNiPo5x88LkvddWk4ZrqS6dIKOEq5pEFYgZ3nD09U5HspI=
-Received: from SA9PR13CA0072.namprd13.prod.outlook.com (2603:10b6:806:23::17)
- by IA1PR12MB6114.namprd12.prod.outlook.com (2603:10b6:208:3ea::5) with
+ bh=0/dUtY7Y6mbppVawRZE362CC3xz3pq5J8VoUG2iYOns=;
+ b=XCE+nt7lmf4Tu02bgo+/zSWlPVLQQnUOIj3ekPQOvMsDoLuk2CTG1ucYJ6T26cz33fhu4wu7/CxPgjcnPerB42en9G4CarRVmg4Urr4SdNjn+ywHsEjcbYqw4+b58vp42Peck4tUePzhe8D/1ieNz6wtM/7bs7VRHc0UqFiAr1YgUFxuVqZHN5khhose9VBiEXaoK3hV2rDOCrWxsgzVUVajUofQ8vVjJdLnaLlpXIElbE4j6J5oUp1DJvMfxpd4s9XuvM5ZBtTuwmRMtIWkI6Tk5vFRJolcYPFwc2UseAVJrgK6mtGO1r5BZEtVIHAcEgLEbw+l57RsTxprWDgjKw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
+ by CY5PR11MB6236.namprd11.prod.outlook.com (2603:10b6:930:23::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.36; Tue, 10 Oct
- 2023 03:26:34 +0000
-Received: from SN1PEPF0002636C.namprd02.prod.outlook.com
- (2603:10b6:806:23:cafe::3a) by SA9PR13CA0072.outlook.office365.com
- (2603:10b6:806:23::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.23 via Frontend
- Transport; Tue, 10 Oct 2023 03:26:34 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SN1PEPF0002636C.mail.protection.outlook.com (10.167.241.137) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.14 via Frontend Transport; Tue, 10 Oct 2023 03:26:33 +0000
-Received: from hr-amd.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 9 Oct
- 2023 22:26:10 -0500
-From:   Huang Rui <ray.huang@amd.com>
-To:     <dri-devel@lists.freedesktop.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, David Airlie <airlied@redhat.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Akihiko Odaki <akihiko.odaki@daynix.com>,
-        Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-        =?UTF-8?q?Marc-Andr=C3=A9=20Lureau?= <marcandre.lureau@gmail.com>
-CC:     Alex Deucher <alexander.deucher@amd.com>,
-        Xenia Ragiadakou <xenia.ragiadakou@amd.com>,
-        Stefano Stabellini <stefano.stabellini@amd.com>,
-        Honglei Huang <honglei1.huang@amd.com>,
-        Julia Zhang <julia.zhang@amd.com>,
-        Chen Jiqian <Jiqian.Chen@amd.com>,
-        Huang Rui <ray.huang@amd.com>
-Subject: [PATCH v2] drm/virtio: add definitions for gfxstream and venus capset
-Date:   Tue, 10 Oct 2023 11:25:53 +0800
-Message-ID: <20231010032553.1138036-1-ray.huang@amd.com>
-X-Mailer: git-send-email 2.25.1
+ 2023 03:24:18 +0000
+Received: from DS0PR11MB7529.namprd11.prod.outlook.com
+ ([fe80::f8f4:bed2:b2f8:cb6b]) by DS0PR11MB7529.namprd11.prod.outlook.com
+ ([fe80::f8f4:bed2:b2f8:cb6b%3]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
+ 03:24:18 +0000
+Message-ID: <1b27b31a-3eaa-0acc-b9ae-756605170220@intel.com>
+Date:   Tue, 10 Oct 2023 11:26:37 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v4 03/17] iommufd: Unite all kernel-managed members into a
+ struct
+Content-Language: en-US
+To:     Yan Zhao <yan.y.zhao@intel.com>
+CC:     <joro@8bytes.org>, <alex.williamson@redhat.com>, <jgg@nvidia.com>,
+        <kevin.tian@intel.com>, <robin.murphy@arm.com>,
+        <baolu.lu@linux.intel.com>, <cohuck@redhat.com>,
+        <eric.auger@redhat.com>, <nicolinc@nvidia.com>,
+        <kvm@vger.kernel.org>, <mjrosato@linux.ibm.com>,
+        <chao.p.peng@linux.intel.com>, <yi.y.sun@linux.intel.com>,
+        <peterx@redhat.com>, <jasowang@redhat.com>,
+        <shameerali.kolothum.thodi@huawei.com>, <lulu@redhat.com>,
+        <suravee.suthikulpanit@amd.com>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <zhenzhong.duan@intel.com>, <joao.m.martins@oracle.com>
+References: <20230921075138.124099-1-yi.l.liu@intel.com>
+ <20230921075138.124099-4-yi.l.liu@intel.com>
+ <ZSEuBcLaSq4NjoC8@yzhao56-desk.sh.intel.com>
+ <c299567a-5be8-f65f-d8ec-ffd3fa183b03@intel.com>
+ <ZSOMCXBzUMRujp89@yzhao56-desk.sh.intel.com>
+From:   Yi Liu <yi.l.liu@intel.com>
+In-Reply-To: <ZSOMCXBzUMRujp89@yzhao56-desk.sh.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: KL1PR01CA0115.apcprd01.prod.exchangelabs.com
+ (2603:1096:820:3::31) To DS0PR11MB7529.namprd11.prod.outlook.com
+ (2603:10b6:8:141::20)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002636C:EE_|IA1PR12MB6114:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9115cc3c-f431-46b3-9c26-08dbc940b417
+X-MS-TrafficTypeDiagnostic: DS0PR11MB7529:EE_|CY5PR11MB6236:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7695727c-eb2b-4158-1f14-08dbc940634c
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EO4a92buXPodC0iJDlszWlYIYb4zOMnGepNS9EKT87Bmf7uBYJNScIE0WDTv6o0oqOjd+D40n84JU+IIOwqlF5ZIbxPb0KVEoluGrHb+Yi930pLAoVfQwRNm8o94tJGUu47+CzSeLFQWlN5EvQAcDaoRX7K3k1Qt3aLTkki+UAWAt+OGG+/gIE2UnUR+Ectzb+9LQf+n8M0XfZ0S6Ywsd0tntTp6e0kRxlcWh5Yzx7w59pH+a1Wudx0rSh8DPLkeBGfrlYlro2X94Vjwi8XWaJxdey3iPy3GPPFcGew9rRMmU26UOWGaraSVv+R+t4PPah1L87BUGskPJ2CFonR6Z8mRm8MI1PSotz/c8A/Q+AWsh6bjTVYOuH9u1NkYcxRHSDPQbm49YI4Xs/q4yZgIInZho2YjeozWMwxY6eDCFy1Pd4MzaV+VsO2cgmrUZ5++3FO/H8supa7SPhI+fiJO+55SwpYOP/O0dIJo5yimDiQzyteAZ4MS3o9A1FudWvGd4QOYXXFYhYLnbVdogCagNW2/shMYpevrtnGMPgGB1m0je8m7ZyqLybb1gB+ctPyPldfYFQxmPJGXxKDE3AJsi3X4ge6LatuBPF8a0cXQM5/9hr42VS+f+qvmq/i+TfnzGCgPT+gY1ZwJroodZfI1dgxhxqpnSh4V/+P3uzOqL+Kr8xYLGyCskDdsiUcTyPBiWEOUpc5KYTk71og7WFRB66vPZ/5L76gY7nN9Jy0ouf8ACeYk0ZN2lbA3z+Pj/ovfMoTp/BOMYpC9VGaZmV/SQA==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(346002)(39860400002)(396003)(376002)(230922051799003)(451199024)(64100799003)(82310400011)(1800799009)(186009)(46966006)(36840700001)(40470700004)(40480700001)(2906002)(316002)(70206006)(40460700003)(2616005)(336012)(1076003)(426003)(70586007)(16526019)(47076005)(36860700001)(26005)(54906003)(7416002)(110136005)(4326008)(8676002)(5660300002)(41300700001)(7696005)(966005)(82740400003)(4744005)(478600001)(8936002)(6666004)(36756003)(356005)(81166007)(921005)(86362001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 03:26:33.8968
+X-Microsoft-Antispam-Message-Info: 5ZYEM5s1ZGhy2bMVYofB3oHGbjPyfs2cz74wcDFKNUJRXidLGQ4ePDLeBUFq59IL/NjxUadBLhBjc6VVQDPB+PRJ1/yPyNMhlVvsgdtEkkj/oHoEpLyiU6AzyEXZONGsNV3cGO0Z9SHrVOR0je706NZBhR1esDoS/ekj1/DAj+5arFfhdZHc2aVrsJ9lUcpYW5ttmTwnJ/bIiRCfiEXuWcaqogF25PMFKY5ABIcaz+0hUnA1oAXX1OH7gk/xXYYYd96hbCnT6oPCLYDDwUlO/dz2vmsYDEZNfcN4UnI09NwGhB/KbYU17ErULN6QIidbSRVRrTiNt5wnHPOVTDSMq06jcoJxFa1pPqcOUNVUfahlIqCIB32RaadL/pQ3NvRGRSguDLNAruoUD5ELJz3HJNmOFg0BOl2t728nmNQC0oF6paHRhRcv6Decfu4L0zT/5hkVlk1IFo5kGAQy2T5aKB+JyLVQCZFzoDGVK/EWlG3cEUMx2QxuQE8MYqxzcuYj2UF/kpL8IehCrYOEllegQBCNB0IUGYZBr37jgADNDkQzcS7hm07WW8zvhdHBStU/2zPVOVWlEfkGshYmwG4Trb52zHqLD4m5z3P3kV314pDvZY645a96rkTOL/MDwpqcUcJSDU7R2TbNB3A3xJ2VnQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(396003)(376002)(39860400002)(136003)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(26005)(2616005)(53546011)(6666004)(8676002)(6512007)(83380400001)(6862004)(7416002)(2906002)(6506007)(478600001)(4326008)(66946007)(66556008)(66476007)(6486002)(5660300002)(8936002)(316002)(37006003)(41300700001)(6636002)(38100700002)(82960400001)(31696002)(86362001)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NVZJUXNQOS8vVnRDMG1WTkp3OS9oYml2a3dCSDdXeG1rM2dNaU8wcFZJTWYz?=
+ =?utf-8?B?QUx4VXNWYk43Nk13QmRaei93ekpSSVFwZzdYeGZpTURqQmJvc24xRmdZV0lU?=
+ =?utf-8?B?NmdBUnRHSmVUaGJoaTZRSzZzVHNqaE96OFdyZlBPOCtreC9QWEF6K3RzZmha?=
+ =?utf-8?B?cmVjdjNxaHdEVVVMUXpLK0lOcHRuL0RWdThwZHNLMjE1SFBweWFOdGQ5UnRp?=
+ =?utf-8?B?QVVlVm9kcHJ3UzRxV2MzMDlKKy9zOGFYRUxYOHBRbTNLR1ZMOURqVnU2dDZy?=
+ =?utf-8?B?NVczeEo3TXViUjN3UWQxL3lIWitzcTFvVEVkZkZ4SUk1V1pXNWQrWmVIRUxz?=
+ =?utf-8?B?aHBzbm04L0dFQ1F6bnlrZk9WK29iTkcwR1Y4d1pKbHVUb3lVR3VuS1Azekc1?=
+ =?utf-8?B?TnZrenc2V0xwVHNjNllhOGtsRlpuekRnQnZ3aEFNOGlRNDJUVFBkWGRyV09h?=
+ =?utf-8?B?d3pPSnFsK3RCOHprVmhRVWNWenZocjhVL1pZdnE4eEdheVFVNnZoSGw2MTla?=
+ =?utf-8?B?MTBUWVVxTTJObm1YeDZCcnhVbFRCejd5cW9FN0ZKYnRZWDBVNVAzOHl1UnIx?=
+ =?utf-8?B?TEVjV0EwUTRYUGczZUdwTzRkeVp0bWF2SmxNWGp4Z09xMHQyTzc0TWdZR0VH?=
+ =?utf-8?B?dEVHbmxrK1FYL3Vzdnc3TWdvL0QvK2FvMitSUHJVWGdIa1VOSmg3MHhPbW9J?=
+ =?utf-8?B?QXZaMDZOYU9XNDllcWtqclRFaUp3RG44U3l2NzloOExTNDBnNlJYOWFOZjhj?=
+ =?utf-8?B?ZGdJTHR1d3V2cEVLekxqR0lhYllrbCtXeXhLMEdRSmF5aEgxeDhiaDZFRmVZ?=
+ =?utf-8?B?WnJ3TzlJaWtWWS9DbmN4WWRpdlRRd0NnWHhuSUh2YStPYW9BbjlVaHFZZHNY?=
+ =?utf-8?B?emlJL1UyQm1EaUtGQThHeW5zUVhrL0U0bXNsUm9Qa2FFVHN6aVpmTTBaMWtR?=
+ =?utf-8?B?MDROVXNtUmU3czQwbDRnRGo2eHl2WVlQMTdHWHFJSFlWRkdLMkhNNVQ5cjQv?=
+ =?utf-8?B?M1hkdmpwUktVODJBQVZ6alBlZUh0NitJMllsSHltanJZeWJ1K3l5SGJvMlUz?=
+ =?utf-8?B?TDI0VEN4WEFLTStVRnViNnR3dm0wYjdHUlI0UWFWRlVPZ3Fxc0U2OStWdWh3?=
+ =?utf-8?B?a3hINDdQRGlYS0tBY3p4YnYycWU0OTJOZFZOYXJWcVZjTFA4bXozNngweHJU?=
+ =?utf-8?B?WmYrUjN1RGI2bS80c3U2RDFLVXFlbUZPYmxGaitoOWFxNXlUeTdSbGdvU3Fp?=
+ =?utf-8?B?YXJ1ZVp0bWdUMmdWamluOVFWQmxlVGpxeGdDMFVGWUVzWTUxaTVsRlNMOE1p?=
+ =?utf-8?B?cFhBSlJrdXNHV0ZKeVY4VHhoUHVMZGVWbDYyZ3JWOGVuS0YvcEQ0ODlYeHVQ?=
+ =?utf-8?B?WWs0R0pnUlROb2ZvQWJPL0JtdFd4UndwRmUzYTYyWVdVd0VHQWg4dDh6VzRr?=
+ =?utf-8?B?R3hFbUVLVG5FWTliMnF1NkwwZlNRZzBlSmJoNlcwTHVSN1dRUGM4ME05ckU4?=
+ =?utf-8?B?eG1pcFBTdGRselFDN2c0UWJiNVlwTUpPQzFqOFNXbVBQVW82VVJKSUtCZmpy?=
+ =?utf-8?B?NGxlb3hqNVNFSk9URFNEVitiL0V0WFNjRXI3UkszRWdKbCswWlE3ZGM0UWRL?=
+ =?utf-8?B?SUx1TjNsaE1qazBTU0gyemlVVjJkVkk5WXlTU1RZRVFqbTU4cUJ3TEVlUUtP?=
+ =?utf-8?B?cStUY2pzai9TdlZmak1pelp3MnFpVmNuWlBDUFVsRnl1eFQyTkpUUGlRRlhT?=
+ =?utf-8?B?U2RsMDZNTGMyTTRnNE9tQnJNOTl1enQ1MjArZml4enlTR3Q5UGcrbktmTGxi?=
+ =?utf-8?B?dyttM1JTSUtMdjdVUk0rZHdGck5DT0tyQUM4TldxTmlrUjc0eVZyQmJpSTE4?=
+ =?utf-8?B?OXRMTHFHT2x2NHRKU1VUVnN5SmNGbHhycGhsK2tNVVhiTmVaUzVXNHgzRlg1?=
+ =?utf-8?B?dFQ5YVl6NzVyQTd4Y2ZCMDlKcWtmTmpVTVUvZ05Bc0p0S0ZUd1VIQ2dBb0pa?=
+ =?utf-8?B?SWlBcGsxbllobU9tUEhPRUErSndIVFpIeU80SVVNSldkU1FkbGdCVDBPdmVa?=
+ =?utf-8?B?UFFUU2NITnY2M0tOZGRUTkdUM0pDR2k0SFBJallBdmVKeEpLNi9rRnBQMHpM?=
+ =?utf-8?Q?NSnDEYJhAzIsLJRHMxaS+S4XZ?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7695727c-eb2b-4158-1f14-08dbc940634c
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 03:24:18.7637
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9115cc3c-f431-46b3-9c26-08dbc940b417
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF0002636C.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6114
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uq50BBWCLhpS/PsIAASEOY+8fcYxfdBBo+lFYOPINjYXwYGS2AOTbzNYvZk4xQwelt+RZAHdV4V1nKWAF3kGaQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6236
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These definitions are used fro qemu, and qemu imports this marco in the
-headers to enable gfxstream or venus for virtio gpu. So it should add it
-even kernel doesn't use this.
+On 2023/10/9 13:13, Yan Zhao wrote:
+> On Mon, Oct 09, 2023 at 12:13:52PM +0800, Yi Liu wrote:
+>> On 2023/10/7 18:08, Yan Zhao wrote:
+>>> On Thu, Sep 21, 2023 at 12:51:24AM -0700, Yi Liu wrote:
+>>>> From: Nicolin Chen <nicolinc@nvidia.com>
+>>>>
+>>>> The struct iommufd_hw_pagetable has been representing a kernel-managed
+>>>> HWPT, yet soon will be reused to represent a user-managed HWPT. These
+>>>> two types of HWPTs has the same IOMMUFD object type and an iommu_domain
+>>>> object, but have quite different attributes/members.
+>>>>
+>>>> Add a union in struct iommufd_hw_pagetable and group all the existing
+>>>> kernel-managed members. One of the following patches will add another
+>>>> struct for user-managed members.
+>>>>
+>>>> Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
+>>>> Signed-off-by: Yi Liu <yi.l.liu@intel.com>
+>>>> ---
+>>>>    drivers/iommu/iommufd/iommufd_private.h | 17 +++++++++++------
+>>>>    1 file changed, 11 insertions(+), 6 deletions(-)
+>>>>
+>>>> diff --git a/drivers/iommu/iommufd/iommufd_private.h b/drivers/iommu/iommufd/iommufd_private.h
+>>>> index 3064997a0181..947a797536e3 100644
+>>>> --- a/drivers/iommu/iommufd/iommufd_private.h
+>>>> +++ b/drivers/iommu/iommufd/iommufd_private.h
+>>>> @@ -231,13 +231,18 @@ int iommufd_vfio_ioas(struct iommufd_ucmd *ucmd);
+>>>>     */
+>>>>    struct iommufd_hw_pagetable {
+>>>>    	struct iommufd_object obj;
+>>>> -	struct iommufd_ioas *ioas;
+>>>>    	struct iommu_domain *domain;
+>>>> -	bool auto_domain : 1;
+>>>> -	bool enforce_cache_coherency : 1;
+>>>> -	bool msi_cookie : 1;
+>>>> -	/* Head at iommufd_ioas::hwpt_list */
+>>>> -	struct list_head hwpt_item;
+>>>> +
+>>>> +	union {
+>>>> +		struct { /* kernel-managed */
+>>>> +			struct iommufd_ioas *ioas;
+>>>> +			bool auto_domain : 1;
+>>> Will iommufd_hw_pagetable_put() also be called on non-kernel-managed domain?
+>>
+>> yes.
+>>
+>>> If yes, hwpt->user_managed needs to be checked in iommufd_hw_pagetable_put(),
+>>> (e.g. as below).
+>>> Otherwise, this union will lead to hwpt->ioas and hwpt->auto_domain still being
+>>> accessible though invalid.
+>>
+>> not quite get this sentence.
+> I mean with this union, hwpt->auto_domain or hwpt->ioas should only be accessed if and
+> only if hwpt type is kernel-managed.
 
-Signed-off-by: Huang Rui <ray.huang@amd.com>
----
+ok, I get this part. just not sure about the missing words in your prior 
+comment.
 
-Changes V1 -> V2:
-- Add all capsets including gfxstream and venus in kernel header (Dmitry Osipenko)
+> So, any unconditional access, as in iommufd_hw_pagetable_put() pasted below, is buggy.
+> 
+> Therefore, do you think it's better to add a filed like "bool kernel_managed : 1",
+> and access the union fields under  /* kernel-managed */ only when hwpt->kernel_managed
+> is true.
+> 
+> 
+>>
+>>>
+>>>    static inline void iommufd_hw_pagetable_put(struct iommufd_ctx *ictx,
+>>>                                               struct iommufd_hw_pagetable *hwpt)
+>>>    {
+>>> -       lockdep_assert_not_held(&hwpt->ioas->mutex);
+>>> -       if (hwpt->auto_domain)
+>>> +       if (!hwpt->user_managed)
+>>> +               lockdep_assert_not_held(&hwpt->ioas->mutex);
+>>
+>> this is true. this assert is not needed when hwpt is not kernel managed domain.
+>>
+>>> +
+>>> +       if (!hwpt->user_managed && hwpt->auto_domain)
+>>
+>> actually, checking auto_domain is more precise. There is hwpt which is
+>> neither user managed nor auto.
+> 
+> auto_domain is under union fields marked with kernel-managed only.
+> Access it without type checking is invalid.
 
-v1: https://lore.kernel.org/lkml/20230915105918.3763061-1-ray.huang@amd.com/
+I see. yes, should check user_managed as well. :)
 
- include/uapi/linux/virtio_gpu.h | 2 ++
- 1 file changed, 2 insertions(+)
+> struct iommufd_hw_pagetable {
+>          struct iommufd_object obj;
+>          struct iommu_domain *domain;
+> 
+>          void (*abort)(struct iommufd_object *obj);
+>          void (*destroy)(struct iommufd_object *obj);
+> 
+>          bool user_managed : 1;
+>          union {
+>                  struct { /* user-managed */
+>                          struct iommufd_hw_pagetable *parent;
+>                  };
+>                  struct { /* kernel-managed */
+>                          struct iommufd_ioas *ioas;
+>                          struct mutex mutex;
+>                          bool auto_domain : 1;
+>                          bool enforce_cache_coherency : 1;
+>                          bool msi_cookie : 1;
+>                          bool nest_parent : 1;
+>                          /* Head at iommufd_ioas::hwpt_list */
+>                          struct list_head hwpt_item;
+>                  };
+>          };
+> };
+> 
+>>
+>>>                   iommufd_object_deref_user(ictx, &hwpt->obj);
+>>>           else
+>>>                   refcount_dec(&hwpt->obj.users);
+>>> }
+>>>
+>>>> +			bool enforce_cache_coherency : 1;
+>>>> +			bool msi_cookie : 1;
+>>>> +			/* Head at iommufd_ioas::hwpt_list */
+>>>> +			struct list_head hwpt_item;
+>>>> +		};
+>>>> +	};
+>>>>    };
+>>>>    struct iommufd_hw_pagetable *
+>>>> -- 
+>>>> 2.34.1
+>>>>
+>>
+>> -- 
+>> Regards,
+>> Yi Liu
 
-diff --git a/include/uapi/linux/virtio_gpu.h b/include/uapi/linux/virtio_gpu.h
-index f556fde07b76..327792658bdc 100644
---- a/include/uapi/linux/virtio_gpu.h
-+++ b/include/uapi/linux/virtio_gpu.h
-@@ -309,6 +309,8 @@ struct virtio_gpu_cmd_submit {
- 
- #define VIRTIO_GPU_CAPSET_VIRGL 1
- #define VIRTIO_GPU_CAPSET_VIRGL2 2
-+#define VIRTIO_GPU_CAPSET_GFXSTREAM 3
-+#define VIRTIO_GPU_CAPSET_VENUS 4
- 
- /* VIRTIO_GPU_CMD_GET_CAPSET_INFO */
- struct virtio_gpu_get_capset_info {
 -- 
-2.25.1
-
+Regards,
+Yi Liu
