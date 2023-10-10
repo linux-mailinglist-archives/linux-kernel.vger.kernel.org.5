@@ -2,178 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6AB7BF403
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 09:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A4327BF405
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 09:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442431AbjJJHVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 03:21:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35378 "EHLO
+        id S1442481AbjJJHVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 03:21:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442422AbjJJHVa (ORCPT
+        with ESMTP id S1442479AbjJJHVp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 03:21:30 -0400
-Received: from IND01-MAX-obe.outbound.protection.outlook.com (mail-maxind01olkn2029.outbound.protection.outlook.com [40.92.102.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 228D2E3;
-        Tue, 10 Oct 2023 00:21:28 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jOSnPYZrHUHkGDNKEiP5B8h87n0D1LFlEOqFIcG4p6/qRi/TAUv7hi3gPHQ4O6Q8A+twwxsnjY6+50n/iYxVEPiQQIguAhTx6AFz+v3FSbdm3tkf9O7pl6kSQOYO+JbE51BDg/4YJ6kPG53iXBbSOWjqXqMptn5usqidDR0UQyWm1qRHpUt22ZnTvUsTVHBblAkCqFdDUtXv7wxYiFXtex2DGMeZW87Qwq8vowOXSXaLWlm/S98xxfj9lVPGNlOqxAK5JkALPVe2OPLwGWJnM/MfoRV2T56B2IVBhzeXSN1Gf1NzxoGpBEJeiP13dNMq+gHnGvair5yw3Eo3TbFDJA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uz7MOAMa+7vNi82tMaS6VkjbsM8RU/9cig/6gZcDcsg=;
- b=DV1Atvb02Eqo7xKrDT+Q56YfuKM34qLpsNyOKRMlbdWlAVjm3IlWpxiflR3gn2lUVYsVfwaxT9vu/DTCW/a/S4sfEWTXXDGQp11aXQd62IcLNCnY6uvyiyvQlH2wnHs8aZoVBcDJ7tXGnrIwUuXwTG20puP0O+T1FyEm0ES3BkdpSpbUXMtZezFffO2eTdBSOdW7UINIxXtzKWuK7KPyNf72Krd0cMhL79JsGF5Lj1ifJ1EPnT7k6TLqtLjOmMLnk5XnObj82rTUIl02U4Z9pFh5rnMGdAvT0nbRgd5kPlZrCFp/e+WAOgXyxuShOGzc614Nr0BoVwSY8xw8eU3GNg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uz7MOAMa+7vNi82tMaS6VkjbsM8RU/9cig/6gZcDcsg=;
- b=b1vJLq6UEDksw+ExaELzVQ6Y6M9Xgplf5HoBoUavPzPUJaLJP57f9HuqVZ8GUXIXocrZNHjBq2THdsh4B4T+9yj0PoVfSORCcX4UbOwsnOvuhdlCiYMfxHe9hfy4un0jEcibSqgFlKDnRpoeTL1P85gM+hxomBZSuKjDe8Rt2jiVPRes/mmPN5ShzT0wq1+EXWrbTbIib48NCMEG8Q0bsdhOSwJSerkU4EBsnIzoAZ+0stTV2MnLAy0evBH2py7F1wC1TTtliTT4EYorHtsBeuHCgv7xxjOPPxvIrxYALvSTXc4s+Ynt2J4aPHdTvWaDU00K/r1irOr9NiRrnea54w==
-Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:ab::5) by
- PN3P287MB1537.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:191::11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6863.38; Tue, 10 Oct 2023 07:21:21 +0000
-Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
- ([fe80::efe9:8d54:281b:23f7]) by MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
- ([fe80::efe9:8d54:281b:23f7%3]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
- 07:21:21 +0000
-Message-ID: <MA0P287MB03321A9E3F3D8415DB9552B5FECDA@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
-Date:   Tue, 10 Oct 2023 15:21:16 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 6/7] riscv: dts: sophgo: add initial CV1812H SoC device
- tree
-To:     Inochi Amaoto <inochiama@outlook.com>,
-        Chao Wei <chao.wei@sophgo.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     Jisheng Zhang <jszhang@kernel.org>, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <IA1PR20MB49531C1C34C3E972DBBA4151BBCEA@IA1PR20MB4953.namprd20.prod.outlook.com>
- <20231009112642.477337-1-inochiama@outlook.com>
- <IA1PR20MB4953262ABB6EFFBC4B4F932BBBCEA@IA1PR20MB4953.namprd20.prod.outlook.com>
-From:   Chen Wang <unicorn_wang@outlook.com>
-In-Reply-To: <IA1PR20MB4953262ABB6EFFBC4B4F932BBBCEA@IA1PR20MB4953.namprd20.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TMN:  [3kEYBiWBpnwu0riTAOQDKZ4g9QLOpHHp]
-X-ClientProxiedBy: SI2P153CA0012.APCP153.PROD.OUTLOOK.COM
- (2603:1096:4:140::15) To MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a01:ab::5)
-X-Microsoft-Original-Message-ID: <095cd885-e2ff-4f3b-8d39-4958214efeec@outlook.com>
+        Tue, 10 Oct 2023 03:21:45 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE68392;
+        Tue, 10 Oct 2023 00:21:43 -0700 (PDT)
+Received: from ideasonboard.com (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 596E33D6;
+        Tue, 10 Oct 2023 09:21:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1696922500;
+        bh=1cyXPcG1hvJgf3dDnfetJVDrY9Kmi4/216HZOH9llbQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V4G8z3ahN+sUfwQQnWk54kGwqiF6j48AChfW3Mztl8anv9KIc2XADnSDc19LS0nBk
+         5yIjz6tc7isOGU3C/6fpksSyZJeYImZtE1tSsQxaTac5aatGiBpa8OOTk48mTFwCj5
+         B7i4pzemiyq9urppvArbUF7Z2TuIfvtDawN+HL+4=
+Date:   Tue, 10 Oct 2023 09:21:39 +0200
+From:   Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+To:     =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
+Cc:     linux-rockchip@lists.infradead.org,
+        Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
+        Nicholas Roth <nicholas@rothemail.net>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "open list:OMNIVISION OV8858 SENSOR DRIVER" 
+        <linux-media@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] media: i2c: ov8858: Don't set fwnode in the driver
+Message-ID: <xlw4t6xxq64pbloppn73gh624s3ji2773tmeigxk5cmwy6b2u3@5vofchxdwox2>
+References: <20231010070747.1781612-1-megi@xff.cz>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MA0P287MB0332:EE_|PN3P287MB1537:EE_
-X-MS-Office365-Filtering-Correlation-Id: afbc8ecc-e1ec-4f10-b5c9-08dbc9617fed
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RqDVRrp7ua2RJhy8/51AEeRbo9mO898xFe/C7wNo6RU2fEklnvuNRvDpdS7TMMg1E/S2gKEQInAvp3evl9FUDSsz/fwwQRNf8hfM4oCbwuxZTj1IRbkEbzoKHA4/Ulx4i6/OYw2hDZ+WQQ1U3eGtkjQPKM6+9QMYV5JeOCq+I/W/3jE38NHhAJRbwRhBXFvqnH6dJwBSboO8o01zko9kuj9mFEpyUEzDzJrfmjs+dDaWhFxPwea//Tr+OypTtA2JY3ompjwyq1Ey9XaNsDU9hUbL+kdD1aehflo+ZsXgFUVf9x0UDK+8cFLmBEd/mRmwSF8QtqVbRSrJvbyzHX2LmLV7iN3L/SfElp7/mUyuJ+zPo39MGp5R4AqWugechRZNP2MvsMKGE/BWugNg5MBb06il6GT6G38skXNoTqHpnNWKv8Bze9izYUsAqDbG0ulCbUcfxikmcBbCGDV6Gbsz5SqJR5Q9QDkingqH071et8gozv2nD44By9VOX9dPhpX5f9yIZvsYwL0UybM0i2CSPhJHcsXM2hWyl8Nbx+K/9HrGw/Ti+MNTMXA5jJOej7pX
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U05nNFFYblZoTDRZNGhEMTNINjB5ajZXdzgxL1RhVWZXcCtEaUtuclBEaUlK?=
- =?utf-8?B?SHN3UGVabU8xSXBGLytJdXhIcEc1aElxN01xZ1dITTZhSmJjOTJnU3F4OXln?=
- =?utf-8?B?ZzdPSHNxNHU3R0dKS0FWaXkrL085bmh6bldZWDVGYlhneHl5N3IxekNMc1lS?=
- =?utf-8?B?WmlwTG0vVDRtSHpuQnl0WFNGRFNuelcrNWhvS0JGMCtIL2V2ejV4ZmRncWgw?=
- =?utf-8?B?ZUFuRXVDaTBwME5ZMUcwdGpCcDFFaURiaGh4eWJkMWE1dE5MS0F2OHBiajJE?=
- =?utf-8?B?aTFhQlVUZDg2dzR0UnFKV1JSYklmdDU5a0FCQk5JMmdwT25oWHNVUzN0ZC9l?=
- =?utf-8?B?UndTQkRiT2hYcXVlZThsYUp3d1Bkby85ZFBuSTUrRW8wZ3NKR0VwREpYc1hG?=
- =?utf-8?B?U0lZR20rdkRYNXNxZjdpUXNmcXcrL1llOHI2bHYvbEZ3RllNVzJ4M0JWdCsx?=
- =?utf-8?B?RFBRUmc4bDQwajlPVXBzN2NqZ3hPSmdHdjBpYldiSjYxOUFMRThOQnkvV09Q?=
- =?utf-8?B?S1ZqVjZZVStEd3VpY3hqT2VacGdkMnFDUm8wUFZGUmFKamMvYzJLNEd6b3J4?=
- =?utf-8?B?MlFWWnRtTlBMZ3VRQ0JySnl5RDNBRE01bUdYYWF6dDJoVlI1L2xuR2xzZTJO?=
- =?utf-8?B?Q3BkR0Z1WkZwMlFucWx6Sk5yNHNNWm5NZ3JLYjRBVnE3UXJPVGtkVWVTYnhz?=
- =?utf-8?B?SWdYMjQrMDVERmQ2endCbW52bGFWaEptM3VSWUNibkhNZFVxMGRGSnZlejhQ?=
- =?utf-8?B?bURNK0RrRmVKdkx2Ui9yMGlhcHhvN2hrVHA3dDE5ZVNGaFdXSWlhVEtIcFpP?=
- =?utf-8?B?T0lCMmJSbGJCcWpaMVJqdDJzUlIrUVlvaC9oTXVzbkoyK2ttSWZLVzErS1Nu?=
- =?utf-8?B?bU5rcVBGTTdxQlpDMmcxamZ5UnJKOXB3TFBQQUxPdFZiYWsvMUxhajQyR0VP?=
- =?utf-8?B?MGhwalJxT1NWRXNIZ0VpZ0xPVFh5dFhHbVhWQlJIcXBQb00zUk5IcjlrenNx?=
- =?utf-8?B?aVFiZnp4bGZienlYUG1PVWI2OEpONXlDUjZuZFlwTldCZkVZbEcwMTdVb3RX?=
- =?utf-8?B?TkhCWG1GRHllOHA1ZlY4VWtERitFcFdGbHY5ZTc5c05kWldBS1JxS25ZcE00?=
- =?utf-8?B?RTVTNUdRY21zMytBdGNmNCt5WVFpYXloUlIvRW50cVZ2cEZ2czhiMWJqUFRF?=
- =?utf-8?B?c2k4SVJzOEFrUnRicXdlVEFrcU5FeW13UHFZZElLMmE4VlJoYlYzRHJJUjlC?=
- =?utf-8?B?L3R0RVJlYlYzbXdua1N1cGFZMWMyWC9FMmR2M2pOdmgvcWJ2LytZeE5zNERT?=
- =?utf-8?B?M0YxMG5ISzh6TkwvVlZ4b1B4Q0hKRnl4QkZJd2dWekcwVHlwN1F6Tk9pcjVy?=
- =?utf-8?B?QUErVjhlRHhpZSs4TkhEOG1KbEp5SnpLZXZzRDdKeTRQTDVMTTZ6c2s5VjFj?=
- =?utf-8?B?U1NhZTdVQ2dYWXZHUnBlZUpoRE5pZmlUeWlRalFIUG1aL0VNeEh5SGpHcjdX?=
- =?utf-8?B?V1NNYUZ5b2NxY2dOWndzb0hyS0NIRWxiQXEwWWZiMWNYZVFkWU5QZVIyb3dP?=
- =?utf-8?B?SWkyOGkrc1IvSGVmYXhhSkVxbDRJVTJtdkw1TFdkblArSXkwY1lGd2RwTjRt?=
- =?utf-8?Q?4od8gGK5rsa2ucIBUUffOjZbuKM4GPir4LoLkDvKDv0g=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: afbc8ecc-e1ec-4f10-b5c9-08dbc9617fed
-X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 07:21:21.5690
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN3P287MB1537
-X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231010070747.1781612-1-megi@xff.cz>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Ondřej
 
-On 2023/10/9 19:26, Inochi Amaoto wrote:
-> Add initial device tree for the CV1812H RISC-V SoC by SOPHGO.
+On Tue, Oct 10, 2023 at 09:07:44AM +0200, Ondřej Jirman wrote:
+> From: Ondrej Jirman <megi@xff.cz>
 >
-> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+> This makes the driver work with the new check in
+> v4l2_async_register_subdev() that was introduced recently in 6.6-rc1.
+> Without this change, probe fails with:
+>
+> ov8858 1-0036: Detected OV8858 sensor, revision 0xb2
+> ov8858 1-0036: sub-device fwnode is an endpoint!
+> ov8858 1-0036: v4l2 async register subdev failed
+> ov8858: probe of 1-0036 failed with error -22
+>
+> This also simplifies the driver a bit.
+>
+> Signed-off-by: Ondrej Jirman <megi@xff.cz>
+
+Reviewed-by: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+
+Thanks!
+
 > ---
->   arch/riscv/boot/dts/sophgo/cv1812h.dtsi | 36 +++++++++++++++++++++++++
->   1 file changed, 36 insertions(+)
->   create mode 100644 arch/riscv/boot/dts/sophgo/cv1812h.dtsi
+> v2:
+> - call fwnode_handle_put earlier to avoid multiple calls to it in
+>   error code paths (suggested by Jacopo Mondi)
 >
-> diff --git a/arch/riscv/boot/dts/sophgo/cv1812h.dtsi b/arch/riscv/boot/dts/sophgo/cv1812h.dtsi
-> new file mode 100644
-> index 000000000000..3864d34b0100
-> --- /dev/null
-> +++ b/arch/riscv/boot/dts/sophgo/cv1812h.dtsi
-> @@ -0,0 +1,36 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Copyright (C) 2023 Inochi Amaoto <inochiama@outlook.com>
-> + */
-> +
-> +#include <dt-bindings/interrupt-controller/irq.h>
-This include is not required.
-> +#include "cv180x.dtsi"
-> +
-> +/ {
-> +	compatible = "sophgo,cv1812h";
-> +
-> +	memory@80000000 {
-> +		device_type = "memory";
-> +		reg = <0x80000000 0x10000000>;
-> +	};
-What's this defined for , I see this is different against cv1800b.
-> +
-> +	soc {
-> +		interrupt-parent = <&plic>;
-> +
-> +		plic: interrupt-controller@70000000 {
-> +			compatible = "sophgo,cv1812h-plic", "thead,c900-plic";
-> +			reg = <0x70000000 0x4000000>;
-> +			interrupts-extended = <&cpu0_intc 11>, <&cpu0_intc 9>;
-> +			interrupt-controller;
-> +			#address-cells = <0>;
-> +			#interrupt-cells = <2>;
-> +			riscv,ndev = <101>;
-> +		};
-> +
-> +		clint: timer@74000000 {
-> +			compatible = "sophgo,cv1812h-clint", "thead,c900-clint";
-> +			reg = <0x74000000 0x10000>;
-> +			interrupts-extended = <&cpu0_intc 3>, <&cpu0_intc 7>;
-> +		};
-> +	};
-> +};
+>  drivers/media/i2c/ov8858.c | 10 ++--------
+>  1 file changed, 2 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/media/i2c/ov8858.c b/drivers/media/i2c/ov8858.c
+> index 3af6125a2eee..4d9fd76e2f60 100644
+> --- a/drivers/media/i2c/ov8858.c
+> +++ b/drivers/media/i2c/ov8858.c
+> @@ -1850,9 +1850,9 @@ static int ov8858_parse_of(struct ov8858 *ov8858)
+>  	}
+>
+>  	ret = v4l2_fwnode_endpoint_parse(endpoint, &vep);
+> +	fwnode_handle_put(endpoint);
+>  	if (ret) {
+>  		dev_err(dev, "Failed to parse endpoint: %d\n", ret);
+> -		fwnode_handle_put(endpoint);
+>  		return ret;
+>  	}
+>
+> @@ -1864,12 +1864,9 @@ static int ov8858_parse_of(struct ov8858 *ov8858)
+>  	default:
+>  		dev_err(dev, "Unsupported number of data lanes %u\n",
+>  			ov8858->num_lanes);
+> -		fwnode_handle_put(endpoint);
+>  		return -EINVAL;
+>  	}
+>
+> -	ov8858->subdev.fwnode = endpoint;
+> -
+>  	return 0;
+>  }
+>
+> @@ -1913,7 +1910,7 @@ static int ov8858_probe(struct i2c_client *client)
+>
+>  	ret = ov8858_init_ctrls(ov8858);
+>  	if (ret)
+> -		goto err_put_fwnode;
+> +		return ret;
+>
+>  	sd = &ov8858->subdev;
+>  	sd->flags |= V4L2_SUBDEV_FL_HAS_DEVNODE | V4L2_SUBDEV_FL_HAS_EVENTS;
+> @@ -1964,8 +1961,6 @@ static int ov8858_probe(struct i2c_client *client)
+>  	media_entity_cleanup(&sd->entity);
+>  err_free_handler:
+>  	v4l2_ctrl_handler_free(&ov8858->ctrl_handler);
+> -err_put_fwnode:
+> -	fwnode_handle_put(ov8858->subdev.fwnode);
+>
+>  	return ret;
+>  }
+> @@ -1978,7 +1973,6 @@ static void ov8858_remove(struct i2c_client *client)
+>  	v4l2_async_unregister_subdev(sd);
+>  	media_entity_cleanup(&sd->entity);
+>  	v4l2_ctrl_handler_free(&ov8858->ctrl_handler);
+> -	fwnode_handle_put(ov8858->subdev.fwnode);
+>
+>  	pm_runtime_disable(&client->dev);
+>  	if (!pm_runtime_status_suspended(&client->dev))
 > --
 > 2.42.0
 >
