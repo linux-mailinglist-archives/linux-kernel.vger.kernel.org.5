@@ -2,102 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7C27C008F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:44:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2587C0096
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233440AbjJJPoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 11:44:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46716 "EHLO
+        id S233532AbjJJPof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 11:44:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233517AbjJJPn4 (ORCPT
+        with ESMTP id S233512AbjJJPod (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 11:43:56 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5EA9F93
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:43:54 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D059CC15;
-        Tue, 10 Oct 2023 08:44:34 -0700 (PDT)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.30.195])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6CA503F7A6;
-        Tue, 10 Oct 2023 08:43:52 -0700 (PDT)
-Date:   Tue, 10 Oct 2023 16:43:49 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Yicong Yang <yangyicong@huawei.com>
-Cc:     maz@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
-        tglx@linutronix.de, jonathan.cameron@huawei.com,
-        prime.zeng@huawei.com, wanghuiqiang@huawei.com,
-        wangwudi@hisilicon.com, guohanjun@huawei.com,
-        yangyicong@hisilicon.com, linuxarm@huawei.com
-Subject: Re: [RFC PATCH 0/3] Add HiSilicon system timer driver
-Message-ID: <ZSVxNanrFunWZLNm@FVFF77S0Q05N.cambridge.arm.com>
-References: <20231010123033.23258-1-yangyicong@huawei.com>
+        Tue, 10 Oct 2023 11:44:33 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D84B6;
+        Tue, 10 Oct 2023 08:44:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F010CC433C7;
+        Tue, 10 Oct 2023 15:44:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696952671;
+        bh=Ysfj3tASnZsm0LsPvesZ/F3r/9kf+qCznBqcA1tmt0U=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=teHIhOEADPw4Mu/kF5qYr134rDmns9sAynWZn4m6LlcWTj1XaJBPCvRuk+8Xe4uAO
+         F3/DgVQKJ+aQmVBmel5AUlK3C3LWsLae/ATnIt7l3rJLNbhf7otdcOYZITPBWoU55j
+         7LCDyqJ03imKInjGjZJayKH+7nvVHX36kB8/tKbXv+tG6aIkCVdDDYBMjofHJT9nfT
+         Wf0XY55TllvBBhebpzw8S7mYpBkthznN9e+MmLEXIU/ppT6ACmuC6kGxjDTgmOztwf
+         5V8+lzH0U/Vy+Yaf9cifVyjVojkWlkzblK88hTiWcXwmaBcZ7T7eLlvOGvFr+sCrOT
+         nDImDWEhQXZyA==
+From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
+To:     hch@infradead.org, Frank Li <Frank.Li@nxp.com>
+Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>, bhelgaas@google.com,
+        christophe.jaillet@wanadoo.fr, imx@lists.linux.dev, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        minghuan.Lian@nxp.com, mingkai.hu@nxp.com, robh@kernel.org,
+        roy.zang@nxp.com
+Subject: Re: [PATCH v3 1/1] PCI: layerscape-ep: set 64-bit DMA mask
+Date:   Tue, 10 Oct 2023 17:44:23 +0200
+Message-Id: <169695244699.95067.12901655371819245761.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230926140445.3855365-1-Frank.Li@nxp.com>
+References: <20230926140445.3855365-1-Frank.Li@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231010123033.23258-1-yangyicong@huawei.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Tue, Oct 10, 2023 at 08:30:30PM +0800, Yicong Yang wrote:
-> From: Yicong Yang <yangyicong@hisilicon.com>
+On Tue, 26 Sep 2023 10:04:45 -0400, Frank Li wrote:
+> Set DMA mask and coherent DMA mask to enable 64-bit addressing.
 > 
-> HiSilicon system timer is a memory mapped platform timer compatible with
-> the arm's generic timer specification. The timer supports both SPI and
-> LPI interrupt and can be enumerated through ACPI DSDT table. Since the
-> timer is fully compatible with the spec, it can reuse most codes of the
-> arm_arch_timer driver. However since the arm_arch_timer driver only
-> supports GTDT and SPI interrupt, this series support the HiSilicon system
-> timer by:
 > 
-> - refactor some of the arm_arch_timer codes and export the function to
->   register a arch memory timer by other drivers
-> - retrieve the IO memory and interrupt resource through DSDT in a separate
->   driver, then setup and register the clockevent device reuse the arm_arch_timer
->   function
-> 
-> Using LPI for the timer is mentioned in BSA Spec section 3.8.1 (DEN0094C 1.0C).
 
-This seems like an oversight; there *should* be a generic way of describing
-this, and I've poked our BSA and ACPI architects to figure out how this is
-supposed to work. The lack of a way to do that seems like a major oversight and
-something that needs to be solved.
+Read this:
+https://lore.kernel.org/linux-pci/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com
 
-I'll try to get back to you shortly on that.
+Find the issue with the commit log (that I fixed).
 
-Regardless of that, I do not think this should be a separate driver, and I'm
-very much not keen on having vendor-specific companion drivers like this. Using
-LPIs isn't specific to HiSilicon, and this should be entirely common (and if we
-need a DSDT device, should use a common HID too).
+This does not apply to v6.6-rc1 so I tweaked it,
+check that everything is OK please.
+
+Applied to controller/layerscape, thanks!
+
+[1/1] PCI: layerscape-ep: set 64-bit DMA mask
+      https://git.kernel.org/pci/pci/c/81ef01bc5934
 
 Thanks,
-Mark.
-
-> 
-> Yicong Yang (3):
->   clocksource/drivers/arm_arch_timer: Split the function of
->     __arch_timer_setup()
->   clocksource/drivers/arm_arch_timer: Extend and export
->     arch_timer_mem_register()
->   clocksource/drivers: Add HiSilicon system timer driver
-> 
->  drivers/clocksource/Kconfig          |  10 +++
->  drivers/clocksource/Makefile         |   1 +
->  drivers/clocksource/arm_arch_timer.c | 123 +++++++++++++++------------
->  drivers/clocksource/timer-hisi-sys.c |  68 +++++++++++++++
->  include/clocksource/arm_arch_timer.h |   2 +
->  5 files changed, 148 insertions(+), 56 deletions(-)
->  create mode 100644 drivers/clocksource/timer-hisi-sys.c
-> 
-> -- 
-> 2.24.0
-> 
+Lorenzo
