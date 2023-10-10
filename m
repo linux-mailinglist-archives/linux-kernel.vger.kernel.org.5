@@ -2,143 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C9A7BF0E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 04:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1627BF0E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 04:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441858AbjJJC0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 22:26:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42110 "EHLO
+        id S1441867AbjJJC1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 22:27:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378796AbjJJC0r (ORCPT
+        with ESMTP id S1379403AbjJJC1v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 22:26:47 -0400
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F6AF93
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 19:26:46 -0700 (PDT)
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1dd6128352cso683111fac.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 19:26:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1696904805; x=1697509605; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=k6bZ4QRaLewauuynMhGijeUR1ZbN0za+0iHRlPIpluA=;
-        b=PbYDA1r33CRH/QbaF1xn0hq91Rj6kwmpCx4m9clWsPg70adzjBjF5oXriAH0pcv5HG
-         NbeHxJSTc7vyje+bve+oPqROFDaRXru5S4W5Xy+mq8jVTHffPKT46XlV+pTNCesGRoY7
-         wDLln1x3JH/cdyieWrzPCvtjGkFcy0zRsGd8hejUlyWGXr2VvaaV+GV8dZfLlAHVE+Pz
-         O7ZT1pxVZyyL3stlUfqdiOio74YD1i58EOMc0bFMb1mF8fJ8jOOAEa8umBuAtIhLgUKK
-         FmOD4eXyITyilRgLZgqqnA2cpw7+aJM2ScOmhAaNTz+XqxqAnyZl1YyRnuh+y3irJUGl
-         5mYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696904805; x=1697509605;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k6bZ4QRaLewauuynMhGijeUR1ZbN0za+0iHRlPIpluA=;
-        b=o2cz6dWQ9/Jf+wPZ/IhYBN2w8OzPHMvIYl2qW+ie6GmTAzBRyLmLZLw+8Yp4cZk5xC
-         VeqDxuoTlHSU5Gzg1w0L3d01KGqZYgdMtbL6Dh81kl89wlAXPxHl5FUZ5/cbjg4+ewoQ
-         xqZO9zhu47Cy4/EU6g2W5840WGV+WBDdQaCvNO0Nclbgr+WYPK+g7A2qEqVb77ibubao
-         lRVLWekufTl024E9kQGpF4ujTwKYP+DhmBNmMJKwLSKI7OnrAfj5YhhxQxq07sAWE6gm
-         QlVo/8yF7LeXSfTL0pKP4iqVlxZgRqoRURcPrhkVzP2EickOHW9pYPaUCkpZm+bGmNpp
-         jvdw==
-X-Gm-Message-State: AOJu0Yy3BDLtwwpBTPtKBq7i6X2t2YdZ7ZLHorKOXfxWsMb6T1bH+lP7
-        arZmr1IoQjw8U9cCNOtr5Q4cfg==
-X-Google-Smtp-Source: AGHT+IFNMfNUnQAw7Ukgw85jFGTqS0jfqdmMiuCZUaFcEa86nIOtKLHkoMXr8LRVeXlaGvzRXU8H/A==
-X-Received: by 2002:a05:6870:561e:b0:1d5:53c0:c1fe with SMTP id m30-20020a056870561e00b001d553c0c1femr17976060oao.3.1696904805328;
-        Mon, 09 Oct 2023 19:26:45 -0700 (PDT)
-Received: from [10.84.155.153] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id fe1-20020a056a002f0100b00690c52267easm7041036pfb.40.2023.10.09.19.26.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 19:26:44 -0700 (PDT)
-Message-ID: <822387b7-4895-4e64-5806-0f56b5d6c447@bytedance.com>
-Date:   Tue, 10 Oct 2023 10:26:39 +0800
+        Mon, 9 Oct 2023 22:27:51 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 62E31A4
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 19:27:50 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D172B1FB;
+        Mon,  9 Oct 2023 19:28:30 -0700 (PDT)
+Received: from [10.163.61.202] (unknown [10.163.61.202])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BEF673F7A6;
+        Mon,  9 Oct 2023 19:27:47 -0700 (PDT)
+Message-ID: <09877594-7d03-4f30-aec8-a0573bf295b8@arm.com>
+Date:   Tue, 10 Oct 2023 07:57:45 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH] mm: add printf attribute to shrinker_debugfs_name_alloc
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] driver: perf: arm_pmuv3: Read PMMIR_EL1 unconditionally
+To:     James Clark <james.clark@arm.com>,
+        linux-arm-kernel@lists.infradead.org, zhangshaokun@hisilicon.com
+Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org
+References: <20231009075631.193208-1-anshuman.khandual@arm.com>
+ <ffb41c00-1df8-e4bb-deff-c2d1cfb15ec0@arm.com>
 Content-Language: en-US
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Lucy Mielke <lucymielke@icloud.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <ZSBue-3kM6gI6jCr@mainframe>
- <20231009175006.326e61e6c0e46e6ce78699ff@linux-foundation.org>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <20231009175006.326e61e6c0e46e6ce78699ff@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <ffb41c00-1df8-e4bb-deff-c2d1cfb15ec0@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi James,
 
-On 2023/10/10 08:50, Andrew Morton wrote:
-> On Fri, 6 Oct 2023 22:30:51 +0200 Lucy Mielke <lucymielke@icloud.com> wrote:
+On 10/9/23 14:29, James Clark wrote:
 > 
->> This fixes a compiler warning when compiling an allyesconfig with W=1:
+> 
+> On 09/10/2023 08:56, Anshuman Khandual wrote:
+>> PMMIR_EL1 needs to be captured in 'armpmu->reg_pmmir', for all appropriate
+>> PMU version implementations where the register is available and reading it
+>> is valid . Hence checking for bus slot event presence is redundant and can
+>> be dropped.
 >>
->> mm/internal.h:1235:9: error: function might be a candidate for ‘gnu_printf’
->> format attribute [-Werror=suggest-attribute=format]
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Mark Rutland <mark.rutland@arm.com>
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>> This applies on v6.6-rc5.
+>>  
+>>  drivers/perf/arm_pmuv3.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
+>> index 1e72b486c033..9fc1b6da5106 100644
+>> --- a/drivers/perf/arm_pmuv3.c
+>> +++ b/drivers/perf/arm_pmuv3.c
+>> @@ -1129,7 +1129,7 @@ static void __armv8pmu_probe_pmu(void *info)
+>>  			     pmceid, ARMV8_PMUV3_MAX_COMMON_EVENTS);
+>>  
+>>  	/* store PMMIR register for sysfs */
+>> -	if (is_pmuv3p4(pmuver) && (pmceid_raw[1] & BIT(31)))
+>> +	if (is_pmuv3p4(pmuver))
+>>  		cpu_pmu->reg_pmmir = read_pmmir();
+>>  	else
+>>  		cpu_pmu->reg_pmmir = 0;
 > 
-> Thanks.  I added
 > 
-> Fixes: c42d50aefd17 ("mm: shrinker: add infrastructure for dynamically allocating shrinker")
+> This does have the side effect of showing non-zero values in caps/slots
+> even when the STALL_SLOT event isn't implemented. I think that's the
+> scenario that the original commit (f5be3a61fd) was trying to avoid:
+
+But the the sysfs interface is supposed to show all the PMMIR_EL1 based
+HW attributes as captured irrespective of bus slots event's presence as
+the register could be read on ARMv8.4-PMU without additional conditions
+imposed upon from the architecture.
+
 > 
-> to this.
+>   /sys/bus/event_source/devices/armv8_pmuv3_0/caps/slots is exposed
+>   under sysfs. [If] Both ARMv8.4-PMU and STALL_SLOT event are
+>   implemented, it returns the slots from PMMIR_EL1, otherwise it will
+>   return 0.
 
-Thanks.
+But that additional requirement of STALL_SLOT event is just SW mandated
+without any architectural backing.
 
 > 
->> --- a/mm/internal.h
->> +++ b/mm/internal.h
->> @@ -1229,8 +1229,8 @@ unsigned long shrink_slab(gfp_t gfp_mask, int nid, struct mem_cgroup *memcg,
->>   			  int priority);
->>   
->>   #ifdef CONFIG_SHRINKER_DEBUG
->> -static inline int shrinker_debugfs_name_alloc(struct shrinker *shrinker,
->> -					      const char *fmt, va_list ap)
->> +static inline __printf(2, 0) int shrinker_debugfs_name_alloc(
->> +			struct shrinker *shrinker, const char *fmt, va_list ap)
->>   {
->>   	shrinker->name = kvasprintf_const(GFP_KERNEL, fmt, ap);
+> I can't really think of a scenario where that would be an issue, and the
+> availability of the STALL_SLOT event is already discoverable from
+> userspace through the events folder, so it's probably fine.
 
-And there is also a warning introduced by c42d50aefd17:
+Absolutely.
 
-mm/shrinker.c: In function 'shrinker_alloc':
-mm/shrinker.c:688:2: error: function 'shrinker_alloc' might be a 
-candidate for 'gnu_printf' format attribute 
-[-Werror=suggest-attribute=format]
-   688 |  err = shrinker_debugfs_name_alloc(shrinker, fmt, ap);
-       |  ^~~
+> 
+> Adding the original author just in case. But otherwise:
+> 
+> Reviewed-by: James Clark <james.clark@arm.com>
 
-This also needs to be fixed:
-
-diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
-index e4f93120e0ab..1a00be90d93a 100644
---- a/include/linux/shrinker.h
-+++ b/include/linux/shrinker.h
-@@ -131,6 +131,7 @@ struct shrinker {
-   */
-  #define SHRINKER_NONSLAB       BIT(4)
-
-+__printf(2, 3)
-  struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, ...);
-  void shrinker_register(struct shrinker *shrinker);
-  void shrinker_free(struct shrinker *shrinker);
-
-Other than that, LGTM.
-
-Reviewed-by: Qi Zheng <zhengqi.arch@bytedance.com>
-
-Thanks,
-Qi
-
->>   
->> -- 
->> 2.42.0
+Thanks !
