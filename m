@@ -2,96 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0BA07BFD4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 777A37BFD31
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232164AbjJJNXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 09:23:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39668 "EHLO
+        id S231959AbjJJNVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 09:21:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232182AbjJJNXH (ORCPT
+        with ESMTP id S231400AbjJJNVA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 09:23:07 -0400
-Received: from mail.helmholz.de (mail.helmholz.de [217.6.86.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C99AA7
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 06:22:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=helmholz.de
-        ; s=dkim1; h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date
-        :Subject:CC:To:From:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=93Dtf4ueCONiAn1Ab9gtN3cKkbSaUtJ5fvdA41bWLUc=; b=fyVYATsKeZCJapMQuZA7f8ixRH
-        j1C3GcA68mA7DDDOAdqN9Ktb+pWCkP9Ka5+zgdLAjkyQfc/nO4EKv9AwSKGFRGaaJ6NbwK7ylXFgM
-        i4LSvKkhYIrKQ8v/T+WL9H+r/2fbPvvsojQw7/9xF9DZoFxl06nGKnDGVhWkSJQZ4JOFiYOotDKSV
-        83RqSOh2dBRQTZL/8s9NI2T2dHESC5wD0AbotDUUuTeDV9b9tFiddF6XagbPvukcqN77vLjNdxTK9
-        1/66KXBYKN7znKQ1n9glmMS5UN+u48Am1Q61YdSaxF7IV/o0NOOBB+ryZlwDtg+jnxhCTD8YoJmZa
-        UCQoZ2Kg==;
-Received: from [192.168.1.4] (port=20319 helo=SH-EX2013.helmholz.local)
-        by mail.helmholz.de with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
-        (Exim 4.96)
-        (envelope-from <Ante.Knezic@helmholz.de>)
-        id 1qqCdY-0001j6-16;
-        Tue, 10 Oct 2023 15:19:00 +0200
-Received: from linuxdev.helmholz.local (192.168.6.7) by
- SH-EX2013.helmholz.local (192.168.1.4) with Microsoft SMTP Server (TLS) id
- 15.0.1497.48; Tue, 10 Oct 2023 15:18:59 +0200
-From:   Ante Knezic <ante.knezic@helmholz.de>
-To:     <netdev@vger.kernel.org>
-CC:     <woojung.huh@microchip.com>, <andrew@lunn.ch>,
-        <f.fainelli@gmail.com>, <olteanv@gmail.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <marex@denx.de>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <UNGLinuxDriver@microchip.com>,
-        Ante Knezic <ante.knezic@helmholz.de>
-Subject: [PATCH net-next 2/2] dt-bindings: net: microchip,ksz: document microchip,rmii-clk-internal
-Date:   Tue, 10 Oct 2023 15:18:54 +0200
-Message-ID: <df8490e3a39a6daa66c5a0dd266d9f4a388dfe7b.1693482665.git.ante.knezic@helmholz.de>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <cover.1693482665.git.ante.knezic@helmholz.de>
-References: <cover.1693482665.git.ante.knezic@helmholz.de>
+        Tue, 10 Oct 2023 09:21:00 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB3991;
+        Tue, 10 Oct 2023 06:20:58 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-2799b7280d1so3570046a91.1;
+        Tue, 10 Oct 2023 06:20:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696944058; x=1697548858; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Zby/4uZ4iToEHOr+VEOppCbzLD2G246ojA6jq62b6h4=;
+        b=g6lpBclrO+f/cwaFwYg+MVVCCjUp2AgW/I20Ju7dTMgU4PN5UoQgqQTqTmsh+0ppzh
+         XC6Xqu3zNdA5BVImLrw3ZdcW8I8qnjLQVNymAkGhT9Y387zhfoJ4hyGuz5edIpyFUlZk
+         9R4XMmpnok/UUUelGBaMR+Q7ACOK+nfJwK7kkCt9y4SSjm3T98zmUFQzzu49mUfPb5pQ
+         RxZbFSUOrT8dSsJWWI7StRo79jKhS5PNE/YYzvSz29AG1nmWJ/0ZB4FoSiQ+Vpt52DOP
+         bcCBj8YkAFCCGCWStdxNkkdK8rIHPbi+bIfQ2E1iJOpsJ87hY1qxOC2x08o7gnZPHfKU
+         8Zdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696944058; x=1697548858;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Zby/4uZ4iToEHOr+VEOppCbzLD2G246ojA6jq62b6h4=;
+        b=CPc4swUV4mKk9ISx2iYLYW2NFS0G2S3AQx0cZUMcf67wBqzwNSW0hCtenHTuFXvxAW
+         YKA3350gr7j/jZEV0BX6aSm1TdMgh21aIP/0GHvCfYZAOyACIaY22c9WL7u0kHeMKWsR
+         85uojpLjet9nmemcfnwHceK5pInnfOCub4GOMTsOw2znzIJ8E4PN6JjfA3hJsklcV0UE
+         hhEWI7zb6qWy/zAKHo7+G92+cRHFjbn4juVD32IzihUfnmB8l3kg9NRvYu4fktWu39Zw
+         aP5a9tFy0iqhf9KmHbnApaKqhGi68bgXHASHkNqtD6F5wf8OUP4oNGAffZpZfh9B4bBk
+         cpvQ==
+X-Gm-Message-State: AOJu0YxKPYRjwWkVpvoEvRKLSICj6E6xR2VnqIVZVf59ZmKcEhX9Sx1s
+        +7Dttgk0fvnv/TKJaBRHr+ZPaAxkoQ5zimfCP5krMeZ1yu1BXtT3
+X-Google-Smtp-Source: AGHT+IEnAxtcOezHyL8o3NDV+w8PdRT+OmDj7+RidTHyk9CgHtjixqmD8bvNNK5yp1ArkXweqya/3d0utB6LLrRmTJw=
+X-Received: by 2002:a17:90b:e11:b0:27c:f1f8:261f with SMTP id
+ ge17-20020a17090b0e1100b0027cf1f8261fmr1017670pjb.20.1696944058235; Tue, 10
+ Oct 2023 06:20:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.6.7]
-X-ClientProxiedBy: SH-EX2013.helmholz.local (192.168.1.4) To
- SH-EX2013.helmholz.local (192.168.1.4)
-X-EXCLAIMER-MD-CONFIG: 2ae5875c-d7e5-4d7e-baa3-654d37918933
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20231003232903.7109-1-frederic@kernel.org> <f214737a-6856-455f-ac86-9f7ec605b902@paulmck-laptop>
+ <ZR0vjdp+BNiFm46+@lothringen> <CANZk6aQG4Lqyk8JkT_my3dwub4jGpn31wYRoCwW4oSH1x=sJ1A@mail.gmail.com>
+ <ZSU1NeV/Z65ph/RC@lothringen>
+In-Reply-To: <ZSU1NeV/Z65ph/RC@lothringen>
+From:   zhuangel570 <zhuangel570@gmail.com>
+Date:   Tue, 10 Oct 2023 21:20:46 +0800
+Message-ID: <CANZk6aTCfNQFX5jCdyEi-yUmTOtKPb0TYOPUs+1LSjF+5=HSNA@mail.gmail.com>
+Subject: Re: [PATCH 0/5] srcu fixes
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation for selecting reference rmii clock on KSZ88X3 devices
+On Tue, Oct 10, 2023 at 7:27=E2=80=AFPM Frederic Weisbecker <frederic@kerne=
+l.org> wrote:
+>
+> On Sat, Oct 07, 2023 at 06:24:53PM +0800, zhuangel570 wrote:
+> > On Wed, Oct 4, 2023 at 5:25=E2=80=AFPM Frederic Weisbecker <frederic@ke=
+rnel.org> wrote:
+> > There is currently no way to reproduce this problem in our environment.
+> > The problem has appeared on 2 machines, and each time it occurred, the
+> > test had been running for more than a month.
+> >
+> > BTW, I will run tests with these patches in our environment.
+>
+> Ok, let us know if it ever triggers after this series.
 
-Signed-off-by: Ante Knezic <ante.knezic@helmholz.de>
----
- Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml | 6 ++++++
- 1 file changed, 6 insertions(+)
+Sure, I have ported the patch set to our test environment, now 2 machines
+already run test for 3 days, everything looks fine.
 
-diff --git a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
-index e51be1ac0362..3df5d2e72dba 100644
---- a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
-+++ b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
-@@ -49,6 +49,12 @@ properties:
-       Set if the output SYNCLKO clock should be disabled. Do not mix with
-       microchip,synclko-125.
- 
-+  microchip,rmii-clk-internal:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Set if the RMII reference clock should be provided internally. Applies only
-+      to KSZ88X3 devices.
-+
- required:
-   - compatible
-   - reg
--- 
-2.11.0
+The patch set is very elegant and completely eliminates the possibility of
+unexpected accelerations in our analysis. I am very confident in fixing our
+problem.
 
+>
+> Since I added you in the Co-developed-by: tags, I will need to
+> also add your Signed-off-by: tag.
+>
+> Is that ok for you?
+
+Sure. Big thanks!
+If possible, would you please change my "Signed-off-by" into:
+
+Signed-off-by: Yong He <alexyonghe@tencent.com>
+
+>
+> Thanks.
