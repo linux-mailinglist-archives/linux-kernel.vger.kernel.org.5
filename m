@@ -2,75 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF2BB7C00DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C25E7C00E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233555AbjJJP5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 11:57:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34170 "EHLO
+        id S233609AbjJJP5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 11:57:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233265AbjJJP5D (ORCPT
+        with ESMTP id S232923AbjJJP5u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 11:57:03 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DAA693;
-        Tue, 10 Oct 2023 08:57:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 868EBC433C8;
-        Tue, 10 Oct 2023 15:56:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696953421;
-        bh=UwuZ32zC8AXiHmdbjhpI6SAE/Jw6t06ng7IB8mYYtyA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=X49pyZQ64ZrT6prpmrF8Og4aeHanVydZ5d+Tk8P/CKok4xaPzB8WSFPS9quuVo1m9
-         vIXywCCl6bV1pvDPVueiNIzFu+xjjFdwL5tC8JR+uhGIBZlkYyU1bVRdawzTgCF104
-         pZRq2ZTSVvYbXuJZJuJBzIzcV7gBBFRPyjcUMp2lR5FyY+6plMmMRQTTJyW3u3UvGN
-         SsaAKPlgiN4uxboa9IJv81F4Idiw8J4VLiZsesf/vkMChKvN+r4vrzd4OIq2FibBYO
-         NL7Gb4FS2s1rsVQsm/CtqypOid03Y02F92D5e5/Y7XQcyMN9ruTOxHzTrVeNaVy0Hn
-         yqBNyY/ZjPwLw==
-Date:   Tue, 10 Oct 2023 16:57:12 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     David Lechner <dlechner@baylibre.com>
-Cc:     linux-iio@vger.kernel.org, linux-staging@lists.linux.dev,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
-        Axel Haslam <ahaslam@baylibre.com>,
-        Philip Molloy <pmolloy@baylibre.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 11/17] staging: iio: resolver: ad2s1210: rename DOS
- reset min/max attrs
-Message-ID: <20231010165712.5584d4c1@jic23-huawei>
-In-Reply-To: <20231005-ad2s1210-mainline-v4-11-ec00746840fc@baylibre.com>
-References: <20231005-ad2s1210-mainline-v4-0-ec00746840fc@baylibre.com>
-        <20231005-ad2s1210-mainline-v4-11-ec00746840fc@baylibre.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Tue, 10 Oct 2023 11:57:50 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E603993;
+        Tue, 10 Oct 2023 08:57:47 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2bfea381255so71186761fa.3;
+        Tue, 10 Oct 2023 08:57:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696953466; x=1697558266; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=r29Bejb38/E5bMBxM2v8OnxR5nKOLQVj6E9r95ZtaSs=;
+        b=hC8vBMEt2oM3TtejqBTkg27Ow5r2kpYG96kjDNdhTJeaPiDRiUTJ2sSvDVSyp2lw62
+         qSTuaVugjzEmpQ+HcMFkn4PRWX0b/NuliEyofarHUdlHM4HSAY6829ztPkfjOBwL08ng
+         wA1Xh86Jg3BRVpFEY69qIhrINp8m0CT4HlXSKsqMpZwxwrv5hS8ujEfquRD65HRHlU6s
+         TRKhl7cvVVa9HotXt4vS3ujUB+V3k4zTLhO2ckronRAVdZLjaqXfR1M8wF2r+EiEleM1
+         2aisxe7Hmq8Pmmey/YDJuJOIMaoM22ta9wexem6VLhdijqeaVZvqCriSKNDkx6dGZf8r
+         geJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696953466; x=1697558266;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=r29Bejb38/E5bMBxM2v8OnxR5nKOLQVj6E9r95ZtaSs=;
+        b=BlxURR3AW+IaoSP8KbJd3bFxCtqp7vLn+9WnHmMknsZQR811vqoT6kfYRRvp+pHVLm
+         0hwVhVmeawX/LWvmPvyHTthRICFILacWlPFm75EC0y+lp8uSXJY5FhglZ0/VLhdOc6ce
+         W3GV3P4WQiFR/0xKPo7nDTkRZeZXcE4Tt/acbKlsDlWnN5cjGkpUv2HKCWtWXsdWozyZ
+         zhJ24zeGmFPNZ7U3cGrOeDOhKwkhocolZWaKcpW0jh6MxY2ttaVJvNTbKZqvVdp3LE2Q
+         FOgb9WIz3t7gIN4MKn6ATSR16GZKg2oGhOM9u+XszroulIghW60YXxU+NoUjxCTlgh5R
+         u59w==
+X-Gm-Message-State: AOJu0YynRqX9y99Sj6O2vwf6WyJwlWtDUdNrytjcKB1FnLNulBhGGzcd
+        duKybPpTze8+09SKhdjno+o=
+X-Google-Smtp-Source: AGHT+IFgBSqh/rAuvcgnrQy/qBrlPqhwgM3eAS70Rq860irNeZkw7l7abwr3CE4NHAvNls5zv9vl9Q==
+X-Received: by 2002:a05:6512:3450:b0:501:c3ee:62ec with SMTP id j16-20020a056512345000b00501c3ee62ecmr12822172lfr.12.1696953465901;
+        Tue, 10 Oct 2023 08:57:45 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id v6-20020a056402184600b005333922efb0sm7826678edy.78.2023.10.10.08.57.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 08:57:45 -0700 (PDT)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] sched/headers: remove comment referring to cpu_load since this has been removed
+Date:   Tue, 10 Oct 2023 16:57:44 +0100
+Message-Id: <20231010155744.1381065-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  5 Oct 2023 19:50:28 -0500
-David Lechner <dlechner@baylibre.com> wrote:
+There is a comment that refers to cpu_load, however, this cpu_load was
+removed with commit 55627e3cd22c ("sched/core: Remove rq->cpu_load[]")
+back in 2019. The comment does not make sense with respect to this
+removed array, so remove the comment.
 
-> The AD2S1210 has a programmable threshold for the degradation of signal
-> (DOS) mismatch fault. This fault is triggered when the difference in
-> amplitude between the sine and cosine inputs exceeds the threshold.
-> 
-> The DOS reset min/max registers on the chip provide initial values
-> for internal tracking of the min/max of the monitor signal after the
-> fault register is cleared.
-> 
-> This patch converts the custom device DOS reset min/max threshold
-> attributes custom event attributes on the monitor signal channel.
-> 
-> The attributes now use millivolts instead of the raw register value in
-> accordance with the IIO ABI.
-> 
-> Signed-off-by: David Lechner <dlechner@baylibre.com>
-Applied.
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ kernel/sched/sched.h | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index faf9031422e1..65cad0e5729e 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -948,10 +948,6 @@ struct rq {
+ 	/* runqueue lock: */
+ 	raw_spinlock_t		__lock;
+ 
+-	/*
+-	 * nr_running and cpu_load should be in the same cacheline because
+-	 * remote CPUs use both these fields when doing load calculation.
+-	 */
+ 	unsigned int		nr_running;
+ #ifdef CONFIG_NUMA_BALANCING
+ 	unsigned int		nr_numa_running;
+-- 
+2.39.2
+
