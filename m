@@ -2,74 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D75D7BFA4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 13:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F53F7BFA52
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 13:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbjJJLth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 07:49:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33064 "EHLO
+        id S231502AbjJJLuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 07:50:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231244AbjJJLtg (ORCPT
+        with ESMTP id S231423AbjJJLum (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 07:49:36 -0400
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com [209.85.167.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 513E394
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 04:49:34 -0700 (PDT)
-Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3af603daa10so9062614b6e.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 04:49:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696938573; x=1697543373;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pMiyhZ4XvOraAHeeebtmWvN0nQevffSjlXA5nq+c7eU=;
-        b=mmTIG37GQ5/WsGDm8qVxlfkCdq4mDpSgE+NvR6AO1UlAwn/pzP7WB+CioJlKcGtAmF
-         q/vMcX1qM4fhzFr7MC+FQBc3F0PqfcUBbu/4am80sGyKamv0kkzpn1xAkfl8C/EfNK81
-         q96q/UKjRnCX/RtdKf+gL0ODvFMcjPpsKUxnzTVnXgTCgJsDEiCggwmqcXqhlQI4NlEe
-         fp/Pj7A/QVAQur5jqg+v0Na7eSkUGAu1UmhBLmyZtglx0pmZpk27fTcttPC04X39nYZj
-         mBICvgXfC9KVrH3HHJatyFzc1qvxcS/QTXYOnWbK8QVHsKYJowHjmdMwe4k7y/iF/pOy
-         3+pQ==
-X-Gm-Message-State: AOJu0Ywp8plgfjnDwRjpzCKIFKFTuXLbHFPIsAutc9bePyhIeFuz3Kx/
-        J9mzDwOfQTfQ2gw6ciYfHrwQJWjZHXLd7CJVig530EfpQ5+h
-X-Google-Smtp-Source: AGHT+IHKPI1z1y4ZmuXva1Ht6sMY+XGIwlcJXWadrKvh2+/5oBv/ukHWokSGQ2dxbepx0VytkUhaxssMF27jIKInvBX68qCqDpRq
+        Tue, 10 Oct 2023 07:50:42 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C737599;
+        Tue, 10 Oct 2023 04:50:39 -0700 (PDT)
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39A38Dv8024201;
+        Tue, 10 Oct 2023 04:50:23 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=869kURQHxyEbzuTjcLLmcIJexFWY1u6w+li4VH7jiQw=;
+ b=LYzNk3z7FZM4lt5zuQmPRaIpRY6WQ2a/5Zn2Mfxqm6LkSuEq1Hd2Qha9PuvQQEMxgSOR
+ rT5CFGsOJAGo4MQpAC87M1YvV1CrKc0GZdczZwjH1aCTBIO6+bB/70599jFv8g9CWzNy
+ /bqnOYf/QiujB7j0/WH8p3e21bA+JzCwz537ljB02CBeECsxoCQ6FmOozfc4mCreWHPh
+ rEOWLCV9bX4CICuPPAK8nKpKn7AgC51ge+j9fMmvhapHLZ0V6V675xhk0vbIaEwegEij
+ PYVE3EhE9MfzRgb+Il0ylEXWBDDncCe3dCH9sVdw+AsEG8W/RoPfiOYuZGNU3snZL7Pn FA== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3tmxense1j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 10 Oct 2023 04:50:23 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 10 Oct
+ 2023 04:50:22 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Tue, 10 Oct 2023 04:50:22 -0700
+Received: from ubuntu-PowerEdge-T110-II.sclab.marvell.com (unknown [10.106.27.86])
+        by maili.marvell.com (Postfix) with ESMTP id 8ED163F70A9;
+        Tue, 10 Oct 2023 04:50:21 -0700 (PDT)
+From:   Shinas Rasheed <srasheed@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <hgani@marvell.com>
+CC:     <vimleshk@marvell.com>, <egallen@redhat.com>,
+        <mschmidt@redhat.com>, Shinas Rasheed <srasheed@marvell.com>,
+        Veerasenareddy Burru <vburru@marvell.com>,
+        Sathesh Edara <sedara@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Satananda Burla <sburla@marvell.com>,
+        Abhijit Ayarekar <aayarekar@marvell.com>
+Subject: [net PATCH] octeon_ep: update BQL sent bytes before ringing doorbell
+Date:   Tue, 10 Oct 2023 04:50:15 -0700
+Message-ID: <20231010115015.2279977-1-srasheed@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:654b:b0:3af:c707:8c9b with SMTP id
- fn11-20020a056808654b00b003afc7078c9bmr5635310oib.4.1696938573714; Tue, 10
- Oct 2023 04:49:33 -0700 (PDT)
-Date:   Tue, 10 Oct 2023 04:49:33 -0700
-In-Reply-To: <20231010111343.2257-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e45bec06075b4cc8@google.com>
-Subject: Re: [syzbot] [reiserfs?] possible deadlock in super_lock
-From:   syzbot <syzbot+062317ea1d0a6d5e29e7@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: uKQmclyPkdhj3WW5UyDKA5GEMu7tg2Xy
+X-Proofpoint-ORIG-GUID: uKQmclyPkdhj3WW5UyDKA5GEMu7tg2Xy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-10_07,2023-10-10_01,2023-05-22_02
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Sometimes Tx is completed immediately after doorbell is updated, which
+causes Tx completion routing to update completion bytes before the
+same packet bytes are updated in sent bytes in transmit function, hence
+hitting BUG_ON() in dql_completed(). To avoid this, update BQL
+sent bytes before ringing doorbell.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Fixes: 37d79d059606 ("octeon_ep: add Tx/Rx processing and interrupt support")
+Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
+---
+ drivers/net/ethernet/marvell/octeon_ep/octep_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reported-and-tested-by: syzbot+062317ea1d0a6d5e29e7@syzkaller.appspotmail.com
+diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
+index dbc518ff8276..314f9c661f93 100644
+--- a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
++++ b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
+@@ -718,6 +718,7 @@ static netdev_tx_t octep_start_xmit(struct sk_buff *skb,
+ 	/* Flush the hw descriptor before writing to doorbell */
+ 	wmb();
+ 
++	netdev_tx_sent_queue(iq->netdev_q, skb->len);
+ 	/* Ring Doorbell to notify the NIC there is a new packet */
+ 	writel(1, iq->doorbell_reg);
+ 	atomic_inc(&iq->instr_pending);
+@@ -726,7 +727,6 @@ static netdev_tx_t octep_start_xmit(struct sk_buff *skb,
+ 		wi = 0;
+ 	iq->host_write_index = wi;
+ 
+-	netdev_tx_sent_queue(iq->netdev_q, skb->len);
+ 	iq->stats.instr_posted++;
+ 	skb_tx_timestamp(skb);
+ 	return NETDEV_TX_OK;
+-- 
+2.25.1
 
-Tested on:
-
-commit:         94f6f055 Linux 6.6-rc5
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=159efc7e680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1b8c825e0d5f3f72
-dashboard link: https://syzkaller.appspot.com/bug?extid=062317ea1d0a6d5e29e7
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=15784cde680000
-
-Note: testing is done by a robot and is best-effort only.
