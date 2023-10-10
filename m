@@ -2,142 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81ED07BF8ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 12:43:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B357BF8E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 12:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231240AbjJJKnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 06:43:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49704 "EHLO
+        id S231236AbjJJKnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 06:43:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231250AbjJJKni (ORCPT
+        with ESMTP id S231202AbjJJKm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 06:43:38 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6FB8B4;
-        Tue, 10 Oct 2023 03:43:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696934615; x=1728470615;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=iHOekVDgtaNocncHM8JY3mpFGLJsRdlpKILUbEllNtY=;
-  b=HdXnT4baQcH1XHBvDofw7R5yMCOSMo4J1NMKwPcOI+erdBiDmhqKelZk
-   UZM1Fs2YTwt6TV0eerOv+eF4qxWYC5GV7xHYhuI3ovB/mDFtyy6+gLs1J
-   21AbsRA/06sHhfVl4yOuoqYofedzo3WF7tj5VYo3T/pqH99Mm4l8seBp4
-   oYc7izTag4jjKulDsXOttoEldeN/Ax1XsRCudlfNg3YpLvgulQwn4d3Ze
-   uLTJ+fjQ5AvAl3ImONW81Btp8mMFiwkZEUZMOr4bu5tREUQ19VQqVrvCK
-   42GRCBUyUdVVIzRs3EOCLmyH8vdg8GVjaGOc6pzraojDB2bkMjBkKyxPg
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="374703550"
-X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
-   d="scan'208";a="374703550"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 03:43:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="747033037"
-X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
-   d="scan'208";a="747033037"
-Received: from asalaman-mobl.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.16.145])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 03:43:29 -0700
-From:   Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-To:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>
-Cc:     ilpo.jarvinen@linux.intel.com,
-        Peter Newman <peternewman@google.com>,
-        Babu Moger <babu.moger@amd.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: [PATCH v5 4/4] Documentation/x86: Document resctrl's new sparse_masks
-Date:   Tue, 10 Oct 2023 12:42:39 +0200
-Message-ID: <3e9610997164f648e15c5c2e90d4944ce36504fe.1696934091.git.maciej.wieczor-retman@intel.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <cover.1696934091.git.maciej.wieczor-retman@intel.com>
-References: <cover.1696934091.git.maciej.wieczor-retman@intel.com>
+        Tue, 10 Oct 2023 06:42:59 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0F3CFB7;
+        Tue, 10 Oct 2023 03:42:57 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 874F31FB;
+        Tue, 10 Oct 2023 03:43:37 -0700 (PDT)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D05F3F762;
+        Tue, 10 Oct 2023 03:42:55 -0700 (PDT)
+Date:   Tue, 10 Oct 2023 11:42:52 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Nikunj Kela <quic_nkela@quicinc.com>
+Cc:     cristian.marussi@arm.com, robh+dt@kernel.org,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v6 2/2] firmware: arm_scmi: Add qcom smc/hvc transport
+ support
+Message-ID: <20231010104252.dwix4xg766uk2y44@bogus>
+References: <20230718160833.36397-1-quic_nkela@quicinc.com>
+ <20231009191437.27926-1-quic_nkela@quicinc.com>
+ <20231009191437.27926-3-quic_nkela@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231009191437.27926-3-quic_nkela@quicinc.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fenghua Yu <fenghua.yu@intel.com>
+On Mon, Oct 09, 2023 at 12:14:37PM -0700, Nikunj Kela wrote:
+> This change adds the support for SCMI message exchange on Qualcomm
+> virtual platforms.
+> 
+> The hypervisor associates an object-id also known as capability-id
+> with each smc/hvc doorbell object. The capability-id is used to
+> identify the doorbell from the VM's capability namespace, similar
+> to a file-descriptor.
+> 
+> The hypervisor, in addition to the function-id, expects the capability-id
+> to be passed in x1 register when SMC/HVC call is invoked.
+> 
+> The capability-id is allocated by the hypervisor on bootup and is stored in
+> the shmem region by the firmware before starting Linux.
+> 
+> Signed-off-by: Nikunj Kela <quic_nkela@quicinc.com>
+> Reviewed-by: Brian Masney <bmasney@redhat.com>
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
 
-The documentation mentions that non-contiguous bit masks are not
-supported in Intel Cache Allocation Technology (CAT).
+FYI for the next time. When posting on the list, the senders sign-off must
+be the last. The only reason I signed off is because it is needed as part
+of committer in the git repo. You should have ideally dropped it in this case.
+If there was some other author/co-developer of the patch, then your signoff
+will be always at the end as you are sending the patch.
 
-Update the documentation on how to determine if sparse bit masks are
-allowed in L2 and L3 CAT.
+Refer "Sign your work - the Developer's Certificate of Origin" section
+in Documentation/process/submitting-patches.rst
 
-Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-Tested-by: Peter Newman <peternewman@google.com>
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Reviewed-by: Peter Newman <peternewman@google.com>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-Reviewed-by: Babu Moger <babu.moger@amd.com>
----
-Changelog v5:
-- Remove last patch message paragraph. (Babu)
-- Add Babu's reviewed-by tag.
+> ---
+>  drivers/firmware/arm_scmi/driver.c |  1 +
+>  drivers/firmware/arm_scmi/smc.c    | 27 +++++++++++++++++++++++++--
+>  2 files changed, 26 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+> index 87383c05424b..09371f40d61f 100644
+> --- a/drivers/firmware/arm_scmi/driver.c
+> +++ b/drivers/firmware/arm_scmi/driver.c
+> @@ -2915,6 +2915,7 @@ static const struct of_device_id scmi_of_match[] = {
+>  #ifdef CONFIG_ARM_SCMI_TRANSPORT_SMC
+>  	{ .compatible = "arm,scmi-smc", .data = &scmi_smc_desc},
+>  	{ .compatible = "arm,scmi-smc-param", .data = &scmi_smc_desc},
+> +	{ .compatible = "qcom,scmi-smc", .data = &scmi_smc_desc},
+>  #endif
+>  #ifdef CONFIG_ARM_SCMI_TRANSPORT_VIRTIO
+>  	{ .compatible = "arm,scmi-virtio", .data = &scmi_virtio_desc},
+> diff --git a/drivers/firmware/arm_scmi/smc.c b/drivers/firmware/arm_scmi/smc.c
+> index 8eba60a41975..7611e9665038 100644
+> --- a/drivers/firmware/arm_scmi/smc.c
+> +++ b/drivers/firmware/arm_scmi/smc.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/of.h>
+>  #include <linux/of_address.h>
+>  #include <linux/of_irq.h>
+> +#include <linux/limits.h>
+>  #include <linux/processor.h>
+>  #include <linux/slab.h>
+>  
+> @@ -50,6 +51,8 @@
+>   * @func_id: smc/hvc call function id
+>   * @param_page: 4K page number of the shmem channel
+>   * @param_offset: Offset within the 4K page of the shmem channel
+> + * @cap_id: smc/hvc doorbell's capability id to be used on Qualcomm virtual
+> + *	    platforms
+>   */
+>  
+>  struct scmi_smc {
+> @@ -63,6 +66,7 @@ struct scmi_smc {
+>  	unsigned long func_id;
+>  	unsigned long param_page;
+>  	unsigned long param_offset;
+> +	unsigned long cap_id;
+>  };
+>  
+>  static irqreturn_t smc_msg_done_isr(int irq, void *data)
+> @@ -124,6 +128,7 @@ static int smc_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
+>  			  bool tx)
+>  {
+>  	struct device *cdev = cinfo->dev;
+> +	unsigned long cap_id = ULONG_MAX;
+>  	struct scmi_smc *scmi_info;
+>  	resource_size_t size;
+>  	struct resource res;
+> @@ -162,6 +167,18 @@ static int smc_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
+>  	if (ret < 0)
+>  		return ret;
+>  
+> +	if (of_device_is_compatible(dev->of_node, "qcom,scmi-smc")) {
+> +		void __iomem *ptr = (void __iomem *)scmi_info->shmem + size - 8;
+> +		/* The capability-id is kept in last 8 bytes of shmem.
+> +		 *     +-------+ <-- 0
+> +		 *     | shmem |
+> +		 *     +-------+ <-- size - 8
+> +		 *     | capId |
+> +		 *     +-------+ <-- size
+> +		 */
+> +		memcpy_fromio(&cap_id, ptr, sizeof(cap_id));
+> +	}
+> +
+>  	if (of_device_is_compatible(dev->of_node, "arm,scmi-smc-param")) {
+>  		scmi_info->param_page = SHMEM_PAGE(res.start);
+>  		scmi_info->param_offset = SHMEM_OFFSET(res.start);
+> @@ -184,6 +201,7 @@ static int smc_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
+>  	}
+>  
+>  	scmi_info->func_id = func_id;
+> +	scmi_info->cap_id = cap_id;
+>  	scmi_info->cinfo = cinfo;
+>  	smc_channel_lock_init(scmi_info);
+>  	cinfo->transport_info = scmi_info;
+> @@ -220,8 +238,13 @@ static int smc_send_message(struct scmi_chan_info *cinfo,
+>  
+>  	shmem_tx_prepare(scmi_info->shmem, xfer, cinfo);
+>  
+> -	arm_smccc_1_1_invoke(scmi_info->func_id, scmi_info->param_page,
+> -			     scmi_info->param_offset, 0, 0, 0, 0, 0, &res);
+> +	if (scmi_info->cap_id != ULONG_MAX)
+> +		arm_smccc_1_1_invoke(scmi_info->func_id, scmi_info->cap_id, 0,
+> +				     0, 0, 0, 0, 0, &res);
+> +	else
+> +		arm_smccc_1_1_invoke(scmi_info->func_id, scmi_info->param_page,
+> +				     scmi_info->param_offset, 0, 0, 0, 0, 0,
+> +				     &res);
+>  
+>  	/* Only SMCCC_RET_NOT_SUPPORTED is valid error code */
+>  	if (res.a0) {
+> -- 
+> 2.17.1
+> 
 
-Changelog v4:
-- Add Ilpo's reviewed-by tag.
-- Add Reinette's reviewed-by tag.
-
-Changelog v3:
-- Add Peter's tested-by and reviewed-by tags.
-
-Changelog v2:
-- Change bitmap naming convention to bit mask. (Reinette)
-
- Documentation/arch/x86/resctrl.rst | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x86/resctrl.rst
-index cb05d90111b4..4c6421e2aa31 100644
---- a/Documentation/arch/x86/resctrl.rst
-+++ b/Documentation/arch/x86/resctrl.rst
-@@ -124,6 +124,13 @@ related to allocation:
- 			"P":
- 			      Corresponding region is pseudo-locked. No
- 			      sharing allowed.
-+"sparse_masks":
-+		Indicates if non-contiguous 1s value in CBM is supported.
-+
-+			"0":
-+			      Only contiguous 1s value in CBM is supported.
-+			"1":
-+			      Non-contiguous 1s value in CBM is supported.
- 
- Memory bandwidth(MB) subdirectory contains the following files
- with respect to allocation:
-@@ -445,12 +452,13 @@ For cache resources we describe the portion of the cache that is available
- for allocation using a bitmask. The maximum value of the mask is defined
- by each cpu model (and may be different for different cache levels). It
- is found using CPUID, but is also provided in the "info" directory of
--the resctrl file system in "info/{resource}/cbm_mask". Intel hardware
-+the resctrl file system in "info/{resource}/cbm_mask". Some Intel hardware
- requires that these masks have all the '1' bits in a contiguous block. So
- 0x3, 0x6 and 0xC are legal 4-bit masks with two bits set, but 0x5, 0x9
--and 0xA are not.  On a system with a 20-bit mask each bit represents 5%
--of the capacity of the cache. You could partition the cache into four
--equal parts with masks: 0x1f, 0x3e0, 0x7c00, 0xf8000.
-+and 0xA are not. Check /sys/fs/resctrl/info/{resource}/sparse_masks
-+if non-contiguous 1s value is supported. On a system with a 20-bit mask
-+each bit represents 5% of the capacity of the cache. You could partition
-+the cache into four equal parts with masks: 0x1f, 0x3e0, 0x7c00, 0xf8000.
- 
- Memory bandwidth Allocation and monitoring
- ==========================================
 -- 
-2.42.0
-
+Regards,
+Sudeep
