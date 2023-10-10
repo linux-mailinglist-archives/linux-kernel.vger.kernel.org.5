@@ -2,114 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B3FF7BF7EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 11:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 958497BF7F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 11:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbjJJJyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 05:54:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54600 "EHLO
+        id S230403AbjJJJzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 05:55:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230446AbjJJJxz (ORCPT
+        with ESMTP id S230293AbjJJJzW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 05:53:55 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A0F593
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 02:53:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1696931631;
-        bh=4A4lQw0bzjvSp3inwHoIDBZkp/sk/XTofAR80wJXCrI=;
-        h=From:Date:Subject:To:Cc:From;
-        b=MrPL7c5VVMa1tNrZbRrspP5Wp26n6h9sxp5FQGqLzjW+ntk0S/Y+Caatlye6iWUyX
-         4RIR26CEtRgngBY0jxtrAxtGQREVTfzmKtn046zW8/lGMSUb2J0ez7gpCHL+nl5DWv
-         sZgkyUgxasGI+1/9M9ti1XlKAVRxHv+q/MySFdRE=
-From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date:   Tue, 10 Oct 2023 11:53:42 +0200
-Subject: [PATCH] locking/osq: remove spin node definition from header
+        Tue, 10 Oct 2023 05:55:22 -0400
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4742A93;
+        Tue, 10 Oct 2023 02:55:21 -0700 (PDT)
+Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-57be3d8e738so2956410eaf.1;
+        Tue, 10 Oct 2023 02:55:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696931720; x=1697536520; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=fRr0GLki14imU2pQsyavD3bnxa727VzXZ1CS3z19LiA=;
+        b=kRAzTH2u0dwSv3MzKe6lonHnKRFHNmGEkhjz8gw74t5wEFxhe2Sl4EZ/IY0y1c4Oq0
+         OTZPTI1TLrwBK3AIx+Cy3Y+m5VWkBxBB/idQ4OB3ohGNX5KebxtTxN2IPYgrCeJaxod4
+         mbj63zubD3EROosBH+34eaTNZwkWFUcNjKY0JaIFTnQ3QgwBRm2jDk/M87zYMJy76MCf
+         MG1UXGXPE/T7vKuPklrVXj3YbUHkSHDVTbmmtZzMLcfsdUp7azNy2TGviv6uTmp76qUB
+         VcD0zAbamu2myo+nisa//HVmKVRykqHRpGK0jsf7zl6f1+p7fMFlMg9AGgsdqqH4JqNj
+         2wgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696931720; x=1697536520;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fRr0GLki14imU2pQsyavD3bnxa727VzXZ1CS3z19LiA=;
+        b=W8dwdivZwMCW+FhOHW2lB1eT9KG9hIa6vgqaDBwZE+r2Ic+ACm/ZEFV530kpkoeu8h
+         ICxG7w31qdCnfNdouQ2dQR1UtEanMksh5pJZ/wODdZSm/25MELWSmQ+UVmP9wlev2dOX
+         RvyKm+Lba5tgoD21SOqOz6pERTKb6sSTxAtd6mP8nO8TXHmS8J0sEpm7j8lFN6fl76Em
+         L9pBRaJdKSNzzsK2rFPxp99oIa4PHQa0j2Nu65HENcNLZGxw9n6/BHHlQCh87prFS7rh
+         LZ7bSNXfd4xgrvAUIIJKclnD06p04uC80iKqmNeaoen0lLGAJqcxhe54VLiu3vggT9M0
+         ZSvg==
+X-Gm-Message-State: AOJu0Yy5+z8iDeWAZRn6V//3ZUDsHIkTnhHdVtdf54awJ4RjPhAcCBmn
+        6jRA7w2Hij2HVL+2B+4LUpJSNnH8zoEiu0XWBdpfa654Gl/veQ==
+X-Google-Smtp-Source: AGHT+IHgEuySn4JrjKTV0h4pLKEwHPrdQJVtRc1PhXmTOwWq2g2k6eFHdk8ESnnLQW6ySJSfF9cdAUj1M3VbQ+5p4Yg=
+X-Received: by 2002:a4a:91d2:0:b0:57b:e100:60ae with SMTP id
+ e18-20020a4a91d2000000b0057be10060aemr16550947ooh.7.1696931720475; Tue, 10
+ Oct 2023 02:55:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231010-osq-header-v1-1-d68fbc1bf1cf@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIACUfJWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2NDA0MD3fziQt2M1MSU1CJdy8TkRHNzCyDb2EAJqKGgKDUtswJsWHRsbS0
- Ay+m2UVwAAAA=
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1696931630; l=1776;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=4A4lQw0bzjvSp3inwHoIDBZkp/sk/XTofAR80wJXCrI=;
- b=5kSfQw2XT7Svl8Az/t3Y8YX5Vbsgd+NBLz/Etj4dXt94v7PgBGKJLTabpBpqlTrPY8ss9stq1
- P+9lxQHnVX8A+saRK57qQnrWPNne9QGS7GFwat+iMYgvtbiMQDPakv5
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+References: <20231010032446.3194-1-linux.amoon@gmail.com> <9fe7d0d2-3582-4b62-be9b-aa9134c18023@linaro.org>
+In-Reply-To: <9fe7d0d2-3582-4b62-be9b-aa9134c18023@linaro.org>
+From:   Anand Moon <linux.amoon@gmail.com>
+Date:   Tue, 10 Oct 2023 15:25:02 +0530
+Message-ID: <CANAwSgRv5d5o2cDzbGYAj0srhUO7T5LAMuzMBqP7p+uHJN0xVQ@mail.gmail.com>
+Subject: Re: [PATCH v1] arm64: dts: amlogic: Used onboard usb hub reset on
+ odroid n2
+To:     neil.armstrong@linaro.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This structure is an implementation detail of osq_lock.c, and there are
-no external users.
+Hi Neil,
 
-Also drop the redundant overview comment from osq_lock.c.
+On Tue, 10 Oct 2023 at 13:40, Neil Armstrong <neil.armstrong@linaro.org> wrote:
+>
+> Hi,
+>
+> On 10/10/2023 05:24, Anand Moon wrote:
+> > On Odroid n2/n2+ previously use gpio-hog to reset the usb hub,
+> > switch to used on-board usb hub reset to enable the usb hub
+> > and enable power to hub.
+> >
+> > Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+> > ---
+> >   .../dts/amlogic/meson-g12b-odroid-n2.dtsi     | 36 ++++++++++++-------
+> >   1 file changed, 24 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
+> > index 91c9769fda20..9e671444eca6 100644
+> > --- a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
+> > +++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
+> > @@ -31,6 +31,30 @@ hub_5v: regulator-hub_5v {
+> >               enable-active-high;
+> >       };
+> >
+> > +     /* USB hub supports both USB 2.0 and USB 3.0 root hub */
+> > +     usb-hub {
+> > +             dr_mode = "host";
+> > +             #address-cells = <1>;
+> > +             #size-cells = <0>;
+> > +
+> > +             /* 2.0 hub on port 1 */
+> > +             hub_2_0: hub@1 {
+> > +                     compatible = "usb5e3,610";
+> > +                     reg = <1>;
+> > +                     peer-hub = <&hub_3_0>;
+>
+> It seems peer-hub is missing from Documentation/devicetree/bindings/usb/genesys,gl850g.yaml, could you add it ?
+>
+Yes, will add an example in genesys,gl850g.yaml file.
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
- include/linux/osq_lock.h  | 5 -----
- kernel/locking/osq_lock.c | 9 ++++++---
- 2 files changed, 6 insertions(+), 8 deletions(-)
+> Thanks,
+> Neil
 
-diff --git a/include/linux/osq_lock.h b/include/linux/osq_lock.h
-index 5581dbd3bd34..ea8fb31379e3 100644
---- a/include/linux/osq_lock.h
-+++ b/include/linux/osq_lock.h
-@@ -6,11 +6,6 @@
-  * An MCS like lock especially tailored for optimistic spinning for sleeping
-  * lock implementations (mutex, rwsem, etc).
-  */
--struct optimistic_spin_node {
--	struct optimistic_spin_node *next, *prev;
--	int locked; /* 1 if lock acquired */
--	int cpu; /* encoded CPU # + 1 value */
--};
- 
- struct optimistic_spin_queue {
- 	/*
-diff --git a/kernel/locking/osq_lock.c b/kernel/locking/osq_lock.c
-index d5610ad52b92..918866edbc30 100644
---- a/kernel/locking/osq_lock.c
-+++ b/kernel/locking/osq_lock.c
-@@ -3,10 +3,13 @@
- #include <linux/sched.h>
- #include <linux/osq_lock.h>
- 
-+struct optimistic_spin_node {
-+	struct optimistic_spin_node *next, *prev;
-+	int locked; /* 1 if lock acquired */
-+	int cpu; /* encoded CPU # + 1 value */
-+};
-+
- /*
-- * An MCS like lock especially tailored for optimistic spinning for sleeping
-- * lock implementations (mutex, rwsem, etc).
-- *
-  * Using a single mcs node per CPU is safe because sleeping locks should not be
-  * called from interrupt context and we have preemption disabled while
-  * spinning.
-
----
-base-commit: 94f6f0550c625fab1f373bb86a6669b45e9748b3
-change-id: 20231010-osq-header-9aca778ade30
-
-Best regards,
--- 
-Thomas Weißschuh <linux@weissschuh.net>
-
+Thanks
+-Anand
