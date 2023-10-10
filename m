@@ -2,144 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C4B17BF84E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 12:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E9FD7BF84B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 12:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbjJJKQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 06:16:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52826 "EHLO
+        id S229994AbjJJKQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 06:16:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230503AbjJJKQI (ORCPT
+        with ESMTP id S229832AbjJJKP6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 06:16:08 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98C44A9;
-        Tue, 10 Oct 2023 03:16:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696932966; x=1728468966;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=7oJBR+kdnX17mUeipPlQNGOJ29qFXoVfWPZLMLGrjsg=;
-  b=kRiKtqk0yzDeTi7yUhqhD3MMn4L+9qKTnJEIMHQaDRPUnd+QAl0lqgWf
-   yEbiDGqxR0kPZ+Ud9Dr1LWpfnlexR2yphkoGmUeKry6uy7vIXD/FS3nZH
-   NmN5W+V30rRPtXioQE0kgFogitA/lVbQeAs7KlNQ2o0wByKXPi33rKTBk
-   26U9whiyIcv0H+hjctApbrl9JreuW5QXgHEEZ2VQ86XZGzoazQ/9a2jYP
-   aDlKoi9ykkXxDsg2Ujd+gMX0R5lVdsNQ8MrR8ArwnlzBaaV4uNCl9X8Cd
-   r3BoK/EyYdde1JX4IGY6aEveYOrFjJjjznXMGQLw+f1smBI+f0iVYlTf3
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="369421631"
-X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
-   d="scan'208";a="369421631"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 03:16:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="1084717354"
-X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
-   d="scan'208";a="1084717354"
-Received: from asalaman-mobl.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.16.145])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 03:16:03 -0700
-From:   Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-To:     shuah@kernel.org, fenghua.yu@intel.com, reinette.chatre@intel.com
-Cc:     ilpo.jarvinen@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH RESEND v7 0/2] selftests/resctrl: Bug fix and optimization
-Date:   Tue, 10 Oct 2023 12:14:57 +0200
-Message-ID: <cover.1696932728.git.maciej.wieczor-retman@intel.com>
-X-Mailer: git-send-email 2.42.0
+        Tue, 10 Oct 2023 06:15:58 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBBC09F;
+        Tue, 10 Oct 2023 03:15:55 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 1B2911F45A;
+        Tue, 10 Oct 2023 10:15:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1696932954; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qUW/UbgD+3WzGGvw1WDoBqbNXK6QrMAtw5pmRBi1hU0=;
+        b=tiUL/KsnaTWgFSkL2FOhr332JEgpJVeG12miROFPQX07CobPBlUOLBlx6KsUtnByzbbFYF
+        YaZckaRuttJXRBngq0oEeX4uYHyUU1ENE/hzNEcDUvJzTrKXQUIDjnHMjKdFYbOO013kUN
+        i0oHYzWOdrQE4E7nTVMVA24JuDIgY9c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1696932954;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qUW/UbgD+3WzGGvw1WDoBqbNXK6QrMAtw5pmRBi1hU0=;
+        b=+OH//e/yEJERqhSdb2h2dUmTZF4H0T1hJfORn3/44cTGq6VHQ7gw5SIJxNNk8T7GsDXqBy
+        5YFovy7bh8JLFCCQ==
+Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 883A22C3F7;
+        Tue, 10 Oct 2023 10:15:53 +0000 (UTC)
+Date:   Tue, 10 Oct 2023 12:15:52 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-modules@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+        Lucas De Marchi <lucas.de.marchi@gmail.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Jiri Slaby <jslaby@suse.com>, Jan Engelhardt <jengelh@inai.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH rebased] kbuild: rpm-pkg: Fix build with non-default
+ MODLIB
+Message-ID: <20231010101552.GW6241@kitsune.suse.cz>
+References: <20231005150728.3429-1-msuchanek@suse.de>
+ <CAK7LNAQh7vCQ859RPkL3SDr2d4ptt5OVCr66fkPKGcvxDUHtkw@mail.gmail.com>
+ <20231009085208.GT6241@kitsune.suse.cz>
+ <CAK7LNASeMEKVi5c0PEow5KSdN7rsm7UYEf2smWOSkYOhr_5fVQ@mail.gmail.com>
+ <20231009140733.GV6241@kitsune.suse.cz>
+ <CAK7LNAQQMFUt4R1m_U8kBY5=BvxD_dMuE4MD4kpd48WK1E+AGA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAK7LNAQQMFUt4R1m_U8kBY5=BvxD_dMuE4MD4kpd48WK1E+AGA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Write_schemata() uses fprintf() to write a bitmask into a schemata file
-inside resctrl FS. It checks fprintf() return value but it doesn't check
-fclose() return value. Error codes from fprintf() such as write errors,
-are buffered and flushed back to the user only after fclose() is executed
-which means any invalid bitmask can be written into the schemata file.
+On Tue, Oct 10, 2023 at 12:14:01AM +0900, Masahiro Yamada wrote:
+> On Mon, Oct 9, 2023 at 11:07 PM Michal Suchánek <msuchanek@suse.de> wrote:
+> >
+> > On Mon, Oct 09, 2023 at 09:34:10PM +0900, Masahiro Yamada wrote:
+> > > On Mon, Oct 9, 2023 at 5:52 PM Michal Suchánek <msuchanek@suse.de> wrote:
+> > > >
+> > > > Hello,
+> > > >
+> > > > On Mon, Oct 09, 2023 at 05:31:02PM +0900, Masahiro Yamada wrote:
+> > > > > On Fri, Oct 6, 2023 at 12:49 AM Michal Suchanek <msuchanek@suse.de> wrote:
+> > > > > >
+> > > > > > The default MODLIB value is composed of two variables and the hardcoded
+> > > > > > string '/lib/modules/'.
+> > > > > >
+> > > > > > MODLIB = $(INSTALL_MOD_PATH)/lib/modules/$(KERNELRELEASE)
+> > > > > >
+> > > > > > Defining this middle part as a variable was rejected on the basis that
+> > > > > > users can pass the whole MODLIB to make, such as
+> > > > >
+> > > > >
+> > > > > In other words, do you want to say
+> > > > >
+> > > > > "If defining this middle part as a variable had been accepted,
+> > > > > this patch would have been unneeded." ?
+> > > >
+> > > > If it were accepted I would not have to guess what the middle part is,
+> > > > and could use the variable that unambiguosly defines it instead.
+> > >
+> > >
+> > > How?
+> > >
+> > > scripts/package/kernel.spec hardcodes 'lib/modules'
+> > > in a couple of places.
+> > >
+> > > I am asking how to derive the module path.
+> >
+> > Not sure what you are asking here. The path is hardcoded, everywhere.
+> >
+> > The current Makefile has
+> >
+> > MODLIB  = $(INSTALL_MOD_PATH)/lib/modules/$(KERNELRELEASE)
+> >
+> > and there is no reliable way to learn what the middle part was after the
+> > fact - $(INSTALL_MOD_PATH) can be non-empty.
+> >
+> > The rejected patch was changing this to a variable, and also default to
+> > adjusting the content to what kmod exports in pkgconfig after applying a
+> > proposed patch to make this hardcoded part configurable:
+> >
+> > export KERNEL_MODULE_DIRECTORY := $(shell pkg-config --print-variables kmod 2>/dev/null | grep '^module_directory$$' >/dev/null && pkg-config --variable=module_directory kmod || echo /lib/modules)
+> >
+> > MODLIB  = $(INSTALL_MOD_PATH)$(KERNEL_MODULE_DIRECTORY)/$(KERNELRELEASE)
+> >
+> > It would be completely posible to only define the middle part as a
+> > variable that could then be used in rpm-pkg:
+> >
+> > export KERNEL_MODULE_DIRECTORY := /lib/modules
+> >
+> > MODLIB  = $(INSTALL_MOD_PATH)$(KERNEL_MODULE_DIRECTORY)/$(KERNELRELEASE)
+> >
+> > Thanks
+> >
+> > Michal
+> >
+> >
+> 
+> 
+> Let me add more context to my question.
+> 
+> 
+> I am interested in the timing when
+> 'pkg-config --print-variables kmod | grep module_directory'
+> is executed.
+> 
+> 
+> 
+> 1.  Build a SRPM on machine A
+> 
+> 2.  Copy the SRPM from machine A to machine B
+> 
+> 3.  Run rpmbuild on machine B to build the SRPM into a RPM
+> 
+> 4.  Copy the RPM from machine B to machine C
+> 
+> 5.  Install the RPM to machine C
 
-Rewrite write_schemata() to use syscalls instead of stdio file
-operations to avoid the buffering.
+As far as I am aware the typical use case is two step:
 
-The resctrlfs.c defines functions that interact with the resctrl FS
-while resctrl_val.c defines functions that perform measurements on
-the cache. Run_benchmark() fits logically into the second file before
-resctrl_val() that uses it.
+1. run make rpm-pkg on machine A
+2. install the binary rpm on machine C that might not have build tools
+   or powerful enough CPU
 
-Move run_benchmark() from resctrlfs.c to resctrl_val.c and remove
-redundant part of the kernel-doc comment. Make run_benchmark() static
-and remove it from the header file.
+While it's theoretically possible to use the srpm to rebuild the binary
+rpm independently of the kernel git tree I am not aware of people
+commonly doing this.
 
-Patch series is based on [1] which is based on [2] which are based on
-kselftest next branch.
+If rebuilding the source rpm on a different machine from where the git
+tree is located, and possibly on a different distribution is desirable
+then the detection of the KERNEL_MODULE_DIRECTORY should be added in the
+rpm spec file as well.
 
-Resend v7:
-- Resending because I forgot to add the base commit.
+> Of course, we are most interested in the module path
+> of machine C, but it is difficult/impossible to
+> guess it at the time of building.
+> 
+> We can assume machine B == machine C.
+> 
+> We are the second most interested in the module
+> path on machine B.
+> 
+> The module path of machine A is not important.
+> 
+> So, I am asking where you would inject
+> 'pkg-config --print-variables kmod | grep module_directory'.
 
-Changelog v7:
-- Add label for non-empty schema error case to Patch 1/2. (Reinette)
-- Add Reinette's reviewed-by tag to Patch 1/2.
+I don't. I don't think there will be a separate machine B.
 
-Changelog v6:
-- Align schema_len error checking with typical snprintf format.
-  (Reinette)
-- Initialize schema string for early return eventuality. (Reinette)
+And I can't really either - so far any attempt at adding support for
+this has been rejected.
 
-Changelog v5:
-- Add Ilpo's reviewed-by tag to Patch 1/2.
-- Reword patch messages slightly.
-- Add error check to schema_len variable.
+Technically the KERNEL_MODULE_DIRECTORY could be set in two steps - one
+giving the script to run, and one running it, and then it could be run
+independently in the SRPM as well.
 
-Changelog v4:
-- Change git signature from Wieczor-Retman Maciej to Maciej
-  Wieczor-Retman.
-- Rebase onto [1] which is based on [2]. (Reinette)
-- Add fcntl.h explicitly to provide glibc backward compatibility.
-  (Reinette)
+Thanks
 
-Changelog v3:
-- Use snprintf() return value instead of strlen() in write_schemata().
-  (Ilpo)
-- Make run_benchmark() static and remove it from the header file.
-  (Reinette)
-- Add Ilpo's reviewed-by tag to Patch 2/2.
-- Patch messages and cover letter rewording.
-
-Changelog v2:
-- Change sprintf() to snprintf() in write_schemata().
-- Redo write_schemata() with syscalls instead of stdio functions.
-- Fix typos and missing dots in patch messages.
-- Branch printf attribute patch to a separate series.
-
-[v1] https://lore.kernel.org/all/cover.1692880423.git.maciej.wieczor-retman@intel.com/
-[v2] https://lore.kernel.org/all/cover.1693213468.git.maciej.wieczor-retman@intel.com/
-[v3] https://lore.kernel.org/all/cover.1693575451.git.maciej.wieczor-retman@intel.com/
-[v4] https://lore.kernel.org/all/cover.1695369120.git.maciej.wieczor-retman@intel.com/
-[v5] https://lore.kernel.org/all/cover.1695975327.git.maciej.wieczor-retman@intel.com/
-[v6] https://lore.kernel.org/all/cover.1696848653.git.maciej.wieczor-retman@intel.com/
-
-[1] https://lore.kernel.org/all/20231002094813.6633-1-ilpo.jarvinen@linux.intel.com/
-[2] https://lore.kernel.org/all/20230904095339.11321-1-ilpo.jarvinen@linux.intel.com/
-
-Maciej Wieczor-Retman (2):
-  selftests/resctrl: Fix schemata write error check
-  selftests/resctrl: Move run_benchmark() to a more fitting file
-
- tools/testing/selftests/resctrl/resctrl.h     |  1 -
- tools/testing/selftests/resctrl/resctrl_val.c | 50 ++++++++++
- tools/testing/selftests/resctrl/resctrlfs.c   | 93 ++++++-------------
- 3 files changed, 76 insertions(+), 68 deletions(-)
-
-
-base-commit: f3d3a8b5cf771ed2c6692a457dbc17f389f97f53
--- 
-2.42.0
-
+Michal
