@@ -2,138 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E397C023C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 19:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B2267C0238
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 19:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234012AbjJJRHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 13:07:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53908 "EHLO
+        id S234081AbjJJRGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 13:06:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234383AbjJJRGq (ORCPT
+        with ESMTP id S234410AbjJJRG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 13:06:46 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D4E10D5;
-        Tue, 10 Oct 2023 10:06:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696957583; x=1728493583;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=xpxagVahSuuVfh54QbO0O0LxyEGgv5d6nUjRC7qUNxI=;
-  b=dUnmCnnLcpJy+1ROY+fg+2z3L6jT81ICzo4ExJfOWEbDsUCyT1wh4V8d
-   FpFAUR/UAzvRjtBaK4SF1Hc+LNcMRUe6XA/mRieVnVyFHc07Inasa1Nsk
-   YoVcYDmzuntBf4m7WZZAKIBBxMAx/7LKGGV5ccYRz9/siGFBVBTHd1LT1
-   pnumf8fS8jEzRfRD+SLqYRkgBTUr8OXkIqD7VGG2JvOOdGy2+9J/PciF0
-   IWqiO4DtoPyhjaG5yILltzESVYIdloVTyUr1LD8WYUaXMvy8MJcPzbtZ8
-   ntIv9+LeJx1HnAfi3ODdmKjThuhH2S+MG6dIHMJREHD02zXFsm0NdInFF
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="450953603"
-X-IronPort-AV: E=Sophos;i="6.03,213,1694761200"; 
-   d="scan'208";a="450953603"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 10:06:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="819323024"
-X-IronPort-AV: E=Sophos;i="6.03,213,1694761200"; 
-   d="scan'208";a="819323024"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.96.100])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 10 Oct 2023 10:05:30 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "tj@kernel.org" <tj@kernel.org>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "Huang, Kai" <kai.huang@intel.com>
-Cc:     "kristen@linux.intel.com" <kristen@linux.intel.com>,
-        "Zhang, Bo" <zhanb@microsoft.com>,
-        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
-        "anakrish@microsoft.com" <anakrish@microsoft.com>,
-        "yangjie@microsoft.com" <yangjie@microsoft.com>
-Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
- EPC
-References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
- <20230923030657.16148-13-haitao.huang@linux.intel.com>
- <1b265d0c9dfe17de2782962ed26a99cc9d330138.camel@intel.com>
- <op.2ckqmgs9wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <fc6aa778ddbde9536cafe48b847cf6c45b640ea4.camel@intel.com>
- <op.2ckr5yetwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <badbe0da60a2b35e8eace98714c6f7d4bcd6f202.camel@intel.com>
-Date:   Tue, 10 Oct 2023 12:05:29 -0500
+        Tue, 10 Oct 2023 13:06:26 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F1211B
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 10:06:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7EF4C433C7;
+        Tue, 10 Oct 2023 17:06:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696957563;
+        bh=fQxhBhW+tBsI74bpxoq2WhIg3iV6j9PgVFhC0vGwcw4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DyA6xxGAjMcq+pqRbop6Hl9L/a7izNrQx+URxcKHk4934m/rfCpF63VFp05pP7x8t
+         oYV5j5bsLcXaK5nEP1CSnbk8TEubM0pjGVGBuDee6xu5DV7Gr21jNks+xxnIEDqSbN
+         l5lHI+PA3HtR260Migd0jbiU0L+XaziHQezq21xNdTpiHcMtB3twWogwuHGGwxauBz
+         ApJxqcjeKTyfLyunkMYYurP+MRGg5Wp2VzbZJ7GiNVpHXbGE4ZtWm9gV3JbmtWAdKA
+         nH7/wVJ1I0ZR8LQfvdlzZ7oxPNQaj38l9ZwSPll8kUSuuy9a1ggijHyDW3aSUBW7x2
+         666ToubamQsOw==
+Received: (nullmailer pid 1059527 invoked by uid 1000);
+        Tue, 10 Oct 2023 17:06:00 -0000
+Date:   Tue, 10 Oct 2023 12:06:00 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Simon Glass <sjg@chromium.org>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        devicetree@vger.kernel.org, Michael Walle <mwalle@kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Tom Rini <trini@konsulko.com>
+Subject: Re: [PATCH v3 2/3] dt-bindings: mtd: binman-partition: Add binman
+ compatibles
+Message-ID: <20231010170600.GA1046256-robh@kernel.org>
+References: <20231009201005.1964794-1-sjg@chromium.org>
+ <20231009201005.1964794-2-sjg@chromium.org>
+ <169688631230.3255827.3268332902446136449.robh@kernel.org>
+ <CAPnjgZ3-eX5r02K_499wz3dQOs8nOO5o16CL9w1xyNsTXL0L2A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2cly3ffmwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <badbe0da60a2b35e8eace98714c6f7d4bcd6f202.camel@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPnjgZ3-eX5r02K_499wz3dQOs8nOO5o16CL9w1xyNsTXL0L2A@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 09 Oct 2023 21:12:27 -0500, Huang, Kai <kai.huang@intel.com> wrote:
+On Mon, Oct 09, 2023 at 04:02:40PM -0600, Simon Glass wrote:
+> Hi Rob,
+> 
+> On Mon, 9 Oct 2023 at 15:18, Rob Herring <robh@kernel.org> wrote:
+> >
+> >
+> > On Mon, 09 Oct 2023 14:10:00 -0600, Simon Glass wrote:
+> > > Add two compatible for binman entries, as a starting point for the
+> > > schema.
+> > >
+> > > Note that, after discussion on v2, we decided to keep the existing
+> > > meaning of label so as not to require changes to existing userspace
+> > > software when moving to use binman nodes to specify the firmware
+> > > layout.
+> > >
+> > > Signed-off-by: Simon Glass <sjg@chromium.org>
+> > > ---
+> > >
+> > > Changes in v3:
+> > > - Drop fixed-partitions from the example
+> > > - Use compatible instead of label
+> > >
+> > > Changes in v2:
+> > > - Use plain partition@xxx for the node name
+> > >
+> > >  .../mtd/partitions/binman-partition.yaml      | 48 +++++++++++++++++++
+> > >  1 file changed, 48 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
+> > >
+> >
+> > My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> > on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> >
+> > yamllint warnings/errors:
+> >
+> > dtschema/dtc warnings/errors:
+> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml: properties:compatible:items: {'enum': ['u-boot', 'atf-bl31']} is not of type 'array'
+> >         from schema $id: http://devicetree.org/meta-schemas/string-array.yaml#
+> >
+> > doc reference errors (make refcheckdocs):
+> >
+> > See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231009201005.1964794-2-sjg@chromium.org
+> >
+> > The base for the series is generally the latest rc1. A different dependency
+> > should be noted in *this* patch.
+> >
+> > If you already ran 'make dt_binding_check' and didn't see the above
+> > error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> > date:
+> >
+> > pip3 install dtschema --upgrade
+> >
+> > Please check and re-submit after running the above command yourself. Note
+> > that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+> > your schema. However, it must be unset to test all examples with your schema.
+> >
+> 
+> Oh dear, I didn't notice that output but I see it now. Could the check
+> return a non-zero exit code if something goes wrong?
 
->
->> > > >
->> > > Later the hosting process could migrated/reassigned to another  
->> cgroup?
->> > > What to do when the new cgroup is OOM?
->> > >
->> >
->> > You addressed in the documentation, no?
->> >
->> > +Migration
->> > +---------
->> > +
->> > +Once an EPC page is charged to a cgroup (during allocation), it
->> > +remains charged to the original cgroup until the page is released
->> > +or reclaimed.  Migrating a process to a different cgroup doesn't
->> > +move the EPC charges that it incurred while in the previous cgroup
->> > +to its new cgroup.
->>
->> Should we kill the enclave though because some VA pages may be in the  
->> new
->> group?
->>
->
-> I guess acceptable?
->
-> And any difference if you keep VA/SECS to unreclaimabe list?
+No, because things go wrong too often and then it breaks for everyone. 
+It's better now, but only because of the above reports and 3 
+maintainers.
 
-Tracking VA/SECS allows all cgroups, in which an enclave has allocation,  
-to identify the enclave following the back pointer and kill it as needed.
+Also, it is not fatal. The schemas are checked against the DT 
+meta-schema, but are used for validation if they pass just draft2019-09 
+meta-schema. That allows new DT meta-schema checks to not start 
+excluding previously used schema.
 
-> If you migrate one
-> enclave to another cgroup, the old EPC pages stay in the old cgroup  
-> while the
-> new one is charged to the new group IIUC.
->
-> I am not cgroup expert, but by searching some old thread it appears this  
-> isn't a
-> supported model:
->
-> https://lore.kernel.org/lkml/YEyR9181Qgzt+Ps9@mtj.duckdns.org/
->
-
-IIUC it's a different problem here. If we don't track the allocated VAs in  
-the new group, then the enclave that spans the two groups can't be killed  
-by the new group. If so, some enclave could just hide in some small group  
-and never gets killed but keeps allocating in a different group?
-
-Thanks
-Haitao
+Rob
