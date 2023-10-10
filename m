@@ -2,310 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFCA27BF710
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 11:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9C57BF716
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 11:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229516AbjJJJSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 05:18:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44276 "EHLO
+        id S230165AbjJJJSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 05:18:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230178AbjJJJR6 (ORCPT
+        with ESMTP id S230041AbjJJJSg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 05:17:58 -0400
-Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F3213D;
-        Tue, 10 Oct 2023 02:17:46 -0700 (PDT)
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-59f6e6b206fso67717217b3.3;
-        Tue, 10 Oct 2023 02:17:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696929465; x=1697534265; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AitLqx6uEsS6SCZM85J15+rmNCaW57KFo5UYsOINuEM=;
-        b=lDfDsGqt0K42cF0INpkMDJaCMYoA3jdDOapeTZ+BCmwFbm3JZ7rSUy9G6GHqRMTMsl
-         RhtxzReGvG7tI81ybAeyVaLtnWsZV+86E2y4zP25RboDPG8lasYRRc0WDYFYO/cWqPfu
-         KUigxnwSNQP0KCbXChCV+FrWE4KYT5IrZTwglJYVZT9IylEOOCH5EqQ1f8RG9dqT82BS
-         WE5jYZjgMAUQedQEbd5aUrdnp0xBa3rdqrw+y9pEgvFRoZdTRFb34jJfrB7NcPxsALMY
-         Er6yGWO/WwIAmkb4HeHCj5j0YAe0FjYmsk4bQmlBd/Cwx+flQjXmesvwfCdo+EjWmLut
-         7aEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696929465; x=1697534265;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AitLqx6uEsS6SCZM85J15+rmNCaW57KFo5UYsOINuEM=;
-        b=FuacNAfWK0I20e1er/8V1fB2A1WSeVuQsrMAmqNIvLY0N3szlfXkxS/yswEzfmY3A1
-         lBb7D+9WZdyHp2frvTxLmrxyDhjYYFtRdTuk5PQJHZ2+avxAZOKFvz4ohFAaMqYYvkXm
-         7l2tEOdSXZLxwmY3yzaAMZYfDligE7YzxkoLO865bpEh7261g2XGfIFi+XfxTJhAFH9s
-         tv6gV8gY3gm2049oWC6hd48TlzNNEbsTMB5/RxKiL0SmHaxAiAnpurFN+LVXZShXje7y
-         u6k3LvG0kLnBF23GLjjTW50KdN87sPyGKg9B9a8ge1A7ih2aJp9MoUslzZ4QKXbtPwFo
-         H+bA==
-X-Gm-Message-State: AOJu0YyREARpYjtfOuiJVjtSbLOVg1xRhMfO73QIzguSfdRrYJSS/OPt
-        rLHJAnjpRTSCJyv3hh3gZ6NKluKd9S+kPI+zXinww1Dxxg==
-X-Google-Smtp-Source: AGHT+IGThSA32vMNWFCh69eI2t1Osj3Kr2Vd2YtH2gpzEjDyfaHS8V2MZAACgBbgbBGqePuqAtNHx0flxtEfLlIrrwE=
-X-Received: by 2002:a25:cf10:0:b0:d9a:4870:7943 with SMTP id
- f16-20020a25cf10000000b00d9a48707943mr2532397ybg.28.1696929464856; Tue, 10
- Oct 2023 02:17:44 -0700 (PDT)
+        Tue, 10 Oct 2023 05:18:36 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D491A7;
+        Tue, 10 Oct 2023 02:18:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696929515; x=1728465515;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=nhMjTskI0kdje3r63TqyWep3YjWnF2MvMNQ53LvDfCs=;
+  b=UN+jLhqfsSbaBaPO9pDGfUUVfbmdIYGRn5IqelQmiBlj8sMfNnv2RX7A
+   7DQ5i+buRfPE5lYFJ6pPrSs7ADpYJgTGaqyRlbT9kJmgqmOl9cN4VOQs7
+   pkCS7fhESPkkF359bWE1jYgnGOhZjEHX/ErC/Wub1u/39QI6SZNvSv884
+   oTOF1CukH2jW5ItoBpRvD+kI6GD4DkYwhqU4LrZ8IBq2BX2SgQvxOfdIe
+   4OtT4DgbcqD6NrIWdfkeuB5qlCqQaLXUU87EYTemH9QyxwSO9xsN/lcfm
+   NeBkspYuVPmdZc/sOvt3YFqH+B0DFzplD06LqQCTzmtZ9FS6+Q7I+d7VK
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="364643123"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="364643123"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 02:18:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="844048252"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="844048252"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by FMSMGA003.fm.intel.com with ESMTP; 10 Oct 2023 02:18:30 -0700
+Date:   Tue, 10 Oct 2023 17:17:36 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     isaku.yamahata@intel.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        isaku.yamahata@gmail.com, Michael Roth <michael.roth@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>, erdemaktas@google.com,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        linux-coco@lists.linux.dev,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Yuan Yao <yuan.yao@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Quentin Perret <qperret@google.com>, wei.w.wang@intel.com,
+        Fuad Tabba <tabba@google.com>
+Subject: Re: [PATCH 6/8] KVM: gmem, x86: Add gmem hook for invalidating
+ private memory
+Message-ID: <ZSUWsK8dGPjlrCR1@yilunxu-OptiPlex-7050>
+References: <cover.1692119201.git.isaku.yamahata@intel.com>
+ <8c9f0470ba6e5dc122f3f4e37c4dcfb6fb97b184.1692119201.git.isaku.yamahata@intel.com>
 MIME-Version: 1.0
-References: <20231009-jmp-into-reserved-fields-v1-1-d8006e2ac1f6@gmail.com>
- <6524f6f77b896_66abc2084d@john.notmuch> <92f824ec-9538-501c-e63e-8483ffe14bad@iogearbox.net>
-In-Reply-To: <92f824ec-9538-501c-e63e-8483ffe14bad@iogearbox.net>
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Tue, 10 Oct 2023 11:17:33 +0200
-Message-ID: <CACkBjsbM8=NLwwEUea21vqCrn-w9cn21gL3BNpU4AupYnuCvJg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] Detect jumping to reserved code during check_cfg()
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8c9f0470ba6e5dc122f3f4e37c4dcfb6fb97b184.1692119201.git.isaku.yamahata@intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 10:33=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.=
-net> wrote:
->
-> On 10/10/23 9:02 AM, John Fastabend wrote:
-> > Hao Sun wrote:
-> >> Currently, we don't check if the branch-taken of a jump is reserved co=
-de of
-> >> ld_imm64. Instead, such a issue is captured in check_ld_imm(). The ver=
-ifier
-> >> gives the following log in such case:
-> >>
-> >> func#0 @0
-> >> 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
-> >> 0: (18) r4 =3D 0xffff888103436000       ; R4_w=3Dmap_ptr(off=3D0,ks=3D=
-4,vs=3D128,imm=3D0)
-> >> 2: (18) r1 =3D 0x1d                     ; R1_w=3D29
-> >> 4: (55) if r4 !=3D 0x0 goto pc+4        ; R4_w=3Dmap_ptr(off=3D0,ks=3D=
-4,vs=3D128,imm=3D0)
-> >> 5: (1c) w1 -=3D w1                      ; R1_w=3D0
-> >> 6: (18) r5 =3D 0x32                     ; R5_w=3D50
-> >> 8: (56) if w5 !=3D 0xfffffff4 goto pc-2
-> >> mark_precise: frame0: last_idx 8 first_idx 0 subseq_idx -1
-> >> mark_precise: frame0: regs=3Dr5 stack=3D before 6: (18) r5 =3D 0x32
-> >> 7: R5_w=3D50
-> >> 7: BUG_ld_00
-> >> invalid BPF_LD_IMM insn
-> >>
-> >> Here the verifier rejects the program because it thinks insn at 7 is a=
-n
-> >> invalid BPF_LD_IMM, but such a error log is not accurate since the iss=
-ue
-> >> is jumping to reserved code not because the program contains invalid i=
-nsn.
-> >> Therefore, make the verifier check the jump target during check_cfg().=
- For
-> >> the same program, the verifier reports the following log:
-> >
-> > I think we at least would want a test case for this. Also how did you c=
-reate
-> > this case? Is it just something you did manually and noticed a strange =
-error?
->
-> Curious as well.
-
-I just wrote a testing tool for the verifier, which uses a test oracle
-to capture
-incorrect verifier's states, capturing incorrect verifier logs is a
-bonus from this.
-The bug is captured during testing the testing tool :). I will publish
-the work when
-I think it's useful enough and ready.
-
->
-> We do have test cases which try to jump into the middle of a double insn =
-as can
-> be seen that this patch breaks BPF CI with regards to log mismatch below =
-(which
-> still needs to be adapted, too). Either way, it probably doesn't hurt to =
-also add
-> the above snippet as a test.
+On 2023-08-15 at 10:18:53 -0700, isaku.yamahata@intel.com wrote:
+> From: Michael Roth <michael.roth@amd.com>
+> 
+> TODO: add a CONFIG option that can be to completely skip arch
+> invalidation loop and avoid __weak references for arch/platforms that
+> don't need an additional invalidation hook.
+> 
+> In some cases, like with SEV-SNP, guest memory needs to be updated in a
+> platform-specific manner before it can be safely freed back to the host.
+> Add hooks to wire up handling of this sort when freeing memory in
+> response to FALLOC_FL_PUNCH_HOLE operations.
+> 
+> Also issue invalidations of all allocated pages when releasing the gmem
+> file so that the pages are not left in an unusable state when they get
+> freed back to the host.
+> 
+> Signed-off-by: Michael Roth <michael.roth@amd.com>
+> Link: https://lore.kernel.org/r/20230612042559.375660-3-michael.roth@amd.com
 >
 
-Will add a test case for this, and try to fix these broken tests, in patch =
-v2.
+[...]
+ 
+> +/* Handle arch-specific hooks needed before releasing guarded pages. */
+> +static void kvm_gmem_issue_arch_invalidate(struct kvm *kvm, struct file *file,
+> +					   pgoff_t start, pgoff_t end)
+> +{
+> +	pgoff_t file_end = i_size_read(file_inode(file)) >> PAGE_SHIFT;
+> +	pgoff_t index = start;
+> +
+> +	end = min(end, file_end);
+> +
+> +	while (index < end) {
+> +		struct folio *folio;
+> +		unsigned int order;
+> +		struct page *page;
+> +		kvm_pfn_t pfn;
+> +
+> +		folio = __filemap_get_folio(file->f_mapping, index,
+> +					    FGP_LOCK, 0);
+> +		if (!folio) {
+> +			index++;
+> +			continue;
+> +		}
+> +
+> +		page = folio_file_page(folio, index);
+> +		pfn = page_to_pfn(page);
+> +		order = folio_order(folio);
+> +
+> +		kvm_arch_gmem_invalidate(kvm, pfn, pfn + min((1ul << order), end - index));
 
-> Hao, as I understand, the patch here is an usability improvement (not a f=
-ix per se)
-> where we reject such cases earlier during cfg check rather than at a late=
-r point
-> where we validate ld_imm instruction. Or are there cases you found which =
-were not
-> yet captured via current check_ld_imm()?
->
+Observed an issue there.
 
-I regard this as a fix, because the verifier log is not correct, since
-the program does
-not contain any invalid ld_imm64 instructions in this case.
+The valid page may not point to the first page in the folio, then the
+range [pfn, pfn + (1ul << order)) expands to the next folio. This makes
+a part of the pages be invalidated again when loop to the next folio.
 
-I haven't met other cases not captured via check_ld_imm(), but somehow, I t=
-hink
-we probably want to convert the check there as an internal bug,
-because we already
-have bpf_opcode_in_insntable() check in resolve_pseudo_ldimm64(). Once we m=
-eet
-invalid insn code here, then somewhere else in the verifier is
-probably wrong. But
-I'm not sure, maybe something like this:
+On TDX, it causes TDH_PHYMEM_PAGE_WBINVD failed.
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index eed7350e15f4..bed97de568a5 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -14532,8 +14532,8 @@ static int check_ld_imm(struct
-bpf_verifier_env *env, struct bpf_insn *insn)
-        int err;
+> +
+> +		index = folio_next_index(folio);
+> +		folio_unlock(folio);
+> +		folio_put(folio);
+> +
+> +		cond_resched();
+> +	}
+> +}
 
-        if (BPF_SIZE(insn->code) !=3D BPF_DW) {
--               verbose(env, "invalid BPF_LD_IMM insn\n");
--               return -EINVAL;
-+               verbose(env, "verifier internal bug, invalid BPF_LD_IMM\n")=
-;
-+               return -EFAULT;
-        }
-        if (insn->off !=3D 0) {
-                verbose(env, "BPF_LD_IMM64 uses reserved fields\n");
+My fix would be:
 
-> test_verifier failure log :
->
->    #458/u test1 ld_imm64 FAIL
->    Unexpected verifier log!
->    EXP: R1 pointer comparison
->    RES:
->    FAIL
->    Unexpected error message!
->         EXP: R1 pointer comparison
->         RES: jump to reserved code from insn 0 to 2
->    verification time 22 usec
->    stack depth 0
->    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
- peak_states 0 mark_read 0
->
->    jump to reserved code from insn 0 to 2
->    verification time 22 usec
->    stack depth 0
->    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
- peak_states 0 mark_read 0
->    #458/p test1 ld_imm64 FAIL
->    Unexpected verifier log!
->    EXP: invalid BPF_LD_IMM insn
->    RES:
->    FAIL
->    Unexpected error message!
->         EXP: invalid BPF_LD_IMM insn
->         RES: jump to reserved code from insn 0 to 2
->    verification time 9 usec
->    stack depth 0
->    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
- peak_states 0 mark_read 0
->
->    jump to reserved code from insn 0 to 2
->    verification time 9 usec
->    stack depth 0
->    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
- peak_states 0 mark_read 0
->    #459/u test2 ld_imm64 FAIL
->    Unexpected verifier log!
->    EXP: R1 pointer comparison
->    RES:
->    FAIL
->    Unexpected error message!
->         EXP: R1 pointer comparison
->         RES: jump to reserved code from insn 0 to 2
->    verification time 11 usec
->    stack depth 0
->    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
- peak_states 0 mark_read 0
->
->    jump to reserved code from insn 0 to 2
->    verification time 11 usec
->    stack depth 0
->    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
- peak_states 0 mark_read 0
->    #459/p test2 ld_imm64 FAIL
->    Unexpected verifier log!
->    EXP: invalid BPF_LD_IMM insn
->    RES:
->    FAIL
->    Unexpected error message!
->         EXP: invalid BPF_LD_IMM insn
->         RES: jump to reserved code from insn 0 to 2
->    verification time 8 usec
->    stack depth 0
->    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
- peak_states 0 mark_read 0
->
->    jump to reserved code from insn 0 to 2
->    verification time 8 usec
->    stack depth 0
->    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
- peak_states 0 mark_read 0
->    #460/u test3 ld_imm64 OK
->
-> >> func#0 @0
-> >> jump to reserved code from insn 8 to 7
-> >>
-> >> ---
-> >>
-> >>
-> >> Signed-off-by: Hao Sun <sunhao.th@gmail.com>
->
-> nit: This needs to be before the "---" line.
->
+diff --git a/virt/kvm/guest_mem.c b/virt/kvm/guest_mem.c
+index e629782d73d5..3665003c3746 100644
+--- a/virt/kvm/guest_mem.c
++++ b/virt/kvm/guest_mem.c
+@@ -155,7 +155,7 @@ static void kvm_gmem_issue_arch_invalidate(struct kvm *kvm, struct inode *inode,
 
-Noted.
+        while (index < end) {
+                struct folio *folio;
+-               unsigned int order;
++               pgoff_t ntails;
+                struct page *page;
+                kvm_pfn_t pfn;
 
-> >> ---
-> >>   kernel/bpf/verifier.c | 7 +++++++
-> >>   1 file changed, 7 insertions(+)
-> >>
-> >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> >> index eed7350e15f4..725ac0b464cf 100644
-> >> --- a/kernel/bpf/verifier.c
-> >> +++ b/kernel/bpf/verifier.c
-> >> @@ -14980,6 +14980,7 @@ static int push_insn(int t, int w, int e, stru=
-ct bpf_verifier_env *env,
-> >>   {
-> >>      int *insn_stack =3D env->cfg.insn_stack;
-> >>      int *insn_state =3D env->cfg.insn_state;
-> >> +    struct bpf_insn *insns =3D env->prog->insnsi;
-> >>
-> >>      if (e =3D=3D FALLTHROUGH && insn_state[t] >=3D (DISCOVERED | FALL=
-THROUGH))
-> >>              return DONE_EXPLORING;
-> >> @@ -14993,6 +14994,12 @@ static int push_insn(int t, int w, int e, str=
-uct bpf_verifier_env *env,
-> >>              return -EINVAL;
-> >>      }
-> >>
-> >> +    if (e =3D=3D BRANCH && insns[w].code =3D=3D 0) {
-> >> +            verbose_linfo(env, t, "%d", t);
-> >> +            verbose(env, "jump to reserved code from insn %d to %d\n"=
-, t, w);
-> >> +            return -EINVAL;
-> >> +    }
->
-> Other than that, lgtm.
->
-> >>      if (e =3D=3D BRANCH) {
-> >>              /* mark branch target for state pruning */
-> >>              mark_prune_point(env, w);
-> >>
+@@ -168,9 +168,9 @@ static void kvm_gmem_issue_arch_invalidate(struct kvm *kvm, struct inode *inode,
+
+                page = folio_file_page(folio, index);
+                pfn = page_to_pfn(page);
+-               order = folio_order(folio);
++               ntails = folio_nr_pages(folio) - folio_page_idx(folio, page);
+
+-               kvm_arch_gmem_invalidate(kvm, pfn, pfn + min((1ul << order), end - index));
++               kvm_arch_gmem_invalidate(kvm, pfn, pfn + min(ntails, end - index));
+
+                index = folio_next_index(folio);
+                folio_unlock(folio);
+
+Thanks,
+Yilun
