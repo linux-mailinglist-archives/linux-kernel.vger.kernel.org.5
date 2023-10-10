@@ -2,61 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD9C7C03D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 20:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A26547C03E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 20:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343786AbjJJSyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 14:54:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58644 "EHLO
+        id S234158AbjJJS44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 14:56:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343735AbjJJSyk (ORCPT
+        with ESMTP id S233336AbjJJS4z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 14:54:40 -0400
+        Tue, 10 Oct 2023 14:56:55 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95D7AAC;
-        Tue, 10 Oct 2023 11:54:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2DB09C433CC;
-        Tue, 10 Oct 2023 18:54:37 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB81B93;
+        Tue, 10 Oct 2023 11:56:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86A3BC433C8;
+        Tue, 10 Oct 2023 18:56:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696964077;
-        bh=3nliYFIhzBhPD+aGytcKvg0fY/dyUUsiJxa6eb+/EB8=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Kg/jPogsNZ3atEo6+w3BimYrq57Uxrj0q6n/YFsBI6/ZC3ga0//0K5K0gkb/CA9D7
-         JeCR5ahd27+8x4OlurCdxq6eIfBv752kDFYHQoV0TAa7rXpnU7fP95fa+GZObyMFXa
-         MoAGKqSGSgP11BqvxXMvmsyp+AaJaeXRsSC6AjLUP2RzrGsXeCANwuI1jvSYwbGLE4
-         iQ7LE0YopLnOUNKBoFahI5t2NeVPxfib6mDzczoBPrroD/EKgGukaxovENjn/Ves1l
-         T7NZD02XSivC4i/B6WZgRDONqXXjH594P67AmhFaFbQlcELJaoQGMsvwp/5G22yA09
-         z2j1rU+WbtsOw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1790CC41671;
-        Tue, 10 Oct 2023 18:54:37 +0000 (UTC)
-Subject: Re: [GIT PULL] Crypto Fixes for 6.6
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <ZSUPdPFo+M/rQhwo@gondor.apana.org.au>
-References: <Y0zcWCmNmdXnX8RP@gondor.apana.org.au>
- <Y1thZ/+Gh/ONyf7x@gondor.apana.org.au>
- <Y7fmtJHWT1Zx+A1j@gondor.apana.org.au>
- <ZARrt99wJb7IhoY4@gondor.apana.org.au>
- <ZFeldCJcieIlXKJ8@gondor.apana.org.au>
- <ZHQe9A8CC93iCFMG@gondor.apana.org.au>
- <ZKtH5zrS4pR22PGT@gondor.apana.org.au>
- <ZOLcCC523FoBAyv0@gondor.apana.org.au>
- <ZPAiMYaqUslSyZ6+@gondor.apana.org.au>
- <ZQz3qxwwAjDaqi5V@gondor.apana.org.au> <ZSUPdPFo+M/rQhwo@gondor.apana.org.au>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ZSUPdPFo+M/rQhwo@gondor.apana.org.au>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git v6.6-p4
-X-PR-Tracked-Commit-Id: 152d0bcdf1efcb54a4fa20f694e9c7bbb6d06cbf
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 832b5d0bf94cab3ab1ca690fca3c3d931f5fa7cd
-Message-Id: <169696407709.29903.11877447157183182158.pr-tracker-bot@kernel.org>
-Date:   Tue, 10 Oct 2023 18:54:37 +0000
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+        s=k20201202; t=1696964212;
+        bh=Kfg6W1o5GY/gdJRUqS6uOzCj8+OvbwvifdKKhp+HQuM=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=Bkt0cta2tvH0ovRyUvC5KeSoVi19QTsjPmHfjddmlDDMaM1En3qXb8ElbfyTYFHji
+         1qfs0K/F1cn8XZpKROokyw7t2Mw0i/3J+6pCkhhbz3NvDRQZ3S6g/IIC1No5iMvyeG
+         ExUzEnSxMnzbE2ppV/C6H5XDMijfTp1V2hwAxwxIRX4gQI53yeZ8BD4TGm3zB/cGHp
+         DsTHZpIa+g9MWOqk1OwwSigi3N3yEDYBxozh6TywPECSo06gCNZUBeRzNvdxVrFbFY
+         X5ilCfYwkFyuUulzzowOsT2lSCBq63JKWnLvMsLsMQy3KQ4AY2n5z3tMWAd7JvFpIt
+         VX3lJeCbE2/Jw==
+Message-ID: <7b764568ea372f0a947798fb3c2dac75.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20231009114514.120130-1-arnd@kernel.org>
+References: <20231009114514.120130-1-arnd@kernel.org>
+Subject: Re: [PATCH] clk: imx: imx8: build base support for scu clk
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Peng Fan <peng.fan@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jesse Taube <Mr.Bossman075@gmail.com>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+To:     Abel Vesa <abelvesa@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+Date:   Tue, 10 Oct 2023 11:56:50 -0700
+User-Agent: alot/0.10
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -66,15 +59,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 10 Oct 2023 16:46:44 +0800:
+Quoting Arnd Bergmann (2023-10-09 04:44:55)
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> There is now a dependency on a function from the clk.c file, so
+> this also needs to be built:
+>=20
+> aarch64-linux-ld: Unexpected GOT/PLT entries detected!
+> aarch64-linux-ld: Unexpected run-time procedure linkages detected!
+> aarch64-linux-ld: drivers/clk/imx/clk-imx8-acm.o: in function `imx8_acm_c=
+lk_probe':
+> clk-imx8-acm.c:(.text+0xbf0): undefined reference to `imx_check_clk_hws'
+>=20
+> Fixes: d3a0946d7ac9a ("clk: imx: imx8: add audio clock mux driver")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git v6.6-p4
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/832b5d0bf94cab3ab1ca690fca3c3d931f5fa7cd
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Is this another https://lore.kernel.org/r/20230921093647.3901752-1-abel.ves=
+a@linaro.org
