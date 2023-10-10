@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D3B57C458C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 01:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B4F7C458D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 01:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344210AbjJJXeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 19:34:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35098 "EHLO
+        id S229718AbjJJXeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 19:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344163AbjJJXdz (ORCPT
+        with ESMTP id S1344181AbjJJXd7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 19:33:55 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2054.outbound.protection.outlook.com [40.107.223.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D8A93;
-        Tue, 10 Oct 2023 16:33:54 -0700 (PDT)
+        Tue, 10 Oct 2023 19:33:59 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2049.outbound.protection.outlook.com [40.107.237.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB31BAF;
+        Tue, 10 Oct 2023 16:33:56 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IdNcTOdk+/6UZhryh7S34E8trsqIpCWenN0GN+HIDIc2W9sOBmAmRZ5dAAsa7FMcXxqStVgwmTMKcrwuwVcRvuyreHYaVmVCBL6qAAjDQSQNM2c9mE+nzUBROb9CKfktIS0sXQc8juU6MRwviWc+/AFAxsaPbr58VtE35lA/tp7JJdEdYjJqnYUB+hQskI7qEJgaLNkQchG1aYhoAFX1Idk95Y98b+n8Hyyia4/OlszTbKywDKgei2CuPuxOsEXR+Dq5SCezpfeXZ2mOqPJmp89jPoImmQWCdzBnEZSC/AOEYy1Z2Bgh6BJ4+daGKj8txd8p9qzsN7SUm9wZEORHcA==
+ b=YIS4MfX1CnlXO5LT2lFSzf8ReC9KYD+JSnPZ1Eyu0Wu3HUIGTsN/A4eiApwg1M5fROFrxjpsE0LgvldWhjCUQVHUoazuAOubCtLz0inaXUZM3+AKpg5am5x/MJSA4ArCZWXd6/7jDrgcQbWWFFjpHgbbjdLbidAk3Tls4RDt5+QxImlIuVT0ZJZ6itMBlI/KJKGusI8ZlVDXou9TWWJAx3fcZcby8EK6D3svd0cH2IyI9k3iM6KojbWBde4xIW/EHS8j9O0y5aoLn6tyrR68UAwTt+A0rlRKHuu3eoFJJOaMh2NHi9LDHYlNKVJuA90woJQaO8jfuhBj0ijzFupCpg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Bc1oUxiw0dA5e9jsoVcsacmbFKbM3gi7SYCxARNC66U=;
- b=Y2/UjzJcTrHhVdc8sz3N0GlpaFJvpxLk9Wx/JGPmKvRZ/iOb55Dxlq+X1WIGt6xphmwCMz51r2hKGd+P0Wx++wMhFDtg196YSrL97pMg0YG4dNkxDtRrXsNzoxrkEfD+ATN0cutU7aN2rcA8F2ITNYNOmbjGFFIv+li3/MsWys4LwYPqHXC9KDfYjw/D+ayRwI08AhsGYUpS0vBjsfvLxgzq4mXABFFbxWNVnirWPoCvREIv5tE/KA5+v1jCiptAGnCIYSOOfvE7GawbpA0yODJIe2/z2IdBZLhZFf7+PzZecrBStyC1hXxnA2drKRRhdgMYVpaydsGsmlDgiov59w==
+ bh=17+APesLAgJrzKT0p23QwGARelWvZo7zmLb7Gnj/sjE=;
+ b=Yohr93ej1JnBuHFxtKVTmYKMeZD8ppNVJjfl05SG6/6LxQu5efFqBQZVxYv21bLMe/A42a1Z6SQYNnkKmlwkVf+KRMMGctXbR8GbfBRT6nRcyEjUZF4RaLXD1pM662TTen/fNoZfD9pYV7oWJ9cQa7dNY7jXeBTN2Ccy2p9mQCOiXKg6oWjl8QxgIrVqR8sg/NmbvNOjdA6NNX3FrZOHEpWxBnSovBmgTItYdS3sGl9xq4VkkvfJ8Jo89RUR3LWnWoEyXBrq54KSOs+k3KkXvhXf3IHDE0YO31PASCpMnkpPgDxwXyr0tWFrKXewkSDvt7qYZaTSWjzrgZZx8H0wvQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=lwn.net smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Bc1oUxiw0dA5e9jsoVcsacmbFKbM3gi7SYCxARNC66U=;
- b=r4Y0SNsq3ffcikIxuL82YlUoEsugX6IHcBsHydYWmnbtcvsm0Li1oiWZ7lKm1W57Oo2a7bqzzrzparX1zHkOEQPYNyHZkwD9Zau7R67kGwBnA/K/lPXdtiqj9Q9PbKqOpunUIPTjTgVbVd7sdkA7lqvBFCIwSqC7km9XjXf7ns0=
-Received: from MN2PR17CA0033.namprd17.prod.outlook.com (2603:10b6:208:15e::46)
- by DS7PR12MB6168.namprd12.prod.outlook.com (2603:10b6:8:97::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6863.37; Tue, 10 Oct 2023 23:33:51 +0000
-Received: from BL6PEPF0001AB4D.namprd04.prod.outlook.com
- (2603:10b6:208:15e:cafe::80) by MN2PR17CA0033.outlook.office365.com
- (2603:10b6:208:15e::46) with Microsoft SMTP Server (version=TLS1_2,
+ bh=17+APesLAgJrzKT0p23QwGARelWvZo7zmLb7Gnj/sjE=;
+ b=wGiDeWkS4GvAantDHFYnTtioaylF8W1zxRqKbI3q11uUJbpZcVMoS6gc7yB/XYGLqPmqTxnYRZgEf/RzALWCVctIU3AXhSoDKCVXeLF+eyvEpKyIl+0egQcshGA/mVrtQ+EAEOflYyBXT/rvZHWZid1d+2OpP6dFtSwG8BcBHmk=
+Received: from BL1P222CA0007.NAMP222.PROD.OUTLOOK.COM (2603:10b6:208:2c7::12)
+ by LV2PR12MB5965.namprd12.prod.outlook.com (2603:10b6:408:172::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Tue, 10 Oct
+ 2023 23:33:53 +0000
+Received: from BL6PEPF0001AB51.namprd04.prod.outlook.com
+ (2603:10b6:208:2c7:cafe::24) by BL1P222CA0007.outlook.office365.com
+ (2603:10b6:208:2c7::12) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38 via Frontend
- Transport; Tue, 10 Oct 2023 23:33:51 +0000
+ Transport; Tue, 10 Oct 2023 23:33:53 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -46,13 +47,13 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL6PEPF0001AB4D.mail.protection.outlook.com (10.167.242.71) with Microsoft
+ BL6PEPF0001AB51.mail.protection.outlook.com (10.167.242.75) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.22 via Frontend Transport; Tue, 10 Oct 2023 23:33:51 +0000
+ 15.20.6838.22 via Frontend Transport; Tue, 10 Oct 2023 23:33:53 +0000
 Received: from bmoger-ubuntu.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 10 Oct
- 2023 18:33:49 -0500
+ 2023 18:33:51 -0500
 From:   Babu Moger <babu.moger@amd.com>
 To:     <corbet@lwn.net>, <reinette.chatre@intel.com>,
         <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>
@@ -70,9 +71,9 @@ CC:     <fenghua.yu@intel.com>, <dave.hansen@linux.intel.com>,
         <eranian@google.com>, <christophe.leroy@csgroup.eu>,
         <jarkko@kernel.org>, <adrian.hunter@intel.com>,
         <quic_jiles@quicinc.com>, <peternewman@google.com>
-Subject: [PATCH v12 05/10] x86/resctrl: Unwind the errors inside rdt_enable_ctx()
-Date:   Tue, 10 Oct 2023 18:33:30 -0500
-Message-ID: <20231010233335.998475-6-babu.moger@amd.com>
+Subject: [PATCH v12 06/10] x86/resctrl: Move default group file creation to mount
+Date:   Tue, 10 Oct 2023 18:33:31 -0500
+Message-ID: <20231010233335.998475-7-babu.moger@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231010233335.998475-1-babu.moger@amd.com>
 References: <20231010233335.998475-1-babu.moger@amd.com>
@@ -84,23 +85,23 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB4D:EE_|DS7PR12MB6168:EE_
-X-MS-Office365-Filtering-Correlation-Id: 901245dd-c94a-48e5-8dea-08dbc9e95c58
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB51:EE_|LV2PR12MB5965:EE_
+X-MS-Office365-Filtering-Correlation-Id: 90a03560-7414-497c-4f45-08dbc9e95d43
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: j5ox6Xs77fbhhELMUdCCrpk9kNYMbTzzK91CCCPANo+Y+8Kne/8K2dhR801aQLiy7OECvwjlMc83L7WzJbfws55CqSTklHdK97aWa2PCukIDtFup+jlBSgL755V6omvvzMfASMbu8ngg2/g1TIXbUzeSnO+fLdCZvq1aF4cQ/Q9g3kDJ12lxeFUvGG1G+h7YkrziW5SFRM09M0naYzmtaT3q/7rd9W+Nqfai9vIy0Mmk22rRLnM/UkKn2IFkpr/YdWbv+xrqBTJVwdT1IZI1sT45IgybSuycxrn0Z9wjVqrtWWjNNEFnewxIsS0GM6ZUS/s725Dt+D1bKwx+GVEPEDTyk4N7W44E9wY8Dtx09eRqWOSutFih1xQEER4OTPB8ErdDHkHqnJmGoGu7O4aWQ0CBo1Wutf50ERsvJ/TZvIduEGRgv7Tb8PQKc7Nbz2BUnIJlEO8cDKA/Cq+DnGtUgQlFT4Vq1eLDwei2ufIYCTHrm7+OfMi7y62xia15LeRaaL8TrPV8vBbMJENRNjLXQAMgPa/5aXk8kgD8lfGxnFLI2gcYCLAz1ZOu09Itfq10SIK3jDecLZgfofi+RgINaFlJOYktgtAsfSHYqUgHqKYXxG2pVfiECXtpDM5Yq+rUfQ+Au6PaeEhmgcFbnPSA6N+p3ps+soCfVvhRWNt1nV+OFxqgCdQ5G/6qsgLFSDNESd8znT4qrlXAb3dGoGOboZkZFxwsPYUsGyztwfvsuX55a9cqyQJOUm5xGygv649Hh4FNL+0qbJ+C5fGqKKZ4eg==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(39860400002)(376002)(346002)(396003)(230922051799003)(451199024)(82310400011)(1800799009)(64100799003)(186009)(40470700004)(36840700001)(46966006)(82740400003)(7696005)(2616005)(1076003)(478600001)(426003)(316002)(41300700001)(336012)(40480700001)(66574015)(7406005)(7416002)(44832011)(47076005)(2906002)(8676002)(110136005)(5660300002)(70586007)(54906003)(70206006)(4326008)(16526019)(8936002)(26005)(83380400001)(36756003)(40460700003)(36860700001)(356005)(86362001)(81166007)(6666004)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: kw7XCzTcDJAaw1oSDkY9pNXXp7KGDDegIvusmdZiyUKaMimqQ6hLsJe6MQsDpremopk6MCJvRynNNVB6Zrvj28FemkcJmcmhU9/QAtAvlnD2m3PCuLUd8ZdUKL4RdTN2OYOrhC2/g926/VXq5ja77TbhQHjHHgCHgpr1LUPTZrsa9r2npr6bX9dHIos6euOw8+d94aEQf02hHk68+fNKmUNCYLa+nJ70xmxygrhUAyJbGpEaD94aAl7JWK0gLQzznApwPF1TJ2U7tWEIOBTkoVq4Set2XxdHy55G4RsZQLo6Jo8TQlUKw3Wz5R6vCgsOkw/nLXBZCO4EVS+nY/KJTe0Y7gmMy0JCX5I8O97m4OxiPN5XBL3z+XRqwWyc8Zpam8PBUWbTPfIu7sVj7ae6DNHDeHCP4LKwmFxy371lmCdKYo6ylJt36dMa/MgrhzIilLp1z2q5ld7JA+6ez0lDQIhZNwVnqQ7qPJPyyak7xIq38SD6FqtGRyqLE2C/Gb48ffuMuMRCyvwA2Chqzlo6l1qNZcqdeGZegKGcjOppcDem66Ey+EBX4ru2g4m/jaYhA4shHuobrCSBEN3MeoJfBZU2wWlyDc4ZymknBq+/uId9SZOEnYEBvaoWQEg+0jRNOFGbiuPhv+MWcISDHIXN+4HyVFQ+ZYN6ulAzIQ0rTSeIzZ8cqqwbbPe9ZehbSINTyoEOb+xD/xZ6cXphavzjs6ES2AqV0ySb8lUVZoSu6pydK2qnERwIXGWRNOzooG1YBSTsR3y66rlqN59V7qzXaw==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(39860400002)(136003)(346002)(230922051799003)(64100799003)(82310400011)(451199024)(1800799009)(186009)(46966006)(36840700001)(40470700004)(40480700001)(7696005)(40460700003)(2616005)(41300700001)(1076003)(356005)(81166007)(82740400003)(16526019)(26005)(36756003)(70586007)(70206006)(110136005)(54906003)(86362001)(316002)(47076005)(83380400001)(5660300002)(44832011)(7416002)(7406005)(426003)(336012)(66574015)(36860700001)(2906002)(8936002)(4326008)(8676002)(478600001)(6666004)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 23:33:51.6458
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 23:33:53.1687
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 901245dd-c94a-48e5-8dea-08dbc9e95c58
+X-MS-Exchange-CrossTenant-Network-Message-Id: 90a03560-7414-497c-4f45-08dbc9e95d43
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB4D.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB51.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6168
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5965
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
@@ -111,17 +112,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-rdt_enable_ctx() enables the features provided during resctrl mount.
+The default resource group and its files are created during kernel
+init time. Upcoming changes will make some resctrl files optional
+based on a mount parameter. If optional files are to be added to the
+default group based on the mount option, then each new file needs to
+be created separately and call kernfs_activate() again.
 
-Additions to rdt_enable_ctx() are required to also modify error paths
-of rdt_enable_ctx() callers to ensure correct unwinding if errors
-are encountered after calling rdt_enable_ctx(). This is error prone.
+Create all files of the default resource group during resctrl
+mount, destroyed during unmount, to avoid scattering resctrl
+file addition across two separate code flows.
 
-Introduce rdt_disable_ctx() to refactor the error unwinding of
-rdt_enable_ctx() to simplify future additions. This also simplifies
-cleanup in rdt_kill_sb().
-
-Suggested-by: Reinette Chatre <reinette.chatre@intel.com>
 Signed-off-by: Babu Moger <babu.moger@amd.com>
 Tested-by: Peter Newman <peternewman@google.com>
 Reviewed-by: Peter Newman <peternewman@google.com>
@@ -131,121 +131,163 @@ Reviewed-by: Fenghua Yu <fenghua.yu@intel.com>
 Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
 Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 ---
-v12: Removed the redundant comment about cdp_disable_all().(Boris)
+v12: No changes
 ---
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 53 ++++++++++++++++----------
- 1 file changed, 32 insertions(+), 21 deletions(-)
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 58 +++++++++++++++-----------
+ 1 file changed, 34 insertions(+), 24 deletions(-)
 
 diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 35945b4bf196..3ea874c80c22 100644
+index 3ea874c80c22..a34657f0bd0c 100644
 --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
 +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -2290,14 +2290,6 @@ int resctrl_arch_set_cdp_enabled(enum resctrl_res_level l, bool enable)
- 	return 0;
- }
+@@ -54,6 +54,9 @@ static struct kernfs_node *kn_mondata;
+ static struct seq_buf last_cmd_status;
+ static char last_cmd_status_buf[512];
  
--static void cdp_disable_all(void)
--{
--	if (resctrl_arch_get_cdp_enabled(RDT_RESOURCE_L3))
--		resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L3, false);
--	if (resctrl_arch_get_cdp_enabled(RDT_RESOURCE_L2))
--		resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L2, false);
--}
--
- /*
-  * We don't allow rdtgroup directories to be created anywhere
-  * except the root directory. Thus when looking for the rdtgroup
-@@ -2377,19 +2369,42 @@ static int mkdir_mondata_all(struct kernfs_node *parent_kn,
- 			     struct rdtgroup *prgrp,
- 			     struct kernfs_node **mon_data_kn);
- 
-+static void rdt_disable_ctx(void)
-+{
-+	resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L3, false);
-+	resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L2, false);
-+	set_mba_sc(false);
-+}
++static int rdtgroup_setup_root(struct rdt_fs_context *ctx);
++static void rdtgroup_destroy_root(void);
 +
- static int rdt_enable_ctx(struct rdt_fs_context *ctx)
- {
- 	int ret = 0;
+ struct dentry *debugfs_resctrl;
  
--	if (ctx->enable_cdpl2)
-+	if (ctx->enable_cdpl2) {
- 		ret = resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L2, true);
-+		if (ret)
-+			goto out_done;
-+	}
- 
--	if (!ret && ctx->enable_cdpl3)
-+	if (ctx->enable_cdpl3) {
- 		ret = resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L3, true);
-+		if (ret)
-+			goto out_cdpl2;
-+	}
- 
--	if (!ret && ctx->enable_mba_mbps)
-+	if (ctx->enable_mba_mbps) {
- 		ret = set_mba_sc(true);
-+		if (ret)
-+			goto out_cdpl3;
-+	}
-+
-+	return 0;
- 
-+out_cdpl3:
-+	resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L3, false);
-+out_cdpl2:
-+	resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L2, false);
-+out_done:
- 	return ret;
- }
- 
-@@ -2497,13 +2512,13 @@ static int rdt_get_tree(struct fs_context *fc)
+ void rdt_last_cmd_clear(void)
+@@ -2511,10 +2514,14 @@ static int rdt_get_tree(struct fs_context *fc)
+ 		goto out;
  	}
  
- 	ret = rdt_enable_ctx(ctx);
--	if (ret < 0)
--		goto out_cdp;
-+	if (ret)
-+		goto out;
+-	ret = rdt_enable_ctx(ctx);
++	ret = rdtgroup_setup_root(ctx);
+ 	if (ret)
+ 		goto out;
  
++	ret = rdt_enable_ctx(ctx);
++	if (ret)
++		goto out_root;
++
  	ret = schemata_list_create();
  	if (ret) {
  		schemata_list_destroy();
--		goto out_mba;
-+		goto out_ctx;
- 	}
+@@ -2523,6 +2530,12 @@ static int rdt_get_tree(struct fs_context *fc)
  
  	closid_init();
-@@ -2562,11 +2577,8 @@ static int rdt_get_tree(struct fs_context *fc)
- 	kernfs_remove(kn_info);
- out_schemata_free:
+ 
++	ret = rdtgroup_add_files(rdtgroup_default.kn, RFTYPE_CTRL_BASE);
++	if (ret)
++		goto out_schemata_free;
++
++	kernfs_activate(rdtgroup_default.kn);
++
+ 	ret = rdtgroup_create_info_dir(rdtgroup_default.kn);
+ 	if (ret < 0)
+ 		goto out_schemata_free;
+@@ -2579,6 +2592,8 @@ static int rdt_get_tree(struct fs_context *fc)
  	schemata_list_destroy();
--out_mba:
--	if (ctx->enable_mba_mbps)
--		set_mba_sc(false);
--out_cdp:
--	cdp_disable_all();
-+out_ctx:
-+	rdt_disable_ctx();
+ out_ctx:
+ 	rdt_disable_ctx();
++out_root:
++	rdtgroup_destroy_root();
  out:
  	rdt_last_cmd_clear();
  	mutex_unlock(&rdtgroup_mutex);
-@@ -2798,12 +2810,11 @@ static void rdt_kill_sb(struct super_block *sb)
- 	cpus_read_lock();
- 	mutex_lock(&rdtgroup_mutex);
+@@ -2649,7 +2664,6 @@ static int rdt_init_fs_context(struct fs_context *fc)
+ 	if (!ctx)
+ 		return -ENOMEM;
  
--	set_mba_sc(false);
-+	rdt_disable_ctx();
- 
- 	/*Put everything back to default values. */
- 	for_each_alloc_capable_rdt_resource(r)
- 		reset_all_ctrls(r);
--	cdp_disable_all();
- 	rmdir_all_sub();
+-	ctx->kfc.root = rdt_root;
+ 	ctx->kfc.magic = RDTGROUP_SUPER_MAGIC;
+ 	fc->fs_private = &ctx->kfc;
+ 	fc->ops = &rdt_fs_context_ops;
+@@ -2819,6 +2833,7 @@ static void rdt_kill_sb(struct super_block *sb)
  	rdt_pseudo_lock_release();
  	rdtgroup_default.mode = RDT_MODE_SHAREABLE;
+ 	schemata_list_destroy();
++	rdtgroup_destroy_root();
+ 	static_branch_disable_cpuslocked(&rdt_alloc_enable_key);
+ 	static_branch_disable_cpuslocked(&rdt_mon_enable_key);
+ 	static_branch_disable_cpuslocked(&rdt_enable_key);
+@@ -3700,10 +3715,8 @@ static struct kernfs_syscall_ops rdtgroup_kf_syscall_ops = {
+ 	.show_options	= rdtgroup_show_options,
+ };
+ 
+-static int __init rdtgroup_setup_root(void)
++static int rdtgroup_setup_root(struct rdt_fs_context *ctx)
+ {
+-	int ret;
+-
+ 	rdt_root = kernfs_create_root(&rdtgroup_kf_syscall_ops,
+ 				      KERNFS_ROOT_CREATE_DEACTIVATED |
+ 				      KERNFS_ROOT_EXTRA_OPEN_PERM_CHECK,
+@@ -3711,6 +3724,20 @@ static int __init rdtgroup_setup_root(void)
+ 	if (IS_ERR(rdt_root))
+ 		return PTR_ERR(rdt_root);
+ 
++	ctx->kfc.root = rdt_root;
++	rdtgroup_default.kn = kernfs_root_to_node(rdt_root);
++
++	return 0;
++}
++
++static void rdtgroup_destroy_root(void)
++{
++	kernfs_destroy_root(rdt_root);
++	rdtgroup_default.kn = NULL;
++}
++
++static void __init rdtgroup_setup_default(void)
++{
+ 	mutex_lock(&rdtgroup_mutex);
+ 
+ 	rdtgroup_default.closid = 0;
+@@ -3720,19 +3747,7 @@ static int __init rdtgroup_setup_root(void)
+ 
+ 	list_add(&rdtgroup_default.rdtgroup_list, &rdt_all_groups);
+ 
+-	ret = rdtgroup_add_files(kernfs_root_to_node(rdt_root), RFTYPE_CTRL_BASE);
+-	if (ret) {
+-		kernfs_destroy_root(rdt_root);
+-		goto out;
+-	}
+-
+-	rdtgroup_default.kn = kernfs_root_to_node(rdt_root);
+-	kernfs_activate(rdtgroup_default.kn);
+-
+-out:
+ 	mutex_unlock(&rdtgroup_mutex);
+-
+-	return ret;
+ }
+ 
+ static void domain_destroy_mon_state(struct rdt_domain *d)
+@@ -3854,13 +3869,11 @@ int __init rdtgroup_init(void)
+ 	seq_buf_init(&last_cmd_status, last_cmd_status_buf,
+ 		     sizeof(last_cmd_status_buf));
+ 
+-	ret = rdtgroup_setup_root();
+-	if (ret)
+-		return ret;
++	rdtgroup_setup_default();
+ 
+ 	ret = sysfs_create_mount_point(fs_kobj, "resctrl");
+ 	if (ret)
+-		goto cleanup_root;
++		return ret;
+ 
+ 	ret = register_filesystem(&rdt_fs_type);
+ 	if (ret)
+@@ -3893,8 +3906,6 @@ int __init rdtgroup_init(void)
+ 
+ cleanup_mountpoint:
+ 	sysfs_remove_mount_point(fs_kobj, "resctrl");
+-cleanup_root:
+-	kernfs_destroy_root(rdt_root);
+ 
+ 	return ret;
+ }
+@@ -3904,5 +3915,4 @@ void __exit rdtgroup_exit(void)
+ 	debugfs_remove_recursive(debugfs_resctrl);
+ 	unregister_filesystem(&rdt_fs_type);
+ 	sysfs_remove_mount_point(fs_kobj, "resctrl");
+-	kernfs_destroy_root(rdt_root);
+ }
 -- 
 2.34.1
 
