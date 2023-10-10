@@ -2,185 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 923067BFD03
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E7687BFD09
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232047AbjJJNLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 09:11:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39110 "EHLO
+        id S231792AbjJJNN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 09:13:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231663AbjJJNL3 (ORCPT
+        with ESMTP id S231400AbjJJNN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 09:11:29 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F9A4AC;
-        Tue, 10 Oct 2023 06:11:27 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id F1D9821835;
-        Tue, 10 Oct 2023 13:11:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1696943486; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OcnlPdXPp8TEZItcZ/fLRAEfXrmV/4GaCHnIViuZCTA=;
-        b=C/wakAH4lemrhHu3dIC3LUtIoy/4S/UlQUABM9ptLGmxKpW1IE9kYco9vDmkp2gbZNr9B7
-        EmD54OO+2et7g38dq3yeWvw9TLUVU9yJqZygW9LJpIKcahptzeyM9MLP1fAblgiyTyg7u5
-        6R6CR4/rQP/WBlV2knXyqoOY7O5DmkU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1696943486;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OcnlPdXPp8TEZItcZ/fLRAEfXrmV/4GaCHnIViuZCTA=;
-        b=AGkrC0RoW+lXLQy4ntRnDXvQCf2jvkdPTYmPpInT4rb0FwGZZ2TRu7EG+jQIkHaAPfobmo
-        4PWHJif4CsnmnRDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E4D5D1358F;
-        Tue, 10 Oct 2023 13:11:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id R4reN31NJWVGYQAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 10 Oct 2023 13:11:25 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 818B6A061C; Tue, 10 Oct 2023 15:11:25 +0200 (CEST)
-Date:   Tue, 10 Oct 2023 15:11:25 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Max Kellermann <max.kellermann@ionos.com>
-Cc:     Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>,
-        Dave Kleikamp <shaggy@kernel.org>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net
-Subject: Re: [PATCH v2] fs/{posix_acl,ext2,jfs,ceph}: apply umask if ACL
- support is disabled
-Message-ID: <20231010131125.3uyfkqbcetfcqsve@quack3>
-References: <69dda7be-d7c8-401f-89f3-7a5ca5550e2f@oracle.com>
- <20231009144340.418904-1-max.kellermann@ionos.com>
+        Tue, 10 Oct 2023 09:13:26 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35530A9;
+        Tue, 10 Oct 2023 06:13:25 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="383264952"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="383264952"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 06:13:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="844124118"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="844124118"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by FMSMGA003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 06:13:22 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
+        (envelope-from <andy@kernel.org>)
+        id 1qqCY3-00000004LcC-2JKZ;
+        Tue, 10 Oct 2023 16:13:19 +0300
+Date:   Tue, 10 Oct 2023 16:13:19 +0300
+From:   Andy Shevchenko <andy@kernel.org>
+To:     Dipen Patel <dipenp@nvidia.com>
+Cc:     linus.walleij@linaro.org, brgl@bgdev.pl, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, linux-gpio@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] gpio: tegra186: Set fwnode of the GPIO chip
+Message-ID: <ZSVN73ffDkGBzmmI@smile.fi.intel.com>
+References: <20231009173858.723686-1-dipenp@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231009144340.418904-1-max.kellermann@ionos.com>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231009173858.723686-1-dipenp@nvidia.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 09-10-23 16:43:39, Max Kellermann wrote:
-> One important implementation detail of the posix_acl_create() function
-> is that it applies the umask to the "mode" parameter.  If
-> CONFIG_FS_POSIX_ACL is disabled, this detail is missing and the umask
-> may not get applied.
-> 
-> This patch adds the missing code to posix_acl_create() and to three
-> filesystems that omit the posix_acl_create() call if their individual
-> ACL support is disabled (CONFIG_EXT2_FS_POSIX_ACL,
-> CONFIG_JFS_POSIX_ACL, CONFIG_CEPH_FS_POSIX_ACL).  If
-> posix_acl_create() never gets called, the umask needs to be applied
-> anyway.
-> 
-> This bug used to be exploitable easily with O_TMPFILE (see
-> https://bugzilla.kernel.org/show_bug.cgi?id=203625) but that part was
-> fixed by commit ac6800e279a2 ("fs: Add missing umask strip in
-> vfs_tmpfile") last year.  The bug may not be reachable by userspace
-> anymore, but since it is apparently still necessary to apply the umask
-> again in posix_acl_create(), there is no reason to assume it's not
-> necessary with ACL support is disabled.
-> 
-> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+On Mon, Oct 09, 2023 at 10:38:58AM -0700, Dipen Patel wrote:
 
-Thanks for the updated changelog! But as I'm looking into VFS code isn't
-this already handled by mode_strip_umask() / vfs_prepare_mode() in
-fs/namei.c? Because posix_acl_create() doesn't do anything to 'mode' for
-!IS_POSIXACL() filesystems either. So at least ext2 (where I've checked
-the mount option handling) does seem to have umask properly applied in all
-the cases. But I might be missing something...
+Tbank you! My comments below.
 
-								Honza
+> Any driver that depends on the GPIO match function to locate the GPIO
+> controller, it has to use the fwnode from the gpio_chip structure. But
+> with [1], it is GPIO providers job to set any members of the gpio_chip
+> structure. This patch addresses that.
 
-> ---
->  fs/ceph/super.h           | 6 ++++++
->  fs/ext2/acl.h             | 6 ++++++
->  fs/jfs/jfs_acl.h          | 6 ++++++
->  include/linux/posix_acl.h | 1 +
->  4 files changed, 19 insertions(+)
-> 
-> diff --git a/fs/ceph/super.h b/fs/ceph/super.h
-> index 51c7f2b14f6f..58349639bd57 100644
-> --- a/fs/ceph/super.h
-> +++ b/fs/ceph/super.h
-> @@ -1194,6 +1194,12 @@ static inline void ceph_forget_all_cached_acls(struct inode *inode)
->  static inline int ceph_pre_init_acls(struct inode *dir, umode_t *mode,
->  				     struct ceph_acl_sec_ctx *as_ctx)
->  {
-> +	/* usually, the umask is applied by posix_acl_create(), but if
-> +	 * ACL support is disabled at compile time, we need to do it
-> +	 * here, because posix_acl_create() will never be called
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/pateldipen1984/linux.git/patch/drivers/gpio/gpiolib.c?id=daecca4b8433d47f0db4933bcc0f283d530ba22e
+
+Use Link: tag for this?
+
+...
+
+> +	/*
+> +	 * This is needed for driver using gpio device matching where it
+> +	 * has to use gpio_chip fwnode to match the gpio controller.
 > +	 */
-> +	*mode &= ~current_umask();
-> +
->  	return 0;
->  }
->  static inline void ceph_init_inode_acls(struct inode *inode,
-> diff --git a/fs/ext2/acl.h b/fs/ext2/acl.h
-> index 4a8443a2b8ec..0ecaa9c20c0c 100644
-> --- a/fs/ext2/acl.h
-> +++ b/fs/ext2/acl.h
-> @@ -67,6 +67,12 @@ extern int ext2_init_acl (struct inode *, struct inode *);
->  
->  static inline int ext2_init_acl (struct inode *inode, struct inode *dir)
->  {
-> +	/* usually, the umask is applied by posix_acl_create(), but if
-> +	 * ACL support is disabled at compile time, we need to do it
-> +	 * here, because posix_acl_create() will never be called
-> +	 */
-> +	inode->i_mode &= ~current_umask();
-> +
->  	return 0;
->  }
->  #endif
-> diff --git a/fs/jfs/jfs_acl.h b/fs/jfs/jfs_acl.h
-> index f892e54d0fcd..64a05e663a45 100644
-> --- a/fs/jfs/jfs_acl.h
-> +++ b/fs/jfs/jfs_acl.h
-> @@ -17,6 +17,12 @@ int jfs_init_acl(tid_t, struct inode *, struct inode *);
->  static inline int jfs_init_acl(tid_t tid, struct inode *inode,
->  			       struct inode *dir)
->  {
-> +	/* usually, the umask is applied by posix_acl_create(), but if
-> +	 * ACL support is disabled at compile time, we need to do it
-> +	 * here, because posix_acl_create() will never be called
-> +	 */
-> +	inode->i_mode &= ~current_umask();
-> +
->  	return 0;
->  }
->  
-> diff --git a/include/linux/posix_acl.h b/include/linux/posix_acl.h
-> index 0e65b3d634d9..54bc9b1061ca 100644
-> --- a/include/linux/posix_acl.h
-> +++ b/include/linux/posix_acl.h
-> @@ -128,6 +128,7 @@ static inline void cache_no_acl(struct inode *inode)
->  static inline int posix_acl_create(struct inode *inode, umode_t *mode,
->  		struct posix_acl **default_acl, struct posix_acl **acl)
->  {
-> +	*mode &= ~current_umask();
->  	*default_acl = *acl = NULL;
->  	return 0;
->  }
-> -- 
-> 2.39.2
-> 
+> +	gpio->gpio.fwnode = of_node_to_fwnode(pdev->dev.of_node);
+
+of_node_to_fwnode() is specific to IRQ, in other places we use generic
+of_fwnode_handle(). That's why better just to use dev_fwnode().
+
+...
+
+With the above addressed:
+Reviewed-by: Andy Shevchenko <andy@kernel.org>
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+With Best Regards,
+Andy Shevchenko
+
+
