@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00DA67C0085
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D4547C0089
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233401AbjJJPkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 11:40:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52736 "EHLO
+        id S233468AbjJJPly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 11:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232740AbjJJPkt (ORCPT
+        with ESMTP id S233438AbjJJPlu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 11:40:49 -0400
+        Tue, 10 Oct 2023 11:41:50 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 793F993;
-        Tue, 10 Oct 2023 08:40:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36A0AC433C8;
-        Tue, 10 Oct 2023 15:40:44 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EDCEB0;
+        Tue, 10 Oct 2023 08:41:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A3DFC433C8;
+        Tue, 10 Oct 2023 15:41:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696952448;
-        bh=Bns2XY9k0e9ThFmHo3x2+L8G5fFyPtlK1e6YKoRto9M=;
+        s=k20201202; t=1696952507;
+        bh=/NTCeOZLGiqM+pdB60lM6X8CBbdbcdi7UZF9GjGk5gA=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RVjr6yXORxZIobDS/hkTiOZX/wAlelhrNwLoRUciv7VDfByEpoJZrgYp1VzCJcRsR
-         LB0POM2c3OyvHQviGCeuWG414/XCmUnmm44uzGEHqbp20mbwwT3Dt4Br68E/bqB4Rk
-         5+Hg3fnxcU/DdYLn/zHSRvKz8P2w1LLgs0mQnZ8PXjTvVGmnh8+/e/s0cU1oyK/Bbn
-         b9y1vqTQtPTag5/mwQVujrOcLnVtsTw4TJQJU2/Sm2jw0CSpmVIUWrIxybXpc7Job8
-         DNaCLY08P2LakVd2rnu6kcqFp3veInA2ksGwhPRwrG8leFM20LvvHG468GMbZNZMQh
-         zoPZK618+aEHg==
-Date:   Tue, 10 Oct 2023 16:40:58 +0100
+        b=slX/YGir9TjDyCkkHw/gwRi42aAiMn+byHwAPesPGXoG7pcZvYNKwF0e7rl1puExR
+         iXykvGn8fwXoT5i4YhauxrNuREsW6Ydt+RlpodqS0Df+HrUl0R5WIrVtbBcJDXTMej
+         CbQ0AHHn6z47bM4kuZ4kbFI72YjcrNWh/L8BnSi9c6SQ42E2sSMaRxPMI8AY54ftKi
+         V58G2ips8U9120CAZAljG/XHdanDWpb9suYRoZcinanlcAPgy3vzdyockC/nxHE8qh
+         sNFtM60HtDaCjv68X6D6DJZs6fDtICXf8iDBtO5yc/7h0TN/2AZFhl4XmelJdA7aDl
+         2/+WikfcERjLg==
+Date:   Tue, 10 Oct 2023 16:41:59 +0100
 From:   Jonathan Cameron <jic23@kernel.org>
 To:     David Lechner <dlechner@baylibre.com>
 Cc:     linux-iio@vger.kernel.org, linux-staging@lists.linux.dev,
@@ -36,12 +36,12 @@ Cc:     linux-iio@vger.kernel.org, linux-staging@lists.linux.dev,
         Axel Haslam <ahaslam@baylibre.com>,
         Philip Molloy <pmolloy@baylibre.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 02/17] staging: iio: resolver: ad2s1210: implement
- hysteresis as channel attr
-Message-ID: <20231010164058.29ee52b4@jic23-huawei>
-In-Reply-To: <20231005-ad2s1210-mainline-v4-2-ec00746840fc@baylibre.com>
+Subject: Re: [PATCH v4 03/17] staging: iio: resolver: ad2s1210: convert
+ fexcit to channel attribute
+Message-ID: <20231010164159.77ec7919@jic23-huawei>
+In-Reply-To: <20231005-ad2s1210-mainline-v4-3-ec00746840fc@baylibre.com>
 References: <20231005-ad2s1210-mainline-v4-0-ec00746840fc@baylibre.com>
-        <20231005-ad2s1210-mainline-v4-2-ec00746840fc@baylibre.com>
+        <20231005-ad2s1210-mainline-v4-3-ec00746840fc@baylibre.com>
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -55,80 +55,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  5 Oct 2023 19:50:19 -0500
+On Thu,  5 Oct 2023 19:50:20 -0500
 David Lechner <dlechner@baylibre.com> wrote:
 
-> The AD2S1210 resolver has a hysteresis feature that can be used to
-> prevent flicker in the LSB of the position register. This can be either
-> enabled or disabled. Disabling hysteresis is useful for increasing
-> precision by oversampling.
+> The ad2s1210 driver has a device-specific attribute `fexcit` for setting
+> the frequency of the excitation output. This converts it to a channel in
+> order to use standard IIO ABI.
+> 
+> The excitation frequency is an analog output that generates a sine wave.
+> Only the frequency is configurable. According to the datasheet, the
+> specified range of the excitation frequency is from 2 kHz to 20 kHz and
+> can be set in increments of 250 Hz.
 > 
 > Signed-off-by: David Lechner <dlechner@baylibre.com>
 Applied
 
 > ---
 > 
-> v4 changes:
-> * Fixed hysteresis raw values when st->resolution != 16.
+> v4 changes: None (rebased)
 > 
 > v3 changes:
-> * Refactored into more functions to reduce complexity of switch statements.
-> * Use early return instead of break in switch statements.
+> * This is a new patch in v3 instead of "iio: resolver: ad2s1210: rename fexcit
+>   attribute"
 > 
 > 
->  drivers/staging/iio/resolver/ad2s1210.c | 91 +++++++++++++++++++++++++++++++--
->  1 file changed, 88 insertions(+), 3 deletions(-)
+>  drivers/staging/iio/resolver/ad2s1210.c | 123 ++++++++++++++++++--------------
+>  1 file changed, 71 insertions(+), 52 deletions(-)
 > 
 > diff --git a/drivers/staging/iio/resolver/ad2s1210.c b/drivers/staging/iio/resolver/ad2s1210.c
-> index 8fbde9517fe9..af063eb25e9c 100644
+> index af063eb25e9c..0c7772725330 100644
 > --- a/drivers/staging/iio/resolver/ad2s1210.c
 > +++ b/drivers/staging/iio/resolver/ad2s1210.c
-> @@ -76,7 +76,8 @@ struct ad2s1210_state {
->  	struct regmap *regmap;
->  	/** The external oscillator frequency in Hz. */
->  	unsigned long clkin_hz;
-> -	bool hysteresis;
-> +	/** Available raw hysteresis values based on resolution. */
-> +	int hysteresis_available[2];
->  	u8 resolution;
->  	/** For reading raw sample value via SPI. */
->  	__be16 sample __aligned(IIO_DMA_MINALIGN);
-> @@ -311,6 +312,7 @@ static ssize_t ad2s1210_store_resolution(struct device *dev,
->  		goto error_ret;
+> @@ -227,54 +227,6 @@ static int ad2s1210_set_resolution_gpios(struct ad2s1210_state *st,
+>  				     bitmap);
+>  }
 >  
->  	st->resolution = udata;
-> +	st->hysteresis_available[1] = 1 << (16 - st->resolution);
->  	ret = len;
->  
->  error_ret:
-> @@ -447,6 +449,35 @@ static int ad2s1210_single_conversion(struct ad2s1210_state *st,
+> -static ssize_t ad2s1210_show_fexcit(struct device *dev,
+> -				    struct device_attribute *attr,
+> -				    char *buf)
+> -{
+> -	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
+> -	unsigned int value;
+> -	u16 fexcit;
+> -	int ret;
+> -
+> -	mutex_lock(&st->lock);
+> -	ret = regmap_read(st->regmap, AD2S1210_REG_EXCIT_FREQ, &value);
+> -	if (ret < 0)
+> -		goto error_ret;
+> -
+> -	fexcit = value * st->clkin_hz / (1 << 15);
+> -
+> -	ret = sprintf(buf, "%u\n", fexcit);
+> -
+> -error_ret:
+> -	mutex_unlock(&st->lock);
+> -	return ret;
+> -}
+> -
+> -static ssize_t ad2s1210_store_fexcit(struct device *dev,
+> -				     struct device_attribute *attr,
+> -				     const char *buf, size_t len)
+> -{
+> -	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
+> -	u16 fexcit;
+> -	int ret;
+> -
+> -	ret = kstrtou16(buf, 10, &fexcit);
+> -	if (ret < 0 || fexcit < AD2S1210_MIN_EXCIT || fexcit > AD2S1210_MAX_EXCIT)
+> -		return -EINVAL;
+> -
+> -	mutex_lock(&st->lock);
+> -	ret = ad2s1210_reinit_excitation_frequency(st, fexcit);
+> -	if (ret < 0)
+> -		goto error_ret;
+> -
+> -	ret = len;
+> -
+> -error_ret:
+> -	mutex_unlock(&st->lock);
+> -
+> -	return ret;
+> -}
+> -
+>  static ssize_t ad2s1210_show_resolution(struct device *dev,
+>  					struct device_attribute *attr,
+>  					char *buf)
+> @@ -478,6 +430,38 @@ static int ad2s1210_set_hysteresis(struct ad2s1210_state *st, int val)
 >  	return ret;
 >  }
 >  
-> +static int ad2s1210_get_hysteresis(struct ad2s1210_state *st, int *val)
+> +static int ad2s1210_get_excitation_frequency(struct ad2s1210_state *st, int *val)
 > +{
+> +	unsigned int reg_val;
 > +	int ret;
 > +
 > +	mutex_lock(&st->lock);
-> +	ret = regmap_test_bits(st->regmap, AD2S1210_REG_CONTROL,
-> +			       AD2S1210_ENABLE_HYSTERESIS);
-> +	mutex_unlock(&st->lock);
-> +
+> +	ret = regmap_read(st->regmap, AD2S1210_REG_EXCIT_FREQ, &reg_val);
 > +	if (ret < 0)
-> +		return ret;
+> +		goto error_ret;
 > +
-> +	*val = ret << (16 - st->resolution);
-> +	return IIO_VAL_INT;
+> +	*val = reg_val * st->clkin_hz / (1 << 15);
+> +	ret = IIO_VAL_INT;
+> +
+> +error_ret:
+> +	mutex_unlock(&st->lock);
+> +	return ret;
 > +}
 > +
-> +static int ad2s1210_set_hysteresis(struct ad2s1210_state *st, int val)
+> +static int ad2s1210_set_excitation_frequency(struct ad2s1210_state *st, int val)
 > +{
 > +	int ret;
 > +
+> +	if (val < AD2S1210_MIN_EXCIT || val > AD2S1210_MAX_EXCIT)
+> +		return -EINVAL;
+> +
 > +	mutex_lock(&st->lock);
-> +	ret = regmap_update_bits(st->regmap, AD2S1210_REG_CONTROL,
-> +				 AD2S1210_ENABLE_HYSTERESIS,
-> +				 val ? AD2S1210_ENABLE_HYSTERESIS : 0);
+> +	ret = ad2s1210_reinit_excitation_frequency(st, val);
 > +	mutex_unlock(&st->lock);
 > +
 > +	return ret;
@@ -137,93 +180,89 @@ Applied
 >  static const int ad2s1210_velocity_scale[] = {
 >  	17089132, /* 8.192MHz / (2*pi * 2500 / 2^15) */
 >  	42722830, /* 8.192MHz / (2*pi * 1000 / 2^15) */
-> @@ -479,7 +510,55 @@ static int ad2s1210_read_raw(struct iio_dev *indio_dev,
+> @@ -510,6 +494,13 @@ static int ad2s1210_read_raw(struct iio_dev *indio_dev,
 >  		default:
 >  			return -EINVAL;
 >  		}
-> +	case IIO_CHAN_INFO_HYSTERESIS:
+> +	case IIO_CHAN_INFO_FREQUENCY:
 > +		switch (chan->type) {
-> +		case IIO_ANGL:
-> +			return ad2s1210_get_hysteresis(st, val);
+> +		case IIO_ALTVOLTAGE:
+> +			return ad2s1210_get_excitation_frequency(st, val);
 > +		default:
 > +			return -EINVAL;
 > +		}
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
+>  	case IIO_CHAN_INFO_HYSTERESIS:
+>  		switch (chan->type) {
+>  		case IIO_ANGL:
+> @@ -527,9 +518,24 @@ static int ad2s1210_read_avail(struct iio_dev *indio_dev,
+>  			       const int **vals, int *type,
+>  			       int *length, long mask)
+>  {
+> +	static const int excitation_frequency_available[] = {
+> +		AD2S1210_MIN_EXCIT,
+> +		250, /* step */
+> +		AD2S1210_MAX_EXCIT,
+> +	};
 > +
-> +static int ad2s1210_read_avail(struct iio_dev *indio_dev,
-> +			       struct iio_chan_spec const *chan,
-> +			       const int **vals, int *type,
-> +			       int *length, long mask)
-> +{
-> +	struct ad2s1210_state *st = iio_priv(indio_dev);
-> +
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_HYSTERESIS:
-> +		switch (chan->type) {
-> +		case IIO_ANGL:
-> +			*vals = st->hysteresis_available;
-> +			*type = IIO_VAL_INT;
-> +			*length = ARRAY_SIZE(st->hysteresis_available);
-> +			return IIO_AVAIL_LIST;
-> +		default:
-> +			return -EINVAL;
-> +		}
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
+>  	struct ad2s1210_state *st = iio_priv(indio_dev);
 >  
-> +static int ad2s1210_write_raw(struct iio_dev *indio_dev,
-> +			      struct iio_chan_spec const *chan,
-> +			      int val, int val2, long mask)
-> +{
-> +	struct ad2s1210_state *st = iio_priv(indio_dev);
-> +
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_HYSTERESIS:
+>  	switch (mask) {
+> +	case IIO_CHAN_INFO_FREQUENCY:
 > +		switch (chan->type) {
-> +		case IIO_ANGL:
-> +			return ad2s1210_set_hysteresis(st, val);
+> +		case IIO_ALTVOLTAGE:
+> +			*type = IIO_VAL_INT;
+> +			*vals = excitation_frequency_available;
+> +			return IIO_AVAIL_RANGE;
 > +		default:
 > +			return -EINVAL;
 > +		}
->  	default:
->  		return -EINVAL;
+>  	case IIO_CHAN_INFO_HYSTERESIS:
+>  		switch (chan->type) {
+>  		case IIO_ANGL:
+> @@ -552,6 +558,13 @@ static int ad2s1210_write_raw(struct iio_dev *indio_dev,
+>  	struct ad2s1210_state *st = iio_priv(indio_dev);
+>  
+>  	switch (mask) {
+> +	case IIO_CHAN_INFO_FREQUENCY:
+> +		switch (chan->type) {
+> +		case IIO_ALTVOLTAGE:
+> +			return ad2s1210_set_excitation_frequency(st, val);
+> +		default:
+> +			return -EINVAL;
+> +		}
+>  	case IIO_CHAN_INFO_HYSTERESIS:
+>  		switch (chan->type) {
+>  		case IIO_ANGL:
+> @@ -564,8 +577,6 @@ static int ad2s1210_write_raw(struct iio_dev *indio_dev,
 >  	}
-> @@ -520,7 +599,10 @@ static const struct iio_chan_spec ad2s1210_channels[] = {
->  		.indexed = 1,
+>  }
+>  
+> -static IIO_DEVICE_ATTR(fexcit, 0644,
+> -		       ad2s1210_show_fexcit,	ad2s1210_store_fexcit, 0);
+>  static IIO_DEVICE_ATTR(bits, 0644,
+>  		       ad2s1210_show_resolution, ad2s1210_store_resolution, 0);
+>  static IIO_DEVICE_ATTR(fault, 0644,
+> @@ -609,11 +620,19 @@ static const struct iio_chan_spec ad2s1210_channels[] = {
 >  		.channel = 0,
 >  		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
-> -				      BIT(IIO_CHAN_INFO_SCALE),
-> +				      BIT(IIO_CHAN_INFO_SCALE) |
-> +				      BIT(IIO_CHAN_INFO_HYSTERESIS),
-> +		.info_mask_separate_available =
-> +					BIT(IIO_CHAN_INFO_HYSTERESIS),
->  	}, {
->  		.type = IIO_ANGL_VEL,
->  		.indexed = 1,
-> @@ -596,6 +678,8 @@ static int ad2s1210_debugfs_reg_access(struct iio_dev *indio_dev,
->  
->  static const struct iio_info ad2s1210_info = {
->  	.read_raw = ad2s1210_read_raw,
-> +	.read_avail = ad2s1210_read_avail,
-> +	.write_raw = ad2s1210_write_raw,
->  	.attrs = &ad2s1210_attribute_group,
->  	.debugfs_reg_access = &ad2s1210_debugfs_reg_access,
+>  				      BIT(IIO_CHAN_INFO_SCALE),
+> -	}
+> +	}, {
+> +		/* excitation frequency output */
+> +		.type = IIO_ALTVOLTAGE,
+> +		.indexed = 1,
+> +		.channel = 0,
+> +		.output = 1,
+> +		.scan_index = -1,
+> +		.info_mask_separate = BIT(IIO_CHAN_INFO_FREQUENCY),
+> +		.info_mask_separate_available = BIT(IIO_CHAN_INFO_FREQUENCY),
+> +	},
 >  };
-> @@ -711,8 +795,9 @@ static int ad2s1210_probe(struct spi_device *spi)
 >  
->  	mutex_init(&st->lock);
->  	st->sdev = spi;
-> -	st->hysteresis = true;
->  	st->resolution = 12;
-> +	st->hysteresis_available[0] = 0;
-> +	st->hysteresis_available[1] = 1 << (16 - st->resolution);
->  
->  	ret = ad2s1210_setup_clocks(st);
->  	if (ret < 0)
+>  static struct attribute *ad2s1210_attributes[] = {
+> -	&iio_dev_attr_fexcit.dev_attr.attr,
+>  	&iio_dev_attr_bits.dev_attr.attr,
+>  	&iio_dev_attr_fault.dev_attr.attr,
+>  	&iio_dev_attr_los_thrd.dev_attr.attr,
 > 
 
