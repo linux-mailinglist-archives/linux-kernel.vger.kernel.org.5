@@ -2,279 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35CB87C40D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 22:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74FC77C40DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 22:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234631AbjJJUIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 16:08:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
+        id S1343786AbjJJUIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 16:08:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234483AbjJJUIU (ORCPT
+        with ESMTP id S234722AbjJJUI2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 16:08:20 -0400
-Received: from smtp.smtpout.orange.fr (smtp-20.smtpout.orange.fr [80.12.242.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E113D48
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 13:06:57 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id qJ09qs5Gi0onIqJ09qavla; Tue, 10 Oct 2023 22:06:53 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1696968413;
-        bh=ztbpBpO2pXmGy4HQ32tzm/CpMzlQbXI1hy8IyrK/n2c=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=SPUlWyBvKqDK5IXiYbEseSMc5bZ78JTJuP/3JYAN6kwTDalaKQq4RbAKvOSEP0ueG
-         KZxRObMFwix3Xf+jZ3w6VRuRShlVOx4/iTUSMZcw0PtP2dCNERJSUkxbwPPn4H+uTL
-         ibFj96ORVcJNvPeP/AI/vB63FYkCwlFbeN+uLgjFXnYt3WFKwWG+LX6uSfjR0KL7+h
-         qPBHF9qPj7wvHJDS9r9UAN+Dsd5ybCXigG4zO2P1smcpA1um1ztKJszRAF9t5tUlzk
-         GTHF4g1fValeq1TUaiY+XyMeGLhYItsBXp+r1OQzs3RaumwAyQhDJngKJPZjJYEPmt
-         P0ZSvCkVcTmnA==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 10 Oct 2023 22:06:53 +0200
-X-ME-IP: 86.243.2.178
-Message-ID: <7792f0ce-b6b4-4b20-9725-1792a888297f@wanadoo.fr>
-Date:   Tue, 10 Oct 2023 22:06:43 +0200
+        Tue, 10 Oct 2023 16:08:28 -0400
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E82F2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 13:07:11 -0700 (PDT)
+Received: by mail-vs1-xe33.google.com with SMTP id ada2fe7eead31-4529d1238a9so2627972137.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 13:07:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696968430; x=1697573230; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vTqGU2u0PCAVxGXohb+XZJghexUD79dSwAsuPfMFR8E=;
+        b=WT6DisU9reUrhgg09rIrN6lwKCebnZ5TT+dDuw+Wrghrt/5/oQ/qeytShnESjgeSgU
+         SeVMavlryvaT/nBhYs4OWzGuLXaJsfm90oKU0k8wmfRIqCLGXURTn/nN2P2gonQ6VFE3
+         BAEYNqP67rrCWwxvnTPNFDQeTAh5AxG5DQSofNM8t7c5ZI91DYuKH+C8SGKjH/8G3Sq2
+         i/GdKjuU87vOraYXamXj0goGyJ8fzIiCQhQM5WCfwEgEb3an34Tr3TlgeBitOEjgpK7y
+         gT5A8U9uFNYHg+HMh2JBFNmZg992QKnMsaCA+MNJWv9PpfvCdlCcgrgQw/dzVdtb/n8g
+         AL2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696968430; x=1697573230;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vTqGU2u0PCAVxGXohb+XZJghexUD79dSwAsuPfMFR8E=;
+        b=gqk7BnJDLt2NMfJ3tMPX7R2I17Lb62odpzuqC56tsma4OZd1NEKQkQd/rbFkiV6w5p
+         7kU68GomWRrqChSQyJddeMD0zAbSdDkvuoCrElfshbahioOf+5CurnCN73PulloVOtIS
+         vjZKdetKPIrz9EbfPRxqPyv2MfZssEXD6KH5PgGn4+Rw1PQDnF8jlbDqRsMonaw4sflf
+         P7UPZ/Jzd7/M9ylVePoRlTvya0XwNmdMc9QQto51mtsjapLpHvxyADzvfJDxS2tDlbU1
+         8RMg/9zam4KxIPt4+P4edenihG9Zy/DqN0PFsIn6wwJkL3Hj1u7emAg+LPmVvXucAXYp
+         qqLA==
+X-Gm-Message-State: AOJu0Yw8v/ETUkbiKK+4c6BSZfcxWPop+x50zJiQMDSKSdxIEep27O7k
+        YPy3Y44KLcAJh+cxGk1vJIq6+ZQGm1F4YDuIpsQnnQ==
+X-Google-Smtp-Source: AGHT+IE8eKtBDoVkE+8koCfQqQXVQmpp2mVRQw5itaoq6P8ktmWX7lQetZItew800ypsGuJqpDugW+OhjNmTzNnenl8=
+X-Received: by 2002:a05:6102:5e95:b0:457:5f7d:8aec with SMTP id
+ ij21-20020a0561025e9500b004575f7d8aecmr10444801vsb.27.1696968429861; Tue, 10
+ Oct 2023 13:07:09 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5] misc: Add Nitro Secure Module driver
-Content-Language: fr
-To:     Alexander Graf <graf@amazon.com>, linux-kernel@vger.kernel.org
-Cc:     linux-crypto@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Olivia Mackall <olivia@selenic.com>,
-        Petre Eftime <petre.eftime@gmail.com>,
-        Erdem Meydanlli <meydanli@amazon.nl>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-References: <20231010191815.13641-1-graf@amazon.com>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20231010191815.13641-1-graf@amazon.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <1696965810-8315-1-git-send-email-haiyangz@microsoft.com>
+In-Reply-To: <1696965810-8315-1-git-send-email-haiyangz@microsoft.com>
+From:   Neal Cardwell <ncardwell@google.com>
+Date:   Tue, 10 Oct 2023 16:06:53 -0400
+Message-ID: <CADVnQy=tPcP+sRRVwvqober3cmi_3=LukzXC3-YcWudbf1e0HA@mail.gmail.com>
+Subject: Re: [PATCH net-next,v2] tcp: Set pingpong threshold via sysctl
+To:     Haiyang Zhang <haiyangz@microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        kys@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, corbet@lwn.net,
+        dsahern@kernel.org, ycheng@google.com, kuniyu@amazon.com,
+        morleyd@google.com, mfreemon@cloudflare.com, mubashirq@google.com,
+        linux-doc@vger.kernel.org, weiwan@google.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 10/10/2023 à 21:18, Alexander Graf a écrit :
-> When running Linux inside a Nitro Enclave, the hypervisor provides a
-> special virtio device called "Nitro Security Module" (NSM). This device
-> has 3 main functions:
-> 
->    1) Provide attestation reports
->    2) Modify PCR state
->    3) Provide entropy
-> 
-> This patch adds a driver for NSM that exposes a /dev/nsm device node which
-> user space can issue an ioctl on this device with raw NSM CBOR formatted
-> commands to request attestation documents, influence PCR states, read
-> entropy and enumerate status of the device. In addition, the driver
-> implements a hwrng backend.
-> 
-> Originally-by: Petre Eftime <petre.eftime@gmail.com>
-> Signed-off-by: Alexander Graf <graf@amazon.com>
-> 
+On Tue, Oct 10, 2023 at 3:24=E2=80=AFPM Haiyang Zhang <haiyangz@microsoft.c=
+om> wrote:
+>
+> TCP pingpong threshold is 1 by default. But some applications, like SQL D=
+B
+> may prefer a higher pingpong threshold to activate delayed acks in quick
+> ack mode for better performance.
+>
+> The pingpong threshold and related code were changed to 3 in the year
+> 2019 in:
+>   commit 4a41f453bedf ("tcp: change pingpong threshold to 3")
+> And reverted to 1 in the year 2022 in:
+>   commit 4d8f24eeedc5 ("Revert "tcp: change pingpong threshold to 3"")
+>
+> There is no single value that fits all applications.
+> Add net.ipv4.tcp_pingpong_thresh sysctl tunable, so it can be tuned for
+> optimal performance based on the application needs.
+>
+> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
 > ---
+> v2: Make it per-namesapce setting, and other updates suggested by Neal Ca=
+rdwell,
+> and Kuniyuki Iwashima.
+>
+> ---
+>  Documentation/networking/ip-sysctl.rst |  8 ++++++++
+>  include/net/inet_connection_sock.h     | 16 ++++++++++++----
+>  include/net/netns/ipv4.h               |  1 +
+>  net/ipv4/sysctl_net_ipv4.c             |  8 ++++++++
+>  net/ipv4/tcp_ipv4.c                    |  2 ++
+>  net/ipv4/tcp_output.c                  |  4 ++--
+>  6 files changed, 33 insertions(+), 6 deletions(-)
+>
+> diff --git a/Documentation/networking/ip-sysctl.rst b/Documentation/netwo=
+rking/ip-sysctl.rst
+> index 5bfa1837968c..c0308b65dc2f 100644
+> --- a/Documentation/networking/ip-sysctl.rst
+> +++ b/Documentation/networking/ip-sysctl.rst
+> @@ -1183,6 +1183,14 @@ tcp_plb_cong_thresh - INTEGER
+>
+>         Default: 128
+>
+> +tcp_pingpong_thresh - INTEGER
+> +       TCP pingpong threshold is 1 by default, but some application may =
+need a
+> +       higher threshold for optimal performance.
+> +
+> +       Possible Values: 1 - 255
+> +
+> +       Default: 1
+> +
 
-...
+It would be good to document what the meaning of the parameter is.
+Perhaps consider something like:
 
-> +static int nsm_rng_read(struct hwrng *rng, void *data, size_t max, bool wait)
-> +{
-> +	struct nsm *nsm = hwrng_to_nsm(rng);
-> +	struct device *dev = &nsm->vdev->dev;
-> +	struct nsm_msg *msg;
-> +	int rc = 0;
-> +
-> +	/* NSM always needs to wait for a response */
-> +	if (!wait)
-> +		return 0;
-> +
-> +	msg = devm_kzalloc(dev, sizeof(*msg), GFP_KERNEL);
-> +	if (!msg)
-> +		return -ENOMEM;
+'The number of estimated data replies sent for estimated incoming data
+requests that must happen before TCP estimates that a connection is a
+"ping-pong" (request-response) connection for which delayed
+acknowledgments can provide benefits. This threshold is 1 by default,
+but some applications may need a higher threshold for optimal
+performance.'
 
-Why use devm_ here? It is freed in all cases...
+Thanks for the patch!
 
-> +
-> +	rc = fill_req_get_random(nsm, &msg->req);
-> +	if (rc != 0)
-> +		goto out;
-> +
-> +	rc = nsm_sendrecv_msg(nsm, msg);
-> +	if (rc != 0)
-> +		goto out;
-> +
-> +	rc = parse_resp_get_random(nsm, &msg->resp, data, max);
-> +	if (rc < 0)
-> +		goto out;
-> +
-> +	dev_dbg(dev, "RNG: returning rand bytes = %d", rc);
-> +out:
-> +	devm_kfree(dev, msg);
-
-..., so kfree would be just fine as well.
-
-> +	return rc;
-> +}
-> +
-> +static long nsm_dev_ioctl(struct file *file, unsigned int cmd,
-> +	unsigned long arg)
-> +{
-> +	void __user *argp = u64_to_user_ptr((u64)arg);
-> +	struct nsm *nsm = file_to_nsm(file);
-> +	struct device *dev = &nsm->vdev->dev;
-> +	struct nsm_msg *msg;
-> +	struct nsm_raw raw;
-> +	int r = 0;
-> +
-> +	if (cmd != NSM_IOCTL_RAW)
-> +		return -EINVAL;
-> +
-> +	if (_IOC_SIZE(cmd) != sizeof(raw))
-> +		return -EINVAL;
-> +
-> +	/* Allocate message buffers to device */
-> +	r = -ENOMEM;
-> +	msg = devm_kzalloc(dev, sizeof(*msg), GFP_KERNEL);
-
-Why use devm_ here? It is freed in all cases...
-
-> +	if (!msg)
-> +		goto out;
-> +
-> +	/* Copy user argument struct to kernel argument struct */
-> +	r = -EFAULT;
-> +	if (copy_from_user(&raw, argp, _IOC_SIZE(cmd)))
-> +		goto out;
-> +
-> +	/* Convert kernel argument struct to device request */
-> +	r = fill_req_raw(nsm, &msg->req, &raw);
-> +	if (r)
-> +		goto out;
-> +
-> +	/* Send message to NSM and read reply */
-> +	r = nsm_sendrecv_msg(nsm, msg);
-> +	if (r)
-> +		goto out;
-> +
-> +	/* Parse device response into kernel argument struct */
-> +	r = parse_resp_raw(nsm, &msg->resp, &raw);
-> +	if (r)
-> +		goto out;
-> +
-> +	/* Copy kernel argument struct back to user argument struct */
-> +	r = -EFAULT;
-> +	if (copy_to_user(argp, &raw, sizeof(raw)))
-> +		goto out;
-> +
-> +	r = 0;
-> +
-> +out:
-> +	devm_kfree(dev, msg);
-
-..., so kfree would be just fine as well.
-
-> +	return r;
-> +}
-
-...
-
-> +/* Handler for probing the NSM device */
-> +static int nsm_device_probe(struct virtio_device *vdev)
-> +{
-> +	struct device *dev = &vdev->dev;
-> +	struct nsm *nsm;
-> +	int rc;
-> +
-> +	nsm = devm_kzalloc(&vdev->dev, sizeof(*nsm), GFP_KERNEL);
-> +	if (!nsm)
-> +		return -ENOMEM;
-> +
-> +	vdev->priv = nsm;
-> +	nsm->vdev = vdev;
-> +
-> +	rc = nsm_device_init_vq(vdev);
-> +	if (rc) {
-> +		dev_err(dev, "queue failed to initialize: %d.\n", rc);
-> +		goto err_init_vq;
-> +	}
-> +
-> +	mutex_init(&nsm->lock);
-> +	init_waitqueue_head(&nsm->wq);
-> +
-> +	/* Register as hwrng provider */
-> +	nsm->hwrng = (struct hwrng) {
-> +		.read = nsm_rng_read,
-> +		.name = "nsm-hwrng",
-> +		.quality = 1000,
-> +	};
-> +
-> +	rc = devm_hwrng_register(&vdev->dev, &nsm->hwrng);
-> +	if (rc) {
-> +		dev_err(dev, "RNG initialization error: %d.\n", rc);
-> +		goto err_hwrng;
-> +	}
-> +
-> +	/* Register /dev/nsm device node */
-> +	nsm->misc = (struct miscdevice) {
-> +		.minor	= MISC_DYNAMIC_MINOR,
-> +		.name	= "nsm",
-> +		.fops	= &nsm_dev_fops,
-> +		.mode	= 0666,
-> +	};
-> +
-> +	rc = misc_register(&nsm->misc);
-> +	if (rc) {
-> +		dev_err(dev, "misc device registration error: %d.\n", rc);
-> +		goto err_misc;
-> +	}
-> +
-> +	return 0;
-> +
-> +err_misc:
-> +	hwrng_unregister(&nsm->hwrng);
-
-Is it needed? devm_hwrng_register() is used.
-
-> +err_hwrng:
-> +	vdev->config->del_vqs(vdev);
-> +err_init_vq:
-> +	kfree(nsm);
-
-'nsm' is devm_kzalloc()'ed, so this is a double free.
-
-> +	return rc;
-> +}
-> +
-> +/* Handler for removing the NSM device */
-> +static void nsm_device_remove(struct virtio_device *vdev)
-> +{
-> +	struct nsm *nsm = vdev->priv;
-> +
-> +	hwrng_unregister(&nsm->hwrng);
-
-Is it needed? devm_hwrng_register() is used.
-
-> +
-> +	vdev->config->del_vqs(vdev);
-> +	misc_deregister(&nsm->misc);
-> +	list_del(&nsm->node);
-
-When is it list_add()'ed?
-The 'node' field seems unused.
-
-CJ
-
-> +}
-
-...
-
+best,
+neal
