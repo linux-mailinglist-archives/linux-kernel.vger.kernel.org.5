@@ -2,113 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B4C7BF06A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 03:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF20E7BF069
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 03:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379378AbjJJBmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 21:42:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60818 "EHLO
+        id S1379373AbjJJBmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 21:42:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379364AbjJJBmv (ORCPT
+        with ESMTP id S1379334AbjJJBmu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 21:42:51 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5D99D
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 18:42:50 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-504b84d59cbso6818262e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 18:42:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696902168; x=1697506968; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8r8xsqUE1WfCL4pE6OYo22lswirb6FPZBD4Cqt+Avvc=;
-        b=CDF1Bh7ip6AuzL3cd67XupnqG3EiLJG//Vj+gYJ7ujTVVwHk9QqmMS2shD8kQ61cU0
-         lCRPqKssiXzHvMp/HkgBH2wSutWs5YWO63nP0fcu8EVVlfaoE5WtOetlVUqTLqKdMYbI
-         c2UQN+Q3H3RhZijk2zN02OFk61neepd9R35bXZ8nJUs50Ot+ZW1rrw3c49brvprm1WZx
-         Cgo+SYhlhxad5/ctzzEBP/FN3sUUNMTJqQWVDO10q0b9A73c2ftZaYudiBkFwyo2VTln
-         JumFVYwG8KsDFS4j45pZ3V2dco2fIGZ/D60yekOVAN+raFHGJPaYxV7lm3yECF7AxIMn
-         IRbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696902168; x=1697506968;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8r8xsqUE1WfCL4pE6OYo22lswirb6FPZBD4Cqt+Avvc=;
-        b=SnRyjTVklaJuUPJhlNywQ+hEghRQNjesD2KONnIqRr+rfTiAD0JzmBlJRGP60A377y
-         vICFIAKrfdXwYA1F9JHCRN09K2WZCQwsc9b9aqCpc8TgzWJTuHSdKBVG4XGJCj2wHOHp
-         vvUUEIhmyJI0c4EKKPfic4a7Tg7XyIwULi2kasZxnCVM9fAWfSvVk214441H/oudKTxD
-         b9YOy0DzZvOp1X+JojWBfB3wJJMAtOHpbXjfEaTYz/3bmV0KGwbyAnq8PisA/wH4TgzZ
-         IsObfXEwLT+B2vcNVLr2awyBpTktRq1gJgYnwdJYPkrZ0wLi4vS8s1bjpy18slNoas3q
-         v7GA==
-X-Gm-Message-State: AOJu0YwBVnVvJACz9ylYCn9G6a9ElqZ9GmANJ/LMc+0viIc181D2D33Z
-        0wIcd6X/qcxvLN1Es5jMf2/zwJoJN63kpw5a6WY=
-X-Google-Smtp-Source: AGHT+IEPcd/ue90wff4n2u/SRx6h6zwqRB8fhsQ1HkkqaByi1Z9uVEyKoevP73q+nimJAh929A9LfXs8aPzzsK5Em44=
-X-Received: by 2002:a05:6512:3e20:b0:502:9fce:b6cc with SMTP id
- i32-20020a0565123e2000b005029fceb6ccmr19062741lfv.11.1696902168001; Mon, 09
- Oct 2023 18:42:48 -0700 (PDT)
+        Mon, 9 Oct 2023 21:42:50 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BBF091;
+        Mon,  9 Oct 2023 18:42:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696902169; x=1728438169;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=AlHkwm9zEXCrDr1o3Gq7oWu7SSn9X4lm0zxGjkR3glU=;
+  b=CIkPWDc/0a0HhMGQA0T3kfZ6++idRIZ8xhl+tV69DSC1GJXOTFzJZipZ
+   2o3jOcReH8Tp8gI283yf/3PABA9f32FS/gtqKfduj9vfhNWxrn1pBkMIe
+   YNu7vcGEAoTwiAoOasJU0pyCj+ZPjm8Lzxs9h/CYw7DF+qxa1EMeCjYE/
+   Mc7h3FCpyk/6ZPlndEUK5upf5eJ8myzDtDT4X/KyJCfI1vLUoVIkSGHtp
+   G5o0TSbbzrN/cjgzd06HjtpF4U8QKanr/SCSABqXlVFRnLr2YL8l3m0pP
+   VJReB4cGr4aen3y+s7tF6oZaHaUJl/+W4yHKs/9RPW30KjITundDFvN4o
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="374632931"
+X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
+   d="scan'208";a="374632931"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 18:42:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="1000477573"
+X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
+   d="scan'208";a="1000477573"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.96.100])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 09 Oct 2023 18:42:46 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     "Kai Huang" <kai.huang@intel.com>,
+        "Sean Christopherson" <seanjc@google.com>
+Cc:     "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "Sohil Mehta" <sohil.mehta@intel.com>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "kristen@linux.intel.com" <kristen@linux.intel.com>,
+        "yangjie@microsoft.com" <yangjie@microsoft.com>,
+        "Zhiquan1 Li" <zhiquan1.li@intel.com>,
+        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+        "Bo Zhang" <zhanb@microsoft.com>,
+        "anakrish@microsoft.com" <anakrish@microsoft.com>
+Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
+ EPC
+References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
+ <20230923030657.16148-13-haitao.huang@linux.intel.com>
+ <1b265d0c9dfe17de2782962ed26a99cc9d330138.camel@intel.com>
+ <ZSSZaFrxvCvR1SOy@google.com>
+Date:   Mon, 09 Oct 2023 20:42:45 -0500
 MIME-Version: 1.0
-References: <1683782550-25799-1-git-send-email-zhaoyang.huang@unisoc.com>
- <20231006141750.5423083520f74bc0746fd249@linux-foundation.org>
- <CAGWkznHqQHMN1QXz7os7AQTYdzc3+LEq+z2bWOzLbiseV=560A@mail.gmail.com>
- <20231009171415.cfc26b45c2f9f4489afe16c2@linux-foundation.org> <ZSSpfw_VdFkus4F5@P9FQF9L96D>
-In-Reply-To: <ZSSpfw_VdFkus4F5@P9FQF9L96D>
-From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date:   Tue, 10 Oct 2023 09:42:36 +0800
-Message-ID: <CAGWkznG+-j8WqM6wSf5yaSi7qZzyb0SbkbOH1Cwq7WaQ1-6RGA@mail.gmail.com>
-Subject: Re: [PATCHv5] mm: optimization on page allocation when CMA enabled
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
-        Roman Gushchin <guro@fb.com>, Minchan Kim <minchan@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, ke.wang@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2cksdjamwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <ZSSZaFrxvCvR1SOy@google.com>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 9:31=E2=80=AFAM Roman Gushchin <roman.gushchin@linu=
-x.dev> wrote:
->
-> On Mon, Oct 09, 2023 at 05:14:15PM -0700, Andrew Morton wrote:
-> > On Sun, 8 Oct 2023 15:54:40 +0800 Zhaoyang Huang <huangzhaoyang@gmail.c=
-om> wrote:
-> >
-> > > > Roman previously asked
-> > > >
-> > > > : Also I'm a bit concerned about potential performance implications=
-.
-> > > > : Would be great to provide some benchmarks or some data.  Probably=
- it's
-> > > > : ok because of we have pcp caches on top, but I'm not 100% sure.
-> > > >
-> > > > Are you able to perform such testing and tell us the result?
-> > > I have applied this patch in a v5.4 based ANDROID system and got no
-> > > regression problem. Actually, this commit is aimed to have
-> > > alloc_pages(GFP_USER) use CMA instead of stealing U&R(could lead to
-> > > GFP_KERNEL fail) only when zone's free pages and free cma are around
-> > > WATERMARK_LOW/MIN which would NOT affect most scenarios.
-> >
-> > OK, thanks.
-> >
-> > Could the appropriate people please take a look at this?  It has been
-> > in mm-unstable since May.
->
-> I have 2 concerns:
-> 1) it's still hard to understand the commit message and comments, I can
->    only reverse-engineer it based on the code changes;
-> 2) performance concerns I expressed earlier are not addressed. Idk what's
->    a good benchmark for the page allocator, probably something i/o or
->    networking heavy.
->
-ok, I will update the commit message
+Hi Sean
 
-> On the positive side I believe that the patch is solving a real problem.
+On Mon, 09 Oct 2023 19:23:04 -0500, Sean Christopherson  
+<seanjc@google.com> wrote:
+
+> On Mon, Oct 09, 2023, Kai Huang wrote:
+>> On Fri, 2023-09-22 at 20:06 -0700, Haitao Huang wrote:
+>> > +/**
+>> > + * sgx_epc_oom() - invoke EPC out-of-memory handling on target LRU
+>> > + * @lru:	LRU that is low
+>> > + *
+>> > + * Return:	%true if a victim was found and kicked.
+>> > + */
+>> > +bool sgx_epc_oom(struct sgx_epc_lru_lists *lru)
+>> > +{
+>> > +	struct sgx_epc_page *victim;
+>> > +
+>> > +	spin_lock(&lru->lock);
+>> > +	victim = sgx_oom_get_victim(lru);
+>> > +	spin_unlock(&lru->lock);
+>> > +
+>> > +	if (!victim)
+>> > +		return false;
+>> > +
+>> > +	if (victim->flags & SGX_EPC_OWNER_PAGE)
+>> > +		return sgx_oom_encl_page(victim->encl_page);
+>> > +
+>> > +	if (victim->flags & SGX_EPC_OWNER_ENCL)
+>> > +		return sgx_oom_encl(victim->encl);
+>>
+>> I hate to bring this up, at least at this stage, but I am wondering why  
+>> we need
+>> to put VA and SECS pages to the unreclaimable list, but cannot keep an
+>> "enclave_list" instead?
+>
+> The motivation for tracking EPC pages instead of enclaves was so that  
+> the EPC
+> OOM-killer could "kill" VMs as well as host-owned enclaves.  The virtual  
+> EPC code
+> didn't actually kill the VM process, it instead just freed all of the  
+> EPC pages
+> and abused the SGX architecture to effectively make the guest recreate  
+> all its
+> enclaves (IIRC, QEMU does the same thing to "support" live migration).
+>
+> Looks like y'all punted on that with:
+>
+>   The EPC pages allocated for KVM guests by the virtual EPC driver are  
+> not
+>   reclaimable by the host kernel [5]. Therefore they are not tracked by  
+> any
+>   LRU lists for reclaiming purposes in this implementation, but they are
+>   charged toward the cgroup of the user processs (e.g., QEMU) launching  
+> the
+>   guest.  And when the cgroup EPC usage reaches its limit, the virtual  
+> EPC
+>   driver will stop allocating more EPC for the VM, and return SIGBUS to  
+> the
+>   user process which would abort the VM launch.
+>
+> which IMO is a hack, unless returning SIGBUS is actually enforced  
+> somehow.  Relying
+> on userspace to be kind enough to kill its VMs kinda defeats the purpose  
+> of cgroup
+> enforcement.  E.g. if the hard limit for a EPC cgroup is lowered,  
+> userspace running
+> encalves in a VM could continue on and refuse to give up its EPC, and  
+> thus run above
+> its limit in perpetuity.
+>
+Cgroup would refuse to allocate more when limit is reached so VMs can not  
+run above limit.
+
+IIRC VMs only support static EPC size right now, reaching limit at launch  
+means the EPC size given in command line for QEMU is not appropriate. So  
+VM should not launch, hence the current behavior.
+
+[all EPC pages in guest are allocated on page fault caused by the  
+sensitization process in guest kernel during init, which is part of the VM  
+Launch process. So SIGNBUS will turn into failed VM launch.]
+
+Once it is launched, guest kernel would have 'total capacity' given by the  
+static value from QEMU option. And it would start paging when it is used  
+up, never would ask for more from host.
+
+For future with dynamic EPC for running guests, QEMU could handle  
+allocation failure and pass SIGBUS to the running guest kernel.  Is that  
+correct understanding?
+
+
+> I can see userspace wanting to explicitly terminate the VM instead of  
+> "silently"
+> the VM's enclaves, but that seems like it should be a knob in the  
+> virtual EPC
+> code.
+
+If my understanding above is correct and understanding your statement  
+above correctly, then don't see we really need separate knob for vEPC  
+code. Reaching a cgroup limit by a running guest (assuming dynamic  
+allocation implemented) should not translate automatically killing the VM.  
+Instead, it's user space job to work with guest to handle allocation  
+failure. Guest could page and kill enclaves.
+
+Haitao
