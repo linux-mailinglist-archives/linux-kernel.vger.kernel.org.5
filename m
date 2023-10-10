@@ -2,118 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BFDA7C4062
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 21:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 606687C4068
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 21:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343625AbjJJTw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 15:52:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35926 "EHLO
+        id S1343612AbjJJTxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 15:53:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234289AbjJJTw5 (ORCPT
+        with ESMTP id S1343519AbjJJTxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 15:52:57 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D8B199
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 12:52:55 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-4054496bde3so55886745e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 12:52:55 -0700 (PDT)
+        Tue, 10 Oct 2023 15:53:35 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A50B94
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 12:53:34 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9a509861acso1762303276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 12:53:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696967574; x=1697572374; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=t5i40gxuuo/zlrus1pUVR5uLfyf6M7O5NanevceCLaM=;
-        b=lhp0VL/alWj4yDjaWLLUyl5aIEMTGKPHkZDcjQh00nY3GoMtUjjM12PAqOwSgMCz2b
-         kpgOe10BkpNQVcqpRd4hfuGn4kWMmLMHEPXqRDdisLAEVjGxo0XUefFOQ8mxD5oUFDDa
-         VOVoW/rwAzHCFvIIfsFwGyoPKhIUNq5c7nyJ3zg8YVzRbMWCy7i3SZUMX3IpmXIBoHfp
-         Z1Q7mCbiUZ50E0hPOMA8KriPsfZCv3XNtDzvdMENT36l24Qf2kYto08CehJdZweFHQw6
-         z3ZBPuEc3ll6rl4SQ11oVaoVDDrTuN8BuF7lVqXSc2627rKHsE5/F+7rxrvI2Ex66oS4
-         tN0Q==
+        d=google.com; s=20230601; t=1696967613; x=1697572413; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=w5E9MxIyYhKzMBpNRM6CeDwnSabl1YmaOv2YrvO7ZwA=;
+        b=aiQQO/rurAS5Lnl/Q2g2+N5y+Yflc4WrKFmJcUT10ZAxVnQYiJayZdAJht6JSma8nn
+         ADTCEnoq9gNSnPa6P/NTVhjeq6U6MhQZQh4ua6XV+6Mqn40K9Hjy4d1+z7vbXNcxRtMT
+         gPEv9zI8NeQ3/5ARcfC9tKSgmTjxCS0+T7whSWFrlPfbv9iJtK9z8i4s8h9e57SOMqHr
+         yt1pxTxt5JKhjkFxvD00vofri7Z7PAjuZhJDc4zwg3os7ak+8c1iYb+KEvY2Xuc5VCvc
+         m2p4u9uH2RkacQHoNobL349x8VxGU0vZiy6DpWxJ7L/Sg4B2AAm0dg7lLhNpJD5ZESeg
+         +RYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696967574; x=1697572374;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=t5i40gxuuo/zlrus1pUVR5uLfyf6M7O5NanevceCLaM=;
-        b=TE0PFgdQvNLKzzNNg4+yivuh1wGfMVRMH8zNQOhubsmyltqMkTbCeFQBSS2mYgXvfx
-         UfTDmlDIOGHtkgTcEiHzPiAq63++z6VmYbAWjCBRPh2bOvgE0RkB1Ne7T8DfrHBNW3Ra
-         49qZm8qv0MCUCkwwfIk6gVskPjmo0RBaQU3iTGfhkbbbySYjlzf4lpvQptOB98eeM55U
-         yUjetVqDgfRpwzRvYbfGHIEgCHZOY3Eb0TDgFyXdnb3ovKTJSjs+TehGjaMHFcj0l7kU
-         X/8KPG6afXH032RIpAmDn3p7UAMfCKK+baE5I/1mgwLgXXJCF/hjnGZ7adgeWco+wmop
-         QsNw==
-X-Gm-Message-State: AOJu0YybbZUkiX2tzhJkFkHwZMgh/7N0aUTFo9bGXJLjei6P9hhFu1hG
-        BpJaxxRRwx5crbKdMwptke0nWQ==
-X-Google-Smtp-Source: AGHT+IGR3sltT7d1/wfUFY0JcxZUAJ8f7UgReRbR9mZOjJt43SSv1yA+6DtBSb2Qh0Y5dzSbU7hI7g==
-X-Received: by 2002:a7b:c3d2:0:b0:402:cc5c:c98 with SMTP id t18-20020a7bc3d2000000b00402cc5c0c98mr16832711wmj.13.1696967573942;
-        Tue, 10 Oct 2023 12:52:53 -0700 (PDT)
-Received: from [172.30.204.182] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id u20-20020a05600c211400b0040642a1df1csm15081271wml.25.2023.10.10.12.52.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Oct 2023 12:52:53 -0700 (PDT)
-Message-ID: <1aea4a86-7f7c-46ee-9cbe-655eb7663c2a@linaro.org>
-Date:   Tue, 10 Oct 2023 21:52:50 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 4/4] ARM: dts: qcom: ipq8064: Add CPU OPP table
-Content-Language: en-US
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Robert Marko <robimarko@gmail.com>, ilia.lin@kernel.org,
-        vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, agross@kernel.org, andersson@kernel.org,
-        rafael@kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20230930102218.229613-1-robimarko@gmail.com>
- <20230930102218.229613-4-robimarko@gmail.com>
- <e255dcbd-6342-49e6-9bfe-17a47b2a3c8a@linaro.org>
- <65255c81.050a0220.141f8.7b8f@mx.google.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <65255c81.050a0220.141f8.7b8f@mx.google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+        d=1e100.net; s=20230601; t=1696967613; x=1697572413;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=w5E9MxIyYhKzMBpNRM6CeDwnSabl1YmaOv2YrvO7ZwA=;
+        b=Ztrr0/vqlugZtP3/HrIJgBiYgWm1whUJ6isIR5q6jRZpSAsmLSb9MBfPU87rmAVXLs
+         LRmU/My5qTEspQBxqbFcRJYoBp6zmmzuSrAm9YJEyReROCxIVlWOrsO0hbcjD8CrCjPG
+         8ArGQb4pFIIyCkFzrW52JuBM6Mx6Z++GZVyCeUd57ErVrB4d52M0iVaoqI0SXdOfDErg
+         UCgaDrHoegSVscF06zZ0VpGi95kTB07WMr+AxQZ8fVSD8wY6JiZO9dTPEv95iM4IQmfA
+         9M4AHoo3o7dbY6gIdeVi8sCyYPOd8McLfJIIxcOPTjd+6oSRFVtm67+b4eFSmbbGZ/CE
+         1q2g==
+X-Gm-Message-State: AOJu0YxovK3Q7ufks429DlyeRYd1xD7nYx4HdFQwR+sbbI0tR0Zzag0n
+        OUqdeFFzuWxvx8I7/4Nxco4vglSqv84Ag/O1sA==
+X-Google-Smtp-Source: AGHT+IFf+EcNSed1EvzahNf05j6H+bR8LMoGehNG9vtR75/usZMZPFVfBU6LyeUKu8sWdgNzGSviQJZCAAOpdfkScA==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6902:85:b0:d86:5644:5d12 with SMTP
+ id h5-20020a056902008500b00d8656445d12mr357348ybs.4.1696967613332; Tue, 10
+ Oct 2023 12:53:33 -0700 (PDT)
+Date:   Tue, 10 Oct 2023 19:53:32 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIALurJWUC/yWNUQrCMBBEr1L224VsFRu8ikgp6cYu1qTshqKU3
+ t2oP8M8HsxsYKzCBpdmA+VVTHKqQIcGwjSkO6OMlaF17ZEcObSiKSxvHFVWVsPEBblMrN8iqfC M8Unu8c++qpLzjAE9+RMPXefPFKHOL8pRXr/r623fP2N/8+eKAAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1696967612; l=2330;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=Kd8rwBEMi1NtM8y4ozGswyeCAqmu3EbqiQJnq7rYFR0=; b=OC+eT0HLH7q5dOLGigWF8Rx7ymgW1poduMQ2TkjiGHXmUxXOMiXpMWi9S1WtDr2E1QqE/23iD
+ A1dqQ8QKh0RBofrRZ+itXkeKDgltYr22tc53NO8eW+Zm9I7v62Xp+fW
+X-Mailer: b4 0.12.3
+Message-ID: <20231010-strncpy-drivers-net-ethernet-intel-fm10k-fm10k_ethtool-c-v1-1-dbdc4570c5a6@google.com>
+Subject: [PATCH] fm10k: replace deprecated strncpy with strscpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+`strncpy` is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
+A suitable replacement is `strscpy` [2] due to the fact that it
+guarantees NUL-termination on the destination buffer without
+unnecessarily NUL-padding.
 
-On 10/10/23 16:15, Christian Marangi wrote:
-> On Tue, Oct 10, 2023 at 03:40:32PM +0200, Konrad Dybcio wrote:
->>
->>
->> On 9/30/23 12:21, Robert Marko wrote:
->>> From: Christian Marangi <ansuelsmth@gmail.com>
->>>
->>> Add CPU OPP table for IPQ8062, IPQ8064 and IPQ8065 SoC.
->>> Use opp-supported-hw binding to correctly enable and disable the
->>> frequency as IPQ8062 supports up to 1.0Ghz, IPQ8064 supports up to
->>> 1.4GHz with 1.2GHz as an additional frequency and IPQ8065 supports
->>> 1.7GHZ but doesn't have 1.2GHZ frequency and has to be disabled.
->>>
->>> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
->>> Signed-off-by: Robert Marko <robimarko@gmail.com>
->>> ---
->> Christian/Robert, can you provide a downstream source for this?
->>
-> 
-> Sure, consider that everything is with +/-5%.
-Hm, so you're e.g. putting ipq8062 384MHz voltage for PVS3 equal to 
-0.95*800000 = 760000, but I'm not sure if it's a good idea?
+Other implementations of .*get_drvinfo also use strscpy so this patch
+brings fm10k_get_drvinfo in line as well:
 
-The comment in downstream:
+igb/igb_ethtool.c +851
+static void igb_get_drvinfo(struct net_device *netdev,
 
-"These are based on +/-5% Margin on the VDD_APCx that is advertised in 
-our Datasheet across Temperature"
+igbvf/ethtool.c
+167:static void igbvf_get_drvinfo(struct net_device *netdev,
 
-suggests this is already not very accurate, and betting that the lower 
-threshold works on all chips is probably not the best idea.
+i40e/i40e_ethtool.c
+1999:static void i40e_get_drvinfo(struct net_device *netdev,
 
-Konrad
+e1000/e1000_ethtool.c
+529:static void e1000_get_drvinfo(struct net_device *netdev,
+
+ixgbevf/ethtool.c
+211:static void ixgbevf_get_drvinfo(struct net_device *netdev,
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
+---
+ drivers/net/ethernet/intel/fm10k/fm10k_ethtool.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/fm10k/fm10k_ethtool.c b/drivers/net/ethernet/intel/fm10k/fm10k_ethtool.c
+index d53369e30040..13a05604dcc0 100644
+--- a/drivers/net/ethernet/intel/fm10k/fm10k_ethtool.c
++++ b/drivers/net/ethernet/intel/fm10k/fm10k_ethtool.c
+@@ -448,10 +448,10 @@ static void fm10k_get_drvinfo(struct net_device *dev,
+ {
+ 	struct fm10k_intfc *interface = netdev_priv(dev);
+ 
+-	strncpy(info->driver, fm10k_driver_name,
+-		sizeof(info->driver) - 1);
+-	strncpy(info->bus_info, pci_name(interface->pdev),
+-		sizeof(info->bus_info) - 1);
++	strscpy(info->driver, fm10k_driver_name,
++		sizeof(info->driver));
++	strscpy(info->bus_info, pci_name(interface->pdev),
++		sizeof(info->bus_info));
+ }
+ 
+ static void fm10k_get_pauseparam(struct net_device *dev,
+
+---
+base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
+change-id: 20231010-strncpy-drivers-net-ethernet-intel-fm10k-fm10k_ethtool-c-8184ea77861f
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
