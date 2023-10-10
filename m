@@ -2,237 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA28B7BF93B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 13:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D4C7BF94A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 13:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbjJJLIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 07:08:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36206 "EHLO
+        id S230481AbjJJLJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 07:09:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230481AbjJJLIl (ORCPT
+        with ESMTP id S229958AbjJJLJv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 07:08:41 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A41AC
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 04:08:39 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d857c8a1d50so5707494276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 04:08:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696936118; x=1697540918; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=yoUO++5OHOnxZZDqfJI5HF1MKHhl2PMBrF0tTuSB4/4=;
-        b=MHPxFBcN7qQDHUQdfya3S86qXFkKvWMsr7m/FbSb3RKLXFAlDkzHvwnCYaZZn8VI4P
-         Xv+hWDFyj0a82VCSbv5iJstfxrPbRha5v/5XxHdDdtYgEIxlmtSnp+K1u8Bm3/BmRyxg
-         +mnWR+EHOTkcd0DWuwrDeLnyOp7lVrcKg9FHTFZN0LWmYmGBGsXeAkP2/3j9wCWTg+VN
-         badiwrwy1knd59qqBKk0a1xdl9hDhgeG3tCJ70I3ooaE39F8TtsWSy/Pl5sfQdk2cWkn
-         xsTcgDxIgJqobNa3ig/qVQfOryXUOAuMPkilPjxWM6c2a935ZfIY1wi2Pm47Sd0DIots
-         Krzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696936118; x=1697540918;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yoUO++5OHOnxZZDqfJI5HF1MKHhl2PMBrF0tTuSB4/4=;
-        b=ln2DST50RVZke1qQzaig6FM+LGFVPVB2Ud7hyac8c0wZ/ofu6a1cbqJoV2A+6lSpuQ
-         rBX1kS6KWmQbM2qy1TokpYZhgKTi4qpBUrf5JHcI/D0oBxa49uSwOugyqXn6q2ttlRwv
-         wARRYVmaRVwFo/Fb5EMcqRsXfxUfSq4aeSHr2fIKXP/OdmbEh4xfDoevoYUGtSLlY9Mj
-         ySYQTJcEMFTUdZProj8HJ68AoTv/wDD1Vt8F021goEgJyMTXElZb5Y5gGS/p8J2aIBXm
-         6oyPdzmL8XVj3RFds9uofUPLqb0/dHCetbRo8g3ON5/cTlYhWO1ZqTueWDVI40aQQ/wd
-         yf2Q==
-X-Gm-Message-State: AOJu0YwSq65ppM3nL9LI34zxM6No/62uPbE1TiZnKXBzQwUHeMO3Rb8p
-        j7Ax1mv/90tk8dOs1d/chZ6hjh/lvQt0iE8vIPpu+Q==
-X-Google-Smtp-Source: AGHT+IFS6BO5fWCDG/MfxYZsNz7Fo1VAl1C0Q+SDMzQiQ95SB74PljJKm4ddTS8OMhgnIrGAIZB8FEzXACrEQToOicE=
-X-Received: by 2002:a25:b190:0:b0:d1b:c879:5e6f with SMTP id
- h16-20020a25b190000000b00d1bc8795e6fmr17033724ybj.23.1696936118573; Tue, 10
- Oct 2023 04:08:38 -0700 (PDT)
+        Tue, 10 Oct 2023 07:09:51 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2058.outbound.protection.outlook.com [40.107.237.58])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A552B4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 04:09:49 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Cn+tBl05dXKlu9XLxK601qw+n0ZEVlOQfQ7gVxRMPciFsjsLZ/tf6r6svKzzALIEwOyUE/Ce+Lkgrbiwsys5Ddg3SERGFGhhBEN2LlTCwfV+ELtsnpoBx5MWKPRMBdohFinvSM8Snln34c0/BGw6kxyokGiQL6j1prqJBYiyXWMWGD1I/vG8f6TLEaFN65Mr/fG0HOgUfe09yfqTFDIiEfNl5pOokWhyMp2DyjoGEDJzhBSOXUyaeQ/lt5egdqbJlqYOZ6Qztj2HNTMiSOmnLvdH61dkVeyVgZUUBmXd95c+10u+zdVQJ9NRH6iZdn6SnJs5uwT6TZPcTmgVwUy/jQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/2qcP/tdYHKkItJBndzLFbKjN2xykQrph81mr+cFOnA=;
+ b=SE7NZmivg4//6taRWBOWKv6Ww9Br4W7O/ZJZ50McE96fuwzn1ISe8u7StgcSVsFIMIhZsyXIzS39It4oZMw7kMxggLesXmheR798ckqWu8ero74vIQXO0KzPT2tnsg1NKHNPPHFLUIF8QoweY4S9YmI/uvDllG5b1m4uvol+WfqaHZQ7dq5R0JmOExRp+bJWBcKKU5JjZ5i6D/M7RmBxInNC/88EqrCycW3h60odF6ZGrNMg8Ya2HHrgqyQtufUCh7m53/H446KgDC+k3+oQI6lRUyM9UCt//ATEI8X3q81EN9ZNaoGM54r9nSn5nmAg1rRDVFzyhvpreXd8oYdZkw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/2qcP/tdYHKkItJBndzLFbKjN2xykQrph81mr+cFOnA=;
+ b=MHsXx9Z/4REOqqa0iJTgt6kOlFxq9F0AP7kfSGpf6Ki72sFQ7AHrdsV3sgf91Mn4RPV5jjkm5hGcY6SchCyi99kF2WXegxCXjzgEpL6TfHvNVp2Shnh/aSQl85UNOCls7G0gwae7UbBcQRmXveOYjmxByG16g/0JRZ0k55Lx4L8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from SJ2PR12MB8690.namprd12.prod.outlook.com (2603:10b6:a03:540::10)
+ by IA1PR12MB6627.namprd12.prod.outlook.com (2603:10b6:208:3a1::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Tue, 10 Oct
+ 2023 11:09:46 +0000
+Received: from SJ2PR12MB8690.namprd12.prod.outlook.com
+ ([fe80::c3b:811:fd1d:c33e]) by SJ2PR12MB8690.namprd12.prod.outlook.com
+ ([fe80::c3b:811:fd1d:c33e%6]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
+ 11:09:46 +0000
+Date:   Tue, 10 Oct 2023 19:09:20 +0800
+From:   Huang Rui <ray.huang@amd.com>
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        David Airlie <airlied@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Akihiko Odaki <akihiko.odaki@daynix.com>,
+        =?iso-8859-1?Q?Marc-Andr=E9?= Lureau <marcandre.lureau@gmail.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Ragiadakou, Xenia" <Xenia.Ragiadakou@amd.com>,
+        "Stabellini, Stefano" <stefano.stabellini@amd.com>,
+        "Huang, Honglei1" <Honglei1.Huang@amd.com>,
+        "Zhang, Julia" <Julia.Zhang@amd.com>,
+        "Chen, Jiqian" <Jiqian.Chen@amd.com>
+Subject: Re: [PATCH v2] drm/virtio: add definitions for gfxstream and venus
+ capset
+Message-ID: <ZSUw4IY+13Yfd+Tx@amd.com>
+References: <20231010032553.1138036-1-ray.huang@amd.com>
+ <245f993a-72f2-7834-34b4-345f97737be1@collabora.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <245f993a-72f2-7834-34b4-345f97737be1@collabora.com>
+X-ClientProxiedBy: SG2PR02CA0069.apcprd02.prod.outlook.com
+ (2603:1096:4:54::33) To SJ2PR12MB8690.namprd12.prod.outlook.com
+ (2603:10b6:a03:540::10)
 MIME-Version: 1.0
-References: <20230915094351.11120-1-victorshihgli@gmail.com>
- <20230915094351.11120-11-victorshihgli@gmail.com> <CAPDyKFrynugse6+vwummTQ73egwvGAfKreH=iihv9bhFN1SJYQ@mail.gmail.com>
- <afa2aeed-7296-4075-a7e0-62f3d59bfdf4@intel.com> <CAPDyKFqidGZ242P-9xnxokSCeGxk8uziqR=AteWt=iQFz5fA9g@mail.gmail.com>
- <81bf38cd-b6a4-4a6f-a51d-bc916e3b8f96@intel.com> <CAPDyKFoc0phsXuX5W0PqFu2En57Lc9D-+MTGxAYtJhPpHcVZ2g@mail.gmail.com>
- <d76a9fff-5536-4e3e-b1c3-234de427d031@intel.com>
-In-Reply-To: <d76a9fff-5536-4e3e-b1c3-234de427d031@intel.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 10 Oct 2023 13:08:02 +0200
-Message-ID: <CAPDyKFqsu6-9U7qQRTB7oDubj5WAp+UQVzLitLytUdamDZQW6w@mail.gmail.com>
-Subject: Re: [PATCH V12 10/23] mmc: sdhci-uhs2: add reset function and
- uhs2_mode function
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Victor Shih <victorshihgli@gmail.com>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, benchuanggli@gmail.com,
-        HL.Liu@genesyslogic.com.tw, Greg.tu@genesyslogic.com.tw,
-        takahiro.akashi@linaro.org, dlunev@chromium.org,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        Victor Shih <victor.shih@genesyslogic.com.tw>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR12MB8690:EE_|IA1PR12MB6627:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8733a9ad-e760-4ae9-1846-08dbc981698e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Ff0obUu3k7LI7iwC8+j+pPTSbUw053ucXitLfEQdmhl12aTE9D/U0Sf732t38gcrjhRAuHc5aKG/Ig/70Ap4uBUC5EsHJgV7an2/uMAHGs+C9fCT+6ku4E2TcnS9xpbPE/gkwzg5COe0owTsSnhxNNR9boXPVs4AZwPd5BcYIu2ONBlbdyQYBN+pecpdFhQsdpLPqacyxaP40RBbRZDLFGkojJvne1k8xakNcam47KVt3XFeHhJMxPmbUAB+mWrtDJYOfyEQKW7LgYXsDl7kx52XtRAFkCYkfrLMe5LN04Bkm49c0u19PSdP5aU8EnrZj3QX9KmVru0E7mSl1Vaxq23uZ1gxzP6aqyEg9T6Z+rQzRrPLgCi2YbNnVJmXxwsNXsE6G0DAkEPPO7Q+/yVp1rMNZiH/INkdiInVCe/OMk8s2aIWCHgU0BX6iVzl9dht87+CC7IJksSCGvJTdhVH1vx0ZukozlDGky3LzEwFwXKUFJfq87y2VzNEh2AIfVB4I+GcHBUN0g3l7oBItameeX+xaQEVX2/lk1kU4dEZukE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR12MB8690.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(366004)(136003)(376002)(396003)(230922051799003)(1800799009)(64100799003)(451199024)(186009)(6506007)(6916009)(53546011)(26005)(38100700002)(8676002)(8936002)(4326008)(83380400001)(478600001)(66946007)(66556008)(66476007)(41300700001)(5660300002)(6512007)(6486002)(7416002)(2616005)(2906002)(6666004)(316002)(54906003)(966005)(36756003)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SUvZ64aE1KfJAHLda60z83s7NmivTwgsWDT2F7gwj5nUayXLVelHeYdSJx/e?=
+ =?us-ascii?Q?Fadm5jj5HS6sG4n5A8UxF+XD8xByYhfzwSJuNbjWP/Rbvs7zthABkdTFCU61?=
+ =?us-ascii?Q?HE+MLvvl0ZTNWJl6MxBkRKLa/7H1q8Y4z2mpmmdBmbI2XxWSX2ZcMLCsXEtK?=
+ =?us-ascii?Q?Cw9odFxlyBmPCzIeLF30j6yEvULmoyT0OG4yL/WMJhBKmrRE1Sg/e5dxRFsy?=
+ =?us-ascii?Q?QmEpyXeEilP0GkUJRZ8EBIXOvhnBWflsaZNv8etGQfZoKGLN1mkB7WfOwaUT?=
+ =?us-ascii?Q?5jfqfx3AQ7RvTgefm11StOBb+EhPWOY5rEPOxhvKNC7Kx6JZnlXCIEQ9VU1Q?=
+ =?us-ascii?Q?QJa27G+WXW1oO2xbErS+0ozMzZ+57VoOlhJfEVlwLNE0DFhdWDZV/asYqVi2?=
+ =?us-ascii?Q?KF2KDdyAAJ55/12s0WQQSSiariwvOxZdFklL881O2EPDWkpDcUV8aQCaA249?=
+ =?us-ascii?Q?X/6z1AWG+X7EhXEOBQ7YsCSCBtaebu3nrk4USsPZBHWi0MJSqsVfPKvV+qei?=
+ =?us-ascii?Q?k9DbrxkZIcTUR0pqeuVHMb8CsZcol7/xXuc8+LaKJiiwfAVKPd9ClRYLuc5b?=
+ =?us-ascii?Q?8XoqVNByBrJtcY9w6TcFUvAzm+k4Q/HQbJbsTlu1oVj6XAQ23vTK5GsIbeQo?=
+ =?us-ascii?Q?Z2mjJlUkYBYV/KnBngv79Nb2dU0FCFnwbxuCF6cpOzLqjoeiDjWeSxolyDn7?=
+ =?us-ascii?Q?0w4TfK7mpUsVKsSJ3RKDiT9AgZz/sWguXo32ml7zXPqiKcs3VtfNTi/Sv34/?=
+ =?us-ascii?Q?j6Pd5rkHVdB432o+cZUpnJ293raSA4eD6m8LfYCeNKoBm9gOuXLxDjNshrsJ?=
+ =?us-ascii?Q?D8xoTJgmG2S/eX5ywmoHivrWf8+OjTWOtS4EFu2LRX0mjaGdWmcksRHpLk6z?=
+ =?us-ascii?Q?W7vI7SXYE76bHxpW4wmWVABg90co0YV0CfZ1T+iC8atAmXn5uxsPm5syEAMi?=
+ =?us-ascii?Q?MS9kvIJyZhdnenzO5RmfFiyIAoRKQAZzOhBpNDBCp2R2CsrDDufzBt1Beb5Z?=
+ =?us-ascii?Q?PRo5Vh96kmD81fXYwFkSp5zrZo8t6bceGTCB04pv/oZxih5u7QHUolhV0e7m?=
+ =?us-ascii?Q?eTwKZt/d3fwk1TSa0SA8l+ycXN4yR4XV6HpYmnM1miW08ZXCE5YeQSc9Jju9?=
+ =?us-ascii?Q?HiGxeGZvpu5q/Ob1zq53z1jn/7Stq7y3Xa2iza5ZWt0M4z5sxEnHsPcQwpoi?=
+ =?us-ascii?Q?RbY1JUYuDJulecAWNKnRnXv2utPJDpT7V/Wluxxx0R7SQ7c8DuJc+wqZ49T8?=
+ =?us-ascii?Q?vZ/GHR1fETShSCYVMD2SjfssKxzCNjLRaQ7y8tkk9hCjA+tXjZcRl2fR08L3?=
+ =?us-ascii?Q?Y6/oJnUA8h/8/Pd6clC2gCGIEqfGXZ+w/Mxo0Uj0ClbhIOIcQ4G7VpMm+Usq?=
+ =?us-ascii?Q?hNEdaSspR+2Ps7cnpYZUesNc5ge3oQqg8YlbbU0/mCkCGIuDESwl99FjNrJj?=
+ =?us-ascii?Q?TP+ebAKfXAqR9OjJvhMrOb6cbjOw6XEXyJSMpOzt/sJiiyapxK+Flzp2ZMFC?=
+ =?us-ascii?Q?hDcPrm5EgGgHxiVqVgJB1NGpoHmaATWxNQJxz9u8aEKp3WDUFIv8u5PpNm14?=
+ =?us-ascii?Q?BcjeHaJkyElm+fmLmUoeVQXpN0ARz6yHIaOmPg/w?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8733a9ad-e760-4ae9-1846-08dbc981698e
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR12MB8690.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 11:09:46.7189
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jDZtH9vXp+BO3Gqn26iQBvAs6QM30KIeVqwe0qcMt/teQnJMgtiZGxgkeeJyJmzVTHfIMXU/uxctCD9t1I10VQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6627
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Oct 2023 at 12:29, Adrian Hunter <adrian.hunter@intel.com> wrote:
->
-> On 4/10/23 11:35, Ulf Hansson wrote:
-> > On Tue, 3 Oct 2023 at 17:03, Adrian Hunter <adrian.hunter@intel.com> wrote:
-> >>
-> >> On 3/10/23 15:22, Ulf Hansson wrote:
-> >>> On Tue, 3 Oct 2023 at 13:37, Adrian Hunter <adrian.hunter@intel.com> wrote:
-> >>>>
-> >>>> On 3/10/23 13:30, Ulf Hansson wrote:
-> >>>>> On Fri, 15 Sept 2023 at 11:44, Victor Shih <victorshihgli@gmail.com> wrote:
-> >>>>>>
-> >>>>>> From: Victor Shih <victor.shih@genesyslogic.com.tw>
-> >>>>>>
-> >>>>>> Sdhci_uhs2_reset() does a UHS-II specific reset operation.
-> >>>>>>
-> >>>>>> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-> >>>>>> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> >>>>>> Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw>
-> >>>>>> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-> >>>>>> ---
-> >>>>>>
-> >>>>>> Updates in V8:
-> >>>>>>  - Adjust the position of matching brackets.
-> >>>>>>
-> >>>>>> Updates in V6:
-> >>>>>>  - Remove unnecessary functions and simplify code.
-> >>>>>>
-> >>>>>> ---
-> >>>>>>
-> >>>>>>  drivers/mmc/host/sdhci-uhs2.c | 45 +++++++++++++++++++++++++++++++++++
-> >>>>>>  drivers/mmc/host/sdhci-uhs2.h |  2 ++
-> >>>>>>  2 files changed, 47 insertions(+)
-> >>>>>>
-> >>>>>> diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sdhci-uhs2.c
-> >>>>>> index e339821d3504..dfc80a7f1bad 100644
-> >>>>>> --- a/drivers/mmc/host/sdhci-uhs2.c
-> >>>>>> +++ b/drivers/mmc/host/sdhci-uhs2.c
-> >>>>>> @@ -10,7 +10,9 @@
-> >>>>>>   *  Author: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> >>>>>>   */
-> >>>>>>
-> >>>>>> +#include <linux/delay.h>
-> >>>>>>  #include <linux/module.h>
-> >>>>>> +#include <linux/iopoll.h>
-> >>>>>>
-> >>>>>>  #include "sdhci.h"
-> >>>>>>  #include "sdhci-uhs2.h"
-> >>>>>> @@ -49,6 +51,49 @@ void sdhci_uhs2_dump_regs(struct sdhci_host *host)
-> >>>>>>  }
-> >>>>>>  EXPORT_SYMBOL_GPL(sdhci_uhs2_dump_regs);
-> >>>>>>
-> >>>>>> +/*****************************************************************************\
-> >>>>>> + *                                                                           *
-> >>>>>> + * Low level functions                                                       *
-> >>>>>> + *                                                                           *
-> >>>>>> +\*****************************************************************************/
-> >>>>>> +
-> >>>>>> +bool sdhci_uhs2_mode(struct sdhci_host *host)
-> >>>>>> +{
-> >>>>>> +       return host->mmc->flags & MMC_UHS2_SUPPORT;
-> >>>>>
-> >>>>> The MMC_UHS2_SUPPORT bit looks redundant to me. Instead, I think we
-> >>>>> should be using mmc->ios.timings, which already indicates whether we
-> >>>>> are using UHS2 (MMC_TIMING_UHS2_SPEED_*). See patch2 where we added
-> >>>>> this.
-> >>>>>
-> >>>>> That said, I think we should drop the sdhci_uhs2_mode() function
-> >>>>> altogether and instead use mmc_card_uhs2(), which means we should move
-> >>>>> it to include/linux/mmc/host.h, so it becomes available for host
-> >>>>> drivers.
-> >>>>>
-> >>>>
-> >>>> UHS2 mode starts at UHS2 initialization and ends either when UHS2
-> >>>> initialization fails, or the card is removed.
-> >>>>
-> >>>> So it includes re-initialization and reset when the transfer mode
-> >>>> currently transitions through MMC_TIMING_LEGACY.
-> >>>>
-> >>>> So mmc_card_uhs2() won't work correctly for the host callbacks
-> >>>> unless something is done about that.
-> >>>
-> >>> Right, thanks for clarifying!
-> >>>
-> >>> In that case I wonder if we couldn't change the way we update the
-> >>> ->ios.timing for UHS2. It seems silly to have two (similar) ways to
-> >>> indicate that we have moved to UHS2.
-> >>
-> >> Perhaps something like below:
-> >>
-> >> diff --git a/drivers/mmc/core/sd_uhs2.c b/drivers/mmc/core/sd_uhs2.c
-> >> index aacefdd6bc9e..e39d63d46041 100644
-> >> --- a/drivers/mmc/core/sd_uhs2.c
-> >> +++ b/drivers/mmc/core/sd_uhs2.c
-> >> @@ -70,7 +70,8 @@ static int sd_uhs2_power_off(struct mmc_host *host)
-> >>
-> >>         host->ios.vdd = 0;
-> >>         host->ios.clock = 0;
-> >> -       host->ios.timing = MMC_TIMING_LEGACY;
-> >> +       /* Must set UHS2 timing to identify UHS2 mode */
-> >> +       host->ios.timing = MMC_TIMING_UHS2_SPEED_A;
-> >>         host->ios.power_mode = MMC_POWER_OFF;
-> >>         if (host->flags & MMC_UHS2_SD_TRAN)
-> >>                 host->flags &= ~MMC_UHS2_SD_TRAN;
-> >> @@ -1095,7 +1096,8 @@ static void sd_uhs2_detect(struct mmc_host *host)
-> >>                 mmc_claim_host(host);
-> >>                 mmc_detach_bus(host);
-> >>                 sd_uhs2_power_off(host);
-> >> -               host->flags &= ~MMC_UHS2_SUPPORT;
-> >> +               /* Remove UHS2 timing to indicate the end of UHS2 mode */
-> >> +               host->ios.timing = MMC_TIMING_LEGACY;
-> >>                 mmc_release_host(host);
-> >>         }
-> >>  }
-> >> @@ -1338,7 +1340,8 @@ static int sd_uhs2_attach(struct mmc_host *host)
-> >>  err:
-> >>         mmc_detach_bus(host);
-> >>         sd_uhs2_power_off(host);
-> >> -       host->flags &= ~MMC_UHS2_SUPPORT;
-> >> +       /* Remove UHS2 timing to indicate the end of UHS2 mode */
-> >> +       host->ios.timing = MMC_TIMING_LEGACY;
-> >>         return err;
-> >>  }
-> >
-> > I wouldn't mind changing to the above. But, maybe an even better
-> > option is to use the ->timing variable in the struct sdhci_host, as
-> > it's there already to keep track of the current/previous timing state.
-> > Would that work too?
->
-> The host does not really have enough information.
+On Tue, Oct 10, 2023 at 06:20:03PM +0800, Dmitry Osipenko wrote:
+> Hi,
+> 
+> On 10/10/23 06:25, Huang Rui wrote:
+> > These definitions are used fro qemu, and qemu imports this marco in the
+> > headers to enable gfxstream or venus for virtio gpu. So it should add it
+> > even kernel doesn't use this.
+> > 
+> > Signed-off-by: Huang Rui <ray.huang@amd.com>
+> > ---
+> > 
+> > Changes V1 -> V2:
+> > - Add all capsets including gfxstream and venus in kernel header (Dmitry Osipenko)
+> > 
+> > v1: https://lore.kernel.org/lkml/20230915105918.3763061-1-ray.huang@amd.com/
+> > 
+> >  include/uapi/linux/virtio_gpu.h | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/include/uapi/linux/virtio_gpu.h b/include/uapi/linux/virtio_gpu.h
+> > index f556fde07b76..327792658bdc 100644
+> > --- a/include/uapi/linux/virtio_gpu.h
+> > +++ b/include/uapi/linux/virtio_gpu.h
+> > @@ -309,6 +309,8 @@ struct virtio_gpu_cmd_submit {
+> >  
+> >  #define VIRTIO_GPU_CAPSET_VIRGL 1
+> >  #define VIRTIO_GPU_CAPSET_VIRGL2 2
+> > +#define VIRTIO_GPU_CAPSET_GFXSTREAM 3
+> > +#define VIRTIO_GPU_CAPSET_VENUS 4
+> >  
+> >  /* VIRTIO_GPU_CMD_GET_CAPSET_INFO */
+> >  struct virtio_gpu_get_capset_info {
+> 
+> By the "all" capsets, I meant to pick up all definitions from crosvm.
+> There should be VIRTIO_GPU_CAPSET_DRM at minimum, could you please add it?
+> 
 
-Okay, let's go with the approach you suggested above/below then!
+Sure. Thanks for the reminder.
 
->
-> >
-> >>
-> >> diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sdhci-uhs2.c
-> >> index 517c497112f4..d1f3318b7d3a 100644
-> >> --- a/drivers/mmc/host/sdhci-uhs2.c
-> >> +++ b/drivers/mmc/host/sdhci-uhs2.c
-> >> @@ -267,10 +267,11 @@ static void __sdhci_uhs2_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
-> >>
-> >>         /* UHS2 timing. Note, UHS2 timing is disabled when powering off */
-> >>         ctrl_2 = sdhci_readw(host, SDHCI_HOST_CONTROL2);
-> >> -       if (ios->timing == MMC_TIMING_UHS2_SPEED_A ||
-> >> -           ios->timing == MMC_TIMING_UHS2_SPEED_A_HD ||
-> >> -           ios->timing == MMC_TIMING_UHS2_SPEED_B ||
-> >> -           ios->timing == MMC_TIMING_UHS2_SPEED_B_HD)
-> >> +       if (ios->power_mode != MMC_POWER_OFF &&
-> >> +           (ios->timing == MMC_TIMING_UHS2_SPEED_A ||
-> >> +            ios->timing == MMC_TIMING_UHS2_SPEED_A_HD ||
-> >> +            ios->timing == MMC_TIMING_UHS2_SPEED_B ||
-> >> +            ios->timing == MMC_TIMING_UHS2_SPEED_B_HD))
-> >>                 ctrl_2 |= SDHCI_CTRL_UHS2 | SDHCI_CTRL_UHS2_ENABLE;
-> >>         else
-> >>                 ctrl_2 &= ~(SDHCI_CTRL_UHS2 | SDHCI_CTRL_UHS2_ENABLE);
-> >>
-> >>
-
-Kind regards
-Uffe
+Best Regards,
+Ray
