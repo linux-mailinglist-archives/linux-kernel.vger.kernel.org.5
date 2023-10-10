@@ -2,81 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF20E7BF069
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 03:42:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F737BF06C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 03:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379373AbjJJBmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 21:42:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60808 "EHLO
+        id S1441805AbjJJBoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 21:44:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379334AbjJJBmu (ORCPT
+        with ESMTP id S1441802AbjJJBoF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 21:42:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BBF091;
-        Mon,  9 Oct 2023 18:42:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696902169; x=1728438169;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=AlHkwm9zEXCrDr1o3Gq7oWu7SSn9X4lm0zxGjkR3glU=;
-  b=CIkPWDc/0a0HhMGQA0T3kfZ6++idRIZ8xhl+tV69DSC1GJXOTFzJZipZ
-   2o3jOcReH8Tp8gI283yf/3PABA9f32FS/gtqKfduj9vfhNWxrn1pBkMIe
-   YNu7vcGEAoTwiAoOasJU0pyCj+ZPjm8Lzxs9h/CYw7DF+qxa1EMeCjYE/
-   Mc7h3FCpyk/6ZPlndEUK5upf5eJ8myzDtDT4X/KyJCfI1vLUoVIkSGHtp
-   G5o0TSbbzrN/cjgzd06HjtpF4U8QKanr/SCSABqXlVFRnLr2YL8l3m0pP
-   VJReB4cGr4aen3y+s7tF6oZaHaUJl/+W4yHKs/9RPW30KjITundDFvN4o
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="374632931"
-X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
-   d="scan'208";a="374632931"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 18:42:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="1000477573"
-X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
-   d="scan'208";a="1000477573"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.96.100])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 09 Oct 2023 18:42:46 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "Kai Huang" <kai.huang@intel.com>,
-        "Sean Christopherson" <seanjc@google.com>
-Cc:     "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Sohil Mehta" <sohil.mehta@intel.com>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "kristen@linux.intel.com" <kristen@linux.intel.com>,
-        "yangjie@microsoft.com" <yangjie@microsoft.com>,
-        "Zhiquan1 Li" <zhiquan1.li@intel.com>,
-        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
-        "Bo Zhang" <zhanb@microsoft.com>,
-        "anakrish@microsoft.com" <anakrish@microsoft.com>
-Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
- EPC
-References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
- <20230923030657.16148-13-haitao.huang@linux.intel.com>
- <1b265d0c9dfe17de2782962ed26a99cc9d330138.camel@intel.com>
- <ZSSZaFrxvCvR1SOy@google.com>
-Date:   Mon, 09 Oct 2023 20:42:45 -0500
+        Mon, 9 Oct 2023 21:44:05 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425F591;
+        Mon,  9 Oct 2023 18:44:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1696902239;
+        bh=TDEkRZ8kDojPfNWycOzBus5z/cW2lt53AV98aJOTPl4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=YCJtbSXFidKaZ5JfQF18W5dXVSkLHbId3h2MJy8+11mZZBIKamHxYBK3Ek04mdgEn
+         IFjGOABcd+PrwvL8xHgH3rWFfYy4ILvUYa4d9IyT1q6/k3BZ+nPQjLLPf3YABos99+
+         Yhpov++3QoQmgX1dgraiCGG1nxJ0tTtg6b+9V5paja8oxOoo7ykI5OyaU9SG7aZyPR
+         SLE7o5ENe3BqtM5i4aoeUhyEhqYJUKAb1fhPLo/+/MYNe8LNckzcnN+myZcXDxaHlJ
+         uDBEL0j0c68r0PgdEEiOIX36v3ESqrF3ljh5g0oV8si1k4M0Mf4T+A+uUi2jsM9Q9W
+         CkhQ/3Va7xvWA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S4JbL621zz4xQd;
+        Tue, 10 Oct 2023 12:43:58 +1100 (AEDT)
+Date:   Tue, 10 Oct 2023 12:43:57 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Qingqing Zhuo <Qingqing.Zhuo@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Roman Li <roman.li@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the amdgpu tree
+Message-ID: <20231010124357.5251e100@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2cksdjamwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <ZSSZaFrxvCvR1SOy@google.com>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+Content-Type: multipart/signed; boundary="Sig_/KpSwQG225d_fQIOAFSnZh=E";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,107 +54,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sean
+--Sig_/KpSwQG225d_fQIOAFSnZh=E
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 09 Oct 2023 19:23:04 -0500, Sean Christopherson  
-<seanjc@google.com> wrote:
+Hi all,
 
-> On Mon, Oct 09, 2023, Kai Huang wrote:
->> On Fri, 2023-09-22 at 20:06 -0700, Haitao Huang wrote:
->> > +/**
->> > + * sgx_epc_oom() - invoke EPC out-of-memory handling on target LRU
->> > + * @lru:	LRU that is low
->> > + *
->> > + * Return:	%true if a victim was found and kicked.
->> > + */
->> > +bool sgx_epc_oom(struct sgx_epc_lru_lists *lru)
->> > +{
->> > +	struct sgx_epc_page *victim;
->> > +
->> > +	spin_lock(&lru->lock);
->> > +	victim = sgx_oom_get_victim(lru);
->> > +	spin_unlock(&lru->lock);
->> > +
->> > +	if (!victim)
->> > +		return false;
->> > +
->> > +	if (victim->flags & SGX_EPC_OWNER_PAGE)
->> > +		return sgx_oom_encl_page(victim->encl_page);
->> > +
->> > +	if (victim->flags & SGX_EPC_OWNER_ENCL)
->> > +		return sgx_oom_encl(victim->encl);
->>
->> I hate to bring this up, at least at this stage, but I am wondering why  
->> we need
->> to put VA and SECS pages to the unreclaimable list, but cannot keep an
->> "enclave_list" instead?
->
-> The motivation for tracking EPC pages instead of enclaves was so that  
-> the EPC
-> OOM-killer could "kill" VMs as well as host-owned enclaves.  The virtual  
-> EPC code
-> didn't actually kill the VM process, it instead just freed all of the  
-> EPC pages
-> and abused the SGX architecture to effectively make the guest recreate  
-> all its
-> enclaves (IIRC, QEMU does the same thing to "support" live migration).
->
-> Looks like y'all punted on that with:
->
->   The EPC pages allocated for KVM guests by the virtual EPC driver are  
-> not
->   reclaimable by the host kernel [5]. Therefore they are not tracked by  
-> any
->   LRU lists for reclaiming purposes in this implementation, but they are
->   charged toward the cgroup of the user processs (e.g., QEMU) launching  
-> the
->   guest.  And when the cgroup EPC usage reaches its limit, the virtual  
-> EPC
->   driver will stop allocating more EPC for the VM, and return SIGBUS to  
-> the
->   user process which would abort the VM launch.
->
-> which IMO is a hack, unless returning SIGBUS is actually enforced  
-> somehow.  Relying
-> on userspace to be kind enough to kill its VMs kinda defeats the purpose  
-> of cgroup
-> enforcement.  E.g. if the hard limit for a EPC cgroup is lowered,  
-> userspace running
-> encalves in a VM could continue on and refuse to give up its EPC, and  
-> thus run above
-> its limit in perpetuity.
->
-Cgroup would refuse to allocate more when limit is reached so VMs can not  
-run above limit.
+After merging the amdgpu tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-IIRC VMs only support static EPC size right now, reaching limit at launch  
-means the EPC size given in command line for QEMU is not appropriate. So  
-VM should not launch, hence the current behavior.
+drivers/gpu/drm/amd/amdgpu/../display/dc/dml2/display_mode_core.c: In funct=
+ion 'dml_core_mode_support':
+drivers/gpu/drm/amd/amdgpu/../display/dc/dml2/display_mode_core.c:8229:1: e=
+rror: the frame size of 2736 bytes is larger than 2048 bytes [-Werror=3Dfra=
+me-larger-than=3D]
+ 8229 | } // dml_core_mode_support
+      | ^
+cc1: all warnings being treated as errors
 
-[all EPC pages in guest are allocated on page fault caused by the  
-sensitization process in guest kernel during init, which is part of the VM  
-Launch process. So SIGNBUS will turn into failed VM launch.]
+Caused by commit
 
-Once it is launched, guest kernel would have 'total capacity' given by the  
-static value from QEMU option. And it would start paging when it is used  
-up, never would ask for more from host.
+  7966f319c66d ("drm/amd/display: Introduce DML2")
 
-For future with dynamic EPC for running guests, QEMU could handle  
-allocation failure and pass SIGBUS to the running guest kernel.  Is that  
-correct understanding?
+(or maybe something later that changed storage size).
 
+I have used the amdgpu tree from next-20231009 for today.
 
-> I can see userspace wanting to explicitly terminate the VM instead of  
-> "silently"
-> the VM's enclaves, but that seems like it should be a knob in the  
-> virtual EPC
-> code.
+--=20
+Cheers,
+Stephen Rothwell
 
-If my understanding above is correct and understanding your statement  
-above correctly, then don't see we really need separate knob for vEPC  
-code. Reaching a cgroup limit by a running guest (assuming dynamic  
-allocation implemented) should not translate automatically killing the VM.  
-Instead, it's user space job to work with guest to handle allocation  
-failure. Guest could page and kill enclaves.
+--Sig_/KpSwQG225d_fQIOAFSnZh=E
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Haitao
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUkrF0ACgkQAVBC80lX
+0GzxDQf+JfIdTbdJ5V4MvCPEn6Kz75ZINinIjnu3lf4RN+kqXLcVgafinhSNF2r9
+Vl4hRyKVJyV4crd5ybo2Z/WpSCvjuksxC2JVcz9bhOElKNF2mfDyItvbEf6tExN5
+TvCa3XWEkTKRjiQEfgGk07dqvUSqkV802ylC2jtqlNvGjFA3ElBDgfpUah4kRsuG
+CcRpSny4PM59iU6tigJrFUVHSeQUsDJjFsbkvvyOgDij7QK7aBpA7OGsq/dokGM4
+xqkWPcP9fgjyPvKqN3fvHRWnIbriIWyX16omYVLBB2rV9ZS3dzxe8NnQ7UDutE3p
+I2ryQckkTOBoIHYZzVpo2b0XszsiMQ==
+=e8K0
+-----END PGP SIGNATURE-----
+
+--Sig_/KpSwQG225d_fQIOAFSnZh=E--
