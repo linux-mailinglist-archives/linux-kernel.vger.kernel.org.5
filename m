@@ -2,91 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84D367BEF79
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 02:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A07C37BEF7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 02:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379135AbjJJAJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 20:09:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60518 "EHLO
+        id S1379145AbjJJAKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 20:10:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377918AbjJJAJN (ORCPT
+        with ESMTP id S1379138AbjJJAKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 20:09:13 -0400
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF463A4;
-        Mon,  9 Oct 2023 17:09:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=n9xu3Z/aqGuYgnlZo2/hESvC9ySythWvvumkFQkDfT0=; b=XIqUa65uMPROPoc4TABSmUZlQX
-        HgrnM9BAh0IwmOaqbe9PO+nenWlwimlzXtYXOGsoLx6PpeJFi8rIt2/4XH1AoGFo1SxgOYDk1VWeg
-        HQ77KAcQR+QCnqr2aUsBZe0indo6PmGBo4srGu1m2kblgCFQ9ZjX0BPbsiUAWdc2cPisI4T1FLo1q
-        559gXGApBNxEXekxl5Cu5BUk0yeo2999kdjhEwsId8XxGoW8qIIZzbuj5n+guDBfUHZN5rXSZnpti
-        RW00SDreI0ApchZ8/TuRyLsvdlzV6HNIq97UA7oJverC5ejAc8gmmdyJnVr1HZHDaen9UqirfZdg8
-        Ata5QWjA==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qq0JC-00HLiS-27;
-        Tue, 10 Oct 2023 00:09:10 +0000
-Date:   Tue, 10 Oct 2023 01:09:10 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH gmem FIXUP] kvm: guestmem: do not use a file system
-Message-ID: <20231010000910.GM800259@ZenIV>
-References: <20230928180651.1525674-1-pbonzini@redhat.com>
- <169595365500.1386813.6579237770749312873.b4-ty@google.com>
- <20231009022248.GD800259@ZenIV>
- <ZSQO4fHaAxDkbGyz@google.com>
- <20231009200608.GJ800259@ZenIV>
- <ZSRgdgQe3fseEQpf@google.com>
- <20231009204037.GK800259@ZenIV>
- <ZSRwDItBbsn2IfWl@google.com>
+        Mon, 9 Oct 2023 20:10:01 -0400
+Received: from out-210.mta0.migadu.com (out-210.mta0.migadu.com [91.218.175.210])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F4EAC
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 17:09:59 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1696896596;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Zu2srZGRza0i12D/f9sOSWHgmsyy71BOzkS7lMMPjis=;
+        b=DnHfbVmaqpEspZYM0pD00NCFUZGLSVOOtcdBPfHVbSOARxf2o1fJ/qt7mqIbtSIPUqM1Xs
+        AlBwkqXu83Dk3Ms55eJaUyr5vrS7cGAm3R0CItbKKNrFTRdhXFx9Lg2iXrue1HccXLZJDr
+        mkrBXCUahp/34s8KWx+jyweMYmAnjR8=
+From:   Roman Gushchin <roman.gushchin@linux.dev>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Dennis Zhou <dennis@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>
+Subject: [PATCH v2 0/5] mm: improve performance of accounted kernel memory allocations
+Date:   Mon,  9 Oct 2023 17:09:24 -0700
+Message-ID: <20231010000929.450702-1-roman.gushchin@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZSRwDItBbsn2IfWl@google.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 02:26:36PM -0700, Sean Christopherson wrote:
-> On Mon, Oct 09, 2023, Al Viro wrote:
-> > On Mon, Oct 09, 2023 at 01:20:06PM -0700, Sean Christopherson wrote:
-> > > On Mon, Oct 09, 2023, Al Viro wrote:
-> > > > On Mon, Oct 09, 2023 at 07:32:48AM -0700, Sean Christopherson wrote:
-> > > > 
-> > > > > Yeah, we found that out the hard way.  Is using the "secure" variant to get a
-> > > > > per-file inode a sane approach, or is that abuse that's going to bite us too?
-> > > > > 
-> > > > > 	/*
-> > > > > 	 * Use the so called "secure" variant, which creates a unique inode
-> > > > > 	 * instead of reusing a single inode.  Each guest_memfd instance needs
-> > > > > 	 * its own inode to track the size, flags, etc.
-> > > > > 	 */
-> > > > > 	file = anon_inode_getfile_secure(anon_name, &kvm_gmem_fops, gmem,
-> > > > > 					 O_RDWR, NULL);
-> > > > 
-> > > > Umm...  Is there any chance that your call site will ever be in a module?
-> > > > If not, you are probably OK with that variant.
-> > > 
-> > > Yes, this code can be compiled as a module.  I assume there issues with the inode
-> > > outliving the module?
-> > 
-> > The entire file, actually...  If you are using that mechanism in a module, you
-> > need to initialize kvm_gmem_fops.owner to THIS_MODULE; AFAICS, you don't have
-> > that done.
-> 
-> Ah, that's handled indirectly handled by a chain of refcounted objects.  Every
-> VM that KVM creates gets a reference to the module, and each guest_memfd instance
-> gets a reference to its owning VM.
+This patchset improves the performance of accounted kernel memory allocations
+by ~30% as measured by a micro-benchmark [1]. The benchmark is very
+straightforward: 1M of 64 bytes-large kmalloc() allocations.
 
-Umm... what's the usual call chain leading to final drop of refcount of that
-module?
+Below are results with the disabled kernel memory accounting, the original state
+and with this patchset applied.
+
+|             | Kmem disabled | Original | Patched |  Delta |
+|-------------+---------------+----------+---------+--------|
+| User cgroup |         29764 |    84548 |   59078 | -30.0% |
+| Root cgroup |         29742 |    48342 |   31501 | -34.8% |
+
+As we can see, the patchset removes the majority of the overhead when there is
+no actual accounting (a task belongs to the root memory cgroup) and almost
+halves the accounting overhead otherwise.
+
+The main idea is to get rid of unnecessary memcg to objcg conversions and switch
+to a scope-based protection of objcgs, which eliminates extra operations with
+objcg reference counters under a rcu read lock. More details are provided in
+individual commit descriptions.
+
+v2:
+	- fixed a bug discovered by Naresh Kamboju
+	- code changes asked by Johannes (added comments, open-coded bit ops)
+	- merged in a couple of small fixes
+v1:
+	- made the objcg update fully lockless
+	- fixed !CONFIG_MMU build issues
+rfc:
+	https://lwn.net/Articles/945722/
+
+--
+[1]:
+
+static int memory_alloc_test(struct seq_file *m, void *v)
+{
+       unsigned long i, j;
+       void **ptrs;
+       ktime_t start, end;
+       s64 delta, min_delta = LLONG_MAX;
+
+       ptrs = kvmalloc(sizeof(void *) * 1000000, GFP_KERNEL);
+       if (!ptrs)
+               return -ENOMEM;
+
+       for (j = 0; j < 100; j++) {
+               start = ktime_get();
+               for (i = 0; i < 1000000; i++)
+                       ptrs[i] = kmalloc(64, GFP_KERNEL_ACCOUNT);
+               end = ktime_get();
+
+               delta = ktime_us_delta(end, start);
+               if (delta < min_delta)
+                       min_delta = delta;
+
+               for (i = 0; i < 1000000; i++)
+                       kfree(ptrs[i]);
+       }
+
+       kvfree(ptrs);
+       seq_printf(m, "%lld us\n", min_delta);
+
+       return 0;
+}
+
+--
+
+Signed-off-by: Roman Gushchin (Cruise) <roman.gushchin@linux.dev>
+
+
+Roman Gushchin (5):
+  mm: kmem: optimize get_obj_cgroup_from_current()
+  mm: kmem: add direct objcg pointer to task_struct
+  mm: kmem: make memcg keep a reference to the original objcg
+  mm: kmem: scoped objcg protection
+  percpu: scoped objcg protection
+
+ include/linux/memcontrol.h |  14 ++-
+ include/linux/sched.h      |   4 +
+ mm/memcontrol.c            | 204 ++++++++++++++++++++++++++++++++-----
+ mm/percpu.c                |   8 +-
+ mm/slab.h                  |  10 +-
+ 5 files changed, 202 insertions(+), 38 deletions(-)
+
+-- 
+2.42.0
+
