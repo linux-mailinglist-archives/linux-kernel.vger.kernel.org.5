@@ -2,248 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B256C7C41F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 23:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B97D7C41FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 23:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343707AbjJJVDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 17:03:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43900 "EHLO
+        id S1343879AbjJJVE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 17:04:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbjJJVDD (ORCPT
+        with ESMTP id S229749AbjJJVE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 17:03:03 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 911FB99
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 14:02:59 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9b6559cbd74so1114794666b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 14:02:59 -0700 (PDT)
+        Tue, 10 Oct 2023 17:04:56 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8E091
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 14:04:54 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d9a4c0d89f7so1699457276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 14:04:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696971778; x=1697576578; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=A4yeKRKjuI6HeztC2APRDWWqL6TgPnk3prMEJAsLcGM=;
-        b=1XtjyV7w9EA/tbHCAWdGmF5UYtiebgVZ+n2wY3W1qu3Xen5jCj5+v4c8JWt+qvQ7R6
-         d9wiBPC/OaMeyQTXEskjzIIMn8MyXzIptyaETZaU5NfB1H8jWH9nJfJzlWM0M2S1TIXm
-         HXF7jrYONXH4TbNcQFjoCd1zYt2YLmGlazebXHO3o6PpIYH6O1TXwMADp6FnYtrX3I8j
-         tamQbFBdyGOkmwnG0du7ud3qyubjS8L56XxgJ38BwtbpnAovpBx+y1GJI0TqQ+860Amo
-         L1NvEon8WaX4eIQvah5xnWE6QJ+yFeHBhPbhMfEfM9YAA4LFi8y7B5VsQLWc0dmfDhiU
-         ZOzA==
+        d=linaro.org; s=google; t=1696971894; x=1697576694; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0JPdI81s1g1jD64Q6FcuAIQKwcDv5/ca0TQcTmOhurM=;
+        b=Os+bFrzjhKtV+ps1T390Qm8hpHMVq3LwUOgCgOVfUlkN3Q8TL8cVK0ReTu0o6Sq4JB
+         2/wAEYVjoN2plvvMndkzomzIMsYozdssEUPQx5b5NS0wz5W3noHvSJMeB3mvmwW4oFnu
+         FXMA4aVMjstZ4AvEWAcR736DnW62WaGhYP7aezjJK+/mPOITmfXCHoiGCLgiJlMl1pPv
+         4/VpSq3O+EYV7x7Hk2TI1Gcp0UGmYE/x2oMdl689WUHUHorp56k2jfmOnjliti+CfnJ1
+         Ck1dHaOiYmtG8dCclg7t2TwRqapvu4cr5BpQu4DHsSVTrUDDSJ6dPs0TqMpaY4VsTTmc
+         Dm2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696971778; x=1697576578;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=A4yeKRKjuI6HeztC2APRDWWqL6TgPnk3prMEJAsLcGM=;
-        b=ZNYb20OFm+u3ct3JiGv9WeEOVMFTKqmrOj8IEt73GYI6nwse6I72SjeKjoEsQVqwmB
-         2BgV5QoKPZrUZn2kiRQJjoRDmuepLbDnabO7dFqxDaugPyMRWEJLZ0QW4NQylCwOzRM1
-         manYJKWP+M3rWWHKzLfLOho1WrOnJpe10QF409ePHEdo80+tqvfge3G8/3MCm1tG/JVZ
-         6E2uXmqVzBcKi8H2+zm2Em1DL6Z7TVZH2VfrIP28+dFcBSenPgfqot/ytg/tC0rVdd9O
-         NDSl4TM7sl9U+30rybQSg1KnaFGYT5gHVVlweOG3SYfOz0XmBQv392OBFAwMskqsYgmq
-         AZSA==
-X-Gm-Message-State: AOJu0YzfsFrtEeHC7O2Z8Fn9Vxfcy1wpYqt3w4MdmxQPueZOtTxX3eq0
-        05sdL1l1cCrdEIUjYio+5zWZOeGUNsEujFtyY4AOdg==
-X-Google-Smtp-Source: AGHT+IH4IuCnrvHAexVt5ClAwTcIDRIWufIwCyS3lEcTcOute8k1s3EIy7KtO6A+1nJk5v12rqqzZmLNyYVklvEFG68=
-X-Received: by 2002:a17:906:539a:b0:9a6:1560:42e8 with SMTP id
- g26-20020a170906539a00b009a6156042e8mr15576950ejo.55.1696971777704; Tue, 10
- Oct 2023 14:02:57 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696971894; x=1697576694;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0JPdI81s1g1jD64Q6FcuAIQKwcDv5/ca0TQcTmOhurM=;
+        b=sQpfWpwGZ/ZTiV/ZVJ93ktH6o59CVTbVJ6do19nVU2wmo7E0p2hal03pjsuFo+5K1G
+         SXm7JP94xv4suzx9YKiNdfCzJMlDOnanzcebjuWRSbp9jAkGu7dJnBNMQqoAoNs2qY63
+         fOXFUYkDQuPDUbFbgVnDRRDSD7QA081hq+Tg2d9uZf4C/7sdSd0YtFik4463jWYwVlxe
+         dRvxPuR79FOEB6Nl4tQ5WmMEdCzW6xiLv/fQlXgwuKlHf9anFIYcWH1jp40Bh6mYIgVz
+         wtxHy3frnZhMm4H4BeY4lr/b4JN5ldD5gjZf3u88tlw/GrL6m8+8WVxog51e3qrjcIWQ
+         mi/w==
+X-Gm-Message-State: AOJu0Yx8xRDjI7gaEqNhdkaQLyXfvxBTG3QgPqLaDBljFoERrXI0uSTs
+        588FuYn88MHalrZ3RWHYoLQhLs0a40OpOT/pxp943vSxcMT0oETPcFw=
+X-Google-Smtp-Source: AGHT+IHuv4B4I/7pSOoU5p4zYXXxB+UnuU5+plZrypxjr00y7A8QvxFJzcakHp6OBM059ut4sqv1nhHOkk4zB/QCxkI=
+X-Received: by 2002:a05:6902:707:b0:d84:afae:96a8 with SMTP id
+ k7-20020a056902070700b00d84afae96a8mr23439973ybt.7.1696971893895; Tue, 10 Oct
+ 2023 14:04:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231010032117.1577496-1-yosryahmed@google.com>
- <20231010032117.1577496-4-yosryahmed@google.com> <CALvZod5nQrf=Y24u_hzGOTXYBfnt-+bo+cYbRMRpmauTMXJn3Q@mail.gmail.com>
-In-Reply-To: <CALvZod5nQrf=Y24u_hzGOTXYBfnt-+bo+cYbRMRpmauTMXJn3Q@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 10 Oct 2023 14:02:18 -0700
-Message-ID: <CAJD7tka=kjd42oFpTm8FzMpNedxpJCUj-Wn6L=zrFODC610A-A@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20231001194943.658299-1-beanhuo@iokpp.de> <CAPDyKFpgPEhVuTbxe5YhYQ0W6907SwJRxSQLB1F2FbVW3zKHxg@mail.gmail.com>
+ <254df9b8ca7475ad9dbd3a303c60e1f99eca9c56.camel@iokpp.de>
+In-Reply-To: <254df9b8ca7475ad9dbd3a303c60e1f99eca9c56.camel@iokpp.de>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 10 Oct 2023 23:04:16 +0200
+Message-ID: <CAPDyKFofJR0xtpmjCQXM7=VzUeN5jQLD2AZYEWocuyCnYNObYw@mail.gmail.com>
+Subject: Re: [PATCH v4] mmc: Add quirk MMC_QUIRK_BROKEN_CACHE_FLUSH for Micron
+ eMMC Q2J54A
+To:     Bean Huo <beanhuo@iokpp.de>
+Cc:     adrian.hunter@intel.com, beanhuo@micron.com,
+        jakub.kwapisz@toradex.com, rafael.beims@toradex.com,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 1:45=E2=80=AFPM Shakeel Butt <shakeelb@google.com> =
-wrote:
+On Tue, 10 Oct 2023 at 17:33, Bean Huo <beanhuo@iokpp.de> wrote:
 >
-> On Mon, Oct 9, 2023 at 8:21=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com=
-> wrote:
-> >
-> > A global counter for the magnitude of memcg stats update is maintained
-> > on the memcg side to avoid invoking rstat flushes when the pending
-> > updates are not significant. This avoids unnecessary flushes, which are
-> > not very cheap even if there isn't a lot of stats to flush. It also
-> > avoids unnecessary lock contention on the underlying global rstat lock.
-> >
-> > Make this threshold per-memcg. The scheme is followed where percpu (now
-> > also per-memcg) counters are incremented in the update path, and only
-> > propagated to per-memcg atomics when they exceed a certain threshold.
-> >
-> > This provides two benefits:
-> > (a) On large machines with a lot of memcgs, the global threshold can be
-> > reached relatively fast, so guarding the underlying lock becomes less
-> > effective. Making the threshold per-memcg avoids this.
-> >
-> > (b) Having a global threshold makes it hard to do subtree flushes, as w=
-e
-> > cannot reset the global counter except for a full flush. Per-memcg
-> > counters removes this as a blocker from doing subtree flushes, which
-> > helps avoid unnecessary work when the stats of a small subtree are
-> > needed.
-> >
-> > Nothing is free, of course. This comes at a cost:
-> > (a) A new per-cpu counter per memcg, consuming NR_CPUS * NR_MEMCGS * 4
-> > bytes. The extra memory usage is insigificant.
-> >
-> > (b) More work on the update side, although in the common case it will
-> > only be percpu counter updates. The amount of work scales with the
-> > number of ancestors (i.e. tree depth). This is not a new concept, addin=
-g
-> > a cgroup to the rstat tree involves a parent loop, so is charging.
-> > Testing results below show no significant regressions.
-> >
-> > (c) The error margin in the stats for the system as a whole increases
-> > from NR_CPUS * MEMCG_CHARGE_BATCH to NR_CPUS * MEMCG_CHARGE_BATCH *
-> > NR_MEMCGS. This is probably fine because we have a similar per-memcg
-> > error in charges coming from percpu stocks, and we have a periodic
-> > flusher that makes sure we always flush all the stats every 2s anyway.
-> >
-> > This patch was tested to make sure no significant regressions are
-> > introduced on the update path as follows. The following benchmarks were
-> > ran in a cgroup that is 4 levels deep (/sys/fs/cgroup/a/b/c/d), which i=
-s
-> > deeper than a usual setup:
-> >
-> > (a) neper [1] with 1000 flows and 100 threads (single machine). The
-> > values in the table are the average of server and client throughputs in
-> > mbps after 30 iterations, each running for 30s:
-> >
-> >                                 tcp_rr          tcp_stream
-> > Base                            9504218.56      357366.84
-> > Patched                         9656205.68      356978.39
-> > Delta                           +1.6%           -0.1%
-> > Standard Deviation              0.95%           1.03%
-> >
-> > An increase in the performance of tcp_rr doesn't really make sense, but
-> > it's probably in the noise. The same tests were ran with 1 flow and 1
-> > thread but the throughput was too noisy to make any conclusions (the
-> > averages did not show regressions nonetheless).
-> >
-> > Looking at perf for one iteration of the above test, __mod_memcg_state(=
-)
-> > (which is where memcg_rstat_updated() is called) does not show up at al=
-l
-> > without this patch, but it shows up with this patch as 1.06% for tcp_rr
-> > and 0.36% for tcp_stream.
-> >
-> > (b) "stress-ng --vm 0 -t 1m --times --perf". I don't understand
-> > stress-ng very well, so I am not sure that's the best way to test this,
-> > but it spawns 384 workers and spits a lot of metrics which looks nice :=
-)
-> > I picked a few ones that seem to be relevant to the stats update path. =
-I
-> > also included cache misses as this patch introduce more atomics that ma=
-y
-> > bounce between cpu caches:
-> >
-> > Metric                  Base            Patched         Delta
-> > Cache Misses            3.394 B/sec     3.433 B/sec     +1.14%
-> > Cache L1D Read          0.148 T/sec     0.154 T/sec     +4.05%
-> > Cache L1D Read Miss     20.430 B/sec    21.820 B/sec    +6.8%
-> > Page Faults Total       4.304 M/sec     4.535 M/sec     +5.4%
-> > Page Faults Minor       4.304 M/sec     4.535 M/sec     +5.4%
-> > Page Faults Major       18.794 /sec     0.000 /sec
-> > Kmalloc                 0.153 M/sec     0.152 M/sec     -0.65%
-> > Kfree                   0.152 M/sec     0.153 M/sec     +0.65%
-> > MM Page Alloc           4.640 M/sec     4.898 M/sec     +5.56%
-> > MM Page Free            4.639 M/sec     4.897 M/sec     +5.56%
-> > Lock Contention Begin   0.362 M/sec     0.479 M/sec     +32.32%
-> > Lock Contention End     0.362 M/sec     0.479 M/sec     +32.32%
-> > page-cache add          238.057 /sec    0.000 /sec
-> > page-cache del          6.265 /sec      6.267 /sec      -0.03%
-> >
-> > This is only using a single run in each case. I am not sure what to
-> > make out of most of these numbers, but they mostly seem in the noise
-> > (some better, some worse). The lock contention numbers are interesting.
-> > I am not sure if higher is better or worse here. No new locks or lock
-> > sections are introduced by this patch either way.
-> >
-> > Looking at perf, __mod_memcg_state() shows up as 0.00% with and without
-> > this patch. This is suspicious, but I verified while stress-ng is
-> > running that all the threads are in the right cgroup.
-> >
-> > (3) will-it-scale page_fault tests. These tests (specifically
-> > per_process_ops in page_fault3 test) detected a 25.9% regression before
-> > for a change in the stats update path [2]. These are the
-> > numbers from 30 runs (+ is good):
-> >
-> >              LABEL            |     MEAN    |   MEDIAN    |   STDDEV   =
-|
-> > ------------------------------+-------------+-------------+------------=
--
-> >   page_fault1_per_process_ops |             |             |            =
-|
-> >   (A) base                    | 265207.738  | 262941.000  | 12112.379  =
-|
-> >   (B) patched                 | 249249.191  | 248781.000  | 8767.457   =
-|
-> >                               | -6.02%      | -5.39%      |            =
-|
-> >   page_fault1_per_thread_ops  |             |             |            =
-|
-> >   (A) base                    | 241618.484  | 240209.000  | 10162.207  =
-|
-> >   (B) patched                 | 229820.671  | 229108.000  | 7506.582   =
-|
-> >                               | -4.88%      | -4.62%      |            =
-|
-> >   page_fault1_scalability     |             |             |
-> >   (A) base                    | 0.03545     | 0.035705    | 0.0015837  =
-|
-> >   (B) patched                 | 0.029952    | 0.029957    | 0.0013551  =
-|
-> >                               | -9.29%      | -9.35%      |            =
-|
+> Hi Ulf,
 >
-> This much regression is not acceptable.
+> thanks for your comments, I didn't quite get your points:
 >
-> In addition, I ran netperf with the same 4 level hierarchy as you have
-> run and I am seeing ~11% regression.
+> On Tue, 2023-10-10 at 16:20 +0200, Ulf Hansson wrote:
+> > > @@ -2381,8 +2381,11 @@ enum mmc_issued mmc_blk_mq_issue_rq(struct
+> > > mmc_queue *mq, struct request *req)
+> > >                          }
+> > >                          ret = mmc_blk_cqe_issue_flush(mq, req);
+> > >                          break;
+> > > -               case REQ_OP_READ:
+> > >                  case REQ_OP_WRITE:
+> > > +                       if (mmc_card_broken_cache_flush(card) &&
+> > > !card->written_flag)
+> >
+> > It looks superfluous to me to check mmc_card_broken_cache_flush() and
+> > !card->written_flag. Just set the card->written_flag unconditionally.
+>
+> what did you mean "Just set the card->written_flag unconditionally."?
+> This means I just need to check card->written_flag and set card-
+> >written_flag to true and false in the case
+> MMC_QUIRK_BROKEN_CACHE_FLUSH? or don't need to call
+> mmc_card_broken_cache_flush()?
 
-Interesting, I thought neper and netperf should be similar. Let me try
-to reproduce this.
-
-Thanks for testing!
+I mean skip the checks above and just do the assignment below.
 
 >
-> More specifically on a machine with 44 CPUs (HT disabled ixion machine):
+> >
+> > > +                               card->written_flag = true;
+> > > +                       fallthrough;
+> > > +               case REQ_OP_READ:
+> > >                          if (host->cqe_enabled)
+> > >                                  ret = mmc_blk_cqe_issue_rw_rq(mq,
+> > > req);
+> > >                          else
+> > > diff --git a/drivers/mmc/core/card.h b/drivers/mmc/core/card.h
+> > > index 4edf9057fa79..b7754a1b8d97 100644
+> > > --- a/drivers/mmc/core/card.h
+> > > +++ b/drivers/mmc/core/card.h
+> > > @@ -280,4 +280,8 @@ static inline int
+> > > mmc_card_broken_sd_cache(const struct mmc_card *c)
+> > >          return c->quirks & MMC_QUIRK_BROKEN_SD_CACHE;
+> > >   }
+> > >
+> > > +static inline int mmc_card_broken_cache_flush(const struct
+> > > mmc_card *c)
+> > > +{
+> > > +       return c->quirks & MMC_QUIRK_BROKEN_CACHE_FLUSH;
+> > > +}
+> > >   #endif
+> > > diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+> > > index 89cd48fcec79..47896c32086e 100644
+> > > --- a/drivers/mmc/core/mmc.c
+> > > +++ b/drivers/mmc/core/mmc.c
+> > > @@ -1929,6 +1929,8 @@ static int mmc_init_card(struct mmc_host
+> > > *host, u32 ocr,
+> > >          if (!oldcard)
+> > >                  host->card = card;
+> > >
+> > > +       card->written_flag = false;
+> > > +
+> >
+> > How about doing this after a successful flush operation instead? In
+> > other words in _mmc_flush_cache().
 >
-> # for server
-> $ netserver -6
->
-> # 22 instances of netperf clients
-> $ netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K
->
-> (averaged over 4 runs)
->
-> base (next-20231009): 33081 MBPS
-> patched: 29267 MBPS
->
-> So, this series is not acceptable unless this regression is resolved.
+> Here initializes flag and the patch is intenting to eliminate the cache
+> flush command before writing. what do you mean adding in
+> mmc_flush_cache()?
+
+mmc_init_card() is called while initializing and re-initializing the
+card. So, it certainly works to reset the flag from here.
+
+However, _mmc_flush_cache() is called before powering off the card,
+which then would work similarly to the above, but also gets called for
+REQ_OP_FLUSH. Wouldn't that mean that we may be able to skip some
+unnecessary/troublesome cache flush requests if we would reset the
+flag from  mmc_flush_cache(), rather than from mmc_init_card()?
+
+Kind regards
+Uffe
