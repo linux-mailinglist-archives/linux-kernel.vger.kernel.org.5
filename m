@@ -2,154 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A177C026A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 19:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 604F47C026D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 19:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233759AbjJJRTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 13:19:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42788 "EHLO
+        id S233906AbjJJRUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 13:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232756AbjJJRTW (ORCPT
+        with ESMTP id S232756AbjJJRUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 13:19:22 -0400
+        Tue, 10 Oct 2023 13:20:08 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB038E
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 10:19:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60153C433C8;
-        Tue, 10 Oct 2023 17:19:17 +0000 (UTC)
-Date:   Tue, 10 Oct 2023 18:19:14 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     ankita@nvidia.com, maz@kernel.org, oliver.upton@linux.dev,
-        will@kernel.org, aniketa@nvidia.com, cjia@nvidia.com,
-        kwankhede@nvidia.com, targupta@nvidia.com, vsethi@nvidia.com,
-        acurrid@nvidia.com, apopple@nvidia.com, jhubbard@nvidia.com,
-        danw@nvidia.com, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] KVM: arm64: determine memory type from VMA
-Message-ID: <ZSWHkvhutlnvVLUZ@arm.com>
-References: <20230907181459.18145-1-ankita@nvidia.com>
- <20230907181459.18145-2-ankita@nvidia.com>
- <ZR7hKYU1Wj+VTqpO@arm.com>
- <20231005165458.GM682044@nvidia.com>
- <ZSVe0nb02S4kz5D2@arm.com>
- <20231010150502.GM3952@nvidia.com>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A147F93;
+        Tue, 10 Oct 2023 10:20:06 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39426C433C7;
+        Tue, 10 Oct 2023 17:20:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696958406;
+        bh=qCJusQWtmT7cmM9tukUxP7rBW0qd61lclOqkdLABC9Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d4AoOsv5XE1vd2PTasKy09QSiUySWg/qOeHiXxYa5Hl8L6f4B268VJ4FHQf5uDN+f
+         OuGGGEdLfwRgw/dhsgHIKHIE0ZIBtbC3iWsrnib0rEbWvT2YeP8WSr1tA75Scm7m76
+         rHLrobj6O8lSI2Urs9u2QZifRiXuAR3H+YqMgSXNWz9IDi45GgEzIhs2tT16vwiIUM
+         +dwZTd2PFqrHVXzQSxVTXljAbuRTOzZzCZjmFsndVhQgZ0ZbTzwgSMOmc5X9bNUVbK
+         Qq5L8uYim+az0tUwbMzBxbIsB1Pdf6ZQAOatqmrJZ/Pzk+illVXcyf/NQ7fSnUYGkc
+         VsFGGOpovrRiQ==
+Date:   Tue, 10 Oct 2023 18:19:59 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Naresh Solanki <naresh.solanki@9elements.com>,
+        zev@bewilderbeest.net, Sebastian Reichel <sre@kernel.org>,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v1 3/3] regulator: fixed: forward under-voltage events
+Message-ID: <c2ee404d-d07f-42c6-b5ba-41659773e8eb@sirena.org.uk>
+References: <20231010085906.3440452-1-o.rempel@pengutronix.de>
+ <20231010085906.3440452-3-o.rempel@pengutronix.de>
+ <5e51792a-cc93-4364-a51b-c2b116d89369@sirena.org.uk>
+ <20231010125531.GA3268051@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ih8Qo3EanWX6jsWc"
 Content-Disposition: inline
-In-Reply-To: <20231010150502.GM3952@nvidia.com>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231010125531.GA3268051@pengutronix.de>
+X-Cookie: I feel partially hydrogenated!
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 12:05:02PM -0300, Jason Gunthorpe wrote:
-> On Tue, Oct 10, 2023 at 03:25:22PM +0100, Catalin Marinas wrote:
-> > On Thu, Oct 05, 2023 at 01:54:58PM -0300, Jason Gunthorpe wrote:
-> > > On Thu, Oct 05, 2023 at 05:15:37PM +0100, Catalin Marinas wrote:
-> > > > On Thu, Sep 07, 2023 at 11:14:58AM -0700, ankita@nvidia.com wrote:
-> > > > > From: Ankit Agrawal <ankita@nvidia.com>
-> > > > > Currently KVM determines if a VMA is pointing at IO memory by checking
-> > > > > pfn_is_map_memory(). However, the MM already gives us a way to tell what
-> > > > > kind of memory it is by inspecting the VMA.
-> > > > 
-> > > > Well, it doesn't. It tells us what attributes the user mapped that
-> > > > memory with, not whether it's I/O memory or standard RAM.
-> > > 
-> > > There is VM_IO which is intended to be used for address space with
-> > > side effects.
-> > > 
-> > > And there is VM_PFNMAP which is intended to be used for address space
-> > > without struct page (IO or not)
-> > > 
-> > > And finally we have the pgprot bit which define the cachability.
-> > > 
-> > > Do you have a definition of IO memory that those three things don't
-> > > cover?
-> > > 
-> > > I would propose that, for KVM's purpose, IO memory is marked with
-> > > VM_IO or a non-cachable pgprot
-> > > 
-> > > And "standard RAM" is defined by a cachable pgprot. Linux never makes
-> > > something that is VM_IO cachable.
-> > 
-> > I think we can safely set a stage 2 Normal NC for a vma with pgprot
-> > other than MT_NORMAL or MT_NORMAL_TAGGED. But the other way around is
-> > not that simple. Just because the VMM was allowed to map it as cacheable
-> > does not mean that it supports all the CPU features. One example is MTE
-> > where we can only guarantee that the RAM given to the OS at boot
-> > supports tagged accesses. 
-> 
-> Is there a use case to supply the VMM with cachable memory that is not
-> full featured? At least the vfio cases I am aware of do not actually
-> want to do this and would probably like the arch to prevent these
-> corner cases upfront.
 
-The MTE case is the problematic one here. On a data access, the
-interconnect shifts (right) the physical address and adds an offset. The
-resulting address is used to access tags. Such shift+offset is
-configured by firmware at boot and normally only covers the default
-memory. If there's some memory on PCIe, it's very unlikely to be
-covered and we can't tell whether it simply drops such tag accesses or
-makes up some random address that may or may not hit an existing memory
-or device.
+--ih8Qo3EanWX6jsWc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-We don't currently have a way to describe this in ACPI tables (there
-were talks about describing special purpose memory, I lost track of the
-progress) and the way MTE was first designed doesn't allow a hypervisor
-to prevent the guest from generating a tagged access (other than mapping
-the memory as non-cacheable at Stage 2). This has been fixed in newer
-architecture versions but we haven't added Linux support for it yet (and
-there's no hardware available either). AFAIK, there's no MTE support for
-CXL-attached memory at the moment in the current interconnects, so
-better not pretend it's general purpose memory that supports all the
-features.
+On Tue, Oct 10, 2023 at 02:55:31PM +0200, Oleksij Rempel wrote:
 
-Other than preventing malicious guest behaviour, it depends what the VM
-needs cacheable access for: some GPU memory that's only used for sharing
-data and we don't need all features or general purpose memory that a VM
-can use to run applications from etc. The former may not need all the
-features (e.g. can skip exclusives) but the latter does.
+> The hardware I am working with has an under-voltage sensor on the 24V
+> supply regulator and some backup capacitors to run SoC for 100ms. I want
+> to forward under-voltage events across a chain of different regulators
+> to a designated consumer. For instance, to the mmc driver, enabling it
+> to initiate shutdown before power loss occurs.  Additionally, a bit can
+> be set in the volatile memory of a scratch pad in an RTC clock to record
+> sudden power loss, which can be checked on the next system start.
 
-We can probably work around the MTE case by only allowing cacheable
-Stage 2 if MTE is disabled for the guest or FEAT_MTE_PERM is
-implemented/supported (TBD when we'll add this). For the other cases, it
-would be up to the VMM how it presents the mapping to the guest (device
-pass-through or general purpose memory).
+So it sounds like the underlying need is to flag the notifications from
+one of the regulators as being system wide and then take action based on
+those notifications somewhere basically disconnected?  That does seem
+like a good use case.
 
-> > I've seen something similar in the past with
-> > LSE atomics (or was it exclusives?) not being propagated. These don't
-> > make the memory safe for a guest to use as general purpose RAM.
-> 
-> At least from a mm perspective, I think it is important that cachable
-> struct pages are all the same and all interchangable. If the arch
-> cannot provide this it should not allow the pgmap/memremap to succeed
-> at all. Otherwise drivers using these new APIs are never going to work
-> fully right..
+The MMC doesn't specifically care that it is handling a regulator
+notification, it more wants to know that the system is dying and doesn't
+really care how we figured that out so if we can hook it into a system
+level notificaiton it'd be happy and would also be able to handle other
+critical faults.  I would have thought that we should have some
+mechanisms for this already for RAS type stuff but I'm drawing a blank
+on what it actually is if there is an existing abstraction.  It could
+potentially go through userspace though there's latency concerns there
+which might not be ideal, there should at least be some policy for
+userspace.
 
-Yes, for struct page backed memory, the current assumption is that all
-are the same, support all CPU features. It's the PFN-based memory where
-we don't have such guarantees.
+For the regulator itself we probably want a way to identify regulators
+as being system critical so they start notifying.  It would be tempting
+to just do that by default but that would likely cause some issues for
+example with regulators for things like SD cards which are more likely
+to get hardware problems that don't comprimise the entire system.  We
+could do that with DT, either a property or some sort of runtime
+consumer, but it might be better to have a control in sysfs that
+userspace can turn on?  OTOH the ability do something about this depends
+on specific hardware design...
 
-> That leaves open the question of what to do with a cachable VM_PFNMAP,
-> but if the arch can deal with the memremap issue then it seems like it
-> can use the same logic when inspecting the VMA contents?
+I've copied in Sebastian since this sounds like the sort of thing that
+power supplies might have some kind of handling for, or at least if we
+need to add something we should make it so that the power supplies can
+be joined up to it.  I do see temperature and capacity alerts in the
+sysfs ABI for power supplies, but nothing for voltage.
 
-In the MTE case, memremap() never returns a Normal Tagged mapping and it
-would not map it in user-space as PROT_MTE either. But if a page is not
-mmap(PROT_MTE) (or VM_MTE in vma->flags) in the VMM, it doesn't mean the
-guest should not be allowed to use MTE. Qemu for example doesn't map the
-guest memory with mmap(PROT_MTE) since it doesn't have a need for it but
-the guest can enable MTE independently (well, if enabled at the vCPU
-level).
+I've also coped in Naresh and Zev who've been discussing something
+vaugely similar with userspace notifications for the userspace consumer
+- it's not the same thing given that you don't specifically need
+userspace to be involved here but it feels like it might have something
+of a similar shape, or at least there might be some shared interest.
 
-We have an additional flag, VM_MTE_ALLOWED, only set for mappings backed
-by struct page. We could probe that in KVM and either fall back to
-non-cacheable or allow cacheable if MTE is disable at the vCPU level.
+--ih8Qo3EanWX6jsWc
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
-Catalin
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUlh74ACgkQJNaLcl1U
+h9BF5Af/cNLrd9suEh0YQRnHMcZMOu5P6+gEvdfAYSXg0loxTuDLopt6elxYJCv2
+zmqJiVW40ro7MaAB0jXUOtx24Pmq9+Bk6fzfMLa7VXbXagJWATmiyQSnSkppCyWM
+92lTC3Q4ki1/ESroIxYQRWk7UMCPN+S4GC3qgOuRxrVhLjPJ+GcT9HFUeq8batZf
+7ublB0wmAYUM4qZiTDMhxlxC0emAgob7u4qJXaeNOPk/26mksiuJTdeiDhMTx5b3
+Ud3mzW+o8ErnRwNGAVAZ/kM+MH5idQAb6U1Kgu2XzDc6znqCie4e46XmekD0WeIT
+q7CtZrlu1/m46hXmiF9WVnGe4p4UfQ==
+=EDr0
+-----END PGP SIGNATURE-----
+
+--ih8Qo3EanWX6jsWc--
