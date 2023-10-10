@@ -2,236 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E69E7C015B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF4307C0157
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233740AbjJJQOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 12:14:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36084 "EHLO
+        id S233756AbjJJQNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 12:13:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343514AbjJJQOI (ORCPT
+        with ESMTP id S233668AbjJJQN3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 12:14:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F5BE9
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:13:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696954395;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=h1753iSDySdyPeq52nW4qkiN8umTNgnvnTBeNQOoWhk=;
-        b=DU++KwZUUcmI1OHtqfQhcSVP0/5d7NeWR0FyB9NkIyWhDywGaUhD1rmNxezBwY1pBtBeVy
-        cHMJwoHUtqfm2+pZnog+vqJ56Fb4JbUDRNjfxURZcco9rYw1qP8GwvQvef+c9nQmy0bDQH
-        gq/Zrhua77bCdbPF5krVv6gce+VQOFw=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-131-Sz4USlmNPjC0D4NGVXdPOg-1; Tue, 10 Oct 2023 12:13:13 -0400
-X-MC-Unique: Sz4USlmNPjC0D4NGVXdPOg-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4059475c174so43037905e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:13:13 -0700 (PDT)
+        Tue, 10 Oct 2023 12:13:29 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC3DD7;
+        Tue, 10 Oct 2023 09:13:24 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40572aeb73cso54331145e9.3;
+        Tue, 10 Oct 2023 09:13:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696954403; x=1697559203; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ap+ERWrbz8gWnQjcESvO2qjRnXglMjuwKN0/PSGnFg0=;
+        b=FvYq9FOIBqu/MLZGCdXQK/MANbg7nEmQSNq8nSGmdm9M0ta0zHi5OfO3K0Jsx28vbO
+         PY/qi3o6+6/O9i6mKH30cMM9e/dcfyH8VgRGaE53+8K2VDnO9DQa01ZM77tpWrCLPn3S
+         B9407kf+bg9xDUkCLoLoZ3aBldNcKkSCvLKkoxc86TeWiiSMvTtH3dDxdDrCmQNnCD10
+         LlbfpZewDXIIfYdQAQBCyr0dRr50C98n409EXurJ5DZU5MehLS9/PIWmmfQptl3WwbPW
+         yXLQmqWeaFboZHpffDMqAV2OeJGvApixXzOr0uhe3BOyNuwQyvG2iA9bSgonygFPeN7O
+         03pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696954392; x=1697559192;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=h1753iSDySdyPeq52nW4qkiN8umTNgnvnTBeNQOoWhk=;
-        b=m5eAJo6gwHmEK7QBOxdT4A4qy3Cq1TGb6vUJR7S4R9Ihvqvj7ONRxCFxP1Phs6cT5F
-         LM2jRgfB3xj7dXQ1CbQVHTTNAf8iOxLitA4rcO4YB+QhfAFwEFxQD3BYMFppl0G8psYP
-         OTYt398V4T8SbSgMd/h4ref+MLaIfE5Q3MQRIxqGMHv5jht7vPMNs9Pz0Cb84JaSm62N
-         eUG3VsGTTWOUk1JtLCH1oV8sbB4n+z8saJNd2GuT3itiJSaCaqCpbvpiAuOP+qOdRcan
-         F/CaIF/NzHwVWS80VkYDNntyvC24cPwofX+2df07CBOwm4j7uC2uDjFjBJxtOwyVo8ja
-         VbAw==
-X-Gm-Message-State: AOJu0YzjOJWIPMaYPIkAoyloDuPZiXOIMGttg0/35Fsl+mrYTHKsvYUT
-        hpWnk7onNl21yilFAByYiN/DZCLfrOEHKNz9+vRuyfavIO5K0MGVdJSt2GZErUGbYK1FeeU9zTe
-        rNp2WePCsdEjqksCL0ZNsJ31T
-X-Received: by 2002:a05:600c:ad0:b0:405:375d:b860 with SMTP id c16-20020a05600c0ad000b00405375db860mr17819265wmr.21.1696954392700;
-        Tue, 10 Oct 2023 09:13:12 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGs2fH4NHjpkUxflX5p7dSmGCMRr2l+ZvyM5EgqLstCWYTU6mdw3EFtRmwc7jHyDGY6IYO9kg==
-X-Received: by 2002:a05:600c:ad0:b0:405:375d:b860 with SMTP id c16-20020a05600c0ad000b00405375db860mr17819250wmr.21.1696954392437;
-        Tue, 10 Oct 2023 09:13:12 -0700 (PDT)
-Received: from starship ([89.237.100.246])
-        by smtp.gmail.com with ESMTPSA id m10-20020a7bce0a000000b00405953973c3sm16790678wmc.6.2023.10.10.09.13.11
+        d=1e100.net; s=20230601; t=1696954403; x=1697559203;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ap+ERWrbz8gWnQjcESvO2qjRnXglMjuwKN0/PSGnFg0=;
+        b=honRKDmiNEMymhCTsOLg7NpZLyWuUCCvc0Af5SLSDFGUpDJoNouAqey5lCNWWG4db9
+         rAT5y6PlOty+x59rd/Pd2knePTmx+rM+nu9T1iRrG4rpBXFJ9aV7D8/HMcT4fUYWSHg6
+         j0u8CYPdni5QFX1NtUJ1MC4A460yyvEWQlm+vu8FE+7SPBarA8lTl8p7Izc6OwKuE/gi
+         tv8njhOQ8X3PJKwuRHI0zXdlKpzIz6AnMVrrc9oHexZL7JT5oFAzYlh8xd8pInLKf2ch
+         cOmJD0eQMDBiusNgISV3QJw3ZAIgBaDMNxy2PO0+zlMUFW07qWcAE7e8f0m+tdW2ex7T
+         62KQ==
+X-Gm-Message-State: AOJu0YxQb6Hrb5+OqqUjeNC4QIi9rTDfBfA1vflo0PJmmm+B0ngKehH7
+        vKzP9Qcg2xR0/xDOvfCENOs=
+X-Google-Smtp-Source: AGHT+IEypkUu60r/7M4MteaQGqYfpQ2I976+ro3MbRwmSKjVUz1bIssOulFjRMi9z/oK/sOWSHAQtg==
+X-Received: by 2002:a05:600c:21d1:b0:405:3ae6:2413 with SMTP id x17-20020a05600c21d100b004053ae62413mr16441550wmj.25.1696954402610;
+        Tue, 10 Oct 2023 09:13:22 -0700 (PDT)
+Received: from orome.fritz.box (p200300e41f3f4900f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f3f:4900:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id 9-20020a05600c020900b003feea62440bsm14455869wmi.43.2023.10.10.09.13.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 09:13:11 -0700 (PDT)
-Message-ID: <7c2a77bb3ec9f85f684218eb80654adcdfefd60d.camel@redhat.com>
-Subject: Re: [PATCH 1/1] selftests: KVM: add test to print boottime wallclock
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Dongli Zhang <dongli.zhang@oracle.com>, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        shuah@kernel.org, seanjc@google.com, dwmw2@infradead.org,
-        joe.jin@oracle.com
-Date:   Tue, 10 Oct 2023 19:13:10 +0300
-In-Reply-To: <20231006175715.105517-1-dongli.zhang@oracle.com>
-References: <20231006175715.105517-1-dongli.zhang@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Tue, 10 Oct 2023 09:13:22 -0700 (PDT)
+Date:   Tue, 10 Oct 2023 18:13:20 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Andrei Coardos <aboutphysycs@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-tegra@vger.kernel.org, ac100@lists.launchpad.net,
+        gregkh@linuxfoundation.org, marvin24@gmx.de, alex@shruggie.ro
+Subject: Re: [PATCH] staging: nvec: paz00: remove unneeded call to
+ platform_set_drvdata()
+Message-ID: <ZSV4ICULpZ0jSGGW@orome.fritz.box>
+References: <20230809154211.15741-1-aboutphysycs@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="xXFtpkf/V8blOu7n"
+Content-Disposition: inline
+In-Reply-To: <20230809154211.15741-1-aboutphysycs@gmail.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-У пт, 2023-10-06 у 10:57 -0700, Dongli Zhang пише:
-> As inspired by the discussion in [1], the boottime wallclock may drift due
-> to the fact that the masterclock (or host monotonic clock) and kvmclock are
-> calculated based on the algorithms in different domains.
-> 
-> This is to introduce a testcase to print the boottime wallclock
-> periodically to help diagnose the wallclock drift issue in the future.
-> 
-> The idea is to wrmsr the MSR_KVM_WALL_CLOCK_NEW, and read the boottime
-> wallclock nanoseconds immediately.
-> 
-> References:
-> [1] https://lore.kernel.org/all/20231001111313.77586-1-nsaenz@amazon.com
-> 
-> Cc: David Woodhouse <dwmw@amazon.co.uk>
-> Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
+
+--xXFtpkf/V8blOu7n
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Aug 09, 2023 at 06:42:11PM +0300, Andrei Coardos wrote:
+> This function call was found to be unnecessary as there is no equivalent
+> platform_get_drvdata() call to access the private data of the driver. Als=
+o,
+> the private data is defined in this driver, so there is no risk of it bei=
+ng
+> accessed outside of this driver file.
+>=20
+> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
 > ---
->  tools/testing/selftests/kvm/Makefile          |   3 +-
->  .../selftests/kvm/x86_64/boottime_wallclock.c | 100 ++++++++++++++++++
->  2 files changed, 102 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/kvm/x86_64/boottime_wallclock.c
-> 
-> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> index a3bb36fb3cfc..fea05b0118de 100644
-> --- a/tools/testing/selftests/kvm/Makefile
-> +++ b/tools/testing/selftests/kvm/Makefile
-> @@ -60,7 +60,8 @@ LIBKVM_riscv += lib/riscv/ucall.c
->  TEST_PROGS_x86_64 += x86_64/nx_huge_pages_test.sh
->  
->  # Compiled test targets
-> -TEST_GEN_PROGS_x86_64 = x86_64/cpuid_test
-> +TEST_GEN_PROGS_x86_64 = x86_64/boottime_wallclock
-> +TEST_GEN_PROGS_x86_64 += x86_64/cpuid_test
->  TEST_GEN_PROGS_x86_64 += x86_64/cr4_cpuid_sync_test
->  TEST_GEN_PROGS_x86_64 += x86_64/dirty_log_page_splitting_test
->  TEST_GEN_PROGS_x86_64 += x86_64/get_msr_index_features
-> diff --git a/tools/testing/selftests/kvm/x86_64/boottime_wallclock.c b/tools/testing/selftests/kvm/x86_64/boottime_wallclock.c
-> new file mode 100644
-> index 000000000000..cc48c9b19920
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/x86_64/boottime_wallclock.c
-> @@ -0,0 +1,100 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (C) 2023 Oracle and/or its affiliates.
-> + */
-> +
-> +#include <asm/kvm_para.h>
-> +#include <asm/pvclock-abi.h>
-> +
-> +#include "kvm_util.h"
-> +#include "processor.h"
-> +
-> +static int period = 10;
-> +
-> +#define GUEST_SYNC_WALLCLOCK(__stage, __val)                        \
-> +		GUEST_SYNC_ARGS(__stage, __val, 0, 0, 0)
-> +
-> +static void guest_main(vm_paddr_t wc_pa, struct pvclock_wall_clock *wc)
-> +{
-> +	uint64_t wallclock;
-> +
-> +	while (true) {
-> +		wrmsr(MSR_KVM_WALL_CLOCK_NEW, wc_pa);
-> +
-> +		wallclock = wc->sec * NSEC_PER_SEC + wc->nsec;
-> +
-> +		GUEST_SYNC_WALLCLOCK(0, wallclock);
+>  drivers/staging/nvec/nvec_paz00.c | 2 --
+>  1 file changed, 2 deletions(-)
 
-Won't this fill the output very fast?
-Do you think it will be worth it to wait some time (e.g 1 second or at least 1/10 of a second)
-between each print?
+Seems fine, and if Marc has tested it, that's good enough for me:
 
-> +	}
-> +}
-> +
-> +static void handle_sync(struct ucall *uc)
-> +{
-> +	uint64_t wallclock;
-> +
-> +	wallclock = uc->args[2];
-> +
-> +	pr_info("Boottime wallclock value: %"PRIu64" ns\n", wallclock);
-> +}
-> +
-> +static void handle_abort(struct ucall *uc)
-> +{
-> +	REPORT_GUEST_ASSERT(*uc);
-> +}
-> +
-> +static void enter_guest(struct kvm_vcpu *vcpu)
-> +{
-> +	struct ucall uc;
-> +
-> +	while (true) {
-> +		vcpu_run(vcpu);
-> +
-> +		TEST_ASSERT_KVM_EXIT_REASON(vcpu, KVM_EXIT_IO);
-> +
-> +		switch (get_ucall(vcpu, &uc)) {
-> +		case UCALL_SYNC:
-> +			handle_sync(&uc);
-> +			break;
-> +		case UCALL_ABORT:
-> +			handle_abort(&uc);
-> +			return;
-> +		default:
-> +			TEST_ASSERT(0, "unhandled ucall: %ld\n", uc.cmd);
-> +			return;
-> +		}
-> +
-> +		sleep(period);
-> +	}
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	struct kvm_vcpu *vcpu;
-> +	struct kvm_vm *vm;
-> +	vm_vaddr_t wc_gva;
-> +	vm_paddr_t wc_gpa;
-> +	int opt;
-> +
-> +	while ((opt = getopt(argc, argv, "p:h")) != -1) {
-> +		switch (opt) {
-> +		case 'p':
-> +			period = atoi_positive("The period (seconds)", optarg);
-> +			break;
-> +		case 'h':
-> +		default:
-> +			pr_info("usage: %s [-p period (seconds)]\n", argv[0]);
-> +			exit(1);
-> +		}
-> +	}
-> +
-> +	pr_info("Capture boottime wallclock every %d seconds.\n", period);
-> +	pr_info("Stop with Ctrl + c.\n\n");
-> +
-> +	vm = vm_create_with_one_vcpu(&vcpu, guest_main);
-> +
-> +	wc_gva = vm_vaddr_alloc(vm, getpagesize(), 0x10000);
-> +	wc_gpa = addr_gva2gpa(vm, wc_gva);
-> +	vcpu_args_set(vcpu, 2, wc_gpa, wc_gva);
-> +
-> +	enter_guest(vcpu);
-> +	kvm_vm_free(vm);
-> +}
+Acked-by: Thierry Reding <treding@nvidia.com>
 
+--xXFtpkf/V8blOu7n
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Best regards,
-	Maxim Levitsky
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmUleCAACgkQ3SOs138+
+s6Fwcg//dbOT+ITHbevm6Ruz8/p44G6Loe2ygmnkQ9V0VXcuLpF1u5+IlXy5Kiqu
+8eRdplUrng9qkDBKLl7OtsPgbM4hF3pOZmyQf8wep+f7f/8/dP1ERtPE8gFpMlfN
+RUZorVq5Ds8r8HMycIzUf7iNOLYM7gzVLjkWdzChjmC7pjsvcjFZ7kJuEwtNq7X/
+FNDgfedUA0J1bx+QzNzW4hP9IgukUzipPxMc9P6DE+bRhFTIVOHjsYaIRDs7xHg2
++KCUBNo2ok6hz7Z3k5JGgQc3i5fceRjVCYjKI8QXSUXg81pXJXmW8YI15wP22lKg
+eDKnvY20EgIDfLSYKKn+L4EsuX1qruyWn30rmY3gIJMaZR4wrXnaPsnht08AUuSh
+pSOihARTyhOA6GuwJPtF5yUGKnsgT+wpKPBQHYSpaB2MtLFM6PqQ45+nh1WMw2CE
+PURvns5vlfT2YnmOw32NR8QZf5MiAXS/K1aFfE51x6OvkNQyqZICO6m31UUZgYB+
+loZLWXS7IlV0PI0PBsR+lPVdDyTdIXYoFO6iWHTL5fi+qsZn5cYAZ2ZzcJjxyEm4
+2ZhdcAro3zpKa9Qb03RoVJwslzoo9uQiDEv1dUSytemeQGex9+YoWhpeODVikhaQ
+3n0fliQGSr35dPgJqUmza/f+0KeMQMnch5tw/Qeg4c/iBtqJ9k4=
+=rvpO
+-----END PGP SIGNATURE-----
 
+--xXFtpkf/V8blOu7n--
