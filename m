@@ -2,54 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 139AE7BFBA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9994B7BFBAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231641AbjJJMhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 08:37:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41714 "EHLO
+        id S231876AbjJJMo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 08:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230036AbjJJMhq (ORCPT
+        with ESMTP id S230036AbjJJMoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 08:37:46 -0400
-Received: from mail-oi1-f206.google.com (mail-oi1-f206.google.com [209.85.167.206])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EFB9AC
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:37:44 -0700 (PDT)
-Received: by mail-oi1-f206.google.com with SMTP id 5614622812f47-3ae65e9d394so8174383b6e.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:37:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696941463; x=1697546263;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pponouXnqkcYZoPXbWW1Fsdf1AYfuvQyCDKNQFeeDk0=;
-        b=oRgqqf9qGaP7+u/mK+5jyYaePRXEh1cpr9vi5A/yUn+ZanEAWBPCp0pj+Hg/fZyRGN
-         I/O3b37CHJWC19e/i42fyAOa6lTtZSro8cO33jHArdZVzcPXrmFn06vpNShfiNuuoExH
-         uxrcXVuxTYA9LJ41dXfDAI0SyrG8qp6He4BOX2hZHecjTlY80qr8Ip+XzzVI8BWHu+dr
-         0nI9aDkej9isoMx68/8VwWjDO6/B7S9Et1Xtij6DBnzsfd6O+1Xp9u4EeL8Vfl03SrXp
-         T9bbgF3uzbEfYwhOEbHQIKmvnGMdvJ4TmHxhD6dwo7j8CeM5KWa6CNEldmkRMExNwvzM
-         z7aA==
-X-Gm-Message-State: AOJu0YzT+M+ahQDMD5gwW6VqgPbCklTGSdMGztSbFDTrOFOWxMr2rKlw
-        ZYfV//a1owBq/axW56DYXFLz1XSjIevtLiYOyZ4xkO5T1a3j
-X-Google-Smtp-Source: AGHT+IGV8JkQD9+eCvp0PToixaq0hIGnXiistcWaxSEL6WBdKodmwabUTy23YrVoAKGB0LReRRe0YsB6yFPV/mWhpR0MiGxuHiH2
+        Tue, 10 Oct 2023 08:44:25 -0400
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7528DB4;
+        Tue, 10 Oct 2023 05:44:22 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R911e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Vtsrq3Q_1696941857;
+Received: from 30.221.148.233(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0Vtsrq3Q_1696941857)
+          by smtp.aliyun-inc.com;
+          Tue, 10 Oct 2023 20:44:18 +0800
+Message-ID: <d32b6812-8b54-564b-17d0-5bc6d0661fe1@linux.alibaba.com>
+Date:   Tue, 10 Oct 2023 20:44:17 +0800
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1a0d:b0:3ae:1691:c59f with SMTP id
- bk13-20020a0568081a0d00b003ae1691c59fmr9548394oib.1.1696941463154; Tue, 10
- Oct 2023 05:37:43 -0700 (PDT)
-Date:   Tue, 10 Oct 2023 05:37:43 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001db97f06075bf98b@google.com>
-Subject: [syzbot] [cgroups?] [mm?] WARNING in mem_cgroup_migrate
-From:   syzbot <syzbot+831ba898b5db8d5617ea@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, hannes@cmpxchg.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mhocko@kernel.org, muchun.song@linux.dev, roman.gushchin@linux.dev,
-        shakeelb@google.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+From:   Jingbo Xu <jefflexu@linux.alibaba.com>
+Subject: Re: [PATCH] erofs: fix inode metadata space layout description in
+ documentation
+To:     Tiwei Bie <tiwei.btw@antgroup.com>, linux-erofs@lists.ozlabs.org,
+        xiang@kernel.org
+Cc:     ayushranjan@google.com, Chao Yu <chao@kernel.org>,
+        Yue Hu <huyue2@coolpad.com>, Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231010113915.436591-1-tiwei.btw@antgroup.com>
+Content-Language: en-US
+In-Reply-To: <20231010113915.436591-1-tiwei.btw@antgroup.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,93 +48,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    7d730f1bf6f3 Add linux-next specific files for 20231005
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1716036e680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f532286be4fff4b5
-dashboard link: https://syzkaller.appspot.com/bug?extid=831ba898b5db8d5617ea
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/1d7f28a4398f/disk-7d730f1b.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/d454d124268e/vmlinux-7d730f1b.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/dbca966175cb/bzImage-7d730f1b.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+831ba898b5db8d5617ea@syzkaller.appspotmail.com
-
- kernel_init+0x1c/0x2a0 init/main.c:1437
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 5208 at mm/memcontrol.c:7552 mem_cgroup_migrate+0x2fa/0x390 mm/memcontrol.c:7552
-Modules linked in:
-CPU: 1 PID: 5208 Comm: syz-executor.1 Not tainted 6.6.0-rc4-next-20231005-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-RIP: 0010:mem_cgroup_migrate+0x2fa/0x390 mm/memcontrol.c:7552
-Code: f7 ff e9 36 ff ff ff 80 3d 84 b2 d1 0c 00 0f 85 54 ff ff ff 48 c7 c6 a0 9e 9b 8a 48 89 ef e8 0d 5c df ff c6 05 68 b2 d1 0c 01 <0f> 0b e9 37 ff ff ff 48 c7 c6 e0 9a 9b 8a 48 89 df e8 f0 5b df ff
-RSP: 0018:ffffc90004b2fa38 EFLAGS: 00010246
-RAX: 0000000000040000 RBX: ffffea0005338000 RCX: ffffc90005439000
-RDX: 0000000000040000 RSI: ffffffff81e76463 RDI: ffffffff8ae96da0
-RBP: ffffea0001d98000 R08: 0000000000000000 R09: fffffbfff1d9db9a
-R10: ffffffff8ecedcd7 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000200 R14: 0000000000000000 R15: ffffea0001d98018
-FS:  00007fc15e89d6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b31820000 CR3: 000000007f5e1000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- hugetlbfs_migrate_folio fs/hugetlbfs/inode.c:1066 [inline]
- hugetlbfs_migrate_folio+0xd0/0x120 fs/hugetlbfs/inode.c:1049
- move_to_new_folio+0x183/0x690 mm/migrate.c:966
- unmap_and_move_huge_page mm/migrate.c:1428 [inline]
- migrate_hugetlbs mm/migrate.c:1546 [inline]
- migrate_pages+0x16ac/0x27c0 mm/migrate.c:1900
- migrate_to_node mm/mempolicy.c:1072 [inline]
- do_migrate_pages+0x43e/0x690 mm/mempolicy.c:1171
- kernel_migrate_pages+0x59b/0x780 mm/mempolicy.c:1682
- __do_sys_migrate_pages mm/mempolicy.c:1700 [inline]
- __se_sys_migrate_pages mm/mempolicy.c:1696 [inline]
- __x64_sys_migrate_pages+0x96/0x100 mm/mempolicy.c:1696
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fc15da7cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fc15e89d0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000100
-RAX: ffffffffffffffda RBX: 00007fc15db9bf80 RCX: 00007fc15da7cae9
-RDX: 0000000020000340 RSI: 0000000000000080 RDI: 0000000000000000
-RBP: 00007fc15dac847a R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000200003c0 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007fc15db9bf80 R15: 00007ffd87d7c058
- </TASK>
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 10/10/23 7:39 PM, Tiwei Bie wrote:
+> Xattrs, extents, data inline are _placed after_, not _followed by_ the
+> corresponding inode. This patch fixes it.
+> 
+> Fixes: fdb0536469cb ("staging: erofs: add document")
+> Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
+> ---
+>  Documentation/filesystems/erofs.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/filesystems/erofs.rst b/Documentation/filesystems/erofs.rst
+> index f200d7874495..57c6ae23b3fc 100644
+> --- a/Documentation/filesystems/erofs.rst
+> +++ b/Documentation/filesystems/erofs.rst
+> @@ -199,7 +199,7 @@ may not. All metadatas can be now observed in two different spaces (views):
+>                                          |                  |
+>                                          |__________________| 64 bytes
+>  
+> -    Xattrs, extents, data inline are followed by the corresponding inode with
+> +    Xattrs, extents, data inline are placed after the corresponding inode with
+>      proper alignment, and they could be optional for different data mappings.
+>      _currently_ total 5 data layouts are supported:
+>  
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Thanks for catching it!
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Reviewed-by: Jingbo Xu <jefflexu@linux.alibaba.com>
 
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+Thanks,
+Jingbo
