@@ -2,113 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D91C7C0070
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 530937C0075
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233379AbjJJPfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 11:35:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45046 "EHLO
+        id S233403AbjJJPfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 11:35:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230448AbjJJPfS (ORCPT
+        with ESMTP id S230448AbjJJPfv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 11:35:18 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE0099;
-        Tue, 10 Oct 2023 08:35:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=YSj7Og7GMhEdxDFXztAZwfRfzfreB00qr43Omn8psvw=; b=LdI9Vg1qcYWMu7L/YG0+MEsMr7
-        CHqIGpLjgQSBovApfjNZYfKQQO875Rzb6vTsq2rrObdbwI1+3vXzUn0rmOuWlcWHebidwk/mU0Fw8
-        daY1G/8CFraYZFjafpgJy8imIJa8z/fFLBFHjL9MFbKRI01rvr1VX9jPn3AkMD0v/B3Sk1vOWicT0
-        6SFQIz5+sRjk17JPCVvoJUpAqfq2ozJHkRAxeUVcuuE0Pg2bfZlEzcX4G9xjP0Zb/Vmm6u9oHrCSj
-        h8ctudMOmYgYDNeQ2xreHm6rGpLMz4RtvmGN8Ej24pCiieUwc1pDjtKAxZc++Dcoft3vmdleaYVPB
-        FC5qNFlg==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qqElG-0006TP-V3; Tue, 10 Oct 2023 17:35:06 +0200
-Received: from [178.197.249.27] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qqElG-000PTn-ET; Tue, 10 Oct 2023 17:35:06 +0200
-Subject: Re: [PATCH bpf-next] Detect jumping to reserved code during
- check_cfg()
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231009-jmp-into-reserved-fields-v1-1-d8006e2ac1f6@gmail.com>
- <6524f6f77b896_66abc2084d@john.notmuch>
- <92f824ec-9538-501c-e63e-8483ffe14bad@iogearbox.net>
- <CACkBjsbM8=NLwwEUea21vqCrn-w9cn21gL3BNpU4AupYnuCvJg@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <0c892e68-3092-0b21-3331-a5e3cad43800@iogearbox.net>
-Date:   Tue, 10 Oct 2023 17:35:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Tue, 10 Oct 2023 11:35:51 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65B56AC
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:35:49 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-d8afe543712so6194190276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:35:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google; t=1696952148; x=1697556948; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W+bVvVmNARXfzksOwpB0sUT7ON07eOsylXSyNT6q0Wk=;
+        b=LwsYK1mDbwygFdLcK0M2Fwg3dER8Hx6z0CnEhnMU/5pOkgW1l4KNxKnAgf0zAVt8r4
+         4VKOMXBBwS+x9Cvr1c6qJgO2oxnpxDJOGMj02EZh/WgR0qV9qJyt6onG3PYA/sMhqiKQ
+         BFNUY4AlxVcH2Pc3NW8nhYRhS8Z3kbkwSm8eohNpVYv22c4Dw/+YnMV9ja4XtL5d+ys0
+         lnwiKY09NQ6Yk3pbAc1cYG/DB/gjzYM/Sl3p5ThSz2o+DElM3j3PxenNpVEwPOTSnOPZ
+         NCYCVgPFQNyZbS7OGtQKiGm2n93hgfgWZpV5DZnFHozHWsL85h90qw6KBDnqTNo7bDWv
+         XOMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696952148; x=1697556948;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=W+bVvVmNARXfzksOwpB0sUT7ON07eOsylXSyNT6q0Wk=;
+        b=xATGyn7M2uWmtyBoNxhTiRzQUSDnqTbyb2yR/mVHIt3uW/EoeF4ElTkzTDC4A1K5J5
+         YvT/tFjsCK4bDPRcPqAe0KaOUp6RJjYRBPjtKCh/r5eYxmIgdRsr8F7x2t20c9IZo+5v
+         qV3gt3mO8KJ8GU8dEax1o2g1c0Rtk7fGjCPLNWQRthogFWXAsaPEjcimRMAZ+/eftA1E
+         G5m+S/KVCwRCsp7tdMHThbn91WxkGx33WJbPPlBI/aeQEkK1jZcYtVrI/Qt+I6o9r7zE
+         zkR8qxvRwuhh0fB5ZJu4CndVDDbBcVajDHTvSBif2zN2c28s3raK7nLUTupvMr3X34pi
+         OY9Q==
+X-Gm-Message-State: AOJu0Ywh7aePdYMuY75i5Ysic77khfNPMdTidpqsmE5Ubc3OMHZ60TKT
+        qHHK9weNE2n5OgKsG0stc4mXXEIHq/dcevurBTWAHg==
+X-Google-Smtp-Source: AGHT+IHyKvPvteLHJsP21FSAJDsvCrIM7jAUYYBVWwm3qsR0h8B0YjeevGze8t/rDMvBAMvKtKPMdsN1QwahNOoS6YM=
+X-Received: by 2002:a25:4cc9:0:b0:d9a:6aaf:2589 with SMTP id
+ z192-20020a254cc9000000b00d9a6aaf2589mr1415894yba.9.1696952148563; Tue, 10
+ Oct 2023 08:35:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACkBjsbM8=NLwwEUea21vqCrn-w9cn21gL3BNpU4AupYnuCvJg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27057/Tue Oct 10 09:39:11 2023)
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <6f78e624-62ee-3ae5-1db4-a0411566def8@yandex.ru>
+ <CAGRGNgU7aySyUny9aG_+wXiKJ7j1weosa-rZDY4_WAXbq-3ABg@mail.gmail.com>
+ <87ttr454bh.fsf@kernel.org> <3c5a3e7a-b332-4a77-51ba-bed3cad1e79f@marcan.st>
+ <e1ee4d76-f717-a67c-8099-7b91192ba1ca@yandex.ru> <e470902a-35eb-9bb4-7a9e-167f985c98bb@marcan.st>
+ <CAEg-Je-mpcrEoM_nD3_8A=gZhdWpn3hxfGZNEfGRNupGwRdetw@mail.gmail.com>
+In-Reply-To: <CAEg-Je-mpcrEoM_nD3_8A=gZhdWpn3hxfGZNEfGRNupGwRdetw@mail.gmail.com>
+From:   Phil Elwell <phil@raspberrypi.com>
+Date:   Tue, 10 Oct 2023 16:35:37 +0100
+Message-ID: <CAMEGJJ3jeOK2WbW7YP4=y2E0Z7GnffHiqZhgAmXJjKchv3jG+A@mail.gmail.com>
+Subject: Re: On brcm80211 maintenance and support
+To:     Neal Gompa <neal@gompa.dev>
+Cc:     Hector Martin <marcan@marcan.st>,
+        Dmitry Antipov <dmantipov@yandex.ru>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
+        Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        SHA-cyfmac-dev-list@infineon.com,
+        brcm80211-dev-list.pdl@broadcom.com,
+        Asahi Linux <asahi@lists.linux.dev>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kalle Valo <kvalo@kernel.org>,
+        Julian Calaby <julian.calaby@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/23 11:17 AM, Hao Sun wrote:
-[...]
-> I regard this as a fix, because the verifier log is not correct, since
-> the program does
-> not contain any invalid ld_imm64 instructions in this case.
-> 
-> I haven't met other cases not captured via check_ld_imm(), but somehow, I think
-> we probably want to convert the check there as an internal bug,
-> because we already
-> have bpf_opcode_in_insntable() check in resolve_pseudo_ldimm64(). Once we meet
-> invalid insn code here, then somewhere else in the verifier is
-> probably wrong. But
-> I'm not sure, maybe something like this:
+Hi everyone,
 
-Makes sense, you could probably add this into your series as a separate commit.
+On Tue, 10 Oct 2023 at 15:53, Neal Gompa <neal@gompa.dev> wrote:
+>
+> * Spam *
+> On Sat, Oct 7, 2023 at 8:51=E2=80=AFAM Hector Martin <marcan@marcan.st> w=
+rote:
+> >
+> > On 07/10/2023 00.48, Dmitry Antipov wrote:
+> > > On 10/6/23 18:34, Hector Martin wrote:
+> > >
+> > >> For better or worse, if nobody else does, I'm willing to sign up to
+> > >> maintain the chips shipping on Apple ARM64 machines (i.e. BCM4378,
+> > >> BCM4387, BCM4388 - that last one I have bringup for downstream, just=
+ got
+> > >> it done this week) and partially BCM4377 as a bonus (since I have ac=
+cess
+> > >> to an older Intel Mac with that one, and already did bringup for it,
+> > >> though my access is sporadic). I'm already playing part time maintai=
+ner
+> > >> anyway (other folks have already sent us patches I'll have to upstre=
+am),
+> > >> and we need this driver to keep working and continue to support new =
+chips.
+> > >
+> > > Good news. Would you capable to consider some generic (not hooked to =
+any
+> > > particular hardware) things like [1] ?
+> > >
+> > > [1] https://lore.kernel.org/linux-wireless/20230703162458.155942-1-dm=
+antipov@yandex.ru/
+> > >
+> >
+> > Sure, I've done cleanup type stuff myself too.
+> >
+>
+> Can we please get this done so that the pile of Broadcom patches can
+> actually start landing again? It's been frustrating watching patch
+> submissions be ignored for over a year now. At least add Hector as a
+> co-maintainer and allow him to land stuff people have been using
+> outside to get Broadcom Wi-Fi to *work*.
+>
+> Having stuff sit on the pile and be *ignored* is frustrating for
+> contributors and users, and massively disincentivizes people from
+> working in upstream Linux.
 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index eed7350e15f4..bed97de568a5 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -14532,8 +14532,8 @@ static int check_ld_imm(struct
-> bpf_verifier_env *env, struct bpf_insn *insn)
->          int err;
-> 
->          if (BPF_SIZE(insn->code) != BPF_DW) {
-> -               verbose(env, "invalid BPF_LD_IMM insn\n");
-> -               return -EINVAL;
-> +               verbose(env, "verifier internal bug, invalid BPF_LD_IMM\n");
+This is just a quick note to say that Raspberry Pi obviously has a
+vested interest in the future of the brcmfmac driver. In our
+downstream tree we use the upstream driver largely unmodified - there
+are a handful of patches that tinker around the edges, the largest of
+which is in the area of firmware location and being phased out - no
+patches from Infineon/Cypress, Synaptics or Broadcom.
 
-If so please stick to the common style as we have in other locations:
+We're very much WiFi users as opposed to WiFi developers, but if
+there's something useful we can contribute then please speak up and
+I'll see what we can do.
 
-verbose(env, "verifier internal error: <xyz>\n");
-
-> +               return -EFAULT;
->          }
->          if (insn->off != 0) {
->                  verbose(env, "BPF_LD_IMM64 uses reserved fields\n");
-> 
+Phil
