@@ -2,113 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0817BF981
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 13:18:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA8F7BF986
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 13:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231228AbjJJLSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 07:18:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55666 "EHLO
+        id S231384AbjJJLSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 07:18:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231296AbjJJLS2 (ORCPT
+        with ESMTP id S231348AbjJJLSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 07:18:28 -0400
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665ABF4;
-        Tue, 10 Oct 2023 04:18:22 -0700 (PDT)
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 910C61C006D; Tue, 10 Oct 2023 13:18:19 +0200 (CEST)
-Date:   Tue, 10 Oct 2023 13:18:19 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     wsa+renesas@sang-engineering.com,
-        niklas.soderlund+renesas@ragnatech.se,
-        yoshihiro.shimoda.uh@renesas.com, geert+renesas@glider.be,
-        biju.das.jz@bp.renesas.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Chris.Paterson2@renesas.com, stable@vger.kernel.org,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: renesas_sdhi problems in 5.10-stable was Re: [PATCH 5.10
- 000/226] 5.10.198-rc1 review
-Message-ID: <ZSUy+zA0+Chm6dFb@duo.ucw.cz>
-References: <20231009130126.697995596@linuxfoundation.org>
- <ZSRVgj5AqJbDXqZU@duo.ucw.cz>
- <ZSRe78MAQwbBdyFP@duo.ucw.cz>
+        Tue, 10 Oct 2023 07:18:38 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB6FB6;
+        Tue, 10 Oct 2023 04:18:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97664C433C7;
+        Tue, 10 Oct 2023 11:18:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696936711;
+        bh=yqS+VZM/cGBrRdLkNNqf/ekOvYWhuSMttPizxpeTXLk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yV4YC2Q4aA4fNLPu8MjLymDmJ2JyFbuqkeCn7yBFGJ+gwjhHvpK5VYRV0JH6asKP0
+         VD3cRuGcPjxnicUwqRUP/4dYT5/NBZ4Cq27G6FUejNVwjgoYBF3+Xvy4bf45mnudH2
+         0f+pmA4tilEFFygGrxMWQuwh9PP89Qn6XReY/0Vg=
+Date:   Tue, 10 Oct 2023 13:18:28 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Prashanth K <quic_prashk@quicinc.com>
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hongyu Xie <xy521521@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>, stable@kernel.org,
+        Hongyu Xie <xiehongyu1@kylinos.cn>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: [PATCH RESEND] xhci: Keep interrupt disabled in initialization
+ until host is running.
+Message-ID: <2023101043-muscular-risk-065f@gregkh>
+References: <1696847966-27555-1-git-send-email-quic_prashk@quicinc.com>
+ <2023100943-underhand-wizard-6901@gregkh>
+ <5f9b483a-ec7e-05f4-4472-57e2300f2c01@quicinc.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="A9Lr04onjTJhAtpN"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZSRe78MAQwbBdyFP@duo.ucw.cz>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NEUTRAL,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <5f9b483a-ec7e-05f4-4472-57e2300f2c01@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 10, 2023 at 02:34:44PM +0530, Prashanth K wrote:
+> 
+> 
+> On 09-10-23 06:22 pm, Greg Kroah-Hartman wrote:
+> > On Mon, Oct 09, 2023 at 04:09:26PM +0530, Prashanth K wrote:
+> > > From: Hongyu Xie <xy521521@gmail.com>
+> > > 
+> > > [ Upstream commit a808925075fb750804a60ff0710614466c396db4 ]
+> > > 
+> > > irq is disabled in xhci_quiesce(called by xhci_halt, with bit:2 cleared
+> > > in USBCMD register), but xhci_run(called by usb_add_hcd) re-enable it.
+> > > It's possible that you will receive thousands of interrupt requests
+> > > after initialization for 2.0 roothub. And you will get a lot of
+> > > warning like, "xHCI dying, ignoring interrupt. Shouldn't IRQs be
+> > > disabled?". This amount of interrupt requests will cause the entire
+> > > system to freeze.
+> > > This problem was first found on a device with ASM2142 host controller
+> > > on it.
+> > > 
+> > > [tidy up old code while moving it, reword header -Mathias]
+> > > 
+> > > Cc: stable@kernel.org
+> > > Signed-off-by: Hongyu Xie <xiehongyu1@kylinos.cn>
+> > > Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+> > > Link: https://lore.kernel.org/r/20220623111945.1557702-2-mathias.nyman@linux.intel.com
+> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > Cc: <stable@vger.kernel.org> # 5.15
+> > > Signed-off-by: Prashanth K <quic_prashk@quicinc.com>
+> > > ---
+> > 
+> > Any specific reason you missed adding the extra blank line in this
+> > version of the backport that the original added?  That is going to cause
+> > problems in the future if other patches are added on top of this that
+> > would be expecting it because it is that way in Linus's tree.
+> > 
+> 
+> Thanks for pointing out, i removed it while resolving some merge conflicts.
+> Will add it back in next version.
+> 
+> > And why is this only relevant for 5.15.y?
+> 
+> I'm not really sure why this was only ported from 5.19 onwards and not
+> present in older kernels (could be because of dependencies/conflicts).
+> 
+> But anyways im backporting it to 5.15 since an irq storm was seen on a qcom
+> SOC working on 5.15, and this patch is helping solve it.
+> 
+> Should I change the CC to just stable kernel (without mentioning kernel
+> version) ?
+> something like this -- Cc: <stable@vger.kernel.org>
 
---A9Lr04onjTJhAtpN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+No, let us know what kernel version this is to be applied to so we know,
+if you only think this is relevant for 5.15.y as you have tested it
+there, that's fine, I just wanted to be sure.
 
-Hi!
+thanks,
 
-> > > This is the start of the stable review cycle for the 5.10.198 release.
-> > > There are 226 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, plea=
-se
-> > > let me know.
-> > >=20
-> > > Responses should be made by Wed, 11 Oct 2023 13:00:55 +0000.
-> > > Anything received after that time might be too late.
-> >=20
-> > 4.14, 4.19 and 6.1 tests ok, 5.10 seems to have problems:
->=20
-> Guessing from stack traces, these may be relevant:
-
-So bisection reveals these are relevant:
-
-  |e10d3d256 b161d8 o: 5.10| mmc: renesas_sdhi: probe into TMIO after   SCC=
- parameters have been setup
-
-Ok
-
- |493b70c48 d14ac6 o: 5.10| mmc: renesas_sdhi: populate SCC pointer at  the=
- proper place
-
-Testing now: https://gitlab.com/cip-project/cip-kernel/linux-cip/-/pipeline=
-s/1031822035
-
- |c508545f4 0d856c o: 5.10| mmc: tmio: support custom irq masks
- |8df1f0639 74f45d o: 5.10| mmc: renesas_sdhi: register irqs before registe=
-ring controller
-
-Fail: https://gitlab.com/cip-project/cip-kernel/linux-cip/-/pipelines/10317=
-86077
-
-I should be able to point specific commit with two more tests.
-
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,        Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---A9Lr04onjTJhAtpN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZSUy+wAKCRAw5/Bqldv6
-8l+cAKC5myuJkrwEyf9tCv+eqSAzp44+BACgpL5hAh7OSoSbpIj6nYPrbvMxOZA=
-=ZKvd
------END PGP SIGNATURE-----
-
---A9Lr04onjTJhAtpN--
+greg k-h
