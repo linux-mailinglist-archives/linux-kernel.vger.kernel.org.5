@@ -2,73 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 254A17BFAEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5904C7BFAFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231603AbjJJMPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 08:15:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36330 "EHLO
+        id S231663AbjJJMQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 08:16:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231246AbjJJMPj (ORCPT
+        with ESMTP id S231494AbjJJMQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 08:15:39 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE3A94
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:15:34 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-41983b83e53so37725361cf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:15:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696940134; x=1697544934; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wyv0P0EsUQbglDoISC/Fppji3yoFWL07MHcby8FubpA=;
-        b=HXe7J1PDO6yck95/2UeDLimdHvIDtax4ziaElhBzOtGZuw+zQWoF03v5DIz9r1XtvW
-         NTzm4CfMm18M1olbospsBAeDEASCMH/5WmezGdrGQjQYrve34UoSdrowyQ/rWZNeq1DW
-         KowFetr9h9L/XCKzVmHc+wn1TRIynHR3XYL1594haSePNf3X5cJgZyIr56QWCekTct/3
-         eL4DZq4z0txGTRGESVuUhRP4eJBqFa9T1TYvoZ1uzpS/UXJdoBpVorQE0BxC3xIl3Lqm
-         ZANaa0md3VRitO0ZVo3eXiXrusVRMW9pvNKFQcybm5F8OtbcpkDS6dStz2Bpi2bVopUa
-         acoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696940134; x=1697544934;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wyv0P0EsUQbglDoISC/Fppji3yoFWL07MHcby8FubpA=;
-        b=OwZ1Qt+emvzko4nOI+L8C/5AmOijL7ltDS/wTwoEyJkLW+X1KDIZIV0p9I1f63O97l
-         pdVgt8Ufw4X/XvsdQAl/R2VBaScEYnR/iaPLvmUplMXcxfAUwFaR+67uIdG74cFcJ0c9
-         scM8DfLNnem1eBc8Yo4PeSZ9uOYX5x2YjeDMx2UfpbmDK2SlGFDl/JLe+bXE7cgBTfOn
-         g4MY6BxWYlN/uUQX+krEFnf5lPFnb/NQxlLrG0TDRLcFT0CEvRFBwY3GLPUAq3FQrvsZ
-         w5FSydVVuhFfz/B5KWidCS2ApkDBloMPgMcKtbbnybCAh72meWQuDmLWbhIYgNwRzTPG
-         59iQ==
-X-Gm-Message-State: AOJu0Yw39x0CmBWgmkA7iKVJFIOHy7QQjqV9aMzLp4pAFboXuWiQJgBT
-        b4/1zaXewupf7KUDSsYJV0d52ptwPCHgCHcYsa6muw==
-X-Google-Smtp-Source: AGHT+IEwUqnvEx+Mf/hDAMwFCZGhEr62ewAQWqnGfydV5k5vPYgdZ50q7jQgpRvOjNa6uAHfl+TYq8Pnof2JwTZuJWw=
-X-Received: by 2002:a0c:cd85:0:b0:65b:2cb7:86a4 with SMTP id
- v5-20020a0ccd85000000b0065b2cb786a4mr17762697qvm.43.1696940133700; Tue, 10
- Oct 2023 05:15:33 -0700 (PDT)
+        Tue, 10 Oct 2023 08:16:32 -0400
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2054.outbound.protection.outlook.com [40.107.20.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82F0FA4;
+        Tue, 10 Oct 2023 05:16:29 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OJyvcr1A7l+HqqJ00grmZTkqe2GSyPvn3lmruOS/T5NLbjxltTp9f27RD+vSXQ9qfJ7Jh7y5LCv/uH7AYCjrXsQir63dhAz1nxOaAH8ox2q8YvCfodiwB/yIj6PIEaykC0tpjOXFBF1jJoISWwz2ERWMEEvMzRhHoG8T4ejcHwxjd3Yoj2wfNADzgv1Cx7dBLr/m51phU+TWo5pv8wzrEtHSajc+XtCOh+ndKQMN3sPJPiXRn7mhebkdhkdvbj9of28TxFs7q0KuChwLoj9S2Pb+J3GbWKvGxt6pVDlu/OlR8tdmDfg4UkPk2P4DjALonfXedDnf6Yed5JQUE1Ktjg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eiP9OYAokihYsk6mwFuxzU5u73vQxiEPThzkg+/dh7o=;
+ b=ZbFdBNypP05IdLrgtQgiV1UDEZs8AFQiP18n8ZIXq9OFiKVMr3WE3B3aJ9HoTYENTifLWtyT7XuOav3uKnQhs5L4b335XnLfrY3oOs8gFMl682xromUGv7o9od8Jpl7ZgtlyEk7vjvUCygx0KW/WnymRpDW7SflP+IM3StdrN16kCT1JLLndIYuW81dC8eyYMOysUirIxTsyG1oLNrjiK6161fPC9dfft+W6sSyk0O7ma2AaiMiJJEVOqiCk079Daf4I5qXPOAQFub8+D1J+ZWNxi8/Mkg+2MUDEsyvYD1BX1cPshx4sxpraLGlvnJbCvlZ2zSIXWIaPccoyoaRABA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
+ is 151.1.184.193) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=asem.it;
+ dmarc=fail (p=none sp=none pct=100) action=none header.from=asem.it;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=asem.it; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eiP9OYAokihYsk6mwFuxzU5u73vQxiEPThzkg+/dh7o=;
+ b=hiVt8qbY3uAMsnd1+mpvF9kIr9603jC44fEHGx4dR8muO/T9mppjtHkUzsRGRX3YDyWfgJmNNFNQNeFQ7Jgw2Lg0GmofDMElywe5+/SwJ+/Wg9fFjdRn0DSMOdeZRAFqM5+W6EBOTcbH3rInpQK0KbjBLr+ll50AU1NjC8v22OE=
+Received: from DB8PR06CA0058.eurprd06.prod.outlook.com (2603:10a6:10:120::32)
+ by PAXPR01MB8488.eurprd01.prod.exchangelabs.com (2603:10a6:102:22a::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.37; Tue, 10 Oct
+ 2023 12:16:27 +0000
+Received: from DU6PEPF0000B621.eurprd02.prod.outlook.com
+ (2603:10a6:10:120:cafe::47) by DB8PR06CA0058.outlook.office365.com
+ (2603:10a6:10:120::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.36 via Frontend
+ Transport; Tue, 10 Oct 2023 12:16:26 +0000
+X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
+ 151.1.184.193) smtp.mailfrom=asem.it; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=none header.from=asem.it;
+Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
+ asem.it discourages use of 151.1.184.193 as permitted sender)
+Received: from asas054.asem.intra (151.1.184.193) by
+ DU6PEPF0000B621.mail.protection.outlook.com (10.167.8.138) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6838.22 via Frontend Transport; Tue, 10 Oct 2023 12:16:26 +0000
+Received: from flavio-x.asem.intra ([172.16.18.47]) by asas054.asem.intra with Microsoft SMTPSVC(10.0.14393.4169);
+         Tue, 10 Oct 2023 14:16:26 +0200
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Lee Jones <lee@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Flavio Suligoi <f.suligoi@asem.it>
+Subject: [PATCH v4 1/2] dt-bindings: backlight: Add MPS MP3309C
+Date:   Tue, 10 Oct 2023 14:16:21 +0200
+Message-Id: <20231010121621.3009154-1-f.suligoi@asem.it>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231006134529.2816540-1-glider@google.com> <20231006134529.2816540-2-glider@google.com>
- <ZSCLuCu9yMyDdHni@yury-ThinkPad> <CAG_fn=XHiVyRO-JiOSFREgJjXWjU9Zc1CCMPYV2Xx4LA8P8tkA@mail.gmail.com>
- <76db1532-1575-614e-5820-5b0fa49863c9@rasmusvillemoes.dk>
-In-Reply-To: <76db1532-1575-614e-5820-5b0fa49863c9@rasmusvillemoes.dk>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Tue, 10 Oct 2023 14:14:52 +0200
-Message-ID: <CAG_fn=VnTiPVpofPQKmGiAvzHOCb7weYO_pmyexQ-7+xn8_ukw@mail.gmail.com>
-Subject: Re: [PATCH v6 1/5] lib/bitmap: add bitmap_{read,write}()
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Yury Norov <yury.norov@gmail.com>, catalin.marinas@arm.com,
-        will@kernel.org, pcc@google.com, andreyknvl@gmail.com,
-        andriy.shevchenko@linux.intel.com, aleksander.lobakin@intel.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        eugenis@google.com, syednwaris@gmail.com, william.gray@linaro.org,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-OriginalArrivalTime: 10 Oct 2023 12:16:26.0024 (UTC) FILETIME=[972CB280:01D9FB73]
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU6PEPF0000B621:EE_|PAXPR01MB8488:EE_
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 78448551-c482-43fc-974e-08dbc98aba1a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gkIkhLFbwhcAxs+n/736kV49Cqc1ith2aXf2J6KYibZYd5H49sd2QcQircOCO+fGaVnRP0vq2weGlj1ic3MLNSV79Ypsoc6WVY6Cn1cqK3iyTyVWOqMQxTFwZpySbHENjDxuoxqc7kra2ORwtLYcs5u6BooQ2LOtvtT5OfQdDhU8EM+PptUxpt11ajZpGaVUjvEqinvwwJX+nDb+53gxmrnlVl7zdFA+opSUqL9eMgVpol1d/st/2qf0IvFg88tBQfCEaES59HyT2C4Hd4HpHVBsFhAE1vWtA0wZVzRBo8CbfSCI2S08VVYYCwUsxGuuPNFvZuvkqXuoUviqwP0+8ayQAjp+ySRrDd2Xy91DwdZWajHi7WV+dR42Dy2Kp6ToO9QE2wKxutLmAJPPTbFNQq/XLhqkJf1hmPJdqeh8aiYBT7oPu9NEm6mQVQSQbg2SCPQ2VxysFOiZSUxtmWu5SqQunNe0Kw6krNIX4KwE0UN5orExVSYVi746NhEFk8JzE0HW0KYyE+0B/fYLcUR4gHcyrO3FIaOUDXCOeSLKn85j52uxbb77ney+YbbQIfxkoJBPfCtcQ0em8FqjqaVeQIQA9qbnAxAp/POeE4vBaU7uS0vFBsLmqAm9dWpxbeuTNWpMUq5tFrYAARNYq/1RSLXeP80wGstRbmG0HNS8wWDX+RsXEwbA3dB3QyrnlyS3gGpDAncH3Z9p+PFs+H8WVyys+ADJPhPw+NQ5XuzImjs=
+X-Forefront-Antispam-Report: CIP:151.1.184.193;CTRY:IT;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:asas054.asem.intra;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(346002)(376002)(39840400004)(136003)(396003)(230922051799003)(186009)(64100799003)(1800799009)(82310400011)(451199024)(36840700001)(46966006)(40480700001)(83380400001)(107886003)(1076003)(336012)(2616005)(47076005)(26005)(70586007)(36860700001)(110136005)(316002)(70206006)(6666004)(4326008)(8676002)(41300700001)(5660300002)(966005)(2906002)(478600001)(8936002)(450100002)(36756003)(356005)(81166007)(86362001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: asem.it
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 12:16:26.5844
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78448551-c482-43fc-974e-08dbc98aba1a
+X-MS-Exchange-CrossTenant-Id: d0a766c6-7992-4344-a4a2-a467a7bb1ed2
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d0a766c6-7992-4344-a4a2-a467a7bb1ed2;Ip=[151.1.184.193];Helo=[asas054.asem.intra]
+X-MS-Exchange-CrossTenant-AuthSource: DU6PEPF0000B621.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR01MB8488
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,33 +99,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 1:03=E2=80=AFPM Rasmus Villemoes
-<linux@rasmusvillemoes.dk> wrote:
->
-> On 10/10/2023 11.17, Alexander Potapenko wrote:
->
-> >> 'behaves similarly' sounds like an understatement. I think, it behaves
-> >> much faster because it can assign up to 64 bits at once, not mentionin=
-g
-> >> the pressure on cache lines traffic.
-> >
-> > My intent was to describe the visible behavior, of course the
-> > generated code is better, and the number of memory accesses lower.
-> >
-> > How about the following description:
-> >
-> >  * The result of bitmap_write() is similar to @nbits calls of assign_bi=
-t(), i.e.
-> >  * bits beyond @nbits are ignored:
-> >  *
-> >  *   for (bit =3D 0; bit < nbits; bit++)
-> >  *           assign_bit(start + bit, bitmap, val & BIT(bit));
-> >
-> > ?
->
-> C programmers should know the meaning of the term "as-if". Perhaps use
-> that. Smth like "bitmap_write() behaves as-if implemented as @nbits
-> calls of __assign_bit()".
+The Monolithic Power (MPS) MP3309C is a WLED step-up converter, featuring a
+programmable switching frequency to optimize efficiency.
+The brightness can be controlled either by I2C commands (called "analog"
+mode) or by a PWM input signal (PWM mode).
+This driver supports both modes.
 
-Good idea, I'll go with this one.
-Thank you!
+For device driver details, please refer to:
+- drivers/video/backlight/mp3309c_bl.c
+
+The datasheet is available at:
+- https://www.monolithicpower.com/en/mp3309c.html
+
+Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+---
+
+v4:
+ - remove not more used allOf keyword
+ - add brightness-levels and default-brightness properties
+ - remove max-brightness and default-brightness from required properties
+ - update example, adding brightness-levels and default-brightness properties
+v3:
+ - add default value for mps,overvoltage-protection-microvolt property
+ - fix the example, changing from "mps,mp3309c-backlight" to "mps,mp3309c" in
+   compatible property
+v2:
+ - remove useless properties (dimming-mode, pinctrl-names, pinctrl-0,
+   switch-on-delay-ms, switch-off-delay-ms, reset-gpios, reset-on-delay-ms,
+   reset-on-length-ms)
+ - add common.yaml#
+ - remove already included properties (default-brightness, max-brightness)
+ - substitute three boolean properties, used for the overvoltage-protection
+   values, with a single enum property
+ - remove some conditional definitions
+ - remove the 2nd example
+v1:
+ - first version
+
+ .../bindings/leds/backlight/mps,mp3309c.yaml  | 82 +++++++++++++++++++
+ 1 file changed, 82 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
+
+diff --git a/Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml b/Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
+new file mode 100644
+index 000000000000..e2f9ae2b3fb4
+--- /dev/null
++++ b/Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
+@@ -0,0 +1,82 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/leds/backlight/mps,mp3309c.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: MPS MP3309C backlight
++
++maintainers:
++  - Flavio Suligoi <f.suligoi@asem.it>
++
++description: |
++  The Monolithic Power (MPS) MP3309C is a WLED step-up converter, featuring a
++  programmable switching frequency to optimize efficiency.
++  It supports two different dimming modes:
++
++  - analog mode, via I2C commands, as default mode (32 dimming levels)
++  - PWM controlled mode (optional)
++
++  The datasheet is available at:
++  https://www.monolithicpower.com/en/mp3309c.html
++
++properties:
++  compatible:
++    const: mps,mp3309c
++
++  reg:
++    maxItems: 1
++
++  pwms:
++    description: if present, the backlight is controlled in PWM mode.
++    maxItems: 1
++
++  enable-gpios:
++    description: GPIO used to enable the backlight in "analog-i2c" dimming mode.
++    maxItems: 1
++
++  brightness-levels:
++    description:
++      Array of distinct brightness levels, in PWM dimming mode.
++      Typically these are in the range from 0 to 255, but any range starting
++      at 0 will do.
++      The 0 value means a 0% duty cycle (darkest/off), while the last value in
++      the array represents a 100% duty cycle (brightest).
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++
++  default-brightness:
++    description:
++      The default brightness (index into the levels array).
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++  mps,overvoltage-protection-microvolt:
++    description: Overvoltage protection (13.5V, 24V or 35.5V).
++    enum: [ 13500000, 24000000, 35500000 ]
++    default: 35500000
++
++  mps,no-sync-mode:
++    description: disable synchronous rectification mode
++    type: boolean
++
++required:
++  - compatible
++  - reg
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        /* Backlight with PWM control */
++        backlight_pwm: backlight@17 {
++            compatible = "mps,mp3309c";
++            reg = <0x17>;
++            pwms = <&pwm1 0 3333333 0>; /* 300 Hz --> (1/f) * 1*10^9 */
++            brightness-levels = <0 1 2 3 4 5 6 7 8 9 10>;
++            default-brightness = <8>;
++            mps,overvoltage-protection-microvolt = <24000000>;
++        };
++    };
+-- 
+2.34.1
+
