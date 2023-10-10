@@ -2,181 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0ED07C0276
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 19:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8FFA7C0283
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 19:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233955AbjJJRVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 13:21:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41438 "EHLO
+        id S233999AbjJJRYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 13:24:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232756AbjJJRVo (ORCPT
+        with ESMTP id S233690AbjJJRY2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 13:21:44 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2083.outbound.protection.outlook.com [40.107.223.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4578E93;
-        Tue, 10 Oct 2023 10:21:43 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NXIQhi7GxuwmA+gDDN2th1jEOV+1MaEUePW1a3+vC5e0WvA5zx6Fe5xi83c7/NPoUcE3ezg5Kpse/aFXiLEx0dSK9ElY2+peS0f0xJtg8vXBvUOpZtk+DkSG155vp/rLR4doclDFU+Z5Sj3BrGcSkdk5SDgKjtRbYG6C1xRPoltHrJ0oYE8gmN+fhgNa+/fzasO4KzH8eUN4vDmJM90M0dU+GFRGlTWwusvCXwe8xC8M1v938gvogT1cyT11tDwOEFg21VI5iCQ78OjTORmpt7NOpHnsxXALZ5ma2OLi1oNneCkbmAMjDiMlAynt9Q5M3bEmQrAf1TPmVb5e65W4dQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7Lc5N5acH1hoWTZorvO9xd7FBSQOXLwK/eSp1aveFN8=;
- b=V4Anwmh1SCZGZ6hpYakeTLZaAI4fiu+MCx9WVhTvRRVcpV+yimmjPHUZUtrsrxCHAhiLUjM9CeSr4RXFmBE6EAt6crLleoIhugoc5r4sxGUhLePWDxAUPW0nc/VxKX08WcO3/jGX9CoBWXVE5+lEHJw5aGnVHJyY99Sl1CMk7ccKj0j8T3+JRgH89JKlbfUy4N6rwRxgbZ+FvW3A3HDDzBQXHe+FihjjUGOihVSv6f22/uVktDubb14gRG84klGZ8f0XE8TRSdgmKi3Z491qmQ8tN/sFTLlvKUQy2p/ypHsEC2iPu57NNtf6O0C1XyL1zE6gTj8AWuXSmADa1jGW0A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7Lc5N5acH1hoWTZorvO9xd7FBSQOXLwK/eSp1aveFN8=;
- b=FYI2qgXvpyyXthez8Z5wDtcQuo5/lXkVJuFrPrBeeAu8iKOGOeI2uD2/BCzGS9iZBZrccZJicypYeo0WU8WuKs3yrWL0uTV1mEl7v9LSnsW4+5Ew/VqihoMcDtPwYBnGRsBXyD/jvub/BQGBCATQNREXFanfAaAOikcq+/ygIMXr6TDUNwFgzJMm8mEkh0AI011ceAwRF3TtDkREg0on2QdHRhU2/YXUU/cRYST1EjlZvmwhZsRw36KdV+C7dQZeqyViA7sKJxI/jFmUdHu2YuTSsQN87cMhKkFUHne0aqBOhKxOKsqvkV8Uch7FuWZ/jc6IqpmEBMKcQRXEOINvDA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by BY5PR12MB4324.namprd12.prod.outlook.com (2603:10b6:a03:209::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Tue, 10 Oct
- 2023 17:21:40 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2%6]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
- 17:21:39 +0000
-Date:   Tue, 10 Oct 2023 14:21:39 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Yi Liu <yi.l.liu@intel.com>
-Cc:     joro@8bytes.org, alex.williamson@redhat.com, kevin.tian@intel.com,
-        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
-        eric.auger@redhat.com, nicolinc@nvidia.com, kvm@vger.kernel.org,
-        mjrosato@linux.ibm.com, chao.p.peng@linux.intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
-Subject: Re: [PATCH v4 02/17] iommu: Add nested domain support
-Message-ID: <20231010172139.GR3952@nvidia.com>
-References: <20230921075138.124099-1-yi.l.liu@intel.com>
- <20230921075138.124099-3-yi.l.liu@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230921075138.124099-3-yi.l.liu@intel.com>
-X-ClientProxiedBy: BLAPR03CA0096.namprd03.prod.outlook.com
- (2603:10b6:208:32a::11) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Tue, 10 Oct 2023 13:24:28 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D7AECC
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 10:24:24 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40662119cd0so5065e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 10:24:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696958662; x=1697563462; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xB5kNO31ptUSKutse3tWEXjsvhyF99RBWYVjwQ8AbvA=;
+        b=fwWO9mZACXUWMsPudmmRUitg6NtW4nwgl2/14aWMpNJL/wGIXc6xUY3iLwCYKZHi1m
+         svIfxjpMbN/b2gKIfa1RzsAO0HCQZpn4W0sEixY3Y/kBhbWG27atXdkvDdMOeHddoDMJ
+         ZOExHZiZyobwBrbA34W4L/M3qZyjABLOBxqtA6ieOl5UmEWDhUQUA2kFsafwVfXlNY3T
+         7PFHii3IsZa9A4pQ4D9oEkfqIaA5gHT+x0dEtGaU11kqjPYV1ROdYGDTzaWB5XYIeIVj
+         7pLj70EkkWGKROqNRlp29uL4Z5UNNFnn8y7xYuG9maHta+vR+/6f/kjPLLct8eYtdXxC
+         F/qQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696958662; x=1697563462;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xB5kNO31ptUSKutse3tWEXjsvhyF99RBWYVjwQ8AbvA=;
+        b=A9wRTevNDE9jXTE4sdQNNUl8EL7EOCylPMrdnxdha6QR1W01GL10+pc9aT17tY86hQ
+         rZN9DFgBoDdpGIrKxYW8X9kE4nOcxeKGJny1lui8SJiS39GHbS954MI52rbhMj+4zfKw
+         8RRJ7yfWWVmaslkHku5W0sLxqBdwB95bGdD1gyX6+vBUv2YB12aTZQx8mCiWxvPpprGJ
+         cKUp54rNx17G2HPkQfu8qrDYRpoLGLI/7FlAktCfqPujgYxN491/yYunsMcHvc7AcILE
+         FwcszvoMPpA9AsdRCQgiQspuHd5W33KDfsWhl5nb+ubj+ARS/1GX6An1LQ/a9lkEm7Tz
+         aFEg==
+X-Gm-Message-State: AOJu0Yw4qsBQZrrN8VYWo1ZiKDLouxNlRz7qrPTCX72UJxM8KdPY/LfC
+        /PbblxJPlvKTqvGj+ZB2ER0Y8RHoUvZlj+r9AbDX5g==
+X-Google-Smtp-Source: AGHT+IHW65kerUr2q16h/XQsLBx5TUnAZCGf5RFeYJB83WXwTpqUq0HW6mE0I6kZv/CrMPkjVTR8X6392uJ6yuEKUpU=
+X-Received: by 2002:a05:600c:3c8f:b0:405:35bf:7362 with SMTP id
+ bg15-20020a05600c3c8f00b0040535bf7362mr11918wmb.0.1696958662190; Tue, 10 Oct
+ 2023 10:24:22 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|BY5PR12MB4324:EE_
-X-MS-Office365-Filtering-Correlation-Id: d4a36007-37d7-4826-e336-08dbc9b55d64
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mk/+i46oYpZORl/AAl8tWp9PBJLGT7ksgBdeb4a/uQASP7l3GyZadgnTyNJ1kajnuHZbhhZuVHkGr75xGVHzowmZujEBI4dCPgYsEamWkUo9MKSUB8vSbFvUTr18Sle5hv1ijAZXS1Y3Py9ZUnJIWJaKTnp+dFGYE1F0BfhyB2W+CoXDi1vRet7Rq1tv5V2lQ9X+EpYLqV+N0ZqAJZMqi2T8ITeJzjekNIQ9AepbVeNx5P7ZdQ+J/Ryn2Mi68t0bqt953IEzshCFryH1peAGe5ZlL/6CMlZEWQf6xHVM7uPDP8uK4KB3GIt9PduAAua9JEYf5syhRvBhdLqZ2ppdwYw6owallCaUNS6ikkHWMl6yDjgOk6kYgppHAXV0DKOXa3g3cG1nkxeArcuTfJrDmZGe/UXztGKeWzdZha8EbOINlLhkVbzWs2Xxp1MSJW8/Vyp2B7mNR2nNygQ6U/gfmkTJixmTiwRRKx39UkMDTUS4+teTM/WJsBlG/MaOGUjPKISf8ziwHlWnml4IuwQlx3mfj/OVdSLfXWIz5TcXc8jGHoXmkMV64ZLfnVmEYyuy
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39860400002)(346002)(376002)(136003)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(2616005)(26005)(1076003)(6512007)(478600001)(6506007)(8676002)(7416002)(6486002)(2906002)(4326008)(66556008)(6916009)(41300700001)(66946007)(66476007)(316002)(8936002)(5660300002)(86362001)(36756003)(38100700002)(33656002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?j/Ha4QjbugjgJCdpzLLhaDiRNLQcdDJt0kvb/wSk7epNOVtHVHjIwZEOqY5K?=
- =?us-ascii?Q?rHXyGDg/sRKts07+kGEDpVpT+oFYewDQfgFN78csio7+UnfXJkvcuGRFVi8f?=
- =?us-ascii?Q?qp2WIA0iJk+YuLRMLf9wONa67ip6jlfrpnPxJN9cHAGKB+kUNO15Xa8GsOXl?=
- =?us-ascii?Q?unZ+j+elw4YVprfmEKNSXNxjOZ//wIlslJBjhfnxKTqADZQPabaaGGeudBka?=
- =?us-ascii?Q?J6gnKQhfl0uLbnwcAEFYSjN6sySts/AGl12LaPo04LLHv2zACqGOXvo8T5jj?=
- =?us-ascii?Q?5WC2G1O0TiDXSi56eFcOB1uTuNubZvGk14w+Z/OQ7fdP5UfDtwf1Q+mhGFcp?=
- =?us-ascii?Q?vDWsKAkAMLTlYxIe8fylKamnebcZYd6TGZWse0+kDd8soe2i68WXw1e9NPCm?=
- =?us-ascii?Q?ZsQUBX4ULRz1zsVh+pyDcFqOq1Z9tAf6RDFEFusKvsJFYM/clPMJIoqG7GxR?=
- =?us-ascii?Q?A3e/wSCFn8vvwdaZp+TlMuSbCLwSZ/ydQBKaHbjGUdsJPwDT7lPT5XxMTXdp?=
- =?us-ascii?Q?VbJgk6y+1gGj2Y68B9FHIpKhutCl20e8Vx34zXzJ8kbpV86FUlCAd5rS79RR?=
- =?us-ascii?Q?28wwh4WSzvpJUNULf3DcZ3lFXFqXqBWE4Rv+24CvfoBOVQ0lch5K0unj3ymF?=
- =?us-ascii?Q?OHlAzVOBloRSSA/INBzVHke12+AzZ2FaEnh6dAoznnwFeNY2xN9UDDIwy0Kg?=
- =?us-ascii?Q?Hu1iaP0XbD73OxNUEhjL1Zy68AG4S+gZcS6STqNFb/uLnfLOOkEKHiCqr0ER?=
- =?us-ascii?Q?LC5fM1BPpLED6EBlCqeqEDsnoAtYd/i/XPeX49Q7Jk160hKGwTig4aAbifMw?=
- =?us-ascii?Q?zSMysH4tjoKm7aqq2zApTby3yqwHvXXC2XxA5Xp324yAYOXuGg2XLiv8sL5b?=
- =?us-ascii?Q?jYAF4i9TJhr1K04km/7XXDRPk64REhVhDETQ0V1f8poIyeehaZlbQJv76UvO?=
- =?us-ascii?Q?S8lHNaTkk3borAyrMdxbzgxVROOO5mzedUxytrJxZOoRL/sIErllNE9lIeDo?=
- =?us-ascii?Q?Dk2PsaFHJBmgcVeqwoogKDunChJzug/9jaSpP3C6lAMVBLFnjAnqCTVwUCWT?=
- =?us-ascii?Q?WAXG+5zxCbS0szQ6gQhGpNUuHidflS9hx/Jp8sns26VUZ0DEIiJwV/Dvmpn8?=
- =?us-ascii?Q?mPAm9JhD/3SzmRT1zcdlfvDRKrBAELhGEufgrX7VftVMBMWfJ10dPBwfBllM?=
- =?us-ascii?Q?ETPufXZVV/NxspRwtZtn91Y6ADC3DKZh6CH3q+cOgcpLiQPJNrELmv67XiRf?=
- =?us-ascii?Q?Ehqag/jy368K7vVNTxjfUXavCPHeErEqhbHsD0FI39zrrLswrRpCghHyYLlg?=
- =?us-ascii?Q?UzesLJo/nvIyaTCGRC6Mbhi9Ce20u0H5mZHaGmiX017TPCHJVZCdQe4/wfYY?=
- =?us-ascii?Q?lcl6jOqFxwfGq1Do2U/bZneT/Ik0dZ5w6YJIs6ynlxmRviu3QBFuUnPbBRuz?=
- =?us-ascii?Q?PNYNoFbkRdLUl9DC25hXlVgyUdTmR/tQVCstheyt4rpSnXo1CtxdPbP6mKqu?=
- =?us-ascii?Q?OehvChF16+K58MbH+veWVOoWGS0m7ySAr/RkRm76IlQWFO9SfZkTDL1Ra4t6?=
- =?us-ascii?Q?W/kwIYapag2kZ32RE/cSd+BGIG8Yh4zQqsAr9KNw?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d4a36007-37d7-4826-e336-08dbc9b55d64
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 17:21:39.7246
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jG9aD3Ux0Su9yLGrYc2lhXt4pw5v6Feuu3La4uEc+i0rPJ8WDxRoSUxI+lmkq3G9
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4324
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+References: <20231009130122.946357448@linuxfoundation.org> <CA+G9fYvWCf4fYuQsVLu0NdN+=W73bW1hr1hiokajktNzPFyYtA@mail.gmail.com>
+ <6447b32f-abb9-4459-aca5-3d510a66b685@kernel.org>
+In-Reply-To: <6447b32f-abb9-4459-aca5-3d510a66b685@kernel.org>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 10 Oct 2023 19:24:08 +0200
+Message-ID: <CANn89iJ_KMA=dQWPhU8WQBc0_CvUztUBodAf-cW-2F=HMX3HJg@mail.gmail.com>
+Subject: Re: [PATCH 6.1 000/162] 6.1.57-rc1 review
+To:     Matthieu Baerts <matttbe@kernel.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        MPTCP Upstream <mptcp@lists.linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 12:51:23AM -0700, Yi Liu wrote:
-> From: Lu Baolu <baolu.lu@linux.intel.com>
-> 
-> Introduce a new domain type for a user I/O page table, which is nested on
-> top of another user space address represented by a UNMANAGED
-> domain. The
+On Tue, Oct 10, 2023 at 6:51=E2=80=AFPM Matthieu Baerts <matttbe@kernel.org=
+> wrote:
+>
+> Hi Naresh,
+>
+> On 09/10/2023 22:43, Naresh Kamboju wrote:
+> > On Mon, 9 Oct 2023 at 18:46, Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> >>
+> >> This is the start of the stable review cycle for the 6.1.57 release.
+> >> There are 162 patches in this series, all will be posted as a response
+> >> to this one.  If anyone has any issues with these being applied, pleas=
+e
+> >> let me know.
+> >>
+> >> Responses should be made by Wed, 11 Oct 2023 13:00:55 +0000.
+> >> Anything received after that time might be too late.
+> >>
+> >> The whole patch series can be found in one patch at:
+> >>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/pat=
+ch-6.1.57-rc1.gz
+> >> or in the git tree and branch at:
+> >>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-sta=
+ble-rc.git linux-6.1.y
+> >> and the diffstat can be found below.
+> >>
+> >> thanks,
+> >>
+> >> greg k-h
+> >
+> >
+> > The following kernel warnings were noticed several times on arm x15 dev=
+ices
+> > running stable-rc 6.1.57-rc1 while running  selftests: net: mptcp_conne=
+ct.sh
+> > and netfilter: nft_fib.sh.
+> >
+> > The possible unsafe locking scenario detected.
+> >
+> > FYI,
+> > Stable-rc/ linux.6.1.y kernel running stable/ linux.6.5.y selftest in t=
+his case.
+> >
+> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> >
+> > kselftest: Running tests in net/mptcp
+>
+> Thank you for having reported the issue and having added MPTCP ML in Cc!
+>
+> Just to avoid confusions: the "WARNING" you shared when running
+> 'mptcp_connect.sh' selftest appeared before creating the first MPTCP
+> connection. It looks like there is no reference to MPTCP in the
+> calltraces. Also, because you have the same issue with nft_fib.sh, I
+> would say that this issue is not linked to MPTCP but rather to a recent
+> modification in the IPv6 stack.
+>
+> By chance, did you start a "git bisect" to identify the commit causing
+> this issue?
+>
+>
 
-Lets start using the world PAGING whenever you want to type
-UNMANAGED. I'm trying to get rid of UNMANAGED.
+I think stable teams missed to backport
 
-> @@ -241,6 +245,21 @@ struct iommu_user_data {
->  	size_t len;
->  };
->  
-> +/**
-> + * struct iommu_user_data_array - iommu driver specific user space data array
-> + * @uptr: Pointer to the user buffer array for copy_from_user()
-> + * @entry_len: The fixed-width length of a entry in the array, in bytes
-> + * @entry_num: The number of total entries in the array
-> + *
-> + * A array having a @entry_num number of @entry_len sized entries, each entry is
-> + * user space data, i.e. an uAPI that is defined in include/uapi/linux/iommufd.h
-> + */
-> +struct iommu_user_data_array {
-> +	void __user *uptr;
-> +	size_t entry_len;
-> +	int entry_num;
-> +};
+commit c486640aa710ddd06c13a7f7162126e1552e8842
+Author: Eric Dumazet <edumazet@google.com>
+Date:   Mon Mar 13 20:17:32 2023 +0000
 
-Ditto about iommu-driver.h for most of this stuff
+    ipv6: remove one read_lock()/read_unlock() pair in rt6_check_neigh()
 
-> +
->  /**
->   * iommu_copy_user_data - Copy iommu driver specific user space data
->   * @dst_data: Pointer to an iommu driver specific user data that is defined in
-> @@ -263,6 +282,34 @@ static inline int iommu_copy_user_data(void *dst_data,
->  				     src_data->uptr, src_data->len);
->  }
->  
-> +/**
-> + * iommu_copy_user_data_from_array - Copy iommu driver specific user space data
-> + *                                   from an iommu_user_data_array input
-> + * @dst_data: Pointer to an iommu driver specific user data that is defined in
-> + *            include/uapi/linux/iommufd.h
-> + * @src_data: Pointer to a struct iommu_user_data_array for user space data array
-> + * @index: Index to offset the location in the array to copy user data from
-> + * @data_len: Length of current user data structure, i.e. sizeof(struct _dst)
-> + * @min_len: Initial length of user data structure for backward compatibility.
-> + *           This should be offsetofend using the last member in the user data
-> + *           struct that was initially added to include/uapi/linux/iommufd.h
-> + */
-> +static inline int
-> +iommu_copy_user_data_from_array(void *dst_data,
-> +				const struct iommu_user_data_array *src_array,
-> +				int index, size_t data_len, size_t min_len)
+    rt6_check_neigh() uses read_lock() to protect n->nud_state reading.
 
-Index should be 'unsigned int'
+    This seems overkill and causes false sharing.
 
-Jason
+    Signed-off-by: Eric Dumazet <edumazet@google.com>
+    Reviewed-by: David Ahern <dsahern@kernel.org>
+    Reviewed-by: Martin KaFai Lau <martin.lau@kernel.org>
+    Signed-off-by: Jakub Kicinski <kuba@kernel.org>
