@@ -2,108 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E90787BF837
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 12:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 094FE7BF839
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 12:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230230AbjJJKLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 06:11:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54018 "EHLO
+        id S230369AbjJJKMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 06:12:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjJJKLW (ORCPT
+        with ESMTP id S229499AbjJJKMp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 06:11:22 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2052893;
-        Tue, 10 Oct 2023 03:11:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=oj1axhxOjginGEELIsLjRAtpZ1XYE8QEYtnImm9KFkM=; b=gYdO8iqarQxLHjF7YnORu/ND3n
-        P8Gxkb0rRc1yB37HNKOontKt/9J1jFpVLPPKbEh8Fo31wpLqgJgonUdDmliPmWek0TAKzExJy0pEF
-        5+BXZCjaTVlX/CwrnMr7nYJ2ZTe7pqq09H8khWEzMP1ob1y57ZotrnJWyYaH1haO5lesiBo95gcED
-        bLNR5ra69pGgy3tbU6IoomsDUHVQCIErONjFJRzX17lUk36DVty7sCzUjpdyjC7HkGE6zM2fVrOwY
-        sZvCBJPxkTQX8xY9qBpODLXVuEEkgcwwgiZfYVswiFF1UqaRAVEjrwt5jxYOLLQJCTz2Lz+wViC21
-        MGvlPphg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qq9hY-0040qP-NX; Tue, 10 Oct 2023 10:10:57 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 63DD1300392; Tue, 10 Oct 2023 12:10:56 +0200 (CEST)
-Date:   Tue, 10 Oct 2023 12:10:56 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        Fei Yang <fei.yang@intel.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] x86/alternatives: Disable KASAN on text_poke_early() in
- apply_alternatives()
-Message-ID: <20231010101056.GF377@noisy.programming.kicks-ass.net>
-References: <20231010053716.2481-1-kirill.shutemov@linux.intel.com>
- <20231010081938.GBZSUJGlSvEkFIDnES@fat_crate.local>
+        Tue, 10 Oct 2023 06:12:45 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 167AC94
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 03:12:44 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40566f89f6eso55582365e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 03:12:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google; t=1696932762; x=1697537562; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=teYJaujWBCZMTxCLTD+iOO+xzJ4IWgTIsHFi/8ohCow=;
+        b=RYELOLeFmbycvKbS5j7pdiq+gIU9r6GKjpP7iyvoWjvStQ1zfGZenwc/gDCH0QFZp9
+         ToIDV1m6wE04IHsyKpRgnX3nSxj3+4mNuuMshD7dTV6nkhyyrGQyVb9RH+lVBhtRDTAA
+         K8zkEKJ3tZl7xt61/8oNiqkLwn9/WBF59R1Pj9qy0Jm/cE8+0HNfqi+e0rJIX4xN7EEt
+         TlUpO/Cvm7v+FlYK/6v52Zhl1rueHulPuILI+Qsl6VG5uCydU6+kFk4taaxskvA9m7dG
+         8aBiLhJgxZBAp3qAkwo9Bm952urWHVzu83/qWVcKQaXEiiEZ+DhdsFVTU3QI4nlABQ86
+         drAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696932762; x=1697537562;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=teYJaujWBCZMTxCLTD+iOO+xzJ4IWgTIsHFi/8ohCow=;
+        b=m4JahtydmhDaqZXKx+IFoag+mHT9XDnRuQzIl+UYT1k7S476JlkW8MP/e6dwNQlLHl
+         ZnsiAQRY5hgYnMO55aLVMZTjleuOo77zXXMZ9XGr499Bhd/OORRxpgiM2pwYSVZJMqlr
+         jNgLvCPQae0zxlj3vHDIcK6J8boyqLGsZoYvTeJjOyivuF1xtdebSlKskdgtQU049aj2
+         7svVXGXHuTTkAzrMI+BlpWqT46j/CvZnRfldNfueWCeBXuFO1E/Ru899R8+KwXlu0voR
+         ohRe7C24R9/gWCn4lFqG73ri3bKDEwhfv2e+8Dht07oZvVKcLrVGEUjX2vBioMz5h/f1
+         PvAQ==
+X-Gm-Message-State: AOJu0YwbCkljIqUebRLvm4cz/Az0t2/WK6zLodm/QuShAV7K6iwLM5GM
+        ifM33qHRderF6NSWokVl/hFCdg==
+X-Google-Smtp-Source: AGHT+IEmxKv6FlPH3O6WPf3LYHGGN3ufjTjlBrrE6YWVYP2w65QpCOqWBYzL851J/FKoQGpYzulCSA==
+X-Received: by 2002:a1c:6a18:0:b0:405:4a78:a892 with SMTP id f24-20020a1c6a18000000b004054a78a892mr14910939wmc.9.1696932762426;
+        Tue, 10 Oct 2023 03:12:42 -0700 (PDT)
+Received: from heron.intern.cm-ag (p200300dc6f49a600529a4cfffe3dd983.dip0.t-ipconnect.de. [2003:dc:6f49:a600:529a:4cff:fe3d:d983])
+        by smtp.gmail.com with ESMTPSA id 1-20020a05600c230100b0040644e699a0sm15977562wmo.45.2023.10.10.03.12.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 03:12:42 -0700 (PDT)
+From:   Max Kellermann <max.kellermann@ionos.com>
+To:     linux@roeck-us.net, joe@perches.com,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Max Kellermann <max.kellermann@ionos.com>,
+        workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Documentation/process/coding-style.rst: space around const/volatile
+Date:   Tue, 10 Oct 2023 12:12:40 +0200
+Message-Id: <20231010101240.992984-1-max.kellermann@ionos.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231010081938.GBZSUJGlSvEkFIDnES@fat_crate.local>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 10:19:38AM +0200, Borislav Petkov wrote:
-> On Tue, Oct 10, 2023 at 08:37:16AM +0300, Kirill A. Shutemov wrote:
-> > On machines with 5-level paging, cpu_feature_enabled(X86_FEATURE_LA57)
-> > got patched. It includes KASAN code, where KASAN_SHADOW_START depends on
-> > __VIRTUAL_MASK_SHIFT, which is defined with the cpu_feature_enabled().
-> 
-> So use boot_cpu_has(X86_FEATURE_LA57).
-> 
-> > It seems that KASAN gets confused when apply_alternatives() patches the
-> 
-> It seems?
-> 
-> > KASAN_SHADOW_START users. A test patch that makes KASAN_SHADOW_START
-> > static, by replacing __VIRTUAL_MASK_SHIFT with 56, fixes the issue.
-> > 
-> > During text_poke_early() in apply_alternatives(), KASAN should be
-> > disabled. KASAN is already disabled in non-_early() text_poke().
-> > 
-> > It is unclear why the issue was not reported earlier. Bisecting does not
-> > help. Older kernels trigger the issue less frequently, but it still
-> > occurs. In the absence of any other clear offenders, the initial dynamic
-> > 5-level paging support is to blame.
-> 
-> This whole thing sounds like it is still not really clear what is
-> actually happening...
+There are currently no rules on the placement of "const" and
+"volatile", but a recent code submission revealed that there is
+clearly a preference for spaces around them.
 
-somewhere along the line __asan_loadN() gets tripped, this then ends up
-in kasan_check_range() -> check_region_inline() -> addr_has_metadata().
+checkpatch.pl has no check at all for this; though it does sometimes
+complain, but only because it erroneously thinks that the "*" (on
+local variables) is an unary dereference operator, not a pointer type.
 
-This latter has: kasan_shadow_to_mem() which is compared against
-KASAN_SHADOW_START, which includes, as Kirill says __VIRTUAL_MASK_SHIFT.
+Current coding style for const pointers-to-pointers:
 
-Now, obviously you really don't want boot_cpu_has() in
-__VIRTUAL_MASK_SHIFT, that would be really bad (Linus recently
-complained about how horrible the code-gen is around this already, must
-not make it far worse).
+ "*const*": 2 occurrences
+ "* const*": 3
+ "*const *": 182
+ "* const *": 681
 
+Just const pointers:
 
-Anyway, being half-way through patching X86_FEATURE_LA57 thing *are*
-inconsistent and I really can't blame things for going sideways.
+ "*const": 2833 occurrences
+ "* const": 16615
 
-That said, I don't particularly like the patch, I think it should, at
-the veyr least, cover all of apply_alternatives, not just
-text_poke_early().
+Link: https://lore.kernel.org/r/264fa39d-aed6-4a54-a085-107997078f8d@roeck-us.net/
+Link: https://lore.kernel.org/r/f511170fe61d7e7214a3a062661cf4103980dad6.camel@perches.com/
+Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+---
+ Documentation/process/coding-style.rst | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
+index 6db37a46d305..b40830517938 100644
+--- a/Documentation/process/coding-style.rst
++++ b/Documentation/process/coding-style.rst
+@@ -271,6 +271,18 @@ adjacent to the type name.  Examples:
+ 	unsigned long long memparse(char *ptr, char **retptr);
+ 	char *match_strdup(substring_t *s);
+ 
++Use space around the keywords ``const`` and ``volatile`` (except when
++adjacent to parentheses).  Example:
++
++.. code-block:: c
++
++	const void *a;
++	void * const b;
++	void ** const c;
++	void * const * const d;
++	void * volatile e;
++	int strcmp(const char *a, const char *b);
++
+ Use one space around (on each side of) most binary and ternary operators,
+ such as any of these::
+ 
+-- 
+2.39.2
+
