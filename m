@@ -2,169 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB7C7C01BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4BC7C01C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233584AbjJJQes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 12:34:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36434 "EHLO
+        id S233532AbjJJQfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 12:35:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232667AbjJJQeq (ORCPT
+        with ESMTP id S231449AbjJJQfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 12:34:46 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A8B397;
-        Tue, 10 Oct 2023 09:34:44 -0700 (PDT)
+        Tue, 10 Oct 2023 12:35:47 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C368E;
+        Tue, 10 Oct 2023 09:35:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696955746; x=1728491746;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=00orKZ10ktIIVdPT28ukB5GSc3X9GzTL+hncMwkoJnA=;
+  b=H9ucY0ZrQm7ZeDu9+/X8uaUq8lmlpzqwjCwd8TTVCR9/IWnPHKtyOoJW
+   hSMPM/yjuKWTDrI1dJDJ+2HMeE7zsKmxwuSMDF+H5JS3MYDbPeUN+6Sbn
+   0fPDoztDjdGjneAcwgK4y+rzUDRJEwou8BQmSMbJoOU6vZ94RtJ9W6y+A
+   szlM08H9swt+f8UXIh5+kkR3+4/ShOhIj+QWJRcOOIERlGQlK2zVgDwsf
+   d9mwHpkczUudtqGoI9XGlMHbGUpGJWHqsjTq9hykmRiWfLP2TUXj4pxvA
+   sf5AQoDgL7hfzXTLAFRQ0ZRjrHtmzZ5xPaqK3G/W8WRSoCnk4kcq69sLb
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="6007792"
+X-IronPort-AV: E=Sophos;i="6.03,213,1694761200"; 
+   d="scan'208";a="6007792"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 09:35:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="1000765311"
+X-IronPort-AV: E=Sophos;i="6.03,213,1694761200"; 
+   d="scan'208";a="1000765311"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 10 Oct 2023 09:35:42 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Tue, 10 Oct 2023 09:35:42 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Tue, 10 Oct 2023 09:35:41 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Tue, 10 Oct 2023 09:35:41 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.41) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Tue, 10 Oct 2023 09:35:41 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Lsdt17dgz4UT65o7g7uJjNaxJDRtthQOsn45HjuvnNwNTleS77s6NcC05OsPf4fDzVJ6GVX1RjhgzgiMvndZvNT5Qiy2TAOmwLTTK/9n9g+DwaHtoHgBkQ6z2fI8av0cFQthb2yGUzxjJjxwwv45yvivtetnJjEP8RwP8kqySxFgqlkzWuI8Lq5ADRmvPpu8y2R1FJnDMnoGGeIw1LcHfX8p/RrSbTv/+VSReHOANKw3sWvJM0X+zLULCIaLRi8FhP7I7Vi4Rk6yj4ErbQNiXmwKxMnXFYMpQf+eTVG0i96R7BAjl5uPKRQtD+nAMzDRgPLPxzIcshUfgz2UCtU0xw==
+ b=O+ZPZN3QflhEXE3zyh0I4N6mLN1lz+S2C/dYLIwTBsiaXrfi3ZmkYtarbdHWdMOnbH35qSLfB+Kg2nkeaA0aASg9o+07GXPHZFoVdIPnd4jTBzWuhsplh2aKsqafRhM5rwZuR41kI8a4bgXrpALi1uwrgR3S3zGqSod9TkWMZsCvBdnKCvti23z3E8p4RBi8rX8Q0VciROXecCld7vonrmuU0VIeFPF2DurwYEImNlKpmm5f0w4Y/ZflFO7fHqwyZuU94r9aSlOmtMGP/Lq1f7qhvVTF8eQWzlQvVjTcZH/8BjfrfNrzfxylZpgLhQBlf1b7QR/Pw4UkDupagN7BiQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OstRbsQvgJS+ZbfpTllTDvpfvlMXtMMJIussT/krCN4=;
- b=BnDpe3RXPCedhYIvw3ZxqiQarFAujUlwXJab3nT5ic2FM2ueeni+6L1VT1q3ssWI+2fFwRt3mYLElGXJFmByqhzeayVpY9Yv+DMfMV3gtGcYy8cCpfTBnz1GrWheco0sIEFN440AWLEp8JVNyICRCKVb5SpZsz42QAOlEJDdtzNLfuhJZwg1qBkaHjk2HDx7T8CsCVA7v1H6CagHpLYzlraj6TwEHq0UU+Xu4hWOlFFwZLG4BlAiXfh6JP0UByApiNFWp9BjseVKVB0qSLlHpG9OsPApA8g2aCJkE73+g7yeERjDDj8ZihRthOPFekKKTIEjSnenVz897zaPKHKnRA==
+ bh=fBjcGlxO/T/AQSj2VbZrt/N6dhjH4a5bBMR8hFFD4us=;
+ b=OKCz1Nvtf3pY4q2lbjBDuyAHsiJuXsBELb55IikEeaFJOec8MThoGmPlbbltx+gSnUCbOkduWz4fxahN9ufKL5pY56Hpbz60b5S4ZFM+aiVBnFu5IzzEWPSS+gA17rqAjr2I4jKPDs3LmEkUSNrrBOQkKJoSNLCOLF0yaqq5avCRc4ckKiAPSqBdziRyMP3n8GM/tIlN0RNyqecAvV5VC7ZmCOMu11WPldK1HY+pKPMDCnVMmHqS2jTfcQdyxUA98PetIi7yvkbyKXnE9OYZ/DFtXaQce3qvqCikPpbZxppl3iEvBLeqON1fWU9yo5MlbXSi0w6uUJXCBno8RTaOBQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OstRbsQvgJS+ZbfpTllTDvpfvlMXtMMJIussT/krCN4=;
- b=zeizVPrQJZVCatxpyEc+wEfQngMPeB9sgOHz9dMKyNIaHnMQGNq/f0PNNVqnHD7ZTjRrn6Ni4IuhQQ5bAG5kLg0Hz/LPAEPLnejSI1rM7FA+n9ShMV4BJoHDcPCun7qKChMFq4wXO3KqkZW5FkQFmwxeVa//um9HPKrn54W73Hc=
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by CYXPR12MB9443.namprd12.prod.outlook.com (2603:10b6:930:db::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.36; Tue, 10 Oct
- 2023 16:34:42 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::3e65:d396:58fb:27d4]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::3e65:d396:58fb:27d4%3]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
- 16:34:42 +0000
-Message-ID: <87bca301-f50b-4164-9b3c-c597dc26288d@amd.com>
-Date:   Tue, 10 Oct 2023 11:34:39 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] PCI: Make d3cold_allowed sysfs attribute read only
-Content-Language: en-US
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     bhelgaas@google.com, lukas@wunner.de, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, mika.westerberg@linux.intel.com
-References: <20231010163325.GA978803@bhelgaas>
-From:   Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <20231010163325.GA978803@bhelgaas>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA1PR02CA0016.namprd02.prod.outlook.com
- (2603:10b6:806:2cf::22) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
+ by DM3PR11MB8733.namprd11.prod.outlook.com (2603:10b6:0:40::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6863.38; Tue, 10 Oct 2023 16:35:40 +0000
+Received: from DS0PR11MB7529.namprd11.prod.outlook.com
+ ([fe80::f8f4:bed2:b2f8:cb6b]) by DS0PR11MB7529.namprd11.prod.outlook.com
+ ([fe80::f8f4:bed2:b2f8:cb6b%3]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
+ 16:35:40 +0000
+Date:   Tue, 10 Oct 2023 18:35:31 +0200
+From:   Larysa Zaremba <larysa.zaremba@intel.com>
+To:     Stanislav Fomichev <sdf@google.com>
+CC:     <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>,
+        "Yonghong Song" <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, <linux-kernel@vger.kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: add options and frags to
+ xdp_hw_metadata
+Message-ID: <ZSV9U0ti8otbZKen@lzaremba-mobl.ger.corp.intel.com>
+References: <20231009160520.20831-1-larysa.zaremba@intel.com>
+ <ZSQvMr3-lY9uTzn_@google.com>
+ <ZST8OTwh+6y1S170@lzaremba-mobl.ger.corp.intel.com>
+ <ZSV2HwOhuNr3XLbv@google.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZSV2HwOhuNr3XLbv@google.com>
+X-ClientProxiedBy: WA1P291CA0023.POLP291.PROD.OUTLOOK.COM
+ (2603:10a6:1d0:19::7) To DS0PR11MB7529.namprd11.prod.outlook.com
+ (2603:10b6:8:141::20)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|CYXPR12MB9443:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9675d51b-fa44-45fa-dffd-08dbc9aecdff
+X-MS-TrafficTypeDiagnostic: DS0PR11MB7529:EE_|DM3PR11MB8733:EE_
+X-MS-Office365-Filtering-Correlation-Id: f6e4b677-7859-4837-2244-08dbc9aef06f
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XZkW3HhxVfTDmefhIYbhvkkRWfk7423TyW2aB2oXz2I9mPbdU8tbVqqYd0IG/azzMt0oO8osXP5LJ28q8ix06N0YsJJYl1xVYKIiyylAQsXRrRqC9pkwi1BB7vJPfCOFCPr+bEDKJKxFDs07MRwuiDgfC5zbrn5wno+DXfoYkjkEz2zGV7VusDsJwMiqGmf4NFRANiioUwZAssXtcp8d1r1+FaazEH9O1PT2mqbxW0V6sFlwyYcq11ChILWZvX1ObI4AR+ROnieLscKwrl4S4wW3UL/0Qy3TnnOh3+SzzYFRMJEK+i14KEwUwCSEa74JM1e6tXnCG9EEZ9uFTghoe2BuNFEsgMqiRrGuTjJt+2RHBwheE9O6s59LayqUzCTCvb31szzMs6BkGmj2JMxEmw2VhEkgUIuVjWgGSiH46g1lLehf3TTGqWCpVsgMPmWvuLIelCyYqjcvtq3LkbXLrhxevv8AtREodzquEdBaK58yh3ctBfHZjKXSnVSr+IpW/X3JxAKbGPKndK01KGR5sqcW4VmtpQxxkd6LKu/34R+BXJTmSykPQa8YIrQ13wf/UcRyElLGVnu9vuEzboW9aU7PgwJ7BYKmL0oUFXONJ3wuNfgv9hJq0spN/mw8eqj8v19t1DalQYfEYQW9GH9KbA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(39860400002)(346002)(396003)(376002)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(83380400001)(31686004)(26005)(53546011)(2616005)(31696002)(38100700002)(86362001)(36756003)(478600001)(4326008)(44832011)(6506007)(2906002)(6512007)(8676002)(6666004)(8936002)(5660300002)(6486002)(6916009)(316002)(41300700001)(66476007)(66556008)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: lf808aRjst10F/MJRW4IrU2N8OAJ4pdZZ1AuzIxvIe2foEblTsw6OH33gFdI8NEi7DVHDdzr3zs7A6tPbTfdALyHJYvPSbxWBNNAkAnoHI8DIfH/a11/zlQB5x5JGxMhWSNPnTy3MtefWxvnyUpw1n52Cj6zJ/BmPlo6+jK+7IDTQlFPOi3iZbxaALzVcyZ9/o93oP0ISdcifrv6WCTaWgYxaeqmGVetwsuG3s5JJxWZyzOGVeXs+vZBjWWGnTUB9lo9gXNwSdFPJ8xCbbqqBVZg4nvZ24sElG3AX2QOaFv/n7jEFMLDJOuRIGyaPVfdUgAPsNEJwl7qj6I5FHwtrMD2NtSMDD5yImZ3vM8qjbzAICDhUmKah6lGVIg+quKNBoTigaLn+9cWvca1oFt3UqCaagqfkNFNb35TF1nlefAvsvvyzxmcqE5hkXF4tHB+vD8uFHPQmvLsjQtRyJQo0IZpyPMC+oZB3Pvhudgm0nssf+sRW1zzpyteLRWCWLXH7eEHPdVfJF6yH9q/+dFhrbWHJpMvcRVcbsZuWltIB06QOsIf7HvRXicBM70LMw8FDswfFGGKPL5IwQn4tNvHbA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(376002)(396003)(136003)(39860400002)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(83380400001)(107886003)(6666004)(478600001)(6512007)(6506007)(38100700002)(66556008)(54906003)(6486002)(966005)(26005)(66946007)(66476007)(6916009)(316002)(41300700001)(44832011)(4326008)(8936002)(8676002)(5660300002)(82960400001)(7416002)(2906002)(86362001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VnFtVnFXV1QzOEsvN2t2c2I2UnVsZklrZXJlcUlERnhxQ3lMVFVMc2diQi9a?=
- =?utf-8?B?YkJ6VlhEYnozSjJHUEJyNXk4Ty9PVzZPWkRkbU8yK0JCMWRvZG1nMUdqbXdz?=
- =?utf-8?B?eE9DMTlDeElyaUk2UHlWN3p5U05ZRm5mbi9nTUUxSXJVK1VOZk51TUxkSzJM?=
- =?utf-8?B?aHpwR0ZybStNWjQ0Z08xb0VZOG4vazRkT253eU1Yb2M5OHdWQTByQUdZemFM?=
- =?utf-8?B?enBpait3M1UzcUtkUy9BSXJlcGpaSlE5bC8vamtlWitTdFZURzluUzdPcnVy?=
- =?utf-8?B?NUdENTk0Qy9XcFd0dzZHUGF3S01DZGZtNkEySnR6KzRNemo3b2JZNkZnYk1I?=
- =?utf-8?B?QkNjY01ZTEhQTkJPb3d2dEs3SVFlUGMvQ0dRZnhBenBkMzlHdGFUZmxFaWo1?=
- =?utf-8?B?WnNBTm90c09WNFFwVlM1aEhLMEVNRW1jU3JPTjRQRi9heVQrL1VnRWVTU3px?=
- =?utf-8?B?R1JvczRPbmF3RXFNUFpwK0RSSk5TbkF0K1dBQ1BWZWhIaHpORzd6akxxMjZz?=
- =?utf-8?B?eVhRY1JHVkdWYWhTQVRUM2JuTlBRSFoyTGlqTVc5RXcxb0tCUHNuNVBYRTUw?=
- =?utf-8?B?Q2I4amxnNEpYL0R3ZmZncHdzK2tsekcwc0hsd2daTjZCVUFwdklIMUxpdklz?=
- =?utf-8?B?NUR1L2d5UTBQRWlrdmpwMVBsZlBUbzJxTE1Xay9WRVVqdnlnK3dpeExWbmRR?=
- =?utf-8?B?ekM1VnFJNTlZUkY2WWFzbEFsRUU5MDlCQy85YnRoWmFsRVZzbE5IVkJFT3pl?=
- =?utf-8?B?Z2VRNTFEWDFMMnNwZi9lT2RTSXloN2Q5MVBNVlo0Zk1VZEpJL1hnWkJKSllS?=
- =?utf-8?B?L0swRk1NMG95ams5SmFHZHVMY1NiaGVIZ1djbmdYYUNsWDB1eWNRS0NROXRV?=
- =?utf-8?B?azVPcWhiTWUrU0QxSnJFTUxtL2Frck5GbFlkaHBlZzRuR1ErYUY2K3BsbFJS?=
- =?utf-8?B?SkdMbUhXOWh0UUhERm9JZ2p5MW53VGZxdUVtbGZKWXRZR1Qrajg0cXBHN3VJ?=
- =?utf-8?B?UHJhKzNMS0ZoUTRpUTF4bHRzV2VDcVloQW9xVjRiK3kvMWhJOU1WNS9hLzM3?=
- =?utf-8?B?RWpwSVh5SkNNL0dBK0lTV2QxQ1g2MStUUUpYSnRvMEYzU1FrbG5GcmUyeHpX?=
- =?utf-8?B?NUs0bzZPZDY3Z2ZnL21idGNqMTJwZS93SEtjSk54S2cxWjFCd0hXZDhNcERx?=
- =?utf-8?B?NFk3cGlaeG9GZnZlY3ZoSUsreTJ2VVZnVGhKMXlxUWZ1dVpyc2ZvVm02MW0v?=
- =?utf-8?B?QmZOSzIraXQvQUg3NFNXNDkvUTBvV0dYVWNFS0xNV0NTdkpxQ2YzeHU1Z2xu?=
- =?utf-8?B?Nyt2SjZHNkI0SXVIN0oxbkRtZnEwUXBhWDk0RlVwcmFUaFZzeWtBRlRWbkFX?=
- =?utf-8?B?NmE4NXlxK3ZleEdKbmM3eXBrclBmekc4U2FJcnpReFVOcGticUpRVFVHZ09q?=
- =?utf-8?B?Sjk2UWhCUHhhcEpFOXZKSXByZ0VBU0JkWFppYmxBOFptNndvMVNqbklGUi9D?=
- =?utf-8?B?czc4eUM2cUdveDRFNlBwYVRiK3cxa2wxcGpYRnZ6b0Nub1dtNlo4Vy80bERM?=
- =?utf-8?B?SDNlR1I0UFkvbjJzZ2FhUC9qRlNqd0ZqdGR4RGNKUVA2QWt0RkN6eGEvVHhk?=
- =?utf-8?B?dWtRZnpTOWFqWkVueGp4OVB2YnRrSkt4TGVNUjUyTGxJNUtpc2NqUFhvWUtJ?=
- =?utf-8?B?VUFIa2lBZ0QxQitvOFpKNkZCWEltMmJTUXdpcmpVVjNOZzh1cXpoUnY4QkhW?=
- =?utf-8?B?UFNlVytiQmtGK0lwVDBIUlFlV1k0ZTcxZDY1NFl5RVp5ZUZvRUk5VGJ5cUlo?=
- =?utf-8?B?T0cvb3EyVjBEVWU3UndwaXJFRW95bStKNWQ5YS9aVzR3ZTRXdElIN1BXOUla?=
- =?utf-8?B?dmFDZWZCNXFZN2QzSEhUWThaTUd6NDNmLzBBeGNiL1FQcGlSbXY3dkZRVEx6?=
- =?utf-8?B?TURXL1lpWE12a1dhTVVNRDJKb2VPbUwwSHRMbTRtdEF2ZHB4eWNkdHJNdkQz?=
- =?utf-8?B?a1RlOXdNUUtXbVdqL0dyMWs3OEZlak1tSmc2OFhCbXNRTllnOTdoWDhFS1dl?=
- =?utf-8?B?bVgyR01iNUpLampkKzhwdjNZTmtJcTJDVzRiQmRSa2FNUjlXK3crRGNuR0Z2?=
- =?utf-8?Q?RfLytnaPYH1oL66QsvQQRELpE?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9675d51b-fa44-45fa-dffd-08dbc9aecdff
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?kygrb6Q94iQdQ0TedGcohm6r1zrH28ZpA5IrNLoD2Sg7crcaTcMOj9VnNxUU?=
+ =?us-ascii?Q?2GVkIy324vW/OnSM5sjKni1vGbZgXFtTV1pWB1gXVd6yior0UGDdJv3NvkUY?=
+ =?us-ascii?Q?tb4PI30TEJILBx3sQuqEX1TSNtuCNQEZPhScqgpczo0ZDbZy7Bf8GObSaKJO?=
+ =?us-ascii?Q?ZJ0Ik8T3B3SEdJiNTzBGm84TFfxWU7fI4DG7LG+vdUscWqKpJ1Z03QNYqsQM?=
+ =?us-ascii?Q?B3YakhJKk8wrnhL2QKpBWJEXSzvxQLfB1wqf+3b+GeX9izAQmWrGE7wJLk+a?=
+ =?us-ascii?Q?0+9m+lb1tCDLaahkHa6lLQ0ROCp240rRwCZNielysoxl5/t0n65wRxYwMk7q?=
+ =?us-ascii?Q?CAp4Bidpd3Ntk3OKUfGfi2VBga8cTDLqu7nFIe2ilo0gwnu45hulWGTUKzPg?=
+ =?us-ascii?Q?4vuxkY6z8S+3XbF2qFHPgDBgQ9xhbLz4UHaAgJpDqMNKpa2SWnvlQS6YTTB2?=
+ =?us-ascii?Q?pMEzcBoQ/xCvwnNivYfsFDCBLkFGag399IJR1cEVCl1IFKJciV7lBjXo8X2Z?=
+ =?us-ascii?Q?TK+p6aK0huqc1axmXPbMx0Y2ho7RAZ5OK67fyA2vgZdKama7B9EJn/ccMYwe?=
+ =?us-ascii?Q?6kB3YD55vJLA+7HKoc35mjGCNQWitJ2+xLwx6xqYmyhXRw5wNXLOUK9RZk1l?=
+ =?us-ascii?Q?e7oUT0qNgrhSFyNhZHRjOQtoMhqeOhPCamfrBeMB54CBUSbDEUSsGvql5+Dq?=
+ =?us-ascii?Q?Ixu1SLOEf8xKQmQ5HOtqoWZhxyE+1Dl+ogpcD+gRwH17mqnEH99sSb+V0Xp/?=
+ =?us-ascii?Q?3ZhTKk8RcgIW94iXauRz6Zz6vXVKTTWYfuD/eURp1GFfVb1VmfxdZbQ9VRXY?=
+ =?us-ascii?Q?nS7kCWQzTwP4j02e+p6zXzDqg2Xk3v0ed2giEic4KF4g82kI6vRBWOJhlhms?=
+ =?us-ascii?Q?GVWa66Mv4Q28TARxuVLub6qZOGBGTkwO0j9+zX/xjs+RAkoZUZFVpQ/Jga7c?=
+ =?us-ascii?Q?GNkp0NOZYDljF60xUgwBzENgxMbNMAQ66DFnkP5neTptbEh+E0voywo+7VA5?=
+ =?us-ascii?Q?pNO+XIFsh4AJxKsSkeoHCu8jRLhZ8tXik8lEqBIpUmwfrOAbsulj3olxnQT7?=
+ =?us-ascii?Q?aGYyD+m2ZGjQS34LmyHB3/A/eGyzcRZgMHIWHSpXOuOWGw36i4Co0D3E1B/N?=
+ =?us-ascii?Q?bsqoQADcAyPvIxBpfTNrX+mg/OcsF8Iv129JXIfUSAV+wIy3tH69Z82tAsU8?=
+ =?us-ascii?Q?+A9kJ+mw3AH2IWpJT2PZnY0+3aS09iO0RmDx8K8ZCTU+T1JGUiiKkQiFCx3p?=
+ =?us-ascii?Q?dxiWg9sE+Y6nrAtnPnSjDnlcvSA31bLkWVxcCKLHHpo7I/1XKms5190AMK6P?=
+ =?us-ascii?Q?C9/fx32VAPXcjTIJtwUDVycfHWdezjdgeBZOveZN6iXIAkCd6gnwSMhRtHRX?=
+ =?us-ascii?Q?QZuKxCBFL09MQVT1vCQ/XTNNQRuqYIyZBhQ0TLAsJ9H3r07qHxVPZv4FLmTN?=
+ =?us-ascii?Q?M4e8suw/9GktvM9M2b1U6yJIFbccX80lhBG5dMFREzJFRPNuWLPNH2sWlkei?=
+ =?us-ascii?Q?wdDpjaa5mUm6RcOCkqOzGXqw7JWSngxCpzQXSsAEeUVXe9F4+y7/KlBJedf+?=
+ =?us-ascii?Q?myt3zd6M0RKjolexqWIwbQDtZzReNck5q0SfR25y6zh7QwE6ZJ+I4LQdL9YI?=
+ =?us-ascii?Q?gw=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f6e4b677-7859-4837-2244-08dbc9aef06f
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 16:34:42.1965
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 16:35:39.9472
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lpL/0WhW8ebRMKBp3PApdIrKqvPCQT/23BpKr1wxKgF6zUPP+/limbPt8htyXTwwbvUJea0EcEDlQnFN3NYZug==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYXPR12MB9443
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: Kl1dz4dPZHp9TFIJ43aAWq8oXTSyWvTJ6m6m8Lc/7MhEC2/wx3qUYn2bd9e8k2pnL4C1PisF5lN69NPlk+8i1kQSojjyEgDG5YHSEa+AJ7Q=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PR11MB8733
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/2023 11:33, Bjorn Helgaas wrote:
-> On Thu, Oct 05, 2023 at 01:56:27PM -0500, Mario Limonciello wrote:
->> On 10/5/2023 13:53, Bjorn Helgaas wrote:
->>> On Wed, Oct 04, 2023 at 09:47:31AM -0500, Mario Limonciello wrote:
->>>> Before d3cold was stable userspace was allowed to influence the kernel's
->>>> decision of whether to enable d3cold for a device by a sysfs file
->>>> `d3cold_allowed`.  This potentially allows userspace to break the suspend
->>>> for the system.
->>>
->>> Is "Before d3cold was stable" referring to a "d3cold" read-only
->>> variable, or to Linux functionality of using D3cold, or ...?
->>
->> I was referring to the previous thread's comments when I asked about the
->> history on it.
->>
->>> In what sense does the `d3cold_allowed` sysfs file break suspend?
->>
->> SoCs might not be able to get into their deepest sleep state if userspace
->> messes with it.
->>
->>>> For debugging purposes `pci_port_pm=` can be used to control whether
->>>> a PCI port will go into D3cold and runtime PM can be turned off by
->>>> sysfs on PCI end points.
->>>
->>> I guess this should be "pcie_port_pm=", which affects *all* PCIe
->>> ports?
->>
->> Yes.
->>
->>> Which sysfs file turns off runtime PM for endpoints?
->>
->> /sys/bus/pci/devices/*/power/control
+On Tue, Oct 10, 2023 at 09:04:47AM -0700, Stanislav Fomichev wrote:
+> On 10/10, Larysa Zaremba wrote:
+> > On Mon, Oct 09, 2023 at 09:49:54AM -0700, Stanislav Fomichev wrote:
+> > > On 10/09, Larysa Zaremba wrote:
+> > > > This is a follow-up to the commit 9b2b86332a9b ("bpf: Allow to use kfunc
+> > > > XDP hints and frags together").
+> > > > 
+> > > > The are some possible implementations problems that may arise when
+> > > > providing metadata specifically for multi-buffer packets, therefore there
+> > > > must be a possibility to test such option separately.
+> > > > 
+> > > > Add an option to use multi-buffer AF_XDP xdp_hw_metadata and mark used XDP
+> > > > program as capable to use frags.
+> > > > 
+> > > > As for now, xdp_hw_metadata accepts no options, so add simple option
+> > > > parsing logic and a help message.
+> > > > 
+> > > > For quick reference, also add an ingress packet generation command to the
+> > > > help message. The command comes from [0].
+> > > > 
+> > > > Example of output for multi-buffer packet:
+> > > > 
+> > > > xsk_ring_cons__peek: 1
+> > > > 0xead018: rx_desc[15]->addr=10000000000f000 addr=f100 comp_addr=f000
+> > > > rx_hash: 0x5789FCBB with RSS type:0x29
+> > > > rx_timestamp:  1696856851535324697 (sec:1696856851.5353)
+> > > > XDP RX-time:   1696856843158256391 (sec:1696856843.1583)
+> > > > 	delta sec:-8.3771 (-8377068.306 usec)
+> > > > AF_XDP time:   1696856843158413078 (sec:1696856843.1584)
+> > > > 	delta sec:0.0002 (156.687 usec)
+> > > > 0xead018: complete idx=23 addr=f000
+> > > > xsk_ring_cons__peek: 1
+> > > > 0xead018: rx_desc[16]->addr=100000000008000 addr=8100 comp_addr=8000
+> > > > 0xead018: complete idx=24 addr=8000
+> > > > xsk_ring_cons__peek: 1
+> > > > 0xead018: rx_desc[17]->addr=100000000009000 addr=9100 comp_addr=9000 EoP
+> > > > 0xead018: complete idx=25 addr=9000
+> > > > 
+> > > > Metadata is printed for the first packet only.
+> > > > 
+> > > > [0] https://lore.kernel.org/all/20230119221536.3349901-18-sdf@google.com/
+> > > > 
+> > > > Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
+> > > > ---
+> > > >  .../selftests/bpf/progs/xdp_hw_metadata.c     |  2 +-
+> > > >  tools/testing/selftests/bpf/xdp_hw_metadata.c | 92 ++++++++++++++++---
+> > > >  2 files changed, 79 insertions(+), 15 deletions(-)
+> > > > 
+> > > > diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> > > > index 63d7de6c6bbb..8767d919c881 100644
+> > > > --- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> > > > +++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+> > > > @@ -21,7 +21,7 @@ extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
+> > > >  extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
+> > > >  				    enum xdp_rss_hash_type *rss_type) __ksym;
+> > > >  
+> > > > -SEC("xdp")
+> > > > +SEC("xdp.frags")
+> > > >  int rx(struct xdp_md *ctx)
+> > > >  {
+> > > >  	void *data, *data_meta, *data_end;
+> > > > diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> > > > index 17c980138796..25225720346b 100644
+> > > > --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> > > > +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+> > > > @@ -26,6 +26,7 @@
+> > > >  #include <linux/sockios.h>
+> > > >  #include <sys/mman.h>
+> > > >  #include <net/if.h>
+> > > > +#include <ctype.h>
+> > > >  #include <poll.h>
+> > > >  #include <time.h>
+> > > >  
+> > > > @@ -49,19 +50,29 @@ struct xsk {
+> > > >  struct xdp_hw_metadata *bpf_obj;
+> > > >  struct xsk *rx_xsk;
+> > > >  const char *ifname;
+> > > > +bool use_frags;
+> > > >  int ifindex;
+> > > >  int rxq;
+> > > >  
+> > > >  void test__fail(void) { /* for network_helpers.c */ }
+> > > >  
+> > > > -static int open_xsk(int ifindex, struct xsk *xsk, __u32 queue_id)
+> > > > +static struct xsk_socket_config gen_socket_config(void)
+> > > >  {
+> > > > -	int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE;
+> > > > -	const struct xsk_socket_config socket_config = {
+> > > > +	struct xsk_socket_config socket_config = {
+> > > >  		.rx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
+> > > >  		.tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
+> > > >  		.bind_flags = XDP_COPY,
+> > > >  	};
+> > > > +
+> > > > +	if (use_frags)
+> > > > +		socket_config.bind_flags |= XDP_USE_SG;
+> > > > +	return socket_config;
+> > > > +}
+> > > 
+> > > nit: why not drop const from socket_config and add this 'if (use_frags)'
+> > > directly to open_xsk? Not sure separate function really buys us anything?
+> > >
+> > 
+> > Considering there will also be ZC/copy option, I thought it would be good to 
+> > separate socket config creation. After giving this a sencond thought though, 
+> > for now options would control bind_flags only. What do you this about removing 
+> > gen_socket_config(), but introducing get_bind_flags()?
 > 
-> To close the loop on this, I think these are questions that should be
-> answered in the commit log (actually, that's usually the case when I
-> have questions, because future readers of the git history may have the
-> same questions, and it's not practical to dig the answers out of the
-> lore archive).
+> In my pending series [0] I ended up adding bind_flags argument
+> to open_xsk. Maybe do the same here? This also lets you drop
+> global use_frags (if you move option parsing directly into main).
 > 
-> Bjorn
+> Or maybe add global bind_flags if you want to keep separate parsing
+> routine (read_args)? Doesn't seem like we get anything by storing
+> separate use_flags/use_copy and then construct bind_flags via extra
+> get_bind_flags()?
+>
 
-OK thanks, sometimes it's unclear if you just want to know more or want 
-it in the commit message.
-
-I'll respin a v2 with the commit message adjusted.
+I like the option with global bind_flags.
+  
+> 0: https://lore.kernel.org/bpf/20231003200522.1914523-10-sdf@google.com/
