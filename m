@@ -2,306 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF5567C0092
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E2947C008C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232740AbjJJPoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 11:44:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60434 "EHLO
+        id S233454AbjJJPnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 11:43:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233523AbjJJPoL (ORCPT
+        with ESMTP id S232042AbjJJPnD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 11:44:11 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED5EC9;
-        Tue, 10 Oct 2023 08:44:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696952649; x=1728488649;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mQdAMHJSD9QeDBBfFFi7Ka2I3dLUue9yP6ms4QhM3Vc=;
-  b=E3aXiYMFMfgZMCN9LOOqwKYXoGuWvrYFH0WN1gnNzxz8s4Q8DpRJKPRj
-   dpsjjtsfn8rmZcpGiN73NFm93DfmocBh/trHY66yC4N4sgG9og1rINQ1y
-   ceGmNlx0Hp/C/c+6CrpDjjqbYqofMKGNv1Nx8CgsCfnnUA3zWdQGkKGey
-   CXPmp8awdvlIPQ2a/s7psNkbTeW1HVA8n4Nd+JCJRqD54yKNH8Ulk+Y47
-   BRKkbNvIRjj6xlL3eQS+Qhh5Zjtmt9HrENZl/4bEOb2cXxaLnOYyVQXe5
-   i2+GstNxVrqtMU+3vlfapPzTydDqbd44r/Sp3cQErtc06bRBDmyoCunuk
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="381685666"
-X-IronPort-AV: E=Sophos;i="6.03,213,1694761200"; 
-   d="scan'208";a="381685666"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 08:44:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="819284307"
-X-IronPort-AV: E=Sophos;i="6.03,213,1694761200"; 
-   d="scan'208";a="819284307"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 10 Oct 2023 08:44:05 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qqEtP-0000gE-0o;
-        Tue, 10 Oct 2023 15:43:31 +0000
-Date:   Tue, 10 Oct 2023 23:42:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, quic_vbadigan@quicinc.com,
-        quic_ramkri@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_skananth@quicinc.com, quic_parass@quicinc.com,
-        Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Subject: Re: [PATCH] bus: mhi: host: Add tracing support
-Message-ID: <202310102355.6SEa9YSi-lkp@intel.com>
-References: <20231005-ftrace_support-v1-1-23a2f394fa49@quicinc.com>
+        Tue, 10 Oct 2023 11:43:03 -0400
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2041.outbound.protection.outlook.com [40.107.102.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27881A7;
+        Tue, 10 Oct 2023 08:43:00 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Wd4rdKErUUrh+WIwWmLWIBLo29b8YfNO0r3dnmcT2+iEH9fJ3usxZYTL1DErB9dTaSj5Gthjl/ODeAdXZptfyXArzTlOfIRtBGdwg1G9FWLa/BpjNpnhdyPnM9owWyXrH+DwtPnoaPZ6TjdT2aj0j+KXIYpcXXWfB5RCHaK4t4Iod4I8Ds1oxMcIYj7Rc7aRH+cDB0Ecc98MGWAfyeWn0kxCHl7A+Qzh12L97cFno/KuyA2jAqzIZWtrjU4FzvJzkF3I5O6EsHLRSctE4QTqDvPaIB02nVKPIaAE4HqeF/Zc4A4zVCuP7U5eHw4b0xXKlhrf4FC+4NIFPKtogft+Cg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=llrvbkD5X7depUvj5pUtPAmOIrGpABrz+hhVJmnh4FA=;
+ b=Sg5D9dscCPx3P7K9chpfLbRg5vINFzJUWZ6OPD5HfnWpKFhMpNzy2miDpn2546lndhneMsy/IcDCFEC4q6AWchEMONEX6T2oZYGXiArBvCAwdlAJahDjC7XgVOhielUyhuLk8sF15wKDrCTHeYDsm+qwc6A8pb+UGO8l8/Hf7HbLY0eTD8XX6B2v/9nLWJ9LsYIOzmpJfd3Z969xSIw3pJ6EktbN0iyRSdWzbTF+zF4VQE+oHd3CidvDoKBO35Hk0IdsKptcz22QX/z+s7htc54xC7hCBusfKVm3AlkBSqt42fzTe5oVqNwMjTtMAn54gdlrCEx9VM+19bHyJ7ihfw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=llrvbkD5X7depUvj5pUtPAmOIrGpABrz+hhVJmnh4FA=;
+ b=EO6SmuI8vQOPQMrFp6q0jbgqZuvWog5vCbjt6gOlb7qOoJ5gP4LSfAAAzVpTt/SJyqBTiNwAY6y50uw9RV7IXgAiUTOyL7qc5m+Jg4UJxvbAhXJ/S7BB38HBnL9NURztR5pAfCR24AMi2vlv100QeSzeNfvEfkjY0Nq8KjkoaGxReeEZCv8flPrxcyb2xy8jcU0by+Cn7mVTb+d2qgm4nVGKVs6FduZ6G6owOJ8j8iAKAyf9PWF5W3ckgKGPP7wOtuXZyMOSgO7hOpyv57mHuSLSs0zQVkjdaYoa/8Tpvx5gXapGo956bJt24kdVgUMwaKKPVcJdbIgH1CCv4EuQUg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
+ MW4PR12MB6973.namprd12.prod.outlook.com (2603:10b6:303:20a::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.37; Tue, 10 Oct
+ 2023 15:42:58 +0000
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::4b09:197c:609a:1013]) by DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::4b09:197c:609a:1013%7]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
+ 15:42:58 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tag needs some work in the mm tree
+Date:   Tue, 10 Oct 2023 11:42:56 -0400
+X-Mailer: MailMate (1.14r5994)
+Message-ID: <F8298EF2-D6DD-42E9-AF2A-01C33510CE6A@nvidia.com>
+In-Reply-To: <20231010164739.236d916d@canb.auug.org.au>
+References: <20231010164739.236d916d@canb.auug.org.au>
+Content-Type: multipart/signed;
+ boundary="=_MailMate_4D2F4DE0-45E7-4735-A0A7-83D19E40C502_=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+X-ClientProxiedBy: BL1PR13CA0269.namprd13.prod.outlook.com
+ (2603:10b6:208:2ba::34) To DS7PR12MB5744.namprd12.prod.outlook.com
+ (2603:10b6:8:73::18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231005-ftrace_support-v1-1-23a2f394fa49@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|MW4PR12MB6973:EE_
+X-MS-Office365-Filtering-Correlation-Id: d8055a67-222a-4ece-0deb-08dbc9a793dc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Q3II9ThA+WQq7NZN6AT+CMHWTy8OtVPhyU2zxlXXZcEvW8Wz+i6Afk1fQbO9kAYc2Cduhrk8f34byhejWvumNJIfvVofv7gbi4ADo8b8+1j5SowUuPRUnyAI45zwGj4k158MOowmt86VxXdBi1gqdVl4Z265XPfHa3yLH8wOdqn1BasDe6vvV/7mpQoCsy2TfYUFcdeZvmWsHFSlbAgrNpyUa22BRti93pMwIUOJjLhe43XJFoQT66F3ZQAuzpVV3I2CNMm9B1aW9FbImPI+/0GZZHAqhdvLHODmn8A25ivIbNhyDOrUBtHTJ3o1ki8kdwDuLZituMPAUGcveh+53qnyXyWB5FnY9d03BP/imm0Xig3+RoYWHpMFgfXDElyq222/CLPjlLkXz5pHRiSEnzXkgEkM9/K0NOBlm/yUZE/UZg+JzZA1pEk6Md7BH113yS0v/GXiqNK8IPe5vA2GcIqk0e4OxAmf6xfJfX7EjFtfAgZNe3LAt59kOfW99u3hvYvHAatfdu955OUO/5Vl2Cm4i2Ia7aE9AhrtBSt09Sx9tXfQ1x07YDvOYxR1MSQ00ixG8BPY/kDn2xHxAIW6W8TII+ckKui93dEPL9VPt7qgg1ERr3lOuqYhN1XeCluV
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(39860400002)(396003)(366004)(346002)(230922051799003)(1800799009)(64100799003)(186009)(451199024)(6512007)(53546011)(2616005)(478600001)(6486002)(26005)(2906002)(5660300002)(235185007)(66556008)(54906003)(66476007)(66946007)(4326008)(8676002)(8936002)(6916009)(316002)(41300700001)(36756003)(6506007)(86362001)(38100700002)(33656002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?QFSju86DsYK5aWiYpeRIGOGTuW6TLBGfTx8JEegHQ/xmoxEdELAnHAMT1BMw?=
+ =?us-ascii?Q?d3Yp+Le/SmqmXGQsxnG8lizBes00VXFkYv56i9HIVed6sqs3FyFWI5Il822N?=
+ =?us-ascii?Q?YX7HoRj6xWF2VA3INe2veilMEtWeeCkli1tCxmfG1gulnZlT5JPiUO1ydMDI?=
+ =?us-ascii?Q?wem8pCzzTjiPezNi+A8f9Y+BGdny1+aqwcQ8ZzsHwSdpy67iFLvA4ErBJnAD?=
+ =?us-ascii?Q?21c4HbJxdnTUq+6vJK/lPfY4ECW0KT4uL8s7tbHNVLu970Uh2k65Yj9sLlAH?=
+ =?us-ascii?Q?ujj6lgjo8Dnm8C/te+FLX2arPqDi7nNrqZOtu+/6TpjM5RnQgq2fnqF8BrWx?=
+ =?us-ascii?Q?yN4jqeywkRLnczTRpaM0ti5AY2hIiQ3U9ylOqi4vu4ce10FX1Po+3WRwaSAt?=
+ =?us-ascii?Q?b0zXU+MsPhxzbFA/8+s3nXVe2z9XUxcfG78wrhRYFhEPgZS6XBS/Y7ARw2NY?=
+ =?us-ascii?Q?VjmzChHKMC+oB1iX5K04JNtR5pkp3ygxzUddjSPo0TxmJOwHCGBGfKLQqIji?=
+ =?us-ascii?Q?EaqSNxu9H1lX5HvM8utcsFinCxsu60xLsni9Lk4q4gQkuDQfQRuvUKeWkKM6?=
+ =?us-ascii?Q?Ep81BWvuW4TXHVbHrXxZz5Mu36duykCEjH/7oYtpSWbIKT6/KIgnfTBo2m4p?=
+ =?us-ascii?Q?iFm57rrXJI6pSBMUnBlXqOyKHU1KqauizeAeGUeXwISjq2sUpv+GDP8+JQJJ?=
+ =?us-ascii?Q?1qolH3ChZ6PRJvND6Yi8IOg21+igjLQSTTjH5HpMFmOyYZ7c75pEhKVoxMF+?=
+ =?us-ascii?Q?EPVHmIzUtYYRYRJm0Z+Xc1fgLmyi8eHgPp2NdtGYkCsCvHm6R/xcP0RTFMbU?=
+ =?us-ascii?Q?VuFF7RBKHb0GOei59Vs6hTXe6NaxX5r7ACC0tKSc7OYm0s0pivzAZU9FzLF0?=
+ =?us-ascii?Q?MTICiOVmlxeVHiPMBm1xEMVgS+ioBd8DmLGFektQejF8hw4omnngWBNr3BL5?=
+ =?us-ascii?Q?0FqGgUqq4udghtI0bw60UKqSblia/bOCv7SD1Wzscr32C4gZ1hRldR3IuD+z?=
+ =?us-ascii?Q?XLAbkpEgQVor0yKpP3lTLS3I1bsZZ1Yfil8aT7oL85sIo8cwuNAhes3mr6i3?=
+ =?us-ascii?Q?ywW3dqmHp9QC4P5lnQscj76JZ1AOJ5NoSpvI3ZMqCrM3kCjxnPe/2PemDsjj?=
+ =?us-ascii?Q?khien/tCxsM9vwiegnjcBXBfWd4qdUEPoIut+VlR3Ekz9l2dflR8sLAHe5zd?=
+ =?us-ascii?Q?GVv9gZelpzOfi2Sscgn9RW7lXETurhDc4hx8q65e5aKUYDrV0M5HeaQbeKQA?=
+ =?us-ascii?Q?5pFHbm83RSg5GZYMo7mJZlilNm1KVe7DHyxiM4gFAnoeGrzLjfbMNnIb+7ND?=
+ =?us-ascii?Q?wST5SoXICKnKD94p71cH7piHxh2Hgl8a7JkkY+nsWg9cDCyazUMAeL59/lA1?=
+ =?us-ascii?Q?w4dHfGesoA2lnsS5ckPIfWfO0PGnBeo61nlbNwe9jk3qGV1s/yh7n491bx8b?=
+ =?us-ascii?Q?QYQ8FPndci2YZoqhC/QeU79MHapDS2sXzXlKqkFGx2iauEuE13wfHXz2ThAR?=
+ =?us-ascii?Q?a7tH5zWFP6WliZghzpkuc74HDbIlZuA6fmmsuMe4ZL5+08x+nvwTpnFcl0rW?=
+ =?us-ascii?Q?MFDL0LONgXFpSkIIcjY=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d8055a67-222a-4ece-0deb-08dbc9a793dc
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 15:42:58.1799
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CZRGVw0GYUusxlfp4Ohdlco5xgB4eBNTQAGxdM9PCMKFJoOdyNMvJLAIH3jKAlEI
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB6973
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krishna,
+--=_MailMate_4D2F4DE0-45E7-4735-A0A7-83D19E40C502_=
+Content-Type: text/plain
 
-kernel test robot noticed the following build warnings:
+On 10 Oct 2023, at 1:47, Stephen Rothwell wrote:
 
-[auto build test WARNING on 3006adf3be79cde4d14b1800b963b82b6e5572e0]
+> Hi all,
+>
+> In commit
+>
+>   2a936ebfab06 ("mm/migrate: correct nr_failed in migrate_pages_sync()")
+>
+> Fixes tag
+>
+>   Fixes: 2ef7dbb26990 ("migrate_pages: try migrate in batch asynchronously fi=
+>
+> has these problem(s):
+>
+>   - Subject has leading but no trailing parentheses
+>   - Subject has leading but no trailing quotes
+>   - Subject does not match target commit subject
+>     Just use
+> 	git log -1 --format='Fixes: %h ("%s")'
+>
+> Please do not split Fixes tags over more than one line.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Krishna-chaitanya-chundru/bus-mhi-host-Add-tracing-support/20231005-231430
-base:   3006adf3be79cde4d14b1800b963b82b6e5572e0
-patch link:    https://lore.kernel.org/r/20231005-ftrace_support-v1-1-23a2f394fa49%40quicinc.com
-patch subject: [PATCH] bus: mhi: host: Add tracing support
-config: i386-randconfig-062-20231010 (https://download.01.org/0day-ci/archive/20231010/202310102355.6SEa9YSi-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231010/202310102355.6SEa9YSi-lkp@intel.com/reproduce)
+I have "transferEncoding=quoted-printable" set in my gitconfig, so git send-email
+splits long lines by itself. Something wrong with that? In the email body,
+it has "Content-Transfer-Encoding: quoted-printable" too.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310102355.6SEa9YSi-lkp@intel.com/
+--
+Best Regards,
+Yan, Zi
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/bus/mhi/host/main.c:835:56: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned long long [usertype] ptr @@     got restricted __le64 [usertype] ptr @@
-   drivers/bus/mhi/host/main.c:835:56: sparse:     expected unsigned long long [usertype] ptr
-   drivers/bus/mhi/host/main.c:835:56: sparse:     got restricted __le64 [usertype] ptr
->> drivers/bus/mhi/host/main.c:835:78: sparse: sparse: incorrect type in argument 4 (different base types) @@     expected int dword0 @@     got restricted __le32 @@
-   drivers/bus/mhi/host/main.c:835:78: sparse:     expected int dword0
-   drivers/bus/mhi/host/main.c:835:78: sparse:     got restricted __le32
->> drivers/bus/mhi/host/main.c:836:63: sparse: sparse: incorrect type in argument 5 (different base types) @@     expected int dword1 @@     got restricted __le32 @@
-   drivers/bus/mhi/host/main.c:836:63: sparse:     expected int dword1
-   drivers/bus/mhi/host/main.c:836:63: sparse:     got restricted __le32
-   drivers/bus/mhi/host/main.c:1004:85: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected unsigned long long [usertype] ptr @@     got restricted __le64 [usertype] ptr @@
-   drivers/bus/mhi/host/main.c:1004:85: sparse:     expected unsigned long long [usertype] ptr
-   drivers/bus/mhi/host/main.c:1004:85: sparse:     got restricted __le64 [usertype] ptr
-   drivers/bus/mhi/host/main.c:1005:66: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected int dword0 @@     got restricted __le32 @@
-   drivers/bus/mhi/host/main.c:1005:66: sparse:     expected int dword0
-   drivers/bus/mhi/host/main.c:1005:66: sparse:     got restricted __le32
-   drivers/bus/mhi/host/main.c:1005:86: sparse: sparse: incorrect type in argument 4 (different base types) @@     expected int dword1 @@     got restricted __le32 @@
-   drivers/bus/mhi/host/main.c:1005:86: sparse:     expected int dword1
-   drivers/bus/mhi/host/main.c:1005:86: sparse:     got restricted __le32
->> drivers/bus/mhi/host/main.c:1246:34: sparse: sparse: incorrect type in argument 4 (different base types) @@     expected unsigned long long [usertype] tre_ptr @@     got restricted __le64 [usertype] ptr @@
-   drivers/bus/mhi/host/main.c:1246:34: sparse:     expected unsigned long long [usertype] tre_ptr
-   drivers/bus/mhi/host/main.c:1246:34: sparse:     got restricted __le64 [usertype] ptr
-   drivers/bus/mhi/host/main.c:1246:55: sparse: sparse: incorrect type in argument 5 (different base types) @@     expected int dword0 @@     got restricted __le32 @@
-   drivers/bus/mhi/host/main.c:1246:55: sparse:     expected int dword0
-   drivers/bus/mhi/host/main.c:1246:55: sparse:     got restricted __le32
-   drivers/bus/mhi/host/main.c:1246:74: sparse: sparse: incorrect type in argument 6 (different base types) @@     expected int dword1 @@     got restricted __le32 @@
-   drivers/bus/mhi/host/main.c:1246:74: sparse:     expected int dword1
-   drivers/bus/mhi/host/main.c:1246:74: sparse:     got restricted __le32
->> drivers/bus/mhi/host/main.c:834:80: sparse: sparse: non size-preserving pointer to integer cast
-   drivers/bus/mhi/host/main.c:1245:75: sparse: sparse: non size-preserving pointer to integer cast
+--=_MailMate_4D2F4DE0-45E7-4735-A0A7-83D19E40C502_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename=signature.asc
+Content-Type: application/pgp-signature; name=signature.asc
 
-vim +835 drivers/bus/mhi/host/main.c
+-----BEGIN PGP SIGNATURE-----
 
-   799	
-   800	int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
-   801				     struct mhi_event *mhi_event,
-   802				     u32 event_quota)
-   803	{
-   804		struct mhi_ring_element *dev_rp, *local_rp;
-   805		struct mhi_ring *ev_ring = &mhi_event->ring;
-   806		struct mhi_event_ctxt *er_ctxt =
-   807			&mhi_cntrl->mhi_ctxt->er_ctxt[mhi_event->er_index];
-   808		struct mhi_chan *mhi_chan;
-   809		struct device *dev = &mhi_cntrl->mhi_dev->dev;
-   810		u32 chan;
-   811		int count = 0;
-   812		dma_addr_t ptr = le64_to_cpu(er_ctxt->rp);
-   813	
-   814		/*
-   815		 * This is a quick check to avoid unnecessary event processing
-   816		 * in case MHI is already in error state, but it's still possible
-   817		 * to transition to error state while processing events
-   818		 */
-   819		if (unlikely(MHI_EVENT_ACCESS_INVALID(mhi_cntrl->pm_state)))
-   820			return -EIO;
-   821	
-   822		if (!is_valid_ring_ptr(ev_ring, ptr)) {
-   823			dev_err(&mhi_cntrl->mhi_dev->dev,
-   824				"Event ring rp points outside of the event ring\n");
-   825			return -EIO;
-   826		}
-   827	
-   828		dev_rp = mhi_to_virtual(ev_ring, ptr);
-   829		local_rp = ev_ring->rp;
-   830	
-   831		while (dev_rp != local_rp) {
-   832			enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
-   833	
- > 834			trace_mhi_process_ctrl_ev_ring(mhi_cntrl->mhi_dev->name, (u64)(local_rp),
- > 835						       local_rp->ptr, local_rp->dword[0],
- > 836						       local_rp->dword[1],
-   837						       mhi_state_str(MHI_TRE_GET_EV_STATE(local_rp)));
-   838	
-   839			switch (type) {
-   840			case MHI_PKT_TYPE_BW_REQ_EVENT:
-   841			{
-   842				struct mhi_link_info *link_info;
-   843	
-   844				link_info = &mhi_cntrl->mhi_link_info;
-   845				write_lock_irq(&mhi_cntrl->pm_lock);
-   846				link_info->target_link_speed =
-   847					MHI_TRE_GET_EV_LINKSPEED(local_rp);
-   848				link_info->target_link_width =
-   849					MHI_TRE_GET_EV_LINKWIDTH(local_rp);
-   850				write_unlock_irq(&mhi_cntrl->pm_lock);
-   851				dev_dbg(dev, "Received BW_REQ event\n");
-   852				mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_BW_REQ);
-   853				break;
-   854			}
-   855			case MHI_PKT_TYPE_STATE_CHANGE_EVENT:
-   856			{
-   857				enum mhi_state new_state;
-   858	
-   859				new_state = MHI_TRE_GET_EV_STATE(local_rp);
-   860	
-   861				dev_dbg(dev, "State change event to state: %s\n",
-   862					mhi_state_str(new_state));
-   863	
-   864				switch (new_state) {
-   865				case MHI_STATE_M0:
-   866					mhi_pm_m0_transition(mhi_cntrl);
-   867					break;
-   868				case MHI_STATE_M1:
-   869					mhi_pm_m1_transition(mhi_cntrl);
-   870					break;
-   871				case MHI_STATE_M3:
-   872					mhi_pm_m3_transition(mhi_cntrl);
-   873					break;
-   874				case MHI_STATE_SYS_ERR:
-   875				{
-   876					enum mhi_pm_state pm_state;
-   877	
-   878					dev_dbg(dev, "System error detected\n");
-   879					write_lock_irq(&mhi_cntrl->pm_lock);
-   880					pm_state = mhi_tryset_pm_state(mhi_cntrl,
-   881								MHI_PM_SYS_ERR_DETECT);
-   882					write_unlock_irq(&mhi_cntrl->pm_lock);
-   883					if (pm_state == MHI_PM_SYS_ERR_DETECT)
-   884						mhi_pm_sys_err_handler(mhi_cntrl);
-   885					break;
-   886				}
-   887				default:
-   888					dev_err(dev, "Invalid state: %s\n",
-   889						mhi_state_str(new_state));
-   890				}
-   891	
-   892				break;
-   893			}
-   894			case MHI_PKT_TYPE_CMD_COMPLETION_EVENT:
-   895				mhi_process_cmd_completion(mhi_cntrl, local_rp);
-   896				break;
-   897			case MHI_PKT_TYPE_EE_EVENT:
-   898			{
-   899				enum dev_st_transition st = DEV_ST_TRANSITION_MAX;
-   900				enum mhi_ee_type event = MHI_TRE_GET_EV_EXECENV(local_rp);
-   901	
-   902				dev_dbg(dev, "Received EE event: %s\n",
-   903					TO_MHI_EXEC_STR(event));
-   904				switch (event) {
-   905				case MHI_EE_SBL:
-   906					st = DEV_ST_TRANSITION_SBL;
-   907					break;
-   908				case MHI_EE_WFW:
-   909				case MHI_EE_AMSS:
-   910					st = DEV_ST_TRANSITION_MISSION_MODE;
-   911					break;
-   912				case MHI_EE_FP:
-   913					st = DEV_ST_TRANSITION_FP;
-   914					break;
-   915				case MHI_EE_RDDM:
-   916					mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_EE_RDDM);
-   917					write_lock_irq(&mhi_cntrl->pm_lock);
-   918					mhi_cntrl->ee = event;
-   919					write_unlock_irq(&mhi_cntrl->pm_lock);
-   920					wake_up_all(&mhi_cntrl->state_event);
-   921					break;
-   922				default:
-   923					dev_err(dev,
-   924						"Unhandled EE event: 0x%x\n", type);
-   925				}
-   926				if (st != DEV_ST_TRANSITION_MAX)
-   927					mhi_queue_state_transition(mhi_cntrl, st);
-   928	
-   929				break;
-   930			}
-   931			case MHI_PKT_TYPE_TX_EVENT:
-   932				chan = MHI_TRE_GET_EV_CHID(local_rp);
-   933	
-   934				WARN_ON(chan >= mhi_cntrl->max_chan);
-   935	
-   936				/*
-   937				 * Only process the event ring elements whose channel
-   938				 * ID is within the maximum supported range.
-   939				 */
-   940				if (chan < mhi_cntrl->max_chan) {
-   941					mhi_chan = &mhi_cntrl->mhi_chan[chan];
-   942					if (!mhi_chan->configured)
-   943						break;
-   944					parse_xfer_event(mhi_cntrl, local_rp, mhi_chan);
-   945				}
-   946				break;
-   947			default:
-   948				dev_err(dev, "Unhandled event type: %d\n", type);
-   949				break;
-   950			}
-   951	
-   952			mhi_recycle_ev_ring_element(mhi_cntrl, ev_ring);
-   953			local_rp = ev_ring->rp;
-   954	
-   955			ptr = le64_to_cpu(er_ctxt->rp);
-   956			if (!is_valid_ring_ptr(ev_ring, ptr)) {
-   957				dev_err(&mhi_cntrl->mhi_dev->dev,
-   958					"Event ring rp points outside of the event ring\n");
-   959				return -EIO;
-   960			}
-   961	
-   962			dev_rp = mhi_to_virtual(ev_ring, ptr);
-   963			count++;
-   964		}
-   965	
-   966		read_lock_bh(&mhi_cntrl->pm_lock);
-   967	
-   968		/* Ring EV DB only if there is any pending element to process */
-   969		if (likely(MHI_DB_ACCESS_VALID(mhi_cntrl)) && count)
-   970			mhi_ring_er_db(mhi_event);
-   971		read_unlock_bh(&mhi_cntrl->pm_lock);
-   972	
-   973		return count;
-   974	}
-   975	
+iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmUlcQAPHHppeUBudmlk
+aWEuY29tAAoJEOJ/noEUByhUtBgP/2dPhokGlIHzNMTDdGcdCLOgmvu0jM9ABZOF
+9KmRlZn3o6FZULPQdqsn1EWOgSNs0LNTKmd3dhN0xn5VQHOpqgpZC1OyAuAbnXOd
+HDF/6E5hUM0hYMEPiTzCrAWrslfQcPKKjCkEHx6hKeUXR42f5zYCGUnDJElMBrLK
+3Uw3aq3rgTwRO/gPiqbuV3D0aEOyzk9lAmw9kJol7k7lMUnfhnTanHCKAQeebmI0
+vJJPD4K/sMiLpdfzkOWbxJC2KyEPUjXCB08NrRimx4864ow01g5NMiWuwSujpsHc
+l4SnEPig4YdkfEyQNCpyYdYam5hZ9YZk7d6UIyH/wyR75fxT9V5Be1YMVKP8jcSa
++7KD55WS5HBuulP/hdf2tRRudvcbdRbAgYuk4j7cAd9e6TO2akubdAvtic4cArU/
+0qjplgMQrZ6Cr1VtoPbItNYAJB/5k4OHfxqIWCVUEMrTadKC++qzusmmUj2+jhr/
+vPJCRA2LrORm35U4GH16gfvEgex34dsb6ZY0i58+nZ9inLAfraD4eZhV1pft/Mpq
+Gw1UYvbNrecIw4UTL5zCHaSpQDZ13wO/euGt8OlWq3dUpiSLuMgUPi8CQCfdY2mS
+lWkAcWxR2GokmnUD3XAi5uMmiFORJ6zMIFhxHwgfNbGJbJjaSytNEBGUWdDQmAnk
+x5NQpQMc
+=V7bf
+-----END PGP SIGNATURE-----
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--=_MailMate_4D2F4DE0-45E7-4735-A0A7-83D19E40C502_=--
