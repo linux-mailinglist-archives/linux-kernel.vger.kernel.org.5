@@ -2,68 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C2D27BF2F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 08:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF3C7BF2FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 08:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442227AbjJJG0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 02:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33512 "EHLO
+        id S1442183AbjJJG2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 02:28:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442156AbjJJG0Q (ORCPT
+        with ESMTP id S1442233AbjJJG2k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 02:26:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BC089D
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 23:26:12 -0700 (PDT)
+        Tue, 10 Oct 2023 02:28:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A8AA7;
+        Mon,  9 Oct 2023 23:28:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696919172; x=1728455172;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=nz+E7DO7OIWkljOalQoDMOXu7kXk7ptyJ/4kojfOYhM=;
-  b=eVvSLkSXi7p+7iG+nhi9M/CnDNSLU7+MyJgzLtk/aeI5jF05tBAuM75V
-   1M4JCTwFjrh8+oSNhSw5WnsWLTJ/UMRWBlj1WW7E9LOY33RtnXPlc3nZg
-   pwI7UK0WF3LmHOKnEWygEMv24oKxr600O16joB563l5J6An8TfJCVHFBR
-   dyxCMEtSicsU00114kpiJ/A/2UwvzAMWOsSw6S/fc4IOI1+wzP8l36Y8C
-   fg9QjE33TnJfILQESzVbL8K227bPNu4bxQpaylSvGjTkfcn5utoETXrxb
-   5Dm3NJfGdppaqvyyvi8Yx3stnV4hjoBRc3RZZ5IdPHAXK0YtrsqxuXfzG
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="450814194"
+  t=1696919317; x=1728455317;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=4jE+PKSt8RyoEfQc42bJCTXndRzMaKURXbt0xZD8cHA=;
+  b=fRWm2SxpLnosBO/SE0NJyS2g1faqaJo17dgO9WuVu+RINluJX6OeqDth
+   Hut1LVT2osVzzPASBp8bqH+SHJkTD40mRFRfk3ABvfivDBMFKDWRWZoSR
+   qcBbEd6tDEBFg6X6Iq/iLUFmKwotE4+MUqRnrJp9wVFDGHCAJbLnq6FIY
+   fE0Zf20S9ILHMyq/p8q0pN14NwnRpCptcvb4iYvT24shNhWKKF3q8AC/Q
+   +6GIFtDD7/u5o3lJEMLSguLxW2Os4nDF72kWjhl294iz41RDGziQoa/36
+   OYAO/OBRQP1Jq4LYJ3lmUrUizyZXJTjgxIpw+Y76u/aQP7U4aCihgjeOZ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="381581540"
 X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
-   d="scan'208";a="450814194"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 23:26:11 -0700
+   d="scan'208";a="381581540"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 23:28:36 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="819105264"
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="1084653983"
 X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
-   d="scan'208";a="819105264"
-Received: from agargas-mobl.ger.corp.intel.com (HELO [10.249.254.164]) ([10.249.254.164])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 23:26:07 -0700
-Message-ID: <780f4ac6-949f-ebc1-791b-69141add3de2@linux.intel.com>
-Date:   Tue, 10 Oct 2023 08:26:04 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH drm-misc-next v6 4/6] drm/gpuvm: track/lock/validate
- external/evicted objects
-Content-Language: en-US
-To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
-        daniel@ffwll.ch, matthew.brost@intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, boris.brezillon@collabora.com,
-        christian.koenig@amd.com, faith@gfxstrand.net
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20231008233212.13815-1-dakr@redhat.com>
- <20231008233212.13815-5-dakr@redhat.com>
- <9d2c3eb5-f0e6-23a6-0946-7d63670b4778@linux.intel.com>
- <4e0d545f-b0bb-17fa-73dc-62c652a0cce3@redhat.com>
-From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
-        <thomas.hellstrom@linux.intel.com>
-In-Reply-To: <4e0d545f-b0bb-17fa-73dc-62c652a0cce3@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+   d="scan'208";a="1084653983"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Oct 2023 23:28:33 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Mon, 9 Oct 2023 23:28:32 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Mon, 9 Oct 2023 23:28:32 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Mon, 9 Oct 2023 23:28:32 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O6eQoX//Nz00ip86g03g32ULdqyGn3mWwN4lLKiBuiEw23ZRVUxkMK7j98LkrnyN98rmN64ufaU+gd90pWGdrTjwEZCF1f/pQ21JseVez6cPbq08WPHM2PdTy6W4mY2EK9jkkZwPopNvCYRX5kNRp8CTfYej7/MJYYqZlHFzoKD3Qv/kHYNIGrThQDLI+0FDgZLbaLiJ28iJNf753yzCHG9zDoB2SlsiN1Ce55pBstKIoNAgSjT2NFoMU2Ja5Pju+rnJi2C2KE6cp1BMsuM3ojh7aw0Crz/FHotHPRrxf/aO1sTNZzFe7QoxcyfYnGgrIcB/hic+Hmvt/v4x6Y0V0A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0DNeBU5DpUzh4wodAIqiulZFYv7Px5KjHzo9IL486so=;
+ b=Icr2DQawK1Mw8MJnuEAW8RZZxBjWq6Dxu4ITOIVH8YPYeDJvnyQL23q597atLtSJm8M7YE/3c+ocOZGtK7yh4l5t7/8QBMcqV0IF+sBHmy2y37oLnyhsO5+GU8HTxLCSYqsa2iLdW7w83ybK8mBbs3gct/b+HfpYdRRRg2qbfUyxOmsH/DM3AeNNetqlBMbIMnZ5IN/ux8Hdg3D4OfrP96cUsHbZiUKsCUP7tU5yNXD3/mE+fUhcHVo6DLXfTGrQSHX4/bQe4cNtAOcU0JYWSjy/u/2s7vttn4COWhgvkvm6lpCcerBI2wbznWNzh7yk0ASrXlUYzgRIR/8/ve3wYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6231.namprd11.prod.outlook.com (2603:10b6:208:3c4::15)
+ by DM6PR11MB4564.namprd11.prod.outlook.com (2603:10b6:5:2a0::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Tue, 10 Oct
+ 2023 06:28:30 +0000
+Received: from MN0PR11MB6231.namprd11.prod.outlook.com
+ ([fe80::fd1b:a3b7:11a6:4bc3]) by MN0PR11MB6231.namprd11.prod.outlook.com
+ ([fe80::fd1b:a3b7:11a6:4bc3%6]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
+ 06:28:29 +0000
+Date:   Tue, 10 Oct 2023 08:28:25 +0200
+From:   Maciej =?utf-8?Q?Wiecz=C3=B3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+CC:     Fenghua Yu <fenghua.yu@intel.com>, Shuah Khan <shuah@kernel.org>,
+        <ilpo.jarvinen@linux.intel.com>, <linux-kernel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH v6 1/2] selftests/resctrl: Fix schemata write error check
+Message-ID: <oc3jfclnvdlg27mcmnplguho2hifz2xvl6bcowgx2oy5xgevju@g2rp3r6hrfdx>
+References: <cover.1696848653.git.maciej.wieczor-retman@intel.com>
+ <ef13c2395db0a688ed84f4b535b308bb6f7b71c7.1696848653.git.maciej.wieczor-retman@intel.com>
+ <822a4716-4079-44d5-81d9-83c7e9bef610@intel.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+In-Reply-To: <822a4716-4079-44d5-81d9-83c7e9bef610@intel.com>
+X-ClientProxiedBy: WA2P291CA0008.POLP291.PROD.OUTLOOK.COM
+ (2603:10a6:1d0:1e::21) To MN0PR11MB6231.namprd11.prod.outlook.com
+ (2603:10b6:208:3c4::15)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6231:EE_|DM6PR11MB4564:EE_
+X-MS-Office365-Filtering-Correlation-Id: 323fef1c-aadc-4a88-c506-08dbc95a1e6d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: k5hYFWEPOm3+4nJASvtbPxcot3QUHZRjI/VMJbdawUX733Zk993+PjTqbKXIERY7KWEEmnfLEG85CGmsdwyJiE/J0LnBkMS7OeSm2yE+k9Od1ftJFyccMgqfEX1F3uioKbU4uzpOxruLj8j1bNScyO+zki0c9hTTZEvkQEgRPRxTJ9e1BrfcHg0YEGjZMx8pyMw7e4sm30oNrENvDYsY/6fQX6UbsvG+O3LjwbtpLpKY7yLbOzh50tnyxu0EavydsaX5Q4uxcccS08WMi9rNIW8bP6/xUo/vkElHvp7PXjsQxzHWgL6/L10pd08LZZR0BsMdfqjVCz07d64DJMatUqfvWWCK0TPrSsGCVUOtWcSoAqx8fY6SOGpL9PprszNupKLBAM3bCjtVO2REFn9s3p+TH6Vp5nYb+LLMn90KvLaAo2Nfg99ZxPnoxAycjkzvgAZmz07cz0a+tgPwrZiep8bX9WGsqF+CR08FDK8s07vDAyzw5jJI3KQQ8r42CF4JALoJutqRUQKZLv95lBFsRAjDlLzn5xxvk9GxqiE3bI4byZ74vjNvcNe/qXRWwNuK
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6231.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(396003)(376002)(136003)(39860400002)(346002)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(5660300002)(26005)(53546011)(9686003)(6666004)(8936002)(54906003)(6506007)(66574015)(6512007)(478600001)(4326008)(83380400001)(8676002)(2906002)(6862004)(66946007)(66476007)(33716001)(66556008)(6636002)(6486002)(41300700001)(316002)(38100700002)(86362001)(82960400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?6fT3YpxlsPl03v88lZ2pveHLGCihXF19L+x0Gmw7qboZaUchkhx3P7X1H6?=
+ =?iso-8859-1?Q?MAaVs2MQ0HVnmO4Re6g9JPUmA1GrlDk6KtYDU4StNK0/v3VZH/LdSVwU3y?=
+ =?iso-8859-1?Q?4wEhvEyrOIN/wF1VRgh4NtJug8FbhO9jXavq0MJoUKEAQ6xkG+Kgy+hgSe?=
+ =?iso-8859-1?Q?l1mGHc9Z0LtQUPJY1wetGFK8G9g03+JON7mMy4sS/29IievprXVa4Ev1yQ?=
+ =?iso-8859-1?Q?8ZOeSpgh8m9kIZNe0ivWpLY97OyuIc5oAFg6/1xx5LVLFQlaR2mpQrM+aj?=
+ =?iso-8859-1?Q?b3FjRUDVexRHLyEQUiSupEJHsZdVgHLNSxNPq3oe22xhhPEjjoiPtl7ugr?=
+ =?iso-8859-1?Q?2ycF6rXfG1g4oy4qlAQZtj54tYqJTvAt+u32XKK1Ma+g6JTGhDDprEDVVp?=
+ =?iso-8859-1?Q?g2ix62RDrFe3JRvC+ITwV0eNvV/resYy++fqJsO8XxBk8jPdAgFe3eEvGg?=
+ =?iso-8859-1?Q?Re0Eo20O1K3xz+lfvrFtPtljG+Oy0Ch6mU+WCkK83nSv9RsmWIDro/kxk2?=
+ =?iso-8859-1?Q?NpN3IvPoHE6YiKXghbC/shZ71+DcGw06WwamRTssdr9em2S1kfavAGXZPN?=
+ =?iso-8859-1?Q?qEQ8hpJivs0pIXdROwpUlF1cNFSgcCPwSUIcQ+8hEwUykZeyYJSEbSIFwu?=
+ =?iso-8859-1?Q?4Kv15uiY8+dDLlSeRJv6g+ykAOKC0ta015mGfFw73LXmofu1N+hhbA5wqp?=
+ =?iso-8859-1?Q?NKkUGGC7njZU2d+bpWab9mGW7yLxo9tgoubPSEZnn1D1Joz9dHB/WrwjoP?=
+ =?iso-8859-1?Q?90jfd6LBWAAMubJVXbLK7RZnUPUuURhyHpzsMwCcCh8JZt4FMnlzqM8yeC?=
+ =?iso-8859-1?Q?ekLceQYuQbC+MEulQ5pJxyn5v+t2DckzZYLQ7bH3Yf/jfkIZBeQ4dcxElw?=
+ =?iso-8859-1?Q?O4RQX7qZ18e0I044Vv/1IpM3BT35nzMoO/FY+RNKidwi0GPG+Tlk8vRE0E?=
+ =?iso-8859-1?Q?+7ojPV6DE1xDu4b/E1gS2K59zrugGJwK1EsbRoThzXjh369+42wtSJ0ei5?=
+ =?iso-8859-1?Q?Pn3cB4tvH30sPgkdS3WjXGDoY9RkarwFaADJIw7eGer2aA5YqZSpl9UehF?=
+ =?iso-8859-1?Q?k+xpycKV3XVvxO6k31PFQ8gOV1L27egIRL/Q9kN+ejyJkTzqEzvoEdi1nQ?=
+ =?iso-8859-1?Q?Vq/ygZYGzB8MUdMO/Gifd3hzxgoVsKYsRU43saBxpK7XPjHc7EBW+KzJit?=
+ =?iso-8859-1?Q?tqicZ1iSIaqYD7JB+AXnEA6lQ/WcR9rdOfZUTuyOh57vRpVYmGh55kkMMm?=
+ =?iso-8859-1?Q?0ksA40853VixvEK3ucFzT0z3Ge6iqirLbb25nIQD9/+UJMFaHolL17a8AA?=
+ =?iso-8859-1?Q?KPlBuA0Ic5bjOQzrvITbuMA6Wcmxd/D5CXxjwrC6EA2ktGo74HoJcIMTFO?=
+ =?iso-8859-1?Q?A08nbC0UWIUft0aOTkNbrmXXQFtk8zy1m8ggqZLwcMD2+uSaQAsaIjEdxz?=
+ =?iso-8859-1?Q?badT8GhRMyk9YUI8IBw/ZNsmV5kMov8DnMpLCTyxw918I678mVdobLJCfO?=
+ =?iso-8859-1?Q?/6H4vHEbH1lFPstQims/UxF8zuEaZYOd/xFzrhm44tjSqEQkNjOrAz6EIL?=
+ =?iso-8859-1?Q?leLfSVtihvaGHwW8nsHbsA4dCU8WqZSh/UTYR6DLS4mUDs4aBTbaK1u1xi?=
+ =?iso-8859-1?Q?mjdQV2zaOBfTdRNTGSk3LIdN4JBLeFPSYRGR9OxQRpKlItUZ/P1521T5YJ?=
+ =?iso-8859-1?Q?un0IVkvN4QjhN4jJXHs=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 323fef1c-aadc-4a88-c506-08dbc95a1e6d
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6231.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 06:28:29.9273
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FaWn4NXzVCSnEbag3fISWJNHWVKXNbDwlMi5DBvZsnR9SmBlz6wKDAGqFvlRiHhlhFKbliz3Kk7WAmzc19LlnIwOX3y23sKXbe8cARba+i0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4564
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,875 +151,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 10/9/23 16:45, Danilo Krummrich wrote:
-> On 10/9/23 15:36, Thomas Hellström wrote:
->>
->> On 10/9/23 01:32, Danilo Krummrich wrote:
->>> Currently the DRM GPUVM offers common infrastructure to track GPU VA
->>> allocations and mappings, generically connect GPU VA mappings to their
->>> backing buffers and perform more complex mapping operations on the 
->>> GPU VA
->>> space.
->>>
->>> However, there are more design patterns commonly used by drivers, which
->>> can potentially be generalized in order to make the DRM GPUVM represent
->>> a basis for GPU-VM implementations. In this context, this patch aims
->>> at generalizing the following elements.
->>>
->>> 1) Provide a common dma-resv for GEM objects not being used outside of
->>>     this GPU-VM.
->>>
->>> 2) Provide tracking of external GEM objects (GEM objects which are
->>>     shared with other GPU-VMs).
->>>
->>> 3) Provide functions to efficiently lock all GEM objects dma-resv the
->>>     GPU-VM contains mappings of.
->>>
->>> 4) Provide tracking of evicted GEM objects the GPU-VM contains mappings
->>>     of, such that validation of evicted GEM objects is accelerated.
->>>
->>> 5) Provide some convinience functions for common patterns.
->>>
->>> Big thanks to Boris Brezillon for his help to figure out locking for
->>> drivers updating the GPU VA space within the fence signalling path.
->>>
->>> Suggested-by: Matthew Brost <matthew.brost@intel.com>
->>> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
->>> ---
->>>   drivers/gpu/drm/drm_gpuvm.c | 646 
->>> ++++++++++++++++++++++++++++++++++++
->>>   include/drm/drm_gpuvm.h     | 246 ++++++++++++++
->>>   2 files changed, 892 insertions(+)
->>>
->>> diff --git a/drivers/gpu/drm/drm_gpuvm.c b/drivers/gpu/drm/drm_gpuvm.c
->>> index 28282283ddaf..6977bd30eca5 100644
->>> --- a/drivers/gpu/drm/drm_gpuvm.c
->>> +++ b/drivers/gpu/drm/drm_gpuvm.c
->>> @@ -82,6 +82,21 @@
->>>    * &drm_gem_object list of &drm_gpuvm_bos for an existing instance 
->>> of this
->>>    * particular combination. If not existent a new instance is 
->>> created and linked
->>>    * to the &drm_gem_object.
->>> + *
->>> + * &drm_gpuvm_bo structures, since unique for a given &drm_gpuvm, 
->>> are also used
->>> + * as entry for the &drm_gpuvm's lists of external and evicted 
->>> objects. Those
->>> + * list are maintained in order to accelerate locking of dma-resv 
->>> locks and
->>> + * validation of evicted objects bound in a &drm_gpuvm. For 
->>> instance, all
->>> + * &drm_gem_object's &dma_resv of a given &drm_gpuvm can be locked 
->>> by calling
->>> + * drm_gpuvm_exec_lock(). Once locked drivers can call 
->>> drm_gpuvm_validate() in
->>> + * order to validate all evicted &drm_gem_objects. It is also 
->>> possible to lock
->>> + * additional &drm_gem_objects by providing the corresponding 
->>> parameters to
->>> + * drm_gpuvm_exec_lock() as well as open code the &drm_exec loop 
->>> while making
->>> + * use of helper functions such as drm_gpuvm_prepare_range() or
->>> + * drm_gpuvm_prepare_objects().
->>> + *
->>> + * Every bound &drm_gem_object is treated as external object when 
->>> its &dma_resv
->>> + * structure is different than the &drm_gpuvm's common &dma_resv 
->>> structure.
->>>    */
->>>   /**
->>> @@ -429,6 +444,20 @@
->>>    * Subsequent calls to drm_gpuvm_bo_obtain() for the same 
->>> &drm_gpuvm and
->>>    * &drm_gem_object must be able to observe previous creations and 
->>> destructions
->>>    * of &drm_gpuvm_bos in order to keep instances unique.
->>> + *
->>> + * The &drm_gpuvm's lists for keeping track of external and evicted 
->>> objects are
->>> + * protected against concurrent insertion / removal and iteration 
->>> internally.
->>> + *
->>> + * However, drivers still need ensure to protect concurrent calls 
->>> to functions
->>> + * iterating those lists, namely drm_gpuvm_prepare_objects() and
->>> + * drm_gpuvm_validate().
->>> + *
->>> + * Alternatively, drivers can set the &DRM_GPUVM_RESV_PROTECTED 
->>> flag to indicate
->>> + * that the corresponding &dma_resv locks are held in order to 
->>> protect the
->>> + * lists. If &DRM_GPUVM_RESV_PROTECTED is set, internal locking is 
->>> disabled and
->>> + * the corresponding lockdep checks are enabled. This is an 
->>> optimization for
->>> + * drivers which are capable of taking the corresponding &dma_resv 
->>> locks and
->>> + * hence do not require internal locking.
->>>    */
->>>   /**
->>> @@ -641,6 +670,195 @@
->>>    *    }
->>>    */
->>> +/**
->>> + * get_next_vm_bo_from_list() - get the next vm_bo element
->>> + * @__gpuvm: The GPU VM
->>> + * @__list_name: The name of the list we're iterating on
->>> + * @__local_list: A pointer to the local list used to store already 
->>> iterated items
->>> + * @__prev_vm_bo: The previous element we got from 
->>> drm_gpuvm_get_next_cached_vm_bo()
->>> + *
->>> + * This helper is here to provide lockless list iteration. Lockless 
->>> as in, the
->>> + * iterator releases the lock immediately after picking the first 
->>> element from
->>> + * the list, so list insertion deletion can happen concurrently.
->>> + *
->>> + * Elements popped from the original list are kept in a local list, 
->>> so removal
->>> + * and is_empty checks can still happen while we're iterating the 
->>> list.
->>> + */
->>> +#define get_next_vm_bo_from_list(__gpuvm, __list_name, 
->>> __local_list, __prev_vm_bo)    \
->>> +    ({                                        \
->>> +        struct drm_gpuvm_bo *__vm_bo = NULL;                    \
->>> +                                            \
->>> + drm_gpuvm_bo_put(__prev_vm_bo);                        \
->>> +                                            \
->>> + spin_lock(&(__gpuvm)->__list_name.lock); \
->>> +        if (!(__gpuvm)->__list_name.local_list)                    \
->>> +            (__gpuvm)->__list_name.local_list = __local_list;        \
->>> +        else                                    \
->>> +            WARN_ON((__gpuvm)->__list_name.local_list != 
->>> __local_list);    \
->>> +                                            \
->>> +        while (!list_empty(&(__gpuvm)->__list_name.list)) 
->>> {            \
->>> +            __vm_bo = 
->>> list_first_entry(&(__gpuvm)->__list_name.list,    \
->>> +                           struct drm_gpuvm_bo,            \
->>> +                           list.entry.__list_name);        \
->>> +            if (kref_get_unless_zero(&__vm_bo->kref)) {            \
->>> + list_move_tail(&(__vm_bo)->list.entry.__list_name,    \
->>> +                           __local_list);                \
->>> +                break;                            \
->>> +            } else {                            \
->>> + list_del_init(&(__vm_bo)->list.entry.__list_name);    \
->>> +                __vm_bo = NULL;                        \
->>> +            }                                \
->>> +        }                                    \
->>> + spin_unlock(&(__gpuvm)->__list_name.lock); \
->>> +                                            \
->>> +        __vm_bo;                                \
->>> +    })
->>> +
->>> +/**
->>> + * for_each_vm_bo_in_list() - internal vm_bo list iterator
->>> + *
->>> + * This helper is here to provide lockless list iteration. Lockless 
->>> as in, the
->>> + * iterator releases the lock immediately after picking the first 
->>> element from the
->>> + * list, hence list insertion and deletion can happen concurrently.
->>> + *
->>> + * It is not allowed to re-assign the vm_bo pointer from inside 
->>> this loop.
->>> + *
->>> + * Typical use:
->>> + *
->>> + *    struct drm_gpuvm_bo *vm_bo;
->>> + *    LIST_HEAD(my_local_list);
->>> + *
->>> + *    ret = 0;
->>> + *    for_each_vm_bo_in_list(gpuvm, <list_name>, &my_local_list, 
->>> vm_bo) {
->>> + *        ret = do_something_with_vm_bo(..., vm_bo);
->>> + *        if (ret)
->>> + *            break;
->>> + *    }
->>> + *    drm_gpuvm_bo_put(vm_bo);
->>> + *    restore_vm_bo_list(gpuvm, <list_name>, &my_local_list);
->>> + *
->>> + *
->>> + * Only used for internal list iterations, not meant to be exposed 
->>> to the outside
->>> + * world.
->>> + */
->>> +#define for_each_vm_bo_in_list(__gpuvm, __list_name, __local_list, 
->>> __vm_bo)    \
->>> +    for (__vm_bo = get_next_vm_bo_from_list(__gpuvm, 
->>> __list_name,        \
->>> +                        __local_list, NULL);        \
->>> +         __vm_bo;                                \
->>> +         __vm_bo = get_next_vm_bo_from_list(__gpuvm, 
->>> __list_name,        \
->>> +                        __local_list, __vm_bo))
->>> +
->>> +static void
->>> +__restore_vm_bo_list(struct drm_gpuvm *gpuvm, spinlock_t *lock,
->>> +             struct list_head *list, struct list_head **local_list)
->>> +{
->>> +    /* Merge back the two lists, moving local list elements to the
->>> +     * head to preserve previous ordering, in case it matters.
->>> +     */
->>> +    spin_lock(lock);
->>> +    if (*local_list) {
->>> +        list_splice(*local_list, list);
->>> +        *local_list = NULL;
->>> +    }
->>> +    spin_unlock(lock);
->>> +}
->>> +
->>> +/**
->>> + * restore_vm_bo_list() - move vm_bo elements back to their 
->>> original list
->>> + * @__gpuvm: The GPU VM
->>> + * @__list_name: The name of the list we're iterating on
->>> + *
->>> + * When we're done iterating a vm_bo list, we should call 
->>> restore_vm_bo_list()
->>> + * to restore the original state and let new iterations take place.
->>> + */
->>> +#define restore_vm_bo_list(__gpuvm, __list_name)            \
->>> +    __restore_vm_bo_list((__gpuvm), &(__gpuvm)->__list_name.lock,    \
->>> +                 &(__gpuvm)->__list_name.list, \
->>> +                 &(__gpuvm)->__list_name.local_list)
->>> +
->>> +static void
->>> +cond_spin_lock(spinlock_t *lock, bool cond)
->>> +{
->>> +    if (cond)
->>> +        spin_lock(lock);
->>> +}
->>> +
->>> +static void
->>> +cond_spin_unlock(spinlock_t *lock, bool cond)
->>> +{
->>> +    if (cond)
->>> +        spin_unlock(lock);
->>> +}
->>> +
->>> +static void
->>> +__drm_gpuvm_bo_list_add(struct drm_gpuvm *gpuvm, spinlock_t *lock,
->>> +            struct list_head *entry, struct list_head *list)
->>> +{
->>> +    cond_spin_lock(lock, !!lock);
->>> +    if (list_empty(entry))
->>> +        list_add_tail(entry, list);
->>> +    cond_spin_unlock(lock, !!lock);
->>> +}
->>> +
->>> +/**
->>> + * drm_gpuvm_bo_list_add() - insert a vm_bo into the given list
->>> + * @__vm_bo: the &drm_gpuvm_bo
->>> + * @__list_name: the name of the list to insert into
->>> + * @__lock: whether to lock with the internal spinlock
->>> + *
->>> + * Inserts the given @__vm_bo into the list specified by @__list_name.
->>> + */
->>> +#define drm_gpuvm_bo_list_add(__vm_bo, __list_name, 
->>> __lock)            \
->>> + __drm_gpuvm_bo_list_add((__vm_bo)->vm,                    \
->>> +                __lock ? &(__vm_bo)->vm->__list_name.lock :    \
->>> +                     NULL,                    \
->>> + &(__vm_bo)->list.entry.__list_name,        \
->>> +                &(__vm_bo)->vm->__list_name.list)
->>> +
->>> +static void
->>> +__drm_gpuvm_bo_list_del(struct drm_gpuvm *gpuvm, spinlock_t *lock,
->>> +            struct list_head *entry, bool init)
->>> +{
->>> +    cond_spin_lock(lock, !!lock);
->>> +    if (init) {
->>> +        if (!list_empty(entry))
->>> +            list_del_init(entry);
->>> +    } else {
->>> +        list_del(entry);
->>> +    }
->>> +    cond_spin_unlock(lock, !!lock);
->>> +}
->>> +
->>> +/**
->>> + * drm_gpuvm_bo_list_del_init() - remove a vm_bo from the given list
->>> + * @__vm_bo: the &drm_gpuvm_bo
->>> + * @__list_name: the name of the list to insert into
->>> + * @__lock: whether to lock with the internal spinlock
->>> + *
->>> + * Removes the given @__vm_bo from the list specified by @__list_name.
->>> + */
->>> +#define drm_gpuvm_bo_list_del_init(__vm_bo, __list_name, 
->>> __lock)        \
->>> + __drm_gpuvm_bo_list_del((__vm_bo)->vm,                    \
->>> +                __lock ? &(__vm_bo)->vm->__list_name.lock :    \
->>> +                     NULL,                    \
->>> + &(__vm_bo)->list.entry.__list_name,        \
->>> +                true)
->>> +
->>> +/**
->>> + * drm_gpuvm_bo_list_del() - remove a vm_bo from the given list
->>> + * @__vm_bo: the &drm_gpuvm_bo
->>> + * @__list_name: the name of the list to insert into
->>> + * @__lock: whether to lock with the internal spinlock
->>> + *
->>> + * Removes the given @__vm_bo from the list specified by @__list_name.
->>> + */
->>> +#define drm_gpuvm_bo_list_del(__vm_bo, __list_name, 
->>> __lock)            \
->>> + __drm_gpuvm_bo_list_del((__vm_bo)->vm,                    \
->>> +                __lock ? &(__vm_bo)->vm->__list_name.lock :    \
->>> +                     NULL,                    \
->>> + &(__vm_bo)->list.entry.__list_name,        \
->>> +                false)
->>> +
->>>   #define to_drm_gpuva(__node)    container_of((__node), struct 
->>> drm_gpuva, rb.node)
->>>   #define GPUVA_START(node) ((node)->va.addr)
->>> @@ -760,6 +978,12 @@ drm_gpuvm_init(struct drm_gpuvm *gpuvm, struct 
->>> drm_gem_object *r_obj,
->>>       gpuvm->rb.tree = RB_ROOT_CACHED;
->>>       INIT_LIST_HEAD(&gpuvm->rb.list);
->>> +    INIT_LIST_HEAD(&gpuvm->extobj.list);
->>> +    spin_lock_init(&gpuvm->extobj.lock);
->>> +
->>> +    INIT_LIST_HEAD(&gpuvm->evict.list);
->>> +    spin_lock_init(&gpuvm->evict.lock);
->>> +
->>>       drm_gpuvm_check_overflow(start_offset, range);
->>>       gpuvm->mm_start = start_offset;
->>>       gpuvm->mm_range = range;
->>> @@ -802,10 +1026,372 @@ drm_gpuvm_destroy(struct drm_gpuvm *gpuvm)
->>>       WARN(!RB_EMPTY_ROOT(&gpuvm->rb.tree.rb_root),
->>>            "GPUVA tree is not empty, potentially leaking memory.\n");
->>> +    WARN(!list_empty(&gpuvm->extobj.list), "Extobj list should be 
->>> empty.\n");
->>> +    WARN(!list_empty(&gpuvm->evict.list), "Evict list should be 
->>> empty.\n");
->>> +
->>>       drm_gem_object_put(gpuvm->r_obj);
->>>   }
->>>   EXPORT_SYMBOL_GPL(drm_gpuvm_destroy);
->>> +static int
->>> +__drm_gpuvm_prepare_objects(struct drm_gpuvm *gpuvm,
->>> +                struct drm_exec *exec,
->>> +                unsigned int num_fences)
->>> +{
->>> +    struct drm_gpuvm_bo *vm_bo;
->>> +    LIST_HEAD(extobjs);
->>> +    int ret = 0;
->>> +
->>> +    for_each_vm_bo_in_list(gpuvm, extobj, &extobjs, vm_bo) {
->>> +        ret = drm_exec_prepare_obj(exec, vm_bo->obj, num_fences);
->>> +        if (ret)
->>> +            break;
->>> +    }
->>> +    /* Drop ref in case we break out of the loop. */
->>> +    drm_gpuvm_bo_put(vm_bo);
->>> +    restore_vm_bo_list(gpuvm, extobj);
->>> +
->>> +    return ret;
->>> +}
->>> +
->>> +static int
->>> +drm_gpuvm_prepare_objects_locked(struct drm_gpuvm *gpuvm,
->>> +                 struct drm_exec *exec,
->>> +                 unsigned int num_fences)
->>> +{
->>> +    struct drm_gpuvm_bo *vm_bo;
->>> +    int ret = 0;
->>> +
->>> +    drm_gpuvm_resv_assert_held(gpuvm);
->>> +    list_for_each_entry(vm_bo, &gpuvm->extobj.list, 
->>> list.entry.extobj) {
->>> +        ret = drm_exec_prepare_obj(exec, vm_bo->obj, num_fences);
->>> +        if (ret)
->>> +            break;
->>> +
->>> +        if (vm_bo->evicted)
->>> +            drm_gpuvm_bo_list_add(vm_bo, evict, false);
->>
->> Clear vm_bo->evicted here?
+On 2023-10-09 at 11:55:16 -0700, Reinette Chatre wrote:
+>Hi Maciej,
 >
-> Why? It's still evicted, hence why not indicate it? It could be useful 
-> for a
-> validate_range() use case.
-
-I guess that boils down to what vm_bo->evicted is supposed to mean. I 
-have been using it as "This bo needs to be put on the evicted list", but 
-if we instead mean "This bo was once evicted and might need revalidation 
-and needs rebinding to this VM" then it's OK not to clear it, I guess. 
-But note that another VM might have already re-validated the gem BO, and 
-also if the locking loop or validate loop restarts due to -EINTR or 
--EDEADLK, then the drm_gpuvm_bo_list_add() will be called multiple 
-times, which is OK but unnecessary. So I'd vote for "This bo needs to be 
-put on the eviced list".
-
+>On 10/9/2023 3:57 AM, Maciej Wieczor-Retman wrote:
+>> Writing bitmasks to the schemata can fail when the bitmask doesn't
+>> adhere to constraints defined by what a particular CPU supports.
+>> Some example of constraints are max length or having contiguous bits.
+>> The driver should properly return errors when any rule concerning
+>> bitmask format is broken.
+>> 
+>> Resctrl FS returns error codes from fprintf() only when fclose() is
+>> called. Current error checking scheme allows invalid bitmasks to be
+>> written into schemata file and the selftest doesn't notice because the
+>> fclose() error code isn't checked.
+>> 
+>> Substitute fopen(), flose() and fprintf() with open(), close() and
+>> write() to avoid error code buffering between fprintf() and fclose().
+>> 
+>> Remove newline character from the schema string after writing it to
+>> the schemata file so it prints correctly before function return.
+>> 
+>> Pass the string generated with strerror() to the "reason" buffer so
+>> the error message is more verbose. Extend "reason" buffer so it can hold
+>> longer messages.
+>> 
+>> Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+>> Reviewed-by: Ilpo J�rvinen <ilpo.jarvinen@linux.intel.com>
+>> ---
+>> Changelog v6:
+>> - Align schema_len error checking with typical snprintf format.
+>>   (Reinette)
+>> - Initialize schema string for early return eventuality. (Reinette)
+>> 
+>> Changelog v5:
+>> - Add Ilpo's reviewed-by tag.
+>> - Fix wrong open() error checking. (Reinette)
+>> - Add error checking to schema_len variable.
+>> 
+>> Changelog v4:
+>> - Unify error checking between open() and write(). (Reinette)
+>> - Add fcntl.h for glibc backward compatiblitiy. (Reinette)
+>> 
+>> Changelog v3:
+>> - Rename fp to fd. (Ilpo)
+>> - Remove strlen, strcspn and just use the snprintf value instead. (Ilpo)
+>> 
+>> Changelog v2:
+>> - Rewrite patch message.
+>> - Double "reason" buffer size to fit longer error explanation.
+>> - Redo file interactions with syscalls instead of stdio functions.
+>> 
+>>  tools/testing/selftests/resctrl/resctrlfs.c | 36 +++++++++++++--------
+>>  1 file changed, 23 insertions(+), 13 deletions(-)
+>> 
+>> diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
+>> index 3a8111362d26..648f9ec8b355 100644
+>> --- a/tools/testing/selftests/resctrl/resctrlfs.c
+>> +++ b/tools/testing/selftests/resctrl/resctrlfs.c
+>> @@ -8,6 +8,7 @@
+>>   *    Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>,
+>>   *    Fenghua Yu <fenghua.yu@intel.com>
+>>   */
+>> +#include <fcntl.h>
+>>  #include <limits.h>
+>>  
+>>  #include "resctrl.h"
+>> @@ -490,9 +491,8 @@ int write_bm_pid_to_resctrl(pid_t bm_pid, char *ctrlgrp, char *mongrp,
+>>   */
+>>  int write_schemata(char *ctrlgrp, char *schemata, int cpu_no, char *resctrl_val)
+>>  {
+>> -	char controlgroup[1024], schema[1024], reason[64];
+>> -	int resource_id, ret = 0;
+>> -	FILE *fp;
+>> +	char controlgroup[1024], reason[128], schema[1024] = {};
+>> +	int resource_id, fd, schema_len = -1, ret = 0;
+>>  
+>>  	if (strncmp(resctrl_val, MBA_STR, sizeof(MBA_STR)) &&
+>>  	    strncmp(resctrl_val, MBM_STR, sizeof(MBM_STR)) &&
+>> @@ -520,27 +520,37 @@ int write_schemata(char *ctrlgrp, char *schemata, int cpu_no, char *resctrl_val)
+>>  
+>>  	if (!strncmp(resctrl_val, CAT_STR, sizeof(CAT_STR)) ||
+>>  	    !strncmp(resctrl_val, CMT_STR, sizeof(CMT_STR)))
+>> -		sprintf(schema, "%s%d%c%s", "L3:", resource_id, '=', schemata);
+>> +		schema_len = snprintf(schema, sizeof(schema), "%s%d%c%s\n",
+>> +				      "L3:", resource_id, '=', schemata);
+>>  	if (!strncmp(resctrl_val, MBA_STR, sizeof(MBA_STR)) ||
+>>  	    !strncmp(resctrl_val, MBM_STR, sizeof(MBM_STR)))
+>> -		sprintf(schema, "%s%d%c%s", "MB:", resource_id, '=', schemata);
+>> +		schema_len = snprintf(schema, sizeof(schema), "%s%d%c%s\n",
+>> +				      "MB:", resource_id, '=', schemata);
+>> +	if (schema_len < 0 || schema_len >= sizeof(schema)) {
+>> +		snprintf(reason, sizeof(reason),
+>> +			 "snprintf() failed with return value : %d", schema_len);
+>> +		ret = -1;
+>> +		goto out;
+>> +	}
+>>  
+>> -	fp = fopen(controlgroup, "w");
+>> -	if (!fp) {
+>> -		sprintf(reason, "Failed to open control group");
+>> +	fd = open(controlgroup, O_WRONLY);
+>> +	if (fd < 0) {
+>> +		snprintf(reason, sizeof(reason),
+>> +			 "open() failed : %s", strerror(errno));
+>>  		ret = -1;
+>>  
+>>  		goto out;
+>>  	}
+>> -
+>> -	if (fprintf(fp, "%s\n", schema) < 0) {
+>> -		sprintf(reason, "Failed to write schemata in control group");
+>> -		fclose(fp);
+>> +	if (write(fd, schema, schema_len) < 0) {
+>> +		snprintf(reason, sizeof(reason),
+>> +			 "write() failed : %s", strerror(errno));
+>> +		close(fd);
+>>  		ret = -1;
+>>  
+>>  		goto out;
+>>  	}
+>> -	fclose(fp);
+>> +	close(fd);
+>> +	schema[schema_len - 1] = 0;
+>>  
+>>  out:
+>>  	ksft_print_msg("Write schema \"%s\" to resctrl FS%s%s\n",
 >
->>
->>
->>> +    }
->>> +
->>> +    return ret;
->>> +}
->>> +
->>> +/**
->>> + * drm_gpuvm_prepare_objects() - prepare all assoiciated BOs
->>> + * @gpuvm: the &drm_gpuvm
->>> + * @exec: the &drm_exec locking context
->>> + * @num_fences: the amount of &dma_fences to reserve
->>> + *
->>> + * Calls drm_exec_prepare_obj() for all &drm_gem_objects the given
->>> + * &drm_gpuvm contains mappings of.
->>> + *
->>> + * Using this function directly, it is the drivers responsibility 
->>> to call
->>> + * drm_exec_init() and drm_exec_fini() accordingly.
->>> + *
->>> + * Note: This function is safe against concurrent insertion and 
->>> removal of
->>> + * external objects, however it is not safe against concurrent 
->>> usage itself.
->>> + *
->>> + * Drivers need to make sure to protect this case with either an 
->>> outer VM lock
->>> + * or by calling drm_gpuvm_prepare_vm() before this function within 
->>> the
->>> + * drm_exec_until_all_locked() loop, such that the GPUVM's dma-resv 
->>> lock ensures
->>> + * mutual exclusion.
->>> + *
->>> + * Returns: 0 on success, negative error code on failure.
->>> + */
->>> +int
->>> +drm_gpuvm_prepare_objects(struct drm_gpuvm *gpuvm,
->>> +              struct drm_exec *exec,
->>> +              unsigned int num_fences)
->>> +{
->>> +    if (drm_gpuvm_resv_protected(gpuvm))
->>> +        return drm_gpuvm_prepare_objects_locked(gpuvm, exec,
->>> +                            num_fences);
->>> +    else
->>> +        return __drm_gpuvm_prepare_objects(gpuvm, exec, num_fences);
->>> +
->>> +}
->>> +EXPORT_SYMBOL_GPL(drm_gpuvm_prepare_objects);
->>> +
->>> +/**
->>> + * drm_gpuvm_prepare_range() - prepare all BOs mapped within a 
->>> given range
->>> + * @gpuvm: the &drm_gpuvm
->>> + * @exec: the &drm_exec locking context
->>> + * @addr: the start address within the VA space
->>> + * @range: the range to iterate within the VA space
->>> + * @num_fences: the amount of &dma_fences to reserve
->>> + *
->>> + * Calls drm_exec_prepare_obj() for all &drm_gem_objects mapped 
->>> between @addr
->>> + * and @addr + @range.
->>> + *
->>> + * Returns: 0 on success, negative error code on failure.
->>> + */
->>> +int
->>> +drm_gpuvm_prepare_range(struct drm_gpuvm *gpuvm, struct drm_exec 
->>> *exec,
->>> +            u64 addr, u64 range, unsigned int num_fences)
->>> +{
->>> +    struct drm_gpuva *va;
->>> +    u64 end = addr + range;
->>> +    int ret;
->>> +
->>> +    drm_gpuvm_for_each_va_range(va, gpuvm, addr, end) {
->>> +        struct drm_gem_object *obj = va->gem.obj;
->>> +
->>> +        ret = drm_exec_prepare_obj(exec, obj, num_fences);
->>> +        if (ret)
->>> +            return ret;
->>> +    }
->>> +
->>> +    return 0;
->>> +}
->>> +EXPORT_SYMBOL_GPL(drm_gpuvm_prepare_range);
->>> +
->>> +/**
->>> + * drm_gpuvm_exec_lock() - lock all dma-resv of all assoiciated BOs
->>> + * @vm_exec: the &drm_gpuvm_exec wrapper
->>> + * @num_fences: the amount of &dma_fences to reserve
->>> + * @interruptible: sleep interruptible if waiting
->>> + *
->>> + * Acquires all dma-resv locks of all &drm_gem_objects the given
->>> + * &drm_gpuvm contains mappings of.
->>> + *
->>> + * Addionally, when calling this function with struct 
->>> drm_gpuvm_exec::extra
->>> + * being set the driver receives the given @fn callback to lock 
->>> additional
->>> + * dma-resv in the context of the &drm_gpuvm_exec instance. 
->>> Typically, drivers
->>> + * would call drm_exec_prepare_obj() from within this callback.
->>> + *
->>> + * Returns: 0 on success, negative error code on failure.
->>> + */
->>> +int
->>> +drm_gpuvm_exec_lock(struct drm_gpuvm_exec *vm_exec,
->>> +            unsigned int num_fences,
->>> +            bool interruptible)
->>> +{
->>> +    struct drm_gpuvm *gpuvm = vm_exec->vm;
->>> +    struct drm_exec *exec = &vm_exec->exec;
->>> +    uint32_t flags;
->>> +    int ret;
->>> +
->>> +    flags = interruptible ? DRM_EXEC_INTERRUPTIBLE_WAIT : 0 |
->>> +        DRM_EXEC_IGNORE_DUPLICATES;
->>> +
->>> +    drm_exec_init(exec, flags);
->>> +
->>> +    drm_exec_until_all_locked(exec) {
->>> +        ret = drm_gpuvm_prepare_vm(gpuvm, exec, num_fences);
->>> +        drm_exec_retry_on_contention(exec);
->>> +        if (ret)
->>> +            goto err;
->>> +
->>> +        ret = drm_gpuvm_prepare_objects(gpuvm, exec, num_fences);
->>> +        drm_exec_retry_on_contention(exec);
->>> +        if (ret)
->>> +            goto err;
->>> +
->>> +        if (vm_exec->extra.fn) {
->>> +            ret = vm_exec->extra.fn(vm_exec, num_fences);
->>> +            drm_exec_retry_on_contention(exec);
->>> +            if (ret)
->>> +                goto err;
->>> +        }
->>> +    }
->>> +
->>> +    return 0;
->>> +
->>> +err:
->>> +    drm_exec_fini(exec);
->>> +    return ret;
->>> +}
->>> +EXPORT_SYMBOL_GPL(drm_gpuvm_exec_lock);
->>> +
->>> +static int
->>> +fn_lock_array(struct drm_gpuvm_exec *vm_exec, unsigned int num_fences)
->>> +{
->>> +    struct {
->>> +        struct drm_gem_object **objs;
->>> +        unsigned int num_objs;
->>> +    } *args = vm_exec->extra.priv;
->>> +
->>> +    return drm_exec_prepare_array(&vm_exec->exec, args->objs,
->>> +                      args->num_objs, num_fences);
->>> +}
->>> +
->>> +/**
->>> + * drm_gpuvm_exec_lock_array() - lock all dma-resv of all 
->>> assoiciated BOs
->>> + * @vm_exec: the &drm_gpuvm_exec wrapper
->>> + * @objs: additional &drm_gem_objects to lock
->>> + * @num_objs: the number of additional &drm_gem_objects to lock
->>> + * @num_fences: the amount of &dma_fences to reserve
->>> + * @interruptible: sleep interruptible if waiting
->>> + *
->>> + * Acquires all dma-resv locks of all &drm_gem_objects the given 
->>> &drm_gpuvm
->>> + * contains mappings of, plus the ones given through @objs.
->>> + *
->>> + * Returns: 0 on success, negative error code on failure.
->>> + */
->>> +int
->>> +drm_gpuvm_exec_lock_array(struct drm_gpuvm_exec *vm_exec,
->>> +              struct drm_gem_object **objs,
->>> +              unsigned int num_objs,
->>> +              unsigned int num_fences,
->>> +              bool interruptible)
->>> +{
->>> +    struct {
->>> +        struct drm_gem_object **objs;
->>> +        unsigned int num_objs;
->>> +    } args;
->>> +
->>> +    args.objs = objs;
->>> +    args.num_objs = num_objs;
->>> +
->>> +    vm_exec->extra.fn = fn_lock_array;
->>> +    vm_exec->extra.priv = &args;
->>> +
->>> +    return drm_gpuvm_exec_lock(vm_exec, num_fences, interruptible);
->>> +}
->>> +EXPORT_SYMBOL_GPL(drm_gpuvm_exec_lock_array);
->>> +
->>> +/**
->>> + * drm_gpuvm_exec_lock_range() - prepare all BOs mapped within a 
->>> given range
->>> + * @vm_exec: the &drm_gpuvm_exec wrapper
->>> + * @addr: the start address within the VA space
->>> + * @range: the range to iterate within the VA space
->>> + * @num_fences: the amount of &dma_fences to reserve
->>> + * @interruptible: sleep interruptible if waiting
->>> + *
->>> + * Acquires all dma-resv locks of all &drm_gem_objects mapped 
->>> between @addr and
->>> + * @addr + @range.
->>> + *
->>> + * Returns: 0 on success, negative error code on failure.
->>> + */
->>> +int
->>> +drm_gpuvm_exec_lock_range(struct drm_gpuvm_exec *vm_exec,
->>> +              u64 addr, u64 range,
->>> +              unsigned int num_fences,
->>> +              bool interruptible)
->>> +{
->>> +    struct drm_gpuvm *gpuvm = vm_exec->vm;
->>> +    struct drm_exec *exec = &vm_exec->exec;
->>> +    uint32_t flags;
->>> +    int ret;
->>> +
->>> +    flags = interruptible ? DRM_EXEC_INTERRUPTIBLE_WAIT : 0 |
->>> +        DRM_EXEC_IGNORE_DUPLICATES;
->>> +
->>> +    drm_exec_init(exec, flags);
->>> +
->>> +    drm_exec_until_all_locked(exec) {
->>> +        ret = drm_gpuvm_prepare_range(gpuvm, exec, addr, range,
->>> +                          num_fences);
->>> +        drm_exec_retry_on_contention(exec);
->>> +        if (ret)
->>> +            goto err;
->>> +    }
->>> +
->>> +    return ret;
->>> +
->>> +err:
->>> +    drm_exec_fini(exec);
->>> +    return ret;
->>> +}
->>> +EXPORT_SYMBOL_GPL(drm_gpuvm_exec_lock_range);
->>> +
->>> +static int
->>> +__drm_gpuvm_validate(struct drm_gpuvm *gpuvm, struct drm_exec *exec)
->>> +{
->>> +    const struct drm_gpuvm_ops *ops = gpuvm->ops;
->>> +    struct drm_gpuvm_bo *vm_bo;
->>> +    LIST_HEAD(evict);
->>> +    int ret = 0;
->>> +
->>> +    for_each_vm_bo_in_list(gpuvm, evict, &evict, vm_bo) {
->>> +        ret = ops->vm_bo_validate(vm_bo, exec);
->>> +        if (ret)
->>> +            break;
->>> +    }
->>> +    /* Drop ref in case we break out of the loop. */
->>> +    drm_gpuvm_bo_put(vm_bo);
->>> +    restore_vm_bo_list(gpuvm, evict);
->>> +
->>> +    return ret;
->>> +}
->>> +
->>> +static int
->>> +drm_gpuvm_validate_locked(struct drm_gpuvm *gpuvm, struct drm_exec 
->>> *exec)
->>> +{
->>> +    const struct drm_gpuvm_ops *ops = gpuvm->ops;
->>> +    struct drm_gpuvm_bo *vm_bo, *next;
->>> +    int ret = 0;
->>> +
->>> +    drm_gpuvm_resv_assert_held(gpuvm);
->>> +
->>> +    /* Iterate list safely, drivers typically remove the current 
->>> entry from
->>> +     * their drm_gpuvm_ops::vm_bo_validate callback. Drivers might 
->>> also
->>> +     * re-add the entry on failure; this is safe since on failure 
->>> we break
->>> +     * out of the loop.
->>> +     */
->>> +    list_for_each_entry_safe(vm_bo, next, &gpuvm->evict.list,
->>> +                 list.entry.evict) {
->>> +        ret = ops->vm_bo_validate(vm_bo, exec);
->>> +        if (ret)
->>> +            break;
->>> +    }
->>> +
->>> +    return ret;
->>> +}
->>> +
->>> +/**
->>> + * drm_gpuvm_validate() - validate all BOs marked as evicted
->>> + * @gpuvm: the &drm_gpuvm to validate evicted BOs
->>> + * @exec: the &drm_exec instance used for locking the GPUVM
->>> + *
->>> + * Calls the &drm_gpuvm_ops::vm_bo_validate callback for all 
->>> evicted buffer
->>> + * objects being mapped in the given &drm_gpuvm.
->>> + *
->>> + * Returns: 0 on success, negative error code on failure.
->>> + */
->>> +int
->>> +drm_gpuvm_validate(struct drm_gpuvm *gpuvm, struct drm_exec *exec)
->>> +{
->>> +    const struct drm_gpuvm_ops *ops = gpuvm->ops;
->>> +
->>> +    if (unlikely(!ops || !ops->vm_bo_validate))
->>> +        return -ENOTSUPP;
->>> +
->>> +    if (drm_gpuvm_resv_protected(gpuvm))
->>> +        return drm_gpuvm_validate_locked(gpuvm, exec);
->>> +    else
->>> +        return __drm_gpuvm_validate(gpuvm, exec);
->>> +
->>> +}
->>> +EXPORT_SYMBOL_GPL(drm_gpuvm_validate);
->>> +
->>> +/**
->>> + * drm_gpuvm_resv_add_fence - add fence to private and all extobj
->>> + * dma-resv
->>> + * @gpuvm: the &drm_gpuvm to add a fence to
->>> + * @exec: the &drm_exec locking context
->>> + * @fence: fence to add
->>> + * @private_usage: private dma-resv usage
->>> + * @extobj_usage: extobj dma-resv usage
->>> + */
->>> +void
->>> +drm_gpuvm_resv_add_fence(struct drm_gpuvm *gpuvm,
->>> +             struct drm_exec *exec,
->>> +             struct dma_fence *fence,
->>> +             enum dma_resv_usage private_usage,
->>> +             enum dma_resv_usage extobj_usage)
->>> +{
->>> +    struct drm_gem_object *obj;
->>> +    unsigned long index;
->>> +
->>> +    drm_exec_for_each_locked_object(exec, index, obj) {
->>> +        dma_resv_assert_held(obj->resv);
->>> +        dma_resv_add_fence(obj->resv, fence,
->>> +                   drm_gpuvm_is_extobj(gpuvm, obj) ?
->>> +                   private_usage : extobj_usage);
->>> +    }
->>> +}
->>> +EXPORT_SYMBOL_GPL(drm_gpuvm_resv_add_fence);
->>> +
->>>   /**
->>>    * drm_gpuvm_bo_create() - create a new instance of struct 
->>> drm_gpuvm_bo
->>>    * @gpuvm: The &drm_gpuvm the @obj is mapped in.
->>> @@ -838,6 +1424,9 @@ drm_gpuvm_bo_create(struct drm_gpuvm *gpuvm,
->>>       INIT_LIST_HEAD(&vm_bo->list.gpuva);
->>>       INIT_LIST_HEAD(&vm_bo->list.entry.gem);
->>> +    INIT_LIST_HEAD(&vm_bo->list.entry.extobj);
->>> +    INIT_LIST_HEAD(&vm_bo->list.entry.evict);
->>> +
->>>       drm_gem_object_get(obj);
->>>       return vm_bo;
->>> @@ -858,6 +1447,9 @@ drm_gpuvm_bo_destroy(struct kref *kref)
->>>       if (!lock)
->>>           drm_gpuvm_resv_assert_held(gpuvm);
->>> +    drm_gpuvm_bo_list_del(vm_bo, extobj, lock);
->>> +    drm_gpuvm_bo_list_del(vm_bo, evict, lock);
->>> +
->>>       list_del(&vm_bo->list.entry.gem);
->>>       drm_gem_object_put(obj);
->>> @@ -994,6 +1586,60 @@ drm_gpuvm_bo_obtain_prealloc(struct 
->>> drm_gpuvm_bo *__vm_bo)
->>>   }
->>>   EXPORT_SYMBOL_GPL(drm_gpuvm_bo_obtain_prealloc);
->>> +/**
->>> + * drm_gpuvm_bo_extobj_add() - adds the &drm_gpuvm_bo to its 
->>> &drm_gpuvm's
->>> + * extobj list
->>> + * @vm_bo: The &drm_gpuvm_bo to add to its &drm_gpuvm's the extobj 
->>> list.
->>> + *
->>> + * Adds the given @vm_bo to its &drm_gpuvm's extobj list if not on 
->>> the list
->>> + * already and if the corresponding &drm_gem_object is an external 
->>> object,
->>> + * actually.
->>> + */
->>> +void
->>> +drm_gpuvm_bo_extobj_add(struct drm_gpuvm_bo *vm_bo)
->>> +{
->>> +    struct drm_gpuvm *gpuvm = vm_bo->vm;
->>> +    bool lock = !drm_gpuvm_resv_protected(gpuvm);
->>> +
->>> +    if (!lock)
->>> +        drm_gpuvm_resv_assert_held(gpuvm);
->>> +
->>> +    if (drm_gpuvm_is_extobj(gpuvm, vm_bo->obj))
->>> +        drm_gpuvm_bo_list_add(vm_bo, extobj, lock);
->>> +}
->>> +EXPORT_SYMBOL_GPL(drm_gpuvm_bo_extobj_add);
->>> +
->>> +/**
->>> + * drm_gpuvm_bo_evict() - add / remove a &drm_gpuvm_bo to / from 
->>> the &drm_gpuvms
->>> + * evicted list
->>> + * @vm_bo: the &drm_gpuvm_bo to add or remove
->>> + * @evict: indicates whether the object is evicted
->>> + *
->>> + * Adds a &drm_gpuvm_bo to or removes it from the &drm_gpuvms 
->>> evicted list.
->>> + */
->>> +void
->>> +drm_gpuvm_bo_evict(struct drm_gpuvm_bo *vm_bo, bool evict)
->>> +{
->>> +    struct drm_gpuvm *gpuvm = vm_bo->vm;
->>> +    struct drm_gem_object *obj = vm_bo->obj;
->>> +    bool lock = !drm_gpuvm_resv_protected(gpuvm);
->>> +
->>> +    dma_resv_assert_held(obj->resv);
->>> +
->>> +    if (drm_gpuvm_is_extobj(gpuvm, obj)) {
->>> +        vm_bo->evicted = evict;
->> Does the lock case also need this?
 >
-> It doesn't need it by itself, but since we have drm_gpuvm_bo::evicted 
-> now, I want it to
-> consistently indicate whether the BO is evicted or not.
-
-OK, I guess that ties to the meaning of bo->evicted, as discussed above.
-
+>As changelog states, the newline is removed from schema to
+>ensure it is printed correctly. Note that this is not done when an
+>error is encountered during open() or write() so when an error is
+>encountered in these places then the print does not look as intended.
 >
->>> +
->>> +        if (!lock)
->>> +            return;
->>
->> Here the !lock case can not remove the gpuvm_bo from the list?
+>I think a new goto label inserted just before the newline removal
+>should be sufficient, with the open() and write() error paths jumping
+>to it.
 >
-> You mean because we'd expect that drm_gpuvm_bo_evict(vm_bo, false) can 
-> only be called from
-> within gpuvm_validate(), which requires the VM's resv lock? What if 
-> there is a ttm_validate()
-> call for only this GEM obj?
+>With that addressed:
 >
-> My idea was to remove VM_BOs from the evicted list in gpuvm_validate() 
-> directly, but I'm afraid
-> I forgot that.
-
-Yes, I think the helper could do it if validate() is successful. But 
-what I meant above was that if the *driver* is responsible for removing 
-object from the evicted list, then if it's a RESV_PROTECTED vm, it can't 
-do that because drm_gpuvm_bo_evict(gpuvm, false) will never get to 
-removing it from the list because it returns early.
-
-Thanks,
-
-Thomas
-
-
+>Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
 >
->>
->> Small patch here that I've been using for xe:
->>
->> https://patchwork.freedesktop.org/patch/561545/?series=124817&rev=1
->>
->> Thanks,
->>
->> Thomas
->>
->>
->
+>Reinette
+
+Thanks, I'll make the correction and resend.
+
+-- 
+Kind regards
+Maciej Wiecz�r-Retman
