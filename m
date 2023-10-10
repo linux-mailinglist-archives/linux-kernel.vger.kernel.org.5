@@ -2,166 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD08D7C01E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECBD27C01E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233829AbjJJQoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 12:44:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
+        id S233830AbjJJQpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 12:45:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233690AbjJJQoA (ORCPT
+        with ESMTP id S232356AbjJJQpC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 12:44:00 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2056.outbound.protection.outlook.com [40.107.223.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7ABD8E;
-        Tue, 10 Oct 2023 09:43:58 -0700 (PDT)
+        Tue, 10 Oct 2023 12:45:02 -0400
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01olkn2023.outbound.protection.outlook.com [40.92.53.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A28B8E;
+        Tue, 10 Oct 2023 09:44:59 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y76832PtgNpiwRFmyNkFrcTKmAIkbZDaB1ueojsjUSlYTD9S3fdSayJgYZXLe7xXzqnQT3mlZlXrg7F5lUn6TN1S0k5cialZwEwxzG4tV4c5Q5GB+5Eegi/XeZTgJYMcifpqBuNqwI2jlvtTGGWWpdqtAb9xUHDousk7Ovpd6VBlTQfrFeMmZL6rmeUVOxzgs3y6r7DbNhnEgPzOQalevWy80rACMhvUmmuHDotgLHn1EE3AyNosRSURv1EGQi73orCul/og/fVEjXy6eKOuxJJBpt6Zzm1bMAAygyrvGvXGxKFjJhRzi0Q8zCsJhsBdR+vvLRuJUNAOE0hliv4IEA==
+ b=iELm5inVMeNQ20FWSEXjt61pQotJXt0sZjhFhohHXuVLJxSjDJK2r6+O1UXd4L1UC/ea33xM2+yHLuQR7sgetE5a1K72Xqn3TcThgKvKcrANXTX+546XGh35pd7p037nrw4bVNZ/4FRIEKv5BRudEnSR9iz0iMBfBvaw3I8IRkr0WOepByouVQAwCpmtyQbzYOQb2nKn84CfL4EV5FShcgOqUsMKELzp4x7q+2VPoF3rLNJr12XAylf+cBcQL9aZ65QqpnvvVAqyWES32ro8TvoOa5e81rrLGaIclNtAgF4DqzNeKtDuO41clsmXshv55sKrVLiW/T1DS5hE+aSQXw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OOcc8SPL5b2ijmoj7gkwXv2mFDycsa6o323XBWrK9MM=;
- b=E6mIRhYq3PRR03lV9iVVNg6JalcOrEOy5QukbVSp3GID7DM/thZ3jNzAnbk67/DcRZpqiS+ItcxSNdqlaAt0RSV4dQBPmpYE5sZ3Op9Xrj7aLmVzHwCewjMqOfEN/zCg82ftAwgvZy2V19P/jLJPmhYAMznMnFljjKEdZFoaZSOCpQUOKEFIi0IrG/qMat531s+uc3e/EJCDNynT2REz7a89YjGiVhVfCv+4PvohgrNoBJ1730noI91F66s7gF40H3ZXmUS5TaBQA+jiuERLa4Wbzna/M3ve2vGTklYfJjUjxmQC6Y106lzy0GtkF5bjxpY47PY3/0MP0U/s5pBxYQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ bh=7Er4IMpZfPSX54I809Kd72s9uLIY/b8EKWkK3Gvhuco=;
+ b=LzN+IXylStAg7SYOy5KK1LxDAimNTOlE8od/ldTUvQTU0Yu95T+Dab/LQ30aR+27zNLToBVhLICCXssBW+yUijxmkWuK7uRxY7toDNlYm9OSE4Da7tfomr2F0cKMfvWb43uvRGXyxN5C5FteeRFmWuP3Wu+zO/uyva3fP/VWoTuLQTS0NTxMF57AYgkJtQFNmSdUwL1JfbGCKc/Qxohdmqog4odtKbn46ZKqKqAqqNgBy8WeDwR2pWwxjDIaLSBt6suO5XstSOKIJ+QSRb4q1DyMCw2SyHjIRGjnZvJXstiAoFrUs50VyTzEROo7hIbB/E4Q5mKUeYS/+N92LsuP0Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OOcc8SPL5b2ijmoj7gkwXv2mFDycsa6o323XBWrK9MM=;
- b=KcPtPAJn8BCV6B9vT1O9Wx5JWcGajN31hNkGnRpaoYi7ELLH6f6SSizCZYxETNGBgQivSukFiLnLfVNUOG+XZLLFg6yzCwCILckuRSv9n8J3rKVU+Gafjehib32q9GVTV6H19VY0jkCPdkHoUuyzk3y5ApwjxOJLAi/xvLvG5S1NRCoFr1dZrBv0W5KW1wAKT47SQPclrqVEt7vdD8qLGfKZtcESqgpoCnv1QJvEcSFCWY4huZjQRF2eOqVvZJdjPBF5zt8d+Js6O19+GEyCoubaxNh1n0SY5Zoa8XeDgb/3/rQZ665Bm/WORJ5R2frJfPMngzGW9YU0aMEqd8/GzQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by MN0PR12MB6029.namprd12.prod.outlook.com (2603:10b6:208:3cf::21) with
- Microsoft SMTP Server (version=TLS1_2,
+ bh=7Er4IMpZfPSX54I809Kd72s9uLIY/b8EKWkK3Gvhuco=;
+ b=i2VRuLN1AGiPO+b3cAT4/HRyiIsCVjcGQnzghid+lQi3E0H/9iiXC8Scu77ASfryoENq3mAXUcJKfZx9AvX1fgkrPDzpowqrI4jcM1pQiQeg/LDtWloJ7gv+7zDKZ2LEGHsItymQwtgPV6qSnKvDxfEKYoiIrnK4cJanocn0nHDVl8na6U/JjFekeVLLdQlO1zYhMzQV0Mw9An1fCQDrdvDXCxgrQlrkdqk/Ofz4duPPcnCMLzs1sSOgwPsflxMPd+qhzjlWHgnJNvZ7pW3ngW+BV1PPlyPaSwjKAxCESqzVK3r9yrc0M2n5bAgTG1IAXqNzd2inIeGxoXOYp2MnXQ==
+Received: from TYZPR01MB5556.apcprd01.prod.exchangelabs.com
+ (2603:1096:400:363::9) by SI2PR01MB3962.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:10e::10) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Tue, 10 Oct
- 2023 16:43:56 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2%6]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
- 16:43:56 +0000
-Date:   Tue, 10 Oct 2023 13:43:55 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Yi Liu <yi.l.liu@intel.com>
-Cc:     joro@8bytes.org, alex.williamson@redhat.com, kevin.tian@intel.com,
-        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
-        eric.auger@redhat.com, nicolinc@nvidia.com, kvm@vger.kernel.org,
-        mjrosato@linux.ibm.com, chao.p.peng@linux.intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
-Subject: Re: [PATCH v2 6/6] iommu/vt-d: Add domain_alloc_user op
-Message-ID: <20231010164355.GA74795@nvidia.com>
-References: <20230928071528.26258-1-yi.l.liu@intel.com>
- <20230928071528.26258-7-yi.l.liu@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230928071528.26258-7-yi.l.liu@intel.com>
-X-ClientProxiedBy: MN2PR05CA0056.namprd05.prod.outlook.com
- (2603:10b6:208:236::25) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+ 2023 16:44:53 +0000
+Received: from TYZPR01MB5556.apcprd01.prod.exchangelabs.com
+ ([fe80::3ac0:a6a4:2d8b:7fb9]) by TYZPR01MB5556.apcprd01.prod.exchangelabs.com
+ ([fe80::3ac0:a6a4:2d8b:7fb9%4]) with mapi id 15.20.6813.017; Tue, 10 Oct 2023
+ 16:44:52 +0000
+From:   Ziyang Huang <hzyitc@outlook.com>
+To:     ulf.hansson@linaro.org
+Cc:     neil.armstrong@linaro.org, khilman@baylibre.com,
+        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
+        yinxin_1989@aliyun.com, regressions@leemhuis.info,
+        briannorris@chromium.org, linux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ziyang Huang <hzyitc@outlook.com>
+Subject: [PATCH v2] mmc: meson-mx-sdhc: Fix initialization frozen issue
+Date:   Wed, 11 Oct 2023 00:44:00 +0800
+Message-ID: <TYZPR01MB5556A3E71554A2EC08597EA4C9CDA@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <TYZPR01MB5556B56D834E02F41C44D81DC95FA@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
+References: <TYZPR01MB5556B56D834E02F41C44D81DC95FA@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [m663dbzJiho1ItKxpjDRASwyqKXEVYHHqVdT8Z9XEEAGOnwkEjJoxw==]
+X-ClientProxiedBy: TYCPR01CA0033.jpnprd01.prod.outlook.com
+ (2603:1096:405:1::21) To TYZPR01MB5556.apcprd01.prod.exchangelabs.com
+ (2603:1096:400:363::9)
+X-Microsoft-Original-Message-ID: <20231010164400.549969-1-hzyitc@outlook.com>
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MN0PR12MB6029:EE_
-X-MS-Office365-Filtering-Correlation-Id: bf4b631e-bb70-4bfa-f1dd-08dbc9b01830
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
+X-MS-TrafficTypeDiagnostic: TYZPR01MB5556:EE_|SI2PR01MB3962:EE_
+X-MS-Office365-Filtering-Correlation-Id: 90674f13-7ae7-4cae-7aa2-08dbc9b03957
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: V3dm2FArdbwfqgzH4CZf6G3Nw81sNmvPbh7+wtY5eAmUjWBgLQ6scsAb1t52yt8wyyIn8PXsQoVe3k8A4Hc3Da4ILAJge/boo0NgRovGH44zIzNAWsww8uFg/Y5cXULA9xliK5afaXOARrcAGlzwz2bcXI1aFGD41s0DaeThItfzz2PPAF+WG3OGO9iyf21j+vrSIfPMD6ybR9AXajTKIfQQrkVLopAsU9JXy+4+ZNC7NqrBRcU7xrl6EQFzxo06vLdA6UAMKxf7sVDsGHE1qvbPWSwxOu04iajrieTY0lWzZN9TP5hNVxc8zhBH3Ah9aSse1uP8TWOzX6iZ7LwjIYhQBVKutiYOzhv/c75Go3OidlSK1t3HnAELbGTJjv2bS/8GlHCdody3b/4iE7mnFKFU2M9moa2A5+Sw/IhhHxjMw2XXHiArU/OVN7ruNozR1Z/eKHtYVP22w0l1Bfr9+J9LQg2b6L77pq8oaUPQzwMs3mBThOy66u7uOFtW5ER/LnbvjAilWfORSCKA6wtVr5MWTkMNi01crCVjCWMRYZEbXbO6TyzrexrXIWnlTv/R
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(366004)(376002)(136003)(346002)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(86362001)(38100700002)(36756003)(33656002)(6512007)(2906002)(8936002)(478600001)(6486002)(8676002)(5660300002)(41300700001)(4326008)(2616005)(1076003)(6506007)(66476007)(66556008)(6916009)(7416002)(66946007)(316002)(26005);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: Xh36sGv6HxhlcLVmuo1jPnpGZmuCaD1eix0QTlW9LkK17hOjRNc07cStNBqxnUFOcKhTPxS3VwOaCxCmdSpnM4HxPK3kYSDE8NdHCU9LDD+3vsq7ET8Pa98cbYd9c623eHkgr1HsfaP9gTo0z6ITrlXdCX3A2h66iyWhWgyEJZyAg33lkBJKJS801dSFRDDRHxqTK9QQsUGeRB6ibn+OObOmINpGgLn1uH1/mig/A6EvojahMTWhKEP8WyCFnNdrk/JWuG6arAvR3NdBC8hpzZ8/+twxKjQ4GCfYH9+mjIeAIQ/PTcgzuWksRQI77BLwomgH80JivHSmjdRnPBNKkacHemnuhq4KVtiKC3y/TjHIUy7NpEyhsAmroxTvR8XYkR4dooobUP8VjgJizmR6ttGaYdqCxiEsADfUra3/h611G58402bFE/0NiUlkrDnAKLav11kmJpcfSfP4VG0sIZPqcUcSfrD6BSY2dBx3IVNaaRriiJQzFMkpKJCxdlQmTzjphu99bIuPgWq46Ly8xViWbXnfe4VsB7B+SRmN+Mrv+rdcXf4sko58uUkJbgXUyLJXtO/FGl75Q+9CwSbnas7oCD7PYUMIgbgYYeIlrW+QtaQ+x0oWIIJFdhP8RZBo
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?XqhenXwuSGTZwC1PYLIVizv8AJbNL1/RNzygBIrQdF40KarUTXvNPvDWqr5/?=
- =?us-ascii?Q?l4inuk/4NNtHDdtwHVqBHRW8p86xQXtoD50SOmC0gwiS6oAiJnYePvJ5BjGv?=
- =?us-ascii?Q?06ezZHCxcgYc1iNfgppk7tMlH6k1TchLjbM4ct+9QVGeYcyVoybKIjEpCPw/?=
- =?us-ascii?Q?711avtah4U8DqGlVHned4rG5p+3g3smzBN24KuD5F23+pZeSnm3X6C/7ZXKb?=
- =?us-ascii?Q?PzvG4/6/zWHFtiouXGb3LeDvPplDbIbvJOXB4uq6Zzs4xj2Z6FswunlAP6oh?=
- =?us-ascii?Q?1qXJHjOdNALvW/4P8EkOQGkVZB80aB8AyocC1SyY6vJOOHDsAxP3p512oPY0?=
- =?us-ascii?Q?cNfZzAWtYrsfqlkxoYIiuQc14fAiIIIQD3+c9TA9wpp9maP5xAYvQSqTXgjB?=
- =?us-ascii?Q?E0wbOeWXXcnvNiIRMASadxqJBWoDpQJXjxSci2gUH/SLGuWshEVoyYOD1qJK?=
- =?us-ascii?Q?/QlDjs2sddfaNLynvN34Xra6Clzc+xBYVpBOYwld5j3tc7FLHyH5a6XfvBh3?=
- =?us-ascii?Q?zwk5ailj6AWhRrqX+H8CwHYlzfpx7hf/6USgIqB8YlLqzeA8iPaflOPC8hAX?=
- =?us-ascii?Q?BbWSB0dU9ptzsGQx7ie8vbBtLcLoPTgfvloQfFITpSYr/ylL1HW26f5P8BJ0?=
- =?us-ascii?Q?wLLOZhDX0ZSpALb+TGXUnhYZon4kuZY+ymTHzuwL5XDLHPl94kbTOE3yHNv9?=
- =?us-ascii?Q?4LDBouk6Hb6AgPSlBT3vwJHnSvknZqMtn3GZQo9S/Xy/0dntQCKdUyAKJKHh?=
- =?us-ascii?Q?iVcJ2OH0D9j+Or/uN+WcxpIbGMyL2SX4rPX79NRWjnsGSQ9MJvFnIM6cwmXt?=
- =?us-ascii?Q?3dcaqsm23RvGo5lein1uNn9P7AfxmqfEtupBHSbKWW7kCe/E4kgfkK2FzOnM?=
- =?us-ascii?Q?88410WdfOA/P91byK/swPJpvVkpQJrCBd3u1auCBGo0cScal9SQ1S/ojFSy2?=
- =?us-ascii?Q?1gnSMY5xwuwRX2jizpurhtqEbjEPb0YIhCqgQm0nHdboiVjoiaR0nko2aST5?=
- =?us-ascii?Q?oOn3R/W6vduCU4WJ26klG2WBWj/MkVYZ5+g7jJLA+qvCLNwQNStRE/KYWqZN?=
- =?us-ascii?Q?/ee1aLhgPFmreO8edtixdjUn63cavjwSdMktT4erS+s9hqQEzRUigS/WiMB1?=
- =?us-ascii?Q?POIoRAtFDLooaOm/BTY23muznvMcV5CxxeYWjRL/cafpX9359E59dbdIM8Wx?=
- =?us-ascii?Q?X6ANVE5VWsNXzCG+U5JwY9R4zsIjbgK9qeSqE4rpPTNCA7BHtkndFyUUu5u9?=
- =?us-ascii?Q?x9SKvcLe+EGSNsRzH54EpUqugFU24jLHfYmSxMNGkSer28DZyOGe+KX+X3zS?=
- =?us-ascii?Q?PZhoypyKTqI8AL1lQ1wIAcpcBkPplC0bhBxJMHkKj/rb/LgxHvIWaQuwRkYK?=
- =?us-ascii?Q?MYE15kkVcxRG8yRt4cOh4+4IYG2m7op7ao9+cmbqkM89IX/ajzbk5T8Mt8ix?=
- =?us-ascii?Q?36RxlYRb+PMCyv4VY+1C8ALdRe/KZC/Kp7z5OI1dltziaofteX1IYKTJgwnR?=
- =?us-ascii?Q?1pDbyh9r6RIzP8xTuMnNK9NQI55JIRkySTsa+3uWZDBNCocM9VX2ub0U3Xza?=
- =?us-ascii?Q?wLIru2iU1ythcZgb7swbRBrSEc6br+ClgpucIYfF?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bf4b631e-bb70-4bfa-f1dd-08dbc9b01830
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?u19E9jMI136bHM0F1ig0fVyxurvuMLClQr0p0MjgOBog/YirxwJRqiH5eNjw?=
+ =?us-ascii?Q?iXzUVhgJ7oUPsV/VEN/PVQTLwuFLuzuDjSkEKlCV8tIX/fpII+lbULekJUy/?=
+ =?us-ascii?Q?kx7kEYaq7AfOQIC13imr5pTFBuw6OFzVEvt+AOGZi/kEPq/SEz/wxeJTcv2H?=
+ =?us-ascii?Q?Iioon/d84R/oCX/npb6/SCn0cV41NaxTc91kU4IPMjUqbn0qbBPMvRGPU3HN?=
+ =?us-ascii?Q?W/Em8OiJqRSCq4IQ4KWF3hMZrxy7ZH77or3tx346DOAGw+R/v/d0hYlbgraY?=
+ =?us-ascii?Q?yzKyct/eCD/RsPHyKi4pN3FisY1a0/NyiOg1/AfmBv/vb+aDOlZUvz6ZYxSK?=
+ =?us-ascii?Q?VIGmthXvqAt28Ac5IAbbAi+Ei2DksJibdjXchOgZRk4IapscL1wRCTDlJsMN?=
+ =?us-ascii?Q?DvooWrWXeqWfCisdhj94kof6uQsCn7/4lGUkV4kcpWVZaL2bjHg2CSiMdAVE?=
+ =?us-ascii?Q?7z7IBuB1PzkvRUkCE7Wv3BDcgtJ7us1x2Dh4xYxYlatvmpljIwTTq8VB70Bs?=
+ =?us-ascii?Q?iw/1fFbwI4asZVhsISkreFhrMOMvhHcFfCP3lXBajGTmXb3d5dPMkP2QGmOE?=
+ =?us-ascii?Q?lcPnj3jiQDKvMOtJLtsMUl3flwSeTlJNZIN6gSg8fy+vbwShH7EeHXBCxzRO?=
+ =?us-ascii?Q?EOBjLtpY0S+AZ4h8fa0VNlAUfnN6d3Zgc6rqPuJ9WGb/olH/xbj8bDEP+OIj?=
+ =?us-ascii?Q?xLqwGlQG7tdKB7fZi5wqzzYGaD505Sv+g6bx+Jbz0eovDwJsblh+HqlHLHYQ?=
+ =?us-ascii?Q?4Nm1LNSXQjPuo/DQ8/QLbNMfLPLzVGETk8PWEG9f2p70ZXqXadm68eDeUaPx?=
+ =?us-ascii?Q?vZEYnfI7KQK1xb++jYUAt+SdVtBtN65M+DmnDkBBSQoZkwwonYbetv2xdIwI?=
+ =?us-ascii?Q?0QFRTqH539lzzlm4IE67Pbruc6zFrD6cco/KNDdaJ2zXCHuyERazpe8ZUe4o?=
+ =?us-ascii?Q?pOSwTX3Mbu3s7yPIL+kTA1zd/POieG12hoA0+jIM/njWlAAfVedJnvyB1O6o?=
+ =?us-ascii?Q?LMG440mzC0TzUaIPBbYM9GameOsoMbS5hKPLxqhMI9NDw+XILri05r2VO0kF?=
+ =?us-ascii?Q?PlYkSXVwD90zgjXXeMpp4BOgXI0tgIK0zcWKSO0H/YbASEesahglvRt41b/V?=
+ =?us-ascii?Q?hE0emADtdtn3kOvSpYODJhznLok0itp5MujIeCTpcz3BrYXjmLnotQqPPi2b?=
+ =?us-ascii?Q?B2ONpRmeeRyBY8naAeIUW1VWFSvtNTB7Rb65jC7qC575kNq2yvMA3hJq/jg?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 90674f13-7ae7-4cae-7aa2-08dbc9b03957
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR01MB5556.apcprd01.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 16:43:56.2387
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 16:44:52.0769
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: C/EwZwEU9cJLwK8IM9VKXGFuQhs0MmnuUOHPHUg792HbBZMf8gB+Q7giDgv5LpWy
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6029
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR01MB3962
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 12:15:28AM -0700, Yi Liu wrote:
-> This adds the domain_alloc_user op implementation. It supports allocating
-> domains to be used as parent under nested translation.
-> 
-> Signed-off-by: Yi Liu <yi.l.liu@intel.com>
-> ---
->  drivers/iommu/intel/iommu.c | 28 ++++++++++++++++++++++++++++
->  1 file changed, 28 insertions(+)
-> 
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index 5db283c17e0d..017aed5813d8 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -4074,6 +4074,33 @@ static struct iommu_domain *intel_iommu_domain_alloc(unsigned type)
->  	return NULL;
->  }
->  
-> +static struct iommu_domain *
-> +intel_iommu_domain_alloc_user(struct device *dev, u32 flags)
-> +{
-> +	struct iommu_domain *domain;
-> +	struct intel_iommu *iommu;
-> +
-> +	if (flags & (~IOMMU_HWPT_ALLOC_NEST_PARENT))
-> +		return ERR_PTR(-EOPNOTSUPP);
-> +
-> +	iommu = device_to_iommu(dev, NULL, NULL);
-> +	if (!iommu)
-> +		return ERR_PTR(-ENODEV);
+Commit 4bc31edebde5 ("mmc: core: Set HS clock speed before sending
+HS CMD13") set HS clock (52MHz) before switching to HS mode. For this
+freq, FCLK_DIV5 will be selected and div value is 10 (reg value is 9).
+Then we set rx_clk_phase to 11 or 15 which is out of range and make
+hardware frozen. After we send command request, no irq will be
+interrupted and the mmc driver will keep to wait for request finished,
+even durning rebooting.
 
-Why isn't this just
+So let's set it to Phase 90 which should work in most cases. Then let
+meson_mx_sdhc_execute_tuning() to find the accurate value for data
+transfer.
 
-	struct device_domain_info *info = dev_iommu_priv_get(dev)
-	struct intel_iommu *iommu = info->iommu
+If this doesn't work, maybe need to define a factor in dts.
 
-???
+Fixes: e4bf1b0970ef ("mmc: host: meson-mx-sdhc: new driver for the Amlogic Meson SDHC host")
+Signed-off-by: Ziyang Huang <hzyitc@outlook.com>
+---
+Changes since v1:
+  Use Phase 90 instand of value 1
 
-Same question for almost all other calls to this function! The one in
-probe is reasonable, but I don't think it should be ever called again.
+ drivers/mmc/host/meson-mx-sdhc-mmc.c | 26 +++++---------------------
+ 1 file changed, 5 insertions(+), 21 deletions(-)
 
-I'm going to leave this, but please make a series cleaning all the
-device_to_iommu() stuff next cycle..
+diff --git a/drivers/mmc/host/meson-mx-sdhc-mmc.c b/drivers/mmc/host/meson-mx-sdhc-mmc.c
+index 97168cdfa8e9..29698fceb89c 100644
+--- a/drivers/mmc/host/meson-mx-sdhc-mmc.c
++++ b/drivers/mmc/host/meson-mx-sdhc-mmc.c
+@@ -269,7 +269,7 @@ static int meson_mx_sdhc_enable_clks(struct mmc_host *mmc)
+ static int meson_mx_sdhc_set_clk(struct mmc_host *mmc, struct mmc_ios *ios)
+ {
+ 	struct meson_mx_sdhc_host *host = mmc_priv(mmc);
+-	u32 rx_clk_phase;
++	u32 val, rx_clk_phase;
+ 	int ret;
+ 
+ 	meson_mx_sdhc_disable_clks(mmc);
+@@ -290,27 +290,11 @@ static int meson_mx_sdhc_set_clk(struct mmc_host *mmc, struct mmc_ios *ios)
+ 		mmc->actual_clock = clk_get_rate(host->sd_clk);
+ 
+ 		/*
+-		 * according to Amlogic the following latching points are
+-		 * selected with empirical values, there is no (known) formula
+-		 * to calculate these.
++		 * Phase 90 should work in most cases. For data transmission,
++		 * meson_mx_sdhc_execute_tuning() will find a accurate value
+ 		 */
+-		if (mmc->actual_clock > 100000000) {
+-			rx_clk_phase = 1;
+-		} else if (mmc->actual_clock > 45000000) {
+-			if (ios->signal_voltage == MMC_SIGNAL_VOLTAGE_330)
+-				rx_clk_phase = 15;
+-			else
+-				rx_clk_phase = 11;
+-		} else if (mmc->actual_clock >= 25000000) {
+-			rx_clk_phase = 15;
+-		} else if (mmc->actual_clock > 5000000) {
+-			rx_clk_phase = 23;
+-		} else if (mmc->actual_clock > 1000000) {
+-			rx_clk_phase = 55;
+-		} else {
+-			rx_clk_phase = 1061;
+-		}
+-
++		regmap_read(host->regmap, MESON_SDHC_CLKC, &val);
++		rx_clk_phase = FIELD_GET(MESON_SDHC_CLKC_CLK_DIV, val) / 4;
+ 		regmap_update_bits(host->regmap, MESON_SDHC_CLK2,
+ 				   MESON_SDHC_CLK2_RX_CLK_PHASE,
+ 				   FIELD_PREP(MESON_SDHC_CLK2_RX_CLK_PHASE,
+-- 
+2.34.1
 
-Jason
