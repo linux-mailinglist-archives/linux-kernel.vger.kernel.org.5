@@ -2,115 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1C5A7BEFBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 02:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9EE87BEFCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 02:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379213AbjJJA1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 20:27:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34446 "EHLO
+        id S1379202AbjJJAh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 20:37:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379189AbjJJA1I (ORCPT
+        with ESMTP id S1379141AbjJJAhZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 20:27:08 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CA89F
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 17:27:07 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-27cdde1ee5fso402305a91.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 17:27:06 -0700 (PDT)
+        Mon, 9 Oct 2023 20:37:25 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C7CCA4
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 17:37:23 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-537f07dfe8eso22439a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 17:37:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696897626; x=1697502426; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oeawgZymjR1McP4t75YvRrkqJDZW25xAyrZ8fBe5iAg=;
-        b=wGyJ/LYpx0JgUoZqXqWI0ut5Ny/EqInfeZqaNaznToVSiLNCMfwMl4fV97cpsnTxx4
-         FlGVWrpdSHHMN9u8Khhi8CcY2MIu2B5bErhdGdwzi393m7Ck6EbNNZzoS/xrMyV1tdE1
-         l6fCRjFo7uowkBLQoOJ7q/iEYPh6eayI8LZcIscy+lVbJa6flPiU8FIJxw/sz1JpZfWx
-         LFxYThCULn7fJHJE+Iciso6fQNmROvp0TK+0lvCpfvFmoprukrqP4AcNJYM0GQMmCRHv
-         gT/OeB/p8E1OlCBg5GTLotsqOW7ZHCOF1Exxr22337wl41F7P24KzJ4d8k+mZdatAKCh
-         +itg==
+        d=google.com; s=20230601; t=1696898242; x=1697503042; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Drda+y33XdGAEUOBvxGHem+aMQjGpAHViuUNurHBjyw=;
+        b=ZZuUvMwXRR7r0CtDY8tlTiBb+R4ATG5C4ak0Ha5akrPo1CyNgHpiXYsrM7Bl5Bn+dZ
+         +o3d/kyPLfOXa+Pah5J06CnKGep5UOT+osEpyM8HvPaAW2kR1K5qp9hBpAn2rpGP/PyT
+         yqVh9+Og4bxmmx00+QCqrUkuyUvqtzhuIrtusRyIRX8sPhijKIDVHUCl/MRoQEqh2YSI
+         gOi8mUKZyZCZvJtGbeN7W9w3AjkU5VS8SoVmc1kdIZ7EtNdNsKP0YCfztjkRxItSVrnv
+         KYOxqsVnzjdvUMyob6HyeMRS+kGmiriGZhAmTaWw0G6WpVv+XqFMuNCbuCT4qsSbfuox
+         hSdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696897626; x=1697502426;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oeawgZymjR1McP4t75YvRrkqJDZW25xAyrZ8fBe5iAg=;
-        b=xBICWErVeShf2nnaNQSnNLQj/GeHEG4i/dVNJnyXN4mDysLacGnMGhna3KBeySmV4Y
-         Fk6ZASheiqzTUjbUtcokEHSy8skDeaYU69rSCNoIrQaq8JwQ2Bt9tVb/yutzju2KWpYj
-         jyQBC17O2v9Z+x2T6Nzjx4yiR82VNAjuY2HhAqsX/pdcZ0+oqb5HR56mmq8+nloNldbe
-         NBQDWU660F9dBg7jD3T/UX6C1x7e4gADsdJrzlj/tJJAt8E6pYSlmXogAD1b+6W98tOp
-         jBNodYUw9W9b1rR/RoUUrKcf1RhSUoiRokry++BT4HUQwYDuXZWpDZ58E/SHH/1jaJIe
-         RukQ==
-X-Gm-Message-State: AOJu0Yx5PFGZCCYcRLiYSHIIJn3Y2NlLIlKF/dfUtvpKaXKGsQAjJZHd
-        Lj7kkMdkfWAbUyMv8F2pjQYDJzBgVJw=
-X-Google-Smtp-Source: AGHT+IG814lzonIZl8N0J+mVapYgnqFN9AMsQW8kkoIlBd1VyLm+5IhFUOTzxRNTw4UiItRbWgZcvOB2G9I=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90b:1092:b0:274:974b:9b2b with SMTP id
- gj18-20020a17090b109200b00274974b9b2bmr284236pjb.0.1696897626570; Mon, 09 Oct
- 2023 17:27:06 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 17:27:04 -0700
-In-Reply-To: <20231010000910.GM800259@ZenIV>
-Mime-Version: 1.0
-References: <20230928180651.1525674-1-pbonzini@redhat.com> <169595365500.1386813.6579237770749312873.b4-ty@google.com>
- <20231009022248.GD800259@ZenIV> <ZSQO4fHaAxDkbGyz@google.com>
- <20231009200608.GJ800259@ZenIV> <ZSRgdgQe3fseEQpf@google.com>
- <20231009204037.GK800259@ZenIV> <ZSRwDItBbsn2IfWl@google.com> <20231010000910.GM800259@ZenIV>
-Message-ID: <ZSSaWPc5wjU9k1Kw@google.com>
-Subject: Re: [PATCH gmem FIXUP] kvm: guestmem: do not use a file system
-From:   Sean Christopherson <seanjc@google.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1696898242; x=1697503042;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Drda+y33XdGAEUOBvxGHem+aMQjGpAHViuUNurHBjyw=;
+        b=mQuSEbQKf2uc8cqk8LHevaaNpQeHMPgyh3mbuYMfgtj93nRTf6q+milQk41rGUdOje
+         Peve1JyEI3N4Yszkt/SE9k7e+vXoVhhBXIT7wa8OmVqTmtNgNCW1NJKL8diwPnhH3YVv
+         jc7a4Of57Bgoa7OB+WF1LAjEHOoLkMrGe10hY2ayrLD5roV8yOJEPOLbyyEQoKjSdsFT
+         fqoe2fIyKkOSD0+/prsB5gclufvk5cQ2OsEgBeG//XyYZZ3KKDLt9/syeNCVUG172bJr
+         OcFGECUX9PXDTRDKpfGlrhC4QX5g2ybMQwN4vTV23SHDcOxtPL1fBh8RGuB2fTwX04iA
+         sTOA==
+X-Gm-Message-State: AOJu0YzhzqBsN3ARZ3V5oVZbb/7zSP0fdLt7mRbnon4CTsi8F0vHEVfQ
+        gmWmaA9H3gin1LUEDHz/wvzf2PNe+Q5k3Af3VcldHQ==
+X-Google-Smtp-Source: AGHT+IHXTrcmyPFitEmbdf7UwBczlXzLmfG+sZKBuqZbC8yA460539RaEyc30nV5L1JJ9FFjsFTppRZS9xao6/JTlE4=
+X-Received: by 2002:a50:d0d7:0:b0:538:1d3b:172f with SMTP id
+ g23-20020a50d0d7000000b005381d3b172fmr471689edf.3.1696898241782; Mon, 09 Oct
+ 2023 17:37:21 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231009142005.21338-1-quic_kriskura@quicinc.com>
+ <20231009142005.21338-2-quic_kriskura@quicinc.com> <CANP3RGfEk2DqZ3biyN78ycQYbDxCEG+H1me2vnEYuwXkNdXnTA@mail.gmail.com>
+ <CANP3RGcCpNOuVpdV9n0AFxZo-wsfwi8OfYgBk1WHNHaEd-4V-Q@mail.gmail.com>
+In-Reply-To: <CANP3RGcCpNOuVpdV9n0AFxZo-wsfwi8OfYgBk1WHNHaEd-4V-Q@mail.gmail.com>
+From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Date:   Mon, 9 Oct 2023 17:37:04 -0700
+Message-ID: <CANP3RGdY4LsOA6U5kuccApHCzL0_jBnY=pLOYrUuYtMZFTvnbw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] usb: gadget: ncm: Add support to update
+ wMaxSegmentSize via configfs
+To:     Krishna Kurapati <quic_kriskura@quicinc.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        onathan Corbet <corbet@lwn.net>,
+        Linyu Yuan <quic_linyyuan@quicinc.com>,
+        linux-usb@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_ppratap@quicinc.com,
+        quic_wcheng@quicinc.com, quic_jackp@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023, Al Viro wrote:
-> On Mon, Oct 09, 2023 at 02:26:36PM -0700, Sean Christopherson wrote:
-> > On Mon, Oct 09, 2023, Al Viro wrote:
-> > > On Mon, Oct 09, 2023 at 01:20:06PM -0700, Sean Christopherson wrote:
-> > > > On Mon, Oct 09, 2023, Al Viro wrote:
-> > > > > On Mon, Oct 09, 2023 at 07:32:48AM -0700, Sean Christopherson wrote:
-> > > > > 
-> > > > > > Yeah, we found that out the hard way.  Is using the "secure" variant to get a
-> > > > > > per-file inode a sane approach, or is that abuse that's going to bite us too?
-> > > > > > 
-> > > > > > 	/*
-> > > > > > 	 * Use the so called "secure" variant, which creates a unique inode
-> > > > > > 	 * instead of reusing a single inode.  Each guest_memfd instance needs
-> > > > > > 	 * its own inode to track the size, flags, etc.
-> > > > > > 	 */
-> > > > > > 	file = anon_inode_getfile_secure(anon_name, &kvm_gmem_fops, gmem,
-> > > > > > 					 O_RDWR, NULL);
-> > > > > 
-> > > > > Umm...  Is there any chance that your call site will ever be in a module?
-> > > > > If not, you are probably OK with that variant.
-> > > > 
-> > > > Yes, this code can be compiled as a module.  I assume there issues with the inode
-> > > > outliving the module?
-> > > 
-> > > The entire file, actually...  If you are using that mechanism in a module, you
-> > > need to initialize kvm_gmem_fops.owner to THIS_MODULE; AFAICS, you don't have
-> > > that done.
-> > 
-> > Ah, that's handled indirectly handled by a chain of refcounted objects.  Every
-> > VM that KVM creates gets a reference to the module, and each guest_memfd instance
-> > gets a reference to its owning VM.
-> 
-> Umm... what's the usual call chain leading to final drop of refcount of that
-> module?
+On Mon, Oct 9, 2023 at 5:20=E2=80=AFPM Maciej =C5=BBenczykowski <maze@googl=
+e.com> wrote:
+>
+> On Mon, Oct 9, 2023 at 5:17=E2=80=AFPM Maciej =C5=BBenczykowski <maze@goo=
+gle.com> wrote:
+> >
+> > On Mon, Oct 9, 2023 at 7:20=E2=80=AFAM Krishna Kurapati
+> > <quic_kriskura@quicinc.com> wrote:
+> > >
+> > > Currently the NCM driver restricts wMaxSegmentSize that indicates
+> > > the datagram size coming from network layer to 1514. However the
+> > > spec doesn't have any limitation. For P2P connections over NCM,
+> > > increasing MTU helps increasing throughput.
+> > >
+> > > Add support to configure this value before configfs symlink is
+> > > created. Also since the NTB Out/In buffer sizes are fixed at 16384
+> > > bytes, limit the segment size to an upper cap of 15014. Set the
+> > > default MTU size for the ncm interface during function bind before
+> > > network interface is registered allowing MTU to be set in parity
+> > > with wMaxSegmentSize.
+> > >
+> > > Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+> > > ---
+> > >  drivers/usb/gadget/function/f_ncm.c | 51 +++++++++++++++++++++++++++=
+++
+> > >  drivers/usb/gadget/function/u_ncm.h |  2 ++
+> > >  2 files changed, 53 insertions(+)
+> > >
+> > > diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget=
+/function/f_ncm.c
+> > > index feccf4c8cc4f..eab297b22200 100644
+> > > --- a/drivers/usb/gadget/function/f_ncm.c
+> > > +++ b/drivers/usb/gadget/function/f_ncm.c
+> > > @@ -103,6 +103,8 @@ static inline struct f_ncm *func_to_ncm(struct us=
+b_function *f)
+> > >  /* Delay for the transmit to wait before sending an unfilled NTB fra=
+me. */
+> > >  #define TX_TIMEOUT_NSECS       300000
+> > >
+> > > +#define MAX_DATAGRAM_SIZE      15014
+> > > +
+> > >  #define FORMATS_SUPPORTED      (USB_CDC_NCM_NTB16_SUPPORTED |  \
+> > >                                  USB_CDC_NCM_NTB32_SUPPORTED)
+> > >
+> > > @@ -1408,6 +1410,7 @@ static int ncm_bind(struct usb_configuration *c=
+, struct usb_function *f)
+> > >         ncm_opts =3D container_of(f->fi, struct f_ncm_opts, func_inst=
+);
+> > >
+> > >         if (cdev->use_os_string) {
+> > > +               ncm_opts->net->mtu =3D (ncm_opts->max_segment_size - =
+ETH_HLEN);
+> > >                 f->os_desc_table =3D kzalloc(sizeof(*f->os_desc_table=
+),
+> > >                                            GFP_KERNEL);
+> > >                 if (!f->os_desc_table)
+> > > @@ -1469,6 +1472,8 @@ static int ncm_bind(struct usb_configuration *c=
+, struct usb_function *f)
+> > >
+> > >         status =3D -ENODEV;
+> > >
+> > > +       ecm_desc.wMaxSegmentSize =3D ncm_opts->max_segment_size;
+> >
+> > I think you need byte swap here.
+> >
+> > > +
+> > >         /* allocate instance-specific endpoints */
+> > >         ep =3D usb_ep_autoconfig(cdev->gadget, &fs_ncm_in_desc);
+> > >         if (!ep)
+> > > @@ -1569,11 +1574,56 @@ USB_ETHERNET_CONFIGFS_ITEM_ATTR_QMULT(ncm);
+> > >  /* f_ncm_opts_ifname */
+> > >  USB_ETHERNET_CONFIGFS_ITEM_ATTR_IFNAME(ncm);
+> > >
+> > > +static ssize_t ncm_opts_max_segment_size_show(struct config_item *it=
+em,
+> > > +                                             char *page)
+> > > +{
+> > > +       struct f_ncm_opts *opts =3D to_f_ncm_opts(item);
+> > > +       u32 segment_size;
+> > > +
+> > > +       mutex_lock(&opts->lock);
+> > > +       segment_size =3D opts->max_segment_size;
+> > > +       mutex_unlock(&opts->lock);
+> > > +
+> > > +       return sprintf(page, "%u\n", segment_size);
+> > > +}
+> > > +
+> > > +static ssize_t ncm_opts_max_segment_size_store(struct config_item *i=
+tem,
+> > > +                                              const char *page, size=
+_t len)
+> > > +{
+> > > +       struct f_ncm_opts *opts =3D to_f_ncm_opts(item);
+> > > +       int ret;
+> > > +       u32 segment_size;
+> > > +
+> > > +       mutex_lock(&opts->lock);
+> > > +       if (opts->refcnt) {
+> > > +               ret =3D -EBUSY;
+> > > +               goto out;
+> > > +       }
+> > > +
+> > > +       ret =3D kstrtou32(page, 0, &segment_size);
+> > > +       if (ret)
+> > > +               goto out;
+> > > +
+> > > +       if (segment_size > MAX_DATAGRAM_SIZE) {
+> > > +               ret =3D -EINVAL;
+> > > +               goto out;
+> > > +       }
+> > > +
+> > > +       opts->max_segment_size =3D segment_size;
+> > > +       ret =3D len;
+> > > +out:
+> > > +       mutex_unlock(&opts->lock);
+> > > +       return ret;
+> > > +}
+> > > +
+> > > +CONFIGFS_ATTR(ncm_opts_, max_segment_size);
+> > > +
+> > >  static struct configfs_attribute *ncm_attrs[] =3D {
+> > >         &ncm_opts_attr_dev_addr,
+> > >         &ncm_opts_attr_host_addr,
+> > >         &ncm_opts_attr_qmult,
+> > >         &ncm_opts_attr_ifname,
+> > > +       &ncm_opts_attr_max_segment_size,
+> > >         NULL,
+> > >  };
+> > >
+> > > @@ -1616,6 +1666,7 @@ static struct usb_function_instance *ncm_alloc_=
+inst(void)
+> > >                 kfree(opts);
+> > >                 return ERR_CAST(net);
+> > >         }
+> > > +       opts->max_segment_size =3D cpu_to_le16(ETH_FRAME_LEN);
+> >
+> > and not here.  ie. max_segment_size should be native endian
+> >
+> > >         INIT_LIST_HEAD(&opts->ncm_os_desc.ext_prop);
+> > >
+> > >         descs[0] =3D &opts->ncm_os_desc;
+> > > diff --git a/drivers/usb/gadget/function/u_ncm.h b/drivers/usb/gadget=
+/function/u_ncm.h
+> > > index 5408854d8407..d3403cf13f17 100644
+> > > --- a/drivers/usb/gadget/function/u_ncm.h
+> > > +++ b/drivers/usb/gadget/function/u_ncm.h
+> > > @@ -31,6 +31,8 @@ struct f_ncm_opts {
+> > >          */
+> > >         struct mutex                    lock;
+> > >         int                             refcnt;
+> > > +
+> > > +       u32                             max_segment_size;
+> > >  };
+> > >
+> > >  #endif /* U_NCM_H */
+> > > --
+> > > 2.42.0
+> > >
+> >
+> > That said, I don't really follow what this is doing...
+>
+> Also
+>
+> static struct usb_cdc_ether_desc ecm_desc =3D {
+> ...
+> .wMaxSegmentSize =3D cpu_to_le16(ETH_FRAME_LEN),
+>
+> ^ I think this should be deleted now, right?  since it's always overwritt=
+en?
+> And if it isn't always overwritten, that would be a bug I think, cause
+> what happens if you bring up 2 ncm devices and only change the setting
+> on the 1st?
 
-If the last reference is effectively held by guest_memfd, it would be:
+One last thing...
 
-  kvm_gmem_release(), a.k.a. file_operations.release()
-  |
-  -> kvm_put_kvm()
-     |
-     -> kvm_destroy_vm()
-        |
-        -> module_put(kvm_chardev_ops.owner);
+static int ncm_unwrap_ntb(struct gether *port,
+...
+unsigned frame_max =3D le16_to_cpu(ecm_desc.wMaxSegmentSize);
+
+^ is this a problem now if we have >1 gadget?
+how does it work then?
