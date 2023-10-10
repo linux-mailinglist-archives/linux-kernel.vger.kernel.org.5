@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECC97BFEF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 16:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7CA7BFEFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 16:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232840AbjJJOT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 10:19:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56106 "EHLO
+        id S233020AbjJJOTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 10:19:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233020AbjJJOTZ (ORCPT
+        with ESMTP id S233022AbjJJOTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 10:19:25 -0400
+        Tue, 10 Oct 2023 10:19:43 -0400
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E317CA
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 07:19:22 -0700 (PDT)
-Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
-        by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1qqDZm-0005Ce-FV; Tue, 10 Oct 2023 16:19:10 +0200
-Message-ID: <47e5f0a7-e3ee-79c8-7460-2c67cf9960cc@pengutronix.de>
-Date:   Tue, 10 Oct 2023 16:19:09 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9DA6B7
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 07:19:41 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qqDa8-0005FO-NP; Tue, 10 Oct 2023 16:19:32 +0200
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qqDa8-000gWG-7a; Tue, 10 Oct 2023 16:19:32 +0200
+Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1qqDa8-00Dktd-3i; Tue, 10 Oct 2023 16:19:32 +0200
+Date:   Tue, 10 Oct 2023 16:19:32 +0200
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        Boris Pismenny <borisp@nvidia.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Subject: Problem with io_uring splice and KTLS
+Message-ID: <20231010141932.GD3114228@pengutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] KEYS: trusted: Remove redundant static calls usage
-Content-Language: en-US
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Sumit Garg <sumit.garg@linaro.org>
-Cc:     torvalds@linux-foundation.org, peterz@infradead.org,
-        zohar@linux.ibm.com, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org, jejb@linux.ibm.com,
-        David.Kaplan@amd.com, bp@alien8.de, mingo@kernel.org,
-        x86@kernel.org, regressions@leemhuis.info,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>
-References: <20231006051801.423973-1-sumit.garg@linaro.org>
- <8eeac047a59667912a45b21050a6e4c57d7cccd5.camel@kernel.org>
- <CAFA6WYNamspdK=RakirdS3fiHrmmaPXcgEcZeNn5z2DRNdE3Rw@mail.gmail.com>
- <1de1ace90f1645fc629c075826aa67eda8dfd138.camel@kernel.org>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-In-Reply-To: <1de1ace90f1645fc629c075826aa67eda8dfd138.camel@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+From:   Sascha Hauer <sha@pengutronix.de>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,126 +59,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Jarkko,
+Hi,
 
-On 10.10.23 15:49, Jarkko Sakkinen wrote:
-> On Tue, 2023-10-10 at 18:44 +0530, Sumit Garg wrote:
->> On Tue, 10 Oct 2023 at 18:03, Jarkko Sakkinen <jarkko@kernel.org> wrote:
->>>
->>> On Fri, 2023-10-06 at 10:48 +0530, Sumit Garg wrote:
->>>> Static calls invocations aren't well supported from module __init and
->>>> __exit functions. Especially the static call from cleanup_trusted() led
->>>> to a crash on x86 kernel with CONFIG_DEBUG_VIRTUAL=y.
->>>>
->>>> However, the usage of static call invocations for trusted_key_init()
->>>> and trusted_key_exit() don't add any value from either a performance or
->>>> security perspective. Hence switch to use indirect function calls instead.
->>>>
->>>> Note here that although it will fix the current crash report, ultimately
->>>> the static call infrastructure should be fixed to either support its
->>>> future usage from module __init and __exit functions or not.
->>>>
->>>> Reported-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
->>>> Link: https://lore.kernel.org/lkml/ZRhKq6e5nF%2F4ZIV1@fedora/#t
->>>> Fixes: 5d0682be3189 ("KEYS: trusted: Add generic trusted keys framework")
->>>> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
->>>> ---
->>>>
->>>> Changes in v2:
->>>> - Polish commit message as per comments from Mimi
->>>>
->>>>  security/keys/trusted-keys/trusted_core.c | 13 +++++--------
->>>>  1 file changed, 5 insertions(+), 8 deletions(-)
->>>>
->>>> diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/trusted-keys/trusted_core.c
->>>> index c6fc50d67214..85fb5c22529a 100644
->>>> --- a/security/keys/trusted-keys/trusted_core.c
->>>> +++ b/security/keys/trusted-keys/trusted_core.c
->>>> @@ -44,13 +44,12 @@ static const struct trusted_key_source trusted_key_sources[] = {
->>>>  #endif
->>>>  };
->>>>
->>>> -DEFINE_STATIC_CALL_NULL(trusted_key_init, *trusted_key_sources[0].ops->init);
->>>>  DEFINE_STATIC_CALL_NULL(trusted_key_seal, *trusted_key_sources[0].ops->seal);
->>>>  DEFINE_STATIC_CALL_NULL(trusted_key_unseal,
->>>>                         *trusted_key_sources[0].ops->unseal);
->>>>  DEFINE_STATIC_CALL_NULL(trusted_key_get_random,
->>>>                         *trusted_key_sources[0].ops->get_random);
->>>> -DEFINE_STATIC_CALL_NULL(trusted_key_exit, *trusted_key_sources[0].ops->exit);
->>>> +static void (*trusted_key_exit)(void);
->>>>  static unsigned char migratable;
->>>>
->>>>  enum {
->>>> @@ -359,19 +358,16 @@ static int __init init_trusted(void)
->>>>                 if (!get_random)
->>>>                         get_random = kernel_get_random;
->>>>
->>>> -               static_call_update(trusted_key_init,
->>>> -                                  trusted_key_sources[i].ops->init);
->>>>                 static_call_update(trusted_key_seal,
->>>>                                    trusted_key_sources[i].ops->seal);
->>>>                 static_call_update(trusted_key_unseal,
->>>>                                    trusted_key_sources[i].ops->unseal);
->>>>                 static_call_update(trusted_key_get_random,
->>>>                                    get_random);
->>>> -               static_call_update(trusted_key_exit,
->>>> -                                  trusted_key_sources[i].ops->exit);
->>>> +               trusted_key_exit = trusted_key_sources[i].ops->exit;
->>>>                 migratable = trusted_key_sources[i].ops->migratable;
->>>>
->>>> -               ret = static_call(trusted_key_init)();
->>>> +               ret = trusted_key_sources[i].ops->init();
->>>>                 if (!ret)
->>>>                         break;
->>>>         }
->>>> @@ -388,7 +384,8 @@ static int __init init_trusted(void)
->>>>
->>>>  static void __exit cleanup_trusted(void)
->>>>  {
->>>> -       static_call_cond(trusted_key_exit)();
->>>> +       if (trusted_key_exit)
->>>> +               (*trusted_key_exit)();
->>>>  }
->>>>
->>>>  late_initcall(init_trusted);
->>>
->>> Would it be less confusing to require trusted_key_exit from each?
->>>
->>
->> It is already required for each trust source to provide exit callback
->> but this NULL check was added via this fix [1] in case there isn't any
->> trust source present.
->>
->> [1] https://lkml.kernel.org/stable/20220126184155.220814-1-dave.kleikamp@oracle.com/
-> 
-> I'd considering creating a placeholder trusted_key_default_exit() with
-> perhaps pr_debug() statement acknowledging it getting called.
-> 
-> Hmm.. if we had that I wonder if we could get away with __weak... Then
-> you would not need to assign anything. This is not through-out analyzed.
-> Tbh I'm not sure how module loader handles this type of scenario but
-> at least the placeholder function would make sense in any case.
+I am working with a webserver using io_uring in conjunction with KTLS. The
+webserver basically splices static file data from a pipe to a socket which uses
+KTLS for encryption. When splice is done the socket is closed. This works fine
+when using software encryption in KTLS. Things go awry though when the software
+encryption is replaced with the CAAM driver which replaces the synchronous
+encryption with a asynchronous queue/interrupt/completion flow.
 
-If you define a default exit function as __weak and expect trusted key sources
-to override it, you can only have one trust source at most in the compiled
-kernel and no boot-time selection would be possible.
+So far I have traced it down to tls_push_sg() calling tcp_sendmsg_locked() to
+send the completed encrypted messages. tcp_sendmsg_locked() sometimes waits for
+more memory on the socket by calling sk_stream_wait_memory(). This in turn
+returns -ERESTARTSYS due to:
 
-Cheers,
-Ahmad
+        if (signal_pending(current))
+                goto do_interrupted;
 
-> 
-> If abusing weak symbols was in-fact possible probably then the whole
-> idea of using static_call could be thrown to garbage bin but there's
-> now a lot of context here related on how module loader works linux
-> that I'm ignoring...
-> 
-> BR, Jarkko
-> 
-> 
+The current task has the TIF_NOTIFY_SIGNAL set due to:
+
+io_req_normal_work_add()
+{
+        ...
+        /* This interrupts sk_stream_wait_memory() (notify_method == TWA_SIGNAL) */
+        task_work_add(req->task, &tctx->task_work, ctx->notify_method)))
+}
+
+The call stack when sk_stream_wait_memory() fails is as follows:
+
+[ 1385.428816]  dump_backtrace+0xa0/0x128
+[ 1385.432568]  show_stack+0x20/0x38
+[ 1385.435878]  dump_stack_lvl+0x48/0x60
+[ 1385.439539]  dump_stack+0x18/0x28
+[ 1385.442850]  tls_push_sg+0x100/0x238
+[ 1385.446424]  tls_tx_records+0x118/0x1d8
+[ 1385.450257]  tls_sw_release_resources_tx+0x74/0x1a0
+[ 1385.455135]  tls_sk_proto_close+0x2f8/0x3f0
+[ 1385.459315]  inet_release+0x58/0xb8
+[ 1385.462802]  inet6_release+0x3c/0x60
+[ 1385.466374]  __sock_release+0x48/0xc8
+[ 1385.470035]  sock_close+0x20/0x38
+[ 1385.473347]  __fput+0xbc/0x280
+[ 1385.476399]  ____fput+0x18/0x30
+[ 1385.479537]  task_work_run+0x80/0xe0
+[ 1385.483108]  io_run_task_work+0x40/0x108
+[ 1385.487029]  __arm64_sys_io_uring_enter+0x164/0xad8
+[ 1385.491907]  invoke_syscall+0x50/0x128
+[ 1385.495655]  el0_svc_common.constprop.0+0x48/0xf0
+[ 1385.500359]  do_el0_svc_compat+0x24/0x40
+[ 1385.504279]  el0_svc_compat+0x38/0x108
+[ 1385.508026]  el0t_32_sync_handler+0x98/0x140
+[ 1385.512294]  el0t_32_sync+0x194/0x198
+
+So the socket is being closed and KTLS tries to send out the remaining
+completed messages.  From a splice point of view everything has been sent
+successfully, but not everything made it through KTLS to the socket and the
+remaining data is sent while closing the socket.
+
+I vaguely understand what's going on here, but I haven't got the slightest idea
+what to do about this. Any ideas?
+
+Sascha
 
 -- 
 Pengutronix e.K.                           |                             |
 Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
 Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
