@@ -2,292 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C68F67BF5F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D487BF5EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442889AbjJJIdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 04:33:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57314 "EHLO
+        id S1442866AbjJJIcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 04:32:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442880AbjJJIdB (ORCPT
+        with ESMTP id S1442859AbjJJIcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 04:33:01 -0400
-Received: from outbound-smtp58.blacknight.com (outbound-smtp58.blacknight.com [46.22.136.242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F9E59F
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 01:32:59 -0700 (PDT)
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp58.blacknight.com (Postfix) with ESMTPS id D1E98FABE0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:32:57 +0100 (IST)
-Received: (qmail 9460 invoked from network); 10 Oct 2023 08:32:57 -0000
-Received: from unknown (HELO morpheus.112glenside.lan) (mgorman@techsingularity.net@[84.203.197.19])
-  by 81.17.254.9 with ESMTPA; 10 Oct 2023 08:32:57 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Raghavendra K T <raghavendra.kt@amd.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Bharata B Rao <bharata@amd.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 6/6] sched/numa: Complete scanning of inactive VMAs when there is no alternative
-Date:   Tue, 10 Oct 2023 09:31:43 +0100
-Message-Id: <20231010083143.19593-7-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20231010083143.19593-1-mgorman@techsingularity.net>
-References: <20231010083143.19593-1-mgorman@techsingularity.net>
+        Tue, 10 Oct 2023 04:32:05 -0400
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF938A4;
+        Tue, 10 Oct 2023 01:31:57 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3529EE000B;
+        Tue, 10 Oct 2023 08:31:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1696926716;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dmxIDRlRKTNn5lgoNqp7quWga8LZsXnCoghtnU8fKPg=;
+        b=jUivcLpBjmtx/6HvttOXSXtzxe7OAlZC52pvAwhhXFagP++NaZu7bvkuOFZwknmyipA52K
+        7IgKerlZZkISbH7PAJtToyjScRjCZEtHs5lD6kPBSXK5eEEeJvjKFTE1JggP+uLnDvEYB6
+        ++snL8erlpiMR+1Di/GG/gKf8+k6C1+B0yv8HB0wnic7oskAv8BU4tdhlD1LyX4ppni94E
+        LKAzn+fwEUphZ9W6hPk2A+VNpKH2AVs80WU125ngEX7zyTH95MesbwtdKlrvi6IyOUPXrh
+        kThRLv+288++4ehRKfv7HSc35iuJ9ozMsec+tWoN6DVj6TVJAIFVXYnm7i5xGQ==
+Date:   Tue, 10 Oct 2023 10:31:50 +0200
+From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To:     Florian Fainelli <florian.fainelli@broadcom.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Michael Walle <michael@walle.cc>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH net-next v5 15/16] net ethtool: net: Let the active time
+ stamping layer be selectable
+Message-ID: <20231010103150.4f4bc187@kmaincent-XPS-13-7390>
+In-Reply-To: <ac520b3b-bf70-4643-a259-83e91dd330a6@broadcom.com>
+References: <20231009155138.86458-1-kory.maincent@bootlin.com>
+        <20231009155138.86458-16-kory.maincent@bootlin.com>
+        <ac520b3b-bf70-4643-a259-83e91dd330a6@broadcom.com>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: kory.maincent@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VMAs are skipped if there is no recent fault activity but this represents
-a chicken-and-egg problem as there may be no fault activity if the PTEs
-are never updated to trap NUMA hints. There is an indirect reliance on
-scanning to be forced early in the lifetime of a task but this may fail
-to detect changes in phase behaviour. Force inactive VMAs to be scanned
-when all other eligible VMAs have been updated within the same scan
-sequence.
+On Mon, 9 Oct 2023 14:28:38 -0700
+Florian Fainelli <florian.fainelli@broadcom.com> wrote:
 
-Test results in general look good with some changes in performance, both
-negative and positive, depending on whether the additional scanning and
-faulting was beneficial or not to the workload. The autonuma benchmark
-workload NUMA01_THREADLOCAL was picked for closer examination. The workload
-creates two processes with numerous threads and thread-local storage that
-is zero-filled in a loop. It exercises the corner case where unrelated
-threads may skip VMAs that are thread-local to another thread and still
-has some VMAs that inactive while the workload executes.
+> > +static int ethnl_set_ts_validate(struct ethnl_req_info *req_info,
+> > +				 struct genl_info *info)
+> > +{
+> > +	struct nlattr **tb = info->attrs;
+> > +	const struct net_device_ops *ops = req_info->dev->netdev_ops;
+> > +
+> > +	if (!tb[ETHTOOL_A_TS_LAYER])
+> > +		return 0;
+> > +
+> > +	if (!ops->ndo_hwtstamp_set)
+> > +		return -EOPNOTSUPP;  
+> 
+> I would check for this first, in all likelihood this is what most 
+> drivers currently do not support, no need to event de-reference the 
+> array of attributes.
 
-The VMA skipping activity frequency with and without the patch is as
-follows;
+Indeed seems more logical.
 
-6.6.0-rc2-sched-numabtrace-v1
-    649 reason=scan_delay
-   9094 reason=unsuitable
-  48915 reason=shared_ro
- 143919 reason=inaccessible
- 193050 reason=pid_inactive
+> > +static int ethnl_set_ts(struct ethnl_req_info *req_info, struct genl_info
+> > *info) +{
+> > +	struct net_device *dev = req_info->dev;
+> > +	const struct ethtool_ops *ops = dev->ethtool_ops;
+> > +	struct kernel_hwtstamp_config config = {0};
+> > +	struct nlattr **tb = info->attrs;
+> > +	bool mod = false;
+> > +	u32 ts_layer;
+> > +	int ret;
+> > +
+> > +	ts_layer = dev->ts_layer;
 
-6.6.0-rc2-sched-numabselective-v1
-    146 reason=seq_completed
-    622 reason=ignore_pid_inactive
-    624 reason=scan_delay
-   6570 reason=unsuitable
-  16101 reason=shared_ro
-  27608 reason=inaccessible
-  41939 reason=pid_inactive
+> > +
+> > +	if (ts_layer & NETDEV_TIMESTAMPING && !ops->get_ts_info) {
+> > +		NL_SET_ERR_MSG_ATTR(info->extack, tb[ETHTOOL_A_TS_LAYER],
+> > +				    "this device cannot support
+> > timestamping");  
+> 
+> Maybe expand the extended ack with "this devices does not support 
+> MAC-based timestamping"
 
-Note that with the patch applied, the PID activity is ignored
-(ignore_pid_inactive) to ensure a VMA with some activity is completely
-scanned. In addition, a small number of VMAs are scanned when no other
-eligible VMA is available during a single scan window (seq_completed).
-The number of times a VMA is skipped due to no PID activity from the
-scanning task (pid_inactive) drops dramatically. It is expected that
-this will increase the number of PTEs updated for NUMA hinting faults
-as well as hinting faults but these represent PTEs that would otherwise
-have been missed. The tradeoff is scan+fault overhead versus improving
-locality due to migration.
+Ok.
 
-On a 2-socket Cascade Lake test machine, the time to complete the
-workload is as follows;
+> > +	/* Disable time stamping in the current layer. */
+> > +	if (netif_device_present(dev) &&
+> > +	    dev->ts_layer & (PHYLIB_TIMESTAMPING | NETDEV_TIMESTAMPING)) {
+> > +		ret = dev_set_hwtstamp_phylib(dev, &config, info->extack);
+> >  
+> 
+> Can we still land in this function even if no changes to the 
+> timestamping configuration has been made? 
 
-                                               6.6.0-rc2              6.6.0-rc2
-                                     sched-numabtrace-v1 sched-numabselective-v1
-Min       elsp-NUMA01_THREADLOCAL      174.22 (   0.00%)      117.64 (  32.48%)
-Amean     elsp-NUMA01_THREADLOCAL      175.68 (   0.00%)      123.34 *  29.79%*
-Stddev    elsp-NUMA01_THREADLOCAL        1.20 (   0.00%)        4.06 (-238.20%)
-CoeffVar  elsp-NUMA01_THREADLOCAL        0.68 (   0.00%)        3.29 (-381.70%)
-Max       elsp-NUMA01_THREADLOCAL      177.18 (   0.00%)      128.03 (  27.74%)
+We land in this function every time we change the timestamp from a valid
+one.  
 
-The time to complete the workload is reduced by almost 30%
+> If so, would suggest first 
+> getting the current configuration and compare it with the user-supplied 
+> configuration if there are no changes, return.
 
-                   6.6.0-rc2   6.6.0-rc2
-                sched-numabtrace-v1 sched-numabselective-v1 /
-Duration User       91201.80    63506.64
-Duration System      2015.53     1819.78
-Duration Elapsed     1234.77      868.37
-
-In this specific case, system CPU time was not increased but it's not
-universally true.
-
-From vmstat, the NUMA scanning and fault activity is as follows;
-
-                                      6.6.0-rc2      6.6.0-rc2
-                            sched-numabtrace-v1 sched-numabselective-v1
-Ops NUMA base-page range updates       64272.00    26374386.00
-Ops NUMA PTE updates                   36624.00       55538.00
-Ops NUMA PMD updates                      54.00       51404.00
-Ops NUMA hint faults                   15504.00       75786.00
-Ops NUMA hint local faults %           14860.00       56763.00
-Ops NUMA hint local percent               95.85          74.90
-Ops NUMA pages migrated                 1629.00     6469222.00
-
-Both the number of PTE updates and hint faults is dramatically
-increased. While this is superficially unfortunate, it represents
-ranges that were simply skipped without the patch. As a result
-of the scanning and hinting faults, many more pages were also
-migrated but as the time to completion is reduced, the overhead
-is offset by the gain.
-
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- include/linux/mm_types.h             |  6 +++
- include/linux/sched/numa_balancing.h |  1 +
- include/trace/events/sched.h         |  3 +-
- kernel/sched/fair.c                  | 55 ++++++++++++++++++++++++++--
- 4 files changed, 61 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index 8cb1dec3e358..a123c1a58617 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -578,6 +578,12 @@ struct vma_numab_state {
- 						 * VMA_PID_RESET_PERIOD
- 						 * jiffies.
- 						 */
-+	int prev_scan_seq;			/* MM scan sequence ID when
-+						 * the VMA was last completely
-+						 * scanned. A VMA is not
-+						 * eligible for scanning if
-+						 * prev_scan_seq == numa_scan_seq
-+						 */
- };
- 
- /*
-diff --git a/include/linux/sched/numa_balancing.h b/include/linux/sched/numa_balancing.h
-index 7dcc0bdfddbb..b69afb8630db 100644
---- a/include/linux/sched/numa_balancing.h
-+++ b/include/linux/sched/numa_balancing.h
-@@ -22,6 +22,7 @@ enum numa_vmaskip_reason {
- 	NUMAB_SKIP_SCAN_DELAY,
- 	NUMAB_SKIP_PID_INACTIVE,
- 	NUMAB_SKIP_IGNORE_PID,
-+	NUMAB_SKIP_SEQ_COMPLETED,
- };
- 
- #ifdef CONFIG_NUMA_BALANCING
-diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
-index 27b51c81b106..010ba1b7cb0e 100644
---- a/include/trace/events/sched.h
-+++ b/include/trace/events/sched.h
-@@ -671,7 +671,8 @@ DEFINE_EVENT(sched_numa_pair_template, sched_swap_numa,
- 	EM( NUMAB_SKIP_INACCESSIBLE,		"inaccessible" )	\
- 	EM( NUMAB_SKIP_SCAN_DELAY,		"scan_delay" )	\
- 	EM( NUMAB_SKIP_PID_INACTIVE,		"pid_inactive" )	\
--	EMe(NUMAB_SKIP_IGNORE_PID,		"ignore_pid_inactive" )
-+	EM( NUMAB_SKIP_IGNORE_PID,		"ignore_pid_inactive" )		\
-+	EMe(NUMAB_SKIP_SEQ_COMPLETED,		"seq_completed" )
- 
- /* Redefine for export. */
- #undef EM
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 150f01948ec6..72ef60f394ba 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3175,6 +3175,8 @@ static void task_numa_work(struct callback_head *work)
- 	unsigned long nr_pte_updates = 0;
- 	long pages, virtpages;
- 	struct vma_iterator vmi;
-+	bool vma_pids_skipped;
-+	bool vma_pids_forced = false;
- 
- 	SCHED_WARN_ON(p != container_of(work, struct task_struct, numa_work));
- 
-@@ -3217,7 +3219,6 @@ static void task_numa_work(struct callback_head *work)
- 	 */
- 	p->node_stamp += 2 * TICK_NSEC;
- 
--	start = mm->numa_scan_offset;
- 	pages = sysctl_numa_balancing_scan_size;
- 	pages <<= 20 - PAGE_SHIFT; /* MB in pages */
- 	virtpages = pages * 8;	   /* Scan up to this much virtual space */
-@@ -3227,6 +3228,16 @@ static void task_numa_work(struct callback_head *work)
- 
- 	if (!mmap_read_trylock(mm))
- 		return;
-+
-+	/*
-+	 * VMAs are skipped if the current PID has not trapped a fault within
-+	 * the VMA recently. Allow scanning to be forced if there is no
-+	 * suitable VMA remaining.
-+	 */
-+	vma_pids_skipped = false;
-+
-+retry_pids:
-+	start = mm->numa_scan_offset;
- 	vma_iter_init(&vmi, mm, start);
- 	vma = vma_next(&vmi);
- 	if (!vma) {
-@@ -3277,6 +3288,13 @@ static void task_numa_work(struct callback_head *work)
- 			/* Reset happens after 4 times scan delay of scan start */
- 			vma->numab_state->pids_active_reset =  vma->numab_state->next_scan +
- 				msecs_to_jiffies(VMA_PID_RESET_PERIOD);
-+
-+			/*
-+			 * Ensure prev_scan_seq does not match numa_scan_seq
-+			 * to prevent VMAs being skipped prematurely on the
-+			 * first scan.
-+			 */
-+			 vma->numab_state->prev_scan_seq = mm->numa_scan_seq - 1;
- 		}
- 
- 		/*
-@@ -3298,8 +3316,19 @@ static void task_numa_work(struct callback_head *work)
- 			vma->numab_state->pids_active[1] = 0;
- 		}
- 
--		/* Do not scan the VMA if task has not accessed */
--		if (!vma_is_accessed(mm, vma)) {
-+		/* Do not rescan VMAs twice within the same sequence. */
-+		if (vma->numab_state->prev_scan_seq == mm->numa_scan_seq) {
-+			mm->numa_scan_offset = vma->vm_end;
-+			trace_sched_skip_vma_numa(mm, vma, NUMAB_SKIP_SEQ_COMPLETED);
-+			continue;
-+		}
-+
-+		/*
-+		 * Do not scan the VMA if task has not accessed unless no other
-+		 * VMA candidate exists.
-+		 */
-+		if (!vma_pids_forced && !vma_is_accessed(mm, vma)) {
-+			vma_pids_skipped = true;
- 			trace_sched_skip_vma_numa(mm, vma, NUMAB_SKIP_PID_INACTIVE);
- 			continue;
- 		}
-@@ -3328,8 +3357,28 @@ static void task_numa_work(struct callback_head *work)
- 
- 			cond_resched();
- 		} while (end != vma->vm_end);
-+
-+		/* VMA scan is complete, do not scan until next sequence. */
-+		vma->numab_state->prev_scan_seq = mm->numa_scan_seq;
-+
-+		/*
-+		 * Only force scan within one VMA at a time to limit the
-+		 * cost of scanning a potentially uninteresting VMA.
-+		 */
-+		if (vma_pids_forced)
-+			break;
- 	} for_each_vma(vmi, vma);
- 
-+	/*
-+	 * If no VMAs are remaining and VMAs were skipped due to the PID
-+	 * not accessing the VMA previously then force a scan to ensure
-+	 * forward progress.
-+	 */
-+	if (!vma && !vma_pids_forced && vma_pids_skipped) {
-+		vma_pids_forced = true;
-+		goto retry_pids;
-+	}
-+
- out:
- 	/*
- 	 * It is possible to reach the end of the VMA list but the last few
--- 
-2.35.3
-
+It is already done at the beginning of the function:
+> > +	ethnl_update_u32(&ts_layer, tb[ETHTOOL_A_TS_LAYER], &mod);
+> > +
+> > +	if (!mod)
+> > +		return 0;
