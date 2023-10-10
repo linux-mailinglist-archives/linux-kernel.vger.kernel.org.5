@@ -2,94 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B56017C038A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 20:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 755837C0395
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 20:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343591AbjJJSiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 14:38:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53586 "EHLO
+        id S1343662AbjJJSke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 14:40:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233538AbjJJSiH (ORCPT
+        with ESMTP id S234149AbjJJSkc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 14:38:07 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B37A7
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 11:38:03 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-5033918c09eso7611891e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 11:38:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1696963081; x=1697567881; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=rhSNL7cMHw4PLYbCPBTl1LNULSkwojpVoNBfxMTdOrU=;
-        b=KvHPqaDBTif73ykZWtb1IfGgNecFk+27EonAEWvzrh3BBA1t015n4+st9fWO2PWZOC
-         k5H3cYmlGD9F66sAm4GvU+q1UYp3YEQHBgMe1nbdMRH/hz/6pZ0G1h0zFyJFofRDxaF2
-         Ma+T5zXqa0og9ipI5xY5FM00MF7EgPJ9mdhCw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696963081; x=1697567881;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rhSNL7cMHw4PLYbCPBTl1LNULSkwojpVoNBfxMTdOrU=;
-        b=uBFvhKKvYgm8W9L584K6Ozv6fStKM3nrx+4CZK270xb0vPNY+FMYXI20UuUl5cyTso
-         7Cxl1DShWiQ/z8JpDtV4D6sxk8iKEuHxh5a9ZcUTRCRjhPyxFexJbgWxcjSBK1Q/V7mJ
-         +7eWGsLK4atmAPRM4i51N65No7EeeBsVV9r6S+kX6+DGqshjZqvcUgiyGzWyZu4yZH0J
-         Q26JJSXSCiHm9JilSVP19SdwWytB5yUYn5SaZcEBQ4rBhAyXyU/cujYD+34WktdeKKNZ
-         pJWCBpMKuo01lwHyTR2+n9bbpSp2dTpLMf92DVLhj9dojMUoEASiw/K5VCGm2bTZL70j
-         bK0A==
-X-Gm-Message-State: AOJu0YxLSf242kMuh94gP6wgSQwIjdX8wUEFSfG5828P3ec0Ip9dxj6s
-        t2L8J5O1Ih1qk/A2kp0ucpJH6JgTjzW54GujKcOiHYLJ
-X-Google-Smtp-Source: AGHT+IE70KHJGkM61IQOOxsyPrzfc4o4Rj1mFU8MQZumQuyLnwifjoR5a5hdTBnrudqn4d0dovn8xg==
-X-Received: by 2002:a05:6512:3a83:b0:505:7360:6023 with SMTP id q3-20020a0565123a8300b0050573606023mr20036977lfu.39.1696963081028;
-        Tue, 10 Oct 2023 11:38:01 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id b12-20020ac2410c000000b0050296ee046csm1924792lfi.69.2023.10.10.11.38.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Oct 2023 11:38:00 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5033918c09eso7611865e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 11:38:00 -0700 (PDT)
-X-Received: by 2002:a19:ad4b:0:b0:503:182e:1def with SMTP id
- s11-20020a19ad4b000000b00503182e1defmr15121375lfd.69.1696963080129; Tue, 10
- Oct 2023 11:38:00 -0700 (PDT)
+        Tue, 10 Oct 2023 14:40:32 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 310629E;
+        Tue, 10 Oct 2023 11:40:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C191FC433CA;
+        Tue, 10 Oct 2023 18:40:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696963230;
+        bh=VvYCBuzvTxNqvXI0/Dte7XGp/9z7rAbpUZxhqoH0w1g=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=DcGMjb98/Qa93ZeX32y6kT0w0V/oo3n1UBPLX163GVEIVSKlSq2dZBcXXlDZ9FIUj
+         RbMcDVXRD4HszXwziM4dkr0fGYJEkdhtWXrGdR3Bp3Cftfn5jGHajzGHF1wHj2JRbF
+         WJkOO5O5voSB5AJXvaA/5mmsuiV/s2vPEewKGI8blHZ/50k1mVrQQUmh3QTR95IY9i
+         EKcttPJthdufQgygRx9w9lhYQl+hJ52qGmsptn+XJPL/OxSHmeN8tMrqcdvZQrjMSO
+         QaTWtF/mh0Uu+Hbze15UWMHXXaWU0Rghk7woOwSsjcHKlAm/TRVsRIdmSVWyI2kGC2
+         z20v6NewERRTQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A39CAE0009E;
+        Tue, 10 Oct 2023 18:40:30 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
- <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
-In-Reply-To: <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 10 Oct 2023 11:37:43 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
-Message-ID: <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
-Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Nadav Amit <namit@vmware.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] Bluetooth: hci_sock: fix slab oob read in
+ create_monitor_event
+From:   patchwork-bot+bluetooth@kernel.org
+Message-Id: <169696323066.22645.5131811474824547611.git-patchwork-notify@kernel.org>
+Date:   Tue, 10 Oct 2023 18:40:30 +0000
+References: <20231010053656.2034368-2-twuufnxlz@gmail.com>
+In-Reply-To: <20231010053656.2034368-2-twuufnxlz@gmail.com>
+To:     Edward AD <twuufnxlz@gmail.com>
+Cc:     syzbot+c90849c50ed209d77689@syzkaller.appspotmail.com,
+        davem@davemloft.net, edumazet@google.com, johan.hedberg@gmail.com,
+        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
+        luiz.von.dentz@intel.com, marcel@holtmann.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Oct 2023 at 11:22, Uros Bizjak <ubizjak@gmail.com> wrote:
->
-> Please note that besides propagation of the addition into address, the
-> patch also exposes memory load to the compiler, with the anticipation
-> that the compiler CSEs the load from this_cpu_off from eventual
-> multiple addresses. For this to work, we have to get rid of the asms.
+Hello:
 
-I actually checked that the inline asm gets combined, the same way the
-this_cpu_read_stable cases do (which we use for 'current').
+This patch was applied to bluetooth/bluetooth-next.git (master)
+by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
 
-              Linus
+On Tue, 10 Oct 2023 13:36:57 +0800 you wrote:
+> When accessing hdev->name, the actual string length should prevail
+> 
+> Reported-by: syzbot+c90849c50ed209d77689@syzkaller.appspotmail.com
+> Fixes: dcda165706b9 ("Bluetooth: hci_core: Fix build warnings")
+> Signed-off-by: Edward AD <twuufnxlz@gmail.com>
+> ---
+>  net/bluetooth/hci_sock.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+Here is the summary with links:
+  - Bluetooth: hci_sock: fix slab oob read in create_monitor_event
+    https://git.kernel.org/bluetooth/bluetooth-next/c/78480de55a96
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
