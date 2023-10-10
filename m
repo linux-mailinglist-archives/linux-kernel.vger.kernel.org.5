@@ -2,43 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0617E7BF688
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF4B7BF68B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbjJJIxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 04:53:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36308 "EHLO
+        id S229702AbjJJIzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 04:55:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjJJIxt (ORCPT
+        with ESMTP id S229476AbjJJIy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 04:53:49 -0400
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B43EA7;
-        Tue, 10 Oct 2023 01:53:46 -0700 (PDT)
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qq8UL-005THy-LE; Tue, 10 Oct 2023 16:53:14 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 10 Oct 2023 16:53:18 +0800
-Date:   Tue, 10 Oct 2023 16:53:18 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Jonas Gorski <jonas.gorski@gmail.com>
-Cc:     Andres Salomon <dilinger@queued.net>,
-        Olivia Mackall <olivia@selenic.com>,
-        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        "Timur I . Davletshin" <timur.davletshin@gmail.com>,
-        Jo-Philipp Wich <jo@mein.io>, linux-geode@lists.infradead.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwrng: geode: fix accessing registers
-Message-ID: <ZSUQ/qB2d1si0b5q@gondor.apana.org.au>
-References: <20230910083418.8990-1-jonas.gorski@gmail.com>
- <ZQQ2Cv1uL/YVxNBb@gondor.apana.org.au>
- <CAOiHx=nCfU22yd9-KommKMEnKq+VpQROOfKwyb9kbRWzY3azhg@mail.gmail.com>
+        Tue, 10 Oct 2023 04:54:59 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E81C197;
+        Tue, 10 Oct 2023 01:54:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26153C433C7;
+        Tue, 10 Oct 2023 08:54:54 +0000 (UTC)
+From:   Huacai Chen <chenhuacai@loongson.cn>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     kvm@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@loongson.cn>, stable@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] MIPS: KVM: Fix a build warning about variable set but not used
+Date:   Tue, 10 Oct 2023 16:54:34 +0800
+Message-Id: <20231010085434.2678144-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOiHx=nCfU22yd9-KommKMEnKq+VpQROOfKwyb9kbRWzY3azhg@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -46,15 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 01:34:04PM +0200, Jonas Gorski wrote:
->
-> Where was it applied? I don't see it neither in linus' tree nor in
-> char-misc. Wondering if it got stuck somewhere.
+After commit 411740f5422a ("KVM: MIPS/MMU: Implement KVM_CAP_SYNC_MMU")
+old_pte is no longer used in kvm_mips_map_page(). So remove it to fix a
+build warning about variable set but not used:
 
-https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git/commit/?id=464bd8ec2f06707f3773676a1bd2c64832a3c805
+   arch/mips/kvm/mmu.c: In function 'kvm_mips_map_page':
+>> arch/mips/kvm/mmu.c:701:29: warning: variable 'old_pte' set but not used [-Wunused-but-set-variable]
+     701 |         pte_t *ptep, entry, old_pte;
+         |                             ^~~~~~~
 
-Cheers,
+Cc: stable@vger.kernel.org
+Fixes: 411740f5422a960 ("KVM: MIPS/MMU: Implement KVM_CAP_SYNC_MMU")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202310070530.aARZCSfh-lkp@intel.com/
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+---
+ arch/mips/kvm/mmu.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
+index e8c08988ed37..cc09fd23aae3 100644
+--- a/arch/mips/kvm/mmu.c
++++ b/arch/mips/kvm/mmu.c
+@@ -592,7 +592,7 @@ static int kvm_mips_map_page(struct kvm_vcpu *vcpu, unsigned long gpa,
+ 	gfn_t gfn = gpa >> PAGE_SHIFT;
+ 	int srcu_idx, err;
+ 	kvm_pfn_t pfn;
+-	pte_t *ptep, entry, old_pte;
++	pte_t *ptep, entry;
+ 	bool writeable;
+ 	unsigned long prot_bits;
+ 	unsigned long mmu_seq;
+@@ -664,7 +664,6 @@ static int kvm_mips_map_page(struct kvm_vcpu *vcpu, unsigned long gpa,
+ 	entry = pfn_pte(pfn, __pgprot(prot_bits));
+ 
+ 	/* Write the PTE */
+-	old_pte = *ptep;
+ 	set_pte(ptep, entry);
+ 
+ 	err = 0;
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.39.3
+
