@@ -2,143 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F957BF47B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 09:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1A67BF480
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 09:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442523AbjJJHjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 03:39:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37840 "EHLO
+        id S1442569AbjJJHjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 03:39:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442488AbjJJHjC (ORCPT
+        with ESMTP id S1442547AbjJJHjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 03:39:02 -0400
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 829D8A4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 00:38:59 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:8cb2:eea1:154:22ce])
-        by andre.telenet-ops.be with bizsmtp
-        id w7ex2A00J1pyQdZ017exct; Tue, 10 Oct 2023 09:38:57 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qq7KR-005pRC-NO
-        for linux-kernel@vger.kernel.org;
-        Tue, 10 Oct 2023 09:38:57 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qq7KT-00El7i-AF
-        for linux-kernel@vger.kernel.org;
-        Tue, 10 Oct 2023 09:38:57 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-kernel@vger.kernel.org
-Subject: Build regressions/improvements in v6.6-rc5
-Date:   Tue, 10 Oct 2023 09:38:57 +0200
-Message-Id: <20231010073857.3517727-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <CAHk-=wh7awamHE3ujoxZFcGMg3wvLTk8UZYSm3m7vUDhpmP2+A@mail.gmail.com>
-References: <CAHk-=wh7awamHE3ujoxZFcGMg3wvLTk8UZYSm3m7vUDhpmP2+A@mail.gmail.com>
+        Tue, 10 Oct 2023 03:39:14 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8AC1AF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 00:39:12 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b95d5ee18dso64705521fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 00:39:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google; t=1696923551; x=1697528351; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g9HLjKQphoF1al/8pr129PFMpYKqfXvTRFbRdIYZSXY=;
+        b=WBfuEJXCLueaZuWoYq7WZtqSz5XtQzFmIlkkIoGm5+pPyIJNqCfBpTaOpImhbFCYBY
+         Q+ahHeiGEJc1LmOcEkKXedqqU9hGv39B6Y4WIrc+Xh63PpQ+CW16eqxuMm5XMEyU4DTh
+         YggdI8jY/TP8cLlcc0P/MJ99ZXNK/2putFhzLmgtPM55Hnnwtq0JJ84VDWisdLQEe/0B
+         aMtm8BUbJWa6VGzwJRY3uD5P+hTubOHnGfLH+0oZa/Q1NS2lb74fRW1OJ7CFt5KPjjTp
+         p4HPLGo6v/NPuyczsJtv7JkAigCug9A6Fk+MJe7Q1UTnyMwEORp/yjfGVg+FhIWlKfMa
+         cuvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696923551; x=1697528351;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g9HLjKQphoF1al/8pr129PFMpYKqfXvTRFbRdIYZSXY=;
+        b=tYvLFk1cZ75cgwL5hgtHi8eaMaJ43ALRPfP/GEaf2UsCkkNF/TMl/xXHBcU4hZgAEO
+         SLW290Ah6t2c9kSb7Exz8B8eo/z+cFjpcxn5vVSY/OA+DF8X/w6myaHO8ZmMbZmeckdT
+         d/T5oSJnRrzmC9ZK05jDYq/LsQrHMHR8qSnOjJGdxR8FCzmON0u9Gr4xj8d9PJD7LMfD
+         9lX/6ufpSrDxiAn8wKatkN04HQBqO/SWQMHK1wyEWy2Bv2fovkBIKDef8DRM/YFWraQA
+         ho/O5CtAG/Bj1qcKylbjEPJUeSz+tZKgBfvkqtuagsnlGb8lyu2ykTG+ew2mvFDoqzke
+         4x1A==
+X-Gm-Message-State: AOJu0YwQNQcFjJgweuZ7WlKQXszxES5GyDlqDpmk+F6k3AowYgdn7a5x
+        wFopA+z2gn+4x6SJG5d3tlFfpP26BYLcuIXL2eDQEbxMp3xh5D5hhTE=
+X-Google-Smtp-Source: AGHT+IHrmhpZIdd5zcic3MUiuhRIn34+0lpjncVRTXZnMi9qzr53DzLFQwtj/OiltQ9OMSRLop5NwgADPdrIQjIYAoQ=
+X-Received: by 2002:a2e:9bd2:0:b0:2bf:e855:8cbf with SMTP id
+ w18-20020a2e9bd2000000b002bfe8558cbfmr13923869ljj.35.1696923550959; Tue, 10
+ Oct 2023 00:39:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231009165741.746184-1-max.kellermann@ionos.com>
+ <20231009165741.746184-6-max.kellermann@ionos.com> <264fa39d-aed6-4a54-a085-107997078f8d@roeck-us.net>
+ <CAKPOu+8k2x1CucWSzoouts0AfMJk+srJXWWf3iWVOeY+fWkOpQ@mail.gmail.com> <f511170fe61d7e7214a3a062661cf4103980dad6.camel@perches.com>
+In-Reply-To: <f511170fe61d7e7214a3a062661cf4103980dad6.camel@perches.com>
+From:   Max Kellermann <max.kellermann@ionos.com>
+Date:   Tue, 10 Oct 2023 09:38:59 +0200
+Message-ID: <CAKPOu+_xPGdKuSdwh9NdKT+RGw1=JbpkBB3+GK0qnC8KbTyY7Q@mail.gmail.com>
+Subject: Re: [PATCH 6/7] fs/sysfs/group: make attribute_group pointers const
+To:     Joe Perches <joe@perches.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Below is the list of build error/warning regressions/improvements in
-v6.6-rc5[1] compared to v6.5[2].
+On Tue, Oct 10, 2023 at 8:48=E2=80=AFAM Joe Perches <joe@perches.com> wrote=
+:
+> My opinion is that const use in the kernel should almost
+> always have whitespace before and after it except when
+> preceded by a open parenthesis or a newline.
 
-Summarized:
-  - build errors: +4/-5
-  - build warnings: +33/-6
-
-JFYI, when comparing v6.6-rc5[1] to v6.6-rc4[3], the summaries are:
-  - build errors: +0/-1
-  - build warnings: +1/-0
-
-Note that there may be false regressions, as some logs are incomplete.
-Still, they're build errors/warnings.
-
-Happy fixing! ;-)
-
-Thanks to the linux-next team for providing the build service.
-
-[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/94f6f0550c625fab1f373bb86a6669b45e9748b3/ (all 239 configs)
-[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/2dde18cd1d8fac735875f2e4987f11817cc0bc2c/ (234 out of 239 configs)
-[3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/8a749fd1a8720d4619c91c8b6e7528c0a355c0aa/ (all 239 configs)
-
-
-*** ERRORS ***
-
-4 error regressions:
-  + error: modpost: ".L872" [drivers/mtd/nand/raw/nand.ko] undefined!:  => N/A
-  + {standard input}: Error: expected comma after name `xpcs_co' in .size directive:  => 1100
-  + {standard input}: Error: expected symbol name:  => 1095
-  + {standard input}: Error: pcrel too far:  => 933, 934
-
-5 error improvements:
-  - error: modpost: ".L856" [drivers/mtd/nand/raw/nand.ko] undefined!: N/A => 
-  - {standard input}: Error: Missing symbol name in directive: 1096 => 
-  - {standard input}: Error: unknown opcode: 1091 => 
-  - {standard input}: Error: unknown pseudo-op: `.glo': 1097 => 
-  - {standard input}: Error: unrecognized symbol type "": 1096 => 
-
-
-*** WARNINGS ***
-
-33 warning regressions:
-  + modpost: WARNING: modpost: "__ashldi3" [fs/ext2/ext2.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__lshrdi3" [drivers/block/ublk_drv.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__ndelay" [drivers/mtd/nand/raw/qcom_nandc.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/char/hw_random/geode-rng.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/char/hw_random/ingenic-rng.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/char/hw_random/intel-rng.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/char/hw_random/mxc-rnga.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/char/hw_random/xgene-rng.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/adl_pci9118.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/amplc_pci230.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/cb_das16_cs.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/cb_pcidas.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/das800.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/mpc624.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/ni_atmio.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/ni_labpc_common.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/pcl812.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/pcl816.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/pcl818.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/rti800.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/hwmon/hs3001.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/mtd/nand/raw/qcom_nandc.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/net/ethernet/broadcom/asp2/bcm-asp.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/net/wireless/mediatek/mt76/mt792x-lib.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/phy/qualcomm/phy-qcom-m31.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/phy/realtek/phy-rtk-usb2.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/phy/realtek/phy-rtk-usb3.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/phy/rockchip/phy-rockchip-inno-usb2.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/pmdomain/amlogic/meson-ee-pwrc.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/pmdomain/amlogic/meson-gx-pwrc-vpu.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/watchdog/gxp-wdt.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/watchdog/smsc37b787_wdt.ko] has no CRC!:  => N/A
-  + {standard input}: Warning: end of file not at end of a line; newline inserted:  => 943, 1094
-
-6 warning improvements:
-  - modpost: WARNING: modpost: "__udelay" [drivers/hwmon/smm665.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__udelay" [drivers/net/wireless/mediatek/mt76/mt7921/mt7921-common.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__udelay" [drivers/net/wireless/mediatek/mt76/mt7996/mt7996e.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__udelay" [drivers/soc/amlogic/meson-ee-pwrc.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__udelay" [drivers/soc/amlogic/meson-gx-pwrc-vpu.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__udelay" [sound/soc/codecs/snd-soc-l3.ko] has no CRC!: N/A => 
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+So it shall be "void * const foo" (16k occurrences in the kernel)
+instead of "void *const foo" (3k occurrences)?
