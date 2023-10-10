@@ -2,159 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC2E7BF467
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 09:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3977BF476
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 09:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442490AbjJJHfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 03:35:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46262 "EHLO
+        id S1442489AbjJJHiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 03:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442452AbjJJHfs (ORCPT
+        with ESMTP id S1442324AbjJJHh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 03:35:48 -0400
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2077.outbound.protection.outlook.com [40.107.102.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5621F92;
-        Tue, 10 Oct 2023 00:35:47 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cgjOKFbrxsNPoUg68YUgTkjYVZG4qTg0lq9ggt+J8h5jjO/rIz1m2k74qmT1T5zqkHfgOy6Bw8IBM6X8Idh5FcMkr4JARu11+ppiKcA+eRSK69awOCIKzvcH9ZL+Cly4cbeHNfKNeHajEW1Ufxx91iZjUyyoHGO8wPXOw6kgf1q5SQArkYW6t/8KtESsYbsUw7RfUVPKGyUHenPuDB5Pvnad28/XwmF2706DPDoHiZbvv0yIsbIZecuShtjn7v6dzZ+o2dDY0NAL+WVRRcsI9nlLwupG7LfZz2ZTCw8baS8t+CiFSNOPXHwx3u0v1TowixEqmx9/uZhpKmtZyrWudw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4SUC4r6VzdLQIw0m+sDYTJCkK/ios2W1Bv0D2f7Utx0=;
- b=AzGvu7GDgsagR4plm1xgQHBE/T9CmDVoqv7aqnJOS6dA8Te2t5dgZchj9I1W9StfgbU8ly4PSmazkcInMGx6m5yq/2Ff/bIKStT8KlQySiEm1d5jcX0D6InUQ4SXVadfZxYxQ7EY6G0GavfI8GVQopmYFUFBBuuE30e3LCRkHTIWaXp0Wd1shT/Yve2mghQJ1/Nf6nt+KH19zp5tT+Zn1rA2jHi4+ykfz+E8rNsmmtCpj9tormd+BArvxidABdf7Tjw4P1xibwhqzf10echPncmZFX0IyYnNEz0x6OtjEIOXzO40DGvLrTPeQlmpDr/UBPO61SN3QPTXNMAM4c1jvQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4SUC4r6VzdLQIw0m+sDYTJCkK/ios2W1Bv0D2f7Utx0=;
- b=mmgygM2H/B1M1JasgPQTab84sD0QGTA+O2QJnfeiz0oKUwOfYVlg1U/MNMMwtR79jVCf+JZfaozHFr5F9MWoUHNX5qXBVbtYi31Z6ns9cUIVEKc4A4gaIMD67rAleZYvjBU+2SkYj5NZ5ei4hoZiY8032GPw65M5ovPzRs78uYUVD3WSu6Oxen+/86qq8ZOY30NpzvePB+GEFyzrReGZr/nTr1V89rjMC/xhabUkxW5wUpNkWr/KK1WUVIcRdj2EiJzGcmsl+NB4BSIYqEHpZVl+AA9l/77syLUiH9PsBJqEeu/RaovA/ubemMlIDrK4mw5tDBET4lKpuOBnSKb3Aw==
-Received: from BL1PR13CA0209.namprd13.prod.outlook.com (2603:10b6:208:2be::34)
- by IA0PR12MB7602.namprd12.prod.outlook.com (2603:10b6:208:43a::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.37; Tue, 10 Oct
- 2023 07:35:45 +0000
-Received: from BL02EPF0001A105.namprd05.prod.outlook.com
- (2603:10b6:208:2be:cafe::d) by BL1PR13CA0209.outlook.office365.com
- (2603:10b6:208:2be::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.20 via Frontend
- Transport; Tue, 10 Oct 2023 07:35:45 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- BL02EPF0001A105.mail.protection.outlook.com (10.167.241.137) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6838.22 via Frontend Transport; Tue, 10 Oct 2023 07:35:45 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 10 Oct
- 2023 00:35:31 -0700
-Received: from [10.41.21.79] (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 10 Oct
- 2023 00:35:27 -0700
-Message-ID: <6d2b652a-17bd-b6ff-03ed-081ab299da56@nvidia.com>
-Date:   Tue, 10 Oct 2023 13:05:24 +0530
+        Tue, 10 Oct 2023 03:37:59 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DBA39E;
+        Tue, 10 Oct 2023 00:37:57 -0700 (PDT)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39A79XvC020878;
+        Tue, 10 Oct 2023 07:37:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=pp1; bh=5aaW2dPRZNtep/xpizNo1N37xs+hP26eCD8NQHP4dYg=;
+ b=fVtGrVHngctrT1pbGLa4kXC6Fe5YJewBoz+fvd2PlEeRlwxFa8Mz8htlgo7LyeE5ZKxo
+ c38UNaXtlvi9WBRAV/TfG4SKfPb4XcA+Hbld4wCXOaoJTNV2SbPzFI5HGTPFPnrhOkuz
+ i+YzokrsJB6sw/l2hFqMyvVR7xdXygmj1olabaYPAf+NZfRUu6ndv/LPY5Er8eJImBtA
+ U9r8/auWcw6/6ciwOREGLWgjdv+uTA6uft3ai5yHqErbT2l3rHRRts1J7YocsGqZqScZ
+ OCiu5nb92oYYMMDAZNTDF5zdFqt9utJzeOSvHKZyurFYuaX/3geRwZTDR8N1jW9Y/2nh KQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tn1yq1513-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Oct 2023 07:37:04 +0000
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39A79caK021024;
+        Tue, 10 Oct 2023 07:37:03 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tn1yq150m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Oct 2023 07:37:03 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39A4lurn028185;
+        Tue, 10 Oct 2023 07:37:02 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tkj1xy0hm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Oct 2023 07:37:02 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39A7ax5Y22086166
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 10 Oct 2023 07:36:59 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0F70A20040;
+        Tue, 10 Oct 2023 07:36:59 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4797420043;
+        Tue, 10 Oct 2023 07:36:58 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Tue, 10 Oct 2023 07:36:58 +0000 (GMT)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-um@lists.infradead.org,
+        loongarch@lists.linux.dev, sparclinux@vger.kernel.org,
+        x86@kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 4/5] kbuild: unify vdso_install rules
+References: <20231009124210.1064021-1-masahiroy@kernel.org>
+        <20231009124210.1064021-4-masahiroy@kernel.org>
+Date:   Tue, 10 Oct 2023 09:36:57 +0200
+In-Reply-To: <20231009124210.1064021-4-masahiroy@kernel.org> (Masahiro
+        Yamada's message of "Mon, 9 Oct 2023 21:42:09 +0900")
+Message-ID: <yt9dfs2judwm.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [Patch v4 2/2] ACPI: processor: reduce CPUFREQ thermal reduction
- pctg for Tegra241
-Content-Language: en-US
-To:     kernel test robot <lkp@intel.com>, <rafael@kernel.org>,
-        <rui.zhang@intel.com>, <lenb@kernel.org>,
-        <linux-acpi@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <oe-kbuild-all@lists.linux.dev>, <treding@nvidia.com>,
-        <jonathanh@nvidia.com>, <bbasu@nvidia.com>, <sanjayc@nvidia.com>,
-        <ksitaraman@nvidia.com>, <srikars@nvidia.com>,
-        <jbrasen@nvidia.com>, "Sumit Gupta" <sumitg@nvidia.com>
-References: <20231009171839.12267-3-sumitg@nvidia.com>
- <202310100219.lpVzbckv-lkp@intel.com>
-From:   Sumit Gupta <sumitg@nvidia.com>
-In-Reply-To: <202310100219.lpVzbckv-lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.126.231.35]
-X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0001A105:EE_|IA0PR12MB7602:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2dad434e-d451-48be-e583-08dbc96383d8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Mb4kizZsrkY8TRr5b97BkxurYuaqfVwi/bdTJ0Gm4r5Wv9E6bJRdo2CBq437h99rTf7T3SBLZWG/PzkUjkiQUDIRvbW94yweHfga7kvygUFppyDSYk0IolctLPqCV21TNyVBToxiw5FHuj37zc/nH3CiL1f9hqloZkRMFYy2CW6GGhM9qQDRrAP8vhi7ke0ynU2SSTWLlk5iKBnqWCsz/u0l+jOCsVKNh0GlBwBvHX3qvBEA5kxoJtS8yAEiQUahYRQc1IkdAeTFpwNYQ7zXez9ecr70Va0EXIVoydVrERK9BTKCk7L46n8GnG5pk3HuCeUeiF2F3yTiMBDKRz8xe5W0lVp4RdajJfXbw13NIDP/9kN9z7PkHp8U1fC08KszqDDhZWq6+jbTQ2PyUXaAJwyfOZXsst81dq2uln8XCR1v5WZLTneSq8WKwETEoeAz6fd/s/yMTN9RseqdUvXA+vCYeEhoZB1zdhYZLRRIgCMhF/nKxXNo3JLvfuYGQqTGYn71b3VkjlWVHQZNeESEnwawtUk442F0ddN6eIuY+fHrDVn0ecStSmBr+TYeAt3Jtc3p6PPcGyk5vpAJHKDTE2k+vU+A0sQwx/ryIZSBHxgbuU9H4cLatOBhjaQkyYYG3/nghw4B2ivRaZ2Ja4k78BA7nMxIi9uhIolgWHlrhbQWiRvEwquODmpqDOTpFalKXk0T9Di1c933GGWEwZgqiejKKGzjPnpP8/lBM5q3RSyHd7cYelvs7TNkyMnLzj5yl4c6FR+mqrhcvptsjqK5WRxeegmd8rfD5NYEmKViZHo=
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(136003)(346002)(376002)(396003)(230922051799003)(82310400011)(451199024)(64100799003)(186009)(1800799009)(46966006)(40470700004)(36840700001)(6666004)(82740400003)(2616005)(107886003)(478600001)(41300700001)(336012)(47076005)(2906002)(83380400001)(426003)(70586007)(110136005)(5660300002)(16576012)(54906003)(70206006)(8676002)(4326008)(8936002)(16526019)(26005)(40460700003)(316002)(36756003)(36860700001)(356005)(7636003)(40480700001)(31696002)(86362001)(31686004)(2101003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 07:35:45.2000
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2dad434e-d451-48be-e583-08dbc96383d8
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0001A105.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB7602
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: _CGlDQcO5kaF2u-illDRNoa12BhAMAB3
+X-Proofpoint-GUID: 5Ae0OhPocEUKJk2CSLcSZHHAMy_Wm0U-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-10_04,2023-10-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=931
+ bulkscore=0 clxscore=1011 suspectscore=0 adultscore=0 priorityscore=1501
+ malwarescore=0 lowpriorityscore=0 impostorscore=0 phishscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310100056
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Masahiro Yamada <masahiroy@kernel.org> writes:
 
+> Currently, there is no standard implementation for vdso_install,
+> leading to various issues:
+>
+>  1. Code duplication
+>
+>     Many architectures duplicate similar code just for copying files
+>     to the install destination.
+>
+>     Some architectures (arm, sparc, x86) create build-id symlinks,
+>     introducing more code duplication.
+>
+>  2. Accidental updates of in-tree build artifacts
+>
+>     The vdso_install rule depends on the vdso files to install.
+>     It may update in-tree build artifacts. This can be problematic,
+>     as explained in commit 19514fc665ff ("arm, kbuild: make
+>     "make install" not depend on vmlinux").
+>
+>  3. Broken code in some architectures
+>
+>     Makefile code is often copied from one architecture to another
+>     without proper adaptation or testing.
+>
+>     The previous commits removed broken code from csky, UML, and parisc.
+>
+>     Another issue is that 'make vdso_install' for ARCH=s390 installs
+>     vdso64, but not vdso32.
+>
+> To address these problems, this commit introduces the generic vdso_install.
+>
+> Architectures that support vdso_install need to define vdso-install-y
+> in arch/*/Makefile.
+>
+> vdso-install-y lists the files to install. For example, arch/x86/Makefile
+> looks like this:
+>
+>   vdso-install-$(CONFIG_X86_64)           += arch/x86/entry/vdso/vdso64.so.dbg
+>   vdso-install-$(CONFIG_X86_X32_ABI)      += arch/x86/entry/vdso/vdsox32.so.dbg
+>   vdso-install-$(CONFIG_X86_32)           += arch/x86/entry/vdso/vdso32.so.dbg
+>   vdso-install-$(CONFIG_IA32_EMULATION)   += arch/x86/entry/vdso/vdso32.so.dbg
+>
+> These files will be installed to $(MODLIB)/vdso/ with the .dbg suffix,
+> if exists, stripped away.
+>
+> vdso-install-y can optionally take the second field after the colon
+> separator. This is needed because some architectures install vdso
+> files as a different base name.
+>
+> The following is a snippet from arch/arm64/Makefile.
+>
+>   vdso-install-$(CONFIG_COMPAT_VDSO)      += arch/arm64/kernel/vdso32/vdso.so.dbg:vdso32.so
+>
+> This will rename vdso.so.dbg to vdso32.so during installation. If such
+> architectures change their implementation so that the file names match,
+> this workaround will go away.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
 
-> Hi Sumit,
-> 
-> kernel test robot noticed the following build errors:
-
-Thank you for the report.
-
-> 
-> [auto build test ERROR on rafael-pm/linux-next]
-> [also build test ERROR on next-20231009]
-> [cannot apply to linus/master v6.6-rc5]
-
-[...]
-
-> All errors (new ones prefixed by >>):
-> 
->     ld: arch/x86/kernel/setup.o: in function `acpi_thermal_cpufreq_pctg':
->>> setup.c:(.text+0x3): multiple definition of `acpi_thermal_cpufreq_pctg'; init/main.o:main.c:(.text+0x32): first defined here
->     ld: arch/x86/kernel/x86_init.o: in function `acpi_thermal_cpufreq_pctg':
-
-[...]
-
->     cpu.c:(.text+0x128): multiple definition of `acpi_thermal_cpufreq_pctg'; init/main.o:main.c:(.text+0x32): first defined here
->     ld: drivers/base/property.o: in function `acpi_thermal_cpufreq_pctg':
->     property.c:(.text+0xa87): multiple definition of `acpi_thermal_cpufreq_pctg'; init/main.o:main.c:(.text+0x32): first defined here
->     ld: drivers/base/cacheinfo.o: in function `acpi_thermal_cpufreq_pctg':
->     cacheinfo.c:(.text+0x231): multiple definition of `acpi_thermal_cpufreq_pctg'; init/main.o:main.c:(.text+0x32): first defined here
-
-Below change fixes the issue for me.
-  +++ b/include/linux/acpi.h
-@@ -1542,7 +1542,7 @@ static inline void 
-acpi_device_notify_remove(struct device *dev) { }
-  #ifdef CONFIG_HAVE_ARM_SMCCC_DISCOVERY
-  int acpi_thermal_cpufreq_pctg(void);
-  #else
--inline int acpi_thermal_cpufreq_pctg(void)
-+static inline int acpi_thermal_cpufreq_pctg(void)
-  {
-         return 0;
-  }
-
-
-Best Regards,
-Sumit Gupta
+Acked-by: Sven Schnelle <svens@linux.ibm.com> # s390
