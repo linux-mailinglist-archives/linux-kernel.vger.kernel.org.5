@@ -2,55 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C86167BEF67
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 02:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 921C07BEF69
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 02:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379104AbjJJAA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 20:00:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44040 "EHLO
+        id S1379124AbjJJAB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 20:01:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377918AbjJJAAz (ORCPT
+        with ESMTP id S1377918AbjJJAB5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 20:00:55 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F23A3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 17:00:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7362C433C7;
-        Tue, 10 Oct 2023 00:00:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1696896054;
-        bh=YKS8Y/7EmqBXYuLK/9MivE+xNPfZVkeyEmaZhaCyW+E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RryLjpiV4EvbXtkF6jCKy71S0MNAG5dgMqH2ypf7KUcH8JxcCO2Az3wr4Fop2QoZB
-         3vUic30DMWobAmFZ3NSBupUnzR8oiCFyzwCFCRMhVbHe34pG+kprS/MS9qoywVGkBA
-         VSZqLNIVRk+B/g6HIw4aYkQXMV018pdZOysyJ0yw=
-Date:   Mon, 9 Oct 2023 17:00:31 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Haibo Li <haibo.li@mediatek.com>
-Cc:     <linux-kernel@vger.kernel.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <xiaoming.yu@mediatek.com>
-Subject: Re: [PATCH v2] kasan:print the original fault addr when access
- invalid shadow
-Message-Id: <20231009170031.a294c11575d5d4941b8596a9@linux-foundation.org>
-In-Reply-To: <20231009073748.159228-1-haibo.li@mediatek.com>
-References: <20231009073748.159228-1-haibo.li@mediatek.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+        Mon, 9 Oct 2023 20:01:57 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9982DA3;
+        Mon,  9 Oct 2023 17:01:56 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 4F17692009C; Tue, 10 Oct 2023 02:01:53 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 4B7CF92009B;
+        Tue, 10 Oct 2023 01:01:53 +0100 (BST)
+Date:   Tue, 10 Oct 2023 01:01:53 +0100 (BST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Arnd Bergmann <arnd@kernel.org>
+cc:     Ian Abbott <abbotti@mev.co.uk>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] comedi: Fix driver module dependencies since HAS_IOPORT
+ changes
+In-Reply-To: <8728313c-997a-46c1-8225-d57369e9292c@app.fastmail.com>
+Message-ID: <alpine.DEB.2.21.2310100018361.48714@angie.orcam.me.uk>
+References: <20230901192615.89591-1-abbotti@mev.co.uk> <33c2292b-08cb-44c7-9438-07d4060976ab@app.fastmail.com> <f0e88ae3-d38e-40d1-900c-395ddc9c8231@mev.co.uk> <65d620b2644e2d60b041815fa4bb544a818ae55a.camel@linux.ibm.com> <ab5baa69-ae3c-4973-8563-670395a3c976@mev.co.uk>
+ <8728313c-997a-46c1-8225-d57369e9292c@app.fastmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,39 +47,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Oct 2023 15:37:48 +0800 Haibo Li <haibo.li@mediatek.com> wrote:
+On Mon, 4 Sep 2023, Arnd Bergmann wrote:
 
-> when the checked address is illegal,the corresponding shadow address
-> from kasan_mem_to_shadow may have no mapping in mmu table.
-> Access such shadow address causes kernel oops.
-> Here is a sample about oops on arm64(VA 39bit) 
-> with KASAN_SW_TAGS and KASAN_OUTLINE on:
-> 
-> [ffffffb80aaaaaaa] pgd=000000005d3ce003, p4d=000000005d3ce003,
->     pud=000000005d3ce003, pmd=0000000000000000
-> Internal error: Oops: 0000000096000006 [#1] PREEMPT SMP
-> Modules linked in:
-> CPU: 3 PID: 100 Comm: sh Not tainted 6.6.0-rc1-dirty #43
-> Hardware name: linux,dummy-virt (DT)
-> pstate: 80000005 (Nzcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> pc : __hwasan_load8_noabort+0x5c/0x90
-> lr : do_ib_ob+0xf4/0x110
-> ffffffb80aaaaaaa is the shadow address for efffff80aaaaaaaa.
-> The problem is reading invalid shadow in kasan_check_range.
-> 
-> The generic kasan also has similar oops.
-> 
-> It only reports the shadow address which causes oops but not
-> the original address.
-> 
-> Commit 2f004eea0fc8("x86/kasan: Print original address on #GP")
-> introduce to kasan_non_canonical_hook but limit it to KASAN_INLINE.
-> 
-> This patch extends it to KASAN_OUTLINE mode.
+> Yes, I think that will always be a safe assumption, ISA without port I/O
+> is just not a sensible configuration. A few of the later ISA devices use
+> PCI style memory mapped I/O, but I can't think of any driver that doesn't
+> also require port I/O, and you wouldn't find ISA slots in a system that
+> lacks support for port I/O.
 
-Is 2f004eea0fc8 a suitable Fixes: target for this?  If not, what is?
+ FWIW for the 8086 CPU as it was designed back in 1970s (and borrowing 
+from the 8080/8085) and consequently IBM PC systems of 1980s memory and 
+I/O bus cycles were meant for resource accesses as the respective names 
+implied, there was no concept of MMIO for those systems back then, which 
+came later from CPU architectures that only have a single address space.
 
-Also, I'm assuming that we want to backport this fix into earlier
-kernel versions?
+ With those ISA option cards memory bus cycles were typically decoded by 
+an option ROM where implemented (for system BIOS expansion), sometimes 
+socketed (e.g. for a network card's optional boot ROM), and video adapters 
+(graphics or text-only such as the MDA) also decoded memory bus cycles to 
+video RAM.  There were also ISA memory expansion cards, exceedingly rare, 
+which decoded memory bus cycles to onboard RAM.
 
+ For anything else I/O bus cycles were used, so for the purpose of our 
+consideration ISA pretty much equals I/O and the presence of ISA implies a 
+way to generate 8086 bus I/O cycles in a system, regardless of what native 
+bus protocols the host CPU might implement.
 
+  Maciej
