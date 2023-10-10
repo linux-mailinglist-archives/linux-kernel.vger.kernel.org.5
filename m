@@ -2,45 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B7BF7BF26D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 07:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D78397BF272
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 07:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442149AbjJJFrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 01:47:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48410 "EHLO
+        id S1442138AbjJJFtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 01:49:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378059AbjJJFrp (ORCPT
+        with ESMTP id S233250AbjJJFtT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 01:47:45 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C05C9E;
-        Mon,  9 Oct 2023 22:47:41 -0700 (PDT)
+        Tue, 10 Oct 2023 01:49:19 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E349A9E;
+        Mon,  9 Oct 2023 22:49:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1696916860;
-        bh=llAuE+x3KttPI6ZIwES9aPdI1aUvwVKmpPB/UIK6qzI=;
+        s=201702; t=1696916955;
+        bh=t15fnIt0tpiMUPAuf8jfVDNlK1gRXinedc/IrU5VPtQ=;
         h=Date:From:To:Cc:Subject:From;
-        b=LXDMiwYznOWGh7uLNAsQvd3u16AH9TKRmJq/I7+f78GzComAdgQaEEEHWuERcedQd
-         APTBCQTb4IgeaJIuU0D25TWARA/EMiUbB4IviGhqyGshstOc4UkceWJCGlRkFqgPBD
-         i1+nY5AqDqaLyhXNi+V8c2ZiY8IzEoXPF3oDOBNsbXHYw5IgEJMrMTIiX4fLrJLBSK
-         4jn/4iUWvH/Z2uXaQ7hhdKwSfCFG6Hgll1cWaZzAdOvJO+lacHD0FCc/fgeugL0wfy
-         wkmPD5ltNXbpXuVi2Qh7JisO4aCB8pZPpxjWHO6pHHLFzrtciXS47swwwWOKK9xstB
-         yCHRJzy1OMlXg==
+        b=UdmXCO9vC/x/7Ozaoz/VY4lp5nahonNtnsIjDP9Lli9/iXkTe6X/6nIGblmo1k0ZZ
+         KqXCy0iZvSj7KtT7hPTN3fwAeh3tmMY5QQ6P2j28cVxG34bGWLk4lM76fpInFA6KHK
+         JHYPqGUQySvlQDXD0YocRT8LLBZ2OJv1ZuAFIDaaLOd0n47Ap/KUjmkO69VuQblpZw
+         SgSTm0Swu2NEkI3RGc3Y3B1lRO8VCzbFkW/2QOofCzFilq2llvrx/UhNET9aL9WRF4
+         taFWXVzeskWx6fdH4HjfUPGtBvKCyryj60eOkeb6I4diOdQotD3SdRgYP4OzEpGoE1
+         OCF7Ab47srywA==
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S4Q0X277nz4wy6;
-        Tue, 10 Oct 2023 16:47:40 +1100 (AEDT)
-Date:   Tue, 10 Oct 2023 16:47:39 +1100
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S4Q2L6sWXz4xM4;
+        Tue, 10 Oct 2023 16:49:14 +1100 (AEDT)
+Date:   Tue, 10 Oct 2023 16:49:14 +1100
 From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Zi Yan <ziy@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the mm tree
-Message-ID: <20231010164739.236d916d@canb.auug.org.au>
+Subject: linux-next: Signed-off-by missing for commit in the imx-mxs tree
+Message-ID: <20231010164914.4683ca7c@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/PmRNJ2+96Cnq2essMtlqlJ7";
+Content-Type: multipart/signed; boundary="Sig_/QjD4FlsDjerN=Xj1tE6mtoe";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
@@ -51,49 +50,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/PmRNJ2+96Cnq2essMtlqlJ7
+--Sig_/QjD4FlsDjerN=Xj1tE6mtoe
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
 Hi all,
 
-In commit
+Commit
 
-  2a936ebfab06 ("mm/migrate: correct nr_failed in migrate_pages_sync()")
+  c0e3c76a8be0 ("ARM: dts: vfxxx: Write dmas in a single line")
 
-Fixes tag
-
-  Fixes: 2ef7dbb26990 ("migrate_pages: try migrate in batch asynchronously =
-fi=3D
-
-has these problem(s):
-
-  - Subject has leading but no trailing parentheses
-  - Subject has leading but no trailing quotes
-  - Subject does not match target commit subject
-    Just use
-	git log -1 --format=3D'Fixes: %h ("%s")'
-
-Please do not split Fixes tags over more than one line.
+is missing a Signed-off-by from its committer.
 
 --=20
 Cheers,
 Stephen Rothwell
 
---Sig_/PmRNJ2+96Cnq2essMtlqlJ7
+--Sig_/QjD4FlsDjerN=Xj1tE6mtoe
 Content-Type: application/pgp-signature
 Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUk5XsACgkQAVBC80lX
-0GyXQwgAg9RlNol8pyZ1ViWknw705C0KW+oInUUxZCCnqudQ5SP8dEzViTeyj3PL
-7kGL0uE19gPKrLR0yJnPmHttrmzn8OXUJcsgXKJhjw76KIrVFCpHCguWQgzmAsfX
-Xjnavg4eKCssFqNf9/DyBLgcvpI3X8sP0SkrI75kXxPVuFbXwW82Nubnf/mLb8VG
-eqp8hyDva0ZFTknVSovDwxm7S0QLiZ2xLmawBe/jtTFKyyhAzN621whXkt1aeiR3
-Wd3PRGqX2P6UwvbyuzA5Y4Q+o2SwHfXyqyZcu39EN06i9mcV32jeplGH7Ww0x8vo
-iQ8Pz7IoHZjpy2Jtp1c1DpGLE5b7TA==
-=ghTN
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUk5doACgkQAVBC80lX
+0Gz8uwf9Ey0/sphFhzzaxeVYGTHUZ/HnovtMRdj3ptuh7iUMLdnmoYRTDAp+kFI1
+j8zwLhw/ifCpm8ht4K0Uyg9Nws3+mDYnKe46KMe6wVXoRGJiceDibJ7WqA1L9GLo
+HxR58jq1/g/H1WdrY0D4UI5FVj/4VzpbPiw/0O2eTXCH9wWGjh55ZOEtd8fif5o2
+YS3DO+/AIpxN2tZO0Qi50BNVmyP77NrbYaSQFxLaVtljHtCmvzAfspKDR1asPWvY
+TXE1qLHAO7jbHEo4QNgtisqVqbQ/bNOk6VyFtjZ0sFOezC8fh5aGWooBY8gB7+Tz
+fUXdQU4c3dyfqvxP3YTCc2GsHonbtw==
+=b2FY
 -----END PGP SIGNATURE-----
 
---Sig_/PmRNJ2+96Cnq2essMtlqlJ7--
+--Sig_/QjD4FlsDjerN=Xj1tE6mtoe--
