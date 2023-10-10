@@ -2,212 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C057BF7BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 11:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C680C7BF7C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 11:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230374AbjJJJpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 05:45:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58598 "EHLO
+        id S230304AbjJJJqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 05:46:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbjJJJpX (ORCPT
+        with ESMTP id S229892AbjJJJqB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 05:45:23 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F7FE93;
-        Tue, 10 Oct 2023 02:45:19 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c189dabcc3so64531641fa.1;
-        Tue, 10 Oct 2023 02:45:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696931117; x=1697535917; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l/qBEDnL1u2dQTbFvw89P6kT4AtOIC2NsWDvt/lq/VU=;
-        b=GxS7HhknCZyyD9+0gOdv3e60OK2bwzwsZvXcD9dNV6PS+EFdKjtoaTWr8fUywLVLCs
-         6bkkzb+VRSKgu1QknQjB+PS3K2Ca7nF5VTKhFIH4vrlSuYK7U+K2daOE6bdejveCUBCm
-         S1xzaPrvJAeG/kJU6x6IPluUHZzeWwcW7BHbj5lpxkeSrSuWz+BdHRDBOVbavZVXWW4X
-         iIg3eFXbuC/poB51F5BRmGS9uWYiRq1jXQavn3WDqmal2v+mznFyc7YZLXGivPxx+jPM
-         eMW7o+k2S1JehL4i4BON8Xy0JBdNG6uMyBllKbMixnhNyCmhwxsu9YFdrAAP6rrZfDVL
-         qhoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696931117; x=1697535917;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=l/qBEDnL1u2dQTbFvw89P6kT4AtOIC2NsWDvt/lq/VU=;
-        b=IohlslcuSt+wDAR9RccNE96VURxTL5txVivqa2sw6MfUkywTPr4vCIZZbIDP6QdBBV
-         AuvdYANybJUFrMMdMXKuP8PyGb0M9MsW9ec9QVcpdntv44eAGItVCNrk8JZ9Ioocw4bz
-         5F4foKKAM2lOmp2xyVCtvcbTbQiQhgROF8EltgO4xOcgxxtXD5nfye5kyV4/1tqiVz84
-         b2+s43gR7ZT5VxdPcLrMzAt5vuHW2phl13KCryWssidO2KKToRXHPN87N5kwhEuVoQQV
-         Uy9UHCndB3K1dN+t++Np/BkeImp3wlRcWa6GUlqd0qmBWpJhzm+5sdTEIi53/mk+UuFR
-         H/pg==
-X-Gm-Message-State: AOJu0Yy32uyVQ/vHj9lnzZrSM1IbXpnKnIZ9CChHDFD2uiSD7OGPHqPx
-        cutGIZBAU6iqqhWF/lieOAE=
-X-Google-Smtp-Source: AGHT+IGURrCq9x7WCrBfQMb8RbXjeUXmsx6TKHE9oCtovGBEdCzvj5Gy1hwvHFblJg3zgcGo8vPCxQ==
-X-Received: by 2002:ac2:4c46:0:b0:500:b56d:e11a with SMTP id o6-20020ac24c46000000b00500b56de11amr16807742lfk.43.1696931117005;
-        Tue, 10 Oct 2023 02:45:17 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:16f8:1500::7? (dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::7])
-        by smtp.gmail.com with ESMTPSA id k15-20020a0565123d8f00b00500b561285bsm1612452lfv.292.2023.10.10.02.45.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Oct 2023 02:45:16 -0700 (PDT)
-Message-ID: <ae210957-4a72-24b3-2f11-8d5824041e85@gmail.com>
-Date:   Tue, 10 Oct 2023 12:45:15 +0300
+        Tue, 10 Oct 2023 05:46:01 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D9F694;
+        Tue, 10 Oct 2023 02:46:00 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 648956607243;
+        Tue, 10 Oct 2023 10:45:58 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1696931159;
+        bh=6H9Fj2tHWKm+K4ZGzGla2mVcICa34lDD8nktakutjLo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=BOV1amVx1RHjJcfG/Juc7idTOADT5dPAhDeFPXtCHpZEG8Hikn6RKf4HB2LHgMEsK
+         2KAASVv/MZIKZV2hqNAQZftl+QQbgLJm6Qu0Xd3IFngyIS45lZ4e820Lfv4cvrTQVd
+         5gDF60go4lFLlGcBBXM8hwd1eHZzUpOYpIeRtmIV/ZjZh7h1cCsmvvk+3/mk9OCQdx
+         QMOrwfMs8fYy/xlxVxnuZC7fgfLpuiCmGHQthYja4UUFiUZkx/kCVqDrixf6ifSgXB
+         myjaI7Xog2MF1g0M4uJwdi09kmwsr8FfXemLQ2KriBgBIzKq0dcS3Rq38evxPFbm4z
+         GwF5ozFb0IUMQ==
+Message-ID: <50bb99ee-8ef3-343e-7359-526662f511cb@collabora.com>
+Date:   Tue, 10 Oct 2023 11:45:55 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US, en-GB
-To:     Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paul Gazzillo <paul@pgazz.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>
-References: <20231008154857.24162-1-subhajit.ghosh@tweaklogic.com>
- <20231008154857.24162-3-subhajit.ghosh@tweaklogic.com>
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-Subject: Re: [PATCH 2/2] iio: light: Add support for APDS9306 Light Sensor
-In-Reply-To: <20231008154857.24162-3-subhajit.ghosh@tweaklogic.com>
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v3 1/2] dt-bindings: PCI: mediatek-gen3: Add support for
+ controlling power and reset
+Content-Language: en-US
+To:     Jian Yang <jian.yang@mediatek.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jianjun Wang <jianjun.wang@mediatek.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Chuanjia.Liu@mediatek.com, Jieyy.Yang@mediatek.com,
+        Qizhong.Cheng@mediatek.com
+References: <20231009084957.18536-1-jian.yang@mediatek.com>
+ <20231009084957.18536-2-jian.yang@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231009084957.18536-2-jian.yang@mediatek.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/23 18:48, Subhajit Ghosh wrote:
-> Driver support for Avago (Broadcom) APDS9306
-> Ambient Light Sensor with als and clear channels.
-> This driver exposes raw values for both the channels and
-> processed(lux) values for the als channel.
-> Support for both with or without hardware interrupt
-> configurations are provided.
+Il 09/10/23 10:49, Jian Yang ha scritto:
+> From: "jian.yang" <jian.yang@mediatek.com>
 > 
-> Datasheet at https://docs.broadcom.com/doc/AV02-4755EN
+> Add new properties to support control power supplies and reset pin of
+> a downstream component.
 > 
-> Signed-off-by: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-
-Hi Subhajit,
-
-To my eyes this driver looks nice. Just spotted two minor things.
-
+> Signed-off-by: jian.yang <jian.yang@mediatek.com>
 > ---
->   drivers/iio/light/Kconfig    |   12 +
->   drivers/iio/light/Makefile   |    1 +
->   drivers/iio/light/apds9306.c | 1381 ++++++++++++++++++++++++++++++++++
->   3 files changed, 1394 insertions(+)
->   create mode 100644 drivers/iio/light/apds9306.c
+>   .../bindings/pci/mediatek-pcie-gen3.yaml      | 30 +++++++++++++++++++
+>   1 file changed, 30 insertions(+)
 > 
-...
+> diff --git a/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml b/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
+> index 7e8c7a2a5f9b..eb4ad98549d1 100644
+> --- a/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
+> +++ b/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
+> @@ -84,6 +84,26 @@ properties:
+>       items:
+>         enum: [ phy, mac ]
+>   
+> +  pcie1v8-supply:
 
-> +
-> +static int apds9306_intg_time_set(struct apds9306_data *data, int val2)
-> +{
-> +	struct device *dev = data->dev;
-> +	int ret, intg_old, gain_old, gain_new, gain_new_closest;
-> +	bool ok;
-> +
-> +	if (!iio_gts_valid_time(&data->gts, val2)) {
-> +		dev_err(dev, "Unsupported integration time %u\n", val2);
-> +		return ret;
-> +	}
-> +
-> +	intg_old = iio_gts_find_int_time_by_sel(&data->gts,
-> +						data->intg_time_idx);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	if (intg_old == val2)
-> +		return 0;
-> +
-> +	gain_old = iio_gts_find_gain_by_sel(&data->gts, data->gain_idx);
-> +	if (gain_old < 0)
-> +		return gain_old;
-> +
-> +	ret = iio_gts_find_new_gain_by_old_gain_time(&data->gts, gain_old,
-> +				intg_old, val2, &gain_new);
-> +	if (gain_new < 0) {
-> +		dev_err(dev, "Unsupported gain with time\n");
-> +		return gain_new;
-> +	}
-> +
-> +	gain_new_closest = iio_find_closest_gain_low(&data->gts, gain_new, &ok);
-> +	if (gain_new_closest < 0) {
-> +		gain_new_closest = iio_gts_get_min_gain(&data->gts);
-> +		if (gain_new_closest < 0)
-> +			return gain_new_closest < 0;
+There are another two controllers having such regulators and they all have the
+same name for those supplies; Can you please change the names to be consistent
+with the other controllers?
 
-Returning the truth value on purpose? :)
+vpcie1v8
+vpcie3v3
+vpcie12v
 
-> +	}
-> +	if (!ok)
-> +		dev_dbg(dev, "Unable to find optimum gain, setting minimum");
-> +
-> +	ret = iio_gts_find_sel_by_int_time(&data->gts, val2);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret = apds9306_intg_time_set_hw(data, ret);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = iio_gts_find_sel_by_gain(&data->gts, gain_new_closest);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return apds9306_gain_set_hw(data, ret);
-> +}
+Regards,
+Angelo
 
-...
-
-> +static int get_device_id_lux_per_count(struct apds9306_data *data)
-> +{
-> +	int ret, part_id;
-> +
-> +	ret = regmap_read(data->regmap, APDS9306_PART_ID, &part_id);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (part_id == apds9306_part_id_nlux_per_count[0].part_id)
-> +		data->nlux_per_count =
-> +			apds9306_part_id_nlux_per_count[0].nlux_per_count;
-> +	else if (part_id == apds9306_part_id_nlux_per_count[1].part_id)
-> +		data->nlux_per_count =
-> +			apds9306_part_id_nlux_per_count[1].nlux_per_count;
-> +	else
-> +		return -ENXIO;
-
-I think we should be able to differentiate between the IC variants by DT 
-compatible. (Commented that on bindings patch). Not sure if we need to 
-support cases where the sensor is instantiated without device-tree. I am 
-not super happy when code requires the part-id to be known if we have 
-separate compatibles for variants. Can we in dt-case just print a 
-warning if the part-ID is not what we expect - and proceed assuming the 
-nlux_per_count based on the DT information? (Sometimes we see new 
-variants with same part-IDs - or many part-IDs with no SW changes 
-needed. Hence maintaining the part-ID lists may be tedious). This is 
-just some pondering though, no strong requirements from my side
-
-> +
-> +	return 0;
-> +}
-> +
-
-Yours,
-	-- Matti
-
--- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
 
