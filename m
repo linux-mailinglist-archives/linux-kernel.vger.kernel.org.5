@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C186C7C0295
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 19:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0B5C7C02A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 19:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234023AbjJJR1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 13:27:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42684 "EHLO
+        id S234105AbjJJR1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 13:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233970AbjJJR1h (ORCPT
+        with ESMTP id S234034AbjJJR1k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 13:27:37 -0400
-Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F9A89D;
-        Tue, 10 Oct 2023 10:27:35 -0700 (PDT)
-Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-        by mx.skole.hr (mx.skole.hr) with ESMTP id 3A92D8516B;
-        Tue, 10 Oct 2023 19:27:33 +0200 (CEST)
+        Tue, 10 Oct 2023 13:27:40 -0400
+Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58FC199;
+        Tue, 10 Oct 2023 10:27:37 -0700 (PDT)
+Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+        by mx.skole.hr (mx.skole.hr) with ESMTP id 248DB8649E;
+        Tue, 10 Oct 2023 19:27:35 +0200 (CEST)
 From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Date:   Tue, 10 Oct 2023 19:27:19 +0200
-Subject: [PATCH v6 2/9] dt-bindings: pinctrl: pinctrl-single: add
- marvell,pxa1908-padconf compatible
+Date:   Tue, 10 Oct 2023 19:27:20 +0200
+Subject: [PATCH v6 3/9] pinctrl: single: add marvell,pxa1908-padconf
+ compatible
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20231010-pxa1908-lkml-v6-2-b2fe09240cf8@skole.hr>
+Message-Id: <20231010-pxa1908-lkml-v6-3-b2fe09240cf8@skole.hr>
 References: <20231010-pxa1908-lkml-v6-0-b2fe09240cf8@skole.hr>
 In-Reply-To: <20231010-pxa1908-lkml-v6-0-b2fe09240cf8@skole.hr>
 To:     Michael Turquette <mturquette@baylibre.com>,
@@ -48,21 +48,21 @@ Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-hardening@vger.kernel.org,
         =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=893;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=886;
  i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=JI4TCidJxHS1hYKjUsUHSsL9Lr+V30eDcrv5o/04yCQ=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlJYl45oeZvqQfEk0N/BcAkKiGhs0mjliAM4Azw
- jKWhTxEAv6JAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZSWJeAAKCRCaEZ6wQi2W
- 4YA+D/9xaSSVr4qSeGjb6mIc60b38KFQ1QTppTfY6GhnmVY7EBrfbP+M7U5DElKvZpKzw9cf4fQ
- DbqxAAS1t37i4lXUgShpKgp83iSwpquchB5WB59ZvDfAbNSUUDix0tcVzC7zFmi66QPdrtxhGip
- N2lamX8fdTlqSPBvPAnXkZLa1TnwCkwLILaEeXHd6g57mSFBQSWqeJHxXSGVkDSiQ8vYMNMh8W8
- dNE+spmLJp+4/MowHWPtWg98epUaslMDTcB7JR/hZbEkyIyGUr7eIlUI/TVUqmX49fMJU82JeQl
- 6wFVlQ/KuEUUOeHutJ9PsCQZU7rL9MoBJRidM/zKPIOy2KeGneJ5qHEn96mGQCSWUlnx0L2yegQ
- GN+GVqdd3cuhLqR6dFcMKeS4EcpLJCE87Zbew+380BQhcFtdIhTT1MUUrBXi8ochBTyp4frAWPi
- 2YcAVQP0iLqpTm0+D6pF1PdoFMuZITz2c51xsXsu9v4Lu5cZ9hZURpFV2tHw/QbArENHQyhA89i
- P0Fq1/PuaJSAZ7UBBIkEj1SaoVVVD7zjhYt90ly/kI0KW84e/lhbBIMLvXoCiBskQElM0pIqkaI
- HGfCbBAcW+JAglnMUkXFPV5ZLDHMgJmyoIKm5XRy2khVW2ukvM6kBBJE2tghycui8AFfq3N268m
- ElIIvKPY4OYPc9w==
+ bh=3vMvyouTrSlTTv/1BlonUdvoKpdtri2jxGZJNXRvhAY=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlJYl4IPBD5s9W1Aki+2HTBXYchq0X3HXueK7hZ
+ XEncSo0sQKJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZSWJeAAKCRCaEZ6wQi2W
+ 4ejND/9SfhMjd94nHShn3D3a0JzuOh8NOdbOOVLTbqzRwM51HCCDcc5p4el49XcQdw8H9bOpT0i
+ BGHwGKmxsgAuQ0kGSJUk9HQCRqwPKh6XrLK8zh9LbSymQGJ/fy8a20Uf7AfIa++BXJvHLO8zZNn
+ KQqI/oeQt3lX16ow8IR6zYIsxWieQ/Yug9TLcQtYp3VFQk0dI+9H7bbiEHBPsAwjWK9o7bigdRj
+ hrKO1oA8TKhd2SlnaeLkYx2hDF3mWvFjZR6i6RWmkNBCXEIOTfbSBoT2mHta/+FfnDqfI6cgqcq
+ ZU/e+zeS7wqDiMPwAK7xI+0JsOabwuBpC03UDhTyQHEgZrA8CiKkuq07qhKlcOEUkRcPlHXDpm+
+ WKF4m90QR/1wrjj+OEUtQ3Pi/w4yfJOcvGydmXA8fE4dEIM6NNcz1pwppG1hpYZFysTcNzZVrvz
+ fFXSnXiqpSAapA7cw+Ebm4A0WvaQnsBIFY8D21vzY+igXjYfEOociz4YjfoJYsIEVFixyfeRr4h
+ RvOKp49MKSwlj6YfGSP193FV+l9AJkkLbMwOgCo4rRBq0R/cTIlpOkMh/0Trx1+w4nN2f1cwORD
+ EbHvfTlerAM/omPkGr7EHHYp0VjPSa9GPCqmC/RELi1xZnPObajr5qimuuezMgv+8wgvWBolo8/
+ V1dl/OAS6hv9OLw==
 X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
  fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
@@ -78,24 +78,21 @@ separate pinctrl driver later.
 
 Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
 ---
- Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/pinctrl/pinctrl-single.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml
-index 45a307d3ce16..0f7e16a28990 100644
---- a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml
-@@ -32,6 +32,10 @@ properties:
-               - ti,omap4-padconf
-               - ti,omap5-padconf
-           - const: pinctrl-single
-+      - items:
-+          - enum:
-+              - marvell,pxa1908-padconf
-+          - const: pinconf-single
+diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
+index 461a7c02d4a3..a36f750cfe9f 100644
+--- a/drivers/pinctrl/pinctrl-single.c
++++ b/drivers/pinctrl/pinctrl-single.c
+@@ -1968,6 +1968,7 @@ static const struct pcs_soc_data pinconf_single = {
+ };
  
-   reg:
-     maxItems: 1
+ static const struct of_device_id pcs_of_match[] = {
++	{ .compatible = "marvell,pxa1908-padconf", .data = &pinconf_single },
+ 	{ .compatible = "ti,am437-padconf", .data = &pinctrl_single_am437x },
+ 	{ .compatible = "ti,am654-padconf", .data = &pinctrl_single_am654 },
+ 	{ .compatible = "ti,dra7-padconf", .data = &pinctrl_single_dra7 },
 
 -- 
 2.42.0
