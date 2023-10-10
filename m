@@ -2,256 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB097C01F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 658857C01FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233981AbjJJQt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 12:49:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44188 "EHLO
+        id S233843AbjJJQv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 12:51:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233936AbjJJQt5 (ORCPT
+        with ESMTP id S231682AbjJJQvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 12:49:57 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39A5C99;
-        Tue, 10 Oct 2023 09:49:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696956594; x=1728492594;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=HzWgG30Hk6ZxaaC2F7EqKo3OACzpOdg8RcC6CY5/PVE=;
-  b=Z3OgZYPmueg58LGNO3Gt2MiGubA1R4jrFauEYFU2ryq358S3OImQwTdq
-   DWFjhJFcT8BpiW2ekNy7/Zo+yLffjfJ+xJQBFQq4V3MY72u1zmHITW4KL
-   Mz8n+uXmMNq0ksD0DmyI8gXgvuMmRRH5ijssWKbffy1P8QZ+g42cTXY0i
-   71Z1Rn1647CwQylyU9tJ+nXeKklZI1Jfm6O/ME4T2bZOBZt6sJ3Svr4kP
-   W1vhXiGdc5u08082Z59Uqf5TYD0h+/43e4dl8DXjqjjGh8ph3eJwEZ6BS
-   T/aiFSlb+jYV3JDilUU8jIYWbEdq/3UXeCJ2uAj49/VYnVgBIODzQuNie
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="415473402"
-X-IronPort-AV: E=Sophos;i="6.03,213,1694761200"; 
-   d="scan'208";a="415473402"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 09:49:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="1000775184"
-X-IronPort-AV: E=Sophos;i="6.03,213,1694761200"; 
-   d="scan'208";a="1000775184"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.96.100])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 10 Oct 2023 09:49:51 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "Christopherson,, Sean" <seanjc@google.com>,
-        "Huang, Kai" <kai.huang@intel.com>
-Cc:     "Zhang, Bo" <zhanb@microsoft.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "yangjie@microsoft.com" <yangjie@microsoft.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "anakrish@microsoft.com" <anakrish@microsoft.com>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "kristen@linux.intel.com" <kristen@linux.intel.com>
-Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
- EPC
-References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
- <20230923030657.16148-13-haitao.huang@linux.intel.com>
- <1b265d0c9dfe17de2782962ed26a99cc9d330138.camel@intel.com>
- <ZSSZaFrxvCvR1SOy@google.com>
- <06142144151da06772a9f0cc195a3c8ffcbc07b7.camel@intel.com>
- <1f7a740f3acff8a04ec95be39864fb3e32d2d96c.camel@intel.com>
-Date:   Tue, 10 Oct 2023 11:49:49 -0500
+        Tue, 10 Oct 2023 12:51:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252F093;
+        Tue, 10 Oct 2023 09:51:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B4BFC433C7;
+        Tue, 10 Oct 2023 16:51:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696956682;
+        bh=rygdfXSd3HsZiGRi57zQfUxXDTmDokxD2KQVVDF49M4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=UJ09HD6/VMnhCRsi8jHd2U9IL6svXrCP2w5+fUI6aItiygEm2U31GwwKLdp1McSvB
+         3kg9lZaqgKpCYqObLG8LSipdtinDABKFb1YpTYN8zxecA8jQU3D/GD7ofzExBUlWFD
+         F95x3j2ecPpLamnaxDaDfXOFfDjcwEzFRQGEHTzXK6Y+6G6nU1yz8KSrH7sGSm+jGQ
+         tIzSlSuh+OnanuNC0AKODi7iD/Us0zaFYjNKrYpdHhCYsNh5fkAMx/zEvD9qCaSUBk
+         79nUoXBy9TSR8ZiHnC+J/DmCy+7iN78Z5vDuBg9YGUSJEnAw5wTgv9183qBQoWmx6m
+         IL8ikUyFaIjBA==
+Message-ID: <6447b32f-abb9-4459-aca5-3d510a66b685@kernel.org>
+Date:   Tue, 10 Oct 2023 18:51:15 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.1 000/162] 6.1.57-rc1 review
+Content-Language: en-GB, fr-BE
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        MPTCP Upstream <mptcp@lists.linux.dev>
+References: <20231009130122.946357448@linuxfoundation.org>
+ <CA+G9fYvWCf4fYuQsVLu0NdN+=W73bW1hr1hiokajktNzPFyYtA@mail.gmail.com>
+From:   Matthieu Baerts <matttbe@kernel.org>
+Autocrypt: addr=matttbe@kernel.org; keydata=
+ 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
+ Fe7fduHbABmYz9cefQpO7wDE/Q==
+Organization: Tessares
+In-Reply-To: <CA+G9fYvWCf4fYuQsVLu0NdN+=W73bW1hr1hiokajktNzPFyYtA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2clydbf8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <1f7a740f3acff8a04ec95be39864fb3e32d2d96c.camel@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 09 Oct 2023 20:34:29 -0500, Huang, Kai <kai.huang@intel.com> wrote:
+Hi Naresh,
 
-> On Tue, 2023-10-10 at 00:50 +0000, Huang, Kai wrote:
->> On Mon, 2023-10-09 at 17:23 -0700, Sean Christopherson wrote:
->> > On Mon, Oct 09, 2023, Kai Huang wrote:
->> > > On Fri, 2023-09-22 at 20:06 -0700, Haitao Huang wrote:
->> > > > +/**
->> > > > + * sgx_epc_oom() - invoke EPC out-of-memory handling on target  
->> LRU
->> > > > + * @lru:	LRU that is low
->> > > > + *
->> > > > + * Return:	%true if a victim was found and kicked.
->> > > > + */
->> > > > +bool sgx_epc_oom(struct sgx_epc_lru_lists *lru)
->> > > > +{
->> > > > +	struct sgx_epc_page *victim;
->> > > > +
->> > > > +	spin_lock(&lru->lock);
->> > > > +	victim = sgx_oom_get_victim(lru);
->> > > > +	spin_unlock(&lru->lock);
->> > > > +
->> > > > +	if (!victim)
->> > > > +		return false;
->> > > > +
->> > > > +	if (victim->flags & SGX_EPC_OWNER_PAGE)
->> > > > +		return sgx_oom_encl_page(victim->encl_page);
->> > > > +
->> > > > +	if (victim->flags & SGX_EPC_OWNER_ENCL)
->> > > > +		return sgx_oom_encl(victim->encl);
->> > >
->> > > I hate to bring this up, at least at this stage, but I am wondering  
->> why we need
->> > > to put VA and SECS pages to the unreclaimable list, but cannot keep  
->> an
->> > > "enclave_list" instead?
->> >
->> > The motivation for tracking EPC pages instead of enclaves was so that  
->> the EPC
->> > OOM-killer could "kill" VMs as well as host-owned enclaves. >
+On 09/10/2023 22:43, Naresh Kamboju wrote:
+> On Mon, 9 Oct 2023 at 18:46, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
 >>
->> Ah this seems a fair argument. :-)
+>> This is the start of the stable review cycle for the 6.1.57 release.
+>> There are 162 patches in this series, all will be posted as a response
+>> to this one.  If anyone has any issues with these being applied, please
+>> let me know.
 >>
->> > The virtual EPC code
->> > didn't actually kill the VM process, it instead just freed all of the  
->> EPC pages
->> > and abused the SGX architecture to effectively make the guest  
->> recreate all its
->> > enclaves (IIRC, QEMU does the same thing to "support" live migration).
+>> Responses should be made by Wed, 11 Oct 2023 13:00:55 +0000.
+>> Anything received after that time might be too late.
 >>
->> It returns SIGBUS.  SGX VM live migration also requires enough EPC  
->> being able to
->> be allocated on the destination machine to work AFAICT.
+>> The whole patch series can be found in one patch at:
+>>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.57-rc1.gz
+>> or in the git tree and branch at:
+>>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+>> and the diffstat can be found below.
 >>
->> >
->> > Looks like y'all punted on that with:
->> >
->> >   The EPC pages allocated for KVM guests by the virtual EPC driver  
->> are not
->> >   reclaimable by the host kernel [5]. Therefore they are not tracked  
->> by any
->> >   LRU lists for reclaiming purposes in this implementation, but they  
->> are
->> >   charged toward the cgroup of the user processs (e.g., QEMU)  
->> launching the
->> >   guest.  And when the cgroup EPC usage reaches its limit, the  
->> virtual EPC
->> >   driver will stop allocating more EPC for the VM, and return SIGBUS  
->> to the
->> >   user process which would abort the VM launch.
->> >
->> > which IMO is a hack, unless returning SIGBUS is actually enforced  
->> somehow. >
+>> thanks,
 >>
->> "enforced" do you mean?
->>
->> Currently the sgx_vepc_fault() returns VM_FAULT_SIGBUS when it cannot  
->> allocate
->> EPC page.  And when this happens, KVM returns KVM_PFN_ERR_FAULT in  
->> hva_to_pfn(),
->> which eventually results in KVM returning -EFAULT to userspace in  
->> vcpu_run().
->> And Qemu then kills the VM with some nonsense message:
->>
->>         error: kvm run failed Bad address
->>         <dump guest registers nonsense>
->>
->> > Relying
->> > on userspace to be kind enough to kill its VMs kinda defeats the  
->> purpose of cgroup
->> > enforcement.  E.g. if the hard limit for a EPC cgroup is lowered,  
->> userspace running
->> > encalves in a VM could continue on and refuse to give up its EPC, and  
->> thus run above
->> > its limit in perpetuity.
->>
->> >
->> > I can see userspace wanting to explicitly terminate the VM instead of  
->> "silently"
->> > the VM's enclaves, but that seems like it should be a knob in the  
->> virtual EPC
->> > code.
->
-> I guess I slightly misunderstood your words.
->
-> You mean we want to kill VM when the limit is set to be lower than  
-> virtual EPC
-> size.
->
-> This patch adds SGX_ENCL_NO_MEMORY.  I guess we can use it for virtual  
-> EPC too?
->
+>> greg k-h
+> 
+> 
+> The following kernel warnings were noticed several times on arm x15 devices
+> running stable-rc 6.1.57-rc1 while running  selftests: net: mptcp_connect.sh
+> and netfilter: nft_fib.sh.
+> 
+> The possible unsafe locking scenario detected.
+> 
+> FYI,
+> Stable-rc/ linux.6.1.y kernel running stable/ linux.6.5.y selftest in this case.
+> 
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> 
+> kselftest: Running tests in net/mptcp
 
-That flag is set for enclaves, do you mean we set similar flag in vepc  
-struct?
+Thank you for having reported the issue and having added MPTCP ML in Cc!
 
-> In the sgx_vepc_fault(), we check this flag at early time and return  
-> SIGBUS if
-> it is set.
->
-> But this also requires keeping virtual EPC pages in some list, and  
-> handles them
-> in sgx_epc_oom() too.
->
-> And for virtual EPC pages, I guess the "young" logic can be applied thus
-> probably it's better to keep the actual virtual EPC pages to a  
-> (separate?) list
-> instead of keeping the virtual EPC instance.
->
-> 	struct sgx_epc_lru {
-> 		struct list_head reclaimable;
-> 		struct sgx_encl *enclaves;
-> 		struct list_head vepc_pages;
-> 	}
->
-> Or still tracking VA/SECS and virtual EPC pages in a single  
-> unrecliamable list?
->
+Just to avoid confusions: the "WARNING" you shared when running
+'mptcp_connect.sh' selftest appeared before creating the first MPTCP
+connection. It looks like there is no reference to MPTCP in the
+calltraces. Also, because you have the same issue with nft_fib.sh, I
+would say that this issue is not linked to MPTCP but rather to a recent
+modification in the IPv6 stack.
 
-One LRU should be OK as we only need relative order in which they are  
-loaded?
-If an VA page is in front of vEPC, we just kill host side enclave first  
-before disrupting VMs in the same group.
-As the group is not in a good situation anyway so kernel just pick  
-something reasonable to force kill.
+By chance, did you start a "git bisect" to identify the commit causing
+this issue?
 
-Also after rereading the sentences "The virtual EPC code didn't actually  
-kill the VM process, it instead just freed all of the  EPC pages and  
-abused the SGX architecture to effectively make the guest  recreate all  
-its enclaves..."
-
-Maybe by "kill" vm, Sean means EREMOVE the vepc pages in the unreclaimable  
-LRU, which effectively make enclaves in guest receiving "EPC lost" error  
-and those enclaves are forced to be reloaded (all reasonable user space  
-impl should already handle that). Not sure about free *all* of EPC pages  
-though. we should just EREMOVE enough to bring down the usage. And disable  
-new allocation in sgx_vepc_fault as kai outlined above. It also means user  
-space needs to inject/pass the SIGBUS to guest (I'm not really familiar  
-with this part, or maybe it's already there?). @sean is that what you  
-mean? Sorry I've been slow on understanding this.
-
-If this is the case, some may still think it's too disruptive to guest  
-because the guest did not have a chance to paging out less active enclave  
-pages. But it's user's limit to set so it is justifiable as long as we  
-document this behavior.
-
-Thanks to both of you for great insights.
-
-Haitao
-
-
+Cheers,
+Matt
+-- 
+Tessares | Belgium | Hybrid Access Solutions
+www.tessares.net
