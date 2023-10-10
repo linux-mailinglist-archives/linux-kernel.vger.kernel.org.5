@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA177BFB81
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9E97BFB80
 	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231672AbjJJMdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 08:33:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53372 "EHLO
+        id S231911AbjJJMdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 08:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231663AbjJJMd0 (ORCPT
+        with ESMTP id S231593AbjJJMd0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 10 Oct 2023 08:33:26 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB719B6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:33:23 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S4ZvL17YfztTHX;
-        Tue, 10 Oct 2023 20:28:46 +0800 (CST)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A2CCB7
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:33:24 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S4Zwf0rHCzVlV2;
+        Tue, 10 Oct 2023 20:29:54 +0800 (CST)
 Received: from localhost.localdomain (10.50.163.32) by
  canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -31,9 +31,9 @@ CC:     <daniel.lezcano@linaro.org>, <tglx@linutronix.de>,
         <wanghuiqiang@huawei.com>, <wangwudi@hisilicon.com>,
         <guohanjun@huawei.com>, <yangyicong@hisilicon.com>,
         <linuxarm@huawei.com>
-Subject: [RFC PATCH 2/3] clocksource/drivers/arm_arch_timer: Extend and export arch_timer_mem_register()
-Date:   Tue, 10 Oct 2023 20:30:32 +0800
-Message-ID: <20231010123033.23258-3-yangyicong@huawei.com>
+Subject: [RFC PATCH 3/3] clocksource/drivers: Add HiSilicon system timer driver
+Date:   Tue, 10 Oct 2023 20:30:33 +0800
+Message-ID: <20231010123033.23258-4-yangyicong@huawei.com>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20231010123033.23258-1-yangyicong@huawei.com>
 References: <20231010123033.23258-1-yangyicong@huawei.com>
@@ -55,124 +55,149 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yicong Yang <yangyicong@hisilicon.com>
 
-Currently the memory-mapped timer will be probed by the GTDT table on
-ACPI based systems, and the timer interrupt can only be the GSI (SPI
-interrupt for arm64) per ACPI spec. However the generic timer
-specification doesn't restrict the interrupt type and per BSA Spec
-section 3.8.1 (DEN0094C 1.0C) the timer interrupt can also be a LPI
-interrupt.
+HiSilicon system timer is compatible with arm's generic timer
+specification but is enumerated through DSDT and can use SPI/LPI
+interrupt as timer interrupt. This patch adds the support
+for the timer. The driver probes the device IO memory and
+interrupt resources through DSDT and then reuse the codes
+of the arm_arch_timer for setup and register the clockevent
+device.
 
-So this patch extends and exports the arch_timer_mem_register() function
-to allow other drivers registers a generic timer using LPI interrupt
-and probed by other means rather than GTDT. Note that the GTDT timer
-still has a higher priority, if a GTDT timer is registered, we'll block
-later registration of other timers.
+Example DSDT node will be like:
+	Device (TIM0)
+        {
+            Name (_HID, "HISI03F2")  // _HID: Hardware ID
+            Name (_UID, Zero)  // _UID: Unique ID
+            Name (RBUF, ResourceTemplate ()
+            {
+                QWordMemory (ResourceConsumer, PosDecode, MinFixed, MaxFixed, NonCacheable, ReadWrite,
+                    0x0000000000000000, // Granularity
+                    0x0000000401170000, // Range Minimum
+                    0x0000000401170fff, // Range Maximum
+                    0x0000000000000000, // Translation Offset
+                    0x0000000000001000, // Length
+                    ,, , AddressRangeMemory, TypeStatic)
+                Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive, ,, )
+                {
+                    0x000003C6,
+                }
+            })
+	    Method (_CRS, 0, NotSerialized)
+	    {
+		Return (RBUF)
+	    }
+	}
 
 Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
 ---
- drivers/clocksource/arm_arch_timer.c | 26 +++++++++++++++++---------
- include/clocksource/arm_arch_timer.h |  2 ++
- 2 files changed, 19 insertions(+), 9 deletions(-)
+ drivers/clocksource/Kconfig          | 10 ++++
+ drivers/clocksource/Makefile         |  1 +
+ drivers/clocksource/timer-hisi-sys.c | 68 ++++++++++++++++++++++++++++
+ 3 files changed, 79 insertions(+)
+ create mode 100644 drivers/clocksource/timer-hisi-sys.c
 
-diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-index 2e20a8ec50ca..6e9445192ca4 100644
---- a/drivers/clocksource/arm_arch_timer.c
-+++ b/drivers/clocksource/arm_arch_timer.c
-@@ -66,7 +66,7 @@ struct arch_timer {
- 	struct clock_event_device evt;
- };
+diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+index 0ba0dc4ecf06..2e43cd6e2add 100644
+--- a/drivers/clocksource/Kconfig
++++ b/drivers/clocksource/Kconfig
+@@ -732,4 +732,14 @@ config GOLDFISH_TIMER
+ 	help
+ 	  Support for the timer/counter of goldfish-rtc
  
--static struct arch_timer *arch_timer_mem __ro_after_init;
-+static struct arch_timer *arch_timer_mem;
- 
- #define to_arch_timer(e) container_of(e, struct arch_timer, evt)
- 
-@@ -888,15 +888,16 @@ static void __arch_timer_setup_cp15(struct clock_event_device *clk)
- 	clockevents_config_and_register(clk, arch_timer_rate, 0xf, max_delta);
- }
- 
--static void __arch_timer_setup_mem(struct clock_event_device *clk)
-+static void __arch_timer_setup_mem(struct clock_event_device *clk,
-+				   bool irq_virtual, const char *name)
- {
- 	u64 max_delta;
- 
- 	clk->features = CLOCK_EVT_FEAT_ONESHOT | CLOCK_EVT_FEAT_DYNIRQ;
--	clk->name = "arch_mem_timer";
-+	clk->name = name;
- 	clk->rating = 400;
- 	clk->cpumask = cpu_possible_mask;
--	if (arch_timer_mem_use_virtual) {
-+	if (irq_virtual) {
- 		clk->set_state_shutdown = arch_timer_shutdown_virt_mem;
- 		clk->set_state_oneshot_stopped = arch_timer_shutdown_virt_mem;
- 		clk->set_next_event =
-@@ -1286,25 +1287,30 @@ static int __init arch_timer_register(void)
- 	return err;
- }
- 
--static int __init arch_timer_mem_register(void __iomem *base, unsigned int irq)
-+int arch_timer_mem_register(void __iomem *base, unsigned int irq,
-+			    bool irq_virtual, const char *name)
- {
- 	int ret;
- 	irq_handler_t func;
- 
-+	/* If we've already register a memory timer, fail the registration */
-+	if (arch_timer_mem)
-+		return -EEXIST;
++config HISI_SYS_TIMER
++	tristate "HiSilicon system timer driver"
++	depends on ARM_ARCH_TIMER && ARM64 && ACPI
++	help
++	  Support for HiSilicon system timer which used as a clockevent
++	  device.
 +
- 	arch_timer_mem = kzalloc(sizeof(*arch_timer_mem), GFP_KERNEL);
- 	if (!arch_timer_mem)
- 		return -ENOMEM;
- 
- 	arch_timer_mem->base = base;
- 	arch_timer_mem->evt.irq = irq;
--	__arch_timer_setup_mem(&arch_timer_mem->evt);
-+	__arch_timer_setup_mem(&arch_timer_mem->evt, irq_virtual, name);
- 
--	if (arch_timer_mem_use_virtual)
-+	if (irq_virtual)
- 		func = arch_timer_handler_virt_mem;
- 	else
- 		func = arch_timer_handler_phys_mem;
- 
--	ret = request_irq(irq, func, IRQF_TIMER, "arch_mem_timer", &arch_timer_mem->evt);
-+	ret = request_irq(irq, func, IRQF_TIMER, name, &arch_timer_mem->evt);
- 	if (ret) {
- 		pr_err("Failed to request mem timer irq\n");
- 		kfree(arch_timer_mem);
-@@ -1313,6 +1319,7 @@ static int __init arch_timer_mem_register(void __iomem *base, unsigned int irq)
- 
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(arch_timer_mem_register);
- 
- static const struct of_device_id arch_timer_of_match[] __initconst = {
- 	{ .compatible   = "arm,armv7-timer",    },
-@@ -1560,7 +1567,8 @@ arch_timer_mem_frame_register(struct arch_timer_mem_frame *frame)
- 		return -ENXIO;
- 	}
- 
--	ret = arch_timer_mem_register(base, irq);
-+	ret = arch_timer_mem_register(base, irq, arch_timer_mem_use_virtual,
-+				      "arch_mem_timer");
- 	if (ret) {
- 		iounmap(base);
- 		return ret;
-diff --git a/include/clocksource/arm_arch_timer.h b/include/clocksource/arm_arch_timer.h
-index cbbc9a6dc571..d0fa2065586c 100644
---- a/include/clocksource/arm_arch_timer.h
-+++ b/include/clocksource/arm_arch_timer.h
-@@ -89,6 +89,8 @@ extern u32 arch_timer_get_rate(void);
- extern u64 (*arch_timer_read_counter)(void);
- extern struct arch_timer_kvm_info *arch_timer_get_kvm_info(void);
- extern bool arch_timer_evtstrm_available(void);
-+extern int arch_timer_mem_register(void __iomem *base, unsigned int irq,
-+				   bool irq_virtual, const char *name);
- 
- #else
- 
++	  This driver can also be built as a module. If so, the module
++	  will be called timer_hisi_sys.
++
+ endmenu
+diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
+index 368c3461dab8..39ababd0d4dd 100644
+--- a/drivers/clocksource/Makefile
++++ b/drivers/clocksource/Makefile
+@@ -89,3 +89,4 @@ obj-$(CONFIG_MSC313E_TIMER)		+= timer-msc313e.o
+ obj-$(CONFIG_GOLDFISH_TIMER)		+= timer-goldfish.o
+ obj-$(CONFIG_GXP_TIMER)			+= timer-gxp.o
+ obj-$(CONFIG_CLKSRC_LOONGSON1_PWM)	+= timer-loongson1-pwm.o
++obj-$(CONFIG_HISI_SYS_TIMER)		+= timer-hisi-sys.o
+diff --git a/drivers/clocksource/timer-hisi-sys.c b/drivers/clocksource/timer-hisi-sys.c
+new file mode 100644
+index 000000000000..1ef39d97e83d
+--- /dev/null
++++ b/drivers/clocksource/timer-hisi-sys.c
+@@ -0,0 +1,68 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Driver for HiSilicon system timer driver.
++ *
++ * The device is fully compatible with ARM's Generic Timer specification.
++ * The device is enumerated through DSDT rather than GTDT and can use
++ * LPI interrupt besides SPI.
++ *
++ * Copyright (c) 2023 HiSilicon Technologies Co., Ltd.
++ * Author: Yicong Yang <yangyicong@hisilicon.com>
++ */
++#include <linux/device.h>
++#include <linux/init.h>
++#include <linux/io.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/mod_devicetable.h>
++#include <linux/platform_device.h>
++#include <linux/units.h>
++
++#include <clocksource/arm_arch_timer.h>
++
++#define DRV_NAME	"hisi_sys_timer"
++
++#define CNTFRQ		0x10
++
++static const struct acpi_device_id hisi_sys_timer_acpi_ids[] = {
++	{ "HISI03F2", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(acpi, hisi_sys_timer_acpi_ids);
++
++static int hisi_sys_timer_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	void __iomem *iobase;
++	int ret, irq;
++	u32 freq;
++
++	iobase = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(iobase))
++		return PTR_ERR(iobase);
++
++	irq = platform_get_irq(pdev, 0);
++	if (irq <= 0)
++		return dev_err_probe(dev, ret, "failed to get interrupt\n");
++
++	ret = arch_timer_mem_register(iobase, irq, false, DRV_NAME);
++	if (ret)
++		return dev_err_probe(dev, ret, "failed to register timer\n");
++
++	freq = readl_relaxed(iobase + CNTFRQ);
++	dev_info(dev, "%s works at %ldMHz\n", DRV_NAME, freq / HZ_PER_MHZ);
++	return 0;
++}
++
++static struct platform_driver hisi_sys_timer_driver = {
++	.probe = hisi_sys_timer_probe,
++	.driver = {
++		.name = DRV_NAME,
++		.acpi_match_table = hisi_sys_timer_acpi_ids,
++	},
++};
++module_platform_driver(hisi_sys_timer_driver);
++
++MODULE_AUTHOR("Yicong Yang <yangyicong@hisilicon.com>");
++MODULE_DESCRIPTION("HiSilicon system timer driver");
++MODULE_LICENSE("GPL");
 -- 
 2.24.0
 
