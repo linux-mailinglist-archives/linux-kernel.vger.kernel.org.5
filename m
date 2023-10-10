@@ -2,77 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB247BFE62
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7887BFE68
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232501AbjJJNtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 09:49:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50564 "EHLO
+        id S232353AbjJJNt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 09:49:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232367AbjJJNsv (ORCPT
+        with ESMTP id S231384AbjJJNtz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 09:48:51 -0400
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B8A125
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 06:48:48 -0700 (PDT)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-59f82ad1e09so71142837b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 06:48:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696945727; x=1697550527; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=awE6efcM38jnk5pss6ok2os1ERWX17UeRfoc3ts5j1U=;
-        b=a4VMKn7CtaJkRMTJPP2bl4sVPwjm1HspHXtJ6vzJj/ksqNlK8IraTtEmtFHfPphUaL
-         oTEkhgnaRMhs3AE1aKVne12cZ3XaYx6omzZZ+gj0VaY0NxAbyblmWJwr4LumMHXuQdam
-         XejE5R73Ky/zo7L2IKZ9TXxjkyBSKdfTJCgdBKtl8r/7F02zICIrRsUt/bzKokAAIJPn
-         X0ZiyNB1PPVShffqKJSwZtr7JbiwFNpJf3EXf1vDkkYMY+GyZaY8GUGpPkvcvPmIiIZT
-         x1YV83B8s6uREV/xC/5LEZ9vwDqEExRN5b7t6vzzDAYXbOGQp0EtPZiSjZ28fwGb7N07
-         zy+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696945727; x=1697550527;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=awE6efcM38jnk5pss6ok2os1ERWX17UeRfoc3ts5j1U=;
-        b=SJkm2v/5KbeLGWkiONf9XxLpw+9PcQqQQJxuTbRHWMBMxUNYwGIWxWHOOP/B8vWdVc
-         Ic0FM5eNY2FgAhfuI2lVkrxkVv3ElT54EBfL6Ywxw4nFx+YN5cG6aWEHhgpkJi3e6GiT
-         PSql04B3xZCjGUtGwX00fOw/d0W+RUPlX0WHNI+5/wQbkEov5ndqD988IHmUKpmQAABf
-         D+5p7daCWnB0UaeHnABphdS7RKJq2PTM++syLkynR5znfiZD7X1Gg+fwWMQLG2VXI15j
-         9JxWeq368qYorCab5VrB6PsE/LWmHLqJjHUEjsJ5ea4wqGmmEELQL0popF/SRa6rISHV
-         k9xw==
-X-Gm-Message-State: AOJu0YxKv0e8Gs3+yoHHjqvlAFxT4R2PskBrDHzu8b1GtoVC4E8WTy7e
-        Je+NvaydH3owIpks+aTlyDhRh2vQPyz0VYLHmABVJA==
-X-Google-Smtp-Source: AGHT+IFKtXQ7bowPMrDeuE2Rh0fL5KWLiYWWmyhnmgM1tPzY9nRlUoBS+z1BtLRNVgWPQl2RE7/tMM4693wyr8IBlk8=
-X-Received: by 2002:a0d:d856:0:b0:59f:687c:fb39 with SMTP id
- a83-20020a0dd856000000b0059f687cfb39mr21626344ywe.14.1696945727397; Tue, 10
- Oct 2023 06:48:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231009162510.335208-1-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <20231009162510.335208-1-u.kleine-koenig@pengutronix.de>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 10 Oct 2023 15:48:36 +0200
-Message-ID: <CACRpkdYxjZd+_7jdSg3e1MfE4zcdAJAAYfGPToRZ5cygdffePQ@mail.gmail.com>
-Subject: Re: [PATCH 0/3] pinctrl: Convert to platform remove callback
- returning void (take #2)
-To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Rob Herring <robh@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+        Tue, 10 Oct 2023 09:49:55 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D6D9AC;
+        Tue, 10 Oct 2023 06:49:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09C07C433C9;
+        Tue, 10 Oct 2023 13:49:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696945793;
+        bh=fTiSxm8WZ05Ie9AUU3jVNwVyZoaduYCe0KKtDVoAF/E=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=WfaFEezYalMeFKmX5SZQMUFwkAuTGIqQkfs7mWR/HlweePT1EDXF/t7CruFHtRaQk
+         jA9PwqV63QoZh7NW3pRuKXxaumhMTvxEMNIoT7uv9D0CyK122oLSYtkr7xDtb9Y+X2
+         KhKvDvwSaYZbSIre0Ko0Ss2XpZEzgdfnCOIK/hQMuFKSDolyg23U0Jn6O2PVfkM9fN
+         G3Q3Q0qih5H2jCRnKFAU6pkhS21PPANaHujLZXDzXtuvTtaEEqdNmTqaIQeCwJainl
+         ljwdb/wyVegDZ81vkYV0d09XEGX68sPUX+POiuo8KaGIdvPEPH5cgKt9F/h0fnzuLz
+         bLSc4jvRog3/g==
+Message-ID: <1de1ace90f1645fc629c075826aa67eda8dfd138.camel@kernel.org>
+Subject: Re: [PATCH v2] KEYS: trusted: Remove redundant static calls usage
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     torvalds@linux-foundation.org, peterz@infradead.org,
+        zohar@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, jejb@linux.ibm.com,
+        David.Kaplan@amd.com, bp@alien8.de, mingo@kernel.org,
+        x86@kernel.org, regressions@leemhuis.info,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Date:   Tue, 10 Oct 2023 16:49:48 +0300
+In-Reply-To: <CAFA6WYNamspdK=RakirdS3fiHrmmaPXcgEcZeNn5z2DRNdE3Rw@mail.gmail.com>
+References: <20231006051801.423973-1-sumit.garg@linaro.org>
+         <8eeac047a59667912a45b21050a6e4c57d7cccd5.camel@kernel.org>
+         <CAFA6WYNamspdK=RakirdS3fiHrmmaPXcgEcZeNn5z2DRNdE3Rw@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+Content-Transfer-Encoding: base64
+User-Agent: Evolution 3.46.4-2 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,16 +56,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 9, 2023 at 6:25=E2=80=AFPM Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
+T24gVHVlLCAyMDIzLTEwLTEwIGF0IDE4OjQ0ICswNTMwLCBTdW1pdCBHYXJnIHdyb3RlOgo+IE9u
+IFR1ZSwgMTAgT2N0IDIwMjMgYXQgMTg6MDMsIEphcmtrbyBTYWtraW5lbiA8amFya2tvQGtlcm5l
+bC5vcmc+IHdyb3RlOgo+ID4gCj4gPiBPbiBGcmksIDIwMjMtMTAtMDYgYXQgMTA6NDggKzA1MzAs
+IFN1bWl0IEdhcmcgd3JvdGU6Cj4gPiA+IFN0YXRpYyBjYWxscyBpbnZvY2F0aW9ucyBhcmVuJ3Qg
+d2VsbCBzdXBwb3J0ZWQgZnJvbSBtb2R1bGUgX19pbml0IGFuZAo+ID4gPiBfX2V4aXQgZnVuY3Rp
+b25zLiBFc3BlY2lhbGx5IHRoZSBzdGF0aWMgY2FsbCBmcm9tIGNsZWFudXBfdHJ1c3RlZCgpIGxl
+ZAo+ID4gPiB0byBhIGNyYXNoIG9uIHg4NiBrZXJuZWwgd2l0aCBDT05GSUdfREVCVUdfVklSVFVB
+TD15Lgo+ID4gPiAKPiA+ID4gSG93ZXZlciwgdGhlIHVzYWdlIG9mIHN0YXRpYyBjYWxsIGludm9j
+YXRpb25zIGZvciB0cnVzdGVkX2tleV9pbml0KCkKPiA+ID4gYW5kIHRydXN0ZWRfa2V5X2V4aXQo
+KSBkb24ndCBhZGQgYW55IHZhbHVlIGZyb20gZWl0aGVyIGEgcGVyZm9ybWFuY2Ugb3IKPiA+ID4g
+c2VjdXJpdHkgcGVyc3BlY3RpdmUuIEhlbmNlIHN3aXRjaCB0byB1c2UgaW5kaXJlY3QgZnVuY3Rp
+b24gY2FsbHMgaW5zdGVhZC4KPiA+ID4gCj4gPiA+IE5vdGUgaGVyZSB0aGF0IGFsdGhvdWdoIGl0
+IHdpbGwgZml4IHRoZSBjdXJyZW50IGNyYXNoIHJlcG9ydCwgdWx0aW1hdGVseQo+ID4gPiB0aGUg
+c3RhdGljIGNhbGwgaW5mcmFzdHJ1Y3R1cmUgc2hvdWxkIGJlIGZpeGVkIHRvIGVpdGhlciBzdXBw
+b3J0IGl0cwo+ID4gPiBmdXR1cmUgdXNhZ2UgZnJvbSBtb2R1bGUgX19pbml0IGFuZCBfX2V4aXQg
+ZnVuY3Rpb25zIG9yIG5vdC4KPiA+ID4gCj4gPiA+IFJlcG9ydGVkLWJ5OiBIeWVvbmdnb24gWW9v
+IDw0Mi5oeWV5b29AZ21haWwuY29tPgo+ID4gPiBMaW5rOiBodHRwczovL2xvcmUua2VybmVsLm9y
+Zy9sa21sL1pSaEtxNmU1bkYlMkY0WklWMUBmZWRvcmEvI3QKPiA+ID4gRml4ZXM6IDVkMDY4MmJl
+MzE4OSAoIktFWVM6IHRydXN0ZWQ6IEFkZCBnZW5lcmljIHRydXN0ZWQga2V5cyBmcmFtZXdvcmsi
+KQo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBTdW1pdCBHYXJnIDxzdW1pdC5nYXJnQGxpbmFyby5vcmc+
+Cj4gPiA+IC0tLQo+ID4gPiAKPiA+ID4gQ2hhbmdlcyBpbiB2MjoKPiA+ID4gLSBQb2xpc2ggY29t
+bWl0IG1lc3NhZ2UgYXMgcGVyIGNvbW1lbnRzIGZyb20gTWltaQo+ID4gPiAKPiA+ID4gwqBzZWN1
+cml0eS9rZXlzL3RydXN0ZWQta2V5cy90cnVzdGVkX2NvcmUuYyB8IDEzICsrKysrLS0tLS0tLS0K
+PiA+ID4gwqAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspLCA4IGRlbGV0aW9ucygtKQo+
+ID4gPiAKPiA+ID4gZGlmZiAtLWdpdCBhL3NlY3VyaXR5L2tleXMvdHJ1c3RlZC1rZXlzL3RydXN0
+ZWRfY29yZS5jIGIvc2VjdXJpdHkva2V5cy90cnVzdGVkLWtleXMvdHJ1c3RlZF9jb3JlLmMKPiA+
+ID4gaW5kZXggYzZmYzUwZDY3MjE0Li44NWZiNWMyMjUyOWEgMTAwNjQ0Cj4gPiA+IC0tLSBhL3Nl
+Y3VyaXR5L2tleXMvdHJ1c3RlZC1rZXlzL3RydXN0ZWRfY29yZS5jCj4gPiA+ICsrKyBiL3NlY3Vy
+aXR5L2tleXMvdHJ1c3RlZC1rZXlzL3RydXN0ZWRfY29yZS5jCj4gPiA+IEBAIC00NCwxMyArNDQs
+MTIgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCB0cnVzdGVkX2tleV9zb3VyY2UgdHJ1c3RlZF9rZXlf
+c291cmNlc1tdID0gewo+ID4gPiDCoCNlbmRpZgo+ID4gPiDCoH07Cj4gPiA+IAo+ID4gPiAtREVG
+SU5FX1NUQVRJQ19DQUxMX05VTEwodHJ1c3RlZF9rZXlfaW5pdCwgKnRydXN0ZWRfa2V5X3NvdXJj
+ZXNbMF0ub3BzLT5pbml0KTsKPiA+ID4gwqBERUZJTkVfU1RBVElDX0NBTExfTlVMTCh0cnVzdGVk
+X2tleV9zZWFsLCAqdHJ1c3RlZF9rZXlfc291cmNlc1swXS5vcHMtPnNlYWwpOwo+ID4gPiDCoERF
+RklORV9TVEFUSUNfQ0FMTF9OVUxMKHRydXN0ZWRfa2V5X3Vuc2VhbCwKPiA+ID4gwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqdHJ1c3RlZF9rZXlfc291cmNl
+c1swXS5vcHMtPnVuc2VhbCk7Cj4gPiA+IMKgREVGSU5FX1NUQVRJQ19DQUxMX05VTEwodHJ1c3Rl
+ZF9rZXlfZ2V0X3JhbmRvbSwKPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCAqdHJ1c3RlZF9rZXlfc291cmNlc1swXS5vcHMtPmdldF9yYW5kb20pOwo+
+ID4gPiAtREVGSU5FX1NUQVRJQ19DQUxMX05VTEwodHJ1c3RlZF9rZXlfZXhpdCwgKnRydXN0ZWRf
+a2V5X3NvdXJjZXNbMF0ub3BzLT5leGl0KTsKPiA+ID4gK3N0YXRpYyB2b2lkICgqdHJ1c3RlZF9r
+ZXlfZXhpdCkodm9pZCk7Cj4gPiA+IMKgc3RhdGljIHVuc2lnbmVkIGNoYXIgbWlncmF0YWJsZTsK
+PiA+ID4gCj4gPiA+IMKgZW51bSB7Cj4gPiA+IEBAIC0zNTksMTkgKzM1OCwxNiBAQCBzdGF0aWMg
+aW50IF9faW5pdCBpbml0X3RydXN0ZWQodm9pZCkKPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgIGlmICghZ2V0X3JhbmRvbSkKPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBnZXRfcmFuZG9tID0ga2VybmVsX2dldF9yYW5kb207Cj4g
+PiA+IAo+ID4gPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdGF0aWNfY2FsbF91cGRh
+dGUodHJ1c3RlZF9rZXlfaW5pdCwKPiA+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0cnVzdGVkX2tleV9zb3VyY2Vz
+W2ldLm9wcy0+aW5pdCk7Cj4gPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdGF0
+aWNfY2FsbF91cGRhdGUodHJ1c3RlZF9rZXlfc2VhbCwKPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdHJ1c3Rl
+ZF9rZXlfc291cmNlc1tpXS5vcHMtPnNlYWwpOwo+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgc3RhdGljX2NhbGxfdXBkYXRlKHRydXN0ZWRfa2V5X3Vuc2VhbCwKPiA+ID4gwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgdHJ1c3RlZF9rZXlfc291cmNlc1tpXS5vcHMtPnVuc2VhbCk7Cj4gPiA+IMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdGF0aWNfY2FsbF91cGRhdGUodHJ1c3RlZF9rZXlf
+Z2V0X3JhbmRvbSwKPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZ2V0X3JhbmRvbSk7Cj4gPiA+IC3CoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIHN0YXRpY19jYWxsX3VwZGF0ZSh0cnVzdGVkX2tleV9leGl0
+LAo+ID4gPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIHRydXN0ZWRfa2V5X3NvdXJjZXNbaV0ub3BzLT5leGl0KTsKPiA+
+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdHJ1c3RlZF9rZXlfZXhpdCA9IHRydXN0
+ZWRfa2V5X3NvdXJjZXNbaV0ub3BzLT5leGl0Owo+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgbWlncmF0YWJsZSA9IHRydXN0ZWRfa2V5X3NvdXJjZXNbaV0ub3BzLT5taWdyYXRh
+YmxlOwo+ID4gPiAKPiA+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0ID0gc3Rh
+dGljX2NhbGwodHJ1c3RlZF9rZXlfaW5pdCkoKTsKPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgcmV0ID0gdHJ1c3RlZF9rZXlfc291cmNlc1tpXS5vcHMtPmluaXQoKTsKPiA+ID4g
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlmICghcmV0KQo+ID4gPiDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJyZWFrOwo+ID4gPiDCoMKgwqDC
+oMKgwqDCoCB9Cj4gPiA+IEBAIC0zODgsNyArMzg0LDggQEAgc3RhdGljIGludCBfX2luaXQgaW5p
+dF90cnVzdGVkKHZvaWQpCj4gPiA+IAo+ID4gPiDCoHN0YXRpYyB2b2lkIF9fZXhpdCBjbGVhbnVw
+X3RydXN0ZWQodm9pZCkKPiA+ID4gwqB7Cj4gPiA+IC3CoMKgwqDCoMKgwqAgc3RhdGljX2NhbGxf
+Y29uZCh0cnVzdGVkX2tleV9leGl0KSgpOwo+ID4gPiArwqDCoMKgwqDCoMKgIGlmICh0cnVzdGVk
+X2tleV9leGl0KQo+ID4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAoKnRydXN0ZWRf
+a2V5X2V4aXQpKCk7Cj4gPiA+IMKgfQo+ID4gPiAKPiA+ID4gwqBsYXRlX2luaXRjYWxsKGluaXRf
+dHJ1c3RlZCk7Cj4gPiAKPiA+IFdvdWxkIGl0IGJlIGxlc3MgY29uZnVzaW5nIHRvIHJlcXVpcmUg
+dHJ1c3RlZF9rZXlfZXhpdCBmcm9tIGVhY2g/Cj4gPiAKPiAKPiBJdCBpcyBhbHJlYWR5IHJlcXVp
+cmVkIGZvciBlYWNoIHRydXN0IHNvdXJjZSB0byBwcm92aWRlIGV4aXQgY2FsbGJhY2sKPiBidXQg
+dGhpcyBOVUxMIGNoZWNrIHdhcyBhZGRlZCB2aWEgdGhpcyBmaXggWzFdIGluIGNhc2UgdGhlcmUg
+aXNuJ3QgYW55Cj4gdHJ1c3Qgc291cmNlIHByZXNlbnQuCj4gCj4gWzFdIGh0dHBzOi8vbGttbC5r
+ZXJuZWwub3JnL3N0YWJsZS8yMDIyMDEyNjE4NDE1NS4yMjA4MTQtMS1kYXZlLmtsZWlrYW1wQG9y
+YWNsZS5jb20vCgpJJ2QgY29uc2lkZXJpbmcgY3JlYXRpbmcgYSBwbGFjZWhvbGRlciB0cnVzdGVk
+X2tleV9kZWZhdWx0X2V4aXQoKSB3aXRoCnBlcmhhcHMgcHJfZGVidWcoKSBzdGF0ZW1lbnQgYWNr
+bm93bGVkZ2luZyBpdCBnZXR0aW5nIGNhbGxlZC4KCkhtbS4uIGlmIHdlIGhhZCB0aGF0IEkgd29u
+ZGVyIGlmIHdlIGNvdWxkIGdldCBhd2F5IHdpdGggX193ZWFrLi4uIFRoZW4KeW91IHdvdWxkIG5v
+dCBuZWVkIHRvIGFzc2lnbiBhbnl0aGluZy4gVGhpcyBpcyBub3QgdGhyb3VnaC1vdXQgYW5hbHl6
+ZWQuClRiaCBJJ20gbm90IHN1cmUgaG93IG1vZHVsZSBsb2FkZXIgaGFuZGxlcyB0aGlzIHR5cGUg
+b2Ygc2NlbmFyaW8gYnV0CmF0IGxlYXN0IHRoZSBwbGFjZWhvbGRlciBmdW5jdGlvbiB3b3VsZCBt
+YWtlIHNlbnNlIGluIGFueSBjYXNlLgoKSWYgYWJ1c2luZyB3ZWFrIHN5bWJvbHMgd2FzIGluLWZh
+Y3QgcG9zc2libGUgcHJvYmFibHkgdGhlbiB0aGUgd2hvbGUKaWRlYSBvZiB1c2luZyBzdGF0aWNf
+Y2FsbCBjb3VsZCBiZSB0aHJvd24gdG8gZ2FyYmFnZSBiaW4gYnV0IHRoZXJlJ3MKbm93IGEgbG90
+IG9mIGNvbnRleHQgaGVyZSByZWxhdGVkIG9uIGhvdyBtb2R1bGUgbG9hZGVyIHdvcmtzIGxpbnV4
+CnRoYXQgSSdtIGlnbm9yaW5nLi4uCgpCUiwgSmFya2tvCgoK
 
-> Uwe Kleine-K=C3=B6nig (3):
->   pinctrl: qcom/lpi: Convert to platform remove callback returning void
->   pinctrl: qcom/msm: Convert to platform remove callback returning void
->   pinctrl: sprd-sc9860: Convert to platform remove callback returning
->     void
-
-All patches applied!
-
-Yours,
-Linus Walleij
