@@ -2,140 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CADB67BF347
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 08:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AAD07BF351
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 08:49:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442299AbjJJGqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 02:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33320 "EHLO
+        id S1442312AbjJJGsw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 10 Oct 2023 02:48:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442156AbjJJGqi (ORCPT
+        with ESMTP id S1442295AbjJJGst (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 02:46:38 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908F69E;
-        Mon,  9 Oct 2023 23:46:36 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-584a761b301so3997977a12.3;
-        Mon, 09 Oct 2023 23:46:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696920396; x=1697525196; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wIQ5Aqzrs+/ZfndeHL04d8DJFEaWbrXX5z11jTnUuqw=;
-        b=Krzx7F3UWnarFXdch25s+60KRril5Vacoel+aYFVR21jBennHk8AmFtbuey6jruKKX
-         Y8eykzJsDqtpoEiJN0pAyRG54JfplpvgOK8grqp/9Eigi8dJDx2Fz7f4CB/mh15MW+Nz
-         f/az8B61oXVhtvV91C45PR208vSLTqT+RY4gSdw3utGOgyHs/I9Lz4tfky+F634a2Gd9
-         eRNM/IDoDQmxtqVpz9HtpkALkDKON+bZMcw/Xk0E+xaLSBQNN6EJOFrXz4xtOQ7JF3ov
-         eztvaNYob0DRovRayWwhdq220bC+F/g0G3cQCUOvzvrKFE5IuHkIuHGhuzt+84qMhtc9
-         gq8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696920396; x=1697525196;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wIQ5Aqzrs+/ZfndeHL04d8DJFEaWbrXX5z11jTnUuqw=;
-        b=bM+4+Bl4miAnYgVKWMEVi0xGw76mAxB+RmOx0nRRwoIzQ/JOeL7dIlghQmv30f7sv3
-         g5Q0kHNrn1fWJS1DpLhdctLaHVQa71CRbTUiVo8dzX8Z95+9n6M2IB/vFeqR0NK1Vn1y
-         xYkhvdqctsvHxJysjqRXBIqVwdTvbvPtsCYDHxXkUUcbh/ChWtiDPnF3g4kx4FYNo/in
-         cSa0fXBCQO9wnDvWsTaeUb+KurnFJ6Dm4uTluF/QN7TWjErndbmKm0hm8LkQ3oss7/n1
-         IqKkpXqfGzDfkUv0vU4OL4GKc2dDXZNQ5qobrgAXAePbjh/VPXTgJBkEiLkfbTQhsNR6
-         653g==
-X-Gm-Message-State: AOJu0YzyWbtzouJRfJN+dURCgLzgwbMidgiOnNfQKexfvWaBIOPX4slQ
-        47C0p044mgguT7ucOeqIGvQ=
-X-Google-Smtp-Source: AGHT+IGl9lZn6Seoy30vrb0vHHbDaZ4cyNJ61UCdkTmIVLIqmmehlduoneDc8bAWXdYi7VPayrdlRA==
-X-Received: by 2002:a05:6a20:7286:b0:15e:7323:5c0f with SMTP id o6-20020a056a20728600b0015e73235c0fmr21811247pzk.16.1696920395939;
-        Mon, 09 Oct 2023 23:46:35 -0700 (PDT)
-Received: from [192.168.255.10] ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id g18-20020aa78752000000b00692cb1224casm7504782pfo.183.2023.10.09.23.46.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Oct 2023 23:46:35 -0700 (PDT)
-Message-ID: <5144fd23-e737-f23c-ce66-58d58ba13757@gmail.com>
-Date:   Tue, 10 Oct 2023 14:46:27 +0800
+        Tue, 10 Oct 2023 02:48:49 -0400
+Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7060A97
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 23:48:41 -0700 (PDT)
+Received: from omf06.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay08.hostedemail.com (Postfix) with ESMTP id 9C649140199;
+        Tue, 10 Oct 2023 06:48:39 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf06.hostedemail.com (Postfix) with ESMTPA id 379272000F;
+        Tue, 10 Oct 2023 06:48:11 +0000 (UTC)
+Message-ID: <f511170fe61d7e7214a3a062661cf4103980dad6.camel@perches.com>
+Subject: Re: [PATCH 6/7] fs/sysfs/group: make attribute_group pointers const
+From:   Joe Perches <joe@perches.com>
+To:     Max Kellermann <max.kellermann@ionos.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Richter <rric@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+        nvdimm@lists.linux.dev, linux-nvme@lists.infradead.org,
+        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-leds@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+Date:   Mon, 09 Oct 2023 23:48:10 -0700
+In-Reply-To: <CAKPOu+8k2x1CucWSzoouts0AfMJk+srJXWWf3iWVOeY+fWkOpQ@mail.gmail.com>
+References: <20231009165741.746184-1-max.kellermann@ionos.com>
+         <20231009165741.746184-6-max.kellermann@ionos.com>
+         <264fa39d-aed6-4a54-a085-107997078f8d@roeck-us.net>
+         <CAKPOu+8k2x1CucWSzoouts0AfMJk+srJXWWf3iWVOeY+fWkOpQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH 2/5] srcu: Only accelerate on enqueue time
-Content-Language: en-US
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Uladzislau Rezki <urezki@gmail.com>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Yong He <zhuangel570@gmail.com>
-References: <20231003232903.7109-1-frederic@kernel.org>
- <20231003232903.7109-3-frederic@kernel.org>
-From:   Like Xu <like.xu.linux@gmail.com>
-In-Reply-To: <20231003232903.7109-3-frederic@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Stat-Signature: x66gji9pr8zwbank5ef871m9qoojjjfr
+X-Rspamd-Server: rspamout04
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+X-Rspamd-Queue-Id: 379272000F
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19bm9nHqj2XrX3TKwatvC/C1GajNvD5h9I=
+X-HE-Tag: 1696920491-749924
+X-HE-Meta: U2FsdGVkX1/+029EmPc9sKVNFK2VRUjBCte/A2E+5y43hxFCP+MAKFoIxkcikfn6Jucu52vLqnvIqQDvdm6WvqlwnI8PH42O3yPwjrf6/Rk44z8SFUR40tWN1QdYZq3HPOEvKn0PLMPTqRRMr7zlpFwkMW85ySQYIyr+J8E4OP6W/LoiP3zYhR+0cmnV5ToftIwEMltweE+g/zUx+NL1fSjTbqk3Sf4w33VMSw7k9oncskJ8CUN/bQZEOiHhpNbgGpLqoQJ7ob3InQymsj8a//o/6ldtQbuoxFCk/RnYuGfC0EahOFEMbfIs5+kJ0g+hK4chvkcdMx/L2QmQgmCvPhqiadvx8BYdkeJ2IpCV5Y5g+W85x67f7ON0uqOVXWab
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/10/2023 7:29 am, Frederic Weisbecker wrote:
-> Acceleration in SRCU happens on enqueue time for each new callback. This
-> operation is expected not to fail and therefore any similar attempt
-> from other places shouldn't find any remaining callbacks to accelerate.
+On Mon, 2023-10-09 at 22:05 +0200, Max Kellermann wrote:
+> On Mon, Oct 9, 2023 at 7:24 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> > Also, I don't know why checkpatch is happy with all the
+> > 
+> >         const struct attribute_group *const*groups;
+> > 
+> > instead of
+> > 
+> >         const struct attribute_group *const *groups;
 > 
-> Moreover accelerations performed beyond enqueue time are error prone
-> because rcu_seq_snap() then may return the snapshot for a new grace
-> period that is not going to be started.
+> I found out that checkpatch has no check for this at all; it does
+> complain about such lines, but only for local variables. But that
+> warning is actually a bug, because this is a check for unary
+> operators: it thinks the asterisk is a dereference operator, not a
+> pointer declaration, and complains that the unary operator must be
+> preceded by a space. Thus warnings on local variable are only correct
+> by coincidence, not by design.
 > 
-> Remove these dangerous and needless accelerations and introduce instead
-> assertions reporting leaking unaccelerated callbacks beyond enqueue
-> time.
-> 
-> Co-developed-by: Yong He <zhuangel570@gmail.com>
-> Co-developed-by: Joel Fernandes <joel@joelfernandes.org>
-> Co-developed-by: Neeraj upadhyay <neeraj.iitr10@gmail.com>
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> ---
->   kernel/rcu/srcutree.c | 6 ++----
->   1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 9fab9ac36996..560e99ec5333 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -784,8 +784,7 @@ static void srcu_gp_start(struct srcu_struct *ssp)
->   	spin_lock_rcu_node(sdp);  /* Interrupts already disabled. */
->   	rcu_segcblist_advance(&sdp->srcu_cblist,
->   			      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
-> -	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
-> -				       rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq));
-> +	WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_NEXT_TAIL));
->   	spin_unlock_rcu_node(sdp);  /* Interrupts remain disabled. */
->   	WRITE_ONCE(ssp->srcu_sup->srcu_gp_start, jiffies);
->   	WRITE_ONCE(ssp->srcu_sup->srcu_n_exp_nodelay, 0);
-> @@ -1721,6 +1720,7 @@ static void srcu_invoke_callbacks(struct work_struct *work)
->   	ssp = sdp->ssp;
->   	rcu_cblist_init(&ready_cbs);
->   	spin_lock_irq_rcu_node(sdp);
-> +	WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_NEXT_TAIL));
->   	rcu_segcblist_advance(&sdp->srcu_cblist,
->   			      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
->   	if (sdp->srcu_cblist_invoking ||
-> @@ -1750,8 +1750,6 @@ static void srcu_invoke_callbacks(struct work_struct *work)
->   	 */
->   	spin_lock_irq_rcu_node(sdp);
->   	rcu_segcblist_add_len(&sdp->srcu_cblist, -len);
-> -	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
-> -				       rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq));
+> Inside structs or parameters (where my coding style violations can be
+> found), it's a different context and thus checkpatch doesn't apply the
+> rules for unary operators.
 
-We did observe such issues at our farm and the same diff was applied,
-thus this fix is especially appreciated. Thanks.
+My opinion is that const use in the kernel should almost
+always have whitespace before and after it except when
+preceded by a open parenthesis or a newline.
 
-Reviewed-by: Like Xu <likexu@tencent.com>
+$ git grep -wh const -- '*.[ch]' | \
+  grep -oP "[ \*\(]?const[ \*]?" | \
+  sort | uniq -c | sort -rn
+ 222438  const 
+  83386 const 
+  51667 (const 
+   2766 *const 
+    834 const
+    442  const
+    343  const*
+     88 *const
+     37 (const
+      4 *const*
 
->   	sdp->srcu_cblist_invoking = false;
->   	more = rcu_segcblist_ready_cbs(&sdp->srcu_cblist);
->   	spin_unlock_irq_rcu_node(sdp);
