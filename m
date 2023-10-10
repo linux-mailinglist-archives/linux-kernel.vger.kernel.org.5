@@ -2,127 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3659A7BFBE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B647BFC09
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231672AbjJJM6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 08:58:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52580 "EHLO
+        id S232130AbjJJM7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 08:59:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231400AbjJJM6i (ORCPT
+        with ESMTP id S231901AbjJJM73 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 08:58:38 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE80AC
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:58:37 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-406618d0992so54519175e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:58:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1696942715; x=1697547515; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3SI4JY3DNx4EgaWZfWrgnEZk2q3gFyXvOUj+dz0SgUs=;
-        b=PQJICYGIq9Pd7O9fr3EXpYt4HFwpC+C9TYO8qiQPfK394B0yYdGc5jLl5iX0Y3HaUb
-         RnIvd1bQ5BWMv45y8VIMUZUTKVIqLMSGwENfXOc56s5ozu5ch5H1rDcQntmqO+Ss0ubL
-         +W7sBbItWaQaSF/GqyDhrEz6l0OGqr8j14Dskr9iYlRHD3wwwsvQH9g2qMILCCs/VGsJ
-         TEPl7WQjXqBT1VVkuFQ9SPCRBzl8oasRvD28pxtvD2XpeHAWJi3TfXePaAkNkz9z+4rL
-         g+u3HyODnttp4Y8gtU3buXY922qAVRf9obBjx/Rh8UhCa5j2GgERJdMwTMWvM/pSxgLk
-         GYBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696942715; x=1697547515;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3SI4JY3DNx4EgaWZfWrgnEZk2q3gFyXvOUj+dz0SgUs=;
-        b=g04S2ueCcRP+gWXqvxsXyget2r9pll+AEcMuHcQGJmfFNBt5ut+U75zWa1S8p+4qEn
-         0PWNwshCfptlyfMAcsTVoIDvCmkMBIPaIYuhZL9W/UWccolCzoumlSt0bI7UGUVVz91N
-         svsXxprHOChOYRIE/EcE0tk6d8i6cyhF9UTEh46ZTZKaIz2qpldXaTGYZ1vqTKHNhER2
-         BBLlQz3KL8rjrevchw+xdWCVSVdmWpFtWiR5U1TwqfC6ZLuKIh57kgIwPSMB4uFcR0vz
-         n6kiI4TX+Hlr59lAZon2IMs6r/jVK0CIa+ykgYaTUt01H98nX6LH3bqf5UTV2aQUHeFx
-         rbNw==
-X-Gm-Message-State: AOJu0Yxnk6vQw8VS/UDTdHav7RoWoRm/TviNobkthiz6QeRt5eQPmeUe
-        o8mAnxZ5e70Hm+KRv2vs4tToiSPh0bA9CDZNc/5rCQ==
-X-Google-Smtp-Source: AGHT+IElBZy9MDfT+YhL3YBHroyxQz9Foj5QmxSxQkw0BYnxu50n7qEZA4PHtsNmMsdx8aYvIW5O7Q==
-X-Received: by 2002:a05:6000:49:b0:32d:5cc0:2f0c with SMTP id k9-20020a056000004900b0032d5cc02f0cmr1091800wrx.40.1696942715517;
-        Tue, 10 Oct 2023 05:58:35 -0700 (PDT)
-Received: from heron.intern.cm-ag (p200300dc6f49a600529a4cfffe3dd983.dip0.t-ipconnect.de. [2003:dc:6f49:a600:529a:4cff:fe3d:d983])
-        by smtp.gmail.com with ESMTPSA id z8-20020a05600c220800b003fee8793911sm14034296wml.44.2023.10.10.05.58.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 05:58:34 -0700 (PDT)
-From:   Max Kellermann <max.kellermann@ionos.com>
-To:     linux@roeck-us.net, joe@perches.com, gregkh@linuxfoundation.org,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Max Kellermann <max.kellermann@ionos.com>,
-        workflows@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] Documentation/process/coding-style.rst: space around const
-Date:   Tue, 10 Oct 2023 14:58:31 +0200
-Message-Id: <20231010125832.1002941-1-max.kellermann@ionos.com>
-X-Mailer: git-send-email 2.39.2
+        Tue, 10 Oct 2023 08:59:29 -0400
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2057.outbound.protection.outlook.com [40.107.21.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2240491;
+        Tue, 10 Oct 2023 05:59:27 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TbOzJPcRe00Cyxr0Vehx4MuEBJS4vaMePMCLDZoHirNmy17c4qCfMXhqpBnOX7lNYxYEWr5D2zV6yngYGo1UJC5eojlWrdULRDbHMncpnnqsr5URzx6RPStKTtcV0Jb4kEzA+LdhgLuVjD1qXDZHAFWhL6insiQ8cakDXXOHSe9L+ssXu/Q3SUXjfGvYq7ud+S08AHOBK9QIabr4de65ZvMvZZkXZyAkSjx5RmSH2qGBK9GhwSqAbmkh/c9tgkYWr7jnpGqCGWCW5h3cJ1kdKwqfQ1l7eKdmBUxPmSpyBPypzxGf/RWNzIdjVn/4K6MwAIqOT/zL5OSrKRNwclmLcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pFZeJojMrUHhVufLee9fcLZt1P2JF/OL9T6nSmvTZG4=;
+ b=a3xcAA9jTCrkfmHThIPa2d6TrVkk/euizn6MHMr4L3QuKAkZtkoR00ivApzHPaSKcWZHy+Y1mSJW09xJMobnoTlrlbMB8+O4+dBMbXZT4YZ7Y+g9Xyvkk5TeeR8nbRS12eH3j8M9TCwY0Xr2J9jO9luNrrbIiZDgmJMHaMBQQmLdC1/PBJjynIJRavdJ2GPnoA9fwW0dRkIVR2avIGKc4hJsocMoe8MOAOhagq58JvqLjui9Dt7TvTuRNuv+jG58hEQd/7j/TGMMTMk2NyQdkhYjPLfKMl3jX8Y6cnwZUuoJjU0WZDrMWnAgB1TrsNpwv7v4ChtKdF+6k2EZVgYjSA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 139.15.153.203) smtp.rcpttodomain=renesas.com smtp.mailfrom=de.bosch.com;
+ dmarc=pass (p=reject sp=none pct=100) action=none header.from=de.bosch.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=de.bosch.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pFZeJojMrUHhVufLee9fcLZt1P2JF/OL9T6nSmvTZG4=;
+ b=TH12z7RrWj2bIlvdvENHmfO6lDge/D9xBn90sSQ6RctqG2QtX9E/ndXLkcLlJC1/TOOkdaLF9tbmpS1jiGV4z9YIjntg5xOdlK8fNlaBdWd8FuAI5qmFrV7uJCaryg+zCYbzk/lFBJwO29E12UPF6PKLer9gP1ptXZqxfYm/Sz4N6L35Ts7TacsBT3xPKfcdJY2UHauKRG+s/4I7rTNH15ohFdkKHphxaWujdlFUD4ZOQnRnSjzJH5QuDUwqq9OWV5GphonG6hmDKnsrrxtieEcwR3JqYFV/kP8TV5e2St+smPc+cTQFNmJGG+U7LBbXw6r96eOKAkXOCezeCLPJeg==
+Received: from DUZPR01CA0054.eurprd01.prod.exchangelabs.com
+ (2603:10a6:10:469::10) by GV1PR10MB6682.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:150:83::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.36; Tue, 10 Oct
+ 2023 12:59:24 +0000
+Received: from DBAEUR03FT060.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:10:469:cafe::de) by DUZPR01CA0054.outlook.office365.com
+ (2603:10a6:10:469::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.36 via Frontend
+ Transport; Tue, 10 Oct 2023 12:59:24 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 139.15.153.203)
+ smtp.mailfrom=de.bosch.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=de.bosch.com;
+Received-SPF: Pass (protection.outlook.com: domain of de.bosch.com designates
+ 139.15.153.203 as permitted sender) receiver=protection.outlook.com;
+ client-ip=139.15.153.203; helo=eop.bosch-org.com; pr=C
+Received: from eop.bosch-org.com (139.15.153.203) by
+ DBAEUR03FT060.mail.protection.outlook.com (100.127.142.238) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6886.23 via Frontend Transport; Tue, 10 Oct 2023 12:59:23 +0000
+Received: from FE-EXCAS2000.de.bosch.com (10.139.217.199) by eop.bosch-org.com
+ (139.15.153.203) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Tue, 10 Oct
+ 2023 14:59:23 +0200
+Received: from [10.34.222.178] (10.139.217.196) by FE-EXCAS2000.de.bosch.com
+ (10.139.217.199) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.32; Tue, 10 Oct
+ 2023 14:59:22 +0200
+Message-ID: <de4ab49b-f1a7-5732-0970-13fd03407376@de.bosch.com>
+Date:   Tue, 10 Oct 2023 14:59:14 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v4] net: ravb: Fix possible UAF bug in ravb_remove
+To:     <yoshihiro.shimoda.uh@renesas.com>
+CC:     <s.shtylyov@omp.ru>, <lee@kernel.org>, <linyunsheng@huawei.com>,
+        <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
+        <richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
+        <geert+renesas@glider.be>, <magnus.damm@gmail.com>,
+        <biju.das.jz@bp.renesas.com>, <wsa+renesas@sang-engineering.com>,
+        <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <hackerzheng666@gmail.com>,
+        <1395428693sheep@gmail.com>, <alex000young@gmail.com>,
+        Zheng Wang <zyytlz.wz@163.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dirk Behme <dirk.behme@de.bosch.com>
+References: <20230725030026.1664873-1-zyytlz.wz@163.com>
+ <20230725201952.2f23bb3b@kernel.org>
+Content-Language: en-US
+From:   "Behme Dirk (CM/ESO2)" <dirk.behme@de.bosch.com>
+In-Reply-To: <20230725201952.2f23bb3b@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.139.217.196]
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DBAEUR03FT060:EE_|GV1PR10MB6682:EE_
+X-MS-Office365-Filtering-Correlation-Id: c111d9d9-9b62-4469-5753-08dbc990ba2a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: y5Q7iKE390erCbINgX5yFxe9w0H5eqLGvHCygF8J6PMJAPRGrANthKfRw3PwegCyf1vW/3KxmHfmXxzvc8f4CuXyGq+xIReC3wjVfWqRl6PMFzI8KHUKtSZk9Z1VZclwaXsZFoq6tezodgQ5755kACbAUEENQTbygfoNedrtbFL5nWXhKfX+wQVFpY1a930erK0SJO6FwsCL3UV0oBK9zzQkKGGUSIYYFBNfWyvqvReS0HUmqyISwU+1+nTkCLMBYXe/R6BvQhU0x6JWR4BYSPNlHrSi3Wi5ENBsQVYr2/6oqKXSbv0TEnvwpvoUWFA2wvP+KoGNLKd5NbSFCmQgBE+9Q87E6cRiwYYg8223RK74PBn9l/Y3wy1UAiWHVv+iMVGA8YnpwPAglBIOXPPlftuAKGKHjpSnHPeqYGs4JShjHc0utwBsNiALuQCIltYwNkfGoJltUp2H0D6j7ksstoiuwNOfSe0ZmAg2wfX8uVoZamTOslGu2thWzp+4QS0+47wWhJZGbousCZhl/hk+BLpLj+UU5sb/SBzgcX/nXNTlbJoLaP5R1vbytER5YqUwrylyM7IpGBaD3s56BaZbr9BcpPlRDiIBP2od1f78HXj9TPLYzBrFGzgAWRFrQfxUSFT2xRngtd58of9MQx/m2GQ2A61QnLA5tjOjJTpp9tSBpDpGHZLPQBy3eqK9pKLd+HKZwH3a7UwFFWu7a0/XEyWibuuiVsxUJ2TV/fZ5/u6jUdvYRnAvwGoOVBv5EH+OxAw+7/4WDP8nUYA9KrDrM1w+qInSyskiqOK7LUXb9L6SH5/sV0hYGBup41HESuGr
+X-Forefront-Antispam-Report: CIP:139.15.153.203;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:eop.bosch-org.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(346002)(136003)(396003)(230922051799003)(64100799003)(1800799009)(186009)(82310400011)(451199024)(46966006)(36840700001)(40470700004)(40480700001)(54906003)(70586007)(40460700003)(426003)(336012)(8936002)(107886003)(2616005)(83380400001)(16526019)(36860700001)(47076005)(26005)(6916009)(16576012)(316002)(7416002)(5660300002)(8676002)(41300700001)(2906002)(478600001)(70206006)(4326008)(6666004)(53546011)(356005)(82740400003)(558084003)(81166007)(86362001)(31696002)(82960400001)(31686004)(43740500002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: de.bosch.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 12:59:23.7774
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c111d9d9-9b62-4469-5753-08dbc990ba2a
+X-MS-Exchange-CrossTenant-Id: 0ae51e19-07c8-4e4b-bb6d-648ee58410f4
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=0ae51e19-07c8-4e4b-bb6d-648ee58410f4;Ip=[139.15.153.203];Helo=[eop.bosch-org.com]
+X-MS-Exchange-CrossTenant-AuthSource: DBAEUR03FT060.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR10MB6682
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are currently no rules on the placement of "const", but a recent
-code submission revealed that there is clearly a preference for spaces
-around it.
 
-checkpatch.pl has no check at all for this; though it does sometimes
-complain, but only because it erroneously thinks that the "*" (on
-local variables) is an unary dereference operator, not a pointer type.
+On 26.07.2023 05:19, Jakub Kicinski wrote:
+...
+> The fact that ravb_tx_timeout_work doesn't take any locks seems much
+> more suspicious.
+Does anybody plan to look into this, too?
 
-Current coding style for const pointers-to-pointers:
+Best regards
 
- "*const*": 2 occurrences
- "* const*": 3
- "*const *": 182
- "* const *": 681
-
-Just const pointers:
-
- "*const": 2833 occurrences
- "* const": 16615
-
-Link: https://lore.kernel.org/r/264fa39d-aed6-4a54-a085-107997078f8d@roeck-us.net/
-Link: https://lore.kernel.org/r/f511170fe61d7e7214a3a062661cf4103980dad6.camel@perches.com/
-Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
----
-V1 -> V2: removed "volatile" on gregkh's request.
-V2 -> V3: moved patch changelog below the "---" line
----
- Documentation/process/coding-style.rst | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
-index 6db37a46d305..71d62d81e506 100644
---- a/Documentation/process/coding-style.rst
-+++ b/Documentation/process/coding-style.rst
-@@ -271,6 +271,17 @@ adjacent to the type name.  Examples:
- 	unsigned long long memparse(char *ptr, char **retptr);
- 	char *match_strdup(substring_t *s);
- 
-+Use space around the ``const`` keyword (except when adjacent to
-+parentheses).  Example:
-+
-+.. code-block:: c
-+
-+	const void *a;
-+	void * const b;
-+	void ** const c;
-+	void * const * const d;
-+	int strcmp(const char *a, const char *b);
-+
- Use one space around (on each side of) most binary and ternary operators,
- such as any of these::
- 
--- 
-2.39.2
-
+Dirk
