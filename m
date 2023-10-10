@@ -2,93 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF057C41BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 22:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 798C97C41BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 22:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234244AbjJJUnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 16:43:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33972 "EHLO
+        id S234473AbjJJUoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 16:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbjJJUnv (ORCPT
+        with ESMTP id S234279AbjJJUoI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 16:43:51 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54A28E
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 13:43:49 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2c012232792so75978401fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 13:43:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1696970628; x=1697575428; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=81cjp26ZLCRfVdmuI0tOydwXQofr1yefS0BzwFdHnbc=;
-        b=nKvdWABEN2E/p+8e6xdih23nMkhHt/EEho9DFMoMngoY6PT3yU2veyMKdaSh8Ow8Gb
-         T6Aot2iThVy86Y17cM8Ugu3fv38HrwbNYLIHTNgWqYTbXMJIyxQWUE+0zXPiBSI+Ys4I
-         /ETGlpyJV+KiXSKmhjS0MeIZRnrj6mkoXLMx0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696970628; x=1697575428;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=81cjp26ZLCRfVdmuI0tOydwXQofr1yefS0BzwFdHnbc=;
-        b=lFvWOGOru53FSY9N1y+vedqVfHYytn8SBY5C3r8dsKKIA7sdA8AzcMAoiMhnZcaNtM
-         J8IBMAFQfIytt79nj6UBaJgEPHi6iAc1LXUcyyyppgvhK2gZFUS7/+40kroK9yC/nprc
-         ndBCxLMjXLH7MkFxxhD3scNt3cCedyl+O9rz3q+b/o5dk1xLwljEkKOnUC4tQ3YBRGSY
-         bI/xL4whQNPaUujwODFNhX9wLjPBYfkIWYkI10H95piudVlcziVywBBFf5LFEi5aoVEY
-         nn7tKk72ztLmqwvt3lbd/vx2liRYuOSLGee4cnPToGRG9tGOii8daXujXE1Y1mulaZwu
-         XzWg==
-X-Gm-Message-State: AOJu0YxHw+9M3ktmxRLtRYN+coeq5r8eNhi0Q2j+Lhy7pbFG1OTGApE8
-        pdI12Fv78RC9PEXGsR9Ugii3/qr1q4zRiGYZx0J1vw==
-X-Google-Smtp-Source: AGHT+IFbF9MZZKolGHZgDB2/ps8Ewh63dhGzwhUtUzbFrQtTYTg7F/nmufWO2JTcxu1WgI2EKXLI67E6W2ZwWnGL2LE=
-X-Received: by 2002:a2e:9d0e:0:b0:2c2:966f:8cc with SMTP id
- t14-20020a2e9d0e000000b002c2966f08ccmr13106920lji.0.1696970627979; Tue, 10
- Oct 2023 13:43:47 -0700 (PDT)
+        Tue, 10 Oct 2023 16:44:08 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C10EE9E
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 13:44:06 -0700 (PDT)
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39AKZLcY026863;
+        Tue, 10 Oct 2023 20:43:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=NyTcl2WVUIxRz2AihBYuBwAILzqMqo2Hp83u66Osvd8=;
+ b=r320EfUtGnQaN3oRXfaOchtrKkgSTMfb5voqHd+KpH1InF8f8uRpr1KZq9vs5H1/QAhR
+ oA+QfExf3t361hJOSX1r0dC6f9SAv3uR93vdPTjwkYrdyaXeUO4xTn1Kd32bnW6kVrXy
+ 4N1R0iitgbAWjuLzvtoMNsD+wjeMZQ7OndhSrE5c7SzUdVBqa0qQrC/Db1aXT/pHAxb6
+ RzS5V4UrxigZXODT7wZQF2I5eKGBDjJXyNPZmN0gJ3kt2Z0t4cdAf5PvRmUHpBiFRRfy
+ aADRqXdaCMNdHKYTvS3T7+F72nMYQPB7GwzCJI4//u/dYWJt2iuRqWM9AEGM0DrssZ5y eg== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tnds9gcmp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Oct 2023 20:43:57 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39AKQClU024498;
+        Tue, 10 Oct 2023 20:43:53 GMT
+Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tkhnskay2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Oct 2023 20:43:53 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39AKhqOK19137042
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 10 Oct 2023 20:43:52 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7722558068;
+        Tue, 10 Oct 2023 20:43:52 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3495E58056;
+        Tue, 10 Oct 2023 20:43:52 +0000 (GMT)
+Received: from gfwa153.aus.stglabs.ibm.com (unknown [9.3.84.127])
+        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 10 Oct 2023 20:43:52 +0000 (GMT)
+From:   Ninad Palsule <ninad@linux.ibm.com>
+To:     jk@ozlabs.org, joel@jms.id.au, alistair@popple.id.au,
+        eajames@linux.ibm.com, linux-fsi@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ninad Palsule <ninad@linux.ibm.com>
+Subject: [PATCH v3 0/2] fsi: sbefifo: fixes
+Date:   Tue, 10 Oct 2023 15:43:46 -0500
+Message-Id: <20231010204348.2600242-1-ninad@linux.ibm.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <20230929021213.2364883-1-joel@joelfernandes.org>
- <87bkdl55qm.fsf@email.froward.int.ebiederm.org> <CAEXW_YQ=HGok600ARtCKBNDs1OHSc=UM4hWmBdQ=sXZvif0Z5g@mail.gmail.com>
- <CAEXW_YQ3YZExYb6FLg3fvWr9K+FGgNQx7xk3p-PngLG6rt8Ntw@mail.gmail.com> <20231009100155.6d71490f@gandalf.local.home>
-In-Reply-To: <20231009100155.6d71490f@gandalf.local.home>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Tue, 10 Oct 2023 16:43:37 -0400
-Message-ID: <CAEXW_YQzf9=90Y4Q6RrVZHPkdAB+0ht94LdPMCozN4JBkjXacw@mail.gmail.com>
-Subject: Re: [PATCH] kexec: Fix reboot race during device_shutdown()
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org, Ricardo Ribalda <ribalda@google.com>,
-        Ross Zwisler <zwisler@google.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        kexec@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 3MIkQGpSs15SY-npvr9opF8SjJNwtsBj
+X-Proofpoint-GUID: 3MIkQGpSs15SY-npvr9opF8SjJNwtsBj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-10_16,2023-10-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ phishscore=0 adultscore=0 malwarescore=0 spamscore=0 priorityscore=1501
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 mlxlogscore=674 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310100160
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 9, 2023 at 10:00=E2=80=AFAM Steven Rostedt <rostedt@goodmis.org=
-> wrote:
->
-> On Sat, 7 Oct 2023 21:30:42 -0400
-> Joel Fernandes <joel@joelfernandes.org> wrote:
->
-> > Just checking how we want to proceed, is the consensus that we should
-> > prevent kernel crashes without relying on userspace stopping all
-> > processes? Should we fix regular reboot syscall as well and not just
-> > kexec reboot?
->
-> If you can show that we can trigger the crash on normal reboot, then I
-> don't see why not. That is, if you have a program that does the reboot
-> (without the SIGSTOP/SIGKILL calls) and triggers this crash, I think that=
-'s
-> a legitimate reason to fix it on normal reboot too.
+Hello,
+Please review the version 3 of the patchset. I have incorporated review
+comments by Eddie.
 
-Ok, Sounds good, thanks for sharing your thoughts.
+Ninad Palsule (2):
+  fsi: sbefifo: Bump up user write cmd length
+  fsi: sbefifo: Handle pending write command
 
- - Joel
+ drivers/fsi/fsi-sbefifo.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+-- 
+2.39.2
+
