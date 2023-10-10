@@ -2,149 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A467C011E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:05:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A41C27C0122
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233897AbjJJQET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 12:04:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44226 "EHLO
+        id S234127AbjJJQFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 12:05:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233786AbjJJQEG (ORCPT
+        with ESMTP id S234005AbjJJQE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 12:04:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A34CCC
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:03:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696953797;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0PzOYNiEjMNfxgDoRNUukN0hkebqWs832TM4JCa3Qvo=;
-        b=ACzS66X6xxMLuwChwCYr3WgXmJCJXEG+GjdZCoeZ/rdxsZsSWouD3c3UDNA4o22sNOwxBs
-        F4HgIOLLbWHUfYn85ieu2cDVbEJV1pnDMlkAPPIdhNX8oiqv4TcWghwT4QTDTmeV3L8RLd
-        JKh49EdFWqFk2zjCyMZE3uwx3UKT/Qw=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-620-Vw-Xhwn5NZ23BnzXlR3Yqg-1; Tue, 10 Oct 2023 12:03:14 -0400
-X-MC-Unique: Vw-Xhwn5NZ23BnzXlR3Yqg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EEF4C2932486;
-        Tue, 10 Oct 2023 16:03:13 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.45.226.166])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2B848158;
-        Tue, 10 Oct 2023 16:03:13 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH RFC 11/11] KVM: nSVM: hyper-v: Hide more stuff under CONFIG_KVM_HYPERV/CONFIG_HYPERV
-Date:   Tue, 10 Oct 2023 18:03:00 +0200
-Message-ID: <20231010160300.1136799-12-vkuznets@redhat.com>
-In-Reply-To: <20231010160300.1136799-1-vkuznets@redhat.com>
-References: <20231010160300.1136799-1-vkuznets@redhat.com>
+        Tue, 10 Oct 2023 12:04:57 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B16910C4;
+        Tue, 10 Oct 2023 09:04:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66636C433C9;
+        Tue, 10 Oct 2023 16:04:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696953865;
+        bh=CPjakDH/b/NnLZYhG6qAlFTOBENXy2ZPobzsoGHhlUE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=oKoB9O5WH9REfKO57RoBNap5FlOCwlHa5tWCMjXkqpZGOdyHCWTAd/nvxQGrRbScf
+         RmwSZew+Hu9gAxh/XrnU6Gya5EylyR2BhX5LJfw9MiSoYPYbFPfmQJRa4vmK1LIcK4
+         fxKkbPA6DLOwewexCElKjkUTlw9mGdpspzauxvuSpU6QPr1TyBnR/bahgwJ5YaHJ1j
+         hNeS5F5I498tCazwxNI4y89y8FYggplvKSaAf7OHXnl3X7QF1pUA7Bd+o2pXlPMrZr
+         fXQlXzmmPEzoenCDb3Mtcx8FCJTO8Ouz8pa8WSGpx3WZqQ7uI1YNZfUMsnC82m26/x
+         +zK+IfiHqRekg==
+Date:   Tue, 10 Oct 2023 11:04:23 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Jianjun Wang <jianjun.wang@mediatek.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        Frank Wunderlich <linux@fw-web.de>,
+        John Crispin <john@phrozen.org>
+Subject: Re: [PATCH] PCI: mediatek-gen3: fix PCIe #PERST being de-asserted
+ too early
+Message-ID: <20231010160423.GA977719@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZR-7Nm2c5s4kuOp0@pidgin.makrotopia.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'struct hv_vmcb_enlightenments' in VMCB only make sense when either
-CONFIG_KVM_HYPERV or CONFIG_HYPERV is enabled.
+On Fri, Oct 06, 2023 at 09:45:58AM +0200, Daniel Golle wrote:
+> The driver for MediaTek gen3 PCIe hosts de-asserts all reset
+> signals at the same time using a single register write operation.
+> Delay the de-assertion of the #PERST signal by 100ms as required by
+> PCIe CEM clause 2.2, some PCIe devices fail to come up otherwise.
+> 
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> ---
+>  drivers/pci/controller/pcie-mediatek-gen3.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/pcie-mediatek-gen3.c b/drivers/pci/controller/pcie-mediatek-gen3.c
+> index e0e27645fdf4..ba8cfce03aad 100644
+> --- a/drivers/pci/controller/pcie-mediatek-gen3.c
+> +++ b/drivers/pci/controller/pcie-mediatek-gen3.c
+> @@ -350,7 +350,13 @@ static int mtk_pcie_startup_port(struct mtk_gen3_pcie *pcie)
 
-No functional change intended.
+I feel like I'm missing something because this patch seems to be
+adding a delay for T_PVPERL, but the comment before the existing
+msleep() claims *it* is the T_PVPERL delay:
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- arch/x86/kvm/svm/nested.c | 20 ++++++++++++++------
- arch/x86/kvm/svm/svm.h    |  2 ++
- 2 files changed, 16 insertions(+), 6 deletions(-)
+         * Described in PCIe CEM specification sections 2.2 (PERST# Signal)
+         * and 2.2.1 (Initial Power-Up (G3 to S0)).
+         * The deassertion of PERST# should be delayed 100ms (TPVPERL)
+         * for the power and clock to become stable.
 
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index 4d8cd378a30b..5ae41a708005 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -187,7 +187,6 @@ void recalc_intercepts(struct vcpu_svm *svm)
-  */
- static bool nested_svm_vmrun_msrpm(struct vcpu_svm *svm)
- {
--	struct hv_vmcb_enlightenments *hve = &svm->nested.ctl.hv_enlightenments;
- 	int i;
- 
- 	/*
-@@ -198,11 +197,16 @@ static bool nested_svm_vmrun_msrpm(struct vcpu_svm *svm)
- 	 * - Nested hypervisor (L1) is using Hyper-V emulation interface and
- 	 * tells KVM (L0) there were no changes in MSR bitmap for L2.
- 	 */
--	if (!svm->nested.force_msr_bitmap_recalc &&
--	    kvm_hv_hypercall_enabled(&svm->vcpu) &&
--	    hve->hv_enlightenments_control.msr_bitmap &&
--	    (svm->nested.ctl.clean & BIT(HV_VMCB_NESTED_ENLIGHTENMENTS)))
--		goto set_msrpm_base_pa;
-+#ifdef CONFIG_KVM_HYPERV
-+	if (!svm->nested.force_msr_bitmap_recalc) {
-+		struct hv_vmcb_enlightenments *hve = &svm->nested.ctl.hv_enlightenments;
-+
-+		if (kvm_hv_hypercall_enabled(&svm->vcpu) &&
-+		    hve->hv_enlightenments_control.msr_bitmap &&
-+		    (svm->nested.ctl.clean & BIT(HV_VMCB_NESTED_ENLIGHTENMENTS)))
-+			goto set_msrpm_base_pa;
-+	}
-+#endif
- 
- 	if (!(vmcb12_is_intercept(&svm->nested.ctl, INTERCEPT_MSR_PROT)))
- 		return true;
-@@ -230,7 +234,9 @@ static bool nested_svm_vmrun_msrpm(struct vcpu_svm *svm)
- 
- 	svm->nested.force_msr_bitmap_recalc = false;
- 
-+#ifdef CONFIG_KVM_HYPERV
- set_msrpm_base_pa:
-+#endif
- 	svm->vmcb->control.msrpm_base_pa = __sme_set(__pa(svm->nested.msrpm));
- 
- 	return true;
-@@ -378,12 +384,14 @@ void __nested_copy_vmcb_control_to_cache(struct kvm_vcpu *vcpu,
- 	to->msrpm_base_pa &= ~0x0fffULL;
- 	to->iopm_base_pa  &= ~0x0fffULL;
- 
-+#ifdef CONFIG_KVM_HYPERV
- 	/* Hyper-V extensions (Enlightened VMCB) */
- 	if (kvm_hv_hypercall_enabled(vcpu)) {
- 		to->clean = from->clean;
- 		memcpy(&to->hv_enlightenments, &from->hv_enlightenments,
- 		       sizeof(to->hv_enlightenments));
- 	}
-+#endif
- }
- 
- void nested_copy_vmcb_control_to_cache(struct vcpu_svm *svm,
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index be67ab7fdd10..59adff7bbf55 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -148,7 +148,9 @@ struct vmcb_ctrl_area_cached {
- 	u64 virt_ext;
- 	u32 clean;
- 	union {
-+#if IS_ENABLED(CONFIG_HYPERV) || IS_ENABLED(CONFIG_KVM_HYPERV)
- 		struct hv_vmcb_enlightenments hv_enlightenments;
-+#endif
- 		u8 reserved_sw[32];
- 	};
- };
--- 
-2.41.0
+>  	msleep(100);
+>  
+>  	/* De-assert reset signals */
+> -	val &= ~(PCIE_MAC_RSTB | PCIE_PHY_RSTB | PCIE_BRG_RSTB | PCIE_PE_RSTB);
+> +	val &= ~(PCIE_MAC_RSTB | PCIE_PHY_RSTB | PCIE_BRG_RSTB);
+> +	writel_relaxed(val, pcie->base + PCIE_RST_CTRL_REG);
+> +
+> +	msleep(100);
 
+So I'm confused about these two sleeps.  Are they for different
+parameters?
+
+T_PVPERL is defined from "Power stable to PERST# inactive".  Do we
+have any actual indication of when to start that delay, i.e., do we
+have a clue about when power became stable?
+
+> +	/* De-assert PERST# signals */
+> +	val &= ~(PCIE_PE_RSTB);
+>  	writel_relaxed(val, pcie->base + PCIE_RST_CTRL_REG);
+>  
+>  	/* Check if the link is up or not */
+> -- 
+> 2.42.0
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
