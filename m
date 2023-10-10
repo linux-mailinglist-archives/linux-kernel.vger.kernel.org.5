@@ -2,101 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C914C7BFABB
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 377097BFAC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231634AbjJJMEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 08:04:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52604 "EHLO
+        id S231467AbjJJMFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 08:05:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231607AbjJJMEh (ORCPT
+        with ESMTP id S231410AbjJJMFs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 08:04:37 -0400
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F23B5FA
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:04:32 -0700 (PDT)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5a7bbcc099fso9599277b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:04:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696939472; x=1697544272; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oRm5xwGlZJf/KJnLdBDBwdoT05gZC5H+vASV2Jvu/KQ=;
-        b=TyNTCWuo266bHgiNm+q+Hok6E3nyqyNcwNpxUwClJIBu6FUZQJ9r3f4Xk8y/hqkwGf
-         qRSjkMVrO0VR+p6idEIXDjV6LhE9LfIUZUlRZTcw4EcFUHP3s0w7ZUV7kwl0j0wbHsKa
-         80I8lDp1kZBikaZfdIFLlBZB6XQVIZumNEaeM3EiPccynX3UR7MKnnGQor4R/XNt4uIy
-         9otCZXVPvCJV+VSTmOBD/Srq1H35UEBTWXRCw+VjxQmNBH25AsaZqKCF3I0Elpx4f2Ss
-         YxaoSuejDQnQPibdgMoF2GXw7kT6pjYq2YG4WWNTolSN2Qzx7u1VtZmZ0DsKOoWBold9
-         uQLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696939472; x=1697544272;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oRm5xwGlZJf/KJnLdBDBwdoT05gZC5H+vASV2Jvu/KQ=;
-        b=JOFUb8S8MSY5SBp7PcHG6R2b6/Zl/SruVRXyp9rJgMz0VM0cH7B/qwRkZIDHfuCURr
-         g9Sda4njEQK67x07rAMlASsev8ha31FfkoX21HcWLW+JeRD8oGaKNrdlHZ+30bB5V7z4
-         w9iP9tXu/YiqnjeEtb03h97JhETkaYSdwxUG+x4UxkIlxoIuG5rkw8QFzx1lMPO6kUcL
-         0H5RQsl9kQxGgAtSB62K4qLHqwWH8SqkZmajEnZTnURc4GTkKDgllp5J1Y6Qp+pXBcXz
-         4hFymSMkzYTEyq5TnQPbmIC2UabzGUx/WL2o0h3gLRDD3AMfAVYjkr1WRFCxAYzC2Pnl
-         J9mg==
-X-Gm-Message-State: AOJu0YztFEqTkS2DYFiyqXpmq2M6KQw46wD8FiKhgzQHrgJvyvFpUeoV
-        GjzXVb63RCAjhVtQX+htMO2utpRJ4BVp4W1kNVQzKA==
-X-Google-Smtp-Source: AGHT+IGVDD7+S69xO3pfTbF949zNCe6yFAK3r96QtSxjKtmrwM3HcJu3N1ThxZ9DhlR9SLOx/kn6XhBTxLOkp/VyWj4=
-X-Received: by 2002:a25:a101:0:b0:d4e:4103:7807 with SMTP id
- z1-20020a25a101000000b00d4e41037807mr16143064ybh.60.1696939471954; Tue, 10
- Oct 2023 05:04:31 -0700 (PDT)
+        Tue, 10 Oct 2023 08:05:48 -0400
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 843DB99;
+        Tue, 10 Oct 2023 05:05:46 -0700 (PDT)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 152EE1C006D; Tue, 10 Oct 2023 14:05:45 +0200 (CEST)
+Date:   Tue, 10 Oct 2023 14:05:44 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     wsa+renesas@sang-engineering.com,
+        niklas.soderlund+renesas@ragnatech.se,
+        yoshihiro.shimoda.uh@renesas.com, geert+renesas@glider.be,
+        biju.das.jz@bp.renesas.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Chris.Paterson2@renesas.com, stable@vger.kernel.org,
+        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: renesas_sdhi problems in 5.10-stable was Re: [PATCH 5.10
+ 000/226] 5.10.198-rc1 review
+Message-ID: <ZSU+GHl1q7T/TBp5@duo.ucw.cz>
+References: <20231009130126.697995596@linuxfoundation.org>
+ <ZSRVgj5AqJbDXqZU@duo.ucw.cz>
+ <ZSRe78MAQwbBdyFP@duo.ucw.cz>
+ <ZSUy+zA0+Chm6dFb@duo.ucw.cz>
 MIME-Version: 1.0
-References: <20231004183906.97845-1-brgl@bgdev.pl>
-In-Reply-To: <20231004183906.97845-1-brgl@bgdev.pl>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 10 Oct 2023 14:04:21 +0200
-Message-ID: <CACRpkdaP1AxUyAo2kOm5o3wn-gwfki_52-YJiPpu20cEKLXxjQ@mail.gmail.com>
-Subject: Re: [PATCH] spi: bcm2835: add a sentinel at the end of the lookup array
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>, linux-spi@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="kmt4faAXz7TCbez6"
+Content-Disposition: inline
+In-Reply-To: <ZSUy+zA0+Chm6dFb@duo.ucw.cz>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_NEUTRAL,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 4, 2023 at 8:39=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl> =
-wrote:
 
+--kmt4faAXz7TCbez6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> GPIOLIB expects the array of lookup entries to be terminated with an
-> empty member. We need to increase the size of the variable length array
-> in the lookup table by 1.
->
-> Fixes: 21f252cd29f0 ("spi: bcm2835: reduce the abuse of the GPIO API")
-> Reported-by: Hans de Goede <hdegoede@redhat.com>
-> Closes: https://lore.kernel.org/lkml/29764d46-8d3d-9794-bbde-d7928a91cbb5=
-@redhat.com/
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Hi!
+> > > > This is the start of the stable review cycle for the 5.10.198 relea=
+se.
+> > > > There are 226 patches in this series, all will be posted as a respo=
+nse
+> > > > to this one.  If anyone has any issues with these being applied, pl=
+ease
+> > > > let me know.
+> > > >=20
+> > > > Responses should be made by Wed, 11 Oct 2023 13:00:55 +0000.
+> > > > Anything received after that time might be too late.
+> > >=20
+> > > 4.14, 4.19 and 6.1 tests ok, 5.10 seems to have problems:
+> >=20
+> > Guessing from stack traces, these may be relevant:
+>=20
+> So bisection reveals these are relevant:
+>=20
+>   |e10d3d256 b161d8 o: 5.10| mmc: renesas_sdhi: probe into TMIO after   S=
+CC parameters have been setup
+>=20
+> Ok
+>=20
+>  |493b70c48 d14ac6 o: 5.10| mmc: renesas_sdhi: populate SCC pointer at  t=
+he proper place
+>=20
+> Testing now: https://gitlab.com/cip-project/cip-kernel/linux-cip/-/pipeli=
+nes/1031822035
 
-OK my bad (I think?)
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+And testing failed. So
 
-Yours,
-Linus Walleij
+commit f5799b4e142884c2e7aa99f813113af4a3395ffb
+Author: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Date:   Tue Nov 10 15:20:57 2020 +0100
+
+    mmc: renesas_sdhi: populate SCC pointer at the proper place
+   =20
+    [ Upstream commit d14ac691bb6f6ebaa7eeec21ca04dd47300ff5b6 ]
+
+seems to be the buggy commit that breaks renesas boards in 5.10.
+
+>  |c508545f4 0d856c o: 5.10| mmc: tmio: support custom irq masks
+
+Testing too: https://gitlab.com/cip-project/cip-kernel/linux-cip/-/pipeline=
+s/1031834627
+
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--kmt4faAXz7TCbez6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZSU+GAAKCRAw5/Bqldv6
+8haIAJkBZWNo+fR9/jsfeG3zeswyYC7fOQCgogoTt5zPNc6+2mGK+jsCbp1Rf9w=
+=FWgd
+-----END PGP SIGNATURE-----
+
+--kmt4faAXz7TCbez6--
