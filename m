@@ -2,130 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB8007BF5A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9717BF5C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442827AbjJJIXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 04:23:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40896 "EHLO
+        id S1442794AbjJJI04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 04:26:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442742AbjJJIXe (ORCPT
+        with ESMTP id S1442752AbjJJI0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 04:23:34 -0400
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B336A7
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 01:23:33 -0700 (PDT)
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20231010082323epoutp034c7064d93f10caf193f3fe1be34f4ed0~MsWRFJofL1875718757epoutp03Y
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:23:23 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20231010082323epoutp034c7064d93f10caf193f3fe1be34f4ed0~MsWRFJofL1875718757epoutp03Y
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1696926203;
-        bh=11JVUyHitflKTv1oP+aIUUOynGhGeOyQ35o7CuUsBKg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M7cjTyRa5KhqfVdqVXr06UPED+MxIVtohdmMGxdHVCFOfhOvye32P0kvEJQ3wMqSZ
-         6sbH5WJzHBLfUr8Za/Ksph8tbrr3+Ycaljt6v3dmA7IYZzI3EQwBxde0CpnZmiBU8/
-         sADI66VeJjHTQ+N3SMacZ6EhL6F9SGbwtbbE/W/k=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20231010082323epcas2p182eb59312f88c3f27933da0ce5dfb4cb~MsWQiwrVC2109721097epcas2p1J;
-        Tue, 10 Oct 2023 08:23:23 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.36.89]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4S4TSB3SF7z4x9Pw; Tue, 10 Oct
-        2023 08:23:22 +0000 (GMT)
-Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        BE.89.09660.AF905256; Tue, 10 Oct 2023 17:23:22 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
-        20231010082321epcas2p29211e29f64b7a4d0a032df5f60c6942f~MsWPQHiN01534015340epcas2p2J;
-        Tue, 10 Oct 2023 08:23:21 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20231010082321epsmtrp1cf63ce41ac83b347cd79e14b0177b525~MsWPPTGK11187111871epsmtrp1h;
-        Tue, 10 Oct 2023 08:23:21 +0000 (GMT)
-X-AuditID: b6c32a47-afdff700000025bc-49-652509fac562
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C3.A1.08742.9F905256; Tue, 10 Oct 2023 17:23:21 +0900 (KST)
-Received: from jtpark-7920.dsn.sec.samsung.com (unknown [10.229.83.56]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20231010082321epsmtip2fdc58e8087e562c7af62a8cfc2681615~MsWO8NYP70746607466epsmtip2E;
-        Tue, 10 Oct 2023 08:23:21 +0000 (GMT)
-From:   Jeongtae Park <jtp.park@samsung.com>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Ben Widawsky <bwidawsk@kernel.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Fan Ni <fan.ni@samsung.com>, linux-cxl@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kyungsan Kim <ks0204.kim@samsung.com>,
-        Wonjae Lee <wj28.lee@samsung.com>,
-        Hojin Nam <hj96.nam@samsung.com>,
-        Junhyeok Im <junhyeok.im@samsung.com>,
-        Jehoon Park <jehoon.park@samsung.com>,
-        Jeongtae Park <jeongtae.park@gmail.com>,
-        Jeongtae Park <jtp.park@samsung.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH v3 6/6] cxl/memdev: Fix a whitespace error
-Date:   Tue, 10 Oct 2023 17:26:08 +0900
-Message-Id: <20231010082608.859137-7-jtp.park@samsung.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231010082608.859137-1-jtp.park@samsung.com>
+        Tue, 10 Oct 2023 04:26:49 -0400
+Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B11C110
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 01:26:46 -0700 (PDT)
+Received: by mail-vk1-xa2a.google.com with SMTP id 71dfb90a1353d-4a13374a1e8so651689e0c.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 01:26:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696926405; x=1697531205; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gxYD0mht6wRxqJ6sAAYMTrwPyt4IIpZM7FRAYXZukGA=;
+        b=nBUjMMNmyUb4L2dvCS3vsqezt5sA84YZt440bhEbSqrQ75FrEdpzj5c8qMFaUA4DfN
+         XdHwygX6evrq4tGkSsmSFF1OCxXKVrrYQfXHQAYRTTKJMHIL5LgtS6Q0m0NK4VOdqKpA
+         kCb1K/BuLa1eqXi0DFHcRIURJsf/a1CKjz6fvOGZb2vzywrPLZ3L2he+gjX7ET2hxlqY
+         6Kr+wLJf348dX5MwlesSK07yDNZrB4tqSo7wnjtdBa3i2ibJVAlIDGJirIKcbuS8ft4t
+         xQDeklb8SebSQRdVIKJNlsdY+fiCxL4n04phHaBoPQsx+wGl6Uln5j4K87vMycLKDPVa
+         RjdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696926405; x=1697531205;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gxYD0mht6wRxqJ6sAAYMTrwPyt4IIpZM7FRAYXZukGA=;
+        b=u3FoEwgixusBy/UcJzbzLJoFyGiLzH8r9b4MuHQxxeVZAUX404XkslFV485Mfj+LYQ
+         G7edNMQkOdMzMNjKLwEOd5fP2xnRhJjmRbrwiow3zPO1+dqo6xSSnMVeh1r6eOBgjI67
+         /avGsLsK6+G8+B7U1PRoUV+vr3zkVsaloVGkEiHMBgK2k046ItYgUlqAhUCjtsPT6j0w
+         tm4Yse5fX5ValoqI2/qp6g3P9CMo8pAROrN9yQSdypT/kLU5ryHxAlCu8DIPSHLjkKmQ
+         39KpSszTwO7fuT2D0SufKE0cs72L/hWtkjdiZbGLRNIzC2oniVBId+wyeG/POfJY0xTX
+         m67A==
+X-Gm-Message-State: AOJu0YymJ3G2y99HloZjmDQ3JgoFZWd590L2JJXxtwEaQn6sc78QzdMq
+        F0OSrIYQuw6AgViyK8eqqFmW7NsYUey+L4wiOnByA0aCX/3Dm4ZQ
+X-Google-Smtp-Source: AGHT+IFcDu4LtIP7KaKGrAUc0zTd4azAJy7agJfsjzpEk9oLdnmqY+dI5RDlVWlr2xTgVei3zkeuLIM714LJsVyHzFE=
+X-Received: by 2002:a05:6122:17a6:b0:4a0:6fd4:4332 with SMTP id
+ o38-20020a05612217a600b004a06fd44332mr5461577vkf.14.1696926405065; Tue, 10
+ Oct 2023 01:26:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Te0xTVxzO6W1vL2yFa8vjrCbYXcc2IK0t0HJB6rasSrNHgptZ9jJw1961
-        jL7SV5x/KAMkwLRChFmKYJVMGBXICBieAwsqLGMyFUklQHBzWhAlmtTsoVnb6zb/+77f7/vO
-        73HOwRD+L6gQKzHZaauJMhBoLPvcRJpC/GdMKi091JBMLv46i5IVx9oAebxxFpBTga9Q0hc4
-        C8hy3yKHrGjrQcmNu0/Y5PhaGZf8aSbIITtPXUfJya45Ftl2wY2QF0Yw8rLnRzZ5degESt6o
-        u8giv1++h77OVw96Frnqysl1jrptJMhS93bWoOqxlrNctauvE6gbmw+qH/amFGIfl+braUpL
-        W0W0SWPWlph0SuLt94veLJIrpDKxLJfMIUQmykgrCdU7heJdJYbwKITISRkc4VAhZbMR23bk
-        W80OOy3Sm212JUFbtAZLjkVio4w2h0knMdH2PJlUmikPC4tL9fOVR7mWb7B93gchdhkIoLUA
-        wyCeDevaBbUgFuPjAwDO33rEZsgDAEd91VyGhAAcr51i1YKYqGMwOMdiEqMADk00cxjyN4DL
-        i0dARIXi6fB4U1k0kYCvsODgqitqQfAGBNZ4+jkRlQDPg3eqppAIZuOp8O7aqWhXvHC8PpjC
-        lNsCx87PRCUx+Ha4cnIdjWAevglON/3GjmAkrKnob0Yi50P8GgZdrXMcxqyCw3+cRBksgKuX
-        +rgMFsLg0SouY6gAcO32NTZDKgHsXhh4qsqC9wK3OZGOEDwN9gxtY1a2FU7eeFo4DlZPPOYy
-        YR6sruIzRgK2ftuKMBjCKy19CCNRw6Xfk5lluQAcdp1B64DI88w4nmfG8fxf1wuQTpBEW2xG
-        HW3LtGT9d8Uas7EXRN92esEAcK9vSPyAhQE/gBhCJPBulrxE83la6sv9tNVcZHUYaJsfyMO7
-        rkeEiRpz+HOY7EWy7FxptkIhy8mUS3OIZN7SoRYtH9dRdrqUpi209V8fC4sRlrG6qoZfeJy0
-        M37csSn/w9iU/d3rH3R1iD8qCH13eum9S4Js5fJU6agzY21XZvfz06EDqeS5RYVG89rA+Zv+
-        xKxA5cNpd+LnQYVOmAQ5Pm38E7bnrY2993fvNSNynqpfW58gHsgYbAp++rI3t4MSjkze3+zu
-        OqbtSFP1HnC7r87LXX95fO3Gwz2XHSrvxetn4or7CvwK63Se1Klb2HNHaVotrovfPHtrdyi5
-        4edYh+RF/A2qJSTpFc+G9i28GzOzfeXKnufWMwT15Ykn4g4bxpAtP/i9zvasdhNMmdiqX3Dl
-        Ltd0x33xydLXCsdnj/JfBUc65svnGiUHg684d3Si86czCLZNT8nSEauN+gfZah7VZAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuphkeLIzCtJLcpLzFFi42LZdlhJXvcnp2qqwaG72hZ3H19gs2ievJjR
-        YvrUC4wWJ242slmsvrmG0aJp9V1Wi+bF69ksPrz5x2Jx4HUDu8WZsy9ZLVYtvMZmcWTtVSaL
-        xUdnMFsc3cNhcX7WKRaLy7vmsFncmnCMyWLj/XdsDkIeO2fdZfdoOfKW1WPxnpdMHptWdbJ5
-        7J+7ht2jb8sqRo+ps+s9Pm+SC+CI4rJJSc3JLEst0rdL4Mq43tLPXjCNo2LBp28sDYw32boY
-        OTkkBEwkdr68ytTFyMUhJLCbUWL+kr8sEAkJieUbXjBB2MIS91uOsEIU/WKUaN4+kRkkwSag
-        JTF9ZgNYQkTgOZPEyTenGEEcZoE5zBKHO1+yg1QJC1hJvGg7AdbBIqAq8eb1QqDdHBy8QPGJ
-        L+UgNshL7D94FqyEU8Ba4uH8t2DnCQGVbDvYDmbzCghKnJz5BOw6ZqD65q2zmScwCsxCkpqF
-        JLWAkWkVo2RqQXFuem6xYYFhXmq5XnFibnFpXrpecn7uJkZwhGlp7mDcvuqD3iFGJg7GQ4wS
-        HMxKIryPMlVShXhTEiurUovy44tKc1KLDzFKc7AoifOKv+hNERJITyxJzU5NLUgtgskycXBK
-        NTDFfdZMjTl8S3LbS9c5vQfndVa0zvr8UfmP+f3Et2/D70d8qWtf8vDOwbqbn3zzth+f9ejx
-        z5CuDLcVJSrTjqfMOPqq18T4TFJnruDNr19Xi9lplbUmry6Ulj5pXni6LljgyLmPU1dVr3zy
-        9NH3c0eOil9g1WPTTnfjFevwXN08b/qRZ2sucp7nZ1q5kv3f0RPcp29wrj00J+DT2svVVw2c
-        wo+GKnDERv8W9T3gI+W3sGlForpw4cU0xhXW4VfC/FmPs91pPe21pGTFjOfzVRw63VRn3VA+
-        dfuX8IOWPZwlzzas/X1uyfRZdeyL98xxebGfbynzo5IJi3Y1b+qODzeZtvye+8oCnQvKqU3b
-        OnXZ9imxFGckGmoxFxUnAgDISiMPHwMAAA==
-X-CMS-MailID: 20231010082321epcas2p29211e29f64b7a4d0a032df5f60c6942f
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231010082321epcas2p29211e29f64b7a4d0a032df5f60c6942f
-References: <20231010082608.859137-1-jtp.park@samsung.com>
-        <CGME20231010082321epcas2p29211e29f64b7a4d0a032df5f60c6942f@epcas2p2.samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+References: <20231009153427.20951-1-brgl@bgdev.pl> <20231009153427.20951-5-brgl@bgdev.pl>
+ <f6jspdoeyv6ntcrl6qndy2ud3mcdkoxxcnzqm3qpbtcd3ztdpi@7iw5f5og7is2>
+In-Reply-To: <f6jspdoeyv6ntcrl6qndy2ud3mcdkoxxcnzqm3qpbtcd3ztdpi@7iw5f5og7is2>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 10 Oct 2023 10:26:34 +0200
+Message-ID: <CAMRc=MchBQrpSqHHs-cD0RmOdSoKt2SLd76a97E8mSmHYGUCUg@mail.gmail.com>
+Subject: Re: [PATCH v3 04/15] firmware: qcom: add a dedicated TrustZone buffer allocator
+To:     Andrew Halaney <ahalaney@redhat.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Elliot Berman <quic_eberman@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -133,36 +79,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ERROR: code indent should use tabs where possible
+On Mon, Oct 9, 2023 at 11:28=E2=80=AFPM Andrew Halaney <ahalaney@redhat.com=
+> wrote:
+>
+> On Mon, Oct 09, 2023 at 05:34:16PM +0200, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > We have several SCM calls that require passing buffers to the TrustZone
+> > on top of the SMC core which allocates memory for calls that require
+> > more than 4 arguments.
+> >
+> > Currently every user does their own thing which leads to code
+> > duplication. Many users call dma_alloc_coherent() for every call which
+> > is terribly unperformant (speed- and size-wise).
+> >
+> > Provide a set of library functions for creating and managing pool of
+> > memory which is suitable for sharing with the TrustZone, that is:
+> > page-aligned, contiguous and non-cachable as well as provides a way of
+> > mapping of kernel virtual addresses to physical space.
+> >
+> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > ---
 
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Jeongtae Park <jtp.park@samsung.com>
----
- drivers/cxl/core/memdev.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+[snip]
 
-diff --git a/drivers/cxl/core/memdev.c b/drivers/cxl/core/memdev.c
-index f99e7ec3cc40..7e8fca4707c0 100644
---- a/drivers/cxl/core/memdev.c
-+++ b/drivers/cxl/core/memdev.c
-@@ -935,11 +935,11 @@ static void cxl_fw_cancel(struct fw_upload *fwl)
- }
- 
- static const struct fw_upload_ops cxl_memdev_fw_ops = {
--        .prepare = cxl_fw_prepare,
--        .write = cxl_fw_write,
--        .poll_complete = cxl_fw_poll_complete,
--        .cancel = cxl_fw_cancel,
--        .cleanup = cxl_fw_cleanup,
-+	.prepare = cxl_fw_prepare,
-+	.write = cxl_fw_write,
-+	.poll_complete = cxl_fw_poll_complete,
-+	.cancel = cxl_fw_cancel,
-+	.cleanup = cxl_fw_cleanup,
- };
- 
- static void devm_cxl_remove_fw_upload(void *fwl)
--- 
-2.34.1
+>
+> I got these warnings with this series:
+>
+>     ahalaney@fedora ~/git/linux-next (git)-[7204cc6c3d73] % ARCH=3Darm64 =
+CROSS_COMPILE=3Daarch64-linux-gnu- make W=3D1 C=3D2 drivers/firmware/qcom/
+>     drivers/firmware/qcom/qcom_tzmem.c:137: warning: Function parameter o=
+r member 'size' not described in 'qcom_tzmem_pool_new'
+>       CHECK   drivers/firmware/qcom/qcom_tzmem.c
+>     drivers/firmware/qcom/qcom_tzmem.c:204:17: warning: incorrect type in=
+ assignment (different address spaces)
+>     drivers/firmware/qcom/qcom_tzmem.c:204:17:    expected void **slot
+>     drivers/firmware/qcom/qcom_tzmem.c:204:17:    got void [noderef] __rc=
+u **
+>     drivers/firmware/qcom/qcom_tzmem.c:204:17: warning: incorrect type in=
+ assignment (different address spaces)
+>     drivers/firmware/qcom/qcom_tzmem.c:204:17:    expected void **slot
+>     drivers/firmware/qcom/qcom_tzmem.c:204:17:    got void [noderef] __rc=
+u **
+>     drivers/firmware/qcom/qcom_tzmem.c:204:17: warning: incorrect type in=
+ argument 1 (different address spaces)
+>     drivers/firmware/qcom/qcom_tzmem.c:204:17:    expected void [noderef]=
+ __rcu **slot
+>     drivers/firmware/qcom/qcom_tzmem.c:204:17:    got void **slot
+>     drivers/firmware/qcom/qcom_tzmem.c:204:17: warning: incorrect type in=
+ assignment (different address spaces)
+>     drivers/firmware/qcom/qcom_tzmem.c:204:17:    expected void **slot
+>     drivers/firmware/qcom/qcom_tzmem.c:204:17:    got void [noderef] __rc=
+u **
+>     drivers/firmware/qcom/qcom_tzmem.c:339:13: warning: context imbalance=
+ in 'qcom_tzmem_to_phys' - wrong count at exit
 
+I fixed the other ones but this one I think comes from CHECK not
+dealing correctly with the spinlock guard.
+
+>
+>
+> All are confusing me, size seems described, I don't know much about
+> radix tree usage / rcu, and the locking in qcom_tzmem_to_phys seems sane
+> to me but I'm still grappling with the new syntax.
+>
+> For the one address space one, I _think_ maybe a diff like this is in
+> order?
+>
+>     diff --git a/drivers/firmware/qcom/qcom_tzmem.c b/drivers/firmware/qc=
+om/qcom_tzmem.c
+>     index b3137844fe43..5b409615198d 100644
+>     --- a/drivers/firmware/qcom/qcom_tzmem.c
+>     +++ b/drivers/firmware/qcom/qcom_tzmem.c
+>     @@ -193,7 +193,7 @@ void qcom_tzmem_pool_free(struct qcom_tzmem_pool =
+*pool)
+>             struct qcom_tzmem_chunk *chunk;
+>             struct radix_tree_iter iter;
+>             bool non_empty =3D false;
+>     -       void **slot;
+>     +       void __rcu **slot;
+>
+>             if (!pool)
+>                     return;
+>     @@ -202,7 +202,7 @@ void qcom_tzmem_pool_free(struct qcom_tzmem_pool =
+*pool)
+>
+>             scoped_guard(spinlock_irqsave, &qcom_tzmem_chunks_lock) {
+>                     radix_tree_for_each_slot(slot, &qcom_tzmem_chunks, &i=
+ter, 0) {
+>     -                       chunk =3D *slot;
+>     +                       chunk =3D radix_tree_deref_slot_protected(slo=
+t, &qcom_tzmem_chunks_lock);
+
+We need to keep the lock taken for the duration of the looping so we
+can use the regular radix_tree_deref_slot().
+
+Bart
+
+>
+>                             if (chunk->owner =3D=3D pool)
+>                                     non_empty =3D true;
+>
+>
+> Still planning on reviewing/testing the rest, but got tripped up there
+> so thought I'd highlight it before doing the rest.
+>
+> Thanks,
+> Andrew
+>
