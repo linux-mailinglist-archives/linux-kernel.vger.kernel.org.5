@@ -2,145 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB047C0406
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 21:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2367C0409
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 21:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343647AbjJJTC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 15:02:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43000 "EHLO
+        id S1343679AbjJJTCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 15:02:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233336AbjJJTC1 (ORCPT
+        with ESMTP id S234162AbjJJTCw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 15:02:27 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C812A93
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 12:02:25 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9b1ebc80d0aso1022535366b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 12:02:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696964544; x=1697569344; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5woyaOlfb5FRD/2ky2o7l2Lh0ZKAp5sQQeLB5eexnx0=;
-        b=SwerxqFMedxMTwU4dVCzvaZ8ITJu2hKAQSNz96hao7tkfxBq25l+PD4WkKFj960acV
-         QrLWjpAhPk4wjwufAaiO8JxCGiZbe3eLdZ/te+fTgjR6CpNr67PZ6SmPh9UOTzqOmy4D
-         g2Nwu/BCBd961xfwZWPmP95QoU6+EyIGuncZOnyiBtCJhCj3BpVmXvFfv985gwPQxTxL
-         aG3I3OM4UeFUGH3F0OPuPdoWDGT6eOtrKooLw86aLxLd+BKcAl3hY7MsG9SICKovV2Bg
-         49Rwf0zKV2nvDjjQ9+dNcaEFtUgHtu46V567eyK1/jwbXaxRp13y/nURh4un+1LZ/mJX
-         qNWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696964544; x=1697569344;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5woyaOlfb5FRD/2ky2o7l2Lh0ZKAp5sQQeLB5eexnx0=;
-        b=qZ1YSCy5yIXnsT1AesW066BNtq/+U8ffIGAoVoGmT+7BmAPkbXo4jDK8vVoMicxwGB
-         O0C0ZWuxX+kjIqMUQJCwAlS4PsMtq1JTlRp3md2K6G3Xonq2QAXlx0tkNOxrTZipO7Ob
-         xMibXZ+PrSWRNBjHWNT/aHxfL2q+M8RZZXopEhWsCgJT44tgMJwaujorB07VNXvlxQO5
-         efpoZM7mkgoENUcZvDxQ+BVDzujPIgXlIyac2A2xsalsXX3C13dCAS0NFpSuP8g9P4MO
-         GZeJnV1hKDdGH/LxLE0/6TL/yKVsmVJywLMp2qdgYNs8wAGEJevJeJfwduD2gIfH5px7
-         YIZw==
-X-Gm-Message-State: AOJu0YxsOHeM++5lrMTJw5Jch7LEt+Ba2MPBfFKnmzqJqLmgo7UzemPw
-        pPtftU3kTaYTr6nxM/yEZ7l9UBY2Ge0AQPQh0Zl0gA==
-X-Google-Smtp-Source: AGHT+IH9bKUffChQjllZKWXnZLqMPjRf0Bp9CGpOP4CvCWQxNB07IIGTrxdZrDu0oiPVMWwbVLPWJ/cU73YSpZmjB7o=
-X-Received: by 2002:a17:907:2cef:b0:9ae:6355:5ef4 with SMTP id
- hz15-20020a1709072cef00b009ae63555ef4mr16422145ejc.3.1696964543989; Tue, 10
- Oct 2023 12:02:23 -0700 (PDT)
+        Tue, 10 Oct 2023 15:02:52 -0400
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F5DB93;
+        Tue, 10 Oct 2023 12:02:49 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 27C131BF208;
+        Tue, 10 Oct 2023 19:02:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1696964568;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TTkwciBPHpkHQim+hrwizd7vUiFtamHK2mlyN+IwYbc=;
+        b=gVfmVRcAbr/0CVhMqNzg/qc+f+gFVBT0enuSrYZHcwfVH+Ae7LueB0d4xTSd4oYLyliKNk
+        fHG9G12xn3bDRMwwsAoVfmH/miao4/uQYgWD/PpoLzHDlD4rFyeYj4ibqSjBNZWkMymQS4
+        gOzG5sqZG4ZLYY7w3jiKVJCzh7wgm5Iwe0fc9q8Wu/vndVwMOIZAQmjVyJF2xILgXwh+iH
+        NTIsVAvamhqEzFj0DMKc7E1ImI5hJofY7APMzK7uMmzKCK1bCNLdbxIuSAX+RueO20ZJeb
+        KXm9Y1hfIybJzTN+iwo/O3Ch7RnENb4bpAZl119eSLY+DCJcdaQdh9JRK7yoWQ==
+Date:   Tue, 10 Oct 2023 21:02:42 +0200
+From:   Mehdi Djait <mehdi.djait@bootlin.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     mchehab@kernel.org, heiko@sntech.de, hverkuil-cisco@xs4all.nl,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        conor+dt@kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        thomas.petazzoni@bootlin.com, alexandre.belloni@bootlin.com,
+        maxime.chevallier@bootlin.com, paul.kocialkowski@bootlin.com
+Subject: Re: [PATCH v6 0/3] media: i2c: Introduce driver for the TW9900 video
+ decoder
+Message-ID: <ZSWf0iVvBoZGbjAx@Host-002>
+References: <cover.1696608809.git.mehdi.djait@bootlin.com>
+ <20231009022122.GH5121@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-References: <20231010032117.1577496-1-yosryahmed@google.com> <CAFYChMv_kv_KXOMRkrmTN-7MrfgBHMcK3YXv0dPYEL7nK77e2A@mail.gmail.com>
-In-Reply-To: <CAFYChMv_kv_KXOMRkrmTN-7MrfgBHMcK3YXv0dPYEL7nK77e2A@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 10 Oct 2023 12:01:44 -0700
-Message-ID: <CAJD7tkamU-rnmw=N+W8Uom1AuK4ADrmW5OxxL8FrFZTxMMP5ag@mail.gmail.com>
-Subject: Re: [PATCH v2 0/5] mm: memcg: subtree stats flushing and thresholds
-To:     domenico cerasuolo <cerasuolodomenico@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231009022122.GH5121@pendragon.ideasonboard.com>
+X-GND-Sasl: mehdi.djait@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 9:48=E2=80=AFAM domenico cerasuolo
-<cerasuolodomenico@gmail.com> wrote:
->
-> Il giorno mar 10 ott 2023 alle ore 05:21 Yosry Ahmed
-> <yosryahmed@google.com> ha scritto:
-> >
-> > This series attempts to address shortages in today's approach for memcg
-> > stats flushing, namely occasionally stale or expensive stat reads. The
-> > series does so by changing the threshold that we use to decide whether
-> > to trigger a flush to be per memcg instead of global (patch 3), and the=
-n
-> > changing flushing to be per memcg (i.e. subtree flushes) instead of
-> > global (patch 5).
-> >
-> > Patch 3 & 5 are the core of the series, and they include more details
-> > and testing results. The rest are either cleanups or prep work.
-> >
-> > This series replaces the "memcg: more sophisticated stats flushing"
-> > series [1], which also replaces another series, in a long list of
-> > attempts to improve memcg stats flushing. It is not a new version of
-> > the same patchset as it is a completely different approach. This is
-> > based on collected feedback from discussions on lkml in all previous
-> > attempts. Hopefully, this is the final attempt.
-> >
-> > [1]https://lore.kernel.org/lkml/20230913073846.1528938-1-yosryahmed@goo=
-gle.com/
-> >
-> > v1 -> v2:
-> > - Fixed compilation error reported by the kernel robot in patch 4, also
-> >   added a missing rcu_read_unlock().
-> > - More testing results in the commit message of patch 3.
-> >
-> > Yosry Ahmed (5):
-> >   mm: memcg: change flush_next_time to flush_last_time
-> >   mm: memcg: move vmstats structs definition above flushing code
-> >   mm: memcg: make stats flushing threshold per-memcg
-> >   mm: workingset: move the stats flush into workingset_test_recent()
-> >   mm: memcg: restore subtree stats flushing
-> >
-> >  include/linux/memcontrol.h |   8 +-
-> >  mm/memcontrol.c            | 269 +++++++++++++++++++++----------------
-> >  mm/vmscan.c                |   2 +-
-> >  mm/workingset.c            |  42 ++++--
-> >  4 files changed, 185 insertions(+), 136 deletions(-)
-> >
-> > --
-> > 2.42.0.609.gbb76f46606-goog
-> >
-> >
->
-> Hi Yosry,
->
-> thanks for this series! We backported it on a 5.19-based kernel and ran i=
-t on a
-> machine for almost a week now. The goal was to fix a CPU utilization regr=
-ession
-> caused by memory stats readings, it seems that this series was the last b=
-it
-> needed to completely fix it and bring CPU utilization to 5.12 levels.
->
-> FWIW,
->
-> Tested-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+Hi Laurent,
 
-That's awesome. Thanks for the testing!
+On Mon, Oct 09, 2023 at 05:21:22AM +0300, Laurent Pinchart wrote:
+> On Fri, Oct 06, 2023 at 06:25:27PM +0200, Mehdi Djait wrote:
+> > Hello everyone,
+> > 
+> > This series is based on the fifth iteration of the series introducing the
+> > tw9900 driver: sent 29 Dec 2020 [1]
+> > 
+> > This is the version 6 of the series adding support for the Techwell
+> > TW9900 multi standard decoder. It's a pretty simple decoder compared to
+> > the TW9910, since it doesn't have a built-in scaler/crop engine.
+> > 
+> > Changes v5 => v6:
+> > - dropped .skip_top and .field in the supported_modes
+> > - added error handling for the i2c writes/reads
+> > - added the colorimetry information to fill_fmt
+> > - removed pm_runtime
+> 
+> It's not very nice to keep the chip powered up all the time :-(
+> 
+
+I agree 100% I tried to make it work with pm_runtime but I faced many
+issues. I don't know if this is due to my lack of experience but here is
+the situation when I enable pm_runtime:
+
+I get most of the time wrong values when calling g_input_status to check
+if I have a signal or not. 
+
+To do that I read the 0x01 – Chip Status Register I (STATUS1) and check
+the BIT(6): HLOCK:
+	- 1 = Horizontal sync PLL is locked to the incoming video source.
+	- 0 = Horizontal sync PLL is not locked.
+
+To make the g_input_status work with pm_runtime I had to add a 300
+msleep after power ON! Which is a huge delay.
+
+I also face issues with the standard detection...
+So I decided to drop it for this first version of the driver.
+
+--
+Kind Regards
+Mehdi Djait
