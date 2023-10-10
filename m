@@ -2,43 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE88E7C0378
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 20:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC327C037C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 20:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343648AbjJJSdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 14:33:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51356 "EHLO
+        id S1343588AbjJJSdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 14:33:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343640AbjJJSdh (ORCPT
+        with ESMTP id S234201AbjJJSdt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 14:33:37 -0400
+        Tue, 10 Oct 2023 14:33:49 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E724B9
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 11:33:36 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09051C433C8;
-        Tue, 10 Oct 2023 18:33:33 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 565E8CA;
+        Tue, 10 Oct 2023 11:33:47 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E1C5C433C7;
+        Tue, 10 Oct 2023 18:33:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696962816;
-        bh=FBG4dlajtykfzMX/8w9AtsLkDPUKg5hOUXTrm5l9Stg=;
+        s=k20201202; t=1696962827;
+        bh=sZ/2OHJxY8bHQQM3jwEjvDUlRp1QAdM//5vOwwb3o2E=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=oxT26bVGbjXMrDDViObRjNSkFr37Xxq1pvX3bQMhdhM1FNNcyixTLWVGOm32AaatM
-         +RRzHoj/dIIKYxeS1c9QuIGPjWlp80sblxsemtbmrjBepLtcQGF1vVf/35pSj+uTha
-         jyzzq7ie+gTIXiarIlKHvn0XrP/7rtcw/Rsr4zYCC7HccmYvGyGz5ivOjLyM1Q86S4
-         efFGdjjVYKam3mQqb30fch8uqehQNmxQ8/mgKEt0ugYm1SubBhPYOiCohaopY5AW+x
-         OA08f/05wnO5iQMk1YWBBXKCjaf5S7j90MdDRndSHmzyA8dmKZ1SWaOXL3NE2aid1U
-         RUOl54lwq7HGA==
+        b=ulwJccVIH8VHg2vRllrc2ydedgCGB0pR75FnjaW3/bmybxhrLTMYSEWWjxnc5IJbf
+         mjZnYn8Mg8Mnph8NFaPMlbNiY0Tzu6AYm+jmcPrgasGzdeHLi1ZwCuDm97cnxrfdMC
+         IGw7zMUjXaj5MFFo1ZIRHEb5tzIB6/XbkXLjkvycVTTDcxPgu64lGGCsdgQ56pNodT
+         ieJJmuAMXEFX4JuqInJOGZ9U17z9gc1FrZJ83gCLB0NuBhGTYhu9uQqJFGAfMhflAa
+         9797BcTG0LuP/axkuVkwMe+GiV1lTzheQsCXNVnCU4CU8TnCJ2pEwtx4LXDU63c8e7
+         WLSjv0A+6xcKQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     lgirdwood@gmail.com, robh+dt@kernel.org, matthias.bgg@gmail.com,
-        angelogioacchino.delregno@collabora.com, perex@perex.cz,
-        trevor.wu@mediatek.com,
-        xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com>
-Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
-In-Reply-To: <20231010023738.8241-1-xiazhengqiao@huaqin.corp-partner.google.com>
-References: <20231010023738.8241-1-xiazhengqiao@huaqin.corp-partner.google.com>
-Subject: Re: [v5 0/2] ASoC: mediatek: mt8188-mt6359: add rt5682s support
-Message-Id: <169696281374.221758.11961649530549486978.b4-ty@kernel.org>
-Date:   Tue, 10 Oct 2023 19:33:33 +0100
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Biju Das <biju.das@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20230927162508.328736-1-fabrizio.castro.jz@renesas.com>
+References: <20230927162508.328736-1-fabrizio.castro.jz@renesas.com>
+Subject: Re: [PATCH v2 0/2] Add RZ/V2M CSI slave support
+Message-Id: <169696282402.222014.2482702719398525940.b4-ty@kernel.org>
+Date:   Tue, 10 Oct 2023 19:33:44 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -53,28 +58,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Oct 2023 10:37:36 +0800, xiazhengqiao wrote:
-> To use RT5682S as the codec and MAX98390 as the amp, add a new
-> sound card named mt8188_rt5682s.
+On Wed, 27 Sep 2023 17:25:06 +0100, Fabrizio Castro wrote:
+> the CSI IP found inside the Renesas RZ/V2M SoC supports
+> both SPI host and target.
+> This series extends the CSI dt-bindings and driver to
+> add SPI target support.
 > 
-> Changes in v5:
-> - PATCH 2/2: modify asoc_rtd_to_codec to snd_soc_rtd_to_codec and make it consistent with the latest revisions
->              remove common struct definitions like rt5682s_jack_pins,mt8188_rt5682s_widgets
->              and mt8188_rt5682s_controls.
-> - Link to v4: https://lore.kernel.org/all/9c28b84e-2d4e-7bc2-88f3-ad5b30d2c727@collabora.com/
+> v1->v2: I have dropped properties renesas,csi-ss and
+>         renesas,csi-ss-high. I have added property
+> 	renesas,csi-no-ss, and to configure SS as active
+> 	high one now needs to use property spi-cs-high.
+> 	I have also purged "master" and "slave" as naming
+> 	schemes (besides for the title of the cover letter,
+> 	to make it easier to follow this discussion), I
+> 	am now using "host" and "target" and related APIs
+> 	instead.
 > 
 > [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/2] ASoC: dt-bindings: mediatek,mt8188-mt6359: add RT5682S support
-      commit: 748d508e5b4cb537ed91e7bc5a664c526b6c64f6
-[2/2] ASoC: mediatek: mt8188-mt6359: add rt5682s support
-      commit: 163284402c42e9094b6aa8e4f69e43da1031efc6
+[1/2] spi: renesas,rzv2m-csi: Add CSI (SPI) target related property
+      commit: 4056d88866e5941ebd15fb2523119f0ddc5186da
+[2/2] spi: rzv2m-csi: Add target mode support
+      commit: a4f7ef6db74197898c48236ad01f8e0eccc1e52b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
