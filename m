@@ -2,122 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B7C7BF7B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 11:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 643377BF7BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 11:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbjJJJoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 05:44:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46564 "EHLO
+        id S231174AbjJJJpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 05:45:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230380AbjJJJnx (ORCPT
+        with ESMTP id S231181AbjJJJpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 05:43:53 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A3A593;
-        Tue, 10 Oct 2023 02:43:52 -0700 (PDT)
-Date:   Tue, 10 Oct 2023 09:43:49 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696931030;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/ccIF8fKpEQO34BOIIS10VJwSID43r//NiX5MeYyT5o=;
-        b=eyZzuK+bnNZiBmhc4wbqwy0sKgQgYxoB3OojWTwzmPY1i0NtpOPezSP9952SsAzpXN5JGT
-        L31JVtHxwOnb+631pC2gH4j+ELMcgCuwOsizA+JO1MUcULga+g8aFSL6qIZKC5ZnTjb2V0
-        WlorHSFzdzZnnJz/BTxwukh+K9ZB6uMk7R1Kkzr92tvQJN+07JoE7V5yCFdduRewbQPv4+
-        AZjO5gyg6PrLFmNdyMY91l3uUvBpER0dPJ9Mh8AnWA/w3MQAi/+B9qeOnEqaOnlHB5w0LR
-        M08ykiehhYjFtp7zKtr5XtjU/hS6v+9Vv/LDZkVioDP3Th6LSzWiUtxB07vrQg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696931030;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/ccIF8fKpEQO34BOIIS10VJwSID43r//NiX5MeYyT5o=;
-        b=gDdSVtEQPelg+y8RE/3C3/PXw6ybTufAmM4L93NgP1okkdRGhWAarX1xv6otdhrCNPniUZ
-        hms5e9yVbLXh15Bg==
-From:   "tip-bot2 for Mel Gorman" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/numa: Document vma_numab_state fields
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231010083143.19593-2-mgorman@techsingularity.net>
-References: <20231010083143.19593-2-mgorman@techsingularity.net>
+        Tue, 10 Oct 2023 05:45:06 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64BE7DB;
+        Tue, 10 Oct 2023 02:45:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6229C433C9;
+        Tue, 10 Oct 2023 09:45:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696931104;
+        bh=hUhxVV/r1YPfIeCuDKqwVl2dHJIY/ryh8R2T9W5FnNs=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=ViZSVuDA5h6MjVAyHgd386jZGWsUxL1q8d2JHfY7u59hJ+U2cdoaslL1D+zHe4IE0
+         S+gm2btrT1YYZtosgkd5TneRtsWgolGLfFSKZw/4U4jHj3PnWplIcMn2y0y/C7ovz0
+         +9pNpypqHUACfGFcLNJK0K6Jcfo7MEvmMIKxtbdqdT2n7l9otGMJDAG+M2FIXJrWiC
+         d2KWTEGb+XKEtizjhwnSCJZ5Wwc052e+mKMnC4GPMQhtzoRb5dZYGjXWWkb0VV9ZPx
+         lpn4g7RHRDiKcRRSm/AP2Kz9o1LynOoleCkgbBw+oYWzzkpDcM5Yj7AhYn/VBk91Tt
+         Y4trnemz0Zr9g==
+Message-ID: <7e729488e2f841f384b719d0509a4f78f491d477.camel@kernel.org>
+Subject: Re: [PATCH v7 00/13] selftests/sgx: Fix compilation errors
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
+Date:   Tue, 10 Oct 2023 12:44:30 +0300
+In-Reply-To: <f2726c67-87f7-409a-9ac2-e845249348cc@cs.kuleuven.be>
+References: <20231005153854.25566-1-jo.vanbulck@cs.kuleuven.be>
+         <119aaa2820be5dc58144e74574cfaa7777f79604.camel@intel.com>
+         <f2726c67-87f7-409a-9ac2-e845249348cc@cs.kuleuven.be>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 MIME-Version: 1.0
-Message-ID: <169693102968.3135.4439690793475045331.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+Folks (sorry for top posting): I've now taken my old NUC7 out of the
+dust and tested the series :-)
 
-Commit-ID:     9ae5c00ea2e600a8b823f9b95606dd244f3096bf
-Gitweb:        https://git.kernel.org/tip/9ae5c00ea2e600a8b823f9b95606dd244f3096bf
-Author:        Mel Gorman <mgorman@techsingularity.net>
-AuthorDate:    Tue, 10 Oct 2023 09:31:38 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 10 Oct 2023 11:10:00 +02:00
+Tested-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-sched/numa: Document vma_numab_state fields
+Off-topic: I wish both Intel and AMD straighten up and deliver some=C2=A0
+"home friendly" development hardware for the  latest stuff. Just my
+stance but the biggest quality risk I see in both TDX and SNP is that
+the patches are made by an enterprise and reviewed (properly) *only*
+by other huge enterprises.
 
-Document the intended usage of the fields.
+I skim status of both from time to time but yeah not much attachment
+or motivation to do more than that as you either need a cloud access
+or partnership with Intel or AMD. "Indie" style seems to be disliked
+these days... You can extrapolate from this that there must be a bunch
+of maintainers around the Linux kernel that feel the same. Not saying
+that particularly my contribution would be that important.
 
-[ mingo: Reformatted to take less vertical space & tidied it up. ]
+Sort of even if let's say Intel would provide me a partner access I
+might not be that interested because I prefer my own (physical)
+computers.
 
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20231010083143.19593-2-mgorman@techsingularity.net
----
- include/linux/mm_types.h | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+BR, Jarkko
 
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index 36c5b43..d7f042e 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -551,8 +551,29 @@ struct vma_lock {
- };
- 
- struct vma_numab_state {
-+	/*
-+	 * Initialised as time in 'jiffies' after which VMA
-+	 * should be scanned.  Delays first scan of new VMA by at
-+	 * least sysctl_numa_balancing_scan_delay:
-+	 */
- 	unsigned long next_scan;
-+
-+	/*
-+	 * Time in jiffies when access_pids[] is reset to
-+	 * detect phase change behaviour:
-+	 */
- 	unsigned long next_pid_reset;
-+
-+	/*
-+	 * Approximate tracking of PIDs that trapped a NUMA hinting
-+	 * fault. May produce false positives due to hash collisions.
-+	 *
-+	 *   [0] Previous PID tracking
-+	 *   [1] Current PID tracking
-+	 *
-+	 * Window moves after next_pid_reset has expired approximately
-+	 * every VMA_PID_RESET_PERIOD jiffies:
-+	 */
- 	unsigned long access_pids[2];
- };
- 
+On Fri, 2023-10-06 at 11:51 +0200, Jo Van Bulck wrote:
+> Thank you, Kai! I'm not familiar with any next steps to get this merged=
+=20
+> upstream, but atm all commits in this series have been reviewed by at=20
+> least Jarkko. Let me know if anything further is needed from my side!
+>=20
+> Best,
+> Jo
+>=20
+> On 05.10.23 23:25, Huang, Kai wrote:
+> > Hi Jo,
+> >=20
+> > Just FYI I won't review the rest patches in this series.=C2=A0 One of t=
+he reasons is
+> > I am not that familiar with the rest.=C2=A0 Jarkko has reviewed anyway =
+:-).
+> >=20
+> > On Thu, 2023-10-05 at 17:38 +0200, Jo Van Bulck wrote:
+> > > Hi,
+> > >=20
+> > > This patch series ensures that all SGX selftests succeed when compili=
+ng with
+> > > optimizations (as tested with -O{0,1,2,3,s} for both gcc 11.3.0 and c=
+lang
+> > > 14.0.0). The aim of the patches is to avoid reliance on undefined,
+> > > compiler-specific behavior that can make the test results fragile.
+> > >=20
+> > > As far as I see, all commits in this series now have an explicit revi=
+ewed-by
+> > > tag, so hopefully this can get merged upstream? Please let me know if=
+ any
+> > > concerns remain and I'd happily address them.
+> > >=20
+> > > Reference output below:
+> > >=20
+> > > .. Testing=C2=A0=C2=A0 gcc=C2=A0=C2=A0 -O0=C2=A0=C2=A0=C2=A0 [OK]
+> > > .. Testing=C2=A0=C2=A0 gcc=C2=A0=C2=A0 -O1=C2=A0=C2=A0=C2=A0 [OK]
+> > > .. Testing=C2=A0=C2=A0 gcc=C2=A0=C2=A0 -O2=C2=A0=C2=A0=C2=A0 [OK]
+> > > .. Testing=C2=A0=C2=A0 gcc=C2=A0=C2=A0 -O3=C2=A0=C2=A0=C2=A0 [OK]
+> > > .. Testing=C2=A0=C2=A0 gcc=C2=A0=C2=A0 -Os=C2=A0=C2=A0=C2=A0 [OK]
+> > > .. Testing=C2=A0=C2=A0 gcc=C2=A0=C2=A0 -Ofast [OK]
+> > > .. Testing=C2=A0=C2=A0 gcc=C2=A0=C2=A0 -Og=C2=A0=C2=A0=C2=A0 [OK]
+> > > .. Testing=C2=A0=C2=A0 clang -O0=C2=A0=C2=A0=C2=A0 [OK]
+> > > .. Testing=C2=A0=C2=A0 clang -O1=C2=A0=C2=A0=C2=A0 [OK]
+> > > .. Testing=C2=A0=C2=A0 clang -O2=C2=A0=C2=A0=C2=A0 [OK]
+> > > .. Testing=C2=A0=C2=A0 clang -O3=C2=A0=C2=A0=C2=A0 [OK]
+> > > .. Testing=C2=A0=C2=A0 clang -Os=C2=A0=C2=A0=C2=A0 [OK]
+> > > .. Testing=C2=A0=C2=A0 clang -Ofast [OK]
+> > > .. Testing=C2=A0=C2=A0 clang -Og=C2=A0=C2=A0=C2=A0 [OK]
+> > >=20
+> > > Changelog
+> > > ---------
+> > >=20
+> > > v7
+> > > =C2=A0=C2=A0 - Add reviewed-by tag (Jarkko)
+> > >=20
+> > > v6
+> > > =C2=A0=C2=A0 - Collect final ack/reviewed-by tags (Jarkko, Kai)
+> > >=20
+> > > v5
+> > > =C2=A0=C2=A0 - Reorder patches (Jarkko, Kai)
+> > > =C2=A0=C2=A0 - Include fixes tag for inline asm memory clobber patch =
+(Kai)
+> > > =C2=A0=C2=A0 - Include linker error in static-pie commit message (Kai=
+)
+> > > =C2=A0=C2=A0 - Include generated assembly in relocations commit (Kai)
+> > >=20
+> > > v4
+> > > =C2=A0=C2=A0 - Remove redundant -nostartfiles compiler flag (Jarkko)
+> > > =C2=A0=C2=A0 - Split dynamic symbol table removal in separate commit =
+(Kai)
+> > > =C2=A0=C2=A0 - Split redundant push/pop elimination in separate commi=
+t (Kai)
+> > > =C2=A0=C2=A0 - Remove (incomplete) register cleansing on enclave exit
+> > > =C2=A0=C2=A0 - Fix possibly uninitialized pointer dereferences in loa=
+d.c
+> > >=20
+> > > v3
+> > > =C2=A0=C2=A0 - Refactor encl_op_array declaration and indexing (Jarkk=
+o)
+> > > =C2=A0=C2=A0 - Annotate encl_buffer with "used" attribute (Kai)
+> > > =C2=A0=C2=A0 - Split encl_buffer size and placement commits (Kai)
+> > >=20
+> > > v2
+> > > =C2=A0=C2=A0 - Add additional check for NULL pointer (Kai)
+> > > =C2=A0=C2=A0 - Refine to produce proper static-pie executable
+> > > =C2=A0=C2=A0 - Fix linker script assertions
+> > > =C2=A0=C2=A0 - Specify memory clobber for inline asm instead of volat=
+ile (Kai)
+> > > =C2=A0=C2=A0 - Clarify why encl_buffer non-static (Jarkko, Kai)
+> > > =C2=A0=C2=A0 - Clarify -ffreestanding (Jarkko)
+> > >=20
+> > > Best,
+> > > Jo
+> > >=20
+> > > Jo Van Bulck (13):
+> > > =C2=A0=C2=A0 selftests/sgx: Fix uninitialized pointer dereference in =
+error path
+> > > =C2=A0=C2=A0 selftests/sgx: Fix uninitialized pointer dereferences in
+> > > =C2=A0=C2=A0=C2=A0=C2=A0 encl_get_entry
+> > > =C2=A0=C2=A0 selftests/sgx: Include memory clobber for inline asm in =
+test enclave
+> > > =C2=A0=C2=A0 selftests/sgx: Separate linker options
+> > > =C2=A0=C2=A0 selftests/sgx: Specify freestanding environment for encl=
+ave
+> > > =C2=A0=C2=A0=C2=A0=C2=A0 compilation
+> > > =C2=A0=C2=A0 selftests/sgx: Remove redundant enclave base address sav=
+e/restore
+> > > =C2=A0=C2=A0 selftests/sgx: Produce static-pie executable for test en=
+clave
+> > > =C2=A0=C2=A0 selftests/sgx: Handle relocations in test enclave
+> > > =C2=A0=C2=A0 selftests/sgx: Fix linker script asserts
+> > > =C2=A0=C2=A0 selftests/sgx: Ensure test enclave buffer is entirely pr=
+eserved
+> > > =C2=A0=C2=A0 selftests/sgx: Ensure expected location of test enclave =
+buffer
+> > > =C2=A0=C2=A0 selftests/sgx: Discard unsupported ELF sections
+> > > =C2=A0=C2=A0 selftests/sgx: Remove incomplete ABI sanitization code i=
+n test enclave
+> > >=20
+> > > =C2=A0 tools/testing/selftests/sgx/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 12 ++--
+> > > =C2=A0 tools/testing/selftests/sgx/defines.h=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 2 +
+> > > =C2=A0 tools/testing/selftests/sgx/load.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 9 ++-
+> > > =C2=A0 tools/testing/selftests/sgx/sigstruct.c=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 |=C2=A0 5 +-
+> > > =C2=A0 tools/testing/selftests/sgx/test_encl.c=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 | 67 +++++++++++++------
+> > > =C2=A0 tools/testing/selftests/sgx/test_encl.lds=C2=A0=C2=A0=C2=A0=C2=
+=A0 | 10 +--
+> > > =C2=A0 .../selftests/sgx/test_encl_bootstrap.S=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 | 28 +++-----
+> > > =C2=A0 7 files changed, 77 insertions(+), 56 deletions(-)
+> > >=20
+> >=20
+
