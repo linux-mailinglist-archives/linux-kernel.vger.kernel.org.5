@@ -2,303 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 680497BFCF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:10:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA397BFCFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231994AbjJJNKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 09:10:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60232 "EHLO
+        id S232030AbjJJNK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 09:10:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231400AbjJJNKn (ORCPT
+        with ESMTP id S231989AbjJJNKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 09:10:43 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15A6BA9
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 06:10:39 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d9a518d66a1so957832276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 06:10:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1696943438; x=1697548238; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CsgZvUB2O0zJJrI/iXEY3Re98UsWJ7TyyRlE83OGx1c=;
-        b=ClEywZq1fSzze7YXlDGvaegYHxjIuvnYfp1HycbsaSvVYQRV9J6UgWzTuAEik1o0pm
-         U7DwJ52X+9yH1f/5wbBZ/gXoLOziGyKx8CGl5UpuxHqCgFHDBkln/fVH3y4LILkHuDVF
-         1G4puvi5nBFuXjoUg4CrfmTdIXu0z0KI3HXnxArcHL49meMu6XwfDs8g9VqIZHoEqHC4
-         iWt3tHlme+gAwG6G3kMXnHsDjCDzi5w8XRmGT4W3u3tIFtk7fuHCohO4TtD4F1GVKQcF
-         ATk2r7257VplRrIdF413nbwI9t3Xa6Xq0NdPLhT+m3EdGw2BWJNhH5luI/Fm3xvrGtb6
-         vcTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696943438; x=1697548238;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CsgZvUB2O0zJJrI/iXEY3Re98UsWJ7TyyRlE83OGx1c=;
-        b=k8sW76owWxwRY+y0YbIHk7YhOgwC2TUfkwYxISEKIVqFLm7YReIDPC2nXe77/MWsfw
-         Lm7ybuga/Rf+GzDCaSIRseMUsyD5ZHqKGrHuC7Mg+b9V97rU0QEtBbYhzYfkQLS9ENbI
-         i/pZngxc+Ac/TybcDZkFsRdzO0YTw+DBUhMRQu2NFKa464Y2Jf4dpgucRw3YLhct3lZG
-         Ul8dS/W2ETtqZ1mgx/Ey1FkGP4XsIN4wBb5sInFNyuO3mBSQs5N8m8B3sPyOTrhEMMZ3
-         MTaNr3CZ6KhgLmbYuyzNLuIS0f7KKj3yRpf7ZR3uUFeabvnpR2ttcW67AYMP1D/iqYpO
-         UGYA==
-X-Gm-Message-State: AOJu0Yzyq3wU2tY2z90sZho0GB3LrinCQhOGMGJe1LlhioU/7AhEVGTW
-        Gb5j0Hk7yaOSAsKrthT7tYh1GJtPpqdRmxv7wMo3
-X-Google-Smtp-Source: AGHT+IExdQYxbTm0mWZmMia9F8dQ3CBKiDVgTxmh3dZcW2qO311/CmuHbWAs1IVtseArGBo+1R/yIG6+Wi0mpWLjU5A=
-X-Received: by 2002:a25:16c3:0:b0:d62:b8f5:d745 with SMTP id
- 186-20020a2516c3000000b00d62b8f5d745mr16050911ybw.52.1696943438099; Tue, 10
- Oct 2023 06:10:38 -0700 (PDT)
+        Tue, 10 Oct 2023 09:10:54 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B89FC6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 06:10:51 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S4blr5hDYzVlFk;
+        Tue, 10 Oct 2023 21:07:20 +0800 (CST)
+Received: from [10.67.121.177] (10.67.121.177) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 10 Oct 2023 21:10:48 +0800
+CC:     <yangyicong@hisilicon.com>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <sudeep.holla@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>, <dietmar.eggemann@arm.com>,
+        <rafael@kernel.org>, <jonathan.cameron@huawei.com>,
+        <prime.zeng@hisilicon.com>, <linuxarm@huawei.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] arch_topology: Support SMT control on arm64
+To:     Greg KH <gregkh@linuxfoundation.org>
+References: <20231010115335.13862-1-yangyicong@huawei.com>
+ <2023101025-thieving-eagle-406f@gregkh>
+From:   Yicong Yang <yangyicong@huawei.com>
+Message-ID: <713d3125-e21e-005e-7713-53c717aa15da@huawei.com>
+Date:   Tue, 10 Oct 2023 21:10:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <20230912205658.3432-1-casey@schaufler-ca.com> <20230912205658.3432-5-casey@schaufler-ca.com>
- <20231003.kooghohS2Aiz@digikod.net> <CAHC9VhT_ijmqo9ap-EokWHuALsMAqome2qcWgst3eRP6m+vbRA@mail.gmail.com>
- <20231009.MieQu5ou2loo@digikod.net> <CAHC9VhS_pFy=WUq8F7jXQ3gstdM36FG52NQ+OeESHRSa54h7MQ@mail.gmail.com>
- <20231010.eisha1Fohj8u@digikod.net>
-In-Reply-To: <20231010.eisha1Fohj8u@digikod.net>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 10 Oct 2023 09:10:27 -0400
-Message-ID: <CAHC9VhReBwy6KMOZ58gNhdffGhob_Z3d6G1Z3VbsP-bA00Z0=w@mail.gmail.com>
-Subject: Re: [PATCH v15 04/11] LSM: syscalls for current process attributes
-To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc:     Casey Schaufler <casey@schaufler-ca.com>,
-        linux-security-module@vger.kernel.org, jmorris@namei.org,
-        serge@hallyn.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <2023101025-thieving-eagle-406f@gregkh>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.121.177]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 5:14=E2=80=AFAM Micka=C3=ABl Sala=C3=BCn <mic@digik=
-od.net> wrote:
-> On Mon, Oct 09, 2023 at 12:04:31PM -0400, Paul Moore wrote:
-> > On Mon, Oct 9, 2023 at 11:37=E2=80=AFAM Micka=C3=ABl Sala=C3=BCn <mic@d=
-igikod.net> wrote:
-> > > On Thu, Oct 05, 2023 at 09:04:34PM -0400, Paul Moore wrote:
-> > > > On Tue, Oct 3, 2023 at 10:09=E2=80=AFAM Micka=C3=ABl Sala=C3=BCn <m=
-ic@digikod.net> wrote:
-> > > > > On Tue, Sep 12, 2023 at 01:56:49PM -0700, Casey Schaufler wrote:
-> > > > > > Create a system call lsm_get_self_attr() to provide the securit=
-y
-> > > > > > module maintained attributes of the current process.
-> > > > > > Create a system call lsm_set_self_attr() to set a security
-> > > > > > module maintained attribute of the current process.
-> > > > > > Historically these attributes have been exposed to user space v=
-ia
-> > > > > > entries in procfs under /proc/self/attr.
-> > > > > >
-> > > > > > The attribute value is provided in a lsm_ctx structure. The str=
-ucture
-> > > > > > identifies the size of the attribute, and the attribute value. =
-The format
-> > > > > > of the attribute value is defined by the security module. A fla=
-gs field
-> > > > > > is included for LSM specific information. It is currently unuse=
-d and must
-> > > > > > be 0. The total size of the data, including the lsm_ctx structu=
-re and any
-> > > > > > padding, is maintained as well.
-> > > > > >
-> > > > > > struct lsm_ctx {
-> > > > > >         __u64 id;
-> > > > > >         __u64 flags;
-> > > > > >         __u64 len;
-> > > > > >         __u64 ctx_len;
-> > > > > >         __u8 ctx[];
-> > > > > > };
-> > > > > >
-> > > > > > Two new LSM hooks are used to interface with the LSMs.
-> > > > > > security_getselfattr() collects the lsm_ctx values from the
-> > > > > > LSMs that support the hook, accounting for space requirements.
-> > > > > > security_setselfattr() identifies which LSM the attribute is
-> > > > > > intended for and passes it along.
-> > > > > >
-> > > > > > Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
-> > > > > > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > > > > > Reviewed-by: Serge Hallyn <serge@hallyn.com>
-> > > > > > Reviewed-by: John Johansen <john.johansen@canonical.com>
-> > > > > > ---
-> > > > > >  Documentation/userspace-api/lsm.rst |  70 +++++++++++++
-> > > > > >  include/linux/lsm_hook_defs.h       |   4 +
-> > > > > >  include/linux/lsm_hooks.h           |   1 +
-> > > > > >  include/linux/security.h            |  19 ++++
-> > > > > >  include/linux/syscalls.h            |   5 +
-> > > > > >  include/uapi/linux/lsm.h            |  36 +++++++
-> > > > > >  kernel/sys_ni.c                     |   2 +
-> > > > > >  security/Makefile                   |   1 +
-> > > > > >  security/lsm_syscalls.c             |  57 +++++++++++
-> > > > > >  security/security.c                 | 152 ++++++++++++++++++++=
-++++++++
-> > > > > >  10 files changed, 347 insertions(+)
-> > > > > >  create mode 100644 Documentation/userspace-api/lsm.rst
-> > > > > >  create mode 100644 security/lsm_syscalls.c
-> > > >
-> > > > ...
-> > > >
-> > > > > > diff --git a/security/security.c b/security/security.c
-> > > > > > index a3489c04b783..0d179750d964 100644
-> > > > > > --- a/security/security.c
-> > > > > > +++ b/security/security.c
-> > > > > > @@ -3837,6 +3837,158 @@ void security_d_instantiate(struct dent=
-ry *dentry, struct inode *inode)
-> > > > > >  }
-> > > > > >  EXPORT_SYMBOL(security_d_instantiate);
-> > > > > >
-> > > > > > +/*
-> > > > > > + * Please keep this in sync with it's counterpart in security/=
-lsm_syscalls.c
-> > > > > > + */
-> > > > > > +
-> > > > > > +/**
-> > > > > > + * security_getselfattr - Read an LSM attribute of the current=
- process.
-> > > > > > + * @attr: which attribute to return
-> > > > > > + * @uctx: the user-space destination for the information, or N=
-ULL
-> > > > > > + * @size: pointer to the size of space available to receive th=
-e data
-> > > > > > + * @flags: special handling options. LSM_FLAG_SINGLE indicates=
- that only
-> > > > > > + * attributes associated with the LSM identified in the passed=
- @ctx be
-> > > > > > + * reported.
-> > > > > > + *
-> > > > > > + * A NULL value for @uctx can be used to get both the number o=
-f attributes
-> > > > > > + * and the size of the data.
-> > > > > > + *
-> > > > > > + * Returns the number of attributes found on success, negative=
- value
-> > > > > > + * on error. @size is reset to the total size of the data.
-> > > > > > + * If @size is insufficient to contain the data -E2BIG is retu=
-rned.
-> > > > > > + */
-> > > > > > +int security_getselfattr(unsigned int attr, struct lsm_ctx __u=
-ser *uctx,
-> > > > > > +                      size_t __user *size, u32 flags)
-> > > > > > +{
-> > > > > > +     struct security_hook_list *hp;
-> > > > > > +     struct lsm_ctx lctx =3D { .id =3D LSM_ID_UNDEF, };
-> > > > > > +     u8 __user *base =3D (u8 __user *)uctx;
-> > > > > > +     size_t total =3D 0;
-> > > > > > +     size_t entrysize;
-> > > > > > +     size_t left;
-> > > > > > +     bool toobig =3D false;
-> > > > > > +     bool single =3D false;
-> > > > > > +     int count =3D 0;
-> > > > > > +     int rc;
-> > > > > > +
-> > > > > > +     if (attr =3D=3D LSM_ATTR_UNDEF)
-> > > > > > +             return -EINVAL;
-> > > > > > +     if (size =3D=3D NULL)
-> > > > > > +             return -EINVAL;
-> > > > > > +     if (get_user(left, size))
-> > > > > > +             return -EFAULT;
-> > > > > > +
-> > > > > > +     if (flags) {
-> > > > > > +             /*
-> > > > > > +              * Only flag supported is LSM_FLAG_SINGLE
-> > > > > > +              */
-> > > > > > +             if (flags !=3D LSM_FLAG_SINGLE)
-> > > > > > +                     return -EINVAL;
-> > > > > > +             if (uctx && copy_from_user(&lctx, uctx, sizeof(lc=
-tx)))
-> > > > >
-> > > > > I'm not sure if we should return -EINVAL or -EFAULT when uctx =3D=
-=3D NULL.
-> > > > > Because uctx is optional (when LSM_FLAG_SINGLE is not set), I gue=
-ss
-> > > > > -EINVAL is OK.
-> > > >
-> > > > That's a good point, we should probably the error codes here: if uc=
-tx
-> > > > is NULL in the LSM_FLAG_SINGLE case we should return -EINVAL, if th=
-e
-> > > > copy_from_user() fails we should return -EFAULT.
-> > > >
-> > > > > > +                     return -EFAULT;
-> > > > > > +             /*
-> > > > > > +              * If the LSM ID isn't specified it is an error.
-> > > > > > +              */
-> > > > > > +             if (lctx.id =3D=3D LSM_ID_UNDEF)
-> > > > > > +                     return -EINVAL;
-> > > > > > +             single =3D true;
-> > > > > > +     }
-> > > > > > +
-> > > > > > +     /*
-> > > > > > +      * In the usual case gather all the data from the LSMs.
-> > > > > > +      * In the single case only get the data from the LSM spec=
-ified.
-> > > > > > +      */
-> > > > > > +     hlist_for_each_entry(hp, &security_hook_heads.getselfattr=
-, list) {
-> > > > > > +             if (single && lctx.id !=3D hp->lsmid->id)
-> > > > > > +                     continue;
-> > > > > > +             entrysize =3D left;
-> > > > > > +             if (base)
-> > > > > > +                     uctx =3D (struct lsm_ctx __user *)(base +=
- total);
-> > > > > > +             rc =3D hp->hook.getselfattr(attr, uctx, &entrysiz=
-e, flags);
-> > > > > > +             if (rc =3D=3D -EOPNOTSUPP) {
-> > > > > > +                     rc =3D 0;
-> > > > > > +                     continue;
-> > > > > > +             }
-> > > > > > +             if (rc =3D=3D -E2BIG) {
-> > > > > > +                     toobig =3D true;
-> > > > > > +                     left =3D 0;
-> > > > > > +             } else if (rc < 0)
-> > > > > > +                     return rc;
-> > > > > > +             else
-> > > > > > +                     left -=3D entrysize;
-> > > > > > +
-> > > > > > +             total +=3D entrysize;
-> > > > > > +             count +=3D rc;
-> > > > >
-> > > > > There is a bug if rc =3D=3D -E2BIG
-> > > >
-> > > > Can you elaborate a bit more on this? Nothing is jumping out at me =
-as
-> > > > obviously broken... are you talking about @count becoming garbage d=
-ue
-> > > > to @rc being equal to -E2BIG?  If that is the case it should be oka=
-y
-> > > > since we explicitly return -E2BIG, not @count, if @toobig is true.
-> > >
-> > > Indeed, in this case count will not be returned thanks to toobig. I'd
-> > > suggest to "continue" if rc =3D=3D -E2BIG (like for -EOPNOTSUPP) to a=
-void an
-> > > inconsistent count value, which could bite us one day.
-> >
-> > Okay, how about we reset @rc to zero in the -E2BIG case?  We don't
-> > want to bypass the lower part of the loop in this case as we still
-> > need to update @total.
-> >
-> >   if (rc =3D=3D -E2BIG) {
-> >     rc =3D 0;
-> >     left =3D 0;
-> >     toobig =3D true;
-> >   }
->
-> Indeed, this is better.
->
-> To avoid useless calls to getselfattr hooks, we could also patch the
-> last part of the loop:
-> -               if (single)
-> +               if (single || left <=3D 0)
->                         break;
->
+On 2023/10/10 20:33, Greg KH wrote:
+> On Tue, Oct 10, 2023 at 07:53:35PM +0800, Yicong Yang wrote:
+>> From: Yicong Yang <yangyicong@hisilicon.com>
+>>
+>> The core CPU control framework supports runtime SMT control which
+>> is not yet supported on arm64. Besides the general vulnerabilities
+>> concerns we want this runtime control on our arm64 server for:
+> 
+> But shouldn't this be part of UEFI?  Why manually try to determine this
+> at powerup in Linux?
 
-They aren't useless calls, we keep calling into the LSMs so that we
-can return a buffer size hint in the @size parameter when the getattr
-syscall returns -E2BIG.
+We can disable/enable SMT by UEFI, but it lacks of flexibility. With runtime
+support we can disable/enable on demand, rather than disable/enable all the time.
+In our case, mainly for the below 2 reasons in the commit.
 
---=20
-paul-moore.com
+> 
+>> - better single CPU performance in some cases
+>> - saving overall power consumption
+>>
+>> This patch implements it in the following aspects:
+>>
+>> - implement the callbacks of the core
+>> - update the SMT status after the topology enumerated on arm64
+>> - select HOTPLUG_SMT for arm64
+>>
+>> For disabling SMT we'll offline all the secondary threads and
+>> only leave the primary thread. Since we don't have restriction
+>> for primary thread selection, the first thread is chosen as the
+>> primary thread in this implementation.
+>>
+>> Tests has been done on our real ACPI based arm64 server and on
+>> ACPI/OF based QEMU VMs.
+>>
+>> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+>> ---
+>> Change since v1:
+>> - Avoid the complexity on SMT detecting by visiting each CPU once, concerned by Sudeep
+>> Link: https://lore.kernel.org/all/20230919123319.23785-1-yangyicong@huawei.com/
+>>
+>>  arch/arm64/Kconfig            |  1 +
+>>  drivers/base/arch_topology.c  | 75 +++++++++++++++++++++++++++++++++++
+>>  include/linux/arch_topology.h | 11 +++++
+>>  3 files changed, 87 insertions(+)
+>>
+>> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+>> index 78f20e632712..339661ceabc8 100644
+>> --- a/arch/arm64/Kconfig
+>> +++ b/arch/arm64/Kconfig
+>> @@ -233,6 +233,7 @@ config ARM64
+>>  	select HAVE_KRETPROBES
+>>  	select HAVE_GENERIC_VDSO
+>>  	select HOTPLUG_CORE_SYNC_DEAD if HOTPLUG_CPU
+>> +	select HOTPLUG_SMT if SMP
+>>  	select IRQ_DOMAIN
+>>  	select IRQ_FORCED_THREADING
+>>  	select KASAN_VMALLOC if KASAN
+>> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+>> index b741b5ba82bd..c5b453c2cd61 100644
+>> --- a/drivers/base/arch_topology.c
+>> +++ b/drivers/base/arch_topology.c
+>> @@ -729,6 +729,75 @@ const struct cpumask *cpu_clustergroup_mask(int cpu)
+>>  	return &cpu_topology[cpu].cluster_sibling;
+>>  }
+>>  
+>> +#ifdef CONFIG_HOTPLUG_SMT
+>> +static int topology_smt_num_threads = 1;
+>> +
+>> +void __init topology_smt_set_num_threads(void)
+>> +{
+>> +	int cpu, sibling, threads;
+>> +	cpumask_var_t to_visit;
+>> +
+>> +	if (!alloc_cpumask_var(&to_visit, GFP_KERNEL)) {
+>> +		pr_err("Failed to update the SMT info\n");
+>> +		return;
+>> +	}
+>> +
+>> +	cpumask_or(to_visit, to_visit, cpu_possible_mask);
+>> +
+>> +	/*
+>> +	 * Walk all the CPUs to find the largest thread number, in case we're
+>> +	 * on a heterogeneous platform with only part of the CPU cores support
+>> +	 * SMT.
+>> +	 *
+>> +	 * Get the thread number by checking the CPUs with same core id
+>> +	 * rather than checking the topology_sibling_cpumask(), since the
+>> +	 * sibling mask will not cover all the CPUs if there's CPU offline.
+>> +	 */
+>> +	for_each_cpu(cpu, to_visit) {
+>> +		threads = 1;
+>> +
+>> +		cpumask_clear_cpu(cpu, to_visit);
+>> +
+>> +		/* Invalid thread id, this CPU is not in a SMT core */
+>> +		if (cpu_topology[cpu].thread_id == -1)
+>> +			continue;
+>> +
+>> +		for_each_cpu(sibling, to_visit) {
+>> +			if (cpu_topology[sibling].thread_id != -1 &&
+>> +			    cpu_topology[cpu].core_id == cpu_topology[sibling].core_id)
+>> +				threads++;
+>> +
+>> +			cpumask_clear_cpu(sibling, to_visit);
+>> +		}
+>> +
+>> +		if (threads > topology_smt_num_threads)
+>> +			topology_smt_num_threads = threads;
+>> +	}
+>> +
+>> +	free_cpumask_var(to_visit);
+>> +
+>> +	/*
+>> +	 * We don't support CONFIG_SMT_NUM_THREADS_DYNAMIC so make the
+>> +	 * max_threads == num_threads.
+>> +	 */
+>> +	cpu_smt_set_num_threads(topology_smt_num_threads, topology_smt_num_threads);
+>> +}
+> 
+> How is this going to affect non-arm64 systems?  Will we now be doing
+> this double loop for all cpus in the systems (i.e. for 10's of thousands
+> on x86)?
+
+x86 build the topology in their arch codes. Currently the user of this driver
+are arm64, arm, risv and parisc who select GENERIC_ARCH_TOPOLOGY.
+arch needs to select CONFIG_HOTPLUG_SMT for this feature and this patch only
+adds arm64 support. So others won't be affected.
+
+> And again, why is this not an issue on the current platforms that
+> already support CONFIG_HOTPLUG_SMT?  What makes ARM64 so broken it
+> requires this manual intervention?
+> 
+
+Currently I see x86 and powerpc supports CONFIG_HOTPLUG_SMT on the mainline.
+For x86 they build the topology and detects the SMT suppport in the arch
+code, seems they can directly get the SMT number by reading the system
+register, refers to arch/x86/kernel/cpu/common.c:detect_ht_early(). For
+powerpc I see they are reading the threads number from the firmware(OF)
+and assuming all the SMT have the same thread number, refer to
+arch/powerpc/kernel/setup-common.c:smp_setup_cpu_maps(). Please corrects
+me if there's mistakes.
+
+Back to arm64, there's no system registers to directly indicate the thread
+numbers of each SMT in the system like x86, nor do we have the information
+from the firmware (OF/ACPI). I cannot assume all the physical cores have
+the same thread number, since we may have SMT cores and non-SMT cores on
+heterogeneous platform. We can only know the SMT information after
+parsing the firmware information.
+
+So in this implementation I scan the cpus to find the biggest SMT number
+rather than use the SMT number of the first CPU in case on a
+heterogeneous platform. And it can handle the case of both ACPI and OF
+based platform. Sudeep also suggests to detect SMT numbers during
+parsing the PPTT or device tree, that means we need to handle it
+separately. Do the detecting in the OF scanning code in arch_topology
+and also the dectecting in the PPTT scanning code in arch codes.
+But if we agree it's better, I can switch to that. Or any other
+suggestions are appreciated.
+
+Thanks.
