@@ -2,168 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C938D7C014D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E69D27C0150
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233576AbjJJQMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 12:12:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55326 "EHLO
+        id S230110AbjJJQNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 12:13:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229833AbjJJQMS (ORCPT
+        with ESMTP id S231953AbjJJQNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 12:12:18 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6702A97
+        Tue, 10 Oct 2023 12:13:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E96AD7
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:12:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696954337;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tSjnvG5NwalIEjKIQtTbuCFGAtOMZwRcBRSi/1kopbk=;
+        b=Ccxq2yOsQxg6xcSOV3Fw5lVOSPHexLLWdwNcIMvBXmCtDB57X1RV80rbHVa+JqlVEarSu2
+        s/bxVkgspiX53ikD11kau1s5YYUBrcVaUZH7rM41sYcOlajcmwHj+2a2CurFgREaexGd7h
+        c5zalzT0+J6b5KAqO5e6MfXXzZxAtc0=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-536-fKRhNiBONE2OhEm-amK30w-1; Tue, 10 Oct 2023 12:12:15 -0400
+X-MC-Unique: fKRhNiBONE2OhEm-amK30w-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-32cbe54ee03so631532f8f.1
         for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:12:15 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jAKvN2Tt4hwxl7K3FijUMukcVxEc8n9k44Go1OaqQDpUygiPaF4Ahb9Xf1zS5FzF59S7KNbObHlTLH9DzRTwKZ10gmdRyaHxH6nSBkSOLJwyVuBiMmrXcC7ogAeZ5s+QwUyRTOffxhgWVHAiaMgU5QOPrSXSeAZ0cTMC9iSO6vMYkEEUCt3oPOrukV+Rk+vBkGWqQC03wioVNGgpG++c82vyNug9YddMYNJUWUZOaWlSZ1Xw+5AMQhWL1rbTnUzALWQxp4NbbGyJFxRMlNP3eDj1vHoF4uG4J7sXOcaKW1CCNe6gCnbEGbaxT/7fYCHZnadgf6Cu4Atnp+QV3hatcQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uulNyNynxxpxbMUSW6+37kbiJpg2PhHk/TSdre8niJ8=;
- b=cG4qJRN+Gk/Wi42I9VIRD3YCtUpu7bGe9D5i9YSaiPC873Ba74hHABWnN+0OpijCiQBRl2HVn7ta9ozHkbImdsGQxcnEoxX5cX89fmwcGUAnsjQEiHx/+ClwJnxekc5XxRnEBOJFtK1rth+T0OioSwZZoB2C2fVYUhHeA96EOb44Wxl63ilfvVTzv951/slcMRJlNx0nzWZTwr8YjeoyD6X6wAeBpJJRbIaEcElpaoCwdnM0AwORWbRhbaLJfQ+vO/iaTCPzSvkeT08WOIB6k8+y7jrTehnHzgtU0AFeGHiZGcH8gNh9mIdUEz+36uUzMM42zlTu84cqnM91T9IJlA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uulNyNynxxpxbMUSW6+37kbiJpg2PhHk/TSdre8niJ8=;
- b=PCc7yT0ZPAbmgOWzpyiLxvQ2xmWT8dwd644qRYG0WtF/WdtQYEL4gwdOmyKufPciV7x0Ce41hddxh61WXbi67p2XA5UQMn6pa0vmcnuvxJldaHK0N9ZIbA5+kW074oSYBkQV9JEeEWBU43IkhKqf1mzMoKBEhHgMI6AmUsFX5B4CuYeJp35K4xRlbMUc+AJ6vFOFBFB2xe9j3lw1GQONZG2SGnISQm+Our/uA9eccT4RbgZsMVFSZieX0JcdlPrS223Tq1rWZ9OLB6RjjRryMLJbeHYZyBn8DhEbOXKCA7ihfqSVRaTs2B/eFo3OMIT4v3Beh/OVnyKuJU57JFeGuA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from IA1PR12MB6604.namprd12.prod.outlook.com (2603:10b6:208:3a0::7)
- by BL1PR12MB5849.namprd12.prod.outlook.com (2603:10b6:208:384::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.36; Tue, 10 Oct
- 2023 16:12:13 +0000
-Received: from IA1PR12MB6604.namprd12.prod.outlook.com
- ([fe80::8814:146:e28e:6eea]) by IA1PR12MB6604.namprd12.prod.outlook.com
- ([fe80::8814:146:e28e:6eea%4]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
- 16:12:13 +0000
-Message-ID: <59939570-3779-ef90-2a72-7be32a30e368@nvidia.com>
-Date:   Tue, 10 Oct 2023 09:12:09 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH v1 1/1] hte: Use kasprintf() instead of fixed buffer
- formatting
-Content-Language: en-US
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        timestamp@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20231010141123.3909596-1-andriy.shevchenko@linux.intel.com>
-X-Nvconfidentiality: public
-From:   Dipen Patel <dipenp@nvidia.com>
-In-Reply-To: <20231010141123.3909596-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR05CA0064.namprd05.prod.outlook.com
- (2603:10b6:a03:74::41) To IA1PR12MB6604.namprd12.prod.outlook.com
- (2603:10b6:208:3a0::7)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696954334; x=1697559134;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tSjnvG5NwalIEjKIQtTbuCFGAtOMZwRcBRSi/1kopbk=;
+        b=SYU0pyLO5cUb9p8067viCCgo3MafzjfdjpBC7CDEmDrs8JgjxVnPKXY2y1OPEjM8Jh
+         OFibutDIfQCNAba4P1fBzmc1FP40JrIRbylos7/4TS/DSfDdevx0dZ9ivXANzD39ES/p
+         yrEnHPrjloZvID72XHLFq4coKImwF3FCIK55AMNn3DIkrcAje0rA49/aExK0Nq0dW8JH
+         Vvila9Iq7oxs1bBBWIH9++ZGD3KjPvYOf9Auz34r1zV/92vCFjeJJmnih3lgC8BfeQAE
+         +ygOqNNx+bIZnMApnz4ANacuFc3+qVGef3kcih8h5URVyUs6Xz59C/AKYb1Pd9jszYlU
+         9tsg==
+X-Gm-Message-State: AOJu0YwAYXBox1pklJWX+p1FfuWlEYq2tQSgPGftXn5IXAT0Vf3b2yWj
+        zBVxt2WSku0wkj1+dijA4NI3wQMTYkOCE5aW7HAMW62hWI951xewFz69c4VIdWkqL8NHoaeID2q
+        ALMHVPfI1QZ01nt3y96vddUap
+X-Received: by 2002:a05:6000:cb:b0:321:7050:6fb6 with SMTP id q11-20020a05600000cb00b0032170506fb6mr14952071wrx.67.1696954334571;
+        Tue, 10 Oct 2023 09:12:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHiVZprh6ZRHMJLcnBs1Xd6l1wpOAVgISEZ4kCScvw7gLyV/CxwFTkly37MyRE2XBOpVqncfw==
+X-Received: by 2002:a05:6000:cb:b0:321:7050:6fb6 with SMTP id q11-20020a05600000cb00b0032170506fb6mr14952042wrx.67.1696954334151;
+        Tue, 10 Oct 2023 09:12:14 -0700 (PDT)
+Received: from starship ([89.237.100.246])
+        by smtp.gmail.com with ESMTPSA id j16-20020adff010000000b0032008f99216sm13043941wro.96.2023.10.10.09.12.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 09:12:13 -0700 (PDT)
+Message-ID: <ce964b43f926708f30c85640591b2fc62397b719.camel@redhat.com>
+Subject: Re: [PATCH v2 4/5] perf kvm: Support sampling guest callchains
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Tianyi Liu <i.pear@outlook.com>, seanjc@google.com,
+        pbonzini@redhat.com, peterz@infradead.org, mingo@redhat.com,
+        acme@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        kvm@vger.kernel.org, x86@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com
+Date:   Tue, 10 Oct 2023 19:12:11 +0300
+In-Reply-To: <SY4P282MB108433024762F1F292D47C2A9DCFA@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
+References: <SY4P282MB1084ECBCC1B176153B9E2A009DCFA@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
+         <SY4P282MB108433024762F1F292D47C2A9DCFA@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR12MB6604:EE_|BL1PR12MB5849:EE_
-X-MS-Office365-Filtering-Correlation-Id: c31876ca-072f-4b83-af93-08dbc9aba9c3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ozBySbNvJj5+LzS1t1HnomTqNGT1rRm+0mLQp01cRPGKKsgYJ7PrcDXaa68Ww6o07v+UdVqhOzVGTRDstoEpGQ9AKUD0lgq/fgV5r11h0L2pzSdyvjIz2CF7NdmCX2OO0IsNhmTeC68hRyJYaiLfouCKMQ73UmOo0T4sBQEkY86WLj/2W1PlmUBSnQZPDZFpkgkYAI1OwYpfEoucdH4tXvGi6QlQGWcZQyyxH7/cpPK0+NJKuQZwws12VTgyvPzWYZUD7238KlGchLleeAkHmkpN7awVmAox2ptyV5/fFUfKA2pjRwvXHhaWb7fHuN/kr9JTnsQOlNvkqqkHBfQ3hXuT8Z4wtnBXSnwMqsV2udp1k+OK84t4sJ/Ij/+W65T48UJKdDNNFSxMOV9UOQHKBoJDSF2JRsC5mUeUrJK1o89GasCln13iKekA83wXIhgiLOX/nABjwApZNkhc1PGCAJAqGydZKf1HfoPF2rfdmhcCz2rhBVr2jXvxqIsH1MvgaQjUMsU+mxsnp2452c9CKJQSSR9w5+gr5pbttfew497GKokqoUMM03yu00goxkgJ43l7qvmJJawKAgN4bYJCIyhWTovqsrcVL/CfA3zi/nQAAl0F86sVv607XPTxPd4MVm8YlFMT5F2QzpGTNl6dyQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB6604.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(366004)(396003)(136003)(376002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(2906002)(2616005)(83380400001)(26005)(66556008)(66476007)(66946007)(8676002)(6666004)(5660300002)(6506007)(8936002)(53546011)(6512007)(41300700001)(478600001)(6486002)(316002)(36756003)(86362001)(31696002)(38100700002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WnRwUElLTkxuOFJyeFpKQm13dEVORzBua1RWS2xwN1V4U3ZiK1RWemhGSUps?=
- =?utf-8?B?cXloM0VwMmZXMEkvaUFjVGVjMytJNCtQOU1aWlhYUVVUR2VNM0lwUStpUXhr?=
- =?utf-8?B?bk10V254SUptaDZDUUFZQWpSbncydWNDeEpDQlJCR29TOXZiMlEvMXZ2dW96?=
- =?utf-8?B?U1BUU1BPYWdST0JWUG51WXZ6TE9oeEtBT1RpQUVhMU83U1hPTk80Mmsyejc0?=
- =?utf-8?B?cUw0L2J6KzBLUlZXZ3ZrdGFqOVFqeGtZbEdzWUZmWHI3bEJUdHhNVG5IS2FD?=
- =?utf-8?B?WllNcnpldXhhaFpZbndJN0UxeWFwZmxmSyticCtMWXUrcFpKc29BbFFZck9F?=
- =?utf-8?B?Z0JmMDdYUW1vbWNxcnRUeCtVMkFKVUlhWlE0dFY0NURIZ21PVXAveEwvcWpO?=
- =?utf-8?B?ZjBmUGFIeDJId09SVzc0SUROaVJBaGJreHluWjhmbEhVZ21ONjcvRDAxeTB5?=
- =?utf-8?B?dHRwT2l0RVlrL1g2SmM4M1JOYUl6RW9aVVV1QlFTeEp1MTNwR0wrVnM2WWxT?=
- =?utf-8?B?TjVoemV1ZTlTOE1Rck04clhtTS8rZ2JIcXpNM2dITzZpeDJUcnE5VWtCWFVE?=
- =?utf-8?B?TktYUHdHTnU0UE9zWVdrcTg4UFpnMUg0U252TlM0cWhIeDVzeDJzbWtvSXBL?=
- =?utf-8?B?d2xzWXNnN2xTMlNyeTM0SFJXUVErQUR1d21yQzY3ZUZBQVNSdm5DN3V4SHpO?=
- =?utf-8?B?allCdWV6b2xpMXpCRFlJTUE4Z0s1NVNWbkJYK0hPZnRFeEkxSFlHMEd3UHA3?=
- =?utf-8?B?dmtyUzRNRDhZbGsxRmh5MFBseWd2RHoxU1JWMllJNVl5UGNJb0E1aHgzWlY3?=
- =?utf-8?B?b2prYWJBSG9RaTJWL2toaENCZElIMk5BODZYbFZ3aFFiVlYxQjkvdSs2NUdD?=
- =?utf-8?B?T1hPN0laZmtnRkVMckJ1bEQremIzajRNRHVFbE5BbldHMVAvb243bUhVMHd0?=
- =?utf-8?B?RTg5WlgvYVlTVGFhaXM2KzlZUnBFRmZxbVBIa0xqZExQaDdYYkpjU2NaSXQ1?=
- =?utf-8?B?Ly9BWEFzeHdKeWgwcDRJMUJRQWNuM3hCQ0lVaVpBTEJaREFMZmRSZmczZVQr?=
- =?utf-8?B?Ny9GTlBxMTBDdjRxdlN1VmR6Q3NwQ0djUnlGSWw3M3dIUWdLdHV1eHFlL0RY?=
- =?utf-8?B?dkNHTmFocVNGMUxvd1A2dnYrVHZuUSs4eUJLV0xGT0FiUmF4YVlyWHZVZ0Ji?=
- =?utf-8?B?NjhlcWNnM3VLd0dWbklaT1BUU1kxM1F3SUd1MUEwc0dlQllVTmQ1dHUxSlpQ?=
- =?utf-8?B?VFVCdEI3T1pRSTBOSkVaL08zcitiSlNjbms4ZGhQczk1eWJZREQ4Qy8rczRk?=
- =?utf-8?B?c2gwMVRiVzJqNVowTWRtRnJKWkt5T2lrR3JOdmNQdDdHL3dwQU1JcHBLcjUr?=
- =?utf-8?B?SXZuQTZsakFmbGluNkdaeHAwQ0R6RC92Y2ppZlQxMk1jZm9MQzFOOFN5ci8x?=
- =?utf-8?B?WmVTdTB2NGxYQmI2V1A1RzhEcW1Rck1YcTdEQmw2ZUt2enpOcC9udksvbUR1?=
- =?utf-8?B?clFPT3BvS2hoa01SUG9sbkw5MEFWN3FDaHd4M3JHM2xhMU9xVjkvaWc3cnVr?=
- =?utf-8?B?WEV0S2FNcUEwaUw2MURSZDhIcU1jRFhPVW1JMHRvM1djU1ZKemI1ZjRod01W?=
- =?utf-8?B?b3ZlOExZVUh2SnlLVmg2b0VZanNJUytXM3lYYmtFMGJTenZIWi93OUkxb2xG?=
- =?utf-8?B?Snl6dVUyOFJPeVd5MlllbjJqVUIrN3BNSXN5Y0NpSGtaYnl6RTlhYzZhanNn?=
- =?utf-8?B?R1Y2ZXJFNHpGTzM3NG5QSjRvdUpnVEZqTk5oLzFscE5WVGxWR0djZU5kWGhX?=
- =?utf-8?B?bU80NDVMc0dVY2ZaMWoyVWJkSkxUOXJRVjJoSHRFQW9IbFUyMUxUTmlWOW01?=
- =?utf-8?B?NDJ3VHhpc2JTYXdvUW9QSkdzZjF1cWFoUFV5SkVYOWh1ZmdnS0dTMGdLcUR3?=
- =?utf-8?B?eG9Falo0L0VOdTM3bVVSeXdVbHdCTXkvYUZSUm1CRHYvWm9NRExENXFFc2pQ?=
- =?utf-8?B?UXQ0cnFiYWthUHA4MDRrTjU0ZXpKK1BzNkZhZmYvVFBBUDZlVHhWamhjSmVa?=
- =?utf-8?B?eWV4MTlKd28ya3htVzUvTkN1SWk3amhwK0NvUXJhT2dNam5FQm96Tmdzc1p6?=
- =?utf-8?Q?tb362PeuorvZQ8QI6mT7a5Cfe?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c31876ca-072f-4b83-af93-08dbc9aba9c3
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB6604.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 16:12:12.9576
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aSOcJHsPXvRsDSyhsZE5Ylq/xs+i/CDfBV77U//9hjIlMY6SSDaI67DfcumpBtC037C1P3TeycPzjma8cYl5XQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5849
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/23 7:11 AM, Andy Shevchenko wrote:
-> Improve readability and maintainability by replacing a hardcoded string
-> allocation and formatting by the use of the kasprintf() helper.
+У нд, 2023-10-08 у 22:57 +0800, Tianyi Liu пише:
+> This patch provides support for sampling guests' callchains.
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> The signature of `get_perf_callchain` has been modified to explicitly
+> specify whether it needs to sample the host or guest callchain.
+> Based on the context, it will distribute the sampling request to one of
+> `perf_callchain_user`, `perf_callchain_kernel`, or `perf_callchain_guest`.
+> 
+> The reason for separately implementing `perf_callchain_user` and
+> `perf_callchain_kernel` is that the kernel may utilize special unwinders
+> such as `ORC`. However, for the guest, we only support stackframe-based
+> unwinding, so the implementation is generic and only needs to be
+> separately implemented for 32-bit and 64-bit.
+> 
+> Signed-off-by: Tianyi Liu <i.pear@outlook.com>
 > ---
->  drivers/hte/hte.c | 13 ++++---------
->  1 file changed, 4 insertions(+), 9 deletions(-)
+>  arch/x86/events/core.c     | 56 +++++++++++++++++++++++++++++++-------
+>  include/linux/perf_event.h |  3 +-
+>  kernel/bpf/stackmap.c      |  8 +++---
+>  kernel/events/callchain.c  | 27 +++++++++++++++++-
+>  kernel/events/core.c       |  7 ++++-
+>  5 files changed, 84 insertions(+), 17 deletions(-)
 > 
-> diff --git a/drivers/hte/hte.c b/drivers/hte/hte.c
-> index 1fd8d2d4528b..23a6eeb8c506 100644
-> --- a/drivers/hte/hte.c
-> +++ b/drivers/hte/hte.c
-> @@ -17,8 +17,6 @@
->  #include <linux/debugfs.h>
->  #include <linux/device.h>
+> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+> index 185f902e5..ea4c86175 100644
+> --- a/arch/x86/events/core.c
+> +++ b/arch/x86/events/core.c
+> @@ -2758,11 +2758,6 @@ perf_callchain_kernel(struct perf_callchain_entry_ctx *entry, struct pt_regs *re
+>  	struct unwind_state state;
+>  	unsigned long addr;
 >  
-> -#define HTE_TS_NAME_LEN		10
-> -
->  /* Global list of the HTE devices */
->  static DEFINE_SPINLOCK(hte_lock);
->  static LIST_HEAD(hte_devices);
-> @@ -389,13 +387,10 @@ static int __hte_req_ts(struct hte_ts_desc *desc, hte_ts_cb_t cb,
->  
->  	atomic_inc(&gdev->ts_req);
->  
-> -	ei->line_name = NULL;
-> -	if (!desc->attr.name) {
-> -		ei->line_name = kzalloc(HTE_TS_NAME_LEN, GFP_KERNEL);
-> -		if (ei->line_name)
-> -			scnprintf(ei->line_name, HTE_TS_NAME_LEN, "ts_%u",
-> -				  desc->attr.line_id);
+> -	if (perf_guest_state()) {
+> -		/* TODO: We don't support guest os callchain now */
+> -		return;
 > -	}
-> +	if (desc->attr.name)
-> +		ei->line_name = NULL;
-> +	else
-> +		ei->line_name = kasprintf(GFP_KERNEL, "ts_%u", desc->attr.line_id);
+> -
+>  	if (perf_callchain_store(entry, regs->ip))
+>  		return;
 >  
->  	hte_ts_dbgfs_init(desc->attr.name == NULL ?
->  			  ei->line_name : desc->attr.name, ei);
-Reviewed-by: Dipen Patel <dipenp@nvidia.com>
+> @@ -2778,6 +2773,52 @@ perf_callchain_kernel(struct perf_callchain_entry_ctx *entry, struct pt_regs *re
+>  	}
+>  }
+>  
+> +static inline void
+> +perf_callchain_guest32(struct perf_callchain_entry_ctx *entry)
+> +{
+> +	struct stack_frame_ia32 frame;
+> +	const struct stack_frame_ia32 *fp;
+> +
+> +	fp = (void *)perf_guest_get_frame_pointer();
+> +	while (fp && entry->nr < entry->max_stack) {
+> +		if (!perf_guest_read_virt(&fp->next_frame, &frame.next_frame,
+This should be fp->next_frame.
+> +			sizeof(frame.next_frame)))
+> +			break;
+> +		if (!perf_guest_read_virt(&fp->return_address, &frame.return_address,
+Same here.
+> +			sizeof(frame.return_address)))
+> +			break;
+> +		perf_callchain_store(entry, frame.return_address);
+> +		fp = (void *)frame.next_frame;
+> +	}
+> +}
+> +
+> +void
+> +perf_callchain_guest(struct perf_callchain_entry_ctx *entry)
+> +{
+> +	struct stack_frame frame;
+> +	const struct stack_frame *fp;
+> +	unsigned int guest_state;
+> +
+> +	guest_state = perf_guest_state();
+> +	perf_callchain_store(entry, perf_guest_get_ip());
+> +
+> +	if (guest_state & PERF_GUEST_64BIT) {
+> +		fp = (void *)perf_guest_get_frame_pointer();
+> +		while (fp && entry->nr < entry->max_stack) {
+> +			if (!perf_guest_read_virt(&fp->next_frame, &frame.next_frame,
+Same here.
+> +				sizeof(frame.next_frame)))
+> +				break;
+> +			if (!perf_guest_read_virt(&fp->return_address, &frame.return_address,
+And here.
+
+> +				sizeof(frame.return_address)))
+> +				break;
+> +			perf_callchain_store(entry, frame.return_address);
+> +			fp = (void *)frame.next_frame;
+> +		}
+> +	} else {
+> +		perf_callchain_guest32(entry);
+> +	}
+> +}
+
+For symmetry, maybe it makes sense to have perf_callchain_guest32 and perf_callchain_guest64
+and then make perf_callchain_guest call each? No strong opinion on this of course.
+
+
+> +
+>  static inline int
+>  valid_user_frame(const void __user *fp, unsigned long size)
+>  {
+> @@ -2861,11 +2902,6 @@ perf_callchain_user(struct perf_callchain_entry_ctx *entry, struct pt_regs *regs
+>  	struct stack_frame frame;
+>  	const struct stack_frame __user *fp;
+>  
+> -	if (perf_guest_state()) {
+> -		/* TODO: We don't support guest os callchain now */
+> -		return;
+> -	}
+> -
+>  	/*
+>  	 * We don't know what to do with VM86 stacks.. ignore them for now.
+>  	 */
+> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> index d0f937a62..a2baf4856 100644
+> --- a/include/linux/perf_event.h
+> +++ b/include/linux/perf_event.h
+> @@ -1545,9 +1545,10 @@ DECLARE_PER_CPU(struct perf_callchain_entry, perf_callchain_entry);
+>  
+>  extern void perf_callchain_user(struct perf_callchain_entry_ctx *entry, struct pt_regs *regs);
+>  extern void perf_callchain_kernel(struct perf_callchain_entry_ctx *entry, struct pt_regs *regs);
+> +extern void perf_callchain_guest(struct perf_callchain_entry_ctx *entry);
+>  extern struct perf_callchain_entry *
+>  get_perf_callchain(struct pt_regs *regs, u32 init_nr, bool kernel, bool user,
+> -		   u32 max_stack, bool crosstask, bool add_mark);
+> +		   bool host, bool guest, u32 max_stack, bool crosstask, bool add_mark);
+>  extern int get_callchain_buffers(int max_stack);
+>  extern void put_callchain_buffers(void);
+>  extern struct perf_callchain_entry *get_callchain_entry(int *rctx);
+> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+> index 458bb80b1..2e88d4639 100644
+> --- a/kernel/bpf/stackmap.c
+> +++ b/kernel/bpf/stackmap.c
+> @@ -294,8 +294,8 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
+>  	if (max_depth > sysctl_perf_event_max_stack)
+>  		max_depth = sysctl_perf_event_max_stack;
+>  
+> -	trace = get_perf_callchain(regs, 0, kernel, user, max_depth,
+> -				   false, false);
+> +	trace = get_perf_callchain(regs, 0, kernel, user, true, false,
+> +				   max_depth, false, false);
+>  
+>  	if (unlikely(!trace))
+>  		/* couldn't fetch the stack trace */
+> @@ -420,8 +420,8 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
+>  	else if (kernel && task)
+>  		trace = get_callchain_entry_for_task(task, max_depth);
+>  	else
+> -		trace = get_perf_callchain(regs, 0, kernel, user, max_depth,
+> -					   false, false);
+> +		trace = get_perf_callchain(regs, 0, kernel, user, true, false,
+> +					   max_depth, false, false);
+>  	if (unlikely(!trace))
+>  		goto err_fault;
+>  
+> diff --git a/kernel/events/callchain.c b/kernel/events/callchain.c
+> index 1273be843..7e80729e9 100644
+> --- a/kernel/events/callchain.c
+> +++ b/kernel/events/callchain.c
+> @@ -45,6 +45,10 @@ __weak void perf_callchain_user(struct perf_callchain_entry_ctx *entry,
+>  {
+>  }
+>  
+> +__weak void perf_callchain_guest(struct perf_callchain_entry_ctx *entry)
+> +{
+> +}
+> +
+>  static void release_callchain_buffers_rcu(struct rcu_head *head)
+>  {
+>  	struct callchain_cpus_entries *entries;
+> @@ -178,11 +182,12 @@ put_callchain_entry(int rctx)
+>  
+>  struct perf_callchain_entry *
+>  get_perf_callchain(struct pt_regs *regs, u32 init_nr, bool kernel, bool user,
+> -		   u32 max_stack, bool crosstask, bool add_mark)
+> +		   bool host, bool guest, u32 max_stack, bool crosstask, bool add_mark)
+>  {
+>  	struct perf_callchain_entry *entry;
+>  	struct perf_callchain_entry_ctx ctx;
+>  	int rctx;
+> +	unsigned int guest_state;
+>  
+>  	entry = get_callchain_entry(&rctx);
+>  	if (!entry)
+> @@ -194,6 +199,26 @@ get_perf_callchain(struct pt_regs *regs, u32 init_nr, bool kernel, bool user,
+>  	ctx.contexts       = 0;
+>  	ctx.contexts_maxed = false;
+>  
+> +	guest_state = perf_guest_state();
+> +	if (guest_state) {
+> +		if (!guest)
+> +			goto exit_put;
+> +		if (user && (guest_state & PERF_GUEST_USER)) {
+> +			if (add_mark)
+> +				perf_callchain_store_context(&ctx, PERF_CONTEXT_GUEST_USER);
+> +			perf_callchain_guest(&ctx);
+> +		}
+> +		if (kernel && !(guest_state & PERF_GUEST_USER)) {
+> +			if (add_mark)
+> +				perf_callchain_store_context(&ctx, PERF_CONTEXT_GUEST_KERNEL);
+> +			perf_callchain_guest(&ctx);
+> +		}
+> +		goto exit_put;
+> +	}
+> +
+> +	if (unlikely(!host))
+> +		goto exit_put;
+> +
+>  	if (kernel && !user_mode(regs)) {
+>  		if (add_mark)
+>  			perf_callchain_store_context(&ctx, PERF_CONTEXT_KERNEL);
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index eaba00ec2..b3401f403 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -7559,6 +7559,8 @@ perf_callchain(struct perf_event *event, struct pt_regs *regs)
+>  {
+>  	bool kernel = !event->attr.exclude_callchain_kernel;
+>  	bool user   = !event->attr.exclude_callchain_user;
+> +	bool host   = !event->attr.exclude_host;
+> +	bool guest  = !event->attr.exclude_guest;
+>  	/* Disallow cross-task user callchains. */
+>  	bool crosstask = event->ctx->task && event->ctx->task != current;
+>  	const u32 max_stack = event->attr.sample_max_stack;
+> @@ -7567,7 +7569,10 @@ perf_callchain(struct perf_event *event, struct pt_regs *regs)
+>  	if (!kernel && !user)
+>  		return &__empty_callchain;
+>  
+> -	callchain = get_perf_callchain(regs, 0, kernel, user,
+> +	if (!host && !guest)
+> +		return &__empty_callchain;
+> +
+> +	callchain = get_perf_callchain(regs, 0, kernel, user, host, guest,
+>  				       max_stack, crosstask, true);
+>  	return callchain ?: &__empty_callchain;
+>  }
+
+
+Best regards,
+	Maxim Levitsky
+
+
