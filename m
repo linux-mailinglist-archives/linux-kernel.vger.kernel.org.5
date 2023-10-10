@@ -2,85 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 309A37BFE9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9881C7BFEA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231989AbjJJN5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 09:57:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55350 "EHLO
+        id S231792AbjJJN7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 09:59:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232212AbjJJN5o (ORCPT
+        with ESMTP id S232081AbjJJN7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 09:57:44 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E2AF99;
-        Tue, 10 Oct 2023 06:57:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=fnkd1aij7Tpc2L+QxXML50n+8ixS5invGoodurLeWlU=; b=ngCOHN8v9MKAiT7mihTGC+tYRD
-        QYIdeaZOHdujS3q+ZWzzSpAAbysLySouhqwNJLonOb0A+VsrjcKoZXXGowyP+vJ2zSzfZq5ZFLx1R
-        nQCk/5liQePtbmDPa16MOpNFgsXN4m+6JduYZfCOTAuzkNtfgX/mt6z3sPYkLJsQzBJE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qqDEs-001Fhr-T4; Tue, 10 Oct 2023 15:57:34 +0200
-Date:   Tue, 10 Oct 2023 15:57:34 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Ante Knezic <ante.knezic@helmholz.de>
-Cc:     UNGLinuxDriver@microchip.com, conor+dt@kernel.org,
-        davem@davemloft.net, devicetree@vger.kernel.org,
-        edumazet@google.com, f.fainelli@gmail.com,
-        krzysztof.kozlowski+dt@linaro.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, marex@denx.de,
-        netdev@vger.kernel.org, olteanv@gmail.com, pabeni@redhat.com,
-        robh+dt@kernel.org, woojung.huh@microchip.com
-Subject: Re: [PATCH net-next 2/2] dt-bindings: net: microchip,ksz: document
- microchip,rmii-clk-internal
-Message-ID: <5348ffc3-a514-4d61-85f9-56910aa94d44@lunn.ch>
-References: <6a366c3a-49e7-42a4-83b2-ef98e7df0896@lunn.ch>
- <20231010134139.17180-1-ante.knezic@helmholz.de>
+        Tue, 10 Oct 2023 09:59:48 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F211EAC
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 06:59:46 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9a58dbd5daeso1018823966b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 06:59:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696946385; x=1697551185; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FXx/Nx2Umfqqvx1+mbJjlkokHcEDmGDoBibG1vLbM2c=;
+        b=cowIt9DHAdl9WF1o5/zwxZZaO+CZrezLxCFiYk8PKUe6B3tzD2Vuwgi6eRjvwQMRZW
+         ic8zaOHQ05/yQuco9UH1edeKVK76CF/Kn2Vn678E+Vs9xXPb29HlYhsbfwZ+ArJlg4r5
+         x9bQyDOzDMDtWlHqVORVPJx4ONaGTeLTfyHIUpOObzBlJgDdSYNY0rmkCq5NSUyk6TPc
+         nx7wRbCgHlBNSTcWBKHhtFRaYBqtCkyAbIXd7cl+PeK7XJoqSRAheaGZExR40P2KrgYX
+         CnKYq7QVtYe7IAcvSGmzopBBHV8XV6M0cDsAG4vmqr5v/Ynp1mKN57e1CQlk/EkWMjDg
+         hx/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696946385; x=1697551185;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FXx/Nx2Umfqqvx1+mbJjlkokHcEDmGDoBibG1vLbM2c=;
+        b=kU1z6swkeiM9QfyTwj0oRM4nMldWCNq2V2rYyERVVN2zrKkVzoJcGLtThoaqaEP+Z9
+         VJI0u/bAoSW0Zi+M+IBGhih01zp6WzdAS8Cx3b7ec0m1P4HSFMkWQAgSejHvjvsEV6QG
+         Fwh2RjXv5B/oxszuwGoZnP6DnxMy3j/j0tymJgtUX3bcwuVP/reWQOo9mn6opGPjcV9M
+         KEh8P2OxAufi6jr3MidgCC8C8LZs/F/Q2gcchXzCUpEzS3G0pGmXVTnIG809bGvN0rbp
+         JKSyIz+/ZOy0DnflaoJJ9PdxZ4a32XqZJHsqx5gSo4qFHTqmnbhGDggvOcqt9SJ5bokW
+         PrKQ==
+X-Gm-Message-State: AOJu0YyXX5Qo+S6BaQDdZtkfdAyHrJ7jvCg6g9ZTgEpGfRcfm14SZgZH
+        pxRLLoOlYEFcjRDuODOBUOGbwuYSyniEPsKUwmJkdw==
+X-Google-Smtp-Source: AGHT+IEZTLuEF4tR/B84ESaBI0t1Pkk/Kk6zu2q3mIk/stooA1t3MqfPi2p1F9iqETJtZxssD3PCoQ==
+X-Received: by 2002:a17:906:3012:b0:99d:e617:abeb with SMTP id 18-20020a170906301200b0099de617abebmr16608511ejz.23.1696946385469;
+        Tue, 10 Oct 2023 06:59:45 -0700 (PDT)
+Received: from [192.168.69.115] (aif79-h01-176-172-113-148.dsl.sta.abo.bbox.fr. [176.172.113.148])
+        by smtp.gmail.com with ESMTPSA id p16-20020a170906b21000b009b9a1714524sm8616055ejz.12.2023.10.10.06.59.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Oct 2023 06:59:45 -0700 (PDT)
+Message-ID: <7a145a7e-02b3-64c3-348c-34037d5aeca1@linaro.org>
+Date:   Tue, 10 Oct 2023 15:59:42 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231010134139.17180-1-ante.knezic@helmholz.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH] MIPS: KVM: Fix a build warning about variable set but not
+ used
+To:     Huacai Chen <chenhuacai@loongson.cn>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     kvm@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>, stable@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+References: <20231010085434.2678144-1-chenhuacai@loongson.cn>
+Content-Language: en-US
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <20231010085434.2678144-1-chenhuacai@loongson.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 03:41:39PM +0200, Ante Knezic wrote:
-> On Tue, 10 Oct 2023 15:25:44 +0200, Andrew Lunn wrote:
-> >> +  microchip,rmii-clk-internal:
-> >> +    $ref: /schemas/types.yaml#/definitions/flag
-> >> +    description:
-> >> +      Set if the RMII reference clock should be provided internally. Applies only
-> >> +      to KSZ88X3 devices.
-> >
-> >It would be good to define what happens when
-> >microchip,rmii-clk-internal is not present. Looking at the code, you
-> >leave it unchanged. Is that what we want, or do we want to force it to
-> >external?
-> >
-> >	Andrew
+On 10/10/23 10:54, Huacai Chen wrote:
+> After commit 411740f5422a ("KVM: MIPS/MMU: Implement KVM_CAP_SYNC_MMU")
+
+Date:   Tue Dec 13 16:32:39 2016 +0000
+
+7 years ago...
+
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+
+> old_pte is no longer used in kvm_mips_map_page(). So remove it to fix a
+> build warning about variable set but not used:
 > 
-> Default register setting is to use external RMII clock (which is btw only 
-> available option for other KSZ devices - as far as I am aware) so I guess 
-> theres no need to force it to external clock?
-
-We just need to watch out for a bootloader setting it. Or is it really
-guaranteed to be false, because the DSA driver always does a device reset,
-removing all existing configuration?
-
-I prefer it is unambiguously documented what not having the property
-means.
-
-	Andrew
-
+>     arch/mips/kvm/mmu.c: In function 'kvm_mips_map_page':
+>>> arch/mips/kvm/mmu.c:701:29: warning: variable 'old_pte' set but not used [-Wunused-but-set-variable]
+>       701 |         pte_t *ptep, entry, old_pte;
+>           |                             ^~~~~~~
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 411740f5422a960 ("KVM: MIPS/MMU: Implement KVM_CAP_SYNC_MMU")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202310070530.aARZCSfh-lkp@intel.com/
+> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+> ---
+>   arch/mips/kvm/mmu.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
 
