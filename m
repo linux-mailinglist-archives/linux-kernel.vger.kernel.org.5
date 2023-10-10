@@ -2,360 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EDBB7BFBDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5DC7BFC11
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231792AbjJJM42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 08:56:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43750 "EHLO
+        id S232117AbjJJM7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 08:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231400AbjJJM41 (ORCPT
+        with ESMTP id S232110AbjJJM7b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 08:56:27 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD73B6;
-        Tue, 10 Oct 2023 05:56:25 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50306b2920dso6854644e87.0;
-        Tue, 10 Oct 2023 05:56:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696942584; x=1697547384; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GY9gPDeUaSknCeaElg4I6hYIBAvst50tsadQ+lMYZbM=;
-        b=F0X9+iRkX/D/BEhm+6Cc+FDOI07w7ojK+pyA8Ly1oc/PTTIxnBvBtOUq2qFmSSTlSP
-         NIN6Fkeo5vwMnNLW1akLGjrb6ucotMr+LZiezAJuR/JI9x2M8PBLbpm381i5+O1IaegI
-         ExVXKWGLivOlJasp5rVphk16ZC0lta+FA9IrEY3DsriWka76yM/jSijXneJdLvwUkTUt
-         o3rD4+DtluiAJP9Dwx9lVowtq0iJj9rcfp4VmkqHLXXvhStvUfyHD1VzYEyOKtag0aZD
-         rem0QjJeP2904LRkBBjsKhRHl4s1ULBEVqGL2H2HikeUqyPS5fpnmJJxCEX8K6sDXHRa
-         yaeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696942584; x=1697547384;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GY9gPDeUaSknCeaElg4I6hYIBAvst50tsadQ+lMYZbM=;
-        b=e7yBPsFlQeX3tTImRqmGt/bOs4eFHp3lwpBhVDorkyD8z0tN8Iqf0020IgPCo3ztk7
-         ntEYitjS/FryLlzYKci/uDz/e77ZmN+Y7iT3T7lIuheYlQaz7NWW16ygMEtuGLbnKjw0
-         BP+mOrRBj/4JibmdcDVDkHFa9AzLrdMx1Ph908mBR0jRLXIoer+rPOMTBsC7PJ4nP7wE
-         JeKqnq20o4Uk1NdmmWnvXVQxHKoA1nQhUaw64Jp2AOoYyb4lswf7ET+1yNdzWt+10QkA
-         jgewGzzEmxEihL3hY8f9tqyLfqSGDmt2RCQCQi8Gk9BglwZ1xajOdtawtTP/pHFEWc3U
-         eQpQ==
-X-Gm-Message-State: AOJu0YyFPZnqDs5j8yZc0LJbavgYy5bWEZzSbkZt6dJEfK6jh3G4DGcH
-        t6CkUjp1tG5d838nWRCwpc0=
-X-Google-Smtp-Source: AGHT+IGjnHkXFFIZmo81XTStNXHpebORjc4xjSe2sljK9Zh74PIK+03yiYxpob5LABfxaQZTob/KvA==
-X-Received: by 2002:a05:6512:1391:b0:500:a1e4:fc45 with SMTP id fc17-20020a056512139100b00500a1e4fc45mr11212632lfb.21.1696942583404;
-        Tue, 10 Oct 2023 05:56:23 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:16f8:1500::7? (dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::7])
-        by smtp.gmail.com with ESMTPSA id h22-20020ac25976000000b005048f11892dsm1804969lfp.171.2023.10.10.05.56.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Oct 2023 05:56:22 -0700 (PDT)
-Message-ID: <0d05bf24-caa6-0f86-b531-22dc08b9cadc@gmail.com>
-Date:   Tue, 10 Oct 2023 15:56:22 +0300
+        Tue, 10 Oct 2023 08:59:31 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42768AC;
+        Tue, 10 Oct 2023 05:59:29 -0700 (PDT)
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39A8Ll47012942;
+        Tue, 10 Oct 2023 14:58:49 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=selector1; bh=McU8TFE
+        IZ+S2rlO5bzzEQ3oyUtZZAZ4HlIsAryT/jcI=; b=BEezo6eAC7VQfos5WepkiXV
+        cgy20U2w0o50zse659NHEzz/MM8ylMMEGdtPNjXojTapb5ZN65ec6d+zSCymKBzc
+        NjIii1ssg/HMg4/v5OXP2al0N/li1LQqBs7DKkFO9G5m0Uh7KzXDU3PpeoWO8rW5
+        rRuAWV3CSV03Tq6MX6J17U5aAG7ZgaEiJePP0HtXMT0Es76/EEW+KUOAllBWD6OK
+        cPOgFE5KAjFjv6tP164z8KaT3g1TD5Qa26sGZI/zmwK/5kvo2W58RDFfOHz7y+Q7
+        biHSCQtGu2WFCuEZv7BGvc0rgQ9VG07/KQhvseByiqJFb4IUELDqcFJpJNxNvIQ=
+        =
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3tkhk3j04b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Oct 2023 14:58:49 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 30BEF100058;
+        Tue, 10 Oct 2023 14:58:48 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0840E2309E2;
+        Tue, 10 Oct 2023 14:58:48 +0200 (CEST)
+Received: from localhost (10.201.20.32) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 10 Oct
+ 2023 14:58:47 +0200
+From:   Gatien Chevallier <gatien.chevallier@foss.st.com>
+To:     <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
+        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <alexandre.torgue@foss.st.com>,
+        <vkoul@kernel.org>, <jic23@kernel.org>,
+        <olivier.moysan@foss.st.com>, <arnaud.pouliquen@foss.st.com>,
+        <mchehab@kernel.org>, <fabrice.gasnier@foss.st.com>,
+        <andi.shyti@kernel.org>, <ulf.hansson@linaro.org>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <hugues.fruchet@foss.st.com>, <lee@kernel.org>, <will@kernel.org>,
+        <catalin.marinas@arm.com>, <arnd@kernel.org>,
+        <richardcochran@gmail.com>, Frank Rowand <frowand.list@gmail.com>,
+        <peng.fan@oss.nxp.com>
+CC:     <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+        <linux-i2c@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, <linux-media@vger.kernel.org>,
+        <linux-mmc@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>, <linux-serial@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        Gatien Chevallier <gatien.chevallier@foss.st.com>
+Subject: [PATCH v6 00/11] Introduce STM32 Firewall framework
+Date:   Tue, 10 Oct 2023 14:57:08 +0200
+Message-ID: <20231010125719.784627-1-gatien.chevallier@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US, en-GB
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <ZRvjuZaQWdZw1U1I@dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi>
- <20231005163026.2c7707de@jic23-huawei>
- <751a87c9-a4aa-4e06-1d12-1e2b1a3487de@gmail.com>
- <20231010110419.00899e0e@jic23-huawei>
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-Subject: Re: [PATCH] iio: sanity check available_scan_masks array
-In-Reply-To: <20231010110419.00899e0e@jic23-huawei>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.201.20.32]
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-10_08,2023-10-10_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/23 13:04, Jonathan Cameron wrote:
-> On Fri, 6 Oct 2023 14:10:16 +0300
-> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
-> 
->> Hi Again Jonathan.
->>
->> On 10/5/23 18:30, Jonathan Cameron wrote:
->>> On Tue, 3 Oct 2023 12:49:45 +0300
->>> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
->>>    
->>>> When IIO goes through the available scan masks in order to select the
->>>> best suiting one, it will just accept the first listed subset of channels
->>>> which meets the user's requirements. If driver lists a mask which is a
->>>> subset of some of the masks previously in the array of
->>>> avaliable_scan_masks, then the latter one will never be selected.
->>>>
->>>> Add a warning if driver registers masks which can't be used due to the
->>>> available_scan_masks-array ordering.
->>>>
->>>> Suggested-by: Jonathan Cameron <jic23@kernel.org>
->>>> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
->>> Hi Matti
->>>
->>> Thanks for doing this.  A few comments inline + maybe we need to think
->>> about a unit test for the matching code. I feel we aren't pushing the
->>> corners of that in any drivers so far so it might bite us later.
->>>
->>> Still that's a job for another day.
->>>
->>> Jonathan
->>>    
->>>>
->>>> ---
->>>> The change was suggested by Jonathan here:
->>>> https://lore.kernel.org/lkml/20230924170726.41443502@jic23-huawei/
->>>> ---
->>>>    drivers/iio/industrialio-core.c | 57 +++++++++++++++++++++++++++++++++
->>>>    1 file changed, 57 insertions(+)
->>>>
->>>> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
->>>> index c77745b594bd..d4f37f4eeec0 100644
->>>> --- a/drivers/iio/industrialio-core.c
->>>> +++ b/drivers/iio/industrialio-core.c
->>>> @@ -1896,6 +1896,53 @@ static int iio_check_extended_name(const struct iio_dev *indio_dev)
->>
->> ...
->>
->>>> +
->>>> +	for (num_masks = 0; *av_masks; num_masks++)
->>>
->>> I think we can't just check *av_masks - need bitmap_empty() as first
->>> long might be 0 but could be bits set in the next one.
->>>    
->>>> +		av_masks += longs_per_mask;
->>
->> I did switch this to:
->> +       for (num_masks = 0; !bitmap_empty(av_masks, masklength);
->> num_masks++)
->> +               av_masks += longs_per_mask;
->>
->> but this kind of freaks me out.
-> 
-> Good because I'm fairly sure you need to reduce the masklength int hat
-> bitmap_empty as well.  It is getting a bit complex.
+Introduce STM32 Firewall framework for STM32MP1x and STM32MP2x
+platforms. STM32MP1x(ETZPC) and STM32MP2x(RIFSC) Firewall controllers
+register to the framework to offer firewall services such as access
+granting.
 
-Hm. As far as I can say the masklength is constant telling how many bits 
-there is in one mask(?) I don't think we can reduce it. Idea is just to 
-increment the av_masks pointer until we find the zero mask indicating 
-end of an array. This is how we count the amount of masks in the array.
+This series of patches is a new approach on the previous STM32 system
+bus, history is available here:
+https://lore.kernel.org/lkml/20230127164040.1047583/
 
-Caveat being that if driver has used single long '0' to indicate the end 
-of an array, and if the masklength > 32 - we'll end up reading out of 
-bounds. (as we agreed later in the mail. OTOH, we also agreed there does 
-not seem to be drivers with masklength > 32 utilizing the 
-available_scan_masks - so this is just trying to avoid problems in the 
-future).
+The need for such framework arises from the fact that there are now
+multiple hardware firewalls implemented across multiple products.
+Drivers are shared between different products, using the same code.
+When it comes to firewalls, the purpose mostly stays the same: Protect
+hardware resources. But the implementation differs, and there are
+multiple types of firewalls: peripheral, memory, ... 
 
->>
->> I think in kernel we see two ways of constructing and passing arrays to
->> frameworks. One is creating a NULL terminated array, the other being an
->> array which size is given. The available_scan_masks is using the first
->> approach.
->>
->> The array represents bitmasks, which are thought to be of arbitrary
->> length. The type of array items is longs though. When building an arry
->> like this, it is easy to just do:
->>
->> unsigned long masks[] = {
->> 	mask1_hi,
->> 	mask1_lo,
->> 	mask2_hi,
->> 	mask2_lo,
->> 	...
->> 	maskN_lo,
->> 	/* sentinel */
->> 	0
->> }
->>
->> (By the way, I've always hated that 'sentinel' comment as it - in my
->> opinion - is not worth adding. I think the meaning of 0 should be
->> obvious, but here I just added it to alleviate the problem).
->>
->> Here, if I'm not mistaken, the check I implemented would go reading out
->> of the array bounds.
-> 
-> It does indeed.
-> 
-> 
->>
->> Knowing how easy it would be slip the above array past my reviewing eyes
->> - I find this scary. And ugly part of this is that we can't detect this
->> in the iio-core side, because we have no way of knowing how big the
->> array and sentinel are. What makes this worse is that the core does:
->>
->> for (i = 0; i < indio_dev->num_channels; i++)
->>                           ml = max(ml, channels[i].scan_index + 1);
->>                   indio_dev->masklength = ml;
->>
->> so, masklength may not be what was set in driver.
-> 
-> IIRC this is there to allow for sparse scan_index values.  Those are
-> very rare, but I think there are a few drivers doing that because
-> it allowed for slightly simpler code a long time back.  May not even
-> matter today.  Key is that mask_length is big enough to allow the
-> bits at all present scan_index values to be set.
-> 
-> So it should always match with the drivers where this is used to make
-> sure available_scan_masks has the right number of longs per entry,
-> but the drivers may need to be a little clever if they are both
-> doing large numbers of channels and sparse scan_index values.
-> AFAIK there are none doing that. Going further I don't recall any
-> drivers that use the available_scan_masks stuff going beyond 32
-> channels (so needing more than one unsigned long per element).
+Some hardware firewall controllers such as the RIFSC implemented on
+STM32MP2x platforms may require to take ownership of a resource before
+being able to use it, hence the requirement for firewall services to
+take/release the ownership of such resources.
 
-I didn't find one either.
+On the other hand, hardware firewall configurations are becoming
+more and more complex. These mecanisms prevent platform crashes
+or other firewall-related incoveniences by denying access to some
+resources.
 
->> I did quick and dirty grep for "_scan_mask\[" in iio directory and
->> didn't spot any bigger than a few channels masks. Still, this makes me
->> worried.
->>
->> BTW: I did also:
->>
->> Author: Matti Vaittinen <mazziesaccount@gmail.com>
->> Date:   Fri Oct 6 13:53:11 2023 +0300
->>
->>       iio: buffer: use bitmap_empty() to find last mask
->>
->>       When IIO buffer code is scanning the array of available masks for
->>       matching the user's enable request to channel configuration
->> supported by
->>       driver, the code uses a 'check for long 0' as indication of last mask.
->>       This does not work right for channel masks greater than BITS_PER_LONG.
->>
->>       Use bitmap_empty() to find the last element in available_scan_masks
->>       array.
->>
->>       Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
->>       ---
->>       NOTE: This is potentially hazardous change. Please, don't pick without
->>       thorough check and understanding.
->>
->> diff --git a/drivers/iio/industrialio-buffer.c
->> b/drivers/iio/industrialio-buffer.c
->> index 176d31d9f9d8..1e59afddcf9a 100644
->> --- a/drivers/iio/industrialio-buffer.c
->> +++ b/drivers/iio/industrialio-buffer.c
->> @@ -413,7 +413,7 @@ static const unsigned long
->> *iio_scan_mask_match(const unsigned long *av_masks,
->>    {
->>           if (bitmap_empty(mask, masklength))
->>                   return NULL;
->> -       while (*av_masks) {
->> +       while (!bitmap_empty(av_masks, masklength)) {
->>                   if (strict) {
->>                           if (bitmap_equal(mask, av_masks, masklength))
->>                                   return av_masks;
->>
->> but this is just as fragile - for obvious reasons.
-> Ah. yes, that is indeed a bug.  I'm not sure your fix is particularly
-> fragile though.  This comes back to us having no drivers that actually use
-> big bitmaps yet.
-> 
-> Key is that we need the available_scan_masks null terminator to be the
-> same length as any other entry - so if multiple unsigned longs needed
-> then multiple 0's should be there.
+The stm32 firewall framework offers an API that is defined in
+firewall controllers drivers to best fit the specificity of each
+firewall.
 
-Exactly my thinking, and why I think this fix would be fragile. I am not 
-convinced people would think of adding enough of zeroes.
+For every peripherals protected by either the ETZPC or the RIFSC, the
+firewall framework checks the firewall controlelr registers to see if
+the peripheral's access is granted to the Linux kernel. If not, the
+peripheral is configured as secure, the node is marked populated,
+so that the driver is not probed for that device.
 
-> We should definitely document that
-> and ideally add a test case.   We can bulk out the dummy driver
-> to trigger these and provide an example of how available_scan_masks
-> should be set.
-> 
->>
->> One way around this would be to have the first bit in the long always
->> set for a valid mask - and take this into account when going through the
->> masks. It's probably somewhat more confusing than current code though -
->> but it would allow using just a single long (with all - or  at least
->> first - bits zero to indicate end of masks).
-> 
-> Too complex.
-> 
+The firewall framework relies on the access-controller device tree
+binding. It is used by peripherals to reference a domain access
+controller. In this case a firewall controller. The bus uses the ID
+referenced by the access-controller property to know where to look
+in the firewall to get the security configuration for the peripheral.
+This allows a device tree description rather than a hardcoded peripheral
+table in the bus driver.
 
-I think I agree. At least for as long as we don't actually have any 
-available_scan_masks users with masklength > 32
+The STM32 ETZPC device is responsible for filtering accesses based on
+security level, or co-processor isolation for any resource connected
+to it.
 
->>
->> Other option I see is to just error out if available_scan_masks array is
->> given with larger than one 'long' wide masks and worry things when this
->> breaks.
-> 
-> That would kick the problem into the long grass.
+The RIFSC is responsible for filtering accesses based on Compartment
+ID / security level / privilege level for any resource connected to
+it.
 
-Well, not 100% sure I interpret the idiom correctly ;) In any case, I'd 
-say this would indeed postpone dealing with the problem to the future. 
-To the point we actually seem to have a problem. The "long grass" as if 
-hiding the problem is something we can avoid by adding something like:
+STM32MP13/15/25 SoC device tree files are updated in this series to
+implement this mecanism.
 
-if (masklength > 32 && idev->available_scan_masks) {
-	/*
-	 * Comment mowing the long grass.
-	 */
-	dev_err( ...);
-	return -EINVAL;
-}
+Changes in V6:
+	- Rename access-controller to access-controllers
+	- Remove access-controller-provider
+	- Update device trees and other bindings accordingly
+	- Rework ETZPC/RIFSC bindings to define what access-controllers
+	  cells contain inside #access-controller-cells
+	- Some other minor fixes
 
-to the device registration.
+Changes in V5:
+	- Integrate and rework the "feature-domains" binding patch in
+	  this patchset. The binding is renamed to "access-controller"
+	- Rename every feature-domain* reference to access-control*
+	  ones
+	- Correct loop bug and missing select STM32_FIREWALL in 32-bit
+	  platform Kconfig
+	
 
->>
->> Anyways, I don't like using bitmap_empty() for array of bitmaps which
->> may be longer than BITS_PER_LONG unless we can sanity check the size of
->> the array...
->>
->> How do you feel about this?
-> 
-> Agreed it's problematic as that null terminator isn't clearly forced to
-> be big enough.  Hmm. Can we cheat for any drivers that actually need large
-> masks (when they come along) and use an appropriate 2D array.
+Changes in V4:
+	- Fix typo in commit message and YAML check errors in
+	  "dt-bindings: Document common device controller bindings"
+	  Note: This patch should be ignored as stated in the cover
+	  letter. I've done this to avoid errors on this series of
+	  patch
+	- Correct code syntax/style issues reported by Simon Horman
+	- Added Jonathan's tag for IIO on the treewide patch
 
-I think we could. Or, maybe develop some mask initialization macro 
-magic. It'd just be cool if one did not need to do things differently 
-for multi long masks.
+Changes in V3:
 
-> unsigned long available_masks[][2] = {
-> 	{mask0_ll, mask0_hl},
-> 	{mask0_ll, mask0_hl},
-> 	{}
-> };
+	Change incorrect ordering for bindings commits leading
+	to an error while running
+	"make DT_CHECKER_FLAGS=-m dt_binding_check"
 
-don't know how would it work to have
-unsigned long available_masks[][1] = {
-	{mask0},
-	{mask1},
-	{}
-};
+Changes in V2:
 
-for regular masks with 1 long / mask as well? At first look it seems 
-horrible to me but at least it would be a standard :) Don't know if 
-there is a sane way to make a macro for it.
+	generic:
+		- Add fw_devlink dependency for "feature-domains"
+		  property.
 
-> 	iio_dev->available_scan_masks = (unsigned long *)available_masks;
-> 
-> If we put such an example into the dummy / example driver then that might
-> act to avoid us getting bugs in future + test the fix you have above and
-> related.
+	bindings:
+		- Corrected YAMLS errors highlighted by Rob's robot
+		- Firewall controllers YAMLs no longer define the
+		  maxItems for the "feature-domains" property
+		- Renamed st,stm32-rifsc.yaml to
+		  st,stm32mp25-rifsc.yaml
+		- Fix examples in YAML files
+		- Change feature-domains maxItems to 2 in firewall
+		  consumer files as there should not be more than
+		  2 entries for now
+		- Declare "feature-domain-names" as an optional
+		  property for firewall controllers child nodes.
+		- Add missing "feature-domains" property declaration
+		  in bosch,m_can.yaml and st,stm32-cryp.yaml files
 
-Well, at least it shouldn't hurt to have some example - although I'm 
-still tempted to use the "long grass" - option ;)
+	firewall framework:
+		- Support multiple entries for "feature-domains"
+		  property
+		- Better handle the device-tree parsing using
+		  phandle+args APIs
+		- Remove "resource firewall" type
+		- Add a field for the name of the firewall entry
+		- Fix licenses
+	
+	RIFSC:
+		- Add controller name
+		- Driver is now a module_platform_driver
+		- Fix license
 
-Yours,
-	-- Matti
+	ETZPC:
+		- Add controller name
+		- Driver is now a module_platform_driver
+		- Fix license
+
+	Device trees:
+		- Fix rifsc node name
+		- Move the "ranges" property under the
+		  "feature-domains" one
+Gatien Chevallier (10):
+  dt-bindings: treewide: add access-controllers description
+  dt-bindings: bus: document RIFSC
+  dt-bindings: bus: document ETZPC
+  firewall: introduce stm32_firewall framework
+  of: property: fw_devlink: Add support for "access-controller"
+  bus: rifsc: introduce RIFSC firewall controller driver
+  arm64: dts: st: add RIFSC as an access controller for STM32MP25x
+    boards
+  bus: etzpc: introduce ETZPC firewall controller driver
+  ARM: dts: stm32: add ETZPC as a system bus for STM32MP15x boards
+  ARM: dts: stm32: add ETZPC as a system bus for STM32MP13x boards
+
+Oleksii Moisieiev (1):
+  dt-bindings: document generic access controllers
+
+ .../access-controllers.yaml                   |   84 +
+ .../bindings/bus/st,stm32-etzpc.yaml          |   87 +
+ .../bindings/bus/st,stm32mp25-rifsc.yaml      |   96 +
+ .../bindings/crypto/st,stm32-cryp.yaml        |    4 +
+ .../bindings/crypto/st,stm32-hash.yaml        |    4 +
+ .../devicetree/bindings/dma/st,stm32-dma.yaml |    4 +
+ .../bindings/dma/st,stm32-dmamux.yaml         |    4 +
+ .../devicetree/bindings/i2c/st,stm32-i2c.yaml |    4 +
+ .../bindings/iio/adc/st,stm32-adc.yaml        |    4 +
+ .../bindings/iio/adc/st,stm32-dfsdm-adc.yaml  |    4 +
+ .../bindings/iio/dac/st,stm32-dac.yaml        |    4 +
+ .../bindings/media/cec/st,stm32-cec.yaml      |    4 +
+ .../bindings/media/st,stm32-dcmi.yaml         |    4 +
+ .../memory-controllers/st,stm32-fmc2-ebi.yaml |    4 +
+ .../bindings/mfd/st,stm32-lptimer.yaml        |    4 +
+ .../bindings/mfd/st,stm32-timers.yaml         |    4 +
+ .../devicetree/bindings/mmc/arm,pl18x.yaml    |    4 +
+ .../bindings/net/can/bosch,m_can.yaml         |    4 +
+ .../devicetree/bindings/net/stm32-dwmac.yaml  |    4 +
+ .../bindings/phy/phy-stm32-usbphyc.yaml       |    4 +
+ .../bindings/regulator/st,stm32-vrefbuf.yaml  |    4 +
+ .../devicetree/bindings/rng/st,stm32-rng.yaml |    4 +
+ .../bindings/serial/st,stm32-uart.yaml        |    4 +
+ .../bindings/sound/st,stm32-i2s.yaml          |    4 +
+ .../bindings/sound/st,stm32-sai.yaml          |    4 +
+ .../bindings/sound/st,stm32-spdifrx.yaml      |    4 +
+ .../bindings/spi/st,stm32-qspi.yaml           |    4 +
+ .../devicetree/bindings/spi/st,stm32-spi.yaml |    4 +
+ .../devicetree/bindings/usb/dwc2.yaml         |    4 +
+ MAINTAINERS                                   |    7 +
+ arch/arm/boot/dts/st/stm32mp131.dtsi          | 1025 +++---
+ arch/arm/boot/dts/st/stm32mp133.dtsi          |   51 +-
+ arch/arm/boot/dts/st/stm32mp13xc.dtsi         |   19 +-
+ arch/arm/boot/dts/st/stm32mp13xf.dtsi         |   19 +-
+ arch/arm/boot/dts/st/stm32mp151.dtsi          | 2756 +++++++++--------
+ arch/arm/boot/dts/st/stm32mp153.dtsi          |   52 +-
+ arch/arm/boot/dts/st/stm32mp15xc.dtsi         |   19 +-
+ arch/arm/mach-stm32/Kconfig                   |    1 +
+ arch/arm64/Kconfig.platforms                  |    1 +
+ arch/arm64/boot/dts/st/stm32mp251.dtsi        |    6 +-
+ drivers/bus/Kconfig                           |    9 +
+ drivers/bus/Makefile                          |    1 +
+ drivers/bus/stm32_etzpc.c                     |  141 +
+ drivers/bus/stm32_firewall.c                  |  294 ++
+ drivers/bus/stm32_firewall.h                  |   83 +
+ drivers/bus/stm32_rifsc.c                     |  252 ++
+ drivers/of/property.c                         |    2 +
+ include/linux/bus/stm32_firewall_device.h     |  141 +
+ 48 files changed, 3331 insertions(+), 1919 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/access-controllers/access-controllers.yaml
+ create mode 100644 Documentation/devicetree/bindings/bus/st,stm32-etzpc.yaml
+ create mode 100644 Documentation/devicetree/bindings/bus/st,stm32mp25-rifsc.yaml
+ create mode 100644 drivers/bus/stm32_etzpc.c
+ create mode 100644 drivers/bus/stm32_firewall.c
+ create mode 100644 drivers/bus/stm32_firewall.h
+ create mode 100644 drivers/bus/stm32_rifsc.c
+ create mode 100644 include/linux/bus/stm32_firewall_device.h
 
 -- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
+2.35.3
 
