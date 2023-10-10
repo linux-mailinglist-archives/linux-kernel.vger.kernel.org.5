@@ -2,101 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD597C4114
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 22:23:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 996CE7C4133
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 22:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230520AbjJJUXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 16:23:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41960 "EHLO
+        id S231998AbjJJU2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 16:28:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjJJUXb (ORCPT
+        with ESMTP id S231150AbjJJU2T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 16:23:31 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7EB8E
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 13:23:30 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-53808d5b774so10873495a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 13:23:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696969409; x=1697574209; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q9K/39pYVDB63ZN/U40w9C502En4aUTJoZoW8PKDMTc=;
-        b=RoEmv0VXe20h981NDuvT4ZuoSNe7IMYJLp0GP4o1wgwErn9pPxGpTfqV3ZGOQvHw7a
-         iwzIiXFw82+mrHyRpC2jHAIoplEjqAJo0mY1Y6PaWrQXLJv6zC76RVLkk3z6niu+N7Fk
-         dCXvJTQDV0uTnP5xneHfE8+qG1yPsa+NGF6q+bygsW+EEdtsSdYDWZs1nH6IPYudLGGX
-         bJbDlAgtpm7XVAGP1Ffe9W8hNqaRJ4WcsQbydzjXUUKyRqJzVPSubEQe6IHToDBo+wM+
-         aRXZQ1rifHx+NXY3qDWEUfDkoZJIZNV7jGH38qKiNmilo1zKBf7uPgF2xgvIHKJd8cQC
-         uU8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696969409; x=1697574209;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Q9K/39pYVDB63ZN/U40w9C502En4aUTJoZoW8PKDMTc=;
-        b=iUrqoGLqhof1rQr3/lXaSXWmOHFq7Qg4c4U2682qzM/B7PumKPx5zImCl8851nPILe
-         QJsICn1euY+FI7+gZmnaw1874EZ1bMqciMN5lGEus+OlGjvYwR8X7SaAg0OSUvhJl+FX
-         Q2NbeDy/8zhUH0AzdrkL4Z6ORMvt56SDLQMAT9/TLiz4+G6h6xBaOptikTxLUwOyLiW4
-         W6SIhRVU3dXvkP2QSFr3O63ne2tULZ9SSuaeqN/JPdCf3vqsngMKwtPHkjgnxEVQ7MAk
-         /4c3y1yKPOWsHfahFc5Y+GLsRx/a1GSt0Kt9leHqnNxvIOjBrksPs1QFdaFL3qk7M0uD
-         HXcA==
-X-Gm-Message-State: AOJu0YyWctLCgVPwJFHeulnIeUC/a/WJV6UB02hhAT+IFElXgMgrxiDx
-        rfbMILmiK4yYef2b+44BKlJf7J2IIsZMCGuv1S0=
-X-Google-Smtp-Source: AGHT+IGllDkDZOXntggqqiPf3dVIEhRfn/puLAvLIPz+t1Q0k06Gc6OysEHoI/3TNpo+v9866aIG21AyO2mZjaS6mW4=
-X-Received: by 2002:a17:906:7398:b0:9b1:aa5d:5d1f with SMTP id
- f24-20020a170906739800b009b1aa5d5d1fmr15193521ejl.73.1696969408945; Tue, 10
- Oct 2023 13:23:28 -0700 (PDT)
+        Tue, 10 Oct 2023 16:28:19 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31F3C94
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 13:28:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696969698; x=1728505698;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=GPG4krj48QNW1LSVLNAZAI9rOouBbrQWlNRVreJbBy0=;
+  b=ANR1vxaWXYqQdQkfSMbL3BDMgLhPyVcNoLvLIvHFjgAKWpiJ8BcIHhlI
+   XyL5j6InPUiCg7cuy106ZtlI6PPolEcrByGsDnZLAW796lDaW8muuKmEc
+   4dkH+LfYYSxaAJxXlYxQW2Jmi9+K7Vh3QbJN5uhDtuNuFsX8mBYPtWhMF
+   Ks+NYAqsykCUSCJm6sTaaeyTu4EUEFW3zTHYfDqg1w+QGoA2HsHyJE4YA
+   7uf8RvG12R8Kv4iL1ecNzDx6KRl6kvORsM7neE0X997SZyaJ9royTRZSZ
+   96utNKTWM0BL2UFPvDXTTleg7IKGfiSWCxj5AKQGyCqN+WSVFA+R5YI35
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="6060624"
+X-IronPort-AV: E=Sophos;i="6.03,213,1694761200"; 
+   d="scan'208";a="6060624"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 13:28:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="844282241"
+X-IronPort-AV: E=Sophos;i="6.03,213,1694761200"; 
+   d="scan'208";a="844282241"
+Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 10 Oct 2023 13:28:16 -0700
+Received: from kbuild by f64821696465 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qqJKt-00015Q-1e;
+        Tue, 10 Oct 2023 20:28:13 +0000
+Date:   Wed, 11 Oct 2023 04:27:39 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: tools/perf/util/bpf_skel/vmlinux/vmlinux.h: warning: ignored by one
+ of the .gitignore files
+Message-ID: <202310110451.rvdUZJEY-lkp@intel.com>
 MIME-Version: 1.0
-References: <20230820215320.4187-1-dakr@redhat.com> <20230820215320.4187-3-dakr@redhat.com>
- <0c50ff22-0f11-1e27-c32e-694ce2b1e6c5@shipmail.org> <ZO864yp3UyVEfEjz@pollux>
- <88c45fe6-0942-707c-9ea7-8486c177fcd7@shipmail.org> <ZO9Zq2RhbX8EeHrn@pollux>
- <736b6b6d-9e04-a27d-7d60-0c45d696b304@shipmail.org> <ZPB26A0/oLHTmyqk@cassiopeiae>
- <a8f28d62-daec-927a-a33d-5be3eec6a1ed@shipmail.org> <ZPDk/lao1JlBNGoJ@cassiopeiae>
- <8a8253ae-0b85-df90-b480-64eeebfafc6d@shipmail.org>
-In-Reply-To: <8a8253ae-0b85-df90-b480-64eeebfafc6d@shipmail.org>
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Wed, 11 Oct 2023 06:23:16 +1000
-Message-ID: <CAPM=9tz3o-m+8VJJ6hxWhykat0kpp1UE7dBJE3X91aHHo1Y2VA@mail.gmail.com>
-Subject: Re: [PATCH drm-misc-next 2/3] drm/gpuva_mgr: generalize
- dma_resv/extobj handling and GEM validation
-To:     =?UTF-8?Q?Thomas_Hellstr=C3=B6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>
-Cc:     Danilo Krummrich <dakr@redhat.com>, daniel@ffwll.ch,
-        matthew.brost@intel.com, thomas.hellstrom@linux.intel.com,
-        sarah.walker@imgtec.com, donald.robson@imgtec.com,
-        boris.brezillon@collabora.com, christian.koenig@amd.com,
-        faith.ekstrand@collabora.com, bskeggs@redhat.com,
-        Liam.Howlett@oracle.com, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I think we're then optimizing for different scenarios. Our compute
-> driver will use mostly external objects only, and if shared, I don't
-> forsee them bound to many VMs. What saves us currently here is that in
-> compute mode we only really traverse the extobj list after a preempt
-> fence wait, or when a vm is using a new context for the first time. So
-> vm's extobj list is pretty large. Each bo's vma list will typically be
-> pretty small.
+Hi Ian,
 
-Can I ask why we are optimising for this userspace, this seems
-incredibly broken.
+FYI, the error/warning still remains.
 
-We've has this sort of problem in the past with Intel letting the tail
-wag the horse, does anyone remember optimising relocations for a
-userspace that didn't actually need to use relocations?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   1c8b86a3799f7e5be903c3f49fcdaee29fd385b5
+commit: b7a2d774c9c5a9a3228c6169ecf32f05b96609cf perf build: Add ability to build with a generated vmlinux.h
+date:   4 months ago
+config: x86_64-allnoconfig (https://download.01.org/0day-ci/archive/20231011/202310110451.rvdUZJEY-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231011/202310110451.rvdUZJEY-lkp@intel.com/reproduce)
 
-We need to ask why this userspace is doing this, can we get some
-pointers to it? compute driver should have no reason to use mostly
-external objects, the OpenCL and level0 APIs should be good enough to
-figure this out.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310110451.rvdUZJEY-lkp@intel.com/
 
-Dave.
+All warnings (new ones prefixed by >>):
+
+>> tools/perf/util/bpf_skel/vmlinux/vmlinux.h: warning: ignored by one of the .gitignore files
+   tools/testing/selftests/arm64/tags/.gitignore: warning: ignored by one of the .gitignore files
+   tools/testing/selftests/arm64/tags/Makefile: warning: ignored by one of the .gitignore files
+   tools/testing/selftests/arm64/tags/run_tags_test.sh: warning: ignored by one of the .gitignore files
+   tools/testing/selftests/arm64/tags/tags_test.c: warning: ignored by one of the .gitignore files
+   tools/testing/selftests/kvm/.gitignore: warning: ignored by one of the .gitignore files
+   tools/testing/selftests/kvm/Makefile: warning: ignored by one of the .gitignore files
+   tools/testing/selftests/kvm/config: warning: ignored by one of the .gitignore files
+   tools/testing/selftests/kvm/settings: warning: ignored by one of the .gitignore files
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
