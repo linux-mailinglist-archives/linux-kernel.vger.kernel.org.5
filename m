@@ -2,73 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1257BFB68
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D31F97BFB6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231876AbjJJM1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 08:27:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35164 "EHLO
+        id S231449AbjJJM3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 08:29:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231462AbjJJM1c (ORCPT
+        with ESMTP id S229634AbjJJM3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 08:27:32 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C383AAC
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:27:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QqtFP4AnazNzdbPfmHwCNPWa5514KWnpnQevKgu7Ie0=; b=q7a5l0pS32MVrOxgHE3VPNyiHW
-        g3To4SpGohUEIWFWIpbCM55wYeWEpjo9KZ6AuS+A3u8k4PkmwmIcvIevsQ4A/CeFuY92kV0aXw+UA
-        i4/H7Dd6ssaitk3xydL/4GmKFDrf4ljfSSVpvlDt6tWI5UHywEzNSBoCInE6TaFkRdLkZtJyKbIPr
-        bdkDYgXUCTrmINQ5Rfoav5KTPKGYFmRD+Wk7IoIETWbFy5TfnVnm0SXq2HmsjJYYe3bBCCn7UJRM/
-        xq1dM1wodXboJ+PnQmcR41eEJKNx2uWjOU9yABHyNaMwVEj510X9NtREAxJHYSyPg+gCIwHWNE44p
-        +kka9kYA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qqBpU-004ZaS-9Q; Tue, 10 Oct 2023 12:27:16 +0000
-Date:   Tue, 10 Oct 2023 13:27:16 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, ying.huang@intel.com,
-        david@redhat.com, Zi Yan <ziy@nvidia.com>
-Subject: Re: [PATCH -next 4/7] mm: convert xchg_page_access_time to
- xchg_folio_access_time()
-Message-ID: <ZSVDJPbt7Nz1xg7+@casper.infradead.org>
-References: <20231010064544.4162286-1-wangkefeng.wang@huawei.com>
- <20231010064544.4162286-5-wangkefeng.wang@huawei.com>
+        Tue, 10 Oct 2023 08:29:50 -0400
+Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.214])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 015B1B7
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:29:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=BY3yD
+        GeIefIcA+vHv8W2LLY7z7fayTNU7z5yohmsntw=; b=LWoGh2C/IearcCMUiW1Y7
+        dJcrvRz3AOju/9s45pzB4qHJT5Y2TMPFycHwpbUi/RCv3l9WPW+IZopRflnawPke
+        zOg+jbFmQ4qFRiYpbOfTI72d9yQiGB5vQ7xeIBiny4xTqnCHXqccFvOGu+q/sZPh
+        8AVccGaxgBAxA5XeFOcMWo=
+Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
+        by zwqz-smtp-mta-g4-0 (Coremail) with SMTP id _____wBnTtWdQyVlOE+vAA--.52111S4;
+        Tue, 10 Oct 2023 20:29:30 +0800 (CST)
+From:   Ma Ke <make_ruc2021@163.com>
+To:     dlemoal@kernel.org
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ma Ke <make_ruc2021@163.com>
+Subject: [PATCH v3] ata: sata_mv: aspeed: fix value check in mv_platform_probe()
+Date:   Tue, 10 Oct 2023 20:29:16 +0800
+Message-Id: <20231010122916.4080132-1-make_ruc2021@163.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231010064544.4162286-5-wangkefeng.wang@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wBnTtWdQyVlOE+vAA--.52111S4
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Jr4rAw4fGw18tFy5tr17Awb_yoWftFgEya
+        yxu39rWr429FnFy3s8Xr15ArWxKFWvvFnYvas2yw1ayFy7Xw43JryDXwn8uwsrWw4kuFy0
+        yr1UC3y3Cry5JjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRthFxDUUUUU==
+X-Originating-IP: [183.174.60.14]
+X-CM-SenderInfo: 5pdnvshuxfjiisr6il2tof0z/1tbivhQFC1ZcjDjUDwAAsB
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
+        RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 02:45:41PM +0800, Kefeng Wang wrote:
-> Make xchg_page_access_time to take a folio, and rename it to
-> xchg_folio_access_time() since all callers with a folio.
+In mv_platform_probe(), check the return value of clk_prepare_enable()
+and return the error code if clk_prepare_enable() returns an
+unexpected value.
 
-You're doing this the hard way, which makes life hard for the reviewrs.
+Signed-off-by: Ma Ke <make_ruc2021@163.com>
+---
+ drivers/ata/sata_mv.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-patch 1. Introduce folio->_last_cpupid
-patch 2: Add
-
-static inline int folio_xchg_access_time(struct folio *folio, int time)
-{
-	return xchg_page_access_time(&folio->page, time);
-}
-
-patch 3-n: Convert callers
-Patch n+1: Remove xchg_page_access_time(), folding it into
-folio_xchg_access_time().
-
-Similarly for page_cpupid_xchg_last / folio_cpupid_xchg_last().
-(why is this not called folio_xchg_last_cpupid?)
+diff --git a/drivers/ata/sata_mv.c b/drivers/ata/sata_mv.c
+index 45e48d653c60..e82786c63fbd 100644
+--- a/drivers/ata/sata_mv.c
++++ b/drivers/ata/sata_mv.c
+@@ -4123,10 +4123,13 @@ static int mv_platform_probe(struct platform_device *pdev)
+ 	hpriv->base -= SATAHC0_REG_BASE;
+ 
+ 	hpriv->clk = clk_get(&pdev->dev, NULL);
+-	if (IS_ERR(hpriv->clk))
++	if (IS_ERR(hpriv->clk)) {
+ 		dev_notice(&pdev->dev, "cannot get optional clkdev\n");
+-	else
+-		clk_prepare_enable(hpriv->clk);
++	} else {
++		rc = clk_prepare_enable(hpriv->clk);
++		if (rc)
++			goto err;
++	}
+ 
+ 	for (port = 0; port < n_ports; port++) {
+ 		char port_number[16];
+-- 
+2.37.2
 
