@@ -2,118 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB687BFA7E
+	by mail.lfdr.de (Postfix) with ESMTP id 939417BFA7F
 	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 13:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231559AbjJJL7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 07:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41620 "EHLO
+        id S231580AbjJJL7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 07:59:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231531AbjJJL7g (ORCPT
+        with ESMTP id S231557AbjJJL7i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 07:59:36 -0400
+        Tue, 10 Oct 2023 07:59:38 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4FFDA4;
-        Tue, 10 Oct 2023 04:59:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06633C433C7;
-        Tue, 10 Oct 2023 11:59:31 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3EC94;
+        Tue, 10 Oct 2023 04:59:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB2FCC433C9;
+        Tue, 10 Oct 2023 11:59:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696939174;
-        bh=sYHoqOrEbMAZaMKLim6NthKBNfLinTYcsgpfSBhdkxM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=jgR/fImUTS/Qe+BQe0gYv9Lw0tdrGJlGdSzjQ/wgglQTvzOFc93kL8P3N6OtwQTaK
-         0yaKbHJ2SZBF/3rQLkx4DA2DRBimzK7ie37+FpkoVTrMRwLO9e/atoZhO/VQEY9bJ+
-         cxcJg3vZvBaWVStX86GF2MYeudtN3dDAc0HXbappYmIvw1ubhq7SR9p2pq0sSWaPx8
-         e2YUP00HPzTRoenkh4fHsUqZx5v4eFpVsa6PgBy55JVlq8KBeCsSErmSZ2qvbFYQDg
-         q9Rgav7OxDRCK9ryVrbIio0OYmVO/S3FPtsw4UJWvDrfUC17W6pyGdD9NLVKL0DsJO
-         yodlUic09q0IQ==
+        s=k20201202; t=1696939177;
+        bh=kVkO+0yKi9ZpS4FWGCS7Kv5Nw6GETSxYizAFJIe2H3Y=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HBwTdFFyikcuW6zjgSfptEjDuaNX/KFrnf74ZHK7pPfzVMwkyIIKaj9oWSk2/E1Mw
+         qzrsA4SH6hh1k6jAeQgxbG5f8CegrVjWMOAu2/3NvqCLu3SM5cmoMn3m7X7BliNOV1
+         mSjXMW0J1MQTPZRVLQRHTMkS8is4YvN1D5/25QHSP+WK1kF+e5/awLb2TIZWFYie46
+         31yOjVFf0K4zwdXfPH8XL/ZN4hNirLQR1hDyHuyMSxQ5f1ZxFAIABoA7kmHmNU9r1r
+         duPEUI6f0wTldpEc+jtNyF8KgqB8UsEUX+YskTygFENqU+v8QBNolufhMBXN/o3T4W
+         GHYh5cZxb3rsg==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
         Josh Triplett <josh@joshtriplett.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>
-Subject: [PATCH 00/23] RCU/lock torture updates for v6.7
-Date:   Tue, 10 Oct 2023 13:58:58 +0200
-Message-Id: <20231010115921.988766-1-frederic@kernel.org>
+        Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH 01/23] torture: Share torture_random_state with torture_shuffle_tasks()
+Date:   Tue, 10 Oct 2023 13:58:59 +0200
+Message-Id: <20231010115921.988766-2-frederic@kernel.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231010115921.988766-1-frederic@kernel.org>
+References: <20231010115921.988766-1-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Please find below the updates for RCU torture, locktorture and the
-generic torture infrastructure.
+Both torture_shuffle_tasks() and its caller torture_shuffle()
+define a torture_random_state structure.  This is suboptimal given
+that torture_shuffle_tasks() runs for a very short period of time.
+This commit therefore causes torture_shuffle() to pass a pointer to its
+torture_random_state structure down to torture_shuffle_tasks().
 
-Arnd Bergmann (1):
-  rcu: Include torture_sched_setaffinity() declaration
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+---
+ kernel/torture.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-Dan Carpenter (1):
-  locktorture: Check the correct variable for allocation failure
-
-Joel Fernandes (Google) (3):
-  rcutorture: Fix stuttering races and other issues
-  rcutorture: Copy out ftrace into its own console file
-  rcutorture: Replace schedule_timeout*() 1-jiffy waits with HZ/20
-
-Paul E. McKenney (17):
-  torture: Share torture_random_state with torture_shuffle_tasks()
-  torture: Make kvm-recheck.sh use mktemp
-  torture: Make torture_hrtimeout_ns() take an hrtimer mode parameter
-  torture: Move rcutorture_sched_setaffinity() out of rcutorture
-  locktorture: Add readers_bind and writers_bind module parameters
-  rcutorture: Add CONFIG_DEBUG_OBJECTS to RCU Tasks testing
-  locktorture: Alphabetize torture_param() entries
-  locktorture: Consolidate "if" statements in lock_torture_writer()
-  locktorture: Add acq_writer_lim to complain about long acquistion
-    times
-  torture: Print out torture module parameters
-  torture: Make torture.sh refscale testing qualify verbose_batched
-  locktorture: Add new module parameters to
-    lock_torture_print_module_parms()
-  locktorture: Add call_rcu_chains module parameter
-  doc: Catch-up update for locktorture module parameters
-  locktorture: Rename readers_bind/writers_bind to
-    bind_readers/bind_writers
-  torture: Add kvm.sh --debug-info argument
-  torture: Convert parse-console.sh to mktemp
-
-Zqiang (1):
-  rcutorture: Traverse possible cpu to set maxcpu in rcu_nocb_toggle()
-
-Thanks,
-        Frederic.
-
- .../admin-guide/kernel-parameters.txt         |  57 ++++-
- include/linux/torture.h                       |   8 +-
- kernel/locking/locktorture.c                  | 216 +++++++++++++-----
- kernel/rcu/rcu.h                              |   4 -
- kernel/rcu/rcutorture.c                       |  16 +-
- kernel/rcu/update.c                           |   9 +-
- kernel/torture.c                              |  75 +++---
- .../selftests/rcutorture/bin/functions.sh     |  29 +++
- .../selftests/rcutorture/bin/kvm-recheck.sh   |   2 +-
- tools/testing/selftests/rcutorture/bin/kvm.sh |  17 +-
- .../selftests/rcutorture/bin/parse-console.sh |   9 +-
- .../selftests/rcutorture/bin/torture.sh       |   2 +-
- .../selftests/rcutorture/configs/rcu/TRACE02  |   1 +
- 13 files changed, 322 insertions(+), 123 deletions(-)
- mode change 100644 => 100755 tools/testing/selftests/rcutorture/bin/functions.sh
-
+diff --git a/kernel/torture.c b/kernel/torture.c
+index b28b05bbef02..68dba4ecab5c 100644
+--- a/kernel/torture.c
++++ b/kernel/torture.c
+@@ -520,9 +520,8 @@ static void torture_shuffle_task_unregister_all(void)
+  * A special case is when shuffle_idle_cpu = -1, in which case we allow
+  * the tasks to run on all CPUs.
+  */
+-static void torture_shuffle_tasks(void)
++static void torture_shuffle_tasks(struct torture_random_state *trp)
+ {
+-	DEFINE_TORTURE_RANDOM(rand);
+ 	struct shuffle_task *stp;
+ 
+ 	cpumask_setall(shuffle_tmp_mask);
+@@ -543,7 +542,7 @@ static void torture_shuffle_tasks(void)
+ 
+ 	mutex_lock(&shuffle_task_mutex);
+ 	list_for_each_entry(stp, &shuffle_task_list, st_l) {
+-		if (!random_shuffle || torture_random(&rand) & 0x1)
++		if (!random_shuffle || torture_random(trp) & 0x1)
+ 			set_cpus_allowed_ptr(stp->st_t, shuffle_tmp_mask);
+ 	}
+ 	mutex_unlock(&shuffle_task_mutex);
+@@ -562,7 +561,7 @@ static int torture_shuffle(void *arg)
+ 	VERBOSE_TOROUT_STRING("torture_shuffle task started");
+ 	do {
+ 		torture_hrtimeout_jiffies(shuffle_interval, &rand);
+-		torture_shuffle_tasks();
++		torture_shuffle_tasks(&rand);
+ 		torture_shutdown_absorb("torture_shuffle");
+ 	} while (!torture_must_stop());
+ 	torture_kthread_stopping("torture_shuffle");
+@@ -673,7 +672,7 @@ int torture_shutdown_init(int ssecs, void (*cleanup)(void))
+ 	if (ssecs > 0) {
+ 		shutdown_time = ktime_add(ktime_get(), ktime_set(ssecs, 0));
+ 		return torture_create_kthread(torture_shutdown, NULL,
+-					     shutdown_task);
++					      shutdown_task);
+ 	}
+ 	return 0;
+ }
 -- 
 2.34.1
 
