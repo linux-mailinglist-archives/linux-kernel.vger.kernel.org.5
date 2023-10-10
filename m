@@ -2,203 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 842E27BF988
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 13:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A952B7BF990
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 13:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231303AbjJJLU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 07:20:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34738 "EHLO
+        id S231396AbjJJLV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 07:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbjJJLU5 (ORCPT
+        with ESMTP id S231365AbjJJLVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 07:20:57 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079A0A4;
-        Tue, 10 Oct 2023 04:20:56 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-53b32dca0bfso8487959a12.0;
-        Tue, 10 Oct 2023 04:20:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696936854; x=1697541654; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sQsOgeceEIsXhp0lkWDt2Tm0RKONRcHVaKqhgdrpmWA=;
-        b=SrwP2Dr+nbYMbywpyMpPVXsAA1CiPs/F+/1HdiuOTSpyxrcnq1dI72tWpnTJ61QFrO
-         BSOEG6k8hwpaE59h5fV7OGpU9BH5VUv+T+68zw8k0gySQJVDYA5Ed7IL1GCC+JIc4Q6P
-         ZUwjAyxLA5kHO47CHNcO/a/6Y/KQg+RfH87AovJcIHxnRwp8zKGUz/sl7bPkRE00T+Py
-         +EeOTRVFcYZtEnzcx/37cv+61E3PVWcJ4MYN8u0RWH7bxzHZtw6Ix/M9WpBTvzvkHho7
-         tMfCRtlUDmvwTwN38/qb670gS7Tf3rYd37GuUM1Omw1+CU3+XkoppZSTCE9IOocYbreU
-         ta1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696936854; x=1697541654;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sQsOgeceEIsXhp0lkWDt2Tm0RKONRcHVaKqhgdrpmWA=;
-        b=CGgmqooMh0q8XLTN+vsjQTY8gH3tT81HZcoYp2zps6qIZDqmQPwmXDhv5LX9vxHCPh
-         a0td6doGrFJ401eppygBvzmVIx+VPut3peC/R+cfxli/Db8HdbxKGDDXay1hWEoDXSqp
-         6IaMLrJhRkcGI+BCK/OVzogjUtr/r01xgKGQ5/t+g8RV+RQQpvmWArKAcmf57XgRsKxX
-         dwaMp7W9zhPv2kTnNJ+/xMYPxxW7hLz2lYHDB9T++D0FTACDidU8jgwZw3NrtdLu/rno
-         AZbcXS1Sc9646IHSVh1xUPvwD+J8hk1jTaCJhIjQwpc+G9aDy9dcS3bqZ6moLA7Xfoja
-         +IEg==
-X-Gm-Message-State: AOJu0YzHgtmh4iYOEG2rKNgTl8QVyCgGcY17nToS1FPGDyZ3cAZjrWLt
-        HAvht7bAhkrS6c+1zNor8Ls=
-X-Google-Smtp-Source: AGHT+IHQg5XnMxa+WG+1BhKXXbSTRxIr71eh+hShfTQmwO35pOdo02/EP4obh3cA9lf1wm2F7dDO/A==
-X-Received: by 2002:a05:6402:5190:b0:534:6b86:eda2 with SMTP id q16-20020a056402519000b005346b86eda2mr10776212edd.21.1696936854308;
-        Tue, 10 Oct 2023 04:20:54 -0700 (PDT)
-Received: from skbuf ([188.26.57.160])
-        by smtp.gmail.com with ESMTPSA id r14-20020a05640251ce00b0053da777f7d1sm281611edd.10.2023.10.10.04.20.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 04:20:54 -0700 (PDT)
-Date:   Tue, 10 Oct 2023 14:20:51 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH] net: dsa: vsc73xx: replace deprecated strncpy with
- ethtool_sprintf
-Message-ID: <20231010112051.zgefbx2c3tjneudz@skbuf>
-References: <20231009-strncpy-drivers-net-dsa-vitesse-vsc73xx-core-c-v1-1-e2427e087fad@google.com>
- <20231009-strncpy-drivers-net-dsa-vitesse-vsc73xx-core-c-v1-1-e2427e087fad@google.com>
+        Tue, 10 Oct 2023 07:21:54 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EA6CB9
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 04:21:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696936912; x=1728472912;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=GSwSurgU5VmpCGT8SNeLj3Hu/yO4xG94clrYMoyVdno=;
+  b=RXC7PWHk8n+porQXLqg23Y09rj96ZLV50vrazhyNll23y7YTvWz49XnE
+   EKXetbZKp3y0Wy6vkzRFMjexUExlp7o940x0HitXxtTpco2byXmlaqGrS
+   jh1qDBDdFml1b1vsRmBlb/JM3CQZDVZyxxgmvIr6BUCOivNXpp9l/Lr3q
+   GWcfQWDXtH6H7lCwRMhYJgDe6x/UW4R9HXb3DQlmf7DXhotuQiLnBJLmV
+   VkSB/rNWG3vgxLRTTjkHCs1FEk+sIeC2zAkkIxIdFg1gNSKaXuuuK7QtL
+   usjHiwbdl+ZokAzUCVViKmqwkXGoHE3PtpDpSvTuSXuL21dxKN1agZmMC
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="363717120"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="363717120"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 04:21:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="788552275"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="788552275"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 10 Oct 2023 04:21:48 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Tue, 10 Oct 2023 04:21:46 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Tue, 10 Oct 2023 04:21:46 -0700
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.40) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Tue, 10 Oct 2023 04:21:45 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cIhiESZjHOS64gqATvfe6+kE0ASmIYN1Wj7Rguh02pQ1T4jtZN2h5tfKEMydd6t9u6L6m3H46e0XXGJg+6nw0GLrkrEQ6I+TMcvfHItPCFh8cDH7HhSc6HPm1TfK4hgJ+vFVB+G+qBo3Cvy1B+acsIYSObpMKqINBLIPQ2hFhDIwc81CIn/YyKe3I/l9JCAjEgPb8IE5p0A/ilzq6nhbY7ISXgo3uB5ULcNIGI6S7dYWL+0F/aFPXUEQ7SbZeM8JX3KHtF45q1NcSBfbTqLQYDgAchKIxwJqcJJJ2eb9ro245mzu/gut/WD6/yZx9b59slWcLzoseFXBI4cPJMZpsQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TAeFayLPvfU78cudZxpiHCnGQDLT6sIOx5gClKThKzc=;
+ b=iYpTa8RdU6rfGn0ErcsVfwtUn5NDPM/yvrgNg4Q8jesXQKirD6RQnJ9sNljUnCenCK5DA+gzI1N5+aJdaMaec2ZyfnD7fbICzsyCPpO0epZCl2QXirGUXtKDhL3f1LXx37Ilh1PjYSHg480iKabipLE0hMIjPegWbcjjvYtYZ+YsIysgSa9/O8qbeAGwt25Bf4AxWhFN9PSRrXpn+VyHrU3QRKxGBGIUD18wEtDvwGer/dKZQVkPFuGFt/jbzQWkZrBV+OZKAFEczjY/SHEex4aG3AGzsJ8KnFL+WFtrTEhQrCNXg59pnE9p3HBrSMmQc3xRmaKgKg/sAcK9ZlDSVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MW5PR11MB5881.namprd11.prod.outlook.com (2603:10b6:303:19d::14)
+ by PH8PR11MB6878.namprd11.prod.outlook.com (2603:10b6:510:22a::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Tue, 10 Oct
+ 2023 11:21:39 +0000
+Received: from MW5PR11MB5881.namprd11.prod.outlook.com
+ ([fe80::3346:a9d1:1c70:eec2]) by MW5PR11MB5881.namprd11.prod.outlook.com
+ ([fe80::3346:a9d1:1c70:eec2%6]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
+ 11:21:38 +0000
+Message-ID: <7d8e895e-5f95-4ab3-b6dc-292b4197bc87@intel.com>
+Date:   Tue, 10 Oct 2023 19:21:26 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 5/6] iommu: Support mm PASID 1:n with sva domains
+Content-Language: en-US
+To:     Nicolin Chen <nicolinc@nvidia.com>
+CC:     Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>,
+        "Lu Baolu" <baolu.lu@linux.intel.com>,
+        Michael Shavit <mshavit@google.com>,
+        "Vasant Hegde" <vasant.hegde@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20230925023813.575016-1-tina.zhang@intel.com>
+ <20230925023813.575016-6-tina.zhang@intel.com>
+ <ZR/ATxpIfCPRJO6r@Asurada-Nvidia>
+From:   Tina Zhang <tina.zhang@intel.com>
+In-Reply-To: <ZR/ATxpIfCPRJO6r@Asurada-Nvidia>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR02CA0079.apcprd02.prod.outlook.com
+ (2603:1096:4:90::19) To MW5PR11MB5881.namprd11.prod.outlook.com
+ (2603:10b6:303:19d::14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231009-strncpy-drivers-net-dsa-vitesse-vsc73xx-core-c-v1-1-e2427e087fad@google.com>
- <20231009-strncpy-drivers-net-dsa-vitesse-vsc73xx-core-c-v1-1-e2427e087fad@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW5PR11MB5881:EE_|PH8PR11MB6878:EE_
+X-MS-Office365-Filtering-Correlation-Id: 433384f4-56f9-4d80-2813-08dbc983120d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: il+QatrI590pkorMZ2q3AwGKZkWNJHx0VlIZRc9Sw+nEjBOYr2efpjl3WvKGmx5crV7sZ0+CX/TUaCVqoaBfAmxxcZEzoa6xKLuuPNxCz1SowM09UD/XHSpz6mK9h/DAj1DziyrbI0Nd7FldMtq7bf0/rPTFDChT3pibuhc58Ua4eZlVpvJeYydkOd6xzojE5rxPuDWcWQ4XoAsVlbKCyhe56beNDyuI0sazaMITUESMwOlco8IAvE6TpOt6E0JubAYkzgi6tpR1+8THwSY2CdNAxhMfnFERpjRa1FrKK2hecYeMhPlgz0ZvspFpinV+GFt2g3nLh3BXvafzEtJEhIShPfRQd38YPY6WFgoDIhx7LjVy7ZRg8n2K9KZ2+gMcX0Ccc3Y0Csr17eTz/EQsAPTMpxR7KzbZsr/Ih7urEeDXgh90ba4gIruAUcc+EOSSgOwzwnmZnss7tKkrpLW39yWeYIMRuFcX767mpi5im1eH7+SzjVvt1AM4e41y1dSQg+f4ZsvGwgNglxzL4BWu6lA5jia5sEinMd/al06mqebVKSSgHHwiHGPV/yFcsBOQeHnKp9sBZPercT7u5Gg8TQuI23DLGMSlzri45SVjz80B11uc9AZGAJblXKSyvCkpUhRyQ13L8SXymElpklYhOQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW5PR11MB5881.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(396003)(366004)(39860400002)(346002)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(31696002)(86362001)(82960400001)(38100700002)(36756003)(31686004)(6512007)(478600001)(6486002)(4326008)(8936002)(53546011)(8676002)(5660300002)(44832011)(41300700001)(2906002)(6506007)(6666004)(2616005)(83380400001)(316002)(66946007)(66556008)(66476007)(6916009)(54906003)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZERkbjNEcVIzVWp1RzZoUm0yNHlLanJGSFNpQ2pqU24xMGVYRGllY0JTNzJH?=
+ =?utf-8?B?Q3BLbTZQY3RSaGxaK2d3UHFlOGJoRU5ieGNKQW5meFZKbkpTVk5BL09uSVhw?=
+ =?utf-8?B?S0ZhWG0weUMwZDFmZW5tVXVweUJvakxkNUxpUGZnY0l1UTdWUC9rcVlZZjJM?=
+ =?utf-8?B?Z29lMSsxNmFkQkR4b2c5U0tvZTgxS3BCbEJ2M0xwZUZickZiVVNPOTBhN1BX?=
+ =?utf-8?B?c0VFMWRGM0swTk1uNHRuYUhiYitCekpTc3AvVDB1MkxjUEwrZjdlSEtabnha?=
+ =?utf-8?B?cmVUd1F5STlWeXJGNWNjTVRUc2M4SDVMRUFMdFlKVWx3V3U3L0dBZk1uWmg4?=
+ =?utf-8?B?WXcyMS96VmxmOVlEbFJxSmdueldIamZOTFJaeS8zd0tVdFRleWE3WHZuWHFJ?=
+ =?utf-8?B?SEd0RkVvOXBOQ294bHZNSm15Qm5lQUdjWTlNOStoZTYwNnM4WERnS1B1L2gv?=
+ =?utf-8?B?T0ZEY0hzZ3doR2ZHS1gzQ2lKblpnVmpMT0tRZnRHcmhtZVE4S3lyTExpK2JG?=
+ =?utf-8?B?M0JIc3RJRm9LNGwwUzU0eG5IOXpHRXJRbGwwNWRnSU9jTUNGbWNSSnJBM2dH?=
+ =?utf-8?B?dS9wNGF5VnptRU5uSlhyYnM4bUdiQlo1WVp4aHU4MkxaLzBERE9SUWN3bmRT?=
+ =?utf-8?B?cGZla0VmVGYzVXA4NkVESVY5WHZPa0J5VFFVVkpFWEVHZGpQZWdZWWhxMDVp?=
+ =?utf-8?B?WlNPa1AyenZjOEF5bmJOL05lcU82ckxiWU50ckY2aUtZeUdJcWQ0VmZxYXR3?=
+ =?utf-8?B?aEphQzBOQTRuY3hHL281K3JEYSt0U0lpRnNxc0NsSzZ2eTI1cEZnc2FMNHhR?=
+ =?utf-8?B?VlRDblkxbE0vZ1ZXeW1PQlBGRjBwVTdNNFp6aGF0T1o5b0w2VytYRHNVdy8v?=
+ =?utf-8?B?YWRzeUZaQ0JZd3MrVFFNS3YxZVNneE9IdUhTNlhZOGJUZllqakRxV3hKRHVz?=
+ =?utf-8?B?dUUrUDNCUkI3ZndxbEV5MlNHODRWU1ZaZi9yRjJmQTF6YldILzZJNHNlOFd1?=
+ =?utf-8?B?NWpFQ09KR3N3UkpZMDdCRm04Z1JqcHRCeWF2S3dFODhiQXYrQVE1R1c1R1A3?=
+ =?utf-8?B?VkJoY1pSUGNqb0prLzlwYW0zcjU0Y05zTTQwWk80cmlIbzBxYUVBR1JHS0ZU?=
+ =?utf-8?B?dVZwbTAwOWwzUXFhWmloOEF0aHh3RTVFSWJlWEhDOGVrQVNkVTVQdDQ1bWRD?=
+ =?utf-8?B?WHBYSUI4SjhWY3dmNmkrRnlxZG9PYXMwSStwUXhxdkU1dklLd2FGRDl6ampT?=
+ =?utf-8?B?K2pCTG0wNXQ2Q3ZUbG9nNHZVYks2K3pMTmZwbWJERkdMR0xFcFV6MTc0Q3Rq?=
+ =?utf-8?B?R0FMQkxzTkJ3Z3ZBYzR1YksvRFVqcitPUHlOT0VTT2dmblFsSDFnbmNOSk44?=
+ =?utf-8?B?cG1pdlZBQVZINTB4Ly81dy9OaUQxc0dWSDdBOXlqTDJURXN6TWF2STdmc2k1?=
+ =?utf-8?B?dFBQR1c5L2dlTGtRYU9La2JEaHVFQUZtZUdHT1grYk5PQUhydGdMZ0dYUjAv?=
+ =?utf-8?B?ejhSWEoxTnpEOVZObmhmUGQySlY3MTlyNzdKc0tuZVNtWmhXYllZSXcwQ05M?=
+ =?utf-8?B?WFJxNHJpczE4dFJzU1ZDTVI1MlZad1g1THRWK2VDcjJxc3lrUmRUVk4xUmNW?=
+ =?utf-8?B?ZVhpTnJGNGh5WWNYNm9lSXhHdEpFZHRvcUVwL01ScGRIbXZSQ0EzeXVZTmJm?=
+ =?utf-8?B?aDBwRDlsckZmZ3E3T002cEViWnpoTXppZUdYd2dLUDBiSnJpRDk0akdzTnBl?=
+ =?utf-8?B?TWErWk51emtNWi9WMDlMS0FHMXhFc3htekU1citIMHFrUVZpNHJQT1lNMXIw?=
+ =?utf-8?B?ZTRUbWZMTVRMb3BBWUMxTUc0OTh1RE52UHYvVTlmaVFZU2VDRHVUZnlTUm13?=
+ =?utf-8?B?RCt6UUF1ME1rNDhta1VaYXBLZXRMbGJRTGUwMXBVc0JHWnEwVEhxUkNKTlMy?=
+ =?utf-8?B?S1lrN0pLcXlVTnJ1UXpRMldtTHNUaEZMRHBIUGNTQStRaVQyR0l3Rit0Z3ZC?=
+ =?utf-8?B?M2I1S1F2QUdIZWlNSkFKU2IzSVFDZkFJdC9aS2tMaUd1ZzdFTTBnTVV4R3Vl?=
+ =?utf-8?B?dGl6ejhoSll5N3UzMHhLZWVkVjMwemt5UEhSbnBmcmJ2WUQyU0pSWGtSMUpH?=
+ =?utf-8?Q?5pS2Hl3NrEiqOGxV4rZ3M2cs1?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 433384f4-56f9-4d80-2813-08dbc983120d
+X-MS-Exchange-CrossTenant-AuthSource: MW5PR11MB5881.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 11:21:38.6407
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iyw6edNmgE74C8nzrOgv+oUqoouFCGEypQmo/Osrmh2sTOFdR4b6WvrR9TMT/bKd5Nf0jl4G+2Jt+nBtRMXeOw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6878
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 10:54:37PM +0000, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
+Hi Nicolin,
+
+On 10/6/23 16:07, Nicolin Chen wrote:
+> Hi Tina,
 > 
-> ethtool_sprintf() is designed specifically for get_strings() usage.
-> Let's replace strncpy in favor of this more robust and easier to
-> understand interface.
+> On Sun, Sep 24, 2023 at 07:38:12PM -0700, Tina Zhang wrote:
 > 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Note: build-tested only.
-> ---
->  drivers/net/dsa/vitesse-vsc73xx-core.c | 20 ++++++--------------
->  1 file changed, 6 insertions(+), 14 deletions(-)
+>> Each mm bound to devices gets a PASID and corresponding sva domains
+>> allocated in iommu_sva_bind_device(), which are referenced by iommu_mm
+>> field of the mm. The PASID is released in __mmdrop(), while a sva domain
+>> is released when no one is using it (the reference count is decremented
+>> in iommu_sva_unbind_device()). However, although sva domains and their
+>> PASID are separate objects such that their own life cycles could be
+>> handled independently, an enqcmd use case may require releasing the
+>> PASID in releasing the mm (i.e., once a PASID is allocated for a mm, it
+>> will be permanently used by the mm and won't be released until the end
+>> of mm) and only allows to drop the PASID after the sva domains are
+>> released. To this end, mmgrab() is called in iommu_sva_domain_alloc() to
+>> increment the mm reference count and mmdrop() is invoked in
+>> iommu_domain_free() to decrement the mm reference count.
+>>
+>> Since the required info of PASID and sva domains is kept in struct
+>> iommu_mm_data of a mm, use mm->iommu_mm field instead of the old pasid
+>> field in mm struct. The sva domain list is protected by iommu_sva_lock.
+>>
+>> Besides, this patch removes mm_pasid_init(), as with the introduced
+>> iommu_mm structure, initializing mm pasid in mm_init() is unnecessary.
+>>
+>> Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+>> Reviewed-by: Vasant Hegde <vasant.hegde@amd.com>
+>> Signed-off-by: Tina Zhang <tina.zhang@intel.com>
 > 
-> diff --git a/drivers/net/dsa/vitesse-vsc73xx-core.c b/drivers/net/dsa/vitesse-vsc73xx-core.c
-> index 4f09e7438f3b..09955fdea2ff 100644
-> --- a/drivers/net/dsa/vitesse-vsc73xx-core.c
-> +++ b/drivers/net/dsa/vitesse-vsc73xx-core.c
-> @@ -928,7 +928,8 @@ static void vsc73xx_get_strings(struct dsa_switch *ds, int port, u32 stringset,
->  	const struct vsc73xx_counter *cnt;
->  	struct vsc73xx *vsc = ds->priv;
->  	u8 indices[6];
-> -	int i, j;
-> +	u8 *buf = data;
-> +	int i;
->  	u32 val;
->  	int ret;
->  
-> @@ -948,10 +949,7 @@ static void vsc73xx_get_strings(struct dsa_switch *ds, int port, u32 stringset,
->  	indices[5] = ((val >> 26) & 0x1f); /* TX counter 2 */
->  
->  	/* The first counters is the RX octets */
-> -	j = 0;
-> -	strncpy(data + j * ETH_GSTRING_LEN,
-> -		"RxEtherStatsOctets", ETH_GSTRING_LEN);
-> -	j++;
-> +	ethtool_sprintf(&buf, "RxEtherStatsOctets");
-
-Here you don't use "%s", but everywhere else you do. Can't you just pass
-the counter name everywhere, without "%s"?
-
->  
->  	/* Each port supports recording 3 RX counters and 3 TX counters,
->  	 * figure out what counters we use in this set-up and return the
-> @@ -962,22 +960,16 @@ static void vsc73xx_get_strings(struct dsa_switch *ds, int port, u32 stringset,
->  	for (i = 0; i < 3; i++) {
->  		cnt = vsc73xx_find_counter(vsc, indices[i], false);
->  		if (cnt)
-> -			strncpy(data + j * ETH_GSTRING_LEN,
-> -				cnt->name, ETH_GSTRING_LEN);
-> -		j++;
-> +			ethtool_sprintf(&buf, "%s", cnt->name);
-
-The code conversion is not functionally identical, and I think it's a
-bit hard to make it identical.
-
-The VSC7395 has 45 port counters, but it seems that it can only monitor
-and display 8 of them at a time - 2 fixed and 6 configurable through
-some windows.
-
-vsc73xx_get_strings() detects which counter is each window configured
-for, based on the value of the CNT_CTRL_CFG hardware register (VSC73XX_C_CFG
-in the code). It displays a different string depending on the hardware
-value.
-
-The code must deal with the case where vsc73xx_find_counter() returns
-NULL, aka the hardware window is configured for a value that vsc73xx_tx_counters[]
-and vsc73xx_rx_counters[] don't know about.
-
-Currently, the way that this is treated is by skipping the strncpy()
-(and thus leaving an empty string), and incrementing j to get to the
-next ethtool counter, and next window.
-
-The order of the strings in vsc73xx_get_strings() needs to be strongly
-correlated to the order of the counters from vsc73xx_get_ethtool_stats().
-So, the driver would still print counter values for the unknown windows,
-it will just not provide a string for them.
-
-In your proposal, the increment of j basically goes into the "if (cnt)"
-block because it's embedded within ethtool_sprintf(), which means that
-if a hardware counter is unknown, the total number of reported strings
-will be less than 8. Which is very problematic, because vsc73xx_get_sset_count()
-says that 8 strings are reported. Also, all the counter strings after
-the unknown one will be shifted to the left.
-
-I suggest that "if (!cnt)", you should call ethtool_sprintf() with an
-empty string, to preserve the original behavior.
-
->  	}
->  
->  	/* TX stats begins with the number of TX octets */
-> -	strncpy(data + j * ETH_GSTRING_LEN,
-> -		"TxEtherStatsOctets", ETH_GSTRING_LEN);
-> -	j++;
-> +	ethtool_sprintf(&buf, "TxEtherStatsOctets");
->  
->  	for (i = 3; i < 6; i++) {
->  		cnt = vsc73xx_find_counter(vsc, indices[i], true);
->  		if (cnt)
-> -			strncpy(data + j * ETH_GSTRING_LEN,
-> -				cnt->name, ETH_GSTRING_LEN);
-> -		j++;
-> +			ethtool_sprintf(&buf, "%s", cnt->name);
->  	}
->  }
->  
+>> @@ -128,8 +142,9 @@ void iommu_sva_unbind_device(struct iommu_sva *handle)
+>>          struct device *dev = handle->dev;
+>>
+>>          mutex_lock(&iommu_sva_lock);
+>> +       iommu_detach_device_pasid(domain, dev, pasid);
+>>          if (--domain->users == 0) {
+>> -               iommu_detach_device_pasid(domain, dev, pasid);
+>> +               list_del(&domain->next);
+>>                  iommu_domain_free(domain);
+>>          }
+>>          mutex_unlock(&iommu_sva_lock);
+>> @@ -209,4 +224,5 @@ void mm_pasid_drop(struct mm_struct *mm)
+>>                  return;
+>>
+>>          iommu_free_global_pasid(mm_get_pasid(mm));
+>> +       kfree(mm->iommu_mm);
 > 
-> ---
-> base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
-> change-id: 20231009-strncpy-drivers-net-dsa-vitesse-vsc73xx-core-c-1cfd0ac2d81b
+> I ran some SVA tests by applying this series on top of my local
+> SMMUv3 tree, though it is not exactly a vanilla mainline tree.
+> And I see a WARN_ON introduced by this patch (did git-bisect):
 > 
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
+> [  364.237319] ------------[ cut here ]------------
+> [  364.237328] ida_free called for id=12 which is not allocated.
+> [  364.237346] WARNING: CPU: 2 PID: 11003 at lib/idr.c:525 ida_free+0x10c/0x1d0
+> ....
+> [  364.237415] pc : ida_free+0x10c/0x1d0
+> [  364.237416] lr : ida_free+0x10c/0x1d0
+> ....
+> [  364.237439] Call trace:
+> [  364.237440]  ida_free+0x10c/0x1d0
+> [  364.237442]  iommu_free_global_pasid+0x30/0x50
+> [  364.237449]  mm_pasid_drop+0x44/0x70
+> [  364.237452]  __mmdrop+0xf4/0x210
+> [  364.237457]  finish_task_switch.isra.0+0x238/0x2e8
+> [  364.237460]  schedule_tail+0x1c/0x1b8
+> [  364.237462]  ret_from_fork+0x4/0x20
+> [  364.237466] irq event stamp: 0
+> [  364.237467] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+> [  364.237470] hardirqs last disabled at (0): [<ffffc0c16022e558>] copy_process+0x770/0x1c78
+> [  364.237473] softirqs last  enabled at (0): [<ffffc0c16022e558>] copy_process+0x770/0x1c78
+> [  364.237475] softirqs last disabled at (0): [<0000000000000000>] 0x0
+> [  364.237476] ---[ end trace 0000000000000000 ]---
 > 
+> I haven't traced it closely to see what's wrong, due to some other
+> tasks. Yet, if you have some idea about this or something that you
+> want me to try, let me know.
+Thanks for reporting this issue. I did some sva tests, but didn't run 
+into this issue. I'm going to try more cases and let you know if I can 
+find anything interesting.
 
+
+Regards,
+-Tina
+
+> 
+> Thanks
+> Nicolin
