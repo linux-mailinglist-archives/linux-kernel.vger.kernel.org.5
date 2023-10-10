@@ -2,292 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6FC7C0131
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6357D7C013A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233858AbjJJQHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 12:07:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48734 "EHLO
+        id S233630AbjJJQJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 12:09:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234005AbjJJQHY (ORCPT
+        with ESMTP id S233799AbjJJQI6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 12:07:24 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C223D68
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:06:30 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5a7d9d357faso433487b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:06:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696953989; x=1697558789; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fbrCOjo8oRmVCVVvksHWmUiWXADJntXuH1qYxxdJKdI=;
-        b=OsITWeGdCCteCFoZbObhX67YiDRa2YfOi2N1jnY/G1KwlAG9nYejhOQtwLIRUsUUkA
-         oB9EF8JXp+Rr50YtVD5SfokRypZIRZWmZAWnDVwrkoOZW3waAqT5h2HyAt+jLyersd6+
-         MPs1a86RmHtgns4GNazLKVWXF8Q2XxhhDq2mM55mTLbqVjXnwmWldkXyzN+xR8F4Ogco
-         DBB/3jydj+rYP5NXxqXxHjaMM6osmteAwBFACCLRq2l/VkJyVfCZDQNfV181xlYYsbnA
-         vSgPz22Vs4s+zSTkS/+jvz1T2iIjPu+e/T4smnuXOCfgQOqSDr6qlXyfDcoqKzs5tLhs
-         vKIA==
+        Tue, 10 Oct 2023 12:08:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD0ACF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:07:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696954072;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GfTmCM8w+01lprKlsyHpviViCYeM18JJasiaZDCapS8=;
+        b=d9iIuuzCUkwAx8brAIytdlsmBPc+JLn08035enY8CtrBNYbzvxzsK53aey6UI3liReNqB/
+        DRUDLraJenWF9zRQmXxrVjey71aSUqTJogZsCb6CZeq2Tq3BI5D1rCXH9JRNgeiuS3+nCz
+        rZn2zApyS0mXfmd7ZIl7QGNLr7mWh0M=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-628-TA1J497iMgKwFZX6ujMTNg-1; Tue, 10 Oct 2023 12:07:51 -0400
+X-MC-Unique: TA1J497iMgKwFZX6ujMTNg-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-99bcb13d8ddso215594366b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:07:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696953989; x=1697558789;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fbrCOjo8oRmVCVVvksHWmUiWXADJntXuH1qYxxdJKdI=;
-        b=H0+KQfh0jYz57sh6rcni+OD48j4AsZ5i3s6ptzll7ysTGELp0LmV/vr1kZimu9aOAJ
-         Jf2gZMdaCUop0AUcPngjjKYkvvI8RvAhj//2slxQ10zbyH3HiTpG35KY578fykillmla
-         V38Kguq0oGVdf6HB5eQHzfbhGV0DrEBvjLfEqvpIP8t27rtseDgSOdUU21Sdd/3ETlH1
-         LoWhs4oNspavCelbXvbb9vGfWg1RMbHMnui3oKtM/QAsAVIzBMGXlyuekvhkxnqvyPUm
-         GuuVhS6GFKGqCJ4mlPJiXG1+urGWZg9hn9gcAXv5kQx/byTmS1OFncBs7AU0KQKfNCK4
-         JRng==
-X-Gm-Message-State: AOJu0Yyo1MNul4EgAHnv3rjHwZhkBKsninwbmMp4ekrV0gMmNJnxouUG
-        nRjkAxy21cS4H+rsEwO6lXaPvGFIr9EyhX6COrq9SyTQ
-X-Google-Smtp-Source: AGHT+IEwQFpEfW0CZVuvkm5WP3C8hOeE2KKY1P9SfAqvIAOHozBIC8YPmCFWhk9UUleywqY3kRITrcfiDE84NUrMi60=
-X-Received: by 2002:a05:690c:dd2:b0:5a4:f7d3:394e with SMTP id
- db18-20020a05690c0dd200b005a4f7d3394emr25295637ywb.14.1696953989359; Tue, 10
- Oct 2023 09:06:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230915154856.1896062-1-lb@semihalf.com> <CAJfuBxyFYyGCtr5i=P7N=1oX3J=jmdp1VLGLt+z1fAnuvGK2aA@mail.gmail.com>
- <CAK8ByeJBrPEQSgUc91LQO9Krzjh2pauhMTjEC82M8ozayE76Yg@mail.gmail.com>
- <CAJfuBxxmL-GtBgt=033F9UNeLCreFbJh3HrQQN2nYKwR_0uTbg@mail.gmail.com>
- <20231003155810.6df9de16@gandalf.local.home> <CAJfuBxyJyFbFEhRxrtxJ_RazaTODV6Gg64b1aiNEzt6_iE4=Og@mail.gmail.com>
- <CAK8ByeLNc9UbTNG4x=40AxYqjjRCsvBNtNFai0PMveM2X4XCow@mail.gmail.com>
- <CAJfuBxyRF4q_T8LmHwR=-PKKDDpiFg2nO03uLnL8aGpRyBByKw@mail.gmail.com>
- <CAK8ByeLpkSV6o6gPw8eJVqq5+ynQrSDjemY7mXkO1ZmA0rYKfQ@mail.gmail.com> <CAJfuBxw+ANLwssAGWpkn5PeJb8ZKn4LXQkk2Gfv3aGsSN=S55Q@mail.gmail.com>
-In-Reply-To: <CAJfuBxw+ANLwssAGWpkn5PeJb8ZKn4LXQkk2Gfv3aGsSN=S55Q@mail.gmail.com>
-From:   jim.cromie@gmail.com
-Date:   Tue, 10 Oct 2023 10:06:02 -0600
-Message-ID: <CAJfuBxy9qn-4i3SteTL1LBbBxPrFM52KkBd=1UhcKV3S_KdQvw@mail.gmail.com>
-Subject: Re: [PATCH v1] dynamic_debug: add support for logs destination
-To:     Sean Paul <seanpaul@chromium.org>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Simon Ser <contact@emersion.fr>, lyude@redhat.com
-Cc:     linux-kernel@vger.kernel.org
+        d=1e100.net; s=20230601; t=1696954070; x=1697558870;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GfTmCM8w+01lprKlsyHpviViCYeM18JJasiaZDCapS8=;
+        b=qv5R8CWGoIOYxaHNAHDiSxmtFYzyrjwgP7Nz1eOJIR3ND/6f5Oopu4daEmFuSSPL8k
+         qGfLDpwetE7ZaBfB0u2INm4cciNStRsVCIixLPUUjiPQda54aoDvXbawz5inWeQHfk0T
+         LTsaIWNn5YdZh4T4gWc4t0UzFWmHX2mKkkRSzGaHcmWqKL5FkxMN9pljt73leh4YAlR8
+         A+1yiOmWQ5UJAIcNUI3zOQfC+cm7jOPfAy6QN3MxRutclIdQY1EUvIn+CUCYOLVgdIWt
+         7+OeTvHtnt+Sk3ZAP3jCOCuyoPrFf5VytF89FtosoMj8D8xn+ppZR690IOqq9MCYw/4h
+         WkCQ==
+X-Gm-Message-State: AOJu0YzNAxZllH13Z+ezL1MjAB8sxRVh/CJrSZ5s8tseakjOIPRe6EC+
+        BykyO+eJDeTep3+X4gSnJvPPy7jCG0mK0PF1uG39nxj6TwdGgYseT3Mxxw85aK5QcpR8Y1y5x0J
+        JD0yThrDMBeiE/KTXew/Z/qEj
+X-Received: by 2002:a17:907:78c7:b0:9ae:7548:742 with SMTP id kv7-20020a17090778c700b009ae75480742mr16068666ejc.3.1696954069930;
+        Tue, 10 Oct 2023 09:07:49 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF0ACah8/ufDTAOKES/qeWRfkUd9MQ+tuQ/d1ijeXf42ZhywPK4PFPibdU5MjNfYgo8IuxKsg==
+X-Received: by 2002:a17:907:78c7:b0:9ae:7548:742 with SMTP id kv7-20020a17090778c700b009ae75480742mr16068643ejc.3.1696954069540;
+        Tue, 10 Oct 2023 09:07:49 -0700 (PDT)
+Received: from starship ([89.237.100.246])
+        by smtp.gmail.com with ESMTPSA id f19-20020a7bc8d3000000b00405959469afsm14601117wml.3.2023.10.10.09.06.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 09:06:36 -0700 (PDT)
+Message-ID: <1ca607bcb4931b7f5e14e6c064264d86e58fd3ce.camel@redhat.com>
+Subject: Re: [PATCH] KVM: SVM: Don't intercept IRET when injecting NMI and
+ vNMI is enabled
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Santosh Shukla <santosh.shukla@amd.com>
+Date:   Tue, 10 Oct 2023 19:06:25 +0300
+In-Reply-To: <ZSVju-lerDbxwamL@google.com>
+References: <20231009212919.221810-1-seanjc@google.com>
+         <e348e75dac85efce9186b6b10a6da1c6532a3378.camel@redhat.com>
+         <ZSVju-lerDbxwamL@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-since I name-dropped you all,
+У вт, 2023-10-10 у 07:46 -0700, Sean Christopherson пише:
+> On Tue, Oct 10, 2023, Maxim Levitsky wrote:
+> > У пн, 2023-10-09 у 14:29 -0700, Sean Christopherson пише:
+> > > Note, per the APM, hardware sets the BLOCKING flag when software directly
+> > > directly injects an NMI:
+> > > 
+> > >   If Event Injection is used to inject an NMI when NMI Virtualization is
+> > >   enabled, VMRUN sets V_NMI_MASK in the guest state.
+> > 
+> > I think that this comment is not needed in the commit message. It describes
+> > a different unrelated concern and can be put somewhere in the code but
+> > not in the commit message.
+> 
+> I strongly disagree, this blurb in the APM directly affects the patch.  If hardware
+> didn't set V_NMI_MASK, then the patch would need to be at least this:
 
-On Tue, Oct 10, 2023 at 10:01=E2=80=AFAM <jim.cromie@gmail.com> wrote:
->
-> On Mon, Oct 9, 2023 at 4:47=E2=80=AFPM =C5=81ukasz Bartosik <lb@semihalf.=
-com> wrote:
-> >
-> > pt., 6 pa=C5=BA 2023 o 22:49 <jim.cromie@gmail.com> napisa=C5=82(a):
-> > >
-> > > On Wed, Oct 4, 2023 at 4:55=E2=80=AFAM =C5=81ukasz Bartosik <lb@semih=
-alf.com> wrote:
-> > > >
-> > > > wt., 3 pa=C5=BA 2023 o 22:54 <jim.cromie@gmail.com> napisa=C5=82(a)=
-:
-> > > > >
-> > > > > On Tue, Oct 3, 2023 at 1:57=E2=80=AFPM Steven Rostedt <rostedt@go=
-odmis.org> wrote:
-> > > > > >
-> > > > > > On Mon, 2 Oct 2023 14:49:20 -0600
-> > > > > > jim.cromie@gmail.com wrote:
-> > > > > >
-> > > > > > > hi Lukasz,
-> > > > > > >
-> > > > > > > sorry my kernel-time has been in my own trees.
-> > > > > > >
-> > > > > > > What I dont understand is why +T is insufficient.
-> > > > > > >
-> > > >
-> > > > We would like to be able to separate debug logs from different
-> > > > subsystem (e.g. thunderbolt and usbcore).
-> > > > With +T it is not possible because all debug logs will land in the =
-same bucket.
-> > > >
-> > > > > > > IIUC, tracefs is intended for production use.
-> > > > > > > thats why each event can be enabled / disabled
-> > > > > > > - to select and minimize whats traced, and not impact the sys=
-tem
-> > > > > > >
-> > > > > > > and +T  can forward all pr_debugs to trace,
-> > > > > > > (by 1-few trace events defined similarly to others)
-> > > > > > > or very few, giving yet another selection mechanism
-> > > > > > > to choose or eliminate specific pr-debugs and reduce traffic =
-to
-> > > > > > > interesting stuff.
-> > > > > > >
-> > > > > > > Once your debug is in the trace-buf,
-> > > > > > > shouldnt user-space be deciding what to do with it ?
-> > > > > > > a smart daemon could leverage tracefs to good effect.
-> > > > > > >
-> > > >
-> > > > Yes, a daemon could separate the debug logs but IMHO it is much
-> > > > easier to separate logs by sending them directly from a given subsy=
-stem
-> > > > to a separate trace instance. My proposal allows to configure diffe=
-rent
-> > > > trace instance as destination for each callsite.
-> > > >
-> > > > > > > IMO the main value of +T is that it allows feeding existing p=
-r_debugs
-> > > > > > > into the place where other trace-data is already integrated a=
-nd managed.
-> > > > > > >
-> > > > > > > At this point, I dont see any extra destination handling as p=
-rudent.
-> > > > > > >
-> > > > > >
-> > > > > >
-> > > > > > I'm fine with either approach. I kind of like the creation of t=
-he instance,
-> > > > > > as that allows the user to keep this debug separate from other =
-tracing
-> > > > > > going on. We are starting to have multiple applications using t=
-he tracing
-> > > > > > buffer (although most are using instances, which is why I'm try=
-ing to make
-> > > > > > them lighter weight with the eventfs code).
-> > > > > >
-> > > > > > -- Steve
-> > > > > >
-> > > >
-> > > > Steve, thanks for commenting from the trace perspective.
-> > > >
-> > > > >
-> > > > >
-> > > > > Ok Im starting to grasp that multiple instances are good
-> > > > > (and wondering how I didnt notice)
-> > > > >
-> > > > > What doesnt thrill me is the new _ddebug field, it enlarges the f=
-ootprint.
-> > > > >
-> > > >
-> > > > Yes it increases _ddebug structure by a pointer size.
-> > > >
-> > > > > can you make it go away ?
-> > > >
-> > > > I implemented my proposal with flexibility in mind so that if someo=
-ne
-> > > > would like to add
-> > > > another destination in the future it should be easy to do. I
-> > > > understand that adding a pointer
-> > > > to the _ddebug structure increases footprint size that's why I also
-> > > > added CONFIG_DYNAMIC_DEBUG_DST
-> > > > kernel configuration option in order to enable/disable this functio=
-nality.
-> > > >
-> > > > > I have some thoughts ..
-> > > >
-> > > > Please share your thoughts. I'm sure we can come to an agreement ho=
-w
-> > > > to incorporate both +T and my proposal.
-> > >
-> > >
-> > > So heres what Im thinking:
-> > >
-> > > shrink lineno, get 2-3 bits back.
-> > > last I checked largest C file is <32kloc
-> > > largest header is ~120kloc, but its a data only,
-> > > no pr_debugs will suddenly appear there.
-> > >
-> > > define a dst_id field with 3 bits
-> >
-> > The dst_id field would be taken into account only when a callsite has
-> > T flag set, is that your assumption ?
->
-> Im ambivalent about the +T bit itself,
-> it could as easily be another "special" value in the 0-2^N range of dst_i=
-d
->
-> its a use-case tradeoff:
-> +T  goes to main tracebuf.
-> dst_id>0  goes to separate, pre-registered "flight-recorder"  tracebufs
->
-> I'm not sure whether doing both independently is better than having
-> 2^(n-1)-1 extra bufs.
->
-> Actually, demoting +T to just another dest makes sense -
-> theres a large population of pr-debugs, and events like vblank-*
-> Nobody will send vblank to syslog on purpose either.
->
->
-> either way, dyndbg will need both:
-> new trace-events, so that prdbgs can get enabled as a single/few event-ty=
-pes
-> trace_array_buf writes to flight recorders
->
->
->
->
->
->
->
-> > Can one bit be taken from class_id to increase dst_id to 4 bits ?
-> > Decreasing class_id length to 5 bits would still leave its range at
-> > [0..31]
->
-> 31 classes / categories should be enough.
-> 64 was convenient, BIT* supported.
->
-> > > 0 is for main tracebuf
-> > > 1-7 is for other instances
-> > >
-> >
-> > Do you want to leave trace events as originally implemented with +T fla=
-g ?
-> > If yes then I would like to propose:
-> > dst_id =3D 0 - for trace events for pr_debug and dbg_dev logs (default)
-> > dst_id =3D 1 - for default trace instance
-> > dst_id > 1 - other trace instances
-> >
-> > > then the alt-dest lookup is avoided except when the dst_id field is >=
-0
-> > >
-> > > It might work to put the alt-dst-pointer into the classmaps,
-> > > so the destination is used for the entire group of debugs
-> > > forex DRM_UT_CORE etc.
-> > >
-> >
-> > If we store dst pointers for dst_id > 1 in classmaps then is there a fa=
-st way
-> > to get from callsite (_ddebug) to its corresponding classmap
-> > (ddebug_class_map) in order to
-> > lookup trace instance destination ?  I ask because I don't see it being=
- possible
-> > without adding a new field to the _ddebug structure.
->
-> I agree, theres no good enough way, compared to a small dst-id.
-> The "muse" was on the grouping aspect it might bring.
->
-> > > But its no better than the dst_id field, which is per-callsite,
-> > > and entirely independent of classes.
-> > >
-> this was me agreeing with your point above :-)
->
->
-> >
-> > I don't have a real life use case to configure different trace
-> > instance for each callsite.
-> > I just tried to be as much flexible as possible.
-> >
->
-> Ive come around to agree - I looked back at some old threads
-> (that I was a part of, and barely remembered :-}
->
-> At least Sean Paul, Lyude, Simon Ser, Pekka Paalanen
-> have expressed a desire for a "flight-recorder"
-> it'd be hard to say now that 2-3 such buffers would always be enough,
-> esp as theres a performance reason for having your own.
->
->
-> > Thanks,
-> > Lukasz
-> >
-> > >
-> > > > Thanks,
-> > > > Lukasz
+I don't see how 'the blurb in the APM' relates to the removal of the 
+IRET intercept, which is what this patch is about.
+
+If the hardware was not to set the V_NMI_BLOCKING_MASK during EVENTINJ NMI injection, 
+we would have had a bigger problem, a problem which would have to be addressed 
+before this patch, because kvm reads back the V_NMI_BLOCKING_MASK 
+(see: svm_get_nmi_mask()) to check if NMI is blocked, something that
+has no relation to the IRET interception.
+
+
+Best regards,
+	Maxim Levtsky
+
+
+> 
+> --
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index b7472ad183b9..d34ee3b8293e 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -3569,8 +3569,12 @@ static void svm_inject_nmi(struct kvm_vcpu *vcpu)
+>  	if (svm->nmi_l1_to_l2)
+>  		return;
+>  
+> -	svm->nmi_masked = true;
+> -	svm_set_iret_intercept(svm);
+> +	if (is_vnmi_enabled(svm)) {
+> +		svm->vmcb->control.int_ctl |= V_NMI_BLOCKING_MASK;
+> +	} else {
+> +		svm->nmi_masked = true;
+> +		svm_set_iret_intercept(svm);
+> +	}
+>  	++vcpu->stat.nmi_injections;
+>  }
+>  
+> 
+> base-commit: 86701e115030e020a052216baa942e8547e0b487
+
+
