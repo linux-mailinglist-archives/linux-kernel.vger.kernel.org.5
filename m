@@ -2,108 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A15D7BF1B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 05:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE77B7BF1B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 05:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442075AbjJJDvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 23:51:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43240 "EHLO
+        id S1442078AbjJJDxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 23:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441973AbjJJDvk (ORCPT
+        with ESMTP id S1442068AbjJJDxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 23:51:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE339D;
-        Mon,  9 Oct 2023 20:51:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696909898; x=1728445898;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=PF+Ay1nF3twFmCEuJZa/1bgtgTYEZ6w5+iXaFlgUOHU=;
-  b=fY0LmTuCmSzdAw5MYsCuoryREJskeKWLWif3p1xShuDtQrCZLukTlJdp
-   eEo64RWRJdXVXVW7MW704kpP7ETeXWQfLJEJqnMP6aGZnNZa3bVfuJRHX
-   xahz3buwtdgmNqoNVyKB22MtZsxP4SdC8mS+OuZon0xt0liGAi6a3EFB5
-   JFFzwCI2oCERmoFAhBIGXRXre++IrgoYcvlNxn6AA0ImCIs3RzGRl9ll/
-   COzsN2UVqdoABFZvugPYs+N7uUL2tmZs7pYxLFBkucSSNYJxjnWMmNlpD
-   Sum2OUL3VGp+tz6a2s7HVC3E2zsIZsgXiv8L7neiSVcQqqZu34vgcmV02
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="5860875"
-X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
-   d="scan'208";a="5860875"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 20:51:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="1084603772"
-X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
-   d="scan'208";a="1084603772"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.1.136]) ([10.238.1.136])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 20:51:34 -0700
-Message-ID: <1793b780-cd15-b6a3-f951-c19a14a1310c@linux.intel.com>
-Date:   Tue, 10 Oct 2023 11:51:32 +0800
+        Mon, 9 Oct 2023 23:53:16 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 728019D;
+        Mon,  9 Oct 2023 20:53:14 -0700 (PDT)
+Received: from [IPV6:2405:201:2033:3002:3848:5d20:59c9:c87c] (unknown [IPv6:2405:201:2033:3002:3848:5d20:59c9:c87c])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 705013D6;
+        Tue, 10 Oct 2023 05:53:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1696909991;
+        bh=4Gqs0eLo+EBbzG39UcwXadyv2NlIUjuZuyQ9YKGzG5c=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=WVx4SFqeA/RWgByXG8dJR/FAvRgOVKCApWuj/zhn51BQ2CkvFMaTanD909h1kzVvj
+         +tHtsVQBo0M/rRIn0D5rBPDpMsb0mbUmxR9eAy8aH0et9RoYifUI4vtQqieQHWimZ3
+         Qbki7vlMRYeal+JPLp1XtdGr/shHRGGxPMFc6VoY=
+Message-ID: <4b319504-45e8-5ad6-7c7a-e503a3c98428@ideasonboard.com>
+Date:   Tue, 10 Oct 2023 09:23:02 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] selftests/x86/lam: Zero out buffer for readlink()
-To:     kirill.shutemov@linux.intel.com
-Cc:     dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        shuah@kernel.org, linux-kselftest@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, weihong.zhang@intel.com
-References: <20230923233346.12726-1-binbin.wu@linux.intel.com>
- <20230927110219.b5n3fbbwrxtcwtzp@box.shutemov.name>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <20230927110219.b5n3fbbwrxtcwtzp@box.shutemov.name>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH 1/5] media: dt-bindings: media: imx335: Add supply
+ bindings
+Content-Language: en-US
+To:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     "Paul J. Murphy" <paul.j.murphy@intel.com>,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20231010005126.3425444-1-kieran.bingham@ideasonboard.com>
+ <20231010005126.3425444-2-kieran.bingham@ideasonboard.com>
+From:   Umang Jain <umang.jain@ideasonboard.com>
+In-Reply-To: <20231010005126.3425444-2-kieran.bingham@ideasonboard.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Kieran,
 
+Thank you for the patch
 
-On 9/27/2023 7:02 PM, kirill.shutemov@linux.intel.com wrote:
-> On Sun, Sep 24, 2023 at 07:33:46AM +0800, Binbin Wu wrote:
->> Zero out the buffer for readlink() since readlink() does not append a
->> terminating null byte to the buffer.
->>
->> Fixes: 833c12ce0f430 ("selftests/x86/lam: Add inherit test cases for linear-address masking")
->>
->> Signed-off-by: Binbin Wu <binbin.wu@linux.intel.com>
->> ---
->>   tools/testing/selftests/x86/lam.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/tools/testing/selftests/x86/lam.c b/tools/testing/selftests/x86/lam.c
->> index eb0e46905bf9..9f06942a8e25 100644
->> --- a/tools/testing/selftests/x86/lam.c
->> +++ b/tools/testing/selftests/x86/lam.c
->> @@ -680,7 +680,7 @@ static int handle_execve(struct testcases *test)
->>   		perror("Fork failed.");
->>   		ret = 1;
->>   	} else if (pid == 0) {
->> -		char path[PATH_MAX];
->> +		char path[PATH_MAX] = {0};
-> Shouldn't it be PATH_MAX+1 to handle the case when readlink(2) stores
-> exactly PATH_MAX bytes into the buffer?
-According to the definition of PATH_MAX in include/uapi/linux/limits.h
-#define PATH_MAX        4096    /* # chars in a path name including nul */
-
-IIUC, Linux limits the path length to 4095 and PATH_MAX includes the 
-terminating nul.
-
-
+On 10/10/23 6:21 AM, Kieran Bingham wrote:
+> Add the bindings for the supply references used on the IMX335.
 >
->>   
->>   		/* Set LAM mode in parent process */
->>   		if (set_lam(lam) != 0)
->>
->> base-commit: ce9ecca0238b140b88f43859b211c9fdfd8e5b70
->> -- 
->> 2.25.1
->>
+> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+
+LGTM,
+
+Reviewed-by: Umang Jain <umang.jain@ideasonboard.com>
+
+> ---
+>   .../bindings/media/i2c/sony,imx335.yaml          | 16 ++++++++++++++++
+>   1 file changed, 16 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx335.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx335.yaml
+> index a167dcdb3a32..1863b5608a5c 100644
+> --- a/Documentation/devicetree/bindings/media/i2c/sony,imx335.yaml
+> +++ b/Documentation/devicetree/bindings/media/i2c/sony,imx335.yaml
+> @@ -32,6 +32,15 @@ properties:
+>       description: Clock frequency from 6 to 27 MHz, 37.125MHz, 74.25MHz
+>       maxItems: 1
+>   
+> +  avdd-supply:
+> +    description: Analog power supply (2.9V)
+> +
+> +  ovdd-supply:
+> +    description: Interface power supply (1.8V)
+> +
+> +  dvdd-supply:
+> +    description: Digital power supply (1.2V)
+> +
+>     reset-gpios:
+>       description: Reference to the GPIO connected to the XCLR pin, if any.
+>       maxItems: 1
+> @@ -60,6 +69,9 @@ required:
+>     - compatible
+>     - reg
+>     - clocks
+> +  - avdd-supply
+> +  - ovdd-supply
+> +  - dvdd-supply
+>     - port
+>   
+>   additionalProperties: false
+> @@ -79,6 +91,10 @@ examples:
+>               assigned-clock-parents = <&imx335_clk_parent>;
+>               assigned-clock-rates = <24000000>;
+>   
+> +            avdd-supply = <&camera_vdda_2v9>;
+> +            ovdd-supply = <&camera_vddo_1v8>;
+> +            dvdd-supply = <&camera_vddd_1v2>;
+> +
+>               port {
+>                   imx335: endpoint {
+>                       remote-endpoint = <&cam>;
 
