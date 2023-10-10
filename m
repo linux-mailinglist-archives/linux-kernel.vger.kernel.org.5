@@ -2,122 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E857BF9EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 13:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2CF7BF9F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 13:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231433AbjJJLjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 07:39:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34342 "EHLO
+        id S231421AbjJJLkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 07:40:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229921AbjJJLjn (ORCPT
+        with ESMTP id S229921AbjJJLkV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 07:39:43 -0400
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2045.outbound.protection.outlook.com [40.107.212.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F2F994
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 04:39:41 -0700 (PDT)
+        Tue, 10 Oct 2023 07:40:21 -0400
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2052.outbound.protection.outlook.com [40.107.212.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3375899
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 04:40:19 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fNntjEfzPVFALLxzSeATGLVPTRmnHran1qH5efdEJ+lp33LQHFrRx9ZkXnEl3qXz4qOVDqIlLBuL7/+Yi7SET1+sVy6eHfk+cDMEYtIeQPgw1fzBfBuG9cE6PUPSoV1HmXhQ5G5TradTT5pnlzqlzgtnC+cYEE0PngQK2/abMepskoatfFLK3s4AumaSvjtZvgPrrwgIfY46XtU5qwh9sMrFMaOyXCvdiaIddKOfkxII3DJTc6eYfOOKO78pqB/5cdO7iiKleGMoBCgMot1RNZAOwHJTSUzo8c/sJOwCbqwYxL8fcUNVeLEqD/gf5atgyl8egF7hm4j17sTY9uFYbw==
+ b=WNQ1F70h2G1RwZFFwlb+eB3gEnAPnIkm+MgD0rhXRDZ4KUU1vTurZCd2C6Kg/2nuZND2iFPcSOabLBohnhcWMJil+EbpRuKAa7zOx3/HkzdDDSpsY9tuGsjbCufO6p7LHD3NrsHaHN5E9eFagB+agSAFKoOopzCtIrsBylc5al6RRX9cYTsFrPhbaBKt8+35+5PBjkWRyroL3EFcy8mW+ZfV0f8TcH9TriOXVp7JIOqaiwGoV24CCX85JdBdJIHlhPClzs3qZrLWT0ru03h/PgyqGN93HWhXnuxQzEAHOGpDt5Nx/Q+o5nfsbPJ2gZZwEp/jJpEWkpxoQa3BBtRVqw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DNIJ/p3l+4XPFgaLLfbq5mXqRnkQykF5TpsbfbjN0fM=;
- b=LRbX6D/miGytvw0T2D/2lcWpi3osA3tY1ZuFU43ImgGsnuagu2UQ1dNACAguvkcZrs8s186ewLYXUCyyrZrsc+h1YUmuH0fqslWQ4/YRBSDT8bkJrJQI+aMPssLRppAIdPTl8sWIGvyE3jQpU62/A/T/zVazp/UnGzXnEELqSvdWPNeT2pwXaU46UOoMiWM7tATlVUHibIE/Pvra9BI0vW1AwV43bQq7XuSA68rvr6Q2HbMVeWzgy6Oh2xyR4tEN7S+bV5+Fri3YvOg8XnWnTKIATZHW9BiZi3cbZK+WaIJCWIVdqy5gn8IefenPC9KLUBb+Yv7USeLt31ARRBXZmQ==
+ bh=fW5U7IziRp3theiEBjEhD+JWtF/kEywxmtnKRgjpVdY=;
+ b=hUd4vf93BYyh/mYgHNtf3CsfEY+y2Y3aW34zsjvxyS0FOEITPaUC4uNEUYMyvAUZnRfJStyPWZstwdFTeFIoZfXGDEHD9vEabwvIHmxlkVikTKzmokALxDPpnpXjRreR2C/rhnii3Q+GRbDvQpsy7e76dnBRlJR+3HVMEI6hI4I+m90MXpJJ48R3Dg5UkJBsU5ynwQwypVWT2dbguyj42IK6KEF+82pXJvvzgMws123eQVVfr06w9Ih1eulbiGLM8J3C43iq2etNTG1VYCrue9iUDTiB99sqO/K1VIInrgt0K9oPhnA8nzYHllLvLMsjfzCgW57XnPGB01/MCnxXQA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DNIJ/p3l+4XPFgaLLfbq5mXqRnkQykF5TpsbfbjN0fM=;
- b=2TKaA9Rj0mTLfWPbwjbaUWV+tgjiiiBsTW3h99r8YGJbYv7cEdXLdLx4ZbvvTAOFkFcKowfU+9rEu3Nh/du/xGed4md0lpHHrUK71dX5td2tHziQUO1PBPSrDDj7EVyhCuOWh3W/rx1ZKqiT7jid8ZLeaaVMc3ikPVGy+NSAa4w=
+ bh=fW5U7IziRp3theiEBjEhD+JWtF/kEywxmtnKRgjpVdY=;
+ b=DCcghTMESZYj/nP0ZJ2+RSQexVxmwggvJfvmHTEROnUAQn+2rlTrgNvXMnTznfwdO7GyZNZkS9f/HhZXSzMRofMX19c4gk/G0BIH6tUPi3qM23XmizR96g/5tkjl/dI4vtdU+adYBuYFqntkndVn4Hgf2onT+7OKRHxJlxOO16o=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=amd.com;
 Received: from MN2PR12MB3008.namprd12.prod.outlook.com (2603:10b6:208:c8::17)
  by LV3PR12MB9095.namprd12.prod.outlook.com (2603:10b6:408:1a6::22) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.36; Tue, 10 Oct
- 2023 11:39:39 +0000
+ 2023 11:40:17 +0000
 Received: from MN2PR12MB3008.namprd12.prod.outlook.com
  ([fe80::74d4:ad6f:f00:8187]) by MN2PR12MB3008.namprd12.prod.outlook.com
  ([fe80::74d4:ad6f:f00:8187%3]) with mapi id 15.20.6863.041; Tue, 10 Oct 2023
- 11:39:38 +0000
-Message-ID: <793eaa1a-c836-3f0d-7443-b2165a9c6ab9@amd.com>
-Date:   Tue, 10 Oct 2023 17:09:28 +0530
+ 11:40:16 +0000
+Message-ID: <15c17bd5-744b-9ae4-93ae-19150bfb85a5@amd.com>
+Date:   Tue, 10 Oct 2023 17:10:06 +0530
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.13.1
-Subject: Re: [PATCH 0/6] sched/numa: Complete scanning of partial and inactive
- VMAs
+Subject: Re: [PATCH 6/6] sched/numa: Complete scanning of inactive VMAs when
+ there is no alternative
 Content-Language: en-US
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     K Prateek Nayak <kprateek.nayak@amd.com>,
+To:     Ingo Molnar <mingo@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
         Bharata B Rao <bharata@amd.com>,
         Ingo Molnar <mingo@redhat.com>,
         LKML <linux-kernel@vger.kernel.org>,
         Linux-MM <linux-mm@kvack.org>
 References: <20231010083143.19593-1-mgorman@techsingularity.net>
+ <20231010083143.19593-7-mgorman@techsingularity.net>
+ <ZSUX9NLa+DDjFLnZ@gmail.com>
 From:   Raghavendra K T <raghavendra.kt@amd.com>
-In-Reply-To: <20231010083143.19593-1-mgorman@techsingularity.net>
+In-Reply-To: <ZSUX9NLa+DDjFLnZ@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN3PR01CA0043.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:98::19) To MN2PR12MB3008.namprd12.prod.outlook.com
+X-ClientProxiedBy: PN3PR01CA0037.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:98::16) To MN2PR12MB3008.namprd12.prod.outlook.com
  (2603:10b6:208:c8::17)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: MN2PR12MB3008:EE_|LV3PR12MB9095:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0e3b9660-cf5e-4fc7-2bb6-08dbc98595dd
+X-MS-Office365-Filtering-Correlation-Id: 8b698af0-a28c-489d-5d8e-08dbc985ac91
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lA9p73YgkFzbVDc5JKWQHzrY7PuqTVuoofZ4g8wEDS6G7hRKWbcGlwt55T2fp1x6qfuT5rGkvmk2XHQjWHbfvV0HdVtgw7AaOb2qv8/HJUc7IZPX+5O2DdP/TsaWYGG7I2C8DxE6BNmnnZA1kADRe9c5mvdAI18bYuBmFy7bBDOJSoXa1YaU2c2Fpf00e9aEOPWdn/zg/WXzZfzI2RA0HSxt1DADhu/xU4IIW2ofXhc4ASINyecTW5cAc2uSkja9seWC8d20uFZHwfwvI5i2RpJv6Y2kQHlcxLb3IKuq/Own4Xb85l3qFjLAvRTbuYHx4OeoOKnZZrLBEvXnAoH6C2WZYff3QWs5p2qgsM76UwJGExdoDEvQNzU1VbxlRwRO7TCzI8vkjKYIq40WP+zlnq1wtOqCmz1xBkWWF2Il2W0bXFO2iOr3DH6xApHj65TQ+iG9bA07TXEojVBNW22YbY7w+UYnkTmTuOQfUoxpo+Su36VpKHQuILe6rcSTD/RtsRWi08FD1LIcIiTYFZqoUrqe4ySlKtcc++tlPDQLpo6tSphUmJSBMu8BOrT+SicvxU8wo79qWzzDBdldbJWhrbgjEkeV5kCMCRDV7jqQSJOONFXmO206GiYTgOUz31Cf
+X-Microsoft-Antispam-Message-Info: AFwxy1ODAA5YqTWJFY12DGiNIc3//3p2gD3Xg7+2sBtVUj0tN0PLsztg32EF2hwpRJ7KcAV/O0N/mKUjCnxld6V4PFBZK5EpiNzmUx9gg7jAQ2h28zSunOIa8JE0J/2pTeSFabjZYOCCNMQc64d9cirgrgXXGlH8DBI/HRDE9UcxwU4kDnvwBGLcyAK9VV8pvJzCpivP8t/omEdvXusEjnuwEFdGRSbB6pCyg+7OC5pRAHPxTCe9po+qwAxWUntcCfBT3zR6OR1bsdidcPtvO7K+aSWua60USFLKTGOzenBPSTq1BlrcTO8yayGOmJ7e9oDtt5hjIfwcYe7epLRe38Qf7Efak1efUb9sHeMhqnIp0Pwuu4/wSLdw9XAM+jV7NDT+L40e9tRm8jifDyMNt/NMmmzIwzBrj3jl53f0aeNGLEo+WWTjE/WglMci3hZQe/HIrwDZyVT2nlMMlqHswiMv/DPa1DXCx9TfBiY23qE1daWZ3CCMj+1yB1XlFYt73tqfjJ448MOeXbEoiTtU91O9KQsAzaj8/lfZ60rL5/Rb7YC0tS14yAFitD6jBbU2fZdalpJldSyxxPE7/bE5hHFoJp3vHqEZ1wslXggvkqDXJPQ3IjR+HqMzOQuSQcobY+kQmQfrAABHJSFfG3Fzvw==
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3008.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(136003)(39860400002)(346002)(366004)(230922051799003)(186009)(64100799003)(451199024)(1800799009)(31686004)(83380400001)(26005)(2616005)(53546011)(31696002)(38100700002)(36756003)(478600001)(4326008)(6506007)(2906002)(8676002)(6666004)(6512007)(110136005)(5660300002)(8936002)(966005)(6486002)(316002)(41300700001)(54906003)(66556008)(66946007)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dTdTZmJnUWVsREtwRHJoVDgxdStCb1YzZnpWOXo1WnNzZ3dMZHlLM0dEMGRP?=
- =?utf-8?B?SGllcVFkSHVid0RjRSs2ZnV6dEFxaGNxL2ZpZFRRVk9jS3ZvNG4za3FXaXp4?=
- =?utf-8?B?ZisvWks3SHptTG1DNDIxNy9pb1FQS2xjallRQVBmTThyWS9IVlZPNFYzT3Nl?=
- =?utf-8?B?WS92Z2ZFOTNXMW9sTDN0WHBUYWNaZTMrUXNHWC94SDh5c2Y4Z3R6S1I3ei84?=
- =?utf-8?B?Qk9uMGxFTkpPWDdPZTBxSGhBSkY2cGQySk55NGlENGZhUE41WEJ4VW92Z3Nl?=
- =?utf-8?B?NXdaS3lhT1hQMHhBRm4yRnM1RTRDMHFqbmdVazNubTZ1SHpxSmhKc3ZuUEI0?=
- =?utf-8?B?YlpiTmxLNEFjTnYxak5RcS9IVGVrSzA3WGdEZFRwTFJDWkUwVGJNUkdUSjN6?=
- =?utf-8?B?WktwSUxKQzFsY0dTeXVKQXhwKytqbUMwUU4wZDU0Q1B0S1RCa2xMM1ZRMVRx?=
- =?utf-8?B?Vkk1Y0lqWHJSanJvY3k1VmpHWE51Vkg3QWV0ZkRBdmNpVUdzYzdwS3lFWlBU?=
- =?utf-8?B?ZFJLSXRaRjZKSkxUMUpnQ2dsRkR1WHppUHVocFZvalM1eDY1S0JabDFVcitK?=
- =?utf-8?B?aXdMZy9wY2J4dVV3R09aczdoLzVTc1cvWkg2YWFiVW5kQnBjY0lwaWNvVzJx?=
- =?utf-8?B?VWtsWU9TeHpFRk1BR3drRzlCZFYwbHNRRzhHWThZK2NXR0NxV000L01PZzVx?=
- =?utf-8?B?TjZ4c1J4NW5FcnJOY0wvUGdmejdUcUtQNlJBanNSTk16ZlAwdy9xNGxCdEV6?=
- =?utf-8?B?eWRjK0puT0NjWVpZbFhmUEdrWkYyTEprdEJYZ0JIRzJCQWlwNUdiNC9HR1hG?=
- =?utf-8?B?azNaU0NxSFlQaEhacTEzUWNKS3hIUXJoVHBlWnpkR0thU3JjSUpQaW1qSkYy?=
- =?utf-8?B?NHlsM0VVRzZqbjVlL1BLVG1nTG44VVdxOFZoeWF6RC9QN21hcmo5RkxHSXhS?=
- =?utf-8?B?VU9uWmppSGxlalc2QkF3Y3BLa2FrMmM1VTBXQWhNLy9KQ2piT2RyUlpZR0NR?=
- =?utf-8?B?RTJkenZEOUN0cW9udUlOamJGam1Ic28zRStITTZiR00yL2hmbyt0NVpLN3NI?=
- =?utf-8?B?VVpOSlNZc0hDclNwNm9sbjBKYU9PelhIWnpkRjVtcUtqNVJiZTI3K0RkdWEx?=
- =?utf-8?B?dHcrWkhOaUdHdEV0UEsxem4zYjhQYmE3M3ZiK3daVnZ1NDBMeXBZd1JiWk80?=
- =?utf-8?B?a2xnSkFHakxlZXI3SUNyRENnTUJ5R25mMTZLc3RtUDU3Z0hFS1hpbUZoblNV?=
- =?utf-8?B?VU1GZGU0ejEwYnp2VnZMeldWL3Fab3Z4MmhlV1JLL2pMUThRRzAvSXNEQmpn?=
- =?utf-8?B?NEVWSEV2R3FPNUhGdllWQUVOamIxNnUwV2Jack9KdXF2aVF0RmduaWh0dklQ?=
- =?utf-8?B?TCt5OU05K0xzYmthUW9ENWFvMTFxWTRqQXRGYTR3NUFRQURYQVcybXRrN1hC?=
- =?utf-8?B?M2puZlRKbHdTc1kydG0xbENUSURncWhhN1h6NDc1N1cvbDF5U2VUT2IyODh1?=
- =?utf-8?B?enhnVG96OTZoSk5jVS90eDhLRk0vNVFHOWxMNHRrNDIxYmZ5bUptdFRZd2tI?=
- =?utf-8?B?V1lraFdPdlhWakdNdXJUSThsVHhlNFpaT3RmUTFUOVFOTkI4MUg3SW5oVmJ5?=
- =?utf-8?B?eUZlbnN0eTQyMU5pWHdnU1BhZGRBYWNnRmlVM0QyY0Z2S1BXRXkySlNzRmRs?=
- =?utf-8?B?VTFnQjUwN2NPQ3k4UXlTSEcydkFiUG9uam56RjdER1IxSUw4ZTRQQ2x3SU52?=
- =?utf-8?B?bjhudjRwQ0hIVTFCcG5xVTIzamdGT21lNVB6RUxadzVHejNnRzVBcTdqdkJt?=
- =?utf-8?B?Mmw4bTRnWEFudXJpTUtTSXIrUlZWeldlZHMyTTZIRk93ZDIydkN4Um5SUzdU?=
- =?utf-8?B?dXZLTEhDYmJOaGYwRVozNzBnaVJKcHNmQy9GdHRIVldEd1BXUkxwT0o4a204?=
- =?utf-8?B?elpQUjJGU3ZDN0ZONXhwZlNwZzlkSU9FdUFtQy8wN29lRFIyV1p2QjhnNktP?=
- =?utf-8?B?VHBpcWdTK1NRSVI1MXdGai9EczROTi9BY0x5eDF1SEgycWl0VitTcERNT1k2?=
- =?utf-8?B?WFB3YnU2ejIrUVJDRWNZdlJwVUFkMTFML1huNGdhc1pYcm9BRWVEUTNBQlMy?=
- =?utf-8?Q?YSLh5LseNojiyNUz6qqQVG1v2?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YTVnc2cwVUQ4QWh4NkVmZWZ3cnM0VlBBeVkweDhZU1JESjZmdVJ2My9ZZ3Q5?=
+ =?utf-8?B?V2ZQOHNFcG9FZHhPTW16UXBYRDRUeUlBNzBVSFN2UVpvZExNQXRrWnFuQzN5?=
+ =?utf-8?B?ZmVMLzA1d3F3eHFxdnZEMFF6SGRjc015dk1EVmd0YnA4NjZtTmRYMXYzSUFR?=
+ =?utf-8?B?VjFmSU5DMk1OL1VvR2tYdGdBN25pT1ZJVDR2UG1NYTRVSk5sSEpBSkhJeHpQ?=
+ =?utf-8?B?WnJrMnJxY1h1U0ZsTklEQk9MWVZpUzFaV2VCc21BYVZRREFWNm9jaGhZT0hI?=
+ =?utf-8?B?US9VMDQzVEVCSnVYdWZYSXdMWGF2RVYvTnVRM0lsZlE0RmdkK3JxOS9HQ2VW?=
+ =?utf-8?B?WVduWjNFSERuTy9JRkZuSzJKN3VaL2Fqb0w4OWppQlF0N044cGtiTXhqUnlI?=
+ =?utf-8?B?b0M4cVAyT1N2TXM5WUU0ZmZpRlNPRE9PelVDbk8vazhkQm84Sm80Ui9hTURL?=
+ =?utf-8?B?QThFMlFObFNMVTc5TDNIenJLRjlESmtOeEZoQk9raXY2bkZUU2Vtd2wxWjFt?=
+ =?utf-8?B?MDI1WGZjS21aNEVkYkNEQlVWMytRakw1bkVyN3EvdkZ0aGJ5Q2VuRWxBMlQy?=
+ =?utf-8?B?YjduaEF4UCt1bkpBcXNOc1BwbU5EaUJJZEdZQldVSERQbzA4a2Zna2pQdHR2?=
+ =?utf-8?B?TlV3UUd6TFduV3JUekg4R3l4RUFKWGVKRW9ZU2FQeVRqQ2tvSXNxTUtpTjF1?=
+ =?utf-8?B?N0poaEd5M2x4YzNiNm1QWGxrY2xvRFpBR09BTGdjNnBVK0QvRGJxS1pVbUk4?=
+ =?utf-8?B?TWFqWnIyMzhiNlM0WUdoRkZ1dmNDUHJGODlORzNhTFJkMWJ5QUxsRzl5QTNC?=
+ =?utf-8?B?bzlydEJhNGxCUDBrTCtDOVNaeEVaY2NFanIzL1h1Z0VBTTJLMksvVXBEc0M4?=
+ =?utf-8?B?MkNWSmZvSTBpS3NodnFyYlZIdW5BNWxlc1ZERm5rRFlWUURFNHNQZlBTOFQx?=
+ =?utf-8?B?QlcycnZJamJLeUtOdFZVKy9JaGZkOG9ydjBCZXhrbWlOMkY3cVNuNXRIeTR6?=
+ =?utf-8?B?MklOd2Z2TDlVbWppMEZTM2Y0cmFNZGFKK05ScFpobHBpcTB1RTBOemhSZW9q?=
+ =?utf-8?B?Uy9mSFFDRkdobVdhbzBZd2pJRHU1a0ttUlFxb2dxWnd0YWNZQkNSQXUvc1lQ?=
+ =?utf-8?B?N1JqK05MNXl3bEZHbmtNeDJvblB1RWdqV0hNNnpSVTMzcFFWNXBleXVpQ3lN?=
+ =?utf-8?B?akdLS2pQV211Nmt6WUxXanY4UzNsRG9rOHRyR2hoTXJSRVdXODBuTUtrdzBx?=
+ =?utf-8?B?THhGWjVteFU5VUl2S1Uzb1A4VFZOTHR4eHJrQXQ5L0pXdCtlY0lGRXpuRzlJ?=
+ =?utf-8?B?UG8wSXI1M3cvZWswdmc2M2hmeitjSFduOHdJKzR1VWZuZGZDOHZ1YmpPR2th?=
+ =?utf-8?B?Vi9FdjFNMmZZd2J0enorRk9ZYnl6aDhrS1g5bHRmNnJic2I0TlFmc0p3SEJs?=
+ =?utf-8?B?S1JRd0xOWVR5OE1lZnN5SnhudjVLNEw3Q0VyT0JGMXAySWhoU0RXTWpiTDN2?=
+ =?utf-8?B?T051L2FkcldEdU0xcUhGSWdBZnByQXdiWGQ0R3ZqcU4xV2c3dmdBV3k4Q3Vn?=
+ =?utf-8?B?ZVp0MDlEQTAwVUJNT3VNTTNJWVFCOUlYN3oyVGU4SzhzSjQ2ek5tN3B6eC9T?=
+ =?utf-8?B?MEJJZWt0MTNKQXcyTTlGQS9XRDlLZ0ZRME1TbjhveGI0QnhLeHBHaXp3YXdx?=
+ =?utf-8?B?Y21sK1dtM1d4V2YyYld6b3pDLzJ4OWpzWWltZGxnOVVJWWxteGJMTUp4bks4?=
+ =?utf-8?B?L1ZBM1ZVUVJyK1pEeld1aGh3M0Q1UzNhQUtHeGQzOHQrbnh2a1pHVjB0a0Vr?=
+ =?utf-8?B?NkllMEl4K3hnclpzQzU0SlFRZDBEc2xWTU55ZkJrckZrNHU2QUFWVStPZVNK?=
+ =?utf-8?B?dGpoRnNWTUZ0clNMSTNBWStUWWxYTkR5Y2FnL0VhVEZKd2l4aE1XU0NmR0xN?=
+ =?utf-8?B?czZsL24rYUFOTzZoNW5OSDh4eFVTNU9pYitQWTlVWktPQXI1YW8yT2FyVDRK?=
+ =?utf-8?B?b1REQ0JnWVcrYjgvbzVLakMrMWUzM1RWd0JpNlBsd3lKRFZCa1JmaU5BQXl2?=
+ =?utf-8?B?U2ZwWVRrSGordkdyNXhnZW5zQVRKVmd5Tm9JdWRaQnIrdmdrUkxRZU94elEv?=
+ =?utf-8?Q?vkHFK6gp6uh24sRsjXHp5WKl2?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0e3b9660-cf5e-4fc7-2bb6-08dbc98595dd
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8b698af0-a28c-489d-5d8e-08dbc985ac91
 X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3008.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 11:39:38.8249
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 11:40:16.8801
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ELxTAyCEeOx/VKSeZ/eyjXoa9kIZtQalu1Us8tEDsne5wPRLgaxQeiKFziti1RWTL1vjfV2pA538G7kENJKLtQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: eiXgo4qiA5piDqVnkx6Mg5Bqy9znrkEtoRc9iV0/eL52VTA3kBLZPobCxHyYn/jJupeu4Bza/QDFi50Fo62KFQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9095
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
@@ -129,75 +132,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/2023 2:01 PM, Mel Gorman wrote:
-> NUMA Balancing currently uses PID fault activity within a VMA to
-> determine if it is worth updating PTEs to trap NUMA hinting faults.
-> While this is reduces overhead, it misses two important corner case.
-> The first is that if Task A partially scans a VMA that is active and
-> Task B resumes the scan but is inactive, then the remainder of the VMA
-> may be missed. Similarly, if a VMA is inactive for a period of time then
-> it may never be scanned again.
+On 10/10/2023 2:53 PM, Ingo Molnar wrote:
 > 
-> Patches 1-3 improve the documentation of the current per-VMA tracking
-> and adds a trace point for scan activity. Patch 4 addresses a corner
-> case where the PID activity information may not be reset after the
-> expected timeout. Patches 5-6 complete the scanning of partial and
-> inactive VMAs within the scan sequence.
+> * Mel Gorman <mgorman@techsingularity.net> wrote:
 > 
-> This could be improved further but it would deserve a separate series on
-> top with supporting data justifying the change. Otherwise and gain/loss
-> due to the additional changes could be masked by this series on its own.
+[...]
+>> Both the number of PTE updates and hint faults is dramatically
+>> increased. While this is superficially unfortunate, it represents
+>> ranges that were simply skipped without the patch. As a result
+>> of the scanning and hinting faults, many more pages were also
+>> migrated but as the time to completion is reduced, the overhead
+>> is offset by the gain.
+> 
+> Nice! I've applied your series to tip:sched/core with a few non-functional
+> edits to comment/changelog formatting/clarity.
+> 
+> Btw., was any previous analysis done on the size of the pids_active[] hash
+> and the hash collision rate?
 > 
 
-Thank you Mel for the patches. I see Ingo already took to sched/core.
-Here is my testing detail FWIW.
+Hello Ingo,
 
-SUT:
-- 4th Generation EPYC System
-- 2 x 128C/256T
-- NPS1 mode
+I did test to understand the behaviour threaded workloads relation to
+pids_active[], and that there is more spread of bits set etc, but not
+actually from hash_collision point of view since it would work better
+for workloads that does not create multiple threads quickly (thus we
+have sparse PIDs) as well as normal case where we have almost continuous
+PIDS.
 
-base: 6.6.-rc4
-patch_v1r5: Mel's  Initial series with prev_scan_seq = -1 fix
-  Link: https://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git/ 
-sched-numabselective-v1r5
+But I also did not try to increase size of individual pids_active more
+than 64 for the same reasoning of Mel that at the most we endup doing
+cross PTE updates.
 
-(May not be relevant. But I did see number was even more better for
-thread_alloc, so ..)
+Perhaps I can experiment when I come across workloads that have 
+512/1000s of threads to refine these cross PTE updates further.
 
-patch_v1_r13: current series
+However, I have tried increasing history (PeterZ's patch) (i.e., 
+increasing array size of
+pids_active[]) to get a better VMA candidate for PTE update in
 
-numa01_thread_alloc
-=============
-         base            patch_v1r5      patch_v1r13
+https://lore.kernel.org/all/cover.1693287931.git.raghavendra.kt@amd.com/T/
 
-real    8m46.557s       8m29.040s       8m38.098s
-user    599m6.070s      268m38.140s     404m52.065s
-sys     3655m38.681s    3794m10.079s    3751m36.779s
+to handle what Mel suggested in other email.
+viz.,
 
-numa_hit                394964680       396000482       393981391
-numa_local              197351688       198242761       197008099
-numa_other              197612992       197757721       196973292
-numa_pte_updates        1160            790360          812
-numa_hint_faults        755             729196          553
-numa_hint_faults_local  754             410220          263
-numa_pages_migrated     1               318976          290
-
-num01
-======
-
-real    18m26.691s      17m31.770s      17m33.540s
-user    4501m40.194s    2148m7.993s     3295m57.897s
-sys     3483m11.684s    4764m57.876s    4215m35.599s
-
-numa_hit                395473956       395813242        395000242
-numa_local              197776626       198188480        197983594
-numa_other              197697330       197624762        197016648
-numa_pte_updates        1447            4625319          7142774
-numa_hint_faults        1390            4947832          10313097
-numa_hint_faults_local  1288            2758651          5354895
-numa_pages_migrated     102             594803           960422
-
+	1. Task-active
+	2. Multiple tasks active
+	3. Any task active
+	4. Inactive
 
 Thanks and Regards
 - Raghu
+
