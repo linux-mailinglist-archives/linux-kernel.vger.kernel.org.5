@@ -2,77 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B567C02D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 19:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 442D87C02DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 19:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233920AbjJJRkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 13:40:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34502 "EHLO
+        id S233779AbjJJRkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 13:40:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233870AbjJJRkA (ORCPT
+        with ESMTP id S233870AbjJJRkS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 13:40:00 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61160CA
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 10:39:57 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50306b2920dso100509e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 10:39:57 -0700 (PDT)
+        Tue, 10 Oct 2023 13:40:18 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5611897
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 10:40:16 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2c00df105f8so75825041fa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 10:40:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696959595; x=1697564395; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696959614; x=1697564414; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=r4xZpqEwWtfUV1JgIse7nmPsmTUQIv/zlM1eTbPf9Zc=;
-        b=D0BZI28AAuxlKIwt2Y0k5v38edjDTKmuGVqY4uy/m17vCEsvmGEbcvOwDu87+7Zb9V
-         0D6uCHCzHrBQJrLK/5KTiArgrqq+0ibHB9va84XZdmlUDh9QtD5GZM4bFuHEeVU9MRMU
-         9W8ZS1kPKpa5LoCDSDqj99t1Rb/Oxi4oGfL5BneZuZ+Qtoh1p8Wo7FXn/BNfu4j7H6U1
-         dCFQrt9mb7tM9LIVgnURnMzgEAwYMNJvgBPZkR7CP6Ym7oBY4JopAmdrGIsJ2rrCq3fz
-         qI+hyUqFE8OS+ZmLzq51i92wjxsPjSMs0LSIA8Ahuer7gRileC0Ia2p9cg2TsMZmWUY3
-         34Sw==
+        bh=eh67zzVngCjOBB0HFeX9Jhktm6NSJyRL2/VUfJuzB14=;
+        b=1K1+zSk7IP8FvNaN2QfP6NvJaYOP+Vyqva8pasCI8h3FKJmqPb6uX3/YYBKQQa+ZtP
+         rRqlHshmJct8odJF1LQXf9h8mVF4n1HPWFQY4orzJ3rkiSztPgU7Ziktp0ci+8malGCW
+         2CEOEWw5RqQuQYvpQL+ebhyE3NYtl+FHvgHb4++Rpd4ujcMm17kBbnnqJJqpS1d17Xri
+         fJAY70suoOP5iQwRwbOfsssjSh1rvZB9Ewe4twgzcCmKb30SrsTwlS7UGog74S7cie1m
+         MHs1Hg3o4sPGdBXSSj0tJ7+bSRSEbY9VWeTUCyqigsasuVrWBts6vxWG66gLPfu6R9hg
+         VLmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696959595; x=1697564395;
+        d=1e100.net; s=20230601; t=1696959614; x=1697564414;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=r4xZpqEwWtfUV1JgIse7nmPsmTUQIv/zlM1eTbPf9Zc=;
-        b=E1TAaZQLbcgjTOFni/wRDOeYd2Jk5tQw0v/jqpvxY+StB2PUlN33t71OVXjw2w9zq5
-         6i7BABfbpdIIA1b3faayrp43OJzePiIfhhdJwc5+4FqmSjZzeN693b72sopBE+kgrTYV
-         9qg/3lmT7wfu9p4L2a0UAiMdJQyqs9Uxf2qUIpbNaPNnIHtWEYJDwWZR9XA0gtnsERhE
-         gkp5KQ86Ovd7INYVDlLCdxO54k7b4HMphlDsS5mC+CZ9CqrkaE/5Cc6xUkEB8lLVro3N
-         e0yjv20Tb6G5zFIHQo1grBhA7TUSH37uNLRrEz+M0ULZmkrRFS+3mYvFveoSS/JyDDEc
-         kVTw==
-X-Gm-Message-State: AOJu0YxdofgFzL+tln29psSZh1QguE2v6OtRhp9JO3Xs5+YcwuYLKNW5
-        irbyJy7TyHhvjTZefsHT1mQ8xKggHqWLBlUlEwmcdg==
-X-Google-Smtp-Source: AGHT+IGSK51KyaDcnsl41rah8ft25iKVz+wl1YCpS4m2RF+QtVWHG/EMQEczDjGuYeiEzvYsApMjlsD9ch7wMtde8XA=
-X-Received: by 2002:a05:6512:3183:b0:503:2879:567 with SMTP id
- i3-20020a056512318300b0050328790567mr13675359lfe.28.1696959595193; Tue, 10
- Oct 2023 10:39:55 -0700 (PDT)
+        bh=eh67zzVngCjOBB0HFeX9Jhktm6NSJyRL2/VUfJuzB14=;
+        b=jUt8e2HlbciAXX8CWApYwurdgQt2mXfNdUbGiMZhmq4fvMZ/nUdBHP5VWwE6W6Dbwj
+         tb6alD2O2DXGn//k83Tfej8SIpeJAaVqOq0wfiuSHmgfOaCsVXTeESaMRkOxR2feTL7A
+         JZzUPPMWrLAfSy0tsDiK+U3ARfQaRIxmCKvAuSd5gvKzZV1T3QZIT7JIsX+gdOkcaUhp
+         vSwhzvsVT1Khh46rKHwsO4Po0jP2gGNgYNZwQd2dtsukxyTSFpIKj6Y4v4Zxs6iMvTCt
+         ypEBX9i55Q+kKwbMbgGTVEIubaU2ElDRQMzUAxKfE3frqzY1/R4mLZk//lOB7n6aMjkX
+         bLjA==
+X-Gm-Message-State: AOJu0YzBRIMWhox+5ToHLNLH2IyHZuHiYFfmEO/lEVfDM2FlBzyDbylb
+        /ZaFQMN78K8HdI2rB6pmvZu4Rwde+/jUFv2bw1ZeKg==
+X-Google-Smtp-Source: AGHT+IH2dIZaBzJpuTwJpmIDz8iPbuG6Si7zQ5/GO2AxnRvRLgTo8Q0DoI2Hr5h8+YihQJDY7PTmfVOLciKXa9h99CI=
+X-Received: by 2002:a2e:b0d5:0:b0:2b9:e304:5f82 with SMTP id
+ g21-20020a2eb0d5000000b002b9e3045f82mr16089497ljl.13.1696959614366; Tue, 10
+ Oct 2023 10:40:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231009-pxa-gpio-v7-0-c8f5f403e856@skole.hr> <20231009-pxa-gpio-v7-2-c8f5f403e856@skole.hr>
- <CAMRc=Mc7=E9bMQgiUM8qqk7UD4+exhJZqw2DucTcsnqHcttR3Q@mail.gmail.com> <12313687.O9o76ZdvQC@radijator>
-In-Reply-To: <12313687.O9o76ZdvQC@radijator>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 10 Oct 2023 19:39:43 +0200
-Message-ID: <CAMRc=MdWYNmBkJ6Nw6V_FzJKQw--g02tjLSztMYW_atNhisVpw@mail.gmail.com>
-Subject: Re: [PATCH RFT v7 2/6] ARM: pxa: Convert Spitz LEDs to GPIO descriptors
-To:     =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Cc:     Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Russell King <linux@armlinux.org.uk>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-spi@vger.kernel.org
+References: <20231005-ad2s1210-mainline-v4-0-ec00746840fc@baylibre.com>
+ <20231005-ad2s1210-mainline-v4-17-ec00746840fc@baylibre.com> <20231010171738.5a23e66e@jic23-huawei>
+In-Reply-To: <20231010171738.5a23e66e@jic23-huawei>
+From:   David Lechner <dlechner@baylibre.com>
+Date:   Tue, 10 Oct 2023 12:40:03 -0500
+Message-ID: <CAMknhBFP1Or+06rAMNOAU1Dc3sx1QgO44-N5xpsE-54DVOHYSQ@mail.gmail.com>
+Subject: Re: [PATCH v4 17/17] staging: iio: resolver: ad2s1210: simplify code
+ with guard(mutex)
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-iio@vger.kernel.org, linux-staging@lists.linux.dev,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
+        Axel Haslam <ahaslam@baylibre.com>,
+        Philip Molloy <pmolloy@baylibre.com>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,30 +74,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 6:33=E2=80=AFPM Duje Mihanovi=C4=87 <duje.mihanovic=
-@skole.hr> wrote:
+On Tue, Oct 10, 2023 at 11:17=E2=80=AFAM Jonathan Cameron <jic23@kernel.org=
+> wrote:
 >
-> On Tuesday, October 10, 2023 1:12:05 PM CEST Bartosz Golaszewski wrote:
-> > Gah! I should have noticed this earlier but this is a perfect
-> > candidate for using hogs. Can you use gpiod_add_hogs() from
-> > linux/gpio/machine.h instead? That would save you having the lookup
-> > and the static leds descriptor array.
+> On Thu,  5 Oct 2023 19:50:34 -0500
+> David Lechner <dlechner@baylibre.com> wrote:
 >
-> From what I can tell, the hogs keep a certain pin at a certain state as l=
-ong
-> as the machine is powered on. Is this really what we want to do with LEDs=
- or
-> am I missing something?
+> > We can simplify the code and get rid of most of the gotos by using
+> > guard(mutex) from cleanup.h.
+> You could consider scoped_guard() for a few cases in here, but perhaps
+> it's better to be consistent and always use the guard() version.
+
+Yes, there it doesn't look like there are any cases where there is any
+long-running operation that could be done after unlocking the mutex,
+so I went with the simpler approach everywhere.
+
 >
+> There is a small timing question wrt to the gpio manipulation inline.
+>
+> >
+> > Signed-off-by: David Lechner <dlechner@baylibre.com>
+> > ---
+> >
+> > v4 changes: New patch in v4.
+> >
+> >  drivers/staging/iio/resolver/ad2s1210.c | 157 ++++++++++--------------=
+--------
+> >  1 file changed, 50 insertions(+), 107 deletions(-)
+> >
+> > diff --git a/drivers/staging/iio/resolver/ad2s1210.c b/drivers/staging/=
+iio/resolver/ad2s1210.c
+> > index c4e1bc22e8b0..c4e0ffa92dc2 100644
+> > --- a/drivers/staging/iio/resolver/ad2s1210.c
+> > +++ b/drivers/staging/iio/resolver/ad2s1210.c
+> > @@ -47,6 +47,7 @@
+> >
+> >  #include <linux/bitfield.h>
+> >  #include <linux/bits.h>
+> > +#include <linux/cleanup.h>
+> >  #include <linux/clk.h>
+> >  #include <linux/delay.h>
+> >  #include <linux/device.h>
+> > @@ -404,11 +405,13 @@ static int ad2s1210_single_conversion(struct iio_=
+dev *indio_dev,
+> >       s64 timestamp;
+> >       int ret;
+> >
+> > -     mutex_lock(&st->lock);
+> > +     guard(mutex)(&st->lock);
+> > +
+> >       gpiod_set_value(st->sample_gpio, 1);
+> >       timestamp =3D iio_get_time_ns(indio_dev);
+> >       /* delay (6 * tck + 20) nano seconds */
+> >       udelay(1);
+> > +     gpiod_set_value(st->sample_gpio, 0);
+> >
+> >       switch (chan->type) {
+> >       case IIO_ANGL:
+> > @@ -418,14 +421,13 @@ static int ad2s1210_single_conversion(struct iio_=
+dev *indio_dev,
+> >               ret =3D ad2s1210_set_mode(st, MOD_VEL);
+> >               break;
+> >       default:
+> > -             ret =3D -EINVAL;
+> > -             break;
+> > +             return -EINVAL;
+> >       }
+> >       if (ret < 0)
+> > -             goto error_ret;
+> > +             return ret;
+> >       ret =3D spi_read(st->sdev, &st->sample, 3);
+> >       if (ret < 0)
+> > -             goto error_ret;
+> > +             return ret;
+> >
+> >       switch (chan->type) {
+> >       case IIO_ANGL:
+> > @@ -437,17 +439,11 @@ static int ad2s1210_single_conversion(struct iio_=
+dev *indio_dev,
+> >               ret =3D IIO_VAL_INT;
+> >               break;
+> >       default:
+> > -             ret =3D -EINVAL;
+> > -             break;
+> > +             return -EINVAL;
+> >       }
+> >
+> >       ad2s1210_push_events(indio_dev, st->sample.fault, timestamp);
+> >
+> > -error_ret:
+> > -     gpiod_set_value(st->sample_gpio, 0);
+> > -     /* delay (2 * tck + 20) nano seconds */
+> > -     udelay(1);
+>
+> Dropping this delay isn't obviously safe (though it probably is given stu=
+ff done before we exit).
+> I assume there are no rules on holding the gpio down for the register rea=
+d.
 
-It doesn't seem like anyone is using these GPIOs once they're
-requested? Wouldn't the above definitios be analogous to:
+Correct. The SAMPLE gpio only needs to be held for a short time (~350
+nanoseconds) to latch in the current values, then it doesn't matter
+when it is released. (Figure 35 in datasheet)
 
-GPIO_HOG("pxa-gpio", SPITZ_GPIO_LED_ORANGE, NULL, GPIO_ACTIVE_HIGH, GPIOD_A=
-SIS)
-GPIO_HOG("pxa-gpio", SPITZ_GPIO_LED_GREEN, NULL, GPIO_ACTIVE_HIGH, GPIOD_AS=
-IS)
+>
+> If nothing else I think the patch description needs to made an argument f=
+or why it is fine.
 
-?
+The longest possible delay needed after releasing the SAMPLE line
+before reasserting is ~350 nanoseconds. Is there a rule of thumb for
+deciding when there are enough instructions that no processor could
+execute them faster than this vs. when we should add an explicit
+delay?
 
-Bart
+I think I will consider adding a patch in the next round to refactor
+the SAMPLE toggle to a separate function so we can be sure it is
+handled the same in all cases.
+
+>
+> > -     mutex_unlock(&st->lock);
+> >       return ret;
+> >  }
+> >
