@@ -2,84 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 630BB7BFB23
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED427BFB2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231681AbjJJMUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 08:20:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39674 "EHLO
+        id S231816AbjJJMVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 08:21:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231637AbjJJMUx (ORCPT
+        with ESMTP id S231775AbjJJMU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 08:20:53 -0400
+        Tue, 10 Oct 2023 08:20:59 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4144399
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:20:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E0E4C433C7;
-        Tue, 10 Oct 2023 12:20:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696940449;
-        bh=ZavnWzZOQAQ7EGflKYoEc/3BIUKgSkHsq0I49wQevOI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nL/xb1cnrv5quevPKrptkBenC3UNP7zpxz5EnnQXcGbSj0DgOGC87yf7vMywGRWSh
-         RwcIJvYjHkuk+MAiMOkyCNLEhcKZ2f2fUybzfYKCXsX1DdNlOj1qih5LWmT50OvN5A
-         nyzPwJeNKGx0TnSpWFASKgJVgBPBg3cyZ9mDMoayotCtNlRPYTweHUTR6R7l5LzGI3
-         1GqiHMGGTVjonjDmleHMaO93eEWEdCkhTyY9VPtxbhmW7kEe3pyAY7oQbV3uGw+WCz
-         ZS5fUTNAkGsGTrzJF5xgVK/Smr5fZcHc9fDUjcIdX5y7R7qe0b0y+wzD5marBPso/p
-         I1fJ/TDkI+LBw==
-Date:   Tue, 10 Oct 2023 13:20:45 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v1 1/3] regulator: dt-bindings: fixed-regulator: Add
- under-voltage interrupt support
-Message-ID: <0024647c-cd4e-4b9f-b2bf-02143d27a852@sirena.org.uk>
-References: <20231010085906.3440452-1-o.rempel@pengutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E877A99;
+        Tue, 10 Oct 2023 05:20:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DE79C433C9;
+        Tue, 10 Oct 2023 12:20:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696940457;
+        bh=UxKiOjwRVBO8hPyVUUWzczAVTUMRjFlQkrN/ltCYT8k=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=z6owfJjLMQIFX2uC9sV/8w0Sqo46Pwrls0o6HMuGNTLpJ6j2UenvrZZUZyQPOk4e4
+         J3ULbbvJmYW9SamstV3gX+7XoWSBjLaIAkObsItWXbwj4B3BwNurPGM/XAYXjZVith
+         +in/PsQQCypXf3oYXYGwsK8NbTcgAuJuaCoH/RRg=
+Date:   Tue, 10 Oct 2023 14:20:54 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@quicinc.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Deepak Rawat <drawat.floss@gmail.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Dinh Nguyen <dinguyen@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Helge Deller <deller@gmx.de>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Khalid Aziz <khalid@gonehiking.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        WANG Xuerui <kernel@xen0n.name>, Wei Liu <wei.liu@kernel.org>,
+        Will Deacon <will@kernel.org>, x86@kernel.org,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-efi@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH v3 0/9] video: screen_info cleanups
+Message-ID: <2023101007-retread-spyglass-4b8c@gregkh>
+References: <20231009211845.3136536-1-arnd@kernel.org>
+ <ZSU59yPUO_Fu39o5@phenom.ffwll.local>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2qKDuD5Uo7Ayf5Bi"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231010085906.3440452-1-o.rempel@pengutronix.de>
-X-Cookie: I feel partially hydrogenated!
+In-Reply-To: <ZSU59yPUO_Fu39o5@phenom.ffwll.local>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 10, 2023 at 01:48:07PM +0200, Daniel Vetter wrote:
+> On Mon, Oct 09, 2023 at 11:18:36PM +0200, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > v3 changelog
+> > 
+> > No real changes, just rebased for context changes, and picked up the Acks.
+> > 
+> > This now conflicts with the ia64 removal and introduces one new dependency
+> > on IA64, but that is harmless and trivial to deal with later.
+> > 
+> > Link: https://lore.kernel.org/lkml/20230719123944.3438363-1-arnd@kernel.org/
+> > ---
+> > v2 changelog
+> > 
+> > I refreshed the first four patches that I sent before with very minor
+> > updates, and then added some more to further disaggregate the use
+> > of screen_info:
+> > 
+> >  - I found that powerpc wasn't using vga16fb any more
+> > 
+> >  - vgacon can be almost entirely separated from the global
+> >    screen_info, except on x86
+> > 
+> >  - similarly, the EFI framebuffer initialization can be
+> >    kept separate, except on x86.
+> > 
+> > I did extensive build testing on arm/arm64/x86 and the normal built bot
+> > testing for the other architectures.
+> > 
+> > Which tree should this get merged through?
+> 
+> I guess if no one else volunteers (Greg maybe?) I can stuff this into
+> drm-misc ...
 
---2qKDuD5Uo7Ayf5Bi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Oh, hey, console code is for me, I keep forgetting.
 
-On Tue, Oct 10, 2023 at 10:59:04AM +0200, Oleksij Rempel wrote:
-> Add under-voltage interrupt support. This can be used with simple
-> regulators having no other way to communicate an under-voltage event
-> except as by toggling some GPIO line.
+I can take it, looks like we have enough acks now, thanks for reminding
+me!
 
-This doesn't apply against current code, please check and resend.
-
---2qKDuD5Uo7Ayf5Bi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUlQZwACgkQJNaLcl1U
-h9B+OAf9HVf3aL2pQBjTFArNyffVDE6INNQufQW6NAbtgLDbBJnTzqsAkKR+P49v
-81rBkDM/nopWQ/w6SSFgj239wsD1Wn8EUxjbfui4fD3zBgy/CBcl8F8FgJKmwkaR
-eFpSadEIA8oKGhNkAX5qDcw6eHNVmp28gtMB9UXhXxAzHyzVaV4/yMAR04wieOXn
-hF3cuW8xSAc0n7n41zAHBVyRAAfQhFVHizmY/QA9MVdvKGWfFtnn9XRjx+NNIZRY
-+4MCDz/KVBbvza7a+tDyox+4t0V2zDVuWNBhHGYB3usuNl6Kumn3BEZZSZfFKRwc
-2lSVNeNn9oObEYzCu6kGh1fYrYaJjw==
-=7uwH
------END PGP SIGNATURE-----
-
---2qKDuD5Uo7Ayf5Bi--
+greg k-h
