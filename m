@@ -2,95 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F9567C018D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C390D7C0195
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232728AbjJJQZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 12:25:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51044 "EHLO
+        id S232417AbjJJQ12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 12:27:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232335AbjJJQZm (ORCPT
+        with ESMTP id S229998AbjJJQ10 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 12:25:42 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B63A9D
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:25:39 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2c27d653856so94851fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:25:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696955137; x=1697559937; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZYpu7WmJTYMPsrwJtEmCK7st+BFZo4gJs4bCDxTrOlY=;
-        b=sHBSEejk4bRr6YlRnhtf6G03QbAVqCQ5Ne10Q+fcQhInSp84t4nEaksw1p9AsxOZ+2
-         OoJsl2K/8KZdh1tNpPEu4a2QdRyCXPwITqfpVSljtdIMtKYFZoD8m9nixUyuXSOluMDg
-         cb7LfFLYg3CPxqxiBLeBgSXx5KbjIhhmB5Cs2ELz/fHsGx1eiIdYcZSbylZfr8kkypTv
-         XmzQ7Nmh/ierCgT2wcd1gI0UiUeH0rfE9XFzhABqsq/vLhR7r0D1tMrFjihxBckbRhO9
-         rE6PD408yKX+mJuB/A93ONUZyKw+2IgtLEqLj9/JvAboz17TdcgqKOodzZWSp0q1LRpP
-         CA+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696955137; x=1697559937;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZYpu7WmJTYMPsrwJtEmCK7st+BFZo4gJs4bCDxTrOlY=;
-        b=kqtQO5L4WCmKTdIDgqerdKtzI9nibmehfo18Xkx6PhkA+WAgdvQpf5jTdBPn/W6p05
-         o1tMVPvJvsDKV60D3ppKHJyaBfYChcDQyk3zkBK6G/2/LtmfrKNudRYLq+uLCOdQyx8g
-         BabBne7SAW9Lmf/Z4yqxsIht5apFVMWP4K6t8xlIxE2QEXK80HybpaAPpRKpItWA73bW
-         18XD63T3EBztoeq5PIs23l1KgUW3whScsfX437GVXapvfF6FtoOAf6Oo6zXHuIHgHvr6
-         2QPPeFfiG6/fBX/ID35aDwazU6fBgAIHgVLn84tGTBkp0qtftk/EKbCQeJHAtt7Ml42D
-         MTkw==
-X-Gm-Message-State: AOJu0YxeOFMwMkhzH+lysWMHCdwdP95atMacKf0WVLOptq26f/r3jJbI
-        cjzkt2GrShu2cLUt2AmC4j2UFA==
-X-Google-Smtp-Source: AGHT+IGILstfH1n9xtnahht/Q4quKgIwuDkjpk3L8fbHv4Am3weXHJDhvA19iKb5tpe5uWAv9X0r5Q==
-X-Received: by 2002:ac2:4da3:0:b0:4ff:9a91:6b73 with SMTP id h3-20020ac24da3000000b004ff9a916b73mr11251453lfe.17.1696955137376;
-        Tue, 10 Oct 2023 09:25:37 -0700 (PDT)
-Received: from [172.30.204.182] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id v19-20020ac25593000000b005032907710asm1877533lfg.237.2023.10.10.09.25.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Oct 2023 09:25:36 -0700 (PDT)
-Message-ID: <5fab045d-3b09-496d-af30-b7355495694b@linaro.org>
-Date:   Tue, 10 Oct 2023 18:25:35 +0200
+        Tue, 10 Oct 2023 12:27:26 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91ADC93
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:27:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26365C433C7;
+        Tue, 10 Oct 2023 16:27:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696955245;
+        bh=t4PzobXZJtCe2x1U9eIGmA6015uE27joZNtgWmnO0IA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rw30bMW6+kCwj0bQ0XJCl02xwmXUjxDC3O97DswIyyA5f79Vz1CsAoyiwlnwI1u5D
+         +E4uzeAwjpbuocOd1mekTSSqSmo/qW443P2zp4DFE/vurKgdny9URSly2jBIy2YwZN
+         2FBZcAHRRhuq8sYAlSSlXMxoMfoia7kDd7qdXt1x9THtFTpMFcCUwT5IAvA25RB7Hw
+         dzjMC9ayTvTgtRq9oYdYq5GhIYCf/b7Q2a3nXRQYFhEIhfwxQ90pwuSUMh/SxuO2Gf
+         cNpIMmJ9ZYcwHQqWIhJ0b3ZWZYMyTAYXqmkUOmjlCeul5j8qNGFunRkAqquAKw4inC
+         ncO72LLPNRVSQ==
+Received: (nullmailer pid 1012386 invoked by uid 1000);
+        Tue, 10 Oct 2023 16:27:22 -0000
+Date:   Tue, 10 Oct 2023 11:27:22 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-rockchip@lists.infradead.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
+Subject: Re: [PATCH v3 1/3] dt-bindings: usb: add rk3588 compatible to
+ rockchip,dwc3
+Message-ID: <20231010162722.GA1006254-robh@kernel.org>
+References: <20231009172129.43568-1-sebastian.reichel@collabora.com>
+ <20231009172129.43568-2-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] PCI: qcom: Enable ASPM on host bridge and devices
-Content-Language: en-US
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        lpieralisi@kernel.org, kw@linux.com, bhelgaas@google.com
-Cc:     robh@kernel.org, gustavo.pimentel@synopsys.com,
-        jingoohan1@gmail.com, andersson@kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20231010155914.9516-1-manivannan.sadhasivam@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231010155914.9516-1-manivannan.sadhasivam@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231009172129.43568-2-sebastian.reichel@collabora.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/10/23 17:59, Manivannan Sadhasivam wrote:
-> Hi,
+On Mon, Oct 09, 2023 at 07:20:09PM +0200, Sebastian Reichel wrote:
+> RK3588 has three DWC3 controllers. Two of them are fully functional in
+> host, device and OTG mode including USB2 support. They are connected to
+> dedicated PHYs, that also support USB-C's DisplayPort alternate mode.
 > 
-> This series enables ASPM by default on the host bridge and devices of selected
-> Qcom platforms.
+> The third controller is connected to one of the combphy's shared
+> with PCIe and SATA. It can only be used in host mode and does not
+> support USB2. Compared to the other controllers this one needs
+> some extra clocks.
 > 
-> The motivation behind enabling ASPM in the controller driver is provided in the
-> commit message of patch 2/2.
+> While adding the extra clocks required by RK3588, I noticed grf_clk
+> is not available on RK3568, so I disallowed it for that platform.
 > 
-> This series has been tested on SC8280-CRD and Lenovo Thinkpad X13s laptop
-> and it helped save ~0.6W of power during runtime.
-That's a lot of power, thanks for looking into this!
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> ---
+>  .../bindings/usb/rockchip,dwc3.yaml           | 66 +++++++++++++++++--
+>  1 file changed, 61 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml b/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
+> index 291844c8f3e1..517879290099 100644
+> --- a/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
+> +++ b/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
+> @@ -20,9 +20,6 @@ description:
+>    Type-C PHY
+>    Documentation/devicetree/bindings/phy/phy-rockchip-typec.txt
+>  
+> -allOf:
+> -  - $ref: snps,dwc3.yaml#
+> -
+>  select:
+>    properties:
+>      compatible:
+> @@ -30,6 +27,7 @@ select:
+>          enum:
+>            - rockchip,rk3328-dwc3
+>            - rockchip,rk3568-dwc3
+> +          - rockchip,rk3588-dwc3
+>    required:
+>      - compatible
+>  
+> @@ -39,6 +37,7 @@ properties:
+>        - enum:
+>            - rockchip,rk3328-dwc3
+>            - rockchip,rk3568-dwc3
+> +          - rockchip,rk3588-dwc3
+>        - const: snps,dwc3
+>  
+>    reg:
+> @@ -58,7 +57,9 @@ properties:
+>            Master/Core clock, must to be >= 62.5 MHz for SS
+>            operation and >= 30MHz for HS operation
+>        - description:
+> -          Controller grf clock
+> +          Controller grf clock OR UTMI clock
+> +      - description:
+> +          PIPE clock
+>  
+>    clock-names:
+>      minItems: 3
+> @@ -66,7 +67,10 @@ properties:
+>        - const: ref_clk
+>        - const: suspend_clk
+>        - const: bus_clk
+> -      - const: grf_clk
+> +      - enum:
+> +          - grf_clk
+> +          - utmi
+> +      - const: pipe
+>  
+>    power-domains:
+>      maxItems: 1
+> @@ -86,6 +90,58 @@ required:
+>    - clocks
+>    - clock-names
+>  
+> +allOf:
+> +  - $ref: snps,dwc3.yaml#
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: rockchip,rk3328-dwc3
+> +    then:
+> +      properties:
+> +        clocks:
+> +          minItems: 3
+> +          maxItems: 4
+> +        clock-names:
+> +          minItems: 3
+> +          items:
+> +            - const: ref_clk
+> +            - const: suspend_clk
+> +            - const: bus_clk
+> +            - const: grf_clk
 
-Konrad
+No need to list everything again. Just:
+
+contains:
+  const: grf_clk
+
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: rockchip,rk3568-dwc3
+> +    then:
+> +      properties:
+> +        clocks:
+> +          maxItems: 3
+> +        clock-names:
+> +          items:
+> +            - const: ref_clk
+> +            - const: suspend_clk
+> +            - const: bus_clk
+
+Just 'maxItems: 3' is sufficient here.
+
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: rockchip,rk3588-dwc3
+> +    then:
+> +      properties:
+> +        clocks:
+> +          minItems: 3
+
+3 is already the min.
+
+> +          maxItems: 5
+
+And 5 is already the max.
+
+> +        clock-names:
+> +          minItems: 3
+> +          items:
+> +            - const: ref_clk
+> +            - const: suspend_clk
+> +            - const: bus_clk
+> +            - const: utmi
+> +            - const: pipe
+
+Again, can use 'contains' here. Where 'utmi' is in the list is already 
+defined by the top-level schema.
+
+Rob
