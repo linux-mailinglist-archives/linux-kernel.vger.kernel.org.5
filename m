@@ -2,125 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73DC87C00F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2CBB7C00F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233645AbjJJP7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 11:59:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56184 "EHLO
+        id S233694AbjJJP7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 11:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233597AbjJJP7d (ORCPT
+        with ESMTP id S233678AbjJJP7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 11:59:33 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A951B6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:59:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=rJgL4rw3kxKAK5R0je1XMzNfxr6vfwIpg8Oe5KINLE8=; b=Noyw/Q4vI5v1GiqTOZn1BAisZR
-        NRCXGcpJpWD+a6LVCB95S0GjpZZODyf89BU7s/+Q2xsd2TTh2gPCK+1wtRy2auKmJSmiVWHuNMg0G
-        J9/qZPD8Ds/M/6b0aZX8BMsi+U3OU5Ck6VQmM1P8nJfnMmb8nz7PcwguKUstHaZB35O1VXZsjEGQl
-        1k2ndiImIc5Xj5mVPpfRTY3ib/6Rt65ENJN3xg2NPWkIpanW9m7k4y4+GX3sXQYBFp4NxbrPevyFS
-        qgql5rOJiRKT1bseRlVJbX1KT0ljmchDwfk6TQ5yCF/OnTwtRFcTSGuMbhzagWSaAp37NC/BY2Vn/
-        pJeoD1og==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qqF8d-00DjRJ-0x;
-        Tue, 10 Oct 2023 15:59:15 +0000
-Message-ID: <6b5e3bd0-8002-49b0-ae23-f091f9b465b5@infradead.org>
-Date:   Tue, 10 Oct 2023 08:59:14 -0700
+        Tue, 10 Oct 2023 11:59:41 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 604FDCC
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:59:38 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-690fe10b6a4so4791332b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:59:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696953578; x=1697558378; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Mr4EIMH8RidVLiQCjZesTsiyIho+EqgKqP+n2ghexZ0=;
+        b=V/tno/VmWysmqS8GOvQPddbaRMCx+TH7RqH5h3STf1QZxqf7isva4RjLNMYD2J07yI
+         sLGXZQ7KpjRPEfVhTyV2uYeQs2H1l5Gv25OJG1LedvHNasURibT+DuICyaCBqDrBQ2B9
+         XXngnFQL76rNf7VBqF3BFm50V+ZkDN85yrvbkeJxJcWFPrjo2cK7EeDy6IcTl3Up+8EQ
+         bUpDYxEXZhrqpv7SX7fCKQ7CZihQrFN0D491wHwK1fwGSy0GHICrQe85jbfSq2tpDgr1
+         HpCPODOQypOKnnj2g9/ltLiToBqLCDjPCn1oSRtA5aU0T1b4YtPMlziGqJ6JZ4jmICY6
+         tq3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696953578; x=1697558378;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Mr4EIMH8RidVLiQCjZesTsiyIho+EqgKqP+n2ghexZ0=;
+        b=P+L2pH7Fk5DDK0quxMlv7IsSuNtEgGSoCrpAbjsWDT1N0ijgEJY39+0OvfqkWV1Qwi
+         LWepbYmcvepagTNvvUvZYBkTd4/t/o8907P16oZB5Ntr+9itLxrmyjgiz7WhRtqjvSj5
+         UiSattuGHey/nHpXRZLDoLb/qW17GVYaiLYWqs8EeegE8gkdultQCQuFpBBwmnjlqY4Z
+         n0275ijlOFPUYGTYIgOSL/ugNBsp9QmBKoaX0SJMzqEChMz+s9wqIOY7L30ML81eM1QO
+         TkePIdm3Y2sfwub2HYJWs2Nkqa9h0o1dx24Qw6Bnbj0zFfKOlol9Tnx2EDXV7/F8BXIT
+         AGIQ==
+X-Gm-Message-State: AOJu0Yy3xm7A8P41z9Qj982rVtRByXlyz0X6jIygKvjGXEaV9IPjLp/8
+        Pxo3fbkUqPI91lV213PgIsmocEamTohAh2gNRw==
+X-Google-Smtp-Source: AGHT+IGZsh/8Q0P3Q/53kwfHSFlOV+p4RTFFqq7TsSk24jv7/qLF1y3Fthhkiyz3Aep4/SuzlKbqbQ==
+X-Received: by 2002:a05:6a20:258f:b0:14d:d9f8:83f8 with SMTP id k15-20020a056a20258f00b0014dd9f883f8mr22767237pzd.1.1696953577720;
+        Tue, 10 Oct 2023 08:59:37 -0700 (PDT)
+Received: from localhost.localdomain ([117.217.182.234])
+        by smtp.gmail.com with ESMTPSA id c24-20020a637258000000b0055c178a8df1sm6537023pgn.94.2023.10.10.08.59.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 08:59:37 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     lpieralisi@kernel.org, kw@linux.com, bhelgaas@google.com
+Cc:     robh@kernel.org, gustavo.pimentel@synopsys.com,
+        jingoohan1@gmail.com, andersson@kernel.org,
+        konrad.dybcio@linaro.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v2 2/2] PCI: qcom: Enable ASPM for platforms supporting 1.9.0 ops
+Date:   Tue, 10 Oct 2023 21:29:14 +0530
+Message-Id: <20231010155914.9516-3-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20231010155914.9516-1-manivannan.sadhasivam@linaro.org>
+References: <20231010155914.9516-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/msi: Fix compile error "incomplete typedef
- 'msi_alloc_info_t'"
-Content-Language: en-US
-To:     yaolu <yaolu@kylinos.cn>, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com
-Cc:     x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org
-References: <20231008082827.279154-1-yaolu@kylinos.cn>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231008082827.279154-1-yaolu@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+ASPM is supported by Qcom host controllers/bridges on most of the recent
+platforms and so the devices tested so far. But for enabling ASPM by
+default (without Kconfig/cmdline/sysfs), BIOS has to enable ASPM on both
+host bridge and downstream devices during boot. Unfortunately, none of the
+BIOS available on Qcom platforms enables ASPM. Due to this, the platforms
+making use of Qcom SoCs draw high power during runtime.
 
-On 10/8/23 01:28, yaolu wrote:
-> When compiling the x86 kernel, if X86_64 || SMP || X86_32_NON_STANDARD ||
-> X86_UP_APIC || PCI_MSI is not enabled in '.config' and GENERIC_MSI_IRQ is
-> selected, the following compilation error will occur:
-> 
->> include/linux/gpio/driver.h:38:19: error:
->>   field 'msiinfo' has incomplete type
->> kernel/irq/msi.c:752:5: error: invalid use of incomplete typedef
->>   'msi_alloc_info_t' {aka 'struct irq_alloc_info'}
->> kernel/irq/msi.c:740:1: error: control reaches end of non-void function
-> 
-> This is because 'X86_LOCAL_APIC' is not defined, but file such as
-> 'kernel/irq/msi.c' only depends on 'GENERIC_MSI_IRQ', and uses
-> 'struct msi_alloc_info_t'. When enable 'GENERIC_MSI_IRQ' will select
-> 'IRQ_DOMAIN_HIERARCHY', so exposing this struct using
-> 'IRQ_DOMAIN_HIERARCHY' rather than 'X86_LOCAL_APIC'.
-> 
-> Signed-off-by: yaolu <yaolu@kylinos.cn>
+To fix this power issue, users/distros have to enable ASPM using configs
+such as (Kconfig/cmdline/sysfs) or the BIOS has to start enabling ASPM.
+The latter may happen in the future, but that won't address the issue on
+current platforms. Also, asking users/distros to enable a feature to get
+the power management right would provide an unpleasant out-of-the-box
+experience.
 
-Thank for the patch. This reduces the build error count from around 190 down to
-two remaining problems for me:
+So the apt solution is to enable ASPM in the controller driver itself. And
+this is being accomplished by calling pci_enable_link_state() in the newly
+introduced host_post_init() callback for all the devices connected to the
+bus. This function enables all supported link low power states for both
+host bridge and the downstream devices.
 
-../arch/x86/kernel/hpet.c: In function ‘hpet_create_irq_domain’:
-../arch/x86/kernel/hpet.c:550:13: error: ‘x86_vector_domain’ undeclared (first use in this function)
-  550 |         if (x86_vector_domain == NULL)
-      |             ^~~~~~~~~~~~~~~~~
-../arch/x86/kernel/hpet.c:550:13: note: each undeclared identifier is reported only once for each function it appears in
-../arch/x86/kernel/hpet.c: In function ‘hpet_assign_irq’:
-../arch/x86/kernel/hpet.c:600:9: error: implicit declaration of function ‘init_irq_alloc_info’ [-Werror=implicit-function-declaration]
-  600 |         init_irq_alloc_info(&info, NULL);
-      |         ^~~~~~~~~~~~~~~~~~~
+Due to limited testing, ASPM is only enabled for platforms making use of
+ops_1_9_0 callbacks.
 
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ drivers/pci/controller/dwc/pcie-qcom.c | 28 ++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-I haven't looked into how to fix this yet...
-
-> ---
->  arch/x86/include/asm/hw_irq.h | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/hw_irq.h b/arch/x86/include/asm/hw_irq.h
-> index 551829884734..b02c3cd3c0f6 100644
-> --- a/arch/x86/include/asm/hw_irq.h
-> +++ b/arch/x86/include/asm/hw_irq.h
-> @@ -28,7 +28,7 @@
->  #include <asm/irq.h>
->  #include <asm/sections.h>
->  
-> -#ifdef	CONFIG_X86_LOCAL_APIC
-> +#ifdef	CONFIG_IRQ_DOMAIN_HIERARCHY
->  struct irq_data;
->  struct pci_dev;
->  struct msi_desc;
-> @@ -105,10 +105,10 @@ static inline void irq_complete_move(struct irq_cfg *c) { }
->  #endif
->  
->  extern void apic_ack_edge(struct irq_data *data);
-> -#else	/*  CONFIG_X86_LOCAL_APIC */
-> +#else	/*  CONFIG_IRQ_DOMAIN_HIERARCHY */
->  static inline void lock_vector_lock(void) {}
->  static inline void unlock_vector_lock(void) {}
-> -#endif	/* CONFIG_X86_LOCAL_APIC */
-> +#endif	/* CONFIG_IRQ_DOMAIN_HIERARCHY */
->  
->  /* Statistics */
->  extern atomic_t irq_err_count;
-
+diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+index 367acb419a2b..c324c3daaa5a 100644
+--- a/drivers/pci/controller/dwc/pcie-qcom.c
++++ b/drivers/pci/controller/dwc/pcie-qcom.c
+@@ -222,6 +222,7 @@ struct qcom_pcie_ops {
+ 	int (*get_resources)(struct qcom_pcie *pcie);
+ 	int (*init)(struct qcom_pcie *pcie);
+ 	int (*post_init)(struct qcom_pcie *pcie);
++	void (*host_post_init)(struct qcom_pcie *pcie);
+ 	void (*deinit)(struct qcom_pcie *pcie);
+ 	void (*ltssm_enable)(struct qcom_pcie *pcie);
+ 	int (*config_sid)(struct qcom_pcie *pcie);
+@@ -967,6 +968,22 @@ static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
+ 	return 0;
+ }
+ 
++static int qcom_pcie_enable_aspm(struct pci_dev *pdev, void *userdata)
++{
++	/* Downstream devices need to be in D0 state before enabling PCI PM substates */
++	pci_set_power_state(pdev, PCI_D0);
++	pci_enable_link_state(pdev, PCIE_LINK_STATE_ALL);
++
++	return 0;
++}
++
++static void qcom_pcie_host_post_init_2_7_0(struct qcom_pcie *pcie)
++{
++	struct dw_pcie_rp *pp = &pcie->pci->pp;
++
++	pci_walk_bus(pp->bridge->bus, qcom_pcie_enable_aspm, NULL);
++}
++
+ static void qcom_pcie_deinit_2_7_0(struct qcom_pcie *pcie)
+ {
+ 	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
+@@ -1219,9 +1236,19 @@ static void qcom_pcie_host_deinit(struct dw_pcie_rp *pp)
+ 	pcie->cfg->ops->deinit(pcie);
+ }
+ 
++static void qcom_pcie_host_post_init(struct dw_pcie_rp *pp)
++{
++	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
++	struct qcom_pcie *pcie = to_qcom_pcie(pci);
++
++	if (pcie->cfg->ops->host_post_init)
++		pcie->cfg->ops->host_post_init(pcie);
++}
++
+ static const struct dw_pcie_host_ops qcom_pcie_dw_ops = {
+ 	.host_init	= qcom_pcie_host_init,
+ 	.host_deinit	= qcom_pcie_host_deinit,
++	.host_post_init	= qcom_pcie_host_post_init,
+ };
+ 
+ /* Qcom IP rev.: 2.1.0	Synopsys IP rev.: 4.01a */
+@@ -1283,6 +1310,7 @@ static const struct qcom_pcie_ops ops_1_9_0 = {
+ 	.get_resources = qcom_pcie_get_resources_2_7_0,
+ 	.init = qcom_pcie_init_2_7_0,
+ 	.post_init = qcom_pcie_post_init_2_7_0,
++	.host_post_init = qcom_pcie_host_post_init_2_7_0,
+ 	.deinit = qcom_pcie_deinit_2_7_0,
+ 	.ltssm_enable = qcom_pcie_2_3_2_ltssm_enable,
+ 	.config_sid = qcom_pcie_config_sid_1_9_0,
 -- 
-~Randy
+2.25.1
+
