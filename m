@@ -2,122 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 377097BFAC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2886E7BFAC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231467AbjJJMFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 08:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60756 "EHLO
+        id S231531AbjJJMGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 08:06:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231410AbjJJMFs (ORCPT
+        with ESMTP id S231410AbjJJMGN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 08:05:48 -0400
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 843DB99;
-        Tue, 10 Oct 2023 05:05:46 -0700 (PDT)
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 152EE1C006D; Tue, 10 Oct 2023 14:05:45 +0200 (CEST)
-Date:   Tue, 10 Oct 2023 14:05:44 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     wsa+renesas@sang-engineering.com,
-        niklas.soderlund+renesas@ragnatech.se,
-        yoshihiro.shimoda.uh@renesas.com, geert+renesas@glider.be,
-        biju.das.jz@bp.renesas.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Chris.Paterson2@renesas.com, stable@vger.kernel.org,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: renesas_sdhi problems in 5.10-stable was Re: [PATCH 5.10
- 000/226] 5.10.198-rc1 review
-Message-ID: <ZSU+GHl1q7T/TBp5@duo.ucw.cz>
-References: <20231009130126.697995596@linuxfoundation.org>
- <ZSRVgj5AqJbDXqZU@duo.ucw.cz>
- <ZSRe78MAQwbBdyFP@duo.ucw.cz>
- <ZSUy+zA0+Chm6dFb@duo.ucw.cz>
+        Tue, 10 Oct 2023 08:06:13 -0400
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44FE3BA
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:06:12 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-5a7af52ee31so15081137b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:06:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696939571; x=1697544371; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2+emiS3FobGYMfsvMtLsinNF+jfBFa+dN92hmrKe7R8=;
+        b=DdCUofSWh2jhY+/KbfJJKI5l+KY8sL49LL4TSFidQk17Hu1nXvI6VQ5Vtfl/J+BsEL
+         pbgeTA+y1pIalIosbojRDuoJJY8gofNEYBSQl2b58pn/vPEUacyOeRDd05kiAfdko2LS
+         /uNLMkapy8Sf8DAIs7Aztfa7FOIMTReNJ4fBU/dVIKicMqpJyTd7diyrEZRbmOamsdGO
+         HmACokbIEcwi2s4wSq2ufp+3rHxwIgg9/+Lo9GLXWCrtW1qB4NY3w7esB9Nvj2qjwn70
+         6IlupiygAdyDDUk8323NLty2q2DZc50To6na4OrDCuXUH5Onxen7/xoKJkOtvuEG5cCS
+         HXhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696939571; x=1697544371;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2+emiS3FobGYMfsvMtLsinNF+jfBFa+dN92hmrKe7R8=;
+        b=Z4jxc+DokY1KPbZbi8FBaoyjFR8cfpTMqebJj+lUJ/AjrBIqDp5iIeSjFF62Y+97ca
+         /TxqK0qzNvpIWPU1ZsTWZ8P9YIbzDbbMRUPZgU15dwhuhPUzYlAy9xAINK1qj5a4UfZU
+         TCNXLqm1pkrkBo9wtQKtRkX2h2rXp/s3rkhqcdhyHPBR8a1LxMnK4JMMfT1ETw8C7ZGL
+         8HhWEobuKBCzsq74a6xeMx+1JUQKJTWsLJsl+X1qky/n02SJIxfdgJkUKamG3iPQuoJa
+         xJhGPSjpdgDEF1QDx3e+6syYtt62t9foeldmF0UqXOkuqx2Nwfy1rnIcOVgZvEb884kO
+         s20Q==
+X-Gm-Message-State: AOJu0Yz4iuumQyol6H5PMX7JJ64zEsz8hfB9RfVKOXdrrJLLoQeg/tAN
+        Cj/Kq/zGLo0bOZALsYwdtfji1RBy1FctfftZ6kyG6SBmg6sOhKve
+X-Google-Smtp-Source: AGHT+IFGYJ5KguZWMbWcf7Fu7QiLPusFLe1oLIe9ZIHU9hn8kyONuZwR4EuT1YT90s3DBcqkbepLog7T0zaskA6hgL8=
+X-Received: by 2002:a81:9c02:0:b0:585:ef4e:6d93 with SMTP id
+ m2-20020a819c02000000b00585ef4e6d93mr18904963ywa.47.1696939571479; Tue, 10
+ Oct 2023 05:06:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="kmt4faAXz7TCbez6"
-Content-Disposition: inline
-In-Reply-To: <ZSUy+zA0+Chm6dFb@duo.ucw.cz>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_NEUTRAL,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+References: <20231003120648.2838047-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20231003120648.2838047-1-andriy.shevchenko@linux.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 10 Oct 2023 14:05:59 +0200
+Message-ID: <CACRpkdY0_BJqM=kv_5rpBDMZwGRi50j3CZxHAN0a6bHMmC-hmg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] pinctrl: core: Remove unneeded {} around one line
+ conditional body
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 3, 2023 at 2:06=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
---kmt4faAXz7TCbez6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi!
-> > > > This is the start of the stable review cycle for the 5.10.198 relea=
-se.
-> > > > There are 226 patches in this series, all will be posted as a respo=
-nse
-> > > > to this one.  If anyone has any issues with these being applied, pl=
-ease
-> > > > let me know.
-> > > >=20
-> > > > Responses should be made by Wed, 11 Oct 2023 13:00:55 +0000.
-> > > > Anything received after that time might be too late.
-> > >=20
-> > > 4.14, 4.19 and 6.1 tests ok, 5.10 seems to have problems:
-> >=20
-> > Guessing from stack traces, these may be relevant:
->=20
-> So bisection reveals these are relevant:
->=20
->   |e10d3d256 b161d8 o: 5.10| mmc: renesas_sdhi: probe into TMIO after   S=
-CC parameters have been setup
->=20
-> Ok
->=20
->  |493b70c48 d14ac6 o: 5.10| mmc: renesas_sdhi: populate SCC pointer at  t=
-he proper place
->=20
-> Testing now: https://gitlab.com/cip-project/cip-kernel/linux-cip/-/pipeli=
-nes/1031822035
+> The one line conditional body doesn't require {} surrounding it.
+> Remove unneeded {}.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-And testing failed. So
+Patch applied!
 
-commit f5799b4e142884c2e7aa99f813113af4a3395ffb
-Author: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Date:   Tue Nov 10 15:20:57 2020 +0100
-
-    mmc: renesas_sdhi: populate SCC pointer at the proper place
-   =20
-    [ Upstream commit d14ac691bb6f6ebaa7eeec21ca04dd47300ff5b6 ]
-
-seems to be the buggy commit that breaks renesas boards in 5.10.
-
->  |c508545f4 0d856c o: 5.10| mmc: tmio: support custom irq masks
-
-Testing too: https://gitlab.com/cip-project/cip-kernel/linux-cip/-/pipeline=
-s/1031834627
-
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,        Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---kmt4faAXz7TCbez6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZSU+GAAKCRAw5/Bqldv6
-8haIAJkBZWNo+fR9/jsfeG3zeswyYC7fOQCgogoTt5zPNc6+2mGK+jsCbp1Rf9w=
-=FWgd
------END PGP SIGNATURE-----
-
---kmt4faAXz7TCbez6--
+Yours,
+Linus Walleij
