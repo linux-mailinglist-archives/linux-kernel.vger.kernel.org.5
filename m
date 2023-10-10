@@ -2,75 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A717C0056
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 027D27C005A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232019AbjJJPZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 11:25:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58796 "EHLO
+        id S233320AbjJJP0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 11:26:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231911AbjJJPZX (ORCPT
+        with ESMTP id S233249AbjJJP0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 11:25:23 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D519B93
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:25:18 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1CD741FB;
-        Tue, 10 Oct 2023 08:25:59 -0700 (PDT)
-Received: from [10.1.197.60] (eglon.cambridge.arm.com [10.1.197.60])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9A2E93F7A6;
-        Tue, 10 Oct 2023 08:25:17 -0700 (PDT)
-Message-ID: <58306525-bd92-18d9-b25a-9c030518cfa6@arm.com>
-Date:   Tue, 10 Oct 2023 16:25:12 +0100
+        Tue, 10 Oct 2023 11:26:02 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B66AF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:26:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52AF7C433C8;
+        Tue, 10 Oct 2023 15:25:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696951560;
+        bh=YodDTkaZ+bcycK00pqPePN0/QiKatfmhX9P+LMDLFh4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ciJ9Kh17CIbzsZylz9Dhiv6Ic/cVCJqmhTy+BBoVtfI8Cq2soIFi/cdmTU2nP5Ali
+         vFevqR3JKFBHM3dPd7Yjp6Fgr78K7+ZW91WBFidPz16aEv6054jmYAfpnLUEXBqn6I
+         biD0Ujni2GK+/Vt2ilLkU5DGIDbwREo3BpRuWCTdBG2YQLaRKepC907LBuUNUAAA/V
+         1ni/Upg+byAdumPHsEEJMu7YgpWhFbHPkEFI72rBl5oMhGphoAKw4Xch9YrgBmUJ+d
+         hsRwrpOO7T2Z5LOtnR2fn+cqWFPFeAU0BSDM/9BfhHweYHwoxXbypQYlqdzaw9Gniq
+         /C+0yQquSzcKw==
+Date:   Tue, 10 Oct 2023 16:25:55 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Ante Knezic <ante.knezic@helmholz.de>
+Cc:     netdev@vger.kernel.org, woojung.huh@microchip.com, andrew@lunn.ch,
+        f.fainelli@gmail.com, olteanv@gmail.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, marex@denx.de, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com
+Subject: Re: [PATCH net-next 2/2] dt-bindings: net: microchip,ksz: document
+ microchip,rmii-clk-internal
+Message-ID: <20231010-unwired-trench-c7a467118879@spud>
+References: <cover.1693482665.git.ante.knezic@helmholz.de>
+ <df8490e3a39a6daa66c5a0dd266d9f4a388dfe7b.1693482665.git.ante.knezic@helmholz.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: arch/x86/kernel/cpu/resctrl/rdtgroup.c:1196: warning: Function
- parameter or member 'type' not described in '__rdtgroup_cbm_overlaps'
-Content-Language: en-GB
-To:     kernel test robot <lkp@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>, Jamie Iles <jamie@nuviainc.com>,
-        Reinette Chatre <reinette.chatre@intel.com>
-References: <202310070434.mD8eRNAz-lkp@intel.com>
-From:   James Morse <james.morse@arm.com>
-In-Reply-To: <202310070434.mD8eRNAz-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ZK4vbLQNLyDEl6PG"
+Content-Disposition: inline
+In-Reply-To: <df8490e3a39a6daa66c5a0dd266d9f4a388dfe7b.1693482665.git.ante.knezic@helmholz.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'lo,
 
-On 06/10/2023 22:03, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   af95dc6fdc25e616051d0234aad638e15c02ec8f
-> commit: fa8f711d2f14381d1a47420b6da94b62e6484c56 x86/resctrl: Pass configuration type to resctrl_arch_get_config()
-> date:   2 years, 2 months ago
+--ZK4vbLQNLyDEl6PG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So, recently.
+On Tue, Oct 10, 2023 at 03:18:54PM +0200, Ante Knezic wrote:
+> Add documentation for selecting reference rmii clock on KSZ88X3 devices
+>=20
+> Signed-off-by: Ante Knezic <ante.knezic@helmholz.de>
+> ---
+>  Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml=
+ b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+> index e51be1ac0362..3df5d2e72dba 100644
+> --- a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+> +++ b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+> @@ -49,6 +49,12 @@ properties:
+>        Set if the output SYNCLKO clock should be disabled. Do not mix with
+>        microchip,synclko-125.
+> =20
+> +  microchip,rmii-clk-internal:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      Set if the RMII reference clock should be provided internally.
 
+> Applies only
+> +      to KSZ88X3 devices.
 
-> config: x86_64-randconfig-003-20230909 (https://download.01.org/0day-ci/archive/20231007/202310070434.mD8eRNAz-lkp@intel.com/config)
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231007/202310070434.mD8eRNAz-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202310070434.mD8eRNAz-lkp@intel.com/
-
-I'll float a patch fixing all these - otherwise I get the blame for the whole lot when the
-code gets moved!
-
+This should be enforced by the schema, the example schema in the docs
+should show you how to do this.
 
 Thanks,
+Conor.
 
-James
+> +
+>  required:
+>    - compatible
+>    - reg
+> --=20
+> 2.11.0
+>=20
+>=20
+
+--ZK4vbLQNLyDEl6PG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSVtAgAKCRB4tDGHoIJi
+0izpAP4vBdiuYP3WAEbZcqrN4YsfFf6tlXSryyiZH534hE8mvAD/V8bf4jyCgfGx
+pDCsIx/r0oOw16zOeOu4EirMC52AUw8=
+=hpzs
+-----END PGP SIGNATURE-----
+
+--ZK4vbLQNLyDEl6PG--
