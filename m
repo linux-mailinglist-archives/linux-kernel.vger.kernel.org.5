@@ -2,133 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D96817BF633
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CEB27BF634
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229737AbjJJIkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 04:40:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49554 "EHLO
+        id S230328AbjJJIkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 04:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230348AbjJJIkL (ORCPT
+        with ESMTP id S232004AbjJJIkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 10 Oct 2023 04:40:11 -0400
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2054.outbound.protection.outlook.com [40.107.20.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F53C10B;
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC8311C
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 01:40:08 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-32157c8e4c7so5352671f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 01:40:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696927207; x=1697532007; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5V8neVpY2GyLdSJsnZ8MOddhcYp6sdc0BYbuhT9I1jQ=;
+        b=Rla+HRJR4uNt057FNJ4pzabPt5gobkC9EYVQU7cow/olgk6KpSujFIn/h9jgR3k1TG
+         Vh6gEIRmQeKbqsp1uN9nhzxUC/aAXdEQMSAkETpnGjSTZcgaaniSS5XjENOYkzi9fvk0
+         OhmbIjSJIbWT466LCp1CUwErYTyFmvZ4hxBYjjCljfryUGbBKDxk6g0eb4tI5FW6QoLH
+         5dVt9UY8oHCf5vrT45MtIB7BKJwlEzeZ6j1u3x4ZUdlYBa8yJ6NFaLbslABOSbtU1RKD
+         RHxeuz+scIsFjD2aqKuIh0YjQpw2GtNlL9gwwTuh5qUI+hrzEpiovJbwW+xyiIK4L5Lz
+         rosA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696927207; x=1697532007;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5V8neVpY2GyLdSJsnZ8MOddhcYp6sdc0BYbuhT9I1jQ=;
+        b=SelFkv6xXLwRJxYMRev/i7zfvvJEape0NZR94e6Yhf/et9DEC3wDu7suiCmsUZdStl
+         ddIFH1S2RDEqwp0qi5q9vs2tb95OszFU1uLJckNt7+9lfn7OIUdmpOt9cwhr28NFGcDg
+         jyTeQq61ZeBHBEsXu3H2HpoV/zz07PeyjeJT9VjYWAYL9cRhIh4ZbJKBldkYontfN5GH
+         dFnoAgv9U/tuPksXigXsIgAN1QMT63o5x04cbH6GfuJ6YEMmE/hZUfNGJhfnH1OE0lhI
+         EKLUZFRCn6srvKg7jRXnvZhUAi3jizcY6VU/01Jb4UCMUNu/ipQb/Cz9IPwZfJ99oxOR
+         mv9g==
+X-Gm-Message-State: AOJu0YxjDp8RxDhXjSpc88apu1Qk7MpQldJ9A2TECJORz97O/mFEgYzI
+        ZYQNbzJTOn65byEYnp/KAHQgWg==
+X-Google-Smtp-Source: AGHT+IH1kmpxEfIe7fVGzRzvDNu56x2D7KkVclXW4oI19nKrGRc3frP0Z8AyVAk1RdaBj0q63jEwVQ==
+X-Received: by 2002:adf:f48e:0:b0:324:8239:2873 with SMTP id l14-20020adff48e000000b0032482392873mr16993689wro.37.1696927206711;
         Tue, 10 Oct 2023 01:40:06 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jPWH53yLjynXkn9FxbXMZ/rhcSvB/VYQroO7967+W7513jQlVgGcuyKhJfY4WQHMwsyg80v1IBBU1D9poz9WESJp9s8buqyabN9P7UixrR1KUCrNTchTkmM6hSj+22KEZM0ZW1q7UxRwB0Xv52ts5XwdUsC6ntH5KbIfR4rWvzGnK9g6UalfEVnC27ee3wNU0OWSnIbXE9HHfYz22gfEnJ4GCj7AgEFP21NtvgmLQpdnXARzrzPN7/cuhPX6cNbpXMbYrMxOJtYkqxgN0Ueq1hBNiQ/amIJr0UyZUONWk3rPJm2Bsg6yAwdh+WMBxaDKMuzNCAXsMrULOPoK2nEo3A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oWYHkwmvA9jrBuIs67grJ25LSNK9wo+TIrzrkO/aXPk=;
- b=H7X8req2l+jqKjGB5iHevQuk4Qcmn29mLq2QbRpFscq5ErN0d3goQYqCfw2RXo7q4rk2G7fSmN6YGkAnW/rxRttRJnVw9r02i9pKAfWg9PtNUzXS5Gjt8IopXMAwl4923/+t3bkn7B2gRJ2QvCzK6LUqvBK4pMDs7aLEoBMXWfLZOfJR1qyNoEw4a6RuAGfv5G9Kdl2+/tA+/VzWNI1dVq5pT93aEi3g5yPjxPyCo/dVKG9xnMH8sgRDCe11JJTvRD6VTMM2BehFRQLVpsNYwnViDQpytjgC37O1r4q5I0DbJnDKONYbFBuGeDhX8WZDgjWHkshYSGzC06F2SFC45A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 195.60.68.100) smtp.rcpttodomain=linaro.org smtp.mailfrom=axis.com;
- dmarc=fail (p=none sp=none pct=100) action=none header.from=axis.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oWYHkwmvA9jrBuIs67grJ25LSNK9wo+TIrzrkO/aXPk=;
- b=AHHH3TrI/ON+1u6FBUHtzWFKQFZlNPaHm+5UqQ1TW2bO/AhFRpAP1KQhkhl8bUT2nbrcpk6RSlwUqnZHN89XZYECPBVWTlJ7n8jxiSlp75iaz01/G4wd/IqgQlvgnzcIRSBd1wJQoIs7Sw4LSPNz5TIe6btIao8wWS+5tWTxez8=
-Received: from AS9PR06CA0118.eurprd06.prod.outlook.com (2603:10a6:20b:465::20)
- by DB9PR02MB7259.eurprd02.prod.outlook.com (2603:10a6:10:24a::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Tue, 10 Oct
- 2023 08:40:03 +0000
-Received: from AM4PEPF00027A6B.eurprd04.prod.outlook.com
- (2603:10a6:20b:465:cafe::d3) by AS9PR06CA0118.outlook.office365.com
- (2603:10a6:20b:465::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38 via Frontend
- Transport; Tue, 10 Oct 2023 08:40:03 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 195.60.68.100)
- smtp.mailfrom=axis.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=none header.from=axis.com;
-Received-SPF: Fail (protection.outlook.com: domain of axis.com does not
- designate 195.60.68.100 as permitted sender) receiver=protection.outlook.com;
- client-ip=195.60.68.100; helo=mail.axis.com;
-Received: from mail.axis.com (195.60.68.100) by
- AM4PEPF00027A6B.mail.protection.outlook.com (10.167.16.89) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.22 via Frontend Transport; Tue, 10 Oct 2023 08:40:03 +0000
-Received: from se-mail01w.axis.com (10.20.40.7) by se-mail02w.axis.com
- (10.20.40.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Tue, 10 Oct
- 2023 10:40:02 +0200
-Received: from se-intmail02x.se.axis.com (10.0.5.60) by se-mail01w.axis.com
- (10.20.40.7) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
- Transport; Tue, 10 Oct 2023 10:40:02 +0200
-Received: from pc36611-1939.se.axis.com (pc36611-1939.se.axis.com [10.88.125.175])
-        by se-intmail02x.se.axis.com (Postfix) with ESMTP id 36A952CD1;
-        Tue, 10 Oct 2023 10:40:02 +0200 (CEST)
-Received: by pc36611-1939.se.axis.com (Postfix, from userid 363)
-        id 19C9362933; Tue, 10 Oct 2023 10:40:02 +0200 (CEST)
-Date:   Tue, 10 Oct 2023 10:40:02 +0200
-From:   Jesper Nilsson <jesper.nilsson@axis.com>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-CC:     Linus Walleij <linus.walleij@linaro.org>,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        Lars Persson <lars.persson@axis.com>,
-        <linux-arm-kernel@axis.com>, <linux-gpio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 09/20] pinctrl: artpec6: Convert to platform remove
- callback returning void
-Message-ID: <20231010084002.GG11306@axis.com>
-References: <20231009083856.222030-1-u.kleine-koenig@pengutronix.de>
- <20231009083856.222030-10-u.kleine-koenig@pengutronix.de>
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id h9-20020a5d5489000000b003179d5aee67sm12052874wrv.94.2023.10.10.01.40.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 01:40:06 -0700 (PDT)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+To:     quic_jesszhan@quicinc.com, sam@ravnborg.org,
+        yangcong5@huaqin.corp-partner.google.com,
+        Ruihai Zhou <zhouruihai@huaqin.corp-partner.google.com>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+In-Reply-To: <20231007064949.22668-1-zhouruihai@huaqin.corp-partner.google.com>
+References: <20231007064949.22668-1-zhouruihai@huaqin.corp-partner.google.com>
+Subject: Re: [PATCH v2] drm/panel: boe-tv101wum-nl6: Completely pull GPW to
+ VGL before TP term
+Message-Id: <169692720597.2649526.6802678685318841336.b4-ty@linaro.org>
+Date:   Tue, 10 Oct 2023 10:40:05 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231009083856.222030-10-u.kleine-koenig@pengutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM4PEPF00027A6B:EE_|DB9PR02MB7259:EE_
-X-MS-Office365-Filtering-Correlation-Id: cd674dde-cadb-42a0-12b7-08dbc96c7f80
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9w8VCbrFEjC3Wz5mvx0la+2rgBOnTvDAV9CBoMOqIWBoHZn37AFhonueuAa299DnHFiWw8XtzR6ralGwb/FMtb5/nKoAa7wyHTkRppz5U57annRLgXyp/xZO70tKiypKCewg9DA2nYSLJpOJM2s/94fGKmEpL0eOwki50o0WovrnK7oYjw+jGLdWxYLtMCTsIV3J5hh+YExYOF5UU2PtTfoO9OZQsmKV+Kl+uW7L3Zi32hA8KbjAf00N50ID/+hYj95DGTDTIAJoAWDJYXD3tlzVNFP/Pf/anbcUqMs6HE8OQxJ4j1UlsCdr8GktitKzPedCwa4lsk5zvIIWfqPEiITuODy5rngNaJO1oupg/8PBKK/HsoFQoEogMOmz8YWt+3VqECtlsLwIRARRZ5UPLFFBJ7I9axSgS0nExCRofYTsTHv86DzfLlTGzh/QQAhk3vP0r/KsezcoFpmCc0T72Jj3PtAW4XERNTr5cSjyW+N81dzRAvpuTMIqHDtN2CNu1kEoFmsgMuD45hpwVJXiOPFh1D/iE2sGM9Sql2vTd9Yg6OCJMpkSQwTdG5/wQT10DaeLpCvsl7HwjHbDDw0Iy6TFDfcuVh7a+X69gWAbuohNDa16G417hpI5goQg2J5VK83Bl6qYoYiQ2Lb9uwqT75BDhazcJ60HHmQUjizzMCmH39TuN0cxtjJAF8Jbch4o65MpL4UAtecNRZzuzQcJmTcryQuB6Ai+MdlcH2XAXYQ6sxW+h8WkRyIjuad2mYQcBgrNbk16zGsACpnSPa8i+g==
-X-Forefront-Antispam-Report: CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(39860400002)(396003)(346002)(230922051799003)(64100799003)(186009)(1800799009)(82310400011)(451199024)(36840700001)(40470700004)(46966006)(83380400001)(40460700003)(2616005)(336012)(426003)(1076003)(26005)(40480700001)(70206006)(42186006)(54906003)(316002)(6916009)(356005)(70586007)(33656002)(41300700001)(47076005)(82740400003)(4326008)(8936002)(2906002)(4744005)(8676002)(81166007)(44832011)(5660300002)(6266002)(66574015)(36756003)(86362001)(478600001)(36860700001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: axis.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 08:40:03.5495
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: cd674dde-cadb-42a0-12b7-08dbc96c7f80
-X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=78703d3c-b907-432f-b066-88f7af9ca3af;Ip=[195.60.68.100];Helo=[mail.axis.com]
-X-MS-Exchange-CrossTenant-AuthSource: AM4PEPF00027A6B.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR02MB7259
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 10:38:45AM +0200, Uwe Kleine-König wrote:
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is ignored (apart
-> from emitting a warning) and this typically results in resource leaks.
-> 
-> To improve here there is a quest to make the remove callback return
-> void. In the first step of this quest all drivers are converted to
-> .remove_new(), which already returns void. Eventually after all drivers
-> are converted, .remove_new() will be renamed to .remove().
-> 
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
-> 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Hi,
 
-Acked-by: Jesper Nilsson <jesper.nilsson@axis.com>
+On Sat, 07 Oct 2023 14:49:49 +0800, Ruihai Zhou wrote:
+> The sta_himax83102 panel sometimes shows abnormally flickering
+> horizontal lines. The front gate output will precharge the X point of
+> the next pole circuit before TP(TouchPanel Enable) term starts, and wait
+> until the end of the TP term to resume the CLK. For this reason, the X
+> point must be maintained during the TP term. In abnormal case, we
+> measured a slight leakage at point X. This because during the TP term,
+> the GPW does not fully pull the VGL low, causing the TFT to not be
+> closed tightly.
+> 
+> [...]
 
+Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-fixes)
 
-/^JN - Jesper Nilsson
+[1/1] drm/panel: boe-tv101wum-nl6: Completely pull GPW to VGL before TP term
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=258dd5e6e65995ee85a941eed9a06708a36b1bfe
+
 -- 
-               Jesper Nilsson -- jesper.nilsson@axis.com
+Neil
+
