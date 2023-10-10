@@ -2,135 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F9B7BF37F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 08:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9807BF38D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 08:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442397AbjJJG6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 02:58:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36172 "EHLO
+        id S1442366AbjJJG7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 02:59:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442363AbjJJG6B (ORCPT
+        with ESMTP id S1442267AbjJJG7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 02:58:01 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 697D59F;
-        Mon,  9 Oct 2023 23:57:59 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C42CCC433C8;
-        Tue, 10 Oct 2023 06:57:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696921079;
-        bh=EYuUNIt6jJRwYBy0E3p0Vk5Y1cHFfh6ehg6kHTfAyUU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zzQU1pwcQ/CneY+FW5FxMonJkZiI86OeSlFhEhdRj/hvvySkkTG2K8Sk51p8M1RuX
-         NA8xXufVqn3K4h0T1GP7rVOn7ryC3K4n6YeVOhjVhWQYEIJa6ayQXO2ZChu8j2BCF+
-         i7dawBqEH7KL0R9NbBls/UV6Yg3YejnrOELbQ5Mk=
-Date:   Tue, 10 Oct 2023 08:57:55 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Max Kellermann <max.kellermann@ionos.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Richter <rric@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
-        nvdimm@lists.linux.dev, linux-nvme@lists.infradead.org,
-        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-leds@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-scsi@vger.kernel.org
-Subject: Re: [PATCH 6/7] fs/sysfs/group: make attribute_group pointers const
-Message-ID: <2023101041-giggle-refried-5b8c@gregkh>
-References: <20231009165741.746184-1-max.kellermann@ionos.com>
- <20231009165741.746184-6-max.kellermann@ionos.com>
- <264fa39d-aed6-4a54-a085-107997078f8d@roeck-us.net>
- <CAKPOu+8k2x1CucWSzoouts0AfMJk+srJXWWf3iWVOeY+fWkOpQ@mail.gmail.com>
- <f511170fe61d7e7214a3a062661cf4103980dad6.camel@perches.com>
+        Tue, 10 Oct 2023 02:59:09 -0400
+Received: from out-204.mta1.migadu.com (out-204.mta1.migadu.com [IPv6:2001:41d0:203:375::cc])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34BE79F
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 23:59:06 -0700 (PDT)
+Message-ID: <e9db3f88-041d-66b6-dcbd-996c2d8c27bf@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1696921144;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/e6vb1bWQTImJ55mJskAw3PJCVgy9GbqhEsCFyFthVg=;
+        b=FrDZusWTJBCDVcBM+vcpe9w2jZzfwxtG18yor58cE8MDaJI8WiagwyryK+UBvslDFOt6W5
+        LhW2j8S3Mxd2qSWp2xhx7vDOgsHCfr7Gy6Hf2KffvKBk139/1fPkA3L+ssrFg8gTZmCTEM
+        hvo4O/IcN3Dd83tO44CW7fXOa1ABb1U=
+Date:   Tue, 10 Oct 2023 14:58:56 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f511170fe61d7e7214a3a062661cf4103980dad6.camel@perches.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 1/1] hugetlb_vmemmap: use folio argument for
+ hugetlb_vmemmap_* functions
+To:     Usama Arif <usama.arif@bytedance.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        mike.kravetz@oracle.com, songmuchun@bytedance.com,
+        fam.zheng@bytedance.com, liangma@liangbit.com,
+        punit.agrawal@bytedance.com
+References: <20231009151830.2248885-1-usama.arif@bytedance.com>
+ <20231009151830.2248885-2-usama.arif@bytedance.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20231009151830.2248885-2-usama.arif@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 11:48:10PM -0700, Joe Perches wrote:
-> On Mon, 2023-10-09 at 22:05 +0200, Max Kellermann wrote:
-> > On Mon, Oct 9, 2023 at 7:24 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> > > Also, I don't know why checkpatch is happy with all the
-> > > 
-> > >         const struct attribute_group *const*groups;
-> > > 
-> > > instead of
-> > > 
-> > >         const struct attribute_group *const *groups;
-> > 
-> > I found out that checkpatch has no check for this at all; it does
-> > complain about such lines, but only for local variables. But that
-> > warning is actually a bug, because this is a check for unary
-> > operators: it thinks the asterisk is a dereference operator, not a
-> > pointer declaration, and complains that the unary operator must be
-> > preceded by a space. Thus warnings on local variable are only correct
-> > by coincidence, not by design.
-> > 
-> > Inside structs or parameters (where my coding style violations can be
-> > found), it's a different context and thus checkpatch doesn't apply the
-> > rules for unary operators.
-> 
-> My opinion is that const use in the kernel should almost
-> always have whitespace before and after it except when
-> preceded by a open parenthesis or a newline.
 
-I totally agree.
+
+On 2023/10/9 23:18, Usama Arif wrote:
+> Most function calls in hugetlb.c are made with folio arguments.
+> This brings hugetlb_vmemmap calls inline with them by using folio
+> instead of head struct page. Head struct page is still needed
+> within these functions.
+>
+> The set/clear/test functions for hugepages are also changed to
+> folio versions.
+>
+> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+> ---
+>   mm/hugetlb.c         | 10 +++++-----
+>   mm/hugetlb_vmemmap.c | 42 ++++++++++++++++++++++--------------------
+>   mm/hugetlb_vmemmap.h |  8 ++++----
+>   3 files changed, 31 insertions(+), 29 deletions(-)
+>
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index b12f5fd295bb..73803d62066a 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1606,7 +1606,7 @@ static void __update_and_free_hugetlb_folio(struct hstate *h,
+>   	 * is no longer identified as a hugetlb page.  hugetlb_vmemmap_restore
+>   	 * can only be passed hugetlb pages and will BUG otherwise.
+>   	 */
+> -	if (clear_dtor && hugetlb_vmemmap_restore(h, &folio->page)) {
+> +	if (clear_dtor && hugetlb_vmemmap_restore(h, folio)) {
+>   		spin_lock_irq(&hugetlb_lock);
+>   		/*
+>   		 * If we cannot allocate vmemmap pages, just refuse to free the
+> @@ -1749,7 +1749,7 @@ static void bulk_vmemmap_restore_error(struct hstate *h,
+>   		 * quit processing the list to retry the bulk operation.
+>   		 */
+>   		list_for_each_entry_safe(folio, t_folio, folio_list, lru)
+> -			if (hugetlb_vmemmap_restore(h, &folio->page)) {
+> +			if (hugetlb_vmemmap_restore(h, folio)) {
+>   				list_del(&folio->lru);
+>   				spin_lock_irq(&hugetlb_lock);
+>   				add_hugetlb_folio(h, folio, true);
+> @@ -1907,7 +1907,7 @@ static void init_new_hugetlb_folio(struct hstate *h, struct folio *folio)
+>   static void __prep_new_hugetlb_folio(struct hstate *h, struct folio *folio)
+>   {
+>   	init_new_hugetlb_folio(h, folio);
+> -	hugetlb_vmemmap_optimize(h, &folio->page);
+> +	hugetlb_vmemmap_optimize(h, folio);
+>   }
+>   
+>   static void prep_new_hugetlb_folio(struct hstate *h, struct folio *folio, int nid)
+> @@ -2312,7 +2312,7 @@ int dissolve_free_huge_page(struct page *page)
+>   		 * Attempt to allocate vmemmmap here so that we can take
+>   		 * appropriate action on failure.
+>   		 */
+> -		rc = hugetlb_vmemmap_restore(h, &folio->page);
+> +		rc = hugetlb_vmemmap_restore(h, folio);
+>   		if (!rc) {
+>   			update_and_free_hugetlb_folio(h, folio, false);
+>   		} else {
+> @@ -3721,7 +3721,7 @@ static int demote_free_hugetlb_folio(struct hstate *h, struct folio *folio)
+>   	 * passed hugetlb folios and will BUG otherwise.
+>   	 */
+>   	if (folio_test_hugetlb(folio)) {
+> -		rc = hugetlb_vmemmap_restore(h, &folio->page);
+> +		rc = hugetlb_vmemmap_restore(h, folio);
+>   		if (rc) {
+>   			/* Allocation of vmemmmap failed, we can not demote folio */
+>   			spin_lock_irq(&hugetlb_lock);
+> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+> index d2999c303031..84b5ac93b9e5 100644
+> --- a/mm/hugetlb_vmemmap.c
+> +++ b/mm/hugetlb_vmemmap.c
+> @@ -495,14 +495,15 @@ EXPORT_SYMBOL(hugetlb_optimize_vmemmap_key);
+>   static bool vmemmap_optimize_enabled = IS_ENABLED(CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP_DEFAULT_ON);
+>   core_param(hugetlb_free_vmemmap, vmemmap_optimize_enabled, bool, 0);
+>   
+> -static int __hugetlb_vmemmap_restore(const struct hstate *h, struct page *head, unsigned long flags)
+> +static int __hugetlb_vmemmap_restore(const struct hstate *h, struct folio *folio, unsigned long flags)
+>   {
+>   	int ret;
+> +	struct page *head = &folio->page;
+>   	unsigned long vmemmap_start = (unsigned long)head, vmemmap_end;
+>   	unsigned long vmemmap_reuse;
+>   
+>   	VM_WARN_ON_ONCE(!PageHuge(head));
+> -	if (!HPageVmemmapOptimized(head))
+> +	if (!folio_test_hugetlb_vmemmap_optimized(folio))
+>   		return 0;
+>   
+>   	vmemmap_end	= vmemmap_start + hugetlb_vmemmap_size(h);
+> @@ -518,7 +519,7 @@ static int __hugetlb_vmemmap_restore(const struct hstate *h, struct page *head,
+>   	 */
+>   	ret = vmemmap_remap_alloc(vmemmap_start, vmemmap_end, vmemmap_reuse, flags);
+>   	if (!ret) {
+> -		ClearHPageVmemmapOptimized(head);
+> +		folio_clear_hugetlb_vmemmap_optimized(folio);
+>   		static_branch_dec(&hugetlb_optimize_vmemmap_key);
+>   	}
+>   
+> @@ -530,14 +531,14 @@ static int __hugetlb_vmemmap_restore(const struct hstate *h, struct page *head,
+>    *				hugetlb_vmemmap_optimize()) vmemmap pages which
+>    *				will be reallocated and remapped.
+>    * @h:		struct hstate.
+> - * @head:	the head page whose vmemmap pages will be restored.
+> + * @folio:     the folio whose vmemmap pages will be restored.
+>    *
+> - * Return: %0 if @head's vmemmap pages have been reallocated and remapped,
+> + * Return: %0 if @folio's vmemmap pages have been reallocated and remapped,
+>    * negative error code otherwise.
+>    */
+> -int hugetlb_vmemmap_restore(const struct hstate *h, struct page *head)
+> +int hugetlb_vmemmap_restore(const struct hstate *h, struct folio *folio)
+
+I'd like to rename this to hugetlb_vmemmap_restore_folio to be consistent
+with hugetlb_vmemmap_restore_folios.
+
+>   {
+> -	return __hugetlb_vmemmap_restore(h, head, 0);
+> +	return __hugetlb_vmemmap_restore(h, folio, 0);
+>   }
+>   
+>   /**
+> @@ -563,7 +564,7 @@ long hugetlb_vmemmap_restore_folios(const struct hstate *h,
+>   
+>   	list_for_each_entry_safe(folio, t_folio, folio_list, lru) {
+>   		if (folio_test_hugetlb_vmemmap_optimized(folio)) {
+> -			ret = __hugetlb_vmemmap_restore(h, &folio->page,
+> +			ret = __hugetlb_vmemmap_restore(h, folio,
+>   						VMEMMAP_REMAP_NO_TLB_FLUSH);
+>   			if (ret)
+>   				break;
+> @@ -641,11 +642,12 @@ static bool vmemmap_should_optimize(const struct hstate *h, const struct page *h
+>   }
+>   
+>   static int __hugetlb_vmemmap_optimize(const struct hstate *h,
+> -					struct page *head,
+> +					struct folio *folio,
+>   					struct list_head *vmemmap_pages,
+>   					unsigned long flags)
+>   {
+>   	int ret = 0;
+> +	struct page *head = &folio->page;
+>   	unsigned long vmemmap_start = (unsigned long)head, vmemmap_end;
+>   	unsigned long vmemmap_reuse;
+>   
+> @@ -665,7 +667,7 @@ static int __hugetlb_vmemmap_optimize(const struct hstate *h,
+>   	 * If there is an error during optimization, we will immediately FLUSH
+>   	 * the TLB and clear the flag below.
+>   	 */
+> -	SetHPageVmemmapOptimized(head);
+> +	folio_set_hugetlb_vmemmap_optimized(folio);
+>   
+>   	vmemmap_end	= vmemmap_start + hugetlb_vmemmap_size(h);
+>   	vmemmap_reuse	= vmemmap_start;
+> @@ -681,27 +683,27 @@ static int __hugetlb_vmemmap_optimize(const struct hstate *h,
+>   							vmemmap_pages, flags);
+>   	if (ret) {
+>   		static_branch_dec(&hugetlb_optimize_vmemmap_key);
+> -		ClearHPageVmemmapOptimized(head);
+> +		folio_clear_hugetlb_vmemmap_optimized(folio);
+>   	}
+>   
+>   	return ret;
+>   }
+>   
+>   /**
+> - * hugetlb_vmemmap_optimize - optimize @head page's vmemmap pages.
+> + * hugetlb_vmemmap_optimize - optimize @folio's vmemmap pages.
+>    * @h:		struct hstate.
+> - * @head:	the head page whose vmemmap pages will be optimized.
+> + * @folio:     the folio whose vmemmap pages will be optimized.
+>    *
+> - * This function only tries to optimize @head's vmemmap pages and does not
+> + * This function only tries to optimize @folio's vmemmap pages and does not
+>    * guarantee that the optimization will succeed after it returns. The caller
+> - * can use HPageVmemmapOptimized(@head) to detect if @head's vmemmap pages
+> - * have been optimized.
+> + * can use folio_test_hugetlb_vmemmap_optimized(@folio) to detect if @folio's
+> + * vmemmap pages have been optimized.
+>    */
+> -void hugetlb_vmemmap_optimize(const struct hstate *h, struct page *head)
+> +void hugetlb_vmemmap_optimize(const struct hstate *h, struct folio *folio)
+
+The same as here. Otherwise, LGTM. Please free to add:
+
+Reviewed-by: Muchun Song <songmuchun@bytedance.com> in you next edition.
+
+Thanks.
+
+>   {
+>   	LIST_HEAD(vmemmap_pages);
+>   
+> -	__hugetlb_vmemmap_optimize(h, head, &vmemmap_pages, 0);
+> +	__hugetlb_vmemmap_optimize(h, folio, &vmemmap_pages, 0);
+>   	free_vmemmap_page_list(&vmemmap_pages);
+>   }
+>   
+> @@ -745,7 +747,7 @@ void hugetlb_vmemmap_optimize_folios(struct hstate *h, struct list_head *folio_l
+>   	flush_tlb_all();
+>   
+>   	list_for_each_entry(folio, folio_list, lru) {
+> -		int ret = __hugetlb_vmemmap_optimize(h, &folio->page,
+> +		int ret = __hugetlb_vmemmap_optimize(h, folio,
+>   						&vmemmap_pages,
+>   						VMEMMAP_REMAP_NO_TLB_FLUSH);
+>   
+> @@ -761,7 +763,7 @@ void hugetlb_vmemmap_optimize_folios(struct hstate *h, struct list_head *folio_l
+>   			flush_tlb_all();
+>   			free_vmemmap_page_list(&vmemmap_pages);
+>   			INIT_LIST_HEAD(&vmemmap_pages);
+> -			__hugetlb_vmemmap_optimize(h, &folio->page,
+> +			__hugetlb_vmemmap_optimize(h, folio,
+>   						&vmemmap_pages,
+>   						VMEMMAP_REMAP_NO_TLB_FLUSH);
+>   		}
+> diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
+> index a0dcf49f46ba..6a06dccd7ffa 100644
+> --- a/mm/hugetlb_vmemmap.h
+> +++ b/mm/hugetlb_vmemmap.h
+> @@ -18,11 +18,11 @@
+>   #define HUGETLB_VMEMMAP_RESERVE_PAGES	(HUGETLB_VMEMMAP_RESERVE_SIZE / sizeof(struct page))
+>   
+>   #ifdef CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP
+> -int hugetlb_vmemmap_restore(const struct hstate *h, struct page *head);
+> +int hugetlb_vmemmap_restore(const struct hstate *h, struct folio *folio);
+>   long hugetlb_vmemmap_restore_folios(const struct hstate *h,
+>   					struct list_head *folio_list,
+>   					struct list_head *non_hvo_folios);
+> -void hugetlb_vmemmap_optimize(const struct hstate *h, struct page *head);
+> +void hugetlb_vmemmap_optimize(const struct hstate *h, struct folio *folio);
+>   void hugetlb_vmemmap_optimize_folios(struct hstate *h, struct list_head *folio_list);
+>   
+>   static inline unsigned int hugetlb_vmemmap_size(const struct hstate *h)
+> @@ -43,7 +43,7 @@ static inline unsigned int hugetlb_vmemmap_optimizable_size(const struct hstate
+>   	return size > 0 ? size : 0;
+>   }
+>   #else
+> -static inline int hugetlb_vmemmap_restore(const struct hstate *h, struct page *head)
+> +static inline int hugetlb_vmemmap_restore(const struct hstate *h, struct folio *folio)
+>   {
+>   	return 0;
+>   }
+> @@ -56,7 +56,7 @@ static long hugetlb_vmemmap_restore_folios(const struct hstate *h,
+>   	return 0;
+>   }
+>   
+> -static inline void hugetlb_vmemmap_optimize(const struct hstate *h, struct page *head)
+> +static inline void hugetlb_vmemmap_optimize(const struct hstate *h, struct folio *folio)
+>   {
+>   }
+>   
+
