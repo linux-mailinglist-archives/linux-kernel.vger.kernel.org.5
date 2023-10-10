@@ -2,86 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AC027BF2C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 08:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FCA57BF2C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 08:08:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377940AbjJJGGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 02:06:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38004 "EHLO
+        id S1442186AbjJJGIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 02:08:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376502AbjJJGGi (ORCPT
+        with ESMTP id S1379414AbjJJGIW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 02:06:38 -0400
-Received: from meesny.iki.fi (meesny.iki.fi [195.140.195.201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AAFEAC;
-        Mon,  9 Oct 2023 23:06:35 -0700 (PDT)
-Received: from hillosipuli.retiisi.eu (185-9-11-240.cust.suomicom.net [185.9.11.240])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sailus)
-        by meesny.iki.fi (Postfix) with ESMTPSA id 4S4QQF6XLFzyWn;
-        Tue, 10 Oct 2023 09:06:27 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
-        t=1696917992;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6+kUZ8PXCIiQYOaRsg+lVPSGx1V+n4P7FYahLIA1VgI=;
-        b=uocPHBA/W+9y9OmEAhXzwnDc7SwM2UNcMhHAm7jezccmUryQGIVWTGCSdsIIC66FSF2AMu
-        A8CPTEyVV/NHfw/SUFpq0L9G6kEpclmdarioAtmlQ0JW5KTNDa1O6ufGr5xCWQBRK6YK72
-        95jfvYgfTPKYaD9K6Pw6VHinSvAqUrk=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-        s=meesny; t=1696917992;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6+kUZ8PXCIiQYOaRsg+lVPSGx1V+n4P7FYahLIA1VgI=;
-        b=U5f3RTcaItTeIklJyU8l0HnyinZmbgSvEWtXI4hnWsl+Tl6kEWaehe7NLPuVLcd0i+sHd4
-        IK8Pwx8xeChPgYNQpJfj+f3oy6lB2w1Su8vV59U9tGOpuOAglr52Ppq0w9MHBBTGDYEgLZ
-        a0GMXLj0KZpZzKFKFYMLweiMnA7SZOk=
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
-ARC-Seal: i=1; s=meesny; d=iki.fi; t=1696917992; a=rsa-sha256; cv=none;
-        b=ZE2Miv8CLD5pyxxx5ZKzlNxzBn58XYlXP9DA/0AyzO8qxiJEWKwNl/KfhvzxdeLvNQfzbk
-        JoOppgcivP5Atrq11q6CSJ6rMZOFPq4Tq/K6qqpO6Y/sOGJeJ/t0Vbupukv1nBuduUv2e6
-        9KfyfLdVS5sAz5ciGouNRf0Op+rplhY=
-Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 7A300634CBD;
-        Tue, 10 Oct 2023 09:06:26 +0300 (EEST)
-Date:   Tue, 10 Oct 2023 06:06:26 +0000
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        "Paul J. Murphy" <paul.j.murphy@intel.com>,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/5] media: dt-bindings: media: imx335: Add supply
- bindings
-Message-ID: <ZSTp4jXKPVrbo5oU@valkosipuli.retiisi.eu>
-References: <20231010005126.3425444-1-kieran.bingham@ideasonboard.com>
- <20231010005126.3425444-2-kieran.bingham@ideasonboard.com>
+        Tue, 10 Oct 2023 02:08:22 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A2E09D
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 23:08:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2A1EC433CA
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 06:08:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696918100;
+        bh=rRBs3Ych6ZoGW6MOQ4I5lIL2l0ivTAGfSIv5O+2SfEE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MRWYqQEukdLRyPOdSKu/qZUlD5vfD67O7axPbnBwNdlyS08vG8SbjJ2h3zawccQIs
+         Q3M373CcUoPmrb8iq7dfN2hz2GHKSlhMIKAv8CJIHQ4nxnMDBZyrX4XVnq68FR3UTV
+         4zztaYkwJF435GaHsQu4XPAWoGOAPu3YBFXQTozaMH/SOihs0q2KOG2Qo2r9dVilzu
+         Io90O3xAY2XfkqrSn5TL11H7rRt/XTtLeTOHC3RDG3UdiVotRzl0qU+BhQmLGlJcB5
+         UyRifSTFK1eoRLE0Hs+KatQBAJ1luM2iVMVRgV8Rr/ATXBk0xb10T4IkHenJYYow5Q
+         HZr6i71aQ7W0w==
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5a2536adaf3so64458267b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 23:08:20 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yx/gY/1WXGOFro/41Pven2e4p1Z+5f1HoNNewsWZk7osSDQRqnG
+        UOtHNJt7L3MgsVj5AxXlK3//CY5z5dZ1lMq1E8w=
+X-Google-Smtp-Source: AGHT+IG9mD2kz+9gbuzzXiCGiW9fG1qt5NBAZi/g3qSE9AAFBv09eLy0LeQCY/MGvuj+9PGzan4fdLL74rBsIzs95zs=
+X-Received: by 2002:a0d:d7cc:0:b0:584:4bbb:963b with SMTP id
+ z195-20020a0dd7cc000000b005844bbb963bmr16955392ywd.15.1696918099929; Mon, 09
+ Oct 2023 23:08:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231010005126.3425444-2-kieran.bingham@ideasonboard.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+References: <2023100654-pointless-stem-5ee1@gregkh>
+In-Reply-To: <2023100654-pointless-stem-5ee1@gregkh>
+From:   Oded Gabbay <ogabbay@kernel.org>
+Date:   Tue, 10 Oct 2023 09:07:53 +0300
+X-Gmail-Original-Message-ID: <CAFCwf10o8J2JYue9Spc0qmSnH671ySuDeUggJ3J6mhXVTc7kTA@mail.gmail.com>
+Message-ID: <CAFCwf10o8J2JYue9Spc0qmSnH671ySuDeUggJ3J6mhXVTc7kTA@mail.gmail.com>
+Subject: Re: [PATCH] accel/habanalabs: make hl_class constant
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Dafna Hirschfeld <dhirschfeld@habana.ai>,
+        Dani Liberman <dliberman@habana.ai>,
+        Koby Elbaz <kelbaz@habana.ai>, Ofir Bitton <obitton@habana.ai>,
+        Ohad Sharabi <osharabi@habana.ai>,
+        Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
+        Tal Cohen <talcohen@habana.ai>, Tomer Tayar <ttayar@habana.ai>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,67 +62,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kieran,
+On Fri, Oct 6, 2023 at 4:57=E2=80=AFPM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> Now that the driver core allows for struct class to be in read-only
+> memory, we should make all 'class' structures declared at build time
+> placing them into read-only memory, instead of having to be dynamically
+> allocated at runtime.
+>
+> This requires some passing of const struct class * around in the common
+> habanalabs code as well as converting the structure itself.
 
-On Tue, Oct 10, 2023 at 01:51:22AM +0100, Kieran Bingham wrote:
-> Add the bindings for the supply references used on the IMX335.
-> 
-> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+Hi Greg,
+Thanks for the patch but if you look at our tip of habanalabs-next
+branch (to be merged in 6.7), you will see the hl_class related code
+no longer exists, as we moved completely to the new accel char device
+class.
+So, I'm dropping this patch.
+Oded
+
+>
+> Cc: Dafna Hirschfeld <dhirschfeld@habana.ai>
+> Cc: Dani Liberman <dliberman@habana.ai>
+> Cc: Koby Elbaz <kelbaz@habana.ai>
+> Cc: Oded Gabbay <ogabbay@kernel.org>
+> Cc: Ofir Bitton <obitton@habana.ai>
+> Cc: Ohad Sharabi <osharabi@habana.ai>
+> Cc: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+> Cc: Tal Cohen <talcohen@habana.ai>
+> Cc: Tomer Tayar <ttayar@habana.ai>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > ---
->  .../bindings/media/i2c/sony,imx335.yaml          | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx335.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx335.yaml
-> index a167dcdb3a32..1863b5608a5c 100644
-> --- a/Documentation/devicetree/bindings/media/i2c/sony,imx335.yaml
-> +++ b/Documentation/devicetree/bindings/media/i2c/sony,imx335.yaml
-> @@ -32,6 +32,15 @@ properties:
->      description: Clock frequency from 6 to 27 MHz, 37.125MHz, 74.25MHz
->      maxItems: 1
->  
-> +  avdd-supply:
-> +    description: Analog power supply (2.9V)
+>  drivers/accel/habanalabs/common/device.c        |  2 +-
+>  drivers/accel/habanalabs/common/habanalabs.h    |  2 +-
+>  .../accel/habanalabs/common/habanalabs_drv.c    | 17 ++++++++++-------
+>  3 files changed, 12 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/accel/habanalabs/common/device.c b/drivers/accel/hab=
+analabs/common/device.c
+> index b97339d1f7c6..4c28d8cfbb68 100644
+> --- a/drivers/accel/habanalabs/common/device.c
+> +++ b/drivers/accel/habanalabs/common/device.c
+> @@ -652,7 +652,7 @@ static void device_release_func(struct device *dev)
+>   *
+>   * Initialize a cdev and a Linux device for habanalabs's device.
+>   */
+> -static int device_init_cdev(struct hl_device *hdev, struct class *class,
+> +static int device_init_cdev(struct hl_device *hdev, const struct class *=
+class,
+>                                 int minor, const struct file_operations *=
+fops,
+>                                 char *name, struct cdev *cdev,
+>                                 struct device **dev)
+> diff --git a/drivers/accel/habanalabs/common/habanalabs.h b/drivers/accel=
+/habanalabs/common/habanalabs.h
+> index 2f027d5a8206..f1c78555e611 100644
+> --- a/drivers/accel/habanalabs/common/habanalabs.h
+> +++ b/drivers/accel/habanalabs/common/habanalabs.h
+> @@ -3308,7 +3308,7 @@ struct hl_device {
+>         u64                             pcie_bar_phys[HL_PCI_NUM_BARS];
+>         void __iomem                    *pcie_bar[HL_PCI_NUM_BARS];
+>         void __iomem                    *rmmio;
+> -       struct class                    *hclass;
+> +       const struct class              *hclass;
+>         struct cdev                     cdev;
+>         struct cdev                     cdev_ctrl;
+>         struct device                   *dev;
+> diff --git a/drivers/accel/habanalabs/common/habanalabs_drv.c b/drivers/a=
+ccel/habanalabs/common/habanalabs_drv.c
+> index 7263e84c1a4d..4f1fdff3843d 100644
+> --- a/drivers/accel/habanalabs/common/habanalabs_drv.c
+> +++ b/drivers/accel/habanalabs/common/habanalabs_drv.c
+> @@ -27,7 +27,11 @@ MODULE_DESCRIPTION(HL_DRIVER_DESC);
+>  MODULE_LICENSE("GPL v2");
+>
+>  static int hl_major;
+> -static struct class *hl_class;
 > +
-> +  ovdd-supply:
-> +    description: Interface power supply (1.8V)
+> +static const struct class hl_class =3D {
+> +       .name =3D HL_NAME,
+> +};
 > +
-> +  dvdd-supply:
-> +    description: Digital power supply (1.2V)
-
-I wonder what's the policy in this case --- some of the regulators are
-often hard-wired and the bindings didn't have them previously either (I
-wonder why, maybe they were all hard wired in the board??).
-
-Could they be optional? The driver will need to be able to do without these
-in any case.
-
-> +
->    reset-gpios:
->      description: Reference to the GPIO connected to the XCLR pin, if any.
->      maxItems: 1
-> @@ -60,6 +69,9 @@ required:
->    - compatible
->    - reg
->    - clocks
-> +  - avdd-supply
-> +  - ovdd-supply
-> +  - dvdd-supply
->    - port
->  
->  additionalProperties: false
-> @@ -79,6 +91,10 @@ examples:
->              assigned-clock-parents = <&imx335_clk_parent>;
->              assigned-clock-rates = <24000000>;
->  
-> +            avdd-supply = <&camera_vdda_2v9>;
-> +            ovdd-supply = <&camera_vddo_1v8>;
-> +            dvdd-supply = <&camera_vddd_1v2>;
-> +
->              port {
->                  imx335: endpoint {
->                      remote-endpoint = <&cam>;
-
--- 
-Kind regards,
-
-Sakari Ailus
+>  static DEFINE_IDR(hl_devs_idr);
+>  static DEFINE_MUTEX(hl_devs_idr_lock);
+>
+> @@ -317,7 +321,7 @@ static void copy_kernel_module_params_to_device(struc=
+t hl_device *hdev)
+>         hdev->asic_prop.fw_security_enabled =3D is_asic_secured(hdev->asi=
+c_type);
+>
+>         hdev->major =3D hl_major;
+> -       hdev->hclass =3D hl_class;
+> +       hdev->hclass =3D &hl_class;
+>         hdev->memory_scrub =3D memory_scrub;
+>         hdev->reset_on_lockup =3D reset_on_lockup;
+>         hdev->boot_error_status_mask =3D boot_error_status_mask;
+> @@ -691,10 +695,9 @@ static int __init hl_init(void)
+>
+>         hl_major =3D MAJOR(dev);
+>
+> -       hl_class =3D class_create(HL_NAME);
+> -       if (IS_ERR(hl_class)) {
+> +       rc =3D class_register(&hl_class);
+> +       if (rc) {
+>                 pr_err("failed to allocate class\n");
+> -               rc =3D PTR_ERR(hl_class);
+>                 goto remove_major;
+>         }
+>
+> @@ -712,7 +715,7 @@ static int __init hl_init(void)
+>
+>  remove_debugfs:
+>         hl_debugfs_fini();
+> -       class_destroy(hl_class);
+> +       class_unregister(&hl_class);
+>  remove_major:
+>         unregister_chrdev_region(MKDEV(hl_major, 0), HL_MAX_MINORS);
+>         return rc;
+> @@ -732,7 +735,7 @@ static void __exit hl_exit(void)
+>          */
+>         hl_debugfs_fini();
+>
+> -       class_destroy(hl_class);
+> +       class_unregister(&hl_class);
+>         unregister_chrdev_region(MKDEV(hl_major, 0), HL_MAX_MINORS);
+>
+>         idr_destroy(&hl_devs_idr);
+> --
+> 2.42.0
+>
