@@ -2,104 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3129F7C459E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 01:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7D6C7C45A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 01:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344191AbjJJXmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 19:42:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46164 "EHLO
+        id S1344201AbjJJXqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 19:46:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343880AbjJJXmv (ORCPT
+        with ESMTP id S229450AbjJJXqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 19:42:51 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E5CB8F;
-        Tue, 10 Oct 2023 16:42:50 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-68fb85afef4so4745969b3a.1;
-        Tue, 10 Oct 2023 16:42:50 -0700 (PDT)
+        Tue, 10 Oct 2023 19:46:31 -0400
+Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D598F;
+        Tue, 10 Oct 2023 16:46:29 -0700 (PDT)
+Received: by mail-ua1-x92f.google.com with SMTP id a1e0cc1a2514c-7a52a27fe03so2705528241.0;
+        Tue, 10 Oct 2023 16:46:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696981370; x=1697586170; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EToU3lcbSlwy9fy/0jMo1G59SHr9e1KfON9mi7yvsw0=;
-        b=mS9MiL7TredmItdqwUTiYBwM2FXe0U8ZCbgIUzFg9NtLouwoRRK3uFl9SlxfAvobNF
-         De6FS+S57eEWKs9+zIGhnFxy47KUX7toFdjAgceyvvj7qr/1d0GNKbu+TujB2nC6FS6l
-         Bg56U/zjkKds8a5G4Vts0SqEbSYVkl7r8Z+igLPF200DYhpdirePsuZ1pH/1eOM39VWj
-         qsMUl723vMjqGW4Nv50pG4IqPPiyNXizgsYvQkzmD5bjqzQ01lrSzfILGRuPnwkh6mIM
-         +Z+aw741V0eAWsdia41vrjBEGWIriCOKBrqe7Ix+Ka6qPnF3QDyhA7ZfmOTXL4eE72o7
-         R4oQ==
+        d=gmail.com; s=20230601; t=1696981589; x=1697586389; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CM+jvdydXHv5556bdY8VF7dkGPmKm212tPIOIcFNEEQ=;
+        b=mYXJeK6ZUhXkIFFd6pUtbk7rGKnI35JD8PdqklapFkhxSf0xF77/Nt7vUN0V/X0VS7
+         kxg+1JBwqdaRZid8mZtX8a4zttGr3ZHlSNn3n2p1uf6ySoe4h+PrxFZuUXWw3EJEj4Gp
+         eqOd7h27MAwihaiGWPngyCVhDGlxDyioTp/DUuSAod6Zz0H0qJ0f4gmhvw8Gd/KvsIqV
+         boGFDPWqJYwbC9dIX3L0MLQOOIa0hqJkLBOMHjpYeNfacq2LyadvarZY0JakdvAvaGb9
+         ff0CDMpnQjNNkACagykvuZgwXxnx+TuflCmYVc6CV/GkBihsfL20tRauE4Yvodf9olUM
+         G8DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696981370; x=1697586170;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=EToU3lcbSlwy9fy/0jMo1G59SHr9e1KfON9mi7yvsw0=;
-        b=OKXxA5Cp/P6+9xRgf+biJl9u51Ro35tsQSNbbN//i8f3xrL2tkPPguFQIOl6NY/aaH
-         XqwAz+rOo+UNDF2xg90WxGa1q9/4VeJU+4kDhkvg8jJQsmV+3KwMORg5iWOa2nklo90N
-         8CiUczvJlmdk0TQjY1XTBhAYVi/PdHaI0zFwcSu8TY4NWy1T0b4LkCc4F424DpA28p9F
-         JZpfS9hkSWCC/cNi4KhZcLnfoZtTxVzRdJjcsRq8zEJydk5MK0abMPIurQ/XksfU7rpO
-         Yl0YqG59yTs+aTprAlviJgWRXfJlr38Own9itkCroH/gm0a0yLb6DClOFTNFxWjdSdnc
-         sVpA==
-X-Gm-Message-State: AOJu0Yx7rb+lBNdzgAH8FcMMrJn26Ei6FFTh8Qf3ioR8j7DN5rCPrvXZ
-        vZAasKNLw6YjauMxH+dWtJoKffZDyUw=
-X-Google-Smtp-Source: AGHT+IGu+0+ZHZ9VhVStWuztl/a8lzxt0oDn4QWcUF/L/whuSBgOn+oTwj+AOI0uz1bk7Ajof/RD3A==
-X-Received: by 2002:a05:6a20:da9d:b0:16c:b5be:5f6c with SMTP id iy29-20020a056a20da9d00b0016cb5be5f6cmr12546254pzb.54.1696981369486;
-        Tue, 10 Oct 2023 16:42:49 -0700 (PDT)
-Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:f301:6279:8c99:9912])
-        by smtp.gmail.com with ESMTPSA id h13-20020a170902f54d00b001c61921d4d2sm12420404plf.302.2023.10.10.16.42.48
+        d=1e100.net; s=20230601; t=1696981589; x=1697586389;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CM+jvdydXHv5556bdY8VF7dkGPmKm212tPIOIcFNEEQ=;
+        b=tWEdE0IP/vvhEJBx6iIn73vfFbc/aDi65obCOPzhYlxm79cpvbhCxrIIDvsYd6tuuF
+         bEaLAi3whrhXNjAD6BUlkGBFqO6dvaGBV4wnZ9P4ZFmA5T/PKcn84uAoJjHoaRLZia7U
+         u9/4wsmslnflburDwyoAt317nX5qL4hPSUKpsPzhvp3suwiqlrKEJkTMCodxO5HCwBIM
+         sLZQXJZCXWN1MzJ8iNizVEqwY21QzXL6sqCeKgwVcpAK1tUx6kp2/uzTKT3D4dKstjIb
+         lvXsRXlU+e2DpiTuNHpgP9ogjmVg20EYc/tdCT+eGq7ChibFolcVKVBr1pnNQ+W72aGc
+         g6ag==
+X-Gm-Message-State: AOJu0YziXCV/14cOauPEdk4akqfDdgHUzXufvGGobsWxwPdWjup05nNI
+        h+vPjYiM8f17/SxMqFLOQ2Y=
+X-Google-Smtp-Source: AGHT+IHDqByel4wQUh67zGN6+2lSqQOLNCtEMrq8DUunjw8Og0HhDtVU2Fu84whBnh32yVp3IYXeRg==
+X-Received: by 2002:a05:6102:f9c:b0:457:a003:2d26 with SMTP id e28-20020a0561020f9c00b00457a0032d26mr1162297vsv.32.1696981588853;
+        Tue, 10 Oct 2023 16:46:28 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id y28-20020ab0561c000000b007a251efad75sm501040uaa.36.2023.10.10.16.46.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 16:42:49 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        oe-kbuild-all@lists.linux.dev
-Subject: [PATCH] perf tools: Do not ignore the default vmlinux.h
-Date:   Tue, 10 Oct 2023 16:42:47 -0700
-Message-ID: <20231010234247.71604-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-In-Reply-To: <202310110451.rvdUZJEY-lkp@intel.com>
-References: <202310110451.rvdUZJEY-lkp@intel.com>
+        Tue, 10 Oct 2023 16:46:28 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 10 Oct 2023 16:46:26 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Max Kellermann <max.kellermann@ionos.com>
+Cc:     joe@perches.com, gregkh@linuxfoundation.org,
+        Jonathan Corbet <corbet@lwn.net>, workflows@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] Documentation/process/coding-style.rst: space around
+ const
+Message-ID: <5e13f429-d08d-4c13-b5e8-72da4624e6a4@roeck-us.net>
+References: <20231010125832.1002941-1-max.kellermann@ionos.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231010125832.1002941-1-max.kellermann@ionos.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The recent change made it possible to generate vmlinux.h from BTF and
-to ignore the file.  But we also have a minimal vmlinux.h that will be
-used by default.  It should not be ignored by GIT.
+On Tue, Oct 10, 2023 at 02:58:31PM +0200, Max Kellermann wrote:
+> There are currently no rules on the placement of "const", but a recent
+> code submission revealed that there is clearly a preference for spaces
+> around it.
+> 
+> checkpatch.pl has no check at all for this; though it does sometimes
+> complain, but only because it erroneously thinks that the "*" (on
+> local variables) is an unary dereference operator, not a pointer type.
+> 
+> Current coding style for const pointers-to-pointers:
+> 
+>  "*const*": 2 occurrences
+>  "* const*": 3
+>  "*const *": 182
+>  "* const *": 681
+> 
+> Just const pointers:
+> 
+>  "*const": 2833 occurrences
+>  "* const": 16615
+> 
+> Link: https://lore.kernel.org/r/264fa39d-aed6-4a54-a085-107997078f8d@roeck-us.net/
+> Link: https://lore.kernel.org/r/f511170fe61d7e7214a3a062661cf4103980dad6.camel@perches.com/
+> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
 
-Fixes: b7a2d774c9c5 ("perf build: Add ability to build with a generated vmlinux.h")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202310110451.rvdUZJEY-lkp@intel.com/
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/util/bpf_skel/vmlinux/.gitignore | 1 +
- 1 file changed, 1 insertion(+)
- create mode 100644 tools/perf/util/bpf_skel/vmlinux/.gitignore
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-diff --git a/tools/perf/util/bpf_skel/vmlinux/.gitignore b/tools/perf/util/bpf_skel/vmlinux/.gitignore
-new file mode 100644
-index 000000000000..49502c04183a
---- /dev/null
-+++ b/tools/perf/util/bpf_skel/vmlinux/.gitignore
-@@ -0,0 +1 @@
-+!vmlinux.h
--- 
-2.42.0.609.gbb76f46606-goog
-
+> ---
+> V1 -> V2: removed "volatile" on gregkh's request.
+> V2 -> V3: moved patch changelog below the "---" line
+> ---
+>  Documentation/process/coding-style.rst | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
+> index 6db37a46d305..71d62d81e506 100644
+> --- a/Documentation/process/coding-style.rst
+> +++ b/Documentation/process/coding-style.rst
+> @@ -271,6 +271,17 @@ adjacent to the type name.  Examples:
+>  	unsigned long long memparse(char *ptr, char **retptr);
+>  	char *match_strdup(substring_t *s);
+>  
+> +Use space around the ``const`` keyword (except when adjacent to
+> +parentheses).  Example:
+> +
+> +.. code-block:: c
+> +
+> +	const void *a;
+> +	void * const b;
+> +	void ** const c;
+> +	void * const * const d;
+> +	int strcmp(const char *a, const char *b);
+> +
+>  Use one space around (on each side of) most binary and ternary operators,
+>  such as any of these::
+>  
+> -- 
+> 2.39.2
+> 
