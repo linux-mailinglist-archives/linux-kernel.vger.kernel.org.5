@@ -2,155 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A10607C43E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 00:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 318B67C43DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 00:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231859AbjJJW01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 18:26:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56180 "EHLO
+        id S234314AbjJJW0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 18:26:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233022AbjJJW0L (ORCPT
+        with ESMTP id S234464AbjJJW0K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 18:26:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9993BBA
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 15:25:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696976721;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=S425dUFU+lNt5RhPxUUHdrBo8GRV+oDgKvT6OmMk34I=;
-        b=JJRorAzympngcuHsbNnxqel13wl/5Ofed31n70r4YaLp04P1g02MK3fuHhBta7rHRw3q1W
-        FutrBsBySr1kiTgboAFltfFax3VosCuJjExMhv0C3bDh+5lz5BchwxuHgRij7eLF2mD4it
-        k5t9KeSIo3hIdIUkFr4Pbo4CkDWT27I=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-654-12Bo-LcDNVO_BAMov5EVCQ-1; Tue, 10 Oct 2023 18:25:15 -0400
-X-MC-Unique: 12Bo-LcDNVO_BAMov5EVCQ-1
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-77574c5f713so708314585a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 15:25:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696976715; x=1697581515;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S425dUFU+lNt5RhPxUUHdrBo8GRV+oDgKvT6OmMk34I=;
-        b=oJGUHxs0MkvtCzHZCXmmOZuEQQ/U47vEOBHMhiP1Bt0C5qLBiffa3krsbWfNoszsKo
-         pGVZMskiKhzewb0Plz228MbDm1k3ZqDm3Bc+4ygJO36dsekBaOx3Q+JEFBYK5J6WsISQ
-         xNviSO3GSEj8Fcw0RVc/wvAQYgsKYFLWCxuDscYc2r7sCJ6ExzdxEPwHWTgfsbbzNVsI
-         Fb5AhMyVoRjyzKz1CM8YmWIOCkUqHgGI9y+8vHtDJBuMT2kBqVhpali1CGL+p45Fuu6S
-         DbNkGzucRyvWAvY0eKp/9R78fHV91Pzb01NYQlIMK7p9wEW36cBlfeRVH6qnovwHS4pa
-         9q4g==
-X-Gm-Message-State: AOJu0YyTUkZ7LqgwQvVCnae6YqSJOu9hlY+mXVn38RIzA89/RJyW24UW
-        5ZXxNelH1rBWSuDBzUD8hr0Gvc5/LZzcGArt6zTdSjDndnYqqYWXdzmXS0163J6cFQFov1ZJKwD
-        z4POfP0ldeIP9Z42MqJrb+v9h
-X-Received: by 2002:a05:620a:44cb:b0:775:6dfb:874b with SMTP id y11-20020a05620a44cb00b007756dfb874bmr25482811qkp.51.1696976715113;
-        Tue, 10 Oct 2023 15:25:15 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHI2h5JSeTuSkej2aFal1eyjZSAByC9WQ/SOyg9W3nCMiojVwl/alCxSWV1QIPawodHclsh1A==
-X-Received: by 2002:a05:620a:44cb:b0:775:6dfb:874b with SMTP id y11-20020a05620a44cb00b007756dfb874bmr25482790qkp.51.1696976714835;
-        Tue, 10 Oct 2023 15:25:14 -0700 (PDT)
-Received: from fedora ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id z4-20020a05620a100400b007726002d69esm4703643qkj.10.2023.10.10.15.25.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 15:25:14 -0700 (PDT)
-Date:   Tue, 10 Oct 2023 17:25:12 -0500
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Elliot Berman <quic_eberman@quicinc.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Guru Das Srinagesh <quic_gurus@quicinc.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v3 08/15] firmware: qcom: scm: make
- qcom_scm_ice_set_key() use the TZ allocator
-Message-ID: <25rend34es2ayrgbyawoz6tfpweba3drvdrwgiflxhkd7lipma@lj6xolgwwjpt>
-References: <20231009153427.20951-1-brgl@bgdev.pl>
- <20231009153427.20951-9-brgl@bgdev.pl>
+        Tue, 10 Oct 2023 18:26:10 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD322D6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 15:26:06 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39ALHTYr030463;
+        Tue, 10 Oct 2023 22:26:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : subject :
+ date : message-id : mime-version : content-type :
+ content-transfer-encoding : to : cc; s=qcppdkim1;
+ bh=/RjSZVFNK9E06ffbGyJiSg+nkUelh8sulDb1cFG1V14=;
+ b=N92p/1bj/XlarBSMxJLsRfDuQc/K7WLuFMKGq6wIe4h6OMSvWWZP1LuJP5i0c6dKDtFo
+ esg3xu+5fdcDWs1fU/ZYPnK55RyR1e0t6kJxJTAgUQPQgJ2Q+tcB8GSTjHWZlrFDLuF5
+ pFaquQD2nuZRAz1dt++NNbpZNcMgeDpY/zLvsXHf/g/+3Cyp8K3vVpKAS3t8PwTRy9HD
+ asX9TuW/3E/h10FNaitdbJb7LvxwDY5okcMBd4Gq+cpNRBIOae5x4u3TAMMvB6m8pjbd
+ B2e8MAQS62h/zradTKBmDEtnn897TAwg337kkKmW806/s6NDybdxE6cA8bqk3HnJhUQh Ww== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tmw3j29bd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Oct 2023 22:26:01 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39AMQ0ep024670
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Oct 2023 22:26:00 GMT
+Received: from jesszhan-linux.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Tue, 10 Oct 2023 15:26:00 -0700
+From:   Jessica Zhang <quic_jesszhan@quicinc.com>
+Subject: [PATCH 0/3] drm/ci: Add support for SM8250 Gitlab Runner
+Date:   Tue, 10 Oct 2023 15:25:34 -0700
+Message-ID: <20231010-rb5-runner-v1-0-aba1fcc6e3aa@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231009153427.20951-9-brgl@bgdev.pl>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAF7PJWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDS0NL3aIkU92i0ry81CJdc/PUZGOjpBQzw1RzJaCGgqLUtMwKsGHRsbW
+ 1APCzI79cAAAA
+To:     Helen Koike <helen.koike@collabora.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+CC:     <robdclark@chromium.org>, <quic_abhinavk@quicinc.com>,
+        <freedreno@lists.freedesktop.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>
+X-Mailer: b4 0.13-dev-0438c
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1696976760; l=1258;
+ i=quic_jesszhan@quicinc.com; s=20230329; h=from:subject:message-id;
+ bh=7774+Yar/yF4QNmVtl4jiaQb4T4f9W0lL92diuZmKh8=;
+ b=R/BWz8KXrPfJtJq095CJvGnQuc5TbPCYAF7hiht5u5RwOB4GMLCpDD5jv/Kyf6hhhq98huFd8
+ pi6rp3wR5BNBcJ9rmeztCFtq6UolF2yOoGxzRy44jjU42FJifRQcivT
+X-Developer-Key: i=quic_jesszhan@quicinc.com; a=ed25519;
+ pk=gAUCgHZ6wTJOzQa3U0GfeCDH7iZLlqIEPo4rrjfDpWE=
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: riyVsbYpsz8ta3U7mvt8SgBJtxrCl1p_
+X-Proofpoint-ORIG-GUID: riyVsbYpsz8ta3U7mvt8SgBJtxrCl1p_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-10_18,2023-10-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1011
+ impostorscore=0 mlxlogscore=744 malwarescore=0 adultscore=0 mlxscore=0
+ priorityscore=1501 lowpriorityscore=0 bulkscore=0 suspectscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310100171
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 05:34:20PM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> Let's use the new TZ memory allocator to obtain a buffer for this call
-> instead of using dma_alloc_coherent().
-> 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
->  drivers/firmware/qcom/qcom_scm.c | 21 +++++----------------
->  1 file changed, 5 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-> index 754f6056b99f..31071a714cf1 100644
-> --- a/drivers/firmware/qcom/qcom_scm.c
-> +++ b/drivers/firmware/qcom/qcom_scm.c
-> @@ -1197,32 +1197,21 @@ int qcom_scm_ice_set_key(u32 index, const u8 *key, u32 key_size,
->  		.args[4] = data_unit_size,
->  		.owner = ARM_SMCCC_OWNER_SIP,
->  	};
-> -	void *keybuf;
-> -	dma_addr_t key_phys;
-> +
->  	int ret;
->  
-> -	/*
-> -	 * 'key' may point to vmalloc()'ed memory, but we need to pass a
-> -	 * physical address that's been properly flushed.  The sanctioned way to
-> -	 * do this is by using the DMA API.  But as is best practice for crypto
-> -	 * keys, we also must wipe the key after use.  This makes kmemdup() +
-> -	 * dma_map_single() not clearly correct, since the DMA API can use
-> -	 * bounce buffers.  Instead, just use dma_alloc_coherent().  Programming
-> -	 * keys is normally rare and thus not performance-critical.
-> -	 */
-> -
-> -	keybuf = dma_alloc_coherent(__scm->dev, key_size, &key_phys,
-> -				    GFP_KERNEL);
-> +	void *keybuf __free(qcom_tzmem) = qcom_tzmem_alloc(__scm->mempool,
-> +							   key_size,
-> +							   GFP_KERNEL);
+Recently, we've registered a Gitlab runner for a Qualcomm RB5 device that will be
+hosted and maintained in Qualcomm labs.
 
-At the risk of sounding like a broken record, the same nit about
-declaration being moved, I'll just mention that one last time here in
-the series and then accept the outcome of that discussion across the
-series :) Also a bummer to lose that comment, but I guess oh well.
+This series will add a corresponding CI job for testing SM8250 devices and add the
+skip/fails/flakes list. We were able to complete a successful run [1] with these
+changes.
 
-Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
+For now, we will keep the job as manual trigger only and drop that rule later
+after we stabilize the tests.
 
->  	if (!keybuf)
->  		return -ENOMEM;
->  	memcpy(keybuf, key, key_size);
-> -	desc.args[1] = key_phys;
-> +	desc.args[1] = qcom_tzmem_to_phys(keybuf);
->  
->  	ret = qcom_scm_call(__scm->dev, &desc, NULL);
->  
->  	memzero_explicit(keybuf, key_size);
->  
-> -	dma_free_coherent(__scm->dev, key_size, keybuf, key_phys);
->  	return ret;
->  }
->  EXPORT_SYMBOL_GPL(qcom_scm_ice_set_key);
-> -- 
-> 2.39.2
-> 
+[1] https://gitlab.freedesktop.org/drm/msm/-/jobs/50092719
+
+---
+Jessica Zhang (3):
+      drm/ci: Add SM8250 job to CI
+      drm/ci: enable CONFIG_INTERCONNECT_QCOM_SM8250 for arm64 config
+      drm/ci: Add skips, fails and flakes for SM8250
+
+ drivers/gpu/drm/ci/arm64.config                 |  1 +
+ drivers/gpu/drm/ci/build.sh                     |  1 +
+ drivers/gpu/drm/ci/test.yml                     | 15 +++++++++++++
+ drivers/gpu/drm/ci/xfails/msm-sm8250-fails.txt  | 29 +++++++++++++++++++++++++
+ drivers/gpu/drm/ci/xfails/msm-sm8250-flakes.txt |  3 +++
+ drivers/gpu/drm/ci/xfails/msm-sm8250-skips.txt  |  8 +++++++
+ 6 files changed, 57 insertions(+)
+---
+base-commit: dcd88f8c63341ed11a8c5019408f62202cd9d1f2
+change-id: 20230919-rb5-runner-77ec32bd61e7
+
+Best regards,
+-- 
+Jessica Zhang <quic_jesszhan@quicinc.com>
 
