@@ -2,143 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0236A7C03F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 20:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8597C03FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 20:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343610AbjJJS6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 14:58:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42260 "EHLO
+        id S1343633AbjJJS7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 14:59:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233674AbjJJS6R (ORCPT
+        with ESMTP id S233674AbjJJS7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 14:58:17 -0400
+        Tue, 10 Oct 2023 14:59:50 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D925893;
-        Tue, 10 Oct 2023 11:58:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB77BC433C7;
-        Tue, 10 Oct 2023 18:58:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696964292;
-        bh=ys7zX7Uip/yjApTsNB1scMMUo0/posh8yamGRtSA3Rk=;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2FD393;
+        Tue, 10 Oct 2023 11:59:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DC1FC433C7;
+        Tue, 10 Oct 2023 18:59:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696964388;
+        bh=QjP+9QKzrymfN2C8lY1Hip1CW9eHoE7JMBdIbHB9Czk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RL4dxfBVLsK8NR+QUwqeE0N3UhwgMYm3mO7m3Dp8BQWAw8W4AZQZ1poygrgqOOx9O
-         h+UnoxTFJxS5d7DmytOI2Q/1bOZ4Dd5JxKkHQ48C+HAMIuXrQunpDezF45lYwaaD3s
-         rTjziqWRLQvaTI1HMp4rPIyp8jkVUyD/7P4SUErRgqCujcgYJ9VyxF+E3XJua0C2+W
-         JFsgB/icYYc50GwjKPfNghwS7rCzxdtdf7f01hmFeWgLTmtPdUDQZuD2AXIfQY0HLR
-         FtjPdK31QgJUjRJbFx5n6DzT6JKGSQjnb6UXStsmfNf0m+g86ds2DJrZjWFYyM4Yr1
-         hzK4RluUVpXWg==
-Date:   Tue, 10 Oct 2023 20:58:06 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Lakshmi Yadlapati <lakshmiy@us.ibm.com>, sumit.semwal@linaro.org,
-        christian.koenig@amd.com, jdelvare@suse.com, joel@jms.id.au,
-        andrew@aj.id.au, eajames@linux.ibm.com, ninad@linux.ibm.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v1 0/2] [PATCH] hwmon: (pmbus/max31785) Add minimum delay
- between bus accesses
-Message-ID: <ZSWevlHzu6kVcGWA@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lakshmi Yadlapati <lakshmiy@us.ibm.com>, sumit.semwal@linaro.org,
-        christian.koenig@amd.com, jdelvare@suse.com, joel@jms.id.au,
-        andrew@aj.id.au, eajames@linux.ibm.com, ninad@linux.ibm.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <20231009211420.3454026-1-lakshmiy@us.ibm.com>
- <ZSUaDIfWmEn5edrE@shikoro>
- <1284830f-025e-4e25-8ed0-50a6cc00d223@roeck-us.net>
+        b=ecU4MnY9/zXzPaOCdkPNhnTUuXhWI95KlqSPWzzLZmRpvFprf7Ugvz4/J9Arb1C3O
+         Wh9q2HmUyWdFPy/Qm7NX1EVtWTNTSHV2ExW0G94RU7cBoXEwsFHa2gvWw8rjWN5MAr
+         3X5DJHZo3tTaultpVLa2Gmy4WVDYcpQg4ZK0vQQM=
+Date:   Tue, 10 Oct 2023 20:59:45 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Matthieu Baerts <matttbe@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        MPTCP Upstream <mptcp@lists.linux.dev>
+Subject: Re: [PATCH 6.1 000/162] 6.1.57-rc1 review
+Message-ID: <2023101036-relock-slogan-3b3c@gregkh>
+References: <20231009130122.946357448@linuxfoundation.org>
+ <CA+G9fYvWCf4fYuQsVLu0NdN+=W73bW1hr1hiokajktNzPFyYtA@mail.gmail.com>
+ <6447b32f-abb9-4459-aca5-3d510a66b685@kernel.org>
+ <CANn89iJ_KMA=dQWPhU8WQBc0_CvUztUBodAf-cW-2F=HMX3HJg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="1djJUpxMrj0Eh3vK"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1284830f-025e-4e25-8ed0-50a6cc00d223@roeck-us.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANn89iJ_KMA=dQWPhU8WQBc0_CvUztUBodAf-cW-2F=HMX3HJg@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 10, 2023 at 07:24:08PM +0200, Eric Dumazet wrote:
+> On Tue, Oct 10, 2023 at 6:51 PM Matthieu Baerts <matttbe@kernel.org> wrote:
+> >
+> > Hi Naresh,
+> >
+> > On 09/10/2023 22:43, Naresh Kamboju wrote:
+> > > On Mon, 9 Oct 2023 at 18:46, Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > >>
+> > >> This is the start of the stable review cycle for the 6.1.57 release.
+> > >> There are 162 patches in this series, all will be posted as a response
+> > >> to this one.  If anyone has any issues with these being applied, please
+> > >> let me know.
+> > >>
+> > >> Responses should be made by Wed, 11 Oct 2023 13:00:55 +0000.
+> > >> Anything received after that time might be too late.
+> > >>
+> > >> The whole patch series can be found in one patch at:
+> > >>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.57-rc1.gz
+> > >> or in the git tree and branch at:
+> > >>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> > >> and the diffstat can be found below.
+> > >>
+> > >> thanks,
+> > >>
+> > >> greg k-h
+> > >
+> > >
+> > > The following kernel warnings were noticed several times on arm x15 devices
+> > > running stable-rc 6.1.57-rc1 while running  selftests: net: mptcp_connect.sh
+> > > and netfilter: nft_fib.sh.
+> > >
+> > > The possible unsafe locking scenario detected.
+> > >
+> > > FYI,
+> > > Stable-rc/ linux.6.1.y kernel running stable/ linux.6.5.y selftest in this case.
+> > >
+> > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > >
+> > > kselftest: Running tests in net/mptcp
+> >
+> > Thank you for having reported the issue and having added MPTCP ML in Cc!
+> >
+> > Just to avoid confusions: the "WARNING" you shared when running
+> > 'mptcp_connect.sh' selftest appeared before creating the first MPTCP
+> > connection. It looks like there is no reference to MPTCP in the
+> > calltraces. Also, because you have the same issue with nft_fib.sh, I
+> > would say that this issue is not linked to MPTCP but rather to a recent
+> > modification in the IPv6 stack.
+> >
+> > By chance, did you start a "git bisect" to identify the commit causing
+> > this issue?
+> >
+> >
+> 
+> I think stable teams missed to backport
+> 
+> commit c486640aa710ddd06c13a7f7162126e1552e8842
+> Author: Eric Dumazet <edumazet@google.com>
+> Date:   Mon Mar 13 20:17:32 2023 +0000
+> 
+>     ipv6: remove one read_lock()/read_unlock() pair in rt6_check_neigh()
+> 
+>     rt6_check_neigh() uses read_lock() to protect n->nud_state reading.
+> 
+>     This seems overkill and causes false sharing.
+> 
+>     Signed-off-by: Eric Dumazet <edumazet@google.com>
+>     Reviewed-by: David Ahern <dsahern@kernel.org>
+>     Reviewed-by: Martin KaFai Lau <martin.lau@kernel.org>
+>     Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 
---1djJUpxMrj0Eh3vK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ah, didn't know we needed that, now queued up, thanks!
 
-Hi Guenter,
-
-> > > Reference to Andrew's previous proposal:
-> > > https://lore.kernel.org/all/20200914122811.3295678-1-andrew@aj.id.au/
-> >=20
-> > I do totally agree with Guenter's comment[1], though. This just affects
-> > a few drivers and this patch is way too intrusive for the I2C core. The
-> > later suggested prepare_device() callback[2] sounds better to me. I
-> > still haven't fully understood why this all cannot be handled in the
-> > driver's probe. Could someone give me a small summary about that?
-> >=20
->=20
-> Lots of PMBus devices have the same problem, we have always handled
-> it in PMBus drivers by implementing local wait code, and your references
-> point that out.
-
-I am confused now. Reading your reply:
-
-"I am not sure if an implementation in the i2c core is desirable. It
-looks quite invasive to me, and it won't solve the problem for all
-devices since it isn't always a simple "wait <n> microseconds between
-accesses". For example, some devices may require a wait after a write
-but not after a read, or a wait only after certain commands (such as
-commands writing to an EEPROM)."
-
-I get the impression you don't prefer to have a generic mechanism in the
-I2C core. This I share. Your response now sounds like you do support
-that idea now?
-
-> What other summary are you looking for ?
-
-What the actual problem is with these devices. The cover letter only
-mentions "issues with small command turn-around times". More details
-would be nice. Is it between transfers? Or even between messages within
-one transfer? Has it been tried to lower the bus frequency? Stuff like
-this.
-
-> On a side note, if anyone plans to implement the prepare_device() callbac=
-k,
-> please make sure that it covers all requirements. It would be unfortunate
-> if such a callback was implemented if that would still require per-driver
-> code (besides the callback).
-
-Is there a list of that somewhere? Or does it mean going through all the
-drivers and see what they currently do?
-
-Regards,
-
-   Wolfram
-
-
---1djJUpxMrj0Eh3vK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUlnroACgkQFA3kzBSg
-Kbbh1hAAobbv+zDV1isP1VmO8awucHkYyvQ8LVnS+Uk1vKJZJjDR7UZHJhnm0VDK
-iTZBj9bnFfwoGzSEA5qmsb6EClU/NE9e0I/zrAvLK8Qhl5qB7vE6iwCe7VwZCacK
-ckl9b7lW/4rB/d/Rp4c8dhpaMIiOV/iimgEAbQJlud+ojwZWTOIWJ0mE+1OlO+as
-m9tyYspGMUIa3APMfaL7hmuNTQC8alEenf/rrPcbHhUKEfu9MmS1fWbXgMgJHgse
-IeTBCDf0lurUO/NdnCGxgfG5aQHZ37EwdaDETzxtob0uWgc2IsUAx//CIxG3VN0J
-13j3QnOwNW3GRmiwiHJgP5Ij896pNaffOKdWz79gSmqKbjaJZ7Tj4FC1IPq9cWLZ
-zf/P0yvysvHC1w8mFFQ3oCJum+VPsK7y9AK/yzxDxSXEq10jUdLCPPoZ4+smhtls
-DcfND9JE2WSpH8Gz0iaeEn629LZlT852KPLFLA6M5sBtHc0w4beT99EL1f3bxn+9
-GSBWEjh5/IHX3YKfWwnjeuDme3OVxc4+eUOmV59i4xjvYo4t9N5qcGy7CucuOFEo
-bz5AcKVQNEIwC3liRRZLzy4dQLHEVlRMuNsk1Rk+BbtTdLygSYmqTVH96j2r5v41
-JuspoeQn8WmdTyD/LnkoZYtqxR6F+HynPJXs4/IgHMRzBW/D0ks=
-=9HLu
------END PGP SIGNATURE-----
-
---1djJUpxMrj0Eh3vK--
+greg k-h
