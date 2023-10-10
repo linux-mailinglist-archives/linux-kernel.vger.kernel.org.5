@@ -2,55 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9FED7BF08E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 04:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B5827BF08F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 04:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441808AbjJJCAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 22:00:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39578 "EHLO
+        id S1378945AbjJJCBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 22:01:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378945AbjJJCAB (ORCPT
+        with ESMTP id S233869AbjJJCBR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 22:00:01 -0400
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EAA28F;
-        Mon,  9 Oct 2023 18:59:50 -0700 (PDT)
-X-UUID: 5f6a0846977943199b4452c4cbcdd13c-20231010
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:3bee9790-88c2-4661-aca1-cf7c02a62ad7,IP:15,
-        URL:0,TC:0,Content:-25,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACT
-        ION:release,TS:-15
-X-CID-INFO: VERSION:1.1.32,REQID:3bee9790-88c2-4661-aca1-cf7c02a62ad7,IP:15,UR
-        L:0,TC:0,Content:-25,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-        N:release,TS:-15
-X-CID-META: VersionHash:5f78ec9,CLOUDID:773d9cf0-9a6e-4c39-b73e-f2bc08ca3dc5,B
-        ulkID:231010093340A5656J4H,BulkQuantity:1,Recheck:0,SF:24|17|19|44|102,TC:
-        nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,COL:0,OSI
-        :0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS
-X-UUID: 5f6a0846977943199b4452c4cbcdd13c-20231010
-X-User: yaolu@kylinos.cn
-Received: from localhost.localdomain [(116.128.244.169)] by mailgw
-        (envelope-from <yaolu@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 399756980; Tue, 10 Oct 2023 09:59:38 +0800
-From:   Lu Yao <yaolu@kylinos.cn>
-To:     hare@suse.com
-Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lu Yao <yaolu@kylinos.cn>
-Subject: [PATCH] scsi: aic7xxx: Fix build 'aicasm' warning
-Date:   Tue, 10 Oct 2023 09:59:35 +0800
-Message-Id: <20231010015935.478006-1-yaolu@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+        Mon, 9 Oct 2023 22:01:17 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D0A8F
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 19:01:16 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-3512740906dso20719375ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 19:01:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ieee.org; s=google; t=1696903275; x=1697508075; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=n8W5jicDuFfCto5Rz0a13pdOEWWZtFkes7WHBt5JLjo=;
+        b=PPck21GWL+u2Kz2+xAqPoG+3Njc9DnYMxHPMLqb/wap5zMDkndfy6+58OybjVB5mf9
+         8mg3lhE9YO95n96UZzWFsbwqYH78K/kMiMhSo39XRrDbfq3fd+sGK+8rUhrl31hUl8FS
+         f/KhV6r6je0ihv234UHGQs9Vzs8s0/0isOjog=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696903275; x=1697508075;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=n8W5jicDuFfCto5Rz0a13pdOEWWZtFkes7WHBt5JLjo=;
+        b=KwdkNdaBgms8nTaJfV8kBXHcUKfJEo7iWCZlIWEnPLeAFk2ucJjiMgDoU7b+cvddDu
+         yN3DVgG9RXr+MahGaypegQTBetAAgd609ORreGLjXDwWMh3NnWim0i6Pjln81Pe7nshG
+         GqkDJu5fjIGggSAqSQFwFSMzGQw6ngm9NgLmTvZ+NHb1u02XphdrDxK/xcE6Vev4oe/q
+         HQ4043IOuMd0PNa9tmIQ+t9l6gPIQ9R82mNMt6Yffbxm088/7gt1QoClGGYg/oWrk2Gs
+         zuTVqUiyI5DZX742oUf2TmInki8uUvztdeGkvaSL1Y7a/5pRsaoU7LKHQU/XfFCfLiRH
+         N4JA==
+X-Gm-Message-State: AOJu0YyMdS5MbQpR5He5B8BPseHrc6exme1Q3ngaPelqZt6zI9KISaVE
+        wH04jTTp0Hj4PxbSBeCfeNAwkg==
+X-Google-Smtp-Source: AGHT+IFxEbsxiAkqgad1NR+N5qEc+xJnzBRXuoUOorumGMCjl3dh8xe9qk/x6WqhsQZNVSqcE/TbYw==
+X-Received: by 2002:a05:6e02:1d1a:b0:351:b22:af5c with SMTP id i26-20020a056e021d1a00b003510b22af5cmr19923893ila.32.1696903275665;
+        Mon, 09 Oct 2023 19:01:15 -0700 (PDT)
+Received: from [10.211.55.3] (c-98-61-227-136.hsd1.mn.comcast.net. [98.61.227.136])
+        by smtp.googlemail.com with ESMTPSA id l17-20020a922811000000b003513b7613f3sm3247512ilf.3.2023.10.09.19.01.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Oct 2023 19:01:15 -0700 (PDT)
+Message-ID: <42a24a62-8dba-452c-b460-61ee06171d74@ieee.org>
+Date:   Mon, 9 Oct 2023 21:01:13 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH][next] staging: greybus: Add __counted_by for struct
+ apr_rx_buf and use struct_size()
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <ZSR2O6zGyT/VX6ve@work>
+Content-Language: en-US
+From:   Alex Elder <elder@ieee.org>
+In-Reply-To: <ZSR2O6zGyT/VX6ve@work>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,72 +74,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building with CONFIG_AIC7XXX_BUILD_FIRMWARE=y or
-CONFIG_AIC79XX_BUILD_FIRMWARE=y,  the warning message is as follow:
+On 10/9/23 4:52 PM, Gustavo A. R. Silva wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
+> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> While there, use struct_size() helper, instead of the open-coded
+> version, to calculate the size for the allocation of the whole
+> flexible structure, including of course, the flexible-array member.
+> 
+> This code was found with the help of Coccinelle, and audited and
+> fixed manually.
 
-  aicasm_gram.tab.c:1722:16: warning: implicit declaration of function
-    ‘yylex’ [-Wimplicit-function-declaration]
+Looks good to me, and I like the use of struct_size().
 
-  aicasm_macro_gram.c:68:25: warning: implicit declaration of function
-    ‘mmlex’ [-Wimplicit-function-declaration]
+Reviewed-by: Alex Elder <elder@linaro.org>
 
-  aicasm_scan.l:417:6: warning: implicit declaration of function
-    ‘mm_switch_to_buffer’
-
-  aicasm_scan.l:418:6: warning: implicit declaration of function
-    ‘mmparse’
-
-  aicasm_scan.l:421:6: warning: implicit declaration of function
-    ‘mm_delete_buffer’
-
-The solution is to add the corresponding function declaration to the
-corresponding file.
-
-Signed-off-by: Lu Yao <yaolu@kylinos.cn>
----
- drivers/scsi/aic7xxx/aicasm/aicasm_gram.y       | 1 +
- drivers/scsi/aic7xxx/aicasm/aicasm_macro_gram.y | 1 +
- drivers/scsi/aic7xxx/aicasm/aicasm_scan.l       | 3 +++
- 3 files changed, 5 insertions(+)
-
-diff --git a/drivers/scsi/aic7xxx/aicasm/aicasm_gram.y b/drivers/scsi/aic7xxx/aicasm/aicasm_gram.y
-index 65182ad9cdf8..b1c9ce477cbd 100644
---- a/drivers/scsi/aic7xxx/aicasm/aicasm_gram.y
-+++ b/drivers/scsi/aic7xxx/aicasm/aicasm_gram.y
-@@ -102,6 +102,7 @@ static void add_conditional(symbol_t *symbol);
- static void add_version(const char *verstring);
- static int  is_download_const(expression_t *immed);
- static int  is_location_address(symbol_t *symbol);
-+int yylex();
- void yyerror(const char *string);
- 
- #define SRAM_SYMNAME "SRAM_BASE"
-diff --git a/drivers/scsi/aic7xxx/aicasm/aicasm_macro_gram.y b/drivers/scsi/aic7xxx/aicasm/aicasm_macro_gram.y
-index 8c0479865f04..5c7350eb5b5c 100644
---- a/drivers/scsi/aic7xxx/aicasm/aicasm_macro_gram.y
-+++ b/drivers/scsi/aic7xxx/aicasm/aicasm_macro_gram.y
-@@ -61,6 +61,7 @@
- static symbol_t *macro_symbol;
- 
- static void add_macro_arg(const char *argtext, int position);
-+int mmlex();
- void mmerror(const char *string);
- 
- %}
-diff --git a/drivers/scsi/aic7xxx/aicasm/aicasm_scan.l b/drivers/scsi/aic7xxx/aicasm/aicasm_scan.l
-index c78d4f68eea5..fc7e6c58148d 100644
---- a/drivers/scsi/aic7xxx/aicasm/aicasm_scan.l
-+++ b/drivers/scsi/aic7xxx/aicasm/aicasm_scan.l
-@@ -64,6 +64,9 @@ static char *string_buf_ptr;
- static int  parren_count;
- static int  quote_count;
- static char buf[255];
-+void mm_switch_to_buffer(YY_BUFFER_STATE);
-+void mmparse();
-+void mm_delete_buffer(YY_BUFFER_STATE);
- %}
- 
- PATH		([/]*[-A-Za-z0-9_.])+
--- 
-2.25.1
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>   drivers/staging/greybus/raw.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/greybus/raw.c b/drivers/staging/greybus/raw.c
+> index a00978c8e1d2..b9c6eff7cdc1 100644
+> --- a/drivers/staging/greybus/raw.c
+> +++ b/drivers/staging/greybus/raw.c
+> @@ -29,7 +29,7 @@ struct gb_raw {
+>   struct raw_data {
+>   	struct list_head entry;
+>   	u32 len;
+> -	u8 data[];
+> +	u8 data[] __counted_by(len);
+>   };
+>   
+>   static const struct class raw_class = {
+> @@ -73,7 +73,7 @@ static int receive_data(struct gb_raw *raw, u32 len, u8 *data)
+>   		goto exit;
+>   	}
+>   
+> -	raw_data = kmalloc(sizeof(*raw_data) + len, GFP_KERNEL);
+> +	raw_data = kmalloc(struct_size(raw_data, data, len), GFP_KERNEL);
+>   	if (!raw_data) {
+>   		retval = -ENOMEM;
+>   		goto exit;
 
