@@ -2,136 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71EEE7C42D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 23:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E527C42D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 23:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343876AbjJJVl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 17:41:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45926 "EHLO
+        id S234550AbjJJVnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 17:43:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbjJJVl0 (ORCPT
+        with ESMTP id S229509AbjJJVnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 17:41:26 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD34899
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 14:41:24 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3247cefa13aso5618738f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 14:41:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696974083; x=1697578883; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GMDM/r5CYmcxbaZwoDfjx69JmAy+Zf5G5Pi9db/hUXk=;
-        b=YUyb9drGUbohAEs31d8RuK3255o7ykpc3qKuv3i52j+WsU89zRSz2bKeKQ/essyhhK
-         XEvdG7NTOUmo5spmRybtdQ73Xqtz6b7GjfLyOxMgS+4fS3HT8qzMumAvbZwbOCYURuiv
-         GaThz+x5ZaoeRTpqvu6YRxPWJvrDKtfQ2rpbTDqiWE2JXzhYh6Ma3gSUzfn/9nNz5uVJ
-         d7YGyQGCYyAATi0XXEUex9rAOyfePWrrp29Rn3xTlrdD/XQ5gFxSxikhskhDG27JyR7v
-         dWKfcwaPqEqRyPWOyY81Su0s9Fv47T7Z7hdR85AMH3l/hfmQishQ3Xrmei5tXqxt1YqD
-         2gJA==
+        Tue, 10 Oct 2023 17:43:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 049981FC2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 14:42:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696974175;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7j58jSxoMSjtICjzuYVhVJduEEO2aGmUt8x1byZkixA=;
+        b=UWEg+ReFZeO2RljSv6kmUf9j9gqFubgbZ8AAjlwBkNCz4hqVpzohvQYralmuDupkE6hoDY
+        57hbnBUKwesSiXiGDqOsbaJwBpQPHUpzFZDBW1h/nRUFn3Pd/KtPg95BmQ0zbegNMvseMO
+        /DfFIjMK16hWgqcZ9jGnLQaK6/hUQaI=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-127-lbHA_WKDN12MJr6FUpy6IA-1; Tue, 10 Oct 2023 17:42:54 -0400
+X-MC-Unique: lbHA_WKDN12MJr6FUpy6IA-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3172a94b274so4190275f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 14:42:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696974083; x=1697578883;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GMDM/r5CYmcxbaZwoDfjx69JmAy+Zf5G5Pi9db/hUXk=;
-        b=l6/dEGRRvSMwwzKkOOOEndGIWWu1hlkCE/kftmpknZxbHj+D3YfhdXq+BS8mugfoUa
-         U0kwszlkDQ8WrRMrWpSraK2CjfQlIYhrar7m8AG/sNNG7WSF+0ommUVOH2ey0U/rpEkC
-         z7djbK4CTvJ79HgXQSRmUmr62LT5ojrlOvIH4mrs+BuW37hyS8OWEkIGsVMYLk+7GYx0
-         LoIvESToR/zv8GTGSYFA+J2g3mWQqu6jIjYYQEoaBYgWpBUpmApTRMKfdyHuis08zMOI
-         ajsZVHrN/ZelT7dHSwLUH4BQmiLmubxPTCYNQICgjmGb6mNE996qZqUH3n9h43U3UMy5
-         XYcA==
-X-Gm-Message-State: AOJu0YxKkmwMLmYaijKcX2vvDeED/u5BNboLp8wN700ANwb+oTVQY/Lk
-        MkySen/aQ2iq1PIsliVFtOlbp0Xo6vlUvAzDEiiXCQ==
-X-Google-Smtp-Source: AGHT+IENzJWLhr1WARu69zZqe9X4Db7XpHhpgy9yuJ3Rb/tvLGQ1CJnMjWOpAsfeaHhE6eZOtekV0/eXaI8rq/Zs46I=
-X-Received: by 2002:a5d:4f10:0:b0:316:ee7f:f9bb with SMTP id
- c16-20020a5d4f10000000b00316ee7ff9bbmr17366404wru.65.1696974082824; Tue, 10
- Oct 2023 14:41:22 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696974173; x=1697578973;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7j58jSxoMSjtICjzuYVhVJduEEO2aGmUt8x1byZkixA=;
+        b=GEo0jd/hFFL8jTwojrl+TYNtvSklmMiiHkNn7gJQ5cDZpENHaGoEWX6QakceHbMqCp
+         Yzssnc2UVgdgb+7gmy/fQRdcige4xW1/CA/q1yD/Q3MB0RKh3nkBO1HNFvbfCZwvGwU5
+         iKJuCZ6vNXOOD3leo+dJw5tzq4M1kwhaN3Gi8Ywz1fkCIY4LSUSHeUYFpYcZdzTaODos
+         WdvHSXEe5/yF6UGruMmturcbH4MxqSp8D8gATQWWHI3TlefukXDvXiEPygiqpYjhOcu+
+         uaiA0VLsKhvXgx52zVRlqCxE/Kw7riPPPNKlNkRm67C4n9C4rkKXu5J5DOCWtKqCKvFk
+         PGow==
+X-Gm-Message-State: AOJu0YwiZhHh4Hm8CRaPIKLrxoTxBajS7UyhZI8n+FSWd+ZU5uk2whYP
+        N+mMI3uPjZctkpB5QR0b45vikNnzMsZZ1dzrcD+JjQHP4RaHMf6lqULAuteY5BJXPkGFDaExilc
+        oJlJde8QZCPbrLvonswwnibrP
+X-Received: by 2002:a5d:4486:0:b0:320:8291:5605 with SMTP id j6-20020a5d4486000000b0032082915605mr16776333wrq.2.1696974173621;
+        Tue, 10 Oct 2023 14:42:53 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHvlJv9piqdjwUmmSzkx4bf0GnL2+t+076ipCDe5oxu2XEBxAvFC4zjoEvDDXmhVt7SWixiKg==
+X-Received: by 2002:a5d:4486:0:b0:320:8291:5605 with SMTP id j6-20020a5d4486000000b0032082915605mr16776313wrq.2.1696974173219;
+        Tue, 10 Oct 2023 14:42:53 -0700 (PDT)
+Received: from redhat.com ([2a06:c701:73d2:bf00:e379:826:5137:6b23])
+        by smtp.gmail.com with ESMTPSA id bv2-20020a0560001f0200b0032d09f7a713sm2878219wrb.18.2023.10.10.14.42.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 14:42:52 -0700 (PDT)
+Date:   Tue, 10 Oct 2023 17:42:49 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Alexander Graf <graf@amazon.com>
+Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Olivia Mackall <olivia@selenic.com>,
+        Petre Eftime <petre.eftime@gmail.com>,
+        Erdem Meydanlli <meydanli@amazon.nl>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH v5] misc: Add Nitro Secure Module driver
+Message-ID: <20231010174115-mutt-send-email-mst@kernel.org>
+References: <20231010191815.13641-1-graf@amazon.com>
+ <20231010163151-mutt-send-email-mst@kernel.org>
+ <aa782a43-ad4a-455d-bc14-a6a6bb4022e0@amazon.com>
 MIME-Version: 1.0
-References: <20231010-strncpy-drivers-net-ethernet-intel-igbvf-netdev-c-v1-1-69ccfb2c2aa5@google.com>
- <5dc78e2f-62c1-083a-387f-9afabac02007@intel.com>
-In-Reply-To: <5dc78e2f-62c1-083a-387f-9afabac02007@intel.com>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Tue, 10 Oct 2023 14:41:10 -0700
-Message-ID: <CAFhGd8ppobxMnvrMT4HrRkf0LvHE1P-utErp8Tk22Fb9OO=8Rw@mail.gmail.com>
-Subject: Re: [PATCH] igbvf: replace deprecated strncpy with strscpy
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
-Cc:     Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aa782a43-ad4a-455d-bc14-a6a6bb4022e0@amazon.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 2:20=E2=80=AFPM Jesse Brandeburg
-<jesse.brandeburg@intel.com> wrote:
->
-> On 10/10/2023 2:12 PM, Justin Stitt wrote:
-> > `strncpy` is deprecated for use on NUL-terminated destination strings
-> > [1] and as such we should prefer more robust and less ambiguous string
-> > interfaces.
-> >
-> > We expect netdev->name to be NUL-terminated based on its usage with
-> > `strlen` and format strings:
-> > |       if (strlen(netdev->name) < (IFNAMSIZ - 5)) {
-> > |               sprintf(adapter->tx_ring->name, "%s-tx-0", netdev->name=
-);
-> >
-> > Moreover, we do not need NUL-padding as netdev is already
-> > zero-allocated:
-> > |       netdev =3D alloc_etherdev(sizeof(struct igbvf_adapter));
-> > ...
-> > alloc_etherdev() -> alloc_etherdev_mq() -> alloc_etherdev_mqs() ->
-> > alloc_netdev_mqs() ...
-> > |       p =3D kvzalloc(alloc_size, GFP_KERNEL_ACCOUNT | __GFP_RETRY_MAY=
-FAIL);
-> >
-> > Considering the above, a suitable replacement is `strscpy` [2] due to
-> > the fact that it guarantees NUL-termination on the destination buffer
-> > without unnecessarily NUL-padding.
-> >
-> > Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#st=
-rncpy-on-nul-terminated-strings [1]
-> > Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en=
-.html [2]
-> > Link: https://github.com/KSPP/linux/issues/90
-> > Cc: linux-hardening@vger.kernel.org
-> > Signed-off-by: Justin Stitt <justinstitt@google.com>
-> > ---
->
-> Thanks Justin for these patches, please make sure you mark the subject
-> line as per the netdev rules:
-> [PATCH net-next v1] etc etc
+On Tue, Oct 10, 2023 at 11:29:00PM +0200, Alexander Graf wrote:
+> 
+> On 10.10.23 22:34, Michael S. Tsirkin wrote:
+> > 
+> > On Tue, Oct 10, 2023 at 07:18:15PM +0000, Alexander Graf wrote:
+> > > When running Linux inside a Nitro Enclave, the hypervisor provides a
+> > > special virtio device called "Nitro Security Module" (NSM). This device
+> > > has 3 main functions:
+> > > 
+> > >    1) Provide attestation reports
+> > >    2) Modify PCR state
+> > >    3) Provide entropy
+> > > 
+> > > This patch adds a driver for NSM that exposes a /dev/nsm device node which
+> > > user space can issue an ioctl on this device with raw NSM CBOR formatted
+> > > commands to request attestation documents, influence PCR states, read
+> > > entropy and enumerate status of the device. In addition, the driver
+> > > implements a hwrng backend.
+> > > 
+> > > Originally-by: Petre Eftime <petre.eftime@gmail.com>
+> > > Signed-off-by: Alexander Graf <graf@amazon.com>
+> > Could some documentation about how this device works be posted on virtio
+> > list please?
+> 
+> 
+> Sure! What is your preferred method to provide this? :)
+> 
+> Alex
+> 
 
-Sure, I'll resend!
+Posting patch adding a text file with it to virtio-comment would be best.
 
->
-> I'd also prefer they came in as part of one series with a good cover
-> letter, at the very least for the Intel drivers, and you probably could
-> combine any others (netdev) together up to the 15 patch limit.
+> 
+> 
+> 
+> Amazon Development Center Germany GmbH
+> Krausenstr. 38
+> 10117 Berlin
+> Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+> Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+> Sitz: Berlin
+> Ust-ID: DE 289 237 879
+> 
+> 
 
-Got it :)
-
->
-> Please mention how you found these issues, via automated tool or via
-> coccinelle script, manual grepping, etc?
-
-rg "strncpy\(" > pain.txt
-
->
-> Thanks,
-> Jesse
->
