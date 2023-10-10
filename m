@@ -2,95 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CB6A7C030A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 19:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A717C030D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 19:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343502AbjJJRyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 13:54:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54950 "EHLO
+        id S1343507AbjJJRzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 13:55:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233964AbjJJRyE (ORCPT
+        with ESMTP id S233489AbjJJRzQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 13:54:04 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20F7399
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 10:54:02 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40651a726acso55203335e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 10:54:02 -0700 (PDT)
+        Tue, 10 Oct 2023 13:55:16 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E547E94
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 10:55:14 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2bffd6c1460so71264311fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 10:55:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=plexity-net.20230601.gappssmtp.com; s=20230601; t=1696960440; x=1697565240; darn=vger.kernel.org;
+        d=joelfernandes.org; s=google; t=1696960513; x=1697565313; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nU4LX7gzUrwftw4dBN6chmZzToLhmhcRecLCdbJFz8c=;
-        b=KRWHxRAKsJ9gWOPJbcKjIwSu+8yArSECmU+SeVl/idY58tTkDDNnyL2baW2ooxrTIz
-         j+hxu9hv4TpM22GgeoPxeaEaQIpzFsNmrUXrudO1gClcWOsPMEoJHk/CIovNsUdzzg93
-         emN5h8yWqE3DUVznC13sJUgT6P9Vm4D1erl1SrvX5yvY2e93POGy1tNhmsdziXlCspnm
-         uJbX5EZa3HU7/YGHtpIz5p2faEu+PEvKXKQ9jygsiwtYb5Y+ByAOWDMsSrs9E9mQgbE9
-         e6BS264Md7o0b5vkFE3Lpt6w97klYUdhVh2UUHQ60CTjGn1BUFRn3ApwWpuASbd2DkW2
-         qR1A==
+        bh=B8+Lz5VjZyLQFcPIUwiXiRLWaHkDX/u4z27NHP1/09Y=;
+        b=BEkB+iJSg0DKcuJa76L1PK9SUtKZ+56q8YgUOoXv/kChwYw49atO9oFj5jhw39Ghea
+         9tDJLQIzMRqs2OEW6xcZj4wy3d5xkYVDI2eZLBA5+LRVuf1vebFLWAPF5P2gL8dwjgKD
+         /SBwn0zSflSUONfqF3jfYYR7LDZoHcATW37sk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696960440; x=1697565240;
+        d=1e100.net; s=20230601; t=1696960513; x=1697565313;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nU4LX7gzUrwftw4dBN6chmZzToLhmhcRecLCdbJFz8c=;
-        b=MtHSfj3UEunB6YOCseOhvCGNvkdW64tI5K/Kz2kz/pkhyqLcpf1fK0ljsGsxLvvhJ6
-         Q+lPn/pNIROSys2/Xpb6VV7K8aJZFjragGRZn6dHTQJGUjMLkk7EMgHtCHMEA83QUMq8
-         0T6IpCTOCxIdi9373ELLJEXAWr5muoYKwRMEoLH0FvTm84mR99B6n5+xLWoltIcL7ZAm
-         6iDIUKzIBPBwHNFXk5UrGg9p/snNUqWYVUUvAMsZD5V8mqNve9SbECSiFKTW5AUYQgk0
-         cHGM2jmRYt8mfzs6cgWwhSi+5b9rI3vZLEEUj9AeQYOjm3CONm2MQLNjrgNu/Ly7c8SD
-         pCuQ==
-X-Gm-Message-State: AOJu0Yxv7HADMu/q0aTiYidmaWCdR8ufuUuZ7CjDhzR51+Bwo4BBip2p
-        To8bSo+MLEtAITT4obr+shk8oU6oSOAdnRaLTshS+Q==
-X-Google-Smtp-Source: AGHT+IHO1eFWk0KYIDBG6wm+v4RZPBvfKTS0MdKA4W6ZNtmZcMnyjrycrl0Rub26vR/CfwzWwVmTJBUtnfGQaBjR65Q=
-X-Received: by 2002:a05:6000:613:b0:329:6d66:85c0 with SMTP id
- bn19-20020a056000061300b003296d6685c0mr13277018wrb.43.1696960440347; Tue, 10
- Oct 2023 10:54:00 -0700 (PDT)
+        bh=B8+Lz5VjZyLQFcPIUwiXiRLWaHkDX/u4z27NHP1/09Y=;
+        b=dmbzCt6LwN86fzVHa4yGB70q01ggRp4PSe/Q3TQ3yd/JNCVCRXSX3jf4EIazZ5OQ0v
+         ikaNIL11L+v/ybtdUz2EtBh2iTsd6oULRZKsQEvb73OATrYUkWk/qZJsW9CWTwDMccj6
+         nNkExcOBmTBe+DwngzdPNQR2hGkOmLPhEduFXC2GPyktJ5Hyh4AGgZgWkA2sjWgii1oq
+         +076N4Rtj94LImbSLmp8N0qtZR7ZgaPmJ+R2l/3FPtzManAr20ChpG9+W7a+mDFzu+Z2
+         CpCQJn+mb8eOI5DLKkXnhAnGFsXN6FlWwsOQ9iLqK1c+YhqvFrY7MA+XUjhKHMXDQnRF
+         wMGw==
+X-Gm-Message-State: AOJu0YyVa608SmuWL6Z8sgurtctKztTAcRSE2qtiCv/24jFdw2l0PnKK
+        dE2OjtUiASYPU3ycZ+2AKJH8w9hlfDrRSqv9dzXGpw==
+X-Google-Smtp-Source: AGHT+IH36Z6zQf7WJgiyX00BpD00ZfG+xcbgfTSUuZyCv2ZaTLuRfCvQY/qme+DtZ2tuxnXGoGtuyNnDrLo4eUXJlEQ=
+X-Received: by 2002:a2e:9b11:0:b0:2c2:9705:c478 with SMTP id
+ u17-20020a2e9b11000000b002c29705c478mr14706221lji.13.1696960511981; Tue, 10
+ Oct 2023 10:55:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <m334yivh1f.fsf@t19.piap.pl> <CACRpkdZ+7YFYNPXuiFU=JRZYOia5V+145dpRrLN+LTuHE5RuUA@mail.gmail.com>
-In-Reply-To: <CACRpkdZ+7YFYNPXuiFU=JRZYOia5V+145dpRrLN+LTuHE5RuUA@mail.gmail.com>
-From:   Deepak Saxena <dsaxena@plexity.net>
-Date:   Tue, 10 Oct 2023 10:53:48 -0700
-Message-ID: <CAC4N5EPWQw9dCEeOLgS_rfn-hc+dbNoOXqTvCc7sue5rRVOsCQ@mail.gmail.com>
-Subject: Re: [RFC] IXP4XX MAINTAINERS entries
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     =?UTF-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linusw@kernel.org>,
-        Imre Kaloz <kaloz@openwrt.org>
+References: <20231005161727.1855004-1-joel@joelfernandes.org>
+ <20231006200129.GJ36277@noisy.programming.kicks-ass.net> <20231008163912.GA2338308@google.com>
+ <ZSPjIwWxSdKAsKZD@gmail.com>
+In-Reply-To: <ZSPjIwWxSdKAsKZD@gmail.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Tue, 10 Oct 2023 13:55:00 -0400
+Message-ID: <CAEXW_YSJTShQoOCdTOHamatV2VFFpK5=GZ40=he5Egz5TRBMkg@mail.gmail.com>
+Subject: Re: [PATCH RFC] sched/fair: Avoid unnecessary IPIs for ILB
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Vineeth Pillai <vineethrp@google.com>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Hsin Yi <hsinyi@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acked-by: Deepak Saxena <dsaxena@plexity.net>
+On Mon, Oct 9, 2023 at 7:25=E2=80=AFAM Ingo Molnar <mingo@kernel.org> wrote=
+:
+>
+>
+> * Joel Fernandes <joel@joelfernandes.org> wrote:
+>
+> > > > Fixes: 7fd7a9e0caba ("sched/fair: Trigger nohz.next_balance updates=
+ when a CPU goes NOHZ-idle")
+> > >
+> > > Hurm.. does this really warrant a Fixes tag? Afaict nothing is curren=
+tly
+> > > broken -- this is a pure optimization question, no?
+> >
+> > IMHO it is a breakage as it breaks NOHZ -- a lot of times the ILB kicks
+> > back the CPU stopping the tick out of idle (effectively breaking NOHZ).
+> > The large number of IPIs also wrecks power and it happens only on 6.1 a=
+nd
+> > after. Having the fixes tag means it will also goto all stable kernels =
+>=3D
+> > 6.1. Hope that sounds reasonable and thank you for taking a look!
+>
+> So it's basically a fix of a NOHZ performance regression, introduced by
+> 7fd7a9e0caba or so, correct?
 
+Yes.
 
-On Tue, Oct 10, 2023 at 7:02=E2=80=AFAM Linus Walleij <linus.walleij@linaro=
-.org> wrote:
+> As long as the fixes have a good hope of being backported with a low amou=
+nt
+> of overhead, a Fixes: tag for a ~2 years old performance regression is
+> unusual but not unprecedented.
 >
-> On Tue, Oct 10, 2023 at 1:44=E2=80=AFPM Krzysztof Ha=C5=82asa <khalasa@pi=
-ap.pl> wrote:
->
-> > Are you OK with the following?
->
-> I'm sad about you stepping down, IXP4xx has a mean time before failure
-> of 60 years and we've only done 20 years yet! ;)
->
-> > If so, perhaps you can pick it up?
-> > Or state your Ack, or something :-)
->
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
->
-> I sent a pull request for IXP4xx today already, so just send
-> this to soc@kernel.org for direct application.
->
-> Yours,
-> Linus Walleij
+> We just need to make sure we don't put too much of a burden on the
+> shoulders of -stable maintainers ...
+
+Sure, that sounds good. After we upstream, I am happy to assist in any
+stable backporting work related to this as well. In any case, I have
+to backport it to ChromeOS kernels which are based on stable. There's
+only the 6.1 stable kernel at the moment that is affected.
+
+thanks,
+
+ - Joel
