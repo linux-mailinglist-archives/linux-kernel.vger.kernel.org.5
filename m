@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E757BF2FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 08:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E237BF303
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 08:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442254AbjJJG3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 02:29:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43240 "EHLO
+        id S1442262AbjJJG3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 02:29:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442233AbjJJG3Q (ORCPT
+        with ESMTP id S1442233AbjJJG3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 02:29:16 -0400
+        Tue, 10 Oct 2023 02:29:38 -0400
 Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E95A791;
-        Mon,  9 Oct 2023 23:29:14 -0700 (PDT)
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39A06bmO016239;
-        Tue, 10 Oct 2023 08:28:56 +0200
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA5EA9F;
+        Mon,  9 Oct 2023 23:29:37 -0700 (PDT)
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39A0OEOY030835;
+        Tue, 10 Oct 2023 08:29:12 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
         message-id:date:mime-version:subject:to:cc:references:from
         :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=ygQRlf3Hn9wsw07l8Czu/bcaaMX5S5BP/kxw/s8CccE=; b=QN
-        F6Y69xofXZpvB6tOhxcu/nE9KGtYsGNEfkm7/XmIWRbb3yXQ/72bbYx9RIcG95gp
-        ecifLHDfsSd43j44zUkAscjk3HiOzCh48Mlr1CFNL/eEsTFcdPNtoJ4iWfDLW91K
-        BLUNNl0GoHHoAhzvjgX1A03T8PyysGWnhGw19my9OEFL/8YvMNZl6AhohsJH/2G3
-        QnRlmKPYeiA4dJYI2WO24KA+t+31VW+hSgML4Q9MnvXd0CZf3V/XwThsf1HiwvzR
-        bw3rxGofdg2ezMVBDaglRGD9Jj5O5X3iI4UsaCgPyNLmyqStxxmwqkWg8rrJfYk8
-        c0V6CyggZgRaSwJWXPjA==
+        selector1; bh=nXW3qRlXx4bi+QU4+EuXILrIzXmfut+QZKeJU9II6o0=; b=eV
+        Ks8hBCCJE6gA0oirU31QLcG1Pg9JvSZsrDI/ZetyZQw0wrHCWzA1IIlIlAVO4YCL
+        ZCUDnJU9bFA0mDszRmKxTZNm84d0wdTN6HJzccj/Yh4jonH0LMV7oeCcphn3ra+E
+        y5U9jAZSwuH2LrZN+EVaaS/UKfWucb1X9kWbf9P/d1mr06DLfB9F9DfJUmeop/cw
+        7LLjyF5wGR3aNA6XWuyIsNl0667BqUNxHnmgJkVAlpsVS7MkdNp860MpzkfiCauU
+        vxKKdvmeOskyvo7OoX5zMFvawnh+vKUjkxhVMSidLzCh0onn12ZHWS8hW3YvrviA
+        G2Ropo4st8gW+XAmCdFg==
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3tkhf7gbq0-1
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3tkhfe0bu5-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 10 Oct 2023 08:28:56 +0200 (MEST)
+        Tue, 10 Oct 2023 08:29:12 +0200 (MEST)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 85CB310005E;
-        Tue, 10 Oct 2023 08:28:55 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 59736100058;
+        Tue, 10 Oct 2023 08:29:11 +0200 (CEST)
 Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3AA2E212319;
-        Tue, 10 Oct 2023 08:28:55 +0200 (CEST)
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 529002128AA;
+        Tue, 10 Oct 2023 08:29:11 +0200 (CEST)
 Received: from [10.201.20.38] (10.201.20.38) by SHFDAG1NODE1.st.com
  (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 10 Oct
- 2023 08:28:54 +0200
-Message-ID: <b6f79025-2257-f739-7e12-4e18cb4c2048@foss.st.com>
-Date:   Tue, 10 Oct 2023 08:28:54 +0200
+ 2023 08:29:10 +0200
+Message-ID: <f7b1dfe5-5efd-54d8-b651-b1fd5c2ab291@foss.st.com>
+Date:   Tue, 10 Oct 2023 08:29:10 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [PATCH] remoteproc: st: Use device_get_match_data()
+Subject: Re: [PATCH] watchdog: st_lpc: Use device_get_match_data()
 Content-Language: en-US
 To:     Rob Herring <robh@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>
 CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20231009211356.3242037-10-robh@kernel.org>
+        <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20231009211356.3242037-18-robh@kernel.org>
 From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
-In-Reply-To: <20231009211356.3242037-10-robh@kernel.org>
+In-Reply-To: <20231009211356.3242037-18-robh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.201.20.38]
@@ -84,57 +84,52 @@ On 10/9/23 23:13, Rob Herring wrote:
 > 
 > Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
->  drivers/remoteproc/st_remoteproc.c | 14 ++++----------
->  1 file changed, 4 insertions(+), 10 deletions(-)
+>  drivers/watchdog/st_lpc_wdt.c | 11 ++---------
+>  1 file changed, 2 insertions(+), 9 deletions(-)
 > 
-> diff --git a/drivers/remoteproc/st_remoteproc.c b/drivers/remoteproc/st_remoteproc.c
-> index e3ce01d98b4c..b0638f984842 100644
-> --- a/drivers/remoteproc/st_remoteproc.c
-> +++ b/drivers/remoteproc/st_remoteproc.c
-> @@ -16,10 +16,9 @@
+> diff --git a/drivers/watchdog/st_lpc_wdt.c b/drivers/watchdog/st_lpc_wdt.c
+> index d2aa43c00221..4c5b8d98a4f3 100644
+> --- a/drivers/watchdog/st_lpc_wdt.c
+> +++ b/drivers/watchdog/st_lpc_wdt.c
+> @@ -15,7 +15,6 @@
 >  #include <linux/mfd/syscon.h>
 >  #include <linux/module.h>
 >  #include <linux/of.h>
-> -#include <linux/of_address.h>
-> -#include <linux/of_device.h>
->  #include <linux/of_reserved_mem.h>
+> -#include <linux/of_platform.h>
 >  #include <linux/platform_device.h>
-> +#include <linux/property.h>
 >  #include <linux/regmap.h>
->  #include <linux/remoteproc.h>
->  #include <linux/reset.h>
-> @@ -341,7 +340,6 @@ static int st_rproc_parse_dt(struct platform_device *pdev)
->  static int st_rproc_probe(struct platform_device *pdev)
+>  #include <linux/watchdog.h>
+> @@ -42,7 +41,7 @@ struct st_wdog {
+>  	void __iomem *base;
+>  	struct device *dev;
+>  	struct regmap *regmap;
+> -	struct st_wdog_syscfg *syscfg;
+> +	const struct st_wdog_syscfg *syscfg;
+>  	struct clk *clk;
+>  	unsigned long clkrate;
+>  	bool warm_reset;
+> @@ -150,7 +149,6 @@ static void st_clk_disable_unprepare(void *data)
+>  static int st_wdog_probe(struct platform_device *pdev)
 >  {
 >  	struct device *dev = &pdev->dev;
 > -	const struct of_device_id *match;
->  	struct st_rproc *ddata;
 >  	struct device_node *np = dev->of_node;
->  	struct rproc *rproc;
-> @@ -349,19 +347,15 @@ static int st_rproc_probe(struct platform_device *pdev)
->  	int enabled;
->  	int ret, i;
->  
-> -	match = of_match_device(st_rproc_match, dev);
-> -	if (!match || !match->data) {
-> -		dev_err(dev, "No device match found\n");
-> -		return -ENODEV;
-> -	}
-> -
->  	rproc = rproc_alloc(dev, np->name, &st_rproc_ops, NULL, sizeof(*ddata));
->  	if (!rproc)
+>  	struct st_wdog *st_wdog;
+>  	struct regmap *regmap;
+> @@ -173,12 +171,7 @@ static int st_wdog_probe(struct platform_device *pdev)
+>  	if (!st_wdog)
 >  		return -ENOMEM;
 >  
->  	rproc->has_iommu = false;
->  	ddata = rproc->priv;
-> -	ddata->config = (struct st_rproc_config *)match->data;
-> +	ddata->config = (struct st_rproc_config *)device_get_match_data(dev);
-> +	if (!ddata->config)
-> +		goto free_rproc;
+> -	match = of_match_device(st_wdog_match, dev);
+> -	if (!match) {
+> -		dev_err(dev, "Couldn't match device\n");
+> -		return -ENODEV;
+> -	}
+> -	st_wdog->syscfg	= (struct st_wdog_syscfg *)match->data;
+> +	st_wdog->syscfg	= (struct st_wdog_syscfg *)device_get_match_data(dev);
 >  
->  	platform_set_drvdata(pdev, rproc);
->  
-
+>  	base = devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(base))
 
 Reviewed-by: Patrice Chotard <patrice.chotard@foss.st.com>
 
