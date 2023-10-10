@@ -2,87 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA52D7BFB1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6587BFB1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231722AbjJJMTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 08:19:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35192 "EHLO
+        id S231734AbjJJMUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 08:20:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231681AbjJJMTq (ORCPT
+        with ESMTP id S231714AbjJJMUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 08:19:46 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D90EBAF;
-        Tue, 10 Oct 2023 05:19:45 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 06E3366072E7;
-        Tue, 10 Oct 2023 13:19:43 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696940384;
-        bh=YFh6qAUpCGl4Tk3sMb7K34FQqqhAH7T1fXGALRzD3k0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ZtH63OGKpty6eflEjW+Hc+DyiqtTtvDe+vaHEwIHH9UvKBXF2u9qRo1u7LVGPvm+4
-         okBCkmXNPGkAylmlpTOjydnze7Cmncqoo6unKdlJk70vJt9BTiKP9weIGJagqXlBBU
-         7QQjO5KhICVGQkRls9zJ/cx8pTmibuDPCm+GoQ7zBZ0NnnXNpa5SHocOnDMQSOxO3B
-         x5kW8VF+I0jJxII5gEC2UqLHMHerhzI8RkGxsbb8+sagZwHgfdJMuuzhpSOoVSJtpL
-         pSMavBFtR23l6Mxk5EyOfVT4JtAzCRQxg7aR/+eFEdTVRPsnuZ8+V40oKjF83C/irp
-         CC/I9CVrEZhsQ==
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     jic23@kernel.org
-Cc:     lars@metafoo.de, matthias.bgg@gmail.com,
-        angelogioacchino.delregno@collabora.com, ruanjinjie@huawei.com,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, wenst@chromium.org,
-        kernel@collabora.com
-Subject: [PATCH] iio: adc: mt6577_auxadc: Fix kernel panic on suspend
-Date:   Tue, 10 Oct 2023 14:19:40 +0200
-Message-ID: <20231010121940.159696-1-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.42.0
+        Tue, 10 Oct 2023 08:20:07 -0400
+Received: from 1.mo560.mail-out.ovh.net (1.mo560.mail-out.ovh.net [46.105.63.121])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C90859D
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:20:05 -0700 (PDT)
+Received: from director6.ghost.mail-out.ovh.net (unknown [10.108.20.96])
+        by mo560.mail-out.ovh.net (Postfix) with ESMTP id B15B128910
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 12:20:03 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-nrnbc (unknown [10.110.103.46])
+        by director6.ghost.mail-out.ovh.net (Postfix) with ESMTPS id BE0761FEC1;
+        Tue, 10 Oct 2023 12:20:02 +0000 (UTC)
+Received: from RCM-web10.webmail.mail.ovh.net ([151.80.29.18])
+        by ghost-submission-6684bf9d7b-nrnbc with ESMTPSA
+        id OdwFLHJBJWXSDQAAjjGCXQ
+        (envelope-from <jose.pekkarinen@foxhound.fi>); Tue, 10 Oct 2023 12:20:02 +0000
 MIME-Version: 1.0
+Date:   Tue, 10 Oct 2023 15:20:02 +0300
+From:   =?UTF-8?Q?Jos=C3=A9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, seanjc@google.com,
+        skhan@linuxfoundation.org, dave.hansen@linux.intel.com,
+        kvm@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, tglx@linutronix.de,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH] kvm/sev: make SEV/SEV-ES asids configurable
+In-Reply-To: <5c19c422-41ad-430b-664c-15f3e2087922@redhat.com>
+References: <20231010100441.30950-1-jose.pekkarinen@foxhound.fi>
+ <2023101050-scuff-overstay-9b43@gregkh>
+ <5c19c422-41ad-430b-664c-15f3e2087922@redhat.com>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <0c73f3ee77afe22879fbbed8a34f838f@foxhound.fi>
+X-Sender: jose.pekkarinen@foxhound.fi
+Organization: Foxhound Ltd.
+X-Originating-IP: 192.42.116.173
+X-Webmail-UserID: jose.pekkarinen@foxhound.fi
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Ovh-Tracer-Id: 4716113239035455142
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrheehgdeglecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeggfffhvfevufgjfhgfkfigohhitgfgsehtkehjtddtreejnecuhfhrohhmpeflohhsrocurfgvkhhkrghrihhnvghnuceojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqnecuggftrfgrthhtvghrnhepkefhgeduudefgedvleegtddvffeghedvtdekveekjeevvdegiedtfeelhedtiedtnecukfhppeduvdejrddtrddtrddupdduledvrdegvddrudduiedrudejfedpudehuddrkedtrddvledrudeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehiedtpdhmohguvgepshhmthhpohhuth
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit a2d518fbe376 ("iio: adc: mt6577_auxadc: Simplify with device managed function")
-simplified the driver with devm hooks, but wrongly states that the
-platform_set_drvdata(), platform_get_drvdata() are unused after the
-simplification: the driver data is infact used in .suspend() and
-.resume() PM callbacks, currently producing a kernel panic.
+On 2023-10-10 14:40, Paolo Bonzini wrote:
+> On 10/10/23 13:35, Greg KH wrote:
+>> On Tue, Oct 10, 2023 at 01:04:39PM +0300, José Pekkarinen wrote:
+>>> There are bioses that doesn't allow to configure the
+>>> number of asids allocated for SEV/SEV-ES, for those
+>>> cases, the default behaviour allocates all the asids
+>>> for SEV, leaving no room for SEV-ES to have some fun.
+> 
+> In addition to what Greg pointed out (and there are many more cases
+> that have to be checked for errors, including possible overflows), why
+> is it correct to just ignore what's in CPUID?
 
-Reintroduce the call to platform_set_drvdata() in the probe function
+     I'll check if I can use cpuid info to improve this
+for v2, I just noticed my cpu advertises sev_es but
+the kernel doesn't activate it despite of the kvm_amd
+parameter being set, so I tried to fix it this way, but
+any comments or ideas for improvement are welcomed.
 
-Fixes: a2d518fbe376 ("iio: adc: mt6577_auxadc: Simplify with device managed function")
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- drivers/iio/adc/mt6577_auxadc.c | 1 +
- 1 file changed, 1 insertion(+)
+     Thanks!
 
-diff --git a/drivers/iio/adc/mt6577_auxadc.c b/drivers/iio/adc/mt6577_auxadc.c
-index 370b84c2d0ba..3343b54e8e44 100644
---- a/drivers/iio/adc/mt6577_auxadc.c
-+++ b/drivers/iio/adc/mt6577_auxadc.c
-@@ -293,6 +293,7 @@ static int mt6577_auxadc_probe(struct platform_device *pdev)
- 	mt6577_auxadc_mod_reg(adc_dev->reg_base + MT6577_AUXADC_MISC,
- 			      MT6577_AUXADC_PDN_EN, 0);
- 	mdelay(MT6577_AUXADC_POWER_READY_MS);
-+	platform_set_drvdata(pdev, indio_dev);
- 
- 	ret = devm_add_action_or_reset(&pdev->dev, mt6577_power_off, adc_dev);
- 	if (ret)
--- 
-2.42.0
-
+     José.
