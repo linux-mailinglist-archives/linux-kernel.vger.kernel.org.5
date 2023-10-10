@@ -2,93 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE70E7C4214
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 23:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F01897C4217
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 23:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230510AbjJJVLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 17:11:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34428 "EHLO
+        id S232191AbjJJVLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 17:11:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjJJVLV (ORCPT
+        with ESMTP id S229726AbjJJVLk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 17:11:21 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D54F991;
-        Tue, 10 Oct 2023 14:11:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1696972275;
-        bh=TOLAHcDsB9A0TSWPF5YbG778XT2SV4PsMJQ0Bw6LOzE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=I1w1BJTJcUzDsMbzaid08vSxrCcqXYlgj1R5KeksGe45Z8hIRW4zgL6usm0BJzo9H
-         3VVXFoiVE0QH4aA6y/7X25OrjCT5qXwTdmtyEG6XVoWt3PALKS8ovyrddhq7KcgavV
-         CyyUV27ZOMg+gBJMv6C+KE9tSbuOcu4/RIjsuy8dA3bJOhV1qWtAroWxtnK7yrlqR6
-         FsIGwocOJQG7IvQwCcX7CqO+XsezTTaQmVV+5S6N13KlPOfqSB6yu8ZDah5/O+4z/u
-         oWzEHbUhyNKptzL3tEUjUtnkEGDRMHzkZlQlasA8xhGAoNuJKxezjPZ+S81w0K9LE7
-         HKE5sUWTaFEaQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S4pVC1bc7z4xPY;
-        Wed, 11 Oct 2023 08:11:14 +1100 (AEDT)
-Date:   Wed, 11 Oct 2023 08:11:14 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     Luca Ceresoli <luca.ceresoli@bootlin.com>,
-        Rob Herring <robh@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patch in the iio tree
-Message-ID: <20231011081114.2f4d36e4@canb.auug.org.au>
+        Tue, 10 Oct 2023 17:11:40 -0400
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com [209.85.160.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 016F198
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 14:11:35 -0700 (PDT)
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1e5a506de8fso343380fac.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 14:11:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696972295; x=1697577095;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DZWvcvFWT3P94ESec92OyEYUrt6Ss1wkXtTKq4rDYxM=;
+        b=hJkU4dGPQaSeqdcC1ZeRgMu1QTR4d7u4W34cg5KwVrT54I7olbIeStAnGavXPTQcyH
+         HZWCq5MGGVRmFLByvbd08QEmktvGH0r/zo55w6KauyaeCYZyD4tIY4ctfKwl+UXGimdL
+         IUwZJ6u6wrVBYUk0+U3VYkNZaK4cHIJPEtJQxCOc4stOIlH/s4YB0Z3r00Kpz9qSirXc
+         iEIiB9dQ3X5RI/ZvHmztak27OoRGeZKv4ksTHurN4PMZ5rpq6LFW3YmcqF7bczbo+NKF
+         bwVZXELaDMa75OAzEXoeWNiZS+bkimWW6EwpJjWsNkAszpXLri23jveTDjGUekLmeSTy
+         1iPg==
+X-Gm-Message-State: AOJu0Yw/4pNl5AaB7E7sXe2kk9PXxkuqEfKd/e8gA3KphCDcn7ayPzLj
+        lidEZmSae2hXiaqlu4ru40KvCW4jmDr5MMbYLFGGUub+el5B
+X-Google-Smtp-Source: AGHT+IEip8/WB1KxD/i7SHZr01hyD5rCMbCsYc9ryFGNuYKojxiyUdRD1sIhFjIPArPGKDz+S+ZWIZzEf6rVWxHmkHDUZdRTKIGt
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/xjXftEDy7HSiR_BsbbENCdr";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:b79c:b0:1e9:6d19:935b with SMTP id
+ ed28-20020a056870b79c00b001e96d19935bmr1140796oab.5.1696972295375; Tue, 10
+ Oct 2023 14:11:35 -0700 (PDT)
+Date:   Tue, 10 Oct 2023 14:11:35 -0700
+In-Reply-To: <0000000000003ee3610599d20096@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000dc11d106076326fe@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in __media_entity_remove_links
+From:   syzbot <syzbot+0b0095300dfeb8a83dc8@syzkaller.appspotmail.com>
+To:     andreyknvl@google.com, laurent.pinchart@ideasonboard.com,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-usb@vger.kernel.org, mchehab@kernel.org, nogikh@google.com,
+        sakari.ailus@linux.intel.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/xjXftEDy7HSiR_BsbbENCdr
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This bug is marked as fixed by commit:
+media: uvcvideo: Avoid cyclic entity chains due to malformed USB descriptors
 
-Hi all,
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
-The following commit is also in Linus Torvalds' tree as a different commit
-(but the same patch):
+#syz fix: exact-commit-title
 
-  25a0741b55b1 ("dt-bindings: trivial-devices: Fix MEMSIC MXC4005 compatibl=
-e string")
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
 
-This is commit
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=0b0095300dfeb8a83dc8
 
-  19007c629c63 ("dt-bindings: trivial-devices: Fix MEMSIC MXC4005 compatibl=
-e string")
+---
+[1] I expect the commit to be present in:
 
-in Linus' tree.
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
 
---=20
-Cheers,
-Stephen Rothwell
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
 
---Sig_/xjXftEDy7HSiR_BsbbENCdr
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
 
------BEGIN PGP SIGNATURE-----
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUlvfIACgkQAVBC80lX
-0GxrwQf/YzVrLJzBfQiUt4HMR7Mhyia+WYYk/P+rCszFSVtTxpL3tpjjAcMuTw9e
-gJTRWFAvEyZ7JsMuXJ1+08k3211lMgQQaG3FoGwbp6UJAvRl8LCjbHJ4pOm9yIwa
-GsKaCuIEXnOMavufuf7dE/99OxfBQsy/Y6kvzGJP/wYTvCiSNjrKLeK4lr8UJYg1
-63ykZXn79ia4I0ADMrYPie/x7fLGpklxa1Y4VJOZ2rC2sdwIrQKJXU4gKCgx0+e5
-6/yqt0RDsDwf6cw4JxLW2ZnrEx0xis1Sit5e1PJQGncRuc5qJPsSBoZvc9LYz4S5
-6sU4Y8XRn7Pwmm/ffocK9EzIeQ/xpQ==
-=eY7j
------END PGP SIGNATURE-----
-
---Sig_/xjXftEDy7HSiR_BsbbENCdr--
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
