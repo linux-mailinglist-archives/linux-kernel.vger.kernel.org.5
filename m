@@ -2,131 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04DB07BF32F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 08:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 197AA7BF334
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 08:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442252AbjJJGhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 02:37:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41372 "EHLO
+        id S1442285AbjJJGkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 02:40:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377808AbjJJGhl (ORCPT
+        with ESMTP id S1442233AbjJJGk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 02:37:41 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248A297
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 23:37:40 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-53d8320f0easo267494a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 23:37:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696919858; x=1697524658; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6qEr5hJmYY1fgOy3MhtcKL7r31lsPaZ5EkwvA6BoNSY=;
-        b=ZGow+nYiPWfBJDp4Oe/rOzs29QQVOmnLP4uwcS2skiyorn71+WyKXoSDunPNxMTbPA
-         zPFmo4BYGRCRMxLz4zU4s7kKF+ODGiuISJJOIqwqPwBygGUbuaxDIZ4p9JsvTyAzYvN6
-         7kn8xiJWx7UcayAezLSP8vBzhogtYvwhDDGdEPdnfXmdnH1/InGnKVsTeUPNyO0bPAJ1
-         YJjJ1r98nJk5UfUu2OsTipRXr78gqSe4NdV7qCNb7StVcWtUnaO6l7MazE6UoAuc/qG3
-         UeIGOOBu1q3kbfC7bn6wbY0Bd3gVtLuUTXhBGJF6zzHedyL/j9Ln/1gQu4gXuDPJ0oMR
-         hQLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696919858; x=1697524658;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6qEr5hJmYY1fgOy3MhtcKL7r31lsPaZ5EkwvA6BoNSY=;
-        b=rZ0BdPCMGSOVsLdtFS5wJi14pYvWgPU+3SIaNIefZ486flHUe+zSwVTbQMVTfeWP2T
-         8+i+CzS6kGv0aEMHMrxWNW7XVosKPjICXLcZGM8C4mDFbiAReQpAJhb1vf9qjueqyW8u
-         TsyeBJtt3eGJ/9yJHdesdJw2BnJ/PxM6zpprAVDPWLKCwzJlDcNFmvnjvbfbzSVecfuR
-         0R5NO8TZxBTBdS/Fs99z6nooxJwtMTt4v+ShgjJd2HMEogydvb/XQDCaUhfToQ35kjOL
-         e4uam9l583mpzJbdxkCmZZPiT2KYHo6ClQfUpQ0evNwOI711+5hAH3fxLX1p6pP8vtJU
-         a5IA==
-X-Gm-Message-State: AOJu0Yx8g+bJtLdAYXz/Ouua4LbmsHibCRszJtZcuh6gGg/BR80ysbvJ
-        9uWnBJI4Jp4CE4USMGcSEKAAZjJv9uDXTkGaiXU=
-X-Google-Smtp-Source: AGHT+IFHCEd0XMMV4MqQ+7cipfm3nWaWjWubytxfnK7VubiQx/T4b72PkLIZ8DdjJI1fLQo6blq/PlCcgJL7r8Uo6P8=
-X-Received: by 2002:aa7:dcd1:0:b0:537:7811:855f with SMTP id
- w17-20020aa7dcd1000000b005377811855fmr14745001edu.12.1696919858388; Mon, 09
- Oct 2023 23:37:38 -0700 (PDT)
+        Tue, 10 Oct 2023 02:40:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B776E9D
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 23:40:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696920026; x=1728456026;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=qyS78X6kgyN72gNbojsrXZvOfLJcf47vxLUxZFdsRK0=;
+  b=LoQPN92xLkHHzmtauf3fImrS9MOlSodoM0lbjWQ0iVU8bm+aWSTxdQV0
+   98ivgNDUexwFmGjpqk9h/393scAWkPl2WH7wie2U7Q+3Q41JgnLEnZsx5
+   XPUr0MdyrYlTl9Me3cXvo/0d4Cy52KQ0NjOwt1UQ1uFpOwx14xTMihLMo
+   e99vw685bpl6LAozWHUvUnLqi7/eg3N9uvvWfIpIoNFn59Sju9vmYhscz
+   kR0fh4IfFMOfU6BcTwEbyTB+Ur1AHBdN0FyQebhkb/kzzHQDgUMsA9oZ7
+   a1My+dsf0IbkQYGUvrRnNSz4ZJOLwvhc4cYzS7TtjizL3SaKL77vbO1um
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="369390597"
+X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
+   d="scan'208";a="369390597"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 23:40:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="746962821"
+X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
+   d="scan'208";a="746962821"
+Received: from agargas-mobl.ger.corp.intel.com (HELO [10.249.254.164]) ([10.249.254.164])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 23:40:21 -0700
+Message-ID: <c6ce663d-dd69-46a2-7b55-359169b6c03c@linux.intel.com>
+Date:   Tue, 10 Oct 2023 08:40:17 +0200
 MIME-Version: 1.0
-References: <20231004145137.86537-1-ubizjak@gmail.com> <20231004145137.86537-5-ubizjak@gmail.com>
- <CAHk-=wgepFm=jGodFQYPAaEvcBhR3-f_h1BLBYiVQsutCwCnUQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wgepFm=jGodFQYPAaEvcBhR3-f_h1BLBYiVQsutCwCnUQ@mail.gmail.com>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Tue, 10 Oct 2023 08:37:27 +0200
-Message-ID: <CAFULd4aa+xMo57WWmEu8hh0PqPqO5hwQPaEh0w==OA_MARJbkw@mail.gmail.com>
-Subject: Re: [PATCH 4/4] x86/percpu: Use C for percpu read/write accessors
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH drm-misc-next v6 4/6] drm/gpuvm: track/lock/validate
+ external/evicted objects
+Content-Language: en-US
+To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        christian.koenig@amd.com, faith@gfxstrand.net
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20231008233212.13815-1-dakr@redhat.com>
+ <20231008233212.13815-5-dakr@redhat.com>
+From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
+        <thomas.hellstrom@linux.intel.com>
+In-Reply-To: <20231008233212.13815-5-dakr@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 8, 2023 at 8:00=E2=80=AFPM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Wed, 4 Oct 2023 at 07:51, Uros Bizjak <ubizjak@gmail.com> wrote:
-> >
-> > The percpu code mostly uses inline assembly. Using segment qualifiers
-> > allows to use C code instead, which enables the compiler to perform
-> > various optimizations (e.g. propagation of memory arguments). Convert
-> > percpu read and write accessors to C code, so the memory argument can
-> > be propagated to the instruction that uses this argument.
->
-> So apparently this causes boot failures.
->
-> It might be worth testing a version where this:
->
-> > +#define raw_cpu_read_1(pcp)            __raw_cpu_read(, pcp)
-> > +#define raw_cpu_read_2(pcp)            __raw_cpu_read(, pcp)
-> > +#define raw_cpu_read_4(pcp)            __raw_cpu_read(, pcp)
-> > +#define raw_cpu_write_1(pcp, val)      __raw_cpu_write(, pcp, val)
-> > +#define raw_cpu_write_2(pcp, val)      __raw_cpu_write(, pcp, val)
-> > +#define raw_cpu_write_4(pcp, val)      __raw_cpu_write(, pcp, val)
->
-> and this
->
-> > +#ifdef CONFIG_X86_64
-> > +#define raw_cpu_read_8(pcp)            __raw_cpu_read(, pcp)
-> > +#define raw_cpu_write_8(pcp, val)      __raw_cpu_write(, pcp, val)
->
-> was all using 'volatile' in the qualifier argument and see if that
-> makes the boot failure go away.
->
-> Because while the old code wasn't "asm volatile", even just a *plain*
-> asm() is certainly a lot more serialized than a normal access.
->
-> For example, the asm() version of raw_cpu_write() used "+m" for the
-> destination modifier, which means that if you did multiple percpu
-> writes to the same variable, gcc would output multiple asm calls,
-> because it would see the subsequent ones as reading the old value
-> (even if they don't *actually* do so).
->
-> That's admittedly really just because it uses a common macro for
-> raw_cpu_write() and the updates (like the percpu_add() code), so the
-> fact that it uses "+m" instead of "=3Dm" is just a random odd artifact
-> of the inline asm version, but maybe we have code that ends up working
-> just by accident.
 
-FYI: While the emitted asm code is correct, the program flow depends
-on uninitialized value. The compiler is free to remove the whole insn
-stream in this case. Admittedly, we have asm here, so the compiler is
-a bit more forgiving, but it is a slippery slope nevertheless.
+On 10/9/23 01:32, Danilo Krummrich wrote:
+> Currently the DRM GPUVM offers common infrastructure to track GPU VA
+> allocations and mappings, generically connect GPU VA mappings to their
+> backing buffers and perform more complex mapping operations on the GPU VA
+> space.
+>
+> However, there are more design patterns commonly used by drivers, which
+> can potentially be generalized in order to make the DRM GPUVM represent
+> a basis for GPU-VM implementations. In this context, this patch aims
+> at generalizing the following elements.
+>
+> 1) Provide a common dma-resv for GEM objects not being used outside of
+>     this GPU-VM.
+>
+> 2) Provide tracking of external GEM objects (GEM objects which are
+>     shared with other GPU-VMs).
+>
+> 3) Provide functions to efficiently lock all GEM objects dma-resv the
+>     GPU-VM contains mappings of.
+>
+> 4) Provide tracking of evicted GEM objects the GPU-VM contains mappings
+>     of, such that validation of evicted GEM objects is accelerated.
+>
+> 5) Provide some convinience functions for common patterns.
+>
+> Big thanks to Boris Brezillon for his help to figure out locking for
+> drivers updating the GPU VA space within the fence signalling path.
+>
+> Suggested-by: Matthew Brost <matthew.brost@intel.com>
+> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+>
+> +/**
+> + * drm_gpuvm_resv_add_fence - add fence to private and all extobj
+> + * dma-resv
+> + * @gpuvm: the &drm_gpuvm to add a fence to
+> + * @exec: the &drm_exec locking context
+> + * @fence: fence to add
+> + * @private_usage: private dma-resv usage
+> + * @extobj_usage: extobj dma-resv usage
+> + */
+> +void
+> +drm_gpuvm_resv_add_fence(struct drm_gpuvm *gpuvm,
+> +			 struct drm_exec *exec,
+> +			 struct dma_fence *fence,
+> +			 enum dma_resv_usage private_usage,
+> +			 enum dma_resv_usage extobj_usage)
+> +{
+> +	struct drm_gem_object *obj;
+> +	unsigned long index;
+> +
+> +	drm_exec_for_each_locked_object(exec, index, obj) {
+> +		dma_resv_assert_held(obj->resv);
+> +		dma_resv_add_fence(obj->resv, fence,
+> +				   drm_gpuvm_is_extobj(gpuvm, obj) ?
+> +				   private_usage : extobj_usage);
 
-Uros.
+It looks like private_usage and extobj_usage are mixed up above?
+
+
+> +	}
+> +}
+> +EXPORT_SYMBOL_GPL(drm_gpuvm_resv_add_fence);
+> +
+
+Thanks,
+
+Thomas
+
+
