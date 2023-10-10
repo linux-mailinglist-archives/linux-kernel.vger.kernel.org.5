@@ -2,138 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A557C422E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 23:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAC167C4236
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 23:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343923AbjJJVPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 17:15:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47372 "EHLO
+        id S1343745AbjJJVRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 17:17:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234090AbjJJVPm (ORCPT
+        with ESMTP id S234598AbjJJVRp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 17:15:42 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3917594
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 14:15:41 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9a61f7aaf8so1417172276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 14:15:41 -0700 (PDT)
+        Tue, 10 Oct 2023 17:17:45 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E40EB99
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 14:17:42 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c16757987fso77458011fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 14:17:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696972540; x=1697577340; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=inAfHUFES32Bj4C70GcKsE711OPK+t9RMjXtNQ5VszM=;
-        b=OFwT5hzx701CknF/AANYsdyGw6qzpWUZE+ZSQAT0kcVyFNQ0GkGtzp8zYWa+f9d0tM
-         S++c9qb12muBlIC8UWne3c8pegtAvr9BLz7oaY7z54Mjny8duoAZmgTi6KYScJSD85gJ
-         n2/iG4w9osWjs4oLszpbl6kAoDCUr2hlwclwtURYrHfK4Maz8RQDtLzDd1EM9KcGQocD
-         JvB2fvQp+QRKCXSIFP8KrInMZ6AdfnNBBcKAO52cyAoaP7bZ8oxBgxSbhhA90sD608Ha
-         zK3LvttMWQ/uNFLnj57Y90agTZMyU71YJrYFPjx1jYJiChHUNOM9inckgMEfp6FMgARk
-         Y1og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696972540; x=1697577340;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+        d=linaro.org; s=google; t=1696972661; x=1697577461; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=inAfHUFES32Bj4C70GcKsE711OPK+t9RMjXtNQ5VszM=;
-        b=kfgs98/pmMPuDlaBWNQ3/gw3/Vv2SD918UUk54yQPzYPzMQqfVcYkbOVZobETByGw+
-         G1tzmcX6Lqn3YknVxCc1HR8Hq9hpxY/P8Wl70aEWkG8OQO98+xyuw8/BmXJZN4azmkHb
-         sNG+tXLmob6r4cgQWce2FrXjBzHVoWNdUXhktoSQTDytNoapaH/lVC7sn+4kZoJ7YQYh
-         d8NTCU7WVcp4fLw03stMn2GZcJ/zNqzyZb2SbFX78e+gzqO89prve5pOG9kdiUMcKiWX
-         JYniHE2GLshtfh4zUxa4ldMa7Ra6xsMAitGNS3i6hEoWODv6mtRBjxmFKWChqJyJT21j
-         A5qw==
-X-Gm-Message-State: AOJu0YyBf1u8zPFJ5LJMRAs2m1x3yzn/rDy+/i40bAAK56bWHKM1KuDI
-        4qTokLcWQk3PY1CT2Aw8WC6xp+eIdrvmOS3iVg==
-X-Google-Smtp-Source: AGHT+IEMUv1TTDgqzDOYIq+Sw2rvHfs+0t2AabsWyLXy1VIOnuqASlfBZBLu9OJtzGdOmIIJ59zdUH9JxiXKqaoZ5g==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:ac24:0:b0:d9a:3596:a5e8 with SMTP
- id w36-20020a25ac24000000b00d9a3596a5e8mr87331ybi.7.1696972540475; Tue, 10
- Oct 2023 14:15:40 -0700 (PDT)
-Date:   Tue, 10 Oct 2023 21:15:39 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAPq+JWUC/x2N0QrCMBAEf6XcswdJREF/RURism0P9CyXUCql/
- 27qw8DOy85KBSYodO1WMsxS5KNN/KGjNEYdwJKbU3Dh6J13XKppmr6cTWZYYUVl1BG2D9GKF8u Qdh7vKMqJwxl9DO6S8/NE7Xcy9LL8m7f7tv0AuewH3oMAAAA=
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1696972539; l=2229;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=aszC9coJ3ufDFemnzGBEFSljINDMKfOjEfDt2TlDPEA=; b=M0LjBlQz4apy3gyX2tH8Osydptr9lDj/JzxqU4f3aGIPfDCpy48DUAn7/iUFhpQnXafN44Mnu
- 3bQ5fcJIVvbBVvaS1GZ/qGz8AcdS1uPFdCrtmQC0/k/kBHxCMuKuJiG
-X-Mailer: b4 0.12.3
-Message-ID: <20231010-strncpy-drivers-net-ethernet-intel-igc-igc_main-c-v1-1-f1f507ecc476@google.com>
-Subject: [PATCH] igc: replace deprecated strncpy with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        bh=sfPPZRlM0sZJ4h/LKs3xYdXAHRzh/EkwJVhNrGIegO4=;
+        b=PRPJAzIl3OSfyWPD+RROliQUJclRflqJjOIGsnhKgrW8xIm2LsoQhCSjA0KFWEg3wf
+         ZdjH2SAB5vapBHo907gptGVcQfpYNGEtthxHkjr+8N4O8/QzeL02Epd9KcJM2cj28oOV
+         W1H2vW9K8X8JcVIhgpusAERTvNvLLKzOr1+FjSqldxg1tA2PPYdaJM84kE01inWthGuK
+         5jHr2hWJrQRgercPhq3XMVrr3uxVmdQlOda5RMX5uOd+7uizgUEE09nDHH9bJau0B+0X
+         GbexbUYaZsuOSVx/Vam7WaGw64e72dUO5VF+v2CCDfPTlasElzKhs0IUU6XyCC7a9KNP
+         WCqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696972661; x=1697577461;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sfPPZRlM0sZJ4h/LKs3xYdXAHRzh/EkwJVhNrGIegO4=;
+        b=wMDyMD2TaIHBal+9KMVQw5uu42fKCx1796HK+cs16ncPEYMwJZu//COEbfapy9lyNU
+         bCd5lMjZ510007JVISRkrGXKZa9aBr+50I/6ZdcVdMYUWs/S4a07bB4HcJ/TPjj5Ghw5
+         qYf2pvdljx7IDA5OGY5Md7meWNtEKSQv9K9H8938TnbWfSuSiF6U+OCLIEoEPQnEqJWm
+         /jVMCJxGa/4mWqOPeCkoeqoJlXlACI7EOuYFvZEDk0H07M4+CgzhO97SnHyU0GUEd5po
+         jOg9qry1JyXwRDSkUuvIZXuTHqBxFqAmAg0H6X4cyA5Cf+b87ihonnhLxX8aJSYfg9Px
+         6wIw==
+X-Gm-Message-State: AOJu0Yw7Zm9rdgwkUJUXQC6z6epqQ0rXVSnkpaZwRKj/j2D/bdZTuDek
+        hNA57HPAboK4YXW4FJE4qLoaeQ==
+X-Google-Smtp-Source: AGHT+IE17AcOeX7TjeVmVy16OgaWTbvrISmCORBUxeyPmJNXOebBZLa36qc+DxwvzaNoWReKy2wgog==
+X-Received: by 2002:a05:6512:3ca4:b0:500:b5db:990b with SMTP id h36-20020a0565123ca400b00500b5db990bmr20891808lfv.47.1696972660557;
+        Tue, 10 Oct 2023 14:17:40 -0700 (PDT)
+Received: from ?IPV6:2a00:f41:8004:ab80:24a8:5e5d:e0b2:5884? ([2a00:f41:8004:ab80:24a8:5e5d:e0b2:5884])
+        by smtp.gmail.com with ESMTPSA id z3-20020ac24183000000b0050335c6d091sm1959755lfh.79.2023.10.10.14.17.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Oct 2023 14:17:40 -0700 (PDT)
+Message-ID: <3c3c80da-8986-4a8b-8b53-c33b36107e95@linaro.org>
+Date:   Tue, 10 Oct 2023 23:17:34 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 4/4] ARM: dts: qcom: ipq8064: Add CPU OPP table
+Content-Language: en-US
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     Robert Marko <robimarko@gmail.com>, ilia.lin@kernel.org,
+        vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, agross@kernel.org, andersson@kernel.org,
+        rafael@kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20230930102218.229613-1-robimarko@gmail.com>
+ <20230930102218.229613-4-robimarko@gmail.com>
+ <e255dcbd-6342-49e6-9bfe-17a47b2a3c8a@linaro.org>
+ <65255c81.050a0220.141f8.7b8f@mx.google.com>
+ <1aea4a86-7f7c-46ee-9cbe-655eb7663c2a@linaro.org>
+ <6525ad59.1c0a0220.e3509.8545@mx.google.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <6525ad59.1c0a0220.e3509.8545@mx.google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
 
-We expect netdev->name to be NUL-terminated based on its use with format
-strings:
-|       if (q_vector->rx.ring && q_vector->tx.ring)
-|               sprintf(q_vector->name, "%s-TxRx-%u", netdev->name,
 
-Furthermore, we do not need NUL-padding as netdev is already
-zero-allocated:
-|       netdev = alloc_etherdev_mq(sizeof(struct igc_adapter),
-|                                  IGC_MAX_TX_QUEUES);
-...
-alloc_etherdev() -> alloc_etherdev_mq() -> alloc_etherdev_mqs() ->
-alloc_netdev_mqs() ...
-|       p = kvzalloc(alloc_size, GFP_KERNEL_ACCOUNT | __GFP_RETRY_MAYFAIL);
+On 10/10/23 22:00, Christian Marangi wrote:
+> On Tue, Oct 10, 2023 at 09:52:50PM +0200, Konrad Dybcio wrote:
+>>
+>>
+>> On 10/10/23 16:15, Christian Marangi wrote:
+>>> On Tue, Oct 10, 2023 at 03:40:32PM +0200, Konrad Dybcio wrote:
+>>>>
+>>>>
+>>>> On 9/30/23 12:21, Robert Marko wrote:
+>>>>> From: Christian Marangi <ansuelsmth@gmail.com>
+>>>>>
+>>>>> Add CPU OPP table for IPQ8062, IPQ8064 and IPQ8065 SoC.
+>>>>> Use opp-supported-hw binding to correctly enable and disable the
+>>>>> frequency as IPQ8062 supports up to 1.0Ghz, IPQ8064 supports up to
+>>>>> 1.4GHz with 1.2GHz as an additional frequency and IPQ8065 supports
+>>>>> 1.7GHZ but doesn't have 1.2GHZ frequency and has to be disabled.
+>>>>>
+>>>>> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+>>>>> Signed-off-by: Robert Marko <robimarko@gmail.com>
+>>>>> ---
+>>>> Christian/Robert, can you provide a downstream source for this?
+>>>>
+>>>
+>>> Sure, consider that everything is with +/-5%.
+>> Hm, so you're e.g. putting ipq8062 384MHz voltage for PVS3 equal to
+>> 0.95*800000 = 760000, but I'm not sure if it's a good idea?
+>>
+>> The comment in downstream:
+>>
+>> "These are based on +/-5% Margin on the VDD_APCx that is advertised in our
+>> Datasheet across Temperature"
+>>
+>> suggests this is already not very accurate, and betting that the lower
+>> threshold works on all chips is probably not the best idea.
+>>
+> 
+> Consider that everything is driven by the rpm. The original qsdk used the
+> same approach of taking the value, apply +-5% and pass it as a voltage
+> triplet to the rpm regulator. Also the driver have ranges so it
+> autodecide the best voltage in the range of the voltage triplet based on
+> the one supported by the regulator. Normally the normal voltage is
+> always used.
+Eeh? So you pass any half-random value to it and RPM edits it in flight?
 
-Considering the above, a suitable replacement is `strscpy` [2] due to
-the fact that it guarantees NUL-termination on the destination buffer
-without unnecessarily NUL-padding.
+Please be more specific, I'm not very familiar with this platform
 
-Let's also opt for the more idiomatic strscpy usage of (dest, src,
-sizeof(dest)) instead of (dest, src, SOME_LEN).
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
----
- drivers/net/ethernet/intel/igc/igc_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index 98de34d0ce07..e9bb403bbacf 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -6935,7 +6935,7 @@ static int igc_probe(struct pci_dev *pdev,
- 	 */
- 	igc_get_hw_control(adapter);
- 
--	strncpy(netdev->name, "eth%d", IFNAMSIZ);
-+	strscpy(netdev->name, "eth%d", sizeof(netdev->name));
- 	err = register_netdev(netdev);
- 	if (err)
- 		goto err_register;
-
----
-base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
-change-id: 20231010-strncpy-drivers-net-ethernet-intel-igc-igc_main-c-26efa209ddb5
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+Konrad
