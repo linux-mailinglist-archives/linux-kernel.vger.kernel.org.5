@@ -2,153 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CB917C01DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD08D7C01E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233779AbjJJQnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 12:43:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46668 "EHLO
+        id S233829AbjJJQoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 12:44:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232356AbjJJQnE (ORCPT
+        with ESMTP id S233690AbjJJQoA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 12:43:04 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D16697
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:42:59 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-53627feca49so9804420a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:42:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696956178; x=1697560978; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=E+NYW0H/78mpIgnIj6WGSptNiQypZq9GKR0ivlCmwmg=;
-        b=R0h13VOLr/fu2AXtLqOb3I5EdOvRXUYdJoNKLE87p2KZ2Hn92zwRP4q9PzsDez3oby
-         8RvNchu3nRQBrYpR2pGtYnziFZef4U7m8694tDaurtLYQQ86plrchUPVjfocwzoa7tRa
-         UI209GgjmkEaRHBJOP4+2ODqWYfXOu2T3pUASP4Xdx7/96qmUh74y/YtRDPBoYi/5+Hx
-         7iMvoI6HCQbJEwtvee8rJBWyNf4d7t/Vqok2xLcrSU4EFH9BWMz48BzFk8few6qqM6Cd
-         JNIv8HRPiSO9Y8hyFV6PiuB9E4EhiL3/EE45HhfKAC2aqmXhTnJPy/aRN5VQjFvYB31d
-         QUBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696956178; x=1697560978;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=E+NYW0H/78mpIgnIj6WGSptNiQypZq9GKR0ivlCmwmg=;
-        b=bKFGFXM0TX5etEoOJO9WtVig0zEuzKoFwsLgIMJJMTCiIelxeDJYbJJdjDS8mqPB3a
-         HuC4kwGM8VM/lIj1+dXHgkL38VqAmWZuJFCXB5Kj19B9LnenFVDII4y6A3VnAMHPccCK
-         eHyliorLFkvPfXZorNDhwU7/kyJMXZtqAfGmGz/aYy7JPyH1aUa44elvbUKpUUfcQ9cT
-         uiv5Jzpu1Q3IuiidgY7BgK5jt5Xve/PfPr9D7D6zscAtTVLm3Xt5uAjtjaNg1n1UlaLU
-         dvPkp8lKiSsgFAJhQ0RYGl4iO0z81XD3QfjMHhHMqoo5jTSBY5UxEhD4ZU2bRkwd0E1t
-         UpbQ==
-X-Gm-Message-State: AOJu0YyWsoAtRSP6BPUgpp+zF6IAJTlOb4OJT/MqP1zXcWqL+z4j6eRy
-        9J2QlMVv1Om3sIIYDvg2beM=
-X-Google-Smtp-Source: AGHT+IGkKxxNPZTgZFSK+6SQI29JmPT9zoFi1y/tuylA4GxlTJLUW4HnXKHpGWntfaedFnMDqJ4RpA==
-X-Received: by 2002:a17:906:cb:b0:9ae:4eb7:ae8b with SMTP id 11-20020a17090600cb00b009ae4eb7ae8bmr18984075eji.7.1696956177615;
-        Tue, 10 Oct 2023 09:42:57 -0700 (PDT)
-Received: from localhost.localdomain ([46.248.82.114])
-        by smtp.gmail.com with ESMTPSA id ks8-20020a170906f84800b00982a92a849asm8668525ejb.91.2023.10.10.09.42.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 09:42:57 -0700 (PDT)
-From:   Uros Bizjak <ubizjak@gmail.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Uros Bizjak <ubizjak@gmail.com>, Nadav Amit <namit@vmware.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
-Date:   Tue, 10 Oct 2023 18:42:29 +0200
-Message-ID: <20231010164234.140750-1-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Tue, 10 Oct 2023 12:44:00 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2056.outbound.protection.outlook.com [40.107.223.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7ABD8E;
+        Tue, 10 Oct 2023 09:43:58 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Y76832PtgNpiwRFmyNkFrcTKmAIkbZDaB1ueojsjUSlYTD9S3fdSayJgYZXLe7xXzqnQT3mlZlXrg7F5lUn6TN1S0k5cialZwEwxzG4tV4c5Q5GB+5Eegi/XeZTgJYMcifpqBuNqwI2jlvtTGGWWpdqtAb9xUHDousk7Ovpd6VBlTQfrFeMmZL6rmeUVOxzgs3y6r7DbNhnEgPzOQalevWy80rACMhvUmmuHDotgLHn1EE3AyNosRSURv1EGQi73orCul/og/fVEjXy6eKOuxJJBpt6Zzm1bMAAygyrvGvXGxKFjJhRzi0Q8zCsJhsBdR+vvLRuJUNAOE0hliv4IEA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OOcc8SPL5b2ijmoj7gkwXv2mFDycsa6o323XBWrK9MM=;
+ b=E6mIRhYq3PRR03lV9iVVNg6JalcOrEOy5QukbVSp3GID7DM/thZ3jNzAnbk67/DcRZpqiS+ItcxSNdqlaAt0RSV4dQBPmpYE5sZ3Op9Xrj7aLmVzHwCewjMqOfEN/zCg82ftAwgvZy2V19P/jLJPmhYAMznMnFljjKEdZFoaZSOCpQUOKEFIi0IrG/qMat531s+uc3e/EJCDNynT2REz7a89YjGiVhVfCv+4PvohgrNoBJ1730noI91F66s7gF40H3ZXmUS5TaBQA+jiuERLa4Wbzna/M3ve2vGTklYfJjUjxmQC6Y106lzy0GtkF5bjxpY47PY3/0MP0U/s5pBxYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OOcc8SPL5b2ijmoj7gkwXv2mFDycsa6o323XBWrK9MM=;
+ b=KcPtPAJn8BCV6B9vT1O9Wx5JWcGajN31hNkGnRpaoYi7ELLH6f6SSizCZYxETNGBgQivSukFiLnLfVNUOG+XZLLFg6yzCwCILckuRSv9n8J3rKVU+Gafjehib32q9GVTV6H19VY0jkCPdkHoUuyzk3y5ApwjxOJLAi/xvLvG5S1NRCoFr1dZrBv0W5KW1wAKT47SQPclrqVEt7vdD8qLGfKZtcESqgpoCnv1QJvEcSFCWY4huZjQRF2eOqVvZJdjPBF5zt8d+Js6O19+GEyCoubaxNh1n0SY5Zoa8XeDgb/3/rQZ665Bm/WORJ5R2frJfPMngzGW9YU0aMEqd8/GzQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by MN0PR12MB6029.namprd12.prod.outlook.com (2603:10b6:208:3cf::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Tue, 10 Oct
+ 2023 16:43:56 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3f66:c2b6:59eb:78c2]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3f66:c2b6:59eb:78c2%6]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
+ 16:43:56 +0000
+Date:   Tue, 10 Oct 2023 13:43:55 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Yi Liu <yi.l.liu@intel.com>
+Cc:     joro@8bytes.org, alex.williamson@redhat.com, kevin.tian@intel.com,
+        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
+        eric.auger@redhat.com, nicolinc@nvidia.com, kvm@vger.kernel.org,
+        mjrosato@linux.ibm.com, chao.p.peng@linux.intel.com,
+        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
+Subject: Re: [PATCH v2 6/6] iommu/vt-d: Add domain_alloc_user op
+Message-ID: <20231010164355.GA74795@nvidia.com>
+References: <20230928071528.26258-1-yi.l.liu@intel.com>
+ <20230928071528.26258-7-yi.l.liu@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230928071528.26258-7-yi.l.liu@intel.com>
+X-ClientProxiedBy: MN2PR05CA0056.namprd05.prod.outlook.com
+ (2603:10b6:208:236::25) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MN0PR12MB6029:EE_
+X-MS-Office365-Filtering-Correlation-Id: bf4b631e-bb70-4bfa-f1dd-08dbc9b01830
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: V3dm2FArdbwfqgzH4CZf6G3Nw81sNmvPbh7+wtY5eAmUjWBgLQ6scsAb1t52yt8wyyIn8PXsQoVe3k8A4Hc3Da4ILAJge/boo0NgRovGH44zIzNAWsww8uFg/Y5cXULA9xliK5afaXOARrcAGlzwz2bcXI1aFGD41s0DaeThItfzz2PPAF+WG3OGO9iyf21j+vrSIfPMD6ybR9AXajTKIfQQrkVLopAsU9JXy+4+ZNC7NqrBRcU7xrl6EQFzxo06vLdA6UAMKxf7sVDsGHE1qvbPWSwxOu04iajrieTY0lWzZN9TP5hNVxc8zhBH3Ah9aSse1uP8TWOzX6iZ7LwjIYhQBVKutiYOzhv/c75Go3OidlSK1t3HnAELbGTJjv2bS/8GlHCdody3b/4iE7mnFKFU2M9moa2A5+Sw/IhhHxjMw2XXHiArU/OVN7ruNozR1Z/eKHtYVP22w0l1Bfr9+J9LQg2b6L77pq8oaUPQzwMs3mBThOy66u7uOFtW5ER/LnbvjAilWfORSCKA6wtVr5MWTkMNi01crCVjCWMRYZEbXbO6TyzrexrXIWnlTv/R
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(366004)(376002)(136003)(346002)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(86362001)(38100700002)(36756003)(33656002)(6512007)(2906002)(8936002)(478600001)(6486002)(8676002)(5660300002)(41300700001)(4326008)(2616005)(1076003)(6506007)(66476007)(66556008)(6916009)(7416002)(66946007)(316002)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?XqhenXwuSGTZwC1PYLIVizv8AJbNL1/RNzygBIrQdF40KarUTXvNPvDWqr5/?=
+ =?us-ascii?Q?l4inuk/4NNtHDdtwHVqBHRW8p86xQXtoD50SOmC0gwiS6oAiJnYePvJ5BjGv?=
+ =?us-ascii?Q?06ezZHCxcgYc1iNfgppk7tMlH6k1TchLjbM4ct+9QVGeYcyVoybKIjEpCPw/?=
+ =?us-ascii?Q?711avtah4U8DqGlVHned4rG5p+3g3smzBN24KuD5F23+pZeSnm3X6C/7ZXKb?=
+ =?us-ascii?Q?PzvG4/6/zWHFtiouXGb3LeDvPplDbIbvJOXB4uq6Zzs4xj2Z6FswunlAP6oh?=
+ =?us-ascii?Q?1qXJHjOdNALvW/4P8EkOQGkVZB80aB8AyocC1SyY6vJOOHDsAxP3p512oPY0?=
+ =?us-ascii?Q?cNfZzAWtYrsfqlkxoYIiuQc14fAiIIIQD3+c9TA9wpp9maP5xAYvQSqTXgjB?=
+ =?us-ascii?Q?E0wbOeWXXcnvNiIRMASadxqJBWoDpQJXjxSci2gUH/SLGuWshEVoyYOD1qJK?=
+ =?us-ascii?Q?/QlDjs2sddfaNLynvN34Xra6Clzc+xBYVpBOYwld5j3tc7FLHyH5a6XfvBh3?=
+ =?us-ascii?Q?zwk5ailj6AWhRrqX+H8CwHYlzfpx7hf/6USgIqB8YlLqzeA8iPaflOPC8hAX?=
+ =?us-ascii?Q?BbWSB0dU9ptzsGQx7ie8vbBtLcLoPTgfvloQfFITpSYr/ylL1HW26f5P8BJ0?=
+ =?us-ascii?Q?wLLOZhDX0ZSpALb+TGXUnhYZon4kuZY+ymTHzuwL5XDLHPl94kbTOE3yHNv9?=
+ =?us-ascii?Q?4LDBouk6Hb6AgPSlBT3vwJHnSvknZqMtn3GZQo9S/Xy/0dntQCKdUyAKJKHh?=
+ =?us-ascii?Q?iVcJ2OH0D9j+Or/uN+WcxpIbGMyL2SX4rPX79NRWjnsGSQ9MJvFnIM6cwmXt?=
+ =?us-ascii?Q?3dcaqsm23RvGo5lein1uNn9P7AfxmqfEtupBHSbKWW7kCe/E4kgfkK2FzOnM?=
+ =?us-ascii?Q?88410WdfOA/P91byK/swPJpvVkpQJrCBd3u1auCBGo0cScal9SQ1S/ojFSy2?=
+ =?us-ascii?Q?1gnSMY5xwuwRX2jizpurhtqEbjEPb0YIhCqgQm0nHdboiVjoiaR0nko2aST5?=
+ =?us-ascii?Q?oOn3R/W6vduCU4WJ26klG2WBWj/MkVYZ5+g7jJLA+qvCLNwQNStRE/KYWqZN?=
+ =?us-ascii?Q?/ee1aLhgPFmreO8edtixdjUn63cavjwSdMktT4erS+s9hqQEzRUigS/WiMB1?=
+ =?us-ascii?Q?POIoRAtFDLooaOm/BTY23muznvMcV5CxxeYWjRL/cafpX9359E59dbdIM8Wx?=
+ =?us-ascii?Q?X6ANVE5VWsNXzCG+U5JwY9R4zsIjbgK9qeSqE4rpPTNCA7BHtkndFyUUu5u9?=
+ =?us-ascii?Q?x9SKvcLe+EGSNsRzH54EpUqugFU24jLHfYmSxMNGkSer28DZyOGe+KX+X3zS?=
+ =?us-ascii?Q?PZhoypyKTqI8AL1lQ1wIAcpcBkPplC0bhBxJMHkKj/rb/LgxHvIWaQuwRkYK?=
+ =?us-ascii?Q?MYE15kkVcxRG8yRt4cOh4+4IYG2m7op7ao9+cmbqkM89IX/ajzbk5T8Mt8ix?=
+ =?us-ascii?Q?36RxlYRb+PMCyv4VY+1C8ALdRe/KZC/Kp7z5OI1dltziaofteX1IYKTJgwnR?=
+ =?us-ascii?Q?1pDbyh9r6RIzP8xTuMnNK9NQI55JIRkySTsa+3uWZDBNCocM9VX2ub0U3Xza?=
+ =?us-ascii?Q?wLIru2iU1ythcZgb7swbRBrSEc6br+ClgpucIYfF?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bf4b631e-bb70-4bfa-f1dd-08dbc9b01830
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 16:43:56.2387
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: C/EwZwEU9cJLwK8IM9VKXGFuQhs0MmnuUOHPHUg792HbBZMf8gB+Q7giDgv5LpWy
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6029
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implementing arch_raw_cpu_ptr() in C, allows the compiler to perform
-better optimizations, such as setting an appropriate base to compute
-the address instead of an add instruction.
+On Thu, Sep 28, 2023 at 12:15:28AM -0700, Yi Liu wrote:
+> This adds the domain_alloc_user op implementation. It supports allocating
+> domains to be used as parent under nested translation.
+> 
+> Signed-off-by: Yi Liu <yi.l.liu@intel.com>
+> ---
+>  drivers/iommu/intel/iommu.c | 28 ++++++++++++++++++++++++++++
+>  1 file changed, 28 insertions(+)
+> 
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index 5db283c17e0d..017aed5813d8 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -4074,6 +4074,33 @@ static struct iommu_domain *intel_iommu_domain_alloc(unsigned type)
+>  	return NULL;
+>  }
+>  
+> +static struct iommu_domain *
+> +intel_iommu_domain_alloc_user(struct device *dev, u32 flags)
+> +{
+> +	struct iommu_domain *domain;
+> +	struct intel_iommu *iommu;
+> +
+> +	if (flags & (~IOMMU_HWPT_ALLOC_NEST_PARENT))
+> +		return ERR_PTR(-EOPNOTSUPP);
+> +
+> +	iommu = device_to_iommu(dev, NULL, NULL);
+> +	if (!iommu)
+> +		return ERR_PTR(-ENODEV);
 
-E.g.: address calcuation in amd_pmu_enable_virt() improves from:
+Why isn't this just
 
-    48 c7 c0 00 00 00 00 	mov    $0x0,%rax
-	87b7: R_X86_64_32S	cpu_hw_events
+	struct device_domain_info *info = dev_iommu_priv_get(dev)
+	struct intel_iommu *iommu = info->iommu
 
-    65 48 03 05 00 00 00 	add    %gs:0x0(%rip),%rax
-    00
-	87bf: R_X86_64_PC32	this_cpu_off-0x4
+???
 
-    48 c7 80 28 13 00 00 	movq   $0x0,0x1328(%rax)
-    00 00 00 00
+Same question for almost all other calls to this function! The one in
+probe is reasonable, but I don't think it should be ever called again.
 
-to:
+I'm going to leave this, but please make a series cleaning all the
+device_to_iommu() stuff next cycle..
 
-    65 48 8b 05 00 00 00 	mov    %gs:0x0(%rip),%rax
-    00
-	8798: R_X86_64_PC32	this_cpu_off-0x4
-    48 c7 80 00 00 00 00 	movq   $0x0,0x0(%rax)
-    00 00 00 00
-	87a6: R_X86_64_32S	cpu_hw_events+0x1328
-
-Co-developed-by: Nadav Amit <namit@vmware.com>
-Signed-off-by: Nadav Amit <namit@vmware.com>
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Brian Gerst <brgerst@gmail.com>
-Cc: Denys Vlasenko <dvlasenk@redhat.com>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
----
- arch/x86/include/asm/percpu.h | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
-index 60ea7755c0fe..cdc188279c5a 100644
---- a/arch/x86/include/asm/percpu.h
-+++ b/arch/x86/include/asm/percpu.h
-@@ -49,6 +49,19 @@
- #define __force_percpu_prefix	"%%"__stringify(__percpu_seg)":"
- #define __my_cpu_offset		this_cpu_read(this_cpu_off)
- 
-+#ifdef CONFIG_USE_X86_SEG_SUPPORT
-+/*
-+ * Efficient implementation for cases in which the compiler supports
-+ * named address spaces.  Allows the compiler to perform additional
-+ * optimizations that can save more instructions.
-+ */
-+#define arch_raw_cpu_ptr(ptr)					\
-+({								\
-+	unsigned long tcp_ptr__;				\
-+	tcp_ptr__ = __raw_cpu_read(, this_cpu_off) + (unsigned long)(ptr); \
-+	(typeof(*(ptr)) __kernel __force *)tcp_ptr__;		\
-+})
-+#else /* CONFIG_USE_X86_SEG_SUPPORT */
- /*
-  * Compared to the generic __my_cpu_offset version, the following
-  * saves one instruction and avoids clobbering a temp register.
-@@ -61,6 +74,8 @@
- 	     : "m" (__my_cpu_var(this_cpu_off)), "0" (ptr));	\
- 	(typeof(*(ptr)) __kernel __force *)tcp_ptr__;		\
- })
-+#endif /* CONFIG_USE_X86_SEG_SUPPORT */
-+
- #else /* CONFIG_SMP */
- #define __percpu_seg_override
- #define __percpu_prefix		""
--- 
-2.41.0
-
+Jason
