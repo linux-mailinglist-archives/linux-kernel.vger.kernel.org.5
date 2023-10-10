@@ -2,65 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF6D7BF2EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 08:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C18C7BF2F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 08:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442222AbjJJGZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 02:25:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39158 "EHLO
+        id S1442246AbjJJG1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 02:27:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442180AbjJJGZY (ORCPT
+        with ESMTP id S1442233AbjJJG1F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 02:25:24 -0400
+        Tue, 10 Oct 2023 02:27:05 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4D99D
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 23:24:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 064959E
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 23:26:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696919083;
+        s=mimecast20190719; t=1696919178;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1AqkLrzrIXxwvm4PGZ1aUIreaVgNNNZ9t0/4h1i7AZY=;
-        b=gM0oGBEMp6KHPvdPCJXzv5D+MxnLVg2GK8J0TKPMjLg+CskOYpO5LEt+GY8WtiXyPTnZws
-        Qp/Xg16TxzwVHmjeBrHa5sL8jWGf0YJ9s7/QcFp7NtFGN36ZuNOiY/I3j9RmGzKb5lKWN9
-        x18baZrkt4yTrlWM7JXpNPqUFYfADGQ=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=ZXgJjAltwNNXgE6CpFrMVez2TIFFxTWTGd+YncZ0BYc=;
+        b=J9qa/Vx4AknqwwOM7fPSxC8QVkwL6hC7/vnJPBqUpqlKr1n9zewf2P3vTOb11mNOLXaFfx
+        rBqm/3YRmjPgQ4or+UUTSH/1QgzrEzhK6nujZDvruIIcfKCTSbqoebG28lPYO6FtsING0Q
+        kavDLq7gGzId4mj+VDWB+Km3BlTcN2E=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-333--0bK5OfrOEOBnwcwygkVUA-1; Tue, 10 Oct 2023 02:24:41 -0400
-X-MC-Unique: -0bK5OfrOEOBnwcwygkVUA-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-50433324cf3so4670977e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 23:24:41 -0700 (PDT)
+ us-mta-607-v07QqIuZMHaAm2j2GAUK6Q-1; Tue, 10 Oct 2023 02:26:07 -0400
+X-MC-Unique: v07QqIuZMHaAm2j2GAUK6Q-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-503317b8d26so4613410e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 23:26:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696919080; x=1697523880;
+        d=1e100.net; s=20230601; t=1696919165; x=1697523965;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1AqkLrzrIXxwvm4PGZ1aUIreaVgNNNZ9t0/4h1i7AZY=;
-        b=LbPXa+8C6y4cT44sy/Y60lTz9SIgNovrTRGdzftKnKbcmA5m6wa/z3oELSmvrd4Wx1
-         ShC/aLDnWiq/IEqigybyBErq4SnIvsIAPj/JjkGpCaj9VFzAfWqQgs1HFQxNadmgA9nG
-         VWcBXAv7dh2lz3Sn2iCa2yOrDJHo9Dgb5gZdKrYNQ7neTpZWsMuC4LDI1vZ/ooXYWUcZ
-         4xjt99DhEFLaOwrsbs8PO8pSgDcNYnSFHny2Bq+EixKLcmyG+6Es3F9N+gWygEs+ue+u
-         7XSipTHBqZHASlkJ02zkGehBZW0Pst77ZMg7RN2WE5YI2m//1znpcrTWYb3kbn2UIHK2
-         YrGQ==
-X-Gm-Message-State: AOJu0YymCgQ6YwpzBT3P6A7YGDPalQSJN3UXlarDS6t8N9g7kea6vVok
-        lW3qqaBXaH+mZfge9zX37qB5XI7xFmI1D5ez/OpMqgt8MKaZAfi4zHytVqAkj8HTBnrExXlIpYK
-        QGskq074YalpiK/oO7e3LMAtNDjBxm0j2VQE01UKiBoDR8muIHA0=
-X-Received: by 2002:a19:f015:0:b0:500:d970:6541 with SMTP id p21-20020a19f015000000b00500d9706541mr13782369lfc.39.1696919079960;
-        Mon, 09 Oct 2023 23:24:39 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE7xUE6pgdBc/7IGhtXyNcrZjmsd0aJhTSJHQ75/95fWLdH7kgG7RJO/mGmbpq6jQLfRM7uFrYPEqqarKGGcNc=
-X-Received: by 2002:a19:f015:0:b0:500:d970:6541 with SMTP id
- p21-20020a19f015000000b00500d9706541mr13782360lfc.39.1696919079631; Mon, 09
- Oct 2023 23:24:39 -0700 (PDT)
+        bh=ZXgJjAltwNNXgE6CpFrMVez2TIFFxTWTGd+YncZ0BYc=;
+        b=OGYcMIiFSqz2NIsn4G+TJXFVkAEPZgDKCNf0hjbS+lFCyyAKkW3fIIWDCgltFD5Xgp
+         gooPMtSNW8u/ji2idEoH7LFHBzzgF/o89ScNxdwbB/o7x5Gd2i/nkObwNo8t39ZLWCwL
+         Tc5jKtCDNapoc+gaqwAoeKwRN/DrVrHIuG+EQLCHw2fPanWz2AMeethbdAjBcwCHq5Fc
+         LA5GuShr89/Om0zvr6iw0bXq2HuUZFjON1ZsxD6bBmlH5/opOCwTHsByMqPZdF8rL4Sm
+         bNMfczZweJzaUDHqjr0BVOmNdXfXpQ5L31QMRggwtAzpQlnUGla0/O9cNwclbw//juZJ
+         I2xw==
+X-Gm-Message-State: AOJu0YyDxvl3+ky3iu36ThGq5TcjwxD9vo21ypZYseO1hredmmb6j1WU
+        yh+zfYYlMzVXOm6Dmpmaq9rsQAnbrYQyl2D6PVDpw9rXcYR1QV3UnAMcyXZxsT9+X7QTqDfM1Bx
+        mg9+kmrHcZbmmS9tbTV5sPBFageyjIjv/zFUqTTju
+X-Received: by 2002:ac2:5e2c:0:b0:500:9524:f733 with SMTP id o12-20020ac25e2c000000b005009524f733mr11638590lfg.20.1696919165639;
+        Mon, 09 Oct 2023 23:26:05 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHTRfSc/Dwktp9YhC8aXUxGnki2o7zlWGkxqIyChOD0GhfDblxBz/lw7GvevY0oxSJY788QjGmeYKUsCUmt5sc=
+X-Received: by 2002:ac2:5e2c:0:b0:500:9524:f733 with SMTP id
+ o12-20020ac25e2c000000b005009524f733mr11638574lfg.20.1696919165315; Mon, 09
+ Oct 2023 23:26:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231009112401.1060447-1-dtatulea@nvidia.com> <20231009112401.1060447-11-dtatulea@nvidia.com>
-In-Reply-To: <20231009112401.1060447-11-dtatulea@nvidia.com>
+References: <20231009112401.1060447-1-dtatulea@nvidia.com> <20231009112401.1060447-12-dtatulea@nvidia.com>
+In-Reply-To: <20231009112401.1060447-12-dtatulea@nvidia.com>
 From:   Jason Wang <jasowang@redhat.com>
-Date:   Tue, 10 Oct 2023 14:24:28 +0800
-Message-ID: <CACGkMEuMnx0s6t-8FhT67Bd3-RYnZkFWUE+SfY2VByy0GbynAA@mail.gmail.com>
-Subject: Re: [PATCH vhost v3 10/16] vdpa/mlx5: Allow creation/deletion of any
- given mr struct
+Date:   Tue, 10 Oct 2023 14:25:54 +0800
+Message-ID: <CACGkMEt6gQCBJNZzc-tia6YkY7z7-zF4Qc2njixVaCZMfohvpw@mail.gmail.com>
+Subject: Re: [PATCH vhost v3 11/16] vdpa/mlx5: Move mr mutex out of mr struct
 To:     Dragos Tatulea <dtatulea@nvidia.com>
 Cc:     "Michael S . Tsirkin" <mst@redhat.com>,
         Eugenio Perez Martin <eperezma@redhat.com>,
@@ -86,15 +85,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Mon, Oct 9, 2023 at 7:25=E2=80=AFPM Dragos Tatulea <dtatulea@nvidia.com>=
  wrote:
 >
-> This patch adapts the mr creation/deletion code to be able to work with
-> any given mr struct pointer. All the APIs are adapted to take an extra
-> parameter for the mr.
+> The mutex is named like it is supposed to protect only the mkey but in
+> reality it is a global lock for all mr resources.
 >
-> mlx5_vdpa_create/delete_mr doesn't need a ASID parameter anymore. The
-> check is done in the caller instead (mlx5_set_map).
->
-> This change is needed for a followup patch which will introduce an
-> additional mr for the vq descriptor data.
+> Shift the mutex to it's rightful location (struct mlx5_vdpa_dev) and
+> give it a more appropriate name.
 >
 > Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
 > Acked-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
