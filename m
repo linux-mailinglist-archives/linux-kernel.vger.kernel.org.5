@@ -2,425 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 741517BF059
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 03:34:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0277F7BF05B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 03:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379138AbjJJBeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 21:34:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37852 "EHLO
+        id S1379351AbjJJBer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 21:34:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379299AbjJJBdx (ORCPT
+        with ESMTP id S1379278AbjJJBep (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 21:33:53 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 715D09E;
-        Mon,  9 Oct 2023 18:33:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1696901628;
-        bh=mZxda45LSjxRlWdtqkpi6JYNGMZ5G2NJZ3ktd0qA/V4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=E0TLdRRAPRiKWzXfCCSp+m93yqyS+Q5LMghXvLWiV6YYmGFpPCDx6B3+Pt+yYU6TI
-         ZJd5/Q/NQFdxdo6ti+a5Ibd+PWWr8TbdDWgi+uZbprOLG6pNv5zzqBC/8MPzoBtw8U
-         3FZCfnhGVkZMK8s5igoHtSiUIyb3NOJEYKtM3+239saqTRDQxdSpgkI19xFw4vNGXs
-         ULTHTy4QKpNWBMPljaXEi0foUG17siqFXMKv9sGzVkzo4lcPUPU+ZSyNPeJAycChUF
-         DDIQQgcowNSNmm3iDLO35FCaBoSKj2ux7qMjdAmMMQiCa7hJX4v8imYlI1ty0fFKh+
-         inLmp/zTmPL9A==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S4JMZ2ST8z4xSn;
-        Tue, 10 Oct 2023 12:33:46 +1100 (AEDT)
-Date:   Tue, 10 Oct 2023 12:33:45 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Airlie <airlied@redhat.com>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
-        <u.kleine-koenig@pengutronix.de>,
-        DRI <dri-devel@lists.freedesktop.org>
-Subject: linux-next: manual merge of the drm-msm tree with the mm, drm trees
-Message-ID: <20231010123345.12bfda28@canb.auug.org.au>
+        Mon, 9 Oct 2023 21:34:45 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F5E68F;
+        Mon,  9 Oct 2023 18:34:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696901683; x=1728437683;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=794BHWMj+EomrOXNAX3+peIKmuvRZ4CeeRrF1l7sJiE=;
+  b=Dm19asFzbc75MGlPQSRbtP1zL5IW+xGH9GNsAxi9ik69NMdRozzEYPD/
+   N9pA71wG0H0V/vARe5ZZAe4jCbKSBKLf9Zb9wSvHeCocPyJyCU2fitF/t
+   /aAwI8f/CBXx5qd5wGtigDCv//N0diNciSf/vn6dKleeq1nKzxjvAxN9K
+   8xhx868LVuxSC5Wqx7f5cV8gMJbzHjnTEWhknXPRw/m66bMv4av/GJaFL
+   felP2HqkCpXdzrwPirOy35btutHqXLqFMej0nW1DqvyRzcl8I6cCwqa30
+   miqUuORXJSBsBpgOZuW7i5jSWz2Elo3HQ5FBweBUCghSvpo90+HOzjp4v
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="364582256"
+X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
+   d="scan'208";a="364582256"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 18:34:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="756915468"
+X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
+   d="scan'208";a="756915468"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Oct 2023 18:34:40 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Mon, 9 Oct 2023 18:34:40 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Mon, 9 Oct 2023 18:34:39 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Mon, 9 Oct 2023 18:34:39 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Mon, 9 Oct 2023 18:34:38 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iRJ/00vp8i5FxGlorrthvWej4Goib2L4QPspKbqq/4deP5sROT9hDcb3vZuankbqG1Dki+WSYPFwmbJ3a1RzFFOuNwRkDAZcIlb6wY0NxGUkbOujgK25th1nPPu9Hrs4dXi7vFgcVEchrfxha5FJReF0shY6eY1VkTghZJHtqdOp/4Hu+oA40UPiQYMfJKGAMApK+z3vkhp2fVCewN9WuWrQOpQwKVLB/VwWIcAau4K7gdYgmSzlV5+FkC3VRSiQyfS+4KZtS8NTbtsB9BasWic7qYw/o4wqPeOpm2N/MDDiCt8FQ5KpiEpMMgBjYGCh0T49UqCwIdPBHRb9n79Ayw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=794BHWMj+EomrOXNAX3+peIKmuvRZ4CeeRrF1l7sJiE=;
+ b=mjjISipJitZsgo4DZ+jp02FDEDCUdzaTzg45oxizH1G5AQnhlfkM6frg88mModuzCMpn0r/nSc+tgwI+A5s7elPc9RtC5gg4tglMUbr7B9gGK/rrkdeHI3cMzGPa23yq7joSuQPeB5V073Ma0lw739EvWl1yQydhyohKyBWbxQbOCwo7DZr9VZar+cV9nEOOHbEEBTUqk4L42rrtXFzwjmxDOv0RN9TwT3USxAZCzeMCwvc6oW6H4YHL6hti0+PvooonNIv3sp/2DLXgztGDAdnAYNA/s13+KyTAFuqXgHOzDmfDbnd6BrHKQV3YeBKTcfqb34zn1PHx5Ozyjxxicw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by CH0PR11MB5331.namprd11.prod.outlook.com (2603:10b6:610:be::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.37; Tue, 10 Oct
+ 2023 01:34:30 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::31a9:b803:fe81:5236]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::31a9:b803:fe81:5236%4]) with mapi id 15.20.6838.033; Tue, 10 Oct 2023
+ 01:34:29 +0000
+From:   "Huang, Kai" <kai.huang@intel.com>
+To:     "Christopherson,, Sean" <seanjc@google.com>
+CC:     "Zhang, Bo" <zhanb@microsoft.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "yangjie@microsoft.com" <yangjie@microsoft.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+        "haitao.huang@linux.intel.com" <haitao.huang@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "anakrish@microsoft.com" <anakrish@microsoft.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+        "Mehta, Sohil" <sohil.mehta@intel.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "kristen@linux.intel.com" <kristen@linux.intel.com>
+Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
+ EPC
+Thread-Topic: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
+ EPC
+Thread-Index: AQHZ7csZABE+dkJZZkCdCB4gngYcNbBCOacAgAAKoQCAAAepgIAADEaA
+Date:   Tue, 10 Oct 2023 01:34:29 +0000
+Message-ID: <1f7a740f3acff8a04ec95be39864fb3e32d2d96c.camel@intel.com>
+References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
+         <20230923030657.16148-13-haitao.huang@linux.intel.com>
+         <1b265d0c9dfe17de2782962ed26a99cc9d330138.camel@intel.com>
+         <ZSSZaFrxvCvR1SOy@google.com>
+         <06142144151da06772a9f0cc195a3c8ffcbc07b7.camel@intel.com>
+In-Reply-To: <06142144151da06772a9f0cc195a3c8ffcbc07b7.camel@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|CH0PR11MB5331:EE_
+x-ms-office365-filtering-correlation-id: 6158214c-bd10-4e18-cb4d-08dbc9310c33
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: GpRKVVoj13JLGmAILERKKqSNx/c5goQWJfR2V023FwPEo7kyb7tinNJykeU1RD3b3mKZPz8n7qAe14bBeev3bHnEasQMXTXrOIj+7k+ZWGe50/M9F7TyBBvUTIoPKO/Tz2lZMqzdQZQAZ9gjLe//g8qkyLMyLy91anmEeZ/S2QzFqGNdNpT5FC9KLGgwicEXQtBysMol2lmFDzMbyQqUUPiTM0OHfmiH1tNJ7qna2j500g4Vs98UiZiFDb9yZTDHf6AcHbz6i95TtCjzKEseJ9WOvoN40Ra+rQ7nb9Jf3iVCkLYJ5l2e6uDoByYgWDv8ArNBR99A46LibWW8i9An+C8wkbdBNHCUPUi+CUGDhzfj34HjwC8l1s+dOqrMhAr+zplqI7hXRpbdIoS+iYjqPFF6SFj+riPaDDHgJqHdbmm38eblbGfSRk4Up83RXMpCJDV8IeucdRrvZyMmLoPyQcH8zyoXjXwUCFnQp4ynfnEeLlcJNGYa82OpM8g2Dp1mgVjF3Tsni84hp2DLaQ7srxAS5jfNn9kUT43st0wj/K9i6zZL0v+dr4VHUFVqP5UsOIKcbrAwJC2X6C/8wqvIGX7gttdf526Srcu/RRdER+PYNinAxOx67dDf2QlQZBcb
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(136003)(346002)(396003)(366004)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(6512007)(2616005)(6506007)(478600001)(41300700001)(2906002)(83380400001)(6486002)(4001150100001)(7416002)(71200400001)(66446008)(91956017)(76116006)(66946007)(66476007)(5660300002)(54906003)(66556008)(6916009)(64756008)(8676002)(4326008)(8936002)(26005)(36756003)(122000001)(316002)(82960400001)(38070700005)(38100700002)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YWF3cjZJNXQrUXI1WSswdC9Nd2s3QlZSOURTc0RRTTRYVFNPclRHVk5RNmdi?=
+ =?utf-8?B?RVA1aVpEK1J1WHVvZVlRUTlJcVdlNmhpV1JsRjBKN3c1cEc4eDRmT1o0Q3FL?=
+ =?utf-8?B?S05oMFdUcHIzVk8yWG1zNnI3NjVmclpEWEVHdEdXcldaVVdTSlQ4em5nUTFU?=
+ =?utf-8?B?WFlpSzU4MjI5Qit3c3VQWUxDZlRxUDdjWWZCb1lDSVd4RmdHUzErb25Nc3Uz?=
+ =?utf-8?B?UzJvcDBVQTc0Y09zTkF5OXRkYWprWTl6aXlhb3Fja2ZXZTdBVU8wcW9RWTJ6?=
+ =?utf-8?B?VGxFa3hnalVMM2VzdTdpS0pCWXNYVERWS01EZWF0Nks4Y3dtK01JN3JRREpk?=
+ =?utf-8?B?RC9NejR1U3hieDR3OC9sTGJ5d3lMYW9Xa0hPdlZiZytnU3lLWTJiUTZMTDhH?=
+ =?utf-8?B?YTdrZ2F0N2UwbU9SV3VRNjdRZjFYZzhSNDV2NklleGRYNmpnMERLUGw1V09a?=
+ =?utf-8?B?NGdoWDg5UndtcFVDSHRPM0hOUWJuZWNpaFRXUlZTUFYxeWZsaFZKN09ZN00z?=
+ =?utf-8?B?VVNSdjdzRjkyUGRIQ3piZUpYdkxlcVJwcDlzRkJ4UUxnUXlib29IQ2pibDlY?=
+ =?utf-8?B?NldsS2pTTmsyNEFSblBmMy9NUithTDEvVjF2SUFzOEZOK0J3MHhPT3VjQzdK?=
+ =?utf-8?B?QTQrWDM2dWQzYW4rcUdrOW5CbmJiWXkrbFhsdFN5OTZuTHg4eE4wWHNrL1pl?=
+ =?utf-8?B?bk5DdnpiRkFTcFlkQ25Tem9SRm5xdS8wOFg5cC9FRE4wOFVrSitTMFpEZ3B4?=
+ =?utf-8?B?NEFabzFKYVQ0Vjc3Nm84RDl1czVNYnpYajEvZUJ3ZWRWMUtkeWF1OUFVcFBW?=
+ =?utf-8?B?cit3L09Fb0lGcUxMMjRhaTVseGZhcFRUOTR2cnpvRXl3Ymk1MFFXZ24xWVMy?=
+ =?utf-8?B?Q2x6eTBjWnhXaVY5ZUMvMWV3WmRUeEo4M2RqNEMvQm0wMVA3SWlIb0c0aEFm?=
+ =?utf-8?B?clZGd044dzZPSk96OTgvVFp2UzdxUy8vY0kvaFBMVW1KYm1jVmxwMVJLQmlq?=
+ =?utf-8?B?RkdtQ3V3ZTVXM0Y5T2dFT3ZTc3BGbWlMellRZHREb1UvdVlCRm01SzFqektV?=
+ =?utf-8?B?cVFnYVdIR3pMeVRqenhzWjlZRG5TZi9LNTg5dm85WDhSTTBrU01OaXZRTDFp?=
+ =?utf-8?B?WHJERWl2VXdZSU05ZURzVll1eE5ic0VFZXpHMU1icHVDRVI4VVVnQTJhSFRV?=
+ =?utf-8?B?R1FKcHhIeWwvSFZKUU5tek5IcXRwdU4rbDdrVTdxWkRTS0Y3RytHOUhmVUU3?=
+ =?utf-8?B?TG1tVnA1T1BtbThjZ1dsMEc2M3UwWHRJNmJZMTBrY05yemt4RVdNZWFlY0pv?=
+ =?utf-8?B?QlkzU2F6SUoyV3F1dDR1MlV1NzJZMk10SGpvQVh1T1FBOHFhZXFHbit1T3JM?=
+ =?utf-8?B?UU14dGUyeTJvM2FuTmhHZlYvaFlPVkp4cjZHR2U2NStzTWJ3cGFrdEE0N0ti?=
+ =?utf-8?B?NTF6UDM5ZGdkRHlhUy8vek5pSmdGK3lqTkJmV29oSnZOMng1UjZodnZHck4v?=
+ =?utf-8?B?NTRrU3IzaEZsckhEVVoxdERWY2Z3eWh1K0ZDamZiMEJkL1NVNlBTMWo3anhM?=
+ =?utf-8?B?d3JiLzhKdXRlbExsR1B3OFNjMzdQUzV6aHZKWE10bDlMQ3Y4QkVpbER3cTRr?=
+ =?utf-8?B?TlhMbGNrYVh3VzgxeGlMUFhDenVYZXNWU0pKWnF4VEtFeUllMzIxczBDOGJl?=
+ =?utf-8?B?WDB4SzZVc0pZUCtROVVKZmlOOFpaZWphK0p3Q1FTWWFKeGZDSmhwWWZjOFI4?=
+ =?utf-8?B?Z1Z1QitPUi91Y21sd2JOQ3M3S2M2cjFoQ2VmR01naTkvb3hWZzdWd1BwaEpH?=
+ =?utf-8?B?Y1hDYms3dmlQUStvYmZHV2x6MUMwUHpIQTcrK1d5cWJNbnhhcVlvZDFuTVB2?=
+ =?utf-8?B?R1lVNGx5SStPZ0U3MkRidGlETHI5aDhVc3Q0bTFqTkdrMHhoWHBETDQ5cGFi?=
+ =?utf-8?B?b0JjY3VMN2NobHlvTWJLeXVLTUJkVXlmUDF6bWM3VmNXeVVmcGhHS2cvVU40?=
+ =?utf-8?B?UVMreXNBeld6OVk2Q2Y5TEwrUjlwT1RvME5ZZEdVT3hHUHJMZnpPTHE2SlZN?=
+ =?utf-8?B?cjZoSnRmMWU3ckk5d0FnYVBGRkZNMTFJTldrNk5kbWRKb05QUkczemVPcjBO?=
+ =?utf-8?B?TnZGRHNJVTZocmtxYWtBcU9iU0hKaDAvdHhxN0V5enNjd21PRE9VYmNtcEc3?=
+ =?utf-8?B?Rmc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <1784F0B2B5BB2F498181EF88B25D13C0@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/rWDVrW2M2hR+XA_N0lP.=mV";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6158214c-bd10-4e18-cb4d-08dbc9310c33
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Oct 2023 01:34:29.7943
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Eekh1WVX6n4UDKwFqyKpwdGItCOQZd9j6i8UzCHmRl4JZ7bFTigoMDtmbgkNDYKlxyOMae1qWMxlkItdroQxdw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5331
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/rWDVrW2M2hR+XA_N0lP.=mV
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-FIXME: Add owner of second tree to To:
-       Add author(s)/SOB of conflicting commits.
-
-Today's linux-next merge of the drm-msm tree got conflicts in:
-
-  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-  drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
-  drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c
-  drivers/gpu/drm/msm/msm_drv.c
-
-between commits:
-
-  01790d5e372f ("drm/msm: Convert to platform remove callback returning voi=
-d")
-  cd61a76c210a ("drm/msm: dynamically allocate the drm-msm_gem shrinker")
-
-from the mm, drm trees and commits:
-
-  283add3e6405 ("drm/msm: remove shutdown callback from msm_platform_driver=
-")
-  506efcba3129 ("drm/msm: carve out KMS code from msm_drv.c")
-
-from the drm-msm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-index 82381d12414d,d14ae316796c..000000000000
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-@@@ -1299,12 -1230,72 +1230,70 @@@ static int dpu_kms_init(struct drm_devi
- =20
-  static int dpu_dev_probe(struct platform_device *pdev)
-  {
-- 	return msm_drv_probe(&pdev->dev, dpu_kms_init);
-+ 	struct device *dev =3D &pdev->dev;
-+ 	struct dpu_kms *dpu_kms;
-+ 	int irq;
-+ 	int ret =3D 0;
-+=20
-+ 	dpu_kms =3D devm_kzalloc(dev, sizeof(*dpu_kms), GFP_KERNEL);
-+ 	if (!dpu_kms)
-+ 		return -ENOMEM;
-+=20
-+ 	dpu_kms->pdev =3D pdev;
-+=20
-+ 	ret =3D devm_pm_opp_set_clkname(dev, "core");
-+ 	if (ret)
-+ 		return ret;
-+ 	/* OPP table is optional */
-+ 	ret =3D devm_pm_opp_of_add_table(dev);
-+ 	if (ret && ret !=3D -ENODEV)
-+ 		return dev_err_probe(dev, ret, "invalid OPP table in device tree\n");
-+=20
-+ 	ret =3D devm_clk_bulk_get_all(&pdev->dev, &dpu_kms->clocks);
-+ 	if (ret < 0)
-+ 		return dev_err_probe(dev, ret, "failed to parse clocks\n");
-+=20
-+ 	dpu_kms->num_clocks =3D ret;
-+=20
-+ 	irq =3D platform_get_irq(pdev, 0);
-+ 	if (irq < 0)
-+ 		return dev_err_probe(dev, irq, "failed to get irq\n");
-+=20
-+ 	dpu_kms->base.irq =3D irq;
-+=20
-+ 	dpu_kms->mmio =3D msm_ioremap(pdev, "mdp");
-+ 	if (IS_ERR(dpu_kms->mmio)) {
-+ 		ret =3D PTR_ERR(dpu_kms->mmio);
-+ 		DPU_ERROR("mdp register memory map failed: %d\n", ret);
-+ 		dpu_kms->mmio =3D NULL;
-+ 		return ret;
-+ 	}
-+ 	DRM_DEBUG("mapped dpu address space @%pK\n", dpu_kms->mmio);
-+=20
-+ 	dpu_kms->vbif[VBIF_RT] =3D msm_ioremap(pdev, "vbif");
-+ 	if (IS_ERR(dpu_kms->vbif[VBIF_RT])) {
-+ 		ret =3D PTR_ERR(dpu_kms->vbif[VBIF_RT]);
-+ 		DPU_ERROR("vbif register memory map failed: %d\n", ret);
-+ 		dpu_kms->vbif[VBIF_RT] =3D NULL;
-+ 		return ret;
-+ 	}
-+=20
-+ 	dpu_kms->vbif[VBIF_NRT] =3D msm_ioremap_quiet(pdev, "vbif_nrt");
-+ 	if (IS_ERR(dpu_kms->vbif[VBIF_NRT])) {
-+ 		dpu_kms->vbif[VBIF_NRT] =3D NULL;
-+ 		DPU_DEBUG("VBIF NRT is not defined");
-+ 	}
-+=20
-+ 	ret =3D dpu_kms_parse_data_bus_icc_path(dpu_kms);
-+ 	if (ret)
-+ 		return ret;
-+=20
-+ 	return msm_drv_probe(&pdev->dev, dpu_kms_init, &dpu_kms->base);
-  }
- =20
- -static int dpu_dev_remove(struct platform_device *pdev)
- +static void dpu_dev_remove(struct platform_device *pdev)
-  {
-  	component_master_del(&pdev->dev, &msm_drm_ops);
- -
- -	return 0;
-  }
- =20
-  static int __maybe_unused dpu_runtime_suspend(struct device *dev)
-@@@ -1380,8 -1371,8 +1369,8 @@@ MODULE_DEVICE_TABLE(of, dpu_dt_match)
- =20
-  static struct platform_driver dpu_driver =3D {
-  	.probe =3D dpu_dev_probe,
- -	.remove =3D dpu_dev_remove,
- +	.remove_new =3D dpu_dev_remove,
-- 	.shutdown =3D msm_drv_shutdown,
-+ 	.shutdown =3D msm_kms_shutdown,
-  	.driver =3D {
-  		.name =3D "msm_dpu",
-  		.of_match_table =3D dpu_dt_match,
-diff --cc drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
-index e5012fa6771f,982b7689e5b6..000000000000
---- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
-+++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
-@@@ -557,12 -507,60 +507,58 @@@ static const struct dev_pm_ops mdp4_pm_
- =20
-  static int mdp4_probe(struct platform_device *pdev)
-  {
-- 	return msm_drv_probe(&pdev->dev, mdp4_kms_init);
-+ 	struct device *dev =3D &pdev->dev;
-+ 	struct mdp4_kms *mdp4_kms;
-+ 	int irq;
-+=20
-+ 	mdp4_kms =3D devm_kzalloc(dev, sizeof(*mdp4_kms), GFP_KERNEL);
-+ 	if (!mdp4_kms)
-+ 		return dev_err_probe(dev, -ENOMEM, "failed to allocate kms\n");
-+=20
-+ 	mdp4_kms->mmio =3D msm_ioremap(pdev, NULL);
-+ 	if (IS_ERR(mdp4_kms->mmio))
-+ 		return PTR_ERR(mdp4_kms->mmio);
-+=20
-+ 	irq =3D platform_get_irq(pdev, 0);
-+ 	if (irq < 0)
-+ 		return dev_err_probe(dev, irq, "failed to get irq\n");
-+=20
-+ 	mdp4_kms->base.base.irq =3D irq;
-+=20
-+ 	/* NOTE: driver for this regulator still missing upstream.. use
-+ 	 * _get_exclusive() and ignore the error if it does not exist
-+ 	 * (and hope that the bootloader left it on for us)
-+ 	 */
-+ 	mdp4_kms->vdd =3D devm_regulator_get_exclusive(&pdev->dev, "vdd");
-+ 	if (IS_ERR(mdp4_kms->vdd))
-+ 		mdp4_kms->vdd =3D NULL;
-+=20
-+ 	mdp4_kms->clk =3D devm_clk_get(&pdev->dev, "core_clk");
-+ 	if (IS_ERR(mdp4_kms->clk))
-+ 		return dev_err_probe(dev, PTR_ERR(mdp4_kms->clk), "failed to get core_c=
-lk\n");
-+=20
-+ 	mdp4_kms->pclk =3D devm_clk_get(&pdev->dev, "iface_clk");
-+ 	if (IS_ERR(mdp4_kms->pclk))
-+ 		mdp4_kms->pclk =3D NULL;
-+=20
-+ 	mdp4_kms->axi_clk =3D devm_clk_get(&pdev->dev, "bus_clk");
-+ 	if (IS_ERR(mdp4_kms->axi_clk))
-+ 		return dev_err_probe(dev, PTR_ERR(mdp4_kms->axi_clk), "failed to get ax=
-i_clk\n");
-+=20
-+ 	/*
-+ 	 * This is required for revn >=3D 2. Handle errors here and let the kms
-+ 	 * init bail out if the clock is not provided.
-+ 	 */
-+ 	mdp4_kms->lut_clk =3D devm_clk_get_optional(&pdev->dev, "lut_clk");
-+ 	if (IS_ERR(mdp4_kms->lut_clk))
-+ 		return dev_err_probe(dev, PTR_ERR(mdp4_kms->lut_clk), "failed to get lu=
-t_clk\n");
-+=20
-+ 	return msm_drv_probe(&pdev->dev, mdp4_kms_init, &mdp4_kms->base.base);
-  }
- =20
- -static int mdp4_remove(struct platform_device *pdev)
- +static void mdp4_remove(struct platform_device *pdev)
-  {
-  	component_master_del(&pdev->dev, &msm_drm_ops);
- -
- -	return 0;
-  }
- =20
-  static const struct of_device_id mdp4_dt_match[] =3D {
-@@@ -573,8 -571,8 +569,8 @@@ MODULE_DEVICE_TABLE(of, mdp4_dt_match)
- =20
-  static struct platform_driver mdp4_platform_driver =3D {
-  	.probe      =3D mdp4_probe,
- -	.remove     =3D mdp4_remove,
- +	.remove_new =3D mdp4_remove,
-- 	.shutdown   =3D msm_drv_shutdown,
-+ 	.shutdown   =3D msm_kms_shutdown,
-  	.driver     =3D {
-  		.name   =3D "mdp4",
-  		.of_match_table =3D mdp4_dt_match,
-diff --cc drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c
-index 8a7b44376bc6,a28fbcd09684..000000000000
---- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c
-+++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c
-@@@ -939,10 -894,43 +894,43 @@@ static int mdp5_dev_probe(struct platfo
-  	if (ret)
-  		return ret;
- =20
-- 	return msm_drv_probe(&pdev->dev, mdp5_kms_init);
-+ 	mdp5_kms->pdev =3D pdev;
-+=20
-+ 	spin_lock_init(&mdp5_kms->resource_lock);
-+=20
-+ 	mdp5_kms->mmio =3D msm_ioremap(pdev, "mdp_phys");
-+ 	if (IS_ERR(mdp5_kms->mmio))
-+ 		return PTR_ERR(mdp5_kms->mmio);
-+=20
-+ 	/* mandatory clocks: */
-+ 	ret =3D get_clk(pdev, &mdp5_kms->axi_clk, "bus", true);
-+ 	if (ret)
-+ 		return ret;
-+ 	ret =3D get_clk(pdev, &mdp5_kms->ahb_clk, "iface", true);
-+ 	if (ret)
-+ 		return ret;
-+ 	ret =3D get_clk(pdev, &mdp5_kms->core_clk, "core", true);
-+ 	if (ret)
-+ 		return ret;
-+ 	ret =3D get_clk(pdev, &mdp5_kms->vsync_clk, "vsync", true);
-+ 	if (ret)
-+ 		return ret;
-+=20
-+ 	/* optional clocks: */
-+ 	get_clk(pdev, &mdp5_kms->lut_clk, "lut", false);
-+ 	get_clk(pdev, &mdp5_kms->tbu_clk, "tbu", false);
-+ 	get_clk(pdev, &mdp5_kms->tbu_rt_clk, "tbu_rt", false);
-+=20
-+ 	irq =3D platform_get_irq(pdev, 0);
-+ 	if (irq < 0)
-+ 		return dev_err_probe(&pdev->dev, irq, "failed to get irq\n");
-+=20
-+ 	mdp5_kms->base.base.irq =3D irq;
-+=20
-+ 	return msm_drv_probe(&pdev->dev, mdp5_kms_init, &mdp5_kms->base.base);
-  }
- =20
- -static int mdp5_dev_remove(struct platform_device *pdev)
- +static void mdp5_dev_remove(struct platform_device *pdev)
-  {
-  	DBG("");
-  	component_master_del(&pdev->dev, &msm_drm_ops);
-@@@ -986,8 -975,8 +974,8 @@@ MODULE_DEVICE_TABLE(of, mdp5_dt_match)
- =20
-  static struct platform_driver mdp5_driver =3D {
-  	.probe =3D mdp5_dev_probe,
- -	.remove =3D mdp5_dev_remove,
- +	.remove_new =3D mdp5_dev_remove,
-- 	.shutdown =3D msm_drv_shutdown,
-+ 	.shutdown =3D msm_kms_shutdown,
-  	.driver =3D {
-  		.name =3D "msm_mdp",
-  		.of_match_table =3D mdp5_dt_match,
-diff --cc drivers/gpu/drm/msm/msm_drv.c
-index 05fe32c3a4b4,401e9ef86074..000000000000
---- a/drivers/gpu/drm/msm/msm_drv.c
-+++ b/drivers/gpu/drm/msm/msm_drv.c
-@@@ -457,23 -264,12 +264,14 @@@ static int msm_drm_init(struct device *
-  	if (ret)
-  		goto err_deinit_vram;
- =20
-- 	/* the fw fb could be anywhere in memory */
-- 	ret =3D drm_aperture_remove_framebuffers(drv);
-- 	if (ret)
-- 		goto err_msm_uninit;
--=20
- -	msm_gem_shrinker_init(ddev);
- +	ret =3D msm_gem_shrinker_init(ddev);
- +	if (ret)
- +		goto err_msm_uninit;
- =20
-  	if (priv->kms_init) {
-- 		ret =3D priv->kms_init(ddev);
-- 		if (ret) {
-- 			DRM_DEV_ERROR(dev, "failed to load kms\n");
-- 			priv->kms =3D NULL;
-+ 		ret =3D msm_drm_kms_init(dev, drv);
-+ 		if (ret)
-  			goto err_msm_uninit;
-- 		}
-- 		kms =3D priv->kms;
-  	} else {
-  		/* valid only for the dummy headless case, where of_node=3DNULL */
-  		WARN_ON(dev->of_node);
-@@@ -1277,37 -971,21 +973,19 @@@ int msm_drv_probe(struct device *master
- =20
-  static int msm_pdev_probe(struct platform_device *pdev)
-  {
-- 	return msm_drv_probe(&pdev->dev, NULL);
-+ 	return msm_drv_probe(&pdev->dev, NULL, NULL);
-  }
- =20
- -static int msm_pdev_remove(struct platform_device *pdev)
- +static void msm_pdev_remove(struct platform_device *pdev)
-  {
-  	component_master_del(&pdev->dev, &msm_drm_ops);
- -
- -	return 0;
-  }
- =20
-- void msm_drv_shutdown(struct platform_device *pdev)
-- {
-- 	struct msm_drm_private *priv =3D platform_get_drvdata(pdev);
-- 	struct drm_device *drm =3D priv ? priv->dev : NULL;
--=20
-- 	/*
-- 	 * Shutdown the hw if we're far enough along where things might be on.
-- 	 * If we run this too early, we'll end up panicking in any variety of
-- 	 * places. Since we don't register the drm device until late in
-- 	 * msm_drm_init, drm_dev->registered is used as an indicator that the
-- 	 * shutdown will be successful.
-- 	 */
-- 	if (drm && drm->registered && priv->kms)
-- 		drm_atomic_helper_shutdown(drm);
-- }
--=20
-  static struct platform_driver msm_platform_driver =3D {
-  	.probe      =3D msm_pdev_probe,
- -	.remove     =3D msm_pdev_remove,
- +	.remove_new =3D msm_pdev_remove,
-- 	.shutdown   =3D msm_drv_shutdown,
-  	.driver     =3D {
-  		.name   =3D "msm",
-- 		.pm     =3D &msm_pm_ops,
-  	},
-  };
- =20
-
---Sig_/rWDVrW2M2hR+XA_N0lP.=mV
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUkqfkACgkQAVBC80lX
-0Gy3bwgAjLUfZneGUf/MjmVhX904NqBVgmvrLjtNqtiCuy24mDxeU0wYmkWpReZE
-IT89DVzILJBJIs5MRNQkxg81nxgYLNMzyc73l3L0ho/lBjz9A8EcXiQdVzRzM75j
-IwhQ6o6BHyll3vOCf/RLoz7H7uO9pfXJywN1Seo3VVFaEBMlYbbdstUj2mjOfa2C
-d6JjTKmILmtskKFQfAJRVEZQkoJOYSNkGS+YwUPW+TaUUIpht6jEFPc4pD3XxsQp
-fGIWlj1lKVATPz66JjmbDg2BEcrGJ8dp+wBbAMgbKSv8x9mIBdZcX874fXLPsx4D
-8zcGEtzX0PRhzqdEumed6jFG5Tn3vA==
-=atEY
------END PGP SIGNATURE-----
-
---Sig_/rWDVrW2M2hR+XA_N0lP.=mV--
+T24gVHVlLCAyMDIzLTEwLTEwIGF0IDAwOjUwICswMDAwLCBIdWFuZywgS2FpIHdyb3RlOg0KPiBP
+biBNb24sIDIwMjMtMTAtMDkgYXQgMTc6MjMgLTA3MDAsIFNlYW4gQ2hyaXN0b3BoZXJzb24gd3Jv
+dGU6DQo+ID4gT24gTW9uLCBPY3QgMDksIDIwMjMsIEthaSBIdWFuZyB3cm90ZToNCj4gPiA+IE9u
+IEZyaSwgMjAyMy0wOS0yMiBhdCAyMDowNiAtMDcwMCwgSGFpdGFvIEh1YW5nIHdyb3RlOg0KPiA+
+ID4gPiArLyoqDQo+ID4gPiA+ICsgKiBzZ3hfZXBjX29vbSgpIC0gaW52b2tlIEVQQyBvdXQtb2Yt
+bWVtb3J5IGhhbmRsaW5nIG9uIHRhcmdldCBMUlUNCj4gPiA+ID4gKyAqIEBscnU6CUxSVSB0aGF0
+IGlzIGxvdw0KPiA+ID4gPiArICoNCj4gPiA+ID4gKyAqIFJldHVybjoJJXRydWUgaWYgYSB2aWN0
+aW0gd2FzIGZvdW5kIGFuZCBraWNrZWQuDQo+ID4gPiA+ICsgKi8NCj4gPiA+ID4gK2Jvb2wgc2d4
+X2VwY19vb20oc3RydWN0IHNneF9lcGNfbHJ1X2xpc3RzICpscnUpDQo+ID4gPiA+ICt7DQo+ID4g
+PiA+ICsJc3RydWN0IHNneF9lcGNfcGFnZSAqdmljdGltOw0KPiA+ID4gPiArDQo+ID4gPiA+ICsJ
+c3Bpbl9sb2NrKCZscnUtPmxvY2spOw0KPiA+ID4gPiArCXZpY3RpbSA9IHNneF9vb21fZ2V0X3Zp
+Y3RpbShscnUpOw0KPiA+ID4gPiArCXNwaW5fdW5sb2NrKCZscnUtPmxvY2spOw0KPiA+ID4gPiAr
+DQo+ID4gPiA+ICsJaWYgKCF2aWN0aW0pDQo+ID4gPiA+ICsJCXJldHVybiBmYWxzZTsNCj4gPiA+
+ID4gKw0KPiA+ID4gPiArCWlmICh2aWN0aW0tPmZsYWdzICYgU0dYX0VQQ19PV05FUl9QQUdFKQ0K
+PiA+ID4gPiArCQlyZXR1cm4gc2d4X29vbV9lbmNsX3BhZ2UodmljdGltLT5lbmNsX3BhZ2UpOw0K
+PiA+ID4gPiArDQo+ID4gPiA+ICsJaWYgKHZpY3RpbS0+ZmxhZ3MgJiBTR1hfRVBDX09XTkVSX0VO
+Q0wpDQo+ID4gPiA+ICsJCXJldHVybiBzZ3hfb29tX2VuY2wodmljdGltLT5lbmNsKTsNCj4gPiA+
+IA0KPiA+ID4gSSBoYXRlIHRvIGJyaW5nIHRoaXMgdXAsIGF0IGxlYXN0IGF0IHRoaXMgc3RhZ2Us
+IGJ1dCBJIGFtIHdvbmRlcmluZyB3aHkgd2UgbmVlZA0KPiA+ID4gdG8gcHV0IFZBIGFuZCBTRUNT
+IHBhZ2VzIHRvIHRoZSB1bnJlY2xhaW1hYmxlIGxpc3QsIGJ1dCBjYW5ub3Qga2VlcCBhbg0KPiA+
+ID4gImVuY2xhdmVfbGlzdCIgaW5zdGVhZD8NCj4gPiANCj4gPiBUaGUgbW90aXZhdGlvbiBmb3Ig
+dHJhY2tpbmcgRVBDIHBhZ2VzIGluc3RlYWQgb2YgZW5jbGF2ZXMgd2FzIHNvIHRoYXQgdGhlIEVQ
+Qw0KPiA+IE9PTS1raWxsZXIgY291bGQgImtpbGwiIFZNcyBhcyB3ZWxsIGFzIGhvc3Qtb3duZWQg
+ZW5jbGF2ZXMuIMKgDQo+ID4gDQo+IA0KPiBBaCB0aGlzIHNlZW1zIGEgZmFpciBhcmd1bWVudC4g
+Oi0pDQo+IA0KPiA+IFRoZSB2aXJ0dWFsIEVQQyBjb2RlDQo+ID4gZGlkbid0IGFjdHVhbGx5IGtp
+bGwgdGhlIFZNIHByb2Nlc3MsIGl0IGluc3RlYWQganVzdCBmcmVlZCBhbGwgb2YgdGhlIEVQQyBw
+YWdlcw0KPiA+IGFuZCBhYnVzZWQgdGhlIFNHWCBhcmNoaXRlY3R1cmUgdG8gZWZmZWN0aXZlbHkg
+bWFrZSB0aGUgZ3Vlc3QgcmVjcmVhdGUgYWxsIGl0cw0KPiA+IGVuY2xhdmVzIChJSVJDLCBRRU1V
+IGRvZXMgdGhlIHNhbWUgdGhpbmcgdG8gInN1cHBvcnQiIGxpdmUgbWlncmF0aW9uKS4NCj4gDQo+
+IEl0IHJldHVybnMgU0lHQlVTLiAgU0dYIFZNIGxpdmUgbWlncmF0aW9uIGFsc28gcmVxdWlyZXMg
+ZW5vdWdoIEVQQyBiZWluZyBhYmxlIHRvDQo+IGJlIGFsbG9jYXRlZCBvbiB0aGUgZGVzdGluYXRp
+b24gbWFjaGluZSB0byB3b3JrIEFGQUlDVC4NCj4gIA0KPiA+IA0KPiA+IExvb2tzIGxpa2UgeSdh
+bGwgcHVudGVkIG9uIHRoYXQgd2l0aDoNCj4gPiANCj4gPiAgIFRoZSBFUEMgcGFnZXMgYWxsb2Nh
+dGVkIGZvciBLVk0gZ3Vlc3RzIGJ5IHRoZSB2aXJ0dWFsIEVQQyBkcml2ZXIgYXJlIG5vdA0KPiA+
+ICAgcmVjbGFpbWFibGUgYnkgdGhlIGhvc3Qga2VybmVsIFs1XS4gVGhlcmVmb3JlIHRoZXkgYXJl
+IG5vdCB0cmFja2VkIGJ5IGFueQ0KPiA+ICAgTFJVIGxpc3RzIGZvciByZWNsYWltaW5nIHB1cnBv
+c2VzIGluIHRoaXMgaW1wbGVtZW50YXRpb24sIGJ1dCB0aGV5IGFyZQ0KPiA+ICAgY2hhcmdlZCB0
+b3dhcmQgdGhlIGNncm91cCBvZiB0aGUgdXNlciBwcm9jZXNzcyAoZS5nLiwgUUVNVSkgbGF1bmNo
+aW5nIHRoZQ0KPiA+ICAgZ3Vlc3QuICBBbmQgd2hlbiB0aGUgY2dyb3VwIEVQQyB1c2FnZSByZWFj
+aGVzIGl0cyBsaW1pdCwgdGhlIHZpcnR1YWwgRVBDDQo+ID4gICBkcml2ZXIgd2lsbCBzdG9wIGFs
+bG9jYXRpbmcgbW9yZSBFUEMgZm9yIHRoZSBWTSwgYW5kIHJldHVybiBTSUdCVVMgdG8gdGhlDQo+
+ID4gICB1c2VyIHByb2Nlc3Mgd2hpY2ggd291bGQgYWJvcnQgdGhlIFZNIGxhdW5jaC4NCj4gPiAN
+Cj4gPiB3aGljaCBJTU8gaXMgYSBoYWNrLCB1bmxlc3MgcmV0dXJuaW5nIFNJR0JVUyBpcyBhY3R1
+YWxseSBlbmZvcmNlZCBzb21laG93LiDCoA0KPiA+IA0KPiANCj4gImVuZm9yY2VkIiBkbyB5b3Ug
+bWVhbj8NCj4gDQo+IEN1cnJlbnRseSB0aGUgc2d4X3ZlcGNfZmF1bHQoKSByZXR1cm5zIFZNX0ZB
+VUxUX1NJR0JVUyB3aGVuIGl0IGNhbm5vdCBhbGxvY2F0ZQ0KPiBFUEMgcGFnZS4gIEFuZCB3aGVu
+IHRoaXMgaGFwcGVucywgS1ZNIHJldHVybnMgS1ZNX1BGTl9FUlJfRkFVTFQgaW4gaHZhX3RvX3Bm
+bigpLA0KPiB3aGljaCBldmVudHVhbGx5IHJlc3VsdHMgaW4gS1ZNIHJldHVybmluZyAtRUZBVUxU
+IHRvIHVzZXJzcGFjZSBpbiB2Y3B1X3J1bigpLiANCj4gQW5kIFFlbXUgdGhlbiBraWxscyB0aGUg
+Vk0gd2l0aCBzb21lIG5vbnNlbnNlIG1lc3NhZ2U6DQo+IA0KPiAgICAgICAgIGVycm9yOiBrdm0g
+cnVuIGZhaWxlZCBCYWQgYWRkcmVzcw0KPiAgICAgICAgIDxkdW1wIGd1ZXN0IHJlZ2lzdGVycyBu
+b25zZW5zZT4NCj4gDQo+ID4gUmVseWluZw0KPiA+IG9uIHVzZXJzcGFjZSB0byBiZSBraW5kIGVu
+b3VnaCB0byBraWxsIGl0cyBWTXMga2luZGEgZGVmZWF0cyB0aGUgcHVycG9zZSBvZiBjZ3JvdXAN
+Cj4gPiBlbmZvcmNlbWVudC4gIEUuZy4gaWYgdGhlIGhhcmQgbGltaXQgZm9yIGEgRVBDIGNncm91
+cCBpcyBsb3dlcmVkLCB1c2Vyc3BhY2UgcnVubmluZw0KPiA+IGVuY2FsdmVzIGluIGEgVk0gY291
+bGQgY29udGludWUgb24gYW5kIHJlZnVzZSB0byBnaXZlIHVwIGl0cyBFUEMsIGFuZCB0aHVzIHJ1
+biBhYm92ZQ0KPiA+IGl0cyBsaW1pdCBpbiBwZXJwZXR1aXR5Lg0KPiANCj4gPiANCj4gPiBJIGNh
+biBzZWUgdXNlcnNwYWNlIHdhbnRpbmcgdG8gZXhwbGljaXRseSB0ZXJtaW5hdGUgdGhlIFZNIGlu
+c3RlYWQgb2YgInNpbGVudGx5Ig0KPiA+IHRoZSBWTSdzIGVuY2xhdmVzLCBidXQgdGhhdCBzZWVt
+cyBsaWtlIGl0IHNob3VsZCBiZSBhIGtub2IgaW4gdGhlIHZpcnR1YWwgRVBDDQo+ID4gY29kZS4N
+Cg0KSSBndWVzcyBJIHNsaWdodGx5IG1pc3VuZGVyc3Rvb2QgeW91ciB3b3Jkcy4NCg0KWW91IG1l
+YW4gd2Ugd2FudCB0byBraWxsIFZNIHdoZW4gdGhlIGxpbWl0IGlzIHNldCB0byBiZSBsb3dlciB0
+aGFuIHZpcnR1YWwgRVBDDQpzaXplLg0KDQpUaGlzIHBhdGNoIGFkZHMgU0dYX0VOQ0xfTk9fTUVN
+T1JZLiAgSSBndWVzcyB3ZSBjYW4gdXNlIGl0IGZvciB2aXJ0dWFsIEVQQyB0b28/DQoNCkluIHRo
+ZSBzZ3hfdmVwY19mYXVsdCgpLCB3ZSBjaGVjayB0aGlzIGZsYWcgYXQgZWFybHkgdGltZSBhbmQg
+cmV0dXJuIFNJR0JVUyBpZg0KaXQgaXMgc2V0Lg0KDQpCdXQgdGhpcyBhbHNvIHJlcXVpcmVzIGtl
+ZXBpbmcgdmlydHVhbCBFUEMgcGFnZXMgaW4gc29tZSBsaXN0LCBhbmQgaGFuZGxlcyB0aGVtDQpp
+biBzZ3hfZXBjX29vbSgpIHRvby4NCg0KQW5kIGZvciB2aXJ0dWFsIEVQQyBwYWdlcywgSSBndWVz
+cyB0aGUgInlvdW5nIiBsb2dpYyBjYW4gYmUgYXBwbGllZCB0aHVzDQpwcm9iYWJseSBpdCdzIGJl
+dHRlciB0byBrZWVwIHRoZSBhY3R1YWwgdmlydHVhbCBFUEMgcGFnZXMgdG8gYSAoc2VwYXJhdGU/
+KSBsaXN0DQppbnN0ZWFkIG9mIGtlZXBpbmcgdGhlIHZpcnR1YWwgRVBDIGluc3RhbmNlLg0KDQoJ
+c3RydWN0IHNneF9lcGNfbHJ1IHsNCgkJc3RydWN0IGxpc3RfaGVhZCByZWNsYWltYWJsZTsNCgkJ
+c3RydWN0IHNneF9lbmNsICplbmNsYXZlczsNCgkJc3RydWN0IGxpc3RfaGVhZCB2ZXBjX3BhZ2Vz
+Ow0KCX0NCg0KT3Igc3RpbGwgdHJhY2tpbmcgVkEvU0VDUyBhbmQgdmlydHVhbCBFUEMgcGFnZXMg
+aW4gYSBzaW5nbGUgdW5yZWNsaWFtYWJsZSBsaXN0Pw0KDQpJIGRvbid0IGtub3cgOi0pDQo=
