@@ -2,109 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 046867BFE35
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA437BFE33
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233004AbjJJNnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 09:43:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37456 "EHLO
+        id S232865AbjJJNnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 09:43:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232587AbjJJNmg (ORCPT
+        with ESMTP id S232425AbjJJNmy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 09:42:36 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C413A10FE;
-        Tue, 10 Oct 2023 06:40:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696945225; x=1728481225;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=XgsVgCZAuytkZmmW6oOHBDJJnZdufzsQiRpSM2n44YE=;
-  b=gs4NceA2E1yjZfx0fHjDB26/Obbz+BdCu49jnypjjVCY+62qBzT9374e
-   fqyC7jM66WYQeEDQQgd3ZwyqAfcv6vwvKL4M9/PRcr1n3HJaK+iCZDecq
-   PKlX07n7y+kkT8JJ22n/t/MEgVbrdOowHsyUZMLDEdCxQsQjf9jZN8J/J
-   oxSXVEJ3DjvmIfyjZYvmgipEYNt2c/DrHxJ9NHAwhHEhAkyDCIUEBvWMW
-   HRw82qcY3moqINq4AUv47IMqnson5QAHikRJi2U11paYbt714lLEZe3oZ
-   sRJOrvDqF6AGDZMzpyioY1XvLRDP9iU14xuIuorlowg0o7r4J1tZD+p9H
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="387232371"
-X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
-   d="scan'208";a="387232371"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 06:40:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="819235562"
-X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
-   d="scan'208";a="819235562"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga008.fm.intel.com with ESMTP; 10 Oct 2023 06:40:22 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id B621B35A; Tue, 10 Oct 2023 16:40:20 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org,
-        acpi4asus-user@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Jo=C3=A3o=20Paulo=20Rechi=20Vita?= <jprvita@gmail.com>,
-        Corentin Chary <corentin.chary@gmail.com>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>
-Subject: [PATCH v5 1/1] platform/x86: asus-wireless: Replace open coded acpi_match_acpi_device()
-Date:   Tue, 10 Oct 2023 16:40:19 +0300
-Message-Id: <20231010134019.3892062-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+        Tue, 10 Oct 2023 09:42:54 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60151BF3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 06:40:36 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so72226541fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 06:40:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696945235; x=1697550035; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XxximMkoWGQA+uzz71VUStaHnVSe2K/WIUNaeHglvcc=;
+        b=LqV+ZEePymX0b2CYVfcmrvRnvP85Ofakx8Pjdst4wUPz3S7lkMC6GuMgPueHipAj9a
+         Qa9B3UvKidAUN2IURc/nGqPKVs5RbVDHBoSPhBNoLm3KCd7VtE3ULkXt/vRZoawa3hKr
+         31OY5msVJ6FfyljsiancWRyaP7M+wddn5OZWmnjx2prezuxh26Tyf8EgyhDe9DvCLEVb
+         6B5D70vp9NrGEYHWu1gNmUu+gcIScZqaB3q+2IsnOJ6D6TdB+i2EgvOdwcDcHPDutkxq
+         V2RKJlt9s6/lgG98fRRHM9e7uALhf9Pz6x8u0q8bzxmADpnhNuLrgEdPSObPSELn9pZT
+         NwGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696945235; x=1697550035;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XxximMkoWGQA+uzz71VUStaHnVSe2K/WIUNaeHglvcc=;
+        b=NKxzPTarlB9Xd0J6a3thFIaaGcpc46kbZxPoAjWbN44cCnDTpxAiFCgShxzHBxqWYc
+         cwH6jFSsBH1+8dMfkbP5SYxM860fnV9wgHkrsKCg9NSrdJvm11WHNMwjhFQHgs7kFKfJ
+         zVor5DCk3C/1f8z7qpilspobHziHXnBRSoCtqyIEnx/2GNJscioRq13Ov5q/JHhGzMdC
+         YpdXjB+aZjirZuLvO+qQRbK1LVA/poctyr0uk0V9xcACEvqpm/0HTxpjYO8BXzI8vo5S
+         Y0tteruvWP/SsWOQT7IyZgRLOnOLuG2SJ3pt/aHuTDQyBkQGcqEoDU5T6qAbPCQPUSOu
+         0lXQ==
+X-Gm-Message-State: AOJu0YzVvlZdItPEcCA4kRvLCchIPOdh9W+5pw07Tt6jItYRqjDyuIr5
+        RYFn99GvwPU94IH5NOZsqn7IUQ==
+X-Google-Smtp-Source: AGHT+IF6lr0SvRheFgchDQzYQqCJnSx8Bi6IESHLFO+fVACAqFpnSaNlGIZF0isBSwL9absMNKdW/Q==
+X-Received: by 2002:a2e:9a84:0:b0:2c2:8e57:24a7 with SMTP id p4-20020a2e9a84000000b002c28e5724a7mr16879591lji.21.1696945234817;
+        Tue, 10 Oct 2023 06:40:34 -0700 (PDT)
+Received: from [172.30.204.192] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id y9-20020a2e3209000000b002b9b9fd0f92sm2348720ljy.105.2023.10.10.06.40.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Oct 2023 06:40:34 -0700 (PDT)
+Message-ID: <e255dcbd-6342-49e6-9bfe-17a47b2a3c8a@linaro.org>
+Date:   Tue, 10 Oct 2023 15:40:32 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 4/4] ARM: dts: qcom: ipq8064: Add CPU OPP table
+Content-Language: en-US
+To:     Robert Marko <robimarko@gmail.com>, ilia.lin@kernel.org,
+        vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, agross@kernel.org, andersson@kernel.org,
+        rafael@kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Christian Marangi <ansuelsmth@gmail.com>
+References: <20230930102218.229613-1-robimarko@gmail.com>
+ <20230930102218.229613-4-robimarko@gmail.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20230930102218.229613-4-robimarko@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace open coded acpi_match_acpi_device() in asus_wireless_add().
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
 
-v5: updated subject (Ilpo)
-v4: used proper API, added tag (Hans)
-v3: rewrote error path logic (Hans)
-v2: fixed compilation error
+On 9/30/23 12:21, Robert Marko wrote:
+> From: Christian Marangi <ansuelsmth@gmail.com>
+> 
+> Add CPU OPP table for IPQ8062, IPQ8064 and IPQ8065 SoC.
+> Use opp-supported-hw binding to correctly enable and disable the
+> frequency as IPQ8062 supports up to 1.0Ghz, IPQ8064 supports up to
+> 1.4GHz with 1.2GHz as an additional frequency and IPQ8065 supports
+> 1.7GHZ but doesn't have 1.2GHZ frequency and has to be disabled.
+> 
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> Signed-off-by: Robert Marko <robimarko@gmail.com>
+> ---
+Christian/Robert, can you provide a downstream source for this?
 
- drivers/platform/x86/asus-wireless.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/platform/x86/asus-wireless.c b/drivers/platform/x86/asus-wireless.c
-index abf01e00b799..41227bf95878 100644
---- a/drivers/platform/x86/asus-wireless.c
-+++ b/drivers/platform/x86/asus-wireless.c
-@@ -148,16 +148,12 @@ static int asus_wireless_add(struct acpi_device *adev)
- 	if (err)
- 		return err;
- 
--	for (id = device_ids; id->id[0]; id++) {
--		if (!strcmp((char *) id->id, acpi_device_hid(adev))) {
--			data->hswc_params =
--				(const struct hswc_params *)id->driver_data;
--			break;
--		}
--	}
--	if (!data->hswc_params)
-+	id = acpi_match_acpi_device(device_ids, adev);
-+	if (!id)
- 		return 0;
- 
-+	data->hswc_params = (const struct hswc_params *)id->driver_data;
-+
- 	data->wq = create_singlethread_workqueue("asus_wireless_workqueue");
- 	if (!data->wq)
- 		return -ENOMEM;
--- 
-2.40.0.1.gaa8946217a0b
-
+Konrad
