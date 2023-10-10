@@ -2,78 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B75C7BFE73
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E697BFE7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232957AbjJJNww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 09:52:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52134 "EHLO
+        id S232728AbjJJNxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 09:53:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232663AbjJJNwl (ORCPT
+        with ESMTP id S232705AbjJJNwu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 09:52:41 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CEF726BA;
-        Tue, 10 Oct 2023 06:45:18 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6969b391791so3880912b3a.3;
-        Tue, 10 Oct 2023 06:45:17 -0700 (PDT)
+        Tue, 10 Oct 2023 09:52:50 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C46930DD
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 06:45:31 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d8a000f6a51so6104216276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 06:45:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696945517; x=1697550317; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8l2RdI3GFEPsUV4izDgB+ReS+fUuBzrkfgodsUfx59E=;
-        b=NEZaRF6XdarTyqq7WhTh6Ppmj3rHgDi3u42y0blJQvIp6q9r5inkGCvDUZGKAdwFxB
-         6b4Raag+FyX9wSDgjGX/gpnDxVvZxGxvBueAQMrgDm27a8LOV4m7xjIXU4WYxkXaSH5s
-         H7/v6ASKspCPgVc7aJcyBssNtzSgWby8Aj5TNoZjo259Hjx1JVig/QfRkOBJZEc9fw0I
-         t6E863ANh+LMGgPjbuu8xm8DOITRV7dpc1MZYLBFW0tMjwg92Tf2lkdnFM2MxhMoCfHT
-         3yh6lFnaVFD7A7v/QeCZKsnsmvmfRX4MqfgBpFhnxEGopoHmIEfHD/K/7wbcJBXpM8Wv
-         Vrmg==
+        d=linaro.org; s=google; t=1696945530; x=1697550330; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RQoVGRS7dETbgV3CTGGzd1lnUKsqhrqwon34noS0Bns=;
+        b=pBLv91vx0ATqEqqb0fCFMbzaHvPJFPHFWg8YBec79DE9JUE3mj8FJ9XB4571Y1dSID
+         gFcdu9gpSy+bq2P04SPr29YZRmn8nyNbP7NkKBXApugDfnxuGOBhXm30SYaxnaxIDM25
+         4YsbKGv4gTpZIxcNKLE8SNA64lueWYoTllYmyk0xywJA/p2WzZ3ZunXb+oIx1ygXr8oW
+         Ek2nijdGu5TgVc7ZjH0Tz9qkfy2Jo3Hl4d6dF6GIDBgWdNqma04RpwCUcJkSGgkT21+t
+         a/WgCf8/8OTRH1OIOMIiXC+kpnJuL+XZh2oCBIqFiLfTyCdxdszmcSogk7kX6LTzmrUr
+         Zw+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696945517; x=1697550317;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:sender:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=8l2RdI3GFEPsUV4izDgB+ReS+fUuBzrkfgodsUfx59E=;
-        b=WUvauxw2JQxzwpexGR8MIo90ujj3+kQLnuhwShnyMUlgbevhd8me99v81Zwutg+ezZ
-         ZWigJp+Drmhk5hpdWGaP4TYrLqCYrzu/TnZcxn7rVdpTodJ8mdKeU5HPKLq7T75bCSpR
-         ms8s6NZW+EQqVkYsXFJDNLBLbZh9/oQJxOP0xWA7ySd7X/PHOuo6miIVpowbu6sWipdB
-         zEgUChUSv9BrkyRyBs6/LKvd3ZsZM/Svm49xsIeqp8A0DLyWdhB7s92+LqFTZDCL8Yze
-         jvlGQpzToZnGkbpMJGWr3saZnvWKFqqYnk0pFkw/bSONGRAUtbxAfaNasOK7v6jw5eyc
-         yoKg==
-X-Gm-Message-State: AOJu0YwZ6vjynDnCqesrGeZX8/4tGK/Wdl9COKH0H43vMuCTYAq2BXdk
-        ppXaW+4iJczjO47iCSHiHbA=
-X-Google-Smtp-Source: AGHT+IFXY9oUPaVxKEnn6g6JYYGtzSzrMoSdMofrv/KTOwLE9fLvIeTEWiBIFB3Tz8IdPnDmUMrc6Q==
-X-Received: by 2002:a05:6a20:2451:b0:14d:5580:8ff0 with SMTP id t17-20020a056a20245100b0014d55808ff0mr18099934pzc.25.1696945517276;
-        Tue, 10 Oct 2023 06:45:17 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j6-20020aa783c6000000b0068ffb8da107sm8231769pfn.212.2023.10.10.06.45.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 06:45:16 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 10 Oct 2023 06:45:15 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Wolfram Sang <wsa@kernel.org>,
-        Lakshmi Yadlapati <lakshmiy@us.ibm.com>,
-        sumit.semwal@linaro.org, christian.koenig@amd.com,
-        jdelvare@suse.com, joel@jms.id.au, andrew@aj.id.au,
-        eajames@linux.ibm.com, ninad@linux.ibm.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v1 0/2] [PATCH] hwmon: (pmbus/max31785) Add minimum delay
- between bus accesses
-Message-ID: <1284830f-025e-4e25-8ed0-50a6cc00d223@roeck-us.net>
-References: <20231009211420.3454026-1-lakshmiy@us.ibm.com>
- <ZSUaDIfWmEn5edrE@shikoro>
+        d=1e100.net; s=20230601; t=1696945530; x=1697550330;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RQoVGRS7dETbgV3CTGGzd1lnUKsqhrqwon34noS0Bns=;
+        b=qali/PSfHkymCiDRVGSdnC3ZOHmXznOLmaJPIfpJtC0vTYkFNFUBV6Rt10TS2BZ3CU
+         8P4Hokb9V1nMrHLCPizjwm+025JQhlu0pYS7+VGpGGFF+2D8/5yHf9ZhnGdoiZzt0NGp
+         w+4dhw6wX+RmfeaerwKqLyCkGJqx06q8Lkuiz4PNKYnYBtqCMEJxmmYLNPA4vHhBIkG5
+         rv7DqrC7I+bSggXXM6dmYA69E6n/tFK96xYkcNSBgRSv+K0Cocq+3mRBhbvOCcumcYWP
+         Dz9CZWU7Exoeq3P/P/xs1jxYcBvBDA1agL3QDRSv2Lg2gTV98KGL9zDk3Dbrg6QpndHZ
+         Pf0Q==
+X-Gm-Message-State: AOJu0Yx58OhpM9m/QGMRPYShmY09B5pgmunHM6VhKmVJFObWX0JN2Jxf
+        d51uyqga5AKs5Rxpiw+O3dHb5N+fZmr4bicWDNEeIw==
+X-Google-Smtp-Source: AGHT+IGrO7LkLD/MRm5QkzXeIcnLLYqdWFi9qGCJ2DBHCDw5MlrCdMPazBkBNCYOQCgCUP8762z6lGP8prXzvQVB8kQ=
+X-Received: by 2002:a25:3308:0:b0:d9a:3801:aed8 with SMTP id
+ z8-20020a253308000000b00d9a3801aed8mr3475649ybz.14.1696945529849; Tue, 10 Oct
+ 2023 06:45:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZSUaDIfWmEn5edrE@shikoro>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+References: <20231009083856.222030-1-u.kleine-koenig@pengutronix.de>
+ <20231009083856.222030-20-u.kleine-koenig@pengutronix.de> <CAMuHMdX=pESX1PefCXBSHgu8wRMsEiNO02q1-sjsxqysKb1znA@mail.gmail.com>
+In-Reply-To: <CAMuHMdX=pESX1PefCXBSHgu8wRMsEiNO02q1-sjsxqysKb1znA@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 10 Oct 2023 15:45:18 +0200
+Message-ID: <CACRpkdZ0xhgEA733XNOehBL0G5u1P=1FGVTf9tcToLhEj5vQCg@mail.gmail.com>
+Subject: Re: [PATCH 19/20] pinctrl: renesas: rzn1: Convert to platform remove
+ callback returning void
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,29 +73,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 11:31:56AM +0200, Wolfram Sang wrote:
-> Hi,
-> 
-> thanks for this series!
-> 
-> > Reference to Andrew's previous proposal:
-> > https://lore.kernel.org/all/20200914122811.3295678-1-andrew@aj.id.au/
-> 
-> I do totally agree with Guenter's comment[1], though. This just affects
-> a few drivers and this patch is way too intrusive for the I2C core. The
-> later suggested prepare_device() callback[2] sounds better to me. I
-> still haven't fully understood why this all cannot be handled in the
-> driver's probe. Could someone give me a small summary about that?
-> 
+On Mon, Oct 9, 2023 at 11:39=E2=80=AFAM Geert Uytterhoeven <geert@linux-m68=
+k.org> wrote:
 
-Lots of PMBus devices have the same problem, we have always handled
-it in PMBus drivers by implementing local wait code, and your references
-point that out. What other summary are you looking for ?
+> Linus: do you plan to take this whole series directly?
+> If yes:
+> Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>
+> Otherwise, I can queue it in renesas-pinctrl-for-v6.7 for my
+> second PR for v6.7 this Friday.
 
-On a side note, if anyone plans to implement the prepare_device() callback,
-please make sure that it covers all requirements. It would be unfortunate
-if such a callback was implemented if that would still require per-driver
-code (besides the callback).
+You pick it! Andy is already picking the Intel changes, so it
+is better to refer to submaintainers where we have them!
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-Thanks,
-Guenter
+Yours,
+Linus Walleij
