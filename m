@@ -2,105 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B93847BF2D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 08:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFB347BF2D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 08:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442215AbjJJGPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 02:15:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45710 "EHLO
+        id S1442218AbjJJGRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 02:17:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442156AbjJJGPp (ORCPT
+        with ESMTP id S1442183AbjJJGRj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 02:15:45 -0400
+        Tue, 10 Oct 2023 02:17:39 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAAC997;
-        Mon,  9 Oct 2023 23:15:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FFFDC433C8;
-        Tue, 10 Oct 2023 06:15:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696918543;
-        bh=wY8QJkm+jocEeUpbq07zihxLMe27HPMooctLb8gtMAs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JWDN21mJ9Z8E6RBWQSwNWfPjoNta/kvTTopqAQAUKPlYbHjSKbVZIBEvBi7qP3YeL
-         yH7t8Wo+Ylsa+5+lhUVhorqFdYvjb8qAyx1c9MN1h8Dye+aKfLpNQswtI6d8x0M5K1
-         MJO1iForDWmtCxJQJyElkm25bgEXzEPHJII+D9ps=
-Date:   Tue, 10 Oct 2023 08:15:40 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Alexander Graf <graf@amazon.com>
-Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Olivia Mackall <olivia@selenic.com>,
-        Petre Eftime <petre.eftime@gmail.com>,
-        Erdem Meydanlli <meydanli@amazon.nl>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Kyunghwan Kwon <k@mononn.com>
-Subject: Re: [PATCH v4 2/2] misc: Add Nitro Secure Module driver
-Message-ID: <2023101010-margarita-whomever-d4a2@gregkh>
-References: <20231009212053.2007-1-graf@amazon.com>
- <20231009212053.2007-3-graf@amazon.com>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9568E9D;
+        Mon,  9 Oct 2023 23:17:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2197C433C8;
+        Tue, 10 Oct 2023 06:17:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696918658;
+        bh=h9CQdICcdTHsa/KeLMNYowXLwDNi+8QMgSiaxa80wo4=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=OaW38fiWbCpjKJ29idyZEI7/RIt1LUKvUgreoSf6oZilIa4q8T8h72Y+V0h7I37zM
+         LLsP9YrEXsxMay67paITpYl/Ub626lejzaDLtfiy0NrlIVMxzmrKpO7KQwg4kICxov
+         UH2l6a2EOaVI7wR37HfAy68QjwIpFmIDhE27dec2C4510HQm/W/AO6r1Ba3W7qZ2a1
+         6RxxvBN+tn+EbaSorn/135go0Mtzq7ki+5YUal576uhp26B/MA9f1H5DkaZ7Tfrodn
+         5VVUYPtL+XnINVnHuVA2ZU40yqp/oArel3qTXsTUYjhmECkAywYLSrio0UuuVwSCt0
+         65KoGNTBklfGA==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] hostap: Add __counted_by for struct
+ prism2_download_data and use struct_size()
+References: <ZSRXXvWMMkm7qqRW@work> <202310091253.665A9C9@keescook>
+        <169f782e-9cc4-49bc-9618-ca6acc526e37@embeddedor.com>
+        <202310091341.74A2D82BB@keescook>
+Date:   Tue, 10 Oct 2023 09:17:34 +0300
+In-Reply-To: <202310091341.74A2D82BB@keescook> (Kees Cook's message of "Mon, 9
+        Oct 2023 13:42:12 -0700")
+Message-ID: <877cnv57cx.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231009212053.2007-3-graf@amazon.com>
+Content-Type: text/plain
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 09:20:53PM +0000, Alexander Graf wrote:
-> When running Linux inside a Nitro Enclave, the hypervisor provides a
-> special virtio device called "NSM". This device has 3 main functions:
-> 
->   1) Provide attestation reports
->   2) Modify PCR state
->   3) Provide entropy
-> 
-> This patch adds a driver for NSM that exposes a /dev/nsm device node which
-> user space can issue ioctls on to request attestation documents, influence
-> PCR states, read entropy and enumerate status of the device. In addition,
-> the driver implements a hwrng backend and exposes some of the NSM device
-> metadata as sysfs entries.
-> 
-> Originally-by: Petre Eftime <petre.eftime@gmail.com>
-> Signed-off-by: Alexander Graf <graf@amazon.com>
-> 
-> ---
-> 
-> v1 -> v2:
-> 
->   - Remove boilerplate
->   - Add uapi header
-> 
-> v2 -> v3:
-> 
->   - Move globals to device struct
->   - Add compat handling
->   - Simplify some naming
->   - Remove debug prints
->   - Use module_virtio_driver
->   - Drop use of uio.h
-> 
-> v3 -> v4:
-> 
->   - Merge hwrng into the misc driver
->   - Add dependency on CBOR library
->   - Add internal and ioctl logic for all current NSM actions
->   - Use in-struct arrays instead of kvecs
->   - Add sysfs entries for NSM metadata
+Kees Cook <keescook@chromium.org> writes:
 
-You forgot Documentation/ABI/ entries for your new sysfs files so we can
-see what exactly they are and if they are sane.
+>> > Should this be considered a v2 of:
+>> > https://lore.kernel.org/linux-hardening/94848cc3-6f5c-46d7-8cc7-98a4f10865b3@embeddedor.com/
+>> > 
+>> > ?
+>> 
+>> Oops... sorry, I forgot I had reviewed this patch of yours.
+>> 
+>> > 
+>> > Yours is more complete since it includes the struct_size() change...
+>> > 
+>> 
+>> Should I resend this explicitly marking it as a v2?
+>
+> I defer to Kalle -- your Subject is more accurate, so perhaps let's just
+> let this stand?
 
-thanks,
+No need to resend. I marked Kees' version as Superseded so that I don't
+accidentally take the wrong version.
 
-greg k-h
+In the title "wifi:" is missing but I can add that during commit.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
