@@ -2,137 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D95CC7C4381
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 00:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 865287C4389
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 00:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbjJJWKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 18:10:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60380 "EHLO
+        id S230283AbjJJWNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 18:13:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231343AbjJJWKh (ORCPT
+        with ESMTP id S229491AbjJJWNF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 18:10:37 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867B498;
-        Tue, 10 Oct 2023 15:10:35 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-53b32dca0bfso657505a12.0;
-        Tue, 10 Oct 2023 15:10:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696975834; x=1697580634; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FeAgAoGuacPUndTYsrbXZvSuEm/6HwNwZXCSR8W2lS0=;
-        b=IviyG/bGjJPyPNhyVEBb4rjn4TKuCo0Rk5eaw5qlJWvB7aNMHJmoE4cKyoP9TzqKf0
-         47+zKEGxy8McpDzRd8cKbPvYaZXc2JClbu2zFaV+Tk3VZa5yo/UhEx3PZW1ie/069cYt
-         cj+FYrTi4PFtpPOO+TDeCe+ot5LdVZto9V5dAuEr7Ia2GM/8CuKApk7Pq8dVAk5Z/L72
-         fs2PD89hW7qNDPYT9hiW7Z63U7FN1EBrdE/aw1DgAL7MdOSmz3xN43cYoAlVGMz1DS0i
-         F5Cd5SnfqndaNA2u7SQ0q0d9k0E6QbLe1//o+U+i32s7o3EF3SCq0GnshGvmLN5IhUyL
-         7GaA==
+        Tue, 10 Oct 2023 18:13:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E983098
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 15:12:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696975938;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VxGOsMb6ryGnf8nRVtqUgdAtUsuDGvs7hUXEJUtIxPg=;
+        b=ZJV9/8wjGQFJkWStmmjykTK3FLiFowyjsZO3Pp8SxkK2T9edijPTtDfCqi8bbGACrj/iED
+        Hr4XWIQjZq1qvdkZXgKU2j7ESDaGk8VW9btEIbz1A5GwO5Lde1+ESYL9Nw7ZyacpikNFl8
+        ebjSEsTcRXs41T2DoW+RQggYRTaXkf4=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-346-0Xy5Gfj7PlucLSONjqZWSA-1; Tue, 10 Oct 2023 18:12:14 -0400
+X-MC-Unique: 0Xy5Gfj7PlucLSONjqZWSA-1
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-77576c78c11so705893585a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 15:12:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696975834; x=1697580634;
+        d=1e100.net; s=20230601; t=1696975934; x=1697580734;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FeAgAoGuacPUndTYsrbXZvSuEm/6HwNwZXCSR8W2lS0=;
-        b=j0Gu2NfjvUl2AauUzaIf+8+C+iLPojmnsKuxrOyzNvLo3lLjiVcx++dXRaFKa63ysZ
-         kRlULBJO5UhyzQ9geJOt7v8wPo/UfvDoO8HzagCB39rLeVjx2Qn4MbvKsOpHbsTgsu2b
-         0U2/eolQVwG48xTtXMCcH7kXOQAQUIJy/LjwXEL1Pvreg+Rr5MTX9Vlgol5WvtMXWl6q
-         gowHEQ56+7XjZ6MueV0MXUmPEyK5LgyKtdCSxe4gwnZIeusQIVJHRsXt0bDQn7u7urkb
-         tsNEfZz2nq3il/KaabZRZ3yvBd4Co8bXUnudkcyDE9fYUNlhn4eo9MRE9JMvfTIUh/Z7
-         CHdw==
-X-Gm-Message-State: AOJu0YwDuBVoTgk/vIcSY6ZmxpzFjCHnXumR5b/naKU91UmgA7ALmz80
-        3S1j7feEaTLTnD2v6tmuVfWijItmY5Y/Uw==
-X-Google-Smtp-Source: AGHT+IErL1oAkp/52wDnHDYZusiMXPM+2eJUJLtoD9cJU9QrTsjGv1SbDOb+bwCWomjqgR+uOekBHQ==
-X-Received: by 2002:a05:6402:2708:b0:52c:f73:3567 with SMTP id y8-20020a056402270800b0052c0f733567mr13346094edd.13.1696975833819;
-        Tue, 10 Oct 2023 15:10:33 -0700 (PDT)
-Received: from skbuf ([188.26.57.160])
-        by smtp.gmail.com with ESMTPSA id bf14-20020a0564021a4e00b005362bcc089csm7962307edb.67.2023.10.10.15.10.33
+        bh=VxGOsMb6ryGnf8nRVtqUgdAtUsuDGvs7hUXEJUtIxPg=;
+        b=SY20PN5hduNBKaH+9/snRQlHJcZeevt4kL6Bbfle6c3JKFOE0pIhQM7LUzJJslL3h5
+         nxh7gEfYEnN882wansD6ip2fIv/xa6wamAI2y6/leWtxuJINfkzJ0EC04igu5hbgzrGJ
+         J0w+ZAbSAlpVRiuqJLkAp7vKHjZzlFJvYRvTkTH/bxijwHXN56Qwj3XS/SGNj9bH8cXR
+         G/FRfqJE6/qqUjWXuQDJYe3TwAiok9NifXsqVGGXsgFyWgNhFyXpZ1j0luApzTp9Ciec
+         /NCQMyDHD+tZeer8iIxtlhGazrJHq0KsuICenxgvnPcavbqXRl17VMaLrQRBa3Awx/94
+         Wbew==
+X-Gm-Message-State: AOJu0YwiGe2ObanPKHXXuCLHxfj12uNERXcN2ySG4ywbc6tFsdssvOVA
+        kvNSqgcK/+Ml6w2Lp1Vsuwogy9vI1ciGp71/LzGXkEef/juy7kCCtKB8xib3yNHHy2CJDHHy6My
+        PALBXK6xHNN4BM3KunLEDcY6q
+X-Received: by 2002:a05:620a:e01:b0:773:c0d7:4ecc with SMTP id y1-20020a05620a0e0100b00773c0d74eccmr16106793qkm.12.1696975934392;
+        Tue, 10 Oct 2023 15:12:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHx3Q0pFOTvEqLEF5LA5/OC1U4CBtpte95Fz5l0s7Hjqf6VQUS4hY/JZn6yPYgclE8vUDU7sQ==
+X-Received: by 2002:a05:620a:e01:b0:773:c0d7:4ecc with SMTP id y1-20020a05620a0e0100b00773c0d74eccmr16106775qkm.12.1696975934135;
+        Tue, 10 Oct 2023 15:12:14 -0700 (PDT)
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id g6-20020ae9e106000000b00770f2a690a8sm4638297qkm.53.2023.10.10.15.12.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 15:10:33 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 01:10:31 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] net: dsa: realtek: replace deprecated strncpy with
- ethtool_sprintf
-Message-ID: <20231010221031.vnp2nf6rbjueitvf@skbuf>
-References: <20231009-strncpy-drivers-net-dsa-realtek-rtl8366-core-c-v1-1-74e1b5190778@google.com>
+        Tue, 10 Oct 2023 15:12:13 -0700 (PDT)
+Date:   Tue, 10 Oct 2023 17:12:00 -0500
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Elliot Berman <quic_eberman@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v3 06/15] firmware: qcom: scm: smc: switch to using the
+ SCM allocator
+Message-ID: <fzf4cpcir4zvb7cbxeqjkvtkyt3gnbbgabp756xadr3ujn3ppx@ukgztdbzdfea>
+References: <20231009153427.20951-1-brgl@bgdev.pl>
+ <20231009153427.20951-7-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231009-strncpy-drivers-net-dsa-realtek-rtl8366-core-c-v1-1-74e1b5190778@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231009153427.20951-7-brgl@bgdev.pl>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 10:47:37PM +0000, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
+On Mon, Oct 09, 2023 at 05:34:18PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> ethtool_sprintf() is designed specifically for get_strings() usage.
-> Let's replace strncpy in favor of this more robust and easier to
-> understand interface.
+> We need to allocate, map and pass a buffer to the trustzone if we have
+> more than 4 arguments for a given SCM calls. Let's use the new TrustZone
+> allocator for that memory and shrink the code in process.
 > 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Note: build-tested only.
-> ---
->  drivers/net/dsa/realtek/rtl8366-core.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+> As this code lives in a different compilation unit than the rest of the
+> SCM code, we need to provide a helper in the form of
+> qcom_scm_get_tzmem_pool() that allows the SMC low-level routines to
+> access the SCM memory pool.
 > 
-> diff --git a/drivers/net/dsa/realtek/rtl8366-core.c b/drivers/net/dsa/realtek/rtl8366-core.c
-> index dc5f75be3017..b13766a3acbb 100644
-> --- a/drivers/net/dsa/realtek/rtl8366-core.c
-> +++ b/drivers/net/dsa/realtek/rtl8366-core.c
-> @@ -395,16 +395,13 @@ void rtl8366_get_strings(struct dsa_switch *ds, int port, u32 stringset,
->  			 uint8_t *data)
->  {
->  	struct realtek_priv *priv = ds->priv;
-> -	struct rtl8366_mib_counter *mib;
->  	int i;
->  
->  	if (port >= priv->num_ports)
->  		return;
->  
->  	for (i = 0; i < priv->num_mib_counters; i++) {
-> -		mib = &priv->mib_counters[i];
-> -		strncpy(data + i * ETH_GSTRING_LEN,
-> -			mib->name, ETH_GSTRING_LEN);
-> +		ethtool_sprintf(&data, "%s", priv->mib_counters[i].name);
->  	}
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Nitpick, you don't need to resend for this. But if there's just a single
-line remaining in the "for" loop, you could have dropped the braces too.
+Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
 
->  }
->  EXPORT_SYMBOL_GPL(rtl8366_get_strings);
-> 
-> ---
-> base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
-> change-id: 20231009-strncpy-drivers-net-dsa-realtek-rtl8366-core-c-60a0f0ddc5cc
-> 
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
-> 
-
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
