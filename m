@@ -2,501 +2,818 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23BF97C0482
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 21:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0DD7C0447
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 21:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343775AbjJJTYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 15:24:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51540 "EHLO
+        id S1343501AbjJJTSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 15:18:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343936AbjJJTXM (ORCPT
+        with ESMTP id S230195AbjJJTS3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 15:23:12 -0400
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C367DCF;
-        Tue, 10 Oct 2023 12:23:02 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 8ABED12000D;
-        Tue, 10 Oct 2023 22:22:48 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 8ABED12000D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1696965768;
-        bh=aFickrMd0GLOI50Jh+DvJsyuCXAH3zgXbHnSidYpMRA=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=A/VpjCmqSoYeuQxkKJRTkDNvzZ2TGIo3iTC7RzohDAnb1nK7h3wGWBMHJS5fB3EQ0
-         iui1UYhCnMht/xQMfo3B9rLFUrAfdcmoSK706/hRWvCL8GpAqkZ32IgSzaEhIdSxQe
-         0cM9MwNo0cc0DE5U20d39k5mqpSPouSAimDBEUgK27LGgfx/68i5i6eySEIsc5Njlc
-         3OiUlN1XBWkUPL46n4YBOMp88MpEL6BrD+WE/i5nY0jl9DSbrQgbYgYOY8VWI5rtrF
-         3pOgKOfqvaXBimr9DbhsqxyD5kNng3zKDi/zwQ8+I4FttfF6Hz66uUIY+fdzBEDAQp
-         R7mPDEAcBf+xA==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Tue, 10 Oct 2023 22:22:48 +0300 (MSK)
-Received: from localhost.localdomain (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+        Tue, 10 Oct 2023 15:18:29 -0400
+Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9352394;
+        Tue, 10 Oct 2023 12:18:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1696965507; x=1728501507;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=d0upPQDcL8x1RbPEvDwbhM5TbLW9KnKKHzvNudswDyY=;
+  b=m2QdL0py6QEYUKKZ9/JzhhgYy4/FBH7RkZi/SU8FYGl3qM1PtTVLg3dW
+   tg6kUpIHOZL2+yTqeM4QywmcB3dqLc1C4ATKGENyd38bF8LAeC51gHYC5
+   lYygZuZGwRENFG6fXTWnhsFFiKoKIbAHGOvvPL/8r3PM2huFz+3V3VndR
+   c=;
+X-IronPort-AV: E=Sophos;i="6.03,213,1694736000"; 
+   d="scan'208";a="244678457"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-617e30c2.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 19:18:24 +0000
+Received: from EX19MTAUWC001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-iad-1a-m6i4x-617e30c2.us-east-1.amazon.com (Postfix) with ESMTPS id D2FB062A2A;
+        Tue, 10 Oct 2023 19:18:19 +0000 (UTC)
+Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
+ EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Tue, 10 Oct 2023 22:22:47 +0300
-From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
+ 15.2.1118.37; Tue, 10 Oct 2023 19:18:19 +0000
+Received: from dev-dsk-graf-1a-5ce218e4.eu-west-1.amazon.com (10.253.83.51) by
+ EX19D020UWC004.ant.amazon.com (10.13.138.149) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Tue, 10 Oct 2023 19:18:16 +0000
+From:   Alexander Graf <graf@amazon.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <linux-crypto@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Olivia Mackall <olivia@selenic.com>,
+        "Petre Eftime" <petre.eftime@gmail.com>,
+        Erdem Meydanlli <meydanli@amazon.nl>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>
-CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>,
-        <avkrasnov@salutedevices.com>
-Subject: [PATCH net-next v4 12/12] test/vsock: io_uring rx/tx tests
-Date:   Tue, 10 Oct 2023 22:15:24 +0300
-Message-ID: <20231010191524.1694217-13-avkrasnov@salutedevices.com>
-X-Mailer: git-send-email 2.35.0
-In-Reply-To: <20231010191524.1694217-1-avkrasnov@salutedevices.com>
-References: <20231010191524.1694217-1-avkrasnov@salutedevices.com>
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v5] misc: Add Nitro Secure Module driver
+Date:   Tue, 10 Oct 2023 19:18:15 +0000
+Message-ID: <20231010191815.13641-1-graf@amazon.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 180515 [Oct 10 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 536 536 1ae19c7800f69da91432b5e67ed4a00b9ade0d03, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/10/10 16:15:00 #22148151
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Originating-IP: [10.253.83.51]
+X-ClientProxiedBy: EX19D046UWA004.ant.amazon.com (10.13.139.76) To
+ EX19D020UWC004.ant.amazon.com (10.13.138.149)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds set of tests which use io_uring for rx/tx. This test suite is
-implemented as separated util like 'vsock_test' and has the same set of
-input arguments as 'vsock_test'. These tests only cover cases of data
-transmission (no connect/bind/accept etc).
+When running Linux inside a Nitro Enclave, the hypervisor provides a
+special virtio device called "Nitro Security Module" (NSM). This device
+has 3 main functions:
 
-Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+  1) Provide attestation reports
+  2) Modify PCR state
+  3) Provide entropy
+
+This patch adds a driver for NSM that exposes a /dev/nsm device node which
+user space can issue an ioctl on this device with raw NSM CBOR formatted
+commands to request attestation documents, influence PCR states, read
+entropy and enumerate status of the device. In addition, the driver
+implements a hwrng backend.
+
+Originally-by: Petre Eftime <petre.eftime@gmail.com>
+Signed-off-by: Alexander Graf <graf@amazon.com>
+
 ---
- Changelog:
- v1 -> v2:
-  * Add 'LDLIBS = -luring' to the target 'vsock_uring_test'.
-  * Add 'vsock_uring_test' to the target 'test'.
- v2 -> v3:
-  * Make 'struct vsock_test_data' private by placing it to the .c file.
-    Rename it and add comments to this struct to clarify sense of its
-    fields.
-  * Add 'vsock_uring_test' to the '.gitignore'.
-  * Add receive loop to the server side - this is needed to read entire
-    data sent by client.
- v3 -> v4:
-  * Link with 'msg_zerocopy_common.o'.
-  * Use '#ifndef' around '#define PAGE_SIZE 4096'.
 
- tools/testing/vsock/.gitignore         |   1 +
- tools/testing/vsock/Makefile           |   7 +-
- tools/testing/vsock/vsock_uring_test.c | 342 +++++++++++++++++++++++++
- 3 files changed, 348 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/vsock/vsock_uring_test.c
+v1 -> v2:
 
-diff --git a/tools/testing/vsock/.gitignore b/tools/testing/vsock/.gitignore
-index a8adcfdc292b..d9f798713cd7 100644
---- a/tools/testing/vsock/.gitignore
-+++ b/tools/testing/vsock/.gitignore
-@@ -3,3 +3,4 @@
- vsock_test
- vsock_diag_test
- vsock_perf
-+vsock_uring_test
-diff --git a/tools/testing/vsock/Makefile b/tools/testing/vsock/Makefile
-index 228470ae33c2..a7f56a09ca9f 100644
---- a/tools/testing/vsock/Makefile
-+++ b/tools/testing/vsock/Makefile
-@@ -1,12 +1,15 @@
- # SPDX-License-Identifier: GPL-2.0-only
- all: test vsock_perf
--test: vsock_test vsock_diag_test
-+test: vsock_test vsock_diag_test vsock_uring_test
- vsock_test: vsock_test.o vsock_test_zerocopy.o timeout.o control.o util.o msg_zerocopy_common.o
- vsock_diag_test: vsock_diag_test.o timeout.o control.o util.o
- vsock_perf: vsock_perf.o msg_zerocopy_common.o
+  - Remove boilerplate
+  - Add uapi header
+
+v2 -> v3:
+
+  - Move globals to device struct
+  - Add compat handling
+  - Simplify some naming
+  - Remove debug prints
+  - Use module_virtio_driver
+  - Drop use of uio.h
+
+v3 -> v4:
+
+  - Merge hwrng into the misc driver
+  - Add dependency on CBOR library
+  - Add internal and ioctl logic for all current NSM actions
+  - Use in-struct arrays instead of kvecs
+  - Add sysfs entries for NSM metadata
+  - Use dev_ print and devm_ allocation helpers
+
+v4 -> v5:
+
+  - Remove CBOR parsing and generation again
+  - Remove support for any non-raw ioctls
+---
+ MAINTAINERS              |   9 +
+ drivers/misc/Kconfig     |  13 +
+ drivers/misc/Makefile    |   1 +
+ drivers/misc/nsm.c       | 576 +++++++++++++++++++++++++++++++++++++++
+ include/uapi/linux/nsm.h |  31 +++
+ 5 files changed, 630 insertions(+)
+ create mode 100644 drivers/misc/nsm.c
+ create mode 100644 include/uapi/linux/nsm.h
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 6c4cce45a09d..d7afb3dedbd2 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15096,6 +15096,15 @@ F:	include/linux/nitro_enclaves.h
+ F:	include/uapi/linux/nitro_enclaves.h
+ F:	samples/nitro_enclaves/
  
-+vsock_uring_test: LDLIBS = -luring
-+vsock_uring_test: control.o util.o vsock_uring_test.o timeout.o msg_zerocopy_common.o
++NITRO SECURE MODULE (NSM)
++M:	Alexander Graf <graf@amazon.com>
++L:	linux-kernel@vger.kernel.org
++L:	The AWS Nitro Enclaves Team <aws-nitro-enclaves-devel@amazon.com>
++S:	Supported
++W:	https://aws.amazon.com/ec2/nitro/nitro-enclaves/
++F:	drivers/misc/nsm.c
++F:	include/uapi/linux/nsm.h
 +
- CFLAGS += -g -O2 -Werror -Wall -I. -I../../include -I../../../usr/include -Wno-pointer-sign -fno-strict-overflow -fno-strict-aliasing -fno-common -MMD -U_FORTIFY_SOURCE -D_GNU_SOURCE
- .PHONY: all test clean
- clean:
--	${RM} *.o *.d vsock_test vsock_diag_test vsock_perf
-+	${RM} *.o *.d vsock_test vsock_diag_test vsock_perf vsock_uring_test
- -include *.d
-diff --git a/tools/testing/vsock/vsock_uring_test.c b/tools/testing/vsock/vsock_uring_test.c
+ NOHZ, DYNTICKS SUPPORT
+ M:	Frederic Weisbecker <frederic@kernel.org>
+ M:	Thomas Gleixner <tglx@linutronix.de>
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index cadd4a820c03..236f36a8e8d4 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -562,6 +562,19 @@ config TPS6594_PFSM
+ 	  This driver can also be built as a module.  If so, the module
+ 	  will be called tps6594-pfsm.
+ 
++config NSM
++	tristate "Nitro (Enclaves) Security Module support"
++	depends on VIRTIO
++	select HW_RANDOM
++	select CBOR
++	help
++	  This driver provides support for the Nitro Security Module
++	  in AWS EC2 Nitro based Enclaves. The driver exposes a /dev/nsm
++	  device user space can use to communicate with the hypervisor.
++
++	  To compile this driver as a module, choose M here.
++	  The module will be called nsm.
++
+ source "drivers/misc/c2port/Kconfig"
+ source "drivers/misc/eeprom/Kconfig"
+ source "drivers/misc/cb710/Kconfig"
+diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+index f2a4d1ff65d4..ea6ea5bbbc9c 100644
+--- a/drivers/misc/Makefile
++++ b/drivers/misc/Makefile
+@@ -67,3 +67,4 @@ obj-$(CONFIG_TMR_MANAGER)      += xilinx_tmr_manager.o
+ obj-$(CONFIG_TMR_INJECT)	+= xilinx_tmr_inject.o
+ obj-$(CONFIG_TPS6594_ESM)	+= tps6594-esm.o
+ obj-$(CONFIG_TPS6594_PFSM)	+= tps6594-pfsm.o
++obj-$(CONFIG_NSM)		+= nsm.o
+diff --git a/drivers/misc/nsm.c b/drivers/misc/nsm.c
 new file mode 100644
-index 000000000000..d976d35f0ba9
+index 000000000000..7ead36ba412f
 --- /dev/null
-+++ b/tools/testing/vsock/vsock_uring_test.c
-@@ -0,0 +1,342 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* io_uring tests for vsock
++++ b/drivers/misc/nsm.c
+@@ -0,0 +1,576 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Amazon Nitro Secure Module driver.
 + *
-+ * Copyright (C) 2023 SberDevices.
++ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 + *
-+ * Author: Arseniy Krasnov <avkrasnov@salutedevices.com>
++ * The Nitro Secure Module implements commands via CBOR over virtio.
++ * This driver exposes a raw message ioctls on /dev/nsm that user
++ * space can use to issue these commands.
 + */
 +
-+#include <getopt.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <liburing.h>
-+#include <unistd.h>
-+#include <sys/mman.h>
-+#include <linux/kernel.h>
-+#include <error.h>
++#include <linux/file.h>
++#include <linux/fs.h>
++#include <linux/interrupt.h>
++#include <linux/hw_random.h>
++#include <linux/miscdevice.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/slab.h>
++#include <linux/string.h>
++#include <linux/uaccess.h>
++#include <linux/uio.h>
++#include <linux/virtio_config.h>
++#include <linux/virtio_ids.h>
++#include <linux/virtio.h>
++#include <linux/wait.h>
++#include <uapi/linux/nsm.h>
 +
-+#include "util.h"
-+#include "control.h"
-+#include "msg_zerocopy_common.h"
++/* Timeout for NSM virtqueue respose in milliseconds. */
++#define NSM_DEFAULT_TIMEOUT_MSECS (120000) /* 2 minutes */
 +
-+#ifndef PAGE_SIZE
-+#define PAGE_SIZE		4096
-+#endif
-+
-+#define RING_ENTRIES_NUM	4
-+
-+#define VSOCK_TEST_DATA_MAX_IOV 3
-+
-+struct vsock_io_uring_test {
-+	/* Number of valid elements in 'vecs'. */
-+	int vecs_cnt;
-+	struct iovec vecs[VSOCK_TEST_DATA_MAX_IOV];
++struct nsm {
++	struct list_head      node;
++	struct virtio_device *vdev;
++	struct virtqueue     *vq;
++	struct mutex          lock;
++	wait_queue_head_t     wq;
++	bool                  device_notified;
++	struct miscdevice     misc;
++	struct hwrng          hwrng;
++	struct work_struct    misc_init;
 +};
 +
-+static struct vsock_io_uring_test test_data_array[] = {
-+	/* All elements have page aligned base and size. */
-+	{
-+		.vecs_cnt = 3,
-+		{
-+			{ NULL, PAGE_SIZE },
-+			{ NULL, 2 * PAGE_SIZE },
-+			{ NULL, 3 * PAGE_SIZE },
-+		}
-+	},
-+	/* Middle element has both non-page aligned base and size. */
-+	{
-+		.vecs_cnt = 3,
-+		{
-+			{ NULL, PAGE_SIZE },
-+			{ (void *)1, 200  },
-+			{ NULL, 3 * PAGE_SIZE },
-+		}
-+	}
++/* NSM device ID */
++static const struct virtio_device_id id_table[] = {
++	{ VIRTIO_ID_NITRO_SEC_MOD, VIRTIO_DEV_ANY_ID },
++	{ 0 },
 +};
 +
-+static void vsock_io_uring_client(const struct test_opts *opts,
-+				  const struct vsock_io_uring_test *test_data,
-+				  bool msg_zerocopy)
-+{
-+	struct io_uring_sqe *sqe;
-+	struct io_uring_cqe *cqe;
-+	struct io_uring ring;
-+	struct iovec *iovec;
-+	struct msghdr msg;
-+	int fd;
-+
-+	fd = vsock_stream_connect(opts->peer_cid, 1234);
-+	if (fd < 0) {
-+		perror("connect");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	if (msg_zerocopy)
-+		enable_so_zerocopy(fd);
-+
-+	iovec = alloc_test_iovec(test_data->vecs, test_data->vecs_cnt);
-+
-+	if (io_uring_queue_init(RING_ENTRIES_NUM, &ring, 0))
-+		error(1, errno, "io_uring_queue_init");
-+
-+	if (io_uring_register_buffers(&ring, iovec, test_data->vecs_cnt))
-+		error(1, errno, "io_uring_register_buffers");
-+
-+	memset(&msg, 0, sizeof(msg));
-+	msg.msg_iov = iovec;
-+	msg.msg_iovlen = test_data->vecs_cnt;
-+	sqe = io_uring_get_sqe(&ring);
-+
-+	if (msg_zerocopy)
-+		io_uring_prep_sendmsg_zc(sqe, fd, &msg, 0);
-+	else
-+		io_uring_prep_sendmsg(sqe, fd, &msg, 0);
-+
-+	if (io_uring_submit(&ring) != 1)
-+		error(1, errno, "io_uring_submit");
-+
-+	if (io_uring_wait_cqe(&ring, &cqe))
-+		error(1, errno, "io_uring_wait_cqe");
-+
-+	io_uring_cqe_seen(&ring, cqe);
-+
-+	control_writeulong(iovec_hash_djb2(iovec, test_data->vecs_cnt));
-+
-+	control_writeln("DONE");
-+	io_uring_queue_exit(&ring);
-+	free_test_iovec(test_data->vecs, iovec, test_data->vecs_cnt);
-+	close(fd);
-+}
-+
-+static void vsock_io_uring_server(const struct test_opts *opts,
-+				  const struct vsock_io_uring_test *test_data)
-+{
-+	unsigned long remote_hash;
-+	unsigned long local_hash;
-+	struct io_uring ring;
-+	size_t data_len;
-+	size_t recv_len;
-+	void *data;
-+	int fd;
-+
-+	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
-+	if (fd < 0) {
-+		perror("accept");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	data_len = iovec_bytes(test_data->vecs, test_data->vecs_cnt);
-+
-+	data = malloc(data_len);
-+	if (!data) {
-+		perror("malloc");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	if (io_uring_queue_init(RING_ENTRIES_NUM, &ring, 0))
-+		error(1, errno, "io_uring_queue_init");
-+
-+	recv_len = 0;
-+
-+	while (recv_len < data_len) {
-+		struct io_uring_sqe *sqe;
-+		struct io_uring_cqe *cqe;
-+		struct iovec iovec;
-+
-+		sqe = io_uring_get_sqe(&ring);
-+		iovec.iov_base = data + recv_len;
-+		iovec.iov_len = data_len;
-+
-+		io_uring_prep_readv(sqe, fd, &iovec, 1, 0);
-+
-+		if (io_uring_submit(&ring) != 1)
-+			error(1, errno, "io_uring_submit");
-+
-+		if (io_uring_wait_cqe(&ring, &cqe))
-+			error(1, errno, "io_uring_wait_cqe");
-+
-+		recv_len += cqe->res;
-+		io_uring_cqe_seen(&ring, cqe);
-+	}
-+
-+	if (recv_len != data_len) {
-+		fprintf(stderr, "expected %zu, got %zu\n", data_len,
-+			recv_len);
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	local_hash = hash_djb2(data, data_len);
-+
-+	remote_hash = control_readulong();
-+	if (remote_hash != local_hash) {
-+		fprintf(stderr, "hash mismatch\n");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	control_expectln("DONE");
-+	io_uring_queue_exit(&ring);
-+	free(data);
-+}
-+
-+void test_stream_uring_server(const struct test_opts *opts)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
-+		vsock_io_uring_server(opts, &test_data_array[i]);
-+}
-+
-+void test_stream_uring_client(const struct test_opts *opts)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
-+		vsock_io_uring_client(opts, &test_data_array[i], false);
-+}
-+
-+void test_stream_uring_msg_zc_server(const struct test_opts *opts)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
-+		vsock_io_uring_server(opts, &test_data_array[i]);
-+}
-+
-+void test_stream_uring_msg_zc_client(const struct test_opts *opts)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
-+		vsock_io_uring_client(opts, &test_data_array[i], true);
-+}
-+
-+static struct test_case test_cases[] = {
-+	{
-+		.name = "SOCK_STREAM io_uring test",
-+		.run_server = test_stream_uring_server,
-+		.run_client = test_stream_uring_client,
-+	},
-+	{
-+		.name = "SOCK_STREAM io_uring MSG_ZEROCOPY test",
-+		.run_server = test_stream_uring_msg_zc_server,
-+		.run_client = test_stream_uring_msg_zc_client,
-+	},
-+	{},
++/* Maximum length input data */
++struct nsm_data_req {
++	__u32 len;
++	__u8  data[NSM_REQUEST_MAX_SIZE];
 +};
 +
-+static const char optstring[] = "";
-+static const struct option longopts[] = {
-+	{
-+		.name = "control-host",
-+		.has_arg = required_argument,
-+		.val = 'H',
-+	},
-+	{
-+		.name = "control-port",
-+		.has_arg = required_argument,
-+		.val = 'P',
-+	},
-+	{
-+		.name = "mode",
-+		.has_arg = required_argument,
-+		.val = 'm',
-+	},
-+	{
-+		.name = "peer-cid",
-+		.has_arg = required_argument,
-+		.val = 'p',
-+	},
-+	{
-+		.name = "help",
-+		.has_arg = no_argument,
-+		.val = '?',
-+	},
-+	{},
++/* Maximum length output data */
++struct nsm_data_resp {
++	__u32 len;
++	__u8  data[NSM_RESPONSE_MAX_SIZE];
 +};
 +
-+static void usage(void)
++/* Full NSM request/response message */
++struct nsm_msg {
++	struct nsm_data_req req;
++	struct nsm_data_resp resp;
++};
++
++static inline struct nsm *file_to_nsm(struct file *file)
 +{
-+	fprintf(stderr, "Usage: vsock_uring_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid>\n"
-+		"\n"
-+		"  Server: vsock_uring_test --control-port=1234 --mode=server --peer-cid=3\n"
-+		"  Client: vsock_uring_test --control-host=192.168.0.1 --control-port=1234 --mode=client --peer-cid=2\n"
-+		"\n"
-+		"Run transmission tests using io_uring. Usage is the same as\n"
-+		"in ./vsock_test\n"
-+		"\n"
-+		"Options:\n"
-+		"  --help                 This help message\n"
-+		"  --control-host <host>  Server IP address to connect to\n"
-+		"  --control-port <port>  Server port to listen on/connect to\n"
-+		"  --mode client|server   Server or client mode\n"
-+		"  --peer-cid <cid>       CID of the other side\n"
-+		);
-+	exit(EXIT_FAILURE);
++	return container_of(file->private_data, struct nsm, misc);
 +}
 +
-+int main(int argc, char **argv)
++static inline struct nsm *hwrng_to_nsm(struct hwrng *rng)
 +{
-+	const char *control_host = NULL;
-+	const char *control_port = NULL;
-+	struct test_opts opts = {
-+		.mode = TEST_MODE_UNSET,
-+		.peer_cid = VMADDR_CID_ANY,
-+	};
++	return container_of(rng, struct nsm, hwrng);
++}
 +
-+	init_signals();
++static inline struct nsm *misc_dev_to_nsm(struct miscdevice *misc)
++{
++	return container_of(misc, struct nsm, misc);
++}
 +
-+	for (;;) {
-+		int opt = getopt_long(argc, argv, optstring, longopts, NULL);
++#define CBOR_TYPE_MASK  0xE0
++#define CBOR_TYPE_MAP 0xA0
++#define CBOR_TYPE_TEXT 0x60
++#define CBOR_TYPE_ARRAY 0x40
++#define CBOR_HEADER_SIZE_SHORT 1
 +
-+		if (opt == -1)
-+			break;
++#define CBOR_SHORT_SIZE_MAX_VALUE 23
++#define CBOR_LONG_SIZE_U8  24
++#define CBOR_LONG_SIZE_U16 25
++#define CBOR_LONG_SIZE_U32 26
++#define CBOR_LONG_SIZE_U64 27
 +
-+		switch (opt) {
-+		case 'H':
-+			control_host = optarg;
-+			break;
-+		case 'm':
-+			if (strcmp(optarg, "client") == 0) {
-+				opts.mode = TEST_MODE_CLIENT;
-+			} else if (strcmp(optarg, "server") == 0) {
-+				opts.mode = TEST_MODE_SERVER;
-+			} else {
-+				fprintf(stderr, "--mode must be \"client\" or \"server\"\n");
-+				return EXIT_FAILURE;
-+			}
-+			break;
-+		case 'p':
-+			opts.peer_cid = parse_cid(optarg);
-+			break;
-+		case 'P':
-+			control_port = optarg;
-+			break;
-+		case '?':
-+		default:
-+			usage();
-+		}
++#define CBOR_HEADER_SIZE_U8  (CBOR_HEADER_SIZE_SHORT + sizeof(u8))
++#define CBOR_HEADER_SIZE_U16 (CBOR_HEADER_SIZE_SHORT + sizeof(u16))
++#define CBOR_HEADER_SIZE_U32 (CBOR_HEADER_SIZE_SHORT + sizeof(u32))
++#define CBOR_HEADER_SIZE_U64 (CBOR_HEADER_SIZE_SHORT + sizeof(u64))
++
++static bool cbor_object_is_array(const u8 *cbor_object, size_t cbor_object_size)
++{
++	if (cbor_object_size == 0 || cbor_object == NULL)
++		return false;
++
++	return (cbor_object[0] & CBOR_TYPE_MASK) == CBOR_TYPE_ARRAY;
++}
++
++static int cbor_object_get_array(u8 *cbor_object, size_t cbor_object_size, u8 **cbor_array)
++{
++	u8 cbor_short_size;
++	u64 array_len;
++	u64 array_offset;
++
++	if (!cbor_object_is_array(cbor_object, cbor_object_size))
++		return -EFAULT;
++
++	if (cbor_array == NULL)
++		return -EFAULT;
++
++	cbor_short_size = (cbor_object[0] & 0x1F);
++
++	/* Decoding byte array length */
++	/* In short field encoding, the object header is 1 byte long and
++	 * contains the type on the 3 MSB and the length on the LSB.
++	 * If the length in the LSB is larger than 23, then the object
++	 * uses long field encoding, and will contain the length over the
++	 * next bytes in the object, depending on the value:
++	 * 24 is u8, 25 is u16, 26 is u32 and 27 is u64.
++	 */
++	if (cbor_short_size <= CBOR_SHORT_SIZE_MAX_VALUE) {
++		/* short encoding */
++		array_len = cbor_short_size;
++		array_offset = CBOR_HEADER_SIZE_SHORT;
++	} else if (cbor_short_size == CBOR_LONG_SIZE_U8) {
++		if (cbor_object_size < CBOR_HEADER_SIZE_U8)
++			return -EFAULT;
++		/* 1 byte */
++		array_len = cbor_object[1];
++		array_offset = CBOR_HEADER_SIZE_U8;
++	} else if (cbor_short_size == CBOR_LONG_SIZE_U16) {
++		if (cbor_object_size < CBOR_HEADER_SIZE_U16)
++			return -EFAULT;
++		/* 2 bytes */
++		array_len = cbor_object[1] << 8 | cbor_object[2];
++		array_offset = CBOR_HEADER_SIZE_U16;
++	} else if (cbor_short_size == CBOR_LONG_SIZE_U32) {
++		if (cbor_object_size < CBOR_HEADER_SIZE_U32)
++			return -EFAULT;
++		/* 4 bytes */
++		array_len = cbor_object[1] << 24 |
++			cbor_object[2] << 16 |
++			cbor_object[3] << 8  |
++			cbor_object[4];
++		array_offset = CBOR_HEADER_SIZE_U32;
++	} else if (cbor_short_size == CBOR_LONG_SIZE_U64) {
++		if (cbor_object_size < CBOR_HEADER_SIZE_U64)
++			return -EFAULT;
++		/* 8 bytes */
++		array_len = (u64) cbor_object[1] << 56 |
++			  (u64) cbor_object[2] << 48 |
++			  (u64) cbor_object[3] << 40 |
++			  (u64) cbor_object[4] << 32 |
++			  (u64) cbor_object[5] << 24 |
++			  (u64) cbor_object[6] << 16 |
++			  (u64) cbor_object[7] << 8  |
++			  (u64) cbor_object[8];
++		array_offset = CBOR_HEADER_SIZE_U64;
 +	}
 +
-+	if (!control_port)
-+		usage();
-+	if (opts.mode == TEST_MODE_UNSET)
-+		usage();
-+	if (opts.peer_cid == VMADDR_CID_ANY)
-+		usage();
++	if (cbor_object_size < array_offset)
++		return -EFAULT;
 +
-+	if (!control_host) {
-+		if (opts.mode != TEST_MODE_SERVER)
-+			usage();
-+		control_host = "0.0.0.0";
-+	}
++	if (cbor_object_size - array_offset < array_len)
++		return -EFAULT;
 +
-+	control_init(control_host, control_port,
-+		     opts.mode == TEST_MODE_SERVER);
++	if (array_len > INT_MAX)
++		return -EFAULT;
 +
-+	run_tests(test_cases, &opts);
++	*cbor_array = cbor_object + array_offset;
++	return array_len;
++}
 +
-+	control_cleanup();
++/* Copy the request of a raw message to kernel space */
++static int fill_req_raw(struct nsm *nsm, struct nsm_data_req *req,
++			struct nsm_raw *raw)
++{
++	/* Verify the user input size. */
++	if (raw->request.len > sizeof(req->data))
++		return -EMSGSIZE;
++
++	/* Copy the request payload */
++	if (copy_from_user(req->data, u64_to_user_ptr(raw->request.addr),
++			   raw->request.len))
++		return -EFAULT;
++
++	req->len = raw->request.len;
 +
 +	return 0;
 +}
++
++/* Copy the response of a raw message back to user-space */
++static int parse_resp_raw(struct nsm *nsm, struct nsm_data_resp *resp,
++			  struct nsm_raw *raw)
++{
++	/* Truncate any message that does not fit. */
++	raw->response.len = min_t(u64, raw->response.len, resp->len);
++
++	/* Copy the response content to user space */
++	if (copy_to_user(u64_to_user_ptr(raw->response.addr),
++			 resp->data, raw->response.len))
++		return -EFAULT;
++
++	return 0;
++}
++
++/* Virtqueue interrupt handler */
++static void nsm_vq_callback(struct virtqueue *vq)
++{
++	struct nsm *nsm = vq->vdev->priv;
++
++	nsm->device_notified = true;
++	wake_up(&nsm->wq);
++}
++
++/* Forward a message to the NSM device and wait for the response from it */
++static int nsm_sendrecv_msg(struct nsm *nsm, struct nsm_msg *msg)
++{
++	struct device *dev = &nsm->vdev->dev;
++	struct scatterlist sg_in, sg_out;
++	struct virtqueue *vq = nsm->vq;
++	unsigned int len;
++	void *queue_buf;
++	bool kicked;
++	int rc;
++
++	/* Initialize scatter-gather lists with request and response buffers. */
++	sg_init_one(&sg_out, msg->req.data, msg->req.len);
++	sg_init_one(&sg_in, msg->resp.data, sizeof(msg->resp.data));
++
++	mutex_lock(&nsm->lock);
++
++	/* Add the request buffer (read by the device). */
++	rc = virtqueue_add_outbuf(vq, &sg_out, 1, msg->req.data, GFP_KERNEL);
++	if (rc) {
++		mutex_unlock(&nsm->lock);
++		return rc;
++	}
++
++	/* Add the response buffer (written by the device). */
++	rc = virtqueue_add_inbuf(vq, &sg_in, 1, msg->resp.data, GFP_KERNEL);
++	if (rc)
++		goto cleanup;
++
++	nsm->device_notified = false;
++	kicked = virtqueue_kick(vq);
++	if (!kicked) {
++		/* Cannot kick the virtqueue. */
++		rc = -EIO;
++		goto cleanup;
++	}
++
++	/* If the kick succeeded, wait for the device's response. */
++	rc = wait_event_timeout(nsm->wq,
++		nsm->device_notified == true,
++		msecs_to_jiffies(NSM_DEFAULT_TIMEOUT_MSECS));
++	if (!rc) {
++		rc = -ETIMEDOUT;
++		goto cleanup;
++	}
++
++	queue_buf = virtqueue_get_buf(vq, &len);
++	if (!queue_buf || (queue_buf != msg->req.data)) {
++		dev_err(dev, "wrong request buffer.");
++		rc = -ENODATA;
++		goto cleanup;
++	}
++
++	queue_buf = virtqueue_get_buf(vq, &len);
++	if (!queue_buf || (queue_buf != msg->resp.data)) {
++		dev_err(dev, "wrong response buffer.");
++		rc = -ENODATA;
++		goto cleanup;
++	}
++
++	msg->resp.len = len;
++
++	rc = 0;
++
++cleanup:
++	if (rc) {
++		/* Clean the virtqueue. */
++		while (virtqueue_get_buf(vq, &len) != NULL)
++			;
++	}
++
++	mutex_unlock(&nsm->lock);
++	return rc;
++}
++
++static int fill_req_get_random(struct nsm *nsm, struct nsm_data_req *req)
++{
++	/*
++	 * 69                          # text(9)
++	 *     47657452616E646F6D      # "GetRandom"
++	 */
++	const u8 request[] = { CBOR_TYPE_TEXT + strlen("GetRandom"),
++			       'G', 'e', 't', 'R', 'a', 'n', 'd', 'o', 'm' };
++
++	memcpy(req->data, request, sizeof(request));
++	req->len = sizeof(request);
++
++	return 0;
++}
++
++static int parse_resp_get_random(struct nsm *nsm, struct nsm_data_resp *resp,
++				 void *out, size_t max)
++{
++	/*
++	 * A1                          # map(1)
++	 *     69                      # text(9) - Name of field
++	 *         47657452616E646F6D  # "GetRandom"
++	 * A1                          # map(1) - The field itself
++	 *     66                      # text(6)
++	 *         72616E646F6D        # "random"
++	 *	# The rest of the response is random data
++	 */
++	const u8 response[] = { CBOR_TYPE_MAP + 1,
++				CBOR_TYPE_TEXT + strlen("GetRandom"),
++				'G', 'e', 't', 'R', 'a', 'n', 'd', 'o', 'm',
++				CBOR_TYPE_MAP + 1,
++				CBOR_TYPE_TEXT + strlen("random"),
++				'r', 'a', 'n', 'd', 'o', 'm' };
++	struct device *dev = &nsm->vdev->dev;
++	u8 *rand_data = NULL;
++	u8 *resp_ptr = resp->data;
++	u64 resp_len = resp->len;
++	int rc;
++
++	if ((resp->len < sizeof(response) + 1) ||
++	    (memcmp(resp_ptr, response, sizeof(response)) != 0)) {
++		dev_err(dev, "Invalid response for GetRandom");
++		return -EFAULT;
++	}
++
++	resp_ptr += sizeof(response);
++	resp_len -= sizeof(response);
++
++	if (!cbor_object_is_array(resp_ptr, resp_len)) {
++		/* not a byte array */
++		dev_err(dev, "GetRandom: Not a byte array");
++		return -EFAULT;
++	}
++
++	rc = cbor_object_get_array(resp_ptr, resp_len, &rand_data);
++	if (rc < 0) {
++		dev_err(dev, "GetRandom: Invalid CBOR encoding\n");
++		return rc;
++	}
++
++	rc = min_t(size_t, rc, max);
++	memcpy(out, rand_data, rc);
++
++	return rc;
++}
++
++/*
++ * HwRNG implementation
++ */
++static int nsm_rng_read(struct hwrng *rng, void *data, size_t max, bool wait)
++{
++	struct nsm *nsm = hwrng_to_nsm(rng);
++	struct device *dev = &nsm->vdev->dev;
++	struct nsm_msg *msg;
++	int rc = 0;
++
++	/* NSM always needs to wait for a response */
++	if (!wait)
++		return 0;
++
++	msg = devm_kzalloc(dev, sizeof(*msg), GFP_KERNEL);
++	if (!msg)
++		return -ENOMEM;
++
++	rc = fill_req_get_random(nsm, &msg->req);
++	if (rc != 0)
++		goto out;
++
++	rc = nsm_sendrecv_msg(nsm, msg);
++	if (rc != 0)
++		goto out;
++
++	rc = parse_resp_get_random(nsm, &msg->resp, data, max);
++	if (rc < 0)
++		goto out;
++
++	dev_dbg(dev, "RNG: returning rand bytes = %d", rc);
++out:
++	devm_kfree(dev, msg);
++	return rc;
++}
++
++static long nsm_dev_ioctl(struct file *file, unsigned int cmd,
++	unsigned long arg)
++{
++	void __user *argp = u64_to_user_ptr((u64)arg);
++	struct nsm *nsm = file_to_nsm(file);
++	struct device *dev = &nsm->vdev->dev;
++	struct nsm_msg *msg;
++	struct nsm_raw raw;
++	int r = 0;
++
++	if (cmd != NSM_IOCTL_RAW)
++		return -EINVAL;
++
++	if (_IOC_SIZE(cmd) != sizeof(raw))
++		return -EINVAL;
++
++	/* Allocate message buffers to device */
++	r = -ENOMEM;
++	msg = devm_kzalloc(dev, sizeof(*msg), GFP_KERNEL);
++	if (!msg)
++		goto out;
++
++	/* Copy user argument struct to kernel argument struct */
++	r = -EFAULT;
++	if (copy_from_user(&raw, argp, _IOC_SIZE(cmd)))
++		goto out;
++
++	/* Convert kernel argument struct to device request */
++	r = fill_req_raw(nsm, &msg->req, &raw);
++	if (r)
++		goto out;
++
++	/* Send message to NSM and read reply */
++	r = nsm_sendrecv_msg(nsm, msg);
++	if (r)
++		goto out;
++
++	/* Parse device response into kernel argument struct */
++	r = parse_resp_raw(nsm, &msg->resp, &raw);
++	if (r)
++		goto out;
++
++	/* Copy kernel argument struct back to user argument struct */
++	r = -EFAULT;
++	if (copy_to_user(argp, &raw, sizeof(raw)))
++		goto out;
++
++	r = 0;
++
++out:
++	devm_kfree(dev, msg);
++	return r;
++}
++
++static int nsm_dev_file_open(struct inode *node, struct file *file)
++{
++	return 0;
++}
++
++static int nsm_dev_file_close(struct inode *inode, struct file *file)
++{
++	return 0;
++}
++
++static int nsm_device_init_vq(struct virtio_device *vdev)
++{
++	struct virtqueue *vq = virtio_find_single_vq(vdev,
++		nsm_vq_callback, "nsm.vq.0");
++	struct nsm *nsm = vdev->priv;
++
++	if (IS_ERR(vq))
++		return PTR_ERR(vq);
++
++	nsm->vq = vq;
++
++	return 0;
++}
++
++static const struct file_operations nsm_dev_fops = {
++	.open = nsm_dev_file_open,
++	.release = nsm_dev_file_close,
++	.unlocked_ioctl = nsm_dev_ioctl,
++	.compat_ioctl = compat_ptr_ioctl,
++};
++
++/* Handler for probing the NSM device */
++static int nsm_device_probe(struct virtio_device *vdev)
++{
++	struct device *dev = &vdev->dev;
++	struct nsm *nsm;
++	int rc;
++
++	nsm = devm_kzalloc(&vdev->dev, sizeof(*nsm), GFP_KERNEL);
++	if (!nsm)
++		return -ENOMEM;
++
++	vdev->priv = nsm;
++	nsm->vdev = vdev;
++
++	rc = nsm_device_init_vq(vdev);
++	if (rc) {
++		dev_err(dev, "queue failed to initialize: %d.\n", rc);
++		goto err_init_vq;
++	}
++
++	mutex_init(&nsm->lock);
++	init_waitqueue_head(&nsm->wq);
++
++	/* Register as hwrng provider */
++	nsm->hwrng = (struct hwrng) {
++		.read = nsm_rng_read,
++		.name = "nsm-hwrng",
++		.quality = 1000,
++	};
++
++	rc = devm_hwrng_register(&vdev->dev, &nsm->hwrng);
++	if (rc) {
++		dev_err(dev, "RNG initialization error: %d.\n", rc);
++		goto err_hwrng;
++	}
++
++	/* Register /dev/nsm device node */
++	nsm->misc = (struct miscdevice) {
++		.minor	= MISC_DYNAMIC_MINOR,
++		.name	= "nsm",
++		.fops	= &nsm_dev_fops,
++		.mode	= 0666,
++	};
++
++	rc = misc_register(&nsm->misc);
++	if (rc) {
++		dev_err(dev, "misc device registration error: %d.\n", rc);
++		goto err_misc;
++	}
++
++	return 0;
++
++err_misc:
++	hwrng_unregister(&nsm->hwrng);
++err_hwrng:
++	vdev->config->del_vqs(vdev);
++err_init_vq:
++	kfree(nsm);
++	return rc;
++}
++
++/* Handler for removing the NSM device */
++static void nsm_device_remove(struct virtio_device *vdev)
++{
++	struct nsm *nsm = vdev->priv;
++
++	hwrng_unregister(&nsm->hwrng);
++
++	vdev->config->del_vqs(vdev);
++	misc_deregister(&nsm->misc);
++	list_del(&nsm->node);
++}
++
++/* NSM device configuration structure */
++static struct virtio_driver virtio_nsm_driver = {
++	.feature_table             = 0,
++	.feature_table_size        = 0,
++	.feature_table_legacy      = 0,
++	.feature_table_size_legacy = 0,
++	.driver.name               = KBUILD_MODNAME,
++	.driver.owner              = THIS_MODULE,
++	.id_table                  = id_table,
++	.probe                     = nsm_device_probe,
++	.remove                    = nsm_device_remove,
++};
++
++module_virtio_driver(virtio_nsm_driver);
++MODULE_DEVICE_TABLE(virtio, id_table);
++MODULE_DESCRIPTION("Virtio NSM driver");
++MODULE_LICENSE("GPL");
+diff --git a/include/uapi/linux/nsm.h b/include/uapi/linux/nsm.h
+new file mode 100644
+index 000000000000..e529f232f6c0
+--- /dev/null
++++ b/include/uapi/linux/nsm.h
+@@ -0,0 +1,31 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/*
++ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
++ */
++
++#ifndef __UAPI_LINUX_NSM_H
++#define __UAPI_LINUX_NSM_H
++
++#include <linux/ioctl.h>
++#include <linux/types.h>
++
++#define NSM_MAGIC		0x0A
++
++#define NSM_REQUEST_MAX_SIZE	0x1000
++#define NSM_RESPONSE_MAX_SIZE	0x3000
++
++struct nsm_iovec {
++	__u64 addr; /* Virtual address of target buffer */
++	__u64 len;  /* Length of target buffer */
++};
++
++/* Raw NSM message. Only available with CAP_SYS_ADMIN. */
++struct nsm_raw {
++	/* Request from user */
++	struct nsm_iovec request;
++	/* Response to user */
++	struct nsm_iovec response;
++};
++#define NSM_IOCTL_RAW		_IOWR(NSM_MAGIC, 0x0, struct nsm_raw)
++
++#endif /* __UAPI_LINUX_NSM_H */
 -- 
-2.25.1
+2.40.1
+
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
 
