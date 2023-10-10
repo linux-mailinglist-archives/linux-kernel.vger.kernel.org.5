@@ -2,95 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05CD07BF1B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 05:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C307BF1BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 05:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442083AbjJJDyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 23:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52176 "EHLO
+        id S1442089AbjJJD6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 23:58:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441993AbjJJDyQ (ORCPT
+        with ESMTP id S1441973AbjJJD6Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 23:54:16 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5A69D;
-        Mon,  9 Oct 2023 20:54:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1696910053;
-        bh=8bV4SCcom7j/uKEvPwyzbYLkGNfVEznGZi6GQ4ZyQEY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=VFZWYElaGRbOdDBLdDA/45PtdmgVuk8gFBZsQ8vvIe0Xw2NzItD4pSaW7XrbBgMjL
-         3Kd1ks7NzoePtb4bGsKjLM+fq200Zm4OJ/UlGNidwva674V5BDXpJsaGpTsHN77Y/i
-         Gfm3nwPVmBQfedi7xayk50V/gA8GLIEk9dH9UC4/Lnt56JRSnrVIGx3oUgVVKg0N74
-         0CIpyxHNJZu66io7jWq4OAIH3fS4bQNIiTI0zvO1OAHfCFk6w3MZYPWTYPWPmAP+tC
-         Z2L9N3Nm5OOnWWeFgse4EOMBNd4nBvgcVtfgaNxEao6wFhmsK7SFlyDssZK+XqxHM3
-         ij5pd8ZCf2QxA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S4MTc6PrKz4xM4;
-        Tue, 10 Oct 2023 14:54:12 +1100 (AEDT)
-Date:   Tue, 10 Oct 2023 14:54:12 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the dmaengine tree
-Message-ID: <20231010145412.4a758f9d@canb.auug.org.au>
+        Mon, 9 Oct 2023 23:58:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8101492;
+        Mon,  9 Oct 2023 20:58:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4gNQmNubIN/TBepTlzBZaBxA4jjJVnAEm3nKv56gu28=; b=lI5Bw8KIWB5ZsFRFGMi6BGGMWF
+        ZdN2uYMoYxzFmMf154Bbrb6BxetbqIcXc4zdguYF/cYSzs3HUoDfrU0M+yv+RcNJ5vqOIcUirBrxM
+        q5XZKPnayu/uk5a/tHzH0NycAsKNLdQ1rP3yum1YVQWyqK1Dj4cZNxPk0JhLFBDvUxNgLNSlVykLO
+        6IpsXvyuheU6TLg3ushd2jYq2j7aFASGYPIwNUE2U1/dB2Oc1sgEbXipKii01NjZGUDRxGXKRZYz3
+        vopBhBePi88Er41e3iXTIJaIElpWZtjDqS5jki8zbB/hAUUF5LAEjPRggq0VjByXxWNsQ1zF62MUS
+        sKBwGsmg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qq3sc-002HYA-JP; Tue, 10 Oct 2023 03:57:58 +0000
+Date:   Tue, 10 Oct 2023 04:57:58 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Bin Lai <sclaibin@gmail.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, akpm@linux-foundation.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, Bin Lai <robinlai@tencent.com>
+Subject: Re: [PATCH] sched/wait: introduce endmark in __wake_up_common
+Message-ID: <ZSTLxuiJssT9aYb0@casper.infradead.org>
+References: <20231010032833.398033-1-robinlai@tencent.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_///poTgS=XLb/fPh_1ybezjW";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231010032833.398033-1-robinlai@tencent.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_///poTgS=XLb/fPh_1ybezjW
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Oct 10, 2023 at 11:28:33AM +0800, Bin Lai wrote:
+> Without this patch applied, it can cause the waker to fall into an
+> infinite loop in some cases. The commit 2554db916586 ("sched/wait: Break
+> up long wake list walk") introduces WQ_FLAG_BOOKMARK to break up long
+> wake list walk. When the number of walked entries reach 64, the waker
+> will record scan position and release the queue lock, which reduces
+> interrupts and rescheduling latency.
 
-Hi all,
+Maybe we could try removing bookmarks instead?  There was a thread a
+while ago where we agreed they weren't actually useful any more.
 
-After merging the dmaengine tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
-
-drivers/dma/mmp_tdma.c: In function 'mmp_tdma_probe':
-drivers/dma/mmp_tdma.c:638:36: error: unused variable 'of_id' [-Werror=3Dun=
-used-variable]
-  638 |         const struct of_device_id *of_id;
-      |                                    ^~~~~
-cc1: all warnings being treated as errors
-
-Caused by commit
-
-  a67ba97dfb30 ("dmaengine: Use device_get_match_data()")
-
-I have used the dmaengine tree from next-20231009 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_///poTgS=XLb/fPh_1ybezjW
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUkyuQACgkQAVBC80lX
-0GxJNwgAj/T/zrh3yBei8Kw9tbx4y+FDl9S8wcLyN1lsAaf/dYBcd0xQ80qaYVkh
-R8Y8T+PmfX+Bhj5+RIpGRHCo48RclTSZ2WL1WfdoJOrp1OmhHIiEaCoEJyulzMk2
-tYQippeES5AnPtQBFUMlJsHUzE9G5AirZcBlpyKTE2bmCj7eKmyI01LR4HceCrzQ
-Vh3gCh/K3B9b/a+Zdk8cTKpiaDSV37f7AYD+URRvvEdn0cqwmH0gxUWxLteTjBl0
-bUQH3gr+5AIQax1imE/MrSENETep43d+zk53EVCnlHu7fUHjYMUQ4k5/fU6QPSIa
-E/FKMNRWQwcDsniKAIIKeqVF2OvABA==
-=UF4g
------END PGP SIGNATURE-----
-
---Sig_///poTgS=XLb/fPh_1ybezjW--
+Patches to follow ...
