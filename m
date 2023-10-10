@@ -2,101 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 728A67BF1A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 05:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 286AB7BF1A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 05:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442062AbjJJDqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 23:46:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46570 "EHLO
+        id S1442071AbjJJDt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 23:49:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378482AbjJJDqV (ORCPT
+        with ESMTP id S1441973AbjJJDt0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 23:46:21 -0400
-Received: from out-210.mta0.migadu.com (out-210.mta0.migadu.com [91.218.175.210])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF039D
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 20:46:20 -0700 (PDT)
-Message-ID: <7fbf47bf-c26c-8eeb-f803-b9f2bafa6364@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1696909578;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hZJB97dQv1x5vY0R7LD94UsgnKYKd6vyN/0XXr9hYJc=;
-        b=RZopyhFg1RxT0Rdep5vYxJJ7xzF+Ws3zGcvSAn7BpQ/kou3o3Xdg7a/J7bbR/e/YZWTP8F
-        hpn4l064//3J3Gekd3Vhg+rG6BE31qI51cfsDXgAxxYAnPl0bsJ/tALlQo/u4ixpubQP1V
-        3f1baHkeF1EewyEU73MsCO508ivMyJ0=
-Date:   Tue, 10 Oct 2023 11:46:08 +0800
+        Mon, 9 Oct 2023 23:49:26 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A4D9E;
+        Mon,  9 Oct 2023 20:49:25 -0700 (PDT)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39A15RPH023081;
+        Mon, 9 Oct 2023 20:48:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=T9FZ6yM8dDtpL6wLz9W9JAwHWcuJhDlosR9PC+8AIeU=;
+ b=dLz+6ym/XdmbyMf4LxCiHlM3eItdG3i5nGQrc+aeEUiCM6pDHsnV4qJznxwYE59jG9Xv
+ rrYwwZmIjmKkl18VKDijs75F+27Q8xhzMcM0ZYOhjIRQgugBNg5BlF1c1ZCe42j+PYa4
+ GrN1QNJd3y2JVtDhq40Aut1nImcxJMgNqEalQey674eXThQg1KJXpLpIoG4f9qjYtgZV
+ 2BbpjfU/7TtH5qB8cPa6ne7hK7u4XMwPYXiTHDfXhcfTsNZq5WkWJZnfwErvLAKms0y9
+ w4aDWYM7HtHhr9r1JWA2gByR/iF+rdtvzjfsQQBN5/xx4PWHnP8v1ooEW2MZOBEe1Ohe Hg== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3tkh7cesk7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 09 Oct 2023 20:48:52 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 9 Oct
+ 2023 20:48:49 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Mon, 9 Oct 2023 20:48:50 -0700
+Received: from marvell-OptiPlex-7090.marvell.com (unknown [10.28.36.165])
+        by maili.marvell.com (Postfix) with ESMTP id 2BA4D3F70A7;
+        Mon,  9 Oct 2023 20:48:44 -0700 (PDT)
+From:   Ratheesh Kannoth <rkannoth@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <sgoutham@marvell.com>, <gakula@marvell.com>,
+        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <rkannoth@marvell.com>, <hawk@kernel.org>,
+        <alexander.duyck@gmail.com>, <ilias.apalodimas@linaro.org>,
+        <linyunsheng@huawei.com>, <bigeasy@linutronix.de>
+Subject: [PATCH net v3] octeontx2-pf: Fix page pool frag allocation warning
+Date:   Tue, 10 Oct 2023 09:18:42 +0530
+Message-ID: <20231010034842.3807816-1-rkannoth@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next v7] net/core: Introduce netdev_core_stats_inc()
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Eric Dumazet <edumazet@google.com>, mhiramat@kernel.org,
-        dennis@kernel.org, tj@kernel.org, cl@linux.com,
-        mark.rutland@arm.com, davem@davemloft.net, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20231007050621.1706331-1-yajun.deng@linux.dev>
- <CANn89i+navyRe8-AV=ehM3qFce2hmnOEKBqvK5Xnev7KTaS5Lg@mail.gmail.com>
- <a53a3ff6-8c66-07c4-0163-e582d88843dd@linux.dev>
- <CANn89i+u5dXdYm_0_LwhXg5Nw+gHXx+nPUmbYhvT=k9P4+9JRQ@mail.gmail.com>
- <9f4fb613-d63f-9b86-fe92-11bf4dfb7275@linux.dev>
- <CANn89iK7bvQtGD=p+fHaWiiaNn=u8vWrt0YQ26pGQY=kZTdfJw@mail.gmail.com>
- <4a747fda-2bb9-4231-66d6-31306184eec2@linux.dev>
- <814b5598-5284-9558-8f56-12a6f7a67187@linux.dev>
- <CANn89iJCTgWTu0mzwj-8_-HiWm4uErY=VASDHoYaod9Nq-ayPA@mail.gmail.com>
- <508b33f7-3dc0-4536-21f6-4a5e7ade2b5c@linux.dev>
- <CANn89i+r-pQGpen1mUhybmj+6ybhxSsuoaB07NFzOWyHUMFDNw@mail.gmail.com>
- <296ca17d-cff0-2d19-f620-eedab004ddde@linux.dev>
- <CANn89iL=W3fyuH_KawfhKvLyw2Cw=qhHbEZtbKgQEYhHJChy3Q@mail.gmail.com>
- <68eb65c5-1870-0776-0878-694a8b002a6d@linux.dev>
- <CANn89iJHtYJjp6zPc2PVLAWuN88BQc5OntjrAf7f6QOcqP+B=g@mail.gmail.com>
- <078f662d-a73f-766b-3a07-c82cd37026c5@linux.dev>
- <20231009102833.1b0d35e3@gandalf.local.home>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yajun Deng <yajun.deng@linux.dev>
-In-Reply-To: <20231009102833.1b0d35e3@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: zfDL4ApmshwH_eWornjGODdWvLzDrvoC
+X-Proofpoint-ORIG-GUID: zfDL4ApmshwH_eWornjGODdWvLzDrvoC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-10_01,2023-10-09_01,2023-05-22_02
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Since page pool param's "order" is set to 0, will result
+in below warn message if interface is configured with higher
+rx buffer size.
 
-On 2023/10/9 22:28, Steven Rostedt wrote:
-> On Mon, 9 Oct 2023 18:58:27 +0800
-> Yajun Deng <yajun.deng@linux.dev> wrote:
->
->>> C compiler decides to inline or not, depending on various factors.
->>>
->>> The most efficient (and small) code is generated by this_cpu_inc()
->>> version, allowing the compiler to inline it.
->>>
->>> If you copy/paste this_cpu_inc()  twenty times, then the compiler
->>> would  not inline the function anymore.
-> Yes, if you want something to be visible by ftrace, it must not be inlined
-> (as inlined functions are not function calls by definition). And as Eric
-> stated, the compiler is perfectly allowed to inline something if it
-> believes it will be more efficient. i.e. There may be code around the function
-> call that could be more efficient if it wasn't change to parameters. If you
-> want to make sure a function stays out of line, you must explicitly tell
-> the compiler you want the function not to ever be inlined (hence the
-> "noinline" attribute).
+Steps to reproduce the issue.
+1. devlink dev param set pci/0002:04:00.0 name receive_buffer_size \
+   value 8196 cmode runtime
+2. ifconfig eth0 up
 
+[   19.901356] ------------[ cut here ]------------
+[   19.901361] WARNING: CPU: 11 PID: 12331 at net/core/page_pool.c:567 page_pool_alloc_frag+0x3c/0x230
+[   19.901449] pstate: 82401009 (Nzcv daif +PAN -UAO +TCO -DIT +SSBS BTYPE=--)
+[   19.901451] pc : page_pool_alloc_frag+0x3c/0x230
+[   19.901453] lr : __otx2_alloc_rbuf+0x60/0xbc [rvu_nicpf]
+[   19.901460] sp : ffff80000f66b970
+[   19.901461] x29: ffff80000f66b970 x28: 0000000000000000 x27: 0000000000000000
+[   19.901464] x26: ffff800000d15b68 x25: ffff000195b5c080 x24: ffff0002a5a32dc0
+[   19.901467] x23: ffff0001063c0878 x22: 0000000000000100 x21: 0000000000000000
+[   19.901469] x20: 0000000000000000 x19: ffff00016f781000 x18: 0000000000000000
+[   19.901472] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
+[   19.901474] x14: 0000000000000000 x13: ffff0005ffdc9c80 x12: 0000000000000000
+[   19.901477] x11: ffff800009119a38 x10: 4c6ef2e3ba300519 x9 : ffff800000d13844
+[   19.901479] x8 : ffff0002a5a33cc8 x7 : 0000000000000030 x6 : 0000000000000030
+[   19.901482] x5 : 0000000000000005 x4 : 0000000000000000 x3 : 0000000000000a20
+[   19.901484] x2 : 0000000000001080 x1 : ffff80000f66b9d4 x0 : 0000000000001000
+[   19.901487] Call trace:
+[   19.901488]  page_pool_alloc_frag+0x3c/0x230
+[   19.901490]  __otx2_alloc_rbuf+0x60/0xbc [rvu_nicpf]
+[   19.901494]  otx2_rq_aura_pool_init+0x1c4/0x240 [rvu_nicpf]
+[   19.901498]  otx2_open+0x228/0xa70 [rvu_nicpf]
+[   19.901501]  otx2vf_open+0x20/0xd0 [rvu_nicvf]
+[   19.901504]  __dev_open+0x114/0x1d0
+[   19.901507]  __dev_change_flags+0x194/0x210
+[   19.901510]  dev_change_flags+0x2c/0x70
+[   19.901512]  devinet_ioctl+0x3a4/0x6c4
+[   19.901515]  inet_ioctl+0x228/0x240
+[   19.901518]  sock_ioctl+0x2ac/0x480
+[   19.901522]  __arm64_sys_ioctl+0x564/0xe50
+[   19.901525]  invoke_syscall.constprop.0+0x58/0xf0
+[   19.901529]  do_el0_svc+0x58/0x150
+[   19.901531]  el0_svc+0x30/0x140
+[   19.901533]  el0t_64_sync_handler+0xe8/0x114
+[   19.901535]  el0t_64_sync+0x1a0/0x1a4
+[   19.901537] ---[ end trace 678c0bf660ad8116 ]---
 
-Thanks for the details.
+Fixes: b2e3406a38f0 ("octeontx2-pf: Add support for page pool")
+Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
 
->>
->> Got it. Thank you.
-> Great.
->
-> -- Steve
+---
+ChangeLog
+
+v2 -> v3: Fixed commit message. Removed ALIGN().
+v1 -> v2: Removed PAGE_ALIGN.
+v0 -> v1: Used get_order() and PAGE_ALIGN. Fixed commit message
+---
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+index 997fedac3a98..818ce76185b2 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+@@ -1403,6 +1403,7 @@ int otx2_pool_init(struct otx2_nic *pfvf, u16 pool_id,
+ 		return 0;
+ 	}
+ 
++	pp_params.order = get_order(buf_size);
+ 	pp_params.flags = PP_FLAG_PAGE_FRAG | PP_FLAG_DMA_MAP;
+ 	pp_params.pool_size = min(OTX2_PAGE_POOL_SZ, numptrs);
+ 	pp_params.nid = NUMA_NO_NODE;
+-- 
+2.25.1
+
