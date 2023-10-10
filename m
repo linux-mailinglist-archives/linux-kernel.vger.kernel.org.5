@@ -2,179 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01F9D7BFF02
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 16:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 497FB7BFF0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 16:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232621AbjJJOVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 10:21:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47674 "EHLO
+        id S232663AbjJJOV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 10:21:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232878AbjJJOU6 (ORCPT
+        with ESMTP id S232862AbjJJOV1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 10:20:58 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A81101
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 07:20:52 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id d75a77b69052e-4180adafdc6so36234471cf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 07:20:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696947652; x=1697552452; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RauVDwCZ6u0rcUr+gmJviY5+pWPqnBMyOCfnWtt3YIs=;
-        b=ig5K0gMlG6fJxAPuwdhBMEEeN8Ai8RQC4EBAr6jXEZ+4Zm1kQ6IqhAbaXOb8pc81/O
-         CnyifNI5WWjMqCkk83otepqaLXsONwYeat6o5MVZLm52pLGdBFnZPDJWwh/ecK4Vo8a2
-         AXw/CvHe3YcdjQ8B6W9CHUgnHU62Y617mrsfM6qV6pd8H2MtM002yPhyy2OQI/1E06/L
-         jDB25klQp843QYF3MpD21Q2Nq48G7/w2Yc/dh6VLmObp3mi7R6npOAvBQK1vbWrM3Hdm
-         ogzSk48iDrUylQrzQC8uzfIyTrgPcNnPyJmDeNMSLjHr52GsPyIrT60cjNEiaTY9U9PO
-         Lgyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696947652; x=1697552452;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RauVDwCZ6u0rcUr+gmJviY5+pWPqnBMyOCfnWtt3YIs=;
-        b=MhjcHu5XFz+IyzgsQYF/Y6dnHMrx9NiWCpNm1XWNYJg7CcHMYLVRvjeagxVM67yRdx
-         xvIHNGmXfLFUkD8zApNfNgwJ3H8bz9GaGaFZIgMDhagV0ZapGusdWWmKN/bmzi8zdxQ6
-         1U8cBo2s6EJZ56BcLtkd/IzhIl0jtOnEqMOcG+l2ugnTDqE2YQ0t0YW+x1lAxIdRiAgs
-         sFzdFIW0LIzpKTkRdxKH8utEB659E8XVFw9nKBmYkhWphSTloQO96KxVTm/dOAW4Psiz
-         91GW8k4mVZM8kJH/YJk9HfF9Gj7mFI5B4hAcVjIy5qaKe0YzRA6aa+g0t334gwA9Wiel
-         Mn+g==
-X-Gm-Message-State: AOJu0YzFIiSsbAR2uNbWhz8o3LTBIYwKi4A8L6kB7qu4S1zbmRa3iW+B
-        D7o/k3Y+8YSYX54DCGk0OPVGkg==
-X-Google-Smtp-Source: AGHT+IEliuUCFDxSpOfLDRYhT6ks1EAn9dsueLogYHl/+td/ofq+7V4XKDqQRhN9MtOWA3xWnn5cdw==
-X-Received: by 2002:ac8:1383:0:b0:418:11de:ce1 with SMTP id h3-20020ac81383000000b0041811de0ce1mr16506979qtj.24.1696947651775;
-        Tue, 10 Oct 2023 07:20:51 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:66a6])
-        by smtp.gmail.com with ESMTPSA id q5-20020ac84505000000b0041b0a7d1872sm3563448qtn.70.2023.10.10.07.20.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 07:20:51 -0700 (PDT)
-Date:   Tue, 10 Oct 2023 10:20:50 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     syzbot <syzbot+831ba898b5db8d5617ea@syzkaller.appspotmail.com>
-Cc:     akpm@linux-foundation.org, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [cgroups?] [mm?] WARNING in mem_cgroup_migrate
-Message-ID: <20231010142050.GA128254@cmpxchg.org>
-References: <0000000000001db97f06075bf98b@google.com>
+        Tue, 10 Oct 2023 10:21:27 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EE3FBF5
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 07:21:23 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F08071FB;
+        Tue, 10 Oct 2023 07:22:03 -0700 (PDT)
+Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CE8D43F762;
+        Tue, 10 Oct 2023 07:21:21 -0700 (PDT)
+From:   Ryan Roberts <ryan.roberts@arm.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [RFC PATCH v1 0/2] Swap-out small-sized THP without splitting
+Date:   Tue, 10 Oct 2023 15:21:09 +0100
+Message-Id: <20231010142111.3997780-1-ryan.roberts@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000001db97f06075bf98b@google.com>
-X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 05:37:43AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    7d730f1bf6f3 Add linux-next specific files for 20231005
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1716036e680000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=f532286be4fff4b5
-> dashboard link: https://syzkaller.appspot.com/bug?extid=831ba898b5db8d5617ea
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/1d7f28a4398f/disk-7d730f1b.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/d454d124268e/vmlinux-7d730f1b.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/dbca966175cb/bzImage-7d730f1b.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+831ba898b5db8d5617ea@syzkaller.appspotmail.com
-> 
->  kernel_init+0x1c/0x2a0 init/main.c:1437
->  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 5208 at mm/memcontrol.c:7552 mem_cgroup_migrate+0x2fa/0x390 mm/memcontrol.c:7552
+Hi All,
 
-This is the earlier version of the hugetlb cgroup accounting patches
-that trigger on an uncharged hugetlbfs:
+This is an RFC for a small series to add support for swapping out small-sized
+THP without needing to first split the large folio via __split_huge_page(). It
+closely follows the approach already used by PMD-sized THP.
 
-  7547          /*
-  7548           * Note that it is normal to see !memcg for a hugetlb folio.
-  7549           * It could have been allocated when memory_hugetlb_accounting was not
-  7550           * selected, for e.g.
-  7551           */
-  7552          VM_WARN_ON_ONCE_FOLIO(!memcg, old);
+"Small-sized THP" is an upcoming feature that enables performance improvements
+by allocating large folios for anonymous memory, where the large folio size is
+smaller than the traditional PMD-size. See [1].
 
-It's been fixed in the revision that's in the latest next release:
+In some circumstances I've observed a performance regression (see patch 2 for
+details), and this series is an attempt to fix the regression in advance of
+merging small-sized THP support.
 
-  7539          /*
-  7540           * Note that it is normal to see !memcg for a hugetlb folio.
-  7541           * For e.g, itt could have been allocated when memory_hugetlb_accounting
-  7542           * was not selected.
-  7543           */
-  7544          VM_WARN_ON_ONCE_FOLIO(!folio_test_hugetlb(old) && !memcg, old);
-  7545          if (!memcg)
-  7546                  return;
+I've done what I thought was the smallest change possible, and as a result, this
+approach is only employed when the swap is backed by a non-rotating block device
+(just as PMD-sized THP is supported today). However, I have a few questions on
+whether we should consider relaxing those requirements in certain circumstances:
 
-> Modules linked in:
-> CPU: 1 PID: 5208 Comm: syz-executor.1 Not tainted 6.6.0-rc4-next-20231005-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-> RIP: 0010:mem_cgroup_migrate+0x2fa/0x390 mm/memcontrol.c:7552
-> Code: f7 ff e9 36 ff ff ff 80 3d 84 b2 d1 0c 00 0f 85 54 ff ff ff 48 c7 c6 a0 9e 9b 8a 48 89 ef e8 0d 5c df ff c6 05 68 b2 d1 0c 01 <0f> 0b e9 37 ff ff ff 48 c7 c6 e0 9a 9b 8a 48 89 df e8 f0 5b df ff
-> RSP: 0018:ffffc90004b2fa38 EFLAGS: 00010246
-> RAX: 0000000000040000 RBX: ffffea0005338000 RCX: ffffc90005439000
-> RDX: 0000000000040000 RSI: ffffffff81e76463 RDI: ffffffff8ae96da0
-> RBP: ffffea0001d98000 R08: 0000000000000000 R09: fffffbfff1d9db9a
-> R10: ffffffff8ecedcd7 R11: 0000000000000000 R12: 0000000000000000
-> R13: 0000000000000200 R14: 0000000000000000 R15: ffffea0001d98018
-> FS:  00007fc15e89d6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000001b31820000 CR3: 000000007f5e1000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  hugetlbfs_migrate_folio fs/hugetlbfs/inode.c:1066 [inline]
->  hugetlbfs_migrate_folio+0xd0/0x120 fs/hugetlbfs/inode.c:1049
->  move_to_new_folio+0x183/0x690 mm/migrate.c:966
->  unmap_and_move_huge_page mm/migrate.c:1428 [inline]
->  migrate_hugetlbs mm/migrate.c:1546 [inline]
->  migrate_pages+0x16ac/0x27c0 mm/migrate.c:1900
->  migrate_to_node mm/mempolicy.c:1072 [inline]
->  do_migrate_pages+0x43e/0x690 mm/mempolicy.c:1171
->  kernel_migrate_pages+0x59b/0x780 mm/mempolicy.c:1682
->  __do_sys_migrate_pages mm/mempolicy.c:1700 [inline]
->  __se_sys_migrate_pages mm/mempolicy.c:1696 [inline]
->  __x64_sys_migrate_pages+0x96/0x100 mm/mempolicy.c:1696
->  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
->  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7fc15da7cae9
-> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007fc15e89d0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000100
-> RAX: ffffffffffffffda RBX: 00007fc15db9bf80 RCX: 00007fc15da7cae9
-> RDX: 0000000020000340 RSI: 0000000000000080 RDI: 0000000000000000
-> RBP: 00007fc15dac847a R08: 0000000000000000 R09: 0000000000000000
-> R10: 00000000200003c0 R11: 0000000000000246 R12: 0000000000000000
-> R13: 000000000000000b R14: 00007fc15db9bf80 R15: 00007ffd87d7c058
->  </TASK>
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
-> If the bug is already fixed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
 
-#syz fix: next-20231010
+1) block-backed vs file-backed
+==============================
+
+The code only attempts to allocate a contiguous set of entries if swap is backed
+by a block device (i.e. not file-backed). The original commit, f0eea189e8e9
+("mm, THP, swap: don't allocate huge cluster for file backed swap device"),
+stated "It's hard to write a whole transparent huge page (THP) to a file backed
+swap device". But didn't state why. Does this imply there is a size limit at
+which it becomes hard? And does that therefore imply that for "small enough"
+sizes we should now allow use with file-back swap?
+
+This original commit was subsequently fixed with commit 41663430588c ("mm, THP,
+swap: fix allocating cluster for swapfile by mistake"), which said the original
+commit was using the wrong flag to determine if it was a block device and
+therefore in some cases was actually doing large allocations for a file-backed
+swap device, and this was causing file-system corruption. But that implies some
+sort of correctness issue to me, rather than the performance issue I inferred
+from the original commit.
+
+If anyone can offer an explanation, that would be helpful in determining if we
+should allow some large sizes for file-backed swap.
+
+
+2) rotating vs non-rotating
+===========================
+
+I notice that the clustered approach is only used for non-rotating swap. That
+implies that for rotating media, we will always fail a large allocation, and
+fall back to splitting THPs to single pages. Which implies that the regression
+I'm fixing here may still be present on rotating media? Or perhaps rotating disk
+is so slow that the cost of writing the data out dominates the cost of
+splitting?
+
+I considered that potentially the free swap entry search algorithm that is used
+in this case could be modified to look for (small) contiguous runs of entries;
+Up to ~16 pages (order-4) could be done by doing 2x 64bit reads from map instead
+of single byte.
+
+I haven't looked into this idea in detail, but wonder if anybody thinks it is
+worth the effort? Or perhaps it would end up causing bad fragmentation.
+
+
+Finally on testing, I've run the mm selftests and see no regressions, but I
+don't think there is anything in there specifically aimed towards swap? Are
+there any functional or performance tests that I should run? It would certainly
+be good to confirm I haven't regressed PMD-size THP swap performance.
+
+Thanks,
+Ryan
+
+[1] https://lore.kernel.org/linux-mm/15a52c3d-9584-449b-8228-1335e0753b04@arm.com/
+
+Ryan Roberts (2):
+  mm: swap: Remove CLUSTER_FLAG_HUGE from swap_cluster_info:flags
+  mm: swap: Swap-out small-sized THP without splitting
+
+ include/linux/swap.h |  17 +++----
+ mm/huge_memory.c     |   3 --
+ mm/swapfile.c        | 105 ++++++++++++++++++++++---------------------
+ mm/vmscan.c          |  10 +++--
+ 4 files changed, 66 insertions(+), 69 deletions(-)
+
+--
+2.25.1
+
