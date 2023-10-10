@@ -2,163 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0297C439F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 00:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87E07C43A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 00:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229577AbjJJWUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 18:20:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43078 "EHLO
+        id S230283AbjJJWWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 18:22:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjJJWUL (ORCPT
+        with ESMTP id S229769AbjJJWWK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 18:20:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA898F
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 15:19:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696976358;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=460OD4B2O0RmiKOd3BNdzwTQ6xFcB587G5axsVGpZnA=;
-        b=NbevVtDa8OSyMB9t6lV+5Wkr8iDl2Pd1I/2fpiyDJrFynzMroP8Ayq+gKzDV3t35uHTpDN
-        ms/L3+hEuI7GuPB5hl7p6au9A2FboCm5b74lTLh8znGcOdZ/eUhpasGTtFcXySR4cSaArI
-        XWsSt8bN+QU7IUAIHKHYbKdYX7MS/jo=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-91-8Uc8q7OEOkOqOQ6DuYSNZQ-1; Tue, 10 Oct 2023 18:19:07 -0400
-X-MC-Unique: 8Uc8q7OEOkOqOQ6DuYSNZQ-1
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-775869cf2f5so48639785a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 15:19:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696976347; x=1697581147;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        Tue, 10 Oct 2023 18:22:10 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A6D8F
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 15:22:08 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-32ccafde8e0so1078870f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 15:22:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696976527; x=1697581327; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=460OD4B2O0RmiKOd3BNdzwTQ6xFcB587G5axsVGpZnA=;
-        b=J1YJuuDOJhLDUUCkmKaN54lTyv1jH+i5rRiN3TCphdjNvdWktLUjU223xIwjf4SgAL
-         tyW20UzxT0WOGHZUV4ZtccCn1cJgbEgbEMUmMMe4EN6xQ1PYupAlF7jb3+BQ5k0V8Lqx
-         7Pnwe0pfspLNZk2nL1rQNGQ6uHQKJ6Xq0PoZvDDWhc3E6CB0TqzHKpdiDoVXFMYQxfm1
-         xhgq7b77TvRt4L3BCuVu7Kx+thLWeRz9AEGxxElzwwIBx/AEaIGK6Hs0S3WpVYMEgGZp
-         mwVMRUGU/tY5k/JlsWOll2NB2TN64+207YIcdjMDiZJYbAC3fKErtV0YYxsleXTSUdhP
-         jglg==
-X-Gm-Message-State: AOJu0YyS4RvYC4QHJOmtDJmbGqBxnwRptfVz/mbxgy7OFF4t5CKgEi2T
-        qHIW3kd0XBds4cslaUjSdZgEx6vzUT4L83mgqwCvwIKbxfMRDcig/LUhzZkrlE0GUpR9ksPXGzg
-        3smXV5rqTuRCSVlNy6TjnISjh
-X-Received: by 2002:a05:620a:3725:b0:76c:a911:f74f with SMTP id de37-20020a05620a372500b0076ca911f74fmr26760440qkb.27.1696976346906;
-        Tue, 10 Oct 2023 15:19:06 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHayoQd+ZrF/NydFXRzAdQ0YuxIeMteFiaa5sBwgKH6E89FbNb+Shv53kOBhKXdERwSzrzhBQ==
-X-Received: by 2002:a05:620a:3725:b0:76c:a911:f74f with SMTP id de37-20020a05620a372500b0076ca911f74fmr26760424qkb.27.1696976346651;
-        Tue, 10 Oct 2023 15:19:06 -0700 (PDT)
-Received: from fedora ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id k26-20020a05620a143a00b007758b25ac3bsm4699190qkj.82.2023.10.10.15.19.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 15:19:06 -0700 (PDT)
-Date:   Tue, 10 Oct 2023 17:19:04 -0500
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Elliot Berman <quic_eberman@quicinc.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Guru Das Srinagesh <quic_gurus@quicinc.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v3 07/15] firmware: qcom: scm: make qcom_scm_assign_mem()
- use the TZ allocator
-Message-ID: <v5ty4xeshodjlpyatqlrjipqejazamuhqhauorujveyqzpikoq@rftlvk6354yx>
-References: <20231009153427.20951-1-brgl@bgdev.pl>
- <20231009153427.20951-8-brgl@bgdev.pl>
+        bh=AJR3kzvdFAtjI4futU9HjQ8SFStLu7+FAsB2B+oCyxc=;
+        b=P1497PtIUYMhMuqDYt+f1fy/SAiX1+io2/GSEU5Lpw1nRHbz3jOpH9m3TbB0pDGVr0
+         Kxh2iaJSFJDG1MqBwDWS4bgO+GyFlFq3Wmz6xGwpRTOM7ZYYFIMl2hz6fGk8sbiSda9i
+         LW84lpMhZLvalYnRXNeXgenIRcmyyy08xe62YwDC/nfksb5L/yVD0LvRPEDuqYtfGDg5
+         dC1mBrVb108UKdlUK4XWkzOs77qLDiLPfnts8jm/mve4u40oUgZ1PjDUlIdL18LEazsW
+         QUShs7mbCQa37y0WpO5TMgxCPhfVYaKfkrk3hqmW+mJY1C4IKjVD7VtPKu36sxanFROd
+         IsRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696976527; x=1697581327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AJR3kzvdFAtjI4futU9HjQ8SFStLu7+FAsB2B+oCyxc=;
+        b=JNSBZ+OnbRJ7wqpKGqcUYeYOqweeRtg5cVURghMWPYJO69rrP4PmJVNMmOFCGAgbeP
+         nSw4EkecB5PnKxp+YbWyEduS7MySxOmuuYmwkjDKVDiWKWbTWEjJSlHBXxEUbBM30amV
+         jqT0Vu7rtSb5ccQowi9OBJ/0ZeiKdww+dtSd1KTb4bgLrSwe1yOaJMDFfN7i3V4FwUvE
+         nMLMdUPQ6slDyglQpUvED06aWiGbJKo2unyoJGi0Zf7kAIwrtop5BDiaKQBN6zs/xYZS
+         QK+ZvI/GTSFT6sAAeOLKuqvmr1yWmMlX20AkcZQds6IB8oDqhOmW4llysmspOp4l82yQ
+         lQuQ==
+X-Gm-Message-State: AOJu0Yw/2ItCPVVQnuvbzE4XamnGG7UnSwpSZoB2DyqZyh+O6SAMPHu0
+        +YH5/UguzHPTvSZelguxjFBUTAgCDb1s2+Frfj/UGQ==
+X-Google-Smtp-Source: AGHT+IE6wUAcmy5tCDBI++Cod8BpbZvHkWf4nr2c4NaKC7jYGq++eFgXeJn8k5isETu4e/PYxkU5T6JY0G5SV14gtk0=
+X-Received: by 2002:a5d:56d0:0:b0:31c:5c77:48ec with SMTP id
+ m16-20020a5d56d0000000b0031c5c7748ecmr15648255wrw.62.1696976526640; Tue, 10
+ Oct 2023 15:22:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231009153427.20951-8-brgl@bgdev.pl>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230914015531.1419405-1-seanjc@google.com> <20230914015531.1419405-8-seanjc@google.com>
+ <117db856-9aec-e91c-b1d4-db2b90ae563d@intel.com> <ZQ3AmLO2SYv3DszH@google.com>
+ <CAF7b7mrf-y9DNdsreOAedGJueOThnYE=ascFd4=rvW0Z4rhTQg@mail.gmail.com>
+ <ZRtxoaJdVF1C2Mvy@google.com> <CAF7b7mqyU059YpBBVYjTMNXf9VHSc6tbKrQ8avFXYtP6LWMh8Q@mail.gmail.com>
+ <ZRyn0nPQpbVpz8ah@google.com> <CAF7b7mqYr0J-J2oaU=c-dzLys-m6Ttp7ZOb3Em7n1wUj3rhh+A@mail.gmail.com>
+ <ZR88w9W62qsZDro-@google.com>
+In-Reply-To: <ZR88w9W62qsZDro-@google.com>
+From:   David Matlack <dmatlack@google.com>
+Date:   Tue, 10 Oct 2023 15:21:37 -0700
+Message-ID: <CALzav=csPcd3f5CYc=6Fa4JnsYP8UTVeSex0-7LvUBnTDpHxLQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v12 07/33] KVM: Add KVM_EXIT_MEMORY_FAULT exit to
+ report faults to userspace
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Anish Moorthy <amoorthy@google.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>, kvm@vger.kernel.org,
+        kvmarm@lists.linux.dev, kvm-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 05:34:19PM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> Let's use the new TZ memory allocator to obtain a buffer for this call
-> instead of using dma_alloc_coherent().
-> 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
->  drivers/firmware/qcom/qcom_scm.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-> index 71e98b666391..754f6056b99f 100644
-> --- a/drivers/firmware/qcom/qcom_scm.c
-> +++ b/drivers/firmware/qcom/qcom_scm.c
-> @@ -4,6 +4,7 @@
->   */
->  
->  #include <linux/arm-smccc.h>
-> +#include <linux/cleanup.h>
->  #include <linux/clk.h>
->  #include <linux/completion.h>
->  #include <linux/cpumask.h>
-> @@ -998,14 +999,13 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
->  	struct qcom_scm_mem_map_info *mem_to_map;
->  	phys_addr_t mem_to_map_phys;
->  	phys_addr_t dest_phys;
-> -	dma_addr_t ptr_phys;
-> +	phys_addr_t ptr_phys;
->  	size_t mem_to_map_sz;
->  	size_t dest_sz;
->  	size_t src_sz;
->  	size_t ptr_sz;
->  	int next_vm;
->  	__le32 *src;
-> -	void *ptr;
+On Thu, Oct 5, 2023 at 3:46=E2=80=AFPM Sean Christopherson <seanjc@google.c=
+om> wrote:
+>
+> On Thu, Oct 05, 2023, Anish Moorthy wrote:
+> > On Tue, Oct 3, 2023 at 4:46=E2=80=AFPM Sean Christopherson <seanjc@goog=
+le.com> wrote:
+> > >
+> > > The only way a KVM_EXIT_MEMORY_FAULT that actually reaches userspace =
+could be
+> > > "unreliable" is if something other than a memory_fault exit clobbered=
+ the union,
+> > > but didn't signal its KVM_EXIT_* reason.  And that would be an egregi=
+ous bug that
+> > > isn't unique to KVM_EXIT_MEMORY_FAULT, i.e. the same data corruption =
+would affect
+> > > each and every other KVM_EXIT_* reason.
+> >
+> > Keep in mind the case where an "unreliable" annotation sets up a
+> > KVM_EXIT_MEMORY_FAULT, KVM_RUN ends up continuing, then something
+> > unrelated comes up and causes KVM_RUN to EFAULT. Although this at
+> > least is a case of "outdated" information rather than blatant
+> > corruption.
+>
+> Drat, I managed to forget about that.
+>
+> > IIRC the last time this came up we said that there's minimal harm in
+> > userspace acting on the outdated info, but it seems like another good
+> > argument for just restricting the annotations to paths we know are
+> > reliable. What if the second EFAULT above is fatal (as I understand
+> > all are today) and sets up subsequent KVM_RUNs to crash and burn
+> > somehow? Seems like that'd be a safety issue.
+>
+> For your series, let's omit
+>
+>   KVM: Annotate -EFAULTs from kvm_vcpu_read/write_guest_page
+>
+> and just fill memory_fault for the page fault paths.  That will be easier=
+ to
+> document too since we can simply say that if the exit reason is KVM_EXIT_=
+MEMORY_FAULT,
+> then run->memory_fault is valid and fresh.
 
-nit: couldn't you keep this up here?
++1
 
-Otherwise,
+And from a performance perspective, I don't think we care about
+kvm_vcpu_read/write_guest_page(). Our (Google) KVM Demand Paging
+implementation just sends any kvm_vcpu_read/write_guest_page()
+requests through the netlink socket, which is just a poor man's
+userfaultfd. So I think we'll be fine sending these callsites through
+uffd instead of exiting out to userspace.
 
-Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
+And with that out of the way, is there any reason to keep tying
+KVM_EXIT_MEMORY_FAULT to -EFAULT? As mentioned in the patch at the top
+of this thread, -EFAULT is just a hack to allow the emulator paths to
+return out to userspace. But that's no longer necessary. I just find
+it odd that some KVM_EXIT_* correspond with KVM_RUN returning an error
+and others don't. The exit_reason is sufficient to tell userspace
+what's going on and has a firm contract, unlike -EFAULT which anything
+KVM calls into can return.
 
->  	int ret, i, b;
->  	u64 srcvm_bits = *srcvm;
->  
-> @@ -1015,10 +1015,13 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
->  	ptr_sz = ALIGN(src_sz, SZ_64) + ALIGN(mem_to_map_sz, SZ_64) +
->  			ALIGN(dest_sz, SZ_64);
->  
-> -	ptr = dma_alloc_coherent(__scm->dev, ptr_sz, &ptr_phys, GFP_KERNEL);
-> +	void *ptr __free(qcom_tzmem) = qcom_tzmem_alloc(__scm->mempool,
-> +							ptr_sz, GFP_KERNEL);
->  	if (!ptr)
->  		return -ENOMEM;
->  
-> +	ptr_phys = qcom_tzmem_to_phys(ptr);
-> +
->  	/* Fill source vmid detail */
->  	src = ptr;
->  	i = 0;
-> @@ -1047,7 +1050,6 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
->  
->  	ret = __qcom_scm_assign_mem(__scm->dev, mem_to_map_phys, mem_to_map_sz,
->  				    ptr_phys, src_sz, dest_phys, dest_sz);
-> -	dma_free_coherent(__scm->dev, ptr_sz, ptr, ptr_phys);
->  	if (ret) {
->  		dev_err(__scm->dev,
->  			"Assign memory protection call failed %d\n", ret);
-> -- 
-> 2.39.2
-> 
-
+>
+> Adding a flag or whatever to mark the data as trustworthy would be the al=
+ternative,
+> but that's effectively adding ABI that says "KVM is buggy, sorry".
+>
+> My dream of having KVM always return useful information for -EFAULT will =
+have to
+> wait for another day.
