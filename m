@@ -2,205 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9FD7BF84B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 12:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 625BA7BF850
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 12:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbjJJKQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 06:16:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59362 "EHLO
+        id S230484AbjJJKQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 06:16:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229832AbjJJKP6 (ORCPT
+        with ESMTP id S231132AbjJJKQS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 06:15:58 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBBC09F;
-        Tue, 10 Oct 2023 03:15:55 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 1B2911F45A;
-        Tue, 10 Oct 2023 10:15:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1696932954; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qUW/UbgD+3WzGGvw1WDoBqbNXK6QrMAtw5pmRBi1hU0=;
-        b=tiUL/KsnaTWgFSkL2FOhr332JEgpJVeG12miROFPQX07CobPBlUOLBlx6KsUtnByzbbFYF
-        YaZckaRuttJXRBngq0oEeX4uYHyUU1ENE/hzNEcDUvJzTrKXQUIDjnHMjKdFYbOO013kUN
-        i0oHYzWOdrQE4E7nTVMVA24JuDIgY9c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1696932954;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qUW/UbgD+3WzGGvw1WDoBqbNXK6QrMAtw5pmRBi1hU0=;
-        b=+OH//e/yEJERqhSdb2h2dUmTZF4H0T1hJfORn3/44cTGq6VHQ7gw5SIJxNNk8T7GsDXqBy
-        5YFovy7bh8JLFCCQ==
-Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 883A22C3F7;
-        Tue, 10 Oct 2023 10:15:53 +0000 (UTC)
-Date:   Tue, 10 Oct 2023 12:15:52 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-modules@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
-        Lucas De Marchi <lucas.de.marchi@gmail.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Jiri Slaby <jslaby@suse.com>, Jan Engelhardt <jengelh@inai.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH rebased] kbuild: rpm-pkg: Fix build with non-default
- MODLIB
-Message-ID: <20231010101552.GW6241@kitsune.suse.cz>
-References: <20231005150728.3429-1-msuchanek@suse.de>
- <CAK7LNAQh7vCQ859RPkL3SDr2d4ptt5OVCr66fkPKGcvxDUHtkw@mail.gmail.com>
- <20231009085208.GT6241@kitsune.suse.cz>
- <CAK7LNASeMEKVi5c0PEow5KSdN7rsm7UYEf2smWOSkYOhr_5fVQ@mail.gmail.com>
- <20231009140733.GV6241@kitsune.suse.cz>
- <CAK7LNAQQMFUt4R1m_U8kBY5=BvxD_dMuE4MD4kpd48WK1E+AGA@mail.gmail.com>
+        Tue, 10 Oct 2023 06:16:18 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DD908D6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 03:16:13 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 22DEC1FB;
+        Tue, 10 Oct 2023 03:16:54 -0700 (PDT)
+Received: from [10.1.30.177] (XHFQ2J9959.cambridge.arm.com [10.1.30.177])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E9F833F762;
+        Tue, 10 Oct 2023 03:16:10 -0700 (PDT)
+Message-ID: <642a14bb-e298-47cc-955f-3200f6977c1f@arm.com>
+Date:   Tue, 10 Oct 2023 11:16:09 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 6/9] mm: thp: Add "recommend" option for anon_orders
+Content-Language: en-GB
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Suren Baghdasaryan <surenb@google.com>
+References: <20230929114421.3761121-1-ryan.roberts@arm.com>
+ <20230929114421.3761121-7-ryan.roberts@arm.com>
+ <2f64809e-0d0d-cc61-71ac-8d9b072efc3a@redhat.com>
+ <CAOUHufb=qurWDFaX2TPQrsmUpEz+VRwm=SxivYuuDiJ4D-f0+g@mail.gmail.com>
+ <25d1cdee-3da8-4728-aa0d-dc07eb28ea95@arm.com>
+ <CAOUHufbHRVPyu7uSWwPzU6eYF1xhOS_amZsUzX5__2=2bc3XRQ@mail.gmail.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAOUHufbHRVPyu7uSWwPzU6eYF1xhOS_amZsUzX5__2=2bc3XRQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK7LNAQQMFUt4R1m_U8kBY5=BvxD_dMuE4MD4kpd48WK1E+AGA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 12:14:01AM +0900, Masahiro Yamada wrote:
-> On Mon, Oct 9, 2023 at 11:07 PM Michal Suchánek <msuchanek@suse.de> wrote:
-> >
-> > On Mon, Oct 09, 2023 at 09:34:10PM +0900, Masahiro Yamada wrote:
-> > > On Mon, Oct 9, 2023 at 5:52 PM Michal Suchánek <msuchanek@suse.de> wrote:
-> > > >
-> > > > Hello,
-> > > >
-> > > > On Mon, Oct 09, 2023 at 05:31:02PM +0900, Masahiro Yamada wrote:
-> > > > > On Fri, Oct 6, 2023 at 12:49 AM Michal Suchanek <msuchanek@suse.de> wrote:
-> > > > > >
-> > > > > > The default MODLIB value is composed of two variables and the hardcoded
-> > > > > > string '/lib/modules/'.
-> > > > > >
-> > > > > > MODLIB = $(INSTALL_MOD_PATH)/lib/modules/$(KERNELRELEASE)
-> > > > > >
-> > > > > > Defining this middle part as a variable was rejected on the basis that
-> > > > > > users can pass the whole MODLIB to make, such as
-> > > > >
-> > > > >
-> > > > > In other words, do you want to say
-> > > > >
-> > > > > "If defining this middle part as a variable had been accepted,
-> > > > > this patch would have been unneeded." ?
-> > > >
-> > > > If it were accepted I would not have to guess what the middle part is,
-> > > > and could use the variable that unambiguosly defines it instead.
-> > >
-> > >
-> > > How?
-> > >
-> > > scripts/package/kernel.spec hardcodes 'lib/modules'
-> > > in a couple of places.
-> > >
-> > > I am asking how to derive the module path.
-> >
-> > Not sure what you are asking here. The path is hardcoded, everywhere.
-> >
-> > The current Makefile has
-> >
-> > MODLIB  = $(INSTALL_MOD_PATH)/lib/modules/$(KERNELRELEASE)
-> >
-> > and there is no reliable way to learn what the middle part was after the
-> > fact - $(INSTALL_MOD_PATH) can be non-empty.
-> >
-> > The rejected patch was changing this to a variable, and also default to
-> > adjusting the content to what kmod exports in pkgconfig after applying a
-> > proposed patch to make this hardcoded part configurable:
-> >
-> > export KERNEL_MODULE_DIRECTORY := $(shell pkg-config --print-variables kmod 2>/dev/null | grep '^module_directory$$' >/dev/null && pkg-config --variable=module_directory kmod || echo /lib/modules)
-> >
-> > MODLIB  = $(INSTALL_MOD_PATH)$(KERNEL_MODULE_DIRECTORY)/$(KERNELRELEASE)
-> >
-> > It would be completely posible to only define the middle part as a
-> > variable that could then be used in rpm-pkg:
-> >
-> > export KERNEL_MODULE_DIRECTORY := /lib/modules
-> >
-> > MODLIB  = $(INSTALL_MOD_PATH)$(KERNEL_MODULE_DIRECTORY)/$(KERNELRELEASE)
-> >
-> > Thanks
-> >
-> > Michal
-> >
-> >
+On 09/10/2023 21:04, Yu Zhao wrote:
+> On Mon, Oct 9, 2023 at 5:45 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>
+>> On 06/10/2023 23:28, Yu Zhao wrote:
+>>> On Fri, Oct 6, 2023 at 2:08 PM David Hildenbrand <david@redhat.com> wrote:
+>>>>
+>>>> On 29.09.23 13:44, Ryan Roberts wrote:
+>>>>> In addition to passing a bitfield of folio orders to enable for THP,
+>>>>> allow the string "recommend" to be written, which has the effect of
+>>>>> causing the system to enable the orders preferred by the architecture
+>>>>> and by the mm. The user can see what these orders are by subsequently
+>>>>> reading back the file.
+>>>>>
+>>>>> Note that these recommended orders are expected to be static for a given
+>>>>> boot of the system, and so the keyword "auto" was deliberately not used,
+>>>>> as I want to reserve it for a possible future use where the "best" order
+>>>>> is chosen more dynamically at runtime.
+>>>>>
+>>>>> Recommended orders are determined as follows:
+>>>>>    - PMD_ORDER: The traditional THP size
+>>>>>    - arch_wants_pte_order() if implemented by the arch
+>>>>>    - PAGE_ALLOC_COSTLY_ORDER: The largest order kept on per-cpu free list
+>>>>>
+>>>>> arch_wants_pte_order() can be overridden by the architecture if desired.
+>>>>> Some architectures (e.g. arm64) can coalsece TLB entries if a contiguous
+>>>>> set of ptes map physically contigious, naturally aligned memory, so this
+>>>>> mechanism allows the architecture to optimize as required.
+>>>>>
+>>>>> Here we add the default implementation of arch_wants_pte_order(), used
+>>>>> when the architecture does not define it, which returns -1, implying
+>>>>> that the HW has no preference.
+>>>>>
+>>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>>>> ---
+>>>>>   Documentation/admin-guide/mm/transhuge.rst |  4 ++++
+>>>>>   include/linux/pgtable.h                    | 13 +++++++++++++
+>>>>>   mm/huge_memory.c                           | 14 +++++++++++---
+>>>>>   3 files changed, 28 insertions(+), 3 deletions(-)
+>>>>>
+>>>>> diff --git a/Documentation/admin-guide/mm/transhuge.rst b/Documentation/admin-guide/mm/transhuge.rst
+>>>>> index 732c3b2f4ba8..d6363d4efa3a 100644
+>>>>> --- a/Documentation/admin-guide/mm/transhuge.rst
+>>>>> +++ b/Documentation/admin-guide/mm/transhuge.rst
+>>>>> @@ -187,6 +187,10 @@ pages (=16K if the page size is 4K). The example above enables order-9
+>>>>>   By enabling multiple orders, allocation of each order will be
+>>>>>   attempted, highest to lowest, until a successful allocation is made.
+>>>>>   If the PMD-order is unset, then no PMD-sized THPs will be allocated.
+>>>>> +It is also possible to enable the recommended set of orders, which
+>>>>> +will be optimized for the architecture and mm::
+>>>>> +
+>>>>> +     echo recommend >/sys/kernel/mm/transparent_hugepage/anon_orders
+>>>>>
+>>>>>   The kernel will ignore any orders that it does not support so read the
+>>>>>   file back to determine which orders are enabled::
+>>>>> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+>>>>> index af7639c3b0a3..0e110ce57cc3 100644
+>>>>> --- a/include/linux/pgtable.h
+>>>>> +++ b/include/linux/pgtable.h
+>>>>> @@ -393,6 +393,19 @@ static inline void arch_check_zapped_pmd(struct vm_area_struct *vma,
+>>>>>   }
+>>>>>   #endif
+>>>>>
+>>>>> +#ifndef arch_wants_pte_order
+>>>>> +/*
+>>>>> + * Returns preferred folio order for pte-mapped memory. Must be in range [0,
+>>>>> + * PMD_ORDER) and must not be order-1 since THP requires large folios to be at
+>>>>> + * least order-2. Negative value implies that the HW has no preference and mm
+>>>>> + * will choose it's own default order.
+>>>>> + */
+>>>>> +static inline int arch_wants_pte_order(void)
+>>>>> +{
+>>>>> +     return -1;
+>>>>> +}
+>>>>> +#endif
+>>>>> +
+>>>>>   #ifndef __HAVE_ARCH_PTEP_GET_AND_CLEAR
+>>>>>   static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
+>>>>>                                      unsigned long address,
+>>>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>>>>> index bcecce769017..e2e2d3906a21 100644
+>>>>> --- a/mm/huge_memory.c
+>>>>> +++ b/mm/huge_memory.c
+>>>>> @@ -464,10 +464,18 @@ static ssize_t anon_orders_store(struct kobject *kobj,
+>>>>>       int err;
+>>>>>       int ret = count;
+>>>>>       unsigned int orders;
+>>>>> +     int arch;
+>>>>>
+>>>>> -     err = kstrtouint(buf, 0, &orders);
+>>>>> -     if (err)
+>>>>> -             ret = -EINVAL;
+>>>>> +     if (sysfs_streq(buf, "recommend")) {
+>>>>> +             arch = max(arch_wants_pte_order(), PAGE_ALLOC_COSTLY_ORDER);
+>>>>> +             orders = BIT(arch);
+>>>>> +             orders |= BIT(PAGE_ALLOC_COSTLY_ORDER);
+>>>>> +             orders |= BIT(PMD_ORDER);
+>>>>> +     } else {
+>>>>> +             err = kstrtouint(buf, 0, &orders);
+>>>>> +             if (err)
+>>>>> +                     ret = -EINVAL;
+>>>>> +     }
+>>>>>
+>>>>>       if (ret > 0) {
+>>>>>               orders &= THP_ORDERS_ALL_ANON;
+>>>>
+>>>> :/ don't really like that. Regarding my proposal, one could have
+>>>> something like that in an "auto" setting for the "enabled" value, or a
+>>>> "recommended" setting [not sure].
+>>>
+>>> Me either.
+>>>
+>>> Again this is something I call random --  we only discussed "auto",
+>>> and yes, the commit message above explained why "recommended" here but
+>>> it has never surfaced in previous discussions, has it?
+>>
+>> The context in which we discussed "auto" was for a future aspiration to
+>> automatically determine the order that should be used for a given allocation to
+>> balance perf vs internal fragmentation.
+>>
+>> The case we are talking about here is completely different; I had a pre-existing
+>> feature from previous versions of the series, which would allow the arch to
+>> specify its preferred order (originally proposed by Yu, IIRC). In moving the
+>> allocation size decision to user space, I felt that we still needed a mechanism
+>> whereby the arch could express its preference. And "recommend" is what I came up
+>> with.
+>>
+>> All of the friction we are currently having is around this feature, I think?
+>> Certainly all the links you provided in the other thread all point to
+>> conversations skirting around it. How about I just drop it for this initial
+>> patch set? Just let user space decide what sizes it wants (per David's interface
+>> proposal)? I can see I'm trying to get a square peg into a round hole.
 > 
+> Yes, and I think I've been fairly clear since the beginning: why can't
+> the initial patchset only have what we agreed on so that it can get
+> merged asap?
 > 
-> Let me add more context to my question.
-> 
-> 
-> I am interested in the timing when
-> 'pkg-config --print-variables kmod | grep module_directory'
-> is executed.
-> 
-> 
-> 
-> 1.  Build a SRPM on machine A
-> 
-> 2.  Copy the SRPM from machine A to machine B
-> 
-> 3.  Run rpmbuild on machine B to build the SRPM into a RPM
-> 
-> 4.  Copy the RPM from machine B to machine C
-> 
-> 5.  Install the RPM to machine C
+> Since we haven't agreed on any ABI changes (sysfs, stats, etc.),
+> debugfs (Suren @ Android), boot parameters, etc., Kconfig is the only
+> mergeable option at the moment. To answer your questions [1][2], i.e.,
+> why "a compile time option": it's not to make *my testing* easier;
+> it's for *your series* to make immediate progress.
 
-As far as I am aware the typical use case is two step:
+My problem is that I need a mechanism to conditionally decide whether to
+allocate a small-sized THP or just a single page; unconditionally doing it when
+compiled in is a problem for the 16K and 64K base page cases, where the arm64
+preferred small-sized THP is 2M. I need a way to solve this for the patch set to
+be usable. All my attempts to do it without introducing ABI have been rejected
+(I'm not complaining about that - I understand the reasons). So I'm now relying
+on ABI to solve it - I think we need to sort that in order to submit.
 
-1. run make rpm-pkg on machine A
-2. install the binary rpm on machine C that might not have build tools
-   or powerful enough CPU
+We've also agreed that there is a list of prerequisite items that need to be
+completed before this can be merged (please do chime in if you think that list
+is wrong or unneccessary), so we can use that time to discuss the ABI in parallel.
 
-While it's theoretically possible to use the srpm to rebuild the binary
-rpm independently of the kernel git tree I am not aware of people
-commonly doing this.
-
-If rebuilding the source rpm on a different machine from where the git
-tree is located, and possibly on a different distribution is desirable
-then the detection of the KERNEL_MODULE_DIRECTORY should be added in the
-rpm spec file as well.
-
-> Of course, we are most interested in the module path
-> of machine C, but it is difficult/impossible to
-> guess it at the time of building.
 > 
-> We can assume machine B == machine C.
-> 
-> We are the second most interested in the module
-> path on machine B.
-> 
-> The module path of machine A is not important.
-> 
-> So, I am asking where you would inject
-> 'pkg-config --print-variables kmod | grep module_directory'.
+> [1] https://lore.kernel.org/mm-commits/137d2fc4-de8b-4dda-a51d-31ce6b29a3d0@arm.com/
+> [2] https://lore.kernel.org/mm-commits/316054fd-0acb-4277-b9da-d21f0dae2d29@arm.com/
 
-I don't. I don't think there will be a separate machine B.
-
-And I can't really either - so far any attempt at adding support for
-this has been rejected.
-
-Technically the KERNEL_MODULE_DIRECTORY could be set in two steps - one
-giving the script to run, and one running it, and then it could be run
-independently in the SRPM as well.
-
-Thanks
-
-Michal
