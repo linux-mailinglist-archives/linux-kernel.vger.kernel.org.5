@@ -2,135 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D12F7C0387
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 20:36:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B56017C038A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 20:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234157AbjJJSgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 14:36:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33882 "EHLO
+        id S1343591AbjJJSiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 14:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231213AbjJJSgE (ORCPT
+        with ESMTP id S233538AbjJJSiH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 14:36:04 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BFF4B0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 11:36:01 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9a5a3f2d4fso1402088276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 11:36:01 -0700 (PDT)
+        Tue, 10 Oct 2023 14:38:07 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B37A7
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 11:38:03 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-5033918c09eso7611891e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 11:38:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696962960; x=1697567760; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=k901dfXyM6A6d2qq6am+50364PkFHEr+c7kfdKStNUQ=;
-        b=HuUhC8dUWxVj48t43dFnss6buqlB07iXCQgYMt6XmUJ97ARpurqBiewO8vgWu4ruyV
-         c8915V0MsKxWKX0acDQwTpOXgBrSKqv9H0EdiY7CaqDJ9WrwecWP7PA22AKWloUv/0iS
-         U/CIakuHY+C2jMFF90C+iqSD7yM3i5+Rd9CTsEXubdtx/at1ZD1MGjRQHe2DsXFox0wx
-         u5deq/YkPGnvEaNI9tZCXTG+RwnFbRnQ+Wd9NYYpxlzzWrGb6UVJRMzfRKQGjkKRs7jL
-         Kl3fBHXWvN5/SfasYpnQjX34jF+mkqxd2Nl4M8oadvzXrAnhl+OJatsU4KEzNXT9QHCt
-         0DfQ==
+        d=linux-foundation.org; s=google; t=1696963081; x=1697567881; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=rhSNL7cMHw4PLYbCPBTl1LNULSkwojpVoNBfxMTdOrU=;
+        b=KvHPqaDBTif73ykZWtb1IfGgNecFk+27EonAEWvzrh3BBA1t015n4+st9fWO2PWZOC
+         k5H3cYmlGD9F66sAm4GvU+q1UYp3YEQHBgMe1nbdMRH/hz/6pZ0G1h0zFyJFofRDxaF2
+         Ma+T5zXqa0og9ipI5xY5FM00MF7EgPJ9mdhCw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696962960; x=1697567760;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=k901dfXyM6A6d2qq6am+50364PkFHEr+c7kfdKStNUQ=;
-        b=a+p2YGhTSLwR0tXTmOsq2hTiE/x4Icogs97fsQgM3hB0UT9ibSKylty4EtYsks9+rK
-         W+jPRWlZSJ9+He20pULtq4dK/s+dQ0wMH/HmBpAwaB2zj39jhVc+MBK6mxFHsqZKD+y/
-         tQoS+w7YPIzxVWzWW/EK5InaMkimbdMI6YjtHG/xvcYpLJo0HGMAxEhQkKKvGMml5v+e
-         fdWVtsMCNaBgv8BNdINiTrOiR2jLejb1wNPH4dp0MCjOfdbiP7c+gknp9cib0NUhuNO4
-         VIQp5D6Fj2Es3Zo13z84I0oRE2VyjZISBBB+qTTpT732BU2a7Eg7gL+ul4zsegY5DA9R
-         TddA==
-X-Gm-Message-State: AOJu0YwRd4SFdCchXMFaWe7ZRCHQJGlbCGntlyv+NSZwpMjiXyN8Nbn4
-        +YH6eSZ9p0o0QMqpqLYWT3Eusuc5DskYXDCC+g==
-X-Google-Smtp-Source: AGHT+IHRvXP3D2yikYaUvE4s+9nvsVr680udJwA/tB2Qv9aTLY6TMIvkkLg6HQyVoI8EkajRQ+bYP1jPBJ2n/sIb9g==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:fc18:0:b0:d85:ae1e:f696 with SMTP
- id v24-20020a25fc18000000b00d85ae1ef696mr336777ybd.0.1696962960761; Tue, 10
- Oct 2023 11:36:00 -0700 (PDT)
-Date:   Tue, 10 Oct 2023 18:35:59 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAI6ZJWUC/yWNywrCMBBFf6XM2oFJVXz8ioiEzNUOaCyTUJTSf
- zfq5nDP5p6ZCtxQ6NjN5Jis2DM3CauO0hDzDWzanHrp10GCcKme0/hmdZvghTMqow7w77BccWc EEfnz8oiWOXHcbFV1f4Dojtr36Lja69c9nZflA5vSlniHAAAA
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1696962959; l=2137;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=XyZq4bqOiJO85kzWF8DwIoZ3ewao6X+shiHLyqLJcIY=; b=pCu5HtRudfioqViLz3TXwRZEp/DFrJMOIQ2kVRk6uzxbBv73fPuiJSNSllaodomHC/EO4TpVc
- wLOlN0mORyDC692XBwLhgkNojIGyVvU3rLYgwEKmdsQ9KnFfg3RKcJD
-X-Mailer: b4 0.12.3
-Message-ID: <20231010-strncpy-drivers-net-ethernet-intel-e1000-e1000_main-c-v1-1-b1d64581f983@google.com>
-Subject: [PATCH] e1000: replace deprecated strncpy with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1696963081; x=1697567881;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rhSNL7cMHw4PLYbCPBTl1LNULSkwojpVoNBfxMTdOrU=;
+        b=uBFvhKKvYgm8W9L584K6Ozv6fStKM3nrx+4CZK270xb0vPNY+FMYXI20UuUl5cyTso
+         7Cxl1DShWiQ/z8JpDtV4D6sxk8iKEuHxh5a9ZcUTRCRjhPyxFexJbgWxcjSBK1Q/V7mJ
+         +7eWGsLK4atmAPRM4i51N65No7EeeBsVV9r6S+kX6+DGqshjZqvcUgiyGzWyZu4yZH0J
+         Q26JJSXSCiHm9JilSVP19SdwWytB5yUYn5SaZcEBQ4rBhAyXyU/cujYD+34WktdeKKNZ
+         pJWCBpMKuo01lwHyTR2+n9bbpSp2dTpLMf92DVLhj9dojMUoEASiw/K5VCGm2bTZL70j
+         bK0A==
+X-Gm-Message-State: AOJu0YxLSf242kMuh94gP6wgSQwIjdX8wUEFSfG5828P3ec0Ip9dxj6s
+        t2L8J5O1Ih1qk/A2kp0ucpJH6JgTjzW54GujKcOiHYLJ
+X-Google-Smtp-Source: AGHT+IE70KHJGkM61IQOOxsyPrzfc4o4Rj1mFU8MQZumQuyLnwifjoR5a5hdTBnrudqn4d0dovn8xg==
+X-Received: by 2002:a05:6512:3a83:b0:505:7360:6023 with SMTP id q3-20020a0565123a8300b0050573606023mr20036977lfu.39.1696963081028;
+        Tue, 10 Oct 2023 11:38:01 -0700 (PDT)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id b12-20020ac2410c000000b0050296ee046csm1924792lfi.69.2023.10.10.11.38.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Oct 2023 11:38:00 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5033918c09eso7611865e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 11:38:00 -0700 (PDT)
+X-Received: by 2002:a19:ad4b:0:b0:503:182e:1def with SMTP id
+ s11-20020a19ad4b000000b00503182e1defmr15121375lfd.69.1696963080129; Tue, 10
+ Oct 2023 11:38:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+In-Reply-To: <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 10 Oct 2023 11:37:43 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+Message-ID: <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Nadav Amit <namit@vmware.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+On Tue, 10 Oct 2023 at 11:22, Uros Bizjak <ubizjak@gmail.com> wrote:
+>
+> Please note that besides propagation of the addition into address, the
+> patch also exposes memory load to the compiler, with the anticipation
+> that the compiler CSEs the load from this_cpu_off from eventual
+> multiple addresses. For this to work, we have to get rid of the asms.
 
-We can see that netdev->name is expected to be NUL-terminated based on
-it's usage with format strings:
-|       pr_info("%s NIC Link is Down\n",
-|               netdev->name);
+I actually checked that the inline asm gets combined, the same way the
+this_cpu_read_stable cases do (which we use for 'current').
 
-A suitable replacement is `strscpy` [2] due to the fact that it
-guarantees NUL-termination on the destination buffer without
-unnecessarily NUL-padding.
-
-This is in line with other uses of strscpy on netdev->name:
-$ rg "strscpy\(netdev\->name.*pci.*"
-
-drivers/net/ethernet/intel/e1000e/netdev.c
-7455:   strscpy(netdev->name, pci_name(pdev), sizeof(netdev->name));
-
-drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-10839:  strscpy(netdev->name, pci_name(pdev), sizeof(netdev->name));
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
----
- drivers/net/ethernet/intel/e1000/e1000_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/intel/e1000/e1000_main.c b/drivers/net/ethernet/intel/e1000/e1000_main.c
-index da6e303ad99b..1d1e93686af2 100644
---- a/drivers/net/ethernet/intel/e1000/e1000_main.c
-+++ b/drivers/net/ethernet/intel/e1000/e1000_main.c
-@@ -1014,7 +1014,7 @@ static int e1000_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	netdev->watchdog_timeo = 5 * HZ;
- 	netif_napi_add(netdev, &adapter->napi, e1000_clean);
- 
--	strncpy(netdev->name, pci_name(pdev), sizeof(netdev->name) - 1);
-+	strscpy(netdev->name, pci_name(pdev), sizeof(netdev->name));
- 
- 	adapter->bd_number = cards_found;
- 
-
----
-base-commit: cbf3a2cb156a2c911d8f38d8247814b4c07f49a2
-change-id: 20231010-strncpy-drivers-net-ethernet-intel-e1000-e1000_main-c-a45ddd89e0d7
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+              Linus
