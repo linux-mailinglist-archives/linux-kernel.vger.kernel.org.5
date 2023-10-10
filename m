@@ -2,91 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C37F7BF197
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 05:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 569E37BF1A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 05:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442046AbjJJDhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 23:37:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55816 "EHLO
+        id S1442037AbjJJDnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 23:43:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441973AbjJJDhr (ORCPT
+        with ESMTP id S1378482AbjJJDnM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 23:37:47 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86DAE9D;
-        Mon,  9 Oct 2023 20:37:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1696909060;
-        bh=+YBDd8EqcKOk8r91tHpJ76I89kDL1oGZ+DnbVAXqp5I=;
-        h=Date:From:To:Cc:Subject:From;
-        b=oP4rNcvv3zsYbO1/fSoKTxsxwNDb1/2sKEeR7sut1sOSAoj0EHCcS4LKKcZBnAzqc
-         UhAo5AO8I+Nj+e+wspN5xPRubaIwTq7qgDePs6yyJK5+29a7KLtlHpZT8ThdoGA856
-         3wIlbqkZAL9KOebRYvi3pf1yMdRPo0dUdRtjY/hrGRbCTJd+aD3Hg+Mmmt9ICV+ZgO
-         dw5CMTlWMycDtpvIL0jz92QJJ6Nd05PPXUnuCu7mVGTL+JwfPkZ61W/S3PLkLJZvgX
-         qb189+tjwVMGJ5ZPU08t++ROxYZ+SnT3kiOqR+R/Id4/zIKS9bpixmWhq5rTGSSjdD
-         qbxqrnAr2a1eA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S4M6X2NDdz4xM4;
-        Tue, 10 Oct 2023 14:37:40 +1100 (AEDT)
-Date:   Tue, 10 Oct 2023 14:37:39 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patch in the spi tree
-Message-ID: <20231010143739.4692aa8a@canb.auug.org.au>
+        Mon, 9 Oct 2023 23:43:12 -0400
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C4B92;
+        Mon,  9 Oct 2023 20:43:11 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5a24b03e22eso64084637b3.0;
+        Mon, 09 Oct 2023 20:43:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696909391; x=1697514191;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jaC1CNi7JQmmxrWwxbdaMek4eXwXT8OMu+wQdUBVHH8=;
+        b=AlCHB8RLVm/jnH2cdJHHbEWDS5uwiLYvvNGdanxdPiuMKmxQ9TaMTGOE/XBaXOBaN5
+         F/Dpl189PjBIoWmrVDmTTvIF155n1qm9qdAgj+tMMnKoggOzDINj4qLh26Kj3chqJSUI
+         BmLKyYogNlS9q6VMa2jWNdWYtAoKa0UAT806xstpuIxwobxcZD4QxigAlQyOaTkx0jc6
+         6XpvXNpY0ahSC0RpXUxy/JIqn9WhroOWKeqdU+DgpUzMCAaDOzYZIK6BD6fDdr8CreJO
+         jxsKcUfgigZq3h1/5pVHQpy4mZUeaHdPFqnTjoJbIX4JmBuhwvsMjUfLUM2Mv2OHWIsy
+         Uuxg==
+X-Gm-Message-State: AOJu0YyEftlHUqM/nmuW9SiZ9vJiUP1+BUBFiQprFDtZJD9cnfpkjmv/
+        wChCeu3Y5PPTzI+FOwUwveyIpX+UoQw=
+X-Google-Smtp-Source: AGHT+IGkwXsDV84jHLcmj9BirA1TG3zfHkKLT3nhlSDzWQOoTcDELHL36PAkT1Y8XQgJ48Wzzw412A==
+X-Received: by 2002:a81:df04:0:b0:5a1:fb1d:740a with SMTP id c4-20020a81df04000000b005a1fb1d740amr17465761ywn.51.1696909390819;
+        Mon, 09 Oct 2023 20:43:10 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
+        by smtp.gmail.com with ESMTPSA id d9-20020a639909000000b0059b2316be86sm543016pge.46.2023.10.09.20.43.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Oct 2023 20:43:10 -0700 (PDT)
+Date:   Tue, 10 Oct 2023 03:43:08 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Ani Sinha <anisinha@redhat.com>
+Cc:     Shradha Gupta <shradhagupta@linux.microsoft.com>,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Long Li <longli@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Olaf Hering <olaf@aepfle.de>,
+        Shradha Gupta <shradhagupta@microsoft.com>
+Subject: Re: [PATCH v8] hv/hv_kvp_daemon:Support for keyfile based connection
+ profile
+Message-ID: <ZSTITGaGzR8wR1+h@liuwe-devbox-debian-v2>
+References: <1696847920-31125-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <DF08C86E-1EFA-4C74-A5E7-190B52698F85@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/=IipmES8wmdPvmq13ZSX.ic";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DF08C86E-1EFA-4C74-A5E7-190B52698F85@redhat.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/=IipmES8wmdPvmq13ZSX.ic
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Oct 09, 2023 at 05:32:35PM +0530, Ani Sinha wrote:
+> 
+> 
+> > On 09-Oct-2023, at 4:08 PM, Shradha Gupta <shradhagupta@linux.microsoft.com> wrote:
+> > 
+> > Ifcfg config file support in NetworkManger is deprecated. This patch
+> > provides support for the new keyfile config format for connection
+> > profiles in NetworkManager. The patch modifies the hv_kvp_daemon code
+> > to generate the new network configuration in keyfile
+> > format(.ini-style format) along with a ifcfg format configuration.
+> > The ifcfg format configuration is also retained to support easy
+> > backward compatibility for distro vendors. These configurations are
+> > stored in temp files which are further translated using the
+> > hv_set_ifconfig.sh script. This script is implemented by individual
+> > distros based on the network management commands supported.
+> > For example, RHEL's implementation could be found here:
+> > https://gitlab.com/redhat/centos-stream/src/hyperv-daemons/-/blob/c9s/hv_set_ifconfig.sh
+> > Debian's implementation could be found here:
+> > https://github.com/endlessm/linux/blob/master/debian/cloud-tools/hv_set_ifconfig
+> > 
+> > The next part of this support is to let the Distro vendors consume
+> > these modified implementations to the new configuration format.
+> > 
+> > Tested-on: Rhel9(Hyper-V, Azure)(nm and ifcfg files verified)
+> > Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+> > Reviewed-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+> 
+> Reviewed-by: Ani Sinha <anisinha@redhat.com>
 
-Hi all,
-
-The following commit is also in the regulator tree as a different commit
-(but the same patch):
-
-  8a6b446d8a13 ("spi: spi-geni-qcom: Rename the label unmap_if_dma")
-
-This is commit
-
-  663060e9213e ("spi: spi-geni-qcom: Rename the label unmap_if_dma")
-
-in the regulator tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/=IipmES8wmdPvmq13ZSX.ic
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUkxwMACgkQAVBC80lX
-0GzYIgf9EDlMNf+2qWua4jgnZ2ABwHDWKEOs4fpymk4UiKKSGTlAPjk/wrFvUGDk
-LmqwqL5ZPnsvhUYh5B9R2Ko2mM8KELes2Ga3JyKpJCWDoUoP1tH5Kf8NrzhX1O3d
-LpgE+0kNfgTeWEp1xp2V01p8TPIFneOHsJZdOnkW1ObzWMg9biLOql4QdseBi/yI
-4WpTufqaPcPtuEAUcGtQqv5airPkRF6Am+qXXd+71YGot4YCtqc+WaQT0v4NSgTP
-Ms4WPnIKWXzSQQ73jN8/sY9WlXSxCh73aoYxJO+SONvQfj6oru2wvkPDDYnpJLXo
-R2F04jPwNsH+Eaes82pultRo762J5g==
-=5APW
------END PGP SIGNATURE-----
-
---Sig_/=IipmES8wmdPvmq13ZSX.ic--
+Applied to hyperv-fixes. Thanks.
