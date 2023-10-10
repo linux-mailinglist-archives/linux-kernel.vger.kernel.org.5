@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC187BFA94
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7067BFA95
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:01:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231575AbjJJMBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 08:01:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43464 "EHLO
+        id S231775AbjJJMBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 08:01:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231871AbjJJMAc (ORCPT
+        with ESMTP id S231658AbjJJMAi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 08:00:32 -0400
+        Tue, 10 Oct 2023 08:00:38 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9602AD45;
-        Tue, 10 Oct 2023 05:00:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23362C433CA;
-        Tue, 10 Oct 2023 12:00:10 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75666D60;
+        Tue, 10 Oct 2023 05:00:16 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB724C433C7;
+        Tue, 10 Oct 2023 12:00:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696939213;
-        bh=f9XO/66z9R1qy9OZli7EUvNrpwkMvHKKVd0X5/hb1w0=;
+        s=k20201202; t=1696939216;
+        bh=sd1BPgiKDfHKjuQl36jNFm0pH7W5mKDJ9L2h4RjkSRk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aH1aS+lUngueVvu0h3k6ebDxOAZ6w6I9RXxvQbJfg/1T2pjDTFfQ7gnM7nW1fJHUk
-         IEnJxWX9FRStXiaZgPBgWc62HKVUZ7EuRs5X+6bkvyGSyi62WSx42F2eqCr1wA2324
-         se5YC3b8WACS5VI5OnwQGn82Y85UWpQLIGlGw5GFh6PzXJC3V9AXriybpXIuSKoe+/
-         kyfbtEfCDS5QajVCANnqDi0G8dbZHD6eGc7FplKITvhdLVFrpuJuBHdm/ptd6PY5yU
-         Y0sf+deQjzo5HppbUN5HemqNit5InpplUyLflSFQI1P+baFCl3TN+mGjfE6K2Nz+WP
-         QvhNZq9pLnsxw==
+        b=dzPVo0+0uHMstI2hSVtR4YVo/sDmn97eFC7F98J8QZEZvOibKJU8XFQE3FRBZif3X
+         2k5bDWGU+rmMJGTMA3+9Cqlx5ua/2ExJnfZN5j21ez0dLVbYPkAtKzfMD+cDSPbXQm
+         RgQeXPfVdtceXnE9F9H4kvRFOh8HIbkWe75bJEHZPBqPYva8H424O/rdMkWbu5rmpI
+         lq5SNombP7vkupyY+lNPri464vzdLdm48zBUwVOumvFtF6jqwo9nOW88YGUgsAR0sx
+         y2+WrRCkRz2SJjHyJg/tC+sOMksuf4ai1wjatnGX/vg8EzYHsRV+hMg2SQOv7r56l4
+         iuLVm+uLVB4UA==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
@@ -38,9 +38,9 @@ Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Uladzislau Rezki <urezki@gmail.com>, rcu <rcu@vger.kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH 14/23] torture: Make torture.sh refscale testing qualify verbose_batched
-Date:   Tue, 10 Oct 2023 13:59:12 +0200
-Message-Id: <20231010115921.988766-15-frederic@kernel.org>
+Subject: [PATCH 15/23] locktorture: Add new module parameters to lock_torture_print_module_parms()
+Date:   Tue, 10 Oct 2023 13:59:13 +0200
+Message-Id: <20231010115921.988766-16-frederic@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231010115921.988766-1-frederic@kernel.org>
 References: <20231010115921.988766-1-frederic@kernel.org>
@@ -48,8 +48,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -58,30 +58,180 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-In torture.sh, the testing of refscale incorrectly used verbose_batched
-as a kernel boot parameter, which causes this parameter to be passed
-to the init process.  This commit therefore prefixes it with refscale,
-so that refscale.verbose_batched is passed to the kernel.
+This commit adds new module parameters to lock_torture_print_module_parms,
+and alphabetizes things while in the area.  This change makes locktorture
+test results more useful and self-contained.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/torture.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/locking/locktorture.c | 64 +++++++++++++-----------------------
+ 1 file changed, 23 insertions(+), 41 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
-index 12b50a4a881a..d5a0d8a33c27 100755
---- a/tools/testing/selftests/rcutorture/bin/torture.sh
-+++ b/tools/testing/selftests/rcutorture/bin/torture.sh
-@@ -472,7 +472,7 @@ do
- 	if test -n "$firsttime"
- 	then
- 		torture_bootargs="refscale.scale_type="$prim" refscale.nreaders=$HALF_ALLOTED_CPUS refscale.loops=10000 refscale.holdoff=20 torture.disable_onoff_at_boot"
--		torture_set "refscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --kconfig "CONFIG_TASKS_TRACE_RCU=y CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --bootargs "verbose_batched=$VERBOSE_BATCH_CPUS torture.verbose_sleep_frequency=8 torture.verbose_sleep_duration=$VERBOSE_BATCH_CPUS" --trust-make
-+		torture_set "refscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --kconfig "CONFIG_TASKS_TRACE_RCU=y CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --bootargs "refscale.verbose_batched=$VERBOSE_BATCH_CPUS torture.verbose_sleep_frequency=8 torture.verbose_sleep_duration=$VERBOSE_BATCH_CPUS" --trust-make
- 		mv $T/last-resdir-nodebug $T/first-resdir-nodebug || :
- 		if test -f "$T/last-resdir-kasan"
- 		then
+diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
+index 296815ef67ae..d2a3a8cc1902 100644
+--- a/kernel/locking/locktorture.c
++++ b/kernel/locking/locktorture.c
+@@ -47,8 +47,8 @@ torture_param(int, shuffle_interval, 3, "Number of jiffies between shuffles, 0=d
+ torture_param(int, shutdown_secs, 0, "Shutdown time (j), <= zero to disable.");
+ torture_param(int, stat_interval, 60, "Number of seconds between stats printk()s");
+ torture_param(int, stutter, 5, "Number of jiffies to run/halt test, 0=disable");
+-torture_param(int, writer_fifo, 0, "Run writers at sched_set_fifo() priority");
+ torture_param(int, verbose, 1, "Enable verbose debugging printk()s");
++torture_param(int, writer_fifo, 0, "Run writers at sched_set_fifo() priority");
+ /* Going much higher trips "BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!" errors */
+ #define MAX_NESTED_LOCKS 8
+ 
+@@ -166,12 +166,9 @@ static int torture_lock_busted_write_lock(int tid __maybe_unused)
+ 
+ static void torture_lock_busted_write_delay(struct torture_random_state *trsp)
+ {
+-	const unsigned long longdelay_ms = long_hold ? long_hold : ULONG_MAX;
+-
+ 	/* We want a long delay occasionally to force massive contention.  */
+-	if (!(torture_random(trsp) %
+-	      (cxt.nrealwriters_stress * 2000 * longdelay_ms)))
+-		mdelay(longdelay_ms);
++	if (long_hold && !(torture_random(trsp) % (cxt.nrealwriters_stress * 2000 * long_hold)))
++		mdelay(long_hold);
+ 	if (!(torture_random(trsp) % (cxt.nrealwriters_stress * 20000)))
+ 		torture_preempt_schedule();  /* Allow test to be preempted. */
+ }
+@@ -244,15 +241,14 @@ __acquires(torture_spinlock)
+ static void torture_spin_lock_write_delay(struct torture_random_state *trsp)
+ {
+ 	const unsigned long shortdelay_us = 2;
+-	const unsigned long longdelay_ms = long_hold ? long_hold : ULONG_MAX;
+ 	unsigned long j;
+ 
+ 	/* We want a short delay mostly to emulate likely code, and
+ 	 * we want a long delay occasionally to force massive contention.
+ 	 */
+-	if (!(torture_random(trsp) % (cxt.nrealwriters_stress * 2000 * longdelay_ms))) {
++	if (long_hold && !(torture_random(trsp) % (cxt.nrealwriters_stress * 2000 * long_hold))) {
+ 		j = jiffies;
+-		mdelay(longdelay_ms);
++		mdelay(long_hold);
+ 		pr_alert("%s: delay = %lu jiffies.\n", __func__, jiffies - j);
+ 	}
+ 	if (!(torture_random(trsp) % (cxt.nrealwriters_stress * 200 * shortdelay_us)))
+@@ -370,14 +366,12 @@ __acquires(torture_rwlock)
+ static void torture_rwlock_write_delay(struct torture_random_state *trsp)
+ {
+ 	const unsigned long shortdelay_us = 2;
+-	const unsigned long longdelay_ms = long_hold ? long_hold : ULONG_MAX;
+ 
+ 	/* We want a short delay mostly to emulate likely code, and
+ 	 * we want a long delay occasionally to force massive contention.
+ 	 */
+-	if (!(torture_random(trsp) %
+-	      (cxt.nrealwriters_stress * 2000 * longdelay_ms)))
+-		mdelay(longdelay_ms);
++	if (long_hold && !(torture_random(trsp) % (cxt.nrealwriters_stress * 2000 * long_hold)))
++		mdelay(long_hold);
+ 	else
+ 		udelay(shortdelay_us);
+ }
+@@ -398,14 +392,12 @@ __acquires(torture_rwlock)
+ static void torture_rwlock_read_delay(struct torture_random_state *trsp)
+ {
+ 	const unsigned long shortdelay_us = 10;
+-	const unsigned long longdelay_ms = 100;
+ 
+ 	/* We want a short delay mostly to emulate likely code, and
+ 	 * we want a long delay occasionally to force massive contention.
+ 	 */
+-	if (!(torture_random(trsp) %
+-	      (cxt.nrealreaders_stress * 2000 * longdelay_ms)))
+-		mdelay(longdelay_ms);
++	if (long_hold && !(torture_random(trsp) % (cxt.nrealreaders_stress * 2000 * long_hold)))
++		mdelay(long_hold);
+ 	else
+ 		udelay(shortdelay_us);
+ }
+@@ -503,12 +495,9 @@ __acquires(torture_mutex)
+ 
+ static void torture_mutex_delay(struct torture_random_state *trsp)
+ {
+-	const unsigned long longdelay_ms = long_hold ? long_hold : ULONG_MAX;
+-
+ 	/* We want a long delay occasionally to force massive contention.  */
+-	if (!(torture_random(trsp) %
+-	      (cxt.nrealwriters_stress * 2000 * longdelay_ms)))
+-		mdelay(longdelay_ms * 5);
++	if (long_hold && !(torture_random(trsp) % (cxt.nrealwriters_stress * 2000 * long_hold)))
++		mdelay(long_hold * 5);
+ 	if (!(torture_random(trsp) % (cxt.nrealwriters_stress * 20000)))
+ 		torture_preempt_schedule();  /* Allow test to be preempted. */
+ }
+@@ -676,15 +665,13 @@ __acquires(torture_rtmutex)
+ static void torture_rtmutex_delay(struct torture_random_state *trsp)
+ {
+ 	const unsigned long shortdelay_us = 2;
+-	const unsigned long longdelay_ms = long_hold ? long_hold : ULONG_MAX;
+ 
+ 	/*
+ 	 * We want a short delay mostly to emulate likely code, and
+ 	 * we want a long delay occasionally to force massive contention.
+ 	 */
+-	if (!(torture_random(trsp) %
+-	      (cxt.nrealwriters_stress * 2000 * longdelay_ms)))
+-		mdelay(longdelay_ms);
++	if (long_hold && !(torture_random(trsp) % (cxt.nrealwriters_stress * 2000 * long_hold)))
++		mdelay(long_hold);
+ 	if (!(torture_random(trsp) %
+ 	      (cxt.nrealwriters_stress * 200 * shortdelay_us)))
+ 		udelay(shortdelay_us);
+@@ -741,12 +728,9 @@ __acquires(torture_rwsem)
+ 
+ static void torture_rwsem_write_delay(struct torture_random_state *trsp)
+ {
+-	const unsigned long longdelay_ms = long_hold ? long_hold : ULONG_MAX;
+-
+ 	/* We want a long delay occasionally to force massive contention.  */
+-	if (!(torture_random(trsp) %
+-	      (cxt.nrealwriters_stress * 2000 * longdelay_ms)))
+-		mdelay(longdelay_ms * 10);
++	if (long_hold && !(torture_random(trsp) % (cxt.nrealwriters_stress * 2000 * long_hold)))
++		mdelay(long_hold * 10);
+ 	if (!(torture_random(trsp) % (cxt.nrealwriters_stress * 20000)))
+ 		torture_preempt_schedule();  /* Allow test to be preempted. */
+ }
+@@ -766,14 +750,11 @@ __acquires(torture_rwsem)
+ 
+ static void torture_rwsem_read_delay(struct torture_random_state *trsp)
+ {
+-	const unsigned long longdelay_ms = 100;
+-
+ 	/* We want a long delay occasionally to force massive contention.  */
+-	if (!(torture_random(trsp) %
+-	      (cxt.nrealreaders_stress * 2000 * longdelay_ms)))
+-		mdelay(longdelay_ms * 2);
++	if (long_hold && !(torture_random(trsp) % (cxt.nrealreaders_stress * 2000 * long_hold)))
++		mdelay(long_hold * 2);
+ 	else
+-		mdelay(longdelay_ms / 2);
++		mdelay(long_hold / 2);
+ 	if (!(torture_random(trsp) % (cxt.nrealreaders_stress * 20000)))
+ 		torture_preempt_schedule();  /* Allow test to be preempted. */
+ }
+@@ -1056,11 +1037,12 @@ lock_torture_print_module_parms(struct lock_torture_ops *cur_ops,
+ 
+ 	cpumask_setall(&cpumask_all);
+ 	pr_alert("%s" TORTURE_FLAG
+-		 "--- %s%s: nwriters_stress=%d nreaders_stress=%d nested_locks=%d stat_interval=%d verbose=%d shuffle_interval=%d stutter=%d shutdown_secs=%d onoff_interval=%d onoff_holdoff=%d readers_bind=%*pbl writers_bind=%*pbl\n",
++		 "--- %s%s: acq_writer_lim=%d long_hold=%d nested_locks=%d nreaders_stress=%d nwriters_stress=%d onoff_holdoff=%d onoff_interval=%d rt_boost=%d rt_boost_factor=%d shuffle_interval=%d shutdown_secs=%d stat_interval=%d stutter=%d verbose=%d writer_fifo=%d readers_bind=%*pbl writers_bind=%*pbl\n",
+ 		 torture_type, tag, cxt.debug_lock ? " [debug]": "",
+-		 cxt.nrealwriters_stress, cxt.nrealreaders_stress,
+-		 nested_locks, stat_interval, verbose, shuffle_interval,
+-		 stutter, shutdown_secs, onoff_interval, onoff_holdoff,
++		 acq_writer_lim, long_hold, nested_locks, cxt.nrealreaders_stress,
++		 cxt.nrealwriters_stress, onoff_holdoff, onoff_interval, rt_boost,
++		 rt_boost_factor, shuffle_interval, shutdown_secs, stat_interval, stutter,
++		 verbose, writer_fifo,
+ 		 cpumask_pr_args(rcmp), cpumask_pr_args(wcmp));
+ }
+ 
 -- 
 2.34.1
 
