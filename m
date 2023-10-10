@@ -2,156 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB9D7C0403
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 21:01:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BB047C0406
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 21:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343535AbjJJTBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 15:01:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60696 "EHLO
+        id S1343647AbjJJTC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 15:02:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233336AbjJJTBW (ORCPT
+        with ESMTP id S233336AbjJJTC1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 15:01:22 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE23894;
-        Tue, 10 Oct 2023 12:01:19 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39AIklF5027319;
-        Tue, 10 Oct 2023 19:01:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=xdbkijLx7schihxcpHXzfMjQ0oJH76kV0Llxrn0wbiA=;
- b=EofFRRIlKAef89uJzy+8jv6R8IVwo4Rapb6+VPsoMmnm6NpU8gWw6lbGYrYQDyq+wKxR
- Z/VVWIoUk/3LPKFWcQSCAdjfr/eYuGpgADfWhCNfx1oTKbHGjxgIjheT3sObKeF0BxbR
- n/6mTfLnu8RycJccGJVt4KqD9hm0h5C06kFLGC/qHb40I0SbsOSRnV31ZuLuxAaX7WYt
- 5uY/IQgkIk3oCv9NWRHI7VPUmnHC9ILMOSrZaYifbAN22PXCxoFnBK6SZeBBrm75FxaH
- eOc+0C/IEE8PVmcmFZ9zeXkD+g5wBQy2MUQEooX1TLGAMgc5loWLctZQiEHqw3kKXmvq Xw== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tmj0dbec1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 10 Oct 2023 19:01:14 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39AJ1AEf019930
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 10 Oct 2023 19:01:11 GMT
-Received: from [10.110.38.80] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 10 Oct
- 2023 12:01:10 -0700
-Message-ID: <5f491814-c105-64e3-93c0-5fff89160ac1@quicinc.com>
-Date:   Tue, 10 Oct 2023 12:01:05 -0700
+        Tue, 10 Oct 2023 15:02:27 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C812A93
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 12:02:25 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9b1ebc80d0aso1022535366b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 12:02:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696964544; x=1697569344; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5woyaOlfb5FRD/2ky2o7l2Lh0ZKAp5sQQeLB5eexnx0=;
+        b=SwerxqFMedxMTwU4dVCzvaZ8ITJu2hKAQSNz96hao7tkfxBq25l+PD4WkKFj960acV
+         QrLWjpAhPk4wjwufAaiO8JxCGiZbe3eLdZ/te+fTgjR6CpNr67PZ6SmPh9UOTzqOmy4D
+         g2Nwu/BCBd961xfwZWPmP95QoU6+EyIGuncZOnyiBtCJhCj3BpVmXvFfv985gwPQxTxL
+         aG3I3OM4UeFUGH3F0OPuPdoWDGT6eOtrKooLw86aLxLd+BKcAl3hY7MsG9SICKovV2Bg
+         49Rwf0zKV2nvDjjQ9+dNcaEFtUgHtu46V567eyK1/jwbXaxRp13y/nURh4un+1LZ/mJX
+         qNWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696964544; x=1697569344;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5woyaOlfb5FRD/2ky2o7l2Lh0ZKAp5sQQeLB5eexnx0=;
+        b=qZ1YSCy5yIXnsT1AesW066BNtq/+U8ffIGAoVoGmT+7BmAPkbXo4jDK8vVoMicxwGB
+         O0C0ZWuxX+kjIqMUQJCwAlS4PsMtq1JTlRp3md2K6G3Xonq2QAXlx0tkNOxrTZipO7Ob
+         xMibXZ+PrSWRNBjHWNT/aHxfL2q+M8RZZXopEhWsCgJT44tgMJwaujorB07VNXvlxQO5
+         efpoZM7mkgoENUcZvDxQ+BVDzujPIgXlIyac2A2xsalsXX3C13dCAS0NFpSuP8g9P4MO
+         GZeJnV1hKDdGH/LxLE0/6TL/yKVsmVJywLMp2qdgYNs8wAGEJevJeJfwduD2gIfH5px7
+         YIZw==
+X-Gm-Message-State: AOJu0YxsOHeM++5lrMTJw5Jch7LEt+Ba2MPBfFKnmzqJqLmgo7UzemPw
+        pPtftU3kTaYTr6nxM/yEZ7l9UBY2Ge0AQPQh0Zl0gA==
+X-Google-Smtp-Source: AGHT+IH9bKUffChQjllZKWXnZLqMPjRf0Bp9CGpOP4CvCWQxNB07IIGTrxdZrDu0oiPVMWwbVLPWJ/cU73YSpZmjB7o=
+X-Received: by 2002:a17:907:2cef:b0:9ae:6355:5ef4 with SMTP id
+ hz15-20020a1709072cef00b009ae63555ef4mr16422145ejc.3.1696964543989; Tue, 10
+ Oct 2023 12:02:23 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v3] usb: host: xhci: Avoid XHCI resume delay if SSUSB
- device is not present
-Content-Language: en-US
-To:     <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230919224327.29974-1-quic_wcheng@quicinc.com>
-From:   Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <20230919224327.29974-1-quic_wcheng@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: t7kclmkzjCDgjRTkdC0DV3R4ZWupEK-f
-X-Proofpoint-ORIG-GUID: t7kclmkzjCDgjRTkdC0DV3R4ZWupEK-f
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-10_15,2023-10-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 spamscore=0 mlxscore=0 mlxlogscore=691 clxscore=1011
- priorityscore=1501 malwarescore=0 impostorscore=0 bulkscore=0
- suspectscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2309180000 definitions=main-2310100145
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20231010032117.1577496-1-yosryahmed@google.com> <CAFYChMv_kv_KXOMRkrmTN-7MrfgBHMcK3YXv0dPYEL7nK77e2A@mail.gmail.com>
+In-Reply-To: <CAFYChMv_kv_KXOMRkrmTN-7MrfgBHMcK3YXv0dPYEL7nK77e2A@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 10 Oct 2023 12:01:44 -0700
+Message-ID: <CAJD7tkamU-rnmw=N+W8Uom1AuK4ADrmW5OxxL8FrFZTxMMP5ag@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] mm: memcg: subtree stats flushing and thresholds
+To:     domenico cerasuolo <cerasuolodomenico@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Friendly ping to see if there are any updates/feedback on this patch?
+On Tue, Oct 10, 2023 at 9:48=E2=80=AFAM domenico cerasuolo
+<cerasuolodomenico@gmail.com> wrote:
+>
+> Il giorno mar 10 ott 2023 alle ore 05:21 Yosry Ahmed
+> <yosryahmed@google.com> ha scritto:
+> >
+> > This series attempts to address shortages in today's approach for memcg
+> > stats flushing, namely occasionally stale or expensive stat reads. The
+> > series does so by changing the threshold that we use to decide whether
+> > to trigger a flush to be per memcg instead of global (patch 3), and the=
+n
+> > changing flushing to be per memcg (i.e. subtree flushes) instead of
+> > global (patch 5).
+> >
+> > Patch 3 & 5 are the core of the series, and they include more details
+> > and testing results. The rest are either cleanups or prep work.
+> >
+> > This series replaces the "memcg: more sophisticated stats flushing"
+> > series [1], which also replaces another series, in a long list of
+> > attempts to improve memcg stats flushing. It is not a new version of
+> > the same patchset as it is a completely different approach. This is
+> > based on collected feedback from discussions on lkml in all previous
+> > attempts. Hopefully, this is the final attempt.
+> >
+> > [1]https://lore.kernel.org/lkml/20230913073846.1528938-1-yosryahmed@goo=
+gle.com/
+> >
+> > v1 -> v2:
+> > - Fixed compilation error reported by the kernel robot in patch 4, also
+> >   added a missing rcu_read_unlock().
+> > - More testing results in the commit message of patch 3.
+> >
+> > Yosry Ahmed (5):
+> >   mm: memcg: change flush_next_time to flush_last_time
+> >   mm: memcg: move vmstats structs definition above flushing code
+> >   mm: memcg: make stats flushing threshold per-memcg
+> >   mm: workingset: move the stats flush into workingset_test_recent()
+> >   mm: memcg: restore subtree stats flushing
+> >
+> >  include/linux/memcontrol.h |   8 +-
+> >  mm/memcontrol.c            | 269 +++++++++++++++++++++----------------
+> >  mm/vmscan.c                |   2 +-
+> >  mm/workingset.c            |  42 ++++--
+> >  4 files changed, 185 insertions(+), 136 deletions(-)
+> >
+> > --
+> > 2.42.0.609.gbb76f46606-goog
+> >
+> >
+>
+> Hi Yosry,
+>
+> thanks for this series! We backported it on a 5.19-based kernel and ran i=
+t on a
+> machine for almost a week now. The goal was to fix a CPU utilization regr=
+ession
+> caused by memory stats readings, it seems that this series was the last b=
+it
+> needed to completely fix it and bring CPU utilization to 5.12 levels.
+>
+> FWIW,
+>
+> Tested-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
 
-Thanks
-Wesley Cheng
-
-On 9/19/2023 3:43 PM, Wesley Cheng wrote:
-> There is a 120ms delay implemented for allowing the XHCI host controller to
-> detect a U3 wakeup pulse.  The intention is to wait for the device to retry
-> the wakeup event if the USB3 PORTSC doesn't reflect the RESUME link status
-> by the time it is checked.  As per the USB3 specification:
-> 
->    tU3WakeupRetryDelay ("Table 7-12. LTSSM State Transition Timeouts")
-> 
-> This would allow the XHCI resume sequence to determine if the root hub
-> needs to be also resumed.  However, in case there is no device connected,
-> or if there is only a HSUSB device connected, this delay would still affect
-> the overall resume timing.
-> 
-> Since this delay is solely for detecting U3 wake events (USB3 specific)
-> then ignore this delay for the disconnected case and the HSUSB connected
-> only case.
-> 
-> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
-> ---
-> Depends-on:
-> https://lore.kernel.org/linux-usb/20230915143108.1532163-3-mathias.nyman@linux.intel.com/
-> 
->   drivers/usb/host/xhci.c | 20 +++++++++++++++++++-
->   1 file changed, 19 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-> index e1b1b64a0723..1855cab1be56 100644
-> --- a/drivers/usb/host/xhci.c
-> +++ b/drivers/usb/host/xhci.c
-> @@ -805,6 +805,18 @@ static void xhci_disable_hub_port_wake(struct xhci_hcd *xhci,
->   	spin_unlock_irqrestore(&xhci->lock, flags);
->   }
->   
-> +/*
-> + * Utilize suspended_ports and bus_suspended to determine if USB3 device is
-> + * connected.  The bus state bits are set by XHCI hub when root hub udev is
-> + * suspended.  Used to determine if USB3 remote wakeup considerations need to
-> + * be accounted for during XHCI resume.
-> + */
-> +static bool xhci_usb3_dev_connected(struct xhci_hcd *xhci)
-> +{
-> +	return !!xhci->usb3_rhub.bus_state.suspended_ports ||
-> +		!!xhci->usb3_rhub.bus_state.bus_suspended;
-> +}
-> +
->   static bool xhci_pending_portevent(struct xhci_hcd *xhci)
->   {
->   	struct xhci_port	**ports;
-> @@ -968,6 +980,7 @@ int xhci_resume(struct xhci_hcd *xhci, pm_message_t msg)
->   	int			retval = 0;
->   	bool			comp_timer_running = false;
->   	bool			pending_portevent = false;
-> +	bool			usb3_connected = false;
->   	bool			reinit_xhc = false;
->   
->   	if (!hcd->state)
-> @@ -1116,9 +1129,14 @@ int xhci_resume(struct xhci_hcd *xhci, pm_message_t msg)
->   		 * Resume roothubs only if there are pending events.
->   		 * USB 3 devices resend U3 LFPS wake after a 100ms delay if
->   		 * the first wake signalling failed, give it that chance.
-> +		 * Avoid this check if there are no devices connected to
-> +		 * the SS root hub. (i.e. HS device connected or no device
-> +		 * connected)
->   		 */
->   		pending_portevent = xhci_pending_portevent(xhci);
-> -		if (!pending_portevent && msg.event == PM_EVENT_AUTO_RESUME) {
-> +		usb3_connected = xhci_usb3_dev_connected(xhci);
-> +		if (!pending_portevent && usb3_connected &&
-> +		     msg.event == PM_EVENT_AUTO_RESUME) {
->   			msleep(120);
->   			pending_portevent = xhci_pending_portevent(xhci);
->   		}
+That's awesome. Thanks for the testing!
