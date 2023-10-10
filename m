@@ -2,47 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 243197BFC3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF2E77BFCE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232408AbjJJNAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 09:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32802 "EHLO
+        id S231911AbjJJNGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 09:06:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232469AbjJJNAX (ORCPT
+        with ESMTP id S231400AbjJJNGU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 09:00:23 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 798BD1BC
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 06:00:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73107C433C9;
-        Tue, 10 Oct 2023 12:59:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696942801;
-        bh=Xi+Z6sMFlQ/asWuwXVb1mQI8aYoKAasoVIf0fri5JUU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=fG2qWorUWCfvQAcOdg2BtGbv9Ro/K0B2CpaODoS/VnH9d1Bet0rngO4Io+dDpjVP+
-         xWEeIBTjpNic9yaaI0woBajR4QdJvM7htlnYU95Xy+b+dWPiDRtOzdFoWFNbHGJmGX
-         jmTIBA72fAJPmxZmwZ6Nxx2gFhjRkcOaKLXGDedAo6tWBD/JxLZ0NR9aEkEjJX5HOw
-         pIa+ZKnY0cG2xrcPx6nOz/ZuRjwXweE0onrNwFHyXr/8Goo2WFFtFHdmdJFUnlP/2D
-         8EVzEEDBVdK45ixmVGgQvtNo5YFccXrQ0B3xmoUrBzrmyF7B225nBkSc8Pd2jaXkqA
-         Drz3Xk1UTpdiA==
-Date:   Tue, 10 Oct 2023 06:59:44 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>
-Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] afs: Add __counted_by for struct afs_acl and use
- struct_size()
-Message-ID: <ZSVKwBmxQ1amv47E@work>
+        Tue, 10 Oct 2023 09:06:20 -0400
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 446E6AF;
+        Tue, 10 Oct 2023 06:06:15 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Vtsp-iy_1696943168;
+Received: from 30.25.224.166(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Vtsp-iy_1696943168)
+          by smtp.aliyun-inc.com;
+          Tue, 10 Oct 2023 21:06:11 +0800
+Message-ID: <9a6ccef5-3a35-ae0d-2a9c-1703c5038c81@linux.alibaba.com>
+Date:   Tue, 10 Oct 2023 21:06:07 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.0
+Subject: Re: [PATCH] erofs: fix inode metadata space layout description in
+ documentation
+To:     Tiwei Bie <tiwei.btw@antgroup.com>, linux-erofs@lists.ozlabs.org,
+        xiang@kernel.org
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ayushranjan@google.com, Yue Hu <huyue2@coolpad.com>
+References: <20231010113915.436591-1-tiwei.btw@antgroup.com>
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <20231010113915.436591-1-tiwei.btw@antgroup.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,51 +47,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prepare for the coming implementation by GCC and Clang of the __counted_by
-attribute. Flexible array members annotated with __counted_by can have
-their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
-array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-functions).
+Hi Tiwei,
 
-While there, use struct_size() helper, instead of the open-coded
-version, to calculate the size for the allocation of the whole
-flexible structure, including of course, the flexible-array member.
+On 2023/10/10 19:39, Tiwei Bie via Linux-erofs wrote:
+> Xattrs, extents, data inline are _placed after_, not _followed by_ the
+> corresponding inode. This patch fixes it
 
-This code was found with the help of Coccinelle, and audited and
-fixed manually.
+Thanks for the patch and sorry about my terrible English...
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- fs/afs/internal.h | 2 +-
- fs/afs/xattr.c    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> Fixes: fdb0536469cb ("staging: erofs: add document")
 
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index 469a717467a4..e263a58b82ba 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -1116,7 +1116,7 @@ extern void afs_fs_inline_bulk_status(struct afs_operation *);
- 
- struct afs_acl {
- 	u32	size;
--	u8	data[];
-+	u8	data[] __counted_by(size);
- };
- 
- extern void afs_fs_fetch_acl(struct afs_operation *);
-diff --git a/fs/afs/xattr.c b/fs/afs/xattr.c
-index 9048d8ccc715..8b42cac51660 100644
---- a/fs/afs/xattr.c
-+++ b/fs/afs/xattr.c
-@@ -75,7 +75,7 @@ static bool afs_make_acl(struct afs_operation *op,
- {
- 	struct afs_acl *acl;
- 
--	acl = kmalloc(sizeof(*acl) + size, GFP_KERNEL);
-+	acl = kmalloc(struct_size(acl, data, size), GFP_KERNEL);
- 	if (!acl) {
- 		afs_op_nomem(op);
- 		return false;
--- 
-2.34.1
+I'm not sure if it's necessary to tag document fixes anyway
+since docs.kernel.org already uses the latest version and
+`.rst` format is adapted much later..
 
+I will drop this tag for the next merge window if not urgent.
+
+> Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
+
+Reviewed-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+
+Thanks,
+Gao Xiang
+
+> ---
+>   Documentation/filesystems/erofs.rst | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/filesystems/erofs.rst b/Documentation/filesystems/erofs.rst
+> index f200d7874495..57c6ae23b3fc 100644
+> --- a/Documentation/filesystems/erofs.rst
+> +++ b/Documentation/filesystems/erofs.rst
+> @@ -199,7 +199,7 @@ may not. All metadatas can be now observed in two different spaces (views):
+>                                           |                  |
+>                                           |__________________| 64 bytes
+>   
+> -    Xattrs, extents, data inline are followed by the corresponding inode with
+> +    Xattrs, extents, data inline are placed after the corresponding inode with
+>       proper alignment, and they could be optional for different data mappings.
+>       _currently_ total 5 data layouts are supported:
+>   
