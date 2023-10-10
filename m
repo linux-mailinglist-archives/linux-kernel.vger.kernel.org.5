@@ -2,101 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DF1D7BEFDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 02:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84BEF7BEFE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 02:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379188AbjJJAox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 20:44:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43426 "EHLO
+        id S1379242AbjJJAr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 20:47:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378721AbjJJAow (ORCPT
+        with ESMTP id S1378721AbjJJAr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 20:44:52 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A238C9F
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 17:44:50 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-2777d237229so3803687a91.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Oct 2023 17:44:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696898690; x=1697503490; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GjWqPSaGLXcalBvg3vbKJZBRfdwwxJm8ORCUVRBFN2k=;
-        b=nliD91NADAj3P8mRtEEHzzIQK9EKu/4+SW4MYtOA2bwhlnxLNMDHX1dlNoO9E3UZdm
-         0HLahyNu8BuUz4429RaqGyY3qkhrK00X8b/fy47F3/JzYXBlYWrlUvoq4iWNPMgRwRiI
-         B1m5ytvh6z/q3yMO0VL2rRj1JMXMXwaRsp9qg5X+jybjdD+NBWfc7cy1AnEzHJ6jqBbu
-         TeKpv14R8Y+ohWEmS5ls8U0infG2SKCOMlbne3lyk60ldvKM9Jaghy6FAMI+vdjyRZij
-         LWhmGnkqElOgdwQAQv/fKexyYrsaavCaACAHtwJofqXSTB8m/zVGl1Z4Sm6Z2xG1gu4D
-         klFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696898690; x=1697503490;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GjWqPSaGLXcalBvg3vbKJZBRfdwwxJm8ORCUVRBFN2k=;
-        b=w0HB3wpiHvQvvb/fhxQk3F5BjRLjeB39EAFS8hY/xk+6O5RJGZP0Z5+Waq1UWxS6CS
-         vavMJ8V61Y+ZNm7cwF4gNNR2u2J+DcHtafarfO1nLjqYYBgxRMOfR0EJmUkUZDOMwNcT
-         kNOWWDyKh1uQpOptU019r3N7KMS72nmBx+fX9fFBgMdg9v6dDW+wgQkaACC865HzEXsE
-         GYxJwEKSpgDuIhWrJlgrAhfZ8ygIpeP5e31tZdgGlD5fG15+06hevjkDYSyaDIUZByEk
-         88QRUS9p2ubfFTGeiYIe9fRs7knTdB0E6yn26szzZQA7a65zgTotZ4qpoNH+ZrZ7OWsU
-         Ybqg==
-X-Gm-Message-State: AOJu0Yz+rDw2tleuWt6w9SxE/rcmapMiDefwiiw1U+jeTdaU1HrUyOwq
-        bIPSlZ2oWu433KD6C4ECwpO0+jc3Qk0=
-X-Google-Smtp-Source: AGHT+IHks1xinxBpntMCi1lJzcobNtsVg0K7o78+ChOATaq1C8mIgIHSbN9sGo+h7fwAELRBj6ylyMI6yKs=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90a:e548:b0:277:5c9b:14dd with SMTP id
- ei8-20020a17090ae54800b002775c9b14ddmr285423pjb.2.1696898690129; Mon, 09 Oct
- 2023 17:44:50 -0700 (PDT)
-Date:   Mon,  9 Oct 2023 17:44:32 -0700
-In-Reply-To: <20231008025335.7419-1-likexu@tencent.com>
-Mime-Version: 1.0
-References: <20231008025335.7419-1-likexu@tencent.com>
-X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Message-ID: <169689823852.390348.16203872510226635933.b4-ty@google.com>
-Subject: Re: [PATCH v7] KVM: x86/tsc: Don't sync user-written TSC against
- startup values
-From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Like Xu <like.xu.linux@gmail.com>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Oliver Upton <oliver.upton@linux.dev>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Mon, 9 Oct 2023 20:47:27 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE4C99;
+        Mon,  9 Oct 2023 17:47:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4AA1C433C9;
+        Tue, 10 Oct 2023 00:47:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696898846;
+        bh=U6LEJYuUeVc0ijopRiWP1lyH7WNEe7pADKgTe1SDe80=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Zn5tjchbfOIbLTsxVx9nsT5GsC1moZatY656JBJxwH77OnOe+vUCNNTWWB+GteyKZ
+         60thf5w+lh/S4firKUBP6mb+qCZq0DMHhRmxTcUr6h6ROVeFyxHbWiw6iHly+YlwQ7
+         Dd29A3803LA6/Yxlp3O7Kn2Yx2IZ+RmwSBGssyKvD51T+YjAOy3+n8k/JqyWxuJZl6
+         ymGQ+BBRDPMWGe20THjmdKcK2UOYgXUKACG511v3itsK0V0/foyYm7OnpqxXb+fbMB
+         0MgEiA6g8o3mpT8ruar9mzBGCru3gPpAHUy6nZs74wpGKMhGGH1NQxpqH816U1mduO
+         zIdUZMKkI62gw==
+Date:   Mon, 9 Oct 2023 17:47:24 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     netdev@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-wireless@vger.kernel.org,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-wpan@vger.kernel.org,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, Doug Brown <doug@schmorgal.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 01/10] appletalk: remove localtalk and ppp support
+Message-ID: <20231009174724.1e42b9ad@kernel.org>
+In-Reply-To: <20231009141908.1767241-1-arnd@kernel.org>
+References: <20231009141908.1767241-1-arnd@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 08 Oct 2023 10:53:35 +0800, Like Xu wrote:
-> The legacy API for setting the TSC is fundamentally broken, and only
-> allows userspace to set a TSC "now", without any way to account for
-> time lost to preemption between the calculation of the value, and the
-> kernel eventually handling the ioctl.
+On Mon,  9 Oct 2023 16:18:59 +0200 Arnd Bergmann wrote:
+> The last localtalk driver is gone now, and ppp support was never fully
+> merged, so clean up the appletalk code by removing the obvious dead
+> code paths.
 > 
-> To work around this we have had a hack which, if a TSC is set with a
-> value which is within a second's worth of a previous vCPU, assumes that
-> userspace actually intended them to be in sync and adjusts the newly-
-> written TSC value accordingly.
+> Notably, this removes one of the two callers of the old .ndo_do_ioctl()
+> callback that was abused for getting device addresses and is now
+> only used in the ieee802154 subsystem, which still uses the same trick.
 > 
-> [...]
+> The include/uapi/linux/if_ltalk.h header might still be required
+> for building userspace programs, but I made sure that debian code
+> search and the netatalk upstream have no references it it, so it
+> should be fine to remove.
 
-Applied to kvm-x86 misc, thanks!  I massaged away most of the pronouns in the
-changelog.  Yes, they bug me that much, and I genuinely had a hard time following
-some of the paragraphs even though I already knew what the patch is doing.
-
-Everyone, please take a look and make sure I didn't botch anything.  I tried my
-best to keep the existing "voice" and tone of the changelog (sans pronouns
-obviously).  I definitely don't want to bikeshed this thing any further.  If
-I've learned anything by this patch, it's that the only guaranteed outcome of
-changelog-by-committee is that no one will walk away 100% happy :-)
-
-[1/1] KVM: x86/tsc: Don't sync user-written TSC against startup values
-      https://github.com/kvm-x86/linux/commit/bf328e22e472
-
---
-https://github.com/kvm-x86/linux/tree/next
+Looks like it depends on the ipddp driver removal.
+Could you repost once that one is merged (~tomorrow)?
+-- 
+pw-bot: cr
