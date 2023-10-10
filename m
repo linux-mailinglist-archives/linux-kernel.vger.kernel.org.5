@@ -2,782 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B467BFF6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 16:38:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2CD7BFF73
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 16:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232439AbjJJOiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 10:38:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45184 "EHLO
+        id S232502AbjJJOko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 10:40:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232130AbjJJOh6 (ORCPT
+        with ESMTP id S232401AbjJJOkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 10:37:58 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA7B9E;
-        Tue, 10 Oct 2023 07:37:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8D78C433C8;
-        Tue, 10 Oct 2023 14:37:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696948675;
-        bh=vgqGK+bwKmgCqLMj0qSiCgmwuDuxCsWZb3n+ldqxMl0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KiA0INp/5GMCI0d8qst0BFsRsqScTdAI1O0UXw4sUwuLG/N2f0oBfMpUPg5EznWk5
-         m5JvIAPnNS/sanQhzwCIn4fo9YCTgmwO6XcD3j0+KfSx51/AlwBdlZoVict9F1aC48
-         IXuJpPqYMEc7pbEdOqB7r7qSmYlkUTcyJMAga/zkFZLO51PN9QgyjayLUmONMI2hmU
-         +h3Z4XEfNL6t4IBuSVm95gZN+GBRGjAODNr2l1GM19pwkMNNOhHs/orWxHMAyndlTL
-         f0IZZmbKRylOXqZcGWOCjqzS7bbyJuxsgU0It51/uio8Lrfk5vtz8co0chXs5YoESC
-         xflowjYV3KBCg==
-Date:   Tue, 10 Oct 2023 15:38:07 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paul Gazzillo <paul@pgazz.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>
-Subject: Re: [PATCH 2/2] iio: light: Add support for APDS9306 Light Sensor
-Message-ID: <20231010153807.6335a043@jic23-huawei>
-In-Reply-To: <20231008154857.24162-3-subhajit.ghosh@tweaklogic.com>
-References: <20231008154857.24162-1-subhajit.ghosh@tweaklogic.com>
-        <20231008154857.24162-3-subhajit.ghosh@tweaklogic.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Tue, 10 Oct 2023 10:40:42 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C1CF9E
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 07:40:35 -0700 (PDT)
+X-UUID: f3b8c66a677a11ee8051498923ad61e6-20231010
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=R6yDmlXukqK5E8HYAt3QgHXCKvoaGoWP2V1/lg1Mx5U=;
+        b=XTsmgH5T5u9eXqXjlOzwTj+aZ9o5D9A1a1/iI0aAA3SfxTwiWF92sV3jk5obWkoy44y1ejFFDZKdd8f3yX4K/dve8OVBH9x7z96eBu57iGiZbeBEAeP9Nz18PrM79psuz/XjJCmtJ9YlPQEhPXjpW48FwWZ/U1j3MJ3Uk1EcqjQ=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:09705b7f-9521-4fdb-9968-ac7a48300282,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:5f78ec9,CLOUDID:e26cf5c3-1e57-4345-9d31-31ad9818b39f,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: f3b8c66a677a11ee8051498923ad61e6-20231010
+Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw02.mediatek.com
+        (envelope-from <kuyo.chang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1207852921; Tue, 10 Oct 2023 22:40:26 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 10 Oct 2023 22:40:25 +0800
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Tue, 10 Oct 2023 22:40:25 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XfpBv+0ZPpC1XYLCj+xraL4x1KHQyxS6Vr3ojf499Xj2psMI3lp5XmUpLRVkNLtCNBF3VctV8g3UyOevxH9wMT+udXoaOuCwhvy0zotEiwYN/oB+ke7ZWaOcmLlfx1x4ykLsYJhHpM6JKzAfIT7H0kIJUQ5n5hs1YeqJbrrV3mw5I8DBWeR2KQasq+vIrC/Ir6VSNIW0vuwwbVN2+5o/6T7FCvvGrWaTCyGItt6z8I4w37K59wad/u1MjOJpfvYqkxn2XQhfqorHynD518OBykA/arYd6T/ig2FbQ6qW/ZjK39pp8IWR6K4rAoduJZ54RDxXaOLn9ev4J3uf53XIdg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=R6yDmlXukqK5E8HYAt3QgHXCKvoaGoWP2V1/lg1Mx5U=;
+ b=X2GpOi9fnjRWymBl4kgUzIxS+oihU4dU+4oP0FYWu6zYd6taZtHj4F+sXXYMzebFfORxY950oHbNce5cnH6nChwRkV6huqS/EXoEc1ANLwWdf3zfsLFQlbLNETRixMFYX1XmvkbIKBkMCjV3u/ji8n3pe7ZTqF1yrwh9FfrLbod846h5RHd1/kjsNmMTsntayfi1uh74ojzQuEgEqANA6KdDxJSOjzc5CedkvdL4v1plqfAkixXPeC+VXHTpXs+7DjGu083tH2gGA/UQJpwdylXYmVuN7Y7AdN983wgkshuVqQO5PlfzKqkysjVgfODLNey3JkazSEbxLYdFXt1uuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R6yDmlXukqK5E8HYAt3QgHXCKvoaGoWP2V1/lg1Mx5U=;
+ b=vBfFGJYXUK+8zOhkII2A3Om/KcrWbu7AYr/XHNrahcXU/ebTu0pBgLYQly9W7+4JHGflzRENZpdC9i59Ovt0LX+3mMu9phzFoIKuUWRida4eT4x2rCxbzPLZH94ZNpGXFff4eywUsbtrB8sQGeir21YA+FCt4BZVnz7pjRTRL1g=
+Received: from SI2PR03MB5580.apcprd03.prod.outlook.com (2603:1096:4:12e::5) by
+ SI2PR03MB5971.apcprd03.prod.outlook.com (2603:1096:4:148::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6863.38; Tue, 10 Oct 2023 14:40:23 +0000
+Received: from SI2PR03MB5580.apcprd03.prod.outlook.com
+ ([fe80::a8c0:4146:462f:76e6]) by SI2PR03MB5580.apcprd03.prod.outlook.com
+ ([fe80::a8c0:4146:462f:76e6%4]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
+ 14:40:22 +0000
+From:   =?utf-8?B?S3V5byBDaGFuZyAo5by15bu65paHKQ==?= 
+        <Kuyo.Chang@mediatek.com>
+To:     "peterz@infradead.org" <peterz@infradead.org>
+CC:     "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        "vschneid@redhat.com" <vschneid@redhat.com>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH 1/1] sched/core: Fix stuck on completion for
+ affine_move_task() when stopper disable
+Thread-Topic: [PATCH 1/1] sched/core: Fix stuck on completion for
+ affine_move_task() when stopper disable
+Thread-Index: AQHZ8PONNdMSrYrApES66NU/CC/LkLAuUcoAgACC+ICAAsbJgIARkfGA
+Date:   Tue, 10 Oct 2023 14:40:22 +0000
+Message-ID: <8ad1b617a1040ce4cc56a5d04e8219b5313a9a6e.camel@mediatek.com>
+References: <20230927033431.12406-1-kuyo.chang@mediatek.com>
+         <20230927080850.GB21824@noisy.programming.kicks-ass.net>
+         <b9def8f3d9426bc158b302f4474b6e643b46d206.camel@mediatek.com>
+         <20230929102135.GD6282@noisy.programming.kicks-ass.net>
+In-Reply-To: <20230929102135.GD6282@noisy.programming.kicks-ass.net>
+Accept-Language: zh-TW, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SI2PR03MB5580:EE_|SI2PR03MB5971:EE_
+x-ms-office365-filtering-correlation-id: 77873e04-9a88-46b5-06e4-08dbc99ed56c
+x-ld-processed: a7687ede-7a6b-4ef6-bace-642f677fbe31,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: QoOKI0sI72+ku6RYTnK0fr6r1iKAYv8+T8sNx8mevXUnCwjhn0CO27BRyCuhnxGe7V60NmhkBM0unJBJ6W69AlpFf0PRynh6oc+qj5CR4HUk/b2pfZ5mVfvVJ2x0Xo4YTBO9BqILx/osYDXoSSbZptzy/E29qeWR2B+qPVeZrfOGI7E34PHHkx/I1gPD8b998ym6BWGuoxcshzlcz05dzs0dejmJi/sePMfLyN6DQFjRNyBp3dLBjlIHsMp1xp6AMjiEXv8o4AKE9Hmqgj8O7aeNNVnQPYb3xndbett/SSy6rPZ7AIsW2XWjQiyupUCX47xUBWoy3UcFX6nAiw1aFnjM+fvSTFyOLCZU1Un04u5SEfZgTG80SjqK1royY/f4ektjg1UUWC7AsKb2dGuabCA8IRO/zqOxS/8kwk0OddIpXYLacNhZPjaYBqSPBOIKb9qO9XvQYzg2XxNZWidHgB9r64MNgXhsW1E0LQRlxV3q2Fdkc9+TyAngrusDhgtYbT+WbsQPT/eyg7i7hwwigy7JrWPVmJu7HGfap7KcUHnqK4D8c4MmakdxcwALN2fcTfKOlHFwZwx9UHZRpk4DGa9pZ7tOLTIM5NbQT+3o29k3Sl6THpPcTeAczxX6g+kEIrQ4IWoNvmf40uL5qt95ih7u4mQSYR9qynaB2cGsH6I=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SI2PR03MB5580.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(136003)(39860400002)(376002)(346002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(7416002)(86362001)(2906002)(38070700005)(122000001)(38100700002)(6512007)(66556008)(66476007)(66946007)(76116006)(6916009)(54906003)(64756008)(66446008)(91956017)(6506007)(85182001)(316002)(26005)(2616005)(478600001)(6486002)(71200400001)(36756003)(83380400001)(5660300002)(41300700001)(4326008)(8676002)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NTFUSUY2MVJDLy9SYzZQRUMwTCthakp3Sk1LN1NYZml2NWV3aUd4TzRPOG82?=
+ =?utf-8?B?SmJNeGhhQ1FzU2tiMHRQWkZ6VXZRTWVhR0FJSGVLc2xrdFhXMFRsbDJuSXFz?=
+ =?utf-8?B?dmMwUkYvejY1TzIzV3RFL0cxUEtlam1YYm9OdjdaRHVpRC9GcHRXQndUb2li?=
+ =?utf-8?B?RFlBRUtIQ2tMMzJyMDZtaGlsOE83bnlXREN2b1hOTHY2b1dHNWxVc0diK0JB?=
+ =?utf-8?B?ZTVLU0dEckUxUG9PSDQraTZDMnlzcmdiRjNVdXMva0JRUFd3QXBqQmFsVWk5?=
+ =?utf-8?B?TGJnb1o3WGN5OTJUcERVOUQxdnRIVk8yVmMvcDRVOVFOMDVHVkVIRmdJVThX?=
+ =?utf-8?B?UTRRaE82eWIvQzZVdUVaTVRlbFh4T0owOW4xS0UySTVpZXUzVlZENGlSU3Jl?=
+ =?utf-8?B?VXVSK1FlK2RIZXZlWUIyRmtsVVkxcDhqUXI3bU1zZ2xnbE0wU0tRQmx0M0ZV?=
+ =?utf-8?B?S3BWMzJ0K3NVUjk1bGtybGlYalJyT3hjcWczV2lQNUdUU0wvNmg4OHJ0cDlj?=
+ =?utf-8?B?bFgvK0pVREpGY3ppeWlGRnl1K0lqRjRDenpOa0JaRVBkTm9JSWdOVTEya3Q3?=
+ =?utf-8?B?R0VSTEM0RlkzWXlCaGxOVFRGRitVK3pnaWg2SmxSd3ViNWgxM1hLQW9JZFdi?=
+ =?utf-8?B?Q05WYkNLUEVDNUZ5RFoxK0NoYVFaZ2xBM2hvRndWcmxsMEJROUIxaWsxdUZO?=
+ =?utf-8?B?UHZtNlIrUkJ5ZzREUCt1U3VFSXo3dyt3ZUNuK3d3enZ3NnY5TjVRYVlkTDdz?=
+ =?utf-8?B?YU5LYkJjOTRaN2tUMnJLQnNWak5KTjltQkFlUjhTUVgzU2NhbDh2Qmt3ZW02?=
+ =?utf-8?B?Y2EvZk51djBYUDZkTVBQWGxRN2g3SFFpVlF2SE5VQzBxNmlCdHBWbDlYRXFM?=
+ =?utf-8?B?NDFXQXNEU0dLTmdPOHVZdXJCajZ5dHBBaGl4ckYvZnlyc0llQlFuZEM1MFFi?=
+ =?utf-8?B?UEt5QUlKemZQcXl0dnkzNFV4SnVjNGRZZG5MWjg2WFM4MkMxVXMveUlqZkNo?=
+ =?utf-8?B?RnVScXJyRWpMbXkvTmdmeHIwZ1FiTTNZWEhaMmpLS3kxQjVKdDI4Z2dWTkRF?=
+ =?utf-8?B?MEVGM253ci9IZy8xdWYrNmwwSlIvKzZ4RHk5bGJMZWYyUkxnZGtsaWZGWGIv?=
+ =?utf-8?B?Nml5MVZyaEFSbU9HTXdtVm9rdmhHTGVPQ29uUTYwejRTL1ZmWHIrbjBINDFC?=
+ =?utf-8?B?YlZmVmFKMVhNenFHNGdBcjltNk5pTDE0NXIxQmhucU5WQVhQYVBoSmxXa043?=
+ =?utf-8?B?bzVuYS8vUngvSFlKT3d0QVR3eCsvcm81QWRKQ1pTZ1hSZzlUNTFqRkZ0R2pM?=
+ =?utf-8?B?VDk2RUE3bzBZNGFFQXZKd3NKMmRza2p3a3FGczgvakxielVZaDJGS085Vjhl?=
+ =?utf-8?B?bldWdU9NaWhrVFBTQy84d1UrN0hpZkRGRU9TTDJERmV4MG9SYUdzNXl1NzdJ?=
+ =?utf-8?B?K3hzUklRQTN2UXRKVEpreEp3U0JrRzdnVG5GMWNMUEJuQnNtRTZwTnN0bzFj?=
+ =?utf-8?B?bWdKdHV4dlRLb1l5N0Y0QnZsWGdZeU1RY2loVlZtZHBoWkhTYysxcE45MzVu?=
+ =?utf-8?B?OFVNaldzay9mY0hGMTF3eWtLa0x4MUZWaHdac3JVT3NFb2xEUDVzL2RNcUJH?=
+ =?utf-8?B?ZkhuVk9UcDNqNmxXeDF4YTVsU3NJZXErSzVzc3JRYXdDMndLK2E0TThUQ3Rq?=
+ =?utf-8?B?M0RGNmk5SkVoUUhjaTJ1cXYxM1V0Ujg3QzkxNzhFZ3J2Y3BiRzFpUHpWU2hu?=
+ =?utf-8?B?VEZWOVNtSytMMmRhOUpuYklqM1VJRUpiajh0RUVKZHByNWhXRW5aUXcrVGtD?=
+ =?utf-8?B?d0tSUzhaNVBXZHJyRjN5djlEbnQ2U3cxa2NEZ01LYmkyZ3dWMzE0ZnBxMmM4?=
+ =?utf-8?B?YU1wQUp4Wk15SXQ5U0t6SFRobFhMUGVHWWI3amZJbkE5cmZtcWdQcG1uRHFk?=
+ =?utf-8?B?MzhuK24xdUNBMERjZkJ5emE4SGY4SkdZVzR5L2JhNVVIOXBUS1V1RjlNbHpD?=
+ =?utf-8?B?ZFdhK0xhQXlNSnRFeTZaM0Y3NEwvdmpneHdDYWNrTk9QTGxpaGNLaHZ3bHpG?=
+ =?utf-8?B?eVh2QzZFKzg0VDBqalJJMzY3d0U0L2R1SDZDMlJGZEdrYnF6cUI3S25kOTln?=
+ =?utf-8?B?d2FwMkU0TE51RnlVcXE0Qk82cDRlazRKK09jWjA2aWo0RE9Jd0pQVVZiblRo?=
+ =?utf-8?B?L1E9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E2F0C540E9E9224E95F747FD600E3E2D@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SI2PR03MB5580.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 77873e04-9a88-46b5-06e4-08dbc99ed56c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Oct 2023 14:40:22.5094
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: oAKm2F/NQajCr5Cgw1VK+DiJ7Owx2srRuK+s+PMwVALNaWCCJy+2DlNHCo4wKewby785ORJz/9AWxeZmTCLUBg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR03MB5971
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--23.753300-8.000000
+X-TMASE-MatchedRID: gIwa0kWWszLUL3YCMmnG4omfV7NNMGm+zqP/yfxANUENcckEPxfz2DEU
+        xl1gE1bkfdd9BtGlLLzx1uczIHKx54/qvvWxLCnegOqr/r0d+Cx+Mk6ACsw4Jrv408/GP5HqPvr
+        EcPlYVkBqWU1QvNIQBvE3mNsb15PKykUkfPOnitKzLD5kmcW6ZPqZGJlZc2fLeG6ZQhhAKrD5WK
+        Feqf3EsW9uijK/DjLT0ETlUWsEcepVDs7/hETL64dlc1JaOB1T7yWPaQc4INSVgeI/5EikpFTKO
+        /kpdJ9DKI87v44UVk2Rk6XtYogiatLvsKjhs0ldVnRXm1iHN1bEQdG7H66TyOk/y0w7JiZo
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--23.753300-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: B8F32F500CD61E0A0C46A37A5180DF5E3693BF334F9226A10E1D886A68AAB9F92000:8
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_PASS,T_SPF_TEMPERROR,UNPARSEABLE_RELAY,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  9 Oct 2023 02:18:57 +1030
-Subhajit Ghosh <subhajit.ghosh@tweaklogic.com> wrote:
-
-> Driver support for Avago (Broadcom) APDS9306
-> Ambient Light Sensor with als and clear channels.
-> This driver exposes raw values for both the channels and
-> processed(lux) values for the als channel.
-> Support for both with or without hardware interrupt
-> configurations are provided.
-Hi Subhajit,
-
-No need to wrap the patch description quite so short. Aim
-for up to 75 char for a commit message (and 80 for the code)
-Here you are under 60.
-
-> 
-> Datasheet at https://docs.broadcom.com/doc/AV02-4755EN
-> 
-There is a tag for datasheets in the format tags block so
-Datasheet: https://docs.broadcom.com/doc/AV02-4755EN
-> Signed-off-by: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-
-I took a quick look at the most similar part number adps9300 and
-this does look substantially different but could you confirm you've
-taken a look at the plausible drivers to which support for this part
-could be added and perhaps mention why that doesn't make sense
-I think it will be mainly feature set being different here, but also
-it seems they have completely different register maps despite similar
-part numbers!
-
-
-A few other comments inline.
-
-Thanks,
-
-Jonathan
-
-> diff --git a/drivers/iio/light/apds9306.c b/drivers/iio/light/apds9306.c
-> new file mode 100644
-> index 000000000000..02c8285b230b
-> --- /dev/null
-> +++ b/drivers/iio/light/apds9306.c
-
-
-...
-
-
-> +};
-> +
-> +enum apds9306_int_channels {
-> +	CLEAR,
-> +	ALS,
-> +};
-
-Is this used?
-
-> +
-> +/**
-> + * struct part_id_nlux_per_count - Part no. & corresponding nano lux per count
-> + * @part_id: Part ID of the device
-> + * @nlux_per_count: Nano lux per ADC count
-> + */
-> +struct part_id_nlux_per_count {
-> +	int part_id;
-> +	int nlux_per_count;
-> +};
-> +
-> +/*
-> + * As per the datasheet, at HW Gain = 3x, Integration time 100mS (32x),
-> + * typical 2000 ADC counts are observed for 49.8 uW per sq cm (340.134 lux)
-> + * for apds9306 and 43 uW per sq cm (293.69 lux) for apds9306-065.
-> + * Assuming lux per count is linear across all integration time ranges,
-> + * saving in nano lux per count.
-> + * Nano Lux per count = (340.134 * 1000000000)/ (32 * 3 * 2000) for apds9306
-> + * Nano Lux per count = (293.69 * 1000000000)/ (32 * 3 * 2000) for apds9306-065
-
-Even though it's a comment stick to kernel maths syntax and put a space before the /
-Otherwise some script will complain it's not correctly formatted code :)
-
-> + */
-> +static struct part_id_nlux_per_count apds9306_part_id_nlux_per_count[] = {
-> +	{.part_id = 0xB1, .nlux_per_count = 1787156},
-> +	{.part_id = 0xB3, .nlux_per_count = 1529635},
-
-Prefer { .part_id = 0xB3, .nlux_per_count = 1629635 },
-for tables liek this as it ends up a tiny bit easier to read.
-
-> +};
-
-...
-
-> +#define APDS9306_CHANNEL(_type) \
-> +	.type = _type, \
-> +	.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_INT_TIME) | \
-> +		BIT(IIO_CHAN_INFO_SCALE) | BIT(IIO_CHAN_INFO_SAMP_FREQ), \
-> +	.info_mask_shared_by_all_available = BIT(IIO_CHAN_INFO_INT_TIME) | \
-> +		BIT(IIO_CHAN_INFO_SCALE) | BIT(IIO_CHAN_INFO_SAMP_FREQ), \
-> +
-> +static struct iio_chan_spec apds9306_channels_with_events[] = {
-> +	{
-> +		APDS9306_CHANNEL(IIO_LIGHT)
-> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
-> +			BIT(IIO_CHAN_INFO_PROCESSED),
-> +		.event_spec = apds9306_event_spec_als,
-> +		.num_event_specs = ARRAY_SIZE(apds9306_event_spec_als),
-> +	}, {
-> +		APDS9306_CHANNEL(IIO_INTENSITY)
-> +		.channel2 = IIO_MOD_LIGHT_CLEAR,
-> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
-> +		.modified = 1,
-> +		.event_spec = apds9306_event_spec_clear,
-> +		.num_event_specs = ARRAY_SIZE(apds9306_event_spec_clear),
-> +	},
-> +};
-> +
-> +static struct iio_chan_spec apds9306_channels_without_events[] = {
-> +	{
-> +		APDS9306_CHANNEL(IIO_LIGHT)
-> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
-> +			BIT(IIO_CHAN_INFO_PROCESSED),
-
-This needs an explanation for why as a comment in the code.
-We very rarely support both raw and processed for the same channel and
-mostly when we do it is due to some historical changes.
-
-You are using the gts stuff here so it should be possible to expose
-the controls for scale necessary to have userspace perform the raw to processed
-conversion.  
-
-> +	}, {
-> +		APDS9306_CHANNEL(IIO_INTENSITY)
-> +		.channel2 = IIO_MOD_LIGHT_CLEAR,
-> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
-> +		.modified = 1,
-> +	},
-> +};
-> +
-> +/* INT_PERSISTENCE available */
-> +IIO_CONST_ATTR(thresh_either_period_available, "[0 15]");
-> +
-> +/* ALS_THRESH_VAR available */
-> +IIO_CONST_ATTR(thresh_adaptive_either_values_available, "[0 7]");
-Not valid range syntax for IIO attributes, you need to include
-the step.
-
-[0 1 7]
-
-> +
-> +static struct attribute *apds9306_event_attributes[] = {
-> +	&iio_const_attr_thresh_either_period_available.dev_attr.attr,
-> +	&iio_const_attr_thresh_adaptive_either_values_available.dev_attr.attr,
-> +	NULL	
-> +};
-> +
-
-> +
-> +static const struct regmap_config apds9306_regmap = {
-> +	.name = "apds9306_regmap",
-> +	.reg_bits = 8,
-> +	.val_bits = 8,
-> +	.rd_table = &apds9306_readable_table,
-> +	.wr_table = &apds9306_writable_table,
-> +	.volatile_table = &apds9306_volatile_table,
-> +	.precious_table = &apds9306_precious_table,
-> +	.max_register = APDS9306_ALS_THRES_VAR,
-> +	.cache_type = REGCACHE_RBTREE,
-> +	.disable_locking = true,
-This normally deserves a statement of what you are doing about locking instead.
-
-The interrupt controller for starters takes to no locks and can run concurrently
-with other accesses from other CPUs.  That seems unwise.
-
-> +};
-+
-...
-
-> +
-> +static int apds9306_intg_time_get(struct apds9306_data *data, int *val2)
-> +{
-> +	*val2 = iio_gts_find_int_time_by_sel(&data->gts, data->intg_time_idx);
-> +	if (*val2 < 0)
-> +		return *val2;
-
-You shouldn't have side effects on *val2 if an error occurs.
-Its not a bug in this case, but it is generally something to avoid
-
-	int ret;
-
-	ret = iio_gts...
-	if (ret < 0)
-		return ret;
-
-	*val2 = ret;
-
-	return 0;
-
-> +
-> +	return 0;
-> +}
-> +
-> +static int apds9306_intg_time_set_hw(struct apds9306_data *data, int sel)
-> +{
-> +	int ret;
-> +
-> +	ret = regmap_field_write(data->regfield_intg_time, sel);
-> +	if (ret)
-> +		return ret;
-> +	data->intg_time_idx = sel;
-> +
-> +	return ret;
-> +}
-
-> +
-> +static int apds9306_sampling_freq_set(struct apds9306_data *data, int val,
-> +				int val2)
-> +{
-> +	int i, ret = -EINVAL;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(apds9306_repeat_rate_freq); i++)
-> +		if (apds9306_repeat_rate_freq[i][0] == val &&
-> +				apds9306_repeat_rate_freq[i][1] == val2) {
-> +			ret = regmap_field_write(data->regfield_repeat_rate, i);
-> +			if (ret)
-> +				return ret;
-> +			data->repeat_rate_idx = i;
-> +			break;
-Might as well return here instead of break as nothing else to do.
-
-> +		}
-> +
-> +	return ret;
-> +}
-
-> +static int apds9306_read_raw(struct iio_dev *indio_dev,
-> +			     struct iio_chan_spec const *chan,
-> +			     int *val, int *val2, long mask)
-> +{
-> +	struct apds9306_data *data = iio_priv(indio_dev);
-> +	int ret, reg;
-> +
-> +	mutex_lock(&data->mutex);
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_RAW:
-> +		if (chan->channel2 == IIO_MOD_LIGHT_CLEAR)
-> +			reg = APDS9306_CLEAR_DATA_0;
-> +		else
-> +			reg = APDS9306_ALS_DATA_0;
-> +		ret = apds9306_read_data(data, val, reg);
-> +		if (ret)
-> +			break;
-> +		ret = IIO_VAL_INT;
-> +		*val2 = 0;
-
-As below.  No need to set *val2 to 0 if returning IIO_VAL_INT.
-
-> +		break;
-> +	case IIO_CHAN_INFO_PROCESSED:
-> +		ret = apds9306_read_lux(data, val);
-> +		if (ret)
-> +			break;
-> +		*val2 = 0;
-> +		ret = IIO_VAL_INT;
-> +		break;
-> +	case IIO_CHAN_INFO_INT_TIME:
-> +		*val = 0;
-> +		ret = apds9306_intg_time_get(data, val2);
-> +		if (ret)
-> +			break;
-> +		ret = IIO_VAL_INT_PLUS_MICRO;
-> +		break;
-> +	case IIO_CHAN_INFO_SAMP_FREQ:
-> +		ret = apds9306_sampling_freq_get(data, val, val2);
-> +		if (ret)
-> +			break;
-> +		ret = IIO_VAL_INT_PLUS_MICRO;
-> +		break;
-> +	case IIO_CHAN_INFO_SCALE:
-> +		ret = apds9306_scale_get(data, val, val2);
-> +		if (ret)
-> +			break;
-> +		ret = IIO_VAL_INT_PLUS_NANO;
-> +		break;
-> +	default:
-> +		ret = -EINVAL;
-> +	}
-> +	mutex_unlock(&data->mutex);
-> +
-> +	return ret;
-> +};
->
-> +
-> +static irqreturn_t apds9306_irq_handler(int irq, void *priv)
-> +{
-> +	struct iio_dev *indio_dev = priv;
-> +	struct apds9306_data *data = iio_priv(indio_dev);
-> +	int ret, status;
-> +
-> +	/*
-> +	 * The interrupt line is released and the interrupt flag is
-> +	 * cleared as a result of reading the status register. All the
-> +	 * status flags are cleared as a result of this read.
-> +	 */
-> +	ret = regmap_read(data->regmap, APDS9306_MAIN_STATUS, &status);
-> +	if (ret < 0) {
-> +		dev_err(data->dev, "status reg read failed\n");
-> +		return IRQ_HANDLED;
-> +	}
-> +
-> +	if ((status & APDS9306_ALS_INT_STAT_MASK)) {
-> +		iio_push_event(indio_dev, IIO_UNMOD_EVENT_CODE(IIO_LIGHT,
-> +			       data->int_ch, IIO_EV_TYPE_THRESH,
-> +			       IIO_EV_DIR_EITHER), iio_get_time_ns(indio_dev));
-> +	}
-> +
-> +	/*
-> +	 * If a one-shot read through sysfs is underway at the same time
-> +	 * as this interrupt handler is executing and a read data available
-> +	 * flag was set, this flag is set to inform read_poll_timeout()
-> +	 * to exit.
-> +	 */
-> +	if ((status & APDS9306_ALS_DATA_STAT_MASK))
-> +		data->read_data_available = 1;
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static int apds9306_read_event(struct iio_dev *indio_dev,
-> +			       const struct iio_chan_spec *chan,
-> +			       enum iio_event_type type,
-> +			       enum iio_event_direction dir,
-> +			       enum iio_event_info info,
-> +			       int *val, int *val2)
-> +{
-> +	struct apds9306_data *data = iio_priv(indio_dev);
-> +	int ret;
-> +
-> +	mutex_lock(&data->mutex);
-> +	switch (type) {
-> +	case IIO_EV_TYPE_THRESH:
-> +		if (dir == IIO_EV_DIR_EITHER && info == IIO_EV_INFO_PERIOD)
-> +			ret = apds9306_event_period_get(data, val);
-> +		else
-> +			ret = apds9306_event_thresh_get(data, dir, val);
-> +		break;
-> +	case IIO_EV_TYPE_THRESH_ADAPTIVE:
-> +		ret = apds9306_event_thresh_adaptive_get(data, val);
-> +		break;
-> +	default:
-> +		ret = -EINVAL;
-> +	}
-> +	mutex_unlock(&data->mutex);
-> +
-> +	if (ret)
-> +		return ret;
-> +
-> +	*val2 = 0;
-
-The IIO core won't use val2 if you return IIO_VAL_INT, so don't bother setting it.
-
-> +	return IIO_VAL_INT;
-> +}
-> +
-> +static int apds9306_write_event(struct iio_dev *indio_dev,
-> +				const struct iio_chan_spec *chan,
-> +				enum iio_event_type type,
-> +				enum iio_event_direction dir,
-> +				enum iio_event_info info,
-> +				int val, int val2)
-> +{
-> +	struct apds9306_data *data = iio_priv(indio_dev);
-> +	int ret;
-> +
-> +	mutex_lock(&data->mutex);
-> +	switch (type) {
-> +	case IIO_EV_TYPE_THRESH:
-> +		if (dir == IIO_EV_DIR_EITHER && info == IIO_EV_INFO_PERIOD)
-> +			ret = apds9306_event_period_set(data, val);
-> +		else
-> +			ret = apds9306_event_thresh_set(data, dir, val);
-> +		break;
-> +	case IIO_EV_TYPE_THRESH_ADAPTIVE:
-> +		ret = apds9306_event_thresh_adaptive_set(data, val);
-> +		break;
-> +	default:
-> +		ret = -EINVAL;
-> +	}
-> +	mutex_unlock(&data->mutex);
-> +	return ret;
-> +}
-> +
-> +static int apds9306_read_event_config(struct iio_dev *indio_dev,
-> +				      const struct iio_chan_spec *chan,
-> +				      enum iio_event_type type,
-> +				      enum iio_event_direction dir)
-> +{
-> +	struct apds9306_data *data = iio_priv(indio_dev);
-> +	unsigned int val, val2;
-> +	int ret;
-> +
-> +	mutex_lock(&data->mutex);
-As below
-	guard(mutex)(&data->mutex);
-
-should simplify this - I won't comment on this one above this point (reviewing backwards
-through the code).
-
-> +	switch (type) {
-> +	case IIO_EV_TYPE_THRESH:
-> +		ret = regmap_field_read(data->regfield_int_en, &val);
-> +		if (ret)
-> +			break;
-> +		ret = regmap_field_read(data->regfield_int_src, &val2);
-> +		if (ret)
-> +			break;
-> +		if (chan->type == IIO_LIGHT)
-> +			ret = val & val2;
-> +		else if (chan->type == IIO_INTENSITY)
-> +			ret = val & !val2;
-
-This logic would benefit from better variable naming.
-en and src for example..
-
-> +		else
-> +			ret = -EINVAL;
-> +		break;
-> +	case IIO_EV_TYPE_THRESH_ADAPTIVE:
-> +		ret = regmap_field_read(data->regfield_int_thresh_var_en,
-> +					&val);
-> +		if (ret)
-> +			break;
-> +		ret = val;
-> +		break;
-> +	default:
-> +		ret = -EINVAL;
-> +	}
-> +	mutex_unlock(&data->mutex);
-> +	return ret;
-> +}
-> +
-> +static int apds9306_write_event_config(struct iio_dev *indio_dev,
-> +				       const struct iio_chan_spec *chan,
-> +				       enum iio_event_type type,
-> +				       enum iio_event_direction dir,
-> +				       int state)
-> +{
-> +	struct apds9306_data *data = iio_priv(indio_dev);
-> +	int ret;
-> +
-> +	state = !!state;
-> +	mutex_lock(&data->mutex);
-
-Perfect place to use the new cleanup.h trickery here.
-
-guard(mutex)(&data->mutex); 
-
-and then you can just return in error paths which will simplify this code
-
-> +	switch (type) {
-> +	case IIO_EV_TYPE_THRESH:
-> +		if (state) {
-> +			if (chan->type == IIO_LIGHT) {
-> +				ret = regmap_field_write(data->regfield_int_src, 1);
-> +				if (ret)
-> +					break;
-> +			} else if (chan->type == IIO_INTENSITY) {
-> +				ret = regmap_field_write(data->regfield_int_src, 0);
-> +				if (ret)
-> +					break;
-> +			} else {
-> +				ret = -EINVAL;
-> +				break;
-> +			}
-> +		}
-> +		ret = regmap_field_write(data->regfield_int_en, state);
-> +		if (ret)
-> +			break;
-> +		ret = apds9306_runtime_power(data, state);
-> +		break;
-> +	case IIO_EV_TYPE_THRESH_ADAPTIVE:
-> +		ret = regmap_field_write(data->regfield_int_thresh_var_en,
-> +					 state);
-> +		break;
-> +	default:
-> +		ret = -EINVAL;
-> +	}
-> +	mutex_unlock(&data->mutex);
-> +
-> +	return ret;
-> +}
-> +
-> +#define APDS9306_IIO_INFO \
-> +	.read_avail = apds9306_read_avail, \
-> +	.read_raw = apds9306_read_raw, \
-> +	.write_raw = apds9306_write_raw, \
-> +	.write_raw_get_fmt = apds9306_write_raw_get_fmt,
-> +
-> +static const struct iio_info apds9306_info_no_events = {
-> +	APDS9306_IIO_INFO
-> +};
-> +
-> +static const struct iio_info apds9306_info = {
-> +	APDS9306_IIO_INFO
-> +	.event_attrs = &apds9306_event_attr_group,
-> +	.read_event_value = apds9306_read_event,
-> +	.write_event_value = apds9306_write_event,
-> +	.read_event_config = apds9306_read_event_config,
-> +	.write_event_config = apds9306_write_event_config,
-> +};
-> +
-> +static int get_device_id_lux_per_count(struct apds9306_data *data)
-> +{
-> +	int ret, part_id;
-> +
-> +	ret = regmap_read(data->regmap, APDS9306_PART_ID, &part_id);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (part_id == apds9306_part_id_nlux_per_count[0].part_id)
-> +		data->nlux_per_count =
-> +			apds9306_part_id_nlux_per_count[0].nlux_per_count;
-> +	else if (part_id == apds9306_part_id_nlux_per_count[1].part_id)
-> +		data->nlux_per_count =
-> +			apds9306_part_id_nlux_per_count[1].nlux_per_count;
-
-For loop over ARRAY_SIZE(apds9306_part_id_nlux_per_count)
-would be more extensible with a return on match, so that if you
-don't we just return -ENXIO on exit from the loop.
-
-
-> +	else
-> +		return -ENXIO;
-> +
-> +	return 0;
-> +}
-> +
-> +static void apds9306_powerdown(void *ptr)
-> +{
-> +	struct apds9306_data *data = (struct apds9306_data *)ptr;
-> +	struct device *dev = data->dev;
-> +	int ret;
-> +
-> +	/* Disable interrupts */
-> +	ret = regmap_field_write(data->regfield_int_thresh_var_en, 0);
-> +	if (ret)
-> +		dev_err(dev, "Failed to disable variance interrupts\n");
-
-Muddling on when things are failing is probably not worthwhile. I'd be
-tempted to just error out of here.  Worst that happens is we leave the
-device partly enabled which is a bit of a power waste, but it's not expected
-to happen so I don't think we care.  Much easier to follow code if we
-always return on error.
-
-> +	ret = regmap_field_write(data->regfield_int_en, 0);
-> +	if (ret)
-> +		dev_err(dev, "Failed to disable interrupts\n");
-> +	/* Put the device in standby mode */
-> +	ret = apds9306_power_state(data, STANDBY);
-> +	if (ret)
-> +		dev_err(dev, "Failed to power down device\n");
-> +}
-
-> +static int apds9306_probe(struct i2c_client *client)
-> +{
-> +	struct device *dev = &client->dev;
-> +	struct apds9306_data *data;
-> +	struct iio_dev *indio_dev;
-> +	int ret;
-> +
-> +	indio_dev = devm_iio_device_alloc(dev, sizeof(*data));
-> +	if (!indio_dev)
-> +		return -ENOMEM;
-> +
-> +	data = iio_priv(indio_dev);
-> +
-> +	mutex_init(&data->mutex);
-> +
-> +	data->regmap = devm_regmap_init_i2c(client, &apds9306_regmap);
-> +	if (IS_ERR(data->regmap))
-> +		return dev_err_probe(dev, PTR_ERR(data->regmap),
-> +				     "regmap initialization failed\n");
-> +
-> +	data->dev = dev;
-> +	i2c_set_clientdata(client, indio_dev);
-> +
-> +	ret = apds9306_regfield_init(data);
-> +	if (ret)
-> +		return dev_err_probe(dev, ret,
-> +				     "regfield initialization failed\n");
-> +
-> +	ret = devm_regulator_get_enable(dev, "vin");
-> +	if (ret)
-> +		return dev_err_probe(dev, ret, "Failed to enable regulator\n");
-> +
-> +	indio_dev->name = "apds9306";
-> +	indio_dev->modes = INDIO_DIRECT_MODE;
-> +	if (client->irq) {
-> +		indio_dev->info = &apds9306_info;
-> +		indio_dev->channels = apds9306_channels_with_events;
-> +		indio_dev->num_channels =
-> +				ARRAY_SIZE(apds9306_channels_with_events);
-> +		ret = devm_request_threaded_irq(dev, client->irq, NULL,
-> +					apds9306_irq_handler,
-> +					IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
-
-The direction of the interrupt should come from device tree.  Sometimes people
-use level conversion by using an not gate and that flips the logic of the
-interrupt in a way that the driver can't see.  Hence we leave that
-detail for firmware, not the driver.
-
-> +					"apds9306_event", indio_dev);
-> +		if (ret)
-> +			return dev_err_probe(dev, ret,
-> +					"failed to assign interrupt.\n");
-> +	} else {
-> +		indio_dev->info = &apds9306_info_no_events;
-> +		indio_dev->channels = apds9306_channels_without_events;
-> +		indio_dev->num_channels =
-> +				ARRAY_SIZE(apds9306_channels_without_events);
-> +	}
-> +
-> +	ret = devm_iio_init_iio_gts(dev, APDS9306_SCALE_1X, 0, apds9306_gains,
-> +				    ARRAY_SIZE(apds9306_gains), apds9306_itimes,
-> +				    ARRAY_SIZE(apds9306_itimes), &data->gts);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = devm_add_action_or_reset(dev, apds9306_powerdown, data);
-
-Why at this point? I'd have thought it wasn't powered up until init_device()
-which follows?  So I'd expect to see this call after that, not before.
-
-> +	if (ret)
-> +		return dev_err_probe(dev, ret,
-> +				"failed to add action on driver unwind\n");
-> +
-> +	ret = apds9306_init_device(data);
-> +	if (ret)
-> +		return dev_err_probe(dev, ret, "failed to init device\n");
-> +
-> +	return devm_iio_device_register(dev, indio_dev);
-> +}
-> +
-> +static int apds9306_runtime_suspend(struct device *dev)
-> +{
-> +	struct iio_dev *indio_dev = dev_get_drvdata(dev);
-> +	struct apds9306_data *data = iio_priv(indio_dev);
-> +	int ret;
-> +
-> +	ret = apds9306_power_state(data, STANDBY);
-> +	if (ret)
-> +		regcache_cache_only(data->regmap, true);
-
-What is the logic of putting the regcache into cache only mode
-if we fail to power down the device?  
-
-> +
-> +	return ret;
-> +}
-> +
-> +static int apds9306_runtime_resume(struct device *dev)
-> +{
-> +	struct iio_dev *indio_dev = dev_get_drvdata(dev);
-> +	struct apds9306_data *data = iio_priv(indio_dev);
-> +	int ret;
-> +
-> +	regcache_cache_only(data->regmap, false);
-> +	ret = regcache_sync(data->regmap);
-> +	if (ret)
-> +		return ret;
-> +	ret = apds9306_power_state(data, ACTIVE);
-> +	if (ret)
-> +		regcache_cache_only(data->regmap, true);
-
-If you get here an this failed we are in an unknown state where
-the device is effectively dead anyway.  I'd not bother
-with juggling the state of the regcache.  Or am I missing some path
-in which this regcache_cache_only() is called that isn't
-an error path?
-
-> +
-> +	return 0;
-> +}
-> +
-> +static DEFINE_RUNTIME_DEV_PM_OPS(apds9306_pm_ops,
-> +				 apds9306_runtime_suspend,
-> +				 apds9306_runtime_resume,
-> +				 NULL);
-> +
-> +static const struct i2c_device_id apds9306_id[] = {
-> +	{ "apds9306" }, { }
-
-Put the terminator on a new line because it reduces the noise if we ever add
-more devices by removing the need to reformat this first.
-
-> +};
-> +MODULE_DEVICE_TABLE(i2c, apds9306_id);
-> +
-> +static const struct of_device_id apds9306_of_match[] = {
-> +	{ .compatible = "avago,apds9306" }, { }
-
-Same as above.
-
-> +};
-> +MODULE_DEVICE_TABLE(of, apds9306_of_match);
-> +
-> +static struct i2c_driver apds9306_driver = {
-> +	.driver = {
-> +		.name = "apds9306",
-> +		.pm = pm_ptr(&apds9306_pm_ops),
-> +		.of_match_table = apds9306_of_match,
-> +		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
-> +	},
-> +	.probe_new = apds9306_probe,
-> +	.id_table = apds9306_id,
-> +};
-> +
-> +module_i2c_driver(apds9306_driver);
-> +
-> +MODULE_AUTHOR("Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>");
-> +MODULE_DESCRIPTION("APDS9306 Ambient Light Sensor driver");
-> +MODULE_LICENSE("GPL");
-> +MODULE_IMPORT_NS(IIO_GTS_HELPER);
-
+T24gRnJpLCAyMDIzLTA5LTI5IGF0IDEyOjIxICswMjAwLCBQZXRlciBaaWpsc3RyYSB3cm90ZToN
+Cj4gIAkgDQo+IEV4dGVybmFsIGVtYWlsIDogUGxlYXNlIGRvIG5vdCBjbGljayBsaW5rcyBvciBv
+cGVuIGF0dGFjaG1lbnRzIHVudGlsDQo+IHlvdSBoYXZlIHZlcmlmaWVkIHRoZSBzZW5kZXIgb3Ig
+dGhlIGNvbnRlbnQuDQo+ICBPbiBXZWQsIFNlcCAyNywgMjAyMyBhdCAwMzo1NzozNVBNICswMDAw
+LCBLdXlvIENoYW5nICjlvLXlu7rmlocpIHdyb3RlOg0KPiANCj4gPiBUaGlzIGlzc3VlIG9jY3Vy
+cyBhdCBDUFUgaG90cGx1Zy9zZXRfYWZmaW5pdHkgc3RyZXNzIHRlc3QuDQo+ID4gVGhlIHJlcHJv
+ZHVjZSByYXRpbyBpcyB2ZXJ5IGxvdyhhYm91dCBvbmNlIGEgd2VlaykuDQo+IA0KPiBJJ20gYXNz
+dW1pbmcgeW91J3JlIHJ1bm5pbmcgYW4gYXJtNjQga2VybmVsIHdpdGggcHJlZW1wdF9mdWxsPXkg
+KHRoZQ0KPiBkZWZhdWx0IGZvciBhcm02NCkuDQo+IA0KPiBDb3VsZCB5b3UgcGxlYXNlIHRlc3Qg
+dGhlIGJlbG93Pw0KPiANCg0KSXQgaXMgcnVubmluZyBnb29kIHNvIGZhcihtb3JlIHRoYW4gYSB3
+ZWVrKW9uIGhvdHBsdWcvc2V0IGFmZmluaXR5DQpzdHJlc3MgdGVzdC4gSSB3aWxsIGtlZXAgaXQg
+dGVzdGluZyBhbmQgcmVwb3J0IGJhY2sgaWYgaXQgaGFwcGVucw0KYWdhaW4uDQoNCj4gZGlmZiAt
+LWdpdCBhL2tlcm5lbC9zY2hlZC9jb3JlLmMgYi9rZXJuZWwvc2NoZWQvY29yZS5jDQo+IGluZGV4
+IGQ4ZmQyOWQ2NmIyNC4uMDc5YTYzYjhhOTU0IDEwMDY0NA0KPiAtLS0gYS9rZXJuZWwvc2NoZWQv
+Y29yZS5jDQo+ICsrKyBiL2tlcm5lbC9zY2hlZC9jb3JlLmMNCj4gQEAgLTI2NDUsOSArMjY0NSwx
+MSBAQCBzdGF0aWMgaW50IG1pZ3JhdGlvbl9jcHVfc3RvcCh2b2lkICpkYXRhKQ0KPiAgICogaXQu
+DQo+ICAgKi8NCj4gIFdBUk5fT05fT05DRSghcGVuZGluZy0+c3RvcF9wZW5kaW5nKTsNCj4gK3By
+ZWVtcHRfZGlzYWJsZSgpOw0KPiAgdGFza19ycV91bmxvY2socnEsIHAsICZyZik7DQo+ICBzdG9w
+X29uZV9jcHVfbm93YWl0KHRhc2tfY3B1KHApLCBtaWdyYXRpb25fY3B1X3N0b3AsDQo+ICAgICAg
+JnBlbmRpbmctPmFyZywgJnBlbmRpbmctPnN0b3Bfd29yayk7DQo+ICtwcmVlbXB0X2VuYWJsZSgp
+Ow0KPiAgcmV0dXJuIDA7DQo+ICB9DQo+ICBvdXQ6DQo+IEBAIC0yOTY3LDEyICsyOTY5LDEzIEBA
+IHN0YXRpYyBpbnQgYWZmaW5lX21vdmVfdGFzayhzdHJ1Y3QgcnEgKnJxLA0KPiBzdHJ1Y3QgdGFz
+a19zdHJ1Y3QgKnAsIHN0cnVjdCBycV9mbGFnDQo+ICBjb21wbGV0ZSA9IHRydWU7DQo+ICB9DQo+
+ICANCj4gK3ByZWVtcHRfZGlzYWJsZSgpOw0KPiAgdGFza19ycV91bmxvY2socnEsIHAsIHJmKTsN
+Cj4gLQ0KPiAgaWYgKHB1c2hfdGFzaykgew0KPiAgc3RvcF9vbmVfY3B1X25vd2FpdChycS0+Y3B1
+LCBwdXNoX2NwdV9zdG9wLA0KPiAgICAgIHAsICZycS0+cHVzaF93b3JrKTsNCj4gIH0NCj4gK3By
+ZWVtcHRfZW5hYmxlKCk7DQo+ICANCj4gIGlmIChjb21wbGV0ZSkNCj4gIGNvbXBsZXRlX2FsbCgm
+cGVuZGluZy0+ZG9uZSk7DQo+IEBAIC0zMDM4LDEyICszMDQxLDEzIEBAIHN0YXRpYyBpbnQgYWZm
+aW5lX21vdmVfdGFzayhzdHJ1Y3QgcnEgKnJxLA0KPiBzdHJ1Y3QgdGFza19zdHJ1Y3QgKnAsIHN0
+cnVjdCBycV9mbGFnDQo+ICBpZiAoZmxhZ3MgJiBTQ0FfTUlHUkFURV9FTkFCTEUpDQo+ICBwLT5t
+aWdyYXRpb25fZmxhZ3MgJj0gfk1ERl9QVVNIOw0KPiAgDQo+ICtwcmVlbXB0X2Rpc2FibGUoKTsN
+Cj4gIHRhc2tfcnFfdW5sb2NrKHJxLCBwLCByZik7DQo+IC0NCj4gIGlmICghc3RvcF9wZW5kaW5n
+KSB7DQo+ICBzdG9wX29uZV9jcHVfbm93YWl0KGNwdV9vZihycSksIG1pZ3JhdGlvbl9jcHVfc3Rv
+cCwNCj4gICAgICAmcGVuZGluZy0+YXJnLCAmcGVuZGluZy0+c3RvcF93b3JrKTsNCj4gIH0NCj4g
+K3ByZWVtcHRfZW5hYmxlKCk7DQo+ICANCj4gIGlmIChmbGFncyAmIFNDQV9NSUdSQVRFX0VOQUJM
+RSkNCj4gIHJldHVybiAwOw0KPiBAQCAtOTQ1OSw2ICs5NDYxLDcgQEAgc3RhdGljIHZvaWQgYmFs
+YW5jZV9wdXNoKHN0cnVjdCBycSAqcnEpDQo+ICAgKiBUZW1wb3JhcmlseSBkcm9wIHJxLT5sb2Nr
+IHN1Y2ggdGhhdCB3ZSBjYW4gd2FrZS11cCB0aGUgc3RvcCB0YXNrLg0KPiAgICogQm90aCBwcmVl
+bXB0aW9uIGFuZCBJUlFzIGFyZSBzdGlsbCBkaXNhYmxlZC4NCj4gICAqLw0KPiArcHJlZW1wdF9k
+aXNhYmxlKCk7DQo+ICByYXdfc3Bpbl9ycV91bmxvY2socnEpOw0KPiAgc3RvcF9vbmVfY3B1X25v
+d2FpdChycS0+Y3B1LCBfX2JhbGFuY2VfcHVzaF9jcHVfc3RvcCwgcHVzaF90YXNrLA0KPiAgICAg
+IHRoaXNfY3B1X3B0cigmcHVzaF93b3JrKSk7DQo+IEBAIC05NDY4LDYgKzk0NzEsNyBAQCBzdGF0
+aWMgdm9pZCBiYWxhbmNlX3B1c2goc3RydWN0IHJxICpycSkNCj4gICAqIHdoaWNoIGt0aHJlYWRf
+aXNfcGVyX2NwdSgpIGFuZCB3aWxsIHB1c2ggdGhpcyB0YXNrIGF3YXkuDQo+ICAgKi8NCj4gIHJh
+d19zcGluX3JxX2xvY2socnEpOw0KPiArcHJlZW1wdF9lbmFibGUoKTsNCj4gIH0NCj4gIA0KPiAg
+c3RhdGljIHZvaWQgYmFsYW5jZV9wdXNoX3NldChpbnQgY3B1LCBib29sIG9uKQ0K
