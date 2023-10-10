@@ -2,78 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC8C7C042C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 21:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 525087C0431
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 21:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343866AbjJJTLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 15:11:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54000 "EHLO
+        id S1343803AbjJJTLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 15:11:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343774AbjJJTLa (ORCPT
+        with ESMTP id S1343827AbjJJTLx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 15:11:30 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA11AF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 12:11:28 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-5812eaed1eeso1089432eaf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 12:11:28 -0700 (PDT)
+        Tue, 10 Oct 2023 15:11:53 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17158E0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 12:11:45 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-534694a9f26so2691a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 12:11:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696965088; x=1697569888; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1696965103; x=1697569903; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=r9C33FK/mhypuEKRvbN96wMq7Q2blPztB7nZo12h8b8=;
-        b=K99N8LMCFcezI03ZLMWZPuinFXtnVIXD+bigeH2El7rmulazD9AvhDe1XOTcfvGH3Q
-         i1DSt2cNVbq8eXkFcbYcOs8/0GKKfGwNkGMrP9rYUmkltItfQkMqdp9HTdAAunhQNc4e
-         BG0HqknB3SbpMNRMaeLXxK5/dY03aYgYJFaoGTLB6paO5aXDD637V/gWa5OlTUcTVSBo
-         3KxL5sj6Y/a6GPdF5QYylqlUEoNy2dhT5uzFcdU7lHSquTHiTuulD0mVKbtrC4BSiobK
-         8jzw5IDcGadDYY6wiXN12Z7RCyv3LnCycrLB+8w+po1jikl4LdwiwhVmcfhU9rODrEWM
-         M1dA==
+        bh=BmjErNj6cLHcO0s7PJGZsoXQtRcGQqMYUEfJq8NBOjo=;
+        b=maZySBjGgF20+xAxLcuzu6WFVPXxIrLhGzPtXRx7psguyrbiiEDcqA96W5otl5Wsrk
+         H8KmjqJsLs3ZdbJJpELZjIXBpktJhkzaTdjK6OZBCRdFmLtl3b4yJyaaN+NVs+RzFc/y
+         BeWP0zc6JdP+Lwn32/OYnzDZXCO30tnXJbG2jC/sv8x65QobIBk2Uc16ad+ajlRoZjCt
+         fhBp1ugqlt5MX+7oaBVwaTwOThHPZKF1D7SGtza96XbIrRqzAiff5ZeZ5GVpF5yMVdTS
+         EIPOrjXDE+4xj4ZGBByLxxMt2l1iDGqeCyYayua4W4CtkUpmuVSSGvknADS00dZtm6Pa
+         VVZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696965088; x=1697569888;
+        d=1e100.net; s=20230601; t=1696965103; x=1697569903;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=r9C33FK/mhypuEKRvbN96wMq7Q2blPztB7nZo12h8b8=;
-        b=nNRb2G+awdhdj62UoNEips22X4/ClSbVJKkAzBlLs8IUAHpP5PJh+deKogXTW8mI17
-         dJ4dbp0OB5phd+BPYgLtRvXzrvYZtvU3QPfUjp5EF6G3lcZ0YPSP2OKIpU4lAnQX32io
-         2DXmPnvcs7cxWW3LAQ7u2/98p4e0Lii+CcIN3tePBHf3RBhWkn140KofvPp/7/Tr99sq
-         QxKXOXC13DRRNzozd5EaqzZu7IfdQhleBYkZdBAod6DF8B4+fz26Rb9Oy/DJq2dWIw60
-         pyWqcnCIqFgI+9Z5P1cWKZ4ooRgww/c38pQqwofhtmxgQqL4AC1Z/cpc1cJgX8gm3y/m
-         MDvA==
-X-Gm-Message-State: AOJu0YyNGRqLYQLdf7MQN3RL+eo5dP1DoOzs8bLEnJ8r9OmJSNe+qcUb
-        m0xFkZtRBtuBmHCvUo8CG5VfYTgFGwm4sW76qkg=
-X-Google-Smtp-Source: AGHT+IH6dRoUciMjgYLJk6PPxfjAtk7XfoSMwaSpFdWn4qtmxLsLRTU4XkvMLjfMaPaKXk1Dov3ncHoPahlMrRoARhY=
-X-Received: by 2002:a05:6358:7246:b0:14f:9904:a17f with SMTP id
- i6-20020a056358724600b0014f9904a17fmr12015198rwa.15.1696965087737; Tue, 10
- Oct 2023 12:11:27 -0700 (PDT)
+        bh=BmjErNj6cLHcO0s7PJGZsoXQtRcGQqMYUEfJq8NBOjo=;
+        b=fv4UbDQ7ZT8KixxDaGLxLIWX9qfSfmVxHMFK9AEDn6m0oVk3otmrk/BLni5xwmw9PZ
+         pdFH8vZWAShcYkN7n2mjDM/VjMr9PBoYka2UFd28cSg/qdooGXnmXEB8HEOmP3RgbuJ8
+         Fgf3n8CfOloRv8ynHACShTjAxw58IaTXbWXxduN6qUwcINrjf3KjQrf3wwZ4ynvqm8JT
+         2YafsrMgOCw/BVk8FGttKBmiFEYB/PqVTwH2ZJWaYCpTcRtJp6nXIzIvolHu99gZB00C
+         PVruItqrZKaRdY7ICPcC7QwyqAv1sD5TuHdSJpC5LqdcbEHjLyyc0KemTOWAmeJjYROL
+         BGkQ==
+X-Gm-Message-State: AOJu0YxjX/Efvrk2JpfoOYapJMSNaIP0fPXi9Eu6PmnF2AQl7zm0OKtD
+        W/duGjv+B9Cvo9VEZbr0lGZ+Fz2F4SggitMu5oT/Gw==
+X-Google-Smtp-Source: AGHT+IF44V9VAvMHDXj78txqmMrBQ5P2zJqqx5htIgx/2JlftTdgM1YVJ7acLqOWZw5OeYg6E3fJaN0KSIczk6RAUH0=
+X-Received: by 2002:a50:cc9a:0:b0:53d:a40e:bed1 with SMTP id
+ q26-20020a50cc9a000000b0053da40ebed1mr26458edi.3.1696965102691; Tue, 10 Oct
+ 2023 12:11:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231009073748.159228-1-haibo.li@mediatek.com>
-In-Reply-To: <20231009073748.159228-1-haibo.li@mediatek.com>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Tue, 10 Oct 2023 21:11:15 +0200
-Message-ID: <CA+fCnZev8zdLV2Q4P5gyGEvLZpmpd5Afi8j3KAyHTFGKt5oTOg@mail.gmail.com>
-Subject: Re: [PATCH v2] kasan:print the original fault addr when access
- invalid shadow
-To:     Haibo Li <haibo.li@mediatek.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, xiaoming.yu@mediatek.com,
-        Jann Horn <jannh@google.com>
+References: <20231007060639.725350-1-yangcong5@huaqin.corp-partner.google.com>
+ <20231007060639.725350-3-yangcong5@huaqin.corp-partner.google.com>
+ <CAD=FV=W3ef3vWrWRDPKgeUjcapEticj4=EWdC-bOb=ph0DShsA@mail.gmail.com> <CAHwB_N+=h8-5H6SM8REAge19SgLvrZD=drAP83QnSuuqB5gN8A@mail.gmail.com>
+In-Reply-To: <CAHwB_N+=h8-5H6SM8REAge19SgLvrZD=drAP83QnSuuqB5gN8A@mail.gmail.com>
+From:   Doug Anderson <dianders@google.com>
+Date:   Tue, 10 Oct 2023 12:11:30 -0700
+Message-ID: <CAD=FV=XtqPJ77dx8uRb0=tMvC3CvgH5X+7mUJeXgcG228kZfUg@mail.gmail.com>
+Subject: Re: [v1 2/2] drm/panel: ili9882t: Avoid blurred screen from fast sleep
+To:     cong yang <yangcong5@huaqin.corp-partner.google.com>
+Cc:     sam@ravnborg.org, neil.armstrong@linaro.org, daniel@ffwll.ch,
+        hsinyi@google.com, linus.walleij@linaro.org, swboyd@chromium.org,
+        airlied@gmail.com, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,99 +74,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 9, 2023 at 9:37=E2=80=AFAM Haibo Li <haibo.li@mediatek.com> wro=
-te:
->
-> when the checked address is illegal,the corresponding shadow address
-> from kasan_mem_to_shadow may have no mapping in mmu table.
-> Access such shadow address causes kernel oops.
-> Here is a sample about oops on arm64(VA 39bit)
-> with KASAN_SW_TAGS and KASAN_OUTLINE on:
->
-> [ffffffb80aaaaaaa] pgd=3D000000005d3ce003, p4d=3D000000005d3ce003,
->     pud=3D000000005d3ce003, pmd=3D0000000000000000
-> Internal error: Oops: 0000000096000006 [#1] PREEMPT SMP
-> Modules linked in:
-> CPU: 3 PID: 100 Comm: sh Not tainted 6.6.0-rc1-dirty #43
-> Hardware name: linux,dummy-virt (DT)
-> pstate: 80000005 (Nzcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=3D--)
-> pc : __hwasan_load8_noabort+0x5c/0x90
-> lr : do_ib_ob+0xf4/0x110
-> ffffffb80aaaaaaa is the shadow address for efffff80aaaaaaaa.
-> The problem is reading invalid shadow in kasan_check_range.
->
-> The generic kasan also has similar oops.
->
-> It only reports the shadow address which causes oops but not
-> the original address.
->
-> Commit 2f004eea0fc8("x86/kasan: Print original address on #GP")
-> introduce to kasan_non_canonical_hook but limit it to KASAN_INLINE.
->
-> This patch extends it to KASAN_OUTLINE mode.
->
-> Signed-off-by: Haibo Li <haibo.li@mediatek.com>
-> ---
-> v2:
-> - In view of the possible perf impact by checking shadow address,change
->    to use kasan_non_canonical_hook as it works after oops.
-> ---
->  include/linux/kasan.h | 6 +++---
->  mm/kasan/report.c     | 4 +---
->  2 files changed, 4 insertions(+), 6 deletions(-)
->
-> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> index 3df5499f7936..a707ee8b19ce 100644
-> --- a/include/linux/kasan.h
-> +++ b/include/linux/kasan.h
-> @@ -466,10 +466,10 @@ static inline void kasan_free_module_shadow(const s=
-truct vm_struct *vm) {}
->
->  #endif /* (CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS) && !CONFIG_KASA=
-N_VMALLOC */
->
-> -#ifdef CONFIG_KASAN_INLINE
-> +#ifdef CONFIG_KASAN
->  void kasan_non_canonical_hook(unsigned long addr);
-> -#else /* CONFIG_KASAN_INLINE */
-> +#else /* CONFIG_KASAN */
->  static inline void kasan_non_canonical_hook(unsigned long addr) { }
-> -#endif /* CONFIG_KASAN_INLINE */
-> +#endif /* CONFIG_KASAN */
->
->  #endif /* LINUX_KASAN_H */
-> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> index ca4b6ff080a6..3974e4549c3e 100644
-> --- a/mm/kasan/report.c
-> +++ b/mm/kasan/report.c
-> @@ -621,9 +621,8 @@ void kasan_report_async(void)
->  }
->  #endif /* CONFIG_KASAN_HW_TAGS */
->
-> -#ifdef CONFIG_KASAN_INLINE
->  /*
-> - * With CONFIG_KASAN_INLINE, accesses to bogus pointers (outside the hig=
-h
-> + * With CONFIG_KASAN, accesses to bogus pointers (outside the high
->   * canonical half of the address space) cause out-of-bounds shadow memor=
-y reads
->   * before the actual access. For addresses in the low canonical half of =
-the
->   * address space, as well as most non-canonical addresses, that out-of-b=
-ounds
-> @@ -659,4 +658,3 @@ void kasan_non_canonical_hook(unsigned long addr)
->         pr_alert("KASAN: %s in range [0x%016lx-0x%016lx]\n", bug_type,
->                  orig_addr, orig_addr + KASAN_GRANULE_SIZE - 1);
->  }
-> -#endif
-> --
-> 2.18.0
->
+Hi,
 
-Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
+On Tue, Oct 10, 2023 at 4:36=E2=80=AFAM cong yang
+<yangcong5@huaqin.corp-partner.google.com> wrote:
+>
+> Hi,
+>
+> On Tue, Oct 10, 2023 at 4:44=E2=80=AFAM Doug Anderson <dianders@google.co=
+m> wrote:
+> >
+> > Hi,
+> >
+> > On Fri, Oct 6, 2023 at 11:07=E2=80=AFPM Cong Yang
+> > <yangcong5@huaqin.corp-partner.google.com> wrote:
+> > >
+> > > At present, we have found that there may be a problem of blurred
+> > > screen during fast sleep/resume. The direct cause of the blurred
+> > > screen is that the IC does not receive 0x28/0x10. Because of the
+> > > particularity of the IC, before the panel enters sleep hid must
+> > > stop scanning, i2c_hid_core_suspend before ili9882t_disable.
+> > > This doesn't look very spec-compliant.
+> >
+> > Presumably you could be more spec compliant if we used
+> > "panel_follower" in this case? Would that be a better solution?
+>
+> In the "panel_follower" solution, the phenomenon is the same.
+> The current order is
+> ili9882t_disable=3D>i2c_hid_core_suspend=3D>elan_i2c_hid_power_down=3D>il=
+i9882t_unprepare,
+> ili9882t need touchpanel stop scanning,i2c_hid_core_suspend before
+> ili9882t_disable.
 
-Thank you!
+Ugh, that's unfortunate. Though is there a reason why you couldn't
+just move the `ili9882t_enter_sleep_mode()` to `ili9882t_unprepare()`?
+That seems like it should be OK and even perhaps makes it more
+symmetric with thue enable?
 
-On a related note, I have debugged the reason why
-kasan_non_canonical_hook sometimes doesn't get engaged properly for
-the SW_TAGS mode. I'll post a fix next week.
+
+> > > @@ -507,7 +526,7 @@ static int ili9882t_prepare(struct drm_panel *pan=
+el)
+> > >         gpiod_set_value(ili->enable_gpio, 1);
+> > >         usleep_range(1000, 2000);
+> > >         gpiod_set_value(ili->enable_gpio, 0);
+> > > -       usleep_range(1000, 2000);
+> > > +       usleep_range(40000, 50000);
+> >
+> > nit: use 40000, 41000 instead of 40000, 50000. Linux almost always
+> > uses the longer delay, so that'll save ~9 ms. The only reason for the
+> > range is to optimize kernel wakeups which is really not a concern
+> > here.
+>
+> We need 50ms delay to meet the requirement.
+
+I'll respond to your v2, but if you need 50 ms then your current delay is w=
+rong.
+
+
+-Doug
