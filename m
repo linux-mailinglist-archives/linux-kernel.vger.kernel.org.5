@@ -2,992 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C204A7C00E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF2B57C0062
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233584AbjJJP5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 11:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57188 "EHLO
+        id S232976AbjJJP2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 11:28:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233265AbjJJP5k (ORCPT
+        with ESMTP id S229955AbjJJP2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 11:57:40 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279E293;
-        Tue, 10 Oct 2023 08:57:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88DA7C433C7;
-        Tue, 10 Oct 2023 15:57:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696953454;
-        bh=zfY6msBP5aRdpz2j74zGaeZjraK9nc1YJksJpF44//M=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ul1qN8FckCpogFnrLfaRUJsYRE1jj8uswkXTnfWBgBeIAMBr4Qduf0EaSLQEbJEb1
-         uDTXXog/iVBY2ymSuqk+PVVzTB9WOgoY/pvk2Fx6l77Hvl4XIV5lL6GRf/r9VEnVHV
-         TjVGx7Ood720K95NGtHTMgGmkoZXKQZnZerFy+dQAaV0i/zVH4tcqdJ+G1tj0oMCy4
-         E5XJGCgd/uPxwzVBmwu6ooPBCQi1j7su6/UdF5j+iWLJjNeXm2qMuHYE72gtgylo6y
-         gtgOOENjf+ZSHq3+uMnaJ6BNKv+/TPksXVkP7gTDxm2g7omzh7XRXBUhCzyeSlBpPN
-         tkjGptJiMhRlA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Kalle Valo <kvalo@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Jakub Kicinski <kuba@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        "David S. Miller" <davem@davemloft.net>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev
-Subject: [PATCH] [RFC] wireless: move obsolete drivers to staging
-Date:   Tue, 10 Oct 2023 17:27:29 +0200
-Message-Id: <20231010155444.858483-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        Tue, 10 Oct 2023 11:28:46 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD34AF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:28:43 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-5068b69f4aeso13701e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 08:28:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696951721; x=1697556521; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ekO9fiWw5dM/5weaz3ceIzr6MnGrpqT9loFE7MOGyrU=;
+        b=FMzgRh7nFfJZT1vSt5yVw4JXV++TtBXraW2kKnZAKQ7lzX/0RSzo6PjXlAvg/n8n+4
+         JsS8JEPnJItkFgjPIeodqbf+TOHgo5FLAlp54T1KEpiBcPLfNrF9vYeO+/wJpJbPwZma
+         2NAgOhxBI09+7bCMnoMytBe0CXmhxYyC/72w4fH4Kqn+xmhfONU4qpIqzo2BulTy4onv
+         Z98rXcpUIwxS2NPj/BQGTZki1iJ8XoUlbXcgtBnHoL5dv9NmzwbodCXBnPEx3xbe/4oL
+         4qJpLaL9He7OdZQn7RoU3XQBdnmx1wqkMcYIMaE2F0pkG8zUnnWWpc+u7RqXHn0VFMu+
+         03HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696951721; x=1697556521;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ekO9fiWw5dM/5weaz3ceIzr6MnGrpqT9loFE7MOGyrU=;
+        b=W0pa1szbhjaA9Uppk+MXYeo2QnQmOEmSBobx/VqBd5u0K6TiYCC7DiH6wjFszJEf6r
+         wwmLGjmMiGSPp3oex91bdHZf7+CBMhq/9R513BOLVNUaUBujp/62nXXucEExAPNi66Wa
+         wGDobzamfqxrqt6NNTvjTCK/AmDFn/LHgrUa2zfkOaLRWsDW8kk3BhUGXQGxTJNeJAdv
+         BxittWPnPDXJIUracLCp0cLsXBrJb75tk56ugXNxuJ9bGKep3YEgdHZBLxLQUz3Hx3XB
+         02tdPyhfxpTiwu0PpwkGUeR0vEYC/4NhvMft04p6E+X6l+hw6V0L6cf1PwEIEkUDaSoU
+         fQjQ==
+X-Gm-Message-State: AOJu0Yyf+F1e0iLX3wH6ec1X03MteFFe+XAttFeLCj+EAY8ZXsKnth6t
+        C+kaXCnT4cDWFfvpihl08FS8AW1N86xH5I0lsLqwieqEc+q0DGhnwLvmdA==
+X-Google-Smtp-Source: AGHT+IFUfVTdI3DGmUSL2RAl8Kh9AQ/SR5mm4YaKckWRqnUiZrfDiBbiehIs91u221NVNLchLwUcJr+ww0Wg7om+KoE=
+X-Received: by 2002:ac2:44a1:0:b0:501:3d3:cbc0 with SMTP id
+ c1-20020ac244a1000000b0050103d3cbc0mr329938lfm.2.1696951721128; Tue, 10 Oct
+ 2023 08:28:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231005190451.175568-1-adrian.hunter@intel.com> <20231010142234.20061-1-adrian.hunter@intel.com>
+In-Reply-To: <20231010142234.20061-1-adrian.hunter@intel.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 10 Oct 2023 08:28:29 -0700
+Message-ID: <CAP-5=fUcC32Qa8vdS5WEa0n-hX_9CeZvbraTJ5+6duQ+2hUJ0A@mail.gmail.com>
+Subject: Re: [PATCH] perf tools: Add unaligned.h to check-headers.sh
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Tue, Oct 10, 2023 at 7:22=E2=80=AFAM Adrian Hunter <adrian.hunter@intel.=
+com> wrote:
+>
+> Add include/asm-generic/unaligned.h to check-headers.sh bringing
+> tools/include/asm-generic/unaligned.h up to date so that the kernel and
+> tools versions match.
+>
+> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 
-While looking at the old drivers using the obsolete .ndo_do_ioctl()
-callback, I found a number of network drivers that are especially
-obsolete, in particular for 802.11b (11Mbit/s) or even older wireless
-networks, using non-busmaster ISA/PCMCIA style bus interfaces, and using
-the legacy wireless extension ioctls rather than the netlink interfaces
-that were meant to replace them in 2007. All of these drivers are
-obsolete or orphaned.
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-We had previously discussed this topic, but nobody ever moved the
-files, so I now went through the list to my best knowledge. These
-are the drivers that I would classify as "probably unused" by now:
+Thanks,
+Ian
 
- - Atmel at76c502/at76c504/at76c506 is a PIO-only (PCMCIA, mini-PCI
-   and Cardbus) 802.11b driver with incomplete CFG80211 support.
-   The related at76c50x USB driver uses MAC80211 and remains.
-
- - Cisco Aironet is an 802.11b PCMCIA and mini-PCI with limited support
-   for Cardbus DMA and for CFG80211.
-
- - HostAP is an ISA/PCMCIA style 802.11b driver supporting only
-   wireless extensions, and some custom ioctls (already removed).
-   Some devices include a legacy PCI bridge but no DMA.
-
- - Aviator/Raytheon is an early PCMCIA driver, apparently predating
-   802.11b and only supporting wireless extensions.
-
- - Planet WL3501 is another PCMCIA driver for pre-802.11b interfaces
-   (2Mbit/s) with incomplete CFG80211 support
-
- - Zydas zd1201 is a USB 802.11b driver with limited support for
-   CFG80211.
-
- - Orinoco is a PIO-only ISA/PCMCIA 802.11b device with extra bus
-   interface connections for PCI/Cardbus/mini-PCI and a few
-   pre-2002 Apple PowerMac variants. It supports both
-   wireless extensions and CFG80211, but I could not tell if
-   it requires using both.
-
- - Wireless RNDIS USB is a new-style CFG80211 driver for 802.11b
-   and 802.11g USB hardware from around 2004 to 2006. This makes it
-   more modern than any of the others, but Kalle already classified
-   it as "legacy" in commit 298e50ad8eb8f ("wifi: move raycs, wl3501
-   and rndis_wlan to legacy directory"), so it stays with ray_cs and
-   wl3501_cs.
-
-There are a few other drivers that are similar to these but that are
-more likely to still be needed, and are not moved here:
-
- - Intel ipw2x00 is a PCI bus-master device for 802.11a/b/g that was
-   popular in "Centrino" branded laptops from 2003 to 2005, but it
-   still requires wireless extensions.
-
- - Marvell Libertas is an 802.11a/b/g device with a number of bus
-   interfaces (USB, SDIO, SPI, PCMCIA) and incomplete CFG80211
-   support. This one was used in the OLPC XO laptop and some other
-   embedded devices that are still supported.
-
- - Some broadcom b43xx devices use the SSB bus that can be abstracted
-   through PCMCIA. All of them use CFG80211.
-
- - The Sony Playstation 3 "gelic" ethernet driver contains a bridge
-   and an 802.11b/g client chip that is controlled through a hypervisor
-   interface from the OS, and it uses wireless extensions in the kernel
-   driver.
-
-Link: https://lore.kernel.org/all/87imaeg4ar.fsf@codeaurora.org/
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-I'm mainly taking educated guesses about which drivers are actually
-obsolete. Let me know if I got any of them wrong, or if any others
-should be included here.
-
-I did not move the staging drivers for ks7010, rtl8192e, rtl8192u,
-rtl8712, rtl8723bs, vt6656 or wlan-ng into driver/staging/wireless,
-as they are already directly under drivers/staging, but that could
-be another patch if we want to keep them all in one place.
----
- MAINTAINERS                                   | 16 ++++-----
- drivers/net/wireless/Kconfig                  |  4 ---
- drivers/net/wireless/Makefile                 |  2 --
- drivers/net/wireless/atmel/Kconfig            | 35 -------------------
- drivers/net/wireless/atmel/Makefile           |  4 ---
- drivers/net/wireless/intersil/Kconfig         |  2 --
- drivers/net/wireless/intersil/Makefile        |  2 --
- drivers/net/wireless/zydas/Kconfig            | 19 ----------
- drivers/net/wireless/zydas/Makefile           |  2 --
- drivers/staging/Kconfig                       |  2 ++
- drivers/staging/Makefile                      |  1 +
- drivers/staging/wireless/Kconfig              | 11 ++++++
- drivers/staging/wireless/Makefile             |  8 +++++
- drivers/staging/wireless/TODO                 | 11 ++++++
- drivers/staging/wireless/atmel/Kconfig        | 35 +++++++++++++++++++
- drivers/staging/wireless/atmel/Makefile       |  6 ++++
- .../{net => staging}/wireless/atmel/atmel.c   |  0
- .../{net => staging}/wireless/atmel/atmel.h   |  0
- .../wireless/atmel/atmel_cs.c                 |  0
- .../wireless/atmel/atmel_pci.c                |  0
- .../{net => staging}/wireless/cisco/Kconfig   |  0
- .../{net => staging}/wireless/cisco/Makefile  |  0
- .../{net => staging}/wireless/cisco/airo.c    |  0
- .../{net => staging}/wireless/cisco/airo.h    |  0
- .../{net => staging}/wireless/cisco/airo_cs.c |  0
- .../wireless}/hostap/Kconfig                  |  1 +
- .../wireless}/hostap/Makefile                 |  0
- .../wireless}/hostap/hostap.h                 |  0
- .../wireless}/hostap/hostap_80211.h           |  0
- .../wireless}/hostap/hostap_80211_rx.c        |  0
- .../wireless}/hostap/hostap_80211_tx.c        |  0
- .../wireless}/hostap/hostap_ap.c              |  0
- .../wireless}/hostap/hostap_ap.h              |  0
- .../wireless}/hostap/hostap_common.h          |  0
- .../wireless}/hostap/hostap_config.h          |  0
- .../wireless}/hostap/hostap_cs.c              |  0
- .../wireless}/hostap/hostap_download.c        |  0
- .../wireless}/hostap/hostap_hw.c              |  0
- .../wireless}/hostap/hostap_info.c            |  0
- .../wireless}/hostap/hostap_ioctl.c           |  0
- .../wireless}/hostap/hostap_main.c            |  0
- .../wireless}/hostap/hostap_pci.c             |  0
- .../wireless}/hostap/hostap_plx.c             |  0
- .../wireless}/hostap/hostap_proc.c            |  0
- .../wireless}/hostap/hostap_wlan.h            |  0
- .../{net => staging}/wireless/legacy/Kconfig  |  0
- .../{net => staging}/wireless/legacy/Makefile |  0
- .../{net => staging}/wireless/legacy/ray_cs.c |  0
- .../{net => staging}/wireless/legacy/ray_cs.h |  0
- .../{net => staging}/wireless/legacy/rayctl.h |  0
- .../wireless/legacy/rndis_wlan.c              |  0
- .../{net => staging}/wireless/legacy/wl3501.h |  0
- .../wireless/legacy/wl3501_cs.c               |  0
- .../wireless}/orinoco/Kconfig                 |  0
- .../wireless}/orinoco/Makefile                |  0
- .../wireless}/orinoco/airport.c               |  0
- .../wireless}/orinoco/cfg.c                   |  0
- .../wireless}/orinoco/cfg.h                   |  0
- .../wireless}/orinoco/fw.c                    |  0
- .../wireless}/orinoco/fw.h                    |  0
- .../wireless}/orinoco/hermes.c                |  0
- .../wireless}/orinoco/hermes.h                |  0
- .../wireless}/orinoco/hermes_dld.c            |  0
- .../wireless}/orinoco/hermes_dld.h            |  0
- .../wireless}/orinoco/hermes_rid.h            |  0
- .../wireless}/orinoco/hw.c                    |  0
- .../wireless}/orinoco/hw.h                    |  0
- .../wireless}/orinoco/main.c                  |  0
- .../wireless}/orinoco/main.h                  |  0
- .../wireless}/orinoco/mic.c                   |  0
- .../wireless}/orinoco/mic.h                   |  0
- .../wireless}/orinoco/orinoco.h               |  0
- .../wireless}/orinoco/orinoco_cs.c            |  0
- .../wireless}/orinoco/orinoco_nortel.c        |  0
- .../wireless}/orinoco/orinoco_pci.c           |  0
- .../wireless}/orinoco/orinoco_pci.h           |  0
- .../wireless}/orinoco/orinoco_plx.c           |  0
- .../wireless}/orinoco/orinoco_tmd.c           |  0
- .../wireless}/orinoco/orinoco_usb.c           |  0
- .../wireless}/orinoco/scan.c                  |  0
- .../wireless}/orinoco/scan.h                  |  0
- .../wireless}/orinoco/spectrum_cs.c           |  0
- .../wireless}/orinoco/wext.c                  |  0
- .../wireless}/orinoco/wext.h                  |  0
- drivers/staging/wireless/zydas/Kconfig        | 20 +++++++++++
- drivers/staging/wireless/zydas/Makefile       |  3 ++
- .../{net => staging}/wireless/zydas/zd1201.c  |  0
- .../{net => staging}/wireless/zydas/zd1201.h  |  0
- 88 files changed, 106 insertions(+), 78 deletions(-)
- create mode 100644 drivers/staging/wireless/Kconfig
- create mode 100644 drivers/staging/wireless/Makefile
- create mode 100644 drivers/staging/wireless/TODO
- create mode 100644 drivers/staging/wireless/atmel/Kconfig
- create mode 100644 drivers/staging/wireless/atmel/Makefile
- rename drivers/{net => staging}/wireless/atmel/atmel.c (100%)
- rename drivers/{net => staging}/wireless/atmel/atmel.h (100%)
- rename drivers/{net => staging}/wireless/atmel/atmel_cs.c (100%)
- rename drivers/{net => staging}/wireless/atmel/atmel_pci.c (100%)
- rename drivers/{net => staging}/wireless/cisco/Kconfig (100%)
- rename drivers/{net => staging}/wireless/cisco/Makefile (100%)
- rename drivers/{net => staging}/wireless/cisco/airo.c (100%)
- rename drivers/{net => staging}/wireless/cisco/airo.h (100%)
- rename drivers/{net => staging}/wireless/cisco/airo_cs.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/hostap/Kconfig (98%)
- rename drivers/{net/wireless/intersil => staging/wireless}/hostap/Makefile (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/hostap/hostap.h (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/hostap/hostap_80211.h (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/hostap/hostap_80211_rx.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/hostap/hostap_80211_tx.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/hostap/hostap_ap.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/hostap/hostap_ap.h (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/hostap/hostap_common.h (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/hostap/hostap_config.h (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/hostap/hostap_cs.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/hostap/hostap_download.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/hostap/hostap_hw.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/hostap/hostap_info.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/hostap/hostap_ioctl.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/hostap/hostap_main.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/hostap/hostap_pci.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/hostap/hostap_plx.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/hostap/hostap_proc.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/hostap/hostap_wlan.h (100%)
- rename drivers/{net => staging}/wireless/legacy/Kconfig (100%)
- rename drivers/{net => staging}/wireless/legacy/Makefile (100%)
- rename drivers/{net => staging}/wireless/legacy/ray_cs.c (100%)
- rename drivers/{net => staging}/wireless/legacy/ray_cs.h (100%)
- rename drivers/{net => staging}/wireless/legacy/rayctl.h (100%)
- rename drivers/{net => staging}/wireless/legacy/rndis_wlan.c (100%)
- rename drivers/{net => staging}/wireless/legacy/wl3501.h (100%)
- rename drivers/{net => staging}/wireless/legacy/wl3501_cs.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/Kconfig (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/Makefile (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/airport.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/cfg.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/cfg.h (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/fw.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/fw.h (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/hermes.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/hermes.h (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/hermes_dld.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/hermes_dld.h (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/hermes_rid.h (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/hw.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/hw.h (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/main.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/main.h (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/mic.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/mic.h (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/orinoco.h (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/orinoco_cs.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/orinoco_nortel.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/orinoco_pci.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/orinoco_pci.h (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/orinoco_plx.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/orinoco_tmd.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/orinoco_usb.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/scan.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/scan.h (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/spectrum_cs.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/wext.c (100%)
- rename drivers/{net/wireless/intersil => staging/wireless}/orinoco/wext.h (100%)
- create mode 100644 drivers/staging/wireless/zydas/Kconfig
- create mode 100644 drivers/staging/wireless/zydas/Makefile
- rename drivers/{net => staging}/wireless/zydas/zd1201.c (100%)
- rename drivers/{net => staging}/wireless/zydas/zd1201.h (100%)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e9e30ec6748ec..826c36d421dd1 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2389,7 +2389,7 @@ F:	drivers/memory/atmel*
- F:	drivers/watchdog/sama5d4_wdt.c
- F:	include/soc/at91/
- X:	drivers/input/touchscreen/atmel_mxt_ts.c
--X:	drivers/net/wireless/atmel/
-+X:	drivers/staging/wireless/atmel/
- N:	at91
- N:	atmel
- 
-@@ -3298,7 +3298,7 @@ L:	linux-wireless@vger.kernel.org
- S:	Orphan
- W:	http://www.thekelleys.org.uk/atmel
- W:	http://atmelwlandriver.sourceforge.net/
--F:	drivers/net/wireless/atmel/atmel*
-+F:	drivers/staging/wireless/atmel/atmel*
- 
- ATOMIC INFRASTRUCTURE
- M:	Will Deacon <will@kernel.org>
-@@ -9630,7 +9630,7 @@ F:	drivers/iio/pressure/mprls0025pa.c
- HOST AP DRIVER
- L:	linux-wireless@vger.kernel.org
- S:	Obsolete
--F:	drivers/net/wireless/intersil/hostap/
-+F:	drivers/staging/wireless/hostap/
- 
- HP BIOSCFG DRIVER
- M:	Jorge Lopez <jorge.lopez2@hp.com>
-@@ -16208,7 +16208,7 @@ L:	linux-wireless@vger.kernel.org
- S:	Orphan
- W:	https://wireless.wiki.kernel.org/en/users/Drivers/orinoco
- W:	http://www.nongnu.org/orinoco/
--F:	drivers/net/wireless/intersil/orinoco/
-+F:	drivers/staging/wireless/orinoco/
- 
- OV2659 OMNIVISION SENSOR DRIVER
- M:	"Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-@@ -18120,7 +18120,7 @@ F:	include/ras/ras_event.h
- RAYLINK/WEBGEAR 802.11 WIRELESS LAN DRIVER
- L:	linux-wireless@vger.kernel.org
- S:	Orphan
--F:	drivers/net/wireless/legacy/ray*
-+F:	drivers/staging/wireless/legacy/ray*
- 
- RC-CORE / LIRC FRAMEWORK
- M:	Sean Young <sean@mess.org>
-@@ -22594,7 +22594,7 @@ F:	include/uapi/linux/usb/g_uvc.h
- USB WIRELESS RNDIS DRIVER (rndis_wlan)
- L:	linux-wireless@vger.kernel.org
- S:	Orphan
--F:	drivers/net/wireless/legacy/rndis_wlan.c
-+F:	drivers/staging/wireless/legacy/rndis_wlan.c
- 
- USB XHCI DRIVER
- M:	Mathias Nyman <mathias.nyman@intel.com>
-@@ -22607,7 +22607,7 @@ USB ZD1201 DRIVER
- L:	linux-wireless@vger.kernel.org
- S:	Orphan
- W:	http://linux-lc100020.sourceforge.net
--F:	drivers/net/wireless/zydas/zd1201.*
-+F:	drivers/staging/wireless/zydas/zd1201.*
- 
- USER DATAGRAM PROTOCOL (UDP)
- M:	Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-@@ -23419,7 +23419,7 @@ F:	drivers/input/misc/wistron_btns.c
- WL3501 WIRELESS PCMCIA CARD DRIVER
- L:	linux-wireless@vger.kernel.org
- S:	Orphan
--F:	drivers/net/wireless/legacy/wl3501*
-+F:	drivers/staging/wireless/legacy/wl3501*
- 
- WMI BINARY MOF DRIVER
- M:	Armin Wolf <W_Armin@gmx.de>
-diff --git a/drivers/net/wireless/Kconfig b/drivers/net/wireless/Kconfig
-index 7555af5195ec3..35a805e10991e 100644
---- a/drivers/net/wireless/Kconfig
-+++ b/drivers/net/wireless/Kconfig
-@@ -20,9 +20,7 @@ if WLAN
- 
- source "drivers/net/wireless/admtek/Kconfig"
- source "drivers/net/wireless/ath/Kconfig"
--source "drivers/net/wireless/atmel/Kconfig"
- source "drivers/net/wireless/broadcom/Kconfig"
--source "drivers/net/wireless/cisco/Kconfig"
- source "drivers/net/wireless/intel/Kconfig"
- source "drivers/net/wireless/intersil/Kconfig"
- source "drivers/net/wireless/marvell/Kconfig"
-@@ -38,8 +36,6 @@ source "drivers/net/wireless/ti/Kconfig"
- source "drivers/net/wireless/zydas/Kconfig"
- source "drivers/net/wireless/quantenna/Kconfig"
- 
--source "drivers/net/wireless/legacy/Kconfig"
--
- source "drivers/net/wireless/virtual/Kconfig"
- 
- endif # WLAN
-diff --git a/drivers/net/wireless/Makefile b/drivers/net/wireless/Makefile
-index 4d7374d567d18..e1c4141c60044 100644
---- a/drivers/net/wireless/Makefile
-+++ b/drivers/net/wireless/Makefile
-@@ -7,7 +7,6 @@ obj-$(CONFIG_WLAN_VENDOR_ADMTEK) += admtek/
- obj-$(CONFIG_WLAN_VENDOR_ATH) += ath/
- obj-$(CONFIG_WLAN_VENDOR_ATMEL) += atmel/
- obj-$(CONFIG_WLAN_VENDOR_BROADCOM) += broadcom/
--obj-$(CONFIG_WLAN_VENDOR_CISCO) += cisco/
- obj-$(CONFIG_WLAN_VENDOR_INTEL) += intel/
- obj-$(CONFIG_WLAN_VENDOR_INTERSIL) += intersil/
- obj-$(CONFIG_WLAN_VENDOR_MARVELL) += marvell/
-@@ -23,5 +22,4 @@ obj-$(CONFIG_WLAN_VENDOR_ST) += st/
- obj-$(CONFIG_WLAN_VENDOR_TI) += ti/
- obj-$(CONFIG_WLAN_VENDOR_ZYDAS) += zydas/
- 
--obj-$(CONFIG_WLAN) += legacy/
- obj-$(CONFIG_WLAN) += virtual/
-diff --git a/drivers/net/wireless/atmel/Kconfig b/drivers/net/wireless/atmel/Kconfig
-index bafdd57b049a1..7a2bb7a58ab7e 100644
---- a/drivers/net/wireless/atmel/Kconfig
-+++ b/drivers/net/wireless/atmel/Kconfig
-@@ -12,41 +12,6 @@ config WLAN_VENDOR_ATMEL
- 
- if WLAN_VENDOR_ATMEL
- 
--config ATMEL
--	tristate "Atmel at76c50x chipset  802.11b support"
--	depends on CFG80211 && (PCI || PCMCIA) && HAS_IOPORT
--	select WIRELESS_EXT
--	select WEXT_PRIV
--	select FW_LOADER
--	select CRC32
--	help
--	  A driver 802.11b wireless cards based on the Atmel fast-vnet
--	  chips. This driver supports standard Linux wireless extensions.
--
--	  Many  cards based on this chipset do not have flash memory
--	  and need their firmware loaded at start-up. If yours is
--	  one of these, you will need to provide a firmware image
--	  to be loaded into the card by the driver. The Atmel
--	  firmware package can be downloaded from
--	  <http://www.thekelleys.org.uk/atmel>
--
--config PCI_ATMEL
--	tristate "Atmel at76c506 PCI cards"
--	depends on ATMEL && PCI
--	help
--	  Enable support for PCI and mini-PCI cards containing the
--	  Atmel at76c506 chip.
--
--config PCMCIA_ATMEL
--	tristate "Atmel at76c502/at76c504 PCMCIA cards"
--	depends on ATMEL && PCMCIA
--	select WIRELESS_EXT
--	select FW_LOADER
--	select CRC32
--	help
--	  Enable support for PCMCIA cards containing the
--	  Atmel at76c502 and at76c504 chips.
--
- config AT76C50X_USB
- 	tristate "Atmel at76c503/at76c505/at76c505a USB cards"
- 	depends on MAC80211 && USB
-diff --git a/drivers/net/wireless/atmel/Makefile b/drivers/net/wireless/atmel/Makefile
-index 17e62805677d4..8338d7098ba60 100644
---- a/drivers/net/wireless/atmel/Makefile
-+++ b/drivers/net/wireless/atmel/Makefile
-@@ -1,6 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--obj-$(CONFIG_ATMEL)             += atmel.o
--obj-$(CONFIG_PCI_ATMEL)         += atmel_pci.o 
--obj-$(CONFIG_PCMCIA_ATMEL)      += atmel_cs.o
--
- obj-$(CONFIG_AT76C50X_USB)      += at76c50x-usb.o
-diff --git a/drivers/net/wireless/intersil/Kconfig b/drivers/net/wireless/intersil/Kconfig
-index bd6bf70ece03d..201b1534a9ca2 100644
---- a/drivers/net/wireless/intersil/Kconfig
-+++ b/drivers/net/wireless/intersil/Kconfig
-@@ -12,8 +12,6 @@ config WLAN_VENDOR_INTERSIL
- 
- if WLAN_VENDOR_INTERSIL
- 
--source "drivers/net/wireless/intersil/hostap/Kconfig"
--source "drivers/net/wireless/intersil/orinoco/Kconfig"
- source "drivers/net/wireless/intersil/p54/Kconfig"
- 
- endif # WLAN_VENDOR_INTERSIL
-diff --git a/drivers/net/wireless/intersil/Makefile b/drivers/net/wireless/intersil/Makefile
-index 65281d1b3d852..27e9b2869da1a 100644
---- a/drivers/net/wireless/intersil/Makefile
-+++ b/drivers/net/wireless/intersil/Makefile
-@@ -1,4 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--obj-$(CONFIG_HOSTAP)		+= hostap/
--obj-$(CONFIG_HERMES)		+= orinoco/
- obj-$(CONFIG_P54_COMMON)	+= p54/
-diff --git a/drivers/net/wireless/zydas/Kconfig b/drivers/net/wireless/zydas/Kconfig
-index 08574433df66f..839e1217e855c 100644
---- a/drivers/net/wireless/zydas/Kconfig
-+++ b/drivers/net/wireless/zydas/Kconfig
-@@ -12,25 +12,6 @@ config WLAN_VENDOR_ZYDAS
- 
- if WLAN_VENDOR_ZYDAS
- 
--config USB_ZD1201
--	tristate "USB ZD1201 based Wireless device support"
--	depends on CFG80211 && USB
--	select WIRELESS_EXT
--	select WEXT_PRIV
--	select FW_LOADER
--	help
--	  Say Y if you want to use wireless LAN adapters based on the ZyDAS
--	  ZD1201 chip.
--
--	  This driver makes the adapter appear as a normal Ethernet interface,
--	  typically on wlan0.
--
--	  The zd1201 device requires external firmware to be loaded.
--	  This can be found at http://linux-lc100020.sourceforge.net/
--
--	  To compile this driver as a module, choose M here: the
--	  module will be called zd1201.
--
- source "drivers/net/wireless/zydas/zd1211rw/Kconfig"
- 
- endif # WLAN_VENDOR_ZYDAS
-diff --git a/drivers/net/wireless/zydas/Makefile b/drivers/net/wireless/zydas/Makefile
-index c70003d30a8fb..3e0a51db98742 100644
---- a/drivers/net/wireless/zydas/Makefile
-+++ b/drivers/net/wireless/zydas/Makefile
-@@ -1,4 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
- obj-$(CONFIG_ZD1211RW)		+= zd1211rw/
--
--obj-$(CONFIG_USB_ZD1201)	+= zd1201.o
-diff --git a/drivers/staging/Kconfig b/drivers/staging/Kconfig
-index f9aef39cac2e9..8206d994f144d 100644
---- a/drivers/staging/Kconfig
-+++ b/drivers/staging/Kconfig
-@@ -36,6 +36,8 @@ source "drivers/staging/rtl8723bs/Kconfig"
- 
- source "drivers/staging/rtl8712/Kconfig"
- 
-+source "drivers/staging/wireless/Kconfig"
-+
- source "drivers/staging/rts5208/Kconfig"
- 
- source "drivers/staging/octeon/Kconfig"
-diff --git a/drivers/staging/Makefile b/drivers/staging/Makefile
-index ffa70dda481d3..43c7e7a23b296 100644
---- a/drivers/staging/Makefile
-+++ b/drivers/staging/Makefile
-@@ -13,6 +13,7 @@ obj-$(CONFIG_OCTEON_ETHERNET)	+= octeon/
- obj-$(CONFIG_VT6655)		+= vt6655/
- obj-$(CONFIG_VT6656)		+= vt6656/
- obj-$(CONFIG_VME_BUS)		+= vme_user/
-+obj-$(CONFIG_WLAN)		+= wireless/
- obj-$(CONFIG_IIO)		+= iio/
- obj-$(CONFIG_FB_SM750)		+= sm750fb/
- obj-$(CONFIG_USB_EMXX)		+= emxx_udc/
-diff --git a/drivers/staging/wireless/Kconfig b/drivers/staging/wireless/Kconfig
-new file mode 100644
-index 0000000000000..a8ce42aa3e944
---- /dev/null
-+++ b/drivers/staging/wireless/Kconfig
-@@ -0,0 +1,11 @@
-+# SPDX-License-Identifier: GPL-2.0
-+if WIRELESS
-+
-+source "drivers/staging/wireless/atmel/Kconfig"
-+source "drivers/staging/wireless/cisco/Kconfig"
-+source "drivers/staging/wireless/hostap/Kconfig"
-+source "drivers/staging/wireless/legacy/Kconfig"
-+source "drivers/staging/wireless/orinoco/Kconfig"
-+source "drivers/staging/wireless/zydas/Kconfig"
-+
-+endif
-diff --git a/drivers/staging/wireless/Makefile b/drivers/staging/wireless/Makefile
-new file mode 100644
-index 0000000000000..33179fca40953
---- /dev/null
-+++ b/drivers/staging/wireless/Makefile
-@@ -0,0 +1,8 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+obj-y += atmel/
-+obj-y += cisco/
-+obj-y += hostap/
-+obj-y += legacy/
-+obj-y += orinoco/
-+obj-y += zydas/
-diff --git a/drivers/staging/wireless/TODO b/drivers/staging/wireless/TODO
-new file mode 100644
-index 0000000000000..7a3c1b6e7db41
---- /dev/null
-+++ b/drivers/staging/wireless/TODO
-@@ -0,0 +1,11 @@
-+TODO (Oct. 2023)
-+
-+These 802.11(b) wireless drivers are likely all unused and can be removed
-+in the near future, unless we find a reason to keep them.
-+
-+All except the rndis_wlan driver still rely on the deprecated wireless
-+extension ioctl interface, which in modern drivers is only provided
-+as an emulation layer on top of the cfg80211 interface.
-+
-+Ideally, any drivers we want to keep around should be converted to no
-+longer require iw_handler_def.
-diff --git a/drivers/staging/wireless/atmel/Kconfig b/drivers/staging/wireless/atmel/Kconfig
-new file mode 100644
-index 0000000000000..5771c82966347
---- /dev/null
-+++ b/drivers/staging/wireless/atmel/Kconfig
-@@ -0,0 +1,35 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+config ATMEL
-+	tristate "Atmel at76c50x chipset  802.11b support"
-+	depends on CFG80211 && (PCI || PCMCIA) && HAS_IOPORT
-+	select WIRELESS_EXT
-+	select WEXT_PRIV
-+	select FW_LOADER
-+	select CRC32
-+	help
-+	  A driver 802.11b wireless cards based on the Atmel fast-vnet
-+	  chips. This driver supports standard Linux wireless extensions.
-+
-+	  Many  cards based on this chipset do not have flash memory
-+	  and need their firmware loaded at start-up. If yours is
-+	  one of these, you will need to provide a firmware image
-+	  to be loaded into the card by the driver. The Atmel
-+	  firmware package can be downloaded from
-+	  <http://www.thekelleys.org.uk/atmel>
-+
-+config PCI_ATMEL
-+	tristate "Atmel at76c506 PCI cards"
-+	depends on ATMEL && PCI
-+	help
-+	  Enable support for PCI and mini-PCI cards containing the
-+	  Atmel at76c506 chip.
-+
-+config PCMCIA_ATMEL
-+	tristate "Atmel at76c502/at76c504 PCMCIA cards"
-+	depends on ATMEL && PCMCIA
-+	select WIRELESS_EXT
-+	select FW_LOADER
-+	select CRC32
-+	help
-+	  Enable support for PCMCIA cards containing the
-+	  Atmel at76c502 and at76c504 chips.
-diff --git a/drivers/staging/wireless/atmel/Makefile b/drivers/staging/wireless/atmel/Makefile
-new file mode 100644
-index 0000000000000..31d81bcd7ff7f
---- /dev/null
-+++ b/drivers/staging/wireless/atmel/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+obj-$(CONFIG_ATMEL)             += atmel.o
-+obj-$(CONFIG_PCI_ATMEL)         += atmel_pci.o
-+obj-$(CONFIG_PCMCIA_ATMEL)      += atmel_cs.o
-+
-+
-diff --git a/drivers/net/wireless/atmel/atmel.c b/drivers/staging/wireless/atmel/atmel.c
-similarity index 100%
-rename from drivers/net/wireless/atmel/atmel.c
-rename to drivers/staging/wireless/atmel/atmel.c
-diff --git a/drivers/net/wireless/atmel/atmel.h b/drivers/staging/wireless/atmel/atmel.h
-similarity index 100%
-rename from drivers/net/wireless/atmel/atmel.h
-rename to drivers/staging/wireless/atmel/atmel.h
-diff --git a/drivers/net/wireless/atmel/atmel_cs.c b/drivers/staging/wireless/atmel/atmel_cs.c
-similarity index 100%
-rename from drivers/net/wireless/atmel/atmel_cs.c
-rename to drivers/staging/wireless/atmel/atmel_cs.c
-diff --git a/drivers/net/wireless/atmel/atmel_pci.c b/drivers/staging/wireless/atmel/atmel_pci.c
-similarity index 100%
-rename from drivers/net/wireless/atmel/atmel_pci.c
-rename to drivers/staging/wireless/atmel/atmel_pci.c
-diff --git a/drivers/net/wireless/cisco/Kconfig b/drivers/staging/wireless/cisco/Kconfig
-similarity index 100%
-rename from drivers/net/wireless/cisco/Kconfig
-rename to drivers/staging/wireless/cisco/Kconfig
-diff --git a/drivers/net/wireless/cisco/Makefile b/drivers/staging/wireless/cisco/Makefile
-similarity index 100%
-rename from drivers/net/wireless/cisco/Makefile
-rename to drivers/staging/wireless/cisco/Makefile
-diff --git a/drivers/net/wireless/cisco/airo.c b/drivers/staging/wireless/cisco/airo.c
-similarity index 100%
-rename from drivers/net/wireless/cisco/airo.c
-rename to drivers/staging/wireless/cisco/airo.c
-diff --git a/drivers/net/wireless/cisco/airo.h b/drivers/staging/wireless/cisco/airo.h
-similarity index 100%
-rename from drivers/net/wireless/cisco/airo.h
-rename to drivers/staging/wireless/cisco/airo.h
-diff --git a/drivers/net/wireless/cisco/airo_cs.c b/drivers/staging/wireless/cisco/airo_cs.c
-similarity index 100%
-rename from drivers/net/wireless/cisco/airo_cs.c
-rename to drivers/staging/wireless/cisco/airo_cs.c
-diff --git a/drivers/net/wireless/intersil/hostap/Kconfig b/drivers/staging/wireless/hostap/Kconfig
-similarity index 98%
-rename from drivers/net/wireless/intersil/hostap/Kconfig
-rename to drivers/staging/wireless/hostap/Kconfig
-index 2edff8efbcbb1..2a7072d1e7dd6 100644
---- a/drivers/net/wireless/intersil/hostap/Kconfig
-+++ b/drivers/staging/wireless/hostap/Kconfig
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config HOSTAP
- 	tristate "IEEE 802.11 for Host AP (Prism2/2.5/3 and WEP/TKIP/CCMP)"
-+	depends on (PCMCIA || PCI) && HAS_IOPORT
- 	select WIRELESS_EXT
- 	select WEXT_SPY
- 	select WEXT_PRIV
-diff --git a/drivers/net/wireless/intersil/hostap/Makefile b/drivers/staging/wireless/hostap/Makefile
-similarity index 100%
-rename from drivers/net/wireless/intersil/hostap/Makefile
-rename to drivers/staging/wireless/hostap/Makefile
-diff --git a/drivers/net/wireless/intersil/hostap/hostap.h b/drivers/staging/wireless/hostap/hostap.h
-similarity index 100%
-rename from drivers/net/wireless/intersil/hostap/hostap.h
-rename to drivers/staging/wireless/hostap/hostap.h
-diff --git a/drivers/net/wireless/intersil/hostap/hostap_80211.h b/drivers/staging/wireless/hostap/hostap_80211.h
-similarity index 100%
-rename from drivers/net/wireless/intersil/hostap/hostap_80211.h
-rename to drivers/staging/wireless/hostap/hostap_80211.h
-diff --git a/drivers/net/wireless/intersil/hostap/hostap_80211_rx.c b/drivers/staging/wireless/hostap/hostap_80211_rx.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/hostap/hostap_80211_rx.c
-rename to drivers/staging/wireless/hostap/hostap_80211_rx.c
-diff --git a/drivers/net/wireless/intersil/hostap/hostap_80211_tx.c b/drivers/staging/wireless/hostap/hostap_80211_tx.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/hostap/hostap_80211_tx.c
-rename to drivers/staging/wireless/hostap/hostap_80211_tx.c
-diff --git a/drivers/net/wireless/intersil/hostap/hostap_ap.c b/drivers/staging/wireless/hostap/hostap_ap.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/hostap/hostap_ap.c
-rename to drivers/staging/wireless/hostap/hostap_ap.c
-diff --git a/drivers/net/wireless/intersil/hostap/hostap_ap.h b/drivers/staging/wireless/hostap/hostap_ap.h
-similarity index 100%
-rename from drivers/net/wireless/intersil/hostap/hostap_ap.h
-rename to drivers/staging/wireless/hostap/hostap_ap.h
-diff --git a/drivers/net/wireless/intersil/hostap/hostap_common.h b/drivers/staging/wireless/hostap/hostap_common.h
-similarity index 100%
-rename from drivers/net/wireless/intersil/hostap/hostap_common.h
-rename to drivers/staging/wireless/hostap/hostap_common.h
-diff --git a/drivers/net/wireless/intersil/hostap/hostap_config.h b/drivers/staging/wireless/hostap/hostap_config.h
-similarity index 100%
-rename from drivers/net/wireless/intersil/hostap/hostap_config.h
-rename to drivers/staging/wireless/hostap/hostap_config.h
-diff --git a/drivers/net/wireless/intersil/hostap/hostap_cs.c b/drivers/staging/wireless/hostap/hostap_cs.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/hostap/hostap_cs.c
-rename to drivers/staging/wireless/hostap/hostap_cs.c
-diff --git a/drivers/net/wireless/intersil/hostap/hostap_download.c b/drivers/staging/wireless/hostap/hostap_download.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/hostap/hostap_download.c
-rename to drivers/staging/wireless/hostap/hostap_download.c
-diff --git a/drivers/net/wireless/intersil/hostap/hostap_hw.c b/drivers/staging/wireless/hostap/hostap_hw.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/hostap/hostap_hw.c
-rename to drivers/staging/wireless/hostap/hostap_hw.c
-diff --git a/drivers/net/wireless/intersil/hostap/hostap_info.c b/drivers/staging/wireless/hostap/hostap_info.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/hostap/hostap_info.c
-rename to drivers/staging/wireless/hostap/hostap_info.c
-diff --git a/drivers/net/wireless/intersil/hostap/hostap_ioctl.c b/drivers/staging/wireless/hostap/hostap_ioctl.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/hostap/hostap_ioctl.c
-rename to drivers/staging/wireless/hostap/hostap_ioctl.c
-diff --git a/drivers/net/wireless/intersil/hostap/hostap_main.c b/drivers/staging/wireless/hostap/hostap_main.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/hostap/hostap_main.c
-rename to drivers/staging/wireless/hostap/hostap_main.c
-diff --git a/drivers/net/wireless/intersil/hostap/hostap_pci.c b/drivers/staging/wireless/hostap/hostap_pci.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/hostap/hostap_pci.c
-rename to drivers/staging/wireless/hostap/hostap_pci.c
-diff --git a/drivers/net/wireless/intersil/hostap/hostap_plx.c b/drivers/staging/wireless/hostap/hostap_plx.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/hostap/hostap_plx.c
-rename to drivers/staging/wireless/hostap/hostap_plx.c
-diff --git a/drivers/net/wireless/intersil/hostap/hostap_proc.c b/drivers/staging/wireless/hostap/hostap_proc.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/hostap/hostap_proc.c
-rename to drivers/staging/wireless/hostap/hostap_proc.c
-diff --git a/drivers/net/wireless/intersil/hostap/hostap_wlan.h b/drivers/staging/wireless/hostap/hostap_wlan.h
-similarity index 100%
-rename from drivers/net/wireless/intersil/hostap/hostap_wlan.h
-rename to drivers/staging/wireless/hostap/hostap_wlan.h
-diff --git a/drivers/net/wireless/legacy/Kconfig b/drivers/staging/wireless/legacy/Kconfig
-similarity index 100%
-rename from drivers/net/wireless/legacy/Kconfig
-rename to drivers/staging/wireless/legacy/Kconfig
-diff --git a/drivers/net/wireless/legacy/Makefile b/drivers/staging/wireless/legacy/Makefile
-similarity index 100%
-rename from drivers/net/wireless/legacy/Makefile
-rename to drivers/staging/wireless/legacy/Makefile
-diff --git a/drivers/net/wireless/legacy/ray_cs.c b/drivers/staging/wireless/legacy/ray_cs.c
-similarity index 100%
-rename from drivers/net/wireless/legacy/ray_cs.c
-rename to drivers/staging/wireless/legacy/ray_cs.c
-diff --git a/drivers/net/wireless/legacy/ray_cs.h b/drivers/staging/wireless/legacy/ray_cs.h
-similarity index 100%
-rename from drivers/net/wireless/legacy/ray_cs.h
-rename to drivers/staging/wireless/legacy/ray_cs.h
-diff --git a/drivers/net/wireless/legacy/rayctl.h b/drivers/staging/wireless/legacy/rayctl.h
-similarity index 100%
-rename from drivers/net/wireless/legacy/rayctl.h
-rename to drivers/staging/wireless/legacy/rayctl.h
-diff --git a/drivers/net/wireless/legacy/rndis_wlan.c b/drivers/staging/wireless/legacy/rndis_wlan.c
-similarity index 100%
-rename from drivers/net/wireless/legacy/rndis_wlan.c
-rename to drivers/staging/wireless/legacy/rndis_wlan.c
-diff --git a/drivers/net/wireless/legacy/wl3501.h b/drivers/staging/wireless/legacy/wl3501.h
-similarity index 100%
-rename from drivers/net/wireless/legacy/wl3501.h
-rename to drivers/staging/wireless/legacy/wl3501.h
-diff --git a/drivers/net/wireless/legacy/wl3501_cs.c b/drivers/staging/wireless/legacy/wl3501_cs.c
-similarity index 100%
-rename from drivers/net/wireless/legacy/wl3501_cs.c
-rename to drivers/staging/wireless/legacy/wl3501_cs.c
-diff --git a/drivers/net/wireless/intersil/orinoco/Kconfig b/drivers/staging/wireless/orinoco/Kconfig
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/Kconfig
-rename to drivers/staging/wireless/orinoco/Kconfig
-diff --git a/drivers/net/wireless/intersil/orinoco/Makefile b/drivers/staging/wireless/orinoco/Makefile
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/Makefile
-rename to drivers/staging/wireless/orinoco/Makefile
-diff --git a/drivers/net/wireless/intersil/orinoco/airport.c b/drivers/staging/wireless/orinoco/airport.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/airport.c
-rename to drivers/staging/wireless/orinoco/airport.c
-diff --git a/drivers/net/wireless/intersil/orinoco/cfg.c b/drivers/staging/wireless/orinoco/cfg.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/cfg.c
-rename to drivers/staging/wireless/orinoco/cfg.c
-diff --git a/drivers/net/wireless/intersil/orinoco/cfg.h b/drivers/staging/wireless/orinoco/cfg.h
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/cfg.h
-rename to drivers/staging/wireless/orinoco/cfg.h
-diff --git a/drivers/net/wireless/intersil/orinoco/fw.c b/drivers/staging/wireless/orinoco/fw.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/fw.c
-rename to drivers/staging/wireless/orinoco/fw.c
-diff --git a/drivers/net/wireless/intersil/orinoco/fw.h b/drivers/staging/wireless/orinoco/fw.h
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/fw.h
-rename to drivers/staging/wireless/orinoco/fw.h
-diff --git a/drivers/net/wireless/intersil/orinoco/hermes.c b/drivers/staging/wireless/orinoco/hermes.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/hermes.c
-rename to drivers/staging/wireless/orinoco/hermes.c
-diff --git a/drivers/net/wireless/intersil/orinoco/hermes.h b/drivers/staging/wireless/orinoco/hermes.h
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/hermes.h
-rename to drivers/staging/wireless/orinoco/hermes.h
-diff --git a/drivers/net/wireless/intersil/orinoco/hermes_dld.c b/drivers/staging/wireless/orinoco/hermes_dld.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/hermes_dld.c
-rename to drivers/staging/wireless/orinoco/hermes_dld.c
-diff --git a/drivers/net/wireless/intersil/orinoco/hermes_dld.h b/drivers/staging/wireless/orinoco/hermes_dld.h
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/hermes_dld.h
-rename to drivers/staging/wireless/orinoco/hermes_dld.h
-diff --git a/drivers/net/wireless/intersil/orinoco/hermes_rid.h b/drivers/staging/wireless/orinoco/hermes_rid.h
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/hermes_rid.h
-rename to drivers/staging/wireless/orinoco/hermes_rid.h
-diff --git a/drivers/net/wireless/intersil/orinoco/hw.c b/drivers/staging/wireless/orinoco/hw.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/hw.c
-rename to drivers/staging/wireless/orinoco/hw.c
-diff --git a/drivers/net/wireless/intersil/orinoco/hw.h b/drivers/staging/wireless/orinoco/hw.h
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/hw.h
-rename to drivers/staging/wireless/orinoco/hw.h
-diff --git a/drivers/net/wireless/intersil/orinoco/main.c b/drivers/staging/wireless/orinoco/main.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/main.c
-rename to drivers/staging/wireless/orinoco/main.c
-diff --git a/drivers/net/wireless/intersil/orinoco/main.h b/drivers/staging/wireless/orinoco/main.h
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/main.h
-rename to drivers/staging/wireless/orinoco/main.h
-diff --git a/drivers/net/wireless/intersil/orinoco/mic.c b/drivers/staging/wireless/orinoco/mic.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/mic.c
-rename to drivers/staging/wireless/orinoco/mic.c
-diff --git a/drivers/net/wireless/intersil/orinoco/mic.h b/drivers/staging/wireless/orinoco/mic.h
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/mic.h
-rename to drivers/staging/wireless/orinoco/mic.h
-diff --git a/drivers/net/wireless/intersil/orinoco/orinoco.h b/drivers/staging/wireless/orinoco/orinoco.h
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/orinoco.h
-rename to drivers/staging/wireless/orinoco/orinoco.h
-diff --git a/drivers/net/wireless/intersil/orinoco/orinoco_cs.c b/drivers/staging/wireless/orinoco/orinoco_cs.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/orinoco_cs.c
-rename to drivers/staging/wireless/orinoco/orinoco_cs.c
-diff --git a/drivers/net/wireless/intersil/orinoco/orinoco_nortel.c b/drivers/staging/wireless/orinoco/orinoco_nortel.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/orinoco_nortel.c
-rename to drivers/staging/wireless/orinoco/orinoco_nortel.c
-diff --git a/drivers/net/wireless/intersil/orinoco/orinoco_pci.c b/drivers/staging/wireless/orinoco/orinoco_pci.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/orinoco_pci.c
-rename to drivers/staging/wireless/orinoco/orinoco_pci.c
-diff --git a/drivers/net/wireless/intersil/orinoco/orinoco_pci.h b/drivers/staging/wireless/orinoco/orinoco_pci.h
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/orinoco_pci.h
-rename to drivers/staging/wireless/orinoco/orinoco_pci.h
-diff --git a/drivers/net/wireless/intersil/orinoco/orinoco_plx.c b/drivers/staging/wireless/orinoco/orinoco_plx.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/orinoco_plx.c
-rename to drivers/staging/wireless/orinoco/orinoco_plx.c
-diff --git a/drivers/net/wireless/intersil/orinoco/orinoco_tmd.c b/drivers/staging/wireless/orinoco/orinoco_tmd.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/orinoco_tmd.c
-rename to drivers/staging/wireless/orinoco/orinoco_tmd.c
-diff --git a/drivers/net/wireless/intersil/orinoco/orinoco_usb.c b/drivers/staging/wireless/orinoco/orinoco_usb.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/orinoco_usb.c
-rename to drivers/staging/wireless/orinoco/orinoco_usb.c
-diff --git a/drivers/net/wireless/intersil/orinoco/scan.c b/drivers/staging/wireless/orinoco/scan.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/scan.c
-rename to drivers/staging/wireless/orinoco/scan.c
-diff --git a/drivers/net/wireless/intersil/orinoco/scan.h b/drivers/staging/wireless/orinoco/scan.h
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/scan.h
-rename to drivers/staging/wireless/orinoco/scan.h
-diff --git a/drivers/net/wireless/intersil/orinoco/spectrum_cs.c b/drivers/staging/wireless/orinoco/spectrum_cs.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/spectrum_cs.c
-rename to drivers/staging/wireless/orinoco/spectrum_cs.c
-diff --git a/drivers/net/wireless/intersil/orinoco/wext.c b/drivers/staging/wireless/orinoco/wext.c
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/wext.c
-rename to drivers/staging/wireless/orinoco/wext.c
-diff --git a/drivers/net/wireless/intersil/orinoco/wext.h b/drivers/staging/wireless/orinoco/wext.h
-similarity index 100%
-rename from drivers/net/wireless/intersil/orinoco/wext.h
-rename to drivers/staging/wireless/orinoco/wext.h
-diff --git a/drivers/staging/wireless/zydas/Kconfig b/drivers/staging/wireless/zydas/Kconfig
-new file mode 100644
-index 0000000000000..9ff2ce3e1695a
---- /dev/null
-+++ b/drivers/staging/wireless/zydas/Kconfig
-@@ -0,0 +1,20 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+
-+config USB_ZD1201
-+	tristate "USB ZD1201 based Wireless device support"
-+	depends on CFG80211 && USB
-+	select WIRELESS_EXT
-+	select WEXT_PRIV
-+	select FW_LOADER
-+	help
-+	  Say Y if you want to use wireless LAN adapters based on the ZyDAS
-+	  ZD1201 chip.
-+
-+	  This driver makes the adapter appear as a normal Ethernet interface,
-+	  typically on wlan0.
-+
-+	  The zd1201 device requires external firmware to be loaded.
-+	  This can be found at http://linux-lc100020.sourceforge.net/
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called zd1201.
-diff --git a/drivers/staging/wireless/zydas/Makefile b/drivers/staging/wireless/zydas/Makefile
-new file mode 100644
-index 0000000000000..5239cc17bd2ad
---- /dev/null
-+++ b/drivers/staging/wireless/zydas/Makefile
-@@ -0,0 +1,3 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+
-+obj-$(CONFIG_USB_ZD1201)	+= zd1201.o
-diff --git a/drivers/net/wireless/zydas/zd1201.c b/drivers/staging/wireless/zydas/zd1201.c
-similarity index 100%
-rename from drivers/net/wireless/zydas/zd1201.c
-rename to drivers/staging/wireless/zydas/zd1201.c
-diff --git a/drivers/net/wireless/zydas/zd1201.h b/drivers/staging/wireless/zydas/zd1201.h
-similarity index 100%
-rename from drivers/net/wireless/zydas/zd1201.h
-rename to drivers/staging/wireless/zydas/zd1201.h
--- 
-2.39.2
-
+> ---
+>
+>
+> Based on top of 5 patch set "perf intel-pt: Use of get_unaligned_le16() e=
+tc"
+>
+>
+>  tools/include/asm-generic/unaligned.h | 129 ++++++++++++++++++++++++--
+>  tools/perf/check-headers.sh           |   1 +
+>  2 files changed, 122 insertions(+), 8 deletions(-)
+>
+> diff --git a/tools/include/asm-generic/unaligned.h b/tools/include/asm-ge=
+neric/unaligned.h
+> index 9140bb4e16c6..156743d399ae 100644
+> --- a/tools/include/asm-generic/unaligned.h
+> +++ b/tools/include/asm-generic/unaligned.h
+> @@ -1,11 +1,11 @@
+> -/* SPDX-License-Identifier: GPL-2.0-or-later */
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __ASM_GENERIC_UNALIGNED_H
+> +#define __ASM_GENERIC_UNALIGNED_H
+> +
+>  /*
+> - * Copied from the kernel sources to tools/perf/:
+> + * This is the most generic implementation of unaligned accesses
+> + * and should work almost anywhere.
+>   */
+> -
+> -#ifndef __TOOLS_LINUX_ASM_GENERIC_UNALIGNED_H
+> -#define __TOOLS_LINUX_ASM_GENERIC_UNALIGNED_H
+> -
+>  #pragma GCC diagnostic push
+>  #pragma GCC diagnostic ignored "-Wpacked"
+>
+> @@ -37,7 +37,120 @@ static inline u64 get_unaligned_le64(const void *p)
+>         return le64_to_cpu(__get_unaligned_t(__le64, p));
+>  }
+>
+> -#pragma GCC diagnostic pop
+> +static inline void put_unaligned_le16(u16 val, void *p)
+> +{
+> +       __put_unaligned_t(__le16, cpu_to_le16(val), p);
+> +}
+> +
+> +static inline void put_unaligned_le32(u32 val, void *p)
+> +{
+> +       __put_unaligned_t(__le32, cpu_to_le32(val), p);
+> +}
+> +
+> +static inline void put_unaligned_le64(u64 val, void *p)
+> +{
+> +       __put_unaligned_t(__le64, cpu_to_le64(val), p);
+> +}
+> +
+> +static inline u16 get_unaligned_be16(const void *p)
+> +{
+> +       return be16_to_cpu(__get_unaligned_t(__be16, p));
+> +}
+> +
+> +static inline u32 get_unaligned_be32(const void *p)
+> +{
+> +       return be32_to_cpu(__get_unaligned_t(__be32, p));
+> +}
+> +
+> +static inline u64 get_unaligned_be64(const void *p)
+> +{
+> +       return be64_to_cpu(__get_unaligned_t(__be64, p));
+> +}
+> +
+> +static inline void put_unaligned_be16(u16 val, void *p)
+> +{
+> +       __put_unaligned_t(__be16, cpu_to_be16(val), p);
+> +}
+> +
+> +static inline void put_unaligned_be32(u32 val, void *p)
+> +{
+> +       __put_unaligned_t(__be32, cpu_to_be32(val), p);
+> +}
+> +
+> +static inline void put_unaligned_be64(u64 val, void *p)
+> +{
+> +       __put_unaligned_t(__be64, cpu_to_be64(val), p);
+> +}
+> +
+> +static inline u32 __get_unaligned_be24(const u8 *p)
+> +{
+> +       return p[0] << 16 | p[1] << 8 | p[2];
+> +}
+>
+> -#endif /* __TOOLS_LINUX_ASM_GENERIC_UNALIGNED_H */
+> +static inline u32 get_unaligned_be24(const void *p)
+> +{
+> +       return __get_unaligned_be24(p);
+> +}
+> +
+> +static inline u32 __get_unaligned_le24(const u8 *p)
+> +{
+> +       return p[0] | p[1] << 8 | p[2] << 16;
+> +}
+> +
+> +static inline u32 get_unaligned_le24(const void *p)
+> +{
+> +       return __get_unaligned_le24(p);
+> +}
+> +
+> +static inline void __put_unaligned_be24(const u32 val, u8 *p)
+> +{
+> +       *p++ =3D val >> 16;
+> +       *p++ =3D val >> 8;
+> +       *p++ =3D val;
+> +}
+> +
+> +static inline void put_unaligned_be24(const u32 val, void *p)
+> +{
+> +       __put_unaligned_be24(val, p);
+> +}
+> +
+> +static inline void __put_unaligned_le24(const u32 val, u8 *p)
+> +{
+> +       *p++ =3D val;
+> +       *p++ =3D val >> 8;
+> +       *p++ =3D val >> 16;
+> +}
+> +
+> +static inline void put_unaligned_le24(const u32 val, void *p)
+> +{
+> +       __put_unaligned_le24(val, p);
+> +}
+> +
+> +static inline void __put_unaligned_be48(const u64 val, u8 *p)
+> +{
+> +       *p++ =3D val >> 40;
+> +       *p++ =3D val >> 32;
+> +       *p++ =3D val >> 24;
+> +       *p++ =3D val >> 16;
+> +       *p++ =3D val >> 8;
+> +       *p++ =3D val;
+> +}
+> +
+> +static inline void put_unaligned_be48(const u64 val, void *p)
+> +{
+> +       __put_unaligned_be48(val, p);
+> +}
+> +
+> +static inline u64 __get_unaligned_be48(const u8 *p)
+> +{
+> +       return (u64)p[0] << 40 | (u64)p[1] << 32 | (u64)p[2] << 24 |
+> +               p[3] << 16 | p[4] << 8 | p[5];
+> +}
+> +
+> +static inline u64 get_unaligned_be48(const void *p)
+> +{
+> +       return __get_unaligned_be48(p);
+> +}
+> +#pragma GCC diagnostic pop
+>
+> +#endif /* __ASM_GENERIC_UNALIGNED_H */
+> diff --git a/tools/perf/check-headers.sh b/tools/perf/check-headers.sh
+> index 4314c9197850..d09c3d46f08f 100755
+> --- a/tools/perf/check-headers.sh
+> +++ b/tools/perf/check-headers.sh
+> @@ -161,6 +161,7 @@ check arch/x86/lib/memcpy_64.S        '-I "^EXPORT_SY=
+MBOL" -I "^#include <asm/ex
+>  check arch/x86/lib/memset_64.S        '-I "^EXPORT_SYMBOL" -I "^#include=
+ <asm/export.h>" -I"^SYM_FUNC_START\(_LOCAL\)*(memset_\(erms\|orig\))"'
+>  check arch/x86/include/asm/amd-ibs.h  '-I "^#include [<\"]\(asm/\)*msr-i=
+ndex.h"'
+>  check arch/arm64/include/asm/cputype.h '-I "^#include [<\"]\(asm/\)*sysr=
+eg.h"'
+> +check include/asm-generic/unaligned.h '-I "^#include <linux/unaligned/pa=
+cked_struct.h>" -I "^#include <asm/byteorder.h>" -I "^#pragma GCC diagnosti=
+c"'
+>  check include/uapi/asm-generic/mman.h '-I "^#include <\(uapi/\)*asm-gene=
+ric/mman-common\(-tools\)*.h>"'
+>  check include/uapi/linux/mman.h       '-I "^#include <\(uapi/\)*asm/mman=
+.h>"'
+>  check include/linux/build_bug.h       '-I "^#\(ifndef\|endif\)\( \/\/\)*=
+ static_assert$"'
+> --
+> 2.34.1
+>
