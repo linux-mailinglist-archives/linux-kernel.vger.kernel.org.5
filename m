@@ -2,64 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 509527C00B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF9DD7C00B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 17:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232728AbjJJPtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 11:49:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58738 "EHLO
+        id S233041AbjJJPuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 11:50:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232441AbjJJPtY (ORCPT
+        with ESMTP id S232502AbjJJPuQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 11:49:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0198B0;
-        Tue, 10 Oct 2023 08:49:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=hcO6nbqUQCaTitXMmYutkN0cL6Et6mB9aV0MG0pJiLk=; b=mg8IuD3mWYwtoSxIe0694DSttk
-        h9BJQEuppRy+URK+6LfaihMRw0WJDU2QDbIIqzprRjAof3NRISqdKdrBzRNjp0u11f0yILgiwFtGk
-        n7o9Vsek58Irbon9f4KcFpCE3iBlQgraRch16NRv656pEi1qC9nm9eHlBIbLPzt5VJKyGhCPeUTnd
-        mkD+Xq4M/RyQ4LY867kuGUBFmamYMCBeko+dynwJaxg3KWkHq14CKEcGHzMiJ6pPAvOTHi3eSoMJk
-        SN4rvt1A0ymaYo7gDY1GDjVAueWWPv1lnjwOj86MXjC3Pz2q1vv2H/DiKUedfKc4fkK+Bix3XbOA4
-        LrPWE7ng==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qqEyY-005RGN-Uu; Tue, 10 Oct 2023 15:48:51 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9C5B03006DD; Tue, 10 Oct 2023 17:48:50 +0200 (CEST)
-Date:   Tue, 10 Oct 2023 17:48:50 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Matthew Maurer <mmaurer@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org
-Subject: Re: [PATCH] x86: Enable IBT in Rust if enabled in C
-Message-ID: <20231010154850.GR377@noisy.programming.kicks-ass.net>
-References: <20231009224347.2076221-1-mmaurer@google.com>
- <20231010081220.GD377@noisy.programming.kicks-ass.net>
- <CAKwvOdk1c3N05R9fya6HsZwPZzrkDhC3LrK=nRVOoUwyXsiXQg@mail.gmail.com>
+        Tue, 10 Oct 2023 11:50:16 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75582AC;
+        Tue, 10 Oct 2023 08:50:13 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39AEKSm1009846;
+        Tue, 10 Oct 2023 15:49:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=uDzM6PKK+KnpqEZrVwvTN0RCuoyw6wDOip0JbtQYE0Q=;
+ b=mOCVW13Ec97dZGrmOL1P1UZwVUT1LU/C82uwT88NSUR1K0vd+tmwEhuSNatPOCtMWwHN
+ yP96aXMkt9ckyOBAf2JLjo445mqZRw6kMvqUDS0jAk8RDmJNDcAPVCUo+DMGTvKt1soJ
+ YVmJneqeFbyhtPnpcWkGC+dg4XE4Rf6kt0FhqN9JgUdCmJohasp95Nb9UuHI8YqB9VDP
+ OHUquDycOUd9LyV3LPodC49X4M91BPOCbFDjbTgd9NerBDwnIebvg6dz5ooc3hJfKlxE
+ Hkg5FaKMNuLafdyTZxwbVWNbCT4mMorO6i5PdN6ZwyDjyKWnrfORi4vJI+tjX11yLRpq Nw== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tn3s18txq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Oct 2023 15:49:59 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39AFnn2V025400
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Oct 2023 15:49:52 GMT
+Received: from hu-mnaresh-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Tue, 10 Oct 2023 08:49:44 -0700
+From:   Maramaina Naresh <quic_mnaresh@quicinc.com>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+CC:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_cang@quicinc.com>, <quic_nguyenb@quicinc.com>
+Subject: [PATCH V1 0/4] Add per-cpu PM QoS support for QCOM UFS
+Date:   Tue, 10 Oct 2023 21:19:03 +0530
+Message-ID: <1696952947-18062-1-git-send-email-quic_mnaresh@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKwvOdk1c3N05R9fya6HsZwPZzrkDhC3LrK=nRVOoUwyXsiXQg@mail.gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: ez6zKbQ3c6LUNUBZfgEZI2BaXGocufw7
+X-Proofpoint-GUID: ez6zKbQ3c6LUNUBZfgEZI2BaXGocufw7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-10_11,2023-10-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 bulkscore=0 spamscore=0 impostorscore=0
+ lowpriorityscore=0 clxscore=1011 mlxlogscore=831 mlxscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310100117
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,27 +85,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 08:38:58AM -0700, Nick Desaulniers wrote:
-> On Tue, Oct 10, 2023 at 1:13 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Mon, Oct 09, 2023 at 10:42:54PM +0000, Matthew Maurer wrote:
-> > > These flags are not made conditional on compiler support because at the
-> > > moment exactly one version of rustc supported, and that one supports
-> > > these flags.
-> > >
-> > > Building without these additional flags will manifest as objtool
-> > > printing a large number of errors about missing ENDBR and if CFI is
-> > > enabled (not currently possible) will result in incorrectly structured
-> > > function prefixes.
-> >
-> > Well, I would also imagine running it on actual IBT enabled hardware
-> > will get you a non-booting kernel.
-> 
-> Do you know what machine type in QEMU first supports IBT?
+Add per-cpu PM QoS support for ufs. This improves random io performance
+by 20% for ufs.
 
-I'm not sure QEMU has IBT support at all atm -- the whole CET
-virtualization stuff is a bit of a mess.
+tiotest benchmark tool io performance results on sm8550 platform:
 
-But hardware wise it's Tigerlake (11) and everything after that - so
-Alderlake (12) and Saphire Rapids (4th gen scalable -- or somesuch
-nonsense).
+1. Without PM QoS support
+	Type (Speed in)    | Average of 6 iterations
+	Random Write(IPOS) | 32201
+	Random Read(IPOS)  | 32201
+
+2. With PM QoS support
+	Type (Speed in)    | Average of 6 iterations
+	Random Write(IPOS) | 40833.5
+	Random Read(IPOS)  | 40833.5
+(Improvement % with PM QoS = ~20%).
+
+Maramaina Naresh (4):
+  dt-bindings: ufs: qcom: Add qos property
+  ufs: ufs-qcom: Add per-cpu PM QoS support for ufs
+  ufs: ufs-qcom: Add per-cpu PM QoS vote support for ufs
+  arm64: dts: qcom: sm8550: Add per-cpu PM QoS support for ufs
+
+ .../devicetree/bindings/ufs/qcom,ufs.yaml          |  16 +
+ arch/arm64/boot/dts/qcom/sm8550.dtsi               |   9 +
+ drivers/ufs/host/ufs-qcom.c                        | 340 ++++++++++++++++++++-
+ drivers/ufs/host/ufs-qcom.h                        |  37 +++
+ 4 files changed, 401 insertions(+), 1 deletion(-)
+
+-- 
+2.7.4
+
