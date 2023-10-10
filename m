@@ -2,68 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1A67BF480
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 09:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66DA47BF48F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 09:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442569AbjJJHjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 03:39:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46558 "EHLO
+        id S1442547AbjJJHkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 03:40:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442547AbjJJHjO (ORCPT
+        with ESMTP id S1442446AbjJJHkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 03:39:14 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8AC1AF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 00:39:12 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b95d5ee18dso64705521fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 00:39:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1696923551; x=1697528351; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g9HLjKQphoF1al/8pr129PFMpYKqfXvTRFbRdIYZSXY=;
-        b=WBfuEJXCLueaZuWoYq7WZtqSz5XtQzFmIlkkIoGm5+pPyIJNqCfBpTaOpImhbFCYBY
-         Q+ahHeiGEJc1LmOcEkKXedqqU9hGv39B6Y4WIrc+Xh63PpQ+CW16eqxuMm5XMEyU4DTh
-         YggdI8jY/TP8cLlcc0P/MJ99ZXNK/2putFhzLmgtPM55Hnnwtq0JJ84VDWisdLQEe/0B
-         aMtm8BUbJWa6VGzwJRY3uD5P+hTubOHnGfLH+0oZa/Q1NS2lb74fRW1OJ7CFt5KPjjTp
-         p4HPLGo6v/NPuyczsJtv7JkAigCug9A6Fk+MJe7Q1UTnyMwEORp/yjfGVg+FhIWlKfMa
-         cuvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696923551; x=1697528351;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g9HLjKQphoF1al/8pr129PFMpYKqfXvTRFbRdIYZSXY=;
-        b=tYvLFk1cZ75cgwL5hgtHi8eaMaJ43ALRPfP/GEaf2UsCkkNF/TMl/xXHBcU4hZgAEO
-         SLW290Ah6t2c9kSb7Exz8B8eo/z+cFjpcxn5vVSY/OA+DF8X/w6myaHO8ZmMbZmeckdT
-         d/T5oSJnRrzmC9ZK05jDYq/LsQrHMHR8qSnOjJGdxR8FCzmON0u9Gr4xj8d9PJD7LMfD
-         9lX/6ufpSrDxiAn8wKatkN04HQBqO/SWQMHK1wyEWy2Bv2fovkBIKDef8DRM/YFWraQA
-         ho/O5CtAG/Bj1qcKylbjEPJUeSz+tZKgBfvkqtuagsnlGb8lyu2ykTG+ew2mvFDoqzke
-         4x1A==
-X-Gm-Message-State: AOJu0YwQNQcFjJgweuZ7WlKQXszxES5GyDlqDpmk+F6k3AowYgdn7a5x
-        wFopA+z2gn+4x6SJG5d3tlFfpP26BYLcuIXL2eDQEbxMp3xh5D5hhTE=
-X-Google-Smtp-Source: AGHT+IHrmhpZIdd5zcic3MUiuhRIn34+0lpjncVRTXZnMi9qzr53DzLFQwtj/OiltQ9OMSRLop5NwgADPdrIQjIYAoQ=
-X-Received: by 2002:a2e:9bd2:0:b0:2bf:e855:8cbf with SMTP id
- w18-20020a2e9bd2000000b002bfe8558cbfmr13923869ljj.35.1696923550959; Tue, 10
- Oct 2023 00:39:10 -0700 (PDT)
+        Tue, 10 Oct 2023 03:40:39 -0400
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 763B192;
+        Tue, 10 Oct 2023 00:40:36 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id DD85424000E;
+        Tue, 10 Oct 2023 07:40:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1696923634;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=z5mbSaDFWT4F1pg9/UQXeQubE+UDM5n2XaAROADfaZ8=;
+        b=kjM9mNev2AShbfug3CIC1p9m8VPnj9VN7bck6ZwquYIEqgJR4gpvuw2KTym4bvC8IyW+OK
+        sDxtdebTx/AyoV75d9kTHd7RSZhDV7SBhI6M4U+0Qx3l36ZpW1PSg22etM0QTtyoWqRNom
+        sDrS+jVE/LU8phy9/GEr/0Q/Q1XVyfko1wgpc1AIJ1USRwz1Y5qmNMdOhIL12MC2dFcalb
+        +11WLE8TRR/kgj3agsoSyCrRTMRWY4X2/l74Rc6g8nfo91SrYBhWsrYn580bKwXfpEHI3i
+        1U4ucR8u+igLPRt+X1CruJfne4fZ8pySUkM133/aiQ75wr1PDOJKLmZ0ZvFTug==
+Date:   Tue, 10 Oct 2023 09:40:28 +0200
+From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Michael Walle <michael@walle.cc>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH net-next v5 05/16] net: Make dev_set_hwtstamp_phylib
+ accessible
+Message-ID: <20231010094028.74185a50@kmaincent-XPS-13-7390>
+In-Reply-To: <57791a7d-04ce-4d02-815d-7f540ea15b89@gmail.com>
+References: <20231009155138.86458-1-kory.maincent@bootlin.com>
+        <20231009155138.86458-6-kory.maincent@bootlin.com>
+        <57791a7d-04ce-4d02-815d-7f540ea15b89@gmail.com>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20231009165741.746184-1-max.kellermann@ionos.com>
- <20231009165741.746184-6-max.kellermann@ionos.com> <264fa39d-aed6-4a54-a085-107997078f8d@roeck-us.net>
- <CAKPOu+8k2x1CucWSzoouts0AfMJk+srJXWWf3iWVOeY+fWkOpQ@mail.gmail.com> <f511170fe61d7e7214a3a062661cf4103980dad6.camel@perches.com>
-In-Reply-To: <f511170fe61d7e7214a3a062661cf4103980dad6.camel@perches.com>
-From:   Max Kellermann <max.kellermann@ionos.com>
-Date:   Tue, 10 Oct 2023 09:38:59 +0200
-Message-ID: <CAKPOu+_xPGdKuSdwh9NdKT+RGw1=JbpkBB3+GK0qnC8KbTyY7Q@mail.gmail.com>
-Subject: Re: [PATCH 6/7] fs/sysfs/group: make attribute_group pointers const
-To:     Joe Perches <joe@perches.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: kory.maincent@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,11 +82,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 8:48=E2=80=AFAM Joe Perches <joe@perches.com> wrote=
-:
-> My opinion is that const use in the kernel should almost
-> always have whitespace before and after it except when
-> preceded by a open parenthesis or a newline.
+On Mon, 9 Oct 2023 14:09:29 -0700
+Florian Fainelli <f.fainelli@gmail.com> wrote:
 
-So it shall be "void * const foo" (16k occurrences in the kernel)
-instead of "void *const foo" (3k occurrences)?
+> > -static int dev_set_hwtstamp_phylib(struct net_device *dev,
+> > -				   struct kernel_hwtstamp_config *cfg,
+> > -				   struct netlink_ext_ack *extack)
+> > +int dev_set_hwtstamp_phylib(struct net_device *dev,
+> > +			    struct kernel_hwtstamp_config *cfg,
+> > +			    struct netlink_ext_ack *extack)
+> >   {
+> >   	const struct net_device_ops *ops = dev->netdev_ops;
+> >   	bool phy_ts = phy_has_hwtstamp(dev->phydev);  
+> 
+> Missing EXPORT_SYMBOL_GPL() here?
+
+True. Will be fixed in next version.
