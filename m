@@ -2,168 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2184E7BEF94
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 02:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3857BEF95
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 02:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379203AbjJJAOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 20:14:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53918 "EHLO
+        id S1379211AbjJJAPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 20:15:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379198AbjJJAOp (ORCPT
+        with ESMTP id S1344700AbjJJAPq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 20:14:45 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56342BA;
-        Mon,  9 Oct 2023 17:14:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1696896881;
-        bh=jFlQ3s3LQk6tdvYwwzOFk/cBbTkwmxGKuqdREZ+lt9s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZNu5PanXqKbNF2kLvMJ3H7XfyBXsTCBXh3Upz6mUokVU0uwDDlDpEQsPHs1c74eSe
-         bg1/e1OJZLP8BX7+Xz82ROGnn8cHUUfeyqeX8KJNC3mdi4OdaJ6sI/W4hwKKIJ/b4W
-         W5cghZEpz3E//HkRIydBKeDnriToK87/4nNKKjsX0APOLU+/Ust/WifWlQ7CENNNhf
-         iqJtfd3Tg0tpUMdSQV4/gutt5QYfoFd2+8N8vHBs3r1pkMo7DqPuB+tEdsqRiHsQjp
-         C7holmOFpzz+BGvQBx+HSufRYPgOdvrRmEOcRGihbHtKwV4RBzsNHtacROmGdt2A/k
-         I+FrBfaUGS12Q==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Mon, 9 Oct 2023 20:15:46 -0400
+Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 254C6B0
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 17:15:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
+        t=1696896940; bh=asTxnfcz7WqzjvZNDDi3T3zgLacfGziMSUDFrjvbCuM=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=MylMqM4nRy+DrXRa+em5n6HbdgNH/OW7HkjV/ZmWGEqdqME+A8CizR3FvLsLM+Yyh
+         UVLn65wLUYjKODmn7hWvgZ1Z9001IGRJkVy2Qui3TcWPDWpz7kljmYSj2B0Wc3Y5bd
+         TaSXlRX6D6LYL2vsqEt6UTcnQo3QdlT4XF1ejQLc=
+Received: from [IPV6:240e:388:8d29:7200:a9cd:3b9b:8239:95ad] (unknown [IPv6:240e:388:8d29:7200:a9cd:3b9b:8239:95ad])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S4GcJ56Zfz4xVM;
-        Tue, 10 Oct 2023 11:14:40 +1100 (AEDT)
-Date:   Tue, 10 Oct 2023 11:14:36 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christian Brauner <brauner@kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>
-Cc:     Alexander Larsson <alexl@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Wedson Almeida Filho <walmeida@microsoft.com>
-Subject: Re: linux-next: manual merge of the vfs-brauner tree with the
- overlayfs tree
-Message-ID: <20231010111436.46f64716@canb.auug.org.au>
-In-Reply-To: <20231010105021.57fa4379@canb.auug.org.au>
-References: <20231010105021.57fa4379@canb.auug.org.au>
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 39A6E600A6;
+        Tue, 10 Oct 2023 08:15:40 +0800 (CST)
+Message-ID: <42b0e6f6-c2b5-49c6-b1f2-0200bef913da@xen0n.name>
+Date:   Tue, 10 Oct 2023 08:15:39 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/fpKi.XBnSUNuJZPtVDLDCb2";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] loongarch/mm: disable WUC for pgprot_writecombine as
+ same as ioremap_wc
+To:     Sui Jingfeng <suijingfeng@loongson.cn>,
+        Icenowy Zheng <uwu@icenowy.me>,
+        Huacai Chen <chenhuacai@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Weihao Li <liweihao@loongson.cn>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>,
+        Jun Yi <yijun@loongson.cn>, Baoquan He <bhe@redhat.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Hongchen Zhang <zhanghongchen@loongson.cn>,
+        Binbin Zhou <zhoubinbin@loongson.cn>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Zhihong Dong <donmor3000@hotmail.com>,
+        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20231009042841.635366-1-uwu@icenowy.me>
+ <4f1af31b-15be-cb47-6b34-45de1b5696be@loongson.cn>
+Content-Language: en-US
+From:   WANG Xuerui <kernel@xen0n.name>
+In-Reply-To: <4f1af31b-15be-cb47-6b34-45de1b5696be@loongson.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/fpKi.XBnSUNuJZPtVDLDCb2
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
-
-On Tue, 10 Oct 2023 10:50:21 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
+On 10/9/23 22:32, Sui Jingfeng wrote:
+> Hi,
 >
-> Today's linux-next merge of the vfs-brauner tree got a conflict in:
->=20
->   fs/overlayfs/super.c
->=20
-> between commit:
->=20
->   1e97d6e67406 ("ovl: Move xattr support to new xattrs.c file")
->=20
-> from the overlayfs tree and commit:
->=20
->   3f644c1cd7b5 ("overlayfs: move xattr tables to .rodata")
->=20
-> from the vfs-brauner tree.
->=20
-> I fixed it up (I used the former version of this file and applied the
-> following merge fix patch) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+>
+> On 2023/10/9 12:28, Icenowy Zheng wrote:
+>> Currently the code disables WUC only disables it for ioremap_wc(), which
+>> is only used when mapping writecombine pages like ioremap() (mapped to
+>> the kernel space). For VRAM mapped in TTM/GEM, it's mapped with a
+>> crafted pgprot with pgprot_writecombine() function, which isn't
+>> corrently disabled now.
+>>
+>> Disable WUC for pgprot_writecombine() (fallback to SUC) too.
+>>
+>> This improves AMDGPU driver stability on Loongson 3A5000 machines.
+>>
+>> Signed-off-by: Icenowy Zheng <uwu@icenowy.me>
+>> ---
+>> Changes since v1:
+>> - Removed _WC macros
+>> - Mention ioremap_wc in commit message
+>>
+>>   arch/loongarch/include/asm/io.h           |  5 ++---
+>>   arch/loongarch/include/asm/pgtable-bits.h |  4 +++-
+>>   arch/loongarch/kernel/setup.c             | 10 +++++-----
+>>   3 files changed, 10 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/arch/loongarch/include/asm/io.h 
+>> b/arch/loongarch/include/asm/io.h
+>> index 0dcb36b32cb25..290aad87a8847 100644
+>> --- a/arch/loongarch/include/asm/io.h
+>> +++ b/arch/loongarch/include/asm/io.h
+>> @@ -52,10 +52,9 @@ static inline void __iomem 
+>> *ioremap_prot(phys_addr_t offset, unsigned long size,
+>>    * @offset:    bus address of the memory
+>>    * @size:      size of the resource to map
+>>    */
+>> -extern pgprot_t pgprot_wc;
+>> -
+>>   #define ioremap_wc(offset, size)    \
+>> -    ioremap_prot((offset), (size), pgprot_val(pgprot_wc))
+>> +    ioremap_prot((offset), (size), pgprot_val( \
+>> +        wc_enabled ? PAGE_KERNEL_WUC : PAGE_KERNEL_SUC))
+>>     #define ioremap_cache(offset, size)    \
+>>       ioremap_prot((offset), (size), pgprot_val(PAGE_KERNEL))
+>> diff --git a/arch/loongarch/include/asm/pgtable-bits.h 
+>> b/arch/loongarch/include/asm/pgtable-bits.h
+>> index 35348d4c4209a..a3d827701736d 100644
+>> --- a/arch/loongarch/include/asm/pgtable-bits.h
+>> +++ b/arch/loongarch/include/asm/pgtable-bits.h
+>> @@ -92,6 +92,8 @@
+>>     #ifndef __ASSEMBLY__
+>>   +extern bool wc_enabled;
+>> +
+>>   #define _PAGE_IOREMAP        pgprot_val(PAGE_KERNEL_SUC)
+>>     #define pgprot_noncached pgprot_noncached
+>> @@ -111,7 +113,7 @@ static inline pgprot_t 
+>> pgprot_writecombine(pgprot_t _prot)
+>>   {
+>>       unsigned long prot = pgprot_val(_prot);
+>>   -    prot = (prot & ~_CACHE_MASK) | _CACHE_WUC;
+>> +    prot = (prot & ~_CACHE_MASK) | (wc_enabled ? _CACHE_WUC : 
+>> _CACHE_SUC);
+>>         return __pgprot(prot);
+>>   }
+>> diff --git a/arch/loongarch/kernel/setup.c 
+>> b/arch/loongarch/kernel/setup.c
+>> index 7783f0a3d742c..465c1dbb6f4b4 100644
+>> --- a/arch/loongarch/kernel/setup.c
+>> +++ b/arch/loongarch/kernel/setup.c
+>> @@ -161,19 +161,19 @@ static void __init smbios_parse(void)
+>>   }
+>>     #ifdef CONFIG_ARCH_WRITECOMBINE
+>> -pgprot_t pgprot_wc = PAGE_KERNEL_WUC;
+>> +bool wc_enabled = true;
+>>   #else
+>> -pgprot_t pgprot_wc = PAGE_KERNEL_SUC;
+>> +bool wc_enabled;
+>>   #endif
+>>   -EXPORT_SYMBOL(pgprot_wc);
+>> +EXPORT_SYMBOL(wc_enabled);
+>>     static int __init setup_writecombine(char *p)
+>>   {
+>>       if (!strcmp(p, "on"))
+>> -        pgprot_wc = PAGE_KERNEL_WUC;
+>> +        wc_enabled = true;
+>>       else if (!strcmp(p, "off"))
+>> -        pgprot_wc = PAGE_KERNEL_SUC;
+>> +        wc_enabled = false;
+>>       else
+>>           pr_warn("Unknown writecombine setting \"%s\".\n", p);
+>
+>
+> Good catch!
+>
+> But this will make the write combine(WC) mappings completely unusable 
+> on LoongArch.
+> This is nearly equivalent to say that LoongArch don't support write 
+> combine at all.
+> But the write combine(WC) mappings works fine for software based drm 
+> drivers,
+> such as drm/loongson and drm/ast etc. Even include drm/radeon and 
+> drm/amdgpu with
+> pure software rendering setup (by putting Option "Accel" "off" into 
+> 10-amdgpu.conf
+> or 10-radeon.conf) After merge this patch, the performance drop 
+> dramatically for
+> 2D software rendering based display controller drivers.
+>
+> Well, this patch itself is a good catch, as it is a fix for the commit 
+> <16c52e503043>
+> ("LoongArch: Make WriteCombine configurable for ioremap()"). But I'm 
+> afraid that
+> both of this commit and the <16c52e503043> commit are not a *real* fix 
+> write combine
+> related issue on LoongArch. It just negative sidestep of the real 
+> problem.
+Sure, but given the public information I have access to, I don't think 
+it's possible to "really" fix the root cause with software only. Do you 
+have any insight on this, given from your perspective and language, such 
+a solution seems to exist?
 
-Actually needs this:
+-- 
+WANG "xen0n" Xuerui
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Tue, 10 Oct 2023 10:47:16 +1100
-Subject: [PATCH] fix up for "ovl: Move xattr support to new xattrs.c file"
+Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
 
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- fs/overlayfs/overlayfs.h | 2 +-
- fs/overlayfs/xattrs.c    | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/fs/overlayfs/overlayfs.h b/fs/overlayfs/overlayfs.h
-index 620d89ba4b6e..ca88b2636a57 100644
---- a/fs/overlayfs/overlayfs.h
-+++ b/fs/overlayfs/overlayfs.h
-@@ -864,7 +864,7 @@ static inline bool ovl_force_readonly(struct ovl_fs *of=
-s)
-=20
- /* xattr.c */
-=20
--const struct xattr_handler **ovl_xattr_handlers(struct ovl_fs *ofs);
-+const struct xattr_handler * const *ovl_xattr_handlers(struct ovl_fs *ofs);
- int ovl_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
- 		struct iattr *attr);
- int ovl_getattr(struct mnt_idmap *idmap, const struct path *path,
-diff --git a/fs/overlayfs/xattrs.c b/fs/overlayfs/xattrs.c
-index 1b16b0abdf91..383978e4663c 100644
---- a/fs/overlayfs/xattrs.c
-+++ b/fs/overlayfs/xattrs.c
-@@ -251,19 +251,19 @@ static const struct xattr_handler ovl_other_xattr_han=
-dler =3D {
- 	.set =3D ovl_other_xattr_set,
- };
-=20
--static const struct xattr_handler *ovl_trusted_xattr_handlers[] =3D {
-+static const struct xattr_handler * const ovl_trusted_xattr_handlers[] =3D=
- {
- 	&ovl_own_trusted_xattr_handler,
- 	&ovl_other_xattr_handler,
- 	NULL
- };
-=20
--static const struct xattr_handler *ovl_user_xattr_handlers[] =3D {
-+static const struct xattr_handler * const ovl_user_xattr_handlers[] =3D {
- 	&ovl_own_user_xattr_handler,
- 	&ovl_other_xattr_handler,
- 	NULL
- };
-=20
--const struct xattr_handler **ovl_xattr_handlers(struct ovl_fs *ofs)
-+const struct xattr_handler * const *ovl_xattr_handlers(struct ovl_fs *ofs)
- {
- 	return ofs->config.userxattr ? ovl_user_xattr_handlers :
- 		ovl_trusted_xattr_handlers;
---=20
-2.40.1
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/fpKi.XBnSUNuJZPtVDLDCb2
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUkl2wACgkQAVBC80lX
-0Gz+sQgAh0oCKUNBc9TxuPivoUcTkpKxxyv8Zj247DAysOHETEQrqVxPlHxXfVRR
-f2hqP9A5kGPHHZ8NCjKRNsbjvGFd0HAF0n294mUQXb4pPSELYuyLCTWFbk+hW3+T
-xHs+XBOu1Be1VlwDMUstAn3lImAboZD8atr1IAPBKok0n0M+xTkoGZShHT08eS3m
-+KHJqaD7LArxkX4PG4whYKxWIf5vCeZ4MZFth0v047uAXmpZA/upW6PXkKRu/M0D
-XLvSVahiMh6wpkBEES8KHV45XTpfGgMH6nOQ4rEIsYEeCuhklvdsAdiI1Daz9kcL
-RoiJ+sBvsBv1tEEpXmqrzlq9tAcz6g==
-=Kcyq
------END PGP SIGNATURE-----
-
---Sig_/fpKi.XBnSUNuJZPtVDLDCb2--
