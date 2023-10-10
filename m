@@ -2,222 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 625BA7BF850
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 12:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE88A7BF852
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 12:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbjJJKQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 06:16:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53064 "EHLO
+        id S230145AbjJJKQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 06:16:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231132AbjJJKQS (ORCPT
+        with ESMTP id S231153AbjJJKQh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 06:16:18 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DD908D6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 03:16:13 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 22DEC1FB;
-        Tue, 10 Oct 2023 03:16:54 -0700 (PDT)
-Received: from [10.1.30.177] (XHFQ2J9959.cambridge.arm.com [10.1.30.177])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E9F833F762;
-        Tue, 10 Oct 2023 03:16:10 -0700 (PDT)
-Message-ID: <642a14bb-e298-47cc-955f-3200f6977c1f@arm.com>
-Date:   Tue, 10 Oct 2023 11:16:09 +0100
+        Tue, 10 Oct 2023 06:16:37 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6256CE6;
+        Tue, 10 Oct 2023 03:16:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696932992; x=1728468992;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=13xQlZVS/d3Fnw5Uih4vnyyNxo0vPH4oWAoiObRGY2Y=;
+  b=Kbe9avFIH/UyxCYN4c6cgBGzxw1HNHnlzeNf4LE4zJLPMDFPT8Kejwoh
+   GYHw77mCjHMBhJbMkV7Qk4ZO4++edf2rNa7JLtb21AlT6JMNhfCSnE3ZA
+   5IfEc104TPoPxBnN35rrPqHnxbuPAVL1RCamGHjGKDOD6jnbYQ99Qp6Hu
+   a8E8R3C2UXBDRC3BWL+k64Y8ymm0xrTn53Mn2jDiMOefRUwNM9/AuLySp
+   eC8EPrxT16OFYfDSa2JEXrtmwiUalK/ePskDmnq7RYuPph1Psgcde4zAw
+   R8GLWZv8ef/GJ+3I0v/QjT0cICCYIA7ZM005CdXYS6G+r5jLcrdfOly6r
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="364652593"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="364652593"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 03:16:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="703252901"
+X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
+   d="scan'208";a="703252901"
+Received: from asalaman-mobl.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.16.145])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 03:16:27 -0700
+From:   Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+To:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     ilpo.jarvinen@linux.intel.com, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH RESEND v7 1/2] selftests/resctrl: Fix schemata write error check
+Date:   Tue, 10 Oct 2023 12:16:10 +0200
+Message-ID: <7d463146d208304e61cd97c60e718372fc2c21d6.1696932728.git.maciej.wieczor-retman@intel.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <cover.1696932728.git.maciej.wieczor-retman@intel.com>
+References: <cover.1696932728.git.maciej.wieczor-retman@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 6/9] mm: thp: Add "recommend" option for anon_orders
-Content-Language: en-GB
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Suren Baghdasaryan <surenb@google.com>
-References: <20230929114421.3761121-1-ryan.roberts@arm.com>
- <20230929114421.3761121-7-ryan.roberts@arm.com>
- <2f64809e-0d0d-cc61-71ac-8d9b072efc3a@redhat.com>
- <CAOUHufb=qurWDFaX2TPQrsmUpEz+VRwm=SxivYuuDiJ4D-f0+g@mail.gmail.com>
- <25d1cdee-3da8-4728-aa0d-dc07eb28ea95@arm.com>
- <CAOUHufbHRVPyu7uSWwPzU6eYF1xhOS_amZsUzX5__2=2bc3XRQ@mail.gmail.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAOUHufbHRVPyu7uSWwPzU6eYF1xhOS_amZsUzX5__2=2bc3XRQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/10/2023 21:04, Yu Zhao wrote:
-> On Mon, Oct 9, 2023 at 5:45 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> On 06/10/2023 23:28, Yu Zhao wrote:
->>> On Fri, Oct 6, 2023 at 2:08 PM David Hildenbrand <david@redhat.com> wrote:
->>>>
->>>> On 29.09.23 13:44, Ryan Roberts wrote:
->>>>> In addition to passing a bitfield of folio orders to enable for THP,
->>>>> allow the string "recommend" to be written, which has the effect of
->>>>> causing the system to enable the orders preferred by the architecture
->>>>> and by the mm. The user can see what these orders are by subsequently
->>>>> reading back the file.
->>>>>
->>>>> Note that these recommended orders are expected to be static for a given
->>>>> boot of the system, and so the keyword "auto" was deliberately not used,
->>>>> as I want to reserve it for a possible future use where the "best" order
->>>>> is chosen more dynamically at runtime.
->>>>>
->>>>> Recommended orders are determined as follows:
->>>>>    - PMD_ORDER: The traditional THP size
->>>>>    - arch_wants_pte_order() if implemented by the arch
->>>>>    - PAGE_ALLOC_COSTLY_ORDER: The largest order kept on per-cpu free list
->>>>>
->>>>> arch_wants_pte_order() can be overridden by the architecture if desired.
->>>>> Some architectures (e.g. arm64) can coalsece TLB entries if a contiguous
->>>>> set of ptes map physically contigious, naturally aligned memory, so this
->>>>> mechanism allows the architecture to optimize as required.
->>>>>
->>>>> Here we add the default implementation of arch_wants_pte_order(), used
->>>>> when the architecture does not define it, which returns -1, implying
->>>>> that the HW has no preference.
->>>>>
->>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>>> ---
->>>>>   Documentation/admin-guide/mm/transhuge.rst |  4 ++++
->>>>>   include/linux/pgtable.h                    | 13 +++++++++++++
->>>>>   mm/huge_memory.c                           | 14 +++++++++++---
->>>>>   3 files changed, 28 insertions(+), 3 deletions(-)
->>>>>
->>>>> diff --git a/Documentation/admin-guide/mm/transhuge.rst b/Documentation/admin-guide/mm/transhuge.rst
->>>>> index 732c3b2f4ba8..d6363d4efa3a 100644
->>>>> --- a/Documentation/admin-guide/mm/transhuge.rst
->>>>> +++ b/Documentation/admin-guide/mm/transhuge.rst
->>>>> @@ -187,6 +187,10 @@ pages (=16K if the page size is 4K). The example above enables order-9
->>>>>   By enabling multiple orders, allocation of each order will be
->>>>>   attempted, highest to lowest, until a successful allocation is made.
->>>>>   If the PMD-order is unset, then no PMD-sized THPs will be allocated.
->>>>> +It is also possible to enable the recommended set of orders, which
->>>>> +will be optimized for the architecture and mm::
->>>>> +
->>>>> +     echo recommend >/sys/kernel/mm/transparent_hugepage/anon_orders
->>>>>
->>>>>   The kernel will ignore any orders that it does not support so read the
->>>>>   file back to determine which orders are enabled::
->>>>> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
->>>>> index af7639c3b0a3..0e110ce57cc3 100644
->>>>> --- a/include/linux/pgtable.h
->>>>> +++ b/include/linux/pgtable.h
->>>>> @@ -393,6 +393,19 @@ static inline void arch_check_zapped_pmd(struct vm_area_struct *vma,
->>>>>   }
->>>>>   #endif
->>>>>
->>>>> +#ifndef arch_wants_pte_order
->>>>> +/*
->>>>> + * Returns preferred folio order for pte-mapped memory. Must be in range [0,
->>>>> + * PMD_ORDER) and must not be order-1 since THP requires large folios to be at
->>>>> + * least order-2. Negative value implies that the HW has no preference and mm
->>>>> + * will choose it's own default order.
->>>>> + */
->>>>> +static inline int arch_wants_pte_order(void)
->>>>> +{
->>>>> +     return -1;
->>>>> +}
->>>>> +#endif
->>>>> +
->>>>>   #ifndef __HAVE_ARCH_PTEP_GET_AND_CLEAR
->>>>>   static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
->>>>>                                      unsigned long address,
->>>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->>>>> index bcecce769017..e2e2d3906a21 100644
->>>>> --- a/mm/huge_memory.c
->>>>> +++ b/mm/huge_memory.c
->>>>> @@ -464,10 +464,18 @@ static ssize_t anon_orders_store(struct kobject *kobj,
->>>>>       int err;
->>>>>       int ret = count;
->>>>>       unsigned int orders;
->>>>> +     int arch;
->>>>>
->>>>> -     err = kstrtouint(buf, 0, &orders);
->>>>> -     if (err)
->>>>> -             ret = -EINVAL;
->>>>> +     if (sysfs_streq(buf, "recommend")) {
->>>>> +             arch = max(arch_wants_pte_order(), PAGE_ALLOC_COSTLY_ORDER);
->>>>> +             orders = BIT(arch);
->>>>> +             orders |= BIT(PAGE_ALLOC_COSTLY_ORDER);
->>>>> +             orders |= BIT(PMD_ORDER);
->>>>> +     } else {
->>>>> +             err = kstrtouint(buf, 0, &orders);
->>>>> +             if (err)
->>>>> +                     ret = -EINVAL;
->>>>> +     }
->>>>>
->>>>>       if (ret > 0) {
->>>>>               orders &= THP_ORDERS_ALL_ANON;
->>>>
->>>> :/ don't really like that. Regarding my proposal, one could have
->>>> something like that in an "auto" setting for the "enabled" value, or a
->>>> "recommended" setting [not sure].
->>>
->>> Me either.
->>>
->>> Again this is something I call random --  we only discussed "auto",
->>> and yes, the commit message above explained why "recommended" here but
->>> it has never surfaced in previous discussions, has it?
->>
->> The context in which we discussed "auto" was for a future aspiration to
->> automatically determine the order that should be used for a given allocation to
->> balance perf vs internal fragmentation.
->>
->> The case we are talking about here is completely different; I had a pre-existing
->> feature from previous versions of the series, which would allow the arch to
->> specify its preferred order (originally proposed by Yu, IIRC). In moving the
->> allocation size decision to user space, I felt that we still needed a mechanism
->> whereby the arch could express its preference. And "recommend" is what I came up
->> with.
->>
->> All of the friction we are currently having is around this feature, I think?
->> Certainly all the links you provided in the other thread all point to
->> conversations skirting around it. How about I just drop it for this initial
->> patch set? Just let user space decide what sizes it wants (per David's interface
->> proposal)? I can see I'm trying to get a square peg into a round hole.
-> 
-> Yes, and I think I've been fairly clear since the beginning: why can't
-> the initial patchset only have what we agreed on so that it can get
-> merged asap?
-> 
-> Since we haven't agreed on any ABI changes (sysfs, stats, etc.),
-> debugfs (Suren @ Android), boot parameters, etc., Kconfig is the only
-> mergeable option at the moment. To answer your questions [1][2], i.e.,
-> why "a compile time option": it's not to make *my testing* easier;
-> it's for *your series* to make immediate progress.
+Writing bitmasks to the schemata can fail when the bitmask doesn't
+adhere to constraints defined by what a particular CPU supports.
+Some example of constraints are max length or having contiguous bits.
+The driver should properly return errors when any rule concerning
+bitmask format is broken.
 
-My problem is that I need a mechanism to conditionally decide whether to
-allocate a small-sized THP or just a single page; unconditionally doing it when
-compiled in is a problem for the 16K and 64K base page cases, where the arm64
-preferred small-sized THP is 2M. I need a way to solve this for the patch set to
-be usable. All my attempts to do it without introducing ABI have been rejected
-(I'm not complaining about that - I understand the reasons). So I'm now relying
-on ABI to solve it - I think we need to sort that in order to submit.
+Resctrl FS returns error codes from fprintf() only when fclose() is
+called. Current error checking scheme allows invalid bitmasks to be
+written into schemata file and the selftest doesn't notice because the
+fclose() error code isn't checked.
 
-We've also agreed that there is a list of prerequisite items that need to be
-completed before this can be merged (please do chime in if you think that list
-is wrong or unneccessary), so we can use that time to discuss the ABI in parallel.
+Substitute fopen(), flose() and fprintf() with open(), close() and
+write() to avoid error code buffering between fprintf() and fclose().
 
-> 
-> [1] https://lore.kernel.org/mm-commits/137d2fc4-de8b-4dda-a51d-31ce6b29a3d0@arm.com/
-> [2] https://lore.kernel.org/mm-commits/316054fd-0acb-4277-b9da-d21f0dae2d29@arm.com/
+Remove newline character from the schema string after writing it to
+the schemata file so it prints correctly before function return.
+
+Pass the string generated with strerror() to the "reason" buffer so
+the error message is more verbose. Extend "reason" buffer so it can hold
+longer messages.
+
+Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+---
+Changelog v7:
+- Add label for non-empty schema error case. (Reinette)
+- Add Reinette's reviewed-by tag.
+
+Changelog v6:
+- Align schema_len error checking with typical snprintf format.
+  (Reinette)
+- Initialize schema string for early return eventuality. (Reinette)
+
+Changelog v5:
+- Add Ilpo's reviewed-by tag.
+- Fix wrong open() error checking. (Reinette)
+- Add error checking to schema_len variable.
+
+Changelog v4:
+- Unify error checking between open() and write(). (Reinette)
+- Add fcntl.h for glibc backward compatiblitiy. (Reinette)
+
+Changelog v3:
+- Rename fp to fd. (Ilpo)
+- Remove strlen, strcspn and just use the snprintf value instead. (Ilpo)
+
+Changelog v2:
+- Rewrite patch message.
+- Double "reason" buffer size to fit longer error explanation.
+- Redo file interactions with syscalls instead of stdio functions.
+
+ tools/testing/selftests/resctrl/resctrlfs.c | 41 +++++++++++++--------
+ 1 file changed, 26 insertions(+), 15 deletions(-)
+
+diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
+index 3a8111362d26..05390afd4d6f 100644
+--- a/tools/testing/selftests/resctrl/resctrlfs.c
++++ b/tools/testing/selftests/resctrl/resctrlfs.c
+@@ -8,6 +8,7 @@
+  *    Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>,
+  *    Fenghua Yu <fenghua.yu@intel.com>
+  */
++#include <fcntl.h>
+ #include <limits.h>
+ 
+ #include "resctrl.h"
+@@ -490,9 +491,8 @@ int write_bm_pid_to_resctrl(pid_t bm_pid, char *ctrlgrp, char *mongrp,
+  */
+ int write_schemata(char *ctrlgrp, char *schemata, int cpu_no, char *resctrl_val)
+ {
+-	char controlgroup[1024], schema[1024], reason[64];
+-	int resource_id, ret = 0;
+-	FILE *fp;
++	char controlgroup[1024], reason[128], schema[1024] = {};
++	int resource_id, fd, schema_len = -1, ret = 0;
+ 
+ 	if (strncmp(resctrl_val, MBA_STR, sizeof(MBA_STR)) &&
+ 	    strncmp(resctrl_val, MBM_STR, sizeof(MBM_STR)) &&
+@@ -520,28 +520,39 @@ int write_schemata(char *ctrlgrp, char *schemata, int cpu_no, char *resctrl_val)
+ 
+ 	if (!strncmp(resctrl_val, CAT_STR, sizeof(CAT_STR)) ||
+ 	    !strncmp(resctrl_val, CMT_STR, sizeof(CMT_STR)))
+-		sprintf(schema, "%s%d%c%s", "L3:", resource_id, '=', schemata);
++		schema_len = snprintf(schema, sizeof(schema), "%s%d%c%s\n",
++				      "L3:", resource_id, '=', schemata);
+ 	if (!strncmp(resctrl_val, MBA_STR, sizeof(MBA_STR)) ||
+ 	    !strncmp(resctrl_val, MBM_STR, sizeof(MBM_STR)))
+-		sprintf(schema, "%s%d%c%s", "MB:", resource_id, '=', schemata);
+-
+-	fp = fopen(controlgroup, "w");
+-	if (!fp) {
+-		sprintf(reason, "Failed to open control group");
++		schema_len = snprintf(schema, sizeof(schema), "%s%d%c%s\n",
++				      "MB:", resource_id, '=', schemata);
++	if (schema_len < 0 || schema_len >= sizeof(schema)) {
++		snprintf(reason, sizeof(reason),
++			 "snprintf() failed with return value : %d", schema_len);
+ 		ret = -1;
+-
+ 		goto out;
+ 	}
+ 
+-	if (fprintf(fp, "%s\n", schema) < 0) {
+-		sprintf(reason, "Failed to write schemata in control group");
+-		fclose(fp);
++	fd = open(controlgroup, O_WRONLY);
++	if (fd < 0) {
++		snprintf(reason, sizeof(reason),
++			 "open() failed : %s", strerror(errno));
+ 		ret = -1;
+ 
+-		goto out;
++		goto err_schema_not_empty;
+ 	}
+-	fclose(fp);
++	if (write(fd, schema, schema_len) < 0) {
++		snprintf(reason, sizeof(reason),
++			 "write() failed : %s", strerror(errno));
++		close(fd);
++		ret = -1;
++
++		goto err_schema_not_empty;
++	}
++	close(fd);
+ 
++err_schema_not_empty:
++	schema[schema_len - 1] = 0;
+ out:
+ 	ksft_print_msg("Write schema \"%s\" to resctrl FS%s%s\n",
+ 		       schema, ret ? " # " : "",
+-- 
+2.42.0
 
