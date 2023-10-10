@@ -2,107 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22FF87BF570
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:16:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 917EE7BF578
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442249AbjJJIP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 04:15:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52444 "EHLO
+        id S1442712AbjJJIRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 04:17:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379438AbjJJIPz (ORCPT
+        with ESMTP id S1379442AbjJJIRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 04:15:55 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D6BA4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 01:15:52 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-991c786369cso893786166b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 01:15:51 -0700 (PDT)
+        Tue, 10 Oct 2023 04:17:10 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9087A4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 01:17:08 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-65b0e623189so30245056d6.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 01:17:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1696925750; x=1697530550; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OfW7dpG31FTMRZhBhOibpRxWenmCtO9DVOjvJpZvmEM=;
-        b=QJayTTjz7EGsSr2QfDAzPrAvOhah9rXuAd7zodFJca05n7exMSINBwdbrbLm7xqLIy
-         ezJI6O44KkqEL1H6VqbXGm+Z7GCuyzCAPQBXDZUEyIj5pzU6o09uGHsPmXOoRX2Dvuut
-         vECC3f87PIB24uubQ2SKBjJCdteLgGQFwpw8Q=
+        d=google.com; s=20230601; t=1696925828; x=1697530628; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vZ91x7U3rirUbkyYioXuLdImi+LNXots2Inn4nnzz1I=;
+        b=xkkOduAEopymSa0l3aRiFtcS9GGR57GfY+5TGgNuiun2g9q5Md2sVwnJ+lbvOokQzb
+         +2wKAaaC4Kkg8Tty8nrZkb1pDY+9/k6EjnKpzCE2dapnW3iWvkVGqgdh2XyKp/OM6MkA
+         JdKX3FwP9hHkvWHaeErNrOeib8uOyL1uS4qe3+BxhF/077I1vMHlfSogNR8B0XiHJV5H
+         HIPF6Z5hz9zhi1Gc2SbJ4ugrlTxLQ3zCdZiBIp5sZtTLHLKw1StMXahjBpKBig9dtFoZ
+         yqCLShsG1b06km2FvdjOQU3oz1utXmhOyAAyq9J02vqJBzTdejTa7NUfOfF3co1ubvAh
+         Tmqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696925750; x=1697530550;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OfW7dpG31FTMRZhBhOibpRxWenmCtO9DVOjvJpZvmEM=;
-        b=R3N3QonNwscDnG+nw/134Fobd0OFcBZ3vW7x81jpU8H5Fcp4/ZoW18NxX5iHvLWjvM
-         3DtBz2JTH33VgLnVLneaYTkn95Cmj7qcUTuzCkKFHkyRdx14zoVUy4C7DNY2aNVQk8NK
-         T0xEsHSNQKgi6olljh84extxpZAXvoCRADj6NZSj94N3DkxolvnH8q3u3a2bX9aZ91GB
-         VFV5ubuNevh5uZ9neuPZcJlk5aHIVUB/2T+THICtwmY2i61ioHyJM0tMZBqSQjdm04KK
-         q9w2MsGOG+jO+0yjgn5aMFmMmfSKtH1HjlGyn8QK+QAF7kE49I2Q4iJEtbw30nT5LtFD
-         uD6Q==
-X-Gm-Message-State: AOJu0YzsDT/DROtgh//GTZhjb9avi7JVJFsW2cj1sT4vVY2siHQTljSO
-        r69c2MJ5j5doFghDsjaBD0qkVBkMz2VuEGWOjCtQfg==
-X-Google-Smtp-Source: AGHT+IGKB4RSuX7TFAKxE7X/HVqgpWnqYSuU57QXdm8Qu8GMOKArtsdxGj6a0/BB1w5re+A4CRrzcMIT9dKaTWGS0SE=
-X-Received: by 2002:a17:907:1dd7:b0:9ae:48df:2235 with SMTP id
- og23-20020a1709071dd700b009ae48df2235mr14985305ejc.55.1696925750403; Tue, 10
- Oct 2023 01:15:50 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696925828; x=1697530628;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vZ91x7U3rirUbkyYioXuLdImi+LNXots2Inn4nnzz1I=;
+        b=rTV8Ekt4OqCZ1tnsbgIgx0PEg1nzOZ8L2YBRhK/EyZx3Yy47S+4udHzru/2ZQmqMBG
+         0kmk2xxXy6PaN/LuqQJopB8GmGV/CLlG+/oNi8rz5LyrJaJwJW4bY0LDRvWI9gT84cNt
+         LP4Tzv5X5keJ9dB2x7tT0I65UWUypj9Oev1MO7KrGvv56XNMx+zPSdo7kbYqrupkrHcQ
+         m2THgR91liVgUgomHDPlKYVPx1zpa/4yC3fc+kfjFjoCRaXsDm2JBJJY3YYX6HL8DM4C
+         uxqoO2MCBQhQjwCo4VUvERDsgPhlHPlSbL61IpAiUQJnsWcaEtlvREiL+WlnzNWEUoeF
+         4hSQ==
+X-Gm-Message-State: AOJu0Yw/yy+pGiPp+IHnZWvd77Aa7rPGaQ1FEGBAayuANnqWbr5PqLgk
+        upMq/7ZHLw+hU6ZJy2NV6RiXHXbBuXG0HznmR9JhgQ==
+X-Google-Smtp-Source: AGHT+IFK6ESdIQlWQSS3hsV5F+BhTOfGzqFxe4qKC6bCYg5DvF/0qYBHmU6gSy2VorcRViwOR63GjqkmqBXv18ZQL4g=
+X-Received: by 2002:a05:6214:3a03:b0:658:2037:718b with SMTP id
+ nw3-20020a0562143a0300b006582037718bmr19876973qvb.51.1696925827788; Tue, 10
+ Oct 2023 01:17:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1696043833.git.kjlx@templeofstupid.com> <45778432fba32dce1fb1f5fd13272c89c95c3f52.1696043833.git.kjlx@templeofstupid.com>
- <CAJfpegtOdqeK34CYvBTuVwOzcyZG8hnusiYO05JdbATOxfVMOg@mail.gmail.com> <20231010023507.GA1983@templeofstupid.com>
-In-Reply-To: <20231010023507.GA1983@templeofstupid.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Tue, 10 Oct 2023 10:15:38 +0200
-Message-ID: <CAJfpegvr0cHj53jSPyBxVZnMpReq_RFhT-P1jv8eUu4pqxt9HA@mail.gmail.com>
-Subject: Re: [resend PATCH v2 2/2] fuse: ensure that submounts lookup their parent
-To:     Krister Johansen <kjlx@templeofstupid.com>
-Cc:     linux-fsdevel@vger.kernel.org,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        German Maglione <gmaglione@redhat.com>,
-        Greg Kurz <groug@kaod.org>, Max Reitz <mreitz@redhat.com>,
-        Bernd Schubert <bernd.schubert@fastmail.fm>
-Content-Type: multipart/mixed; boundary="0000000000009054d70607585084"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231006134529.2816540-1-glider@google.com> <20231006134529.2816540-2-glider@google.com>
+ <ZSAeFfNOUZIrK3Yk@smile.fi.intel.com>
+In-Reply-To: <ZSAeFfNOUZIrK3Yk@smile.fi.intel.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Tue, 10 Oct 2023 10:16:26 +0200
+Message-ID: <CAG_fn=UxSUEcj9wWexakd-F0-Dh+WjeKEaqwMKfD8AEOnkRTsQ@mail.gmail.com>
+Subject: Re: [PATCH v6 1/5] lib/bitmap: add bitmap_{read,write}()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
+        andreyknvl@gmail.com, aleksander.lobakin@intel.com,
+        linux@rasmusvillemoes.dk, yury.norov@gmail.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        eugenis@google.com, syednwaris@gmail.com, william.gray@linaro.org,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000009054d70607585084
-Content-Type: text/plain; charset="UTF-8"
+On Fri, Oct 6, 2023 at 4:48=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Fri, Oct 06, 2023 at 03:45:25PM +0200, Alexander Potapenko wrote:
+> > From: Syed Nayyar Waris <syednwaris@gmail.com>
+> >
+> > The two new functions allow reading/writing values of length up to
+> > BITS_PER_LONG bits at arbitrary position in the bitmap.
+> >
+> > The code was taken from "bitops: Introduce the for_each_set_clump macro=
+"
+> > by Syed Nayyar Waris with a number of changes and simplifications:
+> >  - instead of using roundup(), which adds an unnecessary dependency
+> >    on <linux/math.h>, we calculate space as BITS_PER_LONG-offset;
+> >  - indentation is reduced by not using else-clauses (suggested by
+> >    checkpatch for bitmap_get_value());
+> >  - bitmap_get_value()/bitmap_set_value() are renamed to bitmap_read()
+> >    and bitmap_write();
+> >  - some redundant computations are omitted.
+>
+> ...
+>
+> > v6:
+> >  - As suggested by Yury Norov, do not require bitmap_read(..., 0) to
+> >    return 0.
+>
+> Hmm... See below.
+>
+> ...
+>
+> >   *  bitmap_to_arr32(buf, src, nbits)            Copy nbits from buf to=
+ u32[] dst
+> >   *  bitmap_to_arr64(buf, src, nbits)            Copy nbits from buf to=
+ u64[] dst
+>
+> With the grouping as below I would add a blank line here. But was the int=
+ention
+> to group _arrXX() to these groups?
 
-On Tue, 10 Oct 2023 at 04:35, Krister Johansen <kjlx@templeofstupid.com> wrote:
+Note that there's no single blank line in this long list.
+What if I swap bitmap_read with bitmap_set_value8(), would the
+grouping become more logical?
 
-> If I manually traverse the path to the submount via something like cd
-> and ls from the initial mount namespace, it'll stay referenced until I
-> run a umount for the automounted path.  I'm reasonably sure it's the
-> container setup that's causing the detaching.
+I.e.
+*  bitmap_get_value8(map, start)               Get 8bit value from map at s=
+tart
+*  bitmap_set_value8(map, value, start)        Set 8bit value to map at sta=
+rt
+*  bitmap_read(map, start, nbits)              Read an nbits-sized value fr=
+om
+*                                              map at start
+*  bitmap_write(map, value, start, nbits)      Write an nbits-sized value t=
+o
+*                                              map at start
 
-Okay.  Can you please try the attached test patch.  It's not a proper
-solution, but I think it's the right direction.
+> > +     if (unlikely(!nbits))
+> > +             return 0;
+>
+> Hmm... I didn't get was the comment to add or to remove these checks?
 
-Thanks,
-Miklos
+As Yury said, we should not require the return value to be 0, so I
+added "nonzero" to the descriptions of the @nbits parameter.
+The check stays in place, but the users relying on it is now a mistake.
 
---0000000000009054d70607585084
-Content-Type: text/x-patch; charset="US-ASCII"; 
-	name="fuse-inc-nlookup-on-automount-root.patch"
-Content-Disposition: attachment; 
-	filename="fuse-inc-nlookup-on-automount-root.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_lnk1r8az0>
-X-Attachment-Id: f_lnk1r8az0
+>
+> > +     if (space >=3D nbits)
+> > +             return (map[index] >> offset) & GENMASK(nbits - 1, 0);
+>
+> And don't you want to replace this GENMASK() as well?
 
-ZGlmZiAtLWdpdCBhL2ZzL2Z1c2UvaW5vZGUuYyBiL2ZzL2Z1c2UvaW5vZGUuYwppbmRleCAyZTRl
-YjdjZjI2ZmIuLmQ1ZjQ3MjAzZGZiYyAxMDA2NDQKLS0tIGEvZnMvZnVzZS9pbm9kZS5jCisrKyBi
-L2ZzL2Z1c2UvaW5vZGUuYwpAQCAtMTUyNCw2ICsxNTI0LDE4IEBAIHN0YXRpYyBpbnQgZnVzZV9n
-ZXRfdHJlZV9zdWJtb3VudChzdHJ1Y3QgZnNfY29udGV4dCAqZnNjKQogCQlyZXR1cm4gZXJyOwog
-CX0KIAorCXNwaW5fbG9jaygmbXBfZmktPmxvY2spOworCWlmIChtcF9maS0+bmxvb2t1cCkgewor
-CQlzdHJ1Y3QgZnVzZV9pbm9kZSAqZmkgPSBnZXRfZnVzZV9pbm9kZShkX2lub2RlKHNiLT5zX3Jv
-b3QpKTsKKwkJbXBfZmktPm5sb29rdXAtLTsKKwkJc3Bpbl91bmxvY2soJm1wX2ZpLT5sb2NrKTsK
-KwkJc3Bpbl9sb2NrKCZmaS0+bG9jayk7CisJCWZpLT5ubG9va3VwKys7CisJCXNwaW5fdW5sb2Nr
-KCZmaS0+bG9jayk7CisJfSBlbHNlIHsKKwkJc3Bpbl91bmxvY2soJm1wX2ZpLT5sb2NrKTsKKwl9
-CisKIAlkb3duX3dyaXRlKCZmYy0+a2lsbHNiKTsKIAlsaXN0X2FkZF90YWlsKCZmbS0+ZmNfZW50
-cnksICZmYy0+bW91bnRzKTsKIAl1cF93cml0ZSgmZmMtPmtpbGxzYik7Cg==
---0000000000009054d70607585084--
+See my next reply to Yury, tl;dr this is a stale code version :(
