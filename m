@@ -2,135 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6FC7BF0FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 04:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F487BF0FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 04:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441897AbjJJCgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 22:36:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58922 "EHLO
+        id S1441898AbjJJCjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 22:39:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441879AbjJJCgP (ORCPT
+        with ESMTP id S1441879AbjJJCjD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 22:36:15 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 218429C
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 19:36:13 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8C95F1FB;
-        Mon,  9 Oct 2023 19:36:53 -0700 (PDT)
-Received: from [10.163.61.202] (unknown [10.163.61.202])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ADAE53F7A6;
-        Mon,  9 Oct 2023 19:36:10 -0700 (PDT)
-Message-ID: <2ec03606-af40-48eb-81dd-963dfd4af704@arm.com>
-Date:   Tue, 10 Oct 2023 08:06:08 +0530
+        Mon, 9 Oct 2023 22:39:03 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 487B693
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Oct 2023 19:39:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D828C433C7;
+        Tue, 10 Oct 2023 02:38:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696905541;
+        bh=CRpJbftkNFaCLIPhcQgckrIB5Pwz8ytV6P5nMBDZFL4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dIzthgWUBODnznko5YErlVcsGedhd4oY4a9Qr7s0B5IlEk4BpX9UoKGJo+YhGhsGv
+         eSO7SMHMfcNWH2PkQOMQhYTdHD8TrhcaFJeg1ob81gv3cM6rMruQma/5uYbleHwd1z
+         4ri+9+3xw+5MwzSimg7xWPexOQN2LZUYpmR1rKByTJe/bECUFglyQkmpNkMDm0wCIt
+         l4zHkXL7oL/6DJiWTLHc9a9D53onKl7/4pxv7qQdjtIjxGGglfls0yk0fwteVHDSJB
+         HJPR0ecyKTn+pv1aKALP8N4jJve51q3pJ5+s2OWIZRXNoAxiXjxeyG20C3sDP4omb1
+         SW9Wi5UPTDHgw==
+Date:   Tue, 10 Oct 2023 10:38:51 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH] soc: imx8mp: support 128 bits UID
+Message-ID: <20231010023851.GN819755@dragon>
+References: <20231008083808.1517132-1-peng.fan@oss.nxp.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] driver: perf: arm_pmu: Drop some unused arguments from
- armv8_pmu_init()
-Content-Language: en-US
-To:     James Clark <james.clark@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Robin Murphy <Robin.Murphy@arm.com>
-Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org
-References: <20231009035638.165270-1-anshuman.khandual@arm.com>
- <896fc51e-2c74-29f7-2c7e-f14f29c401a4@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <896fc51e-2c74-29f7-2c7e-f14f29c401a4@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231008083808.1517132-1-peng.fan@oss.nxp.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+On Sun, Oct 08, 2023 at 04:38:08PM +0800, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> Current driver only supports 64bits UID for i.MX8MP, but
+> i.MX8MP UID is actually 128bits, the high 64bits is at 0xE00.
+> So update driver to support it.
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/soc/imx/soc-imx8m.c | 16 +++++++++++++++-
+>  1 file changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soc/imx/soc-imx8m.c b/drivers/soc/imx/soc-imx8m.c
+> index ec87d9d878f3..5dcc227d41c0 100644
+> --- a/drivers/soc/imx/soc-imx8m.c
+> +++ b/drivers/soc/imx/soc-imx8m.c
+> @@ -24,6 +24,7 @@
+>  #define OCOTP_UID_HIGH			0x420
+>  
+>  #define IMX8MP_OCOTP_UID_OFFSET		0x10
+> +#define IMX8MP_OCOTP_UID_HIGH		0xE00
 
-On 10/9/23 14:47, James Clark wrote:
-> 
-> 
-> On 09/10/2023 04:56, Anshuman Khandual wrote:
->> There is just a single call site remaining for armv8_pmu_init(), passing on
->> NULL pointers for all custom 'struct attribute_group'. These arguments are
->> not really getting used and hence can just be dropped off, thus simplifying
->> the code further.
->>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linux-kernel@vger.kernel.org
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->> This applies on v6.6-rc5.
->>
->>  drivers/perf/arm_pmuv3.c | 17 +++++------------
->>  1 file changed, 5 insertions(+), 12 deletions(-)
->>
->> diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
->> index 8fcaa26f0f8a..fe4db1831662 100644
->> --- a/drivers/perf/arm_pmuv3.c
->> +++ b/drivers/perf/arm_pmuv3.c
->> @@ -1187,10 +1187,7 @@ static void armv8_pmu_register_sysctl_table(void)
->>  }
->>  
->>  static int armv8_pmu_init(struct arm_pmu *cpu_pmu, char *name,
->> -			  int (*map_event)(struct perf_event *event),
->> -			  const struct attribute_group *events,
->> -			  const struct attribute_group *format,
->> -			  const struct attribute_group *caps)
->> +			  int (*map_event)(struct perf_event *event))
->>  {
->>  	int ret = armv8pmu_probe_pmu(cpu_pmu);
->>  	if (ret)
->> @@ -1212,13 +1209,9 @@ static int armv8_pmu_init(struct arm_pmu *cpu_pmu, char *name,
->>  
->>  	cpu_pmu->name			= name;
->>  	cpu_pmu->map_event		= map_event;
->> -	cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_EVENTS] = events ?
->> -			events : &armv8_pmuv3_events_attr_group;
->> -	cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_FORMATS] = format ?
->> -			format : &armv8_pmuv3_format_attr_group;
->> -	cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_CAPS] = caps ?
->> -			caps : &armv8_pmuv3_caps_attr_group;
->> -
->> +	cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_EVENTS] = &armv8_pmuv3_events_attr_group;
->> +	cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_FORMATS] = &armv8_pmuv3_format_attr_group;
->> +	cpu_pmu->attr_groups[ARMPMU_ATTR_GROUP_CAPS] = &armv8_pmuv3_caps_attr_group;
->>  	armv8_pmu_register_sysctl_table();
->>  	return 0;
->>  }
->> @@ -1226,7 +1219,7 @@ static int armv8_pmu_init(struct arm_pmu *cpu_pmu, char *name,
->>  static int armv8_pmu_init_nogroups(struct arm_pmu *cpu_pmu, char *name,
->>  				   int (*map_event)(struct perf_event *event))
->>  {
->> -	return armv8_pmu_init(cpu_pmu, name, map_event, NULL, NULL, NULL);
->> +	return armv8_pmu_init(cpu_pmu, name, map_event);
-> 
-> I think the whole point of the nogroups wrapper was to add the NULLs. If
-> you remove them, then you can remove the nogroups function too and just
-> call armv8_pmu_init() directly instead.
+Lowercase for hex values just like other macros in the file?
 
-Sounds reasonable. Will change all the relevant functions to just call
-armv8_pmu_init() directly.
+>  
+>  /* Same as ANADIG_DIGPROG_IMX7D */
+>  #define ANADIG_DIGPROG_IMX8MM	0x800
+> @@ -34,6 +35,7 @@ struct imx8_soc_data {
+>  };
+>  
+>  static u64 soc_uid;
+> +static u64 soc_uid_h;
+>  
+>  #ifdef CONFIG_HAVE_ARM_SMCCC
+>  static u32 imx8mq_soc_revision_from_atf(void)
+> @@ -122,8 +124,15 @@ static void __init imx8mm_soc_uid(void)
+>  	soc_uid <<= 32;
+>  	soc_uid |= readl_relaxed(ocotp_base + OCOTP_UID_LOW + offset);
+>  
+> +	if (offset) {
+> +		soc_uid_h = readl_relaxed(ocotp_base + IMX8MP_OCOTP_UID_HIGH + 0x10);
+> +		soc_uid_h <<= 32;
+> +		soc_uid_h |= readl_relaxed(ocotp_base + IMX8MP_OCOTP_UID_HIGH);
+> +	}
+> +
+>  	clk_disable_unprepare(clk);
+>  	clk_put(clk);
+> +
 
-> 
-> And as it wasn't clear why they were there in the first place, I went to
-> look and found this (e424b17) :
-> 
->   Although nobody uses non-default sysfs attributes today, there's
->   minimal impact to preserving the notion that maybe, some day, somebody
->   might, so we may as well keep up appearances.
-> 
-> It might be worth mentioning that the decision has now been made in the
-> other way.
+Unrelated change.
 
-Sure, will update the commit message to include this.
+>  	iounmap(ocotp_base);
+>  	of_node_put(np);
+>  }
+> @@ -222,7 +231,12 @@ static int __init imx8_soc_init(void)
+>  		goto free_soc;
+>  	}
+>  
+> -	soc_dev_attr->serial_number = kasprintf(GFP_KERNEL, "%016llX", soc_uid);
+> +	if (soc_uid_h) {
+> +		soc_dev_attr->serial_number = kasprintf(GFP_KERNEL, "%016llX%016llX",
+> +							soc_uid_h, soc_uid);
+> +	} else {
+> +		soc_dev_attr->serial_number = kasprintf(GFP_KERNEL, "%016llX", soc_uid);
+> +	}
 
+Unnecessary braces for single statement.
+
+Also it would be nice to have a newline here.
+
+Shawn
+
+>  	if (!soc_dev_attr->serial_number) {
+>  		ret = -ENOMEM;
+>  		goto free_rev;
+> -- 
+> 2.37.1
 > 
-> 
->>  }
->>  
->>  #define PMUV3_INIT_SIMPLE(name)						\
