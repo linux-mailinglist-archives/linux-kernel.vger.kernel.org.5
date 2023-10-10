@@ -2,93 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B777BF1F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 06:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E36F7BF1F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 06:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441896AbjJJEcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 00:32:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40956 "EHLO
+        id S1442013AbjJJEeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 00:34:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376523AbjJJEcI (ORCPT
+        with ESMTP id S1376523AbjJJEeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 00:32:08 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D521593;
-        Mon,  9 Oct 2023 21:32:06 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-5041bb9ce51so6593866e87.1;
-        Mon, 09 Oct 2023 21:32:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696912325; x=1697517125; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9nKNkeB60RcbKm6PBPumuMk8T7ADkJrETtJNbo1qqOk=;
-        b=QkYtLvqgeZBo+muGmPfmDHF+W4IO0Z8kcszfW7pSpMUgWlt0ZIKA8zYaaa1dcp2DkP
-         4Qb+Of1dtcCAz2BaO5Ssqy+41nYCqeEphBWsRxmH66ISgx9Mc0jpjjUsP6BGHZ7QmsX0
-         e6OFgtsVM/CY4PQKVUEMMfAn1tsLbByv7B6X9y2OWvXTIjr5f6OPgOzLu6HwyyyBYnD+
-         fZfzhJ8yLDsbNOjEvrmDp4QbF2A+h3v/tdEy36WbnYqhjlv2kOAPShWEVCm2pokSH3ib
-         4ASfGzxKgd7BEJFSsHYE/IKvk3laT/I898RprWD8SZdLqlSlhdFG98YHoNi0a3BewOyx
-         BZRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696912325; x=1697517125;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9nKNkeB60RcbKm6PBPumuMk8T7ADkJrETtJNbo1qqOk=;
-        b=uosltJ9A+AB0V5P3LiQl6yvPN8l9Yf9XHqLaNmkXazvLEEr8u3vY07VpP+lHy/8zbY
-         N07VGE7+Guy4ONwkehtfsOsB6fDNe5Q8PVb6BevNtagCnMRd+XRNTUCmeyrUTEFr/j2m
-         U/P7iaktsgN3kY7z6F986GKZ0mHjxeuXLbrDqqX+E2SO7oAxFp/m8jMRoUzvU4yrPkYT
-         1GfzZO/O9eHzvSO8ZE1jzvxTXsVWS7hXovpLfWaTOYvGpNTgxtGKCe9dDQbUvPEbjAMK
-         CPg4d0YZe98cI6RZrWPTMd4gk14Qf5lwhyallT1BJ4pbgcH0zYK53PsCQkMpWmirvqMI
-         5U2g==
-X-Gm-Message-State: AOJu0YxJr+w8TrC0ufEOqF7rTM4ei13kbnqqDG4oW4yx6WGf3m0Q7lbO
-        ODexvVug40UXTYRrYcqXd+V5LWph3PaTMA==
-X-Google-Smtp-Source: AGHT+IHWRx+A7cJPzt73D92sd+iDa7yee5wkK1MMtlIDbr0A0Xd9lNB4XQli8GkxmceQ14MGPzKuqw==
-X-Received: by 2002:a05:6512:3b28:b0:500:7de4:300e with SMTP id f40-20020a0565123b2800b005007de4300emr19372157lfv.58.1696912324724;
-        Mon, 09 Oct 2023 21:32:04 -0700 (PDT)
-Received: from dreambig.dreambig.corp ([58.27.187.115])
-        by smtp.gmail.com with ESMTPSA id i12-20020a5d630c000000b00326b8a0e817sm11351688wru.84.2023.10.09.21.32.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 21:32:04 -0700 (PDT)
-From:   Muhammad Muzammil <m.muzzammilashraf@gmail.com>
-To:     sth@linux.ibm.com, hoeppner@linux.ibm.com
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Muhammad Muzammil <m.muzzammilashraf@gmail.com>
-Subject: [PATCH] drivers: s390: dasd_int.h: resolved spelling mistake
-Date:   Tue, 10 Oct 2023 09:31:40 +0500
-Message-Id: <20231010043140.28416-1-m.muzzammilashraf@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 10 Oct 2023 00:34:03 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F10559F;
+        Mon,  9 Oct 2023 21:34:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1696912439;
+        bh=b4dmO715+PkY75cuPttmUofJoX043FDKuWoDSSEaTis=;
+        h=Date:From:To:Cc:Subject:From;
+        b=pud/NdiLgAzVm/W96EGueq7lbhqtPJHL2/eE2fgengt7kUXMIR1Eovy+aIyWMUfl3
+         nfAD6iWR+BeyUmQOlzjiL6jzXtbHxxTNMIq/uM8rM4wwLaapXkjhTXYSm4bwJV5Dhn
+         75Wn+TZtdj8fDjGzbFI4Q9GT6wi5/vxhypXNJZ3MZ6uGo1816rx10x1x64IA+S69Rb
+         +Ydj1j+2GqlY3a9bCUnHHqavWrgxAxqxHraLEe8vYfpjIQd7YGG4iLgc4e7rOgOZ6U
+         g9s/S36K4lll9ADrv+aYkQbhB/G/nOyvFoXyv6LkAlyG4YRoPzVucPlwUx5nRTLGV/
+         wRssDtFohqjdA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S4NMS34xlz4xMC;
+        Tue, 10 Oct 2023 15:33:56 +1100 (AEDT)
+Date:   Tue, 10 Oct 2023 15:33:54 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Shuah Khan <skhan@linuxfoundation.org>, Willy Tarreau <w@1wt.eu>,
+        Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?= <thomas@t-8ch.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patches in the nolibc tree
+Message-ID: <20231010153354.2357ee1c@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/fLdljhEBZ4LW/Yu/a3VVNac";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-resolved typing mistake from pimary to primary
+--Sig_/fLdljhEBZ4LW/Yu/a3VVNac
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Muhammad Muzammil <m.muzzammilashraf@gmail.com>
----
- drivers/s390/block/dasd_int.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi all,
 
-diff --git a/drivers/s390/block/dasd_int.h b/drivers/s390/block/dasd_int.h
-index 2e663131adaf..1b1b8a41c4d4 100644
---- a/drivers/s390/block/dasd_int.h
-+++ b/drivers/s390/block/dasd_int.h
-@@ -283,7 +283,7 @@ struct dasd_pprc_dev_info {
- 	__u8 secondary;		/* 7       Secondary device address */
- 	__u16 pprc_id;		/* 8-9     Peer-to-Peer Remote Copy ID */
- 	__u8 reserved2[12];	/* 10-21   reserved */
--	__u16 prim_cu_ssid;	/* 22-23   Pimary Control Unit SSID */
-+	__u16 prim_cu_ssid;	/* 22-23   Primary Control Unit SSID */
- 	__u8 reserved3[12];	/* 24-35   reserved */
- 	__u16 sec_cu_ssid;	/* 36-37   Secondary Control Unit SSID */
- 	__u8 reserved4[90];	/* 38-127  reserved */
--- 
-2.27.0
+The following commits are also in the rcu tree as different commits
+(but the same patches):
 
+  1b831eb43176 ("tools/nolibc: string: Remove the `_nolibc_memcpy_down()` f=
+unction")
+  3a7296c94dfa ("tools/nolibc: x86-64: Use `rep stosb` for `memset()`")
+  3f79a57865b3 ("selftests/nolibc: libc-test: avoid -Wstringop-overflow war=
+nings")
+  9e9dcee894f8 ("selftests/nolibc: use -nostdinc for nolibc-test")
+  a04fd4052251 ("tools/nolibc: add stdarg.h header")
+  ab663cc32912 ("tools/nolibc: automatically detect necessity to use pselec=
+t6")
+  bd216cb8d814 ("tools/nolibc: don't define new syscall number")
+  c6a15707d1c3 ("tools/nolibc: string: Remove the `_nolibc_memcpy_up()` fun=
+ction")
+  d09e2b033a9f ("tools/nolibc: avoid unused parameter warnings for ENOSYS f=
+allbacks")
+  d7f2a69857ce ("MAINTAINERS: nolibc: update tree location")
+  dbb6448b4263 ("selftests/nolibc: allow building i386 with multiarch compi=
+ler")
+  e6401064e32b ("tools/nolibc: x86-64: Use `rep movsb` for `memcpy()` and `=
+memmove()`")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/fLdljhEBZ4LW/Yu/a3VVNac
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUk1DMACgkQAVBC80lX
+0GxT8Qf/dFIcGfKYxHGeJDx4KTS4Dw+2toLuNxxwA7OfRnBGMaH1Tzn6cr8iLWGr
+JsVyYrQamnfrbVPmWDixYaO5Bz7zOOKbVNkCj5nL0ZBmivgwThEu7YOOVbehE9V2
+IKPVkrXNzx5d8cm9/cqFHziyDOWvDat8/FU+SThHKPd7uQZpvQ9O5kAKFxUY42Ir
+z9FggyjjQbRaS4wvuzKUdx+iIdTkg7s0wDmhTJ0uAEN8fBu/IrHEqUCt5CorHySj
+djIX6hiMPvhxsesgoBensxwfdLdCmVwz9iM8Y/YaA1I+OXR6UbSjY/2gOWEVQV1n
+QcmlcMDZnRSj+xCr27EzfkQSAy4wEw==
+=/LsU
+-----END PGP SIGNATURE-----
+
+--Sig_/fLdljhEBZ4LW/Yu/a3VVNac--
