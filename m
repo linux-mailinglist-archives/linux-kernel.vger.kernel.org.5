@@ -2,198 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 437BA7C0105
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEB5F7C0107
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233612AbjJJQCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 12:02:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44118 "EHLO
+        id S233619AbjJJQDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 12:03:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233532AbjJJQCs (ORCPT
+        with ESMTP id S233597AbjJJQDM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 12:02:48 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 542F8B9
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:02:45 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696953761;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+Rn5Os1D6mbuIatFwguyX+3/LudvCCUS08zsghsg2yU=;
-        b=flyvWYxF6QixzAxq8OaXHWfBr2icL73xA8nmgYR4T3mYDseJc97PUXgW1uS1kwYet3QwRQ
-        6Q1AKo71jvLGT9m4cRgm2lgciywjNGz8oSpGMIwd2CIDfWi6ZLN9DH4P9jN5WI7oEkfHDm
-        pHrjGLKOdSgMkVrqmAEPHo87nDQ8352N/SMQ2cPEJ36E4IcFBSNR/pQ4XZtoey+/rXsw9J
-        JXd223dgv8xKfk3tftTKKD2ccGKUE5HKD6POOoMrBt5dN9TYBlwSYwn7OVPvsB+5IDMs4A
-        VN0Ac7HUYe5mU3tGS94eqhj2ag/lm/bjbKd7Hdb5L2ZcI0X/35saoLLW5p8fbg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696953761;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+Rn5Os1D6mbuIatFwguyX+3/LudvCCUS08zsghsg2yU=;
-        b=kFzw+JYJPlK+uVCbLEFFt7QtPU4rNwqdykm69ZKpGVpXY0YKUtzD7Kx7hM0RPMvKmWqSlX
-        gZQ+QcTddQsbG5Dg==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Linus Torvalds <torvalds@linuxfoundation.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: panic context: was: Re: [PATCH printk v2 04/11] printk: nbcon:
- Provide functions to mark atomic write sections
-In-Reply-To: <ZSQc8ApLjlUpe80o@alley>
-References: <ZRGvn4m2NGCn3Pef@alley> <87h6n5teos.fsf@jogness.linutronix.de>
- <ZSADUKp8oJ2Ws2vC@alley> <87il7hv2v2.fsf@jogness.linutronix.de>
- <ZSQc8ApLjlUpe80o@alley>
-Date:   Tue, 10 Oct 2023 18:08:40 +0206
-Message-ID: <874jiy8nz3.fsf@jogness.linutronix.de>
+        Tue, 10 Oct 2023 12:03:12 -0400
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2043.outbound.protection.outlook.com [40.107.13.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28EF7D6;
+        Tue, 10 Oct 2023 09:03:08 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LvYB+tu94G/KwNRaA4JMkVXoty8hFo4mVpyUCCbR2ARYpE0Zf3yzq83u7MLb4CBP9gNUkJcA8RfApO/QjcfrDiItI4hXpXFDRU8TZyOKW8oXE054b4On9s7r/x6h6EQVoBnd6N2+G84WNMHxx5QphQ0LEZpWptX+aLAgmkGu6fDS7A925gXO7S7YJYHf3yCBz5/Q2u2qVUfpOa/2i4xSPWEfEDvlopUSL7MuBSHnMmXqZC51MkN9JS3GLb+EnhUzCJ3GuA/VhkLwB+Uq4Yhp1AhqPBLcGqxlBiCz9QIODDeYsaHaplVxK4Q2XA/+miQHEzgH4JcgiGnShofKpaxLSw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Ipg9p20F3+8v6FSXXLuGS/+nbNyPLkLEcrm6HhSyKpo=;
+ b=e5e+KyAtomhqRLdyvuCVXcfvJIvQ96Zhaukdx8HpsFpJUrI811stYvkP5YqCJpZRY1dqkAjQ5GFfEuJmX7yEvJ8kGQLTUTWwly3VNdzoVbsrROma1n9Nz8NgGf7hIn6DC/vqlX852vGszGV3moRvaKm+2ggwoRa1oRGwMMfVCWqyCBxGfJb1NOhTaVEI7ARkzvwhCWY4mZBuqCz6taeH9NcEV9aw4grFDwDBPRYYpT4k7bHfN4nS+ZVE80ckOyC3vXy2yQujFKNQcDMDfEbHBYKYM4actXozMraJg6SeWkc280VNzVmE3I5F6Ft+cqbPtrJM+deVDvScV0GKApSywA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ipg9p20F3+8v6FSXXLuGS/+nbNyPLkLEcrm6HhSyKpo=;
+ b=iYqEpVbiHCeLMQH8MAB/hwRP6+/8O61/7+vAnbTU5wdgvySk+1CU6Hm8QFK3Jop6R5v+lz5wlBoHRu+Fi/sD9T7h55sHyyGWOGW+HVbD2NxrOsNUNC9Ye7CVEB6L8ruDo6Nueu2LljQNG1MHh3rJYNwjH6UYTxriVBJzThuCzZg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by AM8PR04MB8020.eurprd04.prod.outlook.com (2603:10a6:20b:244::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Tue, 10 Oct
+ 2023 16:03:05 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
+ 16:03:04 +0000
+Date:   Tue, 10 Oct 2023 12:02:56 -0400
+From:   Frank Li <Frank.li@nxp.com>
+To:     Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc:     hch@infradead.org, bhelgaas@google.com,
+        christophe.jaillet@wanadoo.fr, imx@lists.linux.dev, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        minghuan.Lian@nxp.com, mingkai.hu@nxp.com, robh@kernel.org,
+        roy.zang@nxp.com
+Subject: Re: [PATCH v3 1/1] PCI: layerscape-ep: set 64-bit DMA mask
+Message-ID: <ZSV1sINV/2GrAYFr@lizhi-Precision-Tower-5810>
+References: <20230926140445.3855365-1-Frank.Li@nxp.com>
+ <169695244699.95067.12901655371819245761.b4-ty@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <169695244699.95067.12901655371819245761.b4-ty@kernel.org>
+X-ClientProxiedBy: BY3PR03CA0008.namprd03.prod.outlook.com
+ (2603:10b6:a03:39a::13) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AM8PR04MB8020:EE_
+X-MS-Office365-Filtering-Correlation-Id: 16880fa5-f364-4a33-55ad-08dbc9aa6317
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xSWDK2QRKHFr73B1HBSQXAZMrVBIxrWK/SLj4P9fqXC/SV7DKGf9p/ywh9o/1+NssliQEYOB1f0SLxFhTl37hT2o6+UYZb4muzRnrGqT88Hw0/YeILGLcReKHCACQmWh1ZZcdFkFrBZ6RRrXiNjQMXFelQhEZuWlE+8qBMCAj/mYicZEPRTizs08YUa3PGRz8pUe54ggtLqYoI0q0RvfbX+ty6pV4WNTeI433s2ys1STuZW9NSisXyw2OY+7qksjlXGofB7VS23kvKjFT7OqjlzYkoGxaLeZy9ooJmVPz8HMsAukh4V4PdDp4mEnRuC5cShS6KOtQZl9IBxGumlWtqySOh7P/JbhVqCa0wuUGlfGME5q6aD9mkJ6FAPKGk7TK+iUrprGiz6Wm+5is4i3QAwgp+C2aQP4iQpf9OqYXd3RKywXtyJxRWqvZnY5pHFiHkB+/saBmZTVpDfOAwmmVk2ggPpO9WQYCO9lZfnEko59CtNFZ2JTZVo0n4kttCIvot4Je5UhlDoYYz7dhTb5UQzUADg57aWSnJ7XeW9Pv1THLIkxB/pReaTg4qpnEXK9iQyFeg7QadcKHdyrJYHDjKWZreGIsK/b+9xjflJQ5j4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(39860400002)(366004)(346002)(396003)(376002)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(316002)(66476007)(66556008)(66946007)(6916009)(966005)(6486002)(41300700001)(5660300002)(7416002)(8936002)(4326008)(8676002)(4744005)(2906002)(33716001)(52116002)(6512007)(9686003)(86362001)(26005)(38350700002)(38100700002)(478600001)(6666004)(6506007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?7UOE7Emq+QjSvPA0zzTnSeiv9fbCjllTpXLzyz2hSEWuzXBXjW9y4eL6t/Yt?=
+ =?us-ascii?Q?6IkoqbGUKLUEm/zCUVgFh8ci4CjXxMF6VF186X6xSWB0zA71h9zcI6v6RUVL?=
+ =?us-ascii?Q?9mckPZhtwuYtHg6Xyj0PLCLhIOiWPxhGH1iJ46Ap3xRJc8xYk3zGLVxjiZ1o?=
+ =?us-ascii?Q?ATCwMAeHihF+1Zs96FM9f7BfhgxGMXlFGzjSYvxeDv/36r7qFE61fWTkY1zu?=
+ =?us-ascii?Q?sgObKdx7E2x4QTX6laXaDYaX5QVc7UrIPWYRKmfx+7b+GjrHeD/yuBl94uZR?=
+ =?us-ascii?Q?Ut7ZzOS60Eba0AlfCbe+V2LPLuPkpAFLBDqrztoQI5GFAStt/O5oSmBN4RHp?=
+ =?us-ascii?Q?XymwrtOYt5GfZekOoaRJ8uCSAk9AtL9E90cCrmeLn/Tt2Uo/gMa/FUIQ3gva?=
+ =?us-ascii?Q?03mvGMoq/8YNKRgCKOb+XioXPpF2poDG7Vfi+2QoJeNb73zvId1+neg1tJfE?=
+ =?us-ascii?Q?QdOmPXwub0e72BzE1QAsLxu67/gf3ws1x4mhdEOo+QElsvtjlvbbonbgDFya?=
+ =?us-ascii?Q?KHp0SYKiDyI8af9KssSZzXYL5K/5UiQsihqWITOkahY1bDn0/NVsVFgqrMNp?=
+ =?us-ascii?Q?vCBUNo6RuwScEWgQGH0k1skvVKCJZIfmszAGi1zmiJfjjMe1j7nIGpP1WqEX?=
+ =?us-ascii?Q?XvEp+1Yd39ezARDtyvf8qy0hojXfItEAcuE0fHcR32gXiJS9Z2DPJu9TvrSp?=
+ =?us-ascii?Q?q+2rygpbXiqqSjOn3ToRnPWsdBtVXkNCmrEqWxJXuhtxTxaD9V7ws1Zkyo4Z?=
+ =?us-ascii?Q?v9EdHS3xUe5KKmCNopWvyp8q/IDcUfcBn/lW6MRaiRQajUKpBK96eL4gYM7F?=
+ =?us-ascii?Q?uiYGr2OtIBQCZI2QU+ddvW95uBKggM21VCi1D72/6F1CGLgJheFtwXoLOG5I?=
+ =?us-ascii?Q?JYNgBtvVA3MOjtulBWVv/sFW16IhSjv+e8FBjK1juY7DDlVZ54CloFz4XUrO?=
+ =?us-ascii?Q?NDbBW3U95k3J2LtPrKuvfd7iQuTTcy9GyX5eYqgA6GhV5dHg8ZOwi/W9V1D/?=
+ =?us-ascii?Q?asn4vXWESxt4yZuqKSDfa1qgy4nHkTHYpAeBbj12gvHZCflMrBBwGfqGaXrt?=
+ =?us-ascii?Q?J/CVJ/tJcUvkfe49/hz4CAisiy6rDN77V0xp9kkpiU0nb+UxBufDQsdnGmpt?=
+ =?us-ascii?Q?dcGvJ0PQZPVHhxFWDTHqxUilzyhxryRl3P3zvqU/rJL/vXwQtxCkiAwG9+/S?=
+ =?us-ascii?Q?eEuXXHXjuhzNbwYpdy7zgHj+2H87oNGoFkt9sJav6f+ye3LgnKCHXWYddNdR?=
+ =?us-ascii?Q?S0P4DUSi/R8nE4aXo4nUPMWvGc4UvzqQp+fuqZ5I4yX5u0hLa43zGcOIvxO3?=
+ =?us-ascii?Q?ID0HqI59BvbhcGNt5/PI7kPl2v160dXbukENQp+GG4MthCkAiOTpIWuUwMzV?=
+ =?us-ascii?Q?2BQwk0X5BBiTePKhTT2Oe0lCrQJyNtKXc5YGmtkTWJjokaqdlHOe7zZ+6GSU?=
+ =?us-ascii?Q?7hrSLm3r6sZDpw78Vvk2GSaAZXLKIgIHHxEY9t65RRJrkC1wlrOWr4RL+X/U?=
+ =?us-ascii?Q?LmHVgyULRk+rnf3oWUu8ptAfoduvKMeGD+yunA8PUiTT3tHziKx2x0DEkhv/?=
+ =?us-ascii?Q?NX6yTRZtcH11QlpvtrI4MKkrQBhFvZY8KSriNtYA?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 16880fa5-f364-4a33-55ad-08dbc9aa6317
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 16:03:04.8310
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JoFCt/0PlHcYIDxLXUj0yEkop+N0YIxm/aoBVIsQPMUA3XAKhw/OKcD+XX0aSQvoUEzaUINAD5OFaiAJU8OT7A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB8020
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-09, Petr Mladek <pmladek@suse.com> wrote:
-> We really have to distinguish emergency and panic context!
+On Tue, Oct 10, 2023 at 05:44:23PM +0200, Lorenzo Pieralisi wrote:
+> On Tue, 26 Sep 2023 10:04:45 -0400, Frank Li wrote:
+> > Set DMA mask and coherent DMA mask to enable 64-bit addressing.
+> > 
+> > 
+> 
+> Read this:
+> https://lore.kernel.org/linux-pci/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com
+> 
+> Find the issue with the commit log (that I fixed).
 
-OK.
+Do you means "set" should be "Set"?
 
->> The LPC2022 demo/talk was recorded:
->> 
->> https://www.youtube.com/watch?v=TVhNcKQvzxI
->> 
->> At 55:55 is where the situation occurred and triggered the conversation,
->> ultimately leading to this new feature.
->
-> Thanks for the link. My understanding is that the following scenario
-> has happened:
->
-> 1. System was booting and messages were being flushed using the kthread.
->
-> 2. WARN() happened. It printed the 1st line, took over the per-console
->    console lock and started flushing the backlog. There were still
->    many pending messages from the boot.
->
-> 3. NMI came and caused panic(). The panic context printed its first line,
->    took over the console from the WARN context, flushed the rest
->    of the backlog and continued printing/flushing more messages from
->    the panic() context.
->
->
-> Problem:
->
-> People complained that they saw only the first line from WARN().
-> The related detailed info, including backtrace, was missing.
->
-> It was because panic() interrupted WARN() before it was able
-> to flush the backlog and print/flush all WARN() messages.
+Frank
 
-Thanks for taking the time to review it in detail.
+> 
+> This does not apply to v6.6-rc1 so I tweaked it,
+> check that everything is OK please.
+> 
+> Applied to controller/layerscape, thanks!
 
-> Proposed solution:
->
-> WARN()/emergency context should first store the messages and
-> flush them at the end.
->
-> It would increase the chance that all WARN() messages will
-> be stored in the ring buffer before NMI/panic() is called.
->
-> panic() would then flush all pending messages including
-> the stored WARN() messages.
+Thanks, everthing is good!
 
-OK.
-
-> Important:
->
-> The problem is that panic() interrupted WARN().
-
-Ack.
-
->> You may also want to reread my summary:
->>
->> https://lore.kernel.org/lkml/875yheqh6v.fsf@jogness.linutronix.de
->
-> Again, thanks for the pointer. Let me paste 2 paragraphs here:
->
-> <paste>
-> - Printing the backlog is important! If some emergency situation occurs,
->   make sure the backlog gets printed.
->
-> - When an emergency occurs, put the full backtrace into the ringbuffer
->   before flushing any backlog. This ensures that the backtrace makes it
->   into the ringbuffer in case a panic occurs while flushing the backlog.
-> </paste>
->
-> My understanding is:
->
-> 1st paragraph is the reason why:
->
->    + we have three priorities: normal, emergency, panic
->
->    + messages in normal context might be offloaded to kthread
->
->    + emergency and panic context should try to flush the messages
->      from this context.
->
->
-> 2nd paragraph talks about that emergency context should first store
-> the messages and flush them later. And the important part:
->
->      "in case a panic occurs while flushing the backlog.
->
->      => panic might interrupt emergency
->
-> It clearly distinguishes emergency and panic context.
->
->
->> as well as Linus' follow-up message:
->> 
->> https://lore.kernel.org/lkml/CAHk-=wieXPMGEm7E=Sz2utzZdW1d=9hJBwGYAaAipxnMXr0Hvg@mail.gmail.com
->
-> IMHO, the important part is:
->
-> <paste>
-> Yeah, I really liked the notion of doing the oops with just filling
-> the back buffer but still getting it printed out if something goes
-> wrong in the middle.
-> </paste>
->
-> He was talking about oops => emergency context
->
-> Also he wanted to get it out when something goes wrong in the middle
->    => panic in the middle ?
->
->
-> And another paragraph:
->
-> <paste>
-> I doubt it ends up being an issue in practice, but basically I wanted
-> to just pipe up and say that the exact details of how much of the back
-> buffer needs to be flushed first _could_ be tweaked if it ever does
-> come up as an issue.
-> </paste>
->
-> Linus had doubts that there might be problems with too long backlog
-> in practice. And I have the doubts as well.
->
-> And this is my view. The deferred flush is trying to solve a corner
-> case and we are forgetting what blocked printk kthreads >10 years.
-
-OK. Thank you for the detailed analysis.
-
-For v3 I will do something similar to what you proposed [0], except that
-I will use a per-cpu variable (to track printk emergency nesting)
-instead of adding a new field to the task struct.
-
-John Ogness
-
-[0] https://lore.kernel.org/lkml/ZRLBxsXPCym2NC5Q@alley/
+> 
+> [1/1] PCI: layerscape-ep: set 64-bit DMA mask
+>       https://git.kernel.org/pci/pci/c/81ef01bc5934
+> 
+> Thanks,
+> Lorenzo
