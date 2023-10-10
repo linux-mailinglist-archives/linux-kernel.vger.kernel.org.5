@@ -2,209 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BCA87BFF89
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 16:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B7A7BFF8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 16:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232784AbjJJOqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 10:46:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50094 "EHLO
+        id S232853AbjJJOr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 10:47:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232603AbjJJOqo (ORCPT
+        with ESMTP id S232517AbjJJOrZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 10:46:44 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C667B9;
-        Tue, 10 Oct 2023 07:46:42 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9a6190af24aso1001664766b.0;
-        Tue, 10 Oct 2023 07:46:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696949201; x=1697554001; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=w1dSpfK0+acBDpzpVFgyfg1T22Ag8ukFcTmpvayQbNw=;
-        b=N25Jh0YzPbSYdObo4IhOM7lRPhwjCr/R2sTYRT8fhjU1L5PVjI/3DVcTyHuKSMk0na
-         X1Uvzv5qfGeIdg9bDsyxSw+DHops8oYugAF7If7nX2ZpNKhqwt4l7qKn3gdXw3USEM1w
-         2N7Lr/wcVqMyJ6W99z6E5b0BApjA74wTvGub+03eCPBL1rCEH6yMURIsuBLKgT16V4fx
-         +66j3P3tSdAO4yla4paS41oz1mGommJYgqaJ9EiIpjMulhMTWju454m6Hzud4XVO+ak1
-         lMfMnQh1Sx33dNcBDOKv2xG1NZztj3o4sgiSY0t47LjfEFMbRyKydXE9Owhy4wdwsm3T
-         XX3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696949201; x=1697554001;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=w1dSpfK0+acBDpzpVFgyfg1T22Ag8ukFcTmpvayQbNw=;
-        b=M/XqE4JlNioMpYV8IOeg8aUep9LArmahOUGEP/5yBCc9TRUi1ijC48AU/p1iNxn7tf
-         t6HPSXOCcKwIgdomfI/xtPHb/++82olUjccwQVG59mRK+NmpABFrtXzckWSWkIlNxBXF
-         8vaO5GaHYCv8Lh/B0PVdyZuzdtbxZwrN55ynmxqUjhc3gBKgym3aTN9dwU1WvngmEVPz
-         0o8OZtoLw94cMj9Ac05lPHA8Hqwlmd6iRt317zgOzJbwFFICL2UQ+LJRroG/6oKTHLpE
-         lx6aW/U4JymJGsd48mLa8abNRWBGzGMjnf3S5p1RvDWOBf4GiMMcw8MU7e61HBxSr6Qk
-         zxhQ==
-X-Gm-Message-State: AOJu0Yz7Qteu2nqhpI4qo/J3zepByE4VeF17lLVdiyu65CvmIm83ByM7
-        EaEAlgKy0PjuwTyHKJOY5AY=
-X-Google-Smtp-Source: AGHT+IGFq0/YtecTNhAsBtDYRof/npP23rDl+BWVDMl8f0Gv10Laxrua3LDSDT4sg0EpxwMgZmklyA==
-X-Received: by 2002:a17:906:20e:b0:9ad:7e21:5a6d with SMTP id 14-20020a170906020e00b009ad7e215a6dmr16078111ejd.33.1696949200695;
-        Tue, 10 Oct 2023 07:46:40 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id t8-20020a17090616c800b009a1be9c29d7sm8681309ejd.179.2023.10.10.07.46.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 07:46:40 -0700 (PDT)
-Message-ID: <a2a875ca30b2629afe6f9804eb43572ac81dcf42.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: Detect jumping to reserved code during
- check_cfg()
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Hao Sun <sunhao.th@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 10 Oct 2023 17:46:38 +0300
-In-Reply-To: <20231010-jmp-into-reserved-fields-v2-1-3dd5a94d1e21@gmail.com>
-References: <20231010-jmp-into-reserved-fields-v2-1-3dd5a94d1e21@gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.0 
+        Tue, 10 Oct 2023 10:47:25 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D26AAC;
+        Tue, 10 Oct 2023 07:47:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24DB6C433C7;
+        Tue, 10 Oct 2023 14:47:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696949243;
+        bh=J1s23ow2XteM/tmUX3lBR7oFYuMZv2lwbzP8uSVNZz0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pRDF+pb4lJfxDDooH0gM0f+Vo+adWlwKsKMTUNT/rynJslzg91V0CgKy8yfAZkGEL
+         oSVNafJupc2bxv2p8phqCDJNtmUoYT2IULKqaALy+Ns2IMTnNqZ51wbWq1EmEQZdCy
+         wX+zEW80jeO6YWjiorLP6eVEBzbOUs/Zwb+U5ZA3Y2Q+SMOjakJzbu4yfBJEtZt0+t
+         5gTkWv399m777wnWbB560WdOeDrXETlsZmkMjQ9EPYbJFAYlse9NVv/81tD/141tu3
+         PBaTyw1DzUJIWThqEAYz843qgCh38qe4RoTlncON+vohEKn+oK+ZMnmt//y0ejrUK7
+         KXgMyo0zHdfGQ==
+Date:   Tue, 10 Oct 2023 15:47:34 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: sanity check available_scan_masks array
+Message-ID: <20231010154734.7728fe2b@jic23-huawei>
+In-Reply-To: <0d05bf24-caa6-0f86-b531-22dc08b9cadc@gmail.com>
+References: <ZRvjuZaQWdZw1U1I@dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi>
+        <20231005163026.2c7707de@jic23-huawei>
+        <751a87c9-a4aa-4e06-1d12-1e2b1a3487de@gmail.com>
+        <20231010110419.00899e0e@jic23-huawei>
+        <0d05bf24-caa6-0f86-b531-22dc08b9cadc@gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-10-10 at 14:03 +0200, Hao Sun wrote:
-> Currently, we don't check if the branch-taken of a jump is reserved code =
-of
-> ld_imm64. Instead, such a issue is captured in check_ld_imm(). The verifi=
-er
-> gives the following log in such case:
->=20
-> func#0 @0
-> 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
-> 0: (18) r4 =3D 0xffff888103436000       ; R4_w=3Dmap_ptr(off=3D0,ks=3D4,v=
-s=3D128,imm=3D0)
-> 2: (18) r1 =3D 0x1d                     ; R1_w=3D29
-> 4: (55) if r4 !=3D 0x0 goto pc+4        ; R4_w=3Dmap_ptr(off=3D0,ks=3D4,v=
-s=3D128,imm=3D0)
-> 5: (1c) w1 -=3D w1                      ; R1_w=3D0
-> 6: (18) r5 =3D 0x32                     ; R5_w=3D50
-> 8: (56) if w5 !=3D 0xfffffff4 goto pc-2
-> mark_precise: frame0: last_idx 8 first_idx 0 subseq_idx -1
-> mark_precise: frame0: regs=3Dr5 stack=3D before 6: (18) r5 =3D 0x32
-> 7: R5_w=3D50
-> 7: BUG_ld_00
-> invalid BPF_LD_IMM insn
->=20
-> Here the verifier rejects the program because it thinks insn at 7 is an
-> invalid BPF_LD_IMM, but such a error log is not accurate since the issue
-> is jumping to reserved code not because the program contains invalid insn=
-.
-> Therefore, make the verifier check the jump target during check_cfg(). Fo=
-r
-> the same program, the verifier reports the following log:
->=20
-> func#0 @0
-> jump to reserved code from insn 8 to 7
->=20
-> Also adjust existing tests in ld_imm64.c, testing forward/back jump to
-> reserved code.
->=20
-> Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+On Tue, 10 Oct 2023 15:56:22 +0300
+Matti Vaittinen <mazziesaccount@gmail.com> wrote:
 
-Please see a nitpick below.
+> On 10/10/23 13:04, Jonathan Cameron wrote:
+> > On Fri, 6 Oct 2023 14:10:16 +0300
+> > Matti Vaittinen <mazziesaccount@gmail.com> wrote:
+> >   
+> >> Hi Again Jonathan.
+> >>
+> >> On 10/5/23 18:30, Jonathan Cameron wrote:  
+> >>> On Tue, 3 Oct 2023 12:49:45 +0300
+> >>> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
+> >>>      
+> >>>> When IIO goes through the available scan masks in order to select the
+> >>>> best suiting one, it will just accept the first listed subset of channels
+> >>>> which meets the user's requirements. If driver lists a mask which is a
+> >>>> subset of some of the masks previously in the array of
+> >>>> avaliable_scan_masks, then the latter one will never be selected.
+> >>>>
+> >>>> Add a warning if driver registers masks which can't be used due to the
+> >>>> available_scan_masks-array ordering.
+> >>>>
+> >>>> Suggested-by: Jonathan Cameron <jic23@kernel.org>
+> >>>> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>  
+> >>> Hi Matti
+> >>>
+> >>> Thanks for doing this.  A few comments inline + maybe we need to think
+> >>> about a unit test for the matching code. I feel we aren't pushing the
+> >>> corners of that in any drivers so far so it might bite us later.
+> >>>
+> >>> Still that's a job for another day.
+> >>>
+> >>> Jonathan
+> >>>      
+> >>>>
+> >>>> ---
+> >>>> The change was suggested by Jonathan here:
+> >>>> https://lore.kernel.org/lkml/20230924170726.41443502@jic23-huawei/
+> >>>> ---
+> >>>>    drivers/iio/industrialio-core.c | 57 +++++++++++++++++++++++++++++++++
+> >>>>    1 file changed, 57 insertions(+)
+> >>>>
+> >>>> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> >>>> index c77745b594bd..d4f37f4eeec0 100644
+> >>>> --- a/drivers/iio/industrialio-core.c
+> >>>> +++ b/drivers/iio/industrialio-core.c
+> >>>> @@ -1896,6 +1896,53 @@ static int iio_check_extended_name(const struct iio_dev *indio_dev)  
+> >>
+> >> ...
+> >>  
+> >>>> +
+> >>>> +	for (num_masks = 0; *av_masks; num_masks++)  
+> >>>
+> >>> I think we can't just check *av_masks - need bitmap_empty() as first
+> >>> long might be 0 but could be bits set in the next one.
+> >>>      
+> >>>> +		av_masks += longs_per_mask;  
+> >>
+> >> I did switch this to:
+> >> +       for (num_masks = 0; !bitmap_empty(av_masks, masklength);
+> >> num_masks++)
+> >> +               av_masks += longs_per_mask;
+> >>
+> >> but this kind of freaks me out.  
+> > 
+> > Good because I'm fairly sure you need to reduce the masklength int hat
+> > bitmap_empty as well.  It is getting a bit complex.  
+> 
+> Hm. As far as I can say the masklength is constant telling how many bits 
+> there is in one mask(?) I don't think we can reduce it. Idea is just to 
+> increment the av_masks pointer until we find the zero mask indicating 
+> end of an array. This is how we count the amount of masks in the array.
+I read it wrong  :(    Thought we were iterating over the longs not the
+sets of longs in each mask. oops. I read the same code further down correctly.
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+I blame spending whole day waiting for a plumber (who hasn't come... sigh)
 
-> ---
-> Changes in v2:
-> - Adjust existing test cases
-> - Link to v1: https://lore.kernel.org/bpf/20231009-jmp-into-reserved-fiel=
-ds-v1-1-d8006e2ac1f6@gmail.com/
-> ---
->  kernel/bpf/verifier.c                           | 7 +++++++
->  tools/testing/selftests/bpf/verifier/ld_imm64.c | 8 +++-----
->  2 files changed, 10 insertions(+), 5 deletions(-)
->=20
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index eed7350e15f4..725ac0b464cf 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -14980,6 +14980,7 @@ static int push_insn(int t, int w, int e, struct =
-bpf_verifier_env *env,
->  {
->  	int *insn_stack =3D env->cfg.insn_stack;
->  	int *insn_state =3D env->cfg.insn_state;
-> +	struct bpf_insn *insns =3D env->prog->insnsi;
-> =20
->  	if (e =3D=3D FALLTHROUGH && insn_state[t] >=3D (DISCOVERED | FALLTHROUG=
-H))
->  		return DONE_EXPLORING;
-> @@ -14993,6 +14994,12 @@ static int push_insn(int t, int w, int e, struct=
- bpf_verifier_env *env,
->  		return -EINVAL;
->  	}
-> =20
-> +	if (e =3D=3D BRANCH && insns[w].code =3D=3D 0) {
-> +		verbose_linfo(env, t, "%d", t);
-> +		verbose(env, "jump to reserved code from insn %d to %d\n", t, w);
-> +		return -EINVAL;
-> +	}
-> +
->  	if (e =3D=3D BRANCH) {
->  		/* mark branch target for state pruning */
->  		mark_prune_point(env, w);
-> diff --git a/tools/testing/selftests/bpf/verifier/ld_imm64.c b/tools/test=
-ing/selftests/bpf/verifier/ld_imm64.c
-> index f9297900cea6..c34aa78f1877 100644
-> --- a/tools/testing/selftests/bpf/verifier/ld_imm64.c
-> +++ b/tools/testing/selftests/bpf/verifier/ld_imm64.c
-> @@ -9,22 +9,20 @@
->  	BPF_MOV64_IMM(BPF_REG_0, 2),
->  	BPF_EXIT_INSN(),
->  	},
-> -	.errstr =3D "invalid BPF_LD_IMM insn",
-> -	.errstr_unpriv =3D "R1 pointer comparison",
-> +	.errstr =3D "jump to reserved code",
->  	.result =3D REJECT,
->  },
->  {
->  	"test2 ld_imm64",
->  	.insns =3D {
-> -	BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 0, 1),
->  	BPF_LD_IMM64(BPF_REG_0, 0),
-> +	BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 0, -2),
+> 
+> Caveat being that if driver has used single long '0' to indicate the end 
+> of an array, and if the masklength > 32 - we'll end up reading out of 
+> bounds. (as we agreed later in the mail. OTOH, we also agreed there does 
+> not seem to be drivers with masklength > 32 utilizing the 
+> available_scan_masks - so this is just trying to avoid problems in the 
+> future).
+> 
+> >>
+> >> I think in kernel we see two ways of constructing and passing arrays to
+> >> frameworks. One is creating a NULL terminated array, the other being an
+> >> array which size is given. The available_scan_masks is using the first
+> >> approach.
+> >>
+> >> The array represents bitmasks, which are thought to be of arbitrary
+> >> length. The type of array items is longs though. When building an arry
+> >> like this, it is easy to just do:
+> >>
+> >> unsigned long masks[] = {
+> >> 	mask1_hi,
+> >> 	mask1_lo,
+> >> 	mask2_hi,
+> >> 	mask2_lo,
+> >> 	...
+> >> 	maskN_lo,
+> >> 	/* sentinel */
+> >> 	0
+> >> }
+> >>
+> >> (By the way, I've always hated that 'sentinel' comment as it - in my
+> >> opinion - is not worth adding. I think the meaning of 0 should be
+> >> obvious, but here I just added it to alleviate the problem).
+> >>
+> >> Here, if I'm not mistaken, the check I implemented would go reading out
+> >> of the array bounds.  
+> > 
+> > It does indeed.
+> > 
+> >   
+> >>
+> >> Knowing how easy it would be slip the above array past my reviewing eyes
+> >> - I find this scary. And ugly part of this is that we can't detect this
+> >> in the iio-core side, because we have no way of knowing how big the
+> >> array and sentinel are. What makes this worse is that the core does:
+> >>
+> >> for (i = 0; i < indio_dev->num_channels; i++)
+> >>                           ml = max(ml, channels[i].scan_index + 1);
+> >>                   indio_dev->masklength = ml;
+> >>
+> >> so, masklength may not be what was set in driver.  
+> > 
+> > IIRC this is there to allow for sparse scan_index values.  Those are
+> > very rare, but I think there are a few drivers doing that because
+> > it allowed for slightly simpler code a long time back.  May not even
+> > matter today.  Key is that mask_length is big enough to allow the
+> > bits at all present scan_index values to be set.
+> > 
+> > So it should always match with the drivers where this is used to make
+> > sure available_scan_masks has the right number of longs per entry,
+> > but the drivers may need to be a little clever if they are both
+> > doing large numbers of channels and sparse scan_index values.
+> > AFAIK there are none doing that. Going further I don't recall any
+> > drivers that use the available_scan_masks stuff going beyond 32
+> > channels (so needing more than one unsigned long per element).  
+> 
+> I didn't find one either.
+> 
+> >> I did quick and dirty grep for "_scan_mask\[" in iio directory and
+> >> didn't spot any bigger than a few channels masks. Still, this makes me
+> >> worried.
+> >>
+> >> BTW: I did also:
+> >>
+> >> Author: Matti Vaittinen <mazziesaccount@gmail.com>
+> >> Date:   Fri Oct 6 13:53:11 2023 +0300
+> >>
+> >>       iio: buffer: use bitmap_empty() to find last mask
+> >>
+> >>       When IIO buffer code is scanning the array of available masks for
+> >>       matching the user's enable request to channel configuration
+> >> supported by
+> >>       driver, the code uses a 'check for long 0' as indication of last mask.
+> >>       This does not work right for channel masks greater than BITS_PER_LONG.
+> >>
+> >>       Use bitmap_empty() to find the last element in available_scan_masks
+> >>       array.
+> >>
+> >>       Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
+> >>       ---
+> >>       NOTE: This is potentially hazardous change. Please, don't pick without
+> >>       thorough check and understanding.
+> >>
+> >> diff --git a/drivers/iio/industrialio-buffer.c
+> >> b/drivers/iio/industrialio-buffer.c
+> >> index 176d31d9f9d8..1e59afddcf9a 100644
+> >> --- a/drivers/iio/industrialio-buffer.c
+> >> +++ b/drivers/iio/industrialio-buffer.c
+> >> @@ -413,7 +413,7 @@ static const unsigned long
+> >> *iio_scan_mask_match(const unsigned long *av_masks,
+> >>    {
+> >>           if (bitmap_empty(mask, masklength))
+> >>                   return NULL;
+> >> -       while (*av_masks) {
+> >> +       while (!bitmap_empty(av_masks, masklength)) {
+> >>                   if (strict) {
+> >>                           if (bitmap_equal(mask, av_masks, masklength))
+> >>                                   return av_masks;
+> >>
+> >> but this is just as fragile - for obvious reasons.  
+> > Ah. yes, that is indeed a bug.  I'm not sure your fix is particularly
+> > fragile though.  This comes back to us having no drivers that actually use
+> > big bitmaps yet.
+> > 
+> > Key is that we need the available_scan_masks null terminator to be the
+> > same length as any other entry - so if multiple unsigned longs needed
+> > then multiple 0's should be there.  
+> 
+> Exactly my thinking, and why I think this fix would be fragile. I am not 
+> convinced people would think of adding enough of zeroes.
+> 
+> > We should definitely document that
+> > and ideally add a test case.   We can bulk out the dummy driver
+> > to trigger these and provide an example of how available_scan_masks
+> > should be set.
+> >   
+> >>
+> >> One way around this would be to have the first bit in the long always
+> >> set for a valid mask - and take this into account when going through the
+> >> masks. It's probably somewhat more confusing than current code though -
+> >> but it would allow using just a single long (with all - or  at least
+> >> first - bits zero to indicate end of masks).  
+> > 
+> > Too complex.
+> >   
+> 
+> I think I agree. At least for as long as we don't actually have any 
+> available_scan_masks users with masklength > 32
+> 
+> >>
+> >> Other option I see is to just error out if available_scan_masks array is
+> >> given with larger than one 'long' wide masks and worry things when this
+> >> breaks.  
+> > 
+> > That would kick the problem into the long grass.  
+> 
+> Well, not 100% sure I interpret the idiom correctly ;) In any case, I'd 
+> say this would indeed postpone dealing with the problem to the future. 
 
-This change is not really necessary, the test reports same error
-either way.
+It does indeed mean that!  Sorry bad habit to use idioms in discussions like
+this.
 
->  	BPF_LD_IMM64(BPF_REG_0, 0),
->  	BPF_LD_IMM64(BPF_REG_0, 1),
->  	BPF_LD_IMM64(BPF_REG_0, 1),
->  	BPF_EXIT_INSN(),
->  	},
-> -	.errstr =3D "invalid BPF_LD_IMM insn",
-> -	.errstr_unpriv =3D "R1 pointer comparison",
-> +	.errstr =3D "jump to reserved code",
->  	.result =3D REJECT,
->  },
->  {
->=20
-> ---
-> base-commit: 3157b7ce14bbf468b0ca8613322a05c37b5ae25d
-> change-id: 20231009-jmp-into-reserved-fields-fc1a98a8e7dc
->=20
-> Best regards,
+> To the point we actually seem to have a problem. The "long grass" as if 
+> hiding the problem is something we can avoid by adding something like:
+> 
+> if (masklength > 32 && idev->available_scan_masks) {
+> 	/*
+> 	 * Comment mowing the long grass.
+> 	 */
+> 	dev_err( ...);
+> 	return -EINVAL;
+> }
+> 
+> to the device registration.
+> 
+> >>
+> >> Anyways, I don't like using bitmap_empty() for array of bitmaps which
+> >> may be longer than BITS_PER_LONG unless we can sanity check the size of
+> >> the array...
+> >>
+> >> How do you feel about this?  
+> > 
+> > Agreed it's problematic as that null terminator isn't clearly forced to
+> > be big enough.  Hmm. Can we cheat for any drivers that actually need large
+> > masks (when they come along) and use an appropriate 2D array.  
+> 
+> I think we could. Or, maybe develop some mask initialization macro 
+> magic. It'd just be cool if one did not need to do things differently 
+> for multi long masks.
+> 
+> > unsigned long available_masks[][2] = {
+> > 	{mask0_ll, mask0_hl},
+> > 	{mask0_ll, mask0_hl},
+> > 	{}
+> > };  
+> 
+> don't know how would it work to have
+> unsigned long available_masks[][1] = {
+> 	{mask0},
+> 	{mask1},
+> 	{}
+> };
+> 
+> for regular masks with 1 long / mask as well? At first look it seems 
+> horrible to me but at least it would be a standard :) Don't know if 
+> there is a sane way to make a macro for it.
+
+Agreed - ugly for one entry so we keep those flat which means we have
+to keep our eyes open for the multiple long version.
+
+I've never come up with a sane way to do a macro to set bits
+in multiple longs or seen one unfortunately.
+
+> 
+> > 	iio_dev->available_scan_masks = (unsigned long *)available_masks;
+> > 
+> > If we put such an example into the dummy / example driver then that might
+> > act to avoid us getting bugs in future + test the fix you have above and
+> > related.  
+> 
+> Well, at least it shouldn't hurt to have some example - although I'm 
+> still tempted to use the "long grass" - option ;)
+
+That is probably a good idea for now.  Though we are carrying other infrastructure
+to support this eventually and it feels weird to error out on it whilst we have
+code to support it (assuming that terminator is long enough).
+
+
+> 
+> Yours,
+> 	-- Matti
+> 
 
