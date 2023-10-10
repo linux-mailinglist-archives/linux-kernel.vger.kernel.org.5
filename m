@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D5A7BFB7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EDA17BFB7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231751AbjJJMd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 08:33:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53362 "EHLO
+        id S231844AbjJJMd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 08:33:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231480AbjJJMdZ (ORCPT
+        with ESMTP id S231371AbjJJMdZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 10 Oct 2023 08:33:25 -0400
 Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C443DB4
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C54B0
         for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:33:23 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S4Zwd3MMszVlR7;
-        Tue, 10 Oct 2023 20:29:53 +0800 (CST)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S4Zw61yY1zNnx2;
+        Tue, 10 Oct 2023 20:29:26 +0800 (CST)
 Received: from localhost.localdomain (10.50.163.32) by
  canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -31,10 +31,12 @@ CC:     <daniel.lezcano@linaro.org>, <tglx@linutronix.de>,
         <wanghuiqiang@huawei.com>, <wangwudi@hisilicon.com>,
         <guohanjun@huawei.com>, <yangyicong@hisilicon.com>,
         <linuxarm@huawei.com>
-Subject: [RFC PATCH 0/3] Add HiSilicon system timer driver
-Date:   Tue, 10 Oct 2023 20:30:30 +0800
-Message-ID: <20231010123033.23258-1-yangyicong@huawei.com>
+Subject: [RFC PATCH 1/3] clocksource/drivers/arm_arch_timer: Split the function of __arch_timer_setup()
+Date:   Tue, 10 Oct 2023 20:30:31 +0800
+Message-ID: <20231010123033.23258-2-yangyicong@huawei.com>
 X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20231010123033.23258-1-yangyicong@huawei.com>
+References: <20231010123033.23258-1-yangyicong@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -53,37 +55,157 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yicong Yang <yangyicong@hisilicon.com>
 
-HiSilicon system timer is a memory mapped platform timer compatible with
-the arm's generic timer specification. The timer supports both SPI and
-LPI interrupt and can be enumerated through ACPI DSDT table. Since the
-timer is fully compatible with the spec, it can reuse most codes of the
-arm_arch_timer driver. However since the arm_arch_timer driver only
-supports GTDT and SPI interrupt, this series support the HiSilicon system
-timer by:
+Currently we use __arch_timer_setup() to setup and register clockevents
+device for both cp15 and memory-mapped timer. However there's not too
+much in common of the setups for cp15 and memory-mapped timer. So split
+the setup function for cp15 and memory-mapped timer into separate
+functions. This will also allows future extension for platform timers.
 
-- refactor some of the arm_arch_timer codes and export the function to
-  register a arch memory timer by other drivers
-- retrieve the IO memory and interrupt resource through DSDT in a separate
-  driver, then setup and register the clockevent device reuse the arm_arch_timer
-  function
+Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+---
+ drivers/clocksource/arm_arch_timer.c | 105 ++++++++++++++-------------
+ 1 file changed, 54 insertions(+), 51 deletions(-)
 
-Using LPI for the timer is mentioned in BSA Spec section 3.8.1 (DEN0094C 1.0C).
-
-Yicong Yang (3):
-  clocksource/drivers/arm_arch_timer: Split the function of
-    __arch_timer_setup()
-  clocksource/drivers/arm_arch_timer: Extend and export
-    arch_timer_mem_register()
-  clocksource/drivers: Add HiSilicon system timer driver
-
- drivers/clocksource/Kconfig          |  10 +++
- drivers/clocksource/Makefile         |   1 +
- drivers/clocksource/arm_arch_timer.c | 123 +++++++++++++++------------
- drivers/clocksource/timer-hisi-sys.c |  68 +++++++++++++++
- include/clocksource/arm_arch_timer.h |   2 +
- 5 files changed, 148 insertions(+), 56 deletions(-)
- create mode 100644 drivers/clocksource/timer-hisi-sys.c
-
+diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
+index 7dd2c615bce2..2e20a8ec50ca 100644
+--- a/drivers/clocksource/arm_arch_timer.c
++++ b/drivers/clocksource/arm_arch_timer.c
+@@ -849,65 +849,68 @@ static u64 __arch_timer_check_delta(void)
+ 	return CLOCKSOURCE_MASK(arch_counter_get_width());
+ }
+ 
+-static void __arch_timer_setup(unsigned type,
+-			       struct clock_event_device *clk)
++static void __arch_timer_setup_cp15(struct clock_event_device *clk)
+ {
++	typeof(clk->set_next_event) sne;
+ 	u64 max_delta;
+ 
+ 	clk->features = CLOCK_EVT_FEAT_ONESHOT;
+ 
+-	if (type == ARCH_TIMER_TYPE_CP15) {
+-		typeof(clk->set_next_event) sne;
+-
+-		arch_timer_check_ool_workaround(ate_match_local_cap_id, NULL);
+-
+-		if (arch_timer_c3stop)
+-			clk->features |= CLOCK_EVT_FEAT_C3STOP;
+-		clk->name = "arch_sys_timer";
+-		clk->rating = 450;
+-		clk->cpumask = cpumask_of(smp_processor_id());
+-		clk->irq = arch_timer_ppi[arch_timer_uses_ppi];
+-		switch (arch_timer_uses_ppi) {
+-		case ARCH_TIMER_VIRT_PPI:
+-			clk->set_state_shutdown = arch_timer_shutdown_virt;
+-			clk->set_state_oneshot_stopped = arch_timer_shutdown_virt;
+-			sne = erratum_handler(set_next_event_virt);
+-			break;
+-		case ARCH_TIMER_PHYS_SECURE_PPI:
+-		case ARCH_TIMER_PHYS_NONSECURE_PPI:
+-		case ARCH_TIMER_HYP_PPI:
+-			clk->set_state_shutdown = arch_timer_shutdown_phys;
+-			clk->set_state_oneshot_stopped = arch_timer_shutdown_phys;
+-			sne = erratum_handler(set_next_event_phys);
+-			break;
+-		default:
+-			BUG();
+-		}
+-
+-		clk->set_next_event = sne;
+-		max_delta = __arch_timer_check_delta();
+-	} else {
+-		clk->features |= CLOCK_EVT_FEAT_DYNIRQ;
+-		clk->name = "arch_mem_timer";
+-		clk->rating = 400;
+-		clk->cpumask = cpu_possible_mask;
+-		if (arch_timer_mem_use_virtual) {
+-			clk->set_state_shutdown = arch_timer_shutdown_virt_mem;
+-			clk->set_state_oneshot_stopped = arch_timer_shutdown_virt_mem;
+-			clk->set_next_event =
+-				arch_timer_set_next_event_virt_mem;
+-		} else {
+-			clk->set_state_shutdown = arch_timer_shutdown_phys_mem;
+-			clk->set_state_oneshot_stopped = arch_timer_shutdown_phys_mem;
+-			clk->set_next_event =
+-				arch_timer_set_next_event_phys_mem;
+-		}
++	arch_timer_check_ool_workaround(ate_match_local_cap_id, NULL);
+ 
+-		max_delta = CLOCKSOURCE_MASK(56);
++	if (arch_timer_c3stop)
++		clk->features |= CLOCK_EVT_FEAT_C3STOP;
++	clk->name = "arch_sys_timer";
++	clk->rating = 450;
++	clk->cpumask = cpumask_of(smp_processor_id());
++	clk->irq = arch_timer_ppi[arch_timer_uses_ppi];
++	switch (arch_timer_uses_ppi) {
++	case ARCH_TIMER_VIRT_PPI:
++		clk->set_state_shutdown = arch_timer_shutdown_virt;
++		clk->set_state_oneshot_stopped = arch_timer_shutdown_virt;
++		sne = erratum_handler(set_next_event_virt);
++		break;
++	case ARCH_TIMER_PHYS_SECURE_PPI:
++	case ARCH_TIMER_PHYS_NONSECURE_PPI:
++	case ARCH_TIMER_HYP_PPI:
++		clk->set_state_shutdown = arch_timer_shutdown_phys;
++		clk->set_state_oneshot_stopped = arch_timer_shutdown_phys;
++		sne = erratum_handler(set_next_event_phys);
++		break;
++	default:
++		BUG();
+ 	}
+ 
++	clk->set_next_event = sne;
++	max_delta = __arch_timer_check_delta();
++
+ 	clk->set_state_shutdown(clk);
++	clockevents_config_and_register(clk, arch_timer_rate, 0xf, max_delta);
++}
++
++static void __arch_timer_setup_mem(struct clock_event_device *clk)
++{
++	u64 max_delta;
+ 
++	clk->features = CLOCK_EVT_FEAT_ONESHOT | CLOCK_EVT_FEAT_DYNIRQ;
++	clk->name = "arch_mem_timer";
++	clk->rating = 400;
++	clk->cpumask = cpu_possible_mask;
++	if (arch_timer_mem_use_virtual) {
++		clk->set_state_shutdown = arch_timer_shutdown_virt_mem;
++		clk->set_state_oneshot_stopped = arch_timer_shutdown_virt_mem;
++		clk->set_next_event =
++			arch_timer_set_next_event_virt_mem;
++	} else {
++		clk->set_state_shutdown = arch_timer_shutdown_phys_mem;
++		clk->set_state_oneshot_stopped = arch_timer_shutdown_phys_mem;
++		clk->set_next_event =
++			arch_timer_set_next_event_phys_mem;
++	}
++
++	max_delta = CLOCKSOURCE_MASK(56);
++
++	clk->set_state_shutdown(clk);
+ 	clockevents_config_and_register(clk, arch_timer_rate, 0xf, max_delta);
+ }
+ 
+@@ -1004,7 +1007,7 @@ static int arch_timer_starting_cpu(unsigned int cpu)
+ 	struct clock_event_device *clk = this_cpu_ptr(arch_timer_evt);
+ 	u32 flags;
+ 
+-	__arch_timer_setup(ARCH_TIMER_TYPE_CP15, clk);
++	__arch_timer_setup_cp15(clk);
+ 
+ 	flags = check_ppi_trigger(arch_timer_ppi[arch_timer_uses_ppi]);
+ 	enable_percpu_irq(arch_timer_ppi[arch_timer_uses_ppi], flags);
+@@ -1294,7 +1297,7 @@ static int __init arch_timer_mem_register(void __iomem *base, unsigned int irq)
+ 
+ 	arch_timer_mem->base = base;
+ 	arch_timer_mem->evt.irq = irq;
+-	__arch_timer_setup(ARCH_TIMER_TYPE_MEM, &arch_timer_mem->evt);
++	__arch_timer_setup_mem(&arch_timer_mem->evt);
+ 
+ 	if (arch_timer_mem_use_virtual)
+ 		func = arch_timer_handler_virt_mem;
 -- 
 2.24.0
 
