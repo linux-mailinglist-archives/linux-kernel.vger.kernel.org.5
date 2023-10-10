@@ -2,71 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E3ED7C0153
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E69E7C015B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233713AbjJJQNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 12:13:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53416 "EHLO
+        id S233740AbjJJQOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 12:14:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231953AbjJJQNX (ORCPT
+        with ESMTP id S1343514AbjJJQOI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 12:13:23 -0400
+        Tue, 10 Oct 2023 12:14:08 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF84BB6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:12:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F5BE9
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:13:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696954355;
+        s=mimecast20190719; t=1696954395;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=HwWBmshMoiCixnS99NmNTL6QgwlkX3WoE8OY6VxV+Dc=;
-        b=OShGrNw4v6m/0y6YNHO24dhkxs9gQxHqj3TQjFDbE3zgTpYZS7E78fPVjQepb7VQSGI2iE
-        jW0a3ZbipjfugtQ1b2o6+m52eMSE+SKASWIUpach60+U7qiC285blpVxObZ2S+I6FHB0Wc
-        0BNO6mxpnzZhyqPpFIGMhEPQua69GkA=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=h1753iSDySdyPeq52nW4qkiN8umTNgnvnTBeNQOoWhk=;
+        b=DU++KwZUUcmI1OHtqfQhcSVP0/5d7NeWR0FyB9NkIyWhDywGaUhD1rmNxezBwY1pBtBeVy
+        cHMJwoHUtqfm2+pZnog+vqJ56Fb4JbUDRNjfxURZcco9rYw1qP8GwvQvef+c9nQmy0bDQH
+        gq/Zrhua77bCdbPF5krVv6gce+VQOFw=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-31-KVsebjJPNZ299DwP4N7h3A-1; Tue, 10 Oct 2023 12:12:29 -0400
-X-MC-Unique: KVsebjJPNZ299DwP4N7h3A-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3247f646affso2728660f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:12:29 -0700 (PDT)
+ us-mta-131-Sz4USlmNPjC0D4NGVXdPOg-1; Tue, 10 Oct 2023 12:13:13 -0400
+X-MC-Unique: Sz4USlmNPjC0D4NGVXdPOg-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4059475c174so43037905e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 09:13:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696954348; x=1697559148;
+        d=1e100.net; s=20230601; t=1696954392; x=1697559192;
         h=content-transfer-encoding:mime-version:user-agent:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=HwWBmshMoiCixnS99NmNTL6QgwlkX3WoE8OY6VxV+Dc=;
-        b=dQsBaNDKhvPGDj84AlRRVsw+3UBLfl67ESgmCS8vbgZyCsU/JIBaMfRQVFcD8Il3QC
-         r+R2F18iS26BNZPIgCoB6Q7gixLAgjMpIM7KIOUXs3SNldrY6hnhkmj4gCeZ4ZLclPwt
-         KKreEp6IO1Hxp+L3o/TijOw26Iw268wShVhPEKiAX9+etKZ/0Bc1SBy1YWv4F8dWQaZ9
-         EcPLY73ievoU0u0AADNTtcqfJSdy5F7etN70zXAR437JvcJ6Y6z2q/ocP69sLqJX9FfB
-         U3x9l8lxds6gHbDUNma7PxhvM307BK9QGOJYQ66OuhmKfXoFJhmSUc8PpFQquz0L7aVf
-         pvVg==
-X-Gm-Message-State: AOJu0Yy7tJWYXEFP9Nnzyiod7TjrMhwiLBJ8D5B33S3WTWYPLKR9vGN3
-        gc1bYj277ALhjx56LGs+5qKPTvuaev1GSB7CrC71xKXNNthwaYcmk6/SfiWUD8kDPanXp4f6UMe
-        hB50uGM+Xvw2RclJlISvfje91
-X-Received: by 2002:a05:6000:243:b0:329:6b53:e3ad with SMTP id m3-20020a056000024300b003296b53e3admr10803404wrz.34.1696954348427;
-        Tue, 10 Oct 2023 09:12:28 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IES8Q9DWNOpjBqrp2V2Cl2LKRigDk4U8DPwzTgvqENIa2+Gt/O7S7D3nvy1sb4iqw39jOi8+A==
-X-Received: by 2002:a05:6000:243:b0:329:6b53:e3ad with SMTP id m3-20020a056000024300b003296b53e3admr10803382wrz.34.1696954348022;
-        Tue, 10 Oct 2023 09:12:28 -0700 (PDT)
+        bh=h1753iSDySdyPeq52nW4qkiN8umTNgnvnTBeNQOoWhk=;
+        b=m5eAJo6gwHmEK7QBOxdT4A4qy3Cq1TGb6vUJR7S4R9Ihvqvj7ONRxCFxP1Phs6cT5F
+         LM2jRgfB3xj7dXQ1CbQVHTTNAf8iOxLitA4rcO4YB+QhfAFwEFxQD3BYMFppl0G8psYP
+         OTYt398V4T8SbSgMd/h4ref+MLaIfE5Q3MQRIxqGMHv5jht7vPMNs9Pz0Cb84JaSm62N
+         eUG3VsGTTWOUk1JtLCH1oV8sbB4n+z8saJNd2GuT3itiJSaCaqCpbvpiAuOP+qOdRcan
+         F/CaIF/NzHwVWS80VkYDNntyvC24cPwofX+2df07CBOwm4j7uC2uDjFjBJxtOwyVo8ja
+         VbAw==
+X-Gm-Message-State: AOJu0YzjOJWIPMaYPIkAoyloDuPZiXOIMGttg0/35Fsl+mrYTHKsvYUT
+        hpWnk7onNl21yilFAByYiN/DZCLfrOEHKNz9+vRuyfavIO5K0MGVdJSt2GZErUGbYK1FeeU9zTe
+        rNp2WePCsdEjqksCL0ZNsJ31T
+X-Received: by 2002:a05:600c:ad0:b0:405:375d:b860 with SMTP id c16-20020a05600c0ad000b00405375db860mr17819265wmr.21.1696954392700;
+        Tue, 10 Oct 2023 09:13:12 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGs2fH4NHjpkUxflX5p7dSmGCMRr2l+ZvyM5EgqLstCWYTU6mdw3EFtRmwc7jHyDGY6IYO9kg==
+X-Received: by 2002:a05:600c:ad0:b0:405:375d:b860 with SMTP id c16-20020a05600c0ad000b00405375db860mr17819250wmr.21.1696954392437;
+        Tue, 10 Oct 2023 09:13:12 -0700 (PDT)
 Received: from starship ([89.237.100.246])
-        by smtp.gmail.com with ESMTPSA id f23-20020a7bc8d7000000b003fe1c332810sm16769821wml.33.2023.10.10.09.12.26
+        by smtp.gmail.com with ESMTPSA id m10-20020a7bce0a000000b00405953973c3sm16790678wmc.6.2023.10.10.09.13.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 09:12:27 -0700 (PDT)
-Message-ID: <e4d6c6a5030f49f44febf99ba4c7040938c3c483.camel@redhat.com>
-Subject: Re: [PATCH] KVM: x86/xsave: Remove 'return void' expression for
- 'void function'
+        Tue, 10 Oct 2023 09:13:11 -0700 (PDT)
+Message-ID: <7c2a77bb3ec9f85f684218eb80654adcdfefd60d.camel@redhat.com>
+Subject: Re: [PATCH 1/1] selftests: KVM: add test to print boottime wallclock
 From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Like Xu <like.xu.linux@gmail.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 10 Oct 2023 19:12:26 +0300
-In-Reply-To: <20231007064019.17472-1-likexu@tencent.com>
-References: <20231007064019.17472-1-likexu@tencent.com>
+To:     Dongli Zhang <dongli.zhang@oracle.com>, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, pbonzini@redhat.com,
+        shuah@kernel.org, seanjc@google.com, dwmw2@infradead.org,
+        joe.jin@oracle.com
+Date:   Tue, 10 Oct 2023 19:13:10 +0300
+In-Reply-To: <20231006175715.105517-1-dongli.zhang@oracle.com>
+References: <20231006175715.105517-1-dongli.zhang@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
@@ -82,39 +82,156 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-У сб, 2023-10-07 у 14:40 +0800, Like Xu пише:
-> From: Like Xu <likexu@tencent.com>
+У пт, 2023-10-06 у 10:57 -0700, Dongli Zhang пише:
+> As inspired by the discussion in [1], the boottime wallclock may drift due
+> to the fact that the masterclock (or host monotonic clock) and kvmclock are
+> calculated based on the algorithms in different domains.
 > 
-> The requested info will be stored in 'guest_xsave->region' referenced by
-> the incoming pointer "struct kvm_xsave *guest_xsave", thus there is no need
-> to explicitly use return void expression for a void function "static void
-> kvm_vcpu_ioctl_x86_get_xsave(...)". The issue is caught with [-Wpedantic].
+> This is to introduce a testcase to print the boottime wallclock
+> periodically to help diagnose the wallclock drift issue in the future.
 > 
-> Fixes: 2d287ec65e79 ("x86/fpu: Allow caller to constrain xfeatures when copying to uabi buffer")
-> Signed-off-by: Like Xu <likexu@tencent.com>
+> The idea is to wrmsr the MSR_KVM_WALL_CLOCK_NEW, and read the boottime
+> wallclock nanoseconds immediately.
+> 
+> References:
+> [1] https://lore.kernel.org/all/20231001111313.77586-1-nsaenz@amazon.com
+> 
+> Cc: David Woodhouse <dwmw@amazon.co.uk>
+> Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
 > ---
->  arch/x86/kvm/x86.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  tools/testing/selftests/kvm/Makefile          |   3 +-
+>  .../selftests/kvm/x86_64/boottime_wallclock.c | 100 ++++++++++++++++++
+>  2 files changed, 102 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/kvm/x86_64/boottime_wallclock.c
 > 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index fdb2b0e61c43..2571466a317f 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -5503,8 +5503,8 @@ static void kvm_vcpu_ioctl_x86_get_xsave2(struct kvm_vcpu *vcpu,
->  static void kvm_vcpu_ioctl_x86_get_xsave(struct kvm_vcpu *vcpu,
->  					 struct kvm_xsave *guest_xsave)
->  {
-> -	return kvm_vcpu_ioctl_x86_get_xsave2(vcpu, (void *)guest_xsave->region,
-> -					     sizeof(guest_xsave->region));
-> +	kvm_vcpu_ioctl_x86_get_xsave2(vcpu, (void *)guest_xsave->region,
-> +				      sizeof(guest_xsave->region));
->  }
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index a3bb36fb3cfc..fea05b0118de 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -60,7 +60,8 @@ LIBKVM_riscv += lib/riscv/ucall.c
+>  TEST_PROGS_x86_64 += x86_64/nx_huge_pages_test.sh
 >  
->  static int kvm_vcpu_ioctl_x86_set_xsave(struct kvm_vcpu *vcpu,
-> 
-> base-commit: 86701e115030e020a052216baa942e8547e0b487
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+>  # Compiled test targets
+> -TEST_GEN_PROGS_x86_64 = x86_64/cpuid_test
+> +TEST_GEN_PROGS_x86_64 = x86_64/boottime_wallclock
+> +TEST_GEN_PROGS_x86_64 += x86_64/cpuid_test
+>  TEST_GEN_PROGS_x86_64 += x86_64/cr4_cpuid_sync_test
+>  TEST_GEN_PROGS_x86_64 += x86_64/dirty_log_page_splitting_test
+>  TEST_GEN_PROGS_x86_64 += x86_64/get_msr_index_features
+> diff --git a/tools/testing/selftests/kvm/x86_64/boottime_wallclock.c b/tools/testing/selftests/kvm/x86_64/boottime_wallclock.c
+> new file mode 100644
+> index 000000000000..cc48c9b19920
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/x86_64/boottime_wallclock.c
+> @@ -0,0 +1,100 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (C) 2023 Oracle and/or its affiliates.
+> + */
+> +
+> +#include <asm/kvm_para.h>
+> +#include <asm/pvclock-abi.h>
+> +
+> +#include "kvm_util.h"
+> +#include "processor.h"
+> +
+> +static int period = 10;
+> +
+> +#define GUEST_SYNC_WALLCLOCK(__stage, __val)                        \
+> +		GUEST_SYNC_ARGS(__stage, __val, 0, 0, 0)
+> +
+> +static void guest_main(vm_paddr_t wc_pa, struct pvclock_wall_clock *wc)
+> +{
+> +	uint64_t wallclock;
+> +
+> +	while (true) {
+> +		wrmsr(MSR_KVM_WALL_CLOCK_NEW, wc_pa);
+> +
+> +		wallclock = wc->sec * NSEC_PER_SEC + wc->nsec;
+> +
+> +		GUEST_SYNC_WALLCLOCK(0, wallclock);
+
+Won't this fill the output very fast?
+Do you think it will be worth it to wait some time (e.g 1 second or at least 1/10 of a second)
+between each print?
+
+> +	}
+> +}
+> +
+> +static void handle_sync(struct ucall *uc)
+> +{
+> +	uint64_t wallclock;
+> +
+> +	wallclock = uc->args[2];
+> +
+> +	pr_info("Boottime wallclock value: %"PRIu64" ns\n", wallclock);
+> +}
+> +
+> +static void handle_abort(struct ucall *uc)
+> +{
+> +	REPORT_GUEST_ASSERT(*uc);
+> +}
+> +
+> +static void enter_guest(struct kvm_vcpu *vcpu)
+> +{
+> +	struct ucall uc;
+> +
+> +	while (true) {
+> +		vcpu_run(vcpu);
+> +
+> +		TEST_ASSERT_KVM_EXIT_REASON(vcpu, KVM_EXIT_IO);
+> +
+> +		switch (get_ucall(vcpu, &uc)) {
+> +		case UCALL_SYNC:
+> +			handle_sync(&uc);
+> +			break;
+> +		case UCALL_ABORT:
+> +			handle_abort(&uc);
+> +			return;
+> +		default:
+> +			TEST_ASSERT(0, "unhandled ucall: %ld\n", uc.cmd);
+> +			return;
+> +		}
+> +
+> +		sleep(period);
+> +	}
+> +}
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	struct kvm_vcpu *vcpu;
+> +	struct kvm_vm *vm;
+> +	vm_vaddr_t wc_gva;
+> +	vm_paddr_t wc_gpa;
+> +	int opt;
+> +
+> +	while ((opt = getopt(argc, argv, "p:h")) != -1) {
+> +		switch (opt) {
+> +		case 'p':
+> +			period = atoi_positive("The period (seconds)", optarg);
+> +			break;
+> +		case 'h':
+> +		default:
+> +			pr_info("usage: %s [-p period (seconds)]\n", argv[0]);
+> +			exit(1);
+> +		}
+> +	}
+> +
+> +	pr_info("Capture boottime wallclock every %d seconds.\n", period);
+> +	pr_info("Stop with Ctrl + c.\n\n");
+> +
+> +	vm = vm_create_with_one_vcpu(&vcpu, guest_main);
+> +
+> +	wc_gva = vm_vaddr_alloc(vm, getpagesize(), 0x10000);
+> +	wc_gpa = addr_gva2gpa(vm, wc_gva);
+> +	vcpu_args_set(vcpu, 2, wc_gpa, wc_gva);
+> +
+> +	enter_guest(vcpu);
+> +	kvm_vm_free(vm);
+> +}
+
 
 Best regards,
 	Maxim Levitsky
+
 
