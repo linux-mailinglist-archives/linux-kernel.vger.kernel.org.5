@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 060097BF58A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 859237BF582
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 10:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379439AbjJJITj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 04:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36880 "EHLO
+        id S1442718AbjJJITe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 04:19:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379444AbjJJITd (ORCPT
+        with ESMTP id S1379447AbjJJITc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 04:19:33 -0400
+        Tue, 10 Oct 2023 04:19:32 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AEEEA9;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B292AB8;
         Tue, 10 Oct 2023 01:19:30 -0700 (PDT)
-Date:   Tue, 10 Oct 2023 08:19:27 -0000
+Date:   Tue, 10 Oct 2023 08:19:28 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696925968;
+        s=2020; t=1696925969;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=RtkVgkLll/d9ejAB1g4YDHnl46DXCdr4YKF0fTOqSb8=;
-        b=gZJfXEA68oTUFnA1qM+/1MV3fISrC6QcVJKrAuy5+hlfxsz/z9WD7Di57NPDqLhk9yJhPD
-        8uACfRCGoO4sPZh2BmJiOoYcwcAO7h9k+15BoAX/DL/BGtDruC/kPq4xJCxIA8N33oXzoE
-        o76qVgTgyLmkHOicezTXcypFkUAa5neQBXj8jtExWsI3if4d+c9W24ZMAfOaPeDTsZwTlr
-        FC4cX2wZ5urm2wz/jIivsu63OavEaO2OY7f7t8x0ZM87p05dQMPao1PhTCjQMBiR0Rgm14
-        ta22JYAgGPVNtqfcSCXPmcz2P9EJs9XuNcbQD1ursjasFU0MsgGKFWL/0b7L+g==
+        bh=s5TK6Nd796vNEe4gx/egyQpR7vU+hLD9A6+fXoPVnsw=;
+        b=DvhcLL+j7c8AAhxijxIpCE8CpLw3KMdl1I+KORu/F5nUXtLfihpb51MVeULf3sJ3IibvWC
+        SKRKcGFJz9f/CbLA8oHKbE+bjHyfXbr5Zvnth7ZB2FmD2WN5puZW+Ur5moknaeDAHnQS2H
+        35l+Uz6zYusSvjtI5xpSpZWzvuBA09PAJ5D7sFwHJF8QiUnKQmfRTENf97wFbsvBGAfRM+
+        ugH0nRZ1oz2zNqeSIYlJ7OwzUl70vqjYBgD0efmyc2LMQ99y0/k78nooXs121VxYZBYP2G
+        81jpvpfx+/D4EdNVrnOCkBe4flcTe+IV8hnfVLGXtehIo+kibBBr5tqnsP/KIQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696925968;
+        s=2020e; t=1696925969;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=RtkVgkLll/d9ejAB1g4YDHnl46DXCdr4YKF0fTOqSb8=;
-        b=8mex7i4tQo4J3FdRFF1nzZFEphpVnihH/D0r3TobhwRIktjapN/RwMmXojr6Hu8tP4lg7C
-        FeXj2cKq1RCAnjCg==
+        bh=s5TK6Nd796vNEe4gx/egyQpR7vU+hLD9A6+fXoPVnsw=;
+        b=RKbfalcRmQAFWS3WvBHqsrQW95xDSjW78afp4TwCN00vn6QOJBWgt+ZHj6lnYolIiXcyHb
+        425b6QlGhOXj2/Bw==
 From:   "tip-bot2 for Sandipan Das" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf/x86/amd/uncore: Add memory controller support
+Subject: [tip: perf/core] perf/x86/amd/uncore: Add group exclusivity
 Cc:     Sandipan Das <sandipan.das@amd.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: =?utf-8?q?=3Cb25f391205c22733493abec1ed850b71784edc5f=2E16964?=
+In-Reply-To: =?utf-8?q?=3C937d6d71010a48ea4e069f4904b3116a5f99ecdf=2E16964?=
  =?utf-8?q?25185=2Egit=2Esandipan=2Edas=40amd=2Ecom=3E?=
-References: =?utf-8?q?=3Cb25f391205c22733493abec1ed850b71784edc5f=2E169642?=
+References: =?utf-8?q?=3C937d6d71010a48ea4e069f4904b3116a5f99ecdf=2E169642?=
  =?utf-8?q?5185=2Egit=2Esandipan=2Edas=40amd=2Ecom=3E?=
 MIME-Version: 1.0
-Message-ID: <169692596798.3135.7702003073388693455.tip-bot2@tip-bot2>
+Message-ID: <169692596868.3135.2166851776629649995.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -69,310 +69,131 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     25e56847821f7375bdee7dae1027c7917d07ce4b
-Gitweb:        https://git.kernel.org/tip/25e56847821f7375bdee7dae1027c7917d07ce4b
+Commit-ID:     83a43c622123e714b0317a57176b336187f5deb3
+Gitweb:        https://git.kernel.org/tip/83a43c622123e714b0317a57176b336187f5deb3
 Author:        Sandipan Das <sandipan.das@amd.com>
-AuthorDate:    Thu, 05 Oct 2023 10:53:15 +05:30
+AuthorDate:    Thu, 05 Oct 2023 10:53:14 +05:30
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Mon, 09 Oct 2023 16:12:25 +02:00
+CommitterDate: Mon, 09 Oct 2023 16:12:24 +02:00
 
-perf/x86/amd/uncore: Add memory controller support
+perf/x86/amd/uncore: Add group exclusivity
 
-Unified Memory Controller (UMC) events were introduced with Zen 4 as a
-part of the Performance Monitoring Version 2 (PerfMonV2) enhancements.
-An event is specified using the EventSelect bits and the RdWrMask bits
-can be used for additional filtering of read and write requests.
+In some cases, it may be necessary to restrict opening PMU events to a
+subset of CPUs. E.g. Unified Memory Controller (UMC) PMUs are specific
+to each active memory channel and the MSR address space for the PERF_CTL
+and PERF_CTR registers is reused on each socket. Thus, opening events
+for a specific UMC PMU should be restricted to CPUs belonging to the
+same socket as that of the UMC. The "cpumask" of the PMU should also
+reflect this accordingly.
 
-As of now, a maximum of 12 channels of DDR5 are available on each socket
-and each channel is controlled by a dedicated UMC. Each UMC, in turn,
-has its own set of performance monitoring counters.
-
-Since the MSR address space for the UMC PERF_CTL and PERF_CTR registers
-are reused across sockets, uncore groups are created on the basis of
-socket IDs. Hence, group exclusivity is mandatory while opening events
-so that events for an UMC can only be opened on CPUs which are on the
-same socket as the corresponding memory channel.
-
-For each socket, the total number of available UMC counters and active
-memory channels are determined from CPUID leaf 0x80000022 EBX and ECX
-respectively. Usually, on Zen 4, each UMC has four counters.
-
-MSR assignments are determined on the basis of active UMCs. E.g. if
-UMCs 1, 4 and 9 are active for a given socket, then
-
-  * UMC 1 gets MSRs 0xc0010800 to 0xc0010807 as PERF_CTLs and PERF_CTRs
-  * UMC 4 gets MSRs 0xc0010808 to 0xc001080f as PERF_CTLs and PERF_CTRs
-  * UMC 9 gets MSRs 0xc0010810 to 0xc0010817 as PERF_CTLs and PERF_CTRs
-
-If there are sockets without any online CPUs when the amd_uncore driver
-is loaded, UMCs for such sockets will not be discoverable since the
-mechanism relies on executing the CPUID instruction on an online CPU
-from the socket.
+Uncore PMUs which require this can use the new group attribute in struct
+amd_uncore_pmu to set a valid group ID during the scan() phase. Later,
+during init(), an uncore context for a CPU will be unavailable if the
+group ID does not match.
 
 Signed-off-by: Sandipan Das <sandipan.das@amd.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/b25f391205c22733493abec1ed850b71784edc5f.1696425185.git.sandipan.das@amd.com
+Link: https://lore.kernel.org/r/937d6d71010a48ea4e069f4904b3116a5f99ecdf.1696425185.git.sandipan.das@amd.com
 ---
- arch/x86/events/amd/uncore.c      | 156 ++++++++++++++++++++++++++++-
- arch/x86/include/asm/msr-index.h  |   4 +-
- arch/x86/include/asm/perf_event.h |   9 ++-
- 3 files changed, 168 insertions(+), 1 deletion(-)
+ arch/x86/events/amd/uncore.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/events/amd/uncore.c b/arch/x86/events/amd/uncore.c
-index 3189829..9b444ce 100644
+index 2fe6239..3189829 100644
 --- a/arch/x86/events/amd/uncore.c
 +++ b/arch/x86/events/amd/uncore.c
-@@ -55,6 +55,7 @@ struct amd_uncore_pmu {
- enum {
- 	UNCORE_TYPE_DF,
- 	UNCORE_TYPE_L3,
-+	UNCORE_TYPE_UMC,
+@@ -27,6 +27,7 @@
  
- 	UNCORE_TYPE_MAX
- };
-@@ -286,7 +287,7 @@ static struct device_attribute format_attr_##_var =			\
- DEFINE_UNCORE_FORMAT_ATTR(event12,	event,		"config:0-7,32-35");
- DEFINE_UNCORE_FORMAT_ATTR(event14,	event,		"config:0-7,32-35,59-60"); /* F17h+ DF */
- DEFINE_UNCORE_FORMAT_ATTR(event14v2,	event,		"config:0-7,32-37");	   /* PerfMonV2 DF */
--DEFINE_UNCORE_FORMAT_ATTR(event8,	event,		"config:0-7");		   /* F17h+ L3 */
-+DEFINE_UNCORE_FORMAT_ATTR(event8,	event,		"config:0-7");		   /* F17h+ L3, PerfMonV2 UMC */
- DEFINE_UNCORE_FORMAT_ATTR(umask8,	umask,		"config:8-15");
- DEFINE_UNCORE_FORMAT_ATTR(umask12,	umask,		"config:8-15,24-27");	   /* PerfMonV2 DF */
- DEFINE_UNCORE_FORMAT_ATTR(coreid,	coreid,		"config:42-44");	   /* F19h L3 */
-@@ -296,6 +297,7 @@ DEFINE_UNCORE_FORMAT_ATTR(threadmask2,	threadmask,	"config:56-57");	   /* F19h L
- DEFINE_UNCORE_FORMAT_ATTR(enallslices,	enallslices,	"config:46");		   /* F19h L3 */
- DEFINE_UNCORE_FORMAT_ATTR(enallcores,	enallcores,	"config:47");		   /* F19h L3 */
- DEFINE_UNCORE_FORMAT_ATTR(sliceid,	sliceid,	"config:48-50");	   /* F19h L3 */
-+DEFINE_UNCORE_FORMAT_ATTR(rdwrmask,	rdwrmask,	"config:8-9");		   /* PerfMonV2 UMC */
+ #define COUNTER_SHIFT		16
+ #define UNCORE_NAME_LEN		16
++#define UNCORE_GROUP_MAX	256
  
- /* Common DF and NB attributes */
- static struct attribute *amd_uncore_df_format_attr[] = {
-@@ -312,6 +314,13 @@ static struct attribute *amd_uncore_l3_format_attr[] = {
- 	NULL,
- };
- 
-+/* Common UMC attributes */
-+static struct attribute *amd_uncore_umc_format_attr[] = {
-+	&format_attr_event8.attr,       /* event */
-+	&format_attr_rdwrmask.attr,     /* rdwrmask */
-+	NULL,
-+};
-+
- /* F17h unique L3 attributes */
- static struct attribute *amd_f17h_uncore_l3_format_attr[] = {
- 	&format_attr_slicemask.attr,	/* slicemask */
-@@ -349,6 +358,11 @@ static struct attribute_group amd_f19h_uncore_l3_format_group = {
- 	.is_visible = amd_f19h_uncore_is_visible,
- };
- 
-+static struct attribute_group amd_uncore_umc_format_group = {
-+	.name = "format",
-+	.attrs = amd_uncore_umc_format_attr,
-+};
-+
- static const struct attribute_group *amd_uncore_df_attr_groups[] = {
- 	&amd_uncore_attr_group,
- 	&amd_uncore_df_format_group,
-@@ -367,6 +381,12 @@ static const struct attribute_group *amd_uncore_l3_attr_update[] = {
- 	NULL,
- };
- 
-+static const struct attribute_group *amd_uncore_umc_attr_groups[] = {
-+	&amd_uncore_attr_group,
-+	&amd_uncore_umc_format_group,
-+	NULL,
-+};
-+
- static __always_inline
- int amd_uncore_ctx_cid(struct amd_uncore *uncore, unsigned int cpu)
- {
-@@ -835,6 +855,133 @@ done:
- 	return amd_uncore_ctx_init(uncore, cpu);
+ #undef pr_fmt
+ #define pr_fmt(fmt)	"amd_uncore: " fmt
+@@ -45,6 +46,7 @@ struct amd_uncore_pmu {
+ 	int num_counters;
+ 	int rdpmc_base;
+ 	u32 msr_base;
++	int group;
+ 	cpumask_t active_mask;
+ 	struct pmu pmu;
+ 	struct amd_uncore_ctx * __percpu *ctx;
+@@ -61,6 +63,7 @@ union amd_uncore_info {
+ 	struct {
+ 		u64	aux_data:32;	/* auxiliary data */
+ 		u64	num_pmcs:8;	/* number of counters */
++		u64	gid:8;		/* group id */
+ 		u64	cid:8;		/* context id */
+ 	} split;
+ 	u64		full;
+@@ -372,6 +375,13 @@ int amd_uncore_ctx_cid(struct amd_uncore *uncore, unsigned int cpu)
  }
  
-+static int amd_uncore_umc_event_init(struct perf_event *event)
+ static __always_inline
++int amd_uncore_ctx_gid(struct amd_uncore *uncore, unsigned int cpu)
 +{
-+	struct hw_perf_event *hwc = &event->hw;
-+	int ret = amd_uncore_event_init(event);
-+
-+	if (ret)
-+		return ret;
-+
-+	hwc->config = event->attr.config & AMD64_PERFMON_V2_RAW_EVENT_MASK_UMC;
-+
-+	return 0;
++	union amd_uncore_info *info = per_cpu_ptr(uncore->info, cpu);
++	return info->split.gid;
 +}
 +
-+static void amd_uncore_umc_start(struct perf_event *event, int flags)
-+{
-+	struct hw_perf_event *hwc = &event->hw;
-+
-+	if (flags & PERF_EF_RELOAD)
-+		wrmsrl(hwc->event_base, (u64)local64_read(&hwc->prev_count));
-+
-+	hwc->state = 0;
-+	wrmsrl(hwc->config_base, (hwc->config | AMD64_PERFMON_V2_ENABLE_UMC));
-+	perf_event_update_userpage(event);
-+}
-+
-+static
-+void amd_uncore_umc_ctx_scan(struct amd_uncore *uncore, unsigned int cpu)
-+{
-+	union cpuid_0x80000022_ebx ebx;
-+	union amd_uncore_info info;
-+	unsigned int eax, ecx, edx;
-+
-+	if (pmu_version < 2)
-+		return;
-+
-+	cpuid(EXT_PERFMON_DEBUG_FEATURES, &eax, &ebx.full, &ecx, &edx);
-+	info.split.aux_data = ecx;	/* stash active mask */
-+	info.split.num_pmcs = ebx.split.num_umc_pmc;
-+	info.split.gid = topology_die_id(cpu);
-+	info.split.cid = topology_die_id(cpu);
-+	*per_cpu_ptr(uncore->info, cpu) = info;
-+}
-+
-+static
-+int amd_uncore_umc_ctx_init(struct amd_uncore *uncore, unsigned int cpu)
-+{
-+	DECLARE_BITMAP(gmask, UNCORE_GROUP_MAX) = { 0 };
-+	u8 group_num_pmus[UNCORE_GROUP_MAX] = { 0 };
-+	u8 group_num_pmcs[UNCORE_GROUP_MAX] = { 0 };
-+	union amd_uncore_info info;
-+	struct amd_uncore_pmu *pmu;
-+	int index = 0, gid, i;
-+
-+	if (pmu_version < 2)
-+		return 0;
-+
-+	/* Run just once */
-+	if (uncore->init_done)
-+		return amd_uncore_ctx_init(uncore, cpu);
-+
-+	/* Find unique groups */
-+	for_each_online_cpu(i) {
-+		info = *per_cpu_ptr(uncore->info, i);
-+		gid = info.split.gid;
-+		if (test_bit(gid, gmask))
++static __always_inline
+ int amd_uncore_ctx_num_pmcs(struct amd_uncore *uncore, unsigned int cpu)
+ {
+ 	union amd_uncore_info *info = per_cpu_ptr(uncore->info, cpu);
+@@ -409,18 +419,23 @@ static int amd_uncore_ctx_init(struct amd_uncore *uncore, unsigned int cpu)
+ {
+ 	struct amd_uncore_ctx *curr, *prev;
+ 	struct amd_uncore_pmu *pmu;
+-	int node, cid, i, j;
++	int node, cid, gid, i, j;
+ 
+ 	if (!uncore->init_done || !uncore->num_pmus)
+ 		return 0;
+ 
+ 	cid = amd_uncore_ctx_cid(uncore, cpu);
++	gid = amd_uncore_ctx_gid(uncore, cpu);
+ 
+ 	for (i = 0; i < uncore->num_pmus; i++) {
+ 		pmu = &uncore->pmus[i];
+ 		*per_cpu_ptr(pmu->ctx, cpu) = NULL;
+ 		curr = NULL;
+ 
++		/* Check for group exclusivity */
++		if (gid != pmu->group)
 +			continue;
 +
-+		__set_bit(gid, gmask);
-+		group_num_pmus[gid] = hweight32(info.split.aux_data);
-+		group_num_pmcs[gid] = info.split.num_pmcs;
-+		uncore->num_pmus += group_num_pmus[gid];
-+	}
-+
-+	uncore->pmus = kzalloc(sizeof(*uncore->pmus) * uncore->num_pmus,
-+			       GFP_KERNEL);
-+	if (!uncore->pmus) {
-+		uncore->num_pmus = 0;
-+		goto done;
-+	}
-+
-+	for_each_set_bit(gid, gmask, UNCORE_GROUP_MAX) {
-+		for (i = 0; i < group_num_pmus[gid]; i++) {
-+			pmu = &uncore->pmus[index];
-+			snprintf(pmu->name, sizeof(pmu->name), "amd_umc_%d", index);
-+			pmu->num_counters = group_num_pmcs[gid] / group_num_pmus[gid];
-+			pmu->msr_base = MSR_F19H_UMC_PERF_CTL + i * pmu->num_counters * 2;
-+			pmu->rdpmc_base = -1;
-+			pmu->group = gid;
-+
-+			pmu->ctx = alloc_percpu(struct amd_uncore_ctx *);
-+			if (!pmu->ctx)
-+				goto done;
-+
-+			pmu->pmu = (struct pmu) {
-+				.task_ctx_nr	= perf_invalid_context,
-+				.attr_groups	= amd_uncore_umc_attr_groups,
-+				.name		= pmu->name,
-+				.event_init	= amd_uncore_umc_event_init,
-+				.add		= amd_uncore_add,
-+				.del		= amd_uncore_del,
-+				.start		= amd_uncore_umc_start,
-+				.stop		= amd_uncore_stop,
-+				.read		= amd_uncore_read,
-+				.capabilities	= PERF_PMU_CAP_NO_EXCLUDE | PERF_PMU_CAP_NO_INTERRUPT,
-+				.module		= THIS_MODULE,
-+			};
-+
-+			if (perf_pmu_register(&pmu->pmu, pmu->pmu.name, -1)) {
-+				free_percpu(pmu->ctx);
-+				pmu->ctx = NULL;
-+				goto done;
-+			}
-+
-+			pr_info("%d %s counters detected\n", pmu->num_counters,
-+				pmu->pmu.name);
-+
-+			index++;
-+		}
-+	}
-+
-+done:
-+	uncore->num_pmus = index;
-+	uncore->init_done = true;
-+
-+	return amd_uncore_ctx_init(uncore, cpu);
-+}
-+
- static struct amd_uncore uncores[UNCORE_TYPE_MAX] = {
- 	/* UNCORE_TYPE_DF */
- 	{
-@@ -850,6 +997,13 @@ static struct amd_uncore uncores[UNCORE_TYPE_MAX] = {
- 		.move = amd_uncore_ctx_move,
- 		.free = amd_uncore_ctx_free,
- 	},
-+	/* UNCORE_TYPE_UMC */
-+	{
-+		.scan = amd_uncore_umc_ctx_scan,
-+		.init = amd_uncore_umc_ctx_init,
-+		.move = amd_uncore_ctx_move,
-+		.free = amd_uncore_ctx_free,
-+	},
- };
+ 		/* Find a sibling context */
+ 		for_each_online_cpu(j) {
+ 			if (cpu == j)
+@@ -603,6 +618,7 @@ void amd_uncore_df_ctx_scan(struct amd_uncore *uncore, unsigned int cpu)
  
- static int __init amd_uncore_init(void)
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index 1d11135..dc159ac 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -637,6 +637,10 @@
- /* AMD Last Branch Record MSRs */
- #define MSR_AMD64_LBR_SELECT			0xc000010e
+ 	info.split.aux_data = 0;
+ 	info.split.num_pmcs = NUM_COUNTERS_NB;
++	info.split.gid = 0;
+ 	info.split.cid = topology_die_id(cpu);
  
-+/* Fam 19h MSRs */
-+#define MSR_F19H_UMC_PERF_CTL		0xc0010800
-+#define MSR_F19H_UMC_PERF_CTR		0xc0010801
-+
- /* Fam 17h MSRs */
- #define MSR_F17H_IRPERF			0xc00000e9
+ 	if (pmu_version >= 2) {
+@@ -641,6 +657,7 @@ int amd_uncore_df_ctx_init(struct amd_uncore *uncore, unsigned int cpu)
+ 	pmu->num_counters = amd_uncore_ctx_num_pmcs(uncore, cpu);
+ 	pmu->msr_base = MSR_F15H_NB_PERF_CTL;
+ 	pmu->rdpmc_base = RDPMC_BASE_NB;
++	pmu->group = amd_uncore_ctx_gid(uncore, cpu);
  
-diff --git a/arch/x86/include/asm/perf_event.h b/arch/x86/include/asm/perf_event.h
-index 85a9fd5..2618ec7 100644
---- a/arch/x86/include/asm/perf_event.h
-+++ b/arch/x86/include/asm/perf_event.h
-@@ -112,6 +112,13 @@
- 	(AMD64_PERFMON_V2_EVENTSEL_EVENT_NB	|	\
- 	 AMD64_PERFMON_V2_EVENTSEL_UMASK_NB)
+ 	if (pmu_version >= 2) {
+ 		*df_attr++ = &format_attr_event14v2.attr;
+@@ -734,6 +751,7 @@ void amd_uncore_l3_ctx_scan(struct amd_uncore *uncore, unsigned int cpu)
  
-+#define AMD64_PERFMON_V2_ENABLE_UMC			BIT_ULL(31)
-+#define AMD64_PERFMON_V2_EVENTSEL_EVENT_UMC		GENMASK_ULL(7, 0)
-+#define AMD64_PERFMON_V2_EVENTSEL_RDWRMASK_UMC		GENMASK_ULL(9, 8)
-+#define AMD64_PERFMON_V2_RAW_EVENT_MASK_UMC		\
-+	(AMD64_PERFMON_V2_EVENTSEL_EVENT_UMC	|	\
-+	 AMD64_PERFMON_V2_EVENTSEL_RDWRMASK_UMC)
-+
- #define AMD64_NUM_COUNTERS				4
- #define AMD64_NUM_COUNTERS_CORE				6
- #define AMD64_NUM_COUNTERS_NB				4
-@@ -232,6 +239,8 @@ union cpuid_0x80000022_ebx {
- 		unsigned int	lbr_v2_stack_sz:6;
- 		/* Number of Data Fabric Counters */
- 		unsigned int	num_df_pmc:6;
-+		/* Number of Unified Memory Controller Counters */
-+		unsigned int	num_umc_pmc:6;
- 	} split;
- 	unsigned int		full;
- };
+ 	info.split.aux_data = 0;
+ 	info.split.num_pmcs = NUM_COUNTERS_L2;
++	info.split.gid = 0;
+ 	info.split.cid = get_llc_id(cpu);
+ 
+ 	if (boot_cpu_data.x86 >= 0x17)
+@@ -770,6 +788,7 @@ int amd_uncore_l3_ctx_init(struct amd_uncore *uncore, unsigned int cpu)
+ 	pmu->num_counters = amd_uncore_ctx_num_pmcs(uncore, cpu);
+ 	pmu->msr_base = MSR_F16H_L2I_PERF_CTL;
+ 	pmu->rdpmc_base = RDPMC_BASE_LLC;
++	pmu->group = amd_uncore_ctx_gid(uncore, cpu);
+ 
+ 	if (boot_cpu_data.x86 >= 0x17) {
+ 		*l3_attr++ = &format_attr_event8.attr;
