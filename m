@@ -2,124 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE6F7BFF16
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 16:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4436A7BFF13
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 16:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232907AbjJJOXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 10:23:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58982 "EHLO
+        id S232923AbjJJOWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 10:22:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232779AbjJJOXj (ORCPT
+        with ESMTP id S232107AbjJJOWs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 10:23:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A59AA4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 07:23:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696947779;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=eanIYdQ/OkURqG898KbJm4DzgfTGcpyCx3WajorKeyU=;
-        b=ORX6NROuSgHwmZjSU8b+hPZRR+qzVjRxUG+JqldAIwEC2a0ssG1XL3Dmjyu/Q2qoRpjSgm
-        vHDqm5y/PEa9IvEqh8/Wu/Ab2W5FTykt7feSIpGlzyITi9/XqdGSw6mLR+1AmJi/uqfMVA
-        9BG14HGkkWuPZAfutUFpMrz1Ap9aOeU=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-101-Ztn_c7GENNWS0tBFcB0GLA-1; Tue, 10 Oct 2023 10:22:51 -0400
-X-MC-Unique: Ztn_c7GENNWS0tBFcB0GLA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D87EC1C068DC;
-        Tue, 10 Oct 2023 14:22:34 +0000 (UTC)
-Received: from localhost (unknown [10.72.120.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 034B125C3;
-        Tue, 10 Oct 2023 14:22:33 +0000 (UTC)
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Andrew Theurer <atheurer@redhat.com>,
-        Joe Mario <jmario@redhat.com>, Sebastian Jug <sejug@redhat.com>
-Subject: [PATCH] blk-mq: add module parameter to not run block kworker on isolated CPUs
-Date:   Tue, 10 Oct 2023 22:22:16 +0800
-Message-ID: <20231010142216.1114752-1-ming.lei@redhat.com>
+        Tue, 10 Oct 2023 10:22:48 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7052FAC
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 07:22:47 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53b8f8c6b1fso5066962a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 07:22:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696947766; x=1697552566; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=jjgCMQrMRxO7UT+Dgjs8+PUls1MVudu/KuMSQSGIC0Q=;
+        b=xMdSesD8RwHDcdBBRgiP4rZ5zl3aMhbclxsWfFdbBIMyHj8uzMtJaGTminPNtAZo8a
+         ATzQHfrXrEl48YAW7BUHsKCh8/5MNeCKFb5V96/vo2VokVMijecIXEW4Xjf7apl0pWbG
+         kbBvdgeDs8WtirQvzrFaN1oabkecqDmBJscAWkRklYnKt4pvGihV7EfhWDIvwDwLieoF
+         zzicHCHypFH+szq8X1rqdaPHzxhaG8VY8Mqu/qYsb9yk9bDgc5Ehs+0KMdR5pqBAWI28
+         7VzEzoAM1Smh3bXz0+/0UKw5FmoUMLfoJxiEd9VvTO2XOpRj7TpgCQKsFG8mTUquEUxC
+         Eqxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696947766; x=1697552566;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jjgCMQrMRxO7UT+Dgjs8+PUls1MVudu/KuMSQSGIC0Q=;
+        b=G8GfzifLp768uNgLWzdNjgHqnDJa8CT4OEM6KVyXYc43UeDZsCiyEEEaX+B1PmWXjq
+         1RqvEDUdl/ewen+EYWAF4xQGS8AuSaZpDShqcFtW99s8krUBPcQBXjJMRm677Uphzwvf
+         taxgUEG1qdTotTKQb3232K2jt7AfoM43x90dc2J1qhXZh1QOCvhvccsHrBX7Uz9bRwIy
+         fIgb9ztFlKcXNWqVEuOEkRX/7hUhZsJNOl5epws6CCO2hIS7y0hpf6aCFWvo7LjgyO33
+         J1qRYP3XIJBj7dccuPR2spKWG9J/6/9djJRTYgnnx2rZcgkB9cE9SnSKjuDBed37KjgB
+         UsZQ==
+X-Gm-Message-State: AOJu0YzGTCbsBZtLqMNbIwZXwY1kf8fV6QAvjWXvy2lQEG5DyAJDkfXY
+        XqFmWMTW2+HMvSHLzOfjQ15OJJgJqYWlh/9oPmGFsw==
+X-Google-Smtp-Source: AGHT+IGEzqDJ7Iy6V8fGm6hyIdbMLIhMRY6DQ2ciMjUlAXpHOvBPGkT6Hr6/thaPTJdBzt6mz7WRCQImQ+TQaICLcuc=
+X-Received: by 2002:aa7:d5d0:0:b0:522:6e3f:b65 with SMTP id
+ d16-20020aa7d5d0000000b005226e3f0b65mr15498021eds.33.1696947765800; Tue, 10
+ Oct 2023 07:22:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1696850733.git.viresh.kumar@linaro.org> <957de2a53dde99a653b47af9c95bc17692870294.1696850733.git.viresh.kumar@linaro.org>
+ <920a671c-1927-4086-950f-db8e3293a989@linaro.org>
+In-Reply-To: <920a671c-1927-4086-950f-db8e3293a989@linaro.org>
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+Date:   Tue, 10 Oct 2023 19:52:32 +0530
+Message-ID: <CAKohpon4aYmr9TxhS8H7fVTU_xyhvErr12qViuYAUEf8RX5DGg@mail.gmail.com>
+Subject: Re: [Stratos-dev] [PATCH V3 2/2] xen: privcmd: Add support for ioeventfd
+To:     Bill Mills <bill.mills@linaro.org>
+Cc:     Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        stratos-dev@op-lists.linaro.org,
+        Erik Schilling <erik.schilling@linaro.org>,
+        Manos Pitsidianakis <manos.pitsidianakis@linaro.org>,
+        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel parameter of `isolcpus=` is used for isolating CPUs for specific
-task, and user often won't want block IO to disturb these CPUs, also long
-IO latency may be caused if blk-mq kworker is scheduled on these isolated
-CPUs.
+Hi Bill,
 
-Kernel workqueue only respects this limit for WQ_UNBOUND, for bound wq,
-the responsibility should be on wq user.
+On Tue, 10 Oct 2023 at 18:52, Bill Mills <bill.mills@linaro.org> wrote:
+> On 10/9/23 7:29 AM, Viresh Kumar via Stratos-dev wrote:
 
-Add one block layer parameter for not running block kworker on isolated
-CPUs.
+> > -config XEN_PRIVCMD_IRQFD
+> > -     bool "Xen irqfd support"
+> > +config XEN_PRIVCMD_EVENTFD
+> > +     bool "Xen Ioeventfd and irqfd support"
+>
+> You certainly know about kernel policies better than I but why the
+> CONGIG_ name change?
+>
+> With this change all downstream distros need to find this and re-enable
+> it if they want to keep a working Xen system.
+>
+> I presume the kernel can still work in the old way and not use your new
+> mode correct?
+>
+> I would certainly change the description but I wonder about keeping the
+> CONFIG_ name the same.
+>
+> No issue if I am obviously wrong and this is done all the time.
 
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Andrew Theurer <atheurer@redhat.com>
-Cc: Joe Mario <jmario@redhat.com>
-Cc: Sebastian Jug <sejug@redhat.com>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
----
- block/blk-mq.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+You are absolutely right Bill, but this is a special case. The CONFIG option
+here (XEN_PRIVCMD_IRQFD) is recently added (by me) and is currently
+present in linux-next only. Hopefully this and the other commit will make it
+to Linus's master together.
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index ec922c6bccbe..c53b5b522053 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -29,6 +29,7 @@
- #include <linux/prefetch.h>
- #include <linux/blk-crypto.h>
- #include <linux/part_stat.h>
-+#include <linux/sched/isolation.h>
- 
- #include <trace/events/block.h>
- 
-@@ -42,6 +43,13 @@
- #include "blk-rq-qos.h"
- #include "blk-ioprio.h"
- 
-+static bool respect_cpu_isolation;
-+module_param(respect_cpu_isolation, bool, 0444);
-+MODULE_PARM_DESC(respect_cpu_isolation,
-+		"Don't schedule blk-mq worker on isolated CPUs passed in "
-+		"isolcpus= or nohz_full=. User need to guarantee to not run "
-+		"block IO on isolated CPUs (default: false)");
-+
- static DEFINE_PER_CPU(struct llist_head, blk_cpu_done);
- static DEFINE_PER_CPU(call_single_data_t, blk_cpu_csd);
- 
-@@ -3926,6 +3934,13 @@ static void blk_mq_map_swqueue(struct request_queue *q)
- 		 */
- 		sbitmap_resize(&hctx->ctx_map, hctx->nr_ctx);
- 
-+		if (respect_cpu_isolation) {
-+			cpumask_and(hctx->cpumask, hctx->cpumask,
-+					housekeeping_cpumask(HK_TYPE_DOMAIN));
-+			cpumask_and(hctx->cpumask, hctx->cpumask,
-+					housekeeping_cpumask(HK_TYPE_WQ));
-+		}
-+
- 		/*
- 		 * Initialize batch roundrobin counts
- 		 */
--- 
-2.41.0
+No one using this currently downstream and so life won't be that complicated
+for anyone and so I wanted to put this under the same config option, since they
+are related too.
 
+Hope it makes sense.
+
+--
+Viresh
