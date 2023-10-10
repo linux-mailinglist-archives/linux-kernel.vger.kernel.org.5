@@ -2,72 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B612F7BF889
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 12:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF007BF89E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 12:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbjJJKZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 06:25:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36428 "EHLO
+        id S231135AbjJJK0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 06:26:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229898AbjJJKZt (ORCPT
+        with ESMTP id S229898AbjJJK0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 06:25:49 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD4C9E;
-        Tue, 10 Oct 2023 03:25:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696933545; x=1728469545;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=COjCuI9TuEZ6uSUI7QPwTqfgG6Zb6CVhJUegfpL9UNY=;
-  b=aluJaAQBT7YjlIbzmzq+19kmCsuOyAGanrRWSwBe/EEEGDK1ylGHT2kx
-   yuaCZjea1l0/O3UiqoS7vy6CzEcx2y0CjGc4uA+kpHa2mqORptR6PUG6O
-   70UrqbXa+QzonZ/Cp3XflU0iCs3C/BqRdslvrdnWtuoYH7p7It5ci7b1m
-   avh0epFolSG/05Mnfg8juWEbNe0uRVdGZmx4WeB3L42c9hiVqOB9yhh6O
-   nI1iHRnU+I31Qs+1rmgNMzytXJOiK+TDXIw5Z26QrWkWVdmIxTyXzj9Bk
-   HVENrv6Jty6V8R+lpuOzKt3ugRd5YekNA5JY1XsyI6cJYMZGPLy+4bB1g
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="383235950"
-X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
-   d="scan'208";a="383235950"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 03:25:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="869633637"
-X-IronPort-AV: E=Sophos;i="6.03,212,1694761200"; 
-   d="scan'208";a="869633637"
-Received: from albertmo-mobl2.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.208.38])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 03:25:40 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id EBD8410989E; Tue, 10 Oct 2023 13:25:37 +0300 (+03)
-Date:   Tue, 10 Oct 2023 13:25:37 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        Fei Yang <fei.yang@intel.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] x86/alternatives: Disable KASAN on text_poke_early() in
- apply_alternatives()
-Message-ID: <20231010102537.qkrfcna2fwfkzgir@box.shutemov.name>
-References: <20231010053716.2481-1-kirill.shutemov@linux.intel.com>
- <20231010081938.GBZSUJGlSvEkFIDnES@fat_crate.local>
- <20231010101056.GF377@noisy.programming.kicks-ass.net>
+        Tue, 10 Oct 2023 06:26:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8D1B4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 03:25:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696933556;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hTHlTwU4uZiN8UO3TES+88nKKkaUDBWXQJI6+/WgYu8=;
+        b=Ijz8B7UfOXeg2RnksEylM+FUWycb98IgnsIT4pe9aeixpL07qtXrAg85JyL+EDVj4vYgS8
+        KaYIPF5UO+KLqIxxVqH4+pxN+psOn/2rp3G7gNlzopfy2Q4T3ue+O82EkcicWaadDaE3+b
+        PCaNXUcRKKdYfg2ZZ4xocdbo9D0BlS4=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-680-9QRGbR4sPY2EBZUkUxusIA-1; Tue, 10 Oct 2023 06:25:55 -0400
+X-MC-Unique: 9QRGbR4sPY2EBZUkUxusIA-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9ae6afce33fso122839066b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 03:25:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696933554; x=1697538354;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hTHlTwU4uZiN8UO3TES+88nKKkaUDBWXQJI6+/WgYu8=;
+        b=Jp3uxjgldZ2VksneI6O9vDRKLwR+1+sF7kkzhVbHVQ3wG1YzR6Tz75TOEuEM42LNb5
+         tvkv0NORqI2RG3/ueigzHIL6bOz1QusEuitEZLbZCMggr2neWhwTxd5VeJhs8Wskv1vL
+         x6TAGkhDFv5IyAesrpU/NBcODIoBa13iJ+rJzm0PHZsEw20+MLil/YqNa4YnAlEXmvVa
+         rn2AYXQU+I39Fdch3ZmH32eOt+56kTb0x+OT7+7DPaCN4wZjiPEBZLj6C3Vu1To3hrFg
+         PrTxtiYR3LLB4LWVGQOa/aOXgMAGy4BRQYHOMN2nIZAU4vJfCIGDUXyujaz8iGlwGLsV
+         ZIiA==
+X-Gm-Message-State: AOJu0YzL4je54uBvOaTpX4yp+eKlGEBTeN9O3CKdl+O/BoadzifOVdEZ
+        6+PeWAw34StQRnvIg4W3ujCPkFWZAcoc+J9KUoo7gctwp3vGmRyXwJXZ8Y3/gCZ/pvJepmPGFXL
+        TtmG+u4p1oNEyvDODOalDbSwn
+X-Received: by 2002:a05:6402:5191:b0:52f:bedf:8f00 with SMTP id q17-20020a056402519100b0052fbedf8f00mr14632387edd.1.1696933553972;
+        Tue, 10 Oct 2023 03:25:53 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE75sQGbfKRKWkJhKNVG7X96z1rcluOnaRC4YTGjeiZvnW8R9ofe5Wmn3aMyUHOu7bQ67/lYw==
+X-Received: by 2002:a05:6402:5191:b0:52f:bedf:8f00 with SMTP id q17-20020a056402519100b0052fbedf8f00mr14632375edd.1.1696933553607;
+        Tue, 10 Oct 2023 03:25:53 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-228-243.dyn.eolo.it. [146.241.228.243])
+        by smtp.gmail.com with ESMTPSA id er24-20020a056402449800b0052febc781bfsm282373edb.36.2023.10.10.03.25.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 03:25:53 -0700 (PDT)
+Message-ID: <96bdb031129cdebfa6e0bdd4342439d9d864518b.camel@redhat.com>
+Subject: Re: [PATCH net 1/4] selftests: openvswitch: Add version check for
+ pyroute2
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Aaron Conole <aconole@redhat.com>, netdev@vger.kernel.org
+Cc:     dev@openvswitch.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Pravin B Shelar <pshelar@ovn.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Adrian Moreno <amorenoz@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>
+Date:   Tue, 10 Oct 2023 12:25:51 +0200
+In-Reply-To: <20231006151258.983906-2-aconole@redhat.com>
+References: <20231006151258.983906-1-aconole@redhat.com>
+         <20231006151258.983906-2-aconole@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231010101056.GF377@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -76,55 +87,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 12:10:56PM +0200, Peter Zijlstra wrote:
-> On Tue, Oct 10, 2023 at 10:19:38AM +0200, Borislav Petkov wrote:
-> > On Tue, Oct 10, 2023 at 08:37:16AM +0300, Kirill A. Shutemov wrote:
-> > > On machines with 5-level paging, cpu_feature_enabled(X86_FEATURE_LA57)
-> > > got patched. It includes KASAN code, where KASAN_SHADOW_START depends on
-> > > __VIRTUAL_MASK_SHIFT, which is defined with the cpu_feature_enabled().
-> > 
-> > So use boot_cpu_has(X86_FEATURE_LA57).
-> > 
-> > > It seems that KASAN gets confused when apply_alternatives() patches the
-> > 
-> > It seems?
-> > 
-> > > KASAN_SHADOW_START users. A test patch that makes KASAN_SHADOW_START
-> > > static, by replacing __VIRTUAL_MASK_SHIFT with 56, fixes the issue.
-> > > 
-> > > During text_poke_early() in apply_alternatives(), KASAN should be
-> > > disabled. KASAN is already disabled in non-_early() text_poke().
-> > > 
-> > > It is unclear why the issue was not reported earlier. Bisecting does not
-> > > help. Older kernels trigger the issue less frequently, but it still
-> > > occurs. In the absence of any other clear offenders, the initial dynamic
-> > > 5-level paging support is to blame.
-> > 
-> > This whole thing sounds like it is still not really clear what is
-> > actually happening...
-> 
-> somewhere along the line __asan_loadN() gets tripped, this then ends up
-> in kasan_check_range() -> check_region_inline() -> addr_has_metadata().
-> 
-> This latter has: kasan_shadow_to_mem() which is compared against
-> KASAN_SHADOW_START, which includes, as Kirill says __VIRTUAL_MASK_SHIFT.
-> 
-> Now, obviously you really don't want boot_cpu_has() in
-> __VIRTUAL_MASK_SHIFT, that would be really bad (Linus recently
-> complained about how horrible the code-gen is around this already, must
-> not make it far worse).
-> 
-> 
-> Anyway, being half-way through patching X86_FEATURE_LA57 thing *are*
-> inconsistent and I really can't blame things for going sideways.
-> 
-> That said, I don't particularly like the patch, I think it should, at
-> the veyr least, cover all of apply_alternatives, not just
-> text_poke_early().
+On Fri, 2023-10-06 at 11:12 -0400, Aaron Conole wrote:
+> Paolo Abeni reports that on some systems the pyroute2 version isn't
+> new enough to run the test suite.  Ensure that we support a minimum
+> version of 0.6 for all cases (which does include the existing ones).
+> The 0.6.1 version was released in May of 2021, so should be
+> propagated to most installations at this point.
+>=20
+> The alternative that Paolo proposed was to only skip when the
+> add-flow is being run.  This would be okay for most cases, except
+> if a future test case is added that needs to do flow dump without
+> an associated add (just guessing).  In that case, it could also be
+> broken and we would need additional skip logic anyway.  Just draw
+> a line in the sand now.
+>=20
+> Fixes: 25f16c873fb1 ("selftests: add openvswitch selftest suite")
+> Reported-by: Paolo Abeni <pabeni@redhat.com>
+> Closes: https://lore.kernel.org/lkml/8470c431e0930d2ea204a9363a60937289b7=
+fdbe.camel@redhat.com/
+> Signed-off-by: Aaron Conole <aconole@redhat.com>
+> ---
+>  tools/testing/selftests/net/openvswitch/openvswitch.sh | 2 +-
+>  tools/testing/selftests/net/openvswitch/ovs-dpctl.py   | 8 ++++++++
+>  2 files changed, 9 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/tools/testing/selftests/net/openvswitch/openvswitch.sh b/too=
+ls/testing/selftests/net/openvswitch/openvswitch.sh
+> index 9c2012d70b08e..220c3356901ef 100755
+> --- a/tools/testing/selftests/net/openvswitch/openvswitch.sh
+> +++ b/tools/testing/selftests/net/openvswitch/openvswitch.sh
+> @@ -525,7 +525,7 @@ run_test() {
+>  	fi
+> =20
+>  	if python3 ovs-dpctl.py -h 2>&1 | \
+> -	     grep "Need to install the python" >/dev/null 2>&1; then
+> +	     grep -E "Need to (install|upgrade) the python" >/dev/null 2>&1; th=
+en
+>  		stdbuf -o0 printf "TEST: %-60s  [PYLIB]\n" "${tdesc}"
+>  		return $ksft_skip
+>  	fi
+> diff --git a/tools/testing/selftests/net/openvswitch/ovs-dpctl.py b/tools=
+/testing/selftests/net/openvswitch/ovs-dpctl.py
+> index 912dc8c490858..9686ca30d516d 100644
+> --- a/tools/testing/selftests/net/openvswitch/ovs-dpctl.py
+> +++ b/tools/testing/selftests/net/openvswitch/ovs-dpctl.py
+> @@ -28,6 +28,8 @@ try:
+>      from pyroute2.netlink import nlmsg_atoms
+>      from pyroute2.netlink.exceptions import NetlinkError
+>      from pyroute2.netlink.generic import GenericNetlinkSocket
+> +    import pyroute2
+> +
+>  except ModuleNotFoundError:
+>      print("Need to install the python pyroute2 package.")
+>      sys.exit(0)
+> @@ -1998,6 +2000,12 @@ def main(argv):
+>      nlmsg_atoms.ovskey =3D ovskey
+>      nlmsg_atoms.ovsactions =3D ovsactions
+> =20
+> +    # version check for pyroute2
+> +    prverscheck =3D pyroute2.__version__.split(".")
+> +    if int(prverscheck[0]) =3D=3D 0 and int(prverscheck[1]) < 6:
+> +        print("Need to upgrade the python pyroute2 package.")
 
-I can do this, if it is the only stopper.
+I think it would be better to propagate/print also the minimum version
+required, so that the user should not have to resort looking at the
+self-test sources to learn the required minimum version.
 
-Do you want it disabled on caller side or inside apply_alternatives()?
+Cheers,
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Paolo
+
