@@ -2,164 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45D877BFD0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B9A7BFD10
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 15:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231901AbjJJNPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 09:15:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51852 "EHLO
+        id S232008AbjJJNPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 09:15:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231663AbjJJNPB (ORCPT
+        with ESMTP id S229887AbjJJNPQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 09:15:01 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC5CCA4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 06:14:59 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5a7ab31fb8bso16189647b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 06:14:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696943699; x=1697548499; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=qCK/iSIBEVJhUBSFPGxg1tamM9UsdvKCPylqLfCbsyM=;
-        b=YGv/s29L/J2WF2MHNwFak21XJFMXyghxOKJGebaQ7X9wgCFFwjup5+recQP4fXAUPB
-         BVmJDmWHbQ7PuHqvl6/CF82rr22HmRA1DlIyFxKhLpo7fDyrTDUoxEehjyEf9Efr9Xr9
-         rUEwWLRNJ36tXXq8m5CfwVILijvRGGfCTYYsRKNw21DEsg6HOguAwuDwNaHpuZC9K7mk
-         Xdp+29aHm+CGjE3GkwwYfAX7Dm+JhMm7il3EellsvQJST+hAya2OH2CXmy1lOHfDvoqD
-         ZSK4IgstoK9CsUmZU99i5Gh+1k/7xkSU4RO+gaeh1PqiPRTrJ4MR7i8kYXZGwqD1LRZ2
-         fYAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696943699; x=1697548499;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qCK/iSIBEVJhUBSFPGxg1tamM9UsdvKCPylqLfCbsyM=;
-        b=TsJFLg2gC9GEkiyiDFpmsE2OIfHqowqVlZsJxJ6zDyktJoBHKEHXZDUr/I23KaObE5
-         Hxc7+NzKL5nyh5FG+A9Okn4IW6m8B2sX61kHu4ayFlHSjoRRbmiAmKYHTPIMohU5uSRb
-         iKjFc2/sIAxY8xnzDbQgcMiHRUbc4hcu02ys0kqylD04dfan2G2HhcrbHlhaK0JfH2ds
-         FHX4Z6SR3B5G/gU7JoXM+POJcxtcYL0XPiNSQWUB0Y8AN1cojuZepOIEaC1b1fHc0hRW
-         YtWCmQMJF8DrPXRUhk2/9sGdOKfAyElS+swX2qzR0kQzyERUffM2fte349l1q84pcYss
-         LrZQ==
-X-Gm-Message-State: AOJu0YwOZDKy7piBDdXgQm5tBjxYhbfMhk7w65Z5iLU/d7gIChdbnsN8
-        iAOQg89Yez+MGHvTRoeaxoPM2aLb0AauYlmh2SIk0g==
-X-Google-Smtp-Source: AGHT+IGIjkY8fpBrVuBfe0Dn67SLpAJC5kVo9XDURP7C3vKAcbx8vXqFzdGmtrjTGhChQLt+xjcvUUBnudQ243TZAnY=
-X-Received: by 2002:a0d:d40c:0:b0:5a7:bcbb:b948 with SMTP id
- w12-20020a0dd40c000000b005a7bcbbb948mr2205295ywd.15.1696943699056; Tue, 10
- Oct 2023 06:14:59 -0700 (PDT)
+        Tue, 10 Oct 2023 09:15:16 -0400
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE738C4;
+        Tue, 10 Oct 2023 06:15:12 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3411F60008;
+        Tue, 10 Oct 2023 13:15:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1696943711;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=92wkF1+OZ59KpGfmZnu+Vkwq3nyi9bpMP5C9cBgIJ40=;
+        b=TDTcfbPRYcq2ABod+88AfBi7oWWhg5p1YVGQOEvORwmGW9xQrDB2jd9hwGqnSKOIuEbaKU
+        xF9wFfCh5taO3Pln75Zb1vkAwMMUoEYjdflG60yoPNSj4MUsFvmBWsZP7IIDs3pOip1D5C
+        CawgeuZKa9GL8mEtGB2qSLrimhfhLEJ17m9wvAox3aB7gtZp6Hqq6fyZM0DdDov8uOlKbK
+        iH2z6ymK7/Q2m9HFckMTITx1DMxnWCbL4WaXsZE4/w/IFzk63SngqGKrUYCNBKlREvCFwP
+        lOBGZcCir6K/u06MqP/dvAw/fGeQxHUHi4PTJbHpv8JhIFBICrc3ct8f5ZcHfg==
+From:   Mehdi Djait <mehdi.djait@bootlin.com>
+To:     mchehab@kernel.org, heiko@sntech.de, hverkuil-cisco@xs4all.nl,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        conor+dt@kernel.org, ezequiel@vanguardiasur.com.ar
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        alexandre.belloni@bootlin.com, maxime.chevallier@bootlin.com,
+        paul.kocialkowski@bootlin.com,
+        Mehdi Djait <mehdi.djait@bootlin.com>
+Subject: [PATCH v7 0/3] media: rockchip: Add a driver for Rockchip's camera interface
+Date:   Tue, 10 Oct 2023 15:15:03 +0200
+Message-ID: <cover.1696943295.git.mehdi.djait@bootlin.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20231006051801.423973-1-sumit.garg@linaro.org> <8eeac047a59667912a45b21050a6e4c57d7cccd5.camel@kernel.org>
-In-Reply-To: <8eeac047a59667912a45b21050a6e4c57d7cccd5.camel@kernel.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Tue, 10 Oct 2023 18:44:47 +0530
-Message-ID: <CAFA6WYNamspdK=RakirdS3fiHrmmaPXcgEcZeNn5z2DRNdE3Rw@mail.gmail.com>
-Subject: Re: [PATCH v2] KEYS: trusted: Remove redundant static calls usage
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     torvalds@linux-foundation.org, peterz@infradead.org,
-        zohar@linux.ibm.com, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org, jejb@linux.ibm.com,
-        David.Kaplan@amd.com, bp@alien8.de, mingo@kernel.org,
-        x86@kernel.org, regressions@leemhuis.info,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: mehdi.djait@bootlin.com
+X-Spam-Status: No, score=-0.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED,URI_HEX
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Oct 2023 at 18:03, Jarkko Sakkinen <jarkko@kernel.org> wrote:
->
-> On Fri, 2023-10-06 at 10:48 +0530, Sumit Garg wrote:
-> > Static calls invocations aren't well supported from module __init and
-> > __exit functions. Especially the static call from cleanup_trusted() led
-> > to a crash on x86 kernel with CONFIG_DEBUG_VIRTUAL=y.
-> >
-> > However, the usage of static call invocations for trusted_key_init()
-> > and trusted_key_exit() don't add any value from either a performance or
-> > security perspective. Hence switch to use indirect function calls instead.
-> >
-> > Note here that although it will fix the current crash report, ultimately
-> > the static call infrastructure should be fixed to either support its
-> > future usage from module __init and __exit functions or not.
-> >
-> > Reported-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-> > Link: https://lore.kernel.org/lkml/ZRhKq6e5nF%2F4ZIV1@fedora/#t
-> > Fixes: 5d0682be3189 ("KEYS: trusted: Add generic trusted keys framework")
-> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > ---
-> >
-> > Changes in v2:
-> > - Polish commit message as per comments from Mimi
-> >
-> >  security/keys/trusted-keys/trusted_core.c | 13 +++++--------
-> >  1 file changed, 5 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/trusted-keys/trusted_core.c
-> > index c6fc50d67214..85fb5c22529a 100644
-> > --- a/security/keys/trusted-keys/trusted_core.c
-> > +++ b/security/keys/trusted-keys/trusted_core.c
-> > @@ -44,13 +44,12 @@ static const struct trusted_key_source trusted_key_sources[] = {
-> >  #endif
-> >  };
-> >
-> > -DEFINE_STATIC_CALL_NULL(trusted_key_init, *trusted_key_sources[0].ops->init);
-> >  DEFINE_STATIC_CALL_NULL(trusted_key_seal, *trusted_key_sources[0].ops->seal);
-> >  DEFINE_STATIC_CALL_NULL(trusted_key_unseal,
-> >                         *trusted_key_sources[0].ops->unseal);
-> >  DEFINE_STATIC_CALL_NULL(trusted_key_get_random,
-> >                         *trusted_key_sources[0].ops->get_random);
-> > -DEFINE_STATIC_CALL_NULL(trusted_key_exit, *trusted_key_sources[0].ops->exit);
-> > +static void (*trusted_key_exit)(void);
-> >  static unsigned char migratable;
-> >
-> >  enum {
-> > @@ -359,19 +358,16 @@ static int __init init_trusted(void)
-> >                 if (!get_random)
-> >                         get_random = kernel_get_random;
-> >
-> > -               static_call_update(trusted_key_init,
-> > -                                  trusted_key_sources[i].ops->init);
-> >                 static_call_update(trusted_key_seal,
-> >                                    trusted_key_sources[i].ops->seal);
-> >                 static_call_update(trusted_key_unseal,
-> >                                    trusted_key_sources[i].ops->unseal);
-> >                 static_call_update(trusted_key_get_random,
-> >                                    get_random);
-> > -               static_call_update(trusted_key_exit,
-> > -                                  trusted_key_sources[i].ops->exit);
-> > +               trusted_key_exit = trusted_key_sources[i].ops->exit;
-> >                 migratable = trusted_key_sources[i].ops->migratable;
-> >
-> > -               ret = static_call(trusted_key_init)();
-> > +               ret = trusted_key_sources[i].ops->init();
-> >                 if (!ret)
-> >                         break;
-> >         }
-> > @@ -388,7 +384,8 @@ static int __init init_trusted(void)
-> >
-> >  static void __exit cleanup_trusted(void)
-> >  {
-> > -       static_call_cond(trusted_key_exit)();
-> > +       if (trusted_key_exit)
-> > +               (*trusted_key_exit)();
-> >  }
-> >
-> >  late_initcall(init_trusted);
->
-> Would it be less confusing to require trusted_key_exit from each?
->
+Hello everyone,
 
-It is already required for each trust source to provide exit callback
-but this NULL check was added via this fix [1] in case there isn't any
-trust source present.
+V7 for basic support of the Video Input Processor found on the Rockchip PX30 SoC
 
-[1] https://lkml.kernel.org/stable/20220126184155.220814-1-dave.kleikamp@oracle.com/
+The v6 is based on the fifth iteration of the series introducing the
+driver: sent 29 Dec 2020 [1]
 
--Sumit
+Most of this driver was written following the BSP driver from rockchip,
+removing the parts that either didn't fit correctly the guidelines, or
+that couldn't be tested.
 
-> BR, Jarkko
->
+In the BSP, this driver is known as the "cif" driver, but this was
+renamed to "vip" to better fit the controller denomination in the
+datasheet.
+
+This version of the driver supports ONLY the parallel interface BT656
+and was tested/implemented using an SDTV video decoder
+
+media_tree, base-commit: 2c1bae27df787c9535e48cc27bbd11c3c3e0a235
+
+V6 => V7:
+vip/capture.c vip/dev.c vip/dev.h
+- renamed all struct rk_vip_dev dev => struct rk_vip_dev vip_dev
+- added some error when rk_vip_get_buffer() returns NULL
+- removed a WARN_ON
+- made the irq NOT shared
+- dropped of_match_ptr
+- added the rk_vip_get_resource() function
+
+rockchip,px30-vip.yaml:
+- changed filename to match the compatible
+- dropped the mention of the other rockchip SoC in the dt-binding
+  description and added a more detailed description of VIP
+- removed unused labels in the example
+
+
+V5 [1] => V6:
+vip/capture.c vip/dev.c vip/dev.h
+- added a video g_input_status subdev call, V4L2_IN_CAP_STD and the
+  supported stds in rk_vip_enum_input callback
+- added rk_vip_g_std, rk_vip_s_std and rk_vip_querystd callbacks
+- added the supported video_device->tvnorms
+- s_std will now update the format as this depends on the standard
+  NTSC/PAL (as suggested by Hans in [1])
+- removed STD_ATSC
+- moved the colorimetry information to come from the subdev
+- removed the core s_power subdev calls
+- dropped cropping in rk_vip_stream struct
+
+rockchip-vip.yaml:
+- fixed a mistake in the name of third clock plckin -> plck
+- changed the reg maxItems 2 -> 1
+
+[1] https://lore.kernel.org/linux-media/20201229161724.511102-1-maxime.chevallier@bootlin.com/
+
+I used v4l-utils with HEAD: commit 1ee258e5bb91a12df378e19eb255c5219d6bc36b
+
+# v4l2-compliance 
+v4l2-compliance 1.25.0, 64 bits, 64-bit time_t
+
+Compliance test for rk_vip device /dev/video0:
+
+Driver Info:
+        Driver name      : rk_vip
+        Card type        : rk_vip
+        Bus info         : platform:ff490000.vip
+        Driver version   : 6.6.0
+        Capabilities     : 0x84201000
+                Video Capture Multiplanar
+                Streaming
+                Extended Pix Format
+                Device Capabilities
+        Device Caps      : 0x04201000
+                Video Capture Multiplanar
+                Streaming
+                Extended Pix Format
+Media Driver Info:
+        Driver name      : rk_vip
+        Model            : rk_vip
+        Serial           : 
+        Bus info         : platform:ff490000.vip
+        Media version    : 6.6.0
+        Hardware revision: 0x00000000 (0)
+        Driver version   : 6.6.0
+Interface Info:
+        ID               : 0x03000002
+        Type             : V4L Video
+Entity Info:
+        ID               : 0x00000001 (1)
+        Name             : video_rkvip
+        Function         : V4L2 I/O
+        Pad 0x01000004   : 0: Sink
+          Link 0x02000009: from remote pad 0x1000006 of entity 'tw9900 2-0044' (Digital Video Decoder): Data, Enabled
+
+Required ioctls:
+        test MC information (see 'Media Driver Info' above): OK
+        test VIDIOC_QUERYCAP: OK
+        test invalid ioctls: OK
+
+Allow for multiple opens:
+        test second /dev/video0 open: OK
+        test VIDIOC_QUERYCAP: OK
+        test VIDIOC_G/S_PRIORITY: OK
+        test for unlimited opens: OK
+
+Debug ioctls:
+        test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
+        test VIDIOC_LOG_STATUS: OK (Not Supported)
+
+Input ioctls:
+        test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+        test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+        test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+        test VIDIOC_ENUMAUDIO: OK (Not Supported)
+        test VIDIOC_G/S/ENUMINPUT: OK
+        test VIDIOC_G/S_AUDIO: OK (Not Supported)
+        Inputs: 1 Audio Inputs: 0 Tuners: 0
+
+Output ioctls:
+        test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+        test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+        test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+        test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+        test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+        Outputs: 0 Audio Outputs: 0 Modulators: 0
+
+Input/Output configuration ioctls:
+        test VIDIOC_ENUM/G/S/QUERY_STD: OK
+        test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
+        test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
+        test VIDIOC_G/S_EDID: OK (Not Supported)
+
+Control ioctls (Input 0):
+        test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK (Not Supported)
+        test VIDIOC_QUERYCTRL: OK (Not Supported)
+        test VIDIOC_G/S_CTRL: OK (Not Supported)
+        test VIDIOC_G/S/TRY_EXT_CTRLS: OK (Not Supported)
+        test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK (Not Supported)
+        test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+        Standard Controls: 0 Private Controls: 0
+
+Format ioctls (Input 0):
+        test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
+        test VIDIOC_G/S_PARM: OK (Not Supported)
+        test VIDIOC_G_FBUF: OK (Not Supported)
+        test VIDIOC_G_FMT: OK
+        test VIDIOC_TRY_FMT: OK
+        test VIDIOC_S_FMT: OK
+        test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+        test Cropping: OK (Not Supported)
+        test Composing: OK (Not Supported)
+        test Scaling: OK (Not Supported)
+
+Codec ioctls (Input 0):
+        test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
+        test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+        test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
+
+Buffer ioctls (Input 0):
+        test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+        test VIDIOC_EXPBUF: OK
+        test Requests: OK (Not Supported)
+
+Total for rk_vip device /dev/video0: 46, Succeeded: 46, Failed: 0, Warnings: 0
+
+Mehdi Djait (3):
+  media: dt-bindings: media: add bindings for Rockchip VIP
+  media: rockchip: Add a driver for Rockhip's camera interface
+  arm64: dts: rockchip: Add the camera interface
+
+ .../bindings/media/rockchip,px30-vip.yaml     |   93 ++
+ arch/arm64/boot/dts/rockchip/px30.dtsi        |   12 +
+ drivers/media/platform/rockchip/Kconfig       |    1 +
+ drivers/media/platform/rockchip/Makefile      |    1 +
+ drivers/media/platform/rockchip/vip/Kconfig   |   14 +
+ drivers/media/platform/rockchip/vip/Makefile  |    3 +
+ drivers/media/platform/rockchip/vip/capture.c | 1211 +++++++++++++++++
+ drivers/media/platform/rockchip/vip/dev.c     |  346 +++++
+ drivers/media/platform/rockchip/vip/dev.h     |  163 +++
+ drivers/media/platform/rockchip/vip/regs.h    |  260 ++++
+ 10 files changed, 2104 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml
+ create mode 100644 drivers/media/platform/rockchip/vip/Kconfig
+ create mode 100644 drivers/media/platform/rockchip/vip/Makefile
+ create mode 100644 drivers/media/platform/rockchip/vip/capture.c
+ create mode 100644 drivers/media/platform/rockchip/vip/dev.c
+ create mode 100644 drivers/media/platform/rockchip/vip/dev.h
+ create mode 100644 drivers/media/platform/rockchip/vip/regs.h
+
+-- 
+2.41.0
+
