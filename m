@@ -2,99 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D162E7BFB14
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC4A7BFB13
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 14:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231788AbjJJMTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 08:19:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58102 "EHLO
+        id S231658AbjJJMTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 08:19:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231800AbjJJMSz (ORCPT
+        with ESMTP id S231684AbjJJMSw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 08:18:55 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB6DD7
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:18:52 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-2776ca9adb7so3425613a91.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:18:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tweaklogic.com; s=google; t=1696940332; x=1697545132; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=m/uEl57rkB9FlUc8/Z3IPGgI3YZRBzcpqKdiv4r4u1s=;
-        b=Lm8NHp89ZTc1yIw7DQiuYLMD2DwyugXiiwUDN6hC5oevK3OKa9X6nlPx+oNbDdAlqv
-         d03Wey1yPycLxV1ADWVSCMSEEZUngFQZxPdOfx4u1nMAKLC0RGiEEdbrstfMqUEmAeIi
-         D3pWh+gpsxJr7DxvqYf/UYNiNUwdBgDnvufwUm9yBopNRoffjsf0Z/0rzL1Aijj97poU
-         1Pnl7yLDb7ghgZOtmFewjNbmw5srWcnIdiqh2IMrOq9jfiHlVNdhzmvk8hQ1ka29qWwP
-         iBldJk5Xqs5l+eebWgGlyN+3WKYWK2uXvsod51ZYlzYwq2efiJ5N6nOJHHJL4KZqIrJR
-         KvVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696940332; x=1697545132;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=m/uEl57rkB9FlUc8/Z3IPGgI3YZRBzcpqKdiv4r4u1s=;
-        b=RXlzXctygrbYkkPtxdiDkP8n8J7eip6v7GBuAxg/RaNAe3kyboprorIyAKjVia6vh9
-         X0g06E+kd9X7Z9bpo9IXzJXesPz8foX4gsnt5/CYTRjV8zfilsSxHFsIvGV1DWC8yqet
-         vANhkFM+CrX20vEsWlYtNCwUGNFc7NqlRDXiHAbDFd68br2qp1fiPWjyP3wf8QWfHUc/
-         sIKA9DCyV+Cka6mhs4qYGHdIktJbDf+vmeSOtCdATZvn0IOBRFCUvXR0ICBCXLL7jx6F
-         9EoCG4ya0ZLkPi8D+W7Vzv9H4i2/5JMRBXWLkLTBHxQsNjBXtbHv5bqs9Xme5RbEkve/
-         m0Hw==
-X-Gm-Message-State: AOJu0Yx5a8HO4E7Gh2Qz1HfcibsQZEnhH7qZ54oiJdLsbboRonj0Ev1P
-        aN1TF8Y4ZspvhZDFdsEzmhneYw==
-X-Google-Smtp-Source: AGHT+IHw/JvHNya/HvLyiP3273/LTzyAj8keMwXYe74c2W6FN1+g3m3s4WDbkHEV195vAl+vK+qsew==
-X-Received: by 2002:a17:90b:1d03:b0:26b:5205:525e with SMTP id on3-20020a17090b1d0300b0026b5205525emr14171953pjb.42.1696940332153;
-        Tue, 10 Oct 2023 05:18:52 -0700 (PDT)
-Received: from ?IPV6:2403:580d:82f4:0:4346:670f:8942:33b? (2403-580d-82f4-0-4346-670f-8942-33b.ip6.aussiebb.net. [2403:580d:82f4:0:4346:670f:8942:33b])
-        by smtp.gmail.com with ESMTPSA id ev7-20020a17090aeac700b00274922d4b38sm10128842pjb.27.2023.10.10.05.18.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Oct 2023 05:18:51 -0700 (PDT)
-Message-ID: <83bb2425-aff1-6359-37f4-4182d4f8ed05@tweaklogic.com>
-Date:   Tue, 10 Oct 2023 22:48:43 +1030
+        Tue, 10 Oct 2023 08:18:52 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF53E6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 05:18:49 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1696940327;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n34Yjr73UApla1HKKWZ0In4KYUOcdx7o7ymM14zpnvc=;
+        b=bVoHiOmHJDgIhpQI/d4gwM/rUlZ4hSDm+JxKCz3NI+s6TaxxyAeczIz68YpSjEig01B1l5
+        TAniTBhyk8w3w2ALwLy+kb5auG9npYtVrHhoDvfa3le7C2s/sIfmFYycmbFJv9Vj5RA2lp
+        S6j/Wjc2BBZvRt2qUNrYOWCFlLcrxCi9nDWMYu07xV7u4AXaIFJM/4XAqXJns82mrreHfv
+        ZCuH6TIoATERFsir/MbVnCHMBwLo0AT8c9/90n5kV3eSgxHOYli6at+wOwemD6ZgCMY5+6
+        FIbTzmi8SSCr91MU40QFipJSJcBAqanPPV2XQAjOk4O1SIwlQOTfsocuXLdg8g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1696940327;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n34Yjr73UApla1HKKWZ0In4KYUOcdx7o7ymM14zpnvc=;
+        b=HYgFWSMOjhTDGW9zE7WA/ZI3YV+PC3+iv9wWqxCHLQAsoHPxosKmRGgLIiQkcC+ak1YJgE
+        gchdhlKrtOc4TRDQ==
+To:     Dave Hansen <dave.hansen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Pu Wen <puwen@hygon.cn>,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>
+Subject: Re: [patch V4 02/41] cpu/SMT: Make SMT control more robust against
+ enumeration failures
+In-Reply-To: <3b9518f5-8b92-1c24-286c-47bf9e8b8a2e@intel.com>
+References: <20230814085006.593997112@linutronix.de>
+ <20230814085112.149440843@linutronix.de>
+ <3b9518f5-8b92-1c24-286c-47bf9e8b8a2e@intel.com>
+Date:   Tue, 10 Oct 2023 14:18:47 +0200
+Message-ID: <87r0m2oel4.ffs@tglx>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 1/2] dt-bindings: iio: light: Avago APDS9306
-Content-Language: en-US
-To:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paul Gazzillo <paul@pgazz.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>
-References: <20231008154857.24162-1-subhajit.ghosh@tweaklogic.com>
- <20231008154857.24162-2-subhajit.ghosh@tweaklogic.com>
- <2c6ff28f-9031-beb2-f8d0-e7f12b0a07b4@gmail.com>
-From:   Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-In-Reply-To: <2c6ff28f-9031-beb2-f8d0-e7f12b0a07b4@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/23 19:22, Matti Vaittinen wrote:
+On Tue, Aug 15 2023 at 14:15, Dave Hansen wrote:
+> On 8/14/23 01:53, Thomas Gleixner wrote:
+>> -static inline bool cpu_smt_allowed(unsigned int cpu)
+>> +static inline bool cpu_bootable(unsigned int cpu)
+>>  {
+>>  	if (cpu_smt_control == CPU_SMT_ENABLED)
+>>  		return true;
+>>  
+>> +	if (cpu_smt_control == CPU_SMT_NOT_SUPPORTED)
+>> +		return true;
+>
+> I found this new pair of if()'s rather counterintuitive to read.
+>
+> The first one reads like:
+>
+> 	"If SMT is not supported, the CPU is always bootable"
+>
+> but "supported" could easily mean CONFIG_SMP==n (which is actually
+> covered in the next case).  Would this be better named:
+>
+> 	CPU_SMT_NOT_ENUMERATED
+> or
+> 	CPU_SMT_NOT_DETECTED
+>
+> ?
 
->> +properties:
->> +  compatible:
->> +    const: avago,apds9306
-> 
-> I see the driver supports two different variants of this IC, differentiated by the part-ID register. Variants are named as apds9306 and apds9306-065. I wonder if we could/should have different compatibles for them?
-> 
+Yes, no, maybe. I rather keep them as is because the strings which are
+exposed via sysfs cannot be changed and are matching.
 
-Yes, we can. It makes sense. I'll implement that.
+> 	/* Every CPU is bootable on non-SMT systems: */
+> 	if (cpu_smt_control == CPU_SMT_NOT_DETECTED)
+> 		return true;
+>
+> For the next one:
+>
+>> +	if (cpu_smt_control == CPU_SMT_NOT_IMPLEMENTED)
+>> +		return true;
+>
+> This reads a bit like "SMT is not implemented" rather than "SMT controls
+> are not implemented".  Maybe a comment would help:
+>
+> 	/* All CPUs are bootable if controls are not implemented: */
 
-Regards,
-Subhajit Ghosh
-
+Sure.
