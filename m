@@ -2,184 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 070B97BF00A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 03:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A1A17BF00D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 03:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379315AbjJJBGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Oct 2023 21:06:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35712 "EHLO
+        id S1379311AbjJJBI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Oct 2023 21:08:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379287AbjJJBGg (ORCPT
+        with ESMTP id S1379287AbjJJBIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Oct 2023 21:06:36 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 466C1B6;
-        Mon,  9 Oct 2023 18:06:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696899995; x=1728435995;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=PqBlrOXO0p/wIuRBtWIVZsgDBBqiJLuccAEqIg6kqmo=;
-  b=nhFGhzvsuiApytIYafo6cnOWcqJeAPJnq66LsekqCoZO3J4Tz79VC3bX
-   xxuX9s4NO7JJA6t0sT+OnRmbqpThcSODQRKWt2DyuBWWPXt+FdESHtWSs
-   GCWxoFvAH9oaZ2wKxMGs+d4aPfxhZ517tnxlN6fPEyq1yY6utmBP2sUVJ
-   iYk5m3Jr6Sotv+Gjt5srEhYHtP69Rln194kW+dCUVPaA2mqZXY4wW4Gnv
-   Y1JgZ8Dvl/owXgUpyysTh8msIa2ZPKGbLGEtALxLilrram8uj5v07yLXe
-   Y2OzeyAveZDvYjKt/1tI7UyApfPKEu1Y0EpDaJT/gDnn9hbIU6DmOoGMP
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="388155765"
-X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
-   d="scan'208";a="388155765"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 18:04:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="703121231"
-X-IronPort-AV: E=Sophos;i="6.03,211,1694761200"; 
-   d="scan'208";a="703121231"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.96.100])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 09 Oct 2023 18:04:58 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "Huang, Kai" <kai.huang@intel.com>
-Cc:     "kristen@linux.intel.com" <kristen@linux.intel.com>,
-        "yangjie@microsoft.com" <yangjie@microsoft.com>,
-        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
-        "Zhang, Bo" <zhanb@microsoft.com>,
-        "anakrish@microsoft.com" <anakrish@microsoft.com>
-Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
- EPC
-References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
- <20230923030657.16148-13-haitao.huang@linux.intel.com>
- <1b265d0c9dfe17de2782962ed26a99cc9d330138.camel@intel.com>
-Date:   Mon, 09 Oct 2023 20:04:54 -0500
+        Mon, 9 Oct 2023 21:08:25 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD76A9E;
+        Mon,  9 Oct 2023 18:08:23 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-2773f776f49so3718053a91.1;
+        Mon, 09 Oct 2023 18:08:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696900103; x=1697504903; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/NyHLoSVe2VzqxLFtpuVYd0zTrzwtQioN6fcJnEB+68=;
+        b=Zg3n7NW25xQO+Ebzi+0oP6kaw2STOV6fPCUkXTe080xcJaIQ7I/0plThD5oaD4tFzm
+         5Mu+xGBOQUmJKp9+iBU94lIpi9s5UrMIGXJgi9j7fwa6g6yLhzHUZvk6+0JsK9KySs7F
+         jBO32YlnIykNKHtvYYk7lU1h6YYbNg7uu5JzFMwgY50RKzkycP0nJwjazZqQXstD6crC
+         o0ycC4Vu6h9dQoh2F1i/ifsJWOlp+VosbfGVRUdzMXgHcy6zpJwNSYzkrky1Xc2DuVay
+         h0L6fvgo+MrW3WSK87N4WZOWR5lpbjP/JcxZjXbRJ2sP6yHPF8wBDtI0HSN9tJuRqvCA
+         5PEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696900103; x=1697504903;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/NyHLoSVe2VzqxLFtpuVYd0zTrzwtQioN6fcJnEB+68=;
+        b=UbgihKqOnic8L0lYHFxG8LY4Fn4taUQ7oS0gemqrarictrDEj7SUU4iko7Cg/fKVjk
+         Zclb+vHDkhkB/fg3XnHaXrpr1hutCrns3AU3kdmkdWXW5NEb/bOPan5aop4Z2Ak7wEhB
+         akk/oqnDcNp+4iK8UinkNxQEKDWmdVZUmNdwv9nEqFIRa4dPi3PQHsAdFRDjjuioTxru
+         rkfJEB2j0yv1753h2lyxhHy8adp883EWBZ+xPpzhN3jT+c1JSIrw0K4zZAyGYiHpDlSV
+         +iWgIHPOphmxdOc6B9XoH1uHpud0lOKZdCAaEErS1yHS9+/3dfij0awDJNDjDFZEX2tS
+         pvog==
+X-Gm-Message-State: AOJu0Yx1R662Z/PuH+Xr8/ZahVQhI05NIeViVu7tRdAGQzgprOHaFFeJ
+        c5yiFj7wqxHQdcAUq+Mc82Q=
+X-Google-Smtp-Source: AGHT+IFECBKSr0s8fUjcGXDbGeiFvCUGol7oHZ7hXWmqS472RlN1BZp4LPWlMi3ZSAL4Gu7uyUUvTw==
+X-Received: by 2002:a17:90a:dd43:b0:273:83ac:5eb9 with SMTP id u3-20020a17090add4300b0027383ac5eb9mr19693687pjv.4.1696900102964;
+        Mon, 09 Oct 2023 18:08:22 -0700 (PDT)
+Received: from pek-lxu-l1.wrs.com ([111.198.228.56])
+        by smtp.gmail.com with ESMTPSA id l6-20020a633e06000000b00589eb5b1df7sm3723822pga.35.2023.10.09.18.08.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Oct 2023 18:08:22 -0700 (PDT)
+From:   Edward AD <twuufnxlz@gmail.com>
+To:     syzbot+509238e523e032442b80@syzkaller.appspotmail.com
+Cc:     davem@davemloft.net, edumazet@google.com, johannes.berg@intel.com,
+        johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Subject: [PATCH] rfkill: fix deadlock in rfkill_send_events
+Date:   Tue, 10 Oct 2023 09:08:15 +0800
+Message-ID: <20231010010814.1799012-2-twuufnxlz@gmail.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <000000000000e3788c06074e2b84@google.com>
+References: <000000000000e3788c06074e2b84@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2ckqmgs9wjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <1b265d0c9dfe17de2782962ed26a99cc9d330138.camel@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 09 Oct 2023 18:45:06 -0500, Huang, Kai <kai.huang@intel.com> wrote:
+syzbot report:
+syz-executor675/5132 is trying to acquire lock:
+ffff8880297ee088 (&data->mtx){+.+.}-{3:3}, at: rfkill_send_events+0x226/0x3f0 net/rfkill/core.c:286
 
-> On Fri, 2023-09-22 at 20:06 -0700, Haitao Huang wrote:
->> From: Sean Christopherson <sean.j.christopherson@intel.com>
->>
->> Introduce the OOM path for killing an enclave with a reclaimer that is  
->> no
->> longer able to reclaim enough EPC pages. Find a victim enclave, which
->> will be an enclave with only "unreclaimable" EPC pages left in the
->> cgroup LRU lists. Once a victim is identified, mark the enclave as OOM
->> and zap the enclave's entire page range, and drain all mm references in
->> encl->mm_list. Block allocating any EPC pages in #PF handler, or
->> reloading any pages in all paths, or creating any new mappings.
->>
->> The OOM killing path may race with the reclaimers: in some cases, the
->> victim enclave is in the process of reclaiming the last EPC pages when
->> OOM happens, that is, all pages other than SECS and VA pages are in
->> RECLAIMING_IN_PROGRESS state. The reclaiming process requires access to
->> the enclave backing, VA pages as well as SECS. So the OOM killer does
->> not directly release those enclave resources, instead, it lets all
->> reclaiming in progress to finish, and relies (as currently done) on
->> kref_put on encl->refcount to trigger sgx_encl_release() to do the
->> final cleanup.
->>
->> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
->> Co-developed-by: Kristen Carlson Accardi <kristen@linux.intel.com>
->> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
->> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
->> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
->> Cc: Sean Christopherson <seanjc@google.com>
->> ---
->> V5:
->> - Rename SGX_ENCL_OOM to SGX_ENCL_NO_MEMORY
->>
->> V4:
->> - Updates for patch reordering and typo fixes.
->>
->> V3:
->> - Rebased to use the new VMA_ITERATOR to zap VMAs.
->> - Fixed the racing cases by blocking new page allocation/mapping and
->> reloading when enclave is marked for OOM. And do not release any enclave
->> resources other than draining mm_list entries, and let pages in
->> RECLAIMING_IN_PROGRESS to be reaped by reclaimers.
->> - Due to above changes, also removed the no-longer needed encl->lock in
->> the OOM path which was causing deadlocks reported by the lock prover.
->>
->
-> [...]
->
->> +
->> +/**
->> + * sgx_epc_oom() - invoke EPC out-of-memory handling on target LRU
->> + * @lru:	LRU that is low
->> + *
->> + * Return:	%true if a victim was found and kicked.
->> + */
->> +bool sgx_epc_oom(struct sgx_epc_lru_lists *lru)
->> +{
->> +	struct sgx_epc_page *victim;
->> +
->> +	spin_lock(&lru->lock);
->> +	victim = sgx_oom_get_victim(lru);
->> +	spin_unlock(&lru->lock);
->> +
->> +	if (!victim)
->> +		return false;
->> +
->> +	if (victim->flags & SGX_EPC_OWNER_PAGE)
->> +		return sgx_oom_encl_page(victim->encl_page);
->> +
->> +	if (victim->flags & SGX_EPC_OWNER_ENCL)
->> +		return sgx_oom_encl(victim->encl);
->
-> I hate to bring this up, at least at this stage, but I am wondering why  
-> we need
-> to put VA and SECS pages to the unreclaimable list, but cannot keep an
-> "enclave_list" instead?
->
-> So by looking the patch (" x86/sgx: Limit process EPC usage with misc  
-> cgroup
-> controller"), if I am not missing anything, the whole "unreclaimable"  
-> list is
-> just used to find the victim enclave when OOM needs to be done.  Thus, I  
-> don't
-> see why "enclave_list" cannot be used to achieve this.
->
-> The reason that I am asking is because it seems using "enclave_list" we  
-> can
-> simplify the code.  At least the patches related to track VA/SECS pages,  
-> and the
-> SGX_EPC_OWNER_PAGE/SGX_EPC_OWNER_ENCL thing can be eliminated  
-> completely.  
-> Using "enclave_list", I guess you just need to put the enclave to the  
-> current
-> EPC cgroup when SECS page is allocated.
->
-Later the hosting process could migrated/reassigned to another cgroup?
-What to do when the new cgroup is OOM?
+but task is already holding lock:
+ffff88801bfc0088 (&data->mtx){+.+.}-{3:3}, at: rfkill_fop_open+0x146/0x750 net/rfkill/core.c:1183
 
-Thanks
-Haitao
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&data->mtx);
+  lock(&data->mtx);
+
+ *** DEADLOCK ***
+
+In 2c3dfba4cf84 insert rfkill_sync() to rfkill_fop_open(), it will call
+rfkill_send_events() and then triger this issue.
+
+Fixes: 2c3dfba4cf84 ("rfkill: sync before userspace visibility/changes")
+Reported-and-tested-by: syzbot+509238e523e032442b80@syzkaller.appspotmail.com
+Signed-off-by: Edward AD <twuufnxlz@gmail.com>
+---
+ net/rfkill/core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/net/rfkill/core.c b/net/rfkill/core.c
+index 08630896b6c8..a14e0d4a0b00 100644
+--- a/net/rfkill/core.c
++++ b/net/rfkill/core.c
+@@ -1180,7 +1180,6 @@ static int rfkill_fop_open(struct inode *inode, struct file *file)
+ 	init_waitqueue_head(&data->read_wait);
+ 
+ 	mutex_lock(&rfkill_global_mutex);
+-	mutex_lock(&data->mtx);
+ 	/*
+ 	 * start getting events from elsewhere but hold mtx to get
+ 	 * startup events added first
+@@ -1191,9 +1190,12 @@ static int rfkill_fop_open(struct inode *inode, struct file *file)
+ 		if (!ev)
+ 			goto free;
+ 		rfkill_sync(rfkill);
++		mutex_lock(&data->mtx);
+ 		rfkill_fill_event(&ev->ev, rfkill, RFKILL_OP_ADD);
+ 		list_add_tail(&ev->list, &data->events);
++		mutex_unlock(&data->mtx);
+ 	}
++	mutex_lock(&data->mtx);
+ 	list_add(&data->list, &rfkill_fds);
+ 	mutex_unlock(&data->mtx);
+ 	mutex_unlock(&rfkill_global_mutex);
+-- 
+2.25.1
+
