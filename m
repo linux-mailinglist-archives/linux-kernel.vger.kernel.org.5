@@ -2,169 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6887C0216
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 18:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8058C7C021C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Oct 2023 19:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233674AbjJJQ6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 12:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47796 "EHLO
+        id S232809AbjJJRBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 13:01:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232809AbjJJQ6t (ORCPT
+        with ESMTP id S232621AbjJJRB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 12:58:49 -0400
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2059.outbound.protection.outlook.com [40.107.212.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E787797;
-        Tue, 10 Oct 2023 09:58:47 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y0RqTt93KMDgM5afofNRLmhRuSPA/bwlFYESam66iUB1Jj5QYXQbeU+k5dRgdP57XxW9Inpw4RzfTQcW72tRxAH99pzXzPngPikIANtmt+MfMbHNOda+9fs0ycXXc79HXaFclhlVIWoX1UbZlriN6oXqjC+s6kFm2IlS0wEemOuAdze4yvvYwRSuw5M3Puhqdmv9Z3byz9HGLvIkp5LLnAF3lKl0nzEhmiTDLgHBL4xO4BKGLM9xidTbToMGnF/mKaE8RZDdz7X4rwvHgLPxW9kke4GMKGxgM8jyagpUFQ+M+qGvQPjInvr+N4YAADSxDppj4FCX+Um/6Th9f32YkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pnMOg4+4nnDBbVWOUOCD8dD1tIrbCfW6ORtABwWKxY0=;
- b=mqT8o8fnSYijh2k81u9DgT/ownXYUKvtF58MWKemfhRfgDprdP/ZGJgUTyc5/92ivkyhCqFozKzV10dFc/OczjP1fMKb/wXd8exGnxSULVMae7f4Vij+YBdKk2IwaHNrwFF4CFpXx8pC3fHYd1LimYKc1pNOZoFAZbMgIPL0y9+ZxUby2i33ksBeYspuoLlwykt6DzSzHhahN//4T59nnOpZu1SkyVZW/FJoAACXq1TKb6fzEFc5UsQ99RyYWTc21/mFYILiXRUhP8A+nubaMZDwkZCxq3nkDkcuAXumS+6PGTHWaWB0d8QvKFFPSCAEsPp8bvc3xL2S3Zq+poVWhg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pnMOg4+4nnDBbVWOUOCD8dD1tIrbCfW6ORtABwWKxY0=;
- b=Ew5BjMZNf9b2G62Hfaz7rIqc+YIvKT/UH+bkb3+b+GoWqsrKYnZ42GSgM9pHTA5w+qMc1KGY+Uuj99g2YBqxrGmuDsz0Hl2/AideC1wkflzDLSaLuTxsVQfu7Xx5cX7cMNQH0ONA9CRn9M2Uvsa387lUlFC/AR8X/JGlOG/nzM+Vaw0v32N9IUvGUhTsx0uOmCXysBg8ZUZemtqpQGuZSImyQFitHC2HAczk7Tdzlhm4a6jGGY0shaintYfN8MWBhlJJhFXZWpna5Vc/BF0CDJCWvj8RGiXcaznUfSVatemGDew9DIi9X6JLPpnhZXTf9EojnsJ/u3Y4Z8r5p435/A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by PH0PR12MB8800.namprd12.prod.outlook.com (2603:10b6:510:26f::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.36; Tue, 10 Oct
- 2023 16:58:46 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2%6]) with mapi id 15.20.6863.032; Tue, 10 Oct 2023
- 16:58:46 +0000
-Date:   Tue, 10 Oct 2023 13:58:44 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Yi Liu <yi.l.liu@intel.com>
-Cc:     joro@8bytes.org, alex.williamson@redhat.com, kevin.tian@intel.com,
-        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
-        eric.auger@redhat.com, nicolinc@nvidia.com, kvm@vger.kernel.org,
-        mjrosato@linux.ibm.com, chao.p.peng@linux.intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
-Subject: Re: [PATCH v4 01/17] iommu: Add hwpt_type with user_data for
- domain_alloc_user op
-Message-ID: <20231010165844.GQ3952@nvidia.com>
-References: <20230921075138.124099-1-yi.l.liu@intel.com>
- <20230921075138.124099-2-yi.l.liu@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230921075138.124099-2-yi.l.liu@intel.com>
-X-ClientProxiedBy: MN2PR10CA0003.namprd10.prod.outlook.com
- (2603:10b6:208:120::16) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Tue, 10 Oct 2023 13:01:28 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD3494
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 10:01:26 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-3231dff4343so29385f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 10:01:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1696957285; x=1697562085; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6UedTWOigHlMvbjw9L2/ZKDZgaAgA7T2ZbalaNnedvY=;
+        b=lOBGGzoTOmZiDcu7T6V9z17eLGS5QFwvx1n5nNotXEAPTu86nKWrCEZTzxW6vVEKge
+         mwcUAMoo2LL6sCyAgEavmxb2xd2gCWHJiwOiTEQc22sXt53jOZoliZih45nN0bYQxujg
+         ztBTLGf5luws9Ny8XnxO+Ox7lDsHbs2jR938zmFUHIsIdRIMWADAs+sz81t3vILeKjD4
+         F1F4eOjyKIs/+xBFrWnNbDLjBU/SSCV2REYNBmoY7x4eIeHUW2LVnY1B0KY3/uRMT1eu
+         dQhMZTHfdjQbt/nuPM01X17b+MQZqmZJfRgvy1+tsYTdpk1wmamoVO0iM+aEb807D+Qw
+         Ec0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696957285; x=1697562085;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6UedTWOigHlMvbjw9L2/ZKDZgaAgA7T2ZbalaNnedvY=;
+        b=LHT7dH+djTbd5NZUm3Z1E2L8UEhBdpVMeHXsu+kKrtxJOoiAn5k4yQXBs8gOwu21ef
+         L2EtBia2DNLuwj++FeJPVBmdyFzJHsKM6LWxDTLGuRzoJ9CYhMl9lffPWk9uwekNhrho
+         PLTEdd67mn3EMRr/q6k8ihQmMaC0/KZM8OC6i2zM561mAi1Xoacjpri38u46r0zSc3DZ
+         cq/BWI7pUCiRQUCxxBjcV9fw03OI1hrp7t0LEqLfb0MSVmy78OPCwxHsPamoYvpUxN4U
+         4U5Ar5j6MCSuSNkNxr48UDWwh6buNvtEeOAuRLrd/GUHpLSADYZ/RfveYb2XP4HkYvf4
+         WOvw==
+X-Gm-Message-State: AOJu0Yx5wpipPEl9FrZxbeqDAJNVvX4IWH9DgHs5KU6TqcY/0PT225Fa
+        F8b/ia20Gc0tzzzQgQoNxCybYNcr/gM+G0Msssw=
+X-Google-Smtp-Source: AGHT+IFSeO9aC0SmT/p48t7Ny0Ng06fLg3I9jSu7tyfPX7GoKbPaa/NmSpZTA8FDU2RqIFgvVJqjDg==
+X-Received: by 2002:adf:ec4d:0:b0:323:3336:b6ea with SMTP id w13-20020adfec4d000000b003233336b6eamr13612018wrn.27.1696957284844;
+        Tue, 10 Oct 2023 10:01:24 -0700 (PDT)
+Received: from ?IPV6:2a02:6b6a:b5c7:0:4c48:be29:750e:6e92? ([2a02:6b6a:b5c7:0:4c48:be29:750e:6e92])
+        by smtp.gmail.com with ESMTPSA id z5-20020a7bc7c5000000b00401bbfb9b2bsm954wmk.0.2023.10.10.10.01.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Oct 2023 10:01:24 -0700 (PDT)
+Message-ID: <6b1d9860-3581-0b99-4fb7-4c1f5a2a05f3@bytedance.com>
+Date:   Tue, 10 Oct 2023 18:01:23 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|PH0PR12MB8800:EE_
-X-MS-Office365-Filtering-Correlation-Id: 992a9407-2c61-4ee4-5757-08dbc9b22a84
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8QuXDnzXys2vhHRg3Qey3h31AzqXFpFIMju85AIHZNyO9+6BH73AI9ACE4INq41D0XLhnZuIvWu3mA8ZzUflNw5hypyIJ3KGY87e8VROdi3xUqOmgkQO/5bgaBgVjraQLb3BB7PJUHo4qe5MXwMzRtSaUSiEhisulzA5WkSj6spcxTB3D1yqMgFg25ykzudSSgdRUolhKYBnPnPg2jzhqGCqyHdud0ohN19Nb+Dj5WHnofNvZcL8WJ5WimXV2NIj3oIZHYnWGuKkOOUEkt0RmwNhB/HcNdE7ryTH4GvJZ+1NS8bIbI0a3Ublp8ruWKxIDgAHH9GAwaGUzaGBbyHm6gTsvmlIp42KV6fmaEHPYcPpFMLC1udsCuTdJN9LRRoJJxtyBaEEzcTmhzQTKqBpkJfkhmk/vfOOoAItqdO0BwNlXChvt/2SNNitq2s5QpizgXjhd0+DXaUABxEhoJsq7q+8+WGFKgYouWcRPThvvMXrdSuNzbIr9rmuzv5HgzM+gw2h4K3F2UQ9iN2bLGQNBC3CmaDjD9EjqXdce2FH2nKO0VSJeUtMVYbPdVUtL9n6
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(39860400002)(136003)(366004)(346002)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(1076003)(26005)(2616005)(6512007)(8676002)(6862004)(8936002)(2906002)(478600001)(4326008)(6506007)(66946007)(66556008)(66476007)(5660300002)(6486002)(41300700001)(316002)(38100700002)(86362001)(36756003)(33656002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1kDT+GYpDBgjxAjqAl/ZrMLdyHAjgM3mtQ0NSY3bqV8Bgzy22P9Jq+9Z0P9F?=
- =?us-ascii?Q?PPT3D6acwNhXW+KhLscJdLoikfUPCKWwYGTw14CHewvtSre6a3k+TLHuYlg+?=
- =?us-ascii?Q?P2Z0UCn67aKU+xAhC/2dxwrjzUb1OakmPhXKUhEaoB64pz5VD5FcQhHxShIC?=
- =?us-ascii?Q?GGWkbo593hsg9OjgXrCPsJH6rsMc1sueVcmGD5stW2Oc6PW28xOVH5J1MIhV?=
- =?us-ascii?Q?lFH//yKTjNBANcESuslIrObuZ9iT1xjNqwGFxeXIMwljccD2R7UFUFvUB18s?=
- =?us-ascii?Q?KiaqUEMMRU6HuizrdJruEGEVpA+VUwD7ovWcsRwx3t20vhx95QkYjEo41YOR?=
- =?us-ascii?Q?PvZ2mAcKVvM7c77kfWn/mgkj+jQmFTujwDXaYXHNA5v7YnKVSmqJA1pyW2h+?=
- =?us-ascii?Q?+9t16RwHZjlkrOrGXPROIOJqwmIS6T/eODDtQLyUeYPAHXzA5mpBCLfC/eFc?=
- =?us-ascii?Q?SAfbyQDqvN3hempGBILNsRK2TuUICadYeLLB4aB726q3HZC5C3PYaPc2Tr4J?=
- =?us-ascii?Q?K6w5AXzhy2H0HIIV1TuooEdgo+E/i4oG1jmd6tpqnxKUqV1HFQrwqSoFcGvn?=
- =?us-ascii?Q?cRrfZNPNJgA+MsIaQQ3Nwvm2iBnCjZd39W/9XtIBdLLwgTLRQoCOf9qNoGLL?=
- =?us-ascii?Q?7RJ267u2uBPfrOuF00DamkPs/GF6bErY+RMm7xJUCG52GghAZSBDOsRWc0aP?=
- =?us-ascii?Q?tfGsyRbYQyCfCGZx5YJcpT2hYtygZFEsbos6lJgluM1BhN2kyvnYnzlzyRR3?=
- =?us-ascii?Q?b9c70jVkoakydcwFy7mrsnapIg2D9vifEEio19kAfVVkn5SELon4+ri/QSMw?=
- =?us-ascii?Q?nr7Dda1++kngao8GrMD8sUjB+NQ/8TtqETwvfgErQAt99h9T8tRy0Fj8zVjs?=
- =?us-ascii?Q?CbkbFYl7RShZhpaC+065fEPfDev5JEkbOSVrTYT1UaIuiQ7ZNr+9HihddJm1?=
- =?us-ascii?Q?HXbyMNah1SYa5uwvpalFEFwhcwYngJNdpqXqg/H+pRdNmL/wh1pZIve67Xix?=
- =?us-ascii?Q?IayCJoSZCkQ2yiSvNYVtdKLT/RbshxnxY20OncknxUIdShpHZWjkucoqEiTO?=
- =?us-ascii?Q?wBH/QO+4On3+uAfCGZ811u5c+4g97GQ9lANfRRtAuYpwUhUaXXj1I0jV0MCq?=
- =?us-ascii?Q?yQsgg1XOlG2jstDNk4pRvrWOI2HjeHhznljpGJkA0lYUtt0kYoMwTS7K1mvz?=
- =?us-ascii?Q?6l15JRog6gHdVswroQ8lvbT0aey9mM6lRPiY+x94HRb0gEMtlRbnxL/ygnXy?=
- =?us-ascii?Q?LJ/NiILi/N8/2WBBcQjGXYTcjLklWVFq05ljvpCAz7aD5ix9tDhlmR4nioT4?=
- =?us-ascii?Q?zQgNlIng7gBBHcCWsXWDQyxgpn1muyP17UJZ4JlSzHwpySwP87QUP/nkVfoG?=
- =?us-ascii?Q?3yMrLdnwh29lmKbx9w/BHEy3dcdZYT+MoiNX4z1+ai1OVriZOljeIsog2yfc?=
- =?us-ascii?Q?v0RdL+Y2mW/YKRvtCT7toNuaHGRVWgAU0nLnQU41ExRzGfoHQ5LFUYKGJKKu?=
- =?us-ascii?Q?s1aqbj5fNduW39XXGQ/U+41wKoLObfJd0QwC8Mq59oHMeUITE656Pmsri88/?=
- =?us-ascii?Q?Wl4+BjBY/w8hxPz0uAnXwKgIZOw9EM+aymruZAz3?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 992a9407-2c61-4ee4-5757-08dbc9b22a84
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2023 16:58:45.9185
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: U+ripi4TUimpiu01ycSBW39AOUBMQCtuHG63Jw6nkkA69OVY7MgiTJpvP90gvmJu
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8800
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [External] Re: [PATCH] mm: hugetlb: Only prep and add allocated
+ folios for non-gigantic pages
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, muchun.song@linux.dev,
+        songmuchun@bytedance.com, fam.zheng@bytedance.com,
+        liangma@liangbit.com, punit.agrawal@bytedance.com,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+References: <20231009145605.2150897-1-usama.arif@bytedance.com>
+ <20231010012345.GA108129@monkey>
+Content-Language: en-US
+From:   Usama Arif <usama.arif@bytedance.com>
+In-Reply-To: <20231010012345.GA108129@monkey>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 12:51:22AM -0700, Yi Liu wrote:
-> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> index 660dc1931dc9..12e12e5563e6 100644
-> --- a/include/linux/iommu.h
-> +++ b/include/linux/iommu.h
-> @@ -14,6 +14,7 @@
->  #include <linux/err.h>
->  #include <linux/of.h>
->  #include <uapi/linux/iommu.h>
-> +#include <uapi/linux/iommufd.h>
 
-Oh we should definately avoid doing that!
-  
-Maybe this is a good moment to start a new header file exclusively for
-iommu drivers and core subsystem to include?
 
- include/linux/iommu-driver.h
+On 10/10/2023 02:23, Mike Kravetz wrote:
+> On 10/09/23 15:56, Usama Arif wrote:
+>> Calling prep_and_add_allocated_folios when allocating gigantic pages
+>> at boot time causes the kernel to crash as folio_list is empty
+>> and iterating it causes a NULL pointer dereference. Call this only
+>> for non-gigantic pages when folio_list has entires.
+> 
+> Thanks!
+> 
+> However, are you sure the issue is the result of iterating through a
+> NULL list?  For reference, the routine prep_and_add_allocated_folios is:
+> 
 
-?
+Yes, you are right, it wasnt an issue with the list, but the lock. If I 
+do the below diff it boots.
 
-Put iommu_copy_user_data() and  struct iommu_user_data in there
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 73803d62066a..f428af13e98a 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -2178,18 +2178,19 @@ static struct folio 
+*alloc_fresh_hugetlb_folio(struct hstate *h,
+  static void prep_and_add_allocated_folios(struct hstate *h,
+                                         struct list_head *folio_list)
+  {
++       unsigned long flags;
+         struct folio *folio, *tmp_f;
 
-Avoid this include in this file.
+         /* Send list for bulk vmemmap optimization processing */
+         hugetlb_vmemmap_optimize_folios(h, folio_list);
 
->  #define IOMMU_READ	(1 << 0)
->  #define IOMMU_WRITE	(1 << 1)
-> @@ -227,6 +228,41 @@ struct iommu_iotlb_gather {
->  	bool			queued;
->  };
->  
-> +/**
-> + * struct iommu_user_data - iommu driver specific user space data info
-> + * @uptr: Pointer to the user buffer for copy_from_user()
-> + * @len: The length of the user buffer in bytes
-> + *
-> + * A user space data is an uAPI that is defined in include/uapi/linux/iommufd.h
-> + * Both @uptr and @len should be just copied from an iommufd core uAPI structure
-> + */
-> +struct iommu_user_data {
-> +	void __user *uptr;
-> +	size_t len;
-> +};
+         /* Add all new pool pages to free lists in one lock cycle */
+-       spin_lock_irq(&hugetlb_lock);
++       spin_lock_irqsave(&hugetlb_lock, flags);
+         list_for_each_entry_safe(folio, tmp_f, folio_list, lru) {
+                 __prep_account_new_huge_page(h, folio_nid(folio));
+                 enqueue_hugetlb_folio(h, folio);
+         }
+-       spin_unlock_irq(&hugetlb_lock);
++       spin_unlock_irqrestore(&hugetlb_lock, flags);
+  }
 
-Put the "hwpt_type" in here and just call it type
+  /*
 
-Jason
+
+FYI, this was an x86 VM with kvm enabled.
+
+Thanks,
+Usama
+
+> static void prep_and_add_allocated_folios(struct hstate *h,
+> 					struct list_head *folio_list)
+> {
+> 	struct folio *folio, *tmp_f;
+> 
+> 	/* Add all new pool pages to free lists in one lock cycle */
+> 	spin_lock_irq(&hugetlb_lock);
+> 	list_for_each_entry_safe(folio, tmp_f, folio_list, lru) {
+> 		__prep_account_new_huge_page(h, folio_nid(folio));
+> 		enqueue_hugetlb_folio(h, folio);
+> 	}
+> 	spin_unlock_irq(&hugetlb_lock);
+> }
+> 
+> If folio_list is empty, then the only code that should be executed is
+> acquiring the lock, notice the list is empty, release the lock.
+> 
+> In the case of gigantic pages addressed below, I do see the warning:
+> 
+> [    0.055140] DEBUG_LOCKS_WARN_ON(early_boot_irqs_disabled)
+> [    0.055149] WARNING: CPU: 0 PID: 0 at kernel/locking/lockdep.c:4345 lockdep_hardirqs_on_prepare+0x1a8/0x1b0
+> [    0.055153] Modules linked in:
+> [    0.055155] CPU: 0 PID: 0 Comm: swapper Not tainted 6.6.0-rc4+ #40
+> [    0.055157] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-1.fc37 04/01/2014
+> [    0.055158] RIP: 0010:lockdep_hardirqs_on_prepare+0x1a8/0x1b0
+> [    0.055160] Code: 00 85 c0 0f 84 5e ff ff ff 8b 0d a7 20 74 01 85 c9 0f 85 50 ff ff ff 48 c7 c6 48 25 42 82 48 c7 c7 70 7f 40 82 e8 18 10 f7 ff <0f> 0b 5b e9 e0 d8 af 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90
+> [    0.055162] RSP: 0000:ffffffff82603d40 EFLAGS: 00010086 ORIG_RAX: 0000000000000000
+> [    0.055164] RAX: 0000000000000000 RBX: ffffffff827911e0 RCX: 0000000000000000
+> [    0.055165] RDX: 0000000000000004 RSI: ffffffff8246b3e1 RDI: 00000000ffffffff
+> [    0.055166] RBP: 0000000000000002 R08: 0000000000000001 R09: 0000000000000000
+> [    0.055166] R10: ffffffffffffffff R11: 284e4f5f4e524157 R12: 0000000000000001
+> [    0.055167] R13: ffffffff82eb6316 R14: ffffffff82603d70 R15: ffffffff82ee5f70
+> [    0.055169] FS:  0000000000000000(0000) GS:ffff888277c00000(0000) knlGS:0000000000000000
+> [    0.055170] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    0.055171] CR2: ffff88847ffff000 CR3: 000000000263a000 CR4: 00000000000200b0
+> [    0.055174] Call Trace:
+> [    0.055174]  <TASK>
+> [    0.055175]  ? lockdep_hardirqs_on_prepare+0x1a8/0x1b0
+> [    0.055177]  ? __warn+0x81/0x170
+> [    0.055181]  ? lockdep_hardirqs_on_prepare+0x1a8/0x1b0
+> [    0.055182]  ? report_bug+0x18d/0x1c0
+> [    0.055186]  ? early_fixup_exception+0x92/0xb0
+> [    0.055189]  ? early_idt_handler_common+0x2f/0x40
+> [    0.055194]  ? lockdep_hardirqs_on_prepare+0x1a8/0x1b0
+> [    0.055196]  trace_hardirqs_on+0x10/0xa0
+> [    0.055198]  _raw_spin_unlock_irq+0x24/0x50
+> [    0.055201]  hugetlb_hstate_alloc_pages+0x311/0x3e0
+> [    0.055206]  hugepages_setup+0x220/0x2c0
+> [    0.055210]  unknown_bootoption+0x98/0x1d0
+> [    0.055213]  parse_args+0x152/0x440
+> [    0.055216]  ? __pfx_unknown_bootoption+0x10/0x10
+> [    0.055220]  start_kernel+0x1af/0x6c0
+> [    0.055222]  ? __pfx_unknown_bootoption+0x10/0x10
+> [    0.055225]  x86_64_start_reservations+0x14/0x30
+> [    0.055227]  x86_64_start_kernel+0x74/0x80
+> [    0.055229]  secondary_startup_64_no_verify+0x166/0x16b
+> [    0.055234]  </TASK>
+> [    0.055235] irq event stamp: 0
+> [    0.055236] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+> [    0.055238] hardirqs last disabled at (0): [<0000000000000000>] 0x0
+> [    0.055239] softirqs last  enabled at (0): [<0000000000000000>] 0x0
+> [    0.055240] softirqs last disabled at (0): [<0000000000000000>] 0x0
+> [    0.055240] ---[ end trace 0000000000000000 ]---
+> 
+> This is because interrupts are not enabled this early in boot, and the
+> spin_unlock_irq() would incorrectly enable interrupts too early.  I wonder
+> if this 'warning' could translate to a panic or NULL deref under certain
+> configurations?
+> 
+> Konrad, I am interested to see if this addresses your booting problem.  But,
+> your stack trace is a bit different.  My 'guess' is that this will not address
+> your issue.  If it does not, can you try the following patch?  This
+> applies to next-20231009.
