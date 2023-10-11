@@ -2,176 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B5D67C5E1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 22:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA767C5E2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 22:18:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376321AbjJKUPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 16:15:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46764 "EHLO
+        id S1376336AbjJKUSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 16:18:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233338AbjJKUPI (ORCPT
+        with ESMTP id S231226AbjJKUSH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 16:15:08 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89EC1A9;
-        Wed, 11 Oct 2023 13:15:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26478C433C8;
-        Wed, 11 Oct 2023 20:15:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697055306;
-        bh=7rI5K23nHUYB8QrWcVJMkRhk6dpeW9+5+hV2Br9vIXg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M0Mb35yahXR8BIcciRBkftV86dHySP8qtE25zU41q3wm8HagsHJ3AXU8aMURfP3AS
-         BMuzEeXqGGOxIieozq1BTvP6ei5rQyYKv50B0J2COL8HVxc3R59jCvWBEf7TbSB9hY
-         X4ZI3P+qlDErU/raCu6OL4LFISwVeHynRTi1SOe8Nj2uiBkNOi2jgBf1WZmzxcJGYh
-         gppTeVz1N9AGLL+1J/JXCN5rKjE6w2BaqQbxhDbnd4c82T5IIOnk80Xd0H/EiHhfpZ
-         i06DfbsmHyVnzMm0RNPHVm7qUH26NtQrn6RTouuELtt3oFUtAgR9wPOctuXHlkQiw0
-         WZ1z1G+4fSBCA==
-Date:   Wed, 11 Oct 2023 22:14:55 +0200
-From:   Alejandro Colomar <alx@kernel.org>
-To:     Rik van Riel <riel@surriel.com>
-Cc:     linux-man@vger.kernel.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org,
-        Matthew House <mattlloydhouse@gmail.com>,
-        Eric Biederman <ebiederm@xmission.com>
-Subject: Re: [PATCH v4] execve.2: execve also returns E2BIG if a string is
- too long
-Message-ID: <ZScCP2RqArDeixLz@debian>
-References: <20231011124301.4d93ea72@imladris.surriel.com>
- <20231011125330.13dfe148@imladris.surriel.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kIbR5WHOxHuCy4ke"
-Content-Disposition: inline
-In-Reply-To: <20231011125330.13dfe148@imladris.surriel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Wed, 11 Oct 2023 16:18:07 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C90369D;
+        Wed, 11 Oct 2023 13:18:05 -0700 (PDT)
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39BKF2gI004155;
+        Wed, 11 Oct 2023 20:17:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=jUFqUIlQQYDCiNzSso1s+qE/HAPZvK1rf/Wq5kMZ68U=;
+ b=MMxyc78MDYWVcppPIxi/Hi8vGw1uyrWzz6VQsY+VBBDMGoX1DTZ1PKtjpcEkkcDu4iry
+ WFEp0lxBMRBVZE/rbVmXOR432438HpZDfr0X+ouP/IAASy9jyDB0XtPhUUHXHNuOFxZV
+ M+N48WQTkQ9+F0oiq35xJ/nmhX3tbCnXl3j9U7Xf7mCtp67/Hgxq1IW+O4GOytN6OsV6
+ +gCU67CFQJVb0TP0FI9M83meN31Dom+SYh3Y+xTAF2A+HQarfQUf7otn3N8ybSUEihlT
+ upcVF0ob5+pytVc4a9Xlxy0r54McaQw2MqNZEkyAlycsw6UX/UuuXQo8HJUQPuU96oY3 vQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tp23j18ft-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 20:17:36 +0000
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39BJgK0I006816;
+        Wed, 11 Oct 2023 20:17:35 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tp23j18f5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 20:17:35 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39BI5Wbf024439;
+        Wed, 11 Oct 2023 20:17:33 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tkhnsu26f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 20:17:33 +0000
+Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
+        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39BKHWLB25363092
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Oct 2023 20:17:32 GMT
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C5EAF58056;
+        Wed, 11 Oct 2023 20:17:32 +0000 (GMT)
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7E5F958052;
+        Wed, 11 Oct 2023 20:17:31 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.14.38])
+        by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 11 Oct 2023 20:17:31 +0000 (GMT)
+Message-ID: <a9ed5a1a545e177f2491e132924d2b9a2a70496d.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 04/25] ima: Align ima_file_mprotect() definition with
+ LSM infrastructure
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Stefan Berger <stefanb@linux.ibm.com>
+Date:   Wed, 11 Oct 2023 16:17:31 -0400
+In-Reply-To: <b9e204c1b34c204133059b87a9a307ae5bccb84b.camel@huaweicloud.com>
+References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
+         <20230904133415.1799503-5-roberto.sassu@huaweicloud.com>
+         <443fb4da33eb0ac51a580e8fd51fa271a59172ef.camel@linux.ibm.com>
+         <b9e204c1b34c204133059b87a9a307ae5bccb84b.camel@huaweicloud.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: yEdWKnpi_9YFnuIHDzreB_r4e1hAuuoT
+X-Proofpoint-ORIG-GUID: N6YACTqlEzQz1g97roTeGL9JOHubZggC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-11_15,2023-10-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ priorityscore=1501 impostorscore=0 spamscore=0 clxscore=1015
+ mlxlogscore=726 lowpriorityscore=0 mlxscore=0 suspectscore=0 adultscore=0
+ malwarescore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2309180000 definitions=main-2310110178
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 2023-10-11 at 17:43 +0200, Roberto Sassu wrote:
+> On Wed, 2023-10-11 at 10:51 -0400, Mimi Zohar wrote:
+> > On Mon, 2023-09-04 at 15:33 +0200, Roberto Sassu wrote:
+> > > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > > 
+> > > Change ima_file_mprotect() definition, so that it can be registered
+> > > as implementation of the file_mprotect hook.
+> > > 
+> > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > > Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+> > > ---
+> > >  include/linux/ima.h               | 5 +++--
+> > >  security/integrity/ima/ima_main.c | 6 ++++--
+> > >  security/security.c               | 2 +-
+> > >  3 files changed, 8 insertions(+), 5 deletions(-)
+> > > 
+> > > diff --git a/include/linux/ima.h b/include/linux/ima.h
+> > > index 893c3b98b4d0..56e72c0beb96 100644
+> > > --- a/include/linux/ima.h
+> > > +++ b/include/linux/ima.h
+> > > @@ -24,7 +24,8 @@ extern void ima_post_create_tmpfile(struct mnt_idmap *idmap,
+> > >  extern void ima_file_free(struct file *file);
+> > >  extern int ima_file_mmap(struct file *file, unsigned long reqprot,
+> > >  			 unsigned long prot, unsigned long flags);
+> > > -extern int ima_file_mprotect(struct vm_area_struct *vma, unsigned long prot);
+> > > +int ima_file_mprotect(struct vm_area_struct *vma, unsigned long reqprot,
+> > > +		      unsigned long prot);
+> > 
+> > "extern" is needed here and similarly in 5/25.
+> 
+> I removed because of a complain from checkpatch.pl --strict.
 
---kIbR5WHOxHuCy4ke
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 11 Oct 2023 22:14:55 +0200
-From: Alejandro Colomar <alx@kernel.org>
-To: Rik van Riel <riel@surriel.com>
-Cc: linux-man@vger.kernel.org, kernel-team@meta.com,
-	linux-kernel@vger.kernel.org,
-	Matthew House <mattlloydhouse@gmail.com>,
-	Eric Biederman <ebiederm@xmission.com>
-Subject: Re: [PATCH v4] execve.2: execve also returns E2BIG if a string is
- too long
+Intermixing with/without "extern" looks weird.  I would suggest
+removing all the externs as a separate patch, but they're being removed
+in "[PATCH v3 21/25] ima: Move to LSM infrastructure" anyway.  For now
+I would include the "extern".
 
-Hi Rik,
+-- 
+thanks,
 
-On Wed, Oct 11, 2023 at 12:53:30PM -0400, Rik van Riel wrote:
-> Sigh, once again I did a git commit --amend without the latest file chang=
-e being
-> included. The change below should be good. Working with both git and hg g=
-ets me sometimes :/
-> ---8<---
->=20
-> The execve syscall returns -E2BIG in 3 cases:
-> - The total length of the command line arguments and environment is too l=
-arge.
-> - An argument or environment string is longer than MAX_ARG_STRLEN.
+Mimi
 
-I'm still concerned by the wording of this sentence (and the next one).
-When I (and any user-space programmer, I think) read "string is longer
-than FOO", I read `strlen(string) > FOO`.  Since it's rather
-`strlen(string) >=3D FOO`, I think you should clarify.  How about this?
 
--  An argument or environment string is longer (including the null byte)
-   than MAX_ARG_STRLEN.
-
-Thanks,
-Alex
-
-> - The full path to the executable exceeds MAX_ARG_STRLEN.
->=20
-> Spell out all 3 cases in the -E2BIG section.
->=20
-> Discovered by moving a too large commandline parameter to an environment
-> variable, and finding that things still did not work. Examined the code
-> in fs/exec.c to get the details.
->=20
-> This simple shell script starts failing at 2^17 on a system with 4kB
-> page size:
-> ./exec2big.sh: line 10: /bin/true: Argument list too long
-> fork failed at loop 17
->=20
-> STRING=3D"a"
->=20
-> for loop in `seq 20`; do
-> 	STRING=3D"$STRING$STRING"
-> 	export STRING
-> 	if /bin/true ; then
-> 		: # still under the limit
-> 	else
-> 		echo "fork failed at loop $loop"
-> 	fi
-> done
-
-Thank you very much!
-
->=20
-> Signed-off-by: Rik van Riel <riel@surriel.com>
-> Suggested-by: Matthew House <mattlloydhouse@gmail.com>
-> ---
->  man2/execve.2 | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->=20
-> diff --git a/man2/execve.2 b/man2/execve.2
-> index 0d9582492ad1..b689101771e5 100644
-> --- a/man2/execve.2
-> +++ b/man2/execve.2
-> @@ -449,7 +449,12 @@ The total number of bytes in the environment
->  .RI ( envp )
->  and argument list
->  .RI ( argv )
-> -is too large.
-> +is too large,
-> +an argument or environment string is too long,
-> +or the full
-> +.I pathname
-> +of the executable is too long.
-> +The terminating NUL is counted as part of the string length.
->  .TP
->  .B EACCES
->  Search permission is denied on a component of the path prefix of
-> --=20
-> 2.41.0
->=20
->=20
-
---=20
-<https://www.alejandro-colomar.es/>
-
---kIbR5WHOxHuCy4ke
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmUnAj8ACgkQnowa+77/
-2zJZAA/+IZ5SqRkxDnu/FCav0QtXCHltjqi/VsTI+CJ7fmCtii3akFQ9TWNYeZBO
-xyc0jiSbCaFfhF+frMJIglcwvPlFNEnwoToYbUllkhWQy8wfHrj965jgchUTP1FL
-DJYlIvn4p2RUmnFi1HiwfqdObCMKKlTQJ61Nnj+piztaPZ33RvQuLRdpRcou6ehL
-vgf6kKPuYwPMG43Kii6rcfSXkSnPJu++Shr95anNzKbUG6rNNsXtY7ugPjBs6iop
-MjQdT/PjDs3S1zTvAsQfJEc0N1B16kW1tRriRKE3HH310/u7Q4qG9xGRrfl5W+8G
-4lZK7jqLWZN0PcFM7x8yNOYMaQo2BHKqHnjYlxpAfabcZmGUfm5b01zcxOsqx0IH
-RFM6NOEkaA0YTJAM7puOOx4bR/806iK69eTxaavz+25W1YbfglYb1kB8bBLILLTa
-Lx+Gynd6QMdx0Juyj8mH4gUdjprjOTx4NO5TkM0lSBgqXilUE5kYpJqDvfmjE12e
-fXS2w/fLH5j0hixziUk/zxYbyLa/FbDdnG1NU7z5ZOAQ8FR+CeqE1p9rOAf3nBbb
-hjIGT+oc1qEZ/fTtE1IkJFQVOCJhHmVFGNICoBJxppZPTthMfnMegcR/BWcBGVtQ
-xaS7mGOPK8l4d4Jo+S7dFHsHvksbAmPxnF8VXHR2wAQMRUduo10=
-=tFhL
------END PGP SIGNATURE-----
-
---kIbR5WHOxHuCy4ke--
