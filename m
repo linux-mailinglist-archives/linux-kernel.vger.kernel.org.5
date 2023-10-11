@@ -2,113 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D16A7C5DA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 21:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0211F7C5DAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 21:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233264AbjJKT34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 15:29:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54196 "EHLO
+        id S233337AbjJKTcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 15:32:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233109AbjJKT3y (ORCPT
+        with ESMTP id S233109AbjJKTcK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 15:29:54 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A44590
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 12:29:52 -0700 (PDT)
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5F3C63FA66
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 19:29:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1697052586;
-        bh=c9L/gsOrW6x7KgEWB0KPDKoh+ZY2YJ1yGC5weBaF9Kg=;
-        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-         To:Content-Type;
-        b=b92dQYTSZp0at8d5TL38lQtCwPoPE1EDOWTH5QGlnwfxq8MUgfZjqgnHBKfWm7Knf
-         baXpK+lXWCf9HuYE2ohF1iak42WTUY/0Ar21MTMzMZcLs3SdSm1HoO69xxFAaNuQmN
-         uJeGisidho2moWq9j6Ash3HyrrFQGY0lJ2+mCX6LL43Pxez8vVRDBquggFIbtGVA2W
-         e1R4xX9mflSPLszN+85FWG0RiZzkMcWZGnY7VqYckRxZHpAalMZVfK7nrzV7mEGwH9
-         dogLDEJwwxVM0CDf+Sp1R+nHPfztByxOv2CeGjYlKfkkFm7T+RTNOhZwIT8C/btRgM
-         mtjqF8Klc7lvg==
-Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6c4ed6c64e2so261154a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 12:29:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697052585; x=1697657385;
-        h=to:subject:message-id:date:mime-version:references:in-reply-to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=c9L/gsOrW6x7KgEWB0KPDKoh+ZY2YJ1yGC5weBaF9Kg=;
-        b=i5V5V6Pok2bJuSaznKJvM8MtF4zMMI3Xr5nawyW3dgfIN1JelsWpzYdS+CVwfFjEL5
-         0ElhckmCOHK1qKvPzoxCEKwafktLuzUqWIPErxWq0kLTxqoJl4JlKkBL0zwWh4tjhyAc
-         y8pBFCOIS93mvCMIOKfA/pEPizTioQjlpwcxFqMG/IxnneO1tvR2dO3Cs+HtlNd61Of2
-         a3EmIpk/+56Q6OZ7P732Z9DVhgGZTxSTTvTGbqyNLknZx3/NL8unIcwwyyPax+bWurnM
-         adatybYQW83jDywxNOUaSJM7T1YLktuzDHqdMim1ZpV+6mLyy6SMltKbDzs5wAeySVop
-         08Tw==
-X-Gm-Message-State: AOJu0YxV8obv8dmD2PB64Y+AJkQkNSOm2tndVPv4Lb33jxg+DV1H/Z1Q
-        c4ksbFhMSXQe2EU8gJBlrGPXpKvkS9TVUd4HirWd9eKy5jP9DLiQDp7TReojYNAjsJJRya1GUcG
-        h9BEXsLOqeX2QHSwCWm1xJmiKywKVALvJlX4fkOCgDj3TlJTzuikDZtglpw==
-X-Received: by 2002:a05:6830:12d0:b0:6b9:8357:6150 with SMTP id a16-20020a05683012d000b006b983576150mr22651233otq.35.1697052585227;
-        Wed, 11 Oct 2023 12:29:45 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGCniG85JTchLTim5ooetQCv6XtCN2Hfw918Yim3tDO0dhAQSPYJeSPxd+7rlU/R7/wacdjyqykDfsDX6EHHOA=
-X-Received: by 2002:a05:6830:12d0:b0:6b9:8357:6150 with SMTP id
- a16-20020a05683012d000b006b983576150mr22651223otq.35.1697052585025; Wed, 11
- Oct 2023 12:29:45 -0700 (PDT)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 11 Oct 2023 12:29:44 -0700
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <20231011161414.L6wXZVDb@linutronix.de>
-References: <20231011161414.L6wXZVDb@linutronix.de>
-Mime-Version: 1.0
-Date:   Wed, 11 Oct 2023 12:29:44 -0700
-Message-ID: <CAJM55Z-YoJnZi4CrwD66v1TaJoYz1jbX+QOFXUDjhm5C9tST0w@mail.gmail.com>
-Subject: Re: [PATCH] riscv: dts: starfive: visionfive 2: correct spi's ss pin
-To:     Nam Cao <namcao@linuxtronix.de>, kernel@esmil.dk, conor@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, william.qiu@starfivetech.com,
-        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Wed, 11 Oct 2023 15:32:10 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4251C8F;
+        Wed, 11 Oct 2023 12:32:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9236BC433C7;
+        Wed, 11 Oct 2023 19:32:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697052728;
+        bh=4k1m5qmcSDaP+SZOYD02LNDbpXJtj+6QzJq4iZ0fBT4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=PkSkfYndzZuEdhim2WqdUnaFkJa6/ULgDeXVhLamNMtNqjpEjDLFAOpinVDtpOf9t
+         AUQ8IuXuDRsbGSvvuJcBOkesPKE+B6LOW3w499tPS1H5C+DTTGZEpqDhTJv73Rngtf
+         R8n/q+wpIprV9354P5kNeMO1/5OdiCJZC921zzltoOp4qhTV4cqy8e0kXbMRCaqp4/
+         wgSGTdLCtZ0E1cvfJh/3oqFSKgGnYoWCp1qvbc5VbvIvmnclEI+2/Ls3QSTesrpdOn
+         1i9kPgcJmtJ/9DGNbL1W+mb7/ZJBeiArthYq4x+V47gI24Zx4H0qwEfuzJhfUtgURt
+         hjOYzB4aN6mlQ==
+Date:   Wed, 11 Oct 2023 14:32:06 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
+Cc:     linux-pci@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        ath10k@lists.infradead.org, ath11k@lists.infradead.org,
+        ath12k@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-bluetooth@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-rdma@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2 04/13] PCI/ASPM: Move L0S/L1/sub states mask
+ calculation into a helper
+Message-ID: <20231011193206.GA1039708@bhelgaas>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230918131103.24119-5-ilpo.jarvinen@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nam Cao wrote:
-> The ss pin of spi0 is the same as sck pin. According to the
-> visionfive 2 documentation, it should be pin 49 instead of 48.
+On Mon, Sep 18, 2023 at 04:10:54PM +0300, Ilpo Järvinen wrote:
+> ASPM service driver does the same L0S / L1S / sub states allowed
+> calculation in __pci_disable_link_state() and
+> pci_set_default_link_state().
 
-Thanks! As far as I can tell this should make the 40pin header match the
-Raspberry Pi layout, so
+Is there a typo or something here?  This patch only adds a call to
+__pci_disable_link_state(), not to pci_set_default_link_state().
 
-Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-
->
-> Fixes: 74fb20c8f05d ("riscv: dts: starfive: Add spi node and pins configuration")
-> Signed-off-by: Nam Cao <namcao@linuxtronix.de>
+> Create a helper to calculate the mask for the allowed states.
+> 
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 > ---
->  arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> index 12ebe9792356..2c02358abd71 100644
-> --- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> +++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> @@ -431,7 +431,7 @@ GPOEN_ENABLE,
->  		};
->
->  		ss-pins {
-> -			pinmux = <GPIOMUX(48, GPOUT_SYS_SPI0_FSS,
-> +			pinmux = <GPIOMUX(49, GPOUT_SYS_SPI0_FSS,
->  					      GPOEN_ENABLE,
->  					      GPI_SYS_SPI0_FSS)>;
->  			bias-disable;
-> --
-> 2.39.2
->
+>  drivers/pci/pcie/aspm.c | 33 +++++++++++++++++++++------------
+>  1 file changed, 21 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> index ec6d7a092ac1..91dc95aca90f 100644
+> --- a/drivers/pci/pcie/aspm.c
+> +++ b/drivers/pci/pcie/aspm.c
+> @@ -1034,6 +1034,26 @@ static struct pcie_link_state *pcie_aspm_get_link(struct pci_dev *pdev)
+>  	return bridge->link_state;
+>  }
+>  
+> +static u8 pci_link_state_mask(int state)
+> +{
+> +	u8 result = 0;
+> +
+> +	if (state & PCIE_LINK_STATE_L0S)
+> +		result |= ASPM_STATE_L0S;
+> +	if (state & PCIE_LINK_STATE_L1)
+> +		result |= ASPM_STATE_L1;
+> +	if (state & PCIE_LINK_STATE_L1_1)
+> +		result |= ASPM_STATE_L1_1;
+> +	if (state & PCIE_LINK_STATE_L1_2)
+> +		result |= ASPM_STATE_L1_2;
+> +	if (state & PCIE_LINK_STATE_L1_1_PCIPM)
+> +		result |= ASPM_STATE_L1_1_PCIPM;
+> +	if (state & PCIE_LINK_STATE_L1_2_PCIPM)
+> +		result |= ASPM_STATE_L1_2_PCIPM;
+> +
+> +	return result;
+> +}
+> +
+>  static int __pci_disable_link_state(struct pci_dev *pdev, int state, bool sem)
+>  {
+>  	struct pcie_link_state *link = pcie_aspm_get_link(pdev);
+> @@ -1063,18 +1083,7 @@ static int __pci_disable_link_state(struct pci_dev *pdev, int state, bool sem)
+>  	if (sem)
+>  		down_read(&pci_bus_sem);
+>  	mutex_lock(&aspm_lock);
+> -	if (state & PCIE_LINK_STATE_L0S)
+> -		link->aspm_disable |= ASPM_STATE_L0S;
+> -	if (state & PCIE_LINK_STATE_L1)
+> -		link->aspm_disable |= ASPM_STATE_L1;
+> -	if (state & PCIE_LINK_STATE_L1_1)
+> -		link->aspm_disable |= ASPM_STATE_L1_1;
+> -	if (state & PCIE_LINK_STATE_L1_2)
+> -		link->aspm_disable |= ASPM_STATE_L1_2;
+> -	if (state & PCIE_LINK_STATE_L1_1_PCIPM)
+> -		link->aspm_disable |= ASPM_STATE_L1_1_PCIPM;
+> -	if (state & PCIE_LINK_STATE_L1_2_PCIPM)
+> -		link->aspm_disable |= ASPM_STATE_L1_2_PCIPM;
+> +	link->aspm_disable |= pci_link_state_mask(state);
+>  	pcie_config_aspm_link(link, policy_to_aspm_state(link));
+>  
+>  	if (state & PCIE_LINK_STATE_CLKPM)
+> -- 
+> 2.30.2
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
