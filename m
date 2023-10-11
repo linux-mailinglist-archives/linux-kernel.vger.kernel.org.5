@@ -2,111 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8868A7C4D1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 10:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F58E7C4D1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 10:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbjJKI10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 04:27:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41550 "EHLO
+        id S1345033AbjJKI2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 04:28:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229939AbjJKI1Z (ORCPT
+        with ESMTP id S230202AbjJKI16 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 04:27:25 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F3C93
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 01:27:23 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-405524e6769so3942055e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 01:27:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697012842; x=1697617642; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=i0w+hcGKEi3xrBWLyTiiDJpolO60Wub3ov86WnEvSRg=;
-        b=lVF2DFh//U6ummRk/GWNWtxVTxgy8XSXgWVHMSDa+hiNqFO9/kxnOCRJb0cngtMvtV
-         oBfYhirmATlw9i0RkYD/ouD+jHg+A2CbcT/gN0tEByM61mg+Clpi2TQw+D6hdu7Pe972
-         clB8vAWzJCcHMV/T1Ot0cHlTtsFUOKiHpDmLN7tcfHRXDN8txJOG6r4gzkP87GqfxGiK
-         8c2qIznqRS+YwmSMvwsAOioBfx5ol3gdnEvOhgDgNWWzofCEKxzWbnA7EqAnm1umNs7H
-         P13Hv2IY877FoEw4GRldfnZGh7hM5mX2tZCGncwf/9fomcsENGyjC1zsCs0WHOhahsTl
-         KA+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697012842; x=1697617642;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i0w+hcGKEi3xrBWLyTiiDJpolO60Wub3ov86WnEvSRg=;
-        b=qA22CHJOKmbW38wce8WAs7iYE/lJcstSvF4GKqGyvMtB6BuhxXSui3Zaqcw8ZJI6V5
-         pT1TL6KyW0es96t9AzjaXxD4QJQQykDli7QxAXAfQW7f6YrGA/ReXlkcqElb2TRHRisp
-         Bo5uGS8BHnfzrzXApolGqW0Utyl8XCI7wVoGzWBHfuUIUipoyU8MKhr8Mc/6QbzQdUkA
-         1yMhhqr4M6vsTLC7VV9wOsiqljMaom3Ykx244QBBIsUS8zFjfwiiuSbP9pddkiNKR4Ec
-         UWFwJxbMhfInEPnEZ0h09gsQD7/qJIlOYdjqS4FBxgZiQ5e3w/G6CW+qlo8I+y9ElfTQ
-         NzJQ==
-X-Gm-Message-State: AOJu0Yz4RqUwF8qT012EuDLg17jvVoZZU/oNel6rkwdxIqN8EOm1gX+i
-        iN0GfThJErUWri8AvI784v3AJw==
-X-Google-Smtp-Source: AGHT+IHysVefmRPMThmSbNHWbJ+BZXdyfYcnlxM0wzFYsPTjEDbT4yn2fgFIfIoKYkP4KTazm9TWQw==
-X-Received: by 2002:a05:600c:1c21:b0:407:4701:f9e with SMTP id j33-20020a05600c1c2100b0040747010f9emr8023851wms.17.1697012841838;
-        Wed, 11 Oct 2023 01:27:21 -0700 (PDT)
-Received: from [192.168.86.24] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id 4-20020a05600c228400b003fee53feab5sm16143262wmf.10.2023.10.11.01.27.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Oct 2023 01:27:21 -0700 (PDT)
-Message-ID: <548849a8-9f11-5274-778e-f291267603bb@linaro.org>
-Date:   Wed, 11 Oct 2023 09:27:20 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v12 7/7] nvmem: core: Expose cells through sysfs
-Content-Language: en-US
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Walle <michael@walle.cc>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Robert Marko <robert.marko@sartura.hr>,
+        Wed, 11 Oct 2023 04:27:58 -0400
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176129D;
+        Wed, 11 Oct 2023 01:27:56 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1169360002;
+        Wed, 11 Oct 2023 08:27:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1697012875;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tAl6wI267mdYSd5CG5718M4Naq5umv5wPjrfbzBjjTk=;
+        b=IbJagmVNv9BmJV/Bk5syT4UgbLmG1Ihv1V1/9IA1g+O/kgec2Yzou3NA4q82G6/O0bPfqL
+        xVQztLWHj8nR4DWyH5VNhPjzE2cU8IcXfgiOmsXDBuGCbaGWU7anPlCosMDsZ8Uxr5O8Kz
+        H6Ni4o4uLsD7ufzPQPz0tCHET50qIAIvvCpP8J775sZw2K+cWpKcfiRq6ube9+1EGtYPy3
+        gw69qKXhzHaYi8VdYp/0wlmtgnVeRDUPwSJeqSykjTdEgXXrYF25A4Tdc5gqPxUd2xuavv
+        3l3qbN2cniCHyPCGa3CwzldrfbPV3MMAEDWC33vPl0BzqimYKM0nl8XCTPTwtA==
+Date:   Wed, 11 Oct 2023 10:27:49 +0200
+From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To:     Simon Horman <horms@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
         Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Daniel Golle <daniel@makrotopia.org>
-References: <20231005155907.2701706-1-miquel.raynal@bootlin.com>
- <20231005155907.2701706-8-miquel.raynal@bootlin.com>
- <318fe799-f53e-64ed-b631-d099bb5202f4@linaro.org>
- <20231011091524.0c9ecc55@xps-13>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20231011091524.0c9ecc55@xps-13>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Michael Walle <michael@walle.cc>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH net-next v5 01/16] net: Convert PHYs hwtstamp callback
+ to use kernel_hwtstamp_config
+Message-ID: <20231011102749.6fb29adb@kmaincent-XPS-13-7390>
+In-Reply-To: <ZSVvywM8OLG12OhR@kernel.org>
+References: <20231009155138.86458-1-kory.maincent@bootlin.com>
+        <20231009155138.86458-2-kory.maincent@bootlin.com>
+        <ZSVvywM8OLG12OhR@kernel.org>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 10 Oct 2023 17:37:47 +0200
+Simon Horman <horms@kernel.org> wrote:
 
+> ...
+>=20
+> > diff --git a/drivers/net/phy/nxp-c45-tja11xx.c
+> > b/drivers/net/phy/nxp-c45-tja11xx.c index 7ab080ff02df..416484ea6eb3 10=
+0644
+> > --- a/drivers/net/phy/nxp-c45-tja11xx.c
+> > +++ b/drivers/net/phy/nxp-c45-tja11xx.c
+> > @@ -1022,24 +1022,21 @@ static bool nxp_c45_rxtstamp(struct mii_timesta=
+mper
+> > *mii_ts, }
+> > =20
+> >  static int nxp_c45_hwtstamp(struct mii_timestamper *mii_ts,
+> > -			    struct ifreq *ifreq)
+> > +			    struct kernel_hwtstamp_config *config,
+> > +			    struct netlink_ext_ack *extack)
+> >  {
+> >  	struct nxp_c45_phy *priv =3D container_of(mii_ts, struct nxp_c45_phy,
+> >  						mii_ts);
+> >  	struct phy_device *phydev =3D priv->phydev;
+> >  	const struct nxp_c45_phy_data *data;
+> > -	struct hwtstamp_config cfg;
+> > =20
+> > -	if (copy_from_user(&cfg, ifreq->ifr_data, sizeof(cfg)))
+> > -		return -EFAULT;
+> > -
+> > -	if (cfg.tx_type < 0 || cfg.tx_type > HWTSTAMP_TX_ON)
+> > +	if (cfg->tx_type < 0 || cfg->tx_type > HWTSTAMP_TX_ON) =20
+>=20
+> Hi K=C3=B6ry,
+>=20
+> cfg is removed from this function by this patch, but is used here.
 
-On 11/10/2023 08:15, Miquel Raynal wrote:
->>> +
->>> +	nvmem_cells_group.bin_attrs = cells_attrs;
->>> +
->>> +	ret = devm_device_add_groups(&nvmem->dev, nvmem_cells_groups);
->>> +	if (ret)
->>> +		goto unlock_mutex;
->> This is going to create groups after the nvmem device is added, isn't this going to be problem with user space notifications?
-> Greg said it was not. I hope I understood correctly 😄
-> 
-> And anyway, cells have never been available to userspace, so there is
-> nothing userspace might expect yet?
-I agree, but once we add sysfs uapi then this is going to change.
-
---srini
-
-
-> 
-> Thanks,
-> Miquèl
+Thanks for your review.
+Indeed there is a mistake here. It will be fixed it next version.
