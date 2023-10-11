@@ -2,156 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B84C97C5F27
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E04F7C5F26
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233578AbjJKVdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 17:33:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33960 "EHLO
+        id S234715AbjJKVdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 17:33:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233582AbjJKVdC (ORCPT
+        with ESMTP id S233582AbjJKVdA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 17:33:02 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 283B1A9
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:32:59 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-523100882f2so541767a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:32:59 -0700 (PDT)
+        Wed, 11 Oct 2023 17:33:00 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973289E;
+        Wed, 11 Oct 2023 14:32:58 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53dd752685fso570197a12.3;
+        Wed, 11 Oct 2023 14:32:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1697059977; x=1697664777; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=TKrYYRaD2RfNLNfOhiIpEBPF24FekdqyFgqdK3sdhAs=;
-        b=g9Itb/3gLoAMUfddb6LnLSUqreDyU5pZV6IYZnMgwVqqEk4xj4hSHO3fdk9pWvOlmn
-         OydHTKU8qYGqDIpWIl53LFnv86wKBfPIGdXIL5UlUBkk5pmnVhFH54OvTpfVu9uWghXv
-         fsnmxE24wIp/pKGJRWOIamk5gyE0tuL1pIOHzA6N1wq6fHbDcyFodjcaJTUWjG9oAdQf
-         b9n2rSlnTBgmEg2lKHul2MCKeitn7ecCHRqM5uJKnnTcK9xYigDkBA4Evhok/nJw/OBu
-         mTc6lzXXRW7u/FZND32Ls8nCmzKa6o1Vdw4mbNnQCG14oPc7M/4Q/lvsmXR63a7uy/xI
-         21uQ==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mgILceheKqLDcrQ8Md1C0WGKCCTkWPoSxOmfrQfUe7M=;
+        b=LZ3MCA38Y/QGbl2VDUxvgDf5evagrT6J2sfnxeAmHkY19sfQ3QFeB8I2L2zUFSuOhc
+         8IDZFxbspRruXk/M6YHcW0bUcFEuncGGUtytZVo6Tl9ygqfWy2PrCYUv3UnqF5qsMa4O
+         b1pVlxK8wuIiIGWpgNhtCqY8Rs3dMSHoncRL7Bxo7R6mgEHg6so5SGm+TsXZWFKeI7xk
+         4HglL6JGQqb4XyL49ODuoHad8UJB3LcyhcL6pV3tuCTD+O7aQG7htkehnsYwkZe0QdOf
+         LQPAQsJTItNE8Rn/NYSMIK9PNQp8svcibvDF+mT+Y+zel695LSU2f4Pf4YXUzl6VcJw9
+         G5+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1697059977; x=1697664777;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TKrYYRaD2RfNLNfOhiIpEBPF24FekdqyFgqdK3sdhAs=;
-        b=cZ/Xm5rwqaDFdyJzPeJ+UlOtkoTkvx9hAgPTAYnYLUiyTiwY7Ug0iprVhyJ5RzD+Tp
-         v0nAj0lDa6SGmx5uGbmpWKJV65htLLtLZkdffgufa6/pGnT65fQZIyCnO8kkSv/qzBST
-         MHvcV4Bsdu+15urpqFvM3dMCCbr/GqhkIoO0i17pSkCjmPAbxa6wLCvQQEjWY5qjxIQo
-         hVxwc0U6cPYO0jludXZie6r+8eqDMTtbgnlaGXYCPjwkUxUU62hOAzhtN55Nhn089a5K
-         rdrRSlABIfPbc3p/vZMxaDwvsFopavcthHsHf6eXLRAsyPq04dRrs8RSEg81fytSNG0t
-         XXzA==
-X-Gm-Message-State: AOJu0YyVI2PBUE3qsc3E/fPlGdl2H/99re2DVRNyaxHPGFZEvhc6lmbH
-        jm2EAlUpTLtYtTyNs03ura2KjzlEtcN7woIsSVY=
-X-Google-Smtp-Source: AGHT+IGWr83UShRFhoRHkdEAL+f0mbSDd1IjWXYAqqbw6lg7//IdwJs7vud9FIu4wfMGG+El+tsS8ciDOT8/vuXdPjM=
-X-Received: by 2002:a05:6402:b58:b0:53d:d4a0:3154 with SMTP id
- bx24-20020a0564020b5800b0053dd4a03154mr2582378edb.31.1697059977240; Wed, 11
- Oct 2023 14:32:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
- <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
- <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
- <F48A9D34-3627-4372-B555-B58CBFC3F241@vmware.com> <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wjF4gzCZKh-zN-sY0WpX1kCo+s9gYE9sOcSv0QieH1dwQ@mail.gmail.com>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Wed, 11 Oct 2023 23:32:45 +0200
-Message-ID: <CAFULd4bmOa7G2dXd_mu4J=_bsEs+TbxH691tYx9QQBwJPAma9w@mail.gmail.com>
-Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Nadav Amit <namit@vmware.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mgILceheKqLDcrQ8Md1C0WGKCCTkWPoSxOmfrQfUe7M=;
+        b=fUqXC97fDQR4buJItRiN+hMFVXUMcBg9WBaq1IUsfTuwDO5Tgd9LC+QiVQEuD492dy
+         gcHHdwHPKWX5pfskRcOqdtSij1yQsaH3K9Py47uV+L/OUMEtmiZndvfueWY36QXMXvPh
+         C/of+6qWrh5OUNdPI7RWoV+alGYVkT26b/LlFqiQPKbx0d3tb08yCg8AaKwXNkoJLxl/
+         yLQavtpXr49xgEe9VfgKDxPItgHMR7kbf2axo/GwCF/IWlcBNipCnvjGnT1QFUuZ+jDL
+         GsJQ/XlgfbrofkRr/zE/ZsyxahrIiQ1IsYIOZBv8MMfSfrhs+OudOo3doC/UdfkYanuo
+         0Jdw==
+X-Gm-Message-State: AOJu0YwFuXIGeVGaoGUE7A72UpH8ANKlMKDA7EBwhwhoPfMML/gHRcFb
+        rBfo3p5us7v2ZNBBgyVF09Ys6Ertp2Y=
+X-Google-Smtp-Source: AGHT+IHROiD9c1fQoFylzcx03/lxRGRjXOJ+h9nk5PoQ4SwSh2kzd4ruyHRzB7xSFhP//1f+Xr/gog==
+X-Received: by 2002:aa7:d70b:0:b0:523:387d:f5f1 with SMTP id t11-20020aa7d70b000000b00523387df5f1mr20919807edq.24.1697059976998;
+        Wed, 11 Oct 2023 14:32:56 -0700 (PDT)
+Received: from gmail.com (1F2EF405.nat.pool.telekom.hu. [31.46.244.5])
+        by smtp.gmail.com with ESMTPSA id eg42-20020a05640228aa00b0053daf92f0easm1783507edb.97.2023.10.11.14.32.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 14:32:56 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 11 Oct 2023 23:32:54 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Content-Type: multipart/mixed; boundary="0000000000001b39a80607779171"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        linux-next <linux-next@vger.kernel.org>,
+        Sohil Mehta <sohil.mehta@intel.com>
+Subject: Re: linux-next: manual merge of the block tree with the asm-generic
+ tree
+Message-ID: <ZScUhud9eqKIQJjC@gmail.com>
+References: <20231009123118.4487a0e1@canb.auug.org.au>
+ <20231009084812.GB14330@noisy.programming.kicks-ass.net>
+ <cb4bb8e2-7dfe-4ca4-aa70-060f7b2f8f95@app.fastmail.com>
+ <20231009141351.GD14330@noisy.programming.kicks-ass.net>
+ <b7c57f03-4606-4190-98c5-344c49656f9c@kernel.dk>
+ <66e09ad5-2dcf-4159-9c98-f37ac739a445@kernel.dk>
+ <20231011175407.GG6307@noisy.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231011175407.GG6307@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000001b39a80607779171
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 11, 2023 at 9:37=E2=80=AFPM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Wed, 11 Oct 2023 at 00:42, Nadav Amit <namit@vmware.com> wrote:
-> >
-> > You are correct. Having said that, for =E2=80=9Ccurrent" we may be able=
- to do something
-> > better, as regardless to preemption =E2=80=9Ccurrent" remains the same,=
- and
-> > this_cpu_read_stable() does miss some opportunities to avoid reloading =
-the
-> > value from memory.
->
-> It would be lovely to generate even better code, but that
-> this_cpu_read_stable() thing is the best we've come up with. It
-> intentionally has *no* memory inputs or anything else that might make
-> gcc think "I need to re-do this".
+* Peter Zijlstra <peterz@infradead.org> wrote:
 
-The attached patch makes this_cpu_read_stable a bit better by using
-rip-relative addressing. Immediate reduction of text section by 4kB
-and also makes the kernel some more PIE friendly.
+> On Wed, Oct 11, 2023 at 10:21:06AM -0600, Jens Axboe wrote:
+> > On 10/9/23 8:16 AM, Jens Axboe wrote:
+> > > On 10/9/23 8:13 AM, Peter Zijlstra wrote:
+> > >> On Mon, Oct 09, 2023 at 11:00:19AM +0200, Arnd Bergmann wrote:
+> > >>> On Mon, Oct 9, 2023, at 10:48, Peter Zijlstra wrote:
+> > >>>> On Mon, Oct 09, 2023 at 12:31:18PM +1100, Stephen Rothwell wrote:
+> > >>>>> diff --cc arch/alpha/kernel/syscalls/syscall.tbl
+> > >>>>> index 5d05ab716a74,b1865f9bb31e..000000000000
+> > >>>>> --- a/arch/alpha/kernel/syscalls/syscall.tbl
+> > >>>>> +++ b/arch/alpha/kernel/syscalls/syscall.tbl
+> > >>>>> @@@ -492,4 -492,6 +492,7 @@@
+> > >>>>>   560	common	set_mempolicy_home_node		sys_ni_syscall
+> > >>>>>   561	common	cachestat			sys_cachestat
+> > >>>>>   562	common	fchmodat2			sys_fchmodat2
+> > >>>>>  -563	common	futex_wake			sys_futex_wake
+> > >>>>>  -564	common	futex_wait			sys_futex_wait
+> > >>>>>  -565	common	futex_requeue			sys_futex_requeue
+> > >>>>>  +563	common	map_shadow_stack		sys_map_shadow_stack
+> > >>>>> ++564	common	futex_wake			sys_futex_wake
+> > >>>>> ++565	common	futex_wait			sys_futex_wait
+> > >>>>> ++566	common	futex_requeue			sys_futex_requeue
+> > >>>>
+> > >>>> So this renumbers the (futex) stuff on Alpha, does anybody care? AFAICT
+> > >>>> Alpha does not follow the unistd order and meh.
+> > >>>
+> > >>> Let's not make it worse for now. All the numbers since the
+> > >>> introduction of the time64 syscalls are offset by exactly 120
+> > >>> on alpha, and I'd prefer to keep it that way for the moment.
+> > >>>
+> > >>> I still hope to eventually finish the conversion of all architectures
+> > >>> to a single syscall.tbl for numbers >400, and if that happens before
+> > >>> the end of alpha, a different ordering would just be extra pain.
+> > >>
+> > >> Fair enough; should we look at rebase those futex patches for this? (bit
+> > >> of a pain as that would also mean rebasing block)
+> > > 
+> > > From my point of view, this isn't a huge problem if we do it now. The
+> > > io_uring-futex branch is a separate branch and I have nothing on top of
+> > > it, so I could easily just re-pull your updated branch and rebase my
+> > > changes on top.
+> > > 
+> > >> Or do we want to keep this fixup in the merge resolution and make sure
+> > >> Linus is aware?
+> > > 
+> > > If you're OK with it, I'd say let's rebase and save ourselves the
+> > > trouble at merge time.
+> > 
+> > Peter, what's the verdict - do you want to rebase it, or leave it as-is?
+> 
+> Ah, I looked into doing this, but tip/locking/core has since grown a
+> bunch of patches and has a merge commit -- I talked to Ingo yesterday
+> and he proposed just queueing a fix on top instead of doing a full
+> rebase.
+> 
+> Ingo, that still your preferred solution?
 
-> For example, instead of using "m" as a memory input, it very
-> intentionally uses "p", to make it clear that that it just uses the
-> _pointer_, not the memory location itself.
->
-> That's obviously a lie - it actually does access memory - but it's a
-> lie exactly because of the reason you mention: even when the memory
-> location changes due to preemption (or explicit scheduling), it always
-> changes back to the the value we care about.
->
-> So gcc _should_ be able to CSE it in all situations, but it's entirely
-> possible that gcc then decides to re-generate the value for whatever
-> reason. It's a cheap op, so it's ok to regen, of course, but the
-> intent is basically to let the compiler re-use the value as much as
-> possible.
->
-> But it *is* probably better to regenerate the value than it would be
-> to spill and re-load it, and from the cases I've seen, this all tends
-> to work fairly well.
+Yeah, that would be the best solution IMO - it's not like there's any real 
+prospect of someone bisecting futex2 patch-enablement commits on Alpha ... 
+and the bisection distance isn't particularly large either in any case.
 
-Reading the above, it looks to me that we don't want to play games
-with "const aliased" versions of current_task [1], as proposed by
-Nadav in his patch series. The current version of
-this_cpu_read_stable() (plus the attached trivial patch) is as good as
-it can get.
+[ This would also document the very real historic conflict between these 
+  numbers, as it happened. ]
 
-[1] https://lore.kernel.org/lkml/20190823224424.15296-8-namit@vmware.com/
+Thanks,
 
-Uros.
-
---0000000000001b39a80607779171
-Content-Type: text/plain; charset="US-ASCII"; name="p.diff.txt"
-Content-Disposition: attachment; filename="p.diff.txt"
-Content-Transfer-Encoding: base64
-Content-ID: <f_lnm9o9ol0>
-X-Attachment-Id: f_lnm9o9ol0
-
-ZGlmZiAtLWdpdCBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL3BlcmNwdS5oIGIvYXJjaC94ODYvaW5j
-bHVkZS9hc20vcGVyY3B1LmgKaW5kZXggZTA0N2EwYmM1NTU0Li5iNzQxNjk0MzRiODUgMTAwNjQ0
-Ci0tLSBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL3BlcmNwdS5oCisrKyBiL2FyY2gveDg2L2luY2x1
-ZGUvYXNtL3BlcmNwdS5oCkBAIC00LDggKzQsMTAgQEAKIAogI2lmZGVmIENPTkZJR19YODZfNjQK
-ICNkZWZpbmUgX19wZXJjcHVfc2VnCQlncworI2RlZmluZSBfX3BlcmNwdV9yaXAJCSIoJSVyaXAp
-IgogI2Vsc2UKICNkZWZpbmUgX19wZXJjcHVfc2VnCQlmcworI2RlZmluZSBfX3BlcmNwdV9yaXAJ
-CSIiCiAjZW5kaWYKIAogI2lmZGVmIF9fQVNTRU1CTFlfXwpAQCAtODUsNyArODcsNyBAQAogI2Rl
-ZmluZSBfX215X2NwdV9wdHIocHRyKQkoX19teV9jcHVfdHlwZSgqcHRyKSAqKSh1aW50cHRyX3Qp
-KHB0cikKICNkZWZpbmUgX19teV9jcHVfdmFyKHZhcikJKCpfX215X2NwdV9wdHIoJnZhcikpCiAj
-ZGVmaW5lIF9fcGVyY3B1X2FyZyh4KQkJX19wZXJjcHVfcHJlZml4ICIlIiAjeAotI2RlZmluZSBf
-X2ZvcmNlX3BlcmNwdV9hcmcoeCkJX19mb3JjZV9wZXJjcHVfcHJlZml4ICIlIiAjeAorI2RlZmlu
-ZSBfX2ZvcmNlX3BlcmNwdV9hcmcoeCkJX19mb3JjZV9wZXJjcHVfcHJlZml4ICIlIiAjeCBfX3Bl
-cmNwdV9yaXAKIAogLyoKICAqIEluaXRpYWxpemVkIHBvaW50ZXJzIHRvIHBlci1jcHUgdmFyaWFi
-bGVzIG5lZWRlZCBmb3IgdGhlIGJvb3QK
---0000000000001b39a80607779171--
+	Ingo
