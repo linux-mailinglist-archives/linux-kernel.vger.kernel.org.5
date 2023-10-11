@@ -2,100 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5895E7C4F59
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 11:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 234D67C4F56
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 11:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345736AbjJKJqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 05:46:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45716 "EHLO
+        id S231260AbjJKJqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 05:46:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231341AbjJKJqd (ORCPT
+        with ESMTP id S231196AbjJKJqc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 05:46:33 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB309D
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 02:46:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Dgg0f5mykpLnIpLdCR3KMmNcFJ4Ezwj2Gw0v2uiSW9w=; b=ZJH6NlvPEifpHkW5Xje8JCr8pd
-        iZK7OG3YY1dGdBKmFC9wX6mUMTcMgehRuZ7moVcOQQPpV48T2uAc5sL074M/+Kr3+ddRXhiN1zHek
-        G41M+J8odHa5roHXricGEUYrTmAlK75RjN77vInplG35a4eShYPmXN39UavvXczxyzuuwOz6Di5Yr
-        BFO5sYSmTFKgICl1vwhPeZxGiWEVcV65WZPOaahfpB57ESGsiz5E5XtEl2dV9XaioLLBcMje6oxCU
-        OTI4wNSC7gz6p+XJRTZeDEhv8bO1G7YpgHekyGlzw8T1Ifi5zy0ogyncZSIH1/v+oNiSchi+crmzr
-        YwMWNcCQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qqVmc-0007d9-0n;
-        Wed, 11 Oct 2023 09:45:40 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5CE3F30026F; Wed, 11 Oct 2023 11:45:39 +0200 (CEST)
-Date:   Wed, 11 Oct 2023 11:45:39 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Abel Wu <wuyun.abel@bytedance.com>
-Cc:     mingo@kernel.org, vincent.guittot@linaro.org,
-        linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, corbet@lwn.net,
-        qyousef@layalina.io, chris.hyser@oracle.com,
-        patrick.bellasi@matbug.net, pjt@google.com, pavel@ucw.cz,
-        qperret@google.com, tim.c.chen@linux.intel.com, joshdon@google.com,
-        timj@gnu.org, kprateek.nayak@amd.com, yu.c.chen@intel.com,
-        youssefesmat@chromium.org, joel@joelfernandes.org, efault@gmx.de,
-        tglx@linutronix.de
-Subject: Re: Re: [PATCH 01/15] sched/fair: Add avg_vruntime
-Message-ID: <20231011094539.GE6307@noisy.programming.kicks-ass.net>
-References: <20230531115839.089944915@infradead.org>
- <20230531124603.654144274@infradead.org>
- <75adcb1a-c02f-4d7c-bd9c-ab4f403af3e8@bytedance.com>
- <20231011073001.GI14330@noisy.programming.kicks-ass.net>
- <3156c8fe-5488-4044-8282-79495bf89f6d@bytedance.com>
+        Wed, 11 Oct 2023 05:46:32 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99C2E92;
+        Wed, 11 Oct 2023 02:46:29 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4CBEE21846;
+        Wed, 11 Oct 2023 09:46:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1697017588; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=soXVte2VbxPbbCiLRCQN5td7yB/rAeQqYWLQLBxTIFU=;
+        b=MINSzmiMBqPcCbrrb5vPVjQ4FAleRRJnE1hYr+yINv0F92u7+T9emi+0wjSB8uUZUd69D0
+        zh4gFBG77P84Bzd6iajzSLr+gqwv8cUjeCNuBJedY1ICnaMghUIWuVEjc4F1Obrx6fG7bM
+        fXwXQ2CAmNnHT3yKSi8LykyvJd3qaN0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1697017588;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=soXVte2VbxPbbCiLRCQN5td7yB/rAeQqYWLQLBxTIFU=;
+        b=PuflIjs6dBQNsSmZ34SZrkDPJN2uCfXBS9AiB4CipN0nI/vA5+5fZYmJ2XDxUn5d3P7yKC
+        9X6t0U2qgkZGmDCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3EDD6134F5;
+        Wed, 11 Oct 2023 09:46:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 5E5TD/RuJmWnSwAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 11 Oct 2023 09:46:28 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id C200BA05BC; Wed, 11 Oct 2023 11:46:27 +0200 (CEST)
+Date:   Wed, 11 Oct 2023 11:46:27 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Lorenzo Stoakes <lstoakes@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andy Lutomirski <luto@kernel.org>, Jan Kara <jack@suse.cz>,
+        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] mm: enforce the mapping_map_writable() check
+ after call_mmap()
+Message-ID: <20231011094627.3xohlpe4gm2idszm@quack3>
+References: <cover.1696709413.git.lstoakes@gmail.com>
+ <d2748bc4077b53c60bcb06fccaf976cb2afee345.1696709413.git.lstoakes@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3156c8fe-5488-4044-8282-79495bf89f6d@bytedance.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+In-Reply-To: <d2748bc4077b53c60bcb06fccaf976cb2afee345.1696709413.git.lstoakes@gmail.com>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 04:30:26PM +0800, Abel Wu wrote:
-> On 10/11/23 3:30 PM, Peter Zijlstra Wrote:
-> > On Wed, Oct 11, 2023 at 12:15:28PM +0800, Abel Wu wrote:
-> > > On 5/31/23 7:58 PM, Peter Zijlstra wrote:
-> > > > +/*
-> > > > + * Compute virtual time from the per-task service numbers:
-> > > > + *
-> > > > + * Fair schedulers conserve lag:
-> > > > + *
-> > > > + *   \Sum lag_i = 0
-> > > > + *
-> > > > + * Where lag_i is given by:
-> > > > + *
-> > > > + *   lag_i = S - s_i = w_i * (V - v_i)
-> > > 
-> > > Since the ideal service time S is task-specific, should this be:
-> > > 
-> > > 	lag_i = S_i - s_i = w_i * (V - v_i)
-> > 
-> > It is not, S is the same for all tasks. Remember, the base form is a
-> > differential equation and all tasks progress at the same time at dt/w_i
-> > while S progresses at dt/W.
+On Sat 07-10-23 21:51:01, Lorenzo Stoakes wrote:
+> In order for an F_SEAL_WRITE sealed memfd mapping to have an opportunity to
+> clear VM_MAYWRITE in seal_check_write() we must be able to invoke either
+> the shmem_mmap() or hugetlbfs_file_mmap() f_ops->mmap() handler to do so.
 > 
-> IIUC it's V progresses at dt/W and is same for all tasks, not S which is
-> measured in real time (V*w_i).
+> We would otherwise fail the mapping_map_writable() check before we had
+> the opportunity to clear VM_MAYWRITE.
+> 
+> However, the existing logic in mmap_region() performs this check BEFORE
+> calling call_mmap() (which invokes file->f_ops->mmap()). We must enforce
+> this check AFTER the function call.
+> 
+> In order to avoid any risk of breaking call_mmap() handlers which assume
+> this will have been done first, we continue to mark the file writable
+> first, simply deferring enforcement of it failing until afterwards.
+> 
+> This enables mmap(..., PROT_READ, MAP_SHARED, fd, 0) mappings for memfd's
+> sealed via F_SEAL_WRITE to succeed, whereas previously they were not
+> permitted.
+> 
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=217238
+> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
 
-Clearly I should wake up before replying ;-)
+...
 
-  V = S/W, so dV = dt/W and dS = dt
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index 6f6856b3267a..9fbee92aaaee 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -2767,17 +2767,25 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+>  	vma->vm_pgoff = pgoff;
+>  
+>  	if (file) {
+> -		if (is_shared_maywrite(vm_flags)) {
+> -			error = mapping_map_writable(file->f_mapping);
+> -			if (error)
+> -				goto free_vma;
+> -		}
+> +		int writable_error = 0;
+> +
+> +		if (vma_is_shared_maywrite(vma))
+> +			writable_error = mapping_map_writable(file->f_mapping);
+>  
+>  		vma->vm_file = get_file(file);
+>  		error = call_mmap(file, vma);
+>  		if (error)
+>  			goto unmap_and_free_vma;
+>  
+> +		/*
+> +		 * call_mmap() may have changed VMA flags, so retry this check
+> +		 * if it failed before.
+> +		 */
+> +		if (writable_error && vma_is_shared_maywrite(vma)) {
+> +			error = writable_error;
+> +			goto close_and_free_vma;
+> +		}
 
-Anyway, the point is that both V and S are the same across all tasks,
-all tasks execute in parallel with infinitely small time increments.
+Hum, this doesn't quite give me a peace of mind ;). One bug I can see is
+that if call_mmap() drops the VM_MAYWRITE flag, we seem to forget to drop
+i_mmap_writeable counter here?
 
-In reality this can't work ofc, so we get the approximations v_i and s_i
-and lag is the deviation from the ideal.
+I've checked why your v2 version broke i915 and I think the reason maybe
+has nothing to do with i915. Just in case call_mmap() failed, it ended up
+jumping to unmap_and_free_vma which calls mapping_unmap_writable() but we
+didn't call mapping_map_writable() yet so the counter became imbalanced.
+
+So I'd be for returning to v2 version, just fix up the error handling
+paths...
+
+								Honza
+
+
+> +
+>  		/*
+>  		 * Expansion is handled above, merging is handled below.
+>  		 * Drivers should not alter the address of the VMA.
+> -- 
+> 2.42.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
