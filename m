@@ -2,238 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B51A7C4D88
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 10:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D5367C4D94
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 10:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345404AbjJKIse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 04:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43430 "EHLO
+        id S230366AbjJKItj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 04:49:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbjJKIsc (ORCPT
+        with ESMTP id S230190AbjJKIth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 04:48:32 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A73194
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 01:48:30 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-505748580ceso8304297e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 01:48:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697014108; x=1697618908; darn=vger.kernel.org;
-        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6fZvy+rm9WgWz+lQE0FUmkJyOUMU3uv40D8dD89laLU=;
-        b=UV4omf0DXIqonF2vvbnygjz1i9S4ga5PjRDFFceESh+6NwPuF3uTGoOplqt5UgQx3e
-         W0csYiDWDajm53Z7b+FTc0C/SKi9felIs5HUCuUsepTYzEyCteZOJmsuR+PqRvPLDLBB
-         yzeY7mngOUkXwTqX+e91nIIR7UP1/YSWoeZUSeyIsgrpAkTJIx/2/y9AnoLYgHv+R2UX
-         vkAkgC6BlU98aZef9wi1AlFr1IbCEshINbOnqzcKeAKNBd+oDEiIcO6Uf+vRyXCzPLGe
-         MFrUl57lrtYAr2OG1PPCGJcktv0FAEG0n7COT1CKw8G2HZ+lZ1RfyZo/HohQBMJlzhcu
-         kImw==
+        Wed, 11 Oct 2023 04:49:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38AD394
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 01:48:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697014128;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KC8w0Fq0raXD6liRw4fjPK1Tcvy7e0RKiaMGufrFBog=;
+        b=inrc2iGGMdZg4V4L0pRlF7rgM474lxBEHMY9QXA8ttO7PtFCVLVz5Sl/aV72/4lGae+ScF
+        3lo3mkBgZ/ixEhSxVtXv5LoCffphIGu/7WtuhF0zouxorrC7KjAXL4+WyRj4u65Ie+mZX8
+        pLMAKP8u6no5x1n0pbcfIC4O1OthBPQ=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-620-o6WpC8slOES3rEI3zzFwBQ-1; Wed, 11 Oct 2023 04:48:41 -0400
+X-MC-Unique: o6WpC8slOES3rEI3zzFwBQ-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-32d58708cd5so833459f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 01:48:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697014108; x=1697618908;
-        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6fZvy+rm9WgWz+lQE0FUmkJyOUMU3uv40D8dD89laLU=;
-        b=IRUa0+VauvSfXK/ZDYmKrECdBWoGbGWAZ5o+N0FW+eE1WcxvjN1hJDsqPLeKramebu
-         vAoNDJ64luWahc1f4/+iVYiZbGl4S3KyKYSvibR0jrZ8hXtyZCUvbQli82yTT12C7BBP
-         zNjIhNmXQ0V4XBezqVfRnLs/HsrmlF/02pBlcuW7sajlTLGKZqG1s6eN5+o0KUsKxmI1
-         q8Fxl9ASgzeJMs/j15Xm5kbc2IJQ64hLhRlzH1z1XwPal5sACwNROJdLEEfuxDcU5Flt
-         RRmXib2vugL9a5+fF2mkECo+YUntdMABRYGLcelZCIqc8WLiI/abpxJjsfTndJFmSHNm
-         616Q==
-X-Gm-Message-State: AOJu0YwU+u0g0AcTE1WuFJnns3uom2kAe8Jq92dzeS/rIYv++2HXnhve
-        j7HPbKo9TdOP1zjjM8nJOD8=
-X-Google-Smtp-Source: AGHT+IGXFxph1WwFXua8hzZ9Z4EvsBgKoz0RTPEJgTj8aaYzaJk7It0iKtUaOjpy9MnPibNIs5mDpQ==
-X-Received: by 2002:a05:6512:794:b0:502:cc8d:f1fc with SMTP id x20-20020a056512079400b00502cc8df1fcmr15517150lfr.37.1697014108114;
-        Wed, 11 Oct 2023 01:48:28 -0700 (PDT)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id h26-20020ac2597a000000b00502df04c0basm2180080lfp.183.2023.10.11.01.48.27
+        d=1e100.net; s=20230601; t=1697014120; x=1697618920;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KC8w0Fq0raXD6liRw4fjPK1Tcvy7e0RKiaMGufrFBog=;
+        b=XUHWvNJAbU4TLzBuLI5VKu9sV/9tMhf/l/DWz10889xvZEfBGvRnuHKX+qfpZw1exP
+         D9y9PV+IBkw8R4edVKWD9x4cIlyi9yJF7mJJicSc23AwrM6FjCfewu2guJf2p5IN8du9
+         TBoo0NGMY4Df4JmwUgIT+ZGJSEq21ZzVhXoxrIOZ7/qyHaT5+ToYs2e8LMGLKh90DCNF
+         FD6JiroQUlOGlVCP2tfcPkbHV7q2lcWiQ5m5plWW7WGzL3Q8cz8pdkjGAdeGgh8VcO19
+         kOfo0XWISh8jCgws92QX10jIeUjeg8EbY8BO4zL9dwBCkku+gqnhRwvodelXQ0LDytDN
+         sHSw==
+X-Gm-Message-State: AOJu0YyO+hKnQl4vxh7FXxpKHz+wllRkqvY1EzwutwExWzhEYnHkQvu3
+        T4xbkDp7B6vEkp1ES02g9xv7iHDP0u3FGGuaK/Brgape2bVer5jOSJZobEqZEEPTnirBV5OOJMD
+        s5HyaQ9HNzCb3lvt6T88ehfTO
+X-Received: by 2002:a5d:4fd2:0:b0:314:15a8:7879 with SMTP id h18-20020a5d4fd2000000b0031415a87879mr16709910wrw.34.1697014120690;
+        Wed, 11 Oct 2023 01:48:40 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGu7Ki2HA96j+VxEN6W2qlhAocs8VRGy4ACvoVY0BEVlpMah6SSArUaqxvpmFWqRt/6v3MMRg==
+X-Received: by 2002:a5d:4fd2:0:b0:314:15a8:7879 with SMTP id h18-20020a5d4fd2000000b0031415a87879mr16709893wrw.34.1697014120369;
+        Wed, 11 Oct 2023 01:48:40 -0700 (PDT)
+Received: from localhost ([185.124.31.160])
+        by smtp.gmail.com with ESMTPSA id j16-20020a5d6190000000b003217cbab88bsm14702622wru.16.2023.10.11.01.48.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 01:48:27 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 11:48:16 +0300
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     jim.cromie@gmail.com
-Cc:     Sean Paul <seanpaul@chromium.org>, Simon Ser <contact@emersion.fr>,
-        lyude@redhat.com, linux-kernel@vger.kernel.org,
-        =?UTF-8?B?xYF1a2Fzeg==?= Bartosik <lb@semihalf.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "wayland-devel@lists.freedesktop.org" 
-        <wayland-devel@lists.freedesktop.org>
-Subject: Re: [PATCH v1] dynamic_debug: add support for logs destination
-Message-ID: <20231011114816.19d79f43@eldfell>
-In-Reply-To: <CAJfuBxy9qn-4i3SteTL1LBbBxPrFM52KkBd=1UhcKV3S_KdQvw@mail.gmail.com>
-References: <20230915154856.1896062-1-lb@semihalf.com>
-        <CAJfuBxyFYyGCtr5i=P7N=1oX3J=jmdp1VLGLt+z1fAnuvGK2aA@mail.gmail.com>
-        <CAK8ByeJBrPEQSgUc91LQO9Krzjh2pauhMTjEC82M8ozayE76Yg@mail.gmail.com>
-        <CAJfuBxxmL-GtBgt=033F9UNeLCreFbJh3HrQQN2nYKwR_0uTbg@mail.gmail.com>
-        <20231003155810.6df9de16@gandalf.local.home>
-        <CAJfuBxyJyFbFEhRxrtxJ_RazaTODV6Gg64b1aiNEzt6_iE4=Og@mail.gmail.com>
-        <CAK8ByeLNc9UbTNG4x=40AxYqjjRCsvBNtNFai0PMveM2X4XCow@mail.gmail.com>
-        <CAJfuBxyRF4q_T8LmHwR=-PKKDDpiFg2nO03uLnL8aGpRyBByKw@mail.gmail.com>
-        <CAK8ByeLpkSV6o6gPw8eJVqq5+ynQrSDjemY7mXkO1ZmA0rYKfQ@mail.gmail.com>
-        <CAJfuBxw+ANLwssAGWpkn5PeJb8ZKn4LXQkk2Gfv3aGsSN=S55Q@mail.gmail.com>
-        <CAJfuBxy9qn-4i3SteTL1LBbBxPrFM52KkBd=1UhcKV3S_KdQvw@mail.gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
+        Wed, 11 Oct 2023 01:48:40 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 5/8] drm/ssd13xx: Add a per controller family functions
+ table
+In-Reply-To: <CAMuHMdX0gvW4Y5ppWi=qF6mZF00m4G-fP1-Wg+sKW43Ku5fz9A@mail.gmail.com>
+References: <20231009183522.543918-1-javierm@redhat.com>
+ <20231009183522.543918-6-javierm@redhat.com>
+ <CAMuHMdX0gvW4Y5ppWi=qF6mZF00m4G-fP1-Wg+sKW43Ku5fz9A@mail.gmail.com>
+Date:   Wed, 11 Oct 2023 10:48:38 +0200
+Message-ID: <87jzrtsfx5.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/sFNdrTfSJHhZs5qlySTOtr=";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/sFNdrTfSJHhZs5qlySTOtr=
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-On Tue, 10 Oct 2023 10:06:02 -0600
-jim.cromie@gmail.com wrote:
+> Hi Javier,
+>
+> On Mon, Oct 9, 2023 at 8:36=E2=80=AFPM Javier Martinez Canillas
+> <javierm@redhat.com> wrote:
+>> To allow the driver to decouple the common logic in the function callbac=
+ks
+>> from the behaviour that is specific of a given Solomon controller family.
+>>
+>> For this, include a chip family to the device info and add fields to the
+>> driver-private device struct, to store the hardware buffer maximum size,
+>> the intermediate buffer maximum size and pixel format, and a set of per
+>> chip family function handlers.
+>>
+>> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+>
+> Thanks for your patch!
+>
+>> --- a/drivers/gpu/drm/solomon/ssd13xx.c
+>> +++ b/drivers/gpu/drm/solomon/ssd13xx.c
+>> @@ -104,6 +104,7 @@ const struct ssd13xx_deviceinfo ssd13xx_variants[] =
+=3D {
+>>                 .default_width =3D 132,
+>>                 .default_height =3D 64,
+>>                 .page_mode_only =3D 1,
+>> +               .family_id =3D SSD130X_FAMILY,
+>
+> Why not store &ssd13xx_family_funcs[SSD130X_FAMILY]?
+>
 
-> since I name-dropped you all,
+I could do that, yeah. Originally thought that could be useful besides the
+per chip functions, but I don't think that it's used for anything else...
 
-Hi everyone,
+[...]
 
-I'm really happy to see this topic being developed! I've practically
-forgot about it myself, but the need for it has not diminished at all.
+>> +       switch (family_id) {
+>> +       case SSD130X_FAMILY:
+>> +               unsigned int pages =3D DIV_ROUND_UP(ssd13xx->height, SSD=
+130X_PAGE_HEIGHT);
+>> +
+>> +               ssd13xx->data_array_size =3D ssd13xx->width * pages;
+>> +
+>> +               fi =3D drm_format_info(DRM_FORMAT_R1);
+>> +               break;
+>> +       }
+>
+> Please don't mix ssd13xx_funcs[family_id] and switch (family_id).
+> The switch() could be replaced by an extra function pointer in
+> ssd13xx_funcs, and by storing fi in ssd13xx_funcs, too.
+>
 
-I didn't understand much of the conversation, so I'll just reiterate
-what I would use it for, as a Wayland compositor developer.
+Yes, I didn't want to store the format info in struct ssd13xx_funcs
+because the idea was for that struct to only have chip operations.
 
-I added a few more cc's to get better coverage of DRM and Wayland
-compositor developers.
+But could do that. I wonder if should rename that struct thought? to
+something that better denotes is more than function handlers.
 
-> On Tue, Oct 10, 2023 at 10:01=E2=80=AFAM <jim.cromie@gmail.com> wrote:
-> >
-> > On Mon, Oct 9, 2023 at 4:47=E2=80=AFPM =C5=81ukasz Bartosik <lb@semihal=
-f.com> wrote: =20
+> Note that you don't really need the full drm_format_info, the number
+> of bits per pixel is sufficient.  But having the drm_format_info is
+> nice, as fmt_convert() will need it later when adding support for
+> fbdev emulation using R1 or R4 ;-)
+>
 
-...
+Exactly, thinking in your patches is why I stored the full format info :)
 
-> > > I don't have a real life use case to configure different trace
-> > > instance for each callsite.
-> > > I just tried to be as much flexible as possible.
-> > > =20
-> >
-> > Ive come around to agree - I looked back at some old threads
-> > (that I was a part of, and barely remembered :-}
-> >
-> > At least Sean Paul, Lyude, Simon Ser, Pekka Paalanen
-> > have expressed a desire for a "flight-recorder"
-> > it'd be hard to say now that 2-3 such buffers would always be enough,
-> > esp as theres a performance reason for having your own.
+> Gr{oetje,eeting}s,
 
-A Wayland compositor has roughly three important things where the kernel
-debugs might come in handy:
-- input
-- DRM KMS
-- DRM GPU rendering
+--=20
+Best regards,
 
-DRM KMS is the one I've been thinking of in the flight recorder context
-the most, because KMS hardware varies a lot, and there is plenty of
-room for both KMS drivers and KMS userspace to go wrong. The usual
-result is your display doesn't work, so the system is practically
-unusable to the end user. In the wild, the simplest or maybe the only
-way out of that may be a reboot, maybe an automated one (e.g. digital
-signage). In order to debug such problems, we would need both
-compositor logs and the relevant kernel debug messages.
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
-For example, Weston already has a flight recorder framework of its own,
-so we have the compositor debug logs. It would be useful to get the
-selected kernel debug logs in the same place. It could be used for
-automated or semi-manual bug reporting, for example, making the
-administrator or end user life much easier reporting issues.
-
-Since this is usually a production environment, and the Wayland
-compositor runs without root privileges, we need something that works
-with that. We would likely want the kernel debug messages in the
-compositor to combine and order them properly with the compositor debug
-messages.
-
-It's quite likely that developers would like to pick and choose which
-kernel debug messages might be interesting enough to record, to avoid
-excessive log flooding. The flight recorder in Weston is fixed size to
-avoid running out of memory or disk space. I can also see that Weston
-could have debugging options that affect which kernel debug messages it
-subscribes to. We can have a reasonable default setup that allows us to
-pinpoint the problem area and figure out most problems, and if needed,
-we could ask the administrator pass another debug option to Weston. It
-helps if there is just one place to configure everything about the
-compositor.
-
-This implies that it would be really nice to have userspace subscriber
-specific debug message streams from the kernel, or a good way to filter
-the messages we want. A Wayland compositor would not be interested in
-file system or wireless debugs for example, but another system
-component might be. There is also a security aspect of which component is
-allowed to see which messages in case they could contain anything
-sensitive (input debug could contain typed passwords).
-
-Configuring the kernel debug message selection for our debug message
-stream can and probably should require elevated privileges, and we can
-likely solve that in userspace with a daemon or such, to allow the
-Wayland compositor to run as a regular user.
-
-Thinking of desktop systems, and especially physically multi-seat systems:
-- there can be multiple different Wayland compositors running simultaneously
-- each of them may want debug messages only from a specific DRM KMS
-  device instance, and not from others
-- each of them may have a different idea of which debug messages are import=
-ant
-- because DRM KMS leasing is a thing, different compositor instances
-  could be using the same DRM KMS device instance simultaneously; since
-  this is specific to DRM KMS, and it should be harmless to get a
-  little too much DRM KMS debug (that is, from the whole device instead
-  of just the leased parts), it may not be worth to consider splitting
-  debug message streams this far.
-
-If userspace is offered some standardised fields in kernel debug
-structures, then userspace could do some filtering on its own too, but I
-guess it would be better to filter at the source and not need that.
-
-There is also an anti-goal. The kernel debug message contents are
-specifically not machine-parsable. I very much do not want to impose
-debug strings as ABI, they are for human (and AI?) readers only.
-
-
-As a summary, here are the most important requirements first:
-- usable in production as a normal thing to enable always by default
-- final delivery to unprivileged userspace process
-- per debug-print selection of messages (finer or coarser, categories
-  within a kernel sub-system could be enough)
-- per originating device (driver instance) selection of messages
-- all selections tailored separately for each userspace subscriber
-(- per open device file description selection of messages)
-
-That's my idea of it. It is interesting to see how far the requirements
-can be reasonably realised.
-
-
-Thanks,
-pq
-
---Sig_/sFNdrTfSJHhZs5qlySTOtr=
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmUmYVAACgkQI1/ltBGq
-qqcyqhAApBL3WJoBlku10S+0QQhW2qQ9N3fDnNYQ2QQMkmITou8otpAjqrqga0eh
-RvzjhyXF8gehi6bbPPtsksJGWrimBqf5fS2loGEtpX/g7uXAs/9q28ddYEcelAJw
-HLqOpj/+qI+cUzywt2FBRkdlsfSti/rEESkTYlLPIhwD9Bf7XZyulhrgc2iCL5AA
-exeD/bQ/D3aiBft8q1dDNv36YeEAJuQsaGsFKu72kJlRXb1zvKVLiD1aZ+M1rDJz
-04018vbjXqNeTXpKMsR97KFl4GCOyBeaso2UgTB0yclSEZzwIu2xdgV7IjC/3mmA
-wdMTeowTe7/MKqM5EeF3VnMrA96daciVrbkhY1HnNau60cGH+Z+dSxAfB9X+08WS
-/vJ4pLvd1LL35QXJkq0uIr0fPqkTb3RjeCYR1fXu/Ro8dOyWrUGxzKokVUz0SgMm
-gYNQJ1BJ5+IpSyhr9f0tMtZo4/mBurYRt0ZNuLi/A3LIXx+6Lj1ZqgGVzkRGnSIG
-njh1pt4OswGmDgvPVeHek+1Tkg9JWX+FS5WKPiISbUHZXjpvN0+qUY5llx9Gd1L1
-X0H/QGAuFUCg+NQNeSx3RId8rnvnTHUK/xwqGcRlCydm38CrFig3PIV1kjdGwyRa
-RDavZMp8tvI2Qi7CM9jIa0v/yls+6+tZUJjuuaFuNx/jUvlu15Y=
-=hP0+
------END PGP SIGNATURE-----
-
---Sig_/sFNdrTfSJHhZs5qlySTOtr=--
