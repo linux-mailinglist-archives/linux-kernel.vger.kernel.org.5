@@ -2,82 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B61CE7C55C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 845A67C55CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232429AbjJKNpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 09:45:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33652 "EHLO
+        id S1346776AbjJKNqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 09:46:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231849AbjJKNps (ORCPT
+        with ESMTP id S232091AbjJKNqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 09:45:48 -0400
+        Wed, 11 Oct 2023 09:46:33 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB34A93;
-        Wed, 11 Oct 2023 06:45:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1110CC433C7;
-        Wed, 11 Oct 2023 13:45:43 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B114B92;
+        Wed, 11 Oct 2023 06:46:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 115F4C433C7;
+        Wed, 11 Oct 2023 13:46:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697031946;
-        bh=hhI2du2wdG1ZY2MdeHOhI6DDrpzvKP3LvQCKE392xJg=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=SaYYuqYFP2AOsilXmF5SGSllEYKKJ4n+/i+eRhcqtHv5dY3vSDG2fbiSqQUKdnRt6
-         vp+Hf8EZ6CoUuceUdziJExGqgSMVaE9wXqZHHGiVrYpiacD+fhHyWZXEuP7gS/7tZu
-         /cfJTQFm7+wUykCQQDhpDqtESbYSXKkT1W148h5OgxDSd4kKpPE8+O+w8ggFB3HOG3
-         QRw/kSFB4n1eBcGBhoXAu08J/D0Z0rlmmDPoaMhP0Cs8ez9jpwGgNlcTKTmtRrzNaU
-         SCoM9PF+FlDZAp6oRimfRuOJMFTpNNxAyEF8Ss4V/9umLBx73q9+XYuBQBZOJp7dqv
-         6kV3H6GNvOICw==
-From:   Benjamin Tissoires <bentiss@kernel.org>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Justin Stitt <justinstitt@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Benjamin Tissoires <bentiss@kernel.org>
-Cc:     linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20230825-wip-selftests-v3-0-639963c54109@kernel.org>
-References: <20230825-wip-selftests-v3-0-639963c54109@kernel.org>
-Subject: Re: [PATCH v3 0/3] selftests/hid: assorted fixes
-Message-Id: <169703194378.3126081.13251971976785038026.b4-ty@kernel.org>
-Date:   Wed, 11 Oct 2023 15:45:43 +0200
+        s=k20201202; t=1697031991;
+        bh=7TPQv7Nq7BiCQCWrWeJZjtLq0BIDRCBxXyV8qe3CLuU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=t2l+ViGLRCilD6w6vcRKjFTOxbUav8k077I/X7wqFKzvPpcA3cvPsgoCWNYZbigIs
+         npvwgPSxPyAl2ycCusodrfO0KiiFNRpQiOOqWeEXKkbeoZ9iq0HWJoytI5Xvw1zc8M
+         i2r/AewloDrcSGip/DSaC9JV9rzO7fgT4e94PSrLIrqHAdYmeFyXyiUe3xMvINCA9Z
+         OIVzVXMWccyxSLHkDcEiuPKaxO6BJ6wEdatNMIKQk+w9QMWFvwywPPP8FXGNYkGgT6
+         bZj1Sz46Agf5nKPERldj8Fw30VthHD9Lx+SF8ej3mwZtTblpV8PNq3zcDQdG3i/uBV
+         /38MnoKPThPng==
+Date:   Wed, 11 Oct 2023 08:46:29 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Siddharth Vadapalli <s-vadapalli@ti.com>
+Cc:     lpieralisi@kernel.org, robh@kernel.org, kw@linux.com,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        r-gunasekaran@ti.com, srk@ti.com
+Subject: Re: [PATCH] PCI: keystone: Don't enable BAR0 if link is not detected
+Message-ID: <20231011134629.GA1029324@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231011123451.34827-1-s-vadapalli@ti.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 05 Oct 2023 17:55:31 +0200, Benjamin Tissoires wrote:
-> And this is the last(?) revision of this series which should now compile
-> with or without CONFIG_HID_BPF set.
+Hi Siddharth,
+
+On Wed, Oct 11, 2023 at 06:04:51PM +0530, Siddharth Vadapalli wrote:
+> Since the function dw_pcie_host_init() ignores the absence of link under
+> the assumption that link can come up later, it is possible that the
+> pci_host_probe(bridge) function is invoked even when no endpoint device
+> is connected. In such a situation, the ks_pcie_v3_65_add_bus() function
+> configures BAR0 when the link is not up, resulting in Completion Timeouts
+> during the MSI configuration performed later by the PCI Express Port driver
+> to setup AER, PME and other services. Thus, leave BAR0 disabled if link is
+> not yet detected when the ks_pcie_v3_65_add_bus() function is invoked.
+
+I'm trying to make sense of this.  In this path:
+
+  pci_host_probe
+    pci_scan_root_bus_bridge
+      pci_register_host_bridge
+	bus = pci_alloc_bus(NULL)    # root bus
+	bus->ops->add_bus(bus)
+	  ks_pcie_v3_65_add_bus
+
+The BAR0 in question must belong to a Root Port.  And it sounds like
+the issue must be related to MSI-X, since the original MSI doesn't
+involve any BARs.
+
+I don't understand why the Root Port's BAR0 is related to the link
+being up.  MSI-X configuration of the Root Port (presumably using
+BAR0) shouldn't involve any transactions to devices *below* the Root
+Port, and I would expect that BAR to be available (readable and
+writable) regardless of whether the link is up.
+
+If we skip the BAR0 configuration because the link is down at the time
+of pci_host_probe(), when *do* we do that configuration?  I don't see
+another path to ks_pcie_v3_65_add_bus() for the root bus later.
+
+Do you know what exactly causes the Completion Timeout?  Is this a
+read to BAR0, or some attempted access to a downstream device, or
+something else?
+
+Keystone is the only driver that uses .add_bus() for this, so it seems
+a little weird, but maybe this is related to some Keystone-specific
+hardware design.
+
+> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+> ---
 > 
-> I had to do changes because [1] was failing
+> Hello,
 > 
-> Nick, I kept your Tested-by, even if I made small changes in 1/3. Feel
-> free to shout if you don't want me to keep it.
+> This patch is based on linux-next tagged next-20231011.
 > 
-> [...]
-
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git (for-6.7/selftests), thanks!
-
-[1/3] selftests/hid: ensure we can compile the tests on kernels pre-6.3
-      https://git.kernel.org/hid/hid/c/ae7487d112cf
-[2/3] selftests/hid: do not manually call headers_install
-      https://git.kernel.org/hid/hid/c/89d024a7ba02
-[3/3] selftests/hid: force using our compiled libbpf headers
-      https://git.kernel.org/hid/hid/c/91939636cac4
-
-Cheers,
--- 
-Benjamin Tissoires <bentiss@kernel.org>
-
+> Regards,
+> Siddharth.
+> 
+>  drivers/pci/controller/dwc/pci-keystone.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
+> index 49aea6ce3e87..ac2ad112d616 100644
+> --- a/drivers/pci/controller/dwc/pci-keystone.c
+> +++ b/drivers/pci/controller/dwc/pci-keystone.c
+> @@ -459,7 +459,8 @@ static int ks_pcie_v3_65_add_bus(struct pci_bus *bus)
+>  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+>  	struct keystone_pcie *ks_pcie = to_keystone_pcie(pci);
+>  
+> -	if (!pci_is_root_bus(bus))
+> +	/* Don't enable BAR0 if link is not yet up at this point */
+> +	if (!pci_is_root_bus(bus) || !dw_pcie_link_up(pci))
+>  		return 0;
+>  
+>  	/* Configure and set up BAR0 */
+> -- 
+> 2.34.1
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
