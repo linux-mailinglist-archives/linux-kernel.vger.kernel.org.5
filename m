@@ -2,87 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A05C57C5D77
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 21:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 335077C5D7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 21:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233233AbjJKTOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 15:14:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34376 "EHLO
+        id S1345760AbjJKTOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 15:14:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232224AbjJKTOV (ORCPT
+        with ESMTP id S232743AbjJKTOg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 15:14:21 -0400
-Received: from qs51p00im-qukt01080102.me.com (qs51p00im-qukt01080102.me.com [17.57.155.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A45C8F
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 12:14:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-        s=1a1hai; t=1697051659;
-        bh=Yt9FRATELcFyOe7YzufzD3h35YavtSY/IkLeUwwrWtA=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-        b=snd+ZFo7e3+tLsd/UsGRX4e4R6uA2NUV6AiQhHlGDqvddbFHtyZvtpMmSbYEWw1Fv
-         83R2gWgBIHPm8fa+1sMzawveK1QcoUv2vukiBhxg3RH+QY5kgjOsUMR/ytLunSTF5D
-         wBq/9Nhx3BLk8ageBllxKJgIpdISZQtkAzkNnhV1SoVkeNRQwOHQ62HyiHV1J3YZxg
-         Hj2nr86dz8MAPPzjaMHQXv3eRyYSW5W1+keW180P66bu+G6mXJMFGyazeaaHC5kSOu
-         HlcJxgfDiJzxc0TFHwOR4YRv4izTU48eJDFicis9naokDD358ga7BasKs7R6x43o7f
-         tHLWs3RZF1wdw==
-Received: from fedora.fritz.box (qs51p00im-dlb-asmtp-mailmevip.me.com [17.57.155.28])
-        by qs51p00im-qukt01080102.me.com (Postfix) with ESMTPSA id 1B3291CC00FF;
-        Wed, 11 Oct 2023 19:14:17 +0000 (UTC)
-Date:   Wed, 11 Oct 2023 21:14:15 +0200
-From:   Lucy Mielke <lucymielke@icloud.com>
-To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        longman@redhat.com, boqun.feng@gmail.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] locking/lockdep: fix format-truncation compiler-warning
-Message-ID: <ZSb0B+9otHhd8jCp@fedora.fritz.box>
+        Wed, 11 Oct 2023 15:14:36 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D450FA4;
+        Wed, 11 Oct 2023 12:14:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F33C7C433C7;
+        Wed, 11 Oct 2023 19:14:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697051674;
+        bh=fiAK9g87Vz98ytokGLJJe4d+TJ34yfcDzT+bs6nScOI=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=NkMMmg7Tvq8YNnI2Ymlv97+QC2ZVEs0V4cO7h//tDlJMkh8/oCV0mroqx8+ju8bK+
+         R+be2T7O4knF2nKxq44B4KndhAGZTRB5PIkdYy5Y3uK9hy5C0SR6XcL7+w086rWjpR
+         yri0ADeQCZpnyr28kFuB3dTDIy5AsgwRxD1pzIo14KY3OgtouCD+h+49em6VUJFFBr
+         y4Aw8axW+SJGj5+TqCI10CqElw7VsQo1I+G+K+965iy/fGfDK1eHlpIweeBbY4WwLr
+         GEjw4vj5df3eZAdadiimx2sBIUDHbTq0UV+jggO6bM3L4YgFtknYY4ly2yhLAcqjbV
+         uOMW6w/pmXVjA==
+Received: (nullmailer pid 1840053 invoked by uid 1000);
+        Wed, 11 Oct 2023 19:14:31 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Proofpoint-ORIG-GUID: WxoFQ0PqCK9AMrj-kC9b4XBl4d77970q
-X-Proofpoint-GUID: WxoFQ0PqCK9AMrj-kC9b4XBl4d77970q
-X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
- =?UTF-8?Q?2903e8d5c8f:6.0.138,18.0.790,17.0.605.474.0000000_definitions?=
- =?UTF-8?Q?=3D2022-01-12=5F02:2020-02-14=5F02,2022-01-12=5F02,2020-01-23?=
- =?UTF-8?Q?=5F02_signatures=3D0?=
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 mlxlogscore=996
- suspectscore=0 malwarescore=0 clxscore=1011 bulkscore=0 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2310110170
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+From:   Rob Herring <robh@kernel.org>
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-clk@vger.kernel.org, konrad.dybcio@linaro.org,
+        agross@kernel.org, dmitry.baryshkov@linaro.org,
+        andersson@kernel.org, robh+dt@kernel.org, mturquette@baylibre.com,
+        jonathan@marek.ca, quic_tdas@quicinc.com, sboyd@kernel.org,
+        vladimir.zapolskiy@linaro.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
+In-Reply-To: <20231011185540.2282975-4-bryan.odonoghue@linaro.org>
+References: <20231011185540.2282975-1-bryan.odonoghue@linaro.org>
+ <20231011185540.2282975-4-bryan.odonoghue@linaro.org>
+Message-Id: <169705167192.1839996.9701202822807464812.robh@kernel.org>
+Subject: Re: [PATCH v3 3/4] media: dt-bindings: media: camss: Add
+ qcom,sc8280xp-camss binding
+Date:   Wed, 11 Oct 2023 14:14:31 -0500
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Compiler: gcc x86_64 v13.2.1
-Config: allyesconfig, "treat warnings as errors" unset
 
-This fixes a warning emitted by gcc, stating the output may be
-truncated. The fix included increasing the buffer size to the one
-denoted by gcc.
+On Wed, 11 Oct 2023 19:55:39 +0100, Bryan O'Donoghue wrote:
+> Add bindings for qcom,sc8280xp-camss in order to support the camera
+> subsystem for sc8280xp as found in the Lenovo x13s Laptop.
+> 
+> This patch depends-on:
+> https://lore.kernel.org/lkml/20231004161853.86382-2-bryan.odonoghue@linaro.org/T
+> 
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> ---
+>  .../bindings/media/qcom,sc8280xp-camss.yaml   | 582 ++++++++++++++++++
+>  1 file changed, 582 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.yaml
+> 
 
-Signed-off-by: Lucy Mielke <lucymielke@icloud.com>
----
- kernel/locking/lockdep_proc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-diff --git a/kernel/locking/lockdep_proc.c b/kernel/locking/lockdep_proc.c
-index 15fdc7fa5c68..e2bfb1db589d 100644
---- a/kernel/locking/lockdep_proc.c
-+++ b/kernel/locking/lockdep_proc.c
-@@ -440,7 +440,7 @@ static void snprint_time(char *buf, size_t bufsiz, s64 nr)
- 
- static void seq_time(struct seq_file *m, s64 time)
- {
--	char num[15];
-+	char num[22];
- 
- 	snprint_time(num, sizeof(num), time);
- 	seq_printf(m, " %14s", num);
--- 
-2.41.0
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.example.dts:26:18: fatal error: dt-bindings/clock/qcom,sc8280xp-camcc.h: No such file or directory
+   26 |         #include <dt-bindings/clock/qcom,sc8280xp-camcc.h>
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.example.dtb] Error 1
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1427: dt_binding_check] Error 2
+make: *** [Makefile:234: __sub-make] Error 2
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231011185540.2282975-4-bryan.odonoghue@linaro.org
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
