@@ -2,168 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD107C4FE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C687C4FFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231613AbjJKKQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 06:16:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39094 "EHLO
+        id S231367AbjJKKVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230238AbjJKKQz (ORCPT
+        with ESMTP id S231207AbjJKKV3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:16:55 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B0D7294
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:16:53 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 27153106F;
-        Wed, 11 Oct 2023 03:17:34 -0700 (PDT)
-Received: from [10.57.68.120] (unknown [10.57.68.120])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DB1793F762;
-        Wed, 11 Oct 2023 03:16:51 -0700 (PDT)
-Message-ID: <644aa223-fa43-4527-b748-7da08c6a3afc@arm.com>
-Date:   Wed, 11 Oct 2023 11:16:50 +0100
+        Wed, 11 Oct 2023 06:21:29 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D616794;
+        Wed, 11 Oct 2023 03:21:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697019688; x=1728555688;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/cYWT/4fm7jXsKnDZ4BU0yY6cJwahfXPWVnGMGjbcsM=;
+  b=VIeWU83bLvIUuBBVheASpygqGR67OfO2po2QRufat1UAd7c771nPnieN
+   qke+mncSsVYK2FsIruJRW+jU6K+XLX6bd7Zndjjg15/5+YWvJyJL/axyv
+   TDovcmIDnajM4mJC3s8Yq+C8kOaNr4eChcBEGbrh38srpMuVamyvn8wrQ
+   5+SUKrUW7toVZHTzGzIAucFQT3Id9Y+y3SsHVJHaK/h/2Y2t1t950ISAP
+   ltHUsxBHyZhDNvTR8+lpJD6XUUoZDorRVxGf5QAhqGUL5zzlXwvKlzKjM
+   osi32NGu6DUWogmTLWZ4uAjnXvCKBdxUE0sn0Sk3SRm/5hgGiab5I5AMJ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="415673273"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="415673273"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 03:21:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="897579128"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="897579128"
+Received: from unknown (HELO smile.fi.intel.com) ([10.237.72.54])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 03:19:39 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1qqWLB-00000004an8-1jYb;
+        Wed, 11 Oct 2023 13:21:21 +0300
+Date:   Wed, 11 Oct 2023 13:21:20 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Wentong Wu <wentong.wu@intel.com>
+Cc:     gregkh@linuxfoundation.org, oneukum@suse.com, wsa@kernel.org,
+        andi.shyti@linux.intel.com, broonie@kernel.org,
+        bartosz.golaszewski@linaro.org, linus.walleij@linaro.org,
+        hdegoede@redhat.com, linux-usb@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-spi@vger.kernel.org,
+        sakari.ailus@linux.intel.com, zhifeng.wang@intel.com,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v20 1/4] usb: Add support for Intel LJCA device
+Message-ID: <ZSZ3IPgLk7uC5UGI@smile.fi.intel.com>
+References: <1696833205-16716-1-git-send-email-wentong.wu@intel.com>
+ <1696833205-16716-2-git-send-email-wentong.wu@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 1/2] mm: swap: Remove CLUSTER_FLAG_HUGE from
- swap_cluster_info:flags
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20231010142111.3997780-1-ryan.roberts@arm.com>
- <20231010142111.3997780-2-ryan.roberts@arm.com>
- <75b3f607-856c-4210-9a7f-1a9535275698@huawei.com>
-Content-Language: en-GB
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <75b3f607-856c-4210-9a7f-1a9535275698@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1696833205-16716-2-git-send-email-wentong.wu@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/2023 09:17, Kefeng Wang wrote:
+On Mon, Oct 09, 2023 at 02:33:22PM +0800, Wentong Wu wrote:
+> Implements the USB part of Intel USB-I2C/GPIO/SPI adapter device
+> named "La Jolla Cove Adapter" (LJCA).
 > 
+> The communication between the various LJCA module drivers and the
+> hardware will be muxed/demuxed by this driver. Three modules (
+> I2C, GPIO, and SPI) are supported currently.
 > 
-> On 2023/10/10 22:21, Ryan Roberts wrote:
->> As preparation for supporting small-sized THP in the swap-out path,
->> without first needing to split to order-0, Remove the CLUSTER_FLAG_HUGE,
->> which, when present, always implies PMD-sized THP, which is the same as
->> the cluster size.
->>
->> The only use of the flag was to determine whether a swap entry refers to
->> a single page or a PMD-sized THP in swap_page_trans_huge_swapped().
->> Instead of relying on the flag, we now pass in nr_pages, which
->> originates from the folio's number of pages. This allows the logic to
->> work for folios of any order.
->>
->> The one snag is that one of the swap_page_trans_huge_swapped() call
->> sites does not have the folio. But it was only being called there to
->> avoid bothering to call __try_to_reclaim_swap() in some cases.
->> __try_to_reclaim_swap() gets the folio and (via some other functions)
->> calls swap_page_trans_huge_swapped(). So I've removed the problematic
->> call site and believe the new logic should be equivalent.
->>
->> Removing CLUSTER_FLAG_HUGE also means we can remove split_swap_cluster()
->> which used to be called during folio splitting, since
->> split_swap_cluster()'s only job was to remove the flag.
->>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->> ---
->>   include/linux/swap.h | 10 ----------
->>   mm/huge_memory.c     |  3 ---
->>   mm/swapfile.c        | 47 ++++++++------------------------------------
->>   3 files changed, 8 insertions(+), 52 deletions(-)
->>
->> diff --git a/include/linux/swap.h b/include/linux/swap.h
->> index 19f30a29e1f1..a073366a227c 100644
->> --- a/include/linux/swap.h
->> +++ b/include/linux/swap.h
->> @@ -259,7 +259,6 @@ struct swap_cluster_info {
->>   };
->>   #define CLUSTER_FLAG_FREE 1 /* This cluster is free */
->>   #define CLUSTER_FLAG_NEXT_NULL 2 /* This cluster has no next cluster */
->> -#define CLUSTER_FLAG_HUGE 4 /* This cluster is backing a transparent huge
->> page */
->>
->>   /*
->>    * We assign a cluster to each CPU, so each CPU can allocate swap entry from
->> @@ -595,15 +594,6 @@ static inline int add_swap_extent(struct swap_info_struct
->> *sis,
->>   }
->>   #endif /* CONFIG_SWAP */
->>
->> -#ifdef CONFIG_THP_SWAP
->> -extern int split_swap_cluster(swp_entry_t entry);
->> -#else
->> -static inline int split_swap_cluster(swp_entry_t entry)
->> -{
->> -    return 0;
->> -}
->> -#endif
->> -
->>   #ifdef CONFIG_MEMCG
->>   static inline int mem_cgroup_swappiness(struct mem_cgroup *memcg)
->>   {
->> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->> index c9cbcbf6697e..46b3fb943207 100644
->> --- a/mm/huge_memory.c
->> +++ b/mm/huge_memory.c
->> @@ -2597,9 +2597,6 @@ static void __split_huge_page(struct page *page, struct
->> list_head *list,
->>           shmem_uncharge(head->mapping->host, nr_dropped);
->>       remap_page(folio, nr);
->>
->> -    if (folio_test_swapcache(folio))
->> -        split_swap_cluster(folio->swap);
->> -
->>       for (i = 0; i < nr; i++) {
->>           struct page *subpage = head + i;
->>           if (subpage == page)
->> diff --git a/mm/swapfile.c b/mm/swapfile.c
->> index e52f486834eb..c668838fa660 100644
->> --- a/mm/swapfile.c
->> +++ b/mm/swapfile.c
->> @@ -342,18 +342,6 @@ static inline void cluster_set_null(struct
->> swap_cluster_info *info)
->>       info->data = 0;
->>   }
->>
->> -static inline bool cluster_is_huge(struct swap_cluster_info *info)
->> -{
->> -    if (IS_ENABLED(CONFIG_THP_SWAP))
->> -        return info->flags & CLUSTER_FLAG_HUGE;
->> -    return false;
->> -}
->> -
->> -static inline void cluster_clear_huge(struct swap_cluster_info *info)
->> -{
->> -    info->flags &= ~CLUSTER_FLAG_HUGE;
->> -}
->> -
->>   static inline struct swap_cluster_info *lock_cluster(struct swap_info_struct
->> *si,
->>                                unsigned long offset)
->>   {
->> @@ -1021,7 +1009,7 @@ static int swap_alloc_cluster(struct swap_info_struct
->> *si, swp_entry_t *slot)
->>       offset = idx * SWAPFILE_CLUSTER;
->>       ci = lock_cluster(si, offset);
->>       alloc_cluster(si, idx);
->> -    cluster_set_count_flag(ci, SWAPFILE_CLUSTER, CLUSTER_FLAG_HUGE);
->> +    cluster_set_count_flag(ci, SWAPFILE_CLUSTER, 0);
+> Each sub-module of LJCA device is identified by type field within
+> the LJCA message header.
 > 
-> Maybe just use cluster_set_count() and kill cluster_set_count_flag().
+> The sub-modules of LJCA can use ljca_transfer() to issue a transfer
+> between host and hardware. And ljca_register_event_cb is exported
+> to LJCA sub-module drivers for hardware event subscription.
+> 
+> The minimum code in ASL that covers this board is
+> Scope (\_SB.PCI0.DWC3.RHUB.HS01)
+>     {
+>         Device (GPIO)
+>         {
+>             Name (_ADR, Zero)
+>             Name (_STA, 0x0F)
+>         }
+> 
+>         Device (I2C)
+>         {
+>             Name (_ADR, One)
+>             Name (_STA, 0x0F)
+>         }
+> 
+>         Device (SPI)
+>         {
+>             Name (_ADR, 0x02)
+>             Name (_STA, 0x0F)
+>         }
+>     }
 
-Yes, good point - I'll do this in the next version. Thanks!
+This commit message is not true anymore, or misleading at bare minimum.
+The ACPI specification is crystal clear about usage _ADR and _HID, i.e.
+they must NOT be used together for the same device node. So, can you
+clarify how the DSDT is organized and update the commit message and
+it may require (quite likely) to redesign the architecture of this
+driver. Sorry I missed this from previous rounds as I was busy by
+something else.
+
+Greg, please do not promote this to the next before above will be clarified.
+
+P.S> Using _ADR and _HID together is an immediate NAK from me.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
