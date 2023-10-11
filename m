@@ -2,178 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ABA77C591F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F6C7C5924
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235095AbjJKQ3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 12:29:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49230 "EHLO
+        id S234958AbjJKQbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 12:31:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbjJKQ3I (ORCPT
+        with ESMTP id S230185AbjJKQbi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 12:29:08 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D93B91;
-        Wed, 11 Oct 2023 09:29:06 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 553701FF02;
-        Wed, 11 Oct 2023 16:29:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1697041745; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kYo77x54AzSd+UJL48y6CRA7yZ5+4RMlae1FSxp7kUY=;
-        b=XHPjHzAxZGN8OAcbkRlJpzZcxSqh0PmgTt4npi1tF+csKiWIXSr22Q66FJM2N/QWXLTuWe
-        8qU5i1XbtqtXqXqGt/BP2COPochp4eKiQbidoNtY9W7y4PLwiWnw+G09P8eyOvIpOvA4z+
-        moXDGeLe/pOS1YzwKZ2VAtQlYMqPsxs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1697041745;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kYo77x54AzSd+UJL48y6CRA7yZ5+4RMlae1FSxp7kUY=;
-        b=T1jExGE6EAUwcpMkNyi3OKySzAjG7myKC5zvA28x5gD6fljvVqNo3e5cwm9l9v5cfaJ+fM
-        pqEjb6y8O4ZxlvDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 43D03134F5;
-        Wed, 11 Oct 2023 16:29:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id kvp+EFHNJmVlLQAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 11 Oct 2023 16:29:05 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id C9ED1A05BC; Wed, 11 Oct 2023 18:29:04 +0200 (CEST)
-Date:   Wed, 11 Oct 2023 18:29:04 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, Max Kellermann <max.kellermann@ionos.com>,
-        Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>,
-        Dave Kleikamp <shaggy@kernel.org>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net,
-        Yang Xu <xuyang2018.jy@fujitsu.com>,
-        linux-fsdevel@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>
-Subject: Re: [PATCH v2] fs/{posix_acl,ext2,jfs,ceph}: apply umask if ACL
- support is disabled
-Message-ID: <20231011162904.3dxkids7zzspcolp@quack3>
-References: <20231009144340.418904-1-max.kellermann@ionos.com>
- <20231010131125.3uyfkqbcetfcqsve@quack3>
- <CAKPOu+-nC2bQTZYL0XTzJL6Tx4Pi1gLfNWCjU2Qz1f_5CbJc1w@mail.gmail.com>
- <20231011100541.sfn3prgtmp7hk2oj@quack3>
- <CAKPOu+_xdFALt9sgdd5w66Ab6KTqiy8+Z0Yd3Ss4+92jh8nCwg@mail.gmail.com>
- <20231011120655.ndb7bfasptjym3wl@quack3>
- <CAKPOu+-hLrrpZShHh0o6uc_KMW91suEd0_V_uzp5vMf4NM-8yw@mail.gmail.com>
- <CAKPOu+_0yjg=PrwAR8jKok8WskjdDEJOBtu3uKR_4Qtp8b7H1Q@mail.gmail.com>
- <20231011135922.4bij3ittlg4ujkd7@quack3>
- <20231011-braumeister-anrufen-62127dc64de0@brauner>
+        Wed, 11 Oct 2023 12:31:38 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A583691;
+        Wed, 11 Oct 2023 09:31:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43952C433CA;
+        Wed, 11 Oct 2023 16:31:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697041896;
+        bh=FGA8gM4FeYE4IWyx429Dya7HEFgaNp50J+X1XqE49q8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=VGLoGxYihF/YYfew9Ft1kVSjBHObtFNw5bKvSrYo98+Qn+61pehsVyPIUnOEwN0hS
+         EwAD2BQWoOzwjuwQGShhSeizFMKMyLNXFwxtwN6I9nPnMIR2wRxk83BoTTXHVUSv6e
+         AOhNH8xNcRKEoULOJe5HnJt+KvSLrBC0csomVujidH1b+6pfMVhsSGtY28Ll8PDjk1
+         ik33X3N0RSINRmps91GGkcxrcsJLizPNhDf7eTKMezNOnm0IrumVHabo7dd0BSph3O
+         RjeqEBIKaxn85DieIibabR+HwOndWQrXIgbu/aoi31pbuOPe/kwxSa+q6P0KCoedQW
+         r53uBsdnIY7SA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id E681ECE0AD4; Wed, 11 Oct 2023 09:31:35 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 09:31:35 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, Chengming Zhou <zhouchengming@bytedance.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ovidiu Panait <ovidiu.panait@windriver.com>,
+        Ingo Molnar <mingo@kernel.org>, rcu <rcu@vger.kernel.org>
+Subject: Re: [PATCH 5.15 000/183] 5.15.134-rc1 review
+Message-ID: <273869c3-ba4b-4173-a14e-bd201d900079@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231004175203.943277832@linuxfoundation.org>
+ <CA+G9fYunnEUT2evdabX1KOTiryP1heNHWDH4LWZCt2SVRmnKOA@mail.gmail.com>
+ <20231006162038.d3q7sl34b4ouvjxf@revolver>
+ <57c1ff4d-f138-4f89-8add-c96fb3ba6701@paulmck-laptop>
+ <20231006175714.begtgj6wrs46ukmo@revolver>
+ <7652477c-a37c-4509-9dc9-7f9d1dc08291@paulmck-laptop>
+ <CAEXW_YS16NxPxg52T=3FcyZ2qocj36zKyhPnEQL3nBTbD-qJ-A@mail.gmail.com>
+ <9470dab6-dee5-4505-95a2-f6782b648726@paulmck-laptop>
+ <433f5823-059c-4b51-8d18-8b356a5a507f@paulmck-laptop>
+ <ZSana69n6RWgCnqi@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231011-braumeister-anrufen-62127dc64de0@brauner>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <ZSana69n6RWgCnqi@localhost.localdomain>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 11-10-23 17:27:37, Christian Brauner wrote:
-> On Wed, Oct 11, 2023 at 03:59:22PM +0200, Jan Kara wrote:
-> > On Wed 11-10-23 14:27:49, Max Kellermann wrote:
-> > > On Wed, Oct 11, 2023 at 2:18â€¯PM Max Kellermann <max.kellermann@ionos.com> wrote:
-> > > > But without the other filesystems. I'll resend it with just the
-> > > > posix_acl.h hunk.
-> > > 
-> > > Thinking again, I don't think this is the proper solution. This may
-> > > server as a workaround so those broken filesystems don't suffer from
-> > > this bug, but it's not proper.
-> > > 
-> > > posix_acl_create() is only supposed to appy the umask if the inode
-> > > supports ACLs; if not, the VFS is supposed to do it. But if the
-> > > filesystem pretends to have ACL support but the kernel does not, it's
-> > > really a filesystem bug. Hacking the umask code into
-> > > posix_acl_create() for that inconsistent case doesn't sound right.
-> > > 
-> > > A better workaround would be this patch:
-> > > https://patchwork.kernel.org/project/linux-nfs/patch/151603744662.29035.4910161264124875658.stgit@rabbit.intern.cm-ag/
-> > > I submitted it more than 5 years ago, it got one positive review, but
-> > > was never merged.
-> > > 
-> > > This patch enables the VFS's umask code even if the filesystem
-> > > prerents to support ACLs. This still doesn't fix the filesystem bug,
-> > > but makes VFS's behavior consistent.
+On Wed, Oct 11, 2023 at 03:47:23PM +0200, Frederic Weisbecker wrote:
+> Le Tue, Oct 10, 2023 at 06:34:35PM -0700, Paul E. McKenney a écrit :
+> > If this problem is real, fixes include:
 > > 
-> > OK, that solution works for me as well. I agree it seems a tad bit cleaner.
-> > Christian, which one would you prefer?
+> > o	Revert Liam's patch and make Tiny RCU's call_rcu() deal with
+> > 	the problem.  This is overhead and non-tinyness, but to Joel's
+> > 	point, it might be best.
 > 
-> So it always bugged me that POSIX ACLs push umask stripping down into
-> the individual filesystems but it's hard to get rid of this. And we
-> tried to improve the situation during the POSIX ACL rework by
-> introducing vfs_prepare_umask().
+> But what is calling call_rcu() or start_poll_synchronize_rcu() so
+> early that the CPU is not even online? (that's before boot_cpu_init() !)
 > 
-> Aside from that, the problem had been that filesystems like nfs v4
-> intentionally raised SB_POSIXACL to prevent umask stripping in the VFS.
-> IOW, for them SB_POSIXACL was equivalent to "don't apply any umask".
+> Deferring PF_IDLE setting might pave the way for more issues like this one,
+> present or future. Though is_idle_task() returning true when the task is not
+> in the idle loop but is playing the init/0 role is debatable.
+> 
+> An alternative for tiny RCU is to force waking up ksoftirqd when call_rcu()
+> is in the idle task. Since rcu_qs() during the context switch raises a softirq
+> anyway. It's more overhead for start_poll_synchronize_rcu() though but do we
+> expect much RCU polling in idle?
 
-Ah, what a hack...
+Nice!!!
 
-> And afaict nfs v4 has it's own thing going on how and where umasks are
-> applied. However, since we now have the following commit in vfs.misc:
-> 
-> commit f61b9bb3f8386a5e59b49bf1310f5b34f47bcef9
-> Author:     Jeff Layton <jlayton@kernel.org>
-> AuthorDate: Mon Sep 11 20:25:50 2023 -0400
-> Commit:     Christian Brauner <brauner@kernel.org>
-> CommitDate: Thu Sep 21 15:37:47 2023 +0200
-> 
->     fs: add a new SB_I_NOUMASK flag
-> 
->     SB_POSIXACL must be set when a filesystem supports POSIX ACLs, but NFSv4
->     also sets this flag to prevent the VFS from applying the umask on
->     newly-created files. NFSv4 doesn't support POSIX ACLs however, which
->     causes confusion when other subsystems try to test for them.
-> 
->     Add a new SB_I_NOUMASK flag that allows filesystems to opt-in to umask
->     stripping without advertising support for POSIX ACLs. Set the new flag
->     on NFSv4 instead of SB_POSIXACL.
-> 
->     Also, move mode_strip_umask to namei.h and convert init_mknod and
->     init_mkdir to use it.
-> 
->     Signed-off-by: Jeff Layton <jlayton@kernel.org>
->     Message-Id: <20230911-acl-fix-v3-1-b25315333f6c@kernel.org>
->     Signed-off-by: Christian Brauner <brauner@kernel.org>
-> 
-> I think it's possible to pick up the first patch linked above:
->    
-> fix umask on NFS with CONFIG_FS_POSIX_ACL=n doesn't lead to any
-> 
-> and see whether we see any regressions from this.
-> 
-> The second patch I can't easily judge that should go through nfs if at
-> all.
-> 
-> So proposal/question: should we take the first patch into vfs.misc?
+This does solve the original problem with little or no additional overhead
+(perhaps even with decreased overhead), and avoids the other RCU Tasks
+issues.
 
-Sounds good to me. I have checked whether some other filesystem does not
-try to play similar games as NFS and it appears not although overlayfs does
-seem to play some games with umasks.
+						Thanx, Paul
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
+> index a92bce40b04b..6ab15233e2be 100644
+> --- a/include/linux/interrupt.h
+> +++ b/include/linux/interrupt.h
+> @@ -604,6 +604,7 @@ extern void __raise_softirq_irqoff(unsigned int nr);
+>  
+>  extern void raise_softirq_irqoff(unsigned int nr);
+>  extern void raise_softirq(unsigned int nr);
+> +extern void raise_ksoftirqd_irqsoff(unsigned int nr);
+>  
+>  DECLARE_PER_CPU(struct task_struct *, ksoftirqd);
+>  
+> diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
+> index 42f7589e51e0..872dab8b8b53 100644
+> --- a/kernel/rcu/tiny.c
+> +++ b/kernel/rcu/tiny.c
+> @@ -189,12 +189,12 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
+>  	local_irq_save(flags);
+>  	*rcu_ctrlblk.curtail = head;
+>  	rcu_ctrlblk.curtail = &head->next;
+> -	local_irq_restore(flags);
+>  
+>  	if (unlikely(is_idle_task(current))) {
+>  		/* force scheduling for rcu_qs() */
+> -		resched_cpu(0);
+> +		raise_ksoftirqd_irqsoff(RCU_SOFTIRQ);
+>  	}
+> +	local_irq_restore(flags);
+>  }
+>  EXPORT_SYMBOL_GPL(call_rcu);
+>  
+> @@ -225,10 +225,13 @@ EXPORT_SYMBOL_GPL(get_state_synchronize_rcu);
+>  unsigned long start_poll_synchronize_rcu(void)
+>  {
+>  	unsigned long gp_seq = get_state_synchronize_rcu();
+> +	unsigned long flags;
+>  
+>  	if (unlikely(is_idle_task(current))) {
+> +		local_irq_save(flags);
+>  		/* force scheduling for rcu_qs() */
+> -		resched_cpu(0);
+> +		raise_ksoftirqd_irqsoff(RCU_SOFTIRQ);
+> +		local_irq_restore(flags);
+>  	}
+>  	return gp_seq;
+>  }
+> diff --git a/kernel/softirq.c b/kernel/softirq.c
+> index 210cf5f8d92c..ef105cbdc705 100644
+> --- a/kernel/softirq.c
+> +++ b/kernel/softirq.c
+> @@ -695,6 +695,14 @@ void __raise_softirq_irqoff(unsigned int nr)
+>  	or_softirq_pending(1UL << nr);
+>  }
+>  
+> +#ifdef CONFIG_RCU_TINY
+> +void raise_ksoftirqd(unsigned int nr)
+> +{
+> +	__raise_softirq_irqoff(nr);
+> +	wakeup_softirqd();
+> +}
+> +#endif
+> +
+>  void open_softirq(int nr, void (*action)(struct softirq_action *))
+>  {
+>  	softirq_vec[nr].action = action;
+> 
+> 
+> 
+> 
