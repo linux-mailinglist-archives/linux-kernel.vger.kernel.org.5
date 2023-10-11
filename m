@@ -2,102 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 340FC7C5FC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4117C5FC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235183AbjJKV7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 17:59:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36250 "EHLO
+        id S1376421AbjJKV7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 17:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235161AbjJKV71 (ORCPT
+        with ESMTP id S233339AbjJKV7x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 17:59:27 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A6459E;
-        Wed, 11 Oct 2023 14:59:24 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39BIxBgK009576;
-        Wed, 11 Oct 2023 21:59:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=OgrDYYwCOL/ieAwAtOQYeAM72138+c5Elgd6rcII/+U=;
- b=Jv/A/sBu/SnbZdcd0z3AQYUnKwzjj40Pq2dfCf5DR6qn6uAbZP1IqJOH30lFE47Q1cF2
- zGhVy02WB4Rv2AoduwfAaXMLX3LCXVsIgjSQlZSjRuB+z+35UHHS4pgSiTTW/bK+YvAo
- GbNQBJzNnVC2oVo2ccxCSPCSbfyTLLrv29dLMBnlinQnoXXTf157pkIJxm1GE1KcrUqd
- lJjpJhyU9QTHpuO8qWKeeN0K5tq+TF38wIU+Hutkar5sFsOgG6R4H7pTXHdEXKoo/+Wk
- DK1gEObFJAOnir1svtvDmpC7H5iYWiBoOQGSJT60Cgu4lKalHOtqdJ73bBiKDpZWISi3 XA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tngtpapdd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 21:59:19 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39BLwrOg018902
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 21:58:53 GMT
-Received: from [10.71.115.198] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 11 Oct
- 2023 14:58:53 -0700
-Message-ID: <2c91a35a-43ea-4e20-4065-e30cdaf1931f@quicinc.com>
-Date:   Wed, 11 Oct 2023 14:58:52 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v3] usb: host: xhci: Avoid XHCI resume delay if SSUSB
- device is not present
-Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     <mathias.nyman@intel.com>, <linux-usb@vger.kernel.org>,
+        Wed, 11 Oct 2023 17:59:53 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472109E
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:59:52 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9ba1eb73c27so48240566b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:59:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697061591; x=1697666391; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=P4ZKjGCx4nApKCYikS19QgH43+qwtiZ1ddNEcQjQDUQ=;
+        b=P9+Pa+DX1AocSbG207uq9xIOvrkemHafQT+jIeWs7XtTgQZzSI17l0CpAbD4XX492q
+         5YsWdH02YxWPJYeum2EmAWX5xECaabmms8UOcgfVEAVoIS0zko/WC+SNtJGs+b1jzcTo
+         oLrAf64k0x5fxs3aEU263i1l9Y1yYr2ed2wb6qpCQevMBL6IxHeSFB3AwgXyHEyr0H+U
+         YDHH8kFZG90/OwQ5IElY/kFzaBPDOmN83ZlqTuiEEGROEDY2FXBTQEKHWKFtMOqMDCGO
+         yRvut1jRApuOEm6e3DqDMVGrVYpfCmhUgqbuxetfClsJ3p53zAhArR39Knjj/RuhTcmC
+         fejQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697061591; x=1697666391;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=P4ZKjGCx4nApKCYikS19QgH43+qwtiZ1ddNEcQjQDUQ=;
+        b=oUZHQ/YyEsAlmo1hQelq9SQVsuXCtr95GZX+vTT1m0x9m7yFBd8vdxGyjgLJGBWvJ+
+         jvft6HS6ELuTJ2h25eG7XpjAbBPU1DhwZ0Qa/KkGxuYJ+mngR5G1zeHafws8+pbWxh3Q
+         EiTfVV5gSI4iITstX0LJItSK36CxC1lFIagDj9jXZe4zcIW6WJV6LDOXwoHVLI7916yx
+         B0dgkK8FbLNA8uKP/+u9Jmjde30qpZQag00xkKZGPxQzHc7zBfh3zEkOetAABbaxGfSI
+         mjKsN/CazGyJf6mwWgwuauqLcigsnLlXhhKwabkAsiDAXc9DBtYtetLgk2HGGSloBzEc
+         I0CA==
+X-Gm-Message-State: AOJu0Yw+zBg1GJhcO+3wSGurz0hjeWX5M8V17NzeUaaLkGNBw28tUw9s
+        y3wEh654/wdz0TmBS+3Su9s=
+X-Google-Smtp-Source: AGHT+IFFQEX/2zN2S57PAqVp9/9LmuvQHcMM5rTusTvYCsiu+ds+OJ8190vUDhz+8xprA3/gJYbGIw==
+X-Received: by 2002:a17:906:2929:b0:9b8:df8e:cbde with SMTP id v9-20020a170906292900b009b8df8ecbdemr17627616ejd.51.1697061590579;
+        Wed, 11 Oct 2023 14:59:50 -0700 (PDT)
+Received: from gmail.com (1F2EF405.nat.pool.telekom.hu. [31.46.244.5])
+        by smtp.gmail.com with ESMTPSA id l12-20020a170906078c00b009b94fe3fc47sm10228660ejc.159.2023.10.11.14.59.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 14:59:49 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 11 Oct 2023 23:59:47 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Breno Leitao <leitao@debian.org>
+Cc:     tglx@linutronix.de, bp@alien8.de, Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, leit@meta.com,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
         <linux-kernel@vger.kernel.org>
-References: <20230919224327.29974-1-quic_wcheng@quicinc.com>
- <5f491814-c105-64e3-93c0-5fff89160ac1@quicinc.com>
- <2023101111-acquire-dosage-65c1@gregkh>
-From:   Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <2023101111-acquire-dosage-65c1@gregkh>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Kcr5DhnmzyabB757p4zmeXZ4_crNGPj9
-X-Proofpoint-GUID: Kcr5DhnmzyabB757p4zmeXZ4_crNGPj9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-11_17,2023-10-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- lowpriorityscore=0 clxscore=1015 phishscore=0 mlxlogscore=501
- priorityscore=1501 bulkscore=0 impostorscore=0 mlxscore=0 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310110194
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v4] x86/bugs: Add a separate config for each mitigation
+Message-ID: <ZSca08rnmZfkONEH@gmail.com>
+References: <20231010103028.4192223-1-leitao@debian.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231010103028.4192223-1-leitao@debian.org>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
 
-On 10/11/2023 2:24 AM, Greg KH wrote:
-> On Tue, Oct 10, 2023 at 12:01:05PM -0700, Wesley Cheng wrote:
->> Friendly ping to see if there are any updates/feedback on this patch?
-> 
-> Please do not top-post.
-> 
-> Anyway, did you not see my bot's response to this patch?  If so, why did
-> you ignore it, that's why we didn't do anything with it...
-> 
+* Breno Leitao <leitao@debian.org> wrote:
 
-Got it, I was mainly just checking to see if the new way of determining 
-if there is a SSUSB device connected is the way we want to implement it, 
-since I changed to using the ports_suspended bitmask.  I'll send a new 
-revision with the changelist.
+> +config MITIGATE_MDS
+> +	bool "Mitigate Microarchitectural Data Sampling (MDS) hardware bug"
 
-Thanks
-Wesley Cheng
+> +config MITIGATE_TAA
+> +	bool "Mitigate TSX Asynchronous Abort (TAA) hardware bug"
+
+> +config MITIGATE_MMIO_STALE_DATA
+> +	bool "Mitigate MMIO Stale Data hardware bug"
+
+> +config MITIGATE_L1TF
+> +	bool "Mitigate L1 Terminal Fault (L1TF) hardware bug"
+
+> +config MITIGATE_RETBLEED
+> +	bool "Mitigate RETBleed hardware bug"
+
+> +config MITIGATE_SPECTRE_V1
+> +	bool "Mitigate SPECTRE V1 hardware bug"
+
+> +config MITIGATE_SPECTRE_V2
+> +	bool "Mitigate SPECTRE V2 hardware bug"
+
+> +config MITIGATE_SRBDS
+> +	bool "Mitigate Special Register Buffer Data Sampling (SRBDS) hardware bug"
+
+> +config MITIGATE_SSB
+> +	bool "Mitigate Speculative Store Bypass (SSB) hardware bug"
+
+> +#if IS_ENABLED(CONFIG_MITIGATE_RETBLEED)
+>  static enum retbleed_mitigation_cmd retbleed_cmd __ro_after_init =
+>  	RETBLEED_CMD_AUTO;
+> +#else
+> +static enum retbleed_mitigation_cmd retbleed_cmd __ro_after_init =
+> +	RETBLEED_CMD_OFF;
+> +#endif
+
+1)
+
+Yeah, so this #ifdeffery is unnecessarily ugly - we can actually assign 
+integer values in the Kconfig language and use that for initialization.
+
+Is there a reason why we wouldn't want to do something like:
+
+	static enum retbleed_mitigation_cmd retbleed_cmd __ro_after_init = CONFIG_BOOT_DEFAULT_X86_MITIGATE_RETBLEED;
+
+... or so?
+
+2)
+
+The new Kconfig namespace should probably be X86_MITIGATE_*, so that we 
+don't crowd the generic kernel's Kconfig namespace.
+
+3)
+
+And yes, now that the rush of CPU vulnerabilities seems to be ebbing, we 
+should probably consider unifying the existing hodgepodge of mitigation 
+Kconfig options as well, to not build up even more technical debt.
+
+The churn factor seems moderate:
+
+  kepler:~/tip> git grep CONFIG_RETPOLINE | wc -l
+  52
+
+  kepler:~/tip> git grep RETHUNK | wc -l
+  42
+
+  kepler:~/tip> git grep CALL_DEPTH_TRACKING | wc -l
+  24
+
+... and since most of this code is maintained in the same tree, the usual 
+arguments against churn (interfering with other Git trees) does not apply 
+nearly as much.
+
+4)
+
+Fourth, I think we should inform users (in the boot log) when a kernel 
+.config changes a mitigation default value compared from what the upstream 
+kernel thinks is a suitable default.
+
+Sometimes it can be a simple configuration mistake, or a user might have 
+different opinion about the importance of a particular mitigation. Nothing 
+heavy-handed, just a simple pr_info() table of changes?
+
+Thanks,
+
+	Ingo
