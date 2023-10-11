@@ -2,121 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E6427C509A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1377C50A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346082AbjJKKxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 06:53:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52814 "EHLO
+        id S1346329AbjJKKyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:54:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231818AbjJKKxs (ORCPT
+        with ESMTP id S234802AbjJKKyn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:53:48 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1572494
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:53:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=n0Rd8iB01dlTqJL61z7uUBCANaEnEeQ6SUc86tc4CLM=; b=A4NdML/DjEC+NS52AfNQ6oa2wa
-        Q8WFeyiZLWde7b9NDQyUOcbgLKJPzJ8WDXWc2tGaCIeRJd27Mqh9ZH/R5PRbgW6JzIOepH5kfVy3c
-        EZ+D3y0wUMQyO1R3LSv7Sbd7RkLFND1JOxYIicXDpGrzH9JxaOHioptaDNxi0sTBaAWYyyDuuLERM
-        y5IHDPGFz4/ZNNX0MHOf8JNc7MqSm/W68l1nyyQunqT+cfiCfgtbbSLExfll2wvTLMoJdER6SoYTJ
-        H8/RgeHbnRXySmWn/Ev/0Z+S3xHGQqgxXZXyDHAy5V3ITVgEypOaLbVw6rAydSyZ9UdmuKoglwYs8
-        poN90tQA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qqWqG-0009YU-1m;
-        Wed, 11 Oct 2023 10:53:30 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A690230026F; Wed, 11 Oct 2023 12:53:29 +0200 (CEST)
-Date:   Wed, 11 Oct 2023 12:53:29 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ankit Jain <ankitja@vmware.com>
-Cc:     yury.norov@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk, qyousef@layalina.io, pjt@google.com,
-        joshdon@google.com, bristot@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org, namit@vmware.com,
-        amakhalov@vmware.com, srinidhir@vmware.com, vsirnapalli@vmware.com,
-        vbrahmajosyula@vmware.com, akaher@vmware.com,
-        srivatsa@csail.mit.edu
-Subject: Re: [PATCH RFC] cpumask: Randomly distribute the tasks within
- affinity mask
-Message-ID: <20231011105329.GA17066@noisy.programming.kicks-ass.net>
-References: <20231011071925.761590-1-ankitja@vmware.com>
+        Wed, 11 Oct 2023 06:54:43 -0400
+Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E6592
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:54:40 -0700 (PDT)
+Received: by mail-vs1-xe31.google.com with SMTP id ada2fe7eead31-452951b27d0so2827331137.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:54:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1697021680; x=1697626480; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p4nF6PEutWJBQPD4LIT1skkD09xa4qGsBtRI6mZk9kM=;
+        b=LO+VbWoGycURW0lZWdLoS/PCw4dvNGHkODJzJRAUvngwyubXTbZmkcxI1LxdnqXjQ0
+         tzC3qwSQaqLZW1rIcbypgWPF43TKDA1x2hNTPaSmfshPGmGHGIfnUUu3Mh2xCeMC0x8Y
+         gSlfAMdlmU81u4S4uWARRLJ+Hj/7G+XQkP+vak0jx2ATtR2AuxNGOufYOpgEyXnHcPOx
+         DKFIJAgnbyG63kE2E1j5vdX7aYuwc/0e5+hbcU+4SvPbdzOVjnZmyNHcxgAgSWn5LSwU
+         XPCNgora0K24vvGw5oZHx7cUs3moAhmK07q24JM6Bh8Y1ffUD/nlUQizpL1IxDytNttD
+         GOHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697021680; x=1697626480;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=p4nF6PEutWJBQPD4LIT1skkD09xa4qGsBtRI6mZk9kM=;
+        b=sZOAx+EXj1q4gHlu3pEobctB7M20SAm6+DSu0n+nY7oWH0t7Iv/7AAyaiTGQag83xq
+         E72NlwTDHAUaJVeENQNMKQkWlwMEkZOD42DMiOwPn1o5In0AA4NgTEWngYYM3RdGzb/1
+         y6jK+b1Xt9QoHYxRjy0MOvZPpmr+/OnNzEn/rqL3XlP5Wde7puVQonysDYs63yEazt/1
+         srwRpl8pYQ4/hPXh79M9CQvDtFm1SnWbEKuhb6yZSqYRYbf6Redc9ATysu9nGWrbPPEp
+         0jLvh8ZX/yQpxwPB4VOZiH/LsKuJ7P7/qQ1iySlkMUB3BaMtQ5Yf1oI47or7+u3ZOOHF
+         YIOQ==
+X-Gm-Message-State: AOJu0YxJoqH8brBhhvdMgxMxdZRuqjpNVJUxjXuZ68a4kOc2LNbfYZ2r
+        IRo8Gh3/SkGYPQ82FW+FbweQ+PbI/S0/L2yAc4Qsnw==
+X-Google-Smtp-Source: AGHT+IFDs94V/aDo55pKyEF+KYMg17r2BTEWfhXQjYPz6s8btDK4mBkRCwVsJWRGGrp60X5u0qqqHYxCDBabIc6c5JU=
+X-Received: by 2002:a67:cd11:0:b0:450:8e58:2de4 with SMTP id
+ u17-20020a67cd11000000b004508e582de4mr18396034vsl.7.1697021679643; Wed, 11
+ Oct 2023 03:54:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231011071925.761590-1-ankitja@vmware.com>
+References: <20231010170503.657189-1-apatel@ventanamicro.com>
+ <20231010170503.657189-4-apatel@ventanamicro.com> <2023101048-attach-drift-d77b@gregkh>
+ <CAK9=C2UEcQpHg8WZM3XxLa5yCEZ6wtWJj=8g5_m_0_RkiNMkTA@mail.gmail.com> <2023101105-oink-aerospace-989e@gregkh>
+In-Reply-To: <2023101105-oink-aerospace-989e@gregkh>
+From:   Anup Patel <apatel@ventanamicro.com>
+Date:   Wed, 11 Oct 2023 16:24:28 +0530
+Message-ID: <CAK9=C2V3VzCgaJ_dWExvS3mf3QRgeV5tU9t3LsMaHv7xO3wwzA@mail.gmail.com>
+Subject: Re: [PATCH 3/6] RISC-V: KVM: Forward SBI DBCN extension to user-space
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Conor Dooley <conor@kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 12:49:25PM +0530, Ankit Jain wrote:
-> commit 46a87b3851f0 ("sched/core: Distribute tasks within affinity masks")
-> and commit 14e292f8d453 ("sched,rt: Use cpumask_any*_distribute()")
-> introduced the logic to distribute the tasks at initial wakeup on cpus
-> where load balancing works poorly or disabled at all (isolated cpus).
-> 
-> There are cases in which the distribution of tasks
-> that are spawned on isolcpus does not happen properly.
-> In production deployment, initial wakeup of tasks spawn from
-> housekeeping cpus to isolcpus[nohz_full cpu] happens on first cpu
-> within isolcpus range instead of distributed across isolcpus.
-> 
-> Usage of distribute_cpu_mask_prev from one processes group,
-> will clobber previous value of another or other groups and vice-versa.
-> 
-> When housekeeping cpus spawn multiple child tasks to wakeup on
-> isolcpus[nohz_full cpu], using cpusets.cpus/sched_setaffinity(),
-> distribution is currently performed based on per-cpu
-> distribute_cpu_mask_prev counter.
-> At the same time, on housekeeping cpus there are percpu
-> bounded timers interrupt/rcu threads and other system/user tasks
-> would be running with affinity as housekeeping cpus. In a real-life
-> environment, housekeeping cpus are much fewer and are too much loaded.
-> So, distribute_cpu_mask_prev value from these tasks impacts
-> the offset value for the tasks spawning to wakeup on isolcpus and
-> thus most of the tasks end up waking up on first cpu within the
-> isolcpus set.
-> 
-> Steps to reproduce:
-> Kernel cmdline parameters:
-> isolcpus=2-5 skew_tick=1 nohz=on nohz_full=2-5
-> rcu_nocbs=2-5 rcu_nocb_poll idle=poll irqaffinity=0-1
-> 
-> * pid=$(echo $$)
-> * taskset -pc 0 $pid
-> * cat loop-normal.c
-> int main(void)
-> {
->         while (1)
->                 ;
->         return 0;
-> }
-> * gcc -o loop-normal loop-normal.c
-> * for i in {1..50}; do ./loop-normal & done
-> * pids=$(ps -a | grep loop-normal | cut -d' ' -f5)
-> * for i in $pids; do taskset -pc 2-5 $i ; done
-> 
-> Expected output:
-> * All 50 “loop-normal” tasks should wake up on cpu2-5
-> equally distributed.
-> * ps -eLo cpuid,pid,tid,ppid,cls,psr,cls,cmd | grep "^    [2345]"
-> 
-> Actual output:
-> * All 50 “loop-normal” tasks got woken up on cpu2 only
+On Wed, Oct 11, 2023 at 12:56=E2=80=AFPM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Oct 11, 2023 at 12:02:30PM +0530, Anup Patel wrote:
+> > On Tue, Oct 10, 2023 at 10:45=E2=80=AFPM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Tue, Oct 10, 2023 at 10:35:00PM +0530, Anup Patel wrote:
+> > > > The SBI DBCN extension needs to be emulated in user-space
+> > >
+> > > Why?
+> >
+> > The SBI debug console is similar to a console port available to
+> > KVM Guest so the KVM user space tool (i.e. QEMU-KVM or
+> > KVMTOOL) can redirect the input/output of SBI debug console
+> > wherever it wants (e.g.  telnet, file, stdio, etc).
+> >
+> > We forward SBI DBCN calls to KVM user space so that the
+> > in-kernel KVM does not need to be aware of the guest
+> > console devices.
+>
+> Hint, my "Why" was attempting to get you to write a better changelog
+> description, which would include the above information.  Please read the
+> kernel documentation for hints on how to do this so that we know what
+> why changes are being made.
 
-Your expectation is wrong. Things work as advertised.
+Okay, I will improve the commit description and cover-letter.
 
-Also, isolcpus is crap.
+>
+> > > > so let
+> > > > us forward console_puts() call to user-space.
+> > >
+> > > What could go wrong!
+> > >
+> > > Why does userspace have to get involved in a console message?  Why is
+> > > this needed at all?  The kernel can not handle userspace consoles as
+> > > obviously they have to be re-entrant and irq safe.
+> >
+> > As mentioned above, these are KVM guest console messages which
+> > the VMM (i.e. KVM user-space) can choose to manage on its own.
+>
+> If it chooses not to, what happens?
 
+If KVM user-space chooses not to handle SBI DBCN calls then it can
+disable SBI DBCN extension for Guest VCPUs using the ONE_REG
+ioctl() interface.
 
+>
+> > This is more about providing flexibility to KVM user-space which
+> > allows it to manage guest console devices.
+>
+> Why not use the normal virtio console device interface instead of making
+> a riscv-custom one?
+
+The SBI DBCN (or debug console) is only an early console used for
+early prints and bootloaders.
+
+Once the proper console (like virtio console) is detected by the Guest
+kernel, it will switch the debug console to proper console.
+
+>
+> Where is the userspace side of this interface at?  Where are the patches
+> to handle this new api you added?
+
+As mentioned in the cover letter, I have implemented it in KVMTOOL first.
+
+The patches can be found in riscv_sbi_dbcn_v1 branch at:
+https://github.com/avpatel/kvmtool.git
+
+More precisely, this commit:
+https://github.com/avpatel/kvmtool/commit/06a373ee8991f882ef79de3845a4c8d63=
+cb189a6
+
+>
+> >
+> > >
+> > > >
+> > > > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> > > > ---
+> > > >  arch/riscv/include/asm/kvm_vcpu_sbi.h |  1 +
+> > > >  arch/riscv/include/uapi/asm/kvm.h     |  1 +
+> > > >  arch/riscv/kvm/vcpu_sbi.c             |  4 ++++
+> > > >  arch/riscv/kvm/vcpu_sbi_replace.c     | 31 +++++++++++++++++++++++=
+++++
+> > > >  4 files changed, 37 insertions(+)
+> > > >
+> > > > diff --git a/arch/riscv/include/asm/kvm_vcpu_sbi.h b/arch/riscv/inc=
+lude/asm/kvm_vcpu_sbi.h
+> > > > index 8d6d4dce8a5e..a85f95eb6e85 100644
+> > > > --- a/arch/riscv/include/asm/kvm_vcpu_sbi.h
+> > > > +++ b/arch/riscv/include/asm/kvm_vcpu_sbi.h
+> > > > @@ -69,6 +69,7 @@ extern const struct kvm_vcpu_sbi_extension vcpu_s=
+bi_ext_ipi;
+> > > >  extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_rfence;
+> > > >  extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_srst;
+> > > >  extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_hsm;
+> > > > +extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_dbcn;
+> > > >  extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_experiment=
+al;
+> > > >  extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_vendor;
+> > > >
+> > > > diff --git a/arch/riscv/include/uapi/asm/kvm.h b/arch/riscv/include=
+/uapi/asm/kvm.h
+> > > > index 917d8cc2489e..60d3b21dead7 100644
+> > > > --- a/arch/riscv/include/uapi/asm/kvm.h
+> > > > +++ b/arch/riscv/include/uapi/asm/kvm.h
+> > > > @@ -156,6 +156,7 @@ enum KVM_RISCV_SBI_EXT_ID {
+> > > >       KVM_RISCV_SBI_EXT_PMU,
+> > > >       KVM_RISCV_SBI_EXT_EXPERIMENTAL,
+> > > >       KVM_RISCV_SBI_EXT_VENDOR,
+> > > > +     KVM_RISCV_SBI_EXT_DBCN,
+> > > >       KVM_RISCV_SBI_EXT_MAX,
+> > >
+> > > You just broke a user/kernel ABI here, why?
+> >
+> > The KVM_RISCV_SBI_EXT_MAX only represents the number
+> > of entries in "enum KVM_RISCV_SBI_EXT_ID" so we are not
+> > breaking "enum KVM_RISCV_SBI_EXT_ID" rather appending
+> > new ID to existing enum.
+>
+> So you are sure that userspace never actually tests or sends that _MAX
+> value anywhere?  If not, why is it even needed?
+>
+> thanks,
+>
+> greg k-h
+
+Regards,
+Anup
