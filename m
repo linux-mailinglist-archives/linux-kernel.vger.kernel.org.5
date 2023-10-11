@@ -2,83 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 273387C4F19
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 11:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B51287C4F1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 11:36:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbjJKJfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 05:35:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47054 "EHLO
+        id S231172AbjJKJgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 05:36:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231352AbjJKJfF (ORCPT
+        with ESMTP id S230486AbjJKJgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 05:35:05 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18ADF94
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 02:35:01 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50336768615so8665776e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 02:35:01 -0700 (PDT)
+        Wed, 11 Oct 2023 05:36:11 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04BC99D
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 02:36:09 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40675f06f1fso4157885e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 02:36:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697016899; x=1697621699; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1697016967; x=1697621767; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=GTb+BC97Rmfw2v9f1zxZNHOqcWwQx2NwvNoBl72WQbk=;
-        b=IHSQsp+X+DVapGHCfyAPWG4945+hUcPvDiigKzOScHq1M2VRkoeSn48qS4gsdaw/ZY
-         iVBKkpyctb02u7SN5cEiLsN38PMV/H5pw/NHvnK6xpKgWABxA2bM9xpimmTHcq4TuRrx
-         52w4If3jGJ+3haYqfzOk0RhWIY6bspQszEYjXY0LlatYYCowCbCs3gdLtkeOOMkwFc7y
-         Kfn/FdLuXo2eBqJ1b6qAnrAV4zc4QOnvLhfXKPcv3jNTHX4NptQyFRq7BRC2N5A4jbX1
-         qCPHwyt9KTbWlCQT2v9PwNu5zyG19qK2wj8z7juEPDBkxrfkCTA+cZxDqPqncn45xR1O
-         o81w==
+        bh=iy3XKYHuwy+ceJmp/ioJKl+KTznxwRVeCCbyOJ3Sxxw=;
+        b=H240cv2Ux9EJD8Kx+l0q6ehE9vqeRYvK1YrHZbgiztQErZetf1QjJ9sfJe4A1FBJGW
+         NqhIpw1AevOaXzwMj7AL6Te3+3R1FfXzFt+97LSu802hqZhaGA0zfXnz/AK8/5iw6/H8
+         A/jYPora/VWi+lOHQcGVXddRGgF/P8vRkvxqO6u2XO0M/xtU1kWBI4HbEuMD46ty6jjE
+         TdQnMoTcXd0Qzxjiuo4+qt5gr3h24UtVf3+1ltP/0EnSat2TqJWtwQ8+rpZaXxvP0P4m
+         no9yI16WPK8eSmMb/xFxQ+9L/ARJCKSWb+oAZ9LI9q575NicGkMK8Qqz0FrJxISMg5WY
+         YaAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697016899; x=1697621699;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1697016967; x=1697621767;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GTb+BC97Rmfw2v9f1zxZNHOqcWwQx2NwvNoBl72WQbk=;
-        b=vf5h2KjLra1IVMrqir2N2v8yGbZqRYXTi3E7HSabGgS1AIJY+aShG97NuIz7F5wsyS
-         nmRoFQp6Ynb6RDi4gY5TXdY7+Gd5cENBgITnhD4CTAbNZAcC1sOtIVjt4iEJLxo/GY2k
-         6LUeQ6h9WZP553RaIeusFZ+VqtIjyiZumbpLXTkSyVz2EmyNQYZutOGJxWoRItvxMRDn
-         Y+gQOQ0sQ7IQBXC0CCR7lfwkAM14y+MydyHGKQTDiBs+H+YW9uQcpSAu6C8wUzad3GPX
-         bvSG5M2y9/mK1z6F5sx3guDvSPuWCBfMu5LchrnSkqs5Zh0p6K1McTEcZfq/p0xtzqY8
-         oEQw==
-X-Gm-Message-State: AOJu0YyG43dXufr1I/jD3RzCQV+9kzEM0QDtfiP57toIPKsVNKs0bAv2
-        YEg7EsaiX0y+d2E/2VuJUcmPnoG7lhrDZ1lHzkA=
-X-Google-Smtp-Source: AGHT+IFJlLI9YnlJYD1w9CjE4Ygsx3wdxgdFBI2HqW3ROvAa5SheRB6Z7Int2nygQUmbnYk7UMB+uQ==
-X-Received: by 2002:a19:385c:0:b0:503:6e8:1008 with SMTP id d28-20020a19385c000000b0050306e81008mr16146349lfj.36.1697016899282;
-        Wed, 11 Oct 2023 02:34:59 -0700 (PDT)
+        bh=iy3XKYHuwy+ceJmp/ioJKl+KTznxwRVeCCbyOJ3Sxxw=;
+        b=KaFPvZ5cKwKhbecE16rlnutHSsCrF+ZoTtDrnbf5Umz1x1vnQ0Rx54ah1V76WR81x4
+         ycTaFwD9Nk40pyfUAnrHboI6Xqv3QKfZMs79B+uUADCDS5tFm7+i7tp8uMYR1VdRjZLw
+         JCCXB/muanQakmPzSowEyt9Hh3qSUP4uVfGbkeMB8ADXWMrN3ZbrE0N7bkkXKdBYUH3s
+         ufyiEc+p8232fGM9vixKQ7b5XRaoBIFYbZavnn1D44r0jA4M4IuBZ2S0MPa4yDQO+zXn
+         Tz/8lnAJ93zaCbzHgKmIv2RbQv/z/Nv/1QaXE+KIDGaHB7er+90XesZANX0fMt5r9kAi
+         lHZg==
+X-Gm-Message-State: AOJu0Yw+h0HkFZdjz7czIpBd0wNZ7fKtohkx2RT/OOUbJ9Tl1Q/jw7DF
+        53RZOks6JWrwcZOKGErm9uYhJ1I0Zk7pLxRoRZY=
+X-Google-Smtp-Source: AGHT+IHd7KH3Sp3F80DRbyiSWarxbMqSKkR+9jJcoPpq9fyPdrSif8sxEN25goGim1sZLy+QHEKSUg==
+X-Received: by 2002:adf:f984:0:b0:314:314e:fdda with SMTP id f4-20020adff984000000b00314314efddamr15842477wrr.23.1697016967381;
+        Wed, 11 Oct 2023 02:36:07 -0700 (PDT)
 Received: from [172.30.204.44] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id v5-20020a05600c214500b003fbe791a0e8sm16376359wml.0.2023.10.11.02.34.56
+        by smtp.gmail.com with ESMTPSA id v5-20020a05600c214500b003fbe791a0e8sm16376359wml.0.2023.10.11.02.36.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Oct 2023 02:34:58 -0700 (PDT)
-Message-ID: <a8493160-6417-4366-957b-ea4ac68f8926@linaro.org>
-Date:   Wed, 11 Oct 2023 11:34:55 +0200
+        Wed, 11 Oct 2023 02:36:06 -0700 (PDT)
+Message-ID: <67b34aed-6e0f-400f-a150-1969c5478f4b@linaro.org>
+Date:   Wed, 11 Oct 2023 11:36:05 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 00/10] Add multiport support for DWC3 controllers
-To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        Johan Hovold <johan@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
-        quic_jackp@quicinc.com, ahalaney@redhat.com,
-        quic_shazhuss@quicinc.com
-References: <20231007154806.605-1-quic_kriskura@quicinc.com>
- <537d59b3-0e40-4d4d-80ab-b99028af6ec2@linaro.org>
- <2c325941-0fcc-4092-9581-dd6ebb067163@quicinc.com>
+Subject: Re: [PATCH v6 2/8] hugetlb: restructure pool allocations
 Content-Language: en-US
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Barry Song <21cnbao@gmail.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        linux-kernel@vger.kernel.org, Usama Arif <usama.arif@bytedance.com>
+References: <ba5a528d-7e85-77a2-5096-5a143a3b1606@linaro.org>
+ <20231006030836.GC86415@monkey>
+ <5d14b681-a2c9-4210-a0c1-bf38708b7998@linaro.org>
+ <20231006223512.GC3861@monkey> <20231009032926.GA3376@monkey>
+ <070bd916-d4d6-41c2-9f51-af35e80c96b9@linaro.org>
+ <20231009150401.GA3846@monkey> <20231009151513.GB3846@monkey>
+ <20231009170710.b52f5a6e57c23d5caecce8ab@linux-foundation.org>
+ <6f381d4c-d908-4f00-89b3-ed3bcb26b143@linaro.org>
+ <20231010214533.GC279095@monkey>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <2c325941-0fcc-4092-9581-dd6ebb067163@quicinc.com>
+In-Reply-To: <20231010214533.GC279095@monkey>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
@@ -92,52 +96,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 10/11/23 07:11, Krishna Kurapati PSSNV wrote:
-> 
-> 
-> On 10/11/2023 2:21 AM, Konrad Dybcio wrote:
+On 10/10/23 23:45, Mike Kravetz wrote:
+> On 10/10/23 23:30, Konrad Dybcio wrote:
 >>
 >>
->> On 10/7/23 17:47, Krishna Kurapati wrote:
->>> Currently the DWC3 driver supports only single port controller which
->>> requires at most two PHYs ie HS and SS PHYs. There are SoCs that has
->>> DWC3 controller with multiple ports that can operate in host mode.
->>> Some of the port supports both SS+HS and other port supports only HS
->>> mode.
+>> On 10/10/23 02:07, Andrew Morton wrote:
+>>> On Mon, 9 Oct 2023 08:15:13 -0700 Mike Kravetz <mike.kravetz@oracle.com> wrote:
 >>>
->>> This change primarily refactors the Phy logic in core driver to allow
->>> multiport support with Generic Phy's.
+>>>>> This should also be empty and a noop.
+>>>>>
+>>>>> Is it possible that the misaligned kernel image could make these lists
+>>>>> appear as non-empty?
+>>>>
+>>>> Actually, just saw this:
+>>>>
+>>>> https://lore.kernel.org/linux-mm/20231009145605.2150897-1-usama.arif@bytedance.com/
+>>>>
+>>>> Will take a look, although as mentioned above prep_and_add_bootmem_folios on
+>>>> an empty list should be a noop.
 >>>
->>> Changes have been tested on  QCOM SoC SA8295P which has 4 ports (2
->>> are HS+SS capable and 2 are HS only capable).
->>>
->>> Changes in v13:
->>> This series is a subset of patches in v11 as the first 3 patches in v11
->>> have been mereged into usb-next.
->>> Moved dr_mode property from platform specific files to common 
->>> sc8280xp DT.
->>> Fixed function call wrapping, added comments and replaced #defines with
->>> enum in dwc3-qcom for identifying IRQ index appropriately.
->>> Fixed nitpicks pointed out in v11 for suspend-resume handling.
->>> Added reported-by tag for phy refactoring patch as a compile error was
->>> found by kernel test bot [1].
->> "If you fix the issue in a separate patch/commit (i.e. not just a new 
->> version of
->> the same patch/commit), kindly add following tags"
+>>> Konrad, are you able to test Usama's patch?  Thanks.
+>> I legitimately spent a sad amount of time trying to regain access to the
+>> remote board farm. Previously I could hit the bug on SM8550, but now I can't
+>> do it on SM8450, SM8350 and SM8250 (previous gens), with the same config.. I
+>> have no idea when I'll be able to get access to SM8550 again.
 >>
->> the issue your patch resolves is not one that was reported by the 
->> kernel testing robot, it just pointed out that you need to fix up the 
->> next revision
->>
+>> I did test it on the QCM6490 Fairphone 5 that I initially reported this on,
+>> and neither booting next-20231010 (with your patchset applied) nor adding
+>> the below patch on top of it seems to work. I can't get serial output from
+>> this device though to find out what it's unhappy about :/
 > 
-> I Agree. It sounds wrong to add a reproted-by tag making it seem like a 
-> bug instead of a feature we have written. But if we fix the compile 
-> error mentioned and not add the "reported-by", its like not giving 
-> credit for the reporter. So I put in the reproted by and closes tag to 
-> give a view of what was reported and the feature implemented.
-This is a normal thing in review, people spot mistakes, null ptrs, etc..
+> Sorry for causing you to spend so much time on this.
+No worries, that was my explanation for why it took me so long to 
+respond again..
 
-If I had a reported-by for each review where I pointed out e.g. device 
-tree changes that don't compile i'd be topping lwn charts
+> 
+> As mentioned in the reply to Usama's patch, the root cause seems to be
+> the locking.  So, the real change to test is the locking changes in
+> that thread; not Usama's patch.
+Ack
 
 Konrad
