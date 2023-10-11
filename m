@@ -2,107 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63F177C5054
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 034037C505C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346017AbjJKKiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 06:38:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49698 "EHLO
+        id S1346312AbjJKKjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:39:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbjJKKiO (ORCPT
+        with ESMTP id S234808AbjJKKi7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:38:14 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F63D9D;
-        Wed, 11 Oct 2023 03:38:12 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-5033918c09eso8453470e87.2;
-        Wed, 11 Oct 2023 03:38:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697020691; x=1697625491; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=UAByv1I+aHmJjcNZyAEBlsSCq7nVeKJefcDEUNHdSLc=;
-        b=A9aIBuAo+9QIIoLVIDNX14w/4CrsJsyB7Ttqs93+okej7qillpbLv9LB6OkubmsQIV
-         eBzwMGGHrxGKkNBHjwKBxzq/ODEzeEZ5SNGz6xXbVVIe8kc/WA0h2efjpSBidRU2zevJ
-         4OBCp1DZUue+4AYpIgLvMy2VRGne5Y5WGg/w3Cu7beZHweCfNFX91HUt6dSVDw4wNwyg
-         78zoVRrIwV9jB2LFJlzSu3DXyXeEfpqzU5g9KuKfQPnlE2ffHJqj33D4PHxZPrIFPkGW
-         GzoB1wUsl2n3/ga8m4mQcmvW+BEleMiPMRCTdirtKAF0Ji4py3j+3B8985ohqEFnC1lw
-         B6Fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697020691; x=1697625491;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UAByv1I+aHmJjcNZyAEBlsSCq7nVeKJefcDEUNHdSLc=;
-        b=CFmMI/uqYaRWoZQbh2GdoBu1hNHoHHWKAZg99wYh2rxnHaYSdQnn5aynQZHQe4VGfS
-         qA+VZNr8NFrlgC/aLHvCS12aXPzacG62+8765Yvc0eQAHlAEw+5nrGUuFGf5FVQAbRZA
-         pfzgJX9VJqr6wZ7Uj0BhROrgJ6f2LCgbzloigA1ODDkSSVTZ8qBZ85bs0+j6yRNIMuib
-         t6XXPGcpZy1fyUwYM4+pTiN8nJLaoRnIKBhu4h6wz0cfSejbIk1mcf5ogQpezq7yIMoR
-         hUxtmSLy96BHa7KGq1w8gkZCI8x0Y0mBqD+BO9gHkkHHqqcN+70mqZ9Kd2ZpfCN6WVqA
-         /i3g==
-X-Gm-Message-State: AOJu0YwHGhtGiRROqzsp8iwFbdLUXbkIpDODOsjUxJVbdE3YPYGtDI2t
-        204+z33NUPOiI0qORaQGEkLnPfTl2X0=
-X-Google-Smtp-Source: AGHT+IFZoTNkJ4yMietqGDtPBFUow7+4wWShdxOyhrcSDYk8LXP/KOiYZnq8qMROV50mz4LnyFjfBQ==
-X-Received: by 2002:ac2:5bc7:0:b0:505:6ef8:2544 with SMTP id u7-20020ac25bc7000000b005056ef82544mr16584492lfn.63.1697020690422;
-        Wed, 11 Oct 2023 03:38:10 -0700 (PDT)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id v2-20020ac25582000000b004fe1f1c0ee4sm2212496lfg.82.2023.10.11.03.38.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 03:38:09 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 13:38:07 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     =?utf-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-Cc:     Manivannan Sadhasivam <mani@kernel.org>,
-        Cai Huoqing <cai.huoqing@linux.dev>,
-        Vinod Koul <vkoul@kernel.org>,
-        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Herve Codina <herve.codina@bootlin.com>
-Subject: Re: [PATCH v2 2/5] dmaengine: dw-edma: Typos fixes
-Message-ID: <pa7nvziczcnj56oozkgy244avbeirkseviimwmaxxlm5ozrjuo@plvebecoc4ev>
-References: <20231002131749.2977952-1-kory.maincent@bootlin.com>
- <20231002131749.2977952-3-kory.maincent@bootlin.com>
- <20231010145906.GL4884@thinkpad>
- <20231011092350.18049672@kmaincent-XPS-13-7390>
+        Wed, 11 Oct 2023 06:38:59 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CD77394
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:38:57 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5035C1480;
+        Wed, 11 Oct 2023 03:39:38 -0700 (PDT)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.38.165])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C33993F762;
+        Wed, 11 Oct 2023 03:38:55 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 11:38:50 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Yicong Yang <yangyicong@huawei.com>
+Cc:     Marc Zyngier <maz@kernel.org>, yangyicong@hisilicon.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        daniel.lezcano@linaro.org, tglx@linutronix.de,
+        jonathan.cameron@huawei.com, prime.zeng@huawei.com,
+        wanghuiqiang@huawei.com, wangwudi@hisilicon.com,
+        guohanjun@huawei.com, linuxarm@huawei.com
+Subject: Re: [RFC PATCH 0/3] Add HiSilicon system timer driver
+Message-ID: <ZSZ7OiySl1wcG3CD@FVFF77S0Q05N.cambridge.arm.com>
+References: <20231010123033.23258-1-yangyicong@huawei.com>
+ <874jiymo2l.wl-maz@kernel.org>
+ <a170493f-cd9f-a0d9-432a-2ae07d18d429@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231011092350.18049672@kmaincent-XPS-13-7390>
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+In-Reply-To: <a170493f-cd9f-a0d9-432a-2ae07d18d429@huawei.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 09:23:50AM +0200, Köry Maincent wrote:
-> On Tue, 10 Oct 2023 20:29:06 +0530
-> Manivannan Sadhasivam <mani@kernel.org> wrote:
-> 
-> > On Mon, Oct 02, 2023 at 03:17:46PM +0200, Köry Maincent wrote:
-> > > From: Kory Maincent <kory.maincent@bootlin.com>
-> > > 
-> > > Fix "HDMA_V0_REMOTEL_STOP_INT_EN" typo error.
-> > > Fix "HDMA_V0_LOCAL_STOP_INT_EN" to "HDMA_V0_LOCAL_ABORT_INT_EN" as the STOP
-> > > bit is already set in the same line.
-> > >   
+On Wed, Oct 11, 2023 at 10:10:11AM +0800, Yicong Yang wrote:
+> On 2023/10/11 0:36, Marc Zyngier wrote:
+> > On Tue, 10 Oct 2023 13:30:30 +0100,
+> > Yicong Yang <yangyicong@huawei.com> wrote:
+> >>
+> >> From: Yicong Yang <yangyicong@hisilicon.com>
+> >>
+> >> HiSilicon system timer is a memory mapped platform timer compatible with
+> >> the arm's generic timer specification. The timer supports both SPI and
+> >> LPI interrupt and can be enumerated through ACPI DSDT table. Since the
+> >> timer is fully compatible with the spec, it can reuse most codes of the
+> >> arm_arch_timer driver. However since the arm_arch_timer driver only
+> >> supports GTDT and SPI interrupt, this series support the HiSilicon system
+> >> timer by:
+> >>
+> >> - refactor some of the arm_arch_timer codes and export the function to
+> >>   register a arch memory timer by other drivers
+> >> - retrieve the IO memory and interrupt resource through DSDT in a separate
+> >>   driver, then setup and register the clockevent device reuse the arm_arch_timer
+> >>   function
+> >>
+> >> Using LPI for the timer is mentioned in BSA Spec section 3.8.1 (DEN0094C 1.0C).
 > > 
-> > You should split this into two patches. First one is a typo and is harmless,
-> > but the second is a _bug_.
+> > This strikes me as pretty odd. LPIs are, by definition, *edge*
+> > triggered. The timer interrupt must be *level* triggered. So there
+> > must be some bridge in the middle that is going to regenerate edges on
+> > EOI, and that cannot be architectural.
+> > 
+> > What am I missing?
 > 
-> Thanks for your review.
-> Ok I will do so.
-> Serge if it is ok for you I will keep your reviewed by on the two separate
-> patches.
+> In our case, if the timer is working on LPI mode, it's not directly connected
+> to the GIC. It'll be wired to hisi-mbigen irqchip which will send LPIs to the
+> GIC.
 
-Yeah, it's ok.
+In that case, the timerr itself isn't using an LPI: it's wired to a secondary
+interrupt controller, and the secondary interrupt controller is using an LPI.
 
--Serge(y)
+The BSA doesn't describe that as a permitted configuration.
 
+I think there are two problems here:
+
+(1) The BSA spec is wrong, and shouldn't say "or LPI" here as it simply doesn't
+    make sense.
+
+    I think this should be fixed by removing the "or LPI" wording form the BSA
+    spec for this interrupt.
+
+(2) This platform is not compatible with the BSA, and is not compatible with
+    the existing ACPI bindings in the GTDT.
+
+Do you actually need this wakeup timer?
+
+Thanks,
+Mark.
