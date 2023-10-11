@@ -2,157 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D9547C48B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 06:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5A27C48B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 06:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345074AbjJKEJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 00:09:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53310 "EHLO
+        id S1345066AbjJKEPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 00:15:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344687AbjJKEJC (ORCPT
+        with ESMTP id S229457AbjJKEPG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 00:09:02 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE0758F;
-        Tue, 10 Oct 2023 21:09:00 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-690f7bf73ddso4519752b3a.2;
-        Tue, 10 Oct 2023 21:09:00 -0700 (PDT)
+        Wed, 11 Oct 2023 00:15:06 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B8648F
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 21:14:42 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c60f1a2652so4647875ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 21:14:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696997340; x=1697602140; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=bytedance.com; s=google; t=1696997682; x=1697602482; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=NjFRhw+abGKuFAc754QE3Q4VfIDjdSB/EOwCq4IqhFY=;
-        b=aQEtGHq7WZQO6u8Xfa2PGTz0HfCS80kbzgprsxahm7v5Yc4M2yAMbvo2wWDAsWfAXj
-         zCAb6H01AAmGilqNcPue7V9ri7LQUOeqOGSzX5gBBnYScKhdHBnolIu86H+cbdyRECaT
-         E01il/eSzWT5iQbiuoYG/xn9f3WHNZoLoe9M1EbmHivkWN2QGwYskgdIOA4Sp0073q/3
-         BhCk/AEOGKruiBMzOuRr75W76BmsxO+fznOKNJsYuseHa3pvMd9z2/EwVpAGn0tTmRiN
-         V8cHcfd9OJwY+82G78GlUWfl0HsgKTKCFOv0JuxikOupfmvwWxUGwozFbv4/RdOvXSuq
-         hRrA==
+        bh=qH85XMv6q1Jdw5z1vx7UoLkEaTnNA8rFTTyIGAI3NFM=;
+        b=D3KtOkMDfpmuBYmwZrpVK2a10mLlWxA1Q0Po8hDNoMhZCGIXVYNOV+wbdYYTLfll97
+         igmJPufoDlKvsDS84+R8Rp4HCXJiHUPkHutUEQWTSh9Je/932VON4U2hRsG3xFQFGqB5
+         rWzUR94KrQ6B19atohiEcvCduNVZWZak3nz9Ur4sk3ryOHDbLOlXUXsSWJd6C55DpU75
+         otK38jLKv4Qm8lexapgbWqOeco+zGd4qLRg38ViMHsb8JXfcOax8kpm6llF6k9Jk7ec6
+         q4WOsY7b68HEFwKqLTEKnPJzJEo4d+KF630qsFEEstDMq6X0VQdR6EQ+C+b9NOt2ETrY
+         wqGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696997340; x=1697602140;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1696997682; x=1697602482;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NjFRhw+abGKuFAc754QE3Q4VfIDjdSB/EOwCq4IqhFY=;
-        b=ZsFLBama25SM2L7pYAS+4BaPhn/+nqLGh+/3voDhrYjT8raJwpPugANUqrQXgP02TR
-         hRtmQcfcV7KIYb318MzZl0i48eTiYSkA3oar+UCBLudAKmdc0uysdo/u+nBaNEP3fHLM
-         0K+6SgzsZyqaalDq/MZEkk1ttVynBrOsTDBBkETR9BLk2Je5Oc23b48TR13UOQYFho3S
-         suRciFs2ftgSt3BREBizT5rFYPNRSjYoF7Zd27f1TZrsctRvd/qYJ/fk5N2gih6VQgB5
-         TVHFQlxRa8l+Qm6JXb7S6gcSmreP0WIXlLnkJpG4u1YWKismKGLCxPUgdOQiI/HkPP6s
-         d4bQ==
-X-Gm-Message-State: AOJu0YzQTb8ZeTbQKvebYg5J8dHd7aHOaSG/LFjAuobhe13cT8G4TBdq
-        4u2OoJZtdHuFA9LVOLOLVGY=
-X-Google-Smtp-Source: AGHT+IHSRiqovUqs4Zo0c3Rkc7iyCVGCDIPdxs/ixQ+/FALwyLkVdFXLDpav9MpkEwnq+h+1k50WXA==
-X-Received: by 2002:a05:6a20:4323:b0:16b:c734:4515 with SMTP id h35-20020a056a20432300b0016bc7344515mr12046114pzk.14.1696997340092;
-        Tue, 10 Oct 2023 21:09:00 -0700 (PDT)
-Received: from [172.22.12.30] (118-163-147-182.hinet-ip.hinet.net. [118.163.147.182])
-        by smtp.gmail.com with ESMTPSA id d3-20020a170902c18300b001a5fccab02dsm12716433pld.177.2023.10.10.21.08.58
+        bh=qH85XMv6q1Jdw5z1vx7UoLkEaTnNA8rFTTyIGAI3NFM=;
+        b=uX8ZHXnIdBRYidSvdlJhXgddaWKBxRMsuHfzUXPEiJqKb9GP/cKjRVavD0eNXukezN
+         NYVVchNVFKFwdVYmgapoNmoL1Zisg0Dw3IrIiDWNFh6sPS+do7qCrUUUfu3dgX/p6MKc
+         da9OMfYmaVqLIvRwdVKZmAXaG78vY4pt0nWRksyQhlfUxrxFZyOd4MtDJEa7UySwmMnV
+         lxTPRmdqsd8LzVJ87jsKZPCBCeiZsyAz8sij55dZVQaejxla5IOmhmOgTdZq5dtsR5aO
+         02LwB1QLYbCGPHB69O5D4es2h2FVCFVlBN1OGPIrgaGp2GZ0ZLQDUHeNnku2oinQuOHo
+         YnHQ==
+X-Gm-Message-State: AOJu0Yyia05mDFXaVyuKoriutTiRZE/Xj7arbl/NY7+OG/WP8BKlRzb3
+        yhHS2MAitmAY7rg1jHKlPydGkeTlUsBK5uC31kE=
+X-Google-Smtp-Source: AGHT+IGyFavFi3q1xMOoJt0wiu6N1iEH0XseNxsIRIfatYatZe4DedXqQV0ld8qFgRKXVyRCdIH1Mg==
+X-Received: by 2002:a17:902:ecc4:b0:1c5:c546:fece with SMTP id a4-20020a170902ecc400b001c5c546fecemr25441555plh.34.1696997681844;
+        Tue, 10 Oct 2023 21:14:41 -0700 (PDT)
+Received: from [10.84.153.115] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id iz18-20020a170902ef9200b001b8622c1ad2sm12688695plb.130.2023.10.10.21.14.33
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Oct 2023 21:08:59 -0700 (PDT)
-Message-ID: <88ffe7b3-fa62-e879-b9d6-6e229cfdab7d@gmail.com>
-Date:   Wed, 11 Oct 2023 12:08:57 +0800
+        Tue, 10 Oct 2023 21:14:41 -0700 (PDT)
+Message-ID: <a54a4ccb-9d56-4686-93b6-e9bbbe01f625@bytedance.com>
+Date:   Wed, 11 Oct 2023 12:14:30 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 0/5] watchdog: eiois200_wdt: Add EIO-IS200 Watchdog Driver
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     wenkai.chung@advantech.com.tw, Susi.Driver@advantech.com,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
-References: <cover.1696495372.git.advantech.susiteam@gmail.com>
- <d7df3c7b-730a-4d09-8f15-3cc8591c8092@roeck-us.net>
- <b08d6cf6-cd48-86d7-a959-290fc4de092c@gmail.com>
- <ce810ce8-f93c-4a9c-9d14-1e8f8f8c3e2b@roeck-us.net>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Re: [PATCH 05/15] sched/fair: Implement an EEVDF like policy
 Content-Language: en-US
-From:   Wenkai <advantech.susiteam@gmail.com>
-In-Reply-To: <ce810ce8-f93c-4a9c-9d14-1e8f8f8c3e2b@roeck-us.net>
+To:     Benjamin Segall <bsegall@google.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@kernel.org, vincent.guittot@linaro.org,
+        linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de,
+        bristot@redhat.com, corbet@lwn.net, qyousef@layalina.io,
+        chris.hyser@oracle.com, patrick.bellasi@matbug.net, pjt@google.com,
+        pavel@ucw.cz, qperret@google.com, tim.c.chen@linux.intel.com,
+        joshdon@google.com, timj@gnu.org, kprateek.nayak@amd.com,
+        yu.c.chen@intel.com, youssefesmat@chromium.org,
+        joel@joelfernandes.org, efault@gmx.de, tglx@linutronix.de
+References: <20230531115839.089944915@infradead.org>
+ <20230531124603.931005524@infradead.org> <xm265y3sodyo.fsf@google.com>
+From:   Abel Wu <wuyun.abel@bytedance.com>
+In-Reply-To: <xm265y3sodyo.fsf@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+在 9/30/23 5:40 AM, Benjamin Segall Wrote:
+> Peter Zijlstra <peterz@infradead.org> writes:
+> 
+>> +
+>> +/*
+>> + * Earliest Eligible Virtual Deadline First
+>> + *
+>> + * In order to provide latency guarantees for different request sizes
+>> + * EEVDF selects the best runnable task from two criteria:
+>> + *
+>> + *  1) the task must be eligible (must be owed service)
+>> + *
+>> + *  2) from those tasks that meet 1), we select the one
+>> + *     with the earliest virtual deadline.
+>> + *
+>> + * We can do this in O(log n) time due to an augmented RB-tree. The
+>> + * tree keeps the entries sorted on service, but also functions as a
+>> + * heap based on the deadline by keeping:
+>> + *
+>> + *  se->min_deadline = min(se->deadline, se->{left,right}->min_deadline)
+>> + *
+>> + * Which allows an EDF like search on (sub)trees.
+>> + */
+>> +static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
+>> +{
+>> +	struct rb_node *node = cfs_rq->tasks_timeline.rb_root.rb_node;
+>> +	struct sched_entity *curr = cfs_rq->curr;
+>> +	struct sched_entity *best = NULL;
+>> +
+>> +	if (curr && (!curr->on_rq || !entity_eligible(cfs_rq, curr)))
+>> +		curr = NULL;
+>> +
+>> +	while (node) {
+>> +		struct sched_entity *se = __node_2_se(node);
+>> +
+>> +		/*
+>> +		 * If this entity is not eligible, try the left subtree.
+>> +		 */
+>> +		if (!entity_eligible(cfs_rq, se)) {
+>> +			node = node->rb_left;
+>> +			continue;
+>> +		}
+>> +
+>> +		/*
+>> +		 * If this entity has an earlier deadline than the previous
+>> +		 * best, take this one. If it also has the earliest deadline
+>> +		 * of its subtree, we're done.
+>> +		 */
+>> +		if (!best || deadline_gt(deadline, best, se)) {
+>> +			best = se;
+>> +			if (best->deadline == best->min_deadline)
+>> +				break;
+>> +		}
+>> +
+>> +		/*
+>> +		 * If the earlest deadline in this subtree is in the fully
+>> +		 * eligible left half of our space, go there.
+>> +		 */
+>> +		if (node->rb_left &&
+>> +		    __node_2_se(node->rb_left)->min_deadline == se->min_deadline) {
+>> +			node = node->rb_left;
+>> +			continue;
+>> +		}
+>> +
+>> +		node = node->rb_right;
+>> +	}
+> 
+> I believe that this can fail to actually find the earliest eligible
+> deadline, because the earliest deadline (min_deadline) can be in the
+> right branch, but that se isn't eligible, and the actual target se is in
+> the left branch. A trivial 3-se example with the nodes represented by
+> (vruntime, deadline, min_deadline):
+> 
+>     (5,9,7)
+>   /        \
+> (4,8,8)  (6,7,7)
+> 
+> AIUI, here the EEVDF pick should be (4,8,8), but pick_eevdf() will
+> instead pick (5,9,7), because it goes into the right branch and then
+> fails eligibility.
+> 
+> I'm not sure how much of a problem this is in practice, either in
+> frequency or severity, but it probably should be mentioned if it's
+> an intentional tradeoff.
 
+Assume entity i satisfies (d_i == min_deadline) && (v_i > V), there
+must be an eligible entity j with (d_j >= d_i) && (v_j < V). Given
+that how deadline is calculated, it can be inferred that:
 
-Guenter Roeck 於 10/6/2023 10:16 PM 寫道:
-> On Fri, Oct 06, 2023 at 05:27:48PM +0800, Wenkai wrote:
->>
->> Guenter Roeck 於 10/6/2023 11:02 AM 寫道:
->>> On Thu, Oct 05, 2023 at 04:51:18PM +0800, advantech.susiteam@gmail.com wrote:
->>>> From: Wenkai <advantech.susiteam@gmail.com>
->>>>
->>>> This patch series aims to add support for the Advantech EIO-IS200
->>>> Embedded Controller's watchdog timer to the Linux kernel. The EIO-IS200
->>>> is a widely used embedded controller, and this series introduces a
->>>> native driver for its watchdog timer functionality within the Linux
->>>> ecosystem.
->>>>
->>> I am not going to review this patch series. This is just ne watchdog driver.
->>> One patch is sufficient.
->>>
->>> Guenter
->> Hi Guenter,
->>
->> Advantech's EIO-IS200 watchdog supports 5 output pins: RESET, Power
->> Button, SCI, IRQ, and GPIO. The most traditional scenario is that the
->> Pretimeout triggers IRQ, and the timeout triggers RESET.
->>
->> However, unfortunately, for industrial usages, there are various use
->> cases, which require certain mechanisms and logic to manage which signal
->> is output when Pretimeout and timeout expire. I am concerned that
->> consolidating all these features into a single patch for upstream may
->> lead to confusion and make the source code less readable and
->> understandable.
->>
-> The 1st patch in your series doesn't even compile. I don't call that
-> understandable.
->
-> Oh, it fails to compile because you include a non-existing file from
-> ../mfd directly and because you select a non-existing configuration option
-> instead of depending on it.
->
-> None of those is even remotely acceptable. Are you seriously sending me
-> a series of patches that don't even build to review ?
+	vslice_i < vslice_j
 
-I understand that the patches don't meet the expected quality standards.
-The compile issue is due to my MFD core driver, which is currently under
-review and has not been merged yet.
+IOW a more batch-like entity with looser deadline will beat entities
+that is more interactive-like even with tighter deadline, only because
+the former is eligible while the latter isn't.
 
-I would also like to seek your advice on how to best proceed with the
-sub-drivers like the watchdog driver. Should I wait for my core MFD
-driver to be successfully merged before submitting the sub-drivers, or
-let Jones Lee review my core MFD driver and all its sub-drivers, or is
-there another approach that you recommend?
->> Therefore, I have divided the implementation into 5 separate patches,
->> aiming to make the code more comprehensible and acceptable. If it's
->> acceptable to you, I am more than willing to provide a single patch as
->> per your preference.
->>
-> Frankly, your series is one more nail in the coffin. I am now seriously
-> considering to resign as co-maintainer of the watchdog subsystem.
->
-> Guenter
+With Benjamin's fix, the semantics of 'Earliest Eligible' preserved.
+But since all this is about latency rather than fairness, I wonder if
+there are cases worthy of breaking the 'eligible' rule.
 
-I also appreciate your patience, dedication, and valuable contributions
-to the Linux community. Your longstanding efforts and expertise are
-commendable and have been instrumental in advancing the Linux ecosystem.
-I understand that upstream review can be a meticulous and vital, albeit
-thankless, task. I don't want my actions to cause any inconvenience or
-distress, especially to someone as esteemed as you are in the Linux
-community. Your insights and guidance are incredibly valuable to all of
-us.
+Thanks & Best,
+	Abel
 
-Once again, thank you for your understanding, and I am committed to
-delivering high-quality code for your review.
-
-Best regards,
-Wenkai
-
-
+> 
+> 
+> 
+> Thinking out loud, I think that it would be sufficient to recheck via something like
+> 
+> for_each_sched_entity(best) {
+> 	check __node_2_se(best->rb_left)->min_deadline, store in actual_best
+> }
+> 
+> for the best min_deadline, and then go do a heap lookup in actual_best
+> to find the se matching that min_deadline.
+> 
+> I think this pass could then be combined with our initial descent for
+> better cache behavior by keeping track of the best rb_left->min_deadline
+> each time we take a right branch. We still have to look at up to ~2x the
+> nodes, but I don't think that's avoidable? I'll expand my quick hack I
+> used to test my simple case into a something of a stress tester and try
+> some implementations.
