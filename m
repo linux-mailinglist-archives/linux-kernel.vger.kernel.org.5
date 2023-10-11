@@ -2,127 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A717C524C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ABC27C5250
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231889AbjJKLlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:41:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50942 "EHLO
+        id S231969AbjJKLm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:42:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231601AbjJKLlB (ORCPT
+        with ESMTP id S231235AbjJKLm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:41:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B118F;
-        Wed, 11 Oct 2023 04:40:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697024459; x=1728560459;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=xolNbnSR41bT5Gxm2xO/m9osxdxJ0UMd2pRcScUs0VU=;
-  b=GlKDfUVXL9c0ENzeDHwrd2e4M/43uzmZGXa60BXYZCM3sApO6vNGMrRJ
-   Kw6VzUnTI0buVhQmjb4Z5Vwee8EWELFWVdZEz0n9tG6l1RqFsDMmOG3L4
-   EbLA4S7mPJtKGiV7NWAoou5/Nu+rdh3gtiGFx2TA5BcAkwB/QUb35Mc4J
-   Cqh3Ek2lx6AqbGSbRB7gb6oM+7ZeR1oTs0jwm+hCsnK2uzeWlZor/OmBt
-   UCJazW9TQAaks/WmbB5Bvtr9eXEA8Il+IhRFQYVqcDjPCSv6yBdHPpBad
-   x/W6pHyerf+GtiPWy9m08p8gP0WvcTBIp1L+xzGv0/MpN9yM195n5Eqoj
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="448838245"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
-   d="scan'208";a="448838245"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 04:40:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="730467408"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
-   d="scan'208";a="730467408"
-Received: from opipikin-mobl2.ger.corp.intel.com (HELO sdodaev-mobl.ger.corp.intel.com) ([10.252.57.154])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 04:40:50 -0700
-Date:   Wed, 11 Oct 2023 14:40:48 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-cc:     linux-pci@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH 10/10] PCI/portdrv: Use FIELD_GET()
-In-Reply-To: <20231010204436.1000644-11-helgaas@kernel.org>
-Message-ID: <e4c240f1-2f8f-6617-ea5b-4d74f2185eb9@linux.intel.com>
-References: <20231010204436.1000644-1-helgaas@kernel.org> <20231010204436.1000644-11-helgaas@kernel.org>
+        Wed, 11 Oct 2023 07:42:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E5DB93
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:41:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697024502;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=8NURkiBAbS6tTinRtwOYWNtz0h6Ztp9Eip3YWpE10Qw=;
+        b=hOhsWj2UJGXAa8xc/AbVDHgtCTo+ai5J1hPgnth5hNOvaWRs576Z2/wZ6gIIiPr8/GJaGD
+        UAWOcF+lMa2tfFu//51CTc5ZAProKv2Cb1HMGLsN+udxmgvQSGAjesFRTZTohZenp1uWEx
+        L9+cehk0BZpS1OdbIfAcd/kWfjh8vus=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-344-cu3LQ3BIMxasUrJMpzF7gw-1; Wed, 11 Oct 2023 07:41:41 -0400
+X-MC-Unique: cu3LQ3BIMxasUrJMpzF7gw-1
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-41b19426eedso9803361cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:41:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697024500; x=1697629300;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8NURkiBAbS6tTinRtwOYWNtz0h6Ztp9Eip3YWpE10Qw=;
+        b=rvX9iU8VBsT3UPu5KmVEQncK+gm8Zvu4TCXGReDrqgfNscv3bi/aOWSsy9Cg5jZqDU
+         eboeirOMl4TmWAc4ZsCtxLIufOr3WMiszNi87ufQ2Mubs2VCU6N3/WrKBTQcAOvQNdFT
+         /vYf0w4L+r4QI5+sPU5sRm4D9Pn5UgHN4kG7X9ZSqazD5pGnxQYJ/ekBvmxv28iNpD1y
+         yUmTd303+eBsxMK3DuaEj2hgBJtN+0m5aP5mxI02FkEzck2Gw+ygUvxNOPMS+eONwfaR
+         slzPYzXcYu30wHGadVY4zyoV3a/CNYCG0GcVi0mwqWlGdZObMuiuPJpQ5VNwl4lwot3j
+         DqFg==
+X-Gm-Message-State: AOJu0YxPVo6Yup7p3C+s2DQCPhKHMRKviBNlbeRMuw+z7uuiClneXPXe
+        K6wOdLVpBvSYcGfH9b58oK4H2YpljwVB8k1xU3aVpgyMvePUuTamvvlL4VW1nZPJBVaQjdHqcTd
+        ABfLZgtoww7dXLg8IT74C3apOuIHRVowMpVaJBk/ghO27SJecr66LG0LPp+ta2jcWXoPgIF0pKm
+        RxonwGB4k=
+X-Received: by 2002:a05:6214:c6a:b0:65a:fd40:b79 with SMTP id t10-20020a0562140c6a00b0065afd400b79mr23067475qvj.5.1697024500136;
+        Wed, 11 Oct 2023 04:41:40 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH/PJFqEzyZ8u0zaKxnpGRj7gcP1T2JeVyTubg38E45fbagYfNnX/UGlmnBkSjQ63uUN62XNg==
+X-Received: by 2002:a05:6214:c6a:b0:65a:fd40:b79 with SMTP id t10-20020a0562140c6a00b0065afd400b79mr23067452qvj.5.1697024499781;
+        Wed, 11 Oct 2023 04:41:39 -0700 (PDT)
+Received: from kherbst.pingu.com ([178.24.169.250])
+        by smtp.gmail.com with ESMTPSA id d1-20020a05620a136100b00774309d3e89sm5153179qkl.7.2023.10.11.04.41.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 04:41:38 -0700 (PDT)
+From:   Karol Herbst <kherbst@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, Karol Herbst <kherbst@redhat.com>,
+        stable@vger.kernel.org
+Subject: [PATCH] drm/nouveau/disp: fix DP capable DSM connectors
+Date:   Wed, 11 Oct 2023 13:41:34 +0200
+Message-ID: <20231011114134.861818-1-kherbst@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-616638726-1697024453=:1977"
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Just special case DP DSM connectors until we properly figure out how to
+deal with this.
 
---8323329-616638726-1697024453=:1977
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
+This resolves user regressions on GPUs with such connectors without
+reverting the original fix.
 
-On Tue, 10 Oct 2023, Bjorn Helgaas wrote:
+Cc: Lyude Paul <lyude@redhat.com>
+Cc: stable@vger.kernel.org # 6.4+
+Closes: https://gitlab.freedesktop.org/drm/nouveau/-/issues/255
+Fixes: 2b5d1c29f6c4 ("drm/nouveau/disp: PIOR DP uses GPIO for HPD, not PMGR AUX interrupts")
+Signed-off-by: Karol Herbst <kherbst@redhat.com>
+---
+ drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-> From: Bjorn Helgaas <bhelgaas@google.com>
-> 
-> Use FIELD_GET() to remove dependences on the field position, i.e., the
-> shift value.  No functional change intended.
-> 
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> ---
->  drivers/pci/pcie/portdrv.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/pci/pcie/portdrv.c b/drivers/pci/pcie/portdrv.c
-> index 46fad0d813b2..14a4b89a3b83 100644
-> --- a/drivers/pci/pcie/portdrv.c
-> +++ b/drivers/pci/pcie/portdrv.c
-> @@ -6,6 +6,7 @@
->   * Copyright (C) Tom Long Nguyen (tom.l.nguyen@intel.com)
->   */
->  
-> +#include <linux/bitfield.h>
->  #include <linux/dmi.h>
->  #include <linux/init.h>
->  #include <linux/module.h>
-> @@ -69,7 +70,7 @@ static int pcie_message_numbers(struct pci_dev *dev, int mask,
->  	if (mask & (PCIE_PORT_SERVICE_PME | PCIE_PORT_SERVICE_HP |
->  		    PCIE_PORT_SERVICE_BWNOTIF)) {
->  		pcie_capability_read_word(dev, PCI_EXP_FLAGS, &reg16);
-> -		*pme = (reg16 & PCI_EXP_FLAGS_IRQ) >> 9;
-> +		*pme = FIELD_GET(PCI_EXP_FLAGS_IRQ, reg16);
->  		nvec = *pme + 1;
->  	}
->  
-> @@ -81,7 +82,7 @@ static int pcie_message_numbers(struct pci_dev *dev, int mask,
->  		if (pos) {
->  			pci_read_config_dword(dev, pos + PCI_ERR_ROOT_STATUS,
->  					      &reg32);
-> -			*aer = (reg32 & PCI_ERR_ROOT_AER_IRQ) >> 27;
-> +			*aer = FIELD_GET(PCI_ERR_ROOT_AER_IRQ, reg32);
->  			nvec = max(nvec, *aer + 1);
->  		}
->  	}
-> @@ -92,7 +93,7 @@ static int pcie_message_numbers(struct pci_dev *dev, int mask,
->  		if (pos) {
->  			pci_read_config_word(dev, pos + PCI_EXP_DPC_CAP,
->  					     &reg16);
-> -			*dpc = reg16 & PCI_EXP_DPC_IRQ;
-> +			*dpc = FIELD_GET(PCI_EXP_DPC_IRQ, reg16);
->  			nvec = max(nvec, *dpc + 1);
-
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c b/drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c
+index 46b057fe1412e..3249e5c1c8930 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c
+@@ -62,6 +62,18 @@ nvkm_uconn_uevent_gpio(struct nvkm_object *object, u64 token, u32 bits)
+ 	return object->client->event(token, &args, sizeof(args.v0));
+ }
+ 
++static bool
++nvkm_connector_is_dp_dms(u8 type)
++{
++	switch (type) {
++	case DCB_CONNECTOR_DMS59_DP0:
++	case DCB_CONNECTOR_DMS59_DP1:
++		return true;
++	default:
++		return false;
++	}
++}
++
+ static int
+ nvkm_uconn_uevent(struct nvkm_object *object, void *argv, u32 argc, struct nvkm_uevent *uevent)
+ {
+@@ -101,7 +113,7 @@ nvkm_uconn_uevent(struct nvkm_object *object, void *argv, u32 argc, struct nvkm_
+ 	if (args->v0.types & NVIF_CONN_EVENT_V0_UNPLUG) bits |= NVKM_GPIO_LO;
+ 	if (args->v0.types & NVIF_CONN_EVENT_V0_IRQ) {
+ 		/* TODO: support DP IRQ on ANX9805 and remove this hack. */
+-		if (!outp->info.location)
++		if (!outp->info.location && !nvkm_connector_is_dp_dms(conn->info.type))
+ 			return -EINVAL;
+ 	}
+ 
 -- 
- i.
+2.41.0
 
---8323329-616638726-1697024453=:1977--
