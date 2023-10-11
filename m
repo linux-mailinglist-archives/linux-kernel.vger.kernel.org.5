@@ -2,150 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A247C56F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E3237C56F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232473AbjJKOgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 10:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56772 "EHLO
+        id S229492AbjJKOgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 10:36:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbjJKOgF (ORCPT
+        with ESMTP id S232544AbjJKOgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 10:36:05 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA6579D;
-        Wed, 11 Oct 2023 07:36:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697034963; x=1728570963;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=iMysvAu4HmtiroPGPpdiHPdQSFqPeu7h59Zw9qgde50=;
-  b=FqqUeYLoPVYlq3kHHSRA9rZIxGP5TcHBw58t61HD8izTUMgeycfi0wCE
-   waQXrOXCrzziXnpqGgtN7O06nGgpebgCSEA8bfkOdj9xiUuJ/ueCHMa3c
-   MEO8+OhPy+lnp2cFXyQDOaXvLn6VPzqDWvL5e8a7GhwrtitZm5t+4pR9x
-   +u0NyoS/REvbPUdi6jSmg9SdJQ3MCiSs5HQbEFnfZzcx6sbcJ1odAZYpu
-   xkXtw6hmykOY6ExA98e8PIHNrjuBAqRg2yfwQ+AUcooxHHU7Kx6XVrTuD
-   jZKc7VHAWwM/1pGFfe29jl4Ym4tKf0jFYsIH2m5pie6R3xdnqiyLKB6uH
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="383543388"
-X-IronPort-AV: E=Sophos;i="6.03,216,1694761200"; 
-   d="scan'208";a="383543388"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 07:36:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="757586628"
-X-IronPort-AV: E=Sophos;i="6.03,216,1694761200"; 
-   d="scan'208";a="757586628"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 11 Oct 2023 07:35:52 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qqaJQ-0002K3-21;
-        Wed, 11 Oct 2023 14:35:48 +0000
-Date:   Wed, 11 Oct 2023 22:35:23 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>
-Subject: Re: [PATCH net-next v1 2/3] net: dsa: microchip: ksz8: Enable MIIM
- PHY Control reg access
-Message-ID: <202310112224.iYgvjBUy-lkp@intel.com>
-References: <20231011123856.1443308-2-o.rempel@pengutronix.de>
+        Wed, 11 Oct 2023 10:36:13 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DF509D
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 07:36:11 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so15221a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 07:36:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697034969; x=1697639769; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fRia8k+03Oqwx1GX3n4lKL8Fmr4eu0Kd6W6Uh3EpGVs=;
+        b=3zmuKZfYaSsgs99y+wRCOImGmrggkE4MUUdz04jVhCtA2dF+Tgj0RMOhA8l2DBRYz6
+         VFSIdDo7QlXmOFGAMYacOoqx/8lF7zbGYPCO6uHaUUu43/MHFobDSkkyP0HDLKplWFIv
+         CkEimNKLwBURxJOgxNnULIt877XOS0At5Xns5sPtirxnGF3ElbdK+TZNoKkzPR4U1K5z
+         WnqPsYBXF2mJSFk8jlhIvVJlIyXyC9Bcf33u2C2t3FvlWHpd6juZ2AqmZvzBpKJ4dzDa
+         RhitowQrGZAmwDqYgTleb/xv3wvzvHz6vj/13n43OL85NHfLpQR1lISWLfQzLCyo7Uv8
+         DxqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697034970; x=1697639770;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fRia8k+03Oqwx1GX3n4lKL8Fmr4eu0Kd6W6Uh3EpGVs=;
+        b=CEn0kq19Y4RvKysB2lY9Aib/QAr2X00d/7AaogjCyHaz0xCXarvGlL9YcFz9M67aMM
+         5t7ClWAlFljxBG2RazZ1o1PhZlVKf6wu7NSeCIxEnahWrdC/4svSsFI8L75ieACw67rx
+         mQsc/UkdMBx6UGrJYEq+xNjlh2/n0cMMj5UO5HoTG8cDEYTNMjXqs8ObIj4q7ek7fWla
+         ogQ7Cxg4s2x9C1bFy495H9jRWqF7PUeI7Y7IpGGgz7dSoEjhevYnD3Yx/wYTmmsT60UX
+         Cftr83r7qOXDSKF48NnXNWamY3ZBPNec8eBp5lYzrGfB/Ah0R+fmn44vO8kcji0YEBpt
+         Lxdg==
+X-Gm-Message-State: AOJu0Yy69PtAHgIGFs7Q7tvEphiwxATv2MRwSOYz0GQ34V+tqGK8Wtdo
+        2VGZNEAABonjzpPaJLbpk+atVxsiuvpqxtcjoCMFUg==
+X-Google-Smtp-Source: AGHT+IGp0aCbVch3aWSyH7cHVNbtanzJle7cJ1cAmpcUd/wMeHz4+z/v7vHIwU0O/XV3e1Y9FOEIZ+CBjOydn+x9eiA=
+X-Received: by 2002:a50:8ad1:0:b0:538:5f9e:f0fc with SMTP id
+ k17-20020a508ad1000000b005385f9ef0fcmr158758edk.0.1697034969289; Wed, 11 Oct
+ 2023 07:36:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231011123856.1443308-2-o.rempel@pengutronix.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231010121402.3687948-1-yangcong5@huaqin.corp-partner.google.com>
+ <20231010121402.3687948-2-yangcong5@huaqin.corp-partner.google.com>
+ <CAD=FV=VsjB-gsqXyAs+G8DpHJqHNTxeFXwbpgt20-Wgb757z1w@mail.gmail.com> <CAHwB_NKVSOLwBttWG9GQMvKEFGzuGeE6ukR=vNDNLpdVjjohng@mail.gmail.com>
+In-Reply-To: <CAHwB_NKVSOLwBttWG9GQMvKEFGzuGeE6ukR=vNDNLpdVjjohng@mail.gmail.com>
+From:   Doug Anderson <dianders@google.com>
+Date:   Wed, 11 Oct 2023 07:35:53 -0700
+Message-ID: <CAD=FV=WFkRqkp8wcGG5uxE+7RqAQ40rSU-12Zig1R--ykcO8ZA@mail.gmail.com>
+Subject: Re: [v2 1/3] drm/panel: ili9882t: Break out as separate driver
+To:     cong yang <yangcong5@huaqin.corp-partner.google.com>
+Cc:     sam@ravnborg.org, neil.armstrong@linaro.org, daniel@ffwll.ch,
+        hsinyi@google.com, linus.walleij@linaro.org, swboyd@chromium.org,
+        airlied@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oleksij,
+Hi,
 
-kernel test robot noticed the following build warnings:
+On Tue, Oct 10, 2023 at 10:42=E2=80=AFPM cong yang
+<yangcong5@huaqin.corp-partner.google.com> wrote:
+>
+> Hi,
+>
+> On Wed, Oct 11, 2023 at 3:11=E2=80=AFAM Doug Anderson <dianders@google.co=
+m> wrote:
+> >
+> > Hi,
+> >
+> > On Tue, Oct 10, 2023 at 5:14=E2=80=AFAM Cong Yang
+> > <yangcong5@huaqin.corp-partner.google.com> wrote:
+> > >
+> > > diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9882t.c b/drivers/=
+gpu/drm/panel/panel-ilitek-ili9882t.c
+> > > new file mode 100644
+> > > index 000000000000..e095ad91c4bc
+> > > --- /dev/null
+> > > +++ b/drivers/gpu/drm/panel/panel-ilitek-ili9882t.c
+> > > @@ -0,0 +1,762 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +/*
+> > > + * Panels based on the Ilitek ILI9882T display controller.
+> > > + */
+> > > +#include <linux/delay.h>
+> > > +#include <linux/gpio/consumer.h>
+> > > +#include <linux/module.h>
+> > > +#include <linux/of.h>
+> > > +#include <linux/of_device.h>
+> >
+> > nit: remove include of linux/of_device.h since you don't use any of
+> > the functions declared there.
+>
+> It seems that of_device_get_match_data will be used.
 
-[auto build test WARNING on net-next/main]
+Right... ...and of_device_get_match_data() is declared in...
+<linux/of.h>. :-) See commit 82174a0a9c5c ("of: Move
+of_device_get_match_data() declaration") and commit 722d4f06e560
+("drm: Explicitly include correct DT includes").
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Oleksij-Rempel/net-dsa-microchip-ksz8-Enable-MIIM-PHY-Control-reg-access/20231011-204502
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20231011123856.1443308-2-o.rempel%40pengutronix.de
-patch subject: [PATCH net-next v1 2/3] net: dsa: microchip: ksz8: Enable MIIM PHY Control reg access
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231011/202310112224.iYgvjBUy-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231011/202310112224.iYgvjBUy-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310112224.iYgvjBUy-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/net/dsa/microchip/ksz8795.c:646: warning: Function parameter or member 'val' not described in 'ksz8_r_phy_ctrl'
+We'll probably need to handle that when picking to downstream, but for
+upstream you shouldn't be re-introducing of_device.h.
 
 
-vim +646 drivers/net/dsa/microchip/ksz8795.c
-
-   634	
-   635	/**
-   636	 * ksz8_r_phy_ctrl - Translates and reads from the SMI interface to a MIIM PHY
-   637	 *		     Control register (Reg. 31).
-   638	 * @dev: The KSZ device instance.
-   639	 * @port: The port number to be read.
-   640	 *
-   641	 * This function reads the SMI interface and translates the hardware register
-   642	 * bit values into their corresponding control settings for a MIIM PHY Control
-   643	 * register.
-   644	 */
-   645	static int ksz8_r_phy_ctrl(struct ksz_device *dev, int port, u16 *val)
- > 646	{
-   647		const u16 *regs = dev->info->regs;
-   648		u8 reg_val;
-   649		int ret;
-   650	
-   651		*val = 0;
-   652	
-   653		ret = ksz_pread8(dev, port, regs[P_LINK_STATUS], &reg_val);
-   654		if (ret < 0)
-   655			return ret;
-   656	
-   657		if (reg_val & PORT_MDIX_STATUS)
-   658			*val |= KSZ886X_CTRL_MDIX_STAT;
-   659	
-   660		ret = ksz_pread8(dev, port, REG_PORT_LINK_MD_CTRL, &reg_val);
-   661		if (ret < 0)
-   662			return ret;
-   663	
-   664		if (reg_val & PORT_FORCE_LINK)
-   665			*val |= KSZ886X_CTRL_FORCE_LINK;
-   666	
-   667		if (reg_val & PORT_POWER_SAVING)
-   668			*val |= KSZ886X_CTRL_PWRSAVE;
-   669	
-   670		if (reg_val & PORT_PHY_REMOTE_LOOPBACK)
-   671			*val |= KSZ886X_CTRL_REMOTE_LOOPBACK;
-   672	
-   673		return 0;
-   674	}
-   675	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+-Doug
