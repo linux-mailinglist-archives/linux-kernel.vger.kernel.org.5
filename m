@@ -2,141 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C2247C4DFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 11:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0E97C4DDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 11:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346020AbjJKJBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 05:01:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51976 "EHLO
+        id S1345703AbjJKJA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 05:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345853AbjJKJBU (ORCPT
+        with ESMTP id S1343913AbjJKJA5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 05:01:20 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A3FBA;
-        Wed, 11 Oct 2023 02:01:13 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-405505b07dfso4056945e9.0;
-        Wed, 11 Oct 2023 02:01:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697014872; x=1697619672; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5tEQZWkPMfvY8acdWT7VPDJUfmSEGoci9vBUKo7ObaE=;
-        b=nfcG6iAnCzPaWTSXUNHeDJFtqqLEuZdb46vV2DQxJRq2eMTBDoaGQ+sPAeU4HAaXRj
-         s+yRxZJb/a0ivGfiv0nhdzoDGLKac2XCdQB5ZEQyTHiuMUu4hECIbhTsiK9ZRkwePs1B
-         JR2AksDhUNR0nYty/6eubhSFqZmmpPbRvqOZ0/l7P3Cn+0/M9ibXjGOXrFpjFGTfi6Eg
-         ecWsgv4v+L/hwcopbgQZqFKmvlPBS5fIHafwuOgVO/uSrWKwFJntCdoQBJWJnuwtkTdq
-         G7fmrUYhmkyt+6eO6Xt9DccqbcmLnN8hYXn8fXjfLza+p5dkkT2NWElPJ8e5y/nQpwv4
-         RBrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697014872; x=1697619672;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5tEQZWkPMfvY8acdWT7VPDJUfmSEGoci9vBUKo7ObaE=;
-        b=kILZAFsopc9q1ZQ9hDM1A1HPRJzZV4kfW96AJoS48uXrAVijkkZ1kaNqn3SB15tTyM
-         EgehJIVF8J5EjvcNFGjZTfU6o+xs2D4SyzyVf6JJ0gcTtbVxMIr7G0Wu/vsCE7UsN8hn
-         Q+c2S1SVZ/RRazCFxUwIRQ/Ya2HBXVERwdjzGpipo12LxLKS4eRbwxHrvQsMhVqUby+a
-         ReyhCmhiPWsdOq/eUNl9apY8KdbpLdm9FVsrL0bnwdIbuMheviU8VIBIV70vDe396oHG
-         Oadda/M5vSvvPsjn8mABwVSR/s9JMf8NrkcFutS4GuLV5KFXCPZz/e47d1/q5qpYQO8t
-         sQ9Q==
-X-Gm-Message-State: AOJu0YwycjKj8a9Y1ytjz1gLskelG4PD2vUmFGbPxGPFNw+mxzVg7gnS
-        EddOxmnP7ruYWtNwMB8OTQ==
-X-Google-Smtp-Source: AGHT+IGWN88l8oaPPpQ7BQpJJq6TGBCRSaAHVnSsNnsZI3/v9fmaV1VtaQc2MNeNwoLK+mR1pTdeAA==
-X-Received: by 2002:a5d:6048:0:b0:320:6d6:315b with SMTP id j8-20020a5d6048000000b0032006d6315bmr15353783wrt.29.1697014871970;
-        Wed, 11 Oct 2023 02:01:11 -0700 (PDT)
-Received: from amdsuplus2.inf.ethz.ch (amdsuplus2.inf.ethz.ch. [129.132.31.88])
-        by smtp.gmail.com with ESMTPSA id e28-20020adfa45c000000b0032d892e70b4sm554100wra.37.2023.10.11.02.01.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 02:01:11 -0700 (PDT)
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Wed, 11 Oct 2023 11:00:14 +0200
-Subject: [PATCH bpf-next v3 3/3] bpf: Adapt and add tests for detecting
- jump to reserved code
+        Wed, 11 Oct 2023 05:00:57 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6191094;
+        Wed, 11 Oct 2023 02:00:55 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39B6psCB020160;
+        Wed, 11 Oct 2023 09:00:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=/C1rFeXSlfNmwsrUVHhL8M4nqWlxSH6MFMqznyY8L5Q=;
+ b=kfcesoxD5jFEPg01PNm0xT+soYNt6GXFrUfQM/5vNsh3+7DyhJItKaw6XN27eEizQ30F
+ kZS2rbBCO7Ll6B6BrQwOc4Fvkw+zMMwpW5ZYSMsigNiN+4HYUddOrKlEf1YcgPOCVq0v
+ 2JP9yYV3Tf54GbX9JKTZW1Z2V52+uRhZM7AtAXO3Uzbgo3Qxz2nCYTX5HxMJflYIUgjT
+ CCn2YH4CfxKbzxBTUb1py+doxNeGPFjBJ+bgX0LSFTXUQ8woZLIRPWdF2JGMY9WyDRZA
+ oWiz+N0YK3eKGGCMto7aQ4xu7zASwgUX7uQpkcpxqdaQDb0L4P8ASniu4BhxFI7tf/QK Sw== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tne0q14e9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 09:00:47 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39B90kAW032767
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 09:00:46 GMT
+Received: from hu-imrashai-hyd.qualcomm.com (10.80.80.8) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Wed, 11 Oct 2023 02:00:41 -0700
+From:   Imran Shaik <quic_imrashai@quicinc.com>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     Taniya Das <quic_tdas@quicinc.com>,
+        Imran Shaik <quic_imrashai@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Ajit Pandey <quic_ajipan@quicinc.com>,
+        Jagadeesh Kona <quic_jkona@quicinc.com>
+Subject: [PATCH V2 0/4] Add support for Qualcomm ECPRI clock controller
+Date:   Wed, 11 Oct 2023 14:30:24 +0530
+Message-ID: <20231011090028.1706653-1-quic_imrashai@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231011-jmp-into-reserved-fields-v3-3-97d2aa979788@gmail.com>
-References: <20231011-jmp-into-reserved-fields-v3-0-97d2aa979788@gmail.com>
-In-Reply-To: <20231011-jmp-into-reserved-fields-v3-0-97d2aa979788@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hao Sun <sunhao.th@gmail.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697014868; l=1323;
- i=sunhao.th@gmail.com; s=20231009; h=from:subject:message-id;
- bh=N0h3pju8Lq5TulbCouToc5niZOBTvwsgt1HbEhNoYvI=;
- b=G/m6j8CrPTnWXF8rupUB1VRJ4E/DsmpanWHsgShBwpKp3EVcWmiQx2xJE5Xh6W2yssJPankl4
- aJ8gXFa84KLCxp+hU3VUCv05Fuyb12wZJNbYgRCwVsjBwaOQp0QXrOI
-X-Developer-Key: i=sunhao.th@gmail.com; a=ed25519;
- pk=AHFxrImGtyqXOuw4f5xTNh4PGReb7hzD86ayyTZCXd4=
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 63s3dS_WJpjPyG7JffCyGrxha6spo1_4
+X-Proofpoint-ORIG-GUID: 63s3dS_WJpjPyG7JffCyGrxha6spo1_4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-11_06,2023-10-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ spamscore=0 mlxscore=0 clxscore=1011 priorityscore=1501 phishscore=0
+ adultscore=0 impostorscore=0 suspectscore=0 lowpriorityscore=0
+ mlxlogscore=922 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310110079
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adapt errstr of existing tests to make them pass, and add a new case
-to test backward jump to reserved code.
+The ECPRI clock controller support for QDU1000 and QRU1000. The clock
+controller has a special branch which requires an additional memory to
+be enabled/disabled before the branch ops.
 
-Signed-off-by: Hao Sun <sunhao.th@gmail.com>
----
- tools/testing/selftests/bpf/verifier/ld_imm64.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+Changes since v1:
+ - Updated the dt-bindings
+ - Modified mem ops logic as per the review comments
+ - Update all the hex values to lowercase
+ - Aligned the clock entries in DT as per the review comment
 
-diff --git a/tools/testing/selftests/bpf/verifier/ld_imm64.c b/tools/testing/selftests/bpf/verifier/ld_imm64.c
-index f9297900cea6..aa3ada0062d9 100644
---- a/tools/testing/selftests/bpf/verifier/ld_imm64.c
-+++ b/tools/testing/selftests/bpf/verifier/ld_imm64.c
-@@ -9,8 +9,7 @@
- 	BPF_MOV64_IMM(BPF_REG_0, 2),
- 	BPF_EXIT_INSN(),
- 	},
--	.errstr = "invalid BPF_LD_IMM insn",
--	.errstr_unpriv = "R1 pointer comparison",
-+	.errstr = "jump to reserved code",
- 	.result = REJECT,
- },
- {
-@@ -23,8 +22,7 @@
- 	BPF_LD_IMM64(BPF_REG_0, 1),
- 	BPF_EXIT_INSN(),
- 	},
--	.errstr = "invalid BPF_LD_IMM insn",
--	.errstr_unpriv = "R1 pointer comparison",
-+	.errstr = "jump to reserved code",
- 	.result = REJECT,
- },
- {
-@@ -144,3 +142,13 @@
- 	.errstr = "unrecognized bpf_ld_imm64 insn",
- 	.result = REJECT,
- },
-+{
-+	"test15 ld_imm64",
-+	.insns = {
-+	BPF_LD_IMM64(BPF_REG_0, 0),
-+	BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 0, -2),
-+	BPF_EXIT_INSN(),
-+	},
-+	.errstr = "jump to reserved code",
-+	.result = REJECT,
-+},
+Previous series:
+v1 - https://patchwork.kernel.org/project/linux-arm-msm/list/?series=774092
+
+Imran Shaik (3):
+  dt-bindings: clock: qcom: Add ECPRICC clocks for QDU1000 and QRU1000
+  clk: qcom: Add ECPRICC driver support for QDU1000 and QRU1000
+  arm64: dts: qcom: qdu1000: Add ECPRI clock controller
+
+Taniya Das (1):
+  clk: qcom: branch: Add mem ops support for branch2 clocks
+
+ .../bindings/clock/qcom,qdu1000-ecpricc.yaml  |   68 +
+ arch/arm64/boot/dts/qcom/qdu1000.dtsi         |   14 +
+ drivers/clk/qcom/Kconfig                      |    8 +
+ drivers/clk/qcom/Makefile                     |    1 +
+ drivers/clk/qcom/clk-branch.c                 |   37 +
+ drivers/clk/qcom/clk-branch.h                 |   21 +
+ drivers/clk/qcom/ecpricc-qdu1000.c            | 2466 +++++++++++++++++
+ .../dt-bindings/clock/qcom,qdu1000-ecpricc.h  |  147 +
+ 8 files changed, 2762 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,qdu1000-ecpricc.yaml
+ create mode 100644 drivers/clk/qcom/ecpricc-qdu1000.c
+ create mode 100644 include/dt-bindings/clock/qcom,qdu1000-ecpricc.h
 
 -- 
-2.34.1
+2.25.1
 
