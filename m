@@ -2,181 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8DF7C507B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A097C5080
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346072AbjJKKp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 06:45:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48868 "EHLO
+        id S1346320AbjJKKqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbjJKKpX (ORCPT
+        with ESMTP id S231847AbjJKKqE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:45:23 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B1B092;
-        Wed, 11 Oct 2023 03:45:22 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39B7KwYe011938;
-        Wed, 11 Oct 2023 10:45:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=n2CAALcEigZJjpm4AR7duyPyWm3aXmvCe3nZv4pLlqQ=;
- b=etDZPxeQQ1iut9CBen6Vt9NJAGn8n9z1+sQw3v8oj4izM1RSxWR5qomkEEp/RjJgs1jb
- X+IGEOhnzd+4i3m1lNt2KXx9sKkdvqxqAZ0qrm0tOwQ6+1aeNP7S/xl3RooGVDcm9ncu
- laRXvRD/cjFkDVhL1T5oGtlfFcDvMO2o/oVPYW22+FxOyP3i0opnnvYJHd6WSzwqDHxP
- uGawiVbPj//srt9uF6ugKAf3L1UbcaDHwNIP6oavxITHzlmh6WgvEEFr8svxvUGqevt2
- +WzhCLAH2RmC5cCr9upYWlpjR5Uctn8/7s+Casbx0Lhu/BtFcOBGj5+rQ+WqYYeIgHaq cg== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tnkwngtjt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 10:45:02 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39BAj2j9004602
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 10:45:02 GMT
-Received: from [10.216.52.55] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 11 Oct
- 2023 03:44:53 -0700
-Message-ID: <ca898b48-78e0-4bc7-c88c-a33338e7e47a@quicinc.com>
-Date:   Wed, 11 Oct 2023 16:14:50 +0530
+        Wed, 11 Oct 2023 06:46:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64E19D
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:45:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697021115;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yj5xwBjv1h+ic48+l3R5m7xRb8ThhzdIARG/DY3B/6w=;
+        b=e40WxA5f8YO9I+8ke6KH5LEVYRBVtUMNNuN62ByGdbgUVwiOpR83zquITsRcKnbniVYEzH
+        YpbCAwtafOe1qlE4QXoopWQ3vkiH6bfjiUoQA8b5x3bL+KM0UmKpmEYCQuOU52s+Nq/GjG
+        +gdxTR1rDae8yY7rxWPwuv8kRzpaLf8=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-311-AXnu50YDNumsS3HNQEKgaA-1; Wed, 11 Oct 2023 06:45:03 -0400
+X-MC-Unique: AXnu50YDNumsS3HNQEKgaA-1
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-5047e8f812bso6452075e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:45:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697021102; x=1697625902;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yj5xwBjv1h+ic48+l3R5m7xRb8ThhzdIARG/DY3B/6w=;
+        b=Ohlftt87y5ElCCJit4rUxvISDBBCVBNVUPg68YDcSBbt/SnNelwlZ2xSKf9l2xU0Pm
+         rQthyuX2FnVVDoSbTGDe7B9rHXI6EOuJFGu6FPuA8inDIlTa8QjYLz7OGgeV4eJAQOMm
+         BAex1PkFRMxJn207Ltdxv2nZ28cmiwkLRhCwUNR7zeDGffCr1X7TwMvRE/iLfPnqgAeV
+         bNfenIzsm1FEiBPlQgVrpcbh3pX034JNweAi02NIi4v5TidMg+2HZljwBUS/vMQlcJai
+         Hjbl0UHX9c/l/P2Oekrk8ivZZX9szZ0h+VncY6CsTJWnCgMKdEAxFjTDp+ZCsqHi8qOS
+         CnWA==
+X-Gm-Message-State: AOJu0Ywmb56JMLv9qdbcLEpnCaNcTXdlwsgiQ+BkJTRYl9lIMncIJ+Od
+        2xzLkXVk18LtNyuWSmxTytyz2Cfk0+26sJhQV7nm/EIVh/f+XABfaYPV/5xq4ew/YKeHhqXQiYy
+        O7lMKt59vXgdWR3NvEx0QLDG6
+X-Received: by 2002:a05:6512:e96:b0:500:b3fe:916e with SMTP id bi22-20020a0565120e9600b00500b3fe916emr23312864lfb.2.1697021102125;
+        Wed, 11 Oct 2023 03:45:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFo62scKmACFvigbJFZMhBZlSVMMIRgbDqivvy3TfLWmlA8CD/40NQGVCsniihy4vQeKJ0Qdw==
+X-Received: by 2002:a05:6512:e96:b0:500:b3fe:916e with SMTP id bi22-20020a0565120e9600b00500b3fe916emr23312844lfb.2.1697021101712;
+        Wed, 11 Oct 2023 03:45:01 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id n10-20020aa7c78a000000b00535204ffdb4sm8797259eds.72.2023.10.11.03.45.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Oct 2023 03:45:00 -0700 (PDT)
+Message-ID: <39b5f902-3a7e-fc04-254e-776bf61f57e2@redhat.com>
+Date:   Wed, 11 Oct 2023 12:44:59 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v1 5/5] arm64: dts: qcom: sa8775p: Add ep pcie0 controller
- node
-Content-Language: en-US
-To:     Manivannan Sadhasivam <mani@kernel.org>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <konrad.dybcio@linaro.org>, <quic_shazhuss@quicinc.com>,
-        <quic_nitegupt@quicinc.com>, <quic_ramkri@quicinc.com>,
-        <quic_nayiluri@quicinc.com>, <quic_krichai@quicinc.com>,
-        <quic_vbadigan@quicinc.com>, <quic_parass@quicinc.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <mhi@lists.linux.dev>,
-        <linux-phy@lists.infradead.org>
-References: <1695218113-31198-1-git-send-email-quic_msarkar@quicinc.com>
- <1695218113-31198-6-git-send-email-quic_msarkar@quicinc.com>
- <20230921094823.GE2891@thinkpad>
-From:   Mrinmay Sarkar <quic_msarkar@quicinc.com>
-In-Reply-To: <20230921094823.GE2891@thinkpad>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: txDmBbCPzhrIWJ1FGyxQQng_l1FT9Qe8
-X-Proofpoint-GUID: txDmBbCPzhrIWJ1FGyxQQng_l1FT9Qe8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-11_08,2023-10-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- lowpriorityscore=0 bulkscore=0 mlxscore=0 suspectscore=0 phishscore=0
- priorityscore=1501 malwarescore=0 impostorscore=0 adultscore=0 spamscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310110094
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: PROBLEM: asus_nb_wmi sends KEY_BRIGHTNESSDOWN on pressing CAPS
+ Lock and PrntScrn on Zenbook S 13 UX5304VA
+Content-Language: en-US, nl
+To:     James John <me@donjajo.com>,
+        Corentin Chary <corentin.chary@gmail.com>,
+        =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>
+Cc:     platform-driver-x86@vger.kernel.org,
+        acpi4asus-user@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <a2c441fe-457e-44cf-a146-0ecd86b037cf@donjajo.com>
+ <132feb67-c147-7ee6-b337-385e11786ec6@redhat.com>
+ <146cb960-406b-4456-94ce-ad6ed3f330ad@donjajo.com>
+ <d70f7d35-6458-437d-f68f-47291ce74a1e@redhat.com>
+ <90a7309e-4a76-4dff-8259-9975dd3ed8b1@donjajo.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <90a7309e-4a76-4dff-8259-9975dd3ed8b1@donjajo.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 9/21/2023 3:18 PM, Manivannan Sadhasivam wrote:
-> On Wed, Sep 20, 2023 at 07:25:12PM +0530, Mrinmay Sarkar wrote:
->> Add ep pcie dtsi node for pcie0 controller found on sa8775p platform.
->>
-> It would be good to add more info in the commit message, like PCIe Gen, lane
-> info, IP revision etc...
->
->> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/sa8775p.dtsi | 45 +++++++++++++++++++++++++++++++++++
->>   1 file changed, 45 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sa8775p.dtsi b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
->> index 9f4f58e8..5571131 100644
->> --- a/arch/arm64/boot/dts/qcom/sa8775p.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
->> @@ -2600,4 +2600,49 @@
->>   
->>   		status = "disabled";
->>   	};
->> +
->> +	pcie0_ep: pcie-ep@1c00000 {
->> +		compatible = "qcom,sa8775p-pcie-ep";
->> +		reg = <0x0 0x01c00000 0x0 0x3000>,
->> +		      <0x0 0x40000000 0x0 0xf20>,
->> +		      <0x0 0x40000f20 0x0 0xa8>,
->> +		      <0x0 0x40001000 0x0 0x4000>,
->> +		      <0x0 0x40200000 0x0 0x100000>,
->> +		      <0x0 0x01c03000 0x0 0x1000>,
->> +		      <0x0 0x40005000 0x0 0x2000>;
->> +		reg-names = "parf", "dbi", "elbi", "atu", "addr_space",
->> +			    "mmio", "dma";
->> +
->> +		clocks = <&gcc GCC_PCIE_0_AUX_CLK>,
->> +			<&gcc GCC_PCIE_0_CFG_AHB_CLK>,
->> +			<&gcc GCC_PCIE_0_MSTR_AXI_CLK>,
->> +			<&gcc GCC_PCIE_0_SLV_AXI_CLK>,
->> +			<&gcc GCC_PCIE_0_SLV_Q2A_AXI_CLK>;
->> +
->> +		clock-names = "aux",
->> +			      "cfg",
->> +			      "bus_master",
->> +			      "bus_slave",
->> +			      "slave_q2a";
->> +
->> +		interrupts = <GIC_SPI 306 IRQ_TYPE_LEVEL_HIGH>,
->> +			     <GIC_SPI 147 IRQ_TYPE_LEVEL_HIGH>,
->> +			     <GIC_SPI 630 IRQ_TYPE_LEVEL_HIGH>;
->> +
->> +		interrupt-names = "global", "doorbell", "dma";
->> +
->> +		interconnects = <&pcie_anoc MASTER_PCIE_0 0 &mc_virt SLAVE_EBI1 0>,
->> +				<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_PCIE_0 0>;
->> +		interconnect-names = "pcie-mem", "cpu-pcie";
->> +
-> Don't you need iommu property?
->
->> +		resets = <&gcc GCC_PCIE_0_BCR>;
->> +		reset-names = "core";
->> +		power-domains = <&gcc PCIE_0_GDSC>;
->> +		phys = <&pcie0_phy>;
->> +		phy-names = "pciephy";
->> +		max-link-speed = <3>;
-> Gen 3?
-there is some stability issue with gen4 so going with gen3 as of now.
-Will update once issue is resolved.
+On 10/1/23 16:16, James John wrote:
+> Hello Han,
+> 
+> Thank you. I applied the patch and I have the inputs attached here.
+> 
+> After setting the hwdb filter, all the hot keys are still working except that the LED notification light on Mute Hotkey (F9) is no longer turning up on mute.
+> 
+> The Screen Capture, Disable Camera, and MyASUS buttons are not mapped yet. I believe the Screen Capture button should map to PrntScrn button, and MyASUS with Disable Camera unmapped, obviously. I also have the codes in the attached log.
+> 
+> Screen Capture button is KEY_UNKNOWN to evtest.
+> 
+> Don't hesitate to let me know if you need anything else.
 
-Thanks,
-Mrinmay
->> +		num-lanes = <2>;
-> Only 2 lanes? Or the other one has 4 lanes?
->
-> - Mani
-pcie0 has lane2 and pcie1 has lane4 configuration.
+Sorry for being slow to respond (I was out sick for a week).
 
-Thanks,
-Mrinmay
->> +
->> +		status = "disabled";
->> +	};
->>   };
->> -- 
->> 2.7.4
+I think I know what is going on here but I'm not sure how to fix it yet.
+I'll get back to you.
+
+Some more questions to clarify things:
+
+1. in your log you write:
+
+BACKLIGHT BUTTON
+[17299.166313] asus_wmi: raw event code 0x2e
+[17299.166370] asus_wmi: raw event code 0xffffffffffffffff
+[17302.386607] asus_wmi: raw event code 0x2e
+[17302.386663] asus_wmi: raw event code 0xffffffffffffffff
+
+BACKLIGHT UP BUTTON
+[17332.080632] asus_wmi: raw event code 0x2f
+[17332.080727] asus_wmi: raw event code 0xffffffffffffffff
+[17332.497118] asus_wmi: raw event code 0x2f
+[17332.497192] asus_wmi: raw event code 0xffffffffffffffff
+
+I assume that the first "BACKLIGHT BUTTON" is the backlight DOWN button ?
+
+
+2. Can you please run:
+
+sudo evtest and then select the "ACPI video bus" (or something
+similar) device and see if that reports brightness up/down
+keypresses?  And then do the same thing for the 
+"Asus WMI hotkeys" device ? I expect the Asus WMI hotkeys
+device to only report brightness up keypresses (after my
+hwdb "fix") while I expect brightness-up events to get
+reported twice, by both the "ACPI video bus" device and
+the "Asus WMI hotkeys" device.
+
+Can you confirm this? This also means that brightness
+up will take bigger steps (2 steps per keypress) then
+brightness down, right ?
+
+3. Please run:
+
+sudo acpidump -o acpidump.txt
+
+and send me a private email with acpidump.txt attached.
+
+Regards,
+
+Hans
+
+
+
+
+
+
+> On 01/10/2023 13:45, Hans de Goede wrote:
+>> Hi James,
 >>
+>> On 10/1/23 10:46, James John wrote:
+>>> Hello Han,
+>>>
+>>> Thank you very much for this detailed steps. I was able to reproduce this with "evtest" and everything went okay.
+>>>
+>>> After editing /lib/udev/hwdb.d/60-keyboarrd.hwdb as you specified, the problem has been fixed, which I believe should revert on reboot?
+>> No this will fix it until /lib/udev/hwdb.d/60-keyboarrd.hwdb gets overwritten by your
+>> package-manager the next time the systemd packages get updated.
+>>
+>>> This is the content of /sys/class/dmi/id/modalias
+>>>
+>>> dmi:bvnAmericanMegatrendsInternational,LLC.:bvrUX5304VA.304:bd05/16/2023:br5.27:svnASUSTeKCOMPUTERINC.:pnZenbookS13UX5304VA_UX5304VA:pvr1.0:rvnASUSTeKCOMPUTERINC.:rnUX5304VA:rvr1.0:cvnASUSTeKCOMPUTERINC.:ct10:cvr1.0:sku:
+>> Thanks.
+>>
+>> Looking at:
+>> https://bbs.archlinux.org/viewtopic.php?pid=2123716
+>>
+>> I see that at least one other model Asus laptop is affected too. So rather then
+>> adding a more specific hwdb rule for your model I would like to try and find
+>> the root cause of these 0x20 event code events when pressing capslock
+>> on your laptop.
+>>
+>>> Yes, I built my kernel. I wish I could parse this and write a proper quirk.
+>> Good, I've written a small kernel patch to get to the bottom of this (attached)
+>> can you please build a kernel with this. Then boot into this kernel and
+>> then run dmesg -w
+>>
+>> When you now press capslock you should see log lines show up which contain
+>> "raw event code 0x..."
+>>
+>> Please let me know what these lines show when pressing capslock.
+>>
+>> Please also let me know what these lines show when pressing other
+>> hotkeys which are handled by asus-nb-wmi (you can re-run "sudo evtest"
+>> to check which keys that are).
+>>
+>> I think the issue might be that the asus-wmi code is filtering out
+>> the higher bits of the value, which causes some new events to
+>> get mapped as just 0x20 instead of some-higher-bits + 0x20.
+>>
+>> Also I'm wondering if everything else works as it should,
+>> e.g. does changing the brightness with the brightness hotkeys
+>> still work after setting up the hwdb filtering ?
+>>
+>> And does the lid-switch (suspend the machine when the lid is closed)
+>> work ?
+>>
+>>
+>>> Also, I don't know if this is related; the hotkeys should be enabled by default. Fn key should be for Function keys. But in the current state, it is reversed.
+>> This is laptop models specific and not really controlled by Linux,
+>> sometimes you can change the default in the BIOS. Or sometimes you
+>> can change the default by pressing Fn + Esc.
+>>
+>> Regards,
+>>
+>> Hans
+>>
+>>
+>>
+>>
+>>> On 01/10/2023 09:28, Hans de Goede wrote:
+>>>> Hi James,
+>>>>
+>>>> On 10/1/23 10:11, James John wrote:
+>>>>> Hello,
+>>>>>
+>>>>> First of all, thank you very much for the work you do with maintaining these drivers and supporting systems. It is not an easy one.
+>>>>>
+>>>>> I have debugged this bug down to the asus_nb_wmi module. When I disable this module, the problem goes away, but then other hotkeys are not recognized. Attached is a debug event from libinput, where I pressed the capslock twice
+>>>>>
+>>>>> I have tried to dabble around with asus-nb-wmi.c codes to see if I could fix it by luck, by adding UX5304VA to `static const struct dmi_system_id asus_quirks[]` but to no avail. And I have a very little knowledge of what "quirks" are.
+>>>>>
+>>>>> I have attached some information regarding my hardware and kernel. I will be available to provide any more information that might be needed to resolve this.
+>>>>>
+>>>>> A related open thread: https://bbs.archlinux.org/viewtopic.php?pid=2123716
+>>>> First of all lets confirm that the KEY_BRIGHTNESSDOWN events are really coming from asus_nb_wmi.
+>>>>
+>>>> Please install evtest and then run "sudo evtest" and then select the "Asus WMI hotkeys" device
+>>>> by typing its number followed by enter.
+>>>>
+>>>> After this reproduce the bug and see if the log shows KEY_BRIGHTNESSDOWN.
+>>>>
+>>>> Since you said you tried playing around with the quirks, I assume you can build
+>>>> your own kernel, please let me know if that is wrong.
+>>>>
+>>>> If this confirms the KEY_BRIGHTNESSDOWN events are coming from the "Asus WMI hotkeys" device,
+>>>> then please edit /lib/udev/hwdb.d/60-keyboard.hwdb
+>>>>
+>>>> And search for "Asus WMI hotkeys", this should find this section:
+>>>>
+>>>> evdev:name:Asus WMI hotkeys:dmi:bvn*:bvr*:bd*:svnASUS*:pn*:*
+>>>> evdev:name:Eee PC WMI hotkeys:dmi:bvn*:bvr*:bd*:svnASUS*:pn*:*
+>>>> evdev:name:Asus Laptop extra buttons:dmi:bvn*:bvr*:bd*:svnASUS*:pn*:*
+>>>>    KEYBOARD_KEY_6b=f21                                    # Touchpad Toggle
+>>>>    KEYBOARD_KEY_7c=f20                                    # Remap micmute to f20
+>>>>
+>>>> Change this to:
+>>>>
+>>>> evdev:name:Asus WMI hotkeys:dmi:bvn*:bvr*:bd*:svnASUS*:pn*:*
+>>>> evdev:name:Eee PC WMI hotkeys:dmi:bvn*:bvr*:bd*:svnASUS*:pn*:*
+>>>> evdev:name:Asus Laptop extra buttons:dmi:bvn*:bvr*:bd*:svnASUS*:pn*:*
+>>>>    KEYBOARD_KEY_6b=f21                                    # Touchpad Toggle
+>>>>    KEYBOARD_KEY_7c=f20                                    # Remap micmute to f20
+>>>>    KEYBOARD_KEY_20=unknown
+>>>>
+>>>> And then run "sudo udevadm hwdb --update" followed by "sudo udevadm trigger",
+>>>> that should filter out the spurious keypresses.
+>>>>
+>>>> If that helps, please run:
+>>>>
+>>>> cat /sys/class/dmi/id/modalias
+>>>>
+>>>> So that a proper DMI based quirk to only to the filtering on your model
+>>>> can be written.
+>>>>
+>>>> Regards,
+>>>>
+>>>> Hans
+>>>>
+
