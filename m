@@ -2,70 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9396F7C45DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 02:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75B117C45E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 02:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344289AbjJKAIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 20:08:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37844 "EHLO
+        id S1344293AbjJKANY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 20:13:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjJKAIM (ORCPT
+        with ESMTP id S1344230AbjJKANX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 20:08:12 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 964FF94
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:08:10 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d815354ea7fso8335949276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:08:10 -0700 (PDT)
+        Tue, 10 Oct 2023 20:13:23 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C4649B
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:13:21 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-690f7d73a3aso5585201b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:13:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696982890; x=1697587690; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zd/nacEbxpo/jAXF8pqfkyF745LkcXcc4cVmKOG5Cnc=;
-        b=bRa8OQEfYVX+NWc9dsps3hAtbxwl6xhCaCdfGPb87lERItoje9u/wLlc3eTE1P/HKz
-         6ydAbsbZUrgaUXU9Ylm9JRFz403scKolnCxHRBnlLuSrIUuPyEpi5WtanqHUBfqy+21k
-         x/q68oIwG/LOcIFMOnJNYYZ6ypdDEn9NfetUhrylfesVTehhXNAjn51Ds9QnQdRmL74p
-         zjK5F37/623wxaY2VSS5rPwxoRRXrgslMrF4FqSlz5h8fJaQMZkI9akUkbaEe9U9U+6y
-         ssvLfTeJH54fo+yzuWA5dE5c76t4ZLv8xl1gojIT5VYiS3cNPV8NJXG3xVVYtzSW92qA
-         U8fQ==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1696983201; x=1697588001; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=bXYSMoj+4mDjgRP2mTt2Aa1GtDE1UTVBqHkHte3xwzo=;
+        b=THVAZbLHDOGUMC2GecjPMvtCxzk3eiP3aTrvbwVAmZidEWVOrPAXo2r+UHpS7wvTnx
+         PtNgVjzST+8AvmbSJzItwpVaMU9pgKBbr3474Gz19CJ+hfC+bKHy9niI6V90QIGw76ue
+         0UfiHkTWDez1BRdMrRMN9Fm9KrpVtjGHQyYZRN/x0sUX1Wi75EaJ43K7DffpMCHU7ygz
+         dGSg+tvidNXUEc3tcXW/gWJnMtGmyrYyRPsBM6y3eSrlOyRPbe+42vNSDGr8krIWLVt2
+         vURLIec4QX8A+NQL4+r/J7pPvH6TaiqPH4fFOmRGyoOG2gx0+RV1NcaUZlqUyGPFD6eH
+         giew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696982890; x=1697587690;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zd/nacEbxpo/jAXF8pqfkyF745LkcXcc4cVmKOG5Cnc=;
-        b=OEWzpZqGVmhafpQSPkz1i+JJRyA912hMdEUxT+adPFj1zVqSun4kC8QH7Tzu3IPD4S
-         HzwsR36U6f8xuUaNSDHlcP6RBtNMqMcXzwfdgpd1SmjNdcmFpgOG/Me2+dEbXKWEMVxJ
-         bjmJPaiMdTfbbD83vVOPT3M52KNL8kXXebkEcwLYnMCu39Yh2WIxCVHFO5XtfG0UhLBc
-         sr87xrrVEQzTPpriPNgnAcMDjOHKe3FFqyiHPCIyayxNvrBIoUd463NvEeXtJBws+95x
-         +ThVqjDQClRq4XkJ5YZ93SJczJD48yA2cMgy14hXljSyELWC7gZYfvXHX4Q0GbeV2qcS
-         7cng==
-X-Gm-Message-State: AOJu0YxPEKXjhfunkB8LKvIJi3OPBVXKhYiPGihMlNYtjqPUdoCzZOUF
-        ZKZ1F61bqwfiaan84zWSc2e/t7YnlKU=
-X-Google-Smtp-Source: AGHT+IFQ66Ca540lvih4SLhNTTRYCUUNHt9H2N1GvXrlAGsoLUfqbdcMRs9ubpWDRQxYrK7C/D1lL1ukK7c=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:514:0:b0:d91:c7f2:764 with SMTP id
- 20-20020a250514000000b00d91c7f20764mr272449ybf.0.1696982889881; Tue, 10 Oct
- 2023 17:08:09 -0700 (PDT)
-Date:   Tue, 10 Oct 2023 17:08:08 -0700
-In-Reply-To: <ZSTJEJepdnmC5PA5@yzhao56-desk.sh.intel.com>
-Mime-Version: 1.0
-References: <20230714064656.20147-1-yan.y.zhao@intel.com> <20230714065006.20201-1-yan.y.zhao@intel.com>
- <553e3a0f-156b-e5d2-037b-2d9acaf52329@gmail.com> <ZSRZ_y64UPXBG6lA@google.com>
- <ZSRwNO4xWU6Dx1ne@google.com> <ZSTJEJepdnmC5PA5@yzhao56-desk.sh.intel.com>
-Message-ID: <ZSXnaIi454ATEdH0@google.com>
-Subject: Re: [PATCH v4 01/12] KVM: x86/mmu: helpers to return if KVM honors
- guest MTRRs
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yan Zhao <yan.y.zhao@intel.com>
-Cc:     Like Xu <like.xu.linux@gmail.com>, pbonzini@redhat.com,
-        chao.gao@intel.com, kai.huang@intel.com,
-        robert.hoo.linux@gmail.com, yuan.yao@linux.intel.com,
-        kvm list <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL
+        d=1e100.net; s=20230601; t=1696983201; x=1697588001;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bXYSMoj+4mDjgRP2mTt2Aa1GtDE1UTVBqHkHte3xwzo=;
+        b=gbPz7Wg2npZkIqRvN6WAq6ysYGlLG2EYGxtU/9ORRX8zEMeMff7q/7FNr5EHq7rVH6
+         5eO5Ggr7iSx9N50tF0wIAYyAtGBW4H2m9UiZOZQY2tUM3X1yjHUx+EzRG2Y2IgIGihJY
+         vlQ+wvzeYnShgN2yIdjexln+ywlQqtooQuxSRDkYtR86ixY0Z62LWvKA2qHnACOvHpVs
+         R8sUcK7zzFVIMYsQ8qRsb28Hjmqmtf02fgA184cuS2E6p8lZnHsdTSl7ED2FIK5TvHBS
+         xfoYn26fhgSGnas5mrKhZpug+VRT5UdwHDqv5oT9XeSrnoxcFAMnC/DRyY0JmyxDNqfJ
+         zV+g==
+X-Gm-Message-State: AOJu0YzM9w6lKCeYlW4LaFveM4W0K70gZB0q52gKC5oV6fogxptQqQsU
+        OLv/1jF+j6Jn/6D3a2FGXRYs5w==
+X-Google-Smtp-Source: AGHT+IEhIWc+rwqEXOm79XKP02Vs6tvtegdLCI6fFlAq/EvagoUmMI4WFKDIe3c26N4RyxgWNDKTzA==
+X-Received: by 2002:a05:6a20:9385:b0:161:3120:e840 with SMTP id x5-20020a056a20938500b001613120e840mr24937687pzh.2.1696983200909;
+        Tue, 10 Oct 2023 17:13:20 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id p10-20020a170902eaca00b001b8a85489a3sm12443132pld.262.2023.10.10.17.13.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Oct 2023 17:13:20 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qqMqk-00CB5y-0c;
+        Wed, 11 Oct 2023 11:13:18 +1100
+Date:   Wed, 11 Oct 2023 11:13:18 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
+Cc:     dm-devel@redhat.com, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Brian Foster <bfoster@redhat.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Bart Van Assche <bvanassche@google.com>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Subject: Re: [PATCH v8 0/5] Introduce provisioning primitives
+Message-ID: <ZSXono3GkXhgrZ1T@dread.disaster.area>
+References: <20231007012817.3052558-1-sarthakkukreti@chromium.org>
+ <ZSNANlreccIVXuo+@dread.disaster.area>
+ <CAG9=OMMM3S373Y6UEeXxnOyvMvA9wmAVd4Jrdjt3gzkz9d2yUg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAG9=OMMM3S373Y6UEeXxnOyvMvA9wmAVd4Jrdjt3gzkz9d2yUg@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,39 +87,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023, Yan Zhao wrote:
-> BTW, as param "kvm" is now removed from the helper, better to remove the word
-> "second" in comment in patch 4, i.e.
+On Tue, Oct 10, 2023 at 03:42:53PM -0700, Sarthak Kukreti wrote:
+> On Sun, Oct 8, 2023 at 4:50 PM Dave Chinner <david@fromorbit.com> wrote:
+> >
+> > On Fri, Oct 06, 2023 at 06:28:12PM -0700, Sarthak Kukreti wrote:
+> > > Hi,
+> > >
+> > > This patch series is version 8 of the patch series to introduce
+> > > block-level provisioning mechanism (original [1]), which is useful for provisioning
+> > > space across thinly provisioned storage architectures (loop devices
+> > > backed by sparse files, dm-thin devices, virtio-blk). This series has
+> > > minimal changes over v7[2].
+> > >
+> > > This patch series is rebased from the linux-dm/dm-6.5-provision-support [1] on to
+> > > (cac405a3bfa2 Merge tag 'for-6.6-rc3-tag'). In addition, there's an
+> > > additional patch to allow passing through an unshare intent via REQ_OP_PROVISION
+> > > (suggested by Darrick in [4]).
+> >
+> > The XFS patches I just posted were smoke tested a while back against
+> > loop devices and then forward ported to this patchset. Good for
+> > testing that userspace driven file preallocation gets propagated by
+> > the filesystem down to the backing device correctly and that
+> > subsequent IO to the file then does the right thing (e.g. fio
+> > testing using fallocate() to set up the files being written to)....
+> >
 > 
-> -        * So, specify the second parameter as true here to indicate
-> -        * non-coherent DMAs are/were involved and TDP zap might be
-> -        * necessary.
-> +        * So, specify the parameter as true here to indicate non-coherent
-> +        * DMAs are/were involved and TDP zap might be necessary.
-> 
-> Sorry and thanks a lot for helps on this series!
+> Thanks! I've been testing with a WIP patch for ext4, I'll give your
+> patches a try. Once we are closer to submitting the filesystem
+> support, we can formalize the test into an xfstest (sparse file + loop
+> + filesystem, fallocate() file, check the size of the underlying
+> sparse file).
 
-Heh, don't be sorry, it's not your fault I can't get this quite right.  Fixed
-up yet again, hopefully for the last time.  This is what I ended up with for the
-comment:
+That's not really a valid test - there are so many optional filesystem
+behaviours that can change the layout of the backing file for the
+same upper filesystem operations.
 
-	/*
-	 * Non-coherent DMA assignment and de-assignment will affect
-	 * whether KVM honors guest MTRRs and cause changes in memtypes
-	 * in TDP.
-	 * So, pass %true unconditionally to indicate non-coherent DMA was,
-	 * or will be involved, and that zapping SPTEs might be necessary.
-	 */
+What we actually need to test is the ENOSPC guarantees, not that
+fallocate has been called by the loop device. i.e. that ENOSPC is
+propagated from the underlying filesystem though the loop device to
+the application running on the upper filesystem appropriately.  e.g.
+when the lower filesystem is at ENOSPC, the writes into provisioned
+space in the loop device backing file continue to succeed without
+ENOSPC being reported to the upper filesystem.
 
-and the hashes:
+i.e. this needs to be tested from the perspective of the API
+presented to the upper filesystem, not by running an upper fs
+operation and then trying to infer correct behaviour by peering at
+the state of the lower filesystem...
 
-[1/5] KVM: x86/mmu: Add helpers to return if KVM honors guest MTRRs
-      https://github.com/kvm-x86/linux/commit/1affe455d66d
-[2/5] KVM: x86/mmu: Zap SPTEs when CR0.CD is toggled iff guest MTRRs are honored
-      https://github.com/kvm-x86/linux/commit/7a18c7c2b69a
-[3/5] KVM: x86/mmu: Zap SPTEs on MTRR update iff guest MTRRs are honored
-      https://github.com/kvm-x86/linux/commit/9a3768191d95
-[4/5] KVM: x86/mmu: Zap KVM TDP when noncoherent DMA assignment starts/stops
-      https://github.com/kvm-x86/linux/commit/362ff6dca541
-[5/5] KVM: VMX: drop IPAT in memtype when CD=1 for KVM_X86_QUIRK_CD_NW_CLEARED
-      https://github.com/kvm-x86/linux/commit/c9f65a3f2d92
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
