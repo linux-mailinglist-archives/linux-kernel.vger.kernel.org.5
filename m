@@ -2,108 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F097C46CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 02:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8AAE7C46CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 02:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344466AbjJKAgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 20:36:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36088 "EHLO
+        id S1344453AbjJKAkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 20:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344327AbjJKAgw (ORCPT
+        with ESMTP id S1344281AbjJKAkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 20:36:52 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE8B992
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:36:49 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d84acda47aeso8396793276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:36:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696984609; x=1697589409; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZhPeCxvioG75cIV47i0mJdVPOUMQNjsIUo5SWKluyZ8=;
-        b=htvGbVmCNoVXyQXFJi0lqAvfyeeCe44SwqFB02tic1KUk+8Vm0/RvL/3hTBRtuJX0J
-         F5G7CuqTHVuJhFB4KQEf9KAdQEaDu3ztl9PCqbRn1QmmGmnmuhoEOSBJUeoucsgMlqtW
-         AbIHcJiv/Axyo3KNLTgXGO9muA2MbCsl/VZtnV5dGmguKFWzVrwamoctUp/EDH98MHs2
-         qPzVWiYlomNOPyoqDtfgfiiUBokIKDB1KC7usfIQK4Z5F19Rnslc5OZnK3KCFZzggmI2
-         KbGVOSjL9Z0CXd5savtRW6Nyr3eOUsGytUxJzPvvhrffghQVIaxRlWBOBYbJoVHxkBg+
-         k6Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696984609; x=1697589409;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZhPeCxvioG75cIV47i0mJdVPOUMQNjsIUo5SWKluyZ8=;
-        b=rohaa4i8VZ1HoI31JIpS6c4TRyecZWxin6RwOSzzgmRzOMVO9WWq7eKz2Rt4V3RgYo
-         NPQHV8AVRAhnLeFZazIpmbegFyqNPmMR2i3YBeG+kXY7DjwCKJRGfpCIpJbjYoKrSeYI
-         3cqWBG+1a3T5mnpxNpghKaoVuyga9XLhtTs806ISDyR8gSKVxiyU4GD6zHxFQgnYnTNp
-         QmgrBrCs9f3x50onbxK5gMo0RTLz3aakhl/qyeCHf9yXeXA7uokZDCP/tqRwQWLinTqU
-         XM2sHdllSaLCv8tPfqoWX6g3wcVU+rPm3jwVsTDFSEvihoUruvTKt7PRz+WOzaWXKc0o
-         LBHQ==
-X-Gm-Message-State: AOJu0YxuIYkMRadLtwM3gAZ3Ry0uUbxEEE9WOMdJgInn92NMPjStzCCs
-        QE+jI4iQuq1QMbh9RcKpb1rv21GY+m9EZw==
-X-Google-Smtp-Source: AGHT+IGHnwzxg50++ozxwLsaeRm/ESc9Pd3ZVKaSIuIqMREmxKrAvVLKLElsvPC1UxWyaPjg4RWGiHT2xG2jVA==
-X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
- (user=shakeelb job=sendgmr) by 2002:a25:5f01:0:b0:d77:f7c3:37db with SMTP id
- t1-20020a255f01000000b00d77f7c337dbmr356863ybb.8.1696984609065; Tue, 10 Oct
- 2023 17:36:49 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 00:36:46 +0000
-In-Reply-To: <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com>
-Mime-Version: 1.0
-References: <20231010032117.1577496-1-yosryahmed@google.com>
- <20231010032117.1577496-4-yosryahmed@google.com> <CALvZod5nQrf=Y24u_hzGOTXYBfnt-+bo+cYbRMRpmauTMXJn3Q@mail.gmail.com>
- <CAJD7tka=kjd42oFpTm8FzMpNedxpJCUj-Wn6L=zrFODC610A-A@mail.gmail.com> <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com>
-Message-ID: <20231011003646.dt5rlqmnq6ybrlnd@google.com>
-Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        "Michal =?utf-8?Q?Koutn=C3=BD?=" <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Tue, 10 Oct 2023 20:40:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD13A8E
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 17:39:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696984769;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Fg8S2ybDrfMwqKipB/ZC4g70QBQJPgN1wyoLIe+e5WY=;
+        b=Am9Lvz1bwV2D8/5D8hZj8MTRqIJMuaC9EMkLdHywXpDm5+6BAc/l4q/WgxdmV5P1GTtIJ2
+        589XadSVJKNffw7FpIkS+wAwj74mMd0cZI89AvvZtKIl4nMrUVdLcA6iY8xcBvIlueSqls
+        IrMfR6F0GHI6nuBbJg09HVsoJI4YVgU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-601-x1ArTAfuNyO6mavzfsztEw-1; Tue, 10 Oct 2023 20:39:17 -0400
+X-MC-Unique: x1ArTAfuNyO6mavzfsztEw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 10896101A550;
+        Wed, 11 Oct 2023 00:39:17 +0000 (UTC)
+Received: from fedora (unknown [10.72.120.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CC0462029296;
+        Wed, 11 Oct 2023 00:39:10 +0000 (UTC)
+Date:   Wed, 11 Oct 2023 08:39:05 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        Andrew Theurer <atheurer@redhat.com>,
+        Joe Mario <jmario@redhat.com>,
+        Sebastian Jug <sejug@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>, ming.lei@redhat.com
+Subject: Re: [PATCH] blk-mq: add module parameter to not run block kworker on
+ isolated CPUs
+Message-ID: <ZSXuqZNsyjJk1FGX@fedora>
+References: <20231010142216.1114752-1-ming.lei@redhat.com>
+ <ZSWb2DNV9cIPYv5H@slm.duckdns.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZSWb2DNV9cIPYv5H@slm.duckdns.org>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 03:21:47PM -0700, Yosry Ahmed wrote:
-[...]
-> 
-> I tried this on a machine with 72 cpus (also ixion), running both
-> netserver and netperf in /sys/fs/cgroup/a/b/c/d as follows:
-> # echo "+memory" > /sys/fs/cgroup/cgroup.subtree_control
-> # mkdir /sys/fs/cgroup/a
-> # echo "+memory" > /sys/fs/cgroup/a/cgroup.subtree_control
-> # mkdir /sys/fs/cgroup/a/b
-> # echo "+memory" > /sys/fs/cgroup/a/b/cgroup.subtree_control
-> # mkdir /sys/fs/cgroup/a/b/c
-> # echo "+memory" > /sys/fs/cgroup/a/b/c/cgroup.subtree_control
-> # mkdir /sys/fs/cgroup/a/b/c/d
-> # echo 0 > /sys/fs/cgroup/a/b/c/d/cgroup.procs
-> # ./netserver -6
-> 
-> # echo 0 > /sys/fs/cgroup/a/b/c/d/cgroup.procs
-> # for i in $(seq 10); do ./netperf -6 -H ::1 -l 60 -t TCP_SENDFILE --
-> -m 10K; done
+Hello,
 
-You are missing '&' at the end. Use something like below:
+On Tue, Oct 10, 2023 at 08:45:44AM -1000, Tejun Heo wrote:
+> (cc'ing Frederic)
+> 
+> On Tue, Oct 10, 2023 at 10:22:16PM +0800, Ming Lei wrote:
+> > Kernel parameter of `isolcpus=` is used for isolating CPUs for specific
+> > task, and user often won't want block IO to disturb these CPUs, also long
+> > IO latency may be caused if blk-mq kworker is scheduled on these isolated
+> > CPUs.
+> > 
+> > Kernel workqueue only respects this limit for WQ_UNBOUND, for bound wq,
+> > the responsibility should be on wq user.
+> > 
+> > Add one block layer parameter for not running block kworker on isolated
+> > CPUs.
+> > 
+> > Cc: Juri Lelli <juri.lelli@redhat.com>
+> > Cc: Andrew Theurer <atheurer@redhat.com>
+> > Cc: Joe Mario <jmario@redhat.com>
+> > Cc: Sebastian Jug <sejug@redhat.com>
+> > Signed-off-by: Ming Lei <ming.lei@redhat.com>
+> > ---
+> >  block/blk-mq.c | 15 +++++++++++++++
+> >  1 file changed, 15 insertions(+)
+> > 
+> > diff --git a/block/blk-mq.c b/block/blk-mq.c
+> > index ec922c6bccbe..c53b5b522053 100644
+> > --- a/block/blk-mq.c
+> > +++ b/block/blk-mq.c
+> > @@ -29,6 +29,7 @@
+> >  #include <linux/prefetch.h>
+> >  #include <linux/blk-crypto.h>
+> >  #include <linux/part_stat.h>
+> > +#include <linux/sched/isolation.h>
+> >  
+> >  #include <trace/events/block.h>
+> >  
+> > @@ -42,6 +43,13 @@
+> >  #include "blk-rq-qos.h"
+> >  #include "blk-ioprio.h"
+> >  
+> > +static bool respect_cpu_isolation;
+> > +module_param(respect_cpu_isolation, bool, 0444);
+> > +MODULE_PARM_DESC(respect_cpu_isolation,
+> > +		"Don't schedule blk-mq worker on isolated CPUs passed in "
+> > +		"isolcpus= or nohz_full=. User need to guarantee to not run "
+> > +		"block IO on isolated CPUs (default: false)");
+> 
+> Any chance we can centralize these? It's no fun to try to hunt down module
+> params to opt in different subsystems and the housekeeping interface does
+> have some provisions for selecting different parts. I'd much prefer to see
+> these settings to be collected into a central place.
 
-#!/bin/bash
-for i in {1..22}
-do
-   /data/tmp/netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K &
-done
-wait
+I guess it is hard to solve in a central place, such as workqueue.
+
+Follows the workqueue API:
+
+/**
+   * queue_work_on - queue work on specific cpu
+   * @cpu: CPU number to execute work on
+   * @wq: workqueue to use
+   * @work: work to queue
+   *
+   * We queue the work to a specific CPU, the caller must ensure it
+   * can't go away.  Callers that fail to ensure that the specified
+   * CPU cannot go away will execute on a randomly chosen CPU.
+   * But note well that callers specifying a CPU that never has been
+   * online will get a splat.
+   *
+   * Return: %false if @work was already on a queue, %true otherwise.
+   */
+  bool queue_work_on(int cpu, struct workqueue_struct *wq,
+                     struct work_struct *work)
+
+The caller specifies one cpu to queue work, what can queue_work_on()
+do if the specified CPU is isolated? If the API is changed by dealing
+with isolated CPU, the caller has to modify for adapting with the API
+change.
+
+Secondly isolated CPUs still can be override by 'taskset -C
+$isolated_cpus', that is why I add one blk-mq module parameter,
+but the module parameter can be removed, just with two extra effects
+if block IOs are submitted from isolated CPUs:
+
+- driver's ->queue_rq() can be queued on other CPU or UNBOUND CPU,
+which looks fine
+
+- IO timeout may be triggered during cpu hotplug, but this way had
+been long time, maybe not one big deal too.
+
+I appreciate that any specific suggestions about dealing with isolated CPUs
+generically for bound WQ can be shared.
+
+Thanks,
+Ming
 
