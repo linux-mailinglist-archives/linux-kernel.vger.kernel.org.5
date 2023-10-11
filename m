@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4384C7C5A3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 19:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 022137C5A40
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 19:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231956AbjJKR3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 13:29:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56116 "EHLO
+        id S232761AbjJKR3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 13:29:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232935AbjJKR24 (ORCPT
+        with ESMTP id S234775AbjJKR26 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 13:28:56 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F334CF
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 10:28:50 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59f53027158so1511737b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 10:28:50 -0700 (PDT)
+        Wed, 11 Oct 2023 13:28:58 -0400
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49527E4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 10:28:54 -0700 (PDT)
+Received: by mail-wm1-x349.google.com with SMTP id 5b1f17b1804b1-3fef3606d8cso905025e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 10:28:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697045330; x=1697650130; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1697045332; x=1697650132; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EUuowLQEHtueWkSmI3PIONUYZaGpPfHdjQmX4c0/CJc=;
-        b=PAj1Z2H9DehBkak10cPDBMh5PzR6Hi8h0FKdgoT9fCIBuHIabnDNDobpp/x+F6KJHO
-         sxoQxt9Pz3JpsWpVrT86Jj8rmfTQPmyafUqJWWKse7OD2jxgzij1rKNMshFLL0iieKxq
-         MvC31J8WLSaFLTeMyW+F2BiPi2BPmq131J+qnJ3G4VxkvnZP8+gfR+OQ+i0L1vUH8W9X
-         0vruZMfK/LY9aC2lK575F9ZhutGxqLy2g/AAwYDLupDJwGjWEOwJX2z29QjtHVoNdIOE
-         dHD9oKxMI+vCFpTygZN4RR2KVxCAgbsEvC4B1cSOf3TzOQONBoGlzT2x6ZaezTdqNnlD
-         asjg==
+        bh=d0oYxUnYeCBDJHW3wtaOOjZQ2/WDxieH8mWhqyofNIc=;
+        b=ithdIOqrIodK13CHlncs9BJe5foSBmVymqOaqmBNxttt5ESjqAowdzFDqWNX7Nx5zv
+         /C2txIIkg0DsU8EdYEfBMTSsXW3i9CMAX+rS/7maldxGeYmvY5os5DfX3U7GPcI2T9aB
+         P1Vyj8N9zZEiOJzkkMPsUsS1nTTeG6bhPlLwZDW5/7kcY1bcT+dVG7dpU9JqtPFx0w0M
+         82pJm1rGmgrpMttA76/fRADGIokVnznNUzAWiTPs7hFEe6RaoSAEnz4bd2qyRqYOrXfG
+         jc+Oe/G7J+0cSYXHPdXyxOl6c/mvYrJugHGuM1vGb6RaAiYvKBlXtNBW3pEpnAU6ZXL7
+         3fjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697045330; x=1697650130;
+        d=1e100.net; s=20230601; t=1697045332; x=1697650132;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EUuowLQEHtueWkSmI3PIONUYZaGpPfHdjQmX4c0/CJc=;
-        b=UlkGJUNS5tJCHevnkbWgBVVy/IAgGOSotF/b3Wry3qTcYUIdhe4VH/ugrNCQJcWpgD
-         zak8uuFcxbHOKMCYG3Iq+TG+39kthSk6E+2XmfQfc77IeoeGIw86yADndb3yo6G+7IJc
-         5k+hJyd1IEM8WQe5VsJ4I7hJYy3iaHONSvQBHqcfEXpeKsglpMrnnMHz7InEFiKPeyQy
-         h7cRgmJOgfssCumxJrilg4jkhJTvOq6A2hi7omaTzsYvSwBRjknI5q+/cVqj7SxOyIwo
-         caRKeC89DxAaRKU+2giw3pDPBZYh87sE1J+ogwhsU1Ao5e1baPL3SHzbMC22//nYN3Ts
-         1CRA==
-X-Gm-Message-State: AOJu0YxS+TzipRMA7mv2EghvtHXnDSTyzkgW4Rs3VbfWkxOhKtxZhy+G
-        PQl9vAlZwL++d6FCdrykYzRJutCt7fQ=
-X-Google-Smtp-Source: AGHT+IEpOItCdRA3SWM/HtI1w+jssUCJ7DCaEHUoC0/b/tGd2WDCDcNJ8HeOQHB9KoTIk3o8VOEyudATAB0=
+        bh=d0oYxUnYeCBDJHW3wtaOOjZQ2/WDxieH8mWhqyofNIc=;
+        b=oCytQ097kwMRna4rCG6Wok0688GdheE6VlB2JoLf8dtF5c4EjyLC2doYKQhBBTZQIp
+         lt7IAEt3nCmdkCFpW0B7hFurgzuAlnciiI+eF4F0GePHYLhG3ikNKbVn9TDyREIUT8V4
+         nS3g2ZQngMLVmemqUJ9uQ+Q9oFdXAkOLIhsKSlR22mDrpQqsR05OjgHy8p+fwTNSJX3A
+         VP56jupcKkp97zKquw68aPXFTxPphBxDRJXSP8VXtKq28gSFw18/420f9HnWoaOsI0em
+         nquh9pjLonVZG9OIdr9SmfAhtsGbGTHqNSxTw7sZLSCw/AaoRA8NAmY4yy8SuW/7y+g/
+         p1ZQ==
+X-Gm-Message-State: AOJu0YwndryrupuEUzVaLFeA9cujPlurvugtQtDhILJv2Z1Eq3b1VFuB
+        1PqGZ6Eyr4sV3RsRFMKhBx2m2tIgzwo=
+X-Google-Smtp-Source: AGHT+IHVdw0lrAWhyovS3HT/fiW/+aVOB61YYMPuvjXo/TJheKO3xJHCBJWyinUIIpzauXHqps8aCNQMgEI=
 X-Received: from glider.muc.corp.google.com ([2a00:79e0:9c:201:fe58:8292:66f9:d221])
- (user=glider job=sendgmr) by 2002:a25:bccb:0:b0:d9a:61ca:7c7a with SMTP id
- l11-20020a25bccb000000b00d9a61ca7c7amr106888ybm.11.1697045329761; Wed, 11 Oct
- 2023 10:28:49 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 19:28:33 +0200
+ (user=glider job=sendgmr) by 2002:a05:6000:1c7:b0:32d:898f:8f7b with SMTP id
+ t7-20020a05600001c700b0032d898f8f7bmr18466wrx.3.1697045332505; Wed, 11 Oct
+ 2023 10:28:52 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 19:28:34 +0200
 In-Reply-To: <20231011172836.2579017-1-glider@google.com>
 Mime-Version: 1.0
 References: <20231011172836.2579017-1-glider@google.com>
 X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
-Message-ID: <20231011172836.2579017-4-glider@google.com>
-Subject: [PATCH v7 3/5] arm64: mte: implement CONFIG_ARM64_MTE_COMP
+Message-ID: <20231011172836.2579017-5-glider@google.com>
+Subject: [PATCH v7 4/5] arm64: mte: add a test for MTE tags compression
 From:   Alexander Potapenko <glider@google.com>
 To:     glider@google.com, catalin.marinas@arm.com, will@kernel.org,
         pcc@google.com, andreyknvl@gmail.com,
@@ -72,970 +72,471 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The config implements the algorithm compressing memory tags for ARM MTE
-during swapping.
+Ensure that tag sequences containing alternating values are compressed
+to buffers of expected size and correctly decompressed afterwards.
 
-The algorithm is based on RLE and specifically targets buffers of tags
-corresponding to a single page. In the common case a buffer can be
-compressed into 63 bits, making it possible to store it without
-additional memory allocation.
-
-Suggested-by: Evgenii Stepanov <eugenis@google.com>
 Signed-off-by: Alexander Potapenko <glider@google.com>
 
 ---
  v6:
-  - shuffle bits in inline handles so that they can't be confused with
-    canonical pointers;
-  - use kmem_cache_zalloc() to allocate compressed storage
-  - correctly handle range size overflow
-  - minor documentation fixes, clarify the special cases
+  - add test_decompress_invalid() to ensure invalid handles are ignored;
+  - add test_upper_bits(), which is a regression test for a case where
+    an inline handle looked like an out-of-line one;
+  - add test_compress_nonzero() to ensure a full nonzero tag array is
+    compressed correctly;
+  - add test_two_ranges() to test cases when the input buffer is divided
+    into two ranges.
 
  v5:
-  - make code PAGE_SIZE-agnostic, remove hardcoded constants, updated
-    the docs
-  - implement debugfs interface
-  - Address comments by Andy Shevchenko:
-    - update description of mtecomp.c
-    - remove redundant assignments, simplify mte_tags_to_ranges()
-    - various code simplifications
-    - introduce mtecomp.h
-    - add :export: to Documentation/arch/arm64/mte-tag-compression.rst
+  - remove hardcoded constants, added test setup/teardown;
+  - support 16- and 64K pages;
+  - replace nested if-clauses with expected_size_from_ranges();
+  - call mte_release_handle() after tests that perform
+    compression/decompression;
+  - address comments by Andy Shevchenko:
+    - fix include order;
+    - use mtecomp.h instead of function prototypes.
 
  v4:
-  - Addressed comments by Andy Shevchenko:
-    - expanded "MTE" to "Memory Tagging Extension" in Kconfig
-    - fixed kernel-doc comments, moved them to C source
-    - changed variables to unsigned where applicable
-    - some code simplifications, fewer unnecessary assignments
-    - added the mte_largest_idx_bits() helper
-    - added namespace prefixes to all functions
-    - added missing headers (but removed bits.h)
-  - Addressed comments by Yury Norov:
-    - removed test-only functions from mtecomp.h
-    - dropped the algoritm name (all functions are now prefixed with
-      "mte")
-    - added more comments
-    - got rid of MTE_RANGES_INLINE
-    - renamed bitmap_{get,set}_value() to bitmap_{read,write}()
-    - moved the big comment explaining the algorithm to
-      Documentation/arch/arm64/mte-tag-compression.rst, expanded it,
-      add a link to it from Documentation/arch/arm64/index.rst
-    - removed hardcoded ranges from mte_alloc_size()/mte_size_to_ranges()
+  - addressed comments by Andy Shevchenko:
+    - expanded MTE to "Memory Tagging Extension" in Kconfig
+    - changed signed variables to unsigned where applicable
+    - added missing header dependencies
+
+  - addressed comments by Yury Norov:
+    - moved test-only declarations from mtecomp.h into this test
+    - switched to the new "mte"-prefixed function names, dropped the
+      mentions of "EA0"
+    - added test_tag_to_ranges_n()
 
  v3:
-  - Addressed comments by Andy Shevchenko:
-   - use bitmap_{set,get}_value() writte by Syed Nayyar Waris
-   - switched to unsigned long everywhere (fewer casts)
-   - simplified the code, removed redundant checks
-   - dropped ea0_compress_inline()
- - added bit size constants and helpers to access the bitmap
- - explicitly initialize all compressed sizes in ea0_compress_to_buf()
- - initialize all handle bits
-
- v2:
-  - as suggested by Yury Norov, switched from struct bitq (which is
-    not needed anymore) to <linux/bitmap.h>
-  - add missing symbol exports
+  - addressed comments by Andy Shevchenko in another patch:
+   - switched from u64 to unsigned long
+   - added MODULE_IMPORT_NS(MTECOMP)
+   - fixed includes order
 ---
- Documentation/arch/arm64/index.rst            |   1 +
- .../arch/arm64/mte-tag-compression.rst        | 266 +++++++++
- arch/arm64/Kconfig                            |  11 +
- arch/arm64/include/asm/mtecomp.h              |  13 +
- arch/arm64/mm/Makefile                        |   1 +
- arch/arm64/mm/mtecomp.c                       | 524 ++++++++++++++++++
- arch/arm64/mm/mtecomp.h                       |  12 +
- 7 files changed, 828 insertions(+)
- create mode 100644 Documentation/arch/arm64/mte-tag-compression.rst
- create mode 100644 arch/arm64/include/asm/mtecomp.h
- create mode 100644 arch/arm64/mm/mtecomp.c
- create mode 100644 arch/arm64/mm/mtecomp.h
+ arch/arm64/Kconfig           |  10 +
+ arch/arm64/mm/Makefile       |   1 +
+ arch/arm64/mm/test_mtecomp.c | 377 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 388 insertions(+)
+ create mode 100644 arch/arm64/mm/test_mtecomp.c
 
-diff --git a/Documentation/arch/arm64/index.rst b/Documentation/arch/arm64/index.rst
-index d08e924204bf1..bf6c1583233a9 100644
---- a/Documentation/arch/arm64/index.rst
-+++ b/Documentation/arch/arm64/index.rst
-@@ -19,6 +19,7 @@ ARM64 Architecture
-     legacy_instructions
-     memory
-     memory-tagging-extension
-+    mte-tag-compression
-     perf
-     pointer-authentication
-     ptdump
-diff --git a/Documentation/arch/arm64/mte-tag-compression.rst b/Documentation/arch/arm64/mte-tag-compression.rst
-new file mode 100644
-index 0000000000000..05022c3f67d74
---- /dev/null
-+++ b/Documentation/arch/arm64/mte-tag-compression.rst
-@@ -0,0 +1,266 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+==================================================
-+Tag Compression for Memory Tagging Extension (MTE)
-+==================================================
-+
-+This document describes the algorithm used to compress memory tags used by the
-+ARM Memory Tagging Extension (MTE)
-+
-+Introduction
-+============
-+
-+MTE assigns tags to memory pages: for 4K pages those tags occupy 128 bytes
-+(256 4-bit tags each corresponding to a 16-byte MTE granule), for 16K pages -
-+512 bytes, for 64K pages - 2048 bytes. By default, MTE carves out 3.125% (1/16)
-+of the available physical memory to store the tags.
-+
-+When MTE pages are saved to swap, their tags need to be stored in the kernel
-+memory. If the system swap is used heavily, these tags may take a substantial
-+portion of the physical memory. To reduce memory waste,
-+``CONFIG_ARM64_MTE_COMP`` allows the kernel to store the tags in compressed
-+form.
-+
-+Implementation details
-+======================
-+
-+The algorithm attempts to compress an array of ``MTE_PAGE_TAG_STORAGE``
-+tag bytes into a byte sequence that can be stored in one of the smaller size
-+class allocations (for 4K pages those are 16-, 32-, or 64-byte allocations).
-+A special case is storing the tags inline in an 8-byte pointer.
-+
-+Tag manipulation and storage
-+----------------------------
-+
-+Tags for swapped pages are stored in an XArray that maps swap entries to 63-bit
-+values (see ``arch/arm64/mm/mteswap.c``). In the case when
-+``CONFIG_ARM64_MTE_COMP=n``, these values contain pointers to uncompressed
-+buffers allocated with kmalloc(). Otherwise, they are 63-bit handles used by the
-+functions declared in ``arch/arm64/include/asm/mtecomp.h``:
-+
-+- mte_compress() compresses the given ``MTE_PAGE_TAG_STORAGE``-byte ``tags``
-+  buffer, allocates storage for it, and returns an opaque handle addressing
-+  that storage;
-+- mte_decompress() decompresses the tags addressed by ``handle``
-+  and fills the ``MTE_PAGE_TAG_STORAGE``-byte ``tags`` buffer;
-+- mte_release_handle() releases the storage handle returned by
-+  mte_compress() (so that this handle cannot be used anymore);
-+- mte_storage_size() calculates the size occupied by the tags addressed
-+  by ``handle``.
-+
-+Depending on the size of compressed data, mte_compress() stores it in one of
-+the size classes backed by kmem caches: ``mte-tags-{16,32,64,128}`` for the
-+4K-page case (``mte-tags-128`` being used for the data that cannot be compressed
-+into 64 bytes and is stored uncompressed).
-+A practical common case allows the tags to be compressed into 8 bytes - then
-+they are stored in the handle itself.
-+
-+Handle format
-+-------------
-+
-+The handle returned by mte_compress() is an ``unsigned long`` that has its
-+bit 63 set to 0 (XArray entries must not exceed ``LONG_MAX``)::
-+
-+   63  62    60  ...   2         0
-+  +---+--------+-----+------------+
-+  | 0 | INLINE | ... |  SIZE_LOG  |
-+  +---+--------+-----+------------+
-+
-+Bits ``62..60`` is the inline/out-of-line marker: if they all are set to 1, the
-+data is stored out-of-line in the buffer pointed to by
-+``(handle | BIT(63)) & ~7UL``. Otherwise, the data is stored inline in the
-+handle itself.
-+
-+Bits ``2..0`` denote the size for out-of-line allocations::
-+
-+  size = 16 << (handle & 0b111)
-+
-+
-+Tag compression
-+---------------
-+
-+The compression algorithm is a variation of RLE (run-length encoding) and works
-+as follows (we'll be considering 4K pages and 128-byte tag buffers, but the same
-+approach scales to 16- and 64K pages):
-+
-+1. The input array of 128 (``MTE_PAGE_TAG_STORAGE``) bytes is transformed into
-+   tag ranges (two arrays: ``r_tags[]`` containing tag values and ``r_sizes[]``
-+   containing range lengths) by mte_tags_to_ranges(). Note that
-+   ``r_sizes[]`` sums up to 256 (``MTE_GRANULES_PER_PAGE``).
-+
-+   If ``r_sizes[]`` consists of a single element (``MTE_GRANULES_PER_PAGE``),
-+   the corresponding range is split into two halves, i.e.::
-+
-+     r_sizes_new[2] = { MTE_GRANULES_PER_PAGE / 2, MTE_GRANULES_PER_PAGE / 2 };
-+     r_tags_new[2] = { r_tags[0], r_tags[0] };
-+
-+2. The number of the largest element of ``r_sizes[]`` is stored in
-+   ``largest_idx``. The element itself is thrown away from ``r_sizes[]``,
-+   because it can be reconstructed from the sum of the remaining elements. Note
-+   that now none of the remaining ``r_sizes[]`` elements exceeds
-+   ``MTE_GRANULES_PER_PAGE / 2``.
-+
-+3. Depending on the number ``N`` of ranges, a storage class is picked::
-+
-+           N <= 6:  8 bytes (inline case, no allocation required);
-+      6 < N <= 11: 16 bytes
-+     11 < N <= 23: 32 bytes
-+     23 < N <= 46: 64 bytes
-+     46 < N:       128 bytes (no compression will be performed)
-+
-+  (See `Why these numbers?`_ below).
-+
-+4. For the inline case, the following values are stored packed in the 8-byte
-+   handle (``i<size>`` means a ``<size>``-bit unsigned integer) treated as a
-+   bitmap (see ``include/linux/bitmap.h``)::
-+
-+      largest_idx : i4
-+     r_tags[0..5] : i4 x 6
-+    r_sizes[0..4] : i7 x 5
-+
-+   (if N is less than 6, ``r_tags`` and ``r_sizes`` are padded up with zero
-+   values)
-+
-+   Bitmaps are written from lower bits to higher ones, so the order of the
-+   records in the actual 8-byte handle is reversed. Therefore an additional
-+   transformation is applied to bring largest_idx to bits ``63..60``.
-+   Because ``largest_idx`` is <= 5, bit 63 of the handle is now always 0 (so the
-+   handle can be stored in an Xarray), and bits ``62..60`` cannot all be 1 (so
-+   the handle can be distinguished from a kernel pointer).
-+
-+5. For the out-of-line case, the storage is allocated from one of the
-+   ``mte-tags-{16,32,64,128}`` kmem caches. The resulting pointer is aligned
-+   on 8 bytes, so its bits 2..0 can be used to store the size class (see above).
-+
-+   Bit 63 of the pointer is zeroed out, so that it can be stored in XArray.
-+
-+6. The data layout in the allocated storage is as follows::
-+
-+        largest_idx : i6
-+       r_tags[0..N] : i4 x N
-+    r_sizes[0..N-1] : i7 x (N-1)
-+
-+   Range size of ``MTE_GRANULES_PER_PAGE / 2`` (at most one) does not fit into
-+   i7 and will be written as 0. This case is handled separately by the
-+   decompressing procedure.
-+
-+Tag decompression
-+-----------------
-+
-+The decompression algorithm performs the steps below.
-+
-+1. Decide if data is stored inline (bits ``62..60`` of the handle ``!= 0b111``)
-+   or out-of line.
-+
-+2. For the inline case:
-+  1. Move the top four bits back to the end of the handle.
-+  2. Treat the handle itself as the input buffer.
-+
-+3. For the out-of-line case, look at bits ``2..0`` of the handle to understand
-+   the input buffer length. To obtain the pointer to the input buffer, unset
-+   bits ``2..0`` of the handle and set bit ``63``.
-+
-+4. If the input buffer is 128 byte long, copy its contents to the output
-+   buffer.
-+
-+5. Otherwise, read ``largest_idx``, ``r_tags[]`` and ``r_sizes[]`` from the
-+   input buffer.
-+
-+   If ``largest_idx`` is zero, and all ``r_sizes[]`` are zero, set
-+   ``r_sizes[0] = MTE_GRANULES_PER_PAGE / 2``.
-+
-+   Calculate the removed largest element of ``r_sizes[]`` as
-+   ``largest = 256 - sum(r_sizes)`` and insert it into ``r_sizes`` at
-+   position ``largest_idx``.
-+
-+6. For each ``r_sizes[i] > 0``, add a 4-bit value ``r_tags[i]`` to the output
-+   buffer ``r_sizes[i]`` times.
-+
-+
-+Why these numbers?
-+------------------
-+
-+To be able to reconstruct N tag ranges from the compressed data, we need to
-+store ``largest_idx``, ``r_tags[N]``, and ``r_sizes[N-1]``. Knowing that the
-+sizes do not exceed ``MTE_PAGE_TAG_STORAGE``, those can be packed into
-+``S = ilog2(MTE_PAGE_TAG_STORAGE)`` bits, whereas a single tag occupies
-+4 bits, and ``largest_idx`` cannot take more than
-+``Lmax = ilog2(MTE_GRANULES_PER_PAGE)`` bits.
-+
-+Now, for each ``B``-byte size class it is possible to find the maximal number
-+``M`` such as ``Lmax + 4 * M + S * (M - 1) <= 8 * B``,
-+i.e. ``M = (8 * B - 1) / 11``::
-+
-+ 4K pages: S = 7
-+ +-------------+----+--------------+
-+ | Buffer size |  M | Storage bits |
-+ +-------------+----+--------------+
-+ |          8  |  5 |          56  |
-+ |         16  | 11 |         122  |
-+ |         32  | 23 |         254  |
-+ |         64  | 46 |         507  |
-+ +-------------+----+--------------+
-+
-+We can notice that ``M`` (and therefore ``largest_idx``) actually always fits
-+into 6 bits. For the inline case it is even guaranteed to fit into 3 bits, which
-+lets us squeeze an extra range into a 8-byte buffer. Because the inline case
-+requires bit 63 of the handle to be zero, we add that bit to ``largest_idx``,
-+knowing it will not be used.
-+
-+For the revised ``largest_idx`` sizes, we now pick the maximal number ``N``
-+such as ``(L + 4 * N + 7 * (N - 1) <= 8 * S``, where ``L = 4`` in the inline
-+case and ``L = 6`` otherwise.
-+In other words, ``N = (8 * S + 7 - L) / 11``, therefore::
-+
-+  4K pages: S = 7, L_i = 4, L_o = 6
-+  +-------------+----+--------------+
-+  | Buffer size |  N | Storage bits |
-+  +-------------+----+--------------+
-+  |          8  |  6 |          63  |
-+  |         16  | 11 |         120  |
-+  |         32  | 23 |         252  |
-+  |         64  | 46 |         505  |
-+  +-------------+----+--------------+
-+
-+Similarly, for other page sizes::
-+
-+  16K pages: S = 9, L_i = 4, L_o = 8
-+  +-------------+-----+--------------+
-+  | Buffer size |  N  | Storage bits |
-+  +-------------+-----+--------------+
-+  |          8  |   5 |          60  |
-+  |         16  |   9 |         116  |
-+  |         32  |  19 |         246  |
-+  |         64  |  39 |         506  |
-+  |        128  |  78 |        1013  |
-+  |        256  | 157 |        2040  |
-+  +-------------+-----+--------------+
-+
-+  64K pages: S = 11, L_i = 4, L_o = 10
-+  +-------------+-----+--------------+
-+  | Buffer size |  N  | Storage bits |
-+  +-------------+-----+--------------+
-+  |          8  |   4 |          53  |
-+  |         16  |   8 |         119  |
-+  |         32  |  17 |         254  |
-+  |         64  |  34 |         509  |
-+  |        128  |  68 |        1019  |
-+  |        256  | 136 |        2039  |
-+  |        512  | 273 |        4094  |
-+  |       1024  | 546 |        8189  |
-+  +-------------+-----+--------------+
-+
-+
-+Note
-+----
-+
-+Tag compression and decompression implicitly rely on the fixed MTE tag size
-+(4 bits) and number of tags per page. Should these values change, the algorithm
-+may need to be revised.
-+
-+
-+Programming Interface
-+=====================
-+
-+ .. kernel-doc:: arch/arm64/mm/mtecomp.c
-+   :export:
 diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index a2511b30d0f67..d4fb3b8d11d77 100644
+index d4fb3b8d11d77..ffe3bec89df82 100644
 --- a/arch/arm64/Kconfig
 +++ b/arch/arm64/Kconfig
-@@ -2093,6 +2093,17 @@ config ARM64_EPAN
- 	  if the cpu does not implement the feature.
- endmenu # "ARMv8.7 architectural features"
+@@ -2104,6 +2104,16 @@ config ARM64_MTE_COMP
+ 	  RLE to conserve heap memory. In the common case compressed tags
+ 	  occupy 2.5x less memory.
  
-+config ARM64_MTE_COMP
-+	bool "Tag compression for ARM64 Memory Tagging Extension"
-+	default y
-+	depends on ARM64_MTE
++config ARM64_MTE_COMP_KUNIT_TEST
++	tristate "Test tag compression for ARM64 Memory Tagging Extension" if !KUNIT_ALL_TESTS
++	default KUNIT_ALL_TESTS
++	depends on KUNIT && ARM64_MTE_COMP
 +	help
-+	  Enable tag compression support for ARM64 Memory Tagging Extension.
++	  Test MTE compression algorithm enabled by CONFIG_ARM64_MTE_COMP.
 +
-+	  Tag buffers corresponding to swapped RAM pages are compressed using
-+	  RLE to conserve heap memory. In the common case compressed tags
-+	  occupy 2.5x less memory.
++	  Ensure that tag sequences containing alternating values are compressed
++	  to buffers of expected size and correctly decompressed afterwards.
 +
  config ARM64_SVE
  	bool "ARM Scalable Vector Extension support"
  	default y
-diff --git a/arch/arm64/include/asm/mtecomp.h b/arch/arm64/include/asm/mtecomp.h
-new file mode 100644
-index 0000000000000..71552bc429882
---- /dev/null
-+++ b/arch/arm64/include/asm/mtecomp.h
-@@ -0,0 +1,13 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef __ASM_MTECOMP_H
-+#define __ASM_MTECOMP_H
-+
-+#include <linux/types.h>
-+
-+unsigned long mte_compress(u8 *tags);
-+bool mte_decompress(unsigned long handle, u8 *tags);
-+void mte_release_handle(unsigned long handle);
-+size_t mte_storage_size(unsigned long handle);
-+
-+#endif // __ASM_MTECOMP_H
 diff --git a/arch/arm64/mm/Makefile b/arch/arm64/mm/Makefile
-index dbd1bc95967d0..46778f6dd83c2 100644
+index 46778f6dd83c2..170dc62b010b9 100644
 --- a/arch/arm64/mm/Makefile
 +++ b/arch/arm64/mm/Makefile
-@@ -10,6 +10,7 @@ obj-$(CONFIG_TRANS_TABLE)	+= trans_pgd.o
- obj-$(CONFIG_TRANS_TABLE)	+= trans_pgd-asm.o
+@@ -11,6 +11,7 @@ obj-$(CONFIG_TRANS_TABLE)	+= trans_pgd-asm.o
  obj-$(CONFIG_DEBUG_VIRTUAL)	+= physaddr.o
  obj-$(CONFIG_ARM64_MTE)		+= mteswap.o
-+obj-$(CONFIG_ARM64_MTE_COMP)	+= mtecomp.o
+ obj-$(CONFIG_ARM64_MTE_COMP)	+= mtecomp.o
++obj-$(CONFIG_ARM64_MTE_COMP_KUNIT_TEST) += test_mtecomp.o
  KASAN_SANITIZE_physaddr.o	+= n
  
  obj-$(CONFIG_KASAN)		+= kasan_init.o
-diff --git a/arch/arm64/mm/mtecomp.c b/arch/arm64/mm/mtecomp.c
+diff --git a/arch/arm64/mm/test_mtecomp.c b/arch/arm64/mm/test_mtecomp.c
 new file mode 100644
-index 0000000000000..73e319f1f30da
+index 0000000000000..8fe50a214b38c
 --- /dev/null
-+++ b/arch/arm64/mm/mtecomp.c
-@@ -0,0 +1,524 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
++++ b/arch/arm64/mm/test_mtecomp.c
+@@ -0,0 +1,377 @@
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * MTE tag compression algorithm.
-+ * See Documentation/arch/arm64/mte-tag-compression.rst for more details.
++ * Test cases for MTE tags compression algorithm.
 + */
 +
 +#include <linux/bits.h>
-+#include <linux/bitmap.h>
-+#include <linux/bitops.h>
-+#include <linux/debugfs.h>
-+#include <linux/export.h>
-+#include <linux/gfp.h>
 +#include <linux/module.h>
 +#include <linux/slab.h>
 +#include <linux/string.h>
 +#include <linux/types.h>
 +
++#include <kunit/test.h>
++
 +#include <asm/mtecomp.h>
 +
 +#include "mtecomp.h"
 +
-+/* The handle must fit into an Xarray value. */
-+#define MTE_HANDLE_MASK GENMASK_ULL(62, 0)
-+
-+/* Out-of-line handles have 0b111 in bits 62..60. */
-+#define MTE_NOINLINE_MASK GENMASK_ULL(62, 60)
-+
-+/* Cache index is stored in the lowest pointer bits. */
-+#define MTE_CACHE_ID_MASK GENMASK_ULL(2, 0)
-+
-+/* Caches start at mte-tags-16 and go up to mte-tags-MTE_PAGE_TAG_STORAGE. */
-+#define MTECOMP_NUM_CACHES ilog2(MTE_PAGE_TAG_STORAGE / 8)
-+static struct kmem_cache *mtecomp_caches[MTECOMP_NUM_CACHES];
-+/*
-+ * [0] - store the numbers of created/released inline handles;
-+ * [1..MTECOMP_NUM_CACHES] - store the number of allocations/deallocations from
-+ *                           mtecomp_caches.
-+ */
-+static atomic_long_t alloc_counters[MTECOMP_NUM_CACHES + 1];
-+static atomic_long_t dealloc_counters[MTECOMP_NUM_CACHES + 1];
++/* Per-test storage allocated in mtecomp_test_init(). */
++struct test_data {
++	u8 *tags, *dtags;
++	unsigned short *r_sizes;
++	size_t r_len;
++	u8 *r_tags;
++};
 +
 +/*
-+ * Largest number of ranges, for which compressed data fits into 63 bits, can
-+ * be encoded with 4 bits.
++ * Split td->tags to ranges stored in td->r_tags, td->r_sizes, td->r_len,
++ * then convert those ranges back to tags stored in td->dtags.
 + */
-+#define MTE_BITS_PER_LARGEST_IDX_INLINE 4
++static void tags_to_ranges_to_tags_helper(struct kunit *test)
++{
++	struct test_data *td = test->priv;
++
++	mte_tags_to_ranges(td->tags, td->r_tags, td->r_sizes, &td->r_len);
++	mte_ranges_to_tags(td->r_tags, td->r_sizes, td->r_len, td->dtags);
++	KUNIT_EXPECT_EQ(test, memcmp(td->tags, td->dtags, MTE_PAGE_TAG_STORAGE),
++			0);
++}
++
 +/*
-+ * In the worst case every tag is different, then largest index can be up to
-+ * MTE_GRANULES_PER_PAGE.
++ * Test that mte_tags_to_ranges() produces a single range for a zero-filled tag
++ * buffer.
 + */
-+#define MTE_BITS_PER_LARGEST_IDX ilog2(MTE_GRANULES_PER_PAGE)
-+/* Range size cannot exceed MTE_GRANULES_PER_PAGE / 2. */
-+#define MTE_BITS_PER_SIZE (MTE_BITS_PER_LARGEST_IDX - 1)
-+
-+/* Translate allocation size into mtecomp_caches[] index. */
-+static unsigned int mte_size_to_cache_id(size_t len)
++static void test_tags_to_ranges_zero(struct kunit *test)
 +{
-+	return fls(len) - 5;
++	struct test_data *td = test->priv;
++
++	memset(td->tags, 0, MTE_PAGE_TAG_STORAGE);
++	tags_to_ranges_to_tags_helper(test);
++
++	KUNIT_EXPECT_EQ(test, td->r_len, 1);
++	KUNIT_EXPECT_EQ(test, td->r_tags[0], 0);
++	KUNIT_EXPECT_EQ(test, td->r_sizes[0], MTE_GRANULES_PER_PAGE);
 +}
 +
-+/* Translate mtecomp_caches[] index into allocation size. */
-+static size_t mte_cache_id_to_size(unsigned int id)
++/*
++ * Test that a small number of different tags is correctly transformed into
++ * ranges.
++ */
++static void test_tags_to_ranges_simple(struct kunit *test)
 +{
-+	return 16 << id;
++	struct test_data *td = test->priv;
++	const u8 ex_tags[] = { 0xa, 0x0, 0xa, 0xb, 0x0 };
++	const unsigned short ex_sizes[] = { 1, 2, 2, 1,
++					    MTE_GRANULES_PER_PAGE - 6 };
++
++	memset(td->tags, 0, MTE_PAGE_TAG_STORAGE);
++	td->tags[0] = 0xa0;
++	td->tags[1] = 0x0a;
++	td->tags[2] = 0xab;
++	tags_to_ranges_to_tags_helper(test);
++
++	KUNIT_EXPECT_EQ(test, td->r_len, 5);
++	KUNIT_EXPECT_EQ(test, memcmp(td->r_tags, ex_tags, sizeof(ex_tags)), 0);
++	KUNIT_EXPECT_EQ(test, memcmp(td->r_sizes, ex_sizes, sizeof(ex_sizes)),
++			0);
 +}
 +
-+/**
-+ * mte_tags_to_ranges() - break @tags into arrays of tag ranges.
-+ * @tags: MTE_GRANULES_PER_PAGE-byte array containing MTE tags.
-+ * @out_tags: u8 array to store the tag of every range.
-+ * @out_sizes: unsigned short array to store the size of every range.
-+ * @out_len: length of @out_tags and @out_sizes (output parameter, initially
-+ *           equal to lengths of out_tags[] and out_sizes[]).
-+ */
-+void mte_tags_to_ranges(u8 *tags, u8 *out_tags, unsigned short *out_sizes,
-+			size_t *out_len)
++/* Test that repeated 0xa0 byte produces MTE_GRANULES_PER_PAGE ranges of length 1. */
++static void test_tags_to_ranges_repeated(struct kunit *test)
 +{
-+	u8 prev_tag = tags[0] / 16; /* First tag in the array. */
-+	unsigned int cur_idx = 0, i, j;
-+	u8 cur_tag;
++	struct test_data *td = test->priv;
 +
-+	memset(out_tags, 0, array_size(*out_len, sizeof(*out_tags)));
-+	memset(out_sizes, 0, array_size(*out_len, sizeof(*out_sizes)));
++	memset(td->tags, 0xa0, MTE_PAGE_TAG_STORAGE);
++	tags_to_ranges_to_tags_helper(test);
 +
-+	out_tags[cur_idx] = prev_tag;
-+	for (i = 0; i < MTE_GRANULES_PER_PAGE; i++) {
-+		j = i % 2;
-+		cur_tag = j ? (tags[i / 2] % 16) : (tags[i / 2] / 16);
-+		if (cur_tag == prev_tag) {
-+			out_sizes[cur_idx]++;
-+		} else {
-+			cur_idx++;
-+			prev_tag = cur_tag;
-+			out_tags[cur_idx] = prev_tag;
-+			out_sizes[cur_idx] = 1;
-+		}
-+	}
-+	*out_len = cur_idx + 1;
++	KUNIT_EXPECT_EQ(test, td->r_len, MTE_GRANULES_PER_PAGE);
 +}
-+EXPORT_SYMBOL_NS(mte_tags_to_ranges, MTECOMP);
 +
-+/**
-+ * mte_ranges_to_tags() - fill @tags using given tag ranges.
-+ * @r_tags: u8[] containing the tag of every range.
-+ * @r_sizes: unsigned short[] containing the size of every range.
-+ * @r_len: length of @r_tags and @r_sizes.
-+ * @tags: MTE_GRANULES_PER_PAGE-byte array to write the tags to.
-+ */
-+void mte_ranges_to_tags(u8 *r_tags, unsigned short *r_sizes, size_t r_len,
-+			u8 *tags)
++/* Generate a buffer that will contain @nranges of tag ranges. */
++static void gen_tag_range_helper(u8 *tags, int nranges)
 +{
-+	unsigned int i, j, pos = 0;
-+	u8 prev;
++	unsigned int i;
 +
-+	for (i = 0; i < r_len; i++) {
-+		for (j = 0; j < r_sizes[i]; j++) {
-+			if (pos % 2)
-+				tags[pos / 2] = (prev << 4) | r_tags[i];
-+			else
-+				prev = r_tags[i];
-+			pos++;
-+		}
++	memset(tags, 0, MTE_PAGE_TAG_STORAGE);
++	if (nranges > 1) {
++		nranges--;
++		for (i = 0; i < nranges / 2; i++)
++			tags[i] = 0xab;
++		if (nranges % 2)
++			tags[nranges / 2] = 0xa0;
 +	}
 +}
-+EXPORT_SYMBOL_NS(mte_ranges_to_tags, MTECOMP);
 +
 +/*
-+ * Translate allocation size into maximum number of ranges that it can hold.
++ * Test that mte_tags_to_ranges()/mte_ranges_to_tags() work for various
++ * r_len values.
++ */
++static void test_tag_to_ranges_n(struct kunit *test)
++{
++	struct test_data *td = test->priv;
++	unsigned int i, j, sum;
++
++	for (i = 1; i <= MTE_GRANULES_PER_PAGE; i++) {
++		gen_tag_range_helper(td->tags, i);
++		tags_to_ranges_to_tags_helper(test);
++		sum = 0;
++		for (j = 0; j < td->r_len; j++)
++			sum += td->r_sizes[j];
++		KUNIT_EXPECT_EQ(test, sum, MTE_GRANULES_PER_PAGE);
++	}
++}
++
++/*
++ * Check that the tag buffer in test->priv can be compressed and decompressed
++ * without changes.
++ */
++static unsigned long compress_decompress_helper(struct kunit *test)
++{
++	struct test_data *td = test->priv;
++	unsigned long handle;
++
++	handle = mte_compress(td->tags);
++	KUNIT_EXPECT_EQ(test, handle & BIT_ULL(63), 0);
++	KUNIT_EXPECT_TRUE(test, mte_decompress(handle, td->dtags));
++	KUNIT_EXPECT_EQ(test, memcmp(td->tags, td->dtags, MTE_PAGE_TAG_STORAGE),
++			0);
++	return handle;
++}
++
++/* Test that a zero-filled array is compressed into inline storage. */
++static void test_compress_zero(struct kunit *test)
++{
++	struct test_data *td = test->priv;
++	unsigned long handle;
++
++	memset(td->tags, 0, MTE_PAGE_TAG_STORAGE);
++	handle = compress_decompress_helper(test);
++	/* Tags are stored inline. */
++	KUNIT_EXPECT_EQ(test, mte_storage_size(handle), 8);
++	mte_release_handle(handle);
++}
++
++/* Test that a 0xaa-filled array is compressed into inline storage. */
++static void test_compress_nonzero(struct kunit *test)
++{
++	struct test_data *td = test->priv;
++	unsigned long handle;
++
++	memset(td->tags, 0xaa, MTE_PAGE_TAG_STORAGE);
++	handle = compress_decompress_helper(test);
++	/* Tags are stored inline. */
++	KUNIT_EXPECT_EQ(test, mte_storage_size(handle), 8);
++	mte_release_handle(handle);
++}
++
++/*
++ * Test that two tag ranges are compressed into inline storage.
 + *
-+ * It is the biggest number N such as:
-+ *   MTE_BITS_PER_LARGEST_IDX_INLINE + MTE_TAG_SIZE * N
-+ *                                   + MTE_BITS_PER_SIZE * (N-1) <= 63 bits,
-+ * for the inline case, or
-+ *   MTE_BITS_PER_LARGEST_IDX
-+ *     + MTE_TAG_SIZE * N + MTE_BITS_PER_SIZE * (N-1) <= tag array size in bits,
-+ * for the out-of line case.
++ * This also covers a special case where both ranges contain
++ * `MTE_GRANULES_PER_PAGE / 2` tags and overflow the designated range size.
 + */
-+static size_t mte_size_to_ranges(size_t size)
++static void test_two_ranges(struct kunit *test)
 +{
-+	size_t largest_bits;
++	struct test_data *td = test->priv;
++	unsigned long handle;
++	unsigned int i;
++	size_t r_len = 2;
++	unsigned char r_tags[2] = { 0xe, 0x0 };
++	unsigned short r_sizes[2];
 +
-+	largest_bits = (size == 8) ? MTE_BITS_PER_LARGEST_IDX_INLINE :
-+				     MTE_BITS_PER_LARGEST_IDX;
-+	return (size * 8 + MTE_BITS_PER_SIZE - largest_bits) /
-+	       (MTE_TAG_SIZE + MTE_BITS_PER_SIZE);
++	for (i = 1; i < MTE_GRANULES_PER_PAGE; i++) {
++		r_sizes[0] = i;
++		r_sizes[1] = MTE_GRANULES_PER_PAGE - i;
++		mte_ranges_to_tags(r_tags, r_sizes, r_len, td->tags);
++		handle = compress_decompress_helper(test);
++		KUNIT_EXPECT_EQ(test, mte_storage_size(handle), 8);
++	}
 +}
 +
-+/* Translate @num_ranges into the allocation size needed to hold them. */
-+static size_t mte_alloc_size(unsigned int num_ranges)
++/*
++ * Test that a very small number of tag ranges ends up compressed into 8 bytes.
++ */
++static void test_compress_simple(struct kunit *test)
 +{
++	struct test_data *td = test->priv;
++	unsigned long handle;
++
++	memset(td->tags, 0, MTE_PAGE_TAG_STORAGE);
++	td->tags[0] = 0xa0;
++	td->tags[1] = 0x0a;
++
++	handle = compress_decompress_helper(test);
++	/* Tags are stored inline. */
++	KUNIT_EXPECT_EQ(test, mte_storage_size(handle), 8);
++	mte_release_handle(handle);
++}
++
++/*
++ * Test that a buffer containing @nranges ranges compresses into @exp_size
++ * bytes and decompresses into the original tag sequence.
++ */
++static void compress_range_helper(struct kunit *test, int nranges,
++				  size_t exp_size)
++{
++	struct test_data *td = test->priv;
++	unsigned long handle;
++
++	gen_tag_range_helper(td->tags, nranges);
++	handle = compress_decompress_helper(test);
++	KUNIT_EXPECT_EQ(test, mte_storage_size(handle), exp_size);
++	mte_release_handle(handle);
++}
++
++static size_t expected_size_from_ranges(unsigned int ranges)
++{
++#if defined CONFIG_ARM64_4K_PAGES
++	unsigned int range_exp[4] = { 6, 11, 23, 46 };
++#elif defined(CONFIG_ARM64_16K_PAGES)
++	unsigned int range_exp[6] = { 5, 9, 19, 39, 78, 157 };
++#elif defined(CONFIG_ARM64_64K_PAGES)
++	unsigned int range_exp[8] = { 4, 8, 17, 34, 68, 136, 273, 546 };
++#endif
++	unsigned int i;
 +	size_t size = 8;
 +
-+	while (size < (1 << MTE_BITS_PER_SIZE)) {
-+		if (num_ranges <= mte_size_to_ranges(size))
++	for (i = 0; i < ARRAY_SIZE(range_exp); i++) {
++		if (ranges <= range_exp[i])
 +			return size;
 +		size <<= 1;
 +	}
 +	return size;
 +}
 +
-+/* Is the data stored inline in the handle itself? */
-+static bool mte_is_inline(unsigned long handle)
-+{
-+	return (handle & MTE_NOINLINE_MASK) != MTE_NOINLINE_MASK;
-+}
-+
-+/**
-+ * mte_storage_size() - calculate the memory occupied by compressed tags.
-+ * @handle: storage handle returned by mte_compress.
-+ *
-+ * Returns: size of the storage used for @handle.
++/*
++ * Test that every number of tag ranges is correctly compressed and
++ * decompressed.
 + */
-+size_t mte_storage_size(unsigned long handle)
++static void test_compress_ranges(struct kunit *test)
 +{
-+	if (mte_is_inline(handle))
-+		return 8;
-+	return mte_cache_id_to_size(handle & MTE_CACHE_ID_MASK);
-+}
-+EXPORT_SYMBOL_NS(mte_storage_size, MTECOMP);
++	size_t exp_size;
++	unsigned int i;
 +
-+static void mte_bitmap_write(unsigned long *bitmap, unsigned long value,
-+			     unsigned long *pos, unsigned long bits)
-+{
-+	bitmap_write(bitmap, value, *pos, bits);
-+	*pos += bits;
-+}
-+
-+static inline unsigned long mte_largest_idx_bits(size_t size)
-+{
-+	if (size == 8)
-+		return MTE_BITS_PER_LARGEST_IDX_INLINE;
-+	return MTE_BITS_PER_LARGEST_IDX;
-+}
-+
-+/* Compress ranges into the buffer that can accommodate up to max_ranges. */
-+static void mte_compress_to_buf(size_t len, u8 *tags, unsigned short *sizes,
-+				unsigned long *bitmap, size_t size)
-+{
-+	unsigned long bit_pos = 0, l_bits;
-+	unsigned int largest_idx, i;
-+	unsigned short largest = 0;
-+	size_t max_ranges;
-+
-+	for (i = 0; i < len; i++) {
-+		if (sizes[i] > largest) {
-+			largest = sizes[i];
-+			largest_idx = i;
-+		}
++	for (i = 1; i <= MTE_GRANULES_PER_PAGE; i++) {
++		exp_size = expected_size_from_ranges(i);
++		compress_range_helper(test, i, exp_size);
 +	}
-+	l_bits = mte_largest_idx_bits(size);
-+	max_ranges = mte_size_to_ranges(size);
-+	mte_bitmap_write(bitmap, largest_idx, &bit_pos, l_bits);
-+	for (i = 0; i < len; i++)
-+		mte_bitmap_write(bitmap, tags[i], &bit_pos, MTE_TAG_SIZE);
-+	if (len == 1) {
-+		/*
-+		 * We are compressing MTE_GRANULES_PER_PAGE of identical tags.
-+		 * Split it into two ranges containing
-+		 * MTE_GRANULES_PER_PAGE / 2 tags, so that it falls into the
-+		 * special case described below.
-+		 */
-+		mte_bitmap_write(bitmap, tags[0], &bit_pos, MTE_TAG_SIZE);
-+		i = 2;
-+	} else {
-+		i = len;
-+	}
-+	for (; i < max_ranges; i++)
-+		mte_bitmap_write(bitmap, 0, &bit_pos, MTE_TAG_SIZE);
-+	/*
-+	 * Most of the time sizes[i] fits into MTE_BITS_PER_SIZE, apart from a
-+	 * special case when:
-+	 *   len = 2;
-+	 *   sizes = { MTE_GRANULES_PER_PAGE / 2, MTE_GRANULES_PER_PAGE / 2};
-+	 * In this case largest_idx will be set to 0, and the size written to
-+	 * the bitmap will be also 0.
-+	 */
-+	for (i = 0; i < len; i++) {
-+		if (i != largest_idx)
-+			mte_bitmap_write(bitmap, sizes[i], &bit_pos,
-+					 MTE_BITS_PER_SIZE);
-+	}
-+	for (i = len; i < max_ranges; i++)
-+		mte_bitmap_write(bitmap, 0, &bit_pos, MTE_BITS_PER_SIZE);
 +}
 +
 +/*
-+ * When storing tags inline in the 64-bit pointer, we want to be able to
-+ * distinguish the resulting values from pointers to out-of-line heap buffers.
-+ * Assuming the latter are canonical kernel pointers, we want largest_idx to be
-+ * stored in the top bits of the handle, whereas it is easier for
-+ * mte_compress_to_buf() to store them at the bottom.
-+ *
-+ * mte_inline_bits_to_handle() rearranges the bits in a 64-bit inline storage so
-+ * that it can never be confused with a canonical pointer.
-+ * mte_handle_to_inline_bits() performs the reverse transformation.
-+ * In the future these can be extended to account for tagged kernel pointers.
++ * Test that invalid handles are ignored by mte_decompress().
 + */
-+static unsigned long mte_inline_bits_to_handle(unsigned long bits)
++static void test_decompress_invalid(struct kunit *test)
 +{
-+	return ror64(bits, MTE_BITS_PER_LARGEST_IDX_INLINE);
-+}
++	unsigned long handle1 = 0xeb0b0b010080402f;
++	unsigned long handle2 = 0x6b0b0b010080402f;
++	struct test_data *td = test->priv;
 +
-+static unsigned long mte_handle_to_inline_bits(unsigned long handle)
-+{
-+	return rol64(handle, MTE_BITS_PER_LARGEST_IDX_INLINE);
-+}
-+
-+/**
-+ * mte_compress() - compress the given tag array.
-+ * @tags: MTE_GRANULES_PER_PAGE-byte array to read the tags from.
-+ *
-+ * Compresses the tags and returns a 64-bit opaque handle pointing to the
-+ * tag storage. May allocate memory, which is freed by @mte_release_handle().
-+ *
-+ * Returns: 64-bit tag storage handle.
-+ */
-+unsigned long mte_compress(u8 *tags)
-+{
-+	struct kmem_cache *cache;
-+	unsigned short *r_sizes;
-+	unsigned long *storage;
-+	unsigned int cache_id;
-+	size_t alloc_size;
-+	u8 *r_tags;
-+	size_t r_len;
++	/* handle1 has bit 63 set to 1. */
++	KUNIT_EXPECT_FALSE(test, mte_decompress(handle1, td->dtags));
 +	/*
-+	 * mte_compress_to_buf() only initializes the bits that mte_decompress()
-+	 * will read. But when the tags are stored in the handle itself, it must
-+	 * have all its bits initialized.
++	 * handle2 is an inline handle, but its largest_idx (bits 60..62)
++	 * is out of bounds for the inline storage.
 +	 */
-+	unsigned long result = 0;
-+
-+	r_sizes = kmalloc_array(MTE_GRANULES_PER_PAGE, sizeof(unsigned short),
-+				GFP_KERNEL);
-+	r_tags = kmalloc(MTE_GRANULES_PER_PAGE, GFP_KERNEL);
-+	if (!r_sizes || !r_tags)
-+		goto ret;
-+	r_len = MTE_GRANULES_PER_PAGE;
-+	mte_tags_to_ranges(tags, r_tags, r_sizes, &r_len);
-+	alloc_size = mte_alloc_size(r_len);
-+	if (alloc_size == 8) {
-+		mte_compress_to_buf(r_len, r_tags, r_sizes, &result,
-+				    alloc_size);
-+		result = mte_inline_bits_to_handle(result);
-+		atomic_long_inc(&alloc_counters[0]);
-+		goto ret;
-+	}
-+	cache_id = mte_size_to_cache_id(alloc_size);
-+	cache = mtecomp_caches[cache_id];
-+	storage = kmem_cache_zalloc(cache, GFP_KERNEL);
-+	atomic_long_inc(&alloc_counters[cache_id + 1]);
-+	if (!storage) {
-+		result = 0;
-+		goto ret;
-+	}
-+	if (alloc_size < MTE_PAGE_TAG_STORAGE) {
-+		/* alloc_size is always a multiple of sizeof(unsigned long). */
-+		mte_compress_to_buf(r_len, r_tags, r_sizes, storage,
-+				    alloc_size);
-+		result = ((unsigned long)storage | cache_id) & MTE_HANDLE_MASK;
-+		goto ret;
-+	}
-+	memcpy(storage, tags, alloc_size);
-+	result = ((unsigned long)storage | cache_id) & MTE_HANDLE_MASK;
-+ret:
-+	kfree(r_tags);
-+	kfree(r_sizes);
-+	return result;
-+}
-+EXPORT_SYMBOL_NS(mte_compress, MTECOMP);
-+
-+static unsigned long mte_bitmap_read(const unsigned long *bitmap,
-+				     unsigned long *pos, unsigned long bits)
-+{
-+	unsigned long start = *pos;
-+
-+	*pos += bits;
-+	return bitmap_read(bitmap, start, bits);
++	KUNIT_EXPECT_FALSE(test, mte_decompress(handle2, td->dtags));
 +}
 +
-+/* Decompress the contents of the given buffer into @tags. */
-+static bool mte_decompress_from_buf(const unsigned long *bitmap, size_t size,
-+				    u8 *tags)
-+{
-+	unsigned long bit_pos = 0, l_bits;
-+	unsigned short *r_sizes, sum;
-+	unsigned int largest_idx, i;
-+	bool result = true;
-+	size_t max_ranges;
-+	u8 *r_tags;
-+
-+	max_ranges = mte_size_to_ranges(size);
-+	l_bits = mte_largest_idx_bits(size);
-+	largest_idx = mte_bitmap_read(bitmap, &bit_pos, l_bits);
-+	if (largest_idx >= max_ranges)
-+		return false;
-+	r_sizes = kmalloc_array(max_ranges, sizeof(unsigned short), GFP_KERNEL);
-+	r_tags = kmalloc(max_ranges, GFP_KERNEL);
-+	if (!r_sizes || !r_tags) {
-+		result = false;
-+		goto ret;
-+	}
-+
-+	for (i = 0; i < max_ranges; i++)
-+		r_tags[i] = mte_bitmap_read(bitmap, &bit_pos, MTE_TAG_SIZE);
-+	for (i = 0, sum = 0; i < max_ranges; i++) {
-+		if (i == largest_idx)
-+			continue;
-+		r_sizes[i] =
-+			mte_bitmap_read(bitmap, &bit_pos, MTE_BITS_PER_SIZE);
-+		/*
-+		 * Special case: tag array consists of two ranges of
-+		 * `MTE_GRANULES_PER_PAGE / 2` tags.
-+		 */
-+		if ((largest_idx == 0) && (i == 1) && (r_sizes[i] == 0))
-+			r_sizes[i] = MTE_GRANULES_PER_PAGE / 2;
-+		if (!r_sizes[i]) {
-+			max_ranges = i;
-+			break;
-+		}
-+		sum += r_sizes[i];
-+	}
-+	if (sum >= MTE_GRANULES_PER_PAGE) {
-+		result = false;
-+		goto ret;
-+	}
-+	r_sizes[largest_idx] = MTE_GRANULES_PER_PAGE - sum;
-+	mte_ranges_to_tags(r_tags, r_sizes, max_ranges, tags);
-+	result = true;
-+ret:
-+	kfree(r_sizes);
-+	kfree(r_tags);
-+	return result;
-+}
-+
-+/* Get pointer to the out-of-line storage from a handle. */
-+static void *mte_storage(unsigned long handle)
-+{
-+	if (mte_is_inline(handle))
-+		return NULL;
-+	return (void *)((handle & (~MTE_CACHE_ID_MASK)) | BIT_ULL(63));
-+}
-+
-+/**
-+ * mte_decompress() - decompress the tag array addressed by the handle.
-+ * @handle: handle returned by @mte_decompress()
-+ * @tags: MTE_GRANULES_PER_PAGE-byte array to write the tags to.
++/*
++ * Test that compressed inline tags cannot be confused with out-of-line
++ * pointers.
 + *
-+ * Reads the compressed data and writes it into the user-supplied tag array.
-+ *
-+ * Returns: true on success, false on error.
++ * Compressed values are written from bit 0 to bit 63, so the size of the last
++ * tag range initially ends up in the upper bits of the inline representation.
++ * Make sure mte_compress() rearranges the bits so that the resulting handle does
++ * not have 0b0111 as the upper four bits.
 + */
-+bool mte_decompress(unsigned long handle, u8 *tags)
++static void test_upper_bits(struct kunit *test)
 +{
-+	unsigned long *storage;
-+	size_t size;
++	struct test_data *td = test->priv;
++	unsigned long handle;
++	unsigned char r_tags[6] = { 7, 0, 7, 0, 7, 0 };
++	unsigned short r_sizes[6] = { 1, 1, 1, 1, 1, 1 };
++	size_t r_len;
 +
-+	if ((handle & MTE_HANDLE_MASK) != handle)
-+		return false;
++	/* Maximum number of ranges that can be encoded inline. */
++	r_len = IS_ENABLED(CONFIG_ARM64_4K_PAGES)  ? 6 :
++		IS_ENABLED(CONFIG_ARM64_16K_PAGES) ? 5 :
++						     4;
++	/* Maximum range size possible, will be omitted. */
++	r_sizes[0] = MTE_GRANULES_PER_PAGE / 2 - 1;
++	/* A number close to r_sizes[0] that has most of its bits set. */
++	r_sizes[r_len - 1] = MTE_GRANULES_PER_PAGE - r_sizes[0] - r_len + 2;
 +
-+	size = mte_storage_size(handle);
-+	storage = mte_storage(handle);
-+	switch (size) {
-+	case 8:
-+		handle = mte_handle_to_inline_bits(handle);
-+		return mte_decompress_from_buf(&handle, size, tags);
-+	case MTE_PAGE_TAG_STORAGE:
-+		memcpy(tags, storage, size);
-+		return true;
-+	default:
-+		return mte_decompress_from_buf(storage, size, tags);
-+	}
++	mte_ranges_to_tags(r_tags, r_sizes, r_len, td->tags);
++	handle = compress_decompress_helper(test);
++	KUNIT_EXPECT_EQ(test, mte_storage_size(handle), 8);
 +}
-+EXPORT_SYMBOL_NS(mte_decompress, MTECOMP);
 +
-+/**
-+ * mte_release_handle() - release the handle returned by mte_compress().
-+ * @handle: handle returned by mte_compress().
-+ */
-+void mte_release_handle(unsigned long handle)
++static void mtecomp_dealloc_testdata(struct test_data *td)
 +{
-+	unsigned int cache_id;
-+	struct kmem_cache *c;
-+	void *storage;
-+	size_t size;
-+
-+	storage = mte_storage(handle);
-+	if (!storage) {
-+		atomic_long_inc(&dealloc_counters[0]);
-+		return;
-+	}
-+
-+	size = mte_storage_size(handle);
-+	cache_id = mte_size_to_cache_id(size);
-+	c = mtecomp_caches[cache_id];
-+	kmem_cache_free(c, storage);
-+	atomic_long_inc(&dealloc_counters[cache_id + 1]);
++	kfree(td->tags);
++	kfree(td->dtags);
++	kfree(td->r_sizes);
++	kfree(td->r_tags);
 +}
-+EXPORT_SYMBOL_NS(mte_release_handle, MTECOMP);
 +
-+/* DebugFS interface. */
-+static int stats_show(struct seq_file *seq, void *v)
++static int mtecomp_test_init(struct kunit *test)
 +{
-+	unsigned long total_mem_alloc = 0, total_mem_dealloc = 0;
-+	unsigned long total_num_alloc = 0, total_num_dealloc = 0;
-+	unsigned long size = 8;
-+	long alloc, dealloc;
-+	int i;
++	struct test_data *td;
 +
-+	for (i = 0; i <= MTECOMP_NUM_CACHES; i++) {
-+		alloc = atomic_long_read(&alloc_counters[i]);
-+		dealloc = atomic_long_read(&dealloc_counters[i]);
-+		total_num_alloc += alloc;
-+		total_num_dealloc += dealloc;
-+		/*
-+		 * Do not count 8-byte buffers towards compressed tag storage
-+		 * size.
-+		 */
-+		if (i) {
-+			total_mem_alloc += (size * alloc);
-+			total_mem_dealloc += (size * dealloc);
-+		}
-+		seq_printf(seq,
-+			   "%lu bytes: %lu allocations, %lu deallocations\n",
-+			   size, alloc, dealloc);
-+		size <<= 1;
-+	}
-+	seq_printf(seq, "uncompressed tag storage size: %lu\n",
-+		   (total_num_alloc - total_num_dealloc) *
-+			   MTE_PAGE_TAG_STORAGE);
-+	seq_printf(seq, "compressed tag storage size: %lu\n",
-+		   total_mem_alloc - total_mem_dealloc);
++	td = kmalloc(sizeof(struct test_data), GFP_KERNEL);
++	if (!td)
++		return 1;
++	td->tags = kmalloc(MTE_PAGE_TAG_STORAGE, GFP_KERNEL);
++	if (!td->tags)
++		goto error;
++	td->dtags = kmalloc(MTE_PAGE_TAG_STORAGE, GFP_KERNEL);
++	if (!td->dtags)
++		goto error;
++	td->r_len = MTE_GRANULES_PER_PAGE;
++	td->r_sizes = kmalloc_array(MTE_GRANULES_PER_PAGE,
++				    sizeof(unsigned short), GFP_KERNEL);
++	if (!td->r_sizes)
++		goto error;
++	td->r_tags = kmalloc(MTE_GRANULES_PER_PAGE, GFP_KERNEL);
++	if (!td->r_tags)
++		goto error;
++	test->priv = (void *)td;
 +	return 0;
++error:
++	mtecomp_dealloc_testdata(td);
++	return 1;
 +}
-+DEFINE_SHOW_ATTRIBUTE(stats);
 +
-+static int mtecomp_debugfs_init(void)
++static void mtecomp_test_exit(struct kunit *test)
 +{
-+	struct dentry *mtecomp_dir;
++	struct test_data *td = test->priv;
 +
-+	mtecomp_dir = debugfs_create_dir("mtecomp", NULL);
-+	debugfs_create_file("stats", 0444, mtecomp_dir, NULL, &stats_fops);
-+	return 0;
++	mtecomp_dealloc_testdata(td);
 +}
 +
-+/* Set up mtecomp_caches[]. */
-+static int mtecomp_init(void)
-+{
-+	unsigned int i;
-+	char name[16];
-+	size_t size;
++static struct kunit_case mtecomp_test_cases[] = {
++	KUNIT_CASE(test_tags_to_ranges_zero),
++	KUNIT_CASE(test_tags_to_ranges_simple),
++	KUNIT_CASE(test_tags_to_ranges_repeated),
++	KUNIT_CASE(test_tag_to_ranges_n),
++	KUNIT_CASE(test_compress_zero),
++	KUNIT_CASE(test_compress_nonzero),
++	KUNIT_CASE(test_two_ranges),
++	KUNIT_CASE(test_compress_simple),
++	KUNIT_CASE(test_compress_ranges),
++	KUNIT_CASE(test_decompress_invalid),
++	KUNIT_CASE(test_upper_bits),
++	{}
++};
 +
-+	static_assert(MTECOMP_NUM_CACHES <= (MTE_CACHE_ID_MASK + 1));
-+	for (i = 0; i < MTECOMP_NUM_CACHES; i++) {
-+		size = mte_cache_id_to_size(i);
-+		snprintf(name, sizeof(name), "mte-tags-%ld", size);
-+		mtecomp_caches[i] =
-+			kmem_cache_create(name, size, size, 0, NULL);
-+	}
-+	mtecomp_debugfs_init();
-+	return 0;
-+}
-+module_init(mtecomp_init);
-diff --git a/arch/arm64/mm/mtecomp.h b/arch/arm64/mm/mtecomp.h
-new file mode 100644
-index 0000000000000..b94cf0384f2af
---- /dev/null
-+++ b/arch/arm64/mm/mtecomp.h
-@@ -0,0 +1,12 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
++static struct kunit_suite mtecomp_test_suite = {
++	.name = "mtecomp",
++	.init = mtecomp_test_init,
++	.exit = mtecomp_test_exit,
++	.test_cases = mtecomp_test_cases,
++};
++kunit_test_suites(&mtecomp_test_suite);
 +
-+#ifndef ARCH_ARM64_MM_MTECOMP_H_
-+#define ARCH_ARM64_MM_MTECOMP_H_
-+
-+/* Functions exported from mtecomp.c for test_mtecomp.c. */
-+void mte_tags_to_ranges(u8 *tags, u8 *out_tags, unsigned short *out_sizes,
-+			size_t *out_len);
-+void mte_ranges_to_tags(u8 *r_tags, unsigned short *r_sizes, size_t r_len,
-+			u8 *tags);
-+
-+#endif  // ARCH_ARM64_MM_TEST_MTECOMP_H_
++MODULE_IMPORT_NS(MTECOMP);
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Alexander Potapenko <glider@google.com>");
 -- 
 2.42.0.609.gbb76f46606-goog
 
