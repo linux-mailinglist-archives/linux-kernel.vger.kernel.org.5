@@ -2,54 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B513D7C5598
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9737C55AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:41:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234751AbjJKNjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 09:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42698 "EHLO
+        id S234906AbjJKNln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 09:41:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232244AbjJKNjS (ORCPT
+        with ESMTP id S232091AbjJKNlj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 09:39:18 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0B79E
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:39:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE381C433C7;
-        Wed, 11 Oct 2023 13:39:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697031556;
-        bh=47vFEIfynYM2SLVuIlBK4kOi9a9GpRQT3cwG45gN3mQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vOrMNnAGCvhXr0s28XZ7tcCt2hw5zS9++2trRSGf/T4CZt2QzgkfTpdZzG4TE/U56
-         LA77ChGUDhVkrPStTXkLFX7RzvZ9K/l2ZfBmM0785zUkgxQ8wTLPjfAwMYUhjDjLXJ
-         daUfMUxdeOAPxXsemxK+6y/r2hV6Q7BlCRg2/eSwVpnwQlMYaKZnjMhP36tKkE6np3
-         u5RuUwQ3N4kDnfmxVX5VXeYSnSXjKYmSsQt2lFZuguPoMDB0nQOYPr0C5iBb85LaM/
-         gg9OtnW5vrT3HD5oPGjIQkm/k3OU7a3XGm4dfFupmOpJ+RiLlZn9IjpOY0L4uBSx4c
-         hRoU2YKUrLDQQ==
-Date:   Wed, 11 Oct 2023 14:39:10 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Ante Knezic <ante.knezic@helmholz.de>
-Cc:     UNGLinuxDriver@microchip.com, andrew@lunn.ch, conor+dt@kernel.org,
-        davem@davemloft.net, devicetree@vger.kernel.org,
-        edumazet@google.com, f.fainelli@gmail.com,
-        krzysztof.kozlowski+dt@linaro.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, marex@denx.de,
-        netdev@vger.kernel.org, olteanv@gmail.com, pabeni@redhat.com,
-        robh+dt@kernel.org, woojung.huh@microchip.com
-Subject: Re: [PATCH net-next 2/2] dt-bindings: net: microchip,ksz: document
- microchip,rmii-clk-internal
-Message-ID: <20231011-brittle-frantic-d39ec3dd23f9@spud>
-References: <20231010-unwired-trench-c7a467118879@spud>
- <20231011132600.26297-1-ante.knezic@helmholz.de>
+        Wed, 11 Oct 2023 09:41:39 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4055090;
+        Wed, 11 Oct 2023 06:41:38 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8121EC15;
+        Wed, 11 Oct 2023 06:42:18 -0700 (PDT)
+Received: from bogus (unknown [10.57.93.106])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C229D3F5A1;
+        Wed, 11 Oct 2023 06:41:35 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 14:40:03 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Ranjani Vaidyanathan <ranjani.vaidyanathan@nxp.com>
+Cc:     Cristian Marussi <cristian.marussi@arm.com>,
+        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "souvik.chakravarty@arm.com" <souvik.chakravarty@arm.com>,
+        Glen G Wienecke <glen.wienecke@nxp.com>,
+        Peng Fan <peng.fan@nxp.com>
+Subject: Re: [EXT] Re: [RFC] firmware: arm_scmi: clock: add fixed clock
+ attribute support
+Message-ID: <20231011134003.lhb5yiicgr5cbzr2@bogus>
+References: <20231010022911.4106863-1-peng.fan@oss.nxp.com>
+ <20231010091223.rvcyrgbjcrmjzmvp@bogus>
+ <ZSUXu65bOYVG689E@pluto>
+ <20231010093509.ddy75og4jd72n6cq@bogus>
+ <PA4PR04MB94859C7729B19C8B88541F8692CCA@PA4PR04MB9485.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="tHfanppQTDzMi70y"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231011132600.26297-1-ante.knezic@helmholz.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <PA4PR04MB94859C7729B19C8B88541F8692CCA@PA4PR04MB9485.eurprd04.prod.outlook.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,75 +55,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 11, 2023 at 03:54:59AM +0000, Ranjani Vaidyanathan wrote:
+> From what I see SCMI clock protocol could benefit from an attribute for the
+> clock that describes what operations are possible on a clock. There are many
+> bus clocks that only the SCMI server manages and the error code DENIED
+> should be handled gracefully by the agent.
+>
 
---tHfanppQTDzMi70y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Agreed, but we need to understand if we need it per operation basis or
+at the higher granularity such as any write or set operations not allowed.
+Just my initial thoughts, we can discuss.
 
-On Wed, Oct 11, 2023 at 03:26:00PM +0200, Ante Knezic wrote:
-> On Tue, 10 Oct 2023 16:25:55 +0100, Conor Dooley wrote:
-> > On Tue, Oct 10, 2023 at 03:18:54PM +0200, Ante Knezic wrote:
-> > > Add documentation for selecting reference rmii clock on KSZ88X3 devic=
-es
-> > >=20
-> > > Signed-off-by: Ante Knezic <ante.knezic@helmholz.de>
-> > > ---
-> > >  Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml | 6 +++=
-+++
-> > >  1 file changed, 6 insertions(+)
-> > >=20
-> > > diff --git a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.=
-yaml b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
-> > > index e51be1ac0362..3df5d2e72dba 100644
-> > > --- a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
-> > > +++ b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
-> > > @@ -49,6 +49,12 @@ properties:
-> > >        Set if the output SYNCLKO clock should be disabled. Do not mix=
- with
-> > >        microchip,synclko-125.
-> > > =20
-> > > +  microchip,rmii-clk-internal:
-> > > +    $ref: /schemas/types.yaml#/definitions/flag
-> > > +    description:
-> > > +      Set if the RMII reference clock should be provided internally.
-> >=20
-> > > Applies only
-> > > +      to KSZ88X3 devices.
-> >=20
-> > This should be enforced by the schema, the example schema in the docs
-> > should show you how to do this.
->=20
-> I am guessing you are refering to limiting the property to ksz88x3 device=
-s?
-> Something like:
->=20
-> if:
->   properties:
->     compatible:
->       enum:
->         - microchip,ksz8863
->         - microchip,ksz8873
-> then:
->   properties:
->     microchip,rmii-clk-internal:
->       $ref: /schemas/types.yaml#/definitions/flag
->       description:
->         Set if the RMII reference clock is provided internally. Otherwise
->         reference clock should be provided externally.
+> In the case of Linux, perhaps this should be handled by the SCMI clock
+> driver, instead of allowing the error to propagate up the Linux clock
+> framework?
 
-Not quite. The definition of the property should be outside the if/then,
-but one should be used to allow/disallow the property.
+Yes but even for that we need information from the firmware.
 
---tHfanppQTDzMi70y
-Content-Type: application/pgp-signature; name="signature.asc"
+> It seems strange that the SCMI server should swallow the error (silently
+> fail) only for certain agents.
 
------BEGIN PGP SIGNATURE-----
+I am bit confused by this statement. The SCMI server/platform must not
+ignore or fail silently. Since the agent is not allowed, if it attempts
+it must return the apt error.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZSalfgAKCRB4tDGHoIJi
-0j1vAQDpZsPIcSqaMqUI+uqMOAzykKbi5gXYur3unCFYlUPbUAD+KfDrAmTUEA2s
-On9Np5vf099rBCZAx/bTeVYk3kPP2Q4=
-=2uGA
------END PGP SIGNATURE-----
+While Linux may choose to ignore the error but I think this is what
+we are discussing to figure out what is the best way to avoid it or
+worst case handle it gracefully. With any extra info from the firmware,
+the former option must be possible and we need not think of the latter
+option IMO.
 
---tHfanppQTDzMi70y--
+> I would think this would make debug quite difficult and having a "DENIED"
+> error code not very useful.
+>
+
+Agreed especially if it can and is expected to continue functioning as normal.
+
+-- 
+Regards,
+Sudeep
