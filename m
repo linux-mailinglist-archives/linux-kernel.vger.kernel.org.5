@@ -2,112 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5286B7C545F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 14:54:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 193B27C546A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 14:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346767AbjJKMyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 08:54:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50066 "EHLO
+        id S1346895AbjJKMyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 08:54:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231758AbjJKMyI (ORCPT
+        with ESMTP id S231758AbjJKMyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 08:54:08 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C4892;
-        Wed, 11 Oct 2023 05:54:07 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-2792d70ae25so4602928a91.0;
-        Wed, 11 Oct 2023 05:54:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697028847; x=1697633647; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ugSH8FJbysw/333UJfT2fX6aDJrXjkX7MBOTQ6zLQaY=;
-        b=b1Z0nuFnUakxVeSaHlcTOsMoEysbLsq2/IhbUql1diY530QI3J0Ta0ASll3AGmwphR
-         1FZSriAftxPE+z4ChLQoMeGkdVm+2NEmYLMiSienDffn5t7AOaJU8yv7DxAOMWKWROjK
-         sinZet94juIkl+U7IuPUWwA9O7IfMrXdWd4F7PYCw6JszW44NTRvMvcprMupIOdtPBI/
-         pNDKKhGHqPXscVJWvINILuh3DB5k72VBnAOVdjN3IURl+YczPOA9oeJ1mpZCG9RiiWkM
-         haj/NQNcG6guijirxhl7YHeoqUzTzffD9ir8UaWHXobFBWPjsVoCecW0DKC2Isl1Ia3p
-         Ydow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697028847; x=1697633647;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ugSH8FJbysw/333UJfT2fX6aDJrXjkX7MBOTQ6zLQaY=;
-        b=geRkanNfc5UCpchVO7msiSs0Y9Acfw9gkGbixn175fv2DEBhWg0bJoTw/EFyZpyFLt
-         w/vnxA2ysJ/BgHOZVYLU1hZf4oJyElmrmr83U+qHQReg2Qkga5mTCuxK/XKVioSNEFrO
-         hrcJX9Y8dVBTAzGuBDV1RbBN1/WL+ykJdw5pfd2KO/qyeLwkFXHD7JRdo5lCOGfuhV4H
-         hmOVdRGJZwOl4Tmc7l8qyR3TzS7H66Gv+kBeb4k3C65ofKBttu2mMkwOT/QPs5hI4+qv
-         hgnT/QrP4joi+VCoDjCiqElDwGuOAQ8+y/mB2w49oti84TKZEkZ8tyAvNLFO75hlv5Es
-         T+9Q==
-X-Gm-Message-State: AOJu0YzFFJnTBbfwp2+MGqXC8ZTXWWnnfR093gOOO+HDpHjk08kHf028
-        X1Ojh73jHI+xf4ptijerwXbSVQ7vHrRPmZcQ1oOW3zZd
-X-Google-Smtp-Source: AGHT+IG45+LupoZQup5ypJxF1tNZKgvqKmwjD6o0mHk2cQIch/yzH1JX9vLwdK72USEMloPr/bS46oBgevyVfPaSOx4=
-X-Received: by 2002:a17:90a:a393:b0:278:fa86:13d8 with SMTP id
- x19-20020a17090aa39300b00278fa8613d8mr17431628pjp.41.1697028846773; Wed, 11
- Oct 2023 05:54:06 -0700 (PDT)
+        Wed, 11 Oct 2023 08:54:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B41C09E
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 05:54:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F70DC433BD
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 12:54:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697028879;
+        bh=lsXLuQurGnh4Z0akGPosK/CsIo+qnmnGl1yd/JhynMQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TJr4PxMfQ66iTpUsLi0t/XB2NNLOOVtPTsOuvyhUmXSF637kHZ/ag5bcrCmpsGnLw
+         2zDvMx1av8zgYaUiFDcux3qv9N/T9Txx/q5UhM9NYjlHqncGDww1JGua9oNP4vw7vU
+         F8DRzCDUBXADwLVeBXEJSMmUNLxUJKwNsNahkLLkH2M0zFyI2sZRRoF5gCbQCw86gQ
+         fO7LytSB6utLlF8Sos6Z//qU3c9b1urxAhDKrm8vmSnCCFzjOPP6GLxYz38wVmggd7
+         uoDgQbYeI5q3vOoJZItq1LMT3Bj+Mb2R4ntYJifdQFx7CrmJM0K5SeerDAWekaNoRP
+         0A/JhtfjM/c+w==
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so1930985a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 05:54:39 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyztRA03XyHWbvWLwwS38+lHv+zRRHA6BH5+i0DA9fS+UQQfJnc
+        VGZ/7yEhwloXxDhMREORFNtvFwVXepOqAYsGS442og==
+X-Google-Smtp-Source: AGHT+IHbEm3Uc2en9wMFmmEPBhW/KYWyTxzoEHjV+GnKE9YZ88khdvtKcTY7Q+g52u+n7nUhh4rPKmXMuT2NYqW9/gE=
+X-Received: by 2002:a17:907:7246:b0:9a1:aaae:8207 with SMTP id
+ ds6-20020a170907724600b009a1aaae8207mr14014040ejc.20.1697028877819; Wed, 11
+ Oct 2023 05:54:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230906095143.99806-1-aford173@gmail.com> <8cf5b8d1-5f03-438a-94bb-5691dee8cc86@lunn.ch>
-In-Reply-To: <8cf5b8d1-5f03-438a-94bb-5691dee8cc86@lunn.ch>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Wed, 11 Oct 2023 07:53:55 -0500
-Message-ID: <CAHCN7xJ_2HjQ8iCYimPG+CiMQuDy7YpG2sf6Vq30VsddaSs8CQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] net: ethernet: davinci_emac: Use MAC Address from
- Device Tree
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     linux-omap@vger.kernel.org, aford@beaconembedded.com,
-        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
+References: <5725069.DvuYhMxLoT@kreacher> <f74a029d-39be-4deb-bc4f-a1bc1e401082@linaro.org>
+In-Reply-To: <f74a029d-39be-4deb-bc4f-a1bc1e401082@linaro.org>
+From:   Amit Kucheria <amitk@kernel.org>
+Date:   Wed, 11 Oct 2023 18:24:26 +0530
+X-Gmail-Original-Message-ID: <CAHLCerOYRm6_ZUbpBAxtRZ2e6O_1-w9k-FxfsMv7k-wkN1nG-Q@mail.gmail.com>
+Message-ID: <CAHLCerOYRm6_ZUbpBAxtRZ2e6O_1-w9k-FxfsMv7k-wkN1nG-Q@mail.gmail.com>
+Subject: Re: [PATCH v3] thermal: Remove Amit Kucheria from MAINTAINERS
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+        devicetree@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 6, 2023 at 7:39=E2=80=AFAM Andrew Lunn <andrew@lunn.ch> wrote:
+On Sat, Oct 7, 2023 at 6:21=E2=80=AFPM Daniel Lezcano <daniel.lezcano@linar=
+o.org> wrote:
 >
-> On Wed, Sep 06, 2023 at 04:51:42AM -0500, Adam Ford wrote:
-> > Currently there is a device tree entry called "local-mac-address"
-> > which can be filled by the bootloader or manually set.This is
-> > useful when the user does not want to use the MAC address
-> > programmed into the SoC.
+> On 07/10/2023 13:36, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > Subject: [PATCH v2] thermal: Remove Amit Kucheria from MAINTAINERS
 > >
-> > Currently, the davinci_emac reads the MAC from the DT, copies
-> > it from pdata->mac_addr to priv->mac_addr, then blindly overwrites
-> > it by reading from registers in the SoC, and falls back to a
-> > random MAC if it's still not valid.  This completely ignores any
-> > MAC address in the device tree.
+> > Amit Kucheria has not been participating in kernel development in any
+> > way or form for quite some time, so it is not useful to list him as a
+> > designated reviewer for the thermal subsystem or as the thermal zone DT
+> > binding maintainer.
 > >
-> > In order to use the local-mac-address, check to see if the contents
-> > of priv->mac_addr are valid before falling back to reading from the
-> > SoC when the MAC address is not valid.
+> > Remove him from the THERMAL entry in MAINTAINERS and list Daniel Lezcan=
+o
+> > as the new thermal zone DT binding maintainer.
 > >
-> > Signed-off-by: Adam Ford <aford173@gmail.com>
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
 >
-> There is the potential for regressions here, since behaviour is being
-> changed. But i do think what you are doing make sense.
->
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
-I don't know who the right person is to ask, but is there any chance
-this can be accepted?
-
-adam
->
->     Andrew
+Acked-by: Amit Kucheria <amitk@kernel.org>
