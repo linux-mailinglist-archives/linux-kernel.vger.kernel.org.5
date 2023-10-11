@@ -2,142 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D797C5806
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 17:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4F57C5810
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 17:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234906AbjJKP0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 11:26:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56080 "EHLO
+        id S1343919AbjJKP1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 11:27:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232673AbjJKP0M (ORCPT
+        with ESMTP id S232760AbjJKP1o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 11:26:12 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5355798
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 08:26:10 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id B0E2D21870;
-        Wed, 11 Oct 2023 15:26:08 +0000 (UTC)
-Received: from suse.cz (pmladek.udp.ovpn2.prg.suse.de [10.100.201.202])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 2D7A92C710;
-        Wed, 11 Oct 2023 15:26:07 +0000 (UTC)
-Date:   Wed, 11 Oct 2023 17:26:07 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] printk: Check valid console index for preferred
- console
-Message-ID: <ZSa-j7p-icBvOANN@alley>
-References: <20231011074330.14487-1-tony@atomide.com>
- <2023101131-maroon-stubborn-1364@gregkh>
- <20231011091803.GC34982@atomide.com>
+        Wed, 11 Oct 2023 11:27:44 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2E592;
+        Wed, 11 Oct 2023 08:27:43 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DB8CC433C7;
+        Wed, 11 Oct 2023 15:27:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697038063;
+        bh=7RZyiacWyfzPvWEqzLgY4Ad7VtrgFG6HkGvT4m3kmO8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TaZpnSMEaI0DGU84iKsQFVVPvyC16VvEM8T5n460Au6MNQ/ww2lxz4UfQ+DA6vXFm
+         BCtrP7/qifoV3YuL88v5Z4hcMkOI/aOIq9hyegqYo11WsSBfpE1ueICf/cUBdDE9Bh
+         A+N2mupq/0QsAcz+XUx3VosdLofH9isxy1pRIIJNYMcYdcT28SYP9Ba8kkcZeNF5g0
+         ZNuBaGoPPHI6az5feLlT4O9rib8qxW48pAN9rCw9yaJHhnk2reRwFnoBTVt0Bu3F2a
+         V3k//nJlWORSya2SLRtvjvZ6ykCCdUchhQINAPcQQTeolGD+jWvQIO2+kVnB8rQERq
+         hqKdJxh8IxFnA==
+Date:   Wed, 11 Oct 2023 17:27:37 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Jan Kara <jack@suse.cz>, Max Kellermann <max.kellermann@ionos.com>
+Cc:     Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>,
+        Dave Kleikamp <shaggy@kernel.org>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net,
+        Yang Xu <xuyang2018.jy@fujitsu.com>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2] fs/{posix_acl,ext2,jfs,ceph}: apply umask if ACL
+ support is disabled
+Message-ID: <20231011-braumeister-anrufen-62127dc64de0@brauner>
+References: <69dda7be-d7c8-401f-89f3-7a5ca5550e2f@oracle.com>
+ <20231009144340.418904-1-max.kellermann@ionos.com>
+ <20231010131125.3uyfkqbcetfcqsve@quack3>
+ <CAKPOu+-nC2bQTZYL0XTzJL6Tx4Pi1gLfNWCjU2Qz1f_5CbJc1w@mail.gmail.com>
+ <20231011100541.sfn3prgtmp7hk2oj@quack3>
+ <CAKPOu+_xdFALt9sgdd5w66Ab6KTqiy8+Z0Yd3Ss4+92jh8nCwg@mail.gmail.com>
+ <20231011120655.ndb7bfasptjym3wl@quack3>
+ <CAKPOu+-hLrrpZShHh0o6uc_KMW91suEd0_V_uzp5vMf4NM-8yw@mail.gmail.com>
+ <CAKPOu+_0yjg=PrwAR8jKok8WskjdDEJOBtu3uKR_4Qtp8b7H1Q@mail.gmail.com>
+ <20231011135922.4bij3ittlg4ujkd7@quack3>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231011091803.GC34982@atomide.com>
-X-Spamd-Bar: +++++++++++++++++++++++
-Authentication-Results: smtp-out1.suse.de;
-        dkim=none;
-        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
-        spf=fail (smtp-out1.suse.de: domain of pmladek@suse.com does not designate 149.44.160.134 as permitted sender) smtp.mailfrom=pmladek@suse.com
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [23.60 / 50.00];
-         ARC_NA(0.00)[];
-         R_SPF_FAIL(1.00)[-all];
-         BAYES_SPAM(5.10)[100.00%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
-         RCPT_COUNT_FIVE(0.00)[6];
-         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
-         VIOLATED_DIRECT_SPF(3.50)[];
-         MX_GOOD(-0.01)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MID_RHS_NOT_FQDN(0.50)[];
-         R_DKIM_NA(0.20)[];
-         RCVD_COUNT_TWO(0.00)[2];
-         MIME_TRACE(0.00)[0:+]
-X-Spam-Score: 23.60
-X-Rspamd-Queue-Id: B0E2D21870
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231011135922.4bij3ittlg4ujkd7@quack3>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2023-10-11 12:18:03, Tony Lindgren wrote:
-> * Greg Kroah-Hartman <gregkh@linuxfoundation.org> [231011 07:53]:
-> > On Wed, Oct 11, 2023 at 10:43:25AM +0300, Tony Lindgren wrote:
-> > > Let's check for valid console index values to avoid bogus console index
-> > > numbers from kernel command line. While struct console uses short for
-> > > index, and negative index values are used by some device drivers, we do
-> > > not want to allow negative values for preferred console.
+On Wed, Oct 11, 2023 at 03:59:22PM +0200, Jan Kara wrote:
+> On Wed 11-10-23 14:27:49, Max Kellermann wrote:
+> > On Wed, Oct 11, 2023 at 2:18 PM Max Kellermann <max.kellermann@ionos.com> wrote:
+> > > But without the other filesystems. I'll resend it with just the
+> > > posix_acl.h hunk.
 > > 
-> > What drivers use a negative index for the console?
+> > Thinking again, I don't think this is the proper solution. This may
+> > server as a workaround so those broken filesystems don't suffer from
+> > this bug, but it's not proper.
+> > 
+> > posix_acl_create() is only supposed to appy the umask if the inode
+> > supports ACLs; if not, the VFS is supposed to do it. But if the
+> > filesystem pretends to have ACL support but the kernel does not, it's
+> > really a filesystem bug. Hacking the umask code into
+> > posix_acl_create() for that inconsistent case doesn't sound right.
+> > 
+> > A better workaround would be this patch:
+> > https://patchwork.kernel.org/project/linux-nfs/patch/151603744662.29035.4910161264124875658.stgit@rabbit.intern.cm-ag/
+> > I submitted it more than 5 years ago, it got one positive review, but
+> > was never merged.
+> > 
+> > This patch enables the VFS's umask code even if the filesystem
+> > prerents to support ACLs. This still doesn't fix the filesystem bug,
+> > but makes VFS's behavior consistent.
 > 
-> This is based on grepping with $ git grep "co->index =" drivers/tty/
-> 
-> Not sure what all might be stopping making struct console index unsigned.
+> OK, that solution works for me as well. I agree it seems a tad bit cleaner.
+> Christian, which one would you prefer?
 
-The value -1 is used for initializing struct console, see:
+So it always bugged me that POSIX ACLs push umask stripping down into
+the individual filesystems but it's hard to get rid of this. And we
+tried to improve the situation during the POSIX ACL rework by
+introducing vfs_prepare_umask().
 
-$> git grep -A10 "struct console.*=" | \
-   grep -e "struct console" -e index | \
-   grep -B1 index
-[...]
-drivers/tty/serial/8250/8250_core.c:static struct console univ8250_console = {
-drivers/tty/serial/8250/8250_core.c-    .index          = -1,
-[...]
-drivers/tty/serial/imx.c:static struct console imx_uart_console = {
-drivers/tty/serial/imx.c-       .index          = -1,
-drivers/tty/serial/ip22zilog.c:static struct console ip22zilog_console = {
-drivers/tty/serial/ip22zilog.c- .index  =       -1,
-drivers/tty/serial/kgdb_nmi.c:static struct console kgdb_nmi_console = {
-drivers/tty/serial/kgdb_nmi.c-  .index  = -1,
-drivers/tty/serial/lantiq.c:static struct console lqasc_console = {
-drivers/tty/serial/lantiq.c-    .index =        -1,
-drivers/tty/serial/liteuart.c:static struct console liteuart_console = {
-drivers/tty/serial/liteuart.c-  .index = -1,
-drivers/tty/serial/lpc32xx_hs.c:static struct console lpc32xx_hsuart_console = {
-drivers/tty/serial/lpc32xx_hs.c-        .index          = -1,
-drivers/tty/serial/ma35d1_serial.c:static struct console ma35d1serial_console = {
-drivers/tty/serial/ma35d1_serial.c-     .index   = -1,
-drivers/tty/serial/mcf.c:static struct console mcf_console = {
-drivers/tty/serial/mcf.c-       .index          = -1,
-[...]
+Aside from that, the problem had been that filesystems like nfs v4
+intentionally raised SB_POSIXACL to prevent umask stripping in the VFS.
+IOW, for them SB_POSIXACL was equivalent to "don't apply any umask".
 
-It means that the index still has be get assigned. For example, it is
-used here:
+And afaict nfs v4 has it's own thing going on how and where umasks are
+applied. However, since we now have the following commit in vfs.misc:
 
-static int try_enable_preferred_console(struct console *newcon,
-					bool user_specified)
-{
-[...]
-			if (newcon->index < 0)
-				newcon->index = c->index;
-[...]
+commit f61b9bb3f8386a5e59b49bf1310f5b34f47bcef9
+Author:     Jeff Layton <jlayton@kernel.org>
+AuthorDate: Mon Sep 11 20:25:50 2023 -0400
+Commit:     Christian Brauner <brauner@kernel.org>
+CommitDate: Thu Sep 21 15:37:47 2023 +0200
 
+    fs: add a new SB_I_NOUMASK flag
 
-Resume:
+    SB_POSIXACL must be set when a filesystem supports POSIX ACLs, but NFSv4
+    also sets this flag to prevent the VFS from applying the umask on
+    newly-created files. NFSv4 doesn't support POSIX ACLs however, which
+    causes confusion when other subsystems try to test for them.
 
-1. We must either keep signed short in struct console or
-   use another check for non-yet assigned index.
+    Add a new SB_I_NOUMASK flag that allows filesystems to opt-in to umask
+    stripping without advertising support for POSIX ACLs. Set the new flag
+    on NFSv4 instead of SB_POSIXACL.
 
-2. We should fix the commit message and the comment. We should
-   explain that negative value is used in struct console
-   to distinguish a non-yet-registered/assigned index/port.
+    Also, move mode_strip_umask to namei.h and convert init_mknod and
+    init_mkdir to use it.
 
-Best Regards,
-Petr
+    Signed-off-by: Jeff Layton <jlayton@kernel.org>
+    Message-Id: <20230911-acl-fix-v3-1-b25315333f6c@kernel.org>
+    Signed-off-by: Christian Brauner <brauner@kernel.org>
+
+I think it's possible to pick up the first patch linked above:
+   
+fix umask on NFS with CONFIG_FS_POSIX_ACL=n doesn't lead to any
+
+and see whether we see any regressions from this.
+
+The second patch I can't easily judge that should go through nfs if at
+all.
+
+So proposal/question: should we take the first patch into vfs.misc?
