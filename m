@@ -2,182 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19ED37C48FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DF497C48FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229643AbjJKFFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 01:05:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45922 "EHLO
+        id S229654AbjJKFGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 01:06:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjJKFFI (ORCPT
+        with ESMTP id S229534AbjJKFGj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 01:05:08 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615789E
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 22:05:06 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7a2a9e5451bso250160939f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 22:05:06 -0700 (PDT)
+        Wed, 11 Oct 2023 01:06:39 -0400
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2046.outbound.protection.outlook.com [40.107.104.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7509C94
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 22:06:35 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YPAftdHEi1uueAUfJr3xPH6hbV1SRTAtgRHjIkS+ndzu9gwqTjeKAM8t956X2Dxbd9vPGfoBpy79rDnhFA1Repvmk7Rb2rb9JafSiqnPEELo6wMk9w4bDpnAF7jgxVAt/qQtHGZYlyMMRSdKiIgZ9ikEGXFJJ2qHOBAs3iOnP4cVQWT1YbFbrpH02Rx4ftesGX+KpGEqy9j08ykRcO7ff+FfyNYqBUPC3HHkqayhqT3Tgv07Uul7uBIOqzqqhWKO2HHqCdtukuQ/a/DoCq6lvsuDj9zeFeTsuAt7H0u8CMhs9XWpIluYC3fAb4ciCpoF0xEEHViqU/0PNE2K1Ys/Aw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pn1iR4TC3IOjdvWD0ZRvVaB75OwlVP2t7vf2N7xn0UE=;
+ b=aHtOz0o6x/g1DMdzPnTm2WAsgvJPXJeWZIWnldvtmAMd3KJ8OOYiiqMZcOu8DT9kPmxrmeAtTmr27RWXVBzFrqU55skchn/6SbZNUf44HpuVX5as5WO0+F+21Ww3+Omy9Lyz2G2d3B/dxNkw0mEruq15Zts9i4tUW8spBg4Xuj0XOWllzxOYSwf2f49Px2gyWcfKYQNlpnUUsYXxEhN9bCUq0/MWjke2sU1dctmLYpbfefxHS2YFFMseoShKD3pcz8twlCV5qQzmv1JC/fXV917UZPxbzc5GDOErFNaLCCWTFCd7RX2yynAZF/iX4H8Hf5rfLnPIQBqapwh+LhUYLA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=piap.lukasiewicz.gov.pl; dmarc=pass action=none
+ header.from=piap.pl; dkim=pass header.d=piap.pl; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1697000705; x=1697605505; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WxTb+tzaW80rCd53UmA2HdlmPdirZzFTdr3/d2GhRv0=;
-        b=NIvEbTzeRoUZGJ+s5QD52YqMFlgDbLKjEAv8AVBD6UHZNY9HeFXHuuSHKaYpCt91tq
-         g5K7asLLhH90l1V8aebrpjxZNyFXmCM4+FpcDTyrTnUtUwlouJwKakKakQjiADUDBVwE
-         6VfWPlivqeUv/xe3ddYE/qpbNxHeJhVpjpcdo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697000705; x=1697605505;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WxTb+tzaW80rCd53UmA2HdlmPdirZzFTdr3/d2GhRv0=;
-        b=uwxwzeNRWBCq+n+fGbnOXAd2VrDV8v5f9jcASJl02A5vp81vy1hNcTmUBU85DIlBwN
-         yM7GbW7g0drYVXN17GpQqT68n9eCvagJ1FkKG2ualHtz+d6tfOwasWA6vSFn3JXjfhLV
-         lFKpF3nJ+OEVhJnOe8A1FlP5Yq7kiiyF2Q62OT0m4EGf9UOIG6SjHYXSybsjnGL2dAts
-         4aM2iEq2Y3ZWi91N1b0RsN/t2ZKd6mDsEbk2dSUfKbryHkD3I4Npeoy6NwEnzf//UYgY
-         k6+Ww5UymJQGkL0zm6MAkGc4SnRWyYVhZfBoXZd4wJ133Kh/SvZUBZ3naUo3K8QSqOOs
-         nA5g==
-X-Gm-Message-State: AOJu0Yx1mz9uySM8/MdxYpCBx6T7/0UY7vwMB4x9vj7wsu2hqc50lbMr
-        v3LuMWMM+FpfSRTJT/2RT3XbGg==
-X-Google-Smtp-Source: AGHT+IFy03G2cJuFBIp6FGEixKXoqXrVTKJalXLWgyRWJ4CG+YpsKoYUI6z524T5aX5M2yqvkC+r0w==
-X-Received: by 2002:a5d:9954:0:b0:786:f4a0:d37e with SMTP id v20-20020a5d9954000000b00786f4a0d37emr19775042ios.4.1697000705583;
-        Tue, 10 Oct 2023 22:05:05 -0700 (PDT)
-Received: from localhost (161.74.123.34.bc.googleusercontent.com. [34.123.74.161])
-        by smtp.gmail.com with ESMTPSA id m11-20020a02c88b000000b0042b35e163besm3195221jao.88.2023.10.10.22.05.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 22:05:05 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 05:05:04 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, Chengming Zhou <zhouchengming@bytedance.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ovidiu Panait <ovidiu.panait@windriver.com>,
-        Ingo Molnar <mingo@kernel.org>, rcu <rcu@vger.kernel.org>
-Subject: Re: [PATCH 5.15 000/183] 5.15.134-rc1 review
-Message-ID: <20231011050504.GA201855@google.com>
-References: <20231004175203.943277832@linuxfoundation.org>
- <CA+G9fYunnEUT2evdabX1KOTiryP1heNHWDH4LWZCt2SVRmnKOA@mail.gmail.com>
- <20231006162038.d3q7sl34b4ouvjxf@revolver>
- <57c1ff4d-f138-4f89-8add-c96fb3ba6701@paulmck-laptop>
- <20231006175714.begtgj6wrs46ukmo@revolver>
- <7652477c-a37c-4509-9dc9-7f9d1dc08291@paulmck-laptop>
- <CAEXW_YS16NxPxg52T=3FcyZ2qocj36zKyhPnEQL3nBTbD-qJ-A@mail.gmail.com>
- <9470dab6-dee5-4505-95a2-f6782b648726@paulmck-laptop>
- <433f5823-059c-4b51-8d18-8b356a5a507f@paulmck-laptop>
+ d=lukasiewiczgov.onmicrosoft.com; s=selector1-lukasiewiczgov-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pn1iR4TC3IOjdvWD0ZRvVaB75OwlVP2t7vf2N7xn0UE=;
+ b=sgOXcFB5uYxikEDMXWFowExm/3+Ia2EIdDMC6Jj3EUZD8dTHBTtwGaB65PqvXPxVuejFHnaCPnSJ3qBRlk7htioZH77RxQDVIA1kof39LVLj7W8OTPXkhOctoWB9VKYCzNcfLzKU4TaJXpWDeLMEybDh2m0EsOF6g1gb7H7F+1E=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=piap.pl;
+Received: from VI1P193MB0685.EURP193.PROD.OUTLOOK.COM (2603:10a6:800:155::18)
+ by PR3P193MB1039.EURP193.PROD.OUTLOOK.COM (2603:10a6:102:ae::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Wed, 11 Oct
+ 2023 05:06:32 +0000
+Received: from VI1P193MB0685.EURP193.PROD.OUTLOOK.COM
+ ([fe80::1bd8:1a5d:e69:d1a7]) by VI1P193MB0685.EURP193.PROD.OUTLOOK.COM
+ ([fe80::1bd8:1a5d:e69:d1a7%3]) with mapi id 15.20.6863.041; Wed, 11 Oct 2023
+ 05:06:31 +0000
+From:   Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
+To:     soc@kernel.org
+Cc:     Linus Walleij <linusw@kernel.org>, Imre Kaloz <kaloz@openwrt.org>,
+        Deepak Saxena <dsaxena@plexity.net>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: [PATCH] IXP4xx MAINTAINERS entries
+Date:   Wed, 11 Oct 2023 07:06:29 +0200
+Message-ID: <m3ttqxu4ru.fsf@t19.piap.pl>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: WA2P291CA0028.POLP291.PROD.OUTLOOK.COM
+ (2603:10a6:1d0:1f::23) To VI1P193MB0685.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:800:155::18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <433f5823-059c-4b51-8d18-8b356a5a507f@paulmck-laptop>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1P193MB0685:EE_|PR3P193MB1039:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7574f98f-69a4-4e9e-1e9a-08dbca17d4c5
+X-MS-Exchange-AtpMessageProperties: SA
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1LdqnbVP89PQ71LMZbbdkQsORyNdPjQ6nuIBzZHNBuCd5ND7Kc73HqgiFt1ccddgHNrPMGF17v9XlZwwVtIH+blp8BwOfO7gCWWAW1UNzjPgcNGVn8tpOtU9aqjPq9soAS3wyEPVVcajCVyimMVckiopMkd+yqwfDmzqUFgeMu8yuh6z/TMAw1LbnjUURlE5KJ64LO9ah+h+PeGApnuKxk2lY24/l4ETaIqPdIwKABCsYBmTVWuA1FI7d6kJpg3NpahuIIJh4RRfz06FNwgaWHaD/q6RyiI83YW9kpBDNl7ang/FKVfVgTvfIw+jdthQXiLORtU+S89Q94Ge0xA4Ip/HShVg7AHPMKmrg0mhm6/1pWVKSU2t/Q6Qn+ZAIXl81Aw3w2uGpcRD4/b1PtH/yesyZYOz0pqEjMN0pgzkcAssduHVVmsgVECjo5Dlx6A3exPfPt1ogsr3spYvIBsgQ98pZ+NByYgqybFDtapT523+tAda1HedA0iLmK4SWiDX/SJ48VIyPGVAWpG4PtyN+pOHXTOjljoKUkWWI+s0Q5X4JLTTQGCfXPQBX68qOx7A9AbZpzWCVhQXMLRUVTwWI7wyfLjZjU3qQEAHaFOmNG6uFQgnykNFnGhRU645tvY/Sg3bS9mUaRxfpafgF6g+EA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1P193MB0685.EURP193.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(346002)(366004)(39860400002)(1800799009)(451199024)(64100799003)(186009)(2906002)(83170400001)(38350700002)(38100700002)(6916009)(66476007)(54906003)(41300700001)(66556008)(66946007)(316002)(786003)(52116002)(6512007)(26005)(478600001)(6486002)(6506007)(66574015)(8676002)(5660300002)(42882007)(8936002)(83380400001)(4326008)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dGhtU3Y0SlkyVWsyQjRpK1VPUDUwY1BodFFLVGpkZlFqNU5ib3ZqVVoxWVhy?=
+ =?utf-8?B?eTE1Qk5WN3BRK0k1dzIyak5QWGRvd2xIcy9zMFNIYzJ3djVzWHh4YXpFOXAx?=
+ =?utf-8?B?L2hiUk1JbFJacTJ2SDJFSTc3eGdsOTg4MnJ3QTVHT2ZnQW5vVWJCMzZlQllm?=
+ =?utf-8?B?UXRKS0oycHU3TmVESEtCMWpLck5aRCtCYnlTR3ZWcFFQblpxT0NKbGdVN0I4?=
+ =?utf-8?B?QlFvOE02RkZrUVQzczRWMFNtZFZOTmJ5VkorS1QvVGxPaDFSVUFxOU1MSnRT?=
+ =?utf-8?B?QlZTcWNZNXZaQm52TWhEU0p0d0t6bXFYWFJ2VHlDazhUaTlIM2ZFc0psSGoy?=
+ =?utf-8?B?S2ZPenFMa1JycWUxY1I1YUorbUh4S2doUVlOZEtFa3FwREc1LzFNbWxtaVRU?=
+ =?utf-8?B?bzhXb3JuQWpaZmFTeTdvelVzY2J0T1N5N2M3MW5LZEt6eExEaFprTnBzMldl?=
+ =?utf-8?B?TklQblE5S3RMQmdQTnNsMGJkaXFFRndxMWVuWXJsRW8yNDRhYlVEV1ZBdW1I?=
+ =?utf-8?B?V29nNi9OWkY5NitFTndESTJTSHladGcwMTNxMlVhK2RScC9BTFVhSjBOZHNB?=
+ =?utf-8?B?MkZhS1lYR3d1RThnM2Y2bEJNdWlqMzN3bkdaUGlwbDlESVlFWUxxdEpZSmhS?=
+ =?utf-8?B?UzJaY2pBWEV2UytXWnZJeEFSS3FISENpd3d2dS9PWTk0Z2FFQ09xeG5la2E4?=
+ =?utf-8?B?amZpRVV1U3NrYThleG43cWZ3d3crdXVPNXdZRmZ0OWFhNVZXNmY3dkZzd0xT?=
+ =?utf-8?B?REtsdDZmUEc5a0hjNUZPWUFPVmZyYkdQenpNNW1WT1JlL0x5eHhVQnIwQmRZ?=
+ =?utf-8?B?Q0NmenpzT2R4ZG4zWmQrTUh3Z3c5d3FhZkpjenV0NHF5a1NKSWRoeGRFdk9t?=
+ =?utf-8?B?RmZXVWRFRHFxcGc3S0JjbGdMMnUwZGZiSXdVL09wa2QyczFqWnZJSVZiUHd4?=
+ =?utf-8?B?MnZoY0VJYjNQLzFZN3kvVXo1U2ZWcHlVL2RzbUtCclB5ZXB5ZVZjWnlsZUt5?=
+ =?utf-8?B?MlNwbkZNaFpMOGt2VDBuQzRoLzNUc1hyU1E3Sk5ZUTZPeTFodERUL2o0NCtp?=
+ =?utf-8?B?VWx2bUt5VlVrUHJleEpCSFpLeW1kc2xvMVZBMWE2eExwL3hpSUxRZ1hoOXNi?=
+ =?utf-8?B?aFlscjcxQ0pDaEoyRkV1WmVodnRqNTlMdUdmejMzTm1HS1J3WGJ2a2NkNXAw?=
+ =?utf-8?B?Z3BIdThrTTdMZjQyZkRociswTWdMT2NRYkE2dzYva3VQREhobEplME5vZHdz?=
+ =?utf-8?B?aXFkaHl4MTRCNE1kdFZxK0JxSnNmdXlwS1cvVDdvTC9zVWxpenJpeHRpa3lP?=
+ =?utf-8?B?bmd4N3VaRFJSRGtCU05TS2hNbStBQUY4SEJJTjR4UUJYZ3FEZGpxV1VFSVhi?=
+ =?utf-8?B?SjZ5YkZxVzhCMVo1TG9obHVXdHZYSmRvSU5jSkVvRmVvZWRJR1NHb3ZiT3l4?=
+ =?utf-8?B?NmdxZDNJVWhBUU1heTE4STc3K0FESGszRmpTeHFWNGZEWFZWM1I1Uzl3VHR5?=
+ =?utf-8?B?VUFCaGtCT0xpMjlmNkFEOUlXSjdMcmlETEpFbndSa05pN2dOVVdDTXJYelZX?=
+ =?utf-8?B?R0hOcDNralR5M04zUHVKdmVadVRIR1hocDhFcTRpUUZoaDNuWlZVa2cxUmhZ?=
+ =?utf-8?B?bi9CWmhRdlpzaXVId25VeDRnQnR6cVdSRkUvQkZDczNoUCtWWklJMkN3RlpU?=
+ =?utf-8?B?TG81c2xIdGw4U0l3S2U1a0VSRlFSREcraWpMQlVCZDlTVy91TE42Z0pqbEIw?=
+ =?utf-8?B?Y04xUXRGV0tkRnRsSjV5cHBaMTRiSHpnem5kbkpTTVgzVFRMY2cxcjlIZE1l?=
+ =?utf-8?B?UnVRUmJNRDRtRzRUZ1g0QTBtbkdlbG50QzhwaklIblNJQnYrRDdaVmpNZnBL?=
+ =?utf-8?B?UkYvUWw5b21RVHgybzZTRjQwRFFsbDZiaUJVSjdLWHdjQ0t0WW1PUzFaWlNo?=
+ =?utf-8?B?Y1JDdHZpS0ptTFR5RkdsaGtLQkYzWFcvTnRlNjA1U08wWHBXN0xTdVIrSURt?=
+ =?utf-8?B?WHdwMGVHcHp5ck5sUk1kTGJhTktrNitwZVFiMzdxSDkyWWs2K0wvYkc1bytD?=
+ =?utf-8?B?eHdQUTlFSC81L2xJdjZlejVCYU9tWDBJcVdscVp2SngzVEFZQnRyRjRCdG1D?=
+ =?utf-8?B?Wi95SE5Cd2NvMzQxd0RpRkNLWmdnSmZ4eVlRQmRmdldTQzZNNHJyTDlGOW1z?=
+ =?utf-8?Q?/Ari1INAJPPPOvuQOH2vljWxQtmUT0JE9brPABactG3B?=
+X-OriginatorOrg: piap.pl
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7574f98f-69a4-4e9e-1e9a-08dbca17d4c5
+X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0685.EURP193.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2023 05:06:30.8488
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3e05b101-c6fe-47e5-82e1-c6a410bb95c0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bEx4pACR2Wa60dg+2ceTIct3kVd6vin7bXuI1bpto9gxNEyM3giMElmUiM+YfDlksKv3H9CZ10y6Cgp7ndUXzV8S++c7X2Kgt4hHNDaXptxXHMbsf7eT4ros2P2KwGNS5FTXkiWd3mQgEUUDwntGqA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3P193MB1039
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 06:34:35PM -0700, Paul E. McKenney wrote:
-[...]
-> > > > > > > It's also worth noting that the bug this fixes wasn't exposed until the
-> > > > > > > maple tree (added in v6.1) was used for the IRQ descriptors (added in
-> > > > > > > v6.5).
-> > > > > >
-> > > > > > Lots of latent bugs, to be sure, even with rcutorture.  :-/
-> > > > >
-> > > > > The Right Thing is to fix the bug all the way back to the introduction,
-> > > > > but what fallout makes the backport less desirable than living with the
-> > > > > unexposed bug?
-> > > >
-> > > > You are quite right that it is possible for the risk of a backport to
-> > > > exceed the risk of the original bug.
-> > > >
-> > > > I defer to Joel (CCed) on how best to resolve this in -stable.
-> > > 
-> > > Maybe I am missing something but this issue should also be happening
-> > > in mainline right?
-> > > 
-> > > Even though mainline has 897ba84dc5aa ("rcu-tasks: Handle idle tasks
-> > > for recently offlined CPUs") , the warning should still be happening
-> > > due to Liam's "kernel/sched: Modify initial boot task idle setup"
-> > > because the warning is just rearranged a bit but essentially the same.
-> > > 
-> > > IMHO, the right thing to do then is to drop Liam's patch from 5.15 and
-> > > fix it in mainline (using the ideas described in this thread), then
-> > > backport both that new fix and Liam's patch to 5.15.
-> > > 
-> > > Or is there a reason this warning does not show up on the mainline?
-> 
-> There is not a whole lot of commonality between the v5.15.134 version of
-> RCU Tasks Trace and that of mainline.  In theory, in mainline, CPU hotplug
-> is supposed to be disabled across all calls to trc_inspect_reader(),
-> which means that there would not be any CPU coming or going.
-> 
-> But there could potentially be some time between when a CPU was
-> marked as online and its idle task was marked PF_IDLE.  And in
-> fact x86 start_secondary() invokes set_cpu_online() before it calls
-> cpu_startup_entry(), and it is the latter than sets PF_IDLE.
-> 
-> The same is true of alpha, arc, arm, arm64, csky, ia64, loongarch, mips,
-> openrisc, parisc, powerpc, riscv, s390, sh, sparc32, sparc64, x86 xen,
-> and xtensa, which is everybody.
-> 
-> One reason why my testing did not reproduce this is because I was running
-> against v6.6-rc1, and cff9b2332ab7 ("kernel/sched: Modify initial boot
-> task idle setup") went into v6.6-rc3.  An initial run merging in current
-> mainline also failed to reproduce this, but I am running overnight.
-> If that doesn't reproduce, I will try inserting delays between the
-> set_cpu_online() and the cpu_startup_entry().
+Update MAINTAINERS entries for Intel IXP4xx SoCs.
 
-I thought the warning happens before set_cpu_online() is even called, because
-under such situation, ofl == true and the task is not set to PF_IDLE yet:
+Linus has been handling all IXP4xx stuff since 2019 or so.
 
-                  WARN_ON_ONCE(ofl && task_curr(t) && !is_idle_task(t));
+Signed-off-by: Krzysztof Ha=C5=82asa <khalasa@piap.pl>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Acked-by: Deepak Saxena <dsaxena@plexity.net>
 
-> If this problem is real, fixes include:
-> 
-> o	Revert Liam's patch and make Tiny RCU's call_rcu() deal with
-> 	the problem.  This is overhead and non-tinyness, but to Joel's
-> 	point, it might be best.
-> 
-> o	Go back to something more like Liam's original patch, which
-> 	cleared PF_IDLE only for the boot CPU.
-> 
-> o	Set PF_IDLE before calling set_cpu_online().  This would work,
-> 	but it would also be rather ugly, reaching into each and every
-> 	architecture.
-> 
-> o	Move the call to set_cpu_online() into cpu_startup_entry().
-> 	This would require some serious inspection to prove that it is
-> 	safe, assuming that it is in fact safe.
-> 
-> o	Drop the WARN_ON_ONCE() from trc_inspect_reader().  Not all
-> 	that excited by losing this diagnostic, but then again it
-> 	has been awhile since it has caught anything.
-> 
-> o	Make the WARN_ON_ONCE() condition in trc_inspect_reader() instead
-> 	to a "return false" to retry later.  Ditto, also not liking the
-> 	possibility of indefinite deferral with no warning.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 6c4cce45a09db..6d1c4e8d1ff8f 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2210,21 +2210,28 @@ F:	arch/arm/boot/dts/ti/omap/omap3-igep*
+ ARM/INTEL IXP4XX ARM ARCHITECTURE
+ M:	Linus Walleij <linusw@kernel.org>
+ M:	Imre Kaloz <kaloz@openwrt.org>
+-M:	Krzysztof Halasa <khalasa@piap.pl>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/arm/intel-ixp4xx.yaml
+ F:	Documentation/devicetree/bindings/gpio/intel,ixp4xx-gpio.txt
+ F:	Documentation/devicetree/bindings/interrupt-controller/intel,ixp4xx-int=
+errupt.yaml
+ F:	Documentation/devicetree/bindings/memory-controllers/intel,ixp4xx-expan=
+sion*
++F:	Documentation/devicetree/bindings/rng/intel,ixp46x-rng.yaml
+ F:	Documentation/devicetree/bindings/timer/intel,ixp4xx-timer.yaml
+ F:	arch/arm/boot/dts/intel/ixp/
+ F:	arch/arm/mach-ixp4xx/
+ F:	drivers/bus/intel-ixp4xx-eb.c
++F:	drivers/char/hw_random/ixp4xx-rng.c
+ F:	drivers/clocksource/timer-ixp4xx.c
+ F:	drivers/crypto/intel/ixp4xx/ixp4xx_crypto.c
+ F:	drivers/gpio/gpio-ixp4xx.c
+ F:	drivers/irqchip/irq-ixp4xx.c
++F:	drivers/net/ethernet/xscale/ixp4xx_eth.c
++F:	drivers/net/wan/ixp4xx_hss.c
++F:	drivers/soc/ixp4xx/ixp4xx-npe.c
++F:	drivers/soc/ixp4xx/ixp4xx-qmgr.c
++F:	include/linux/soc/ixp4xx/npe.h
++F:	include/linux/soc/ixp4xx/qmgr.h
+=20
+ ARM/INTEL KEEMBAY ARCHITECTURE
+ M:	Paul J. Murphy <paul.j.murphy@intel.com>
+@@ -10619,22 +10626,6 @@ L:	linux-crypto@vger.kernel.org
+ S:	Maintained
+ F:	drivers/crypto/intel/ixp4xx/ixp4xx_crypto.c
+=20
+-INTEL IXP4XX QMGR, NPE, ETHERNET and HSS SUPPORT
+-M:	Krzysztof Halasa <khalasa@piap.pl>
+-S:	Maintained
+-F:	drivers/net/ethernet/xscale/ixp4xx_eth.c
+-F:	drivers/net/wan/ixp4xx_hss.c
+-F:	drivers/soc/ixp4xx/ixp4xx-npe.c
+-F:	drivers/soc/ixp4xx/ixp4xx-qmgr.c
+-F:	include/linux/soc/ixp4xx/npe.h
+-F:	include/linux/soc/ixp4xx/qmgr.h
+-
+-INTEL IXP4XX RANDOM NUMBER GENERATOR SUPPORT
+-M:	Deepak Saxena <dsaxena@plexity.net>
+-S:	Maintained
+-F:	Documentation/devicetree/bindings/rng/intel,ixp46x-rng.yaml
+-F:	drivers/char/hw_random/ixp4xx-rng.c
+-
+ INTEL KEEM BAY DRM DRIVER
+ M:	Anitha Chrisanthus <anitha.chrisanthus@intel.com>
+ M:	Edmund Dea <edmund.j.dea@intel.com>
 
-Just for completeness, 
+--=20
+Krzysztof "Chris" Ha=C5=82asa
 
- o      Since it just a warning, checking for task_struct::pid == 0 instead of is_idle_task()?
-        Though PF_IDLE is also set in play_idle_precise().
-
- o	Change warning to:
-                  WARN_ON_ONCE(ofl && task_curr(t) && (!is_idle_task(t) && t->pid != 0));
-
-thanks,
-
- - Joel
-
+Sie=C4=87 Badawcza =C5=81ukasiewicz
+Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
