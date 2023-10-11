@@ -2,184 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A18D7C5271
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00FF27C527C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234723AbjJKLtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:49:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55858 "EHLO
+        id S230489AbjJKLvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:51:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234757AbjJKLsw (ORCPT
+        with ESMTP id S234829AbjJKLsz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:48:52 -0400
-Received: from mail-ot1-f78.google.com (mail-ot1-f78.google.com [209.85.210.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799CFCC
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:48:50 -0700 (PDT)
-Received: by mail-ot1-f78.google.com with SMTP id 46e09a7af769-6c22d8a0cecso9370190a34.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:48:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697024930; x=1697629730;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dvPO+gogj2TMD3QRmWPHiBIeaehacfqKQiwt3SM/RLA=;
-        b=FFXiiIzlRF0VrLy78OnpxFAnoZcRZSRnTpM+X+3BwbuZX9OoHQ99dMicVGZGsc9sMf
-         Jr7OqwZNm6NSLE6gMYOMNzJYcgD8SP276vOXTEi/oqLFIjUooF7jFIIhxOYfmuVRjtIs
-         g2clXCVPz0Z5XqiEVFGlk6i2Li7uB/qJo5NRqrQCZPVlEidqCG1SYsVnALizB79us67z
-         OK1I+/xvBQwtyHaFtQrQx4YWcYMWpVJk+kMYEeFkJtDkccYf7M4VV4hHC9+b92VNuT0b
-         2uoNzr7MNkqjjbeqHxIJb4CECGcFIDXm+sj2ChQHJQfuJRYPq1ZHKtaek7ayYcFn3VsC
-         NkAw==
-X-Gm-Message-State: AOJu0Ywygn8aW0tFZNMVdRSJc/JZtleZp0L4A7/ZKLi71XUqQd5vL69O
-        TYJcsRLXBgBYW0YZuzOdRtUgfrjwLtfgzx0D06Pe/4quXWiP
-X-Google-Smtp-Source: AGHT+IEhpG/z3De/SR73x/Sern95ULB4+POFxC41sig7+OOBFbrqeEVEgjwVKIKp6TWOD9FLk44cHY2qGHH6ctQGcjtI0weTvKO0
+        Wed, 11 Oct 2023 07:48:55 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F257CA9;
+        Wed, 11 Oct 2023 04:48:53 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DE7EC433C8;
+        Wed, 11 Oct 2023 11:48:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697024933;
+        bh=u9Bib1G26xubCLXuoKQJbbgiqRSPlByRzAQB8SaHLx8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qgEbu6Bq9z3UKeqhLy0QAKw1dKpXyvqi+9uOAtjmlqemipeYtjlEItfPEOMrzvuT3
+         OZZLazIYlcv5TbWWw9783GNQ9q9wAE6p+IBpzwXzpPeYNbuL7SiWkMvZesL9ajtmv2
+         DSA13c+KAkJ4OzrSGP3PStTDv1jAAg/VP7UupPmJUsr6Zmut+AzNyU/H24KHp+OEmz
+         /aoXU7viEam2Fmft5M/qEVLlUtpW49CGK+h33lBfBZ9qh5afKui/QK1+Fiui+MQIC+
+         R4d5sn5dk+CAU/oBsKPdGklyZXeZsv2qt2vH4B4BaIUTE4IXX9Tl79xdWdplCJYDE3
+         FP5NJR4xepdEA==
+Date:   Wed, 11 Oct 2023 17:18:49 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Kelvin.Cao@microchip.com
+Cc:     dmaengine@vger.kernel.org, George.Ge@microchip.com,
+        linux-kernel@vger.kernel.org, logang@deltatee.com,
+        christophe.jaillet@wanadoo.fr, hch@infradead.org
+Subject: Re: [PATCH v6 1/1] dmaengine: switchtec-dma: Introduce Switchtec DMA
+ engine PCI driver
+Message-ID: <ZSaLoaenhsEG4/IP@matsya>
+References: <20230728200327.96496-1-kelvin.cao@microchip.com>
+ <20230728200327.96496-2-kelvin.cao@microchip.com>
+ <ZMlSLXaYaMry7ioA@matsya>
+ <fd597a2a71f1c5146c804bb9fce3495864212d69.camel@microchip.com>
+ <b0dc3da623dee479386e7cb75841b8b7913c9890.camel@microchip.com>
+ <ZR/htuZSKGJP1wgU@matsya>
+ <f72b924b8c51a7768b0748848555e395ecbb32eb.camel@microchip.com>
+ <ZSORx0SwTerzlasY@matsya>
+ <1c677fbf37ac2783f864b523482d4e06d9188861.camel@microchip.com>
 MIME-Version: 1.0
-X-Received: by 2002:a9d:67cb:0:b0:6ab:8d3:5209 with SMTP id
- c11-20020a9d67cb000000b006ab08d35209mr6579019otn.5.1697024929803; Wed, 11 Oct
- 2023 04:48:49 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 04:48:49 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001db56d06076f6861@google.com>
-Subject: [syzbot] [hfs?] KMSAN: uninit-value in hfsplus_rename_cat
-From:   syzbot <syzbot+93f4402297a457fc6895@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1c677fbf37ac2783f864b523482d4e06d9188861.camel@microchip.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 10-10-23, 21:23, Kelvin.Cao@microchip.com wrote:
+> On Mon, 2023-10-09 at 11:08 +0530, Vinod Koul wrote:
 
-syzbot found the following issue on:
+> > > u64 size_to_transfer;
+> > 
+> > Why cant the client driver write to doorbell, is there anything which
+> > prevents us from doing so?
+> 
+> I think the potential challenge here for the client driver to ring db
+> is that the client driver (host RC) is a different requester in the
+> PCIe hierarchy compared to DMA EP, in which case PCIe ordering need to
+> be considered. 
+> 
+> As PCIe ensures that reads don't pass writes, we can insert a read DMA
+> operation with DMA_PREP_FENSE flag in between the two DMA writes (one
+> for data transfer and one for notification) to ensure the ordering for
+> the same requester DMA EP. I'm not sure if the RC could ensure the same
+> ordering if the client driver issue MMIO write to db after the data DMA
+> and read DMA completion, so that the consumer is guaranteed the
+> transferred data is ready in memory when the db is triggered by the
+> client MMIO write. I guess it's still doable with MMIO write but just
+> some special consideration needed. 
 
-HEAD commit:    82714078aee4 Merge tag 'pm-6.6-rc5' of git://git.kernel.or..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=151aa759680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7a5682d32a74b423
-dashboard link: https://syzkaller.appspot.com/bug?extid=93f4402297a457fc6895
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13095252680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=123ba911680000
+Given that it is a single value, overhead of doing a new txn would be
+higher than a mmio write! I think that should be preferred
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/d1f78c1d4d78/disk-82714078.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e2a379fc35bb/vmlinux-82714078.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/e52238a1bd60/bzImage-82714078.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/286844f77c11/mount_0.gz
-
-Bisection is inconclusive: the issue happens on the oldest tested release.
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15b3eaee680000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=17b3eaee680000
-console output: https://syzkaller.appspot.com/x/log.txt?x=13b3eaee680000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+93f4402297a457fc6895@syzkaller.appspotmail.com
-
-         and is ignored by this kernel. Remove the mand
-         option from the mount to silence this warning.
-=======================================================
-general protection fault, probably for non-canonical address 0xdffffc0000000008: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000040-0x0000000000000047]
-CPU: 0 PID: 5030 Comm: syz-executor114 Not tainted 6.6.0-rc4-syzkaller-00229-g82714078aee4 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-RIP: 0010:hfsplus_rename_cat+0x4b3/0x1050 fs/hfsplus/catalog.c:480
-Code: 60 42 80 3c 20 00 48 8b 5c 24 20 74 05 e8 05 38 81 ff 48 8b 94 24 20 01 00 00 48 83 c3 40 48 89 d8 48 c1 e8 03 48 89 44 24 68 <42> 80 3c 20 00 48 89 54 24 08 74 0d 48 89 df e8 d9 37 81 ff 48 8b
-RSP: 0018:ffffc90003a6f780 EFLAGS: 00010202
-RAX: 0000000000000008 RBX: 0000000000000040 RCX: ffff8880203e1dc0
-RDX: ffff88801fb6f000 RSI: 0000000000000000 RDI: ffffc90003a6f8a0
-RBP: ffffc90003a6fbf0 R08: ffffffff8267c274 R09: ad0047e119000000
-R10: ad0047e119000000 R11: ad0047e1ad0047e1 R12: dffffc0000000000
-R13: ffffc90003a6f86c R14: ffffc90003a6f900 R15: 1ffff9200074df04
-FS:  0000555556d88380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffd58aeb000 CR3: 0000000027125000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- hfsplus_unlink+0x308/0x790 fs/hfsplus/dir.c:376
- vfs_unlink+0x35d/0x5f0 fs/namei.c:4332
- do_unlinkat+0x4a7/0x950 fs/namei.c:4398
- __do_sys_unlink fs/namei.c:4446 [inline]
- __se_sys_unlink fs/namei.c:4444 [inline]
- __x64_sys_unlink+0x49/0x50 fs/namei.c:4444
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f9d18b02019
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd58aea948 EFLAGS: 00000246 ORIG_RAX: 0000000000000057
-RAX: ffffffffffffffda RBX: 00007f9d18b4b082 RCX: 00007f9d18b02019
-RDX: 00007f9d18b02019 RSI: 00007f9d18b012f7 RDI: 00000000200000c0
-RBP: 00007f9d18b4b08c R08: 0000000020000000 R09: 0000000020000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd58aea980
-R13: 00007ffd58aeaba8 R14: 431bde82d7b634db R15: 00007f9d18b4b03b
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:hfsplus_rename_cat+0x4b3/0x1050 fs/hfsplus/catalog.c:480
-Code: 60 42 80 3c 20 00 48 8b 5c 24 20 74 05 e8 05 38 81 ff 48 8b 94 24 20 01 00 00 48 83 c3 40 48 89 d8 48 c1 e8 03 48 89 44 24 68 <42> 80 3c 20 00 48 89 54 24 08 74 0d 48 89 df e8 d9 37 81 ff 48 8b
-RSP: 0018:ffffc90003a6f780 EFLAGS: 00010202
-RAX: 0000000000000008 RBX: 0000000000000040 RCX: ffff8880203e1dc0
-RDX: ffff88801fb6f000 RSI: 0000000000000000 RDI: ffffc90003a6f8a0
-RBP: ffffc90003a6fbf0 R08: ffffffff8267c274 R09: ad0047e119000000
-R10: ad0047e119000000 R11: ad0047e1ad0047e1 R12: dffffc0000000000
-R13: ffffc90003a6f86c R14: ffffc90003a6f900 R15: 1ffff9200074df04
-FS:  0000555556d88380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffd58aeb000 CR3: 0000000027125000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess), 1 bytes skipped:
-   0:	42 80 3c 20 00       	cmpb   $0x0,(%rax,%r12,1)
-   5:	48 8b 5c 24 20       	mov    0x20(%rsp),%rbx
-   a:	74 05                	je     0x11
-   c:	e8 05 38 81 ff       	call   0xff813816
-  11:	48 8b 94 24 20 01 00 	mov    0x120(%rsp),%rdx
-  18:	00
-  19:	48 83 c3 40          	add    $0x40,%rbx
-  1d:	48 89 d8             	mov    %rbx,%rax
-  20:	48 c1 e8 03          	shr    $0x3,%rax
-  24:	48 89 44 24 68       	mov    %rax,0x68(%rsp)
-* 29:	42 80 3c 20 00       	cmpb   $0x0,(%rax,%r12,1) <-- trapping instruction
-  2e:	48 89 54 24 08       	mov    %rdx,0x8(%rsp)
-  33:	74 0d                	je     0x42
-  35:	48 89 df             	mov    %rbx,%rdi
-  38:	e8 d9 37 81 ff       	call   0xff813816
-  3d:	48                   	rex.W
-  3e:	8b                   	.byte 0x8b
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+~Vinod
