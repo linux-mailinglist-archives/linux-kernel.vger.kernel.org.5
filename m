@@ -2,183 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A47BC7C4B0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87AF37C4B0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344249AbjJKG61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 02:58:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59020 "EHLO
+        id S1344583AbjJKG7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 02:59:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbjJKG60 (ORCPT
+        with ESMTP id S1344499AbjJKG66 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 02:58:26 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E7DB7;
-        Tue, 10 Oct 2023 23:58:24 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-327be5fe4beso5874113f8f.3;
-        Tue, 10 Oct 2023 23:58:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697007502; x=1697612302; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=94Aupc/WoctqDp8xqPo3RjM/d0ECIJ8ZPHye9gY433w=;
-        b=KIxB5r+jsya9wKwRiOtdw3I/3ZxD82m8uL4DwQRBz/PS8KGJ4FyFsufmprI6OBVu9K
-         pR4Iay02IcbgkeHLid+mfNrQN84FFpOgclACZwjIwJMkSuxnV9UfV5q5hXYnhhp5uye1
-         Hg26/vz5dROysidFxa1WVBO7kZHgoM/TdDtCW8Zgkg90YQ2rcmqYC/XwKPSuMH3q7VDf
-         rVB2MuSxhufs2u2iLpFASzPsG6x8SZfm07Abv9qTQ7TVQAcHWF/HVYbazydoRY8izVvC
-         rDk67qq5LM/9AAHrvar2tNg9eeWiC9x3MUeqw+ziY66Xq5iyGjIILJg48ZCvtGcbqiA9
-         FfWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697007502; x=1697612302;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=94Aupc/WoctqDp8xqPo3RjM/d0ECIJ8ZPHye9gY433w=;
-        b=l0VQtUiyaHVKsoKC7Ng9LS/ABqcWfu+7DGIbyIpIcz0roNOVNkbwObt4mt37RszTEd
-         Pk18jlJdYndTYxzj+wEPysgczdW5LTbf0OnSwydqy3iSMzcEBKsxwMDIz7Tdr0qCxaQS
-         t9qw1wP6vQrKZL5ErpXBHro+1oqGD7cVlwdvonrEk7Ps4ztAfeT7LGgqNNOkH9WXNsyP
-         RkRzfYZsteFMeK+lmZEheQhO+L5OzwaJrPHLQpg1GE3Qio1Bk6ZzbctBh1DZMGb2RXs/
-         VtCZ2Sx7yZ/YSG8IdrYtGD5wVERS7sRGQ82cb7yQtRPCYA6qaYSucJwgfyQgVHo5XWS6
-         GP6Q==
-X-Gm-Message-State: AOJu0Yx19uMRGv5IbmRvjXexba0g0Ha6VoorgolkUPr5yvfglAtf5gPs
-        MkR3kW11J53IgumzZOgb7jgJkvDTGLI=
-X-Google-Smtp-Source: AGHT+IHLJYkdW/fjT6jzHgUoZyb7XD0MWnrvSt2FIGvXP4SKbU60fDv2wfSA0vlHElTRAdHzqaci8Q==
-X-Received: by 2002:a5d:5304:0:b0:319:6d03:13ae with SMTP id e4-20020a5d5304000000b003196d0313aemr16290191wrv.55.1697007502350;
-        Tue, 10 Oct 2023 23:58:22 -0700 (PDT)
-Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
-        by smtp.gmail.com with ESMTPSA id p13-20020a5d68cd000000b0031ae8d86af4sm14469751wrw.103.2023.10.10.23.58.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 23:58:20 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 07:58:20 +0100
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     "=Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 4/5] mm: abstract merge for new VMAs into
- vma_merge_new_vma()
-Message-ID: <e2c8fb0e-e5dc-454e-aad7-93a85fefaa9a@lucifer.local>
-References: <cover.1696929425.git.lstoakes@gmail.com>
- <fe658ae961de1206f1557001f4d41d6e931d3919.1696929425.git.lstoakes@gmail.com>
+        Wed, 11 Oct 2023 02:58:58 -0400
+Received: from mxout70.expurgate.net (mxout70.expurgate.net [194.37.255.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DCD90;
+        Tue, 10 Oct 2023 23:58:56 -0700 (PDT)
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.92)
+        (envelope-from <prvs=96621b7d4a=fe@dev.tdt.de>)
+        id 1qqTB4-00AC05-8G; Wed, 11 Oct 2023 08:58:42 +0200
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <fe@dev.tdt.de>)
+        id 1qqTB3-009Qf4-63; Wed, 11 Oct 2023 08:58:41 +0200
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id CBC472400B1;
+        Wed, 11 Oct 2023 08:58:40 +0200 (CEST)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id 271D1240082;
+        Wed, 11 Oct 2023 08:58:40 +0200 (CEST)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id 7E37B334C9;
+        Wed, 11 Oct 2023 08:58:39 +0200 (CEST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fe658ae961de1206f1557001f4d41d6e931d3919.1696929425.git.lstoakes@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 11 Oct 2023 08:58:39 +0200
+From:   Florian Eckert <fe@dev.tdt.de>
+To:     Lee Jones <lee@kernel.org>
+Cc:     Eckert.Florian@googlemail.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, pavel@ucw.cz, kabel@kernel.org,
+        u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-leds@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v2 3/4] trigger: ledtrig-tty: move variable definition to
+ the top
+In-Reply-To: <20231002140559.GB8453@google.com>
+References: <20230928132632.200263-1-fe@dev.tdt.de>
+ <20230928132632.200263-4-fe@dev.tdt.de> <20231002140559.GB8453@google.com>
+Message-ID: <66ca9e2231629a72e098e1b17736ca34@dev.tdt.de>
+X-Sender: fe@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.17
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-purgate-type: clean
+X-purgate: clean
+X-purgate-ID: 151534::1697007521-520A685C-E874BB0D/0/0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 07:23:07PM +0100, Lorenzo Stoakes wrote:
-> Only in mmap_region() and copy_vma() do we attempt to merge VMAs which
-> occupy entirely new regions of virtual memory.
->
-> We can abstract this logic and make the intent of this invocations of it
-> completely explicit, rather than invoking vma_merge() with an inscrutable
-> wall of parameters.
->
-> This also paves the way for a simplification of the core vma_merge()
-> implementation, as we seek to make it entirely an implementation detail.
->
-> Note that on mmap_region(), VMA fields are initialised to zero, so we can
-> simply reference these rather than explicitly specifying NULL.
+Hello Lee,
 
-Andrew - based on feedback from Liam on the v2 version of this patch, could
-we change this commit message to:-
+I only got reviews for the fixes and preparations for commits that 
+change the
+tty subsystem, but no reaction from the maintainer of the feature I want 
+to
+add to ledtrig-tty for v1 and v2 patchset.
 
+How should I proceed? Send a v3 with the the requested changes.
 
-Only in mmap_region() and copy_vma() do we attempt to merge VMAs which
-occupy entirely new regions of virtual memory.
+[Patch v2 1/4]: 
+https://lore.kernel.org/linux-leds/20230928132632.200263-1-fe@dev.tdt.de/T/#m913d3822465f35b54dfa24b1dfe4d50e61352980
+Change got a 'Reviewed-by: Jiri Slaby <jirislaby@kernel.org>'.
+Will add this to an upcoming v3 again.
 
-We can abstract this logic and make the intent of this invocations of it
-completely explicit, rather than invoking vma_merge() with an inscrutable
- wall of parameters.
+[Patch v2 2/4] : 
+https://lore.kernel.org/linux-leds/20230928132632.200263-1-fe@dev.tdt.de/T/#m7ee7618894a66fd3c89bed488a2394265a3f8df1
+I missed to add the robot error message to the commit message and also 
+missed
+to add the the following 'Reported-by: kernel test robot 
+<lkp@intel.com>' and
+'Closes: 
+https://lore.kernel.org/oe-kbuild-all/202309270440.IJB24Xap-lkp@intel.com/'
+to the commit message. Will add this to an upcoming v3.
 
-This also paves the way for a simplification of the core vma_merge()
-implementation, as we seek to make it entirely an implementation detail.
+And do not wait for the review of the following patches.
+https://lore.kernel.org/linux-leds/20230928132632.200263-1-fe@dev.tdt.de/T/#mc0ecb912fa0e59015ad0a9b4cb491ae9f18c1ea9
+https://lore.kernel.org/linux-leds/20230928132632.200263-1-fe@dev.tdt.de/T/#mba36217323c386ecd900e188bbdf6276c3c96c91
 
-The VMA merge call in mmap_region() occurs only for file-backed mappings,
-where each of the parameters previously specified as NULL are defaulted to
-NULL in vma_init() (called by vm_area_alloc()).
+---
 
-This matches the previous behaviour of specifying NULL for a number of
-fields, however note that prior to this call we pass the VMA to the file
-system driver via call_mmap(), which may in theory adjust fields that we
-pass in to vma_merge_new_vma().
-
-Therefore we actually resolve an oversight here by allowing for the fact
-that the driver may have done this.
-
-
->
-> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
-> ---
->  mm/mmap.c | 27 ++++++++++++++++++++-------
->  1 file changed, 20 insertions(+), 7 deletions(-)
->
-
-Thanks!
-
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index a516f2412f79..db3842601a88 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -2485,6 +2485,22 @@ struct vm_area_struct *vma_modify(struct vma_iterator *vmi,
->  	return vma;
->  }
->
-> +/*
-> + * Attempt to merge a newly mapped VMA with those adjacent to it. The caller
-> + * must ensure that [start, end) does not overlap any existing VMA.
-> + */
-> +static struct vm_area_struct *vma_merge_new_vma(struct vma_iterator *vmi,
-> +						struct vm_area_struct *prev,
-> +						struct vm_area_struct *vma,
-> +						unsigned long start,
-> +						unsigned long end,
-> +						pgoff_t pgoff)
-> +{
-> +	return vma_merge(vmi, vma->vm_mm, prev, start, end, vma->vm_flags,
-> +			 vma->anon_vma, vma->vm_file, pgoff, vma_policy(vma),
-> +			 vma->vm_userfaultfd_ctx, anon_vma_name(vma));
-> +}
-> +
->  /*
->   * do_vmi_align_munmap() - munmap the aligned region from @start to @end.
->   * @vmi: The vma iterator
-> @@ -2840,10 +2856,9 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
->  		 * vma again as we may succeed this time.
->  		 */
->  		if (unlikely(vm_flags != vma->vm_flags && prev)) {
-> -			merge = vma_merge(&vmi, mm, prev, vma->vm_start,
-> -				    vma->vm_end, vma->vm_flags, NULL,
-> -				    vma->vm_file, vma->vm_pgoff, NULL,
-> -				    NULL_VM_UFFD_CTX, NULL);
-> +			merge = vma_merge_new_vma(&vmi, prev, vma,
-> +						  vma->vm_start, vma->vm_end,
-> +						  pgoff);
->  			if (merge) {
->  				/*
->  				 * ->mmap() can change vma->vm_file and fput
-> @@ -3385,9 +3400,7 @@ struct vm_area_struct *copy_vma(struct vm_area_struct **vmap,
->  	if (new_vma && new_vma->vm_start < addr + len)
->  		return NULL;	/* should never get here */
->
-> -	new_vma = vma_merge(&vmi, mm, prev, addr, addr + len, vma->vm_flags,
-> -			    vma->anon_vma, vma->vm_file, pgoff, vma_policy(vma),
-> -			    vma->vm_userfaultfd_ctx, anon_vma_name(vma));
-> +	new_vma = vma_merge_new_vma(&vmi, prev, vma, addr, addr + len, pgoff);
->  	if (new_vma) {
->  		/*
->  		 * Source vma may have been merged into new_vma
-> --
-> 2.42.0
->
+Florian
