@@ -2,177 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB87B7C5EF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B72BC7C5EF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 23:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233569AbjJKVP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 17:15:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48280 "EHLO
+        id S233549AbjJKVQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 17:16:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233525AbjJKVPX (ORCPT
+        with ESMTP id S233441AbjJKVQk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 17:15:23 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0378790
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:15:21 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9ada2e6e75fso45547466b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:15:20 -0700 (PDT)
+        Wed, 11 Oct 2023 17:16:40 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 304369E
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:16:39 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9a3e5f1742so386501276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 14:16:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697058919; x=1697663719; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hJF0NDc8Mcux/Il97ezd+yJcINMhCT6dKRS+JP02R0E=;
-        b=O13ydFKnoys4C4MLCb60GIRjJOjMRezTEHfgHl4HJ9vG7EGbufHrc7FneCbtZbWlyR
-         jbws4iqu5CpJJ9Co2JfnDnOAWt6cINVTnu1MFY/zr85F3hiznVvpo0ra8aWtvc6Aku/S
-         LwPAbD+rWLgF/+g+VlmnauwGk7qpReZfb4/VA0nirUHT6isnkNYMb26H1UWCrm/TIKsr
-         L5EIVEupfQu/ePAac7d76bruK0M6/2KLIGIEf9gHc2+qdiN3SBwxQ6w5knRfshI19ZQU
-         UsBGY0kur4JG2l2QdENOocFUoo35iyL6oTSl/eBb1JyC45QedImNAOKEbIodx3FQeNCZ
-         oJoA==
+        d=google.com; s=20230601; t=1697058998; x=1697663798; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=AkMbkjU0vEq64RoxC9mx2kutRLIWzBPilt+kMErOBXk=;
+        b=viwZ6khh+pCy12HXp+3i4C2faf8ibwIfdTcWmQp9SYSsN1/Og84W5amWj/g/L+6Xxp
+         Jhz/bvk+NqhIHvb13OiY+MCvx/yLnAUdvWVe1oKQQdnPITCmJcCGrnQuQNOcXkxTJd0x
+         mpOg2HZjEuz9xUsh/PwD1IIKzEm54xgZDzXfa4uEuUzmTNLf8e7ApnEA72oJVJVieU63
+         GHdyFgPk+J87teZ4yIBUQjNdkXVsFMwbb+tMgBbWWg7aWTEcveut7KLxqnb8sdA84OgL
+         +Mvz7rOnFau1cjNwdeW8VEioeObD0cwri3E/vs1c8Q6ICaM/uvoz9JuJs6JMzXD3xPHY
+         O7lQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697058919; x=1697663719;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hJF0NDc8Mcux/Il97ezd+yJcINMhCT6dKRS+JP02R0E=;
-        b=Ri00tBC59ZApAS6ZXSvzcMDA16jZMYNhhXypuQWw9cezHB5MeTB6ejcsOhwtVH8tzW
-         +kz36j2SQ9jNhaqXBujYJENAxxcC4orvisiX9Ql82lGkhFTUwg6dzF+mCYPBXz1q8itP
-         RrhaeX5y/rYcnOL/+ZEHbf+/csJbGKRjJwuOLQdTg0cGHsBMj7UlhoA1+B+tnt50LLVw
-         mtWvL+SHG32riS9//esbe9/9tt/AeldUDGByGTnFFd6r3maF/0t1w91LDYZRfbumT4yD
-         fE/l0i6VK/H7/kpDNEr/7dfkm3nI747zIZi9qCTLTmlrrBl2JU0LqH5w+G1iGzlPdfsD
-         SYOg==
-X-Gm-Message-State: AOJu0Yy0pjKNi1W96j6wjNkIrt7hsuh7hWHT81bhUUungvtnF3BiDsNU
-        dKPgEGq5yOU/O5IIbJ+Woz8=
-X-Google-Smtp-Source: AGHT+IFQIhFCes/MJqKpqWGhUmxgj+ptMtSiHpOT2ZrlMt17PClrTLYBBhOgNkGz76CBJbpU/kjfJA==
-X-Received: by 2002:a17:906:18b2:b0:9b2:b992:160f with SMTP id c18-20020a17090618b200b009b2b992160fmr17028101ejf.42.1697058919177;
-        Wed, 11 Oct 2023 14:15:19 -0700 (PDT)
-Received: from gmail.com (1F2EF405.nat.pool.telekom.hu. [31.46.244.5])
-        by smtp.gmail.com with ESMTPSA id re9-20020a170906d8c900b0099b8234a9fesm10213540ejb.1.2023.10.11.14.15.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 14:15:18 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Wed, 11 Oct 2023 23:15:16 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     yang.yang29@zte.com.cn
-Cc:     surenb@google.com, peterz@infradead.org, hannes@cmpxchg.org,
-        linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
-        mingo@redhat.com
-Subject: Re: [PATCH linux-next v3 2/4] sched/psi: Avoid update triggers and
- rtpoll_total when it is unnecessary
-Message-ID: <ZScQZLTssSfq19Jm@gmail.com>
-References: <ZST/WggW4hSVs9d4@gmail.com>
- <202310101641075436843@zte.com.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202310101641075436843@zte.com.cn>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1697058998; x=1697663798;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AkMbkjU0vEq64RoxC9mx2kutRLIWzBPilt+kMErOBXk=;
+        b=uaV2ZHSzMrbkYSD4zXbblDryZSkjo0E9DWdoOM/QpgnMChM4RxRxnLL700yO7R2Hq3
+         CqmM1gHDyRmjXU0xhvjDM+G3XEiQ+/XwZc4fZ2zK9ExyYnGNzprpH2b591uGTZ59e2s5
+         Hmb546189TvrqP59xegL3hiWAoMmljYgAEQ1mpbX4EbvFBnTDaTYOs9ZcNj3Gs5HH8Kx
+         uUfVjdEnIqC5n/ZfrnAWZ8RRo+kxDx63Jx4HM1er5NHGlmeJfsZ9a3NeNFqPFQEITjd/
+         yj1DlzsItfHHz0lcOjJeAmfYlFTxb6jfHy4LiMh7Lxz6nz0qMjiTG8ZwDXIcI5kuMSyf
+         M4JA==
+X-Gm-Message-State: AOJu0YxF9CeKckXGyrMzflS0qQppwb/G6QBFZGVzLzo0g4zIWWvHn+Vz
+        aT27OUsnyqaEcjrjylPExOBUCVkY/ax5
+X-Google-Smtp-Source: AGHT+IGAzhuTPA8xuaGd0/MIYrNSNCXikipR4gkbaclFwt1ULUI/01TDo30ZPmFJEvB4ZjHJwjhJuCAIPgXw
+X-Received: from jiangzp-glinux-dev.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:38e4])
+ (user=jiangzp job=sendgmr) by 2002:a25:828c:0:b0:d9a:bc5a:737c with SMTP id
+ r12-20020a25828c000000b00d9abc5a737cmr10169ybk.4.1697058998406; Wed, 11 Oct
+ 2023 14:16:38 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 14:16:31 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
+Message-ID: <20231011141631.kernel.v1.1.I6dbfc1fedddf0633b55ce7e7a10ef7f3929a9bdc@changeid>
+Subject: [kernel PATCH v1] btmtksdio: enable bluetooth wakeup in system suspend
+From:   Zhengping Jiang <jiangzp@google.com>
+To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
+        luiz.dentz@gmail.com
+Cc:     chromeos-bluetooth-upstreaming@chromium.org,
+        Zhengping Jiang <jiangzp@google.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The BTMTKSDIO_BT_WAKE_ENABLED flag is set for bluetooth interrupt
+during system suspend and increases wakeup count for bluetooth event.
 
-* yang.yang29@zte.com.cn <yang.yang29@zte.com.cn> wrote:
-
-> From: Yang Yang <yang.yang29@zte.com.cn>
-> 
-> When psimon wakes up and there are no state changes for rtpoll_states,
-> it's unnecessary to update triggers and rtpoll_total because the pressures
-> being monitored by user had not changed.
-> This will help to slightly reduce unnecessary computations of psi.
-> 
-> Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
-> Cc: Zhang Yunkai <zhang.yunkai@zte.com.cn>
-> Cc: Ran Xiaokai <ran.xiaokai@zte.com.cn>
-> ---
->  kernel/sched/psi.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-> index be853f227e40..143f8eb34f9d 100644
-> --- a/kernel/sched/psi.c
-> +++ b/kernel/sched/psi.c
-> @@ -704,11 +704,12 @@ static void psi_rtpoll_work(struct psi_group *group)
->  	}
-> 
->  	if (now >= group->rtpoll_next_update) {
-> -		update_triggers(group, now, &update_total, PSI_POLL);
->  		group->rtpoll_next_update = now + group->rtpoll_min_period;
-> -		if (update_total)
-> +		if (changed_states & group->rtpoll_states) {
-> +			update_triggers(group, now, &update_total, PSI_POLL);
->  			memcpy(group->rtpoll_total, group->total[PSI_POLL],
->  				   sizeof(group->rtpoll_total));
-> +		}
-
-Yeah, so I believe we may have been talking past each other for past 
-versions of this patch: why is this patch modifying the order of the 
-modification to group->rtpoll_next_update?
-
-It should do the below sequence, nothing more - see the patch attached 
-below. This is basically a combination of patches #2 and #3.
-
-And then the final patch removes the now superfluous 'update_total' 
-parameter, which is always true.
-
-Here are the commits I applied to tip:sched/core:
-
-  e03dc9fa0663 sched/psi: Change update_triggers() to a 'void' function
-  ...
-  80cc1d1d5ee3 sched/psi: Avoid updating PSI triggers and ->rtpoll_total when there are no state changes
-  3657680f38cd sched/psi: Delete the 'update_total' function parameter from update_triggers()
-
-I rewrote the changelogs for readability.
-
-Thanks,
-
-	Ingo
-
-===================>
-From: Yang Yang <yang.yang29@zte.com.cn>
-Date: Tue, 10 Oct 2023 16:41:07 +0800
-Subject: [PATCH] sched/psi: Avoid updating PSI triggers and ->rtpoll_total when there are no state changes
-
-When psimon wakes up and there are no state changes for ->rtpoll_states,
-it's unnecessary to update triggers and ->rtpoll_total because the pressures
-being monitored by the user have not changed.
-
-This will help to slightly reduce unnecessary computations of PSI.
-
-[ mingo: Changelog updates ]
-
-Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Suren Baghdasaryan <surenb@google.com>
-Cc: Peter Ziljstra <peterz@infradead.org>
-Link: https://lore.kernel.org/r/202310101641075436843@zte.com.cn
+Signed-off-by: Zhengping Jiang <jiangzp@google.com>
 ---
- kernel/sched/psi.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index be853f227e40..79f8db0c6150 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -704,11 +704,12 @@ static void psi_rtpoll_work(struct psi_group *group)
- 	}
+Changes in v1:
+- Add BTMTKSDIO_BT_WAKE_ENABLED flag
+- Call pm_wakeup_event in btmtksdio_interrupt
+
+ drivers/bluetooth/btmtksdio.c | 36 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 34 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/bluetooth/btmtksdio.c b/drivers/bluetooth/btmtksdio.c
+index f9a3444753c2..ddc04ce5c6d4 100644
+--- a/drivers/bluetooth/btmtksdio.c
++++ b/drivers/bluetooth/btmtksdio.c
+@@ -118,6 +118,7 @@ MODULE_DEVICE_TABLE(sdio, btmtksdio_table);
+ #define BTMTKSDIO_FUNC_ENABLED		3
+ #define BTMTKSDIO_PATCH_ENABLED		4
+ #define BTMTKSDIO_HW_RESET_ACTIVE	5
++#define BTMTKSDIO_BT_WAKE_ENABLED	6
  
- 	if (now >= group->rtpoll_next_update) {
--		update_triggers(group, now, &update_total, PSI_POLL);
--		group->rtpoll_next_update = now + group->rtpoll_min_period;
--		if (update_total)
-+		if (changed_states & group->rtpoll_states) {
-+			update_triggers(group, now, &update_total, PSI_POLL);
- 			memcpy(group->rtpoll_total, group->total[PSI_POLL],
- 				   sizeof(group->rtpoll_total));
-+		}
-+		group->rtpoll_next_update = now + group->rtpoll_min_period;
- 	}
+ struct mtkbtsdio_hdr {
+ 	__le16	len;
+@@ -620,6 +621,12 @@ static void btmtksdio_interrupt(struct sdio_func *func)
+ {
+ 	struct btmtksdio_dev *bdev = sdio_get_drvdata(func);
  
- 	psi_schedule_rtpoll_work(group,
++	if (test_bit(BTMTKSDIO_BT_WAKE_ENABLED, &bdev->tx_state)) {
++		if (bdev->hdev->suspended)
++			pm_wakeup_event(bdev->dev, 0);
++		clear_bit(BTMTKSDIO_BT_WAKE_ENABLED, &bdev->tx_state);
++	}
++
+ 	/* Disable interrupt */
+ 	sdio_writel(bdev->func, C_INT_EN_CLR, MTK_REG_CHLPCR, 0);
+ 
+@@ -1454,6 +1461,23 @@ static int btmtksdio_runtime_suspend(struct device *dev)
+ 	return err;
+ }
+ 
++static int btmtksdio_system_suspend(struct device *dev)
++{
++	struct sdio_func *func = dev_to_sdio_func(dev);
++	struct btmtksdio_dev *bdev;
++
++	bdev = sdio_get_drvdata(func);
++	if (!bdev)
++		return 0;
++
++	if (!test_bit(BTMTKSDIO_FUNC_ENABLED, &bdev->tx_state))
++		return 0;
++
++	set_bit(BTMTKSDIO_BT_WAKE_ENABLED, &bdev->tx_state);
++
++	return btmtksdio_runtime_suspend(dev);
++}
++
+ static int btmtksdio_runtime_resume(struct device *dev)
+ {
+ 	struct sdio_func *func = dev_to_sdio_func(dev);
+@@ -1474,8 +1498,16 @@ static int btmtksdio_runtime_resume(struct device *dev)
+ 	return err;
+ }
+ 
+-static UNIVERSAL_DEV_PM_OPS(btmtksdio_pm_ops, btmtksdio_runtime_suspend,
+-			    btmtksdio_runtime_resume, NULL);
++static int btmtksdio_system_resume(struct device *dev)
++{
++	return btmtksdio_runtime_resume(dev);
++}
++
++const struct dev_pm_ops __maybe_unused btmtksdio_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(btmtksdio_system_suspend, btmtksdio_system_resume)
++	SET_RUNTIME_PM_OPS(btmtksdio_runtime_suspend, btmtksdio_runtime_resume, NULL)
++};
++
+ #define BTMTKSDIO_PM_OPS (&btmtksdio_pm_ops)
+ #else	/* CONFIG_PM */
+ #define BTMTKSDIO_PM_OPS NULL
+-- 
+2.42.0.609.gbb76f46606-goog
+
