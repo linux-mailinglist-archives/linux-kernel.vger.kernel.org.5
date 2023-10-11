@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86EBB7C4775
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 03:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE187C4779
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 03:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344701AbjJKBt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 21:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
+        id S1344699AbjJKBvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 21:51:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344412AbjJKBt6 (ORCPT
+        with ESMTP id S1344679AbjJKBvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 21:49:58 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7805B92;
-        Tue, 10 Oct 2023 18:49:57 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bdcade7fbso1073714266b.1;
-        Tue, 10 Oct 2023 18:49:57 -0700 (PDT)
+        Tue, 10 Oct 2023 21:51:23 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 512D592;
+        Tue, 10 Oct 2023 18:51:22 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9b9ad5760b9so1061486666b.3;
+        Tue, 10 Oct 2023 18:51:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google; t=1696988996; x=1697593796; darn=vger.kernel.org;
+        d=jms.id.au; s=google; t=1696989081; x=1697593881; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LO/vJrNP2TpMz42rqukb2IJJCeqp32FfF1/7XGzp3yw=;
-        b=XHHbpmN1On7QqF9RL3YyQMyzJByDxtS8bzuN6pvLdZbw7CPnbIcaFe+6CUQKOsvLcd
-         COE55YVPbHovhvWlrgXWT3rsP97pI93aNlsR+kAx/CjIN5fhYNJlss4qzcnec0YI4/m+
-         2ThnK3QWzZVzo8fChCnNyWsFhhtzeby9+8Elk=
+        bh=dvEek/wu0ornX7TSQqFw+K8z0hBkSwQuqkpR0z0uE5k=;
+        b=mNri+D2ECy215R5kqAHAs9xWWv0MzZNwW/IVCCjVxqTpKUmtBZXGOS6cetkT14JCZh
+         YMH0BraqlB4A90nl+NSJVZcX0cJhQNpAcvTMUCYPI7RNl+MQUdp7lg8Z9r0K3jyzkRim
+         UQ2avkdcXEC8LY6iyPlhsVQ7bQ3IMveo+2Ujc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696988996; x=1697593796;
+        d=1e100.net; s=20230601; t=1696989081; x=1697593881;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=LO/vJrNP2TpMz42rqukb2IJJCeqp32FfF1/7XGzp3yw=;
-        b=fo2bU+jI0dh/2vy5/Umz/8fwAXyteV6Julxis9lplbtR1p+P9nvRv45oBpfcOpydn2
-         XpeiyVOdRtkMd7XbIAQuoPsklDyxQeSUCa/LsBsvLk6tRCP0NHKFI1v5fa4FnCQHSvU+
-         tCNxpLnk6u8C10W2/kbvtdvT/DlHOZYiOmBjagxjxoKDhy0uLgVI64sEzKhr/8dRb765
-         Tis+D/uYsb3bf9fEuznoR3LDWzTEw6155vo7BBm7sMRkd+3wqYSv2PmCYF/eUZ+G2aOw
-         Vo1VXBXMczkHDlFpAwqalApxgsyKANL24x+feoiQDz8NIPxzbMb6VtRQix4ZWntzko1B
-         zcWQ==
-X-Gm-Message-State: AOJu0Yyu62KX9cIroh0tNQRmPdOgx5ARzxYyk+LHKdSDHBsSzyERiOFz
-        rYFj1IlJWhxGS8OY5e0n/ZNLCmmGbB24pszWlZo=
-X-Google-Smtp-Source: AGHT+IENtIO4uRrRVxLj+GzOepLQkLMK0qxFFO24siVqSmqpcrcJ7ieHXx0nNMhyFPDGj+jIXrGioxzcX3zlg33/eMo=
-X-Received: by 2002:a17:906:3f04:b0:9ae:5568:b6a8 with SMTP id
- c4-20020a1709063f0400b009ae5568b6a8mr19965720ejj.10.1696988995731; Tue, 10
- Oct 2023 18:49:55 -0700 (PDT)
+        bh=dvEek/wu0ornX7TSQqFw+K8z0hBkSwQuqkpR0z0uE5k=;
+        b=hyarK0bX3RNLJVKgGPIrolXAwKgQEItfASpac+xeKe+pKKoYr9+5PLQYCvTuc8WOfI
+         dYx50gW+g0cbfZGVtY2aLGlKkwUDx80nN5bhftte4/kaGIAGwjKkQShd5zxLvN1vHEqK
+         iYzFxRRnTNTdR7bj3APtYsbx9yq6OqotpFQpgC8wNcQ+neQZa7gU2neFJ5Z2lVUOzK5i
+         r7wZu0uVZLdg6TFEhPTLJaanlkqIJbvZc2MHfuq1JbEGZQ4WTzjvCS5H5+ENJRqIXFU7
+         kLR5MG/0SL6xBWKbopn86IQAr+PDDDORBNdyCMR+KwX+rwoVNexWB/eJkYWBdeUyTp6J
+         X/Jw==
+X-Gm-Message-State: AOJu0YxxXgvyJ+/EzeB58ggASFiIeEWo2Sgpl6s4RPO9Fn/uuWFSZcto
+        PRZtMMN63VifZKUSz5HEUOve5CK2uqnL8qQ7XforZep5OmA=
+X-Google-Smtp-Source: AGHT+IEJHgu6jOvC4sfayzAJpsh/xcXdz7gNPlaBSSuCWsWCemoWp8C2Kriej5Qo+yGFOjuOzBt2CEssbvsu5fd04Ok=
+X-Received: by 2002:a17:907:762d:b0:9ba:4163:1807 with SMTP id
+ jy13-20020a170907762d00b009ba41631807mr1896364ejc.2.1696989080445; Tue, 10
+ Oct 2023 18:51:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231005035525.19036-1-chanh@os.amperecomputing.com> <20231005035525.19036-4-chanh@os.amperecomputing.com>
-In-Reply-To: <20231005035525.19036-4-chanh@os.amperecomputing.com>
+References: <20231005035525.19036-1-chanh@os.amperecomputing.com> <20231005035525.19036-6-chanh@os.amperecomputing.com>
+In-Reply-To: <20231005035525.19036-6-chanh@os.amperecomputing.com>
 From:   Joel Stanley <joel@jms.id.au>
-Date:   Wed, 11 Oct 2023 12:19:44 +1030
-Message-ID: <CACPK8Xcby1Oy0ksP9GQjUi8TNg77bw+HJMqgVujM6dABvT_ViA@mail.gmail.com>
-Subject: Re: [PATCH 3/7] ARM: dts: aspeed: mtjade: Add the gpio-hog
+Date:   Wed, 11 Oct 2023 12:21:09 +1030
+Message-ID: <CACPK8Xcs_4G0nSeKm2+hjSrp=SBb1MJrCob+EQ1emfVOijSOjw@mail.gmail.com>
+Subject: Re: [PATCH 5/7] ARM: dts: aspeed: mtmitchell: Add inlet temperature sensor
 To:     Chanh Nguyen <chanh@os.amperecomputing.com>
 Cc:     OpenBMC Maillist <openbmc@lists.ozlabs.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -71,46 +71,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Thu, 5 Oct 2023 at 14:26, Chanh Nguyen <chanh@os.amperecomputing.com> wrote:
 >
-> Add the GPIOR5 as a gpio-hog with output high so that can
-> power the OCP card once the BMC booting.
->
-> Add the GPIOAC5 as a gpio-hog with output high to notice
-> the BMC state.
+> Add the inlet temperature at address 0x48, which is connected
+> via BMC I2C8.
 >
 > Signed-off-by: Chanh Nguyen <chanh@os.amperecomputing.com>
-
-Could be two patches as it does two different things, but not worth
-re-spinning just for that.
 
 Reviewed-by: Joel Stanley <joel@jms.id.au>
 
 > ---
->  .../boot/dts/aspeed/aspeed-bmc-ampere-mtjade.dts   | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
+>  arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts | 5 +++++
+>  1 file changed, 5 insertions(+)
 >
-> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtjade.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtjade.dts
-> index c87be433bdd0..8ab5f301f926 100644
-> --- a/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtjade.dts
-> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtjade.dts
-> @@ -805,4 +805,18 @@
->                 output-high;
->                 line-name = "i2c4-o-en";
->         };
-> +
-> +       ocp-aux-pwren-hog {
-> +               gpio-hog;
-> +               gpios = <ASPEED_GPIO(R, 3) GPIO_ACTIVE_HIGH>;
-> +               output-high;
-> +               line-name = "ocp-aux-pwren";
+> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts
+> index 88693c2b2dbe..c676172f0dbf 100644
+> --- a/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts
+> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts
+> @@ -510,6 +510,11 @@
+>  &i2c8 {
+>         status = "okay";
+>
+> +       temperature-sensor@48 {
+> +               compatible = "ti,tmp112";
+> +               reg = <0x48>;
 > +       };
 > +
-> +       bmc-ready {
-> +               gpio-hog;
-> +               gpios = <ASPEED_GPIO(AC, 5) GPIO_ACTIVE_HIGH>;
-> +               output-high;
-> +               line-name = "bmc-ready";
-> +       };
->  };
+>         gpio@77 {
+>                 compatible = "nxp,pca9539";
+>                 reg = <0x77>;
 > --
 > 2.17.1
 >
