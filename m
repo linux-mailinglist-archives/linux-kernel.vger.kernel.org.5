@@ -2,116 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 572EE7C526F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A18D7C5271
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346135AbjJKLsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:48:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52884 "EHLO
+        id S234723AbjJKLtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:49:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234743AbjJKLsj (ORCPT
+        with ESMTP id S234757AbjJKLsw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:48:39 -0400
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2048.outbound.protection.outlook.com [40.107.105.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0BF894;
-        Wed, 11 Oct 2023 04:48:37 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VmoXBf3OCpagqAbbVL/nVrDYJDghFVd4Otz8sOhoeDBeaYAeenwiJXChbCtN8DK7ZW+7gsTy55/BTrCI/zVteL2Rmd79l5laVZUnIPT2o7sBTZR333gihmBh/PQDlx38A0Sz1MMYRl/GRLe7/U1NSJj/1ptykiDRJc7wbvMWU7eObJ6Q0NZybB+zwl8wc97XvoHLBL+YIWselul5uxKzS2LDrrXPP2yRg8jaPLAWNF6GfWrgAxxTsRc1fFYTlRGKVDvotwzmHtSDqd+bQaWslsyZccM/wROkD0tJe/FhWzhEYSHSpr+/tCW4Rg3YnI/68q+IWkLT6PxnPFlJ8GMadw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JEyCPyZgpvDOSO3JuNyZDEiyTPUOU88DIYgf377bypU=;
- b=eDr0GOrqQbzCsSw+DE5ax/2yNCG6Q6DfOmi1WttacHLDJiptBGmmIRSyZHogVvHN96gqzARLkHmXj7MDvgg/YVEg4Q9sXVQzfTJ7lxfCe9HPc5guo+1gQPZ5aorO8wSgdoCefAGY9/nfeKA3YZ/9cGM2vtOgiMUK1KIjP6tYL1w6aHheELWC4gy8tgryj/RCUvLWMxF+n2pyWcnqrpBdzpe5BSgulnKldSCGE0K+vT8ztJ+RsYdiF23GKW4lI6VVHP0Ib2uBHPQnoRtRLAozogVBIZV0LHX42NPtoXhHxm15kzvGPVsEMzQk/zuHfFT+ydSCj0cop9o20hBovvOQZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JEyCPyZgpvDOSO3JuNyZDEiyTPUOU88DIYgf377bypU=;
- b=kVU1hys65GSu7GT2rjAqVgMaBkn54msdhiHJl0ojh/It0vcdhsOoKdUwdEu9dmJRHDmKl3HNkq5hnL7qs8C34MK/cMpge7p7Ebo7iBm9MlRMrEnfrECLNgqpVJfc+35Rldodh/KEOOZSIAf5e2xEb3Vcyf2m8WFZeq3JkCo26pA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
- by DB9PR04MB8300.eurprd04.prod.outlook.com (2603:10a6:10:243::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.38; Wed, 11 Oct
- 2023 11:48:35 +0000
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::51f9:b8d2:7ddd:c74f]) by DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::51f9:b8d2:7ddd:c74f%6]) with mapi id 15.20.6863.032; Wed, 11 Oct 2023
- 11:48:35 +0000
-From:   Chancel Liu <chancel.liu@nxp.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        nicoleotsuka@gmail.com, perex@perex.cz, tiwai@suse.com,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Chancel Liu <chancel.liu@nxp.com>
-Subject: [PATCH v3 2/2] ASoC: imx-rpmsg: Force codec power on in low power audio mode
-Date:   Wed, 11 Oct 2023 19:47:59 +0800
-Message-Id: <20231011114759.1073757-2-chancel.liu@nxp.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231011114759.1073757-1-chancel.liu@nxp.com>
-References: <20231011114759.1073757-1-chancel.liu@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI2PR02CA0025.apcprd02.prod.outlook.com
- (2603:1096:4:195::21) To DB9PR04MB9498.eurprd04.prod.outlook.com
- (2603:10a6:10:360::21)
+        Wed, 11 Oct 2023 07:48:52 -0400
+Received: from mail-ot1-f78.google.com (mail-ot1-f78.google.com [209.85.210.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799CFCC
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:48:50 -0700 (PDT)
+Received: by mail-ot1-f78.google.com with SMTP id 46e09a7af769-6c22d8a0cecso9370190a34.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:48:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697024930; x=1697629730;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dvPO+gogj2TMD3QRmWPHiBIeaehacfqKQiwt3SM/RLA=;
+        b=FFXiiIzlRF0VrLy78OnpxFAnoZcRZSRnTpM+X+3BwbuZX9OoHQ99dMicVGZGsc9sMf
+         Jr7OqwZNm6NSLE6gMYOMNzJYcgD8SP276vOXTEi/oqLFIjUooF7jFIIhxOYfmuVRjtIs
+         g2clXCVPz0Z5XqiEVFGlk6i2Li7uB/qJo5NRqrQCZPVlEidqCG1SYsVnALizB79us67z
+         OK1I+/xvBQwtyHaFtQrQx4YWcYMWpVJk+kMYEeFkJtDkccYf7M4VV4hHC9+b92VNuT0b
+         2uoNzr7MNkqjjbeqHxIJb4CECGcFIDXm+sj2ChQHJQfuJRYPq1ZHKtaek7ayYcFn3VsC
+         NkAw==
+X-Gm-Message-State: AOJu0Ywygn8aW0tFZNMVdRSJc/JZtleZp0L4A7/ZKLi71XUqQd5vL69O
+        TYJcsRLXBgBYW0YZuzOdRtUgfrjwLtfgzx0D06Pe/4quXWiP
+X-Google-Smtp-Source: AGHT+IEhpG/z3De/SR73x/Sern95ULB4+POFxC41sig7+OOBFbrqeEVEgjwVKIKp6TWOD9FLk44cHY2qGHH6ctQGcjtI0weTvKO0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB9PR04MB9498:EE_|DB9PR04MB8300:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4aaf73d0-a7c7-44ba-f37f-08dbca50004e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iXGJYhJBz1JNhOEZrX1ZOZCrWmh3mEHeeZ2+tvYRHswluru7+9Kav4vEsakfRsjaxw4dghP9mSlo1pc6tuw5uJEl87Wqwwu62EDI+i7ScIzIToY1SOLLU19svbg2mBHO0p4HgD4YNRIdErEvo+CDAq/8pL0eotAnxcYh1wtR4YXRUOPe1WToeMkbMJgHVmagFUCLQ08os/8vXcj3a0s2TZ3uu8Rr9GKI8b1nkVNl3ozjAWvjVyM8EBbW3hm/OFyfy8rKBl9mf4VCvoYUJO5O5etjxnbYw8Bb7d+FaYKuOHpAdsredEoylCTYk4vhYm2EkTodWVTrxpEg0rtNqXST6NHnsErJoXwVhyQ4BrRKAEndaOaFJ4JOh/f2mFv3/0AmvecSyik5VB7JjkRHeXICV4H+PtsSm2a4bAOrR+nGGQoZBJdZutJJhekRa0sR5rX+TrObkBkao4QgXSRqSvjUKzDLksPmzdLLyshYEY4aNKI2HdOm5RdnW86JTff8vWTpMPmbGrZRMNY8Gc3LL9EI8dTS9DrWA7oSGoN0VNyJqUWoOe5mK2UNsbits/TU/adwdjaxT/gqa1n9uvA9kUFkVkrHDPiiEHdmF4GSg3IPPnR6iCJwZnYvvw6VTi6O0gP7x6P6YHUvBWg2HHhPcySLbqbxRKBqHO7EXi20wUgR370=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39860400002)(376002)(346002)(366004)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(6506007)(6512007)(52116002)(1076003)(478600001)(921005)(44832011)(6486002)(6666004)(2616005)(26005)(83380400001)(7416002)(2906002)(5660300002)(66556008)(66946007)(66476007)(8936002)(8676002)(4326008)(316002)(41300700001)(2013699003)(36756003)(86362001)(38100700002)(38350700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tT8uBSan+CMGGBbaQlBRmBodU8ItOjjgVoKimDg20IFS5OI29pFTPB7pF9JR?=
- =?us-ascii?Q?a/bGj6IPEw8Ih2uosUtQ242o38wu3iHk6tVVWYVjV9q6alknzajIXshkXSww?=
- =?us-ascii?Q?LPNuUR5k5/jh8nE9u1nAUjNlUvzEfZXDfyAwLD1XpkYC/2FE+U56jEIkltrP?=
- =?us-ascii?Q?kYyPX+4MN5tXFQMCp/ZMpwn0fSdDUqBSZcb66WK1TS5ivKm76H8mkbdvZdRn?=
- =?us-ascii?Q?Veup3facm54lKI6jwtzFrKHUMELqH2/n0lFupqogJyyZrVm26yNH1mLnlQn6?=
- =?us-ascii?Q?LTXOBe5jtIg0mmo3aThQLLs3oJpI2eeTfj7J5vJPTSTjNELNKlHfB2Uzx6IJ?=
- =?us-ascii?Q?XtIjIz/vkM2XOdiBhdXK9DEUiL8WGKLgFLmikAb54STwcgC3Er7/0uaNkE9X?=
- =?us-ascii?Q?sm0DAVlEP6K1l15OUW+uiIJAtcm21EBeD+ExD288/PWr+DB/DEiTQMzaZX0q?=
- =?us-ascii?Q?dzKUQg90JUcaX4KvAuWCO+yzHxzDpWzNSBRIOie5ZMs9AYQtt7+1gQK2OSXh?=
- =?us-ascii?Q?Fjmd9agVGwNERwQeho6p8+YJEd224qG74/BNp0OHQBSAOu/DWejAvIWRLh3l?=
- =?us-ascii?Q?ntLhxVQ06zxgdPGcf8S0IPDt6VLNXHcZq7EW8FqEGwb9U3Onojvx4tyX395H?=
- =?us-ascii?Q?lEt+7XsHQ0pg+EA4Kdx5qlKkOYUh6Jvva3cge26kLG7FKQqEq0mGzhcP9bIC?=
- =?us-ascii?Q?yHQEKMUyr+R1bzG9oC7HwAZFK9fyEKHOQeMtiuL8YJ6aObLVker0pjRmGW1n?=
- =?us-ascii?Q?1HbRso0cgXfln48qoOb7LsIiGM5xodf7/3Iil+wr8I0DSX2fmnShBsIRMrQn?=
- =?us-ascii?Q?59jDeIzfLpmDMDsCnG/7xfEDzfnwz5aCemuaBa+VQ1Dtxqy6lh86Ru7BAeFz?=
- =?us-ascii?Q?NUAB/guGlqbpnV0oKBffYMOmztSTfEn9KjW9Sn+X2Da0QN8MKaJldKuYxRzl?=
- =?us-ascii?Q?w78ARlEBqseaRzvcy/RyvObbEPXyhvTi+XE4SpLQMNFdwXZNojPYe0tdy3Pd?=
- =?us-ascii?Q?XGMAZpMBSWy4LCA4GVr5T6BUcBQHGUplW5/ZmL8YLGbh34LOBIHd+Jmn4UO7?=
- =?us-ascii?Q?yHJP+eigk2OTMnH43QGsSxUr4vbCv0Fpb943SdUpziMEAnN0QQP+FxG1kKa7?=
- =?us-ascii?Q?meGpTMuU/9FBETyjiZ9Im4jxmQQQI+YgTRTjFOR1BUVDhljaQmB4vpjgFmKf?=
- =?us-ascii?Q?yspHOQ+rgSBxHQYO7FCHqkqGcMGfVpLHh26MHKU935cuX+4lfCOkhbtCWJLV?=
- =?us-ascii?Q?9UodHKAiMecF80YTnbeJ/xQ62EfqbKArduczm0LY9zxgeoJb7/arWCOukOR8?=
- =?us-ascii?Q?Ejg+KmbI9fJYk16c6q6jejYgdoHZdYxqqL+erXT1UiFpFAPPtZyHqXiHyjfh?=
- =?us-ascii?Q?NaRcMXLlWeNM+4OxroOM6ixtab8STgYDC0qQc0a/pLRcCEHDFDfU/ts0TObF?=
- =?us-ascii?Q?7g/6iJrK1H4eC0m0NKGXL6aERcfqmZRDwYKJTBEalzIZBk7VXz5rGZZ8gIF9?=
- =?us-ascii?Q?Nc8FJMZ9LmsugMhCZnttnhqgZNJLEGvKuVQa+AhJtfzOWxu4oU2uJ5Fi4HTk?=
- =?us-ascii?Q?AREgBepKIW35zbo2eSs/d2D1zSiJEpXbWUm57SYW?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4aaf73d0-a7c7-44ba-f37f-08dbca50004e
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2023 11:48:35.5959
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2F+eTIYlGmO19vSLRM+9hU57kWWgiYcrV6QLTxVHY8rkXGJWwirUnima3FY/616fko8mbw89wSmbe1cjlOhEoQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8300
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Received: by 2002:a9d:67cb:0:b0:6ab:8d3:5209 with SMTP id
+ c11-20020a9d67cb000000b006ab08d35209mr6579019otn.5.1697024929803; Wed, 11 Oct
+ 2023 04:48:49 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 04:48:49 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001db56d06076f6861@google.com>
+Subject: [syzbot] [hfs?] KMSAN: uninit-value in hfsplus_rename_cat
+From:   syzbot <syzbot+93f4402297a457fc6895@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -119,106 +54,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Low power audio mode requires binding codec still power on while Acore
-enters into suspend so Mcore can continue playback music.
+Hello,
 
-ASoC machine driver acquires DAPM endpoints through reading
-"lpa-widgets" property from DT and then forces the path between these
-endpoints ignoring suspend.
+syzbot found the following issue on:
 
-If the rpmsg sound card is in low power audio mode, the suspend/resume
-callback of binding codec is overridden to disable the suspend/resume.
+HEAD commit:    82714078aee4 Merge tag 'pm-6.6-rc5' of git://git.kernel.or..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=151aa759680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7a5682d32a74b423
+dashboard link: https://syzkaller.appspot.com/bug?extid=93f4402297a457fc6895
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13095252680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=123ba911680000
 
-Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/d1f78c1d4d78/disk-82714078.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/e2a379fc35bb/vmlinux-82714078.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e52238a1bd60/bzImage-82714078.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/286844f77c11/mount_0.gz
+
+Bisection is inconclusive: the issue happens on the oldest tested release.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15b3eaee680000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17b3eaee680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13b3eaee680000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+93f4402297a457fc6895@syzkaller.appspotmail.com
+
+         and is ignored by this kernel. Remove the mand
+         option from the mount to silence this warning.
+=======================================================
+general protection fault, probably for non-canonical address 0xdffffc0000000008: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000040-0x0000000000000047]
+CPU: 0 PID: 5030 Comm: syz-executor114 Not tainted 6.6.0-rc4-syzkaller-00229-g82714078aee4 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+RIP: 0010:hfsplus_rename_cat+0x4b3/0x1050 fs/hfsplus/catalog.c:480
+Code: 60 42 80 3c 20 00 48 8b 5c 24 20 74 05 e8 05 38 81 ff 48 8b 94 24 20 01 00 00 48 83 c3 40 48 89 d8 48 c1 e8 03 48 89 44 24 68 <42> 80 3c 20 00 48 89 54 24 08 74 0d 48 89 df e8 d9 37 81 ff 48 8b
+RSP: 0018:ffffc90003a6f780 EFLAGS: 00010202
+RAX: 0000000000000008 RBX: 0000000000000040 RCX: ffff8880203e1dc0
+RDX: ffff88801fb6f000 RSI: 0000000000000000 RDI: ffffc90003a6f8a0
+RBP: ffffc90003a6fbf0 R08: ffffffff8267c274 R09: ad0047e119000000
+R10: ad0047e119000000 R11: ad0047e1ad0047e1 R12: dffffc0000000000
+R13: ffffc90003a6f86c R14: ffffc90003a6f900 R15: 1ffff9200074df04
+FS:  0000555556d88380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffd58aeb000 CR3: 0000000027125000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ hfsplus_unlink+0x308/0x790 fs/hfsplus/dir.c:376
+ vfs_unlink+0x35d/0x5f0 fs/namei.c:4332
+ do_unlinkat+0x4a7/0x950 fs/namei.c:4398
+ __do_sys_unlink fs/namei.c:4446 [inline]
+ __se_sys_unlink fs/namei.c:4444 [inline]
+ __x64_sys_unlink+0x49/0x50 fs/namei.c:4444
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f9d18b02019
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd58aea948 EFLAGS: 00000246 ORIG_RAX: 0000000000000057
+RAX: ffffffffffffffda RBX: 00007f9d18b4b082 RCX: 00007f9d18b02019
+RDX: 00007f9d18b02019 RSI: 00007f9d18b012f7 RDI: 00000000200000c0
+RBP: 00007f9d18b4b08c R08: 0000000020000000 R09: 0000000020000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd58aea980
+R13: 00007ffd58aeaba8 R14: 431bde82d7b634db R15: 00007f9d18b4b03b
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:hfsplus_rename_cat+0x4b3/0x1050 fs/hfsplus/catalog.c:480
+Code: 60 42 80 3c 20 00 48 8b 5c 24 20 74 05 e8 05 38 81 ff 48 8b 94 24 20 01 00 00 48 83 c3 40 48 89 d8 48 c1 e8 03 48 89 44 24 68 <42> 80 3c 20 00 48 89 54 24 08 74 0d 48 89 df e8 d9 37 81 ff 48 8b
+RSP: 0018:ffffc90003a6f780 EFLAGS: 00010202
+RAX: 0000000000000008 RBX: 0000000000000040 RCX: ffff8880203e1dc0
+RDX: ffff88801fb6f000 RSI: 0000000000000000 RDI: ffffc90003a6f8a0
+RBP: ffffc90003a6fbf0 R08: ffffffff8267c274 R09: ad0047e119000000
+R10: ad0047e119000000 R11: ad0047e1ad0047e1 R12: dffffc0000000000
+R13: ffffc90003a6f86c R14: ffffc90003a6f900 R15: 1ffff9200074df04
+FS:  0000555556d88380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffd58aeb000 CR3: 0000000027125000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess), 1 bytes skipped:
+   0:	42 80 3c 20 00       	cmpb   $0x0,(%rax,%r12,1)
+   5:	48 8b 5c 24 20       	mov    0x20(%rsp),%rbx
+   a:	74 05                	je     0x11
+   c:	e8 05 38 81 ff       	call   0xff813816
+  11:	48 8b 94 24 20 01 00 	mov    0x120(%rsp),%rdx
+  18:	00
+  19:	48 83 c3 40          	add    $0x40,%rbx
+  1d:	48 89 d8             	mov    %rbx,%rax
+  20:	48 c1 e8 03          	shr    $0x3,%rax
+  24:	48 89 44 24 68       	mov    %rax,0x68(%rsp)
+* 29:	42 80 3c 20 00       	cmpb   $0x0,(%rax,%r12,1) <-- trapping instruction
+  2e:	48 89 54 24 08       	mov    %rdx,0x8(%rsp)
+  33:	74 0d                	je     0x42
+  35:	48 89 df             	mov    %rbx,%rdi
+  38:	e8 d9 37 81 ff       	call   0xff813816
+  3d:	48                   	rex.W
+  3e:	8b                   	.byte 0x8b
+
+
 ---
- sound/soc/fsl/imx-rpmsg.c | 58 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 58 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/sound/soc/fsl/imx-rpmsg.c b/sound/soc/fsl/imx-rpmsg.c
-index a9324712e3fa..2c54c92fb911 100644
---- a/sound/soc/fsl/imx-rpmsg.c
-+++ b/sound/soc/fsl/imx-rpmsg.c
-@@ -20,8 +20,11 @@ struct imx_rpmsg {
- 	struct snd_soc_dai_link dai;
- 	struct snd_soc_card card;
- 	unsigned long sysclk;
-+	bool lpa;
- };
- 
-+static struct dev_pm_ops lpa_pm;
-+
- static const struct snd_soc_dapm_widget imx_rpmsg_dapm_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
- 	SND_SOC_DAPM_SPK("Ext Spk", NULL),
-@@ -38,6 +41,58 @@ static int imx_rpmsg_late_probe(struct snd_soc_card *card)
- 	struct device *dev = card->dev;
- 	int ret;
- 
-+	if (data->lpa) {
-+		struct snd_soc_component *codec_comp;
-+		struct device_node *codec_np;
-+		struct device_driver *codec_drv;
-+		struct device *codec_dev = NULL;
-+
-+		codec_np = data->dai.codecs->of_node;
-+		if (codec_np) {
-+			struct platform_device *codec_pdev;
-+			struct i2c_client *codec_i2c;
-+
-+			codec_i2c = of_find_i2c_device_by_node(codec_np);
-+			if (codec_i2c)
-+				codec_dev = &codec_i2c->dev;
-+			if (!codec_dev) {
-+				codec_pdev = of_find_device_by_node(codec_np);
-+				if (codec_pdev)
-+					codec_dev = &codec_pdev->dev;
-+			}
-+		}
-+		if (codec_dev) {
-+			codec_comp = snd_soc_lookup_component_nolocked(codec_dev, NULL);
-+			if (codec_comp) {
-+				int i, num_widgets;
-+				const char *widgets;
-+				struct snd_soc_dapm_context *dapm;
-+
-+				num_widgets = of_property_count_strings(data->card.dev->of_node,
-+									"lpa-widgets");
-+				for (i = 0; i < num_widgets; i++) {
-+					of_property_read_string_index(data->card.dev->of_node,
-+								      "lpa-widgets",
-+								      i, &widgets);
-+					dapm = snd_soc_component_get_dapm(codec_comp);
-+					snd_soc_dapm_ignore_suspend(dapm, widgets);
-+				}
-+			}
-+			codec_drv = codec_dev->driver;
-+			if (codec_drv->pm) {
-+				memcpy(&lpa_pm, codec_drv->pm, sizeof(lpa_pm));
-+				lpa_pm.suspend = NULL;
-+				lpa_pm.resume = NULL;
-+				lpa_pm.freeze = NULL;
-+				lpa_pm.thaw = NULL;
-+				lpa_pm.poweroff = NULL;
-+				lpa_pm.restore = NULL;
-+				codec_drv->pm = &lpa_pm;
-+			}
-+			put_device(codec_dev);
-+		}
-+	}
-+
- 	if (!data->sysclk)
- 		return 0;
- 
-@@ -137,6 +192,9 @@ static int imx_rpmsg_probe(struct platform_device *pdev)
- 		goto fail;
- 	}
- 
-+	if (of_property_read_bool(np, "fsl,enable-lpa"))
-+		data->lpa = true;
-+
- 	data->card.dev = &pdev->dev;
- 	data->card.owner = THIS_MODULE;
- 	data->card.dapm_widgets = imx_rpmsg_dapm_widgets;
--- 
-2.25.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
