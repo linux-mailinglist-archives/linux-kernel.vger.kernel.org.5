@@ -2,76 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7047C5249
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A717C524C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231733AbjJKLkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:40:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53772 "EHLO
+        id S231889AbjJKLlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:41:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231758AbjJKLkb (ORCPT
+        with ESMTP id S231601AbjJKLlB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:40:31 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0FD294;
-        Wed, 11 Oct 2023 04:40:29 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D43C06607312;
-        Wed, 11 Oct 2023 12:40:27 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697024428;
-        bh=OAMxSeQ6P5OM3kNDdwo69a8n51/BNIPMjIOkxQ7766s=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=NUigGBNW6cMl0UPf5ATiyCBG/6NiwnVGibUC7TWy9Fx2nq6JRWCzg78cLjmhRantd
-         24iERycqpetEV8+scZLms7O3eBWLmKVHMlVn4BLInT/lt0K/fEoEc9eKUVKrDu4QSj
-         lh6LOOzhbgcNuMFpRZp+1c7LvdI237Kp+K2JZ1NdOh1OZllW+1t1/PP480J/9Yp+GG
-         r6bz4f9/t91CkgCxjXv3HM2vQuFTbXApvxqqiRjupOwWnnZH7WnhPB32WlR60enX/9
-         9gjaon5QJQtNE7hGu5uLsjs51C89Fg68KqTOnkRt5OVQkMdNPzhMhlxssJ27A+YsPX
-         xJYCkN1E+GjaA==
-Message-ID: <9b822d2d-7e2f-98f5-218c-22e0bb516a6a@collabora.com>
-Date:   Wed, 11 Oct 2023 13:40:24 +0200
+        Wed, 11 Oct 2023 07:41:01 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B118F;
+        Wed, 11 Oct 2023 04:40:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697024459; x=1728560459;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=xolNbnSR41bT5Gxm2xO/m9osxdxJ0UMd2pRcScUs0VU=;
+  b=GlKDfUVXL9c0ENzeDHwrd2e4M/43uzmZGXa60BXYZCM3sApO6vNGMrRJ
+   Kw6VzUnTI0buVhQmjb4Z5Vwee8EWELFWVdZEz0n9tG6l1RqFsDMmOG3L4
+   EbLA4S7mPJtKGiV7NWAoou5/Nu+rdh3gtiGFx2TA5BcAkwB/QUb35Mc4J
+   Cqh3Ek2lx6AqbGSbRB7gb6oM+7ZeR1oTs0jwm+hCsnK2uzeWlZor/OmBt
+   UCJazW9TQAaks/WmbB5Bvtr9eXEA8Il+IhRFQYVqcDjPCSv6yBdHPpBad
+   x/W6pHyerf+GtiPWy9m08p8gP0WvcTBIp1L+xzGv0/MpN9yM195n5Eqoj
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="448838245"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="448838245"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 04:40:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="730467408"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="730467408"
+Received: from opipikin-mobl2.ger.corp.intel.com (HELO sdodaev-mobl.ger.corp.intel.com) ([10.252.57.154])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 04:40:50 -0700
+Date:   Wed, 11 Oct 2023 14:40:48 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+cc:     linux-pci@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH 10/10] PCI/portdrv: Use FIELD_GET()
+In-Reply-To: <20231010204436.1000644-11-helgaas@kernel.org>
+Message-ID: <e4c240f1-2f8f-6617-ea5b-4d74f2185eb9@linux.intel.com>
+References: <20231010204436.1000644-1-helgaas@kernel.org> <20231010204436.1000644-11-helgaas@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v7 2/3] arm64: dts: mediatek: mt8195: revise VDOSYS RDMA
- node name
-To:     Moudy Ho <moudy.ho@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     "Nancy . Lin" <nancy.lin@mediatek.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20231011075031.30660-1-moudy.ho@mediatek.com>
- <20231011075031.30660-3-moudy.ho@mediatek.com>
-Content-Language: en-US
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231011075031.30660-3-moudy.ho@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-616638726-1697024453=:1977"
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 11/10/23 09:50, Moudy Ho ha scritto:
-> DMA-related nodes have their own standardized naming. Therefore,
-> the MT8195 VDOSYS RDMA has been unified and corrected.
-> Additionally, these modifications will facilitate the further
-> integration of bindings.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-616638726-1697024453=:1977
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+
+On Tue, 10 Oct 2023, Bjorn Helgaas wrote:
+
+> From: Bjorn Helgaas <bhelgaas@google.com>
 > 
-> Fixes: 92d2c23dc269 ("arm64: dts: mt8195: add display node for vdosys1")
-> Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
+> Use FIELD_GET() to remove dependences on the field position, i.e., the
+> shift value.  No functional change intended.
+> 
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> ---
+>  drivers/pci/pcie/portdrv.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/portdrv.c b/drivers/pci/pcie/portdrv.c
+> index 46fad0d813b2..14a4b89a3b83 100644
+> --- a/drivers/pci/pcie/portdrv.c
+> +++ b/drivers/pci/pcie/portdrv.c
+> @@ -6,6 +6,7 @@
+>   * Copyright (C) Tom Long Nguyen (tom.l.nguyen@intel.com)
+>   */
+>  
+> +#include <linux/bitfield.h>
+>  #include <linux/dmi.h>
+>  #include <linux/init.h>
+>  #include <linux/module.h>
+> @@ -69,7 +70,7 @@ static int pcie_message_numbers(struct pci_dev *dev, int mask,
+>  	if (mask & (PCIE_PORT_SERVICE_PME | PCIE_PORT_SERVICE_HP |
+>  		    PCIE_PORT_SERVICE_BWNOTIF)) {
+>  		pcie_capability_read_word(dev, PCI_EXP_FLAGS, &reg16);
+> -		*pme = (reg16 & PCI_EXP_FLAGS_IRQ) >> 9;
+> +		*pme = FIELD_GET(PCI_EXP_FLAGS_IRQ, reg16);
+>  		nvec = *pme + 1;
+>  	}
+>  
+> @@ -81,7 +82,7 @@ static int pcie_message_numbers(struct pci_dev *dev, int mask,
+>  		if (pos) {
+>  			pci_read_config_dword(dev, pos + PCI_ERR_ROOT_STATUS,
+>  					      &reg32);
+> -			*aer = (reg32 & PCI_ERR_ROOT_AER_IRQ) >> 27;
+> +			*aer = FIELD_GET(PCI_ERR_ROOT_AER_IRQ, reg32);
+>  			nvec = max(nvec, *aer + 1);
+>  		}
+>  	}
+> @@ -92,7 +93,7 @@ static int pcie_message_numbers(struct pci_dev *dev, int mask,
+>  		if (pos) {
+>  			pci_read_config_word(dev, pos + PCI_EXP_DPC_CAP,
+>  					     &reg16);
+> -			*dpc = reg16 & PCI_EXP_DPC_IRQ;
+> +			*dpc = FIELD_GET(PCI_EXP_DPC_IRQ, reg16);
+>  			nvec = max(nvec, *dpc + 1);
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
+-- 
+ i.
 
+--8323329-616638726-1697024453=:1977--
