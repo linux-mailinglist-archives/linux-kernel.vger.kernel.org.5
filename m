@@ -2,166 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5856D7C5DE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 21:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 599A17C5DE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 21:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346981AbjJKTvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 15:51:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44370 "EHLO
+        id S1346812AbjJKTwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 15:52:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235091AbjJKTvx (ORCPT
+        with ESMTP id S233369AbjJKTwT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 15:51:53 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B79E94
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 12:51:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697053912; x=1728589912;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=K55L4tJbHN93cKRt7fHalGKnxFZ4BSmZmywuVimPaIs=;
-  b=KAefQ2dtViTH+PoJUOMJGRF6R0wPyWZ29066YL+vIroXBzkKIMUyT5EX
-   63xFHsZUgsBW7GHbWYnNvmkK3o8A+DDSKpjPA4uMm09Yz4heRxmbVzz7q
-   JBqxM44dlnHciwnp0B92lGCCixL4IDlldpzQdLqt7Q/CLGJUQHIdOQI8J
-   I/zigb9+E7r8nE/URh693VsCV3MJfmtkhzJ9AXHAF/LHp/w3wxUIIuint
-   R0pXfyn7rcuQkluQggiSXE1OKnlBsDvprwGX4How7/p3JPNavN3E+pHKY
-   QJ2xfWldOgEgHs85Guau1yE21t4StUcxOdl9Glpu8uVB5ZdKFWkCjbMyn
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="6310416"
-X-IronPort-AV: E=Sophos;i="6.03,217,1694761200"; 
-   d="scan'208";a="6310416"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 12:51:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="870278523"
-X-IronPort-AV: E=Sophos;i="6.03,217,1694761200"; 
-   d="scan'208";a="870278523"
-Received: from lkp-server02.sh.intel.com (HELO f64821696465) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 11 Oct 2023 12:51:48 -0700
-Received: from kbuild by f64821696465 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qqfFC-0002en-2K;
-        Wed, 11 Oct 2023 19:51:46 +0000
-Date:   Thu, 12 Oct 2023 03:51:23 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Huacai Chen <chenhuacai@loongson.cn>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        WANG Xuerui <git@xen0n.name>,
-        Jianmin Lv <lvjianmin@loongson.cn>
-Subject: drivers/pci/controller/pcie-mediatek.c:400:40: sparse: sparse:
- incorrect type in argument 1 (different address spaces)
-Message-ID: <202310120352.9mcOljlX-lkp@intel.com>
+        Wed, 11 Oct 2023 15:52:19 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E099E
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 12:52:15 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9a9f139cd94so30544466b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 12:52:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1697053934; x=1697658734; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GfFDJdH5W2KsoZBFM8tAF2+ELipfCkZ7tnwEzIAb7iM=;
+        b=aOY5eeiodXb7Zhynz7Z4S8ASd5wJHZIxXiYTSSH4XEQrVGf32YBG4oKnjLCMQ4Mkmh
+         QDLm90BbXN2/o1woOHC/E6F1PTp2DXMgZe3bbUtP78oQ1wggmk8G79SxridTo55Zmyeq
+         OXKOqmSCNsmgFXB6C5NfTtjv0DIW4xy52HwtU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697053934; x=1697658734;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GfFDJdH5W2KsoZBFM8tAF2+ELipfCkZ7tnwEzIAb7iM=;
+        b=ietqx50BopVJyXw4bPHtE+G/aiPJi5nHb6jJbk+ZWhZfDXu893lkNIx9V2yzsEJdeR
+         Fj6kCO7QZo0lXQRvBgIJ/RjD2eBQDLBWwi1jv2yDxxrDM346gme4zv8hv+LEiooBQyGO
+         eDmb5Dg21J4GcJ2g/Z6na32JksUg3UpTOoNtE6JVutafk3meFpjigQv8RLvD//HhOnsG
+         yjON0BkU0vZBqhsrG42Aj2iesbGAuZcLxssLdB1MpAGme+FkIz05QXyUkO0f8WCDYQ4n
+         A3UEN5RrhKdEd2oZBmC2t7t2tOTrvENQby5OpHhIZu2BfL2A3lqGj29zYDXTfXAieMss
+         0UZw==
+X-Gm-Message-State: AOJu0Yykar14ag5gY9nTL41BIeTSBs+ivYB57eDrpAsPULzpkVMiKByW
+        NR2pPfAJ8Us03qtNTeeSoJrXx2jMl5wBQ2x06onJ8Szi
+X-Google-Smtp-Source: AGHT+IFlOpDu8vnTc1gVf+N4yTh1A/lFwjZLKQNd0CkMQqlSrNbwBup7fTU5OoJ+f8ZaJntBCHtIxw==
+X-Received: by 2002:a17:906:100e:b0:9b3:47f:1c05 with SMTP id 14-20020a170906100e00b009b3047f1c05mr17326723ejm.64.1697053933940;
+        Wed, 11 Oct 2023 12:52:13 -0700 (PDT)
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com. [209.85.208.49])
+        by smtp.gmail.com with ESMTPSA id e25-20020a1709062c1900b009adc77fe164sm10250416ejh.66.2023.10.11.12.52.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Oct 2023 12:52:13 -0700 (PDT)
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-53dd3f169d8so426786a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 12:52:13 -0700 (PDT)
+X-Received: by 2002:a05:6402:1859:b0:530:74ed:fc8a with SMTP id
+ v25-20020a056402185900b0053074edfc8amr19163331edy.41.1697053933076; Wed, 11
+ Oct 2023 12:52:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20231010164234.140750-1-ubizjak@gmail.com> <CAHk-=whYWhZN52SJN-Th9x2L2V-vHtAXUgiy_nSJ3+vQU6ak4Q@mail.gmail.com>
+ <CAFULd4ZqH3FeG8_mjDvUAU9QiGB36wDu3MzUtadgAgoVuQ9QRg@mail.gmail.com>
+ <CAHk-=wiALZxieQQmvv5sW15HYB_YwC3d_ma9sdp7Zb4Fb4uK2w@mail.gmail.com>
+ <CAFULd4Y8NSArDqH=VMy8F97eNosUUGxrBMEyHH=MytjUBSCmjg@mail.gmail.com>
+ <CAHk-=whMr8V_q3dq4iS0dpx4Nssu+aYWz+mA36p2ykA+OXTjXA@mail.gmail.com> <CAFULd4afyYK0-wAOo3oJDapX0iyu86m5+vVn9c35gk8fd6iwRQ@mail.gmail.com>
+In-Reply-To: <CAFULd4afyYK0-wAOo3oJDapX0iyu86m5+vVn9c35gk8fd6iwRQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 11 Oct 2023 12:51:56 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiLyA0g3BvQ_nsF2PWi-FDtcNS5+4-ai1FX-xFzTBeTzg@mail.gmail.com>
+Message-ID: <CAHk-=wiLyA0g3BvQ_nsF2PWi-FDtcNS5+4-ai1FX-xFzTBeTzg@mail.gmail.com>
+Subject: Re: [PATCH v2 -tip] x86/percpu: Use C for arch_raw_cpu_ptr()
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Nadav Amit <namit@vmware.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   1c8b86a3799f7e5be903c3f49fcdaee29fd385b5
-commit: 57fc7323a8e7c2e7c1d5795ab63cb3ffea3cfdfb LoongArch: Add PCI controller support
-date:   1 year, 2 months ago
-config: loongarch-randconfig-r122-20230906 (https://download.01.org/0day-ci/archive/20231012/202310120352.9mcOljlX-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231012/202310120352.9mcOljlX-lkp@intel.com/reproduce)
+On Wed, 11 Oct 2023 at 11:42, Uros Bizjak <ubizjak@gmail.com> wrote:
+>
+> The attached patch was tested on a target with fsgsbase CPUID and
+> without it. It works!
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310120352.9mcOljlX-lkp@intel.com/
+.. I should clearly read all my emails before answering some of them.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/pci/controller/pcie-mediatek.c:400:40: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile *address @@     got void [noderef] __iomem * @@
-   drivers/pci/controller/pcie-mediatek.c:400:40: sparse:     expected void volatile *address
-   drivers/pci/controller/pcie-mediatek.c:400:40: sparse:     got void [noderef] __iomem *
-   drivers/pci/controller/pcie-mediatek.c:523:44: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile *address @@     got void [noderef] __iomem * @@
-   drivers/pci/controller/pcie-mediatek.c:523:44: sparse:     expected void volatile *address
-   drivers/pci/controller/pcie-mediatek.c:523:44: sparse:     got void [noderef] __iomem *
---
-   drivers/uio/uio_aec.c:44:49: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void [noderef] __iomem *int_flag @@     got void * @@
-   drivers/uio/uio_aec.c:44:49: sparse:     expected void [noderef] __iomem *int_flag
-   drivers/uio/uio_aec.c:44:49: sparse:     got void *
->> drivers/uio/uio_aec.c:50:49: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
-   drivers/uio/uio_aec.c:50:49: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/uio/uio_aec.c:50:49: sparse:     got void *
-   drivers/uio/uio_aec.c:59:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
-   drivers/uio/uio_aec.c:59:9: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/uio/uio_aec.c:59:9: sparse:     got void *
-   drivers/uio/uio_aec.c:59:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
-   drivers/uio/uio_aec.c:59:9: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/uio/uio_aec.c:59:9: sparse:     got void *
-   drivers/uio/uio_aec.c:59:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
-   drivers/uio/uio_aec.c:59:9: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/uio/uio_aec.c:59:9: sparse:     got void *
-   drivers/uio/uio_aec.c:59:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
-   drivers/uio/uio_aec.c:59:9: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/uio/uio_aec.c:59:9: sparse:     got void *
-   drivers/uio/uio_aec.c:59:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
-   drivers/uio/uio_aec.c:59:9: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/uio/uio_aec.c:59:9: sparse:     got void *
-   drivers/uio/uio_aec.c:59:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
-   drivers/uio/uio_aec.c:59:9: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/uio/uio_aec.c:59:9: sparse:     got void *
-   drivers/uio/uio_aec.c:88:20: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *priv @@     got void [noderef] __iomem * @@
-   drivers/uio/uio_aec.c:88:20: sparse:     expected void *priv
-   drivers/uio/uio_aec.c:88:20: sparse:     got void [noderef] __iomem *
->> drivers/uio/uio_aec.c:104:42: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void * @@
-   drivers/uio/uio_aec.c:104:42: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/uio/uio_aec.c:104:42: sparse:     got void *
-   drivers/uio/uio_aec.c:105:43: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void * @@
-   drivers/uio/uio_aec.c:105:43: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/uio/uio_aec.c:105:43: sparse:     got void *
-   drivers/uio/uio_aec.c:106:34: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
-   drivers/uio/uio_aec.c:106:34: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/uio/uio_aec.c:106:34: sparse:     got void *
-   drivers/uio/uio_aec.c:115:31: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem * @@     got void *priv @@
-   drivers/uio/uio_aec.c:115:31: sparse:     expected void [noderef] __iomem *
-   drivers/uio/uio_aec.c:115:31: sparse:     got void *priv
-   drivers/uio/uio_aec.c:128:42: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void * @@
-   drivers/uio/uio_aec.c:128:42: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/uio/uio_aec.c:128:42: sparse:     got void *
-   drivers/uio/uio_aec.c:129:43: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void * @@
-   drivers/uio/uio_aec.c:129:43: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/uio/uio_aec.c:129:43: sparse:     got void *
-   drivers/uio/uio_aec.c:131:28: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void * @@
-   drivers/uio/uio_aec.c:131:28: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/uio/uio_aec.c:131:28: sparse:     got void *
-   drivers/uio/uio_aec.c:136:31: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem * @@     got void *priv @@
-   drivers/uio/uio_aec.c:136:31: sparse:     expected void [noderef] __iomem *
-   drivers/uio/uio_aec.c:136:31: sparse:     got void *priv
+Yes, that patch looks good to me, and I'm happy to hear that you
+actually tested it unlike my "maybe something like this".
 
-vim +400 drivers/pci/controller/pcie-mediatek.c
+> The patch improves amd_pmu_enable_virt() in the same way as reported
+> in the original patch submission and also reduces the number of percpu
+> offset reads (either from this_cpu_off or with rdgsbase) from 1663 to
+> 1571.
 
-b099631df160ec6 drivers/pci/host/pcie-mediatek.c Ryder Lee     2017-08-10  393  
-42fe2f91b4ebc07 drivers/pci/host/pcie-mediatek.c Honghui Zhang 2018-05-04  394  static void mtk_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
-43e6409db64ddab drivers/pci/host/pcie-mediatek.c Honghui Zhang 2017-08-14  395  {
-42fe2f91b4ebc07 drivers/pci/host/pcie-mediatek.c Honghui Zhang 2018-05-04  396  	struct mtk_pcie_port *port = irq_data_get_irq_chip_data(data);
-42fe2f91b4ebc07 drivers/pci/host/pcie-mediatek.c Honghui Zhang 2018-05-04  397  	phys_addr_t addr;
-43e6409db64ddab drivers/pci/host/pcie-mediatek.c Honghui Zhang 2017-08-14  398  
-42fe2f91b4ebc07 drivers/pci/host/pcie-mediatek.c Honghui Zhang 2018-05-04  399  	/* MT2712/MT7622 only support 32-bit MSI addresses */
-42fe2f91b4ebc07 drivers/pci/host/pcie-mediatek.c Honghui Zhang 2018-05-04 @400  	addr = virt_to_phys(port->base + PCIE_MSI_VECTOR);
-42fe2f91b4ebc07 drivers/pci/host/pcie-mediatek.c Honghui Zhang 2018-05-04  401  	msg->address_hi = 0;
-42fe2f91b4ebc07 drivers/pci/host/pcie-mediatek.c Honghui Zhang 2018-05-04  402  	msg->address_lo = lower_32_bits(addr);
-42fe2f91b4ebc07 drivers/pci/host/pcie-mediatek.c Honghui Zhang 2018-05-04  403  
-42fe2f91b4ebc07 drivers/pci/host/pcie-mediatek.c Honghui Zhang 2018-05-04  404  	msg->data = data->hwirq;
-43e6409db64ddab drivers/pci/host/pcie-mediatek.c Honghui Zhang 2017-08-14  405  
-42fe2f91b4ebc07 drivers/pci/host/pcie-mediatek.c Honghui Zhang 2018-05-04  406  	dev_dbg(port->pcie->dev, "msi#%d address_hi %#x address_lo %#x\n",
-42fe2f91b4ebc07 drivers/pci/host/pcie-mediatek.c Honghui Zhang 2018-05-04  407  		(int)data->hwirq, msg->address_hi, msg->address_lo);
-43e6409db64ddab drivers/pci/host/pcie-mediatek.c Honghui Zhang 2017-08-14  408  }
-43e6409db64ddab drivers/pci/host/pcie-mediatek.c Honghui Zhang 2017-08-14  409  
+Dio y ou have any actka performance numbers? The patch looks good to
+me, and I *think* rdgsbase ends up being faster in practice due to
+avoiding a memory access, but that's very much a gut feel.
 
-:::::: The code at line 400 was first introduced by commit
-:::::: 42fe2f91b4ebc07c815fb334ea1262e6dc23bf77 PCI: mediatek: Implement chained IRQ handling setup
+> The only drawback is a larger binary size:
+>
+>   text    data     bss     dec     hex filename
+> 25546594        4387686  808452 30742732        1d518cc vmlinux-new.o
+> 25515256        4387814  808452 30711522        1d49ee2 vmlinux-old.o
+>
+> that increases by 31k (0.123%), probably due to 1578 rdgsbase alternatives.
 
-:::::: TO: Honghui Zhang <honghui.zhang@mediatek.com>
-:::::: CC: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+I'm actually surprised that it increases the text size. The 'rdgsbase'
+instruction should be smaller than a 'mov %gs', so I would have
+expected the *data* size to increase due to the alternatives tables,
+but not the text size.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+[ Looks around ]
+
+Oh. It's because we put the altinstructions into the text section.
+That's kind of silly, but whatever.
+
+So I think that increase in text-size is not "real" - yes, it
+increases our binary size because we obviously have two instructions,
+but the actual *executable* part likely stays the same, and it's just
+that we grow the altinstruction metadata.
+
+                  Linus
