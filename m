@@ -2,188 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A7C7C476A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 03:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 004197C4770
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 03:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344689AbjJKBsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 21:48:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35388 "EHLO
+        id S1344693AbjJKBs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 21:48:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344618AbjJKBsQ (ORCPT
+        with ESMTP id S1344618AbjJKBsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 21:48:16 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 404AC92;
-        Tue, 10 Oct 2023 18:48:14 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso1143677366b.1;
-        Tue, 10 Oct 2023 18:48:14 -0700 (PDT)
+        Tue, 10 Oct 2023 21:48:54 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0095D94
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 18:48:51 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9ba1eb73c27so489373866b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 18:48:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google; t=1696988893; x=1697593693; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=igjlN4dO3JjcdB2G4ww8hAUFD7DZ0Fw5neZs9pJmc38=;
-        b=QBUutq5Vpvc3gbVYnxPj3J9ZtWQTiMQ4/ZPQpJLbxjF0OZfy06F1Pl3XkXZw0e6DFB
-         Ubi0YKI9VP0JLNLxqQFRFVuNSmcreJFSxGi5Ka8zdCx3W6mBkLkK1Wfg4VjGFpK6pT8i
-         1zLWKYZlrJHggYzEeX8L5hJXYgpnHvnPjeC8I=
+        d=google.com; s=20230601; t=1696988930; x=1697593730; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LgmTMfuU3cCeLGy5YhBbbvizhGvmrwNUjrSNHCgxSVM=;
+        b=r1m8eAQgu1YxRdB3F9oK28HWMMvq/OJmOQokmNkjXMGb/csXzN5OLDAgbB6VykiMVx
+         q/JqUfFFCBfFZnbCXgnn9ktZZ2TVNqC1pXzAVb3rBQNT1OdPbSG3gPi3k29pLJ5FU++J
+         eyk/M2Vqx0W30Zrd2ogiAyjz8RySKxnTNkLYp8V+SpgSoh22o2zoeo8AEeKkSDN1z5rK
+         EgMBMVjShbODqGGIS+UDwIrYdhGFAu2XWN/Dqutd5wdChGjiO89I4Qmy1NmfmM84AO9B
+         xYVsQ2b09UAwPue2nGa7hF5qMiBF1ax32H+A8xcIw9G9HwvrchFsOnW/WTsbt3fFcvwG
+         40jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696988893; x=1697593693;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=igjlN4dO3JjcdB2G4ww8hAUFD7DZ0Fw5neZs9pJmc38=;
-        b=T2IJCRMcJyuCHovFTPIgUQRXjWuKdIx3ZXfq8FB2104P97b/TdR01Zv082s0Bb1hDE
-         qheal/xG/2LQFkcNNFdHgl0rN7EFq3k8w0J9PTip3OOIXRc9yzbjNgzHqT+JOvaALr6G
-         pC3aKxXLPA4Ba1PpBDjgvEdUQGyUhwIezZH4BjTbH61cpN+LbNDhpGmJ4acswp2K5AQt
-         Sxb1naARnspLSlxy8e7NqM1r4BWnZgq5/yImy2zhrQPkAS7MNMwCdcBgkK9TI09CYHsK
-         bMPBBDbqaFiakgYMY4N+0H/hBOgVtZr78unA3p8HSVxYuE0e/IcnJ9lpq0xjsordSddo
-         85dA==
-X-Gm-Message-State: AOJu0Yxm2AUBAEySHp8eYCvl2+n8APk8k97cIrzdzSpaUA7z8sdYLfKN
-        widU5NpSR0qYWo+EQp2IFzEQ7N4Lcyv1Zt6/Bx4=
-X-Google-Smtp-Source: AGHT+IEuuMqEy3USpJDXR0kSSSQMnE9Vm8JFze2cJqxGftCWpvdSX0K+UCUFBZu0kfb7wHhQh1dEjjpMVzNhVPs+EdA=
-X-Received: by 2002:a17:907:7890:b0:9ae:711d:7e03 with SMTP id
- ku16-20020a170907789000b009ae711d7e03mr17862404ejc.15.1696988892477; Tue, 10
- Oct 2023 18:48:12 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696988930; x=1697593730;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LgmTMfuU3cCeLGy5YhBbbvizhGvmrwNUjrSNHCgxSVM=;
+        b=io826mH1VNZO3p9i/1z/ObrFChNRl3gfyMvSo3UVgnc/6AxUGVPHpBdY7Tijx1NRmu
+         bcWk4c68sinf1rTAMDhI9HMabTksckZnZODz6hve41yooYoNX0opeAYfc9oaE1klHCY1
+         6zH6QLWP/djvGU7q8alUiQACTmaGN94RRgBKj8vmEQWbdzDT+XnJB6dYxR3Z63VR6lE4
+         wVITQL89kDIDukCXg54ywTjJam7UNZPS0GkIA5+B6iBEYG110Fm1S36MMUz3uz+xNtyX
+         9nNWE+YabXhs10TlQPCavaQDGUQvwZHtMr84cHQDrxIVPiyjXuGo+FOdQ16nSZ69htBl
+         nWow==
+X-Gm-Message-State: AOJu0YwG5f/MDqb97qSi0XBbyq9LOgYf0VL9YUKN732OstcYPl9SHnfJ
+        gcvib9C7SB/0Wx0zbmQNfD+ExO+fm+NTf48AoVbGsw==
+X-Google-Smtp-Source: AGHT+IFG8zP5Syqi5MZ6+G6K9VUFI90ompaJz3mzhBWqc14rM6pucl7DnlfREAkMgADEGF+ZpGnbG1KidG8/lnu9PFw=
+X-Received: by 2002:a17:906:32cb:b0:9ae:7622:eed9 with SMTP id
+ k11-20020a17090632cb00b009ae7622eed9mr17959783ejk.50.1696988930108; Tue, 10
+ Oct 2023 18:48:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231005035525.19036-1-chanh@os.amperecomputing.com> <20231005035525.19036-2-chanh@os.amperecomputing.com>
-In-Reply-To: <20231005035525.19036-2-chanh@os.amperecomputing.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Wed, 11 Oct 2023 12:18:01 +1030
-Message-ID: <CACPK8XdpUpg0vDG7UwO-o=dYD-88evizSUb-yKm9qdUP2rjzdg@mail.gmail.com>
-Subject: Re: [PATCH 1/7] ARM: dts: aspeed: mtjade, mtmitchell: Update gpio-line-names
-To:     Chanh Nguyen <chanh@os.amperecomputing.com>
-Cc:     OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20231010032117.1577496-1-yosryahmed@google.com>
+ <20231010032117.1577496-4-yosryahmed@google.com> <CALvZod5nQrf=Y24u_hzGOTXYBfnt-+bo+cYbRMRpmauTMXJn3Q@mail.gmail.com>
+ <CAJD7tka=kjd42oFpTm8FzMpNedxpJCUj-Wn6L=zrFODC610A-A@mail.gmail.com>
+ <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com> <20231011003646.dt5rlqmnq6ybrlnd@google.com>
+In-Reply-To: <20231011003646.dt5rlqmnq6ybrlnd@google.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 10 Oct 2023 18:48:11 -0700
+Message-ID: <CAJD7tkaZzBbvSYbCdvCigcum9Dddk8b6MR2hbCBG4Q2h4ciNtw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED,WEIRD_QUOTING autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Oct 2023 at 14:26, Chanh Nguyen <chanh@os.amperecomputing.com> wrote:
+On Tue, Oct 10, 2023 at 5:36=E2=80=AFPM Shakeel Butt <shakeelb@google.com> =
+wrote:
 >
-> Update GPIO line-name to follow naming convention specified at
-> github.com/openbmc/docs/blob/master/designs/device-tree-gpio-naming.md
+> On Tue, Oct 10, 2023 at 03:21:47PM -0700, Yosry Ahmed wrote:
+> [...]
+> >
+> > I tried this on a machine with 72 cpus (also ixion), running both
+> > netserver and netperf in /sys/fs/cgroup/a/b/c/d as follows:
+> > # echo "+memory" > /sys/fs/cgroup/cgroup.subtree_control
+> > # mkdir /sys/fs/cgroup/a
+> > # echo "+memory" > /sys/fs/cgroup/a/cgroup.subtree_control
+> > # mkdir /sys/fs/cgroup/a/b
+> > # echo "+memory" > /sys/fs/cgroup/a/b/cgroup.subtree_control
+> > # mkdir /sys/fs/cgroup/a/b/c
+> > # echo "+memory" > /sys/fs/cgroup/a/b/c/cgroup.subtree_control
+> > # mkdir /sys/fs/cgroup/a/b/c/d
+> > # echo 0 > /sys/fs/cgroup/a/b/c/d/cgroup.procs
+> > # ./netserver -6
+> >
+> > # echo 0 > /sys/fs/cgroup/a/b/c/d/cgroup.procs
+> > # for i in $(seq 10); do ./netperf -6 -H ::1 -l 60 -t TCP_SENDFILE --
+> > -m 10K; done
 >
-> Signed-off-by: Chanh Nguyen <chanh@os.amperecomputing.com>
+> You are missing '&' at the end. Use something like below:
+>
+> #!/bin/bash
+> for i in {1..22}
+> do
+>    /data/tmp/netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K &
+> done
+> wait
+>
 
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+Oh sorry I missed the fact that you are running instances in parallel, my b=
+ad.
 
-> ---
->  .../dts/aspeed/aspeed-bmc-ampere-mtjade.dts   | 42 +++++++++----------
->  .../aspeed/aspeed-bmc-ampere-mtmitchell.dts   |  6 +--
->  2 files changed, 24 insertions(+), 24 deletions(-)
->
-> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtjade.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtjade.dts
-> index 0a51d2e32fab..e57efcc8522a 100644
-> --- a/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtjade.dts
-> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtjade.dts
-> @@ -760,30 +760,30 @@
->
->  &gpio {
->         gpio-line-names =
-> -       /*A0-A7*/       "","","","S0_BMC_SPECIAL_BOOT","","","","",
-> -       /*B0-B7*/       "BMC_SELECT_EEPROM","","","",
-> -                       "POWER_BUTTON","","","",
-> +       /*A0-A7*/       "","","","host0-special-boot","","","","",
-> +       /*B0-B7*/       "i2c-backup-sel","","","",
-> +                       "power-button","","","",
->         /*C0-C7*/       "","","","","","","","",
->         /*D0-D7*/       "","","","","","","","",
->         /*E0-E7*/       "","","","","","","","",
-> -       /*F0-F7*/       "","","BMC_SYS_PSON_L","S0_DDR_SAVE","PGOOD",
-> -                       "S1_DDR_SAVE","","",
-> -       /*G0-G7*/       "host0-ready","SHD_REQ_L","","S0_OVERTEMP_L","","",
-> +       /*F0-F7*/       "","","power-chassis-control","s0-ddr-save","power-chassis-good",
-> +                       "s1-ddr-save","","",
-> +       /*G0-G7*/       "host0-ready","host0-shd-req-n","","s0-overtemp-n","","",
->                         "","",
-> -       /*H0-H7*/       "","","","","PSU1_VIN_GOOD","PSU2_VIN_GOOD","","",
-> -       /*I0-I7*/       "PSU1_PRESENT","PSU2_PRESENT","S1_BMC_SPECIAL_BOOT",
-> -                       "","","","","",
-> -       /*J0-J7*/       "S0_HIGHTEMP_L","S0_FAULT_L","S0_SCP_AUTH_FAIL_L","",
-> +       /*H0-H7*/       "","","","","ps0-vin-good","ps1-vin-good","","",
-> +       /*I0-I7*/       "presence-ps0","presence-ps1","s1-special-boot",
-> +                               "","","","","",
-> +       /*J0-J7*/       "s0-hightemp-n","s0-fault-alert","s0-sys-auth-failure-n","",
->                         "","","","",
->         /*K0-K7*/       "","","","","","","","",
-> -       /*L0-L7*/       "","","","BMC_SYSRESET_L","SPI_AUTH_FAIL_L","","","",
-> +       /*L0-L7*/       "","","","host0-sysreset-n","s0-spi-auth-fail-n","","","",
->         /*M0-M7*/       "","","","","","","","",
->         /*N0-N7*/       "","","","","","","","",
->         /*O0-O7*/       "","","","","","","","",
->         /*P0-P7*/       "","","","","","","","",
-> -       /*Q0-Q7*/       "","","","","","UID_BUTTON","","",
-> -       /*R0-R7*/       "","","BMC_EXT_HIGHTEMP_L","OCP_AUX_PWREN",
-> -                       "OCP_MAIN_PWREN","RESET_BUTTON","","",
-> +       /*Q0-Q7*/       "","","","","","identify-button","","",
-> +       /*R0-R7*/       "","","ext-hightemp-n","",
-> +                       "ocp-main-pwren","reset-button","","",
->         /*S0-S7*/       "","","","","rtc-battery-voltage-read-enable","","","",
->         /*T0-T7*/       "","","","","","","","",
->         /*U0-U7*/       "","","","","","","","",
-> @@ -791,18 +791,18 @@
->         /*W0-W7*/       "","","","","","","","",
->         /*X0-X7*/       "","","","","","","","",
->         /*Y0-Y7*/       "","","","","","","","",
-> -       /*Z0-Z7*/       "S0_BMC_PLIMIT","S1_FAULT_L","S1_FW_BOOT_OK","","",
-> -                       "S1_SCP_AUTH_FAIL_L","S1_OVERTEMP_L","",
-> +       /*Z0-Z7*/       "s0-plimit","s1-fault-alert","s1-fw-boot-ok","","",
-> +                       "s1-sys-auth-failure-n","s1-overtemp-n","",
->         /*AA0-AA7*/     "","","","","","","","",
-> -       /*AB0-AB7*/     "S1_HIGHTEMP_L","S1_BMC_PLIMIT","S0_BMC_DDR_ADDR",
-> -                       "S1_BMC_DDR_ADR","","","","",
-> -       /*AC0-AC7*/     "SYS_PWR_GD","","","","","BMC_READY","SLAVE_PRESENT_L",
-> -                       "BMC_OCP_PG";
-> +       /*AB0-AB7*/     "s1-hightemp-n","s1-plimit","s0-ddr-addr",
-> +                       "s1-ddr-addr","","","","",
-> +       /*AC0-AC7*/     "sys-pwr-gd","","","","","","presence-cpu1",
-> +                       "ocp-pgood";
->
->         i2c4-o-en-hog {
->                 gpio-hog;
->                 gpios = <ASPEED_GPIO(Y, 2) GPIO_ACTIVE_HIGH>;
->                 output-high;
-> -               line-name = "BMC_I2C4_O_EN";
-> +               line-name = "i2c4-o-en";
->         };
->  };
-> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts
-> index 0715cb9ab30c..2f571b43106d 100644
-> --- a/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts
-> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts
-> @@ -599,17 +599,17 @@
->         /*Q0-Q7*/       "","","","","","","","",
->         /*R0-R7*/       "","","","","","","","",
->         /*S0-S7*/       "","","identify-button","led-identify",
-> -                       "s1-ddr-save","spi-nor-access","sys-pgood","presence-cpu1",
-> +                       "s1-ddr-save","spi-nor-access","host0-ready","presence-cpu1",
->         /*T0-T7*/       "","","","","","","","",
->         /*U0-U7*/       "","","","","","","","",
->         /*V0-V7*/       "s0-hightemp-n","s0-fault-alert","s0-sys-auth-failure-n",
-> -                       "host0-reboot-ack-n","host0-ready","host0-shd-req-n",
-> +                       "host0-reboot-ack-n","s0-fw-boot-ok","host0-shd-req-n",
->                         "host0-shd-ack-n","s0-overtemp-n",
->         /*W0-W7*/       "","ocp-main-pwren","ocp-pgood","",
->                         "bmc-ok","bmc-ready","spi0-program-sel","spi0-backup-sel",
->         /*X0-X7*/       "i2c-backup-sel","s1-fault-alert","s1-fw-boot-ok",
->                         "s1-hightemp-n","s0-spi-auth-fail-n","s1-sys-auth-failure-n",
-> -                       "s1-overtemp-n","s1-spi-auth-fail-n",
-> +                       "s1-overtemp-n","cpld-s1-spi-auth-fail-n",
->         /*Y0-Y7*/       "","","","","","","","host0-special-boot",
->         /*Z0-Z7*/       "reset-button","ps0-pgood","ps1-pgood","","","","","";
->
-> --
-> 2.17.1
->
+So I ran 36 instances on a machine with 72 cpus. I did this 10 times
+and got an average from all instances for all runs to reduce noise:
+
+#!/bin/bash
+
+ITER=3D10
+NR_INSTANCES=3D36
+
+for i in $(seq $ITER); do
+  echo "iteration $i"
+  for j in $(seq $NR_INSTANCES); do
+    echo "iteration $i" >> "out$j"
+    ./netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K >> "out$j" &
+  done
+  wait
+done
+
+cat out* | grep 540000 | awk '{sum +=3D $5} END {print sum/NR}'
+
+Base: 22169 mbps
+Patched: 21331.9 mbps
+
+The difference is ~3.7% in my runs. I am not sure what's different.
+Perhaps it's the number of runs?
