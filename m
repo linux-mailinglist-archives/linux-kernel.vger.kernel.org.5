@@ -2,76 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A78537C496A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4957C496D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229973AbjJKFtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 01:49:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59734 "EHLO
+        id S229977AbjJKFvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 01:51:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229897AbjJKFtE (ORCPT
+        with ESMTP id S229897AbjJKFva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 01:49:04 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A2E8E
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 22:49:02 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-694ed84c981so4972851b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 22:49:02 -0700 (PDT)
+        Wed, 11 Oct 2023 01:51:30 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D53DAB6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 22:51:28 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-5892832f8daso501893a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 22:51:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697003342; x=1697608142; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=i3/xooCfzn+HEb84CSy8n1NiyDH9US0NidBeh+kHVYE=;
-        b=DENHURHFEXIX2Casi1G4byCfgdWPbRWZ3fdZYmZbR/8y7e7K60CN4HF7DxokoU7PGz
-         IQVwrSqYcd88epKDNfBsi0VP8dH8a7bbWOWuqCQqkU+woXUDNak5J1hEsePjzZNpk9iD
-         TbNzpmdlRUqrwZC2BlhSiVOBPWMP0gexI4rnIIE+VIjRExMCHBH/C8LCzvSXvLrOBdXe
-         1uE3Xg55EfqlMmMktQRFhx+wp3Fd+QDNRKyovrf40gh04QLaZdnuiELfVQnZ5mgFsZa9
-         8tnc/nUfsrXf+ft+MgOheEmBzINuVDKju5Ql5cx9eEYxoBKBXCFHcQJFXiQVjpghcrCq
-         +g2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697003342; x=1697608142;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=ventanamicro.com; s=google; t=1697003488; x=1697608288; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=i3/xooCfzn+HEb84CSy8n1NiyDH9US0NidBeh+kHVYE=;
-        b=tQvaa/rEA1aKX2xfa8lpFyGflkLOPRQNeBYfmJFNJp7nbNbPMzZ3RGcyD6z0m7O+Lt
-         5Qga9knljmhTAbU34BQo7oHUPBCZ0HSutXoyAwzVEL6mLPbfoRH0b1/gAKf1kwVDsRLf
-         9Nh/n2B1yZjzZbLd6nZmH/bZTQELjVvwNNPYj8+5817f5t1JGLE8OZaFunme5BzfQuKz
-         xiCIQSVvk/OFF92sDfBREuS8Nv0UcVwJnXjaTY5g5xwH2VA+nZVvb9BRvo7ZggxQOQ8t
-         +x2Uv7O5dQnEivlrWpLG7pelOW7uxMAfAemOIL/oFF/jyQealhUoB6ohu70fvnZgeMdJ
-         ppHQ==
-X-Gm-Message-State: AOJu0Yys0Slc7055ta/tASHLqhJXS4aFw+PZQb9I8eiWSm0zXbB8TtwV
-        cRcpRd5T6JWu+2sl4HSK7qTvNw==
-X-Google-Smtp-Source: AGHT+IELb9UJT6sC7GTilNP+4QfWdcX9+gyN7cf4Rlq0B7kFgPDad3Hdi4I21cnODq4uhQcLWot/+w==
-X-Received: by 2002:a05:6a00:885:b0:68f:e810:e86f with SMTP id q5-20020a056a00088500b0068fe810e86fmr21643745pfj.28.1697003341973;
-        Tue, 10 Oct 2023 22:49:01 -0700 (PDT)
-Received: from localhost ([122.172.81.92])
-        by smtp.gmail.com with ESMTPSA id p6-20020a62ab06000000b0069302c3c050sm9172133pff.218.2023.10.10.22.49.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 22:49:00 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 11:18:58 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Johan Hovold <johan@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
-        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, andersson@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-        robdclark@gmail.com
-Subject: Re: [PATCH 2/2] OPP: Disallow "opp-hz" property without a
- corresponding clk
-Message-ID: <20231011054858.3vvnr76u5enu5lf6@vireshk-i7>
-References: <cover.1669012140.git.viresh.kumar@linaro.org>
- <c03c4f2b9d4dcc3264d1902606c6c5c464b4b043.1669012140.git.viresh.kumar@linaro.org>
- <Y3snGQet8yc7HnJK@hovoldconsulting.com>
- <20221121073946.GE11945@thinkpad>
- <20230125042145.hrjpnskywwqn7b6v@vireshk-i7>
- <20230216064727.GA2420@thinkpad>
+        bh=ZgOOUrxhrQpKc0UcO6mj9tBnrpY40gn5l4EwRcu1NOI=;
+        b=BBi47a0d566uAZLf74tOZs1i4XMtlk8eUoxA0YLHzNJyaMusR9TcGhPGokZjl5ln0U
+         IzVnafrv1kV+fiwNyN2a1FSBE2YjZoajroOV/AR7Cyi7kB9q6tT9coTOdOY6J0Lw3uDT
+         T8QZ2zmqeHXENIC9goCzxe0mPR72xr20vE2VqXn2R5t9Xl7EEXutZ7zJKkM4LMEoS9AJ
+         Hm+09KxzGAxoq5a4gDnw5G3o3zcrKaZNaBnzNQSqnl6WAJyt9anQ4rkXmnXgKTUYWfC4
+         tv6llJs5kqPNvZA2m5iaj+LKIA6CiUvDriFzNPV4D9iHLB359OmfAFQNcrSCOf6qm7MO
+         mMHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697003488; x=1697608288;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZgOOUrxhrQpKc0UcO6mj9tBnrpY40gn5l4EwRcu1NOI=;
+        b=b5e0IfTZdiP84jWK2GV2RFJ96uDyZcQVs4fluj/0UMvGJlcu7/y5SFTtCaLVFgBqgG
+         009HXP9YQ6ipNTTG8FG57pu7r76M2j8rnkyW00r4V1clbpuyI+5uu1R0BqSpSiQ8bqmy
+         5+fJxfOuLhVGUjkeX30btoYpXf/4bielQu/ZOnOqQ/+dbPobuyFSIvEiMujCXTu8s34N
+         arUbItEVGhqODuidSS91D9h3yVczRtgJUcyFeJNuI7LLIviET/cipf9oHH6kugQgOTUD
+         AccDT7a9Zy1aAk0YnzIzmv6OuKaEqah6yhrWgJ3Vmddw6yZ+weqfjFn/CqAdq87/+yZA
+         axVg==
+X-Gm-Message-State: AOJu0YxjbYwAe/dFZgtQbUhHjHnALXi2CTgRFZo1eO5BMFqinDEpEKGb
+        /RbAQzF7ICAorAWiHB4jvfaw767/V5womYW9np0EKg==
+X-Google-Smtp-Source: AGHT+IEAxE7QdFbbOPuVcJD52vAqLrqPEDqxTXMyXoDEBFNSRVwd6lB/XppSiIl4XgAPPxR1exDjPPNx2wJzk6+Jr1M=
+X-Received: by 2002:a17:90a:af86:b0:277:4be4:7a84 with SMTP id
+ w6-20020a17090aaf8600b002774be47a84mr25295223pjq.19.1697003487902; Tue, 10
+ Oct 2023 22:51:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230216064727.GA2420@thinkpad>
+References: <20231010170503.657189-1-apatel@ventanamicro.com>
+ <20231010170503.657189-6-apatel@ventanamicro.com> <2023101045-hazard-popcorn-7d19@gregkh>
+In-Reply-To: <2023101045-hazard-popcorn-7d19@gregkh>
+From:   Anup Patel <apatel@ventanamicro.com>
+Date:   Wed, 11 Oct 2023 11:21:17 +0530
+Message-ID: <CAK9=C2WvfPg1tCpNLgDteaQGBVAsPL3S+vdvgEsBb8PCx2W8xw@mail.gmail.com>
+Subject: Re: [PATCH 5/6] tty: Add SBI debug console support to HVC SBI driver
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Conor Dooley <conor@kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, Atish Patra <atishp@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -82,35 +78,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16-02-23, 12:17, Manivannan Sadhasivam wrote:
-> Sorry for the delay. I've submitted the dts changes [1] to handle the CPU clocks
-> for the rest of the Qcom SoCs.
-> 
-> For the Qcom GPUs, I've CCed Rob Clark who is the maintainer.
-> 
-> Rob, here is the background on the issue that is being discussed in this
-> thread:
-> 
-> Viresh submitted a series [2] back in July to improve the OPP framework, but
-> that ended up breaking cpufreq on multiple Qcom SoCs. After investigation, it
-> was found that the series was expecting the clocks supplied to the OPP end
-> devices like CPUs/GPUs to be modeled in DT. But on Qcom platforms even though
-> the clocks for these nodes are supplied by a separate entity, like CPUFreq
-> (EPSS/OSM) for CPUs and GMU for GPUs, there was no clock property present in
-> the respective nodes. And these nodes are using OPP table to switch frequencies
-> dynamically.
-> 
-> While the series was merged with a hack that still allows the OPP nodes without
-> clock property in DT, we came to an agreement that the clock hierarchy should
-> be modeled properly.
-> 
-> So I submitted a series [3] that added clock provider support to cpufreq driver
-> and sourced the clock from cpufreq node to CPU nodes in DT.
-> 
-> Likewise, it should be handled for the adreno GPUs whose clock is managed by
-> GMU on newer SoCs. Can you take a look at this?
+On Tue, Oct 10, 2023 at 10:42=E2=80=AFPM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Oct 10, 2023 at 10:35:02PM +0530, Anup Patel wrote:
+> > --- a/drivers/tty/hvc/hvc_riscv_sbi.c
+> > +++ b/drivers/tty/hvc/hvc_riscv_sbi.c
+> > @@ -15,6 +15,7 @@
+> >
+> >  #include "hvc_console.h"
+> >
+> > +#ifdef CONFIG_RISCV_SBI_V01
+>
+> Please no #ifdef in a .c file, that's not a good style for Linux code at
+> all.
+>
+> And what if you want to build the driver for both options here?  What
+> will happen?
 
-Any update on this ?
+Okay, I will remove all #ifdef from .c file
 
--- 
-viresh
+>
+> > +static int hvc_sbi_dbcn_tty_put(uint32_t vtermno, const char *buf, int=
+ count)
+> >  {
+> > -     return PTR_ERR_OR_ZERO(hvc_alloc(0, 0, &hvc_sbi_ops, 16));
+> > +     phys_addr_t pa;
+> > +     struct sbiret ret;
+> > +
+> > +     if (is_vmalloc_addr(buf))
+> > +             pa =3D page_to_phys(vmalloc_to_page(buf)) + offset_in_pag=
+e(buf);
+> > +     else
+> > +             pa =3D __pa(buf);
+> > +
+> > +     ret =3D sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_WRITE,
+> > +#ifdef CONFIG_32BIT
+> > +               count, pa, (u64)pa >> 32,
+> > +#else
+> > +               count, pa, 0,
+> > +#endif
+>
+> This is not how to do an api, sorry, again, please no #ifdef if you want
+> to support this code for the next 20+ years.
+
+Sure, I will update like you suggested.
+
+>
+> thanks,
+>
+> gre gk-h
+
+Thanks,
+Anup
