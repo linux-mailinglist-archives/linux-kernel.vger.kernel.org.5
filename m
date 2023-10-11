@@ -2,957 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 210CF7C5645
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8867C561F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235010AbjJKODX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 10:03:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54562 "EHLO
+        id S232662AbjJKOCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 10:02:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347015AbjJKODL (ORCPT
+        with ESMTP id S232202AbjJKOCu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 10:03:11 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C43E8;
-        Wed, 11 Oct 2023 07:03:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6931FC433C7;
-        Wed, 11 Oct 2023 14:03:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697032985;
-        bh=pBsdQK7MCTzPLcjzg3nWmnN/eYz9+yxpVt8ibNe/wD0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GY4SrYYm1sULach12gP79RuJzBdrGKH9urxWH57KQossftjhcRMSTbN8aWZLOJDAn
-         oqxDZ4kf2QEJQ7HqeS76VGZoWpZAMmXbpC1tO+jS6KF55JFX+Fre+cI6xZfRUy7hHs
-         /DanVd8oBgPOOPiqyrSdwaVcfqnd3XP5IqzvOdOuMvbfSa+QnGNYynYBJWoUFJUG0B
-         Ld8YEx8J1Z5vl04grO2Gg5uQ8v4UFNKT/nuuaVciDJWABYjIa2fXEFY5nixlHRHmBj
-         Uhx4//0V2RoZ67CS/P1Uo4JhJAiSWXfp5Kdj7rxpOmo4Ijk1sDssGZHT/JBU91F2N2
-         qH7bcC+5C6vTw==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-wireless@vger.kernel.org,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-wpan@vger.kernel.org,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Rodolfo Zitellini <rwz@xhero.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v2 05/10] staging: rtl8192: remove unused legacy ioctl handlers
-Date:   Wed, 11 Oct 2023 16:02:20 +0200
-Message-Id: <20231011140225.253106-5-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231011140225.253106-1-arnd@kernel.org>
-References: <20231011140225.253106-1-arnd@kernel.org>
+        Wed, 11 Oct 2023 10:02:50 -0400
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83FE393;
+        Wed, 11 Oct 2023 07:02:47 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 01B7140004;
+        Wed, 11 Oct 2023 14:02:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1697032966;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AmDid+2p5omqPQxMszlLHuNt/K12o40KfGGotdHRA4A=;
+        b=fxkhROQypXEGEU25tCB1qFGhCBWiY7ChPSURIW48jG2TDWzf1Hs2f+d5jYfOdwyALI9Ven
+        Az9tOMNZ49Sb+/fcBjwht/+vyXww0yARVBlafJsON1TIajAPJiOzWZrcgmWthQyJuyGSpy
+        DadE20n8nsGPhXWuaM0d/t9UqwA2txhlMNlPoHxWsWeGv/G5Dr95OUNhC2rzWisyrPZ+jl
+        pw3CL+XMwf6rqf5SvKn7Pf8V4Q6FudA6Fjjx8NwpdO6GCKrLMwABEaAM44NPbxytlnWvPE
+        3qrO5CQ6hUZtHPAkOJWflWy/vcwWVKxZYa9vtxc3K6svT24dz36CqWTclQbjeA==
+Date:   Wed, 11 Oct 2023 16:02:43 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michael Walle <michael@walle.cc>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Robert Marko <robert.marko@sartura.hr>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Daniel Golle <daniel@makrotopia.org>
+Subject: Re: [PATCH v12 7/7] nvmem: core: Expose cells through sysfs
+Message-ID: <20231011160243.4893729d@xps-13>
+In-Reply-To: <a67f5fd1-6b5c-662d-5ab3-b528c2080efc@linaro.org>
+References: <20231005155907.2701706-1-miquel.raynal@bootlin.com>
+        <20231005155907.2701706-8-miquel.raynal@bootlin.com>
+        <318fe799-f53e-64ed-b631-d099bb5202f4@linaro.org>
+        <20231011091524.0c9ecc55@xps-13>
+        <548849a8-9f11-5274-778e-f291267603bb@linaro.org>
+        <20231011103306.08f1fbd4@xps-13>
+        <fe4a2688-079c-a36d-0ea4-c244c6e1a0ad@linaro.org>
+        <20231011105829.778bed58@xps-13>
+        <490c6740-06cb-9ee6-ca8c-3ab404109344@linaro.org>
+        <20231011114419.21821f4d@xps-13>
+        <8b8403ee-b610-312b-aa98-3e4fa65a3800@linaro.org>
+        <20231011130931.3b6216aa@xps-13>
+        <a67f5fd1-6b5c-662d-5ab3-b528c2080efc@linaro.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hi Srinivas,
 
-The .ndo_do_ioctl functions are never called, and can just be removed,
-especially since this is a staging driver.
+srinivas.kandagatla@linaro.org wrote on Wed, 11 Oct 2023 14:56:02 +0100:
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/staging/rtl8192u/ieee80211/dot11d.c   |  41 --
- drivers/staging/rtl8192u/ieee80211/dot11d.h   |   2 -
- .../staging/rtl8192u/ieee80211/ieee80211.h    |  12 -
- .../rtl8192u/ieee80211/ieee80211_softmac.c    | 563 ------------------
- drivers/staging/rtl8192u/r8192U.h             |   2 -
- drivers/staging/rtl8192u/r8192U_core.c        | 109 ----
- 6 files changed, 729 deletions(-)
+> On 11/10/2023 12:09, Miquel Raynal wrote:
+> > Hi Srinivas,
+> >=20
+> > srinivas.kandagatla@linaro.org wrote on Wed, 11 Oct 2023 11:02:16 +0100:
+> >  =20
+> >> Hi Miquel,
+> >>
+> >> On 11/10/2023 10:44, Miquel Raynal wrote: =20
+> >>> Hi Srinivas,
+> >>>
+> >>> srinivas.kandagatla@linaro.org wrote on Wed, 11 Oct 2023 10:26:43 +01=
+00: =20
+> >>>    >>>> On 11/10/2023 09:58, Miquel Raynal wrote: =20
+> >>>>> Hi Srinivas,
+> >>>>>
+> >>>>> srinivas.kandagatla@linaro.org wrote on Wed, 11 Oct 2023 09:45:11 +=
+0100: =20
+> >>>>>     >>>> On 11/10/2023 09:33, Miquel Raynal wrote: =20
+> >>>>>>> Hi Srinivas,
+> >>>>>>>
+> >>>>>>> srinivas.kandagatla@linaro.org wrote on Wed, 11 Oct 2023 09:27:20=
+ +0100: =20
+> >>>>>>>      >>>> On 11/10/2023 08:15, Miquel Raynal wrote:
+> >>>>>>>>>>> +
+> >>>>>>>>>>> +	nvmem_cells_group.bin_attrs =3D cells_attrs;
+> >>>>>>>>>>> +
+> >>>>>>>>>>> +	ret =3D devm_device_add_groups(&nvmem->dev, nvmem_cells_gro=
+ups);
+> >>>>>>>>>>> +	if (ret)
+> >>>>>>>>>>> +		goto unlock_mutex; =20
+> >>>>>>>>>> This is going to create groups after the nvmem device is added=
+, isn't this going to be problem with user space notifications? =20
+> >>>>>>>>> Greg said it was not. I hope I understood correctly =F0=9F=98=84
+> >>>>>>>>>
+> >>>>>>>>> And anyway, cells have never been available to userspace, so th=
+ere is
+> >>>>>>>>> nothing userspace might expect yet? =20
+> >>>>>>>> I agree, but once we add sysfs uapi then this is going to change=
+. =20
+> >>>>>>>
+> >>>>>>> Can you elaborate? I'm not sure I follow you here. Is there still=
+ a
+> >>>>>>> problem you fear or you think it's okay? =20
+> >>>>>>>      >> Now that we add cells to sysfs. =20
+> >>>>>> AFAIU, By the time the userspace sees the udev event from this dev=
+ice we might not have cells populated. =20
+> >>>>>
+> >>>>> Yes, but why would this be a problem? =20
+> >>>>>     >> It will be problem if the userspace is using things like lib=
+udev to act on these events. There seems to be some caching of attributes i=
+n udev during event more info http://www.kroah.com/log/blog/2013/06/26/how-=
+to-create-a-sysfs-file-correctly/ =20
+> >>>
+> >>> I am already using these attributes, right? The problem here is that =
+we
+> >>> always attach cells sysfs attributes to the nvmem device, but in some
+> >>> cases (when using layout devices/drivers) the probe of these devices
+> >>> will happen after the main nvmem device has been announced to userspa=
+ce
+> >>> and thus these attributes might not be populated yet (but Greg said it
+> >>> was "supported" and I assumed it was fine). =20
+> >>>   > So what is your idea here to overcome this? =20
+> >>
+> >> Ideally we should have all the cells definitions ready by the time nvm=
+em is registered. =20
+> >=20
+> > I no longer think what you describe can happen because even though the
+> > rootfs might be mounted, the daemons will only be 'started' once the
+> > kernel is done starting and starts the init process, which means all
+> > the devices have probed and all the cells have been registered as well.=
+ =20
+> I think you forgot about modules in the above flow.
 
-diff --git a/drivers/staging/rtl8192u/ieee80211/dot11d.c b/drivers/staging/rtl8192u/ieee80211/dot11d.c
-index ddaf66fa0f936..8a72c1e9eb1e1 100644
---- a/drivers/staging/rtl8192u/ieee80211/dot11d.c
-+++ b/drivers/staging/rtl8192u/ieee80211/dot11d.c
-@@ -97,22 +97,6 @@ void dot11d_update_country_ie(struct ieee80211_device *dev, u8 *pTaddr,
- }
- EXPORT_SYMBOL(dot11d_update_country_ie);
- 
--u8 dot11d_get_max_tx_pwr_in_dbm(struct ieee80211_device *dev, u8 Channel)
--{
--	struct rt_dot11d_info *dot11d_info = GET_DOT11D_INFO(dev);
--	u8 MaxTxPwrInDbm = 255;
--
--	if (Channel > MAX_CHANNEL_NUMBER) {
--		netdev_err(dev->dev, "%s: Invalid Channel\n", __func__);
--		return MaxTxPwrInDbm;
--	}
--	if (dot11d_info->channel_map[Channel])
--		MaxTxPwrInDbm = dot11d_info->max_tx_pwr_dbm_list[Channel];
--
--	return MaxTxPwrInDbm;
--}
--EXPORT_SYMBOL(dot11d_get_max_tx_pwr_in_dbm);
--
- void dot11d_scan_complete(struct ieee80211_device *dev)
- {
- 	struct rt_dot11d_info *dot11d_info = GET_DOT11D_INFO(dev);
-@@ -147,28 +131,3 @@ int is_legal_channel(struct ieee80211_device *dev, u8 channel)
- 	return 0;
- }
- EXPORT_SYMBOL(is_legal_channel);
--
--int to_legal_channel(struct ieee80211_device *dev, u8 channel)
--{
--	struct rt_dot11d_info *dot11d_info = GET_DOT11D_INFO(dev);
--	u8 default_chn = 0;
--	u32 i = 0;
--
--	for (i = 1; i <= MAX_CHANNEL_NUMBER; i++) {
--		if (dot11d_info->channel_map[i] > 0) {
--			default_chn = i;
--			break;
--		}
--	}
--
--	if (channel > MAX_CHANNEL_NUMBER) {
--		netdev_err(dev->dev, "%s: Invalid Channel\n", __func__);
--		return default_chn;
--	}
--
--	if (dot11d_info->channel_map[channel] > 0)
--		return channel;
--
--	return default_chn;
--}
--EXPORT_SYMBOL(to_legal_channel);
-diff --git a/drivers/staging/rtl8192u/ieee80211/dot11d.h b/drivers/staging/rtl8192u/ieee80211/dot11d.h
-index 8b485fa180898..fd774265211a5 100644
---- a/drivers/staging/rtl8192u/ieee80211/dot11d.h
-+++ b/drivers/staging/rtl8192u/ieee80211/dot11d.h
-@@ -49,9 +49,7 @@ void dot11d_update_country_ie(struct ieee80211_device *dev,
- 			      u8 *addr,
- 			      u16 coutry_ie_len,
- 			      u8 *coutry_ie);
--u8 dot11d_get_max_tx_pwr_in_dbm(struct ieee80211_device *dev, u8 channel);
- void dot11d_scan_complete(struct ieee80211_device *dev);
- int is_legal_channel(struct ieee80211_device *dev, u8 channel);
--int to_legal_channel(struct ieee80211_device *dev, u8 channel);
- 
- #endif /* #ifndef __INC_DOT11D_H */
-diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211.h b/drivers/staging/rtl8192u/ieee80211/ieee80211.h
-index 694d1b18f81c7..fc4201757c408 100644
---- a/drivers/staging/rtl8192u/ieee80211/ieee80211.h
-+++ b/drivers/staging/rtl8192u/ieee80211/ieee80211.h
-@@ -223,11 +223,7 @@ struct cb_desc {
- #define MAX_IE_LEN  0xff
- 
- // added for kernel conflict
--#define ieee80211_wake_queue		ieee80211_wake_queue_rsl
--#define ieee80211_stop_queue		ieee80211_stop_queue_rsl
- #define notify_wx_assoc_event		notify_wx_assoc_event_rsl
--#define SendDisassociation		SendDisassociation_rsl
--
- 
- struct ieee_param {
- 	u32 cmd;
-@@ -2152,7 +2148,6 @@ int ieee80211_wx_set_gen_ie(struct ieee80211_device *ieee, u8 *ie, size_t len);
- 
- /* ieee80211_softmac.c */
- short ieee80211_is_54g(const struct ieee80211_network *net);
--short ieee80211_is_shortslot(const struct ieee80211_network *net);
- int ieee80211_rx_frame_softmac(struct ieee80211_device *ieee,
- 			       struct sk_buff *skb,
- 			       struct ieee80211_rx_stats *rx_stats,
-@@ -2160,7 +2155,6 @@ int ieee80211_rx_frame_softmac(struct ieee80211_device *ieee,
- void ieee80211_softmac_new_net(struct ieee80211_device *ieee,
- 			       struct ieee80211_network *net);
- 
--void SendDisassociation(struct ieee80211_device *ieee, u8 *asSta, u8 asRsn);
- void ieee80211_softmac_xmit(struct ieee80211_txb *txb,
- 			    struct ieee80211_device *ieee);
- 
-@@ -2182,13 +2176,7 @@ void ieee80211_stop_protocol(struct ieee80211_device *ieee);
- void ieee80211_softmac_start_protocol(struct ieee80211_device *ieee);
- void ieee80211_softmac_stop_protocol(struct ieee80211_device *ieee);
- void ieee80211_reset_queue(struct ieee80211_device *ieee);
--void ieee80211_wake_queue(struct ieee80211_device *ieee);
--void ieee80211_stop_queue(struct ieee80211_device *ieee);
--struct sk_buff *ieee80211_get_beacon(struct ieee80211_device *ieee);
- void ieee80211_start_send_beacons(struct ieee80211_device *ieee);
--int ieee80211_wpa_supplicant_ioctl(struct ieee80211_device *ieee,
--				   struct iw_point *p);
--void ieee80211_ps_tx_ack(struct ieee80211_device *ieee, short success);
- 
- void softmac_mgmt_xmit(struct sk_buff *skb, struct ieee80211_device *ieee);
- 
-diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
-index 92001cb36730b..8cb2f48dbefec 100644
---- a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
-+++ b/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
-@@ -27,12 +27,6 @@ short ieee80211_is_54g(const struct ieee80211_network *net)
- }
- EXPORT_SYMBOL(ieee80211_is_54g);
- 
--short ieee80211_is_shortslot(const struct ieee80211_network *net)
--{
--	return net->capability & WLAN_CAPABILITY_SHORT_SLOT;
--}
--EXPORT_SYMBOL(ieee80211_is_shortslot);
--
- /* returns the total length needed for placing the RATE MFIE
-  * tag and the EXTENDED RATE MFIE tag if needed.
-  * It includes two bytes per tag for the tag itself and its len
-@@ -154,21 +148,6 @@ static void enqueue_mgmt(struct ieee80211_device *ieee, struct sk_buff *skb)
- 	//return 0;
- }
- 
--static struct sk_buff *dequeue_mgmt(struct ieee80211_device *ieee)
--{
--	struct sk_buff *ret;
--
--	if (ieee->mgmt_queue_tail == ieee->mgmt_queue_head)
--		return NULL;
--
--	ret = ieee->mgmt_queue_ring[ieee->mgmt_queue_tail];
--
--	ieee->mgmt_queue_tail =
--		(ieee->mgmt_queue_tail + 1) % MGMT_QUEUE_NUM;
--
--	return ret;
--}
--
- static void init_mgmt_queue(struct ieee80211_device *ieee)
- {
- 	ieee->mgmt_queue_tail = ieee->mgmt_queue_head = 0;
-@@ -1772,33 +1751,6 @@ void ieee80211_sta_wakeup(struct ieee80211_device *ieee, short nl)
- 	}
- }
- 
--void ieee80211_ps_tx_ack(struct ieee80211_device *ieee, short success)
--{
--	unsigned long flags, flags2;
--
--	spin_lock_irqsave(&ieee->lock, flags);
--
--	if (ieee->sta_sleep == 2) {
--		/* Null frame with PS bit set */
--		if (success) {
--			ieee->sta_sleep = 1;
--			ieee->enter_sleep_state(ieee->dev, ieee->ps_th, ieee->ps_tl);
--		}
--		/* if the card report not success we can't be sure the AP
--		 * has not RXed so we can't assume the AP believe us awake
--		 */
--	} else {
--		/* 21112005 - tx again null without PS bit if lost */
--		if ((ieee->sta_sleep == 0) && !success) {
--			spin_lock_irqsave(&ieee->mgmt_tx_lock, flags2);
--			ieee80211_sta_ps_send_null_frame(ieee, 0);
--			spin_unlock_irqrestore(&ieee->mgmt_tx_lock, flags2);
--		}
--	}
--	spin_unlock_irqrestore(&ieee->lock, flags);
--}
--EXPORT_SYMBOL(ieee80211_ps_tx_ack);
--
- static void ieee80211_process_action(struct ieee80211_device *ieee,
- 				     struct sk_buff *skb)
- {
-@@ -2068,7 +2020,6 @@ void ieee80211_softmac_xmit(struct ieee80211_txb *txb, struct ieee80211_device *
- 			 * to check it any more.
- 			 * */
- 			//printk("error:no descriptor left@queue_index %d\n", queue_index);
--			//ieee80211_stop_queue(ieee);
- #ifdef USB_TX_DRIVER_AGGREGATION_ENABLE
- 			skb_queue_tail(&ieee->skb_drv_aggQ[queue_index], txb->fragments[i]);
- #else
-@@ -2089,27 +2040,6 @@ void ieee80211_softmac_xmit(struct ieee80211_txb *txb, struct ieee80211_device *
- }
- EXPORT_SYMBOL(ieee80211_softmac_xmit);
- 
--/* called with ieee->lock acquired */
--static void ieee80211_resume_tx(struct ieee80211_device *ieee)
--{
--	int i;
--	for (i = ieee->tx_pending.frag; i < ieee->tx_pending.txb->nr_frags; i++) {
--		if (ieee->queue_stop) {
--			ieee->tx_pending.frag = i;
--			return;
--		} else {
--			ieee->softmac_data_hard_start_xmit(ieee->tx_pending.txb->fragments[i],
--							   ieee->dev, ieee->rate);
--			//(i+1)<ieee->tx_pending.txb->nr_frags);
--			ieee->stats.tx_packets++;
--			netif_trans_update(ieee->dev);
--		}
--	}
--
--	ieee80211_txb_free(ieee->tx_pending.txb);
--	ieee->tx_pending.txb = NULL;
--}
--
- void ieee80211_reset_queue(struct ieee80211_device *ieee)
- {
- 	unsigned long flags;
-@@ -2125,59 +2055,6 @@ void ieee80211_reset_queue(struct ieee80211_device *ieee)
- }
- EXPORT_SYMBOL(ieee80211_reset_queue);
- 
--void ieee80211_wake_queue(struct ieee80211_device *ieee)
--{
--	unsigned long flags;
--	struct sk_buff *skb;
--	struct rtl_80211_hdr_3addr  *header;
--
--	spin_lock_irqsave(&ieee->lock, flags);
--	if (!ieee->queue_stop)
--		goto exit;
--
--	ieee->queue_stop = 0;
--
--	if (ieee->softmac_features & IEEE_SOFTMAC_SINGLE_QUEUE) {
--		while (!ieee->queue_stop && (skb = dequeue_mgmt(ieee))) {
--			header = (struct rtl_80211_hdr_3addr  *)skb->data;
--
--			header->seq_ctl = cpu_to_le16(ieee->seq_ctrl[0] << 4);
--
--			if (ieee->seq_ctrl[0] == 0xFFF)
--				ieee->seq_ctrl[0] = 0;
--			else
--				ieee->seq_ctrl[0]++;
--
--			ieee->softmac_data_hard_start_xmit(skb, ieee->dev, ieee->basic_rate);
--			//dev_kfree_skb_any(skb);//edit by thomas
--		}
--	}
--	if (!ieee->queue_stop && ieee->tx_pending.txb)
--		ieee80211_resume_tx(ieee);
--
--	if (!ieee->queue_stop && netif_queue_stopped(ieee->dev)) {
--		ieee->softmac_stats.swtxawake++;
--		netif_wake_queue(ieee->dev);
--	}
--exit:
--	spin_unlock_irqrestore(&ieee->lock, flags);
--}
--EXPORT_SYMBOL(ieee80211_wake_queue);
--
--void ieee80211_stop_queue(struct ieee80211_device *ieee)
--{
--	//unsigned long flags;
--	//spin_lock_irqsave(&ieee->lock,flags);
--
--	if (!netif_queue_stopped(ieee->dev)) {
--		netif_stop_queue(ieee->dev);
--		ieee->softmac_stats.swtxstop++;
--	}
--	ieee->queue_stop = 1;
--	//spin_unlock_irqrestore(&ieee->lock,flags);
--}
--EXPORT_SYMBOL(ieee80211_stop_queue);
--
- /* called in user context only */
- void ieee80211_start_master_bss(struct ieee80211_device *ieee)
- {
-@@ -2438,27 +2315,6 @@ struct sk_buff *ieee80211_get_beacon_(struct ieee80211_device *ieee)
- 	return skb;
- }
- 
--struct sk_buff *ieee80211_get_beacon(struct ieee80211_device *ieee)
--{
--	struct sk_buff *skb;
--	struct ieee80211_probe_response *b;
--
--	skb = ieee80211_get_beacon_(ieee);
--	if (!skb)
--		return NULL;
--
--	b = (struct ieee80211_probe_response *)skb->data;
--	b->header.seq_ctl = cpu_to_le16(ieee->seq_ctrl[0] << 4);
--
--	if (ieee->seq_ctrl[0] == 0xFFF)
--		ieee->seq_ctrl[0] = 0;
--	else
--		ieee->seq_ctrl[0]++;
--
--	return skb;
--}
--EXPORT_SYMBOL(ieee80211_get_beacon);
--
- void ieee80211_softmac_stop_protocol(struct ieee80211_device *ieee)
- {
- 	ieee->sync_scan_hurryup = 1;
-@@ -2623,425 +2479,6 @@ void ieee80211_softmac_free(struct ieee80211_device *ieee)
- 	mutex_unlock(&ieee->wx_mutex);
- }
- 
--/********************************************************
-- * Start of WPA code.                                   *
-- * this is stolen from the ipw2200 driver               *
-- ********************************************************/
--static int ieee80211_wpa_enable(struct ieee80211_device *ieee, int value)
--{
--	/* This is called when wpa_supplicant loads and closes the driver
--	 * interface. */
--	printk("%s WPA\n", value ? "enabling" : "disabling");
--	ieee->wpa_enabled = value;
--	return 0;
--}
--
--static void ieee80211_wpa_assoc_frame(struct ieee80211_device *ieee,
--				      char *wpa_ie, int wpa_ie_len)
--{
--	/* make sure WPA is enabled */
--	ieee80211_wpa_enable(ieee, 1);
--
--	ieee80211_disassociate(ieee);
--}
--
--static int ieee80211_wpa_mlme(struct ieee80211_device *ieee, int command, int reason)
--{
--	int ret = 0;
--
--	switch (command) {
--	case IEEE_MLME_STA_DEAUTH:
--		// silently ignore
--		break;
--
--	case IEEE_MLME_STA_DISASSOC:
--		ieee80211_disassociate(ieee);
--		break;
--
--	default:
--		printk("Unknown MLME request: %d\n", command);
--		ret = -EOPNOTSUPP;
--	}
--
--	return ret;
--}
--
--static int ieee80211_wpa_set_wpa_ie(struct ieee80211_device *ieee,
--			      struct ieee_param *param, int plen)
--{
--	u8 *buf;
--
--	if (param->u.wpa_ie.len > MAX_WPA_IE_LEN)
--		return -EINVAL;
--
--	if (param->u.wpa_ie.len) {
--		buf = kmemdup(param->u.wpa_ie.data, param->u.wpa_ie.len,
--			      GFP_KERNEL);
--		if (!buf)
--			return -ENOMEM;
--
--		kfree(ieee->wpa_ie);
--		ieee->wpa_ie = buf;
--		ieee->wpa_ie_len = param->u.wpa_ie.len;
--	} else {
--		kfree(ieee->wpa_ie);
--		ieee->wpa_ie = NULL;
--		ieee->wpa_ie_len = 0;
--	}
--
--	ieee80211_wpa_assoc_frame(ieee, ieee->wpa_ie, ieee->wpa_ie_len);
--	return 0;
--}
--
--#define AUTH_ALG_OPEN_SYSTEM			0x1
--#define AUTH_ALG_SHARED_KEY			0x2
--
--static int ieee80211_wpa_set_auth_algs(struct ieee80211_device *ieee, int value)
--{
--	struct ieee80211_security sec = {
--		.flags = SEC_AUTH_MODE,
--	};
--
--	if (value & AUTH_ALG_SHARED_KEY) {
--		sec.auth_mode = WLAN_AUTH_SHARED_KEY;
--		ieee->open_wep = 0;
--		ieee->auth_mode = 1;
--	} else if (value & AUTH_ALG_OPEN_SYSTEM) {
--		sec.auth_mode = WLAN_AUTH_OPEN;
--		ieee->open_wep = 1;
--		ieee->auth_mode = 0;
--	} else if (value & IW_AUTH_ALG_LEAP) {
--		sec.auth_mode = WLAN_AUTH_LEAP;
--		ieee->open_wep = 1;
--		ieee->auth_mode = 2;
--	}
--
--	if (ieee->set_security)
--		ieee->set_security(ieee->dev, &sec);
--	//else
--	//	ret = -EOPNOTSUPP;
--
--	return 0;
--}
--
--static int ieee80211_wpa_set_param(struct ieee80211_device *ieee, u8 name, u32 value)
--{
--	int ret = 0;
--	unsigned long flags;
--
--	switch (name) {
--	case IEEE_PARAM_WPA_ENABLED:
--		ret = ieee80211_wpa_enable(ieee, value);
--		break;
--
--	case IEEE_PARAM_TKIP_COUNTERMEASURES:
--		ieee->tkip_countermeasures = value;
--		break;
--
--	case IEEE_PARAM_DROP_UNENCRYPTED: {
--		/* HACK:
--		 *
--		 * wpa_supplicant calls set_wpa_enabled when the driver
--		 * is loaded and unloaded, regardless of if WPA is being
--		 * used.  No other calls are made which can be used to
--		 * determine if encryption will be used or not prior to
--		 * association being expected.  If encryption is not being
--		 * used, drop_unencrypted is set to false, else true -- we
--		 * can use this to determine if the CAP_PRIVACY_ON bit should
--		 * be set.
--		 */
--		struct ieee80211_security sec = {
--			.flags = SEC_ENABLED,
--			.enabled = value,
--		};
--		ieee->drop_unencrypted = value;
--		/* We only change SEC_LEVEL for open mode. Others
--		 * are set by ipw_wpa_set_encryption.
--		 */
--		if (!value) {
--			sec.flags |= SEC_LEVEL;
--			sec.level = SEC_LEVEL_0;
--		} else {
--			sec.flags |= SEC_LEVEL;
--			sec.level = SEC_LEVEL_1;
--		}
--		if (ieee->set_security)
--			ieee->set_security(ieee->dev, &sec);
--		break;
--	}
--
--	case IEEE_PARAM_PRIVACY_INVOKED:
--		ieee->privacy_invoked = value;
--		break;
--
--	case IEEE_PARAM_AUTH_ALGS:
--		ret = ieee80211_wpa_set_auth_algs(ieee, value);
--		break;
--
--	case IEEE_PARAM_IEEE_802_1X:
--		ieee->ieee802_1x = value;
--		break;
--	case IEEE_PARAM_WPAX_SELECT:
--		// added for WPA2 mixed mode
--		spin_lock_irqsave(&ieee->wpax_suitlist_lock, flags);
--		ieee->wpax_type_set = 1;
--		ieee->wpax_type_notify = value;
--		spin_unlock_irqrestore(&ieee->wpax_suitlist_lock, flags);
--		break;
--
--	default:
--		printk("Unknown WPA param: %d\n", name);
--		ret = -EOPNOTSUPP;
--	}
--
--	return ret;
--}
--
--/* implementation borrowed from hostap driver */
--static int ieee80211_wpa_set_encryption(struct ieee80211_device *ieee,
--				  struct ieee_param *param, int param_len)
--{
--	int ret = 0;
--	const char *module = NULL;
--
--	struct ieee80211_crypto_ops *ops = NULL;
--	struct ieee80211_crypt_data **crypt;
--
--	struct ieee80211_security sec = {
--		.flags = 0,
--	};
--
--	param->u.crypt.err = 0;
--	param->u.crypt.alg[IEEE_CRYPT_ALG_NAME_LEN - 1] = '\0';
--
--	if (param_len !=
--	    (int)((char *)param->u.crypt.key - (char *)param) +
--	    param->u.crypt.key_len) {
--		printk("Len mismatch %d, %d\n", param_len,
--			       param->u.crypt.key_len);
--		return -EINVAL;
--	}
--	if (is_broadcast_ether_addr(param->sta_addr)) {
--		if (param->u.crypt.idx >= WEP_KEYS)
--			return -EINVAL;
--		crypt = &ieee->crypt[param->u.crypt.idx];
--	} else {
--		return -EINVAL;
--	}
--
--	if (strcmp(param->u.crypt.alg, "none") == 0) {
--		if (crypt) {
--			sec.enabled = 0;
--			// FIXME FIXME
--			//sec.encrypt = 0;
--			sec.level = SEC_LEVEL_0;
--			sec.flags |= SEC_ENABLED | SEC_LEVEL;
--			ieee80211_crypt_delayed_deinit(ieee, crypt);
--		}
--		goto done;
--	}
--	sec.enabled = 1;
--// FIXME FIXME
--//	sec.encrypt = 1;
--	sec.flags |= SEC_ENABLED;
--
--	/* IPW HW cannot build TKIP MIC, host decryption still needed. */
--	if (!(ieee->host_encrypt || ieee->host_decrypt) &&
--	    strcmp(param->u.crypt.alg, "TKIP"))
--		goto skip_host_crypt;
--
--	//set WEP40 first, it will be modified according to WEP104 or WEP40 at other place
--	if (!strcmp(param->u.crypt.alg, "WEP"))
--		module = "ieee80211_crypt_wep";
--	else if (!strcmp(param->u.crypt.alg, "TKIP"))
--		module = "ieee80211_crypt_tkip";
--	else if (!strcmp(param->u.crypt.alg, "CCMP"))
--		module = "ieee80211_crypt_ccmp";
--	if (module)
--		ops = try_then_request_module(ieee80211_get_crypto_ops(param->u.crypt.alg),
--					      module);
--	if (!ops) {
--		printk("unknown crypto alg '%s'\n", param->u.crypt.alg);
--		param->u.crypt.err = IEEE_CRYPT_ERR_UNKNOWN_ALG;
--		ret = -EINVAL;
--		goto done;
--	}
--
--	if (!*crypt || (*crypt)->ops != ops) {
--		struct ieee80211_crypt_data *new_crypt;
--
--		ieee80211_crypt_delayed_deinit(ieee, crypt);
--
--		new_crypt = kzalloc(sizeof(*new_crypt), GFP_KERNEL);
--		if (!new_crypt) {
--			ret = -ENOMEM;
--			goto done;
--		}
--		new_crypt->ops = ops;
--		if (new_crypt->ops && try_module_get(new_crypt->ops->owner))
--			new_crypt->priv =
--				new_crypt->ops->init(param->u.crypt.idx);
--
--		if (!new_crypt->priv) {
--			kfree(new_crypt);
--			param->u.crypt.err = IEEE_CRYPT_ERR_CRYPT_INIT_FAILED;
--			ret = -EINVAL;
--			goto done;
--		}
--
--		*crypt = new_crypt;
--	}
--
--	if (param->u.crypt.key_len > 0 && (*crypt)->ops->set_key &&
--	    (*crypt)->ops->set_key(param->u.crypt.key,
--				   param->u.crypt.key_len, param->u.crypt.seq,
--				   (*crypt)->priv) < 0) {
--		printk("key setting failed\n");
--		param->u.crypt.err = IEEE_CRYPT_ERR_KEY_SET_FAILED;
--		ret = -EINVAL;
--		goto done;
--	}
--
-- skip_host_crypt:
--	if (param->u.crypt.set_tx) {
--		ieee->tx_keyidx = param->u.crypt.idx;
--		sec.active_key = param->u.crypt.idx;
--		sec.flags |= SEC_ACTIVE_KEY;
--	} else {
--		sec.flags &= ~SEC_ACTIVE_KEY;
--	}
--	memcpy(sec.keys[param->u.crypt.idx],
--	       param->u.crypt.key,
--	       param->u.crypt.key_len);
--	sec.key_sizes[param->u.crypt.idx] = param->u.crypt.key_len;
--	sec.flags |= (1 << param->u.crypt.idx);
--
--	if (strcmp(param->u.crypt.alg, "WEP") == 0) {
--		sec.flags |= SEC_LEVEL;
--		sec.level = SEC_LEVEL_1;
--	} else if (strcmp(param->u.crypt.alg, "TKIP") == 0) {
--		sec.flags |= SEC_LEVEL;
--		sec.level = SEC_LEVEL_2;
--	} else if (strcmp(param->u.crypt.alg, "CCMP") == 0) {
--		sec.flags |= SEC_LEVEL;
--		sec.level = SEC_LEVEL_3;
--	}
-- done:
--	if (ieee->set_security)
--		ieee->set_security(ieee->dev, &sec);
--
--	/* Do not reset port if card is in Managed mode since resetting will
--	 * generate new IEEE 802.11 authentication which may end up in looping
--	 * with IEEE 802.1X.  If your hardware requires a reset after WEP
--	 * configuration (for example... Prism2), implement the reset_port in
--	 * the callbacks structures used to initialize the 802.11 stack. */
--	if (ieee->reset_on_keychange &&
--	    ieee->iw_mode != IW_MODE_INFRA &&
--	    ieee->reset_port &&
--	    ieee->reset_port(ieee->dev)) {
--		printk("reset_port failed\n");
--		param->u.crypt.err = IEEE_CRYPT_ERR_CARD_CONF_FAILED;
--		return -EINVAL;
--	}
--
--	return ret;
--}
--
--static inline struct sk_buff *ieee80211_disassociate_skb(struct ieee80211_network *beacon,
--							 struct ieee80211_device *ieee,
--							 u8	asRsn)
--{
--	struct sk_buff *skb;
--	struct ieee80211_disassoc *disass;
--
--	skb = dev_alloc_skb(sizeof(struct ieee80211_disassoc));
--	if (!skb)
--		return NULL;
--
--	disass = skb_put(skb, sizeof(struct ieee80211_disassoc));
--	disass->header.frame_ctl = cpu_to_le16(IEEE80211_STYPE_DISASSOC);
--	disass->header.duration_id = 0;
--
--	memcpy(disass->header.addr1, beacon->bssid, ETH_ALEN);
--	memcpy(disass->header.addr2, ieee->dev->dev_addr, ETH_ALEN);
--	memcpy(disass->header.addr3, beacon->bssid, ETH_ALEN);
--
--	disass->reason = cpu_to_le16(asRsn);
--	return skb;
--}
--
--void
--SendDisassociation(struct ieee80211_device *ieee,
--		   u8			   *asSta,
--		   u8			    asRsn
--)
--{
--	struct ieee80211_network *beacon = &ieee->current_network;
--	struct sk_buff *skb;
--
--	skb = ieee80211_disassociate_skb(beacon, ieee, asRsn);
--	if (skb) {
--		softmac_mgmt_xmit(skb, ieee);
--		//dev_kfree_skb_any(skb);//edit by thomas
--	}
--}
--EXPORT_SYMBOL(SendDisassociation);
--
--int ieee80211_wpa_supplicant_ioctl(struct ieee80211_device *ieee, struct iw_point *p)
--{
--	struct ieee_param *param;
--	int ret = 0;
--
--	mutex_lock(&ieee->wx_mutex);
--	//IEEE_DEBUG_INFO("wpa_supplicant: len=%d\n", p->length);
--
--	if (p->length < sizeof(struct ieee_param) || !p->pointer) {
--		ret = -EINVAL;
--		goto out;
--	}
--
--	param = memdup_user(p->pointer, p->length);
--	if (IS_ERR(param)) {
--		ret = PTR_ERR(param);
--		goto out;
--	}
--
--	switch (param->cmd) {
--	case IEEE_CMD_SET_WPA_PARAM:
--		ret = ieee80211_wpa_set_param(ieee, param->u.wpa_param.name,
--					param->u.wpa_param.value);
--		break;
--
--	case IEEE_CMD_SET_WPA_IE:
--		ret = ieee80211_wpa_set_wpa_ie(ieee, param, p->length);
--		break;
--
--	case IEEE_CMD_SET_ENCRYPTION:
--		ret = ieee80211_wpa_set_encryption(ieee, param, p->length);
--		break;
--
--	case IEEE_CMD_MLME:
--		ret = ieee80211_wpa_mlme(ieee, param->u.mlme.command,
--				   param->u.mlme.reason_code);
--		break;
--
--	default:
--		printk("Unknown WPA supplicant request: %d\n", param->cmd);
--		ret = -EOPNOTSUPP;
--		break;
--	}
--
--	if (ret == 0 && copy_to_user(p->pointer, param, p->length))
--		ret = -EFAULT;
--
--	kfree(param);
--out:
--	mutex_unlock(&ieee->wx_mutex);
--
--	return ret;
--}
--EXPORT_SYMBOL(ieee80211_wpa_supplicant_ioctl);
--
- void notify_wx_assoc_event(struct ieee80211_device *ieee)
- {
- 	union iwreq_data wrqu;
-diff --git a/drivers/staging/rtl8192u/r8192U.h b/drivers/staging/rtl8192u/r8192U.h
-index ff0ada00bf414..ef59c785f950a 100644
---- a/drivers/staging/rtl8192u/r8192U.h
-+++ b/drivers/staging/rtl8192u/r8192U.h
-@@ -453,8 +453,6 @@ typedef enum _WIRELESS_MODE {
- 	WIRELESS_MODE_N_5G = 0x20
- } WIRELESS_MODE;
- 
--#define RTL_IOCTL_WPA_SUPPLICANT		(SIOCIWFIRSTPRIV + 30)
--
- typedef struct buffer {
- 	struct buffer *next;
- 	u32 *buf;
-diff --git a/drivers/staging/rtl8192u/r8192U_core.c b/drivers/staging/rtl8192u/r8192U_core.c
-index 0a60ef20107c4..295b514043336 100644
---- a/drivers/staging/rtl8192u/r8192U_core.c
-+++ b/drivers/staging/rtl8192u/r8192U_core.c
-@@ -3284,114 +3284,6 @@ static int r8192_set_mac_adr(struct net_device *dev, void *mac)
- 	return 0;
- }
- 
--/* based on ipw2200 driver */
--static int rtl8192_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
--{
--	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
--	struct iwreq *wrq = (struct iwreq *)rq;
--	int ret = -1;
--	struct ieee80211_device *ieee = priv->ieee80211;
--	u32 key[4];
--	u8 broadcast_addr[6] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
--	struct iw_point *p = &wrq->u.data;
--	struct ieee_param *ipw = NULL;
--
--	mutex_lock(&priv->wx_mutex);
--
--	if (p->length < sizeof(struct ieee_param) || !p->pointer) {
--		ret = -EINVAL;
--		goto out;
--	}
--
--	ipw = memdup_user(p->pointer, p->length);
--	if (IS_ERR(ipw)) {
--		ret = PTR_ERR(ipw);
--		goto out;
--	}
--
--	switch (cmd) {
--	case RTL_IOCTL_WPA_SUPPLICANT:
--		/* parse here for HW security */
--		if (ipw->cmd == IEEE_CMD_SET_ENCRYPTION) {
--			if (ipw->u.crypt.set_tx) {
--				if (strcmp(ipw->u.crypt.alg, "CCMP") == 0) {
--					ieee->pairwise_key_type = KEY_TYPE_CCMP;
--				} else if (strcmp(ipw->u.crypt.alg, "TKIP") == 0) {
--					ieee->pairwise_key_type = KEY_TYPE_TKIP;
--				} else if (strcmp(ipw->u.crypt.alg, "WEP") == 0) {
--					if (ipw->u.crypt.key_len == 13)
--						ieee->pairwise_key_type = KEY_TYPE_WEP104;
--					else if (ipw->u.crypt.key_len == 5)
--						ieee->pairwise_key_type = KEY_TYPE_WEP40;
--				} else {
--					ieee->pairwise_key_type = KEY_TYPE_NA;
--				}
--
--				if (ieee->pairwise_key_type) {
--					memcpy((u8 *)key, ipw->u.crypt.key, 16);
--					EnableHWSecurityConfig8192(dev);
--					/* We fill both index entry and 4th
--					 * entry for pairwise key as in IPW
--					 * interface, adhoc will only get here,
--					 * so we need index entry for its
--					 * default key serching!
--					 */
--					setKey(dev, 4, ipw->u.crypt.idx,
--					       ieee->pairwise_key_type,
--					       (u8 *)ieee->ap_mac_addr,
--					       0, key);
--					if (ieee->auth_mode != 2)
--						setKey(dev, ipw->u.crypt.idx,
--						       ipw->u.crypt.idx,
--						       ieee->pairwise_key_type,
--						       (u8 *)ieee->ap_mac_addr,
--						       0, key);
--				}
--			} else {
--				memcpy((u8 *)key, ipw->u.crypt.key, 16);
--				if (strcmp(ipw->u.crypt.alg, "CCMP") == 0) {
--					ieee->group_key_type = KEY_TYPE_CCMP;
--				} else if (strcmp(ipw->u.crypt.alg, "TKIP") == 0) {
--					ieee->group_key_type = KEY_TYPE_TKIP;
--				} else if (strcmp(ipw->u.crypt.alg, "WEP") == 0) {
--					if (ipw->u.crypt.key_len == 13)
--						ieee->group_key_type = KEY_TYPE_WEP104;
--					else if (ipw->u.crypt.key_len == 5)
--						ieee->group_key_type = KEY_TYPE_WEP40;
--				} else {
--					ieee->group_key_type = KEY_TYPE_NA;
--				}
--
--				if (ieee->group_key_type) {
--					setKey(dev, ipw->u.crypt.idx,
--					       /* KeyIndex */
--					       ipw->u.crypt.idx,
--					       /* KeyType */
--					       ieee->group_key_type,
--					       /* MacAddr */
--					       broadcast_addr,
--					       /* DefaultKey */
--					       0,
--					       /* KeyContent */
--					       key);
--				}
--			}
--		}
--		ret = ieee80211_wpa_supplicant_ioctl(priv->ieee80211,
--						     &wrq->u.data);
--		break;
--
--	default:
--		ret = -EOPNOTSUPP;
--		break;
--	}
--	kfree(ipw);
--	ipw = NULL;
--out:
--	mutex_unlock(&priv->wx_mutex);
--	return ret;
--}
--
- static u8 HwRateToMRate90(bool bIsHT, u8 rate)
- {
- 	u8  ret_rate = 0xff;
-@@ -4496,7 +4388,6 @@ static const struct net_device_ops rtl8192_netdev_ops = {
- 	.ndo_stop               = rtl8192_close,
- 	.ndo_get_stats          = rtl8192_stats,
- 	.ndo_tx_timeout         = tx_timeout,
--	.ndo_do_ioctl           = rtl8192_ioctl,
- 	.ndo_set_rx_mode	= r8192_set_multicast,
- 	.ndo_set_mac_address    = r8192_set_mac_adr,
- 	.ndo_validate_addr      = eth_validate_addr,
--- 
-2.39.2
+We request module insertion when the layout gets populated. By the time
+userspace starts the kernel is done initializing, meaning that any
+available nvmem layout module has already been loaded and the devices
+probed -> the cells are there already.
 
+Thanks,
+Miqu=C3=A8l
