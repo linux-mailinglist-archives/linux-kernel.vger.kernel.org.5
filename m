@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33DDB7C531A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 14:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72AD67C5322
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 14:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346879AbjJKMKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 08:10:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53654 "EHLO
+        id S1346586AbjJKMKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 08:10:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346757AbjJKMJb (ORCPT
+        with ESMTP id S1346767AbjJKMJc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 08:09:31 -0400
+        Wed, 11 Oct 2023 08:09:32 -0400
 Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3793AF7
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 05:09:23 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40572aeb73cso63107955e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 05:09:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A1C3103
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 05:09:25 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-405361bba99so62444135e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 05:09:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697026161; x=1697630961; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697026162; x=1697630962; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6CbdpxA2yoiqOdTkvvgzFYeQ0S/2apw7f0m7nJ4Vrkk=;
-        b=HZ8Z3wujgrEl3JcSkK/MPH57vSOVXQy9CBPQOJs4cV/ZT9wZD1FyzuxUMl+S7cMnni
-         cplCIA4HTgi4+9P4OtX+oyq9/qVTXYdKazNEQ6MeL/Oi9paKB9aH8yesUTs9yTTEGO6s
-         b1syYfjj91R604gfTWUz1hcPiMr95NHb8/ZTnm5lD+6SeKg3GKSy2cHb06+E4kiMjMnl
-         1banjHDyTDtpBZaf/alm7/FAOxKl+zM2mjx89qiD33XzQ58IVEr2bYYK7OXXQ6zR8XIY
-         7zyFfyMjKEDaTxCzuVrMCCw0t0Ogc2gaWK7hpgLPb2RlZ0cpDh3K5A/CHOX5Vk1awFhc
-         A6SQ==
+        bh=wPwuEwfRZF39P0qe4RqCU1p549Ra/xLyaMOsvkr04jY=;
+        b=owH5wbJfOoKtbUidOVVhY2l9zWRohRHWAksuFjsBRJrMUVCoAgS4neCQr8sIc9/Mfm
+         +5vgsxKeYx09lZHa1kYewbOmsW+yEcuKNthRB1SGXyzh77ER4YNgmj8rTTYfUqVqXm9O
+         Vhx+yAZlYt5j1vpMdIVOb0i7bKwlf8TwwBlZbCLdiy8+LS/zQTpxpZ5OF2Sqmc8/3QQ5
+         FifuaSMi4o/O2Vd6TUBBusat9D+22YvvDMFj1/ZkVqZNMH5yd8O1S5Zq353iWtg8O+VI
+         K1+fRldn2TuMNlggfz9N4I65ulkTQhG3ox78PS6cvB1ODivFpXcULFs5xIxu1dnIrugf
+         2f8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697026161; x=1697630961;
+        d=1e100.net; s=20230601; t=1697026162; x=1697630962;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6CbdpxA2yoiqOdTkvvgzFYeQ0S/2apw7f0m7nJ4Vrkk=;
-        b=Lj+l67h4R2qKDP265Ou+CFCiSWQnzFl9xJ0qFRc3H5u0zGjYbETjKf2yJ5UWacaiRI
-         q/U9TU9WW1KoEeyV9bF0BeATCh2fMPb1fR6uBPS5n8RUC715jtn2w3P+v+9jeSMBGkfc
-         B1y/h7Cc/U6FL17dRIfZn2ObW77LJsIFs8RjvTnC0gZmiE6FSujHm+8wzZudLzR9DMqg
-         t0bEYq3c6GFZsc1+ZVwiBa/aekyaktnoaH/uX/F+SavQ11CSvmPT1kn0ry888szJON35
-         aKa1EONSvOuNDtGfbtFr5BjIFgNUzARdMUJzRvFBSFHY7Npf4Ec75G//C8KUnNGW2/s6
-         /D4Q==
-X-Gm-Message-State: AOJu0Yx33yA1PLeGjimaCwPJ5OEXT/Wni2tvQMCv8i5ys8LOf2nloqIk
-        QC9GoX00NKftnTduSiU+XWjWpw==
-X-Google-Smtp-Source: AGHT+IGPszQMlGOhUEshB1OYzNIjZG0mo+cw3ASMyoyfmyTuDwtxPnM6tHzkZ5s/2xnXiC02gOnQJg==
-X-Received: by 2002:a05:600c:3ba1:b0:406:872d:7725 with SMTP id n33-20020a05600c3ba100b00406872d7725mr17789005wms.1.1697026160925;
-        Wed, 11 Oct 2023 05:09:20 -0700 (PDT)
+        bh=wPwuEwfRZF39P0qe4RqCU1p549Ra/xLyaMOsvkr04jY=;
+        b=VW3yRjYzJaDwEZefX15pIbw37p6/sFdiTaVaVMRDW2otgywqgpM00bD3kwtLf8bXZ2
+         LcU6UjxhWnuItOPvqcnMFk6+0SIriG98Wlfr4x4XnQvWGXzABuRMoimVxOM/6ofwRUJm
+         +I5AizxVE2Rrah5S5616nEGGlhSCYg80ZvQoPD6wYKEEkFFYmtZNqrsPooDCfhwOx4j+
+         RRSZoLi6vSnhw4r4LViGbgybB3ZdVCigXsS0GS56QwRDWhlG4dMcTK4vIp/xex6xDQYQ
+         UuXNiPw6/Nb0+meA0zrQzN7QF4Q9y5Wfl6CsuhKoO7lkrT/6b/f+smJHsCJ0LIhT/2J0
+         afFQ==
+X-Gm-Message-State: AOJu0YzqUuh2ogRykZD+oLKCmDqrvvVgEnZpOf5y0HTWn0Pt9H7n1UwP
+        flY95Y7xF1jJ6rRqFi7N4gVZ1g==
+X-Google-Smtp-Source: AGHT+IHG58kszOlx+/jzRbb/vUE3ysT4ruamZvPBJkCiYBz6pRrqIIBWYOANrs0621MZOnLfPD77xw==
+X-Received: by 2002:a7b:c419:0:b0:3fe:d630:f568 with SMTP id k25-20020a7bc419000000b003fed630f568mr18238326wmi.39.1697026161771;
+        Wed, 11 Oct 2023 05:09:21 -0700 (PDT)
 Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:e551:3946:26fc:f94])
-        by smtp.gmail.com with ESMTPSA id w21-20020a05600c015500b0040652e8ca13sm19012253wmm.43.2023.10.11.05.09.20
+        by smtp.gmail.com with ESMTPSA id w21-20020a05600c015500b0040652e8ca13sm19012253wmm.43.2023.10.11.05.09.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 05:09:20 -0700 (PDT)
+        Wed, 11 Oct 2023 05:09:21 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v2 15/62] pinctrl: bcm: use new pinctrl GPIO helpers
-Date:   Wed, 11 Oct 2023 14:07:43 +0200
-Message-Id: <20231011120830.49324-16-brgl@bgdev.pl>
+Subject: [PATCH v2 16/62] pinctrl: stm32: use new pinctrl GPIO helpers
+Date:   Wed, 11 Oct 2023 14:07:44 +0200
+Message-Id: <20231011120830.49324-17-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231011120830.49324-1-brgl@bgdev.pl>
 References: <20231011120830.49324-1-brgl@bgdev.pl>
@@ -80,40 +80,46 @@ and the controller-relative offset.
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- drivers/pinctrl/bcm/pinctrl-iproc-gpio.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/pinctrl/stm32/pinctrl-stm32.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/pinctrl/bcm/pinctrl-iproc-gpio.c b/drivers/pinctrl/bcm/pinctrl-iproc-gpio.c
-index bc7bb9876e57..fb98c3e14743 100644
---- a/drivers/pinctrl/bcm/pinctrl-iproc-gpio.c
-+++ b/drivers/pinctrl/bcm/pinctrl-iproc-gpio.c
-@@ -330,24 +330,22 @@ static const struct irq_chip iproc_gpio_irq_chip = {
- static int iproc_gpio_request(struct gpio_chip *gc, unsigned offset)
- {
- 	struct iproc_gpio *chip = gpiochip_get_data(gc);
--	unsigned gpio = gc->base + offset;
+diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
+index a73385a431de..11d9f07934bd 100644
+--- a/drivers/pinctrl/stm32/pinctrl-stm32.c
++++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
+@@ -217,12 +217,12 @@ static int stm32_gpio_request(struct gpio_chip *chip, unsigned offset)
+ 		return -EINVAL;
+ 	}
  
- 	/* not all Iproc GPIO pins can be muxed individually */
- 	if (!chip->pinmux_is_supported)
- 		return 0;
- 
--	return pinctrl_gpio_request(gpio);
-+	return pinctrl_gpio_request_new(gc, offset);
+-	return pinctrl_gpio_request(chip->base + offset);
++	return pinctrl_gpio_request_new(chip, offset);
  }
  
- static void iproc_gpio_free(struct gpio_chip *gc, unsigned offset)
+ static void stm32_gpio_free(struct gpio_chip *chip, unsigned offset)
  {
- 	struct iproc_gpio *chip = gpiochip_get_data(gc);
--	unsigned gpio = gc->base + offset;
- 
- 	if (!chip->pinmux_is_supported)
- 		return;
- 
--	pinctrl_gpio_free(gpio);
-+	pinctrl_gpio_free_new(gc, offset);
+-	pinctrl_gpio_free(chip->base + offset);
++	pinctrl_gpio_free_new(chip, offset);
  }
  
- static int iproc_gpio_direction_input(struct gpio_chip *gc, unsigned gpio)
+ static int stm32_gpio_get(struct gpio_chip *chip, unsigned offset)
+@@ -241,7 +241,7 @@ static void stm32_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
+ 
+ static int stm32_gpio_direction_input(struct gpio_chip *chip, unsigned offset)
+ {
+-	return pinctrl_gpio_direction_input(chip->base + offset);
++	return pinctrl_gpio_direction_input_new(chip, offset);
+ }
+ 
+ static int stm32_gpio_direction_output(struct gpio_chip *chip,
+@@ -250,7 +250,7 @@ static int stm32_gpio_direction_output(struct gpio_chip *chip,
+ 	struct stm32_gpio_bank *bank = gpiochip_get_data(chip);
+ 
+ 	__stm32_gpio_set(bank, offset, value);
+-	pinctrl_gpio_direction_output(chip->base + offset);
++	pinctrl_gpio_direction_output_new(chip, offset);
+ 
+ 	return 0;
+ }
 -- 
 2.39.2
 
