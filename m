@@ -2,79 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 528817C54B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E43F7C54D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232165AbjJKNDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 09:03:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47158 "EHLO
+        id S234909AbjJKNHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 09:07:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232135AbjJKNDb (ORCPT
+        with ESMTP id S232432AbjJKNEB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 09:03:31 -0400
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95DE48F;
-        Wed, 11 Oct 2023 06:03:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
-        :From:subject:date:message-id:reply-to;
-        bh=IFsYLR4wmr3IAYVRLjSnORkQTv/8c6YGBfQFkD5vk3U=; b=JHyD4Wp0zJGuCznKIDyQmWN5pD
-        V+PezETsgtuu1YGGs1JsyxiL1CTWpRHE+wPOny9mTWooj5LA2tMg1iGiGKYSfKgJHoSnOXtjzo46c
-        FH9RSez3JmBjkPtIrfor3qDHGe6bp04neXbxbCoeKckrFL731cp6EXE0ZlEn8PiL1rrc=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:33542 helo=pettiford.lan)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1qqYs0-0000rX-T1; Wed, 11 Oct 2023 09:03:25 -0400
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     hugo@hugovil.com, Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Date:   Wed, 11 Oct 2023 09:03:17 -0400
-Message-Id: <20231011130317.3562401-1-hugo@hugovil.com>
-X-Mailer: git-send-email 2.39.2
+        Wed, 11 Oct 2023 09:04:01 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B20992;
+        Wed, 11 Oct 2023 06:04:00 -0700 (PDT)
+Received: from kwepemm000012.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4S5CYS2Z80zVkdw;
+        Wed, 11 Oct 2023 21:00:28 +0800 (CST)
+Received: from build.huawei.com (10.175.101.6) by
+ kwepemm000012.china.huawei.com (7.193.23.142) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Wed, 11 Oct 2023 21:03:57 +0800
+From:   Wenchao Hao <haowenchao2@huawei.com>
+To:     Hannes Reinecke <hare@suse.de>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        <linux-scsi@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <louhongxiang@huawei.com>, Wenchao Hao <haowenchao2@huawei.com>
+Subject: [PATCH] scsi: libfc: Fix potential NULL pointer dereference in fc_lport_ptp_setup
+Date:   Wed, 11 Oct 2023 21:03:50 +0800
+Message-ID: <20231011130350.819571-1-haowenchao2@huawei.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm000012.china.huawei.com (7.193.23.142)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
-Subject: [PATCH] serial: max310x: remove trailing whitespaces
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+fc_lport_ptp_setup() did not check the return value of fc_rport_create()
+which is possible to return NULL which would cause a NULL pointer
+dereference. Address this issue by checking return value of
+fc_rport_create() and log error message on fc_rport_create() failed.
 
-Fix coding style. No functional changes.
-
-Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
 ---
- drivers/tty/serial/max310x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/libfc/fc_lport.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-index db3204d2a305..97e4965b73d4 100644
---- a/drivers/tty/serial/max310x.c
-+++ b/drivers/tty/serial/max310x.c
-@@ -402,7 +402,7 @@ static int max14830_detect(struct device *dev)
- 	ret = s->if_cfg->extended_reg_enable(dev, true);
- 	if (ret)
- 		return ret;
--	
-+
- 	regmap_read(s->regmap, s->if_cfg->rev_id_reg, &val);
- 	s->if_cfg->extended_reg_enable(dev, false);
- 	if (((val & MAX310x_REV_MASK) != MAX14830_REV_ID)) {
-
-base-commit: 1c8b86a3799f7e5be903c3f49fcdaee29fd385b5
+diff --git a/drivers/scsi/libfc/fc_lport.c b/drivers/scsi/libfc/fc_lport.c
+index 9c02c9523c4d..904d66160785 100644
+--- a/drivers/scsi/libfc/fc_lport.c
++++ b/drivers/scsi/libfc/fc_lport.c
+@@ -241,6 +241,12 @@ static void fc_lport_ptp_setup(struct fc_lport *lport,
+ 	}
+ 	mutex_lock(&lport->disc.disc_mutex);
+ 	lport->ptp_rdata = fc_rport_create(lport, remote_fid);
++	if (!lport->ptp_rdata) {
++		printk(KERN_WARNING "libfc: Failed to setup lport 0x%x\n",
++			lport->port_id);
++		mutex_unlock(&lport->disc.disc_mutex);
++		return;
++	}
+ 	kref_get(&lport->ptp_rdata->kref);
+ 	lport->ptp_rdata->ids.port_name = remote_wwpn;
+ 	lport->ptp_rdata->ids.node_name = remote_wwnn;
 -- 
-2.39.2
+2.32.0
 
