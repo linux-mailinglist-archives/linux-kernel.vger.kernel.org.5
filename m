@@ -2,2292 +2,860 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F917C5490
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 14:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C1C7C548A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 14:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347010AbjJKM4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 08:56:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59026 "EHLO
+        id S234914AbjJKM4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 08:56:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234945AbjJKMzz (ORCPT
+        with ESMTP id S231639AbjJKMzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 08:55:55 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 770D6DE;
-        Wed, 11 Oct 2023 05:55:45 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39BCODON005484;
-        Wed, 11 Oct 2023 12:55:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=s1oMgWFVR0OeLlQWAlM7cyegfnsVP0+fNxbXZ+raWjI=;
- b=g08NeS8vYw6RnbdWveZ4aU0jIcMow6HZzm9s1cBitTPR//VfT/8QFxlwcs2qxnov7pbd
- yIxhVX6KCJyetszNJwWfqi4/tVCZsvTkPYml7xp36hWaGlLXUuGZ+12W/K7dEUqiuwFO
- 1uCK3a9VxjKMvbcXSI/HuzZlzexrc9AAaLr5P81aCO8X5i0LDGD1KEluoynTnlsjyPhp
- iM5GJCMFwvQP6jaY4HGkMe5JOacH7xrx+0ZDTNCks008ezKhRBEVcONc6I7nDQ1leIbJ
- jrm/Aw1owHaSa3L4wRDf++BgsWlUspqyhdKYbk47qLvP3ckUUUxfd8S+Xwn5VW/vlcod AQ== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tne0q1n5x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 12:55:25 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39BCtOec010754
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 12:55:24 GMT
-Received: from akronite-sh-dev02.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 11 Oct 2023 05:55:20 -0700
-From:   Luo Jie <quic_luoj@quicinc.com>
-To:     <andersson@kernel.org>, <agross@kernel.org>,
-        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
-        <sboyd@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <p.zabel@pengutronix.de>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_srichara@quicinc.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Subject: [PATCH v10 4/4] clk: qcom: add clock controller driver for qca8386/qca8084
-Date:   Wed, 11 Oct 2023 20:54:47 +0800
-Message-ID: <20231011125447.26530-5-quic_luoj@quicinc.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231011125447.26530-1-quic_luoj@quicinc.com>
-References: <20231011125447.26530-1-quic_luoj@quicinc.com>
+        Wed, 11 Oct 2023 08:55:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13CC2CA
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 05:54:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697028898;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ep7hmDUyuZ0WkIuNExS4JhPOiHqL0a6sa6+rmjXsuck=;
+        b=OP5JbY0pS/K0nuWc6Px8rsy7SHMXJ3pMg7LRBTrKEbXPSNdVQiK4ERrdoGyq9dGFFWt/Pt
+        fdJMrharq+QyawHCkzpljkDY80R5CUZbjamNqRF0IOfBAfJfkNjsOPmyX9YSuBHtaI6XQZ
+        0cMRIwjHJ5WHaL1oCCipAVY5dJVGtN4=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-203-AmVxnPfXOUq_OY1z6SdsEw-1; Wed, 11 Oct 2023 08:54:56 -0400
+X-MC-Unique: AmVxnPfXOUq_OY1z6SdsEw-1
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-41b0f770312so52981681cf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 05:54:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697028896; x=1697633696;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ep7hmDUyuZ0WkIuNExS4JhPOiHqL0a6sa6+rmjXsuck=;
+        b=Zr+rnfKyA+eB2Ljo2xQ0g1J0N7CUM/fEdFkUHXrAia4zfHJLkeSrSKGCmPf7tiKFFa
+         Bq1bgq4xjc8UgSlIa4Bkk8VTS9HpPqQc0vGpScd1TjOv2gen+FlXsbury61wTlFI5RTJ
+         AR/7d0ML4/YqYl5GJ9mrWceokxy7Ts/irmw3Ymu9lTdLCrgYZKRjQ92vuxIeOAjq1rm9
+         Zfn01vYRYtOS1/vChK7FCOC5miNjQoTlvKk4YFZ58rA8mMASzx5MtM3JYGhY7RKSkwWz
+         IOMJ0uWJo9c4IXPNB4q8s77bt+QK2rSwhdEyVRiMZPVtF/6iVca27JBHJ3hcBcUBjQ9T
+         7UxA==
+X-Gm-Message-State: AOJu0YyoR+Q2AFDCMBeQ4LcLPwymcv/OWNmlfQDeAtl1+xdbcaNgAcCW
+        7rVqCw03ML5llX2KWa7ZgXrkyIjDuD0A7PYB191jQuT61Nwz55KPtPXNSxTb9RYlOGW8xtLMuzj
+        Uefr/U/rSrgEbQYzGz4ZSkNGA
+X-Received: by 2002:ac8:7c4f:0:b0:419:529e:dcfd with SMTP id o15-20020ac87c4f000000b00419529edcfdmr28306794qtv.3.1697028896182;
+        Wed, 11 Oct 2023 05:54:56 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEFbboJ/XHvBEUZeYPxWc6tPLghl6i5Lo0AgWZ1InH6MBHKWUBjS5nHS3aYazHBH2/YXRXwoA==
+X-Received: by 2002:ac8:7c4f:0:b0:419:529e:dcfd with SMTP id o15-20020ac87c4f000000b00419529edcfdmr28306767qtv.3.1697028895824;
+        Wed, 11 Oct 2023 05:54:55 -0700 (PDT)
+Received: from sgarzare-redhat (host-79-46-200-251.retail.telecomitalia.it. [79.46.200.251])
+        by smtp.gmail.com with ESMTPSA id e1-20020ac81301000000b0040331a24f16sm5325650qtj.3.2023.10.11.05.54.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 05:54:55 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 14:54:50 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v4 10/12] test/vsock: MSG_ZEROCOPY flag tests
+Message-ID: <3w7dz3pkujmysdqoynxrnxcnmsrvgq4c7iijqktg2oynbzmwns@jiu2p6y2hm4m>
+References: <20231010191524.1694217-1-avkrasnov@salutedevices.com>
+ <20231010191524.1694217-11-avkrasnov@salutedevices.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: CZ7UGP5sV4WsIgM3VDO5ht30YRq2Qtj2
-X-Proofpoint-ORIG-GUID: CZ7UGP5sV4WsIgM3VDO5ht30YRq2Qtj2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-11_09,2023-10-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- spamscore=0 mlxscore=0 clxscore=1015 priorityscore=1501 phishscore=0
- adultscore=0 impostorscore=0 suspectscore=0 lowpriorityscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310110114
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20231010191524.1694217-11-avkrasnov@salutedevices.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The clock controller driver of qca8386/qca8084 is registered
-as the MDIO device, the hardware register is accessed by MDIO bus
-that is normally used to access general PHY device, which is
-different from the current existed qcom clock controller drivers
-using ioremap to access hardware clock registers, nsscc-qca8k is
-accessed via an MDIO bus.
+On Tue, Oct 10, 2023 at 10:15:22PM +0300, Arseniy Krasnov wrote:
+>This adds three tests for MSG_ZEROCOPY feature:
+>1) SOCK_STREAM tx with different buffers.
+>2) SOCK_SEQPACKET tx with different buffers.
+>3) SOCK_STREAM test to read empty error queue of the socket.
+>
+>Patch also works as preparation for the next patches for tools in this
+>patchset: vsock_perf and vsock_uring_test:
+>1) Adds several new functions to util.c - they will be also used by
+>   vsock_uring_test.
+>2) Adds two new functions for MSG_ZEROCOPY handling to a new source
+>   file - such source will be shared between vsock_test, vsock_perf and
+>   vsock_uring_test, thus avoiding code copy-pasting.
+>
+>Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>---
+> Changelog:
+> v1 -> v2:
+>  * Move 'SOL_VSOCK' and 'VSOCK_RECVERR' from 'util.c' to 'util.h'.
+> v2 -> v3:
+>  * Patch was reworked. Now it is also preparation patch (see commit
+>    message). Shared stuff for 'vsock_perf' and tests is placed to a
+>    new header file, while shared code between current test tool and
+>    future uring test is placed to the 'util.c'. I think, that making
+>    this patch as preparation allows to reduce number of changes in the
+>    next patches in this patchset.
+>  * Make 'struct vsock_test_data' private by placing it to the .c file.
+>    Also add comments to this struct to clarify sense of its fields.
+> v3 -> v4:
+>  * Move code from 'msg_zerocopy_common.h' to 'msg_zerocopy_common.c'
+>    to avoid warning about unused functions.
+>  * Rename 'iovec_from_test_data()' and 'free_iovec_test_data()' to
+>    'alloc_test_iovec()' and 'free_test_iovec(). Also add comments for
+>    both functions.
+>  * Use '#ifndef' around '#define PAGE_SIZE 4096'.
+>
+> tools/testing/vsock/Makefile              |   2 +-
+> tools/testing/vsock/msg_zerocopy_common.c |  87 ++++++
+> tools/testing/vsock/msg_zerocopy_common.h |  18 ++
+> tools/testing/vsock/util.c                | 133 ++++++++
+> tools/testing/vsock/util.h                |   5 +
+> tools/testing/vsock/vsock_test.c          |  16 +
+> tools/testing/vsock/vsock_test_zerocopy.c | 358 ++++++++++++++++++++++
+> tools/testing/vsock/vsock_test_zerocopy.h |  15 +
+> 8 files changed, 633 insertions(+), 1 deletion(-)
+> create mode 100644 tools/testing/vsock/msg_zerocopy_common.c
+> create mode 100644 tools/testing/vsock/msg_zerocopy_common.h
+> create mode 100644 tools/testing/vsock/vsock_test_zerocopy.c
+> create mode 100644 tools/testing/vsock/vsock_test_zerocopy.h
 
-MDIO bus is commonly utilized by both qca8386/qca8084 and other
-PHY devices, so the mutex lock mdio_bus->mdio_lock should be
-used instead of using the mutex lock of remap.
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
-To access the hardware clock registers of qca8386/qca8084, there
-is a special MDIO frame sequence, which needs to be sent to the
-device.
-
-Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
----
-v9->v10: remove the depends on ARM, qca8k device is supported by both
-ARM and ARM64. With depends on ARM, qca8k clock driver can't be enabled
-on ARM64 platform.
-
- drivers/clk/qcom/Kconfig       |    9 +
- drivers/clk/qcom/Makefile      |    1 +
- drivers/clk/qcom/nsscc-qca8k.c | 2139 ++++++++++++++++++++++++++++++++
- 3 files changed, 2149 insertions(+)
- create mode 100644 drivers/clk/qcom/nsscc-qca8k.c
-
-diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
-index 865db5202e4c..c95ada6a1385 100644
---- a/drivers/clk/qcom/Kconfig
-+++ b/drivers/clk/qcom/Kconfig
-@@ -203,6 +203,15 @@ config IPQ_GCC_9574
- 	  i2c, USB, SD/eMMC, etc. Select this for the root clock
- 	  of ipq9574.
- 
-+config IPQ_NSSCC_QCA8K
-+	tristate "QCA8K(QCA8386 or QCA8084) NSS Clock Controller"
-+	depends on MDIO_BUS || COMPILE_TEST
-+	help
-+	  Support for NSS(Network SubSystem) clock controller on
-+	  qca8386/qca8084 chip.
-+	  Say Y or M if you want to use network features of switch or
-+	  PHY device. Select this for the root clock of qca8k.
-+
- config MSM_GCC_8660
- 	tristate "MSM8660 Global Clock Controller"
- 	depends on ARM || COMPILE_TEST
-diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
-index 4790c8cca426..3550d37d8f65 100644
---- a/drivers/clk/qcom/Makefile
-+++ b/drivers/clk/qcom/Makefile
-@@ -31,6 +31,7 @@ obj-$(CONFIG_IPQ_GCC_806X) += gcc-ipq806x.o
- obj-$(CONFIG_IPQ_GCC_8074) += gcc-ipq8074.o
- obj-$(CONFIG_IPQ_GCC_9574) += gcc-ipq9574.o
- obj-$(CONFIG_IPQ_LCC_806X) += lcc-ipq806x.o
-+obj-$(CONFIG_IPQ_NSSCC_QCA8K) += nsscc-qca8k.o
- obj-$(CONFIG_MDM_GCC_9607) += gcc-mdm9607.o
- obj-$(CONFIG_MDM_GCC_9615) += gcc-mdm9615.o
- obj-$(CONFIG_MSM_GCC_8660) += gcc-msm8660.o
-diff --git a/drivers/clk/qcom/nsscc-qca8k.c b/drivers/clk/qcom/nsscc-qca8k.c
-new file mode 100644
-index 000000000000..4ebf9954bdcf
---- /dev/null
-+++ b/drivers/clk/qcom/nsscc-qca8k.c
-@@ -0,0 +1,2139 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+#include <linux/clk-provider.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/regmap.h>
-+#include <linux/phy.h>
-+#include <linux/mdio.h>
-+
-+#include <dt-bindings/clock/qcom,qca8k-nsscc.h>
-+#include <dt-bindings/reset/qcom,qca8k-nsscc.h>
-+
-+#include "clk-branch.h"
-+#include "clk-rcg.h"
-+#include "clk-regmap.h"
-+#include "clk-regmap-divider.h"
-+#include "clk-regmap-mux.h"
-+#include "common.h"
-+#include "reset.h"
-+
-+#define QCA8K_CLK_REG_BASE		0x800000
-+#define QCA8K_HIGH_ADDR_PREFIX		0x18
-+#define QCA8K_LOW_ADDR_PREFIX		0x10
-+#define QCA8K_CFG_PAGE_REG		0xc
-+#define QCA8K_CLK_REG_MASK		GENMASK(4, 0)
-+#define QCA8K_CLK_PHY_ADDR_MASK		GENMASK(7, 5)
-+#define QCA8K_CLK_PAGE_MASK		GENMASK(23, 8)
-+#define QCA8K_REG_DATA_UPPER_16_BITS	BIT(1)
-+
-+enum {
-+	DT_XO,
-+	DT_UNIPHY0_RX_CLK,
-+	DT_UNIPHY0_TX_CLK,
-+	DT_UNIPHY1_RX_CLK,
-+	DT_UNIPHY1_TX_CLK,
-+	DT_UNIPHY1_RX312P5M_CLK,
-+	DT_UNIPHY1_TX312P5M_CLK,
-+};
-+
-+enum {
-+	P_XO,
-+	P_UNIPHY0_RX,
-+	P_UNIPHY0_TX,
-+	P_UNIPHY1_RX,
-+	P_UNIPHY1_TX,
-+	P_UNIPHY1_RX312P5M,
-+	P_UNIPHY1_TX312P5M,
-+	P_MAC4_RX_DIV,
-+	P_MAC4_TX_DIV,
-+	P_MAC5_RX_DIV,
-+	P_MAC5_TX_DIV,
-+};
-+
-+static const struct clk_parent_data nss_cc_uniphy1_tx312p5m_data[] = {
-+	{ .index = DT_XO },
-+	{ .index = DT_UNIPHY1_TX312P5M_CLK },
-+};
-+
-+static const struct parent_map nss_cc_uniphy1_tx312p5m_map[] = {
-+	{ P_XO, 0 },
-+	{ P_UNIPHY1_TX312P5M, 1 },
-+};
-+
-+static struct clk_rcg2 nss_cc_switch_core_clk_src = {
-+	.cmd_rcgr = 0x0,
-+	.hid_width = 5,
-+	.parent_map = nss_cc_uniphy1_tx312p5m_map,
-+	.clkr.hw.init = &(const struct clk_init_data) {
-+		.name = "nss_cc_switch_core_clk_src",
-+		.parent_data = nss_cc_uniphy1_tx312p5m_data,
-+		.num_parents = ARRAY_SIZE(nss_cc_uniphy1_tx312p5m_data),
-+		.ops = &clk_rcg2_mux_closest_ops,
-+	},
-+};
-+
-+static struct clk_branch nss_cc_switch_core_clk = {
-+	.halt_reg = 0x8,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x8,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_switch_core_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_switch_core_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_apb_bridge_clk = {
-+	.halt_reg = 0x10,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x10,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_apb_bridge_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_switch_core_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static const struct clk_parent_data nss_cc_uniphy1_tx_data[] = {
-+	{ .index = DT_XO },
-+	{ .index = DT_UNIPHY1_TX_CLK },
-+};
-+
-+static const struct parent_map nss_cc_uniphy1_tx_map[] = {
-+	{ P_XO, 0 },
-+	{ P_UNIPHY1_TX, 2 },
-+};
-+
-+static struct clk_rcg2 nss_cc_mac0_tx_clk_src = {
-+	.cmd_rcgr = 0x14,
-+	.hid_width = 5,
-+	.parent_map = nss_cc_uniphy1_tx_map,
-+	.clkr.hw.init = &(const struct clk_init_data) {
-+		.name = "nss_cc_mac0_tx_clk_src",
-+		.parent_data = nss_cc_uniphy1_tx_data,
-+		.num_parents = ARRAY_SIZE(nss_cc_uniphy1_tx_data),
-+		.flags = CLK_SET_RATE_PARENT,
-+		.ops = &clk_rcg2_mux_closest_ops,
-+	},
-+};
-+
-+static struct clk_regmap_div nss_cc_mac0_tx_div_clk_src = {
-+	.reg = 0x1c,
-+	.shift = 0,
-+	.width = 4,
-+	.clkr = {
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac0_tx_div_clk_src",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac0_tx_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_regmap_div_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac0_tx_clk = {
-+	.halt_reg = 0x20,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x20,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac0_tx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac0_tx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac0_tx_srds1_clk = {
-+	.halt_reg = 0x24,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x24,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac0_tx_srds1_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac0_tx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static const struct clk_parent_data nss_cc_uniphy1_rx_tx_data[] = {
-+	{ .index = DT_XO },
-+	{ .index = DT_UNIPHY1_RX_CLK },
-+	{ .index = DT_UNIPHY1_TX_CLK },
-+};
-+
-+static const struct parent_map nss_cc_uniphy1_rx_tx_map[] = {
-+	{ P_XO, 0 },
-+	{ P_UNIPHY1_RX, 1 },
-+	{ P_UNIPHY1_TX, 2 },
-+};
-+
-+static struct clk_rcg2 nss_cc_mac0_rx_clk_src = {
-+	.cmd_rcgr = 0x28,
-+	.hid_width = 5,
-+	.parent_map = nss_cc_uniphy1_rx_tx_map,
-+	.clkr.hw.init = &(const struct clk_init_data) {
-+		.name = "nss_cc_mac0_rx_clk_src",
-+		.parent_data = nss_cc_uniphy1_rx_tx_data,
-+		.num_parents = ARRAY_SIZE(nss_cc_uniphy1_rx_tx_data),
-+		.flags = CLK_SET_RATE_PARENT,
-+		.ops = &clk_rcg2_mux_closest_ops,
-+	},
-+};
-+
-+static struct clk_regmap_div nss_cc_mac0_rx_div_clk_src = {
-+	.reg = 0x30,
-+	.shift = 0,
-+	.width = 4,
-+	.clkr = {
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac0_rx_div_clk_src",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac0_rx_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_regmap_div_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac0_rx_clk = {
-+	.halt_reg = 0x34,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x34,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac0_rx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac0_rx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac0_rx_srds1_clk = {
-+	.halt_reg = 0x3c,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x3c,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac0_rx_srds1_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac0_rx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static const struct clk_parent_data nss_cc_uniphy1_rx_tx312p5m_data[] = {
-+	{ .index = DT_XO },
-+	{ .index = DT_UNIPHY1_TX312P5M_CLK },
-+	{ .index = DT_UNIPHY1_RX312P5M_CLK },
-+};
-+
-+static const struct parent_map nss_cc_uniphy1_rx_tx312p5m_map[] = {
-+	{ P_XO, 0 },
-+	{ P_UNIPHY1_TX312P5M, 6 },
-+	{ P_UNIPHY1_RX312P5M, 7 },
-+};
-+
-+static const struct freq_tbl ftbl_nss_cc_mac1_tx_clk_src[] = {
-+	F(25000000, P_UNIPHY1_TX312P5M, 12.5, 0, 0),
-+	F(25000000, P_UNIPHY1_RX312P5M, 12.5, 0, 0),
-+	F(50000000, P_XO, 1, 0, 0),
-+	F(125000000, P_UNIPHY1_TX312P5M, 2.5, 0, 0),
-+	F(125000000, P_UNIPHY1_RX312P5M, 2.5, 0, 0),
-+	F(312500000, P_UNIPHY1_TX312P5M, 1, 0, 0),
-+	F(312500000, P_UNIPHY1_RX312P5M, 1, 0, 0),
-+	{ }
-+};
-+
-+static struct clk_rcg2 nss_cc_mac1_tx_clk_src = {
-+	.cmd_rcgr = 0x40,
-+	.freq_tbl = ftbl_nss_cc_mac1_tx_clk_src,
-+	.hid_width = 5,
-+	.parent_map = nss_cc_uniphy1_rx_tx312p5m_map,
-+	.clkr.hw.init = &(const struct clk_init_data) {
-+		.name = "nss_cc_mac1_tx_clk_src",
-+		.parent_data = nss_cc_uniphy1_rx_tx312p5m_data,
-+		.num_parents = ARRAY_SIZE(nss_cc_uniphy1_rx_tx312p5m_data),
-+		.ops = &clk_rcg2_ops,
-+	},
-+};
-+
-+static struct clk_regmap_div nss_cc_mac1_tx_div_clk_src = {
-+	.reg = 0x48,
-+	.shift = 0,
-+	.width = 4,
-+	.clkr = {
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac1_tx_div_clk_src",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac1_tx_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_regmap_div_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_regmap_div nss_cc_mac1_srds1_ch0_xgmii_rx_div_clk_src = {
-+	.reg = 0x4c,
-+	.shift = 0,
-+	.width = 4,
-+	.clkr = {
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac1_srds1_ch0_xgmii_rx_div_clk_src",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac1_tx_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_regmap_div_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac1_srds1_ch0_rx_clk = {
-+	.halt_reg = 0x50,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x50,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac1_srds1_ch0_rx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac1_tx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac1_tx_clk = {
-+	.halt_reg = 0x54,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x54,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac1_tx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac1_tx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac1_gephy0_tx_clk = {
-+	.halt_reg = 0x58,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x58,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac1_gephy0_tx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac1_tx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac1_srds1_ch0_xgmii_rx_clk = {
-+	.halt_reg = 0x5c,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x5c,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac1_srds1_ch0_xgmii_rx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac1_srds1_ch0_xgmii_rx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static const struct clk_parent_data nss_cc_uniphy1_tx312p5m_prx_data[] = {
-+	{ .index = DT_XO },
-+	{ .index = DT_UNIPHY1_TX312P5M_CLK },
-+};
-+
-+static const struct parent_map nss_cc_uniphy1_tx312p5m_prx_map[] = {
-+	{ P_XO, 0 },
-+	{ P_UNIPHY1_TX312P5M, 6 },
-+};
-+
-+static const struct freq_tbl ftbl_nss_cc_mac1_rx_clk_src[] = {
-+	F(25000000, P_UNIPHY1_TX312P5M, 12.5, 0, 0),
-+	F(50000000, P_XO, 1, 0, 0),
-+	F(125000000, P_UNIPHY1_TX312P5M, 2.5, 0, 0),
-+	F(312500000, P_UNIPHY1_TX312P5M, 1, 0, 0),
-+	{ }
-+};
-+
-+static struct clk_rcg2 nss_cc_mac1_rx_clk_src = {
-+	.cmd_rcgr = 0x60,
-+	.freq_tbl = ftbl_nss_cc_mac1_rx_clk_src,
-+	.hid_width = 5,
-+	.parent_map = nss_cc_uniphy1_tx312p5m_prx_map,
-+	.clkr.hw.init = &(const struct clk_init_data) {
-+		.name = "nss_cc_mac1_rx_clk_src",
-+		.parent_data = nss_cc_uniphy1_tx312p5m_prx_data,
-+		.num_parents = ARRAY_SIZE(nss_cc_uniphy1_tx312p5m_prx_data),
-+		.ops = &clk_rcg2_ops,
-+	},
-+};
-+
-+static struct clk_regmap_div nss_cc_mac1_rx_div_clk_src = {
-+	.reg = 0x68,
-+	.shift = 0,
-+	.width = 4,
-+	.clkr = {
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac1_rx_div_clk_src",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac1_rx_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_regmap_div_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_regmap_div nss_cc_mac1_srds1_ch0_xgmii_tx_div_clk_src = {
-+	.reg = 0x6c,
-+	.shift = 0,
-+	.width = 4,
-+	.clkr = {
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac1_srds1_ch0_xgmii_tx_div_clk_src",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac1_rx_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_regmap_div_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac1_srds1_ch0_tx_clk = {
-+	.halt_reg = 0x70,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x70,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac1_srds1_ch0_tx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac1_rx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac1_rx_clk = {
-+	.halt_reg = 0x74,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x74,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac1_rx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac1_rx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac1_gephy0_rx_clk = {
-+	.halt_reg = 0x78,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x78,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac1_gephy0_rx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac1_rx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac1_srds1_ch0_xgmii_tx_clk = {
-+	.halt_reg = 0x7c,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x7c,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac1_srds1_ch0_xgmii_tx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac1_srds1_ch0_xgmii_tx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_rcg2 nss_cc_mac2_tx_clk_src = {
-+	.cmd_rcgr = 0x80,
-+	.freq_tbl = ftbl_nss_cc_mac1_tx_clk_src,
-+	.hid_width = 5,
-+	.parent_map = nss_cc_uniphy1_rx_tx312p5m_map,
-+	.clkr.hw.init = &(const struct clk_init_data) {
-+		.name = "nss_cc_mac2_tx_clk_src",
-+		.parent_data = nss_cc_uniphy1_rx_tx312p5m_data,
-+		.num_parents = ARRAY_SIZE(nss_cc_uniphy1_rx_tx312p5m_data),
-+		.ops = &clk_rcg2_ops,
-+	},
-+};
-+
-+static struct clk_regmap_div nss_cc_mac2_tx_div_clk_src = {
-+	.reg = 0x88,
-+	.shift = 0,
-+	.width = 4,
-+	.clkr = {
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac2_tx_div_clk_src",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac2_tx_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_regmap_div_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_regmap_div nss_cc_mac2_srds1_ch1_xgmii_rx_div_clk_src = {
-+	.reg = 0x8c,
-+	.shift = 0,
-+	.width = 4,
-+	.clkr = {
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac2_srds1_ch1_xgmii_rx_div_clk_src",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac2_tx_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_regmap_div_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac2_srds1_ch1_rx_clk = {
-+	.halt_reg = 0x90,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x90,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac2_srds1_ch1_rx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac2_tx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac2_tx_clk = {
-+	.halt_reg = 0x94,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x94,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac2_tx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac2_tx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac2_gephy1_tx_clk = {
-+	.halt_reg = 0x98,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x98,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac2_gephy1_tx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac2_tx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac2_srds1_ch1_xgmii_rx_clk = {
-+	.halt_reg = 0x9c,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x9c,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac2_srds1_ch1_xgmii_rx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac2_srds1_ch1_xgmii_rx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_rcg2 nss_cc_mac2_rx_clk_src = {
-+	.cmd_rcgr = 0xa0,
-+	.freq_tbl = ftbl_nss_cc_mac1_rx_clk_src,
-+	.hid_width = 5,
-+	.parent_map = nss_cc_uniphy1_tx312p5m_prx_map,
-+	.clkr.hw.init = &(const struct clk_init_data) {
-+		.name = "nss_cc_mac2_rx_clk_src",
-+		.parent_data = nss_cc_uniphy1_tx312p5m_prx_data,
-+		.num_parents = ARRAY_SIZE(nss_cc_uniphy1_tx312p5m_prx_data),
-+		.ops = &clk_rcg2_ops,
-+	},
-+};
-+
-+static struct clk_regmap_div nss_cc_mac2_rx_div_clk_src = {
-+	.reg = 0xa8,
-+	.shift = 0,
-+	.width = 4,
-+	.clkr = {
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac2_rx_div_clk_src",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac2_rx_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_regmap_div_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_regmap_div nss_cc_mac2_srds1_ch1_xgmii_tx_div_clk_src = {
-+	.reg = 0xac,
-+	.shift = 0,
-+	.width = 4,
-+	.clkr = {
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac2_srds1_ch1_xgmii_tx_div_clk_src",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac2_rx_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_regmap_div_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac2_srds1_ch1_tx_clk = {
-+	.halt_reg = 0xb0,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0xb0,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac2_srds1_ch1_tx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac2_rx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac2_rx_clk = {
-+	.halt_reg = 0xb4,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0xb4,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac2_rx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac2_rx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac2_gephy1_rx_clk = {
-+	.halt_reg = 0xb8,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0xb8,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac2_gephy1_rx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac2_rx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac2_srds1_ch1_xgmii_tx_clk = {
-+	.halt_reg = 0xbc,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0xbc,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac2_srds1_ch1_xgmii_tx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac2_srds1_ch1_xgmii_tx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_rcg2 nss_cc_mac3_tx_clk_src = {
-+	.cmd_rcgr = 0xc0,
-+	.freq_tbl = ftbl_nss_cc_mac1_tx_clk_src,
-+	.hid_width = 5,
-+	.parent_map = nss_cc_uniphy1_rx_tx312p5m_map,
-+	.clkr.hw.init = &(const struct clk_init_data) {
-+		.name = "nss_cc_mac3_tx_clk_src",
-+		.parent_data = nss_cc_uniphy1_rx_tx312p5m_data,
-+		.num_parents = ARRAY_SIZE(nss_cc_uniphy1_rx_tx312p5m_data),
-+		.ops = &clk_rcg2_ops,
-+	},
-+};
-+
-+static struct clk_regmap_div nss_cc_mac3_tx_div_clk_src = {
-+	.reg = 0xc8,
-+	.shift = 0,
-+	.width = 4,
-+	.clkr = {
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac3_tx_div_clk_src",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac3_tx_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_regmap_div_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_regmap_div nss_cc_mac3_srds1_ch2_xgmii_rx_div_clk_src = {
-+	.reg = 0xcc,
-+	.shift = 0,
-+	.width = 4,
-+	.clkr = {
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac3_srds1_ch2_xgmii_rx_div_clk_src",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac3_tx_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_regmap_div_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac3_srds1_ch2_rx_clk = {
-+	.halt_reg = 0xd0,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0xd0,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac3_srds1_ch2_rx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac3_tx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac3_tx_clk = {
-+	.halt_reg = 0xd4,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0xd4,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac3_tx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac3_tx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac3_gephy2_tx_clk = {
-+	.halt_reg = 0xd8,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0xd8,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac3_gephy2_tx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac3_tx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac3_srds1_ch2_xgmii_rx_clk = {
-+	.halt_reg = 0xdc,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0xdc,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac3_srds1_ch2_xgmii_rx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac3_srds1_ch2_xgmii_rx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_rcg2 nss_cc_mac3_rx_clk_src = {
-+	.cmd_rcgr = 0xe0,
-+	.freq_tbl = ftbl_nss_cc_mac1_rx_clk_src,
-+	.hid_width = 5,
-+	.parent_map = nss_cc_uniphy1_tx312p5m_prx_map,
-+	.clkr.hw.init = &(const struct clk_init_data) {
-+		.name = "nss_cc_mac3_rx_clk_src",
-+		.parent_data = nss_cc_uniphy1_tx312p5m_prx_data,
-+		.num_parents = ARRAY_SIZE(nss_cc_uniphy1_tx312p5m_prx_data),
-+		.ops = &clk_rcg2_ops,
-+	},
-+};
-+
-+static struct clk_regmap_div nss_cc_mac3_rx_div_clk_src = {
-+	.reg = 0xe8,
-+	.shift = 0,
-+	.width = 4,
-+	.clkr = {
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac3_rx_div_clk_src",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac3_rx_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_regmap_div_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_regmap_div nss_cc_mac3_srds1_ch2_xgmii_tx_div_clk_src = {
-+	.reg = 0xec,
-+	.shift = 0,
-+	.width = 4,
-+	.clkr = {
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac3_srds1_ch2_xgmii_tx_div_clk_src",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac3_rx_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_regmap_div_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac3_srds1_ch2_tx_clk = {
-+	.halt_reg = 0xf0,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0xf0,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac3_srds1_ch2_tx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac3_rx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac3_rx_clk = {
-+	.halt_reg = 0xf4,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0xf4,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac3_rx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac3_rx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac3_gephy2_rx_clk = {
-+	.halt_reg = 0xf8,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0xf8,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac3_gephy2_rx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac3_rx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac3_srds1_ch2_xgmii_tx_clk = {
-+	.halt_reg = 0xfc,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0xfc,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac3_srds1_ch2_xgmii_tx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac3_srds1_ch2_xgmii_tx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static const struct clk_parent_data nss_cc_uniphy0_rx_uniphy1_rx_tx312p5m_data[] = {
-+	{ .index = DT_XO },
-+	{ .index = DT_UNIPHY1_TX312P5M_CLK },
-+	{ .index = DT_UNIPHY1_RX312P5M_CLK },
-+};
-+
-+static const struct parent_map nss_cc_uniphy0_rx_uniphy1_rx_tx312p5m_map[] = {
-+	{ P_XO, 0 },
-+	{ P_UNIPHY1_TX312P5M, 3 },
-+	{ P_UNIPHY1_RX312P5M, 7 },
-+};
-+
-+static const struct freq_tbl ftbl_nss_cc_mac4_tx_clk_src[] = {
-+	F(25000000, P_UNIPHY1_TX312P5M, 12.5, 0, 0),
-+	F(25000000, P_UNIPHY1_RX312P5M, 12.5, 0, 0),
-+	F(50000000, P_XO, 1, 0, 0),
-+	F(125000000, P_UNIPHY1_TX312P5M, 2.5, 0, 0),
-+	F(125000000, P_UNIPHY1_RX312P5M, 2.5, 0, 0),
-+	F(312500000, P_UNIPHY1_TX312P5M, 1, 0, 0),
-+	F(312500000, P_UNIPHY1_RX312P5M, 1, 0, 0),
-+	{ }
-+};
-+
-+static struct clk_rcg2 nss_cc_mac4_tx_clk_src = {
-+	.cmd_rcgr = 0x100,
-+	.freq_tbl = ftbl_nss_cc_mac4_tx_clk_src,
-+	.hid_width = 5,
-+	.parent_map = nss_cc_uniphy0_rx_uniphy1_rx_tx312p5m_map,
-+	.clkr.hw.init = &(const struct clk_init_data) {
-+		.name = "nss_cc_mac4_tx_clk_src",
-+		.parent_data = nss_cc_uniphy0_rx_uniphy1_rx_tx312p5m_data,
-+		.num_parents = ARRAY_SIZE(nss_cc_uniphy0_rx_uniphy1_rx_tx312p5m_data),
-+		.ops = &clk_rcg2_ops,
-+	},
-+};
-+
-+static struct clk_regmap_div nss_cc_mac4_tx_div_clk_src = {
-+	.reg = 0x108,
-+	.shift = 0,
-+	.width = 4,
-+	.clkr = {
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac4_tx_div_clk_src",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac4_tx_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_regmap_div_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_regmap_div nss_cc_mac4_srds1_ch3_xgmii_rx_div_clk_src = {
-+	.reg = 0x10c,
-+	.shift = 0,
-+	.width = 4,
-+	.clkr = {
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac4_srds1_ch3_xgmii_rx_div_clk_src",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac4_tx_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_regmap_div_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac4_srds1_ch3_rx_clk = {
-+	.halt_reg = 0x110,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x110,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac4_srds1_ch3_rx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac4_tx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac4_tx_clk = {
-+	.halt_reg = 0x114,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x114,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac4_tx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac4_tx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac4_gephy3_tx_clk = {
-+	.halt_reg = 0x118,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x118,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac4_gephy3_tx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac4_tx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac4_srds1_ch3_xgmii_rx_clk = {
-+	.halt_reg = 0x11c,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x11c,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac4_srds1_ch3_xgmii_rx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac4_srds1_ch3_xgmii_rx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static const struct clk_parent_data nss_cc_uniphy0_tx_uniphy1_tx312p5m_data[] = {
-+	{ .index = DT_XO },
-+	{ .index = DT_UNIPHY1_TX312P5M_CLK },
-+};
-+
-+static const struct parent_map nss_cc_uniphy0_tx_uniphy1_tx312p5m_map[] = {
-+	{ P_XO, 0 },
-+	{ P_UNIPHY1_TX312P5M, 3 },
-+};
-+
-+static const struct freq_tbl ftbl_nss_cc_mac4_rx_clk_src[] = {
-+	F(25000000, P_UNIPHY1_TX312P5M, 12.5, 0, 0),
-+	F(50000000, P_XO, 1, 0, 0),
-+	F(125000000, P_UNIPHY1_TX312P5M, 2.5, 0, 0),
-+	F(312500000, P_UNIPHY1_TX312P5M, 1, 0, 0),
-+	{ }
-+};
-+
-+static struct clk_rcg2 nss_cc_mac4_rx_clk_src = {
-+	.cmd_rcgr = 0x120,
-+	.freq_tbl = ftbl_nss_cc_mac4_rx_clk_src,
-+	.hid_width = 5,
-+	.parent_map = nss_cc_uniphy0_tx_uniphy1_tx312p5m_map,
-+	.clkr.hw.init = &(const struct clk_init_data) {
-+		.name = "nss_cc_mac4_rx_clk_src",
-+		.parent_data = nss_cc_uniphy0_tx_uniphy1_tx312p5m_data,
-+		.num_parents = ARRAY_SIZE(nss_cc_uniphy0_tx_uniphy1_tx312p5m_data),
-+		.ops = &clk_rcg2_ops,
-+	},
-+};
-+
-+static struct clk_regmap_div nss_cc_mac4_rx_div_clk_src = {
-+	.reg = 0x128,
-+	.shift = 0,
-+	.width = 4,
-+	.clkr = {
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac4_rx_div_clk_src",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac4_rx_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_regmap_div_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_regmap_div nss_cc_mac4_srds1_ch3_xgmii_tx_div_clk_src = {
-+	.reg = 0x12c,
-+	.shift = 0,
-+	.width = 4,
-+	.clkr = {
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac4_srds1_ch3_xgmii_tx_div_clk_src",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac4_rx_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_regmap_div_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac4_srds1_ch3_tx_clk = {
-+	.halt_reg = 0x130,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x130,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac4_srds1_ch3_tx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac4_rx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac4_rx_clk = {
-+	.halt_reg = 0x134,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x134,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac4_rx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac4_rx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac4_gephy3_rx_clk = {
-+	.halt_reg = 0x138,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x138,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac4_gephy3_rx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac4_rx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac4_srds1_ch3_xgmii_tx_clk = {
-+	.halt_reg = 0x13c,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x13c,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac4_srds1_ch3_xgmii_tx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac4_srds1_ch3_xgmii_tx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static const struct clk_parent_data nss_cc_uniphy0_tx_data[] = {
-+	{ .index = DT_XO },
-+	{ .index = DT_UNIPHY0_TX_CLK },
-+};
-+
-+static const struct parent_map nss_cc_uniphy0_tx_map[] = {
-+	{ P_XO, 0 },
-+	{ P_UNIPHY0_TX, 2 },
-+};
-+
-+static struct clk_rcg2 nss_cc_mac5_tx_clk_src = {
-+	.cmd_rcgr = 0x140,
-+	.hid_width = 5,
-+	.parent_map = nss_cc_uniphy0_tx_map,
-+	.clkr.hw.init = &(const struct clk_init_data) {
-+		.name = "nss_cc_mac5_tx_clk_src",
-+		.parent_data = nss_cc_uniphy0_tx_data,
-+		.num_parents = ARRAY_SIZE(nss_cc_uniphy0_tx_data),
-+		.flags = CLK_SET_RATE_PARENT,
-+		.ops = &clk_rcg2_mux_closest_ops,
-+	},
-+};
-+
-+static struct clk_regmap_div nss_cc_mac5_tx_div_clk_src = {
-+	.reg = 0x148,
-+	.shift = 0,
-+	.width = 4,
-+	.clkr = {
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac5_tx_div_clk_src",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac5_tx_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_regmap_div_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac5_tx_clk = {
-+	.halt_reg = 0x14c,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x14c,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac5_tx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac5_tx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static const struct clk_parent_data nss_cc_uniphy0_rx_tx_data[] = {
-+	{ .index = DT_XO },
-+	{ .index = DT_UNIPHY0_RX_CLK },
-+	{ .index = DT_UNIPHY0_TX_CLK },
-+};
-+
-+static const struct parent_map nss_cc_uniphy0_rx_tx_map[] = {
-+	{ P_XO, 0 },
-+	{ P_UNIPHY0_RX, 1 },
-+	{ P_UNIPHY0_TX, 2 },
-+};
-+
-+static struct clk_rcg2 nss_cc_mac5_rx_clk_src = {
-+	.cmd_rcgr = 0x154,
-+	.hid_width = 5,
-+	.parent_map = nss_cc_uniphy0_rx_tx_map,
-+	.clkr.hw.init = &(const struct clk_init_data) {
-+		.name = "nss_cc_mac5_rx_clk_src",
-+		.parent_data = nss_cc_uniphy0_rx_tx_data,
-+		.num_parents = ARRAY_SIZE(nss_cc_uniphy0_rx_tx_data),
-+		.flags = CLK_SET_RATE_PARENT,
-+		.ops = &clk_rcg2_mux_closest_ops,
-+	},
-+};
-+
-+static struct clk_regmap_div nss_cc_mac5_rx_div_clk_src = {
-+	.reg = 0x15c,
-+	.shift = 0,
-+	.width = 4,
-+	.clkr = {
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac5_rx_div_clk_src",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac5_rx_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_regmap_div_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac5_rx_clk = {
-+	.halt_reg = 0x160,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x160,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac5_rx_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac5_rx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static const struct parent_map nss_cc_mac4_rx_div_mac5_tx_div_map[] = {
-+	{ P_MAC4_RX_DIV, 0 },
-+	{ P_MAC5_TX_DIV, 1 },
-+};
-+
-+static struct clk_regmap_mux nss_cc_mac5_tx_srds0_clk_src = {
-+	.reg = 0x300,
-+	.shift = 0,
-+	.width = 1,
-+	.parent_map = nss_cc_mac4_rx_div_mac5_tx_div_map,
-+	.clkr = {
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac5_tx_srds0_clk_src",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac4_rx_div_clk_src.clkr.hw,
-+				&nss_cc_mac5_tx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 2,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_regmap_mux_closest_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac5_tx_srds0_clk = {
-+	.halt_reg = 0x150,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x150,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac5_tx_srds0_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac5_tx_srds0_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static const struct parent_map nss_cc_mac4_tx_div_mac5_rx_div_map[] = {
-+	{ P_MAC4_TX_DIV, 0 },
-+	{ P_MAC5_RX_DIV, 1 },
-+};
-+
-+static struct clk_regmap_mux nss_cc_mac5_rx_srds0_clk_src = {
-+	.reg = 0x300,
-+	.shift = 1,
-+	.width = 1,
-+	.parent_map = nss_cc_mac4_tx_div_mac5_rx_div_map,
-+	.clkr = {
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac5_rx_srds0_clk_src",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac4_tx_div_clk_src.clkr.hw,
-+				&nss_cc_mac5_rx_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 2,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_regmap_mux_closest_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mac5_rx_srds0_clk = {
-+	.halt_reg = 0x164,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x164,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mac5_rx_srds0_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_mac5_rx_srds0_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static const struct parent_map nss_cc_uniphy1_tx312p5m_map2[] = {
-+	{ P_XO, 0 },
-+	{ P_UNIPHY1_TX312P5M, 2 },
-+};
-+
-+static const struct freq_tbl ftbl_nss_cc_ahb_clk_src[] = {
-+	F(50000000, P_XO, 1, 0, 0),
-+	F(104170000, P_UNIPHY1_TX312P5M, 3, 0, 0),
-+	{ }
-+};
-+
-+static struct clk_rcg2 nss_cc_ahb_clk_src = {
-+	.cmd_rcgr = 0x168,
-+	.freq_tbl = ftbl_nss_cc_ahb_clk_src,
-+	.hid_width = 5,
-+	.parent_map = nss_cc_uniphy1_tx312p5m_map2,
-+	.clkr.hw.init = &(const struct clk_init_data) {
-+		.name = "nss_cc_ahb_clk_src",
-+		.parent_data = nss_cc_uniphy1_tx312p5m_data,
-+		.num_parents = ARRAY_SIZE(nss_cc_uniphy1_tx312p5m_data),
-+		.ops = &clk_rcg2_ops,
-+	},
-+};
-+
-+static struct clk_branch nss_cc_ahb_clk = {
-+	.halt_reg = 0x170,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x170,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_ahb_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_ahb_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_sec_ctrl_ahb_clk = {
-+	.halt_reg = 0x174,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x174,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_sec_ctrl_ahb_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_ahb_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_tlmm_clk = {
-+	.halt_reg = 0x178,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x178,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_tlmm_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_ahb_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_tlmm_ahb_clk = {
-+	.halt_reg = 0x190,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x190,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_tlmm_ahb_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_ahb_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_cnoc_ahb_clk = {
-+	.halt_reg = 0x194,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x194,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_cnoc_ahb_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_ahb_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mdio_ahb_clk = {
-+	.halt_reg = 0x198,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x198,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mdio_ahb_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_ahb_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_mdio_master_ahb_clk = {
-+	.halt_reg = 0x19c,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x19c,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_mdio_master_ahb_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_ahb_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static const struct clk_parent_data nss_cc_xo_data[] = {
-+	{ .index = DT_XO },
-+};
-+
-+static const struct parent_map nss_cc_xo_map[] = {
-+	{ P_XO, 0 },
-+};
-+
-+static const struct freq_tbl ftbl_nss_cc_sys_clk_src[] = {
-+	F(25000000, P_XO, 2, 0, 0),
-+	{ }
-+};
-+
-+static struct clk_rcg2 nss_cc_sys_clk_src = {
-+	.cmd_rcgr = 0x1a0,
-+	.freq_tbl = ftbl_nss_cc_sys_clk_src,
-+	.hid_width = 5,
-+	.parent_map = nss_cc_xo_map,
-+	.clkr.hw.init = &(const struct clk_init_data) {
-+		.name = "nss_cc_sys_clk_src",
-+		.parent_data = nss_cc_xo_data,
-+		.num_parents = ARRAY_SIZE(nss_cc_xo_data),
-+		.ops = &clk_rcg2_ops,
-+	},
-+};
-+
-+static struct clk_branch nss_cc_srds0_sys_clk = {
-+	.halt_reg = 0x1a8,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x1a8,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_srds0_sys_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_sys_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_srds1_sys_clk = {
-+	.halt_reg = 0x1ac,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x1ac,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_srds1_sys_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_sys_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_gephy0_sys_clk = {
-+	.halt_reg = 0x1b0,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x1b0,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_gephy0_sys_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_sys_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_gephy1_sys_clk = {
-+	.halt_reg = 0x1b4,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x1b4,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_gephy1_sys_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_sys_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_gephy2_sys_clk = {
-+	.halt_reg = 0x1b8,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x1b8,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_gephy2_sys_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_sys_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch nss_cc_gephy3_sys_clk = {
-+	.halt_reg = 0x1bc,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x1bc,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "nss_cc_gephy3_sys_clk",
-+			.parent_hws = (const struct clk_hw *[]) {
-+				&nss_cc_sys_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.ops = &clk_branch2_prepare_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_regmap *nss_cc_qca8k_clocks[] = {
-+	[NSS_CC_SWITCH_CORE_CLK_SRC] = &nss_cc_switch_core_clk_src.clkr,
-+	[NSS_CC_SWITCH_CORE_CLK] = &nss_cc_switch_core_clk.clkr,
-+	[NSS_CC_APB_BRIDGE_CLK] = &nss_cc_apb_bridge_clk.clkr,
-+	[NSS_CC_MAC0_TX_CLK_SRC] = &nss_cc_mac0_tx_clk_src.clkr,
-+	[NSS_CC_MAC0_TX_DIV_CLK_SRC] = &nss_cc_mac0_tx_div_clk_src.clkr,
-+	[NSS_CC_MAC0_TX_CLK] = &nss_cc_mac0_tx_clk.clkr,
-+	[NSS_CC_MAC0_TX_SRDS1_CLK] = &nss_cc_mac0_tx_srds1_clk.clkr,
-+	[NSS_CC_MAC0_RX_CLK_SRC] = &nss_cc_mac0_rx_clk_src.clkr,
-+	[NSS_CC_MAC0_RX_DIV_CLK_SRC] = &nss_cc_mac0_rx_div_clk_src.clkr,
-+	[NSS_CC_MAC0_RX_CLK] = &nss_cc_mac0_rx_clk.clkr,
-+	[NSS_CC_MAC0_RX_SRDS1_CLK] = &nss_cc_mac0_rx_srds1_clk.clkr,
-+	[NSS_CC_MAC1_TX_CLK_SRC] = &nss_cc_mac1_tx_clk_src.clkr,
-+	[NSS_CC_MAC1_TX_DIV_CLK_SRC] = &nss_cc_mac1_tx_div_clk_src.clkr,
-+	[NSS_CC_MAC1_SRDS1_CH0_XGMII_RX_DIV_CLK_SRC] =
-+		&nss_cc_mac1_srds1_ch0_xgmii_rx_div_clk_src.clkr,
-+	[NSS_CC_MAC1_SRDS1_CH0_RX_CLK] = &nss_cc_mac1_srds1_ch0_rx_clk.clkr,
-+	[NSS_CC_MAC1_TX_CLK] = &nss_cc_mac1_tx_clk.clkr,
-+	[NSS_CC_MAC1_GEPHY0_TX_CLK] = &nss_cc_mac1_gephy0_tx_clk.clkr,
-+	[NSS_CC_MAC1_SRDS1_CH0_XGMII_RX_CLK] = &nss_cc_mac1_srds1_ch0_xgmii_rx_clk.clkr,
-+	[NSS_CC_MAC1_RX_CLK_SRC] = &nss_cc_mac1_rx_clk_src.clkr,
-+	[NSS_CC_MAC1_RX_DIV_CLK_SRC] = &nss_cc_mac1_rx_div_clk_src.clkr,
-+	[NSS_CC_MAC1_SRDS1_CH0_XGMII_TX_DIV_CLK_SRC] =
-+		&nss_cc_mac1_srds1_ch0_xgmii_tx_div_clk_src.clkr,
-+	[NSS_CC_MAC1_SRDS1_CH0_TX_CLK] = &nss_cc_mac1_srds1_ch0_tx_clk.clkr,
-+	[NSS_CC_MAC1_RX_CLK] = &nss_cc_mac1_rx_clk.clkr,
-+	[NSS_CC_MAC1_GEPHY0_RX_CLK] = &nss_cc_mac1_gephy0_rx_clk.clkr,
-+	[NSS_CC_MAC1_SRDS1_CH0_XGMII_TX_CLK] = &nss_cc_mac1_srds1_ch0_xgmii_tx_clk.clkr,
-+	[NSS_CC_MAC2_TX_CLK_SRC] = &nss_cc_mac2_tx_clk_src.clkr,
-+	[NSS_CC_MAC2_TX_DIV_CLK_SRC] = &nss_cc_mac2_tx_div_clk_src.clkr,
-+	[NSS_CC_MAC2_SRDS1_CH1_XGMII_RX_DIV_CLK_SRC] =
-+		&nss_cc_mac2_srds1_ch1_xgmii_rx_div_clk_src.clkr,
-+	[NSS_CC_MAC2_SRDS1_CH1_RX_CLK] = &nss_cc_mac2_srds1_ch1_rx_clk.clkr,
-+	[NSS_CC_MAC2_TX_CLK] = &nss_cc_mac2_tx_clk.clkr,
-+	[NSS_CC_MAC2_GEPHY1_TX_CLK] = &nss_cc_mac2_gephy1_tx_clk.clkr,
-+	[NSS_CC_MAC2_SRDS1_CH1_XGMII_RX_CLK] = &nss_cc_mac2_srds1_ch1_xgmii_rx_clk.clkr,
-+	[NSS_CC_MAC2_RX_CLK_SRC] = &nss_cc_mac2_rx_clk_src.clkr,
-+	[NSS_CC_MAC2_RX_DIV_CLK_SRC] = &nss_cc_mac2_rx_div_clk_src.clkr,
-+	[NSS_CC_MAC2_SRDS1_CH1_XGMII_TX_DIV_CLK_SRC] =
-+		&nss_cc_mac2_srds1_ch1_xgmii_tx_div_clk_src.clkr,
-+	[NSS_CC_MAC2_SRDS1_CH1_TX_CLK] = &nss_cc_mac2_srds1_ch1_tx_clk.clkr,
-+	[NSS_CC_MAC2_RX_CLK] = &nss_cc_mac2_rx_clk.clkr,
-+	[NSS_CC_MAC2_GEPHY1_RX_CLK] = &nss_cc_mac2_gephy1_rx_clk.clkr,
-+	[NSS_CC_MAC2_SRDS1_CH1_XGMII_TX_CLK] = &nss_cc_mac2_srds1_ch1_xgmii_tx_clk.clkr,
-+	[NSS_CC_MAC3_TX_CLK_SRC] = &nss_cc_mac3_tx_clk_src.clkr,
-+	[NSS_CC_MAC3_TX_DIV_CLK_SRC] = &nss_cc_mac3_tx_div_clk_src.clkr,
-+	[NSS_CC_MAC3_SRDS1_CH2_XGMII_RX_DIV_CLK_SRC] =
-+		&nss_cc_mac3_srds1_ch2_xgmii_rx_div_clk_src.clkr,
-+	[NSS_CC_MAC3_SRDS1_CH2_RX_CLK] = &nss_cc_mac3_srds1_ch2_rx_clk.clkr,
-+	[NSS_CC_MAC3_TX_CLK] = &nss_cc_mac3_tx_clk.clkr,
-+	[NSS_CC_MAC3_GEPHY2_TX_CLK] = &nss_cc_mac3_gephy2_tx_clk.clkr,
-+	[NSS_CC_MAC3_SRDS1_CH2_XGMII_RX_CLK] = &nss_cc_mac3_srds1_ch2_xgmii_rx_clk.clkr,
-+	[NSS_CC_MAC3_RX_CLK_SRC] = &nss_cc_mac3_rx_clk_src.clkr,
-+	[NSS_CC_MAC3_RX_DIV_CLK_SRC] = &nss_cc_mac3_rx_div_clk_src.clkr,
-+	[NSS_CC_MAC3_SRDS1_CH2_XGMII_TX_DIV_CLK_SRC] =
-+		&nss_cc_mac3_srds1_ch2_xgmii_tx_div_clk_src.clkr,
-+	[NSS_CC_MAC3_SRDS1_CH2_TX_CLK] = &nss_cc_mac3_srds1_ch2_tx_clk.clkr,
-+	[NSS_CC_MAC3_RX_CLK] = &nss_cc_mac3_rx_clk.clkr,
-+	[NSS_CC_MAC3_GEPHY2_RX_CLK] = &nss_cc_mac3_gephy2_rx_clk.clkr,
-+	[NSS_CC_MAC3_SRDS1_CH2_XGMII_TX_CLK] = &nss_cc_mac3_srds1_ch2_xgmii_tx_clk.clkr,
-+	[NSS_CC_MAC4_TX_CLK_SRC] = &nss_cc_mac4_tx_clk_src.clkr,
-+	[NSS_CC_MAC4_TX_DIV_CLK_SRC] = &nss_cc_mac4_tx_div_clk_src.clkr,
-+	[NSS_CC_MAC4_SRDS1_CH2_XGMII_RX_DIV_CLK_SRC] =
-+		&nss_cc_mac4_srds1_ch3_xgmii_rx_div_clk_src.clkr,
-+	[NSS_CC_MAC4_SRDS1_CH3_RX_CLK] = &nss_cc_mac4_srds1_ch3_rx_clk.clkr,
-+	[NSS_CC_MAC4_TX_CLK] = &nss_cc_mac4_tx_clk.clkr,
-+	[NSS_CC_MAC4_GEPHY3_TX_CLK] = &nss_cc_mac4_gephy3_tx_clk.clkr,
-+	[NSS_CC_MAC4_SRDS1_CH3_XGMII_RX_CLK] = &nss_cc_mac4_srds1_ch3_xgmii_rx_clk.clkr,
-+	[NSS_CC_MAC4_RX_CLK_SRC] = &nss_cc_mac4_rx_clk_src.clkr,
-+	[NSS_CC_MAC4_RX_DIV_CLK_SRC] = &nss_cc_mac4_rx_div_clk_src.clkr,
-+	[NSS_CC_MAC4_SRDS1_CH2_XGMII_TX_DIV_CLK_SRC] =
-+		&nss_cc_mac4_srds1_ch3_xgmii_tx_div_clk_src.clkr,
-+	[NSS_CC_MAC4_SRDS1_CH3_TX_CLK] = &nss_cc_mac4_srds1_ch3_tx_clk.clkr,
-+	[NSS_CC_MAC4_RX_CLK] = &nss_cc_mac4_rx_clk.clkr,
-+	[NSS_CC_MAC4_GEPHY3_RX_CLK] = &nss_cc_mac4_gephy3_rx_clk.clkr,
-+	[NSS_CC_MAC4_SRDS1_CH3_XGMII_TX_CLK] = &nss_cc_mac4_srds1_ch3_xgmii_tx_clk.clkr,
-+	[NSS_CC_MAC5_TX_CLK_SRC] = &nss_cc_mac5_tx_clk_src.clkr,
-+	[NSS_CC_MAC5_TX_DIV_CLK_SRC] = &nss_cc_mac5_tx_div_clk_src.clkr,
-+	[NSS_CC_MAC5_TX_SRDS0_CLK] = &nss_cc_mac5_tx_srds0_clk.clkr,
-+	[NSS_CC_MAC5_TX_CLK] = &nss_cc_mac5_tx_clk.clkr,
-+	[NSS_CC_MAC5_RX_CLK_SRC] = &nss_cc_mac5_rx_clk_src.clkr,
-+	[NSS_CC_MAC5_RX_DIV_CLK_SRC] = &nss_cc_mac5_rx_div_clk_src.clkr,
-+	[NSS_CC_MAC5_RX_SRDS0_CLK] = &nss_cc_mac5_rx_srds0_clk.clkr,
-+	[NSS_CC_MAC5_RX_CLK] = &nss_cc_mac5_rx_clk.clkr,
-+	[NSS_CC_MAC5_TX_SRDS0_CLK_SRC] = &nss_cc_mac5_tx_srds0_clk_src.clkr,
-+	[NSS_CC_MAC5_RX_SRDS0_CLK_SRC] = &nss_cc_mac5_rx_srds0_clk_src.clkr,
-+	[NSS_CC_AHB_CLK_SRC] = &nss_cc_ahb_clk_src.clkr,
-+	[NSS_CC_AHB_CLK] = &nss_cc_ahb_clk.clkr,
-+	[NSS_CC_SEC_CTRL_AHB_CLK] = &nss_cc_sec_ctrl_ahb_clk.clkr,
-+	[NSS_CC_TLMM_CLK] = &nss_cc_tlmm_clk.clkr,
-+	[NSS_CC_TLMM_AHB_CLK] = &nss_cc_tlmm_ahb_clk.clkr,
-+	[NSS_CC_CNOC_AHB_CLK] = &nss_cc_cnoc_ahb_clk.clkr,
-+	[NSS_CC_MDIO_AHB_CLK] = &nss_cc_mdio_ahb_clk.clkr,
-+	[NSS_CC_MDIO_MASTER_AHB_CLK] = &nss_cc_mdio_master_ahb_clk.clkr,
-+	[NSS_CC_SYS_CLK_SRC] = &nss_cc_sys_clk_src.clkr,
-+	[NSS_CC_SRDS0_SYS_CLK] = &nss_cc_srds0_sys_clk.clkr,
-+	[NSS_CC_SRDS1_SYS_CLK] = &nss_cc_srds1_sys_clk.clkr,
-+	[NSS_CC_GEPHY0_SYS_CLK] = &nss_cc_gephy0_sys_clk.clkr,
-+	[NSS_CC_GEPHY1_SYS_CLK] = &nss_cc_gephy1_sys_clk.clkr,
-+	[NSS_CC_GEPHY2_SYS_CLK] = &nss_cc_gephy2_sys_clk.clkr,
-+	[NSS_CC_GEPHY3_SYS_CLK] = &nss_cc_gephy3_sys_clk.clkr,
-+};
-+
-+static const struct qcom_reset_map nss_cc_qca8k_resets[] = {
-+	[NSS_CC_SWITCH_CORE_ARES] = { 0xc, 2 },
-+	[NSS_CC_APB_BRIDGE_ARES] = { 0x10, 2 },
-+	[NSS_CC_MAC0_TX_ARES] = { 0x20, 2 },
-+	[NSS_CC_MAC0_TX_SRDS1_ARES] = { 0x24, 2 },
-+	[NSS_CC_MAC0_RX_ARES] = { 0x34, 2 },
-+	[NSS_CC_MAC0_RX_SRDS1_ARES] = { 0x3c, 2 },
-+	[NSS_CC_MAC1_SRDS1_CH0_RX_ARES] = { 0x50, 2 },
-+	[NSS_CC_MAC1_TX_ARES] = { 0x54, 2 },
-+	[NSS_CC_MAC1_GEPHY0_TX_ARES] = { 0x58, 2 },
-+	[NSS_CC_MAC1_SRDS1_CH0_XGMII_RX_ARES] = { 0x5c, 2 },
-+	[NSS_CC_MAC1_SRDS1_CH0_TX_ARES] = { 0x70, 2 },
-+	[NSS_CC_MAC1_RX_ARES] = { 0x74, 2 },
-+	[NSS_CC_MAC1_GEPHY0_RX_ARES] = { 0x78, 2 },
-+	[NSS_CC_MAC1_SRDS1_CH0_XGMII_TX_ARES] = { 0x7c, 2 },
-+	[NSS_CC_MAC2_SRDS1_CH1_RX_ARES] = { 0x90, 2 },
-+	[NSS_CC_MAC2_TX_ARES] = { 0x94, 2 },
-+	[NSS_CC_MAC2_GEPHY1_TX_ARES] = { 0x98, 2 },
-+	[NSS_CC_MAC2_SRDS1_CH1_XGMII_RX_ARES] = { 0x9c, 2 },
-+	[NSS_CC_MAC2_SRDS1_CH1_TX_ARES] = { 0xb0, 2 },
-+	[NSS_CC_MAC2_RX_ARES] = { 0xb4, 2 },
-+	[NSS_CC_MAC2_GEPHY1_RX_ARES] = { 0xb8, 2 },
-+	[NSS_CC_MAC2_SRDS1_CH1_XGMII_TX_ARES] = { 0xbc, 2 },
-+	[NSS_CC_MAC3_SRDS1_CH2_RX_ARES] = { 0xd0, 2 },
-+	[NSS_CC_MAC3_TX_ARES] = { 0xd4, 2 },
-+	[NSS_CC_MAC3_GEPHY2_TX_ARES] = { 0xd8, 2 },
-+	[NSS_CC_MAC3_SRDS1_CH2_XGMII_RX_ARES] = { 0xdc, 2 },
-+	[NSS_CC_MAC3_SRDS1_CH2_TX_ARES] = { 0xf0, 2 },
-+	[NSS_CC_MAC3_RX_ARES] = { 0xf4, 2 },
-+	[NSS_CC_MAC3_GEPHY2_RX_ARES] = { 0xf8, 2 },
-+	[NSS_CC_MAC3_SRDS1_CH2_XGMII_TX_ARES] = { 0xfc, 2 },
-+	[NSS_CC_MAC4_SRDS1_CH3_RX_ARES] = { 0x110, 2 },
-+	[NSS_CC_MAC4_TX_ARES] = { 0x114, 2 },
-+	[NSS_CC_MAC4_GEPHY3_TX_ARES] = { 0x118, 2 },
-+	[NSS_CC_MAC4_SRDS1_CH3_XGMII_RX_ARES] = { 0x11c, 2 },
-+	[NSS_CC_MAC4_SRDS1_CH3_TX_ARES] = { 0x130, 2 },
-+	[NSS_CC_MAC4_RX_ARES] = { 0x134, 2 },
-+	[NSS_CC_MAC4_GEPHY3_RX_ARES] = { 0x138, 2 },
-+	[NSS_CC_MAC4_SRDS1_CH3_XGMII_TX_ARES] = { 0x13c, 2 },
-+	[NSS_CC_MAC5_TX_ARES] = { 0x14c, 2 },
-+	[NSS_CC_MAC5_TX_SRDS0_ARES] = { 0x150, 2 },
-+	[NSS_CC_MAC5_RX_ARES] = { 0x160, 2 },
-+	[NSS_CC_MAC5_RX_SRDS0_ARES] = { 0x164, 2 },
-+	[NSS_CC_AHB_ARES] = { 0x170, 2 },
-+	[NSS_CC_SEC_CTRL_AHB_ARES] = { 0x174, 2 },
-+	[NSS_CC_TLMM_ARES] = { 0x178, 2 },
-+	[NSS_CC_TLMM_AHB_ARES] = { 0x190, 2 },
-+	[NSS_CC_CNOC_AHB_ARES] = { 0x194, 2 }, /* reset CNOC AHB & APB */
-+	[NSS_CC_MDIO_AHB_ARES] = { 0x198, 2 },
-+	[NSS_CC_MDIO_MASTER_AHB_ARES] = { 0x19c, 2 },
-+	[NSS_CC_SRDS0_SYS_ARES] = { 0x1a8, 2 },
-+	[NSS_CC_SRDS1_SYS_ARES] = { 0x1ac, 2 },
-+	[NSS_CC_GEPHY0_SYS_ARES] = { 0x1b0, 2 },
-+	[NSS_CC_GEPHY1_SYS_ARES] = { 0x1b4, 2 },
-+	[NSS_CC_GEPHY2_SYS_ARES] = { 0x1b8, 2 },
-+	[NSS_CC_GEPHY3_SYS_ARES] = { 0x1bc, 2 },
-+	[NSS_CC_SEC_CTRL_ARES] = { 0x1c8, 2 },
-+	[NSS_CC_SEC_CTRL_SENSE_ARES] = { 0x1d0, 2 },
-+	[NSS_CC_SLEEP_ARES] = { 0x1e0, 2 },
-+	[NSS_CC_DEBUG_ARES] = { 0x1e8, 2 },
-+	[NSS_CC_GEPHY0_ARES] = { 0x304, 0 },
-+	[NSS_CC_GEPHY1_ARES] = { 0x304, 1 },
-+	[NSS_CC_GEPHY2_ARES] = { 0x304, 2 },
-+	[NSS_CC_GEPHY3_ARES] = { 0x304, 3 },
-+	[NSS_CC_DSP_ARES] = { 0x304, 4 },
-+	[NSS_CC_GLOBAL_ARES] = { 0x308, 0 },
-+	[NSS_CC_XPCS_ARES] = { 0x30c, 0 },
-+};
-+
-+/* For each read/write operation of clock register, there are three MDIO frames
-+ * sent to the device.
-+ *
-+ * 1. The high address part[23:8] of register is packaged into the first MDIO frame
-+ *    for selecting page.
-+ * 2. The low address part[7:0] of register is packaged into the second MDIO frame
-+ *    with the low 16bit data to read/write.
-+ * 3. The low address part[7:0] of register is packaged into the last MDIO frame
-+ *    with the high 16bit data to read/write.
-+ *
-+ * The clause22 MDIO frame format used by device is as below.
-+ * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-+ * | ST| OP|   ADDR  |   REG   | TA|             DATA              |
-+ * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-+ */
-+static inline void convert_reg_to_mii_addr(u32 regaddr, u16 *reg, u16 *phy_addr, u16 *page)
-+{
-+	*reg = FIELD_GET(QCA8K_CLK_REG_MASK, regaddr);
-+	*phy_addr = FIELD_GET(QCA8K_CLK_PHY_ADDR_MASK, regaddr) | QCA8K_LOW_ADDR_PREFIX;
-+	*page = FIELD_GET(QCA8K_CLK_PAGE_MASK, regaddr);
-+}
-+
-+static int qca8k_mii_read(struct mii_bus *bus, u16 switch_phy_id, u32 reg, u32 *val)
-+{
-+	int ret, data;
-+
-+	ret = __mdiobus_read(bus, switch_phy_id, reg);
-+	if (ret >= 0) {
-+		data = ret;
-+
-+		ret = __mdiobus_read(bus, switch_phy_id, (reg | QCA8K_REG_DATA_UPPER_16_BITS));
-+		if (ret >= 0)
-+			*val = data | ret << 16;
-+	}
-+
-+	if (ret < 0)
-+		dev_err_ratelimited(&bus->dev, "fail to read qca8k mii register\n");
-+
-+	return ret < 0 ? ret : 0;
-+}
-+
-+static void qca8k_mii_write(struct mii_bus *bus, u16 switch_phy_id, u32 reg, u32 val)
-+{
-+	int ret;
-+
-+	ret = __mdiobus_write(bus, switch_phy_id, reg, lower_16_bits(val));
-+	if (ret >= 0)
-+		ret = __mdiobus_write(bus, switch_phy_id, (reg | QCA8K_REG_DATA_UPPER_16_BITS),
-+				      upper_16_bits(val));
-+
-+	if (ret < 0)
-+		dev_err_ratelimited(&bus->dev, "fail to write qca8k mii register\n");
-+}
-+
-+static int qca8k_mii_page_set(struct mii_bus *bus, u16 switch_phy_id, u32 reg, u16 page)
-+{
-+	int ret;
-+
-+	ret = __mdiobus_write(bus, switch_phy_id, reg, page);
-+	if (ret < 0)
-+		dev_err_ratelimited(&bus->dev, "fail to set page\n");
-+
-+	return ret;
-+}
-+
-+static int qca8k_regmap_read(void *context, unsigned int regaddr, unsigned int *val)
-+{
-+	struct mii_bus *bus = context;
-+	u16 reg, phy_addr, page;
-+	int ret;
-+
-+	regaddr += QCA8K_CLK_REG_BASE;
-+	convert_reg_to_mii_addr(regaddr, &reg, &phy_addr, &page);
-+
-+	mutex_lock(&bus->mdio_lock);
-+	ret = qca8k_mii_page_set(bus, QCA8K_HIGH_ADDR_PREFIX, QCA8K_CFG_PAGE_REG, page);
-+	if (ret < 0)
-+		goto qca8k_read_exit;
-+
-+	ret = qca8k_mii_read(bus, phy_addr, reg, val);
-+
-+qca8k_read_exit:
-+	mutex_unlock(&bus->mdio_lock);
-+	return ret;
-+};
-+
-+static int qca8k_regmap_write(void *context, unsigned int regaddr, unsigned int val)
-+{
-+	struct mii_bus *bus = context;
-+	u16 reg, phy_addr, page;
-+	int ret;
-+
-+	regaddr += QCA8K_CLK_REG_BASE;
-+	convert_reg_to_mii_addr(regaddr, &reg, &phy_addr, &page);
-+
-+	mutex_lock(&bus->mdio_lock);
-+	ret = qca8k_mii_page_set(bus, QCA8K_HIGH_ADDR_PREFIX, QCA8K_CFG_PAGE_REG, page);
-+	if (ret < 0)
-+		goto qca8k_write_exit;
-+
-+	qca8k_mii_write(bus, phy_addr, reg, val);
-+
-+qca8k_write_exit:
-+	mutex_unlock(&bus->mdio_lock);
-+	return ret;
-+};
-+
-+static int qca8k_regmap_update_bits(void *context, unsigned int regaddr, unsigned int mask,
-+				    unsigned int value)
-+{
-+	struct mii_bus *bus = context;
-+	u16 reg, phy_addr, page;
-+	int ret;
-+	u32 val;
-+
-+	regaddr += QCA8K_CLK_REG_BASE;
-+	convert_reg_to_mii_addr(regaddr, &reg, &phy_addr, &page);
-+
-+	mutex_lock(&bus->mdio_lock);
-+	ret = qca8k_mii_page_set(bus, QCA8K_HIGH_ADDR_PREFIX, QCA8K_CFG_PAGE_REG, page);
-+	if (ret < 0)
-+		goto qca8k_update_exit;
-+
-+	ret = qca8k_mii_read(bus, phy_addr, reg, &val);
-+	if (ret < 0)
-+		goto qca8k_update_exit;
-+
-+	val &= ~mask;
-+	val |= value;
-+	qca8k_mii_write(bus, phy_addr, reg, val);
-+
-+qca8k_update_exit:
-+	mutex_unlock(&bus->mdio_lock);
-+	return ret;
-+}
-+
-+static const struct regmap_config nss_cc_qca8k_regmap_config = {
-+	.reg_bits = 12,
-+	.reg_stride = 4,
-+	.val_bits = 32,
-+	.max_register = 0x30c,
-+	.reg_read = qca8k_regmap_read,
-+	.reg_write = qca8k_regmap_write,
-+	.reg_update_bits = qca8k_regmap_update_bits,
-+	.disable_locking = true,
-+};
-+
-+static const struct qcom_cc_desc nss_cc_qca8k_desc = {
-+	.config = &nss_cc_qca8k_regmap_config,
-+	.clks = nss_cc_qca8k_clocks,
-+	.num_clks = ARRAY_SIZE(nss_cc_qca8k_clocks),
-+	.resets = nss_cc_qca8k_resets,
-+	.num_resets = ARRAY_SIZE(nss_cc_qca8k_resets),
-+};
-+
-+static int nss_cc_qca8k_probe(struct mdio_device *mdiodev)
-+{
-+	struct regmap *regmap;
-+
-+	regmap = devm_regmap_init(&mdiodev->dev, NULL, mdiodev->bus, nss_cc_qca8k_desc.config);
-+	if (IS_ERR(regmap))
-+		return dev_err_probe(&mdiodev->dev, PTR_ERR(regmap), "Failed to init regmap\n");
-+
-+	return qcom_cc_really_probe(&mdiodev->dev, &nss_cc_qca8k_desc, regmap);
-+}
-+
-+static const struct of_device_id nss_cc_qca8k_match_table[] = {
-+	{ .compatible = "qcom,qca8084-nsscc" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, nss_cc_qca8k_match_table);
-+
-+static struct mdio_driver nss_cc_qca8k_driver = {
-+	.mdiodrv.driver = {
-+		.name = "qcom,qca8k-nsscc",
-+		.of_match_table	= nss_cc_qca8k_match_table,
-+	},
-+	.probe = nss_cc_qca8k_probe,
-+};
-+
-+mdio_module_driver(nss_cc_qca8k_driver);
-+
-+MODULE_DESCRIPTION("QCOM NSS_CC QCA8K Driver");
-+MODULE_LICENSE("GPL");
--- 
-2.42.0
+>
+>diff --git a/tools/testing/vsock/Makefile b/tools/testing/vsock/Makefile
+>index 21a98ba565ab..bb938e4790b5 100644
+>--- a/tools/testing/vsock/Makefile
+>+++ b/tools/testing/vsock/Makefile
+>@@ -1,7 +1,7 @@
+> # SPDX-License-Identifier: GPL-2.0-only
+> all: test vsock_perf
+> test: vsock_test vsock_diag_test
+>-vsock_test: vsock_test.o timeout.o control.o util.o
+>+vsock_test: vsock_test.o vsock_test_zerocopy.o timeout.o control.o util.o msg_zerocopy_common.o
+> vsock_diag_test: vsock_diag_test.o timeout.o control.o util.o
+> vsock_perf: vsock_perf.o
+>
+>diff --git a/tools/testing/vsock/msg_zerocopy_common.c b/tools/testing/vsock/msg_zerocopy_common.c
+>new file mode 100644
+>index 000000000000..5a4bdf7b5132
+>--- /dev/null
+>+++ b/tools/testing/vsock/msg_zerocopy_common.c
+>@@ -0,0 +1,87 @@
+>+// SPDX-License-Identifier: GPL-2.0-only
+>+/* Some common code for MSG_ZEROCOPY logic
+>+ *
+>+ * Copyright (C) 2023 SberDevices.
+>+ *
+>+ * Author: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>+ */
+>+
+>+#include <stdio.h>
+>+#include <stdlib.h>
+>+#include <sys/types.h>
+>+#include <sys/socket.h>
+>+#include <linux/errqueue.h>
+>+
+>+#include "msg_zerocopy_common.h"
+>+
+>+void enable_so_zerocopy(int fd)
+>+{
+>+	int val = 1;
+>+
+>+	if (setsockopt(fd, SOL_SOCKET, SO_ZEROCOPY, &val, sizeof(val))) {
+>+		perror("setsockopt");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+}
+>+
+>+void vsock_recv_completion(int fd, const bool *zerocopied)
+>+{
+>+	struct sock_extended_err *serr;
+>+	struct msghdr msg = { 0 };
+>+	char cmsg_data[128];
+>+	struct cmsghdr *cm;
+>+	ssize_t res;
+>+
+>+	msg.msg_control = cmsg_data;
+>+	msg.msg_controllen = sizeof(cmsg_data);
+>+
+>+	res = recvmsg(fd, &msg, MSG_ERRQUEUE);
+>+	if (res) {
+>+		fprintf(stderr, "failed to read error queue: %zi\n", res);
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	cm = CMSG_FIRSTHDR(&msg);
+>+	if (!cm) {
+>+		fprintf(stderr, "cmsg: no cmsg\n");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	if (cm->cmsg_level != SOL_VSOCK) {
+>+		fprintf(stderr, "cmsg: unexpected 'cmsg_level'\n");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	if (cm->cmsg_type != VSOCK_RECVERR) {
+>+		fprintf(stderr, "cmsg: unexpected 'cmsg_type'\n");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	serr = (void *)CMSG_DATA(cm);
+>+	if (serr->ee_origin != SO_EE_ORIGIN_ZEROCOPY) {
+>+		fprintf(stderr, "serr: wrong origin: %u\n", serr->ee_origin);
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	if (serr->ee_errno) {
+>+		fprintf(stderr, "serr: wrong error code: %u\n", serr->ee_errno);
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	/* This flag is used for tests, to check that transmission was
+>+	 * performed as expected: zerocopy or fallback to copy. If NULL
+>+	 * - don't care.
+>+	 */
+>+	if (!zerocopied)
+>+		return;
+>+
+>+	if (*zerocopied && (serr->ee_code & SO_EE_CODE_ZEROCOPY_COPIED)) {
+>+		fprintf(stderr, "serr: was copy instead of zerocopy\n");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	if (!*zerocopied && !(serr->ee_code & SO_EE_CODE_ZEROCOPY_COPIED)) {
+>+		fprintf(stderr, "serr: was zerocopy instead of copy\n");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+}
+>diff --git a/tools/testing/vsock/msg_zerocopy_common.h b/tools/testing/vsock/msg_zerocopy_common.h
+>new file mode 100644
+>index 000000000000..3763c5ccedb9
+>--- /dev/null
+>+++ b/tools/testing/vsock/msg_zerocopy_common.h
+>@@ -0,0 +1,18 @@
+>+/* SPDX-License-Identifier: GPL-2.0-only */
+>+#ifndef MSG_ZEROCOPY_COMMON_H
+>+#define MSG_ZEROCOPY_COMMON_H
+>+
+>+#include <stdbool.h>
+>+
+>+#ifndef SOL_VSOCK
+>+#define SOL_VSOCK	287
+>+#endif
+>+
+>+#ifndef VSOCK_RECVERR
+>+#define VSOCK_RECVERR	1
+>+#endif
+>+
+>+void enable_so_zerocopy(int fd);
+>+void vsock_recv_completion(int fd, const bool *zerocopied);
+>+
+>+#endif /* MSG_ZEROCOPY_COMMON_H */
+>diff --git a/tools/testing/vsock/util.c b/tools/testing/vsock/util.c
+>index 6779d5008b27..92336721321a 100644
+>--- a/tools/testing/vsock/util.c
+>+++ b/tools/testing/vsock/util.c
+>@@ -11,10 +11,12 @@
+> #include <stdio.h>
+> #include <stdint.h>
+> #include <stdlib.h>
+>+#include <string.h>
+> #include <signal.h>
+> #include <unistd.h>
+> #include <assert.h>
+> #include <sys/epoll.h>
+>+#include <sys/mman.h>
+>
+> #include "timeout.h"
+> #include "control.h"
+>@@ -444,3 +446,134 @@ unsigned long hash_djb2(const void *data, size_t len)
+>
+> 	return hash;
+> }
+>+
+>+size_t iovec_bytes(const struct iovec *iov, size_t iovnum)
+>+{
+>+	size_t bytes;
+>+	int i;
+>+
+>+	for (bytes = 0, i = 0; i < iovnum; i++)
+>+		bytes += iov[i].iov_len;
+>+
+>+	return bytes;
+>+}
+>+
+>+unsigned long iovec_hash_djb2(const struct iovec *iov, size_t iovnum)
+>+{
+>+	unsigned long hash;
+>+	size_t iov_bytes;
+>+	size_t offs;
+>+	void *tmp;
+>+	int i;
+>+
+>+	iov_bytes = iovec_bytes(iov, iovnum);
+>+
+>+	tmp = malloc(iov_bytes);
+>+	if (!tmp) {
+>+		perror("malloc");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	for (offs = 0, i = 0; i < iovnum; i++) {
+>+		memcpy(tmp + offs, iov[i].iov_base, iov[i].iov_len);
+>+		offs += iov[i].iov_len;
+>+	}
+>+
+>+	hash = hash_djb2(tmp, iov_bytes);
+>+	free(tmp);
+>+
+>+	return hash;
+>+}
+>+
+>+/* Allocates and returns new 'struct iovec *' according pattern
+>+ * in the 'test_iovec'. For each element in the 'test_iovec' it
+>+ * allocates new element in the resulting 'iovec'. 'iov_len'
+>+ * of the new element is copied from 'test_iovec'. 'iov_base' is
+>+ * allocated depending on the 'iov_base' of 'test_iovec':
+>+ *
+>+ * 'iov_base' == NULL -> valid buf: mmap('iov_len').
+>+ *
+>+ * 'iov_base' == MAP_FAILED -> invalid buf:
+>+ *               mmap('iov_len'), then munmap('iov_len').
+>+ *               'iov_base' still contains result of
+>+ *               mmap().
+>+ *
+>+ * 'iov_base' == number -> unaligned valid buf:
+>+ *               mmap('iov_len') + number.
+>+ *
+>+ * 'iovnum' is number of elements in 'test_iovec'.
+>+ *
+>+ * Returns new 'iovec' or calls 'exit()' on error.
+>+ */
+>+struct iovec *alloc_test_iovec(const struct iovec *test_iovec, int iovnum)
+>+{
+>+	struct iovec *iovec;
+>+	int i;
+>+
+>+	iovec = malloc(sizeof(*iovec) * iovnum);
+>+	if (!iovec) {
+>+		perror("malloc");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	for (i = 0; i < iovnum; i++) {
+>+		iovec[i].iov_len = test_iovec[i].iov_len;
+>+
+>+		iovec[i].iov_base = mmap(NULL, iovec[i].iov_len,
+>+					 PROT_READ | PROT_WRITE,
+>+					 MAP_PRIVATE | MAP_ANONYMOUS | MAP_POPULATE,
+>+					 -1, 0);
+>+		if (iovec[i].iov_base == MAP_FAILED) {
+>+			perror("mmap");
+>+			exit(EXIT_FAILURE);
+>+		}
+>+
+>+		if (test_iovec[i].iov_base != MAP_FAILED)
+>+			iovec[i].iov_base += (uintptr_t)test_iovec[i].iov_base;
+>+	}
+>+
+>+	/* Unmap "invalid" elements. */
+>+	for (i = 0; i < iovnum; i++) {
+>+		if (test_iovec[i].iov_base == MAP_FAILED) {
+>+			if (munmap(iovec[i].iov_base, iovec[i].iov_len)) {
+>+				perror("munmap");
+>+				exit(EXIT_FAILURE);
+>+			}
+>+		}
+>+	}
+>+
+>+	for (i = 0; i < iovnum; i++) {
+>+		int j;
+>+
+>+		if (test_iovec[i].iov_base == MAP_FAILED)
+>+			continue;
+>+
+>+		for (j = 0; j < iovec[i].iov_len; j++)
+>+			((uint8_t *)iovec[i].iov_base)[j] = rand() & 0xff;
+>+	}
+>+
+>+	return iovec;
+>+}
+>+
+>+/* Frees 'iovec *', previously allocated by 'alloc_test_iovec()'.
+>+ * On error calls 'exit()'.
+>+ */
+>+void free_test_iovec(const struct iovec *test_iovec,
+>+		     struct iovec *iovec, int iovnum)
+>+{
+>+	int i;
+>+
+>+	for (i = 0; i < iovnum; i++) {
+>+		if (test_iovec[i].iov_base != MAP_FAILED) {
+>+			if (test_iovec[i].iov_base)
+>+				iovec[i].iov_base -= (uintptr_t)test_iovec[i].iov_base;
+>+
+>+			if (munmap(iovec[i].iov_base, iovec[i].iov_len)) {
+>+				perror("munmap");
+>+				exit(EXIT_FAILURE);
+>+			}
+>+		}
+>+	}
+>+
+>+	free(iovec);
+>+}
+>diff --git a/tools/testing/vsock/util.h b/tools/testing/vsock/util.h
+>index e5407677ce05..a77175d25864 100644
+>--- a/tools/testing/vsock/util.h
+>+++ b/tools/testing/vsock/util.h
+>@@ -53,4 +53,9 @@ void list_tests(const struct test_case *test_cases);
+> void skip_test(struct test_case *test_cases, size_t test_cases_len,
+> 	       const char *test_id_str);
+> unsigned long hash_djb2(const void *data, size_t len);
+>+size_t iovec_bytes(const struct iovec *iov, size_t iovnum);
+>+unsigned long iovec_hash_djb2(const struct iovec *iov, size_t iovnum);
+>+struct iovec *alloc_test_iovec(const struct iovec *test_iovec, int iovnum);
+>+void free_test_iovec(const struct iovec *test_iovec,
+>+		     struct iovec *iovec, int iovnum);
+> #endif /* UTIL_H */
+>diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
+>index da4cb819a183..c1f7bc9abd22 100644
+>--- a/tools/testing/vsock/vsock_test.c
+>+++ b/tools/testing/vsock/vsock_test.c
+>@@ -21,6 +21,7 @@
+> #include <poll.h>
+> #include <signal.h>
+>
+>+#include "vsock_test_zerocopy.h"
+> #include "timeout.h"
+> #include "control.h"
+> #include "util.h"
+>@@ -1269,6 +1270,21 @@ static struct test_case test_cases[] = {
+> 		.run_client = test_stream_shutrd_client,
+> 		.run_server = test_stream_shutrd_server,
+> 	},
+>+	{
+>+		.name = "SOCK_STREAM MSG_ZEROCOPY",
+>+		.run_client = test_stream_msgzcopy_client,
+>+		.run_server = test_stream_msgzcopy_server,
+>+	},
+>+	{
+>+		.name = "SOCK_SEQPACKET MSG_ZEROCOPY",
+>+		.run_client = test_seqpacket_msgzcopy_client,
+>+		.run_server = test_seqpacket_msgzcopy_server,
+>+	},
+>+	{
+>+		.name = "SOCK_STREAM MSG_ZEROCOPY empty MSG_ERRQUEUE",
+>+		.run_client = test_stream_msgzcopy_empty_errq_client,
+>+		.run_server = test_stream_msgzcopy_empty_errq_server,
+>+	},
+> 	{},
+> };
+>
+>diff --git a/tools/testing/vsock/vsock_test_zerocopy.c b/tools/testing/vsock/vsock_test_zerocopy.c
+>new file mode 100644
+>index 000000000000..a16ff76484e6
+>--- /dev/null
+>+++ b/tools/testing/vsock/vsock_test_zerocopy.c
+>@@ -0,0 +1,358 @@
+>+// SPDX-License-Identifier: GPL-2.0-only
+>+/* MSG_ZEROCOPY feature tests for vsock
+>+ *
+>+ * Copyright (C) 2023 SberDevices.
+>+ *
+>+ * Author: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>+ */
+>+
+>+#include <stdio.h>
+>+#include <stdlib.h>
+>+#include <string.h>
+>+#include <sys/mman.h>
+>+#include <unistd.h>
+>+#include <poll.h>
+>+#include <linux/errqueue.h>
+>+#include <linux/kernel.h>
+>+#include <errno.h>
+>+
+>+#include "control.h"
+>+#include "vsock_test_zerocopy.h"
+>+#include "msg_zerocopy_common.h"
+>+
+>+#ifndef PAGE_SIZE
+>+#define PAGE_SIZE		4096
+>+#endif
+>+
+>+#define VSOCK_TEST_DATA_MAX_IOV 3
+>+
+>+struct vsock_test_data {
+>+	/* This test case if for SOCK_STREAM only. */
+>+	bool stream_only;
+>+	/* Data must be zerocopied. This field is checked against
+>+	 * field 'ee_code' of the 'struct sock_extended_err', which
+>+	 * contains bit to detect that zerocopy transmission was
+>+	 * fallbacked to copy mode.
+>+	 */
+>+	bool zerocopied;
+>+	/* Enable SO_ZEROCOPY option on the socket. Without enabled
+>+	 * SO_ZEROCOPY, every MSG_ZEROCOPY transmission will behave
+>+	 * like without MSG_ZEROCOPY flag.
+>+	 */
+>+	bool so_zerocopy;
+>+	/* 'errno' after 'sendmsg()' call. */
+>+	int sendmsg_errno;
+>+	/* Number of valid elements in 'vecs'. */
+>+	int vecs_cnt;
+>+	struct iovec vecs[VSOCK_TEST_DATA_MAX_IOV];
+>+};
+>+
+>+static struct vsock_test_data test_data_array[] = {
+>+	/* Last element has non-page aligned size. */
+>+	{
+>+		.zerocopied = true,
+>+		.so_zerocopy = true,
+>+		.sendmsg_errno = 0,
+>+		.vecs_cnt = 3,
+>+		{
+>+			{ NULL, PAGE_SIZE },
+>+			{ NULL, PAGE_SIZE },
+>+			{ NULL, 200 }
+>+		}
+>+	},
+>+	/* All elements have page aligned base and size. */
+>+	{
+>+		.zerocopied = true,
+>+		.so_zerocopy = true,
+>+		.sendmsg_errno = 0,
+>+		.vecs_cnt = 3,
+>+		{
+>+			{ NULL, PAGE_SIZE },
+>+			{ NULL, PAGE_SIZE * 2 },
+>+			{ NULL, PAGE_SIZE * 3 }
+>+		}
+>+	},
+>+	/* All elements have page aligned base and size. But
+>+	 * data length is bigger than 64Kb.
+>+	 */
+>+	{
+>+		.zerocopied = true,
+>+		.so_zerocopy = true,
+>+		.sendmsg_errno = 0,
+>+		.vecs_cnt = 3,
+>+		{
+>+			{ NULL, PAGE_SIZE * 16 },
+>+			{ NULL, PAGE_SIZE * 16 },
+>+			{ NULL, PAGE_SIZE * 16 }
+>+		}
+>+	},
+>+	/* Middle element has both non-page aligned base and size. */
+>+	{
+>+		.zerocopied = true,
+>+		.so_zerocopy = true,
+>+		.sendmsg_errno = 0,
+>+		.vecs_cnt = 3,
+>+		{
+>+			{ NULL, PAGE_SIZE },
+>+			{ (void *)1, 100 },
+>+			{ NULL, PAGE_SIZE }
+>+		}
+>+	},
+>+	/* Middle element is unmapped. */
+>+	{
+>+		.zerocopied = false,
+>+		.so_zerocopy = true,
+>+		.sendmsg_errno = ENOMEM,
+>+		.vecs_cnt = 3,
+>+		{
+>+			{ NULL, PAGE_SIZE },
+>+			{ MAP_FAILED, PAGE_SIZE },
+>+			{ NULL, PAGE_SIZE }
+>+		}
+>+	},
+>+	/* Valid data, but SO_ZEROCOPY is off. This
+>+	 * will trigger fallback to copy.
+>+	 */
+>+	{
+>+		.zerocopied = false,
+>+		.so_zerocopy = false,
+>+		.sendmsg_errno = 0,
+>+		.vecs_cnt = 1,
+>+		{
+>+			{ NULL, PAGE_SIZE }
+>+		}
+>+	},
+>+	/* Valid data, but message is bigger than peer's
+>+	 * buffer, so this will trigger fallback to copy.
+>+	 * This test is for SOCK_STREAM only, because
+>+	 * for SOCK_SEQPACKET, 'sendmsg()' returns EMSGSIZE.
+>+	 */
+>+	{
+>+		.stream_only = true,
+>+		.zerocopied = false,
+>+		.so_zerocopy = true,
+>+		.sendmsg_errno = 0,
+>+		.vecs_cnt = 1,
+>+		{
+>+			{ NULL, 100 * PAGE_SIZE }
+>+		}
+>+	},
+>+};
+>+
+>+#define POLL_TIMEOUT_MS		100
+>+
+>+static void test_client(const struct test_opts *opts,
+>+			const struct vsock_test_data *test_data,
+>+			bool sock_seqpacket)
+>+{
+>+	struct pollfd fds = { 0 };
+>+	struct msghdr msg = { 0 };
+>+	ssize_t sendmsg_res;
+>+	struct iovec *iovec;
+>+	int fd;
+>+
+>+	if (sock_seqpacket)
+>+		fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
+>+	else
+>+		fd = vsock_stream_connect(opts->peer_cid, 1234);
+>+
+>+	if (fd < 0) {
+>+		perror("connect");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	if (test_data->so_zerocopy)
+>+		enable_so_zerocopy(fd);
+>+
+>+	iovec = alloc_test_iovec(test_data->vecs, test_data->vecs_cnt);
+>+
+>+	msg.msg_iov = iovec;
+>+	msg.msg_iovlen = test_data->vecs_cnt;
+>+
+>+	errno = 0;
+>+
+>+	sendmsg_res = sendmsg(fd, &msg, MSG_ZEROCOPY);
+>+	if (errno != test_data->sendmsg_errno) {
+>+		fprintf(stderr, "expected 'errno' == %i, got %i\n",
+>+			test_data->sendmsg_errno, errno);
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	if (!errno) {
+>+		if (sendmsg_res != iovec_bytes(iovec, test_data->vecs_cnt)) {
+>+			fprintf(stderr, "expected 'sendmsg()' == %li, got %li\n",
+>+				iovec_bytes(iovec, test_data->vecs_cnt),
+>+				sendmsg_res);
+>+			exit(EXIT_FAILURE);
+>+		}
+>+	}
+>+
+>+	fds.fd = fd;
+>+	fds.events = 0;
+>+
+>+	if (poll(&fds, 1, POLL_TIMEOUT_MS) < 0) {
+>+		perror("poll");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	if (fds.revents & POLLERR) {
+>+		vsock_recv_completion(fd, &test_data->zerocopied);
+>+	} else if (test_data->so_zerocopy && !test_data->sendmsg_errno) {
+>+		/* If we don't have data in the error queue, but
+>+		 * SO_ZEROCOPY was enabled and 'sendmsg()' was
+>+		 * successful - this is an error.
+>+		 */
+>+		fprintf(stderr, "POLLERR expected\n");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	if (!test_data->sendmsg_errno)
+>+		control_writeulong(iovec_hash_djb2(iovec, test_data->vecs_cnt));
+>+	else
+>+		control_writeulong(0);
+>+
+>+	control_writeln("DONE");
+>+	free_test_iovec(test_data->vecs, iovec, test_data->vecs_cnt);
+>+	close(fd);
+>+}
+>+
+>+void test_stream_msgzcopy_client(const struct test_opts *opts)
+>+{
+>+	int i;
+>+
+>+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
+>+		test_client(opts, &test_data_array[i], false);
+>+}
+>+
+>+void test_seqpacket_msgzcopy_client(const struct test_opts *opts)
+>+{
+>+	int i;
+>+
+>+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++) {
+>+		if (test_data_array[i].stream_only)
+>+			continue;
+>+
+>+		test_client(opts, &test_data_array[i], true);
+>+	}
+>+}
+>+
+>+static void test_server(const struct test_opts *opts,
+>+			const struct vsock_test_data *test_data,
+>+			bool sock_seqpacket)
+>+{
+>+	unsigned long remote_hash;
+>+	unsigned long local_hash;
+>+	ssize_t total_bytes_rec;
+>+	unsigned char *data;
+>+	size_t data_len;
+>+	int fd;
+>+
+>+	if (sock_seqpacket)
+>+		fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
+>+	else
+>+		fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
+>+
+>+	if (fd < 0) {
+>+		perror("accept");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	data_len = iovec_bytes(test_data->vecs, test_data->vecs_cnt);
+>+
+>+	data = malloc(data_len);
+>+	if (!data) {
+>+		perror("malloc");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	total_bytes_rec = 0;
+>+
+>+	while (total_bytes_rec != data_len) {
+>+		ssize_t bytes_rec;
+>+
+>+		bytes_rec = read(fd, data + total_bytes_rec,
+>+				 data_len - total_bytes_rec);
+>+		if (bytes_rec <= 0)
+>+			break;
+>+
+>+		total_bytes_rec += bytes_rec;
+>+	}
+>+
+>+	if (test_data->sendmsg_errno == 0)
+>+		local_hash = hash_djb2(data, data_len);
+>+	else
+>+		local_hash = 0;
+>+
+>+	free(data);
+>+
+>+	/* Waiting for some result. */
+>+	remote_hash = control_readulong();
+>+	if (remote_hash != local_hash) {
+>+		fprintf(stderr, "hash mismatch\n");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	control_expectln("DONE");
+>+	close(fd);
+>+}
+>+
+>+void test_stream_msgzcopy_server(const struct test_opts *opts)
+>+{
+>+	int i;
+>+
+>+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
+>+		test_server(opts, &test_data_array[i], false);
+>+}
+>+
+>+void test_seqpacket_msgzcopy_server(const struct test_opts *opts)
+>+{
+>+	int i;
+>+
+>+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++) {
+>+		if (test_data_array[i].stream_only)
+>+			continue;
+>+
+>+		test_server(opts, &test_data_array[i], true);
+>+	}
+>+}
+>+
+>+void test_stream_msgzcopy_empty_errq_client(const struct test_opts *opts)
+>+{
+>+	struct msghdr msg = { 0 };
+>+	char cmsg_data[128];
+>+	ssize_t res;
+>+	int fd;
+>+
+>+	fd = vsock_stream_connect(opts->peer_cid, 1234);
+>+	if (fd < 0) {
+>+		perror("connect");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	msg.msg_control = cmsg_data;
+>+	msg.msg_controllen = sizeof(cmsg_data);
+>+
+>+	res = recvmsg(fd, &msg, MSG_ERRQUEUE);
+>+	if (res != -1) {
+>+		fprintf(stderr, "expected 'recvmsg(2)' failure, got %zi\n",
+>+			res);
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	control_writeln("DONE");
+>+	close(fd);
+>+}
+>+
+>+void test_stream_msgzcopy_empty_errq_server(const struct test_opts *opts)
+>+{
+>+	int fd;
+>+
+>+	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
+>+	if (fd < 0) {
+>+		perror("accept");
+>+		exit(EXIT_FAILURE);
+>+	}
+>+
+>+	control_expectln("DONE");
+>+	close(fd);
+>+}
+>diff --git a/tools/testing/vsock/vsock_test_zerocopy.h b/tools/testing/vsock/vsock_test_zerocopy.h
+>new file mode 100644
+>index 000000000000..3ef2579e024d
+>--- /dev/null
+>+++ b/tools/testing/vsock/vsock_test_zerocopy.h
+>@@ -0,0 +1,15 @@
+>+/* SPDX-License-Identifier: GPL-2.0-only */
+>+#ifndef VSOCK_TEST_ZEROCOPY_H
+>+#define VSOCK_TEST_ZEROCOPY_H
+>+#include "util.h"
+>+
+>+void test_stream_msgzcopy_client(const struct test_opts *opts);
+>+void test_stream_msgzcopy_server(const struct test_opts *opts);
+>+
+>+void test_seqpacket_msgzcopy_client(const struct test_opts *opts);
+>+void test_seqpacket_msgzcopy_server(const struct test_opts *opts);
+>+
+>+void test_stream_msgzcopy_empty_errq_client(const struct test_opts *opts);
+>+void test_stream_msgzcopy_empty_errq_server(const struct test_opts *opts);
+>+
+>+#endif /* VSOCK_TEST_ZEROCOPY_H */
+>-- 
+>2.25.1
+>
 
