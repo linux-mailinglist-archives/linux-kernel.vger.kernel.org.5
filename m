@@ -2,79 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 447F37C5253
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1927C5257
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232037AbjJKLnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43262 "EHLO
+        id S234720AbjJKLnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:43:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230138AbjJKLnW (ORCPT
+        with ESMTP id S232013AbjJKLns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:43:22 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B62D98
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:43:20 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-991c786369cso1127804366b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:43:20 -0700 (PDT)
+        Wed, 11 Oct 2023 07:43:48 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D78E79E
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:43:46 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-d857c8a1d50so7035057276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:43:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697024598; x=1697629398; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZgxFWFlqtNB9y2KoDFsWngJ4vKWBFSBMlRLjDq6FqUA=;
-        b=qj4xVyVPsrXDBZxWVxip23NHfdQHvXuxYt9nKvGyQ+yuJIkIQbASDZNqQJOZSCFvEh
-         C6JLIOZnEROUtpR0NEGaBAgHVSSTh5oa1uhSMvWNIPB8XEV8hrfO7uMKtBlBideuuzcu
-         aoMS5+7Z0o3l88oMzWqyTulh0NeN5Qv0lltLf+MwwDKtjhAvLyQWQU3RPu6fwVilZchX
-         6DVtTWwJD+JUnA2Rxfyu32lAWdNo8z8mcO5GDyYpTZjafGGMbqflEqRom6Wfx5qRHjFc
-         w/wesujSH43WkuisdlHeTDQkCNaQq61hpKp7H1/0nNhAEUtUF2XgGtO6KvmTLOKBYZX8
-         dAeQ==
+        d=linaro.org; s=google; t=1697024626; x=1697629426; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8ms2vtbDlNLotZRA9zziKsDWimhPIOZieH9Xxbts9Gc=;
+        b=Xgf5xcA9ZmI0rsdXBX4sb5GATD/BhmMDXZVQyg8yDgHqWHRIZ6TEIzbzllWM3lq6Dn
+         bbkPxYiA3MI8rJmSSZwTwnCxbVEL98vpnY5+k3IXZMJvZxT4VOj0L7DcmrrgRlA75QQi
+         FHIW66s+wEqgQXWpVe703uZzZB/Za+w3/4VF7ggergduZe7EkxpglfACWZIEjiztOSPR
+         cijCEBPcjdGy4X5vbL7nIXjZcdt87teHNIXFFq6jxSzLwSEmO2jKiHA+Q3CVtZHqB2vv
+         N5bm4FCbpIoAr+nC1gpKzCq8NbnyBcQUd9YIuRYrznCVHhqFqPm87gCDcrz6BzxrkO8N
+         rz3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697024598; x=1697629398;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZgxFWFlqtNB9y2KoDFsWngJ4vKWBFSBMlRLjDq6FqUA=;
-        b=rOIx85gJwXjvY43+z77vn+uDWgOUNt53uWsHZu9H0Ppbl+Oa/td+ZKiDhW7SvWehNS
-         WgGy2Ce5wW5koPOpACqEdXYu3nQ4uwDQf59aQOLhCWjSujXrG7Ixepib21yH0B1TL17b
-         MuAJR8r7gYL/XpU1J9hTZoFUAZRa82TxdACb3aq2d7gLmZcdWCtMzJP+/YMOdBu6A1gz
-         yWjPCmMgjWQVizTjAd0lsg8FwqXnOs6Liu5z4RaTey8gksMQ/GiUy3ITdJX2uP15zRsA
-         Q0iu0o3vNJNRXdwrpUeaoHZl05xUu1XluxQY2K4H1/u/iS+lwdgpI3Y3PFLkFEkEG67R
-         jeFw==
-X-Gm-Message-State: AOJu0Ywv1IV5XyAREan0KlvgYQ8tV8Z8h8LDtbf40FGva04Qs5rWWeUe
-        BzhAZUmcneRntowyPXU+gfz08w5C4ZaEa35qB6c2Kw==
-X-Google-Smtp-Source: AGHT+IF+0sYBl6h4x+B0Hh3LisaV7RDJ/W7t5rpHpMiyWZMWhMOJ9yAdGZnDXCwDAWqrX82dofTUxKy7oUeA7d1TUFg=
-X-Received: by 2002:a17:906:8a73:b0:9a1:e758:fc73 with SMTP id
- hy19-20020a1709068a7300b009a1e758fc73mr17381841ejc.67.1697024598423; Wed, 11
- Oct 2023 04:43:18 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697024626; x=1697629426;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8ms2vtbDlNLotZRA9zziKsDWimhPIOZieH9Xxbts9Gc=;
+        b=Z/Bx+TjtoUTWorUfci0IaMC27nBNDB4iow+wzB/oGdk8KpozVMHs6naJ5+VGatZOXN
+         /1UMMQ/k3bWRxOOQJivX4gnN04n34rUBloXhHrkbjy9ljK/RWA2rq8Ji3Bh6N2UABb/3
+         X+DtCbIvIU2yPDHuEYlxDNOkWM2FaVvsCVbz/5dG5ScudaqJmmyj1o2FHWcTvCtth+IZ
+         Y3gxr8TMUvRJ0Xc53lXtHukVBvnRjteI727PCO5iQFMyLF3fKuqIm7h2OVDE5L7f5gEr
+         fkr54DahLs6xHXSRKdIDMX+jV5H6rrTu2oHFGC9qfgqXIkjxUSbemTmNQrHzCig8Q9dr
+         mhUA==
+X-Gm-Message-State: AOJu0YxdiZjOilB84wn8s5vAOSgTHn1SE8Yb1X2V390lHckDH4izMinK
+        O+tfuAJ9ljFQcbPgooLwZMBR1q2mXd/fzUBLg/urgg==
+X-Google-Smtp-Source: AGHT+IGv903cvmdbSYh+DAb+5Tz4rULNvXAQTlBg+7mdFxAdgy0NyhnbXdLN6utN8XfBDPbmB7i+1uIbbVMACSQpBvk=
+X-Received: by 2002:a25:ccc1:0:b0:d6b:6b53:d1ab with SMTP id
+ l184-20020a25ccc1000000b00d6b6b53d1abmr19665014ybf.38.1697024626069; Wed, 11
+ Oct 2023 04:43:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <1695218113-31198-1-git-send-email-quic_msarkar@quicinc.com>
- <1695218113-31198-2-git-send-email-quic_msarkar@quicinc.com>
- <20230921183850.GA762694-robh@kernel.org> <28bf111f-b965-4d38-884b-bc3a0b68a6cc@quicinc.com>
- <8effa7e5-a223-081b-75b8-7b94400d42e6@quicinc.com>
-In-Reply-To: <8effa7e5-a223-081b-75b8-7b94400d42e6@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 11 Oct 2023 14:43:05 +0300
-Message-ID: <CAA8EJpp+3_A-9YXF1yOKdFweVKqrpTxvxKoJcUH6qiDHfCQ-dQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/5] dt-bindings: PCI: qcom-ep: Add support for SA8775P SoC
-To:     Mrinmay Sarkar <quic_msarkar@quicinc.com>
-Cc:     Shazad Hussain <quic_shazhuss@quicinc.com>,
-        Rob Herring <robh@kernel.org>, agross@kernel.org,
-        andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, konrad.dybcio@linaro.org, mani@kernel.org,
-        quic_nitegupt@quicinc.com, quic_ramkri@quicinc.com,
-        quic_nayiluri@quicinc.com, quic_krichai@quicinc.com,
-        quic_vbadigan@quicinc.com, quic_parass@quicinc.com,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, linux-pci@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
-        linux-phy@lists.infradead.org
+References: <20231010151709.4104747-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20231010151709.4104747-1-andriy.shevchenko@linux.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 11 Oct 2023 13:43:34 +0200
+Message-ID: <CACRpkdbEzT-VWOP26oDWc7YE=t_wNOJKo=CfQxZ-vk5Rsmzt8A@mail.gmail.com>
+Subject: Re: [PATCH v1 0/4] hte: Improve GPIO handling and other cleanups
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Dipen Patel <dipenp@nvidia.com>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, timestamp@lists.linux.dev,
+        linux-tegra@vger.kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -83,87 +74,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Oct 2023 at 14:14, Mrinmay Sarkar <quic_msarkar@quicinc.com> wrote:
->
->
-> On 10/6/2023 4:24 PM, Shazad Hussain wrote:
-> >
-> >
-> > On 9/22/2023 12:08 AM, Rob Herring wrote:
-> >> On Wed, Sep 20, 2023 at 07:25:08PM +0530, Mrinmay Sarkar wrote:
-> >>> Add devicetree bindings support for SA8775P SoC.
-> >>> Define reg and interrupt per platform.
-> >>>
-> >>> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-> >>> ---
-> >>>   .../devicetree/bindings/pci/qcom,pcie-ep.yaml      | 130
-> >>> +++++++++++++++++----
-> >>>   1 file changed, 108 insertions(+), 22 deletions(-)
-> >>>
-> >>> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
-> >>> b/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
-> >>> index a223ce0..e860e8f 100644
-> >>> --- a/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
-> >>> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
-> >>> @@ -13,6 +13,7 @@ properties:
-> >>>     compatible:
-> >>>       oneOf:
-> >>>         - enum:
-> >>> +          - qcom,sa8775p-pcie-ep
-> >>>             - qcom,sdx55-pcie-ep
-> >>>             - qcom,sm8450-pcie-ep
-> >>>         - items:
-> >>> @@ -20,29 +21,19 @@ properties:
-> >>>             - const: qcom,sdx55-pcie-ep
-> >>>       reg:
-> >>> -    items:
-> >>> -      - description: Qualcomm-specific PARF configuration registers
-> >>> -      - description: DesignWare PCIe registers
-> >>> -      - description: External local bus interface registers
-> >>> -      - description: Address Translation Unit (ATU) registers
-> >>> -      - description: Memory region used to map remote RC address space
-> >>> -      - description: BAR memory region
-> >>> +    minItems: 6
-> >>> +    maxItems: 7
-> >>>       reg-names:
-> >>> -    items:
-> >>> -      - const: parf
-> >>> -      - const: dbi
-> >>> -      - const: elbi
-> >>> -      - const: atu
-> >>> -      - const: addr_space
-> >>> -      - const: mmio
-> >>> +    minItems: 6
-> >>> +    maxItems: 7
-> >>
-> >> Don't move these into if/then schemas. Then we are duplicating the
-> >> names, and there is no reason to keep them aligned for new compatibles.
-> >>
-> >> Rob
-> >
-> > Hi Rob,
-> > As we have one extra reg property (dma) required for sa8775p-pcie-ep,
-> > isn't it expected to be moved in if/then as per number of regs
-> > required. Anyways we would have duplication of some properties for new
-> > compatibles where the member numbers differs for a property.
-> >
-> > Are you suggesting to add the extra reg property (dma) in the existing
-> > reg and reg-names list, and add minItems/maxItems for all compatibles
-> > present in this file ?
+On Tue, Oct 10, 2023 at 5:18=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
-This is what we have been doing in other cases: if the list is an
-extension of the current list, there is no need to duplicate it. One
-can use min/maxItems instead.
-
-> >
-> > -Shazad
+> This is a series provides a new API to GPIO library (so far only
+> available in the GPIO tree), and respective update to the Tegra
+> HTE driver. On top a couple of other cleaups (patches 3 & 4, they
+> can be applied separately).
 >
-> Here we have defined reg and interrupt per platform as clocks is defined.
+> Patch 2 inherited tags from its respective discussion thread [1],
+> but I believe the Tested-by needs to be confirmed again.
 >
-> -Mrinmay
+> Due to dependencies this either should be applied to the GPIO tree,
+> or to the HTE when GPIO updates land the upstream (optionally with
+> the first patch be applied even now to the GPIO tree independently).
 >
+> Another option is to have an immutable branch or tag, but I assume
+> that was discussed and rejected (?) in [1].
+>
+> Link: https://lore.kernel.org/linux-gpio/20230905185309.131295-15-brgl@bg=
+dev.pl/ [1]
+> Cc: Dipen Patel <dipenp@nvidia.com>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
 
+This is good stuff. The series:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
--- 
-With best wishes
-Dmitry
+Yours,
+Linus Walleij
