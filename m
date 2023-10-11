@@ -2,75 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ABC27C5250
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 447F37C5253
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231969AbjJKLm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:42:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49274 "EHLO
+        id S232037AbjJKLnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:43:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231235AbjJKLm2 (ORCPT
+        with ESMTP id S230138AbjJKLnW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:42:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E5DB93
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:41:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697024502;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=8NURkiBAbS6tTinRtwOYWNtz0h6Ztp9Eip3YWpE10Qw=;
-        b=hOhsWj2UJGXAa8xc/AbVDHgtCTo+ai5J1hPgnth5hNOvaWRs576Z2/wZ6gIIiPr8/GJaGD
-        UAWOcF+lMa2tfFu//51CTc5ZAProKv2Cb1HMGLsN+udxmgvQSGAjesFRTZTohZenp1uWEx
-        L9+cehk0BZpS1OdbIfAcd/kWfjh8vus=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-344-cu3LQ3BIMxasUrJMpzF7gw-1; Wed, 11 Oct 2023 07:41:41 -0400
-X-MC-Unique: cu3LQ3BIMxasUrJMpzF7gw-1
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-41b19426eedso9803361cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:41:41 -0700 (PDT)
+        Wed, 11 Oct 2023 07:43:22 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B62D98
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:43:20 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-991c786369cso1127804366b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:43:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697024598; x=1697629398; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZgxFWFlqtNB9y2KoDFsWngJ4vKWBFSBMlRLjDq6FqUA=;
+        b=qj4xVyVPsrXDBZxWVxip23NHfdQHvXuxYt9nKvGyQ+yuJIkIQbASDZNqQJOZSCFvEh
+         C6JLIOZnEROUtpR0NEGaBAgHVSSTh5oa1uhSMvWNIPB8XEV8hrfO7uMKtBlBideuuzcu
+         aoMS5+7Z0o3l88oMzWqyTulh0NeN5Qv0lltLf+MwwDKtjhAvLyQWQU3RPu6fwVilZchX
+         6DVtTWwJD+JUnA2Rxfyu32lAWdNo8z8mcO5GDyYpTZjafGGMbqflEqRom6Wfx5qRHjFc
+         w/wesujSH43WkuisdlHeTDQkCNaQq61hpKp7H1/0nNhAEUtUF2XgGtO6KvmTLOKBYZX8
+         dAeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697024500; x=1697629300;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1697024598; x=1697629398;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=8NURkiBAbS6tTinRtwOYWNtz0h6Ztp9Eip3YWpE10Qw=;
-        b=rvX9iU8VBsT3UPu5KmVEQncK+gm8Zvu4TCXGReDrqgfNscv3bi/aOWSsy9Cg5jZqDU
-         eboeirOMl4TmWAc4ZsCtxLIufOr3WMiszNi87ufQ2Mubs2VCU6N3/WrKBTQcAOvQNdFT
-         /vYf0w4L+r4QI5+sPU5sRm4D9Pn5UgHN4kG7X9ZSqazD5pGnxQYJ/ekBvmxv28iNpD1y
-         yUmTd303+eBsxMK3DuaEj2hgBJtN+0m5aP5mxI02FkEzck2Gw+ygUvxNOPMS+eONwfaR
-         slzPYzXcYu30wHGadVY4zyoV3a/CNYCG0GcVi0mwqWlGdZObMuiuPJpQ5VNwl4lwot3j
-         DqFg==
-X-Gm-Message-State: AOJu0YxPVo6Yup7p3C+s2DQCPhKHMRKviBNlbeRMuw+z7uuiClneXPXe
-        K6wOdLVpBvSYcGfH9b58oK4H2YpljwVB8k1xU3aVpgyMvePUuTamvvlL4VW1nZPJBVaQjdHqcTd
-        ABfLZgtoww7dXLg8IT74C3apOuIHRVowMpVaJBk/ghO27SJecr66LG0LPp+ta2jcWXoPgIF0pKm
-        RxonwGB4k=
-X-Received: by 2002:a05:6214:c6a:b0:65a:fd40:b79 with SMTP id t10-20020a0562140c6a00b0065afd400b79mr23067475qvj.5.1697024500136;
-        Wed, 11 Oct 2023 04:41:40 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH/PJFqEzyZ8u0zaKxnpGRj7gcP1T2JeVyTubg38E45fbagYfNnX/UGlmnBkSjQ63uUN62XNg==
-X-Received: by 2002:a05:6214:c6a:b0:65a:fd40:b79 with SMTP id t10-20020a0562140c6a00b0065afd400b79mr23067452qvj.5.1697024499781;
-        Wed, 11 Oct 2023 04:41:39 -0700 (PDT)
-Received: from kherbst.pingu.com ([178.24.169.250])
-        by smtp.gmail.com with ESMTPSA id d1-20020a05620a136100b00774309d3e89sm5153179qkl.7.2023.10.11.04.41.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 04:41:38 -0700 (PDT)
-From:   Karol Herbst <kherbst@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, Karol Herbst <kherbst@redhat.com>,
-        stable@vger.kernel.org
-Subject: [PATCH] drm/nouveau/disp: fix DP capable DSM connectors
-Date:   Wed, 11 Oct 2023 13:41:34 +0200
-Message-ID: <20231011114134.861818-1-kherbst@redhat.com>
-X-Mailer: git-send-email 2.41.0
+        bh=ZgxFWFlqtNB9y2KoDFsWngJ4vKWBFSBMlRLjDq6FqUA=;
+        b=rOIx85gJwXjvY43+z77vn+uDWgOUNt53uWsHZu9H0Ppbl+Oa/td+ZKiDhW7SvWehNS
+         WgGy2Ce5wW5koPOpACqEdXYu3nQ4uwDQf59aQOLhCWjSujXrG7Ixepib21yH0B1TL17b
+         MuAJR8r7gYL/XpU1J9hTZoFUAZRa82TxdACb3aq2d7gLmZcdWCtMzJP+/YMOdBu6A1gz
+         yWjPCmMgjWQVizTjAd0lsg8FwqXnOs6Liu5z4RaTey8gksMQ/GiUy3ITdJX2uP15zRsA
+         Q0iu0o3vNJNRXdwrpUeaoHZl05xUu1XluxQY2K4H1/u/iS+lwdgpI3Y3PFLkFEkEG67R
+         jeFw==
+X-Gm-Message-State: AOJu0Ywv1IV5XyAREan0KlvgYQ8tV8Z8h8LDtbf40FGva04Qs5rWWeUe
+        BzhAZUmcneRntowyPXU+gfz08w5C4ZaEa35qB6c2Kw==
+X-Google-Smtp-Source: AGHT+IF+0sYBl6h4x+B0Hh3LisaV7RDJ/W7t5rpHpMiyWZMWhMOJ9yAdGZnDXCwDAWqrX82dofTUxKy7oUeA7d1TUFg=
+X-Received: by 2002:a17:906:8a73:b0:9a1:e758:fc73 with SMTP id
+ hy19-20020a1709068a7300b009a1e758fc73mr17381841ejc.67.1697024598423; Wed, 11
+ Oct 2023 04:43:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=unavailable
+References: <1695218113-31198-1-git-send-email-quic_msarkar@quicinc.com>
+ <1695218113-31198-2-git-send-email-quic_msarkar@quicinc.com>
+ <20230921183850.GA762694-robh@kernel.org> <28bf111f-b965-4d38-884b-bc3a0b68a6cc@quicinc.com>
+ <8effa7e5-a223-081b-75b8-7b94400d42e6@quicinc.com>
+In-Reply-To: <8effa7e5-a223-081b-75b8-7b94400d42e6@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Wed, 11 Oct 2023 14:43:05 +0300
+Message-ID: <CAA8EJpp+3_A-9YXF1yOKdFweVKqrpTxvxKoJcUH6qiDHfCQ-dQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/5] dt-bindings: PCI: qcom-ep: Add support for SA8775P SoC
+To:     Mrinmay Sarkar <quic_msarkar@quicinc.com>
+Cc:     Shazad Hussain <quic_shazhuss@quicinc.com>,
+        Rob Herring <robh@kernel.org>, agross@kernel.org,
+        andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, konrad.dybcio@linaro.org, mani@kernel.org,
+        quic_nitegupt@quicinc.com, quic_ramkri@quicinc.com,
+        quic_nayiluri@quicinc.com, quic_krichai@quicinc.com,
+        quic_vbadigan@quicinc.com, quic_parass@quicinc.com,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, linux-pci@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
+        linux-phy@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,53 +83,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just special case DP DSM connectors until we properly figure out how to
-deal with this.
+On Wed, 11 Oct 2023 at 14:14, Mrinmay Sarkar <quic_msarkar@quicinc.com> wrote:
+>
+>
+> On 10/6/2023 4:24 PM, Shazad Hussain wrote:
+> >
+> >
+> > On 9/22/2023 12:08 AM, Rob Herring wrote:
+> >> On Wed, Sep 20, 2023 at 07:25:08PM +0530, Mrinmay Sarkar wrote:
+> >>> Add devicetree bindings support for SA8775P SoC.
+> >>> Define reg and interrupt per platform.
+> >>>
+> >>> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+> >>> ---
+> >>>   .../devicetree/bindings/pci/qcom,pcie-ep.yaml      | 130
+> >>> +++++++++++++++++----
+> >>>   1 file changed, 108 insertions(+), 22 deletions(-)
+> >>>
+> >>> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
+> >>> b/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
+> >>> index a223ce0..e860e8f 100644
+> >>> --- a/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
+> >>> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
+> >>> @@ -13,6 +13,7 @@ properties:
+> >>>     compatible:
+> >>>       oneOf:
+> >>>         - enum:
+> >>> +          - qcom,sa8775p-pcie-ep
+> >>>             - qcom,sdx55-pcie-ep
+> >>>             - qcom,sm8450-pcie-ep
+> >>>         - items:
+> >>> @@ -20,29 +21,19 @@ properties:
+> >>>             - const: qcom,sdx55-pcie-ep
+> >>>       reg:
+> >>> -    items:
+> >>> -      - description: Qualcomm-specific PARF configuration registers
+> >>> -      - description: DesignWare PCIe registers
+> >>> -      - description: External local bus interface registers
+> >>> -      - description: Address Translation Unit (ATU) registers
+> >>> -      - description: Memory region used to map remote RC address space
+> >>> -      - description: BAR memory region
+> >>> +    minItems: 6
+> >>> +    maxItems: 7
+> >>>       reg-names:
+> >>> -    items:
+> >>> -      - const: parf
+> >>> -      - const: dbi
+> >>> -      - const: elbi
+> >>> -      - const: atu
+> >>> -      - const: addr_space
+> >>> -      - const: mmio
+> >>> +    minItems: 6
+> >>> +    maxItems: 7
+> >>
+> >> Don't move these into if/then schemas. Then we are duplicating the
+> >> names, and there is no reason to keep them aligned for new compatibles.
+> >>
+> >> Rob
+> >
+> > Hi Rob,
+> > As we have one extra reg property (dma) required for sa8775p-pcie-ep,
+> > isn't it expected to be moved in if/then as per number of regs
+> > required. Anyways we would have duplication of some properties for new
+> > compatibles where the member numbers differs for a property.
+> >
+> > Are you suggesting to add the extra reg property (dma) in the existing
+> > reg and reg-names list, and add minItems/maxItems for all compatibles
+> > present in this file ?
 
-This resolves user regressions on GPUs with such connectors without
-reverting the original fix.
+This is what we have been doing in other cases: if the list is an
+extension of the current list, there is no need to duplicate it. One
+can use min/maxItems instead.
 
-Cc: Lyude Paul <lyude@redhat.com>
-Cc: stable@vger.kernel.org # 6.4+
-Closes: https://gitlab.freedesktop.org/drm/nouveau/-/issues/255
-Fixes: 2b5d1c29f6c4 ("drm/nouveau/disp: PIOR DP uses GPIO for HPD, not PMGR AUX interrupts")
-Signed-off-by: Karol Herbst <kherbst@redhat.com>
----
- drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+> >
+> > -Shazad
+>
+> Here we have defined reg and interrupt per platform as clocks is defined.
+>
+> -Mrinmay
+>
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c b/drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c
-index 46b057fe1412e..3249e5c1c8930 100644
---- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c
-@@ -62,6 +62,18 @@ nvkm_uconn_uevent_gpio(struct nvkm_object *object, u64 token, u32 bits)
- 	return object->client->event(token, &args, sizeof(args.v0));
- }
- 
-+static bool
-+nvkm_connector_is_dp_dms(u8 type)
-+{
-+	switch (type) {
-+	case DCB_CONNECTOR_DMS59_DP0:
-+	case DCB_CONNECTOR_DMS59_DP1:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
- static int
- nvkm_uconn_uevent(struct nvkm_object *object, void *argv, u32 argc, struct nvkm_uevent *uevent)
- {
-@@ -101,7 +113,7 @@ nvkm_uconn_uevent(struct nvkm_object *object, void *argv, u32 argc, struct nvkm_
- 	if (args->v0.types & NVIF_CONN_EVENT_V0_UNPLUG) bits |= NVKM_GPIO_LO;
- 	if (args->v0.types & NVIF_CONN_EVENT_V0_IRQ) {
- 		/* TODO: support DP IRQ on ANX9805 and remove this hack. */
--		if (!outp->info.location)
-+		if (!outp->info.location && !nvkm_connector_is_dp_dms(conn->info.type))
- 			return -EINVAL;
- 	}
- 
+
 -- 
-2.41.0
-
+With best wishes
+Dmitry
