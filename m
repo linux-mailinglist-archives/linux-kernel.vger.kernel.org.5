@@ -2,82 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11FEC7C591B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ABA77C591F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234829AbjJKQ2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 12:28:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44490 "EHLO
+        id S235095AbjJKQ3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 12:29:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbjJKQ2s (ORCPT
+        with ESMTP id S230271AbjJKQ3I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 12:28:48 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8517091
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 09:28:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5410C433C7;
-        Wed, 11 Oct 2023 16:28:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697041725;
-        bh=eLVqglcIaYXm0eePP87XMceGaZzYZyMwAu+YaWboENI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hIrAbucaf0W+q5nNMsuaZdHR6B9UV+EryXYG41J9kWM9IIivmSwx9/L3XxF5n+jmC
-         gliSY1yjBukF1PJSgYPTE66KzIY1it1+xQ/CdPvVL8YExPeSNG8OimghZnU9/BwGMO
-         TQdJ8i9tQ9B/rkEHRsyedWjiEV+/7DpaekA16nC8cjJW4f5vrGMMWxoHyCda0S+2hC
-         +e4MP8xJC8oGXEgv2dWkrBjt0DKHKYxiCWhN1817aqcx3/AZ9F6jnWkaIcGOjpbItx
-         IPKQ7NlDdYzws7lKBkokkI6fU3IiSrF/dAt/W9chBFz1E+w+2FmsGKy3jdKlqzOy3e
-         yf3umg9aO6Daw==
-Date:   Wed, 11 Oct 2023 09:28:43 -0700
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        David Kaplan <david.kaplan@amd.com>, x86@kernel.org,
-        luto@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] Revert "x86/retpoline: Remove
- .text..__x86.return_thunk section"
-Message-ID: <20231011162843.grv6kixw4ides6uw@treble>
-References: <20231010171020.462211-1-david.kaplan@amd.com>
- <20231010171020.462211-2-david.kaplan@amd.com>
- <20231010174833.GG14330@noisy.programming.kicks-ass.net>
- <20231010195721.p5pb273kevg7ydxz@treble>
- <20231010200429.GIZSWuTWSUM9aId7a6@fat_crate.local>
- <20231010201912.7pjksbparssqu34k@treble>
- <20231010212254.ypk2wdogno55shit@treble>
- <20231011074142.GK14330@noisy.programming.kicks-ass.net>
+        Wed, 11 Oct 2023 12:29:08 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D93B91;
+        Wed, 11 Oct 2023 09:29:06 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 553701FF02;
+        Wed, 11 Oct 2023 16:29:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1697041745; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kYo77x54AzSd+UJL48y6CRA7yZ5+4RMlae1FSxp7kUY=;
+        b=XHPjHzAxZGN8OAcbkRlJpzZcxSqh0PmgTt4npi1tF+csKiWIXSr22Q66FJM2N/QWXLTuWe
+        8qU5i1XbtqtXqXqGt/BP2COPochp4eKiQbidoNtY9W7y4PLwiWnw+G09P8eyOvIpOvA4z+
+        moXDGeLe/pOS1YzwKZ2VAtQlYMqPsxs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1697041745;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kYo77x54AzSd+UJL48y6CRA7yZ5+4RMlae1FSxp7kUY=;
+        b=T1jExGE6EAUwcpMkNyi3OKySzAjG7myKC5zvA28x5gD6fljvVqNo3e5cwm9l9v5cfaJ+fM
+        pqEjb6y8O4ZxlvDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 43D03134F5;
+        Wed, 11 Oct 2023 16:29:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id kvp+EFHNJmVlLQAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 11 Oct 2023 16:29:05 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id C9ED1A05BC; Wed, 11 Oct 2023 18:29:04 +0200 (CEST)
+Date:   Wed, 11 Oct 2023 18:29:04 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, Max Kellermann <max.kellermann@ionos.com>,
+        Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>,
+        Dave Kleikamp <shaggy@kernel.org>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net,
+        Yang Xu <xuyang2018.jy@fujitsu.com>,
+        linux-fsdevel@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>
+Subject: Re: [PATCH v2] fs/{posix_acl,ext2,jfs,ceph}: apply umask if ACL
+ support is disabled
+Message-ID: <20231011162904.3dxkids7zzspcolp@quack3>
+References: <20231009144340.418904-1-max.kellermann@ionos.com>
+ <20231010131125.3uyfkqbcetfcqsve@quack3>
+ <CAKPOu+-nC2bQTZYL0XTzJL6Tx4Pi1gLfNWCjU2Qz1f_5CbJc1w@mail.gmail.com>
+ <20231011100541.sfn3prgtmp7hk2oj@quack3>
+ <CAKPOu+_xdFALt9sgdd5w66Ab6KTqiy8+Z0Yd3Ss4+92jh8nCwg@mail.gmail.com>
+ <20231011120655.ndb7bfasptjym3wl@quack3>
+ <CAKPOu+-hLrrpZShHh0o6uc_KMW91suEd0_V_uzp5vMf4NM-8yw@mail.gmail.com>
+ <CAKPOu+_0yjg=PrwAR8jKok8WskjdDEJOBtu3uKR_4Qtp8b7H1Q@mail.gmail.com>
+ <20231011135922.4bij3ittlg4ujkd7@quack3>
+ <20231011-braumeister-anrufen-62127dc64de0@brauner>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231011074142.GK14330@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231011-braumeister-anrufen-62127dc64de0@brauner>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 09:41:42AM +0200, Peter Zijlstra wrote:
-> > +++ b/tools/objtool/check.c
-> > @@ -1610,6 +1610,15 @@ static int add_jump_destinations(struct objtool_file *file)
-> >  			return -1;
-> >  		}
-> >  
-> > +		/*
-> > +		 * Since retpolines are in the same section as the return
-> > +		 * thunk, they might not use a relocation when branching to it.
-> > +		 */
-> > +		if (jump_dest->sym && jump_dest->sym->return_thunk) {
-> > +			add_return_call(file, insn, true);
-> > +			continue;
-> > +		}
+On Wed 11-10-23 17:27:37, Christian Brauner wrote:
+> On Wed, Oct 11, 2023 at 03:59:22PM +0200, Jan Kara wrote:
+> > On Wed 11-10-23 14:27:49, Max Kellermann wrote:
+> > > On Wed, Oct 11, 2023 at 2:18 PM Max Kellermann <max.kellermann@ionos.com> wrote:
+> > > > But without the other filesystems. I'll resend it with just the
+> > > > posix_acl.h hunk.
+> > > 
+> > > Thinking again, I don't think this is the proper solution. This may
+> > > server as a workaround so those broken filesystems don't suffer from
+> > > this bug, but it's not proper.
+> > > 
+> > > posix_acl_create() is only supposed to appy the umask if the inode
+> > > supports ACLs; if not, the VFS is supposed to do it. But if the
+> > > filesystem pretends to have ACL support but the kernel does not, it's
+> > > really a filesystem bug. Hacking the umask code into
+> > > posix_acl_create() for that inconsistent case doesn't sound right.
+> > > 
+> > > A better workaround would be this patch:
+> > > https://patchwork.kernel.org/project/linux-nfs/patch/151603744662.29035.4910161264124875658.stgit@rabbit.intern.cm-ag/
+> > > I submitted it more than 5 years ago, it got one positive review, but
+> > > was never merged.
+> > > 
+> > > This patch enables the VFS's umask code even if the filesystem
+> > > prerents to support ACLs. This still doesn't fix the filesystem bug,
+> > > but makes VFS's behavior consistent.
+> > 
+> > OK, that solution works for me as well. I agree it seems a tad bit cleaner.
+> > Christian, which one would you prefer?
 > 
-> *urgh*... I mean, yes, that obviously works, but should we not also have
-> the retpoline thingy for consistency? That case makes less sense though
-> :/
+> So it always bugged me that POSIX ACLs push umask stripping down into
+> the individual filesystems but it's hard to get rid of this. And we
+> tried to improve the situation during the POSIX ACL rework by
+> introducing vfs_prepare_umask().
+> 
+> Aside from that, the problem had been that filesystems like nfs v4
+> intentionally raised SB_POSIXACL to prevent umask stripping in the VFS.
+> IOW, for them SB_POSIXACL was equivalent to "don't apply any umask".
 
-Consistency with what?  The extra section seems pointless but maybe I'm
-missing something.
+Ah, what a hack...
 
+> And afaict nfs v4 has it's own thing going on how and where umasks are
+> applied. However, since we now have the following commit in vfs.misc:
+> 
+> commit f61b9bb3f8386a5e59b49bf1310f5b34f47bcef9
+> Author:     Jeff Layton <jlayton@kernel.org>
+> AuthorDate: Mon Sep 11 20:25:50 2023 -0400
+> Commit:     Christian Brauner <brauner@kernel.org>
+> CommitDate: Thu Sep 21 15:37:47 2023 +0200
+> 
+>     fs: add a new SB_I_NOUMASK flag
+> 
+>     SB_POSIXACL must be set when a filesystem supports POSIX ACLs, but NFSv4
+>     also sets this flag to prevent the VFS from applying the umask on
+>     newly-created files. NFSv4 doesn't support POSIX ACLs however, which
+>     causes confusion when other subsystems try to test for them.
+> 
+>     Add a new SB_I_NOUMASK flag that allows filesystems to opt-in to umask
+>     stripping without advertising support for POSIX ACLs. Set the new flag
+>     on NFSv4 instead of SB_POSIXACL.
+> 
+>     Also, move mode_strip_umask to namei.h and convert init_mknod and
+>     init_mkdir to use it.
+> 
+>     Signed-off-by: Jeff Layton <jlayton@kernel.org>
+>     Message-Id: <20230911-acl-fix-v3-1-b25315333f6c@kernel.org>
+>     Signed-off-by: Christian Brauner <brauner@kernel.org>
+> 
+> I think it's possible to pick up the first patch linked above:
+>    
+> fix umask on NFS with CONFIG_FS_POSIX_ACL=n doesn't lead to any
+> 
+> and see whether we see any regressions from this.
+> 
+> The second patch I can't easily judge that should go through nfs if at
+> all.
+> 
+> So proposal/question: should we take the first patch into vfs.misc?
+
+Sounds good to me. I have checked whether some other filesystem does not
+try to play similar games as NFS and it appears not although overlayfs does
+seem to play some games with umasks.
+
+								Honza
 -- 
-Josh
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
