@@ -2,120 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 955377C5050
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D42D7C5058
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234804AbjJKKhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 06:37:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36404 "EHLO
+        id S1346166AbjJKKik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:38:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231657AbjJKKg4 (ORCPT
+        with ESMTP id S234792AbjJKKig (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:36:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912BFB7;
-        Wed, 11 Oct 2023 03:36:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697020615; x=1728556615;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=52YiH9Rm64BW8CkQzXjUhpKwgm4oo9z7eHhxwksiAv4=;
-  b=UglVFxDZiGCyI1bnaBQ4VxS4tOIW5Hp8CO60QnsG+tYHH8Isk3iRwnpc
-   NwHL4gdZeEj5MNzNdofCvtp/3WXbSYK+6NBIhVGQq655fVZr4rKczu0dz
-   PKe/Lfh7nZ9QtX4sKr0b4rhInphagaLr12aJnzAhT14L6hUDwW6wutghx
-   P5hV7jTi3B+AP6/noFqd3FfV3XXcaA8GefjLOl6LEH2DeuHXJq3OVMDWx
-   htVxoB9Vz5eZUR0aXEun8HTzXFe4oVemN84RPocqsrEgBhjU6nszso4MC
-   hhlSjIJiiqo3pzlwW1WMEkiRYdlbtrN5JiNTmk+YAse927WA9nPM/lBbO
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="415675482"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
-   d="scan'208";a="415675482"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 03:36:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="824114342"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
-   d="scan'208";a="824114342"
-Received: from unknown (HELO smile.fi.intel.com) ([10.237.72.54])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 03:36:50 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qqWa7-00000004azc-2aLH;
-        Wed, 11 Oct 2023 13:36:47 +0300
-Date:   Wed, 11 Oct 2023 13:36:47 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     Yury Norov <yury.norov@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Alexander Potapenko <glider@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@kernel.org>,
-        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        netdev@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        dm-devel@redhat.com, ntfs3@lists.linux.dev,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 09/14] bitmap: extend bitmap_{get,set}_value8() to
- bitmap_{get,set}_bits()
-Message-ID: <ZSZ6v1qgZbqKgKXa@smile.fi.intel.com>
-References: <20231009151026.66145-1-aleksander.lobakin@intel.com>
- <20231009151026.66145-10-aleksander.lobakin@intel.com>
- <ZSQq02A9mTireK71@yury-ThinkPad>
- <a28542e2-4a5b-4c29-9d4a-12a0d2ab5527@intel.com>
+        Wed, 11 Oct 2023 06:38:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4FBB6
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:37:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697020676;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=B9T69CSeczQTNAGc3fH4cJghTMdZtaq9dJk8j6ttMDE=;
+        b=ZWv8BMhVZGbq4E8yYG3IRN92PB+fU6LIdRdcR2BEDjVrL66rUxK7fhLJ53PQf2UTT6yzyD
+        6YEw6LLuHRBkOCumx1WKZQBbB+7MXE4fzCpi+RNGwFqiCVYqOXwjCc10pLNP1jyI44shjw
+        dYeq3x6DNft/wF9AtWt/pkLw+H2WPFA=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-304-NLJSEiY3MyyEcyxQsT-t6A-1; Wed, 11 Oct 2023 06:37:54 -0400
+X-MC-Unique: NLJSEiY3MyyEcyxQsT-t6A-1
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-53a7cb6ee43so965585a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:37:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697020673; x=1697625473;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=B9T69CSeczQTNAGc3fH4cJghTMdZtaq9dJk8j6ttMDE=;
+        b=N37xKnI652vRpAvr8W2Cuz7BlSWCcZUx4XPDBm3lj8ERECnvYgIS+9uS5KTyekZ9DC
+         97MNPFygj3Pp2TCipN44hnGgB5098HNPVxPBjPaa2GN+qzjIN4DoEwCQuCzh0AyrwwWG
+         0KhXQ/m1jewTvB598vDwiNWBu0T+WKA5Q4qyjp3ZdC4rPmYecFJmPmwN5GVSqQQ5/d5U
+         hM8mM/39vQ6zXKdBz3ABhgDqwxOT7XuY/TZspU7JG9YCBI7Dx9bWO8rA3p08VGdCc8ss
+         yQKSbrLFfW9urymJdkrAqT8rpCGvhCWxc46WxOCVN6ycGDtHO7vGxRxAYxG385mZS2/B
+         FRgQ==
+X-Gm-Message-State: AOJu0YwP4I/hrx9YsIFzmtsRhjCy0xHOtCfCdnxMc54Nd3EzNujWjlPU
+        ENxAmhdm3FGwlPDofSVB99NF+VIEWnldnD0rKwQU3ZPWrU80QlM5gbwoEC36pWELNgp5YecH3QX
+        kUCgtGfJ1DPqHUZ7X8n0T8KTx
+X-Received: by 2002:a05:6402:2547:b0:531:14c4:ae30 with SMTP id l7-20020a056402254700b0053114c4ae30mr16765427edb.0.1697020673662;
+        Wed, 11 Oct 2023 03:37:53 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGpqK//D1TgfDznC+Wtwpoxq0pK4T0TpAW3VYUjkeuymqvaSZAJeCmcSYMMkbgvTRmAH89JYQ==
+X-Received: by 2002:a05:6402:2547:b0:531:14c4:ae30 with SMTP id l7-20020a056402254700b0053114c4ae30mr16765416edb.0.1697020673313;
+        Wed, 11 Oct 2023 03:37:53 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id s14-20020a056402014e00b005309eb7544fsm8660244edu.45.2023.10.11.03.37.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Oct 2023 03:37:52 -0700 (PDT)
+Message-ID: <6a87b43a-0648-28d4-6c69-e0f684e44eb6@redhat.com>
+Date:   Wed, 11 Oct 2023 12:37:51 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a28542e2-4a5b-4c29-9d4a-12a0d2ab5527@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v20 1/4] usb: Add support for Intel LJCA device
+Content-Language: en-US, nl
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Wentong Wu <wentong.wu@intel.com>
+Cc:     gregkh@linuxfoundation.org, oneukum@suse.com, wsa@kernel.org,
+        andi.shyti@linux.intel.com, broonie@kernel.org,
+        bartosz.golaszewski@linaro.org, linus.walleij@linaro.org,
+        linux-usb@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-spi@vger.kernel.org, sakari.ailus@linux.intel.com,
+        zhifeng.wang@intel.com, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1696833205-16716-1-git-send-email-wentong.wu@intel.com>
+ <1696833205-16716-2-git-send-email-wentong.wu@intel.com>
+ <ZSZ3IPgLk7uC5UGI@smile.fi.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <ZSZ3IPgLk7uC5UGI@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 11:33:25AM +0200, Alexander Lobakin wrote:
-> From: Yury Norov <yury.norov@gmail.com>
-> Date: Mon, 9 Oct 2023 09:31:15 -0700
+Hi,
+
+On 10/11/23 12:21, Andy Shevchenko wrote:
+> On Mon, Oct 09, 2023 at 02:33:22PM +0800, Wentong Wu wrote:
+>> Implements the USB part of Intel USB-I2C/GPIO/SPI adapter device
+>> named "La Jolla Cove Adapter" (LJCA).
+>>
+>> The communication between the various LJCA module drivers and the
+>> hardware will be muxed/demuxed by this driver. Three modules (
+>> I2C, GPIO, and SPI) are supported currently.
+>>
+>> Each sub-module of LJCA device is identified by type field within
+>> the LJCA message header.
+>>
+>> The sub-modules of LJCA can use ljca_transfer() to issue a transfer
+>> between host and hardware. And ljca_register_event_cb is exported
+>> to LJCA sub-module drivers for hardware event subscription.
+>>
+>> The minimum code in ASL that covers this board is
+>> Scope (\_SB.PCI0.DWC3.RHUB.HS01)
+>>     {
+>>         Device (GPIO)
+>>         {
+>>             Name (_ADR, Zero)
+>>             Name (_STA, 0x0F)
+>>         }
+>>
+>>         Device (I2C)
+>>         {
+>>             Name (_ADR, One)
+>>             Name (_STA, 0x0F)
+>>         }
+>>
+>>         Device (SPI)
+>>         {
+>>             Name (_ADR, 0x02)
+>>             Name (_STA, 0x0F)
+>>         }
+>>     }
 > 
-> > + Alexander Potapenko <glider@google.com>
-> > 
-> > On Mon, Oct 09, 2023 at 05:10:21PM +0200, Alexander Lobakin wrote:
-> >> Sometimes there's need to get a 8/16/...-bit piece of a bitmap at a
-> >> particular offset. Currently, there are only bitmap_{get,set}_value8()
-> >> to do that for 8 bits and that's it.
-> > 
-> > And also a series from Alexander Potapenko, which I really hope will
-> > get into the -next really soon. It introduces bitmap_read/write which
-> > can set up to BITS_PER_LONG at once, with no limitations on alignment
-> > of position and length:
-> > 
-> > https://lore.kernel.org/linux-arm-kernel/ZRXbOoKHHafCWQCW@yury-ThinkPad/T/#mc311037494229647088b3a84b9f0d9b50bf227cb
-> > 
-> > Can you consider building your series on top of it?
-> 
-> Yeah, I mentioned in the cover letter that I'm aware of it and in fact
-> it doesn't conflict much, as the functions I'm adding here get optimized
-> as much as the original bitmap_{get,set}_value8(), while Alexander's
-> generic helpers are heavier.
-> I realize lots of calls will be optimized as well due to the offset and
-> the width being compile-time constants, but not all of them. The idea of
-> keeping two pairs of helpers initially came from Andy if I understood
-> him correctly.
+> This commit message is not true anymore, or misleading at bare minimum.
+> The ACPI specification is crystal clear about usage _ADR and _HID, i.e.
+> they must NOT be used together for the same device node. So, can you
+> clarify how the DSDT is organized and update the commit message and
+> it may require (quite likely) to redesign the architecture of this
+> driver. Sorry I missed this from previous rounds as I was busy by
+> something else.
 
-Just a disclaimer: The idea came before I saw the series by Alexander Potapenko.
+This part of the commit message unfortunately is not accurate.
+_ADR is not used in either DSDTs of shipping hw; nor in the code.
 
-> What do you think? I can provide some bloat-o-meter stats after
-> rebasing. And either way, I see no issue in basing this series on top of
-> Alex' one.
+The code in question parsing the relevant part of the DSDT looks
+like this:
 
--- 
-With Best Regards,
-Andy Shevchenko
+static int ljca_match_device_ids(struct acpi_device *adev, void *data)
+{
+        struct ljca_match_ids_walk_data *wd = data;
+        const char *uid = acpi_device_uid(adev);
 
+        if (acpi_match_device_ids(adev, wd->ids))
+                return 0;
+
+        if (!wd->uid)
+                goto match;
+
+        if (!uid)
+                /*
+                 * Some DSDTs have only one ACPI companion for the two I2C
+                 * controllers and they don't set a UID at all (e.g. Dell
+                 * Latitude 9420). On these platforms only the first I2C
+                 * controller is used, so if a HID match has no UID we use
+                 * "0" as the UID and assign ACPI companion to the first
+                 * I2C controller.
+                 */
+                uid = "0";
+        else
+                uid = strchr(uid, wd->uid[0]);
+
+        if (!uid || strcmp(uid, wd->uid))
+                return 0;
+
+match:
+        wd->adev = adev;
+
+        return 1;
+}
+
+Notice that it check _UID (for some child devices, only those of
+which there may be more then 1 have a UID set in the DSDT) and
+that in case of requested but missing UID it assumes UID = "0"
+for compatibility with older DSDTs which lack the UID.
+
+And relevant DSDT bits from early hw (TigerLake Dell Latitude 9420)
+Note no UID for the I2C node even though the LJCA USB IO expander
+has 2 I2C controllers :
+
+    Scope (_SB.PC00.XHCI.RHUB.HS06)
+    {
+            Device (VGPO)
+            {
+                Name (_HID, "INTC1074")  // _HID: Hardware ID
+                Name (_DDN, "Intel UsbGpio Device")  // _DDN: DOS Device Name
+            }
+
+            Device (VI2C)
+            {
+                Name (_HID, "INTC1075")  // _HID: Hardware ID
+                Name (_DDN, "Intel UsbI2C Device")  // _DDN: DOS Device Name
+            }
+    }
+
+And for newer hw (Lenovo Thinkpad X1 yoga gen7, alder lake):
+
+        Scope (_SB.PC00.XHCI.RHUB.HS08)
+        {
+            Device (VGPO)
+            {
+                Name (_HID, "INTC1096")  // _HID: Hardware ID
+                Name (_DDN, "Intel UsbGpio Device")  // _DDN: DOS Device Name
+            }
+
+            Device (VIC0)
+            {
+                Name (_HID, "INTC1097")  // _HID: Hardware ID
+                Name (_DDN, "Intel UsbI2C Device")  // _DDN: DOS Device Name
+                Name (_UID, Zero)  // _UID: Unique ID
+            }
+
+            Device (VIC1)
+            {
+                Name (_HID, "INTC1097")  // _HID: Hardware ID
+                Name (_DDN, "Intel UsbI2C Device")  // _DDN: DOS Device Name
+                Name (_UID, One)  // _UID: Unique ID
+            }
+
+            Device (VSPI)
+            {
+                Name (_HID, "INTC1098")  // _HID: Hardware ID
+                Name (_DDN, "Intel UsbSPI Device")  // _DDN: DOS Device Name
+            }
+        }
+
+Note UIDs are used for the I2C controllers but not for the singleton
+SPI and GPIO controllers.
+
+TL;DR: there is nothing to worry about here, but the commit message
+should be updated to reflect reality.
+
+Regards,
+
+Hans
 
