@@ -2,164 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C907C58D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C63A47C58D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232896AbjJKQE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 12:04:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46866 "EHLO
+        id S234961AbjJKQFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 12:05:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232345AbjJKQE6 (ORCPT
+        with ESMTP id S234829AbjJKQFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 12:04:58 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E15079D;
-        Wed, 11 Oct 2023 09:04:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697040296; x=1728576296;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=inxQ3IranDcT46Lz+YqsdFYxNjUb8dv9j72WAW4wQlI=;
-  b=m27ZUF+o1gWw7R+i6U3fDCvmJeyvJwQFcnWSUSNK+SoR3wWWPdlDfwai
-   jmb7ppkSV6aH+Np7wroDCs3cdv18De6aWVim8N1v7GXR480/sIv2x61Q4
-   +DixMdzCB9MLPZ8DWYqHvzWDpCPafd5XCIJ8VZJSdfTs2v343weuu5ttO
-   C+FK1ukKrFAAUqER3+ysnkTgvdo/dbeN0DyZSDKX6i+S936TwNA8oEuk0
-   W7TCwOd3U6yrCIjgrxkYybmI171qYQUNgqHBPDpVvJTfNqBeV9hhdszwz
-   YWEVKBVqBylnV00HXcJMYk8UWgGp/AVEDxcdVepe3ibL7JmCeng7io+DS
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="451193463"
-X-IronPort-AV: E=Sophos;i="6.03,216,1694761200"; 
-   d="scan'208";a="451193463"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 09:04:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="877736596"
-X-IronPort-AV: E=Sophos;i="6.03,216,1694761200"; 
-   d="scan'208";a="877736596"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.96.100])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 11 Oct 2023 09:04:54 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tj@kernel.org" <tj@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Huang, Kai" <kai.huang@intel.com>
-Cc:     "kristen@linux.intel.com" <kristen@linux.intel.com>,
-        "yangjie@microsoft.com" <yangjie@microsoft.com>,
-        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
-        "Zhang, Bo" <zhanb@microsoft.com>,
-        "anakrish@microsoft.com" <anakrish@microsoft.com>
-Subject: Re: [PATCH v5 12/18] x86/sgx: Add EPC OOM path to forcefully reclaim
- EPC
-References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
- <20230923030657.16148-13-haitao.huang@linux.intel.com>
- <1b265d0c9dfe17de2782962ed26a99cc9d330138.camel@intel.com>
- <op.2ckqmgs9wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <fc6aa778ddbde9536cafe48b847cf6c45b640ea4.camel@intel.com>
- <op.2ckr5yetwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <badbe0da60a2b35e8eace98714c6f7d4bcd6f202.camel@intel.com>
- <op.2cly3ffmwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <8593359034d9173be5efd9c055ea782e44fbcdad.camel@intel.com>
-Date:   Wed, 11 Oct 2023 11:04:53 -0500
+        Wed, 11 Oct 2023 12:05:33 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30BB9A4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 09:05:28 -0700 (PDT)
+Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nfraprado)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0AC3866072FC;
+        Wed, 11 Oct 2023 17:05:23 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1697040326;
+        bh=JX/FNFTRvgUjRggNucUPj/avlj5AIJtfvklHcuIrhpc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FOvsvP2z4ELP9LV96w8lC8IG53tbUcpfdEjCzCWhy/UHUKlqPJKxAjKU7yzF4Yy7N
+         /YC08oleXh/SM7zMPX0cUpXEghvg0c950bgpJPz3XHcjo2sb972iSTv1/L3xRhurGj
+         cqtbstLlprV0C0Hw/4WhEkTTMeynQsyOW7QZqYgbgGrkwUapU9I7r5hQnaIyl2f/0A
+         ekkyHILY/UiLaVp9xK0pQl107nduU5BO6a+DG7nIu9xxO6KKiqcPzwa8ZDF7HKMnbZ
+         gzaWCPuhM0PrsfZodIBY96FK42HFPak2R1vZO01rFQo6VmvwZro0xCeYca14c6COUA
+         iyESeUwrHaw9w==
+Date:   Wed, 11 Oct 2023 12:05:19 -0400
+From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
+        <nfraprado@collabora.com>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     chunkuang.hu@kernel.org, p.zabel@pengutronix.de, airlied@gmail.com,
+        daniel@ffwll.ch, matthias.bgg@gmail.com,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, wenst@chromium.org,
+        kernel@collabora.com, ehristev@collabora.com
+Subject: Re: [PATCH v10 08/16] drm/mediatek: De-commonize disp_aal/disp_gamma
+ gamma_set functions
+Message-ID: <8cf3d18a-fe99-49c5-8d0c-eb5deaef79d6@notapiano>
+References: <20230804072850.89365-1-angelogioacchino.delregno@collabora.com>
+ <20230804072850.89365-9-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2cnqyfdzwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <8593359034d9173be5efd9c055ea782e44fbcdad.camel@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230804072850.89365-9-angelogioacchino.delregno@collabora.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Oct 2023 19:31:19 -0500, Huang, Kai <kai.huang@intel.com> wrote:
+On Fri, Aug 04, 2023 at 09:28:42AM +0200, AngeloGioacchino Del Regno wrote:
+> In preparation for adding a 12-bits gamma support for the DISP_GAMMA
+> IP, remove the mtk_gamma_set_common() function and move the relevant
+> bits in mtk_gamma_set() for DISP_GAMMA and mtk_aal_gamma_set() for
+> DISP_AAL: since the latter has no more support for gamma manipulation
+> (being moved to a different IP) in newer revisions, those functions
+> are about to diverge and it makes no sense to keep a common one (with
+> all the complications of passing common data and making exclusions
+> for device driver data) for just a few bits.
+> 
+> This commit brings no functional changes.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_disp_aal.c   | 39 +++++++++++++++++++++--
+>  drivers/gpu/drm/mediatek/mtk_disp_drv.h   |  1 -
+>  drivers/gpu/drm/mediatek/mtk_disp_gamma.c | 34 ++++----------------
+>  3 files changed, 44 insertions(+), 30 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_aal.c b/drivers/gpu/drm/mediatek/mtk_disp_aal.c
+> index bec035780db0..21b25470e9b7 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_disp_aal.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_disp_aal.c
+> @@ -17,10 +17,18 @@
+>  
+>  #define DISP_AAL_EN				0x0000
+>  #define AAL_EN						BIT(0)
+> +#define DISP_AAL_CFG				0x0020
+> +#define AAL_RELAY_MODE					BIT(0)
+> +#define AAL_GAMMA_LUT_EN				BIT(1)
+>  #define DISP_AAL_SIZE				0x0030
+>  #define DISP_AAL_SIZE_HSIZE				GENMASK(28, 16)
+>  #define DISP_AAL_SIZE_VSIZE				GENMASK(12, 0)
+>  #define DISP_AAL_OUTPUT_SIZE			0x04d8
+> +#define DISP_AAL_GAMMA_LUT			0x0700
+> +#define DISP_AAL_GAMMA_LUT_R				GENMASK(29, 20)
+> +#define DISP_AAL_GAMMA_LUT_G				GENMASK(19, 10)
+> +#define DISP_AAL_GAMMA_LUT_B				GENMASK(9, 0)
+> +#define DISP_AAL_LUT_BITS			10
+>  #define DISP_AAL_LUT_SIZE			512
+>  
+>  struct mtk_disp_aal_data {
+> @@ -85,9 +93,36 @@ unsigned int mtk_aal_gamma_get_lut_size(struct device *dev)
+>  void mtk_aal_gamma_set(struct device *dev, struct drm_crtc_state *state)
+>  {
+>  	struct mtk_disp_aal *aal = dev_get_drvdata(dev);
+> +	struct drm_color_lut *lut;
+> +	unsigned int i;
+> +	u32 cfg_val;
+> +
+> +	/* If gamma is not supported in AAL, go out immediately */
+> +	if (!(aal->data && aal->data->has_gamma))
+> +		return;
+> +
+> +	/* Also, if there's no gamma lut there's nothing to do here. */
+> +	if (!state->gamma_lut)
+> +		return;
+> +
+> +	cfg_val = readl(aal->regs + DISP_AAL_CFG);
+> +	lut = (struct drm_color_lut *)state->gamma_lut->data;
+> +
+> +	for (i = 0; i < DISP_AAL_LUT_SIZE; i++) {
+> +		struct drm_color_lut hwlut = {
+> +			.red = drm_color_lut_extract(lut[i].red, DISP_AAL_LUT_BITS),
+> +			.green = drm_color_lut_extract(lut[i].green, DISP_AAL_LUT_BITS),
+> +			.blue = drm_color_lut_extract(lut[i].blue, DISP_AAL_LUT_BITS)
+> +		};
+> +		u32 word;
+> +
+> +		word = FIELD_PREP(DISP_AAL_GAMMA_LUT_R, hwlut.red);
+> +		word |= FIELD_PREP(DISP_AAL_GAMMA_LUT_G, hwlut.green);
+> +		word |= FIELD_PREP(DISP_AAL_GAMMA_LUT_B, hwlut.blue);
+> +		writel(word, (aal->regs + DISP_AAL_GAMMA_LUT) + (i * 4));
+> +	}
 
-> On Tue, 2023-10-10 at 12:05 -0500, Haitao Huang wrote:
->> On Mon, 09 Oct 2023 21:12:27 -0500, Huang, Kai <kai.huang@intel.com>  
->> wrote:
->>
->> >
->> > > > > >
->> > > > > Later the hosting process could migrated/reassigned to another
->> > > cgroup?
->> > > > > What to do when the new cgroup is OOM?
->> > > > >
->> > > >
->> > > > You addressed in the documentation, no?
->> > > >
->> > > > +Migration
->> > > > +---------
->> > > > +
->> > > > +Once an EPC page is charged to a cgroup (during allocation), it
->> > > > +remains charged to the original cgroup until the page is released
->> > > > +or reclaimed.  Migrating a process to a different cgroup doesn't
->> > > > +move the EPC charges that it incurred while in the previous  
->> cgroup
->> > > > +to its new cgroup.
->> > >
->> > > Should we kill the enclave though because some VA pages may be in  
->> the
->> > > new
->> > > group?
->> > >
->> >
->> > I guess acceptable?
->> >
->> > And any difference if you keep VA/SECS to unreclaimabe list?
->>
->> Tracking VA/SECS allows all cgroups, in which an enclave has allocation,
->> to identify the enclave following the back pointer and kill it as  
->> needed.
->>
->> > If you migrate one
->> > enclave to another cgroup, the old EPC pages stay in the old cgroup
->> > while the
->> > new one is charged to the new group IIUC.
->> >
->> > I am not cgroup expert, but by searching some old thread it appears  
->> this
->> > isn't a
->> > supported model:
->> >
->> > https://lore.kernel.org/lkml/YEyR9181Qgzt+Ps9@mtj.duckdns.org/
->> >
->>
->> IIUC it's a different problem here. If we don't track the allocated VAs  
->> in
->> the new group, then the enclave that spans the two groups can't be  
->> killed
->> by the new group. If so, some enclave could just hide in some small  
->> group
->> and never gets killed but keeps allocating in a different group?
->>
->
-> I mean from the link above IIUC migrating enclave among different  
-> cgroups simply
-> isn't a supported model, thus any bad behaviour isn't a big concern in  
-> terms of
-> decision making.
+Hi Angelo,
 
-If we leave some pages in a cgroup unkillable, we are in the same  
-situation of not able to enforce a cgroup limit as that we are are in if  
-we don't kill VMs for lower limits.
+it looks like you're missing a
 
-I think not supporting migration of pages between cgroups should not leave  
-a gap for enforcement just like we don't want to have an enforcement gap  
-if we let VMs to hold pages once it is launched.
+  	cfg_val |= FIELD_PREP(AAL_GAMMA_LUT_EN, 1);
 
-Haitao
+to actually enable the AAL gamma table here, like was done in the common
+function.
+
+Thanks,
+Nícolas
+
+>  
+> -	if (aal->data && aal->data->has_gamma)
+> -		mtk_gamma_set_common(NULL, aal->regs, state);
+> +	writel(cfg_val, aal->regs + DISP_AAL_CFG);
+>  }
+[..]
