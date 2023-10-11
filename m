@@ -2,89 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B34C37C48E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 06:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 613D97C48E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 06:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345132AbjJKEm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 00:42:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40488 "EHLO
+        id S1345154AbjJKEol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 00:44:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344777AbjJKEm4 (ORCPT
+        with ESMTP id S1345026AbjJKEok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 00:42:56 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C81ED94
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 21:42:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02561C433C8;
-        Wed, 11 Oct 2023 04:42:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696999374;
-        bh=NYNisQuom27rBBJUfP7fvKUCts8FyNst+nzRKYiXRgs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c+YMg1lcNAhugNq0hVyJhWNO15HUnl7sfbqkcuNsA97qPrFaocaBoxH0rt1Ks+vMM
-         nRIkvHGSTW7dnZKQWZ69K6R4XKGHIG2Up9Tw6xXwI8JmqC54TuCuv5bFO8GzCaORaT
-         yr3LD10abrgUB6pwHEQdltQRQu5gO0yghMH9jZ6dnwnhg/7lvUiIfGw8JVB8KOTnX1
-         WeTCmlKwc8g0lAVfb20pk9yINgyd2HRG8OWIA2+XUpdk14zxm0UUz/9y3CXAL5xIAh
-         CInUjJkliBc69D3OITHRNkPaqHRMddwEeolPZTEZCjNl9FbQNBisEAk5n5omSjfi7o
-         cbB4RxYEfZHFw==
-Date:   Tue, 10 Oct 2023 21:42:52 -0700
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Breno Leitao <leitao@debian.org>
-Cc:     tglx@linutronix.de, bp@alien8.de, Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, leit@meta.com,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4] x86/bugs: Add a separate config for each mitigation
-Message-ID: <20231011044252.42bplzjsam3qsasz@treble>
-References: <20231010103028.4192223-1-leitao@debian.org>
+        Wed, 11 Oct 2023 00:44:40 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 292A594
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 21:44:14 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-58d26cfe863so1678754a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 21:44:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1696999453; x=1697604253; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lP4b4JzgevJDuqoo7Rpr4koADp7QjWQ1TVT0IwKQygg=;
+        b=WcOV32Nyerab2jwd1tzTWYqzurnKYm7stBEkyzT7rIJ/kOE5nvUTTF4iG91uVVfreO
+         hhlHyLK2LENjx2YMuBzV+CcJKTV4khMAe3ydL7VMkzmv48oFBNXqtkbLCfzlw56UVzow
+         W+cDL/VjwZzdG9AMYLEB8Wy/+MjXjm0wuNMvdrI6sZL2W5Cugzv4HHwzozrcnONpfdzJ
+         xpf4SpRe/VYwagZon80+FutnxmXpAnjZLOD8iKPwZQNKULNVuK/kb0TDKKI9h+FL9UMR
+         39N2+bi7EoJj1rmWWK3i5opdbePGc+t3sBudHg/8jARPkY3lDX8LovujNx+94GXeRxxF
+         N9rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696999453; x=1697604253;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=lP4b4JzgevJDuqoo7Rpr4koADp7QjWQ1TVT0IwKQygg=;
+        b=CQoKdqsC3Tr6QXLQrFoWepL2/8lfz308AV0SdCg2MlsJZlIW/W0RbndmEVWiRdniy7
+         b4JLIHqQSDxE9TYKNC4E7A4+KEfVU2mr+QR4az5aknRlgiqbPjdjlH3arm9qPjQDcr/1
+         cJOq5OZPwnwHcMJZXCIb3NCiRv2fRHU3OVRql6xhyw7zQ0jUIzlZDg50ju8wSMlzZ8wU
+         JnAIxXYTiSXWWAIT6LdM9gkrw/544RbubyAtYisk9GTm+NEyOtbq/oMnH0Gyzzrd+3wY
+         uTo4/0CVfUu4Qp4xLcr/gnIQCH0rI2a7LhfeI6vi96W6F0W3aJQWe1S1GRDFwSKzoh8z
+         rQ8g==
+X-Gm-Message-State: AOJu0YzVZskqUUsVifcZzc1ghFLbEoPDqLjmqrOcPTAfwi+7EuowXMf8
+        wf40WUFY3Tt/5yQAxWuLNO+FfA==
+X-Google-Smtp-Source: AGHT+IGZPDR2+zk+cLZC1C124n9Vodl9jExw6pMc1CqBKp5+Yy+Po/2p/quZNzTb61vzBCKiRBDkAw==
+X-Received: by 2002:a05:6a21:33a8:b0:16b:8bcf:9e27 with SMTP id yy40-20020a056a2133a800b0016b8bcf9e27mr14605437pzb.20.1696999453635;
+        Tue, 10 Oct 2023 21:44:13 -0700 (PDT)
+Received: from [10.84.141.101] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id m8-20020a17090a4d8800b00263f41a655esm10595328pjh.43.2023.10.10.21.44.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Oct 2023 21:44:12 -0700 (PDT)
+Message-ID: <f6fd8209-4808-45e1-b5b5-95ea2dcc0ba4@bytedance.com>
+Date:   Wed, 11 Oct 2023 12:44:08 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231010103028.4192223-1-leitao@debian.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v4 4/8] bpf: Introduce css open-coded iterator
+ kfuncs
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@kernel.org, tj@kernel.org, linux-kernel@vger.kernel.org
+References: <20231007124522.34834-1-zhouchuyi@bytedance.com>
+ <20231007124522.34834-5-zhouchuyi@bytedance.com>
+From:   Chuyi Zhou <zhouchuyi@bytedance.com>
+In-Reply-To: <20231007124522.34834-5-zhouchuyi@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 03:30:27AM -0700, Breno Leitao wrote:
-> +config MITIGATE_MDS
-> +	bool "Mitigate Microarchitectural Data Sampling (MDS) hardware bug"
-> +	depends on CPU_SUP_INTEL
-> +	default y
-> +	help
-> +	  Enable mitigation for Microarchitectural Data Sampling (MDS). MDS is
-> +	  a hardware vulnerability which allows unprivileged speculative access
-> +	  to data which is available in various CPU internal buffer. Deeper
-> +	  technical information is available in the MDS specific x86 architecture
-> +	  section: Documentation/arch/x86/mds.rst.
 
-MITIGATE_GDS seems to be missing?
 
-For consistency I'm thinking it would be better to call them
-MITIGATION_* rather than MITIGATE_* since they're under the
-SPECULATION_MITIGATIONS menuentry, and the bugs code almost exclusively
-uses the noun "mitigation" rather than the verb "mitigate".
+在 2023/10/7 20:45, Chuyi Zhou 写道:
+> This Patch adds kfuncs bpf_iter_css_{new,next,destroy} which allow
+> creation and manipulation of struct bpf_iter_css in open-coded iterator
+> style. These kfuncs actually wrapps css_next_descendant_{pre, post}.
+> css_iter can be used to:
+> 
+> 1) iterating a sepcific cgroup tree with pre/post/up order
+> 
+> 2) iterating cgroup_subsystem in BPF Prog, like
+> for_each_mem_cgroup_tree/cpuset_for_each_descendant_pre in kernel.
+> 
+> The API design is consistent with cgroup_iter. bpf_iter_css_new accepts
+> parameters defining iteration order and starting css. Here we also reuse
+> BPF_CGROUP_ITER_DESCENDANTS_PRE, BPF_CGROUP_ITER_DESCENDANTS_POST,
+> BPF_CGROUP_ITER_ANCESTORS_UP enums.
+> 
+> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
+> Acked-by: Tejun Heo <tj@kernel.org>
+> ---
+>   kernel/bpf/cgroup_iter.c                      | 59 +++++++++++++++++++
+>   kernel/bpf/helpers.c                          |  3 +
+>   .../testing/selftests/bpf/bpf_experimental.h  |  6 ++
+>   3 files changed, 68 insertions(+)
+> 
+> diff --git a/kernel/bpf/cgroup_iter.c b/kernel/bpf/cgroup_iter.c
+> index 810378f04fbc..9c6ad892ae82 100644
+> --- a/kernel/bpf/cgroup_iter.c
+> +++ b/kernel/bpf/cgroup_iter.c
+> @@ -294,3 +294,62 @@ static int __init bpf_cgroup_iter_init(void)
+>   }
+>   
+>   late_initcall(bpf_cgroup_iter_init);
+> +
+> +struct bpf_iter_css {
+> +	__u64 __opaque[3];
+> +} __attribute__((aligned(8)));
+> +
+> +struct bpf_iter_css_kern {
+> +	struct cgroup_subsys_state *start;
+> +	struct cgroup_subsys_state *pos;
+> +	unsigned int flags;
+> +} __attribute__((aligned(8)));
+> +
+> +__bpf_kfunc int bpf_iter_css_new(struct bpf_iter_css *it,
+> +		struct cgroup_subsys_state *start, unsigned int flags)
+> +{
+> +	struct bpf_iter_css_kern *kit = (void *)it;
+> +
+> +	BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css));
+> +	BUILD_BUG_ON(__alignof__(struct bpf_iter_css_kern) != __alignof__(struct bpf_iter_css));
+> +
 
-While we're at it should we go ahead and rename the existing options?
+This would cause the fail of netdev/build_32bit CI 
+(https://netdev.bots.linux.dev/static/nipa/790929/13412333/build_32bit/stderr):
 
-e.g.:
+tools/testing/selftests/kvm/settings: warning: ignored by one of the 
+.gitignore files
+../kernel/bpf/cgroup_iter.c:308:17: warning: no previous prototype for 
+‘bpf_iter_css_new’ [-Wmissing-prototypes]
+   308 | __bpf_kfunc int bpf_iter_css_new(struct bpf_iter_css *it,
+       |                 ^~~~~~~~~~~~~~~~
+../kernel/bpf/cgroup_iter.c:332:41: warning: no previous prototype for 
+‘bpf_iter_css_next’ [-Wmissing-prototypes]
+   332 | __bpf_kfunc struct cgroup_subsys_state 
+*bpf_iter_css_next(struct bpf_iter_css *it)
+       |                                         ^~~~~~~~~~~~~~~~~
+../kernel/bpf/cgroup_iter.c:353:18: warning: no previous prototype for 
+‘bpf_iter_css_destroy’ [-Wmissing-prototypes]
+   353 | __bpf_kfunc void bpf_iter_css_destroy(struct bpf_iter_css *it)
+       |                  ^~~~~~~~~~~~~~~~~~~~
+In file included from <command-line>:
+../kernel/bpf/cgroup_iter.c: In function ‘bpf_iter_css_new’:
+./../include/linux/compiler_types.h:425:45: error: call to 
+‘__compiletime_assert_322’ declared with attribute error: BUILD_BUG_ON 
+failed: sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css)
+   425 |         _compiletime_assert(condition, msg, 
+__compiletime_assert_, __COUNTER__)
+       |                                             ^
+./../include/linux/compiler_types.h:406:25: note: in definition of macro 
+‘__compiletime_assert’
+   406 |                         prefix ## suffix(); 
+         \
+       |                         ^~~~~~
+./../include/linux/compiler_types.h:425:9: note: in expansion of macro 
+‘_compiletime_assert’
+   425 |         _compiletime_assert(condition, msg, 
+__compiletime_assert_, __COUNTER__)
+       |         ^~~~~~~~~~~~~~~~~~~
+../include/linux/build_bug.h:39:37: note: in expansion of macro 
+‘compiletime_assert’
+    39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), 
+msg)
+       |                                     ^~~~~~~~~~~~~~~~~~
+../include/linux/build_bug.h:50:9: note: in expansion of macro 
+‘BUILD_BUG_ON_MSG’
+    50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " 
+#condition)
+       |         ^~~~~~~~~~~~~~~~
+../kernel/bpf/cgroup_iter.c:313:9: note: in expansion of macro 
+‘BUILD_BUG_ON’
+   313 |         BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) != 
+sizeof(struct bpf_iter_css));
 
-  MITIGATION_PAGE_TABLE_ISOLATION
-  MITIGATION_RETPOLINE
-  MITIGATION_UNRET_ENTRY
-  MITIGATION_CALL_DEPTH_TRACKING
-  MITIGATION_IBPB_ENTRY
-  MITIGATION_IBRS_ENTRY
-  MITIGATION_SRSO
-  MITIGATION_SLS
 
--- 
-Josh
+The reason seems on 32-bit machine, sizeof(struct bpf_iter_css) is 24 
+and sizeof(struct bpf_iter_css_kern) is 16.
+
+I was wondering whether the BUILD_BUG_ON check is necessary. Looking at 
+the struct bpf_list_node and struct bpf_list_node_kern wich are very 
+similay to bpf_iter_css, I didn't see the BUILD_BUG_ON check when 
+convert from (struct bpf_list_node *) to (struct bpf_list_node_kern *)
+
+/* Non-opaque version of bpf_list_node in uapi/linux/bpf.h */
+struct bpf_list_node_kern {
+	struct list_head list_head;
+	void *owner;
+} __attribute__((aligned(8)));
+
+struct bpf_list_node {
+	__u64 :64;
+	__u64 :64;
+	__u64 :64;
+} __attribute__((aligned(8)));
+
+__bpf_kfunc int bpf_list_push_back_impl(struct bpf_list_head *head,
+					struct bpf_list_node *node,
+					void *meta__ign, u64 off)
+{
+	struct bpf_list_node_kern *n = (void *)node;
+
+}
+
+
+
