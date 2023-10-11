@@ -2,104 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F9F7C5941
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03AF77C5947
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:36:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346959AbjJKQeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 12:34:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45124 "EHLO
+        id S235122AbjJKQgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 12:36:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346962AbjJKQeN (ORCPT
+        with ESMTP id S235105AbjJKQgA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 12:34:13 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E0EDA4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 09:34:10 -0700 (PDT)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39B69HGL028515;
-        Wed, 11 Oct 2023 11:34:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding:content-type; s=PODMain02222019; bh=b
-        77U65NzPhkgOKHWlwkTamYPj/TOXrDCPIuZPvkXAr8=; b=izsJ6koh2FMzwGjfe
-        N22ZfK1++M6CsJuWJk2wX1XK066MkOCCZzBpTOo235TU6a81Ux9pPlN4z19jAIq1
-        6BwshNm6vPyqjXk5Isd2LASyuGmPsOBRDpRrKAJHluQi6VZDyyc6n3Mm6dAU9cKy
-        JbhaWtZRSBuiSa0UU43B9a984OP0cnzn52blgigBe/iqk6gOYa8aFzfQvQyXGdrs
-        CgjdEjGVZMCOz7K8NHUGwbJ0814cys6I0sEXapd9DX3vUatk2M1u0biHjKuNolal
-        2x2o+CRzYgF83g2N6vlALp1n6VcVB7yHugaD87I5WwB+4RRn29CfPBF4IlDk7lMX
-        7Zayw==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3tnp64gvmh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 11:34:00 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 11 Oct
- 2023 17:33:58 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
- Transport; Wed, 11 Oct 2023 17:33:58 +0100
-Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com [198.61.65.230])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id ED81B11AA;
-        Wed, 11 Oct 2023 16:33:57 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Simon Trimmer <simont@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH] ALSA: hda: cs35l56: Enable low-power hibernation mode on i2c
-Date:   Wed, 11 Oct 2023 17:33:55 +0100
-Message-ID: <20231011163355.18183-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
+        Wed, 11 Oct 2023 12:36:00 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2700B6;
+        Wed, 11 Oct 2023 09:35:57 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4S5JGW5d5hz6JB4n;
+        Thu, 12 Oct 2023 00:32:51 +0800 (CST)
+Received: from localhost (10.126.175.8) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 11 Oct
+ 2023 17:35:54 +0100
+Date:   Wed, 11 Oct 2023 17:35:53 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     "Sridharan, Vilas" <Vilas.Sridharan@amd.com>
+CC:     David Rientjes <rientjes@google.com>,
+        Jiaqi Yan <jiaqiyan@google.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Grimm, Jon" <Jon.Grimm@amd.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "linuxarm@huawei.com" <linuxarm@huawei.com>,
+        "shiju.jose@huawei.com" <shiju.jose@huawei.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "naoya.horiguchi@nec.com" <naoya.horiguchi@nec.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "david@redhat.com" <david@redhat.com>,
+        "jthoughton@google.com" <jthoughton@google.com>,
+        "somasundaram.a@hpe.com" <somasundaram.a@hpe.com>,
+        "erdemaktas@google.com" <erdemaktas@google.com>,
+        "pgonda@google.com" <pgonda@google.com>,
+        "duenwen@google.com" <duenwen@google.com>,
+        "mike.malvestuto@intel.com" <mike.malvestuto@intel.com>,
+        "gthelen@google.com" <gthelen@google.com>,
+        "tanxiaofei@huawei.com" <tanxiaofei@huawei.com>,
+        "prime.zeng@hisilicon.com" <prime.zeng@hisilicon.com>
+Subject: Re: [RFC PATCH 2/9] memory: scrub: sysfs: Add Documentation entries
+ for set of scrub attributes
+Message-ID: <20231011173553.00001b39@Huawei.com>
+In-Reply-To: <BL0PR12MB4673F5E024B62D64B065DBE4EAC9A@BL0PR12MB4673.namprd12.prod.outlook.com>
+References: <20230915172818.761-1-shiju.jose@huawei.com>
+        <20230915172818.761-3-shiju.jose@huawei.com>
+        <CACw3F50jRzJnr9h7qYyD3t+6h7Uw9QMfkCkgu7a=7Lv0Tpi8Zg@mail.gmail.com>
+        <20230922111740.000046d7@huawei.com>
+        <CACw3F539gZc0FoJLo6VvYSyZmeWZ3Pbec7AzsH+MYUJJNzQbUQ@mail.gmail.com>
+        <92f48c1c-3235-49b2-aabd-7da87ad3febc@google.com>
+        <20231006140224.000018a2@Huawei.com>
+        <BL0PR12MB4673F5E024B62D64B065DBE4EAC9A@BL0PR12MB4673.namprd12.prod.outlook.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: QG4T2Kyo7OWCR0NkwwwzoTUhlAOXlLTw
-X-Proofpoint-ORIG-GUID: QG4T2Kyo7OWCR0NkwwwzoTUhlAOXlLTw
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.126.175.8]
+X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Simon Trimmer <simont@opensource.cirrus.com>
+On Fri, 6 Oct 2023 13:06:53 +0000
+"Sridharan, Vilas" <Vilas.Sridharan@amd.com> wrote:
 
-This can now be re-enabled as the sequence to reliably wake the device
-has been implemented in the shared ASoC code.
+> [AMD Official Use Only - General]
+> 
+> I do not believe AMD has implemented RASF/RAS2 at all.
+> 
+> We are looking at it, but our initial impression is that it is insufficiently flexible for general use. (Not just for this feature, but for others in the future.)
+> 
+>     -Vilas
 
-This has a functional dependency on commit 3df761bdbc8b
-("ASoC: cs35l56: Wake transactions need to be issued twice")
+Hi Vilas,
 
-To protect against this, enabling hibernation is conditional on
-CS35L56_WAKE_HOLD_TIME_US being defined, which indicates that the new
-hibernation sequences are available.
+So obvious question is - worth fixing?
 
-Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/pci/hda/cs35l56_hda_i2c.c | 4 ++++
- 1 file changed, 4 insertions(+)
+I'm not particularly keen to see 10+ different ways of meeting this requirement.
 
-diff --git a/sound/pci/hda/cs35l56_hda_i2c.c b/sound/pci/hda/cs35l56_hda_i2c.c
-index 757a4d193e0f..a9ef6d86de83 100644
---- a/sound/pci/hda/cs35l56_hda_i2c.c
-+++ b/sound/pci/hda/cs35l56_hda_i2c.c
-@@ -21,6 +21,10 @@ static int cs35l56_hda_i2c_probe(struct i2c_client *clt)
- 		return -ENOMEM;
- 
- 	cs35l56->base.dev = &clt->dev;
-+
-+#ifdef CS35L56_WAKE_HOLD_TIME_US
-+	cs35l56->base.can_hibernate = true;
-+#endif
- 	cs35l56->base.regmap = devm_regmap_init_i2c(clt, &cs35l56_regmap_i2c);
- 	if (IS_ERR(cs35l56->base.regmap)) {
- 		ret = PTR_ERR(cs35l56->base.regmap);
--- 
-2.30.2
+Probably not too bad if that's 10+ drivers implementing the same userspace ABI, but
+definitely don't want 10 drivers and 10 ABIs.
+
+Jonathan
+
+> 
+> -----Original Message-----
+> From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+> Sent: Friday, October 6, 2023 9:02 AM
+> To: David Rientjes <rientjes@google.com>
+> Cc: Jiaqi Yan <jiaqiyan@google.com>; Luck, Tony <tony.luck@intel.com>; Grimm, Jon <Jon.Grimm@amd.com>; dave.hansen@linux.intel.com; Sridharan, Vilas <Vilas.Sridharan@amd.com>; linuxarm@huawei.com; shiju.jose@huawei.com; linux-acpi@vger.kernel.org; linux-mm@kvack.org; linux-kernel@vger.kernel.org; rafael@kernel.org; lenb@kernel.org; naoya.horiguchi@nec.com; james.morse@arm.com; david@redhat.com; jthoughton@google.com; somasundaram.a@hpe.com; erdemaktas@google.com; pgonda@google.com; duenwen@google.com; mike.malvestuto@intel.com; gthelen@google.com; tanxiaofei@huawei.com; prime.zeng@hisilicon.com
+> Subject: Re: [RFC PATCH 2/9] memory: scrub: sysfs: Add Documentation entries for set of scrub attributes
+> 
+> Caution: This message originated from an External Source. Use proper caution when opening attachments, clicking links, or responding.
+> 
+> 
+> On Wed, 4 Oct 2023 20:18:12 -0700 (PDT)
+> David Rientjes <rientjes@google.com> wrote:
+> 
+> > On Wed, 27 Sep 2023, Jiaqi Yan wrote:
+> >  
+> > > > > 1. I am not aware of any chip/platform hardware that implemented
+> > > > > the hw ps part defined in ACPI RASF/RAS2 spec. So I am curious
+> > > > > what the RAS experts from different hardware vendors think about
+> > > > > this. For example, Tony and Dave from Intel, Jon and Vilas from
+> > > > > AMD. Is there any hardware platform (if allowed to disclose)
+> > > > > that implemented ACPI RASF/RAS2? If so, will vendors continue to
+> > > > > support the control of patrol scrubber using the ACPI spec? If
+> > > > > not (as Tony said in [1], will the vendor consider starting some future platform?
+> > > > >
+> > > > > If we are unlikely to get the vendor support, creating this ACPI
+> > > > > specific sysfs API (and the driver implementations) in Linux
+> > > > > seems to have limited meaning.  
+> > > >
+> > > > There is a bit of a chicken and egg problem here. Until there is
+> > > > reasonable support in kernel (or it looks like there will be),
+> > > > BIOS teams push back on a requirement to add the tables.
+> > > > I'd encourage no one to bother with RASF - RAS2 is much less
+> > > > ambiguous.  
+> > >
+> > > Here mainly to re-ping folks from Intel (Tony and Dave)  and AMD
+> > > (Jon and Vilas) for your opinion on RAS2.
+> > >  
+> >
+> > We'll need to know from vendors, ideally at minimum from both Intel
+> > and AMD, whether RAS2 is the long-term vision here.  Nothing is set in
+> > stone, of course, but deciding whether RAS2 is the standard that we
+> > should be rallying around will help to guide future development
+> > including in the kernel.
+> >
+> > If RAS2 is insufficient for future use cases or we would need to
+> > support multiple implementations in the kernel for configuring the
+> > patrol scrubber depending on vendor, that's great feedback to have.
+> >
+> > I'd much rather focus on implementing something in the kernel that we
+> > have some clarity about the vendors supporting, especially when it
+> > comes with user visible interfaces, as opposed to something that may
+> > not be used long term.  I think that's a fair ask and that vendor
+> > feedback is required here?  
+> 
+> Agreed and happy to have feedback from Intel and AMD + all the other CPU vendors who make use of ACPI + all the OEMs who add stuff well beyond what Intel and AMD tell them to :)  I'll just note a lot of the ACPI support in the kernel covers stuff not used on mainstream x86 platforms because they are doing something custom and we didn't want 2 + X custom implementations...
+> 
+> Some other interfaces for scrub control (beyond existing embedded ones) will surface in the next few months where RAS2 is not appropriate.
+> 
+> Jonathan
+> 
+> 
 
