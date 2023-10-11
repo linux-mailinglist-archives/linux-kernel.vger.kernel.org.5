@@ -2,76 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7857C4AF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 223B47C4AF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345573AbjJKGsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 02:48:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52476 "EHLO
+        id S1345613AbjJKGul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 02:50:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345289AbjJKGsu (ORCPT
+        with ESMTP id S1345289AbjJKGuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 02:48:50 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE33E9B;
-        Tue, 10 Oct 2023 23:48:48 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40684f53ef3so63672445e9.3;
-        Tue, 10 Oct 2023 23:48:48 -0700 (PDT)
+        Wed, 11 Oct 2023 02:50:39 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B49D90
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 23:50:38 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-537f07dfe8eso5879a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 23:50:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697006927; x=1697611727; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cqFmO2+2FrIdfi4i9ENoBkFxqNjBz5nx6bXommNjl7M=;
-        b=WTIY1QcAru8MNHbnGWU0hxC8cp3yPJuL8Ofb4qg5g42ot6nvQYpumJFII/yNxNHmYS
-         G/RNLIyGd/8yTTP0gJOMWOZer8IQAwFiAWzB8QXm/hZE7bYGOs5r2XZYLDvtXEKCUQ+u
-         20m0xZIiXNB/LxwMIoxOVU9sJ4aalzq+2adXXVDLUXL1mM2gA3erZPAguOfrC/bAnD6d
-         akLzlkK/mj/ETt/RZCYnKnhsZihELxz09WH+f2y3aKx7DyaFb6MdpLJEezmR8drCgw/R
-         BvLy8TNz3NEQq299wX3gdtMiQIbeh3xaLxQpL/L4I/jb7hNSMj7t764WrH5M2Se+7N/l
-         6Kyg==
+        d=google.com; s=20230601; t=1697007037; x=1697611837; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fSdUFdNj96ap5yOzCUQatTJqtRpLC8WshQaaBaUNCbs=;
+        b=oT+THZDf+QDadK0nvojwt9eOmAKznH8i7VGKGiu9W+fhYiI1zeWXZkMlWhrVTfnCaR
+         3FNm2wLQj3j2BK/18R5KXq8zaX40b/lC/cZNy+Msa7I0zaubRQfuUZvWHxxgvJhT0Sz+
+         ZKY5eoNJDKzRClYYxCq3oGW0KklCha1lsp2w9Vomzxhmrg1FL7tj9f/swLTDB7YNRGCw
+         ViOBPdfBlHRtITaTgoVx+mnQu8M3EyDYbQp8RdXDjRuiK5lmXefO/xz6hjpn93qSfftU
+         Xs4K89QQE9yEIwIpDdqUMsBKEtrAWl9U9exCIE9yIPGd9eUtGh8qYA0rLj+QDljPK1O4
+         6M1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697006927; x=1697611727;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cqFmO2+2FrIdfi4i9ENoBkFxqNjBz5nx6bXommNjl7M=;
-        b=IhC3cRkVYtHK6vbHrtNb5TGldQeupB2QmpFOw1QhFaXWYfLBWIGRqta000zj/JuZdJ
-         IS6lNBwZd0T3acndJ95MND/7qVdihWinrWHPuob0EUbdXiKS3eMeSswU5OpOiW7Lm/hB
-         wCqmQQlGs+xnBSQ0fprCYqjliClEGKgHAx4kFvuexkWN9OxO/7iSGx3OEVm/3qECL7hD
-         Zmg/0fJg6TWmTLD2QToIOou9KP0Bw6I86LJHpTeixA0kCvsMtsmgRfxNfPN8szvZeARD
-         NB2ekRq411GS09xHHj3q4OVbGjgsNGCOqDaFjn6DGXm1LJJPn5Dsj6BO0KNx/WxQJLvW
-         0ssw==
-X-Gm-Message-State: AOJu0Ywfjncrb06+g+FdiPHB2AdrPM6BqH3skrOnD19eW3m2/DCZ9iqH
-        3jQjpCNQgvaGem2m3TSQSdU=
-X-Google-Smtp-Source: AGHT+IEG2ekD3+biT2AFwRrgndK5hGQ4Qsm39lkF0PjkgCFwVoSTvwH+6Oky4EqVlW4W9Ij9Zdc8YQ==
-X-Received: by 2002:a05:600c:2189:b0:405:7400:1e4c with SMTP id e9-20020a05600c218900b0040574001e4cmr17992312wme.35.1697006926909;
-        Tue, 10 Oct 2023 23:48:46 -0700 (PDT)
-Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
-        by smtp.gmail.com with ESMTPSA id f12-20020a7bcd0c000000b003fefb94ccc9sm15755217wmj.11.2023.10.10.23.48.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 23:48:45 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 07:48:44 +0100
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 4/5] mm: abstract merge for new VMAs into
- vma_merge_new_vma()
-Message-ID: <211daa6d-220a-4477-a357-bfe9e0678fc8@lucifer.local>
-References: <cover.1696884493.git.lstoakes@gmail.com>
- <8525290591267805ffabf8a31b53f0290a6a4276.1696884493.git.lstoakes@gmail.com>
- <20231011015140.arngzv47bdyyzfie@revolver>
+        d=1e100.net; s=20230601; t=1697007037; x=1697611837;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fSdUFdNj96ap5yOzCUQatTJqtRpLC8WshQaaBaUNCbs=;
+        b=XD6fs57K1w0YDhtDOrea2git4D66k+NDpHUGeoR0Rb4aotEV4SfICY5Trb6NPxuBPV
+         t9mV6d/hn4/g5sYUyytjcHoeKWnTWMYQS2F1VGjoG0zvxMIR9pdeofO2QTvkB1lYfcI1
+         mKdWNzCgPr74IEHuZmBc4C6KILCVGW8vv3n98Wqiagb+iCyWE7/aevks4WAfPuYqNvil
+         wrWh6ZBO7SEn2/0rPQXZ0B8P7usDcdQ2lvZlDRjZelA8CyhkEwKddE8diS9JXlK2dA77
+         kOxWBu/bIYa/7udcWTFXIH7NYq5++rrsf38LZi2unic5qnx99JLN2CgBP0MC2KsgiXFz
+         fqRA==
+X-Gm-Message-State: AOJu0YzN9EAXVKK65bUvmuaBtylcXbtLculVjUNm9Y3MhqGvLIRo9rXI
+        BZtdjpHSKpLHpGWhgbMW7EaLpYi1UlKu6oSkfRQVrQ==
+X-Google-Smtp-Source: AGHT+IHtpBCgMDNuwyCLbV/TmJmT1aF1BKCDMSYjGgolBuC8aR9OOrLb8aK6Oo+7rWTSvZYKPL2nKc4+xp9VwQSoI9I=
+X-Received: by 2002:a50:9356:0:b0:538:1d3b:172f with SMTP id
+ n22-20020a509356000000b005381d3b172fmr57065eda.3.1697007036622; Tue, 10 Oct
+ 2023 23:50:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231011015140.arngzv47bdyyzfie@revolver>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20231002221909.2958708-1-irogers@google.com> <CAP-5=fX-VOeCkOJY5xeW67x0+A0tGAHM4VYBBz46L-g2eRCR+w@mail.gmail.com>
+ <93afcf44-5f8b-49c1-abc5-5304cba5f991@intel.com> <CAP-5=fXzcR6QKKhFG5PS1pFYi5JsO4AOUoH_-Bv0O+11YzEkkw@mail.gmail.com>
+ <CAM9d7cjQZvZm+Vyrx9PTUYMFN5RjE+i-Kq1kbffyVp2hGKF6sg@mail.gmail.com>
+ <CAP-5=fUo-vuLofC4jgHC9z=BTe80OEiY_PoQWqQtyVdvHcf+KQ@mail.gmail.com> <CAM9d7cjdb5WE-xdSdKD=p_EtsS7OSVEWL+GL3RVwczu-+1JvFQ@mail.gmail.com>
+In-Reply-To: <CAM9d7cjdb5WE-xdSdKD=p_EtsS7OSVEWL+GL3RVwczu-+1JvFQ@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 10 Oct 2023 23:50:25 -0700
+Message-ID: <CAP-5=fVe9v=KOxJE5TfmivBQCD=7SRFpnqkob7e05U76d_bSPQ@mail.gmail.com>
+Subject: Re: [PATCH v1] perf intel-pt: pkt-decoder: Fix alignment issues
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Olsa <jolsa@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,109 +79,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 09:51:40PM -0400, Liam R. Howlett wrote:
-> * Lorenzo Stoakes <lstoakes@gmail.com> [231009 16:53]:
-> > Only in mmap_region() and copy_vma() do we attempt to merge VMAs which
-> > occupy entirely new regions of virtual memory.
-> >
-> > We can abstract this logic and make the intent of this invocations of it
-> > completely explicit, rather than invoking vma_merge() with an inscrutable
-> > wall of parameters.
-> >
-> > This also paves the way for a simplification of the core vma_merge()
-> > implementation, as we seek to make it entirely an implementation detail.
-> >
-> > Note that on mmap_region(), VMA fields are initialised to zero, so we can
-> > simply reference these rather than explicitly specifying NULL.
+On Tue, Oct 10, 2023 at 10:56=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
+ wrote:
 >
-> I don't think that's accurate.. mmap_region() sets the start, end,
-> offset, flags.  It also passes this vma into a driver, so I'm not sure
-> we can rely on them being anything after that?  The whole reason
-> vma_merge() is attempted in this case is because the driver may have
-> changed vma->vm_flags on us.  Your way may actually be better since the
-> driver may set something we assume is NULL today.
-
-Yeah I think I wasn't clear here - I meant to say that we memset -> 0 so
-all fields that are not specified (e.g. not start, end, offset, flags).
-
-However you make a very good point re: the driver, which I hadn't thought
-of, also it's worth saying here that we specifically only do this for a
-file-backed mapping just for complete clarity.
-
-I will add a note to this part of the v3 series asking Andrew to update the
-comment.
-
+> On Mon, Oct 9, 2023 at 8:31=E2=80=AFAM Ian Rogers <irogers@google.com> wr=
+ote:
+> >
+> > On Sun, Oct 8, 2023 at 10:29=E2=80=AFPM Namhyung Kim <namhyung@kernel.o=
+rg> wrote:
+> > >
+> > > On Thu, Oct 5, 2023 at 2:24=E2=80=AFPM Ian Rogers <irogers@google.com=
+> wrote:
+> > > >
+> > > > On Thu, Oct 5, 2023 at 12:06=E2=80=AFPM Adrian Hunter <adrian.hunte=
+r@intel.com> wrote:
+> > > > >
+> > > > > On 5/10/23 18:48, Ian Rogers wrote:
+> > > > > > On Mon, Oct 2, 2023 at 3:19=E2=80=AFPM Ian Rogers <irogers@goog=
+le.com> wrote:
+> > > > > >>
+> > > > > >> The byte aligned buffer is cast to large types and dereference=
+d
+> > > > > >> causing misaligned pointer warnings from undefined behavior sa=
+nitizer.
+> > > > > >> Fix the alignment issues with memcpy which may require the
+> > > > > >> introduction of temporaries.
+> > > > > >>
+> > > > > >> Signed-off-by: Ian Rogers <irogers@google.com>
+> > > > > >> ---
+> > > > > >
+> > > > > > This is a relatively small change that fixes building with
+> > > > > > -fsanitize=3Dalignment -fsanitize-undefined-trap-on-error. Adri=
+an, as
+> > > > > > this is Intel-PT could you take a look?
+> > > > >
+> > > > > Thanks! This has been down my list of things to do for ages,
+> > > > > but using get_unaligned_le16() etc seems nicer.  I sent a patch
+> > > > > set for that.
+> > > >
+> > > > Thanks Adrian! Your patch set looks good and I think after Arnaldo'=
+s
+> > > > comment is addressed we should go with it.
+> > >
+> > > I think it can be done as a later step as long as the interface is th=
+e
+> > > same.  Can I add your Ack's to the Adrian's patchset?
+> >
+> > I think addressing Arnaldo's comment:
+> > https://lore.kernel.org/lkml/ZR8QnasisGEsaaDR@kernel.org/
+> > will need some changes to the patch series, and so I was waiting to
+> > see the outcome of that.
 >
-> >
-> > Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-> > Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
-> > ---
-> >  mm/mmap.c | 27 ++++++++++++++++++++-------
-> >  1 file changed, 20 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/mm/mmap.c b/mm/mmap.c
-> > index 17c0dcfb1527..33aafd23823b 100644
-> > --- a/mm/mmap.c
-> > +++ b/mm/mmap.c
-> > @@ -2482,6 +2482,22 @@ struct vm_area_struct *vma_modify(struct vma_iterator *vmi,
-> >  	return NULL;
-> >  }
-> >
-> > +/*
-> > + * Attempt to merge a newly mapped VMA with those adjacent to it. The caller
-> > + * must ensure that [start, end) does not overlap any existing VMA.
-> > + */
-> > +static struct vm_area_struct *vma_merge_new_vma(struct vma_iterator *vmi,
-> > +						struct vm_area_struct *prev,
-> > +						struct vm_area_struct *vma,
-> > +						unsigned long start,
-> > +						unsigned long end,
-> > +						pgoff_t pgoff)
->
-> It's not a coding style, but if you used two tabs here, it may make this
-> more condensed.
+> It seems it's done without further changes.  Can I get your Ack's now?
 
-Checkpatch shouts at me about aligning to the paren, I obviously could just
-put "static struct vm_area_struct *" on the line before to make this a bit
-better though. If we go to a v4 will fix, otherwise I think probably ok to
-leave even if a bit squished for now?
+With the unaligned.h patch on its own, I think patch 1 of 5 needs
+dropping. For the rest I'm happy to acked-by.
 
->
-> > +{
-> > +	return vma_merge(vmi, vma->vm_mm, prev, start, end, vma->vm_flags,
-> > +			 vma->anon_vma, vma->vm_file, pgoff, vma_policy(vma),
-> > +			 vma->vm_userfaultfd_ctx, anon_vma_name(vma));
-> > +}
-> > +
-> >  /*
-> >   * do_vmi_align_munmap() - munmap the aligned region from @start to @end.
-> >   * @vmi: The vma iterator
-> > @@ -2837,10 +2853,9 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
-> >  		 * vma again as we may succeed this time.
-> >  		 */
-> >  		if (unlikely(vm_flags != vma->vm_flags && prev)) {
-> > -			merge = vma_merge(&vmi, mm, prev, vma->vm_start,
-> > -				    vma->vm_end, vma->vm_flags, NULL,
-> > -				    vma->vm_file, vma->vm_pgoff, NULL,
-> > -				    NULL_VM_UFFD_CTX, NULL);
-> > +			merge = vma_merge_new_vma(&vmi, prev, vma,
-> > +						  vma->vm_start, vma->vm_end,
-> > +						  pgoff);
->                                                    └ vma->vm_pgoff
-> >  			if (merge) {
-> >  				/*
-> >  				 * ->mmap() can change vma->vm_file and fput
-> > @@ -3382,9 +3397,7 @@ struct vm_area_struct *copy_vma(struct vm_area_struct **vmap,
-> >  	if (new_vma && new_vma->vm_start < addr + len)
-> >  		return NULL;	/* should never get here */
-> >
-> > -	new_vma = vma_merge(&vmi, mm, prev, addr, addr + len, vma->vm_flags,
-> > -			    vma->anon_vma, vma->vm_file, pgoff, vma_policy(vma),
-> > -			    vma->vm_userfaultfd_ctx, anon_vma_name(vma));
-> > +	new_vma = vma_merge_new_vma(&vmi, prev, vma, addr, addr + len, pgoff);
-> >  	if (new_vma) {
-> >  		/*
-> >  		 * Source vma may have been merged into new_vma
-> > --
-> > 2.42.0
-> >
+Thanks,
+Ian
+
+> Thanks,
+> Namhyung
