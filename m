@@ -2,149 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7193D7C5E4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 22:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E06437C5E48
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 22:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376394AbjJKUX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 16:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51122 "EHLO
+        id S1376319AbjJKUXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 16:23:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233358AbjJKUXw (ORCPT
+        with ESMTP id S233279AbjJKUXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 16:23:52 -0400
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31EC91;
-        Wed, 11 Oct 2023 13:23:50 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id E5CC85C01E9;
-        Wed, 11 Oct 2023 16:23:49 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 11 Oct 2023 16:23:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1697055829; x=1697142229; bh=V4
-        0Dm0ERM/8BGJO0YKNSpWXn7zZJAk8XtXCkCcVqzY0=; b=hRGi7XOVwKS8e7rsjX
-        NZ6/5yOeiyC76EKt+OkAt5JSsR8lKu0cKPnWEwviGzRpAPg9vz9zjTwo/Aw7F4ad
-        0u2k0+hJcJXv99oh5fHhE7yDXK9r4vuJPz+sl5vfSwM1u+rgjhQ/JfvtmYcmOmaT
-        HAGeRW240ha9dPeYqjSeao8CBZDiHocAgOZfmkOTnkw0M+Ep8Z5iM8fifK2NFSfX
-        f9ZWw964PHSlp1+XfZLYV/n/S89Fv25t0GWjU4WuYB7oikxuQPCoqOVaYd6YyxON
-        hkKilbsWjingOG1O4HZ2BzdUva4896xiuRoOYrHv/wMEWrIPVmJJAZfj+T6vSHYH
-        3hPA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1697055829; x=1697142229; bh=V40Dm0ERM/8BG
-        JO0YKNSpWXn7zZJAk8XtXCkCcVqzY0=; b=ToQqibCWxH2crMF6jSlJoeGHkiwFh
-        5aWhkEs/wTrIa0c+UMlXxmhJTB/DBv+R51hpiTDknZghHzF//SdEQ6Sw+wXbaRQG
-        UzfXIzvwgbwWlq0a7/vKJ+bUPGCkz1arJ6QpfaXrL36hB9kWznLt+kHNU4C88bAr
-        ij1ckQ8ZpbHUrWerSJJnXg64qfAZ8UokaMvXalHD4dQ3C4R7nfoMUh086XF3J91/
-        itkhbQjT7AvuIE7w8It9M8knuO6I7E+c/L/VbBCNT3mAeFverH9InB8YCd9+wQkn
-        1DgWdFY68aLZwkALqM9THAa9R3ayOe5aBCGJrQR4xT1DAPzvrSEeQD1dQ==
-X-ME-Sender: <xms:VAQnZVz-uRX71Rud-fLOB6wYIQ0lEsuThZELWmOfmQM0SkkUJZY9aw>
-    <xme:VAQnZVQRfuexdbc7Zh6RqapMppPiii2ABngpFOZ-BYyUqgJ_4AA6gU3fjhrMehmCi
-    KD0PV5GhS--mPDPC1w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrheekgddugeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:VQQnZfUwD51L3NCq0ZMTAZcAaGiKGjQQPBq3deOJ8SH9XCYrm0Heeg>
-    <xmx:VQQnZXhiM2KBuOkakp-pI0uI9zq7b2-cTxKjbEcNuMh-pEQ5pOSQtA>
-    <xmx:VQQnZXCBPA3e8nZOW1RUDZ5B2Xed3zWTIf0moJcUQdLM6FvfGFKx6A>
-    <xmx:VQQnZb7bOtyKcfR8jX-Rb83RjdSHleoh8AvL-xr7hpK-066QMqUBzw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id CCF0EB60089; Wed, 11 Oct 2023 16:23:48 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1019-ged83ad8595-fm-20231002.001-ged83ad85
+        Wed, 11 Oct 2023 16:23:08 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6117090;
+        Wed, 11 Oct 2023 13:23:06 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4S5PJc0MPNz67VcY;
+        Thu, 12 Oct 2023 04:20:00 +0800 (CST)
+Received: from localhost (10.126.175.8) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 11 Oct
+ 2023 21:23:03 +0100
+Date:   Wed, 11 Oct 2023 21:23:01 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Jeongtae Park <jtp.park@samsung.com>
+CC:     Dan Williams <dan.j.williams@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Ben Widawsky" <bwidawsk@kernel.org>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Fan Ni <fan.ni@samsung.com>, <linux-cxl@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kyungsan Kim <ks0204.kim@samsung.com>,
+        "Wonjae Lee" <wj28.lee@samsung.com>,
+        Hojin Nam <hj96.nam@samsung.com>,
+        Junhyeok Im <junhyeok.im@samsung.com>,
+        Jehoon Park <jehoon.park@samsung.com>,
+        "Jeongtae Park" <jeongtae.park@gmail.com>
+Subject: Re: [PATCH v3 2/6] cxl/region: Fix a checkpatch warning
+Message-ID: <20231011212301.000027e2@Huawei.com>
+In-Reply-To: <20231010082608.859137-3-jtp.park@samsung.com>
+References: <20231010082608.859137-1-jtp.park@samsung.com>
+        <CGME20231010082321epcas2p13641bd794b1c26d2137bb51093fd49f7@epcas2p1.samsung.com>
+        <20231010082608.859137-3-jtp.park@samsung.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Message-Id: <db98d9ac-7650-4a72-8eb9-4def1f17ea0d@app.fastmail.com>
-In-Reply-To: <da777a72-55d1-4ee3-91c8-30afe7659f54@gmail.com>
-References: <20231010155444.858483-1-arnd@kernel.org>
- <da777a72-55d1-4ee3-91c8-30afe7659f54@gmail.com>
-Date:   Wed, 11 Oct 2023 22:22:32 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Philipp Hortmann" <philipp.g.hortmann@gmail.com>,
-        "Arnd Bergmann" <arnd@kernel.org>, "Kalle Valo" <kvalo@kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-Cc:     "Nicolas Ferre" <nicolas.ferre@microchip.com>,
-        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
-        "Claudiu Beznea" <claudiu.beznea@tuxon.dev>,
-        "Jakub Kicinski" <kuba@kernel.org>, "Pavel Machek" <pavel@ucw.cz>,
-        "David S . Miller" <davem@davemloft.net>,
-        "Larry Finger" <Larry.Finger@lwfinger.net>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH] [RFC] wireless: move obsolete drivers to staging
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.126.175.8]
+X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023, at 20:13, Philipp Hortmann wrote:
-> On 10/10/23 17:27, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de> While looking at the old drivers 
->> using the obsolete .ndo_do_ioctl() callback, I found a number of network 
->> drivers that are especially obsolete, in particular for 802.11b 
->> (11Mbit/s) or even older wireless networks, using non-busmaster 
->> ISA/PCMCIA style bus interfaces, and using the legacy wireless extension 
->> ioctls rather than the netlink interfaces that were meant to replace 
->> them in 2007. All of these drivers are obsolete or orphaned. We had 
->> previously discussed this topic, but nobody ever moved the files, so I 
->> now went through the list to my best knowledge. These are the drivers 
->> that I would classify as "probably unused" by now:
->
-> I found a USB WLAN Stick with a rtl8192u. I got it last Saturday and 
-> found out that the firmware is missing in my ubuntu 20.04. I found it on 
-> the web and fixed it. When I started the driver my computer crashed. The 
-> missing part was: priv->priv_wq = alloc_workqueue("priv_wq", 0, 0); 
-> Fixing this the next error was a network = kzalloc(sizeof(*network), 
-> GFP_KERNEL); in wrong context with leads to a crash of my computer. 
-> Fixing this leads to another issue which lets my computer crash.
->
-> For me the firmware of rtl8192u was intentionally missing because of the 
-> issues with the driver.
->
-> What this has to do with your question?
-> Can we check for missing firmware in main distributions to know which 
-> drivers are considered to be old and unused?
+On Tue, 10 Oct 2023 17:26:04 +0900
+Jeongtae Park <jtp.park@samsung.com> wrote:
 
-Nice, thanks so much for testing.
+> WARNING: else is not generally useful after a break or return
+> 
+> Since cpu_cache_invalidate_memregion() already checks for
+> support of invalidaton operation, it can be removed.
+> This change would make more efficient or small codes
+> when 'CONFIG_CXL_REGION_INVALIDATION_TEST' is not set.
 
-I see the two bugs were introduced in 2016 by commit 1761a85c3bed3
-("staging: rtl8192u: Remove create_workqueue()") and in 2021 by
-commit 061e390b7c87f ("staging: rtl8192u: ieee80211_softmac: Move a
-large data struct onto the heap"), so it's been broken for a while.
+Oddly short line wrap - aim for 75 chars ish.
 
-I also checked rtl8192e for the same bugs, but that driver
-managed to avoid this even though it had the same code
-originally.
+> 
+> Signed-off-by: Jeongtae Park <jtp.park@samsung.com>
 
-Regarding the firmware files, I found:
 
-- rtl8192e, rtl7812 and rtl8723bs are all in the linux-firmware
-  package, unlike rtl8192u
+> ---
+>  drivers/cxl/core/region.c | 20 +++++++-------------
+>  1 file changed, 7 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
+> index e115ba382e04..0eb7a12badb9 100644
+> --- a/drivers/cxl/core/region.c
+> +++ b/drivers/cxl/core/region.c
+> @@ -127,21 +127,15 @@ static struct cxl_region_ref *cxl_rr_load(struct cxl_port *port,
+>  
+>  static int cxl_region_invalidate_memregion(struct cxl_region *cxlr)
+>  {
+> -	if (!cpu_cache_has_invalidate_memregion()) {
+> -		if (IS_ENABLED(CONFIG_CXL_REGION_INVALIDATION_TEST)) {
+> -			dev_warn_once(
+> -				&cxlr->dev,
+> -				"Bypassing cpu_cache_invalidate_memregion() for testing!\n");
+> -			return 0;
+> -		} else {
+> -			dev_err(&cxlr->dev,
+> -				"Failed to synchronize CPU cache state\n");
+> -			return -ENXIO;
+> -		}
+> +	if (IS_ENABLED(CONFIG_CXL_REGION_INVALIDATION_TEST)
+> +			&& cpu_cache_has_invalidate_memregion()) {
+> +		dev_warn_once(
+> +			&cxlr->dev,
+> +			"Bypassing cpu_cache_invalidate_memregion() for testing!\n");
+> +		return 0;
+>  	}
+>  
+> -	cpu_cache_invalidate_memregion(IORES_DESC_CXL);
+> -	return 0;
+> +	return cpu_cache_invalidate_memregion(IORES_DESC_CXL);
 
-- atmel firmware is not in upstream linux-firmware, but Debian
-  has an atmel-firmware package for it
+This is an arch specific call.  Whilst today on x86 (only option) the only way to
+return an error is if it's not supported, that's not necessarily going to be the
+case for other architectures. So I'd prefer to keep the dev_err if this fails.
 
-- I could not find a Debian package for ks7010sd.rom
+Jonathan
 
-- vt6656/vntwusb.fw is in firmware-misc-nonfree
+>  }
+>  
+>  static int cxl_region_decode_reset(struct cxl_region *cxlr, int count)
 
-- orinoco has multiple firmware files, but only agere_sta_fw.bin
-  and agere_ap_fw.bin are in Debian and linux-firmware.
-
-     Arnd
