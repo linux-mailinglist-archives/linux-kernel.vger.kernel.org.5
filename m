@@ -2,206 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 476BB7C4E0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 11:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D29DD7C4E67
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 11:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345620AbjJKJDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 05:03:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52100 "EHLO
+        id S231194AbjJKJV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 05:21:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346191AbjJKJCt (ORCPT
+        with ESMTP id S232010AbjJKJD7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 05:02:49 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9CED58
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 02:02:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52813C433C8;
-        Wed, 11 Oct 2023 09:02:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697014950;
-        bh=gULH7R73AOyYDlw1oHOdemHr44ROONKh1wEHDMeHQi0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hNjTeexcq23Al3cx63lnTiNMJy8IjWupiSkkMw5lIdiGe+SWMoIIeMbyoP1lwtSMu
-         2XMXVeacoKRUgEd7iFD5xRI7hlbvUYC57UBV+sLh3SUmP8QaRXYNTgbGLv6XFeyQ7H
-         sRUIk5U/14dSi/Z0SVyNKY4DI7lqtywXIU+y4nCU=
-Date:   Wed, 11 Oct 2023 11:02:27 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hardik Gajjar <hgajjar@de.adit-jv.com>
-Cc:     mathias.nyman@intel.com, stern@rowland.harvard.edu,
-        yangyingliang@huawei.com, jinpu.wang@ionos.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        erosca@de.adit-jv.com
-Subject: Re: [PATCH v3] usb: core: hub: Add quirks for reducing device
- address timeout
-Message-ID: <2023101117-colonize-jovial-893f@gregkh>
-References: <6b26db15-89a0-d455-5740-9abb1befa3a8@intel.com>
- <20231011085011.89198-1-hgajjar@de.adit-jv.com>
+        Wed, 11 Oct 2023 05:03:59 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC33AC
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 02:03:58 -0700 (PDT)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39B92PN8022956;
+        Wed, 11 Oct 2023 09:03:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=BTIoFOk/xLtJ0TdjDNsWNE6i8V3JRVQTvCgEvw0zIUE=;
+ b=UgZqsZCwd62OHPCjzkWTMkGgSFSfOghxliH5w9jQIWl9LhErxTgJ9cq4QFgdQc1X5aU3
+ kHSji3Ltw6kbXppekEBlo3JX1QpjrfA9047X2iHwQgwEy26tU2UHvdpuUzOydHt+WxDk
+ z5F8IZ7taLQneBfIACxlYkT2XpfV8C0GVLhe4lcTrsenDuRxT3Lh6bXJr1Z/5ASoViXp
+ dBBU3tdJktEMX+r5Kz4CJRD332w8LhGYu2IzrXVWSq7DqJtHqfB9962bBalF3EwjSBjy
+ sTuzHNxmLGI0seuLN5hZ//hkfDie5SsWjCw4CDYE2XEHLj3UtOCsnuZiq36idtwFujul sA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tnrqj823x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 09:03:42 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39B92Qo4022996;
+        Wed, 11 Oct 2023 09:03:42 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tnrqj823g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 09:03:42 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39B6q60x001150;
+        Wed, 11 Oct 2023 09:03:41 GMT
+Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tkkvjxgj5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 09:03:41 +0000
+Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
+        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39B93e2s27066976
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Oct 2023 09:03:40 GMT
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BFEE558043;
+        Wed, 11 Oct 2023 09:03:40 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9259658053;
+        Wed, 11 Oct 2023 09:03:36 +0000 (GMT)
+Received: from [9.171.24.239] (unknown [9.171.24.239])
+        by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 11 Oct 2023 09:03:36 +0000 (GMT)
+Message-ID: <1ebf2b9d-f496-565c-bc00-4fee9cb11b0b@linux.vnet.ibm.com>
+Date:   Wed, 11 Oct 2023 14:33:34 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231011085011.89198-1-hgajjar@de.adit-jv.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] powerpc/paravirt: Improve vcpu_is_preempted
+Content-Language: en-US
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     Juergen Gross <jgross@suse.com>, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Ajay Kaher <akaher@vmware.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        shrikanth hegde <sshegde@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+References: <20231009051740.17683-1-srikar@linux.vnet.ibm.com>
+From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+In-Reply-To: <20231009051740.17683-1-srikar@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: insH9JdICxpNfmkhspqAPkbhAKXc9VMg
+X-Proofpoint-ORIG-GUID: ZTA4UbXx1i1nfm6JfGqxCVfDQ9Ux-uVN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-11_06,2023-10-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ phishscore=0 lowpriorityscore=0 impostorscore=0 mlxlogscore=999
+ spamscore=0 suspectscore=0 bulkscore=0 clxscore=1011 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310110079
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 10:50:11AM +0200, Hardik Gajjar wrote:
-> Currently, the timeout for the set address command is fixed at
-> 5 seconds in the xhci driver. This means the host waits up to 5
-> seconds to receive a response for the set_address command from
-> the device.
+
+
+On 10/9/23 10:47 AM, Srikar Dronamraju wrote:
+
+Hi Srikar. This is an interesting patch. 
+
+> PowerVM Hypervisor dispatches on a whole core basis. In a shared LPAR, a
+s/whole/big 
+
+Can we mention that a big core consist of two small cores. and w.r.t
+linux a core is at small core. Hence there is mismatch. 
+> CPU from a core that is preempted may have a larger latency. In
+> such a scenario, its preferable to choose a different CPU to run.
 > 
-> In the automotive context, most smartphone enumerations, including
-> screen projection, should ideally complete within 3 seconds.
-> Achieving this is impossible in scenarios where the set_address is
-> not successful and waits for a timeout.
+> If one of the CPUs in the core is active, i.e neither CEDED nor
+> preempted, then consider this CPU as not preempted
 > 
-> The shortened address device timeout quirks provide the flexibility
-> to align with a 3-second time limit in the event of errors.
-> By swiftly triggering a failure response and swiftly initiating
-> retry procedures, these quirks ensure efficient and rapid recovery,
-> particularly in automotive contexts where rapid smartphone enumeration
-> and screen projection are vital.
+> Also if any of the CPUs in the core has yielded but OS has not requested
+> CEDE or CONFER, then consider this CPU to be preempted.
 > 
-> The quirk will set the timeout to 500 ms from 5 seconds.
-> 
-> To use the quirk, please write "vendor_id:product_id:p" to
-> /sys/bus/usb/drivers/hub/module/parameter/quirks
-> 
-> For example,
-> echo "0x2c48:0x0132:p" > /sys/bus/usb/drivers/hub/module/parameter/quirks"
-> 
-> Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
+
+This is because an idle CPU cannot be preempted. Right?
+
+This patch should help address the has_idle_core functionality and ttwu path 
+in powerpc SPLPAR based on powerVM. Currently they are not correct.  
+
+when the all the CPU's are idle, __update_idle_core will not set has_idle_core
+ which is functionally not right. That is one example, there are other places where correct 
+functionality of vcpu_is_preempted is crucial as well. 
+
+
+> Cc: Ajay Kaher <akaher@vmware.com>
+> Cc: Alexey Makhalov <amakhalov@vmware.com>
+> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Cc: Juergen Gross <jgross@suse.com>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: virtualization@lists.linux-foundation.org
+> Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 > ---
-> changes since version 1:
-> 	- implement quirk instead of new API in xhci driver
+>  arch/powerpc/include/asm/paravirt.h | 33 ++++++++++++++++++++++++++---
+>  1 file changed, 30 insertions(+), 3 deletions(-)
 > 
-> changes since version 2:
-> 	- Add documentation for the new quirk.
-> 	- Define the timeout unit in milliseconds in variable names and function arguments.
-> 	- Change the xHCI command timeout from HZ (jiffies) to milliseconds.
-> 	- Add APTIV usb hub vendor and product ID in device quirk list
-> 	- Adding some other comments for clarity
-> ---
->  .../admin-guide/kernel-parameters.txt         |  3 +++
->  drivers/usb/core/hub.c                        | 13 ++++++++--
->  drivers/usb/core/quirks.c                     |  6 +++++
->  drivers/usb/host/xhci-mem.c                   |  2 ++
->  drivers/usb/host/xhci-ring.c                  | 11 ++++----
->  drivers/usb/host/xhci.c                       | 25 +++++++++++++------
->  drivers/usb/host/xhci.h                       |  6 +++--
->  include/linux/usb/hcd.h                       |  5 ++--
->  include/linux/usb/quirks.h                    |  3 +++
->  9 files changed, 56 insertions(+), 18 deletions(-)
+> diff --git a/arch/powerpc/include/asm/paravirt.h b/arch/powerpc/include/asm/paravirt.h
+> index e08513d73119..a980756f58df 100644
+> --- a/arch/powerpc/include/asm/paravirt.h
+> +++ b/arch/powerpc/include/asm/paravirt.h
+> @@ -121,9 +121,19 @@ static inline bool vcpu_is_preempted(int cpu)
+>  	if (!is_shared_processor())
+>  		return false;
 > 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 0a1731a0f0ef..44732d179bce 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -6817,6 +6817,9 @@
->  					pause after every control message);
->  				o = USB_QUIRK_HUB_SLOW_RESET (Hub needs extra
->  					delay after resetting its port);
-> +				p = USB_QUIRK_SHORT_DEVICE_ADDR_TIMEOUT ( Timeout
-> +					of set_address command reduce from 5000 ms
-> +					to 500 ms
-
-No trailing ")" character?  And no need for the extra space after the
-new "(" one, right?
-
-also, this should say it is "reducing", not "reduce"?
-
->  			Example: quirks=0781:5580:bk,0a5c:5834:gij
->  
->  	usbhid.mousepoll=
-> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-> index 3c54b218301c..c0d727398cd1 100644
-> --- a/drivers/usb/core/hub.c
-> +++ b/drivers/usb/core/hub.c
-> @@ -54,6 +54,9 @@
->  #define USB_TP_TRANSMISSION_DELAY_MAX	65535	/* ns */
->  #define USB_PING_RESPONSE_TIME		400	/* ns */
->  
-> +#define USB_DEFAULT_ADDR_DEVICE_TIMEOUT_MS	5000 /* 5000ms */
-
-This comes from the USB specification, right?  If so, can you add the
-USB spec location for it in the comment?
-
-> +#define USB_SHORT_ADDR_DEVICE_TIMEOUT_MS	500  /* 500ms */
-
-This is for "broken" devices, right?
-
+> +	if (!(yield_count_of(cpu) & 1))
+> +		return false;
 > +
->  /* Protect struct usb_device->state and ->children members
->   * Note: Both are also protected by ->dev.sem, except that ->state can
->   * change to USB_STATE_NOTATTACHED even when the semaphore isn't held. */
-> @@ -4626,8 +4629,14 @@ EXPORT_SYMBOL_GPL(usb_ep0_reinit);
->  static int hub_set_address(struct usb_device *udev, int devnum)
->  {
->  	int retval;
-> +	unsigned int timeout_ms = USB_DEFAULT_ADDR_DEVICE_TIMEOUT_MS;
->  	struct usb_hcd *hcd = bus_to_hcd(udev->bus);
->  
-> +	struct usb_hub *hub = usb_hub_to_struct_hub(udev->parent);
+> +	/*
+> +	 * If CPU has yielded but OS has not requested idle then this CPU is
 
-Did you run checkpatch.pl on your change?  It should say the extra blank
-line you added here isn't needed (if not, it shouldn't be added anyway,
-that's not good kernel coding style.)
+nit: can it be "if CPU is in hypervisor but OS has not requested ..." ?
 
+> +	 * definitely preempted.
+> +	 */
+> +	if (!lppaca_of(cpu).idle)
+> +		return true;
 > +
-> +	if (hub->hdev->quirks & USB_QUIRK_SHORT_DEVICE_ADDR_TIMEOUT)
-> +		timeout_ms = USB_SHORT_ADDR_DEVICE_TIMEOUT_MS;
+>  #ifdef CONFIG_PPC_SPLPAR
+>  	if (!is_kvm_guest()) {
+> -		int first_cpu;
+> +		int first_cpu, i;
+> 
+>  		/*
+>  		 * The result of vcpu_is_preempted() is used in a
+> @@ -149,11 +159,28 @@ static inline bool vcpu_is_preempted(int cpu)
+>  		 */
+>  		if (cpu_first_thread_sibling(cpu) == first_cpu)
+>  			return false;
 > +
->  	/*
->  	 * The host controller will choose the device address,
->  	 * instead of the core having chosen it earlier
-> @@ -4639,11 +4648,11 @@ static int hub_set_address(struct usb_device *udev, int devnum)
->  	if (udev->state != USB_STATE_DEFAULT)
->  		return -EINVAL;
->  	if (hcd->driver->address_device)
-> -		retval = hcd->driver->address_device(hcd, udev);
-> +		retval = hcd->driver->address_device(hcd, udev, timeout_ms);
->  	else
->  		retval = usb_control_msg(udev, usb_sndaddr0pipe(),
->  				USB_REQ_SET_ADDRESS, 0, devnum, 0,
-> -				NULL, 0, USB_CTRL_SET_TIMEOUT);
-> +				NULL, 0, timeout_ms);
->  	if (retval == 0) {
->  		update_devnum(udev, devnum);
->  		/* Device now using proper address. */
-> diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
-> index 15e9bd180a1d..a1137740b496 100644
-> --- a/drivers/usb/core/quirks.c
-> +++ b/drivers/usb/core/quirks.c
-> @@ -138,6 +138,9 @@ static int quirks_param_set(const char *value, const struct kernel_param *kp)
->  			case 'o':
->  				flags |= USB_QUIRK_HUB_SLOW_RESET;
->  				break;
-> +			case 'p':
-> +				flags |= USB_QUIRK_SHORT_DEVICE_ADDR_TIMEOUT;
-> +				break;
->  			/* Ignore unrecognized flag characters */
->  			}
->  		}
-> @@ -542,6 +545,9 @@ static const struct usb_device_id usb_quirk_list[] = {
->  	/* INTEL VALUE SSD */
->  	{ USB_DEVICE(0x8086, 0xf1a5), .driver_info = USB_QUIRK_RESET_RESUME },
->  
-> +	/* APTIV AUTOMOTIVE HUB */
-> +	{ USB_DEVICE(0x2c48, 0x0132), .driver_info = USB_QUIRK_SHORT_DEVICE_ADDR_TIMEOUT },
-> +
->  	{ }  /* terminating entry must be last */
->  };
->  
+> +		/*
+> +		 * If any of the threads of this core is not preempted or
+> +		 * ceded, then consider this CPU to be non-preempted
+> +		 */
+> +		first_cpu = cpu_first_thread_sibling(cpu);
+> +		for (i = first_cpu; i < first_cpu + threads_per_core; i++) {
+> +			if (i == cpu)
+> +				continue;
+> +			if (!(yield_count_of(i) & 1))
+> +				return false;
+> +			if (!lppaca_of(i).idle)
+> +				return true;
+> +		}
+>  	}
+>  #endif
+> 
+> -	if (yield_count_of(cpu) & 1)
+> -		return true;
+> +	/*
+> +	 * None of the threads in this thread group are running but none of
+> +	 * them were preempted too. Hence assume the thread to be
+> +	 * non-preempted.
+> +	 */
 
-I miss where you add the timeout delay in the other host controller
-drivers.  Why only xhci?  What about uhci/ohci/dwc3/etc.?
+That comment is bit confusing. instead of threads it would be better say CPUs
 
-thanks,
+"None of the CPUs in this Big Core are running but none of them were preempted too. Hence assume the 
+the CPU to be non-preempted."
 
-greg k-h
+
+>  	return false;
+>  }
+> 
+
+Otherwise LGTM
+Reviewed-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
