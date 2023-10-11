@@ -2,150 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F467C5441
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 14:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D517C5442
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 14:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230489AbjJKMqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 08:46:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32772 "EHLO
+        id S1346870AbjJKMqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 08:46:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234887AbjJKMqO (ORCPT
+        with ESMTP id S234859AbjJKMqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 08:46:14 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F5AAF
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 05:46:11 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c9d4f08d7cso37045ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 05:46:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697028370; x=1697633170; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vRxnYW++U+8TlQsWmKaGw4xOnyl04ESkzrCSiOYHMOw=;
-        b=qAp+K8S1JOrv4Vc471JGQA+DzbmURcp2VnW7zVvKSnLxZcsqjnvD1EyFbYWy1yQvcJ
-         cC/z2Gw/e7ugaCWm7gjfZbQq8y6s9fcVGTPFdmA3pZnXuKwoVue/Pr6fGZugZM1pbCOA
-         BCS7SB0cbmfxRkcoB3pmxGYZh0BMHry3B4igIIPD8A23wjI+Kagc5TbzRRrhXBPgj0v6
-         OgfH9rmczoqwjJhdQwQ83Zy0/Fqcmb5L9QumXCStW6VyUDmlYu7+ig0uC6AI+p7Lxy5v
-         aU+UOtCe6vztHNA/UZfIsVQiTrp5GG80RnnsYi70iuwcRsh+/UVg+1iuMnliz8oT9+RW
-         jx3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697028370; x=1697633170;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vRxnYW++U+8TlQsWmKaGw4xOnyl04ESkzrCSiOYHMOw=;
-        b=oz6PqrIjOMF3feuK9v5xXHig/QReH08COXeecbkFGlPO31S2im/TR6ewpN2fzgQ6lY
-         ITb2mKsV6qO/oiYL+XtYPLkjNovgp5bg0bn/kXct6nqK+oc7P735H3c1sKhPWDkvaSmn
-         GxQbX/yvvhszGwKnDjp23LJzwsg4SUK0mYmcZE02DhIxF4ZhEWJpF5PbGURTAcOaxyyJ
-         ZKmF8i+n/rxmViCK6m9Wc3R59GlTTNxDuSU5n0FX+ksNB+H2iOnnhnQTF+21AZOnPyRK
-         rGfa6868HwswrlzriUVhtQkdyL+Ub13KzyMBYOB6+AtCAywF/j926Fu3V+RkSA58emvL
-         li+A==
-X-Gm-Message-State: AOJu0YzleN+w+2OQ4ksLjCI1bs8E5MkDPWCoXm/qbOXqesc6RXhvku+j
-        CiuokIVtKrT5OLqDZceJVg7Wecw9l8YBJT0Oajpoug==
-X-Google-Smtp-Source: AGHT+IHSO7IpzlUaTsA99RK2xosy3goKI41ZEFNsKGFVZUUg12a2Etj4aZSQgVylWCCjwh0GKeVN7byl8b9dfg6R6Zs=
-X-Received: by 2002:a17:902:ecc9:b0:1c6:212f:c8e5 with SMTP id
- a9-20020a170902ecc900b001c6212fc8e5mr218432plh.26.1697028370195; Wed, 11 Oct
- 2023 05:46:10 -0700 (PDT)
+        Wed, 11 Oct 2023 08:46:17 -0400
+Received: from outbound-smtp27.blacknight.com (outbound-smtp27.blacknight.com [81.17.249.195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00EA391
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 05:46:14 -0700 (PDT)
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp27.blacknight.com (Postfix) with ESMTPS id 9E262B2013
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 13:46:13 +0100 (IST)
+Received: (qmail 15039 invoked from network); 11 Oct 2023 12:46:13 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.197.19])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 11 Oct 2023 12:46:13 -0000
+Date:   Wed, 11 Oct 2023 13:46:10 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Huang Ying <ying.huang@intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Arjan Van De Ven <arjan@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Johannes Weiner <jweiner@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Lameter <cl@linux.com>
+Subject: Re: [PATCH 01/10] mm, pcp: avoid to drain PCP when process exit
+Message-ID: <20231011124610.4punxroovolyvmgr@techsingularity.net>
+References: <20230920061856.257597-1-ying.huang@intel.com>
+ <20230920061856.257597-2-ying.huang@intel.com>
 MIME-Version: 1.0
-References: <20231010032117.1577496-1-yosryahmed@google.com>
- <20231010032117.1577496-4-yosryahmed@google.com> <CALvZod5nQrf=Y24u_hzGOTXYBfnt-+bo+cYbRMRpmauTMXJn3Q@mail.gmail.com>
- <CAJD7tka=kjd42oFpTm8FzMpNedxpJCUj-Wn6L=zrFODC610A-A@mail.gmail.com>
- <CAJD7tkZSanKOynQmVcDi_y4+J2yh+n7=oP97SDm2hq1kfY=ohw@mail.gmail.com>
- <20231011003646.dt5rlqmnq6ybrlnd@google.com> <CAJD7tkaZzBbvSYbCdvCigcum9Dddk8b6MR2hbCBG4Q2h4ciNtw@mail.gmail.com>
-In-Reply-To: <CAJD7tkaZzBbvSYbCdvCigcum9Dddk8b6MR2hbCBG4Q2h4ciNtw@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 11 Oct 2023 05:45:58 -0700
-Message-ID: <CALvZod7NN-9Vvy=KRtFZfV7SUzD+Bn8Z8QSEdAyo48pkOAHtTg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20230920061856.257597-2-ying.huang@intel.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 6:48=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-> On Tue, Oct 10, 2023 at 5:36=E2=80=AFPM Shakeel Butt <shakeelb@google.com=
-> wrote:
-> >
-> > On Tue, Oct 10, 2023 at 03:21:47PM -0700, Yosry Ahmed wrote:
-> > [...]
-> > >
-> > > I tried this on a machine with 72 cpus (also ixion), running both
-> > > netserver and netperf in /sys/fs/cgroup/a/b/c/d as follows:
-> > > # echo "+memory" > /sys/fs/cgroup/cgroup.subtree_control
-> > > # mkdir /sys/fs/cgroup/a
-> > > # echo "+memory" > /sys/fs/cgroup/a/cgroup.subtree_control
-> > > # mkdir /sys/fs/cgroup/a/b
-> > > # echo "+memory" > /sys/fs/cgroup/a/b/cgroup.subtree_control
-> > > # mkdir /sys/fs/cgroup/a/b/c
-> > > # echo "+memory" > /sys/fs/cgroup/a/b/c/cgroup.subtree_control
-> > > # mkdir /sys/fs/cgroup/a/b/c/d
-> > > # echo 0 > /sys/fs/cgroup/a/b/c/d/cgroup.procs
-> > > # ./netserver -6
-> > >
-> > > # echo 0 > /sys/fs/cgroup/a/b/c/d/cgroup.procs
-> > > # for i in $(seq 10); do ./netperf -6 -H ::1 -l 60 -t TCP_SENDFILE --
-> > > -m 10K; done
-> >
-> > You are missing '&' at the end. Use something like below:
-> >
-> > #!/bin/bash
-> > for i in {1..22}
-> > do
-> >    /data/tmp/netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K &
-> > done
-> > wait
-> >
->
-> Oh sorry I missed the fact that you are running instances in parallel, my=
- bad.
->
-> So I ran 36 instances on a machine with 72 cpus. I did this 10 times
-> and got an average from all instances for all runs to reduce noise:
->
-> #!/bin/bash
->
-> ITER=3D10
-> NR_INSTANCES=3D36
->
-> for i in $(seq $ITER); do
->   echo "iteration $i"
->   for j in $(seq $NR_INSTANCES); do
->     echo "iteration $i" >> "out$j"
->     ./netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K >> "out$j" &
->   done
->   wait
-> done
->
-> cat out* | grep 540000 | awk '{sum +=3D $5} END {print sum/NR}'
->
-> Base: 22169 mbps
-> Patched: 21331.9 mbps
->
-> The difference is ~3.7% in my runs. I am not sure what's different.
-> Perhaps it's the number of runs?
+On Wed, Sep 20, 2023 at 02:18:47PM +0800, Huang Ying wrote:
+> In commit f26b3fa04611 ("mm/page_alloc: limit number of high-order
+> pages on PCP during bulk free"), the PCP (Per-CPU Pageset) will be
+> drained when PCP is mostly used for high-order pages freeing to
+> improve the cache-hot pages reusing between page allocation and
+> freeing CPUs.
+> 
+> But, the PCP draining mechanism may be triggered unexpectedly when
+> process exits.  With some customized trace point, it was found that
+> PCP draining (free_high == true) was triggered with the order-1 page
+> freeing with the following call stack,
+> 
+>  => free_unref_page_commit
+>  => free_unref_page
+>  => __mmdrop
+>  => exit_mm
+>  => do_exit
+>  => do_group_exit
+>  => __x64_sys_exit_group
+>  => do_syscall_64
+> 
+> Checking the source code, this is the page table PGD
+> freeing (mm_free_pgd()).  It's a order-1 page freeing if
+> CONFIG_PAGE_TABLE_ISOLATION=y.  Which is a common configuration for
+> security.
+> 
+> Just before that, page freeing with the following call stack was
+> found,
+> 
+>  => free_unref_page_commit
+>  => free_unref_page_list
+>  => release_pages
+>  => tlb_batch_pages_flush
+>  => tlb_finish_mmu
+>  => exit_mmap
+>  => __mmput
+>  => exit_mm
+>  => do_exit
+>  => do_group_exit
+>  => __x64_sys_exit_group
+>  => do_syscall_64
+> 
+> So, when a process exits,
+> 
+> - a large number of user pages of the process will be freed without
+>   page allocation, it's highly possible that pcp->free_factor becomes
+>   > 0.
+> 
+> - after freeing all user pages, the PGD will be freed, which is a
+>   order-1 page freeing, PCP will be drained.
+> 
+> All in all, when a process exits, it's high possible that the PCP will
+> be drained.  This is an unexpected behavior.
+> 
+> To avoid this, in the patch, the PCP draining will only be triggered
+> for 2 consecutive high-order page freeing.
+> 
+> On a 2-socket Intel server with 224 logical CPU, we tested kbuild on
+> one socket with `make -j 112`.  With the patch, the build time
+> decreases 3.4% (from 206s to 199s).  The cycles% of the spinlock
+> contention (mostly for zone lock) decreases from 43.6% to 40.3% (with
+> PCP size == 361).  The number of PCP draining for high order pages
+> freeing (free_high) decreases 50.8%.
+> 
+> This helps network workload too for reduced zone lock contention.  On
+> a 2-socket Intel server with 128 logical CPU, with the patch, the
+> network bandwidth of the UNIX (AF_UNIX) test case of lmbench test
+> suite with 16-pair processes increase 17.1%.  The cycles% of the
+> spinlock contention (mostly for zone lock) decreases from 50.0% to
+> 45.8%.  The number of PCP draining for high order pages
+> freeing (free_high) decreases 27.4%.  The cache miss rate keeps 0.3%.
+> 
+> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
 
-My base kernel is next-20231009 and I am running experiments with
-hyperthreading disabled.
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
+
+However, I want to note that batching on exit is not necessarily
+unexpected. For processes that are multi-TB in size, the time to exit
+can actually be quite large and batching is of benefit but optimising
+for exit is rarely a winning strategy. The pattern of "all allocs on CPU
+B and all frees on CPU B" or "short-lived tasks triggering a premature
+drain" is a bit more compelling but not worth a changelog rewrite.
+> 
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 4106fbc5b4b3..64d5ed2bb724 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -676,12 +676,15 @@ enum zone_watermarks {
+>  #define high_wmark_pages(z) (z->_watermark[WMARK_HIGH] + z->watermark_boost)
+>  #define wmark_pages(z, i) (z->_watermark[i] + z->watermark_boost)
+>  
+> +#define	PCPF_PREV_FREE_HIGH_ORDER	0x01
+> +
+
+The meaning of the flag and its intent should have been documented.
+
+-- 
+Mel Gorman
+SUSE Labs
