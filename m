@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46CAC7C5967
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B5C7C596A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346960AbjJKQnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 12:43:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40350 "EHLO
+        id S1346943AbjJKQno convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Oct 2023 12:43:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235108AbjJKQnb (ORCPT
+        with ESMTP id S235149AbjJKQnm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 12:43:31 -0400
+        Wed, 11 Oct 2023 12:43:42 -0400
 Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 435FA8F;
-        Wed, 11 Oct 2023 09:43:29 -0700 (PDT)
-Received: from [2601:18c:9101:a8b6:6e0b:84ff:fee2:98bb] (helo=imladris.surriel.com)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29201E4;
+        Wed, 11 Oct 2023 09:43:40 -0700 (PDT)
+Received: from imladris.home.surriel.com ([10.0.13.28] helo=imladris.surriel.com)
         by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.96.1)
         (envelope-from <riel@shelob.surriel.com>)
-        id 1qqcIb-0004RY-2Q;
-        Wed, 11 Oct 2023 12:43:05 -0400
-Date:   Wed, 11 Oct 2023 12:43:01 -0400
+        id 1qqcJ8-0004S7-2t;
+        Wed, 11 Oct 2023 12:43:38 -0400
+Message-ID: <6347cb90238ce61fb21a8203da53497663cee60a.camel@surriel.com>
+Subject: Re: [PATCH v2] execve.2: execve also returns E2BIG if a string is
+ too long
 From:   Rik van Riel <riel@surriel.com>
 To:     Alejandro Colomar <alx@kernel.org>
 Cc:     linux-man@vger.kernel.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org,
-        Matthew House <mattlloydhouse@gmail.com>,
-        Eric Biederman <ebiederm@xmission.com>
-Subject: [PATCH v3] execve.2: execve also returns E2BIG if a string is too
- long
-Message-ID: <20231011124301.4d93ea72@imladris.surriel.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        LKML <linux-kernel@vger.kernel.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Matthew House <mattlloydhouse@gmail.com>
+Date:   Wed, 11 Oct 2023 12:43:38 -0400
+In-Reply-To: <ZSbD59Y5y3zNGC1h@debian>
+References: <20231011101134.709b8089@imladris.surriel.com>
+         <ZSbD59Y5y3zNGC1h@debian>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 Sender: riel@surriel.com
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
@@ -45,55 +48,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The execve syscall returns -E2BIG in 3 cases:
-- The total length of the command line arguments and environment is too large.
-- An argument or environment string is longer than MAX_ARG_STRLEN.
-- The full path to the executable exceeds MAX_ARG_STRLEN.
+On Wed, 2023-10-11 at 17:48 +0200, Alejandro Colomar wrote:
+> Hi Rik,
+> 
+> On Wed, Oct 11, 2023 at 10:11:34AM -0400, Rik van Riel wrote:
+> > The execve syscall returns -E2BIG in 3 cases:
+> > - The total length of the command line arguments and environment is
+> > too large.
+> > - An argument or environment string is longer than MAX_ARG_STRLEN.
+> 
+> Please mention that this includes the terminating NUL, as Matthew
+> confirmed.  Otherwise, to user-space programmers, this would usually
+> be
+> interpreted as `strlen(p) > MAX_ARG_STRLEN`.
+> 
+> An example program that demonstrates the limit would be very
+> interesting
+> here.
 
-Spell out all 3 cases in the -E2BIG section.
+Thank you for the detailed review.
 
-Discovered by moving a too large commandline parameter to an environment
-variable, and finding that things still did not work. Examined the code
-in fs/exec.c to get the details.
-
-This shell script starts failing at 2^17 on a system with 4kB page size:
-
-./exec2big.sh: line 10: /bin/true: Argument list too long
-fork failed at loop 17
-
-STRING="a"
-
-for loop in `seq 20`; do
-	STRING="$STRING$STRING"
-	export STRING
-	if /bin/true ; then
-		: # still under the limit
-	else
-		echo "fork failed at loop $loop"
-	fi
-done
-
-Signed-off-by: Rik van Riel <riel@surriel.com>
-Suggested-by: Matthew House <mattlloydhouse@gmail.com>
----
- man2/execve.2 | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/man2/execve.2 b/man2/execve.2
-index 0d9582492ad1..85c6ec15df3c 100644
---- a/man2/execve.2
-+++ b/man2/execve.2
-@@ -449,7 +449,8 @@ The total number of bytes in the environment
- .RI ( envp )
- and argument list
- .RI ( argv )
--is too large.
-+is too large, an argument or environment string is too long, or
-+the full path name to the executable is too long.
- .TP
- .B EACCES
- Search permission is denied on a component of the path prefix of
+I think all the comments are addressed in version 3.
 -- 
-2.41.0
-
-
+All Rights Reversed.
