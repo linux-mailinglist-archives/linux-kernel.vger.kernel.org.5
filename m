@@ -2,137 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C497C4A64
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 056CD7C4A6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344424AbjJKGUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 02:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60382 "EHLO
+        id S1344466AbjJKGWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 02:22:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344777AbjJKGUl (ORCPT
+        with ESMTP id S1344210AbjJKGWy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 02:20:41 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44114D6B
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 23:19:29 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-692779f583fso4599751b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 23:19:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1697005164; x=1697609964; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zcqMB30naFRgYdHZVjh4rWtjXZPaceEDVeZe+D6ZGQM=;
-        b=oYPInmB2+tfsY5VSLQcX+ksIVpEbszEojCThY8Thzo7e/kJT1tjvQmQuGKX6bkfQxc
-         YzdllyGRSAA1pX5Xcw5qtIOC/UwlooyuihXTul6XnDIrJlT+HHeSHqyGP66XxK8OH0Ne
-         6RKkpFZgnsTX5PVaOBIbEz2LY02fkDWv5omF3P5UUtacxgRAuev/+wb8lQXKA3I3riHz
-         3E8wNsopkvnVyH6sxuDkrPbQlGgiJJM1qk2fpyLFWPohvYlFSknl55CJPEGaxWc7Gx2t
-         ETUTh3zTDWvJA7ifiCpKdDBenNIMi2RH8cNtCmLn3biDF9xFyd22D3/AisXDNeMwxSj4
-         OEnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697005164; x=1697609964;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zcqMB30naFRgYdHZVjh4rWtjXZPaceEDVeZe+D6ZGQM=;
-        b=OURYyeUMdTWvh9rH19f7EwCSIuZYmYKJ9OQ2XT2HCdrloLIy5WXGCArq9m0r3DZ3ut
-         8NDIo/R7KahcxO1RJ9ptO5H4Aw5VOu0ovvp7cg7MbGtF9cG1yJOp9lK5K5Xfaj0UWGQR
-         1p/fegCtMOvQ6RINOem272dOiTsWK51ib27OFnPNRTfI2+pXXfAJpv06x3tZ9DvnMjCT
-         AKiucDUxv9PTonU41rSULixDnW7CdzCR1JPuYYOsWYNXdHy8ClikSgbONHUYUQktA4sQ
-         jOuIDJOzJOIdcBlfNqDZxCwFwNznNZ8GLHzfllAp5fmYaRBqT1C4sBJ1hIvKCGYscObV
-         y3xA==
-X-Gm-Message-State: AOJu0YzI6NPeuUVWXC24p3MXd02T4c4BNld7NpesKf/TrzqIwzx3TR2d
-        V433zBreLCKpQ5yOCy0riHunQ+RxHcyozah2xN6HvQ==
-X-Google-Smtp-Source: AGHT+IH0dVQdsDAFTukx58Mm4npJdNbm0bLcgPLvVKj0AVOxI4yYVZT6FxUGUblbjBF7BjO/DvhKeANQ/axsKvXGtw8=
-X-Received: by 2002:a05:6a20:4305:b0:15e:2d9f:cae0 with SMTP id
- h5-20020a056a20430500b0015e2d9fcae0mr20933619pzk.10.1697005164547; Tue, 10
- Oct 2023 23:19:24 -0700 (PDT)
+        Wed, 11 Oct 2023 02:22:54 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57679B;
+        Tue, 10 Oct 2023 23:22:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1697005371;
+        bh=do1+OLudqm4G6YFPzIsQsPmx/JqwLQPT8sgazB4mP+A=;
+        h=Date:From:To:Cc:Subject:From;
+        b=rZCKXt6M5TTLkWlZLVJH38luOMygcwdjHbqq/uqrf/6zjXhnfvzIvdPAG7d11DNek
+         /Pu4lB+ZADzhJ3/YEBw9HtAGZB2y37vw313LEcZcmIpwT5QSEOaSeiGMDEE0BtrRAg
+         Ci2kgEv3ZAcarzr+O2p1VY2DwM1K8FM2aGASXadHnqX8E9Dai7DOwPobDCns7nPHaq
+         7qCSCk511rC92piOR3DSW65hiE9VVnp854pdaizGEwEzazhtHsgJ5B9cOlc+0o0Xsh
+         ah0dFaOud7DW0q4ENbRN2pg8l13R3EPsB8+Njqg3AbNU3BlpC01NaLra68Hd0ToCs5
+         OiMq+YubtJSBw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S52kf6zvbz4xWK;
+        Wed, 11 Oct 2023 17:22:50 +1100 (AEDT)
+Date:   Wed, 11 Oct 2023 17:22:50 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Will Deacon <will@kernel.org>
+Cc:     Ilkka Koskinen <ilkka@os.amperecomputing.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the arm-perf tree
+Message-ID: <20231011172250.5a6498e5@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20231010170503.657189-1-apatel@ventanamicro.com>
- <20231010170503.657189-3-apatel@ventanamicro.com> <2023101013-overfeed-online-7f69@gregkh>
-In-Reply-To: <2023101013-overfeed-online-7f69@gregkh>
-From:   Anup Patel <apatel@ventanamicro.com>
-Date:   Wed, 11 Oct 2023 11:49:14 +0530
-Message-ID: <CAK9=C2WbW_WvoU59Ba9VrKf5GbbXmMOhB2jsiAp0a=SJYh3d7w@mail.gmail.com>
-Subject: Re: [PATCH 2/6] RISC-V: KVM: Change the SBI specification version to v2.0
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Conor Dooley <conor@kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/fXs0/8MHi1ntp8/hhL4Nx+c";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 10:43=E2=80=AFPM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Tue, Oct 10, 2023 at 10:34:59PM +0530, Anup Patel wrote:
-> > We will be implementing SBI DBCN extension for KVM RISC-V so let
-> > us change the KVM RISC-V SBI specification version to v2.0.
-> >
-> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> > ---
-> >  arch/riscv/include/asm/kvm_vcpu_sbi.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/arch/riscv/include/asm/kvm_vcpu_sbi.h b/arch/riscv/include=
-/asm/kvm_vcpu_sbi.h
-> > index cdcf0ff07be7..8d6d4dce8a5e 100644
-> > --- a/arch/riscv/include/asm/kvm_vcpu_sbi.h
-> > +++ b/arch/riscv/include/asm/kvm_vcpu_sbi.h
-> > @@ -11,7 +11,7 @@
-> >
-> >  #define KVM_SBI_IMPID 3
-> >
-> > -#define KVM_SBI_VERSION_MAJOR 1
-> > +#define KVM_SBI_VERSION_MAJOR 2
->
-> What does this number mean?  Who checks it?  Why do you have to keep
-> incrementing it?
+--Sig_/fXs0/8MHi1ntp8/hhL4Nx+c
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This number is the SBI specification version implemented by KVM RISC-V
-for the Guest kernel.
+Hi all,
 
-The original sbi_console_putchar() and sbi_console_getchar() are legacy
-functions (aka SBI v0.1) which were introduced a few years back along
-with the Linux RISC-V port.
+After merging the arm-perf tree, today's linux-next build (htmldocs)
+produced this warning:
 
-The latest SBI v2.0 specification (which is now frozen) introduces a new
-SBI debug console extension which replaces legacy sbi_console_putchar()
-and sbi_console_getchar() functions with better alternatives.
-(Refer, https://github.com/riscv-non-isa/riscv-sbi-doc/releases/download/co=
-mmit-fe4562532a9cc57e5743b6466946c5e5c98c73ca/riscv-sbi.pdf)
+Documentation/admin-guide/perf/ampere_cspmu.rst: WARNING: document isn't in=
+cluded in any toctree
 
-This series adds SBI debug console implementation in KVM RISC-V
-so the SBI specification version advertised by KVM RISC-V must also be
-upgraded to v2.0.
+Introduced by commit
 
-Regarding who checks its, the SBI client drivers in the Linux kernel
-will check SBI specification version implemented by higher privilege
-mode (M-mode firmware or HS-mode hypervisor) before probing
-the SBI extension. For example, the HVC SBI driver (PATCH5)
-will ensure SBI spec version to be at least v2.0 before probing
-SBI debug console extension.
+  53a810ad3c5c ("perf: arm_cspmu: ampere_cspmu: Add support for Ampere SoC =
+PMU")
 
->
-> thanks,
->
-> greg k-h
+--=20
+Cheers,
+Stephen Rothwell
 
-Regards,
-Anup
+--Sig_/fXs0/8MHi1ntp8/hhL4Nx+c
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUmPzoACgkQAVBC80lX
+0GxjwQf/Xl8UFKEJcmjZYoJPYv0R1cIMcHVtCby21vSmI+pHOR241w8dFhOHFJm8
+cnS8x4IFRQbaHBymIUSmXAeU4nlyMF54ENikGqV2yZFokR35yWIxHap67Q29eQ6O
+leaeSLDs2a0abONSFpWr0oazxOF67ZxXHxyZJN1Y2vlKGBeqzBDcPpUemMDEBkW0
+Cl+1WgO67K2NFDrS8I+S3IHx0C2yMpDDjD2v3VMBewn7gom6yE/95dvmXYut1GYs
+Mi1OkzVe21y0T1CWHO1QjcBiXVOSJC+cL9NsvXspcWoXQmthWIrI5vGf6uFcn8WC
+JrOe3KZBlrdHpbRIh1vn4dntiJFtYw==
+=eSa1
+-----END PGP SIGNATURE-----
+
+--Sig_/fXs0/8MHi1ntp8/hhL4Nx+c--
