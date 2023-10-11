@@ -2,94 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A0C7C5528
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E9C7C552E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 15:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234958AbjJKNWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 09:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60666 "EHLO
+        id S1346062AbjJKNXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 09:23:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231524AbjJKNWo (ORCPT
+        with ESMTP id S231524AbjJKNXd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 09:22:44 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B19092;
-        Wed, 11 Oct 2023 06:22:43 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-53dd3f169d8so1322117a12.3;
-        Wed, 11 Oct 2023 06:22:43 -0700 (PDT)
+        Wed, 11 Oct 2023 09:23:33 -0400
+Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B87A90
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:23:30 -0700 (PDT)
+Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-1dd2e4f744dso968125fac.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 06:23:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697030562; x=1697635362; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gwj/RqxGPkzuOtK1UNPuFzJw65gTRa5z9/nkxrTcS64=;
-        b=ZYC6MsupiaErp9/vvfK5IJobPrJiU2P6gWZJabmg/r5NTx5wuKbZ9XyILFEEGcT/AU
-         qHfj98VlV1VaQ2rjqcdg6cV/MaxGDRjBDHTejVY0PECZBAPot9xTerC7xA1aoAu7+EOE
-         Q/hdBtuyDnOsIGpQ/JF4jzDErlNlKWLVnZ0PTXEzHskErChwphU4ofGBc7cs/J6P90jh
-         aQbJb8fdBABQ/6zHCUK8d7XVqnanfWJu0tcnWrlszW4rXDq/8cq6Cdj5RBOIJ4WvbYOC
-         AEzjHruGPCttDutnZ3XoabPAzVyqYVEbwT1sOMifly4sKY5FehAs2FLCb8MwQmtMjXss
-         1Jqw==
+        d=ffwll.ch; s=google; t=1697030609; x=1697635409; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=aPMFXAItQQgSeDMu106EsctnKTGFX+nLv6VS+2VQ9ec=;
+        b=WH0kF8xhjYJcbkgydHhlchThr9wz3l+mO5YjSGATOGd9OcrK7UHPihj7x2Nz6Llbsh
+         byHkMW3wPvyGwuLUCXeH5YyIOV4LCvlV/StpECbiMwvfxo9VpVB+/MBNOKJ29OGG/TD6
+         YlrMXZhSGwhc8GaFSaUiUVhB1ffv95A5BmSiI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697030562; x=1697635362;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gwj/RqxGPkzuOtK1UNPuFzJw65gTRa5z9/nkxrTcS64=;
-        b=OaOh1gBSH2USvdfOCoXiCeV0ATIL8/GoQLUa1dNoDMvq1aPnamITaXMMI7nCqrbjfA
-         PHmI0aVOkJV+2qRtbjldiVF8n17qjegnm7aknUcroUVvNEio094jnkfFFhpSRz+0NAic
-         OtZFaJ1TJfkRkMdxRDlgGwdCtB4zU3G5r8AImEPx/QgcNDDwwCKCiTBWx+EBQjAcRbs0
-         QCgLHnvhn8RYd6+lxAG7TLqtE/QQR1B1xTWSFDUlSa+hI+l+VBA2DeVqMrXCnXqdHRjx
-         82D/eMl7SekbiegAvQA/lajZMD76H4LRlPAS/geFAg8QBP6qKS4tmERNNdrO4PSiBkUn
-         l6fA==
-X-Gm-Message-State: AOJu0YxOXPTayiVvT9rGohoqXPj39Hojt2uJrTbcBL8/QQon0GzChbH5
-        xz2bO0ibfuSK9OF7vmzs8YG+2kJlHUcTmIKytZRt2xHB
-X-Google-Smtp-Source: AGHT+IFjwPBdU24OWt+9rcNzyGAp61bEypdrM0CvK15jqMZomnmNG0qOl212jrCcTf9kSexYP8Ppu/QQjvKHxhdmt1k=
-X-Received: by 2002:a05:6402:60e:b0:523:33eb:1103 with SMTP id
- n14-20020a056402060e00b0052333eb1103mr19266775edv.14.1697030561468; Wed, 11
- Oct 2023 06:22:41 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697030609; x=1697635409;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aPMFXAItQQgSeDMu106EsctnKTGFX+nLv6VS+2VQ9ec=;
+        b=ms5g6TccJRMBgfMd9mEkIGhFLRuyJDsIen1UawAgQnC5OQ7UOG+5EXLAmN2MwQ3Ft7
+         aNEPVT4VQ7WR1fDQmYdRHHrxwxukgymSP6BPV0Sa6NdK9Aidqeo0u1j6ULXWydeUB4Ja
+         Q0qR5WmVwlalX7S/e3DOXTYJ9lo/cQZk/zIZm+3R8pdbui/Xp7XieOKWy6BtvJhlSBlX
+         UADj9h5l1RzXRXMMSXpfMlmolt2HIc9gYt/tIx7Lt30kYkm3Z2nDM58ES2Uz3l2T/TW6
+         SBLZ8XM8LX7kfDj/6wsj8LMIQmyW4JEvCsOa1ySbaXmUJuk9Fy6ojELLWwx2+q+ObYaN
+         Cb2Q==
+X-Gm-Message-State: AOJu0Yxg4rxUQTm36PAfSpxHX9tjFV1SHBFAf07yBGjmAjZQhUrZu0VY
+        lOe1JfUf2FEQ9T4knIAZ+KA4KMxuNbGA+HEFF8TY/g==
+X-Google-Smtp-Source: AGHT+IGVhxusHGjoJmoPuM9cn7HjoSWRP/Xoy6wQeSEGov+GTITI1G1n3+rHZH7wMU4MS9XvJaCi7ILcvXNbsMYMGuk=
+X-Received: by 2002:a05:6870:c689:b0:1e1:e6ee:94b6 with SMTP id
+ cv9-20020a056870c68900b001e1e6ee94b6mr23108366oab.4.1697030609252; Wed, 11
+ Oct 2023 06:23:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <ZSRMosLuJJS5Y/io@work>
-In-Reply-To: <ZSRMosLuJJS5Y/io@work>
-From:   Jason Andryuk <jandryuk@gmail.com>
-Date:   Wed, 11 Oct 2023 09:22:29 -0400
-Message-ID: <CAKf6xpu4vQSKFykwygcCtnnJtcQbgVTuaNvAwDLeV8cZAectHg@mail.gmail.com>
-Subject: Re: [PATCH][next] xen/xenbus: Add __counted_by for struct read_buffer
- and use struct_size()
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
+References: <20221207-rpi-hdmi-improvements-v3-0-bdd54f66884e@cerno.tech> <20221207-rpi-hdmi-improvements-v3-3-bdd54f66884e@cerno.tech>
+In-Reply-To: <20221207-rpi-hdmi-improvements-v3-3-bdd54f66884e@cerno.tech>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Wed, 11 Oct 2023 15:23:18 +0200
+Message-ID: <CAKMK7uFQ8yJLKgTrQdmhwmq9uL-hbUsfUeU6cxWdB2AW3i4vOg@mail.gmail.com>
+Subject: Re: [PATCH v3 3/9] drm/vc4: hdmi: Add Broadcast RGB property to allow
+ override of RGB range
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Emma Anholt <emma@anholt.net>, Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 9, 2023 at 2:55=E2=80=AFPM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
+On Mon, 6 Mar 2023 at 11:49, Maxime Ripard <maxime@cerno.tech> wrote:
 >
-> Prepare for the coming implementation by GCC and Clang of the __counted_b=
-y
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
-> array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
+> From: Dave Stevenson <dave.stevenson@raspberrypi.com>
 >
-> While there, use struct_size() helper, instead of the open-coded
-> version, to calculate the size for the allocation of the whole
-> flexible structure, including of course, the flexible-array member.
+> Copy Intel's "Broadcast RGB" property semantics to add manual override
+> of the HDMI pixel range for monitors that don't abide by the content
+> of the AVI Infoframe.
 >
-> This code was found with the help of Coccinelle, and audited and
-> fixed manually.
->
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-Reviewed-by: Jason Andryuk <jandryuk@gmail.com>
+Stumbled over this grepping around, but would have been nice to lift
+this into drm code and document the property. It's one of the legacy
+ones from the table of horrors after all ...
+
+Shouldn't be an uapi problem because it's copypasted to much, just not great.
+-Sima
+> ---
+>  drivers/gpu/drm/vc4/vc4_hdmi.c | 97 ++++++++++++++++++++++++++++++++++++++++--
+>  drivers/gpu/drm/vc4/vc4_hdmi.h |  9 ++++
+>  2 files changed, 102 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> index 522cfbc83fe4..d23c0c3df2ee 100644
+> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> @@ -154,10 +154,16 @@ static bool vc4_hdmi_mode_needs_scrambling(const struct drm_display_mode *mode,
+>  }
+>
+>  static bool vc4_hdmi_is_full_range_rgb(struct vc4_hdmi *vc4_hdmi,
+> -                                      const struct drm_display_mode *mode)
+> +                                      struct vc4_hdmi_connector_state *vc4_state)
+>  {
+> +       const struct drm_display_mode *mode = &vc4_hdmi->saved_adjusted_mode;
+>         struct drm_display_info *display = &vc4_hdmi->connector.display_info;
+>
+> +       if (vc4_state->broadcast_rgb == VC4_HDMI_BROADCAST_RGB_LIMITED)
+> +               return false;
+> +       else if (vc4_state->broadcast_rgb == VC4_HDMI_BROADCAST_RGB_FULL)
+> +               return true;
+> +
+>         return !display->is_hdmi ||
+>                 drm_default_rgb_quant_range(mode) == HDMI_QUANTIZATION_RANGE_FULL;
+>  }
+> @@ -528,8 +534,12 @@ static int vc4_hdmi_connector_atomic_check(struct drm_connector *connector,
+>  {
+>         struct drm_connector_state *old_state =
+>                 drm_atomic_get_old_connector_state(state, connector);
+> +       struct vc4_hdmi_connector_state *old_vc4_state =
+> +               conn_state_to_vc4_hdmi_conn_state(old_state);
+>         struct drm_connector_state *new_state =
+>                 drm_atomic_get_new_connector_state(state, connector);
+> +       struct vc4_hdmi_connector_state *new_vc4_state =
+> +               conn_state_to_vc4_hdmi_conn_state(new_state);
+>         struct drm_crtc *crtc = new_state->crtc;
+>
+>         if (!crtc)
+> @@ -562,6 +572,7 @@ static int vc4_hdmi_connector_atomic_check(struct drm_connector *connector,
+>         }
+>
+>         if (old_state->colorspace != new_state->colorspace ||
+> +           old_vc4_state->broadcast_rgb != new_vc4_state->broadcast_rgb ||
+>             !drm_connector_atomic_hdr_metadata_equal(old_state, new_state)) {
+>                 struct drm_crtc_state *crtc_state;
+>
+> @@ -575,6 +586,49 @@ static int vc4_hdmi_connector_atomic_check(struct drm_connector *connector,
+>         return 0;
+>  }
+>
+> +static int vc4_hdmi_connector_get_property(struct drm_connector *connector,
+> +                                          const struct drm_connector_state *state,
+> +                                          struct drm_property *property,
+> +                                          uint64_t *val)
+> +{
+> +       struct drm_device *drm = connector->dev;
+> +       struct vc4_hdmi *vc4_hdmi =
+> +               connector_to_vc4_hdmi(connector);
+> +       const struct vc4_hdmi_connector_state *vc4_conn_state =
+> +               conn_state_to_vc4_hdmi_conn_state(state);
+> +
+> +       if (property == vc4_hdmi->broadcast_rgb_property) {
+> +               *val = vc4_conn_state->broadcast_rgb;
+> +       } else {
+> +               drm_dbg(drm, "Unknown property [PROP:%d:%s]\n",
+> +                       property->base.id, property->name);
+> +               return -EINVAL;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int vc4_hdmi_connector_set_property(struct drm_connector *connector,
+> +                                          struct drm_connector_state *state,
+> +                                          struct drm_property *property,
+> +                                          uint64_t val)
+> +{
+> +       struct drm_device *drm = connector->dev;
+> +       struct vc4_hdmi *vc4_hdmi =
+> +               connector_to_vc4_hdmi(connector);
+> +       struct vc4_hdmi_connector_state *vc4_conn_state =
+> +               conn_state_to_vc4_hdmi_conn_state(state);
+> +
+> +       if (property == vc4_hdmi->broadcast_rgb_property) {
+> +               vc4_conn_state->broadcast_rgb = val;
+> +               return 0;
+> +       }
+> +
+> +       drm_dbg(drm, "Unknown property [PROP:%d:%s]\n",
+> +               property->base.id, property->name);
+> +       return -EINVAL;
+> +}
+> +
+>  static void vc4_hdmi_connector_reset(struct drm_connector *connector)
+>  {
+>         struct vc4_hdmi_connector_state *old_state =
+> @@ -594,6 +648,7 @@ static void vc4_hdmi_connector_reset(struct drm_connector *connector)
+>         new_state->base.max_bpc = 8;
+>         new_state->base.max_requested_bpc = 8;
+>         new_state->output_format = VC4_HDMI_OUTPUT_RGB;
+> +       new_state->broadcast_rgb = VC4_HDMI_BROADCAST_RGB_AUTO;
+>         drm_atomic_helper_connector_tv_margins_reset(connector);
+>  }
+>
+> @@ -611,6 +666,7 @@ vc4_hdmi_connector_duplicate_state(struct drm_connector *connector)
+>         new_state->tmds_char_rate = vc4_state->tmds_char_rate;
+>         new_state->output_bpc = vc4_state->output_bpc;
+>         new_state->output_format = vc4_state->output_format;
+> +       new_state->broadcast_rgb = vc4_state->broadcast_rgb;
+>         __drm_atomic_helper_connector_duplicate_state(connector, &new_state->base);
+>
+>         return &new_state->base;
+> @@ -621,6 +677,8 @@ static const struct drm_connector_funcs vc4_hdmi_connector_funcs = {
+>         .reset = vc4_hdmi_connector_reset,
+>         .atomic_duplicate_state = vc4_hdmi_connector_duplicate_state,
+>         .atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
+> +       .atomic_get_property = vc4_hdmi_connector_get_property,
+> +       .atomic_set_property = vc4_hdmi_connector_set_property,
+>  };
+>
+>  static const struct drm_connector_helper_funcs vc4_hdmi_connector_helper_funcs = {
+> @@ -629,6 +687,33 @@ static const struct drm_connector_helper_funcs vc4_hdmi_connector_helper_funcs =
+>         .atomic_check = vc4_hdmi_connector_atomic_check,
+>  };
+>
+> +static const struct drm_prop_enum_list broadcast_rgb_names[] = {
+> +       { VC4_HDMI_BROADCAST_RGB_AUTO, "Automatic" },
+> +       { VC4_HDMI_BROADCAST_RGB_FULL, "Full" },
+> +       { VC4_HDMI_BROADCAST_RGB_LIMITED, "Limited 16:235" },
+> +};
+> +
+> +static void
+> +vc4_hdmi_attach_broadcast_rgb_property(struct drm_device *dev,
+> +                                      struct vc4_hdmi *vc4_hdmi)
+> +{
+> +       struct drm_property *prop = vc4_hdmi->broadcast_rgb_property;
+> +
+> +       if (!prop) {
+> +               prop = drm_property_create_enum(dev, DRM_MODE_PROP_ENUM,
+> +                                               "Broadcast RGB",
+> +                                               broadcast_rgb_names,
+> +                                               ARRAY_SIZE(broadcast_rgb_names));
+> +               if (!prop)
+> +                       return;
+> +
+> +               vc4_hdmi->broadcast_rgb_property = prop;
+> +       }
+> +
+> +       drm_object_attach_property(&vc4_hdmi->connector.base, prop,
+> +                                  VC4_HDMI_BROADCAST_RGB_AUTO);
+> +}
+> +
+>  static int vc4_hdmi_connector_init(struct drm_device *dev,
+>                                    struct vc4_hdmi *vc4_hdmi)
+>  {
+> @@ -675,6 +760,8 @@ static int vc4_hdmi_connector_init(struct drm_device *dev,
+>         if (vc4_hdmi->variant->supports_hdr)
+>                 drm_connector_attach_hdr_output_metadata_property(connector);
+>
+> +       vc4_hdmi_attach_broadcast_rgb_property(dev, vc4_hdmi);
+> +
+>         drm_connector_attach_encoder(connector, encoder);
+>
+>         return 0;
+> @@ -829,7 +916,7 @@ static void vc4_hdmi_set_avi_infoframe(struct drm_encoder *encoder)
+>
+>         drm_hdmi_avi_infoframe_quant_range(&frame.avi,
+>                                            connector, mode,
+> -                                          vc4_hdmi_is_full_range_rgb(vc4_hdmi, mode) ?
+> +                                          vc4_hdmi_is_full_range_rgb(vc4_hdmi, vc4_state) ?
+>                                            HDMI_QUANTIZATION_RANGE_FULL :
+>                                            HDMI_QUANTIZATION_RANGE_LIMITED);
+>         drm_hdmi_avi_infoframe_colorimetry(&frame.avi, cstate);
+> @@ -1069,6 +1156,8 @@ static void vc4_hdmi_csc_setup(struct vc4_hdmi *vc4_hdmi,
+>                                struct drm_connector_state *state,
+>                                const struct drm_display_mode *mode)
+>  {
+> +       struct vc4_hdmi_connector_state *vc4_state =
+> +               conn_state_to_vc4_hdmi_conn_state(state);
+>         struct drm_device *drm = vc4_hdmi->connector.dev;
+>         unsigned long flags;
+>         u32 csc_ctl;
+> @@ -1082,7 +1171,7 @@ static void vc4_hdmi_csc_setup(struct vc4_hdmi *vc4_hdmi,
+>         csc_ctl = VC4_SET_FIELD(VC4_HD_CSC_CTL_ORDER_BGR,
+>                                 VC4_HD_CSC_CTL_ORDER);
+>
+> -       if (!vc4_hdmi_is_full_range_rgb(vc4_hdmi, mode)) {
+> +       if (!vc4_hdmi_is_full_range_rgb(vc4_hdmi, vc4_state)) {
+>                 /* CEA VICs other than #1 requre limited range RGB
+>                  * output unless overridden by an AVI infoframe.
+>                  * Apply a colorspace conversion to squash 0-255 down
+> @@ -1235,7 +1324,7 @@ static void vc5_hdmi_csc_setup(struct vc4_hdmi *vc4_hdmi,
+>         case VC4_HDMI_OUTPUT_RGB:
+>                 if_xbar = 0x354021;
+>
+> -               if (!vc4_hdmi_is_full_range_rgb(vc4_hdmi, mode))
+> +               if (!vc4_hdmi_is_full_range_rgb(vc4_hdmi, vc4_state))
+>                         vc5_hdmi_set_csc_coeffs(vc4_hdmi, vc5_hdmi_csc_full_rgb_to_limited_rgb);
+>                 else
+>                         vc5_hdmi_set_csc_coeffs(vc4_hdmi, vc5_hdmi_csc_full_rgb_unity);
+> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.h b/drivers/gpu/drm/vc4/vc4_hdmi.h
+> index 5d249ac54cd1..89800c48aa24 100644
+> --- a/drivers/gpu/drm/vc4/vc4_hdmi.h
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.h
+> @@ -117,6 +117,12 @@ enum vc4_hdmi_output_format {
+>         VC4_HDMI_OUTPUT_YUV420,
+>  };
+>
+> +enum vc4_hdmi_broadcast_rgb {
+> +       VC4_HDMI_BROADCAST_RGB_AUTO,
+> +       VC4_HDMI_BROADCAST_RGB_FULL,
+> +       VC4_HDMI_BROADCAST_RGB_LIMITED,
+> +};
+> +
+>  /* General HDMI hardware state. */
+>  struct vc4_hdmi {
+>         struct vc4_hdmi_audio audio;
+> @@ -129,6 +135,8 @@ struct vc4_hdmi {
+>
+>         struct delayed_work scrambling_work;
+>
+> +       struct drm_property *broadcast_rgb_property;
+> +
+>         struct i2c_adapter *ddc;
+>         void __iomem *hdmicore_regs;
+>         void __iomem *hd_regs;
+> @@ -238,6 +246,7 @@ struct vc4_hdmi_connector_state {
+>         unsigned long long              tmds_char_rate;
+>         unsigned int                    output_bpc;
+>         enum vc4_hdmi_output_format     output_format;
+> +       enum vc4_hdmi_broadcast_rgb     broadcast_rgb;
+>  };
+>
+>  #define conn_state_to_vc4_hdmi_conn_state(_state)                      \
+>
+> --
+> 2.39.2
+>
+
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
