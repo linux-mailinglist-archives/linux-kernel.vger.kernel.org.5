@@ -2,124 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10B4D7C4959
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE827C495F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbjJKFof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 01:44:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36084 "EHLO
+        id S229963AbjJKFqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 01:46:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbjJKFod (ORCPT
+        with ESMTP id S229471AbjJKFqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 01:44:33 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C9D18E;
-        Tue, 10 Oct 2023 22:44:32 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39B3wFvI005760;
-        Wed, 11 Oct 2023 05:44:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=JXUvqj7ucdpFgR3f/39nj4RnJXbXYFegLK8trvcC5SU=;
- b=eJFwD9/87fWqVAoZzyrqXvGh055ONaYK8UZMOd/g8cW0y2pS0r94XoF+FekZr17fP4mf
- QIKWcO+DV5Z5Jjz0bGBpfs2rlFomFEeoBaL9ZaZ/t3zwgWTy9r0mKUB234jh1vFaur0l
- LCBazOZlrssJzTbgezjtN7UB3mhqBCqP3xaIohaaUHsKeRi32oD1ReOby1TDAO4sbPDM
- 2HTfOpoOWzuocwoXPmKfLEe0KylLXzsfjK1pCiD6lx/oQpqaWmfn/X/cec86179d0HMa
- oMY2j29V3Mw4lLBLB0mtU0D63QJbndqj/tsqE/3kntvDJ7Y3Vk2D2Azumgyt5V0pBFZb PQ== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tne0q0r42-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 05:44:26 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39B5iJOb006218
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Oct 2023 05:44:19 GMT
-Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 10 Oct
- 2023 22:44:15 -0700
-Message-ID: <82703121-ee55-57b3-6c70-bd0c861d2513@quicinc.com>
-Date:   Wed, 11 Oct 2023 11:14:12 +0530
+        Wed, 11 Oct 2023 01:46:10 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE1D19B;
+        Tue, 10 Oct 2023 22:46:02 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6969b391791so4562151b3a.3;
+        Tue, 10 Oct 2023 22:46:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697003162; x=1697607962; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xf/p4DjELpfr1NcB6qfw3yuqnU4IRTf9hEu7aSbTs6Q=;
+        b=LcwPDc4INGTReXION7HXcKqIr9efsf6zWJa8iyKcajeqXuj+9c7S/g9Gm3wu7u/r0k
+         93ApCbUIW032kYC7lQWFzlKET+mN97fByIL7xEBpLKmKnpTDqnRlsu+bWUNNl4/NlsvQ
+         u0m4GdEjbcbf4Fmq7W+pVosrapYrmgGaXUg+YRoL93ONG5ihfI6YKYqSWnMGBr1OExau
+         scYHQvgnNKR/oVk2J9IvPs/CYq7wmLHjkl+Jas4MyUFQU+roqafHAnOnRx3NAhdWdiEw
+         MWPDePMhDlSpKO/5Yo7UP6fnnn+Izd3qKxcKmICKVAC1VIsOc48S/1JkFcKUgAg68EaT
+         fB4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697003162; x=1697607962;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xf/p4DjELpfr1NcB6qfw3yuqnU4IRTf9hEu7aSbTs6Q=;
+        b=uu/+HiVilCK2tmIoHCVEdqTVqa+iX8kD6Ts4C0mSmJlW79B27YOUPte6uYYzpKk/4m
+         ZeNBDWodidZyVqKpJ0HNt5+OWejhlWUCID7InRtNZmMePBpa4ihudeex19RzMDVBum5N
+         cI+eVIEtV6c5Dl9yBp7AxLlDuMJ7L3OgDTJ3dqMkoo/fTXy7QFHENp7Z501kv1e7Bmsc
+         pJAovt935tmqCjmxKcptgc+uDCEmhfrbHnSaakPoA6iA8n3iO6J1QLbKr3jejjcbSxIO
+         GRBmvpUnJ0aRescYMwWkJpU1M1W6oZrCjseDyJshftMkVqEvWd9Q7BTPQwaJT6iGpPfV
+         N8tg==
+X-Gm-Message-State: AOJu0Yw8pWWffGmw227sbSq2OU3rtidItVrJXdTnFYYSP9meGjV9ehvc
+        wbaYavtKETwzfT8BjRK66T4=
+X-Google-Smtp-Source: AGHT+IHQslnR6hlgXl6oZqRY7WGzCXPOGRjmQDAzmyoHPA79ASonPxlA3FgFcb5JYk9FUU3nt7kS9Q==
+X-Received: by 2002:a05:6a20:244e:b0:16b:e46e:1269 with SMTP id t14-20020a056a20244e00b0016be46e1269mr11501132pzc.30.1697003162278;
+        Tue, 10 Oct 2023 22:46:02 -0700 (PDT)
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id jh13-20020a170903328d00b001bba7aab822sm12980766plb.5.2023.10.10.22.45.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Oct 2023 22:46:01 -0700 (PDT)
+Message-ID: <a080c284-e9e3-452a-9ce2-56c93ef04c02@gmail.com>
+Date:   Wed, 11 Oct 2023 12:45:55 +0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/3] dt-bindings: mfd: qcom,tcsr: Add compatible for
- sm8{2|3|5}50
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11 1/1] vfio/nvgpu: Add vfio pci variant module for grace
+ hopper
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     ankita@nvidia.com, jgg@nvidia.com, yishaih@nvidia.com,
+        shameerali.kolothum.thodi@huawei.com, kevin.tian@intel.com,
+        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
+        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
+        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
+        anuaggarwal@nvidia.com, dnigam@nvidia.com, udhoke@nvidia.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231007202254.30385-1-ankita@nvidia.com>
+ <ZSHykZ2GgSn0fE_x@debian.me>
+ <20231009133612.3fdd86a9.alex.williamson@redhat.com>
 Content-Language: en-US
-To:     <neil.armstrong@linaro.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1696954157-16327-1-git-send-email-quic_mojha@quicinc.com>
- <8ccbeb04-9671-4414-810e-70d4c3690e0c@linaro.org>
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <8ccbeb04-9671-4414-810e-70d4c3690e0c@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: vRV1S9MM0EUIOWtci8P2BWREvMstG6Eo
-X-Proofpoint-ORIG-GUID: vRV1S9MM0EUIOWtci8P2BWREvMstG6Eo
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-11_03,2023-10-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- spamscore=0 mlxscore=0 clxscore=1015 priorityscore=1501 phishscore=0
- adultscore=0 impostorscore=0 suspectscore=0 lowpriorityscore=0
- mlxlogscore=961 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310110051
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <20231009133612.3fdd86a9.alex.williamson@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/10/2023 11:23 PM, Neil Armstrong wrote:
-> On 10/10/2023 18:09, Mukesh Ojha wrote:
->> Document the compatible for sm8{2|3|5}50 SoCs.
+On 10/10/2023 02:36, Alex Williamson wrote:
+> On Sun, 8 Oct 2023 07:06:41 +0700
+> Bagas Sanjaya <bagasdotme@gmail.com> wrote:
+> 
+>> On Sun, Oct 08, 2023 at 01:52:54AM +0530, ankita@nvidia.com wrote:
+>>> PCI BAR are aligned to the power-of-2, but the actual memory on the
+>>> device may not. A read or write access to the physical address from the
+>>> last device PFN up to the next power-of-2 aligned physical address
+>>> results in reading ~0 and dropped writes.
+>>>   
 >>
->> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
->> ---
->>   Documentation/devicetree/bindings/mfd/qcom,tcsr.yaml | 3 +++
->>   1 file changed, 3 insertions(+)
+>> Reading garbage or padding in that case?
 >>
->> diff --git a/Documentation/devicetree/bindings/mfd/qcom,tcsr.yaml 
->> b/Documentation/devicetree/bindings/mfd/qcom,tcsr.yaml
->> index 33c3d023a106..f328ddd6c566 100644
->> --- a/Documentation/devicetree/bindings/mfd/qcom,tcsr.yaml
->> +++ b/Documentation/devicetree/bindings/mfd/qcom,tcsr.yaml
->> @@ -29,7 +29,10 @@ properties:
->>             - qcom,sdx65-tcsr
->>             - qcom,sm4450-tcsr
->>             - qcom,sm8150-tcsr
->> +          - qcom,sm8250-tcsr
->> +          - qcom,sm8350-tcsr
->>             - qcom,sm8450-tcsr
->> +          - qcom,sm8550-tcsr
+>> Confused...
 > 
-> This is already documented in:
-> Documentation/devicetree/bindings/clock/qcom,sm8550-tcsr.yaml
+> The coherent memory size is rounded to a power-of-2 to be compliant with
+> PCI BAR semantics, but reading beyond the implemented size fills the
+> return buffer with -1 data, as is common on many platforms when reading
+> from an unimplemented section of the address space.  Thanks,
+> 
+> Alex
+> 
 
-Oh, will remove it from here.
-Thanks.
+Thanks for the explanation!
 
--Mukesh
-> 
->>             - qcom,tcsr-apq8064
->>             - qcom,tcsr-apq8084
->>             - qcom,tcsr-ipq5332
-> 
+-- 
+An old man doll... just what I always wanted! - Clara
+
