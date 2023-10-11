@@ -2,117 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7007C574B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C13C07C574E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343588AbjJKOs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 10:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40076 "EHLO
+        id S1346859AbjJKOtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 10:49:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232246AbjJKOsZ (ORCPT
+        with ESMTP id S234751AbjJKOs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 10:48:25 -0400
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 266DF90;
-        Wed, 11 Oct 2023 07:48:19 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0VtxFJ45_1697035696;
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0VtxFJ45_1697035696)
-          by smtp.aliyun-inc.com;
-          Wed, 11 Oct 2023 22:48:17 +0800
-Date:   Wed, 11 Oct 2023 22:48:16 +0800
-From:   Dust Li <dust.li@linux.alibaba.com>
-To:     Niklas Schnelle <schnelle@linux.ibm.com>,
-        Albert Huang <huangjie.albert@bytedance.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Jan Karcher <jaka@linux.ibm.com>
-Cc:     "D. Wythe" <alibuda@linux.alibaba.com>,
-        Tony Lu <tonylu@linux.alibaba.com>,
-        Wen Gu <guwen@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net/smc: add support for netdevice in
- containers.
-Message-ID: <20231011144816.GO92403@linux.alibaba.com>
-Reply-To: dust.li@linux.alibaba.com
-References: <20230925023546.9964-1-huangjie.albert@bytedance.com>
- <00bbbf48440c1889ecd16a590ebb746b820a4f48.camel@linux.ibm.com>
+        Wed, 11 Oct 2023 10:48:59 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC3394;
+        Wed, 11 Oct 2023 07:48:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37C0CC433C9;
+        Wed, 11 Oct 2023 14:48:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697035738;
+        bh=UB4+HeZ2ctHuAdDSStXTcsIo1PGN3+WxqWufzfEOOhE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ibM2p3PdtWTWtKrJZ018Ia8+4VWj6mgBmyhGh25FqtzOEm2W+Vb3ozfRQ1mP99o+L
+         U736adtuq5RXEUXxW4u7+2dt0gs63s4WUoXRmDkhmerLTVD8HX9dK/u4JUjAfQoWkm
+         wNP9q5wKEi5FWdcy/tZumD74v1PmyFdL8/0aZB0CIzfo449gl3qgC63q9yUSsBphwK
+         +dL/ssvbjKAdWaJ2h+WPvKVZ+Hl9Fr9atJDonMBb+xnSvV1dlZNUXnoUVWzi1AxfCV
+         WDN+ef2e8oewDZXPUD0CdMRvhgbONrBJJ9glMnrNTiU2BQhw8nO4VqlXUerhBX3IyF
+         wcxkZ1QpNSsnw==
+Date:   Wed, 11 Oct 2023 16:48:50 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Gregor Riepl <onitake@gmail.com>, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Kamal Dasu <kamal.dasu@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>
+Subject: Re: [PATCH] i2c: brcmstb: Add support for atomic transfers
+Message-ID: <ZSa10t1kdUBfiVhR@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Gregor Riepl <onitake@gmail.com>, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Kamal Dasu <kamal.dasu@broadcom.com>,
+        Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>
+References: <CGME20231006144123eucas1p111cbbdbd70927ffbd697f7edf6b7ae1c@eucas1p1.samsung.com>
+ <20231006144117.4079796-1-m.szyprowski@samsung.com>
+ <ba3c0972-2ba2-4df7-826e-a7634027b967@gmail.com>
+ <b4b91fb3-07b0-41c2-a97c-d1a045924fdc@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="AVdLZ6OvLmwsPHz2"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <00bbbf48440c1889ecd16a590ebb746b820a4f48.camel@linux.ibm.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <b4b91fb3-07b0-41c2-a97c-d1a045924fdc@samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 05:04:21PM +0200, Niklas Schnelle wrote:
->On Mon, 2023-09-25 at 10:35 +0800, Albert Huang wrote:
->> If the netdevice is within a container and communicates externally
->> through network technologies like VXLAN, we won't be able to find
->> routing information in the init_net namespace. To address this issue,
->> we need to add a struct net parameter to the smc_ib_find_route function.
->> This allow us to locate the routing information within the corresponding
->> net namespace, ensuring the correct completion of the SMC CLC interaction.
->> 
->> Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
->> ---
->>  net/smc/af_smc.c | 3 ++-
->>  net/smc/smc_ib.c | 7 ++++---
->>  net/smc/smc_ib.h | 2 +-
->>  3 files changed, 7 insertions(+), 5 deletions(-)
->> 
->
->I'm trying to test this patch on s390x but I'm running into the same
->issue I ran into with the original SMC namespace
->support:https://lore.kernel.org/netdev/8701fa4557026983a9ec687cfdd7ac5b3b85fd39.camel@linux.ibm.com/
->
->Just like back then I'm using a server and a client network namespace
->on the same system with two ConnectX-4 VFs from the same card and port.
->Both TCP/IP traffic as well as user-space RDMA via "qperf … rc_bw" and
->`qperf … rc_lat` work between namespaces and definitely go via the
->card.
->
->I did use "rdma system set netns exclusive" then moved the RDMA devices
->into the namespaces with "rdma dev set <rdma_dev> netns <namespace>". I
->also verified with "ip netns exec <namespace> rdma dev"
->that the RDMA devices are in the network namespace and as seen by the
->qperf runs normal RDMA does work.
->
->For reference the smc_chck tool gives me the following output:
->
->Server started on port 37373
->[DEBUG] Interfaces to check: eno4378
->Test with target IP 10.10.93.12 and port 37373
->  Live test (SMC-D and SMC-R)
->[DEBUG] Running client: smc_run /tmp/echo-clt.x0q8iO 10.10.93.12 -p
->37373
->[DEBUG] Client result: TCP 0x05000000/0x03030000
->     Failed  (TCP fallback), reasons:
->          Client:        0x05000000   Peer declined during handshake
->          Server:        0x03030000   No SMC devices found (R and D)
->
->I also checked that SMC is generally working, once I add an ISM device
->I do get SMC-D between the namespaces. Any ideas what could break SMC-R
->here?
 
-I missed the email :(
-
-Are you running SMC-Rv2 or v1 ?
-
-Best regards,
-Dust
+--AVdLZ6OvLmwsPHz2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
 
->
->Thanks,
->Niklas
+> I guess that i2c core takes care of NOT multiplexing atomic and standard=
+=20
+> i2c transfers.
+
+Atomic transfers are only used iff the system is in a certain state,
+check i2c_in_atomic_xfer_mode(). Then and only then, transfers are
+atomic. All of them. Neither bus drivers nor clients can choose them.
+
+
+--AVdLZ6OvLmwsPHz2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUmtc4ACgkQFA3kzBSg
+KbZLRA/9GJeh1v2sMju/XX7WqJe3CjrSWTiq2qlGJ892PoHA8i+mAwSzCrMBE2FV
++AxFcb2RGy0ON33TeKoeyfDe4iYcRTLqqElBvVd5JFq+nt3SdAH/Pz2gBTa7KYCr
+g7xL1e86yLPeVil0lVuuELZbbt1H1UpcCGZqy3G1p24GGekd0Y0CEECfaMbf6TPd
+KKILC+oo6xV2RLranqKgl3xijoWNLLRmrXVj+wgXk3o+JknlwjDfQUUvJiZzrH5M
+u145XHpmgEa3LkO5kKy+Xj/kBumrb5gzbKiERy2ANfBBkGi1GaV6nIYuwJJ5IOeP
+mPlR0N6ihhmiITPcumroZh/bDa5FinPYTsrB3im6ob40CbLN6x+Os2y1PazKusiG
+q3MZQjhRFnSA2ZkLhn5Xsni5jwz095XJaD7X3tdxHTZ9as6aEQ4UPQHVVGLqQZQM
+HlylRMsvToavOixirPfbQhgvbZz1J1JuVtHQ5vtXFWeDYqo9dr2xlFTDN+L5Tsmo
+XvENkvm3d5GxVDltHA+1MMYw/4fTp1ir4VLQPJHQJrpVVDD9jcL17+cYPDKFhANU
+lJLnD3zHCA78vxIohGG7j27vlRF0OFYqKuLTI9otcOpNXaZS6hnG4pZA5sdRlfPc
+N0ighPzITu2F3eSpp3jesGU8pNkV3ltyN6auYkdeIp9RHXJ4PM4=
+=1CQ5
+-----END PGP SIGNATURE-----
+
+--AVdLZ6OvLmwsPHz2--
