@@ -2,77 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 943FB7C4D7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 10:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0867C4D7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 10:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345580AbjJKIoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 04:44:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36536 "EHLO
+        id S1345542AbjJKIpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 04:45:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345457AbjJKIou (ORCPT
+        with ESMTP id S1345681AbjJKIpc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 04:44:50 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103409D;
-        Wed, 11 Oct 2023 01:44:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52932C433C8;
-        Wed, 11 Oct 2023 08:44:45 +0000 (UTC)
-Message-ID: <bd0ba3d3-444a-4288-910f-4b8a84b90750@xs4all.nl>
-Date:   Wed, 11 Oct 2023 10:44:43 +0200
+        Wed, 11 Oct 2023 04:45:32 -0400
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9AE09C
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 01:45:29 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 4D4DD240105
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 10:45:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1697013927; bh=RGojVmI/xMEaWWuoMnRdbYay89Aw9vZzsbfx00TeLGM=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:
+         Content-Transfer-Encoding:From;
+        b=K4elfQCEQPf7k0RYueBGzgvHZaYbvOE0BALBwsudmD8THiXL+irDXXj9xW/OtVQsG
+         mszP5yfpC5FtxOQFFUzg/+2ijV0QqdiaE/3eYSAhSFy45jWWxFkRhi52TMmrCt15D8
+         eDgPbJp1Art/qzvdj+eWQ1e/eSHC56b+PY9HsCdfpWQsFrgsz673kIqwy+N2l/GSiC
+         gBBK7t1GsG0PPyCywGwM60yDOpDCCGZ189dxA36WkvfBKhX4V5PLfJFEjAtJZtEQpl
+         RytSj4ri6kESkMjypRLUVrx+1nR3Nh8FpC9JX73iQsfNHKc08adeepLlH4yFSRzaFo
+         A0G7e3RqGv7GA==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4S55v9353sz6tw0;
+        Wed, 11 Oct 2023 10:45:25 +0200 (CEST)
+From:   Mark O'Donovan <shiftee@posteo.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de,
+        axboe@kernel.dk, kbusch@kernel.org, hare@suse.de,
+        Mark O'Donovan <shiftee@posteo.net>
+Subject: [PATCH 1/2 RESEND] nvme-auth: unlock mutex in one place only
+Date:   Wed, 11 Oct 2023 08:45:11 +0000
+Message-Id: <20231011084512.1835614-1-shiftee@posteo.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 11/54] media: videobuf2: Access vb2_queue bufs array
- through helper functions
-Content-Language: en-US, nl
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-References: <20231003080704.43911-1-benjamin.gaignard@collabora.com>
- <20231003080704.43911-12-benjamin.gaignard@collabora.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20231003080704.43911-12-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/10/2023 10:06, Benjamin Gaignard wrote:
-> This patch adds 2 helpers functions to add and remove vb2 buffers
-> from a queue. With these 2 and vb2_get_buffer(), bufs field of
-> struct vb2_queue becomes like a private member of the structure.
-> 
-> After each call to vb2_get_buffer() we need to be sure that we get
-> a valid pointer so check the return value of all of them.
+Signed-off-by: Mark O'Donovan <shiftee@posteo.net>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+---
+ drivers/nvme/host/auth.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-This needs to be extended: checking the returned pointer is a preparation
-for when buffers can be deleted. As it is right now, checking for a
-NULL pointer isn't needed.
-
-I wonder if it isn't better to drop those checks and instead apply them
-at the tail end of this series when the actual work on deleting buffers
-starts (before patch 49, I think).
-
-Regards,
-
-	Hans
-
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> ---
->  .../media/common/videobuf2/videobuf2-core.c   | 151 +++++++++++++-----
->  .../media/common/videobuf2/videobuf2-v4l2.c   |  51 ++++--
->  2 files changed, 146 insertions(+), 56 deletions(-)
+diff --git a/drivers/nvme/host/auth.c b/drivers/nvme/host/auth.c
+index daf5d144a8ea..e1a98647c3a2 100644
+--- a/drivers/nvme/host/auth.c
++++ b/drivers/nvme/host/auth.c
+@@ -758,12 +758,11 @@ static void nvme_queue_auth_work(struct work_struct *work)
+ 		__func__, chap->qid);
+ 	mutex_lock(&ctrl->dhchap_auth_mutex);
+ 	ret = nvme_auth_dhchap_setup_host_response(ctrl, chap);
++	mutex_unlock(&ctrl->dhchap_auth_mutex);
+ 	if (ret) {
+-		mutex_unlock(&ctrl->dhchap_auth_mutex);
+ 		chap->error = ret;
+ 		goto fail2;
+ 	}
+-	mutex_unlock(&ctrl->dhchap_auth_mutex);
+ 
+ 	/* DH-HMAC-CHAP Step 3: send reply */
+ 	dev_dbg(ctrl->device, "%s: qid %d send reply\n",
+-- 
+2.39.2
 
