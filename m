@@ -2,120 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21E237C5A85
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 19:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A55BC7C5A89
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 19:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232653AbjJKRtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 13:49:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50412 "EHLO
+        id S232689AbjJKRuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 13:50:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230050AbjJKRtk (ORCPT
+        with ESMTP id S230050AbjJKRuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 13:49:40 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B468F;
-        Wed, 11 Oct 2023 10:49:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
- t=1697046554; x=1697651354; i=linosanfilippo@gmx.de;
- bh=UJJzaerlQRsDqbxZwPZpsK3aG/E9cxNuD4ysd9HCNkg=;
- h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
- b=QxJyHUiVXHjL9yISHHGz34eeSJAOUGCUDN9jFDlsBS/2B3veD2KapeZa+D0reKDZgmvSb2c7YER
- GfrOMrP5LvVmBCKHkZNi8b+etBlN5FIXg2nYBd5+Bda7IAVpir3HmkdcGE4WzopihGnnkYNkL7wlH
- 7QtyLdilxY3aFWLZxsmTcWWD66eKzAhdeDQFfOYGX4lznHQg/YWv0tcmS69c5EVjsXHCr5nEipWLn
- ZrVieTrze1tmNMhFrBPx/N/d7NDj7m+xGx/oINLtPZnBW8iNCYfEfXl3WMM5e5PAA4riEGiH7SV6v
- 7xkh4xtDOCLbgNhntMa9bx3diXqGa9KRmC7g==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.2.37] ([84.162.21.41]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MXp9i-1r4rMk2oRw-00YDyX; Wed, 11
- Oct 2023 19:49:14 +0200
-Subject: Re: [PATCH v2 2/7] serial: amba-pl011: get rid of useless wrapper
- pl011_get_rs485_mode()
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Lino Sanfilippo <l.sanfilippo@kunbus.com>, jirislaby@kernel.org,
-        ilpo.jarvinen@linux.intel.com, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, cniedermaier@dh-electronics.com,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        lukas@wunner.de, p.rosenberger@kunbus.com
-References: <20231011173829.10508-1-l.sanfilippo@kunbus.com>
- <20231011173829.10508-3-l.sanfilippo@kunbus.com>
- <2023101134-theater-oversleep-a58b@gregkh>
- <20d22e11-b9be-b547-ec4e-9964a57924a4@gmx.de>
- <2023101101-knoll-dust-6308@gregkh>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Message-ID: <447eecb3-1ebc-e8ea-db6c-9964ef9fd0db@gmx.de>
-Date:   Wed, 11 Oct 2023 19:49:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 11 Oct 2023 13:50:50 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A780A98;
+        Wed, 11 Oct 2023 10:50:47 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40566f8a093so1606925e9.3;
+        Wed, 11 Oct 2023 10:50:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697046644; x=1697651444; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zP+zcpcY4L8UQr12IXOv8iX0tyZpjo9Hcziw+ngC5Ew=;
+        b=eClB0p8IfHWHrHOWn8Qy2fG6s5mBrLkirEMvafky0vDCOlRZauN1ya7cj2pZh+dAIX
+         WXLpZ2l/U+2z49CIlwdTVD48YeKnOCJIrrMcY8Mv8PH0JsfjkLHBuY6aegslllcL55qB
+         0gwz//9HUmO6hRHvRyhFBfpJ+DFJMvoJsCRnh5D8mzNvka22t/pvmEC/N5gW+paRNuVu
+         c7UpIRCk+maxFkvugY13UmLGLDlUwhlS0X/IZnrb8mCEXcRlVrKUGvfqdTFDcXFwBb//
+         AdYSWmjPgJlqBIChi3yy4xWq8rRNQ3HOoozT8S48tS1EYLWIOLQMISGvM9kS6IXFx3et
+         NVeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697046644; x=1697651444;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zP+zcpcY4L8UQr12IXOv8iX0tyZpjo9Hcziw+ngC5Ew=;
+        b=oKtXztxlbEVv18jmnDvMP1+pkpvcK6KyM9VasjgHa2xPS4cJJGgGaGU4PIGdsKXVi4
+         luiVNbY+kQAhrw7ZQebBLjmdRyytYOLcbDfeKPgHgZtOUFvZyevV4r/Bi8PjWcaIX9sU
+         mGgfXaRo8sxkF4MQ7Tu+hDGKC5l/T6StvHQOzrJd3FGKVTVKeaAoOhhEkjn3i6f5ydj4
+         oN3iPDlsL8aZm/bb1t1GHgOdlZnu0nDOVJeDnZs7WOV7xMOiB5kd5kDYSudfKzUiujyS
+         0eYk3A8vCiNg47GXd5lPGCyg0mykzHeUxh+9Yuceh46p7dqH3rTnoYv4OhaNa2aLTRH3
+         bWCg==
+X-Gm-Message-State: AOJu0YzwwrZap3UIMKuEV3oPGG0Yb6IfNTGPS4OE8+kz1W7NHRC95lVK
+        nhAwRWFDnhFYX2UELOvz0En0bBigrparueP+FM8=
+X-Google-Smtp-Source: AGHT+IGnLacLwFRfiKUzu/I423WVEyqhmENuuVZ09ysfbGiuIbod3nrnsXuldgoCDGsvlZIzf6l/kQ==
+X-Received: by 2002:a05:600c:2146:b0:405:458d:d54 with SMTP id v6-20020a05600c214600b00405458d0d54mr19668199wml.33.1697046643995;
+        Wed, 11 Oct 2023 10:50:43 -0700 (PDT)
+Received: from dell.intranet (77-255-201-154.dynamic.inetia.pl. [77.255.201.154])
+        by smtp.gmail.com with ESMTPSA id fl16-20020a05600c0b9000b00406847c988asm19658788wmb.12.2023.10.11.10.50.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 10:50:43 -0700 (PDT)
+From:   Janusz Krzysztofik <jmkrzyszt@gmail.com>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Douglas Anderson <dianders@chromium.org>,
+        Mark Brown <broonie@kernel.org>, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+        stable@vger.kernel.org
+Subject: [PATCH v2] ARM: OMAP1: ams-delta: Fix MODEM initialization failure
+Date:   Wed, 11 Oct 2023 19:49:55 +0200
+Message-ID: <20231011175038.1907629-1-jmkrzyszt@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-In-Reply-To: <2023101101-knoll-dust-6308@gregkh>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:4DLX6g8ZGchS1XtTecAHpxYCrURMdVvGDH0mpcd4YoSEcPYub+l
- dp9Ac/1jzfKbTOMhCg4rHrX+lEaiKKp8/0PU9Qi/+s6/2cugeBY4vyyDWOBBpAYZFJlQLdM
- Vczjcp8Mop1GMYiVaYdSP8xQiDzR85/0I2Xdb4JXQ/d3MA8MOWB02xwb9FxDRnwzL7edD8x
- Wtj6q/EEU3RzKosNu3pJQ==
-UI-OutboundReport: notjunk:1;M01:P0:IteMFpbMUBQ=;wjRF8QhpTpFpjyp7JvmrW+OQ55k
- bQJkm4Fe86TzUm0nnTrYhzHqb5xqylyYBI/oBLHa4pNXjrtk6uCit6zn6Rxh6LJEWgkRRC/qg
- e5uyFqKYMGLIExRiUs39+fI5RlXMtctsgsc6LNM8wa4SX4WiFdd9udePmFBuTfHGi/H3Mvy30
- oGEIARVkvAwW9wC4T5MOcZ6g4Z2uOAWWjdI9CyDCexwpCA5Qq0L52YVj4bS5yjClvEW2E4jCv
- EPZikOjaTFIWXNWwKwKCJlHXraknTL2sBTzm/OU4+5Tdmpbzap/ni9Pml3pvsJIWqyQDr0wGL
- Lna5OeyAcOJAAKWN3EOf0sZNyeRfGd1/rw3TrPA4JZJit9mIkM7DuyLh21dMUKG6ZAbou72nF
- jDCMqQ52Fkyd+v8RlOG4DWyq1pf8o3rc2SJ90Q1mWwUDRUuiVCI5xQPfPSBUicpipQEggQLPQ
- zuLxT4eiSQ4Oy522Xv8bx4YowcWF5rjkIzK25qULAIP9wOOrjd8Js08jJdUX7yGAKiZBevedE
- jBEGYN/osUHg9kkcG9eaTXCzqTvW2fvaqfd5tQjnnUrkbpLViuDDvJm21j6RJsELG/sz95n0s
- qACNaxBwvT9J8wFA1mns0hJfOZRVBDOh7g33bEb/XDvd9ibIFZGuGrirT6p9IVuAeokO1yy6F
- LeobZ3GW3Wsu9Q4TOQjsFdJpG41QKMz64ougaeVSfck4gffLjk5KIuVTV24jZcvEpO2OpPqEJ
- U/qpfV4zSCzZhpA7HzoQkyKZ39xdM/r1R7ONJRTr/xXZKP4/Z2p4HGldsyzIv1K0LvUJVIlTT
- N6KpMqukaJqq/1HgAm/11CZRulbgiXFg58kr1stbZLdKDWfm4LS+XcZtGTholpp4C+Awy30WC
- lvxLmOE2wQZdRDA4WsHKSCjWLioa6mIUuPpUPmhRsdc1VO4wMgO32qZ4ra7oPMC3XarwBvaUx
- StvmQg==
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.10.23 at 19:47, Greg KH wrote:
-> On Wed, Oct 11, 2023 at 07:44:51PM +0200, Lino Sanfilippo wrote:
->>
->> Hi,
->>
->> On 11.10.23 at 19:42, Greg KH wrote:
->>> On Wed, Oct 11, 2023 at 07:38:24PM +0200, Lino Sanfilippo wrote:
->>>> Due to earlier code changes function pl011_get_rs485_mode() is now me=
-rely
->>>> a wrapper for uart_get_rs485_mode() which does not add any further
->>>> functionality. So remove it and instead call uart_get_rs485_mode()
->>>> directly.
->>>>
->>>> Reviewed-by: Lukas Wunner <lukas@wunner.de>
->>>> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
->>>> ---
->>>>  drivers/tty/serial/amba-pl011.c | 14 +-------------
->>>>  1 file changed, 1 insertion(+), 13 deletions(-)
->>>
->>> Why is patch 2/7 not cc: stable, when patches 3-7 are?  Either this
->>> patch isn't needed in this series, and can go later (or to a different
->>> branch), or it also needs to be marked for stable as the later patches
->>> depend on it?
->>>
->>
->> 2/7 is really only a cleanup patch that does not provide a bugfix.
->> Should I remove it from this series?
->
-> Please do, and send it later, or as part of a separate patch series
-> independant of this one.
->
+Regulator drivers were modified to use asynchronous device probe.  Since
+then, the board .init_late hook fails to acquire a GPIO based fixed
+regulator needed by an on-board voice MODEM device, and unregisters the
+MODEM.  That in turn triggers a so far not discovered bug of device
+unregister function called for a device with no associated release() op.
 
-Ok will do so.
+serial8250 serial8250.1: incomplete constraints, dummy supplies not allowed
+WARNING: CPU: 0 PID: 1 at drivers/base/core.c:2486 device_release+0x98/0xa8
+Device 'serial8250.1' does not have a release() function, it is broken and
+ must be fixed. See Documentation/core-api/kobject.rst.
+...
+put_device from platform_device_put+0x1c/0x24
+platform_device_put from ams_delta_init_late+0x4c/0x68
+ams_delta_init_late from init_machine_late+0x1c/0x94
+init_machine_late from do_one_initcall+0x60/0x1d4
 
-BR,
-Lino
+As a consequence, ASoC CODEC driver is no longer able to control its
+device over the voice MODEM's tty interface.
+
+cx20442-codec: ASoC: error at soc_component_write_no_lock
+ on cx20442-codec for register: [0x00000000] -5
+cx20442-codec: ASoC: error at snd_soc_component_update_bits_legacy
+ on cx20442-codec for register: [0x00000000] -5
+cx20442-codec: ASoC: error at snd_soc_component_update_bits
+ on cx20442-codec for register: [0x00000000] -5
+
+The regulator hangs of a GPIO pin controlled by basic-mmio-gpio driver.
+Unlike most GPIO drivers, that driver doesn't probe for devices before
+device_initcall, then GPIO pins under its control are not availabele to
+majority of devices probed at that phase, including regulators.  On the
+other hand, serial8250 driver used by the MODEM device neither accepts via
+platform data nor handles regulators, then the board file is not able to
+teach that driver to return -EPROBE_DEFER when the regulator is not ready
+so the failed probe is retried after late_initcall.
+
+Resolve the issue by extending description of the MODEM device with a
+dedicated power management domain.  Acquire the regulator from the
+domain's .activate hook and return -EPROBE_DEFER if the regulator is not
+available.  Having that under control, add the regulator device
+description to the list of platform devices initialized from .init_machine
+and drop the no longer needed custom .init_late hook.
+
+v2: Trim down the warning for prettier git log output (Tony).
+
+Fixes: 259b93b21a9f ("regulator: Set PROBE_PREFER_ASYNCHRONOUS for drivers that existed in 4.14")
+Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Cc: stable@vger.kernel.org # v6.4+
+---
+ arch/arm/mach-omap1/board-ams-delta.c | 60 +++++++--------------------
+ 1 file changed, 16 insertions(+), 44 deletions(-)
+
+diff --git a/arch/arm/mach-omap1/board-ams-delta.c b/arch/arm/mach-omap1/board-ams-delta.c
+index 9808cd27e2cf..67de96c7717d 100644
+--- a/arch/arm/mach-omap1/board-ams-delta.c
++++ b/arch/arm/mach-omap1/board-ams-delta.c
+@@ -550,6 +550,7 @@ static struct platform_device *ams_delta_devices[] __initdata = {
+ 	&ams_delta_nand_device,
+ 	&ams_delta_lcd_device,
+ 	&cx20442_codec_device,
++	&modem_nreset_device,
+ };
+ 
+ static struct gpiod_lookup_table *ams_delta_gpio_tables[] __initdata = {
+@@ -782,26 +783,28 @@ static struct plat_serial8250_port ams_delta_modem_ports[] = {
+ 	{ },
+ };
+ 
++static int ams_delta_modem_pm_activate(struct device *dev)
++{
++	modem_priv.regulator = regulator_get(dev, "RESET#");
++	if (IS_ERR(modem_priv.regulator))
++		return -EPROBE_DEFER;
++
++	return 0;
++}
++
++static struct dev_pm_domain ams_delta_modem_pm_domain = {
++	.activate	= ams_delta_modem_pm_activate,
++};
++
+ static struct platform_device ams_delta_modem_device = {
+ 	.name	= "serial8250",
+ 	.id	= PLAT8250_DEV_PLATFORM1,
+ 	.dev		= {
+ 		.platform_data = ams_delta_modem_ports,
++		.pm_domain = &ams_delta_modem_pm_domain,
+ 	},
+ };
+ 
+-static int __init modem_nreset_init(void)
+-{
+-	int err;
+-
+-	err = platform_device_register(&modem_nreset_device);
+-	if (err)
+-		pr_err("Couldn't register the modem regulator device\n");
+-
+-	return err;
+-}
+-
+-
+ /*
+  * This function expects MODEM IRQ number already assigned to the port.
+  * The MODEM device requires its RESET# pin kept high during probe.
+@@ -833,37 +836,6 @@ static int __init ams_delta_modem_init(void)
+ }
+ arch_initcall_sync(ams_delta_modem_init);
+ 
+-static int __init late_init(void)
+-{
+-	int err;
+-
+-	err = modem_nreset_init();
+-	if (err)
+-		return err;
+-
+-	/*
+-	 * Once the modem device is registered, the modem_nreset
+-	 * regulator can be requested on behalf of that device.
+-	 */
+-	modem_priv.regulator = regulator_get(&ams_delta_modem_device.dev,
+-			"RESET#");
+-	if (IS_ERR(modem_priv.regulator)) {
+-		err = PTR_ERR(modem_priv.regulator);
+-		goto unregister;
+-	}
+-	return 0;
+-
+-unregister:
+-	platform_device_unregister(&ams_delta_modem_device);
+-	return err;
+-}
+-
+-static void __init ams_delta_init_late(void)
+-{
+-	omap1_init_late();
+-	late_init();
+-}
+-
+ static void __init ams_delta_map_io(void)
+ {
+ 	omap1_map_io();
+@@ -877,7 +849,7 @@ MACHINE_START(AMS_DELTA, "Amstrad E3 (Delta)")
+ 	.init_early	= omap1_init_early,
+ 	.init_irq	= omap1_init_irq,
+ 	.init_machine	= ams_delta_init,
+-	.init_late	= ams_delta_init_late,
++	.init_late	= omap1_init_late,
+ 	.init_time	= omap1_timer_init,
+ 	.restart	= omap1_restart,
+ MACHINE_END
+-- 
+2.42.0
 
