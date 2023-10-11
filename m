@@ -2,153 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9867C47E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 04:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 068B27C47E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 04:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344849AbjJKCmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 22:42:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57194 "EHLO
+        id S1344854AbjJKCmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 22:42:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344850AbjJKCmC (ORCPT
+        with ESMTP id S1344791AbjJKCmu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 22:42:02 -0400
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82CC1B4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 19:41:57 -0700 (PDT)
-X-UUID: 2ae501e020d04e76bce2ac58757c3385-20231011
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:8b65f283-09fc-44ab-a602-1c20f30eed68,IP:20,
-        URL:0,TC:0,Content:-25,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,AC
-        TION:release,TS:15
-X-CID-INFO: VERSION:1.1.32,REQID:8b65f283-09fc-44ab-a602-1c20f30eed68,IP:20,UR
-        L:0,TC:0,Content:-25,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-        ON:release,TS:15
-X-CID-META: VersionHash:5f78ec9,CLOUDID:59ebc8bf-14cc-44ca-b657-2d2783296e72,B
-        ulkID:231011104149YJMBUFJ5,BulkQuantity:0,Recheck:0,SF:19|43|38|23|17|102,
-        TC:nil,Content:0,EDM:5,IP:-2,URL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,
-        OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_ULS,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-UUID: 2ae501e020d04e76bce2ac58757c3385-20231011
-X-User: yaolu@kylinos.cn
-Received: from localhost.localdomain [(119.39.248.66)] by mailgw
-        (envelope-from <yaolu@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 1348739861; Wed, 11 Oct 2023 10:41:46 +0800
-From:   Lu Yao <yaolu@kylinos.cn>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, rdunlap@infradead.org
-Cc:     hpa@zytor.com, linux-kernel@vger.kernel.org,
-        Lu Yao <yaolu@kylinos.cn>
-Subject: [PATCH v2] x86/msi: Fix compile error caused by GENERIC_MSI_IRQ and X86_LOCAL_APIC
-Date:   Wed, 11 Oct 2023 10:41:43 +0800
-Message-Id: <20231011024143.92233-1-yaolu@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+        Tue, 10 Oct 2023 22:42:50 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AEF49D;
+        Tue, 10 Oct 2023 19:42:48 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-53d9b94731aso2096154a12.1;
+        Tue, 10 Oct 2023 19:42:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696992167; x=1697596967; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=id44sh06sB+VzUBOjFeGvj0/2qgnTKDwavEKyMyAfT8=;
+        b=BCwdqKcyDt0sXI1J+5NqANmhZer7jYfnxy2jW2bL/5T75TUoRuBpZKwc3YwnNF6ryV
+         vFqyWSuCodt04lgNeezExMwt0BnxiZ9M/MIK1lDVyAMykBZOyFm5EJK+6PTrp9pcx937
+         7SNNvCJMU1Ud7jmlUXkfHlEl/1zashQ459GulCIoZOrnt3p56uBSwFGUGUWkHoc0Rc4S
+         KHcufuk6H7oTrg+nvdW6IleD5g7hAjEVQPO93mwArRp9BUEHcI76j8rq+RAVi6Rei3PQ
+         sBEEyh4O0S+OTDTfSkqRpbQ+2Y9hECkL2yVt1o0kJwvTSf8apU+2F4w/08U14yqMN+/a
+         6SEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696992167; x=1697596967;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=id44sh06sB+VzUBOjFeGvj0/2qgnTKDwavEKyMyAfT8=;
+        b=hIh86MIJ3nf6CEiI5zW6Kg4RIF/+PSrD+d6iLL/9+dQgyEx4hCQpCVNhZKtQpoYkpw
+         4SBRZhfEW06mfHBb7JxfJYqT2Dk8lYEO/P7H1qisktAY0ZnVjgCD0UoNQPIA5ZNN5hvg
+         AzmQ2x9JD2ydCUpp2XUkxqhUB4/nc0J3HHWK0nVwF+PlX9pV/5Fee6iJHhYHOM7Iwd4f
+         Scd6z2zH1M3g442UhgrBbjhKLtv3507t35AZ8f3W2RgPpeyq1lF4Mi+ei5LhGTuPQgza
+         H9/hZAA7KvVVmWVq3AxCZ5BJJ5PTyEM7BHO37RamgP96yS1LnY/XNwvrLZygRwXUQAcm
+         lzMw==
+X-Gm-Message-State: AOJu0YwHDGCiP6ji+yPIlHCEjtcBYltOIWhdm4vm6IjrBScT3lsDByIs
+        i3iaRNu7AGRLp71lszLjkMTz2LyNjP9k8HgtnT0=
+X-Google-Smtp-Source: AGHT+IFXL2f2HcXw1v9fo8Al4YHu9PNbmoZ0LGms3MQSxml82cjRQOQmLoBzCI5tQZLJESozCprpyInq79kn/zKKi9A=
+X-Received: by 2002:aa7:c904:0:b0:525:7f37:e87a with SMTP id
+ b4-20020aa7c904000000b005257f37e87amr18005344edt.16.1696992166517; Tue, 10
+ Oct 2023 19:42:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231009-jmp-into-reserved-fields-v1-1-d8006e2ac1f6@gmail.com>
+ <6524f6f77b896_66abc2084d@john.notmuch> <92f824ec-9538-501c-e63e-8483ffe14bad@iogearbox.net>
+In-Reply-To: <92f824ec-9538-501c-e63e-8483ffe14bad@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 10 Oct 2023 19:42:35 -0700
+Message-ID: <CAEf4Bza2s=JwR8b6d_x+bj5Y7iZ+ZDOMOJRNwcXF1ATWzHCxcA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] Detect jumping to reserved code during check_cfg()
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Hao Sun <sunhao.th@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When compiling the x86 kernel, if X86_LOCAL_APIC is not enabled but
-GENERIC_MSI_IRQ is selected in '.config', the following compilation
-error will occur:
+On Tue, Oct 10, 2023 at 1:33=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.n=
+et> wrote:
+>
+> On 10/10/23 9:02 AM, John Fastabend wrote:
+> > Hao Sun wrote:
+> >> Currently, we don't check if the branch-taken of a jump is reserved co=
+de of
+> >> ld_imm64. Instead, such a issue is captured in check_ld_imm(). The ver=
+ifier
+> >> gives the following log in such case:
+> >>
+> >> func#0 @0
+> >> 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
+> >> 0: (18) r4 =3D 0xffff888103436000       ; R4_w=3Dmap_ptr(off=3D0,ks=3D=
+4,vs=3D128,imm=3D0)
+> >> 2: (18) r1 =3D 0x1d                     ; R1_w=3D29
+> >> 4: (55) if r4 !=3D 0x0 goto pc+4        ; R4_w=3Dmap_ptr(off=3D0,ks=3D=
+4,vs=3D128,imm=3D0)
+> >> 5: (1c) w1 -=3D w1                      ; R1_w=3D0
+> >> 6: (18) r5 =3D 0x32                     ; R5_w=3D50
+> >> 8: (56) if w5 !=3D 0xfffffff4 goto pc-2
+> >> mark_precise: frame0: last_idx 8 first_idx 0 subseq_idx -1
+> >> mark_precise: frame0: regs=3Dr5 stack=3D before 6: (18) r5 =3D 0x32
+> >> 7: R5_w=3D50
+> >> 7: BUG_ld_00
+> >> invalid BPF_LD_IMM insn
+> >>
+> >> Here the verifier rejects the program because it thinks insn at 7 is a=
+n
+> >> invalid BPF_LD_IMM, but such a error log is not accurate since the iss=
+ue
+> >> is jumping to reserved code not because the program contains invalid i=
+nsn.
+> >> Therefore, make the verifier check the jump target during check_cfg().=
+ For
+> >> the same program, the verifier reports the following log:
+> >
+> > I think we at least would want a test case for this. Also how did you c=
+reate
+> > this case? Is it just something you did manually and noticed a strange =
+error?
+>
+> Curious as well.
+>
+> We do have test cases which try to jump into the middle of a double insn =
+as can
+> be seen that this patch breaks BPF CI with regards to log mismatch below =
+(which
+> still needs to be adapted, too). Either way, it probably doesn't hurt to =
+also add
+> the above snippet as a test.
+>
+> Hao, as I understand, the patch here is an usability improvement (not a f=
+ix per se)
+> where we reject such cases earlier during cfg check rather than at a late=
+r point
+> where we validate ld_imm instruction. Or are there cases you found which =
+were not
+> yet captured via current check_ld_imm()?
+>
+> test_verifier failure log :
+>
+>    #458/u test1 ld_imm64 FAIL
+>    Unexpected verifier log!
+>    EXP: R1 pointer comparison
+>    RES:
+>    FAIL
+>    Unexpected error message!
+>         EXP: R1 pointer comparison
+>         RES: jump to reserved code from insn 0 to 2
+>    verification time 22 usec
+>    stack depth 0
+>    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
+ peak_states 0 mark_read 0
+>
+>    jump to reserved code from insn 0 to 2
+>    verification time 22 usec
+>    stack depth 0
+>    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
+ peak_states 0 mark_read 0
+>    #458/p test1 ld_imm64 FAIL
+>    Unexpected verifier log!
+>    EXP: invalid BPF_LD_IMM insn
+>    RES:
+>    FAIL
+>    Unexpected error message!
+>         EXP: invalid BPF_LD_IMM insn
+>         RES: jump to reserved code from insn 0 to 2
+>    verification time 9 usec
+>    stack depth 0
+>    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
+ peak_states 0 mark_read 0
+>
+>    jump to reserved code from insn 0 to 2
+>    verification time 9 usec
+>    stack depth 0
+>    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
+ peak_states 0 mark_read 0
+>    #459/u test2 ld_imm64 FAIL
+>    Unexpected verifier log!
+>    EXP: R1 pointer comparison
+>    RES:
+>    FAIL
+>    Unexpected error message!
+>         EXP: R1 pointer comparison
+>         RES: jump to reserved code from insn 0 to 2
+>    verification time 11 usec
+>    stack depth 0
+>    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
+ peak_states 0 mark_read 0
+>
+>    jump to reserved code from insn 0 to 2
+>    verification time 11 usec
+>    stack depth 0
+>    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
+ peak_states 0 mark_read 0
+>    #459/p test2 ld_imm64 FAIL
+>    Unexpected verifier log!
+>    EXP: invalid BPF_LD_IMM insn
+>    RES:
+>    FAIL
+>    Unexpected error message!
+>         EXP: invalid BPF_LD_IMM insn
+>         RES: jump to reserved code from insn 0 to 2
+>    verification time 8 usec
+>    stack depth 0
+>    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
+ peak_states 0 mark_read 0
+>
+>    jump to reserved code from insn 0 to 2
+>    verification time 8 usec
+>    stack depth 0
+>    processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0=
+ peak_states 0 mark_read 0
+>    #460/u test3 ld_imm64 OK
+>
+> >> func#0 @0
+> >> jump to reserved code from insn 8 to 7
+> >>
+> >> ---
+> >>
+> >>
+> >> Signed-off-by: Hao Sun <sunhao.th@gmail.com>
+>
+> nit: This needs to be before the "---" line.
+>
+> >> ---
+> >>   kernel/bpf/verifier.c | 7 +++++++
+> >>   1 file changed, 7 insertions(+)
+> >>
+> >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> >> index eed7350e15f4..725ac0b464cf 100644
+> >> --- a/kernel/bpf/verifier.c
+> >> +++ b/kernel/bpf/verifier.c
+> >> @@ -14980,6 +14980,7 @@ static int push_insn(int t, int w, int e, stru=
+ct bpf_verifier_env *env,
+> >>   {
+> >>      int *insn_stack =3D env->cfg.insn_stack;
+> >>      int *insn_state =3D env->cfg.insn_state;
+> >> +    struct bpf_insn *insns =3D env->prog->insnsi;
+> >>
+> >>      if (e =3D=3D FALLTHROUGH && insn_state[t] >=3D (DISCOVERED | FALL=
+THROUGH))
+> >>              return DONE_EXPLORING;
+> >> @@ -14993,6 +14994,12 @@ static int push_insn(int t, int w, int e, str=
+uct bpf_verifier_env *env,
+> >>              return -EINVAL;
+> >>      }
+> >>
+> >> +    if (e =3D=3D BRANCH && insns[w].code =3D=3D 0) {
+> >> +            verbose_linfo(env, t, "%d", t);
+> >> +            verbose(env, "jump to reserved code from insn %d to %d\n"=
+, t, w);
+> >> +            return -EINVAL;
+> >> +    }
+>
+> Other than that, lgtm.
 
-  include/linux/gpio/driver.h:38:19: error:
-    field 'msiinfo' has incomplete type
+We do rely quite a lot on verifier not complaining eagerly about some
+potentially invalid instructions if it's provable that some portion of
+the code won't ever be reached (think using .rodata variables for
+feature gating, poisoning intructions due to failed CO-RE relocation,
+which libbpf does actively, except it's using a call to non-existing
+helper). As such, check_cfg() is a wrong place to do such validity
+checks because some of the branches might never be run and validated
+in practice.
 
-  kernel/irq/msi.c:752:5: error: invalid use of incomplete typedef
-    'msi_alloc_info_t' {aka 'struct irq_alloc_info'}
+This seems like a pretty obscure case of fuzzer generated test with
+random jumps into the middle of ldimm64 instruction. I think the tool
+should be able to avoid this or handle verifier log just fine in such
+situations. On the other hand, valid code generated by compilers will
+never have such jumps.
 
-  kernel/irq/msi.c:740:1: error: control reaches end of non-void function
+So perhaps we can improve existing "invalid BPF_LD_IMM insn" message,
+but let's not teach check_cfg() more checks than necessary?
 
-This is because file such as 'kernel/irq/msi.c' only depends on
-'GENERIC_MSI_IRQ', and uses 'struct msi_alloc_info_t'. However,
-this struct depends on 'X86_LOCAL_APIC'.
-
-When enable 'GENERIC_MSI_IRQ' or 'X86_LOCAL_APIC' will select
-'IRQ_DOMAIN_HIERARCHY', so exposing this struct using
-'IRQ_DOMAIN_HIERARCHY' rather than 'X86_LOCAL_APIC'.
-
-Under the above conditions, if 'HPET_TIMER' is selected, the following
-compilation error will occur:
-
-  arch/x86/kernel/hpet.c:550:13: error: ‘x86_vector_domain’ undeclared
-
-  arch/x86/kernel/hpet.c:600:9: error: implicit declaration of
-    function ‘init_irq_alloc_info’
-
-This is because 'x86_vector_domain' is defined in 'kernel/apic/vector.c'
-which is compiled only when 'X86_LOCAL_APIC' is enabled. So use
-'X86_LOCAL_APIC' to expose these code rather than 'GENERIC_MSI_IRQ'.
-
-Signed-off-by: Lu Yao <yaolu@kylinos.cn>
----
-Change from v1:
- * Fix arch/x86/kernel/hpet.c compiled error
-Thanks to Randy for the feedback.
-v1: https://lore.kernel.org/lkml/20231008082827.279154-1-yaolu@kylinos.cn/
-
----
- arch/x86/include/asm/hw_irq.h | 6 +++---
- arch/x86/kernel/hpet.c        | 4 ++--
- 2 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/arch/x86/include/asm/hw_irq.h b/arch/x86/include/asm/hw_irq.h
-index 551829884734..b02c3cd3c0f6 100644
---- a/arch/x86/include/asm/hw_irq.h
-+++ b/arch/x86/include/asm/hw_irq.h
-@@ -28,7 +28,7 @@
- #include <asm/irq.h>
- #include <asm/sections.h>
- 
--#ifdef	CONFIG_X86_LOCAL_APIC
-+#ifdef	CONFIG_IRQ_DOMAIN_HIERARCHY
- struct irq_data;
- struct pci_dev;
- struct msi_desc;
-@@ -105,10 +105,10 @@ static inline void irq_complete_move(struct irq_cfg *c) { }
- #endif
- 
- extern void apic_ack_edge(struct irq_data *data);
--#else	/*  CONFIG_X86_LOCAL_APIC */
-+#else	/*  CONFIG_IRQ_DOMAIN_HIERARCHY */
- static inline void lock_vector_lock(void) {}
- static inline void unlock_vector_lock(void) {}
--#endif	/* CONFIG_X86_LOCAL_APIC */
-+#endif	/* CONFIG_IRQ_DOMAIN_HIERARCHY */
- 
- /* Statistics */
- extern atomic_t irq_err_count;
-diff --git a/arch/x86/kernel/hpet.c b/arch/x86/kernel/hpet.c
-index 1648aa0204d9..9904c0d46eba 100644
---- a/arch/x86/kernel/hpet.c
-+++ b/arch/x86/kernel/hpet.c
-@@ -52,7 +52,7 @@ unsigned long				hpet_address;
- u8					hpet_blockid; /* OS timer block num */
- bool					hpet_msi_disable;
- 
--#ifdef CONFIG_GENERIC_MSI_IRQ
-+#ifdef CONFIG_X86_LOCAL_APIC
- static DEFINE_PER_CPU(struct hpet_channel *, cpu_hpet_channel);
- static struct irq_domain		*hpet_domain;
- #endif
-@@ -469,7 +469,7 @@ static void __init hpet_legacy_clockevent_register(struct hpet_channel *hc)
- /*
-  * HPET MSI Support
-  */
--#ifdef CONFIG_GENERIC_MSI_IRQ
-+#ifdef CONFIG_X86_LOCAL_APIC
- static void hpet_msi_unmask(struct irq_data *data)
- {
- 	struct hpet_channel *hc = irq_data_get_irq_handler_data(data);
--- 
-2.25.1
-
+>
+> >>      if (e =3D=3D BRANCH) {
+> >>              /* mark branch target for state pruning */
+> >>              mark_prune_point(env, w);
+> >>
+>
