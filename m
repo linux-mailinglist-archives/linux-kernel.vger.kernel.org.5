@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB687C4FE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 920757C4FAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346112AbjJKKSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 06:18:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35690 "EHLO
+        id S1345968AbjJKKJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:09:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234746AbjJKKSI (ORCPT
+        with ESMTP id S234768AbjJKKIn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:18:08 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6613F19A8
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:07:40 -0700 (PDT)
+        Wed, 11 Oct 2023 06:08:43 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50BC019AC
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:07:41 -0700 (PDT)
 Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S57g35r48zrTN3;
-        Wed, 11 Oct 2023 18:05:03 +0800 (CST)
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4S57g55RL4z1M9LQ;
+        Wed, 11 Oct 2023 18:05:05 +0800 (CST)
 Received: from huawei.com (10.67.174.55) by kwepemi500008.china.huawei.com
  (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 11 Oct
- 2023 18:07:37 +0800
+ 2023 18:07:38 +0800
 From:   Jinjie Ruan <ruanjinjie@huawei.com>
 To:     <catalin.marinas@arm.com>, <will@kernel.org>,
         <mark.rutland@arm.com>, <broonie@kernel.org>,
@@ -33,9 +33,9 @@ To:     <catalin.marinas@arm.com>, <will@kernel.org>,
         <hewenliang4@huawei.com>, <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <stable@kernel.org>
 CC:     <ruanjinjie@huawei.com>
-Subject: [PATCH v5.15 03/15] arm64: consistently pass ESR_ELx to die()
-Date:   Wed, 11 Oct 2023 10:06:43 +0000
-Message-ID: <20231011100655.979626-4-ruanjinjie@huawei.com>
+Subject: [PATCH v5.15 04/15] arm64: rework FPAC exception handling
+Date:   Wed, 11 Oct 2023 10:06:44 +0000
+Message-ID: <20231011100655.979626-5-ruanjinjie@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231011100655.979626-1-ruanjinjie@huawei.com>
 References: <20231011100655.979626-1-ruanjinjie@huawei.com>
@@ -57,175 +57,174 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Mark Rutland <mark.rutland@arm.com>
 
-commit 0f2cb928a1547ae8f89e80a4b8df2c6c02ae5f96 upstream.
+commit a1fafa3b24a70461bbf3e5c0770893feb0a49292 upstream.
 
-Currently, bug_handler() and kasan_handler() call die() with '0' as the
-'err' value, whereas die_kernel_fault() passes the ESR_ELx value.
+If an FPAC exception is taken from EL1, the entry code will call
+do_ptrauth_fault(), where due to:
 
-For consistency, this patch ensures we always pass the ESR_ELx value to
-die(). As this is only called for exceptions taken from kernel mode,
-there should be no user-visible change as a result of this patch.
+	BUG_ON(!user_mode(regs))
 
-For UNDEFINED exceptions, I've had to modify do_undefinstr() and its
-callers to pass the ESR_ELx value. In all cases the ESR_ELx value had
-already been read and was available.
+... the kernel will report a problem within do_ptrauth_fault() rather
+than reporting the original context the FPAC exception was taken from.
+The pt_regs and ESR value reported will be from within
+do_ptrauth_fault() and the code dump will be for the BRK in BUG_ON(),
+which isn't sufficient to debug the cause of the original exception.
+
+This patch makes the reporting better by having separate EL0 and EL1
+FPAC exception handlers, with the latter calling die() directly to
+report the original context the FPAC exception was taken from.
+
+Note that we only need to prevent kprobes of the EL1 FPAC handler, since
+the EL0 FPAC handler cannot be called recursively.
+
+For consistency with do_el0_svc*(), I've named the split functions
+do_el{0,1}_fpac() rather than do_el{0,1}_ptrauth_fault(). I've also
+clarified the comment to not imply there are casues other than FPAC
+exceptions.
+
+Prior to this patch FPAC exceptions are reported as:
+
+| kernel BUG at arch/arm64/kernel/traps.c:517!
+| Internal error: Oops - BUG: 00000000f2000800 [#1] PREEMPT SMP
+| Modules linked in:
+| CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.19.0-rc3-00130-g9c8a180a1cdf-dirty #12
+| Hardware name: FVP Base RevC (DT)
+| pstate: 00400009 (nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+| pc : do_ptrauth_fault+0x3c/0x40
+| lr : el1_fpac+0x34/0x54
+| sp : ffff80000a3bbc80
+| x29: ffff80000a3bbc80 x28: ffff0008001d8000 x27: 0000000000000000
+| x26: 0000000000000000 x25: 0000000000000000 x24: 0000000000000000
+| x23: 0000000020400009 x22: ffff800008f70fa4 x21: ffff80000a3bbe00
+| x20: 0000000072000000 x19: ffff80000a3bbcb0 x18: fffffbfffda37000
+| x17: 3120676e696d7573 x16: 7361202c6e6f6974 x15: 0000000081a90000
+| x14: 0040000000000041 x13: 0040000000000001 x12: ffff000001a90000
+| x11: fffffbfffda37480 x10: 0068000000000703 x9 : 0001000080000000
+| x8 : 0000000000090000 x7 : 0068000000000f03 x6 : 0060000000000783
+| x5 : ffff80000a3bbcb0 x4 : ffff0008001d8000 x3 : 0000000072000000
+| x2 : 0000000000000000 x1 : 0000000020400009 x0 : ffff80000a3bbcb0
+| Call trace:
+|  do_ptrauth_fault+0x3c/0x40
+|  el1h_64_sync_handler+0xc4/0xd0
+|  el1h_64_sync+0x64/0x68
+|  test_pac+0x8/0x10
+|  smp_init+0x7c/0x8c
+|  kernel_init_freeable+0x128/0x28c
+|  kernel_init+0x28/0x13c
+|  ret_from_fork+0x10/0x20
+| Code: 97fffe5e a8c17bfd d50323bf d65f03c0 (d4210000)
+
+With this patch applied FPAC exceptions are reported as:
+
+| Internal error: Oops - FPAC: 0000000072000000 [#1] PREEMPT SMP
+| Modules linked in:
+| CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.19.0-rc3-00132-g78846e1c4757-dirty #11
+| Hardware name: FVP Base RevC (DT)
+| pstate: 20400009 (nzCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+| pc : test_pac+0x8/0x10
+| lr : 0x0
+| sp : ffff80000a3bbe00
+| x29: ffff80000a3bbe00 x28: 0000000000000000 x27: 0000000000000000
+| x26: 0000000000000000 x25: 0000000000000000 x24: 0000000000000000
+| x23: ffff80000a2c8000 x22: 0000000000000000 x21: 0000000000000000
+| x20: ffff8000099fa5b0 x19: ffff80000a007000 x18: fffffbfffda37000
+| x17: 3120676e696d7573 x16: 7361202c6e6f6974 x15: 0000000081a90000
+| x14: 0040000000000041 x13: 0040000000000001 x12: ffff000001a90000
+| x11: fffffbfffda37480 x10: 0068000000000703 x9 : 0001000080000000
+| x8 : 0000000000090000 x7 : 0068000000000f03 x6 : 0060000000000783
+| x5 : ffff80000a2c6000 x4 : ffff0008001d8000 x3 : ffff800009f88378
+| x2 : 0000000000000000 x1 : 0000000080210000 x0 : ffff000001a90000
+| Call trace:
+|  test_pac+0x8/0x10
+|  smp_init+0x7c/0x8c
+|  kernel_init_freeable+0x128/0x28c
+|  kernel_init+0x28/0x13c
+|  ret_from_fork+0x10/0x20
+| Code: d50323bf d65f03c0 d503233f aa1f03fe (d50323bf)
 
 Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Mark Brown <broonie@kernel.org>
+Reviewed-by: Mark Brown <broonie@kernel.org>
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
 Cc: Alexandru Elisei <alexandru.elisei@arm.com>
 Cc: Amit Daniel Kachhap <amit.kachhap@arm.com>
 Cc: James Morse <james.morse@arm.com>
 Cc: Will Deacon <will@kernel.org>
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
-Reviewed-by: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20220913101732.3925290-4-mark.rutland@arm.com
+Link: https://lore.kernel.org/r/20220913101732.3925290-5-mark.rutland@arm.com
 Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
 ---
- arch/arm64/include/asm/exception.h |  2 +-
- arch/arm64/kernel/entry-common.c   | 14 +++++++-------
- arch/arm64/kernel/traps.c          | 14 +++++++-------
- 3 files changed, 15 insertions(+), 15 deletions(-)
+ arch/arm64/include/asm/exception.h |  3 ++-
+ arch/arm64/kernel/entry-common.c   |  4 ++--
+ arch/arm64/kernel/traps.c          | 16 ++++++++++------
+ 3 files changed, 14 insertions(+), 9 deletions(-)
 
 diff --git a/arch/arm64/include/asm/exception.h b/arch/arm64/include/asm/exception.h
-index 0e6535aa78c2..babbe2db8010 100644
+index babbe2db8010..79385ae73f8d 100644
 --- a/arch/arm64/include/asm/exception.h
 +++ b/arch/arm64/include/asm/exception.h
-@@ -58,7 +58,7 @@ asmlinkage void call_on_irq_stack(struct pt_regs *regs,
- asmlinkage void asm_exit_to_user_mode(struct pt_regs *regs);
+@@ -71,7 +71,8 @@ void bad_el0_sync(struct pt_regs *regs, int reason, unsigned long esr);
+ void do_cp15instr(unsigned long esr, struct pt_regs *regs);
+ void do_el0_svc(struct pt_regs *regs);
+ void do_el0_svc_compat(struct pt_regs *regs);
+-void do_ptrauth_fault(struct pt_regs *regs, unsigned long esr);
++void do_el0_fpac(struct pt_regs *regs, unsigned long esr);
++void do_el1_fpac(struct pt_regs *regs, unsigned long esr);
+ void do_serror(struct pt_regs *regs, unsigned long esr);
+ void do_notify_resume(struct pt_regs *regs, unsigned long thread_flags);
  
- void do_mem_abort(unsigned long far, unsigned long esr, struct pt_regs *regs);
--void do_undefinstr(struct pt_regs *regs);
-+void do_undefinstr(struct pt_regs *regs, unsigned long esr);
- void do_bti(struct pt_regs *regs);
- void do_debug_exception(unsigned long addr_if_watchpoint, unsigned long esr,
- 			struct pt_regs *regs);
 diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-index fc91dad1579a..4dbdadc5daa1 100644
+index 4dbdadc5daa1..a4fd4de22c15 100644
 --- a/arch/arm64/kernel/entry-common.c
 +++ b/arch/arm64/kernel/entry-common.c
-@@ -371,11 +371,11 @@ static void noinstr el1_pc(struct pt_regs *regs, unsigned long esr)
- 	exit_to_kernel_mode(regs);
- }
- 
--static void noinstr el1_undef(struct pt_regs *regs)
-+static void noinstr el1_undef(struct pt_regs *regs, unsigned long esr)
+@@ -394,7 +394,7 @@ static void noinstr el1_fpac(struct pt_regs *regs, unsigned long esr)
  {
  	enter_from_kernel_mode(regs);
  	local_daif_inherit(regs);
--	do_undefinstr(regs);
-+	do_undefinstr(regs, esr);
+-	do_ptrauth_fault(regs, esr);
++	do_el1_fpac(regs, esr);
  	local_daif_mask();
  	exit_to_kernel_mode(regs);
  }
-@@ -417,7 +417,7 @@ asmlinkage void noinstr el1h_64_sync_handler(struct pt_regs *regs)
- 		break;
- 	case ESR_ELx_EC_SYS64:
- 	case ESR_ELx_EC_UNKNOWN:
--		el1_undef(regs);
-+		el1_undef(regs, esr);
- 		break;
- 	case ESR_ELx_EC_BREAKPT_CUR:
- 	case ESR_ELx_EC_SOFTSTP_CUR:
-@@ -554,11 +554,11 @@ static void noinstr el0_sp(struct pt_regs *regs, unsigned long esr)
- 	exit_to_user_mode(regs);
- }
- 
--static void noinstr el0_undef(struct pt_regs *regs)
-+static void noinstr el0_undef(struct pt_regs *regs, unsigned long esr)
+@@ -601,7 +601,7 @@ static void noinstr el0_fpac(struct pt_regs *regs, unsigned long esr)
  {
  	enter_from_user_mode(regs);
  	local_daif_restore(DAIF_PROCCTX);
--	do_undefinstr(regs);
-+	do_undefinstr(regs, esr);
+-	do_ptrauth_fault(regs, esr);
++	do_el0_fpac(regs, esr);
  	exit_to_user_mode(regs);
  }
  
-@@ -639,7 +639,7 @@ asmlinkage void noinstr el0t_64_sync_handler(struct pt_regs *regs)
- 		el0_pc(regs, esr);
- 		break;
- 	case ESR_ELx_EC_UNKNOWN:
--		el0_undef(regs);
-+		el0_undef(regs, esr);
- 		break;
- 	case ESR_ELx_EC_BTI:
- 		el0_bti(regs);
-@@ -755,7 +755,7 @@ asmlinkage void noinstr el0t_32_sync_handler(struct pt_regs *regs)
- 	case ESR_ELx_EC_CP14_MR:
- 	case ESR_ELx_EC_CP14_LS:
- 	case ESR_ELx_EC_CP14_64:
--		el0_undef(regs);
-+		el0_undef(regs, esr);
- 		break;
- 	case ESR_ELx_EC_CP15_32:
- 	case ESR_ELx_EC_CP15_64:
 diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
-index fcf1a306e094..591eb1a44d30 100644
+index 591eb1a44d30..6bdbeba76fd4 100644
 --- a/arch/arm64/kernel/traps.c
 +++ b/arch/arm64/kernel/traps.c
-@@ -486,7 +486,7 @@ void arm64_notify_segfault(unsigned long addr)
- 	force_signal_inject(SIGSEGV, code, addr, 0);
+@@ -509,16 +509,20 @@ void do_bti(struct pt_regs *regs)
  }
+ NOKPROBE_SYMBOL(do_bti);
  
--void do_undefinstr(struct pt_regs *regs)
-+void do_undefinstr(struct pt_regs *regs, unsigned long esr)
+-void do_ptrauth_fault(struct pt_regs *regs, unsigned long esr)
++void do_el0_fpac(struct pt_regs *regs, unsigned long esr)
++{
++	force_signal_inject(SIGILL, ILL_ILLOPN, regs->pc, esr);
++}
++
++void do_el1_fpac(struct pt_regs *regs, unsigned long esr)
  {
- 	/* check for AArch32 breakpoint instructions */
- 	if (!aarch32_break_handler(regs))
-@@ -496,7 +496,7 @@ void do_undefinstr(struct pt_regs *regs)
- 		return;
- 
- 	if (!user_mode(regs))
--		die("Oops - Undefined instruction", regs, 0);
-+		die("Oops - Undefined instruction", regs, esr);
- 
- 	force_signal_inject(SIGILL, ILL_ILLOPC, regs->pc, 0);
- }
-@@ -755,7 +755,7 @@ void do_cp15instr(unsigned long esr, struct pt_regs *regs)
- 		hook_base = cp15_64_hooks;
- 		break;
- 	default:
--		do_undefinstr(regs);
-+		do_undefinstr(regs, esr);
- 		return;
- 	}
- 
-@@ -770,7 +770,7 @@ void do_cp15instr(unsigned long esr, struct pt_regs *regs)
- 	 * EL0. Fall back to our usual undefined instruction handler
- 	 * so that we handle these consistently.
+ 	/*
+-	 * Unexpected FPAC exception or pointer authentication failure in
+-	 * the kernel: kill the task before it does any more harm.
++	 * Unexpected FPAC exception in the kernel: kill the task before it
++	 * does any more harm.
  	 */
--	do_undefinstr(regs);
-+	do_undefinstr(regs, esr);
+-	BUG_ON(!user_mode(regs));
+-	force_signal_inject(SIGILL, ILL_ILLOPN, regs->pc, esr);
++	die("Oops - FPAC", regs, esr);
  }
- NOKPROBE_SYMBOL(do_cp15instr);
- #endif
-@@ -790,7 +790,7 @@ void do_sysinstr(unsigned long esr, struct pt_regs *regs)
- 	 * back to our usual undefined instruction handler so that we handle
- 	 * these consistently.
- 	 */
--	do_undefinstr(regs);
-+	do_undefinstr(regs, esr);
- }
- NOKPROBE_SYMBOL(do_sysinstr);
+-NOKPROBE_SYMBOL(do_ptrauth_fault);
++NOKPROBE_SYMBOL(do_el1_fpac);
  
-@@ -966,7 +966,7 @@ static int bug_handler(struct pt_regs *regs, unsigned long esr)
- {
- 	switch (report_bug(regs->pc, regs)) {
- 	case BUG_TRAP_TYPE_BUG:
--		die("Oops - BUG", regs, 0);
-+		die("Oops - BUG", regs, esr);
- 		break;
- 
- 	case BUG_TRAP_TYPE_WARN:
-@@ -1034,7 +1034,7 @@ static int kasan_handler(struct pt_regs *regs, unsigned long esr)
- 	 * This is something that might be fixed at some point in the future.
- 	 */
- 	if (!recover)
--		die("Oops - KASAN", regs, 0);
-+		die("Oops - KASAN", regs, esr);
- 
- 	/* If thread survives, skip over the brk instruction and continue: */
- 	arm64_skip_faulting_instruction(regs, AARCH64_INSN_SIZE);
+ #define __user_cache_maint(insn, address, res)			\
+ 	if (address >= user_addr_max()) {			\
 -- 
 2.34.1
 
