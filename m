@@ -2,105 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CFE57C5A44
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 19:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE607C5A4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 19:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232144AbjJKRcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 13:32:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43486 "EHLO
+        id S231970AbjJKRf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 13:35:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230386AbjJKRcu (ORCPT
+        with ESMTP id S231666AbjJKRfZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 13:32:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B4098;
-        Wed, 11 Oct 2023 10:32:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697045569; x=1728581569;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=x3sQm7M9J3RlOJdmLbTd2L6sMpG+CaS+3exQhZIBrB8=;
-  b=BuQSyy4F4DRsZKyDFflAXGHzyyiIvG9wYdNr6xVdIp8ne5svz3LqYMjj
-   149UAWL7vttxXQK7W2W3DBDsavrJtQvKG0YhzNcU3kR9dXBjvno9CaD9K
-   s2ONU7CL/F0rQnJOKAM1Fn36y9IxLi9cvWFPWgiAgXNK7GdJXhpFa68cZ
-   FoN//6bm6P3uhA6lZtgYfYN/b4DSeJK7ZvSTJT6gwDGTXMd4siludDnnG
-   VH4/uv8i09Wwj8bDQGNui0newoIeqWgEz/eer1WqZG7kTI/cQlMxg31Ic
-   vA3sGbiMvav5ZeggQj6Tv5RK3kjo7RsGCoWIceCOyfRVqFCdq3hozjO4S
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="451212939"
-X-IronPort-AV: E=Sophos;i="6.03,216,1694761200"; 
-   d="scan'208";a="451212939"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 10:32:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="703823906"
-X-IronPort-AV: E=Sophos;i="6.03,216,1694761200"; 
-   d="scan'208";a="703823906"
-Received: from kevinsu1-mobl.amr.corp.intel.com (HELO [10.209.77.44]) ([10.209.77.44])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 10:32:44 -0700
-Message-ID: <afaef377-25e0-49f6-a99f-3e5bd4b44f87@intel.com>
-Date:   Wed, 11 Oct 2023 10:32:44 -0700
+        Wed, 11 Oct 2023 13:35:25 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B288FAF;
+        Wed, 11 Oct 2023 10:35:21 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39BGWT0i015763;
+        Wed, 11 Oct 2023 17:35:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=2Xu49m1feMgExRGBOKkf21fhFESZROqSNyL0YhkcTyE=;
+ b=iOaFmDYb7dFwB5mkKWhrSDS89V1OvSfbAOQ6GY5QlyvE3ivT4FJoOFwuGhix92gSLouW
+ tqNLp71tSboWbWCZaoTqcK0iNpkPiDtNCV/dj29iJIjLRmASuEcaM87rYwCQ+Kp0J0/O
+ Ru4Kqwe8BpJt3+71WzafOi4KINZrvP23pGTCzwtlaIXXlCIlo3FtZiJEMFXW0dAVApEZ
+ BsfDZV4uRIqq7x5JLRuaOZniKApsCLG2ZPUr5UBXOSsgHjeJJzc1jj03meK+lifGq5oL
+ NPrPTc31ZpMblpn+ETQWt5tbQgPBf2PhHLq3YBtHyAu9plw7wdnovDm/cMdGvvg+4u/O pQ== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tnmds9t9n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 17:35:13 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39BHZCeY004085
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 17:35:12 GMT
+Received: from [10.110.79.230] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 11 Oct
+ 2023 10:35:12 -0700
+Message-ID: <01c7a346-1e8b-1767-7594-c8adcd4823c3@quicinc.com>
+Date:   Wed, 11 Oct 2023 10:35:11 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/mce: Increase the size of the MCE pool from 2 to 8
- pages
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v3 2/2] arm64: dts: qcom: qcm6490: Add qcm6490 dts file
 Content-Language: en-US
-To:     Filippo Sironi <sironi@amazon.de>, linux-kernel@vger.kernel.org
-Cc:     tony.luck@intel.com, bp@alien8.de, tglx@linutronix.de,
-        mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, linux-edac@vger.kernel.org
-References: <20231011163320.79732-1-sironi@amazon.de>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <20231011163320.79732-1-sironi@amazon.de>
-Content-Type: text/plain; charset=UTF-8
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Mukesh Ojha <quic_mojha@quicinc.com>,
+        Komal Bajaj <quic_kbajaj@quicinc.com>, <agross@kernel.org>,
+        <andersson@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <luca.weiss@fairphone.com>
+References: <20231003175456.14774-1-quic_kbajaj@quicinc.com>
+ <20231003175456.14774-3-quic_kbajaj@quicinc.com>
+ <5da2ba4f-5bf7-46ff-8204-0c169042dbfa@linaro.org>
+ <3fd31aaa-f6bf-8440-6b08-fca2803171d9@quicinc.com>
+ <dba83334-3971-46e9-9342-1344c5858be8@linaro.org>
+From:   Trilok Soni <quic_tsoni@quicinc.com>
+In-Reply-To: <dba83334-3971-46e9-9342-1344c5858be8@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 5dMDsSgiRBaLVcof63q1--rQ9M1Glavh
+X-Proofpoint-GUID: 5dMDsSgiRBaLVcof63q1--rQ9M1Glavh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-11_12,2023-10-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 bulkscore=0 lowpriorityscore=0 adultscore=0 suspectscore=0
+ clxscore=1011 spamscore=0 phishscore=0 impostorscore=0 mlxlogscore=999
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310110155
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -108,38 +87,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/23 09:33, Filippo Sironi wrote:
-> On some of our large servers and some of our most sorry servers ( 🙂 ),
-> we're seeing the kernel reporting the warning in mce_gen_pool_add: "MCE
-> records pool full!". Let's increase the amount of memory that we use to
-> store the MCE records from 2 to 8 pages to prevent this from happening
-> and be able to collect useful information.
-
-MCE_POOLSZ is used to size gen_pool_buf[] which was a line out of your
-diff context:
-
-> #define MCE_POOLSZ      (2 * PAGE_SIZE)
+On 10/11/2023 2:47 AM, Konrad Dybcio wrote:
 > 
-> static struct gen_pool *mce_evt_pool;
-> static LLIST_HEAD(mce_event_llist);
-> static char gen_pool_buf[MCE_POOLSZ];
+> 
+> On 10/11/23 07:40, Mukesh Ojha wrote:
+>>
+>>
+>> On 10/7/2023 5:02 AM, Konrad Dybcio wrote:
+>>> On 3.10.2023 19:54, Komal Bajaj wrote:
+>>>> Add qcm6490 devicetree file for QCM6490 SoC and QCM6490 IDP
+>>>> platform. QCM6490 is derived from SC7280 meant for various
+>>>> form factor including IoT.
+>>>>
+>>>> Supported features are, as of now:
+>>>> * Debug UART
+>>>> * eMMC
+>>>> * USB
+>>>>
+>>>> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
+>>>> ---
+>>> [...]
+>>>
+>>>> diff --git a/arch/arm64/boot/dts/qcom/qcm6490.dtsi b/arch/arm64/boot/dts/qcom/qcm6490.dtsi
+>>>> new file mode 100644
+>>>> index 000000000000..b93270cae9ae
+>>>> --- /dev/null
+>>>> +++ b/arch/arm64/boot/dts/qcom/qcm6490.dtsi
+>>>> @@ -0,0 +1,94 @@
+>>>> +// SPDX-License-Identifier: BSD-3-Clause
+>>>> +/*
+>>>> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+>>>> + */
+>>>> +
+>>>> +#include "sc7280.dtsi"
+>>>> +
+>>>> +/*
+>>>> + * Delete unused sc7280 memory nodes and define the memory regions
+>>>> + * required by qcm6490
+>>>> + */
+>>>> +/delete-node/ &rmtfs_mem;
+>>>> +/delete-node/ &wlan_ce_mem;
+>>>> +
+>>>> +/{
+>>>> +    reserved-memory {
+>>>> +        cdsp_secure_heap_mem: cdsp-secure-heap@81800000 {
+>>>> +            reg = <0x0 0x81800000 0x0 0x1e00000>;
+>>>> +            no-map;
+>>>> +        };
+>>>> +
+>>>> +        camera_mem: camera@84300000 {
+>>> Uhh.. this is totally not the same memory map that I have on a
+>>> random msm-5.4 source+devicetree drop (which does in turn align
+>>> with the one on QCM6490 Fairphone 5, as it should because it's
+>>> a rebadged reference device for the most part)..
+>>>
+>>> Did you guys *really* redo it between software releases?
+>>
+>> QCM6490 fairphone is special case where same SOC is used for mobile
+>> product and it uses sc7280 memory map.
+>>
+>> Current patch adds support for the same SOC marketed for IOT segment
+>> [1] and very active in the development and soon going to freeze its
+>> memory map, so we are deriving memory map from sc7280 and creating
+>> a new memory map for all IOT product with qcm6490.dtsi .
+> Stop reinventing the wheel. I'm not going to accept patches that are supposed to define ABI for products that are still in development.
+> Not unless Qualcomm changes their attitude towards unilaterally breaking things for no good reason.
+> 
+>>
+>> [1]
+>> https://www.qualcomm.com/products/internet-of-things/industrial/building-enterprise/qcm6490
+>>
+>>>
+>>> This SoC family has been on the market for quite some time,
+>>> breaking software expectations like that is not cool, especially
+>>> on a product with a promised lifespan of 10 years or whatever!
+>>
+>> I agree, but we are not changing anything for product which are there
+>> in the market instead defining a new memory map what is going to come
+>> with qcm6490.dtsi for IOT.
+> Why would the OS care about the market segment you're targeting?
+> Why would the firmware you're building care about the market segment you're targeting? The LE vs LA vs LU vs WP vs whatever split is so unnecessary and arbitrary on the firmware/kernel side..
+> 
+> The firmware should either be fully relocatable (so that dynamic memory reservation can be used), unified so that there's no changes or better yet stored in separate memory so that q6 cores don't steal the RAM that the user paid for and you can do whatever ugly magic you please in there.
+> 
+> This arbitrary segmentation makes it impossible to have a common base, or to explain what device should go where to a newcomer.
 
-That's in .bss which means it eats up memory for *everyone*.  It seems a
-little silly to eat up an extra 6 pages of memory for *everyone* in
-order to get rid of a message on what I assume is a relatively small set
-of "sorry servers".
+Konrad it is possible to use the same SOC with the multiple segments w/ the different memory maps. 
 
-Is there any way that the size of the pool can be more automatically
-determined?  Is the likelihood of a bunch errors proportional to the
-number of CPUs or amount of RAM or some other aspect of the hardware?
+Memory map here is how you organize the DDR and give it to various S/W and DSP regions etc; 
 
-Could the pool be emptied more aggressively so that it does not fill up?
+Also these SOCs are around for sometime and it is possible that new segments may use it. We can't solve
+or know all the new segments need when the SOCs come out. Memory maps does provide that flexibility
+and they don't change often. OEMs has also some flexibility to change the memory map if needed to optimize. 
 
-Last, what is the _actual_ harm caused by missing this "useful
-information"?  Is collecting that information collectively really worth
-24kb*NR_X86_SYSTEMS_ON_EARTH?  Is it really that valuable to know that
-the system got 4,000 ECC errors on a DIMM versus 1,000?
+This SOC is around for quite sometime new usecases are expected to emerge. I don't see it as
+way to stop us from taking these contributions into the linux-arm-msm. 
 
-If there's no other choice and this extra information is *CRITICAL*,
-then by all means let's enlarge the buffer.  But, let's please do it for
-a known, tangible benefit.
+---Trilok Soni
+
+
+-- 
+---Trilok Soni
+
