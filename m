@@ -2,120 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6A17C5698
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 772D27C5686
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 16:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347051AbjJKORl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 10:17:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53698 "EHLO
+        id S232504AbjJKORE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 10:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347018AbjJKORb (ORCPT
+        with ESMTP id S234952AbjJKORD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 10:17:31 -0400
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E79A7;
-        Wed, 11 Oct 2023 07:17:27 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D720B60009;
-        Wed, 11 Oct 2023 14:17:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1697033845;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Njx3NaGKWu808jS2rM/MlNFciYIn5u1xCeEnktSSeyc=;
-        b=ipH6DD//FVdp9q8zrCoQzSezgKpRCLRy3Cb1+M9S6l4iFonYWRLtNptp5rFbl8s6T3AbAC
-        yzpZrWiPuqYtpjw2+hwYvD2SA9XHV7Iq+Hyep7HXwBsyKmQf5AO5DFPoAFf6xjKVL5RYe7
-        5NSKEjuAmTcKmyeMyERE5z9TPf/O1J2iz3h2rvoxMcUbGYoCEVBDZUTHQEVo8tbg43Qmhd
-        NIX7ne2Qapu0OyjzMyydb0bmoZpMlP7ij2lRT+salf/xDKQM67nts8HPF2OdbZMx/ngq80
-        GcRedwOEAQGUf3V03eZ4QtXQGi8QfHjIWt16a/yMAC/IB6ywBXOJhOQnvvHT/A==
-From:   Kory Maincent <kory.maincent@bootlin.com>
-Date:   Wed, 11 Oct 2023 16:17:02 +0200
-Subject: [PATCH v4 6/6] dmaengine: dw-edma: eDMA: Add sync read before
- starting the DMA transfer in remote setup
+        Wed, 11 Oct 2023 10:17:03 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96B993;
+        Wed, 11 Oct 2023 07:17:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697033821; x=1728569821;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=c17UurypKKNWzJXvHu//qpZKgYSik3NedPr3yahsuWs=;
+  b=X6GqtRBbnfM3JgLDy/vvXvMUZlzjOy6uVhgphc5F8MW9Vi0b63uv/MYn
+   l2jKEo5CxEiqS8Bk1w4mABJyY/8Izy+U/JGZyqL5/kt2IsiM6bGC1h2iA
+   0oBNf+bWZ0G3aponSGzU64+ERnu5xYLDxNcXIwzh0LhTH1IG3OEmKaGyJ
+   E9b90f62z9gDKTS0w88PUUmOubngJRRNUDpTe91z4oGDcNLyKdjWOFUUv
+   BzhD/1IjSZriUM96+iplAFq82AANBGjj9wpR+C4iZfb6X/7EnmDuGPlO3
+   Q5nkAjW2G4yLU+10NwJM6uHsxvRJ4zY4q9iPfN6eGxBD7P/TrSJ6G0q2R
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="451163293"
+X-IronPort-AV: E=Sophos;i="6.03,216,1694761200"; 
+   d="scan'208";a="451163293"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 07:16:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="730516948"
+X-IronPort-AV: E=Sophos;i="6.03,216,1694761200"; 
+   d="scan'208";a="730516948"
+Received: from unknown (HELO [10.237.72.199]) ([10.237.72.199])
+  by orsmga006.jf.intel.com with ESMTP; 11 Oct 2023 07:16:49 -0700
+Message-ID: <a903222f-b501-13b4-94ce-efbcc2afd3b6@linux.intel.com>
+Date:   Wed, 11 Oct 2023 17:18:16 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231011-b4-feature_hdma_mainline-v4-6-43d417b93138@bootlin.com>
-References: <20231011-b4-feature_hdma_mainline-v4-0-43d417b93138@bootlin.com>
-In-Reply-To: <20231011-b4-feature_hdma_mainline-v4-0-43d417b93138@bootlin.com>
-To:     Manivannan Sadhasivam <mani@kernel.org>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Cai Huoqing <cai.huoqing@linux.dev>
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Herve Codina <herve.codina@bootlin.com>,
-        Kory Maincent <kory.maincent@bootlin.com>
-X-Mailer: b4 0.12.3
-X-GND-Sasl: kory.maincent@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v1 04/10] xhci: dbc: Use ATTRIBUTE_GROUPS()
+Content-Language: en-US
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20231002161610.2648818-1-andriy.shevchenko@linux.intel.com>
+ <20231002161610.2648818-4-andriy.shevchenko@linux.intel.com>
+From:   Mathias Nyman <mathias.nyman@linux.intel.com>
+In-Reply-To: <20231002161610.2648818-4-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Linked list element and pointer are not stored in the same memory as
-the eDMA controller register. If the doorbell register is toggled before
-the full write of the linked list a race condition error will occur.
-In remote setup we can only use a readl to the memory to assure the full
-write has occurred.
+On 2.10.2023 19.16, Andy Shevchenko wrote:
+> Embrace ATTRIBUTE_GROUPS() to avoid boiler plate code.
+> This should not introduce any functional changes.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>   drivers/usb/host/xhci-dbgcap.c | 11 ++++-------
+>   1 file changed, 4 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/usb/host/xhci-dbgcap.c b/drivers/usb/host/xhci-dbgcap.c
+> index 92869c67a430..3c90410e9cde 100644
+> --- a/drivers/usb/host/xhci-dbgcap.c
+> +++ b/drivers/usb/host/xhci-dbgcap.c
+> @@ -1124,7 +1124,7 @@ static DEVICE_ATTR_RW(dbc_idProduct);
+>   static DEVICE_ATTR_RW(dbc_bcdDevice);
+>   static DEVICE_ATTR_RW(dbc_bInterfaceProtocol);
+>   
+> -static struct attribute *dbc_dev_attributes[] = {
+> +static struct attribute *dbc_dev_attrs[] = {
+>   	&dev_attr_dbc.attr,
+>   	&dev_attr_dbc_idVendor.attr,
+>   	&dev_attr_dbc_idProduct.attr,
+> @@ -1132,10 +1132,7 @@ static struct attribute *dbc_dev_attributes[] = {
+>   	&dev_attr_dbc_bInterfaceProtocol.attr,
+>   	NULL
+>   };
+> -
+> -static const struct attribute_group dbc_dev_attrib_grp = {
+> -	.attrs = dbc_dev_attributes,
+> -};
+> +ATTRIBUTE_GROUPS(dbc_dev);
+>   
+>   struct xhci_dbc *
+>   xhci_alloc_dbc(struct device *dev, void __iomem *base, const struct dbc_driver *driver)
+> @@ -1161,7 +1158,7 @@ xhci_alloc_dbc(struct device *dev, void __iomem *base, const struct dbc_driver *
+>   	INIT_DELAYED_WORK(&dbc->event_work, xhci_dbc_handle_events);
+>   	spin_lock_init(&dbc->lock);
+>   
+> -	ret = sysfs_create_group(&dev->kobj, &dbc_dev_attrib_grp);
+> +	ret = sysfs_create_groups(&dev->kobj, &dbc_dev_groups)  
+Compiler warns:
 
-Fixes: 7e4b8a4fbe2c ("dmaengine: Add Synopsys eDMA IP version 0 support")
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
----
+drivers/usb/host/xhci-dbgcap.c:1186:40: error: passing argument 2 of ‘sysfs_create_groups’ from incompatible pointer type
 
-Changes in v2:
-- New patch
+should probably be:
+sysfs_create_groups(&dev->kobj, dbc_dev_groups)
 
-Changes in v4:
-- Update git commit message.
----
- drivers/dma/dw-edma/dw-edma-v0-core.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+-Mathias
 
-diff --git a/drivers/dma/dw-edma/dw-edma-v0-core.c b/drivers/dma/dw-edma/dw-edma-v0-core.c
-index b38786f0ad79..6245b720fbfe 100644
---- a/drivers/dma/dw-edma/dw-edma-v0-core.c
-+++ b/drivers/dma/dw-edma/dw-edma-v0-core.c
-@@ -346,6 +346,20 @@ static void dw_edma_v0_core_write_chunk(struct dw_edma_chunk *chunk)
- 	dw_edma_v0_write_ll_link(chunk, i, control, chunk->ll_region.paddr);
- }
- 
-+static void dw_edma_v0_sync_ll_data(struct dw_edma_chunk *chunk)
-+{
-+	/*
-+	 * In case of remote eDMA engine setup, the DW PCIe RP/EP internals
-+	 * configuration registers and Application memory are normally accessed
-+	 * over different buses. Ensure LL-data reaches the memory before the
-+	 * doorbell register is toggled by issuing the dummy-read from the remote
-+	 * LL memory in a hope that the posted MRd TLP will return only after the
-+	 * last MWr TLP is completed
-+	 */
-+	if (!(chunk->chan->dw->chip->flags & DW_EDMA_CHIP_LOCAL))
-+		readl(chunk->ll_region.vaddr.io);
-+}
-+
- static void dw_edma_v0_core_start(struct dw_edma_chunk *chunk, bool first)
- {
- 	struct dw_edma_chan *chan = chunk->chan;
-@@ -412,6 +426,9 @@ static void dw_edma_v0_core_start(struct dw_edma_chunk *chunk, bool first)
- 		SET_CH_32(dw, chan->dir, chan->id, llp.msb,
- 			  upper_32_bits(chunk->ll_region.paddr));
- 	}
-+
-+	dw_edma_v0_sync_ll_data(chunk);
-+
- 	/* Doorbell */
- 	SET_RW_32(dw, chan->dir, doorbell,
- 		  FIELD_PREP(EDMA_V0_DOORBELL_CH_MASK, chan->id));
-
--- 
-2.25.1
 
