@@ -2,117 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C3C7C5E4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 22:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D67127C5E57
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 22:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376326AbjJKUYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 16:24:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38046 "EHLO
+        id S1376446AbjJKU0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 16:26:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233279AbjJKUYo (ORCPT
+        with ESMTP id S1376412AbjJKU0v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 16:24:44 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE0891;
-        Wed, 11 Oct 2023 13:24:43 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso38372366b.1;
-        Wed, 11 Oct 2023 13:24:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697055881; x=1697660681; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uzvkbhkLaMUPqU7HMTRyBjb4pmEB3My0Qu8sb0+YfiQ=;
-        b=RnomGxJ3ysZqyBOEQ8DbLeXEJaLOvy3pQaObqvM0J/UwOgZoP/KujThEwd2QlBie1w
-         XhTsFHyN6bk6Q7PRSxsqTMJX4qDb9T0ppdYjiPk8+O9oVapFKST9e5WvYiFvVTrnpnYh
-         da2rCsthDyJP39X16ElauiJuXuWxbhAxbOWqe5r77NAxts01GPJK0DuLoUl9nGDiQc5U
-         M5rl+qhKvfRPbMBRaTcgPj+CFXZsFFrBfZiE4tZ7LeN3EchCwk3vLdQJK/0H1olEOeQL
-         6ymN6bXsZeThwckyjjXTz3AT2yGBdpLXmQDN5DOpa6nzH+EETesFZpjeFGZKQAbhZKdO
-         /r2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697055881; x=1697660681;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uzvkbhkLaMUPqU7HMTRyBjb4pmEB3My0Qu8sb0+YfiQ=;
-        b=t+Scl7bHeD/9nGTAEfLll34SLc7YNl5MulEiUuH+beM0ILoJF4PKUky1U+yk9G0Sjq
-         /iOSEal2NdO/Iv+9Tx76D9l+6bxOkAIuzY/n8VtQjT3Fpi+MdSaiGDaUbaVt4lLfJZs3
-         nCriWCwWFkYHC3IffBndpzU7k1iGrlZz31ayNpjfVATeLToMatAse9YfZD52vZ/NDrRg
-         93WC3aRwe9b9Hh849Q2IkBJn6dv9GF1EflwzftqX2WDFKQEhpJKYeX52klLENmPwh2Rg
-         pWeWMF9xxhu2DZdecphkvwN6EoWKq/oTln1wzTpgwBDWIMk2/yTdpsvvHfEdGXjEL+uD
-         fQMQ==
-X-Gm-Message-State: AOJu0YzWxZzhgjf0+CPKHjGIpBux+vbWO9fKiHHM2br7oXiKC1gSaD8F
-        TZYrP7EYiQyQHUH7HBHe5PI=
-X-Google-Smtp-Source: AGHT+IGygcDlYEvQCHkHqj9FwQIkNeS15ycoNc0YrqsIvUTmjvBthYTots46Xd0hRCc9tkEJT5LYaQ==
-X-Received: by 2002:a17:906:53c6:b0:9ae:6ad0:f6cd with SMTP id p6-20020a17090653c600b009ae6ad0f6cdmr19804679ejo.24.1697055881232;
-        Wed, 11 Oct 2023 13:24:41 -0700 (PDT)
-Received: from orome.fritz.box (p200300e41f3f4900f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f3f:4900:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id lf8-20020a170906ae4800b009b27d4153c0sm10326077ejb.178.2023.10.11.13.24.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 13:24:40 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 22:24:39 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Laxman Dewangan <ldewangan@nvidia.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-input@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: tegra: Use device_get_match_data()
-Message-ID: <ZScEh0j0SlOZFcWv@orome.fritz.box>
-References: <20231006224432.442709-1-robh@kernel.org>
+        Wed, 11 Oct 2023 16:26:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C73091;
+        Wed, 11 Oct 2023 13:26:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697056010; x=1728592010;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=dE6YTAgpIUGjQqgWImfLh5Fh6tJ6lKZxZUBMMvpIri0=;
+  b=HjFt7l/ILMgfeVj1xTeuzDpTI552tgynytWTU+bI3rE1+y0iEdz9CIyn
+   G10o+p28IzbSpKJ7eOB1ftbw13U8AnBT9ZQExSWt8qgEC53kIO6UV16Fy
+   NNb/LOISXDhzg33Wjf4iydMLNFwN6w3EwC6m9feHdWgQggBi5pJT7UhCB
+   K8CPLWeVcIJAT9BryXEhOEkFuW4RZxuZkpRxXnD4Tq6wi7C6k/0q4jDjW
+   bmgH2M6kdZ5rJRyt/Qq9uw6YrDLcMbf7w8OhG1/7sMJHznu/wvIjHz6gi
+   zBOYKZdf4xQ9R3URxLHGKuubHsxNvtcIh5wP5akg4ipwmUHNtF8pqZ8nn
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="471015144"
+X-IronPort-AV: E=Sophos;i="6.03,217,1694761200"; 
+   d="scan'208";a="471015144"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 13:26:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10860"; a="783393505"
+X-IronPort-AV: E=Sophos;i="6.03,217,1694761200"; 
+   d="scan'208";a="783393505"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga008.jf.intel.com with ESMTP; 11 Oct 2023 13:26:43 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id ED1B7430; Wed, 11 Oct 2023 23:26:41 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Dipen Patel <dipenp@nvidia.com>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, timestamp@lists.linux.dev,
+        linux-tegra@vger.kernel.org
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Subject: [PATCH v2 0/4] hte: Improve GPIO handling and other cleanups
+Date:   Wed, 11 Oct 2023 23:26:34 +0300
+Message-Id: <20231011202638.372382-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="EpZWWdJP6+/QOGEM"
-Content-Disposition: inline
-In-Reply-To: <20231006224432.442709-1-robh@kernel.org>
-User-Agent: Mutt/2.2.12 (2023-09-09)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is a series that provides a new API to GPIO library (so far only
+available in the GPIO tree), and respective update to the Tegra
+HTE driver. On top a couple of other cleaups (patches 3 & 4, they
+can be applied separately).
 
---EpZWWdJP6+/QOGEM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Patch 2 inherited tags from its respective discussion thread [1].
 
-On Fri, Oct 06, 2023 at 05:44:32PM -0500, Rob Herring wrote:
-> Use preferred device_get_match_data() instead of of_match_device() to
-> get the driver match data. With this, adjust the includes to explicitly
-> include the correct headers.
->=20
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  drivers/input/keyboard/tegra-kbc.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
+Due to dependencies this either should be applied to the GPIO tree,
+or to the HTE when GPIO updates land the upstream (optionally with
+the first patch be applied even now to the GPIO tree independently).
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+Another option is to have an immutable branch or tag, but I assume
+that was discussed and rejected (?) in [1].
 
---EpZWWdJP6+/QOGEM
-Content-Type: application/pgp-signature; name="signature.asc"
+In v2:
+- collected tags (Linus, Dipen) 
+- fixed couple of typos (Dipen)
 
------BEGIN PGP SIGNATURE-----
+Link: https://lore.kernel.org/linux-gpio/20230905185309.131295-15-brgl@bgdev.pl/ [1]
+Cc: Dipen Patel <dipenp@nvidia.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmUnBIcACgkQ3SOs138+
-s6HPEQ//WdVN2OUKGkF3D1pmcNQrs+kbsWE+RlouD5B/2En6FyPJuCy4nTBaWJhU
-4PvIIpCvEm7YD+vaO/D01a8cw/pC4bHTgsgsiGvRaJPnaX9ypzldeWjS8FW5hIgc
-zLaUbk0pDfw85Nix0Ru0/ApueorU4PkpNc93LrTwsggpDAuqjTMXZuzHtr9z6Bqb
-82IDUE5qEl8dE4kDdoX4oGWMZEKIrCSvGDUOPwNsLtF8nV2EUXRkW9PdNQAcj3Ty
-e+zk3mje2GDpsy38aXfOZcSXNWt2Jk6sVppa8T0PE9e/BNY6Vp4eo6fLJh3RJdjZ
-601g6oX+It3yBhm+4OrORgMuDu0IniMlABX636LYVS+oopQr9VXG6+QDTHkjcgE+
-1lU8HxlJ+/V+/Tk6aEwztHl42i3BcbNqGlwpiAc6ZtCHXOGcoYklfvVjMPY9kKzN
-JZevK8qnzDdG9xiwOwWBGhBsiY0jfaKeOyrRVdR4/aHFC4JtITrLyhbYVxG4u0uI
-vCLe/VQbrztt21lLz4lm4yekglOvupPH3NNPBf5aXdycRuZRrkFetf2I2aU9NpB3
-weiM8Pb0sHqYdwRCNxwKHrTh3vquAPiqe3ZZD9uKI93Bv0FTcu4iw1W/dq1A/NIH
-DWiop4xR28fsqhxZw+MUxpKXwA2vmeInmRz+FOTtPUuGLbNFejE=
-=LrBo
------END PGP SIGNATURE-----
+Andy Shevchenko (3):
+  gpiolib: provide gpio_device_find_by_fwnode()
+  hte: tegra194: Remove redundant dev_err()
+  hte: tegra194: Switch to LATE_SIMPLE_DEV_PM_OPS()
 
---EpZWWdJP6+/QOGEM--
+Bartosz Golaszewski (1):
+  hte: tegra194: don't access struct gpio_chip
+
+ drivers/gpio/gpiolib.c      | 20 ++++++++++++++++
+ drivers/hte/hte-tegra194.c  | 46 +++++++++++++++++++------------------
+ include/linux/gpio/driver.h |  1 +
+ 3 files changed, 45 insertions(+), 22 deletions(-)
+
+-- 
+2.40.0.1.gaa8946217a0b
+
