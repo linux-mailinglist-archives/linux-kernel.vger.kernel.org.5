@@ -2,107 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9B87C525F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD357C5265
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343896AbjJKLpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:45:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47630 "EHLO
+        id S1345936AbjJKLrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:47:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234715AbjJKLpk (ORCPT
+        with ESMTP id S231601AbjJKLrI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:45:40 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88F1098;
-        Wed, 11 Oct 2023 04:45:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D906C433C8;
-        Wed, 11 Oct 2023 11:45:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697024738;
-        bh=2rNnRPbutD2jUkamVsQTXHOGYyI/vgTPHfVJILJMjwI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CuxlfmYBe3Ygxsc2dKYGwo2ts/CUK4/jGB0tD3A8UgZi/YudGX8rhZ4Elsjg7+rQG
-         ZvEfvBvgc5kpQQBnuYJjDXqNpNLNPW4DS9qMfHpTcPcxcPwMODhKSA2XIIv2IqCd/V
-         HvGrQ1KdMsArRi6vBkiyWMyo8QJVepL7NHCB45djElooihPFX769nQ8nCL3O8F65P7
-         0dvuGg7v8S/h/o6Yg/NScOvQ8opAVhh7eI+JslIOOdxAmjtPnHzrYWRyGroeQX/d4c
-         6ww6ujsAxdHD+CaKzDkRpJDQQQGfpg5ljSRJl25z8PX/QkMBSXKbz4QIj79B0X1NM/
-         xcROJvZ3ZxzWQ==
-Date:   Wed, 11 Oct 2023 12:45:31 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>, linux-spi@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH] spi: bcm2835: add a sentinel at the end of the lookup
- array
-Message-ID: <f1b8555b-5acb-43cd-b48b-1dfafdb8d27c@sirena.org.uk>
-References: <20231004183906.97845-1-brgl@bgdev.pl>
- <169696282723.222014.3485016870976123694.b4-ty@kernel.org>
- <CAMRc=MenBeJV+p6LirsCfyaPRWfAvSrVQayqUc77KOyvRGMqvQ@mail.gmail.com>
+        Wed, 11 Oct 2023 07:47:08 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B59C18F
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:47:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=RSsV3tzE81yhMrJ2OAEkPBSGqOhOdmB831LXDp5PvM8=; b=D6O30peoybOa+iTaf2UQhdZU0s
+        kpT3cNMQkH2f5dT8iFXvz7/4WP4IAfW+lJe8X38+4NOkKSz9wXr7WTSa+fxGQzUslfvJAhtpwYhOU
+        +yhWzE6xPEPeFQieevpx8CZ6ndWYWvw54QGbp52lKRFbp5izL/h1m0mTFrM9UkAFtlIlA7ha9MoMS
+        vBMkaBbHH8QUrVWJHye6n5nvlSp2N0P/RhjK6aWuu9pXEa6oAVKOaUVHIQUjLL8S+agrVT1guRgW3
+        naz9KZ7wsUwiBDz9XhegVDDSTgenVsITNszY7p59JdrswuJaiAsf9d0W8jHocBu1dSnUmlb6g/Upn
+        S9eK0L5A==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qqXfl-000BmS-0e;
+        Wed, 11 Oct 2023 11:46:42 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2273130036C; Wed, 11 Oct 2023 13:46:42 +0200 (CEST)
+Date:   Wed, 11 Oct 2023 13:46:42 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ankit Jain <ankitja@vmware.com>
+Cc:     yury.norov@gmail.com, andriy.shevchenko@linux.intel.com,
+        linux@rasmusvillemoes.dk, qyousef@layalina.io, pjt@google.com,
+        joshdon@google.com, bristot@redhat.com, vschneid@redhat.com,
+        linux-kernel@vger.kernel.org, namit@vmware.com,
+        amakhalov@vmware.com, srinidhir@vmware.com, vsirnapalli@vmware.com,
+        vbrahmajosyula@vmware.com, akaher@vmware.com,
+        srivatsa@csail.mit.edu
+Subject: Re: [PATCH RFC] cpumask: Randomly distribute the tasks within
+ affinity mask
+Message-ID: <20231011114642.GA36521@noisy.programming.kicks-ass.net>
+References: <20231011071925.761590-1-ankitja@vmware.com>
+ <20231011105329.GA17066@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="afp+guHfXX9/pd8X"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAMRc=MenBeJV+p6LirsCfyaPRWfAvSrVQayqUc77KOyvRGMqvQ@mail.gmail.com>
-X-Cookie: What an artist dies with me!
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231011105329.GA17066@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 11, 2023 at 12:53:29PM +0200, Peter Zijlstra wrote:
+> On Wed, Oct 11, 2023 at 12:49:25PM +0530, Ankit Jain wrote:
+> > commit 46a87b3851f0 ("sched/core: Distribute tasks within affinity masks")
+> > and commit 14e292f8d453 ("sched,rt: Use cpumask_any*_distribute()")
+> > introduced the logic to distribute the tasks at initial wakeup on cpus
+> > where load balancing works poorly or disabled at all (isolated cpus).
+> > 
+> > There are cases in which the distribution of tasks
+> > that are spawned on isolcpus does not happen properly.
+> > In production deployment, initial wakeup of tasks spawn from
+> > housekeeping cpus to isolcpus[nohz_full cpu] happens on first cpu
+> > within isolcpus range instead of distributed across isolcpus.
+> > 
+> > Usage of distribute_cpu_mask_prev from one processes group,
+> > will clobber previous value of another or other groups and vice-versa.
+> > 
+> > When housekeeping cpus spawn multiple child tasks to wakeup on
+> > isolcpus[nohz_full cpu], using cpusets.cpus/sched_setaffinity(),
+> > distribution is currently performed based on per-cpu
+> > distribute_cpu_mask_prev counter.
+> > At the same time, on housekeeping cpus there are percpu
+> > bounded timers interrupt/rcu threads and other system/user tasks
+> > would be running with affinity as housekeeping cpus. In a real-life
+> > environment, housekeeping cpus are much fewer and are too much loaded.
+> > So, distribute_cpu_mask_prev value from these tasks impacts
+> > the offset value for the tasks spawning to wakeup on isolcpus and
+> > thus most of the tasks end up waking up on first cpu within the
+> > isolcpus set.
+> > 
+> > Steps to reproduce:
+> > Kernel cmdline parameters:
+> > isolcpus=2-5 skew_tick=1 nohz=on nohz_full=2-5
+> > rcu_nocbs=2-5 rcu_nocb_poll idle=poll irqaffinity=0-1
+> > 
+> > * pid=$(echo $$)
+> > * taskset -pc 0 $pid
+> > * cat loop-normal.c
+> > int main(void)
+> > {
+> >         while (1)
+> >                 ;
+> >         return 0;
+> > }
+> > * gcc -o loop-normal loop-normal.c
+> > * for i in {1..50}; do ./loop-normal & done
+> > * pids=$(ps -a | grep loop-normal | cut -d' ' -f5)
+> > * for i in $pids; do taskset -pc 2-5 $i ; done
+> > 
+> > Expected output:
+> > * All 50 “loop-normal” tasks should wake up on cpu2-5
+> > equally distributed.
+> > * ps -eLo cpuid,pid,tid,ppid,cls,psr,cls,cmd | grep "^    [2345]"
+> > 
+> > Actual output:
+> > * All 50 “loop-normal” tasks got woken up on cpu2 only
+> 
+> Your expectation is wrong. Things work as advertised.
 
---afp+guHfXX9/pd8X
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+That is, isolcpus results in single CPU balance domains and as such we
+must not distribute -- there is no load balancing.
 
-On Wed, Oct 11, 2023 at 09:36:19AM +0200, Bartosz Golaszewski wrote:
-> On Tue, Oct 10, 2023 at 8:33=E2=80=AFPM Mark Brown <broonie@kernel.org> w=
-rote:
-> > On Wed, 04 Oct 2023 20:39:06 +0200, Bartosz Golaszewski wrote:
+Ideally we'd reject setting cpumasks with multi bits set on domains like
+that, but alas, that would break historical behaviour :/
 
-> > [1/1] spi: bcm2835: add a sentinel at the end of the lookup array
-> >       commit: 9aaa25df9b02bfe5579cbc9b4cc1177c662ec33f
+Now, looking at the code, I don't think the current code actually
+behaves correct in this case :-(, somewhere along the line we should
+truncate cpu_valid_mask to a single bit. Let me see where the sane place
+is to do that.
 
-> Can you provide me with an immutable branch containing commit
-> 21f252cd29f08892d48739fd7513ad79c1cff96a (the one this one fixes)?
 
-> We are very close to removing gpiochip_find() from the GPIOLIB and
-> with this pulled we could remove it for v6.7.
-
-Ugh, *please* say this sort of thing when sending patches rather than
-waiting until after they've been applied.  The default is just to add
-patches to the normal development branches which means they have the
-whole history for the release cycle after them and may well have other
-things applied on top of them before you get round to asking for them to
-be applied on a different branch as is the case here.
-
---afp+guHfXX9/pd8X
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUmitoACgkQJNaLcl1U
-h9D+4Af8CJ5+ct01+tn2WsdFFMcvKELu0E7FSpEIegfW7OyA0n4hHQFdJIUS83hH
-VBwCQ//WgRkIgr616SqVaxKy3XYgi34kMOCUWUUGFuPTUnSfuSZ8HkXBmY+e/eHf
-5oepsYewqtgd4QqsQuTD+jVFM4K+/X5EtT4wl4gGXDLXaCjYZZpF37N3BwdaUOFL
-EuZ0OyiUWhcY7BUv2a0jZJklE7J4fuTAT2DhE2xLd9WNrIM1P9JWzBNvy1JeoprG
-v1fGaLY/pUNxJTh0o2i9qpo+IRuyAcrP69q4n6lnrGce7kdXC9PakeEIoUK81fAw
-4v45+QwKR2do3HAR24Uy0g+zssca8g==
-=/G22
------END PGP SIGNATURE-----
-
---afp+guHfXX9/pd8X--
