@@ -2,58 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2593F7C47CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 04:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F66F7C47D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 04:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344816AbjJKCbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Oct 2023 22:31:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46192 "EHLO
+        id S1344828AbjJKCc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Oct 2023 22:32:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343759AbjJKCbL (ORCPT
+        with ESMTP id S1344584AbjJKCcz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Oct 2023 22:31:11 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88AAD92;
-        Tue, 10 Oct 2023 19:31:07 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 598FBC433C8;
-        Wed, 11 Oct 2023 02:31:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696991467;
-        bh=2kt6GpEYEc8TWPUIQauHW2cC+U9TC95GtdTD5AMuWXM=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=sxdTmUcfddQMbjHtHzygFI7iHhQppaRc61TRTTgLg79FG3XdyZLUmkIhmx2sDGmrE
-         bI6yKgT1rXtFEa1tH31L0zuSO6PN7iQDP7v3lwOuPXeJmQNycI4APPH69ReNufSXNq
-         BhRyZeWo8EP11u4ndChfI0HpAsxzYtUevHR7wzzrg+hL7CrugQrSq9/UICShEK82W3
-         kbPc4w5w5bG85yIXh4KZQ4x1hQMv1el5VFbuJA5FnSMZQXEitnoLcoZz7PTZ1cTtFf
-         y0+WECKdKwL4wP/rJYK4sAi9AQOac2YvTFr6rKCNQkxWV0d/9J/6YLFv0fiEX5Qrie
-         ptfsmbNPUWo6Q==
-Received: (nullmailer pid 2560993 invoked by uid 1000);
-        Wed, 11 Oct 2023 02:31:04 -0000
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+        Tue, 10 Oct 2023 22:32:55 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1CCF4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 19:32:48 -0700 (PDT)
+Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4S4xZD1CKBzrTDX;
+        Wed, 11 Oct 2023 10:30:12 +0800 (CST)
+Received: from [10.174.178.209] (10.174.178.209) by
+ dggpemm500009.china.huawei.com (7.185.36.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Wed, 11 Oct 2023 10:32:45 +0800
+Message-ID: <9f96baf1-962e-d595-0e4f-797315cd0348@huawei.com>
+Date:   Wed, 11 Oct 2023 10:32:45 +0800
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Wesley Cheng <quic_wcheng@quicinc.com>
-Cc:     konrad.dybcio@linaro.org, agross@kernel.org,
-        devicetree@vger.kernel.org, bgoswami@quicinc.com,
-        broonie@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        lgirdwood@gmail.com, gregkh@linuxfoundation.org,
-        andersson@kernel.org, conor+dt@kernel.org,
-        linux-usb@vger.kernel.org, mathias.nyman@intel.com, perex@perex.cz,
-        tiwai@suse.com, robh+dt@kernel.org, Thinh.Nguyen@synopsys.com,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, srinivas.kandagatla@linaro.org
-In-Reply-To: <20231011002146.1821-15-quic_wcheng@quicinc.com>
-References: <20231011002146.1821-1-quic_wcheng@quicinc.com>
- <20231011002146.1821-15-quic_wcheng@quicinc.com>
-Message-Id: <169699146356.2560906.8654324582682669209.robh@kernel.org>
-Subject: Re: [PATCH v8 14/34] dt-bindings: usb: dwc3: Limit
- num-hc-interrupters definition
-Date:   Tue, 10 Oct 2023 21:31:04 -0500
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH RFC] ubi: gluebi: Fix NULL pointer dereference caused by
+ ftl notifier
+To:     <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <chengzhihao1@huawei.com>, <yi.zhang@huawei.com>,
+        <yangerkun@huawei.com>
+References: <20231010142925.545238-1-wangzhaolong1@huawei.com>
+From:   ZhaoLong Wang <wangzhaolong1@huawei.com>
+In-Reply-To: <20231010142925.545238-1-wangzhaolong1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.209]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -61,40 +52,176 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Tue, 10 Oct 2023 17:21:26 -0700, Wesley Cheng wrote:
-> Ensure that the number of XHCI secondary interrupters defined for a DWC3
-> based implementation is limited to 8.  XHCI in general can potentially
-> support up to 1024 interrupters.
+> This patch assumes that the gluebi module is not designed to work with
+> the ftl module. In this case, the patch only needs to prevent the ftl
+> notifier operation.
 > 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+> Add some correctness check for gluebi->desc in gluebi_read/write/erase(),
+> If the pointer is invalid, the -EINVAL is returned.
+> 
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=217992 [1]
+> Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
 > ---
->  Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 4 ++++
->  1 file changed, 4 insertions(+)
+>   drivers/mtd/ubi/gluebi.c | 8 ++++++++
+>   1 file changed, 8 insertions(+)
 > 
+> diff --git a/drivers/mtd/ubi/gluebi.c b/drivers/mtd/ubi/gluebi.c
+> index 1b980d15d9fb..189ecc0eacd1 100644
+> --- a/drivers/mtd/ubi/gluebi.c
+> +++ b/drivers/mtd/ubi/gluebi.c
+> @@ -157,6 +157,9 @@ static int gluebi_read(struct mtd_info *mtd, loff_t from, size_t len,
+>   	struct gluebi_device *gluebi;
+>   
+>   	gluebi = container_of(mtd, struct gluebi_device, mtd);
+> +	if (IS_ERR_OR_NULL(gluebi->desc))
+> +		return -EINVAL;
+> +
+>   	lnum = div_u64_rem(from, mtd->erasesize, &offs);
+>   	bytes_left = len;
+>   	while (bytes_left) {
+> @@ -197,6 +200,9 @@ static int gluebi_write(struct mtd_info *mtd, loff_t to, size_t len,
+>   	struct gluebi_device *gluebi;
+>   
+>   	gluebi = container_of(mtd, struct gluebi_device, mtd);
+> +	if (IS_ERR_OR_NULL(gluebi->desc))
+> +		return -EINVAL;
+> +
+>   	lnum = div_u64_rem(to, mtd->erasesize, &offs);
+>   
+>   	if (len % mtd->writesize || offs % mtd->writesize)
+> @@ -242,6 +248,8 @@ static int gluebi_erase(struct mtd_info *mtd, struct erase_info *instr)
+>   	lnum = mtd_div_by_eb(instr->addr, mtd);
+>   	count = mtd_div_by_eb(instr->len, mtd);
+>   	gluebi = container_of(mtd, struct gluebi_device, mtd);
+> +	if (IS_ERR_OR_NULL(gluebi->desc))
+> +		return -EINVAL;
+>   
+>   	for (i = 0; i < count - 1; i++) {
+>   		err = ubi_leb_unmap(gluebi->desc, lnum + i);
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-yamllint warnings/errors:
+This modification attempts another solution. Always check the validity
+of gluebi->desc. If the gluebi->desc pointer is invalid, try to get MTD
+device.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/usb/snps,dwc3.yaml: num-hc-interrupters: missing type definition
 
-doc reference errors (make refcheckdocs):
+diff --git a/drivers/mtd/ubi/gluebi.c b/drivers/mtd/ubi/gluebi.c
+index 1b980d15d9fb..f1a74ccf1718 100644
+--- a/drivers/mtd/ubi/gluebi.c
++++ b/drivers/mtd/ubi/gluebi.c
+@@ -154,9 +154,19 @@ static int gluebi_read(struct mtd_info *mtd, loff_t 
+from, size_t len,
+  		       size_t *retlen, unsigned char *buf)
+  {
+  	int err = 0, lnum, offs, bytes_left;
+-	struct gluebi_device *gluebi;
++	struct gluebi_device *gluebi = container_of(mtd, struct gluebi_device,
++						    mtd);
++	int not_get = IS_ERR_OR_NULL(gluebi->desc);
++
++	if (not_get) {
++		err = __get_mtd_device(mtd);
++		if (err) {
++			err_msg("cannot get MTD device %d, UBI device %d, volume %d, error %d",
++				mtd->index, gluebi->ubi_num, gluebi->vol_id, err);
++			return err;
++		}
++	}
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231011002146.1821-15-quic_wcheng@quicinc.com
+-	gluebi = container_of(mtd, struct gluebi_device, mtd);
+  	lnum = div_u64_rem(from, mtd->erasesize, &offs);
+  	bytes_left = len;
+  	while (bytes_left) {
+@@ -176,6 +186,9 @@ static int gluebi_read(struct mtd_info *mtd, loff_t 
+from, size_t len,
+  	}
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
+  	*retlen = len - bytes_left;
++
++	if (not_get)
++		__put_mtd_device(mtd);
+  	return err;
+  }
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+@@ -194,9 +207,19 @@ static int gluebi_write(struct mtd_info *mtd, 
+loff_t to, size_t len,
+  			size_t *retlen, const u_char *buf)
+  {
+  	int err = 0, lnum, offs, bytes_left;
+-	struct gluebi_device *gluebi;
++	struct gluebi_device *gluebi = container_of(mtd, struct gluebi_device,
++						    mtd);
++	int not_get = IS_ERR_OR_NULL(gluebi->desc);
++
++	if (not_get) {
++		err = __get_mtd_device(mtd);
++		if (err) {
++			err_msg("cannot get MTD device %d, UBI device %d, volume %d, error %d",
++				mtd->index, gluebi->ubi_num, gluebi->vol_id, err);
++			return err;
++		}
++	}
 
-pip3 install dtschema --upgrade
+-	gluebi = container_of(mtd, struct gluebi_device, mtd);
+  	lnum = div_u64_rem(to, mtd->erasesize, &offs);
 
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+  	if (len % mtd->writesize || offs % mtd->writesize)
+@@ -220,6 +243,9 @@ static int gluebi_write(struct mtd_info *mtd, loff_t 
+to, size_t len,
+  	}
+
+  	*retlen = len - bytes_left;
++
++	if (not_get)
++		__put_mtd_device(mtd);
+  	return err;
+  }
+
+@@ -234,14 +260,24 @@ static int gluebi_write(struct mtd_info *mtd, 
+loff_t to, size_t len,
+  static int gluebi_erase(struct mtd_info *mtd, struct erase_info *instr)
+  {
+  	int err, i, lnum, count;
+-	struct gluebi_device *gluebi;
++	struct gluebi_device *gluebi = container_of(mtd, struct gluebi_device,
++						    mtd);
++	int not_get = IS_ERR_OR_NULL(gluebi->desc);
++
++	if (not_get) {
++		err = __get_mtd_device(mtd);
++		if (err) {
++			err_msg("cannot get MTD device %d, UBI device %d, volume %d, error %d",
++				mtd->index, gluebi->ubi_num, gluebi->vol_id, err);
++			return err;
++		}
++	}
+
+  	if (mtd_mod_by_ws(instr->addr, mtd) || mtd_mod_by_ws(instr->len, mtd))
+  		return -EINVAL;
+
+  	lnum = mtd_div_by_eb(instr->addr, mtd);
+  	count = mtd_div_by_eb(instr->len, mtd);
+-	gluebi = container_of(mtd, struct gluebi_device, mtd);
+
+  	for (i = 0; i < count - 1; i++) {
+  		err = ubi_leb_unmap(gluebi->desc, lnum + i);
+@@ -259,10 +295,14 @@ static int gluebi_erase(struct mtd_info *mtd, 
+struct erase_info *instr)
+  	if (err)
+  		goto out_err;
+
++	if (not_get)
++		__put_mtd_device(mtd);
+  	return 0;
+
+  out_err:
+  	instr->fail_addr = (long long)lnum * mtd->erasesize;
++	if (not_get)
++		__put_mtd_device(mtd);
+  	return err;
+  }
+
+-- 
+2.31.1
+
 
