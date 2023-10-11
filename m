@@ -2,73 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9437C508B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 847167C508E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234803AbjJKKvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 06:51:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39350 "EHLO
+        id S231946AbjJKKvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:51:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbjJKKu6 (ORCPT
+        with ESMTP id S231934AbjJKKv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:50:58 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31339A9;
-        Wed, 11 Oct 2023 03:50:54 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4S58cN5jw2z6J9Zf;
-        Wed, 11 Oct 2023 18:47:48 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 11 Oct
- 2023 11:50:51 +0100
-Date:   Wed, 11 Oct 2023 11:50:50 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     <linux-pci@vger.kernel.org>,
-        Ilpo =?UTF-8?Q?J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Krzysztof =?UTF-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        <linux-kernel@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH 01/10] PCI: Use FIELD_GET()
-Message-ID: <20231011115050.00004e46@Huawei.com>
-In-Reply-To: <20231010204436.1000644-2-helgaas@kernel.org>
-References: <20231010204436.1000644-1-helgaas@kernel.org>
-        <20231010204436.1000644-2-helgaas@kernel.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Wed, 11 Oct 2023 06:51:28 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E41D294
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:51:25 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2bffc55af02so79555041fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 03:51:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google; t=1697021484; x=1697626284; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OA4VMlVoeOMyOhtKxhGjb50TdmzbdywYsQIBV+11vPc=;
+        b=CNQBmY7qVXfQiwZDv4Qq3U01WJ5aeRtlPLzVGnPyLd/BiVFabbJ+TeX7uyzE7frO3Y
+         jFjcZTBKKHZhAJfisWg9DqRRYkVYtT0xnAXOQqd4H/pULwY93fxAfrHFG0IYjlg7lfXd
+         M6fpqAFJlDI05LovRXR28B7uqsyW0IN+JIspl+RUDl4c2vxgw+BbQCyaXxrvaXhfCjkK
+         tOgYT7KgKVUd7DcKqCoSAvhKfxoMe/TN2VfvS6/h2aQjp//kGDBX+EucLdnQJz0/yI5l
+         xJEQVJN4zbYfC9b1c32lFEjAPIe3DtE56kQkq/G0KOMsKyDQFziZ1iLsuCLDK8tmo4DO
+         WTUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697021484; x=1697626284;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OA4VMlVoeOMyOhtKxhGjb50TdmzbdywYsQIBV+11vPc=;
+        b=Og9bfk5j1u7VqROfrjMjRiOlHl4rBf66Te72XdgnlRs5J5Ki3WYGfwh/CvrgTkZl7j
+         99RVuJSf4byTH4fDzPRrwxa9D9621yzt10nNNls/A5x93Tey7kr+DFPaFM+SGjo/wuuj
+         H/JUPg2NSbhq76qBtxASo6oFHXnIpnVorE7qdj+u0PWKt82Y1fycIlR5daVXQW/vBmpq
+         YjbyzfyQa++2CKZulfR2l3wsuqzstLfiEoL00YOTBkyS1b7xMMRlysxynBLanzBissFI
+         t1hWYnweNBTEFIB7UGlRSApvXxskI9EzQywINaYh9kKDCK3ToSMMO45pfjDVQe4WzQDQ
+         6RIQ==
+X-Gm-Message-State: AOJu0YzU4tR/HLXMPNMwCZPJI4mTSX6x0ilvCTuuT9QVbYrSr9CLaE73
+        cpX9CfBRSb3AZjspReoGxaw9te2aXzNgsPCdsuPxyw==
+X-Google-Smtp-Source: AGHT+IGyLfs+WkrEIobRRB6LgrkT6il+FVpPUfzkIGExXLDR7euxzATM6T+qlV7Ejvi7bqqDUXFwlj14PNASEvLGAW0=
+X-Received: by 2002:a2e:3309:0:b0:2bf:fb49:6619 with SMTP id
+ d9-20020a2e3309000000b002bffb496619mr16986300ljc.23.1697021484028; Wed, 11
+ Oct 2023 03:51:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <69dda7be-d7c8-401f-89f3-7a5ca5550e2f@oracle.com>
+ <20231009144340.418904-1-max.kellermann@ionos.com> <20231010131125.3uyfkqbcetfcqsve@quack3>
+ <CAKPOu+-nC2bQTZYL0XTzJL6Tx4Pi1gLfNWCjU2Qz1f_5CbJc1w@mail.gmail.com> <20231011100541.sfn3prgtmp7hk2oj@quack3>
+In-Reply-To: <20231011100541.sfn3prgtmp7hk2oj@quack3>
+From:   Max Kellermann <max.kellermann@ionos.com>
+Date:   Wed, 11 Oct 2023 12:51:12 +0200
+Message-ID: <CAKPOu+_xdFALt9sgdd5w66Ab6KTqiy8+Z0Yd3Ss4+92jh8nCwg@mail.gmail.com>
+Subject: Re: [PATCH v2] fs/{posix_acl,ext2,jfs,ceph}: apply umask if ACL
+ support is disabled
+To:     Jan Kara <jack@suse.cz>
+Cc:     Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>,
+        Dave Kleikamp <shaggy@kernel.org>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net,
+        Christian Brauner <brauner@kernel.org>,
+        Yang Xu <xuyang2018.jy@fujitsu.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Oct 2023 15:44:27 -0500
-Bjorn Helgaas <helgaas@kernel.org> wrote:
+On Wed, Oct 11, 2023 at 12:05=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
+> So I've checked some more and the kernel doc comments before
+> mode_strip_umask() and vfs_prepare_mode() make it pretty obvious - all
+> paths creating new inodes must be calling vfs_prepare_mode(). As a result
+> mode_strip_umask() which handles umask stripping for filesystems not
+> supporting posix ACLs. For filesystems that do support ACLs,
+> posix_acl_create() must be call and that handles umask stripping. So your
+> fix should not be needed. CCed some relevant people for confirmation.
 
-> From: Bjorn Helgaas <bhelgaas@google.com>
-> 
-> Use FIELD_GET() to remove dependences on the field position, i.e., the
-> shift value.  No functional change intended.
-> 
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Thanks, Jan. Do you think the documentation is obvious enough, or
+shall I look around and try to improve the documentation? I'm not a FS
+expert, so it may be just my fault that it confused me.... I just
+analyzed the O_TMPFILE vulnerability four years ago (because it was
+reported to me as the maintainer of a userspace software).
 
-It's a little unfortunate that some of the masks are called *_MASK and
-others are not (e.g. PCI_RBAR_CTRL_BAR_SIZE which is a mask).
-but given they are in include/uapi not sure we can tidy that up unless
-we add more defines that stick to consistent naming...
+Apart from my doubts that this API contract is too error prone, I'm
+not quite sure if all filesystems really implement it properly.
 
-Otherwise very nice.
+For example, overlayfs unconditionally sets SB_POSIXACL, even if the
+kernel has no ACL support. Would this ignore the umask? I'm not sure,
+overlayfs is a special beast.
+Then there's orangefs which allows setting the "acl" mount option (and
+thus SB_POSIXACL) even if the kernel has no ACL support. Same for gfs2
+and maybe cifs, maybe more, I didn't check them all.
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+The "mainstream" filesystems like ext4 seem to be implemented
+properly, though this is still too fragile for my taste... ext4 has
+the SB_POSIXACL code even if there's no kernel ACL support, but it is
+not reachable because EXT4_MOUNT_POSIX_ACL cannot be set from
+userspace in that case. The code looks suspicious, but is okay in the
+end - still not my taste.
 
+I see so much redundant code regarding the "acl" mount option in all
+filesystems. I believe the API should be designed in a way that it is
+safe-by-default, and shouldn't need very careful considerations in
+each and every filesystem, or else all filesystems repeat the same
+mistakes until the last one gets fixed.
+
+Max
