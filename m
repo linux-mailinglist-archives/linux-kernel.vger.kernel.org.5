@@ -2,166 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FAD27C4C79
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 09:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E04197C4C7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 10:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345054AbjJKH7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 03:59:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33036 "EHLO
+        id S1345404AbjJKIAM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Oct 2023 04:00:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbjJKH7r (ORCPT
+        with ESMTP id S230104AbjJKIAJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 03:59:47 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF19591
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 00:59:44 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qqU7w-0006Ab-CQ; Wed, 11 Oct 2023 09:59:32 +0200
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qqU7v-000qiI-HM; Wed, 11 Oct 2023 09:59:31 +0200
-Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qqU7v-00Ds9z-EG; Wed, 11 Oct 2023 09:59:31 +0200
-Date:   Wed, 11 Oct 2023 09:59:31 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Naresh Solanki <naresh.solanki@9elements.com>,
-        zev@bewilderbeest.net, Sebastian Reichel <sre@kernel.org>,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v1 3/3] regulator: fixed: forward under-voltage events
-Message-ID: <20231011075931.GA3305420@pengutronix.de>
-References: <20231010085906.3440452-1-o.rempel@pengutronix.de>
- <20231010085906.3440452-3-o.rempel@pengutronix.de>
- <5e51792a-cc93-4364-a51b-c2b116d89369@sirena.org.uk>
- <20231010125531.GA3268051@pengutronix.de>
- <c2ee404d-d07f-42c6-b5ba-41659773e8eb@sirena.org.uk>
+        Wed, 11 Oct 2023 04:00:09 -0400
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 848F792
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 01:00:08 -0700 (PDT)
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-5a7e5dc8573so2427487b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 01:00:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697011207; x=1697616007;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EJXeUKTthXt8M2vbMgjrZC204wLHYXruTCm+pLMNj8I=;
+        b=LtDvy5Mk8Kij/g35IWi++/anwf7xKojh1HE/XP/k0+ZJF0EoWpBmnEkdC2n9dHXA5g
+         ldyk5rYVQmUGqSNxi1nwS6fGg1EcTdk8OIHI5/u6oSHI59gentAAnta5aroUSISwvBc0
+         5m/X7QbfAGBswoefe6douLJPJB7uAcSqi1zhbe7FkRLzlTz5A+Kl2nELWVtzxxp4hZJn
+         NS8024hw9DZK5r3bcmL84+iI4C9m4c4X6zzdyfhca/j4tog7bKtm4dsHbWgnRa09CtLE
+         IvvjxKTtILFhj2xW3KCH0A5zwGtSzQwHDK3/dbq7O57GI4prl77nOGZ20jnHibOMal1m
+         i0Dw==
+X-Gm-Message-State: AOJu0Yz/iscqaBtfaNz4b1hl8fl1VM1Gx6eOJ72XnCPK2Eslr9w26RCx
+        4lRvK72u+/TJaUP399MGjDtBcwOFGthBBA==
+X-Google-Smtp-Source: AGHT+IGBA2+kUMjCNbhYyemijwavBfHA3mnkuE9eU7gQR75Y9i5TbVxDPf1sKo1fCr2CkrnLz7XGlg==
+X-Received: by 2002:a81:d54b:0:b0:59b:cfe1:bcf1 with SMTP id l11-20020a81d54b000000b0059bcfe1bcf1mr20392540ywj.44.1697011207555;
+        Wed, 11 Oct 2023 01:00:07 -0700 (PDT)
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
+        by smtp.gmail.com with ESMTPSA id d184-20020a0ddbc1000000b00586108dd8f5sm4971955ywe.18.2023.10.11.01.00.07
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Oct 2023 01:00:07 -0700 (PDT)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-59f6441215dso80974827b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 01:00:07 -0700 (PDT)
+X-Received: by 2002:a81:5bd5:0:b0:589:f9f0:2e8c with SMTP id
+ p204-20020a815bd5000000b00589f9f02e8cmr20463475ywb.48.1697011207007; Wed, 11
+ Oct 2023 01:00:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c2ee404d-d07f-42c6-b5ba-41659773e8eb@sirena.org.uk>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231009183522.543918-1-javierm@redhat.com> <20231009183522.543918-5-javierm@redhat.com>
+In-Reply-To: <20231009183522.543918-5-javierm@redhat.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 11 Oct 2023 09:59:56 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWmzUx6iOhSSfNz4NyMZ0vY6Md6cn86S0BjOjhzzPuO=g@mail.gmail.com>
+Message-ID: <CAMuHMdWmzUx6iOhSSfNz4NyMZ0vY6Md6cn86S0BjOjhzzPuO=g@mail.gmail.com>
+Subject: Re: [PATCH 4/8] drm/ssd13xx: Use drm_format_info_min_pitch() to
+ calculate the dest_pitch
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 06:19:59PM +0100, Mark Brown wrote:
-> On Tue, Oct 10, 2023 at 02:55:31PM +0200, Oleksij Rempel wrote:
-> 
-> > The hardware I am working with has an under-voltage sensor on the 24V
-> > supply regulator and some backup capacitors to run SoC for 100ms. I want
-> > to forward under-voltage events across a chain of different regulators
-> > to a designated consumer. For instance, to the mmc driver, enabling it
-> > to initiate shutdown before power loss occurs.  Additionally, a bit can
-> > be set in the volatile memory of a scratch pad in an RTC clock to record
-> > sudden power loss, which can be checked on the next system start.
-> 
-> So it sounds like the underlying need is to flag the notifications from
-> one of the regulators as being system wide and then take action based on
-> those notifications somewhere basically disconnected?  That does seem
-> like a good use case.
-> 
-> The MMC doesn't specifically care that it is handling a regulator
-> notification, it more wants to know that the system is dying and doesn't
-> really care how we figured that out so if we can hook it into a system
-> level notificaiton it'd be happy and would also be able to handle other
-> critical faults.  I would have thought that we should have some
-> mechanisms for this already for RAS type stuff but I'm drawing a blank
-> on what it actually is if there is an existing abstraction.  It could
-> potentially go through userspace though there's latency concerns there
-> which might not be ideal, there should at least be some policy for
-> userspace.
+Hi Javier,
 
-The project I'm working prefers reducing user space daemons to configure and
-enforce RAS policies due to time and financial budget constraints. The customer
-is inclined to invest only in essential infrastructure.
+On Mon, Oct 9, 2023 at 8:36 PM Javier Martinez Canillas
+<javierm@redhat.com> wrote:
+> Don't assume bpp of 1 and instead compute the destination pitch using the
+> intermediate buffer pixel format info when doing a format conversion.
+>
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
 
-Configuration through the device tree and kernel defaults is preferable.
-For instance, having a default kernel governor that doesn’t require user
-space configuration aligns with the project’s objectives.
+Thanks for your patch!
 
-While a proper UAPI might not be implemented in the first run, the
-design will allow for it to be added and extended by other projects in
-the future.
+> --- a/drivers/gpu/drm/solomon/ssd13xx.c
+> +++ b/drivers/gpu/drm/solomon/ssd13xx.c
+> @@ -148,6 +148,8 @@ struct ssd13xx_plane_state {
+>         struct drm_shadow_plane_state base;
+>         /* Intermediate buffer to convert pixels from XRGB8888 to HW format */
+>         u8 *buffer;
+> +       /* Pixel format info for the intermediate buffer */
+> +       const struct drm_format_info *fi;
 
-> For the regulator itself we probably want a way to identify regulators
-> as being system critical so they start notifying.  It would be tempting
-> to just do that by default but that would likely cause some issues for
-> example with regulators for things like SD cards which are more likely
-> to get hardware problems that don't comprimise the entire system.  We
-> could do that with DT, either a property or some sort of runtime
-> consumer, but it might be better to have a control in sysfs that
-> userspace can turn on?  OTOH the ability do something about this depends
-> on specific hardware design...
-> 
-> I've copied in Sebastian since this sounds like the sort of thing that
-> power supplies might have some kind of handling for, or at least if we
-> need to add something we should make it so that the power supplies can
-> be joined up to it.  I do see temperature and capacity alerts in the
-> sysfs ABI for power supplies, but nothing for voltage.
+This is really intermediate, as it is removed again in the next patch :-)
 
-Thank you for pointing towards the power supply framework. Given the hardware
-design of my project, I can envision mapping the following states and
-properties within this framework:
+In fact 60% of this patch is changed again in the next patch.
+So perhaps combine this with the next patch?
 
-1. States:
-   - POWER_SUPPLY_STATUS_FULL: When the capacitor is fully charged.
-   - POWER_SUPPLY_STATUS_DISCHARGING: Triggered when an under-voltage event is
-                                      detected.
+Gr{oetje,eeting}s,
 
-2. Technology:
-   - POWER_SUPPLY_TECHNOLOGY_CAPACITOR
+                        Geert
 
-3. Capacity Level:
-   - Post under-voltage detection, the system would immediately transition to
-     POWER_SUPPLY_CAPACITY_LEVEL_CRITICAL state.
-
-4. Properties:
-   - POWER_SUPPLY_PROP_TIME_TO_EMPTY_NOW: 100ms, representing the time until
-                                          complete power loss.
-   - POWER_SUPPLY_TYPE_MAINS: Under normal operation.
-   - POWER_SUPPLY_TYPE_BATTERY: Triggered when under-voltage is detected.
-
-Considering the above mapping, my initial step would be to create a simple
-regulator coupled (if regulator is still needed in this casr) with a Device
-Tree (DT) based power supply driver.  This setup would align with the existing
-power supply framework, with a notable extension being the system-wide
-notification for emergency shutdown upon under-voltage detection.
-
-> I've also coped in Naresh and Zev who've been discussing something
-> vaugely similar with userspace notifications for the userspace consumer
-> - it's not the same thing given that you don't specifically need
-> userspace to be involved here but it feels like it might have something
-> of a similar shape, or at least there might be some shared interest.
-
-Regards,
-Oleksij
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
