@@ -2,120 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CB77C4D9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 10:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B08777C4DA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 10:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345033AbjJKItu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 04:49:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43334 "EHLO
+        id S1345529AbjJKIvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 04:51:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230437AbjJKIts (ORCPT
+        with ESMTP id S230382AbjJKIvI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 04:49:48 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F38479C;
-        Wed, 11 Oct 2023 01:49:45 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qqUuU-0008HT-9A; Wed, 11 Oct 2023 10:49:42 +0200
-Message-ID: <8f982779-d7d6-494b-affc-9ecd44b1e23a@leemhuis.info>
-Date:   Wed, 11 Oct 2023 10:49:41 +0200
+        Wed, 11 Oct 2023 04:51:08 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A75798;
+        Wed, 11 Oct 2023 01:51:05 -0700 (PDT)
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39B5xlfO011115;
+        Wed, 11 Oct 2023 10:50:08 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=8gYo5goS4DqeD1ldn/WMNS5pR/ViIwg7IylwRkFLbCQ=; b=Za
+        TlXAtbPx+MB2v0D8AaSOiCRr0QWaExzh07Zo/oJZvuCeapBUJIlchy/0wVkKmKEn
+        wF4z0gNW2gVgYd+nm+OoUH3zQARoNUOh9jLOsqhjQPZQakZgQ8UQum8NC5lIu53G
+        J9/i4D9RVwogLLkVq45t8JbhccX58FoBHOkPFG54l4Myu31cTN8/lVAO4VwO3iQ/
+        QVK9wmSpmZQtWB32TwY8Jbg0FQFxf0GPdf5ZAKxNUqJf8bLx+7v473H+0cTRORLN
+        +6OGQsijOBEGjRMLIhQfjAvoAYEoRWr3fmVZBKuazCBrw1XmeMdLs2GuCUkIAx4t
+        D2E7cjGWOwhthrlESwYw==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3tnp24gtuh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Oct 2023 10:50:08 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 21883100064;
+        Wed, 11 Oct 2023 10:50:05 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B630822FA2E;
+        Wed, 11 Oct 2023 10:50:05 +0200 (CEST)
+Received: from [10.201.20.32] (10.201.20.32) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 11 Oct
+ 2023 10:50:03 +0200
+Message-ID: <8f1b6915-68be-a525-c5d5-37f0983c14de@foss.st.com>
+Date:   Wed, 11 Oct 2023 10:49:58 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US, de-DE
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Autocrypt: addr=linux@leemhuis.info; keydata=
- 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 n7RI
-Subject: next: Build error on arm64: `modpost: "of_find_next_cache_node"
- [drivers/cpufreq/qcom-cpufreq-nvmem.ko] undefined!`
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v6 10/11] ARM: dts: stm32: add ETZPC as a system bus for
+ STM32MP15x boards
+To:     Rob Herring <robh@kernel.org>
+CC:     <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
+        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <alexandre.torgue@foss.st.com>, <vkoul@kernel.org>,
+        <jic23@kernel.org>, <olivier.moysan@foss.st.com>,
+        <arnaud.pouliquen@foss.st.com>, <mchehab@kernel.org>,
+        <fabrice.gasnier@foss.st.com>, <andi.shyti@kernel.org>,
+        <ulf.hansson@linaro.org>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <hugues.fruchet@foss.st.com>,
+        <lee@kernel.org>, <will@kernel.org>, <catalin.marinas@arm.com>,
+        <arnd@kernel.org>, <richardcochran@gmail.com>,
+        Frank Rowand <frowand.list@gmail.com>, <peng.fan@oss.nxp.com>,
+        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+        <linux-i2c@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, <linux-media@vger.kernel.org>,
+        <linux-mmc@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-p.hy@lists.infradead.org>, <linux-serial@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <linux-usb@vger.kernel.org>
+References: <20231010125719.784627-1-gatien.chevallier@foss.st.com>
+ <20231010125719.784627-11-gatien.chevallier@foss.st.com>
+ <20231010184212.GA1221641-robh@kernel.org>
+Content-Language: en-US
+From:   Gatien CHEVALLIER <gatien.chevallier@foss.st.com>
+In-Reply-To: <20231010184212.GA1221641-robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1697014186;24989d11;
-X-HE-SMSGID: 1qqUuU-0008HT-9A
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.201.20.32]
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-11_06,2023-10-10_01,2023-05-22_02
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry, my linux-next builds for Fedora failed today with this error:
+Hi Rob,
 
-> + /usr/bin/make -s 'HOSTCFLAGS=-O2  -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -mbranch-protection=standard -fasynchronous-unwind-tables -fstack-clash-protection   ' 'HOSTLDFLAGS=-Wl,-z,relro -Wl,--as-needed  -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes ' ARCH=arm64 'KCFLAGS= ' WITH_GCOV=0 -j4 modules
-> drivers/net/ethernet/freescale/dpaa/dpaa_ethtool.c: In function 'dpaa_set_coalesce':
-> drivers/net/ethernet/freescale/dpaa/dpaa_ethtool.c:502:1: warning: the frame size of 4112 bytes is larger than 2048 bytes [-Wframe-larger-than=]
->   502 | }
->       | ^
-> drivers/net/ethernet/freescale/dpaa/dpaa_eth.c: In function 'dpaa_fq_setup.constprop':
-> drivers/net/ethernet/freescale/dpaa/dpaa_eth.c:1000:1: warning: the frame size of 8224 bytes is larger than 2048 bytes [-Wframe-larger-than=]
->  1000 | }
->       | ^
-> ERROR: modpost: "of_find_next_cache_node" [drivers/cpufreq/qcom-cpufreq-nvmem.ko] undefined!
+On 10/10/23 20:42, Rob Herring wrote:
+> On Tue, Oct 10, 2023 at 02:57:18PM +0200, Gatien Chevallier wrote:
+>> ETZPC is a firewall controller. Put all peripherals filtered by the
+>> ETZPC as ETZPC subnodes and reference ETZPC as an
+>> access-control-provider.
+>>
+>> For more information on which peripheral is securable or supports MCU
+>> isolation, please read the STM32MP15 reference manual.
+>>
+>> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+>> ---
+>>
+>> Changes in V6:
+>>      	- Renamed access-controller to access-controllers
+>>      	- Removal of access-control-provider property
+>>
+>> Changes in V5:
+>>      	- Renamed feature-domain* to access-control*
+>>
+>>   arch/arm/boot/dts/st/stm32mp151.dtsi  | 2756 +++++++++++++------------
+>>   arch/arm/boot/dts/st/stm32mp153.dtsi  |   52 +-
+>>   arch/arm/boot/dts/st/stm32mp15xc.dtsi |   19 +-
+>>   3 files changed, 1450 insertions(+), 1377 deletions(-)
+> 
+> This is not reviewable. Change the indentation and any non-functional
+> change in one patch and then actual changes in another.
 
-A quick search on lore found that the 0-day bot encountered a similar
-problem early July:
-https://lore.kernel.org/all/202307030626.PUPpfATh-lkp@intel.com/
+Ok, I'll make it easier to read.
 
-Back then it afaics was caused by "cpufreq: qcom-nvmem: create L2 cache
-device" which is new in todays next, which makes it a likely suspect for
-my problem. That's why I decided to write this mail. But note, I didn't
-verify if that patch really causes the trouble; hence if you think it
-might be something entirely different, let me know.
+> 
+> This is also an ABI break. Though I'm not sure it's avoidable. All the
+> devices below the ETZPC node won't probe on existing kernel. A
+> simple-bus fallback for ETZPC node should solve that.
+> 
 
-Full build log:
-https://copr-be.cloud.fedoraproject.org/results/@kernel-vanilla/next/fedora-38-aarch64/06516038-next-next-all/builder-live.log.gz
+I had one issue when trying with a simple-bus fallback that was the
+drivers were probing even though the access rights aren't correct.
+Hence the removal of the simple-bus compatible in the STM32MP25 patch.
 
-I don't have the config file at hand, but it should be the following one
-processed with "make olddefconfig"
-https://www.leemhuis.info/files/misc/kernel-aarch64-fedora.config
+Even though a node is tagged with the OF_POPULATED flag when checking
+the access rights with the firewall controller, it seems that when
+simple-bus is probing, there's no check of this flag.
 
-Ciao, Thorsten
+of_platform_populate() checks and sets the OF_POPULATED_BUS flag.
+Maybe that is my error and the firewall bus populate should set
+OF_POPULATED_BUS instead of OF_POPULATED. Is that correct?
+
+Best regards,
+Gatien
+
+> Rob
