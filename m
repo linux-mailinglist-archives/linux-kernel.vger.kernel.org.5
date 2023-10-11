@@ -2,70 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B7707C5329
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 14:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB12F7C532B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 14:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346936AbjJKMKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 08:10:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47104 "EHLO
+        id S1346873AbjJKMK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 08:10:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346775AbjJKMJv (ORCPT
+        with ESMTP id S1346798AbjJKMJy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 08:09:51 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E893139
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 05:09:35 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-504a7f9204eso8291014e87.3
+        Wed, 11 Oct 2023 08:09:54 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C845318B
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 05:09:36 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3296b49c546so4478271f8f.3
         for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 05:09:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697026165; x=1697630965; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697026166; x=1697630966; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SgDYd9Rguhjm4qQEjlLUgCLw45ItMDY7i661tMI87TY=;
-        b=NXGqg7APoSGYbHOIRd/00LSae6AR2vx9ywofXAB0/1n79w0jDUWUeH9EkFX7Jam5Om
-         X79sA9rgO1JlZrMLku64Tl92bMzoqBtM5DHUTbLzapDZ3uXnGO7zdj+B3Tji2IbBoYdr
-         k8nxD9I/qM4l2MwAhzS1VHkZzraQQyuomLtUkSw7/XGa6SU2CShoE7vxeKSYTTgwBAJZ
-         3uZ41alpb/3zjgTiMCkAkNePr49ZsYgSuRd388Lh0t3/ITyXTDTTVMbERxtj08BsfQo1
-         mp+HF0FBSEDhld3mMy1SlctXGSbNR4hCZmevM1h7O/3IVxJNUI2ZTIQhoW/D/thHLMaV
-         KUTw==
+        bh=B7mQAW/gcS7bWGdM82oN9G3UwAV92bdGrqJQuitFsrM=;
+        b=UQ79YBteAxmimcxCPja9jhleZqR7Ibf98MeqMYf1vVkXRfDiBi9QDTbkTo8l8fzjV6
+         gWx8uO/IovLEWzR2MJce1stB7Q0Oi0/0Op9fOzmvauMgKk3UC6yCYD0p5mBz07ocgyS6
+         dC64C0BQ9l7vKeFcrWuORAQfVC7yGPcSnvBJJHltWeth9TZomcsTT7JVvDC76Iz6Mrdx
+         J7pKhPdpqVzMfUkBZMtrY5exixXkFOmPQ1zGpUxACaAbg8RZXaJpEe1N8Jg8y7+eXXw7
+         svIdh3J4E3lMES2fdGhYLcoj5yl4FZM+jD00FhW2MhXC+yTFVCTE9w/Q2lEU4+EQWyA9
+         Mjcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697026165; x=1697630965;
+        d=1e100.net; s=20230601; t=1697026166; x=1697630966;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SgDYd9Rguhjm4qQEjlLUgCLw45ItMDY7i661tMI87TY=;
-        b=jIGVEYnO5NP5eMpBnT1byID3TEdva6wWxTYkxVcN40rC3pR0iS+zxV/ifjfP0bdsYb
-         lKF3wZKsvwtPq5+Gd4z8fbWi7f3jjS3GfTonxJ+dsTyKRjMj5z4N0V1CXkAwySmXgW+e
-         JVsQCdfSOXXoH3uwKLkRv3XY9ZUBuqL2XAg7IvV5c6Pc7xspyVrWnR/IDZogAL7aXUfB
-         evw0UsLQLKC/7DSG/WyAeDRqJ1Rcrrw8nVJ1wYejRikg4p/cC6K1Lr0Wd/vJlCHjAQIu
-         S3eMD9VncU7D6obM21EOHcx0JeGk1jhKi3EtNz7QZ8ROxJ8omMmyrimoIXycIeB6tVQn
-         biMA==
-X-Gm-Message-State: AOJu0YzQ0DEUjG0Ai3rLLpFUfaadIJqWs6E+/6LFJhyHxZ6IdpjyfD/T
-        vKs7pV3Sc0TcPVdJ5+EkrnYXfg==
-X-Google-Smtp-Source: AGHT+IF3ZBeCHQ7UxXAI5x4hDZ/wVHmC4NXEoeGBeKjkPKX50TSAw6cbyyvN919Y1osgvewm9XIvUg==
-X-Received: by 2002:ac2:5fae:0:b0:503:1998:b48a with SMTP id s14-20020ac25fae000000b005031998b48amr14881273lfe.62.1697026165466;
-        Wed, 11 Oct 2023 05:09:25 -0700 (PDT)
+        bh=B7mQAW/gcS7bWGdM82oN9G3UwAV92bdGrqJQuitFsrM=;
+        b=QGnA8op53e2nm8+DWaibgQ4CwwzrEC+GrD43EQ2/NJ7uhH6hjoISOtn2DKCIbtvzUg
+         Mzjr/bNfuY/+l0W5asSLAGssfrKTY3zOVkrCZLySCyVzc75QOleqDsT9gBy+1ysGLFvB
+         PbVlJFRmyGJRO9RDSejBhYF1CwHbyVoaYWKbUbq+NeplvLh01/sSg620zQvWNiXWc8ci
+         sQ6CjylRKhkQ7fSBAQ0E9T9Z9cHkJr0WUjki/wBQcxdsPZH8twoWMRoY6yJBMtUX62sp
+         XTb7/9s6GcvJurlzYt/Uww/6jcHBzHUhZt1t6Tb5WyX4ADoJ83f2QrIf0gNviZgweLK2
+         DX6A==
+X-Gm-Message-State: AOJu0YzhbcOrS1aSxfPkkUXK5S/1BLgdKHpBIaEzS7R0c3H5TnHQC6NL
+        BSZTA5R0cEXXZlr21+U+PuenIw==
+X-Google-Smtp-Source: AGHT+IFgKc46nUE0aKpQQ0TuMyLnkp05FAa6kvD0a50LHPMvjm6A08VFOB7DYiM1ltxi8FSgEIgJcA==
+X-Received: by 2002:a05:6000:5c6:b0:32d:5870:8b8a with SMTP id bh6-20020a05600005c600b0032d58708b8amr4272879wrb.56.1697026166464;
+        Wed, 11 Oct 2023 05:09:26 -0700 (PDT)
 Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:e551:3946:26fc:f94])
-        by smtp.gmail.com with ESMTPSA id w21-20020a05600c015500b0040652e8ca13sm19012253wmm.43.2023.10.11.05.09.24
+        by smtp.gmail.com with ESMTPSA id w21-20020a05600c015500b0040652e8ca13sm19012253wmm.43.2023.10.11.05.09.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 05:09:24 -0700 (PDT)
+        Wed, 11 Oct 2023 05:09:25 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v2 20/62] pinctrl: rk805: use new pinctrl GPIO helpers
-Date:   Wed, 11 Oct 2023 14:07:48 +0200
-Message-Id: <20231011120830.49324-21-brgl@bgdev.pl>
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH v2 21/62] pinctrl: cirrus: use new pinctrl GPIO helpers
+Date:   Wed, 11 Oct 2023 14:07:49 +0200
+Message-Id: <20231011120830.49324-22-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231011120830.49324-1-brgl@bgdev.pl>
 References: <20231011120830.49324-1-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -79,31 +80,47 @@ with the improved variants that instead take a pointer to the GPIO chip
 and the controller-relative offset.
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- drivers/pinctrl/pinctrl-rk805.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/pinctrl/cirrus/pinctrl-cs42l43.c   | 4 ++--
+ drivers/pinctrl/cirrus/pinctrl-lochnagar.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pinctrl/pinctrl-rk805.c b/drivers/pinctrl/pinctrl-rk805.c
-index 2639a9ee82cd..58e6dd932bc7 100644
---- a/drivers/pinctrl/pinctrl-rk805.c
-+++ b/drivers/pinctrl/pinctrl-rk805.c
-@@ -289,14 +289,14 @@ static void rk805_gpio_set(struct gpio_chip *chip,
- static int rk805_gpio_direction_input(struct gpio_chip *chip,
- 				      unsigned int offset)
+diff --git a/drivers/pinctrl/cirrus/pinctrl-cs42l43.c b/drivers/pinctrl/cirrus/pinctrl-cs42l43.c
+index c09646318419..097e4dcdda36 100644
+--- a/drivers/pinctrl/cirrus/pinctrl-cs42l43.c
++++ b/drivers/pinctrl/cirrus/pinctrl-cs42l43.c
+@@ -508,7 +508,7 @@ static void cs42l43_gpio_set(struct gpio_chip *chip, unsigned int offset, int va
+ 
+ static int cs42l43_gpio_direction_in(struct gpio_chip *chip, unsigned int offset)
  {
 -	return pinctrl_gpio_direction_input(chip->base + offset);
 +	return pinctrl_gpio_direction_input_new(chip, offset);
  }
  
- static int rk805_gpio_direction_output(struct gpio_chip *chip,
- 				       unsigned int offset, int value)
+ static int cs42l43_gpio_direction_out(struct gpio_chip *chip,
+@@ -516,7 +516,7 @@ static int cs42l43_gpio_direction_out(struct gpio_chip *chip,
  {
- 	rk805_gpio_set(chip, offset, value);
+ 	cs42l43_gpio_set(chip, offset, value);
+ 
 -	return pinctrl_gpio_direction_output(chip->base + offset);
 +	return pinctrl_gpio_direction_output_new(chip, offset);
  }
  
- static int rk805_gpio_get_direction(struct gpio_chip *chip, unsigned int offset)
+ static int cs42l43_gpio_add_pin_ranges(struct gpio_chip *chip)
+diff --git a/drivers/pinctrl/cirrus/pinctrl-lochnagar.c b/drivers/pinctrl/cirrus/pinctrl-lochnagar.c
+index 0b78cf611afe..f3c8a8c14e14 100644
+--- a/drivers/pinctrl/cirrus/pinctrl-lochnagar.c
++++ b/drivers/pinctrl/cirrus/pinctrl-lochnagar.c
+@@ -1098,7 +1098,7 @@ static int lochnagar_gpio_direction_out(struct gpio_chip *chip,
+ {
+ 	lochnagar_gpio_set(chip, offset, value);
+ 
+-	return pinctrl_gpio_direction_output(chip->base + offset);
++	return pinctrl_gpio_direction_output_new(chip, offset);
+ }
+ 
+ static int lochnagar_fill_func_groups(struct lochnagar_pin_priv *priv)
 -- 
 2.39.2
 
