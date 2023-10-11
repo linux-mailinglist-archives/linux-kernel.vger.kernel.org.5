@@ -2,159 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D9287C58E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C777C58EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 18:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232583AbjJKQKG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Oct 2023 12:10:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36108 "EHLO
+        id S232761AbjJKQOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 12:14:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbjJKQKF (ORCPT
+        with ESMTP id S232701AbjJKQOT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 12:10:05 -0400
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 395529D;
-        Wed, 11 Oct 2023 09:10:04 -0700 (PDT)
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-58907163519so5286778a12.1;
-        Wed, 11 Oct 2023 09:10:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697040603; x=1697645403;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cZ+VIPsKS+z6FGqu1gSOMc5oXv3t+KffR0mpRHqGu2k=;
-        b=Qnt7cxb2+eM6qJMUL016LqFSXptG2Bhc10IkBoSkIvA0rBgbQeju1cWpAjAOmjrDIC
-         IpkapYAM3PsCniNBB2Bj/b4JJZfU68AxrgdlzHBSDmCIo1QReWXjr3oIhUqWcfhUo3Q/
-         xk8IwzB3adxgtfWLjb+p64S8DW0VnSPbUDk/vWV9va/ZL02QL9SiKGIhhskmUt1INn9H
-         Zs84ctjkeucnb82tt7FKaNM/ZLb5hdevIpIxMWhXhfp+cwPK8fLCaRXKUjzcjc28pCxT
-         coZJczebIVxz7My3c1byKN2QYYeciOG862///+FQN0vOJdb0xD7caXHSlzVIoL1NaRSc
-         blhA==
-X-Gm-Message-State: AOJu0Yxwxb9BeyQWRiDNYbEWd32jpJxv8lPb2RQ2VPqsFhXkuEtzN8yi
-        4OZYSoiNVhxXSAlb3AXrrGNta7abSGFGlAJo9Ds=
-X-Google-Smtp-Source: AGHT+IHnjfzk1SghAsiF23/gGQQawTqA4BpkDSmSW28ox1CFLYnmzEXivE6eYPQlyskK5f+u1Eo/7e7ICRMkd0hM8rU=
-X-Received: by 2002:a17:90b:ecc:b0:27d:a59:ebae with SMTP id
- gz12-20020a17090b0ecc00b0027d0a59ebaemr1571538pjb.46.1697040603539; Wed, 11
- Oct 2023 09:10:03 -0700 (PDT)
+        Wed, 11 Oct 2023 12:14:19 -0400
+Received: from omta034.useast.a.cloudfilter.net (omta034.useast.a.cloudfilter.net [44.202.169.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5CC8F
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 09:14:16 -0700 (PDT)
+Received: from eig-obgw-5009a.ext.cloudfilter.net ([10.0.29.176])
+        by cmsmtp with ESMTP
+        id qZAlq9fb1IBlVqbqGq9s27; Wed, 11 Oct 2023 16:13:48 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id qbqhqmhDtivKvqbqhqwzEW; Wed, 11 Oct 2023 16:14:15 +0000
+X-Authority-Analysis: v=2.4 cv=R8oQpPdX c=1 sm=1 tr=0 ts=6526c9d7
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
+ a=V7xphIdJqzxAJ2XP6soA:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=IglXiu7clxmjc6NnMmyD4jz2gwc1+yZr7itwJnzvAag=; b=xt/Tb6mHGkEDAh4cK7S1dC9YrF
+        Ndo23soGJTyTAu3uPEpBks1653WuqTh2RNwMKZBwa/ZscUhiKV5rrGUcELLkvzCHlxV7LwGGz9lle
+        Rt1XSM4N3QugUJxGUlk0KGEc89mdad7gJ/wwviLO7zJ91SyJzF1Fon6J2fRVewGEsGemkGKNYiclv
+        k2T39BjJcRgXe9Y7ZV5j0qNYvnM2mK7lQ9m85tPw8EIk9/rCGsKMIfSGppfDRXMwQLBevv+qmScCo
+        y66LDAm+8vUF4TB+o4sXQ0nROLR3mid6Lf7MbYslf6jnqu7tH8M9AKzrrRjWtmGLtT3L5EzLvzQ4c
+        +rL4Io2w==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:58052 helo=[192.168.15.7])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96.1)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qqbqg-002zCK-1C;
+        Wed, 11 Oct 2023 11:14:14 -0500
+Message-ID: <0d63e8aa-5836-40e7-8f8a-2be10fbaac4a@embeddedor.com>
+Date:   Wed, 11 Oct 2023 10:13:42 -0600
 MIME-Version: 1.0
-References: <20230916040915.1075620-1-irogers@google.com> <CAL715WJxmMbXkZSE3p_+ODGxabgrXREsBo9aFu9G9=qkYZeH9A@mail.gmail.com>
- <CAP-5=fUjNiDv=KQ7t8jqfOfOt5i8HGvt8Vv1hn2-hLxX_Kqucg@mail.gmail.com>
- <CAL715W+GQuCJm-1SEsNN2qnHghNL1SrzwH9Km5K8UxubEFfYVw@mail.gmail.com>
- <CAM9d7cgKWi0fafwTxSrKLrVZxcwnhwMGz=oNkAsNdOjDwF6pEA@mail.gmail.com>
- <CAP-5=fWXXi7Y=6Q0k8oLOZmYon+vvg-k4dNUSex_ijcL8ti9sQ@mail.gmail.com> <CAL715WJ8w+q_=0_NVZJ=rs0GLs=pYqDiRLcCxxO0gDcGdcvZnw@mail.gmail.com>
-In-Reply-To: <CAL715WJ8w+q_=0_NVZJ=rs0GLs=pYqDiRLcCxxO0gDcGdcvZnw@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 11 Oct 2023 09:09:51 -0700
-Message-ID: <CAM9d7ci-G-+FFPsKbMzzSzCr2kS75axYHFDm2=f6TxUk=dM_CA@mail.gmail.com>
-Subject: Re: [PATCH v1] perf evlist: Avoid frequency mode for the dummy event
-To:     Ian Rogers <irogers@google.com>, Mingwei Zhang <mizhang@google.com>
-Cc:     Jim Mattson <jmattson@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH][next] dma-buf: Fix NULL pointer dereference in
+ dma_fence_enable_sw_signaling()
+To:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Arvind Yadav <Arvind.Yadav@amd.com>,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <ZSarP0/+hG8/87//@work> <202310110903.FE533CBCD@keescook>
+Content-Language: en-US
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <202310110903.FE533CBCD@keescook>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1qqbqg-002zCK-1C
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.7]) [187.162.21.192]:58052
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 2
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfIHvX/MDIBntnIKmNn4Ici2/2RP3oWxsnWDviqRFOPeVZVXbYe9putvwxzM657VyrKTrsejmNXbEsHS2lUSOajReQr/Nw9NdEHj6nIp0LtbZ6QKNHs+R
+ 6XWnYV2rbuxEIWznaJSf24+venM8sRx4o4AaiQWcWoyCOIZYAsR/lQ77cY8l4MoPgA68K4KQjtAq0DJ+q0FFv0HgVAVfgRSWMsXlLRKXq2ac+2/RW5at96zn
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ian,
 
-On Tue, Oct 3, 2023 at 4:20 PM Mingwei Zhang <mizhang@google.com> wrote:
->
-> On Tue, Oct 3, 2023 at 3:36 PM Ian Rogers <irogers@google.com> wrote:
-> >
-> > On Tue, Oct 3, 2023 at 1:08 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> > >
-> > > Hello,
-> > >
-> > > On Wed, Sep 20, 2023 at 10:05 PM Mingwei Zhang <mizhang@google.com> wrote:
-> > > >
-> > > > On Mon, Sep 18, 2023 at 3:43 PM Ian Rogers <irogers@google.com> wrote:
-> > > > >
-> > > > > On Sat, Sep 16, 2023 at 5:46 PM Mingwei Zhang <mizhang@google.com> wrote:
-> > > > > > Thank you very much for the change. I have one quick question about
-> > > > > > the PMU unthrottling logic. When I am looking into the function
-> > > > > > perf_adjust_freq_unthr_context(), I see the loop with PMU stop and
-> > > > > > start in each iteration. Is there a good way to avoid this PMU reset
-> > > > > > operation while quickly figuring out the event in frequency mode?
-> > > > >
-> > > > > Agreed. I think before the pmu_disable could be avoided for this condition:
-> > > > > ```
-> > > > > if (event->hw.interrupts != MAX_INTERRUPTS &&
-> > > > >     (!event->attr.freq || !event->attr.sample_freq))
-> > > > >         continue;
-> > > > > ```
-> > > > > Fixing up the event stop/start looks harder.
-> > > > >
-> > > >
-> > > > Right, I think putting the check early before pmu_disable() is already
-> > > > a great optimization. The only concern I initially had was whether
-> > > > event->hw.interrupts can be accessed before we disable the pmu. But
-> > > > after checking this field in other locations, I don't see any problem
-> > > > at all.
-> > >
-> > > The event->hw.interrupts would be increased in the NMI handler
-> > > so there is a race between the check and the NMI.  That's why
-> > > I think it checks that after disabling the PMU.
-> > >
-> > > But I think we can skip non-sampling events for sure.  Then it
-> > > would be better to set attr.sample_period = 0 rather than attr.freq.
-> > >
-> > >     if (!is_sampling_event(event))
-> > >         continue;
-> > >
-> > >     perf_pmu_disable(event->pmu);
-> > >     ...
-> > >
-> > > Thanks,
-> > > Namhyung
-> >
-> > With the PMU disabled, isn't there still a risk of an interrupt still
-> > being in flight? In other words the disable doesn't prevent a race and
-> > we'll catch this on the next timer call to
-> > perf_adjust_freq_unthr_context. I think we can also improve the code
-> > by just disabling a PMU once, we can take advantage of the
-> > perf_event_pmu_context and disable that PMU, iterate its events and
-> > then re-enable the PMU - i.e. no need for an enable and disable per
-> > event. I'll put a patch together.
-> >
-> > Thanks,
-> > Ian
->
-> +Jim Mattson
->
-> I initially thought this idea was just an alternative, or a more
-> professional fix in the perf subsystem. I was wrong...
->
-> This would be way better than just skipping frequency events in the
-> loop. Since if we just skip by event, we may still suffer from huge
-> overhead if the event list contains many sampling events in frequency
-> mode. Unfortunately, that is the general case when we do perf record
-> -e 'eventlist' (IIUC all events in eventlist are in frequency mode if
-> we don't specify period=). So the problem actually remains whenever we
-> do perf sampling unless we use something like Intel vtune.
->
-> On the other hand, since all of the events are presumably CPU core
-> events, with the fix we pay only once for the PMU reset per hrtimer
-> regardless of how many events are in frequency mode.
->
-> Looking forward to the patch! Please keep us posted if possible.
 
-Any updates?
+On 10/11/23 10:03, Kees Cook wrote:
+> On Wed, Oct 11, 2023 at 08:03:43AM -0600, Gustavo A. R. Silva wrote:
+>> Currently, a NULL pointer dereference will happen in function
+>> `dma_fence_enable_sw_signaling()` (at line 615), in case `chain`
+>> is not allocated in `mock_chain()` and this function returns
+>> `NULL` (at line 86). See below:
+>>
+>> drivers/dma-buf/st-dma-fence-chain.c:
+>>   86         chain = mock_chain(NULL, f, 1);
+>>   87         if (!chain)
+>>   88                 err = -ENOMEM;
+>>   89
+>>   90         dma_fence_enable_sw_signaling(chain);
+> 
+> Instead of the larger patch, should line 88 here just do a "return
+> -ENOMEM" instead?
 
-Thanks,
-Namhyung
+Nope. I would have to add a `goto` to skip `dma_fence_enable_sw_signaling(chain)`.
+
+I originally thought of that, but as other _signaling() functions have
+sanity-checks inside, I decided to go with that solution.
+
+This bug has been there since Sep 2022. So, adding a sanity check inside that
+function should prevent any other issue of this same kind to enter the codebase
+and stay there for years.
+
+--
+Gustavo
+
+> 
+> -Kees
+> 
+>>
+>> drivers/dma-buf/dma-fence.c:
+>>   611 void dma_fence_enable_sw_signaling(struct dma_fence *fence)
+>>   612 {
+>>   613         unsigned long flags;
+>>   614
+>>   615         spin_lock_irqsave(fence->lock, flags);
+>> 			       ^^^^^^^^^^^
+>> 				    |
+>> 			  NULL pointer reference
+>> 			  if fence == NULL
+>>
+>>   616         __dma_fence_enable_signaling(fence);
+>>   617         spin_unlock_irqrestore(fence->lock, flags);
+>>   618 }
+>>
+>> Fix this by adding a NULL check before dereferencing `fence` in
+>> `dma_fence_enable_sw_signaling()`. This will prevent any other NULL
+>> pointer dereference when the `fence` passed as an argument is `NULL`.
+>>
+>> Addresses-Coverity: ("Dereference after null check")
+>> Fixes: d62c43a953ce ("dma-buf: Enable signaling on fence for selftests")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> ---
+>>   drivers/dma-buf/dma-fence.c | 9 ++++++++-
+>>   include/linux/dma-fence.h   | 2 +-
+>>   2 files changed, 9 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/dma-buf/dma-fence.c b/drivers/dma-buf/dma-fence.c
+>> index 8aa8f8cb7071..4d2f13560d0f 100644
+>> --- a/drivers/dma-buf/dma-fence.c
+>> +++ b/drivers/dma-buf/dma-fence.c
+>> @@ -607,14 +607,21 @@ static bool __dma_fence_enable_signaling(struct dma_fence *fence)
+>>    * This will request for sw signaling to be enabled, to make the fence
+>>    * complete as soon as possible. This calls &dma_fence_ops.enable_signaling
+>>    * internally.
+>> + *
+>> + * Returns 0 on success and a negative error value when @fence is NULL.
+>>    */
+>> -void dma_fence_enable_sw_signaling(struct dma_fence *fence)
+>> +int dma_fence_enable_sw_signaling(struct dma_fence *fence)
+>>   {
+>>   	unsigned long flags;
+>>   
+>> +	if (!fence)
+>> +		return -EINVAL;
+>> +
+>>   	spin_lock_irqsave(fence->lock, flags);
+>>   	__dma_fence_enable_signaling(fence);
+>>   	spin_unlock_irqrestore(fence->lock, flags);
+>> +
+>> +	return 0;
+>>   }
+>>   EXPORT_SYMBOL(dma_fence_enable_sw_signaling);
+>>   
+>> diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
+>> index ebe78bd3d121..1e4025e925e6 100644
+>> --- a/include/linux/dma-fence.h
+>> +++ b/include/linux/dma-fence.h
+>> @@ -399,7 +399,7 @@ int dma_fence_add_callback(struct dma_fence *fence,
+>>   			   dma_fence_func_t func);
+>>   bool dma_fence_remove_callback(struct dma_fence *fence,
+>>   			       struct dma_fence_cb *cb);
+>> -void dma_fence_enable_sw_signaling(struct dma_fence *fence);
+>> +int dma_fence_enable_sw_signaling(struct dma_fence *fence);
+>>   
+>>   /**
+>>    * dma_fence_is_signaled_locked - Return an indication if the fence
+>> -- 
+>> 2.34.1
+>>
+>>
+> 
