@@ -2,187 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D9C7C523D
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA067C52A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346097AbjJKLhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:37:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36106 "EHLO
+        id S231970AbjJKL5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:57:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234772AbjJKLhM (ORCPT
+        with ESMTP id S230138AbjJKL5T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:37:12 -0400
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 803439E
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:37:09 -0700 (PDT)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-59f82ad1e09so83910137b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:37:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697024228; x=1697629028; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ADnQSRKfiE11Fw6NWJPg4jyr5BhP2bgI5UYJpaw9Vtc=;
-        b=DSI5lwUwDGyERG61xBXpUKSy3GvB/kfAiO+etSzyzwvKW7xInaTSA5mMhXMj4UTCGj
-         56ph2HQPIykn15aWXu4RdNCQ6i6VnEbzP9NZV6mqxkNXck8kJd7F8BQXN+Ug4RM3FeE2
-         OkXA5YAVaHycYoGtI8kUGVIR42GEyf4RQzfTY3JTBW6a84+wuHiIV9Ju5ZIXmFdrvhnR
-         +8pHhBHViQZNAWFR6NIwlC8sBhI1oDJaBRLkyV2T7rLbbHeCLKAKDsed9qIUkKfZ9vLG
-         wJbHF5vecCFG0w4mzYWYIy6rFyUZl8fB+6goZHXEtnjFpS3LsAhbvojpFkW6pUduu4zg
-         NCUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697024228; x=1697629028;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ADnQSRKfiE11Fw6NWJPg4jyr5BhP2bgI5UYJpaw9Vtc=;
-        b=o0U+jJw0pD/IPw0P9OJJ+bWnFnDyP9GTb0YoLXPt2gIoXItlgf86XYkUvYkcWTP9eU
-         AxgiEvy9BemDg1TlnJjIblIuPdE/3XZn6Gr04Vct+S3fKbV7TzmU6JYGtZ59XsVTQGK8
-         2oS3aU8ObQAz1n9hEAy0J7jPwUsI2MOeYRTntmpmM5GRdD7wjZiHEG0/lZtdU3XX5MVr
-         I8lOGhNODu+AP0JJblOUdkXkaUVcAcc+tWNkfFxxJnzZd3PaK5mXZ/EFcepHVV1D6u0u
-         YILT4+75UHXARL4AOEFEiDoAIKerZMCkOCqqtALz0rfz7p+ilvGE7aofg2ZHhyhIYEJ4
-         KoTg==
-X-Gm-Message-State: AOJu0YzDDYJ4/VS/MWYYyV2vkk9opBwbUaLCkX8YgOrJWsGuJhgJJT0e
-        ka2zr5o+FJ2fm2uz4jw55if38M8uuwi24Y+NwVgKtg==
-X-Google-Smtp-Source: AGHT+IFRpepGKSGvXbAwCvg5/0it467EZf0qhpiwowhNbkcbVmcXi8gnzAdqnBvYtzILhbVKUdAlRHR97OtZsiekmHc=
-X-Received: by 2002:a5b:20d:0:b0:d15:7402:f7cd with SMTP id
- z13-20020a5b020d000000b00d157402f7cdmr19392771ybl.27.1697024228604; Wed, 11
- Oct 2023 04:37:08 -0700 (PDT)
+        Wed, 11 Oct 2023 07:57:19 -0400
+X-Greylist: delayed 1146 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 11 Oct 2023 04:57:16 PDT
+Received: from cpanel10.indieserve.net (cpanel10.indieserve.net [199.212.143.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF378F;
+        Wed, 11 Oct 2023 04:57:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=crashcourse.ca; s=default; h=Content-Type:MIME-Version:References:
+        Message-ID:In-Reply-To:Subject:cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=7HThHjVRjaAH3M5PNDjGoOnPbrAsZmPdBw6j8Z6DAOg=; b=vH+QURGhl7qJKCl73dZvEEy4e2
+        BtbnXKO+Nf9Rl5Xo1hDz+AioHNOCTqN1aTamuPjvNfBWJR2N059mEiy92xojopCqJvsRrzZKHJWWT
+        5r13HuKWgnmEBBO4meqTlArPTAE95YPB6GvXed7NNcK3+zEuCVs0yHpmEB96mChdVpz1DBelnMM+y
+        UDuWC9+ja1UHLwu01OrB2Vmicgi3KtEXTg1rc9fjoFFUWwHWD85aDHNUS2KudOa08RtHYwDgWtn1b
+        2/FBs5Ch/+nau2me+4sqcIih2qPGYEbXG5mvrIOQXVZXDM0yGCOmLfutY7E+xJtHj+dAp8A5tfLvF
+        DuDT7vhQ==;
+Received: from cpeac202e043973-cmac202e043970.sdns.net.rogers.com ([174.114.102.5]:53422 helo=fedora)
+        by cpanel10.indieserve.net with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.96.1)
+        (envelope-from <rpjday@crashcourse.ca>)
+        id 1qqXXS-006uiT-2a;
+        Wed, 11 Oct 2023 07:38:08 -0400
+Date:   Wed, 11 Oct 2023 07:37:50 -0400 (EDT)
+From:   "Robert P. J. Day" <rpjday@crashcourse.ca>
+To:     =?ISO-8859-15?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>
+cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Evan Green <evan@rivosinc.com>, Conor Dooley <conor@kernel.org>
+Subject: Re: [PATCH v1 01/13] riscv: fatorize hwprobe ISA extension
+ reporting
+In-Reply-To: <20231011111438.909552-2-cleger@rivosinc.com>
+Message-ID: <548c87a3-d1a7-a6ba-64e6-ddde97da2ae4@crashcourse.ca>
+References: <20231011111438.909552-1-cleger@rivosinc.com> <20231011111438.909552-2-cleger@rivosinc.com>
 MIME-Version: 1.0
-References: <1697023109-23671-1-git-send-email-quic_msarkar@quicinc.com> <1697023109-23671-3-git-send-email-quic_msarkar@quicinc.com>
-In-Reply-To: <1697023109-23671-3-git-send-email-quic_msarkar@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 11 Oct 2023 14:36:55 +0300
-Message-ID: <CAA8EJpoLxeSvxjcyq1BMR9XuAffrxLmO-eaBYJ+Fhnb4zYmxUQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] phy: qcom-qmp-pcie: add endpoint support for sa8775p
-To:     Mrinmay Sarkar <quic_msarkar@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        konrad.dybcio@linaro.org, mani@kernel.org,
-        quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
-        robh@kernel.org, quic_krichai@quicinc.com,
-        quic_vbadigan@quicinc.com, quic_parass@quicinc.com,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
-        linux-phy@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cpanel10.indieserve.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - crashcourse.ca
+X-Get-Message-Sender-Via: cpanel10.indieserve.net: authenticated_id: rpjday+crashcourse.ca/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: cpanel10.indieserve.net: rpjday@crashcourse.ca
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Oct 2023 at 14:19, Mrinmay Sarkar <quic_msarkar@quicinc.com> wrote:
->
-> Add support for dual lane end point mode PHY found on sa8755p platform.
->
-> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-> ---
->  drivers/phy/qualcomm/phy-qcom-qmp-pcie.c   | 41 ++++++++++++++++++++++++++++++
->  drivers/phy/qualcomm/phy-qcom-qmp-pcs-v5.h |  2 ++
->  2 files changed, 43 insertions(+)
 
-Two minor questions.
+  correct misspelling of "fatorize" in subject line
 
->
-> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
-> index a63ca74..962b4a1 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
-> @@ -2147,6 +2147,38 @@ static const struct qmp_phy_init_tbl sa8775p_qmp_gen4x4_pcie_rc_serdes_alt_tbl[]
->         QMP_PHY_INIT_CFG(QSERDES_V5_COM_CLK_SELECT, 0x34),
->  };
->
-> +static const struct qmp_phy_init_tbl sa8775p_qmp_gen4x2_pcie_ep_serdes_alt_tbl[] = {
-> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_BG_TIMER, 0x02),
-> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_SYS_CLK_CTRL, 0x07),
-> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_CP_CTRL_MODE0, 0x27),
-> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_CP_CTRL_MODE1, 0x0a),
-> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_PLL_RCTRL_MODE0, 0x17),
-> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_PLL_RCTRL_MODE1, 0x19),
-> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_PLL_CCTRL_MODE0, 0x00),
-> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_PLL_CCTRL_MODE1, 0x03),
-> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_SYSCLK_EN_SEL, 0x00),
-> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_INTEGLOOP_GAIN0_MODE0, 0xfb),
-> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_INTEGLOOP_GAIN1_MODE0, 0x01),
-> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_INTEGLOOP_GAIN0_MODE1, 0xfb),
-> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_INTEGLOOP_GAIN1_MODE1, 0x01),
-> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_CMN_MODE, 0x14),
-
-I should check whether we miss QSERDES_V5_COM_CMN_MODE in
-sm8450_qmp_gen4x2_pcie_ep_serdes_tbl, which is otherwise nearly
-identical.
-Also do you need to set QSERDES_V5_COM_CORE_CLK_EN here?
-
-> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_LOCK_CMP1_MODE0, 0xff),
-> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_LOCK_CMP2_MODE0, 0x04),
-> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_LOCK_CMP1_MODE1, 0xff),
-> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_LOCK_CMP2_MODE1, 0x09),
-> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_DEC_START_MODE0, 0x19),
-> +       QMP_PHY_INIT_CFG(QSERDES_V5_COM_DEC_START_MODE1, 0x28),
-> +};
-> +
-> +static const struct qmp_phy_init_tbl sa8775p_qmp_gen4_pcie_ep_pcs_misc_tbl[] = {
-> +       QMP_PHY_INIT_CFG(QPHY_V5_20_PCS_PCIE_OSC_DTCT_MODE2_CONFIG5, 0x08),
-> +};
-
-This is the same as sm8450_qmp_gen4x2_pcie_ep_pcs_misc_tbl
-
-> +
-> +static const struct qmp_phy_init_tbl sa8775p_qmp_gen4x2_pcie_ep_pcs_alt_tbl[] = {
-> +       QMP_PHY_INIT_CFG(QPHY_V5_PCS_INSIG_MX_CTRL7, 0x00),
-> +       QMP_PHY_INIT_CFG(QPHY_V5_PCS_INSIG_SW_CTRL7, 0x00),
-> +};
-
-Could you please confirm that these registers belong to the V5
-namespace rather than V5_20 one?
-
-> +
->  struct qmp_pcie_offsets {
->         u16 serdes;
->         u16 pcs;
-> @@ -3043,6 +3075,15 @@ static const struct qmp_phy_cfg sa8775p_qmp_gen4x2_pciephy_cfg = {
->                 .pcs_misc_num   = ARRAY_SIZE(sa8775p_qmp_gen4_pcie_rc_pcs_misc_tbl),
->         },
->
-> +       .tbls_ep = &(const struct qmp_phy_cfg_tbls) {
-> +               .serdes         = sa8775p_qmp_gen4x2_pcie_ep_serdes_alt_tbl,
-> +               .serdes_num     = ARRAY_SIZE(sa8775p_qmp_gen4x2_pcie_ep_serdes_alt_tbl),
-> +               .pcs_misc       = sa8775p_qmp_gen4_pcie_ep_pcs_misc_tbl,
-> +               .pcs_misc_num   = ARRAY_SIZE(sa8775p_qmp_gen4_pcie_ep_pcs_misc_tbl),
-> +               .pcs            = sa8775p_qmp_gen4x2_pcie_ep_pcs_alt_tbl,
-> +               .pcs_num        = ARRAY_SIZE(sa8775p_qmp_gen4x2_pcie_ep_pcs_alt_tbl),
-> +       },
-> +
->         .reset_list             = sdm845_pciephy_reset_l,
->         .num_resets             = ARRAY_SIZE(sdm845_pciephy_reset_l),
->         .vreg_list              = qmp_phy_vreg_l,
-> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-v5.h b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-v5.h
-> index 36cc80b..6ee1c33 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-v5.h
-> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-v5.h
-> @@ -11,6 +11,8 @@
->  #define QPHY_V5_PCS_PCS_STATUS1                                0x014
->  #define QPHY_V5_PCS_POWER_DOWN_CONTROL                 0x040
->  #define QPHY_V5_PCS_START_CONTROL                      0x044
-> +#define QPHY_V5_PCS_INSIG_SW_CTRL7                     0x060
-> +#define QPHY_V5_PCS_INSIG_MX_CTRL7                     0x07c
->  #define QPHY_V5_PCS_LOCK_DETECT_CONFIG1                        0x0c4
->  #define QPHY_V5_PCS_LOCK_DETECT_CONFIG2                        0x0c8
->  #define QPHY_V5_PCS_LOCK_DETECT_CONFIG3                        0x0cc
-> --
-> 2.7.4
->
-
-
--- 
-With best wishes
-Dmitry
+rday
