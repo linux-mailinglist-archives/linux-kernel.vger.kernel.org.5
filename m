@@ -2,104 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 839467C5B4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 20:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 901EB7C5B52
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 20:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346890AbjJKS1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 14:27:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32802 "EHLO
+        id S1346982AbjJKS33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 14:29:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234976AbjJKS1t (ORCPT
+        with ESMTP id S235129AbjJKS32 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 14:27:49 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 708B7B0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:27:47 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9b98a699f45so16060666b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:27:47 -0700 (PDT)
+        Wed, 11 Oct 2023 14:29:28 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A259E
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:29:25 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-5041cc983f9so225758e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 11:29:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1697048866; x=1697653666; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HfuTTDR+nJ6o/M0eow0TQoImOGAmMP0qEOP+RWPlF7Y=;
-        b=jsXPe6t32aXYqLf16ejPQffnyIQK+RRE24WPNmawlpZtdmpeGPbzpKF+UpGQGNv8gj
-         ExM725dg2iExTK56lZUkjLkg+p83sL/u75VgT0Ne5Mbl4RWNxWZjVnt2EsPXkyYGx6NK
-         K/cvq8KZCQlS7Ldw1R984Q5zJhAEkGBume2yI=
+        d=linaro.org; s=google; t=1697048963; x=1697653763; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eejRC5jkkP9a/cnnUiuXlShL9G58ptQE16Rjy2o31Kc=;
+        b=l34vBeqbHEJoZnXc39NmqowIFcSAYkwnXNfrs3eKZSehQL8dUP2dGuy6TPHXypCwju
+         xdHKIb+KkKitz+04WtiZAmG7dLJoEA1Z4q0nue/pgt4KQYRglENVQcd0lSy5htF0K2pP
+         Mb+MEqyM+AwsMePnzjISyu/ujYj/xvMNJ9uEVgUTw6MJLdmHUzwJffaP6YoZtOcDeXKX
+         xgYRq9TD2TsH99Q8scVFw5pmVFCKBnR4nBjP+OWyf4r1jEzQU9njy1D2oPFbe+jD35q7
+         J8zLBoMssjLXJoIiA4iwXPhEZ6DrmQCTiL+oUO4JbwIvK+6o8bW/6B3x/ESp69ZnNiQo
+         cupg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697048866; x=1697653666;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HfuTTDR+nJ6o/M0eow0TQoImOGAmMP0qEOP+RWPlF7Y=;
-        b=NEBxIS0wAcJTGfWU0iff94OFLv3ujJcubTEsHHu/Bugr2FkRwuAMMQS5Vdo9NBtwu0
-         kuzNJk1QI/QpBTXaMlrUewcnCZeJJFQuCqpd0goh1AdWeKoNtSJfmsxvi4D8T1hHqqAm
-         ZMgSUN1lc6KZa4hv+pJqqBTAPZ/xNBrVol3HWkMR/qaqF/NWq6wNMAJeVlYzMbvxwiqj
-         QsEHE7k81obn9yDqg8zP/vC724QjvUyKhq+GqMYVMcw2v5EljG77BiTRu+OyWeUagj72
-         UmfD/A8sxBIu12YrCdXmsHW02n4aXHl4xmisaqY8Uh7XToPIZDmT+p/9z+NTrkuV3szN
-         5Z+Q==
-X-Gm-Message-State: AOJu0YyT+wkvUUyMuCxF/aw8RY9J5h3NmozU4IvJreE3Lw92Bv8lzx8I
-        F9HYQ/QqMjfmjUkoe6JcbXJSapIa8XwQTebO/Y5Cyn9YkmU+O5PP
-X-Google-Smtp-Source: AGHT+IEJB43UBIJkWXU/+yP7anQC/n2l6c6US9J/b6MClEUeWkTP8XSWSjTPJvy9IenYfNOmz1l4zjbgc9TJFxEEOO8=
-X-Received: by 2002:a17:906:8a50:b0:99c:e38d:e484 with SMTP id
- gx16-20020a1709068a5000b0099ce38de484mr19331684ejc.6.1697048865820; Wed, 11
- Oct 2023 11:27:45 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697048963; x=1697653763;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eejRC5jkkP9a/cnnUiuXlShL9G58ptQE16Rjy2o31Kc=;
+        b=U8140XvWyrD4hdOqsmmxufMXfakSdOsJml2GXPQou3Dj+mrAufcR3OMxqXWuWwrJBg
+         Cp1qIe2ZnwXFvBWWMytT2TUTBeQnrw/rhhX56SePG8o2n0juA9ufJ7oenNJpDcvM5K7Z
+         fta/ucgGs3vFzcKCQAhW5SO3FZhPWlReOtLdsjyRdA2rGWyxcvfJx86wNCcqVPos/4Nr
+         oU4Zqqwc3P3acPoQ+pj5u3GTeRgMZqMT2X5G82VKMXvfRT3GfcRvf8bOY6+BfP6B8YSV
+         N+fpwHEux6wR9wwkdspDkilLyxIQ7OVgAPKmwb0ERhrRJ/CXhjQ2d8SdsIc35ekv4xBo
+         Yi7Q==
+X-Gm-Message-State: AOJu0Yxm6D/q99LxNpAIw+Xiiwi2qRBrwRqQzynbr+q4zzxRTFr13R1I
+        olBk5trVxeQl6WSCGh+84JFZIg==
+X-Google-Smtp-Source: AGHT+IGMLQlG/2YqVwq9AN9IBYY2DekPXLj3trGyLQFjz0c/WVT0DhBhXpaKl81zyKyxcOyvuuabeg==
+X-Received: by 2002:a19:7917:0:b0:503:c51:74d7 with SMTP id u23-20020a197917000000b005030c5174d7mr15013587lfc.17.1697048963200;
+        Wed, 11 Oct 2023 11:29:23 -0700 (PDT)
+Received: from [172.30.204.35] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id b21-20020ac25635000000b00503fe93fb56sm2368604lff.228.2023.10.11.11.29.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Oct 2023 11:29:22 -0700 (PDT)
+Message-ID: <9e781059-bc86-4485-a9e5-80fcd14113fc@linaro.org>
+Date:   Wed, 11 Oct 2023 20:29:19 +0200
 MIME-Version: 1.0
-References: <cover.1696043833.git.kjlx@templeofstupid.com> <45778432fba32dce1fb1f5fd13272c89c95c3f52.1696043833.git.kjlx@templeofstupid.com>
- <CAJfpegtOdqeK34CYvBTuVwOzcyZG8hnusiYO05JdbATOxfVMOg@mail.gmail.com>
- <20231010023507.GA1983@templeofstupid.com> <CAJfpegvr0cHj53jSPyBxVZnMpReq_RFhT-P1jv8eUu4pqxt9HA@mail.gmail.com>
- <20231011012545.GA1977@templeofstupid.com> <CAJfpegukL5bj6U0Kvvw_uTW1jstoD2DTLM7kByx2HAhOP02HEg@mail.gmail.com>
- <20231011163220.GA1970@templeofstupid.com>
-In-Reply-To: <20231011163220.GA1970@templeofstupid.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 11 Oct 2023 20:27:34 +0200
-Message-ID: <CAJfpegtzyUhcVbYrLG5Uhdur9fPxtdvxyYhFzCBf9Q8v6fK3Ow@mail.gmail.com>
-Subject: Re: [resend PATCH v2 2/2] fuse: ensure that submounts lookup their parent
-To:     Krister Johansen <kjlx@templeofstupid.com>
-Cc:     linux-fsdevel@vger.kernel.org,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        German Maglione <gmaglione@redhat.com>,
-        Greg Kurz <groug@kaod.org>, Max Reitz <mreitz@redhat.com>,
-        Bernd Schubert <bernd.schubert@fastmail.fm>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] ARM: dts: qcom: msm8226: Add watchdog node
+Content-Language: en-US
+To:     Luca Weiss <luca@z3ntu.xyz>, ~postmarketos/upstreaming@lists.sr.ht,
+        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sai Prakash Ranjan <quic_saipraka@quicinc.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Matti_Lehtim=C3=A4ki?= <matti.lehtimaki@gmail.com>
+References: <20231011-msm8226-msm8974-watchdog-v1-0-2c472818fbce@z3ntu.xyz>
+ <20231011-msm8226-msm8974-watchdog-v1-2-2c472818fbce@z3ntu.xyz>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20231011-msm8226-msm8974-watchdog-v1-2-2c472818fbce@z3ntu.xyz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Oct 2023 at 18:32, Krister Johansen <kjlx@templeofstupid.com> wrote:
->
-> On Wed, Oct 11, 2023 at 09:07:33AM +0200, Miklos Szeredi wrote:
-> > On Wed, 11 Oct 2023 at 03:26, Krister Johansen <kjlx@templeofstupid.com> wrote:
-> >
-> > > I am curious what you have in mind in order to move this towards a
-> > > proper fix?  I shied away from the approach of stealing a nlookup from
-> > > mp_fi beacuse it wasn't clear that I could always count on the nlookup
-> > > in the parent staying positive.  E.g. I was afraid I was either going to
-> > > not have enough nlookups to move to submounts, or trigger a forget from
-> > > an exiting container that leads to an EBADF from the initial mount
-> > > namespace.
-> >
-> > One idea is to transfer the nlookup to a separately refcounted object
-> > that is referenced from mp_fi as well as all the submounts.
->
-> That seems possible.  Would the idea be to move all tracking of nlookup
-> to a separate refcounted object for the particular nodeid, or just do
-> this for the first lookup of a submount?
 
-Just for submounts.  And yes, it should work if the count from the
-first lookup is transferred to this object (fuse_iget()) and
-subsequent counts (fuse_dentry_revalidate()) go to the mountpoint
-inode as usual.  This will result in more than one FORGET in most
-cases, but that's okay.
 
-> Would you like me to put together a v3 that heads this direction?
+On 10/11/23 18:33, Luca Weiss wrote:
+> From: Matti Lehtimäki <matti.lehtimaki@gmail.com>
+> 
+> Add watchdog for MSM8226 platform.
+> 
+> Signed-off-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
+> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-That would be great, thanks.
-
-Miklos
+Konrad
