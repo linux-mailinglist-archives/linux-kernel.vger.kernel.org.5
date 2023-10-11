@@ -2,87 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6EA7C5EC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 22:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 531BA7C5ED2
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 22:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376315AbjJKU4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 16:56:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37432 "EHLO
+        id S233422AbjJKU6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 16:58:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231226AbjJKU4w (ORCPT
+        with ESMTP id S233133AbjJKU6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 16:56:52 -0400
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A80B90;
-        Wed, 11 Oct 2023 13:56:50 -0700 (PDT)
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-27cfb8bc7eeso186196a91.0;
-        Wed, 11 Oct 2023 13:56:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697057810; x=1697662610;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5fCHObAEeL5mzpUTwwILbHdlQXAib9rb/QiAV6nbo0Q=;
-        b=RFGP8ZzMUT9BNA8FtKED82EWcTDI7LvmUqIiA42CrFIBBXYgABZe+dDEhSzeRSHf0i
-         sIcNHssiLBMgx28X0gAT9PFX4jxJrYPtDqcVQ3JEnsjlC7kVP0uxhzi72MBodXVqGHmx
-         GeGVwKD+mnIWF2FANMey+78smV3j3Dd5igEalzTSKqfoAIMvudsG6Y1u+Omd5CLA5EjC
-         3tAuT+Xv1t2QFy8lslJFjWs27qJuFNqVRaea3J0DZWrvJGrsOsBz2+niS5NXJKPIqLP7
-         KkoPeVa/PUMxPr4tOmQ+MsMlDRlHU2Drd8gYU1OzDqhX1qAEYrvMhAtRkcFRaaSwXv/P
-         AkWQ==
-X-Gm-Message-State: AOJu0Yy2iozfPYVkKiExzLH+BJzDLKhzTEmHZovWjW+v+wj9jWPQdH3I
-        X84EfqnkjgUC1DFvKQfv404=
-X-Google-Smtp-Source: AGHT+IG71j0EgRlck26WH3mT2067Yv5guihfeH1VtvMnSfj7MCMwdvHpRv3xWbysKOyNPt8XJoWarw==
-X-Received: by 2002:a17:90a:1650:b0:27d:273:93ba with SMTP id x16-20020a17090a165000b0027d027393bamr3045155pje.30.1697057809787;
-        Wed, 11 Oct 2023 13:56:49 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:19de:6b54:16fe:c022? ([2620:15c:211:201:19de:6b54:16fe:c022])
-        by smtp.gmail.com with ESMTPSA id d17-20020a17090ac25100b0026b70d2a8a2sm353153pjx.29.2023.10.11.13.56.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Oct 2023 13:56:49 -0700 (PDT)
-Message-ID: <23c91551-9d94-4ec6-85eb-be1e2af20dc7@acm.org>
-Date:   Wed, 11 Oct 2023 13:56:43 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V1 0/4] Add per-cpu PM QoS support for QCOM UFS
-Content-Language: en-US
-To:     Maramaina Naresh <quic_mnaresh@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_cang@quicinc.com, quic_nguyenb@quicinc.com
-References: <1696952947-18062-1-git-send-email-quic_mnaresh@quicinc.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <1696952947-18062-1-git-send-email-quic_mnaresh@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        Wed, 11 Oct 2023 16:58:46 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4255EB6
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 13:58:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id DE187C433C9;
+        Wed, 11 Oct 2023 20:58:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697057924;
+        bh=H4yUqBy97o8qewFD+SoQiGV8n7a4xlyL44Gyvh2sLJE=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=j4DVDAWT6++c0HzZoGLeJ2VlTz3KvC3kiuJRxH1efjnQdXKlU3y/UR5sMvgflPiXl
+         Lw1eqqTxB2cgZreBYVHB6vXWoWDS47jQ3B4THiRj8DCG1pWDXbU8HN7x11cy2R0VI1
+         yQiFs2L1wnl1O12yCmK0KmiyI/BW1pVPbMRE5KeMjOv+qLC5uY6wGoDVQf9SUqhsiV
+         0Ob6r1hRYu3BATKcxPLVb74Y0lNdIQi/DVFKBVh+g3luEapf2/PCym7THwMtpQAY9j
+         DBlDdwi2F3nGuvYMQfePVlmBYLlC+e7aZ9u0ofpjaCJBpDePzIAFuqWu0Tl7q6489q
+         onbuxxy3wDqWQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C76E4C595C5;
+        Wed, 11 Oct 2023 20:58:44 +0000 (UTC)
+Subject: Re: [GIT PULL] printk regression fix for 6.6-rc6
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <ZSaPGo13Fz9TLUc6@alley>
+References: <ZSaPGo13Fz9TLUc6@alley>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZSaPGo13Fz9TLUc6@alley>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git tags/printk-for-6.6-rc6
+X-PR-Tracked-Commit-Id: 9277abd2c17272ed8fc1b842d9efa45797435b77
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 4524565e3a3821a40eea029d05846f7de6588857
+Message-Id: <169705792480.2785.3561657914203671048.pr-tracker-bot@kernel.org>
+Date:   Wed, 11 Oct 2023 20:58:44 +0000
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Todd Brandt <todd.e.brandt@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>, Jan Kara <jack@suse.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/23 08:49, Maramaina Naresh wrote:
-> Add per-cpu PM QoS support for ufs. This improves random io performance
-> by 20% for ufs.
+The pull request you sent on Wed, 11 Oct 2023 14:03:38 +0200:
 
-What in this patch series (other than the DT-bindings) is specific to
-the Qualcomm driver? If the answer is not much: please move this
-functionality into the UFS driver core.
+> git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git tags/printk-for-6.6-rc6
 
-Thanks,
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/4524565e3a3821a40eea029d05846f7de6588857
 
-Bart.
+Thank you!
 
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
