@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA637C607E
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 00:44:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C6E7C6080
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 00:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376577AbjJKWoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 18:44:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59286 "EHLO
+        id S1376579AbjJKWoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 18:44:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376550AbjJKWn7 (ORCPT
+        with ESMTP id S1376578AbjJKWoC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 18:43:59 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73E7A9
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:43:57 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id 6a1803df08f44-66d0760cd20so2713416d6.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:43:57 -0700 (PDT)
+        Wed, 11 Oct 2023 18:44:02 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6848A4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:43:58 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-66d0ceba445so2079146d6.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:43:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697064236; x=1697669036; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697064237; x=1697669037; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HZGveJLgwifDwKHvj2/VHQXDCqoTe78KUSxE+lNTdAg=;
-        b=awxtAks/9WVVH+7UeadSsBtLZKhKfCMVMsAsRl3L+7hg0BEKvqf0e0lcM1RPdJvM5Y
-         JR316hc6OGz15ouCEDPgwA7i5lq8MkMKBdv5v94NkEpMQSvzgU9eu6AH2WM/HFzFerr3
-         5KHXna0S1grvnPNdQZ1BLpiEor3mjjbxiGKP4HrCQFCoFn4Am55c/CbT9kjpMlZpRrM2
-         Xhanru37wXgbAGIZOqbLlBffUsQR8xhcEEj/2EQZvRKpRvHv4c0N39UJMTMiFvXHl06K
-         lJ5K1ojAAWG/f2fMU0/OjSrcsv4H7NmvrDvpknm9tOXT4ICADSgqr/5LUpt+1lP5x8RV
-         cgKA==
+        bh=s/e/e5drqChWwuXG6soyxRsu9kSizf72f1McaizEqmY=;
+        b=KfG+5kXFwbi8s9e9C9i0A+an/sTrACwJmvaBTGPuzmgCRThBHRdKqutY6cFPvfzVKt
+         W2XXslbtzICFNBiY3WwknRYczssYoechEXEDlVgUNazZi5/EYY8yuB+GmyEy6hKd901+
+         AL93sIQki1iHyh5WhdecSppakjsHlA806b3PE5WvRVi4bFfP1yuwqlPcmME02kgZU97h
+         rG6/WcTmP86s+ETvl2ddh66tXCSSm89NQFyR+KMHmfSToP81Gp3eWpZGIZ30yTyET+07
+         zKYuPuluhWl5dhpd4olFLl5+ROmVX/9mHPzXNlFDdku5Uhs2F56xYaILGe7sP8ZRCpJR
+         bq7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697064236; x=1697669036;
+        d=1e100.net; s=20230601; t=1697064237; x=1697669037;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HZGveJLgwifDwKHvj2/VHQXDCqoTe78KUSxE+lNTdAg=;
-        b=T3ccQmZKmzQxvo7DA/iABj37ITHFYRjf2zp5OSwpFy3ZVzPUEi9rphHKRrvT8Je7UQ
-         +5f/AwGIk0x5+7NsBP6sO+QGrzcMUcfAHg+a+MwNFKgSUZS+EFbGqHveXYVi89Ot4pO2
-         opq9xXQPb7aJmNYA4LoNzIAh1l6bS1QdNla0dfuT6R8MUlkeMtklqKftI8sZM3Er/yzY
-         psAU5GXaorP+c8wAfv/RQTM2i+MgeA6FQ/qJBrhOmn3Rxul972+uOsTBypE5YkcRvu6N
-         v4pPTHFvmt4gou+IjFse8+U/PLDfYfiz4bYRGTW6enLN1eUoOq7r3xtn2zPccUjHySlG
-         oUag==
-X-Gm-Message-State: AOJu0Yzlj0TvpJ8PcodkIB6ptoddSZiVGo4PTINGNiNsMhvHqd0EbkMp
-        MTk70oaGAFPOmEhJVqi8EzdJRJQuIA==
-X-Google-Smtp-Source: AGHT+IHai+Y+y8sZx8W8FhlOxbeoOR1TWhTqWxRutap+GxQJCstB9QWtljWPF63mMXsnsNwCmf3WwA==
-X-Received: by 2002:a05:6214:21ea:b0:66d:1103:3286 with SMTP id p10-20020a05621421ea00b0066d11033286mr2709612qvj.12.1697064236600;
-        Wed, 11 Oct 2023 15:43:56 -0700 (PDT)
+        bh=s/e/e5drqChWwuXG6soyxRsu9kSizf72f1McaizEqmY=;
+        b=Yy/xSnYX1SwyR/prMfy/P6xchiq0TjAbzArGEP5MzyPRoL2li/NzkBsvfoj/hELF32
+         4tvHdSn7YjvV74N2VPy5MKkGKy3JcE8pTOes2uvvVCFxCS9ZF7z/XENnQMqzVyi5RSlh
+         tcP6wSWwxLQu2dQF0/dv6Ivhve/oCoGEOCU+/yPsfX4H4tCu5u7Aj3MvW+ob/TeYUOO1
+         byM6b4EMdTTAwbJTX+90WKVxCfsOZWR9ABBzDHDVz2UY3ilb3LCv04nyBacWv5iSCGJh
+         0fWI4lmJXA/qRGzxYM5v9G+P4hZH3qW/F2gu/CqFaU6HdU4Wv8+baLUGGthO/W2e6yy9
+         Lvvg==
+X-Gm-Message-State: AOJu0YyKRRXEmHeSrQPDrtqIliwsNc08BNZG2wyAmJ6Kf1EKbwVPhkgz
+        Ti8QjjadDyHWMnMtHRGma8ogOcMzDQ==
+X-Google-Smtp-Source: AGHT+IFrc4I5n58/NTdAASVqcxX266gphMt+GTGmOWfYfo5XhT+GjQADGrhfsGOVzMNmmBw/eD88ew==
+X-Received: by 2002:a0c:efd4:0:b0:65c:ffb6:11ea with SMTP id a20-20020a0cefd4000000b0065cffb611eamr21865019qvt.33.1697064237533;
+        Wed, 11 Oct 2023 15:43:57 -0700 (PDT)
 Received: from citadel.lan ([2600:6c4a:4d3f:6d5c::1019])
-        by smtp.gmail.com with ESMTPSA id o10-20020a0cf4ca000000b0065b129ec0e8sm6132871qvm.57.2023.10.11.15.43.55
+        by smtp.gmail.com with ESMTPSA id o10-20020a0cf4ca000000b0065b129ec0e8sm6132871qvm.57.2023.10.11.15.43.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 15:43:56 -0700 (PDT)
+        Wed, 11 Oct 2023 15:43:57 -0700 (PDT)
 From:   Brian Gerst <brgerst@gmail.com>
 To:     linux-kernel@vger.kernel.org, x86@kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
@@ -58,9 +58,9 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         "H . Peter Anvin" <hpa@zytor.com>,
         Andy Lutomirski <luto@kernel.org>,
         Brian Gerst <brgerst@gmail.com>
-Subject: [PATCH v3 2/3] x86/entry/64: Use TASK_SIZE_MAX for canonical RIP test
-Date:   Wed, 11 Oct 2023 18:43:50 -0400
-Message-ID: <20231011224351.130935-3-brgerst@gmail.com>
+Subject: [PATCH v3 3/3] x86/entry/32: Clean up syscall fast exit tests
+Date:   Wed, 11 Oct 2023 18:43:51 -0400
+Message-ID: <20231011224351.130935-4-brgerst@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231011224351.130935-1-brgerst@gmail.com>
 References: <20231011224351.130935-1-brgerst@gmail.com>
@@ -76,35 +76,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using shifts to determine if an address is canonical is difficult for
-the compiler to optimize when the virtual address width is variable
-(LA57 feature) without using inline assembly.  Instead, compare RIP
-against TASK_SIZE_MAX.  The only user executable address outside of that
-range is the deprecated vsyscall page, which can fall back to using IRET.
+Merge compat and native code and clarify comments.
 
 Signed-off-by: Brian Gerst <brgerst@gmail.com>
 ---
- arch/x86/entry/common.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/x86/entry/common.c | 48 +++++++++++++++++++----------------------
+ 1 file changed, 22 insertions(+), 26 deletions(-)
 
 diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-index 207149a0a9b3..e3d6f255379f 100644
+index e3d6f255379f..0acf35d7fe55 100644
 --- a/arch/x86/entry/common.c
 +++ b/arch/x86/entry/common.c
-@@ -110,10 +110,10 @@ __visible noinstr bool do_syscall_64(struct pt_regs *regs, int nr)
- 	 * in kernel space.  This essentially lets the user take over
- 	 * the kernel, since userspace controls RSP.
- 	 *
--	 * Change top bits to match most significant bit (47th or 56th bit
--	 * depending on paging mode) in the address.
-+	 * TASK_SIZE_MAX covers all user-accessible addresses other than
-+	 * the deprecated vsyscall page.
- 	 */
--	if (unlikely(!__is_canonical_address(regs->ip, __VIRTUAL_MASK_SHIFT + 1)))
-+	if (unlikely(regs->ip >= TASK_SIZE_MAX))
+@@ -255,34 +255,30 @@ __visible noinstr bool do_fast_syscall_32(struct pt_regs *regs)
+ 	if (!__do_fast_syscall_32(regs))
  		return false;
  
+-#ifdef CONFIG_X86_64
  	/*
+-	 * Opportunistic SYSRETL: if possible, try to return using SYSRETL.
+-	 * SYSRETL is available on all 64-bit CPUs, so we don't need to
+-	 * bother with SYSEXIT.
+-	 *
+-	 * Unlike 64-bit opportunistic SYSRET, we can't check that CX == IP,
+-	 * because the ECX fixup above will ensure that this is essentially
+-	 * never the case.
++	 * Check that the register state is valid for using SYSRETL/SYSEXIT
++	 * to exit to userspace.  Otherwise use the slower but fully capable
++	 * IRET exit path.
+ 	 */
+-	return regs->cs == __USER32_CS && regs->ss == __USER_DS &&
+-		regs->ip == landing_pad &&
+-		(regs->flags & (X86_EFLAGS_RF | X86_EFLAGS_TF)) == 0;
+-#else
+-	/*
+-	 * Opportunistic SYSEXIT: if possible, try to return using SYSEXIT.
+-	 *
+-	 * Unlike 64-bit opportunistic SYSRET, we can't check that CX == IP,
+-	 * because the ECX fixup above will ensure that this is essentially
+-	 * never the case.
+-	 *
+-	 * We don't allow syscalls at all from VM86 mode, but we still
+-	 * need to check VM, because we might be returning from sys_vm86.
+-	 */
+-	return regs->cs == __USER_CS && regs->ss == __USER_DS &&
+-		regs->ip == landing_pad &&
+-		(regs->flags & (X86_EFLAGS_RF | X86_EFLAGS_TF | X86_EFLAGS_VM)) == 0;
+-#endif
++
++	/* XEN PV guests always use IRET path */
++	if (cpu_feature_enabled(X86_FEATURE_XENPV))
++		return false;
++
++	/* EIP must point to the VDSO landing pad */
++	if (unlikely(regs->ip != landing_pad))
++		return false;
++
++	/* CS and SS must match the values set in MSR_STAR */
++	if (unlikely(regs->cs != __USER32_CS || regs->ss != __USER_DS))
++		return false;
++
++	/* If the TF, RF, or VM flags are set, use IRET */
++	if (unlikely(regs->flags & (X86_EFLAGS_RF | X86_EFLAGS_TF | X86_EFLAGS_VM)))
++		return false;
++
++	/* Use SYSRETL/SYSEXIT to exit to userspace */
++	return true;
+ }
+ 
+ /* Returns true to return using SYSEXIT/SYSRETL, or false to use IRET */
 -- 
 2.41.0
 
