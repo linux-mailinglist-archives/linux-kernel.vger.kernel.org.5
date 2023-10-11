@@ -2,204 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 066CD7C50BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA1C47C50C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346718AbjJKLCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:02:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42944 "EHLO
+        id S1346745AbjJKLCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:02:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346674AbjJKLCU (ORCPT
+        with ESMTP id S1346690AbjJKLCX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:02:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9491A9
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:02:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697022137; x=1728558137;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=AX4VHlWO9XCZX/4XDdhwVkemO2KD/0VLOBZhVIMd1zE=;
-  b=lbA/JU3IXl+cjgVq7KSe/6BdZDn6+f3dcX114HkGocuz4L1kTxF/uQtx
-   gh4F2EUR8gYomae20U+gLrtt5tOcyxAtoO/gJlGTvteRMmI/F8HkGfPC4
-   NRJK1ypImF6uiCOgxvXjsGNu6xYqrQQphVo/YnVY3mDovBkwSgQMPL5Eg
-   BUAlalEZrIc94WHkMmnwveZNdf7nbiGKW5v6X98zGkoHNy9yYJ/9KpUVK
-   PIPuVrWr41BcPjk+huA9Q/4vWVzqw/rkukKtFvJr8SEPKPmJYFjRqDJrr
-   bmXeYR88DiIwSUHGxAUVDPPgOv8yry1wZtTUvDFi7fQFb10OaDmTUVIoi
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="369696917"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
-   d="scan'208";a="369696917"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 04:02:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="788960311"
-X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
-   d="scan'208";a="788960311"
-Received: from twinkler-lnx.jer.intel.com ([10.12.231.216])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2023 04:02:15 -0700
-From:   Tomas Winkler <tomas.winkler@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
-        Vitaly Lubart <vitaly.lubart@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Alan Previn <alan.previn.teres.alexis@intel.com>,
-        Tomas Winkler <tomas.winkler@intel.com>
-Subject: [char-misc-next 4/4] mei: update mei-pxp's component interface with timeouts
-Date:   Wed, 11 Oct 2023 14:01:57 +0300
-Message-ID: <20231011110157.247552-5-tomas.winkler@intel.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231011110157.247552-1-tomas.winkler@intel.com>
-References: <20231011110157.247552-1-tomas.winkler@intel.com>
+        Wed, 11 Oct 2023 07:02:23 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C24E3B6;
+        Wed, 11 Oct 2023 04:02:20 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4S58tn6d4Rz6K6FZ;
+        Wed, 11 Oct 2023 19:00:17 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 11 Oct
+ 2023 12:02:17 +0100
+Date:   Wed, 11 Oct 2023 12:02:17 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     <linux-pci@vger.kernel.org>,
+        Ilpo =?UTF-8?Q?J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Krzysztof =?UTF-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        <linux-kernel@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH 05/10] PCI/ATS: Use FIELD_GET()
+Message-ID: <20231011120217.0000770b@Huawei.com>
+In-Reply-To: <20231010204436.1000644-6-helgaas@kernel.org>
+References: <20231010204436.1000644-1-helgaas@kernel.org>
+        <20231010204436.1000644-6-helgaas@kernel.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Previn <alan.previn.teres.alexis@intel.com>
+On Tue, 10 Oct 2023 15:44:31 -0500
+Bjorn Helgaas <helgaas@kernel.org> wrote:
 
-In debugging platform or firmware related MEI-PXP connection
-issues, having a timeout when clients (such as i915) calling
-into mei-pxp's send/receive functions have proven useful as opposed to
-blocking forever until the kernel triggers a watchdog panic (when
-platform issues are experienced).
+> From: Bjorn Helgaas <bhelgaas@google.com>
+> 
+> Use FIELD_GET() to remove dependences on the field position, i.e., the
+> shift value.  No functional change intended.
+> 
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+One trivial comment inline. Either way.
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-Update the mei-pxp component interface send and receive functions
-to take in timeouts.
+> ---
+>  drivers/pci/ats.c             | 7 ++-----
+>  include/uapi/linux/pci_regs.h | 1 +
+>  2 files changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/pci/ats.c b/drivers/pci/ats.c
+> index f9cc2e10b676..c570892b2090 100644
+> --- a/drivers/pci/ats.c
+> +++ b/drivers/pci/ats.c
+> @@ -9,6 +9,7 @@
+>   * Copyright (C) 2011 Advanced Micro Devices,
+>   */
+>  
+> +#include <linux/bitfield.h>
+>  #include <linux/export.h>
+>  #include <linux/pci-ats.h>
+>  #include <linux/pci.h>
+> @@ -480,8 +481,6 @@ int pci_pasid_features(struct pci_dev *pdev)
+>  }
+>  EXPORT_SYMBOL_GPL(pci_pasid_features);
+>  
+> -#define PASID_NUMBER_SHIFT	8
+> -#define PASID_NUMBER_MASK	(0x1f << PASID_NUMBER_SHIFT)
+>  /**
+>   * pci_max_pasids - Get maximum number of PASIDs supported by device
+>   * @pdev: PCI device structure
+> @@ -503,9 +502,7 @@ int pci_max_pasids(struct pci_dev *pdev)
+>  
+>  	pci_read_config_word(pdev, pasid + PCI_PASID_CAP, &supported);
+>  
+> -	supported = (supported & PASID_NUMBER_MASK) >> PASID_NUMBER_SHIFT;
+> -
+> -	return (1 << supported);
+> +	return (1 << FIELD_GET(PCI_PASID_CAP_WIDTH, supported));
 
-Signed-off-by: Alan Previn <alan.previn.teres.alexis@intel.com>
-Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
-Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
----
- drivers/gpu/drm/i915/pxp/intel_pxp_tee.c |  8 ++++--
- drivers/misc/mei/pxp/mei_pxp.c           | 33 +++++++++++++++++++-----
- include/drm/i915_pxp_tee_interface.h     |  6 +++--
- 3 files changed, 37 insertions(+), 10 deletions(-)
+Could drop the bonus set of brackets..
 
-diff --git a/drivers/gpu/drm/i915/pxp/intel_pxp_tee.c b/drivers/gpu/drm/i915/pxp/intel_pxp_tee.c
-index 80bb0018986525f16d410e56..dfc2878426fc2226ccb55270 100644
---- a/drivers/gpu/drm/i915/pxp/intel_pxp_tee.c
-+++ b/drivers/gpu/drm/i915/pxp/intel_pxp_tee.c
-@@ -20,6 +20,8 @@
- #include "intel_pxp_tee.h"
- #include "intel_pxp_types.h"
- 
-+#define PXP_TRANSPORT_TIMEOUT_MS 5000 /* 5 sec */
-+
- static bool
- is_fw_err_platform_config(u32 type)
- {
-@@ -71,13 +73,15 @@ static int intel_pxp_tee_io_message(struct intel_pxp *pxp,
- 		goto unlock;
- 	}
- 
--	ret = pxp_component->ops->send(pxp_component->tee_dev, msg_in, msg_in_size);
-+	ret = pxp_component->ops->send(pxp_component->tee_dev, msg_in, msg_in_size,
-+				       PXP_TRANSPORT_TIMEOUT_MS);
- 	if (ret) {
- 		drm_err(&i915->drm, "Failed to send PXP TEE message\n");
- 		goto unlock;
- 	}
- 
--	ret = pxp_component->ops->recv(pxp_component->tee_dev, msg_out, msg_out_max_size);
-+	ret = pxp_component->ops->recv(pxp_component->tee_dev, msg_out, msg_out_max_size,
-+				       PXP_TRANSPORT_TIMEOUT_MS);
- 	if (ret < 0) {
- 		drm_err(&i915->drm, "Failed to receive PXP TEE message\n");
- 		goto unlock;
-diff --git a/drivers/misc/mei/pxp/mei_pxp.c b/drivers/misc/mei/pxp/mei_pxp.c
-index 9875d16445bb03efcfb31cd9..f77d78fa50549e69f0a0873b 100644
---- a/drivers/misc/mei/pxp/mei_pxp.c
-+++ b/drivers/misc/mei/pxp/mei_pxp.c
-@@ -46,10 +46,20 @@ static inline int mei_pxp_reenable(const struct device *dev, struct mei_cl_devic
-  * @dev: device corresponding to the mei_cl_device
-  * @message: a message buffer to send
-  * @size: size of the message
-- * Return: 0 on Success, <0 on Failure
-+ * @timeout_ms: timeout in milliseconds, zero means wait indefinitely.
-+ *
-+ * Returns: 0 on Success, <0 on Failure with the following defined failures.
-+ *         -ENODEV: Client was not connected.
-+ *                  Caller may attempt to try again immediately.
-+ *         -ENOMEM: Internal memory allocation failure experienced.
-+ *                  Caller may sleep to allow kernel reclaim before retrying.
-+ *         -EINTR : Calling thread received a signal. Caller may choose
-+ *                  to abandon with the same thread id.
-+ *         -ETIME : Request is timed out.
-+ *                  Caller may attempt to try again immediately.
-  */
- static int
--mei_pxp_send_message(struct device *dev, const void *message, size_t size)
-+mei_pxp_send_message(struct device *dev, const void *message, size_t size, unsigned long timeout_ms)
- {
- 	struct mei_cl_device *cldev;
- 	ssize_t byte;
-@@ -60,7 +70,7 @@ mei_pxp_send_message(struct device *dev, const void *message, size_t size)
- 
- 	cldev = to_mei_cl_device(dev);
- 
--	byte = mei_cldev_send(cldev, message, size);
-+	byte = mei_cldev_send_timeout(cldev, message, size, timeout_ms);
- 	if (byte < 0) {
- 		dev_dbg(dev, "mei_cldev_send failed. %zd\n", byte);
- 		switch (byte) {
-@@ -84,10 +94,21 @@ mei_pxp_send_message(struct device *dev, const void *message, size_t size)
-  * @dev: device corresponding to the mei_cl_device
-  * @buffer: a message buffer to contain the received message
-  * @size: size of the buffer
-- * Return: bytes sent on Success, <0 on Failure
-+ * @timeout_ms: timeout in milliseconds, zero means wait indefinitely.
-+ *
-+ * Returns: number of bytes send on Success, <0 on Failure with the following defined failures.
-+ *         -ENODEV: Client was not connected.
-+ *                  Caller may attempt to try again from send immediately.
-+ *         -ENOMEM: Internal memory allocation failure experienced.
-+ *                  Caller may sleep to allow kernel reclaim before retrying.
-+ *         -EINTR : Calling thread received a signal. Caller will need to repeat calling
-+ *                  (with a different owning thread) to retrieve existing unclaimed response
-+ *                  (and may discard it).
-+ *         -ETIME : Request is timed out.
-+ *                  Caller may attempt to try again from send immediately.
-  */
- static int
--mei_pxp_receive_message(struct device *dev, void *buffer, size_t size)
-+mei_pxp_receive_message(struct device *dev, void *buffer, size_t size, unsigned long timeout_ms)
- {
- 	struct mei_cl_device *cldev;
- 	ssize_t byte;
-@@ -100,7 +121,7 @@ mei_pxp_receive_message(struct device *dev, void *buffer, size_t size)
- 	cldev = to_mei_cl_device(dev);
- 
- retry:
--	byte = mei_cldev_recv(cldev, buffer, size);
-+	byte = mei_cldev_recv_timeout(cldev, buffer, size, timeout_ms);
- 	if (byte < 0) {
- 		dev_dbg(dev, "mei_cldev_recv failed. %zd\n", byte);
- 		switch (byte) {
-diff --git a/include/drm/i915_pxp_tee_interface.h b/include/drm/i915_pxp_tee_interface.h
-index a702b6ec17f7ca95eda7d225..7d96985f2d05327151b0dfc1 100644
---- a/include/drm/i915_pxp_tee_interface.h
-+++ b/include/drm/i915_pxp_tee_interface.h
-@@ -22,8 +22,10 @@ struct i915_pxp_component_ops {
- 	 */
- 	struct module *owner;
- 
--	int (*send)(struct device *dev, const void *message, size_t size);
--	int (*recv)(struct device *dev, void *buffer, size_t size);
-+	int (*send)(struct device *dev, const void *message, size_t size,
-+		    unsigned long timeout_ms);
-+	int (*recv)(struct device *dev, void *buffer, size_t size,
-+		    unsigned long timeout_ms);
- 	ssize_t (*gsc_command)(struct device *dev, u8 client_id, u32 fence_id,
- 			       struct scatterlist *sg_in, size_t total_in_len,
- 			       struct scatterlist *sg_out);
--- 
-2.41.0
+>  }
+>  EXPORT_SYMBOL_GPL(pci_max_pasids);
+>  #endif /* CONFIG_PCI_PASID */
+> diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
+> index 6af1f8d53e97..833e5fb40ea5 100644
+> --- a/include/uapi/linux/pci_regs.h
+> +++ b/include/uapi/linux/pci_regs.h
+> @@ -932,6 +932,7 @@
+>  #define PCI_PASID_CAP		0x04    /* PASID feature register */
+>  #define  PCI_PASID_CAP_EXEC	0x0002	/* Exec permissions Supported */
+>  #define  PCI_PASID_CAP_PRIV	0x0004	/* Privilege Mode Supported */
+> +#define  PCI_PASID_CAP_WIDTH	0x1f00
+>  #define PCI_PASID_CTRL		0x06    /* PASID control register */
+>  #define  PCI_PASID_CTRL_ENABLE	0x0001	/* Enable bit */
+>  #define  PCI_PASID_CTRL_EXEC	0x0002	/* Exec permissions Enable */
 
