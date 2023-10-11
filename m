@@ -2,98 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DAA27C4E66
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 11:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 748067C4E14
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 11:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230508AbjJKJVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 05:21:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49976 "EHLO
+        id S230500AbjJKJFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 05:05:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345800AbjJKJDw (ORCPT
+        with ESMTP id S230333AbjJKJFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 05:03:52 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97CEDAF
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 02:03:50 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3247cefa13aso5979800f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 02:03:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697015029; x=1697619829; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FBdHg52RbcScFIWBis5JPCbs4EFwutNb74y5hFI3muk=;
-        b=XguleccvBkRPE/5miciF2rgnAiYT24fQPpEtPCtkcV2Bo7JQEWBbUM90f5SIO4VluE
-         KN2feLXk1DDVz0Kmgz5ESr1OjXb3mfLQFAWYqvRMt4YtW8vMi3R4BtZwUloPoox++Jd9
-         3e/xxaAkNpH0ue/0V+k6y2XS7LlxPkBADqN0WiO4dFrUh9Nbhac2A/k5p4ejI1CT9bB4
-         gp1I5sKIMLuPL94bx0nvUn5H/Ft7CSj/mPNFQzkMRoonZHclG3/UB7rUCxrZN6w5Yt+K
-         H9lMMEBPfivrf8g3XYho6IaqemAzn8VSbJVm3esah0AL69JotQyl2u20b0Wjz1hVhFNQ
-         SSHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697015029; x=1697619829;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FBdHg52RbcScFIWBis5JPCbs4EFwutNb74y5hFI3muk=;
-        b=Ewt3AWWG8uAJrLqaBpM1TBX2yFMk54GTzgv6vsbWsVn4FiFCSCJpYAVAjvRRuxB1+P
-         iVQJaH/fNXsL4mUw/ytxLluzmc00bZHYJyMfZP8c5cjWdRxKdyxn3K3mvnSloba+REAr
-         0so4bM7ygwLDd1WC4rdzpkQ0j/CSg5xtv6YGAIulQBZ6rk1EmZvcqd0Q6Tn/8aDQbQwr
-         y9D9lEbzvfGo/Zcyh58gJqO72obYImA9hyCmMRGNQ+8sG8H+y26kkdXKam6v/5q2BpS0
-         8wy9u7cxBLPpk/woHxqyIaDh+qaFaLMtwGla1ZeTelyx/J72I38I84OJ8aP2qZ04rZo+
-         +1jA==
-X-Gm-Message-State: AOJu0YyqYOLMlctn3D5wwOkp9HyN1hYbjoJvrjXZumfXVewv5MsMZJ5I
-        FI/gKtdfy8GY+cf/n1tIy0tDypPghro8e2wTec0=
-X-Google-Smtp-Source: AGHT+IHhC+dSe6ZgkjkRRcDm2jaYQvv0w9SRi0lllA0IR+H8hw0N/vi7sDbjg6OeQmo/Z+HXKoyvuA==
-X-Received: by 2002:adf:cf0a:0:b0:321:6bed:1646 with SMTP id o10-20020adfcf0a000000b003216bed1646mr17841695wrj.14.1697015028906;
-        Wed, 11 Oct 2023 02:03:48 -0700 (PDT)
-Received: from ?IPV6:2a05:6e02:1041:c10:de95:eca9:6b1e:b330? ([2a05:6e02:1041:c10:de95:eca9:6b1e:b330])
-        by smtp.googlemail.com with ESMTPSA id d18-20020a5d5392000000b00326f5d0ce0asm14827181wrv.21.2023.10.11.02.03.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Oct 2023 02:03:48 -0700 (PDT)
-Message-ID: <96da3e12-7d40-458e-9f65-05606dca201f@linaro.org>
-Date:   Wed, 11 Oct 2023 11:03:47 +0200
+        Wed, 11 Oct 2023 05:05:00 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B792A4;
+        Wed, 11 Oct 2023 02:04:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2947BC433C8;
+        Wed, 11 Oct 2023 09:04:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697015097;
+        bh=KdSwyFFB1qrpPOFhVid5Br7z5KX419xUQhDpNZ+9iGk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DYFI10E6rTZHU1cRCUy+vOuDx+AO8H+pW0nifwCknpDkbnvmO+KwvRTdMVL24WgoM
+         tVHzWpegLxTNE3sgq4qppwp80X8u/PW+A3hRqAjeSQleVXSKz+BgvxE6644NKpx3IH
+         RxsBxS0ST1PO8VuGDPHXSSM3MAeZ3iY4tevYRlZc=
+Date:   Wed, 11 Oct 2023 11:04:54 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>, stable@vger.kernel.org,
+        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 4.19 00/29] 4.19.282-rc1 review
+Message-ID: <2023101132-playable-flagstick-1abf@gregkh>
+References: <20230424131121.155649464@linuxfoundation.org>
+ <CA+G9fYstB_fROK9LHYuQ8dc2ArieGGAW_x69eEX-eAi5xMeE3Q@mail.gmail.com>
+ <20230426170945.0ec0f1ef@gandalf.local.home>
+ <20230426181415.17c893f5@gandalf.local.home>
+ <CA+G9fYtd=dJEM=+xOHA9Egs88r+gEfrnW_gFnTFm4of5uTQ7mA@mail.gmail.com>
+ <CA+G9fYt518bg10DVo=ag=iGB8dj_NQZEmEty1CdkU3Cj+gtW0w@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] clocksource/drivers/sun5i: Remove surplus dev_err()
- when using platform_get_irq()
-Content-Language: en-US
-To:     Yang Li <yang.lee@linux.alibaba.com>, jernej.skrabec@gmail.com,
-        samuel@sholland.org, wens@csie.org
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-References: <20230831041414.66434-1-yang.lee@linux.alibaba.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20230831041414.66434-1-yang.lee@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYt518bg10DVo=ag=iGB8dj_NQZEmEty1CdkU3Cj+gtW0w@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/08/2023 06:14, Yang Li wrote:
-> There is no need to call the dev_err() function directly to print a
-> custom message when handling an error from either the platform_get_irq()
-> or platform_get_irq_byname() functions as both are going to display an
-> appropriate error message in case of a failure.
+On Wed, Oct 11, 2023 at 06:59:46AM +0530, Naresh Kamboju wrote:
+> Hi Steven and Greg,
 > 
-> ./drivers/clocksource/timer-sun5i.c:260:2-9: line 260 is redundant because platform_get_irq() already prints an error
+> On Thu, 27 Apr 2023 at 15:19, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> >
+> > Hi Steven,
+> >
+> > On Wed, 26 Apr 2023 at 23:14, Steven Rostedt <rostedt@goodmis.org> wrote:
+> > >
+> > > On Wed, 26 Apr 2023 17:09:45 -0400
+> > > Steven Rostedt <rostedt@goodmis.org> wrote:
+> > >
+> > > > Now the question is, why is this triggering on 4.19 but not in latest
+> > > > mainline?
+> > >
+> > > I found it, I backported this patch and the warning goes away (at least for
+> > > me). Can you add this and see if it makes the warning go away for you too?
+> >
+> > I have applied this patch on stable-rc 4.19 branch and tested on
+> > - arm64: Juno-r2
+> >  - x86_64 device
+> >
+> > and the reported problem has been resolved.
+> >
+> > Thanks for finding a quick fix patch.
+> >
+> > >
+> > > -- Steve
+> > >
+> > > From: Peter Zijlstra <peterz@infradead.org>
+> > > Date: Fri, 7 Aug 2020 20:50:19 +0200
+> > > Subject: [PATCH] sched,idle,rcu: Push rcu_idle deeper into the idle path
+> > >
+> > > commit 1098582a0f6c4e8fd28da0a6305f9233d02c9c1d upstream.
 > 
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
+> Can we expect this patch to be merged into 4.19 ?
+> The reason for the question is, the reported problem is still seen on
+> stable-rc 4.19.
 
-Applied, thanks
+Ok, I'll queue it up now, I didn't realize it needed to be there, sorry.
 
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
-
+greg k-h
