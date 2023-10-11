@@ -2,146 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D9777C5065
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9EE7C5067
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346320AbjJKKlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 06:41:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52880 "EHLO
+        id S1346498AbjJKKlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:41:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346498AbjJKKk7 (ORCPT
+        with ESMTP id S234810AbjJKKlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:40:59 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 816E4A7;
-        Wed, 11 Oct 2023 03:40:56 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-5031ccf004cso8105135e87.2;
-        Wed, 11 Oct 2023 03:40:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697020855; x=1697625655; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MIwLub0INRRdgrIISIRMpvUCD9eeyw981wkAi0ZsffY=;
-        b=b9JHr/l5yZOWbtM0htenDtYya+erZmxpwEjq9V1g09/1HHvq82U9KNuUODldNxXU3Z
-         PvWyZfjgmxsFtVsh0r7w5QZ0tbxhvQqi6AtrX9eJSBRkH+GMKZfn2rtL96oYnyOvaDSV
-         POHUCkaJRdsrAZaOyCWZ2X5wWslHm0AyqI8IcMYLgrA3FiKR2lNQxRztgWz2aRdk5B1c
-         unHVsEPX3SXm+9C6caOhUiQDIJuLIowikR3QpjgKjFgBrAZIh5ITwnpROuY2X/s7WjmX
-         K8p/uHdZ+Mj2Z6P9YdEVr2qMDarHfAhjnCsy0jEJ1cKFgI/mHkcjw9adofhRrr9mK7o8
-         yKpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697020855; x=1697625655;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MIwLub0INRRdgrIISIRMpvUCD9eeyw981wkAi0ZsffY=;
-        b=Ex/k4MOqttxsdQ3gHYTa0t4Op4mxNi8aaKzcgac25AnobLE77svpAnClvSYNVa/6Rq
-         V30Yyn0mQ2msjQ+7wIw8ieDrxpYvFnaBioYPJdaWh7ohOQnQCfDRlB7Ug8UpSYLHe+xS
-         scw3cEKWDJp+Gydjsg6dsZtW2LLJaUZfblAtaqsyXLMc+exSjeVTv/PHzRnbo4vQefHK
-         DDnS9NRxgnp2wdQqRCgMv58Av7V5y3J0trCAEpq3a/veb1RdVoI1e/1iYrSLSGAkwQAx
-         ATIeA5o0R5wAaZ7XsCgJUJIgRI3JMAR6KuQuubt3EzImWoOF3IWkzaf9cS7dL0soT24N
-         owuw==
-X-Gm-Message-State: AOJu0YxYpe5axx6+PmTWTDYYQB7ZpkR2EeYn9P6b2KkJK8NW01u91U7K
-        HbGBFP4cAIUxyKbGtCEhrW4=
-X-Google-Smtp-Source: AGHT+IEoHHRIumi6Qc+UuPZifX5OUKY2Y/hEgTETmsyuhl5/tQcdFXRkyRkdXG0q9gZXcwWgIz1GRQ==
-X-Received: by 2002:ac2:5f08:0:b0:503:383c:996d with SMTP id 8-20020ac25f08000000b00503383c996dmr15544417lfq.12.1697020854490;
-        Wed, 11 Oct 2023 03:40:54 -0700 (PDT)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id p7-20020a19f007000000b004ff8631d6c0sm2190574lfc.278.2023.10.11.03.40.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 03:40:54 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 13:40:52 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Kory Maincent <kory.maincent@bootlin.com>,
-        Cai Huoqing <cai.huoqing@linux.dev>
-Cc:     Manivannan Sadhasivam <mani@kernel.org>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Herve Codina <herve.codina@bootlin.com>
-Subject: Re: [PATCH v3 1/6] dmaengine: dw-edma: Fix the ch_count hdma callback
-Message-ID: <blylz7am3w2yi45aaraunjmzhd3prvpvrnsdseuccuprtj4gcv@fdewoi2n54fk>
-References: <20231011-b4-feature_hdma_mainline-v3-0-24ee0c979c6f@bootlin.com>
- <20231011-b4-feature_hdma_mainline-v3-1-24ee0c979c6f@bootlin.com>
+        Wed, 11 Oct 2023 06:41:19 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A076FBA;
+        Wed, 11 Oct 2023 03:41:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BECEC433C7;
+        Wed, 11 Oct 2023 10:41:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697020877;
+        bh=anlzUPl7ZpZUKXtz2bt3SGpGSz5+2RISrv6OvPdB5VM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TqeuOLMx4e1yNDzaxqpQm0RlWgrkKGCg3FPPuJ7chlHlfgONlgqxysH/VcSait1I+
+         En6ItSF6hsZN0B9iCwOe8Szwy8spTC2yBOCUGBKS4RGyrOAhmx8M4wHNsm+Rs4uvYq
+         jHXnBZXqQZ1dUlFc7QzAdxdQiqqNk+U58DqEoMXfT9yynAK3+jw80vXlWYLLNJDJ9c
+         /WmsCuJUQ6Yll3vqUvitMKtIp7mINQ64WK5V+RGkxWnTP//3YWjTKXeWw4B3gcI0z9
+         s0/o5p0PGPemUkU5r3lwsMJL3rFwfyuYKqdqwTZMS2Yb2zZMb29MTAMElpn/1P+796
+         GDsUc1j3KS75A==
+Date:   Wed, 11 Oct 2023 12:41:13 +0200
+From:   Alejandro Colomar <alx@kernel.org>
+To:     Rik van Riel <riel@surriel.com>
+Cc:     linux-man@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        kernel-team@meta.com, Eric Biederman <ebiederm@xmission.com>
+Subject: Re: [PATCH] execve.2: execve also returns E2BIG if a string is too
+ long
+Message-ID: <ZSZ7yXwYAg-xPC7P@debian>
+References: <20231010234153.021826b1@imladris.surriel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ZwlcAQNhET8ZExSa"
 Content-Disposition: inline
-In-Reply-To: <20231011-b4-feature_hdma_mainline-v3-1-24ee0c979c6f@bootlin.com>
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+In-Reply-To: <20231010234153.021826b1@imladris.surriel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 11, 2023 at 10:11:40AM +0200, Kory Maincent wrote:
-> The current check of ch_en enabled to know the maximum number of available
-> hardware channels is wrong as it check the number of ch_en register set
-> but all of them are unset at probe. This register is set at the
-> dw_hdma_v0_core_start function which is run lately before a DMA transfer.
-> 
-> The HDMA IP have no way to know the number of hardware channels available
-> like the eDMA IP, then let set it to maximum channels and let the platform
-> set the right number of channels.
-> 
-> Fixes: e74c39573d35 ("dmaengine: dw-edma: Add support for native HDMA")
-> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
-> Acked-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-So no news from Cai... I guess we can accept it as is then.
+--ZwlcAQNhET8ZExSa
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Date: Wed, 11 Oct 2023 12:41:13 +0200
+From: Alejandro Colomar <alx@kernel.org>
+To: Rik van Riel <riel@surriel.com>
+Cc: linux-man@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+	kernel-team@meta.com, Eric Biederman <ebiederm@xmission.com>
+Subject: Re: [PATCH] execve.2: execve also returns E2BIG if a string is too
+ long
 
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+Hi Rik,
 
--Serge(y)
+On Tue, Oct 10, 2023 at 11:41:53PM -0400, Rik van Riel wrote:
+> Document that if a command line or environment string is too long (> MAX_=
+ARG_STRLEN), execve will also return E2BIG.
 
+That's already implied by the current text:
+
+       E2BIG  The total number of bytes in the environment (envp) and argum=
+ent
+              list (argv) is too large.
+
+That means that
+
+size_t  bytes;
+
+bytes =3D 0;
+for (char *e =3D envp; e !=3D NULL; e++)
+	bytes +=3D strlen(e) + 1;  // I have doubts about the +1
+for (char *a =3D argv; a !=3D NULL; a++)
+	bytes +=3D strlen(a) + 1;  // Same doubts
+
+if (bytes > MAX_ARG_STRLEN)  // Maybe >=3D ?
+	return -E2BIG;
+
+>=20
+> Signed-off-by: Rik van Riel <riel@surriel.com>
 > ---
-> 
-> See the following thread mail that talk about this issue:
-> https://lore.kernel.org/lkml/20230607095832.6d6b1a73@kmaincent-XPS-13-7390/
-> 
-> Changes in v2:
-> - Add comment
-> 
-> Changes in v3:
-> - Fix comment style.
-> ---
->  drivers/dma/dw-edma/dw-hdma-v0-core.c | 18 ++++++------------
->  1 file changed, 6 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/dma/dw-edma/dw-hdma-v0-core.c b/drivers/dma/dw-edma/dw-hdma-v0-core.c
-> index 00b735a0202a..1f4cb7db5475 100644
-> --- a/drivers/dma/dw-edma/dw-hdma-v0-core.c
-> +++ b/drivers/dma/dw-edma/dw-hdma-v0-core.c
-> @@ -65,18 +65,12 @@ static void dw_hdma_v0_core_off(struct dw_edma *dw)
->  
->  static u16 dw_hdma_v0_core_ch_count(struct dw_edma *dw, enum dw_edma_dir dir)
->  {
-> -	u32 num_ch = 0;
-> -	int id;
-> -
-> -	for (id = 0; id < HDMA_V0_MAX_NR_CH; id++) {
-> -		if (GET_CH_32(dw, id, dir, ch_en) & BIT(0))
-> -			num_ch++;
-> -	}
-> -
-> -	if (num_ch > HDMA_V0_MAX_NR_CH)
-> -		num_ch = HDMA_V0_MAX_NR_CH;
-> -
-> -	return (u16)num_ch;
-> +	/*
-> +	 * The HDMA IP have no way to know the number of hardware channels
-> +	 * available, we set it to maximum channels and let the platform
-> +	 * set the right number of channels.
-> +	 */
-> +	return HDMA_V0_MAX_NR_CH;
->  }
->  
->  static enum dma_status dw_hdma_v0_core_ch_status(struct dw_edma_chan *chan)
-> 
-> -- 
-> 2.25.1
-> 
+>  man2/execve.2 | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/man2/execve.2 b/man2/execve.2
+> index 0d9582492ad1..c1a359d01872 100644
+> --- a/man2/execve.2
+> +++ b/man2/execve.2
+> @@ -449,7 +449,7 @@ The total number of bytes in the environment
+>  .RI ( envp )
+>  and argument list
+>  .RI ( argv )
+> -is too large.
+> +is too large, or an argument or environment string is too long.
+
+Please use semantic newlines:
+
+$ MANWIDTH=3D72 man man-pages | sed -n '/Use semantic newlines/,/^$/p'
+   Use semantic newlines
+       In the source of a manual page, new sentences should be started
+       on  new  lines,  long  sentences  should be split into lines at
+       clause breaks (commas, semicolons, colons, and so on), and long
+       clauses should be split at phrase boundaries.  This convention,
+       sometimes known as "semantic newlines", makes it easier to  see
+       the  effect of patches, which often operate at the level of in=E2=80=
+=90
+       dividual sentences, clauses, or phrases.
+
+
+Thanks,
+Alex
+
+>  .TP
+>  .B EACCES
+>  Search permission is denied on a component of the path prefix of
+> --=20
+> 2.41.0
+>=20
+>=20
+
+--=20
+<https://www.alejandro-colomar.es/>
+
+--ZwlcAQNhET8ZExSa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmUme8kACgkQnowa+77/
+2zLKiw//ZOA7Nq0uA05ugaXbCPWN/txWsn+y9oxApUHLy1RygRjiPCsRK8XhNvde
+AueRu+yXv+OGAbOTGCDJNJqp0smMiCParVtLGwr8hxp9l1J3GPbFBGSsTUSlXUwy
+y9LgkfY3ZiGT419unGJI0Mbep/koSYBl+X7kLyWQYz6I+lpFGZAFAmLj7fpqGNpq
+mcH1M6cTPB7ip1HdseTptBoJ3yI3JEIPPf8GF9+HdcubfVaYoXQ/qw9xRy5coh7H
+emgFrcu4UD1L6/WOmLenPZ6mkOSqTi1AiERZIpGtkxksJLgBZPUY3jV+bqKUuOtS
+M8TCwTbnM8EiPdQQlK4lE425Eymzla2vVRilY7+s6rsLKGdZRDla6Plm3Q23xxa9
+2+mjAgLZURFadQIhj6GRH/0+cSUFRTDEkw7mt00RES8/9h0oTxVmpnV0+slQMqjf
+P5zAznodF9rcyq7s/T7MVZwJNnRUEixz+B+JfqCnoE8Id2Eh1Oo9GAyuZ6C3v28R
+5m6MflH9HBtjzNUgWTm69UxdMAtPhcCp5orD6cnrlEDX4jpVRbZ0NORcbxesyxo/
+n+LDCtakCJsZks6GJZOsfZqChcEjLeutzR96T8HZWiMfiKJJOOeW5lNebWHxmr9d
+yVdFwPWLfL4Gk8JScIO7JhVmGCnQn6UbCxam7c7AQpZFSrisIo8=
+=jOsU
+-----END PGP SIGNATURE-----
+
+--ZwlcAQNhET8ZExSa--
