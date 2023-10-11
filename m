@@ -2,141 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 223B47C4AF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A877C4AFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 08:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345613AbjJKGul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 02:50:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56274 "EHLO
+        id S1345533AbjJKGvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 02:51:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345289AbjJKGuj (ORCPT
+        with ESMTP id S1345289AbjJKGvl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 02:50:39 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B49D90
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 23:50:38 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-537f07dfe8eso5879a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 23:50:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697007037; x=1697611837; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fSdUFdNj96ap5yOzCUQatTJqtRpLC8WshQaaBaUNCbs=;
-        b=oT+THZDf+QDadK0nvojwt9eOmAKznH8i7VGKGiu9W+fhYiI1zeWXZkMlWhrVTfnCaR
-         3FNm2wLQj3j2BK/18R5KXq8zaX40b/lC/cZNy+Msa7I0zaubRQfuUZvWHxxgvJhT0Sz+
-         ZKY5eoNJDKzRClYYxCq3oGW0KklCha1lsp2w9Vomzxhmrg1FL7tj9f/swLTDB7YNRGCw
-         ViOBPdfBlHRtITaTgoVx+mnQu8M3EyDYbQp8RdXDjRuiK5lmXefO/xz6hjpn93qSfftU
-         Xs4K89QQE9yEIwIpDdqUMsBKEtrAWl9U9exCIE9yIPGd9eUtGh8qYA0rLj+QDljPK1O4
-         6M1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697007037; x=1697611837;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fSdUFdNj96ap5yOzCUQatTJqtRpLC8WshQaaBaUNCbs=;
-        b=XD6fs57K1w0YDhtDOrea2git4D66k+NDpHUGeoR0Rb4aotEV4SfICY5Trb6NPxuBPV
-         t9mV6d/hn4/g5sYUyytjcHoeKWnTWMYQS2F1VGjoG0zvxMIR9pdeofO2QTvkB1lYfcI1
-         mKdWNzCgPr74IEHuZmBc4C6KILCVGW8vv3n98Wqiagb+iCyWE7/aevks4WAfPuYqNvil
-         wrWh6ZBO7SEn2/0rPQXZ0B8P7usDcdQ2lvZlDRjZelA8CyhkEwKddE8diS9JXlK2dA77
-         kOxWBu/bIYa/7udcWTFXIH7NYq5++rrsf38LZi2unic5qnx99JLN2CgBP0MC2KsgiXFz
-         fqRA==
-X-Gm-Message-State: AOJu0YzN9EAXVKK65bUvmuaBtylcXbtLculVjUNm9Y3MhqGvLIRo9rXI
-        BZtdjpHSKpLHpGWhgbMW7EaLpYi1UlKu6oSkfRQVrQ==
-X-Google-Smtp-Source: AGHT+IHtpBCgMDNuwyCLbV/TmJmT1aF1BKCDMSYjGgolBuC8aR9OOrLb8aK6Oo+7rWTSvZYKPL2nKc4+xp9VwQSoI9I=
-X-Received: by 2002:a50:9356:0:b0:538:1d3b:172f with SMTP id
- n22-20020a509356000000b005381d3b172fmr57065eda.3.1697007036622; Tue, 10 Oct
- 2023 23:50:36 -0700 (PDT)
+        Wed, 11 Oct 2023 02:51:41 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE9F59E
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 23:51:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697007099; x=1728543099;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=bBI2FZKsPnLrhMOSzCEEd0XdZov87F+NftJakDXO9Z4=;
+  b=X3uhmzPg8qOpYgxiSKwifitRN+LW/YzbMzUtNxzgL4ntg/YQiPklwain
+   4hToW3mYvpH3Jeng/WyXKbrqZa+SbaiQoWm1qPkw/TvqlRzTY+jF7XZrj
+   QVSs0CrMab9GweBxJS8TjCYsvxJ1XkR6koJ734Y5h7WS5Kbx9S6fz5wtM
+   POb1r0+kRXLxjhTXf9eZueAzRrXKtlYiauMnwKxuR/8Oapaf7MF/VCBC1
+   DZ3YgHrn/Vz7LLHyOKIkQiwxyzBJIBuUJP2f6y6v2G4WORoamYdNFIVDb
+   Avr8jGfnC/sMiu0RwuGwvrbGUDcMgo++JlnAF1QMQQDorS4Xalyzp3cMT
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="387436946"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="387436946"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 23:51:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10859"; a="824050224"
+X-IronPort-AV: E=Sophos;i="6.03,214,1694761200"; 
+   d="scan'208";a="824050224"
+Received: from sqa-gate.sh.intel.com (HELO spr-2s5.tsp.org) ([10.239.48.212])
+  by fmsmga004.fm.intel.com with ESMTP; 10 Oct 2023 23:51:36 -0700
+From:   Tina Zhang <tina.zhang@intel.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Tina Zhang <tina.zhang@intel.com>
+Subject: [v6 PATCH 0/5] Share sva domains with all devices bound to a mm
+Date:   Wed, 11 Oct 2023 14:51:27 +0800
+Message-Id: <20231011065132.102676-1-tina.zhang@intel.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-References: <20231002221909.2958708-1-irogers@google.com> <CAP-5=fX-VOeCkOJY5xeW67x0+A0tGAHM4VYBBz46L-g2eRCR+w@mail.gmail.com>
- <93afcf44-5f8b-49c1-abc5-5304cba5f991@intel.com> <CAP-5=fXzcR6QKKhFG5PS1pFYi5JsO4AOUoH_-Bv0O+11YzEkkw@mail.gmail.com>
- <CAM9d7cjQZvZm+Vyrx9PTUYMFN5RjE+i-Kq1kbffyVp2hGKF6sg@mail.gmail.com>
- <CAP-5=fUo-vuLofC4jgHC9z=BTe80OEiY_PoQWqQtyVdvHcf+KQ@mail.gmail.com> <CAM9d7cjdb5WE-xdSdKD=p_EtsS7OSVEWL+GL3RVwczu-+1JvFQ@mail.gmail.com>
-In-Reply-To: <CAM9d7cjdb5WE-xdSdKD=p_EtsS7OSVEWL+GL3RVwczu-+1JvFQ@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 10 Oct 2023 23:50:25 -0700
-Message-ID: <CAP-5=fVe9v=KOxJE5TfmivBQCD=7SRFpnqkob7e05U76d_bSPQ@mail.gmail.com>
-Subject: Re: [PATCH v1] perf intel-pt: pkt-decoder: Fix alignment issues
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Olsa <jolsa@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 10:56=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
- wrote:
->
-> On Mon, Oct 9, 2023 at 8:31=E2=80=AFAM Ian Rogers <irogers@google.com> wr=
-ote:
-> >
-> > On Sun, Oct 8, 2023 at 10:29=E2=80=AFPM Namhyung Kim <namhyung@kernel.o=
-rg> wrote:
-> > >
-> > > On Thu, Oct 5, 2023 at 2:24=E2=80=AFPM Ian Rogers <irogers@google.com=
-> wrote:
-> > > >
-> > > > On Thu, Oct 5, 2023 at 12:06=E2=80=AFPM Adrian Hunter <adrian.hunte=
-r@intel.com> wrote:
-> > > > >
-> > > > > On 5/10/23 18:48, Ian Rogers wrote:
-> > > > > > On Mon, Oct 2, 2023 at 3:19=E2=80=AFPM Ian Rogers <irogers@goog=
-le.com> wrote:
-> > > > > >>
-> > > > > >> The byte aligned buffer is cast to large types and dereference=
-d
-> > > > > >> causing misaligned pointer warnings from undefined behavior sa=
-nitizer.
-> > > > > >> Fix the alignment issues with memcpy which may require the
-> > > > > >> introduction of temporaries.
-> > > > > >>
-> > > > > >> Signed-off-by: Ian Rogers <irogers@google.com>
-> > > > > >> ---
-> > > > > >
-> > > > > > This is a relatively small change that fixes building with
-> > > > > > -fsanitize=3Dalignment -fsanitize-undefined-trap-on-error. Adri=
-an, as
-> > > > > > this is Intel-PT could you take a look?
-> > > > >
-> > > > > Thanks! This has been down my list of things to do for ages,
-> > > > > but using get_unaligned_le16() etc seems nicer.  I sent a patch
-> > > > > set for that.
-> > > >
-> > > > Thanks Adrian! Your patch set looks good and I think after Arnaldo'=
-s
-> > > > comment is addressed we should go with it.
-> > >
-> > > I think it can be done as a later step as long as the interface is th=
-e
-> > > same.  Can I add your Ack's to the Adrian's patchset?
-> >
-> > I think addressing Arnaldo's comment:
-> > https://lore.kernel.org/lkml/ZR8QnasisGEsaaDR@kernel.org/
-> > will need some changes to the patch series, and so I was waiting to
-> > see the outcome of that.
->
-> It seems it's done without further changes.  Can I get your Ack's now?
+This series is to share sva(shared virtual addressing) domains with all
+devices bound to one mm.
 
-With the unaligned.h patch on its own, I think patch 1 of 5 needs
-dropping. For the rest I'm happy to acked-by.
+Problem
+-------
+In the current iommu core code, sva domain is allocated per IOMMU group,
+when device driver is binding a process address space to a device (which is
+handled in iommu_sva_bind_device()). If one than more device is bound to
+the same process address space, there must be more than one sva domain
+instance, with each device having one. In other words, the sva domain
+doesn't share between those devices bound to the same process address
+space, and that leads to two problems:
+1) device driver has to duplicate sva domains with enqcmd, as those sva
+domains have the same PASID and are relevant to one virtual address space.
+This makes the sva domain handling complex in device drivers.
+2) IOMMU driver cannot get sufficient info of the IOMMUs that have
+devices behind them bound to the same virtual address space, when handling
+mmu_notifier_ops callbacks. As a result, IOMMU IOTLB invalidation is
+performed per device instead of per IOMMU, and that may lead to
+superfluous IOTLB invalidation issue, especially in a virtualization
+environment where all devices may be behind one virtual IOMMU.
 
-Thanks,
-Ian
+Solution
+--------
+This patch-set tries to fix those two problems by allowing sharing sva
+domains with all devices bound to a mm. To achieve this, a new structure
+pointer is introduced to mm to replace the old PASID field, which can keep
+the info of PASID as well as the corresponding shared sva domains.
+Besides, function iommu_sva_bind_device() is updated to ensure a new sva
+domain can only be allocated when the old ones cannot work for the IOMMU.
+With these changes, a device driver can expect one sva domain could work
+for per PASID instance(e.g., enqcmd PASID instance), and therefore may get
+rid of handling sva domain duplication. Besides, IOMMU driver (e.g., intel
+vt-d driver) can get sufficient info (e.g., the info of the IOMMUs having
+their devices bound to one virtual address space) when handling
+mmu_notifier_ops callbacks, to remove the redundant IOTLB invalidations.
 
-> Thanks,
-> Namhyung
+Arguably there shouldn't be more than one sva_domain with the same PASID,
+and in any sane configuration there should be only 1 type of IOMMU driver
+that needs only 1 SVA domain. However, in reality, IOMMUs on one platform
+may not be identical to each other. Thus, attaching a sva domain that has
+been successfully bound to device A behind a IOMMU A, to device B behind
+IOMMU B may get failed due to the difference between IOMMU A and IOMMU
+B. In this case, a new sva domain with the same PASID needs to be
+allocated to work with IOMMU B. That's why we need a list to keep sva
+domains of one PASID. For the platform where IOMMUs are compatible to each
+other, there should be one sva domain in the list.
+
+v6:
+ - Rename iommu_sva_alloc_pasid() to iommu_alloc_mm_data().
+ - Hold the iommu_sva_lock before invoking iommu_alloc_mm_data().
+ - Remove "iommu: Introduce mm_get_pasid() helper function" patch, because
+   SMMUv3 decides to use mm_get_enqcmd_pasid() instead and other users are
+   using iommu_sva_get_pasid() to get the pasid value. Besides, the iommu
+   core accesses iommu_mm_data in the critical section protected by
+   iommu_sva_lock. So no need to add another helper to retrieve PASID
+   atomically.
+
+v5:
+ - Order patch "iommu/vt-d: Remove mm->pasid in intel_sva_bind_mm()"
+   first in this series.
+ - Update commit message of patch "iommu: Introduce mm_get_pasid()
+   helper function"
+ - Use smp_store_release() & READ_ONCE() in storing and loading mm's
+   pasid value.
+
+v4:
+ - Rebase to v6.6-rc1.
+
+v3:
+ - Add a comment describing domain->next.
+ - Expand explanation of why PASID isn't released in
+   iommu_sva_unbind_device().
+ - Add a patch to remove mm->pasid in intel_sva_bind_mm()
+
+v2:
+ - Add mm_get_enqcmd_pasid().
+ - Update commit message.
+
+v1: https://lore.kernel.org/linux-iommu/20230808074944.7825-1-tina.zhang@intel.com/
+
+Tina Zhang (5):
+  iommu/vt-d: Remove mm->pasid in intel_sva_bind_mm()
+  iommu: Add mm_get_enqcmd_pasid() helper function
+  mm: Add structure to keep sva information
+  iommu: Support mm PASID 1:n with sva domains
+  mm: Deprecate pasid field
+
+ arch/x86/kernel/traps.c                       |  2 +-
+ .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   | 12 +--
+ drivers/iommu/intel/svm.c                     | 14 +--
+ drivers/iommu/iommu-sva.c                     | 94 +++++++++++--------
+ include/linux/iommu.h                         | 27 +++++-
+ include/linux/mm_types.h                      |  3 +-
+ kernel/fork.c                                 |  1 -
+ mm/init-mm.c                                  |  3 -
+ 8 files changed, 93 insertions(+), 63 deletions(-)
+
+-- 
+2.39.3
+
