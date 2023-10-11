@@ -2,103 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1927C5257
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4371F7C5259
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 13:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234720AbjJKLnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 07:43:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37504 "EHLO
+        id S234670AbjJKLoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 07:44:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232013AbjJKLns (ORCPT
+        with ESMTP id S230175AbjJKLo3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 07:43:48 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D78E79E
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:43:46 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-d857c8a1d50so7035057276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 04:43:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697024626; x=1697629426; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8ms2vtbDlNLotZRA9zziKsDWimhPIOZieH9Xxbts9Gc=;
-        b=Xgf5xcA9ZmI0rsdXBX4sb5GATD/BhmMDXZVQyg8yDgHqWHRIZ6TEIzbzllWM3lq6Dn
-         bbkPxYiA3MI8rJmSSZwTwnCxbVEL98vpnY5+k3IXZMJvZxT4VOj0L7DcmrrgRlA75QQi
-         FHIW66s+wEqgQXWpVe703uZzZB/Za+w3/4VF7ggergduZe7EkxpglfACWZIEjiztOSPR
-         cijCEBPcjdGy4X5vbL7nIXjZcdt87teHNIXFFq6jxSzLwSEmO2jKiHA+Q3CVtZHqB2vv
-         N5bm4FCbpIoAr+nC1gpKzCq8NbnyBcQUd9YIuRYrznCVHhqFqPm87gCDcrz6BzxrkO8N
-         rz3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697024626; x=1697629426;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8ms2vtbDlNLotZRA9zziKsDWimhPIOZieH9Xxbts9Gc=;
-        b=Z/Bx+TjtoUTWorUfci0IaMC27nBNDB4iow+wzB/oGdk8KpozVMHs6naJ5+VGatZOXN
-         /1UMMQ/k3bWRxOOQJivX4gnN04n34rUBloXhHrkbjy9ljK/RWA2rq8Ji3Bh6N2UABb/3
-         X+DtCbIvIU2yPDHuEYlxDNOkWM2FaVvsCVbz/5dG5ScudaqJmmyj1o2FHWcTvCtth+IZ
-         Y3gxr8TMUvRJ0Xc53lXtHukVBvnRjteI727PCO5iQFMyLF3fKuqIm7h2OVDE5L7f5gEr
-         fkr54DahLs6xHXSRKdIDMX+jV5H6rrTu2oHFGC9qfgqXIkjxUSbemTmNQrHzCig8Q9dr
-         mhUA==
-X-Gm-Message-State: AOJu0YxdiZjOilB84wn8s5vAOSgTHn1SE8Yb1X2V390lHckDH4izMinK
-        O+tfuAJ9ljFQcbPgooLwZMBR1q2mXd/fzUBLg/urgg==
-X-Google-Smtp-Source: AGHT+IGv903cvmdbSYh+DAb+5Tz4rULNvXAQTlBg+7mdFxAdgy0NyhnbXdLN6utN8XfBDPbmB7i+1uIbbVMACSQpBvk=
-X-Received: by 2002:a25:ccc1:0:b0:d6b:6b53:d1ab with SMTP id
- l184-20020a25ccc1000000b00d6b6b53d1abmr19665014ybf.38.1697024626069; Wed, 11
- Oct 2023 04:43:46 -0700 (PDT)
+        Wed, 11 Oct 2023 07:44:29 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC7E8F;
+        Wed, 11 Oct 2023 04:44:28 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 5244B6607312;
+        Wed, 11 Oct 2023 12:44:26 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1697024667;
+        bh=N4YKplRWJ6SDqnjedGaZQWvesSWK9mTeJQID5g1MjoI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=VTJnx51lKG+BlnOCi8O3YIxIpn9ha3Yd+jN389ICrk6TvipPLABaaTGdRbI/88LZe
+         2GAn4QSENinasDmlFEf0NTPaigZA15DuO6LJt8/EWuPbewd9ilnqCj9pkqd3TpS0IA
+         dnNoabmRZItnOle1WKQW3/hGsHdyMV3b7oJ6cBtxw5qw+xjEBtkhHRBR+TgF39JLC5
+         mVuLSuX1ncXEHLtpCO7srNqv8fLMcmgWAzJAzoOIrWlIz+RenKgMq+rIvN2TCIhPaN
+         3E50cD1PFXD3fcbsSoMDeaSGfvswWBMp2o2/Ozg3f+v+TJNa4KISsJgutlkAGpfybC
+         /DCrIFymcInHQ==
+Message-ID: <d6386e5e-be7a-a68c-e592-1587380480d0@collabora.com>
+Date:   Wed, 11 Oct 2023 13:44:24 +0200
 MIME-Version: 1.0
-References: <20231010151709.4104747-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20231010151709.4104747-1-andriy.shevchenko@linux.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 11 Oct 2023 13:43:34 +0200
-Message-ID: <CACRpkdbEzT-VWOP26oDWc7YE=t_wNOJKo=CfQxZ-vk5Rsmzt8A@mail.gmail.com>
-Subject: Re: [PATCH v1 0/4] hte: Improve GPIO handling and other cleanups
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Dipen Patel <dipenp@nvidia.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, timestamp@lists.linux.dev,
-        linux-tegra@vger.kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v2 1/2] media: dt-bindings: mediatek: Add phandle to
+ mediatek,scp on MDP3 RDMA
+Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>
+Cc:     mchehab@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        matthias.bgg@gmail.com, moudy.ho@mediatek.com,
+        hverkuil-cisco@xs4all.nl, sakari.ailus@linux.intel.com,
+        u.kleine-koenig@pengutronix.de, linqiheng@huawei.com,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, kernel@collabora.com,
+        wenst@chromium.org
+References: <20231005104905.120544-1-angelogioacchino.delregno@collabora.com>
+ <20231005104905.120544-2-angelogioacchino.delregno@collabora.com>
+ <20231006-jinx-playing-261e5f41ff7f@spud>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231006-jinx-playing-261e5f41ff7f@spud>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 5:18=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+Il 06/10/23 01:36, Conor Dooley ha scritto:
+> On Thu, Oct 05, 2023 at 12:49:04PM +0200, AngeloGioacchino Del Regno wrote:
+>> The MDP3 RDMA needs to communicate with the SCP remote processor: allow
+>> specifying a phandle to a SCP core.
+>>
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>> ---
+>>
+>> v2: I've dropped Conor and Chen-Yu's Reviewed-by tags because I have changed
+>>      the description (so, the patch actually changed a bit).
+> 
+> I dunno, you made it more informative so you could probably have kept
+> mine at least.
+> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> 
 
-> This is a series provides a new API to GPIO library (so far only
-> available in the GPIO tree), and respective update to the Tegra
-> HTE driver. On top a couple of other cleaups (patches 3 & 4, they
-> can be applied separately).
->
-> Patch 2 inherited tags from its respective discussion thread [1],
-> but I believe the Tested-by needs to be confirmed again.
->
-> Due to dependencies this either should be applied to the GPIO tree,
-> or to the HTE when GPIO updates land the upstream (optionally with
-> the first patch be applied even now to the GPIO tree independently).
->
-> Another option is to have an immutable branch or tag, but I assume
-> that was discussed and rejected (?) in [1].
->
-> Link: https://lore.kernel.org/linux-gpio/20230905185309.131295-15-brgl@bg=
-dev.pl/ [1]
-> Cc: Dipen Patel <dipenp@nvidia.com>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
+I just wanted to be cautious with keeping Reviewed-by tags.
 
-This is good stuff. The series:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Sometimes it's better to drop than unfairly keeping, I'm sure that you
+understand my point here.
 
-Yours,
-Linus Walleij
+Btw, thank you!
+
+Cheers,
+Angelo
+
+> Thanks,
+> Conor.
+> 
+>>
+>>   .../devicetree/bindings/media/mediatek,mdp3-rdma.yaml     | 8 ++++++++
+>>   1 file changed, 8 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml b/Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml
+>> index 7032c7e15039..59dcea797b71 100644
+>> --- a/Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml
+>> +++ b/Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml
+>> @@ -45,6 +45,14 @@ properties:
+>>         include/dt-bindings/gce/<chip>-gce.h of each chips.
+>>       $ref: /schemas/types.yaml#/definitions/uint32-array
+>>   
+>> +  mediatek,scp:
+>> +    $ref: /schemas/types.yaml#/definitions/phandle
+>> +    description:
+>> +      Phandle to the System Control Processor (SCP) used for initializing
+>> +      and stopping the MDP3, for sending frame data locations to the MDP3's
+>> +      VPU and to install Inter-Processor Interrupt handlers to control
+>> +      processing states.
+>> +
+>>     power-domains:
+>>       maxItems: 1
+>>   
+>> -- 
+>> 2.42.0
+>>
+>>
+>> _______________________________________________
+>> Kernel mailing list -- kernel@mailman.collabora.com
+>> To unsubscribe send an email to kernel-leave@mailman.collabora.com
+
