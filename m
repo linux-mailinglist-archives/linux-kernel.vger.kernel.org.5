@@ -2,82 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0C57C5A81
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 19:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E237C5A85
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 19:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232795AbjJKRsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 13:48:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49984 "EHLO
+        id S232653AbjJKRtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 13:49:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231906AbjJKRsw (ORCPT
+        with ESMTP id S230050AbjJKRtk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 13:48:52 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D693B9D
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 10:48:50 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6934202b8bdso29522b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 10:48:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697046530; x=1697651330; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bM2ZtT57neAX/wQjDtY6kTjEfhq5pvyurdRnUuf/xJM=;
-        b=Hy+o3VdJuO81ausf8llhFOkBB+r0xZ6d0wk7L0qSa5i+aZhL4RextZ9fB7FSwgS+Oy
-         k3KwIb2SiLl6llCsCkKMCpyGeLe7e0g7s6OkSKT+Das1JzqohH2+oPDF3g9eoK8cKS0t
-         nMFpuTVfbeLtnENhoz2VSu5sO2DoZgy8NoQE409qg/v7AQ4Uy3OjBIAsgSsaXr+KecOD
-         g6/NJaXV47xu6f88z0jh9gTZG8ivVTj/lpFDLsYawtfCLKYUbcNCnK+HuKUhHbEqnL4w
-         CHEe1z5l+XfGgkfOVfTQd6rx3mNdBHVPceNbuqZTTJS/OQuzmnZp6jGAQQPj8H63UnNv
-         01iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697046530; x=1697651330;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bM2ZtT57neAX/wQjDtY6kTjEfhq5pvyurdRnUuf/xJM=;
-        b=iRF+kWKv5hJfCtGpq/ApHS1XvYBUrtVy+yL8qctjb92nZtCVomhsbai+K1WJXAqgNf
-         3mWEW81Y9HTn85tK+Jo1Wsl1kPOi61KsSmRPQJJTST5EUaLLCWlZePJbM/E0EDJDY1Kg
-         4otaNPC3eTUfBjwrCZpiPk7fN1lGbPVw+hZWdVL92JaKUCQT9bBDRtY/k3SHQXomQBBm
-         oT0YbH6fg6on8Xp4muYt6x/gwQIJR/vZApj5jN9gbSYt6ARlA7rmoDyTdBLSLpakSanP
-         sy6CozGeYaHxuNgF8yiptlp9gVYXDwWXIKeObIOUrXGsAnjN/gskr+lAsOQQ+BWef4Z0
-         O/yw==
-X-Gm-Message-State: AOJu0YzR+hOy+bZbDiOTuASFQKxCxSLzdqcCkn13uGk5zjjOggomAufP
-        7mR0Nezjz6aTc4z1KAFglXX/lg==
-X-Google-Smtp-Source: AGHT+IF4MffnY6FNeJJc1juHDvYlAxYH24seuPoeHgjPkWoCKjPIY6tr0GTX+skm36H1sgCf0PrVBQ==
-X-Received: by 2002:a05:6a00:1687:b0:68a:5395:7aa5 with SMTP id k7-20020a056a00168700b0068a53957aa5mr24585337pfc.17.1697046530225;
-        Wed, 11 Oct 2023 10:48:50 -0700 (PDT)
-Received: from p14s ([2604:3d09:148c:c800:fbd6:ce83:3759:dbcc])
-        by smtp.gmail.com with ESMTPSA id c4-20020a62e804000000b00690c9fda0fesm10327293pfi.169.2023.10.11.10.48.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 10:48:49 -0700 (PDT)
-Date:   Wed, 11 Oct 2023 11:48:45 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Mukesh Ojha <quic_mojha@quicinc.com>
-Cc:     corbet@lwn.net, agross@kernel.org, andersson@kernel.org,
-        konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
-        catalin.marinas@arm.com, will@kernel.org, linus.walleij@linaro.org,
-        andy.shevchenko@gmail.com, vigneshr@ti.com, nm@ti.com,
-        matthias.bgg@gmail.com, kgene@kernel.org, alim.akhtar@samsung.com,
-        bmasney@redhat.com, quic_tsoni@quicinc.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, kernel@quicinc.com
-Subject: Re: [REBASE PATCH v5 04/17] remoteproc: qcom: Remove minidump
- related data from qcom_common.c
-Message-ID: <ZSbf/VqpBIlhyUIG@p14s>
-References: <1694429639-21484-1-git-send-email-quic_mojha@quicinc.com>
- <1694429639-21484-5-git-send-email-quic_mojha@quicinc.com>
- <bb29aba3-9378-6405-5f6d-a7d77e0374ad@quicinc.com>
+        Wed, 11 Oct 2023 13:49:40 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B468F;
+        Wed, 11 Oct 2023 10:49:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+ t=1697046554; x=1697651354; i=linosanfilippo@gmx.de;
+ bh=UJJzaerlQRsDqbxZwPZpsK3aG/E9cxNuD4ysd9HCNkg=;
+ h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+ b=QxJyHUiVXHjL9yISHHGz34eeSJAOUGCUDN9jFDlsBS/2B3veD2KapeZa+D0reKDZgmvSb2c7YER
+ GfrOMrP5LvVmBCKHkZNi8b+etBlN5FIXg2nYBd5+Bda7IAVpir3HmkdcGE4WzopihGnnkYNkL7wlH
+ 7QtyLdilxY3aFWLZxsmTcWWD66eKzAhdeDQFfOYGX4lznHQg/YWv0tcmS69c5EVjsXHCr5nEipWLn
+ ZrVieTrze1tmNMhFrBPx/N/d7NDj7m+xGx/oINLtPZnBW8iNCYfEfXl3WMM5e5PAA4riEGiH7SV6v
+ 7xkh4xtDOCLbgNhntMa9bx3diXqGa9KRmC7g==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.2.37] ([84.162.21.41]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MXp9i-1r4rMk2oRw-00YDyX; Wed, 11
+ Oct 2023 19:49:14 +0200
+Subject: Re: [PATCH v2 2/7] serial: amba-pl011: get rid of useless wrapper
+ pl011_get_rs485_mode()
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Lino Sanfilippo <l.sanfilippo@kunbus.com>, jirislaby@kernel.org,
+        ilpo.jarvinen@linux.intel.com, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@foss.st.com, cniedermaier@dh-electronics.com,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        lukas@wunner.de, p.rosenberger@kunbus.com
+References: <20231011173829.10508-1-l.sanfilippo@kunbus.com>
+ <20231011173829.10508-3-l.sanfilippo@kunbus.com>
+ <2023101134-theater-oversleep-a58b@gregkh>
+ <20d22e11-b9be-b547-ec4e-9964a57924a4@gmx.de>
+ <2023101101-knoll-dust-6308@gregkh>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Message-ID: <447eecb3-1ebc-e8ea-db6c-9964ef9fd0db@gmx.de>
+Date:   Wed, 11 Oct 2023 19:49:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bb29aba3-9378-6405-5f6d-a7d77e0374ad@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+In-Reply-To: <2023101101-knoll-dust-6308@gregkh>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:4DLX6g8ZGchS1XtTecAHpxYCrURMdVvGDH0mpcd4YoSEcPYub+l
+ dp9Ac/1jzfKbTOMhCg4rHrX+lEaiKKp8/0PU9Qi/+s6/2cugeBY4vyyDWOBBpAYZFJlQLdM
+ Vczjcp8Mop1GMYiVaYdSP8xQiDzR85/0I2Xdb4JXQ/d3MA8MOWB02xwb9FxDRnwzL7edD8x
+ Wtj6q/EEU3RzKosNu3pJQ==
+UI-OutboundReport: notjunk:1;M01:P0:IteMFpbMUBQ=;wjRF8QhpTpFpjyp7JvmrW+OQ55k
+ bQJkm4Fe86TzUm0nnTrYhzHqb5xqylyYBI/oBLHa4pNXjrtk6uCit6zn6Rxh6LJEWgkRRC/qg
+ e5uyFqKYMGLIExRiUs39+fI5RlXMtctsgsc6LNM8wa4SX4WiFdd9udePmFBuTfHGi/H3Mvy30
+ oGEIARVkvAwW9wC4T5MOcZ6g4Z2uOAWWjdI9CyDCexwpCA5Qq0L52YVj4bS5yjClvEW2E4jCv
+ EPZikOjaTFIWXNWwKwKCJlHXraknTL2sBTzm/OU4+5Tdmpbzap/ni9Pml3pvsJIWqyQDr0wGL
+ Lna5OeyAcOJAAKWN3EOf0sZNyeRfGd1/rw3TrPA4JZJit9mIkM7DuyLh21dMUKG6ZAbou72nF
+ jDCMqQ52Fkyd+v8RlOG4DWyq1pf8o3rc2SJ90Q1mWwUDRUuiVCI5xQPfPSBUicpipQEggQLPQ
+ zuLxT4eiSQ4Oy522Xv8bx4YowcWF5rjkIzK25qULAIP9wOOrjd8Js08jJdUX7yGAKiZBevedE
+ jBEGYN/osUHg9kkcG9eaTXCzqTvW2fvaqfd5tQjnnUrkbpLViuDDvJm21j6RJsELG/sz95n0s
+ qACNaxBwvT9J8wFA1mns0hJfOZRVBDOh7g33bEb/XDvd9ibIFZGuGrirT6p9IVuAeokO1yy6F
+ LeobZ3GW3Wsu9Q4TOQjsFdJpG41QKMz64ougaeVSfck4gffLjk5KIuVTV24jZcvEpO2OpPqEJ
+ U/qpfV4zSCzZhpA7HzoQkyKZ39xdM/r1R7ONJRTr/xXZKP4/Z2p4HGldsyzIv1K0LvUJVIlTT
+ N6KpMqukaJqq/1HgAm/11CZRulbgiXFg58kr1stbZLdKDWfm4LS+XcZtGTholpp4C+Awy30WC
+ lvxLmOE2wQZdRDA4WsHKSCjWLioa6mIUuPpUPmhRsdc1VO4wMgO32qZ4ra7oPMC3XarwBvaUx
+ StvmQg==
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -86,215 +82,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 06, 2023 at 08:38:52PM +0530, Mukesh Ojha wrote:
-> Hi Bjorn/Mathieu,
-> 
-> Patches from 2/17-4/17  is just a movement of functions to separate
-> config/file.
-> 
-> Do you think, these can be picked independently from this series ?
-> I can send them separately, if required.
+On 11.10.23 at 19:47, Greg KH wrote:
+> On Wed, Oct 11, 2023 at 07:44:51PM +0200, Lino Sanfilippo wrote:
+>>
+>> Hi,
+>>
+>> On 11.10.23 at 19:42, Greg KH wrote:
+>>> On Wed, Oct 11, 2023 at 07:38:24PM +0200, Lino Sanfilippo wrote:
+>>>> Due to earlier code changes function pl011_get_rs485_mode() is now me=
+rely
+>>>> a wrapper for uart_get_rs485_mode() which does not add any further
+>>>> functionality. So remove it and instead call uart_get_rs485_mode()
+>>>> directly.
+>>>>
+>>>> Reviewed-by: Lukas Wunner <lukas@wunner.de>
+>>>> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+>>>> ---
+>>>>  drivers/tty/serial/amba-pl011.c | 14 +-------------
+>>>>  1 file changed, 1 insertion(+), 13 deletions(-)
+>>>
+>>> Why is patch 2/7 not cc: stable, when patches 3-7 are?  Either this
+>>> patch isn't needed in this series, and can go later (or to a different
+>>> branch), or it also needs to be marked for stable as the later patches
+>>> depend on it?
+>>>
+>>
+>> 2/7 is really only a cleanup patch that does not provide a bugfix.
+>> Should I remove it from this series?
+>
+> Please do, and send it later, or as part of a separate patch series
+> independant of this one.
+>
 
-Bjorn handles submissions for Qualcomm - I will defer to him.
+Ok will do so.
 
-> 
-> @Bjorn: I have sent 13/17-15/17 separately [1] as it is needed
-> by some folks and independent from this series.
-> 
-> [1]
-> https://lore.kernel.org/all/1696440338-12561-1-git-send-email-quic_mojha@quicinc.com/
-> 
-> -Mukesh
-> 
-> On 9/11/2023 4:23 PM, Mukesh Ojha wrote:
-> > As minidump specific data structure and functions move under
-> > config QCOM_RPROC_MINIDUMP, so remove minidump specific data
-> > from driver/remoteproc/qcom_common.c .
-> > 
-> > Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
-> > ---
-> >   drivers/remoteproc/qcom_common.c | 160 ---------------------------------------
-> >   1 file changed, 160 deletions(-)
-> > 
-> > diff --git a/drivers/remoteproc/qcom_common.c b/drivers/remoteproc/qcom_common.c
-> > index 03e5f5d533eb..085fd73fa23a 100644
-> > --- a/drivers/remoteproc/qcom_common.c
-> > +++ b/drivers/remoteproc/qcom_common.c
-> > @@ -17,7 +17,6 @@
-> >   #include <linux/rpmsg/qcom_smd.h>
-> >   #include <linux/slab.h>
-> >   #include <linux/soc/qcom/mdt_loader.h>
-> > -#include <linux/soc/qcom/smem.h>
-> >   #include "remoteproc_internal.h"
-> >   #include "qcom_common.h"
-> > @@ -26,61 +25,6 @@
-> >   #define to_smd_subdev(d) container_of(d, struct qcom_rproc_subdev, subdev)
-> >   #define to_ssr_subdev(d) container_of(d, struct qcom_rproc_ssr, subdev)
-> > -#define MAX_NUM_OF_SS           10
-> > -#define MAX_REGION_NAME_LENGTH  16
-> > -#define SBL_MINIDUMP_SMEM_ID	602
-> > -#define MINIDUMP_REGION_VALID		('V' << 24 | 'A' << 16 | 'L' << 8 | 'I' << 0)
-> > -#define MINIDUMP_SS_ENCR_DONE		('D' << 24 | 'O' << 16 | 'N' << 8 | 'E' << 0)
-> > -#define MINIDUMP_SS_ENABLED		('E' << 24 | 'N' << 16 | 'B' << 8 | 'L' << 0)
-> > -
-> > -/**
-> > - * struct minidump_region - Minidump region
-> > - * @name		: Name of the region to be dumped
-> > - * @seq_num:		: Use to differentiate regions with same name.
-> > - * @valid		: This entry to be dumped (if set to 1)
-> > - * @address		: Physical address of region to be dumped
-> > - * @size		: Size of the region
-> > - */
-> > -struct minidump_region {
-> > -	char	name[MAX_REGION_NAME_LENGTH];
-> > -	__le32	seq_num;
-> > -	__le32	valid;
-> > -	__le64	address;
-> > -	__le64	size;
-> > -};
-> > -
-> > -/**
-> > - * struct minidump_subsystem - Subsystem's SMEM Table of content
-> > - * @status : Subsystem toc init status
-> > - * @enabled : if set to 1, this region would be copied during coredump
-> > - * @encryption_status: Encryption status for this subsystem
-> > - * @encryption_required : Decides to encrypt the subsystem regions or not
-> > - * @region_count : Number of regions added in this subsystem toc
-> > - * @regions_baseptr : regions base pointer of the subsystem
-> > - */
-> > -struct minidump_subsystem {
-> > -	__le32	status;
-> > -	__le32	enabled;
-> > -	__le32	encryption_status;
-> > -	__le32	encryption_required;
-> > -	__le32	region_count;
-> > -	__le64	regions_baseptr;
-> > -};
-> > -
-> > -/**
-> > - * struct minidump_global_toc - Global Table of Content
-> > - * @status : Global Minidump init status
-> > - * @md_revision : Minidump revision
-> > - * @enabled : Minidump enable status
-> > - * @subsystems : Array of subsystems toc
-> > - */
-> > -struct minidump_global_toc {
-> > -	__le32				status;
-> > -	__le32				md_revision;
-> > -	__le32				enabled;
-> > -	struct minidump_subsystem	subsystems[MAX_NUM_OF_SS];
-> > -};
-> > -
-> >   struct qcom_ssr_subsystem {
-> >   	const char *name;
-> >   	struct srcu_notifier_head notifier_list;
-> > @@ -90,110 +34,6 @@ struct qcom_ssr_subsystem {
-> >   static LIST_HEAD(qcom_ssr_subsystem_list);
-> >   static DEFINE_MUTEX(qcom_ssr_subsys_lock);
-> > -static void qcom_minidump_cleanup(struct rproc *rproc)
-> > -{
-> > -	struct rproc_dump_segment *entry, *tmp;
-> > -
-> > -	list_for_each_entry_safe(entry, tmp, &rproc->dump_segments, node) {
-> > -		list_del(&entry->node);
-> > -		kfree(entry->priv);
-> > -		kfree(entry);
-> > -	}
-> > -}
-> > -
-> > -static int qcom_add_minidump_segments(struct rproc *rproc, struct minidump_subsystem *subsystem,
-> > -			void (*rproc_dumpfn_t)(struct rproc *rproc, struct rproc_dump_segment *segment,
-> > -				void *dest, size_t offset, size_t size))
-> > -{
-> > -	struct minidump_region __iomem *ptr;
-> > -	struct minidump_region region;
-> > -	int seg_cnt, i;
-> > -	dma_addr_t da;
-> > -	size_t size;
-> > -	char *name;
-> > -
-> > -	if (WARN_ON(!list_empty(&rproc->dump_segments))) {
-> > -		dev_err(&rproc->dev, "dump segment list already populated\n");
-> > -		return -EUCLEAN;
-> > -	}
-> > -
-> > -	seg_cnt = le32_to_cpu(subsystem->region_count);
-> > -	ptr = ioremap((unsigned long)le64_to_cpu(subsystem->regions_baseptr),
-> > -		      seg_cnt * sizeof(struct minidump_region));
-> > -	if (!ptr)
-> > -		return -EFAULT;
-> > -
-> > -	for (i = 0; i < seg_cnt; i++) {
-> > -		memcpy_fromio(&region, ptr + i, sizeof(region));
-> > -		if (le32_to_cpu(region.valid) == MINIDUMP_REGION_VALID) {
-> > -			name = kstrndup(region.name, MAX_REGION_NAME_LENGTH - 1, GFP_KERNEL);
-> > -			if (!name) {
-> > -				iounmap(ptr);
-> > -				return -ENOMEM;
-> > -			}
-> > -			da = le64_to_cpu(region.address);
-> > -			size = le64_to_cpu(region.size);
-> > -			rproc_coredump_add_custom_segment(rproc, da, size, rproc_dumpfn_t, name);
-> > -		}
-> > -	}
-> > -
-> > -	iounmap(ptr);
-> > -	return 0;
-> > -}
-> > -
-> > -void qcom_minidump(struct rproc *rproc, unsigned int minidump_id,
-> > -		void (*rproc_dumpfn_t)(struct rproc *rproc,
-> > -		struct rproc_dump_segment *segment, void *dest, size_t offset,
-> > -		size_t size))
-> > -{
-> > -	int ret;
-> > -	struct minidump_subsystem *subsystem;
-> > -	struct minidump_global_toc *toc;
-> > -
-> > -	/* Get Global minidump ToC*/
-> > -	toc = qcom_smem_get(QCOM_SMEM_HOST_ANY, SBL_MINIDUMP_SMEM_ID, NULL);
-> > -
-> > -	/* check if global table pointer exists and init is set */
-> > -	if (IS_ERR(toc) || !toc->status) {
-> > -		dev_err(&rproc->dev, "Minidump TOC not found in SMEM\n");
-> > -		return;
-> > -	}
-> > -
-> > -	/* Get subsystem table of contents using the minidump id */
-> > -	subsystem = &toc->subsystems[minidump_id];
-> > -
-> > -	/**
-> > -	 * Collect minidump if SS ToC is valid and segment table
-> > -	 * is initialized in memory and encryption status is set.
-> > -	 */
-> > -	if (subsystem->regions_baseptr == 0 ||
-> > -	    le32_to_cpu(subsystem->status) != 1 ||
-> > -	    le32_to_cpu(subsystem->enabled) != MINIDUMP_SS_ENABLED) {
-> > -		return rproc_coredump(rproc);
-> > -	}
-> > -
-> > -	if (le32_to_cpu(subsystem->encryption_status) != MINIDUMP_SS_ENCR_DONE) {
-> > -		dev_err(&rproc->dev, "Minidump not ready, skipping\n");
-> > -		return;
-> > -	}
-> > -
-> > -	/**
-> > -	 * Clear out the dump segments populated by parse_fw before
-> > -	 * re-populating them with minidump segments.
-> > -	 */
-> > -	rproc_coredump_cleanup(rproc);
-> > -
-> > -	ret = qcom_add_minidump_segments(rproc, subsystem, rproc_dumpfn_t);
-> > -	if (ret) {
-> > -		dev_err(&rproc->dev, "Failed with error: %d while adding minidump entries\n", ret);
-> > -		goto clean_minidump;
-> > -	}
-> > -	rproc_coredump_using_sections(rproc);
-> > -clean_minidump:
-> > -	qcom_minidump_cleanup(rproc);
-> > -}
-> > -EXPORT_SYMBOL_GPL(qcom_minidump);
-> > -
-> >   static int glink_subdev_start(struct rproc_subdev *subdev)
-> >   {
-> >   	struct qcom_rproc_glink *glink = to_glink_subdev(subdev);
+BR,
+Lino
+
