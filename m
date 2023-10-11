@@ -2,134 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A0397C5082
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C3767C5086
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 12:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346082AbjJKKrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 06:47:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42536 "EHLO
+        id S1346285AbjJKKr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 06:47:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbjJKKrt (ORCPT
+        with ESMTP id S229750AbjJKKrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 06:47:49 -0400
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5818E94;
-        Wed, 11 Oct 2023 03:47:47 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D8692FF80A;
-        Wed, 11 Oct 2023 10:47:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1697021265;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=3qt0Iwz0wApopLK8eSk42w8JbYkkMjIfQ/k9jDHK89E=;
-        b=pXj8npAUzYi/bD5fcei+eSp780xUpiuhTQBJX7eKOE0XlGzqTO3m2Yet+9PNXmE1Fx5oDL
-        6TZB7Gsa6gAUz0RmVRiQzwD0nT4+2MxIXl2+qaHhXIt+DsIP5UCcFccjsRtrTemgxJgH9d
-        5/5Yp3RUWesgxXrxnVKW7jH78N5AOBkYlr29Uhydxy74L6IpnXywOnXfdh5pASZX/tZgj5
-        n72E9KlLF6TZRd+IBK1vGDpIMkxUbbVXckIPNzSxPy+PxITBvWVuybYuKhp5TDKLvauJnH
-        qqxZOF8+s6pR6mQpqBmBnWuAIR7yxYakxi0+BNbhG5komJ+YMmt2gCxCW6j11g==
-From:   Luca Ceresoli <luca.ceresoli@bootlin.com>
-Date:   Wed, 11 Oct 2023 12:47:38 +0200
-Subject: [PATCH] dt-bindings: display: remove backlight node from panel
- examples
+        Wed, 11 Oct 2023 06:47:53 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A40B692;
+        Wed, 11 Oct 2023 03:47:51 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-5041bb9ce51so8480320e87.1;
+        Wed, 11 Oct 2023 03:47:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697021270; x=1697626070; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AVKb52P/acdOegXUvVk4ObTPK15ZJRlslOWZhhK70RY=;
+        b=GQZjJDQS0JFzerIRtunPw55XYZY1CBhImfgV/L2OpcHl95V9Qmgs057M4cVl0SZVkr
+         cSeT00TYwJsplEm8hRDTTh/sioxt7O4eD0Vvqg832B3bTT6Pv7ujuPF32HxZwtRnsXwY
+         tWBYWD+9xBvaXZhRRgKnydapxpg+2fNTw2Kztfn9aEfTFebBrdTgRLE3z0U8b2BZqd3L
+         ZqNsHFwTgrnQkqP+MiZ0I1qOUxzuO1ci2Yc9WCYTT4RVXvK1vaaYQiP/AnceymBgYQsk
+         Z1fuij7iMI/saIMFwdWeJ/ntp5qAqU1uCPRrP4sQUDkmBJ+Ryl5hCA888U0DnbEGy03r
+         2hrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697021270; x=1697626070;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AVKb52P/acdOegXUvVk4ObTPK15ZJRlslOWZhhK70RY=;
+        b=VDljj6wepBnf8Hhj9nj+n4OSX1kF1FS1sEzybAMluyz+JUN8x7fsfGqId+q5RVoYD4
+         qcsvBe3qjdaXrbF6qIRbpvtplczwqffqcSEigElmPFJYK49o1MhroOELLJQvcNvNNb25
+         /BZvrokRKiqYxC5fvuz1f5UVsP7M7/D1qBh9uk9faoE3VHVayzawsoWsrdR3JBXonHW/
+         1R8S3uLqkiuzKAMYjo1zm+Pph+rAxPngqZavUKWbe+zlpXyXJxZCAcWc4p3NiK87Lym6
+         bIWvWF7gxhT60x/Pf8YWB5X/lwMZ6OVAz45wjVaG/4a09MybFHFiqZxslzOL+9Y9UNNA
+         xMug==
+X-Gm-Message-State: AOJu0YyCDk/W8qIDwmE3c5m9fUMl7SVoGYd+2l+9lPBo5RoMG900R1GE
+        HwqsLaj0hvvCDVKvANEpIEo=
+X-Google-Smtp-Source: AGHT+IHwAwZ0p/8U14m7ATpDvmadPexRyhxkVxSyPsZgOitMCbTZVOF6c5Jh86N8Gak1nVW7nhI8TQ==
+X-Received: by 2002:ac2:5b4b:0:b0:503:c45:a6e1 with SMTP id i11-20020ac25b4b000000b005030c45a6e1mr14760902lfp.46.1697021269672;
+        Wed, 11 Oct 2023 03:47:49 -0700 (PDT)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id b7-20020ac24107000000b004ff96c09b47sm2214345lfi.260.2023.10.11.03.47.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Oct 2023 03:47:49 -0700 (PDT)
+Date:   Wed, 11 Oct 2023 13:47:46 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Kory Maincent <kory.maincent@bootlin.com>
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Cai Huoqing <cai.huoqing@linux.dev>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Herve Codina <herve.codina@bootlin.com>
+Subject: Re: [PATCH v3 5/6] dmaengine: dw-edma: HDMA: Add sync read before
+ starting the DMA transfer in remote setup
+Message-ID: <6adlujxc4cnrxbl5fbqpg5fishq7jvk6w6chgjyktbwcxd2dvi@w4ayo5ooh7fq>
+References: <20231011-b4-feature_hdma_mainline-v3-0-24ee0c979c6f@bootlin.com>
+ <20231011-b4-feature_hdma_mainline-v3-5-24ee0c979c6f@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231011-dt-panel-example-no-backlight-v1-1-b81618d32752@bootlin.com>
-X-B4-Tracking: v=1; b=H4sIAEl9JmUC/x3MQQqDMBAF0KvIrDuQWGhtr1K6mCRfHZrGkIgI4
- t0bunybd1BFUVR6dgcVbFp1SQ320pGfJU1gDc3Um/5qjRk4rJwlITJ2+eYITgs78Z+o07yyH4P
- ADTfrHndqRy4Ydf//r/d5/gApQfZMbwAAAA==
-To:     Kamlesh Gurudasani <kamlesh.gurudasani@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Lechner <david@lechnology.com>,
-        Daniel Mack <daniel@zonque.org>
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
-        Luca Ceresoli <luca.ceresoli@bootlin.com>
-X-Mailer: b4 0.12.3
-X-GND-Sasl: luca.ceresoli@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231011-b4-feature_hdma_mainline-v3-5-24ee0c979c6f@bootlin.com>
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The examples for these panel drivers have a backlight node in addition to
-the actual panel node. However the exact backlight is outside the scope of
-this binding and should be dropped from the example.
+On Wed, Oct 11, 2023 at 10:11:44AM +0200, Kory Maincent wrote:
+> The Linked list element and pointer are not stored in the same memory as
+> the HDMA controller register. If the doorbell register is toggled before
+> the full write of the linked list a race condition error can appears.
 
-Link: https://lore.kernel.org/linux-devicetree/20230724143152.GA3430423-robh@kernel.org/
-Suggested-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
----
- Documentation/devicetree/bindings/display/ilitek,ili9486.yaml       | 4 ----
- Documentation/devicetree/bindings/display/panel/ilitek,ili9163.yaml | 4 ----
- Documentation/devicetree/bindings/display/sitronix,st7735r.yaml     | 5 -----
- 3 files changed, 13 deletions(-)
+s/can appears/may occur
 
-diff --git a/Documentation/devicetree/bindings/display/ilitek,ili9486.yaml b/Documentation/devicetree/bindings/display/ilitek,ili9486.yaml
-index 1f8f2182e2f1..9cc1fd0751cd 100644
---- a/Documentation/devicetree/bindings/display/ilitek,ili9486.yaml
-+++ b/Documentation/devicetree/bindings/display/ilitek,ili9486.yaml
-@@ -50,10 +50,6 @@ examples:
-   - |
-     #include <dt-bindings/gpio/gpio.h>
- 
--    backlight: backlight {
--            compatible = "gpio-backlight";
--            gpios = <&gpio 22 GPIO_ACTIVE_HIGH>;
--    };
-     spi {
-             #address-cells = <1>;
-             #size-cells = <0>;
-diff --git a/Documentation/devicetree/bindings/display/panel/ilitek,ili9163.yaml b/Documentation/devicetree/bindings/display/panel/ilitek,ili9163.yaml
-index 90e323e19edb..3cabbba86581 100644
---- a/Documentation/devicetree/bindings/display/panel/ilitek,ili9163.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/ilitek,ili9163.yaml
-@@ -48,10 +48,6 @@ examples:
-   - |
-     #include <dt-bindings/gpio/gpio.h>
- 
--    backlight: backlight {
--            compatible = "gpio-backlight";
--            gpios = <&gpio 22 GPIO_ACTIVE_HIGH>;
--    };
-     spi {
-             #address-cells = <1>;
-             #size-cells = <0>;
-diff --git a/Documentation/devicetree/bindings/display/sitronix,st7735r.yaml b/Documentation/devicetree/bindings/display/sitronix,st7735r.yaml
-index 621f27148419..3b0ebc0db8e0 100644
---- a/Documentation/devicetree/bindings/display/sitronix,st7735r.yaml
-+++ b/Documentation/devicetree/bindings/display/sitronix,st7735r.yaml
-@@ -54,11 +54,6 @@ examples:
-   - |
-     #include <dt-bindings/gpio/gpio.h>
- 
--    backlight: backlight {
--            compatible = "gpio-backlight";
--            gpios = <&gpio 44 GPIO_ACTIVE_HIGH>;
--    };
--
-     spi {
-             #address-cells = <1>;
-             #size-cells = <0>;
+> In remote setup we can only use a readl to the memory to assured the full
+> write has occurred.
 
----
-base-commit: 2430fa6470d5e76be39a3e0d6d01474234582f94
-change-id: 20231008-dt-panel-example-no-backlight-cfdaeb861b97
+s/assured/assure
 
-Best regards,
--- 
-Luca Ceresoli <luca.ceresoli@bootlin.com>
+> 
+> Fixes: e74c39573d35 ("dmaengine: dw-edma: Add support for native HDMA")
+> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+
+-Serge(y)
+
+> ---
+> 
+> Changes in v2:
+> - Move the sync read in a function.
+> - Add commments
+> ---
+>  drivers/dma/dw-edma/dw-hdma-v0-core.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+> 
+> diff --git a/drivers/dma/dw-edma/dw-hdma-v0-core.c b/drivers/dma/dw-edma/dw-hdma-v0-core.c
+> index 04b0bcb6ded9..13b6aec6a6de 100644
+> --- a/drivers/dma/dw-edma/dw-hdma-v0-core.c
+> +++ b/drivers/dma/dw-edma/dw-hdma-v0-core.c
+> @@ -222,6 +222,20 @@ static void dw_hdma_v0_core_write_chunk(struct dw_edma_chunk *chunk)
+>  	dw_hdma_v0_write_ll_link(chunk, i, control, chunk->ll_region.paddr);
+>  }
+>  
+> +static void dw_hdma_v0_sync_ll_data(struct dw_edma_chunk *chunk)
+> +{
+> +	/*
+> +	 * In case of remote HDMA engine setup, the DW PCIe RP/EP internals
+> +	 * configuration registers and Application memory are normally accessed
+> +	 * over different buses. Ensure LL-data reaches the memory before the
+> +	 * doorbell register is toggled by issuing the dummy-read from the remote
+> +	 * LL memory in a hope that the posted MRd TLP will return only after the
+> +	 * last MWr TLP is completed
+> +	 */
+> +	if (!(chunk->chan->dw->chip->flags & DW_EDMA_CHIP_LOCAL))
+> +		readl(chunk->ll_region.vaddr.io);
+> +}
+> +
+>  static void dw_hdma_v0_core_start(struct dw_edma_chunk *chunk, bool first)
+>  {
+>  	struct dw_edma_chan *chan = chunk->chan;
+> @@ -252,6 +266,9 @@ static void dw_hdma_v0_core_start(struct dw_edma_chunk *chunk, bool first)
+>  	/* Set consumer cycle */
+>  	SET_CH_32(dw, chan->dir, chan->id, cycle_sync,
+>  		  HDMA_V0_CONSUMER_CYCLE_STAT | HDMA_V0_CONSUMER_CYCLE_BIT);
+> +
+> +	dw_hdma_v0_sync_ll_data(chunk);
+> +
+>  	/* Doorbell */
+>  	SET_CH_32(dw, chan->dir, chan->id, doorbell, HDMA_V0_DOORBELL_START);
+>  }
+> 
+> -- 
+> 2.25.1
+> 
