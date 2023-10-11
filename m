@@ -2,212 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 613D97C48E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 06:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B63B7C48F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Oct 2023 07:01:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345154AbjJKEol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 00:44:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41860 "EHLO
+        id S1345192AbjJKFBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 01:01:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345026AbjJKEok (ORCPT
+        with ESMTP id S1345102AbjJKFBQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 00:44:40 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 292A594
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 21:44:14 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-58d26cfe863so1678754a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Oct 2023 21:44:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1696999453; x=1697604253; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lP4b4JzgevJDuqoo7Rpr4koADp7QjWQ1TVT0IwKQygg=;
-        b=WcOV32Nyerab2jwd1tzTWYqzurnKYm7stBEkyzT7rIJ/kOE5nvUTTF4iG91uVVfreO
-         hhlHyLK2LENjx2YMuBzV+CcJKTV4khMAe3ydL7VMkzmv48oFBNXqtkbLCfzlw56UVzow
-         W+cDL/VjwZzdG9AMYLEB8Wy/+MjXjm0wuNMvdrI6sZL2W5Cugzv4HHwzozrcnONpfdzJ
-         xpf4SpRe/VYwagZon80+FutnxmXpAnjZLOD8iKPwZQNKULNVuK/kb0TDKKI9h+FL9UMR
-         39N2+bi7EoJj1rmWWK3i5opdbePGc+t3sBudHg/8jARPkY3lDX8LovujNx+94GXeRxxF
-         N9rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696999453; x=1697604253;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=lP4b4JzgevJDuqoo7Rpr4koADp7QjWQ1TVT0IwKQygg=;
-        b=CQoKdqsC3Tr6QXLQrFoWepL2/8lfz308AV0SdCg2MlsJZlIW/W0RbndmEVWiRdniy7
-         b4JLIHqQSDxE9TYKNC4E7A4+KEfVU2mr+QR4az5aknRlgiqbPjdjlH3arm9qPjQDcr/1
-         cJOq5OZPwnwHcMJZXCIb3NCiRv2fRHU3OVRql6xhyw7zQ0jUIzlZDg50ju8wSMlzZ8wU
-         JnAIxXYTiSXWWAIT6LdM9gkrw/544RbubyAtYisk9GTm+NEyOtbq/oMnH0Gyzzrd+3wY
-         uTo4/0CVfUu4Qp4xLcr/gnIQCH0rI2a7LhfeI6vi96W6F0W3aJQWe1S1GRDFwSKzoh8z
-         rQ8g==
-X-Gm-Message-State: AOJu0YzVZskqUUsVifcZzc1ghFLbEoPDqLjmqrOcPTAfwi+7EuowXMf8
-        wf40WUFY3Tt/5yQAxWuLNO+FfA==
-X-Google-Smtp-Source: AGHT+IGZPDR2+zk+cLZC1C124n9Vodl9jExw6pMc1CqBKp5+Yy+Po/2p/quZNzTb61vzBCKiRBDkAw==
-X-Received: by 2002:a05:6a21:33a8:b0:16b:8bcf:9e27 with SMTP id yy40-20020a056a2133a800b0016b8bcf9e27mr14605437pzb.20.1696999453635;
-        Tue, 10 Oct 2023 21:44:13 -0700 (PDT)
-Received: from [10.84.141.101] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id m8-20020a17090a4d8800b00263f41a655esm10595328pjh.43.2023.10.10.21.44.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Oct 2023 21:44:12 -0700 (PDT)
-Message-ID: <f6fd8209-4808-45e1-b5b5-95ea2dcc0ba4@bytedance.com>
-Date:   Wed, 11 Oct 2023 12:44:08 +0800
+        Wed, 11 Oct 2023 01:01:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEFA891;
+        Tue, 10 Oct 2023 22:01:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2BE8C433C8;
+        Wed, 11 Oct 2023 05:01:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697000474;
+        bh=nZ0wElezBc13qdDeHX+3EFgsUXMlsET9CTtzab8WRbs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Zd/YFGmupKRjohNmNK1tU7+fluUCEg4D49Lly2VyMVOa78SYIm3gpEUXG8JOk7MQV
+         SI31b3d5pm70slAe+wRCc5cnGjF2qDAecfB0kd+miuAj2NdbtYcqO7xcNbsF9zeYgn
+         vHAd1zYGaC67bym7saB2oGGcARbjwCQPMUKYoCT8s0HcVc/LzmPyJoZIhmuJa6qjrl
+         BiRzioorkqBnABjjJE9Wrrk1l/7hP6E6tlVbKP2ZiZAd0tZpmGFEb9ZGZMU5g030uF
+         TDOn73uogjhYnWGMf04h4vGm0WGqRBSxGm+QjTXdLf5kTh+ahYv64s8WSoFhwFu09h
+         wAPwYAHD9DXIA==
+Date:   Wed, 11 Oct 2023 10:30:58 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        lpieralisi@kernel.org, kw@linux.com, bhelgaas@google.com,
+        robh@kernel.org, gustavo.pimentel@synopsys.com,
+        jingoohan1@gmail.com, andersson@kernel.org,
+        konrad.dybcio@linaro.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] PCI: qcom: Enable ASPM for platforms supporting
+ 1.9.0 ops
+Message-ID: <20231011050058.GC3508@thinkpad>
+References: <20231010155914.9516-3-manivannan.sadhasivam@linaro.org>
+ <20231010162945.GA978270@bhelgaas>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v4 4/8] bpf: Introduce css open-coded iterator
- kfuncs
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@kernel.org, tj@kernel.org, linux-kernel@vger.kernel.org
-References: <20231007124522.34834-1-zhouchuyi@bytedance.com>
- <20231007124522.34834-5-zhouchuyi@bytedance.com>
-From:   Chuyi Zhou <zhouchuyi@bytedance.com>
-In-Reply-To: <20231007124522.34834-5-zhouchuyi@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231010162945.GA978270@bhelgaas>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 10, 2023 at 11:29:45AM -0500, Bjorn Helgaas wrote:
+> On Tue, Oct 10, 2023 at 09:29:14PM +0530, Manivannan Sadhasivam wrote:
+> > ASPM is supported by Qcom host controllers/bridges on most of the recent
+> > platforms and so the devices tested so far. But for enabling ASPM by
+> > default (without Kconfig/cmdline/sysfs), BIOS has to enable ASPM on both
+> > host bridge and downstream devices during boot. Unfortunately, none of the
+> > BIOS available on Qcom platforms enables ASPM.
+> 
+> I think this covers over a PCI core defect.  If the devices advertise
+> ASPM support, which both the qcom host controller and the endpoint
+> devices do, the PCI core should be able to enable it without being
+> prodded as this patch does.
+> 
 
+Right.
 
-在 2023/10/7 20:45, Chuyi Zhou 写道:
-> This Patch adds kfuncs bpf_iter_css_{new,next,destroy} which allow
-> creation and manipulation of struct bpf_iter_css in open-coded iterator
-> style. These kfuncs actually wrapps css_next_descendant_{pre, post}.
-> css_iter can be used to:
+> We had a long conversation about this at [1], but never came to a good
+> resolution.  Since we don't know how to fix the PCI core issue, I
+> guess we have no choice but to do things like this patch, at least for
+> now.
 > 
-> 1) iterating a sepcific cgroup tree with pre/post/up order
+> If/when we ever *do* fix the PCI core issue, it would likely result in
+> enabling ASPM (if advertised by both ends of the link) for *all* qcom
+> controllers, not just the 1.9.0 ones.
 > 
-> 2) iterating cgroup_subsystem in BPF Prog, like
-> for_each_mem_cgroup_tree/cpuset_for_each_descendant_pre in kernel.
+
+That would be a welcome move IMO :)
+
+> And I think that even today, users can enable ASPM on non-1.9.0
+> controllers via sysfs.  So if you are concerned about ASPM not being
+> tested on those controllers, you may want to make them not advertise
+> ASPM support.
 > 
-> The API design is consistent with cgroup_iter. bpf_iter_css_new accepts
-> parameters defining iteration order and starting css. Here we also reuse
-> BPF_CGROUP_ITER_DESCENDANTS_PRE, BPF_CGROUP_ITER_DESCENDANTS_POST,
-> BPF_CGROUP_ITER_ANCESTORS_UP enums.
+
+That will completely take away the power saving if users want it at some time.
+I'm planning to enable ASPM for other configs as well in the coming days once I
+get hold of the test platforms. For platforms where ASPM is not really desired,
+like IPQ SoCs used in routers, I will just disable it.
+
+> Even with this patch, I guess hot-added devices don't get ASPM
+> enabled?  That's basically what [1] is about.
 > 
-> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
-> Acked-by: Tejun Heo <tj@kernel.org>
-> ---
->   kernel/bpf/cgroup_iter.c                      | 59 +++++++++++++++++++
->   kernel/bpf/helpers.c                          |  3 +
->   .../testing/selftests/bpf/bpf_experimental.h  |  6 ++
->   3 files changed, 68 insertions(+)
+
+Yeah, that's a limitation like the BIOS enablement. Fortunately, most of the
+platforms based on Qcom SoCs do not have hot pluggable PCIe slots like in PCs.
+But we should fix it too.
+
+- Mani
+
+> Bjorn
 > 
-> diff --git a/kernel/bpf/cgroup_iter.c b/kernel/bpf/cgroup_iter.c
-> index 810378f04fbc..9c6ad892ae82 100644
-> --- a/kernel/bpf/cgroup_iter.c
-> +++ b/kernel/bpf/cgroup_iter.c
-> @@ -294,3 +294,62 @@ static int __init bpf_cgroup_iter_init(void)
+> [1] https://lore.kernel.org/linux-pci/20230615070421.1704133-1-kai.heng.feng@canonical.com/
+> 
+> > Due to this, the platforms
+> > making use of Qcom SoCs draw high power during runtime.
+> > 
+> > To fix this power issue, users/distros have to enable ASPM using configs
+> > such as (Kconfig/cmdline/sysfs) or the BIOS has to start enabling ASPM.
+> > The latter may happen in the future, but that won't address the issue on
+> > current platforms. Also, asking users/distros to enable a feature to get
+> > the power management right would provide an unpleasant out-of-the-box
+> > experience.
+> > 
+> > So the apt solution is to enable ASPM in the controller driver itself. And
+> > this is being accomplished by calling pci_enable_link_state() in the newly
+> > introduced host_post_init() callback for all the devices connected to the
+> > bus. This function enables all supported link low power states for both
+> > host bridge and the downstream devices.
+> > 
+> > Due to limited testing, ASPM is only enabled for platforms making use of
+> > ops_1_9_0 callbacks.
+> > 
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >  drivers/pci/controller/dwc/pcie-qcom.c | 28 ++++++++++++++++++++++++++
+> >  1 file changed, 28 insertions(+)
+> > 
+> > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> > index 367acb419a2b..c324c3daaa5a 100644
+> > --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> > @@ -222,6 +222,7 @@ struct qcom_pcie_ops {
+> >  	int (*get_resources)(struct qcom_pcie *pcie);
+> >  	int (*init)(struct qcom_pcie *pcie);
+> >  	int (*post_init)(struct qcom_pcie *pcie);
+> > +	void (*host_post_init)(struct qcom_pcie *pcie);
+> >  	void (*deinit)(struct qcom_pcie *pcie);
+> >  	void (*ltssm_enable)(struct qcom_pcie *pcie);
+> >  	int (*config_sid)(struct qcom_pcie *pcie);
+> > @@ -967,6 +968,22 @@ static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
+> >  	return 0;
 >   }
->   
->   late_initcall(bpf_cgroup_iter_init);
-> +
-> +struct bpf_iter_css {
-> +	__u64 __opaque[3];
-> +} __attribute__((aligned(8)));
-> +
-> +struct bpf_iter_css_kern {
-> +	struct cgroup_subsys_state *start;
-> +	struct cgroup_subsys_state *pos;
-> +	unsigned int flags;
-> +} __attribute__((aligned(8)));
-> +
-> +__bpf_kfunc int bpf_iter_css_new(struct bpf_iter_css *it,
-> +		struct cgroup_subsys_state *start, unsigned int flags)
-> +{
-> +	struct bpf_iter_css_kern *kit = (void *)it;
-> +
-> +	BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css));
-> +	BUILD_BUG_ON(__alignof__(struct bpf_iter_css_kern) != __alignof__(struct bpf_iter_css));
-> +
+> >  
+> > +static int qcom_pcie_enable_aspm(struct pci_dev *pdev, void *userdata)
+> > +{
+> > +	/* Downstream devices need to be in D0 state before enabling PCI PM substates */
+> > +	pci_set_power_state(pdev, PCI_D0);
+> > +	pci_enable_link_state(pdev, PCIE_LINK_STATE_ALL);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static void qcom_pcie_host_post_init_2_7_0(struct qcom_pcie *pcie)
+> > +{
+> > +	struct dw_pcie_rp *pp = &pcie->pci->pp;
+> > +
+> > +	pci_walk_bus(pp->bridge->bus, qcom_pcie_enable_aspm, NULL);
+> > +}
+> > +
+> >  static void qcom_pcie_deinit_2_7_0(struct qcom_pcie *pcie)
+> >  {
+> >  	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
+> > @@ -1219,9 +1236,19 @@ static void qcom_pcie_host_deinit(struct dw_pcie_rp *pp)
+> >  	pcie->cfg->ops->deinit(pcie);
+> >  }
+> >  
+> > +static void qcom_pcie_host_post_init(struct dw_pcie_rp *pp)
+> > +{
+> > +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> > +	struct qcom_pcie *pcie = to_qcom_pcie(pci);
+> > +
+> > +	if (pcie->cfg->ops->host_post_init)
+> > +		pcie->cfg->ops->host_post_init(pcie);
+> > +}
+> > +
+> >  static const struct dw_pcie_host_ops qcom_pcie_dw_ops = {
+> >  	.host_init	= qcom_pcie_host_init,
+> >  	.host_deinit	= qcom_pcie_host_deinit,
+> > +	.host_post_init	= qcom_pcie_host_post_init,
+> >  };
+> >  
+> >  /* Qcom IP rev.: 2.1.0	Synopsys IP rev.: 4.01a */
+> > @@ -1283,6 +1310,7 @@ static const struct qcom_pcie_ops ops_1_9_0 = {
+> >  	.get_resources = qcom_pcie_get_resources_2_7_0,
+> >  	.init = qcom_pcie_init_2_7_0,
+> >  	.post_init = qcom_pcie_post_init_2_7_0,
+> > +	.host_post_init = qcom_pcie_host_post_init_2_7_0,
+> >  	.deinit = qcom_pcie_deinit_2_7_0,
+> >  	.ltssm_enable = qcom_pcie_2_3_2_ltssm_enable,
+> >  	.config_sid = qcom_pcie_config_sid_1_9_0,
+> > -- 
+> > 2.25.1
+> > 
 
-This would cause the fail of netdev/build_32bit CI 
-(https://netdev.bots.linux.dev/static/nipa/790929/13412333/build_32bit/stderr):
-
-tools/testing/selftests/kvm/settings: warning: ignored by one of the 
-.gitignore files
-../kernel/bpf/cgroup_iter.c:308:17: warning: no previous prototype for 
-‘bpf_iter_css_new’ [-Wmissing-prototypes]
-   308 | __bpf_kfunc int bpf_iter_css_new(struct bpf_iter_css *it,
-       |                 ^~~~~~~~~~~~~~~~
-../kernel/bpf/cgroup_iter.c:332:41: warning: no previous prototype for 
-‘bpf_iter_css_next’ [-Wmissing-prototypes]
-   332 | __bpf_kfunc struct cgroup_subsys_state 
-*bpf_iter_css_next(struct bpf_iter_css *it)
-       |                                         ^~~~~~~~~~~~~~~~~
-../kernel/bpf/cgroup_iter.c:353:18: warning: no previous prototype for 
-‘bpf_iter_css_destroy’ [-Wmissing-prototypes]
-   353 | __bpf_kfunc void bpf_iter_css_destroy(struct bpf_iter_css *it)
-       |                  ^~~~~~~~~~~~~~~~~~~~
-In file included from <command-line>:
-../kernel/bpf/cgroup_iter.c: In function ‘bpf_iter_css_new’:
-./../include/linux/compiler_types.h:425:45: error: call to 
-‘__compiletime_assert_322’ declared with attribute error: BUILD_BUG_ON 
-failed: sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css)
-   425 |         _compiletime_assert(condition, msg, 
-__compiletime_assert_, __COUNTER__)
-       |                                             ^
-./../include/linux/compiler_types.h:406:25: note: in definition of macro 
-‘__compiletime_assert’
-   406 |                         prefix ## suffix(); 
-         \
-       |                         ^~~~~~
-./../include/linux/compiler_types.h:425:9: note: in expansion of macro 
-‘_compiletime_assert’
-   425 |         _compiletime_assert(condition, msg, 
-__compiletime_assert_, __COUNTER__)
-       |         ^~~~~~~~~~~~~~~~~~~
-../include/linux/build_bug.h:39:37: note: in expansion of macro 
-‘compiletime_assert’
-    39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), 
-msg)
-       |                                     ^~~~~~~~~~~~~~~~~~
-../include/linux/build_bug.h:50:9: note: in expansion of macro 
-‘BUILD_BUG_ON_MSG’
-    50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " 
-#condition)
-       |         ^~~~~~~~~~~~~~~~
-../kernel/bpf/cgroup_iter.c:313:9: note: in expansion of macro 
-‘BUILD_BUG_ON’
-   313 |         BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) != 
-sizeof(struct bpf_iter_css));
-
-
-The reason seems on 32-bit machine, sizeof(struct bpf_iter_css) is 24 
-and sizeof(struct bpf_iter_css_kern) is 16.
-
-I was wondering whether the BUILD_BUG_ON check is necessary. Looking at 
-the struct bpf_list_node and struct bpf_list_node_kern wich are very 
-similay to bpf_iter_css, I didn't see the BUILD_BUG_ON check when 
-convert from (struct bpf_list_node *) to (struct bpf_list_node_kern *)
-
-/* Non-opaque version of bpf_list_node in uapi/linux/bpf.h */
-struct bpf_list_node_kern {
-	struct list_head list_head;
-	void *owner;
-} __attribute__((aligned(8)));
-
-struct bpf_list_node {
-	__u64 :64;
-	__u64 :64;
-	__u64 :64;
-} __attribute__((aligned(8)));
-
-__bpf_kfunc int bpf_list_push_back_impl(struct bpf_list_head *head,
-					struct bpf_list_node *node,
-					void *meta__ign, u64 off)
-{
-	struct bpf_list_node_kern *n = (void *)node;
-
-}
-
-
-
+-- 
+மணிவண்ணன் சதாசிவம்
