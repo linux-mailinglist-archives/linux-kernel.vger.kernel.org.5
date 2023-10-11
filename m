@@ -2,259 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9424C7C6044
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 00:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FCF67C604B
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Oct 2023 00:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376488AbjJKWUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Oct 2023 18:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36886 "EHLO
+        id S235196AbjJKWV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Oct 2023 18:21:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235200AbjJKWUf (ORCPT
+        with ESMTP id S233397AbjJKWVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Oct 2023 18:20:35 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E15B7
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:20:33 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c8a1541232so3107645ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Oct 2023 15:20:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1697062833; x=1697667633; darn=vger.kernel.org;
-        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=OxwNzaeeyHY0DHAO9fiAGJHdOGrAxYgLJWS9VVtYrHU=;
-        b=HS0iFbP648P7tTJusVdpNYV56jjgnMgevaiSE598LDvfZwzMQ3vUFbFQm9sYKxYeQc
-         iN+sB9+DoFIV0faxskljCYNPyMWeTi8Ag97CelbgTRpjxnQg1B2AxMLDNEctAmW+NxAa
-         9JLFqw7xcPiHXK6X5toaau+a946p53mh/umYQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697062833; x=1697667633;
-        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OxwNzaeeyHY0DHAO9fiAGJHdOGrAxYgLJWS9VVtYrHU=;
-        b=s0MJmEL+kPno6+sJUU1XC8Z7eu485AN539SVoqhHrc0zFNxN58Ag7RBIrOHn6ugpWO
-         Syh8puhqpqxyCNHG79Jwdkev4ldpjMdZcvBnMN805X8pPAQ2p+MQhKN+VEpqZ4kATO3C
-         7f+xdfbAOvZLvbtKTLbiYpdJvXQ0Ka/mALFzOy2KwfLPFatmGnVdTC18o2gd+T2o2/pB
-         SZZpjVbgY4XnINVt1pbCUgOFQHRF0de1RZehgZ7dMVwa5N/JHicsz/BXLpNku1LgfcEh
-         XSgGERsSRLg5bwjr1if0okzMXITekSkPImQs9sNojX6wpgq/0o9/3+AVWBoxQtCX8SU2
-         gSPw==
-X-Gm-Message-State: AOJu0YzUodRHaDCrDaW5KtAPjfzYbUAq9ecy32p5wQsKcolUwcJEC2AG
-        wNrR5PsuLb+bmiM8Kgj85grrKg==
-X-Google-Smtp-Source: AGHT+IF91HnyYRTz2ZZRaGu39NW2dNF8bdPhNAncTAzQ8GUItXAgo+zKeS9kXa07/8xije/4e0zuDw==
-X-Received: by 2002:a17:902:ea8d:b0:1b8:2c6f:3248 with SMTP id x13-20020a170902ea8d00b001b82c6f3248mr23400488plb.39.1697062833000;
-        Wed, 11 Oct 2023 15:20:33 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 13-20020a170902c10d00b001c75d7f2597sm348256pli.141.2023.10.11.15.20.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Oct 2023 15:20:32 -0700 (PDT)
-From:   Florian Fainelli <florian.fainelli@broadcom.com>
-To:     netdev@vger.kernel.org
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        linux-kernel@vger.kernel.org (open list:ARM/Mediatek SoC support),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support)
-Subject: [PATCH net-next v2 2/2] net: dsa: Rename IFLA_DSA_MASTER to IFLA_DSA_CONDUIT
-Date:   Wed, 11 Oct 2023 15:20:26 -0700
-Message-Id: <20231011222026.4181654-3-florian.fainelli@broadcom.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231011222026.4181654-1-florian.fainelli@broadcom.com>
-References: <20231011222026.4181654-1-florian.fainelli@broadcom.com>
+        Wed, 11 Oct 2023 18:21:25 -0400
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C9AB8;
+        Wed, 11 Oct 2023 15:21:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
+        :From:subject:date:message-id:reply-to;
+        bh=j0lKlo34pg/0a0B2e7rNH4hcNejowX7t2+Le7q0Qbrg=; b=cBQSMF35Hown+M2FtHLQx7n63s
+        qfppfY99To5Ke/yfP2U/YkPiXtBqy7Wikl6cB4yayoeBSEDKkPg8DqDaONAjIvETNYIqwb3DtVHdB
+        K6+cAkgTL4vjolnN1z4s9FNtYGwc+eK/elTPCcPuQO7zv8QdJdE8KBWgR4SIWaolgrac=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:53922 helo=pettiford.lan)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1qqhZr-0007QE-2I; Wed, 11 Oct 2023 18:21:16 -0400
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Cc:     hugo@hugovil.com, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org
+Date:   Wed, 11 Oct 2023 18:21:05 -0400
+Message-Id: <20231011222105.2587175-1-hugo@hugovil.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000005718f50607783b6e"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
+Subject: [PATCH] dt-bindings: max310x: convert to YAML
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000005718f50607783b6e
-Content-Transfer-Encoding: 8bit
+From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-This preserves the existing IFLA_DSA_MASTER which is part of the uAPI
-and creates an alias named IFLA_DSA_CONDUIT.
+Convert binding from text format to YAML.
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Additions to original text binding:
+  - add rs485 reference.
+
+Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 ---
- Documentation/networking/dsa/configuration.rst |  4 ++--
- include/uapi/linux/if_link.h                   |  4 +++-
- net/dsa/netlink.c                              | 10 +++++-----
- 3 files changed, 10 insertions(+), 8 deletions(-)
+ .../bindings/serial/maxim,max310x.txt         |  48 --------
+ .../bindings/serial/maxim,max310x.yaml        | 107 ++++++++++++++++++
+ 2 files changed, 107 insertions(+), 48 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/serial/maxim,max310x.txt
+ create mode 100644 Documentation/devicetree/bindings/serial/maxim,max310x.yaml
 
-diff --git a/Documentation/networking/dsa/configuration.rst b/Documentation/networking/dsa/configuration.rst
-index a5a38c31736d..7148fb7c7fe1 100644
---- a/Documentation/networking/dsa/configuration.rst
-+++ b/Documentation/networking/dsa/configuration.rst
-@@ -393,7 +393,7 @@ description which has an ``ethernet`` property. It is up to the user to
- configure the system for the switch to use other conduits.
- 
- DSA uses the ``rtnl_link_ops`` mechanism (with a "dsa" ``kind``) to allow
--changing the DSA conduit of a user port. The ``IFLA_DSA_MASTER`` u32 netlink
-+changing the DSA conduit of a user port. The ``IFLA_DSA_CONDUIT`` u32 netlink
- attribute contains the ifindex of the conduit device that handles each user
- device. The DSA conduit must be a valid candidate based on firmware node
- information, or a LAG interface which contains only users which are valid
-@@ -435,7 +435,7 @@ Using iproute2, the following manipulations are possible:
-         dsa master bond0
- 
- Notice that in the case of CPU ports under a LAG, the use of the
--``IFLA_DSA_MASTER`` netlink attribute is not strictly needed, but rather, DSA
-+``IFLA_DSA_CONDUIT`` netlink attribute is not strictly needed, but rather, DSA
- reacts to the ``IFLA_MASTER`` attribute change of its present conduit (``eth0``)
- and migrates all user ports to the new upper of ``eth0``, ``bond0``. Similarly,
- when ``bond0`` is destroyed using ``RTM_DELLINK``, DSA migrates the user ports
-diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
-index fac351a93aed..30ef80aff033 100644
---- a/include/uapi/linux/if_link.h
-+++ b/include/uapi/linux/if_link.h
-@@ -1392,7 +1392,9 @@ enum {
- 
- enum {
- 	IFLA_DSA_UNSPEC,
--	IFLA_DSA_MASTER,
-+	IFLA_DSA_CONDUIT,
-+	/* Deprecated, use IFLA_DSA_CONDUIT insted */
-+	IFLA_DSA_MASTER = IFLA_DSA_CONDUIT,
- 	__IFLA_DSA_MAX,
- };
- 
-diff --git a/net/dsa/netlink.c b/net/dsa/netlink.c
-index f56f90a25b99..1332e56349e5 100644
---- a/net/dsa/netlink.c
-+++ b/net/dsa/netlink.c
-@@ -8,7 +8,7 @@
- #include "user.h"
- 
- static const struct nla_policy dsa_policy[IFLA_DSA_MAX + 1] = {
--	[IFLA_DSA_MASTER]	= { .type = NLA_U32 },
-+	[IFLA_DSA_CONDUIT]	= { .type = NLA_U32 },
- };
- 
- static int dsa_changelink(struct net_device *dev, struct nlattr *tb[],
-@@ -20,8 +20,8 @@ static int dsa_changelink(struct net_device *dev, struct nlattr *tb[],
- 	if (!data)
- 		return 0;
- 
--	if (data[IFLA_DSA_MASTER]) {
--		u32 ifindex = nla_get_u32(data[IFLA_DSA_MASTER]);
-+	if (data[IFLA_DSA_CONDUIT]) {
-+		u32 ifindex = nla_get_u32(data[IFLA_DSA_CONDUIT]);
- 		struct net_device *conduit;
- 
- 		conduit = __dev_get_by_index(dev_net(dev), ifindex);
-@@ -38,7 +38,7 @@ static int dsa_changelink(struct net_device *dev, struct nlattr *tb[],
- 
- static size_t dsa_get_size(const struct net_device *dev)
- {
--	return nla_total_size(sizeof(u32)) +	/* IFLA_DSA_MASTER  */
-+	return nla_total_size(sizeof(u32)) +	/* IFLA_DSA_CONDUIT  */
- 	       0;
- }
- 
-@@ -46,7 +46,7 @@ static int dsa_fill_info(struct sk_buff *skb, const struct net_device *dev)
- {
- 	struct net_device *conduit = dsa_user_to_conduit(dev);
- 
--	if (nla_put_u32(skb, IFLA_DSA_MASTER, conduit->ifindex))
-+	if (nla_put_u32(skb, IFLA_DSA_CONDUIT, conduit->ifindex))
- 		return -EMSGSIZE;
- 
- 	return 0;
+diff --git a/Documentation/devicetree/bindings/serial/maxim,max310x.txt b/Documentation/devicetree/bindings/serial/maxim,max310x.txt
+deleted file mode 100644
+index 79e10a05a96a..000000000000
+--- a/Documentation/devicetree/bindings/serial/maxim,max310x.txt
++++ /dev/null
+@@ -1,48 +0,0 @@
+-* Maxim MAX310X advanced Universal Asynchronous Receiver-Transmitter (UART)
+-
+-Required properties:
+-- compatible: Should be one of the following:
+-  - "maxim,max3107" for Maxim MAX3107,
+-  - "maxim,max3108" for Maxim MAX3108,
+-  - "maxim,max3109" for Maxim MAX3109,
+-  - "maxim,max14830" for Maxim MAX14830.
+-- reg: SPI chip select number.
+-- interrupts: Specifies the interrupt source of the parent interrupt
+-  controller. The format of the interrupt specifier depends on the
+-  parent interrupt controller.
+-- clocks: phandle to the IC source clock.
+-- clock-names: Should be "xtal" if clock is an external crystal or
+-  "osc" if an external clock source is used.
+-
+-Optional properties:
+-- gpio-controller: Marks the device node as a GPIO controller.
+-- #gpio-cells: Should be two. The first cell is the GPIO number and
+-  the second cell is used to specify the GPIO polarity:
+-    0 = active high,
+-    1 = active low.
+-
+-Example:
+-
+-/ {
+-	clocks {
+-		spi_uart_clk: osc_max14830 {
+-			compatible = "fixed-clock";
+-			#clock-cells = <0>;
+-			clock-frequency = <3686400>;
+-		};
+-
+-	};
+-};
+-
+-&spi0 {
+-	max14830: max14830@0 {
+-		compatible = "maxim,max14830";
+-		reg = <0>;
+-		clocks = <&spi_uart_clk>;
+-		clock-names = "osc";
+-		interrupt-parent = <&gpio3>;
+-		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
+-		gpio-controller;
+-		#gpio-cells = <2>;
+-	};
+-};
+diff --git a/Documentation/devicetree/bindings/serial/maxim,max310x.yaml b/Documentation/devicetree/bindings/serial/maxim,max310x.yaml
+new file mode 100644
+index 000000000000..05fd00d95260
+--- /dev/null
++++ b/Documentation/devicetree/bindings/serial/maxim,max310x.yaml
+@@ -0,0 +1,107 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/serial/maxim,max310x.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Maxim MAX310X Advanced Universal Asynchronous Receiver-Transmitter (UART)
++
++maintainers:
++  - Hugo Villeneuve <hvilleneuve@dimonoff.com>
++
++properties:
++  compatible:
++    enum:
++      - maxim,max3107
++      - maxim,max3108
++      - maxim,max3109
++      - maxim,max14830
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-frequency:
++    description:
++      When there is no clock provider visible to the platform, this
++      is the source crystal frequency for the IC in Hz.
++    minimum: 1000000
++    maximum: 4000000
++
++  clock-names:
++    enum:
++      - xtal # External crystal
++      - osc  # External clock source
++
++  gpio-controller: true
++
++  "#gpio-cells":
++    const: 2
++
++  gpio-line-names:
++    minItems: 1
++    maxItems: 16
++
++allOf:
++  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++  - $ref: /schemas/serial/serial.yaml#
++  - $ref: /schemas/serial/rs485.yaml#
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++oneOf:
++  - required:
++      - clocks
++      - clock-names
++  - required:
++      - clock-frequency
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        serial@2c {
++            compatible = "maxim,max3107";
++            reg = <0x2c>;
++            clocks = <&xtal4m>;
++            clock-names = "xtal";
++            interrupt-parent = <&gpio3>;
++            interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
++            gpio-controller;
++            #gpio-cells = <2>;
++        };
++
++        serial@60 {
++            compatible = "maxim,max3108";
++            reg = <0x60>;
++            clocks = <&clk20m>;
++            clock-names = "osc";
++            interrupt-parent = <&gpio3>;
++            interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
++            gpio-controller;
++            #gpio-cells = <2>;
++        };
++
++        serial@6f {
++            compatible = "maxim,max14830";
++            reg = <0x6f>;
++            clock-frequency = <3000000>;
++            interrupt-parent = <&gpio3>;
++            interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
++            gpio-controller;
++            #gpio-cells = <2>;
++        };
++    };
+
+base-commit: 8182d7a3f1b8982c0136dca82a846ea375a4d6e9
 -- 
-2.34.1
+2.39.2
 
-
---0000000000005718f50607783b6e
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
-9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
-UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
-KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
-nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
-Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
-KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
-kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
-2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
-3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
-NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
-AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIAD4BoHKpDTcV9+y
-KClWevdrLlRSU87DqXgwtUq5LfSqMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTIzMTAxMTIyMjAzM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
-AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQB4fj3kXyJFKfy0BzXJK+WDhHQWtmQtForw
-U4+FM3Rll3sZG9Juj1IUilb+S2opEHrxin50DeAN/9gcGt5xlfmVuLqmUeeAAxh5k5buRwKIzVZG
-DxsYmcnqrIckSHecrj8G1kC5krmqMAbKA84bxDCv3NU/GitxD6VBsO41smW/sRO0isGsifDK1dl2
-bnTZ9LzFEusczb8d9GwRLugYxZDpyscQ6yOAq8jjX5LIOKSlWGLaC9+cOX6dsyCrUmLdm/cv3/VP
-vqMN2jc6xJQHxzyDNo62GTVKS0TwiIppXPYyKL8UalF4FBr7BaehzJKo4Vy17ohabg28CfNk63x2
-rpCr
---0000000000005718f50607783b6e--
